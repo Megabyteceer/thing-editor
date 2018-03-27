@@ -19,10 +19,13 @@ app.get('/exit', (req, res) => {
 var clientLibs = {
 	'jquery': 'node_modules/jquery/dist/jquery'
 };
-
+var libsFolder = rootPath + 'public/js/lib/';
+if (!fs.existsSync(libsFolder)){
+    fs.mkdirSync(libsFolder);
+}
 Object.keys(clientLibs).some((k) => {
 	var src = rootPath + clientLibs[k];
-	var dest = rootPath + 'public/js/lib/' + k;
+	var dest = libsFolder + k;
 	log(src);
 	log(dest);
 	fs.symlink(src + '.js', dest + '.js', ef);
