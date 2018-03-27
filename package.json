@@ -1,0 +1,27 @@
+{
+  "name": "thing_github_train",
+  "version": "0.0.1",
+  "description": "train",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Megabyteceer/thing.git"
+  },
+  "keywords": [
+    "js"
+  ],
+  "author": "Megabyte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Megabyteceer/thing/issues"
+  },
+  "homepage": "https://github.com/Megabyteceer/thing#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "jquery": "^3.3.1",
+    "opn": "^5.3.0"
+  }
+}
