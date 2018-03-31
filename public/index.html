@@ -1,8 +1,37 @@
-<head>
-
-
-</head>
-<body>
-<body/>
-<script src="js/lib/jquery.min.js"/>
-<script src="js/index.js"/>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>EDITOR</title>
+		<link rel="stylesheet" href="css/reset.css"/>
+		<link rel="stylesheet" href="css/style.css"/>
+		
+		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+		
+		<script>
+			/*window.errorssLimit =0;
+			window.occuredErrorsInGame = [];
+			window.onerror = function(msg, url, line, col, error) {
+				debugger;
+				window.errorssLimit++;
+				if (window.errorssLimit<=3) {
+					var m = 'unhandled ERROR: ' + url+' ('+line+':'+col+') '+msg;
+					
+					window.occuredErrorsInGame.push(m);
+					
+					alert(m);
+				}
+			};*/
+		</script>
+	</head>
+	
+	<body>
+	<div id="root"></div>
+	
+	<body/>
+	<script src="js/lib/jquery.min.js"></script>
+	<script src="js/lib/react.development.js"></script>
+	<script src="js/lib/react-dom.development.js"></script>
+	<script src="js/lib/pixi.min.js"></script>
+	<script type="module" src="js/index.js"></script>
+	
+</html>
