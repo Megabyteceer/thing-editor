@@ -1,16 +1,10 @@
 "use strict";
-
+import utils from '/js/utils/utils.js';
 import ws from '/js/utils/socket.js';
-
-
-class Hello extends React.Component {
-  render() {
-    return React.createElement('div', null, `Hello ${this.props.toWhat}`);
-  }
-}
+import UI from '/js/ui/ui.js';
 
 ReactDOM.render(
-  React.createElement(Hello, {toWhat: 'World'}, null),
+  React.createElement(UI),
   document.getElementById('root')
 );
 
@@ -19,7 +13,7 @@ var app = new PIXI.Application(800, 600, {backgroundColor : 0x1099bb});
 document.body.appendChild(app.view);
 
 // create a new Sprite from an image path
-var bunny = PIXI.Sprite.fromImage('required/assets/basics/bunny.png')
+var bunny = PIXI.Sprite.fromImage('img/pic3.jpg')
 
 // center the sprite's anchor point
 bunny.anchor.set(0.5);
