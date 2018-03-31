@@ -7,7 +7,7 @@ ws.onopen = function open() {
 };
 
 ws.onmessage = function incoming(data) {
-  console.log(data);
+  log(data);
 };
 
 ws.onclose = function incoming(data) {
