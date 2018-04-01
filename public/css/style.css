@@ -57,3 +57,24 @@ h5{
 	-moz-box-shadow: inset 0px 4px 12px 0px rgba(44,0,0,0.75);
 	box-shadow: inset 0px 4px 12px 0px rgba(44,0,0,0.75);
 }
+
+.window-body {
+	position:fixed;
+	border: 1px solid #abc;
+	box-sizing: content-box;
+}
+
+.window-header {
+	width:100%;
+	background:#567;
+	color:#fff;
+	cursor:move;
+	user-select: none; 
+	font-size: 70%;
+	padding: 2px;
+	box-sizing: border-box;
+}
+
+.window-content {
+	padding: 2px;
+}

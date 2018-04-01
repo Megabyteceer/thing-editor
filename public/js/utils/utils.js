@@ -1,9 +1,9 @@
-var factorues = {};
+var factories = {};
 ['div', 'span', 'img', 'button', 'input'].some((factoryType) => {
-	factorues[factoryType] = React.createFactory(factoryType);
+	factories[factoryType] = React.createFactory(factoryType);
 });
 
-window.R = factorues;
+window.R = factories;
 window.log = console.log;
 
 export default {
