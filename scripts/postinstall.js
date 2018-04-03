@@ -12,12 +12,17 @@ var clientJsLibs = {
 	'pixi.min.js': 'node_modules/pixi.js/dist/pixi.min.js'
 };
 
-createSymlink(rootPath + 'node_modules/reset-css/reset.css', 'public/css/reset.css');
-
-var libsFolder = rootPath + 'public/js/lib/';
-if (!fs.existsSync(libsFolder)) {
-    fs.mkdirSync(libsFolder);
+var libsJsFolder = rootPath + 'public/js/lib/';
+if (!fs.existsSync(libsJsFolder)) {
+    fs.mkdirSync(libsJsFolder);
 }
+var libsCssFolder = rootPath + 'public/css/lib/';
+if (!fs.existsSync(libsCssFolder)) {
+    fs.mkdirSync(libsCssFolder);
+}
+
+createSymlink(rootPath + 'node_modules/reset-css/reset.css', libsCssFolder + 'reset.css');
+
 function createSymlink(src, dest) {
 	if(fs.existsSync(src)) {
 		fs.symlink(src, dest, ef);
@@ -25,6 +30,6 @@ function createSymlink(src, dest) {
 }
 Object.keys(clientJsLibs).some((k) => {
 	var src = rootPath + clientJsLibs[k];
-	var dest = libsFolder + k;
+	var dest = libsJsFolder + k;
 	createSymlink(src, dest);
 });
