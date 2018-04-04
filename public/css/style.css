@@ -1,5 +1,7 @@
 :root {
     --window-bg-color: #cccfda;
+	--bg-color: #8c8f9a;
+	--window-header-color:#567;
 }
 
 body,html{
@@ -8,7 +10,7 @@ body,html{
 	height:100%;
 	color:#595550;
 	line-height:normal;
-	background: var(--window-bg-color);
+	background: var(--bg-color);
 }
 
 hr{
@@ -66,13 +68,14 @@ h5{
 	position:fixed;
 	box-sizing: content-box;
 	background: var(--window-bg-color);
-	border: 1px solid #abc;
+	border: 1px solid var(--window-header-color);
+	border-radius:3px;
 }
 
 .window-header {
 	width:100%;
-	background:#567;
-	color:#fff;
+	background:var(--window-header-color);
+	color:#9ab;
 	cursor:move;
 	user-select: none; 
 	font-size: 70%;
@@ -82,4 +85,16 @@ h5{
 
 .window-content {
 	padding: 2px;
+}
+
+.window-rb-corner {
+	position:absolute;
+	right:0;
+	bottom:0;
+	width:8px;
+	height:8px;
+	cursor: se-resize;
+	background: var(--window-header-color);
+	border-top-left-radius: 80px;
+	border-lef-top-radius: 20px;
 }
