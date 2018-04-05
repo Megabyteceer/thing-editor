@@ -4,6 +4,42 @@ const contentProps = {
 
 var emptyImage = new Image();
 
+class CornerDragger extends React.Component {
+	
+	constructor() {
+		this.dragEndHandler = this.dragEndHandler.bind(this);
+		this.dragStartHandler = this.dragStartHandler.bind(this);
+		this.dragHandler = this.dragHandler.bind(this);
+	}
+	
+	dragStartHandler(ev) {
+		this.prevX = ev.pageX;
+		this.prevY = ev.pageY;
+		ev.dataTransfer.setDragImage(emptyImage, 0, 0);
+	}
+	
+	dragHandler(ev) {
+		this.props.onDrag(ev.pageX - this.prevX, ev.pageY - this.prevY);
+		this.prevX = ev.pageX;
+		this.prevY = ev.pageY;
+	}
+	
+	dragEndHandler(ev) {
+		this.dragHandler(ev);
+		this.props.onDragEnd();
+	}
+	
+	render () {
+		return R.div({
+			className:this.props.className,
+			onDragStart: this.dragStartHandler,
+			onDrag: this.dragHandler,
+			onDragEnd : this.dragEndHandler,
+			draggable: true
+		});
+	}
+}
+	
 class Window extends React.Component {
 	
 	constructor(props) {
@@ -15,16 +51,21 @@ class Window extends React.Component {
 		this.state = {};
 		this.setSize(settings.getItem(id + '.w', props.w), settings.getItem(id + '.h', props.h));
 		this.setPosition(settings.getItem(id + '.x', props.x), settings.getItem(id + '.y', props.y));
+		
+		this.saveState = this.saveState.bind(this);
+		this.deltaPosition = this.deltaPosition.bind(this);
+		this.deltaLBCorner = this.deltaLBCorner.bind(this);
+		this.deltaRBCorner = this.deltaRBCorner.bind(this);
+		
+		
+		
 		this.dragEndHandler = this.dragEndHandler.bind(this);
 		this.dragStartHandler = this.dragStartHandler.bind(this);
 		this.dragHandler = this.dragHandler.bind(this);
 		this.dragEndHandlerRBCorner = this.dragEndHandlerRBCorner.bind(this);
 		this.dragStartHandlerRBCorner = this.dragStartHandlerRBCorner.bind(this);
 		this.dragHandlerRBCorner = this.dragHandlerRBCorner.bind(this);
-		this.dragEndHandlerLBCorner = this.dragEndHandlerLBCorner.bind(this);
-		this.dragStartHandlerLBCorner = this.dragStartHandlerLBCorner.bind(this);
-		this.dragHandlerLBCorner = this.dragHandlerLBCorner.bind(this);
-		
+	
 	}
 	
 	saveState() {
@@ -36,55 +77,18 @@ class Window extends React.Component {
 		settings.setItem(id + '.h', this.state.h);
 	}
 	
-	dragStartHandler(ev) {
-		const wndPos = $('#'+this.id).offset();
-		this.dragXshift = ev.pageX - wndPos.left;
-		this.dragYshift = ev.pageY - wndPos.top;
-		ev.dataTransfer.setDragImage(emptyImage, 0, 0);
+	deltaPosition(x,y) {
+		
 	}
 	
-	dragHandler(ev) {
-		this.setPosition(ev.pageX - this.dragXshift, ev.pageY - this.dragYshift);
+	deltaLBCorner(x,y) {
+		
 	}
 	
-	dragEndHandler(ev) {
-		this.dragHandler(ev);
-		this.saveState();
+	deltaRBCorner(x,y) {
+		
 	}
 
-	dragStartHandlerRBCorner(ev) {
-		const wndPos = $('#'+this.id)[0].getBoundingClientRect();
-		this.dragXshift = ev.pageX - wndPos.width;
-		this.dragYshift = ev.pageY - wndPos.height;
-		ev.dataTransfer.setDragImage(emptyImage, 0, 0);
-	}
-	
-	dragHandlerRBCorner(ev) {
-		this.setSize(ev.pageX - this.dragXshift, ev.pageY - this.dragYshift);
-	}
-	
-	dragEndHandlerRBCorner(ev) {
-		this.dragHandlerRBCorner(ev);
-		this.saveState();
-	}
-
-	dragStartHandlerLBCorner(ev) {
-		const wndPos = $('#'+this.id)[0].getBoundingClientRect();
-		this.dragXshift = ev.pageX - wndPos.width;
-		this.dragYshift = ev.pageY - wndPos.height;
-		ev.dataTransfer.setDragImage(emptyImage, 0, 0);
-	}
-	
-	dragHandlerLBCorner(ev) {
-		var prevWidth = this.state.w;
-		this.setSize(-ev.pageX + this.dragXshift, ev.pageY - this.dragYshift);
-		this.setPosition(this.state.x + (this.state.w - prevWidth), this.state.y);
-	}
-	
-	dragEndHandlerLBCorner(ev) {
-		this.dragHandlerLBCorner(ev);
-		this.saveState();
-	}
 
 	setPosition(x, y) {
 		x = Math.max(0, x);
@@ -120,6 +124,7 @@ class Window extends React.Component {
 				draggable: true
 			}, this.props.title),
 			R.div(contentProps, this.props.content),
+			React.createElement(CornerDragger, {className:'', this.saveState();
 			R.div({
 				className:'window-rb-corner',
 				onDragStart: this.dragStartHandlerRBCorner,
@@ -127,13 +132,7 @@ class Window extends React.Component {
 				onDragEnd : this.dragEndHandlerRBCorner,
 				draggable: true
 			}),
-			R.div({
-				className:'window-lb-corner',
-				onDragStart: this.dragStartHandlerLBCorner,
-				onDrag: this.dragHandlerLBCorner,
-				onDragEnd : this.dragEndHandlerLBCorner,
-				draggable: true
-			})
+			
 			
 		);
 	}
