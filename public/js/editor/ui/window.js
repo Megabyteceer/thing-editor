@@ -12,7 +12,7 @@ class CornerDragger extends React.Component {
 		this.dragStartHandler = this.dragStartHandler.bind(this);
 		this.dragHandler = this.dragHandler.bind(this);
 	}
-	
+
 	dragStartHandler(ev) {
 		this.prevX = ev.pageX;
 		this.prevY = ev.pageY;
@@ -67,7 +67,12 @@ class Window extends React.Component {
 		this.deltaLBCorner = this.deltaLBCorner.bind(this);
 		this.deltaRBCorner = this.deltaRBCorner.bind(this);
 		
-	
+		$(window).on('resize', this.onClientResize.bind(this));
+	}
+		
+	onClientResize() {
+		this.setPosition(this.state.x, this.state.y);
+		this.setSize(this.state.w, this.state.h);
 	}
 	
 	saveState() {
