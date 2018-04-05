@@ -6,7 +6,8 @@ var emptyImage = new Image();
 
 class CornerDragger extends React.Component {
 	
-	constructor() {
+	constructor(props) {
+		super(props);
 		this.dragEndHandler = this.dragEndHandler.bind(this);
 		this.dragStartHandler = this.dragStartHandler.bind(this);
 		this.dragHandler = this.dragHandler.bind(this);
@@ -19,13 +20,22 @@ class CornerDragger extends React.Component {
 	}
 	
 	dragHandler(ev) {
-		this.props.onDrag(ev.pageX - this.prevX, ev.pageY - this.prevY);
-		this.prevX = ev.pageX;
-		this.prevY = ev.pageY;
+		if(this.prevX != ev.pageX || this.prevY != ev.pageY) {
+			if(ev.pageX!= 0 || ev.pageY != 0) {
+				var ret = this.props.onDrag(ev.pageX - this.prevX, ev.pageY - this.prevY);
+				if(ret) {
+					this.prevX += ret.x;
+					this.prevY += ret.y;
+				} else {
+					this.prevX = ev.pageX;
+					this.prevY = ev.pageY;
+				}
+				
+			}
+		}
 	}
 	
 	dragEndHandler(ev) {
-		this.dragHandler(ev);
 		this.props.onDragEnd();
 	}
 	
@@ -57,14 +67,6 @@ class Window extends React.Component {
 		this.deltaLBCorner = this.deltaLBCorner.bind(this);
 		this.deltaRBCorner = this.deltaRBCorner.bind(this);
 		
-		
-		
-		this.dragEndHandler = this.dragEndHandler.bind(this);
-		this.dragStartHandler = this.dragStartHandler.bind(this);
-		this.dragHandler = this.dragHandler.bind(this);
-		this.dragEndHandlerRBCorner = this.dragEndHandlerRBCorner.bind(this);
-		this.dragStartHandlerRBCorner = this.dragStartHandlerRBCorner.bind(this);
-		this.dragHandlerRBCorner = this.dragHandlerRBCorner.bind(this);
 	
 	}
 	
@@ -77,16 +79,29 @@ class Window extends React.Component {
 		settings.setItem(id + '.h', this.state.h);
 	}
 	
-	deltaPosition(x,y) {
-		
+	deltaPosition(x, y) {
+		var ret = {x:this.state.x, y:this.state.y};
+		this.setPosition(this.state.x + x, this.state.y + y);
+		ret.x = this.state.x - ret.x;
+		ret.y = this.state.y - ret.y;
+		return ret;
 	}
 	
-	deltaLBCorner(x,y) {
-		
+	deltaLBCorner(x, y) {
+		var ret = {x:this.state.w, y:this.state.h};
+		this.setSize(this.state.w - x, this.state.h + y);
+		this.setPosition(this.state.x - (this.state.w - ret.x), this.state.y);
+		ret.x = -(this.state.w - ret.x);
+		ret.y = this.state.h - ret.y;
+		return ret;
 	}
 	
-	deltaRBCorner(x,y) {
-		
+	deltaRBCorner(x, y) {
+		var ret = {x:this.state.w, y:this.state.h};
+		this.setSize(this.state.w + x, this.state.h + y);
+		ret.x = this.state.w - ret.x;
+		ret.y = this.state.h - ret.y;
+		return ret;
 	}
 
 
@@ -122,16 +137,24 @@ class Window extends React.Component {
 				onDrag: this.dragHandler,
 				onDragEnd : this.dragEndHandler,
 				draggable: true
-			}, this.props.title),
+			}, this.props.title,
+				React.createElement(CornerDragger, {
+					className: 'window-dragger',
+					onDragEnd: this.saveState,
+					onDrag: this.deltaPosition
+				})
+			),
 			R.div(contentProps, this.props.content),
-			React.createElement(CornerDragger, {className:'', this.saveState();
-			R.div({
-				className:'window-rb-corner',
-				onDragStart: this.dragStartHandlerRBCorner,
-				onDrag: this.dragHandlerRBCorner,
-				onDragEnd : this.dragEndHandlerRBCorner,
-				draggable: true
+			React.createElement(CornerDragger, {
+				className: 'window-rb-corner',
+				onDragEnd: this.saveState,
+				onDrag: this.deltaRBCorner
 			}),
+			React.createElement(CornerDragger, {
+				className: 'window-lb-corner',
+				onDragEnd: this.saveState,
+				onDrag: this.deltaLBCorner
+			})
 			
 			
 		);

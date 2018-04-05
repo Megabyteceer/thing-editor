@@ -81,6 +81,7 @@ h5{
 	font-size: 70%;
 	padding: 2px;
 	box-sizing: border-box;
+	position:relative;
 }
 
 .window-content {
@@ -89,21 +90,24 @@ h5{
 
 .window-rb-corner {
 	position:absolute;
-	right:0;
-	bottom:0;
+	right:-2px;
+	bottom:-2px;
 	width:8px;
 	height:8px;
 	cursor: se-resize;
-	background: var(--window-header-color);
-	border-top-left-radius: 80px;
 }
 .window-lb-corner {
 	position:absolute;
-	left:0;
-	bottom:0;
+	left:-2px;
+	bottom:-2px;
 	width:8px;
 	height:8px;
 	cursor: ne-resize;
-	background: var(--window-header-color);
-	border-top-right-radius: 80px;
+}
+.window-dragger {
+	position:absolute;
+	width:100%;
+	top:0;
+	height:100%;
+	cursor: move;
 }
