@@ -1,8 +1,9 @@
 "use strict";
-import utils from '/js/utils/utils.js';
-import Settings from '/js/utils/settings.js';
-import ws from '/js/utils/socket.js';
-import UI from '/js/ui/ui.js';
+import editorUtils from '/js/editor/utils/utils.js';
+import engineUtils from '/js/engine/utils/utils.js';
+import Settings from '/js/engine/utils/settings.js';
+import ws from '/js/editor/utils/socket.js';
+import UI from '/js/editor/ui/ui.js';
 
 $(function(){
 

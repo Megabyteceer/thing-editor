@@ -20,7 +20,12 @@ class Window extends React.Component {
 		this.dragHandler = this.dragHandler.bind(this);
 		this.dragEndHandlerRBCorner = this.dragEndHandlerRBCorner.bind(this);
 		this.dragStartHandlerRBCorner = this.dragStartHandlerRBCorner.bind(this);
-		this.dragHandlerRBCorner = this.dragHandlerRBCorner.bind(this);	}
+		this.dragHandlerRBCorner = this.dragHandlerRBCorner.bind(this);
+		this.dragEndHandlerLBCorner = this.dragEndHandlerLBCorner.bind(this);
+		this.dragStartHandlerLBCorner = this.dragStartHandlerLBCorner.bind(this);
+		this.dragHandlerLBCorner = this.dragHandlerLBCorner.bind(this);
+		
+	}
 	
 	saveState() {
 		const settings = EDITOR.settings;
@@ -60,6 +65,24 @@ class Window extends React.Component {
 	
 	dragEndHandlerRBCorner(ev) {
 		this.dragHandlerRBCorner(ev);
+		this.saveState();
+	}
+
+	dragStartHandlerLBCorner(ev) {
+		const wndPos = $('#'+this.id)[0].getBoundingClientRect();
+		this.dragXshift = ev.pageX - wndPos.width;
+		this.dragYshift = ev.pageY - wndPos.height;
+		ev.dataTransfer.setDragImage(emptyImage, 0, 0);
+	}
+	
+	dragHandlerLBCorner(ev) {
+		var prevWidth = this.state.w;
+		this.setSize(-ev.pageX + this.dragXshift, ev.pageY - this.dragYshift);
+		this.setPosition(this.state.x + (this.state.w - prevWidth), this.state.y);
+	}
+	
+	dragEndHandlerLBCorner(ev) {
+		this.dragHandlerLBCorner(ev);
 		this.saveState();
 	}
 
@@ -103,9 +126,13 @@ class Window extends React.Component {
 				onDrag: this.dragHandlerRBCorner,
 				onDragEnd : this.dragEndHandlerRBCorner,
 				draggable: true
-
-
-
+			}),
+			R.div({
+				className:'window-lb-corner',
+				onDragStart: this.dragStartHandlerLBCorner,
+				onDrag: this.dragHandlerLBCorner,
+				onDragEnd : this.dragEndHandlerLBCorner,
+				draggable: true
 			})
 			
 		);

@@ -4,7 +4,6 @@ var factories = {};
 });
 
 window.R = factories;
-window.log = console.log;
 
 export default {
 	

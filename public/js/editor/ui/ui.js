@@ -1,4 +1,4 @@
-import Window from '/js/ui/window.js';
+import Window from '/js/editor/ui/window.js';
 
 function window(id, title, content, x, y, minW, minH, w, h) {
 	return React.createElement(Window, {id, title, content, x, y, minW, minH, w, h});

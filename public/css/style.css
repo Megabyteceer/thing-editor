@@ -96,5 +96,14 @@ h5{
 	cursor: se-resize;
 	background: var(--window-header-color);
 	border-top-left-radius: 80px;
-	border-lef-top-radius: 20px;
+}
+.window-lb-corner {
+	position:absolute;
+	left:0;
+	bottom:0;
+	width:8px;
+	height:8px;
+	cursor: ne-resize;
+	background: var(--window-header-color);
+	border-top-right-radius: 80px;
 }
