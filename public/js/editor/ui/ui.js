@@ -7,7 +7,7 @@ function window(id, title, content, x, y, minW, minH, w, h) {
 class UI extends React.Component {
 	
 	componentWillMount() {
-		EDITOR.ui = this;
+		this.props.onMounted(this);
 	}
 	render() {
 		return R.div(null,
