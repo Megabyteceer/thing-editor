@@ -1,4 +1,4 @@
-import game from '/js/engine/game.js';
+import Game from '/js/engine/game.js';
 import engineUtils from '/js/editor/utils/editor-utils.js';
 import Settings from '/js/engine/utils/settings.js';
 import ws from '/js/editor/utils/socket.js';
@@ -14,16 +14,17 @@ class Editor {
 		this.initResize();
 
 		this.onUIMounted = this.onUIMounted.bind(this);
+		
 
-		ReactDOM.render(
-			React.createElement(UI, {onMounted:this.onUIMounted }),
+		ReactDOM.render (
+			React.createElement(UI, {onMounted:this.onUIMounted}),
 			document.getElementById('root')
 		);
 	}
 
 	onUIMounted(ui) {
 		this.ui = ui;
-
+		this.game = new Game('tmp.game.id', document.getElementById('game-root'));
 	}
 
 	initResize() {
