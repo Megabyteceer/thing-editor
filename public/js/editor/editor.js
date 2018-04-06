@@ -1,14 +1,18 @@
 import Game from '/js/engine/game.js';
-import engineUtils from '/js/editor/utils/editor-utils.js';
 import Settings from '/js/engine/utils/settings.js';
-import ws from '/js/editor/utils/socket.js';
-import UI from '/js/editor/ui/ui.js';
+import ws from './utils/socket.js';
+import UI from './ui/ui.js';
+
+import MainScene from '/games/game-1/src/game-objects/scenes/main-scene.js';
 
 class Editor {
 
 	constructor () {
 		
 		window.EDITOR = this;
+
+		this.currenGamePath = 'games/game-1';
+
 		this.settings = new Settings('EDITOR');
 
 		this.initResize();
@@ -24,7 +28,16 @@ class Editor {
 
 	onUIMounted(ui) {
 		this.ui = ui;
-		this.game = new Game('tmp.game.id', document.getElementById('game-root'));
+		window.game = new Game('tmp.game.id');
+		game.paused = true;
+		game.init(document.getElementById('viewport-root'));
+		
+		this.loadScene();
+	}
+
+	loadScene() {
+
+		game.showScene(new MainScene());
 	}
 
 	initResize() {
