@@ -10,13 +10,13 @@ class Viewport extends React.Component{
     }
 
     onTogglePlay (val) {
-        game.paused = val;
+        game.paused = !val;
     }
 
     render () {
         return R.div({className:'editor-viewport-wrapper'},
             R.div({className:'editor-viewport-panel'},
-                R.btn(PLAY_ICON, this.onTogglePlay, 'play-stop-btn', STOP_ICON)
+                R.btn(PLAY_ICON, this.onTogglePlay, 'play-stop-btn', STOP_ICON, 32)
             ),
 
             R.div({id:'viewport-root', className:'editor-viewport'})

@@ -9,7 +9,8 @@ var clientJsLibs = {
 	'react-dom.development.js': 'node_modules/react-dom/umd/react-dom.development.js',
 	'react.development.js': 'node_modules/react/umd/react.development.js',
 	'jquery.min.js': 'node_modules/jquery/dist/jquery.min.js',
-	'pixi.min.js': 'node_modules/pixi.js/dist/pixi.min.js'
+	'pixi.min.js': 'node_modules/pixi.js/dist/pixi.min.js',
+	'pixi.js': 'node_modules/pixi.js/dist/pixi.js'
 };
 
 var libsJsFolder = rootPath + 'public/js/lib/';

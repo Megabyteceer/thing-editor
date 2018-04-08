@@ -1,5 +1,5 @@
-import Settings from '/js/engine/utils/settings.js';
-
+import Settings from './utils/settings.js';
+import Lib from './lib.js';
 import Scene from './scene.js';
 import Sprite from './sprite.js';
 
@@ -10,13 +10,15 @@ var stage;
 var app;
 var currentScene;
 
-const FRAME_ERIOD = 60 / 1000;
-
+const FRAME_PERIOD = 1.0;
+var frameCounterTime = 0;
 class Game {
 
 	constructor (gameId) {
 		this.settings = new Settings(gameId);
 		this.updateGlobal = this.updateGlobal.bind(this);
+		window.game = this;
+		window.Lib = new (Lib);
 	}
 
 	init(element) {
@@ -25,7 +27,7 @@ class Game {
 		(element || document.body).appendChild(app.view);
 
 		stage = new PIXI.Container();
-		stage.name = 'stage'
+		stage.name = 'stage';
 		this.stage = stage;
 
 		app.stage.addChild(stage);
@@ -46,9 +48,16 @@ class Game {
 
 	updateGlobal(dt) {
 		if(!this.paused && currentScene) {
-			while(dt > FRAME_ERIOD) {
-				this.updateFrame();
-				dt -= FRAME_ERIOD;
+			frameCounterTime += dt;
+			var limit = 4;
+			while(frameCounterTime > FRAME_PERIOD) {
+				if(limit-- > 0) {
+					this.updateFrame();
+					frameCounterTime -= FRAME_PERIOD;
+				} else {
+					frameCounterTime = 0;
+				}
+				
 			}
 		}
 	}
@@ -58,12 +67,13 @@ class Game {
 	}
 }
 
-function updateRecursivelly(o){
+function updateRecursivelly(o) {
+
 	o.update();
 	
 	var a = o.children;
 	var arrayLength = a.length;
-	for (var i = 0; i < arrayLength; i++) {
+	for (var i = 0; i < arrayLength && o.parent; i++) {
 		updateRecursivelly(a[i]);
 	}
 }

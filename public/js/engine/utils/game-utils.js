@@ -1,3 +1,5 @@
+const TARGET = 'development';
+
 const log = console.log;
 
 const W = 1280;
@@ -24,5 +26,13 @@ var clearLoadedScript;
 		});
 		_loadedScripts = {};
 	}
+
+	if (TARGET == 'development') {
+		window.assert = (expression, message) => {
+			if(!expression){
+				throw message;
+			}
+		}
+	}	
 
 })();

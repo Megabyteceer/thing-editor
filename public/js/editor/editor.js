@@ -1,9 +1,11 @@
 import Game from '/js/engine/game.js';
 import Settings from '/js/engine/utils/settings.js';
+import Selection from './utils/selection.js';
 import ws from './utils/socket.js';
 import UI from './ui/ui.js';
 
 import MainScene from '/games/game-1/src/game-objects/scenes/main-scene.js';
+import Bunny from '/games/game-1/src/game-objects/bunny.js';
 
 class Editor {
 
@@ -14,12 +16,12 @@ class Editor {
 		this.currenGamePath = 'games/game-1';
 
 		this.settings = new Settings('EDITOR');
+		this.selection = new Selection();
 
 		this.initResize();
 
 		this.onUIMounted = this.onUIMounted.bind(this);
 		
-
 		ReactDOM.render (
 			React.createElement(UI, {onMounted:this.onUIMounted}),
 			document.getElementById('root')
@@ -27,8 +29,19 @@ class Editor {
 	}
 
 	onUIMounted(ui) {
+		var idCounter = 0;
+
 		this.ui = ui;
-		window.game = new Game('tmp.game.id');
+		this.game = new Game('tmp.game.id');
+		
+		Lib.wrapConstructorProcessor((o) => {
+			o.__editorData = {id: idCounter++};
+		});
+		Lib.addScene('main', MainScene);
+		Lib.addObject('bunny', Bunny);
+		Lib.addTexture('bunny', PIXI.Texture.fromImage('img/pic1.png'));
+
+
 		game.paused = true;
 		game.init(document.getElementById('viewport-root'));
 		
@@ -36,8 +49,12 @@ class Editor {
 	}
 
 	loadScene() {
+		game.showScene(Lib.loadScene('main'));
+		this.refreshSceneTree();
+	}
 
-		game.showScene(new MainScene());
+	refreshSceneTree() {
+		this.ui.sceneTree.forceUpdate();
 	}
 
 	initResize() {
@@ -48,6 +65,10 @@ class Editor {
 		
 		$(window).on('resize', onResize);
 		onResize();
+	}
+
+	refreshTreeView() {
+		this.ui.sceneTree.forceUpdate();
 	}
 }
 
