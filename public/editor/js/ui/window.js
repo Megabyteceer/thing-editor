@@ -30,7 +30,6 @@ class CornerDragger extends React.Component {
 					this.prevX = ev.pageX;
 					this.prevY = ev.pageY;
 				}
-				
 			}
 		}
 	}
@@ -68,6 +67,10 @@ class Window extends React.Component {
 		this.deltaRBCorner = this.deltaRBCorner.bind(this);
 		
 		$(window).on('resize', this.onClientResize.bind(this));
+	}
+
+	componentDidMount(){
+		this.$ = $('#'+this.id);
 	}
 		
 	onClientResize() {
@@ -117,7 +120,10 @@ class Window extends React.Component {
 		y = Math.min(y, EDITOR.H - this.state.h);
 		this.state.x = x;
 		this.state.y = y;
-		$('#'+this.id).css({left: x + 'px', top: y + 'px'});
+		if(this.$) {
+			this.$.css({left: x + 'px', top: y + 'px'});
+			this.bringForward();
+		}
 	}
 
 	setSize(w, h) {
@@ -125,11 +131,19 @@ class Window extends React.Component {
 		h = Math.max(h, this.props.minH);
 		this.state.w = w;
 		this.state.h = h;
-		$('#'+this.id).css({width: w + 'px', height: h + 'px'});
+		if(this.$) {
+			this.$.css({width: w + 'px', height: h + 'px'});
+			this.bringForward();
+		}
+	}
+
+	bringForward() {
+		$('window-body').css({'z-index':1});
+		this.$.css({'z-index':2});
 	}
 
 	
-	render(){
+	render() {
 		return R.div({id: this.id, className:'window-body', style:{
 				left:this.state.x,
 				top:this.state.y,
