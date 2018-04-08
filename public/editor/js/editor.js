@@ -1,5 +1,5 @@
-import Game from '/js/engine/game.js';
-import Settings from '/js/engine/utils/settings.js';
+import Game from '/engine/js/game.js';
+import Settings from '/engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
 import ws from './utils/socket.js';
 import UI from './ui/ui.js';
@@ -39,7 +39,7 @@ class Editor {
 		});
 		Lib.addScene('main', MainScene);
 		Lib.addObject('bunny', Bunny);
-		Lib.addTexture('bunny', PIXI.Texture.fromImage('img/pic1.png'));
+		Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png'));
 
 
 		game.paused = true;

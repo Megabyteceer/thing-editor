@@ -5,32 +5,25 @@ const rootPath = path.resolve(__dirname)+'/../';
 
 //========= libs reflection to public ===================================================
 const ef = () => {};
-var clientJsLibs = {
-	'react-dom.development.js': 'node_modules/react-dom/umd/react-dom.development.js',
-	'react.development.js': 'node_modules/react/umd/react.development.js',
-	'jquery.min.js': 'node_modules/jquery/dist/jquery.min.js',
-	'pixi.min.js': 'node_modules/pixi.js/dist/pixi.min.js',
-	'pixi.js': 'node_modules/pixi.js/dist/pixi.js'
+var clientLibs = {
+	'public/editor/js/lib/react-dom.development.js': 'node_modules/react-dom/umd/react-dom.development.js',
+	'public/editor/js/lib/react.development.js': 'node_modules/react/umd/react.development.js',
+	'public/editor/css/lib/reset.css': 'node_modules/reset-css/reset.css',
+	
+	'public/engine/js/lib/jquery.min.js': 'node_modules/jquery/dist/jquery.min.js',
+	'public/engine/js/lib/pixi.min.js': 'node_modules/pixi.js/dist/pixi.min.js',
+	'public/engine/js/lib/pixi.js': 'node_modules/pixi.js/dist/pixi.js'
 };
 
-var libsJsFolder = rootPath + 'public/js/lib/';
-if (!fs.existsSync(libsJsFolder)) {
-    fs.mkdirSync(libsJsFolder);
-}
-var libsCssFolder = rootPath + 'public/css/lib/';
-if (!fs.existsSync(libsCssFolder)) {
-    fs.mkdirSync(libsCssFolder);
-}
-
-createSymlink(rootPath + 'node_modules/reset-css/reset.css', libsCssFolder + 'reset.css');
-
 function createSymlink(src, dest) {
-	if(fs.existsSync(src)) {
-		fs.symlink(src, dest, ef);
+	src = rootPath + src;
+	dest = rootPath + dest;
+	var destFolder = path.dirname(dest);
+	if (!fs.existsSync(destFolder)) {
+		fs.mkdirSync(destFolder);
 	}
+	fs.symlink(src, dest, ef);
 }
-Object.keys(clientJsLibs).some((k) => {
-	var src = rootPath + clientJsLibs[k];
-	var dest = libsJsFolder + k;
-	createSymlink(src, dest);
+Object.keys(clientLibs).some((k) => {
+	createSymlink(clientLibs[k], k);
 });

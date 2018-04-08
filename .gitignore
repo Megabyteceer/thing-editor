@@ -30,5 +30,6 @@ typings/
 # All dot started folders and files
 .*
 
-public/js/lib
-public/css/lib
+public/editor/js/lib
+public/editor/css/lib
+public/engine/js/lib
