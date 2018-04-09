@@ -8,7 +8,6 @@ window.Sprite = Sprite;
 
 var stage;
 var app;
-var currentScene;
 
 const FRAME_PERIOD = 1.0;
 var frameCounterTime = 0;
@@ -37,17 +36,17 @@ class Game {
 	}
 
 	showScene(scene) {
-		if(currentScene) {
-			currentScene.onHideInner();
-			stage.removeChild(currentScene);
+		if(this.currentScene) {
+			this.currentScene.onHideInner();
+			stage.removeChild(this.currentScene);
 		}
-		currentScene = scene;
+		this.currentScene = scene;
 		stage.addChild(scene);
 		scene.onShowInner();
 	}
 
 	updateGlobal(dt) {
-		if(!this.paused && currentScene) {
+		if(!this.paused && this.currentScene) {
 			frameCounterTime += dt;
 			var limit = 4;
 			while(frameCounterTime > FRAME_PERIOD) {
@@ -63,7 +62,7 @@ class Game {
 	}
 
 	updateFrame() {
-		updateRecursivelly(currentScene);
+		updateRecursivelly(this.currentScene);
 	}
 }
 

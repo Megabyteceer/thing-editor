@@ -4,7 +4,7 @@ import Selection from './utils/selection.js';
 import ws from './utils/socket.js';
 import UI from './ui/ui.js';
 
-import MainScene from '/games/game-1/src/game-objects/scenes/main-scene.js';
+import MainScene from '/games/game-1/src/scenes/main-scene.js';
 import Bunny from '/games/game-1/src/game-objects/bunny.js';
 
 class Editor {
@@ -50,11 +50,8 @@ class Editor {
 
 	loadScene() {
 		game.showScene(Lib.loadScene('main'));
-		this.refreshSceneTree();
-	}
-
-	refreshSceneTree() {
-		this.ui.sceneTree.forceUpdate();
+		this.selection.select(game.currentScene);
+		this.refreshTreeViewAndPropertyEditor();
 	}
 
 	initResize() {
@@ -67,8 +64,13 @@ class Editor {
 		onResize();
 	}
 
-	refreshTreeView() {
+	refreshPropsEditor() {
+		this.ui.propsEditor.forceUpdate();
+	}
+
+	refreshTreeViewAndPropertyEditor() {
 		this.ui.sceneTree.forceUpdate();
+		this.refreshPropsEditor();
 	}
 }
 

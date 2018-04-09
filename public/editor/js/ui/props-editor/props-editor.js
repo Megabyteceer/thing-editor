@@ -2,7 +2,7 @@ class PropsEditor extends React.Component {
     
     render() {
         return EDITOR.selection.map((o) => {
-           return R.div(null, o.name); 
+           return R.div({key:o.__editorData.id}, o.name); 
         });
     }
     

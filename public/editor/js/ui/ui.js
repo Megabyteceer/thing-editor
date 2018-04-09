@@ -17,6 +17,7 @@ class UI extends React.Component {
 	constructor (props) {
 		super(props);
 		this.sceneTreeRef = this.sceneTreeRef.bind(this);
+		this.propsEditorRef = this.propsEditorRef.bind(this);
 	}
 
 	componentDidMount() {
@@ -26,12 +27,16 @@ class UI extends React.Component {
 	sceneTreeRef(sceneTree) {
 		this.sceneTree = sceneTree;
 	}
+
+	propsEditorRef(propsEditor) {
+		this.propsEditor = propsEditor;
+	}
 	
 	render() {
 		return R.div(null,
 			window('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 250, 250, 500),
 			window('viewport', 'Viewport', React.createElement(Viewport), 1000, 0, 840, 480, 840, 480),
-			window('propsEditor', 'Properties', React.createElement(PropsEditor), 250, 0, 250, 250, 250, 500)
+			window('propsEditor', 'Properties', React.createElement(PropsEditor, {ref: this.propsEditorRef}), 250, 0, 250, 250, 250, 500)
 		
 		);
 	}
