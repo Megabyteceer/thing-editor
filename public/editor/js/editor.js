@@ -12,6 +12,7 @@ class Editor {
 	constructor () {
 		
 		window.EDITOR = this;
+		Object.defineProperty(PIXI.DisplayObject.prototype, '__editorData', {get:()=>{throw "No __editorData field found for " + this.constructor.name + '. To create game objects use code: Lib.create(\'name\')';}});
 
 		this.currenGamePath = 'games/game-1';
 
@@ -29,14 +30,11 @@ class Editor {
 	}
 
 	onUIMounted(ui) {
-		var idCounter = 0;
-
 		this.ui = ui;
 		this.game = new Game('tmp.game.id');
 		
-		Lib.wrapConstructorProcessor((o) => {
-			o.__editorData = {id: idCounter++};
-		});
+		Lib.wrapConstructorProcessor(applyEditorDataToNode);
+		
 		Lib.addScene('main', MainScene);
 		Lib.addObject('bunny', Bunny);
 		Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png'));
@@ -44,6 +42,7 @@ class Editor {
 
 		game.paused = true;
 		game.init(document.getElementById('viewport-root'));
+		applyEditorDataToNode(game.stage);
 		
 		this.loadScene();
 	}
@@ -72,6 +71,13 @@ class Editor {
 		this.ui.sceneTree.forceUpdate();
 		this.refreshPropsEditor();
 	}
+}
+
+var idCounter = 0;
+var __editorDataPropertyDescriptor = {writable:true};
+var applyEditorDataToNode = (n) => {
+	Object.defineProperty(n, '__editorData', __editorDataPropertyDescriptor);
+	n.__editorData = {id: idCounter++};
 }
 
 export default Editor;

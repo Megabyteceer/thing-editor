@@ -14,7 +14,7 @@ class Selection extends Array {
 	}
 
 	sortSelectedNodes() {
-		this.some(calculateNodeDeepness);
+		recalculateNodesDeepness();
 		this.sort(sortByDeepness);
 	}
 
@@ -39,27 +39,24 @@ class Selection extends Array {
 		this.splice(i, 1);
 	}
 }
-
-var calculateNodeDeepness = (node) => {
-	var a = [];
-	var n = node;
-	var p = n.parent;
-	while(p) {
-		a.push[p.getChildIndex(n)];
-		n = p;
-		p = p.parent;
-	}
-	var ret = 0;
-	var currentLevel = 999999999999.9;
-	while(a.length > 0) {
-		ret += currentLevel * a.pop();
-		currentLevel /= 500.0;
-	}
-	node.__editorData.deepness = ret;
-}
-
-var sortByDeepness = (a,b) {
-	return a.deepness - b.deepness;
-}
-
 export default Selection;
+
+//-------- sorting selection --------------------------------
+var curDeepness;
+
+var recalculateNodesDeepness = () => {
+	curDeepness = 0;
+	recalculateNodesDeepnessRecursive(game.stage);
+}
+
+var recalculateNodesDeepnessRecursive = (n) => {
+	n.__editorData.deepness = curDeepness++;
+	if (n.hasOwnProperty('children')) {
+		n.children.some(recalculateNodesDeepnessRecursive);
+	}
+}
+
+var sortByDeepness = (a,b) => {
+	return a.__editorData.deepness - b.__editorData.deepness;
+}
+
