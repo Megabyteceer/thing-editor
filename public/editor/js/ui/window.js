@@ -65,6 +65,10 @@ class Window extends React.Component {
 		this.deltaPosition = this.deltaPosition.bind(this);
 		this.deltaLBCorner = this.deltaLBCorner.bind(this);
 		this.deltaRBCorner = this.deltaRBCorner.bind(this);
+		this.deltaRTCorner = this.deltaRTCorner.bind(this);
+		this.deltaLTCorner = this.deltaLTCorner.bind(this);
+		
+		this.onMouseDown = this.onMouseDown.bind(this);
 		
 		$(window).on('resize', this.onClientResize.bind(this));
 	}
@@ -112,6 +116,18 @@ class Window extends React.Component {
 		return ret;
 	}
 
+	deltaRTCorner(x, y) {
+		var ret = {x:this.state.w, y:this.state.y};
+		this.setSize(this.state.w + x, this.state.h - y);
+		this.setPosition(this.state.x, this.state.y + y);
+		ret.x = this.state.w - ret.x;
+		ret.y = this.state.y - ret.y;
+		return ret;
+	}
+
+	deltaLTCorner(x, y) {
+
+	}
 
 	setPosition(x, y) {
 		x = Math.max(0, x);
@@ -122,7 +138,6 @@ class Window extends React.Component {
 		this.state.y = y;
 		if(this.$) {
 			this.$.css({left: x + 'px', top: y + 'px'});
-			this.bringForward();
 		}
 	}
 
@@ -133,18 +148,21 @@ class Window extends React.Component {
 		this.state.h = h;
 		if(this.$) {
 			this.$.css({width: w + 'px', height: h + 'px'});
-			this.bringForward();
 		}
 	}
 
+	onMouseDown() {
+		this.bringForward();
+	}
+
 	bringForward() {
-		$('window-body').css({'z-index':1});
+		$('.window-body').css({'z-index':1});
 		this.$.css({'z-index':2});
 	}
 
 	
 	render() {
-		return R.div({id: this.id, className:'window-body', style:{
+		return R.div({id: this.id, onMouseDown:this.onMouseDown, className:'window-body', style:{
 				left:this.state.x,
 				top:this.state.y,
 				width:this.state.w,
@@ -173,6 +191,11 @@ class Window extends React.Component {
 				className: 'window-lb-corner',
 				onDragEnd: this.saveState,
 				onDrag: this.deltaLBCorner
+			}),
+			React.createElement(CornerDragger, {
+				className: 'window-rt-corner',
+				onDragEnd: this.saveState,
+				onDrag: this.deltaRTCorner
 			})
 			
 			

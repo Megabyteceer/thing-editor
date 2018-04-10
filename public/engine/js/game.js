@@ -1,4 +1,5 @@
 import Settings from './utils/settings.js';
+import PixiObjectsProperties from './utils/pixi-objects-properties.js';
 import Lib from './lib.js';
 import Scene from './scene.js';
 import Sprite from './sprite.js';
@@ -21,6 +22,7 @@ class Game {
 	}
 
 	init(element) {
+		PixiObjectsProperties.init();
 		app = new PIXI.Application(W, H, {backgroundColor : 0x1099bb});
 		this.pixiApp = app;
 		(element || document.body).appendChild(app.view);
