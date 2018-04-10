@@ -109,13 +109,23 @@ button {
 	height:8px;
 	cursor: se-resize;
 }
-.window-rb-corner {
+
+.window-lt-corner {
 	position:absolute;
-	right:-2px;
-	bottom:-2px;
+	left:-2px;
+	top:-2px;
 	width:8px;
 	height:8px;
 	cursor: se-resize;
+}
+
+.window-lb-corner {
+	position:absolute;
+	left:-2px;
+	bottom:-2px;
+	width:8px;
+	height:8px;
+	cursor: ne-resize;
 }
 .window-rt-corner {
 	position:absolute;
@@ -125,6 +135,43 @@ button {
 	height:8px;
 	cursor: ne-resize;
 }
+
+.window-r-dragger{
+	position:absolute;
+	right:-2px;
+	top:0;
+	width:8px;
+	height:100%;
+	cursor: e-resize;
+}
+
+.window-l-dragger{
+	position:absolute;
+	left:-2px;
+	top:0;
+	width:8px;
+	height:100%;
+	cursor: e-resize;
+}
+
+.window-b-dragger{
+	position:absolute;
+	bottom:-2px;
+	left:0;
+	width:100%;
+	height:8px;
+	cursor: n-resize;
+}
+
+.window-t-dragger{
+	position:absolute;
+	top:-4px;
+	left:0;
+	width:100%;
+	height:8px;
+	cursor: n-resize;
+}
+
 .window-dragger {
 	position:absolute;
 	width:100%;

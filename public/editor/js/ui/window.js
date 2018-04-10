@@ -67,6 +67,10 @@ class Window extends React.Component {
 		this.deltaRBCorner = this.deltaRBCorner.bind(this);
 		this.deltaRTCorner = this.deltaRTCorner.bind(this);
 		this.deltaLTCorner = this.deltaLTCorner.bind(this);
+		this.deltaR = this.deltaR.bind(this);
+		this.deltaL = this.deltaL.bind(this);
+		this.deltaB = this.deltaB.bind(this);
+		this.deltaT = this.deltaT.bind(this);
 		
 		this.onMouseDown = this.onMouseDown.bind(this);
 		
@@ -98,35 +102,67 @@ class Window extends React.Component {
 		ret.y = this.state.y - ret.y;
 		return ret;
 	}
-	
-	deltaLBCorner(x, y) {
+
+	deltaL(x, y) {
 		var ret = {x:this.state.w, y:this.state.h};
-		this.setSize(this.state.w - x, this.state.h + y);
-		this.setPosition(this.state.x - (this.state.w - ret.x), this.state.y);
+		this.setSize(this.state.w-x, this.state.h);
 		ret.x = -(this.state.w - ret.x);
 		ret.y = this.state.h - ret.y;
+		this.setPosition(this.state.x+ret.x, this.state.y);
+		return ret;
+	}
+
+	deltaR(x, y) {
+		var ret = {x:this.state.w, y:this.state.h};
+		this.setSize(this.state.w+x, this.state.h);
+		ret.x = this.state.w - ret.x;
+		ret.y = this.state.h - ret.y;
+		return ret;
+	}
+
+	deltaB(x, y) {
+		var ret = {x:this.state.w, y:this.state.h};
+		this.setSize(this.state.w, this.state.h+y);
+		ret.x = this.state.w - ret.x;
+		ret.y = this.state.h - ret.y;
+		return ret;
+	}
+
+	deltaT(x, y) {
+		var ret = {x:this.state.w, y:this.state.h};
+		this.setSize(this.state.w, this.state.h-y);
+		ret.x = this.state.w - ret.x;
+		ret.y = -(this.state.h - ret.y);
+		this.setPosition(this.state.x, this.state.y+ret.y);
+		return ret;
+	}
+	
+	deltaLBCorner(x, y) {
+		var ret = this.deltaL(x,y);
+		var ret2 = this.deltaB(x,y);
+		ret.y = ret2.y;
 		return ret;
 	}
 	
 	deltaRBCorner(x, y) {
-		var ret = {x:this.state.w, y:this.state.h};
-		this.setSize(this.state.w + x, this.state.h + y);
-		ret.x = this.state.w - ret.x;
-		ret.y = this.state.h - ret.y;
+		var ret = this.deltaR(x,y);
+		var ret2 = this.deltaB(x,y);
+		ret.y = ret2.y;
 		return ret;
 	}
 
 	deltaRTCorner(x, y) {
-		var ret = {x:this.state.w, y:this.state.y};
-		this.setSize(this.state.w + x, this.state.h - y);
-		this.setPosition(this.state.x, this.state.y + y);
-		ret.x = this.state.w - ret.x;
-		ret.y = this.state.y - ret.y;
+		var ret = this.deltaR(x,y);
+		var ret2 = this.deltaT(x,y);
+		ret.y = ret2.y;
 		return ret;
 	}
 
 	deltaLTCorner(x, y) {
-
+		var ret = this.deltaL(x,y);
+		var ret2 = this.deltaT(x,y);
+		ret.y = ret2.y;
+		return ret;
 	}
 
 	setPosition(x, y) {
@@ -144,6 +180,8 @@ class Window extends React.Component {
 	setSize(w, h) {
 		w = Math.max(w, this.props.minW);
 		h = Math.max(h, this.props.minH);
+		w = Math.min(w, EDITOR.W);
+		h = Math.min(h, EDITOR.H);
 		this.state.w = w;
 		this.state.h = h;
 		if(this.$) {
@@ -183,6 +221,26 @@ class Window extends React.Component {
 			),
 			R.div(contentProps, this.props.content),
 			React.createElement(CornerDragger, {
+				className: 'window-r-dragger',
+				onDragEnd: this.saveState,
+				onDrag: this.deltaR
+			}),
+			React.createElement(CornerDragger, {
+				className: 'window-l-dragger',
+				onDragEnd: this.saveState,
+				onDrag: this.deltaL
+			}),
+			React.createElement(CornerDragger, {
+				className: 'window-b-dragger',
+				onDragEnd: this.saveState,
+				onDrag: this.deltaB
+			}),
+			React.createElement(CornerDragger, {
+				className: 'window-t-dragger',
+				onDragEnd: this.saveState,
+				onDrag: this.deltaT
+			}),
+			React.createElement(CornerDragger, {
 				className: 'window-rb-corner',
 				onDragEnd: this.saveState,
 				onDrag: this.deltaRBCorner
@@ -196,7 +254,13 @@ class Window extends React.Component {
 				className: 'window-rt-corner',
 				onDragEnd: this.saveState,
 				onDrag: this.deltaRTCorner
+			}),
+			React.createElement(CornerDragger, {
+				className: 'window-lt-corner',
+				onDragEnd: this.saveState,
+				onDrag: this.deltaLTCorner
 			})
+			
 			
 			
 		);
