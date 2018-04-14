@@ -15,8 +15,6 @@ class Bunny extends Sprite {
         } else {
         	this.ySpeed += this.gravity;
         }
-        
-       
 
         if((this.x < 0) || (this.x > W)) {
             this.xSpeed *= -1.0;
@@ -25,7 +23,6 @@ class Bunny extends Sprite {
 
         super.update();
     }
-
 }
 
 export default Bunny;

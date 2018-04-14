@@ -4,15 +4,20 @@ var editorProps = {
     className:'props-editor'
 }
 
-var splitters = new Map();
-var currentSplitter = 0;
-var getSplitter = (field) => {
-    var s = splitters[field];
-    if(!s) {
-        s = R.div({className:'props-splitter', key:'splitter-' + (currentSplitter++)});
-        splitters[field] = s;
+function isGroupHidden(groupId) {
+    return  EDITOR.settings.getItem(groupId, false);
+}
+
+function toggleGroup(ev) {
+    var groupId = ev.target.data.groupid;
+    var group = $('props-group' + groupId + ' props-group-body');
+    var isHidden = !isGroupHidden(groupId);
+    EDITOR.settings.setItem(groupId, isHidden);
+    if(isHidden){
+        group.addClass('hidden');
+    } else {
+        group.removeClass('hidden');
     }
-    return s;
 }
 
 class PropsEditor extends React.Component {
@@ -36,16 +41,27 @@ class PropsEditor extends React.Component {
             return propsFilter[p.name] === EDITOR.selection.length;
         });
 
-
-        return R.div(editorProps, props.map((p) => {
+        var groups = [];
+        var curGroup, curGroupArray;
+            props.some((p) => {
             if(p.type === 'splitter') {
-                return getSplitter(p);
+                if(curGroup) {
+                    groups.push(curGroup);
+                }
+                var gid = 'props-group-' + p.name;
+                curGroupArray = [];
+                curGroup = R.div({key:gid, groupClassName:'props-group props-group' + gid},
+                    R.div({className:'props-group-header', 'data-groupid':gid, onClick:toggleGroup}),
+                    R.div({className:'props-group-body' + (isGroupHidden(gid) ? ' hidden' : '')}, p.title, curGroupArray)
+                )
+            } else {
+                curGroupArray.push (
+                    React.createElement(PropsFieldWrapper, {key:p.name, field:p, onChange: this.props.onChange})
+                );
             }
-            return React.createElement(PropsFieldWrapper, {key:p.name, field:p, onChange: this.props.onChange}); 
-        }));
+        });
+        return R.div(editorProps, groups);
     }
-    
-
 }
 
 export default PropsEditor;

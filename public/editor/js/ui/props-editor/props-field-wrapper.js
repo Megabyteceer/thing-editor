@@ -17,7 +17,7 @@ class PropsFieldWrapper extends React.Component {
     }
 
     onChange(ev) {
-        debugger;
+        this.props.onChange(this.props.field, ev.target.value);
     }
 
     render () {
@@ -25,7 +25,7 @@ class PropsFieldWrapper extends React.Component {
 
         var value = EDITOR.selection[0][field.name];
 
-        return R.div(fieldProps, R.div(labelProps, field.name), R.div(wrapperProps, React.createElement(typedEditors[field.type || Number], {parent:this, value:value, onChange:this.propsonChange})));
+        return R.div(fieldProps, R.div(labelProps, field.name), R.div(wrapperProps, React.createElement(typedEditors[field.type || Number], {parent:this, defaultValue:value, onChange:this.propsonChange})));
     }
 }
 

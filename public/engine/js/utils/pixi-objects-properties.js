@@ -1,11 +1,15 @@
 export default {
 
-
     init() {
-
         PIXI.DisplayObject.prototype.listEditableProps = () => {
-
             return [
+//EDITOR
+                {
+                    type: 'splitter',
+                    title: 'Basic props:',
+                    name: 'basic'
+                },
+//ENDEDITOR
                 {
                     name:'name',
                     type:String
@@ -16,23 +20,11 @@ export default {
                     step: 1
                 },
                 {
-                    type: 'splitter'
-                },
-                {
                     name: 'y',
                     type: Number,
                     step: 1
                 }
-
-
             ]
         }
-
-
-
-
-
-
     }
-
 }
