@@ -2,17 +2,17 @@ class Settings {
 	constructor(storageId) {
         this._storageId = storageId;
         if (typeof(Storage) !== "undefined") {
-            if (localStorage.hasOwnProperty(name)) {
+            if (localStorage.hasOwnProperty(storageId)) {
                 this._store = JSON.parse(localStorage[storageId]);
             }
         }
         if(!this.hasOwnProperty('_store')) {
-        	this.storage = {};
+        	this._store = {};
         }
         this.flush = this.flush.bind(this);
     }
 
-	getItem(name, def){
+	getItem(name, def) {
 		if(this._store.hasOwnProperty(name)){
 			return this._store[name];
 		}
@@ -21,17 +21,17 @@ class Settings {
 
 	setItem(name, val) {
         this._store[name] = val;
-		changed();
+		this.changed();
 	}
 
 	removeItem(name) {
 		delete(this._store[name]);
-        changed();
+        this.changed();
 	}
 
 	changed() {
 		if(!this.hasOwnProperty('__flushInterval')) {
-			this.__flushInterval = setInterval(this.flush, 10, this);
+			this.__flushInterval = setTimeout(this.flush, 10, this);
 		}
 	}
 

@@ -20,6 +20,8 @@ class Button extends React.Component{
     }
 
     onKeyPress(e) {
+        if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+        
         if(e.keyCode == this.props.hotkey) {
             this.onClick();
         }

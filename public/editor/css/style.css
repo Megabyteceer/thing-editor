@@ -4,6 +4,10 @@
 	--window-header-color:#567;
 }
 
+.hidden{
+	display:none;
+}
+
 body,html{
 	font-family: sans-serif;
 	width:100%;
@@ -37,6 +41,10 @@ h4{
 
 h5{
 	font-weight:bold;
+}
+
+.checkbox{
+	cursor:pointer;
 }
 
 .unclickable{
@@ -246,7 +254,7 @@ button {
 }
 
 .tree-childs {
-	padding-left:10px;
+	padding-left:30px;
 }
 
 .scene-node-name {
@@ -257,28 +265,49 @@ button {
 	color:#aaa;
 }
 
-.props-editor {
-
+.props-group{
+	border-radius:6px;
+	overflow:hidden;
 }
 
-.props-wrapper {
-	display:inline-block;
+.props-group-header {
+	user-select:none;
+	padding:3px;
+	background-color:var(--window-header-color);
+	color:#a3adb7;
+	font-size:70%;
+}
+
+.props-group-body {
+	font-family: monospace;
 	background:#fff;
-	width:50%;
 }
 
 .props-field {
-	/* margin-bottom:1px; */
+	border-bottom: 1px solid #c6c6c6;
 }
 
 .props-label {
 	display:inline-block;
 	box-sizing:border-box;
-	padding-right: 10px;
+	padding-right: 20px;
 	text-align:right;
-	width:50%;
+	width:40%;
+	color: #3a8cff;
+	font-size: 120%;
 }
 
-.props-splitter {
-	height:4px;
+.props-wrapper {
+	display:inline-block;
+	width:60%;
+	box-sizing:border-box;
+	border-left: 1px solid #cfcfcf;
+}
+
+.props-wrapper input{
+	/* font-family: monospace; */
+	box-sizing: border-box;
+	width:100%;
+	padding: 3px;
+	border:none;
 }

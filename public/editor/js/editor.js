@@ -22,6 +22,7 @@ class Editor {
 		this.initResize();
 
 		this.onUIMounted = this.onUIMounted.bind(this);
+		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
 		
 		ReactDOM.render (
 			React.createElement(UI, {onMounted:this.onUIMounted}),
@@ -70,6 +71,13 @@ class Editor {
 	refreshTreeViewAndPropertyEditor() {
 		this.ui.sceneTree.forceUpdate();
 		this.refreshPropsEditor();
+	}
+
+	onSelectedPropsChange(fieldName, val) {
+		for(let o of this.selection) {
+			o[fieldName] = val;
+		}
+		this.refreshTreeViewAndPropertyEditor();
 	}
 }
 

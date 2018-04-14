@@ -16,13 +16,21 @@ export default {
                 },
                 {
                     name: 'x',
-                    type: Number,
-                    step: 1
+                    type: Number
                 },
                 {
                     name: 'y',
+                    type: Number
+                },
+                {
+                    name: 'rotation',
                     type: Number,
-                    step: 1
+                    step: 0.001
+                },
+                {
+                    name: 'renderable',
+                    type: Boolean,
+                    rows:2
                 }
             ]
         }

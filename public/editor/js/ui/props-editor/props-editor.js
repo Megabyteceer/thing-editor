@@ -9,8 +9,8 @@ function isGroupHidden(groupId) {
 }
 
 function toggleGroup(ev) {
-    var groupId = ev.target.data.groupid;
-    var group = $('props-group' + groupId + ' props-group-body');
+    var groupId = ev.target.dataset.groupid;
+    var group = $('.' + groupId + ' .props-group-body');
     var isHidden = !isGroupHidden(groupId);
     EDITOR.settings.setItem(groupId, isHidden);
     if(isHidden){
@@ -50,16 +50,18 @@ class PropsEditor extends React.Component {
                 }
                 var gid = 'props-group-' + p.name;
                 curGroupArray = [];
-                curGroup = R.div({key:gid, groupClassName:'props-group props-group' + gid},
-                    R.div({className:'props-group-header', 'data-groupid':gid, onClick:toggleGroup}),
-                    R.div({className:'props-group-body' + (isGroupHidden(gid) ? ' hidden' : '')}, p.title, curGroupArray)
+                curGroup = R.div({key:gid, className:'props-group ' + gid},
+                    R.div({className:'props-group-header clickable', 'data-groupid':gid, onClick:toggleGroup}, p.title),
+                    R.div({className:'props-group-body' + (isGroupHidden(gid) ? ' hidden' : '')}, curGroupArray)
                 )
             } else {
                 curGroupArray.push (
                     React.createElement(PropsFieldWrapper, {key:p.name, field:p, onChange: this.props.onChange})
                 );
             }
+            
         });
+        groups.push(curGroup);
         return R.div(editorProps, groups);
     }
 }
