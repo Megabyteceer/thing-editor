@@ -27,11 +27,11 @@ class PropsEditor extends React.Component {
             return 'Nothing selected';
         }
 
-        var props = EDITOR.selection[0].listEditableProps();
+        var props = EDITOR.enumObjectsProperties(EDITOR.selection[0]);
         var propsFilter = {};
 
         EDITOR.selection.some((o) => {
-            var ps = o.listEditableProps();
+            var ps = EDITOR.enumObjectsProperties(o);
             ps.some((p) => {
                 var name =  p.name;
                 propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
@@ -51,7 +51,7 @@ class PropsEditor extends React.Component {
                 var gid = 'props-group-' + p.name;
                 curGroupArray = [];
                 curGroup = R.div({key:gid, className:'props-group ' + gid},
-                    R.div({className:'props-group-header clickable', 'data-groupid':gid, onClick:toggleGroup}, p.title),
+                    R.div({className:'props-group-header clickable clickable-neg', 'data-groupid':gid, onClick:toggleGroup}, p.title),
                     R.div({className:'props-group-body' + (isGroupHidden(gid) ? ' hidden' : '')}, curGroupArray)
                 )
             } else {

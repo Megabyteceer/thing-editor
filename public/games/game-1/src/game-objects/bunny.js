@@ -20,7 +20,7 @@ class Bunny extends Sprite {
             this.xSpeed *= -1.0;
             this.rotation = Math.random() - 0.5;
         }
-
+        
         super.update();
     }
 }

@@ -1,16 +1,11 @@
 class Scene extends PIXI.Container {
     constructor() {
-
         super();
-        
-
-       
-
-        
+        this.interactiveChildren = false;
     }
 
     onShow () {
-
+        
     }
 
     onHide () {
@@ -28,11 +23,6 @@ class Scene extends PIXI.Container {
     onHideInner() {
         this.onHide();
     }
-
-    updateInner() {
-        this.update();
-    }
-
 }
 
 export default Scene;

@@ -1,6 +1,7 @@
 import NumberEditor from './number-editor.js';
 import StringEditor from './string-editor.js';
 import BooleanEditor from './boolean-editor.js';
+import SelectEditor from './select-editor.js';
 
 
 var typedEditors = new WeakMap();
@@ -10,7 +11,7 @@ typedEditors[Boolean] = {renderer: BooleanEditor,   parser:(target)=>{return tar
 
 
 
-var getTypeEditor = (field) =>{
+var getTypeEditor = (field) => {
     return typedEditors[field.type || Number];
 }
 
@@ -26,6 +27,11 @@ class PropsFieldWrapper extends React.Component {
         super(props);
         this.state = {};
         this.onChange = this.onChange.bind(this);
+        if(props.field.hasOwnProperty('get')){
+            this.getter = props.field.get;
+        } else {
+            this.getter = false;
+        }
     }
 
     onChange (ev) {
@@ -39,19 +45,30 @@ class PropsFieldWrapper extends React.Component {
             val = Math.min(field.max, val);
         }
 
-        this.props.onChange(field.name, val);
+        this.props.onChange(field, val);
         this.setState({value:val});
     }
 
     render () {
         var field = this.props.field;
-
-        var value = EDITOR.selection[0][field.name];
+        var value;
+        if (this.getter) {
+            value = this.getter(EDITOR.selection[0]);
+        } else {
+            value = EDITOR.selection[0][field.name];
+        }
+        
+        var renderer;
+        if(field.hasOwnProperty('select')) {
+            renderer = SelectEditor;
+        } else {
+            renderer = getTypeEditor(field).renderer;
+        }
 
         return R.div(fieldProps,
         R.div(labelProps, field.name+':'),
         R.div(wrapperProps,
-            React.createElement(getTypeEditor(field).renderer, {
+            React.createElement(renderer, {
                 value,
                 onChange:this.onChange,
                 field
@@ -59,5 +76,11 @@ class PropsFieldWrapper extends React.Component {
         ));
     }
 }
+
+var _surrogateEventObj = {target:{value:0}};
+PropsFieldWrapper.surrogateChnageEvent = (val) => {
+    _surrogateEventObj.target.value = val;
+    return _surrogateEventObj;
+};
 
 export default PropsFieldWrapper

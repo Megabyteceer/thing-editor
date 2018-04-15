@@ -79,6 +79,11 @@ button {
 	box-shadow: inset 0px 4px 12px 0px rgba(44,0,0,0.75);
 }
 
+.clickable-neg:hover{
+	color:#aab4bd !important;
+	background:#435362 !important;
+}
+
 .window-body {
 	position:fixed;
 	box-sizing: content-box;
@@ -142,6 +147,19 @@ button {
 	width:8px;
 	height:8px;
 	cursor: ne-resize;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #cccfda; 
+}
+::-webkit-scrollbar-thumb {
+    background: #acb5be; 
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #9ea9b4; 
 }
 
 .window-r-dragger{
@@ -265,7 +283,13 @@ button {
 	color:#aaa;
 }
 
+.props-editor {
+    overflow-y: auto;
+    height: 100%;
+}
+
 .props-group{
+	margin: 3px;
 	border-radius:6px;
 	overflow:hidden;
 }

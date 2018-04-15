@@ -73,14 +73,66 @@ class Editor {
 		this.refreshPropsEditor();
 	}
 
-	onSelectedPropsChange(fieldName, val) {
-		for(let o of this.selection) {
-			o[fieldName] = val;
+	/**
+	* set propery value received frop property editor
+	*/
+
+	onSelectedPropsChange(field, val) {
+		if(field.hasOwnProperty('set')) {
+			var setter = field.set;
+			for(let o of this.selection) {
+				setter(o, val);
+			}
+
+		} else {
+			for(let o of this.selection) {
+				o[field.name] = val;
+			}
 		}
+		
 		this.refreshTreeViewAndPropertyEditor();
+	}
+
+	/**
+     * enumerate all editable properties of given DisplayObject.
+     */
+	enumObjectsProperties(o) {
+		var c = o.constructor;
+		if (!c.hasOwnProperty('EDITOR_propslist_cache')) {
+			
+			var cc = c;
+			var props = [];
+			var i = 50;
+			while (cc && (i-- > 0)) {
+				if(!cc.prototype) {
+					throw 'attempt to enum editable properties of not PIXI.DisplayObject instance';
+				}
+				if(cc.hasOwnProperty('EDITOR_editableProps')) {  //check if property with same name already defined in super classes chain
+					var addProps = cc.EDITOR_editableProps;
+					if(addProps.some((p) => {
+						return props.some((pp)=>{
+							return pp.name === p.name
+						});
+					})) {
+						throw 'redefenition of property "' + pp.name + '"';
+					}
+
+					props = addProps.concat(props);
+				}
+				if(cc === PIXI.DisplayObject) {
+					break;
+				}
+				cc = cc.__proto__;
+			}
+			c.EDITOR_propslist_cache = props;
+		}
+
+		return c.EDITOR_propslist_cache;
 	}
 }
 
+
+//====== extend DisplayObjct data for editor time only ===============================
 var idCounter = 0;
 var __editorDataPropertyDescriptor = {writable:true};
 var applyEditorDataToNode = (n) => {

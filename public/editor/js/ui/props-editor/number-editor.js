@@ -1,8 +1,8 @@
+import PropsFieldWrapper from './props-field-wrapper.js';
 var propsStore = {};
 var draggingProps;
 var draggingInput;
 var lastY;
-var surrogateEvent = {target:{value:0}};
 
 let onMouseDown = (ev) => {
     var props = propsStore[ev.target.dataset.fieldname];
@@ -19,8 +19,8 @@ $(window).on('mousemove', (ev) => {
     var d = Math.round((lastY - ev.clientY) / 2.001);
     if(d !== 0) {
         lastY = ev.clientY;
-        surrogateEvent.target.value = parseFloat(draggingInput.value) + d * (draggingProps.field.step || 1);
-        draggingProps.onChange(surrogateEvent);
+        var e = PropsFieldWrapper.surrogateChnageEvent(parseFloat(draggingInput.value) + d * (draggingProps.field.step || 1));
+        draggingProps.onChange(e);
     }
 })
 

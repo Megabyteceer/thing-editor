@@ -4,12 +4,46 @@ class Sprite extends PIXI.Sprite {
         this.anchor.set(0.5);
         this.xSpeed = 0;
         this.ySpeed = 0;
+        this.rSpeed = 0;
     }
 
     update() {
        this.x += this.xSpeed;
        this.y += this.ySpeed;
+       this.rotation += this.rSpeed;
     }
 }
+
+var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k)=>{
+  return {name:k, value:PIXI.BLEND_MODES[k]};
+}).sort((a,b)=>{return a.value - b.value});
+
+Sprite.EDITOR_editableProps = [
+    {
+        type: 'splitter',
+        title: 'Sprite:',
+        name: 'sprite'
+    },
+    {
+        name:'blendMode',
+        type: Number,
+        select:blendModesSelect
+    },
+    {
+        name: 'xSpeed',
+        type: Number,
+        step:0.001
+    },
+    {
+        name: 'ySpeed',
+        type: Number,
+        step:0.001
+    },
+    {
+        name: 'rSpeed',
+        type: Number,
+        step:0.0001
+    }
+];
 
 export default Sprite;
