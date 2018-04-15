@@ -4,9 +4,11 @@ import BooleanEditor from './boolean-editor.js';
 
 
 var typedEditors = new WeakMap();
-typedEditors[Number] = {renderer: NumberEditor,     parser:parseFloat};
-typedEditors[String] = {renderer: StringEditor,     parser:(val)=>{return val}};
-typedEditors[Boolean] = {renderer: BooleanEditor,   parser:(val)=>{return val==='true' im here}};
+typedEditors[Number] = {renderer: NumberEditor,     parser:(target)=>{return parseFloat(target.value)}};
+typedEditors[String] = {renderer: StringEditor,     parser:(target)=>{return target.value}};
+typedEditors[Boolean] = {renderer: BooleanEditor,   parser:(target)=>{return target.checked}};
+
+
 
 var getTypeEditor = (field) =>{
     return typedEditors[field.type || Number];
@@ -27,8 +29,17 @@ class PropsFieldWrapper extends React.Component {
     }
 
     onChange (ev) {
-        var val = getTypeEditor(this.props.field).parser(ev.target.value);
-        this.props.onChange(this.props.field.name, val);
+        var field = this.props.field;
+        var val = getTypeEditor(field).parser(ev.target);
+
+        if(field.hasOwnProperty('min')) {
+            val = Math.max(field.min, val);
+        }
+        if(field.hasOwnProperty('max')) {
+            val = Math.min(field.max, val);
+        }
+
+        this.props.onChange(field.name, val);
         this.setState({value:val});
     }
 

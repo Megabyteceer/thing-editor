@@ -305,9 +305,9 @@ button {
 }
 
 .props-wrapper input{
-	/* font-family: monospace; */
+	font-family: monospace;
 	box-sizing: border-box;
-	width:100%;
+	width: 100%;
 	padding: 3px;
 	border:none;
 }

@@ -28,7 +28,15 @@ export default {
                     step: 0.001
                 },
                 {
-                    name: 'renderable',
+                    name: 'alpha',
+                    type: Number,
+                    step: 0.01,
+                    min: 0,
+                    max: 1
+                },
+                
+                {
+                    name: 'visible',
                     type: Boolean,
                     rows:2
                 }
