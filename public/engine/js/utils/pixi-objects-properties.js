@@ -1,6 +1,9 @@
 export default {
 
     init() {
+
+		//========= PIXI.DisplayObject ===========================================
+    	
         PIXI.DisplayObject.EDITOR_editableProps = [
 			{
 				type: 'splitter',
@@ -82,6 +85,26 @@ export default {
 			}
 		   
 		];
+
+		
+		//========= PIXI.Sprite ===========================================
+
+		var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k)=>{
+		  return {name:k, value:PIXI.BLEND_MODES[k]};
+		}).sort((a,b)=>{return a.value - b.value});
+
+		PIXI.Sprite.EDITOR_editableProps = [
+			{
+				type: 'splitter',
+				title: 'Sprite:',
+				name: 'sprite'
+			},
+			{
+				name:'blendMode',
+				type: Number,
+				select:blendModesSelect
+			}
+    	];
         
     }
 }

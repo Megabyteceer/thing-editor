@@ -9,3 +9,8 @@ R.spinner = () => {
 	return R.div(null, 
 	);
 }
+
+window.sp = (ev) => {
+	ev.stopPropagation();
+	ev.preventDefault();
+}

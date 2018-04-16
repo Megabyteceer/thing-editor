@@ -2,13 +2,14 @@ import NumberEditor from './number-editor.js';
 import StringEditor from './string-editor.js';
 import BooleanEditor from './boolean-editor.js';
 import SelectEditor from './select-editor.js';
+import ColorEditor from './color-editor.js';
 
 
 var typedEditors = new WeakMap();
 typedEditors[Number] = {renderer: NumberEditor,     parser:(target)=>{return parseFloat(target.value)}};
 typedEditors[String] = {renderer: StringEditor,     parser:(target)=>{return target.value}};
 typedEditors[Boolean] = {renderer: BooleanEditor,   parser:(target)=>{return target.checked}};
-
+typedEditors['color'] = {renderer: ColorEditor,   parser:(target)=>{return parseInt(target.value.replace('#',''),16)}};
 
 
 var getTypeEditor = (field) => {

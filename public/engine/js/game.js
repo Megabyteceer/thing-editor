@@ -61,6 +61,7 @@ class Game {
 				
 			}
 		}
+		app.renderer.backgroundColor = this.currentScene.backgroundColor;
 	}
 
 	updateFrame() {

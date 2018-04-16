@@ -62,7 +62,6 @@ button {
 
 .clickable {
 	cursor:pointer;
-	vertical-align:middle;
 }
 
 .clickable:hover{
@@ -210,7 +209,7 @@ button {
 	display: flex;
 	align-items:center;
 	justify-content:center;
-	background:#a8aec3;
+	background: #b9bdc8;
 	flex-grow:1;
 	width:100%;
 	height:100%;
@@ -231,8 +230,8 @@ button {
 }
 
 .editor-viewport canvas {
-	max-height: 99%;
-	max-width: 99%;
+	max-height: 100%;
+	max-width: 100%;
 	/* max-height:100%; */
 }
 
@@ -316,14 +315,14 @@ button {
 	box-sizing:border-box;
 	padding-right: 20px;
 	text-align:right;
-	width:40%;
+	width: 50%;
 	color: #3a8cff;
 	font-size: 120%;
 }
 
 .props-wrapper {
 	display:inline-block;
-	width:60%;
+	width: 50%;
 	box-sizing:border-box;
 	border-left: 1px solid #cfcfcf;
 }
@@ -334,4 +333,59 @@ button {
 	width: 100%;
 	padding: 3px;
 	border:none;
+}
+
+.select-editor-current {
+	padding-left: 10px;
+}
+
+.select-editor-list{
+	user-select: none;
+	position: absolute;
+	background:#fff;
+	padding:10px;
+}
+
+.modal-blackout {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	z-index: 100;
+	background:rgba(0,16,32,0.5);
+}
+
+.modal-title {
+	background:#345;
+	padding: 10px 20px;
+	color:#89a;
+	font-weight:bold;
+}
+
+.modal-body {
+	margin:auto;
+	margin-top:100px;
+	cursor:initial;
+	max-width: 600px;
+}
+
+.modal-content {
+	padding:20px;
+	background:#fff;
+}
+
+.project-item-select {
+	padding: 10px;
+	margin: 5px;
+	border: 1px solid #bfc6cc;
+	border-radius:10px;
+	color: #476582;
+	font-size: 150%;
+}
+
+.project-item-select img {
+	max-height: 30px;
+	vertical-align: top;
+	margin: 0 20px;
 }

@@ -14,20 +14,11 @@ class Sprite extends PIXI.Sprite {
     }
 }
 
-var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k)=>{
-  return {name:k, value:PIXI.BLEND_MODES[k]};
-}).sort((a,b)=>{return a.value - b.value});
-
 Sprite.EDITOR_editableProps = [
     {
         type: 'splitter',
-        title: 'Sprite:',
-        name: 'sprite'
-    },
-    {
-        name:'blendMode',
-        type: Number,
-        select:blendModesSelect
+        title: 'Speed:',
+        name: 'speed'
     },
     {
         name: 'xSpeed',
@@ -44,6 +35,8 @@ Sprite.EDITOR_editableProps = [
         type: Number,
         step:0.0001
     }
+
+    //TODO: image, tint
 ];
 
 export default Sprite;

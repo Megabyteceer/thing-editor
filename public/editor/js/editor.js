@@ -2,6 +2,7 @@ import Game from '/engine/js/game.js';
 import Settings from '/engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
 import ws from './utils/socket.js';
+import fs from './utils/fs.js';
 import UI from './ui/ui.js';
 
 import MainScene from '/games/game-1/src/scenes/main-scene.js';
@@ -15,7 +16,8 @@ class Editor {
 		Object.defineProperty(PIXI.DisplayObject.prototype, '__editorData', {get:()=>{throw "No __editorData field found for " + this.constructor.name + '. To create game objects use code: Lib.create(\'name\')';}});
 
 		this.currenGamePath = 'games/game-1';
-
+		this.fs = fs;
+		
 		this.settings = new Settings('EDITOR');
 		this.selection = new Selection();
 

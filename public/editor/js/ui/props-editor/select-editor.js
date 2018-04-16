@@ -8,7 +8,14 @@ class SelectEditor extends React.Component {
 
         this.onToggle = this.onToggle.bind(this);
         this.onSelect = this.onSelect.bind(this);
+        this.onMouseOut = this.onMouseOut.bind(this);
         this.renderItem = this.renderItem.bind(this);
+    }
+
+    onMouseOut() {
+        if(this.state.toggled) {
+            this.onToggle();
+        }
     }
 
     onToggle() {
@@ -29,14 +36,15 @@ class SelectEditor extends React.Component {
         
         var list = this.props.field.select;
 
-        var body;
+        var items;
 
         if(this.state.toggled) {
-            body = list.map(this.renderItem);
-        } else {
-            body = list.find((i)=>{if(i.value === this.props.value)return i}).name + ' ▾';
+            items = R.div({className:'select-editor-list'}, list.map(this.renderItem));
         }
-        return R.div({className:'select-editor', onClick:this.onToggle}, body);
+        return R.div({className:'select-editor', onClick:this.onToggle/*, onMouseOut:this.onMouseOut*/}, 
+            R.div({className:'select-editor-current clickable'}, list.find((i)=>{if(i.value === this.props.value)return i}).name + ' ▾'),
+            items
+        );
     }
 
 }

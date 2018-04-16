@@ -29,7 +29,7 @@ class Button extends React.Component{
 
     onClick() {
         var newState = !this.state.toggled;
-        if(this.props.hasOwnProperty('toggledLabel')) {
+        if(this.props.toggledLabel) {
             this.setState({toggled:newState });
         }
         this.props.onClick(newState);

@@ -3,8 +3,9 @@ import TreeView from './tree-view/tree-view.js'
 import Viewport from './viewport.js';
 import PropsEditor from './props-editor/props-editor.js';
 import Button from './button.js';
+import Modal from './modal.js';
 
-R.btn = function(label, onClick, className, toggledLabel, hotkey){
+R.btn = function(label, onClick, className, toggledLabel, hotkey) {
 	return React.createElement(Button, {label, onClick, className, toggledLabel, hotkey});
 }
 
@@ -18,6 +19,7 @@ class UI extends React.Component {
 		super(props);
 		this.sceneTreeRef = this.sceneTreeRef.bind(this);
 		this.propsEditorRef = this.propsEditorRef.bind(this);
+		this.modalRef = this.modalRef.bind(this);
 	}
 
 	componentDidMount() {
@@ -31,13 +33,18 @@ class UI extends React.Component {
 	propsEditorRef(propsEditor) {
 		this.propsEditor = propsEditor;
 	}
-	
+
+	modalRef(modal) {
+		this.modal = modal;
+	}
+
 	render() {
 		return R.div(null,
+			R.btn('Open project...', EDITOR.fs.chooseProject),
 			window('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 250, 250, 500),
-			window('viewport', 'Viewport', React.createElement(Viewport), 1000, 0, 840, 480, 840, 480),
-			window('propsEditor', 'Properties', React.createElement(PropsEditor, {ref: this.propsEditorRef, onChange:EDITOR.onSelectedPropsChange}), 250, 0, 250, 250, 250, 500)
-		
+			window('viewport', 'Viewport', React.createElement(Viewport), 1000, 0, 448, 223, 840, 480),
+			window('propsEditor', 'Properties', React.createElement(PropsEditor, {ref: this.propsEditorRef, onChange:EDITOR.onSelectedPropsChange}), 250, 0, 250, 250, 250, 500),
+			React.createElement(Modal, {ref:this.modalRef})
 		);
 	}
 }
