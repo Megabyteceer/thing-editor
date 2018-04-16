@@ -28,11 +28,16 @@ var clearLoadedScript;
 	}
 
 	if (TARGET == 'development') {
-		window.assert = (expression, message) => {
+		window.assert = (expression, message, dontBreakFlow) => {
 			if(!expression){
-				throw message;
+				if(dontBreakFlow) {
+					if(window.EDITOR) {
+						EDITOR.ui.showError(message);
+					}
+				} else {
+					throw message;
+				}
 			}
 		}
-	}	
-
+	}
 })();

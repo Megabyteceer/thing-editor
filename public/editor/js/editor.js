@@ -4,6 +4,7 @@ import Selection from './utils/selection.js';
 import ws from './utils/socket.js';
 import fs from './utils/fs.js';
 import UI from './ui/ui.js';
+import ClassesLoader from './utils/classes-loader.js';
 
 import MainScene from '/games/game-1/src/scenes/main-scene.js';
 import Bunny from '/games/game-1/src/game-objects/bunny.js';
@@ -22,6 +23,7 @@ class Editor {
 		this.selection = new Selection();
 
 		this.initResize();
+		this.ClassesLoader = ClassesLoader;
 
 		this.onUIMounted = this.onUIMounted.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
@@ -47,7 +49,9 @@ class Editor {
 		game.init(document.getElementById('viewport-root'));
 		applyEditorDataToNode(game.stage);
 		
-		this.loadScene();
+		ClassesLoader.init();
+
+		fs.openProject();
 	}
 
 	loadScene() {
@@ -73,6 +77,19 @@ class Editor {
 	refreshTreeViewAndPropertyEditor() {
 		this.ui.sceneTree.forceUpdate();
 		this.refreshPropsEditor();
+	}
+
+	reloadClasses() {
+		ClassesLoader.reloadClasses();
+	}
+	
+	reloadAssets() {
+
+	}
+
+	reloadAll() {
+		this.reloadClasses();
+		this.reloadAssets();
 	}
 
 	/**
@@ -116,7 +133,7 @@ class Editor {
 							return pp.name === p.name
 						});
 					})) {
-						throw 'redefenition of property "' + pp.name + '"';
+						this.ui.showError('redefenition of property "' + pp.name + '"');
 					}
 
 					props = addProps.concat(props);

@@ -14,7 +14,7 @@ class TreeNode extends React.Component {
         this.onMouseDown = this.onMouseDown.bind(this);
     }
     
-    onMouseDown(e) {
+    onMouseDown(e) { // == select nodes
         var state = this.props.node.__editorData;
         if(!e.ctrlKey) {
             state.toggled = !state.toggled;
@@ -65,8 +65,8 @@ class TreeNode extends React.Component {
         if(state.isSelected) {
             className += ' scene-tree-item-selected';
         }
-        
-        return R.div(null, R.div({className, onMouseDown:this.onMouseDown}, caret, R.span(nameProps, node.name), R.span(classProps,' (' + node.constructor.name + ')')), childs);
+        var icon = R.icon(node.constructor.EDITOR_icon || 'tree/game-obj');
+        return R.div(null, R.div({className, onMouseDown:this.onMouseDown}, caret, icon, R.span(nameProps, node.name), R.span(classProps,' (' + node.constructor.name + ')')), childs);
     }
 
 }

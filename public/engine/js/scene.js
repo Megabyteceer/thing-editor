@@ -28,6 +28,7 @@ class Scene extends PIXI.Container {
 
 export default Scene;
 
+Scene.EDITOR_icon = 'tree/scene';
 Scene.EDITOR_editableProps = [
     {
         type: 'splitter',

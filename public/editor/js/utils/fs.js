@@ -1,7 +1,7 @@
 var fs = {
    chooseProject: (enforced) => {
-        $.getJSON('/fs/projects').then((data) => {
-            EDITOR.ui.modal.open(data.map(renderProjectItem), 'Choose project to open:', enforced === true)
+        fs.load('/fs/projects', (data) => {
+            EDITOR.ui.modal.open(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
         });
    },
    openProject:(desc) => {
@@ -14,15 +14,28 @@ var fs = {
         }
         if(!dir) {
             fs.chooseProject(true);
+        } else {
+             fs.load('/fs/openProject?dir=' + dir, (data) => {
+                fs.refreshFiles(() => {
+                    EDITOR.settings.setItem('last-opened-project', dir);
+                    fs.gameFolder = '/games/' + dir + '/';
+                    EDITOR.reloadAll();
+                });
+            });
         }
-        $.getJSON('/fs/openProject?dir=' + dir).then((data) => {
-            fs.refreshFiles();
-        });
+       
     },
     refreshFiles:(callback) => {
-        $.getJSON('/fs/enum').then((data) => {
+        fs.load('/fs/enum', (data) => {
             fs.files = data;
+            callback();
         });
+    },
+    load(url, callback, silently) {
+		if(!silently) {
+			EDITOR.ui.modal.showSpinner();
+		}
+		$.getJSON(url).then(callback).always(EDITOR.ui.modal.hideSpinner);
     }
 }
 

@@ -48,20 +48,23 @@ class Game {
 	}
 
 	updateGlobal(dt) {
-		if(!this.paused && this.currentScene) {
-			frameCounterTime += dt;
-			var limit = 4;
-			while(frameCounterTime > FRAME_PERIOD) {
-				if(limit-- > 0) {
-					this.updateFrame();
-					frameCounterTime -= FRAME_PERIOD;
-				} else {
-					frameCounterTime = 0;
+		if(this.currentScene) {
+			if(!this.paused) {
+				frameCounterTime += dt;
+				var limit = 4;
+				while(frameCounterTime > FRAME_PERIOD) {
+					if(limit-- > 0) {
+						this.updateFrame();
+						frameCounterTime -= FRAME_PERIOD;
+					} else {
+						frameCounterTime = 0;
+					}
+
 				}
-				
+
 			}
+			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 		}
-		app.renderer.backgroundColor = this.currentScene.backgroundColor;
 	}
 
 	updateFrame() {

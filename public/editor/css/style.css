@@ -256,6 +256,11 @@ button {
 	cursor:pointer;
 }
 
+.scene-tree-item img {
+	margin-right: 4px;
+	vertical-align:bottom;
+}
+
 .scene-tree-item-selected{
 	background:#c4e3ff;
 }
@@ -363,6 +368,12 @@ button {
 	font-weight:bold;
 }
 
+.modal-title img {
+	max-height:20px;
+	margin-right: 10px;
+	vertical-align: text-bottom;
+}
+
 .modal-body {
 	margin:auto;
 	margin-top:100px;
@@ -389,3 +400,4 @@ button {
 	vertical-align: top;
 	margin: 0 20px;
 }
+

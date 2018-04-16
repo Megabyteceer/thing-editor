@@ -6,8 +6,9 @@ var bodyProps = {className:'modal-body', onClick:sp};
 var titleProps = {className:'modal-title'};
 var contentProps = {className:'modal-content'};
 
-var renderModal = (props, i) => {
+var spinnerShowCounter = 0;
 
+var renderModal = (props, i) => {
     var title;
 
     if(props.title) {
@@ -26,6 +27,14 @@ var renderModal = (props, i) => {
     );
 }
 
+var renderSpinner = () => {
+    return R.div(blackoutProps,
+        R.div(bodyProps,
+            'Loading...'
+        )
+    );
+}
+
 class Modal extends React.Component {
     
     constructor(props) {
@@ -36,14 +45,14 @@ class Modal extends React.Component {
     }
 
     close() {
-        assert(this.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
-        this.state.modals.pop();
-        this.forceUpdate();
+        assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
+        modal.state.modals.pop();
+        modal.forceUpdate();
     }
 
     open(content, title, noEasyClose) {
-        this.state.modals.push({content, title, noEasyClose});
-        this.forceUpdate();
+        modal.state.modals.push({content, title, noEasyClose});
+        modal.forceUpdate();
     }
 
     componentDidMount() {
@@ -51,7 +60,24 @@ class Modal extends React.Component {
         modal = this;
     }
 
+    showSpinner() {
+        spinnerShowCounter++;
+        if(spinnerShowCounter === 1) {
+            modal.forceUpdate();
+        }
+    }
+
+    hideSpinner() {
+        spinnerShowCounter--;
+        if(spinnerShowCounter === 0){
+            modal.forceUpdate();
+        }
+    }
+
     render() {
+        if (spinnerShowCounter > 0) {
+            return renderSpinner();
+        }
         return R.div(null, this.state.modals.map(renderModal));
     }
 }
