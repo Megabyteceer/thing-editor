@@ -114,7 +114,7 @@ ClassesLoader.classLoaded = (c, path) => {
             return;
         }
     }
-
+	TODO: fix wrong order loading (Scene instead of Bunny)
     var id;
     if(loadedClassesByName.hasOwnProperty(name)) {
         id = loadedClassesIdsByName[name];
