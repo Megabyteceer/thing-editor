@@ -6,7 +6,7 @@ window.R = factories;
 });
 
 R.spinner = () => {
-	return R.div(null, 
+	return R.div(null, 'Loading...'
 	);
 }
 
@@ -17,6 +17,24 @@ R.icon = (name) => {
 	}
 	return _iconsCache[name];
 }
+
+R.classIcon = (constructor) => {
+	return R.icon(constructor.EDITOR_icon || 'tree/game-obj');
+}
+
+
+
+R.listItem = (view, item, key, parent) => {
+
+	var className = (parent.state.__selectedItem === item) ? 'item-selected' : 'clickable';
+
+	return R.div({className:className, key:key, onClick:() => {
+		parent.state.__selectedItem = item;
+		parent.onSelect(item);
+	}}, view);
+}
+
+
 
 window.sp = (ev) => {
 	ev.stopPropagation();

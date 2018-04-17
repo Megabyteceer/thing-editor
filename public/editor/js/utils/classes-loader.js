@@ -9,7 +9,11 @@ var loadedClassesIdsByName = {};
 var classesIdCounter;
 var customClassesIdCounter;
 
+var cacheCounter = 0;
+
 var embeddedClasses;
+
+ClassesLoader.loaded = new Signal();
 
 ClassesLoader.init = () => {
     //embedded engine classes
@@ -24,6 +28,14 @@ ClassesLoader.init = () => {
 const jsFiler = /^src\/.*\.js$/gm;
 var head = document.getElementsByTagName('head')[0];
 
+var cbCounter;
+function checkIfLoaded(){
+    cbCounter--;
+    if(cbCounter === 0) {
+        ClassesLoader.loaded.emit();
+    }
+}
+
 ClassesLoader.reloadClasses = () => { //enums all ingame scripts, detect which exports PIXI.DisplayObject descendants and add them in to Lib.
     Lib.clearClasses();
     customClassesIdCounter = CUSTOM_CLASSES_ID;
@@ -31,18 +43,23 @@ ClassesLoader.reloadClasses = () => { //enums all ingame scripts, detect which e
     embeddedClasses.some(Lib.addClass);
 
     var dir = EDITOR.fs.gameFolder;
+    cbCounter = 1;
     EDITOR.fs.files.some((fn) => {
         if(fn.match(jsFiler)) {
-            var src = '/fs/loadClass?c='+ encodeURIComponent(dir + fn);
+
+            cbCounter++;
+            var src = '/fs/loadClass?c='+ encodeURIComponent(dir + fn)+'&nocache='+cacheCounter++;
             var script = document.createElement('script');
             script.onload = function(ev) {
                 head.removeChild(ev.target);
+                checkIfLoaded();
             };
             script.type = 'module';
             script.src = src;
             head.appendChild(script);
         }
     });
+    checkIfLoaded();
 }
 
 ClassesLoader.classLoaded = (c) => {
@@ -59,5 +76,6 @@ ClassesLoader.classLoaded = (c) => {
     loadedClasses[id] = c;
     Lib.addClass(c, id);
 }
+
 
 export default ClassesLoader;

@@ -63,9 +63,9 @@ class TreeNode extends React.Component {
         var className = 'scene-tree-item';
 
         if(state.isSelected) {
-            className += ' scene-tree-item-selected';
+            className += ' item-selected';
         }
-        var icon = R.icon(node.constructor.EDITOR_icon || 'tree/game-obj');
+        var icon = R.classIcon(node.constructor);
         return R.div(null, R.div({className, onMouseDown:this.onMouseDown}, caret, icon, R.span(nameProps, node.name), R.span(classProps,' (' + node.constructor.name + ')')), childs);
     }
 

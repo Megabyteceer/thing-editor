@@ -18,7 +18,6 @@ class Game {
 		this.settings = new Settings(gameId);
 		this.updateGlobal = this.updateGlobal.bind(this);
 		window.game = this;
-		window.Lib = new (Lib);
 	}
 
 	init(element) {

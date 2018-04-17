@@ -22,6 +22,7 @@ var constructRecursive = (o) => {
 var classIdCounter = 0;
 var customClassIdCounter = 0;
 
+var self;
 class Lib {
 
     wrapConstructorProcessor(wrapper) {
@@ -47,13 +48,13 @@ class Lib {
     addClass(c, id) {
         assert(EDITOR, "Lib.addClass has sence for editor mode only");
         classesById[id] = c;
-        Lib.classes.push({id, c}); im here: add lib classes window
+        self.EDITORclasses.push({id, c});
     }
 
     clearClasses() {
         assert(EDITOR, "Lib.clearClasses has sence for editor mode only");
         classesById = {};
-        Lib.classes = [];
+        self.EDITORclasses = [];
         //TODO: clear pools
     }
 
@@ -74,5 +75,5 @@ class Lib {
     }
 }
 
-window.Lib = new Lib();
-export default Lib;
+self = window.Lib = new Lib();
+export default 'this class is singletone. Use window.Lib';
