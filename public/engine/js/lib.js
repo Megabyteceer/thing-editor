@@ -3,6 +3,11 @@ var scenes = {};
 var classesById = {};
 var textures = {};
 
+
+function getInstanceByClassId(id) {
+    return new classesById[id]();
+}
+
 var constructorProcessor = (o) => {
     if(o instanceof PIXI.Sprite) {
          o.texture = textures['bunny'];
@@ -45,25 +50,25 @@ class Lib {
         return classesById[id];
     }
 
-    addClass(c, id) {
-        assert(EDITOR, "Lib.addClass has sence for editor mode only");
-        classesById[id] = c;
-        self.EDITORclasses.push({id, c});
-    }
-
-    clearClasses() {
-        assert(EDITOR, "Lib.clearClasses has sence for editor mode only");
-        classesById = {};
-        self.EDITORclasses = [];
-        //TODO: clear pools
+    setClasses(c) {
+        classesById = c;
     }
 
     addTexture(name, texture) {
         textures[name] = texture;
     }
 
+    loadClassInstanceById(id) {
+        var ret = new classesById[id];
+        constructRecursive(ret);
+        return ret;
+    }
+
     loadObject(name) {
-        var ret = new objects[name];
+
+        return window.Lib.loadClassInstanceById(100);
+        
+        var ret = new objects[name]; //getInstanceByClassId
         constructRecursive(ret);
         return ret;
     }

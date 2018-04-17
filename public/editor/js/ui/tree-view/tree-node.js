@@ -11,13 +11,16 @@ class TreeNode extends React.Component {
     constructor(props) {
         super(props);
 
-        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
     
-    onMouseDown(e) { // == select nodes
+    onClick(e) { // == select nodes
         var state = this.props.node.__editorData;
-        if(!e.ctrlKey) {
+        if(!e.ctrlKey && (state.isSelected || isClickedAtRightEdge(e))) {
             state.toggled = !state.toggled;
+            if(!state.toggled) {
+                collapseChildsRecursively(this.props.node);
+            }
         }
 
         if(e.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
@@ -60,15 +63,27 @@ class TreeNode extends React.Component {
 
             }
         }
-        var className = 'scene-tree-item';
+        var className = 'list-item';
 
         if(state.isSelected) {
             className += ' item-selected';
         }
         var icon = R.classIcon(node.constructor);
-        return R.div(null, R.div({className, onMouseDown:this.onMouseDown}, caret, icon, R.span(nameProps, node.name), R.span(classProps,' (' + node.constructor.name + ')')), childs);
+        return R.div(null, R.div({className, onClick:this.onClick}, icon, R.span(nameProps, node.name), R.span(classProps,' (' + node.constructor.name + state.id + ')'), caret), childs);
     }
 
+}
+
+function isClickedAtRightEdge(e) {
+    var b = $(e.currentTarget).closest('.scene-tree-view')[0].getBoundingClientRect();
+    return (b.right - e.clientX) < 40;
+}
+
+function collapseChildsRecursively(node) {
+    node.__editorData.toggled = false;
+    if(node.hasOwnProperty('children')) {
+        node.children.some(collapseChildsRecursively);
+    }
 }
 
 export default TreeNode;

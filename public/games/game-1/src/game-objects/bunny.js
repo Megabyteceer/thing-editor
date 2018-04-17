@@ -2,16 +2,17 @@ class Bunny extends Sprite {
     
     constructor(img){
         super(img);
-        this.xSpeed = Math.random() * 10.0 - 5.0;
+        this.xSpeed = Math.random() * 30.0 - 15.0;
         this.x = Math.random() * W;
 		this.y = Math.random() * H;
-		this.gravity = Math.random()*0.15 + 0.03;
+		this.gravity = Math.random()*0.15 + 0.83;
     }
 
     update () {
          if(this.y > H) {
-            this.ySpeed *= -1.0;
+            this.ySpeed *= -1;
             this.rotation = Math.random() - 0.5;
+			this.xSpeed *= 1;
         } else {
         	this.ySpeed += this.gravity;
         }

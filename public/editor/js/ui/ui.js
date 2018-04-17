@@ -6,8 +6,8 @@ import Button from './button.js';
 import Modal from './modal.js';
 import ClessesView from './classes-view.js';
 
-R.btn = function(label, onClick, className, toggledLabel, hotkey) {
-	return React.createElement(Button, {label, onClick, className, toggledLabel, hotkey});
+R.btn = function(label, onClick, title, className, toggledLabel, hotkey) {
+	return React.createElement(Button, {label, onClick, className, title, toggledLabel, hotkey});
 }
 
 function window(id, title, content, x, y, minW, minH, w, h) {

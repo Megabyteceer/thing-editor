@@ -44,8 +44,16 @@ h5{
 	font-weight:bold;
 }
 
-imput {
+b{
+	font-weight:bold;
+}
+
+input {
 	user-select:all;
+}
+
+img {
+	vertical-align: middle;
 }
 
 .checkbox{
@@ -62,7 +70,13 @@ button {
 	border:0;
 	border-radius:6px;
 	margin:5px;
+	padding: 4px 12px;
 	outline: none;
+}
+
+.disabled {
+	opacity:0.5;
+	pointer-events:none;
 }
 
 .clickable {
@@ -70,17 +84,11 @@ button {
 }
 
 .clickable:hover{
-	color:#123 !important;
-	background:#eeeef3 !important;
+	box-shadow: inset 0px 0px 2px 2px rgb(189, 223, 255);
 }
 
 .clickable:active{
-	-ms-transform: scale(0.98);
-	-webkit-transform: scale(0.98);
-	transform: scale(0.98);
-	-webkit-box-shadow: inset 0px 4px 12px 0px rgba(44,0,0,0.75);
-	-moz-box-shadow: inset 0px 4px 12px 0px rgba(44,0,0,0.75);
-	box-shadow: inset 0px 4px 12px 0px rgba(44,0,0,0.75);
+	box-shadow: inset 0px 0px 2px 2px rgb(85, 102, 119);
 }
 
 .clickable-neg:hover{
@@ -240,9 +248,9 @@ button {
 }
 
 .play-stop-btn{
+	padding: 0;
 	width:50px;
 	height:50px;
-	font-size:200%;
 }
 
 .scene-tree-view {
@@ -253,33 +261,30 @@ button {
 	font-size: 80%;
 }
 
-.scene-tree-item {
+.list-item {
 	border-top:1px solid #eee;
 	padding:2px;
 	cursor:pointer;
 }
 
-.scene-tree-item img {
+.list-item img {
 	margin-right: 4px;
-	vertical-align:bottom;
 }
 
 .item-selected{
-	background:#c4e3ff;
+	background: #95ccff;
 }
 
 .tree-caret {
+	line-height: 0.50;
+	float: right;
 	font-size: 290%;
-	position:relative;
-	top:10px;
-	margin-top: -92px;
-	margin-bottom: -30px;
-	display:inline-block;
-	margin-right: 3px;
+	color: #6c6b6a;
+	pointer-events:none;
 }
 
 .tree-childs {
-	padding-left:30px;
+	padding-left: 10px;
 }
 
 .scene-node-name {
@@ -372,7 +377,6 @@ button {
 .modal-title img {
 	max-height:20px;
 	margin-right: 10px;
-	vertical-align: text-bottom;
 }
 
 .modal-body {
@@ -398,7 +402,13 @@ button {
 
 .project-item-select img {
 	max-height: 30px;
-	vertical-align: top;
 	margin: 0 20px;
 }
 
+.list-view {
+	background:#fff;
+}
+
+.error {
+	color: #be0000;
+}

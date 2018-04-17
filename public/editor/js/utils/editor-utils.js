@@ -1,7 +1,7 @@
 var factories = {};
 window.R = factories;
 
-['div', 'span', 'img', 'button', 'input'].some((factoryType) => {
+['div', 'span', 'img', 'button', 'input', 'b'].some((factoryType) => {
 	factories[factoryType] = React.createFactory(factoryType);
 });
 
@@ -26,11 +26,18 @@ R.classIcon = (constructor) => {
 
 R.listItem = (view, item, key, parent) => {
 
-	var className = (parent.state.__selectedItem === item) ? 'item-selected' : 'clickable';
+	var className = 'list-item';
+
+	if (parent.state.selectedItem === item) {
+		className += ' item-selected';
+	}
 
 	return R.div({className:className, key:key, onClick:() => {
-		parent.state.__selectedItem = item;
-		parent.onSelect(item);
+		if(parent.state.selectedItem !== item) {
+			parent.state.selectedItem = item;
+			parent.onSelect(item);
+			parent.forceUpdate();
+		}
 	}}, view);
 }
 

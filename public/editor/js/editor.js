@@ -27,6 +27,8 @@ class Editor {
 
 		this.onUIMounted = this.onUIMounted.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
+		this.reloadClasses = this.reloadClasses.bind(this);
+
 		
 		ReactDOM.render (
 			React.createElement(UI, {onMounted:this.onUIMounted}),
@@ -54,7 +56,7 @@ class Editor {
 		fs.openProject();
 	}
 
-	loadScene() {
+	loadScene(name) {
 		game.showScene(Lib.loadScene('main'));
 		this.selection.select(game.currentScene);
 		this.refreshTreeViewAndPropertyEditor();
@@ -80,6 +82,9 @@ class Editor {
 	}
 
 	reloadClasses() {
+		ClassesLoader.loaded.addOnce(() => {
+			this.loadScene();
+		});
 		ClassesLoader.reloadClasses();
 	}
 	
@@ -90,6 +95,16 @@ class Editor {
 	reloadAll() {
 		this.reloadClasses();
 		this.reloadAssets();
+	}
+
+	addToSelected(o) {
+		if(this.selection.length > 0) {
+			addTo(this.selection[0], o);
+		}
+	}
+
+	addToScene(o) {
+		addTo(game.currentScene, o);
 	}
 
 	/**
@@ -148,6 +163,11 @@ class Editor {
 
 		return c.EDITOR_propslist_cache;
 	}
+}
+
+function addTo(parent, child) {
+	parent.addChild(child);
+	EDITOR.ui.sceneTree.select(child);
 }
 
 

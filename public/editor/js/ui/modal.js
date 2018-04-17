@@ -5,6 +5,7 @@ var blackoutPropsClosable = {className:'modal-blackout', style:{cursor:'pointer'
 var bodyProps = {className:'modal-body', onClick:sp};
 var titleProps = {className:'modal-title'};
 var contentProps = {className:'modal-content'};
+var errorProps = {className:'error'};
 
 var spinnerShowCounter = 0;
 
@@ -72,6 +73,10 @@ class Modal extends React.Component {
         if(spinnerShowCounter === 0){
             modal.forceUpdate();
         }
+    }
+
+    showError(message, title='Error!') {
+        this.open(R.div(errorProps, message), R.span(null, R.icon('error'), title));
     }
 
     render() {

@@ -8,6 +8,18 @@ R.renderSceneNode = (node) => {
 
 class TreeView extends React.Component {
 
+    select(node) {
+        var n = node;
+        while(n && n.parent) {
+            n.__editorData.toggled = true;
+            n = n.parent;
+        }
+        EDITOR.selection.select(node);
+        setTimeout(() => {
+            $('.scene-tree-view .item-selected')[0].scrollIntoView({});
+        },0);
+    }
+
     render () {
         if(!EDITOR.game) return R.spinner();
         

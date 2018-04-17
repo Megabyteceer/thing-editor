@@ -32,7 +32,7 @@ var clearLoadedScript;
 			if(!expression){
 				if(dontBreakFlow) {
 					if(window.EDITOR) {
-						EDITOR.ui.showError(message);
+						EDITOR.ui.modal.showError(message);
 					}
 				} else {
 					throw message;

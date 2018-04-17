@@ -1,5 +1,5 @@
-const PLAY_ICON = R.span({style:{color:'#070'}}, '▶');
-const STOP_ICON = R.span({style:{color:'#d00'}}, '■');
+const PLAY_ICON = R.icon('play');
+const STOP_ICON = R.icon('stop');
 
 class Viewport extends React.Component{
     
@@ -16,7 +16,8 @@ class Viewport extends React.Component{
     render () {
         return R.div({className:'editor-viewport-wrapper'},
             R.div({className:'editor-viewport-panel'},
-                R.btn(PLAY_ICON, this.onTogglePlay, 'play-stop-btn', STOP_ICON, 32)
+                R.btn(PLAY_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', STOP_ICON, 32),
+                R.btn(R.icon('recompile'), EDITOR.reloadClasses, 'Recompile .js sources', 'play-stop-btn'),
             ),
 
             R.div({id:'viewport-root', className:'editor-viewport'})

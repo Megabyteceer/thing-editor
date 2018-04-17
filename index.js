@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path')
 const express = require('express')
 const app = express()
+var cacheCounter = 0;
 
 var currentGame;
 
@@ -30,7 +31,7 @@ app.use('/fs/enum', function (req, res) {
 app.use('/fs/loadClass', function (req, res) {
 	var className = req.query.c;
 	res.setHeader('Content-Type', 'application/javascript');
-	res.send("import C from '" + className + "'; EDITOR.ClassesLoader.classLoaded(C);");
+	res.send("import C from '" + className + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C, '" + className + "');");
 });
 app.use('/', express.static(path.join(__dirname, 'public')));
 

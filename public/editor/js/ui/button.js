@@ -36,7 +36,7 @@ class Button extends React.Component{
     }
 
     render () {
-        return R.button({className:'clickable ' + this.props.className, onClick:this.onClick}, this.state.toggled ? this.props.toggledLabel : this.props.label);
+        return R.button({className:'clickable ' + this.props.className, title:this.props.title, onClick:this.onClick}, this.state.toggled ? this.props.toggledLabel : this.props.label);
     }
 }
 
