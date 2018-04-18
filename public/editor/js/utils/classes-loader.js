@@ -36,13 +36,13 @@ function saveClassesRegister(callback) {
             path:classPathByName[name]
         }
     });
-    EDITOR.fs.saveFile('/data/classes.json', content, callback);
+    EDITOR.fs.saveFile('data/classes.json', content, callback);
 }
 
 var errorOccured;
 function showError(message) {
     errorOccured = true;
-    EDITOR.ui.modal.showError(message, 'Class loading error');
+    EDITOR.ui.modal.showError(message, 'Game sourcecode loading error.');
 }
 
 function getClassType(c) {
@@ -65,7 +65,7 @@ function addClass(c, id, path) {
             return;
         }
     }
-    classPathByName[name] = ((typeof path === 'String') ? path : false);
+    classPathByName[name] = (((typeof path) === 'string') ? path : false);
 
     loadedClassesByName[name] = c;
     classesById[id] = c;
@@ -90,13 +90,16 @@ const jsFiler = /^src\/.*\.js$/gm;
 var head = document.getElementsByTagName('head')[0];
 
 var cbCounter;
-function checkIfLoaded(){
+function checkIfLoaded() {
     cbCounter--;
-    if(cbCounter === 0 && !errorOccured) {
-        Lib.setClasses(classesById);
-        saveClassesRegister(()=>{
-            ClassesLoader.loaded.emit();
-        });
+    if(cbCounter === 0) {
+        window.onerror = null;
+        if(!errorOccured) {
+            Lib.setClasses(classesById);
+            saveClassesRegister(()=>{
+                ClassesLoader.loaded.emit();
+            });
+        }
     }
 }
 
@@ -106,19 +109,24 @@ ClassesLoader.reloadClasses = () => { //enums all js files in src folder, detect
     customClassesIdCounter = CUSTOM_CLASSES_ID;
     
     embeddedClasses.some(addClass);
+    window.onerror = (message, source, lineno, colno, error) => {
+        showError(message);
+    };
 
-    var dir = EDITOR.fs.gameFolder;
     cbCounter = 1;
     EDITOR.fs.files.some((fn) => {
         if(fn.match(jsFiler)) {
 
             cbCounter++;
-            var src = '/fs/loadClass?c='+ encodeURIComponent(dir + fn)+'&nocache='+cacheCounter++;
+            var src = '/fs/loadClass?c='+ encodeURIComponent(fn)+'&nocache='+cacheCounter++;
             var script = document.createElement('script');
             script.onload = function(ev) {
                 head.removeChild(ev.target);
                 checkIfLoaded();
             };
+            script.onerror = (er) => {
+                debugger;
+            }
             script.type = 'module';
             script.src = src;
             head.appendChild(script);

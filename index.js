@@ -1,6 +1,5 @@
 const log = console.log;
-log('Thing starting...');
-
+var bodyParser = require('body-parser')
 const fs = require('fs');
 const path = require('path')
 const express = require('express')
@@ -8,10 +7,12 @@ const app = express()
 var cacheCounter = 0;
 
 var currentGame;
+var currentGameRoot;
 
 var PORT = 32023;
 var gamesRoot = __dirname + '/public/games/';
-
+var clientGamesRoot = '/games/';
+var jsonParser = bodyParser.json()
 
 // File System acess commands
 
@@ -20,6 +21,7 @@ app.get('/fs/projects', function (req, res) {
 });
 app.get('/fs/openProject', function (req, res) {
 	currentGame = req.query.dir;
+	currentGameRoot = clientGamesRoot + currentGame + '/';
 	process.chdir(gamesRoot + currentGame);
 	res.send({});
 });
@@ -31,13 +33,20 @@ app.get('/fs/enum', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	res.send(walkSync('.').map(pathFixer));
 });
-app.post('/fs/savefile', function (req, res) {
-    throw "TODO";
+app.post('/fs/savefile', jsonParser, function (req, res) {
+	var fileName = req.body.filename;
+    ensureDirectoryExistence(fileName);
+	fs.writeFile(fileName, req.body.data, function(err) {
+		if(err) {
+			throw err;
+		}
+		res.end();
+	});
 });
 app.get('/fs/loadClass', function (req, res) {
-	var className = req.query.c;
+	var classPath = req.query.c;
 	res.setHeader('Content-Type', 'application/javascript');
-	res.send("import C from '" + className + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C, '" + className + "');");
+	res.send("import C from '" + currentGameRoot + classPath + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C, '" + classPath + "');");
 });
 
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -93,4 +102,13 @@ const enumProjects = () => {
 	return ret;
 }
 
+//=============== create folder for fail ==================
+function ensureDirectoryExistence(filePath) {
+  var dirname = path.dirname(filePath);
+  if (fs.existsSync(dirname)) {
+    return true;
+  }
+  ensureDirectoryExistence(dirname);
+  fs.mkdirSync(dirname);
+}
 

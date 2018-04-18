@@ -15,7 +15,7 @@ var fs = {
         if(!dir) {
             fs.chooseProject(true);
         } else {
-             fs.load('/fs/openProject?dir=' + dir, (data) => {
+             fs.get('/fs/openProject?dir=' + dir, (data) => {
                 fs.refreshFiles(() => {
                     EDITOR.settings.setItem('last-opened-project', dir);
                     fs.gameFolder = '/games/' + dir + '/';
@@ -25,7 +25,7 @@ var fs = {
         }
     },
     refreshFiles:(callback) => {
-       fs.load('/fs/enum', (data) => {
+       fs.get('/fs/enum', (data) => {
            fs.files = data;
            callback();
        });
@@ -39,14 +39,17 @@ var fs = {
            r.always(EDITOR.ui.modal.hideSpinner);
        }
     },
-    saveFile(filename, body, callback, silently) {
+    saveFile(filename, data, callback, silently) {
         if(!silently) {
             EDITOR.ui.modal.showSpinner();
         }
-        var r = $.post('/fs/savefile', {
-            body,
-            filename
-        }).then(callback);
+		
+		var r = $.ajax({
+			type: "POST",
+			url: '/fs/savefile',
+			data: JSON.stringify({data: JSON.stringify(data, null, '	'), filename}),
+			contentType : 'application/json'
+		}).then(callback);
         if(!silently) {
             r.always(EDITOR.ui.modal.hideSpinner);
         }

@@ -1,0 +1,18 @@
+{
+	"0": {
+		"name": "Sprite",
+		"path": false
+	},
+	"1": {
+		"name": "Scene",
+		"path": false
+	},
+	"100": {
+		"name": "Bunny",
+		"path": "src/game-objects/bunny.js"
+	},
+	"101": {
+		"name": "MainMenu",
+		"path": "src/scenes/main-scene.js"
+	}
+}

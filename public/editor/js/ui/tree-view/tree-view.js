@@ -1,5 +1,5 @@
 import TreeNode from './tree-node.js';
-
+import Window from '../window.js';
 
 R.renderSceneNode = (node) => {
  return React.createElement(TreeNode, {node: node, key:node.__editorData.id});
@@ -16,7 +16,9 @@ class TreeView extends React.Component {
         }
         EDITOR.selection.select(node);
         setTimeout(() => {
-            $('.scene-tree-view .item-selected')[0].scrollIntoView({});
+            var e = $('.scene-tree-view .item-selected');
+            Window.bringWindowForward(e.closest('.window-body'));
+            e[0].scrollIntoView({});
         },0);
     }
 

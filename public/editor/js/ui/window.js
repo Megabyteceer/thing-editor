@@ -190,14 +190,8 @@ class Window extends React.Component {
 	}
 
 	onMouseDown() {
-		this.bringForward();
+		Window.bringWindowForward(this.$);
 	}
-
-	bringForward() {
-		$('.window-body').css({'z-index':1});
-		this.$.css({'z-index':2});
-	}
-
 	
 	render() {
 		return R.div({id: this.id, onMouseDown:this.onMouseDown, className:'window-body', style:{
@@ -265,6 +259,15 @@ class Window extends React.Component {
 			
 		);
 	}
+}
+
+Window.bringWindowForward = (windowBody) => {
+	windowBody = windowBody[0];
+	Array.from(document.getElementsByClassName('window-body')).sort((a,b) => {
+		return a.style.zIndex - b.style.zIndex;
+	}).some((w, i, a) => {
+		w.style.zIndex = (w === windowBody) ? a.length + 2 : i;
+	});
 }
 
 export default Window;

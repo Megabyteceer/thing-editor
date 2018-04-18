@@ -71,6 +71,16 @@ class Game {
 	}
 }
 
+var tmpPoint = {};
+Game.mouseEventToGlobalXY = function mouseEventToGlobalX(ev) {
+	var b = ev.target.getBoundingClientRect();
+	var n = ev.clientX - b.left;
+	tmpPoint.x = n * (W / b.width);
+	n = ev.clientY - b.top;
+	tmpPoint.y = n * (H / b.height);
+	return tmpPoint;
+}
+
 function updateRecursivelly(o) {
 
 	o.update();

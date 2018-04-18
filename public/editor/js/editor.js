@@ -112,6 +112,11 @@ class Editor {
 	*/
 
 	onSelectedPropsChange(field, val) {
+
+		if(typeof field === 'string') {
+			field = EDITOR.getObjectField(this.selection[0], field)
+		}
+
 		if(field.hasOwnProperty('set')) {
 			var setter = field.set;
 			for(let o of this.selection) {
@@ -160,8 +165,13 @@ class Editor {
 			}
 			c.EDITOR_propslist_cache = props;
 		}
-
 		return c.EDITOR_propslist_cache;
+	}
+
+	getObjectField(o, name) {
+		return EDITOR.enumObjectsProperties(o).find((f) => {
+			return f.name === name
+		});
 	}
 }
 
