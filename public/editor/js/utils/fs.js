@@ -1,10 +1,10 @@
 var fs = {
-   chooseProject: (enforced) => {
+    chooseProject: (enforced) => {
         fs.load('/fs/projects', (data) => {
             EDITOR.ui.modal.open(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
         });
-   },
-   openProject:(desc) => {
+    },
+    openProject:(desc) => {
         var dir;
         if(desc) {
             dir = desc.dir;
@@ -23,19 +23,33 @@ var fs = {
                 });
             });
         }
-       
     },
     refreshFiles:(callback) => {
-        fs.load('/fs/enum', (data) => {
-            fs.files = data;
-            callback();
-        });
+       fs.load('/fs/enum', (data) => {
+           fs.files = data;
+           callback();
+       });
     },
-    load(url, callback, silently) {
-		if(!silently) {
-			EDITOR.ui.modal.showSpinner();
-		}
-		$.getJSON(url).then(callback).always(EDITOR.ui.modal.hideSpinner);
+    get(url, callback, silently) {
+       if(!silently) {
+           EDITOR.ui.modal.showSpinner();
+       }
+       var r = $.getJSON(url).then(callback);
+       if(!silently) {
+           r.always(EDITOR.ui.modal.hideSpinner);
+       }
+    },
+    saveFile(filename, body, callback, silently) {
+        if(!silently) {
+            EDITOR.ui.modal.showSpinner();
+        }
+        var r = $.post('/fs/savefile', {
+            body,
+            filename
+        }).then(callback);
+        if(!silently) {
+            r.always(EDITOR.ui.modal.hideSpinner);
+        }
     }
 }
 

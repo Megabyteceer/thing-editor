@@ -4,8 +4,7 @@ const CUSTOM_CLASSES_ID = 100;
 const CLASS_TYPE_SCENE = 1;
 const CLASS_TYPE_DISPLAYOBJECT = 2;
 
-var loadedClasses,
-    loadedClassesByName = {},
+var loadedClassesByName = {},
     loadedClassesIdsByName = {},
     classesById = {},
     classPathByName = {};
@@ -28,6 +27,24 @@ ClassesLoader.init = () => {
     assert(CUSTOM_CLASSES_ID > embeddedClasses.length);
 }
 
+function saveClassesRegister(callback) {
+    var content = {};
+    Object.keys(classesById).some((id) =>{
+        var name = classesById[id].name;
+        content[id] = {
+            name:name,
+            path:classPathByName[name]
+        }
+    });
+    EDITOR.fs.saveFile('/data/classes.json', content, callback);
+}
+
+var errorOccured;
+function showError(message) {
+    errorOccured = true;
+    EDITOR.ui.modal.showError(message, 'Class loading error');
+}
+
 function getClassType(c) {
     while(c) {
         if(c === Scene) return CLASS_TYPE_SCENE;
@@ -37,14 +54,20 @@ function getClassType(c) {
 }
 
 function addClass(c, id, path) {
-    
+
     var classType = getClassType(c);
     if (!classType) return;
 
-    classPathByName[c.name] = ((typeof path === 'String') ? path : false);
+    var name = c.name;
+    if(classPathByName.hasOwnProperty(name)) {
+        if(classPathByName[name] !== path) {
+            showError(R.span(null, 'class ', R.b(null, name), '" ('+path+') overrides existing class ', R.b(null, (classPathByName[name] || 'System class '+name)), '. Please change your class name.'));
+            return;
+        }
+    }
+    classPathByName[name] = ((typeof path === 'String') ? path : false);
 
-    loadedClassesByName[c.name] = c;
-    loadedClasses[id] = c;
+    loadedClassesByName[name] = c;
     classesById[id] = c;
     var item = {id, c};
     if (classType === CLASS_TYPE_DISPLAYOBJECT) {
@@ -52,13 +75,10 @@ function addClass(c, id, path) {
     } else {
         ClassesLoader.sceneClasses.push(item);
     }
-    
 }
 
 function clearClasses() {
     classPathByName = {};
-    loadedClasses = {};
-    loadedClassesByName = {};
     classesById = {};
     ClassesLoader.gameObjClasses = [];
     ClassesLoader.sceneClasses = [];
@@ -72,13 +92,16 @@ var head = document.getElementsByTagName('head')[0];
 var cbCounter;
 function checkIfLoaded(){
     cbCounter--;
-    if(cbCounter === 0) {
+    if(cbCounter === 0 && !errorOccured) {
         Lib.setClasses(classesById);
-        ClassesLoader.loaded.emit();
+        saveClassesRegister(()=>{
+            ClassesLoader.loaded.emit();
+        });
     }
 }
 
 ClassesLoader.reloadClasses = () => { //enums all js files in src folder, detect which of them exports PIXI.DisplayObject descendants and add them in to Lib.
+    errorOccured = false;
     clearClasses();
     customClassesIdCounter = CUSTOM_CLASSES_ID;
     
@@ -105,16 +128,8 @@ ClassesLoader.reloadClasses = () => { //enums all js files in src folder, detect
 }
 
 ClassesLoader.classLoaded = (c, path) => {
-
     var name = c.name;
 
-    if(classPathByName.hasOwnProperty(name)) {
-        if(classPathByName[name] !== path) {
-            EDITOR.ui.modal.showError(R.span(null, 'class ', R.b(null, name), '" ('+path+') overrides existing class ', R.b(null, (classPathByName[name] || 'System class '+name)), '. Please change your class name.'),'Class loading error');
-            return;
-        }
-    }
-	TODO: fix wrong order loading (Scene instead of Bunny)
     var id;
     if(loadedClassesByName.hasOwnProperty(name)) {
         id = loadedClassesIdsByName[name];

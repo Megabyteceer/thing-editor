@@ -12,27 +12,34 @@ var currentGame;
 var PORT = 32023;
 var gamesRoot = __dirname + '/public/games/';
 
-var pathFixerExp = /\\/g;
-var pathFixer = (fn) => {
-	return fn.replace(pathFixerExp, '/');
-}
-app.use('/fs/projects', function (req, res) {
+
+// File System acess commands
+
+app.get('/fs/projects', function (req, res) {
 	res.send(enumProjects());
 });
-app.use('/fs/openProject', function (req, res) {
+app.get('/fs/openProject', function (req, res) {
 	currentGame = req.query.dir;
 	process.chdir(gamesRoot + currentGame);
 	res.send({});
 });
-app.use('/fs/enum', function (req, res) {
+var pathFixerExp = /\\/g;
+var pathFixer = (fn) => {
+    return fn.replace(pathFixerExp, '/');
+}
+app.get('/fs/enum', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	res.send(walkSync('.').map(pathFixer));
 });
-app.use('/fs/loadClass', function (req, res) {
+app.post('/fs/savefile', function (req, res) {
+    throw "TODO";
+});
+app.get('/fs/loadClass', function (req, res) {
 	var className = req.query.c;
 	res.setHeader('Content-Type', 'application/javascript');
 	res.send("import C from '" + className + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C, '" + className + "');");
 });
+
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 //========= start server ================================================================
