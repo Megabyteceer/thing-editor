@@ -16,7 +16,10 @@ var cacheCounter = 0;
 
 var embeddedClasses;
 
-ClassesLoader.loaded = new Signal();
+var classesLoadedSuccessfullyAtLeastOnce = false;
+var initialClassesLoaded = false;
+
+ClassesLoader.classesLoaded = new Signal();
 
 ClassesLoader.init = () => {
     //embedded engine classes
@@ -39,10 +42,33 @@ function saveClassesRegister(callback) {
     EDITOR.fs.saveFile('data/classes.json', content, callback);
 }
 
+function loadClassesRegister(callback) {
+    EDITOR.fs.openFile('data/classes.json', (data) => {
+        if(data) {
+            for(var id in data) {
+                var desc = data[id];
+                var className = desc.name;
+                loadedClassesIdsByName[className] = parseInt(id);
+                classPathByName[className] = desc.path;
+            }
+            initialClassesLoaded = true;
+            callback();
+        } else {
+            showError('Classes list "data/classes.json" loading error.');
+        }
+    });
+}
+
 var errorOccured;
 function showError(message) {
     errorOccured = true;
-    EDITOR.ui.modal.showError(message, 'Game sourcecode loading error.');
+    EDITOR.ui.modal.showError(R.div(null,
+        message,
+        R.btn('Im have fixed code, try again', ()=> {
+            EDITOR.ui.modal.close();
+            ClassesLoader.reloadClasses();
+        }, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
+    'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
 }
 
 function getClassType(c) {
@@ -59,6 +85,8 @@ function addClass(c, id, path) {
     if (!classType) return;
 
     var name = c.name;
+    console.log('Class loded: '+ name +'; id:' + id + '; '+path);
+
     if(classPathByName.hasOwnProperty(name)) {
         if(classPathByName[name] !== path) {
             showError(R.span(null, 'class ', R.b(null, name), '" ('+path+') overrides existing class ', R.b(null, (classPathByName[name] || 'System class '+name)), '. Please change your class name.'));
@@ -78,7 +106,6 @@ function addClass(c, id, path) {
 }
 
 function clearClasses() {
-    classPathByName = {};
     classesById = {};
     ClassesLoader.gameObjClasses = [];
     ClassesLoader.sceneClasses = [];
@@ -97,21 +124,39 @@ function checkIfLoaded() {
         if(!errorOccured) {
             Lib.setClasses(classesById);
             saveClassesRegister(()=>{
-                ClassesLoader.loaded.emit();
+                classesLoadedSuccessfullyAtLeastOnce;
+                ClassesLoader.classesLoaded.emit();
             });
+        } else {
+            console.warn('classes were not loaded because of error.')
         }
     }
 }
 
+function loadingErrorHandler(message, source, lineno, colno, error) {
+    showError(R.div(null,
+        message,
+        R.div({className:'error-body'}, source.split('?nocache=').shift().split(':'+location.port).pop() +' ('+lineno+':'+ colno +')', R.br(), message),
+        'Plese fix error in source code and press button to try again:',
+    ));
+};
+
 ClassesLoader.reloadClasses = () => { //enums all js files in src folder, detect which of them exports PIXI.DisplayObject descendants and add them in to Lib.
     errorOccured = false;
+
+    if(!initialClassesLoaded) {
+        loadClassesRegister(ClassesLoader.reloadClasses);
+        return;
+    }
+
+
     clearClasses();
     customClassesIdCounter = CUSTOM_CLASSES_ID;
-    
-    embeddedClasses.some(addClass);
-    window.onerror = (message, source, lineno, colno, error) => {
-        showError(message);
-    };
+    console.clear();
+    console.log('%c EDITOR: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
+
+    embeddedClasses.some((c, id)=>{addClass(c, id, false)});
+    window.onerror = loadingErrorHandler;
 
     cbCounter = 1;
     EDITOR.fs.files.some((fn) => {
@@ -139,7 +184,7 @@ ClassesLoader.classLoaded = (c, path) => {
     var name = c.name;
 
     var id;
-    if(loadedClassesByName.hasOwnProperty(name)) {
+    if(loadedClassesIdsByName.hasOwnProperty(name)) {
         id = loadedClassesIdsByName[name];
     } else {
         id = customClassesIdCounter++;

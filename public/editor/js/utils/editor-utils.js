@@ -1,7 +1,7 @@
 var factories = {};
 window.R = factories;
 
-['div', 'span', 'img', 'button', 'input', 'b'].some((factoryType) => {
+['div', 'span', 'img', 'button', 'input', 'b', 'a', 'br'].some((factoryType) => {
 	factories[factoryType] = React.createFactory(factoryType);
 });
 

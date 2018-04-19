@@ -3,7 +3,30 @@ export default {
     init() {
 
 		//========= PIXI.DisplayObject ===========================================
-    	
+    	Object.defineProperties(PIXI.DisplayObject.prototype, {
+    	'scale.x':{
+    		get:function(){return this.transform.scale.x},
+    		set:function(val) {this.transform.scale.x = val}
+    	},'scale.y':{
+    		get:function(){return this.transform.scale.y},
+    		set:function(val) {this.transform.scale.y = val}
+    	},
+    	'skew.x':{
+    		get:function(){return this.transform.skew.x},
+    		set:function(val) {this.transform.skew.x = val}
+    	},'skew.y':{
+    		get:function(){return this.transform.skew.y},
+    		set:function(val) {this.transform.skew.y = val}
+    	},
+    	'pivot.x':{
+    		get:function(){return this.transform.pivot.x},
+    		set:function(val) {this.transform.pivot.x = val}
+    	},'pivot.y':{
+    		get:function(){return this.transform.pivot.y},
+    		set:function(val) {this.transform.pivot.y = val}
+    	}
+    	});
+
         PIXI.DisplayObject.EDITOR_editableProps = [
 			{
 				type: 'splitter',
@@ -46,42 +69,30 @@ export default {
 			{
 				name: 'scale.x',
 				type: Number,
-				step:0.01,
-				get:(self)=>{return self.transform.scale.x},
-				set:(self, val)=>{self.transform.scale.x = val}
+				step:0.01
 			},
 			{
 				name: 'scale.y',
 				type: Number,
-				step:0.01,
-				get:(self)=>{return self.transform.scale.y},
-				set:(self, val)=>{self.transform.scale.y = val}
+				step:0.01
 			},
 			{
 				name: 'skew.x',
 				type: Number,
-				step:0.01,
-				get:(self)=>{return self.transform.skew.x},
-				set:(self, val)=>{self.transform.skew.x = val}
+				step:0.01
 			},
 			{
 				name: 'skew.y',
 				type: Number,
-				step:0.01,
-				get:(self)=>{return self.transform.skew.y},
-				set:(self, val)=>{self.transform.skew.y = val}
+				step:0.01
 			},
 			{
 				name: 'pivot.x',
-				type: Number,
-				get:(self)=>{return self.transform.pivot.x},
-				set:(self, val)=>{self.transform.pivot.x = val}
+				type: Number
 			},
 			{
 				name: 'pivot.y',
-				type: Number,
-				get:(self)=>{return self.transform.pivot.y},
-				set:(self, val)=>{self.transform.pivot.y = val}
+				type: Number
 			}
 		   
 		];

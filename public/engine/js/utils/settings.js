@@ -20,13 +20,17 @@ class Settings {
 	}
 
 	setItem(name, val) {
-        this._store[name] = val;
-		this.changed();
+		if(JSON.stringify(val) !== JSON.stringify(this._store[name])) {
+			this._store[name] = val;
+			this.changed();
+		}
 	}
 
 	removeItem(name) {
-		delete(this._store[name]);
+		if(this._store.hasOwnProperty(name)) {
+			delete(this._store[name]);
         this.changed();
+		}
 	}
 
 	changed() {

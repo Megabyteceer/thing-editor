@@ -1,7 +1,7 @@
 var modal;
 
-var blackoutProps = {className:'modal-blackout'};
-var blackoutPropsClosable = {className:'modal-blackout', style:{cursor:'pointer'}, onClick:() => {modal.close()}};
+var blackoutProps = {className:'modal-blackout fadein-animation'};
+var blackoutPropsClosable = {className:'modal-blackout fadein-animation', style:{cursor:'pointer'}, onClick:() => {modal.close()}};
 var bodyProps = {className:'modal-body', onClick:sp};
 var titleProps = {className:'modal-title'};
 var contentProps = {className:'modal-content'};
@@ -75,8 +75,8 @@ class Modal extends React.Component {
         }
     }
 
-    showError(message, title='Error!') {
-        this.open(R.div(errorProps, message), R.span(null, R.icon('error'), title));
+    showError(message, title='Error!', noEasyClose) {
+        this.open(R.div(errorProps, message), R.span(null, R.icon('error'), title), noEasyClose);
     }
 
     render() {

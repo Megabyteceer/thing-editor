@@ -23,6 +23,7 @@ app.get('/fs/openProject', function (req, res) {
 	currentGame = req.query.dir;
 	currentGameRoot = clientGamesRoot + currentGame + '/';
 	process.chdir(gamesRoot + currentGame);
+	//log('Project opened: ' + process.cwd());
 	res.send({});
 });
 var pathFixerExp = /\\/g;

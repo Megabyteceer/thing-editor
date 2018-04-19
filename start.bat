@@ -1,2 +1,3 @@
-node --inspect index.js
+#node --inspect index.js
+node index.js
 pause

@@ -1,12 +1,11 @@
 var classViewProps = {className:'vertical-layout'};
 var bodyProps = {className:'list-view'};
 
-
 class ClessesView extends React.Component {
 
     constructor(props){
         super(props);
-        EDITOR.ClassesLoader.loaded.add(this.onClassesLoaded.bind(this));
+        EDITOR.ClassesLoader.classesLoaded.add(this.onClassesLoaded.bind(this));
         this.state = {};
         this.renderItem = this.renderItem.bind(this);
         this.onAddClick = this.onAddClick.bind(this);

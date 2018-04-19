@@ -125,6 +125,14 @@ button {
 	padding: 2px;
 }
 
+.main-btn{
+	font-size:120%;
+	padding:10px 40px;
+	background:#080;
+	color:#fff;
+	margin: 20px;
+}
+
 .window-rb-corner {
 	position:absolute;
 	right:-2px;
@@ -411,4 +419,38 @@ button {
 
 .error {
 	color: #be0000;
+	user-select: text;
 }
+
+.error-body {
+	color: #444;
+	font-family:monospace;
+	padding: 10px;
+	border:1px solid #444;
+	margin: 15px;
+}
+
+
+
+
+
+
+
+
+/* animations*/
+
+.fadein-animation{
+  animation: fadein linear .4s;
+  animation-iteration-count: 1;
+  animation-fill-mode:forwards;
+}
+
+@keyframes fadein{
+  0% {
+    opacity:0;
+  }
+  100% {
+    opacity:1;
+  }
+}
+

@@ -7,7 +7,6 @@ import UI from './ui/ui.js';
 import ClassesLoader from './utils/classes-loader.js';
 
 import MainScene from '/games/game-1/src/scenes/main-scene.js';
-import Bunny from '/games/game-1/src/game-objects/bunny.js';
 
 class Editor {
 
@@ -43,16 +42,13 @@ class Editor {
 		Lib.wrapConstructorProcessor(applyEditorDataToNode);
 		
 		Lib.addScene('main', MainScene);
-		Lib.addObject('bunny', Bunny);
 		Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png'));
-
 
 		game.paused = true;
 		game.init(document.getElementById('viewport-root'));
 		applyEditorDataToNode(game.stage);
 		
 		ClassesLoader.init();
-
 		fs.openProject();
 	}
 
@@ -82,7 +78,7 @@ class Editor {
 	}
 
 	reloadClasses() {
-		ClassesLoader.loaded.addOnce(() => {
+		ClassesLoader.classesLoaded.addOnce(() => {
 			this.loadScene();
 		});
 		ClassesLoader.reloadClasses();
@@ -112,23 +108,12 @@ class Editor {
 	*/
 
 	onSelectedPropsChange(field, val) {
-
 		if(typeof field === 'string') {
 			field = EDITOR.getObjectField(this.selection[0], field)
 		}
-
-		if(field.hasOwnProperty('set')) {
-			var setter = field.set;
-			for(let o of this.selection) {
-				setter(o, val);
-			}
-
-		} else {
-			for(let o of this.selection) {
-				o[field.name] = val;
-			}
+		for(let o of this.selection) {
+			o[field.name] = val;
 		}
-		
 		this.refreshTreeViewAndPropertyEditor();
 	}
 

@@ -1,11 +1,11 @@
 var objects = {};
 var scenes = {};
-var classesById = {};
+var classes;
 var textures = {};
 
 
 function getInstanceByClassId(id) {
-    return new classesById[id]();
+    return new classes[id]();
 }
 
 var constructorProcessor = (o) => {
@@ -47,11 +47,12 @@ class Lib {
     }
 
     getClass(id) {
-        return classesById[id];
+        return classes[id];
     }
 
     setClasses(c) {
-        classesById = c;
+        classes = c;
+        this.classes = c;
     }
 
     addTexture(name, texture) {
@@ -59,7 +60,7 @@ class Lib {
     }
 
     loadClassInstanceById(id) {
-        var ret = new classesById[id];
+        var ret = new classes[id];
         constructRecursive(ret);
         return ret;
     }

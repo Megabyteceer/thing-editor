@@ -28,11 +28,6 @@ class PropsFieldWrapper extends React.Component {
         super(props);
         this.state = {};
         this.onChange = this.onChange.bind(this);
-        if(props.field.hasOwnProperty('get')){
-            this.getter = props.field.get;
-        } else {
-            this.getter = false;
-        }
     }
 
     onChange (ev) {
@@ -52,12 +47,7 @@ class PropsFieldWrapper extends React.Component {
 
     render () {
         var field = this.props.field;
-        var value;
-        if (this.getter) {
-            value = this.getter(EDITOR.selection[0]);
-        } else {
-            value = EDITOR.selection[0][field.name];
-        }
+        var value = EDITOR.selection[0][field.name];
         
         var renderer;
         if(field.hasOwnProperty('select')) {

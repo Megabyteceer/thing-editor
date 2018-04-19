@@ -15,7 +15,7 @@ var fs = {
         if(!dir) {
             fs.chooseProject(true);
         } else {
-             fs.get('/fs/openProject?dir=' + dir, (data) => {
+             fs.getJSON('/fs/openProject?dir=' + dir, (data) => {
                 fs.refreshFiles(() => {
                     EDITOR.settings.setItem('last-opened-project', dir);
                     fs.gameFolder = '/games/' + dir + '/';
@@ -25,12 +25,12 @@ var fs = {
         }
     },
     refreshFiles:(callback) => {
-       fs.get('/fs/enum', (data) => {
+       fs.getJSON('/fs/enum', (data) => {
            fs.files = data;
            callback();
        });
     },
-    get(url, callback, silently) {
+    getJSON(url, callback, silently) {
        if(!silently) {
            EDITOR.ui.modal.showSpinner();
        }
@@ -38,6 +38,9 @@ var fs = {
        if(!silently) {
            r.always(EDITOR.ui.modal.hideSpinner);
        }
+    },
+    openFile(fileName, callback, silently) {
+		this.getJSON(fs.gameFolder+fileName, callback, silently);
     },
     saveFile(filename, data, callback, silently) {
         if(!silently) {
