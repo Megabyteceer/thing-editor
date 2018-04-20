@@ -1,6 +1,6 @@
 var fs = {
     chooseProject: (enforced) => {
-        fs.load('/fs/projects', (data) => {
+        fs.getJSON('/fs/projects', (data) => {
             EDITOR.ui.modal.open(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
         });
     },

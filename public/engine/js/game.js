@@ -48,7 +48,7 @@ class Game {
 
 	updateGlobal(dt) {
 		if(this.currentScene) {
-			if(!this.paused) {
+			if(!this.paused && !this.__EDITORmode) {
 				frameCounterTime += dt;
 				var limit = 4;
 				while(frameCounterTime > FRAME_PERIOD) {

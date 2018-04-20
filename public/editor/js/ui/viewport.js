@@ -13,7 +13,18 @@ class Viewport extends React.Component{
     }
 
     onTogglePlay(val) {
-        game.paused = !val;
+        var play = !val;
+        if(play) { // launch game
+            Lib.saveScene(game.currentScene, "EDITOR:save");
+            
+
+        } else { //stop game
+
+
+
+            
+        }
+        game.__EDITORmode = !play;
     }
 
     onMouseMove(ev) {
@@ -35,7 +46,7 @@ class Viewport extends React.Component{
                 R.btn(R.icon('recompile'), EDITOR.reloadClasses, 'Rebuild game sources', 'play-stop-btn'),
             ),
 
-            R.div({id:'viewport-root', onMouseDown:this.onMouseDown, onMouseMove:this.onMouseMove, onContextMenu:sp, className:'editor-viewport'})
+            R.div({id:'viewport-root', onMouseDown:this.onMouseDown, onMouseMove:this.onMouseMove, className:'editor-viewport'})
 
         );
     }

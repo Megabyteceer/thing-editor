@@ -44,7 +44,7 @@ class Editor {
 		Lib.addScene('main', MainScene);
 		Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png'));
 
-		game.paused = true;
+		game.__EDITORmode = true;
 		game.init(document.getElementById('viewport-root'));
 		applyEditorDataToNode(game.stage);
 		
@@ -157,6 +157,10 @@ class Editor {
 		return EDITOR.enumObjectsProperties(o).find((f) => {
 			return f.name === name
 		});
+	}
+
+	serializeObject(o) {
+		  
 	}
 }
 

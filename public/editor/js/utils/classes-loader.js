@@ -11,10 +11,10 @@ var loadedClassesByName = {},
 
 var classesIdCounter;
 var customClassesIdCounter;
-
 var cacheCounter = 0;
-
 var embeddedClasses;
+
+var loadedClssesCount, newLoadedClassesCount;
 
 var classesLoadedSuccessfullyAtLeastOnce = false;
 var initialClassesLoaded = false;
@@ -85,7 +85,10 @@ function addClass(c, id, path) {
     if (!classType) return;
 
     var name = c.name;
-    console.log('Class loded: '+ name +'; id:' + id + '; '+path);
+    if(path) {
+         console.log('Custom class loded: '+ name +'; id:' + id + '; '+path);
+    }
+   
 
     if(classPathByName.hasOwnProperty(name)) {
         if(classPathByName[name] !== path) {
@@ -123,9 +126,14 @@ function checkIfLoaded() {
         window.onerror = null;
         if(!errorOccured) {
             Lib.setClasses(classesById);
-            saveClassesRegister(()=>{
+            saveClassesRegister(() => {
                 classesLoadedSuccessfullyAtLeastOnce;
                 ClassesLoader.classesLoaded.emit();
+                console.log('Loading success.');
+                console.log(loadedClssesCount + ' classes updated.');
+                if(newLoadedClassesCount > 0) {
+                    console.log(newLoadedClassesCount + ' new classes added.');
+                }
             });
         } else {
             console.warn('classes were not loaded because of error.')
@@ -149,7 +157,7 @@ ClassesLoader.reloadClasses = () => { //enums all js files in src folder, detect
         return;
     }
 
-
+    loadedClssesCount = newLoadedClassesCount = 0;
     clearClasses();
     customClassesIdCounter = CUSTOM_CLASSES_ID;
     console.clear();
@@ -186,9 +194,12 @@ ClassesLoader.classLoaded = (c, path) => {
     var id;
     if(loadedClassesIdsByName.hasOwnProperty(name)) {
         id = loadedClassesIdsByName[name];
+        loadedClssesCount++;
     } else {
         id = customClassesIdCounter++;
         loadedClassesIdsByName[name] = id;
+        console.alert('New class ' + name + '. id ' + id + ' was assigned.');
+        newLoadedClassesCount++;
     }
     addClass(c, id, path);
 }

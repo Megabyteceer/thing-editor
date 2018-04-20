@@ -73,6 +73,10 @@ class Lib {
         constructRecursive(ret);
         return ret;
     }
+    
+    saveScene(scene, name) {
+        im here (
+    }
 
     loadScene(name) {
         var ret = new scenes[name];

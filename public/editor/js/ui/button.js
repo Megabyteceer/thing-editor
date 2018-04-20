@@ -5,6 +5,7 @@ class Button extends React.Component{
         this.state = {};
         this.onClick = this.onClick.bind(this);
         this.onKeyPress = this.onKeyPress.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
     }
 
     componentDidMount() {
@@ -27,6 +28,12 @@ class Button extends React.Component{
         }
     }
 
+    onMouseDown(ev) {
+        if(ev.button === 2) {
+            EDITOR.ui.modal.open(this.props.onClick.name, 'Button Handler:');
+        }
+    }
+
     onClick() {
         if(this.props.toggledLabel) {
             var newState = !this.state.toggled;
@@ -36,7 +43,7 @@ class Button extends React.Component{
     }
 
     render () {
-        return R.button({className:'clickable ' + this.props.className, title:this.props.title, onClick:this.onClick}, this.state.toggled ? this.props.toggledLabel : this.props.label);
+        return R.button({className:'clickable ' + this.props.className, onMouseDown:this.onMouseDown, title:this.props.title, onClick:this.onClick}, this.state.toggled ? this.props.toggledLabel : this.props.label);
     }
 }
 

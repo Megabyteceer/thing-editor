@@ -392,6 +392,7 @@ button {
 	margin-top:100px;
 	cursor:initial;
 	max-width: 600px;
+	user-select:text;
 }
 
 .modal-content {

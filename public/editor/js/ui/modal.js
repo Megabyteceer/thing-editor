@@ -1,8 +1,12 @@
 var modal;
 
 var blackoutProps = {className:'modal-blackout fadein-animation'};
-var blackoutPropsClosable = {className:'modal-blackout fadein-animation', style:{cursor:'pointer'}, onClick:() => {modal.close()}};
-var bodyProps = {className:'modal-body', onClick:sp};
+var blackoutPropsClosable = {className:'modal-blackout fadein-animation', style:{cursor:'pointer'}, onClick:(sp) => {
+    if(sp.target.className.indexOf('modal-blackout') === 0) {
+        modal.close();
+    }
+}};
+var bodyProps = {className:'modal-body'};
 var titleProps = {className:'modal-title'};
 var contentProps = {className:'modal-content'};
 var errorProps = {className:'error'};

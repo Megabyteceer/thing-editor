@@ -53,3 +53,9 @@ window.check = (expression, message) => {
 		EDITOR.ui.modal.showError(message);
 	}
 }
+
+$(window).on('contextmenu', (e)=> {
+	if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+	sp(e);
+
+});

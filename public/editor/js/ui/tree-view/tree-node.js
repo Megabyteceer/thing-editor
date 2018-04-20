@@ -21,6 +21,8 @@ class TreeNode extends React.Component {
             if(!state.toggled) {
                 collapseChildsRecursively(this.props.node);
             }
+            this.forceUpdate();
+            return;
         }
 
         if(e.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
@@ -60,7 +62,6 @@ class TreeNode extends React.Component {
                 );
             } else {
                 caret = caretClosed;
-
             }
         }
         var className = 'list-item';
