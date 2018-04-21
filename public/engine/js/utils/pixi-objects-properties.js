@@ -1,41 +1,65 @@
 export default {
-
-    init() {
-
+	
+	init() {
+		
 		//========= PIXI.DisplayObject ===========================================
-    	Object.defineProperties(PIXI.DisplayObject.prototype, {
-    	'scale.x':{
-    		get:function(){return this.transform.scale.x},
-    		set:function(val) {this.transform.scale.x = val}
-    	},'scale.y':{
-    		get:function(){return this.transform.scale.y},
-    		set:function(val) {this.transform.scale.y = val}
-    	},
-    	'skew.x':{
-    		get:function(){return this.transform.skew.x},
-    		set:function(val) {this.transform.skew.x = val}
-    	},'skew.y':{
-    		get:function(){return this.transform.skew.y},
-    		set:function(val) {this.transform.skew.y = val}
-    	},
-    	'pivot.x':{
-    		get:function(){return this.transform.pivot.x},
-    		set:function(val) {this.transform.pivot.x = val}
-    	},'pivot.y':{
-    		get:function(){return this.transform.pivot.y},
-    		set:function(val) {this.transform.pivot.y = val}
-    	}
-    	});
-
-        PIXI.DisplayObject.EDITOR_editableProps = [
+		Object.defineProperties(PIXI.DisplayObject.prototype, {
+			'scale.x': {
+				get: function () {
+					return this.transform.scale.x
+				},
+				set: function (val) {
+					this.transform.scale.x = val
+				}
+			}, 'scale.y': {
+				get: function () {
+					return this.transform.scale.y
+				},
+				set: function (val) {
+					this.transform.scale.y = val
+				}
+			},
+			'skew.x': {
+				get: function () {
+					return this.transform.skew.x
+				},
+				set: function (val) {
+					this.transform.skew.x = val
+				}
+			}, 'skew.y': {
+				get: function () {
+					return this.transform.skew.y
+				},
+				set: function (val) {
+					this.transform.skew.y = val
+				}
+			},
+			'pivot.x': {
+				get: function () {
+					return this.transform.pivot.x
+				},
+				set: function (val) {
+					this.transform.pivot.x = val
+				}
+			}, 'pivot.y': {
+				get: function () {
+					return this.transform.pivot.y
+				},
+				set: function (val) {
+					this.transform.pivot.y = val
+				}
+			}
+		});
+		
+		PIXI.DisplayObject.EDITOR_editableProps = [
 			{
 				type: 'splitter',
 				title: 'Basic props:',
 				name: 'basic'
 			},
 			{
-				name:'name',
-				type:String
+				name: 'name',
+				type: String
 			},
 			{
 				name: 'x',
@@ -69,22 +93,22 @@ export default {
 			{
 				name: 'scale.x',
 				type: Number,
-				step:0.01
+				step: 0.01
 			},
 			{
 				name: 'scale.y',
 				type: Number,
-				step:0.01
+				step: 0.01
 			},
 			{
 				name: 'skew.x',
 				type: Number,
-				step:0.01
+				step: 0.01
 			},
 			{
 				name: 'skew.y',
 				type: Number,
-				step:0.01
+				step: 0.01
 			},
 			{
 				name: 'pivot.x',
@@ -94,16 +118,18 @@ export default {
 				name: 'pivot.y',
 				type: Number
 			}
-		   
+		
 		];
-
+		
 		
 		//========= PIXI.Sprite ===========================================
-
-		var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k)=>{
-		  return {name:k, value:PIXI.BLEND_MODES[k]};
-		}).sort((a,b)=>{return a.value - b.value});
-
+		
+		var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
+			return {name: k, value: PIXI.BLEND_MODES[k]};
+		}).sort((a, b) => {
+			return a.value - b.value
+		});
+		
 		PIXI.Sprite.EDITOR_editableProps = [
 			{
 				type: 'splitter',
@@ -111,11 +137,11 @@ export default {
 				name: 'sprite'
 			},
 			{
-				name:'blendMode',
+				name: 'blendMode',
 				type: Number,
-				select:blendModesSelect
+				select: blendModesSelect
 			}
-    	];
-        
-    }
+		];
+		
+	}
 }

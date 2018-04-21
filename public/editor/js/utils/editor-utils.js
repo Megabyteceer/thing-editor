@@ -12,8 +12,8 @@ R.spinner = () => {
 
 var _iconsCache = {};
 R.icon = (name) => {
-	if(!_iconsCache.hasOwnProperty(name)){
-		_iconsCache[name] = R.img({src:'/editor/img/' + name + '.png'});
+	if (!_iconsCache.hasOwnProperty(name)) {
+		_iconsCache[name] = R.img({src: '/editor/img/' + name + '.png'});
 	}
 	return _iconsCache[name];
 }
@@ -23,24 +23,24 @@ R.classIcon = (constructor) => {
 }
 
 
-
 R.listItem = (view, item, key, parent) => {
-
+	
 	var className = 'list-item';
-
+	
 	if (parent.state.selectedItem === item) {
 		className += ' item-selected';
 	}
-
-	return R.div({className:className, key:key, onClick:() => {
-		if(parent.state.selectedItem !== item) {
-			parent.state.selectedItem = item;
-			parent.onSelect(item);
-			parent.forceUpdate();
+	
+	return R.div({
+		className: className, key: key, onClick: () => {
+			if (parent.state.selectedItem !== item) {
+				parent.state.selectedItem = item;
+				parent.onSelect(item);
+				parent.forceUpdate();
+			}
 		}
-	}}, view);
+	}, view);
 }
-
 
 
 window.sp = (ev) => {
@@ -49,13 +49,13 @@ window.sp = (ev) => {
 }
 
 window.check = (expression, message) => {
-	if(!expression) {
+	if (!expression) {
 		EDITOR.ui.modal.showError(message);
 	}
 }
 
-$(window).on('contextmenu', (e)=> {
-	if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+$(window).on('contextmenu', (e) => {
+	if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
 	sp(e);
-
+	
 });

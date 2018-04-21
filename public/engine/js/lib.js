@@ -30,7 +30,6 @@ var constructRecursive = (o) => {
 var classIdCounter = 0;
 var customClassIdCounter = 0;
 
-var self;
 class Lib {
 
     wrapConstructorProcessor(wrapper) {
@@ -102,6 +101,7 @@ class Lib {
 
 //EDITOR
     __saveScene(scene, name) {
+        assert(scene instanceof Scene, "Scene instance expected");
         if(!scene) {
             assert(name === 'EDITOR:tmp', 'Only temporary scene can be null');
             scenes[name] = undefined;
@@ -131,5 +131,5 @@ class Lib {
 
 }
 
-self = window.Lib = new Lib();
+window.Lib = new Lib();
 export default 'this class is singletone. Use window.Lib';

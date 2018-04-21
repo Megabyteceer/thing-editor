@@ -1,5 +1,5 @@
 const contentProps = {
-	className:'window-content'
+	className: 'window-content'
 }
 
 var emptyImage = new Image();
@@ -12,7 +12,7 @@ class CornerDragger extends React.Component {
 		this.dragStartHandler = this.dragStartHandler.bind(this);
 		this.dragHandler = this.dragHandler.bind(this);
 	}
-
+	
 	dragStartHandler(ev) {
 		this.prevX = ev.pageX;
 		this.prevY = ev.pageY;
@@ -20,10 +20,10 @@ class CornerDragger extends React.Component {
 	}
 	
 	dragHandler(ev) {
-		if(this.prevX != ev.pageX || this.prevY != ev.pageY) {
-			if(ev.pageX!= 0 || ev.pageY != 0) {
+		if (this.prevX != ev.pageX || this.prevY != ev.pageY) {
+			if (ev.pageX != 0 || ev.pageY != 0) {
 				var ret = this.props.onDrag(ev.pageX - this.prevX, ev.pageY - this.prevY);
-				if(ret) {
+				if (ret) {
 					this.prevX += ret.x;
 					this.prevY += ret.y;
 				} else {
@@ -38,17 +38,17 @@ class CornerDragger extends React.Component {
 		this.props.onDragEnd();
 	}
 	
-	render () {
+	render() {
 		return R.div({
-			className:this.props.className,
+			className: this.props.className,
 			onDragStart: this.dragStartHandler,
 			onDrag: this.dragHandler,
-			onDragEnd : this.dragEndHandler,
+			onDragEnd: this.dragEndHandler,
 			draggable: true
 		});
 	}
 }
-	
+
 class Window extends React.Component {
 	
 	constructor(props) {
@@ -76,11 +76,11 @@ class Window extends React.Component {
 		
 		$(window).on('resize', this.onClientResize.bind(this));
 	}
-
-	componentDidMount(){
-		this.$ = $('#'+this.id);
+	
+	componentDidMount() {
+		this.$ = $('#' + this.id);
 	}
-		
+	
 	onClientResize() {
 		this.setPosition(this.state.x, this.state.y);
 		this.setSize(this.state.w, this.state.h);
@@ -96,75 +96,75 @@ class Window extends React.Component {
 	}
 	
 	deltaPosition(x, y) {
-		var ret = {x:this.state.x, y:this.state.y};
+		var ret = {x: this.state.x, y: this.state.y};
 		this.setPosition(this.state.x + x, this.state.y + y);
 		ret.x = this.state.x - ret.x;
 		ret.y = this.state.y - ret.y;
 		return ret;
 	}
-
+	
 	deltaL(x, y) {
-		var ret = {x:this.state.w, y:this.state.h};
-		this.setSize(this.state.w-x, this.state.h);
+		var ret = {x: this.state.w, y: this.state.h};
+		this.setSize(this.state.w - x, this.state.h);
 		ret.x = -(this.state.w - ret.x);
 		ret.y = this.state.h - ret.y;
-		this.setPosition(this.state.x+ret.x, this.state.y);
+		this.setPosition(this.state.x + ret.x, this.state.y);
 		return ret;
 	}
-
+	
 	deltaR(x, y) {
-		var ret = {x:this.state.w, y:this.state.h};
-		this.setSize(this.state.w+x, this.state.h);
+		var ret = {x: this.state.w, y: this.state.h};
+		this.setSize(this.state.w + x, this.state.h);
 		ret.x = this.state.w - ret.x;
 		ret.y = this.state.h - ret.y;
 		return ret;
 	}
-
+	
 	deltaB(x, y) {
-		var ret = {x:this.state.w, y:this.state.h};
-		this.setSize(this.state.w, this.state.h+y);
+		var ret = {x: this.state.w, y: this.state.h};
+		this.setSize(this.state.w, this.state.h + y);
 		ret.x = this.state.w - ret.x;
 		ret.y = this.state.h - ret.y;
 		return ret;
 	}
-
+	
 	deltaT(x, y) {
-		var ret = {x:this.state.w, y:this.state.h};
-		this.setSize(this.state.w, this.state.h-y);
+		var ret = {x: this.state.w, y: this.state.h};
+		this.setSize(this.state.w, this.state.h - y);
 		ret.x = this.state.w - ret.x;
 		ret.y = -(this.state.h - ret.y);
-		this.setPosition(this.state.x, this.state.y+ret.y);
+		this.setPosition(this.state.x, this.state.y + ret.y);
 		return ret;
 	}
 	
 	deltaLBCorner(x, y) {
-		var ret = this.deltaL(x,y);
-		var ret2 = this.deltaB(x,y);
+		var ret = this.deltaL(x, y);
+		var ret2 = this.deltaB(x, y);
 		ret.y = ret2.y;
 		return ret;
 	}
 	
 	deltaRBCorner(x, y) {
-		var ret = this.deltaR(x,y);
-		var ret2 = this.deltaB(x,y);
+		var ret = this.deltaR(x, y);
+		var ret2 = this.deltaB(x, y);
 		ret.y = ret2.y;
 		return ret;
 	}
-
+	
 	deltaRTCorner(x, y) {
-		var ret = this.deltaR(x,y);
-		var ret2 = this.deltaT(x,y);
+		var ret = this.deltaR(x, y);
+		var ret2 = this.deltaT(x, y);
 		ret.y = ret2.y;
 		return ret;
 	}
-
+	
 	deltaLTCorner(x, y) {
-		var ret = this.deltaL(x,y);
-		var ret2 = this.deltaT(x,y);
+		var ret = this.deltaL(x, y);
+		var ret2 = this.deltaT(x, y);
 		ret.y = ret2.y;
 		return ret;
 	}
-
+	
 	setPosition(x, y) {
 		x = Math.max(0, x);
 		y = Math.max(0, y);
@@ -172,11 +172,11 @@ class Window extends React.Component {
 		y = Math.min(y, EDITOR.H - this.state.h);
 		this.state.x = x;
 		this.state.y = y;
-		if(this.$) {
+		if (this.$) {
 			this.$.css({left: x + 'px', top: y + 'px'});
 		}
 	}
-
+	
 	setSize(w, h) {
 		w = Math.max(w, this.props.minW);
 		h = Math.max(h, this.props.minH);
@@ -184,29 +184,31 @@ class Window extends React.Component {
 		h = Math.min(h, EDITOR.H);
 		this.state.w = w;
 		this.state.h = h;
-		if(this.$) {
+		if (this.$) {
 			this.$.css({width: w + 'px', height: h + 'px'});
 		}
 	}
-
+	
 	onMouseDown() {
 		Window.bringWindowForward(this.$);
 	}
 	
 	render() {
-		return R.div({id: this.id, onMouseDown:this.onMouseDown, className:'window-body', style:{
-				left:this.state.x,
-				top:this.state.y,
-				width:this.state.w,
-				height:this.state.h
-			}},
+		return R.div({
+				id: this.id, onMouseDown: this.onMouseDown, className: 'window-body', style: {
+					left: this.state.x,
+					top: this.state.y,
+					width: this.state.w,
+					height: this.state.h
+				}
+			},
 			R.div({
-				className: 'window-header',
-				onDragStart: this.dragStartHandler,
-				onDrag: this.dragHandler,
-				onDragEnd : this.dragEndHandler,
-				draggable: true
-			}, this.props.title,
+					className: 'window-header',
+					onDragStart: this.dragStartHandler,
+					onDrag: this.dragHandler,
+					onDragEnd: this.dragEndHandler,
+					draggable: true
+				}, this.props.title,
 				React.createElement(CornerDragger, {
 					className: 'window-dragger',
 					onDragEnd: this.saveState,
@@ -254,16 +256,13 @@ class Window extends React.Component {
 				onDragEnd: this.saveState,
 				onDrag: this.deltaLTCorner
 			})
-			
-			
-			
 		);
 	}
 }
 
 Window.bringWindowForward = (windowBody) => {
 	windowBody = windowBody[0];
-	Array.from(document.getElementsByClassName('window-body')).sort((a,b) => {
+	Array.from(document.getElementsByClassName('window-body')).sort((a, b) => {
 		return a.style.zIndex - b.style.zIndex;
 	}).some((w, i, a) => {
 		w.style.zIndex = (w === windowBody) ? a.length + 2 : i;

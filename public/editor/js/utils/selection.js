@@ -1,10 +1,10 @@
 class Selection extends Array {
-
-    select(object, add) {
-		if(!add) {
+	
+	select(object, add) {
+		if (!add) {
 			this.clear();
 		}
-		if(object.__editorData.isSelected) {
+		if (object.__editorData.isSelected) {
 			this.remove(object);
 		} else {
 			this.add(object);
@@ -12,15 +12,15 @@ class Selection extends Array {
 		this.sortSelectedNodes();
 		EDITOR.refreshTreeViewAndPropertyEditor();
 	}
-
+	
 	sortSelectedNodes() {
 		recalculateNodesDeepness();
 		this.sort(sortByDeepness);
 	}
-
+	
 	clear() {
-		while(this.length > 0) {
-			this.remove(this[this.length -1]);
+		while (this.length > 0) {
+			this.remove(this[this.length - 1]);
 		}
 	}
 	
@@ -30,7 +30,7 @@ class Selection extends Array {
 		o.__editorData.isSelected = true;
 		this.push(o);
 	}
-
+	
 	remove(o) {
 		assert(o.__editorData.isSelected);
 		var i = this.indexOf(o);
@@ -39,6 +39,7 @@ class Selection extends Array {
 		this.splice(i, 1);
 	}
 }
+
 export default Selection;
 
 //-------- sorting selection --------------------------------
@@ -56,7 +57,7 @@ var recalculateNodesDeepnessRecursive = (n) => {
 	}
 }
 
-var sortByDeepness = (a,b) => {
+var sortByDeepness = (a, b) => {
 	return a.__editorData.deepness - b.__editorData.deepness;
 }
 

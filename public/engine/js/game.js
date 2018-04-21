@@ -22,7 +22,8 @@ class Game {
 
 	init(element) {
 		PixiObjectsProperties.init();
-		app = new PIXI.Application(W, H, {backgroundColor : 0x1099bb});
+		// noinspection JSUnresolvedVariable
+        app = new PIXI.Application(W, H, {backgroundColor : 0x1099bb});
 		this.pixiApp = app;
 		(element || document.body).appendChild(app.view);
 
