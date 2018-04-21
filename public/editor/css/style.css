@@ -230,18 +230,15 @@ button {
 	align-items:center;
 	justify-content:center;
 	background: #b9bdc8;
-	flex-grow:1;
 	width:100%;
 	height:100%;
 }
 
 .editor-viewport-panel{
-	text-align:center;
-	flex-basis:100px;
+	text-align: left;
 }
 
 .editor-viewport-wrapper{
-	display:flex;
 	position:absolute;
 	left:0;
 	top:0;
