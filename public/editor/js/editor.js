@@ -45,7 +45,6 @@ class Editor {
 		
 		Lib.wrapConstructorProcessor(applyEditorDataToNode);
 		
-		Lib.__saveScene(new MainScene(), 'main');
 		Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png'));
 		
 		game.__EDITORmode = true;
@@ -98,11 +97,13 @@ class Editor {
 	reloadClasses() {
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
 		this.saveCurrentScene();
-		return ClassesLoader.reloadClasses();
+		return ClassesLoader.reloadClasses().then(()=>{
+			im here(
+		});
 	}
 	
 	reloadAssets() {
-	
+		return Promise.resolve();
 	}
 	
 	reloadAll() {
@@ -186,7 +187,6 @@ class Editor {
 		game.showScene(Lib.loadScene(name));
 		EDITOR.projectDesc.currentScene = name;
 		this.selection.select(game.currentScene);
-		this.refreshTreeViewAndPropertyEditor();
 	}
 	
 	saveCurrentScene(name = "EDITOR:tmp") {

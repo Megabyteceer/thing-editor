@@ -6,6 +6,7 @@ import Sprite from './sprite.js';
 
 window.Scene = Scene;
 window.Sprite = Sprite;
+window.Lib = new Lib();
 
 var stage;
 var app;

@@ -1,5 +1,5 @@
 var objects = {};
-var scenes = {};
+var scenes;
 var classes;
 var textures = {};
 
@@ -16,7 +16,13 @@ var constructorProcessor = (o) => {
          o.texture = textures['bunny'];
     }
 }
-
+var _wrapConstructorProcessor = (wrapper) => {
+	var prevConstructor = constructRecursive;
+	constructRecursive = (o) => {
+		prevConstructor(o);
+		wrapper(o);
+	}
+}
 var constructRecursive = (o) => {
     constructorProcessor(o);
 
@@ -31,13 +37,14 @@ var classIdCounter = 0;
 var customClassIdCounter = 0;
 
 class Lib {
-
+    constructor() {
+        assert(!scenes, "Attempt to create Lib secondary. It is singleton.");
+	    scenes = {'main':{c:1}};
+	    classes = {1:Scene};
+    }
+    
     wrapConstructorProcessor(wrapper) {
-        var prevConstructor = constructorProcessor;
-        constructRecursive = (o) => {
-            prevConstructor(o);
-            wrapper(o);
-        }
+	    _wrapConstructorProcessor(wrapper);
     }
 
     addObject(name, classRef) {
@@ -83,7 +90,7 @@ class Lib {
         Object.assign(ret, src.p);
         if(src.hasOwnProperty(':')){
             src[':'].some((src)=>{
-                ret.addChild(this.deserializeObject(src));
+                ret.addChild(this._deserializeObject(src));
             });
         }
         return ret;
@@ -101,11 +108,11 @@ class Lib {
 
 //EDITOR
     __saveScene(scene, name) {
-        assert(scene instanceof Scene, "Scene instance expected");
         if(!scene) {
             assert(name === 'EDITOR:tmp', 'Only temporary scene can be null');
             scenes[name] = undefined;
         } else {
+	        assert(scene instanceof Scene, "Scene instance expected");
             scenes[name] = this.__serializeObject(scene);
         }
     }
@@ -118,6 +125,7 @@ class Lib {
                 props[p.name] = o[p.name];
             }
         })
+        assert(classesIdByName.hasOwnProperty(o.constructor.name), 'Attempt to serialize class ' + o.constructor.name + ' which has no assigned id.');
         var ret = {
             c:classesIdByName[o.constructor.name],
             p:props
@@ -131,5 +139,4 @@ class Lib {
 
 }
 
-window.Lib = new Lib();
-export default 'this class is singletone. Use window.Lib';
+export default Lib;
