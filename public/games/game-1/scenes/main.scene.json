@@ -1,0 +1,125 @@
+{
+	"c": 1,
+	"p": {
+		"name": null,
+		"x": 0,
+		"y": 0,
+		"rotation": 0,
+		"alpha": 1,
+		"visible": true,
+		"scale.x": 1,
+		"scale.y": 1,
+		"skew.x": 0,
+		"skew.y": 0,
+		"pivot.x": 0,
+		"pivot.y": 0,
+		"backgroundColor": 0
+	},
+	":": [
+		{
+			"c": 100,
+			"p": {
+				"name": null,
+				"x": 391.83549727425003,
+				"y": 326.5229923681828,
+				"rotation": 0,
+				"alpha": 1,
+				"visible": true,
+				"scale.x": 1,
+				"scale.y": 1,
+				"skew.x": 0,
+				"skew.y": 0,
+				"pivot.x": 0,
+				"pivot.y": 0,
+				"blendMode": 0,
+				"xSpeed": -1.0036253040455598,
+				"ySpeed": 0,
+				"rSpeed": 0
+			}
+		},
+		{
+			"c": 100,
+			"p": {
+				"name": null,
+				"x": 951.9416556483731,
+				"y": 330.7823929125698,
+				"rotation": 0,
+				"alpha": 1,
+				"visible": true,
+				"scale.x": 1,
+				"scale.y": 1,
+				"skew.x": 0,
+				"skew.y": 0,
+				"pivot.x": 0,
+				"pivot.y": 0,
+				"blendMode": 0,
+				"xSpeed": 2.058588319464853,
+				"ySpeed": 0,
+				"rSpeed": 0
+			}
+		},
+		{
+			"c": 100,
+			"p": {
+				"name": null,
+				"x": 793.026672598852,
+				"y": 395.88347003016855,
+				"rotation": 0,
+				"alpha": 1,
+				"visible": true,
+				"scale.x": 1,
+				"scale.y": 1,
+				"skew.x": 0,
+				"skew.y": 0,
+				"pivot.x": 0,
+				"pivot.y": 0,
+				"blendMode": 0,
+				"xSpeed": 10.175417161662807,
+				"ySpeed": 0,
+				"rSpeed": 0
+			}
+		},
+		{
+			"c": 100,
+			"p": {
+				"name": null,
+				"x": 877.4053385261116,
+				"y": 453.5908607855772,
+				"rotation": 0,
+				"alpha": 1,
+				"visible": true,
+				"scale.x": 1,
+				"scale.y": 1,
+				"skew.x": 0,
+				"skew.y": 0,
+				"pivot.x": 0,
+				"pivot.y": 0,
+				"blendMode": 0,
+				"xSpeed": 3.258624262585972,
+				"ySpeed": 0,
+				"rSpeed": 0
+			}
+		},
+		{
+			"c": 100,
+			"p": {
+				"name": null,
+				"x": 913.1676101099021,
+				"y": 129.09652558017365,
+				"rotation": 0,
+				"alpha": 1,
+				"visible": true,
+				"scale.x": 1,
+				"scale.y": 1,
+				"skew.x": 0,
+				"skew.y": 0,
+				"pivot.x": 0,
+				"pivot.y": 0,
+				"blendMode": 0,
+				"xSpeed": -5.421398072129648,
+				"ySpeed": 0,
+				"rSpeed": 0
+			}
+		}
+	]
+}

@@ -8,18 +8,28 @@ class Viewport extends React.Component {
 	constructor(props) {
 		super(props);
 		
-		this.onTogglePlay = this.onTogglePlay.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
+		this.onTogglePlay = this.onTogglePlay.bind(this);
 	}
 	
-	onTogglePlay(val) {
-		var play = val;
-		if (play) { // launch game
-			EDITOR.saveCurrentScene("EDITOR:save");
-		} else { //stop game
-			EDITOR.loadScene("EDITOR:save");
+	stopExecution(reason) {
+		if(reason){
+			EDITOR.ui.modal.showError(reason);
 		}
+		if(!game.__EDITORmode) {
+			this.onTogglePlay();
+		}
+	}
+	
+	onTogglePlay() {
+		var play = game.__EDITORmode;
+		if (play) { // launch game
+			EDITOR.saveCurrentScene(".EDITOR~save");
+		} else { //stop game
+			EDITOR.loadScene(".EDITOR~save");
+		}
+		this.forceUpdate();
 		game.__EDITORmode = !play;
 	}
 	
@@ -37,17 +47,18 @@ class Viewport extends React.Component {
 	
 	render() {
 		return R.div({className: 'editor-viewport-wrapper'},
-			R.div({className: 'editor-viewport-panel'},
-				R.btn(PLAY_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', STOP_ICON, 32),
-				R.btn(R.icon('recompile'), EDITOR.reloadClasses, 'Rebuild game sources', 'play-stop-btn'),
-			),
 			
 			R.div({
 				id: 'viewport-root',
 				onMouseDown: this.onMouseDown,
 				onMouseMove: this.onMouseMove,
 				className: 'editor-viewport'
-			})
+			}),
+			
+			R.div({className: 'editor-viewport-panel'},
+				R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', 32),
+				R.btn(R.icon('recompile'), EDITOR.reloadClasses, 'Rebuild game sources', 'play-stop-btn'),
+			)
 		);
 	}
 	
@@ -55,8 +66,8 @@ class Viewport extends React.Component {
 
 function setSelectedPos(ev) {
 	var p = Game.mouseEventToGlobalXY(ev);
-	EDITOR.onSelectedPropsChange('x', p.x);
-	EDITOR.onSelectedPropsChange('y', p.y);
+	EDITOR.onSelectedPropsChange('x', Math.round(p.x));
+	EDITOR.onSelectedPropsChange('y', Math.round(p.y));
 }
 
 export default Viewport;

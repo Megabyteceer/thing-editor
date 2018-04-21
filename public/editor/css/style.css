@@ -231,7 +231,7 @@ button {
 	justify-content:center;
 	background: #b9bdc8;
 	width:100%;
-	height:100%;
+	height: calc(100% - 60px);
 }
 
 .editor-viewport-panel{

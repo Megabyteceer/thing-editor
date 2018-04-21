@@ -5,8 +5,7 @@ import ws from './utils/socket.js';
 import fs from './utils/fs.js';
 import UI from './ui/ui.js';
 import ClassesLoader from './utils/classes-loader.js';
-
-import MainScene from '/games/game-1/src/scenes/main-scene.js';
+import ScenesList from "./ui/scenes-list.js";
 
 class Editor {
 	
@@ -32,6 +31,7 @@ class Editor {
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
 		
+		this.sceneOpened = new Signal();
 		
 		ReactDOM.render(
 			React.createElement(UI, {onMounted: this.onUIMounted}),
@@ -68,7 +68,7 @@ class Editor {
 					this.fs.gameFolder = '/games/' + dir + '/';
 					EDITOR.projectDesc = data;
 					EDITOR.reloadAll().then(() => {
-						this.loadScene(EDITOR.projectDesc.currentScene || 'main');
+						this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
 					});
 				});
 			});
@@ -95,10 +95,17 @@ class Editor {
 	}
 	
 	reloadClasses() {
+		this.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
-		this.saveCurrentScene();
+		var needRepairScene = game.currentScene != null;
+		if(needRepairScene) {
+			this.saveCurrentScene();
+		}
+		
 		return ClassesLoader.reloadClasses().then(()=>{
-			im here(
+			if(needRepairScene) {
+				this.loadScene();
+			}
 		});
 	}
 	
@@ -156,7 +163,7 @@ class Editor {
 					
 					if (addProps.some((p) => {
 							if (p.type === 'splitter') {
-								p.noSave = true;
+								p.notSeriazable = true;
 							}
 							return props.some((pp) => {
 								return pp.name === p.name
@@ -183,13 +190,16 @@ class Editor {
 		});
 	}
 	
-	loadScene(name = "EDITOR:tmp") {
+	loadScene(name = ".EDITOR~tmp") {
 		game.showScene(Lib.loadScene(name));
-		EDITOR.projectDesc.currentScene = name;
-		this.selection.select(game.currentScene);
+        this.selection.select(game.currentScene);
+        if(!ScenesList.isSpecialSceneName(name)) {
+            EDITOR.projectDesc.currentSceneName = name;
+        }
+        this.sceneOpened.emit();
 	}
 	
-	saveCurrentScene(name = "EDITOR:tmp") {
+	saveCurrentScene(name = ".EDITOR~tmp") {
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
 		Lib.__saveScene(game.currentScene, name);
 	}

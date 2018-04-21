@@ -108,20 +108,27 @@ class Lib {
 
 //EDITOR
     __saveScene(scene, name) {
+        assert(typeof name === 'string');
         if(!scene) {
-            assert(name === 'EDITOR:tmp', 'Only temporary scene can be null');
+            assert(name === '.EDITOR~tmp', 'Only temporary scene can be null');
             scenes[name] = undefined;
         } else {
 	        assert(scene instanceof Scene, "Scene instance expected");
-            scenes[name] = this.__serializeObject(scene);
+	        var sceneData = this.__serializeObject(scene)
+            scenes[name] = sceneData;
+            EDITOR.fs.saveFile('scenes/'+name+'.scene.json', sceneData, true);
         }
+    }
+    
+    _getAllScenes() {
+        return scenes;
     }
     
     __serializeObject(o) {
         var props = {};
         var propsList = EDITOR.enumObjectsProperties(o);
         propsList.some((p)=>{
-            if(!p.noSave) {
+            if(!p.notSeriazable) {
                 props[p.name] = o[p.name];
             }
         })

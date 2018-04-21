@@ -35,11 +35,7 @@ class Button extends React.Component {
 	}
 	
 	onClick(ev) {
-		if (this.props.toggledLabel) {
-			var newState = !this.state.toggled;
-			this.setState({toggled: newState});
-		}
-		this.props.onClick(newState);
+		this.props.onClick();
 		ev.target.blur();
 	}
 	
@@ -49,7 +45,7 @@ class Button extends React.Component {
 			onMouseDown: this.onMouseDown,
 			title: this.props.title,
 			onClick: this.onClick
-		}, this.state.toggled ? this.props.toggledLabel : this.props.label);
+		}, this.props.label);
 	}
 }
 
