@@ -24,7 +24,7 @@ class Button extends React.Component {
 		if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
 		
 		if (e.keyCode == this.props.hotkey) {
-			this.onClick();
+			this.onClick(e);
 		}
 	}
 	
@@ -34,12 +34,13 @@ class Button extends React.Component {
 		}
 	}
 	
-	onClick() {
+	onClick(ev) {
 		if (this.props.toggledLabel) {
 			var newState = !this.state.toggled;
 			this.setState({toggled: newState});
 		}
 		this.props.onClick(newState);
+		ev.target.blur();
 	}
 	
 	render() {
