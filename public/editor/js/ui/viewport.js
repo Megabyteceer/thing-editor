@@ -13,16 +13,11 @@ class Viewport extends React.Component{
     }
 
     onTogglePlay(val) {
-        var play = !val;
+        var play = val;
         if(play) { // launch game
-            Lib.saveScene(game.currentScene, "EDITOR:save");
-            
-
+            EDITOR.saveCurrentScene("EDITOR:save");
         } else { //stop game
-
-
-
-            
+            EDITOR.loadScene("EDITOR:save");
         }
         game.__EDITORmode = !play;
     }

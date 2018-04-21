@@ -4,45 +4,25 @@ var fs = {
             EDITOR.ui.modal.open(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
         });
     },
-    openProject:(desc) => {
-        var dir;
-        if(desc) {
-            dir = desc.dir;
-        }
-        else {
-            dir = EDITOR.settings.getItem('last-opened-project');
-        }
-        if(!dir) {
-            fs.chooseProject(true);
-        } else {
-             fs.getJSON('/fs/openProject?dir=' + dir, (data) => {
-                fs.refreshFiles(() => {
-                    EDITOR.settings.setItem('last-opened-project', dir);
-                    fs.gameFolder = '/games/' + dir + '/';
-                    EDITOR.reloadAll();
-                });
-            });
-        }
-    },
-    refreshFiles:(callback) => {
-       fs.getJSON('/fs/enum', (data) => {
+    refreshFiles:() => {
+       return fs.getJSON('/fs/enum').then((data) => {
            fs.files = data;
-           callback();
        });
     },
-    getJSON(url, callback, silently) {
+    getJSON(url, silently) {
        if(!silently) {
            EDITOR.ui.modal.showSpinner();
        }
-       var r = $.getJSON(url).then(callback);
+       var r = $.getJSON(url);
        if(!silently) {
            r.always(EDITOR.ui.modal.hideSpinner);
        }
+       return r;
     },
-    openFile(fileName, callback, silently) {
-		this.getJSON(fs.gameFolder+fileName, callback, silently);
+    openFile(fileName, silently) {
+		return this.getJSON(fs.gameFolder+fileName, silently);
     },
-    saveFile(filename, data, callback, silently) {
+    saveFile(filename, data, silently) {
         if(!silently) {
             EDITOR.ui.modal.showSpinner();
         }
@@ -52,10 +32,11 @@ var fs = {
 			url: '/fs/savefile',
 			data: JSON.stringify({data: JSON.stringify(data, null, '	'), filename}),
 			contentType : 'application/json'
-		}).then(callback);
+		});
         if(!silently) {
             r.always(EDITOR.ui.modal.hideSpinner);
         }
+        return r;
     }
 }
 
@@ -73,7 +54,7 @@ function renderProjectItem (desc, i, array) {
 
     return R.div({className:'project-item-select clickable', key:i, onClick:() => {
         EDITOR.ui.modal.close();
-        fs.openProject(desc);
+        fs.openProject(desc.dir);
     }},icon, desc.title);
 }
 

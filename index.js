@@ -24,7 +24,7 @@ app.get('/fs/openProject', function (req, res) {
 	currentGameRoot = clientGamesRoot + currentGame + '/';
 	process.chdir(gamesRoot + currentGame);
 	//log('Project opened: ' + process.cwd());
-	res.send({});
+	res.send(fs.readFileSync('project.json'));
 });
 var pathFixerExp = /\\/g;
 var pathFixer = (fn) => {

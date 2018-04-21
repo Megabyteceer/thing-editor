@@ -70,7 +70,7 @@ class TreeNode extends React.Component {
             className += ' item-selected';
         }
         var icon = R.classIcon(node.constructor);
-        return R.div(null, R.div({className, onClick:this.onClick}, icon, R.span(nameProps, node.name), R.span(classProps,' (' + node.constructor.name + state.id + ')'), caret), childs);
+        return R.div(null, R.div({className, onClick:this.onClick}, icon, R.span(nameProps, node.name), R.span(classProps,' (' + node.constructor.name+ ') #' + state.id), caret), childs);
     }
 
 }

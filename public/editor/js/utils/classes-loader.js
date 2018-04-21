@@ -17,7 +17,7 @@ var embeddedClasses;
 var loadedClssesCount, newLoadedClassesCount;
 
 var classesLoadedSuccessfullyAtLeastOnce = false;
-var initialClassesLoaded = false;
+var classesRegisterLoaded = false;
 
 ClassesLoader.classesLoaded = new Signal();
 
@@ -30,7 +30,7 @@ ClassesLoader.init = () => {
     assert(CUSTOM_CLASSES_ID > embeddedClasses.length);
 }
 
-function saveClassesRegister(callback) {
+function saveClassesRegister() {
     var content = {};
     Object.keys(classesById).some((id) =>{
         var name = classesById[id].name;
@@ -39,23 +39,29 @@ function saveClassesRegister(callback) {
             path:classPathByName[name]
         }
     });
-    EDITOR.fs.saveFile('data/classes.json', content, callback);
+    return EDITOR.fs.saveFile('data/classes.json', content);
 }
 
-function loadClassesRegister(callback) {
-    EDITOR.fs.openFile('data/classes.json', (data) => {
-        if(data) {
-            for(var id in data) {
-                var desc = data[id];
-                var className = desc.name;
-                loadedClassesIdsByName[className] = parseInt(id);
-                classPathByName[className] = desc.path;
+function loadClassesRegister() {
+    if(classesRegisterLoaded) {
+        return Promise.resolve();
+    }
+    return new Promise((resolve, reject) =>{
+        EDITOR.fs.openFile('data/classes.json').then((data) => {
+            if(data) {
+                for(var id in data) {
+                    var desc = data[id];
+                    var className = desc.name;
+                    loadedClassesIdsByName[className] = parseInt(id);
+                    classPathByName[className] = desc.path;
+                }
+                classesRegisterLoaded = true;
+                resolve();
+            } else {
+                reject();
+                showError('Classes list "data/classes.json" loading error.');
             }
-            initialClassesLoaded = true;
-            callback();
-        } else {
-            showError('Classes list "data/classes.json" loading error.');
-        }
+        }).catch(reject);
     });
 }
 
@@ -119,73 +125,86 @@ function clearClasses() {
 const jsFiler = /^src\/.*\.js$/gm;
 var head = document.getElementsByTagName('head')[0];
 
-var cbCounter;
-function checkIfLoaded() {
-    cbCounter--;
-    if(cbCounter === 0) {
-        window.onerror = null;
-        if(!errorOccured) {
-            Lib.setClasses(classesById);
-            saveClassesRegister(() => {
-                classesLoadedSuccessfullyAtLeastOnce;
-                ClassesLoader.classesLoaded.emit();
-                console.log('Loading success.');
-                console.log(loadedClssesCount + ' classes updated.');
-                if(newLoadedClassesCount > 0) {
-                    console.log(newLoadedClassesCount + ' new classes added.');
-                }
-            });
-        } else {
-            console.warn('classes were not loaded because of error.')
-        }
-    }
-}
-
-function loadingErrorHandler(message, source, lineno, colno, error) {
-    showError(R.div(null,
-        message,
-        R.div({className:'error-body'}, source.split('?nocache=').shift().split(':'+location.port).pop() +' ('+lineno+':'+ colno +')', R.br(), message),
-        'Plese fix error in source code and press button to try again:',
-    ));
-};
-
 ClassesLoader.reloadClasses = () => { //enums all js files in src folder, detect which of them exports PIXI.DisplayObject descendants and add them in to Lib.
     errorOccured = false;
+    loadClassesRegister().then(() => {
+        
+        loadedClssesCount = newLoadedClassesCount = 0;
+        clearClasses();
+        customClassesIdCounter = CUSTOM_CLASSES_ID;
+        console.clear();
+        console.log('%c EDITOR: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
 
-    if(!initialClassesLoaded) {
-        loadClassesRegister(ClassesLoader.reloadClasses);
-        return;
-    }
+        embeddedClasses.some((c, id)=>{
+            addClass(c, id, false);
+        });
 
-    loadedClssesCount = newLoadedClassesCount = 0;
-    clearClasses();
-    customClassesIdCounter = CUSTOM_CLASSES_ID;
-    console.clear();
-    console.log('%c EDITOR: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
+        window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
+            showError(R.div(null,
+                message,
+                R.div({className:'error-body'}, source.split('?nocache=').shift().split(':'+location.port).pop() +' ('+lineno+':'+ colno +')', R.br(), message),
+                'Plese fix error in source code and press button to try again:',
+            ));
+            waitToLoadPromise.reject();
+            loadersRejectors.some((p)=>{
+                p();
+            });
+        };
 
-    embeddedClasses.some((c, id)=>{addClass(c, id, false)});
-    window.onerror = loadingErrorHandler;
+        var loaders = [];
+        var loadersRejectors = [];
 
-    cbCounter = 1;
-    EDITOR.fs.files.some((fn) => {
-        if(fn.match(jsFiler)) {
-
-            cbCounter++;
-            var src = '/fs/loadClass?c='+ encodeURIComponent(fn)+'&nocache='+cacheCounter++;
-            var script = document.createElement('script');
-            script.onload = function(ev) {
-                head.removeChild(ev.target);
-                checkIfLoaded();
-            };
-            script.onerror = (er) => {
-                debugger;
+        EDITOR.fs.files.some((fn) => {
+            if(fn.match(jsFiler)) {
+                loaders.push(new Promise((resolve, reject)=> {
+                    loadersRejectors.push(reject);
+                    var src = '/fs/loadClass?c='+ encodeURIComponent(fn)+'&nocache='+cacheCounter++;
+                    var script = document.createElement('script');
+                    EDITOR.ui.modal.showSpinner();
+                    script.onload = function(ev) {
+                        EDITOR.ui.modal.hideSpinner();
+                        head.removeChild(ev.target);
+                        resolve();
+                    }
+                    script.type = 'module';
+                    script.src = src;
+                    head.appendChild(script);
+                }));
+                
             }
-            script.type = 'module';
-            script.src = src;
-            head.appendChild(script);
-        }
+        });
+
+        var loadingAllPromise = Promise.all(loaders).finally(() => {
+            window.onerror = null;
+            if(!errorOccured) {
+                Lib.setClasses(classesById);
+                saveClassesRegister().then(() => {
+                    classesLoadedSuccessfullyAtLeastOnce = true;
+
+                    console.log('Loading success.');
+                    console.log(loadedClssesCount + ' classes updated.');
+                    if(newLoadedClassesCount > 0) {
+                        console.log(newLoadedClassesCount + ' new classes added.');
+                    }
+                    waitToLoadPromise.resolve();
+                });
+            } else {
+                waitToLoadPromise.reject();
+                console.warn('classes were not loaded because of error.')
+            }
+        });
     });
-    checkIfLoaded();
+
+    var waitToLoadPromise = new Promise((resolve, reject) => {
+        setTimeout(()=>{
+            waitToLoadPromise.resolve = resolve;
+            waitToLoadPromise.reject = reject;
+        }, 0);
+    });
+    waitToLoadPromise.then(() =>{
+        ClassesLoader.classesLoaded.emit()
+    });
+    return waitToLoadPromise;
 }
 
 ClassesLoader.classLoaded = (c, path) => {

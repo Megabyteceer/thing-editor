@@ -8,7 +8,7 @@ class Signal {
         this._listeners.push(f);
     }
     addOnce(f){
-        this._listenersOnce.push(f);
+       throw "forgot about this antipattern.";
     }
     
     emit() {

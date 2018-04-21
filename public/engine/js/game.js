@@ -38,12 +38,16 @@ class Game {
 
 	showScene(scene) {
 		if(this.currentScene) {
-			this.currentScene.onHideInner();
+			if(!this.__EDITORmode) {
+				this.currentScene.onHideInner();
+			}
 			stage.removeChild(this.currentScene);
 		}
 		this.currentScene = scene;
 		stage.addChild(scene);
-		scene.onShowInner();
+		if(!this.__EDITORmode) {
+			scene.onShowInner();
+		}
 	}
 
 	updateGlobal(dt) {
@@ -73,7 +77,7 @@ class Game {
 
 var tmpPoint = {};
 Game.mouseEventToGlobalXY = function mouseEventToGlobalX(ev) {
-	var b = ev.target.getBoundingClientRect();
+	var b = app.view.getBoundingClientRect();
 	var n = ev.clientX - b.left;
 	tmpPoint.x = n * (W / b.width);
 	n = ev.clientY - b.top;

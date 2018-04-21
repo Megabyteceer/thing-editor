@@ -74,8 +74,10 @@ class Modal extends React.Component {
 
     hideSpinner() {
         spinnerShowCounter--;
-        if(spinnerShowCounter === 0){
-            modal.forceUpdate();
+        if(spinnerShowCounter === 0) {
+            setTimeout(()=>{
+                modal.forceUpdate();
+            }, 10);
         }
     }
 

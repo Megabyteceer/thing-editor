@@ -41,7 +41,7 @@ class Editor {
 		
 		Lib.wrapConstructorProcessor(applyEditorDataToNode);
 		
-		Lib.addScene('main', MainScene);
+		Lib.__saveScene('main', new MainScene());
 		Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png'));
 
 		game.__EDITORmode = true;
@@ -49,14 +49,28 @@ class Editor {
 		applyEditorDataToNode(game.stage);
 		
 		ClassesLoader.init();
-		fs.openProject();
+		this.openProject();
 	}
 
-	loadScene(name) {
-		game.showScene(Lib.loadScene('main'));
-		this.selection.select(game.currentScene);
-		this.refreshTreeViewAndPropertyEditor();
-	}
+	openProject(dir) {
+        if(!dir) {
+            dir = EDITOR.settings.getItem('last-opened-project');
+        }
+        if(!dir) {
+            this.fs.chooseProject(true);
+        } else {
+             this.fs.getJSON('/fs/openProject?dir=' + dir).then((data) => {
+                this.fs.refreshFiles().then(() => {
+                    EDITOR.settings.setItem('last-opened-project', dir);
+                    this.fs.gameFolder = '/games/' + dir + '/';
+                    EDITOR.projectDesc = data;
+                    EDITOR.reloadAll().then(()=>{
+                    	this.loadScene(EDITOR.projectDesc.currentScene || 'main');
+                    });
+                });
+            });
+        }
+    }
 
 	initResize() {
 		var onResize = () => {
@@ -78,10 +92,9 @@ class Editor {
 	}
 
 	reloadClasses() {
-		ClassesLoader.classesLoaded.addOnce(() => {
-			this.loadScene();
-		});
-		ClassesLoader.reloadClasses();
+		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
+		this.saveCurrentScene();
+		return ClassesLoader.reloadClasses();
 	}
 	
 	reloadAssets() {
@@ -89,8 +102,10 @@ class Editor {
 	}
 
 	reloadAll() {
-		this.reloadClasses();
-		this.reloadAssets();
+		return Promise.all([
+			this.reloadClasses(),
+			this.reloadAssets()
+		]);
 	}
 
 	addToSelected(o) {
@@ -131,10 +146,14 @@ class Editor {
 				if(!cc.prototype) {
 					throw 'attempt to enum editable properties of not PIXI.DisplayObject instance';
 				}
-				if(cc.hasOwnProperty('EDITOR_editableProps')) {  //check if property with same name already defined in super classes chain
+				if(cc.hasOwnProperty('EDITOR_editableProps')) {
 					var addProps = cc.EDITOR_editableProps;
+
 					if(addProps.some((p) => {
-						return props.some((pp)=>{
+						if(p.type === 'splitter') {
+                			p.noSave = true;
+						}
+						return props.some((pp) => {
 							return pp.name === p.name
 						});
 					})) {
@@ -158,9 +177,17 @@ class Editor {
 			return f.name === name
 		});
 	}
-
-	serializeObject(o) {
-		  
+	
+	loadScene(name = "EDITOR:tmp") {
+		game.showScene(Lib.loadScene(name));
+		EDITOR.projectDesc.currentScene = name;
+		this.selection.select(game.currentScene);
+		this.refreshTreeViewAndPropertyEditor();
+	}
+	
+	saveCurrentScene(name = "EDITOR:tmp") {
+		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
+		Lib.__saveScene(game.currentScene, name);
 	}
 }
 
