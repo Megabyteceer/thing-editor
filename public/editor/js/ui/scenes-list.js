@@ -12,19 +12,22 @@ export default class ScenesList extends React.Component {
 		super(props);
 		this.state = {};
 		this.onSelect = this.onSelect.bind(this);
-		EDITOR.sceneOpened.add(() =>{
-		    this.forceUpdate();
-        });
 	}
 	
 	onSaveSceneClick() {
-		EDITOR.saveCurrentScene(EDITOR.saveCurrentScene(EDITOR.projectDesc.currentSceneName));
+		EDITOR.saveCurrentScene(EDITOR.projectDesc.currentSceneName);
 	}
     
     onSaveAsSceneClick() {
 		//im here: TODO: requireString dialog -> save scene as with check name is unique
-        
-        assert(!ScenesList.isSpecialSceneName(enteredName), "Scene name is not allowed");
+        EDITOR.ui.modal.promptShow('Enter name for scene:').then((enteredName) => {
+            if(ScenesList.isSpecialSceneName(enteredName)) {
+                EDITOR.ui.modal.showError("Scene name is not allowed.");
+            } else {
+                EDITOR.saveCurrentScene(enteredName);
+                EDITOR.ui.modal.closeModal();
+            }
+        });
 	}
     
     onSelect(item) {

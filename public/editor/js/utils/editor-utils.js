@@ -1,3 +1,5 @@
+"use strict";
+
 var factories = {};
 window.R = factories;
 
@@ -54,8 +56,15 @@ window.check = (expression, message) => {
 	}
 }
 
-$(window).on('contextmenu', (e) => {
-	if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-	sp(e);
+$(window).on('contextmenu', (ev) => {
+	if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'SELECT') return;
+	sp(ev);
 	
+});
+
+$(window).on('keydown', (ev) => {
+    if(ev.key === 'F5') {
+        sp(ev);
+        EDITOR.reloadAssetsAndClasses();
+    }
 });

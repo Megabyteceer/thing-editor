@@ -11,18 +11,21 @@ class Bunny extends Sprite {
     update () {
          if(this.y > H) {
             this.ySpeed *= -1;
-            this.rotation = Math.random() - 0.5;
-			this.xSpeed *= 1;
+             this.onTouchBounds();
         } else {
         	this.ySpeed += this.gravity;
         }
 
         if((this.x < 0) || (this.x > W)) {
             this.xSpeed *= -1.0;
-            this.rotation = Math.random() - 0.5;
+            this.onTouchBounds();
         }
-        
+        this.scale.x = this.xSpeed > 0 ? 1 : -1;
         super.update();
+    }
+    
+    onTouchBounds() {
+        this.rotation = (Math.random() - 0.5) * 0.2;
     }
 }
 

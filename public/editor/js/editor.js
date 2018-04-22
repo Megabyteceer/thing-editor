@@ -73,7 +73,7 @@ class Editor {
 					EDITOR.settings.setItem('last-opened-project', dir);
 					this.fs.gameFolder = '/games/' + dir + '/';
 					EDITOR.projectDesc = data;
-					EDITOR.reloadAssetsAndScripts().then(() => {
+					EDITOR.reloadAssetsAndClasses().then(() => {
                         ScenesList.loadScenes().then(() => {
                             this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
                         })
@@ -121,7 +121,7 @@ class Editor {
 		return Promise.resolve();
 	}
 	
-	reloadAssetsAndScripts() {
+	reloadAssetsAndClasses() {
 		return Promise.all([
 			this.reloadClasses(),
 			this.reloadAssets()
@@ -171,13 +171,20 @@ class Editor {
         if(!ScenesList.isSpecialSceneName(name)) {
             EDITOR.projectDesc.currentSceneName = name;
         }
-        this.sceneOpened.emit();
+        this.ui.forceUpdate();
+        this.sceneOpened.emit(); //TODO: ? remove this signal?
 	}
 	
 	saveCurrentScene(name = EDITOR.editorFilesPrefix + "tmp") {
 	    EDITOR.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
 		Lib.__saveScene(game.currentScene, name);
+        if(!ScenesList.isSpecialSceneName(name)) {
+            if(EDITOR.projectDesc.currentSceneName != name) {
+                EDITOR.projectDesc.currentSceneName = name;
+                this.ui.forceUpdate();
+            }
+        }
 	}
 }
 
