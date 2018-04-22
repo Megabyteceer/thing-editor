@@ -13,7 +13,7 @@ var fs = {
        if(!silently) {
            EDITOR.ui.modal.showSpinner();
        }
-       var r = $.getJSON(url);
+       var r = $.getJSON(url).fail;
        if(!silently) {
            r.always(EDITOR.ui.modal.hideSpinner);
        }
@@ -32,7 +32,7 @@ var fs = {
 			url: '/fs/savefile',
 			data: JSON.stringify({data: JSON.stringify(data, null, '	'), filename}),
 			contentType : 'application/json'
-		});
+		}).fail show error message;
         if(!silently) {
             r.always(EDITOR.ui.modal.hideSpinner);
         }
