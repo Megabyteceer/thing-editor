@@ -55,7 +55,7 @@ class Lib {
         return classes[id];
     }
 
-    setClasses(c) {
+    _setClasses(c) {
         classes = c;
         this.classes = c;
 //EDITOR
@@ -63,6 +63,11 @@ class Lib {
             classesIdByName[c[id].name] = parseInt(id);
         });
 //ENDEDITOR
+    }
+    
+    _setScenes(s){
+        scenes = s;
+        this.scenes = s;
     }
 
     addTexture(name, texture) {
@@ -110,11 +115,11 @@ class Lib {
     __saveScene(scene, name) {
         assert(typeof name === 'string');
         if(!scene) {
-            assert(name === '.EDITOR~tmp', 'Only temporary scene can be null');
+            assert(name === EDITOR.editorFilesPrefix + 'tmp', 'Only temporary scene can be null');
             scenes[name] = undefined;
         } else {
 	        assert(scene instanceof Scene, "Scene instance expected");
-	        var sceneData = this.__serializeObject(scene)
+	        var sceneData = Lib.__serializeObject(scene)
             scenes[name] = sceneData;
             EDITOR.fs.saveFile('scenes/'+name+'.scene.json', sceneData, true);
         }
@@ -124,7 +129,7 @@ class Lib {
         return scenes;
     }
     
-    __serializeObject(o) {
+    static __serializeObject(o) {
         var props = {};
         var propsList = EDITOR.enumObjectsProperties(o);
         propsList.some((p)=>{
@@ -138,7 +143,7 @@ class Lib {
             p:props
         }
         if(o.children && o.children.length > 0) {
-            ret[':'] = o.children.map(this.__serializeObject);
+            ret[':'] = o.children.map(Lib.__serializeObject);
         }
         return ret;
     }

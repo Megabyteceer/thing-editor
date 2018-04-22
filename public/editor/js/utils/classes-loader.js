@@ -72,7 +72,7 @@ function showError(message) {
 	EDITOR.ui.modal.showError(R.div(null,
 		message,
 		R.btn('Im have fixed code, try again', () => {
-			EDITOR.ui.modal.close();
+			EDITOR.ui.modal.closeModal();
 			ClassesLoader.reloadClasses();
 		}, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
 		'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
@@ -160,6 +160,7 @@ ClassesLoader.reloadClasses = () => { //enums all js files in src folder, detect
 				loaders.push(new Promise((resolve, reject) => {
 					loadersRejectors.push(reject);
 					var src = '/fs/loadClass?c=' + encodeURIComponent(fn) + '&nocache=' + cacheCounter++;
+					//TODO: fs/loadClasses  - filter and load all classes on server side in one request.
 					var script = document.createElement('script');
 					EDITOR.ui.modal.showSpinner();
 					script.onload = function (ev) {
@@ -178,7 +179,7 @@ ClassesLoader.reloadClasses = () => { //enums all js files in src folder, detect
 		var loadingAllPromise = Promise.all(loaders).finally(() => {
 			window.onerror = null;
 			if (!errorOccured) {
-				Lib.setClasses(classesById);
+				Lib._setClasses(classesById);
 				saveClassesRegister().then(() => {
 					classesLoadedSuccessfullyAtLeastOnce = true;
 					
@@ -218,7 +219,7 @@ ClassesLoader.classLoaded = (c, path) => {
 	} else {
 		id = customClassesIdCounter++;
 		loadedClassesIdsByName[name] = id;
-		console.alert('New class ' + name + '. id ' + id + ' was assigned.');
+		console.warn('New class ' + name + '. id ' + id + ' was assigned.');
 		newLoadedClassesCount++;
 	}
 	addClass(c, id, path);

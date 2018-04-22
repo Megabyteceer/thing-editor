@@ -14,9 +14,9 @@ class TreeNode extends React.Component {
 		this.onClick = this.onClick.bind(this);
 	}
 	
-	onClick(e) { // == select nodes
+	onClick(ev) { // == select nodes
 		var state = this.props.node.__editorData;
-		if (!e.ctrlKey && (state.isSelected || isClickedAtRightEdge(e))) {
+		if (!ev.ctrlKey && (state.isSelected || isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
 			state.toggled = !state.toggled;
 			if (!state.toggled) {
 				collapseChildsRecursively(this.props.node);
@@ -25,7 +25,7 @@ class TreeNode extends React.Component {
 			return;
 		}
 		
-		if (e.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
+		if (ev.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
 			var p = this.props.node.parent;
 			var i1 = p.getChildIndex(lastClickedItem.props.node);
 			var i2 = p.getChildIndex(this.props.node);
@@ -39,14 +39,14 @@ class TreeNode extends React.Component {
 				from++;
 			}
 		} else {
-			EDITOR.selection.select(this.props.node, e.ctrlKey);
+			EDITOR.selection.select(this.props.node, ev.ctrlKey);
 		}
 		
 		if (state.isSelected) {
 			lastClickedItem = this;
 		}
 		
-		e.stopPropagation();
+		sp(ev);
 	}
 	
 	render() {
@@ -54,7 +54,7 @@ class TreeNode extends React.Component {
 		var state = node.__editorData;
 		var childs;
 		var caret;
-		if (node.children && node.children.length > 0) {
+		if (nodeHasChildren(node)) {
 			if (state.toggled) {
 				caret = caretOpened;
 				childs = R.div({className: 'tree-childs'},
@@ -76,6 +76,10 @@ class TreeNode extends React.Component {
 		}, icon, R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + state.id), caret), childs);
 	}
 	
+}
+
+function nodeHasChildren(node) {
+    return node.children && node.children.length > 0;
 }
 
 function isClickedAtRightEdge(e) {

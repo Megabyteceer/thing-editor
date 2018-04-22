@@ -7,8 +7,13 @@ import UI from './ui/ui.js';
 import ClassesLoader from './utils/classes-loader.js';
 import ScenesList from "./ui/scenes-list.js";
 
+
 class Editor {
 	
+    get editorFilesPrefix() {
+        return '.editor-tmp.';
+    }
+    
 	constructor() {
 		
 		window.EDITOR = this;
@@ -67,8 +72,10 @@ class Editor {
 					EDITOR.settings.setItem('last-opened-project', dir);
 					this.fs.gameFolder = '/games/' + dir + '/';
 					EDITOR.projectDesc = data;
-					EDITOR.reloadAll().then(() => {
-						this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
+					EDITOR.reloadAssetsAndScripts().then(() => {
+                        ScenesList.loadScenes().then(() => {
+                            this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
+                        })
 					});
 				});
 			});
@@ -113,7 +120,7 @@ class Editor {
 		return Promise.resolve();
 	}
 	
-	reloadAll() {
+	reloadAssetsAndScripts() {
 		return Promise.all([
 			this.reloadClasses(),
 			this.reloadAssets()
@@ -190,7 +197,7 @@ class Editor {
 		});
 	}
 	
-	loadScene(name = ".EDITOR~tmp") {
+	loadScene(name = EDITOR.editorFilesPrefix + "tmp") {
 		game.showScene(Lib.loadScene(name));
         this.selection.select(game.currentScene);
         if(!ScenesList.isSpecialSceneName(name)) {
@@ -199,7 +206,8 @@ class Editor {
         this.sceneOpened.emit();
 	}
 	
-	saveCurrentScene(name = ".EDITOR~tmp") {
+	saveCurrentScene(name = EDITOR.editorFilesPrefix + "tmp") {
+	    EDITOR.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
 		Lib.__saveScene(game.currentScene, name);
 	}
@@ -209,6 +217,7 @@ function addTo(parent, child) {
 	parent.addChild(child);
 	EDITOR.ui.sceneTree.select(child);
 }
+
 
 
 //====== extend DisplayObjct data for editor time only ===============================

@@ -428,6 +428,21 @@ button {
 	margin: 15px;
 }
 
+#window-scenesList .list-item {
+	padding:10px;
+	border:0;
+	user-select:text;
+	margin-bottom:1px;
+}
+
+#window-scenesList .item-selected {
+	border-left: 7px solid #080;
+	cursor: default;
+}
+
+#window-scenesList img {
+	margin-right: 15px;
+}
 
 
 
@@ -435,7 +450,16 @@ button {
 
 
 
-/* animations*/
+
+
+
+
+
+
+
+
+
+/*===================== animations ==================================================*/
 
 .fadein-animation{
   animation: fadein linear .2s;

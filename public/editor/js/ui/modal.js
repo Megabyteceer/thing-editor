@@ -4,7 +4,7 @@ var blackoutProps = {className: 'modal-blackout fadein-animation'};
 var blackoutPropsClosable = {
 	className: 'modal-blackout fadein-animation', style: {cursor: 'pointer'}, onClick: (sp) => {
 		if (sp.target.className.indexOf('modal-blackout') === 0) {
-			modal.close();
+			modal.closeModal();
 		}
 	}
 };
@@ -50,16 +50,19 @@ class Modal extends React.Component {
 			modals: []
 		};
 	}
-	
-	close() {
+    
+    closeModal() {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
-		modal.state.modals.pop();
+		var closedModalItem = modal.state.modals.pop();
 		modal.forceUpdate();
+        closedModalItem.resolve();
 	}
-	
-	open(content, title, noEasyClose) {
-		modal.state.modals.push({content, title, noEasyClose});
-		modal.forceUpdate();
+    
+    showModal(content, title, noEasyClose) {
+	    return new Promise((resolve) => {
+            modal.state.modals.push({content, title, noEasyClose, resolve});
+            modal.forceUpdate();
+        });
 	}
 	
 	componentDidMount() {
@@ -84,7 +87,7 @@ class Modal extends React.Component {
 	}
 	
 	showError(message, title = 'Error!', noEasyClose) {
-		this.open(R.div(errorProps, message), R.span(null, R.icon('error'), title), noEasyClose);
+		return this.showModal(R.div(errorProps, message), R.span(null, R.icon('error'), title), noEasyClose);
 	}
 	
 	render() {

@@ -1,7 +1,11 @@
 var classViewProps = {className: 'vertical-layout'};
 var bodyProps = {className: 'list-view', title:'Double click to open scene.'};
 
-
+const sceneFileFiler = /^scenes\/.*\.scene.json$/gm;
+const sceneExtRemover = /.scene.json$/gm;
+const fileNameToSceneName = (fn) => {
+    return fn.replace('scenes/', '').replace(sceneExtRemover, '');
+}
 export default class ScenesList extends React.Component {
 	
 	constructor(props) {
@@ -13,12 +17,12 @@ export default class ScenesList extends React.Component {
         });
 	}
 	
-	save() {
+	onSaveSceneClick() {
 		EDITOR.saveCurrentScene(EDITOR.saveCurrentScene(EDITOR.projectDesc.currentSceneName));
 	}
-	
-	saveAs() {
-		//TODO: add save as dialogue
+    
+    onSaveAsSceneClick() {
+		//im here: TODO: requireString dialog -> save scene as with check name is unique
         
         assert(!ScenesList.isSpecialSceneName(enteredName), "Scene name is not allowed");
 	}
@@ -32,9 +36,8 @@ export default class ScenesList extends React.Component {
 		return R.div({onDoubleClick:() => {
 		        EDITOR.loadScene(sceneName);
             },
-            className:(item === this.state.selectedItem) ? 'unclickable' : undefined,
             key:sceneName
-        }, R.listItem(R.span(null, R.classIcon(cls), sceneName + ' (' + cls.name + ')'), item, sceneName, this));
+        }, R.listItem(R.span(null, R.classIcon(cls), R.b(null,sceneName), '; (' + cls.name + ')'), item, sceneName, this));
 	}
 	
 	render () {
@@ -56,13 +59,28 @@ export default class ScenesList extends React.Component {
             }
         }
 		return R.div(classViewProps,
-			R.div({className: bottomPanelClassName}, R.btn('Save', this.save), R.btn('Save As...', this.saveAs)),
+			R.div({className: bottomPanelClassName}, R.btn('Save', this.onSaveSceneClick, 'Save current scene'), R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')),
 			R.div(bodyProps, scenes)
 		)
 	}
 	
+	static loadScenes() {
+	    var scenes = {};
+	    return Promise.all(
+            EDITOR.fs.files.filter(fn => fn.match(sceneFileFiler))
+            .map((fn) => {
+                return EDITOR.fs.openFile(fn)
+                .then((data) => {
+                    scenes[fileNameToSceneName(fn)] = data;
+                });
+            })
+        ).then(() => {
+	        Lib._setScenes(scenes)
+        });
+    }
+	
 	static isSpecialSceneName(sceneName) {
-	    return sceneName.indexOf('.EDITOR~') === 0;
+	    return sceneName.indexOf(EDITOR.editorFilesPrefix) === 0;
     }
 }
 

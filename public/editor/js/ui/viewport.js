@@ -25,9 +25,9 @@ class Viewport extends React.Component {
 	onTogglePlay() {
 		var play = game.__EDITORmode;
 		if (play) { // launch game
-			EDITOR.saveCurrentScene(".EDITOR~save");
+			EDITOR.saveCurrentScene(EDITOR.editorFilesPrefix + "save");
 		} else { //stop game
-			EDITOR.loadScene(".EDITOR~save");
+			EDITOR.loadScene(EDITOR.editorFilesPrefix + "save");
 		}
 		this.forceUpdate();
 		game.__EDITORmode = !play;

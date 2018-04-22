@@ -51,7 +51,7 @@ app.get('/fs/loadClass', function (req, res) {
 	res.send("import C from '" + currentGameRoot + classPath + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C, '" + classPath + "');");
 });
 
-app.use('/', express.static(path.join(__dirname, 'public')));
+app.use('/', express.static(path.join(__dirname, 'public'), {dotfiles:'allow'}));
 
 //========= start server ================================================================
 var server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
