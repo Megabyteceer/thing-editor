@@ -1,18 +1,84 @@
 {
 	"0": {
 		"name": "Sprite",
-		"path": false
+		"path": false,
+		"defaults": {
+			"xSpeed": 0,
+			"ySpeed": 0,
+			"rSpeed": 0,
+			"blendMode": 0,
+			"name": null,
+			"x": 0,
+			"y": 0,
+			"rotation": 0,
+			"alpha": 1,
+			"visible": true,
+			"scale.x": 1,
+			"scale.y": 1,
+			"skew.x": 0,
+			"skew.y": 0,
+			"pivot.x": 0,
+			"pivot.y": 0
+		}
 	},
 	"1": {
 		"name": "Scene",
-		"path": false
+		"path": false,
+		"defaults": {
+			"backgroundColor": 16777215,
+			"name": null,
+			"x": 0,
+			"y": 0,
+			"rotation": 0,
+			"alpha": 1,
+			"visible": true,
+			"scale.x": 1,
+			"scale.y": 1,
+			"skew.x": 0,
+			"skew.y": 0,
+			"pivot.x": 0,
+			"pivot.y": 0
+		}
 	},
 	"100": {
 		"name": "Bunny",
-		"path": "src/game-objects/bunny.js"
+		"path": "src/game-objects/bunny.js",
+		"defaults": {
+			"xSpeed": 0,
+			"ySpeed": 0,
+			"rSpeed": 0,
+			"blendMode": 0,
+			"name": null,
+			"x": 0,
+			"y": 0,
+			"rotation": 0,
+			"alpha": 1,
+			"visible": true,
+			"scale.x": 1,
+			"scale.y": 1,
+			"skew.x": 0,
+			"skew.y": 0,
+			"pivot.x": 0,
+			"pivot.y": 0
+		}
 	},
 	"101": {
 		"name": "MainMenu",
-		"path": "src/scenes/main-scene.js"
+		"path": "src/scenes/main-scene.js",
+		"defaults": {
+			"backgroundColor": 16777215,
+			"name": null,
+			"x": 0,
+			"y": 0,
+			"rotation": 0,
+			"alpha": 1,
+			"visible": true,
+			"scale.x": 1,
+			"scale.y": 1,
+			"skew.x": 0,
+			"skew.y": 0,
+			"pivot.x": 0,
+			"pivot.y": 0
+		}
 	}
 }

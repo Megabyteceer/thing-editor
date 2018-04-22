@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path')
 const express = require('express')
 const app = express()
-var cacheCounter = 0;
 
 var currentGame;
 var currentGameRoot;
@@ -44,11 +43,6 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 		}
 		res.end();
 	});
-});
-app.get('/fs/loadClass', function (req, res) {
-	var classPath = req.query.c;
-	res.setHeader('Content-Type', 'application/javascript');
-	res.send("import C from '" + currentGameRoot + classPath + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C, '" + classPath + "');");
 });
 
 app.use('/', express.static(path.join(__dirname, 'public'), {dotfiles:'allow'}));

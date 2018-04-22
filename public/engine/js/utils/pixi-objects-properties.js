@@ -79,11 +79,13 @@ export default {
 				type: Number,
 				step: 0.01,
 				min: 0,
-				max: 1
+				max: 1,
+                default:1
 			},
 			{
 				name: 'visible',
 				type: Boolean,
+                default:true
 			},
 			{
 				type: 'splitter',
@@ -93,12 +95,14 @@ export default {
 			{
 				name: 'scale.x',
 				type: Number,
-				step: 0.01
+				step: 0.01,
+                default:1
 			},
 			{
 				name: 'scale.y',
 				type: Number,
-				step: 0.01
+				step: 0.01,
+                default:1
 			},
 			{
 				name: 'skew.x',
@@ -118,7 +122,6 @@ export default {
 				name: 'pivot.y',
 				type: Number
 			}
-		
 		];
 		
 		

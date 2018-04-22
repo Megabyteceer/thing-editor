@@ -5,31 +5,39 @@ import SelectEditor from './select-editor.js';
 import ColorEditor from './color-editor.js';
 
 
-var typedEditors = new WeakMap();
-typedEditors[Number] = {
-	renderer: NumberEditor, parser: (target) => {
+var typeDescriptions = new WeakMap();
+typeDescriptions[Number] = {
+	renderer: NumberEditor,
+    parser: (target) => {
 		return parseFloat(target.value)
-	}
+	},
+    default: 0
 };
-typedEditors[String] = {
-	renderer: StringEditor, parser: (target) => {
-		return target.value
-	}
+typeDescriptions[String] = {
+	renderer: StringEditor,
+    parser: (target) => {
+		return target.value || null;
+	},
+    default:null
 };
-typedEditors[Boolean] = {
-	renderer: BooleanEditor, parser: (target) => {
+typeDescriptions[Boolean] = {
+	renderer: BooleanEditor,
+    parser: (target) => {
 		return target.checked
-	}
+	},
+    default:false
 };
-typedEditors['color'] = {
-	renderer: ColorEditor, parser: (target) => {
+typeDescriptions['color'] = {
+	renderer: ColorEditor, parser:
+        (target) => {
 		return parseInt(target.value.replace('#', ''), 16)
-	}
+	},
+    default:0xFFFFFF
 };
 
 
-var getTypeEditor = (field) => {
-	return typedEditors[field.type || Number];
+var getTypeDescription = (field) => {
+	return typeDescriptions[field.type || Number];
 }
 
 var fieldProps = {className: 'props-field'};
@@ -48,7 +56,7 @@ class PropsFieldWrapper extends React.Component {
 	
 	onChange(ev) {
 		var field = this.props.field;
-		var val = getTypeEditor(field).parser(ev.target);
+		var val = getTypeDescription(field).parser(ev.target);
 		
 		if (field.hasOwnProperty('min')) {
 			val = Math.max(field.min, val);
@@ -69,7 +77,7 @@ class PropsFieldWrapper extends React.Component {
 		if (field.hasOwnProperty('select')) {
 			renderer = SelectEditor;
 		} else {
-			renderer = getTypeEditor(field).renderer;
+			renderer = getTypeDescription(field).renderer;
 		}
 		
 		return R.div(fieldProps,
@@ -89,5 +97,7 @@ PropsFieldWrapper.surrogateChnageEvent = (val) => {
 	_surrogateEventObj.target.value = val;
 	return _surrogateEventObj;
 };
+
+PropsFieldWrapper.getTypeDescription = getTypeDescription;
 
 export default PropsFieldWrapper

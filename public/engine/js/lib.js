@@ -1,15 +1,12 @@
 var objects = {};
 var scenes;
 var classes;
+var defaults;
 var textures = {};
 
 //EDITOR
 var classesIdByName = {};
 //ENDEDITOR
-
-function getInstanceByClassId(id) {
-    return new classes[id]();
-}
 
 var constructorProcessor = (o) => {
     if(o instanceof PIXI.Sprite) {
@@ -33,9 +30,6 @@ var constructRecursive = (o) => {
     }
 }
 
-var classIdCounter = 0;
-var customClassIdCounter = 0;
-
 class Lib {
     constructor() {
         assert(!scenes, "Attempt to create Lib secondary. It is singleton.");
@@ -47,15 +41,12 @@ class Lib {
 	    _wrapConstructorProcessor(wrapper);
     }
 
-    addObject(name, classRef) {
-        objects[name] = classRef;
-    }
-
     getClass(id) {
         return classes[id];
     }
 
-    _setClasses(c) {
+    _setClasses(c, def) {
+        defaults = def;
         classes = c;
         this.classes = c;
 //EDITOR
@@ -81,18 +72,17 @@ class Lib {
     }
 
     loadObject(name) {
-
         return window.Lib.loadClassInstanceById(100);
-        
         var ret = new objects[name]; //getInstanceByClassId
         constructRecursive(ret);
         return ret;
     }
     
     _deserializeObject(src) {
-        assert(classes.hasOwnProperty(src.c), 'Unknown class id: '+ src.c);
+        assert(classes.hasOwnProperty(src.c), 'Unknown class id: ' + src.c);
+        assert(defaults.hasOwnProperty(src.c), 'Class with id ' + src.c + ' has no default values set');
         var ret = new classes[src.c]();
-        Object.assign(ret, src.p);
+        Object.assign(ret, defaults[src.c], src.p);
         if(src.hasOwnProperty(':')){
             src[':'].some((src)=>{
                 ret.addChild(this._deserializeObject(src));
@@ -134,7 +124,10 @@ class Lib {
         var propsList = EDITOR.enumObjectsProperties(o);
         propsList.some((p)=>{
             if(!p.notSeriazable) {
-                props[p.name] = o[p.name];
+                var val = o[p.name];
+                if(val != p.default) {
+                    props[p.name] = val;
+                }
             }
         })
         assert(classesIdByName.hasOwnProperty(o.constructor.name), 'Attempt to serialize class ' + o.constructor.name + ' which has no assigned id.');

@@ -6,6 +6,7 @@ import fs from './utils/fs.js';
 import UI from './ui/ui.js';
 import ClassesLoader from './utils/classes-loader.js';
 import ScenesList from "./ui/scenes-list.js";
+import PropsFieldWrapper from "./ui/props-editor/props-field-wrapper.js";
 
 
 class Editor {
@@ -155,40 +156,7 @@ class Editor {
 	 * enumerate all editable properties of given DisplayObject.
 	 */
 	enumObjectsProperties(o) {
-		var c = o.constructor;
-		if (!c.hasOwnProperty('EDITOR_propslist_cache')) {
-			
-			var cc = c;
-			var props = [];
-			var i = 50;
-			while (cc && (i-- > 0)) {
-				if (!cc.prototype) {
-					throw 'attempt to enum editable properties of not PIXI.DisplayObject instance';
-				}
-				if (cc.hasOwnProperty('EDITOR_editableProps')) {
-					var addProps = cc.EDITOR_editableProps;
-					
-					if (addProps.some((p) => {
-							if (p.type === 'splitter') {
-								p.notSeriazable = true;
-							}
-							return props.some((pp) => {
-								return pp.name === p.name
-							});
-						})) {
-						this.ui.showError('redefenition of property "' + pp.name + '"');
-					}
-					
-					props = addProps.concat(props);
-				}
-				if (cc === PIXI.DisplayObject) {
-					break;
-				}
-				cc = cc.__proto__;
-			}
-			c.EDITOR_propslist_cache = props;
-		}
-		return c.EDITOR_propslist_cache;
+		return o.constructor.EDITOR_propslist_cache;
 	}
 	
 	getObjectField(o, name) {

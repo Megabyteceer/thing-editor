@@ -1,124 +1,50 @@
 {
 	"c": 1,
 	"p": {
-		"name": null,
-		"x": 0,
-		"y": 0,
-		"rotation": 0,
-		"alpha": 1,
-		"visible": true,
-		"scale.x": 1,
-		"scale.y": 1,
-		"skew.x": 0,
-		"skew.y": 0,
-		"pivot.x": 0,
-		"pivot.y": 0,
+		"name": "scene1",
 		"backgroundColor": 3090502
 	},
 	":": [
 		{
 			"c": 100,
 			"p": {
-				"name": null,
 				"x": 1014,
 				"y": 616,
-				"rotation": 0,
-				"alpha": 1,
-				"visible": true,
-				"scale.x": 1,
-				"scale.y": 1,
-				"skew.x": 0,
-				"skew.y": 0,
-				"pivot.x": 0,
 				"pivot.y": 31,
-				"blendMode": 0,
-				"xSpeed": 8.307122052799432,
-				"ySpeed": 0,
-				"rSpeed": 0
+				"xSpeed": 8.307122052799432
 			}
 		},
 		{
 			"c": 100,
 			"p": {
-				"name": null,
 				"x": 159.27961303591616,
 				"y": 503.99332645980286,
-				"rotation": 0,
-				"alpha": 1,
-				"visible": true,
-				"scale.x": 1,
-				"scale.y": 1,
-				"skew.x": 0,
-				"skew.y": 0,
-				"pivot.x": 0,
 				"pivot.y": 31,
-				"blendMode": 0,
-				"xSpeed": 10.197367648693145,
-				"ySpeed": 0,
-				"rSpeed": 0
+				"xSpeed": 10.197367648693145
 			}
 		},
 		{
 			"c": 100,
 			"p": {
-				"name": null,
 				"x": 1012,
 				"y": 126,
-				"rotation": 0,
-				"alpha": 1,
-				"visible": true,
-				"scale.x": 1,
-				"scale.y": 1,
-				"skew.x": 0,
-				"skew.y": 0,
-				"pivot.x": 0,
 				"pivot.y": 31,
-				"blendMode": 0,
-				"xSpeed": -12.84236517126659,
-				"ySpeed": 0,
-				"rSpeed": 0
+				"xSpeed": -12.84236517126659
 			}
 		},
 		{
 			"c": 100,
 			"p": {
-				"name": null,
 				"x": 558,
 				"y": 693,
-				"rotation": 0,
-				"alpha": 1,
-				"visible": true,
-				"scale.x": 1,
-				"scale.y": 1,
-				"skew.x": 0,
-				"skew.y": 0,
-				"pivot.x": 0,
 				"pivot.y": 30,
-				"blendMode": 0,
-				"xSpeed": -3,
-				"ySpeed": 0,
-				"rSpeed": 0
+				"xSpeed": -3
 			},
 			":": [
 				{
 					"c": 0,
 					"p": {
-						"name": null,
-						"x": 0,
-						"y": -44,
-						"rotation": 0,
-						"alpha": 1,
-						"visible": true,
-						"scale.x": 1,
-						"scale.y": 1,
-						"skew.x": 0,
-						"skew.y": 0,
-						"pivot.x": 0,
-						"pivot.y": 0,
-						"blendMode": 0,
-						"xSpeed": 0,
-						"ySpeed": 0,
-						"rSpeed": 0
+						"y": -44
 					}
 				}
 			]
@@ -126,43 +52,18 @@
 		{
 			"c": 100,
 			"p": {
-				"name": null,
 				"x": 806.6122373727408,
 				"y": 506.32467730217195,
-				"rotation": 0,
-				"alpha": 1,
-				"visible": true,
-				"scale.x": 1,
-				"scale.y": 1,
-				"skew.x": 0,
-				"skew.y": 0,
-				"pivot.x": 0,
 				"pivot.y": 31,
-				"blendMode": 0,
-				"xSpeed": -11.194716823816178,
-				"ySpeed": 0,
-				"rSpeed": 0
+				"xSpeed": -11.194716823816178
 			}
 		},
 		{
 			"c": 0,
 			"p": {
-				"name": null,
 				"x": 39,
 				"y": 725,
-				"rotation": 0,
-				"alpha": 1,
-				"visible": true,
-				"scale.x": 1,
-				"scale.y": 1,
-				"skew.x": 0,
-				"skew.y": 0,
-				"pivot.x": 0,
-				"pivot.y": 35,
-				"blendMode": 0,
-				"xSpeed": 0,
-				"ySpeed": 0,
-				"rSpeed": 0
+				"pivot.y": 35
 			}
 		}
 	]
