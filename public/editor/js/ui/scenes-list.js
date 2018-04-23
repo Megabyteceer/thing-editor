@@ -6,6 +6,9 @@ const sceneExtRemover = /.scene.json$/gm;
 const fileNameToSceneName = (fn) => {
     return fn.replace('scenes/', '').replace(sceneExtRemover, '');
 }
+
+const sceneNameFilter = /[^a-z\-\/0-9]/g;
+
 export default class ScenesList extends React.Component {
 	
 	constructor(props) {
@@ -20,14 +23,12 @@ export default class ScenesList extends React.Component {
     
     onSaveAsSceneClick() {
 		//im here: TODO: requireString dialog -> save scene as with check name is unique
-        EDITOR.ui.modal.promptShow('Enter name for scene:').then((enteredName) => {
-            if(ScenesList.isSpecialSceneName(enteredName)) {
-                EDITOR.ui.modal.showError("Scene name is not allowed.");
-            } else {
+        EDITOR.ui.modal.promptShow('Enter name for scene:',
+            (val)=> {
+                return val.toLowerCase().replace(sceneNameFilter, '');
+            }).then((enteredName) => {
                 EDITOR.saveCurrentScene(enteredName);
-                EDITOR.ui.modal.closeModal();
-            }
-        });
+            });
 	}
     
     onSelect(item) {

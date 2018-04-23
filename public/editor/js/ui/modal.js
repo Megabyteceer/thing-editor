@@ -8,6 +8,7 @@ var blackoutPropsClosable = {
 		}
 	}
 };
+var spinnerProps = {className: 'modal-spinner'};
 var bodyProps = {className: 'modal-body'};
 var titleProps = {className: 'modal-title'};
 var contentProps = {className: 'modal-content'};
@@ -36,11 +37,54 @@ var renderModal = (props, i) => {
 
 var renderSpinner = () => {
 	return R.div(blackoutProps,
-		R.div(bodyProps,
-			'Loading...'
-		)
+		R.div(spinnerProps)
 	);
 }
+
+class Prompt extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {value:''};
+        this.onChange = this.onChange.bind(this);
+        this.onAcceptClick = this.onAcceptClick.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+    }
+    onChange(ev) {
+        var val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
+        var reject = this.props.accept ? this.props.accept(val) : undefined;
+        this.setState({
+            value:val,
+            rejectReason: reject,
+            accepted: val && !reject
+        });
+    }
+    
+    onKeyDown (ev){
+        if(ev.keyCode === 13) {
+            this.onAcceptClick();
+        }
+    }
+    
+    onAcceptClick() {
+        if(this.state.accepted) {
+            modal.closeModal(this.state.value);
+        }
+    }
+    
+    render() {
+        var rejected;
+        if(this.state.rejectReason){
+            rejected = R.div(errorProps, this.state.rejectReason);
+        }
+        
+        return R.div(null,
+            R.input({value:this.state.value, onKeyDown:this.onKeyDown, autoFocus:true, onChange:this.onChange}),
+            R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', 13)
+        )
+    }
+    
+}
+
 
 class Modal extends React.Component {
 	
@@ -51,11 +95,11 @@ class Modal extends React.Component {
 		};
 	}
     
-    closeModal() {
+    closeModal(val) {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
 		var closedModalItem = modal.state.modals.pop();
 		modal.forceUpdate();
-        closedModalItem.resolve();
+        closedModalItem.resolve(val);
 	}
     
     showModal(content, title, noEasyClose) {
@@ -85,16 +129,21 @@ class Modal extends React.Component {
 			}, 10);
 		}
 	}
+    
+    promptShow(title, filter, accept, noEasyClose) {
+	    return this.showModal(React.createElement(Prompt, {filter, accept}), title, noEasyClose);
+    }
 	
 	showError(message, title = 'Error!', noEasyClose) {
 		return this.showModal(R.div(errorProps, message), R.span(null, R.icon('error'), title), noEasyClose);
 	}
 	
 	render() {
+	    var spinner;
 		if (spinnerShowCounter > 0) {
-			return renderSpinner();
+            spinner = renderSpinner();
 		}
-		return R.div(null, this.state.modals.map(renderModal));
+		return R.div(null, this.state.modals.map(renderModal), spinner);
 	}
 }
 

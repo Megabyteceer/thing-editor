@@ -64,7 +64,7 @@ $(window).on('contextmenu', (ev) => {
 
 $(window).on('keydown', (ev) => {
     if(ev.key === 'F5') {
-        sp(ev);
-        EDITOR.reloadAssetsAndClasses();
+       /* sp(ev);
+        EDITOR.reloadAssetsAndClasses();*/
     }
 });

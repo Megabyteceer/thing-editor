@@ -13,7 +13,7 @@ var fs = {
        if(!silently) {
            EDITOR.ui.modal.showSpinner();
        }
-       var r = $.getJSON(url).fail;
+       var r = $.getJSON(url).fail(handleError);
        if(!silently) {
            r.always(EDITOR.ui.modal.hideSpinner);
        }
@@ -32,7 +32,7 @@ var fs = {
 			url: '/fs/savefile',
 			data: JSON.stringify({data: JSON.stringify(data, null, '	'), filename}),
 			contentType : 'application/json'
-		}).fail show error message;
+		}).fail(handleError);
         if(!silently) {
             r.always(EDITOR.ui.modal.hideSpinner);
         }
@@ -41,6 +41,10 @@ var fs = {
 }
 
 export default fs;
+
+function handleError(er, status, error) {
+    EDITOR.ui.modal.showError(JSON.stringify(error || 'connection error'));
+}
 
 function getIconPath(desc) {
     return 'games/' + desc.dir + '/' + desc.icon;

@@ -77,7 +77,7 @@ function showError(message) {
 	errorOccured = true;
 	EDITOR.ui.modal.showError(R.div(null,
 		message,
-		R.btn('Im have fixed code, try again', () => {
+		R.btn('I have fixed code, try again', () => {
 			EDITOR.ui.modal.closeModal();
 			ClassesLoader.reloadClasses();
 		}, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
@@ -209,6 +209,9 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
         
             var script = document.createElement('script');
             EDITOR.ui.modal.showSpinner();
+            script.onerror = function (er) {
+                EDITOR.ui.modal.hideSpinner();
+            }
             script.onload = function (ev) {
                 
                 EDITOR.ui.modal.hideSpinner();

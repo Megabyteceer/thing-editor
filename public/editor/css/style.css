@@ -344,7 +344,7 @@ button {
 	border-left: 1px solid #cfcfcf;
 }
 
-.props-wrapper input{
+input{
 	font-family: monospace;
 	box-sizing: border-box;
 	width: 100%;
@@ -369,7 +369,7 @@ button {
 	width:100%;
 	height:100%;
 	z-index: 1000;
-	background:rgba(0,16,32,0.5);
+	background: rgba(0,16,62,0.5);
 }
 
 .modal-title {
@@ -476,3 +476,20 @@ button {
   }
 }
 
+.modal-spinner {
+	margin:auto;
+	margin-top:calc(50% - 30px);
+    border: 4px solid rgba(0,0,0,0); /* Light grey */
+    border-top: 4px solid #bfbfbf; /* Blue */
+    border-left: 4px solid #bfbfbf; /* Blue */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    background:rgba(0,0,0,0.3);
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
