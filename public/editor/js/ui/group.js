@@ -10,33 +10,36 @@ function renderGroup(props) {
     )
 }
 
-function groupArray(a) {
+function groupArray(a, level = 0) {
 
     var groups = {};
 
     var ret = [];
     for (var item of a) {
-        debugger;
+        
         var name = item.key;
-        var slashIndex = name.indexOf('/');
-        if(slashIndex > 0) {
-            var groupName = name.substr(0, slashIndex);
-            item.key = name.substr(slashIndex + 1);
-
-            if(!groups.hasOwnProperty(name)) {
-                groups[name] = [];
+        var np = name.split('/');
+        if(np.length > (level + 1)) {
+            if(level > 0) {
+                np.splice(0, level);
             }
-            var group = groups[name];
-            group.push(item);
+            
+            var groupName = np.shift();
 
-        } else {
-            ret.push(item);
+            if(!groups.hasOwnProperty(groupName)) {
+                groups[groupName] = [];
+            }
+            var group = groups[groupName];
+            group.push(item);
+            
+            continue;
         }
+        ret.push(item);
     }
 
     for(groupName in groups) {
         var group = groups[groupName];
-        ret.unshift(renderGroup({key:groupName, title:groupName, content: groupArray(group)}));
+        ret.unshift(renderGroup({key:groupName, title:groupName, content: groupArray(group, level + 1)}));
     }
 
     return ret;

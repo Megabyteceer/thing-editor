@@ -9,6 +9,19 @@ const fileNameToSceneName = (fn) => {
     return fn.replace('scenes/', '').replace(sceneExtRemover, '');
 }
 
+function SelectText(element) {
+    var selection = window.getSelection();
+    var range = document.createRange();
+    range.selectNodeContents(element);
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+
+var sceneNameProps = {className:"selectable-text", title:'click to select scene`s name', onMouseDown:function (ev) {
+    SelectText(ev.target);
+    sp(ev);
+}};
+
 const sceneNameFilter = /[^a-z\-\/0-9]/g;
 
 export default class ScenesList extends React.Component {
@@ -24,8 +37,15 @@ export default class ScenesList extends React.Component {
 	}
     
     onSaveAsSceneClick() {
-		//im here: TODO: requireString dialog -> save scene as with check name is unique
+		
+	    var defaultSceneName = EDITOR.projectDesc.currentSceneName.split('/');
+        defaultSceneName.pop();
+        defaultSceneName = defaultSceneName.join('/');
+	    if(defaultSceneName) {
+	        defaultSceneName += '/';
+        }
         EDITOR.ui.modal.promptShow('Enter name for scene:',
+            defaultSceneName,
             (val) => { // filter
                 return val.toLowerCase().replace(sceneNameFilter, '');
             },
@@ -49,10 +69,11 @@ export default class ScenesList extends React.Component {
 	renderItem(sceneName, item) {
         var cls = Lib.getClass(item.c);
 		return R.div({onDoubleClick: () => {
+                EDITOR.ui.viewport.stopExecution();
 		        EDITOR.loadScene(sceneName);
             },
             key:sceneName
-        }, R.listItem(R.span(null, R.classIcon(cls), R.b(null,sceneName), '; (' + cls.name + ')'), item, sceneName, this));
+        }, R.listItem(R.span(null, R.classIcon(cls), R.b(sceneNameProps, sceneName), ' (' + cls.name + ')'), item, sceneName, this));
 	}
 	
 	render () {
@@ -82,7 +103,7 @@ export default class ScenesList extends React.Component {
 		)
 	}
 	
-	static loadScenes() {
+	static readAllScenesList() {
 	    var scenes = {};
 	    return Promise.all(
             EDITOR.fs.files.filter(fn => fn.match(sceneFileFiler))

@@ -1,7 +1,10 @@
 var fs = {
     chooseProject: (enforced) => {
-        fs.getJSON('/fs/projects', (data) => {
+        fs.getJSON('/fs/projects').then((data) => {
             EDITOR.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
+            .then((projDir) => {
+                EDITOR.openProject(projDir);
+            })
         });
     },
     refreshFiles:() => {
@@ -57,8 +60,7 @@ function renderProjectItem (desc, i, array) {
     }
 
     return R.div({className:'project-item-select clickable', key:i, onClick:() => {
-        EDITOR.ui.modal.closeModal();
-        fs.openProject(desc.dir);
+        EDITOR.ui.modal.closeModal(desc.dir);
     }},icon, desc.title);
 }
 

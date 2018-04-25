@@ -84,7 +84,7 @@ button {
 }
 
 .clickable:hover{
-	box-shadow: inset 0 0 2px 2px rgb(189, 223, 255);
+	background:#eee;
 }
 
 .clickable:active{
@@ -272,11 +272,20 @@ button {
 	cursor:pointer;
 }
 
+.list-item:hover{
+	background:#e8e8e8;
+}
+
 .list-item img {
 	margin-right: 4px;
 }
 
-.item-selected{
+.item-selected {
+	cursor:default;
+	background: #95ccff;
+}
+
+.item-selected:hover {
 	background: #95ccff;
 }
 
@@ -395,6 +404,7 @@ input{
 .modal-content {
 	padding:20px;
 	background:#fff;
+	text-align:center;
 }
 
 .project-item-select {
@@ -437,7 +447,6 @@ input{
 #window-scenesList .list-item {
 	padding:10px;
 	border:0;
-	user-select:text;
 	margin-bottom:1px;
 }
 
@@ -450,9 +459,34 @@ input{
 	margin-right: 15px;
 }
 
+.modal-content input {
+	font-size:130%;
+	width: 50%;
+	padding:5px;
+	border:1px solid #888;
+	margin-bottom: 20px;
+}
 
+.modal-reject-text {
+	color:#a00;
+	min-height: 20px;
+	margin: 14px;
+}
 
+.list-view .props-group-header {
+	font-size: 90%;
+	padding-left:20px;
+	color:#fff;
+}
 
+.list-view .props-group{
+	border:1px solid #567;
+}
+
+.selectable-text {
+	user-select:text;
+	cursor:text;
+}
 
 
 
@@ -484,15 +518,15 @@ input{
 
 .modal-spinner {
 	margin:auto;
-	margin-top:calc(50% - 30px);
-    border: 4px solid rgba(0,0,0,0); /* Light grey */
-    border-top: 4px solid #bfbfbf; /* Blue */
-    border-left: 4px solid #bfbfbf; /* Blue */
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    background:rgba(0,0,0,0.3);
-    animation: spin 2s linear infinite;
+	margin-top: 120px;
+	border: 4px solid rgba(0,0,0,0); /* Light grey */
+	border-top: 4px solid #bfbfbf; /* Blue */
+	border-left: 4px solid #bfbfbf; /* Blue */
+	border-radius: 50%;
+	width: 60px;
+	height: 60px;
+	background:rgba(0,0,0,0.3);
+	animation: spin 2s linear infinite;
 }
 
 @keyframes spin {

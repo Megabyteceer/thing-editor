@@ -8,6 +8,7 @@ var blackoutPropsClosable = {
 		}
 	}
 };
+var modalRejectProps = {className: 'modal-reject-text'};
 var spinnerProps = {className: 'modal-spinner'};
 var bodyProps = {className: 'modal-body'};
 var titleProps = {className: 'modal-title'};
@@ -35,6 +36,16 @@ var renderModal = (props, i) => {
 	);
 }
 
+$(window).on('keydown', (ev) => {
+    if (ev.keyCode === 27) {
+        var m = modal.state.modals[modal.state.modals.length - 1];
+        if(m && !m.noEasyClose) {
+            modal.closeModal();
+            sp(ev);
+        }
+    }
+});
+
 var renderSpinner = () => {
 	return R.div(blackoutProps,
 		R.div(spinnerProps)
@@ -44,7 +55,7 @@ var renderSpinner = () => {
 class Prompt extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {value:''};
+        this.state = {value:props.defaultText || ''};
         this.onChange = this.onChange.bind(this);
         this.onAcceptClick = this.onAcceptClick.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
@@ -72,13 +83,11 @@ class Prompt extends React.Component {
     }
     
     render() {
-        var rejected;
-        if(this.state.rejectReason){
-            rejected = R.div(errorProps, this.state.rejectReason);
-        }
-        
         return R.div(null,
-            R.input({value:this.state.value, onKeyDown:this.onKeyDown, autoFocus:true, onChange:this.onChange}),
+            R.div(modalRejectProps, this.state.rejectReason || ' '),
+            R.div(null,
+                R.input({value:this.state.value, onKeyDown:this.onKeyDown, autoFocus:true, onChange:this.onChange})
+            ),
             R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', 13)
         )
     }
@@ -130,8 +139,8 @@ class Modal extends React.Component {
 		}
 	}
     
-    promptShow(title, filter, accept, noEasyClose) {
-	    return this.showModal(React.createElement(Prompt, {filter, accept}), title, noEasyClose);
+    promptShow(title, defaultText, filter, accept, noEasyClose) {
+	    return this.showModal(React.createElement(Prompt, {defaultText, filter, accept}), title, noEasyClose);
     }
 	
 	showError(message, title = 'Error!', noEasyClose) {

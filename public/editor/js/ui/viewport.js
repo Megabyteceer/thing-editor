@@ -14,7 +14,7 @@ class Viewport extends React.Component {
 	}
 	
 	stopExecution(reason) {
-		if(reason){
+		if(reason) {
 			EDITOR.ui.modal.showError(reason);
 		}
 		if(!game.__EDITORmode) {
@@ -24,13 +24,14 @@ class Viewport extends React.Component {
 	
 	onTogglePlay() {
 		var play = game.__EDITORmode;
+		
 		if (play) { // launch game
 			EDITOR.saveCurrentScene(EDITOR.editorFilesPrefix + "save");
 		} else { //stop game
 			EDITOR.loadScene(EDITOR.editorFilesPrefix + "save");
 		}
 		this.forceUpdate();
-		game.__EDITORmode = !play;
+        game.__EDITORmode = !play;
 	}
 	
 	onMouseMove(ev) {

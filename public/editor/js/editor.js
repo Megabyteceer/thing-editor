@@ -67,14 +67,16 @@ class Editor {
 		}
 		if (!dir) {
 			this.fs.chooseProject(true);
-		} else {
+		} else if(dir !== EDITOR.projectDir) {
+		    //TODO: ask if save changes in current scene
 			this.fs.getJSON('/fs/openProject?dir=' + dir).then((data) => {
 				this.fs.refreshFiles().then(() => {
+                    EDITOR.projectDir = dir;
 					EDITOR.settings.setItem('last-opened-project', dir);
 					this.fs.gameFolder = '/games/' + dir + '/';
 					EDITOR.projectDesc = data;
 					EDITOR.reloadAssetsAndClasses().then(() => {
-                        ScenesList.loadScenes().then(() => {
+                        ScenesList.readAllScenesList().then(() => {
                             this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
                         })
 					});

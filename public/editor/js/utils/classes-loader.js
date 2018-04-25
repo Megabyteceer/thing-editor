@@ -65,7 +65,7 @@ function addClass(c, path) {
 
 	if (classPathById.hasOwnProperty(name)) {
 		if (classPathById[name] !== path) {
-			showError(R.span(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'));
+			showError(R.div(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'));
 			return;
 		}
 	}
@@ -149,8 +149,8 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
         console.clear();
         console.log('%c EDITOR: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
 
-        embeddedClasses.some((c, id) => {
-            addClass(c, id, false);
+        embeddedClasses.some((c) => {
+            addClass(c, false);
         });
 
         window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
