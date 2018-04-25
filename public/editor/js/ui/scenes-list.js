@@ -24,8 +24,11 @@ export default class ScenesList extends React.Component {
     onSaveAsSceneClick() {
 		//im here: TODO: requireString dialog -> save scene as with check name is unique
         EDITOR.ui.modal.promptShow('Enter name for scene:',
-            (val)=> {
+            (val) => { // filter
                 return val.toLowerCase().replace(sceneNameFilter, '');
+            },
+            (val) => { //accept
+            
             }).then((enteredName) => {
                 EDITOR.saveCurrentScene(enteredName);
             });

@@ -412,6 +412,11 @@ input{
 }
 
 .list-view {
+	bottom: 3px;
+	top: 35px;
+	left: 3px;
+	right: 3px;
+	position: absolute;
 	overflow-y: auto;
 	background:#fff;
 }
