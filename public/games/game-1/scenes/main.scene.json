@@ -2,6 +2,8 @@
 	"c": "Scene",
 	"p": {
 		"name": "scene1",
+		"x": 539,
+		"y": 326,
 		"backgroundColor": 3090502
 	},
 	":": [
