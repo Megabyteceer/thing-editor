@@ -172,11 +172,17 @@ class Editor {
         this.selection.select(game.currentScene);
         if(!ScenesList.isSpecialSceneName(name)) {
             EDITOR.projectDesc.currentSceneName = name;
+            EDITOR.saveProjecrDesc();
         }
         this.ui.forceUpdate();
         this.sceneOpened.emit(); //TODO: ? remove this signal?
 	}
 	
+    saveProjecrDesc(){
+	    this.fs.saveFile('project.json', EDITOR.projectDesc);
+    }
+    
+    
 	saveCurrentScene(name = EDITOR.editorFilesPrefix + "tmp") {
 	    EDITOR.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
@@ -184,6 +190,7 @@ class Editor {
         if(!ScenesList.isSpecialSceneName(name)) {
             if(EDITOR.projectDesc.currentSceneName != name) {
                 EDITOR.projectDesc.currentSceneName = name;
+                EDITOR.saveProjecrDesc();
                 this.ui.forceUpdate();
             }
         }

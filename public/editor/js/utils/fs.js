@@ -9,6 +9,7 @@ var fs = {
     },
     refreshFiles:() => {
        return fs.getJSON('/fs/enum').then((data) => {
+           data.sort();
            fs.files = data;
        });
     },
