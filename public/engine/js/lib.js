@@ -4,10 +4,6 @@ var classes;
 var defaults;
 var textures = {};
 
-//EDITOR
-var classesIdByName = {};
-//ENDEDITOR
-
 var constructorProcessor = (o) => {
     if(o instanceof PIXI.Sprite) {
          o.texture = textures['bunny'];
@@ -49,11 +45,6 @@ class Lib {
         defaults = def;
         classes = c;
         this.classes = c;
-//EDITOR
-        Object.keys(c).some((id)=> {
-            classesIdByName[c[id].name] = parseInt(id);
-        });
-//ENDEDITOR
     }
     
     _setScenes(s){
@@ -130,9 +121,9 @@ class Lib {
                 }
             }
         })
-        assert(classesIdByName.hasOwnProperty(o.constructor.name), 'Attempt to serialize class ' + o.constructor.name + ' which has no assigned id.');
+        assert(classes.hasOwnProperty(o.constructor.name), 'Attempt to serialize class ' + o.constructor.name + ' which was not loaded properly.');
         var ret = {
-            c:classesIdByName[o.constructor.name],
+            c:o.constructor.name,
             p:props
         }
         if(o.children && o.children.length > 0) {

@@ -6,11 +6,9 @@ const CUSTOM_CLASSES_ID = 100;
 const CLASS_TYPE_SCENE = 1;
 const CLASS_TYPE_DISPLAYOBJECT = 2;
 
-var loadedClassesByName = {},
-	loadedClassesIdsByName = {},
-	classesById = {},
+var classesById = {},
 	classesDefaultsById = {}, //default values for serializable properties of class
-	classPathByName = {};
+	classPathById = {};
 
 var classesIdCounter;
 var customClassesIdCounter;
@@ -35,42 +33,6 @@ function init() {
 
 ClassesLoader.init = init;
 
-function saveClassesRegister() {
-	var content = {};
-	Object.keys(classesById).some((id) => {
-		var name = classesById[id].name;
-		content[id] = {
-			name: name,
-			path: classPathByName[name],
-            defaults: classesDefaultsById[id]
-		}
-	});
-	return EDITOR.fs.saveFile('data/classes.json', content);
-}
-
-function loadClassesRegister() {
-	if (classesRegisterLoaded) {
-		return Promise.resolve();
-	}
-	return new Promise((resolve, reject) => {
-		EDITOR.fs.openFile('data/classes.json').then((data) => {
-			if (data) {
-				for (var id in data) {
-					var desc = data[id];
-					var className = desc.name;
-					loadedClassesIdsByName[className] = parseInt(id);
-					classPathByName[className] = desc.path;
-				}
-				classesRegisterLoaded = true;
-				resolve();
-			} else {
-				reject();
-				showError('Classes list "data/classes.json" loading error.');
-			}
-		}).catch(reject);
-	});
-}
-
 var errorOccured;
 
 function showError(message) {
@@ -92,37 +54,39 @@ function getClassType(c) {
 	}
 }
 
-function addClass(c, id, path) {
+function addClass(c, path) {
 	
 	var classType = getClassType(c);
 	if (!classType) return;
 	
 	var name = c.name;
-	if (path) {
-		console.log('Custom class loded: ' + name + '; id:' + id + '; ' + path);
-	}
-	
-	
-	if (classPathByName.hasOwnProperty(name)) {
-		if (classPathByName[name] !== path) {
-			showError(R.span(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathByName[name] || 'System class ' + name)), '. Please change your class name.'));
+
+
+
+	if (classPathById.hasOwnProperty(name)) {
+		if (classPathById[name] !== path) {
+			showError(R.span(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'));
 			return;
 		}
 	}
-	classPathByName[name] = (((typeof path) === 'string') ? path : false);
-	
-	loadedClassesByName[name] = c;
-	classesById[id] = c;
-	var item = {id, c};
+
+	if (path) {
+        console.log('Custom class loded: ' + name + '; ' + path);
+    }
+
+	classPathById[name] = (((typeof path) === 'string') ? path : false);
+	classesById[name] = c;
+
+	var item = {c};
 	if (classType === CLASS_TYPE_DISPLAYOBJECT) {
 		ClassesLoader.gameObjClasses.push(item);
 	} else {
 		ClassesLoader.sceneClasses.push(item);
 	}
-    enumClassProperties(c, id);
+    enumClassProperties(c);
 }
 
-function enumClassProperties(c, id) {
+function enumClassProperties(c) {
     var cc = c;
     var props = [];
     var defaults = {};
@@ -158,7 +122,7 @@ function enumClassProperties(c, id) {
         cc = cc.__proto__;
     }
     c.EDITOR_propslist_cache = props;
-    classesDefaultsById[id] = defaults;
+    classesDefaultsById[c.name] = defaults;
 }
 
 function clearClasses() {
@@ -177,86 +141,73 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
     return new Promise((resolve, reject) => {
         
         errorOccured = false;
-        loadClassesRegister().then(() => {
-            
-            loadedClssesCount = newLoadedClassesCount = 0;
-            clearClasses();
-            customClassesIdCounter = CUSTOM_CLASSES_ID;
-            console.clear();
-            console.log('%c EDITOR: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
-            
-            embeddedClasses.some((c, id) => {
-                addClass(c, id, false);
-            });
-            
-            window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
-                showError(R.div(null,
-                    message,
-                    R.div({className: 'error-body'}, source.split('?nocache=').shift().split(':' + location.port).pop() + ' (' + lineno + ':' + colno + ')', R.br(), message),
-                    'Plese fix error in source code and press button to try again:',
-                ));
-            };
-        
-            var scriptSource = '';
-            EDITOR.fs.files.some((fn, i) => {
-                if (fn.match(jsFiler)) {
-                    var classPath = fn;
-                    scriptSource += ("import C" + i + " from '" + location.origin + EDITOR.fs.gameFolder + classPath + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
-                }
-            });
-            
-            var src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
-        
-            var script = document.createElement('script');
-            EDITOR.ui.modal.showSpinner();
-            script.onerror = function (er) {
-                EDITOR.ui.modal.hideSpinner();
-            }
-            script.onload = function (ev) {
-                
-                EDITOR.ui.modal.hideSpinner();
-                head.removeChild(script);
-                
-                window.onerror = null;
-                if (!errorOccured) {
-                    Lib._setClasses(classesById, classesDefaultsById);
-                    saveClassesRegister().then(() => {
-                        classesLoadedSuccessfullyAtLeastOnce = true;
-                
-                        console.log('Loading success.');
-                        console.log(loadedClssesCount + ' classes updated.');
-                        if (newLoadedClassesCount > 0) {
-                            console.log(newLoadedClassesCount + ' new classes added.');
-                        }
-                        resolve();
-                    });
-                    ClassesLoader.classesLoaded.emit();
-                } else {
-                    reject();
-                    console.warn('classes were not loaded because of error.')
-                }
-            }
-            script.type = 'module';
-            script.src = src;
-            head.appendChild(script);
+
+
+        loadedClssesCount = newLoadedClassesCount = 0;
+        clearClasses();
+        customClassesIdCounter = CUSTOM_CLASSES_ID;
+        console.clear();
+        console.log('%c EDITOR: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
+
+        embeddedClasses.some((c, id) => {
+            addClass(c, id, false);
         });
+
+        window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
+            showError(R.div(null,
+                message,
+                R.div({className: 'error-body'}, source.split('?nocache=').shift().split(':' + location.port).pop() + ' (' + lineno + ':' + colno + ')', R.br(), message),
+                'Plese fix error in source code and press button to try again:',
+            ));
+        };
+
+        var scriptSource = '';
+        EDITOR.fs.files.some((fn, i) => {
+            if (fn.match(jsFiler)) {
+                var classPath = fn;
+                scriptSource += ("import C" + i + " from '" + location.origin + EDITOR.fs.gameFolder + classPath + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
+            }
+        });
+
+        var src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
+
+        var script = document.createElement('script');
+        EDITOR.ui.modal.showSpinner();
+        script.onerror = function (er) {
+            EDITOR.ui.modal.hideSpinner();
+        }
+        script.onload = function (ev) {
+
+            EDITOR.ui.modal.hideSpinner();
+            head.removeChild(script);
+
+            window.onerror = null;
+            if (!errorOccured) {
+                Lib._setClasses(classesById, classesDefaultsById);
+
+                classesLoadedSuccessfullyAtLeastOnce = true;
+
+                console.log('Loading success.');
+                console.log(loadedClssesCount + ' classes updated.');
+                if (newLoadedClassesCount > 0) {
+                    console.log(newLoadedClassesCount + ' new classes added.');
+                }
+                resolve();
+
+                ClassesLoader.classesLoaded.emit();
+            } else {
+                reject();
+                console.warn('classes were not loaded because of error.')
+            }
+        }
+        script.type = 'module';
+        script.src = src;
+        head.appendChild(script);
     });
 }
 
 function  classLoaded(c, path) {
-    var name = c.name;
-    
-    var id;
-    if (loadedClassesIdsByName.hasOwnProperty(name)) {
-        id = loadedClassesIdsByName[name];
-        loadedClssesCount++;
-    } else {
-        id = customClassesIdCounter++;
-        loadedClassesIdsByName[name] = id;
-        console.warn('New class ' + name + '. id ' + id + ' was assigned.');
-        newLoadedClassesCount++;
-    }
-    addClass(c, id, path);
+    addClass(c, path);
 }
 
 ClassesLoader.reloadClasses = reloadClasses;

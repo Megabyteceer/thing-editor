@@ -17,11 +17,11 @@ class ClessesView extends React.Component {
 	}
 	
 	onAddClick() {
-		EDITOR.addToScene(Lib.loadClassInstanceById(this.state.selectedItem.id));
+		EDITOR.addToScene(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
 	}
 	
 	onAddAsChildClick() {
-		EDITOR.addToSelected(Lib.loadClassInstanceById(this.state.selectedItem.id));
+		EDITOR.addToSelected(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
 	}
 	
 	onSelect(item) {
@@ -29,7 +29,7 @@ class ClessesView extends React.Component {
 	}
 	
 	renderItem(item) {
-		return R.listItem(R.span(null, R.classIcon(item.c), item.c.name + ' (' + item.id + ')'), item, item.id, this);
+		return R.listItem(R.span(null, R.classIcon(item.c), item.c.name), item, item.c.name, this);
 	}
 	
 	selectedItem() {
