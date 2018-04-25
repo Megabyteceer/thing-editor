@@ -1,3 +1,5 @@
+import Group from "./group.js";
+
 var classViewProps = {className: 'vertical-layout'};
 var bodyProps = {className: 'list-view', title:'Double click to open scene.'};
 
@@ -28,7 +30,13 @@ export default class ScenesList extends React.Component {
                 return val.toLowerCase().replace(sceneNameFilter, '');
             },
             (val) => { //accept
-            
+                if(Lib.scenes.hasOwnProperty(val)) {
+                    return "Name already exists";
+                }
+                if(val.endsWith('/') || val.startsWith('/')) {
+                    return 'name can not begin or end with "/"';
+                }
+
             }).then((enteredName) => {
                 EDITOR.saveCurrentScene(enteredName);
             });
@@ -40,7 +48,7 @@ export default class ScenesList extends React.Component {
 	
 	renderItem(sceneName, item) {
         var cls = Lib.getClass(item.c);
-		return R.div({onDoubleClick:() => {
+		return R.div({onDoubleClick: () => {
 		        EDITOR.loadScene(sceneName);
             },
             key:sceneName
@@ -65,6 +73,9 @@ export default class ScenesList extends React.Component {
                 scenes.push(this.renderItem(sceneName, libsScenes[sceneName]));
             }
         }
+
+        scenes = Group.groupArray(scenes);
+
 		return R.div(classViewProps,
 			R.div({className: bottomPanelClassName}, R.btn('Save', this.onSaveSceneClick, 'Save current scene'), R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')),
 			R.div(bodyProps, scenes)

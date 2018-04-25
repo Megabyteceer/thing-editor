@@ -1,23 +1,8 @@
 import PropsFieldWrapper from './props-field-wrapper.js';
+import Group from '../group.js';
 
 var editorProps = {
 	className: 'props-editor'
-}
-
-function isGroupHidden(groupId) {
-	return EDITOR.settings.getItem(groupId, false);
-}
-
-function toggleGroup(ev) {
-	var groupId = ev.target.dataset.groupid;
-	var group = $('.' + groupId + ' .props-group-body');
-	var isHidden = !isGroupHidden(groupId);
-	EDITOR.settings.setItem(groupId, isHidden);
-	if (isHidden) {
-		group.addClass('hidden');
-	} else {
-		group.removeClass('hidden');
-	}
 }
 
 class PropsEditor extends React.Component {
@@ -48,16 +33,8 @@ class PropsEditor extends React.Component {
 				if (curGroup) {
 					groups.push(curGroup);
 				}
-				var gid = 'props-group-' + p.name;
 				curGroupArray = [];
-				curGroup = R.div({key: gid, className: 'props-group ' + gid},
-					R.div({
-						className: 'props-group-header clickable clickable-neg',
-						'data-groupid': gid,
-						onClick: toggleGroup
-					}, p.title),
-					R.div({className: 'props-group-body' + (isGroupHidden(gid) ? ' hidden' : '')}, curGroupArray)
-				)
+                curGroup = Group.renderGroup({key: p.name, content:curGroupArray, title:p.title});
 			} else {
 				curGroupArray.push(
 					React.createElement(PropsFieldWrapper, {key: p.name, field: p, onChange: this.props.onChange})
