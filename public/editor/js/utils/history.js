@@ -11,6 +11,7 @@ function applyState(state) {
 
 function pushCurrentStateToUndoHistory() {
     if(!game.__EDITORmode) {
+        assert(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName));
         undos.push(Lib.scenes[EDITOR.runningSceneLibSaveSlotName]);
     } else {
         undos.push(getCurrentState());

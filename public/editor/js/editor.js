@@ -89,7 +89,24 @@ class Editor {
                         EDITOR.projectDesc = data;
                         EDITOR.reloadAssetsAndClasses().then(() => {
                             ScenesList.readAllScenesList().then(() => {
-                                this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
+
+                                if(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName)) {
+                                    debugger;
+                                    EDITOR.ui.modal.showQuestion("Scene's backup restoring",
+                                        R.div(null, R.div(null, "Looks like previous session was finished incorrectly."),
+                                        R.div(null, "Do you want to restore scene from backup?")),
+                                        ()=> {
+                                            this.loadScene(EDITOR.runningSceneLibSaveSlotName);
+                                        }, 'Restore backup',
+                                        () => {
+                                            this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
+                                            EDITOR.fs.deleteFile(EDITOR.runningSceneLibSaveSlotName);
+                                        }, 'Delete backup',
+                                        true
+                                    );
+                                } else {
+                                    this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
+                                }
                             });
                         });
                     });
@@ -191,6 +208,8 @@ class Editor {
             if (!ScenesList.isSpecialSceneName(name)) {
                 EDITOR.projectDesc.currentSceneName = name;
                 EDITOR.saveProjecrDesc();
+            } if( name === EDITOR.runningSceneLibSaveSlotName) {
+                EDITOR.fs.deleteFile(EDITOR.runningSceneLibSaveSlotName);
             }
             this.ui.forceUpdate();
             this.sceneOpened.emit(); //TODO: ? remove this signal?
