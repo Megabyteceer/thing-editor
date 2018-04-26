@@ -100,7 +100,7 @@ class Lib {
             scenes[name] = undefined;
         } else {
 	        assert(scene instanceof Scene, "Scene instance expected");
-	        var sceneData = Lib.__serializeObject(scene)
+	        var sceneData = Lib.__serializeObject(scene);
             scenes[name] = sceneData;
             EDITOR.fs.saveFile('scenes/'+name+'.scene.json', sceneData, true);
         }

@@ -18,6 +18,7 @@ var jsonParser = bodyParser.json()
 app.get('/fs/projects', function (req, res) {
 	res.send(enumProjects());
 });
+
 app.get('/fs/openProject', function (req, res) {
 	currentGame = req.query.dir;
 	currentGameRoot = clientGamesRoot + currentGame + '/';
@@ -25,14 +26,28 @@ app.get('/fs/openProject', function (req, res) {
 	//log('Project opened: ' + process.cwd());
 	res.send(fs.readFileSync('project.json'));
 });
+
 var pathFixerExp = /\\/g;
 var pathFixer = (fn) => {
     return fn.replace(pathFixerExp, '/');
 }
+
 app.get('/fs/enum', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	res.send(walkSync('.').map(pathFixer));
 });
+
+app.get('/fs/delete', function (req, res) {
+	if(!currentGame) throw 'No game opened';
+	var fn = req.query.f;
+	try {
+		fs.unlinkSync(fn);
+		res.end('{}');
+	} catch (err) {
+		res.end("Can't delete file " + fn);
+	}
+});
+
 app.post('/fs/savefile', jsonParser, function (req, res) {
 	var fileName = req.body.filename;
 	log('Save file: ' + fileName);
@@ -107,4 +122,3 @@ function ensureDirectoryExistence(filePath) {
   ensureDirectoryExistence(dirname);
   fs.mkdirSync(dirname);
 }
-

@@ -16,6 +16,7 @@ var frameCounterTime = 0;
 class Game {
 
 	constructor (gameId) {
+        this.__EDITORmode = true;
 		this.settings = new Settings(gameId);
 		this.updateGlobal = this.updateGlobal.bind(this);
 		window.game = this;

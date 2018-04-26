@@ -1,23 +1,28 @@
+import utils from './utils/editor-utils.js';
 import Game from '/engine/js/game.js';
 import Settings from '/engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
 import ws from './utils/socket.js';
 import fs from './utils/fs.js';
+import history from './utils/history.js';
 import UI from './ui/ui.js';
 import ClassesLoader from './utils/classes-loader.js';
 import ScenesList from "./ui/scenes-list.js";
-import PropsFieldWrapper from "./ui/props-editor/props-field-wrapper.js";
-
 
 class Editor {
 	
     get editorFilesPrefix() {
         return '.editor-tmp.';
     }
+
+    get runningSceneLibSaveSlotName() {
+        return this.editorFilesPrefix + 'save';
+    }
     
 	constructor() {
 		
 		window.EDITOR = this;
+
 		Object.defineProperty(PIXI.DisplayObject.prototype, '__editorData', {
 			get: () => {
 				throw "No __editorData field found for " + this.constructor.name + '. To create game objects use code: Lib.create(\'name\')';
@@ -38,14 +43,20 @@ class Editor {
 		this.reloadClasses = this.reloadClasses.bind(this);
 		
 		this.sceneOpened = new Signal();
+		this.history = history;
 		
 		ReactDOM.render(
 			React.createElement(UI, {onMounted: this.onUIMounted}),
 			document.getElementById('root')
 		);
 	}
-	
+
+    /**
+     *
+     * @param ui {UI}
+     */
 	onUIMounted(ui) {
+        /** @member {UI} */
 		this.ui = ui;
 		this.game = new Game('tmp.game.id');
 		
@@ -62,27 +73,29 @@ class Editor {
 	}
 	
 	openProject(dir) {
-		if (!dir) {
-			dir = EDITOR.settings.getItem('last-opened-project');
-		}
-		if (!dir) {
-			this.fs.chooseProject(true);
-		} else if(dir !== EDITOR.projectDir) {
-		    //TODO: ask if save changes in current scene
-			this.fs.getJSON('/fs/openProject?dir=' + dir).then((data) => {
-				this.fs.refreshFiles().then(() => {
-                    EDITOR.projectDir = dir;
-					EDITOR.settings.setItem('last-opened-project', dir);
-					this.fs.gameFolder = '/games/' + dir + '/';
-					EDITOR.projectDesc = data;
-					EDITOR.reloadAssetsAndClasses().then(() => {
-                        ScenesList.readAllScenesList().then(() => {
-                            this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
-                        })
-					});
-				});
-			});
-		}
+	    askSceneToSaveIfNeed().then(() => {
+            if (!dir) {
+                dir = EDITOR.settings.getItem('last-opened-project');
+            }
+            if (!dir) {
+                this.fs.chooseProject(true);
+            } else if (dir !== EDITOR.currentProjectDir) {
+                //TODO: ask if save changes in current scene
+                this.fs.getJSON('/fs/openProject?dir=' + dir).then((data) => {
+                    this.fs.refreshFiles().then(() => {
+                        EDITOR.currentProjectDir = dir;
+                        EDITOR.settings.setItem('last-opened-project', dir);
+                        this.fs.gameFolder = '/games/' + dir + '/';
+                        EDITOR.projectDesc = data;
+                        EDITOR.reloadAssetsAndClasses().then(() => {
+                            ScenesList.readAllScenesList().then(() => {
+                                this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
+                            });
+                        });
+                    });
+                });
+            }
+        });
 	}
 	
 	initResize() {
@@ -109,12 +122,12 @@ class Editor {
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
 		var needRepairScene = game.currentScene != null;
 		if(needRepairScene) {
-			this.saveCurrentScene();
+			this.saveCurrentScene(EDITOR.editorFilesPrefix + "tmp");
 		}
 		
 		return ClassesLoader.reloadClasses().then(()=>{
 			if(needRepairScene) {
-				this.loadScene();
+				this.loadScene(EDITOR.editorFilesPrefix + "tmp");
 			}
 		});
 	}
@@ -146,12 +159,13 @@ class Editor {
 	
 	onSelectedPropsChange(field, val) {
 		if (typeof field === 'string') {
-			field = EDITOR.getObjectField(this.selection[0], field)
+			field = EDITOR.getObjectField(this.selection[0], field);
 		}
 		for (let o of this.selection) {
 			o[field.name] = val;
 		}
 		this.refreshTreeViewAndPropertyEditor();
+		EDITOR.sceneModified();
 	}
 	
 	/**
@@ -163,38 +177,84 @@ class Editor {
 	
 	getObjectField(o, name) {
 		return EDITOR.enumObjectsProperties(o).find((f) => {
-			return f.name === name
+			return f.name === name;
 		});
 	}
-	
-	loadScene(name = EDITOR.editorFilesPrefix + "tmp") {
-		game.showScene(Lib.loadScene(name));
-        this.selection.select(game.currentScene);
-        if(!ScenesList.isSpecialSceneName(name)) {
-            EDITOR.projectDesc.currentSceneName = name;
-            EDITOR.saveProjecrDesc();
-        }
-        this.ui.forceUpdate();
-        this.sceneOpened.emit(); //TODO: ? remove this signal?
-	}
-	
-    saveProjecrDesc(){
-	    this.fs.saveFile('project.json', EDITOR.projectDesc);
-    }
-    
-    
-	saveCurrentScene(name = EDITOR.editorFilesPrefix + "tmp") {
-	    EDITOR.ui.viewport.stopExecution();
-		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
-		Lib.__saveScene(game.currentScene, name);
-        if(!ScenesList.isSpecialSceneName(name)) {
-            if(EDITOR.projectDesc.currentSceneName != name) {
+
+	loadScene(name) {
+	    assert(name, 'name should be defined');
+        askSceneToSaveIfNeed().then(() => {
+            history.clearHistory();
+            EDITOR.currentSceneIsModified = false;
+            game.showScene(Lib.loadScene(name));
+            this.selection.select(game.currentScene);
+            if (!ScenesList.isSpecialSceneName(name)) {
                 EDITOR.projectDesc.currentSceneName = name;
                 EDITOR.saveProjecrDesc();
-                this.ui.forceUpdate();
+            }
+            this.ui.forceUpdate();
+            this.sceneOpened.emit(); //TODO: ? remove this signal?
+        });
+	}
+
+	applyScene(scene) { //used to raplace current scene in redo/undo
+	    assert(game.__EDITORmode);
+        game.currentScene = scene;
+        this.selection.select(game.currentScene);
+        this.refreshTreeViewAndPropertyEditor();
+    }
+
+    saveProjecrDesc() {
+        debouncedCall(__saveProjectDescriptorInner);
+    }
+
+    sceneModified() {
+	    if(game.__EDITORmode) {
+	        EDITOR.currentSceneIsModified = true;
+            debouncedCall(history.addHistoryState, 1000);
+        }
+    }
+
+    /**
+     *
+     * @param name: String
+     */
+	saveCurrentScene(name = EDITOR.projectDesc.currentSceneName) {
+	    EDITOR.ui.viewport.stopExecution();
+		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
+		if(EDITOR.currentSceneIsModified || (EDITOR.projectDesc.currentSceneName !== name)) {
+            EDITOR.currentSceneIsModified = false;
+            Lib.__saveScene(game.currentScene, name);
+            if(!ScenesList.isSpecialSceneName(name)) {
+                if(EDITOR.projectDesc.currentSceneName != name) {
+                    EDITOR.projectDesc.currentSceneName = name;
+                    EDITOR.saveProjecrDesc();
+                    this.ui.forceUpdate();
+                }
             }
         }
 	}
+}
+
+function  askSceneToSaveIfNeed() {
+    if(EDITOR.currentSceneIsModified) {
+        return new Promise((resolve) => {
+
+            EDITOR.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
+                ()=> {
+                    debugger;
+                    EDITOR.saveCurrentScene();
+                    resolve();
+                }, 'Save',
+                () => {
+                    resolve();
+
+                }, 'No save'
+            )
+        });
+    } else {
+        return Promise.resolve();
+    }
 }
 
 function addTo(parent, child) {
@@ -202,7 +262,9 @@ function addTo(parent, child) {
 	EDITOR.ui.sceneTree.select(child);
 }
 
-
+let __saveProjectDescriptorInner = () => {
+    EDITOR.fs.saveFile('project.json', EDITOR.projectDesc);
+}
 
 //====== extend DisplayObjct data for editor time only ===============================
 var idCounter = 0;

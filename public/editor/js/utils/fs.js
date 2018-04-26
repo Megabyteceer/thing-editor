@@ -13,6 +13,9 @@ var fs = {
            fs.files = data;
        });
     },
+    deleteFile:(fileName) => {
+        return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName));
+    },
     getJSON(url, silently) {
        if(!silently) {
            EDITOR.ui.modal.showSpinner();
@@ -24,7 +27,7 @@ var fs = {
        return r;
     },
     openFile(fileName, silently) {
-		return this.getJSON(fs.gameFolder+fileName, silently);
+		return this.getJSON(fs.gameFolder + fileName, silently);
     },
     saveFile(filename, data, silently) {
         if(!silently) {

@@ -33,7 +33,7 @@ export default class ScenesList extends React.Component {
 	}
 	
 	onSaveSceneClick() {
-		EDITOR.saveCurrentScene(EDITOR.projectDesc.currentSceneName);
+		EDITOR.saveCurrentScene();
 	}
     
     onSaveAsSceneClick() {
@@ -44,7 +44,7 @@ export default class ScenesList extends React.Component {
 	    if(defaultSceneName) {
 	        defaultSceneName += '/';
         }
-        EDITOR.ui.modal.promptShow('Enter name for scene:',
+        EDITOR.ui.modal.showPrompt('Enter name for scene:',
             defaultSceneName,
             (val) => { // filter
                 return val.toLowerCase().replace(sceneNameFilter, '');
@@ -98,7 +98,10 @@ export default class ScenesList extends React.Component {
         scenes = Group.groupArray(scenes);
 
 		return R.div(classViewProps,
-			R.div({className: bottomPanelClassName}, R.btn('Save', this.onSaveSceneClick, 'Save current scene'), R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')),
+			R.div({className: bottomPanelClassName},
+                R.btn('Save', this.onSaveSceneClick, 'Save current scene'),
+                R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')
+            ),
 			R.div(bodyProps, scenes)
 		)
 	}

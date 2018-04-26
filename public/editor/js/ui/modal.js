@@ -138,8 +138,23 @@ class Modal extends React.Component {
 			}, 10);
 		}
 	}
+
+    showQuestion(title, message, onYes, yesLabel='Ok', onNo, noLabel = 'Cancel', noEasyClose) {
+
+	    var yesBtn = R.btn(yesLabel, onYes, undefined, 'main-btn', 13);
+	    if(typeof onNo != 'undefined') {
+            var noBtn = R.btn(noLabel, onNo);
+        }
+
+	    return this.showModal(R.div(null, message,
+            R.div(null,
+                yesBtn,
+                noBtn
+            )
+        ), title, noEasyClose);
+    }
     
-    promptShow(title, defaultText, filter, accept, noEasyClose) {
+    showPrompt(title, defaultText, filter, accept, noEasyClose) {
 	    return this.showModal(React.createElement(Prompt, {defaultText, filter, accept}), title, noEasyClose);
     }
 	

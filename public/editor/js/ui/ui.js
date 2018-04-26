@@ -7,6 +7,16 @@ import Modal from './modal.js';
 import ClessesView from './classes-view.js';
 import ScenesList from "./scenes-list.js";
 
+
+/**
+ *
+ * @param label
+ * @param onClick
+ * @param title
+ * @param className
+ * @param hotkey
+ * @returns {Element}
+ */
 R.btn = function (label, onClick, title, className, hotkey) {
 	className = className || '';
 	return React.createElement(Button, {label, onClick, className, title, hotkey});
@@ -17,9 +27,12 @@ function window(id, title, content, x, y, minW, minH, w, h) {
 }
 
 class UI extends React.Component {
-	
+
+
+
 	constructor(props) {
 		super(props);
+
 		this.sceneTreeRef = this.sceneTreeRef.bind(this);
 		this.propsEditorRef = this.propsEditorRef.bind(this);
 		this.viewportRef = this.viewportRef.bind(this);
@@ -35,11 +48,15 @@ class UI extends React.Component {
 	}
 	
 	viewportRef(viewport) {
+
 		this.viewport = viewport;
 	}
-	
-	propsEditorRef(propsEditor) {
-		this.propsEditor = propsEditor;
+
+    /**
+     * @param ref {PropsEditor}
+     */
+	propsEditorRef(ref) {
+        this.propsEditor = ref;
 	}
 	
 	modalRef(modal) {
@@ -49,6 +66,8 @@ class UI extends React.Component {
 	render() {
 		return R.div(null,
 			R.btn('Open project...', EDITOR.fs.chooseProject),
+			R.btn('Undo', EDITOR.history.undo, undefined, undefined, 90),
+			R.btn('Redo', EDITOR.history.redo, undefined, undefined, 89),
 			window('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 250, 250, 500),
 			window('viewport', R.span(null, 'Viewport: ', EDITOR.projectDesc ? R.b(null, EDITOR.projectDesc.currentSceneName): undefined), React.createElement(Viewport, {ref: this.viewportRef}), 1000, 0, 420, 313, 840, 480),
 			window('propsEditor', 'Properties', React.createElement(PropsEditor, {
