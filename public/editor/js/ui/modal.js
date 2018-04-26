@@ -141,9 +141,9 @@ class Modal extends React.Component {
 
     showQuestion(title, message, onYes, yesLabel='Ok', onNo, noLabel = 'Cancel', noEasyClose) {
 
-	    var yesBtn = R.btn(yesLabel, onYes, undefined, 'main-btn', 13);
+	    var yesBtn = R.btn(yesLabel, () => {modal.closeModal(true); onYes();}, undefined, 'main-btn', 13);
 	    if(typeof onNo != 'undefined') {
-            var noBtn = R.btn(noLabel, onNo);
+            var noBtn = R.btn(noLabel, () => {modal.closeModal(); onNo();});
         }
 
 	    return this.showModal(R.div(null, message,

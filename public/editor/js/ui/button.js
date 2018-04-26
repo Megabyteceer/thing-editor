@@ -25,6 +25,7 @@ class Button extends React.Component {
 		
 		if (e.keyCode == this.props.hotkey) {
 			this.onClick(e);
+			sp(e);
 		}
 	}
 	

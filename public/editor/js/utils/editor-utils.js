@@ -43,8 +43,8 @@ R.listItem = (view, item, key, parent) => {
 
 let _debouncings = new Map();
 window.debouncedCall = (f, timeMs = 0) => {
-    debugger;
     if(_debouncings.has(f)) {
+        clearTimeout(_debouncings.get(f));
         _debouncings.delete(f);
     }
     _debouncings.set(f, setTimeout(() => {

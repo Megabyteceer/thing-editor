@@ -2,7 +2,7 @@ import TreeNode from './tree-node.js';
 import Window from '../window.js';
 
 R.renderSceneNode = (node) => {
-	return React.createElement(TreeNode, {node: node, key: node.__editorData.id});
+	return React.createElement(TreeNode, {node: node, key: __getNodeExtendData(node).id});
 	
 }
 
@@ -11,7 +11,7 @@ class TreeView extends React.Component {
 	select(node) {
 		var n = node;
 		while (n && n.parent) {
-			n.__editorData.toggled = true;
+            __getNodeExtendData(n).toggled = true;
 			n = n.parent;
 		}
 		EDITOR.selection.select(node);

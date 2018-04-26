@@ -22,13 +22,7 @@ class Editor {
 	constructor() {
 		
 		window.EDITOR = this;
-
-		Object.defineProperty(PIXI.DisplayObject.prototype, '__editorData', {
-			get: () => {
-				throw "No __editorData field found for " + this.constructor.name + '. To create game objects use code: Lib.create(\'name\')';
-			}
-		});
-		
+	
 		this.currenGamePath = 'games/game-1';
 		this.fs = fs;
 		
@@ -60,13 +54,10 @@ class Editor {
 		this.ui = ui;
 		this.game = new Game('tmp.game.id');
 		
-		Lib.wrapConstructorProcessor(applyEditorDataToNode);
-		
 		Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png'));
 		
 		game.__EDITORmode = true;
 		game.init(document.getElementById('viewport-root'));
-		applyEditorDataToNode(game.stage);
 		
 		ClassesLoader.init();
 		this.openProject();
@@ -91,16 +82,17 @@ class Editor {
                             ScenesList.readAllScenesList().then(() => {
 
                                 if(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName)) {
-                                    debugger;
+                                    
                                     EDITOR.ui.modal.showQuestion("Scene's backup restoring",
                                         R.div(null, R.div(null, "Looks like previous session was finished incorrectly."),
                                         R.div(null, "Do you want to restore scene from backup?")),
                                         ()=> {
                                             this.loadScene(EDITOR.runningSceneLibSaveSlotName);
+                                            EDITOR.currentSceneIsModified = true;
                                         }, 'Restore backup',
                                         () => {
                                             this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
-                                            EDITOR.fs.deleteFile(EDITOR.runningSceneLibSaveSlotName);
+                                            Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
                                         }, 'Delete backup',
                                         true
                                     );
@@ -201,15 +193,15 @@ class Editor {
 	loadScene(name) {
 	    assert(name, 'name should be defined');
         askSceneToSaveIfNeed().then(() => {
-            history.clearHistory();
-            EDITOR.currentSceneIsModified = false;
+            
             game.showScene(Lib.loadScene(name));
             this.selection.select(game.currentScene);
             if (!ScenesList.isSpecialSceneName(name)) {
-                EDITOR.projectDesc.currentSceneName = name;
-                EDITOR.saveProjecrDesc();
+                history.clearHistory(Lib.scenes[name]);
+                EDITOR.currentSceneIsModified = false;
+                saveCurrentProjectName(name);
             } if( name === EDITOR.runningSceneLibSaveSlotName) {
-                EDITOR.fs.deleteFile(EDITOR.runningSceneLibSaveSlotName);
+                Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
             }
             this.ui.forceUpdate();
             this.sceneOpened.emit(); //TODO: ? remove this signal?
@@ -218,7 +210,7 @@ class Editor {
 
 	applyScene(scene) { //used to raplace current scene in redo/undo
 	    assert(game.__EDITORmode);
-        game.currentScene = scene;
+        game.showScene(scene);
         this.selection.select(game.currentScene);
         this.refreshTreeViewAndPropertyEditor();
     }
@@ -230,7 +222,7 @@ class Editor {
     sceneModified() {
 	    if(game.__EDITORmode) {
 	        EDITOR.currentSceneIsModified = true;
-            debouncedCall(history.addHistoryState, 1000);
+            history.addHistoryState();
         }
     }
 
@@ -242,14 +234,10 @@ class Editor {
 	    EDITOR.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
 		if(EDITOR.currentSceneIsModified || (EDITOR.projectDesc.currentSceneName !== name)) {
-            EDITOR.currentSceneIsModified = false;
             Lib.__saveScene(game.currentScene, name);
             if(!ScenesList.isSpecialSceneName(name)) {
-                if(EDITOR.projectDesc.currentSceneName != name) {
-                    EDITOR.projectDesc.currentSceneName = name;
-                    EDITOR.saveProjecrDesc();
-                    this.ui.forceUpdate();
-                }
+                EDITOR.currentSceneIsModified = false;
+                saveCurrentProjectName(name);
             }
         }
 	}
@@ -261,7 +249,6 @@ function  askSceneToSaveIfNeed() {
 
             EDITOR.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
                 ()=> {
-                    debugger;
                     EDITOR.saveCurrentScene();
                     resolve();
                 }, 'Save',
@@ -276,6 +263,14 @@ function  askSceneToSaveIfNeed() {
     }
 }
 
+function saveCurrentProjectName(name) {
+    if(EDITOR.projectDesc.currentSceneName != name) {
+        EDITOR.projectDesc.currentSceneName = name;
+        EDITOR.saveProjecrDesc();
+        EDITOR.ui.forceUpdate();
+    }
+}
+
 function addTo(parent, child) {
 	parent.addChild(child);
 	EDITOR.ui.sceneTree.select(child);
@@ -285,12 +280,13 @@ let __saveProjectDescriptorInner = () => {
     EDITOR.fs.saveFile('project.json', EDITOR.projectDesc);
 }
 
-//====== extend DisplayObjct data for editor time only ===============================
 var idCounter = 0;
-var __editorDataPropertyDescriptor = {writable: true};
-var applyEditorDataToNode = (n) => {
-	Object.defineProperty(n, '__editorData', __editorDataPropertyDescriptor);
-	n.__editorData = {id: idCounter++};
+let editorNodeData = new WeakMap();
+window.__getNodeExtendData = (node) => {
+    if(!editorNodeData.has(node)) {
+        editorNodeData.set(node, {id: idCounter++});
+    }
+    return editorNodeData.get(node);
 }
 
 export default Editor;

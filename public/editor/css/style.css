@@ -125,12 +125,16 @@ button {
 	padding: 2px;
 }
 
-.main-btn{
+.main-btn {
 	font-size:120%;
 	padding:10px 40px;
 	background:#080;
 	color:#fff;
 	margin: 20px;
+}
+
+.main-btn:hover {
+	background:#0cb70c;
 }
 
 .window-rb-corner {

@@ -9,13 +9,7 @@ var constructorProcessor = (o) => {
          o.texture = textures['bunny'];
     }
 }
-var _wrapConstructorProcessor = (wrapper) => {
-	var prevConstructor = constructRecursive;
-	constructRecursive = (o) => {
-		prevConstructor(o);
-		wrapper(o);
-	}
-}
+
 var constructRecursive = (o) => {
     constructorProcessor(o);
 
@@ -28,72 +22,73 @@ var constructRecursive = (o) => {
 
 class Lib {
     constructor() {
-        assert(!scenes, "Attempt to create Lib secondary. It is singleton.");
+        assert(false, "Lib cant be instanced.");
 	    scenes = {'main':{c:1}};
 	    classes = {1:Scene};
     }
     
-    wrapConstructorProcessor(wrapper) {
+    static wrapConstructorProcessor(wrapper) {
 	    _wrapConstructorProcessor(wrapper);
     }
-
-    getClass(id) {
+    
+    static getClass(id) {
         return classes[id];
     }
-
-    _setClasses(c, def) {
+    
+    static _setClasses(c, def) {
         defaults = def;
         classes = c;
-        this.classes = c;
+        Lib.classes = c;
     }
     
-    _setScenes(s){
+    static _setScenes(s){
         scenes = s;
-        this.scenes = s;
+        Lib.scenes = s;
     }
-
-    addTexture(name, texture) {
+    
+    static addTexture(name, texture) {
         textures[name] = texture;
     }
-
-    loadClassInstanceById(id) {
+    
+    static loadClassInstanceById(id) {
         var ret = new classes[id];
         constructRecursive(ret);
         return ret;
     }
-
-    loadObject(name) {
-        return window.Lib.loadClassInstanceById(100);
-        var ret = new objects[name]; //getInstanceByClassId
-        constructRecursive(ret);
-        return ret;
+    
+    static loadObject(name) {
+        return Lib._loadObjectFromData(objects[name]);
     }
     
-    _deserializeObject(src) {
+    static _deserializeObject(src) {
         assert(classes.hasOwnProperty(src.c), 'Unknown class id: ' + src.c);
         assert(defaults.hasOwnProperty(src.c), 'Class with id ' + src.c + ' has no default values set');
         var ret = new classes[src.c]();
         Object.assign(ret, defaults[src.c], src.p);
         if(src.hasOwnProperty(':')){
             src[':'].some((src)=>{
-                ret.addChild(this._deserializeObject(src));
+                ret.addChild(Lib._deserializeObject(src));
             });
         }
         return ret;
     }
-
-    loadScene(name) {
-        var ret = this._deserializeObject(scenes[name]);
+    
+    static _loadObjectFromData(src) {
+        var ret = Lib._deserializeObject(src);
         constructRecursive(ret);
         return ret;
     }
-
-    hasScene(name) {
+    
+    static loadScene(name) {
+        return Lib._loadObjectFromData(scenes[name]);
+    }
+    
+    static hasScene(name) {
         return scenes.hasOwnProperty(name);
     }
 
 //EDITOR
-    __saveScene(scene, name) {
+    static __saveScene(scene, name) {
         assert(typeof name === 'string');
         if(!scene) {
             assert(name === EDITOR.editorFilesPrefix + 'tmp', 'Only temporary scene can be null');
@@ -102,11 +97,19 @@ class Lib {
 	        assert(scene instanceof Scene, "Scene instance expected");
 	        var sceneData = Lib.__serializeObject(scene);
             scenes[name] = sceneData;
-            EDITOR.fs.saveFile('scenes/'+name+'.scene.json', sceneData, true);
+            EDITOR.fs.saveFile(Lib.__sceneNameToFileName(name), sceneData, true);
         }
     }
     
-    _getAllScenes() {
+    static __deleteScene(name) {
+        return EDITOR.fs.deleteFile(Lib.__sceneNameToFileName(name));
+    }
+    
+    static __sceneNameToFileName(sceneName) {
+        return 'scenes/' + sceneName + '.scene.json';
+    }
+    
+    static _getAllScenes() {
         return scenes;
     }
     

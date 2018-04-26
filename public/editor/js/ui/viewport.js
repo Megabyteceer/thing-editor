@@ -26,9 +26,15 @@ class Viewport extends React.Component {
 		var play = game.__EDITORmode;
 		
 		if (play) { // launch game
-			EDITOR.saveCurrentScene(EDITOR.runningSceneLibSaveSlotName);
+            if(EDITOR.currentSceneIsModified) {
+                EDITOR.saveCurrentScene(EDITOR.runningSceneLibSaveSlotName);
+            }
 		} else { //stop game
-			EDITOR.loadScene(EDITOR.runningSceneLibSaveSlotName);
+            if(EDITOR.currentSceneIsModified) {
+                EDITOR.loadScene(EDITOR.runningSceneLibSaveSlotName);
+            } else {
+                EDITOR.loadScene(EDITOR.projectDesc.currentSceneName);
+            }
 		}
 		this.forceUpdate();
         game.__EDITORmode = !play;

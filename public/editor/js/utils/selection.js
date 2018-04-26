@@ -4,7 +4,7 @@ class Selection extends Array {
 		if (!add) {
 			this.clear();
 		}
-		if (object.__editorData.isSelected) {
+		if (__getNodeExtendData(object).isSelected) {
 			this.remove(object);
 		} else {
 			this.add(object);
@@ -25,17 +25,17 @@ class Selection extends Array {
 	}
 	
 	add(o) {
-		assert(!o.__editorData.isSelected);
+		assert(!__getNodeExtendData(o).isSelected);
 		assert(this.indexOf(o) < 0);
-		o.__editorData.isSelected = true;
+        __getNodeExtendData(o).isSelected = true;
 		this.push(o);
 	}
 	
 	remove(o) {
-		assert(o.__editorData.isSelected);
+		assert(__getNodeExtendData(o).isSelected);
 		var i = this.indexOf(o);
 		assert(i >= 0);
-		o.__editorData.isSelected = false;
+        __getNodeExtendData(o).isSelected = false;
 		this.splice(i, 1);
 	}
 }
@@ -51,13 +51,13 @@ var recalculateNodesDeepness = () => {
 }
 
 var recalculateNodesDeepnessRecursive = (n) => {
-	n.__editorData.deepness = curDeepness++;
+    __getNodeExtendData(n).deepness = curDeepness++;
 	if (n.hasOwnProperty('children')) {
 		n.children.some(recalculateNodesDeepnessRecursive);
 	}
 }
 
 var sortByDeepness = (a, b) => {
-	return a.__editorData.deepness - b.__editorData.deepness;
+	return __getNodeExtendData(a).deepness - __getNodeExtendData(b).deepness;
 }
 
