@@ -7,14 +7,14 @@ R.renderSceneNode = (node) => {
 }
 
 class TreeView extends React.Component {
-	
-	select(node) {
-		var n = node;
-		while (n && n.parent) {
+    
+    selectInTree(node) {
+        var n = node;
+        while (n && n.parent) {
             __getNodeExtendData(n).toggled = true;
-			n = n.parent;
-		}
-		EDITOR.selection.select(node);
+            n = n.parent;
+        }
+        EDITOR.selection.select(node);
 		setTimeout(() => {
 			var e = $('.scene-tree-view .item-selected');
 			Window.bringWindowForward(e.closest('.window-body'));

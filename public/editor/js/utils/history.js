@@ -10,66 +10,55 @@ function applyState(state) {
     var scene = Lib._loadObjectFromData(state);
     assert(game.__EDITORmode);
     game.showScene(scene);
-    this.selection.loadSelection(state.selectionData);
-    this.refreshTreeViewAndPropertyEditor();
-}
-
-function pushCurrentStateToUndoHistory(selectionData) {
-    if(!game.__EDITORmode) {
-        assert(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName));
-        undos.push(Lib.scenes[EDITOR.runningSceneLibSaveSlotName]);
-    } else {
-        assert(game.__EDITORmode, "Attempt to use history in running time.");
-        undos.push(Lib.__serializeObject(game.currentScene));
-    }
-    this.currentState._isModified = true;
-    this.currentState.selectionData = selectionData;
-
-    //reduce and limit history
-    if(undos.length > HISTORY_LEN) {
-        var i = HISTORY_LEN - 1;
-        while (i > STRICT_HISTORY_LEN) {
-            i -= 2;
-            undos.splice(i, 1);
-        }
-    }
+    EDITOR.selection.loadSelection(state.selectionData);
 }
 
 function  isRedoAvailable() {
-    redos.length > 0;
+    return redos.length > 0;
 }
 
-function  isUndaAvailable() {
+function  isUndoAvailable() {
     return undos.length > 1;
 }
 
-var timeout;
-var clearDebouncing = () => {
-    if(timeout) {
-        clearTimeout(timeout);
-        timeout = false;
-    }
-}
 class History {
-
-    addHistoryState() {
-        var selectionData = this.selection.saveSelection();
-        redos.length = 0;
-        clearDebouncing();
-        timeout = setTimeout(() => {
-            pushCurrentStateToUndoHistory(selectionData);
-            console.log('History saved');
-            timeout = false;
-        }, 100);
+    
+    constructor(){
+        this.undo = this.undo.bind(this);
+        this.redo = this.redo.bind(this);
+    }
+    
+    _pushCurrentStateToUndoHistory(selectionData) {
+        if(!game.__EDITORmode) {
+            assert(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName));
+            undos.push(Lib.scenes[EDITOR.runningSceneLibSaveSlotName]);
+        } else {
+            assert(game.__EDITORmode, "Attempt to use history in running time.");
+            undos.push(Lib.__serializeObject(game.currentScene));
+        }
+        this.currentState._isModified = true;
+        this.currentState.selectionData = selectionData;
+        
+        //reduce and limit history
+        if(undos.length > HISTORY_LEN) {
+            var i = HISTORY_LEN - 1;
+            while (i > STRICT_HISTORY_LEN) {
+                i -= 2;
+                undos.splice(i, 1);
+            }
+        }
         historyUi.forceUpdate();
+    }
+    
+    addHistoryState() {
+        var selectionData = EDITOR.selection.saveSelection();
+        redos.length = 0;
+        this._pushCurrentStateToUndoHistory(selectionData);
+        console.log('History saved');
     }
 
     undo() {
-        if(isUndaAvailable()) {
-            if(timeout) {
-                clearDebouncing();
-                return;
-            }
+        if(isUndoAvailable()) {
             redos.push(undos.pop());
             applyState(this.currentState);
             historyUi.forceUpdate();
@@ -78,29 +67,28 @@ class History {
 
     redo() {
         if(isRedoAvailable()) {
-            clearDebouncing();
             undos.push(redos.pop());
             applyState(this.currentState);
             historyUi.forceUpdate();
         }
     }
 
-    get currentState(){
+    get currentState() {
         return undos[undos.length - 1];
     }
 
     clearHistory(currentState) {
         undos.length = 0;
         redos.length = 0;
-        undos.push(currentState);
+        this.addHistoryState();
         historyUi.forceUpdate();
     }
 
     setCurrentStateUnmodified() {
         undos.some((s)=> {
-            s._isModified = false;
+            s._isModified = true;
         });
-        this.currentState._isModified = true;
+        this.currentState._isModified = false;
     }
 
     get isStateModified() {
@@ -122,8 +110,10 @@ class HistoryUi extends React.Component {
 
     render() {
         return R.span(EDITOR.currentSceneIsModified ? modifiedStyle: null,
-            R.btn('Undo', EDITOR.history.undo, '(Ctrl + Z)', undefined, 90, !isUndaAvailable()),
-            R.btn('Redo', EDITOR.history.redo, '(Ctrl + Y)', undefined, 89, !isRedoAvailable())
+            R.btn('Undo', EDITOR.history.undo, '(Ctrl + Z)', undefined, 90, !isUndoAvailable()),
+            undos.length,
+            R.btn('Redo', EDITOR.history.redo, '(Ctrl + Y)', undefined, 89, !isRedoAvailable()),
+            redos.length
         );
     }
 }

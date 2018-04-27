@@ -75,7 +75,7 @@ class UI extends React.Component {
 				onChange: EDITOR.onSelectedPropsChange
 			}), 250, 0, 250, 250, 250, 500),
 			window('classesLib', 'Classes', React.createElement(ClessesView), 0, 1000, 250, 150, 250, 500),
-            window('scenesList', 'Scenes', React.createElement(PrefabsList), 250, 1000, 250, 150, 250, 500),
+            window('prefabsList', 'Prefabs', React.createElement(PrefabsList), 250, 1000, 250, 150, 250, 500),
 
             window('scenesList', 'Scenes', React.createElement(ScenesList), 1000, 1000, 200, 100, 200, 100),
 			

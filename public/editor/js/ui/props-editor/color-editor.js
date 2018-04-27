@@ -5,7 +5,7 @@ var ColorEditor = (props) => {
 		onChange: props.onChange,
 		className: 'clickable',
 		type: 'color',
-		defaultValue: '#' + val.toString(16)
+		defaultValue: '#' + val.toString(16).padStart(6, '0')
 	});
 }
 

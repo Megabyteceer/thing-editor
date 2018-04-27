@@ -87,12 +87,14 @@ class Editor {
                                         R.div(null, R.div(null, "Looks like previous session was finished incorrectly."),
                                         R.div(null, "Do you want to restore scene from backup?")),
                                         ()=> {
-                                            this.loadScene(EDITOR.runningSceneLibSaveSlotName);
-                                            EDITOR.currentSceneIsModified = true;
+                                            this.loadScene(EDITOR.runningSceneLibSaveSlotName).then(()=>{
+                                                EDITOR.currentSceneIsModified = true;
+                                            });
                                         }, 'Restore backup',
                                         () => {
-                                            this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
-                                            Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
+                                            this.loadScene(EDITOR.projectDesc.currentSceneName || 'main').then(() =>{
+                                                Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
+                                            });
                                         }, 'Delete backup',
                                         true
                                     );
@@ -132,11 +134,14 @@ class Editor {
 		var needRepairScene = game.currentScene != null;
 		if(needRepairScene) {
 			this.saveCurrentScene(EDITOR.editorFilesPrefix + "tmp");
+			var selectionData = EDITOR.selection.saveSelection();
 		}
 		
 		return ClassesLoader.reloadClasses().then(()=>{
 			if(needRepairScene) {
-				this.loadScene(EDITOR.editorFilesPrefix + "tmp");
+				this.loadScene(EDITOR.editorFilesPrefix + "tmp").then(()=>{
+                    EDITOR.selection.loadSelection(selectionData);
+                });
 			}
 		});
 	}
@@ -192,15 +197,15 @@ class Editor {
 
 	loadScene(name) {
 	    assert(name, 'name should be defined');
-        askSceneToSaveIfNeed().then(() => {
+        return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
             selectionsForScenesByName[EDITOR.projectDesc.currentSceneName] = this.selection.saveSelection();
             game.showScene(Lib.loadScene(name));
-            this.selection.select(game.currentScene);
             if (!ScenesList.isSpecialSceneName(name)) {
-                history.clearHistory(Lib.scenes[name]);
-                history.setCurrentStateUnmodified();
+                
                 saveCurrentSceneName(name);
                 this.selection.loadSelection(selectionsForScenesByName[EDITOR.projectDesc.currentSceneName]);
+                history.clearHistory(Lib.scenes[name]);
+                history.setCurrentStateUnmodified();
             } if( name === EDITOR.runningSceneLibSaveSlotName) {
                 Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
             }
@@ -236,8 +241,8 @@ class Editor {
 	}
 }
 
-function  askSceneToSaveIfNeed() {
-    if(EDITOR.currentSceneIsModified) {
+function  askSceneToSaveIfNeed(skip) {
+    if(!skip && EDITOR.currentSceneIsModified) {
         return new Promise((resolve) => {
 
             EDITOR.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
@@ -266,7 +271,7 @@ function saveCurrentSceneName(name) {
 
 function addTo(parent, child) {
 	parent.addChild(child);
-	EDITOR.ui.sceneTree.select(child);
+	EDITOR.ui.sceneTree.selectInTree(child);
 }
 
 let __saveProjectDescriptorInner = () => {

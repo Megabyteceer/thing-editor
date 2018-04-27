@@ -17,18 +17,17 @@ class Selection extends Array {
 		recalculateNodesDeepness();
 		this.sort(sortByDeepness);
 	}
-
+ 
 	loadSelection(data) {
-        this.clearSelection();
         if(!data || data.length === 0) {
-            this.add(game.currentScene);
+            EDITOR.ui.sceneTree.selectInTree(game.currentScene);
         } else {
             data.some(selectNodeByPath);
         }
+        EDITOR.refreshTreeViewAndPropertyEditor();
     }
 
     saveSelection() {
-	    debugger;
         return this.map(getPathOfNode);
     }
 
@@ -62,16 +61,21 @@ var getPathOfNode = (node) => {
     var ret = [];
     while(node !== game.stage){
         ret.push(node.parent.getChildIndex(node));
+        node = node.parent;
     }
     return ret;
 }
 
-var selectNodeByPath = (path) => {
+var selectNodeByPath = (path, nodeNum) => {
     var ret = game.stage;
-    while (path.length > 0){
-        ret = ret.getChildAt(path.pop());
+    for (var i = path.length-1; i >= 0; i--) {
+        ret = ret.getChildAt(path[i]);
     }
-    EDITOR.selection.add(ret);
+    if(nodeNum === 0) {
+        EDITOR.ui.sceneTree.selectInTree(ret);
+    } else {
+        EDITOR.selection.add(ret);
+    }
 }
 
 

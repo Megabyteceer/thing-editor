@@ -73,9 +73,8 @@ class TreeNode extends React.Component {
 		return R.div(null, R.div({
 			className,
 			onClick: this.onClick
-		}, icon, R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + state.id), caret), childs);
+		}, icon, R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ')'), caret), childs);
 	}
-	
 }
 
 function nodeHasChildren(node) {

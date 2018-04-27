@@ -104,7 +104,7 @@ export default class PrefabsList extends React.Component {
                 R.btn('Add', this.onAddClick, 'Add prefab to scene'),
                 R.btn('Add as child', this.onAddChildClick, 'Add prefab as children')
             ),
-            R.btn('Save Selected As...', this.onSaveSelectedAsClick, 'Save current selected in scene object as new prefab.')
+            R.btn('Save Selected As...', this.onSaveSelectedAsClick, 'Save current selected in scene object as new prefab.'),
             R.div(bodyProps, prefabs)
         )
     }
