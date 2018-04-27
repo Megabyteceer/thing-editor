@@ -193,13 +193,14 @@ class Editor {
 	loadScene(name) {
 	    assert(name, 'name should be defined');
         askSceneToSaveIfNeed().then(() => {
-            
+            selectionsForScenesByName[EDITOR.projectDesc.currentSceneName] = this.selection.saveSelection();
             game.showScene(Lib.loadScene(name));
             this.selection.select(game.currentScene);
             if (!ScenesList.isSpecialSceneName(name)) {
                 history.clearHistory(Lib.scenes[name]);
-                EDITOR.currentSceneIsModified = false;
-                saveCurrentProjectName(name);
+                history.setCurrentStateUnmodified();
+                saveCurrentSceneName(name);
+                this.selection.loadSelection(selectionsForScenesByName[EDITOR.projectDesc.currentSceneName]);
             } if( name === EDITOR.runningSceneLibSaveSlotName) {
                 Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
             }
@@ -208,36 +209,28 @@ class Editor {
         });
 	}
 
-	applyScene(scene) { //used to raplace current scene in redo/undo
-	    assert(game.__EDITORmode);
-        game.showScene(scene);
-        this.selection.select(game.currentScene);
-        this.refreshTreeViewAndPropertyEditor();
-    }
-
     saveProjecrDesc() {
         debouncedCall(__saveProjectDescriptorInner);
     }
 
     sceneModified() {
 	    if(game.__EDITORmode) {
-	        EDITOR.currentSceneIsModified = true;
             history.addHistoryState();
         }
     }
 
-    /**
-     *
-     * @param name: String
-     */
+    get currentSceneIsModified() {
+	    return history.isStateModified;
+    }
+
 	saveCurrentScene(name = EDITOR.projectDesc.currentSceneName) {
 	    EDITOR.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
 		if(EDITOR.currentSceneIsModified || (EDITOR.projectDesc.currentSceneName !== name)) {
             Lib.__saveScene(game.currentScene, name);
             if(!ScenesList.isSpecialSceneName(name)) {
-                EDITOR.currentSceneIsModified = false;
-                saveCurrentProjectName(name);
+                history.setCurrentStateUnmodified();
+                saveCurrentSceneName(name);
             }
         }
 	}
@@ -263,7 +256,7 @@ function  askSceneToSaveIfNeed() {
     }
 }
 
-function saveCurrentProjectName(name) {
+function saveCurrentSceneName(name) {
     if(EDITOR.projectDesc.currentSceneName != name) {
         EDITOR.projectDesc.currentSceneName = name;
         EDITOR.saveProjecrDesc();
@@ -279,6 +272,8 @@ function addTo(parent, child) {
 let __saveProjectDescriptorInner = () => {
     EDITOR.fs.saveFile('project.json', EDITOR.projectDesc);
 }
+
+var selectionsForScenesByName = {};
 
 var idCounter = 0;
 let editorNodeData = new WeakMap();

@@ -212,5 +212,6 @@ function  classLoaded(c, path) {
 
 ClassesLoader.reloadClasses = reloadClasses;
 ClassesLoader.classLoaded = classLoaded;
+ClassesLoader.getClassType = getClassType;
 
 export default ClassesLoader;

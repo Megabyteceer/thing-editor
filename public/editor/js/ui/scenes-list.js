@@ -9,16 +9,8 @@ const fileNameToSceneName = (fn) => {
     return fn.replace('scenes/', '').replace(sceneExtRemover, '');
 }
 
-function SelectText(element) {
-    var selection = window.getSelection();
-    var range = document.createRange();
-    range.selectNodeContents(element);
-    selection.removeAllRanges();
-    selection.addRange(range);
-}
-
 var sceneNameProps = {className:"selectable-text", title:'click to select scene`s name', onMouseDown:function (ev) {
-    SelectText(ev.target);
+    selectText(ev.target);
     sp(ev);
 }};
 
@@ -44,6 +36,7 @@ export default class ScenesList extends React.Component {
 	    if(defaultSceneName) {
 	        defaultSceneName += '/';
         }
+
         EDITOR.ui.modal.showPrompt('Enter name for scene:',
             defaultSceneName,
             (val) => { // filter
@@ -57,9 +50,10 @@ export default class ScenesList extends React.Component {
                     return 'name can not begin or end with "/"';
                 }
 
-            }).then((enteredName) => {
-                EDITOR.saveCurrentScene(enteredName);
-            });
+            }
+        ).then((enteredName) => {
+            EDITOR.saveCurrentScene(enteredName);
+        });
 	}
     
     onSelect(item) {

@@ -77,4 +77,12 @@ $(window).on('keydown', (ev) => {
     }
 });
 
+window.selectText = function(element) {
+    var selection = window.getSelection();
+    var range = document.createRange();
+    range.selectNodeContents(element);
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+
 export default null;

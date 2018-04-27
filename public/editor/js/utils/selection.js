@@ -2,7 +2,7 @@ class Selection extends Array {
 	
 	select(object, add) {
 		if (!add) {
-			this.clear();
+			this.clearSelection();
 		}
 		if (__getNodeExtendData(object).isSelected) {
 			this.remove(object);
@@ -17,8 +17,22 @@ class Selection extends Array {
 		recalculateNodesDeepness();
 		this.sort(sortByDeepness);
 	}
-	
-	clear() {
+
+	loadSelection(data) {
+        this.clearSelection();
+        if(!data || data.length === 0) {
+            this.add(game.currentScene);
+        } else {
+            data.some(selectNodeByPath);
+        }
+    }
+
+    saveSelection() {
+	    debugger;
+        return this.map(getPathOfNode);
+    }
+
+	clearSelection() {
 		while (this.length > 0) {
 			this.remove(this[this.length - 1]);
 		}
@@ -41,6 +55,26 @@ class Selection extends Array {
 }
 
 export default Selection;
+
+//save/load selection
+
+var getPathOfNode = (node) => {
+    var ret = [];
+    while(node !== game.stage){
+        ret.push(node.parent.getChildIndex(node));
+    }
+    return ret;
+}
+
+var selectNodeByPath = (path) => {
+    var ret = game.stage;
+    while (path.length > 0){
+        ret = ret.getChildAt(path.pop());
+    }
+    EDITOR.selection.add(ret);
+}
+
+
 
 //-------- sorting selection --------------------------------
 var curDeepness;

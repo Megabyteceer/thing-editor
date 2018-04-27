@@ -6,6 +6,7 @@ import Button from './button.js';
 import Modal from './modal.js';
 import ClessesView from './classes-view.js';
 import ScenesList from "./scenes-list.js";
+import PrefabsList from "./prefabs-list.js";
 
 
 /**
@@ -17,9 +18,9 @@ import ScenesList from "./scenes-list.js";
  * @param hotkey
  * @returns {Element}
  */
-R.btn = function (label, onClick, title, className, hotkey) {
+R.btn = function (label, onClick, title, className, hotkey, disabled) {
 	className = className || '';
-	return React.createElement(Button, {label, onClick, className, title, hotkey});
+	return React.createElement(Button, {label, onClick, className, title, hotkey, disabled});
 }
 
 function window(id, title, content, x, y, minW, minH, w, h) {
@@ -66,8 +67,7 @@ class UI extends React.Component {
 	render() {
 		return R.div(null,
 			R.btn('Open project...', EDITOR.fs.chooseProject),
-			R.btn('Undo', EDITOR.history.undo, undefined, undefined, 90),
-			R.btn('Redo', EDITOR.history.redo, undefined, undefined, 89),
+            EDITOR.history.buttonsRenderer(),
 			window('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 250, 250, 500),
 			window('viewport', R.span(null, 'Viewport: ', EDITOR.projectDesc ? R.b(null, EDITOR.projectDesc.currentSceneName): undefined), React.createElement(Viewport, {ref: this.viewportRef}), 1000, 0, 420, 313, 840, 480),
 			window('propsEditor', 'Properties', React.createElement(PropsEditor, {
@@ -75,7 +75,9 @@ class UI extends React.Component {
 				onChange: EDITOR.onSelectedPropsChange
 			}), 250, 0, 250, 250, 250, 500),
 			window('classesLib', 'Classes', React.createElement(ClessesView), 0, 1000, 250, 150, 250, 500),
-			window('scenesList', 'Scenes', React.createElement(ScenesList), 1000, 1000, 200, 100, 200, 100),
+            window('scenesList', 'Scenes', React.createElement(PrefabsList), 250, 1000, 250, 150, 250, 500),
+
+            window('scenesList', 'Scenes', React.createElement(ScenesList), 1000, 1000, 200, 100, 200, 100),
 			
 			
 			React.createElement(Modal, {ref: this.modalRef})

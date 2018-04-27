@@ -1,4 +1,4 @@
-var objects = {};
+var prefabs = {};
 var scenes;
 var classes;
 var defaults;
@@ -56,8 +56,8 @@ class Lib {
         return ret;
     }
     
-    static loadObject(name) {
-        return Lib._loadObjectFromData(objects[name]);
+    static loadPrefab(name) {
+        return Lib._loadObjectFromData(prefabs[name]);
     }
     
     static _deserializeObject(src) {
@@ -100,6 +100,12 @@ class Lib {
             EDITOR.fs.saveFile(Lib.__sceneNameToFileName(name), sceneData, true);
         }
     }
+
+    static __savePrefab(object, name) {
+        assert(typeof name === 'string');
+        assert(ClassesLoader.getClassType)
+
+    }
     
     static __deleteScene(name) {
         return EDITOR.fs.deleteFile(Lib.__sceneNameToFileName(name));
@@ -112,7 +118,11 @@ class Lib {
     static _getAllScenes() {
         return scenes;
     }
-    
+
+    static _getAllPrefabs() {
+        return prefabs;
+    }
+
     static __serializeObject(o) {
         var props = {};
         var propsList = EDITOR.enumObjectsProperties(o);
