@@ -25,6 +25,20 @@ export default class PrefabsList extends React.Component {
         this.state = {};
         this.onSelect = this.onSelect.bind(this);
         this.onSaveSelectedAsClick = this.onSaveSelectedAsClick.bind(this);
+        this.onAddClick = this.onAddClick.bind(this);
+        this.onAddChildClick = this.onAddChildClick.bind(this);
+    }
+
+    onAddClick() {
+        if(this.state.selectedItem) {
+            EDITOR.addToScene(Lib.loadPrefab(this.state.selectedItem.c.name));
+        }
+    }
+
+    onAddChildClick() {
+        if(this.state.selectedItem) {
+            EDITOR.addToSelected(Lib.loadPrefab(this.state.selectedItem.c.name));
+        }
     }
 
     onSaveSelectedAsClick() {
@@ -69,14 +83,14 @@ export default class PrefabsList extends React.Component {
     renderItem(prefabName, item) {
         var cls = Lib.getClass(item.c);
         return R.div({key:prefabName},
-            R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'), item, sceneName, this)
+            R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'), item, prefabName, this)
         );
     }
 
     render () {
         var scenePrefabs = Lib._getAllPrefabs();
 
-        var panelClassname = '';
+        var panelClassname = this.state.selectedItem ? '' : 'unclickable';
 
         var prefabs = [];
         for(var prefabName in scenePrefabs) {
@@ -86,10 +100,11 @@ export default class PrefabsList extends React.Component {
         prefabs = Group.groupArray(prefabs);
 
         return R.div(classViewProps,
-            R.div({className: panelClassname},
-                //R.btn('Save', this.onSaveSceneClick, 'Save current scene'),
-                R.btn('Save Selected As...', this.onSaveSelectedAsClick, 'Save current selected in scene object as new prefab.')
+            R.span({className: panelClassname},
+                R.btn('Add', this.onAddClick, 'Add prefab to scene'),
+                R.btn('Add as child', this.onAddChildClick, 'Add prefab as children')
             ),
+            R.btn('Save Selected As...', this.onSaveSelectedAsClick, 'Save current selected in scene object as new prefab.')
             R.div(bodyProps, prefabs)
         )
     }

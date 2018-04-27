@@ -41,9 +41,14 @@ class Lib {
         Lib.classes = c;
     }
     
-    static _setScenes(s){
+    static _setScenes(s) {
         scenes = s;
         Lib.scenes = s;
+    }
+
+    static _setPrefabs(p) {
+        prefabs = p;
+        Lib.prefabs = p;
     }
     
     static addTexture(name, texture) {
@@ -59,7 +64,7 @@ class Lib {
     static loadPrefab(name) {
         return Lib._loadObjectFromData(prefabs[name]);
     }
-    
+
     static _deserializeObject(src) {
         assert(classes.hasOwnProperty(src.c), 'Unknown class id: ' + src.c);
         assert(defaults.hasOwnProperty(src.c), 'Class with id ' + src.c + ' has no default values set');
@@ -104,7 +109,15 @@ class Lib {
     static __savePrefab(object, name) {
         assert(typeof name === 'string');
         assert(ClassesLoader.getClassType)
+    }
 
+    static __getNameByPrefab(prefab) {
+        for(name in prefabs) {
+            if(prefabs[name] === prefab) {
+                return name;
+            }
+        }
+        assert(false, "unknown prefab name");
     }
     
     static __deleteScene(name) {
