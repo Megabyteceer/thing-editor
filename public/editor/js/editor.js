@@ -110,6 +110,11 @@ class Editor {
 	openSceneSafe(name) {
         return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
             this.loadScene(name);
+            saveCurrentSceneName(name);
+			history.clearHistory(Lib.scenes[name]);
+			history.setCurrentStateUnmodified();
+			this.ui.forceUpdate();
+			this.sceneOpened.emit();
         });
     }
 	
@@ -202,17 +207,13 @@ class Editor {
 	    assert(name, 'name should be defined');
         selectionsForScenesByName[EDITOR.projectDesc.currentSceneName] = this.selection.saveSelection();
         game.showScene(Lib.loadScene(name));
-        if (!ScenesList.isSpecialSceneName(name)) {
+        this.selection.loadSelection(selectionsForScenesByName[name]);
 
-            saveCurrentSceneName(name);
-            this.selection.loadSelection(selectionsForScenesByName[EDITOR.projectDesc.currentSceneName]);
-            history.clearHistory(Lib.scenes[name]);
-            history.setCurrentStateUnmodified();
-        } if( name === EDITOR.runningSceneLibSaveSlotName) {
+		if( name === EDITOR.runningSceneLibSaveSlotName) {
             Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
         }
-        this.ui.forceUpdate();
-        this.sceneOpened.emit(); //TODO: ? remove this signal?
+        this.refreshTreeViewAndPropertyEditor();
+        this.sceneOpened.emit();
 	}
 
     saveProjecrDesc() {

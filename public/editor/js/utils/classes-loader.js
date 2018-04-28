@@ -3,8 +3,6 @@ import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
 var ClassesLoader = {};
 
 const CUSTOM_CLASSES_ID = 100;
-const CLASS_TYPE_SCENE = 1;
-const CLASS_TYPE_DISPLAYOBJECT = 2;
 
 var classesById = {},
 	classesDefaultsById = {}, //default values for serializable properties of class
@@ -48,8 +46,8 @@ function showError(message) {
 
 function getClassType(c) {
 	while (c) {
-		if (c === Scene) return CLASS_TYPE_SCENE;
-		if (c === PIXI.DisplayObject) return CLASS_TYPE_DISPLAYOBJECT;
+		if (c === Scene) return Scene;
+		if (c === PIXI.DisplayObject) return PIXI.DisplayObject;
 		c = c.__proto__;
 	}
 }
@@ -78,7 +76,7 @@ function addClass(c, path) {
 	classesById[name] = c;
 
 	var item = {c};
-	if (classType === CLASS_TYPE_DISPLAYOBJECT) {
+	if (classType === PIXI.DisplayObject) {
 		ClassesLoader.gameObjClasses.push(item);
 	} else {
 		ClassesLoader.sceneClasses.push(item);

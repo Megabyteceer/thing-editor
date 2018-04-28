@@ -30,7 +30,7 @@ class History {
     
     _pushCurrentStateToUndoHistory(selectionData) {
         if(!game.__EDITORmode) {
-            assert(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName));
+            assert(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName), "");
             undos.push(Lib.scenes[EDITOR.runningSceneLibSaveSlotName]);
         } else {
             assert(game.__EDITORmode, "Attempt to use history in running time.");

@@ -108,7 +108,7 @@ class Lib {
 
     static __savePrefab(object, name) {
         assert(typeof name === 'string');
-        assert(ClassesLoader.getClassType)
+        assert(ClassesLoader.getClassType(object) === PIXI.DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
     }
 
     static __getNameByPrefab(prefab) {
