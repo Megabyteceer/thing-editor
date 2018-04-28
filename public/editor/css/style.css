@@ -463,6 +463,10 @@ input{
 	margin-right: 15px;
 }
 
+#window-prefabsList .list-item {
+	padding:7px;
+}
+
 .modal-content input {
 	font-size:130%;
 	width: 50%;

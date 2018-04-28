@@ -52,7 +52,9 @@ export default class ScenesList extends React.Component {
 
             }
         ).then((enteredName) => {
-            EDITOR.saveCurrentScene(enteredName);
+            if(enteredName) {
+                EDITOR.saveCurrentScene(enteredName);
+            }
         });
 	}
     

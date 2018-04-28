@@ -1,24 +1,28 @@
 
 var backdrop = new Sprite(PIXI.Texture.WHITE);
 backdrop.tint = 30;
-backdrop.alpha = 0.5;
+backdrop.alpha = 0.9;
+backdrop.x = W/2;
+backdrop.y = H/2;
+backdrop.width = W;
+backdrop.height = H;
 var currentlyShowedPreview;
 
 export default class Overlay {
 
     showPreview(object) {
         this.hidePreview();
-        EDITOR.overlay.addChild(backdrop);
+        game.stage.addChild(backdrop);
         currentlyShowedPreview = object;
-        EDITOR.overlay.removeChild(currentlyShowedPreview);
+        game.stage.addChild(currentlyShowedPreview);
     }
 
     hidePreview() {
         if(backdrop.parent) {
-            EDITOR.overlay.removeChild(backdrop);
+            game.stage.removeChild(backdrop);
         }
         if(currentlyShowedPreview) {
-            EDITOR.overlay.removeChild(currentlyShowedPreview); ////TODO: pool dispose. When poolling will be ready.
+            game.stage.removeChild(currentlyShowedPreview); ////TODO: pool dispose. When poolling will be ready.
             currentlyShowedPreview = null;
         }
     }

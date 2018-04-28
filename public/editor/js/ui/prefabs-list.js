@@ -6,8 +6,10 @@ var bodyProps = {className: 'list-view'};
 const prefabFileFiler = /^prefabs\/.*\.prefab.json$/gm;
 const prefabExtRemover = /.prefab.json$/gm;
 const fileNameToPrefabName = (fn) => {
-    return fn.replace('prefabs/', '').replace(sceneExtRemover, '');
+    return fn.replace('prefabs/', '').replace(prefabExtRemover, '');
 }
+
+const prefabNameFilter = /[^a-z\-\/0-9]/g;
 
 var prefabNameProps = {className:"selectable-text", title:'click to select prefabs`s name', onMouseDown:function (ev) {
     selectText(ev.target);
@@ -44,13 +46,13 @@ export default class PrefabsList extends React.Component {
     }
 
     onSaveSelectedAsClick() {
-        debugger;
+        
         if(EDITOR.selection.length === 0) {
-            EDITOR.modal.showError('Nothing is selected in scene.');
+            EDITOR.ui.modal.showModal('Nothing is selected in scene.');
         } else if(EDITOR.selection.length > 1) {
-            EDITOR.modal.showError('More that one object selected.');
-        } else if(EDITOR.ClassesLoader.getClassType(EDITOR.selection[0]) === Scene) {
-            EDITOR.modal.showError('You cant save Scene as prefab. Please select some object from scene first.');
+            EDITOR.ui.modal.showModal('More that one object selected.');
+        } else if(EDITOR.ClassesLoader.getClassType(EDITOR.selection[0].constructor) === Scene) {
+            EDITOR.ui.modal.showModal('You cant save Scene as prefab. Please select some object from scene first.');
         } else {
 
             var defaultPrefabName = '';
@@ -66,7 +68,7 @@ export default class PrefabsList extends React.Component {
             EDITOR.ui.modal.showPrompt('Enter name for new prefab:',
                 defaultPrefabName,
                 (val) => { // filter
-                    return val.toLowerCase().replace(sceneNameFilter, '');
+                    return val.toLowerCase().replace(prefabNameFilter, '');
                 },
                 (val) => { //accept
                     if(Lib.scenes.hasOwnProperty(val)) {
@@ -77,15 +79,16 @@ export default class PrefabsList extends React.Component {
                     }
                 }
             ).then((enteredName) => {
-                Lib.__savePrefab(EDITOR.selection[0], name);
-                this.forceUpdate();
+                if(enteredName) {
+                    Lib.__savePrefab(EDITOR.selection[0], enteredName);
+                    this.forceUpdate();
+                }
             });
         }
     }
 
     onSelect(item) {
-        debugger;
-        var preview = Lib.loadPrefab(item);
+        var preview = Lib.loadPrefab(Lib.__getNameByPrefab(item));
         EDITOR.overlay.showPreview(preview);
     }
 
@@ -103,7 +106,7 @@ export default class PrefabsList extends React.Component {
 
         var prefabs = [];
         for(var prefabName in scenePrefabs) {
-            prefabs.push(this.renderItem(prefabName, prefabs[prefabName]));
+            prefabs.push(this.renderItem(prefabName, scenePrefabs[prefabName]));
         }
 
         prefabs = Group.groupArray(prefabs);
@@ -113,7 +116,7 @@ export default class PrefabsList extends React.Component {
                 R.btn('Add', this.onAddClick, 'Add prefab to scene'),
                 R.btn('Child', this.onAddChildClick, 'Add prefab as children')
             ),
-            R.btn('New...', this.onSaveSelectedAsClick, 'Save current selected object from scene as new prefab.'),
+            R.btn('Save...', this.onSaveSelectedAsClick, 'Save current selected object from scene as new prefab.'),
             R.div(bodyProps, prefabs)
         )
     }

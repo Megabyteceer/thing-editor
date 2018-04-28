@@ -99,7 +99,7 @@ class Lib {
             assert(name === EDITOR.editorFilesPrefix + 'tmp', 'Only temporary scene can be null');
             scenes[name] = undefined;
         } else {
-	        assert(scene instanceof Scene, "Scene instance expected");
+            assert(EDITOR.ClassesLoader.getClassType(scene.constructor) === Scene, "attempt to save not Scene instance in to scenes list.");
 	        var sceneData = Lib.__serializeObject(scene);
             scenes[name] = sceneData;
             EDITOR.fs.saveFile(Lib.__sceneNameToFileName(name), sceneData, true);
@@ -108,11 +108,14 @@ class Lib {
 
     static __savePrefab(object, name) {
         assert(typeof name === 'string');
-        assert(ClassesLoader.getClassType(object) === PIXI.DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
+        assert(EDITOR.ClassesLoader.getClassType(object.constructor) === PIXI.DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
+        var sceneData = Lib.__serializeObject(object);
+        prefabs[name] = sceneData;
+        EDITOR.fs.saveFile(Lib.__prefabNameToFileName(name), sceneData, true);
     }
 
     static __getNameByPrefab(prefab) {
-        for(name in prefabs) {
+        for(var name in prefabs) {
             if(prefabs[name] === prefab) {
                 return name;
             }
@@ -126,6 +129,10 @@ class Lib {
     
     static __sceneNameToFileName(sceneName) {
         return 'scenes/' + sceneName + '.scene.json';
+    }
+    
+    static __prefabNameToFileName(sceneName) {
+        return 'prefabs/' + sceneName + '.prefab.json';
     }
     
     static _getAllScenes() {

@@ -9,6 +9,7 @@ import UI from './ui/ui.js';
 import ClassesLoader from './utils/classes-loader.js';
 import ScenesList from "./ui/scenes-list.js";
 import Overlay from "./utils/overlay.js";
+import PrefabsList from "./ui/prefabs-list.js";
 
 class Editor {
 	
@@ -82,7 +83,7 @@ class Editor {
                         this.fs.gameFolder = '/games/' + dir + '/';
                         EDITOR.projectDesc = data;
                         EDITOR.reloadAssetsAndClasses().then(() => {
-                            ScenesList.readAllScenesList().then(() => {
+                            Promise.all([ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList()]).then(() => {
 
                                 if(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName)) {
                                     
@@ -237,6 +238,7 @@ class Editor {
 
 	saveCurrentScene(name = EDITOR.projectDesc.currentSceneName) {
 	    EDITOR.ui.viewport.stopExecution();
+		assert(name, "Name can't be empty");
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
 		if(EDITOR.currentSceneIsModified || (EDITOR.projectDesc.currentSceneName !== name)) {
             Lib.__saveScene(game.currentScene, name);

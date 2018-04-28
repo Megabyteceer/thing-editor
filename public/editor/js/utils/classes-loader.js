@@ -45,6 +45,7 @@ function showError(message) {
 }
 
 function getClassType(c) {
+    assert(typeof c === 'function');
 	while (c) {
 		if (c === Scene) return Scene;
 		if (c === PIXI.DisplayObject) return PIXI.DisplayObject;
