@@ -87,14 +87,12 @@ class Editor {
                                         R.div(null, R.div(null, "Looks like previous session was finished incorrectly."),
                                         R.div(null, "Do you want to restore scene from backup?")),
                                         ()=> {
-                                            this.loadScene(EDITOR.runningSceneLibSaveSlotName).then(()=>{
-                                                EDITOR.currentSceneIsModified = true;
-                                            });
+                                            this.loadScene(EDITOR.runningSceneLibSaveSlotName);
+                                            EDITOR.history.currentState._isModified = true;
                                         }, 'Restore backup',
                                         () => {
-                                            this.loadScene(EDITOR.projectDesc.currentSceneName || 'main').then(() =>{
-                                                Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
-                                            });
+                                            this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
+                                            Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
                                         }, 'Delete backup',
                                         true
                                     );
@@ -108,6 +106,12 @@ class Editor {
             }
         });
 	}
+
+	openSceneSafe(name) {
+        return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
+            this.loadScene(name);
+        });
+    }
 	
 	initResize() {
 		var onResize = () => {
@@ -139,9 +143,8 @@ class Editor {
 		
 		return ClassesLoader.reloadClasses().then(()=>{
 			if(needRepairScene) {
-				this.loadScene(EDITOR.editorFilesPrefix + "tmp").then(()=>{
-                    EDITOR.selection.loadSelection(selectionData);
-                });
+				this.loadScene(EDITOR.editorFilesPrefix + "tmp");
+                EDITOR.selection.loadSelection(selectionData);
 			}
 		});
 	}
@@ -197,21 +200,19 @@ class Editor {
 
 	loadScene(name) {
 	    assert(name, 'name should be defined');
-        return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
-            selectionsForScenesByName[EDITOR.projectDesc.currentSceneName] = this.selection.saveSelection();
-            game.showScene(Lib.loadScene(name));
-            if (!ScenesList.isSpecialSceneName(name)) {
-                
-                saveCurrentSceneName(name);
-                this.selection.loadSelection(selectionsForScenesByName[EDITOR.projectDesc.currentSceneName]);
-                history.clearHistory(Lib.scenes[name]);
-                history.setCurrentStateUnmodified();
-            } if( name === EDITOR.runningSceneLibSaveSlotName) {
-                Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
-            }
-            this.ui.forceUpdate();
-            this.sceneOpened.emit(); //TODO: ? remove this signal?
-        });
+        selectionsForScenesByName[EDITOR.projectDesc.currentSceneName] = this.selection.saveSelection();
+        game.showScene(Lib.loadScene(name));
+        if (!ScenesList.isSpecialSceneName(name)) {
+
+            saveCurrentSceneName(name);
+            this.selection.loadSelection(selectionsForScenesByName[EDITOR.projectDesc.currentSceneName]);
+            history.clearHistory(Lib.scenes[name]);
+            history.setCurrentStateUnmodified();
+        } if( name === EDITOR.runningSceneLibSaveSlotName) {
+            Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
+        }
+        this.ui.forceUpdate();
+        this.sceneOpened.emit(); //TODO: ? remove this signal?
 	}
 
     saveProjecrDesc() {

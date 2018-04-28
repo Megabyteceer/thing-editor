@@ -64,7 +64,7 @@ export default class ScenesList extends React.Component {
         var cls = Lib.getClass(item.c);
 		return R.div({onDoubleClick: () => {
                 EDITOR.ui.viewport.stopExecution();
-		        EDITOR.loadScene(sceneName);
+		        EDITOR.openSceneSafe(sceneName);
             },
             key:sceneName
         }, R.listItem(R.span(null, R.classIcon(cls), R.b(sceneNameProps, sceneName), ' (' + cls.name + ')'), item, sceneName, this));
