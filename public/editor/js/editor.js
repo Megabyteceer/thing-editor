@@ -90,17 +90,19 @@ class Editor {
                                         R.div(null, R.div(null, "Looks like previous session was finished incorrectly."),
                                         R.div(null, "Do you want to restore scene from backup?")),
                                         ()=> {
-                                            this.loadScene(EDITOR.runningSceneLibSaveSlotName);
-                                            EDITOR.history.currentState._isModified = true;
+                                            this.openSceneSafe(EDITOR.runningSceneLibSaveSlotName).then(() => {
+                                                EDITOR.history.currentState._isModified = true;
+                                            });
                                         }, 'Restore backup',
                                         () => {
-                                            this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
-                                            Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
+                                            this.openSceneSafe(EDITOR.projectDesc.currentSceneName || 'main').then(() => {
+                                                Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
+                                            });
                                         }, 'Delete backup',
                                         true
                                     );
                                 } else {
-                                    this.loadScene(EDITOR.projectDesc.currentSceneName || 'main');
+                                    this.openSceneSafe(EDITOR.projectDesc.currentSceneName || 'main');
                                 }
                             });
                         });
@@ -225,7 +227,7 @@ class Editor {
 
     sceneModified() {
 	    if(game.__EDITORmode) {
-            history.addHistoryState();
+            needHistorySave = true;
         }
     }
 
@@ -284,6 +286,16 @@ let __saveProjectDescriptorInner = () => {
 }
 
 var selectionsForScenesByName = {};
+
+var needHistorySave = false;
+var tryToSaveHistory = () => {
+    if(needHistorySave) {
+        history.addHistoryState();
+        needHistorySave = false;
+    }
+};
+$(window).on('mouseup', tryToSaveHistory);
+$(window).on('keyup', tryToSaveHistory);
 
 var idCounter = 0;
 let editorNodeData = new WeakMap();

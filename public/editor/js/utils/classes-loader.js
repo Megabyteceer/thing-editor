@@ -13,7 +13,7 @@ var customClassesIdCounter;
 var cacheCounter = 0;
 var embeddedClasses;
 
-var loadedClssesCount, newLoadedClassesCount;
+var loadedClssesCount;
 
 var classesLoadedSuccessfullyAtLeastOnce = false;
 var classesRegisterLoaded = false;
@@ -141,7 +141,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
         errorOccured = false;
 
 
-        loadedClssesCount = newLoadedClassesCount = 0;
+        loadedClssesCount = 0;
         clearClasses();
         customClassesIdCounter = CUSTOM_CLASSES_ID;
         console.clear();
@@ -186,10 +186,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
                 classesLoadedSuccessfullyAtLeastOnce = true;
 
                 console.log('Loading success.');
-                console.log(loadedClssesCount + ' classes updated.');
-                if (newLoadedClassesCount > 0) {
-                    console.log(newLoadedClassesCount + ' new classes added.');
-                }
+                console.log(loadedClssesCount + ' classes total.');
                 resolve();
 
                 ClassesLoader.classesLoaded.emit();
@@ -205,6 +202,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 }
 
 function  classLoaded(c, path) {
+    loadedClssesCount++;
     addClass(c, path);
 }
 
