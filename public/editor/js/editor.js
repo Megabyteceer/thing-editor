@@ -8,6 +8,7 @@ import history from './utils/history.js';
 import UI from './ui/ui.js';
 import ClassesLoader from './utils/classes-loader.js';
 import ScenesList from "./ui/scenes-list.js";
+import Overlay from "./utils/overlay.js";
 
 class Editor {
 	
@@ -58,7 +59,9 @@ class Editor {
 		
 		game.__EDITORmode = true;
 		game.init(document.getElementById('viewport-root'));
-		
+
+		this.overlay = new Overlay();
+
 		ClassesLoader.init();
 		this.openProject();
 	}
