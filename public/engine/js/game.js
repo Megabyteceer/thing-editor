@@ -19,6 +19,7 @@ class Game {
         this.__EDITORmode = true;
 		this.settings = new Settings(gameId);
 		this.updateGlobal = this.updateGlobal.bind(this);
+		this.mouse = {x:0,y:0};
 		window.game = this;
 	}
 
@@ -72,26 +73,25 @@ class Game {
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 		}
 	}
-
+    
+    mouseEventToGlobalXY(ev) {
+        var b = app.view.getBoundingClientRect();
+        var n = ev.clientX - b.left;
+        tmpPoint.x = n * (W / b.width);
+        n = ev.clientY - b.top;
+        tmpPoint.y = n * (H / b.height);
+        return tmpPoint;
+    }
+    
 	updateFrame() {
 		updateRecursivelly(this.currentScene);
 	}
 }
 
 var tmpPoint = {};
-Game.mouseEventToGlobalXY = function mouseEventToGlobalX(ev) {
-	var b = app.view.getBoundingClientRect();
-	var n = ev.clientX - b.left;
-	tmpPoint.x = n * (W / b.width);
-	n = ev.clientY - b.top;
-	tmpPoint.y = n * (H / b.height);
-	return tmpPoint;
-}
 
 function updateRecursivelly(o) {
-
 	o.update();
-	
 	var a = o.children;
 	var arrayLength = a.length;
 	for (var i = 0; i < arrayLength && o.parent; i++) {

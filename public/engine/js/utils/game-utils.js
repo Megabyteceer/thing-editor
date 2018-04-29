@@ -21,4 +21,12 @@ const H = 720;
 			}
 		}
 	}
+	
+	window.addEventListener('mousemove', (ev) => {
+	    var p = game.mouseEventToGlobalXY(ev);
+	    game.mouse.x = p.x;
+	    game.mouse.y = p.y;
+	    game.mouse.click = ev.buttons !== 0;
+    });
+	
 })();

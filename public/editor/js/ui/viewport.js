@@ -2,6 +2,7 @@ import Game from '/engine/js/game.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
+var selectionData;
 
 class Viewport extends React.Component {
 	
@@ -27,8 +28,10 @@ class Viewport extends React.Component {
 		
 		if (play) { // launch game
             EDITOR.saveCurrentScene(EDITOR.runningSceneLibSaveSlotName);
+            selectionData = EDITOR.selection.saveSelection();
 		} else { //stop game
             EDITOR.loadScene(EDITOR.runningSceneLibSaveSlotName);
+            EDITOR.selection.loadSelection(selectionData);
 		}
 		this.forceUpdate();
         game.__EDITORmode = !play;
@@ -66,7 +69,7 @@ class Viewport extends React.Component {
 }
 
 function setSelectedPos(ev) {
-	var p = Game.mouseEventToGlobalXY(ev);
+	var p = game.mouseEventToGlobalXY(ev);
 	EDITOR.onSelectedPropsChange('x', Math.round(p.x));
 	EDITOR.onSelectedPropsChange('y', Math.round(p.y));
 }
