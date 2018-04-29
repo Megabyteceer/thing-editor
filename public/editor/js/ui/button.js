@@ -4,26 +4,28 @@ class Button extends React.Component {
 		super(props);
 		this.state = {};
 		this.onClick = this.onClick.bind(this);
-		this.onKeyPress = this.onKeyPress.bind(this);
+		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 	
 	componentDidMount() {
 		if (this.props.hotkey) {
-			window.addEventListener("keypress", this.onKeyPress);
+			window.addEventListener("keydown", this.onKeyDown);
 		}
 	}
 	
 	componentWillUnmount() {
 		if (this.props.hotkey) {
-			window.removeEventListener("keypress", this.onKeyPress);
+			window.removeEventListener("keydown", this.onKeyDown);
 		}
 	}
 	
-	onKeyPress(e) {
+	onKeyDown(e) {
 		if (this.props.disabled ||  e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
 		
-		if (e.keyCode == this.props.hotkey) {
+		var needCtrl = this.props.hotkey > 1000;
+		console.log(e.keyCode);
+		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
 			this.onClick(e);
 			sp(e);
 		}

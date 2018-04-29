@@ -22,6 +22,7 @@ class TreeNode extends React.Component {
 				collapseChildsRecursively(this.props.node);
 			}
 			this.forceUpdate();
+            sp(ev);
 			return;
 		}
 		

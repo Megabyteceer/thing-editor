@@ -1,8 +1,8 @@
 import Settings from './utils/settings.js';
 import PixiObjectsProperties from './utils/pixi-objects-properties.js';
 import Lib from './lib.js';
-import Scene from './scene.js';
-import Sprite from './sprite.js';
+import Scene from './components/scene.js';
+import Sprite from './components/sprite.js';
 
 window.Scene = Scene;
 window.Sprite = Sprite;

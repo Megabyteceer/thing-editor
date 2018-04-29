@@ -20,7 +20,7 @@ class Selection extends Array {
  
 	loadSelection(data) {
         if(!data || data.length === 0) {
-            EDITOR.ui.sceneTree.selectInTree(game.currentScene);
+            EDITOR.selection.clearSelection();
         } else {
             data.some(selectNodeByPath);
         }
@@ -31,16 +31,22 @@ class Selection extends Array {
         return this.map(getPathOfNode);
     }
 
-	clearSelection() {
+	clearSelection(refresh) {
 		while (this.length > 0) {
 			this.remove(this[this.length - 1]);
 		}
+		if(refresh) {
+            EDITOR.refreshTreeViewAndPropertyEditor();
+        }
 	}
 	
 	add(o) {
 		assert(!__getNodeExtendData(o).isSelected);
 		assert(this.indexOf(o) < 0);
         __getNodeExtendData(o).isSelected = true;
+        if(o instanceof PIXI.Sprite) {
+            o.filters = selectedFilters;
+        }
 		this.push(o);
 	}
 	
@@ -49,11 +55,23 @@ class Selection extends Array {
 		var i = this.indexOf(o);
 		assert(i >= 0);
         __getNodeExtendData(o).isSelected = false;
+        if(o instanceof PIXI.Sprite) {
+            o.filters = null;
+        }
 		this.splice(i, 1);
 	}
 }
 
 export default Selection;
+
+const selectionFilter = new PIXI.filters.OutlineFilter(2, 0xffff00);
+const selectedFilters = [selectionFilter];
+
+setInterval(() => {
+    if(EDITOR.selection.length > 0) {
+        selectionFilter.color ^= 0x063311;
+    }
+}, 1000 / 60 * 3);
 
 //save/load selection
 

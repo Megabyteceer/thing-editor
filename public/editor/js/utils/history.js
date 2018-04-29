@@ -110,9 +110,9 @@ class HistoryUi extends React.Component {
 
     render() {
         return R.span(EDITOR.currentSceneIsModified ? modifiedStyle: null,
-            R.btn('Undo', EDITOR.history.undo, '(Ctrl + Z)', undefined, 90, !isUndoAvailable()),
+            R.btn('Undo', EDITOR.history.undo, '(Ctrl + Z)', undefined, 1090, !isUndoAvailable()),
             undos.length,
-            R.btn('Redo', EDITOR.history.redo, '(Ctrl + Y)', undefined, 89, !isRedoAvailable()),
+            R.btn('Redo', EDITOR.history.redo, '(Ctrl + Y)', undefined, 1089, !isRedoAvailable()),
             redos.length
         );
     }

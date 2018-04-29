@@ -116,6 +116,7 @@ class Editor {
 	openSceneSafe(name) {
         return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
             this.loadScene(name);
+            __getNodeExtendData(game.currentScene).toggled = true;
             saveCurrentSceneName(name);
 			history.clearHistory(Lib.scenes[name]);
 			history.setCurrentStateUnmodified();
@@ -174,7 +175,9 @@ class Editor {
 	addToSelected(o) {
 		if (this.selection.length > 0) {
 			addTo(this.selection[0], o);
-		}
+		} else {
+            this.addToScene(o);
+        }
 	}
 	
 	addToScene(o) {
@@ -186,14 +189,16 @@ class Editor {
 	 */
 	
 	onSelectedPropsChange(field, val) {
-		if (typeof field === 'string') {
-			field = EDITOR.getObjectField(this.selection[0], field);
-		}
-		for (let o of this.selection) {
-			o[field.name] = val;
-		}
-		this.refreshTreeViewAndPropertyEditor();
-		EDITOR.sceneModified();
+	    if(this.selection.length > 0) {
+            if (typeof field === 'string') {
+                field = EDITOR.getObjectField(this.selection[0], field);
+            }
+            for (let o of this.selection) {
+                o[field.name] = val;
+            }
+            this.refreshTreeViewAndPropertyEditor();
+            EDITOR.sceneModified();
+        }
 	}
 	
 	/**

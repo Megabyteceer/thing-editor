@@ -1,4 +1,6 @@
 import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
+import Pool from "/engine/js/utils/pool.js";
+import Container from "../../../engine/js/components/container.js";
 
 var ClassesLoader = {};
 
@@ -24,7 +26,8 @@ function init() {
 	//embedded engine classes
 	embeddedClasses = [ //Do not ever delete any class
 		Sprite,
-		Scene
+		Scene,
+        Container
 	]; //Add new classes to the end of array only.
 	assert(CUSTOM_CLASSES_ID > embeddedClasses.length);
 }
@@ -191,6 +194,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
                 resolve();
 
                 ClassesLoader.classesLoaded.emit();
+                Pool.clearAll();
             } else {
                 reject();
                 console.warn('classes were not loaded because of error.')

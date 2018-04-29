@@ -3,7 +3,10 @@ import Window from '../window.js';
 
 R.renderSceneNode = (node) => {
 	return React.createElement(TreeNode, {node: node, key: __getNodeExtendData(node).id});
-	
+}
+
+function onEmptyClick() {
+    EDITOR.selection.clearSelection(true);
 }
 
 class TreeView extends React.Component {
@@ -25,7 +28,7 @@ class TreeView extends React.Component {
 	render() {
 		if (!EDITOR.game) return R.spinner();
 		
-		return R.div({className: 'scene-tree-view'},
+		return R.div({className: 'scene-tree-view', onClick:onEmptyClick},
 			EDITOR.game.stage.children.map(R.renderSceneNode)
 		);
 	}
