@@ -24,7 +24,6 @@ class Button extends React.Component {
 		if (this.props.disabled ||  e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
 		
 		var needCtrl = this.props.hotkey > 1000;
-		console.log(e.keyCode);
 		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
 			this.onClick(e);
 			sp(e);

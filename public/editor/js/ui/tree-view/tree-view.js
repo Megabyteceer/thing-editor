@@ -12,6 +12,7 @@ function onEmptyClick() {
 class TreeView extends React.Component {
     
     selectInTree(node) {
+        assert(node, "Attempt to select in tree emty node");
         var n = node;
         while (n && n.parent) {
             __getNodeExtendData(n).toggled = true;
@@ -20,9 +21,11 @@ class TreeView extends React.Component {
         EDITOR.selection.select(node);
 		setTimeout(() => {
 			var e = $('.scene-tree-view .item-selected');
-			Window.bringWindowForward(e.closest('.window-body'));
-			e[0].scrollIntoView({});
-		}, 0);
+			if(e[0]) {
+                Window.bringWindowForward(e.closest('.window-body'));
+                e[0].scrollIntoView({});
+            }
+		}, 1);
 	}
 	
 	render() {

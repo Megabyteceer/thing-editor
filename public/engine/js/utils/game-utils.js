@@ -11,22 +11,13 @@ const H = 720;
 		window.assert = (expression, message, dontBreakFlow) => {
             message = 'Assert: ' + message;
 			if (!expression) {
-				if (dontBreakFlow) {
-					if (window.EDITOR) {
-						EDITOR.ui.modal.showError(message);
-					}
-				} else {
+                if (window.EDITOR) {
+                    EDITOR.ui.modal.showError(message);
+                }
+				if (!dontBreakFlow) {
 					throw message;
 				}
 			}
 		}
 	}
-	
-	window.addEventListener('mousemove', (ev) => {
-	    var p = game.mouseEventToGlobalXY(ev);
-	    game.mouse.x = p.x;
-	    game.mouse.y = p.y;
-	    game.mouse.click = ev.buttons !== 0;
-    });
-	
 })();

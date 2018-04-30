@@ -69,7 +69,7 @@ class Viewport extends React.Component {
 }
 
 function setSelectedPos(ev) {
-	var p = game.mouseEventToGlobalXY(ev);
+	var p = Game.mouseEventToGlobalXY(ev);
 	EDITOR.onSelectedPropsChange('x', Math.round(p.x));
 	EDITOR.onSelectedPropsChange('y', Math.round(p.y));
 }

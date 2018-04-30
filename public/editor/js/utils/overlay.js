@@ -18,13 +18,11 @@ var pivotImage = PIXI.Texture.fromImage('editor/img/overlay/pivot.png');
 var rotatorImage = PIXI.Texture.fromImage('editor/img/overlay/rotator.png');
 
 var draggers = [];
-var draggersOwners = new WeakMap();
 
-function createDragger(owner, img) {
-    var ret = Pool.create(Dragger);
-    ret.texture = img;
+function createDragger(owner, constructor) {
+    var ret = Pool.create(constructor);
     draggers.push(ret);
-    draggersOwners.set(ret, owner);
+    ret.owner = owner;
     return ret;
 }
 
@@ -60,7 +58,7 @@ function refreshSelection() {
     var i = draggers.length -1;
     while(i >= 0) {
         var d = draggers[i];
-        var info = __getNodeExtendData(draggersOwners.get(d));
+        var info = __getNodeExtendData(d.owner);
         if(!info.isSelected) {
             d.parent.removeChild(d);
             Pool.dispose(d);
@@ -79,9 +77,9 @@ function refreshSelection() {
     EDITOR.selection.some((o) => {
         var info = __getNodeExtendData(o)
         if(!info.draggerPivot) {
-            info.draggerPivot = createDragger(o, pivotImage);
+            info.draggerPivot = createDragger(o, Dragger);
             game.pixiApp.stage.addChild(info.draggerPivot);
-            info.draggerRotator = createDragger(o, rotatorImage);
+            info.draggerRotator = createDragger(o, Rotator);
             game.pixiApp.stage.addChild(info.draggerRotator);
         }
         o.getGlobalPosition(p, true);
@@ -101,9 +99,7 @@ $(window).on('mousedown', (ev) => {
 
 $(window).on('mousemove', () => {
     if(draggingDragger) {
-        var o = draggersOwners.get(draggingDragger);
-        o.x = game.mouse.x;
-        o.y = game.mouse.y;
+       draggingDragger.onDrag();
     }
 });
 
@@ -112,7 +108,30 @@ $(window).on('mouseup', () => {
 });
 
 class Dragger extends Sprite {
-    constructor(owner) {
+    constructor() {
         super();
+        this.texture = pivotImage;
+    }
+    
+    onDrag() {
+        var o = this.owner;
+        EDITOR.onSelectedPropsChange('x', game.mouse.x);
+        EDITOR.onSelectedPropsChange('y', game.mouse.y);
+    }
+}
+
+class Rotator extends Sprite {
+    constructor() {
+        super();
+        this.texture = rotatorImage;
+    }
+    
+    onDrag() {
+        var o = this.owner;
+        var r = Math.atan2(game.mouse.y - o.y, game.mouse.x - o.x);
+        if(game.mouse.shiftKey) {
+            r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
+        }
+        EDITOR.onSelectedPropsChange('rotation', r);
     }
 }

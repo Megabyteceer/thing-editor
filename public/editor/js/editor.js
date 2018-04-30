@@ -38,7 +38,6 @@ class Editor {
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
 		
-		this.sceneOpened = new Signal();
 		this.history = history;
 		
 		ReactDOM.render(
@@ -116,12 +115,10 @@ class Editor {
 	openSceneSafe(name) {
         return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
             this.loadScene(name);
-            __getNodeExtendData(game.currentScene).toggled = true;
             saveCurrentSceneName(name);
 			history.clearHistory(Lib.scenes[name]);
 			history.setCurrentStateUnmodified();
 			this.ui.forceUpdate();
-			this.sceneOpened.emit();
         });
     }
 	
@@ -193,11 +190,17 @@ class Editor {
             if (typeof field === 'string') {
                 field = EDITOR.getObjectField(this.selection[0], field);
             }
+            var changed = false;
             for (let o of this.selection) {
-                o[field.name] = val;
+                if(o[field.name] != val) {
+                    o[field.name] = val;
+                    changed = true;
+                }
             }
-            this.refreshTreeViewAndPropertyEditor();
-            EDITOR.sceneModified();
+            if(changed) {
+                this.refreshTreeViewAndPropertyEditor();
+                EDITOR.sceneModified();
+            }
         }
 	}
 	
@@ -223,8 +226,8 @@ class Editor {
 		if( name === EDITOR.runningSceneLibSaveSlotName) {
             Lib.__deleteScene(EDITOR.runningSceneLibSaveSlotName);
         }
+        __getNodeExtendData(game.currentScene).toggled = true;
         this.refreshTreeViewAndPropertyEditor();
-        this.sceneOpened.emit();
 	}
 
     saveProjecrDesc() {

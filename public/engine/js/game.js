@@ -19,7 +19,8 @@ class Game {
         this.__EDITORmode = true;
 		this.settings = new Settings(gameId);
 		this.updateGlobal = this.updateGlobal.bind(this);
-		this.mouse = {x:0,y:0};
+		this.mouse = {x:0, y:0};
+        window.addEventListener('mousemove', mouseHandlerGlobal);
 		window.game = this;
 	}
 
@@ -74,7 +75,7 @@ class Game {
 		}
 	}
     
-    mouseEventToGlobalXY(ev) {
+    static mouseEventToGlobalXY(ev) {
         var b = app.view.getBoundingClientRect();
         var n = ev.clientX - b.left;
         tmpPoint.x = n * (W / b.width);
@@ -97,6 +98,14 @@ function updateRecursivelly(o) {
 	for (var i = 0; i < arrayLength && o.parent; i++) {
 		updateRecursivelly(a[i]);
 	}
+}
+
+const mouseHandlerGlobal = (ev) => {
+    var p = Game.mouseEventToGlobalXY(ev);
+    game.mouse.x = Math.round(p.x);
+    game.mouse.y = Math.round(p.y);
+    game.mouse.click = ev.buttons !== 0;
+    game.mouse.shiftKey = ev.shiftKey;
 }
 
 export default Game
