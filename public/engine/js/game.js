@@ -20,9 +20,14 @@ class Game {
 		this.__EDITORmode = true;
 		this.settings = new Settings(gameId);
 		this.updateGlobal = this.updateGlobal.bind(this);
-		this.mouse = {x: 0, y: 0};
+		this.mouse = new PIXI.Point();
 		window.addEventListener('mousemove', mouseHandlerGlobal);
 		window.game = this;
+	}
+	
+	get currentContainer () {
+		return this.currentScene; //TODO return upper modal or current scene if no modal
+		
 	}
 	
 	init(element) {
@@ -86,7 +91,7 @@ class Game {
 	}
 	
 	updateFrame() {
-		updateRecursivelly(this.currentScene);
+		updateRecursivelly(this.currentContainer);
 	}
 }
 

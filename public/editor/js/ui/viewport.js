@@ -9,8 +9,6 @@ class Viewport extends React.Component {
 	constructor(props) {
 		super(props);
 		
-		this.onMouseMove = this.onMouseMove.bind(this);
-		this.onMouseDown = this.onMouseDown.bind(this);
 		this.onTogglePlay = this.onTogglePlay.bind(this);
 	}
 	
@@ -37,25 +35,11 @@ class Viewport extends React.Component {
 		game.__EDITORmode = !play;
 	}
 	
-	onMouseMove(ev) {
-		if (ev.buttons === 2) {
-			setSelectedPos(ev);
-		}
-	}
-	
-	onMouseDown(ev) {
-		if (ev.buttons === 2) {
-			setSelectedPos(ev);
-		}
-	}
-	
 	render() {
 		return R.div({className: 'editor-viewport-wrapper'},
 			
 			R.div({
 				id: 'viewport-root',
-				onMouseDown: this.onMouseDown,
-				onMouseMove: this.onMouseMove,
 				className: 'editor-viewport'
 			}),
 			
@@ -66,12 +50,6 @@ class Viewport extends React.Component {
 		);
 	}
 	
-}
-
-function setSelectedPos(ev) {
-	var p = Game.mouseEventToGlobalXY(ev);
-	EDITOR.onSelectedPropsChange('x', Math.round(p.x));
-	EDITOR.onSelectedPropsChange('y', Math.round(p.y));
 }
 
 export default Viewport;

@@ -1,5 +1,5 @@
 /*
-    helper and debugging drawing ower game's viewport
+    helper and debugging drawing over game's viewport
  */
 
 import Editor from "../editor.js";
@@ -51,7 +51,7 @@ export default class Overlay {
 }
 
 const p = new PIXI.Point();
-const p2 = new PIXI.Point();
+const zeroPoint = new PIXI.Point();
 var overedDragger, draggingDragger;
 
 function refreshSelection() {
@@ -89,12 +89,58 @@ function refreshSelection() {
 		var r = o.getGlobalRotation();
 		info.draggerRotator.x = p.x + Math.cos(r) * 40;
 		info.draggerRotator.y = p.y + Math.sin(r) * 40;
+		info.draggerRotator.rotation = r;
 	});
 }
 
 $(window).on('mousedown', (ev) => {
-	if (overedDragger && (ev.buttons === 1)) {
-		draggingDragger = overedDragger;
+	if (overedDragger) {
+		if (ev.buttons === 1 || ev.buttons === 2) {
+			draggingDragger = overedDragger;
+		}
+	} else if(ev.target === game.pixiApp.view && ev.buttons === 1) {
+		
+		// ---------------------------- select by stage click --------------------------------
+		var root = game.currentContainer;
+		var o = EDITOR.selection[0] || root;
+		var start = o;
+		var c =0;
+		while(c++ < 100) {
+			if(o.children && o.children.length > 0) {
+				o = o.getChildAt(0);
+			} else {
+				var i = o.parent.getChildIndex(o) + 1;
+				if(i < o.parent.children.length) {
+					o = o.parent.getChildAt(i);
+				} else {
+					o = o.parent;
+					i = o.parent.getChildIndex(o) + 1;
+					if(i < o.parent.children.length) {
+						o = o.parent.getChildAt(i);
+					} else {
+						if (o === root) {
+							o = o.getChildAt(0);
+						}
+					}
+				}
+			}
+			
+			if(o.containsPoint && o.containsPoint(game.mouse)) {
+				EDITOR.ui.sceneTree.selectInTree(o);
+				return;
+			}
+			if(o === start) {
+				break;
+			}
+			console.log(o.name);
+		}
+		EDITOR.selection.clearSelection(true);
+	} else if(ev.buttons === 2 && EDITOR.selection.length > 0) {
+		var info = __getNodeExtendData(EDITOR.selection[0]);
+		if(info.draggerPivot){
+			draggingDragger = info.draggerPivot;
+			draggingDragger.onDrag();
+		}
 	}
 });
 
@@ -116,8 +162,11 @@ class Dragger extends Sprite {
 	
 	onDrag() {
 		var o = this.owner;
-		EDITOR.onSelectedPropsChange('x', game.mouse.x - this.owner.x, true);
-		EDITOR.onSelectedPropsChange('y', game.mouse.y - this.owner.y, true);
+		
+		o.parent.toLocal(game.mouse, undefined, p, true);
+		
+		EDITOR.onSelectedPropsChange('x', p.x - o.x, true);
+		EDITOR.onSelectedPropsChange('y', p.y - o.y, true);
 	}
 }
 
@@ -129,10 +178,11 @@ class Rotator extends Sprite {
 	
 	onDrag() {
 		var o = this.owner;
-		var r = Math.atan2(game.mouse.y - o.y, game.mouse.x - o.x);
+		var info = __getNodeExtendData(o);
+		var r = Math.atan2(game.mouse.y - info.draggerPivot.y, game.mouse.x - info.draggerPivot.x);
 		if (game.mouse.shiftKey) {
 			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 		}
-		EDITOR.onSelectedPropsChange('rotation', r - this.owner.rotation, true);
+		EDITOR.onSelectedPropsChange('rotation', r - info.draggerRotator.rotation, true);
 	}
 }
