@@ -12,6 +12,7 @@ backdrop.x = W / 2;
 backdrop.y = H / 2;
 backdrop.width = W;
 backdrop.height = H;
+
 var currentlyShowedPreview;
 
 var pivotImage = PIXI.Texture.fromImage('editor/img/overlay/pivot.png');
@@ -26,6 +27,8 @@ function createDragger(owner, constructor) {
 	return ret;
 }
 
+var savedSelection;
+
 export default class Overlay {
 	
 	constructor() {
@@ -33,18 +36,21 @@ export default class Overlay {
 	}
 	
 	showPreview(object) {
-		this.hidePreview();
+		this.hidePreview(false);
+		savedSelection = editor.selection.saveSelection();
 		game.stage.addChild(backdrop);
+		__getNodeExtendData(backdrop).hidden = true;
 		currentlyShowedPreview = object;
-		game.stage.addChild(currentlyShowedPreview);
+		game.makeItModal(currentlyShowedPreview);
 	}
 	
-	hidePreview() {
+	hidePreview(refresh = true) {
 		if (backdrop.parent) {
 			game.stage.removeChild(backdrop);
 		}
 		if (currentlyShowedPreview) {
-			game.stage.removeChild(currentlyShowedPreview); ////TODO: pool dispose. When poolling will be ready.
+			game.hideModal(currentlyShowedPreview);
+			editor.selection.loadSelection(savedSelection);
 			currentlyShowedPreview = null;
 		}
 	}
@@ -95,7 +101,9 @@ function refreshSelection() {
 
 $(window).on('mousedown', (ev) => {
 	if (overedDragger) {
-		if (ev.buttons === 1 || ev.buttons === 2) {
+		if(overedDragger instanceof Rotator && ev.buttons === 2) {
+			editor.onSelectedPropsChange('rotation', 0);
+		} else if (ev.buttons === 1 || ev.buttons === 2) {
 			draggingDragger = overedDragger;
 		}
 	} else if(ev.target === game.pixiApp.view && ev.buttons === 1) {

@@ -68,15 +68,11 @@ class Lib {
 	}
 	
 	static disposeObjectAndChildrens(o) {
-		if (o.parent) {
-			o.detachFromParent();
-		}
+		o.detachFromParent();
 		if (o.children) {
 			while(o.children.length > 0) {
-			
+				Lib.disposeObjectAndChildrens(o.getChildAt(o.children.length-1));
 			}
-			var s = o.getChildAt(o.children.length-1);
-			Lib.disposeObjectAndChildrens(s);
 		}
 		Pool.dispose(o);
 	}

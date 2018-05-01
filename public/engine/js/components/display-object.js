@@ -8,6 +8,12 @@ PIXI.DisplayObject.prototype.getGlobalRotation = function getGlobalRotation() {
 	return ret;
 }
 
+PIXI.DisplayObject.prototype.detachFromParent = function () {
+	if(this.parent) {
+		this.parent.removeChild(this);
+	}
+}
+
 PIXI.DisplayObject.prototype.remove = function () {
 	Lib.disposeObjectAndChildrens(this);
 }

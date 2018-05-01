@@ -32,10 +32,22 @@ class TreeView extends React.Component {
 		if (!editor.game) return R.spinner();
 		
 		return R.div({className: 'scene-tree-view', onClick: onEmptyClick},
-			editor.game.stage.children.map(R.renderSceneNode)
+			editor.game.stage.children.map(renderRoots)
 		);
 	}
 	
+}
+
+const renderRoots = (node, i) => {
+	if(node === game.currentContainer) {
+		return R.renderSceneNode(node);
+	} else {
+		var style;
+		if(__getNodeExtendData(node).hidden) {
+			style = {display:'none'};
+		}
+		return R.div({className:'inactive-scene-item', style, key:'na-' + i, title:'This scene node is blocked by modal object for now.'}, R.classIcon(node.constructor), R.b(null, node.name), ' (' + node.constructor.name + ')');
+	}
 }
 
 export default TreeView;

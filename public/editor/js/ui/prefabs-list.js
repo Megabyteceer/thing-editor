@@ -91,6 +91,7 @@ export default class PrefabsList extends React.Component {
 			PrefabsList.hidePrefabPreview();
 			var preview = Lib.loadPrefab(Lib.__getNameByPrefab(item));
 			editor.overlay.showPreview(preview);
+			editor.ui.sceneTree.selectInTree(preview);
 			previewShown = true;
 		}
 	}

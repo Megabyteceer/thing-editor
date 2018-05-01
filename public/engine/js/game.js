@@ -16,6 +16,9 @@ var app;
 const FRAME_PERIOD = 1.0;
 var frameCounterTime = 0;
 
+var modals = [];
+var hiddingModals = [];
+
 class Game {
 	
 	constructor(gameId) {
@@ -28,7 +31,10 @@ class Game {
 	}
 	
 	get currentContainer () {
-		return this.currentScene; //TODO return upper modal or current scene if no modal
+		if(modals.length >0) {
+			return modals[modals.length - 1]; //top modal is active
+		}
+		return this.currentScene; //current scene is active if no modals on screen
 	}
 	
 	init(element) {
@@ -60,10 +66,26 @@ class Game {
 		if (!this.__EDITORmode) {
 			scene.onShowInner();
 		}
+		//EDITOR
+		__getNodeExtendData(game.currentScene).toggled = true;
+		//ENDEDITOR
 	}
 	
 	makeItModal(displayObject) {
+		modals.push(displayObject);
+		this.stage.addChild(displayObject);
+	}
 	
+	hideModal(displayObject) {
+		if(!displayObject) {
+			assert(modals.length > 0, 'Attempt to hide modal when modal list is empty.');
+			hiddingModals.push(modals.pop());
+		} else {
+			var i = modals.indexOf(displayObject);
+			assert(i >= 0, 'Attempt to hide modal object which is not in modal list.');
+			hiddingModals.push(modals[i]);
+			modals.splice(i, 1)
+		}
 	}
 	
 	updateGlobal(dt) {
@@ -77,6 +99,12 @@ class Game {
 						frameCounterTime -= FRAME_PERIOD;
 					} else {
 						frameCounterTime = 0;
+					}
+				}
+			} else {
+				if(this.__EDITORmode) {
+					while (hiddingModals.length > 0) {
+						hiddingModals.pop().remove();
 					}
 				}
 			}
@@ -95,6 +123,17 @@ class Game {
 	
 	updateFrame() {
 		updateRecursivelly(this.currentContainer);
+		
+		var i = hiddingModals.length-1; //hide modals process
+		while (i >= 0) {
+			var m = hiddingModals[i];
+			m.alpha -= 0.01;
+			if(m.alpha <= 0.0) {
+				m.remove();
+				hiddingModals.splice(i, 1);
+			}
+			i--;
+		}
 	}
 }
 

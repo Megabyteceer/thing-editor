@@ -238,7 +238,6 @@ class Editor {
 		if (name === editor.runningSceneLibSaveSlotName) {
 			Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
 		}
-		__getNodeExtendData(game.currentScene).toggled = true;
 		this.refreshTreeViewAndPropertyEditor();
 	}
 	
