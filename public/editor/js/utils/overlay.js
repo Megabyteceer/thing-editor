@@ -104,8 +104,8 @@ $(window).on('mousedown', (ev) => {
 		var root = game.currentContainer;
 		var o = EDITOR.selection[0] || root;
 		var start = o;
-		var c =0;
-		while(c++ < 100) {
+		var c = 0;
+		while(c++ < 10000) {
 			if(o.children && o.children.length > 0) {
 				o = o.getChildAt(0);
 			} else {
@@ -113,13 +113,15 @@ $(window).on('mousedown', (ev) => {
 				if(i < o.parent.children.length) {
 					o = o.parent.getChildAt(i);
 				} else {
-					o = o.parent;
-					i = o.parent.getChildIndex(o) + 1;
-					if(i < o.parent.children.length) {
-						o = o.parent.getChildAt(i);
-					} else {
-						if (o === root) {
+					while(c++ < 10000) {
+						o = o.parent;
+						i = o.parent.getChildIndex(o) + 1;
+						if (i < o.parent.children.length) {
+							o = o.parent.getChildAt(i);
+							break
+						} if (o === root) {
 							o = o.getChildAt(0);
+							break;
 						}
 					}
 				}
