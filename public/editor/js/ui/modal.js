@@ -37,13 +37,13 @@ var renderModal = (props, i) => {
 }
 
 $(window).on('keydown', (ev) => {
-    if (ev.keyCode === 27) {
-        var m = modal.state.modals[modal.state.modals.length - 1];
-        if(m && !m.noEasyClose) {
-            modal.closeModal();
-            sp(ev);
-        }
-    }
+	if (ev.keyCode === 27) {
+		var m = modal.state.modals[modal.state.modals.length - 1];
+		if (m && !m.noEasyClose) {
+			modal.closeModal();
+			sp(ev);
+		}
+	}
 });
 
 var renderSpinner = () => {
@@ -53,45 +53,46 @@ var renderSpinner = () => {
 }
 
 class Prompt extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value:props.defaultText || ''};
-        this.onChange = this.onChange.bind(this);
-        this.onAcceptClick = this.onAcceptClick.bind(this);
-        this.onKeyDown = this.onKeyDown.bind(this);
-    }
-    onChange(ev) {
-        var val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
-        var reject = this.props.accept ? this.props.accept(val) : undefined;
-        this.setState({
-            value:val,
-            rejectReason: reject,
-            accepted: val && !reject
-        });
-    }
-    
-    onKeyDown (ev){
-        if(ev.keyCode === 13) {
-            this.onAcceptClick();
-        }
-    }
-    
-    onAcceptClick() {
-        if(this.state.accepted) {
-            modal.closeModal(this.state.value);
-        }
-    }
-    
-    render() {
-        return R.div(null,
-            R.div(modalRejectProps, this.state.rejectReason || ' '),
-            R.div(null,
-                R.input({value:this.state.value, onKeyDown:this.onKeyDown, autoFocus:true, onChange:this.onChange})
-            ),
-            R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', 13)
-        )
-    }
-    
+	constructor(props) {
+		super(props);
+		this.state = {value: props.defaultText || ''};
+		this.onChange = this.onChange.bind(this);
+		this.onAcceptClick = this.onAcceptClick.bind(this);
+		this.onKeyDown = this.onKeyDown.bind(this);
+	}
+	
+	onChange(ev) {
+		var val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
+		var reject = this.props.accept ? this.props.accept(val) : undefined;
+		this.setState({
+			value: val,
+			rejectReason: reject,
+			accepted: val && !reject
+		});
+	}
+	
+	onKeyDown(ev) {
+		if (ev.keyCode === 13) {
+			this.onAcceptClick();
+		}
+	}
+	
+	onAcceptClick() {
+		if (this.state.accepted) {
+			modal.closeModal(this.state.value);
+		}
+	}
+	
+	render() {
+		return R.div(null,
+			R.div(modalRejectProps, this.state.rejectReason || ' '),
+			R.div(null,
+				R.input({value: this.state.value, onKeyDown: this.onKeyDown, autoFocus: true, onChange: this.onChange})
+			),
+			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', 13)
+		)
+	}
+	
 }
 
 
@@ -103,19 +104,19 @@ class Modal extends React.Component {
 			modals: []
 		};
 	}
-    
-    closeModal(val) {
+	
+	closeModal(val) {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
 		var closedModalItem = modal.state.modals.pop();
 		modal.forceUpdate();
-        closedModalItem.resolve(val);
+		closedModalItem.resolve(val);
 	}
-    
-    showModal(content, title, noEasyClose) {
-	    return new Promise((resolve) => {
-            modal.state.modals.push({content, title, noEasyClose, resolve});
-            modal.forceUpdate();
-        });
+	
+	showModal(content, title, noEasyClose) {
+		return new Promise((resolve) => {
+			modal.state.modals.push({content, title, noEasyClose, resolve});
+			modal.forceUpdate();
+		});
 	}
 	
 	componentDidMount() {
@@ -138,34 +139,40 @@ class Modal extends React.Component {
 			}, 10);
 		}
 	}
-
-    showQuestion(title, message, onYes, yesLabel='Ok', onNo, noLabel = 'Cancel', noEasyClose) {
-
-	    var yesBtn = R.btn(yesLabel, () => {modal.closeModal(true); onYes();}, undefined, 'main-btn', 13);
-	    if(typeof onNo != 'undefined') {
-            var noBtn = R.btn(noLabel, () => {modal.closeModal(); onNo();});
-        }
-
-	    return this.showModal(R.div(null, message,
-            R.div(null,
-                yesBtn,
-                noBtn
-            )
-        ), title, noEasyClose);
-    }
-    
-    showPrompt(title, defaultText, filter, accept, noEasyClose) {
-	    return this.showModal(React.createElement(Prompt, {defaultText, filter, accept}), title, noEasyClose);
-    }
+	
+	showQuestion(title, message, onYes, yesLabel = 'Ok', onNo, noLabel = 'Cancel', noEasyClose) {
+		
+		var yesBtn = R.btn(yesLabel, () => {
+			modal.closeModal(true);
+			onYes();
+		}, undefined, 'main-btn', 13);
+		if (typeof onNo != 'undefined') {
+			var noBtn = R.btn(noLabel, () => {
+				modal.closeModal();
+				onNo();
+			});
+		}
+		
+		return this.showModal(R.div(null, message,
+			R.div(null,
+				yesBtn,
+				noBtn
+			)
+		), title, noEasyClose);
+	}
+	
+	showPrompt(title, defaultText, filter, accept, noEasyClose) {
+		return this.showModal(React.createElement(Prompt, {defaultText, filter, accept}), title, noEasyClose);
+	}
 	
 	showError(message, title = 'Error!', noEasyClose) {
 		return this.showModal(R.div(errorProps, message), R.span(null, R.icon('error'), title), noEasyClose);
 	}
 	
 	render() {
-	    var spinner;
+		var spinner;
 		if (spinnerShowCounter > 0) {
-            spinner = renderSpinner();
+			spinner = renderSpinner();
 		}
 		return R.div(null, this.state.modals.map(renderModal), spinner);
 	}

@@ -43,14 +43,14 @@ R.listItem = (view, item, key, parent) => {
 
 let _debouncings = new Map();
 window.debouncedCall = (f, timeMs = 0) => {
-    if(_debouncings.has(f)) {
-        clearTimeout(_debouncings.get(f));
-        _debouncings.delete(f);
-    }
-    _debouncings.set(f, setTimeout(() => {
-        _debouncings.delete(f);
-        f();
-    }, timeMs));
+	if (_debouncings.has(f)) {
+		clearTimeout(_debouncings.get(f));
+		_debouncings.delete(f);
+	}
+	_debouncings.set(f, setTimeout(() => {
+		_debouncings.delete(f);
+		f();
+	}, timeMs));
 }
 
 window.sp = (ev) => {
@@ -71,18 +71,18 @@ $(window).on('contextmenu', (ev) => {
 });
 
 $(window).on('keydown', (ev) => {
-    if(ev.key === 'F5') {
-       /* sp(ev);
-        EDITOR.reloadAssetsAndClasses();*/
-    }
+	if (ev.key === 'F5') {
+		/* sp(ev);
+		 EDITOR.reloadAssetsAndClasses();*/
+	}
 });
 
-window.selectText = function(element) {
-    var selection = window.getSelection();
-    var range = document.createRange();
-    range.selectNodeContents(element);
-    selection.removeAllRanges();
-    selection.addRange(range);
+window.selectText = function (element) {
+	var selection = window.getSelection();
+	var range = document.createRange();
+	range.selectNodeContents(element);
+	selection.removeAllRanges();
+	selection.addRange(range);
 }
 
 export default null;

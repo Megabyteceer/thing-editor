@@ -8,31 +8,31 @@ import ColorEditor from './color-editor.js';
 var typeDescriptions = new WeakMap();
 typeDescriptions[Number] = {
 	renderer: NumberEditor,
-    parser: (target) => {
+	parser: (target) => {
 		return parseFloat(target.value)
 	},
-    default: 0
+	default: 0
 };
 typeDescriptions[String] = {
 	renderer: StringEditor,
-    parser: (target) => {
+	parser: (target) => {
 		return target.value || null;
 	},
-    default:null
+	default: null
 };
 typeDescriptions[Boolean] = {
 	renderer: BooleanEditor,
-    parser: (target) => {
+	parser: (target) => {
 		return target.checked
 	},
-    default:false
+	default: false
 };
 typeDescriptions['color'] = {
 	renderer: ColorEditor, parser:
-        (target) => {
-		return parseInt(target.value.replace('#', ''), 16)
-	},
-    default:0xFFFFFF
+		(target) => {
+			return parseInt(target.value.replace('#', ''), 16)
+		},
+	default: 0xFFFFFF
 };
 
 

@@ -15,10 +15,10 @@ class Viewport extends React.Component {
 	}
 	
 	stopExecution(reason) {
-		if(reason) {
+		if (reason) {
 			EDITOR.ui.modal.showError(reason);
 		}
-		if(!game.__EDITORmode) {
+		if (!game.__EDITORmode) {
 			this.onTogglePlay();
 		}
 	}
@@ -27,14 +27,14 @@ class Viewport extends React.Component {
 		var play = game.__EDITORmode;
 		
 		if (play) { // launch game
-            EDITOR.saveCurrentScene(EDITOR.runningSceneLibSaveSlotName);
-            selectionData = EDITOR.selection.saveSelection();
+			EDITOR.saveCurrentScene(EDITOR.runningSceneLibSaveSlotName);
+			selectionData = EDITOR.selection.saveSelection();
 		} else { //stop game
-            EDITOR.loadScene(EDITOR.runningSceneLibSaveSlotName);
-            EDITOR.selection.loadSelection(selectionData);
+			EDITOR.loadScene(EDITOR.runningSceneLibSaveSlotName);
+			EDITOR.selection.loadSelection(selectionData);
 		}
 		this.forceUpdate();
-        game.__EDITORmode = !play;
+		game.__EDITORmode = !play;
 	}
 	
 	onMouseMove(ev) {

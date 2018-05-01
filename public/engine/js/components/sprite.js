@@ -42,11 +42,11 @@ Sprite.EDITOR_editableProps = [
 export default Sprite;
 
 PIXI.DisplayObject.prototype.getGlobalRotation = function getGlobalRotation() {
-    var ret = this.rotation;
-    var p = this.parent;
-    while(p) {
-        ret += p.rotation;
-        p = p.parent;
-    }
-    return ret;
+	var ret = this.rotation;
+	var p = this.parent;
+	while (p) {
+		ret += p.rotation;
+		p = p.parent;
+	}
+	return ret;
 }

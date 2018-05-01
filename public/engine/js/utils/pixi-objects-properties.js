@@ -80,12 +80,12 @@ export default {
 				step: 0.01,
 				min: 0,
 				max: 1,
-                default:1
+				default: 1
 			},
 			{
 				name: 'visible',
 				type: Boolean,
-                default:true
+				default: true
 			},
 			{
 				type: 'splitter',
@@ -96,13 +96,13 @@ export default {
 				name: 'scale.x',
 				type: Number,
 				step: 0.01,
-                default:1
+				default: 1
 			},
 			{
 				name: 'scale.y',
 				type: Number,
 				step: 0.01,
-                default:1
+				default: 1
 			},
 			{
 				name: 'skew.x',

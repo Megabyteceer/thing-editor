@@ -21,7 +21,7 @@ class Button extends React.Component {
 	}
 	
 	onKeyDown(e) {
-		if (this.props.disabled ||  e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+		if (this.props.disabled || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
 		
 		var needCtrl = this.props.hotkey > 1000;
 		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
@@ -37,15 +37,15 @@ class Button extends React.Component {
 	}
 	
 	onClick(ev) {
-        if(this.props.disabled) return;
-
-        this.props.onClick();
+		if (this.props.disabled) return;
+		
+		this.props.onClick();
 		ev.target.blur();
 	}
 	
 	render() {
 		return R.button({
-		    disabled: this.props.disabled,
+			disabled: this.props.disabled,
 			className: 'clickable ' + this.props.className,
 			onMouseDown: this.onMouseDown,
 			title: this.props.title,

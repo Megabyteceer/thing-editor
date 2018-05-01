@@ -1,6 +1,6 @@
 "use strict";
 import Editor from '/editor/js/editor.js';
 
-(function() {
+(function () {
 	new Editor();
 })();

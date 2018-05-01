@@ -1,7 +1,7 @@
 export default class Container extends PIXI.Container {
-    update() {
-    
-    }
+	update() {
+	
+	}
 }
 
 Container.EDITOR_icon = 'tree/container';

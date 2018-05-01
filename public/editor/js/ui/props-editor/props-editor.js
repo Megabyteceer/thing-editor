@@ -34,7 +34,7 @@ class PropsEditor extends React.Component {
 					groups.push(curGroup);
 				}
 				curGroupArray = [];
-                curGroup = Group.renderGroup({key: p.name, content:curGroupArray, title:p.title});
+				curGroup = Group.renderGroup({key: p.name, content: curGroupArray, title: p.title});
 			} else {
 				curGroupArray.push(
 					React.createElement(PropsFieldWrapper, {key: p.name, field: p, onChange: this.props.onChange})

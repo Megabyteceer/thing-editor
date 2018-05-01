@@ -9,11 +9,11 @@ const H = 720;
 	
 	if (TARGET == 'development') {
 		window.assert = (expression, message, dontBreakFlow) => {
-            message = 'Assert: ' + message;
+			message = 'Assert: ' + message;
 			if (!expression) {
-                if (window.EDITOR) {
-                    EDITOR.ui.modal.showError(message);
-                }
+				if (window.EDITOR) {
+					EDITOR.ui.modal.showError(message);
+				}
 				if (!dontBreakFlow) {
 					throw message;
 				}

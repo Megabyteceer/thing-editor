@@ -22,7 +22,7 @@ class TreeNode extends React.Component {
 				collapseChildsRecursively(this.props.node);
 			}
 			this.forceUpdate();
-            sp(ev);
+			sp(ev);
 			return;
 		}
 		
@@ -79,7 +79,7 @@ class TreeNode extends React.Component {
 }
 
 function nodeHasChildren(node) {
-    return node.children && node.children.length > 0;
+	return node.children && node.children.length > 0;
 }
 
 function isClickedAtRightEdge(e) {
@@ -88,7 +88,7 @@ function isClickedAtRightEdge(e) {
 }
 
 function collapseChildsRecursively(node) {
-    __getNodeExtendData(node).toggled = false;
+	__getNodeExtendData(node).toggled = false;
 	if (node.hasOwnProperty('children')) {
 		node.children.some(collapseChildsRecursively);
 	}
