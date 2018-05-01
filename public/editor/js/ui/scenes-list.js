@@ -27,19 +27,19 @@ export default class ScenesList extends React.Component {
 	}
 	
 	onSaveSceneClick() {
-		EDITOR.saveCurrentScene();
+		editor.saveCurrentScene();
 	}
 	
 	onSaveAsSceneClick() {
 		
-		var defaultSceneName = EDITOR.projectDesc.currentSceneName.split('/');
+		var defaultSceneName = editor.projectDesc.currentSceneName.split('/');
 		defaultSceneName.pop();
 		defaultSceneName = defaultSceneName.join('/');
 		if (defaultSceneName) {
 			defaultSceneName += '/';
 		}
 		
-		EDITOR.ui.modal.showPrompt('Enter name for scene:',
+		editor.ui.modal.showPrompt('Enter name for scene:',
 			defaultSceneName,
 			(val) => { // filter
 				return val.toLowerCase().replace(sceneNameFilter, '');
@@ -55,7 +55,7 @@ export default class ScenesList extends React.Component {
 			}
 		).then((enteredName) => {
 			if (enteredName) {
-				EDITOR.saveCurrentScene(enteredName);
+				editor.saveCurrentScene(enteredName);
 			}
 		});
 	}
@@ -68,8 +68,8 @@ export default class ScenesList extends React.Component {
 		var cls = Lib.getClass(item.c);
 		return R.div({
 			onDoubleClick: () => {
-				EDITOR.ui.viewport.stopExecution();
-				EDITOR.openSceneSafe(sceneName);
+				editor.ui.viewport.stopExecution();
+				editor.openSceneSafe(sceneName);
 			},
 			key: sceneName
 		}, R.listItem(R.span(null, R.classIcon(cls), R.b(sceneNameProps, sceneName), ' (' + cls.name + ')'), item, sceneName, this));
@@ -77,7 +77,7 @@ export default class ScenesList extends React.Component {
 	
 	render() {
 		var libsScenes = Lib._getAllScenes();
-		var currentSceneName = EDITOR.projectDesc && EDITOR.projectDesc.currentSceneName;
+		var currentSceneName = editor.projectDesc && editor.projectDesc.currentSceneName;
 		
 		var bottomPanelClassName = '';
 		if (!currentSceneName) {
@@ -108,9 +108,9 @@ export default class ScenesList extends React.Component {
 	static readAllScenesList() {
 		var scenes = {};
 		return Promise.all(
-			EDITOR.fs.files.filter(fn => fn.match(sceneFileFiler))
+			editor.fs.files.filter(fn => fn.match(sceneFileFiler))
 			.map((fn) => {
-				return EDITOR.fs.openFile(fn)
+				return editor.fs.openFile(fn)
 				.then((data) => {
 					scenes[fileNameToSceneName(fn)] = data;
 				});
@@ -121,7 +121,7 @@ export default class ScenesList extends React.Component {
 	}
 	
 	static isSpecialSceneName(sceneName) {
-		return sceneName.indexOf(EDITOR.editorFilesPrefix) === 0;
+		return sceneName.indexOf(editor.editorFilesPrefix) === 0;
 	}
 }
 

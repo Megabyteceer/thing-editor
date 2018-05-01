@@ -38,10 +38,10 @@ var errorOccured;
 
 function showError(message) {
 	errorOccured = true;
-	EDITOR.ui.modal.showError(R.div(null,
+	editor.ui.modal.showError(R.div(null,
 		message,
 		R.btn('I have fixed code, try again', () => {
-			EDITOR.ui.modal.closeModal();
+			editor.ui.modal.closeModal();
 			ClassesLoader.reloadClasses();
 		}, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
 		'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
@@ -148,7 +148,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		clearClasses();
 		customClassesIdCounter = CUSTOM_CLASSES_ID;
 		console.clear();
-		console.log('%c EDITOR: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
+		console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
 		
 		embeddedClasses.some((c) => {
 			addClass(c, false);
@@ -163,23 +163,23 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		};
 		
 		var scriptSource = '';
-		EDITOR.fs.files.some((fn, i) => {
+		editor.fs.files.some((fn, i) => {
 			if (fn.match(jsFiler)) {
 				var classPath = fn;
-				scriptSource += ("import C" + i + " from '" + location.origin + EDITOR.fs.gameFolder + classPath + "?nocache=" + (cacheCounter++) + "'; EDITOR.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
+				scriptSource += ("import C" + i + " from '" + location.origin + editor.fs.gameFolder + classPath + "?nocache=" + (cacheCounter++) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
 			}
 		});
 		
 		var src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
 		
 		var script = document.createElement('script');
-		EDITOR.ui.modal.showSpinner();
+		editor.ui.modal.showSpinner();
 		script.onerror = function (er) {
-			EDITOR.ui.modal.hideSpinner();
+			editor.ui.modal.hideSpinner();
 		}
 		script.onload = function (ev) {
 			
-			EDITOR.ui.modal.hideSpinner();
+			editor.ui.modal.hideSpinner();
 			head.removeChild(script);
 			
 			window.onerror = null;
@@ -207,6 +207,10 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 
 function classLoaded(c, path) {
 	loadedClssesCount++;
+	if(!c.hasOwnProperty('EDITOR_icon')) {
+		c.EDITOR_icon = "tree/game";
+	}
+	
 	addClass(c, path);
 }
 

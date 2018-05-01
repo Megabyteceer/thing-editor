@@ -5,7 +5,7 @@ class ClessesView extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		EDITOR.ClassesLoader.classesLoaded.add(this.onClassesLoaded.bind(this));
+		editor.ClassesLoader.classesLoaded.add(this.onClassesLoaded.bind(this));
 		this.state = {};
 		this.renderItem = this.renderItem.bind(this);
 		this.onAddClick = this.onAddClick.bind(this);
@@ -17,11 +17,11 @@ class ClessesView extends React.Component {
 	}
 	
 	onAddClick() {
-		EDITOR.addToScene(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
+		editor.addToScene(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
 	}
 	
 	onAddAsChildClick() {
-		EDITOR.addToSelected(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
+		editor.addToSelected(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
 	}
 	
 	onSelect(item) {
@@ -33,7 +33,7 @@ class ClessesView extends React.Component {
 	}
 	
 	selectedItem() {
-		if ((!EDITOR.ClassesLoader.gameObjClasses) || (EDITOR.ClassesLoader.gameObjClasses.indexOf(this.state.selectedItem) < 0)) return null;
+		if ((!editor.ClassesLoader.gameObjClasses) || (editor.ClassesLoader.gameObjClasses.indexOf(this.state.selectedItem) < 0)) return null;
 		return this.state.selectedItem;
 	}
 	
@@ -41,7 +41,7 @@ class ClessesView extends React.Component {
 		
 		var body;
 		
-		var classes = EDITOR.ClassesLoader.gameObjClasses;
+		var classes = editor.ClassesLoader.gameObjClasses;
 		if (!classes) {
 			body = 'Loading...'
 		} else {

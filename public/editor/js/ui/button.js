@@ -32,7 +32,7 @@ class Button extends React.Component {
 	
 	onMouseDown(ev) {
 		if (ev.button === 2) {
-			EDITOR.ui.modal.showModal(this.props.onClick.name, 'Button Handler:');
+			editor.ui.modal.showModal(this.props.onClick.name, 'Button Handler:');
 		}
 	}
 	

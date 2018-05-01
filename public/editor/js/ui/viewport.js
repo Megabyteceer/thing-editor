@@ -14,7 +14,7 @@ class Viewport extends React.Component {
 	
 	stopExecution(reason) {
 		if (reason) {
-			EDITOR.ui.modal.showError(reason);
+			editor.ui.modal.showError(reason);
 		}
 		if (!game.__EDITORmode) {
 			this.onTogglePlay();
@@ -25,14 +25,14 @@ class Viewport extends React.Component {
 		var play = game.__EDITORmode;
 		
 		if (play) { // launch game
-			EDITOR.saveCurrentScene(EDITOR.runningSceneLibSaveSlotName);
-			selectionData = EDITOR.selection.saveSelection();
+			editor.saveCurrentScene(editor.runningSceneLibSaveSlotName);
+			selectionData = editor.selection.saveSelection();
 		} else { //stop game
-			EDITOR.loadScene(EDITOR.runningSceneLibSaveSlotName);
-			EDITOR.selection.loadSelection(selectionData);
+			editor.loadScene(editor.runningSceneLibSaveSlotName);
+			editor.selection.loadSelection(selectionData);
 		}
-		this.forceUpdate();
 		game.__EDITORmode = !play;
+		this.forceUpdate();
 	}
 	
 	render() {
@@ -45,7 +45,7 @@ class Viewport extends React.Component {
 			
 			R.div({className: 'editor-viewport-panel'},
 				R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', 32),
-				R.btn(R.icon('recompile'), EDITOR.reloadClasses, 'Rebuild game sources', 'play-stop-btn'),
+				R.btn(R.icon('recompile'), editor.reloadClasses, 'Rebuild game sources', 'play-stop-btn'),
 			)
 		);
 	}

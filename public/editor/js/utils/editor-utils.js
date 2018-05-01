@@ -21,7 +21,7 @@ R.icon = (name) => {
 }
 
 R.classIcon = (constructor) => {
-	return R.icon(constructor.EDITOR_icon || 'tree/game-obj');
+	return R.icon(constructor.EDITOR_icon);
 }
 
 R.listItem = (view, item, key, parent) => {
@@ -60,7 +60,7 @@ window.sp = (ev) => {
 
 window.check = (expression, message) => {
 	if (!expression) {
-		EDITOR.ui.modal.showError(message);
+		editor.ui.modal.showError(message);
 	}
 }
 
@@ -73,7 +73,7 @@ $(window).on('contextmenu', (ev) => {
 $(window).on('keydown', (ev) => {
 	if (ev.key === 'F5') {
 		/* sp(ev);
-		 EDITOR.reloadAssetsAndClasses();*/
+		 editor.reloadAssetsAndClasses();*/
 	}
 });
 

@@ -1,10 +1,6 @@
 import Group from "./group.js";
 
-var classViewProps = {
-	className: 'vertical-layout', onBlur: () => {
-		EDITOR.overlay.hidePreview();
-	}
-};
+var classViewProps = {className: 'vertical-layout'};
 var bodyProps = {className: 'list-view'};
 
 const prefabFileFiler = /^prefabs\/.*\.prefab.json$/gm;
@@ -39,26 +35,23 @@ export default class PrefabsList extends React.Component {
 	
 	onAddClick() {
 		if (this.state.selectedItem) {
-			debugger;
-			EDITOR.addToScene(Lib.__getNameByPrefab(this.state.selectedItem));
+			editor.addToScene(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
 		}
 	}
 	
 	onAddChildClick() {
 		if (this.state.selectedItem) {
-			debugger;
-			EDITOR.addToSelected(Lib.__getNameByPrefab(this.state.selectedItem));
+			editor.addToSelected(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
 		}
 	}
 	
 	onSaveSelectedAsClick() {
-		
-		if (EDITOR.selection.length === 0) {
-			EDITOR.ui.modal.showModal('Nothing is selected in scene.');
-		} else if (EDITOR.selection.length > 1) {
-			EDITOR.ui.modal.showModal('More that one object selected.');
-		} else if (EDITOR.ClassesLoader.getClassType(EDITOR.selection[0].constructor) === Scene) {
-			EDITOR.ui.modal.showModal('You cant save Scene as prefab. Please select some object from scene first.');
+		if (editor.selection.length === 0) {
+			editor.ui.modal.showModal('Nothing is selected in scene.');
+		} else if (editor.selection.length > 1) {
+			editor.ui.modal.showModal('More that one object selected.');
+		} else if (editor.ClassesLoader.getClassType(editor.selection[0].constructor) === Scene) {
+			editor.ui.modal.showModal('You cant save Scene as prefab. Please select some object from scene first.');
 		} else {
 			
 			var defaultPrefabName = '';
@@ -71,7 +64,7 @@ export default class PrefabsList extends React.Component {
 				}
 			}
 			
-			EDITOR.ui.modal.showPrompt('Enter name for new prefab:',
+			editor.ui.modal.showPrompt('Enter name for new prefab:',
 				defaultPrefabName,
 				(val) => { // filter
 					return val.toLowerCase().replace(prefabNameFilter, '');
@@ -86,7 +79,7 @@ export default class PrefabsList extends React.Component {
 				}
 			).then((enteredName) => {
 				if (enteredName) {
-					Lib.__savePrefab(EDITOR.selection[0], enteredName);
+					Lib.__savePrefab(editor.selection[0], enteredName);
 					this.forceUpdate();
 				}
 			});
@@ -94,8 +87,12 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	onSelect(item) {
-		var preview = Lib.loadPrefab(Lib.__getNameByPrefab(item));
-		EDITOR.overlay.showPreview(preview);
+		if(game.__EDITORmode) {
+			PrefabsList.hidePrefabPreview();
+			var preview = Lib.loadPrefab(Lib.__getNameByPrefab(item));
+			editor.overlay.showPreview(preview);
+			previewShown = true;
+		}
 	}
 	
 	renderItem(prefabName, item) {
@@ -122,17 +119,28 @@ export default class PrefabsList extends React.Component {
 				R.btn('Add', this.onAddClick, 'Add prefab to scene'),
 				R.btn('Child', this.onAddChildClick, 'Add prefab as children')
 			),
-			R.btn('Save...', this.onSaveSelectedAsClick, 'Save current selected object from scene as new prefab.'),
+			R.btn('New...', this.onSaveSelectedAsClick, 'Create new prefab from selected objecton scene.'),
 			R.div(bodyProps, prefabs)
 		)
+	}
+	
+	static acceptPrefabEdition() {
+		PrefabsList.hidePrefabPreview();
+	}
+	
+	static hidePrefabPreview() {
+		if(previewShown) {
+			previewShown = false;
+			editor.overlay.hidePreview();
+		}
 	}
 	
 	static readAllPrefabsList() {
 		var prefabs = {};
 		return Promise.all(
-			EDITOR.fs.files.filter(fn => fn.match(prefabFileFiler))
+			editor.fs.files.filter(fn => fn.match(prefabFileFiler))
 			.map((fn) => {
-				return EDITOR.fs.openFile(fn)
+				return editor.fs.openFile(fn)
 				.then((data) => {
 					prefabs[fileNameToPrefabName(fn)] = data;
 				});
@@ -142,3 +150,13 @@ export default class PrefabsList extends React.Component {
 		});
 	}
 }
+
+var previewShown = false;
+
+const onMouseDown = (ev) => {
+	if(ev.target !== game.pixiApp.view) {
+		PrefabsList.hidePrefabPreview();
+	}
+}
+
+$(window).on('mousedown', onMouseDown);

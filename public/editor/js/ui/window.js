@@ -53,7 +53,7 @@ class Window extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		const settings = EDITOR.settings;
+		const settings = editor.settings;
 		const id = 'window-' + props.id;
 		this.id = id;
 		
@@ -87,7 +87,7 @@ class Window extends React.Component {
 	}
 	
 	saveState() {
-		const settings = EDITOR.settings;
+		const settings = editor.settings;
 		var id = this.id;
 		settings.setItem(id + '.x', this.state.x);
 		settings.setItem(id + '.y', this.state.y);
@@ -168,8 +168,8 @@ class Window extends React.Component {
 	setPosition(x, y) {
 		x = Math.max(0, x);
 		y = Math.max(0, y);
-		x = Math.min(x, EDITOR.W - this.state.w);
-		y = Math.min(y, EDITOR.H - this.state.h);
+		x = Math.min(x, editor.W - this.state.w);
+		y = Math.min(y, editor.H - this.state.h);
 		this.state.x = x;
 		this.state.y = y;
 		if (this.$) {
@@ -180,8 +180,8 @@ class Window extends React.Component {
 	setSize(w, h) {
 		w = Math.max(w, this.props.minW);
 		h = Math.max(h, this.props.minH);
-		w = Math.min(w, EDITOR.W);
-		h = Math.min(h, EDITOR.H);
+		w = Math.min(w, editor.W);
+		h = Math.min(h, editor.H);
 		this.state.w = w;
 		this.state.h = h;
 		if (this.$) {

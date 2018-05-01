@@ -75,7 +75,7 @@ function refreshSelection() {
 	
 	game.pixiApp.view.style.cursor = overedDragger ? ((overedDragger.texture === rotatorImage) ? 'pointer' : 'move') : 'initial';
 	
-	EDITOR.selection.some((o) => {
+	editor.selection.some((o) => {
 		var info = __getNodeExtendData(o)
 		if (!info.draggerPivot) {
 			info.draggerPivot = createDragger(o, Dragger);
@@ -102,7 +102,7 @@ $(window).on('mousedown', (ev) => {
 		
 		// ---------------------------- select by stage click --------------------------------
 		var root = game.currentContainer;
-		var o = EDITOR.selection[0] || root;
+		var o = editor.selection[0] || root;
 		var start = o;
 		var c = 0;
 		while(c++ < 10000) {
@@ -128,17 +128,16 @@ $(window).on('mousedown', (ev) => {
 			}
 			
 			if(o.containsPoint && o.containsPoint(game.mouse)) {
-				EDITOR.ui.sceneTree.selectInTree(o);
+				editor.ui.sceneTree.selectInTree(o);
 				return;
 			}
 			if(o === start) {
 				break;
 			}
-			console.log(o.name);
 		}
-		EDITOR.selection.clearSelection(true);
-	} else if(ev.buttons === 2 && EDITOR.selection.length > 0) {
-		var info = __getNodeExtendData(EDITOR.selection[0]);
+		editor.selection.clearSelection(true);
+	} else if(ev.buttons === 2 && editor.selection.length > 0) {
+		var info = __getNodeExtendData(editor.selection[0]);
 		if(info.draggerPivot){
 			draggingDragger = info.draggerPivot;
 			draggingDragger.onDrag();
@@ -167,8 +166,8 @@ class Dragger extends Sprite {
 		
 		o.parent.toLocal(game.mouse, undefined, p, true);
 		
-		EDITOR.onSelectedPropsChange('x', p.x - o.x, true);
-		EDITOR.onSelectedPropsChange('y', p.y - o.y, true);
+		editor.onSelectedPropsChange('x', p.x - o.x, true);
+		editor.onSelectedPropsChange('y', p.y - o.y, true);
 	}
 }
 
@@ -185,6 +184,6 @@ class Rotator extends Sprite {
 		if (game.mouse.shiftKey) {
 			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 		}
-		EDITOR.onSelectedPropsChange('rotation', r - info.draggerRotator.rotation, true);
+		editor.onSelectedPropsChange('rotation', r - info.draggerRotator.rotation, true);
 	}
 }

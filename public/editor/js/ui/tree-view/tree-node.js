@@ -35,12 +35,12 @@ class TreeNode extends React.Component {
 			while (from <= to) {
 				var n = p.getChildAt(from);
 				if (n !== lastClickedItem.props.node) {
-					EDITOR.selection.select(n, true);
+					editor.selection.select(n, true);
 				}
 				from++;
 			}
 		} else {
-			EDITOR.selection.select(this.props.node, ev.ctrlKey);
+			editor.selection.select(this.props.node, ev.ctrlKey);
 		}
 		
 		if (state.isSelected) {

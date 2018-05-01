@@ -1,7 +1,6 @@
-export default class Container extends PIXI.Container {
-	update() {
-	
-	}
-}
+PIXI.Container.prototype.update = function update() {
 
-Container.EDITOR_icon = 'tree/container';
+}
+PIXI.Container.EDITOR_icon = 'tree/container';
+
+export default PIXI.Container;

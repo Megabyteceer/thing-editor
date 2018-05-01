@@ -46,14 +46,14 @@ function groupArray(a, level = 0) {
 }
 
 function isGroupHidden(groupId) {
-	return EDITOR.settings.getItem(groupId, false);
+	return editor.settings.getItem(groupId, false);
 }
 
 function toggleGroup(ev) {
 	var groupId = ev.target.dataset.groupid;
 	var group = $('.' + groupId + ' .props-group-body');
 	var isHidden = !isGroupHidden(groupId);
-	EDITOR.settings.setItem(groupId, isHidden);
+	editor.settings.setItem(groupId, isHidden);
 	if (isHidden) {
 		group.addClass('hidden');
 	} else {

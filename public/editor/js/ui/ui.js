@@ -65,13 +65,13 @@ class UI extends React.Component {
 	
 	render() {
 		return R.div(null,
-			R.btn('Open project...', EDITOR.fs.chooseProject),
-			EDITOR.history.buttonsRenderer(),
+			R.btn('Open project...', editor.fs.chooseProject),
+			editor.history.buttonsRenderer(),
 			window('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 250, 250, 500),
-			window('viewport', R.span(null, 'Viewport: ', EDITOR.projectDesc ? R.b(null, EDITOR.projectDesc.currentSceneName) : undefined), React.createElement(Viewport, {ref: this.viewportRef}), 1000, 0, 420, 313, 840, 480),
+			window('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.projectDesc.currentSceneName) : undefined), React.createElement(Viewport, {ref: this.viewportRef}), 1000, 0, 420, 313, 840, 480),
 			window('propsEditor', 'Properties', React.createElement(PropsEditor, {
 				ref: this.propsEditorRef,
-				onChange: EDITOR.onSelectedPropsChange
+				onChange: editor.onSelectedPropsChange
 			}), 250, 0, 250, 250, 250, 500),
 			window('classesLib', 'Classes', React.createElement(ClessesView), 0, 1000, 250, 150, 250, 500),
 			window('prefabsList', 'Prefabs', React.createElement(PrefabsList), 250, 1000, 250, 150, 250, 500),

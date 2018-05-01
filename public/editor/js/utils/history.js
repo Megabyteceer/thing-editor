@@ -10,7 +10,7 @@ function applyState(state) {
 	var scene = Lib._loadObjectFromData(state);
 	assert(game.__EDITORmode);
 	game.showScene(scene);
-	EDITOR.selection.loadSelection(state.selectionData);
+	editor.selection.loadSelection(state.selectionData);
 }
 
 function isRedoAvailable() {
@@ -30,8 +30,8 @@ class History {
 	
 	_pushCurrentStateToUndoHistory(selectionData) {
 		if (!game.__EDITORmode) {
-			assert(Lib.hasScene(EDITOR.runningSceneLibSaveSlotName), "");
-			undos.push(Lib.scenes[EDITOR.runningSceneLibSaveSlotName]);
+			assert(Lib.hasScene(editor.runningSceneLibSaveSlotName), "");
+			undos.push(Lib.scenes[editor.runningSceneLibSaveSlotName]);
 		} else {
 			assert(game.__EDITORmode, "Attempt to use history in running time.");
 			undos.push(Lib.__serializeObject(game.currentScene));
@@ -51,7 +51,7 @@ class History {
 	}
 	
 	addHistoryState() {
-		var selectionData = EDITOR.selection.saveSelection();
+		var selectionData = editor.selection.saveSelection();
 		redos.length = 0;
 		this._pushCurrentStateToUndoHistory(selectionData);
 		console.log('History saved');
@@ -109,10 +109,10 @@ class HistoryUi extends React.Component {
 	}
 	
 	render() {
-		return R.span(EDITOR.currentSceneIsModified ? modifiedStyle : null,
-			R.btn('Undo', EDITOR.history.undo, '(Ctrl + Z)', undefined, 1090, !isUndoAvailable()),
+		return R.span(editor.currentSceneIsModified ? modifiedStyle : null,
+			R.btn('Undo', editor.history.undo, '(Ctrl + Z)', undefined, 1090, !isUndoAvailable()),
 			undos.length,
-			R.btn('Redo', EDITOR.history.redo, '(Ctrl + Y)', undefined, 1089, !isRedoAvailable()),
+			R.btn('Redo', editor.history.redo, '(Ctrl + Y)', undefined, 1089, !isRedoAvailable()),
 			redos.length
 		);
 	}

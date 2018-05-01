@@ -8,22 +8,22 @@ var editorProps = {
 class PropsEditor extends React.Component {
 	
 	render() {
-		if (EDITOR.selection.length <= 0) {
+		if (editor.selection.length <= 0) {
 			return 'Nothing selected';
 		}
 		
-		var props = EDITOR.enumObjectsProperties(EDITOR.selection[0]);
+		var props = editor.enumObjectsProperties(editor.selection[0]);
 		var propsFilter = {};
 		
-		EDITOR.selection.some((o) => {
-			var ps = EDITOR.enumObjectsProperties(o);
+		editor.selection.some((o) => {
+			var ps = editor.enumObjectsProperties(o);
 			ps.some((p) => {
 				var name = p.name;
 				propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
 			});
 		})
 		props = props.filter((p) => {
-			return propsFilter[p.name] === EDITOR.selection.length;
+			return propsFilter[p.name] === editor.selection.length;
 		});
 		
 		var groups = [];

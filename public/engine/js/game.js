@@ -1,8 +1,10 @@
 import Settings from './utils/settings.js';
 import PixiObjectsProperties from './utils/pixi-objects-properties.js';
 import Lib from './lib.js';
-import Scene from './components/scene.js';
+import DisplayObject from './components/display-object.js';
+import Container from './components/container.js';
 import Sprite from './components/sprite.js';
+import Scene from './components/scene.js';
 
 window.Scene = Scene;
 window.Sprite = Sprite;
@@ -27,7 +29,6 @@ class Game {
 	
 	get currentContainer () {
 		return this.currentScene; //TODO return upper modal or current scene if no modal
-		
 	}
 	
 	init(element) {
@@ -61,6 +62,10 @@ class Game {
 		}
 	}
 	
+	makeItModal(displayObject) {
+	
+	}
+	
 	updateGlobal(dt) {
 		if (this.currentScene) {
 			if (!this.paused && !this.__EDITORmode) {
@@ -73,9 +78,7 @@ class Game {
 					} else {
 						frameCounterTime = 0;
 					}
-					
 				}
-				
 			}
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 		}

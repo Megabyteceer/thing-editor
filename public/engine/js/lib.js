@@ -1,3 +1,5 @@
+import Pool from "./utils/pool.js";
+
 var prefabs = {};
 var scenes;
 var classes;
@@ -56,7 +58,7 @@ class Lib {
 	}
 	
 	static loadClassInstanceById(id) {
-		var ret = new classes[id];
+		var ret = Pool.create(classes[id]);
 		constructRecursive(ret);
 		return ret;
 	}
@@ -65,10 +67,24 @@ class Lib {
 		return Lib._loadObjectFromData(prefabs[name]);
 	}
 	
+	static disposeObjectAndChildrens(o) {
+		if (o.parent) {
+			o.detachFromParent();
+		}
+		if (o.children) {
+			while(o.children.length > 0) {
+			
+			}
+			var s = o.getChildAt(o.children.length-1);
+			Lib.disposeObjectAndChildrens(s);
+		}
+		Pool.dispose(o);
+	}
+	
 	static _deserializeObject(src) {
 		assert(classes.hasOwnProperty(src.c), 'Unknown class id: ' + src.c);
 		assert(defaults.hasOwnProperty(src.c), 'Class with id ' + src.c + ' has no default values set');
-		var ret = new classes[src.c]();
+		var ret = Pool.create(classes[src.c]);
 		Object.assign(ret, defaults[src.c], src.p);
 		if (src.hasOwnProperty(':')) {
 			src[':'].some((src) => {
@@ -92,26 +108,26 @@ class Lib {
 		return scenes.hasOwnProperty(name);
 	}
 
-//EDITOR
+//editor
 	static __saveScene(scene, name) {
 		assert(typeof name === 'string');
 		if (!scene) {
-			assert(name === EDITOR.editorFilesPrefix + 'tmp', 'Only temporary scene can be null');
+			assert(name === editor.editorFilesPrefix + 'tmp', 'Only temporary scene can be null');
 			scenes[name] = undefined;
 		} else {
-			assert(EDITOR.ClassesLoader.getClassType(scene.constructor) === Scene, "attempt to save not Scene instance in to scenes list.");
+			assert(editor.ClassesLoader.getClassType(scene.constructor) === Scene, "attempt to save not Scene instance in to scenes list.");
 			var sceneData = Lib.__serializeObject(scene);
 			scenes[name] = sceneData;
-			EDITOR.fs.saveFile(Lib.__sceneNameToFileName(name), sceneData, true);
+			editor.fs.saveFile(Lib.__sceneNameToFileName(name), sceneData, true);
 		}
 	}
 	
 	static __savePrefab(object, name) {
 		assert(typeof name === 'string');
-		assert(EDITOR.ClassesLoader.getClassType(object.constructor) === PIXI.DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
+		assert(editor.ClassesLoader.getClassType(object.constructor) === PIXI.DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
 		var sceneData = Lib.__serializeObject(object);
 		prefabs[name] = sceneData;
-		EDITOR.fs.saveFile(Lib.__prefabNameToFileName(name), sceneData, true);
+		editor.fs.saveFile(Lib.__prefabNameToFileName(name), sceneData, true);
 	}
 	
 	static __getNameByPrefab(prefab) {
@@ -124,7 +140,7 @@ class Lib {
 	}
 	
 	static __deleteScene(name) {
-		return EDITOR.fs.deleteFile(Lib.__sceneNameToFileName(name));
+		return editor.fs.deleteFile(Lib.__sceneNameToFileName(name));
 	}
 	
 	static __sceneNameToFileName(sceneName) {
@@ -145,7 +161,7 @@ class Lib {
 	
 	static __serializeObject(o) {
 		var props = {};
-		var propsList = EDITOR.enumObjectsProperties(o);
+		var propsList = editor.enumObjectsProperties(o);
 		propsList.some((p) => {
 			if (!p.notSeriazable) {
 				var val = o[p.name];

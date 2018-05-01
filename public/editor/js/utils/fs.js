@@ -1,9 +1,9 @@
 var fs = {
 	chooseProject: (enforced) => {
 		fs.getJSON('/fs/projects').then((data) => {
-			EDITOR.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
+			editor.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
 			.then((projDir) => {
-				EDITOR.openProject(projDir);
+				editor.openProject(projDir);
 			})
 		});
 	},
@@ -18,11 +18,11 @@ var fs = {
 	},
 	getJSON(url, silently) {
 		if (!silently) {
-			EDITOR.ui.modal.showSpinner();
+			editor.ui.modal.showSpinner();
 		}
 		var r = $.getJSON(url).fail(handleError);
 		if (!silently) {
-			r.always(EDITOR.ui.modal.hideSpinner);
+			r.always(editor.ui.modal.hideSpinner);
 		}
 		return r;
 	},
@@ -31,7 +31,7 @@ var fs = {
 	},
 	saveFile(filename, data, silently) {
 		if (!silently) {
-			EDITOR.ui.modal.showSpinner();
+			editor.ui.modal.showSpinner();
 		}
 		
 		var r = $.ajax({
@@ -41,7 +41,7 @@ var fs = {
 			contentType: 'application/json'
 		}).fail(handleError);
 		if (!silently) {
-			r.always(EDITOR.ui.modal.hideSpinner);
+			r.always(editor.ui.modal.hideSpinner);
 		}
 		return r;
 	}
@@ -50,7 +50,7 @@ var fs = {
 export default fs;
 
 function handleError(er, status, error) {
-	EDITOR.ui.modal.showError(JSON.stringify(error || 'connection error'));
+	editor.ui.modal.showError(JSON.stringify(error || 'connection error'));
 }
 
 function getIconPath(desc) {
@@ -65,7 +65,7 @@ function renderProjectItem(desc, i, array) {
 	
 	return R.div({
 		className: 'project-item-select clickable', key: i, onClick: () => {
-			EDITOR.ui.modal.closeModal(desc.dir);
+			editor.ui.modal.closeModal(desc.dir);
 		}
 	}, icon, desc.title);
 }

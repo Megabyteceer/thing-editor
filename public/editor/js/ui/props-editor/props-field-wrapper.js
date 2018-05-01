@@ -71,7 +71,7 @@ class PropsFieldWrapper extends React.Component {
 	
 	render() {
 		var field = this.props.field;
-		var value = EDITOR.selection[0][field.name];
+		var value = editor.selection[0][field.name];
 		
 		var renderer;
 		if (field.hasOwnProperty('select')) {

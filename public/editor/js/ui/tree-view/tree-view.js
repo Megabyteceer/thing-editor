@@ -6,7 +6,7 @@ R.renderSceneNode = (node) => {
 }
 
 function onEmptyClick() {
-	EDITOR.selection.clearSelection(true);
+	editor.selection.clearSelection(true);
 }
 
 class TreeView extends React.Component {
@@ -18,7 +18,7 @@ class TreeView extends React.Component {
 			__getNodeExtendData(n).toggled = true;
 			n = n.parent;
 		}
-		EDITOR.selection.select(node);
+		editor.selection.select(node);
 		setTimeout(() => {
 			var e = $('.scene-tree-view .item-selected');
 			if (e[0]) {
@@ -29,10 +29,10 @@ class TreeView extends React.Component {
 	}
 	
 	render() {
-		if (!EDITOR.game) return R.spinner();
+		if (!editor.game) return R.spinner();
 		
 		return R.div({className: 'scene-tree-view', onClick: onEmptyClick},
-			EDITOR.game.stage.children.map(R.renderSceneNode)
+			editor.game.stage.children.map(R.renderSceneNode)
 		);
 	}
 	

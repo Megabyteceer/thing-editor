@@ -10,7 +10,7 @@ class Selection extends Array {
 			this.add(object);
 		}
 		this.sortSelectedNodes();
-		EDITOR.refreshTreeViewAndPropertyEditor();
+		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
 	sortSelectedNodes() {
@@ -20,11 +20,11 @@ class Selection extends Array {
 	
 	loadSelection(data) {
 		if (!data || data.length === 0) {
-			EDITOR.selection.clearSelection();
+			editor.selection.clearSelection();
 		} else {
 			data.some(selectNodeByPath);
 		}
-		EDITOR.refreshTreeViewAndPropertyEditor();
+		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
 	saveSelection() {
@@ -36,7 +36,7 @@ class Selection extends Array {
 			this.remove(this[this.length - 1]);
 		}
 		if (refresh) {
-			EDITOR.refreshTreeViewAndPropertyEditor();
+			editor.refreshTreeViewAndPropertyEditor();
 		}
 	}
 	
@@ -68,7 +68,7 @@ const selectionFilter = new PIXI.filters.OutlineFilter(2, 0xffff00);
 const selectedFilters = [selectionFilter];
 
 setInterval(() => {
-	if (EDITOR.selection.length > 0) {
+	if (editor.selection.length > 0) {
 		selectionFilter.color ^= 0x063311;
 	}
 }, 1000 / 60 * 3);
@@ -90,9 +90,9 @@ var selectNodeByPath = (path, nodeNum) => {
 		ret = ret.getChildAt(path[i]);
 	}
 	if (nodeNum === 0) {
-		EDITOR.ui.sceneTree.selectInTree(ret);
+		editor.ui.sceneTree.selectInTree(ret);
 	} else {
-		EDITOR.selection.add(ret);
+		editor.selection.add(ret);
 	}
 }
 
