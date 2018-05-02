@@ -34,12 +34,14 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	onAddClick() {
+        PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
 			editor.addToScene(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
 		}
 	}
 	
 	onAddChildClick() {
+        PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
 			editor.addToSelected(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
 		}
@@ -92,7 +94,9 @@ export default class PrefabsList extends React.Component {
 			var preview = Lib.loadPrefab(Lib.__getNameByPrefab(item));
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);
-			previewShown = true;
+            editor.ui.viewport.setPrefabMode(true);
+            editor.history.clearHistory(item);
+			previewShown = preview;
 		}
 	}
 	
@@ -125,12 +129,16 @@ export default class PrefabsList extends React.Component {
 		)
 	}
 	
-	static acceptPrefabEdition() {
+	acceptPrefabEdition() {
+        if(editor.isCurrentSceneModified) {
+
+        }
 		PrefabsList.hidePrefabPreview();
 	}
 	
 	static hidePrefabPreview() {
 		if(previewShown) {
+            editor.ui.viewport.setPrefabMode(false);
 			previewShown = false;
 			editor.overlay.hidePreview();
 		}

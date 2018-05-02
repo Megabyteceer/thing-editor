@@ -1,4 +1,5 @@
 import Game from '/engine/js/game.js';
+import PrefabsList from './prefabs-list.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -8,7 +9,7 @@ class Viewport extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		
+		this.state = {};
 		this.onTogglePlay = this.onTogglePlay.bind(this);
 	}
 	
@@ -34,9 +35,31 @@ class Viewport extends React.Component {
 		game.__EDITORmode = !play;
 		this.forceUpdate();
 	}
+
+    setPrefabMode(enabled) {
+	    this.setState({prefabMode:enabled});
+    }
 	
 	render() {
-		return R.div({className: 'editor-viewport-wrapper'},
+
+        var className = 'editor-viewport-wrapper';
+
+        var panel;
+	    if(this.state.prefabMode) {
+            this.state.prefabMode += ' editor-viewport-wrapper-prefab-mode';
+            panel = R.span( undefined,
+                R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes'),
+                R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes', 'main-btn')
+            )
+        } else {
+	        panel = R.span( undefined,
+	            R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', 32),
+                R.btn(R.icon('recompile'), editor.reloadClasses, 'Rebuild game sources', 'play-stop-btn')
+            )
+        }
+
+
+		return R.div({className},
 			
 			R.div({
 				id: 'viewport-root',
@@ -44,8 +67,7 @@ class Viewport extends React.Component {
 			}),
 			
 			R.div({className: 'editor-viewport-panel'},
-				R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', 32),
-				R.btn(R.icon('recompile'), editor.reloadClasses, 'Rebuild game sources', 'play-stop-btn'),
+                panel
 			)
 		);
 	}

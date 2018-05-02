@@ -37,19 +37,23 @@ class UI extends React.Component {
 		this.propsEditorRef = this.propsEditorRef.bind(this);
 		this.viewportRef = this.viewportRef.bind(this);
 		this.modalRef = this.modalRef.bind(this);
+		this.prefabsRef = this.prefabsRef.bind(this);
 	}
 	
 	componentDidMount() {
 		this.props.onMounted(this);
 	}
 	
-	sceneTreeRef(sceneTree) {
-		this.sceneTree = sceneTree;
+	sceneTreeRef(ref) {
+		this.sceneTree = ref;
+	}
+
+    prefabsRef(ref) {
+		this.prefabsList = ref;
 	}
 	
-	viewportRef(viewport) {
-		
-		this.viewport = viewport;
+	viewportRef(ref) {
+		this.viewport = ref;
 	}
 	
 	/**
@@ -59,8 +63,8 @@ class UI extends React.Component {
 		this.propsEditor = ref;
 	}
 	
-	modalRef(modal) {
-		this.modal = modal;
+	modalRef(ref) {
+		this.modal = ref;
 	}
 	
 	render() {
@@ -74,7 +78,7 @@ class UI extends React.Component {
 				onChange: editor.onSelectedPropsChange
 			}), 250, 0, 250, 250, 250, 500),
 			window('classesLib', 'Classes', React.createElement(ClessesView), 0, 1000, 250, 150, 250, 500),
-			window('prefabsList', 'Prefabs', React.createElement(PrefabsList), 250, 1000, 250, 150, 250, 500),
+			window('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 250, 1000, 250, 150, 250, 500),
 			
 			window('scenesList', 'Scenes', React.createElement(ScenesList), 1000, 1000, 200, 100, 200, 100),
 			

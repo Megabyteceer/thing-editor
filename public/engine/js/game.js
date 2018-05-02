@@ -75,6 +75,10 @@ class Game {
 		modals.push(displayObject);
 		this.stage.addChild(displayObject);
 	}
+
+	get modalsCount() {
+	    return modals.length;
+    }
 	
 	hideModal(displayObject) {
 		if(!displayObject) {

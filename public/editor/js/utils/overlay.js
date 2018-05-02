@@ -52,6 +52,9 @@ export default class Overlay {
 			game.hideModal(currentlyShowedPreview);
 			editor.selection.loadSelection(savedSelection);
 			currentlyShowedPreview = null;
+			if(refresh === true) {
+			    editor.refreshTreeViewAndPropertyEditor();
+            }
 		}
 	}
 }

@@ -178,7 +178,7 @@ class Editor {
 	}
 	
 	addToScene(o) {
-		addTo(game.currentScene, o);
+		addTo(game.currentContainer, o);
 	}
 	
 	/**
@@ -245,13 +245,22 @@ class Editor {
 		debouncedCall(__saveProjectDescriptorInner);
 	}
 	
-	sceneModified() {
+	sceneModified(saveImmidiatly) {
 		if (game.__EDITORmode) {
 			needHistorySave = true;
+			if(saveImmidiatly === true) {
+			    tryToSaveHistory();
+            }
 		}
 	}
+
+	exitPrefabMode() {
+        if(editor.ui.prefabsList) {
+            editor.ui.prefabsList.acceptPrefabEdition();
+        }
+    }
 	
-	get currentSceneIsModified() {
+	get isCurrentSceneModified() {
 		return history.isStateModified;
 	}
 	
@@ -259,7 +268,7 @@ class Editor {
 		editor.ui.viewport.stopExecution();
 		assert(name, "Name can't be empty");
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
-		if (editor.currentSceneIsModified || (editor.projectDesc.currentSceneName !== name)) {
+		if (editor.isCurrentSceneModified || (editor.projectDesc.currentSceneName !== name)) {
 			Lib.__saveScene(game.currentScene, name);
 			if (!ScenesList.isSpecialSceneName(name)) {
 				history.setCurrentStateUnmodified();
@@ -270,7 +279,8 @@ class Editor {
 }
 
 function askSceneToSaveIfNeed(skip) {
-	if (!skip && editor.currentSceneIsModified) {
+    editor.exitPrefabMode();
+	if (!skip && editor.isCurrentSceneModified) {
 		return new Promise((resolve) => {
 			
 			editor.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
@@ -300,6 +310,7 @@ function saveCurrentSceneName(name) {
 function addTo(parent, child) {
 	parent.addChild(child);
 	editor.ui.sceneTree.selectInTree(child);
+	editor.sceneModified(true);
 }
 
 let __saveProjectDescriptorInner = () => {
