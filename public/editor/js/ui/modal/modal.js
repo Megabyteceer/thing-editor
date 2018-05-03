@@ -1,3 +1,6 @@
+import Prompt from './prompt.js';
+import ChooseList from './choose-list.js';
+
 var modal;
 
 var blackoutProps = {className: 'modal-blackout fadein-animation'};
@@ -51,50 +54,6 @@ var renderSpinner = () => {
 		R.div(spinnerProps)
 	);
 }
-
-class Prompt extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {value: props.defaultText || ''};
-		this.onChange = this.onChange.bind(this);
-		this.onAcceptClick = this.onAcceptClick.bind(this);
-		this.onKeyDown = this.onKeyDown.bind(this);
-	}
-	
-	onChange(ev) {
-		var val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
-		var reject = this.props.accept ? this.props.accept(val) : undefined;
-		this.setState({
-			value: val,
-			rejectReason: reject,
-			accepted: val && !reject
-		});
-	}
-	
-	onKeyDown(ev) {
-		if (ev.keyCode === 13) {
-			this.onAcceptClick();
-		}
-	}
-	
-	onAcceptClick() {
-		if (this.state.accepted) {
-			modal.closeModal(this.state.value);
-		}
-	}
-	
-	render() {
-		return R.div(null,
-			R.div(modalRejectProps, this.state.rejectReason || ' '),
-			R.div(null,
-				R.input({value: this.state.value, onKeyDown: this.onKeyDown, autoFocus: true, onChange: this.onChange})
-			),
-			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', 13)
-		)
-	}
-	
-}
-
 
 class Modal extends React.Component {
 	
@@ -163,6 +122,10 @@ class Modal extends React.Component {
 	
 	showPrompt(title, defaultText, filter, accept, noEasyClose) {
 		return this.showModal(React.createElement(Prompt, {defaultText, filter, accept}), title, noEasyClose);
+	}
+	
+	showListChoose(title, list, noEasyClose) {
+		return this.showModal(React.createElement(ChooseList, {list}), title, noEasyClose);
 	}
 	
 	showError(message, title = 'Error!', noEasyClose) {

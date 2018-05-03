@@ -506,6 +506,19 @@ input{
     width: 40px;
 }
 
+.props-header {
+    padding: 5px;
+}
+
+.choosing-item {
+    padding: 4px;
+    border-bottom: 1px solid #eee;
+}
+
+.resizable-dialog {
+    min-height: 300px;
+    resize: both;
+}
 
 
 

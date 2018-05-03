@@ -3,7 +3,7 @@ import TreeView from './tree-view/tree-view.js'
 import Viewport from './viewport.js';
 import PropsEditor from './props-editor/props-editor.js';
 import Button from './button.js';
-import Modal from './modal.js';
+import Modal from './modal/modal.js';
 import ClessesView from './classes-view.js';
 import ScenesList from "./scenes-list.js";
 import PrefabsList from "./prefabs-list.js";

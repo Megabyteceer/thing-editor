@@ -4,12 +4,50 @@ import Group from '../group.js';
 var editorProps = {
 	className: 'props-editor'
 }
+var headerProps = {
+	className: 'props-header'
+}
 
 class PropsEditor extends React.Component {
+	
+	onChangeClassClick() {
+		if(editor.selection[0] instanceof Scene) {
+			classesList = editor.ClassesLoader.sceneClasses;
+		} else {
+			classesList = editor.ClassesLoader.gameObjClasses;
+		}
+		
+		editor.ui.modal.showListChoose(classesList).then((selectedClass) => {
+			if(selectedClass) {
+				var a = editor.selection.slice(0);
+				a.some((o) => {
+					o.constructor = selectedClass;
+				});
+				game.__setCurrentContainerContent(Lib._deserializeObject(Lib.__serializeObject( game.currentContainer)));
+				a.some((o) => {
+					delete o.constructor;
+				});
+				editor.sceneModified(true);
+			}
+		});
+	}
 	
 	render() {
 		if (editor.selection.length <= 0) {
 			return 'Nothing selected';
+		}
+		
+		var header;
+		var firstClass = editor.selection[0].constructor;
+		if(editor.selection.some((o) =>{
+			return o.constructor !== firstClass;
+		})) {
+			header =  R.div(headerProps,'Mixed types selected');
+		} else {
+			header = R.div(headerProps,
+				R.classIcon(firstClass), R.b(null, firstClass.name), ' selected ',
+				R.btn('...', this.onChangeClassClick, 'Change objects Class')
+			);
 		}
 		
 		var props = editor.enumObjectsProperties(editor.selection[0]);
@@ -43,7 +81,7 @@ class PropsEditor extends React.Component {
 			
 		});
 		groups.push(curGroup);
-		return R.div(editorProps, groups);
+		return R.div(editorProps, header, groups);
 	}
 }
 
