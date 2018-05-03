@@ -2,6 +2,7 @@ import TreeNode from './tree-node.js';
 import Window from '../window.js';
 
 var classViewProps = {className: 'vertical-layout'};
+var leftPanelProps = {className: 'left-panel'};
 
 R.renderSceneNode = (node) => {
 	return React.createElement(TreeNode, {node: node, key: __getNodeExtendData(node).id});
@@ -145,7 +146,7 @@ class TreeView extends React.Component {
 		var isEmpty = editor.selection.length === 0;
 		
 		return R.div(classViewProps,
-			R.div(null,
+			R.div(leftPanelProps,
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected', undefined, 46, isEmpty),
 				R.btn(R.icon('bring-up'), this.onBringUpClick, 'Bring selected up', undefined, undefined, isEmpty),
 				R.btn(R.icon('move-up'), this.onMoveUpClick, 'Move selected up', undefined, undefined, isEmpty),

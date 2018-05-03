@@ -496,9 +496,15 @@ input{
 	cursor:text;
 }
 
+.vertical-layout {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
 
-
-
+.left-panel {
+    width: 40px;
+}
 
 
 
