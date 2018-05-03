@@ -55,6 +55,7 @@ class Game {
 	}
 	
 	showScene(scene) {
+		assert(scene instanceof Scene, 'Scene instance expected.');
 		if (this.currentScene) {
 			if (!this.__EDITORmode) {
 				this.currentScene.onHideInner();
@@ -70,8 +71,20 @@ class Game {
 		__getNodeExtendData(game.currentScene).toggled = true;
 		//ENDEDITOR
 	}
-	
+
+    //EDITOR
+    __setCurrentContainerContent(object) {
+	    if(modals.length > 0) {
+			this.hideModal();
+			this.makeItModal(object);
+        } else {
+            this.showScene(object);
+        }
+    }
+    //ENDEDITOR
+
 	makeItModal(displayObject) {
+	    assert(!(displayObject instanceof Scene), 'Scene cant be used as modal');
 		modals.push(displayObject);
 		this.stage.addChild(displayObject);
 	}

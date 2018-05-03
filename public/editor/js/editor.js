@@ -74,13 +74,13 @@ class Editor {
 			if (!dir) {
 				this.fs.chooseProject(true);
 			} else if (dir !== editor.currentProjectDir) {
-				//TODO: ask if save changes in current scene
 				this.fs.getJSON('/fs/openProject?dir=' + dir).then((data) => {
 					this.fs.refreshFiles().then(() => {
 						editor.currentProjectDir = dir;
 						editor.settings.setItem('last-opened-project', dir);
 						this.fs.gameFolder = '/games/' + dir + '/';
 						editor.projectDesc = data;
+						this.clipboardData = null;
 						editor.reloadAssetsAndClasses().then(() => {
 							Promise.all([ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList()]).then(() => {
 								

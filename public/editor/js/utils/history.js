@@ -10,9 +10,9 @@ var instance;
 function applyState(state) {
 	assert(state, 'Empty history record');
 	
-	var scene = Lib._loadObjectFromData(state);
+	var node = Lib._loadObjectFromData(state);
 	assert(game.__EDITORmode);
-	game.showScene(scene); todo: replace current container instead of scene
+	game.__setCurrentContainerContent(node);
 	editor.selection.loadSelection(state.selectionData);
 }
 

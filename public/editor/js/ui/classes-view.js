@@ -1,4 +1,3 @@
-var classViewProps = {className: 'vertical-layout'};
 var bodyProps = {className: 'list-view'};
 
 class ClessesView extends React.Component {
@@ -53,7 +52,7 @@ class ClessesView extends React.Component {
 			bottomPanelClassName += ' disabled';
 		}
 		
-		return R.div(classViewProps,
+		return R.div(null,
 			R.div({className: bottomPanelClassName}, R.btn('Add', this.onAddClick), R.btn('Add As Child', this.onAddAsChildClick)),
 			R.div(bodyProps, body)
 		)

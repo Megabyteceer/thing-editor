@@ -1,6 +1,5 @@
 import Group from "./group.js";
 
-var classViewProps = {className: 'vertical-layout'};
 var bodyProps = {className: 'list-view', title: 'Double click to open scene.'};
 
 const sceneFileFiler = /^scenes\/.*\.scene.json$/gm;
@@ -96,7 +95,7 @@ export default class ScenesList extends React.Component {
 		
 		scenes = Group.groupArray(scenes);
 		
-		return R.div(classViewProps,
+		return R.div(null,
 			R.div({className: bottomPanelClassName},
 				R.btn('Save', this.onSaveSceneClick, 'Save current scene'),
 				R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')

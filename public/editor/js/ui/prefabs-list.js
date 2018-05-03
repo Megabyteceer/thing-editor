@@ -1,6 +1,5 @@
 import Group from "./group.js";
 
-var classViewProps = {className: 'vertical-layout'};
 var bodyProps = {className: 'list-view'};
 
 const prefabFileFiler = /^prefabs\/.*\.prefab.json$/gm;
@@ -119,7 +118,7 @@ export default class PrefabsList extends React.Component {
 		
 		prefabs = Group.groupArray(prefabs);
 		
-		return R.div(classViewProps,
+		return R.div(null,
 			R.span({className: panelClassname},
 				R.btn('Add', this.onAddClick, 'Add prefab to scene'),
 				R.btn('Child', this.onAddChildClick, 'Add prefab as children')
