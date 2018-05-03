@@ -12,7 +12,7 @@ function applyState(state) {
 	
 	var scene = Lib._loadObjectFromData(state);
 	assert(game.__EDITORmode);
-	game.showScene(scene);
+	game.showScene(scene); todo: replace current container instead of scene
 	editor.selection.loadSelection(state.selectionData);
 }
 
@@ -61,13 +61,9 @@ class History {
     }
 
 	_pushCurrentStateToUndoHistory(selectionData) {
-		if (!game.__EDITORmode) {
-			assert(Lib.hasScene(editor.runningSceneLibSaveSlotName), "");
-            this._undos.push(Lib.scenes[editor.runningSceneLibSaveSlotName]);
-		} else {
-			assert(game.__EDITORmode, "Attempt to use history in running time.");
-            this._undos.push(Lib.__serializeObject(game.currentScene));
-		}
+		assert(game.__EDITORmode, "Attempt to use history in running time.");
+		this._undos.push(Lib.__serializeObject(game.currentContainer));
+
 		this.currentState._isModified = true;
 		this.currentState.selectionData = selectionData;
 		
@@ -86,7 +82,6 @@ class History {
 		var selectionData = editor.selection.saveSelection();
         this._redos.length = 0;
 		this._pushCurrentStateToUndoHistory(selectionData);
-		console.log('History saved');
 	}
 	
 	undo() {

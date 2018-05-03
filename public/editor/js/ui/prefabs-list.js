@@ -96,7 +96,7 @@ export default class PrefabsList extends React.Component {
 			editor.ui.sceneTree.selectInTree(preview);
             editor.ui.viewport.setPrefabMode(true);
             editor.history.clearHistory(item);
-			previewShown = preview;
+			previewShown = true;
 		}
 	}
 	
@@ -161,11 +161,3 @@ export default class PrefabsList extends React.Component {
 }
 
 var previewShown = false;
-
-const onMouseDown = (ev) => {
-	if(ev.target !== game.pixiApp.view) {
-		PrefabsList.hidePrefabPreview();
-	}
-}
-
-$(window).on('mousedown', onMouseDown);
