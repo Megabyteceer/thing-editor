@@ -11,13 +11,20 @@ var headerProps = {
 class PropsEditor extends React.Component {
 	
 	onChangeClassClick() {
+		var classesList;
+		var title;
 		if(editor.selection[0] instanceof Scene) {
 			classesList = editor.ClassesLoader.sceneClasses;
+			title = "Choose new scene type for current scene";
 		} else {
 			classesList = editor.ClassesLoader.gameObjClasses;
+			title = "Choose new type for " + editor.selection.length + " selected element";
+			if(editor.selection.length > 1) {
+				title += 's';
+			}
 		}
 		
-		editor.ui.modal.showListChoose(classesList).then((selectedClass) => {
+		editor.ui.modal.showListChoose('Choose new class for ', classesList).then((selectedClass) => {
 			if(selectedClass) {
 				var a = editor.selection.slice(0);
 				a.some((o) => {
@@ -49,6 +56,8 @@ class PropsEditor extends React.Component {
 				R.btn('...', this.onChangeClassClick, 'Change objects Class')
 			);
 		}
+		
+		assert(React.isValidElement(header));
 		
 		var props = editor.enumObjectsProperties(editor.selection[0]);
 		var propsFilter = {};

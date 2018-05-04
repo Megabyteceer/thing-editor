@@ -155,7 +155,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		});
 		
 		window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
-			showError(R.div(null,
+			showError(R.fragment(
 				message,
 				R.div({className: 'error-body'}, source.split('?nocache=').shift().split(':' + location.port).pop() + ' (' + lineno + ':' + colno + ')', R.br(), message),
 				'Plese fix error in source code and press button to try again:',

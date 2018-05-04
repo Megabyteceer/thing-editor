@@ -10,7 +10,7 @@ function renderGroup(props) {
 	)
 }
 
-function groupArray(a, level = 0) {
+function groupArray(a, delimitter = '/', level = 0) {
 	
 	var groups = {};
 	
@@ -18,7 +18,7 @@ function groupArray(a, level = 0) {
 	for (var item of a) {
 		
 		var name = item.key;
-		var np = name.split('/');
+		var np = name.split(delimitter);
 		if (np.length > (level + 1)) {
 			if (level > 0) {
 				np.splice(0, level);
@@ -39,7 +39,7 @@ function groupArray(a, level = 0) {
 	
 	for (groupName in groups) {
 		var group = groups[groupName];
-		ret.unshift(renderGroup({key: groupName, title: groupName, content: groupArray(group, level + 1)}));
+		ret.unshift(renderGroup({key: groupName, title: groupName, content: groupArray(group, delimitter, level + 1)}));
 	}
 	
 	return ret;

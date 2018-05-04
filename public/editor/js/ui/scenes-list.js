@@ -95,7 +95,7 @@ export default class ScenesList extends React.Component {
 		
 		scenes = Group.groupArray(scenes);
 		
-		return R.div(null,
+		return R.fragment(
 			R.div({className: bottomPanelClassName},
 				R.btn('Save', this.onSaveSceneClick, 'Save current scene'),
 				R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')

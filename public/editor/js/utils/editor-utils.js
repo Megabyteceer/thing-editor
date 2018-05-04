@@ -7,6 +7,10 @@ window.R = factories;
 	factories[factoryType] = React.createFactory(factoryType);
 });
 
+R.fragment = function(...theArgs) {
+	return React.createElement(React.Fragment, null, ...theArgs);
+}
+
 R.spinner = () => {
 	return R.div(null, 'Loading...'
 	);
@@ -40,6 +44,7 @@ R.listItem = (view, item, key, parent) => {
 		}
 	}, view);
 }
+
 
 let _debouncings = new Map();
 window.debouncedCall = (f, timeMs = 0) => {

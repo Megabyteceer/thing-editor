@@ -31,7 +31,7 @@ export default class Prompt extends React.Component {
 	}
 	
 	render() {
-		return R.div(null,
+		return R.fragment(
 			R.div(modalRejectProps, this.state.rejectReason || ' '),
 			R.div(null,
 				R.input({value: this.state.value, onKeyDown: this.onKeyDown, autoFocus: true, onChange: this.onChange})

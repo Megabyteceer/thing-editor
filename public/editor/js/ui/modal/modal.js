@@ -72,6 +72,8 @@ class Modal extends React.Component {
 	}
 	
 	showModal(content, title, noEasyClose) {
+		assert(React.isValidElement(content, "Modal content is not valid React element"));
+		assert(React.isValidElement(title), "Title is invalid");
 		return new Promise((resolve) => {
 			modal.state.modals.push({content, title, noEasyClose, resolve});
 			modal.forceUpdate();
@@ -137,7 +139,7 @@ class Modal extends React.Component {
 		if (spinnerShowCounter > 0) {
 			spinner = renderSpinner();
 		}
-		return R.div(null, this.state.modals.map(renderModal), spinner);
+		return R.fragment(this.state.modals.map(renderModal), spinner);
 	}
 }
 

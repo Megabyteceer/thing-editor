@@ -87,7 +87,7 @@ class Editor {
 								if (Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
 									
 									editor.ui.modal.showQuestion("Scene's backup restoring",
-										R.div(null, R.div(null, "Looks like previous session was finished incorrectly."),
+										R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 											R.div(null, "Do you want to restore scene from backup?")),
 										() => {
 											this.openSceneSafe(editor.runningSceneLibSaveSlotName).then(() => {

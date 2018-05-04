@@ -118,7 +118,7 @@ export default class PrefabsList extends React.Component {
 		
 		prefabs = Group.groupArray(prefabs);
 		
-		return R.div(null,
+		return R.fragment(
 			R.span({className: panelClassname},
 				R.btn('Add', this.onAddClick, 'Add prefab to scene'),
 				R.btn('Child', this.onAddChildClick, 'Add prefab as children')

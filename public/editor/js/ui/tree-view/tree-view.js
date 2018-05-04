@@ -100,7 +100,7 @@ class TreeView extends React.Component {
 				var i = o.parent.getChildIndex(o);
 				if (i > 1) {
 					var upper = o.parent.getChildAt(i - 1);
-					if (editor.selection.indexOf(upper) < 0) {
+					if(!__getNodeExtendData(upper).isSelected) {
 						o.parent.swapChildren(o, upper);
 						ret = true;
 					}
@@ -115,13 +115,14 @@ class TreeView extends React.Component {
 	
 	onMoveDownClick(dontSaveHistoryState) {
 		var ret = false;
-		
-		editor.selection.some((o) => {
+		var a = editor.selection.slice(0);
+		a.reverse();
+		a.some((o) => {
 			if(o.parent !== game.stage) {
 				var i = o.parent.getChildIndex(o);
 				if(i < (o.parent.children.length - 1)) {
 					var lower = o.parent.getChildAt(i + 1);
-					if(editor.selection.indexOf(lower) < 0) {
+					if(!__getNodeExtendData(lower).isSelected) {
 						o.parent.swapChildren(o, lower);
 						ret = true;
 					}

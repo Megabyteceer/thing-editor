@@ -52,7 +52,7 @@ class ClessesView extends React.Component {
 			bottomPanelClassName += ' disabled';
 		}
 		
-		return R.div(null,
+		return R.fragment(
 			R.div({className: bottomPanelClassName}, R.btn('Add', this.onAddClick), R.btn('Add As Child', this.onAddAsChildClick)),
 			R.div(bodyProps, body)
 		)
