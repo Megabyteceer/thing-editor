@@ -408,7 +408,6 @@ input{
 .modal-content {
 	padding:20px;
 	background:#fff;
-	text-align:center;
 }
 
 .project-item-select {
@@ -520,6 +519,9 @@ input{
     resize: both;
 }
 
+.mid-text-align {
+    vertical-align: middle;
+}
 
 
 

@@ -7,6 +7,9 @@ var editorProps = {
 var headerProps = {
 	className: 'props-header'
 }
+var headerTextProps = {
+	className: 'mid-text-align'
+}
 
 class PropsEditor extends React.Component {
 	
@@ -24,7 +27,7 @@ class PropsEditor extends React.Component {
 			}
 		}
 		
-		editor.ui.modal.showListChoose('Choose new class for ', classesList).then((selectedClass) => {
+		editor.ui.modal.showListChoose('Choose new class for ', classesList.map(i => i.c)).then((selectedClass) => {
 			if(selectedClass) {
 				var a = editor.selection.slice(0);
 				a.some((o) => {
@@ -52,12 +55,13 @@ class PropsEditor extends React.Component {
 			header =  R.div(headerProps,'Mixed types selected');
 		} else {
 			header = R.div(headerProps,
-				R.classIcon(firstClass), R.b(null, firstClass.name), ' selected ',
-				R.btn('...', this.onChangeClassClick, 'Change objects Class')
+				R.classIcon(firstClass),
+				R.span(headerTextProps,
+					R.b(null, firstClass.name), ' selected ',
+					R.btn('...', this.onChangeClassClick, 'Change objects Class')
+				)
 			);
 		}
-		
-		assert(React.isValidElement(header));
 		
 		var props = editor.enumObjectsProperties(editor.selection[0]);
 		var propsFilter = {};

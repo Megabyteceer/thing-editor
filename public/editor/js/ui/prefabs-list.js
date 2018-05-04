@@ -80,7 +80,14 @@ export default class PrefabsList extends React.Component {
 				}
 			).then((enteredName) => {
 				if (enteredName) {
-					Lib.__savePrefab(editor.selection[0], enteredName);
+					var s = editor.selection[0];
+					var tx = s.x;
+					var ty = s.y;
+					s.x = W / 2;
+					s.y = H / 2;
+					Lib.__savePrefab(s, enteredName);
+					s.x = tx;
+					s.y = ty;
 					this.forceUpdate();
 				}
 			});
@@ -130,7 +137,7 @@ export default class PrefabsList extends React.Component {
 	
 	acceptPrefabEdition() {
         if(editor.isCurrentSceneModified) {
-
+			Lib.__savePrefab()
         }
 		PrefabsList.hidePrefabPreview();
 	}

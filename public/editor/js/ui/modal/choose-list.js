@@ -13,6 +13,7 @@ export default class ChooseList extends React.Component {
 		}
 		this.onSelect = this.onSelect.bind(this);
 		this.onSearchCliearClick = this.onSearchCliearClick.bind(this);
+		this.renderChoosingItem = this.renderChoosingItem.bind(this);
 	}
 	
 	onSearchChange(ev) {
@@ -42,6 +43,7 @@ export default class ChooseList extends React.Component {
 			icon = R.classIcon(i);
 		}
 		var name = i.name;
+		debugger;
 		return R.div({
 			onDoubleClick: this.onSelect,
 			className: 'clickable choosing-item',

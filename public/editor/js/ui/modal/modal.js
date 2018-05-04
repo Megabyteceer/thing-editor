@@ -72,8 +72,6 @@ class Modal extends React.Component {
 	}
 	
 	showModal(content, title, noEasyClose) {
-		assert(React.isValidElement(content, "Modal content is not valid React element"));
-		assert(React.isValidElement(title), "Title is invalid");
 		return new Promise((resolve) => {
 			modal.state.modals.push({content, title, noEasyClose, resolve});
 			modal.forceUpdate();

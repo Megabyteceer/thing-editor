@@ -121,9 +121,9 @@ class Lib {
 	static __savePrefab(object, name) {
 		assert(typeof name === 'string');
 		assert(editor.ClassesLoader.getClassType(object.constructor) === PIXI.DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
-		var sceneData = Lib.__serializeObject(object);
-		prefabs[name] = sceneData;
-		editor.fs.saveFile(Lib.__prefabNameToFileName(name), sceneData, true);
+		var prefabData = Lib.__serializeObject(object);
+		prefabs[name] = prefabData;
+		editor.fs.saveFile(Lib.__prefabNameToFileName(name), prefabData, true);
 	}
 	
 	static __getNameByPrefab(prefab) {
