@@ -10,7 +10,7 @@ var instance;
 function applyState(state) {
 	assert(state, 'Empty history record');
 	
-	var node = Lib._loadObjectFromData(state);
+	var node = Lib._deserializeObject(state);
 	assert(game.__EDITORmode);
 	game.__setCurrentContainerContent(node);
 	editor.selection.loadSelection(state.selectionData);
@@ -111,6 +111,10 @@ class History {
 		historyUi.forceUpdate();
 	}
 	
+	updateUi() {
+		historyUi.forceUpdate();
+	}
+	
 	setCurrentStateUnmodified() {
         this._undos.some((s) => {
 			s._isModified = true;
@@ -137,9 +141,9 @@ class HistoryUi extends React.Component {
 	
 	render() {
 		return R.span(editor.isCurrentSceneModified ? modifiedStyle : null,
-			R.btn('Undo', editor.history.undo, '(Ctrl + Z)', undefined, 1090, !instance.isUndoAvailable()),
+			R.btn('Undo', editor.history.undo, '(Ctrl + Z)', undefined, 1090, !instance.isUndoAvailable() || !game.__EDITORmode),
             instance._undos.length,
-			R.btn('Redo', editor.history.redo, '(Ctrl + Y)', undefined, 1089, !instance.isRedoAvailable()),
+			R.btn('Redo', editor.history.redo, '(Ctrl + Y)', undefined, 1089, !instance.isRedoAvailable() || !game.__EDITORmode),
             instance._redos.length
 		);
 	}

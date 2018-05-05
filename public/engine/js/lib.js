@@ -7,9 +7,7 @@ var defaults;
 var textures = {};
 
 var constructorProcessor = (o) => {
-	if (o instanceof PIXI.Sprite) {
-		o.texture = textures['bunny'];
-	}
+
 }
 
 var constructRecursive = (o) => {
@@ -63,8 +61,12 @@ class Lib {
 		return ret;
 	}
 	
+	static getTexture(name) {
+		return textures[name];
+	}
+	
 	static loadPrefab(name) {
-		return Lib._loadObjectFromData(prefabs[name]);
+		return _loadObjectFromData(prefabs[name]);
 	}
 	
 	static disposeObjectAndChildrens(o) {
@@ -89,15 +91,9 @@ class Lib {
 		}
 		return ret;
 	}
-	
-	static _loadObjectFromData(src) {
-		var ret = Lib._deserializeObject(src);
-		constructRecursive(ret);
-		return ret;
-	}
-	
+
 	static loadScene(name) {
-		return Lib._loadObjectFromData(scenes[name]);
+		return _loadObjectFromData(scenes[name]);
 	}
 	
 	static hasScene(name) {
@@ -181,4 +177,12 @@ class Lib {
 
 }
 
+const _loadObjectFromData = (src) => {
+	var ret = Lib._deserializeObject(src);
+	constructRecursive(ret);
+	return ret;
+}
+
 export default Lib;
+
+Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png')); //TODO: remove this temporary texture

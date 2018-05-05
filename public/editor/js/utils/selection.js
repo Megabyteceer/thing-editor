@@ -44,7 +44,7 @@ class Selection extends Array {
 		assert(!__getNodeExtendData(o).isSelected);
 		assert(this.indexOf(o) < 0);
 		__getNodeExtendData(o).isSelected = true;
-		if (o instanceof PIXI.Sprite) {
+		if (o instanceof Sprite) {
 			o.filters = selectedFilters;
 		}
 		this.push(o);
@@ -55,7 +55,7 @@ class Selection extends Array {
 		var i = this.indexOf(o);
 		assert(i >= 0);
 		__getNodeExtendData(o).isSelected = false;
-		if (o instanceof PIXI.Sprite) {
+		if (o instanceof Sprite) {
 			o.filters = null;
 		}
 		this.splice(i, 1);

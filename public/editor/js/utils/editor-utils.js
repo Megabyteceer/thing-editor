@@ -91,10 +91,13 @@ window.selectText = function (element) {
 }
 
 
+
+//======== wrapPropertyWithNumberChecker - make numeric property sensitive for NaN assigning
+
 var _definedProps = new WeakMap();
 var _valStore = new WeakMap();
 
-var getValStore = (o) => {
+var _getValStore = (o) => {
 	if(!_valStore.has(o)) {
 		_valStore.set(o,{});
 	}
@@ -126,9 +129,9 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 		var privValue = '__wrapper_store_' + propertyName;
 		
 		originalSetter = function(val){
-			getValStore(this)[privValue] = val;
+			_getValStore(this)[privValue] = val;
 		};
-		d = {set:newSetter, get:function(){return getValStore(this)[privValue];}};
+		d = {set:newSetter, get:function(){return _getValStore(this)[privValue];}};
 	}
 
 	Object.defineProperty(constructor.prototype, propertyName, d);

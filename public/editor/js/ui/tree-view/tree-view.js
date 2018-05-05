@@ -51,7 +51,7 @@ class TreeView extends React.Component {
 				o.remove();
 			});
 			
-			editor.selectin.clearSelection();
+			editor.selection.clearSelection();
 			if(i > 0) {
 				this.selectInTree(p.getChildAt(i - 1));
 			} else if (p !== game.stage) {

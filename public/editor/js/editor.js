@@ -55,8 +55,6 @@ class Editor {
 		this.ui = ui;
 		this.game = new Game('tmp.game.id');
 		
-		Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png'));
-		
 		game.__EDITORmode = true;
 		game.init(document.getElementById('viewport-root'));
 		

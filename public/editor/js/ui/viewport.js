@@ -34,6 +34,7 @@ class Viewport extends React.Component {
 		}
 		game.__EDITORmode = !play;
 		this.forceUpdate();
+		editor.history.updateUi();
 	}
 
     setPrefabMode(enabled) {

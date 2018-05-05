@@ -36,20 +36,15 @@ class PropsEditor extends React.Component {
 					o.constructor = selectedClass;
 				});
 
-				var s1 = Lib.__serializeObject( game.currentContainer);
+				var newSceneData = Lib.__serializeObject( game.currentContainer);
 				
 				a.some((o) => {
 					assert(o.hasOwnProperty('constructor'));
 					delete o.constructor;
 				});
-				
-				var s2 = Lib._deserializeObject(s1);
-				game.__setCurrentContainerContent(s2);
-				
-				
+				game.__setCurrentContainerContent(Lib._deserializeObject(newSceneData));
 				editor.selection.loadSelection(selectionData);
-
-				//editor.sceneModified(true);
+				editor.sceneModified(true);
 			}
 		});
 	}
