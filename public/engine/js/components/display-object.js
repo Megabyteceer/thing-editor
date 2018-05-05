@@ -150,3 +150,6 @@ PIXI.DisplayObject.EDITOR_editableProps = [
 		type: Number
 	}
 ];
+
+wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
+wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
