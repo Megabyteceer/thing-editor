@@ -18,6 +18,7 @@ class TreeView extends React.Component {
 		super(props);
 		this.selectInTree = this.selectInTree.bind(this);
 		this.onCopyClick = this.onCopyClick.bind(this);
+		this.onCutClick = this.onCutClick.bind(this);
 		this.onDeleteClick = this.onDeleteClick.bind(this);
 		this.onBringUpClick = this.onBringUpClick.bind(this);
 		this.onMoveUpClick = this.onMoveUpClick.bind(this);
@@ -25,14 +26,14 @@ class TreeView extends React.Component {
 		this.onBringDownClick = this.onBringDownClick.bind(this);
 	}
 	
-	selectInTree(node) {
+	selectInTree(node, add) {
 		assert(node, "Attempt to select in tree emty node");
 		var n = node;
 		while (n && n.parent) {
 			__getNodeExtendData(n).toggled = true;
 			n = n.parent;
 		}
-		editor.selection.select(node);
+		editor.selection.select(node, add === true);
 		setTimeout(() => {
 			var e = $('.scene-tree-view .item-selected');
 			if (e[0]) {
@@ -46,13 +47,18 @@ class TreeView extends React.Component {
 		if((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
 			var p = editor.selection[0].parent;
 			var i = p.getChildIndex(editor.selection[0]);
-			
-			editor.selection.some((o) => {
+
+			var a = editor.selection.slice(0);
+			editor.selection.clearSelection();
+
+			a.some((o) => {
 				o.remove();
 			});
 			
-			editor.selection.clearSelection();
-			if(i > 0) {
+			
+			if(i < p.children.length) {
+				this.selectInTree(p.getChildAt(i));
+			} else if(i > 0) {
 				this.selectInTree(p.getChildAt(i - 1));
 			} else if (p !== game.stage) {
 				this.selectInTree(p);
@@ -76,12 +82,17 @@ class TreeView extends React.Component {
 	
 	onPasteClick() {
 		if(editor.clipboardData && editor.clipboardData.length > 0) {
-			editor.selection.clearSelection();
+			
+			var added = [];
 			editor.clipboardData.some((data) => {
 				var o = Lib._deserializeObject(data);
-				editor.addToSelected(o);
-				editor.selection.add(o);
+				added.push(o);
+				editor.attachToSelected(o, true);
 			});
+			editor.selection.clearSelection();
+			while (added.length > 0) {
+				editor.selection.add(added.shift());
+			}
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 		}
@@ -91,6 +102,7 @@ class TreeView extends React.Component {
 		var i = 0;
 		while(this.onMoveUpClick(true) && i++ < 100000);
 		editor.sceneModified(true);
+		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
 	onMoveUpClick(dontSaveHistoryState) {
@@ -99,7 +111,7 @@ class TreeView extends React.Component {
 		editor.selection.some((o) => {
 			if(o.parent !== game.stage) {
 				var i = o.parent.getChildIndex(o);
-				if (i > 1) {
+				if (i > 0) {
 					var upper = o.parent.getChildAt(i - 1);
 					if(!__getNodeExtendData(upper).isSelected) {
 						o.parent.swapChildren(o, upper);
@@ -110,6 +122,7 @@ class TreeView extends React.Component {
 		});
 		if(dontSaveHistoryState !== true) {
 			editor.sceneModified(true);
+			editor.refreshTreeViewAndPropertyEditor();
 		}
 		return ret;
 	}
@@ -132,6 +145,7 @@ class TreeView extends React.Component {
 		});
 		if(dontSaveHistoryState !== true) {
 			editor.sceneModified(true);
+			editor.refreshTreeViewAndPropertyEditor();
 		}
 		return ret;
 	}
@@ -140,6 +154,7 @@ class TreeView extends React.Component {
 		var i = 0;
 		while(this.onMoveDownClick(true) && i++ < 100000);
 		editor.sceneModified(true);
+		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
 	render() {

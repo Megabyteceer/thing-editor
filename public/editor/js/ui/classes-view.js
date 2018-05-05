@@ -20,7 +20,7 @@ class ClessesView extends React.Component {
 	}
 	
 	onAddAsChildClick() {
-		editor.addToSelected(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
+		editor.attachToSelected(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
 	}
 	
 	onSelect(item) {

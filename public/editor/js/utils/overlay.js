@@ -139,7 +139,7 @@ $(window).on('mousedown', (ev) => {
 			}
 			
 			if(o.containsPoint && o.containsPoint(game.mouse)) {
-				editor.ui.sceneTree.selectInTree(o);
+				editor.ui.sceneTree.selectInTree(o, ev.ctrlKey);
 				return;
 			}
 			if(o === start) {

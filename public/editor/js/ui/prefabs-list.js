@@ -42,7 +42,7 @@ export default class PrefabsList extends React.Component {
 	onAddChildClick() {
         PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
-			editor.addToSelected(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
+			editor.attachToSelected(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
 		}
 	}
 	

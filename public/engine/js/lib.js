@@ -77,6 +77,9 @@ class Lib {
 			}
 		}
 		Pool.dispose(o);
+		//EDITOR
+		__resetNodeExtendData(o);
+		//ENDEDITOR
 	}
 	
 	static _deserializeObject(src) {

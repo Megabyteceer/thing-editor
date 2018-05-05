@@ -167,16 +167,16 @@ class Editor {
 		]);
 	}
 	
-	addToSelected(o) {
+	attachToSelected(o, doNotSelect) {
 		if (this.selection.length > 0) {
-			addTo(this.selection[0], o);
+			addTo(this.selection[0], o, doNotSelect);
 		} else {
-			this.addToScene(o);
+			this.addToScene(o, doNotSelect);
 		}
 	}
 	
-	addToScene(o) {
-		addTo(game.currentContainer, o);
+	addToScene(o, doNotSelect) {
+		addTo(game.currentContainer, o, doNotSelect);
 	}
 	
 	/**
@@ -305,10 +305,12 @@ function saveCurrentSceneName(name) {
 	}
 }
 
-function addTo(parent, child) {
+function addTo(parent, child, doNotselect) {
 	parent.addChild(child);
-	editor.ui.sceneTree.selectInTree(child);
-	editor.sceneModified(true);
+	if(!doNotselect) {
+		editor.ui.sceneTree.selectInTree(child);
+		editor.sceneModified(true);
+	}
 }
 
 let __saveProjectDescriptorInner = () => {
@@ -335,5 +337,7 @@ window.__getNodeExtendData = (node) => {
 	}
 	return editorNodeData.get(node);
 }
-
+window.__resetNodeExtendData = (node) => {
+	editorNodeData.delete(node);
+}
 export default Editor;
