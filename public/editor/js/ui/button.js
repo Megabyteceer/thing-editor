@@ -46,7 +46,7 @@ class Button extends React.Component {
 	render() {
 		return R.button({
 			disabled: this.props.disabled,
-			className: 'clickable ' + this.props.className,
+			className: (this.props.disabled ? 'unclickable ' : 'clickable ') + this.props.className,
 			onMouseDown: this.onMouseDown,
 			title: this.props.title,
 			onClick: this.onClick

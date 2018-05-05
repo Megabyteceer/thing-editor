@@ -107,6 +107,13 @@ function enumClassProperties(c) {
 						p.default = PropsFieldWrapper.getTypeDescription(p).default;
 					}
 					defaults[p.name] = p.default;
+					
+					if(c === cc) { //own properties of this class
+						if(p.type === Number || p.type === 'color' || p.type === 'select') {
+							wrapPropertyWithNumberChecker(c, p.name);
+						}
+					}
+					
 				}
 				return props.some((pp) => {
 					return pp.name === p.name
@@ -150,6 +157,8 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		console.clear();
 		console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
 		
+		enumClassProperties(PIXI.DisplayObject);
+		enumClassProperties(PIXI.Sprite);
 		embeddedClasses.some((c) => {
 			addClass(c, false);
 		});

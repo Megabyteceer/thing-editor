@@ -43,10 +43,19 @@ class SelectEditor extends React.Component {
 		if (this.state.toggled) {
 			items = R.div({className: 'select-editor-list'}, list.map(this.renderItem));
 		}
-		return R.div({className: 'select-editor', onClick: this.onToggle/*, onMouseOut:this.onMouseOut*/},
-			R.div({className: 'select-editor-current clickable'}, list.find((i) => {
+		
+		var item;
+		if(!this.props.value) {
+			item = list[0];
+		}
+		else {
+			item = list.find((i) => {
 				if (i.value === this.props.value) return i
-			}).name + ' ▾'),
+			});
+		}
+		
+		return R.div({className: 'select-editor', onClick: this.onToggle/*, onMouseOut:this.onMouseOut*/},
+			R.div({className: 'select-editor-current clickable'}, item.name + ' ▾'),
 			items
 		);
 	}

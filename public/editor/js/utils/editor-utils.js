@@ -3,7 +3,7 @@
 var factories = {};
 window.R = factories;
 
-['div', 'span', 'img', 'button', 'input', 'b', 'a', 'br'].some((factoryType) => {
+['div', 'span', 'img', 'button', 'input', 'b', 'a', 'br', 'hr'].some((factoryType) => {
 	factories[factoryType] = React.createFactory(factoryType);
 });
 
@@ -88,6 +88,50 @@ window.selectText = function (element) {
 	range.selectNodeContents(element);
 	selection.removeAllRanges();
 	selection.addRange(range);
+}
+
+
+var _definedProps = new WeakMap();
+var _valStore = new WeakMap();
+
+var getValStore = (o) => {
+	if(!_valStore.has(o)) {
+		_valStore.set(o,{});
+	}
+	return _valStore.get(o);
+}
+
+window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(constructor, propertyName) {
+	
+	if(!_definedProps.has(constructor)){
+		_definedProps.set(constructor,{});
+	}
+	var o = _definedProps.get(constructor);
+	if(o.hasOwnProperty(propertyName)) return; //wrapped already
+	o[propertyName] = true;
+	
+	
+	var newSetter = function (val) {
+		assert(!isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.');
+		originalSetter.call(this, val);
+	};
+	
+	var d = Object.getOwnPropertyDescriptor(constructor.prototype, propertyName);
+	if(d) {
+		console.log("Property " + propertyName + " wraped.")
+		var originalSetter = d.set;
+		d.set = newSetter;
+	} else {
+		console.log("Own property " + propertyName + " wraped.")
+		var privValue = '__wrapper_store_' + propertyName;
+		
+		originalSetter = function(val){
+			getValStore(this)[privValue] = val;
+		};
+		d = {set:newSetter, get:function(){return getValStore(this)[privValue];}};
+	}
+
+	Object.defineProperty(constructor.prototype, propertyName, d);
 }
 
 export default null;

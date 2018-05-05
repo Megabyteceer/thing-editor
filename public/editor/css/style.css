@@ -63,6 +63,7 @@ img {
 .unclickable{
 	vertical-align:middle;
 	pointer-events:none;
+	opacity: 0.3;
 }
 
 button {
@@ -401,7 +402,8 @@ input{
 	margin:auto;
 	margin-top:100px;
 	cursor:initial;
-	max-width: 600px;
+	width: min-content;
+	min-width: 500px;
 	user-select:text;
 }
 
@@ -499,6 +501,7 @@ input{
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    height: 100%;
 }
 
 .left-panel {
@@ -506,7 +509,7 @@ input{
 }
 
 .props-header {
-    padding: 5px;
+    padding: 0 5px;
 }
 
 .choosing-item {
@@ -515,14 +518,26 @@ input{
 }
 
 .resizable-dialog {
-    min-height: 300px;
-    resize: both;
+    position: relative;
+    overflow: auto;
+    pointer-events:all;
+    resize:both;
+    min-height:300px;
+    min-width:500px;
+    
 }
 
 .mid-text-align {
     vertical-align: middle;
 }
 
+.tool-btn {
+	padding: 0;
+	background:none;
+}
+#window-sceneTree button:hover {
+	background:#dd8;
+}
 
 
 

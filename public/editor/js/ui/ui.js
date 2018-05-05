@@ -71,7 +71,7 @@ class UI extends React.Component {
 		return R.div(null,
 			R.btn('Open project...', editor.fs.chooseProject),
 			editor.history.buttonsRenderer(),
-			window('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 250, 250, 500),
+			window('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 330, 250, 500),
 			window('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.projectDesc.currentSceneName) : undefined), React.createElement(Viewport, {ref: this.viewportRef}), 1000, 0, 420, 313, 840, 480),
 			window('propsEditor', 'Properties', React.createElement(PropsEditor, {
 				ref: this.propsEditorRef,

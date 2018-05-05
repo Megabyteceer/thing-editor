@@ -51,7 +51,7 @@ class TreeView extends React.Component {
 				o.remove();
 			});
 			
-			editor.clearSelection();
+			editor.selectin.clearSelection();
 			if(i > 0) {
 				this.selectInTree(p.getChildAt(i - 1));
 			} else if (p !== game.stage) {
@@ -65,6 +65,7 @@ class TreeView extends React.Component {
 	onCopyClick() {
 		if(editor.selection.length > 0) {
 			editor.clipboardData = editor.selection.map(Lib.__serializeObject);
+			editor.refreshTreeViewAndPropertyEditor();
 		}
 	}
 	
@@ -148,15 +149,18 @@ class TreeView extends React.Component {
 		
 		return R.div(classViewProps,
 			R.div(leftPanelProps,
-				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected', undefined, 46, isEmpty),
-				R.btn(R.icon('bring-up'), this.onBringUpClick, 'Bring selected up', undefined, undefined, isEmpty),
-				R.btn(R.icon('move-up'), this.onMoveUpClick, 'Move selected up', undefined, undefined, isEmpty),
-				R.btn(R.icon('move-down'), this.onMoveDownClick, 'Move selected down', undefined, undefined, isEmpty),
-				R.btn(R.icon('bring-down'), this.onBringDownClick, 'Bring selected down', undefined, undefined, isEmpty),
-				R.btn(R.icon('copy'), this.onCopyClick, 'Copy selected in to clipboard (Ctrl+C)', undefined, 1067, isEmpty),
-				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', undefined, 1088, isEmpty),
-				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', undefined, 1086, editor.clipboardData != null)
-			),
+				R.btn(R.icon('bring-up'), this.onBringUpClick, 'Bring selected up', "tool-btn", undefined, isEmpty),
+				R.btn(R.icon('move-up'), this.onMoveUpClick, 'Move selected up', "tool-btn", undefined, isEmpty),
+				R.btn(R.icon('move-down'), this.onMoveDownClick, 'Move selected down', "tool-btn", undefined, isEmpty),
+				R.btn(R.icon('bring-down'), this.onBringDownClick, 'Bring selected down', "tool-btn", undefined, isEmpty),
+				R.hr(),
+				R.btn(R.icon('copy'), this.onCopyClick, 'Copy selected in to clipboard (Ctrl+C)', "tool-btn", 1067, isEmpty),
+				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', "tool-btn", 1088, isEmpty),
+				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, editor.clipboardData == null),
+				R.hr(),
+				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected', "tool-btn", 46, isEmpty)
+	
+	),
 			R.div({className: 'scene-tree-view', onClick: onEmptyClick},
 				editor.game.stage.children.map(renderRoots)
 			)
