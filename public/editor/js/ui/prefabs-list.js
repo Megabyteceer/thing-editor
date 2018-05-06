@@ -30,6 +30,7 @@ export default class PrefabsList extends React.Component {
 		this.onSaveSelectedAsClick = this.onSaveSelectedAsClick.bind(this);
 		this.onAddClick = this.onAddClick.bind(this);
 		this.onAddChildClick = this.onAddChildClick.bind(this);
+		this.reselectAllowed = true;
 	}
 	
 	onAddClick() {
@@ -101,7 +102,7 @@ export default class PrefabsList extends React.Component {
 			var preview = Lib.loadPrefab(name);
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);
-            editor.ui.viewport.setPrefabMode(true);
+            editor.ui.viewport.setPrefabMode(name);
             editor.history.clearHistory(item);
 			previewShown = name;
 		}
@@ -139,6 +140,7 @@ export default class PrefabsList extends React.Component {
 	static acceptPrefabEdition() {
         if(previewShown && editor.isCurrentSceneModified) {
 			Lib.__savePrefab(game.currentContainer, previewShown);
+			editor.ui.prefabsList.forceUpdate();
         }
 		PrefabsList.hidePrefabPreview();
 	}
@@ -168,3 +170,10 @@ export default class PrefabsList extends React.Component {
 }
 
 var previewShown = false;
+
+
+$(document.body).on('click', (ev) =>{
+	if(ev.target === document.body){
+		PrefabsList.acceptPrefabEdition();
+	}
+});

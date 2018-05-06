@@ -44,6 +44,7 @@ export default class Overlay {
 		__getNodeExtendData(backdrop).hidden = true;
 		currentlyShowedPreview = object;
 		game.makeItModal(currentlyShowedPreview);
+		editor.history.updateUi();
 	}
 	
 	hidePreview(refresh = true) {
@@ -57,6 +58,7 @@ export default class Overlay {
 			if(refresh === true) {
 			    editor.refreshTreeViewAndPropertyEditor();
             }
+			editor.history.updateUi();
 		}
 	}
 }

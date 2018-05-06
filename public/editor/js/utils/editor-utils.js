@@ -36,7 +36,7 @@ R.listItem = (view, item, key, parent) => {
 	
 	return R.div({
 		className: className, key: key, onClick: () => {
-			if (parent.state.selectedItem !== item) {
+			if (parent.state.selectedItem !== item || parent.reselectAllowed) {
 				parent.state.selectedItem = item;
 				parent.onSelect(item);
 				parent.forceUpdate();
