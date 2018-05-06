@@ -1,3 +1,5 @@
+import Game from "../game.js";
+
 export default class Button extends Sprite {
 	
 	constructor(p) {
@@ -27,7 +29,7 @@ export default class Button extends Sprite {
 	}
 	
 	executeOnClick() {
-		if(!Button.disableAllButtons && !game.__EDITORmode) {
+		if(!Game.disableAllButtons && !game.__EDITORmode) {
 			Button.clickedButton = this;
 			if (this.callback != null) {
 				this.callback();

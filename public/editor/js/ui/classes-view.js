@@ -16,11 +16,11 @@ class ClessesView extends React.Component {
 	}
 	
 	onAddClick() {
-		editor.addToScene(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
+		editor.addToScene(Lib._loadClassInstanceById(this.state.selectedItem.c.name));
 	}
 	
 	onAddAsChildClick() {
-		editor.attachToSelected(Lib.loadClassInstanceById(this.state.selectedItem.c.name));
+		editor.attachToSelected(Lib._loadClassInstanceById(this.state.selectedItem.c.name));
 	}
 	
 	onSelect(item) {

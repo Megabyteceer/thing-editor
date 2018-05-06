@@ -25,7 +25,7 @@ export default class Viewport extends React.Component {
 	
 	onTogglePlay() {
 		var play = game.__EDITORmode;
-		
+		Lib.__clearStaticScenes();
 		if (play) { // launch game
 			editor.saveCurrentScene(editor.runningSceneLibSaveSlotName);
 			selectionData = editor.selection.saveSelection();

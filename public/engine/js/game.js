@@ -19,6 +19,10 @@ var frameCounterTime = 0;
 var modals = [];
 var hiddingModals = [];
 
+var SHOOTTIME = false;
+var currentFader;
+var showStack = [];
+
 class Game {
 	
 	constructor(gameId) {
@@ -51,29 +55,90 @@ class Game {
 		app.stage.addChild(stage);
 		
 		app.ticker.add(this.updateGlobal);
-		
 	}
 	
-	showScene(scene) {
-		if(typeof scene === 'string') {
-			scene = Lib.loadScene(scene);
-		}
+	faderShoot() {
+		assert(currentFader, "game.faderShoot() called without fader on screen");
+		SHOOTTIME = true;
 		
-		assert(scene instanceof Scene, 'Scene instance expected.');
-		if (this.currentScene) {
-			if (!this.__EDITORmode) {
-				this.currentScene.onHideInner();
-			}
-			stage.removeChild(this.currentScene);
+		while(modals.length > 0) {
+			modals.pop().remove();
 		}
+		this.currentScene.onHide();
+		
+		if (!this.currentScene.isStatic && (showStack.indexOf(this.currentScene) < 0)) {
+			this.currentScene.remove();
+		} else {
+			this.currentScene.detachFromParent();
+		}
+		this._setCurrentSceneContent(showStack.pop());
+		this.currentScene.onShow();
+		
+		SHOOTTIME = false;
+//EDITOR
+		//TODO:	editor.ui.scenesStack.forceUpdate();
+//ENDEDITOR
+	}
+	
+	_setCurrentSceneContent(scene) {
+		assert(!this.currentScene || !this.currentScene.parent, "Previous scene was not removed before setting new one.");
 		this.currentScene = scene;
 		stage.addChild(scene);
-		if (!this.__EDITORmode) {
-			scene.onShowInner();
-		}
 		//EDITOR
 		__getNodeExtendData(game.currentScene).toggled = true;
 		//ENDEDITOR
+	}
+	
+	static get disableAllButtons() {
+		return currentFader != null;
+	}
+	
+	faderEnd() {
+		assert(currentFader, "game.faderEnd() called without fader on screen");
+		currentFader.remove();
+		currentFader = null;
+	}
+	
+	showScene(scene, faderType) {
+		if(typeof scene === 'string') {
+			scene = Lib.loadScene(scene);
+		}
+		assert(scene instanceof Scene, 'Scene instance expected.');
+		if(this.__EDITORmode) {
+			if (this.currentScene) {
+				stage.removeChild(this.currentScene);
+			}
+			this._setCurrentSceneContent(scene);
+		} else {
+			if (this.currentScene) {
+				if (!this.currentScene.isNoStackable) {
+					showStack.push(this.currentScene);
+				}
+				showStack.push(scene);
+				this.closeCurrentScene(faderType);
+			} else {
+				this._setCurrentSceneContent(scene);
+			}
+		}
+	}
+	
+	closeCurrentScene(faderType) {
+		assert(showStack.length > 0, "can't close latest scene");
+		
+		if (SHOOTTIME) {
+			this.faderShoot();
+		} else {
+			if (!faderType) {
+				if(this.currentScene && this.currentScene.faderType) {
+					faderType = this.currentScene.faderType;
+				} else {
+					faderType = 'fader/default';
+				}
+			}
+			currentFader = Lib.loadPrefab(faderType);
+			assert(currentFader, 'Wrong fader type for this scene');
+			this.stage.addChild(currentFader);
+		}
 	}
 
     //EDITOR
@@ -115,6 +180,15 @@ class Game {
 		}
 	}
 	
+	static mouseEventToGlobalXY(ev) {
+		var b = app.view.getBoundingClientRect();
+		var n = ev.clientX - b.left;
+		tmpPoint.x = n * (W / b.width);
+		n = ev.clientY - b.top;
+		tmpPoint.y = n * (H / b.height);
+		return tmpPoint;
+	}
+	
 	updateGlobal(dt) {
 		if (this.currentScene) {
 			if (!this.paused && !this.__EDITORmode) {
@@ -131,9 +205,9 @@ class Game {
 			}
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 			
-			this.currentScene.interactiveChildren = (this.modalsCount === 0);
+			this.currentScene.interactiveChildren = ((this.modalsCount === 0) && !currentFader);
 			var i = this.modalsCount-1;
-			var isCurrent = true;
+			var isCurrent = !currentFader;
 			while (i >= 0) {
 				modals[i].interactiveChildren = isCurrent;
 				isCurrent = false;
@@ -141,18 +215,11 @@ class Game {
 		}
 	}
 	
-	static mouseEventToGlobalXY(ev) {
-		var b = app.view.getBoundingClientRect();
-		var n = ev.clientX - b.left;
-		tmpPoint.x = n * (W / b.width);
-		n = ev.clientY - b.top;
-		tmpPoint.y = n * (H / b.height);
-		return tmpPoint;
-	}
-	
 	updateFrame() {
 		updateRecursivelly(this.currentContainer);
-		
+		if(currentFader) {
+			updateRecursivelly(currentFader);
+		}
 		var i = hiddingModals.length-1; //hide modals process
 		while (i >= 0) {
 			var m = hiddingModals[i];

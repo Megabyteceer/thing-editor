@@ -2,33 +2,27 @@ import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
 import Pool from "/engine/js/utils/pool.js";
 import Container from "../../../engine/js/components/container.js";
 import Button from "../../../engine/js/components/button.js";
-
+import Fader from "../../../engine/js/components/fader.js";
 
 function init() {
 	//embedded engine classes
-	embeddedClasses = [ //Do not ever delete any class
+	embeddedClasses = [
 		Sprite,
 		Scene,
 		Container,
-		Button
-	]; //Add new classes to the end of array only.
-	assert(CUSTOM_CLASSES_ID > embeddedClasses.length);
+		Button,
+		Fader
+	];
 }
 
-
 var ClassesLoader = {};
-
-const CUSTOM_CLASSES_ID = 100;
 
 var classesById = {},
 	classesDefaultsById = {}, //default values for serializable properties of class
 	classPathById = {};
 
-var classesIdCounter;
-var customClassesIdCounter;
 var cacheCounter = 0;
 var embeddedClasses;
-
 var loadedClssesCount;
 
 var classesLoadedSuccessfullyAtLeastOnce = false;
@@ -155,10 +149,8 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 		errorOccured = false;
 		
-		
 		loadedClssesCount = 0;
 		clearClasses();
-		customClassesIdCounter = CUSTOM_CLASSES_ID;
 		console.clear();
 		console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
 		

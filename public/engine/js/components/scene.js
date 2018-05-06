@@ -17,14 +17,6 @@ class Scene extends PIXI.Container {
 	update() {
 	
 	}
-	
-	onShowInner() {
-		this.onShow();
-	}
-	
-	onHideInner() {
-		this.onHide();
-	}
 }
 
 export default Scene;
@@ -39,8 +31,20 @@ Scene.EDITOR_editableProps = [
 		name: 'speed'
 	},
 	{
+		name: 'isStatic',
+		type: Boolean
+	},
+	{
+		name: 'isNoStackable',
+		type: Boolean
+	},
+	{
 		name: 'backgroundColor',
 		type: 'color'
+	},
+	{
+		name: 'faderType',
+		type: String
 	}
 	//TODO: isStatic, isNoStackable, faderType, music_intro, music_loop, music_volume, bgR, bgG, bgB
 ];

@@ -5,14 +5,14 @@
 import Editor from "../editor.js";
 import Pool from "/engine/js/utils/pool.js";
 
-var backdrop = new Sprite();
-backdrop.texture = PIXI.Texture.WHITE;
-backdrop.tint = 30;
-backdrop.alpha = 0.9;
-backdrop.x = W / 2;
-backdrop.y = H / 2;
-backdrop.width = W;
-backdrop.height = H;
+var blackout = new Sprite();
+blackout.texture = PIXI.Texture.WHITE;
+blackout.tint = 30;
+blackout.alpha = 0.9;
+blackout.x = W / 2;
+blackout.y = H / 2;
+blackout.width = W;
+blackout.height = H;
 
 var currentlyShowedPreview;
 
@@ -40,16 +40,16 @@ export default class Overlay {
 	showPreview(object) {
 		this.hidePreview(false);
 		savedSelection = editor.selection.saveSelection();
-		game.stage.addChild(backdrop);
-		__getNodeExtendData(backdrop).hidden = true;
+		game.stage.addChild(blackout);
+		__getNodeExtendData(blackout).hidden = true;
 		currentlyShowedPreview = object;
 		game.makeItModal(currentlyShowedPreview);
 		editor.history.updateUi();
 	}
 	
 	hidePreview(refresh = true) {
-		if (backdrop.parent) {
-			game.stage.removeChild(backdrop);
+		if (blackout.parent) {
+			game.stage.removeChild(blackout);
 		}
 		if (currentlyShowedPreview) {
 			game.hideModal(currentlyShowedPreview);

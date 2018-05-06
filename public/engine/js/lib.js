@@ -5,6 +5,7 @@ var scenes;
 var classes;
 var defaults;
 var textures = {};
+var staticScenes = {};
 
 var constructorProcessor = (o) => {
 	o.init();
@@ -52,8 +53,9 @@ class Lib {
 		textures[name] = texture;
 	}
 	
-	static loadClassInstanceById(id) {
+	static _loadClassInstanceById(id) {
 		var ret = Pool.create(classes[id]);
+		Object.assign(ret, defaults[id]);
 		if(!game.__EDITORmode) {
 			constructRecursive(ret);
 		}
@@ -98,7 +100,14 @@ class Lib {
 	}
 
 	static loadScene(name) {
-		return _loadObjectFromData(scenes[name]);
+		if(!game.__EDITORmode && staticScenes.hasOwnProperty(name)) {
+			return staticScenes[name];
+		}
+		var s = _loadObjectFromData(scenes[name]);
+		if(s.isStatic) {
+			staticScenes[name] = s;
+		}
+		return s;
 	}
 	
 	static hasScene(name) {
@@ -154,6 +163,10 @@ class Lib {
 	
 	static _getAllPrefabs() {
 		return prefabs;
+	}
+	
+	static  __clearStaticScenes() {
+		staticScenes = {};
 	}
 	
 	static __serializeObject(o) {
