@@ -1,6 +1,11 @@
-PIXI.Container.prototype.update = function update() {
+const emtyFunction = () =>{};
+PIXI.Container.prototype.update = emtyFunction;
+PIXI.Container.prototype.init = emtyFunction;
+PIXI.Container.prototype.onRemove = emtyFunction;
 
-}
-PIXI.Container.EDITOR_icon = 'tree/container';
 
 export default PIXI.Container;
+
+//EDITOR
+PIXI.Container.EDITOR_icon = 'tree/container';
+//ENDEDITOR

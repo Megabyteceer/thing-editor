@@ -192,7 +192,7 @@ class Editor {
 			
 			if (delta === true) {
 				assert(field.type === Number);
-				if (val !== 0) {
+				if (Math.abs(val) > 0.0000001) {
 					changed = true;
 					for (let o of this.selection) {
 						o[field.name] += val;
@@ -229,9 +229,13 @@ class Editor {
 	
 	loadScene(name) {
 		assert(name, 'name should be defined');
-		selectionsForScenesByName[editor.projectDesc.currentSceneName] = this.selection.saveSelection();
-		game.showScene(Lib.loadScene(name));
-		this.selection.loadSelection(selectionsForScenesByName[name]);
+		if (game.currentScene) {
+			selectionsForScenesByName[editor.projectDesc.currentSceneName] = this.selection.saveSelection();
+		}
+		game.showScene(name);
+		if (game.currentScene) {
+			this.selection.loadSelection(selectionsForScenesByName[name]);
+		}
 		
 		if (name === editor.runningSceneLibSaveSlotName) {
 			Lib.__deleteScene(editor.runningSceneLibSaveSlotName);

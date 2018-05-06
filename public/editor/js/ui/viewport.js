@@ -1,11 +1,12 @@
 import Game from '/engine/js/game.js';
 import PrefabsList from './prefabs-list.js';
+import Lib from "../../../engine/js/lib.js";
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
 var selectionData;
 
-class Viewport extends React.Component {
+export default class Viewport extends React.Component {
 	
 	constructor(props) {
 		super(props);
@@ -28,11 +29,19 @@ class Viewport extends React.Component {
 		if (play) { // launch game
 			editor.saveCurrentScene(editor.runningSceneLibSaveSlotName);
 			selectionData = editor.selection.saveSelection();
+			game.__EDITORmode = false;
+			Lib.__constructRecursive(game.currentScene);
 		} else { //stop game
+			while (game.modalsCount > 0) {
+				game.closeModal();
+			}
+			game.currentScene.remove();
+			game.currentScene = null;
+			game.__EDITORmode = true;
 			editor.loadScene(editor.runningSceneLibSaveSlotName);
 			editor.selection.loadSelection(selectionData);
 		}
-		game.__EDITORmode = !play;
+		
 		this.forceUpdate();
 		editor.history.updateUi();
 	}
@@ -55,7 +64,7 @@ class Viewport extends React.Component {
             )
         } else {
 	        panel = R.span( undefined,
-	            R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', 32),
+	            R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', 1032),
                 R.btn(R.icon('recompile'), editor.reloadClasses, 'Rebuild game sources', 'play-stop-btn')
             )
         }
@@ -73,7 +82,5 @@ class Viewport extends React.Component {
 			)
 		);
 	}
-	
-}
 
-export default Viewport;
+}

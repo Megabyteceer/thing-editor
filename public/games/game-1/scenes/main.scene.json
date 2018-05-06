@@ -103,6 +103,14 @@
 			}
 		},
 		{
+			"c": "Button",
+			"p": {
+				"x": 165,
+				"y": 67,
+				"onClick": "game.showScene`levels/1"
+			}
+		},
+		{
 			"c": "Bunny",
 			"p": {
 				"x": 421,

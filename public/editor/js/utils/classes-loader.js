@@ -1,6 +1,20 @@
 import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
 import Pool from "/engine/js/utils/pool.js";
 import Container from "../../../engine/js/components/container.js";
+import Button from "../../../engine/js/components/button.js";
+
+
+function init() {
+	//embedded engine classes
+	embeddedClasses = [ //Do not ever delete any class
+		Sprite,
+		Scene,
+		Container,
+		Button
+	]; //Add new classes to the end of array only.
+	assert(CUSTOM_CLASSES_ID > embeddedClasses.length);
+}
+
 
 var ClassesLoader = {};
 
@@ -22,15 +36,7 @@ var classesRegisterLoaded = false;
 
 ClassesLoader.classesLoaded = new Signal();
 
-function init() {
-	//embedded engine classes
-	embeddedClasses = [ //Do not ever delete any class
-		Sprite,
-		Scene,
-		Container
-	]; //Add new classes to the end of array only.
-	assert(CUSTOM_CLASSES_ID > embeddedClasses.length);
-}
+
 
 ClassesLoader.init = init;
 

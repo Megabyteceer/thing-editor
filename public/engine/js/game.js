@@ -4,6 +4,7 @@ import DisplayObject from './components/display-object.js';
 import Container from './components/container.js';
 import Sprite from './components/sprite.js';
 import Scene from './components/scene.js';
+import call from './utils/call.js';
 
 window.Scene = Scene;
 window.Sprite = Sprite;
@@ -25,6 +26,7 @@ class Game {
 		this.settings = new Settings(gameId);
 		this.updateGlobal = this.updateGlobal.bind(this);
 		this.mouse = new PIXI.Point();
+		this.call = call;
 		window.addEventListener('mousemove', mouseHandlerGlobal);
 		window.game = this;
 	}
@@ -53,6 +55,10 @@ class Game {
 	}
 	
 	showScene(scene) {
+		if(typeof scene === 'string') {
+			scene = Lib.loadScene(scene);
+		}
+		
 		assert(scene instanceof Scene, 'Scene instance expected.');
 		if (this.currentScene) {
 			if (!this.__EDITORmode) {

@@ -7,10 +7,11 @@ var defaults;
 var textures = {};
 
 var constructorProcessor = (o) => {
-
+	o.init();
 }
 
 var constructRecursive = (o) => {
+	assert(!game.__EDITORmode, "initialization attempt in editing mode.");
 	constructorProcessor(o);
 	
 	var a = o.children;
@@ -25,10 +26,6 @@ class Lib {
 		assert(false, "Lib cant be instanced.");
 		scenes = {'main': {c: 1}};
 		classes = {1: Scene};
-	}
-	
-	static wrapConstructorProcessor(wrapper) {
-		_wrapConstructorProcessor(wrapper);
 	}
 	
 	static getClass(id) {
@@ -57,7 +54,9 @@ class Lib {
 	
 	static loadClassInstanceById(id) {
 		var ret = Pool.create(classes[id]);
-		constructRecursive(ret);
+		if(!game.__EDITORmode) {
+			constructRecursive(ret);
+		}
 		return ret;
 	}
 	
@@ -69,11 +68,14 @@ class Lib {
 		return _loadObjectFromData(prefabs[name]);
 	}
 	
-	static disposeObjectAndChildrens(o) {
+	static destroyObjectAndChildrens(o) {
+		if(!game.__EDITORmode) {
+			o.onRemove();
+		}
 		o.detachFromParent();
 		if (o.children) {
 			while(o.children.length > 0) {
-				Lib.disposeObjectAndChildrens(o.getChildAt(o.children.length-1));
+				Lib.destroyObjectAndChildrens(o.getChildAt(o.children.length-1));
 			}
 		}
 		Pool.dispose(o);
@@ -182,9 +184,13 @@ class Lib {
 
 const _loadObjectFromData = (src) => {
 	var ret = Lib._deserializeObject(src);
-	constructRecursive(ret);
+	if(!game.__EDITORmode) {
+		constructRecursive(ret);
+	}
 	return ret;
 }
+
+Lib.__constructRecursive = constructRecursive;
 
 export default Lib;
 

@@ -5,6 +5,8 @@ class Scene extends PIXI.Container {
 		this.backgroundColor = 0;
 	}
 	
+	onRemove() {}
+	
 	onShow() {
 	
 	}
@@ -28,6 +30,8 @@ class Scene extends PIXI.Container {
 
 export default Scene;
 
+
+//EDITOR
 Scene.EDITOR_icon = 'tree/scene';
 Scene.EDITOR_editableProps = [
 	{
@@ -42,3 +46,4 @@ Scene.EDITOR_editableProps = [
 	//TODO: isStatic, isNoStackable, faderType, music_intro, music_loop, music_volume, bgR, bgG, bgB
 ];
 
+//ENDEDITOR

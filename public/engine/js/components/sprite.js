@@ -1,4 +1,4 @@
-class Sprite extends PIXI.Sprite {
+export default class Sprite extends PIXI.Sprite {
 	constructor(pic) {
 		super(pic);
 		this.anchor.set(0.5);
@@ -9,16 +9,24 @@ class Sprite extends PIXI.Sprite {
 		this.texture = Lib.getTexture('bunny'); //TODO: remove this temporary texture assigning
 	}
 	
+	onRemove() {}
+	
 	update() {
 		this.x += this.xSpeed;
 		this.y += this.ySpeed;
 		this.rotation += this.rSpeed;
 	}
-}	var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
+}
+
+
+//EDITOR
+
+var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
 	return {name: k, value: PIXI.BLEND_MODES[k]};
 }).sort((a, b) => {
 	return a.value - b.value
 });
+
 
 PIXI.Sprite.EDITOR_editableProps = [
 	{
@@ -58,6 +66,8 @@ Sprite.EDITOR_editableProps = [
 	//TODO: image, tint
 ];
 
-export default Sprite;
+
 
 Sprite.EDITOR_icon = 'tree/sprite'
+
+//ENDEDITOR

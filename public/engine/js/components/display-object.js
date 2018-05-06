@@ -1,11 +1,3 @@
-class DOoverrider extends PIXI.DisplayObject {
-	
-	set x(val) {
-		assert(!isNan(val));
-		super.x = val;
-	}
-}
-
 PIXI.DisplayObject.prototype.getGlobalRotation = function getGlobalRotation() {
 	var ret = this.rotation;
 	var p = this.parent;
@@ -16,19 +8,22 @@ PIXI.DisplayObject.prototype.getGlobalRotation = function getGlobalRotation() {
 	return ret;
 }
 
-
-
 PIXI.DisplayObject.prototype.detachFromParent = function () {
 	if(this.parent) {
 		this.parent.removeChild(this);
 	}
 }
 
+PIXI.DisplayObject.prototype.onRemove = () => {};
+
 PIXI.DisplayObject.prototype.remove = function () {
-	Lib.disposeObjectAndChildrens(this);
+	Lib.destroyObjectAndChildrens(this);
 }
 
 export default PIXI.DisplayObject;
+
+
+//EDITOR
 
 Object.defineProperties(PIXI.DisplayObject.prototype, {
 	'scale.x': {
@@ -153,3 +148,5 @@ PIXI.DisplayObject.EDITOR_editableProps = [
 
 wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
+
+//ENDEDITOR
