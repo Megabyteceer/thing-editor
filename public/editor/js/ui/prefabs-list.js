@@ -97,7 +97,7 @@ export default class PrefabsList extends React.Component {
 	onSelect(item) {
 		if(game.__EDITORmode) {
 			var name = Lib.__getNameByPrefab(item);
-			PrefabsList.hidePrefabPreview();
+			PrefabsList.acceptPrefabEdition();
 			var preview = Lib.loadPrefab(name);
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);

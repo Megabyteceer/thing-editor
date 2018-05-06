@@ -71,6 +71,7 @@ window.check = (expression, message) => {
 
 $(window).on('contextmenu', (ev) => {
 	if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'SELECT') return;
+	if ($(ev.target).hasClass('selectable-text')) return;
 	sp(ev);
 	
 });

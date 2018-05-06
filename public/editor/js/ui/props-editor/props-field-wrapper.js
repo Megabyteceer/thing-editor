@@ -42,7 +42,10 @@ var getTypeDescription = (field) => {
 
 var fieldProps = {className: 'props-field'};
 
-var labelProps = {className: 'props-label'};
+var labelProps = {className: 'props-label selectable-text', onMouseDown: function (ev) {
+	selectText(ev.target);
+	sp(ev);
+}};
 var wrapperProps = {className: 'props-wrapper'};
 
 class PropsFieldWrapper extends React.Component {
@@ -81,7 +84,7 @@ class PropsFieldWrapper extends React.Component {
 		}
 		
 		return R.div(fieldProps,
-			R.div(labelProps, field.name + ':'),
+			R.div(labelProps, field.name),
 			R.div(wrapperProps,
 				React.createElement(renderer, {
 					value,

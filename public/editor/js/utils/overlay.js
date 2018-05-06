@@ -144,7 +144,6 @@ function selectByStageClick(ev) {
 						o = o.parent.getChildAt(i);
 						break
 					} if (o === root) {
-						o = o.getChildAt(0);
 						break;
 					}
 				}
