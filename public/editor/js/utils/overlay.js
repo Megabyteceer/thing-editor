@@ -113,42 +113,8 @@ $(window).on('mousedown', (ev) => {
 		}
 	} else if(ev.target === game.pixiApp.view && ev.buttons === 1) {
 		
-		// ---------------------------- select by stage click --------------------------------
-		var root = game.currentContainer;
-		var o = editor.selection[0] || root;
-		var start = o;
-		var c = 0;
-		while(c++ < 10000) {
-			if(o.children && o.children.length > 0) {
-				o = o.getChildAt(0);
-			} else {
-				var i = o.parent.getChildIndex(o) + 1;
-				if(i < o.parent.children.length) {
-					o = o.parent.getChildAt(i);
-				} else {
-					while(c++ < 10000) {
-						o = o.parent;
-						i = o.parent.getChildIndex(o) + 1;
-						if (i < o.parent.children.length) {
-							o = o.parent.getChildAt(i);
-							break
-						} if (o === root) {
-							o = o.getChildAt(0);
-							break;
-						}
-					}
-				}
-			}
-			
-			if(o.containsPoint && o.containsPoint(game.mouse)) {
-				editor.ui.sceneTree.selectInTree(o, ev.ctrlKey);
-				return;
-			}
-			if(o === start) {
-				break;
-			}
-		}
-		editor.selection.clearSelection(true);
+		selectByStageClick(ev);
+		
 	} else if(ev.buttons === 2 && editor.selection.length > 0) {
 		var info = __getNodeExtendData(editor.selection[0]);
 		if(info.draggerPivot){
@@ -157,6 +123,45 @@ $(window).on('mousedown', (ev) => {
 		}
 	}
 });
+
+function selectByStageClick(ev) {
+	var root = game.currentContainer;
+	var o = editor.selection[0] || root;
+	var start = o;
+	var c = 0;
+	while(c++ < 10000) {
+		if(o.children && o.children.length > 0) {
+			o = o.getChildAt(0);
+		} else {
+			var i = o.parent.getChildIndex(o) + 1;
+			if(i < o.parent.children.length) {
+				o = o.parent.getChildAt(i);
+			} else {
+				while(c++ < 10000) {
+					o = o.parent;
+					i = o.parent.getChildIndex(o) + 1;
+					if (i < o.parent.children.length) {
+						o = o.parent.getChildAt(i);
+						break
+					} if (o === root) {
+						o = o.getChildAt(0);
+						break;
+					}
+				}
+			}
+		}
+		
+		if(o.containsPoint && o.containsPoint(game.mouse)) {
+			editor.ui.sceneTree.selectInTree(o, ev.ctrlKey);
+			return;
+		}
+		if(o === start) {
+			break;
+		}
+	}
+	editor.selection.clearSelection(true);
+}
+
 
 $(window).on('mousemove', () => {
 	if (draggingDragger) {

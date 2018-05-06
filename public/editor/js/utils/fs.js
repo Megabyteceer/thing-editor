@@ -37,7 +37,7 @@ var fs = {
 		var r = $.ajax({
 			type: "POST",
 			url: '/fs/savefile',
-			data: JSON.stringify({data: JSON.stringify(data, numberLengthLimitter, '	'), filename}),
+			data: JSON.stringify({data: JSON.stringify(data, null, '	'), filename}),
 			contentType: 'application/json'
 		}).fail(handleError);
 		if (!silently) {
@@ -45,15 +45,6 @@ var fs = {
 		}
 		return r;
 	}
-}
-
-const numberLengthLimitter = (key, val) => {
-	if (typeof val === 'number') {
-		var s = val.toString();
-		var s2 = val.toFixed(editor.ClassesLoader.getFieldDigitsLength(key));
-		return (s.length < s2.length) ? s : s2;
-	}
-	return val;
 }
 
 export default fs;
