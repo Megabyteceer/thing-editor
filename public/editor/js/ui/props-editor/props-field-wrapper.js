@@ -57,9 +57,11 @@ class PropsFieldWrapper extends React.Component {
 		this.onChange = this.onChange.bind(this);
 	}
 	
-	onChange(ev) {
+	onChange(ev, delta, deltaVal) {
+		delta = (delta === true);
 		var field = this.props.field;
 		var val = getTypeDescription(field).parser(ev.target);
+		var initialVal = val;
 		
 		if (field.hasOwnProperty('min')) {
 			val = Math.max(field.min, val);
@@ -67,8 +69,12 @@ class PropsFieldWrapper extends React.Component {
 		if (field.hasOwnProperty('max')) {
 			val = Math.min(field.max, val);
 		}
+		if(delta) {
+			this.props.onChange(field, deltaVal, true);
+		} else {
+			this.props.onChange(field, val);
+		}
 		
-		this.props.onChange(field, val);
 		this.setState({value: val});
 	}
 	

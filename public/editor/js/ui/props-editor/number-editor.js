@@ -29,9 +29,10 @@ $(window).on('mousemove', (ev) => {
 	
 	var d = Math.round((lastY - ev.clientY) / 2.001);
 	if (d !== 0) {
+		d = d * (draggingProps.field.step || 1);
 		lastY = ev.clientY;
-		var e = PropsFieldWrapper.surrogateChnageEvent(parseFloat(draggingInput.value) + d * (draggingProps.field.step || 1));
-		draggingProps.onChange(e);
+		var e = PropsFieldWrapper.surrogateChnageEvent(parseFloat(draggingInput.value) + d);
+		draggingProps.onChange(e, true, d);
 	}
 })
 

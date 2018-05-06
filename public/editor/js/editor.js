@@ -192,10 +192,18 @@ class Editor {
 			
 			if (delta === true) {
 				assert(field.type === Number);
-				if (Math.abs(val) > 0.0000001) {
-					changed = true;
-					for (let o of this.selection) {
-						o[field.name] += val;
+				for (let o of this.selection) {
+					var v = o[field.name];
+					var newVal = v + val;
+					if (field.hasOwnProperty('min')) {
+						newVal = Math.max(field.min, newVal);
+					}
+					if (field.hasOwnProperty('max')) {
+						newVal = Math.min(field.max, newVal);
+					}
+					if(v !== newVal) {
+						o[field.name] = newVal;
+						changed = true;
 					}
 				}
 			} else {
