@@ -160,7 +160,7 @@ class Lib {
 		propsList.some((p) => {
 			if (!p.notSeriazable) {
 				var val = o[p.name];
-				if (val != p.default) {
+				if ((val != p.default) && (typeof val != 'undefined') && (val !== null)) {
 					props[p.name] = val;
 				}
 			}

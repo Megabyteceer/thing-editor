@@ -96,13 +96,14 @@ export default class PrefabsList extends React.Component {
 	
 	onSelect(item) {
 		if(game.__EDITORmode) {
+			var name = Lib.__getNameByPrefab(item);
 			PrefabsList.hidePrefabPreview();
-			var preview = Lib.loadPrefab(Lib.__getNameByPrefab(item));
+			var preview = Lib.loadPrefab(name);
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);
             editor.ui.viewport.setPrefabMode(true);
             editor.history.clearHistory(item);
-			previewShown = true;
+			previewShown = name;
 		}
 	}
 	
@@ -135,9 +136,9 @@ export default class PrefabsList extends React.Component {
 		)
 	}
 	
-	acceptPrefabEdition() {
-        if(editor.isCurrentSceneModified) {
-			Lib.__savePrefab()
+	static acceptPrefabEdition() {
+        if(previewShown && editor.isCurrentSceneModified) {
+			Lib.__savePrefab(game.currentContainer, previewShown);
         }
 		PrefabsList.hidePrefabPreview();
 	}

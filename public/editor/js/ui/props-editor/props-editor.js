@@ -28,7 +28,7 @@ class PropsEditor extends React.Component {
 		}
 		
 		editor.ui.modal.showListChoose('Choose new class for ', classesList.map(i => i.c)).then((selectedClass) => {
-			if(selectedClass) {
+			if(selectedClass && (editor.selection[0].constructor !== selectedClass)) {
 				var a = editor.selection.slice(0);
 				var selectionData = editor.selection.saveSelection();
 				

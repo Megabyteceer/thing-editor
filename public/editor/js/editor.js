@@ -254,7 +254,7 @@ class Editor {
 
 	exitPrefabMode() {
         if(editor.ui.prefabsList) {
-            editor.ui.prefabsList.acceptPrefabEdition();
+	        PrefabsList.acceptPrefabEdition();
         }
     }
 	
@@ -338,6 +338,11 @@ window.__getNodeExtendData = (node) => {
 	return editorNodeData.get(node);
 }
 window.__resetNodeExtendData = (node) => {
+	if (editorNodeData.has(node)) {
+		if(editorNodeData.get(node).isSelected) {
+			editor.selection.remove(node);
+		}
+	}
 	editorNodeData.delete(node);
 }
 export default Editor;

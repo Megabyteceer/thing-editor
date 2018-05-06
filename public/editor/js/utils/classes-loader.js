@@ -110,6 +110,7 @@ function enumClassProperties(c) {
 					
 					if(c === cc) { //own properties of this class
 						if(p.type === Number || p.type === 'color' || p.type === 'select') {
+							_registerPropertyLenght(p);
 							wrapPropertyWithNumberChecker(c, p.name);
 						}
 					}
@@ -134,10 +135,10 @@ function enumClassProperties(c) {
 }
 
 function clearClasses() {
+	_fieldsLength = {};
 	classesById = {};
 	ClassesLoader.gameObjClasses = [];
 	ClassesLoader.sceneClasses = [];
-	//TODO: clear Lib.pools
 }
 
 //load custom game classes
@@ -223,8 +224,34 @@ function classLoaded(c, path) {
 	addClass(c, path);
 }
 
+var _fieldsLength;
+const getFieldDigitsLength = (name) => {
+	assert(_fieldsLength.hasOwnProperty(name));
+	return _fieldsLength[name];
+}
+const _registerPropertyLenght = (p) => {
+	var len;
+	if(!p.step){
+		len = 0;
+	} else {
+		len = p.step.toString().split('.');
+		if(len.length < 2){
+			len = 0;
+		} else {
+			len = len[1].length;
+		}
+	}
+	if(_fieldsLength.hasOwnProperty(p.name)){
+		_fieldsLength[p.name] = Math.max(_fieldsLength[p.name], len);
+	} else {
+		_fieldsLength[p.name] = len;
+	}
+}
+
+
 ClassesLoader.reloadClasses = reloadClasses;
 ClassesLoader.classLoaded = classLoaded;
 ClassesLoader.getClassType = getClassType;
+ClassesLoader.getFieldDigitsLength = getFieldDigitsLength;
 
 export default ClassesLoader;

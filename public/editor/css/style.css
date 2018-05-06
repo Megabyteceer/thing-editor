@@ -131,7 +131,7 @@ button {
 	padding:10px 40px;
 	background:#080;
 	color:#fff;
-	margin: 20px;
+	margin: 5px 20px;
 }
 
 .main-btn:hover {
@@ -240,7 +240,7 @@ button {
 }
 
 .editor-viewport-panel{
-	text-align: left;
+	text-align: center;
 }
 
 .editor-viewport-wrapper{
@@ -286,7 +286,7 @@ button {
 }
 
 .item-selected {
-	cursor:default;
+	/* cursor:default; */
 	background: #95ccff;
 }
 

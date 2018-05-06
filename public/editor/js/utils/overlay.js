@@ -5,7 +5,8 @@
 import Editor from "../editor.js";
 import Pool from "/engine/js/utils/pool.js";
 
-var backdrop = new Sprite(PIXI.Texture.WHITE);
+var backdrop = new Sprite();
+backdrop.texture = PIXI.Texture.WHITE;
 backdrop.tint = 30;
 backdrop.alpha = 0.9;
 backdrop.x = W / 2;
@@ -24,6 +25,7 @@ function createDragger(owner, constructor) {
 	var ret = Pool.create(constructor);
 	draggers.push(ret);
 	ret.owner = owner;
+	ret.info = __getNodeExtendData(owner);
 	return ret;
 }
 
@@ -69,7 +71,7 @@ function refreshSelection() {
 	while (i >= 0) {
 		var d = draggers[i];
 		var info = __getNodeExtendData(d.owner);
-		if (!info.isSelected) {
+		if (!info.isSelected || d.info !== info) {
 			d.parent.removeChild(d);
 			Pool.dispose(d);
 			info.draggerPivot = null;
@@ -177,8 +179,8 @@ class Dragger extends Sprite {
 		
 		o.parent.toLocal(game.mouse, undefined, p, true);
 		
-		editor.onSelectedPropsChange('x', p.x - o.x, true);
-		editor.onSelectedPropsChange('y', p.y - o.y, true);
+		editor.onSelectedPropsChange('x', Math.round(p.x - o.x), true);
+		editor.onSelectedPropsChange('y', Math.round(p.y - o.y), true);
 	}
 }
 
@@ -195,6 +197,6 @@ class Rotator extends Sprite {
 		if (game.mouse.shiftKey) {
 			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 		}
-		editor.onSelectedPropsChange('rotation', r - info.draggerRotator.rotation, true);
+		editor.onSelectedPropsChange('rotation', Math.round((r - info.draggerRotator.rotation)*1000.0)/1000.0, true);
 	}
 }

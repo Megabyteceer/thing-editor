@@ -94,12 +94,18 @@ class Game {
 	hideModal(displayObject) {
 		if(!displayObject) {
 			assert(modals.length > 0, 'Attempt to hide modal when modal list is empty.');
-			hiddingModals.push(modals.pop());
+			var modalToHide = modals.pop();
 		} else {
 			var i = modals.indexOf(displayObject);
 			assert(i >= 0, 'Attempt to hide modal object which is not in modal list.');
-			hiddingModals.push(modals[i]);
+			modalToHide = modals[i];
 			modals.splice(i, 1)
+		}
+		
+		if(game.__EDITORmode) {
+			modalToHide.remove();
+		} else {
+			hiddingModals.push(modalToHide);
 		}
 	}
 	
@@ -114,12 +120,6 @@ class Game {
 						frameCounterTime -= FRAME_PERIOD;
 					} else {
 						frameCounterTime = 0;
-					}
-				}
-			} else {
-				if(this.__EDITORmode) {
-					while (hiddingModals.length > 0) {
-						hiddingModals.pop().remove();
 					}
 				}
 			}
@@ -142,8 +142,8 @@ class Game {
 		var i = hiddingModals.length-1; //hide modals process
 		while (i >= 0) {
 			var m = hiddingModals[i];
-			m.alpha -= 0.01;
-			if(m.alpha <= 0.0) {
+			m.alpha -= 0.1;
+			if(m.alpha <= 0.01) {
 				m.remove();
 				hiddingModals.splice(i, 1);
 			}
