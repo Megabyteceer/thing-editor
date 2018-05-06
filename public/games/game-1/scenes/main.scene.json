@@ -105,8 +105,10 @@
 		{
 			"c": "Button",
 			"p": {
-				"x": 165,
-				"y": 67,
+				"x": 587,
+				"y": 99,
+				"scale.x": 2,
+				"scale.y": 2,
 				"onClick": "game.showScene`levels/1"
 			}
 		},

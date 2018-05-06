@@ -130,6 +130,14 @@ class Game {
 				}
 			}
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
+			
+			this.currentScene.interactiveChildren = (this.modalsCount === 0);
+			var i = this.modalsCount-1;
+			var isCurrent = true;
+			while (i >= 0) {
+				modals[i].interactiveChildren = isCurrent;
+				isCurrent = false;
+			}
 		}
 	}
 	

@@ -1,7 +1,6 @@
 class Scene extends PIXI.Container {
 	constructor() {
 		super();
-		this.interactiveChildren = false;
 		this.backgroundColor = 0;
 	}
 	

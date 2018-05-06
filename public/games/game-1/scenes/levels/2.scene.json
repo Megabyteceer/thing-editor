@@ -169,6 +169,16 @@
 				"y": 169,
 				"xSpeed": 11.827911663023443
 			}
+		},
+		{
+			"c": "Button",
+			"p": {
+				"x": 203,
+				"y": 604,
+				"scale.x": 2,
+				"scale.y": 2,
+				"onClick": "game.showScene`levels/3"
+			}
 		}
 	]
 }

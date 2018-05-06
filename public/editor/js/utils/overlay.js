@@ -67,6 +67,7 @@ const p = new PIXI.Point();
 const zeroPoint = new PIXI.Point();
 var overedDragger, draggingDragger;
 
+var currentPointer = 'initial';
 function refreshSelection() {
 	overedDragger = null;
 	var i = draggers.length - 1;
@@ -85,8 +86,11 @@ function refreshSelection() {
 		}
 		i--;
 	}
-	
-	game.pixiApp.view.style.cursor = overedDragger ? ((overedDragger.texture === rotatorImage) ? 'pointer' : 'move') : 'initial';
+	var newPointer = overedDragger ? ((overedDragger.texture === rotatorImage) ? 'pointer' : 'move') : 'initial';
+	if(currentPointer !== newPointer) {
+		game.pixiApp.view.style.cursor = newPointer;
+		currentPointer = newPointer;
+	}
 	
 	editor.selection.some((o) => {
 		var info = __getNodeExtendData(o)

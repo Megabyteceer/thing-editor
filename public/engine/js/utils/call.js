@@ -2,9 +2,9 @@ const call = (s, this_) => {
 	assert(s, "Empty call string.");
 	try {
 		var data = stringToCallData(s);
-		var path = data.path;
+		var path = data.p;
 		var c;
-		var rootName = path[0].s;
+		var rootName = path[0];
 		switch (rootName) {
 			case "this":
 				c = this_;
@@ -23,12 +23,20 @@ const call = (s, this_) => {
 			if(typeof n === 'string') {
 				c = c[n];
 			} else {
-				c = c.getChildrenByName(n.s);
+				c = c.getChildByName(n.s);
 			}
+//EDITOR
+			
+			if(!c){
+				assert(false, "Can't find property '" + ((typeof n === 'string') ? n : ('#' + n.s)) + "' in callback " + s);
+			}
+			
+//ENDEDITOR
+			
 			i++;
 		}
 		if(data.hasOwnProperty('v')) {
-			return c.call(fOwner, data.v);
+			return c.apply(fOwner, data.v);
 		} else {
 			return c();
 		}
@@ -47,7 +55,7 @@ const stringToCallData = (s) => {
 	}
 	let data = {};
 	
-	let a = s.split('~');
+	let a = s.split('`');
 	data.p = a[0].split('.').map(pathPartsMapper);
 	if(a.length > 1) {
 		data.v = a[1].split(',');
