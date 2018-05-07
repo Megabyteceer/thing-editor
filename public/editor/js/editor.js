@@ -348,7 +348,7 @@ window.__getNodeExtendData = (node) => {
 		editorNodeData.set(node, {id: idCounter++});
 	}
 	return editorNodeData.get(node);
-}
+};
 window.__resetNodeExtendData = (node) => {
 	if (editorNodeData.has(node)) {
 		if(editorNodeData.get(node).isSelected) {
@@ -356,5 +356,5 @@ window.__resetNodeExtendData = (node) => {
 		}
 	}
 	editorNodeData.delete(node);
-}
+};
 export default Editor;

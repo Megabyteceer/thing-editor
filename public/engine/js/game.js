@@ -75,17 +75,15 @@ class Game {
 		this.currentScene.onShow();
 		
 		SHOOTTIME = false;
-//EDITOR
-		//TODO:	editor.ui.scenesStack.forceUpdate();
-//ENDEDITOR
 	}
 	
 	_setCurrentSceneContent(scene) {
 		assert(!this.currentScene || !this.currentScene.parent, "Previous scene was not removed before setting new one.");
 		this.currentScene = scene;
-		stage.addChild(scene);
+		stage.addChildAt(scene, 0);
 		//EDITOR
 		__getNodeExtendData(game.currentScene).toggled = true;
+		editor.refreshTreeViewAndPropertyEditor();
 		//ENDEDITOR
 	}
 	
@@ -97,6 +95,9 @@ class Game {
 		assert(currentFader, "game.faderEnd() called without fader on screen");
 		currentFader.remove();
 		currentFader = null;
+		//EDITOR
+		editor.refreshTreeViewAndPropertyEditor();
+		//ENDEDITOR
 	}
 	
 	showScene(scene, faderType) {
@@ -150,6 +151,11 @@ class Game {
             this.showScene(object);
         }
     }
+    
+    __getScenesStack() {
+		return showStack;
+	}
+    
     //ENDEDITOR
 
 	makeItModal(displayObject) {
@@ -249,7 +255,10 @@ const mouseHandlerGlobal = (ev) => {
 	game.mouse.x = Math.round(p.x);
 	game.mouse.y = Math.round(p.y);
 	game.mouse.click = ev.buttons !== 0;
+	game.mouse.buttons = ev.buttons;
 	game.mouse.shiftKey = ev.shiftKey;
+	game.mouse.altKey = ev.altKey;
+	game.mouse.ctrlKey = ev.ctrlKey;
 }
 
 export default Game

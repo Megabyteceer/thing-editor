@@ -11,7 +11,7 @@ var blackoutPropsClosable = {
 		}
 	}
 };
-var modalRejectProps = {className: 'modal-reject-text'};
+
 var spinnerProps = {className: 'modal-spinner'};
 var bodyProps = {className: 'modal-body'};
 var titleProps = {className: 'modal-title'};

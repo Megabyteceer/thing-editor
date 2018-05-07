@@ -122,11 +122,11 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	
 	var d = Object.getOwnPropertyDescriptor(constructor.prototype, propertyName);
 	if(d) {
-		console.log("Property " + propertyName + " wraped.")
+		//console.log("Property " + propertyName + " wraped.")
 		var originalSetter = d.set;
 		d.set = newSetter;
 	} else {
-		console.log("Own property " + propertyName + " wraped.")
+		//console.log("Own property " + propertyName + " wraped.")
 		var privValue = '__wrapper_store_' + propertyName;
 		
 		originalSetter = function(val){

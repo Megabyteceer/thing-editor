@@ -30,6 +30,7 @@ class Lib {
 	}
 	
 	static getClass(id) {
+		assert(classes.hasOwnProperty(id), "No class with name '" + name + "' registred in Lib");
 		return classes[id];
 	}
 	
@@ -50,6 +51,7 @@ class Lib {
 	}
 	
 	static addTexture(name, texture) {
+		assert(!textures.hasOwnProperty(name), "Texture with name '" + name + "' already registred in Lib");
 		textures[name] = texture;
 	}
 	
@@ -63,10 +65,12 @@ class Lib {
 	}
 	
 	static getTexture(name) {
+		assert(textures.hasOwnProperty(name), "No texture with name '" + name + "' registred in Lib");
 		return textures[name];
 	}
 	
 	static loadPrefab(name) {
+		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registred in Lib");
 		return _loadObjectFromData(prefabs[name]);
 	}
 	
@@ -103,6 +107,7 @@ class Lib {
 		if(!game.__EDITORmode && staticScenes.hasOwnProperty(name)) {
 			return staticScenes[name];
 		}
+		assert(scenes.hasOwnProperty(name), "No scene with name '" + name + "'");
 		var s = _loadObjectFromData(scenes[name]);
 		if(s.isStatic) {
 			staticScenes[name] = s;

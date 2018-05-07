@@ -2,7 +2,10 @@ export default class Fader extends Sprite {
 	
 	constructor() {
 		super();
-		this.texture = PIXI.PIXI.Texture.WHITE;
+		this.texture = PIXI.Texture.WHITE;
+		this.width = W;
+		this.height = H;
+		this.tint = 0;
 	}
 	
 	init() {

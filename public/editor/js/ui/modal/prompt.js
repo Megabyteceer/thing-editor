@@ -1,3 +1,5 @@
+var modalRejectProps = {className: 'modal-reject-text'};
+
 export default class Prompt extends React.Component {
 	
 	constructor(props) {
@@ -26,7 +28,7 @@ export default class Prompt extends React.Component {
 	
 	onAcceptClick() {
 		if (this.state.accepted) {
-			modal.closeModal(this.state.value);
+			editor.ui.modal.closeModal(this.state.value);
 		}
 	}
 	

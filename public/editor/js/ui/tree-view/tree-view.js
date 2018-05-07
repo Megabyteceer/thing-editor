@@ -12,7 +12,7 @@ function onEmptyClick() {
 	editor.selection.clearSelection(true);
 }
 
-class TreeView extends React.Component {
+export default class TreeView extends React.Component {
 	
 	constructor (props) {
 		super(props);
@@ -177,6 +177,7 @@ class TreeView extends React.Component {
 	
 	),
 			R.div({className: 'scene-tree-view', onClick: onEmptyClick},
+				game.__getScenesStack().map(renderSceneStackItem),
 				editor.game.stage.children.map(renderRoots)
 			)
 		);
@@ -195,4 +196,8 @@ const renderRoots = (node, i) => {
 	}
 }
 
-export default TreeView;
+const renderSceneStackItem = (s, i) => {
+	return R.div({className:'stacked-scene-item', title: 'This scene currently in stack.', key: i},
+		R.classIcon(s.constructor), s.name, '(' + s.constructor.name + ')'
+	);
+}
