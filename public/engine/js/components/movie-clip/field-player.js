@@ -67,19 +67,7 @@ var fieldAnimationDataSerialized =  //TODO: example. will be removed
 		t:1,	//frame time
 		m:0,	//mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE
 		j:120,		//time to jump. If no jump - equal to 't'
-		n:frameRef	//next keyFrame
-	},
-	...
+		n:'frameRef'	//next keyFrame
+	}
 ]
 
-var labels = {
-	show: {
-		t:100,	//time to set for all frames
-		n:[		//frames for all fileds
-			frameRef_x,
-			frameRef_y,
-			frameRef_scale,
-			...
-		]
-	},
-}

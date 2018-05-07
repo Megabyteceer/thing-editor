@@ -3,6 +3,8 @@ import StringEditor from './string-editor.js';
 import BooleanEditor from './boolean-editor.js';
 import SelectEditor from './select-editor.js';
 import ColorEditor from './color-editor.js';
+import MovieClip from "/engine/js/components/movie-clip/movie-clip";
+import TimelineEditor from "./timeline-editor.js";
 
 
 var typeDescriptions = new WeakMap();
@@ -31,6 +33,14 @@ typeDescriptions['color'] = {
 	renderer: ColorEditor, parser:
 		(target) => {
 			return parseInt(target.value.replace('#', ''), 16)
+		},
+	default: 0xFFFFFF
+};
+
+typeDescriptions['timelineData'] = {
+	renderer: TimelineEditor, parser:
+		(movieClip) => {
+			return MovieClip.__serializeTimelineData(movieClip.timelineData);
 		},
 	default: 0xFFFFFF
 };

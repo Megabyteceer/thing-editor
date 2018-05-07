@@ -71,6 +71,11 @@ export default class MovieClip extends Sprite {
 
 //EDITOR
 
+MovieClip.__serializeTimelineData = (data) {
+	
+	return {}
+}
+
 MovieClip.EDITOR_icon = 'tree/movie';
 MovieClip.EDITOR_editableProps = [
 	{
@@ -95,3 +100,16 @@ MovieClip.EDITOR_editableProps = [
 ];
 
 //ENDEDITOR
+
+
+var labels = { //TODO:example
+	show: {
+		t:100,	//time to set for all frames
+		n:[		//frames for all fileds
+			'frameRef_x',
+			'frameRef_y',
+			'frameRef_scale'
+		
+		]
+	}
+}
