@@ -20,6 +20,32 @@ PIXI.DisplayObject.prototype.remove = function () {
 	Lib.destroyObjectAndChildrens(this);
 }
 
+
+
+PIXI.DisplayObject.prototype.findChildrenByType = function (classType) {
+	var ret = [];
+	var stack = [this];
+	
+	while (stack.length > 0) {
+		if (stack.length > 100) throw new Error('owerflow');
+		var o = stack.pop();
+		var childs = o.children;
+		for (var i = childs.length - 1; i >= 0; i--) {
+			o = childs[i];
+			if (o.children.length > 0) {
+				stack.push(o);
+			}
+			if (o instanceof classType) {
+				ret.push(o);
+			}
+		}
+	}
+	return ret;
+}
+
+
+
+
 export default PIXI.DisplayObject;
 
 

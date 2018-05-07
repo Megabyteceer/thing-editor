@@ -46,7 +46,7 @@ Scene.EDITOR_editableProps = [
 		name: 'faderType',
 		type: String
 	}
-	//TODO: isStatic, isNoStackable, faderType, music_intro, music_loop, music_volume, bgR, bgG, bgB
+	//TODO: music_intro, music_loop, music_volume
 ];
 
 //ENDEDITOR

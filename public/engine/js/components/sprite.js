@@ -1,6 +1,6 @@
 export default class Sprite extends PIXI.Sprite {
-	constructor(pic) {
-		super(pic);
+	constructor() {
+		super();
 		this.anchor.set(0.5);
 		this.xSpeed = 0;
 		this.ySpeed = 0;

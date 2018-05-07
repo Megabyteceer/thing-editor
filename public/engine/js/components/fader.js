@@ -16,7 +16,7 @@ export default class Fader extends Sprite {
 	update() {
 		if(this.shooted) {
 			this.alpha -= 0.1;
-			if(this.alpha <= 0.01){
+			if(this.alpha <= 0.01) {
 				game.faderEnd();
 			}
 		} else {
