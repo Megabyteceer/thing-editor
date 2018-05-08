@@ -40,6 +40,7 @@ class UI extends React.Component {
 		this.modalRef = this.modalRef.bind(this);
 		this.prefabsRef = this.prefabsRef.bind(this);
 		this.scenesStackRef = this.scenesStackRef.bind(this);
+		this.classesListRef = this.classesListRef.bind(this);
 	}
 	
 	componentDidMount() {
@@ -48,6 +49,10 @@ class UI extends React.Component {
 	
 	sceneTreeRef(ref) {
 		this.sceneTree = ref;
+	}
+	
+	classesListRef(ref) {
+		this.classesList = ref;
 	}
 
     prefabsRef(ref) {
@@ -83,7 +88,7 @@ class UI extends React.Component {
 				ref: this.propsEditorRef,
 				onChange: editor.onSelectedPropsChange
 			}), 250, 0, 250, 250, 250, 500),
-			renderWindow('classesLib', 'Classes', React.createElement(ClessesView), 0, 1000, 250, 150, 250, 500),
+			renderWindow('classesLib', 'Classes', React.createElement(ClessesView, {ref: this.classesListRef}), 0, 1000, 250, 150, 250, 500),
 			renderWindow('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 250, 1000, 250, 150, 250, 500),
 			renderWindow('scenesList', 'Scenes', React.createElement(ScenesList), 1000, 1000, 200, 100, 200, 100),
 			

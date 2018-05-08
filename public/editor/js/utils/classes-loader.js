@@ -30,10 +30,6 @@ var loadedClssesCount;
 var classesLoadedSuccessfullyAtLeastOnce = false;
 var classesRegisterLoaded = false;
 
-ClassesLoader.classesLoaded = new Signal();
-
-
-
 ClassesLoader.init = init;
 
 var errorOccured;
@@ -200,7 +196,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				console.log(loadedClssesCount + ' classes total.');
 				resolve();
 				
-				ClassesLoader.classesLoaded.emit();
+				editor.ui.classesList.forceUpdate();
 				Pool.clearAll();
 			} else {
 				reject();

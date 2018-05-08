@@ -4,15 +4,10 @@ class ClessesView extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		editor.ClassesLoader.classesLoaded.add(this.onClassesLoaded.bind(this));
 		this.state = {};
 		this.renderItem = this.renderItem.bind(this);
 		this.onAddClick = this.onAddClick.bind(this);
 		this.onAddAsChildClick = this.onAddAsChildClick.bind(this);
-	}
-	
-	onClassesLoaded() {
-		this.forceUpdate();
 	}
 	
 	onAddClick() {
