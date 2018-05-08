@@ -1,22 +1,28 @@
+import call from "../../utils/call.js";
+
 export default class FieldPlayer {
 	
-	reset(target, data, pow, pamper) {
+	init(target, data, pow, damper) {
 		
 		this.target = target;
 		this.fieldName = data.n;
 		this.timeline = data.t;
+		this.pow = pow;
+		this.damper = damper;
+		this.reset();
+	}
+	
+	reset() {
 		this.time = 0;
 		this.currentFrame = data.t[0];
-		this.discrete = data.d;
-		if(!data.d) {
-			this.pow = pow;
-			this.pamper = pamper;
-			this.val = target[this.fieldName];
-			this.targetVal = this.val;
+		this.val = this.timeline[0].v;
+		this.targetVal = this.val;
+		this.currentTime = 0;
+		if(this.currentFrame.hasOwnProperty('s')) {
+			this.speed = this.currentFrame.s;
+		} else {
 			this.speed = 0;
 		}
-		
-		this.currentTime = 0;
 	}
 	
 	goto(time, nextKeyframe) {
@@ -25,32 +31,98 @@ export default class FieldPlayer {
 	}
 	
 	update() {
+		var currentFrame = this.currentFrame;
+		if (this.time === currentFrame.t) {
+
+			if (currentFrame.hasOwnProperty('c')) {
+				console.log('timeline CALL: ' + this.target.name + '; '+ currentFrame.t + '; ' + currentFrame.c );
+				call(this.currentFrame.call, target);
+			}
+			
+			if (type != 0) {
+				this.val = currentFrame.v;
+			}
+			
+			currentFrameNum++;
+			
+			if (currentFrameNum >= frames.length)
+			{
+				
+				currentFrameNum = loopFrameNum;
+				currentTime = (frames[currentFrameNum] as TimelineKeyframe).time-1;
+				
+			}
+			
+			currentFrame = frames[currentFrameNum]
+			
+			
+			nextSwitchTime = currentFrame.time;
+			
+			
+			
+			
+			if (type === 0)
+			{
+				targetValue = currentFrame.value;
+				
+				var len:Number = nextSwitchTime - currentTime;
+				{
+					if (len < 1)
+					{
+						len = 1;
+					}
+				}
+				
+				if (currentFrame.smooth != 0)
+				{
+					speed = (currentFrame.value - currentValue) / len;
+				}
+				
+				
+				speedDivider = len;
+				
+				/*step = ;*/
+			}
+			
+			
+		}
 		
+		
+		if (type === 0)
+		{
+			if (currentFrame.smooth != 2)
+			{
+				speed += (targetValue-currentValue) / speedDivider;
+				speed *= 0.85;
+			}
+			
+			currentValue += speed;
+			if (setter != null) {
+				setter(currentValue);
+			} else {
+				this.val = this.currentValue;
+			}
+			
+		}
+		
+		target[this.fieldName] = this.val;
+		
+		currentTime++;
 		
 	}
 	
 	//EDITOR
 	__getValueForPreview(time) {
-		var frames = this.timeline;
-		var prevFrame = frames[0];
-		var i = 0;
-		while ((i < frames.length) && frames[i].t < time) {
-			prevFrame = frames[i];
-			i++;
+		this.reset();
+		while (time > 0) {
+			this.update();
+			time--;
 		}
-		if (i >= frames.length || this.discrete) {
-			return prevFrame.v;
-		}
-		
-		var curFrame = frames[i];
-
-		var q = (time-prevFrame.t) / (curFrame.t-prevFrame.t);
-		return curFrame.v * q + prevFrame.v * (1.0 - q);
+		return this.val;
 	}
 	
 	__serializeTimeline() {
 		var keyframes = [];
-		
 		return {
 			
 		}
@@ -58,18 +130,3 @@ export default class FieldPlayer {
 	
 	//ENDEDITOR
 }
-
-
-var fieldAnimationDataSerialized =  //TODO: example. will be removed
-[
-	{
-		v:2,	//target Value
-		t:1,	//frame triggering Time
-		m:0,	//Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE
-		j:120,	//Jump to time. If no jump need - equal to 't'
-		s:0,	//multiply current Speed
-		d:-3,	//Delta current speed. (active if 's' is existing only). If need abs speed set. multiply current speed by 0 first.
-		n:'frameRef'	//next keyFrame
-	}
-]
-

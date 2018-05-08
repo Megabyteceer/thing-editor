@@ -34,6 +34,9 @@ export default class MovieClip extends Sprite {
 	}
 	
 	set timelineData(data) {
+		
+		data = fakeTmpData;
+		
 		assert(!this._timelineData, "Timeline data already assigned for this MovieClip");
 		assert(Array.isArray(data), "Wrong timeline data. Array expected");
 		this.__timelineData = data;
@@ -44,7 +47,15 @@ export default class MovieClip extends Sprite {
 		var fieldsData = data.f;
 		for(var i = 0; i < fieldsData.length; i++) {
 			var p = Pool.create(FieldPlayer);
-			p.reset(this, fieldsData[i], pow, damper);
+			p.init(this, fieldsData[i], pow, damper);
+		}
+	}
+	
+	gotoLabel(labelName) {
+		var label = this.labels[labelName];
+		let l = label.n;
+		for(let i =0; i < l; i++) {
+			this.fieldPlayers[i].goto(label.t, label.n[i]);
 		}
 	}
 	
@@ -71,7 +82,7 @@ export default class MovieClip extends Sprite {
 
 //EDITOR
 
-MovieClip.__serializeTimelineData = (data) {
+MovieClip.__serializeTimelineData = (data) => {
 	
 	return {}
 }
@@ -101,15 +112,102 @@ MovieClip.EDITOR_editableProps = [
 
 //ENDEDITOR
 
+//TODO: example. will be removed
 
-var labels = { //TODO:example
-	show: {
-		t:100,	//time to set for all frames
-		n:[		//next frames for all fileds
-			'frameRef_x',
-			'frameRef_y',
-			'frameRef_scale'
-		
+var filedsTimelines = [
+	{
+		n: 'x',
+		t: [
+			{
+				v: 250,
+				t: 0,
+				m: 0,
+				j: 0
+			},
+			{
+				v: 100,	//target Value
+				t: 100,	//frame triggering Time
+				m: 0,	//Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE
+				j: 100,	//Jump to time. If no jump need - equal to 't'
+				s: 0,	//multiply current Speed
+				d: -3,	//Delta current speed. (active if 's' is existing only). If need abs speed set. multiply current speed by 0 first.
+				n: 'frameRef'	//next keyFrame
+			},
+			{
+				v: 300,
+				t: 200,
+				m: 0,
+				j: 200
+			},
+			{
+				v: 200,
+				t: 254,
+				m: 0,
+				j: 1
+			}
+		]
+	},
+	{
+		n: 'y',
+		t: [
+			{
+				v: 250,
+				t: 0,
+				m: 0,
+				j: 0
+			},
+			{
+				v: 320,
+				t: 122,
+				m: 0,
+				j: 122
+			},
+			{
+				v: 260,
+				t: 254,
+				m: 0,
+				j: 254
+			},
+			{
+				v: 160,
+				t: 334,
+				m: 0,
+				j: 334
+			},
+			{
+				v: 360,
+				t: 397,
+				m: 0,
+				j: 1
+			}
 		]
 	}
+];
+
+
+const loopFrames = (a) => {
+	var i = 1;
+	while(i < a.length) {
+		a[i-1].n = a[i];
+	}
+	a[a.length-1].n = a[1];
+}
+loopFrames(filedsTimelines.x);
+loopFrames(filedsTimelines.y);
+
+var labels = {
+	start: {
+		t:0,	//time to set for all frames
+		n: [	//next frames for all fileds
+			filedsTimelines.x[0],
+			filedsTimelines.y[0]
+		]
+	}
+}
+
+var fakeTmpData = {
+	l:labels,
+	p:0.01,
+	d:0.9,
+	f:filedsTimelines
 }
