@@ -105,7 +105,7 @@ MovieClip.EDITOR_editableProps = [
 var labels = { //TODO:example
 	show: {
 		t:100,	//time to set for all frames
-		n:[		//frames for all fileds
+		n:[		//next frames for all fileds
 			'frameRef_x',
 			'frameRef_y',
 			'frameRef_scale'

@@ -63,10 +63,12 @@ export default class FieldPlayer {
 var fieldAnimationDataSerialized =  //TODO: example. will be removed
 [
 	{
-		v:2,	//target value
-		t:1,	//frame time
-		m:0,	//mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE
-		j:120,		//time to jump. If no jump - equal to 't'
+		v:2,	//target Value
+		t:1,	//frame triggering Time
+		m:0,	//Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE
+		j:120,	//Jump to time. If no jump need - equal to 't'
+		s:0,	//multiply current Speed
+		d:-3,	//Delta current speed. (active if 's' is existing only). If need abs speed set. multiply current speed by 0 first.
 		n:'frameRef'	//next keyFrame
 	}
 ]
