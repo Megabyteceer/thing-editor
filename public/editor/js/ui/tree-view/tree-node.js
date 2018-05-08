@@ -82,9 +82,9 @@ function nodeHasChildren(node) {
 	return node.children && node.children.length > 0;
 }
 
-function isClickedAtRightEdge(e) {
-	var b = $(e.currentTarget).closest('.scene-tree-view')[0].getBoundingClientRect();
-	return (b.right - e.clientX) < 40;
+function isClickedAtRightEdge(ev) {
+	var b = $(ev.currentTarget).closest('.scene-tree-view')[0].getBoundingClientRect();
+	return (b.right - ev.clientX) < 40;
 }
 
 function collapseChildsRecursively(node) {

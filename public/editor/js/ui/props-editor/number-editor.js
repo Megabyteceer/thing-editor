@@ -16,11 +16,18 @@ let onDoubleClick = (ev) => {
 }
 
 let onMouseDown = (ev) => {
-	var props = propsStore[ev.target.dataset.fieldname];
-	var val = ev.target.value;
-	draggingInput = ev.target;
-	draggingProps = props;
-	lastY = ev.clientY;
+	if(isClickedAtRightEdge(ev)) {
+		var props = propsStore[ev.target.dataset.fieldname];
+		var val = ev.target.value;
+		draggingInput = ev.target;
+		draggingProps = props;
+		lastY = ev.clientY;
+	}
+}
+
+function isClickedAtRightEdge(ev) {
+	var b = $(ev.target).getBoundingClientRect();
+	return (b.right - ev.clientX) < 20;
 }
 
 $(window).on('mousemove', (ev) => {
