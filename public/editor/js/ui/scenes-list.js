@@ -66,7 +66,7 @@ export default class ScenesList extends React.Component {
 	renderItem(sceneName, item) {
 		var cls = Lib.getClass(item.c);
 		
-		if(sceneName === editor.curreSceneName) {
+		if(sceneName === editor.currentSceneName) {
 			this.state.selectedItem = item;
 		} else {
 			this.state.selectedItem = null;

@@ -125,7 +125,12 @@ class Editor {
 		});
 	}
 	
-	get curreSceneName() {
+	get currentSceneName() {
+		if(!window.game) return null;
+		var a = game.__getScenesStack();
+		if(a.length > 0) {
+			return a[0].name;
+		}
 		return game.currentScene ? game.currentScene.name : null;
 	}
 	
@@ -249,6 +254,7 @@ class Editor {
 		if (game.currentScene) {
 			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
+		idCounter = 0;
 		game.showScene(name);
 		if (game.currentScene) {
 			this.selection.loadSelection(selectionsForScenesByName[name]);
@@ -283,8 +289,11 @@ class Editor {
 		return history.isStateModified;
 	}
 	
-	saveCurrentScene(name = editor.currentSceneName) {
+	saveCurrentScene(name) {
 		editor.ui.viewport.stopExecution();
+		if(!name) {
+			name = editor.currentSceneName;
+		}
 		assert(name, "Name can't be empty");
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
 		if (editor.isCurrentSceneModified || (editor.currentSceneName !== name)) {
