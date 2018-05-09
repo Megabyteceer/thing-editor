@@ -1,8 +1,9 @@
 {
 	"c": "Bunny",
 	"p": {
-		"x": 278,
-		"y": 423,
+		"name": "double-rabbit",
+		"x": 369,
+		"y": 445,
 		"pivot.y": 30,
 		"xSpeed": -3
 	},

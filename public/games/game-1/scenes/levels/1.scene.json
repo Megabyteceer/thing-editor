@@ -1,7 +1,7 @@
 {
 	"c": "Scene",
 	"p": {
-		"name": "scene1",
+		"name": "levels/1",
 		"x": 18,
 		"y": 16,
 		"backgroundColor": 0
@@ -185,7 +185,7 @@
 			"p": {
 				"name": "b6",
 				"x": 686,
-				"y": 549,
+				"y": 546,
 				"rotation": -1.5399999999999985,
 				"pivot.y": 35
 			}

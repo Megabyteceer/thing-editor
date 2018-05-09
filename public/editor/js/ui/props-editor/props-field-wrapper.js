@@ -90,7 +90,8 @@ class PropsFieldWrapper extends React.Component {
 	
 	render() {
 		var field = this.props.field;
-		var value = editor.selection[0][field.name];
+		var node = editor.selection[0];
+		var value = node[field.name];
 		
 		var renderer;
 		if (field.hasOwnProperty('select')) {
@@ -99,13 +100,16 @@ class PropsFieldWrapper extends React.Component {
 			renderer = getTypeDescription(field).renderer;
 		}
 		
+		var disabled = field.name === 'name' && node.parent === game.stage;
+		
 		return R.div(fieldProps,
 			R.div(labelProps, field.name),
 			R.div(wrapperProps,
 				React.createElement(renderer, {
 					value,
 					onChange: this.onChange,
-					field
+					field,
+					disabled
 				})
 			));
 	}

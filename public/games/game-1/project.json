@@ -1,5 +1,6 @@
 {
 	"title": "Game-1",
 	"icon": "img/pic1.png",
-	"currentSceneName": "main"
+	"currentSceneName": "main",
+	"lastSceneName": "levels/3"
 }

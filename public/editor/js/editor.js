@@ -83,24 +83,24 @@ class Editor {
 							Promise.all([ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList()]).then(() => {
 								
 								if (Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
-									
+									//backup restoring
 									editor.ui.modal.showQuestion("Scene's backup restoring",
 										R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 											R.div(null, "Do you want to restore scene from backup?")),
 										() => {
-											this.openSceneSafe(editor.runningSceneLibSaveSlotName).then(() => {
+											this.openSceneSafe(editor.runningSceneLibSaveSlotName, editor.projectDesc.lastSceneName).then(() => {
 												editor.history.currentState._isModified = true;
 											});
 										}, 'Restore backup',
 										() => {
-											this.openSceneSafe(editor.projectDesc.currentSceneName || 'main').then(() => {
+											this.openSceneSafe(editor.projectDesc.lastSceneName || 'main').then(() => {
 												Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
 											});
 										}, 'Delete backup',
 										true
 									);
-								} else {
-									this.openSceneSafe(editor.projectDesc.currentSceneName || 'main');
+								} else {//open last project's scene
+									this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
 								}
 							});
 						});
@@ -110,14 +110,23 @@ class Editor {
 		});
 	}
 	
-	openSceneSafe(name) {
+	openSceneSafe(name, renameAfterOpening) {
 		return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
 			this.loadScene(name);
+			if(renameAfterOpening) {
+				assert(typeof renameAfterOpening === 'string', 'String expected');
+				name = renameAfterOpening;
+				game.currentScene.name = renameAfterOpening;
+			}
 			saveCurrentSceneName(name);
 			history.clearHistory(Lib.scenes[name]);
 			history.setCurrentStateUnmodified();
 			this.ui.forceUpdate();
 		});
+	}
+	
+	get curreSceneName() {
+		return game.currentScene ? game.currentScene.name : null;
 	}
 	
 	initResize() {
@@ -238,7 +247,7 @@ class Editor {
 	loadScene(name) {
 		assert(name, 'name should be defined');
 		if (game.currentScene) {
-			selectionsForScenesByName[editor.projectDesc.currentSceneName] = this.selection.saveSelection();
+			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
 		game.showScene(name);
 		if (game.currentScene) {
@@ -274,11 +283,11 @@ class Editor {
 		return history.isStateModified;
 	}
 	
-	saveCurrentScene(name = editor.projectDesc.currentSceneName) {
+	saveCurrentScene(name = editor.currentSceneName) {
 		editor.ui.viewport.stopExecution();
 		assert(name, "Name can't be empty");
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
-		if (editor.isCurrentSceneModified || (editor.projectDesc.currentSceneName !== name)) {
+		if (editor.isCurrentSceneModified || (editor.currentSceneName !== name)) {
 			Lib.__saveScene(game.currentScene, name);
 			if (!ScenesList.isSpecialSceneName(name)) {
 				history.setCurrentStateUnmodified();
@@ -310,8 +319,8 @@ function askSceneToSaveIfNeed(skip) {
 }
 
 function saveCurrentSceneName(name) {
-	if (editor.projectDesc.currentSceneName != name) {
-		editor.projectDesc.currentSceneName = name;
+	if (editor.projectDesc.lastSceneName != name) {
+		editor.projectDesc.lastSceneName = name;
 		editor.saveProjecrDesc();
 		editor.ui.forceUpdate();
 	}

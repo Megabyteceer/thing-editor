@@ -71,6 +71,9 @@ class Lib {
 	
 	static loadPrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registred in Lib");
+		//EDITOR
+		prefabs[name].name = name;
+		//ENDEDITOR
 		return _loadObjectFromData(prefabs[name]);
 	}
 	
@@ -107,11 +110,20 @@ class Lib {
 		if(!game.__EDITORmode && staticScenes.hasOwnProperty(name)) {
 			return staticScenes[name];
 		}
-		assert(scenes.hasOwnProperty(name), "No scene with name '" + name + "'");
+		
+		var isSceneExists = scenes.hasOwnProperty(name);
+		assert(isSceneExists, "No scene with name '" + name + "'", true);
+		if(!isSceneExists) {
+			name = Object.keys(scenes)[0];
+		}
+		
 		var s = _loadObjectFromData(scenes[name]);
 		if(s.isStatic) {
 			staticScenes[name] = s;
 		}
+		//EDITOR
+		s.name = name;
+		//ENDEDITOR
 		return s;
 	}
 	
@@ -121,6 +133,7 @@ class Lib {
 
 //editor
 	static __saveScene(scene, name) {
+		scene.name = name;
 		assert(typeof name === 'string');
 		if (!scene) {
 			assert(name === editor.editorFilesPrefix + 'tmp', 'Only temporary scene can be null');
@@ -134,6 +147,7 @@ class Lib {
 	}
 	
 	static __savePrefab(object, name) {
+		object.name = name;
 		assert(typeof name === 'string');
 		assert(editor.ClassesLoader.getClassType(object.constructor) === PIXI.DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
 		var prefabData = Lib.__serializeObject(object);

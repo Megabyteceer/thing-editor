@@ -50,7 +50,7 @@ var fs = {
 export default fs;
 
 function handleError(er, status, error) {
-	editor.ui.modal.showError(JSON.stringify(error || 'connection error'));
+	editor.ui.modal.showError(er.responseText || JSON.stringify(error || 'connection error'));
 }
 
 function getIconPath(desc) {

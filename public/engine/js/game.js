@@ -217,6 +217,7 @@ class Game {
 			while (i >= 0) {
 				modals[i].interactiveChildren = isCurrent;
 				isCurrent = false;
+				i--;
 			}
 		}
 	}

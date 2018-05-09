@@ -31,7 +31,7 @@ export default class ScenesList extends React.Component {
 	
 	onSaveAsSceneClick() {
 		
-		var defaultSceneName = editor.projectDesc.currentSceneName.split('/');
+		var defaultSceneName = editor.currentSceneName.split('/');
 		defaultSceneName.pop();
 		defaultSceneName = defaultSceneName.join('/');
 		if (defaultSceneName) {
@@ -65,6 +65,14 @@ export default class ScenesList extends React.Component {
 	
 	renderItem(sceneName, item) {
 		var cls = Lib.getClass(item.c);
+		
+		if(sceneName === editor.curreSceneName) {
+			this.state.selectedItem = item;
+		} else {
+			this.state.selectedItem = null;
+		}
+		
+		
 		return R.div({
 			onDoubleClick: () => {
 				editor.ui.viewport.stopExecution();
@@ -76,14 +84,12 @@ export default class ScenesList extends React.Component {
 	
 	render() {
 		var libsScenes = Lib._getAllScenes();
-		var currentSceneName = editor.projectDesc && editor.projectDesc.currentSceneName;
-		
 		var bottomPanelClassName = '';
-		if (!currentSceneName) {
+		if (!editor.currentSceneName) {
 			bottomPanelClassName += ' disabled';
 			this.state.selectedItem = null;
 		} else {
-			this.state.selectedItem = libsScenes[currentSceneName];
+			this.state.selectedItem = libsScenes[editor.currentSceneName];
 		}
 		
 		var scenes = [];
