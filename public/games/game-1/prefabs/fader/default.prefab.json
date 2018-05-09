@@ -1,6 +1,7 @@
 {
 	"c": "Fader",
 	"p": {
+		"name": "fader/default",
 		"x": 640,
 		"y": 360
 	}

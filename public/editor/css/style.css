@@ -98,6 +98,7 @@ button {
 }
 
 .window-body {
+	box-shadow: .5px 3px 0 1px rgba(0,0,30,0.3);
 	position:fixed;
 	box-sizing: content-box;
 	background: var(--window-bg-color);
@@ -236,14 +237,13 @@ button {
 	justify-content:center;
 	background: #b9bdc8;
 	width:100%;
-	height: calc(100% - 60px);
+	height: 100%;
 }
 
-.editor-viewport-panel{
-	text-align: center;
-}
+.editor-viewport-panel{text-align: center;width: 80px;}
 
 .editor-viewport-wrapper{
+	display: flex;
 	position:absolute;
 	left:0;
 	top:0;
@@ -257,7 +257,7 @@ button {
 	/* max-height:100%; */
 }
 
-.play-stop-btn{
+.big-btn{
 	padding: 0;
 	width:50px;
 	height:50px;
@@ -272,6 +272,7 @@ button {
 }
 
 .list-item {
+	white-space: nowrap;
 	border-top:1px solid #eee;
 	padding:2px;
 	cursor:pointer;
@@ -550,9 +551,15 @@ input{
     font-size: 75%;
 }
 
+.editor-viewport-panel .main-btn{
+	margin: 10px;
+	padding: 14px;
+}
 
-
-
+.prefabs-mode-title {
+	margin: 20px 0;
+	font-size:80%;
+}
 
 
 

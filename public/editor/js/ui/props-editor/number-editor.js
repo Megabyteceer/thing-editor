@@ -38,7 +38,7 @@ $(window).on('mousemove', (ev) => {
 	if (d !== 0) {
 		d = d * (draggingProps.field.step || 1);
 		lastY = ev.clientY;
-		if(ev.ctrlKey) {l
+		if(ev.ctrlKey) {
 			d *= 10;
 		}
 		var e = PropsFieldWrapper.surrogateChnageEvent(parseFloat(draggingInput.value) + d);

@@ -50,7 +50,7 @@ app.get('/fs/delete', function (req, res) {
 
 app.post('/fs/savefile', jsonParser, function (req, res) {
 	var fileName = req.body.filename;
-	log('Save file: ' + fileName);
+	//log('Save file: ' + fileName);
     ensureDirectoryExistence(fileName);
 	fs.writeFile(fileName, req.body.data, function(err) {
 		if(err) {

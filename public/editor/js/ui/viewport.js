@@ -4,7 +4,13 @@ import Lib from "../../../engine/js/lib.js";
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
+const PAUSE_ICON = R.icon('pause');
 var selectionData;
+var prefabTitleProps = {className:'prefabs-mode-title'};
+var prefabLabelProps = {className: 'selectable-text', onMouseDown: function (ev) {
+	selectText(ev.target);
+	sp(ev);
+}};
 
 export default class Viewport extends React.Component {
 	
@@ -12,6 +18,8 @@ export default class Viewport extends React.Component {
 		super(props);
 		this.state = {};
 		this.onTogglePlay = this.onTogglePlay.bind(this);
+		this.onPauseResumeClick = this.onPauseResumeClick.bind(this);
+		this.onOneStepClick = this.onOneStepClick.bind(this);
 	}
 	
 	stopExecution(reason) {
@@ -24,6 +32,8 @@ export default class Viewport extends React.Component {
 	}
 	
 	onTogglePlay() {
+		game.__doOneStep = false;
+		game.__paused = false;
 		var play = game.__EDITORmode;
 		Lib.__clearStaticScenes();
 		if (play) { // launch game
@@ -52,6 +62,16 @@ export default class Viewport extends React.Component {
 		this.forceUpdate();
 		editor.history.updateUi();
 	}
+	
+	onPauseResumeClick() {
+		game.__paused = !game.__paused;
+		this.forceUpdate();
+	}
+	
+	onOneStepClick() {
+		game.__doOneStep = true;
+		this.forceUpdate();
+	}
 
     setPrefabMode(enabled) {
 	    this.setState({prefabMode:enabled});
@@ -60,34 +80,45 @@ export default class Viewport extends React.Component {
 	render() {
 
         var className = 'editor-viewport-wrapper';
-
+		var statusHeader;
         var panel;
 	    if(this.state.prefabMode) {
 		    className += ' editor-viewport-wrapper-prefab-mode';
             panel = R.span( null,
-                'Prefab edition mode: ', R.b(null, this.state.prefabMode),
-                R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes'),
-                R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes', 'main-btn')
+                R.div(prefabTitleProps, 'Prefab edition mode: ', R.br(), R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
+	            R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes', 'main-btn'),
+                R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes')
             )
         } else {
+	    	var pauseResumeBtn, oneStepBtn;
+	    	if(window.game && !game.__EDITORmode) {
+			    pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, undefined, 'big-btn');
+			    if(game.__paused) {
+				    statusHeader = 'paused';
+			    	oneStepBtn = R.btn('One step', this.onOneStepClick);
+			    } else {
+				    statusHeader = 'running';
+			    }
+		    }
+	    	
 	        panel = R.span( undefined,
-	            R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'play-stop-btn', 1032),
-                R.btn(R.icon('recompile'), editor.reloadClasses, 'Rebuild game sources', 'play-stop-btn')
+	            R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'big-btn', 1032),
+                R.btn(R.icon('recompile'), editor.reloadClasses, 'Rebuild game sources', 'big-btn'),
+		        statusHeader,
+		        pauseResumeBtn,
+		        oneStepBtn
             )
         }
 
 
 		return R.div({className},
-			
+			R.div({className: 'editor-viewport-panel'},
+				panel
+			),
 			R.div({
 				id: 'viewport-root',
 				className: 'editor-viewport'
-			}),
-			
-			R.div({className: 'editor-viewport-panel'},
-                panel
-			)
+			})
 		);
 	}
-
 }

@@ -1,8 +1,9 @@
 {
 	"c": "Bunny",
 	"p": {
-		"x": 249,
-		"y": 438,
+		"name": "bunny-double",
+		"x": 329,
+		"y": 413,
 		"rotation": -0.6060000000000001,
 		"pivot.y": 30,
 		"xSpeed": -3

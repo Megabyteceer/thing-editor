@@ -22,6 +22,7 @@ var hiddingModals = [];
 var SHOOTTIME = false;
 var currentFader;
 var showStack = [];
+var frameProcessedWithoutErrors;
 
 class Game {
 	
@@ -197,18 +198,31 @@ class Game {
 	
 	updateGlobal(dt) {
 		if (this.currentScene) {
-			if (!this.paused && !this.__EDITORmode) {
+		
+//EDITOR
+			if ((!this.__paused || this.__doOneStep) && !this.__EDITORmode) {
+//ENDEDITOR
+				frameProcessedWithoutErrors = false;
+				setTimeout(pixiTickerReapirer, 0);
 				frameCounterTime += dt;
 				var limit = 4;
+				frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * 4);
 				while (frameCounterTime > FRAME_PERIOD) {
-					if (limit-- > 0) {
-						this.updateFrame();
-						frameCounterTime -= FRAME_PERIOD;
-					} else {
+					
+					this.updateFrame();
+					frameCounterTime -= FRAME_PERIOD;
+//EDITOR
+					if (this.__doOneStep) {
+						editor.refreshTreeViewAndPropertyEditor();
+						this.__doOneStep = false;
 						frameCounterTime = 0;
+						break;
 					}
 				}
+//ENDEDITOR
+				frameProcessedWithoutErrors = true;
 			}
+
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 			
 			this.currentScene.interactiveChildren = ((this.modalsCount === 0) && !currentFader);
@@ -237,6 +251,12 @@ class Game {
 			}
 			i--;
 		}
+	}
+}
+
+function pixiTickerReapirer() {
+	if(!frameProcessedWithoutErrors) {
+		game.pixiApp.ticker._requestIfNeeded();
 	}
 }
 

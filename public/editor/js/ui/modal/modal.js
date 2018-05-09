@@ -129,6 +129,7 @@ class Modal extends React.Component {
 	}
 	
 	showError(message, title = 'Error!', noEasyClose) {
+		editor.ui.viewport.stopExecution();
 		return this.showModal(R.div(errorProps, message), R.span(null, R.icon('error'), title), noEasyClose);
 	}
 	
