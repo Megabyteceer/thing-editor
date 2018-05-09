@@ -14,8 +14,8 @@ export default class FieldPlayer {
 	
 	reset() {
 		this.time = 0;
-		this.currentFrame = data.t[0];
-		this.val = this.timeline[0].v;
+		this.currentFrame = this.timeline[0];
+		this.val = this.currentFrame.v;
 		this.targetVal = this.val;
 		this.currentTime = 0;
 		if(this.currentFrame.hasOwnProperty('s')) {
@@ -23,6 +23,7 @@ export default class FieldPlayer {
 		} else {
 			this.speed = 0;
 		}
+		this.target[this.fieldName] = this.val;
 	}
 	
 	goto(time, nextKeyframe) {
@@ -36,36 +37,32 @@ export default class FieldPlayer {
 
 			if (currentFrame.hasOwnProperty('c')) {
 				console.log('timeline CALL: ' + this.target.name + '; '+ currentFrame.t + '; ' + currentFrame.c );
-				call(this.currentFrame.call, target);
+				call(this.currentFrame.call, this.target);
 			}
 			
-			if (currentFrame.m !== 0) { //discrete and linear fields apply exact value
+			if (currentFrame.m !== 0) { //discrete and linear Mode fields apply exact value
 				this.val = currentFrame.v;
 			}
 			
 			this.time = currentFrame.j;
 			this.currentFrame = currentFrame = currentFrame.n;
-			
-			currentFrame
-		}
-		
-		
-		if (type === 0) {
-			if (currentFrame.smooth != 2) {
-				speed += (targetVal-currentValue) * this.pow;
-				speed *= this.damper;
+			if(currentFrame.m === 1) {// linear Mode
+				var dist = currentFrame.t - this.time;
+				if(dist > 0) {
+					this.speed = (currentFrame.v - this.val) / dist;
+				}
+			} else if(currentFrame.m === 2) {// discrete Mode
+				this.speed = 0;
 			}
-			
-			currentValue += speed;
-			if (setter != null) {
-				setter(currentValue);
-			} else {
-				this.val = this.currentValue;
-			}
-			
 		}
-		
-		target[this.fieldName] = this.val;
+
+		if (currentFrame.m === 0) { //Smooth mode
+			this.speed += (currentFrame.v - this.val) * this.pow;
+			this.speed *= this.damper;
+		}
+		this.val += this.speed;
+
+		this.target[this.fieldName] = this.val;
 		this.time++;
 	}
 	

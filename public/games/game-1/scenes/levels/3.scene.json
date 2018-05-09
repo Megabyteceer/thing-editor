@@ -330,6 +330,13 @@
 				"y": 489,
 				"onClick": "game.showScene`main"
 			}
+		},
+		{
+			"c": "MovieClip",
+			"p": {
+				"x": 250,
+				"y": 250
+			}
 		}
 	]
 }

@@ -13,15 +13,15 @@ export default class MovieClip extends Sprite {
 		while (this.fieldPlayers.length > 0) {
 			Pool.dispose(this.fieldPlayers.pop());
 		}
-		this.__timelineData = null;
+		this.__timeline = null;
 	}
 	
 	update() {
 		if (this.isPlaying) {
-			if (delay > 0) {
-				delay--;
+			if (this.delay > 0) {
+				this.delay--;
 			} else {
-				for(var p in this.fieldPlayers) {
+				for(var p of this.fieldPlayers) {
 					p.update();
 				}
 			}
@@ -29,17 +29,17 @@ export default class MovieClip extends Sprite {
 		super.update();
 	}
 	
-	get timelineData() {
-		return this._timelineData;
+	get timeline() {
+		return this._timeline;
 	}
 	
-	set timelineData(data) {
+	set timeline(data) {
 		
 		data = fakeTmpData;
 		
-		assert(!this._timelineData, "Timeline data already assigned for this MovieClip");
-		assert(Array.isArray(data), "Wrong timeline data. Array expected");
-		this.__timelineData = data;
+		assert(!this._timeline, "Timeline data already assigned for this MovieClip");
+		assert(Array.isArray(data.f), "Wrong timeline data?");
+		this.__timeline = data;
 		
 		var pow = data.p; //smooth fields dynamic parameters
 		var damper = data.d;
@@ -48,6 +48,7 @@ export default class MovieClip extends Sprite {
 		for(var i = 0; i < fieldsData.length; i++) {
 			var p = Pool.create(FieldPlayer);
 			p.init(this, fieldsData[i], pow, damper);
+			this.fieldPlayers.push(p);
 		}
 	}
 	
@@ -106,7 +107,7 @@ MovieClip.EDITOR_editableProps = [
 	},
 	{
 		name: 'timeline',
-		type: 'timelineData'
+		type: 'timeline'
 	}
 ];
 
@@ -121,7 +122,7 @@ var filedsTimelines = [
 			{
 				v: 250,
 				t: 0,
-				m: 0,
+				m: 1,
 				j: 0
 			},
 			{
@@ -136,7 +137,7 @@ var filedsTimelines = [
 			{
 				v: 300,
 				t: 200,
-				m: 0,
+				m: 1,
 				j: 200
 			},
 			{
@@ -165,7 +166,7 @@ var filedsTimelines = [
 			{
 				v: 260,
 				t: 254,
-				m: 0,
+				m: 1,
 				j: 254
 			},
 			{
@@ -177,6 +178,27 @@ var filedsTimelines = [
 			{
 				v: 360,
 				t: 397,
+				m: 1,
+				j: 1
+			}
+		]
+	},
+	{
+		n: 'rotation',
+		t: [
+			{
+				v: -0.4,
+				t: 0,
+				m: 0,
+				j: 0
+			}, {
+				v: 0.4,
+				t: 20,
+				m: 0,
+				j: 20
+			}, {
+				v: -0.4,
+				t: 40,
 				m: 0,
 				j: 1
 			}
@@ -196,20 +218,22 @@ const loopFrames = (a) => {
 }
 loopFrames(filedsTimelines[0]);
 loopFrames(filedsTimelines[1]);
+loopFrames(filedsTimelines[2]);
 
 var labels = {
 	start: {
 		t:0,	//time to set for all frames
 		n: [	//next frames for all fileds
 			filedsTimelines[0].t[0],
-			filedsTimelines[1].t[0]
+			filedsTimelines[1].t[0],
+			filedsTimelines[2].t[0]
 		]
 	}
 }
 
 var fakeTmpData = {
 	l:labels,
-	p:0.01,
-	d:0.9,
+	p:0.02,
+	d:0.8,
 	f:filedsTimelines
 }

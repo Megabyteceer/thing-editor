@@ -37,10 +37,10 @@ typeDescriptions['color'] = {
 	default: 0xFFFFFF
 };
 
-typeDescriptions['timelineData'] = {
+typeDescriptions['timeline'] = {
 	renderer: TimelineEditor, parser:
 		(movieClip) => {
-			return MovieClip.__serializeTimelineData(movieClip.timelineData);
+			return MovieClip.__serializeTimelineData(movieClip.timeline);
 		},
 	default: 0xFFFFFF
 };

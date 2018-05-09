@@ -1,7 +1,7 @@
 export default class TimelineEditor extends React.Component {
 	
 	constructor(props) {
-		super.props(props);
+		super(props);
 		this.state = {};
 		this.toggle = this.toggle.bind(this);
 	}

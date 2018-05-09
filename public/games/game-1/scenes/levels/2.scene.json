@@ -177,6 +177,13 @@
 				"y": 604,
 				"onClick": "game.showScene`levels/3"
 			}
+		},
+		{
+			"c": "MovieClip",
+			"p": {
+				"x": 250,
+				"y": 250
+			}
 		}
 	]
 }
