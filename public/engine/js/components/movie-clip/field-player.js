@@ -39,61 +39,21 @@ export default class FieldPlayer {
 				call(this.currentFrame.call, target);
 			}
 			
-			if (type != 0) {
+			if (currentFrame.m !== 0) { //discrete and linear fields apply exact value
 				this.val = currentFrame.v;
 			}
 			
-			currentFrameNum++;
+			this.time = currentFrame.j;
+			this.currentFrame = currentFrame = currentFrame.n;
 			
-			if (currentFrameNum >= frames.length)
-			{
-				
-				currentFrameNum = loopFrameNum;
-				currentTime = (frames[currentFrameNum] as TimelineKeyframe).time-1;
-				
-			}
-			
-			currentFrame = frames[currentFrameNum]
-			
-			
-			nextSwitchTime = currentFrame.time;
-			
-			
-			
-			
-			if (type === 0)
-			{
-				targetValue = currentFrame.value;
-				
-				var len:Number = nextSwitchTime - currentTime;
-				{
-					if (len < 1)
-					{
-						len = 1;
-					}
-				}
-				
-				if (currentFrame.smooth != 0)
-				{
-					speed = (currentFrame.value - currentValue) / len;
-				}
-				
-				
-				speedDivider = len;
-				
-				/*step = ;*/
-			}
-			
-			
+			currentFrame
 		}
 		
 		
-		if (type === 0)
-		{
-			if (currentFrame.smooth != 2)
-			{
-				speed += (targetValue-currentValue) / speedDivider;
-				speed *= 0.85;
+		if (type === 0) {
+			if (currentFrame.smooth != 2) {
+				speed += (targetVal-currentValue) * this.pow;
+				speed *= this.damper;
 			}
 			
 			currentValue += speed;
@@ -106,9 +66,7 @@ export default class FieldPlayer {
 		}
 		
 		target[this.fieldName] = this.val;
-		
-		currentTime++;
-		
+		this.time++;
 	}
 	
 	//EDITOR

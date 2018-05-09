@@ -26,7 +26,7 @@ let onMouseDown = (ev) => {
 }
 
 function isClickedAtRightEdge(ev) {
-	var b = $(ev.target).getBoundingClientRect();
+	var b = ev.target.getBoundingClientRect();
 	return (b.right - ev.clientX) < 20;
 }
 
@@ -38,6 +38,9 @@ $(window).on('mousemove', (ev) => {
 	if (d !== 0) {
 		d = d * (draggingProps.field.step || 1);
 		lastY = ev.clientY;
+		if(ev.ctrlKey) {
+			d *= 10;
+		}
 		var e = PropsFieldWrapper.surrogateChnageEvent(parseFloat(draggingInput.value) + d);
 		draggingProps.onChange(e, true, d);
 	}

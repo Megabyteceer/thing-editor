@@ -133,6 +133,20 @@ $(window).on('mousedown', (ev) => {
 function selectByStageClick(ev) {
 	var root = game.currentContainer;
 	var o = editor.selection[0] || root;
+	
+	var isSelectionInRoot = false;
+	var p = o.parent;
+	while(p) {
+		if(p === root) {
+			isSelectionInRoot = true;
+			break;
+		}
+		p = p.parent;
+	}
+	if(!isSelectionInRoot) {
+		o = root;
+	}
+	
 	var start = o;
 	var c = 0;
 	while(c++ < 10000) {

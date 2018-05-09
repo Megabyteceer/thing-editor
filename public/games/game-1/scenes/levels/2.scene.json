@@ -175,8 +175,6 @@
 			"p": {
 				"x": 203,
 				"y": 604,
-				"scale.x": 2,
-				"scale.y": 2,
 				"onClick": "game.showScene`levels/3"
 			}
 		}

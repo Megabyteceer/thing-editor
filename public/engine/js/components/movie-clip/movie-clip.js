@@ -186,21 +186,23 @@ var filedsTimelines = [
 
 
 const loopFrames = (a) => {
+	a = a.t;
 	var i = 1;
 	while(i < a.length) {
 		a[i-1].n = a[i];
+		i++;
 	}
 	a[a.length-1].n = a[1];
 }
-loopFrames(filedsTimelines.x);
-loopFrames(filedsTimelines.y);
+loopFrames(filedsTimelines[0]);
+loopFrames(filedsTimelines[1]);
 
 var labels = {
 	start: {
 		t:0,	//time to set for all frames
 		n: [	//next frames for all fileds
-			filedsTimelines.x[0],
-			filedsTimelines.y[0]
+			filedsTimelines[0].t[0],
+			filedsTimelines[1].t[0]
 		]
 	}
 }

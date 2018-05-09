@@ -198,6 +198,6 @@ const renderRoots = (node, i) => {
 
 const renderSceneStackItem = (s, i) => {
 	return R.div({className:'stacked-scene-item', title: 'This scene currently in stack.', key: i},
-		R.classIcon(s.constructor), s.name, '(' + s.constructor.name + ')'
+		R.classIcon(s.constructor), s.name, '(' + s.constructor.name + ') #' +  __getNodeExtendData(s).id
 	);
 }

@@ -64,7 +64,7 @@ const selectionFilter = new PIXI.filters.OutlineFilter(2, 0xffff00);
 const selectedFilters = [selectionFilter];
 
 setInterval(() => {
-	if (editor.selection.length > 0) {
+	if (window.editor && editor.selection.length > 0) {
 		selectionFilter.color ^= 0x063311;
 	}
 }, 1000 / 60 * 3);

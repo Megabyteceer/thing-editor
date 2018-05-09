@@ -3,7 +3,7 @@ import StringEditor from './string-editor.js';
 import BooleanEditor from './boolean-editor.js';
 import SelectEditor from './select-editor.js';
 import ColorEditor from './color-editor.js';
-import MovieClip from "/engine/js/components/movie-clip/movie-clip";
+import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
 import TimelineEditor from "./timeline-editor.js";
 
 
