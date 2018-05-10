@@ -4,7 +4,7 @@ import BooleanEditor from './boolean-editor.js';
 import SelectEditor from './select-editor.js';
 import ColorEditor from './color-editor.js';
 import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
-import TimelineEditor from "./timeline-editor.js";
+import TimelineProperty from "./timeline/timeline-property.js";
 
 
 var typeDescriptions = new WeakMap();
@@ -38,7 +38,7 @@ typeDescriptions['color'] = {
 };
 
 typeDescriptions['timeline'] = {
-	renderer: TimelineEditor, parser:
+	renderer: TimelineProperty, parser:
 		(movieClip) => {
 			return MovieClip.__serializeTimelineData(movieClip.timeline);
 		},

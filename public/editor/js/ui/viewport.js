@@ -1,4 +1,3 @@
-import Game from '/engine/js/game.js';
 import PrefabsList from './prefabs-list.js';
 import Lib from "../../../engine/js/lib.js";
 
@@ -61,6 +60,8 @@ export default class Viewport extends React.Component {
 		
 		this.forceUpdate();
 		editor.history.updateUi();
+		
+		game.pixiApp.ticker._requestIfNeeded(); //restore broken ticker if necessary.
 	}
 	
 	onPauseResumeClick() {
