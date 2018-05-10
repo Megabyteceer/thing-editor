@@ -42,7 +42,7 @@ export default class TreeView extends React.Component {
 			}
 		}, 1);
 	}
-	
+
 	onDeleteClick() {
 		if((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
 			var p = editor.selection[0].parent;

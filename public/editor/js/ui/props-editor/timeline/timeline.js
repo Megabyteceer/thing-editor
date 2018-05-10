@@ -6,7 +6,9 @@ export default class Timeline extends React.Component {
 	}
 	
 	render() {
-		return 'Timeline here';
+		return R.div(null,
+			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
+			'Timeline here'
+		)
 	}
-	
 }
