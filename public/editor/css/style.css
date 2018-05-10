@@ -98,7 +98,7 @@ button {
 }
 
 .window-body {
-	box-shadow: .5px 3px 0 1px rgba(0,0,30,0.3);
+	box-shadow: .5px 3px 0 1px rgba(0,0,30,0.08);
 	position:fixed;
 	box-sizing: content-box;
 	background: var(--window-bg-color);
