@@ -113,7 +113,7 @@ const enumProjects = () => {
 	return ret;
 }
 
-//=============== create folder for fail ==================
+//=============== create folder for file ==================
 function ensureDirectoryExistence(filePath) {
   var dirname = path.dirname(filePath);
   if (fs.existsSync(dirname)) {
