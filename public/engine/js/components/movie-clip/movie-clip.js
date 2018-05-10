@@ -13,7 +13,7 @@ export default class MovieClip extends Sprite {
 		while (this.fieldPlayers.length > 0) {
 			Pool.dispose(this.fieldPlayers.pop());
 		}
-		this.__timeline = null;
+		this._timeline = null;
 	}
 	
 	update() {
@@ -39,7 +39,7 @@ export default class MovieClip extends Sprite {
 		
 		assert(!this._timeline, "Timeline data already assigned for this MovieClip");
 		assert(Array.isArray(data.f), "Wrong timeline data?");
-		this.__timeline = data;
+		this._timeline = data;
 		
 		var pow = data.p; //smooth fields dynamic parameters
 		var damper = data.d;

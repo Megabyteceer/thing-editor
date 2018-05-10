@@ -5,7 +5,7 @@ export default class TimelineProperty extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.state = {toggled:editor.settings.getItem('timeline-showed')};
+		this.state = {toggled:editor.settings.getItem('timeline-showed', true)};
 		this.onToggleClick = this.onToggleClick.bind(this);
 	}
 	
@@ -21,6 +21,7 @@ export default class TimelineProperty extends React.Component {
 		if(this.state.toggled) {
 			timeline = editor.ui.renderWindow('timeline', 'Timeline', React.createElement(Timeline, {onCloseClick:this.onToggleClick}), 1000, 1000, 400, 150, 400, 150);
 			setTimeout(() => {
+				Window.bringWindowForward($('#window-propsEditor'));
 				Window.bringWindowForward($('#window-timeline'));
 			}, 1);
 		}
