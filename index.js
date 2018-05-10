@@ -66,7 +66,7 @@ app.use('/', express.static(path.join(__dirname, 'public'), {dotfiles:'allow'}))
 var server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
 
 const opn = require('opn');
-opn('', {app: ['chrome', /*'--new-window --app=' +*/ 'http://127.0.0.1:' + PORT]});
+opn('', {app: ['chrome', /*'--new-window --no-sandbox --js-flags="--max_old_space_size=32768" --app=' +*/ 'http://127.0.0.1:' + PORT]});
 
 //======== socket connection with client ================================================
 const WebSocket = require('ws');
