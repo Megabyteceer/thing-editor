@@ -176,6 +176,7 @@ button {
 
 ::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
 }
 ::-webkit-scrollbar-track {
     background: #cccfda; 
@@ -571,7 +572,54 @@ input{
     color: #de3535;
 }
 
+.timeline {
+    overflow-x: auto;
+}
 
+.objects-timeline {
+    position: relative;
+    margin-left: 100px;
+    background: #fff;
+}
+
+.objects-timeline-labels {
+    width: 100px;
+    text-align: right;
+    position: fixed;
+    background: #cccfda;
+    z-index: 3;
+    padding: 6px;
+    font-weight: bold;
+    box-sizing: border-box;
+    border-right: 1px solid #606886;
+    height: 31px;
+    left: 0;
+}
+
+.field-timeline {
+    width: max-content;
+    height: 30px;
+    border-bottom: 1px solid #ddd;
+    /* position: relative; */
+}
+
+.timeline-keyframe {
+    position: absolute;
+    width: 8px;
+    border: 1px solid #6c6b6a;
+    background: #fff2c2;
+    height: 20px;
+    cursor: pointer;
+}
+
+.loop-arrow {
+    position: absolute;
+    right: 50%;
+    bottom: -6px;
+    fill:none;
+    stroke: #38ff38;
+    stroke-width: 2;
+}
 
 
 

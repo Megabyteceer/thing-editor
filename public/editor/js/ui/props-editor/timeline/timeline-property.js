@@ -9,8 +9,8 @@ export default class TimelineProperty extends React.Component {
 		this.onToggleClick = this.onToggleClick.bind(this);
 	}
 	
-	onToggleClick() {
-		var t = !this.state.toggled
+	onToggleClick() { //show/hide timeline window
+		var t = !this.state.toggled;
 		this.setState({toggled: t});
 		editor.settings.setItem('timeline-showed', t);
 	}
