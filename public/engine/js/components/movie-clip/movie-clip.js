@@ -30,16 +30,16 @@ export default class MovieClip extends Sprite {
 	}
 	
 	get timeline() {
-		return this._timeline;
+		return {}; //TODO: serialize this._timelineData;
 	}
 	
 	set timeline(data) {
 		
 		data = fakeTmpData;
 		
-		assert(!this._timeline, "Timeline data already assigned for this MovieClip");
+		assert(!this._timelineData, "Timeline data already assigned for this MovieClip");
 		assert(Array.isArray(data.f), "Wrong timeline data?");
-		this._timeline = data;
+		this._timelineData = data;
 		
 		var pow = data.p; //smooth fields dynamic parameters
 		var damper = data.d;

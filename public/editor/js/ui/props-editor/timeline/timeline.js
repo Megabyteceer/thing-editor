@@ -1,4 +1,6 @@
 import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
+import FieldPlayer from "/engine/js/components/movie-clip/field-player.js";
+import Pool from "/engine/js/utils/pool.js";
 
 const FRAMES_STEP = 3;
 
@@ -40,10 +42,10 @@ const renderObjectsTimeline = (node) => {
 
 class ObjectsTimeline extends React.Component {
 	render() {
-		var tl = this.props.node.timeline;
+		var tl = this.props.node._timelineData;
 		return R.div(objectsTimelineProps,
-			tl.f.map((field) => {
-				return React.createElement(FieldsTimeline, {field, key:field.n});
+			tl.f.map((field, i) => {
+				return React.createElement(FieldsTimeline, {field, fieldIndex:i, key:field.n});
 			})
 		)
 	}
@@ -56,6 +58,11 @@ const keyframesClasses = [
 	'timeline-keyframe timeline-keyframe-discrete'
 ]
 
+var _scale, _shift;
+const scale = (val) => {
+	return (val + _shift) / _scale;
+}
+
 class FieldsTimeline extends React.Component {
 	
 	constructor(props) {
@@ -63,9 +70,55 @@ class FieldsTimeline extends React.Component {
 	}
 	
 	invalidateTimelineCache () {
-		if (this.props.field) {
-			todo
+		this.props.field.__cacheTimeline = false;
+	}
+	
+	getValueAtTime(time) {
+		var field = this.props.field;
+		if(!field.__cacheTimeline) {
+			var fieldPlayer = Pool.create(FieldPlayer);
+			var c = [];
+			field.__cacheTimeline = c;
+			fieldPlayer.timeline = field;
+			fieldPlayer.reset();
+			calculateCacheSegmentForField(fieldPlayer);
+			for(let label of field.l) {
+				if(!c.hasOwnProperty(label.t)) { //time at this label is not calculated yet
+					fieldPlayer.goto(label.t, label.n[this.props.fieldIndex]);
+					calculateCacheSegmentForField(fieldPlayer);
+				}
+			}
+			c.min = Math.min.call(null, c);
+			c.max = Math.max.call(null, c);
+			Pool.dispose(fieldPlayer);
 		}
+		if(field.__cacheTimeline.hasOwnProperty(time)) {
+			return field.__cacheTimeline[time];
+		} else {
+			return false;
+		}
+	}
+	
+	renderKeyframeChart(keyFrame) {
+		if(keyFrame.n && (keyFrame.t < keyFrame.n.t)) {
+			var n = keyFrame.n;
+			switch (n.m) {
+				case 0:
+					var ret = [];
+					for(let i = keyFrame.t; i < n.t; i++) {
+						ret.push(i + ',' + scale(this.getValueAtTime(i)));
+					}
+					return ret.join(' ');
+					break;
+				case 1: //linear
+					return (n.t * FRAMES_STEP) + ',' + scale(t.v);
+				case 2: //discrete
+					var v = scale(keyFrame.v);
+					var t = n.t * FRAMES_STEP;
+					return (keyFrame.t * FRAMES_STEP) + ',' + v + ' ' + t + ',' + v + ' ' + t + ',' + scale(t.v);
+			}
+		}
+		return '';
 	}
 	
 	renderKeyframe(keyFrame) {
@@ -74,7 +127,7 @@ class FieldsTimeline extends React.Component {
 			var len = Math.abs(keyFrame.j - keyFrame.t) + 3;
 			len *= FRAMES_STEP;
 			loopArrow = R.svg({className:'loop-arrow', height:5, width:len},
-				R.polyline({points:'3,0 3,3 0,3 3,0 3,5 '+len+',5 '+len+',0'})
+				R.polyline({points:'3,0 6,3 0,3 3,0 6,5 '+(len-3)+',5 '+len+',0'})
 			);
 		}
 		return R.div({key:keyFrame.t, className:keyframesClasses[keyFrame.m], style:{left:keyFrame.t * FRAMES_STEP}}, loopArrow);
@@ -92,7 +145,14 @@ class FieldsTimeline extends React.Component {
 		}
 		width += 300;
 		
+		this.getValueAtTime(lastKeyframe.t); //cache timeline's values
+		shift = field.__cacheTimeline.max;
+		scale = Math.max(1, field.__cacheTimeline.max - field.__cacheTimeline.min / 40.0);
+			
 		return R.div(fieldTimelineProps,
+			loopArrow = R.svg({className:'timeline-chart', height:5, width:len},
+				R.polyline({points:field.t.map(this.renderKeyframeChart).join(' ')})
+			),
 			R.div({style:{width}},
 				label,
 				field.t.map(this.renderKeyframe)
@@ -101,4 +161,14 @@ class FieldsTimeline extends React.Component {
 	}
 }
 
-
+const calculateCacheSegmentForField = (fieldPlayer) => {
+	var c = fieldPlayer.timelineData.__cacheTimeline;
+	var time;
+	var i = 0;
+	while(!c.hasOwnProperty(fieldPlayer.time)) {
+		time = fieldPlayer.time;
+		fieldPlayer.update();
+		c[fieldPlayer.time] = fieldPlayer.val;
+		assert(i++ < 100000, 'Timeline values cache calculation looped and failed.');
+	}
+}

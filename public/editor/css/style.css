@@ -621,7 +621,11 @@ input{
     stroke-width: 2;
 }
 
-
+.timeline-chart {
+    fill:none;
+    stroke: #847c75;
+    stroke-width: 1;
+}
 
 
 
