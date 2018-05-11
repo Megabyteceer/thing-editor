@@ -62,6 +62,12 @@ class FieldsTimeline extends React.Component {
 		super(props);
 	}
 	
+	invalidateTimelineCache () {
+		if (this.props.field) {
+			todo
+		}
+	}
+	
 	renderKeyframe(keyFrame) {
 		var loopArrow;
 		if(keyFrame.j !== keyFrame.t) {
