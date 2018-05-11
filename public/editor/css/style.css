@@ -176,7 +176,7 @@ button {
 
 ::-webkit-scrollbar {
     width: 6px;
-    height: 6px;
+    height: 15px;
 }
 ::-webkit-scrollbar-track {
     background: #cccfda; 
@@ -578,7 +578,7 @@ input{
 
 .objects-timeline {
     position: relative;
-    margin-left: 100px;
+    margin-left: 110px;
     background: #fff;
 }
 
@@ -587,45 +587,61 @@ input{
     text-align: right;
     position: fixed;
     background: #cccfda;
-    z-index: 3;
     padding: 6px;
     font-weight: bold;
     box-sizing: border-box;
     border-right: 1px solid #606886;
-    height: 31px;
-    left: 0;
+    height: 43px;
+    margin-left: -110px;
+    margin-top: -2px;
+    z-index: 4;
 }
 
 .field-timeline {
     width: max-content;
-    height: 30px;
+    height: 40px;
+    padding-top: 2px;
     border-bottom: 1px solid #ddd;
-    /* position: relative; */
 }
 
 .timeline-keyframe {
     position: absolute;
     width: 8px;
-    border: 1px solid #6c6b6a;
-    background: #fff2c2;
-    height: 20px;
+    height: 24px;
     cursor: pointer;
+}
+
+.timeline-keyframe-linear {
+	background: #8db2ff;
+	border-left: 1px solid #456aa1;
+}
+
+.timeline-keyframe-smooth {
+	border-top-right-radius:6px;
+	border-bottom-right-radius:6px;
+	background: #33ffa2;
+	border-left: 1px solid #516b00;
 }
 
 .loop-arrow {
     position: absolute;
-    right: 50%;
-    bottom: -6px;
+    right: 100%;
+    bottom: -13px;
     fill:none;
-    stroke: #38ff38;
-    stroke-width: 2;
+    stroke: rgba(0, 187, 0, 0.5);
+    stroke-width: 1.5;
 }
 
 .timeline-chart {
+    position: absolute;
     fill:none;
-    stroke: #847c75;
-    stroke-width: 1;
+    stroke: #544d00;
+    stroke-width: 1.5;
+    pointer-events: none;
 }
+
+
+
 
 
 

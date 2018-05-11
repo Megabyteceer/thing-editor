@@ -40,6 +40,10 @@ export default class FieldPlayer {
 				call(this.currentFrame.call, this.target);
 			}
 			
+			if(currentFrame.hasOwnProperty('s')) {
+				this.speed = currentFrame.s;
+			}
+			
 			if (currentFrame.m !== 0) { //discrete and linear Mode fields apply exact value
 				this.val = currentFrame.v;
 			}

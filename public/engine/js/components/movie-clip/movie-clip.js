@@ -13,7 +13,7 @@ export default class MovieClip extends Sprite {
 		while (this.fieldPlayers.length > 0) {
 			Pool.dispose(this.fieldPlayers.pop());
 		}
-		this._timeline = null;
+		this._timelineData = null;
 	}
 	
 	update() {
@@ -37,7 +37,7 @@ export default class MovieClip extends Sprite {
 		
 		data = fakeTmpData;
 		
-		assert(!this._timelineData, "Timeline data already assigned for this MovieClip");
+		assert(!this._timelineData || game.__EDITORmode, "Timeline data already assigned for this MovieClip");
 		assert(Array.isArray(data.f), "Wrong timeline data?");
 		this._timelineData = data;
 		
@@ -130,15 +130,15 @@ var filedsTimelines = [
 				t: 100,	//frame triggering Time
 				m: 0,	//Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE
 				j: 100,	//Jump to time. If no jump need - equal to 't'
-				s: 0,	//multiply current Speed
-				d: -3,	//Delta current speed. (active if 's' is existing only). If need abs speed set. multiply current speed by 0 first.
+				s: 0,	//set current Speed
 				n: 'frameRef'	//next keyFrame
 			},
 			{
 				v: 300,
 				t: 200,
 				m: 1,
-				j: 200
+				j: 200,
+				s: 50
 			},
 			{
 				v: 200,
@@ -187,17 +187,17 @@ var filedsTimelines = [
 		n: 'rotation',
 		t: [
 			{
-				v: -0.4,
+				v: -0.1,
 				t: 0,
 				m: 0,
 				j: 0
 			}, {
-				v: 0.4,
+				v: 0.1,
 				t: 20,
 				m: 0,
 				j: 20
 			}, {
-				v: -0.4,
+				v: -0.1,
 				t: 40,
 				m: 0,
 				j: 1
@@ -234,6 +234,6 @@ var labels = {
 var fakeTmpData = {
 	l:labels,
 	p:0.02,
-	d:0.8,
+	d:0.90,
 	f:filedsTimelines
 }
