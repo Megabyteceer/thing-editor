@@ -38,7 +38,7 @@ const call = (s, this_) => {
 		if(data.hasOwnProperty('v')) {
 			return c.apply(fOwner, data.v);
 		} else {
-			return c();
+			return c.call(fOwner);
 		}
 	} catch (er) {
 		let m = er.message || er;
