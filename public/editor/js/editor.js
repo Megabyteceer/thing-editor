@@ -10,6 +10,7 @@ import ClassesLoader from './utils/classes-loader.js';
 import ScenesList from "./ui/scenes-list.js";
 import Overlay from "./utils/overlay.js";
 import PrefabsList from "./ui/prefabs-list.js";
+import Signal from "./utils/signal.js";
 
 class Editor {
 	
@@ -39,6 +40,9 @@ class Editor {
 		this.reloadClasses = this.reloadClasses.bind(this);
 		
 		this.history = history;
+		
+		this.beforePropertyChanged = new Signal();
+		this.afterPropertyChanged = new Signal();
 		
 		ReactDOM.render(
 			React.createElement(UI, {onMounted: this.onUIMounted}),
@@ -194,15 +198,16 @@ class Editor {
 	}
 	
 	/**
-	 * set propery value received frop property editor
+	 * set property value received from property editor
 	 */
-	
 	onSelectedPropsChange(field, val, delta) {
 		if (this.selection.length > 0) {
 			if (typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
 			var changed = false;
+			
+			this.beforePropertyChanged.emit(field.name);
 			
 			if (delta === true) {
 				assert(field.type === Number);
@@ -228,6 +233,8 @@ class Editor {
 					}
 				}
 			}
+			
+			this.afterPropertyChanged.emit(field.name);
 			
 			if (changed) {
 				this.refreshTreeViewAndPropertyEditor();

@@ -66,6 +66,10 @@ img {
 	opacity: 0.3;
 }
 
+.small-text{
+	font-size:76%;
+}
+
 button {
 	background:#e6e7e9;
 	border:0;
@@ -288,7 +292,7 @@ button {
 }
 
 .item-selected {
-	/* cursor:default; */
+	 cursor:default;
 	background: #95ccff;
 }
 
@@ -573,42 +577,45 @@ input{
 }
 
 .timeline {
+    cursor: pointer;
+    padding-top: 30px;
+    padding-left: 110px;
     overflow-x: auto;
+    background: #bbbbbb;
+    top: 10px;
 }
 
 .objects-timeline {
     position: relative;
-    margin-left: 110px;
-    background: #fff;
 }
 
 .objects-timeline-labels {
-    width: 100px;
+    cursor: default;
+    width: 110px;
+    height: 40px;
     text-align: right;
-    position: fixed;
-    background: #cccfda;
-    padding: 6px;
+    position: absolute;
+    padding-right: 6px;
     font-weight: bold;
     box-sizing: border-box;
-    border-right: 1px solid #606886;
-    height: 43px;
+    backface-visibility: hidden;
     margin-left: -110px;
-    margin-top: -2px;
-    z-index: 4;
+    background: #cccfda;
+    z-index: 6;
 }
 
 .field-timeline {
     width: max-content;
+    background: url(/editor/img/timeline.png);
     height: 40px;
-    padding-top: 2px;
-    border-bottom: 1px solid #ddd;
+    background-repeat-y: no-repeat;
 }
 
 .timeline-keyframe {
+	cursor: w-resize;
     position: absolute;
     width: 8px;
     height: 24px;
-    cursor: pointer;
 }
 
 .timeline-keyframe-linear {
@@ -624,11 +631,12 @@ input{
 }
 
 .loop-arrow {
+    pointer-events: none;
     position: absolute;
     right: 100%;
     bottom: -13px;
     fill:none;
-    stroke: rgba(0, 187, 0, 0.5);
+    stroke: rgb(0, 136, 0);
     stroke-width: 1.5;
 }
 
@@ -639,6 +647,52 @@ input{
     stroke-width: 1.5;
     pointer-events: none;
 }
+
+.time-marker-body {
+	height: 31px;
+	position: relative;
+	margin-top: -33px;
+	width: 100%;
+	z-index: 1;
+	background: #bbbbbb;
+}
+
+.time-marker {
+	cursor: w-resize;
+	width: 8px;
+	height: 23px;
+	position: absolute;
+	top: 0;
+	background: #d33;
+}
+
+.timeline-left-top-panel {
+	cursor: default;
+	position: fixed;
+	width: 110px;
+	background: #cccfda;
+	height: 40px;
+	margin-left: -110px;
+	margin-top: -40px;
+}
+
+.time-marker-v-line {
+	position:absolute;
+	pointer-events:none;
+	height: 1000px;
+	border-left:1px solid #d33;
+}
+
+.time-marker-label {
+	width: 230px;
+	margin: 2px 12px;
+	color:#213950;
+	white-space nowrap;
+}
+
+
+
+
 
 
 

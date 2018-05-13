@@ -234,6 +234,6 @@ var labels = {
 var fakeTmpData = {
 	l:labels,
 	p:0.02,
-	d:0.90,
+	d:0.85,
 	f:filedsTimelines
 }

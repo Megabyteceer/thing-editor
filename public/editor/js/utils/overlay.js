@@ -111,21 +111,21 @@ function refreshSelection() {
 }
 
 $(window).on('mousedown', (ev) => {
-	if (overedDragger) {
-		if(overedDragger instanceof Rotator && ev.buttons === 2) {
-			editor.onSelectedPropsChange('rotation', 0);
-		} else if (ev.buttons === 1 || ev.buttons === 2) {
-			draggingDragger = overedDragger;
-		}
-	} else if(ev.target === game.pixiApp.view && ev.buttons === 1) {
-		
-		selectByStageClick(ev);
-		
-	} else if(ev.buttons === 2 && editor.selection.length > 0) {
-		var info = __getNodeExtendData(editor.selection[0]);
-		if(info.draggerPivot){
-			draggingDragger = info.draggerPivot;
-			draggingDragger.onDrag();
+	if(ev.target === game.pixiApp.view) {
+		if (overedDragger) {
+			if(overedDragger instanceof Rotator && ev.buttons === 2) {
+				editor.onSelectedPropsChange('rotation', 0);
+			} else if (ev.buttons === 1 || ev.buttons === 2) {
+				draggingDragger = overedDragger;
+			}
+		} else if(ev.target === game.pixiApp.view && ev.buttons === 1) {
+			selectByStageClick(ev);
+		} else if(ev.buttons === 2 && editor.selection.length > 0) {
+			var info = __getNodeExtendData(editor.selection[0]);
+			if(info.draggerPivot){
+				draggingDragger = info.draggerPivot;
+				draggingDragger.onDrag();
+			}
 		}
 	}
 });
