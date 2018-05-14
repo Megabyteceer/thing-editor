@@ -147,20 +147,22 @@ function getKeyframeTypesForField(o, name) {
 	return keyframeTypesDiscreteOnly;
 }
 
-function renormalizeFieldTimelineDataAfterChange(fieldData) {
+Timeline.getKeyframeTypesForField = getKeyframeTypesForField;
+
+function renormalizeFieldTimelineDataAfterChange(fieldData) { //invalidate cache
 	var timeLineData = fieldData.t;
 	timeLineData.sort(sortFieldsByTime);
 	for(let field of timeLineData) {
 		field.n = MovieClip._findNextField(timeLineData, field.t);
 	}
-	debugger;
+
 	fieldData.__cacheTimeline = false;
 	fieldData.__cacheTimelineRendered = null;
-	for(var o in editor.selection) {
+	for(var o of editor.selection) {
 		if(o._timelineData && o._timelineData.f.some((f) => { //get movieclip by field's timeline data and invalidate whole serialisation cache
 			return f === fieldData;
 		})) {
-			serializeCache.delete(o._timelineData);
+			MovieClip.invalidateSerializeCache(o._timelineData);
 		}
 	}
 }
@@ -240,28 +242,28 @@ function onTimelineMouseDown(ev) {
 
 function onTimeMarkerDrag(ev) {
 	isDragging = (isDragging && (ev.buttons === 1));
-	
-		var tl = $('.timeline')[0];
-		if(tl) {
-			var b = tl.getBoundingClientRect();
-			var x = ev.clientX - 110 - b.x;
-			
-			if(ev.buttons !== 0) {
-				if (x < 20) {
-					tl.scrollLeft -= 20;
-				} else if ((x - b.width + 110) > -20) {
-					tl.scrollLeft += 50;
-				}
+
+	var tl = $('.timeline')[0];
+	if(tl) {
+		var b = tl.getBoundingClientRect();
+		var x = ev.clientX - 110 - b.x;
+
+		if(ev.buttons !== 0) {
+			if (x < 20) {
+				tl.scrollLeft -= 20;
+			} else if ((x - b.width + 110) > -20) {
+				tl.scrollLeft += 50;
 			}
-			
-			var dragTime = Math.max(0, Math.round((x + tl.scrollLeft) / FRAMES_STEP));
-			
-			if(isDragging) {
-				timeline.setTime(dragTime);
-			}
-			FieldsTimeline.onMouseDrag(dragTime, ev.buttons);
 		}
+
+		var dragTime = Math.max(0, Math.round((x + tl.scrollLeft) / FRAMES_STEP));
+
+		if(isDragging) {
+			timeline.setTime(dragTime);
+		}
+		FieldsTimeline.onMouseDrag(dragTime, ev.buttons);
 	}
+	
 }
 
 $(window).on('mousemove', onTimeMarkerDrag);

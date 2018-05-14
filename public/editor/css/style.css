@@ -623,12 +623,34 @@ input{
 	border-left: 1px solid #456aa1;
 }
 
+.timeline-keyframe-discrete {
+	background: #c1c1c1;
+	border-left: 1px solid #505050;
+}
+
 .timeline-keyframe-smooth {
 	border-top-right-radius:6px;
 	border-bottom-right-radius:6px;
 	background: #33ffa2;
 	border-left: 1px solid #516b00;
 }
+
+.timeline-keyframe-jump-floor {
+	border-bottom-left-radius:6px;
+	border-bottom-right-radius:6px;
+	background: #e2c200;
+	border-left: 1px solid #ad7000;
+}
+
+.timeline-keyframe-jump-roof {
+	border-top-left-radius:6px;
+	border-top-right-radius:6px;
+	background: #e2c200;
+	border-left: 1px solid #ad7000;
+}
+
+
+
 
 .loop-arrow {
     pointer-events: none;

@@ -67,6 +67,10 @@ export default class MovieClip extends Sprite {
 		}
 		return serializeCache.get(this._timelineData);
 	}
+
+	static invalidateSerializeCache (timelineData) {
+		serializeCache.delete(timelineData);
+	}
 //ENDEDITOR
 
 	static _findNextField (timeLineData, time) {
@@ -130,8 +134,6 @@ export default class MovieClip extends Sprite {
 		}
 		data = deserializeCache.get(data);
 //ENDEDITOR
-		
-		data = fakeTmpData; //TODO: remove fake data
 		
 		assert(!this._timelineData || game.__EDITORmode, "Timeline data already assigned for this MovieClip");
 		assert(Array.isArray(data.f), "Wrong timeline data?");
@@ -209,128 +211,3 @@ MovieClip.EDITOR_editableProps = [
 ];
 
 //ENDEDITOR
-
-//TODO: example. will be removed
-
-var filedsTimelines = [
-	{
-		n: 'x',
-		t: [
-			{
-				v: 1,
-				t: 0,
-				m: 1,
-				j: 0
-			},
-			{
-				v: 100,	//target Value
-				t: 100,	//frame triggering Time
-				m: 0,	//Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE
-				j: 100,	//Jump to time. If no jump need - equal to 't'
-				s: 0,	//set current Speed
-				n: 'frameRef'	//next keyFrame
-			},
-			{
-				v: 300,
-				t: 200,
-				m: 1,
-				j: 200,
-				s: 50
-			},
-			{
-				v: 200,
-				t: 254,
-				m: 0,
-				j: 1
-			}
-		]
-	},
-	{
-		n: 'y',
-		t: [
-			{
-				v: 2,
-				t: 0,
-				m: 0,
-				j: 0
-			},
-			{
-				v: 320,
-				t: 122,
-				m: 0,
-				j: 122
-			},
-			{
-				v: 260,
-				t: 254,
-				m: 1,
-				j: 254
-			},
-			{
-				v: 160,
-				t: 334,
-				m: 0,
-				j: 334
-			},
-			{
-				v: 360,
-				t: 397,
-				m: 1,
-				j: 1
-			}
-		]
-	},
-	{
-		n: 'rotation',
-		t: [
-			{
-				v: -0.1,
-				t: 0,
-				m: 0,
-				j: 0
-			}, {
-				v: 0.1,
-				t: 20,
-				m: 0,
-				j: 20
-			}, {
-				v: -0.1,
-				t: 40,
-				m: 0,
-				j: 1
-			}
-		]
-	}
-];
-
-
-const loopFrames = (a) => {
-	a = a.t;
-	var i = 1;
-	while(i < a.length) {
-		a[i-1].n = a[i];
-		i++;
-	}
-	a[a.length-1].n = a[1];
-}
-loopFrames(filedsTimelines[0]);
-loopFrames(filedsTimelines[1]);
-loopFrames(filedsTimelines[2]);
-
-var labels = {
-	start: {
-		t:0,	//time to set for all frames
-		n: [	//next frames for all fileds
-			filedsTimelines[0].t[0],
-			filedsTimelines[1].t[0],
-			filedsTimelines[2].t[0]
-		]
-	}
-}
-
-var fakeTmpData = {
-	l:labels,
-	p:0.02,
-	d:0.85,
-	f:filedsTimelines
-}

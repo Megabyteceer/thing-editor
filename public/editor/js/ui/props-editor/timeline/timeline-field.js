@@ -7,7 +7,9 @@ export const FRAMES_STEP = 3;
 const keyframesClasses = [
 	'timeline-keyframe timeline-keyframe-smooth',
 	'timeline-keyframe timeline-keyframe-linear',
-	'timeline-keyframe timeline-keyframe-discrete'
+	'timeline-keyframe timeline-keyframe-discrete',
+	'timeline-keyframe timeline-keyframe-jump-floor',
+	'timeline-keyframe timeline-keyframe-jump-roof'
 ]
 
 var fieldLabelTimelineProps = {className: 'objects-timeline-labels'};
@@ -25,6 +27,7 @@ export default class FieldsTimeline extends React.Component {
 		super(props);
 		this.deleteKeyframe = this.deleteKeyframe.bind(this);
 		this.renderKeyframeChart = this.renderKeyframeChart.bind(this);
+		this.renderKeyframe = this.renderKeyframe.bind(this);
 	}
 	
 	getValueAtTime(time) {
@@ -86,39 +89,53 @@ export default class FieldsTimeline extends React.Component {
 			);
 		}
 		return R.div({key:keyFrame.t, className:keyframesClasses[keyFrame.m], onMouseDown: (ev) => {
-			debugger;
 				if(ev.buttons === 2) {
-					this.deleteKeyframe(draggingKeyframe);
+					this.deleteKeyframe(keyFrame);
 				} else {
-					draggingKeyframe = keyFrame;
+					if (this.props.field.t.indexOf(keyFrame) > 0) {
+						todo remember drag x shift
+						draggingKeyframe = keyFrame;
+						draggingTimeline = this;
+					}
 				}
 				sp(ev);
+			}, onClick:(ev) => {
+			
+				todo: select. switch type if already selected
+			
+				var types = Timeline.getKeyframeTypesForField(editor.selection[0], this.props.field.n);
+				var i = types.indexOf(keyFrame.m);
+				keyFrame.m = types[(i + 1) % types.length];
+				Timeline.renormalizeFieldTimelineDataAfterChange(this.props.field);
+				this.forceUpdate();
+				
 			},style:{left:keyFrame.t * FRAMES_STEP}},
 			loopArrow
 		);
 	}
 	
-	deleteKeyframe(keyframe) {
+	deleteKeyframe(keyFrame) {
 		var f = this.props.field;
-		var i = f.t.indexOf(keyframe);
+		var i = f.t.indexOf(keyFrame);
 		assert(i >= 0, "can't delete keyFrame.");
-		f.t.splice(i, 1);
-		Fie
-		Timeline.renormalizeFieldTimelineDataAfterChange(f);
-		this.forceUpdate();
+		if(i > 0) {
+			f.t.splice(i, 1);
+			Timeline.renormalizeFieldTimelineDataAfterChange(f);
+			this.forceUpdate();
+		}
 	}
 	
 	static onMouseDrag(time, buttons) {
 		if(buttons !== 1) {
 			draggingKeyframe = null;
 		}
-		if(draggingKeyframe && (draggingKeyframe.t !== time) {
+		if(draggingKeyframe && (draggingKeyframe.t !== time)) {
 			if(draggingKeyframe.j === draggingKeyframe.t) {
-				draggingKeyframe.t = time;
+				draggingKeyframe.j = time;
 			}
 			draggingKeyframe.t = time;
-			Timeline.renormalizeFieldTimelineDataAfterChange(f);
-			this.forceUpdate();
+			Timeline.renormalizeFieldTimelineDataAfterChange(draggingTimeline.props.field);
+			draggingTimeline.forceUpdate();
 		}
 	}
 	
@@ -158,6 +175,8 @@ export default class FieldsTimeline extends React.Component {
 		);
 	}
 }
+
+var draggingKeyframe, draggingTimeline;
 
 const calculateCacheSegmentForField = (fieldPlayer, c) => {
 	var time;
