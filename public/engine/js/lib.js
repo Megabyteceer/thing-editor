@@ -80,8 +80,19 @@ class Lib {
 	}
 	
 	static destroyObjectAndChildrens(o) {
+		
+//EDITOR
 		if(!game.__EDITORmode) {
-			o.onRemove();
+			try {
+//ENDEDITOR
+				o.onRemove();
+//EDITOR
+			} catch (er) {
+				if(!game.__EDITORmode) {
+					editor.ui.modal.showError(er.message || er);
+				}
+			}
+//ENDEDITOR
 		}
 		o.detachFromParent();
 		if (o.children) {

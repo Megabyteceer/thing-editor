@@ -11,6 +11,9 @@ var prefabLabelProps = {className: 'selectable-text', onMouseDown: function (ev)
 	sp(ev);
 }};
 
+var stoppingExecutionTime;
+var playTogglingTime;
+
 export default class Viewport extends React.Component {
 	
 	constructor(props) {
@@ -21,47 +24,54 @@ export default class Viewport extends React.Component {
 		this.onOneStepClick = this.onOneStepClick.bind(this);
 	}
 	
-	stopExecution(reason) {
-		if (reason) {
-			editor.ui.modal.showError(reason);
-		}
-		if (!game.__EDITORmode) {
-			this.onTogglePlay();
+	stopExecution() {
+		if(!stoppingExecutionTime) {
+			stoppingExecutionTime = true;
+			if (!game.__EDITORmode) {
+				this.onTogglePlay();
+			}
+			stoppingExecutionTime = false;
 		}
 	}
 	
 	onTogglePlay() {
-		game.__doOneStep = false;
-		game.__paused = false;
-		var play = game.__EDITORmode;
-		Lib.__clearStaticScenes();
-		if (play) { // launch game
-			editor.saveCurrentScene(editor.runningSceneLibSaveSlotName);
-			selectionData = editor.selection.saveSelection();
-			game.__EDITORmode = false;
-			Lib.__constructRecursive(game.currentScene);
-		} else { //stop game
-			while (game.modalsCount > 0) {
-				game.closeModal();
-			}
-			var scenesStack = game.__getScenesStack();
-			while (scenesStack.length > 0) {
-				var s = scenesStack.pop();
-				game.stage.addChild(s);
-				s.remove();
+		if(!playTogglingTime) {
+			playTogglingTime = true;
+			
+			game.__doOneStep = false;
+			game.__paused = false;
+			var play = game.__EDITORmode;
+			Lib.__clearStaticScenes();
+			if (play) { // launch game
+				editor.saveCurrentScene(editor.runningSceneLibSaveSlotName);
+				selectionData = editor.selection.saveSelection();
+				game.__EDITORmode = false;
+				Lib.__constructRecursive(game.currentScene);
+			} else { //stop game
+				while (game.modalsCount > 0) {
+					game.closeModal();
+				}
+				var scenesStack = game.__getScenesStack();
+				while (scenesStack.length > 0) {
+					var s = scenesStack.pop();
+					game.stage.addChild(s);
+					s.remove();
+				}
+				
+				game.currentScene.remove();
+				game.currentScene = null;
+				game.__EDITORmode = true;
+				editor.loadScene(editor.runningSceneLibSaveSlotName);
+				editor.selection.loadSelection(selectionData);
 			}
 			
-			game.currentScene.remove();
-			game.currentScene = null;
-			game.__EDITORmode = true;
-			editor.loadScene(editor.runningSceneLibSaveSlotName);
-			editor.selection.loadSelection(selectionData);
+			this.forceUpdate();
+			editor.history.updateUi();
+			
+			game.pixiApp.ticker._requestIfNeeded(); //restore broken ticker if necessary.
+			
+			playTogglingTime = false;
 		}
-		
-		this.forceUpdate();
-		editor.history.updateUi();
-		
-		game.pixiApp.ticker._requestIfNeeded(); //restore broken ticker if necessary.
 	}
 	
 	onPauseResumeClick() {

@@ -44,6 +44,7 @@ export default class Timeline extends React.Component {
 			keyFrame.v = o[fieldName];
 			var field = getFieldByNameOrCreate(o, fieldName);
 			FieldsTimeline.invalidateTimelineCache(field);
+			MovieClip.invalidateTimelineSerialisationCache(o);
 			renirmalizeFieldTimelineData(field);
 		});
 		
@@ -53,11 +54,13 @@ export default class Timeline extends React.Component {
 	setTime(time) {
 		this.timelineMarker.setTime(time);
 		editor.selection.some((o) => {
-			o._timelineData.f.some((f) => {
-				if(f.__cacheTimeline.hasOwnProperty(time)) {
-					o[f.n] = f.__cacheTimeline[time];
-				}
-			});
+			if(o._timelineData) {
+				o._timelineData.f.some((f) => {
+					if(f.__cacheTimeline.hasOwnProperty(time)) {
+						o[f.n] = f.__cacheTimeline[time];
+					}
+				});
+			}
 		});
 		editor.refreshPropsEditor();
 	}
@@ -79,6 +82,15 @@ export default class Timeline extends React.Component {
 }
 
 function getFieldByNameOrCreate(o, name) {
+	if(!o._timelineData) {
+		o._timelineData = {
+			d:0.85,
+			p:0.02,
+			l:{},
+			f:[]
+		}
+	}
+	
 	var fields = o._timelineData.f;
 	for(field of fields) {
 		if(field.n === name) {
@@ -138,7 +150,7 @@ function renirmalizeFieldTimelineData(fieldData) {
 	var timeLineData = fieldData.t;
 	timeLineData.sort(sortFieldsByTime);
 	for(let field of timeLineData) {
-		field.n = findNextField(timeLineData, field);
+		field.n = MovieClip._findNextField(timeLineData, field.t);
 	}
 }
 
@@ -146,22 +158,10 @@ const sortFieldsByTime = (a, b) => {
 	return a.t - b.t;
 }
 
-const findNextField = (timeLineData, forField) => {
-	var ret = timeLineData[0];
-	var time = forField.j;
-	for(let f of timeLineData) {
-		if(f.t > time) {
-			return f;
-		}
-		ret = f;
-	}
-	return ret;
-}
-
 
 const renderObjectsTimeline = (node) => {
 	var key = __getNodeExtendData(node).id;
-	if(node instanceof MovieClip) {
+	if(node instanceof MovieClip && node._timelineData) {
 		return React.createElement(ObjectsTimeline, {node, key});
 	} else {
 		return R.div({key});

@@ -38,11 +38,12 @@ typeDescriptions['color'] = {
 };
 
 typeDescriptions['timeline'] = {
-	renderer: TimelineEditor, parser:
+	renderer: TimelineEditor,
+	parser:
 		(movieClip) => {
-			return MovieClip.__serializeTimelineData(movieClip.timeline);
+			return movieClip.timeline;
 		},
-	default: 0xFFFFFF
+	default:null
 };
 
 
@@ -91,7 +92,9 @@ class PropsFieldWrapper extends React.Component {
 	render() {
 		var field = this.props.field;
 		var node = editor.selection[0];
+		editor.ui.propsEditor.__isPropsRenderingAccessTime = true;
 		var value = node[field.name];
+		editor.ui.propsEditor.__isPropsRenderingAccessTime = false;
 		
 		var renderer;
 		if (field.hasOwnProperty('select')) {

@@ -10,9 +10,6 @@ export default class MovieClip extends Sprite {
 	}
 	
 	onRemove() {
-		while (this.fieldPlayers.length > 0) {
-			Pool.dispose(this.fieldPlayers.pop());
-		}
 		this._timelineData = null;
 	}
 	
@@ -28,22 +25,124 @@ export default class MovieClip extends Sprite {
 		}
 		super.update();
 	}
-	
-	get timeline() {
-		return {}; //TODO: serialize this._timelineData;
+
+//EDITOR
+//timeline reading has sense in editor mode only
+	get timeline() { //serialize timeline to save in Lib as json. Replace keyframes references to indexes
+		if(!this._timelineData || editor.ui.propsEditor.__isPropsRenderingAccessTime) {
+			return null;
+		}
+		if(!serializeCache.has(this._timelineData)) {
+			console.warn("MovieClip serialization invoked >>>");
+			var tl = this._timelineData;
+			var fields = tl.f.map((f) => {
+				return {
+					n: f.n,
+					t: f.t.map((k) => {
+						var ret = Object.assign({}, k);
+						if(ret.j === ret.t) {
+							delete(ret.j);
+						}
+						if(ret.m === 0) {
+							delete ret.m;
+						}
+						delete ret.n;
+						return ret;
+					})
+				};
+			});
+
+			var labels = {};
+			for(let key in tl.l) {
+				var label = tl.l[key];
+				labels[key] = label.t;
+			}
+			var c = {
+				l: labels,
+				p: tl.p,
+				d: tl.d,
+				f: fields
+			}
+			serializeCache.set(this._timelineData, c);
+		}
+		return serializeCache.get(this._timelineData);
+	}
+//ENDEDITOR
+
+	static _findNextField (timeLineData, time) {
+		var ret = timeLineData[0];
+		for(let f of timeLineData) {
+			if(f.t > time) {
+				return f;
+			}
+			ret = f;
+		}
+		return ret;
 	}
 	
-	set timeline(data) {
+	static _deserializeTimelineData(tl) {
+		console.warn("MovieClip deserialization invoked <<<");
+
+		var fields = tl.f.map((f) => {
+			
+			var fieldTimeline = f.t.map((k) => {
+				var ret =  Object.assign({}, k);
+				if(!ret.hasOwnProperty('j')) {
+					ret.j = ret.t;
+				}
+				if(!ret.hasOwnProperty('m')) {
+					ret.m = 0; //- SMOOTH
+				}
+				return ret;
+			});
+			for(let f of fieldTimeline) {
+				f.n = MovieClip._findNextField(fieldTimeline, f.j);
+			}
+			return {
+				n: f.n,
+				t: fieldTimeline
+			};
+		});
 		
-		data = fakeTmpData;
+		var labels = {};
+		for(let key in tl.l) {
+			var labelTime = tl.l[key].t;
+			var nexts = fields.map((field) => {
+				return MovieClip._findNextField(field.t, labelTime-1);
+			});
+			labels[key] = {t: labelTime, n: nexts};
+		}
+		return {
+			l: labels,
+			p: tl.p,
+			d: tl.d,
+			f: fields
+		};
+	}
+
+	set timeline(data) {
+		if(data === null) return;
+//EDITOR
+		if(!deserializeCache.has(data)) {
+			var desData = MovieClip._deserializeTimelineData(data);
+			deserializeCache.set(data, desData)
+			serializeCache.set(desData, data);
+		}
+		data = deserializeCache.get(data);
+//ENDEDITOR
+		
+		data = fakeTmpData; //TODO: remove fake data
 		
 		assert(!this._timelineData || game.__EDITORmode, "Timeline data already assigned for this MovieClip");
 		assert(Array.isArray(data.f), "Wrong timeline data?");
 		this._timelineData = data;
-		
+
 		var pow = data.p; //smooth fields dynamic parameters
 		var damper = data.d;
 		
+		while (this.fieldPlayers.length > 0) {
+			Pool.dispose(this.fieldPlayers.pop());
+		}
 		var fieldsData = data.f;
 		for(var i = 0; i < fieldsData.length; i++) {
 			var p = Pool.create(FieldPlayer);
@@ -83,9 +182,14 @@ export default class MovieClip extends Sprite {
 
 //EDITOR
 
-MovieClip.__serializeTimelineData = (data) => {
-	
-	return {}
+var deserializeCache = new WeakMap();
+
+
+var serializeCache = new WeakMap();
+MovieClip.invalidateTimelineSerialisationCache = (o) => {
+	if(o._timelineData) {
+		serializeCache.delete(o._timelineData);
+	}
 }
 
 MovieClip.EDITOR_icon = 'tree/movie';
@@ -120,7 +224,7 @@ var filedsTimelines = [
 		n: 'x',
 		t: [
 			{
-				v: 250,
+				v: 1,
 				t: 0,
 				m: 1,
 				j: 0
@@ -152,7 +256,7 @@ var filedsTimelines = [
 		n: 'y',
 		t: [
 			{
-				v: 250,
+				v: 2,
 				t: 0,
 				m: 0,
 				j: 0
