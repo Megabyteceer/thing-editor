@@ -1,3 +1,4 @@
+import Timeline from "./timeline.js";
 import Pool from "/engine/js/utils/pool.js";
 import FieldPlayer from "/engine/js/components/movie-clip/field-player.js";
 
@@ -22,12 +23,8 @@ export default class FieldsTimeline extends React.Component {
 	
 	constructor(props) {
 		super(props);
+		this.deleteKeyframe = this.deleteKeyframe.bind(this);
 		this.renderKeyframeChart = this.renderKeyframeChart.bind(this);
-	}
-	
-	static invalidateTimelineCache (field) {
-		field.__cacheTimeline = false;
-		field.__cacheTimelineRendered = null;
 	}
 	
 	getValueAtTime(time) {
@@ -89,10 +86,40 @@ export default class FieldsTimeline extends React.Component {
 			);
 		}
 		return R.div({key:keyFrame.t, className:keyframesClasses[keyFrame.m], onMouseDown: (ev) => {
+			debugger;
+				if(ev.buttons === 2) {
+					this.deleteKeyframe(draggingKeyframe);
+				} else {
+					draggingKeyframe = keyFrame;
+				}
 				sp(ev);
 			},style:{left:keyFrame.t * FRAMES_STEP}},
 			loopArrow
 		);
+	}
+	
+	deleteKeyframe(keyframe) {
+		var f = this.props.field;
+		var i = f.t.indexOf(keyframe);
+		assert(i >= 0, "can't delete keyFrame.");
+		f.t.splice(i, 1);
+		Fie
+		Timeline.renormalizeFieldTimelineDataAfterChange(f);
+		this.forceUpdate();
+	}
+	
+	static onMouseDrag(time, buttons) {
+		if(buttons !== 1) {
+			draggingKeyframe = null;
+		}
+		if(draggingKeyframe && (draggingKeyframe.t !== time) {
+			if(draggingKeyframe.j === draggingKeyframe.t) {
+				draggingKeyframe.t = time;
+			}
+			draggingKeyframe.t = time;
+			Timeline.renormalizeFieldTimelineDataAfterChange(f);
+			this.forceUpdate();
+		}
 	}
 	
 	render() {
@@ -118,7 +145,7 @@ export default class FieldsTimeline extends React.Component {
 		
 		if(!field.__cacheTimelineRendered) {
 			field.__cacheTimelineRendered = R.svg({className:'timeline-chart', height:'27', width},
-				R.polyline({points:field.t.map(this.renderKeyframeChart).join(' ')})
+				R.polyline({points:field.t.map(this.renderKeyframeChart, field).join(' ')})
 			)
 		}
 		

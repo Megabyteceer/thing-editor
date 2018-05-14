@@ -183,14 +183,7 @@ export default class MovieClip extends Sprite {
 //EDITOR
 
 var deserializeCache = new WeakMap();
-
-
 var serializeCache = new WeakMap();
-MovieClip.invalidateTimelineSerialisationCache = (o) => {
-	if(o._timelineData) {
-		serializeCache.delete(o._timelineData);
-	}
-}
 
 MovieClip.EDITOR_icon = 'tree/movie';
 MovieClip.EDITOR_editableProps = [

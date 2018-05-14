@@ -34,20 +34,21 @@ export default class Timeline extends React.Component {
 	
 	onBeforePropertyChanged(fieldName) {
 		editor.selection.some((o) => {
-			getFrameAtTimeOrCreate(o, fieldName, 0);
+			if(o instanceof MovieClip) {
+				getFrameAtTimeOrCreate(o, fieldName, 0);
+			}
 		});
 	}
 	
 	onAfterPropertyChanged(fieldName) {
 		editor.selection.some((o) => {
-			var keyFrame = getFrameAtTimeOrCreate(o, fieldName, this.timelineMarker.state.time);
-			keyFrame.v = o[fieldName];
-			var field = getFieldByNameOrCreate(o, fieldName);
-			FieldsTimeline.invalidateTimelineCache(field);
-			MovieClip.invalidateTimelineSerialisationCache(o);
-			renirmalizeFieldTimelineData(field);
+			if(o instanceof MovieClip) {
+				var keyFrame = getFrameAtTimeOrCreate(o, fieldName, this.timelineMarker.state.time);
+				keyFrame.v = o[fieldName];
+				var field = getFieldByNameOrCreate(o, fieldName);
+				renormalizeFieldTimelineDataAfterChange(field);
+			}
 		});
-		
 		timeline.forceUpdate();
 	}
 	
@@ -146,13 +147,25 @@ function getKeyframeTypesForField(o, name) {
 	return keyframeTypesDiscreteOnly;
 }
 
-function renirmalizeFieldTimelineData(fieldData) {
+function renormalizeFieldTimelineDataAfterChange(fieldData) {
 	var timeLineData = fieldData.t;
 	timeLineData.sort(sortFieldsByTime);
 	for(let field of timeLineData) {
 		field.n = MovieClip._findNextField(timeLineData, field.t);
 	}
+	debugger;
+	fieldData.__cacheTimeline = false;
+	fieldData.__cacheTimelineRendered = null;
+	for(var o in editor.selection) {
+		if(o._timelineData && o._timelineData.f.some((f) => { //get movieclip by field's timeline data and invalidate whole serialisation cache
+			return f === fieldData;
+		})) {
+			serializeCache.delete(o._timelineData);
+		}
+	}
 }
+
+Timeline.renormalizeFieldTimelineDataAfterChange = renormalizeFieldTimelineDataAfterChange;
 
 const sortFieldsByTime = (a, b) => {
 	return a.t - b.t;
@@ -227,17 +240,26 @@ function onTimelineMouseDown(ev) {
 
 function onTimeMarkerDrag(ev) {
 	isDragging = (isDragging && (ev.buttons === 1));
-	if(isDragging) {
+	
 		var tl = $('.timeline')[0];
 		if(tl) {
 			var b = tl.getBoundingClientRect();
 			var x = ev.clientX - 110 - b.x;
-			timeline.setTime(Math.max(0, Math.round((x + tl.scrollLeft) / FRAMES_STEP)));
-			if(x < 20) {
-				tl.scrollLeft -= 20;
-			} else if((x - b.width + 110) > -20) {
-				tl.scrollLeft += 50;
+			
+			if(ev.buttons !== 0) {
+				if (x < 20) {
+					tl.scrollLeft -= 20;
+				} else if ((x - b.width + 110) > -20) {
+					tl.scrollLeft += 50;
+				}
 			}
+			
+			var dragTime = Math.max(0, Math.round((x + tl.scrollLeft) / FRAMES_STEP));
+			
+			if(isDragging) {
+				timeline.setTime(dragTime);
+			}
+			FieldsTimeline.onMouseDrag(dragTime, ev.buttons);
 		}
 	}
 }
