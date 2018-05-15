@@ -100,6 +100,11 @@ export default class FieldsTimeline extends React.Component {
 			className += ' timeline-keyframe-selected'
 		}
 		
+		var mark;
+		if(keyFrame.hasOwnProperty('a')) {
+			mark = 'A';
+		}
+		
 		return R.div({key:keyFrame.t, className:className, onMouseDown: (ev) => {
 				if(ev.buttons === 2) {
 					this.deleteKeyframe(keyFrame);
@@ -120,6 +125,7 @@ export default class FieldsTimeline extends React.Component {
 					this.forceUpdate();
 				}
 			},style:{left:keyFrame.t * FRAMES_STEP}},
+			mark,
 			loopArrow
 		);
 	}
@@ -132,6 +138,13 @@ export default class FieldsTimeline extends React.Component {
 			kf.b = 0.5; //JUMP ROOF, JUMP FLOOR default gravity and boouncing
 			kf.g = 0.5;
 		}
+		
+		if(kf.hasOwnProperty('a')) {
+			if(!kf.a) {
+				delete kf.a;
+			}
+ 		}
+		
 		Timeline.renormalizeFieldTimelineDataAfterChange(this.props.field);
 		this.forceUpdate();
 	}
