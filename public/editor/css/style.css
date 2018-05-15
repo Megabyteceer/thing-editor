@@ -619,7 +619,7 @@ input{
 }
 
 .timeline-keyframe-selected {
-    outline: 2px solid #ff0;
+    outline: 2px solid #ff9d00;
 }
 
 .timeline-keyframe-linear {
@@ -716,7 +716,22 @@ input{
 }
 
 .bottom-panel {
+    padding: 8px;
     position: fixed;
+    z-index: 8;
+    background: #cccfda;
+    border-top: 1px solid #567;
+}
+
+.bottom-panel input, .bottom-panel .select-editor{
+	width:initial;
+	display:inline-block;
+}
+
+.objects-timeline-labels button {
+	padding:0 4px;
+	border-radius:0;
+	margin:1px;
 }
 
 

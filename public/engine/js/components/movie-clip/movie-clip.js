@@ -153,6 +153,12 @@ export default class MovieClip extends Sprite {
 		}
 	}
 	
+	resetTimeline() {
+		for (let p of this.fieldPlayers) {
+			p.reset();
+		}
+	}
+	
 	gotoLabel(labelName) {
 		var label = this.labels[labelName];
 		let l = this.fieldPlayers.length;

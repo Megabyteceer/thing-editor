@@ -7,11 +7,21 @@ const FRAMES_STEP = 3;
 var timelineContainerProps = {className: 'timeline list-view', onScroll:onTimelineScroll, onMouseDown:onTimelineMouseDown};
 var objectsTimelineProps = {className: 'objects-timeline'};
 var fieldLabelTimelineProps = {className: 'objects-timeline-labels'};
-var leftTopPanel = {className: 'timeline-left-top-panel'};
+var leftTopPanel = {className: 'timeline-left-top-panel', onMouseDown:sp, onMouseMove:sp};
 
 var timeline;
 var timelineElement;
 var lastTimelineBounds;
+
+var affectedMovieclips = new Map();
+function removeAffectFromUnselected(all) {
+	affectedMovieclips.forEach((value, o) => {
+		if(all || !__getNodeExtendData(o).isSelected) {
+			o.resetTimeline();
+			affectedMovieclips.delete(o);
+		}
+	});
+}
 
 export default class Timeline extends React.Component {
 	constructor(props) {
@@ -36,6 +46,7 @@ export default class Timeline extends React.Component {
 		timelineElement = null;
 		editor.beforePropertyChanged.remove(this.onBeforePropertyChanged);
 		editor.afterPropertyChanged.remove(this.onAfterPropertyChanged);
+		removeAffectFromUnselected(true);
 	}
 	
 	createKeyframeAtFieldData(fieldData) {
@@ -62,7 +73,7 @@ export default class Timeline extends React.Component {
 	onAfterPropertyChanged(fieldName) {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
-				createKeyframeWithCurrentObjectsValue(o, fieldName);
+				this.createKeyframeWithCurrentObjectsValue(o, fieldName);
 			}
 		});
 		timeline.forceUpdate();
@@ -85,6 +96,7 @@ export default class Timeline extends React.Component {
 		this.timelineMarker.setTime(time, scrollInToView);
 		editor.selection.some((o) => {
 			if(o._timelineData) {
+				affectedMovieclips.set(o, true);
 				o._timelineData.f.some((f) => {
 					if(f.__cacheTimeline.hasOwnProperty(time)) {
 						o[f.n] = f.__cacheTimeline[time];
@@ -115,6 +127,7 @@ export default class Timeline extends React.Component {
 	}
 	
 	render() {
+		removeAffectFromUnselected();
 		return R.fragment (
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
 			R.div(timelineContainerProps,
@@ -244,7 +257,7 @@ function renormalizeLabel(label, timelineData) { //re find keyframes for modifie
 }
 
 function renormalizeAllLabels(timelineData) {
-	for(label of timelineData.l) {
+	for(let label of timelineData.l) {
 		renormalizeLabel(label, timelineData);
 	}
 }
@@ -308,7 +321,6 @@ class TimeMarker extends React.Component {
 	setTime(time, scrollInToView) {
 		this.setState({time});
 		if(scrollInToView) {
-			debugger;
 			timelineElement.scrollLeft = time * FRAMES_STEP -  Timeline.getTimelineWindowBounds().width / 2;
 		}
 	}
@@ -370,29 +382,34 @@ function onTimelineScroll(ev) {
 
 var isDragging = false;
 var draggingXShift = 0;
+var draggingLabel;
 var mouseTimelineTime = 0;
 
 function onTimelineMouseDown(ev) {
 	var b = Timeline.getTimelineWindowBounds();
 	var tl = Timeline.getTimelineElement();
 	if((ev.clientX - b.x) < b.width && (ev.clientY - b.y) < b.height) {
-		if(t.hasClass('timeline-keyframe')) {
+		if($(ev.target).hasClass('timeline-keyframe')) {
 			draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
 		} else {
 			draggingXShift = 0;
+			isDragging = true;
 		}
-		
-		isDragging = true;
 		onMouseMove(ev);
 	}
 }
 
 function onMouseMove(ev) {
+	
+	if($(ev.target).closest('.bottom-panel').length > 0) {
+		return;
+	}
+	
 	isDragging = (isDragging && (ev.buttons === 1));
 
 	var b = Timeline.getTimelineWindowBounds();
 	var tl = Timeline.getTimelineElement();
-	if(b) {
+	if(tl) {
 		var x = ev.clientX - 110 - b.x - draggingXShift;
 
 		if(ev.buttons !== 0) {
@@ -401,6 +418,8 @@ function onMouseMove(ev) {
 			} else if ((x - b.width + 110) > -20) {
 				tl.scrollLeft += 50;
 			}
+		} else {
+			draggingLabel = null;
 		}
 		
 		mouseTimelineTime = Math.max(0, Math.round((x + tl.scrollLeft) / FRAMES_STEP));

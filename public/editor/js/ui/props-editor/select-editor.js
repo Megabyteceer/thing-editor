@@ -36,7 +36,7 @@ class SelectEditor extends React.Component {
 	
 	render() {
 		
-		var list = this.props.field.select;
+		var list = this.props.select || this.props.field.select;
 		
 		var items;
 		

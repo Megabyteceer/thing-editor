@@ -77,7 +77,7 @@ export default class FieldPlayer {
 				this.val += this.speed;
 			}
 		} else if(currentFrame.m === 3) { //JUMP ROOF
-			this.speed += currentFrame.g;
+			this.speed -= currentFrame.g;
 			if(this.val <= currentFrame.v) {
 				this.val = currentFrame.v;
 				this.speed *= currentFrame.b;
