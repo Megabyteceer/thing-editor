@@ -210,7 +210,7 @@ function renormalizeFieldTimelineDataAfterChange(fieldData) { //invalidate cache
 	var timeLineData = fieldData.t;
 	timeLineData.sort(sortFieldsByTime);
 	for(let field of timeLineData) {
-		field.n = MovieClip._findNextField(timeLineData, field.t);
+		field.n = MovieClip._findNextField(timeLineData, field.j);
 	}
 
 	fieldData.__cacheTimeline = false;
