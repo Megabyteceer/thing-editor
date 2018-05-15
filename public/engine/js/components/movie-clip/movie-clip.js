@@ -112,7 +112,7 @@ export default class MovieClip extends Sprite {
 		for(let key in tl.l) {
 			var labelTime = tl.l[key].t;
 			var nexts = fields.map((field) => {
-				return MovieClip._findNextField(field.t, labelTime-1);
+				return MovieClip._findNextField(field.t, labelTime - 1);
 			});
 			labels[key] = {t: labelTime, n: nexts};
 		}

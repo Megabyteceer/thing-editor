@@ -35,9 +35,15 @@ export default class FieldPlayer {
 		var currentFrame = this.currentFrame;
 		if (this.time === currentFrame.t) {
 
-			if (currentFrame.hasOwnProperty('c')) {
-				console.log('timeline CALL: ' + this.target.name + '; '+ currentFrame.t + '; ' + currentFrame.c );
-				call(this.currentFrame.call, this.target);
+			if (currentFrame.hasOwnProperty('a')) {
+//EDITOR
+				if(!this.__dontCallActions) {
+					console.log('timeline CALL: ' + this.target.name + '; ' + currentFrame.t + '; ' + currentFrame.a);
+//ENDEDITOR
+					call(currentFrame.a, this.target);
+//EDITOR
+				}
+//ENDEDITOR
 			}
 			
 			if(currentFrame.hasOwnProperty('s')) {
@@ -60,11 +66,29 @@ export default class FieldPlayer {
 			}
 		}
 
-		if (currentFrame.m === 0) { //Smooth mode
+		if (currentFrame.m === 0) { //- SMOOTH
 			this.speed += (currentFrame.v - this.val) * this.pow;
 			this.speed *= this.damper;
+			this.val += this.speed;
+		} else if(currentFrame.m === 1) { //LINEAR
+			this.val += this.speed;
+		} else if(currentFrame.m === 3) { //JUMP FLOOR
+			this.speed += currentFrame.g;
+			if(this.val >= currentFrame.v) {
+				this.val = currentFrame.v;
+				this.speed *= currentFrame.b;
+			} else {
+				this.val += this.speed;
+			}
+		} else if(currentFrame.m === 3) { //JUMP ROOF
+			this.speed += currentFrame.g;
+			if(this.val <= currentFrame.v) {
+				this.val = currentFrame.v;
+				this.speed *= currentFrame.b;
+			} else {
+				this.val += this.speed;
+			}
 		}
-		this.val += this.speed;
 
 		this.target[this.fieldName] = this.val;
 		this.time++;

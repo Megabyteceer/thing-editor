@@ -618,6 +618,10 @@ input{
     height: 24px;
 }
 
+.timeline-keyframe-selected {
+    outline: 2px solid #ff0;
+}
+
 .timeline-keyframe-linear {
 	background: #8db2ff;
 	border-left: 1px solid #456aa1;
@@ -709,8 +713,14 @@ input{
 	width: 230px;
 	margin: 2px 12px;
 	color:#213950;
-	white-space nowrap;
 }
+
+.bottom-panel {
+    position: fixed;
+}
+
+
+
 
 
 
