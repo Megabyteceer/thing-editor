@@ -1,8 +1,9 @@
 import Timeline from "./timeline.js";
 import Pool from "/engine/js/utils/pool.js";
 import FieldPlayer from "/engine/js/components/movie-clip/field-player.js";
+import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
 
-export const FRAMES_STEP = 3;
+const FRAMES_STEP = 3;
 
 const keyframesClasses = [
 	'timeline-keyframe-smooth',
@@ -177,15 +178,41 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	onGoLeftClick() {
-		
+		debugger;
+		var field = this.props.field
+		var currentTime = Timeline.timeline.getTime();
+		while(currentTime > 0) {
+			currentTime--;
+			if(MovieClip._findNextField(field, currentTime).t === currentTime){
+				Timeline.timeline.setTime(currentTime, true);
+				return;
+			}
+		}
+		Timeline.timeline.setTime(field.t[field.t.length - 1].t, true);
 	}
 	
 	onGoRightClick() {
-		
+		debugger;
+		var field = this.props.field
+		var currentTime = Timeline.timeline.getTime();
+		var lastTime = field.t[field.t.length - 1].t;
+		if(currentTime >= lastTime) {
+			Timeline.timeline.setTime(0, true);
+		} else {
+			var nextKeyframe = MovieClip._findNextField(field, currentTime);
+			Timeline.timeline.setTime(nextKeyframe.t, true);
+		}
 	}
 	
 	onToggleKeyframeClick() {
-		
+		var field = this.props.field
+		var currentTime = Timeline.timeline.getTime();
+		var currentKeyframe = MovieClip._findNextField(field, currentTime - 1);
+		if(currentKeyframe.t === currentTime) {
+			Timeline.timeline.createKeyframeAtFieldData(field);
+		} else {
+			this.deleteKeyframe(currentKeyframe);
+		}
 	}
 	
 	render() {
@@ -272,8 +299,12 @@ class KeyframePropertyEditor extends React.Component {
 		this.onActionChange = this.onActionChange.bind(this);
 		this.onGravityChange = this.onGravityChange.bind(this);
 		this.onBouncingChange = this.onBouncingChange.bind(this);
+		this.onSetSpeeedExistsChanged = this.onSetSpeeedExistsChanged.bind(this);
+		this.onSpeedChanged = this.onSpeedChanged.bind(this);
+		this.onJumpExistsChanged = this.onJumpExistsChanged.bind(this);
+		this.onJumpChanged = this.onJumpChanged.bind(this);
 	}
-	
+
 	setKeyframe(kf) {
 		if(selectedKeyframe === kf) {
 			this.forceUpdate();
@@ -298,14 +329,52 @@ class KeyframePropertyEditor extends React.Component {
 	}
 	
 	onActionChange(ev) {
-		debugger
+		debugger;
 		var kf = this.state.keyFrame;
 		kf.a = ev.target.value;
 		this.props.onKeyframeChanged(kf);
 	}
 	
+	onSpeedChanged(ev) {
+		debugger;
+		var kf = this.state.keyFrame;
+		kf.s = ev.target.value;
+		this.props.onKeyframeChanged(kf);
+		this.forceUpdate();
+	}
+	
+	onSetSpeeedExistsChanged(ev) {
+		debugger;
+		var kf = this.state.keyFrame;
+		if(ev.target.checked) {
+			kf.s = 0;
+		} else {
+			delete kf.s;
+		}
+		this.props.onKeyframeChanged(kf);
+	}
+	
+	onJumpExistsChanged(ev) {
+		debugger;
+		var kf = this.state.keyFrame;
+		if(ev.target.checked) {
+			kf.j = 0;
+		} else {
+			kf.j = kf.t;
+		}
+		this.props.onKeyframeChanged(kf);
+	}
+	
+	onJumpChanged(ev) {
+		debugger;
+		var kf = this.state.keyFrame;
+		kf.j = Math.round(ev.target.value);
+		this.props.onKeyframeChanged(kf);
+		this.forceUpdate();
+	}
+	
 	render () {
-		
+		debugger;
 		var kf = this.state.keyFrame;
 		if(!kf) {
 			return R.div();
@@ -325,10 +394,32 @@ class KeyframePropertyEditor extends React.Component {
 		
 		var b = Timeline.getTimelineWindowBounds();
 		
-		return R.div({className: 'bottom-panel', style:{left: b.left, bottom: b.bottom}}, 'type:', React.createElement(SelectEditor, {select:types, onSelect:(selectedTypeId) => {
-			kf.m = selectKeyframeTypes.indexOf(types[selectedTypeId]);
-			this.props.onKeyframeChanged(kf);
-		}}), rgavityAndBouncingEditor, ' action:', R.input({value:kf.a, onChange:this.onActionChange}));
+		var hasSpeed =  kf.hasOwnProperty('s');
+		var speedEditor;
+		if(hasSpeed) {
+			speedEditor = R.input({value: kf.s, type:'number', step:0.01, min: -1000, max: 1000, onChange: this.onSpeedChanged});
+		}
+		
+		var hasJump = kf.j !== kt.t;
+		var jumpEditor;
+		if(hasJump) {
+			jumpEditor = R.input({value: kf.s, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
+		}
+		
+		return R.div({className: 'bottom-panel', style:{left: b.left, bottom: b.bottom}},
+			' action:', R.input({value:kf.a, onChange:this.onActionChange}),
+			'type:', React.createElement(SelectEditor, {select:types, onSelect:(selectedTypeId) => {
+				kf.m = selectKeyframeTypes.indexOf(types[selectedTypeId]);
+				this.props.onKeyframeChanged(kf);
+			}}),
+			rgavityAndBouncingEditor,
+			' speed set: ',
+			R.input({type:'checkbox', onChanged: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
+			speedEditor,
+			' jump time: ',
+			R.input({type:'checkbox', onChanged: this.onJumpExistsChanged, checked:hasJump}),
+			jumpEditor
+		);
 	}
 }
 

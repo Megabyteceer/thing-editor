@@ -155,7 +155,7 @@ export default class MovieClip extends Sprite {
 	
 	gotoLabel(labelName) {
 		var label = this.labels[labelName];
-		let l = label.n;
+		let l = this.fieldPlayers.length;
 		for(let i =0; i < l; i++) {
 			this.fieldPlayers[i].goto(label.t, label.n[i]);
 		}

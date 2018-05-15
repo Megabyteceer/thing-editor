@@ -2,9 +2,7 @@ import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
 import FieldsTimeline from "./timeline-field.js";
 import SelectEditor from '../select-editor.js';
 
-export const FRAMES_STEP = 3;
-
-
+const FRAMES_STEP = 3;
 
 var timelineContainerProps = {className: 'timeline list-view', onScroll:onTimelineScroll, onMouseDown:onTimelineMouseDown};
 var objectsTimelineProps = {className: 'objects-timeline'};
@@ -20,6 +18,7 @@ export default class Timeline extends React.Component {
 		super(props);
 		this.state = {};
 		timeline = this;
+		Timeline.timeline = this;
 		this.timelineMarkerRef = this.timelineMarkerRef.bind(this);
 		this.onBeforePropertyChanged = this.onBeforePropertyChanged.bind(this);
 		this.onAfterPropertyChanged = this.onAfterPropertyChanged.bind(this);
@@ -39,6 +38,19 @@ export default class Timeline extends React.Component {
 		editor.afterPropertyChanged.remove(this.onAfterPropertyChanged);
 	}
 	
+	createKeyframeAtFieldData(fieldData) {
+		debugger;
+		this.createKeyframeWithCurrentObjectsValue(getMovieclipByFieldData(fieldData), fieldData.name);
+		renormalizeFieldTimelineDataAfterChange(fieldData);
+	}
+	
+	createKeyframeWithCurrentObjectsValue(o, fieldName) {
+		var keyFrame = getFrameAtTimeOrCreate(o, fieldName, this.timelineMarker.state.time);
+		keyFrame.v = o[fieldName];
+		var field = getFieldByNameOrCreate(o, fieldName);
+		renormalizeFieldTimelineDataAfterChange(field);
+	}
+	
 	onBeforePropertyChanged(fieldName) {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
@@ -50,10 +62,7 @@ export default class Timeline extends React.Component {
 	onAfterPropertyChanged(fieldName) {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
-				var keyFrame = getFrameAtTimeOrCreate(o, fieldName, this.timelineMarker.state.time);
-				keyFrame.v = o[fieldName];
-				var field = getFieldByNameOrCreate(o, fieldName);
-				renormalizeFieldTimelineDataAfterChange(field);
+				createKeyframeWithCurrentObjectsValue(o, fieldName);
 			}
 		});
 		timeline.forceUpdate();
@@ -64,6 +73,7 @@ export default class Timeline extends React.Component {
 		var i = tl.f.indexOf(field);
 		assert(i >= 0, "Can't find field in timeline");
 		tl.f.splice(i,1);
+		renormalizeAllLabels(tl);
 		this.forceUpdate();
 	}
 	
@@ -71,8 +81,8 @@ export default class Timeline extends React.Component {
 		return this.timelineMarker.state.time;
 	}
 	
-	setTime(time) {
-		this.timelineMarker.setTime(time);
+	setTime(time, scrollInToView) {
+		this.timelineMarker.setTime(time, scrollInToView);
 		editor.selection.some((o) => {
 			if(o._timelineData) {
 				o._timelineData.f.some((f) => {
@@ -197,14 +207,18 @@ function renormalizeFieldTimelineDataAfterChange(fieldData) { //invalidate cache
 	
 }
 
-function getTimelineDataByFieldData(fieldData) {
+function getMovieclipByFieldData(fieldData) {
 	for(var o of editor.selection) {
 		if(o._timelineData && o._timelineData.f.some((f) => { //get movieclip by field's timeline data and invalidate whole serialisation cache
 				return f === fieldData;
 			})) {
-			return o._timelineData;
+			return o;
 		}
 	}
+}
+
+function getTimelineDataByFieldData(fieldData) {
+	return getMovieclipByFieldData(fieldData)._timelineData;
 }
 
 Timeline.renormalizeFieldTimelineDataAfterChange = renormalizeFieldTimelineDataAfterChange;
@@ -224,14 +238,15 @@ const renderObjectsTimeline = (node) => {
 }
 
 function renormalizeLabel(label, timelineData) { //re find keyframes for modified label
-	debugger;
 	label.n = timelineData.f.map((fieldTimeline) => {
 		return MovieClip._findNextField(fieldTimeline, label.t - 1);
 	});
 }
 
 function renormalizeAllLabels(timelineData) {
-	
+	for(label of timelineData.l) {
+		renormalizeLabel(label, timelineData);
+	}
 }
 
 function askForLabelName(existingLabelsNames) {
@@ -290,8 +305,12 @@ class TimeMarker extends React.Component {
 		this.state = {time:0};
 	}
 	
-	setTime(time) {
+	setTime(time, scrollInToView) {
 		this.setState({time});
+		if(scrollInToView) {
+			debugger;
+			timelineElement.scrollLeft = time * FRAMES_STEP -  Timeline.getTimelineWindowBounds().width / 2;
+		}
 	}
 	
 	render() {

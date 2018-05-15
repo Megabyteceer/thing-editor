@@ -18,11 +18,7 @@ export default class FieldPlayer {
 		this.val = this.currentFrame.v;
 		this.targetVal = this.val;
 		this.currentTime = 0;
-		if(this.currentFrame.hasOwnProperty('s')) {
-			this.speed = this.currentFrame.s;
-		} else {
-			this.speed = 0;
-		}
+		this.speed = 0;
 		this.target[this.fieldName] = this.val;
 	}
 	
