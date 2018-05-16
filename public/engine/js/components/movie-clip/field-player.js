@@ -28,6 +28,7 @@ export default class FieldPlayer {
 	}
 	
 	update() {
+		this.val += this.speed;
 		var currentFrame = this.currentFrame;
 		if (this.time === currentFrame.t) {
 
@@ -46,18 +47,18 @@ export default class FieldPlayer {
 				this.speed = currentFrame.s;
 			}
 			
-			if (currentFrame.m !== 0) { //discrete and linear Mode fields apply exact value
+			if (currentFrame.m === 1 || currentFrame.m === 2) { //discrete and linear Mode fields apply exact value
 				this.val = currentFrame.v;
 			}
 			
 			this.time = currentFrame.j;
 			this.currentFrame = currentFrame = currentFrame.n;
-			if(currentFrame.m === 1) {// linear Mode
+			if(currentFrame.m === 1) {// LINEAR Mode
 				var dist = currentFrame.t - this.time;
 				if(dist > 0) {
 					this.speed = (currentFrame.v - this.val) / dist;
 				}
-			} else if(currentFrame.m === 2) {// discrete Mode
+			} else if(currentFrame.m === 2) {// DISCRETE Mode
 				this.speed = 0;
 			}
 		}
@@ -65,27 +66,21 @@ export default class FieldPlayer {
 		if (currentFrame.m === 0) { //- SMOOTH
 			this.speed += (currentFrame.v - this.val) * this.pow;
 			this.speed *= this.damper;
-			this.val += this.speed;
-		} else if(currentFrame.m === 1) { //LINEAR
-			this.val += this.speed;
 		} else if(currentFrame.m === 3) { //JUMP FLOOR
-			this.speed += currentFrame.g;
 			if(this.val >= currentFrame.v) {
 				this.val = currentFrame.v;
-				this.speed *= currentFrame.b;
+				this.speed *= -currentFrame.b;
 			} else {
-				this.val += this.speed;
+				this.speed += currentFrame.g;
 			}
 		} else if(currentFrame.m === 3) { //JUMP ROOF
-			this.speed -= currentFrame.g;
 			if(this.val <= currentFrame.v) {
 				this.val = currentFrame.v;
-				this.speed *= currentFrame.b;
+				this.speed *= -currentFrame.b;
 			} else {
-				this.val += this.speed;
+				this.speed -= currentFrame.g;
 			}
 		}
-
 		this.target[this.fieldName] = this.val;
 		this.time++;
 	}

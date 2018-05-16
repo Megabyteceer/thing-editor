@@ -33,30 +33,36 @@ export default class Timeline extends React.Component {
 		this.onBeforePropertyChanged = this.onBeforePropertyChanged.bind(this);
 		this.onAfterPropertyChanged = this.onAfterPropertyChanged.bind(this);
 		this.keyframePropretyEditorRef = this.keyframePropretyEditorRef.bind(this);
+		this.onPlayStopToggle = this.onPlayStopToggle.bind(this);
 	}
 	
 	componentDidMount() {
 		timelineElement = $('.timeline')[0];
-		
+		editor.ui.viewport.beforePlayStopToggle.add(this.onPlayStopToggle)
 		editor.beforePropertyChanged.add(this.onBeforePropertyChanged);
 		editor.afterPropertyChanged.add(this.onAfterPropertyChanged);
 	}
 	
 	componentWillUnmount() {
 		timelineElement = null;
+		editor.ui.viewport.beforePlayStopToggle.remove(this.onPlayStopToggle)
 		editor.beforePropertyChanged.remove(this.onBeforePropertyChanged);
 		editor.afterPropertyChanged.remove(this.onAfterPropertyChanged);
 		removeAffectFromUnselected(true);
 	}
 	
-	createKeyframeAtFieldData(fieldData) {
-		debugger;
-		this.createKeyframeWithCurrentObjectsValue(getMovieclipByFieldData(fieldData), fieldData.name);
+	onPlayStopToggle() {
+		removeAffectFromUnselected(true);
+		this.setTime(0, true);
+	}
+	
+	createKeyframeAtFieldData(fieldData, time) {
+		this.createKeyframeWithCurrentObjectsValue(getMovieclipByFieldData(fieldData), fieldData.n, time);
 		renormalizeFieldTimelineDataAfterChange(fieldData);
 	}
 	
-	createKeyframeWithCurrentObjectsValue(o, fieldName) {
-		var keyFrame = getFrameAtTimeOrCreate(o, fieldName, this.timelineMarker.state.time);
+	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
+		var keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.timelineMarker.state.time);
 		keyFrame.v = o[fieldName];
 		var field = getFieldByNameOrCreate(o, fieldName);
 		renormalizeFieldTimelineDataAfterChange(field);
@@ -85,6 +91,8 @@ export default class Timeline extends React.Component {
 		assert(i >= 0, "Can't find field in timeline");
 		tl.f.splice(i,1);
 		renormalizeAllLabels(tl);
+		MovieClip.invalidateSerializeCache(tl);
+		editor.sceneModified();
 		this.forceUpdate();
 	}
 	
@@ -94,17 +102,19 @@ export default class Timeline extends React.Component {
 	
 	setTime(time, scrollInToView) {
 		this.timelineMarker.setTime(time, scrollInToView);
-		editor.selection.some((o) => {
-			if(o._timelineData) {
-				affectedMovieclips.set(o, true);
-				o._timelineData.f.some((f) => {
-					if(f.__cacheTimeline.hasOwnProperty(time)) {
-						o[f.n] = f.__cacheTimeline[time];
-					}
-				});
-			}
-		});
-		editor.refreshPropsEditor();
+		if(game.__EDITORmode) {
+			editor.selection.some((o) => {
+				if(o._timelineData) {
+					affectedMovieclips.set(o, true);
+					o._timelineData.f.some((f) => {
+						if(f.__cacheTimeline.hasOwnProperty(time)) {
+							o[f.n] = f.__cacheTimeline[time];
+						}
+					});
+				}
+			});
+			editor.refreshPropsEditor();
+		}
 	}
 	
 	timelineMarkerRef(ref) {
@@ -210,14 +220,13 @@ function renormalizeFieldTimelineDataAfterChange(fieldData) { //invalidate cache
 	var timeLineData = fieldData.t;
 	timeLineData.sort(sortFieldsByTime);
 	for(let field of timeLineData) {
-		field.n = MovieClip._findNextField(timeLineData, field.j);
+		field.n = MovieClip._findNextKeyframe(timeLineData, field.j);
 	}
 
 	fieldData.__cacheTimeline = false;
 	fieldData.__cacheTimelineRendered = null;
 	MovieClip.invalidateSerializeCache(getTimelineDataByFieldData(fieldData));
-	
-	
+	editor.sceneModified();
 }
 
 function getMovieclipByFieldData(fieldData) {
@@ -252,13 +261,14 @@ const renderObjectsTimeline = (node) => {
 
 function renormalizeLabel(label, timelineData) { //re find keyframes for modified label
 	label.n = timelineData.f.map((fieldTimeline) => {
-		return MovieClip._findNextField(fieldTimeline, label.t - 1);
+		return MovieClip._findNextKeyframe(fieldTimeline, label.t - 1);
 	});
 }
 
 function renormalizeAllLabels(timelineData) {
-	for(let label of timelineData.l) {
-		renormalizeLabel(label, timelineData);
+	for(let key in timelineData.l) {
+        if(!timelineData.l.hasOwnProperty(key)) continue;
+		renormalizeLabel(timelineData.l[key], timelineData);
 	}
 }
 
@@ -423,7 +433,8 @@ function onMouseMove(ev) {
 		}
 		
 		mouseTimelineTime = Math.max(0, Math.round((x + tl.scrollLeft) / FRAMES_STEP));
-
+		timeline.mouseTimelineTime = mouseTimelineTime;
+		
 		if(isDragging) {
 			timeline.setTime(mouseTimelineTime);
 		}

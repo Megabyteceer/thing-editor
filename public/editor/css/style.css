@@ -139,6 +139,15 @@ button {
 	margin: 5px 20px;
 }
 
+.danger-btn {
+	background:#880000;
+	color:#fff;
+}
+
+.danger-btn:hover {
+	background:#c50000;
+}
+
 .main-btn:hover {
 	background:#0cb70c;
 }
@@ -620,6 +629,10 @@ input{
 
 .timeline-keyframe-selected {
     outline: 2px solid #ff9d00;
+}
+
+.timeline-keyframe-nextofselected {
+    border-bottom: 2px solid #ff9d00;
 }
 
 .timeline-keyframe-linear {

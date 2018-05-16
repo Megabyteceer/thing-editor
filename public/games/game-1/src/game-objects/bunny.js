@@ -10,6 +10,7 @@ class Bunny extends Sprite {
 	
 	update() {
 		if (this.y > H) {
+			this.y = H;
 			this.ySpeed *= -1;
 			this.onTouchBounds();
 		} else {
@@ -25,7 +26,7 @@ class Bunny extends Sprite {
 	}
 	
 	onTouchBounds() {
-		this.rotation = (Math.random() - 0.5) * 0.2;
+		//this.rotation = (Math.random() - 0.5) * 0.2;
 	}
 }
 

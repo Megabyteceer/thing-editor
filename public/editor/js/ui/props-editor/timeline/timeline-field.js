@@ -5,6 +5,8 @@ import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
 import SelectEditor from "../select-editor.js";
 
 const FRAMES_STEP = 3;
+const DEFAULT_GRAVITY = 1; //JUMP ROOF, JUMP FLOOR default gravity and boouncing
+const DEFAULT_BOUNCING = 0.4;
 
 const keyframesClasses = [
 	'timeline-keyframe-smooth',
@@ -15,8 +17,6 @@ const keyframesClasses = [
 ]
 
 var fieldLabelTimelineProps = {className: 'objects-timeline-labels', onMouseDown:sp, onMouseMove:sp};
-var fieldTimelineProps = {className: 'field-timeline'};
-
 
 var _scale, _shift;
 const scale = (val) => {
@@ -35,6 +35,7 @@ export default class FieldsTimeline extends React.Component {
 		this.onGoLeftClick = this.onGoLeftClick.bind(this);
 		this.onGoRightClick = this.onGoRightClick.bind(this);
 		this.onToggleKeyframeClick = this.onToggleKeyframeClick.bind(this);
+		this.toggleKeyframeType = this.toggleKeyframeType.bind(this);
 	}
 	
 	componentWillUnmount() {
@@ -77,6 +78,8 @@ export default class FieldsTimeline extends React.Component {
 			var n = keyFrame.n;
 			switch (n.m) {
 				case 0:
+				case 3:
+				case 4:
 					var ret = [];
 					for(let i = keyFrame.t+1; i <= n.t; i++) {
 						ret.push((i * FRAMES_STEP) + ',' + scale(this.getValueAtTime(i)));
@@ -93,9 +96,17 @@ export default class FieldsTimeline extends React.Component {
 		return '';
 	}
 	
+	toggleKeyframeType(keyFrame) {
+		var types = Timeline.getKeyframeTypesForField(editor.selection[0], this.props.field.n);
+		var i = types.indexOf(keyFrame.m);
+		keyFrame.m = types[(i + 1) % types.length];
+		this.onKeyframeChanged(keyFrame);
+	}
+	
 	renderKeyframe(keyFrame) {
 		var loopArrow;
 		var isSelected = isKeyframeSelected(keyFrame);
+		var isNextOfSelected = selectedKeyframe && (selectedKeyframe.n === keyFrame);
 		if(keyFrame.j !== keyFrame.t) {
 			var len = Math.abs(keyFrame.j - keyFrame.t);
 			len *= FRAMES_STEP;
@@ -105,7 +116,9 @@ export default class FieldsTimeline extends React.Component {
 		}
 		var className = 'timeline-keyframe ' + keyframesClasses[keyFrame.m];
 		if(isSelected) {
-			className += ' timeline-keyframe-selected'
+			className += ' timeline-keyframe-selected';
+		} else if (isNextOfSelected) {
+			className += ' timeline-keyframe-nextofselected';
 		}
 		
 		var mark;
@@ -116,6 +129,7 @@ export default class FieldsTimeline extends React.Component {
 		return R.div({key:keyFrame.t, className:className, onMouseDown: (ev) => {
 				if(ev.buttons === 2) {
 					this.deleteKeyframe(keyFrame);
+					sp(ev);
 				} else {
 					if (this.props.field.t.indexOf(keyFrame) > 0) {
 						draggingKeyframe = keyFrame;
@@ -124,10 +138,7 @@ export default class FieldsTimeline extends React.Component {
 				}
 			}, onClick:(ev) => {
 				if(this.selectKeyframe(keyFrame)) {
-					var types = Timeline.getKeyframeTypesForField(editor.selection[0], this.props.field.n);
-					var i = types.indexOf(keyFrame.m);
-					keyFrame.m = types[(i + 1) % types.length];
-					this.onKeyframeChanged(keyFrame);
+					//this.toggleKeyframeType(keyFrame);
 				} else {
 					this.forceUpdate();
 				}
@@ -142,8 +153,10 @@ export default class FieldsTimeline extends React.Component {
 			delete kf.b; //JUMP ROOF, JUMP FLOOR  gravity and boouncing delete
 			delete kf.g;
 		} else {
-			kf.b = 0.5; //JUMP ROOF, JUMP FLOOR default gravity and boouncing
-			kf.g = 0.5;
+			if(!kf.hasOwnProperty('b')) {
+				kf.b = DEFAULT_BOUNCING;
+				kf.g = DEFAULT_GRAVITY;
+			}
 		}
 		
 		if(kf.hasOwnProperty('a')) {
@@ -164,6 +177,7 @@ export default class FieldsTimeline extends React.Component {
 			f.t.splice(i, 1);
 			Timeline.renormalizeFieldTimelineDataAfterChange(f);
 			this.selectKeyframe(null);
+			this.forceUpdate();
 		}
 	}
 	
@@ -176,8 +190,9 @@ export default class FieldsTimeline extends React.Component {
 			selectedTimeline.forceUpdate();
 		}
 		selectedTimeline = this;
-		
-		this.forceUpdate();
+		if(kf) {
+			this.forceUpdate();
+		}
 	}
 	
 	static onMouseDrag(time, buttons) {
@@ -197,7 +212,7 @@ export default class FieldsTimeline extends React.Component {
 	onRemoveFieldClick() {
 		editor.ui.modal.showQuestion("Field animation delete", "Are you sure you want to delete animation track for field '" + this.props.field.n + "'?",
 			() => {
-				timeline.deleteAnimationField(this.props.field);
+				Timeline.timeline.deleteAnimationField(this.props.field);
 			}, 'Delete'
 		)
 	}
@@ -205,13 +220,17 @@ export default class FieldsTimeline extends React.Component {
 	gotoLabel(direction) {
 		var field = this.props.field
 		var currentTime = Timeline.timeline.getTime();
-		var currentKeyframe = MovieClip._findNextField(field.t, currentTime-1);
+		var currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		
 		var i = field.t.indexOf(currentKeyframe);
 		i += direction;
-		if(i < 0) i = field.t.length -1;
-		else if(i >= field.t.length) i = 0;
-			Timeline.timeline.setTime(field.t[i].t, true);
+		if(i < 0) {
+			i = field.t.length -1;
+		}
+		else if(i >= field.t.length) {
+			i = 0;
+		}
+		Timeline.timeline.setTime(field.t[i].t, true);
 	}
 	
 	onGoLeftClick() {
@@ -222,12 +241,13 @@ export default class FieldsTimeline extends React.Component {
 		this.gotoLabel(1);
 	}
 	
-	onToggleKeyframeClick() {
+	onToggleKeyframeClick(time) {
 		var field = this.props.field
-		var currentTime = Timeline.timeline.getTime();
-		var currentKeyframe = MovieClip._findNextField(field, currentTime - 1);
-		if(currentKeyframe.t === currentTime) {
-			Timeline.timeline.createKeyframeAtFieldData(field);
+		var currentTime = time || Timeline.timeline.getTime();
+		var currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
+		if(currentKeyframe.t !== currentTime) {
+			Timeline.timeline.createKeyframeAtFieldData(field, currentTime);
+			this.forceUpdate();
 		} else {
 			this.deleteKeyframe(currentKeyframe);
 		}
@@ -239,7 +259,7 @@ export default class FieldsTimeline extends React.Component {
 		var label = R.div(fieldLabelTimelineProps,
 			field.n,
 			R.br(),
-			R.btn('×', this.onRemoveFieldClick, 'Remove field animation...'),
+			R.btn('×', this.onRemoveFieldClick, 'Remove field animation...', 'danger-btn'),
 			R.btn('<', this.onGoLeftClick, 'Previous Keyframe'),
 			R.btn('●', this.onToggleKeyframeClick, 'add/remove Keyframe'),
 			R.btn('>', this.onGoRightClick, 'Next Keyframe'),
@@ -270,10 +290,14 @@ export default class FieldsTimeline extends React.Component {
 		
 		var keyframePropsEditor;
 		if(selectedKeyframe && field.t.indexOf(selectedKeyframe) >= 0) {
-			keyframePropsEditor = React.createElement(KeyframePropertyEditor, {onKeyframeChanged: this.onKeyframeChanged, timelineData:field, ref: this.keyframePropretyEditorRef, keyFrame: selectedKeyframe});
+			keyframePropsEditor = React.createElement(KeyframePropertyEditor, {toggleKeyframeType:this.toggleKeyframeType, onKeyframeChanged: this.onKeyframeChanged, timelineData:field, ref: this.keyframePropretyEditorRef, keyFrame: selectedKeyframe});
 		}
 		
-		return R.div(fieldTimelineProps,
+		return R.div({className: 'field-timeline', onMouseDown:(ev) =>{
+					if(ev.buttons === 2) {
+						this.onToggleKeyframeClick(Timeline.timeline.mouseTimelineTime);
+					}
+				}},
 			R.div({style:{width}},
 				label,
 				field.t.map(this.renderKeyframe)
@@ -324,13 +348,13 @@ class KeyframePropertyEditor extends React.Component {
 	
 	onGravityChange(ev) {
 		var kf = selectedKeyframe;
-		kf.g = ev.target.value;
+		kf.g = parseFloat(ev.target.value);
 		this.props.onKeyframeChanged(kf);
 	}
 	
 	onBouncingChange(ev) {
 		var kf = selectedKeyframe;
-		kf.b = ev.target.value;
+		kf.b = parseFloat(ev.target.value);
 		this.props.onKeyframeChanged(kf);
 	}
 	
@@ -342,7 +366,7 @@ class KeyframePropertyEditor extends React.Component {
 	
 	onSpeedChanged(ev) {
 		var kf = selectedKeyframe;
-		kf.s = ev.target.value;
+		kf.s = parseFloat(ev.target.value);
 		this.props.onKeyframeChanged(kf);
 		this.forceUpdate();
 	}
@@ -383,8 +407,8 @@ class KeyframePropertyEditor extends React.Component {
 		var rgavityAndBouncingEditor;
 		if(kf.m > 2 ) { //JUMP ROOF, JUMP FLOOR
 			rgavityAndBouncingEditor = R.span(null,
-				R.input({value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
-				R.input({value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
+				' gravity: ' ,R.input({value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
+				' bouncing: ' ,R.input({value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
 			)
 		}
 		
@@ -393,7 +417,7 @@ class KeyframePropertyEditor extends React.Component {
 		var hasSpeed =  kf.hasOwnProperty('s');
 		var speedEditor;
 		if(hasSpeed) {
-			speedEditor = R.input({value: kf.s, type:'number', step:0.01, min: -1000, max: 1000, onChange: this.onSpeedChanged});
+			speedEditor = R.input({value: kf.s, type:'number', step:0.1, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 		}
 		
 		var hasJump = kf.j !== kf.t;
@@ -404,7 +428,7 @@ class KeyframePropertyEditor extends React.Component {
 		
 		return R.div({className: 'bottom-panel', style:{left: b.left, width:b.width, bottom: window.document.body.clientHeight - b.bottom}},
 			' action: ', R.input({value:kf.a, onChange:this.onActionChange}),
-			' ' + selectKeyframeTypes[kf.m] + ' ',
+			' ', R.span({className:'clickable', onMouseDown:() => {this.props.toggleKeyframeType(kf);}}, selectKeyframeTypes[kf.m]), ' ',
 			rgavityAndBouncingEditor,
 			' speed set: ',
 			R.input({type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),

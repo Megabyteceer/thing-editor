@@ -1,5 +1,6 @@
 import PrefabsList from './prefabs-list.js';
 import Lib from "../../../engine/js/lib.js";
+import Signal from "../utils/signal.js";
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -22,6 +23,7 @@ export default class Viewport extends React.Component {
 		this.onTogglePlay = this.onTogglePlay.bind(this);
 		this.onPauseResumeClick = this.onPauseResumeClick.bind(this);
 		this.onOneStepClick = this.onOneStepClick.bind(this);
+		this.beforePlayStopToggle = new Signal();
 	}
 	
 	stopExecution() {
@@ -41,6 +43,7 @@ export default class Viewport extends React.Component {
 			game.__doOneStep = false;
 			game.__paused = false;
 			var play = game.__EDITORmode;
+			this.beforePlayStopToggle.emit(play);
 			Lib.__clearStaticScenes();
 			if (play) { // launch game
 				editor.saveCurrentScene(editor.runningSceneLibSaveSlotName);

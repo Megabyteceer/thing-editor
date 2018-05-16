@@ -64,16 +64,19 @@ export default class MovieClip extends Sprite {
 				f: fields
 			}
 			serializeCache.set(this._timelineData, c);
+		} else {
+			console.warn("MovieClip serialization from cache >>>");
 		}
 		return serializeCache.get(this._timelineData);
 	}
 
 	static invalidateSerializeCache (timelineData) {
+		deserializeCache.delete(serializeCache.get(timelineData));
 		serializeCache.delete(timelineData);
 	}
 //ENDEDITOR
 
-	static _findNextField (timeLineData, time) {
+	static _findNextKeyframe (timeLineData, time) {
 		var ret = timeLineData[0];
 		for(let f of timeLineData) {
 			if(f.t > time) {
@@ -100,7 +103,7 @@ export default class MovieClip extends Sprite {
 				return ret;
 			});
 			for(let f of fieldTimeline) {
-				f.n = MovieClip._findNextField(fieldTimeline, f.j);
+				f.n = MovieClip._findNextKeyframe(fieldTimeline, f.j);
 			}
 			return {
 				n: f.n,
@@ -112,7 +115,7 @@ export default class MovieClip extends Sprite {
 		for(let key in tl.l) {
 			var labelTime = tl.l[key].t;
 			var nexts = fields.map((field) => {
-				return MovieClip._findNextField(field.t, labelTime - 1);
+				return MovieClip._findNextKeyframe(field.t, labelTime - 1);
 			});
 			labels[key] = {t: labelTime, n: nexts};
 		}
@@ -131,6 +134,8 @@ export default class MovieClip extends Sprite {
 			var desData = MovieClip._deserializeTimelineData(data);
 			deserializeCache.set(data, desData)
 			serializeCache.set(desData, data);
+		} else {
+			console.warn("MovieClip deserialization from cache <<<");
 		}
 		data = deserializeCache.get(data);
 //ENDEDITOR

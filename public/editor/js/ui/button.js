@@ -3,7 +3,6 @@ class Button extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
-		this.onClick = this.onClick.bind(this);
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
@@ -25,7 +24,7 @@ class Button extends React.Component {
 		
 		var needCtrl = this.props.hotkey > 1000;
 		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
-			this.onClick(e);
+			this.onMouseDown(e);
 			sp(e);
 		}
 	}
@@ -33,14 +32,11 @@ class Button extends React.Component {
 	onMouseDown(ev) {
 		if (ev.button === 2) {
 			editor.ui.modal.showModal(this.props.onClick.name, 'Button Handler:');
+		} else {
+			if (this.props.disabled) return;
+			this.props.onClick();
+			ev.target.blur();
 		}
-	}
-	
-	onClick(ev) {
-		if (this.props.disabled) return;
-		
-		this.props.onClick();
-		ev.target.blur();
 	}
 	
 	render() {
