@@ -28,10 +28,11 @@ export default class FieldPlayer {
 	}
 	
 	update() {
-		this.val += this.speed;
 		var currentFrame = this.currentFrame;
 		if (this.time === currentFrame.t) {
-
+//EDITOR
+			this.__lastFiredKeyframe = currentFrame;
+//ENDEDITOR
 			if (currentFrame.hasOwnProperty('a')) {
 //EDITOR
 				if(!this.__dontCallActions) {
@@ -62,6 +63,12 @@ export default class FieldPlayer {
 				this.speed = 0;
 			}
 		}
+		
+		//EDITOR
+		else {
+			this.__lastFiredKeyframe = null;
+		}
+//ENDEDITOR
 
 		if (currentFrame.m === 0) { //- SMOOTH
 			this.speed += (currentFrame.v - this.val) * this.pow;
@@ -81,6 +88,7 @@ export default class FieldPlayer {
 				this.speed -= currentFrame.g;
 			}
 		}
+		this.val += this.speed;
 		this.target[this.fieldName] = this.val;
 		this.time++;
 	}

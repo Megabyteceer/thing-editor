@@ -113,7 +113,7 @@ export default class MovieClip extends Sprite {
 		
 		var labels = {};
 		for(let key in tl.l) {
-			var labelTime = tl.l[key].t;
+			var labelTime = tl.l[key];
 			var nexts = fields.map((field) => {
 				return MovieClip._findNextKeyframe(field.t, labelTime - 1);
 			});
@@ -173,11 +173,11 @@ export default class MovieClip extends Sprite {
 	}
 	
 	play() {
-		isPlaying = true;
+		this.isPlaying = true;
 	}
 	
 	stop() {
-		isPlaying = false;
+		this.isPlaying = false;
 	}
 	
 	playRecursive() {

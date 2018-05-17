@@ -620,6 +620,22 @@ input{
     background-repeat-y: no-repeat;
 }
 
+.timeline-play-indicator {
+	position: absolute;
+	height: 30px;
+	border-left:1px solid #f00;
+}
+
+.timeline-fire-indicator {
+	animation: fireAnimation linear 0.5s;
+	animation-iteration-count: 1;
+	animation-fill-mode:forwards;
+	position: absolute;
+	height: 24px;
+	width: 8px;
+	border:1px solid #f00;
+}
+
 .timeline-keyframe {
 	cursor: w-resize;
     position: absolute;
@@ -688,7 +704,7 @@ input{
 }
 
 .time-marker-body {
-	height: 31px;
+	/* height: 15px; */
 	position: relative;
 	margin-top: -33px;
 	width: 100%;
@@ -726,6 +742,7 @@ input{
 	width: 230px;
 	margin: 2px 12px;
 	color:#213950;
+	pointer-events: none;
 }
 
 .bottom-panel {
@@ -747,8 +764,19 @@ input{
 	margin:1px;
 }
 
+.timeline-labels-panel {
+	height: 26px;
+	background: #f7f5b5;
+}
 
-
+.timeline-label{
+	position:absolute;
+	background: #ffa887;
+	color: #fff;
+	margin-top:10px;
+	padding:0 3px;
+	border-left: 1px solid #f00;
+}
 
 
 
@@ -807,3 +835,17 @@ input{
 	color:#888;
 	border-radius:10px;
 }
+
+
+@keyframes fireAnimation{
+  0% {
+    opacity:1;
+  }
+  50% {
+    opacity:1;
+  }
+  100% {
+    opacity:0;
+  }
+}
+

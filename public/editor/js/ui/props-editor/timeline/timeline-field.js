@@ -131,18 +131,18 @@ export default class FieldsTimeline extends React.Component {
 					this.deleteKeyframe(keyFrame);
 					sp(ev);
 				} else {
+					if(this.selectKeyframe(keyFrame)) {
+						//this.toggleKeyframeType(keyFrame);
+					} else {
+						this.forceUpdate();
+					}
 					if (this.props.field.t.indexOf(keyFrame) > 0) {
 						draggingKeyframe = keyFrame;
 						draggingTimeline = this;
 					}
 				}
-			}, onClick:(ev) => {
-				if(this.selectKeyframe(keyFrame)) {
-					//this.toggleKeyframeType(keyFrame);
-				} else {
-					this.forceUpdate();
-				}
-			},style:{left:keyFrame.t * FRAMES_STEP}},
+			},
+			style:{left:keyFrame.t * FRAMES_STEP}},
 			mark,
 			loopArrow
 		);
@@ -223,12 +223,17 @@ export default class FieldsTimeline extends React.Component {
 		var currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		
 		var i = field.t.indexOf(currentKeyframe);
-		i += direction;
-		if(i < 0) {
-			i = field.t.length -1;
-		}
-		else if(i >= field.t.length) {
-			i = 0;
+		
+		var moved = (currentKeyframe.t - currentTime);
+		
+		if(!(((direction > 0) === (moved > 0)) && ((direction < 0) === (moved < 0)))) {
+			i += direction;
+			if(i < 0) {
+				i = field.t.length -1;
+			}
+			else if(i >= field.t.length) {
+				i = 0;
+			}
 		}
 		Timeline.timeline.setTime(field.t[i].t, true);
 	}
@@ -303,6 +308,7 @@ export default class FieldsTimeline extends React.Component {
 				field.t.map(this.renderKeyframe)
 			),
 			field.__cacheTimelineRendered,
+			React.createElement(PlayingDisplay, this.props),
 			keyframePropsEditor
 		);
 	}
@@ -427,7 +433,7 @@ class KeyframePropertyEditor extends React.Component {
 		}
 		
 		return R.div({className: 'bottom-panel', style:{left: b.left, width:b.width, bottom: window.document.body.clientHeight - b.bottom}},
-			' action: ', R.input({value:kf.a, onChange:this.onActionChange}),
+			' action: ', R.input({value:kf.a || '', onChange:this.onActionChange}),
 			' ', R.span({className:'clickable', onMouseDown:() => {this.props.toggleKeyframeType(kf);}}, selectKeyframeTypes[kf.m]), ' ',
 			rgavityAndBouncingEditor,
 			' speed set: ',
@@ -442,4 +448,39 @@ class KeyframePropertyEditor extends React.Component {
 
 function isKeyframeSelected(kf) {
 	return selectedKeyframe === kf;
+}
+
+class PlayingDisplay extends React.Component {
+	componentDidMount() {
+		this.interval = setInterval(this.update.bind(this), 35);
+	}
+	
+	componentWillUnmount() {
+		clearInterval(this.interval);
+	}
+	
+	update() {
+		var fieldPlayer = this.props.node.fieldPlayers[this.props.fieldIndex];
+		this.fieldPlayer = fieldPlayer;
+		if(fieldPlayer && fieldPlayer.time !== this.renderedTime) {
+			this.renderedTime = fieldPlayer.time;
+			this.forceUpdate();
+		}
+	}
+	
+	render () {
+		if(!this.fieldPlayer) {
+			return R.div();
+		} else {
+			var firedFrame;
+			if(this.fieldPlayer.__lastFiredKeyframe) {
+				firedFrame = R.div({className:'timeline-fire-indicator', style:{left: this.fieldPlayer.__lastFiredKeyframe.t * FRAMES_STEP}})
+			}
+			return R.fragment(
+				R.div({className:'timeline-play-indicator', style:{left: this.fieldPlayer.time * FRAMES_STEP}}),
+				firedFrame
+			);
+		}
+		
+	}
 }

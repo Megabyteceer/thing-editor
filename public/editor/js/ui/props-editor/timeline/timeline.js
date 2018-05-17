@@ -261,7 +261,7 @@ const renderObjectsTimeline = (node) => {
 
 function renormalizeLabel(label, timelineData) { //re find keyframes for modified label
 	label.n = timelineData.f.map((fieldTimeline) => {
-		return MovieClip._findNextKeyframe(fieldTimeline, label.t - 1);
+		return MovieClip._findNextKeyframe(fieldTimeline.t, label.t - 1);
 	});
 }
 
@@ -272,9 +272,9 @@ function renormalizeAllLabels(timelineData) {
 	}
 }
 
-function askForLabelName(existingLabelsNames) {
-	return editor.ui.modal.showPrompt("Enter name for label", '', undefined, (nameToCheck) => {
-		if(labelsNames.indexOf(nameToCheck) >= 0) {
+function askForLabelName(existingLabelsNames, title, defaultName = '') {
+	return editor.ui.modal.showPrompt(title, defaultName, undefined, (nameToCheck) => {
+		if(existingLabelsNames.indexOf(nameToCheck) >= 0) {
 			return 'Label with that name already esists.';
 		}
 	})
@@ -291,25 +291,28 @@ class ObjectsTimeline extends React.Component {
 		
 		var labelsNames = Object.keys(tl.l);
 		var labelsPanel = R.div({
-				onDoubleClick:(ev) => { //create new label by double click
-					askForLabelName(labelsNames).then((name) => {
-						if(name) {
-							var label = {t: mouseTimelineTime};
-							tl.l[name] = label;
-							renormalizeLabel(label, tl);
-							this.forceUpdate();
-						}
-					});
+				onMouseDown:(ev) => { //create new label by double click
+					if(ev.buttons == 2) {
+						askForLabelName(labelsNames, "Create new label:").then((name) => {
+							if(name) {
+								var label = {t: mouseTimelineTime};
+								tl.l[name] = label;
+								renormalizeLabel(label, tl);
+								this.forceUpdate();
+							}
+						});
+					}
 				},
+				title:'Right click to add time label',
 				className:'timeline-labels-panel'
 			},
-			labelsNames.map(this.renderTimeLabel)
+			labelsNames.map((labelName)=> {return this.renderTimeLabel(labelName, labelsNames)})
 		);
 		
 		return R.div(objectsTimelineProps,
 			labelsPanel,
 			tl.f.map((field, i) => {
-				return React.createElement(FieldsTimeline, {field, fieldIndex:i, key:field.n});
+				return React.createElement(FieldsTimeline, {field, fieldIndex:i, key:field.n, node:this.props.node});
 			})
 		)
 	}
@@ -356,25 +359,25 @@ class TimeLabel extends React.Component {
 		var label = this.props.label;
 		var name = this.props.labelName;
 		
-		R.div({className:'timeline-label', style:{left: label.t * FRAMES_STEP},
+		return R.div({className:'timeline-label', style:{left: label.t * FRAMES_STEP},
 			onMouseDown: (ev) => {
 				if(ev.buttons === 2) {
-					editor.ui.modal.showQuestion('Label removing', 'Remove Label "' + name + '"?', () => {
+					editor.ui.modal.showQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
 						delete tl.l[name];
 						this.forceUpdate();
 					});
 				} else {
 					draggingXShift = ev.clientX - $(ev.target).closest('.timeline-label')[0].getBoundingClientRect().x;
 					draggingLabel = label;
-					sp(ev);
 				}
+				sp(ev);
 			},
 			onDoubleClick: (ev) => { //rename label by double click
-				askForLabelName(labelsNamesList).then((name) => {
-					if(name) {
-						label.n = name;
-						renormalizeLabel(label, tl);
-						this.forceUpdate();
+				askForLabelName(labelsNamesList, "Rename label", name).then((enteredName) => {
+					if(enteredName) {
+						tl.l[enteredName] = label;
+						delete tl.l[name];
+						timeline.forceUpdate();
 					}
 				});
 				sp(ev);
