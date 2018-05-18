@@ -51,9 +51,14 @@ class Lib {
 	}
 	
 	static addTexture(name, texture) {
-		assert(!textures.hasOwnProperty(name), "Texture with name '" + name + "' already registred in Lib");
-		textures[name] = texture;
-		Lib.__texturesList.push({name, value:name});
+		if(!textures.hasOwnProperty(name)) {
+			Lib.__texturesList.push({name, value:name});
+		}
+		if(typeof texture === 'string') {
+			textures[name] = PIXI.Texture.fromImage(texture);
+		} else {
+			textures[name] = texture;
+		}
 	}
 	
 	static _loadClassInstanceById(id) {
@@ -251,4 +256,3 @@ export default Lib;
 
 Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 Lib.addTexture('WHITE', PIXI.Texture.WHITE);
-Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png')); //TODO: remove this temporary texture

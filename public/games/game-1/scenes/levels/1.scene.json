@@ -2,8 +2,6 @@
 	"c": "Scene",
 	"p": {
 		"name": "levels/1",
-		"x": 18,
-		"y": 16,
 		"backgroundColor": 3626305
 	},
 	":": [
@@ -11,236 +9,41 @@
 			"c": "Bunny",
 			"p": {
 				"name": "b1",
-				"x": 1014,
-				"y": 616,
+				"x": 793,
+				"y": 444,
+				"scale.x": -1,
 				"pivot.y": 31,
-				"image": "bunny",
+				"image": "bunny.png",
 				"xSpeed": 8.307122052799432
+			}
+		},
+		{
+			"c": "Button",
+			"p": {
+				"x": 705,
+				"y": 471,
+				"image": "UI/button.png",
+				"onClick": "game.showScene`levels/2"
 			}
 		},
 		{
 			"c": "Bunny",
 			"p": {
 				"name": "b2",
-				"x": 138,
-				"y": 436,
-				"pivot.y": 31,
-				"image": "bunny",
-				"xSpeed": 10.197367648693145
-			}
-		},
-		{
-			"c": "Bunny",
-			"p": {
-				"name": "b3",
-				"x": 478,
-				"y": 46,
-				"pivot.y": 31,
-				"xSpeed": -12.84236517126659
-			}
-		},
-		{
-			"c": "Bunny",
-			"p": {
-				"name": "b4",
-				"x": 277,
-				"y": 697,
-				"pivot.y": 30,
-				"xSpeed": -3
-			},
-			":": [
-				{
-					"c": "Sprite",
-					"p": {
-						"name": "b4-1",
-						"x": 1,
-						"y": -43
-					}
-				}
-			]
-		},
-		{
-			"c": "Bunny",
-			"p": {
-				"name": "b5",
-				"x": 806.6122373727408,
-				"y": 506.32467730217195,
-				"pivot.y": 31,
-				"xSpeed": -11.194716823816178
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 355,
-				"y": 386,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 352,
-				"y": 445,
-				"pivot.y": 35
-			},
-			":": [
-				{
-					"c": "Sprite",
-					"p": {
-						"name": "b6",
-						"x": -3,
-						"y": 95,
-						"pivot.y": 35
-					},
-					":": [
-						{
-							"c": "Sprite",
-							"p": {
-								"name": "b6",
-								"x": -3,
-								"y": 95,
-								"pivot.y": 35
-							},
-							":": [
-								{
-									"c": "Sprite",
-									"p": {
-										"name": "b6",
-										"x": 78,
-										"y": 17,
-										"rotation": -1.5399999999999985,
-										"pivot.y": 35
-									},
-									":": [
-										{
-											"c": "Sprite",
-											"p": {
-												"name": "b6",
-												"y": 94,
-												"rotation": -0.07199999999999844,
-												"pivot.y": 35
-											}
-										}
-									]
-								}
-							]
-						}
-					]
-				}
-			]
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 638,
-				"y": 545,
-				"rotation": -1.5399999999999985,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 633,
-				"y": 451,
-				"rotation": -1.5399999999999985,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
 				"x": 631,
-				"y": 328,
-				"rotation": -1.5399999999999985,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 689,
-				"y": 329,
-				"rotation": -1.5399999999999985,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 694,
-				"y": 450,
-				"rotation": -1.5399999999999985,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 694,
-				"y": 547,
-				"rotation": -1.5399999999999985,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 578,
-				"y": 396,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 575,
-				"y": 454,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 575,
-				"y": 504,
-				"pivot.y": 35
-			}
-		},
-		{
-			"c": "Sprite",
-			"p": {
-				"name": "b6",
-				"x": 569,
-				"y": 560,
-				"pivot.y": 35
+				"y": 442,
+				"pivot.y": 31,
+				"image": "bunny.png",
+				"xSpeed": 10.197367648693145
 			}
 		},
 		{
 			"c": "Button",
 			"p": {
-				"x": 830,
-				"y": 156,
-				"onClick": "game.showScene`levels/2"
-			}
-		},
-		{
-			"c": "MovieClip",
-			"p": {
-				"x": 250,
-				"y": 250
+				"x": 1253,
+				"y": 38,
+				"image": "bunny.png",
+				"onClick": "game.closeCurrentScene"
 			}
 		}
 	]

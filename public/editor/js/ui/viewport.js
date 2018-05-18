@@ -51,16 +51,7 @@ export default class Viewport extends React.Component {
 				game.__EDITORmode = false;
 				Lib.__constructRecursive(game.currentScene);
 			} else { //stop game
-				while (game.modalsCount > 0) {
-					game.closeModal();
-				}
-				var scenesStack = game.__getScenesStack();
-				while (scenesStack.length > 0) {
-					var s = scenesStack.pop();
-					game.stage.addChild(s);
-					s.remove();
-				}
-				
+				game.__cleanupBeforeToggleStop();
 				game.currentScene.remove();
 				game.currentScene = null;
 				game.__EDITORmode = true;

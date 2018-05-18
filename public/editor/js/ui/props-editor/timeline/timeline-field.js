@@ -51,7 +51,7 @@ export default class FieldsTimeline extends React.Component {
 			var fieldPlayer = Pool.create(FieldPlayer);
 			var c = [];
 			field.__cacheTimeline = c;
-			var wholeTimelineData = editor.selection[0]._timelineData;
+			var wholeTimelineData = Timeline.getTimelineDataByFieldData(field);
 			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
 			fieldPlayer.reset();
 			calculateCacheSegmentForField(fieldPlayer, c);
@@ -62,36 +62,31 @@ export default class FieldsTimeline extends React.Component {
 					calculateCacheSegmentForField(fieldPlayer, c);
 				}
 			}
+			let len = field.t[field.t.length - 1].t + 1;
+			let lastVal;
+			for(let i = 0; i < len; i++) {
+				if(i in c) {
+					lastVal = c[i];
+				} else {
+					c[i] = lastVal;
+				}
+				
+			}
 			c.min = Math.min.apply(null, c);
 			c.max = Math.max.apply(null, c);
 			Pool.dispose(fieldPlayer);
 		}
-		if(field.__cacheTimeline.hasOwnProperty(time)) {
-			return field.__cacheTimeline[time];
-		} else {
-			return false;
-		}
+		return field.__cacheTimeline[time];
 	}
 	
 	renderKeyframeChart(keyFrame) {
 		if(keyFrame.n && (keyFrame.t < keyFrame.n.t)) {
 			var n = keyFrame.n;
-			switch (n.m) {
-				case 0:
-				case 3:
-				case 4:
-					var ret = [];
-					for(let i = keyFrame.t+1; i <= n.t; i++) {
-						ret.push((i * FRAMES_STEP) + ',' + scale(this.getValueAtTime(i)));
-					}
-					return ret.join(' ');
-				case 1: //linear
-					return (keyFrame.t * FRAMES_STEP) + ',' + scale(this.getValueAtTime(keyFrame.t)) + ' ' + (n.t * FRAMES_STEP) + ',' + scale(n.v);
-				case 2: //discrete
-					var v = scale(this.getValueAtTime(keyFrame.t));
-					var t = n.t * FRAMES_STEP;
-					return (keyFrame.t * FRAMES_STEP) + ',' + v + ' ' + t + ',' + v + ' ' + t + ',' + scale(n.v);
+			var ret = [];
+			for(let i = keyFrame.t+1; i <= n.t; i++) {
+				ret.push((i * FRAMES_STEP) + ',' + scale(this.getValueAtTime(i)));
 			}
+			return ret.join(' ');
 		}
 		return '';
 	}
@@ -123,7 +118,8 @@ export default class FieldsTimeline extends React.Component {
 		
 		var mark;
 		if(keyFrame.hasOwnProperty('a')) {
-			mark = 'A';
+			
+			mark = (keyFrame.a === 'this.stop') ? '■' : 'A';
 		}
 		
 		return R.div({key:keyFrame.t, className:className, onMouseDown: (ev) => {
@@ -204,6 +200,7 @@ export default class FieldsTimeline extends React.Component {
 				draggingKeyframe.j = time;
 			}
 			draggingKeyframe.t = time;
+			Timeline.timeline.setTime(time);
 			Timeline.renormalizeFieldTimelineDataAfterChange(draggingTimeline.props.field);
 			draggingTimeline.forceUpdate();
 		}
@@ -351,6 +348,9 @@ class KeyframePropertyEditor extends React.Component {
 		this.onSpeedChanged = this.onSpeedChanged.bind(this);
 		this.onJumpExistsChanged = this.onJumpExistsChanged.bind(this);
 		this.onJumpChanged = this.onJumpChanged.bind(this);
+		this.onDemptChanged = this.onDemptChanged.bind(this);
+		this.onPowChanged = this.onPowChanged.bind(this);
+		this.onPresetSelected = this.onPresetSelected.bind(this);
 	}
 	
 	onGravityChange(ev) {
@@ -405,17 +405,57 @@ class KeyframePropertyEditor extends React.Component {
 		this.forceUpdate();
 	}
 	
+	onDemptChanged(ev) {
+		var val =  parseFloat(ev.target.value);
+		editor.selection.some((o) => {
+			o._timelineData.d = val;
+		});
+		this.props.onKeyframeChanged(selectedKeyframe);
+		editor.sceneModified();
+		this.forceUpdate(); todo: invalidate cache after global property changing
+	}
+	
+	onPowChanged(ev) {
+		var val =  parseFloat(ev.target.value);
+		editor.selection.some((o) => {
+			o._timelineData.p = val;
+		});
+		this.props.onKeyframeChanged(selectedKeyframe);
+		editor.sceneModified();
+		this.forceUpdate();
+	}
+	
+	onPresetSelected(ev) {
+		editor.selection.some((o) => {
+			Object.assign(o._timelineData, ev.target.value);
+			});
+		this.props.onKeyframeChanged(selectedKeyframe);
+		editor.sceneModified();
+		this.forceUpdate();
+	}
+	
 	render () {
 		var kf = selectedKeyframe;
 		if(!kf) {
 			return R.div();
 		}
 		
-		var rgavityAndBouncingEditor;
+		var extendEditor;
 		if(kf.m > 2 ) { //JUMP ROOF, JUMP FLOOR
-			rgavityAndBouncingEditor = R.span(null,
-				' gravity: ' ,R.input({value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
-				' bouncing: ' ,R.input({value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
+			extendEditor = R.span(null,
+				' Gravity: ' ,R.input({value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
+				' Bouncing: ' ,R.input({value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
+			)
+		} else if(kf.m === 0) { //SMOOTH
+			
+			var presetSelectedValue = presets.find((p) => {
+				return editor.selection[0]._timelineData.p === p.value.p && editor.selection[0]._timelineData.d === p.value.d;
+			}) || presets[0];
+			
+			extendEditor = R.span(null,
+				' Power: ' ,R.input({value: editor.selection[0]._timelineData.p, type:'number', step:0.001, min: 0.001, max: 0.9, onChange: this.onPowChanged}),
+				' Dempt: ' ,R.input({value: editor.selection[0]._timelineData.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
+				' Preset ', React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
 			)
 		}
 		
@@ -435,17 +475,41 @@ class KeyframePropertyEditor extends React.Component {
 		
 		return R.div({className: 'bottom-panel', style:{left: b.left, width:b.width, bottom: window.document.body.clientHeight - b.bottom}},
 			' action: ', R.input({value:kf.a || '', onChange:this.onActionChange}),
-			' ', R.span({className:'clickable', onMouseDown:() => {this.props.toggleKeyframeType(kf);}}, selectKeyframeTypes[kf.m]), ' ',
-			rgavityAndBouncingEditor,
+			' ', R.btn(selectKeyframeTypes[kf.m], () => {this.props.toggleKeyframeType(kf);}, "Switch selected keyframe's' Mode (Ctrl + M)", 'keyframe-type-chooser', 1077), ' ',
 			' speed set: ',
 			R.input({type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
 			speedEditor,
 			' jump time: ',
 			R.input({type:'checkbox', onChange: this.onJumpExistsChanged, checked:hasJump}),
-			jumpEditor
+			jumpEditor,
+			extendEditor
 		);
 	}
 }
+
+const presets = [
+	{name : 'None', value:{}},
+	{name: 'Alive', value:{
+		d:0.85,
+		p:0.02
+	}},
+	{name: 'Bouncy', value:{
+		d:0.95,
+		p:0.03
+	}},
+	{name: 'Baloon', value:{
+		d:0.9,
+		p:0.001
+	}},
+	{name: 'Fast', value:{
+		d:0.85,
+		p:0.05
+	}},
+	{name: 'Inert', value:{
+		d:0.98,
+		p:0.002
+	}}
+]
 
 function isKeyframeSelected(kf) {
 	return selectedKeyframe === kf;

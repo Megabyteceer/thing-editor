@@ -11,6 +11,7 @@ const H = 720;
 		window.assert = (expression, message, dontBreakFlow) => {
 			message = 'Assert: ' + message;
 			if (!expression) {
+				debugger;
 				if (window.editor) {
 					editor.ui.modal.showError(message);
 				}

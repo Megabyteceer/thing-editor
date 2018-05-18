@@ -109,13 +109,17 @@ class Game {
 		if(typeof scene === 'string') {
 			scene = Lib.loadScene(scene);
 		}
+//EDITOR
 		assert(scene instanceof Scene, 'Scene instance expected.');
+//ENDEDITOR
 		if(this.__EDITORmode) {
 			if (this.currentScene) {
 				stage.removeChild(this.currentScene);
 			}
 			this._setCurrentSceneContent(scene);
 		} else {
+			
+			
 			if (this.currentScene) {
 				if (!this.currentScene.isNoStackable) {
 					showStack.push(this.currentScene);
@@ -125,7 +129,11 @@ class Game {
 			} else {
 				this._setCurrentSceneContent(scene);
 			}
+			//EDITOR
+			editor.refreshTreeViewAndPropertyEditor();
+			
 		}
+		//ENDEDITOR
 	}
 	
 	closeCurrentScene(faderType) {
@@ -155,6 +163,20 @@ class Game {
         } else {
             this.showScene(object);
         }
+    }
+    
+    __cleanupBeforeToggleStop() {
+	    while (game.modalsCount > 0) {
+		    game.closeModal();
+	    }
+	    while (showStack.length > 0) {
+		    var s = showStack.pop();
+		    game.stage.addChild(s);
+		    s.remove();
+	    }
+		if(currentFader) {
+			this.faderEnd();
+		}
     }
     
     __getScenesStack() {

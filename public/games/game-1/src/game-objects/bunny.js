@@ -10,7 +10,6 @@ class Bunny extends Sprite {
 	
 	update() {
 		if (this.y > H) {
-			this.y = H;
 			this.ySpeed *= -1;
 			this.onTouchBounds();
 		} else {

@@ -11,6 +11,7 @@ import ScenesList from "./ui/scenes-list.js";
 import Overlay from "./utils/overlay.js";
 import PrefabsList from "./ui/prefabs-list.js";
 import Signal from "./utils/signal.js";
+import Lib from "/engine/js/lib.js";
 
 class Editor {
 	
@@ -175,6 +176,9 @@ class Editor {
 	}
 	
 	reloadAssets() {
+		Lib.addTexture('bunny.png', editor.fs.gameFolder + 'img/' + 'bunny.png'); //TODO: remove this temporary textures
+		Lib.addTexture('UI/button.png', editor.fs.gameFolder + 'img/' + 'UI/button.png'); //TODO: remove this temporary textures
+		
 		return Promise.resolve();
 	}
 	

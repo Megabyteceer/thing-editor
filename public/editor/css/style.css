@@ -387,8 +387,9 @@ input{
 
 .select-editor-list{
 	position: absolute;
-	background:#fff;
+	background: #fffde4;
 	padding:10px;
+	border: 1px solid #9e8247;
 }
 
 .modal-blackout {
@@ -621,12 +622,14 @@ input{
 }
 
 .timeline-play-indicator {
+	pointer-events: none;
 	position: absolute;
 	height: 30px;
 	border-left:1px solid #f00;
 }
 
 .timeline-fire-indicator {
+	pointer-events: none;
 	animation: fireAnimation linear 0.5s;
 	animation-iteration-count: 1;
 	animation-fill-mode:forwards;
@@ -735,6 +738,7 @@ input{
 	position:absolute;
 	pointer-events:none;
 	height: 1000px;
+	margin-bottom: -1000px;
 	border-left:1px solid #d33;
 }
 
@@ -753,9 +757,17 @@ input{
     border-top: 1px solid #567;
 }
 
+.keyframe-type-chooser {
+	width: 100px;
+}
+
 .bottom-panel input, .bottom-panel .select-editor{
 	width:initial;
 	display:inline-block;
+}
+
+.bottom-panel .select-editor-list {
+	bottom:26px;
 }
 
 .objects-timeline-labels button {
@@ -771,10 +783,11 @@ input{
 
 .timeline-label{
 	position:absolute;
-	background: #ffa887;
+	background: #ff8050;
+	border-top-right-radius: 20px;
 	color: #fff;
 	margin-top:10px;
-	padding:0 3px;
+	padding: 0 5px;
 	border-left: 1px solid #f00;
 }
 

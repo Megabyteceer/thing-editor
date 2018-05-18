@@ -5,8 +5,6 @@ export default class Sprite extends PIXI.Sprite {
 		this.xSpeed = 0;
 		this.ySpeed = 0;
 		this.rSpeed = 0;
-		
-		this.texture = Lib.getTexture('bunny'); //TODO: remove this temporary texture assigning
 	}
 	
 	onRemove() {}

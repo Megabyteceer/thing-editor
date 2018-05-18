@@ -243,6 +243,7 @@ function getTimelineDataByFieldData(fieldData) {
 	return getMovieclipByFieldData(fieldData)._timelineData;
 }
 
+Timeline.getTimelineDataByFieldData = getTimelineDataByFieldData;
 Timeline.renormalizeFieldTimelineDataAfterChange = renormalizeFieldTimelineDataAfterChange;
 
 const sortFieldsByTime = (a, b) => {
@@ -364,7 +365,7 @@ class TimeLabel extends React.Component {
 				if(ev.buttons === 2) {
 					editor.ui.modal.showQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
 						delete tl.l[name];
-						this.forceUpdate();
+						timeline.forceUpdate();
 					});
 				} else {
 					draggingXShift = ev.clientX - $(ev.target).closest('.timeline-label')[0].getBoundingClientRect().x;
@@ -444,6 +445,7 @@ function onMouseMove(ev) {
 		
 		if(draggingLabel && (draggingLabel.t !== mouseTimelineTime)) {
 			draggingLabel.t = mouseTimelineTime;
+			editor.sceneModified();
 			timeline.forceUpdate();
 		}
 		

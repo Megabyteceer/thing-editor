@@ -103,7 +103,7 @@ export default class ScenesList extends React.Component {
 		
 		return R.fragment(
 			R.div({className: bottomPanelClassName},
-				R.btn('Save', this.onSaveSceneClick, 'Save current scene', undefined, 1083),
+				R.btn('Save', this.onSaveSceneClick, 'Save current Scene (Ctrl + S)', undefined, 1083),
 				R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')
 			),
 			R.div(bodyProps, scenes)
