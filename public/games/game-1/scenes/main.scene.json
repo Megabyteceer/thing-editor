@@ -10,6 +10,7 @@
 			"p": {
 				"x": 577,
 				"y": 99,
+				"image": "bunny",
 				"onClick": "game.showScene`levels/1"
 			}
 		},
@@ -19,6 +20,8 @@
 				"x": 231.683,
 				"y": 320,
 				"rotation": -0.1,
+				"image": "bunny",
+				"isPlaying": false,
 				"timeline": {
 					"l": {
 						"eeee": 39
@@ -63,6 +66,7 @@
 			"p": {
 				"x": 1250,
 				"y": 40,
+				"image": "bunny",
 				"onClick": "game.closeCurrentScene"
 			}
 		},
@@ -71,7 +75,8 @@
 			"p": {
 				"x": 954,
 				"y": 341,
-				"pivot.y": 29
+				"pivot.y": 29,
+				"image": "bunny"
 			}
 		},
 		{
@@ -79,6 +84,8 @@
 			"p": {
 				"x": 365,
 				"y": 423,
+				"image": "bunny",
+				"isPlaying": false,
 				"timeline": {
 					"l": {},
 					"p": 0.02,
@@ -89,18 +96,15 @@
 							"t": [
 								{
 									"v": 365,
-									"t": 0,
-									"m": 1
+									"t": 0
 								},
 								{
 									"v": 450,
-									"t": 41,
-									"m": 1
+									"t": 41
 								},
 								{
 									"v": 311,
-									"t": 79,
-									"m": 1
+									"t": 79
 								}
 							]
 						}

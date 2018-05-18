@@ -1,8 +1,55 @@
 {
-	"c": "Fader",
+	"c": "MovieClip",
 	"p": {
-		"name": "fader/default",
+		"name": "fader/default2",
 		"x": 640,
-		"y": 360
+		"y": 360,
+		"alpha": 0,
+		"scale.x": 128,
+		"scale.y": 72,
+		"image": "WHITE",
+		"tint": 0,
+		"timeline": {
+			"l": {
+				"hide": 33
+			},
+			"p": 0.02,
+			"d": 0.85,
+			"f": [
+				{
+					"n": "alpha",
+					"t": [
+						{
+							"v": 0,
+							"t": 0,
+							"m": 1
+						},
+						{
+							"v": 1,
+							"t": 10,
+							"m": 1,
+							"a": "game.faderShoot"
+						},
+						{
+							"v": 1,
+							"t": 13,
+							"m": 1,
+							"a": "this.stop"
+						},
+						{
+							"v": 1,
+							"t": 35,
+							"m": 1
+						},
+						{
+							"v": 0,
+							"t": 42,
+							"m": 1,
+							"a": "game.faderEnd"
+						}
+					]
+				}
+			]
+		}
 	}
 }

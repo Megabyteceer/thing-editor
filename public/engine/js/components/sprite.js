@@ -27,12 +27,42 @@ var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
 	return a.value - b.value
 });
 
+var imagePropertySelect = {
+	name: 'image',
+	type: String,
+	default: 'EMPTY'
+}
+Object.defineProperty(imagePropertySelect, 'select', {
+	get:() => {
+		return Lib.__texturesList;
+	}
+})
+
+Object.defineProperty(PIXI.Sprite.prototype, 'image', {
+	get:function () {
+		return this._imageID;
+	},
+	set:function (v) {
+		if(this._imageID !== v) {
+			this._imageID = v;
+			this.texture = Lib.getTexture(v);
+		}
+	}
+});
 
 PIXI.Sprite.EDITOR_editableProps = [
 	{
 		type: 'splitter',
 		title: 'Sprite:',
 		name: 'sprite'
+	},
+	imagePropertySelect,
+	{
+		name: 'tint',
+		type: Number,
+		default: 0xFFFFFF,
+		max: 0xFFFFFF,
+		min: 0
 	},
 	{
 		name: 'blendMode',
@@ -62,9 +92,8 @@ Sprite.EDITOR_editableProps = [
 		type: Number,
 		step: 0.0001
 	}
-	
-	//TODO: image, tint
 ];
+
 
 
 

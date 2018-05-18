@@ -74,6 +74,11 @@ class Game {
 		this._setCurrentSceneContent(showStack.pop());
 		this.currentScene.onShow();
 		
+		//TODO: wait until scene's assetw will beloaded
+		currentFader.gotoLabel('hide');
+		currentFader.play();
+		
+		
 		SHOOTTIME = false;
 	}
 	

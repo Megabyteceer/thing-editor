@@ -4,7 +4,7 @@
 		"name": "levels/1",
 		"x": 18,
 		"y": 16,
-		"backgroundColor": 0
+		"backgroundColor": 3626305
 	},
 	":": [
 		{
@@ -14,6 +14,7 @@
 				"x": 1014,
 				"y": 616,
 				"pivot.y": 31,
+				"image": "bunny",
 				"xSpeed": 8.307122052799432
 			}
 		},
@@ -24,6 +25,7 @@
 				"x": 138,
 				"y": 436,
 				"pivot.y": 31,
+				"image": "bunny",
 				"xSpeed": 10.197367648693145
 			}
 		},

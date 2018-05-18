@@ -64,8 +64,6 @@ export default class MovieClip extends Sprite {
 				f: fields
 			}
 			serializeCache.set(this._timelineData, c);
-		} else {
-			console.warn("MovieClip serialization from cache >>>");
 		}
 		return serializeCache.get(this._timelineData);
 	}
@@ -88,8 +86,6 @@ export default class MovieClip extends Sprite {
 	}
 	
 	static _deserializeTimelineData(tl) {
-		console.warn("MovieClip deserialization invoked <<<");
-
 		var fields = tl.f.map((f) => {
 			
 			var fieldTimeline = f.t.map((k) => {
@@ -134,8 +130,6 @@ export default class MovieClip extends Sprite {
 			var desData = MovieClip._deserializeTimelineData(data);
 			deserializeCache.set(data, desData)
 			serializeCache.set(desData, data);
-		} else {
-			console.warn("MovieClip deserialization from cache <<<");
 		}
 		data = deserializeCache.get(data);
 //ENDEDITOR
@@ -165,7 +159,7 @@ export default class MovieClip extends Sprite {
 	}
 	
 	gotoLabel(labelName) {
-		var label = this.labels[labelName];
+		var label = this._timelineData.l[labelName];
 		let l = this.fieldPlayers.length;
 		for(let i =0; i < l; i++) {
 			this.fieldPlayers[i].goto(label.t, label.n[i]);

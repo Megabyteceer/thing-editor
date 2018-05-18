@@ -50,7 +50,7 @@ class SelectEditor extends React.Component {
 		}
 		else {
 			item = list.find((i) => {
-				if (i.value === this.props.value) return i
+				if (i.value === this.props.value) return i;
 			});
 		}
 		

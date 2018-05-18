@@ -2,7 +2,6 @@ import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
 import Pool from "/engine/js/utils/pool.js";
 import Container from "../../../engine/js/components/container.js";
 import Button from "../../../engine/js/components/button.js";
-import Fader from "../../../engine/js/components/fader.js";
 import MovieClip from "../../../engine/js/components/movie-clip/movie-clip.js";
 
 function init() {
@@ -12,8 +11,7 @@ function init() {
 		MovieClip,
 		Scene,
 		Container,
-		Button,
-		Fader
+		Button
 	];
 }
 

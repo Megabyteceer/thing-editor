@@ -53,6 +53,7 @@ class Lib {
 	static addTexture(name, texture) {
 		assert(!textures.hasOwnProperty(name), "Texture with name '" + name + "' already registred in Lib");
 		textures[name] = texture;
+		Lib.__texturesList.push({name, value:name});
 	}
 	
 	static _loadClassInstanceById(id) {
@@ -229,7 +230,6 @@ class Lib {
 		}
 		return ret;
 	}
-
 //ENDEDITOR
 
 }
@@ -242,8 +242,13 @@ const _loadObjectFromData = (src) => {
 	return ret;
 }
 
+//EDITOR
+Lib.__texturesList = [];
 Lib.__constructRecursive = constructRecursive;
+//ENDEDITOR
 
 export default Lib;
 
+Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
+Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 Lib.addTexture('bunny', PIXI.Texture.fromImage('editor/img/pic1.png')); //TODO: remove this temporary texture
