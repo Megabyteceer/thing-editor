@@ -33,15 +33,9 @@ export default class FieldPlayer {
 //EDITOR
 			this.__lastFiredKeyframe = currentFrame;
 //ENDEDITOR
+			var action;
 			if (currentFrame.hasOwnProperty('a')) {
-//EDITOR
-				if(!this.__dontCallActions) {
-					console.log('timeline CALL: ' + this.target.name + '; ' + currentFrame.t + '; ' + currentFrame.a);
-//ENDEDITOR
-					call(currentFrame.a, this.target);
-//EDITOR
-				}
-//ENDEDITOR
+				action = currentFrame.a;
 			}
 			
 			if(currentFrame.hasOwnProperty('s')) {
@@ -58,17 +52,35 @@ export default class FieldPlayer {
 				var dist = currentFrame.t - this.time;
 				if(dist > 0) {
 					this.speed = (currentFrame.v - this.val) / dist;
+				} else {
+					this.speed = 0;
 				}
 			} else if(currentFrame.m === 2) {// DISCRETE Mode
 				this.speed = 0;
 			}
-		}
-		
-		//EDITOR
-		else {
-			this.__lastFiredKeyframe = null;
-		}
+			
+			if (action) {
+//EDITOR
+				if(!this.__dontCallActions) {
+					console.log('timeline CALL: ' + this.target.name + '; ' + currentFrame.t + '; ' + action);
 //ENDEDITOR
+					call(action, this.target);
+//EDITOR
+				}
+//ENDEDITOR
+				if(!this.target.isPlaying) {
+					return;
+				}
+				
+			}
+			this.time++;
+		} else {
+			this.time++;
+//EDITOR
+			this.__lastFiredKeyframe = null;
+//ENDEDITOR
+		}
+
 
 		if (currentFrame.m === 0) { //- SMOOTH
 			this.speed += (currentFrame.v - this.val) * this.pow;
@@ -90,7 +102,7 @@ export default class FieldPlayer {
 		}
 		this.val += this.speed;
 		this.target[this.fieldName] = this.val;
-		this.time++;
+		
 	}
 	
 	//EDITOR
