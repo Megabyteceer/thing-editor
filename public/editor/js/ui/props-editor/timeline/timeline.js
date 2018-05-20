@@ -229,6 +229,11 @@ function renormalizeFieldTimelineDataAfterChange(fieldData) { //invalidate cache
 	editor.sceneModified();
 }
 
+function renormalizeWholeTimelineData(timelineData) {
+	timelineData.f.some(renormalizeFieldTimelineDataAfterChange);
+}
+Timeline.renormalizeWholeTimelineData = renormalizeWholeTimelineData;
+
 function getMovieclipByFieldData(fieldData) {
 	for(var o of editor.selection) {
 		if(o._timelineData && o._timelineData.f.some((f) => { //get movieclip by field's timeline data and invalidate whole serialisation cache

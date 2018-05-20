@@ -292,7 +292,7 @@ export default class FieldsTimeline extends React.Component {
 		
 		var keyframePropsEditor;
 		if(selectedKeyframe && field.t.indexOf(selectedKeyframe) >= 0) {
-			keyframePropsEditor = React.createElement(KeyframePropertyEditor, {toggleKeyframeType:this.toggleKeyframeType, onKeyframeChanged: this.onKeyframeChanged, timelineData:field, ref: this.keyframePropretyEditorRef, keyFrame: selectedKeyframe});
+			keyframePropsEditor = React.createElement(KeyframePropertyEditor, {node:this.props.node, toggleKeyframeType:this.toggleKeyframeType, onKeyframeChanged: this.onKeyframeChanged, timelineData:field, ref: this.keyframePropretyEditorRef, keyFrame: selectedKeyframe});
 		}
 		
 		return R.div({className: 'field-timeline', onMouseDown:(ev) =>{
@@ -412,7 +412,8 @@ class KeyframePropertyEditor extends React.Component {
 		});
 		this.props.onKeyframeChanged(selectedKeyframe);
 		editor.sceneModified();
-		this.forceUpdate(); todo: invalidate cache after global property changing
+		Timeline.renormalizeWholeTimelineData(this.props.node._timelineData);
+		this.forceUpdate();
 	}
 	
 	onPowChanged(ev) {
@@ -422,6 +423,7 @@ class KeyframePropertyEditor extends React.Component {
 		});
 		this.props.onKeyframeChanged(selectedKeyframe);
 		editor.sceneModified();
+		Timeline.renormalizeWholeTimelineData(this.props.node._timelineData);
 		this.forceUpdate();
 	}
 	
@@ -431,6 +433,7 @@ class KeyframePropertyEditor extends React.Component {
 			});
 		this.props.onKeyframeChanged(selectedKeyframe);
 		editor.sceneModified();
+		Timeline.renormalizeWholeTimelineData(this.props.node._timelineData);
 		this.forceUpdate();
 	}
 	
