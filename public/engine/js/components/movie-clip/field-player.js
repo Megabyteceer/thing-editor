@@ -89,25 +89,21 @@ export default class FieldPlayer {
 		} else if(currentFrame.m === 1) { //LINEAR
 			this.val += this.speed;
 		} else if(currentFrame.m === 3) { //JUMP FLOOR
+			this.speed += currentFrame.g;
+			this.val += this.speed;
 			if(this.val >= currentFrame.v) {
 				this.val = currentFrame.v;
 				this.speed *= -currentFrame.b;
-			} else {
-				this.speed += currentFrame.g;
 			}
-			this.val += this.speed;
 		} else if(currentFrame.m === 4) { //JUMP ROOF
+			this.speed -= currentFrame.g;
+			this.val += this.speed;
 			if(this.val <= currentFrame.v) {
 				this.val = currentFrame.v;
 				this.speed *= -currentFrame.b;
-			} else {
-				this.speed -= currentFrame.g;
 			}
-			this.val += this.speed;
 		}
-		
 		this.target[this.fieldName] = this.val;
-		
 	}
 	
 	//EDITOR

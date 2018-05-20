@@ -2,7 +2,8 @@
 	"c": "Scene",
 	"p": {
 		"name": "levels/3",
-		"backgroundColor": 4324025
+		"backgroundColor": 4324025,
+		"faderType": "fader/curtains"
 	},
 	":": [
 		{
@@ -18,8 +19,8 @@
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 159.27961303591616,
-				"y": 503.99332645980286,
+				"x": 395.27961303591616,
+				"y": 141.99332645980286,
 				"pivot.y": 31,
 				"image": "bunny.png",
 				"xSpeed": 10.197367648693145

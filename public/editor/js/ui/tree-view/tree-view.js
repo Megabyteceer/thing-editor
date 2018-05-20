@@ -82,7 +82,7 @@ export default class TreeView extends React.Component {
 	
 	onPasteClick() {
 		if(editor.clipboardData && editor.clipboardData.length > 0) {
-			
+			editor.disableFieldsCache = true;
 			var added = [];
 			editor.clipboardData.some((data) => {
 				var o = Lib._deserializeObject(data);
@@ -95,6 +95,7 @@ export default class TreeView extends React.Component {
 			}
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
+			editor.disableFieldsCache = false;
 		}
 	}
 	
@@ -176,7 +177,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected', "tool-btn", 46, isEmpty)
 	
 	),
-			R.div({className: 'scene-tree-view', onClick: onEmptyClick},
+			R.div({className: 'scene-tree-view', onMouseDown: onEmptyClick},
 				game.__getScenesStack().map(renderSceneStackItem),
 				editor.game.stage.children.map(renderRoots)
 			)

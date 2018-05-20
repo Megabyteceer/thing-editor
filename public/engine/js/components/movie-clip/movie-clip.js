@@ -9,10 +9,6 @@ export default class MovieClip extends Sprite {
 		this.fieldPlayers = [];
 	}
 	
-	onRemove() {
-		this._timelineData = null;
-	}
-	
 	update() {
 		if (this.isPlaying) {
 			if (this.delay > 0) {
@@ -126,7 +122,7 @@ export default class MovieClip extends Sprite {
 	set timeline(data) {
 		if(data === null) return;
 //EDITOR
-		if(!deserializeCache.has(data)) {
+		if(!deserializeCache.has(data) || editor.disableFieldsCache) {
 			var desData = MovieClip._deserializeTimelineData(data);
 			deserializeCache.set(data, desData)
 			serializeCache.set(desData, data);
@@ -134,7 +130,6 @@ export default class MovieClip extends Sprite {
 		data = deserializeCache.get(data);
 //ENDEDITOR
 		
-		assert(!this._timelineData || game.__EDITORmode, "Timeline data already assigned for this MovieClip");
 		assert(Array.isArray(data.f), "Wrong timeline data?");
 		this._timelineData = data;
 
@@ -156,6 +151,10 @@ export default class MovieClip extends Sprite {
 		for (let p of this.fieldPlayers) {
 			p.reset();
 		}
+	}
+	
+	hasLabel(labelName) {
+		return this._timelineData.l.hasOwnProperty(labelName);
 	}
 	
 	gotoLabel(labelName) {

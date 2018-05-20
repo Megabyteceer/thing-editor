@@ -1,6 +1,6 @@
 const call = (s, this_) => {
 	assert(s, "Empty call string.");
-	try {
+	//try {
 		var data = stringToCallData(s);
 		var path = data.p;
 		var c;
@@ -40,11 +40,11 @@ const call = (s, this_) => {
 		} else {
 			return c.call(fOwner);
 		}
-	} catch (er) {
+	/*} catch (er) {
 		let m = er.message || er;
 		console.error(er);
 		assert(false, 'Call execution error: ' + m, true);
-	}
+	}*/
 }
 
 const _callsCahce = {};

@@ -11,10 +11,10 @@ class TreeNode extends React.Component {
 	constructor(props) {
 		super(props);
 		
-		this.onClick = this.onClick.bind(this);
+		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 	
-	onClick(ev) { // == select nodes
+	onMouseDown(ev) { // == select nodes
 		var state = __getNodeExtendData(this.props.node);
 		if (!ev.ctrlKey && (state.isSelected || isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
 			state.toggled = !state.toggled;
@@ -73,7 +73,7 @@ class TreeNode extends React.Component {
 		var icon = R.classIcon(node.constructor);
 		return R.fragment(R.div({
 			className,
-			onClick: this.onClick
+			onMouseDown: this.onMouseDown
 		}, icon, R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + __getNodeExtendData(node).id), caret), childs);
 	}
 }

@@ -57,8 +57,8 @@ export default class PrefabsList extends React.Component {
 		} else {
 			
 			var defaultPrefabName = '';
-			if (this.state.selectedItem) {
-				defaultPrefabName = this.state.selectedItem.split('/');
+			if (this.state.selectedItem && this.state.selectedItem.p.name) {
+				defaultPrefabName = this.state.selectedItem.p.name.split('/');
 				defaultPrefabName.pop();
 				defaultPrefabName = defaultPrefabName.join('/');
 				if (defaultPrefabName) {

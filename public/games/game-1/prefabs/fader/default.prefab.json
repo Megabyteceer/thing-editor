@@ -4,14 +4,14 @@
 		"name": "fader/default",
 		"x": 640,
 		"y": 360,
-		"alpha": -7.216449660063518e-16,
+		"alpha": 0,
 		"scale.x": 128,
 		"scale.y": 72,
 		"image": "WHITE",
 		"tint": 0,
 		"timeline": {
 			"l": {
-				"hide": 120
+				"hide fader": 120
 			},
 			"p": 0.02,
 			"d": 0.85,
@@ -26,7 +26,7 @@
 						},
 						{
 							"v": 1,
-							"t": 60,
+							"t": 11,
 							"m": 1,
 							"a": "game.faderShoot"
 						},
@@ -43,7 +43,7 @@
 						},
 						{
 							"v": 0,
-							"t": 180,
+							"t": 131,
 							"m": 1,
 							"a": "game.faderEnd"
 						}

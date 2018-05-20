@@ -2,7 +2,8 @@
 	"c": "Scene",
 	"p": {
 		"name": "levels/1",
-		"backgroundColor": 3626305
+		"backgroundColor": 3626305,
+		"faderType": "fader/curtains"
 	},
 	":": [
 		{

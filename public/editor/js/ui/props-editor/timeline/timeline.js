@@ -269,6 +269,7 @@ function renormalizeLabel(label, timelineData) { //re find keyframes for modifie
 	label.n = timelineData.f.map((fieldTimeline) => {
 		return MovieClip._findNextKeyframe(fieldTimeline.t, label.t - 1);
 	});
+	MovieClip.invalidateSerializeCache(timelineData);
 }
 
 function renormalizeAllLabels(timelineData) {
@@ -375,6 +376,7 @@ class TimeLabel extends React.Component {
 				} else {
 					draggingXShift = ev.clientX - $(ev.target).closest('.timeline-label')[0].getBoundingClientRect().x;
 					draggingLabel = label;
+					draggingTimelineData = tl;
 				}
 				sp(ev);
 			},
@@ -383,6 +385,7 @@ class TimeLabel extends React.Component {
 					if(enteredName) {
 						tl.l[enteredName] = label;
 						delete tl.l[name];
+						MovieClip.invalidateSerializeCache(tl);
 						timeline.forceUpdate();
 					}
 				});
@@ -402,6 +405,7 @@ function onTimelineScroll(ev) {
 var isDragging = false;
 var draggingXShift = 0;
 var draggingLabel;
+var draggingTimelineData;
 var mouseTimelineTime = 0;
 
 function onTimelineMouseDown(ev) {
@@ -450,6 +454,7 @@ function onMouseMove(ev) {
 		
 		if(draggingLabel && (draggingLabel.t !== mouseTimelineTime)) {
 			draggingLabel.t = mouseTimelineTime;
+			renormalizeLabel(draggingLabel, draggingTimelineData);
 			editor.sceneModified();
 			timeline.forceUpdate();
 		}

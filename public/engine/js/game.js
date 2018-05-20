@@ -75,9 +75,7 @@ class Game {
 		this.currentScene.onShow();
 		
 		//TODO: wait until scene's assetw will beloaded
-		currentFader.gotoLabel('hide');
-		currentFader.play();
-		
+		currentFader.gotoLabelRecursive('hide fader');
 		
 		SHOOTTIME = false;
 	}

@@ -312,6 +312,7 @@ button {
 .tree-caret {
 	line-height: 0.50;
 	float: right;
+	margin-left: -2000px;
 	font-size: 290%;
 	color: #6c6b6a;
 	pointer-events:none;
@@ -354,21 +355,22 @@ button {
 
 .props-field {
 	border-bottom: 1px solid #c6c6c6;
+	display: flex;
 }
 
 .props-label {
-	display:inline-block;
+	/* display:inline-block; */
 	box-sizing:border-box;
 	padding-right: 20px;
 	text-align:right;
-	width: 50%;
+	width: 110px;
 	color: #3a8cff;
 	font-size: 120%;
 }
 
 .props-wrapper {
 	display:inline-block;
-	width: 50%;
+	flex-grow: 1;
 	box-sizing:border-box;
 	border-left: 1px solid #cfcfcf;
 }
@@ -593,6 +595,7 @@ input{
     overflow-x: auto;
     background: #bbbbbb;
     top: 10px;
+    bottom: 36px;
 }
 
 .objects-timeline {
@@ -758,7 +761,7 @@ input{
 }
 
 .keyframe-type-chooser {
-	width: 100px;
+	width: 140px;
 }
 
 .bottom-panel input, .bottom-panel .select-editor{
