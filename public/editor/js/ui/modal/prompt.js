@@ -10,6 +10,12 @@ export default class Prompt extends React.Component {
 		this.onKeyDown = this.onKeyDown.bind(this);
 	}
 	
+	componentDidMount() {
+		setTimeout(() => {
+			$('.modal-content input').focus();
+		},1);
+	}
+	
 	onChange(ev) {
 		var val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
 		var reject = this.props.accept ? this.props.accept(val) : undefined;
@@ -36,7 +42,7 @@ export default class Prompt extends React.Component {
 		return R.fragment(
 			R.div(modalRejectProps, this.state.rejectReason || ' '),
 			R.div(null,
-				R.input({value: this.state.value, onKeyDown: this.onKeyDown, autoFocus: true, onChange: this.onChange})
+				R.input({value: this.state.value, onKeyDown: this.onKeyDown, onChange: this.onChange})
 			),
 			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', 13)
 		)

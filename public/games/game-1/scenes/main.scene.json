@@ -19,7 +19,6 @@
 			"p": {
 				"x": 231.683,
 				"y": 320,
-				"rotation": -0.1,
 				"image": "bunny.png",
 				"timeline": {
 					"l": {
@@ -74,8 +73,9 @@
 			"p": {
 				"x": 954,
 				"y": 341,
-				"pivot.y": 29,
-				"image": "bunny.png"
+				"image": "bunny.png",
+				"xSpeed": -2.637000000000001,
+				"rSpeed": -0.11470000000000002
 			}
 		},
 		{

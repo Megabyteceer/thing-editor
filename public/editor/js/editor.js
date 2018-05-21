@@ -27,6 +27,8 @@ class Editor {
 		
 		window.editor = this;
 		
+		this.tryToSaveHistory = tryToSaveHistory;
+		
 		this.currenGamePath = 'games/game-1';
 		this.fs = fs;
 		
@@ -367,6 +369,7 @@ var tryToSaveHistory = () => {
 		needHistorySave = false;
 	}
 };
+
 $(window).on('mouseup', tryToSaveHistory);
 $(window).on('keyup', tryToSaveHistory);
 

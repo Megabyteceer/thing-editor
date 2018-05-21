@@ -426,6 +426,7 @@ input{
 }
 
 .modal-content {
+	text-align: center;
 	padding:20px;
 	background:#fff;
 }

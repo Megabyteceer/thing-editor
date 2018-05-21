@@ -15,7 +15,9 @@ export default class MovieClip extends Sprite {
 				this.delay--;
 			} else {
 				for(var p of this.fieldPlayers) {
-					p.update();
+					if (this.isPlaying) {
+						p.update();
+					}
 				}
 			}
 		}

@@ -188,6 +188,7 @@ function getFrameAtTimeOrCreate(o, name, time) {
 	};
 	
 	field.t.push(keyFrame);
+	renormalizeAllLabels(o._timelineData);
 	return keyFrame;
 }
 
@@ -300,9 +301,10 @@ class ObjectsTimeline extends React.Component {
 		var labelsPanel = R.div({
 				onMouseDown:(ev) => { //create new label by double click
 					if(ev.buttons == 2) {
+						var time = mouseTimelineTime;
 						askForLabelName(labelsNames, "Create new label:").then((name) => {
 							if(name) {
-								var label = {t: mouseTimelineTime};
+								var label = {t: time};
 								tl.l[name] = label;
 								renormalizeLabel(label, tl);
 								this.forceUpdate();
@@ -372,7 +374,7 @@ class TimeLabel extends React.Component {
 					editor.ui.modal.showQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
 						delete tl.l[name];
 						timeline.forceUpdate();
-					});
+					}, R.span(null, R.icon('delete'), ' Delete'));
 				} else {
 					draggingXShift = ev.clientX - $(ev.target).closest('.timeline-label')[0].getBoundingClientRect().x;
 					draggingLabel = label;

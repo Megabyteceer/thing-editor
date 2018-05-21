@@ -1,15 +1,14 @@
+var floorY = H - 25;
+
 class Bunny extends Sprite {
 	
 	constructor(img) {
 		super(img);
-		this.xSpeed = Math.random() * 30.0 - 15.0;
-		this.x = Math.random() * W;
-		this.y = Math.random() * H;
-		this.gravity = Math.random() * 0.15 + 0.83;
+		this.gravity = 1;
 	}
 	
 	update() {
-		if (this.y > H) {
+		if (this.y > floorY) {
 			this.ySpeed *= -1;
 			this.onTouchBounds();
 		} else {
@@ -25,7 +24,7 @@ class Bunny extends Sprite {
 	}
 	
 	onTouchBounds() {
-		//this.rotation = (Math.random() - 0.5) * 0.2;
+		this.rotation = (Math.random() - 0.5) * 0.2;
 	}
 }
 

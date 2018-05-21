@@ -23,8 +23,20 @@ export default class FieldPlayer {
 	}
 	
 	goto(time, nextKeyframe) {
-		this.currentFrame = nextKeyframe;
 		this.time = time;
+		this.currentFrame = nextKeyframe;
+		if(nextKeyframe.m === 1) { //LINEAR
+			var dist = nextKeyframe.t - this.time;
+			if(dist > 0) {
+				this.speed = (nextKeyframe.v - this.val) / dist;
+			} else {
+				this.speed = 0;
+			}
+		} else if (nextKeyframe.m === 2) {//DISCRETE
+			this.speed = 0;
+		}
+		
+		
 	}
 	
 	update() {
@@ -84,8 +96,9 @@ export default class FieldPlayer {
 
 		if (currentFrame.m === 0) { //- SMOOTH
 			this.speed += (currentFrame.v - this.val) * this.pow;
-			this.speed *= this.damper;
 			this.val += this.speed;
+			this.speed *= this.damper;
+			
 		} else if(currentFrame.m === 1) { //LINEAR
 			this.val += this.speed;
 		} else if(currentFrame.m === 3) { //JUMP FLOOR

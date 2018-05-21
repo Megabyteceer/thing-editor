@@ -37,6 +37,9 @@ export default class Button extends Sprite {
 			if (this.onClick) {
 				game.call(this.onClick, this);
 			}
+			if (this.afterClick) {
+				game.call(this.afterClick, this);
+			}
 			//Sounder.snd(this.clickSound);
 			Button.clickedButton = null;
 		}
@@ -80,6 +83,10 @@ Button.EDITOR_editableProps = [
 	},
 	{
 		name: 'onClick',
+		type: String
+	},
+	{
+		name: 'afterClick',
 		type: String
 	}
 ];
