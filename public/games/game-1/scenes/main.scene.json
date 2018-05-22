@@ -8,8 +8,8 @@
 		{
 			"c": "Button",
 			"p": {
-				"x": 347,
-				"y": 220,
+				"x": 587,
+				"y": 212,
 				"image": "UI/button.png",
 				"onClick": "game.showScene`levels/1"
 			}
@@ -140,8 +140,8 @@
 		{
 			"c": "Button",
 			"p": {
-				"x": 808,
-				"y": 216,
+				"x": 586,
+				"y": 303,
 				"image": "UI/button.png",
 				"onClick": "game.showScene`levels/2"
 			}
