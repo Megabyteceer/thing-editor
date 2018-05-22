@@ -253,6 +253,3 @@ Lib.__constructRecursive = constructRecursive;
 //ENDEDITOR
 
 export default Lib;
-
-Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
-Lib.addTexture('WHITE', PIXI.Texture.WHITE);

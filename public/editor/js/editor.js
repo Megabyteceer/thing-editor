@@ -7,6 +7,7 @@ import fs from './utils/fs.js';
 import history from './utils/history.js';
 import UI from './ui/ui.js';
 import ClassesLoader from './utils/classes-loader.js';
+import AssetsLoader from './utils/assets-loader.js';
 import ScenesList from "./ui/scenes-list.js";
 import Overlay from "./utils/overlay.js";
 import PrefabsList from "./ui/prefabs-list.js";
@@ -37,6 +38,7 @@ class Editor {
 		
 		this.initResize();
 		this.ClassesLoader = ClassesLoader;
+		this.AssetsLoader = AssetsLoader;
 		
 		this.onUIMounted = this.onUIMounted.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
@@ -68,6 +70,7 @@ class Editor {
 		this.overlay = new Overlay();
 		
 		ClassesLoader.init();
+		AssetsLoader.init();
 		this.openProject();
 	}
 	
@@ -178,10 +181,7 @@ class Editor {
 	}
 	
 	reloadAssets() {
-		Lib.addTexture('bunny.png', editor.fs.gameFolder + 'img/' + 'bunny.png'); //TODO: remove this temporary textures
-		Lib.addTexture('UI/button.png', editor.fs.gameFolder + 'img/' + 'UI/button.png'); //TODO: remove this temporary textures
-		
-		return Promise.resolve();
+		return AssetsLoader.reloadAssets();
 	}
 	
 	reloadAssetsAndClasses() {

@@ -83,6 +83,14 @@ export default class Viewport extends React.Component {
 	    this.setState({prefabMode:enabled});
     }
 	
+    onReloadClassesClick() {
+		editor.fs.refreshFiles().then(editor.reloadClasses);
+    }
+	
+	onReloadAssetsClick() {
+		editor.fs.refreshFiles().then(editor.reloadAssets);
+	}
+    
 	render() {
 
         var className = 'editor-viewport-wrapper';
@@ -109,7 +117,8 @@ export default class Viewport extends React.Component {
 	    	
 	        panel = R.span( undefined,
 	            R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'big-btn', 1032),
-                R.btn(R.icon('recompile'), editor.reloadClasses, 'Rebuild game sources', 'big-btn'),
+                R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Rebuild game sources', 'big-btn'),
+                R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
 		        statusHeader,
 		        pauseResumeBtn,
 		        oneStepBtn
