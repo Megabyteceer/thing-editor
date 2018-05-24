@@ -7,6 +7,8 @@ var defaults;
 var textures = {};
 var staticScenes = {};
 
+var noCacheCounter = 0;
+
 var constructorProcessor = (o) => {
 	o.init();
 }
@@ -55,7 +57,7 @@ class Lib {
 			Lib.__texturesList.push({name, value:name});
 		}
 		if(typeof texture === 'string') {
-			textures[name] = PIXI.Texture.fromImage(texture);
+			textures[name] = PIXI.Texture.fromImage(texture + '?noCahce=' + noCacheCounter++);
 		} else {
 			textures[name] = texture;
 		}

@@ -1,6 +1,6 @@
 var floorY = H - 25;
 
-class Bunny extends Sprite {
+export default class Bunny extends Sprite {
 	
 	constructor(img) {
 		super(img);
@@ -8,7 +8,8 @@ class Bunny extends Sprite {
 	}
 	
 	update() {
-		if (this.y > floorY) {
+		this.vertexData[2] += Math.random();
+		/*if (this.y > floorY) {
 			this.ySpeed *= -1;
 			this.onTouchBounds();
 		} else {
@@ -19,7 +20,7 @@ class Bunny extends Sprite {
 			this.xSpeed *= -1.0;
 			this.onTouchBounds();
 		}
-		this.scale.x = this.xSpeed > 0 ? 1 : -1;
+		this.scale.x = this.xSpeed > 0 ? 1 : -1;*/
 		super.update();
 	}
 	
@@ -27,5 +28,3 @@ class Bunny extends Sprite {
 		this.rotation = (Math.random() - 0.5) * 0.2;
 	}
 }
-
-export default Bunny;

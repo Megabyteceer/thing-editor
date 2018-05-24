@@ -16,9 +16,6 @@ blackout.height = H;
 
 var currentlyShowedPreview;
 
-var pivotImage = PIXI.Texture.fromImage('editor/img/overlay/pivot.png');
-var rotatorImage = PIXI.Texture.fromImage('editor/img/overlay/rotator.png');
-
 var draggers = [];
 
 function createDragger(owner, constructor) {
@@ -86,7 +83,7 @@ function refreshSelection() {
 		}
 		i--;
 	}
-	var newPointer = overedDragger ? ((overedDragger.texture === rotatorImage) ? 'pointer' : 'move') : 'initial';
+	var newPointer = overedDragger ? ((overedDragger instanceof Rotator) ? 'pointer' : 'move') : 'initial';
 	if(currentPointer !== newPointer) {
 		game.pixiApp.view.style.cursor = newPointer;
 		currentPointer = newPointer;
@@ -110,6 +107,8 @@ function refreshSelection() {
 	});
 }
 
+var startX, startY;
+
 $(window).on('mousedown', (ev) => {
 	if(ev.target === game.pixiApp.view) {
 		if (overedDragger) {
@@ -122,9 +121,19 @@ $(window).on('mousedown', (ev) => {
 			selectByStageClick(ev);
 		} else if(ev.buttons === 2 && editor.selection.length > 0) {
 			var info = __getNodeExtendData(editor.selection[0]);
-			if(info.draggerPivot){
+			if(info.draggerPivot) {
 				draggingDragger = info.draggerPivot;
 				draggingDragger.onDrag();
+			}
+		}
+		if(draggingDragger) {
+			startX = draggingDragger.x;
+			startY = draggingDragger.y;
+			if(game.mouse.altKey) {
+				editor.selection.some((o) => {
+					o.parent.addChildAt(Lib._deserializeObject(Lib.__serializeObject(o)), o.parent.children.indexOf(o));
+				});
+				editor.ui.sceneTree.forceUpdate();
 			}
 		}
 	}
@@ -196,13 +205,28 @@ $(window).on('mouseup', () => {
 class Dragger extends Sprite {
 	constructor() {
 		super();
-		this.texture = pivotImage;
+		this.texture = PIXI.Texture.fromImage('editor/img/overlay/pivot.png');
 	}
 	
 	onDrag() {
 		var o = this.owner;
 		
 		o.parent.toLocal(game.mouse, undefined, p, true);
+		
+		if(game.mouse.shiftKey) {
+			var dX = p.x - startX;
+			var dY = p.y - startY;
+			var angle = Math.atan2(dY, dX);
+			angle /= Math.PI;
+			angle *= 4;
+			angle = Math.round(angle);
+			angle /= 4.0;
+			angle *= Math.PI;
+			
+			var len = Math.sqrt(dX * dX + dY * dY);
+			p.x = startX + Math.cos(angle) * len;
+			p.y = startY + Math.sin(angle) * len;
+		}
 		
 		editor.onSelectedPropsChange('x', Math.round(p.x - o.x), true);
 		editor.onSelectedPropsChange('y', Math.round(p.y - o.y), true);
@@ -212,7 +236,7 @@ class Dragger extends Sprite {
 class Rotator extends Sprite {
 	constructor() {
 		super();
-		this.texture = rotatorImage;
+		this.texture = PIXI.Texture.fromImage('editor/img/overlay/rotator.png');
 	}
 	
 	onDrag() {

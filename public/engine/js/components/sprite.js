@@ -41,12 +41,41 @@ Object.defineProperty(PIXI.Sprite.prototype, 'image', {
 		return this._imageID;
 	},
 	set:function (v) {
+		assert(typeof v === 'string', "texture's Srting ID expected.");
 		if(this._imageID !== v) {
 			this._imageID = v;
 			this.texture = Lib.getTexture(v);
 		}
 	}
 });
+
+Object.defineProperty(PIXI.Sprite.prototype, 'tintR', {
+	get:function () {
+		return this.tint >> 16;
+	},
+	set:function (v) {
+		this.tint = (this.tint & 0xFFFF) | (v << 16);
+	}
+});
+
+Object.defineProperty(PIXI.Sprite.prototype, 'tintG', {
+	get:function () {
+		return (this.tint & 0xFF00) >> 8;
+	},
+	set:function (v) {
+		this.tint = (this.tint & 0xFF00FF) | (v << 8);
+	}
+});
+
+Object.defineProperty(PIXI.Sprite.prototype, 'tintB', {
+	get:function () {
+		return this.tint & 0xFF;
+	},
+	set:function (v) {
+		this.tint = (this.tint & 0xFFFF00) | v;
+	}
+});
+
 
 PIXI.Sprite.EDITOR_editableProps = [
 	{
@@ -61,6 +90,30 @@ PIXI.Sprite.EDITOR_editableProps = [
 		default: 0xFFFFFF,
 		max: 0xFFFFFF,
 		min: 0
+	},
+	{
+		name: 'tintR',
+		type: Number,
+		default: 255,
+		max: 255,
+		min: 0,
+		notSeriazable: true
+	},
+	{
+		name: 'tintG',
+		type: Number,
+		default: 255,
+		max: 255,
+		min: 0,
+		notSeriazable: true
+	},
+	{
+		name: 'tintB',
+		type: Number,
+		default: 255,
+		max: 255,
+		min: 0,
+		notSeriazable: true
 	},
 	{
 		name: 'blendMode',

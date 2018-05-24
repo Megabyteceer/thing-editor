@@ -44,7 +44,7 @@ function showError(message) {
 }
 
 function getClassType(c) {
-	assert(typeof c === 'function');
+	assert(typeof c === 'function', 'Class expected');
 	while (c) {
 		if (c === Scene) return Scene;
 		if (c === PIXI.DisplayObject) return PIXI.DisplayObject;
@@ -94,8 +94,7 @@ function enumClassProperties(c) {
 		}
 		if (cc.hasOwnProperty('EDITOR_editableProps')) {
 			var addProps = cc.EDITOR_editableProps;
-			
-			if (addProps.some((p) => {
+			addProps.some((p) => {
 				if (p.type === 'splitter') {
 					p.notSeriazable = true;
 				} else {
@@ -111,12 +110,17 @@ function enumClassProperties(c) {
 					}
 					
 				}
+				
+				var ownerClassName = cc.name + ' (' + loadedPath + ')';
+				p.owner = ownerClassName;
+				
 				return props.some((pp) => {
-					return pp.name === p.name
+					if(pp.name === p.name) {
+						editor.ui.modal.showError('redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner);
+						return true;
+					}
 				});
-			})) {
-				this.ui.showError('redefenition of property "' + pp.name + '"');
-			}
+			});
 			
 			props = addProps.concat(props);
 		}
@@ -136,7 +140,7 @@ function clearClasses() {
 }
 
 //load custom game classes
-const jsFiler = /^src\/.*\.js$/gm;
+const jsFiler = /^src\/(game-objects|scenes)\/.*\.js$/gm;
 var head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports PIXI.DisplayObject descendants and add them in to Lib.
@@ -158,7 +162,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 		window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
 			showError(R.fragment(
-				message,
+				'attempt to load: '+ loadedPath + ': ' + message,
 				R.div({className: 'error-body'}, source.split('?nocache=').shift().split(':' + location.port).pop() + ' (' + lineno + ':' + colno + ')', R.br(), message),
 				'Plese fix error in source code and press button to try again:',
 			));
@@ -206,8 +210,9 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		head.appendChild(script);
 	});
 }
-
+var loadedPath;
 function classLoaded(c, path) {
+	loadedPath = path;
 	loadedClssesCount++;
 	if(!c.hasOwnProperty('EDITOR_icon')) {
 		c.EDITOR_icon = "tree/game";

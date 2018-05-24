@@ -10,6 +10,8 @@ window.Scene = Scene;
 window.Sprite = Sprite;
 window.Lib = Lib;
 
+PIXI.settings.MIPMAP_TEXTURES = false;
+
 var stage;
 var app;
 
