@@ -74,13 +74,18 @@ class Game {
 			this.currentScene.detachFromParent();
 		}
 		this._setCurrentSceneContent(showStack.pop());
-		this.currentScene.onShow();
+		this._processOnShow();
 		
 		//TODO: wait until scene's assetw will beloaded
 		currentFader.gotoLabelRecursive('hide fader');
 		
 		SHOOTTIME = false;
 	}
+	
+	_processOnShow() {
+		this.currentScene.onShow();
+	}
+	
 	
 	_setCurrentSceneContent(scene) {
 		assert(!this.currentScene || !this.currentScene.parent, "Previous scene was not removed before setting new one.");

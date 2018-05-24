@@ -27,10 +27,11 @@ PIXI.DisplayObject.prototype.findChildrenByType = function (classType) {
 	var stack = [this];
 	
 	while (stack.length > 0) {
-		if (stack.length > 100) throw new Error('owerflow');
+		if (stack.length > 1000) throw new Error('owerflow');
 		var o = stack.pop();
 		var childs = o.children;
-		for (var i = childs.length - 1; i >= 0; i--) {
+		var len = childs.length;
+		for (var i =  0; i < len; i++) {
 			o = childs[i];
 			if (o.children.length > 0) {
 				stack.push(o);

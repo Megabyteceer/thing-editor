@@ -536,6 +536,10 @@ input{
     border-bottom: 1px solid #eee;
 }
 
+.left-align-text {
+	text-align: left;
+}
+
 .resizable-dialog {
     position: relative;
     overflow: auto;

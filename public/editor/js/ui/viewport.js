@@ -51,6 +51,7 @@ export default class Viewport extends React.Component {
 				selectionData = editor.selection.saveSelection();
 				game.__EDITORmode = false;
 				Lib.__constructRecursive(game.currentScene);
+				game._processOnShow();
 			} else { //stop game
 				game.__cleanupBeforeToggleStop();
 				game.currentScene.remove();

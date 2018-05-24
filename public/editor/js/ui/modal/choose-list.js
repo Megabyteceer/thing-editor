@@ -1,5 +1,5 @@
 var listProps = {className:'list-view'};
-var bodyProps = {className:'resizable-dialog'};
+var bodyProps = {className:'resizable-dialog left-align-text'};
 
 export default class ChooseList extends React.Component {
 	
