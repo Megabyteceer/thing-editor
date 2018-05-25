@@ -70,7 +70,7 @@ window.check = (expression, message) => {
 }
 
 $(window).on('contextmenu', (ev) => {
-	if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'TEXTAREA' || ev.target.tagName === 'SELECT') return;
+	if(isEventFocusOnInputElement(ev)) return;
 	if ($(ev.target).hasClass('selectable-text')) return;
 	sp(ev);
 	
@@ -81,6 +81,24 @@ $(window).on('keydown', (ev) => {
 		/* sp(ev);
 		 editor.reloadAssetsAndClasses();*/
 	}
+	
+	if(!isEventFocusOnInputElement(ev)) {
+		switch(ev.key) {
+			case "ArrowUp":
+				editor.onSelectedPropsChange('y', -1, true);
+				break;
+			case "ArrowDown":
+				editor.onSelectedPropsChange('y', 1, true);
+				break;
+			case "ArrowLeft":
+				editor.onSelectedPropsChange('x', -1, true);
+				break;
+			case "ArrowRight":
+				editor.onSelectedPropsChange('x', 1, true);
+				break;
+		}
+	}
+	
 });
 
 window.selectText = function (element) {
@@ -136,6 +154,34 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	}
 
 	Object.defineProperty(constructor.prototype, propertyName, d);
+}
+
+window.isEventFocusOnInputElement = (ev) => {
+	var tag = ev.target.tagName;
+	return (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+}
+
+window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty) => {
+	var ret = {
+		name: name,
+		type: String,
+		default: canBeEmpty ? '' : 'EMPTY'
+	}
+	Object.defineProperty(ret, 'select', {
+		get:() => {
+			if(canBeEmpty) {
+				var a = Lib.__texturesList.concat();
+				a[0] = {
+					"name": "none",
+					"value": ""
+				};
+				return a;
+			} else {
+				return Lib.__texturesList;
+			}
+		}
+	});
+	return ret;
 }
 
 export default null;

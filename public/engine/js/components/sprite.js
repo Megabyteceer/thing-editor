@@ -16,26 +16,6 @@ export default class Sprite extends PIXI.Sprite {
 	}
 }
 
-
-//EDITOR
-
-var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
-	return {name: k, value: PIXI.BLEND_MODES[k]};
-}).sort((a, b) => {
-	return a.value - b.value
-});
-
-var imagePropertySelect = {
-	name: 'image',
-	type: String,
-	default: 'EMPTY'
-}
-Object.defineProperty(imagePropertySelect, 'select', {
-	get:() => {
-		return Lib.__texturesList;
-	}
-})
-
 const imagePropertyDescriptor = {
 	get:function () {
 		return this._imageID;
@@ -51,6 +31,16 @@ const imagePropertyDescriptor = {
 
 Object.defineProperty(PIXI.Sprite.prototype, 'image', imagePropertyDescriptor);
 Object.defineProperty(PIXI.mesh.Mesh.prototype, 'image', imagePropertyDescriptor);
+
+
+
+//EDITOR
+
+var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
+	return {name: k, value: PIXI.BLEND_MODES[k]};
+}).sort((a, b) => {
+	return a.value - b.value
+});
 
 const tintRDesc = {
 	get:function () {
@@ -94,7 +84,7 @@ PIXI.Sprite.EDITOR_editableProps = [
 		title: 'Sprite:',
 		name: 'sprite'
 	},
-	imagePropertySelect,
+	makeImageSelectEditablePropertyDecriptor('image'),
 	{
 		name: 'tint',
 		type: Number,

@@ -6,7 +6,7 @@ AssetsLoader.init = () => {
 
 }
 
-const textureFiler = /^img\/.*\.png$/gm;
+const textureFiler = /^img\/.*\.(png|jpg)$/gm;
 const textureNameCleaner = /^img\//gm;
 
 const enumAssets = () => {

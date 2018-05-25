@@ -7,48 +7,51 @@ import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
 import TimelineEditor from "./timeline/timeline-property.js";
 
 
-var typeDescriptions = new WeakMap();
-typeDescriptions[Number] = {
+var typeDescriptions = new Map();
+
+typeDescriptions.set(Number, {
 	renderer: NumberEditor,
 	parser: (target) => {
 		return parseFloat(target.value)
 	},
 	default: 0
-};
-typeDescriptions[String] = {
+});
+typeDescriptions.set(String, {
 	renderer: StringEditor,
 	parser: (target) => {
 		return target.value || null;
 	},
 	default: null
-};
-typeDescriptions[Boolean] = {
+});
+typeDescriptions.set(Boolean, {
 	renderer: BooleanEditor,
 	parser: (target) => {
 		return target.checked
 	},
 	default: false
-};
-typeDescriptions['color'] = {
+});
+typeDescriptions.set('color', {
 	renderer: ColorEditor, parser:
 		(target) => {
 			return parseInt(target.value.replace('#', ''), 16)
 		},
 	default: 0xFFFFFF
-};
+});
 
-typeDescriptions['timeline'] = {
+typeDescriptions.set('timeline', {
 	renderer: TimelineEditor,
 	parser:
 		(movieClip) => {
 			return movieClip.timeline;
 		},
 	default:null
-};
+});
 
 
 var getTypeDescription = (field) => {
-	return typeDescriptions[field.type || Number];
+	var t = field.type || Number;
+	assert(typeDescriptions.has(t), "Unknown editable property type: " + t);
+	return typeDescriptions.get(t);
 }
 
 var fieldProps = {className: 'props-field'};

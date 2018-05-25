@@ -20,7 +20,7 @@ class Button extends React.Component {
 	}
 	
 	onKeyDown(e) {
-		if (this.props.disabled || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT' || (editor.ui.modal.state.modals.length > 0)) return;
+		if (this.props.disabled || isEventFocusOnInputElement(e) || (editor.ui.modal.state.modals.length > 0)) return;
 		
 		var needCtrl = this.props.hotkey > 1000;
 		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {

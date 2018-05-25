@@ -46,7 +46,9 @@ class TreeNode extends React.Component {
 		if (state.isSelected) {
 			lastClickedItem = this;
 		}
-		
+		if(document.activeElement) {
+			document.activeElement.blur();
+		}
 		sp(ev);
 	}
 	

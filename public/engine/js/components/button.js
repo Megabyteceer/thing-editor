@@ -16,6 +16,8 @@ export default class Button extends Sprite {
 		allActiveButtons.push(this);
 		this.interactive = true;
 		this.buttonMode = true;
+		this.initialScale = this.scale.x;
+		this.initialImage = this.image;
 		super.init();
 	}
 	
@@ -46,13 +48,13 @@ export default class Button extends Sprite {
 	}
 	onDown() {
 		this.scale.x =
-		this.scale.y = 0.9;
+		this.scale.y = this.initialScale * 0.9;
 		Button.downedButton = this;
 	}
 	
 	onUp() {
 		this.scale.x =
-		this.scale.y = 1.0;
+		this.scale.y = this.initialScale;
 		if(Button.downedButton === this) {
 			this.executeOnClick();
 		}
@@ -61,14 +63,22 @@ export default class Button extends Sprite {
 	
 	onOver() {
 		Button.overerdButton = this;
-		this.rotation = 0.1;
+		if(this.hoverImage) {
+			this.image = this.hoverImage;
+		} else {
+			this.rotation = 0.1;
+		}
 	}
 	onOut() {
 		Button.overerdButton = null;
 		this.scale.x =
-		this.scale.y = 1.0;
+		this.scale.y = this.initialScale;
 		Button.downedButton = null;
-		this.rotation = 0.0;
+		if(this.hoverImage) {
+			this.image = this.initialImage;
+		} else {
+			this.rotation = 0;
+		}
 	}
 }
 
@@ -81,6 +91,7 @@ Button.EDITOR_editableProps = [
 		title: 'button:',
 		name: 'button'
 	},
+	makeImageSelectEditablePropertyDecriptor('hoverImage', true),
 	{
 		name: 'onClick',
 		type: String

@@ -14,7 +14,7 @@ import PrefabsList from "./ui/prefabs-list.js";
 import Signal from "./utils/signal.js";
 import Lib from "/engine/js/lib.js";
 
-class Editor {
+export default class Editor {
 	
 	get editorFilesPrefix() {
 		return '.editor-tmp.';
@@ -168,13 +168,13 @@ class Editor {
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
 		var needRepairScene = game.currentScene != null;
 		if (needRepairScene) {
-			this.saveCurrentScene(editor.editorFilesPrefix + "tmp");
+			this.saveCurrentScene(editor.runningSceneLibSaveSlotName);
 			var selectionData = editor.selection.saveSelection();
 		}
 		
 		return ClassesLoader.reloadClasses().then(() => {
 			if (needRepairScene) {
-				this.loadScene(editor.editorFilesPrefix + "tmp");
+				this.loadScene(editor.runningSceneLibSaveSlotName);
 				editor.selection.loadSelection(selectionData);
 			}
 		});
@@ -389,4 +389,3 @@ window.__resetNodeExtendData = (node) => {
 	}
 	editorNodeData.delete(node);
 };
-export default Editor;
