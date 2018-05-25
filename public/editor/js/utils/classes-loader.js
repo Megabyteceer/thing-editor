@@ -3,7 +3,7 @@ import Pool from "/engine/js/utils/pool.js";
 import Container from "../../../engine/js/components/container.js";
 import Button from "../../../engine/js/components/button.js";
 import MovieClip from "../../../engine/js/components/movie-clip/movie-clip.js";
-
+import NineSlicePlane from "../../../engine/js/components/nine-slice-plane.js";
 function init() {
 	//embedded engine classes
 	embeddedClasses = [
@@ -11,7 +11,8 @@ function init() {
 		MovieClip,
 		Scene,
 		Container,
-		Button
+		Button,
+		NineSlicePlane
 	];
 }
 
@@ -104,7 +105,7 @@ function enumClassProperties(c) {
 					defaults[p.name] = p.default;
 					
 					if(c === cc) { //own properties of this class
-						if(p.type === Number || p.type === 'color' || p.type === 'select') {
+						if(!p.hasOwnProperty('noNullCheck') && (p.type === Number || p.type === 'color' || p.type === 'select')) {
 							wrapPropertyWithNumberChecker(c, p.name);
 						}
 					}

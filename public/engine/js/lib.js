@@ -73,7 +73,16 @@ class Lib {
 	}
 	
 	static getTexture(name) {
-		assert(textures.hasOwnProperty(name), "No texture with name '" + name + "' registred in Lib");
+		
+		//EDITOR
+		var exists = textures.hasOwnProperty(name);
+		if(!exists) {
+			assert(exists, "No texture with name '" + name + "' registred in Lib");
+			return PIXI.Texture.EMPTY;
+		}
+		
+		//ENDEDITOR
+		
 		return textures[name];
 	}
 	

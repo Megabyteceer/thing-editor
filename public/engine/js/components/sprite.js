@@ -36,7 +36,7 @@ Object.defineProperty(imagePropertySelect, 'select', {
 	}
 })
 
-Object.defineProperty(PIXI.Sprite.prototype, 'image', {
+const imagePropertyDescriptor = {
 	get:function () {
 		return this._imageID;
 	},
@@ -47,35 +47,46 @@ Object.defineProperty(PIXI.Sprite.prototype, 'image', {
 			this.texture = Lib.getTexture(v);
 		}
 	}
-});
+};
 
-Object.defineProperty(PIXI.Sprite.prototype, 'tintR', {
+Object.defineProperty(PIXI.Sprite.prototype, 'image', imagePropertyDescriptor);
+Object.defineProperty(PIXI.mesh.Mesh.prototype, 'image', imagePropertyDescriptor);
+
+const tintRDesc = {
 	get:function () {
 		return this.tint >> 16;
 	},
 	set:function (v) {
 		this.tint = (this.tint & 0xFFFF) | (v << 16);
 	}
-});
+};
 
-Object.defineProperty(PIXI.Sprite.prototype, 'tintG', {
+Object.defineProperty(PIXI.Sprite.prototype, 'tintR', tintRDesc);
+Object.defineProperty(PIXI.mesh.Mesh.prototype, 'tintR', tintRDesc);
+
+const tintGDesc = {
 	get:function () {
 		return (this.tint & 0xFF00) >> 8;
 	},
 	set:function (v) {
 		this.tint = (this.tint & 0xFF00FF) | (v << 8);
 	}
-});
+};
 
-Object.defineProperty(PIXI.Sprite.prototype, 'tintB', {
+Object.defineProperty(PIXI.Sprite.prototype, 'tintG', tintGDesc);
+Object.defineProperty(PIXI.mesh.Mesh.prototype, 'tintG', tintGDesc);
+
+const tintBDesc = {
 	get:function () {
 		return this.tint & 0xFF;
 	},
 	set:function (v) {
 		this.tint = (this.tint & 0xFFFF00) | v;
 	}
-});
-
+};
+	
+	Object.defineProperty(PIXI.Sprite.prototype, 'tintB', tintBDesc);
+	Object.defineProperty(PIXI.mesh.Mesh.prototype, 'tintB', tintBDesc);
 
 PIXI.Sprite.EDITOR_editableProps = [
 	{
@@ -122,6 +133,8 @@ PIXI.Sprite.EDITOR_editableProps = [
 	}
 ];
 
+PIXI.mesh.Mesh.EDITOR_editableProps = PIXI.Sprite.EDITOR_editableProps;
+
 Sprite.EDITOR_editableProps = [
 	{
 		type: 'splitter',
@@ -144,9 +157,6 @@ Sprite.EDITOR_editableProps = [
 		step: 0.0001
 	}
 ];
-
-
-
 
 Sprite.EDITOR_icon = 'tree/sprite'
 

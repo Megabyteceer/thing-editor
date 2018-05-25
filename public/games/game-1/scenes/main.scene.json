@@ -33,172 +33,31 @@
 			}
 		},
 		{
-			"c": "Dice",
+			"c": "PerspectiveSprite",
 			"p": {
-				"x": 136,
-				"y": 682,
-				"scale.x": 0.5,
-				"scale.y": 0.5,
-				"rotationX": 3.88,
-				"rotationXSpeed": -0.44,
-				"dempt": 0.962
-			},
-			":": [
-				{
-					"c": "Sprite",
-					"p": {
-						"name": "shadow",
-						"rotation": 0.855,
-						"alpha": 0.5,
-						"scale.x": 2.1100000000000003,
-						"scale.y": 1.65,
-						"skew.x": -1.0408340855860843e-17,
-						"pivot.x": -23,
-						"image": "bones/shadow.png",
-						"tint": 10240
-					}
-				},
-				{
-					"c": "Sprite",
-					"p": {
-						"name": "bg",
-						"scale.x": 1.4200000000000002,
-						"scale.y": 1.4000000000000001,
-						"image": "bones/dice.png"
-					}
-				},
-				{
-					"c": "Container",
-					"p": {
-						"name": "faces"
-					},
-					":": [
-						{
-							"c": "Sprite",
-							"p": {
-								"y": -79.99768290640199,
-								"alpha": 0.03805473067053079,
-								"visible": false,
-								"scale.y": 0.007610946134106159,
-								"image": "bones/6.png",
-								"tint": 8454016
-							}
-						},
-						{
-							"c": "Sprite",
-							"p": {
-								"y": -59.16332230074068,
-								"scale.y": 0.6731109323435616,
-								"image": "bones/3.png"
-							}
-						},
-						{
-							"c": "Sprite",
-							"p": {
-								"y": 53.84887458748493,
-								"scale.y": 0.7395415287592586,
-								"image": "bones/1.png",
-								"tint": 14548957
-							}
-						},
-						{
-							"c": "Sprite",
-							"p": {
-								"y": -79.87091835478091,
-								"alpha": 0.28392066153516765,
-								"visible": false,
-								"scale.y": 0.05678413230703353,
-								"image": "bones/4.png",
-								"tint": 8847238
-							}
-						}
-					]
-				}
-			]
+				"x": 256,
+				"y": 315,
+				"image": "UI/button.png",
+				"x0": 20,
+				"x1": 236,
+				"y2": 64,
+				"x3": 256,
+				"y3": 64
+			}
 		},
 		{
-			"c": "Dice",
+			"c": "NineSlicePlane",
 			"p": {
-				"x": 280,
-				"y": 701,
-				"scale.x": 0.5,
-				"scale.y": 0.5,
-				"rotationX": 3.88,
-				"rotationXSpeed": -0.54,
-				"dempt": 0.967
-			},
-			":": [
-				{
-					"c": "Sprite",
-					"p": {
-						"name": "shadow",
-						"rotation": 0.855,
-						"alpha": 0.5,
-						"scale.x": 2.1100000000000003,
-						"scale.y": 1.65,
-						"skew.x": -1.0408340855860843e-17,
-						"pivot.x": -23,
-						"image": "bones/shadow.png",
-						"tint": 10240
-					}
-				},
-				{
-					"c": "Sprite",
-					"p": {
-						"name": "bg",
-						"scale.x": 1.4200000000000002,
-						"scale.y": 1.4000000000000001,
-						"image": "bones/dice.png"
-					}
-				},
-				{
-					"c": "Container",
-					"p": {
-						"name": "faces"
-					},
-					":": [
-						{
-							"c": "Sprite",
-							"p": {
-								"y": -79.99768290640199,
-								"alpha": 0.03805473067053079,
-								"visible": false,
-								"scale.y": 0.007610946134106159,
-								"image": "bones/6.png",
-								"tint": 8454016
-							}
-						},
-						{
-							"c": "Sprite",
-							"p": {
-								"y": -59.16332230074068,
-								"scale.y": 0.6731109323435616,
-								"image": "bones/3.png"
-							}
-						},
-						{
-							"c": "Sprite",
-							"p": {
-								"y": 53.84887458748493,
-								"scale.y": 0.7395415287592586,
-								"image": "bones/1.png",
-								"tint": 14548957
-							}
-						},
-						{
-							"c": "Sprite",
-							"p": {
-								"y": -79.87091835478091,
-								"alpha": 0.28392066153516765,
-								"visible": false,
-								"scale.y": 0.05678413230703353,
-								"image": "bones/4.png",
-								"tint": 8847238
-							}
-						}
-					]
-				}
-			]
+				"x": 127,
+				"y": 153,
+				"image": "UI/button.png",
+				"W": 293,
+				"H": 108,
+				"fieldL": 36,
+				"fieldR": 22,
+				"fieldT": 9,
+				"fieldB": 10
+			}
 		}
 	]
 }
