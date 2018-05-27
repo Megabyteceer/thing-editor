@@ -74,50 +74,49 @@ export default class Editor {
 		this.openProject();
 	}
 	
-	openProject(dir) {
-		askSceneToSaveIfNeed().then(() => {
-			if (!dir) {
-				dir = editor.settings.getItem('last-opened-project');
+	async openProject(dir) {
+		
+		await askSceneToSaveIfNeed();
+		
+		if (!dir) {
+			dir = editor.settings.getItem('last-opened-project');
+		}
+		if (!dir) {
+			this.fs.chooseProject(true);
+		} else if (dir !== editor.currentProjectDir) {
+			var data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
+			
+			await this.fs.refreshFiles();
+			
+			editor.currentProjectDir = dir;
+			editor.settings.setItem('last-opened-project', dir);
+			this.fs.gameFolder = '/games/' + dir + '/';
+			editor.projectDesc = data;
+			this.clipboardData = null;
+			
+			await editor.reloadAssetsAndClasses();
+			await Promise.all([ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList()]);
+			
+			if (Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
+				//backup restoring
+				editor.ui.modal.showQuestion("Scene's backup restoring",
+					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
+						R.div(null, "Do you want to restore scene from backup?")),
+					async () => {
+						await this.openSceneSafe(editor.runningSceneLibSaveSlotName, editor.projectDesc.lastSceneName);
+						editor.history.currentState._isModified = true;
+						
+					}, 'Restore backup',
+					async () => {
+						await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
+						Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
+					}, 'Delete backup',
+					true
+				);
+			} else {//open last project's scene
+				this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
 			}
-			if (!dir) {
-				this.fs.chooseProject(true);
-			} else if (dir !== editor.currentProjectDir) {
-				this.fs.getJSON('/fs/openProject?dir=' + dir).then((data) => {
-					this.fs.refreshFiles().then(() => {
-						editor.currentProjectDir = dir;
-						editor.settings.setItem('last-opened-project', dir);
-						this.fs.gameFolder = '/games/' + dir + '/';
-						editor.projectDesc = data;
-						this.clipboardData = null;
-						editor.reloadAssetsAndClasses().then(() => {
-							Promise.all([ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList()]).then(() => {
-								
-								if (Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
-									//backup restoring
-									editor.ui.modal.showQuestion("Scene's backup restoring",
-										R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
-											R.div(null, "Do you want to restore scene from backup?")),
-										() => {
-											this.openSceneSafe(editor.runningSceneLibSaveSlotName, editor.projectDesc.lastSceneName).then(() => {
-												editor.history.currentState._isModified = true;
-											});
-										}, 'Restore backup',
-										() => {
-											this.openSceneSafe(editor.projectDesc.lastSceneName || 'main').then(() => {
-												Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
-											});
-										}, 'Delete backup',
-										true
-									);
-								} else {//open last project's scene
-									this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
-								}
-							});
-						});
-					});
-				});
-			}
-		});
+		}
 	}
 	
 	openSceneSafe(name, renameAfterOpening) {
