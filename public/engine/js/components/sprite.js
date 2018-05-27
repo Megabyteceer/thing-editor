@@ -1,4 +1,4 @@
-export default class Sprite extends PIXI.Sprite {
+export default class DSprite extends PIXI.Sprite {
 	constructor() {
 		super();
 		this.anchor.set(0.5);
@@ -48,7 +48,7 @@ const tintRDesc = {
 	},
 	set:function (v) {
 		this.tint = (this.tint & 0xFFFF) | (v << 16);
-	}
+	}, configurable: true
 };
 
 Object.defineProperty(PIXI.Sprite.prototype, 'tintR', tintRDesc);
@@ -60,7 +60,7 @@ const tintGDesc = {
 	},
 	set:function (v) {
 		this.tint = (this.tint & 0xFF00FF) | (v << 8);
-	}
+	}, configurable: true
 };
 
 Object.defineProperty(PIXI.Sprite.prototype, 'tintG', tintGDesc);
@@ -72,11 +72,11 @@ const tintBDesc = {
 	},
 	set:function (v) {
 		this.tint = (this.tint & 0xFFFF00) | v;
-	}
+	}, configurable: true
 };
 	
-	Object.defineProperty(PIXI.Sprite.prototype, 'tintB', tintBDesc);
-	Object.defineProperty(PIXI.mesh.Mesh.prototype, 'tintB', tintBDesc);
+Object.defineProperty(PIXI.Sprite.prototype, 'tintB', tintBDesc);
+Object.defineProperty(PIXI.mesh.Mesh.prototype, 'tintB', tintBDesc);
 
 PIXI.Sprite.EDITOR_editableProps = [
 	{
@@ -125,11 +125,11 @@ PIXI.Sprite.EDITOR_editableProps = [
 
 PIXI.mesh.Mesh.EDITOR_editableProps = PIXI.Sprite.EDITOR_editableProps;
 
-Sprite.EDITOR_editableProps = [
+DSprite.EDITOR_editableProps = [
 	{
 		type: 'splitter',
-		title: 'Speed:',
-		name: 'speed'
+		title: 'Dynamic Sprite:',
+		name: 'd-sprite'
 	},
 	{
 		name: 'xSpeed',
@@ -148,6 +148,7 @@ Sprite.EDITOR_editableProps = [
 	}
 ];
 
-Sprite.EDITOR_icon = 'tree/sprite'
+DSprite.EDITOR_icon = 'tree/dsprite'
+PIXI.Sprite.EDITOR_icon = 'tree/sprite'
 
 //ENDEDITOR

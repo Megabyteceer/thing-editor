@@ -331,6 +331,7 @@ button {
 }
 
 .props-editor {
+    position: relative;
     overflow-y: auto;
     height: 100%;
 }
@@ -359,12 +360,12 @@ button {
 }
 
 .props-label {
-	/* display:inline-block; */
 	box-sizing:border-box;
 	padding-right: 20px;
 	text-align:right;
-	width: 110px;
+	width: 120px;
 	color: #3a8cff;
+	overflow-x: hidden;
 	font-size: 120%;
 }
 

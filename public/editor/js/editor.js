@@ -162,7 +162,7 @@ export default class Editor {
 		this.ui.sceneTree.forceUpdate();
 		this.refreshPropsEditor();
 	}
-	
+
 	reloadClasses() {
 		this.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');

@@ -60,7 +60,7 @@ class SelectEditor extends React.Component {
 			}
 			
 			a = a.slice(0, 20);
-			items = R.div({className: 'select-editor-list'},R.input({className:'select-editor-filter', onChange: this.onFilterChange, value:this.state.filter}), a.map(this.renderItem));
+			items = R.div({className: 'select-editor-list'},R.input({className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter}), a.map(this.renderItem));
 		}
 		
 		var item;
@@ -73,7 +73,9 @@ class SelectEditor extends React.Component {
 			});
 		}
 		
-		return R.div({className: 'select-editor', onClick: this.onToggle, onMouseLeave:this.hide},
+		return R.div({className: 'select-editor', onClick: this.onToggle
+				, onMouseLeave:this.hide
+			},
 			R.div({className: 'select-editor-current clickable'}, item.name + ' ▾'),
 			items
 		);

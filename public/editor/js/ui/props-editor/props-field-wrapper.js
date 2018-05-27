@@ -75,6 +75,9 @@ class PropsFieldWrapper extends React.Component {
 		delta = (delta === true);
 		var field = this.props.field;
 		var val = getTypeDescription(field).parser(ev.target);
+		if(field.hasOwnProperty('parser')){
+			val = field.parser(val);
+		}
 		var initialVal = val;
 		
 		if (field.hasOwnProperty('min')) {

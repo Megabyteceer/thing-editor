@@ -47,7 +47,7 @@
 			},
 			":": [
 				{
-					"c": "Sprite",
+					"c": "DSprite",
 					"p": {
 						"y": -44,
 						"image": "bunny.png"
@@ -66,7 +66,7 @@
 			}
 		},
 		{
-			"c": "Sprite",
+			"c": "DSprite",
 			"p": {
 				"x": 39,
 				"y": 725,

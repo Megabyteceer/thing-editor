@@ -8,7 +8,8 @@ import NineSlicePlane from "../../../engine/js/components/nine-slice-plane.js";
 function init() {
 	//embedded engine classes
 	embeddedClasses = [
-		Sprite,
+		PIXI.Sprite,
+		DSprite,
 		MovieClip,
 		Scene,
 		Container,
@@ -158,7 +159,6 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
 		
 		enumClassProperties(PIXI.DisplayObject);
-		enumClassProperties(Sprite);
 		embeddedClasses.some((c) => {
 			addClass(c, false);
 		});

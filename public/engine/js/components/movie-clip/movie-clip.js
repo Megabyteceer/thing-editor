@@ -1,8 +1,8 @@
-import Sprite from '../sprite.js';
+import DSprite from '../sprite.js';
 import Pool from "../../utils/pool.js";
 import FieldPlayer from "./field-player.js";
 
-export default class MovieClip extends Sprite {
+export default class MovieClip extends DSprite {
 	
 	constructor() {
 		super();

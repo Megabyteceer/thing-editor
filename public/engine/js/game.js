@@ -2,12 +2,12 @@ import Settings from './utils/settings.js';
 import Lib from './lib.js';
 import DisplayObject from './components/display-object.js';
 import Container from './components/container.js';
-import Sprite from './components/sprite.js';
+import DSprite from './components/sprite.js';
 import Scene from './components/scene.js';
 import call from './utils/call.js';
 
 window.Scene = Scene;
-window.Sprite = Sprite;
+window.DSprite = DSprite;
 window.Lib = Lib;
 
 PIXI.settings.MIPMAP_TEXTURES = false;

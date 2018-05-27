@@ -205,20 +205,6 @@ class Lib {
 		return editor.fs.deleteFile(Lib.__sceneNameToFileName(name));
 	}
 	
-	static _loadStylesFromJSON(data) {
-		Lib._stylesByName = {};
-		Lib.__stylesList = data.map((styleData) => {
-			var style = new PIXI.TextStyle(styleData);
-			Lib._stylesByName[styleData.name] = style;
-			return {name: styleData.name, value: styleData.name};
-		});
-	}
-	
-	static getTextStyle(name) {
-		assert(Lib._stylesByName.hasOwnProperty(name), "Unknown TextStyle '" + name + "'");
-		return Lib._stylesByName[name];
-	}
-	
 	static __sceneNameToFileName(sceneName) {
 		return 'scenes/' + sceneName + '.scene.json';
 	}

@@ -1,6 +1,6 @@
 import Game from "../game.js";
 
-export default class Button extends Sprite {
+export default class Button extends DSprite {
 	
 	constructor(p) {
 		super();

@@ -1,6 +1,6 @@
 var floorY = H - 25;
 
-export default class Bunny extends Sprite {
+export default class Bunny extends DSprite {
 	
 	constructor(img) {
 		super(img);

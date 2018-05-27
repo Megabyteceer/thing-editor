@@ -5,12 +5,10 @@
 import Editor from "../editor.js";
 import Pool from "/engine/js/utils/pool.js";
 
-var blackout = new Sprite();
+var blackout = new PIXI.Sprite();
 blackout.texture = PIXI.Texture.WHITE;
 blackout.tint = 30;
 blackout.alpha = 0.9;
-blackout.x = W / 2;
-blackout.y = H / 2;
 blackout.width = W;
 blackout.height = H;
 
@@ -202,7 +200,7 @@ $(window).on('mouseup', () => {
 	draggingDragger = null;
 });
 
-class Dragger extends Sprite {
+class Dragger extends DSprite {
 	constructor() {
 		super();
 		this.texture = PIXI.Texture.fromImage('editor/img/overlay/pivot.png');
@@ -233,7 +231,7 @@ class Dragger extends Sprite {
 	}
 }
 
-class Rotator extends Sprite {
+class Rotator extends DSprite {
 	constructor() {
 		super();
 		this.texture = PIXI.Texture.fromImage('editor/img/overlay/rotator.png');
