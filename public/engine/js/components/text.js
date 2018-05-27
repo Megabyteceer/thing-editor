@@ -115,11 +115,6 @@ PIXI.Text.EDITOR_editableProps = [
 	},
 	{
 		type: 'splitter',
-		title: 'Text:',
-		name: 'text-props'
-	},
-	{
-		type: 'splitter',
 		title: 'Style:',
 		name: 'text-style'
 	},

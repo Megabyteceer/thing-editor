@@ -4,7 +4,11 @@ class SelectEditor extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.state = {filter: editor.settings.getItem(this.props.field.name + '-filter', '')};
+		if(this.props.field) {
+			this.state = {filter: editor.settings.getItem(this.props.field.name + '-filter', '')};
+		} else {
+			this.state = {};
+		}
 		
 		this.onToggle = this.onToggle.bind(this);
 		this.onSelect = this.onSelect.bind(this);
@@ -52,15 +56,20 @@ class SelectEditor extends React.Component {
 		
 		if (this.state.toggled) {
 			var a = list;
-			if(this.state.filter) {
-				var flt = this.state.filter.toLocaleLowerCase();
-				a = a.filter((i) => {
-					return i.name.toLowerCase().indexOf(flt) >= 0;
-				});
+			if(this.state.field) {
+				if(this.state.filter) {
+					var flt = this.state.filter.toLocaleLowerCase();
+					a = a.filter((i) => {
+						return i.name.toLowerCase().indexOf(flt) >= 0;
+					});
+				}
+				a = a.slice(0, 20);
+				var filterInput = R.input({className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter});
 			}
 			
-			a = a.slice(0, 20);
-			items = R.div({className: 'select-editor-list'},R.input({className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter}), a.map(this.renderItem));
+			
+			
+			items = R.div({className: 'select-editor-list'}, filterInput, a.map(this.renderItem));
 		}
 		
 		var item;

@@ -165,6 +165,7 @@ export default class MovieClip extends DSprite {
 		for(let i =0; i < l; i++) {
 			this.fieldPlayers[i].goto(label.t, label.n[i]);
 		}
+		this.play();
 	}
 	
 	play() {

@@ -9,7 +9,6 @@ var _labelName;
 const gotoLabelAndPlay = (m)  => {
 	if (m.hasLabel(_labelName)) {
 		m.gotoLabel(_labelName);
-		m.play();
 	}
 };
 

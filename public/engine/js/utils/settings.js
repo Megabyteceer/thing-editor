@@ -1,3 +1,5 @@
+//local data storage
+
 class Settings {
 	constructor(storageId) {
 		this._storageId = storageId;

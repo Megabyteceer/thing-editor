@@ -27,6 +27,7 @@ export default class Viewport extends React.Component {
 	}
 	
 	stopExecution() {
+		playTogglingTime = false;
 		if(!stoppingExecutionTime) {
 			stoppingExecutionTime = true;
 			if (!game.__EDITORmode) {

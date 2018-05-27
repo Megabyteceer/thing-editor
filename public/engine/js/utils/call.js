@@ -13,6 +13,8 @@ const call = (s, this_) => {
 				c = window.game;
 				break;
 			default:
+				assert(Lib.classes.hasOwnProperty(rootName), "Can't recognize call path root element '" + rootName+ "' in '" + s + "'. game, this, or game-object or scene class name expected.");
+				
 				c = Lib.getClass(rootName);
 		}
 		var i = 1;
