@@ -43,6 +43,7 @@ PIXI.DisplayObject.prototype.findChildrenByType = function (classType) {
 }
 
 PIXI.DisplayObject.prototype.findChildByName = function (name) {
+	assert(name, 'Empty name received.');
 	var stack = [this];
 	while (stack.length > 0) {
 		if (stack.length > 1000) throw new Error('owerflow');
@@ -51,7 +52,15 @@ PIXI.DisplayObject.prototype.findChildByName = function (name) {
 		var len = childs.length;
 		for (var i =  0; i < len; i++) {
 			o = childs[i];
-			if(o.name === name) return o;
+			if(o.name === name) {
+				//EDITOR
+				o.name = '';
+				var double = this.findChildByName(name);
+				o.name = name;
+				assert(!double, 'More that one element with name "' + name + '" exists.');
+				//ENDEDITOR
+				return o;
+			}
 			if (o.children.length > 0) {
 				stack.push(o);
 			}

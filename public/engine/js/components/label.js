@@ -39,7 +39,7 @@ export default class Label extends PIXI.Text {
 					}
 				}
 			} else {
-				this.showedVal = undefined;
+				this-.showedVal = undefined;
 				this.visible = false;
 			}
 		

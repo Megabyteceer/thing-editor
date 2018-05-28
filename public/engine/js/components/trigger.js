@@ -16,6 +16,7 @@ export default class Trigger extends Container {
 		} else {
 			this.phase = 0;
 		}
+		this.interactiveChildren = this.state;
 		this.updatePhase();
 	}
 	
@@ -29,10 +30,12 @@ export default class Trigger extends Container {
 	
 	show() {
 		this.state = true;
+		this.interactiveChildren = true;
 	}
 	
 	hide() {
 		this.state = false;
+		this.interactiveChildren = false;
 	}
 	
 	toggle() {
@@ -41,6 +44,7 @@ export default class Trigger extends Container {
 	
 	updatePhase() {
 		var q = this.phase / this.animationLength;
+		this.visible = (q !== 1);
 		if (this.animateAlpha) {
 			this.alpha = 1 - q;
 		}
@@ -61,6 +65,7 @@ export default class Trigger extends Container {
 		if (this.dataPath) {
 			this.state = this.getState();
 		}
+		this.interactiveChildren = this.state;
 		if (this.state) {
 			if (this.phase > 0) {
 				

@@ -158,7 +158,25 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 
 window.isEventFocusOnInputElement = (ev) => {
 	var tag = ev.target.tagName;
-	return (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+	
+	if(ev.type === 'keydown') {
+		var canBePassed = ev.ctrlKey;
+		if(canBePassed) {
+			switch(ev.keyCode) {  //block cpypaste hotkeys foxused on text inputs only
+				case 67:
+				case 86:
+				case 88:
+				case 89:
+				case 90:
+					canBePassed = false;
+				break;
+				default:
+					canBePassed = true;
+			}
+		}
+		console.dir(ev);
+	}
+	return !canBePassed && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
 }
 
 window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty) => {

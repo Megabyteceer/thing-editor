@@ -53,7 +53,7 @@ export default class Viewport extends React.Component {
 
 				savedBackupName = editor.runningSceneLibSaveSlotName;
 				if(!editor.isCurrentSceneModified) {
-					savedBackupName = 'unmodified-' + savedBackupName;
+					savedBackupName += '-unmodified';
 				}
 				editor.saveCurrentScene(savedBackupName);
 				selectionData = editor.selection.saveSelection();

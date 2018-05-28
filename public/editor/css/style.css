@@ -384,6 +384,10 @@ input{
 	border:none;
 }
 
+.select-editor {
+	white-space:nowrap;
+}
+
 .select-editor-current {
 	padding-left: 10px;
 }
