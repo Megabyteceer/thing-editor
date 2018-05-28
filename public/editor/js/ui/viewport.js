@@ -15,6 +15,8 @@ var prefabLabelProps = {className: 'selectable-text', onMouseDown: function (ev)
 var stoppingExecutionTime;
 var playTogglingTime;
 
+var savedBackupName;
+
 export default class Viewport extends React.Component {
 	
 	constructor(props) {
@@ -48,7 +50,12 @@ export default class Viewport extends React.Component {
 			Lib.__clearStaticScenes();
 			if (play) { // launch game
 				editor.tryToSaveHistory();
-				editor.saveCurrentScene(editor.runningSceneLibSaveSlotName);
+
+				savedBackupName = editor.runningSceneLibSaveSlotName;
+				if(!editor.isCurrentSceneModified) {
+					savedBackupName = 'unmodified-' + savedBackupName;
+				}
+				editor.saveCurrentScene(savedBackupName);
 				selectionData = editor.selection.saveSelection();
 				game.__EDITORmode = false;
 				Lib.__constructRecursive(game.currentScene);
@@ -58,7 +65,7 @@ export default class Viewport extends React.Component {
 				game.currentScene.remove();
 				game.currentScene = null;
 				game.__EDITORmode = true;
-				editor.loadScene(editor.runningSceneLibSaveSlotName);
+				editor.loadScene(savedBackupName);
 				editor.selection.loadSelection(selectionData);
 			}
 			

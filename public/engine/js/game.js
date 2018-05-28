@@ -288,7 +288,7 @@ function updateRecursivelly(o) {
 	o.update();
 	var a = o.children;
 	var arrayLength = a.length;
-	for (var i = 0; i < arrayLength && o.parent; i++) {
+	for (var i = arrayLength - 1; i >= 0 && o.parent; i--) {
 		updateRecursivelly(a[i]);
 	}
 }

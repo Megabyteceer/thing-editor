@@ -92,6 +92,7 @@ Object.defineProperties(PIXI.Text.prototype, {
 	}
 });
 
+//EDITOR
 
 PIXI.Text.EDITOR_icon = 'tree/text';
 
@@ -174,3 +175,5 @@ PIXI.Text.EDITOR_editableProps = [
 		type: Number
 	}
 ]
+
+//ENDEDITOR

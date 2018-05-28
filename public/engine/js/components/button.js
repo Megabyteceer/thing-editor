@@ -108,6 +108,21 @@ export default class Button extends DSprite {
 }
 
 var allActiveButtons = [];
+window.addEventListener('keydown', (ev) => {
+	
+	for(var b of allActiveButtons) {
+		if(b.interactive && b.hotkey === ev.keyCode) {
+			var p = b.parent;
+			while(p !== game.stage && p.interactiveChildren) {
+				p = p.parent;
+			}
+			if(p.interactiveChildren) {
+				b.executeOnClick();
+			}
+		}
+	}
+	
+})
 
 //EDITOR
 Button.EDITOR_editableProps = [
@@ -126,6 +141,10 @@ Button.EDITOR_editableProps = [
 	{
 		name: 'afterClick',
 		type: String
+	},
+	{
+		name: 'hotkey',
+		type: Number
 	}
 ];
 

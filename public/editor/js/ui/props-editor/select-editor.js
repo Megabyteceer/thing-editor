@@ -56,7 +56,7 @@ class SelectEditor extends React.Component {
 		
 		if (this.state.toggled) {
 			var a = list;
-			if(this.state.field) {
+			if(this.props.field) {
 				if(this.state.filter) {
 					var flt = this.state.filter.toLocaleLowerCase();
 					a = a.filter((i) => {

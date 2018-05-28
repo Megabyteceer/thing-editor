@@ -4,8 +4,10 @@ import Container from "../../../engine/js/components/container.js";
 import Button from "../../../engine/js/components/button.js";
 import Text from "../../../engine/js/components/text.js";
 import Label from "../../../engine/js/components/label.js";
+import Trigger from "../../../engine/js/components/trigger.js";
 import MovieClip from "../../../engine/js/components/movie-clip/movie-clip.js";
 import NineSlicePlane from "../../../engine/js/components/nine-slice-plane.js";
+
 function init() {
 	//embedded engine classes
 	embeddedClasses = [
@@ -17,6 +19,7 @@ function init() {
 		Button,
 		Text,
 		Label,
+		Trigger,
 		NineSlicePlane
 	];
 }

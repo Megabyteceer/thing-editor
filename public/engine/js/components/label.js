@@ -20,22 +20,29 @@ export default class Label extends PIXI.Text {
 		if(this.currentInterval <= 0 && this.dataPath) {
 			
 			var val = getValueByPath(this.dataPath, this);
-			if(val !== undefined && val !== this.showedVal) {
-				this.showedVal = val;
-				
-				if(this.isMoney) {
-					val = formatMoney(val, this.decimalsCount);
+			if(val !== undefined) {
+				if(val !== this.showedVal) {
+					this.visible = true;
+					this.showedVal = val;
+					
+					if(this.isMoney) {
+						val = formatMoney(val, this.decimalsCount);
+					}
+					
+					if(this.template) {
+						this.text = this.template.replace('%%', val);
+					} else {
+						this.text = val;
+					}
+					if(this.onChanged) {
+						game.call(this.onChanged, this);
+					}
 				}
-				
-				if(this.template) {
-					this.text = this.template.replace('%%', val);
-				} else {
-					this.text = val;
-				}
-				if(this.onChanged) {
-					game.call(this.onChanged, this);
-				}
+			} else {
+				this.showedVal = undefined;
+				this.visible = false;
 			}
+		
 			this.currentInterval = this.refreshInterval;
 		} else {
 			this.currentInterval--;

@@ -60,8 +60,6 @@ PIXI.DisplayObject.prototype.findChildByName = function (name) {
 	return null;
 }
 
-
-
 export default PIXI.DisplayObject;
 
 
