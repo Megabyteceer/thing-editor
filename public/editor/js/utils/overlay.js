@@ -38,7 +38,7 @@ export default class Overlay {
 		game.stage.addChild(blackout);
 		__getNodeExtendData(blackout).hidden = true;
 		currentlyShowedPreview = object;
-		game.makeItModal(currentlyShowedPreview);
+		game.showModal(currentlyShowedPreview);
 		editor.history.updateUi();
 	}
 	
@@ -127,7 +127,7 @@ $(window).on('mousedown', (ev) => {
 		if(draggingDragger) {
 			startX = draggingDragger.x;
 			startY = draggingDragger.y;
-			if(game.mouse.altKey) {
+			if(ev.altKey) {
 				editor.selection.some((o) => {
 					o.parent.addChildAt(Lib._deserializeObject(Lib.__serializeObject(o)), o.parent.children.indexOf(o));
 				});

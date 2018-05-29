@@ -179,11 +179,12 @@ window.isEventFocusOnInputElement = (ev) => {
 	return !canBePassed && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
 }
 
-window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty) => {
+window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) => {
 	var ret = {
 		name: name,
 		type: String,
-		default: canBeEmpty ? '' : 'EMPTY'
+		default: canBeEmpty ? '' : 'EMPTY',
+		important: important
 	}
 	Object.defineProperty(ret, 'select', {
 		get:() => {

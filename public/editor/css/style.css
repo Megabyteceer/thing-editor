@@ -302,7 +302,7 @@ button {
 
 .item-selected {
 	 cursor:default;
-	background: #95ccff;
+	 background: #95ccff;
 }
 
 .item-selected:hover {
@@ -360,9 +360,12 @@ button {
 }
 
 .props-field-important {
-	font-weight: bold;
-	background: #c7ffc5;
+	background: #cfffd4;
 	color:#0e5a00;
+}
+
+.props-field-important input{
+	font-weight:bold;
 }
 
 .props-label {

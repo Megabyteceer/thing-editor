@@ -73,8 +73,18 @@ class TreeNode extends React.Component {
 			className += ' item-selected';
 		}
 		var icon = R.classIcon(node.constructor);
+		
+		var style;
+		if(this, node.children.length > 6) {
+			var p = node.children.length/2;
+			style = {
+				paddingTop: p,
+				paddingBottom: p
+			};
+		}
 		return R.fragment(R.div({
 			className,
+			style,
 			onMouseDown: this.onMouseDown
 		}, icon, R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + __getNodeExtendData(node).id), caret), childs);
 	}

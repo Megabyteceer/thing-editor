@@ -164,7 +164,7 @@ class Game {
     __setCurrentContainerContent(object) {
 	    if(modals.length > 0) {
 			this.hideModal();
-			this.makeItModal(object);
+			this.showModal(object);
         } else {
             this.showScene(object);
         }
@@ -190,8 +190,13 @@ class Game {
     
     //ENDEDITOR
 
-	makeItModal(displayObject) {
-	    assert(!(displayObject instanceof Scene), 'Scene cant be used as modal');
+	showModal(displayObject) {
+		
+		if(typeof displayObject === "string"){
+			displayObject = Lib.loadPrefab(displayObject);
+		}
+		
+		assert(!(displayObject instanceof Scene), 'Scene cant be used as modal');
 		modals.push(displayObject);
 		this.stage.addChild(displayObject);
 	}
@@ -200,7 +205,14 @@ class Game {
 	    return modals.length;
     }
 	
-	hideModal(displayObject) {
+	hideModal(displayObject, instantly) {
+		if(typeof instantly === 'undefined') {
+			instantly = displayObject === 'instantly';
+			if(instantly) {
+				displayObject = undefined;
+			}
+		}
+		
 		if(!displayObject) {
 			assert(modals.length > 0, 'Attempt to hide modal when modal list is empty.');
 			var modalToHide = modals.pop();
@@ -211,7 +223,7 @@ class Game {
 			modals.splice(i, 1)
 		}
 		
-		if(game.__EDITORmode) {
+		if(instantly || game.__EDITORmode) {
 			modalToHide.remove();
 		} else {
 			hiddingModals.push(modalToHide);
