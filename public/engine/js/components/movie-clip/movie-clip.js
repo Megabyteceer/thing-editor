@@ -24,7 +24,7 @@ export default class MovieClip extends DSprite {
 		super.update();
 	}
 
-//EDITOR
+/// #if EDITOR
 //timeline reading has sense in editor mode only
 	get timeline() { //serialize timeline to save in Lib as json. Replace keyframes references to indexes
 		if(!this._timelineData || editor.ui.propsEditor.__isPropsRenderingAccessTime) {
@@ -70,7 +70,7 @@ export default class MovieClip extends DSprite {
 		deserializeCache.delete(serializeCache.get(timelineData));
 		serializeCache.delete(timelineData);
 	}
-//ENDEDITOR
+/// #endif
 
 	static _findNextKeyframe (timeLineData, time) {
 		var ret = timeLineData[0];
@@ -123,14 +123,14 @@ export default class MovieClip extends DSprite {
 
 	set timeline(data) {
 		if(data === null) return;
-//EDITOR
+/// #if EDITOR
 		if(!deserializeCache.has(data) || editor.disableFieldsCache) {
 			var desData = MovieClip._deserializeTimelineData(data);
 			deserializeCache.set(data, desData)
 			serializeCache.set(desData, data);
 		}
 		data = deserializeCache.get(data);
-//ENDEDITOR
+/// #endif
 		
 		assert(Array.isArray(data.f), "Wrong timeline data?");
 		this._timelineData = data;
@@ -189,7 +189,7 @@ export default class MovieClip extends DSprite {
 	}
 }
 
-//EDITOR
+/// #if EDITOR
 
 var deserializeCache = new WeakMap();
 var serializeCache = new WeakMap();
@@ -217,4 +217,4 @@ MovieClip.EDITOR_editableProps = [
 	}
 ];
 
-//ENDEDITOR
+/// #endif

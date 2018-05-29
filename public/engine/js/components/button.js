@@ -124,7 +124,7 @@ window.addEventListener('keydown', (ev) => {
 	
 })
 
-//EDITOR
+/// #if EDITOR
 Button.EDITOR_editableProps = [
 	{
 		type: 'splitter',
@@ -150,4 +150,4 @@ Button.EDITOR_editableProps = [
 ];
 
 Button.EDITOR_icon = 'tree/button';
-//ENDEDITOR
+/// #endif

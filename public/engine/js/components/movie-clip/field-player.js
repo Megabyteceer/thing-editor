@@ -42,9 +42,9 @@ export default class FieldPlayer {
 	update() {
 		var currentFrame = this.currentFrame;
 		if (this.time === currentFrame.t) {
-//EDITOR
+/// #if EDITOR
 			this.__lastFiredKeyframe = currentFrame;
-//ENDEDITOR
+/// #endif
 			var action;
 			if (currentFrame.hasOwnProperty('a')) {
 				action = currentFrame.a;
@@ -72,14 +72,14 @@ export default class FieldPlayer {
 			}
 			
 			if (action) {
-//EDITOR
+/// #if EDITOR
 				if(!this.__dontCallActions) {
 					console.log('timeline CALL: ' + this.target.name + '; ' + currentFrame.t + '; ' + action);
-//ENDEDITOR
+/// #endif
 					call(action, this.target);
-//EDITOR
+/// #if EDITOR
 				}
-//ENDEDITOR
+/// #endif
 				if(!this.target.isPlaying) {
 					return;
 				}
@@ -88,9 +88,9 @@ export default class FieldPlayer {
 			this.time++;
 		} else {
 			this.time++;
-//EDITOR
+/// #if EDITOR
 			this.__lastFiredKeyframe = null;
-//ENDEDITOR
+/// #endif
 		}
 
 
@@ -119,7 +119,7 @@ export default class FieldPlayer {
 		this.target[this.fieldName] = this.val;
 	}
 	
-	//EDITOR
+	/// #if EDITOR
 	__getValueForPreview(time) {
 		this.reset();
 		while (time > 0) {
@@ -136,5 +136,5 @@ export default class FieldPlayer {
 		}
 	}
 	
-	//ENDEDITOR
+	/// #endif
 }

@@ -74,43 +74,44 @@ class Lib {
 	
 	static getTexture(name) {
 		
-		//EDITOR
+		/// #if EDITOR
 		var exists = textures.hasOwnProperty(name);
 		if(!exists) {
 			assert(exists, "No texture with name '" + name + "' registred in Lib");
 			return PIXI.Texture.EMPTY;
 		}
 		
-		//ENDEDITOR
+		/// #endif
 		
 		return textures[name];
 	}
 	
 	static loadPrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registred in Lib");
-		//EDITOR
+		/// #if EDITOR
 		if(name.indexOf(editor.editorFilesPrefix) !== 0) {
 			prefabs[name].name = name;
 		}
-		//ENDEDITOR
+		/// #endif
 		return _loadObjectFromData(prefabs[name]);
 	}
 	
 	static destroyObjectAndChildrens(o) {
 		
-//EDITOR
+/// #if EDITOR
 		if(!game.__EDITORmode) {
 			try {
-//ENDEDITOR
+/// #endif
 				o.onRemove();
-//EDITOR
+/// #if EDITOR
 			} catch (er) {
 				if(!game.__EDITORmode) {
 					editor.ui.modal.showError(er.message || er);
 				}
 			}
-//ENDEDITOR
+
 		}
+/// #endif
 		o.detachFromParent();
 		if (o.children) {
 			while(o.children.length > 0) {
@@ -118,9 +119,9 @@ class Lib {
 			}
 		}
 		Pool.dispose(o);
-		//EDITOR
+		/// #if EDITOR
 		__resetNodeExtendData(o);
-		//ENDEDITOR
+		/// #endif
 	}
 	
 	static _deserializeObject(src) {
@@ -151,11 +152,11 @@ class Lib {
 		if(s.isStatic) {
 			staticScenes[name] = s;
 		}
-		//EDITOR
+		/// #if EDITOR
 		if(name.indexOf(editor.editorFilesPrefix) !== 0) {
 			s.name = name;
 		}
-		//ENDEDITOR
+		/// #endif
 		return s;
 	}
 	
@@ -246,7 +247,7 @@ class Lib {
 		}
 		return ret;
 	}
-//ENDEDITOR
+/// #endif
 
 }
 
@@ -258,9 +259,9 @@ const _loadObjectFromData = (src) => {
 	return ret;
 }
 
-//EDITOR
+/// #if EDITOR
 Lib.__texturesList = [];
 Lib.__constructRecursive = constructRecursive;
-//ENDEDITOR
+/// #endif
 
 export default Lib;

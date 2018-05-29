@@ -27,13 +27,13 @@ const call = (s, this_) => {
 			} else {
 				c = c.getChildByName(n.s);
 			}
-//EDITOR
+/// #if EDITOR
 			
 			if(!c){
 				assert(false, "Can't find property '" + ((typeof n === 'string') ? n : ('#' + n.s)) + "' in callback " + s);
 			}
 			
-//ENDEDITOR
+/// #endif
 			
 			i++;
 		}

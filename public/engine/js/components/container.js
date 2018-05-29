@@ -22,6 +22,6 @@ PIXI.Container.prototype.gotoLabelRecursive = function (labelName) {
 
 export default PIXI.Container;
 
-//EDITOR
+/// #if EDITOR
 PIXI.Container.EDITOR_icon = 'tree/container';
-//ENDEDITOR
+/// #endif

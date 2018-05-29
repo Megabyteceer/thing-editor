@@ -22,9 +22,9 @@ export default class Pool {
 		if (!pools.has(key)) {
 			pools.set(key, []);
 		}
-		//EDITOR
+		/// #if EDITOR
 		assert(pools.get(key).indexOf(obj) === -1, 'Object already disposed');
-		//ENDEDITOR
+		/// #endif
 		
 		pools.get(key).push(obj);
 	}

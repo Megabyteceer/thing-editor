@@ -7,7 +7,7 @@ export default class NineSlicePlane extends PIXI.mesh.NineSlicePlane {
 	
 }
 
-//EDITOR
+/// #if EDITOR
 
 NineSlicePlane.EDITOR_editableProps = [
 	{
@@ -49,4 +49,4 @@ NineSlicePlane.EDITOR_editableProps = [
 
 NineSlicePlane.EDITOR_icon = 'tree/slice9';
 
-//ENDEDITOR
+/// #endif

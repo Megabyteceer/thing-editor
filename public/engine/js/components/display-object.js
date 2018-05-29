@@ -53,12 +53,12 @@ PIXI.DisplayObject.prototype.findChildByName = function (name) {
 		for (var i =  0; i < len; i++) {
 			o = childs[i];
 			if(o.name === name) {
-				//EDITOR
+				/// #if EDITOR
 				o.name = '';
 				var double = this.findChildByName(name);
 				o.name = name;
 				assert(!double, 'More that one element with name "' + name + '" exists.');
-				//ENDEDITOR
+				/// #endif
 				return o;
 			}
 			if (o.children.length > 0) {
@@ -72,7 +72,7 @@ PIXI.DisplayObject.prototype.findChildByName = function (name) {
 export default PIXI.DisplayObject;
 
 
-//EDITOR
+/// #if EDITOR
 
 Object.defineProperties(PIXI.DisplayObject.prototype, {
 	'scale.x': {
@@ -198,4 +198,4 @@ PIXI.DisplayObject.EDITOR_editableProps = [
 wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
 
-//ENDEDITOR
+/// #endif

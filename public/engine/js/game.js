@@ -91,10 +91,10 @@ class Game {
 		assert(!this.currentScene || !this.currentScene.parent, "Previous scene was not removed before setting new one.");
 		this.currentScene = scene;
 		stage.addChildAt(scene, 0);
-		//EDITOR
+		/// #if EDITOR
 		__getNodeExtendData(game.currentScene).toggled = true;
 		editor.refreshTreeViewAndPropertyEditor();
-		//ENDEDITOR
+		/// #endif
 	}
 	
 	static get disableAllButtons() {
@@ -105,18 +105,18 @@ class Game {
 		assert(currentFader, "game.faderEnd() called without fader on screen");
 		currentFader.remove();
 		currentFader = null;
-		//EDITOR
+		/// #if EDITOR
 		editor.refreshTreeViewAndPropertyEditor();
-		//ENDEDITOR
+		/// #endif
 	}
 	
 	showScene(scene, faderType) {
 		if(typeof scene === 'string') {
 			scene = Lib.loadScene(scene);
 		}
-//EDITOR
+/// #if EDITOR
 		assert(scene instanceof Scene, 'Scene instance expected.');
-//ENDEDITOR
+/// #endif
 		if(this.__EDITORmode) {
 			if (this.currentScene) {
 				stage.removeChild(this.currentScene);
@@ -134,11 +134,11 @@ class Game {
 			} else {
 				this._setCurrentSceneContent(scene);
 			}
-			//EDITOR
+			/// #if EDITOR
 			editor.refreshTreeViewAndPropertyEditor();
-			
+			/// #endif
 		}
-		//ENDEDITOR
+		
 	}
 	
 	closeCurrentScene(faderType) {
@@ -160,7 +160,7 @@ class Game {
 		}
 	}
 
-    //EDITOR
+    /// #if EDITOR
     __setCurrentContainerContent(object) {
 	    if(modals.length > 0) {
 			this.hideModal();
@@ -188,7 +188,7 @@ class Game {
 		return showStack;
 	}
     
-    //ENDEDITOR
+    /// #endif
 
 	showModal(displayObject) {
 		
@@ -242,9 +242,9 @@ class Game {
 	updateGlobal(dt) {
 		if (this.currentScene) {
 		
-//EDITOR
+/// #if EDITOR
 			if ((!this.__paused || this.__doOneStep) && !this.__EDITORmode) {
-//ENDEDITOR
+/// #endif
 				frameCounterTime += dt;
 				var limit = 4;
 				frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * 4);
@@ -252,7 +252,7 @@ class Game {
 					
 					this.updateFrame();
 					frameCounterTime -= FRAME_PERIOD;
-//EDITOR
+/// #if EDITOR
 					if (this.__doOneStep) {
 						editor.refreshTreeViewAndPropertyEditor();
 						this.__doOneStep = false;
@@ -260,7 +260,7 @@ class Game {
 						break;
 					}
 				}
-//ENDEDITOR
+/// #endif
 			}
 
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;

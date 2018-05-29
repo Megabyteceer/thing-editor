@@ -22,7 +22,7 @@ class Scene extends PIXI.Container {
 export default Scene;
 
 
-//EDITOR
+/// #if EDITOR
 Scene.EDITOR_icon = 'tree/scene';
 Scene.EDITOR_editableProps = [
 	{
@@ -49,4 +49,4 @@ Scene.EDITOR_editableProps = [
 	//TODO: music_intro, music_loop, music_volume
 ];
 
-//ENDEDITOR
+/// #endif

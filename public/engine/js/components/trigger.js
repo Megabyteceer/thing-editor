@@ -81,7 +81,7 @@ export default class Trigger extends Container {
 	}
 }
 
-//EDITOR
+/// #if EDITOR
 
 Trigger.EDITOR_editableProps = [
 	{
@@ -134,4 +134,4 @@ Trigger.EDITOR_editableProps = [
 
 Trigger.EDITOR_icon = 'tree/trigger';
 
-//ENDEDITOR
+/// #endif

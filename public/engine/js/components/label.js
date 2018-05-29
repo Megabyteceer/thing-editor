@@ -56,7 +56,7 @@ export default class Label extends PIXI.Text {
 
 Label.formatMoney = formatMoney;
 
-//EDITOR
+/// #if EDITOR
 
 Label.EDITOR_icon = 'tree/label';
 
@@ -96,4 +96,4 @@ Label.EDITOR_editableProps = [
 	}
 ];
 
-//ENDEDITOR
+/// #endif

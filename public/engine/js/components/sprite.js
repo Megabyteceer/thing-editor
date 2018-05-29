@@ -34,7 +34,7 @@ Object.defineProperty(PIXI.mesh.Mesh.prototype, 'image', imagePropertyDescriptor
 
 
 
-//EDITOR
+/// #if EDITOR
 
 var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
 	return {name: k, value: PIXI.BLEND_MODES[k]};
@@ -151,4 +151,4 @@ DSprite.EDITOR_editableProps = [
 DSprite.EDITOR_icon = 'tree/dsprite'
 PIXI.Sprite.EDITOR_icon = 'tree/sprite'
 
-//ENDEDITOR
+/// #endif
