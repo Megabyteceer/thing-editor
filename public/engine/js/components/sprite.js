@@ -84,7 +84,7 @@ PIXI.Sprite.EDITOR_editableProps = [
 		title: 'Sprite:',
 		name: 'sprite'
 	},
-	makeImageSelectEditablePropertyDecriptor('image'),
+	makeImageSelectEditablePropertyDecriptor('image', false, true),
 	{
 		name: 'tint',
 		type: Number,

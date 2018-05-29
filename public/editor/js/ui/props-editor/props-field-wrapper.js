@@ -55,6 +55,7 @@ var getTypeDescription = (field) => {
 }
 
 var fieldProps = {className: 'props-field'};
+var fieldPropsImportant = {className: 'props-field props-field-important'};
 
 var labelProps = {className: 'props-label selectable-text', onMouseDown: function (ev) {
 	selectText(ev.target);
@@ -111,7 +112,7 @@ class PropsFieldWrapper extends React.Component {
 		
 		var disabled = field.name === 'name' && node.parent === game.stage;
 		
-		return R.div(fieldProps,
+		return R.div(field.important ? fieldPropsImportant : fieldProps,
 			R.div(labelProps, field.name),
 			R.div(wrapperProps,
 				React.createElement(renderer, {

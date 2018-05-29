@@ -68,7 +68,8 @@ Label.EDITOR_editableProps = [
 	},
 	{
 		name: 'dataPath',
-		type: String
+		type: String,
+		important: true
 	},
 	{
 		name: 'refreshInterval',

@@ -108,7 +108,8 @@ PIXI.Text.EDITOR_editableProps = [
 		parser: (v) => {
 			if(v && v.length === 2 &&  v.charCodeAt(0) === 32) return v.substr(1);
 			return v;
-		}
+		},
+		important: true
 	},
 	{
 		name: 'translatableText',
@@ -164,7 +165,8 @@ PIXI.Text.EDITOR_editableProps = [
 		type: Number,
 		min:0,
 		max:300,
-		default: 12
+		default: 12,
+		important: true
 	},
 	{
 		name: 'style.leading',

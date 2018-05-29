@@ -359,6 +359,12 @@ button {
 	display: flex;
 }
 
+.props-field-important {
+	font-weight: bold;
+	background: #c7ffc5;
+	color:#0e5a00;
+}
+
 .props-label {
 	box-sizing:border-box;
 	padding-right: 20px;
@@ -375,6 +381,8 @@ button {
 	box-sizing:border-box;
 	border-left: 1px solid #cfcfcf;
 }
+
+
 
 input{
 	font-family: monospace;

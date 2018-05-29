@@ -136,7 +136,8 @@ Button.EDITOR_editableProps = [
 	makeImageSelectEditablePropertyDecriptor('disabledImage', true),
 	{
 		name: 'onClick',
-		type: String
+		type: String,
+		important: true
 	},
 	{
 		name: 'afterClick',

@@ -49,7 +49,7 @@ export default class Trigger extends Container {
 			this.alpha = 1 - q;
 		}
 		if (this.scaleSpeed !== 0) {
-			var s = this.initialScale + q * this.scaleSpeed;
+			var s = this.initialScale - q * this.scaleSpeed;
 			this.scale.x = s;
 			this.scale.y = s;
 		}
@@ -95,7 +95,8 @@ Trigger.EDITOR_editableProps = [
 	},
 	{
 		name: 'dataPath',
-		type: String
+		type: String,
+		important: true
 	},
 	{
 		name: 'invert',
