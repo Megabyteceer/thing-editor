@@ -2,7 +2,7 @@
     helper and debugging drawing over game's viewport
  */
 
-import Editor from "../editor.js";
+import Selection from "./selection.js";
 import Pool from "/engine/js/utils/pool.js";
 
 var blackout = new PIXI.Sprite();
@@ -137,58 +137,46 @@ $(window).on('mousedown', (ev) => {
 	}
 });
 
+var previousAllUnderMouse;
 function selectByStageClick(ev) {
-	var root = game.currentContainer;
-	var o = editor.selection[0] || root;
+	var allUnderMouse = new Selection;
+	var stack = [game.currentContainer];
 	
-	var isSelectionInRoot = false;
-	var p = o.parent;
-	while(p) {
-		if(p === root) {
-			isSelectionInRoot = true;
-			break;
-		}
-		p = p.parent;
-	}
-	if(!isSelectionInRoot) {
-		o = root;
-	}
-	
-	var start = o;
-	var c = 0;
-	while(c++ < 10000) {
-		if(o.children && o.children.length > 0) {
-			o = o.getChildAt(0);
-		} else {
-			var i = o.parent.getChildIndex(o) + 1;
-			if(i < o.parent.children.length) {
-				o = o.parent.getChildAt(i);
-			} else {
-				while(c++ < 10000) {
-					o = o.parent;
-					i = o.parent.getChildIndex(o) + 1;
-					if (i < o.parent.children.length) {
-						o = o.parent.getChildAt(i);
-						break
-					}
-					if (o === root) {
-						break;
-					}
-				}
+	while (stack.length > 0) {
+		if (stack.length > 1000) throw new Error('owerflow');
+		var o = stack.pop();
+		var childs = o.children;
+		var len = childs.length;
+		for (var i =  0; i < len; i++) {
+			o = childs[i];
+			if (o.children.length > 0) {
+				stack.push(o);
+			}
+			if(o.containsPoint && o.worldVisible && o.containsPoint(game.mouse)) {
+				allUnderMouse.push(o);
 			}
 		}
-		
-		if(o.containsPoint && o.containsPoint(game.mouse)) {
-			editor.ui.sceneTree.selectInTree(o, ev.ctrlKey);
-			return;
-		}
-		if(o === start) {
-			break;
-		}
 	}
-	editor.selection.clearSelection(true);
+	
+	allUnderMouse.sortSelectedNodes();
+	allUnderMouse.reverse();
+	
+	if(allUnderMouse.length > 0) {
+		var i;
+		if(!previousAllUnderMouse || previousAllUnderMouse.some((prevObj, i) => {
+			return prevObj !== allUnderMouse[i];
+		})) {
+			i = 0;
+		} else {
+			i = allUnderMouse.indexOf(editor.selection[0]) + 1;
+		}
+		
+		editor.ui.sceneTree.selectInTree(allUnderMouse[i % allUnderMouse.length], ev.ctrlKey);
+	} else {
+		editor.selection.clearSelection(true);
+	}
+	previousAllUnderMouse = allUnderMouse;
 }
-
 
 $(window).on('mousemove', () => {
 	if (draggingDragger) {
