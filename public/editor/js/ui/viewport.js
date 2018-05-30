@@ -1,5 +1,5 @@
 import PrefabsList from './prefabs-list.js';
-import Lib from "../../../engine/js/lib.js";
+import Lib from "../../..//engine/js/lib.js";
 import Signal from "../utils/signal.js";
 
 const PLAY_ICON = R.icon('play');

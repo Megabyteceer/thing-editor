@@ -1,4 +1,4 @@
-import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
+import MovieClip from "../../../../../engine/js/components/movie-clip/movie-clip.js";
 import FieldsTimeline from "./timeline-field.js";
 import SelectEditor from '../select-editor.js';
 

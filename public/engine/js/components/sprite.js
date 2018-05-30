@@ -33,15 +33,6 @@ Object.defineProperty(PIXI.Sprite.prototype, 'image', imagePropertyDescriptor);
 Object.defineProperty(PIXI.mesh.Mesh.prototype, 'image', imagePropertyDescriptor);
 
 
-
-/// #if EDITOR
-
-var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
-	return {name: k, value: PIXI.BLEND_MODES[k]};
-}).sort((a, b) => {
-	return a.value - b.value
-});
-
 const tintRDesc = {
 	get:function () {
 		return this.tint >> 16;
@@ -74,9 +65,18 @@ const tintBDesc = {
 		this.tint = (this.tint & 0xFFFF00) | v;
 	}, configurable: true
 };
-	
+
 Object.defineProperty(PIXI.Sprite.prototype, 'tintB', tintBDesc);
 Object.defineProperty(PIXI.mesh.Mesh.prototype, 'tintB', tintBDesc);
+
+
+/// #if EDITOR
+
+var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
+	return {name: k, value: PIXI.BLEND_MODES[k]};
+}).sort((a, b) => {
+	return a.value - b.value
+});
 
 PIXI.Sprite.EDITOR_editableProps = [
 	{

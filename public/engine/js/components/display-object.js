@@ -72,8 +72,6 @@ PIXI.DisplayObject.prototype.findChildByName = function (name) {
 export default PIXI.DisplayObject;
 
 
-/// #if EDITOR
-
 Object.defineProperties(PIXI.DisplayObject.prototype, {
 	'scale.x': {
 		get: function () {
@@ -121,6 +119,8 @@ Object.defineProperties(PIXI.DisplayObject.prototype, {
 		}, configurable: true
 	}
 });
+
+/// #if EDITOR
 
 PIXI.DisplayObject.EDITOR_editableProps = [
 	{

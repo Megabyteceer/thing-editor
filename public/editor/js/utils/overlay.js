@@ -3,7 +3,7 @@
  */
 
 import Selection from "./selection.js";
-import Pool from "/engine/js/utils/pool.js";
+import Pool from "../../../engine/js/utils/pool.js";
 
 var blackout = new PIXI.Sprite();
 blackout.texture = PIXI.Texture.WHITE;

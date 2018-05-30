@@ -34,10 +34,14 @@ var fs = {
 			editor.ui.modal.showSpinner();
 		}
 		
+		if(typeof data !== 'string') {
+			data = JSON.stringify(data, null, '	');
+		}
+		
 		var r = $.ajax({
 			type: "POST",
 			url: '/fs/savefile',
-			data: JSON.stringify({data: JSON.stringify(data, null, '	'), filename}),
+			data: JSON.stringify({data, filename}),
 			contentType: 'application/json'
 		}).fail(handleError);
 		if (!silently) {

@@ -1,7 +1,7 @@
 import Timeline from "./timeline.js";
-import Pool from "/engine/js/utils/pool.js";
-import FieldPlayer from "/engine/js/components/movie-clip/field-player.js";
-import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
+import Pool from "../../../../../engine/js/utils/pool.js";
+import FieldPlayer from "../../../../../engine/js/components/movie-clip/field-player.js";
+import MovieClip from "../../../../../engine/js/components/movie-clip/movie-clip.js";
 import SelectEditor from "../select-editor.js";
 
 const FRAMES_STEP = 3;

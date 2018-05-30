@@ -123,14 +123,20 @@ export default class MovieClip extends DSprite {
 
 	set timeline(data) {
 		if(data === null) return;
+
+		if(!deserializeCache.has(data)
 /// #if EDITOR
-		if(!deserializeCache.has(data) || editor.disableFieldsCache) {
+			|| editor.disableFieldsCache
+/// #endif
+		) {
 			var desData = MovieClip._deserializeTimelineData(data);
 			deserializeCache.set(data, desData)
+/// #if EDITOR
 			serializeCache.set(desData, data);
+/// #endif
 		}
 		data = deserializeCache.get(data);
-/// #endif
+
 		
 		assert(Array.isArray(data.f), "Wrong timeline data?");
 		this._timelineData = data;
@@ -189,9 +195,11 @@ export default class MovieClip extends DSprite {
 	}
 }
 
-/// #if EDITOR
 
 var deserializeCache = new WeakMap();
+
+/// #if EDITOR
+
 var serializeCache = new WeakMap();
 
 MovieClip.EDITOR_icon = 'tree/movie';

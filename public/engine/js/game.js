@@ -28,7 +28,6 @@ var showStack = [];
 class Game {
 	
 	constructor(gameId) {
-		this.__EDITORmode = true;
 		this.settings = new Settings(gameId);
 		this.updateGlobal = this.updateGlobal.bind(this);
 		this.mouse = new PIXI.Point();

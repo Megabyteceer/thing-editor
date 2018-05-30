@@ -53,9 +53,13 @@ class Lib {
 	}
 	
 	static addTexture(name, texture) {
+		
+		/// #if EDITOR
 		if(!textures.hasOwnProperty(name)) {
 			Lib.__texturesList.push({name, value:name});
 		}
+		/// #endif
+		
 		if(typeof texture === 'string') {
 			textures[name] = PIXI.Texture.fromImage(texture + '?noCahce=' + noCacheCounter++);
 		} else {
@@ -145,7 +149,7 @@ class Lib {
 		var isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, "No scene with name '" + name + "'", true);
 		if(!isSceneExists) {
-			name = Object.keys(scenes)[0];
+			name = Object.keys(scenes)[0]; //get any scene
 		}
 		
 		var s = _loadObjectFromData(scenes[name]);
@@ -165,7 +169,7 @@ class Lib {
 	}
 
 //EDOTOR
-	static __saveScene(scene, name) {
+	static __saveScene(scene, name, returnOnly) {
 		if(name.indexOf(editor.editorFilesPrefix) !== 0) {
 			scene.name = name;
 		}
