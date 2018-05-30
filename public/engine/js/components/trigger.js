@@ -21,7 +21,7 @@ export default class Trigger extends Container {
 	}
 	
 	getState() {
-		var s = getValueByPath(this.dataPath);
+		var s = getValueByPath(this.dataPath, this);
 		if (this.invert) {
 			return !s;
 		}
@@ -47,7 +47,7 @@ export default class Trigger extends Container {
 		
 		this.alpha = 1 - q * this.disabledAlpha;
 		
-		this.visible = this.alpha < 0.01;
+		this.visible = this.alpha > 0.01;
 		
 		if (this.scaleSpeed !== 0) {
 			var s = this.initialScale - q * this.scaleSpeed;

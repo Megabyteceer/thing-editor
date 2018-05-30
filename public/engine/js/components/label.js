@@ -28,18 +28,16 @@ export default class Label extends PIXI.Text {
 					if(this.isMoney) {
 						if(this.counterSpeed < 1) {
 							let step = (val - (this.showedVal || 0)) * this.counterSpeed;
-							if(step > 0) {
-								if(step < 1) step = 1;
-							} else {
-								if(step > -1) step = -1;
-							}
-							this.showedVal = val + step;
+							this.showedVal = (this.showedVal || 0) + step;
 						} else {
 							this.showedVal = val;
 						}
-							
-							
-						val = formatMoney(this.showedVal, this.decimalsCount);
+						if(this.plusMinus && val > 0) {
+							val = '+' + formatMoney(this.showedVal, this.decimalsCount);
+						} else {
+							val = formatMoney(this.showedVal, this.decimalsCount);
+						}
+						
 					} else {
 						this.showedVal = val;
 					}
@@ -107,11 +105,16 @@ Label.EDITOR_editableProps = [
 		type: Boolean
 	},
 	{
+		name: 'plusMinus',
+		type: Boolean
+	},
+	{
 		name: 'counterSpeed',
 		type: Number,
 		min:0.001,
 		max:1,
 		step: 0.001,
+		default: 1,
 		tip: `When counterSpeed is <b>1</b> - label instantly takes and represent value.
 <b>When counterSpeed less that 1</b> - label shows value as counter in few steps.
 Property <b>counterSpeed</b> has effect only if <b>isMoney</b> property is enabled`

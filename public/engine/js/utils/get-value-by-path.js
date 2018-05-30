@@ -1,4 +1,5 @@
 const getValueByPath = (s, this_) => {
+	assert(this_, "'this' object is not provided.");
 	assert(s, "Empty data source path string.");
 	var path = stringToPathData(s);
 	var c;

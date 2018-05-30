@@ -1,4 +1,5 @@
 const call = (s, this_) => {
+	assert(this_, "'this' object is not provided.");
 	assert(s, "Empty call string.");
 	//try {
 		var data = stringToCallData(s);
