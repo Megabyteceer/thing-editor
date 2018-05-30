@@ -48,7 +48,15 @@ class ClessesView extends React.Component {
 	}
 	
 	renderItem(item) {
-		return R.listItem(R.span(null, R.classIcon(item.c), item.c.name), item, item.c.name, this);
+		var tip;
+		if(item.c.EDITOR_tip) {
+			tip = R.tip('class-' + item.c.name,
+				'Component "' + item.c.name + '" description:',
+				item.c.EDITOR_tip
+			);
+		}
+		
+		return R.listItem(R.span(null, R.classIcon(item.c), item.c.name, tip), item, item.c.name, this);
 	}
 	
 	selectedItem() {

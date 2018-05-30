@@ -32,7 +32,22 @@ export default class Overlay {
 		game.pixiApp.ticker.add(refreshSelection);
 	}
 	
+	getBGcolor() {
+		return blackout.tint;
+	}
+	
+	setBGcolor(tint) {
+		if(tint === undefined) {
+			tint = 30;
+		} else if(currentlyShowedPreview) {
+			editor.settings.setItem('prefab-bg'+ currentlyShowedPreview.name, tint);
+		}
+		
+		blackout.tint = tint;
+	}
+	
 	showPreview(object) {
+		this.setBGcolor(editor.settings.getItem('prefab-bg' + object.name));
 		this.hidePreview(false);
 		savedSelection = editor.selection.saveSelection();
 		game.stage.addChild(blackout);
@@ -128,9 +143,11 @@ $(window).on('mousedown', (ev) => {
 			startX = draggingDragger.x;
 			startY = draggingDragger.y;
 			if(ev.altKey) {
+				editor.disableFieldsCache = true;
 				editor.selection.some((o) => {
 					o.parent.addChildAt(Lib._deserializeObject(Lib.__serializeObject(o)), o.parent.children.indexOf(o));
 				});
+				editor.disableFieldsCache = false;
 				editor.ui.sceneTree.forceUpdate();
 			}
 		}

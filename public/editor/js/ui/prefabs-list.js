@@ -96,18 +96,18 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	onSelect(item) {
-		if(game.__EDITORmode) {
+		if (game.__EDITORmode) {
 			var name = Lib.__getNameByPrefab(item);
 			PrefabsList.acceptPrefabEdition();
 			var preview = Lib.loadPrefab(name);
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);
-            editor.ui.viewport.setPrefabMode(name);
-            editor.history.clearHistory(item);
+			editor.ui.viewport.setPrefabMode(name);
+			editor.history.clearHistory(item);
 			previewShown = name;
 		}
 	}
-	
+		
 	renderItem(prefabName, item) {
 		var cls = Lib.getClass(item.c);
 		return R.div({key: prefabName},
@@ -132,7 +132,7 @@ export default class PrefabsList extends React.Component {
 				R.btn('Add', this.onAddClick, 'Add prefab to scene'),
 				R.btn('Child', this.onAddChildClick, 'Add prefab as children')
 			),
-			R.btn('New...', this.onSaveSelectedAsClick, 'Create new prefab from selected objecton scene.'),
+			R.btn('Save...', this.onSaveSelectedAsClick, 'Save currently selected on scene object as new prefab.'),
 			R.div(bodyProps, prefabs)
 		)
 	}

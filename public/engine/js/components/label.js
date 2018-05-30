@@ -13,7 +13,7 @@ export default class Label extends PIXI.Text {
 		super.init();
 		this.currentInterval = 0;
 		this.text = '';
-		this.showedVal = '';
+		this.showedVal = undefined;
 	}
 	
 	update() {
@@ -23,10 +23,25 @@ export default class Label extends PIXI.Text {
 			if(val !== undefined) {
 				if(val !== this.showedVal) {
 					this.visible = true;
-					this.showedVal = val;
+					
 					
 					if(this.isMoney) {
-						val = formatMoney(val, this.decimalsCount);
+						if(this.counterSpeed < 1) {
+							let step = (val - (this.showedVal || 0)) * this.counterSpeed;
+							if(step > 0) {
+								if(step < 1) step = 1;
+							} else {
+								if(step > -1) step = -1;
+							}
+							this.showedVal = val + step;
+						} else {
+							this.showedVal = val;
+						}
+							
+							
+						val = formatMoney(this.showedVal, this.decimalsCount);
+					} else {
+						this.showedVal = val;
 					}
 					
 					if(this.template) {
@@ -58,7 +73,10 @@ Label.formatMoney = formatMoney;
 
 /// #if EDITOR
 
+import Tip from "/editor/js/utils/tip.js";
+
 Label.EDITOR_icon = 'tree/label';
+Label.EDITOR_tip = `<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.`;
 
 Label.EDITOR_editableProps = [
 	{
@@ -69,7 +87,8 @@ Label.EDITOR_editableProps = [
 	{
 		name: 'dataPath',
 		type: String,
-		important: true
+		important: true,
+		tip: Tip.tips.pathFieldTip
 	},
 	{
 		name: 'refreshInterval',
@@ -79,11 +98,23 @@ Label.EDITOR_editableProps = [
 	},
 	{
 		name: 'template',
-		type: String
+		type: String,
+		tip: `Label's text template with <b>%%</b> as marker of place where value will be inserted.
+		As example label with teplate <b>Your money: %% coins</b> will appear on screen as "Your money: 1000 coins".`
 	},
 	{
 		name: 'isMoney',
 		type: Boolean
+	},
+	{
+		name: 'counterSpeed',
+		type: Number,
+		min:0.001,
+		max:1,
+		step: 0.001,
+		tip: `When counterSpeed is <b>1</b> - label instantly takes and represent value.
+<b>When counterSpeed less that 1</b> - label shows value as counter in few steps.
+Property <b>counterSpeed</b> has effect only if <b>isMoney</b> property is enabled`
 	},
 	{
 		name: 'decimalsCount',
@@ -95,5 +126,6 @@ Label.EDITOR_editableProps = [
 		type: String
 	}
 ];
+
 
 /// #endif

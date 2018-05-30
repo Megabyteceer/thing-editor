@@ -110,7 +110,16 @@ export default class Viewport extends React.Component {
             panel = R.span( null,
                 R.div(prefabTitleProps, 'Prefab edition mode: ', R.br(), R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 	            R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes', 'main-btn'),
-                R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes')
+                R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes'),
+				'BG color:',
+				R.input({
+					onChange: (ev) => {
+						editor.overlay.setBGcolor(parseInt(ev.target.value.replace('#', ''), 16));
+					},
+					className: 'clickable',
+					type: 'color',
+					defaultValue: '#' + editor.overlay.getBGcolor().toString(16).padStart(6, '0')
+				})
             )
         } else {
 	    	var pauseResumeBtn, oneStepBtn;

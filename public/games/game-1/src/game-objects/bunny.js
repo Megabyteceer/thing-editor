@@ -9,7 +9,7 @@ export default class Bunny extends DSprite {
 	
 	update() {
 		this.vertexData[2] += Math.random();
-		/*if (this.y > floorY) {
+		if (this.y > floorY) {
 			this.ySpeed *= -1;
 			this.onTouchBounds();
 		} else {
@@ -20,7 +20,7 @@ export default class Bunny extends DSprite {
 			this.xSpeed *= -1.0;
 			this.onTouchBounds();
 		}
-		this.scale.x = this.xSpeed > 0 ? 1 : -1;*/
+		this.scale.x = this.xSpeed > 0 ? 1 : -1;
 		super.update();
 	}
 	

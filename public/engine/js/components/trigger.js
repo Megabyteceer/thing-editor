@@ -44,10 +44,11 @@ export default class Trigger extends Container {
 	
 	updatePhase() {
 		var q = this.phase / this.animationLength;
-		this.visible = (q !== 1);
-		if (this.animateAlpha) {
-			this.alpha = 1 - q;
-		}
+		
+		this.alpha = 1 - q * this.disabledAlpha;
+		
+		this.visible = this.alpha < 0.01;
+		
 		if (this.scaleSpeed !== 0) {
 			var s = this.initialScale - q * this.scaleSpeed;
 			this.scale.x = s;
@@ -83,6 +84,8 @@ export default class Trigger extends Container {
 
 /// #if EDITOR
 
+import Tip from "/editor/js/utils/tip.js";
+
 Trigger.EDITOR_editableProps = [
 	{
 		type: 'splitter',
@@ -96,7 +99,8 @@ Trigger.EDITOR_editableProps = [
 	{
 		name: 'dataPath',
 		type: String,
-		important: true
+		important: true,
+		tip: Tip.tips.pathFieldTip
 	},
 	{
 		name: 'invert',
@@ -106,12 +110,21 @@ Trigger.EDITOR_editableProps = [
 		name: 'animationLength',
 		type: Number,
 		min: 1,
-		default:10
+		default:10,
+		tip:`Switch transition duration in frames.
+Set <b>1</b> - to swich visibility <b>instantly</b>.`
 	},
 	{
-		name: 'animateAlpha',
-		type: Boolean,
-		default: true
+		name: 'disabledAlpha',
+		type: Number,
+		min:0,
+		max:1,
+		default: 1,
+		step: 0.01,
+		tip: `<b>Triggers transparency transition:</b>
+<b>1</b> - make fully invisible when state is 'false';
+<b>0.5</b> - make half visible when state id 'false';
+<b>0</b> - don't disturb alpha;`
 	},
 	{
 		name: 'scaleSpeed',
@@ -133,5 +146,7 @@ Trigger.EDITOR_editableProps = [
 ];
 
 Trigger.EDITOR_icon = 'tree/trigger';
+
+Trigger.EDITOR_tip = `<b>Trigger</b> - is component which smoothly or instantly <b>switches</b> it's <b>visibility</b> or/and <b>position</b> accordingly of value of specified javaScript variable.`;
 
 /// #endif

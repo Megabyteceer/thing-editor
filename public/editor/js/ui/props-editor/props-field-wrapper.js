@@ -3,8 +3,8 @@ import StringEditor from './string-editor.js';
 import BooleanEditor from './boolean-editor.js';
 import SelectEditor from './select-editor.js';
 import ColorEditor from './color-editor.js';
-import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
 import TimelineEditor from "./timeline/timeline-property.js";
+import Tip from "../../utils/tip.js";
 
 
 var typeDescriptions = new Map();
@@ -112,7 +112,16 @@ class PropsFieldWrapper extends React.Component {
 		
 		var disabled = field.name === 'name' && node.parent === game.stage;
 		
+		var tip;
+		if(field.hasOwnProperty('tip')) {
+			tip = R.tip(field.name,
+				'Field "' + field.name + '" description:',
+				field.tip
+			);
+		}
+		
 		return R.div(field.important ? fieldPropsImportant : fieldProps,
+			tip,
 			R.div(labelProps, field.name),
 			R.div(wrapperProps,
 				React.createElement(renderer, {
