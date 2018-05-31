@@ -1,3 +1,4 @@
+import Group from "./group.js";
 var bodyProps = {className: 'list-view'};
 
 class ClessesView extends React.Component {
@@ -56,7 +57,14 @@ class ClessesView extends React.Component {
 			);
 		}
 		
-		return R.listItem(R.span(null, R.classIcon(item.c), item.c.name, tip), item, item.c.name, this);
+		var key;
+		if(item.c.hasOwnProperty('EDITOR_group')) {
+			key = item.c.EDITOR_group + '/' + item.c.name;
+		} else {
+			key = 'Custom/' + item.c.name;
+		}
+		
+		return R.listItem(R.span(null, R.classIcon(item.c), item.c.name, tip), item, key, this);
 	}
 	
 	selectedItem() {
@@ -72,7 +80,8 @@ class ClessesView extends React.Component {
 		if (!classes) {
 			body = 'Loading...'
 		} else {
-			body = classes.map(this.renderItem);
+			body =  Group.groupArray(classes.map(this.renderItem));
+			body.reverse();
 		}
 		
 		var bottomPanelClassName = '';

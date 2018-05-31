@@ -24,4 +24,6 @@ export default PIXI.Container;
 
 /// #if EDITOR
 PIXI.Container.EDITOR_icon = 'tree/container';
+PIXI.Container.EDITOR_group = 'Basic';
+
 /// #endif

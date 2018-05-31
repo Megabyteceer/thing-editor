@@ -95,7 +95,7 @@ Object.defineProperties(PIXI.Text.prototype, {
 /// #if EDITOR
 
 PIXI.Text.EDITOR_icon = 'tree/text';
-
+PIXI.Text.EDITOR_group = 'Basic';
 PIXI.Text.EDITOR_editableProps = [
 	{
 		type: 'splitter',

@@ -77,7 +77,7 @@ var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
 }).sort((a, b) => {
 	return a.value - b.value
 });
-
+PIXI.Sprite.EDITOR_group = 'Basic';
 PIXI.Sprite.EDITOR_editableProps = [
 	{
 		type: 'splitter',
@@ -124,7 +124,7 @@ PIXI.Sprite.EDITOR_editableProps = [
 ];
 
 PIXI.mesh.Mesh.EDITOR_editableProps = PIXI.Sprite.EDITOR_editableProps;
-
+DSprite.EDITOR_group = 'Basic';
 DSprite.EDITOR_editableProps = [
 	{
 		type: 'splitter',

@@ -148,6 +148,6 @@ Button.EDITOR_editableProps = [
 		type: Number
 	}
 ];
-
+Button.EDITOR_group = 'Basic';
 Button.EDITOR_icon = 'tree/button';
 /// #endif

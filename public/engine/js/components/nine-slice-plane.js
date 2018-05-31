@@ -8,7 +8,7 @@ export default class NineSlicePlane extends PIXI.mesh.NineSlicePlane {
 }
 
 /// #if EDITOR
-
+NineSlicePlane.EDITOR_group = 'Basic';
 NineSlicePlane.EDITOR_editableProps = [
 	{
 		type: 'splitter',

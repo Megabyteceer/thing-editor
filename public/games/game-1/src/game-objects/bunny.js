@@ -23,3 +23,8 @@ export default class Bunny extends DSprite {
 		this.rotation = (Math.random() - 0.5) * 0.2;
 	}
 }
+
+/// #if EDITOR
+Bunny.EDITOR_group = "Custom/Bunnies";
+
+/// #endif

@@ -99,9 +99,9 @@ export default class Trigger extends Container {
 /// #if EDITOR
 
 import Tip from "/editor/js/utils/tip.js";
-
+Trigger.EDITOR_group = 'Extended';
 Trigger.EDITOR_editableProps = [
-	{
+		{
 		type: 'splitter',
 		title: 'Trigger:',
 		name: 'trigger'

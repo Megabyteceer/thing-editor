@@ -201,7 +201,7 @@ var deserializeCache = new WeakMap();
 /// #if EDITOR
 
 var serializeCache = new WeakMap();
-
+MovieClip.EDITOR_group = 'Basic';
 MovieClip.EDITOR_icon = 'tree/movie';
 MovieClip.EDITOR_editableProps = [
 	{

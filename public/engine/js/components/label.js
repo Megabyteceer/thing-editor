@@ -72,7 +72,7 @@ Label.formatMoney = formatMoney;
 /// #if EDITOR
 
 import Tip from "/editor/js/utils/tip.js";
-
+Label.EDITOR_group = 'Extended';
 Label.EDITOR_icon = 'tree/label';
 Label.EDITOR_tip = `<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.`;
 

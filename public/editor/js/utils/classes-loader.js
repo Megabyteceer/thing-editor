@@ -11,13 +11,13 @@ import NineSlicePlane from "/engine/js/components/nine-slice-plane.js";
 function init() {
 	//embedded engine classes
 	embeddedClasses = [
+		[Container, "/engine/js/components/container.js"],
 		[PIXI.Sprite, false],
 		[DSprite, false],
 		[MovieClip, "/engine/js/components/movie-clip/movie-clip.js"],
 		[Scene, false],
-		[Container, "/engine/js/components/container.js"],
-		[Button, "/engine/js/components/button.js"],
 		[Text, "/engine/js/components/text.js"],
+		[Button, "/engine/js/components/button.js"],
 		[Label, "/engine/js/components/label.js"],
 		[Trigger,"/engine/js/components/trigger.js" ],
 		[NineSlicePlane, "/engine/js/components/nine-slice-plane.js"]
