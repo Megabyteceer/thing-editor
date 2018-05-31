@@ -14,6 +14,9 @@ var prefabLabelProps = {className: 'selectable-text', onMouseDown: function (ev)
 
 var stoppingExecutionTime;
 var playTogglingTime;
+var recoveryCheckingTime;
+var problemOnGameStart,
+	problemOnGameStop;
 
 var savedBackupName;
 
@@ -29,7 +32,6 @@ export default class Viewport extends React.Component {
 	}
 	
 	stopExecution() {
-		playTogglingTime = false;
 		if(!stoppingExecutionTime) {
 			stoppingExecutionTime = true;
 			if (!game.__EDITORmode) {
@@ -39,8 +41,36 @@ export default class Viewport extends React.Component {
 		}
 	}
 	
+	checkIfNeedRecovery() {
+		if(!recoveryCheckingTime) {
+			setTimeout(() => {
+				if(problemOnGameStart || problemOnGameStop || editor.frameUpdateException) {
+					
+					playTogglingTime = false;
+					
+					if(problemOnGameStop) {
+						problemOnGameStop = false;
+						editor.ui.modal.showFatalError('Exception on game stopping.');
+					}
+					if(problemOnGameStart) {
+						problemOnGameStart = false;
+						editor.ui.modal.showFatalError('Exception on game starting.');
+					}
+					if(editor.frameUpdateException) {
+						editor.frameUpdateException = false;
+						editor.ui.modal.showFatalError('Exception on frame update.');
+					}
+					game.__EDITORmode = true;
+					recoveryCheckingTime = false;
+				}
+			},0);
+		}
+		
+	}
+	
 	onTogglePlay() {
 		if(!playTogglingTime) {
+			this.checkIfNeedRecovery();
 			playTogglingTime = true;
 			
 			game.__doOneStep = false;
@@ -49,6 +79,7 @@ export default class Viewport extends React.Component {
 			this.beforePlayStopToggle.emit(play);
 			Lib.__clearStaticScenes();
 			if (play) { // launch game
+				problemOnGameStart = true;
 				editor.tryToSaveHistory();
 
 				savedBackupName = editor.runningSceneLibSaveSlotName;
@@ -56,17 +87,21 @@ export default class Viewport extends React.Component {
 					savedBackupName += '-unmodified';
 				}
 				editor.saveCurrentScene(savedBackupName);
+				
 				selectionData = editor.selection.saveSelection();
 				game.__EDITORmode = false;
 				Lib.__constructRecursive(game.currentScene);
 				game._processOnShow();
+				problemOnGameStart = false;
 			} else { //stop game
+				
+				problemOnGameStop = true;
 				game.__cleanupBeforeToggleStop();
 				game.currentScene.remove();
 				game.currentScene = null;
 				game.__EDITORmode = true;
-				editor.loadScene(savedBackupName);
-				editor.selection.loadSelection(selectionData);
+				restorePrestartBackup();
+				problemOnGameStop = false;
 			}
 			
 			this.forceUpdate();
@@ -154,4 +189,13 @@ export default class Viewport extends React.Component {
 			})
 		);
 	}
+}
+
+function restorePrestartBackup() {
+	if(!savedBackupName) {
+		throw error('No backup scene was saved bofore Start attempt. Please restart application.');
+	}
+	editor.loadScene(savedBackupName);
+	savedBackupName = null;
+	editor.selection.loadSelection(selectionData);
 }

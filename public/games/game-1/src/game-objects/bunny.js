@@ -2,18 +2,13 @@ var floorY = H - 25;
 
 export default class Bunny extends DSprite {
 	
-	constructor(img) {
-		super(img);
-		this.gravity = 1;
-	}
-	
 	update() {
 		this.vertexData[2] += Math.random();
 		if (this.y > floorY) {
 			this.ySpeed *= -1;
 			this.onTouchBounds();
 		} else {
-			this.ySpeed += this.gravity;
+			this.ySpeed += 1;
 		}
 		
 		if ((this.x < 0) || (this.x > W)) {

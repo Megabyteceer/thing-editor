@@ -242,6 +242,8 @@ class Game {
 		if (this.currentScene) {
 		
 /// #if EDITOR
+			editor.ui.viewport.checkIfNeedRecovery();
+			editor.frameUpdateException = true;
 			if ((!this.__paused || this.__doOneStep) && !this.__EDITORmode) {
 /// #endif
 				frameCounterTime += dt;
@@ -261,7 +263,10 @@ class Game {
 				}
 /// #endif
 			}
-
+			
+/// #if EDITOR
+			editor.frameUpdateException = false;
+/// #endif
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 			
 			this.currentScene.interactiveChildren = ((this.modalsCount === 0) && !currentFader);

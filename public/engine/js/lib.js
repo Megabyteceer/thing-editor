@@ -101,21 +101,7 @@ class Lib {
 	}
 	
 	static destroyObjectAndChildrens(o) {
-		
-/// #if EDITOR
-		if(!game.__EDITORmode) {
-			try {
-/// #endif
-				o.onRemove();
-/// #if EDITOR
-			} catch (er) {
-				if(!game.__EDITORmode) {
-					editor.ui.modal.showError(er.message || er);
-				}
-			}
-
-		}
-/// #endif
+		o.onRemove();
 		o.detachFromParent();
 		if (o.children) {
 			while(o.children.length > 0) {
