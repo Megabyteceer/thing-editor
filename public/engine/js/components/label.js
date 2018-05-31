@@ -84,7 +84,7 @@ Label.EDITOR_editableProps = [
 	},
 	{
 		name: 'dataPath',
-		type: String,
+		type: 'data-path',
 		important: true,
 		tip: Tip.tips.pathFieldTip
 	},

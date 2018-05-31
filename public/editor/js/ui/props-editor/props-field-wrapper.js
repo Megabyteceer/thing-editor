@@ -5,6 +5,7 @@ import SelectEditor from './select-editor.js';
 import ColorEditor from './color-editor.js';
 import TimelineEditor from "./timeline/timeline-property.js";
 import Tip from "../../utils/tip.js";
+import DataPathEditor from "./data-path-editor.js";
 
 
 var typeDescriptions = new Map();
@@ -30,6 +31,15 @@ typeDescriptions.set(Boolean, {
 	},
 	default: false
 });
+
+typeDescriptions.set('data-path', {
+	renderer: DataPathEditor,
+	parser: (target) => {
+		return target.value || null;
+	},
+	default: null
+});
+
 typeDescriptions.set('color', {
 	renderer: ColorEditor, parser:
 		(target) => {
