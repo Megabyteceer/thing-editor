@@ -7,77 +7,91 @@ export default class Trigger extends Container {
 		this.initialScale = this.scale.x;
 		this.initialX = this.x;
 		this.initialY = this.y;
-		this.stepsToShow = Math.floor()
+
 		if (this.dataPath) {
-			this.state = this.getState();
+			this._state = this.getState();
 		}
-		if (!this.state) {
-			this.phase = this.animationLength;
+		if (this._state) {
+			this.q = 0;
 		} else {
-			this.phase = 0;
+			this.q = 1;
 		}
-		this.interactiveChildren = this.state;
+		this.qSpeed = 0;
+		this.triggering = false;
+		this.interactiveChildren = this._state;
 		this.updatePhase();
 	}
 	
 	getState() {
-		var s = getValueByPath(this.dataPath, this);
-		if (this.invert) {
-			return !s;
-		}
-		return s;
+		return this.invert === (!getValueByPath(this.dataPath, this));
 	}
 	
 	show() {
-		this.state = true;
+		this._state = true;
 		this.interactiveChildren = true;
+		this.triggering = true;
+	}
+
+	set state (val) {
+		this._state = val;
+		this.triggering = true;
+	}
+	get state () {
+		return this._state;
 	}
 	
 	hide() {
-		this.state = false;
+		this._state = false;
 		this.interactiveChildren = false;
+		this.triggering = true;
 	}
 	
 	toggle() {
-		this.state = !this.state;
+		if(this._state) {
+			this.hide();
+		} else {
+			this.show();
+		}
 	}
 	
 	updatePhase() {
-		var q = this.phase / this.animationLength;
+		var qTo = this._state ? 0 : 1;
+		if((this.speed === 1) || ((Math.abs(qTo - this.q) < 0.01) && (Math.abs(this.qSpeed) < 0.01))) {
+			this.triggering = false;
+			this.q = qTo;
+		} else {
+			this.qSpeed += (qTo - this.q) * this.pow;
+			this.qSpeed *= this.damp;
+			this.q += this.qSpeed;
+		}
 		
-		this.alpha = 1 - q * this.disabledAlpha;
-		
+		this.alpha = 1 - this.q * this.alphaShift;
 		this.visible = this.alpha > 0.01;
 		
-		if (this.scaleSpeed !== 0) {
-			var s = this.initialScale - q * this.scaleSpeed;
+		if (this.scaleShift !== 0) {
+			var s = this.initialScale + this.q * this.scaleShift;
 			this.scale.x = s;
 			this.scale.y = s;
 		}
-		if (this.xSpeed !== 0) {
-			this.x = this.initialX + q * this.xSpeed;
+		this.visible = (this.alpha > 0.01) && (Math.abs(this.scale.x) > 0.001);
+		
+		if (this.xShift !== 0) {
+			this.x = this.initialX + this.q * this.xShift;
 		}
-		if (this.ySpeed !== 0) {
-			this.y = this.initialY + q * this.ySpeed;
+		if (this.yShift !== 0) {
+			this.y = this.initialY + this.q * this.yShift;
 		}
 	}
 	
 	update() {
 		if (this.dataPath) {
-			this.state = this.getState();
+			var s = this.getState();
+			if(this._state !== s) {
+				this.toggle();
+			}
 		}
-		this.interactiveChildren = this.state;
-		if (this.state) {
-			if (this.phase > 0) {
-				
-				this.phase--;
-				this.updatePhase();
-			}
-		} else {
-			if (this.phase < this.animationLength) {
-				this.phase++;
-				this.updatePhase();
-			}
+		if(this.triggering) {
+			this.updatePhase();
 		}
 	}
 }
@@ -106,6 +120,54 @@ Trigger.EDITOR_editableProps = [
 		name: 'invert',
 		type: Boolean
 	},
+	{
+		name: 'pow',
+		type: Number,
+		step: 0.001,
+		min:0.001,
+		max:1,
+		default: 0.02,
+		tip:'Speed of state swiching. Set it to <b>1.0</b> for instant switching.'
+	},
+	{
+		name: 'damp',
+		type: Number,
+		step: 0.001,
+		min:0.001,
+		max:0.999,
+		default: 0.85,
+		tip:'Resistance for swiching.'
+	},
+	{
+		name: 'alphaShift',
+		type: Number,
+		step: 0.01,
+		min:-1,
+		max:0,
+		default: -1
+	},
+	{
+		name: 'scaleShift',
+		type: Number,
+		step: 0.01,
+		min:-1,
+		default: -1
+	},
+	{
+		name: 'xShift',
+		type: Number,
+	},
+	{
+		name: 'yShift',
+		type: Number,
+	},
+	
+	{
+		type: 'splitter',
+		title: 'Trigger deprecated:',
+		name: 'trigger-deprecated'
+	},
+	
 	{
 		name: 'animationLength',
 		type: Number,
