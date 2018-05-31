@@ -62,7 +62,7 @@ export default class Timeline extends React.Component {
 	}
 	
 	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
-		var keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.timelineMarker.state.time);
+		var keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
 		keyFrame.v = o[fieldName];
 		var field = getFieldByNameOrCreate(o, fieldName);
 		renormalizeFieldTimelineDataAfterChange(field);
@@ -71,15 +71,23 @@ export default class Timeline extends React.Component {
 	onBeforePropertyChanged(fieldName) {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
-				getFrameAtTimeOrCreate(o, fieldName, 0);
+				if(this.needAnimateProperty(o, fieldName)) {
+					getFrameAtTimeOrCreate(o, fieldName, 0);
+				}
 			}
 		});
+	}
+	
+	needAnimateProperty(o, fieldName) {
+		return this.getTime() > 0 || getFieldByName(o, fieldName);
 	}
 	
 	onAfterPropertyChanged(fieldName) {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
-				this.createKeyframeWithCurrentObjectsValue(o, fieldName);
+				if(this.needAnimateProperty(o, fieldName)) {
+					this.createKeyframeWithCurrentObjectsValue(o, fieldName);
+				}
 			}
 		});
 		timeline.forceUpdate();
@@ -149,27 +157,34 @@ export default class Timeline extends React.Component {
 	}
 }
 
+function getFieldByName(o, name) {
+	if(o._timelineData) {
+		var fields = o._timelineData.f;
+		for(let field of fields) {
+			if(field.n === name) {
+				return field;
+			}
+		}
+	}
+}
+
 function getFieldByNameOrCreate(o, name) {
-	if(!o._timelineData) {
-		o._timelineData = {
-			d:0.85,
-			p:0.02,
-			l:{},
-			f:[]
+	var field = getFieldByName(o, name);
+	if(!field) {
+		if(!o._timelineData) {
+			o._timelineData = {
+				d:0.85,
+				p:0.02,
+				l:{},
+				f:[]
+			}
 		}
-	}
-	
-	var fields = o._timelineData.f;
-	for(field of fields) {
-		if(field.n === name) {
-			return field;
+		field = {
+			n:name,
+			t:[]
 		}
+		o._timelineData.f.push(field);
 	}
-	var field = {
-		n:name,
-		t:[]
-	}
-	fields.push(field);
 	return field;
 }
 
