@@ -214,11 +214,9 @@ class Dragger extends DSprite {
 	onDrag() {
 		var o = this.owner;
 		
-		o.parent.toLocal(game.mouse, undefined, p, true);
-		
 		if(game.mouse.shiftKey) {
-			var dX = p.x - startX;
-			var dY = p.y - startY;
+			var dX = game.mouse.x - startX;
+			var dY = game.mouse.y - startY;
 			var angle = Math.atan2(dY, dX);
 			angle /= Math.PI;
 			angle *= 4;
@@ -229,7 +227,12 @@ class Dragger extends DSprite {
 			var len = Math.sqrt(dX * dX + dY * dY);
 			p.x = startX + Math.cos(angle) * len;
 			p.y = startY + Math.sin(angle) * len;
+		} else {
+			p.x = game.mouse.x;
+			p.y = game.mouse.y;
 		}
+		
+		o.parent.toLocal(p, undefined, p, true);
 		
 		editor.onSelectedPropsChange('x', Math.round(p.x - o.x), true);
 		editor.onSelectedPropsChange('y', Math.round(p.y - o.y), true);
