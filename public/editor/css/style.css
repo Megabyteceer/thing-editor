@@ -371,7 +371,6 @@ button {
 .props-label {
 	box-sizing:border-box;
 	padding-right: 20px;
-	text-align:right;
 	width: 120px;
 	color: #3a8cff;
 	overflow-x: hidden;
@@ -867,6 +866,17 @@ input{
 	margin: 10px;
 	line-height: 1.6;
 }
+
+.props-wrapper .tool-btn {
+	margin:0;
+	float: right;
+	padding: 3px;
+	border:1px solid #a4a4a4;
+	background:#ffffff;
+}
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-export default class DataPathEditor extends ReactComponent {
+export default class DataPathEditor extends React.Component {
 	
 	constructor(props) {
 		super(props);

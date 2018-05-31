@@ -76,6 +76,10 @@ class Lib {
 		return ret;
 	}
 	
+	static hasTexture(name) {
+		return textures.hasOwnProperty(name);
+	}
+	
 	static getTexture(name) {
 		
 		/// #if EDITOR

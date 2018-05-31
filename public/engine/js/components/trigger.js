@@ -56,7 +56,7 @@ export default class Trigger extends Container {
 	
 	updatePhase() {
 		var qTo = this._state ? 0 : 1;
-		if((this.speed === 1) || ((Math.abs(qTo - this.q) < 0.01) && (Math.abs(this.qSpeed) < 0.01))) {
+		if((this.pow === 1) || ((Math.abs(qTo - this.q) < 0.01) && (Math.abs(this.qSpeed) < 0.01))) {
 			this.triggering = false;
 			this.q = qTo;
 		} else {
@@ -65,7 +65,7 @@ export default class Trigger extends Container {
 			this.q += this.qSpeed;
 		}
 		
-		this.alpha = 1 - this.q * this.alphaShift;
+		this.alpha = 1 + this.q * this.alphaShift;
 		this.visible = this.alpha > 0.01;
 		
 		if (this.scaleShift !== 0) {
@@ -150,8 +150,7 @@ Trigger.EDITOR_editableProps = [
 		name: 'scaleShift',
 		type: Number,
 		step: 0.01,
-		min:-1,
-		default: -1
+		min:-1
 	},
 	{
 		name: 'xShift',
@@ -160,50 +159,6 @@ Trigger.EDITOR_editableProps = [
 	{
 		name: 'yShift',
 		type: Number,
-	},
-	
-	{
-		type: 'splitter',
-		title: 'Trigger deprecated:',
-		name: 'trigger-deprecated'
-	},
-	
-	{
-		name: 'animationLength',
-		type: Number,
-		min: 1,
-		default:10,
-		tip:`Switch transition duration in frames.
-Set <b>1</b> - to swich visibility <b>instantly</b>.`
-	},
-	{
-		name: 'disabledAlpha',
-		type: Number,
-		min:0,
-		max:1,
-		default: 1,
-		step: 0.01,
-		tip: `<b>Triggers transparency transition:</b>
-<b>1</b> - make fully invisible when state is 'false';
-<b>0.5</b> - make half visible when state id 'false';
-<b>0</b> - don't disturb alpha;`
-	},
-	{
-		name: 'scaleSpeed',
-		type: Number,
-		step: 0.001,
-		min:-1,
-		max:1
-	},
-	{
-		name: 'ySpeed',
-		type: Number,
-		step: 0.1
-	},
-	{
-		name: 'xSpeed',
-		type: Number,
-		step: 0.1
 	}
 ];
 
