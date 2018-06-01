@@ -23,7 +23,7 @@ export default class Build {
 		
 		fileSavePromises.push(editor.fs.saveFile('.dist/assets.json', {scenes, prefabs, images}));
 		
-		debugger;
+
 		var classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
 		var src = [`var classes = {
 			"Sprite":PIXI.Sprite,
@@ -37,11 +37,11 @@ export default class Build {
 			var path = editor.ClassesLoader.getClassPath(name);
 			if(path) {
 				src.push('import ' + name + ' from "' + path + '"');
-				src.push('classes["' + name + '"] =' + name + ';');
+				src.push('classes["' + name + '"] = ' + name + ';');
 			}
 		};
 		src.push('Lib._setClasses(classes, ');
-		src.push(JSON.stringify(editor.ClassesLoader.classesDefaultsById) + ');');
+		src.push(JSON.stringify(editor.ClassesLoader.classesDefaultsById, null, ' ') + ');');
 		fileSavePromises.push(editor.fs.saveFile('.obj/classes.js', src.join('\n')));
 		
 		Promise.all(fileSavePromises).then(() => {

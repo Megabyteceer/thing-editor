@@ -11,14 +11,16 @@ const symlinksMaker = require('./symlinks-maker.js');
 
 
 module.exports = function(projectPath, callback) {
-	
+	console.log('ENTER: ' + projectPath);
 	symlinksMaker.setRootPath(projectPath);
 	
 	var foldersToShare = {
+		'../../../dist-template/index.html': '.dist/index.html',
+		'../../../node_modules/pixi.js/dist/pixi.min.js': '.dist/pixi.min.js',
 		'img': '.dist/img'
 	};
 	symlinksMaker.makeSymlinks(foldersToShare);
-	
+	console.log(1);
 	const loaders = [{
 		test: /\.js$/, 
 		use: [
@@ -47,9 +49,10 @@ module.exports = function(projectPath, callback) {
 			}
 		}
 	};
-	
+	console.log(3);
 	webpack(config, (err, stats) => {
 		result = [];
+		console.log('RESULT:');
 		function errorHandle(err) {
 			var txt = 'ERROR: '+ err;
 			result.push (txt);

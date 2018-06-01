@@ -159,7 +159,7 @@ export default class TreeView extends React.Component {
 	}
 	
 	render() {
-		if (!editor.game) return R.spinner();
+		if (typeof game === 'undefined') return R.spinner();
 		
 		var isEmpty = editor.selection.length === 0;
 		
@@ -179,7 +179,7 @@ export default class TreeView extends React.Component {
 	),
 			R.div({className: 'scene-tree-view', onMouseDown: onEmptyClick},
 				game.__getScenesStack().map(renderSceneStackItem),
-				editor.game.stage.children.map(renderRoots)
+				game.stage.children.map(renderRoots)
 			)
 		);
 	}

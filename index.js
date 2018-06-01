@@ -25,7 +25,7 @@ app.get('/fs/openProject', function (req, res) {
 	currentGame = req.query.dir;
 	currentGameRoot = gamesRoot + currentGame + '/';
 	process.chdir(gamesRoot + currentGame);
-	//log('Project opened: ' + currentGameRoot + '; ' + process.cwd());
+	log('Project opened: ' + currentGameRoot + '; ' + process.cwd());
 	res.send(fs.readFileSync('project.json'));
 });
 
