@@ -5,6 +5,8 @@ const path = require('path')
 const express = require('express')
 const app = express()
 
+const build = require('./scripts/build.js');
+
 var currentGame;
 var currentGameRoot;
 
@@ -21,9 +23,9 @@ app.get('/fs/projects', function (req, res) {
 
 app.get('/fs/openProject', function (req, res) {
 	currentGame = req.query.dir;
-	currentGameRoot = clientGamesRoot + currentGame + '/';
+	currentGameRoot = gamesRoot + currentGame + '/';
 	process.chdir(gamesRoot + currentGame);
-	//log('Project opened: ' + process.cwd());
+	//log('Project opened: ' + currentGameRoot + '; ' + process.cwd());
 	res.send(fs.readFileSync('project.json'));
 });
 
@@ -46,6 +48,13 @@ app.get('/fs/delete', function (req, res) {
 	} catch (err) {
 		res.end("Can't delete file " + fn);
 	}
+});
+
+app.get('/fs/build', function (req, res) {
+	log('BUILD project: ' + currentGameRoot);
+	build(currentGameRoot, (result) => {
+		res.end(JSON.stringify(result));
+	});
 });
 
 app.post('/fs/savefile', jsonParser, function (req, res) {

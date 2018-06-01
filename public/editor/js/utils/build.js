@@ -1,7 +1,6 @@
-export default {
-	build:() => {
-	
-	
+export default class Build {
+	static build() {
+		
 		var scenesSrc = Lib._getAllScenes();
 		var scenes = {};
 		Object.keys(scenesSrc).some((sceneName) => {
@@ -20,11 +19,18 @@ export default {
 			return t.value;
 		});
 		
+		var fileSavePromises = [];
 		
-		editor.fs.saveFile('assets.json', {scenes, prefabs, images});
+		fileSavePromises.push(editor.fs.saveFile('.dist/assets.json', {scenes, prefabs, images}));
 		
+		debugger;
 		var classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
-		var src = ['var classes = {};'];
+		var src = [`var classes = {
+			"Sprite":PIXI.Sprite,
+			"DSprite":DSprite,
+			"Scene":Scene
+		};`];
+		
 		
 		for(let c of classesSrc) {
 			var name = c.c.name;
@@ -35,9 +41,19 @@ export default {
 			}
 		};
 		src.push('Lib._setClasses(classes, ');
-		src.push('`' + JSON.stringify(editor.ClassesLoader.classesDefaultsById) + '`);');
-		editor.fs.saveFile('classes.js', src.join('\n'));
+		src.push(JSON.stringify(editor.ClassesLoader.classesDefaultsById) + ');');
+		fileSavePromises.push(editor.fs.saveFile('.obj/classes.js', src.join('\n')));
 		
-		
+		Promise.all(fileSavePromises).then(() => {
+			editor.fs.getJSON('/fs/build').then((result) => {
+				if(result.length > 0) {
+					editor.ui.modal.showError(result.map((r, i) =>{
+						return R.div({key:i}, r);
+					}));
+				} else {
+					window.open('/games/' + editor.currentProjectDir + '/.dist');
+				}
+			});
+		})
 	}
 }

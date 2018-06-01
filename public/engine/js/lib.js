@@ -53,7 +53,6 @@ class Lib {
 	}
 	
 	static addTexture(name, texture) {
-		
 		/// #if EDITOR
 		if(!textures.hasOwnProperty(name)) {
 			Lib.__texturesList.push({name, value:name});
@@ -61,7 +60,10 @@ class Lib {
 		/// #endif
 		
 		if(typeof texture === 'string') {
-			textures[name] = PIXI.Texture.fromImage(texture + '?noCahce=' + noCacheCounter++);
+			/// #if EDITOR
+			texture +=  '?noCahce=' + noCacheCounter++
+			/// #endif
+			textures[name] = PIXI.Texture.fromImage(texture);
 		} else {
 			textures[name] = texture;
 		}

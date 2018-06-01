@@ -1,10 +1,8 @@
-var floorY = H - 25;
-
 export default class Bunny extends DSprite {
 	
 	update() {
 		this.vertexData[2] += Math.random();
-		if (this.y > floorY) {
+		if (this.y > H - 25) {
 			this.ySpeed *= -1;
 			this.onTouchBounds();
 		} else {

@@ -56,6 +56,13 @@ class Game {
 		app.stage.addChild(stage);
 		
 		app.ticker.add(this.updateGlobal);
+		
+/// #if EDITOR
+		return;
+		
+/// #else
+		this._startGame();
+/// #endif
 	}
 	
 	faderShoot() {
@@ -79,6 +86,29 @@ class Game {
 		currentFader.gotoLabelRecursive('hide fader');
 		
 		SHOOTTIME = false;
+	}
+	
+	_startGame() {
+		///#if EDITOR
+		throw('game._startGame is for internal usage only. Will be invoked automaticly in production build.');
+		///#endif
+		
+		fetch("assets.json").then(function(response) {
+			return response.json();
+		}).then((assets) => {
+
+			Lib._setPrefabs(assets.prefabs);
+			Lib._setScenes(assets.scenes);
+			
+			Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
+			Lib.addTexture('WHITE', PIXI.Texture.WHITE);
+			
+			assets.images.some((tName) => {
+				Lib.addTexture(tName, 'img/' + tName);
+			});
+			
+			this.showScene('main');
+		});
 	}
 	
 	_processOnShow() {

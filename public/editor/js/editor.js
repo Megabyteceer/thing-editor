@@ -63,7 +63,7 @@ export default class Editor {
 	onUIMounted(ui) {
 		/** @member {UI} */
 		this.ui = ui;
-		this.game = new Game('tmp.game.id');
+		new Game('tmp.game.id');
 		
 		game.__EDITORmode = true;
 		game.init(document.getElementById('viewport-root'));
