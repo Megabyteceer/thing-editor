@@ -36,15 +36,15 @@ class Game {
 		window.game = this;
 	}
 	
-	get currentContainer () {
-		if(modals.length >0) {
+	get currentContainer() {
+		if(modals.length > 0) {
 			return modals[modals.length - 1]; //top modal is active
 		}
 		return this.currentScene; //current scene is active if no modals on screen
 	}
 	
 	init(element) {
-
+		
 		app = new PIXI.Application(W, H, {backgroundColor: 0x1099bb});
 		this.pixiApp = app;
 		(element || document.body).appendChild(app.view);
@@ -56,10 +56,10 @@ class Game {
 		app.stage.addChild(stage);
 		
 		app.ticker.add(this.updateGlobal);
-		
+
 /// #if EDITOR
 		return;
-		
+
 /// #else
 		this._startGame();
 /// #endif
@@ -74,7 +74,7 @@ class Game {
 		}
 		this.currentScene.onHide();
 		
-		if (!this.currentScene.isStatic && (showStack.indexOf(this.currentScene) < 0)) {
+		if(!this.currentScene.isStatic && (showStack.indexOf(this.currentScene) < 0)) {
 			this.currentScene.remove();
 		} else {
 			this.currentScene.detachFromParent();
@@ -96,7 +96,7 @@ class Game {
 		fetch("assets.json").then(function(response) {
 			return response.json();
 		}).then((assets) => {
-
+			
 			Lib._setPrefabs(assets.prefabs);
 			Lib._setScenes(assets.scenes);
 			
@@ -147,15 +147,15 @@ class Game {
 		assert(scene instanceof Scene, 'Scene instance expected.');
 /// #endif
 		if(this.__EDITORmode) {
-			if (this.currentScene) {
+			if(this.currentScene) {
 				stage.removeChild(this.currentScene);
 			}
 			this._setCurrentSceneContent(scene);
 		} else {
 			
 			
-			if (this.currentScene) {
-				if (!this.currentScene.isNoStackable) {
+			if(this.currentScene) {
+				if(!this.currentScene.isNoStackable) {
 					showStack.push(this.currentScene);
 				}
 				showStack.push(scene);
@@ -173,10 +173,10 @@ class Game {
 	closeCurrentScene(faderType) {
 		assert(showStack.length > 0, "can't close latest scene");
 		
-		if (SHOOTTIME) {
+		if(SHOOTTIME) {
 			this.faderShoot();
 		} else {
-			if (!faderType) {
+			if(!faderType) {
 				if(this.currentScene && this.currentScene.faderType) {
 					faderType = this.currentScene.faderType;
 				} else {
@@ -188,40 +188,44 @@ class Game {
 			this.stage.addChild(currentFader);
 		}
 	}
-
-    /// #if EDITOR
-    __setCurrentContainerContent(object) {
-	    if(modals.length > 0) {
+	
+	/// #if EDITOR
+	__setCurrentContainerContent(object) {
+		if(modals.length > 0) {
 			this.hideModal();
 			this.showModal(object);
-        } else {
-            this.showScene(object);
-        }
-    }
-    
-    __cleanupBeforeToggleStop() {
-	    while (game.modalsCount > 0) {
-		    game.closeModal();
-	    }
-	    while (showStack.length > 0) {
-		    var s = showStack.pop();
-		    game.stage.addChild(s);
-		    s.remove();
-	    }
+		} else {
+			this.showScene(object);
+		}
+	}
+	
+	__clearStage() {
+		while(this.modalsCount > 0) {
+			this.closeModal();
+		}
+		while(showStack.length > 0) {
+			var s = showStack.pop();
+			this.stage.addChild(s);
+			s.remove();
+		}
 		if(currentFader) {
 			this.faderEnd();
 		}
-    }
-    
-    __getScenesStack() {
+		if(this.currentScene) {
+			this.currentScene.remove();
+			this.currentScene = null;
+		}
+	}
+	
+	__getScenesStack() {
 		return showStack;
 	}
-    
-    /// #endif
-
+	
+	/// #endif
+	
 	showModal(displayObject) {
 		
-		if(typeof displayObject === "string"){
+		if(typeof displayObject === "string") {
 			displayObject = Lib.loadPrefab(displayObject);
 		}
 		
@@ -229,10 +233,10 @@ class Game {
 		modals.push(displayObject);
 		this.stage.addChild(displayObject);
 	}
-
+	
 	get modalsCount() {
-	    return modals.length;
-    }
+		return modals.length;
+	}
 	
 	hideModal(displayObject, instantly) {
 		if(typeof instantly === 'undefined') {
@@ -269,22 +273,22 @@ class Game {
 	}
 	
 	updateGlobal(dt) {
-		if (this.currentScene) {
-		
+		if(this.currentScene) {
+
 /// #if EDITOR
 			editor.ui.viewport.checkIfNeedRecovery();
 			editor.frameUpdateException = true;
-			if ((!this.__paused || this.__doOneStep) && !this.__EDITORmode) {
+			if((!this.__paused || this.__doOneStep) && !this.__EDITORmode) {
 /// #endif
 				frameCounterTime += dt;
 				var limit = 4;
 				frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * 4);
-				while (frameCounterTime > FRAME_PERIOD) {
+				while(frameCounterTime > FRAME_PERIOD) {
 					
 					this.updateFrame();
 					frameCounterTime -= FRAME_PERIOD;
 /// #if EDITOR
-					if (this.__doOneStep) {
+					if(this.__doOneStep) {
 						editor.refreshTreeViewAndPropertyEditor();
 						this.__doOneStep = false;
 						frameCounterTime = 0;
@@ -293,16 +297,16 @@ class Game {
 				}
 /// #endif
 			}
-			
+
 /// #if EDITOR
 			editor.frameUpdateException = false;
 /// #endif
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 			
 			this.currentScene.interactiveChildren = ((this.modalsCount === 0) && !currentFader);
-			var i = this.modalsCount-1;
+			var i = this.modalsCount - 1;
 			var isCurrent = !currentFader;
-			while (i >= 0) {
+			while(i >= 0) {
 				modals[i].interactiveChildren = isCurrent;
 				isCurrent = false;
 				i--;
@@ -315,8 +319,8 @@ class Game {
 		if(currentFader) {
 			updateRecursivelly(currentFader);
 		}
-		var i = hiddingModals.length-1; //hide modals process
-		while (i >= 0) {
+		var i = hiddingModals.length - 1; //hide modals process
+		while(i >= 0) {
 			var m = hiddingModals[i];
 			m.alpha -= 0.1;
 			if(m.alpha <= 0.01) {
@@ -334,7 +338,7 @@ function updateRecursivelly(o) {
 	o.update();
 	var a = o.children;
 	var arrayLength = a.length;
-	for (var i = arrayLength - 1; i >= 0 && o.parent; i--) {
+	for(var i = arrayLength - 1; i >= 0 && o.parent; i--) {
 		updateRecursivelly(a[i]);
 	}
 }

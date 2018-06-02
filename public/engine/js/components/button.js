@@ -51,27 +51,28 @@ export default class Button extends DSprite {
 	executeOnClick() {
 		if(!Game.disableAllButtons && !game.__EDITORmode) {
 			Button.clickedButton = this;
-			if (this.callback != null) {
+			if(this.callback != null) {
 				this.callback();
 			}
-			if (this.onClick) {
+			if(this.onClick) {
 				game.call(this.onClick, this);
 			}
-			if (this.afterClick) {
+			if(this.afterClick) {
 				game.call(this.afterClick, this);
 			}
 			//Sounder.snd(this.clickSound);
 			Button.clickedButton = null;
 		}
 	}
+	
 	onDown() {
 		if(this.pressImage) {
 			this.image = this.pressImage;
 		} else {
 			this.scale.x =
-			this.scale.y = this.initialScale * 0.9;
+				this.scale.y = this.initialScale * 0.9;
 		}
-
+		
 		Button.downedButton = this;
 		this.executeOnClick();
 	}
@@ -81,7 +82,7 @@ export default class Button extends DSprite {
 			this.image = this.initialImage;
 		} else {
 			this.scale.x =
-			this.scale.y = this.initialScale;
+				this.scale.y = this.initialScale;
 		}
 		Button.downedButton = null;
 	}
@@ -94,10 +95,11 @@ export default class Button extends DSprite {
 			this.rotation = 0.1;
 		}
 	}
+	
 	onOut() {
 		Button.overerdButton = null;
 		this.scale.x =
-		this.scale.y = this.initialScale;
+			this.scale.y = this.initialScale;
 		Button.downedButton = null;
 		if(this.hoverImage) {
 			this.image = this.initialImage;

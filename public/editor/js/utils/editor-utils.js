@@ -18,7 +18,7 @@ R.spinner = () => {
 
 let _iconsCache = {};
 R.icon = (name) => {
-	if (!_iconsCache.hasOwnProperty(name)) {
+	if(!_iconsCache.hasOwnProperty(name)) {
 		_iconsCache[name] = R.img({src: '/editor/img/' + name + '.png'});
 	}
 	return _iconsCache[name];
@@ -30,13 +30,13 @@ R.classIcon = (constructor) => {
 
 R.listItem = (view, item, key, parent) => {
 	var className = 'list-item';
-	if (parent.state.selectedItem === item) {
+	if(parent.state.selectedItem === item) {
 		className += ' item-selected';
 	}
 	
 	return R.div({
 		className: className, key: key, onClick: () => {
-			if (parent.state.selectedItem !== item || parent.reselectAllowed) {
+			if(parent.state.selectedItem !== item || parent.reselectAllowed) {
 				parent.state.selectedItem = item;
 				parent.onSelect(item);
 				parent.forceUpdate();
@@ -48,7 +48,7 @@ R.listItem = (view, item, key, parent) => {
 
 let _debouncings = new Map();
 window.debouncedCall = (f, timeMs = 0) => {
-	if (_debouncings.has(f)) {
+	if(_debouncings.has(f)) {
 		clearTimeout(_debouncings.get(f));
 		_debouncings.delete(f);
 	}
@@ -64,20 +64,20 @@ window.sp = (ev) => {
 }
 
 window.check = (expression, message) => {
-	if (!expression) {
+	if(!expression) {
 		editor.ui.modal.showError(message);
 	}
 }
 
 $(window).on('contextmenu', (ev) => {
 	if(isEventFocusOnInputElement(ev)) return;
-	if ($(ev.target).hasClass('selectable-text')) return;
+	if($(ev.target).hasClass('selectable-text')) return;
 	sp(ev);
 	
 });
 
 $(window).on('keydown', (ev) => {
-	if (ev.key === 'F5') {
+	if(ev.key === 'F5') {
 		/* sp(ev);
 		 editor.reloadAssetsAndClasses();*/
 	}
@@ -101,14 +101,13 @@ $(window).on('keydown', (ev) => {
 	
 });
 
-window.selectText = function (element) {
+window.selectText = function(element) {
 	var selection = window.getSelection();
 	var range = document.createRange();
 	range.selectNodeContents(element);
 	selection.removeAllRanges();
 	selection.addRange(range);
 }
-
 
 
 //======== wrapPropertyWithNumberChecker - make numeric property sensitive for NaN assigning
@@ -118,22 +117,22 @@ var _valStore = new WeakMap();
 
 var _getValStore = (o) => {
 	if(!_valStore.has(o)) {
-		_valStore.set(o,{});
+		_valStore.set(o, {});
 	}
 	return _valStore.get(o);
 }
 
 window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(constructor, propertyName) {
 	
-	if(!_definedProps.has(constructor)){
-		_definedProps.set(constructor,{});
+	if(!_definedProps.has(constructor)) {
+		_definedProps.set(constructor, {});
 	}
 	var o = _definedProps.get(constructor);
 	if(o.hasOwnProperty(propertyName)) return; //wrapped already
 	o[propertyName] = true;
 	
 	
-	var newSetter = function (val) {
+	var newSetter = function(val) {
 		assert(!isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.');
 		originalSetter.call(this, val);
 	};
@@ -147,12 +146,16 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 		//console.log("Own property " + propertyName + " wraped.")
 		var privValue = '__wrapper_store_' + propertyName;
 		
-		originalSetter = function(val){
+		originalSetter = function(val) {
 			_getValStore(this)[privValue] = val;
 		};
-		d = {set:newSetter, get:function(){return _getValStore(this)[privValue];}};
+		d = {
+			set: newSetter, get: function() {
+				return _getValStore(this)[privValue];
+			}
+		};
 	}
-
+	
 	Object.defineProperty(constructor.prototype, propertyName, d);
 }
 
@@ -169,12 +172,11 @@ window.isEventFocusOnInputElement = (ev) => {
 				case 89:
 				case 90:
 					canBePassed = false;
-				break;
+					break;
 				default:
 					canBePassed = true;
 			}
 		}
-		console.dir(ev);
 	}
 	return !canBePassed && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
 }
@@ -187,7 +189,7 @@ window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) 
 		important: important
 	}
 	Object.defineProperty(ret, 'select', {
-		get:() => {
+		get: () => {
 			if(canBeEmpty) {
 				var a = Lib.__texturesList.concat();
 				a[0] = {

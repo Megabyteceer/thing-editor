@@ -16,9 +16,9 @@ class TreeNode extends React.Component {
 	
 	onMouseDown(ev) { // == select nodes
 		var state = __getNodeExtendData(this.props.node);
-		if (!ev.ctrlKey && (state.isSelected || isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
+		if(!ev.ctrlKey && (state.isSelected || isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
 			state.toggled = !state.toggled;
-			if (!state.toggled) {
+			if(!state.toggled) {
 				collapseChildsRecursively(this.props.node);
 			}
 			this.forceUpdate();
@@ -26,15 +26,15 @@ class TreeNode extends React.Component {
 			return;
 		}
 		
-		if (ev.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
+		if(ev.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
 			var p = this.props.node.parent;
 			var i1 = p.getChildIndex(lastClickedItem.props.node);
 			var i2 = p.getChildIndex(this.props.node);
 			var from = Math.min(i1, i2);
 			var to = Math.max(i1, i2);
-			while (from <= to) {
+			while(from <= to) {
 				var n = p.getChildAt(from);
-				if (n !== lastClickedItem.props.node) {
+				if(n !== lastClickedItem.props.node) {
 					editor.selection.select(n, true);
 				}
 				from++;
@@ -43,7 +43,7 @@ class TreeNode extends React.Component {
 			editor.selection.select(this.props.node, ev.ctrlKey);
 		}
 		
-		if (state.isSelected) {
+		if(state.isSelected) {
 			lastClickedItem = this;
 		}
 		if(document.activeElement) {
@@ -57,8 +57,8 @@ class TreeNode extends React.Component {
 		var state = __getNodeExtendData(node);
 		var childs;
 		var caret;
-		if (nodeHasChildren(node)) {
-			if (state.toggled) {
+		if(nodeHasChildren(node)) {
+			if(state.toggled) {
 				caret = caretOpened;
 				childs = R.div({className: 'tree-childs'},
 					node.children.map(R.renderSceneNode)
@@ -69,19 +69,24 @@ class TreeNode extends React.Component {
 		}
 		var className = 'list-item';
 		
-		if (state.isSelected) {
+		if(state.isSelected) {
 			className += ' item-selected';
 		}
 		var icon = R.classIcon(node.constructor);
 		
 		var style;
 		if(this, node.children.length > 6) {
-			var p = node.children.length/2;
+			var p = node.children.length / 2;
 			style = {
 				paddingTop: p,
 				paddingBottom: p
 			};
 		}
+		
+		if(__getNodeExtendData(node).hidden) {
+			style = {display: 'none'};
+		}
+		
 		return R.fragment(R.div({
 			className,
 			style,
@@ -101,7 +106,7 @@ function isClickedAtRightEdge(ev) {
 
 function collapseChildsRecursively(node) {
 	__getNodeExtendData(node).toggled = false;
-	if (node.hasOwnProperty('children')) {
+	if(node.hasOwnProperty('children')) {
 		node.children.some(collapseChildsRecursively);
 	}
 }

@@ -14,6 +14,7 @@ import PrefabsList from "./ui/prefabs-list.js";
 import Signal from "./utils/signal.js";
 import Lib from "../../engine/js/lib.js";
 import build from "./utils/build.js";
+import Pool from "/engine/js/utils/pool.js";
 
 export default class Editor {
 	
@@ -76,19 +77,19 @@ export default class Editor {
 	}
 	
 	async openProject(dir) {
-		
+		editor.ui.viewport.stopExecution();
 		await askSceneToSaveIfNeed();
 		
-		if (!dir) {
+		if(!dir) {
 			dir = editor.settings.getItem('last-opened-project');
 		}
-		if (!dir) {
+		if(!dir) {
 			this.fs.chooseProject(true);
-		} else if (dir !== editor.currentProjectDir) {
+		} else if(dir !== editor.currentProjectDir) {
 			var data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
-			
+			game.__clearStage();
+			Pool.clearAll();
 			await this.fs.refreshFiles();
-			
 			editor.currentProjectDir = dir;
 			editor.settings.setItem('last-opened-project', dir);
 			this.fs.gameFolder = '/games/' + dir + '/';
@@ -98,17 +99,17 @@ export default class Editor {
 			await editor.reloadAssetsAndClasses();
 			await Promise.all([ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList()]);
 			
-			if (Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
+			if(Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showQuestion("Scene's backup restoring",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 						R.div(null, "Do you want to restore scene from backup?")),
-					async () => {
+					async() => {
 						await this.openSceneSafe(editor.runningSceneLibSaveSlotName, editor.projectDesc.lastSceneName);
 						editor.history.currentState._isModified = true;
 						
 					}, 'Restore backup',
-					async () => {
+					async() => {
 						await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
 						Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
 					}, 'Delete backup',
@@ -162,18 +163,19 @@ export default class Editor {
 		this.ui.sceneTree.forceUpdate();
 		this.refreshPropsEditor();
 	}
-
+	
 	reloadClasses() {
 		this.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
 		var needRepairScene = game.currentScene != null;
-		if (needRepairScene) {
+		if(needRepairScene) {
 			this.saveCurrentScene(editor.runningSceneLibSaveSlotName);
 			var selectionData = editor.selection.saveSelection();
 		}
+		Lib.__clearTexturesList();
 		
 		return ClassesLoader.reloadClasses().then(() => {
-			if (needRepairScene) {
+			if(needRepairScene) {
 				this.loadScene(editor.runningSceneLibSaveSlotName);
 				editor.selection.loadSelection(selectionData);
 			}
@@ -192,7 +194,7 @@ export default class Editor {
 	}
 	
 	attachToSelected(o, doNotSelect) {
-		if (this.selection.length > 0) {
+		if(this.selection.length > 0) {
 			addTo(this.selection[0], o, doNotSelect);
 		} else {
 			this.addToScene(o, doNotSelect);
@@ -207,23 +209,23 @@ export default class Editor {
 	 * set property value received from property editor
 	 */
 	onSelectedPropsChange(field, val, delta) {
-		if (this.selection.length > 0) {
-			if (typeof field === 'string') {
+		if(this.selection.length > 0) {
+			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
 			var changed = false;
 			
 			this.beforePropertyChanged.emit(field.name);
 			
-			if (delta === true) {
+			if(delta === true) {
 				assert(field.type === Number);
-				for (let o of this.selection) {
+				for(let o of this.selection) {
 					var v = o[field.name];
 					var newVal = v + val;
-					if (field.hasOwnProperty('min')) {
+					if(field.hasOwnProperty('min')) {
 						newVal = Math.max(field.min, newVal);
 					}
-					if (field.hasOwnProperty('max')) {
+					if(field.hasOwnProperty('max')) {
 						newVal = Math.min(field.max, newVal);
 					}
 					if(v !== newVal) {
@@ -232,8 +234,8 @@ export default class Editor {
 					}
 				}
 			} else {
-				for (let o of this.selection) {
-					if (o[field.name] != val) {
+				for(let o of this.selection) {
+					if(o[field.name] != val) {
 						o[field.name] = val;
 						changed = true;
 					}
@@ -242,7 +244,7 @@ export default class Editor {
 			
 			this.afterPropertyChanged.emit(field.name);
 			
-			if (changed) {
+			if(changed) {
 				this.refreshTreeViewAndPropertyEditor();
 				editor.sceneModified();
 			}
@@ -264,16 +266,16 @@ export default class Editor {
 	
 	loadScene(name) {
 		assert(name, 'name should be defined');
-		if (game.currentScene) {
+		if(game.currentScene) {
 			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
 		idCounter = 0;
 		game.showScene(name);
-		if (game.currentScene) {
+		if(game.currentScene) {
 			this.selection.loadSelection(selectionsForScenesByName[name]);
 		}
 		
-		if (name === editor.runningSceneLibSaveSlotName) {
+		if(name === editor.runningSceneLibSaveSlotName) {
 			Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
 		}
 		this.refreshTreeViewAndPropertyEditor();
@@ -284,19 +286,19 @@ export default class Editor {
 	}
 	
 	sceneModified(saveImmidiatly) {
-		if (game.__EDITORmode) {
+		if(game.__EDITORmode) {
 			needHistorySave = true;
 			if(saveImmidiatly === true) {
-			    tryToSaveHistory();
-            }
+				tryToSaveHistory();
+			}
 		}
 	}
-
+	
 	exitPrefabMode() {
-        if(editor.ui.prefabsList) {
-	        PrefabsList.acceptPrefabEdition();
-        }
-    }
+		if(editor.ui.prefabsList) {
+			PrefabsList.acceptPrefabEdition();
+		}
+	}
 	
 	get isCurrentSceneModified() {
 		return history.isStateModified;
@@ -309,9 +311,9 @@ export default class Editor {
 		}
 		assert(name, "Name can't be empty");
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
-		if (editor.isCurrentSceneModified || (editor.currentSceneName !== name)) {
+		if(editor.isCurrentSceneModified || (editor.currentSceneName !== name)) {
 			Lib.__saveScene(game.currentScene, name);
-			if (!ScenesList.isSpecialSceneName(name)) {
+			if(!ScenesList.isSpecialSceneName(name)) {
 				history.setCurrentStateUnmodified();
 				saveCurrentSceneName(name);
 			}
@@ -324,8 +326,8 @@ export default class Editor {
 }
 
 function askSceneToSaveIfNeed(skip) {
-    editor.exitPrefabMode();
-	if (!skip && editor.isCurrentSceneModified) {
+	editor.exitPrefabMode();
+	if(!skip && editor.isCurrentSceneModified) {
 		return new Promise((resolve) => {
 			
 			editor.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
@@ -345,7 +347,7 @@ function askSceneToSaveIfNeed(skip) {
 }
 
 function saveCurrentSceneName(name) {
-	if (editor.projectDesc.lastSceneName != name) {
+	if(editor.projectDesc.lastSceneName != name) {
 		editor.projectDesc.lastSceneName = name;
 		editor.saveProjecrDesc();
 		editor.ui.forceUpdate();
@@ -368,7 +370,7 @@ var selectionsForScenesByName = {};
 
 var needHistorySave = false;
 var tryToSaveHistory = () => {
-	if (needHistorySave) {
+	if(needHistorySave) {
 		history.addHistoryState();
 		needHistorySave = false;
 	}
@@ -380,13 +382,13 @@ $(window).on('keyup', tryToSaveHistory);
 var idCounter = 0;
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
-	if (!editorNodeData.has(node)) {
+	if(!editorNodeData.has(node)) {
 		editorNodeData.set(node, {id: idCounter++});
 	}
 	return editorNodeData.get(node);
 };
 window.__resetNodeExtendData = (node) => {
-	if (editorNodeData.has(node)) {
+	if(editorNodeData.has(node)) {
 		if(editorNodeData.get(node).isSelected) {
 			editor.selection.remove(node);
 		}

@@ -10,7 +10,7 @@ const textureFiler = /^img\/.*\.(png|jpg)$/gm;
 const textureNameCleaner = /^img\//gm;
 
 const enumAssets = () => {
-	
+	Lib.__clearTexturesList();
 	var tmp = new Map();
 	var a = game.pixiApp.stage.findChildrenByType(PIXI.Sprite);
 	a.some((s) => {
@@ -23,7 +23,7 @@ const enumAssets = () => {
 	for(let k of Lib.__texturesList) { //TODO: clear changed only
 		var t = Lib.getTexture(k.name);
 		if(t.textureCacheIds.length > 0) {
-			for (let id of t.textureCacheIds) {
+			for(let id of t.textureCacheIds) {
 				delete(PIXI.utils.TextureCache[id]);
 			}
 			t.destroy(true);

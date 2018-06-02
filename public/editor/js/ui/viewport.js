@@ -6,11 +6,13 @@ const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
 const PAUSE_ICON = R.icon('pause');
 var selectionData;
-var prefabTitleProps = {className:'prefabs-mode-title'};
-var prefabLabelProps = {className: 'selectable-text', onMouseDown: function (ev) {
-	selectText(ev.target);
-	sp(ev);
-}};
+var prefabTitleProps = {className: 'prefabs-mode-title'};
+var prefabLabelProps = {
+	className: 'selectable-text', onMouseDown: function(ev) {
+		selectText(ev.target);
+		sp(ev);
+	}
+};
 
 var stoppingExecutionTime;
 var playTogglingTime;
@@ -34,7 +36,7 @@ export default class Viewport extends React.Component {
 	stopExecution() {
 		if(!stoppingExecutionTime) {
 			stoppingExecutionTime = true;
-			if (!game.__EDITORmode) {
+			if(!game.__EDITORmode) {
 				this.onTogglePlay();
 			}
 			stoppingExecutionTime = false;
@@ -63,9 +65,8 @@ export default class Viewport extends React.Component {
 					game.__EDITORmode = true;
 					recoveryCheckingTime = false;
 				}
-			},0);
+			}, 0);
 		}
-		
 	}
 	
 	onTogglePlay() {
@@ -78,10 +79,10 @@ export default class Viewport extends React.Component {
 			var play = game.__EDITORmode;
 			this.beforePlayStopToggle.emit(play);
 			Lib.__clearStaticScenes();
-			if (play) { // launch game
+			if(play) { // launch game
 				problemOnGameStart = true;
 				editor.tryToSaveHistory();
-
+				
 				savedBackupName = editor.runningSceneLibSaveSlotName;
 				if(!editor.isCurrentSceneModified) {
 					savedBackupName += '-unmodified';
@@ -96,9 +97,7 @@ export default class Viewport extends React.Component {
 			} else { //stop game
 				
 				problemOnGameStop = true;
-				game.__cleanupBeforeToggleStop();
-				game.currentScene.remove();
-				game.currentScene = null;
+				game.__clearStage();
 				game.__EDITORmode = true;
 				restorePrestartBackup();
 				problemOnGameStop = false;
@@ -122,30 +121,30 @@ export default class Viewport extends React.Component {
 		game.__doOneStep = true;
 		this.forceUpdate();
 	}
-
-    setPrefabMode(enabled) {
-	    this.setState({prefabMode:enabled});
-    }
 	
-    onReloadClassesClick() {
+	setPrefabMode(enabled) {
+		this.setState({prefabMode: enabled});
+	}
+	
+	onReloadClassesClick() {
 		editor.fs.refreshFiles().then(editor.reloadClasses);
-    }
+	}
 	
 	onReloadAssetsClick() {
 		editor.fs.refreshFiles().then(editor.reloadAssets);
 	}
-    
+	
 	render() {
-
-        var className = 'editor-viewport-wrapper';
+		
+		var className = 'editor-viewport-wrapper';
 		var statusHeader;
-        var panel;
-	    if(this.state.prefabMode) {
-		    className += ' editor-viewport-wrapper-prefab-mode';
-            panel = R.span( null,
-                R.div(prefabTitleProps, 'Prefab edition mode: ', R.br(), R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
-	            R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes', 'main-btn'),
-                R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes'),
+		var panel;
+		if(this.state.prefabMode) {
+			className += ' editor-viewport-wrapper-prefab-mode';
+			panel = R.span(null,
+				R.div(prefabTitleProps, 'Prefab edition mode: ', R.br(), R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
+				R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes', 'main-btn'),
+				R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes'),
 				'BG color:',
 				R.input({
 					onChange: (ev) => {
@@ -155,30 +154,30 @@ export default class Viewport extends React.Component {
 					type: 'color',
 					defaultValue: '#' + editor.overlay.getBGcolor().toString(16).padStart(6, '0')
 				})
-            )
-        } else {
-	    	var pauseResumeBtn, oneStepBtn;
-	    	if(window.game && !game.__EDITORmode) {
-			    pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, undefined, 'big-btn');
-			    if(game.__paused) {
-				    statusHeader = 'paused';
-			    	oneStepBtn = R.btn('One step', this.onOneStepClick);
-			    } else {
-				    statusHeader = 'running';
-			    }
-		    }
-	    	
-	        panel = R.span( undefined,
-	            R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'big-btn', 1032),
-                R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Rebuild game sources', 'big-btn'),
-                R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
-		        statusHeader,
-		        pauseResumeBtn,
-		        oneStepBtn
-            )
-        }
-
-
+			)
+		} else {
+			var pauseResumeBtn, oneStepBtn;
+			if(window.game && !game.__EDITORmode) {
+				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, undefined, 'big-btn');
+				if(game.__paused) {
+					statusHeader = 'paused';
+					oneStepBtn = R.btn('One step', this.onOneStepClick);
+				} else {
+					statusHeader = 'running';
+				}
+			}
+			
+			panel = R.span(undefined,
+				R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Space)', 'big-btn', 1032),
+				R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Rebuild game sources', 'big-btn'),
+				R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
+				statusHeader,
+				pauseResumeBtn,
+				oneStepBtn
+			)
+		}
+		
+		
 		return R.div({className},
 			R.div({className: 'editor-viewport-panel'},
 				panel

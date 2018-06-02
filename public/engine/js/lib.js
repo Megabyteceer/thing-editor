@@ -11,6 +11,7 @@ var noCacheCounter = 0;
 
 var constructorProcessor = (o) => {
 	o.init();
+	__getNodeExtendData(o).constructorCalled = true;
 }
 
 var constructRecursive = (o) => {
@@ -19,7 +20,7 @@ var constructRecursive = (o) => {
 	
 	var a = o.children;
 	var arrayLength = a.length;
-	for (var i = 0; i < arrayLength; i++) {
+	for(var i = 0; i < arrayLength; i++) {
 		constructRecursive(a[i]);
 	}
 }
@@ -55,18 +56,23 @@ class Lib {
 	static addTexture(name, texture) {
 		/// #if EDITOR
 		if(!textures.hasOwnProperty(name)) {
-			Lib.__texturesList.push({name, value:name});
+			Lib.__texturesList.push({name, value: name});
 		}
 		/// #endif
 		
 		if(typeof texture === 'string') {
 			/// #if EDITOR
-			texture +=  '?noCahce=' + noCacheCounter++
+			texture += '?noCahce=' + noCacheCounter++
 			/// #endif
 			textures[name] = PIXI.Texture.fromImage(texture);
 		} else {
 			textures[name] = texture;
 		}
+	}
+	
+	static __clearTexturesList() {
+		textures = {};
+		Lib.__texturesList = [];
 	}
 	
 	static _loadClassInstanceById(id) {
@@ -107,11 +113,18 @@ class Lib {
 	}
 	
 	static destroyObjectAndChildrens(o) {
-		o.onRemove();
+/// #if EDITOR
+		if(__getNodeExtendData(o).constructorCalled) {
+/// #endif
+			o.onRemove();
+/// #if EDITOR
+		}
+/// #endif
+		
 		o.detachFromParent();
-		if (o.children) {
+		if(o.children) {
 			while(o.children.length > 0) {
-				Lib.destroyObjectAndChildrens(o.getChildAt(o.children.length-1));
+				Lib.destroyObjectAndChildrens(o.getChildAt(o.children.length - 1));
 			}
 		}
 		Pool.dispose(o);
@@ -125,14 +138,14 @@ class Lib {
 		assert(defaults.hasOwnProperty(src.c), 'Class with id ' + src.c + ' has no default values set');
 		var ret = Pool.create(classes[src.c]);
 		Object.assign(ret, defaults[src.c], src.p);
-		if (src.hasOwnProperty(':')) {
+		if(src.hasOwnProperty(':')) {
 			src[':'].some((src) => {
 				ret.addChild(Lib._deserializeObject(src));
 			});
 		}
 		return ret;
 	}
-
+	
 	static loadScene(name) {
 		if(!game.__EDITORmode && staticScenes.hasOwnProperty(name)) {
 			return staticScenes[name];
@@ -160,14 +173,14 @@ class Lib {
 		return scenes.hasOwnProperty(name);
 	}
 
-//EDOTOR
+/// #if EDITOR
 	static __saveScene(scene, name, returnOnly) {
 		if(name.indexOf(editor.editorFilesPrefix) !== 0) {
 			scene.name = name;
 		}
 		
 		assert(typeof name === 'string');
-		if (!scene) {
+		if(!scene) {
 			assert(name === editor.editorFilesPrefix + 'tmp', 'Only temporary scene can be null');
 			scenes[name] = undefined;
 		} else {
@@ -190,8 +203,8 @@ class Lib {
 	}
 	
 	static __getNameByPrefab(prefab) {
-		for (var name in prefabs) {
-			if (prefabs[name] === prefab) {
+		for(var name in prefabs) {
+			if(prefabs[name] === prefab) {
 				return name;
 			}
 		}
@@ -218,7 +231,7 @@ class Lib {
 		return prefabs;
 	}
 	
-	static  __clearStaticScenes() {
+	static __clearStaticScenes() {
 		staticScenes = {};
 	}
 	
@@ -226,9 +239,9 @@ class Lib {
 		var props = {};
 		var propsList = editor.enumObjectsProperties(o);
 		propsList.some((p) => {
-			if (!p.notSeriazable) {
+			if(!p.notSeriazable) {
 				var val = o[p.name];
-				if ((val != p.default) && (typeof val != 'undefined') && (val !== null)) {
+				if((val != p.default) && (typeof val != 'undefined') && (val !== null)) {
 					props[p.name] = val;
 				}
 			}
@@ -238,11 +251,12 @@ class Lib {
 			c: o.constructor.name,
 			p: props
 		}
-		if (o.children && o.children.length > 0) {
-			ret[':'] = o.children.map(Lib.__serializeObject);
+		if(o.children && o.children.length > 0) {
+			ret[':'] = o.children.filter(__isSerializableObject).map(Lib.__serializeObject);
 		}
 		return ret;
 	}
+
 /// #endif
 
 }
@@ -258,6 +272,11 @@ const _loadObjectFromData = (src) => {
 /// #if EDITOR
 Lib.__texturesList = [];
 Lib.__constructRecursive = constructRecursive;
+
+const __isSerializableObject = (o) => {
+	return !__getNodeExtendData(o).hidden;
+}
+
 /// #endif
 
 export default Lib;
