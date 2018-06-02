@@ -6,19 +6,19 @@ PIXI.DisplayObject.prototype.getGlobalRotation = function getGlobalRotation() {
 		p = p.parent;
 	}
 	return ret;
-}
+};
 
 PIXI.DisplayObject.prototype.detachFromParent = function () {
 	if(this.parent) {
 		this.parent.removeChild(this);
 	}
-}
+};
 
 PIXI.DisplayObject.prototype.onRemove = () => {};
 
 PIXI.DisplayObject.prototype.remove = function () {
 	Lib.destroyObjectAndChildrens(this);
-}
+};
 
 PIXI.DisplayObject.prototype.findChildrenByType = function (classType) {
 	var ret = [];
@@ -40,7 +40,7 @@ PIXI.DisplayObject.prototype.findChildrenByType = function (classType) {
 		}
 	}
 	return ret;
-}
+};
 
 PIXI.DisplayObject.prototype.findChildByName = function (name) {
 	assert(name, 'Empty name received.');
@@ -67,7 +67,7 @@ PIXI.DisplayObject.prototype.findChildByName = function (name) {
 		}
 	}
 	return null;
-}
+};
 
 export default PIXI.DisplayObject;
 

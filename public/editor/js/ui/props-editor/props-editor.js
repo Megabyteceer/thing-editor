@@ -3,13 +3,13 @@ import Group from '../group.js';
 
 var editorProps = {
 	className: 'props-editor'
-}
+};
 var headerProps = {
 	className: 'props-header'
-}
+};
 var headerTextProps = {
 	className: 'mid-text-align'
-}
+};
 
 class PropsEditor extends React.Component {
 	
@@ -27,7 +27,7 @@ class PropsEditor extends React.Component {
 			}
 		}
 		
-		editor.ui.modal.showListChoose('Choose new class for ', classesList.map(i => i.c)).then((selectedClass) => {
+		editor.ui.modal.showListChoose(title, classesList.map(i => i.c)).then((selectedClass) => {
 			if(selectedClass && (editor.selection[0].constructor !== selectedClass)) {
 				var a = editor.selection.slice(0);
 				var selectionData = editor.selection.saveSelection();
@@ -79,7 +79,7 @@ class PropsEditor extends React.Component {
 				var name = p.name;
 				propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
 			});
-		})
+		});
 		props = props.filter((p) => {
 			return propsFilter[p.name] === editor.selection.length;
 		});
@@ -100,6 +100,7 @@ class PropsEditor extends React.Component {
 			}
 			
 		});
+		assert(curGroup, "Properties list started not with splitter.");
 		groups.push(curGroup);
 		return R.div(editorProps, header, groups);
 	}

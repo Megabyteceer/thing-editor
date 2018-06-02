@@ -188,10 +188,10 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 		var script = document.createElement('script');
 		editor.ui.modal.showSpinner();
-		script.onerror = function (er) {
+		script.onerror = function () {
 			editor.ui.modal.hideSpinner();
-		}
-		script.onload = function (ev) {
+		};
+		script.onload = function () {
 			
 			editor.ui.modal.hideSpinner();
 			head.removeChild(script);

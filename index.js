@@ -1,9 +1,9 @@
 const log = console.log;
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 const fs = require('fs');
-const path = require('path')
-const express = require('express')
-const app = express()
+const path = require('path');
+const express = require('express');
+const app = express();
 
 const build = require('./scripts/build.js');
 
@@ -13,7 +13,7 @@ var currentGameRoot;
 var PORT = 32023;
 var gamesRoot = __dirname + '/public/games/';
 var clientGamesRoot = '/games/';
-var jsonParser = bodyParser.json()
+var jsonParser = bodyParser.json();
 
 // File System acess commands
 
@@ -32,7 +32,7 @@ app.get('/fs/openProject', function (req, res) {
 var pathFixerExp = /\\/g;
 var pathFixer = (fn) => {
     return fn.replace(pathFixerExp, '/');
-}
+};
 
 app.get('/fs/enum', function (req, res) {
 	if(!currentGame) throw 'No game opened';
@@ -102,7 +102,7 @@ const walkSync = (dir, filelist = []) => {
 
   });
   return filelist;
-}
+};
 
 //============= enum projects ===========================
 const enumProjects = () => {
@@ -120,7 +120,7 @@ const enumProjects = () => {
 		}
 	});
 	return ret;
-}
+};
 
 //=============== create folder for file ==================
 function ensureDirectoryExistence(filePath) {

@@ -176,6 +176,6 @@ PIXI.Text.EDITOR_editableProps = [
 		name: 'style.letterSpacing',
 		type: Number
 	}
-]
+];
 
 /// #endif

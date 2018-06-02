@@ -18,7 +18,7 @@ PIXI.Container.prototype.gotoLabelRecursive = function (labelName) {
 		gotoLabelAndPlay(this);
 	}
 	this.findChildrenByType(MovieClip).some(gotoLabelAndPlay);
-}
+};
 
 export default PIXI.Container;
 

@@ -11,7 +11,7 @@ export default class SceneLinkedRequest extends Container {
 /// #endif
 	
 	fetch(url, options) {
-		assert(this.parent, "Please attach request to scene or display object before fetch.")
+		assert(this.parent, "Please attach request to scene or display object before fetch.");
 		this.waitUrlToRequest = url;
 		this.options = options;
 		return new Promise((resolve, reject) => {
@@ -36,7 +36,7 @@ export default class SceneLinkedRequest extends Container {
 				if(this.requestId === requestId) {
 					this.error = error;
 				}
-			})
+			});
 			this.waitUrlToRequest = null;
 			this.options = null;
 		} else if(this.error) {

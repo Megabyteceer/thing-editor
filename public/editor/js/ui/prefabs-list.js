@@ -6,7 +6,7 @@ const prefabFileFiler = /^prefabs\/.*\.prefab.json$/gm;
 const prefabExtRemover = /.prefab.json$/gm;
 const fileNameToPrefabName = (fn) => {
 	return fn.replace('prefabs/', '').replace(prefabExtRemover, '');
-}
+};
 
 const prefabNameFilter = /[^a-z\-\/0-9]/g;
 
@@ -19,7 +19,7 @@ var prefabNameProps = {
 
 const prefabNameToFileName = (name) => {
 	return 'prefabs/' + name + '.prefab.json';
-}
+};
 
 export default class PrefabsList extends React.Component {
 	
@@ -103,7 +103,7 @@ export default class PrefabsList extends React.Component {
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);
 			editor.ui.viewport.setPrefabMode(name);
-			editor.history.clearHistory(item);
+			editor.history.clearHistory();
 			previewShown = name;
 		}
 	}

@@ -9,14 +9,14 @@ var staticScenes = {};
 
 var noCacheCounter = 0;
 
-var constructorProcessor = (o) => {
-	o.init();
-	__getNodeExtendData(o).constructorCalled = true;
-}
-
 var constructRecursive = (o) => {
 	assert(!game.__EDITORmode, "initialization attempt in editing mode.");
-	constructorProcessor(o);
+	
+	o.init();
+	
+	///#if EDITOR
+	__getNodeExtendData(o).constructorCalled = true;
+	///#endif
 	
 	var a = o.children;
 	var arrayLength = a.length;

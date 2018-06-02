@@ -75,7 +75,7 @@ class TreeNode extends React.Component {
 		var icon = R.classIcon(node.constructor);
 		
 		var style;
-		if(this, node.children.length > 6) {
+		if(node.children.length > 6) {
 			var p = node.children.length / 2;
 			style = {
 				paddingTop: p,

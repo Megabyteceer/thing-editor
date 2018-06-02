@@ -1,6 +1,5 @@
 import MovieClip from "../../../../../engine/js/components/movie-clip/movie-clip.js";
 import FieldsTimeline from "./timeline-field.js";
-import SelectEditor from '../select-editor.js';
 
 const FRAMES_STEP = 3;
 
@@ -38,14 +37,14 @@ export default class Timeline extends React.Component {
 	
 	componentDidMount() {
 		timelineElement = $('.timeline')[0];
-		editor.ui.viewport.beforePlayStopToggle.add(this.onPlayStopToggle)
+		editor.ui.viewport.beforePlayStopToggle.add(this.onPlayStopToggle);
 		editor.beforePropertyChanged.add(this.onBeforePropertyChanged);
 		editor.afterPropertyChanged.add(this.onAfterPropertyChanged);
 	}
 	
 	componentWillUnmount() {
 		timelineElement = null;
-		editor.ui.viewport.beforePlayStopToggle.remove(this.onPlayStopToggle)
+		editor.ui.viewport.beforePlayStopToggle.remove(this.onPlayStopToggle);
 		editor.beforePropertyChanged.remove(this.onBeforePropertyChanged);
 		editor.afterPropertyChanged.remove(this.onAfterPropertyChanged);
 		removeAffectFromUnselected(true);
@@ -182,7 +181,7 @@ function getFieldByNameOrCreate(o, name) {
 		field = {
 			n:name,
 			t:[]
-		}
+		};
 		o._timelineData.f.push(field);
 	}
 	return field;
@@ -269,7 +268,7 @@ Timeline.renormalizeFieldTimelineDataAfterChange = renormalizeFieldTimelineDataA
 
 const sortFieldsByTime = (a, b) => {
 	return a.t - b.t;
-}
+};
 
 
 const renderObjectsTimeline = (node) => {
@@ -279,7 +278,7 @@ const renderObjectsTimeline = (node) => {
 	} else {
 		return R.div({key});
 	}
-}
+};
 
 function renormalizeLabel(label, timelineData) { //re find keyframes for modified label
 	label.n = timelineData.f.map((fieldTimeline) => {
@@ -314,8 +313,8 @@ class ObjectsTimeline extends React.Component {
 		
 		var labelsNames = Object.keys(tl.l);
 		var labelsPanel = R.div({
-				onMouseDown:(ev) => { //create new label by double click
-					if(ev.buttons == 2) {
+				onMouseDown:(ev) => { //create new label by right click
+					if(ev.buttons === 2) {
 						var time = mouseTimelineTime;
 						askForLabelName(labelsNames, "Create new label:").then((name) => {
 							if(name) {
@@ -427,7 +426,6 @@ var mouseTimelineTime = 0;
 
 function onTimelineMouseDown(ev) {
 	var b = Timeline.getTimelineWindowBounds();
-	var tl = Timeline.getTimelineElement();
 	if((ev.clientX - b.x) < b.width && (ev.clientY - b.y) < b.height) {
 		if($(ev.target).hasClass('timeline-keyframe')) {
 			draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;

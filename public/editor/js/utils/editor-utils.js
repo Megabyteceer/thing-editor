@@ -1,5 +1,8 @@
 "use strict";
 
+window.W = 1280;
+window.H = 720;
+
 var factories = {};
 window.R = factories;
 
@@ -9,12 +12,12 @@ window.R = factories;
 
 R.fragment = function(...theArgs) {
 	return React.createElement(React.Fragment, null, ...theArgs);
-}
+};
 
 R.spinner = () => {
 	return R.div(null, 'Loading...'
 	);
-}
+};
 
 let _iconsCache = {};
 R.icon = (name) => {
@@ -22,11 +25,11 @@ R.icon = (name) => {
 		_iconsCache[name] = R.img({src: '/editor/img/' + name + '.png'});
 	}
 	return _iconsCache[name];
-}
+};
 
 R.classIcon = (constructor) => {
 	return R.icon(constructor.EDITOR_icon);
-}
+};
 
 R.listItem = (view, item, key, parent) => {
 	var className = 'list-item';
@@ -43,7 +46,7 @@ R.listItem = (view, item, key, parent) => {
 			}
 		}
 	}, view);
-}
+};
 
 
 let _debouncings = new Map();
@@ -56,18 +59,18 @@ window.debouncedCall = (f, timeMs = 0) => {
 		_debouncings.delete(f);
 		f();
 	}, timeMs));
-}
+};
 
 window.sp = (ev) => {
 	ev.stopPropagation();
 	ev.preventDefault();
-}
+};
 
 window.check = (expression, message) => {
 	if(!expression) {
 		editor.ui.modal.showError(message);
 	}
-}
+};
 
 $(window).on('contextmenu', (ev) => {
 	if(isEventFocusOnInputElement(ev)) return;
@@ -107,7 +110,7 @@ window.selectText = function(element) {
 	range.selectNodeContents(element);
 	selection.removeAllRanges();
 	selection.addRange(range);
-}
+};
 
 
 //======== wrapPropertyWithNumberChecker - make numeric property sensitive for NaN assigning
@@ -120,7 +123,7 @@ var _getValStore = (o) => {
 		_valStore.set(o, {});
 	}
 	return _valStore.get(o);
-}
+};
 
 window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(constructor, propertyName) {
 	
@@ -157,7 +160,7 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	}
 	
 	Object.defineProperty(constructor.prototype, propertyName, d);
-}
+};
 
 window.isEventFocusOnInputElement = (ev) => {
 	var tag = ev.target.tagName;
@@ -179,7 +182,20 @@ window.isEventFocusOnInputElement = (ev) => {
 		}
 	}
 	return !canBePassed && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
-}
+};
+
+window.assert = (expression, message, dontBreakFlow) => {
+	message = 'Assert: ' + message;
+	if (!expression) {
+		debugger;
+		if (window.editor) {
+			editor.ui.modal.showError(message);
+		}
+		if (!dontBreakFlow) {
+			throw message;
+		}
+	}
+};
 
 window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) => {
 	var ret = {
@@ -187,7 +203,7 @@ window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) 
 		type: String,
 		default: canBeEmpty ? '' : 'EMPTY',
 		important: important
-	}
+	};
 	Object.defineProperty(ret, 'select', {
 		get: () => {
 			if(canBeEmpty) {
@@ -203,6 +219,6 @@ window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) 
 		}
 	});
 	return ret;
-}
+};
 
 export default null;

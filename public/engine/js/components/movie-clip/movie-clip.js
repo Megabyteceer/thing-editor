@@ -60,7 +60,7 @@ export default class MovieClip extends DSprite {
 				p: tl.p,
 				d: tl.d,
 				f: fields
-			}
+			};
 			serializeCache.set(this._timelineData, c);
 		}
 		return serializeCache.get(this._timelineData);
@@ -73,7 +73,7 @@ export default class MovieClip extends DSprite {
 /// #endif
 
 	static _findNextKeyframe (timeLineData, time) {
-		var ret = timeLineData[0];
+		var ret;
 		for(let f of timeLineData) {
 			if(f.t > time) {
 				return f;
@@ -130,7 +130,7 @@ export default class MovieClip extends DSprite {
 /// #endif
 		) {
 			var desData = MovieClip._deserializeTimelineData(data);
-			deserializeCache.set(data, desData)
+			deserializeCache.set(data, desData);
 /// #if EDITOR
 			serializeCache.set(desData, data);
 /// #endif
@@ -183,13 +183,13 @@ export default class MovieClip extends DSprite {
 	}
 	
 	playRecursive() {
-		for (var c in this.findChildrenByType(MovieClip)) {
+		for (var c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = true;
 		}
 	}
 	
 	stopRecursive() {
-		for (var c in this.findChildrenByType(MovieClip)) {
+		for (var c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = false;
 		}
 	}

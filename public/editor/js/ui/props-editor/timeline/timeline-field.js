@@ -14,14 +14,14 @@ const keyframesClasses = [
 	'timeline-keyframe-discrete',
 	'timeline-keyframe-jump-floor',
 	'timeline-keyframe-jump-roof'
-]
+];
 
 var fieldLabelTimelineProps = {className: 'objects-timeline-labels', onMouseDown:sp, onMouseMove:sp};
 
 var _scale, _shift;
 const scale = (val) => {
 	return (_shift - val) * _scale;
-}
+};
 
 export default class FieldsTimeline extends React.Component {
 	
@@ -215,7 +215,7 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	gotoLabel(direction) {
-		var field = this.props.field
+		var field = this.props.field;
 		var currentTime = Timeline.timeline.getTime();
 		var currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		
@@ -244,7 +244,7 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	onToggleKeyframeClick(time) {
-		var field = this.props.field
+		var field = this.props.field;
 		var currentTime = time || Timeline.timeline.getTime();
 		var currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		if(currentKeyframe.t !== currentTime) {
@@ -330,7 +330,7 @@ const calculateCacheSegmentForField = (fieldPlayer, c) => {
 		assert(i++ < 100000, 'Timeline values cache calculation looped and failed.');
 	}
 	fieldPlayer.__dontCallActions = false;
-}
+};
 
 
 var selectedKeyframe, selectedTimeline;
@@ -512,7 +512,7 @@ const presets = [
 		d:0.98,
 		p:0.002
 	}}
-]
+];
 
 function isKeyframeSelected(kf) {
 	return selectedKeyframe === kf;

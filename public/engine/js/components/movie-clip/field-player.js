@@ -119,22 +119,5 @@ export default class FieldPlayer {
 		this.target[this.fieldName] = this.val;
 	}
 	
-	/// #if EDITOR
-	__getValueForPreview(time) {
-		this.reset();
-		while (time > 0) {
-			this.update();
-			time--;
-		}
-		return this.val;
-	}
-	
-	__serializeTimeline() {
-		var keyframes = [];
-		return {
-			
-		}
-	}
-	
-	/// #endif
+
 }

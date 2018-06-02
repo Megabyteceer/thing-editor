@@ -148,7 +148,7 @@ DSprite.EDITOR_editableProps = [
 	}
 ];
 
-DSprite.EDITOR_icon = 'tree/dsprite'
-PIXI.Sprite.EDITOR_icon = 'tree/sprite'
+DSprite.EDITOR_icon = 'tree/dsprite';
+PIXI.Sprite.EDITOR_icon = 'tree/sprite';
 
 /// #endif

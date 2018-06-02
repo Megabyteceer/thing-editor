@@ -78,7 +78,7 @@ var getPathOfNode = (node) => {
 		node = node.parent;
 	}
 	return ret;
-}
+};
 
 var selectNodeByPath = (path, nodeNum) => {
 	var ret = game.stage;
@@ -90,7 +90,7 @@ var selectNodeByPath = (path, nodeNum) => {
 	} else {
 		editor.selection.add(ret);
 	}
-}
+};
 
 
 //-------- sorting selection --------------------------------
@@ -99,16 +99,16 @@ var curDeepness;
 var recalculateNodesDeepness = () => {
 	curDeepness = 0;
 	recalculateNodesDeepnessRecursive(game.stage);
-}
+};
 
 var recalculateNodesDeepnessRecursive = (n) => {
 	__getNodeExtendData(n).deepness = curDeepness++;
 	if (n.hasOwnProperty('children')) {
 		n.children.some(recalculateNodesDeepnessRecursive);
 	}
-}
+};
 
 var sortByDeepness = (a, b) => {
 	return __getNodeExtendData(a).deepness - __getNodeExtendData(b).deepness;
-}
+};
 

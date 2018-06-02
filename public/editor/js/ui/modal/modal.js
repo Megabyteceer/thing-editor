@@ -37,7 +37,7 @@ var renderModal = (props, i) => {
 			)
 		)
 	);
-}
+};
 
 $(window).on('keydown', (ev) => {
 	if (ev.keyCode === 27) {
@@ -53,7 +53,7 @@ var renderSpinner = () => {
 	return R.div(blackoutProps,
 		R.div(spinnerProps)
 	);
-}
+};
 
 class Modal extends React.Component {
 	
@@ -105,7 +105,7 @@ class Modal extends React.Component {
 			modal.closeModal(true);
 			onYes();
 		}, undefined, 'main-btn', 13);
-		if (typeof onNo != 'undefined') {
+		if (typeof onNo !== 'undefined') {
 			var noBtn = R.btn(noLabel, () => {
 				modal.closeModal();
 				onNo();

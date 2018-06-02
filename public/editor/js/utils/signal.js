@@ -15,8 +15,8 @@ export default class Signal {
 		this._listeners.splice(i, 1);
 	}
 	
-	addOnce(f) {
-		throw "forgot about this antipattern.";
+	addOnce() {
+		throw "forgot about this antipattern. Use promises instead.";
 	}
 	
 	emit() {

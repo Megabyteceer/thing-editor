@@ -33,7 +33,7 @@ export default class Tip extends React.Component {
 
 R.tip = (id, header, text) => {
 	return React.createElement(Tip, {id, header, text});
-}
+};
 
 Tip.tips = {
 	pathFieldTip: `Contains string path to javascript variable to get value from.
@@ -43,4 +43,4 @@ Use '#' to acess to child scene nodes by name: <b>game.currentScene.#myChildElem
 
 	
 	
-}
+};

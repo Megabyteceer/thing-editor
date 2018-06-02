@@ -74,7 +74,6 @@ export default class Overlay {
 }
 
 const p = new PIXI.Point();
-const zeroPoint = new PIXI.Point();
 var overedDragger, draggingDragger;
 
 var currentPointer = 'initial';
@@ -103,7 +102,7 @@ function refreshSelection() {
 	}
 	
 	editor.selection.some((o) => {
-		var info = __getNodeExtendData(o)
+		var info = __getNodeExtendData(o);
 		if (!info.draggerPivot) {
 			info.draggerPivot = createDragger(o, Dragger);
 			game.pixiApp.stage.addChild(info.draggerPivot);
@@ -158,13 +157,14 @@ var previousAllUnderMouse;
 function selectByStageClick(ev) {
 	var allUnderMouse = new Selection;
 	var stack = [game.currentContainer];
+	var i;
 	
 	while (stack.length > 0) {
 		if (stack.length > 1000) throw new Error('owerflow');
 		var o = stack.pop();
 		var childs = o.children;
 		var len = childs.length;
-		for (var i =  0; i < len; i++) {
+		for (i = 0; i < len; i++) {
 			o = childs[i];
 			if (o.children.length > 0) {
 				stack.push(o);
@@ -179,7 +179,6 @@ function selectByStageClick(ev) {
 	allUnderMouse.reverse();
 	
 	if(allUnderMouse.length > 0) {
-		var i;
 		if(!previousAllUnderMouse || previousAllUnderMouse.some((prevObj, i) => {
 			return prevObj !== allUnderMouse[i];
 		})) {

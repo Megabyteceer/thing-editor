@@ -32,7 +32,7 @@ const getValueByPath = (s, this_) => {
 		i++;
 	}
 	return c;
-}
+};
 
 const _cahce = {};
 
@@ -43,13 +43,13 @@ const stringToPathData = (s) => {
 	let path = s.split('.').map(pathPartsMapper);
 	_cahce[s] = path;
 	return path;
-}
+};
 
 const pathPartsMapper = (s) => {
 	if(s.charCodeAt(0) === 35) {//'#'
 		return {s:s.substr(1)}; // - child name
 	}
 	return s;
-}
+};
 
 export default getValueByPath;

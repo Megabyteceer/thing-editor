@@ -104,7 +104,7 @@ class History {
 		return this._undos[this._undos.length - 1];
 	}
 	
-	clearHistory(currentState) {
+	clearHistory() {
 		this._undos.length = 0;
         this._redos.length = 0;
 		this.addHistoryState();

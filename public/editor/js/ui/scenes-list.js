@@ -6,7 +6,7 @@ const sceneFileFiler = /^scenes\/.*\.scene.json$/gm;
 const sceneExtRemover = /.scene.json$/gm;
 const fileNameToSceneName = (fn) => {
 	return fn.replace('scenes/', '').replace(sceneExtRemover, '');
-}
+};
 
 var sceneNameProps = {
 	className: "selectable-text", title: 'click to select scene`s name', onMouseDown: function (ev) {

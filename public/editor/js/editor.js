@@ -27,7 +27,7 @@ export default class Editor {
 	}
 	
 	constructor() {
-		
+		/*global editor */
 		window.editor = this;
 		
 		this.tryToSaveHistory = tryToSaveHistory;
@@ -130,7 +130,7 @@ export default class Editor {
 				game.currentScene.name = renameAfterOpening;
 			}
 			saveCurrentSceneName(name);
-			history.clearHistory(Lib.scenes[name]);
+			history.clearHistory();
 			history.setCurrentStateUnmodified();
 			this.ui.forceUpdate();
 		});
@@ -149,7 +149,7 @@ export default class Editor {
 		var onResize = () => {
 			this.W = window.innerWidth;
 			this.H = window.innerHeight;
-		}
+		};
 		
 		$(window).on('resize', onResize);
 		onResize();
@@ -347,7 +347,7 @@ function askSceneToSaveIfNeed(skip) {
 }
 
 function saveCurrentSceneName(name) {
-	if(editor.projectDesc.lastSceneName != name) {
+	if(editor.projectDesc.lastSceneName !== name) {
 		editor.projectDesc.lastSceneName = name;
 		editor.saveProjecrDesc();
 		editor.ui.forceUpdate();
@@ -364,7 +364,7 @@ function addTo(parent, child, doNotselect) {
 
 let __saveProjectDescriptorInner = () => {
 	editor.fs.saveFile('project.json', editor.projectDesc);
-}
+};
 
 var selectionsForScenesByName = {};
 

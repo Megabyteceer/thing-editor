@@ -15,12 +15,13 @@ import PrefabsList from "./prefabs-list.js";
  * @param title
  * @param className
  * @param hotkey
+ * @param disabled
  * @returns {Element}
  */
-R.btn = function (label, onClick, title, className, hotkey, disabled) {
+R.btn = function (label, onClick, title = undefined, className = undefined, hotkey = false, disabled = false) {
 	className = className || '';
 	return React.createElement(Button, {label, onClick, className, title, hotkey, disabled});
-}
+};
 
 function renderWindow(id, title, content, x, y, minW, minH, w, h) {
 	return React.createElement(Window, {id, title, content, x, y, minW, minH, w, h});

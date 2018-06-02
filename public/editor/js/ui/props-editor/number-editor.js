@@ -9,21 +9,20 @@ let onChange = (ev) => {
 	var props = propsStore[ev.target.dataset.fieldname];
 	var val = parseFloat(ev.target.value) || 0;
 	props.onChange(PropsFieldWrapper.surrogateChnageEvent(val));
-}
+};
 
 let onDoubleClick = (ev) => {
 	ev.target.select();
-}
+};
 
 let onMouseDown = (ev) => {
 	if(isClickedAtRightEdge(ev)) {
 		var props = propsStore[ev.target.dataset.fieldname];
-		var val = ev.target.value;
 		draggingInput = ev.target;
 		draggingProps = props;
 		lastY = ev.clientY;
 	}
-}
+};
 
 function isClickedAtRightEdge(ev) {
 	var b = ev.target.getBoundingClientRect();
@@ -44,7 +43,7 @@ $(window).on('mousemove', (ev) => {
 		var e = PropsFieldWrapper.surrogateChnageEvent(parseFloat(draggingInput.value) + d);
 		draggingProps.onChange(e, true, d);
 	}
-})
+});
 
 
 var NumberEditor = (props) => {
@@ -63,6 +62,6 @@ var NumberEditor = (props) => {
 		min: props.field.min,
 		max: props.field.max
 	});
-}
+};
 
 export default NumberEditor

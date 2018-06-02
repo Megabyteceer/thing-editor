@@ -13,6 +13,7 @@ function renderGroup(props) {
 function groupArray(a, delimitter = '/', level = 0) {
 	
 	var groups = {};
+	var group;
 	
 	var ret = [];
 	for (var item of a) {
@@ -29,7 +30,7 @@ function groupArray(a, delimitter = '/', level = 0) {
 			if (!groups.hasOwnProperty(groupName)) {
 				groups[groupName] = [];
 			}
-			var group = groups[groupName];
+			group = groups[groupName];
 			group.push(item);
 			
 			continue;
@@ -38,7 +39,7 @@ function groupArray(a, delimitter = '/', level = 0) {
 	}
 	
 	for (groupName in groups) {
-		var group = groups[groupName];
+		group = groups[groupName];
 		ret.unshift(renderGroup({key: groupName, title: groupName, content: groupArray(group, delimitter, level + 1)}));
 	}
 	

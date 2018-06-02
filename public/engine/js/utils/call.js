@@ -48,7 +48,7 @@ const call = (s, this_) => {
 		console.error(er);
 		assert(false, 'Call execution error: ' + m, true);
 	}*/
-}
+};
 
 const _callsCahce = {};
 
@@ -65,13 +65,13 @@ const stringToCallData = (s) => {
 	}
 	_callsCahce[s] = data;
 	return data;
-}
+};
 
 const pathPartsMapper = (s) => {
 	if(s.charCodeAt(0) === 35) {//'#'
 		return {s:s.substr(1)}; // - child name
 	}
 	return s;
-}
+};
 
 export default call;

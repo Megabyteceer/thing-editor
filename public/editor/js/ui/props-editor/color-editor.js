@@ -7,6 +7,6 @@ var ColorEditor = (props) => {
 		type: 'color',
 		defaultValue: '#' + val.toString(16).padStart(6, '0')
 	});
-}
+};
 
 export default ColorEditor

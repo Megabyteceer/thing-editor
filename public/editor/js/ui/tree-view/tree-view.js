@@ -6,7 +6,7 @@ var leftPanelProps = {className: 'left-panel'};
 
 R.renderSceneNode = (node) => {
 	return React.createElement(TreeNode, {node: node, key: __getNodeExtendData(node).id});
-}
+};
 
 function onEmptyClick() {
 	editor.selection.clearSelection(true);
@@ -27,7 +27,7 @@ export default class TreeView extends React.Component {
 	}
 	
 	selectInTree(node, add) {
-		assert(node, "Attempt to select in tree emty node");
+		assert(node, "Attempt to select in tree empty node");
 		var n = node;
 		while (n && n.parent) {
 			__getNodeExtendData(n).toggled = true;
@@ -101,7 +101,7 @@ export default class TreeView extends React.Component {
 	
 	onBringUpClick() {
 		var i = 0;
-		while(this.onMoveUpClick(true) && i++ < 100000);
+		while(this.onMoveUpClick(true) && i++ < 100000); //moves selected object up until its become top
 		editor.sceneModified(true);
 		editor.refreshTreeViewAndPropertyEditor();
 	}
@@ -153,7 +153,7 @@ export default class TreeView extends React.Component {
 	
 	onBringDownClick() {
 		var i = 0;
-		while(this.onMoveDownClick(true) && i++ < 100000);
+		while(this.onMoveDownClick(true) && i++ < 100000); //move selected element down until its become bottom.
 		editor.sceneModified(true);
 		editor.refreshTreeViewAndPropertyEditor();
 	}
@@ -195,10 +195,10 @@ const renderRoots = (node, i) => {
 		}
 		return R.div({className:'inactive-scene-item', style, key:'na-' + i, title:'This scene node is blocked by modal object for now.'}, R.classIcon(node.constructor), R.b(null, node.name), ' (' + node.constructor.name + ')');
 	}
-}
+};
 
 const renderSceneStackItem = (s, i) => {
 	return R.div({className:'stacked-scene-item', title: 'This scene currently in stack.', key: i},
 		R.classIcon(s.constructor), s.name, '(' + s.constructor.name + ') #' +  __getNodeExtendData(s).id
 	);
-}
+};

@@ -11,7 +11,7 @@ export default class ChooseList extends React.Component {
 			onChange: this.onSearchChange.bind(this),
 			onKeyDown:this.onKeyDown.bind(this),
 			placeholder: 'Search'
-		}
+		};
 		this.onSelect = this.onSelect.bind(this);
 		this.onSearchCliearClick = this.onSearchCliearClick.bind(this);
 		this.renderChoosingItem = this.renderChoosingItem.bind(this);

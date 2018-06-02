@@ -2,7 +2,7 @@ import Game from "../game.js";
 
 export default class Button extends DSprite {
 	
-	constructor(p) {
+	constructor() {
 		super();
 		this.on('pointerdown', this.onDown)
 			.on('pointerup', this.onUp)
@@ -24,7 +24,7 @@ export default class Button extends DSprite {
 	onRemove() {
 		assert(!game.__EDITORmode, "'destroy()' called in edition mode");
 		var i = allActiveButtons.indexOf(this);
-		assert(i >= 0, 'Button is not in active list.')
+		assert(i >= 0, 'Button is not in active list.');
 		allActiveButtons.splice(i, 1);
 		this.interactive = false;
 		this.buttonMode = false;
@@ -124,7 +124,7 @@ window.addEventListener('keydown', (ev) => {
 		}
 	}
 	
-})
+});
 
 /// #if EDITOR
 Button.EDITOR_editableProps = [
