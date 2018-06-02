@@ -35,7 +35,7 @@ module.exports = function(projectPath, callback) {
 	}];
 
 	let config = {
-		mode: 'production', //development, production
+		mode: 'development', //development, production
 		module: { rules: loaders },
 		entry: projectPath + 'src/index.js',
 		output: {

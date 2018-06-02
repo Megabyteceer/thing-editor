@@ -1,5 +1,71 @@
 <html>
+
+<style>
+	div{
+		margin:0;
+		padding:0;
+	}
+	
+	#preloader {
+		z-index:1;
+		text-align:center;
+		position:fixed;
+		width:100%;
+		height:100%;
+	}
+
+	#preloader-text {
+		font-family: Arial;
+		font-size: 200%;
+		color: #fff;
+		position: relative;
+		display: block;
+		margin: 10px;
+	}
+	#preloader-bar-frame {
+		position: relative;
+		top: 70%;
+		background:#002008;
+		margin: 0 auto;
+		border: 3px solid #051;
+		border-radius: 25px;
+		overflow: hidden;
+		width: 50%;
+	}
+	#preloader-bar {
+		position: absolute;
+		width: 0%;
+		height: 100%;
+		background: #0a2;
+	}
+	
+	body {
+		background:#000;
+		margin:0;
+		padding:0;
+	}
+	
+	canvas {
+		position:absolute;
+		top:0;
+		left:0;
+		right:0;
+		bottom:0;
+		margin:0;
+	}
+
+
+</style>
+
 <body>
+
+<div id="preloader">
+	<div id="preloader-bar-frame">
+		<div id="preloader-bar"></div>
+		<div id="preloader-text">Loading...</div>
+	</div>
+</div>
+
 <script src="pixi.min.js"></script>
 <script src="bundle.js"></script>
 </body>

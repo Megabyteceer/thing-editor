@@ -5,6 +5,7 @@ import Container from './components/container.js';
 import DSprite from './components/sprite.js';
 import Scene from './components/scene.js';
 import call from './utils/call.js';
+import Preloader from "./utils/preloader.js";
 
 window.Scene = Scene;
 window.DSprite = DSprite;
@@ -24,6 +25,7 @@ var hiddingModals = [];
 var SHOOTTIME = false;
 var currentFader;
 var showStack = [];
+var scale = 1;
 
 class Game {
 	
@@ -45,13 +47,28 @@ class Game {
 	
 	init(element) {
 		
-		app = new PIXI.Application(W, H, {backgroundColor: 0x1099bb});
+		var w = window.innerWidth;
+		var h = window.innerHeight;
+		scale = Math.min(w / W, h / H);
+		/// #if EDITOR
+		w = W;
+		h = H;
+		scale = 1;
+		/// #endif
+		
+		w /= scale;
+		h /= scale;
+		
+		PIXI.settings.RESOLUTION = scale;
+		app = new PIXI.Application(w, h, {backgroundColor: 0, roundPixels: true});
 		this.pixiApp = app;
 		(element || document.body).appendChild(app.view);
 		
 		stage = new PIXI.Container();
 		stage.name = 'stage';
 		this.stage = stage;
+		game.stage.scale.x = w / W;
+		game.stage.scale.y = h / H;
 		
 		app.stage.addChild(stage);
 		
@@ -93,6 +110,16 @@ class Game {
 		throw('game._startGame is for internal usage only. Will be invoked automaticly in production build.');
 		///#endif
 		
+		window.addEventListener('resize', function() {
+			var w = window.innerWidth / scale;
+			var h = window.innerHeight / scale;
+			game.stage.scale.x = w / W;
+			game.stage.scale.y = h / H;
+			game.pixiApp.renderer.resize(w, h);
+		});
+		
+		var preloader = new Preloader();
+		
 		fetch("assets.json").then(function(response) {
 			return response.json();
 		}).then((assets) => {
@@ -104,10 +131,14 @@ class Game {
 			Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 			
 			assets.images.some((tName) => {
-				Lib.addTexture(tName, 'img/' + tName);
+				var fileName = 'img/' + tName;
+				PIXI.loader.add(fileName);
+				Lib.addTexture(tName, fileName);
 			});
-			
-			this.showScene('main');
+			PIXI.loader.load();
+			preloader.start(() => {
+				this.showScene('main');
+			});
 		});
 	}
 	
