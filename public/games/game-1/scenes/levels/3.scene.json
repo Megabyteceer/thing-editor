@@ -456,6 +456,20 @@
 				"image": "bunny.png",
 				"onClick": "game.closeCurrentScene"
 			}
+		},
+		{
+			"c": "Label",
+			"p": {
+				"x": 17,
+				"y": 642,
+				"text": "---",
+				"style.align": "left",
+				"style.fill": "#243",
+				"style.fontSize": 16,
+				"dataPath": "game.currentScene.name",
+				"template": "Current scene's name: %%",
+				"decimalsCount": 1
+			}
 		}
 	]
 }

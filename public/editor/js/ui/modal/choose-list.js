@@ -12,7 +12,6 @@ export default class ChooseList extends React.Component {
 			onKeyDown:this.onKeyDown.bind(this),
 			placeholder: 'Search'
 		};
-		this.onSelect = this.onSelect.bind(this);
 		this.onSearchCliearClick = this.onSearchCliearClick.bind(this);
 		this.renderChoosingItem = this.renderChoosingItem.bind(this);
 		this.searchFilter = this.searchFilter.bind(this);
@@ -33,23 +32,18 @@ export default class ChooseList extends React.Component {
 		}
 	}
 	
-	onSelect(ev) {
-		editor.ui.modal.closeModal(this.list.find((i) => {
-			return i.name === ev.target.dataset.name;
-		}));
-	}
-	
-	renderChoosingItem(i) {
+	renderChoosingItem(i, key) {
 		var icon;
 		if(i.EDITOR_icon) {
 			icon = R.classIcon(i);
 		}
 		var name = i.name;
 		return R.div({
-			onDoubleClick: this.onSelect,
+			onMouseDown: ()=>{
+				editor.ui.modal.closeModal(i)
+			},
 			className: 'clickable choosing-item',
-			key: name,
-			'data-name': name
+			key: key
 		}, icon, name);
 	}
 	

@@ -36,6 +36,30 @@ class Game {
 		this.call = call;
 		window.addEventListener('mousemove', mouseHandlerGlobal);
 		window.game = this;
+		
+		Object.defineProperties(this, {
+			W: {
+				enumerable: true,
+				get: function() {
+					return W;
+				}
+			},
+			H: {
+				enumerable: true,
+				get: function() {
+					return H;
+				}
+			},
+			scale: {
+				enumerable: true,
+				get: function() {
+					return scale;
+				}
+			}
+			
+		});
+		
+		
 	}
 	
 	get currentContainer() {
@@ -373,6 +397,9 @@ function updateRecursivelly(o) {
 		updateRecursivelly(a[i]);
 	}
 }
+
+
+
 
 const mouseHandlerGlobal = (ev) => {
 	var p = Game.mouseEventToGlobalXY(ev);

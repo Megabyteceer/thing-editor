@@ -458,6 +458,48 @@
 				"image": "UI/button.png",
 				"onClick": "game.showScene`levels/3"
 			}
+		},
+		{
+			"c": "Label",
+			"p": {
+				"x": 17,
+				"y": 648,
+				"text": "---",
+				"style.align": "left",
+				"style.fill": "#acb",
+				"style.fontSize": 16,
+				"dataPath": "game.scale",
+				"template": "Renderer scale: %%",
+				"decimalsCount": 1
+			}
+		},
+		{
+			"c": "Label",
+			"p": {
+				"x": 17,
+				"y": 588,
+				"text": "---",
+				"style.align": "left",
+				"style.fill": "#acb",
+				"style.fontSize": 16,
+				"dataPath": "game.W",
+				"template": "W: %%",
+				"decimalsCount": 1
+			}
+		},
+		{
+			"c": "Label",
+			"p": {
+				"x": 17,
+				"y": 618,
+				"text": "---",
+				"style.align": "left",
+				"style.fill": "#acb",
+				"style.fontSize": 16,
+				"dataPath": "game.H",
+				"template": "H: %%",
+				"decimalsCount": 1
+			}
 		}
 	]
 }

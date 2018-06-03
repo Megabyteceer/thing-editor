@@ -25,7 +25,7 @@ export default class Label extends PIXI.Text {
 					this.visible = true;
 					
 					
-					if(this.isMoney) {
+					if(this.isNumeric) {
 						if(this.counterSpeed < 1) {
 							let step = (val - (this.showedVal || 0)) * this.counterSpeed;
 							this.showedVal = (this.showedVal || 0) + step;
@@ -101,7 +101,7 @@ Label.EDITOR_editableProps = [
 		As example label with teplate <b>Your money: %% coins</b> will appear on screen as "Your money: 1000 coins".`
 	},
 	{
-		name: 'isMoney',
+		name: 'isNumeric',
 		type: Boolean
 	},
 	{
@@ -117,7 +117,7 @@ Label.EDITOR_editableProps = [
 		default: 1,
 		tip: `When counterSpeed is <b>1</b> - label instantly takes and represent value.
 <b>When counterSpeed less that 1</b> - label shows value as counter in few steps.
-Property <b>counterSpeed</b> has effect only if <b>isMoney</b> property is enabled`
+Property <b>counterSpeed</b> has effect only if <b>isNumeric</b> property is enabled`
 	},
 	{
 		name: 'decimalsCount',

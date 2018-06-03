@@ -5,32 +5,32 @@ class Settings {
 		this._storageId = storageId;
 		if (typeof(Storage) !== "undefined") {
 			if (localStorage.hasOwnProperty(storageId)) {
-				this._store = JSON.parse(localStorage[storageId]);
+				this.data = JSON.parse(localStorage[storageId]);
 			}
 		}
-		if (!this.hasOwnProperty('_store')) {
-			this._store = {};
+		if (!this.hasOwnProperty('data')) {
+			this.data = {};
 		}
 		this.flush = this.flush.bind(this);
 	}
 	
 	getItem(name, def) {
-		if (this._store.hasOwnProperty(name)) {
-			return this._store[name];
+		if (this.data.hasOwnProperty(name)) {
+			return this.data[name];
 		}
 		return def;
 	}
 	
 	setItem(name, val) {
-		if (JSON.stringify(val) !== JSON.stringify(this._store[name])) {
-			this._store[name] = val;
+		if (JSON.stringify(val) !== JSON.stringify(this.data[name])) {
+			this.data[name] = val;
 			this.changed();
 		}
 	}
 	
 	removeItem(name) {
-		if (this._store.hasOwnProperty(name)) {
-			delete(this._store[name]);
+		if (this.data.hasOwnProperty(name)) {
+			delete(this.data[name]);
 			this.changed();
 		}
 	}
@@ -44,7 +44,7 @@ class Settings {
 	flush() {
 		if (typeof(Storage) !== "undefined") {
 			delete(this.__flushInterval);
-			localStorage.setItem(this._storageId, JSON.stringify(this._store));
+			localStorage.setItem(this._storageId, JSON.stringify(this.data));
 		}
 	}
 }

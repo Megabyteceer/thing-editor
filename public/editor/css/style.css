@@ -384,6 +384,9 @@ button {
 	border-left: 1px solid #cfcfcf;
 }
 
+.field-editor-wrapper{
+	display:flex;
+}
 
 
 input{
@@ -869,8 +872,9 @@ input{
 
 .props-wrapper .tool-btn {
 	margin:0;
-	float: right;
 	padding: 3px;
+	/* position: absolute; */
+	/* right: 0; */
 	border:1px solid #a4a4a4;
 	background:#ffffff;
 }

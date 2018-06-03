@@ -31,6 +31,9 @@ const getValueByPath = (s, this_) => {
 		}
 		i++;
 	}
+	if(typeof c === "function") {
+		return c.call(fOwner);
+	}
 	return c;
 };
 

@@ -50,13 +50,21 @@
 			"p": {
 				"x": 127,
 				"y": 153,
-				"image": "UI/button.png",
-				"W": 293,
-				"H": 108,
-				"fieldL": 36,
-				"fieldR": 22,
-				"fieldT": 9,
-				"fieldB": 10
+				"image": "UI/button.png"
+			}
+		},
+		{
+			"c": "Label",
+			"p": {
+				"x": 17,
+				"y": 642,
+				"text": "---",
+				"style.align": "left",
+				"style.fill": "#acb",
+				"style.fontSize": 16,
+				"dataPath": "game.currentScene.name",
+				"template": "Current scene's name: %%",
+				"decimalsCount": 1
 			}
 		}
 	]

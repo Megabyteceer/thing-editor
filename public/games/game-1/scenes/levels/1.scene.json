@@ -28,15 +28,23 @@
 			}
 		},
 		{
-			"c": "Bunny",
+			"c": "Trigger",
 			"p": {
-				"name": "b2",
-				"x": 631,
-				"y": 442,
-				"pivot.y": 31,
-				"image": "bunny.png",
-				"xSpeed": 10.197367648693145
-			}
+				"dataPath": "this.x"
+			},
+			":": [
+				{
+					"c": "Bunny",
+					"p": {
+						"name": "b2",
+						"x": 631,
+						"y": 442,
+						"pivot.y": 31,
+						"image": "bunny.png",
+						"xSpeed": 10.197367648693145
+					}
+				}
+			]
 		},
 		{
 			"c": "Button",
@@ -45,6 +53,50 @@
 				"y": 38,
 				"image": "bunny.png",
 				"onClick": "game.closeCurrentScene"
+			}
+		},
+		{
+			"c": "Label",
+			"p": {
+				"x": 15,
+				"y": 696,
+				"text": "---",
+				"style.align": "left",
+				"style.fill": "#acb",
+				"style.fontSize": 16,
+				"dataPath": "game.currentScene.#b1.x",
+				"template": "Rabbit's X: %%",
+				"isNumeric": true,
+				"decimalsCount": 1
+			}
+		},
+		{
+			"c": "Label",
+			"p": {
+				"x": 17,
+				"y": 667,
+				"text": "---",
+				"style.align": "left",
+				"style.fill": "#acb",
+				"style.fontSize": 16,
+				"dataPath": "Bunny.getRandom",
+				"template": "Banny's random: %%",
+				"isNumeric": true,
+				"decimalsCount": 1
+			}
+		},
+		{
+			"c": "Label",
+			"p": {
+				"x": 17,
+				"y": 642,
+				"text": "---",
+				"style.align": "left",
+				"style.fill": "#acb",
+				"style.fontSize": 16,
+				"dataPath": "game.currentScene.name",
+				"template": "Current scene's name: %%",
+				"decimalsCount": 1
 			}
 		}
 	]

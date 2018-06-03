@@ -9,6 +9,8 @@ export default class Bunny extends DSprite {
 			this.ySpeed += 1;
 		}
 		
+		game.settings.setItem('data1', true);
+		
 		if ((this.x < 0) || (this.x > W)) {
 			this.xSpeed *= -1.0;
 			this.onTouchBounds();
@@ -17,10 +19,18 @@ export default class Bunny extends DSprite {
 		super.update();
 	}
 	
+	static get globalBunnysCount () {
+		return 3;
+	}
+	
 	onTouchBounds() {
 		this.rotation = (Math.random() - 0.5) * 0.2;
 	}
 }
+
+Bunny.getRandom = function() {
+	return Math.random() * 300;
+};
 
 /// #if EDITOR
 Bunny.EDITOR_group = "Custom/Bunnies";
