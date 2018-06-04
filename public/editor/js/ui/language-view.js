@@ -141,7 +141,7 @@ function refreshCachedData() {
 	oneLanguageTable = languages[langsIdsList[0]];
 	idsList = Object.keys(oneLanguageTable);
 	
-	let a = [{name:'', value:null}];
+	let a = [{name:'none', value:''}];
 	for(let id of idsList) {
 		a.push({name:id, value:id});
 	}

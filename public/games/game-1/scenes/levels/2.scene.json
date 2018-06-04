@@ -457,7 +457,20 @@
 				"y": 471,
 				"image": "UI/button.png",
 				"onClick": "game.showScene`levels/3"
-			}
+			},
+			":": [
+				{
+					"c": "Text",
+					"p": {
+						"y": -22,
+						"text": "Yes",
+						"translatableText": "YES",
+						"style.stroke": "#472",
+						"style.strokeThickness": 5,
+						"style.fontSize": 34
+					}
+				}
+			]
 		},
 		{
 			"c": "Label",

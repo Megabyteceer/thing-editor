@@ -96,7 +96,7 @@ class Game {
 		h /= scale;
 		
 		PIXI.settings.RESOLUTION = scale;
-		app = new PIXI.Application(w, h, {backgroundColor: 0, roundPixels: true});
+		app = new PIXI.Application(w, h, {backgroundColor: 0});
 		this.pixiApp = app;
 		(element || document.body).appendChild(app.view);
 		

@@ -73,13 +73,14 @@ class SelectEditor extends React.Component {
 		}
 		
 		var item;
-		if(!this.props.value) {
-			item = list[0];
-		}
-		else {
+		if(this.props.value) {
 			item = list.find((i) => {
 				if (i.value === this.props.value) return i;
 			});
+		}
+
+		if(!item) {
+			item = list[0];
 		}
 		
 		return R.div({className: 'select-editor', onClick: this.onToggle
