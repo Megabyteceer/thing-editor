@@ -155,7 +155,7 @@ $(window).on('mousedown', (ev) => {
 
 var previousAllUnderMouse;
 function selectByStageClick(ev) {
-	var allUnderMouse = new Selection;
+	var allUnderMouse = new Selection();
 	var stack = [game.currentContainer];
 	var i;
 	

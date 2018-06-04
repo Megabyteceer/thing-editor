@@ -1,5 +1,10 @@
 import Group from "./group.js";
-var bodyProps = {className: 'list-view'};
+import Selection from "../utils/selection.js";
+
+
+const bodyProps = {className: 'list-view'};
+const classItemProps = {className: 'class-list-item'};
+const classItemSubProps = {className: 'class-list-item-sub'};
 
 class ClessesView extends React.Component {
 	
@@ -64,7 +69,20 @@ class ClessesView extends React.Component {
 			key = 'Custom/' + item.c.name;
 		}
 		
-		return R.listItem(R.span(null, R.classIcon(item.c), item.c.name, tip), item, key, this);
+		return R.listItem(
+			R.div(classItemProps,
+				R.div(classItemSubProps,
+					R.classIcon(item.c),
+					item.c.name,
+					tip
+				),
+				R.btn('<', () => {
+					findNextOfThisType(item.c, -1);
+				}, 'Find previous ' + item.c.name, 'tool-btn'),
+				R.btn('>', () => {
+					findNextOfThisType(item.c, 1);
+				}, 'Find next ' + item.c.name, 'tool-btn')
+			), item, key, this);
 	}
 	
 	selectedItem() {
@@ -95,6 +113,34 @@ class ClessesView extends React.Component {
 		)
 		
 	}
+}
+
+function findNextOfThisType(c, direction) {
+	var a = new Selection();
+	
+	game.currentContainer.forAllChildren((o) => {
+		if(o.constructor === c) {
+			a.push(o);
+		}
+	});
+	
+	if (a.length > 0) {
+
+		a.sortSelectedNodes();
+
+		
+		let i = a.indexOf(editor.selection[0]);
+		if (i >= 0) {
+			i += direction;
+			if (i < 0) i = a.length - 1;
+			if (i >= a.length) i = 0;
+		} else {
+			i = 0;
+		}
+		editor.ui.sceneTree.selectInTree(a[i]);
+	}
+	
+
 }
 
 export default ClessesView;

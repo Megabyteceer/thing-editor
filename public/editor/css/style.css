@@ -873,7 +873,7 @@ input{
 	line-height: 1.6;
 }
 
-.props-wrapper .tool-btn {
+.props-wrapper .tool-btn, .class-list-item .tool-btn {
 	margin:0;
 	padding: 3px;
 	border:1px solid #a4a4a4;
@@ -948,9 +948,12 @@ input{
 }
 
 .class-list-item {
-	display:flex;
+	display: flex;
 }
 
+.class-list-item-sub {
+    flex: auto;
+}
 
 
 

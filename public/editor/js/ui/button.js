@@ -37,6 +37,7 @@ class Button extends React.Component {
 			this.props.onClick();
 			ev.target.blur();
 		}
+		sp(ev);
 	}
 	
 	render() {
