@@ -7,6 +7,7 @@ import Modal from './modal/modal.js';
 import ClessesView from './classes-view.js';
 import ScenesList from "./scenes-list.js";
 import PrefabsList from "./prefabs-list.js";
+import LanguageView from "./language-view.js";
 
 /**
  *
@@ -83,6 +84,7 @@ class UI extends React.Component {
 		return R.div(null,
 			R.btn('Open project...', editor.fs.chooseProject),
 			R.btn('Build', editor.build),
+			R.btn('Text data editor...', LanguageView.show),
 			editor.history.buttonsRenderer(),
 			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 330, 250, 500),
 			renderWindow('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}), 1000, 0, 420, 313, 840, 480),

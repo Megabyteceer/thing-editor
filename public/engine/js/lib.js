@@ -235,6 +235,10 @@ class Lib {
 		staticScenes = {};
 	}
 	
+	static _getStaticScenes() {
+		return staticScenes;
+	}
+	
 	static __serializeObject(o) {
 		var props = {};
 		var propsList = editor.enumObjectsProperties(o);

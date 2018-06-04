@@ -7,7 +7,7 @@ var blackoutProps = {className: 'modal-blackout fadein-animation'};
 var blackoutPropsClosable = {
 	className: 'modal-blackout fadein-animation', style: {cursor: 'pointer'}, onClick: (sp) => {
 		if (sp.target.className.indexOf('modal-blackout') === 0) {
-			modal.closeModal();
+			modal.hideModal();
 		}
 	}
 };
@@ -43,7 +43,7 @@ $(window).on('keydown', (ev) => {
 	if (ev.keyCode === 27) {
 		var m = modal.state.modals[modal.state.modals.length - 1];
 		if (m && !m.noEasyClose) {
-			modal.closeModal();
+			modal.hideModal();
 			sp(ev);
 		}
 	}
@@ -64,7 +64,7 @@ class Modal extends React.Component {
 		};
 	}
 	
-	closeModal(val) {
+	hideModal(val) {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
 		var closedModalItem = modal.state.modals.pop();
 		modal.forceUpdate();
@@ -102,12 +102,12 @@ class Modal extends React.Component {
 	showQuestion(title, message, onYes, yesLabel = 'Ok', onNo, noLabel = 'Cancel', noEasyClose) {
 		
 		var yesBtn = R.btn(yesLabel, () => {
-			modal.closeModal(true);
+			modal.hideModal(true);
 			onYes();
 		}, undefined, 'main-btn', 13);
 		if (typeof onNo !== 'undefined') {
 			var noBtn = R.btn(noLabel, () => {
-				modal.closeModal();
+				modal.hideModal();
 				onNo();
 			});
 		}

@@ -34,7 +34,7 @@ export default class Prompt extends React.Component {
 	
 	onAcceptClick() {
 		if (this.state.accepted) {
-			editor.ui.modal.closeModal(this.state.value);
+			editor.ui.modal.hideModal(this.state.value);
 		}
 	}
 	

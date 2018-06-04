@@ -15,6 +15,7 @@ import Signal from "./utils/signal.js";
 import Lib from "../../engine/js/lib.js";
 import build from "./utils/build.js";
 import Pool from "/engine/js/utils/pool.js";
+import LanguageView from "./ui/language-view.js";
 
 export default class Editor {
 	
@@ -96,8 +97,7 @@ export default class Editor {
 			editor.projectDesc = data;
 			this.clipboardData = null;
 			
-			await editor.reloadAssetsAndClasses();
-			await Promise.all([ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList()]);
+			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
 			
 			if(Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
 				//backup restoring
@@ -138,7 +138,7 @@ export default class Editor {
 	
 	get currentSceneName() {
 		if(!window.game) return null;
-		var a = game.__getScenesStack();
+		var a = game._getScenesStack();
 		if(a.length > 0) {
 			return a[0].name;
 		}

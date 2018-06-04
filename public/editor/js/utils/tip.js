@@ -14,7 +14,7 @@ export default class Tip extends React.Component {
 	
 	onDiscardClick() {
 		editor.settings.setItem('tip-discard-' + this.props.id, true);
-		editor.ui.modal.closeModal();
+		editor.ui.modal.hideModal();
 	}
 	
 	onMouseDown() {

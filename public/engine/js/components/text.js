@@ -1,6 +1,17 @@
 export default PIXI.Text;
 
 Object.defineProperties(PIXI.Text.prototype, {
+	translatableText:{
+		get: function () {
+			return this._translatableText;
+		},
+		set: function (val) {
+			if(val && this._translatableText !== val) {
+				this.text = L(val);
+				this._translatableText = val;
+			}
+		}
+	},
 	image: { //remove sprite texture property
 		get: function () {
 		},
@@ -92,6 +103,14 @@ Object.defineProperties(PIXI.Text.prototype, {
 	}
 });
 
+PIXI.Text.prototype.onLanguageChanged = function onLanguageChanged() {
+	if(this._translatableText) {
+		var t = this._translatableText;
+		_translatableText = null;
+		this.translatableText = t;
+	}
+};
+
 /// #if EDITOR
 
 PIXI.Text.EDITOR_icon = 'tree/text';
@@ -111,10 +130,7 @@ PIXI.Text.EDITOR_editableProps = [
 		},
 		important: true
 	},
-	{
-		name: 'translatableText',
-		type: String
-	},
+	makeTranslatableSelectEditablePropertyDecriptor('translatableText'),
 	{
 		type: 'splitter',
 		title: 'Style:',

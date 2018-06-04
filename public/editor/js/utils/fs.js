@@ -69,7 +69,7 @@ function renderProjectItem(desc, i, array) {
 	
 	return R.div({
 		className: 'project-item-select clickable', key: i, onClick: () => {
-			editor.ui.modal.closeModal(desc.dir);
+			editor.ui.modal.hideModal(desc.dir);
 		}
 	}, icon, desc.title);
 }

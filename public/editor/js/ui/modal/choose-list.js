@@ -28,7 +28,7 @@ export default class ChooseList extends React.Component {
 	
 	onKeyDown(ev) {
 		if((ev.keyCode === 13) && (this.list.leading === 1)) {
-			editor.ui.modal.closeModal(this.list[0]);
+			editor.ui.modal.hideModal(this.list[0]);
 		}
 	}
 	
@@ -40,7 +40,7 @@ export default class ChooseList extends React.Component {
 		var name = i.name;
 		return R.div({
 			onMouseDown: ()=>{
-				editor.ui.modal.closeModal(i)
+				editor.ui.modal.hideModal(i)
 			},
 			className: 'clickable choosing-item',
 			key: key

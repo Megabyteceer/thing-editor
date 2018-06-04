@@ -6,10 +6,12 @@ import DSprite from './components/sprite.js';
 import Scene from './components/scene.js';
 import call from './utils/call.js';
 import Preloader from "./utils/preloader.js";
+import L from "./utils/l.js";
 
 window.Scene = Scene;
 window.DSprite = DSprite;
 window.Lib = Lib;
+window.L = L;
 
 PIXI.settings.MIPMAP_TEXTURES = false;
 
@@ -55,6 +57,21 @@ class Game {
 				get: function() {
 					return scale;
 				}
+			},
+			currentContainer: {
+				enumerable: true,
+				get: function() {
+					if(modals.length > 0) {
+						return modals[modals.length - 1]; //top modal is active
+					}
+					return this.currentScene; //current scene is active if no modals on screen
+				}
+			},
+			modalsCount: {
+				enumerable: true,
+				get: function() {
+					return modals.length;
+				}
 			}
 			
 		});
@@ -62,12 +79,7 @@ class Game {
 		
 	}
 	
-	get currentContainer() {
-		if(modals.length > 0) {
-			return modals[modals.length - 1]; //top modal is active
-		}
-		return this.currentScene; //current scene is active if no modals on screen
-	}
+	
 	
 	init(element) {
 		
@@ -256,7 +268,7 @@ class Game {
 	
 	__clearStage() {
 		while(this.modalsCount > 0) {
-			this.closeModal();
+			this.hideModal();
 		}
 		while(showStack.length > 0) {
 			var s = showStack.pop();
@@ -272,7 +284,7 @@ class Game {
 		}
 	}
 	
-	__getScenesStack() {
+	_getScenesStack() {
 		return showStack;
 	}
 	
@@ -287,10 +299,6 @@ class Game {
 		assert(!(displayObject instanceof Scene), 'Scene cant be used as modal');
 		modals.push(displayObject);
 		this.stage.addChild(displayObject);
-	}
-	
-	get modalsCount() {
-		return modals.length;
 	}
 	
 	hideModal(displayObject, instantly) {
@@ -397,8 +405,6 @@ function updateRecursivelly(o) {
 		updateRecursivelly(a[i]);
 	}
 }
-
-
 
 
 const mouseHandlerGlobal = (ev) => {

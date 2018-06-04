@@ -16,6 +16,10 @@ export default class Label extends PIXI.Text {
 		this.showedVal = undefined;
 	}
 	
+	onLanguageChanged() {
+		this.refreshNow();
+	}
+	
 	update() {
 		if(this.currentInterval <= 0 && this.dataPath) {
 			
@@ -42,7 +46,9 @@ export default class Label extends PIXI.Text {
 						this.showedVal = val;
 					}
 					
-					if(this.template) {
+					if(this._translatableText) {
+						this.text = L(this._translatableText).replace('%%', val);
+					} else if(this.template) {
 						this.text = this.template.replace('%%', val);
 					} else {
 						this.text = val;
@@ -98,7 +104,8 @@ Label.EDITOR_editableProps = [
 		name: 'template',
 		type: String,
 		tip: `Label's text template with <b>%%</b> as marker of place where value will be inserted.
-		As example label with teplate <b>Your money: %% coins</b> will appear on screen as "Your money: 1000 coins".`
+As example label with teplate <b>Your money: %% coins</b> will appear on screen as "Your money: 1000 coins".
+This field will be ignored if <b>translatableText</b> is defined.`
 	},
 	{
 		name: 'isNumeric',

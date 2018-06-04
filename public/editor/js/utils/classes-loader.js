@@ -46,7 +46,7 @@ function showError(message) {
 	editor.ui.modal.showError(R.div(null,
 		message,
 		R.btn('I have fixed code, try again', () => {
-			editor.ui.modal.closeModal();
+			editor.ui.modal.hideModal();
 			ClassesLoader.reloadClasses();
 		}, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
 		'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
@@ -76,7 +76,7 @@ function addClass(c, path) {
 		}
 	}
 	
-	if (path) {
+	if (path && (path.indexOf('/engine/') < 0)) {
 		console.log('Custom class loded: ' + name + '; ' + path);
 	}
 	

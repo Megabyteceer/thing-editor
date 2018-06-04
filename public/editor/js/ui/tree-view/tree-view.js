@@ -178,7 +178,7 @@ export default class TreeView extends React.Component {
 	
 	),
 			R.div({className: 'scene-tree-view', onMouseDown: onEmptyClick},
-				game.__getScenesStack().map(renderSceneStackItem),
+				game._getScenesStack().map(renderSceneStackItem),
 				game.stage.children.map(renderRoots)
 			)
 		);
