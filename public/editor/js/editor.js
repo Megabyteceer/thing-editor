@@ -173,7 +173,7 @@ export default class Editor {
 			this.saveCurrentScene(editor.runningSceneLibSaveSlotName);
 			var selectionData = editor.selection.saveSelection();
 		}
-		Lib.__clearTexturesList();
+		
 		
 		return ClassesLoader.reloadClasses().then(() => {
 			if(needRepairScene) {
