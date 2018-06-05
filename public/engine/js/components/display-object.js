@@ -143,7 +143,10 @@ PIXI.DisplayObject.EDITOR_editableProps = [
 	},
 	{
 		name: 'name',
-		type: String
+		type: String,
+		disabled:(node) => {
+			return node.parent === game.stage;
+		}
 	},
 	{
 		name: 'x',

@@ -117,7 +117,7 @@ class PropsFieldWrapper extends React.Component {
 			renderer = getTypeDescription(field).renderer;
 		}
 		
-		var disabled = field.name === 'name' && node.parent === game.stage;
+		var disabled = field.disabled && field.disabled(node);
 		
 		var tip;
 		if(field.hasOwnProperty('tip')) {

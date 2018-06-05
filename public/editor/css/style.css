@@ -111,7 +111,7 @@ button {
 	box-sizing: content-box;
 	background: var(--window-bg-color);
 	border: 1px solid var(--window-header-color);
-	border-radius:3px;
+	border-radius: 4px;
 }
 
 .window-header {
@@ -354,9 +354,9 @@ button {
 }
 
 .props-group-header {
-	padding:3px;
+	padding: 3px 15px;
 	background-color:var(--window-header-color);
-	color:#a3adb7;
+	color: #a3adb7;
 	font-size:70%;
 }
 
@@ -381,8 +381,9 @@ button {
 
 .props-label {
 	box-sizing:border-box;
-	padding-right: 20px;
-	width: 120px;
+	padding-left: 15px;
+	width: 40%;
+	max-width: 250px;
 	color: #3a8cff;
 	overflow-x: hidden;
 	font-size: 120%;
@@ -534,8 +535,6 @@ input{
 
 .list-view .props-group-header {
 	font-size: 90%;
-	padding-left:20px;
-	color:#fff;
 }
 
 .list-view .props-group{
@@ -896,12 +895,18 @@ input{
     border-radius:10px;
 }
 
+.langs-editor {
+	top:0;
+	bottom:0;
+	position:absolute;
+	
+}
+
 .langs-editor-table {
-	padding: 3px;
 	box-sizing: content-box;
 	text-align: left;
-	max-width: 90vw;
-	max-height: calc(90vh - 300px);
+	padding-bottom: 3px;
+	max-height: calc(100% - 130px);
 	overflow: auto;
 }
 
@@ -917,7 +922,8 @@ input{
 .langs-editor-th {
     box-sizing: border-box;
     padding: 15px;
-	color: #bbb;
+    color: #bbb;
+    background: #fff;
     font-weight: bold;
 }
 
@@ -942,8 +948,6 @@ input{
 }
 
 .langs-editor-tr {
-    margin-right: 4px;
-    margin-bottom: 2px;
     white-space: nowrap;
     box-sizing: border-box;
 }
@@ -955,10 +959,10 @@ input{
 
 
 .langs-editor textarea {
+	height: 100%;
 	padding:5px;
+	width: 100%;
 	box-sizing: border-box;
-	display: block;
-	min-height: 50px;
 	border: none;
 	resize:none;
 }

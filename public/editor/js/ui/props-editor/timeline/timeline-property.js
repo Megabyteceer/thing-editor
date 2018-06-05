@@ -19,7 +19,7 @@ export default class TimelineProperty extends React.Component {
 		var btn = R.btn(this.state.toggled ? 'Close Timeline' : 'Open timeline', this.onToggleClick);
 		var timeline;
 		if(this.state.toggled) {
-			timeline = editor.ui.renderWindow('timeline', 'Timeline', React.createElement(Timeline, {onCloseClick:this.onToggleClick}), 1000, 1000, 400, 150, 400, 150);
+			timeline = editor.ui.renderWindow('timeline', 'Timeline', React.createElement(Timeline, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 1137, 407);
 			setTimeout(() => {
 				Window.bringWindowForward($('#window-propsEditor'));
 				Window.bringWindowForward($('#window-timeline'));

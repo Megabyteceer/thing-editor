@@ -8,8 +8,10 @@ export default class DataPathEditor extends React.Component {
 	}
 	
 	onEditClicked() {
-		fieldNameToChoose = this.props.field.name;
-		chooseProperty(null, editor.selection[0][fieldNameToChoose]);
+		if(!this.props.disabled) {
+			fieldNameToChoose = this.props.field.name;
+			chooseProperty(null, editor.selection[0][fieldNameToChoose]);
+		}
 	}
 	
 	render() {

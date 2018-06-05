@@ -24,7 +24,7 @@ class SelectEditor extends React.Component {
 	}
 	
 	onToggle() {
-		if(!this.state.toggled) {
+		if(!this.state.toggled && !this.props.disabled) {
 			this.setState({toggled: true});
 		}
 	}

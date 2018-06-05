@@ -17,6 +17,7 @@ export default class Label extends PIXI.Text {
 	}
 	
 	onLanguageChanged() {
+		this.showedVal = undefined;
 		this.refreshNow();
 		/// #if EDITOR
 		if(game.__EDITORmode || game.__paused) super.onLanguageChanged();
@@ -118,8 +119,10 @@ Label.EDITOR_editableProps = [
 		name: 'template',
 		type: String,
 		tip: `Label's text template with <b>%%</b> as marker of place where value will be inserted.
-As example label with teplate <b>Your money: %% coins</b> will appear on screen as "Your money: 1000 coins".
-This field will be ignored if <b>translatableText</b> is defined.`
+As example label with teplate <b>Your money: %% coins</b> will appear on screen as "Your money: 1000 coins".`,
+		disabled:(node) => {
+			return node.translatableText;
+		}
 	},
 	{
 		name: 'isNumeric',
@@ -127,7 +130,10 @@ This field will be ignored if <b>translatableText</b> is defined.`
 	},
 	{
 		name: 'plusMinus',
-		type: Boolean
+		type: Boolean,
+		disabled:(node) => {
+			return !node.isNumeric;
+		}
 	},
 	{
 		name: 'counterSpeed',
@@ -137,13 +143,18 @@ This field will be ignored if <b>translatableText</b> is defined.`
 		step: 0.001,
 		default: 1,
 		tip: `When counterSpeed is <b>1</b> - label instantly takes and represent value.
-<b>When counterSpeed less that 1</b> - label shows value as counter in few steps.
-Property <b>counterSpeed</b> has effect only if <b>isNumeric</b> property is enabled`
+<b>When counterSpeed less that 1</b> - label shows value as counter in few steps`,
+		disabled:(node) => {
+			return !node.isNumeric;
+		}
 	},
 	{
 		name: 'decimalsCount',
 		type: Number,
-		min: 0
+		min: 0,
+		disabled:(node) => {
+			return !node.isNumeric;
+		}
 	},
 	{
 		name: 'onChanged',

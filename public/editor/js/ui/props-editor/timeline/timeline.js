@@ -435,6 +435,9 @@ function onTimelineMouseDown(ev) {
 		}
 		onMouseMove(ev);
 	}
+	if(!isEventFocusOnInputElement(ev)) {
+		sp(ev);
+	}
 }
 
 function onMouseMove(ev) {

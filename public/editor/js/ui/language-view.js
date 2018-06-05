@@ -40,7 +40,7 @@ export default class LanguageView extends React.Component {
 		if(this.state.toggled) {
 			table = editor.ui.renderWindow('texteditor', 'Text Table', R.fragment(
 				R.btn('×', this.onToggleClick, 'Hide Text Editor', 'close-window-btn'),
-				React.createElement(LanguageTableEditor)), 200, 100, 600, 600, 400, 150);
+				React.createElement(LanguageTableEditor)), 200, 100, 620, 300, 900, 800);
 			
 			setTimeout(() => {
 				Window.bringWindowForward($('#window-texteditor'));
@@ -197,10 +197,10 @@ function onModified() {
 	}
 	
 	_outjump = setTimeout(() => {
-		L.onLanguageChanged();
+		L.fefreshAllTextEwerywhere();
 		editor.fs.saveFile('text.json', languages, true);
 		_outjump = null;
-	}, 1000);
+	}, 600);
 }
 
 function langIdPriority(l) {

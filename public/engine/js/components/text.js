@@ -6,8 +6,10 @@ Object.defineProperties(PIXI.Text.prototype, {
 			return this._translatableText;
 		},
 		set: function (val) {
-			if(val && this._translatableText !== val) {
-				this.text = L(val);
+			if(this._translatableText !== val) {
+				if(val) {
+					this.text = L(val);
+				}
 				this._translatableText = val;
 			}
 		}
@@ -140,13 +142,24 @@ PIXI.Text.EDITOR_editableProps = [
 			return v;
 		},
 		default:' ',
-		important: true
+		important: true,
+		disabled:(node) => {
+			return node.translatableText;
+		}
 	},
 	makeTranslatableSelectEditablePropertyDecriptor('translatableText'),
 	{
 		type: 'splitter',
 		title: 'Style:',
 		name: 'text-style'
+	},
+	{
+		name: 'style.fontSize',
+		type: Number,
+		min:0,
+		max:300,
+		default: 12,
+		important: true
 	},
 	{
 		name: 'style.align',
@@ -166,7 +179,10 @@ PIXI.Text.EDITOR_editableProps = [
 	{
 		name: 'style.stroke',
 		type: String,
-		default:'#000000'
+		default:'#000000',
+		disabled:(node) => {
+			return node.style.strokeThickness > 0;
+		}
 	},
 	{
 		name: 'style.strokeThickness',
@@ -187,14 +203,6 @@ PIXI.Text.EDITOR_editableProps = [
 			{name: 'lighter', value: 'lighter'}
 		],
 		default: 'normal'
-	},
-	{
-		name: 'style.fontSize',
-		type: Number,
-		min:0,
-		max:300,
-		default: 12,
-		important: true
 	},
 	{
 		name: 'style.leading',

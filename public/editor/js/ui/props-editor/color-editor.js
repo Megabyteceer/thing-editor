@@ -3,6 +3,7 @@ var ColorEditor = (props) => {
 	
 	return R.input({
 		onChange: props.onChange,
+		disabled:props.disabled,
 		className: 'clickable',
 		type: 'color',
 		defaultValue: '#' + val.toString(16).padStart(6, '0')

@@ -32,28 +32,33 @@ L.setLanguagesAssets = (_languages, defaultLanguage) => {
 };
 
 function setCurrentLanguage(languageId) {
-	if(currentLanguageId !== languageId) {
+	if (currentLanguageId !== languageId) {
 		currentLanguageId = languageId;
 		if (languages.hasOwnProperty(languageId)) {
 			currentLanguageTable = languages[languageId];
 		} else {
 			currentLanguageTable = languages['en'];
 		}
-		
-		game.stage.forAllChildren(refreshTranslantableText);
-		
-		for(let s of game._getScenesStack()) {
-			s.forAllChildren(refreshTranslantableText);
-		}
-		
-		const staticScenes = Lib._getStaticScenes();
-		for(let n in staticScenes) {
-			let s = staticScenes[n];
-			s.forAllChildren(refreshTranslantableText);
-		}
-
-		Lib.__clearStaticScenes()
+		L.fefreshAllTextEwerywhere();
 	}
+	
+}
+
+L.fefreshAllTextEwerywhere = function onLanguageChanged() {
+	
+	game.stage.forAllChildren(refreshTranslantableText);
+	
+	for(let s of game._getScenesStack()) {
+		s.forAllChildren(refreshTranslantableText);
+	}
+	
+	const staticScenes = Lib._getStaticScenes();
+	for(let n in staticScenes) {
+		let s = staticScenes[n];
+		s.forAllChildren(refreshTranslantableText);
+	}
+
+	Lib.__clearStaticScenes()
 }
 
 function refreshTranslantableText(o) {

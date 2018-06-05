@@ -87,20 +87,25 @@ class UI extends React.Component {
 			R.btn('Build', editor.build),
 			React.createElement(LanguageView),
 			editor.history.buttonsRenderer(),
-			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 330, 250, 500),
-			renderWindow('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}), 1000, 0, 420, 313, 840, 480),
+			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),
+			renderWindow('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),
+				558, 0, 420, 313, 1362, 742),
 			renderWindow('propsEditor', 'Properties', React.createElement(PropsEditor, {
 				ref: this.propsEditorRef,
 				onChange: editor.onSelectedPropsChange
-			}), 250, 0, 250, 250, 250, 500),
-			renderWindow('classesLib', 'Classes', React.createElement(ClessesView, {ref: this.classesListRef}), 0, 1000, 250, 150, 250, 500),
-			renderWindow('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 250, 1000, 250, 150, 250, 500),
-			renderWindow('scenesList', 'Scenes', React.createElement(ScenesList), 1000, 1000, 200, 100, 200, 100),
+			}), 255, 35, 250, 250, 250, 500),
+			renderWindow('classesLib', 'Classes', React.createElement(ClessesView, {ref: this.classesListRef}), 0, 550, 250, 150, 250, 470),
+			renderWindow('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 255, 550, 250, 150, 250, 470),
+			renderWindow('scenesList', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
 			
 			React.createElement(Modal, {ref: this.modalRef})
 		);
 	}
 }
+
+
+
+
 
 export default UI;
 

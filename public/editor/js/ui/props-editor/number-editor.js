@@ -52,6 +52,7 @@ var NumberEditor = (props) => {
 	var val = Math.round(props.value / step) * step;
 	return R.input({
 		onChange: onChange,
+		disabled:props.disabled,
 		value: val,
 		'data-fieldname': props.field.name,
 		onDoubleClick: onDoubleClick,
