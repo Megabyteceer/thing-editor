@@ -124,6 +124,7 @@ export default class Editor {
 	openSceneSafe(name, renameAfterOpening) {
 		return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
 			this.loadScene(name);
+			document.title = '(' + editor.projectDesc.title + ') - - (' + name + ')';
 			if(renameAfterOpening) {
 				assert(typeof renameAfterOpening === 'string', 'String expected');
 				name = renameAfterOpening;
@@ -271,6 +272,7 @@ export default class Editor {
 		}
 		idCounter = 0;
 		game.showScene(name);
+		
 		if(game.currentScene) {
 			this.selection.loadSelection(selectionsForScenesByName[name]);
 		}

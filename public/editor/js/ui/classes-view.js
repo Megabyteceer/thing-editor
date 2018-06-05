@@ -1,5 +1,4 @@
 import Group from "./group.js";
-import Selection from "../utils/selection.js";
 
 
 const bodyProps = {className: 'list-view'};
@@ -115,32 +114,12 @@ class ClessesView extends React.Component {
 	}
 }
 
+
 function findNextOfThisType(c, direction) {
-	var a = new Selection();
-	
-	game.currentContainer.forAllChildren((o) => {
-		if(o.constructor === c) {
-			a.push(o);
-		}
-	});
-	
-	if (a.length > 0) {
-
-		a.sortSelectedNodes();
-
+	editor.ui.sceneTree.findNext((o) => {
+		return o instanceof c;
 		
-		let i = a.indexOf(editor.selection[0]);
-		if (i >= 0) {
-			i += direction;
-			if (i < 0) i = a.length - 1;
-			if (i >= a.length) i = 0;
-		} else {
-			i = 0;
-		}
-		editor.ui.sceneTree.selectInTree(a[i]);
-	}
-	
-
+	}, direction);
 }
 
 export default ClessesView;

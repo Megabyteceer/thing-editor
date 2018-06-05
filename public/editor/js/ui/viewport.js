@@ -1,6 +1,7 @@
 import PrefabsList from './prefabs-list.js';
 import Lib from "../../../engine/js/lib.js";
 import Signal from "../utils/signal.js";
+import LanguageSwitcher from "./language-switcher.js";
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -177,9 +178,11 @@ export default class Viewport extends React.Component {
 			)
 		}
 		
+		let languagePanel = React.createElement(LanguageSwitcher);
 		
 		return R.div({className},
 			R.div({className: 'editor-viewport-panel'},
+				languagePanel,
 				panel
 			),
 			R.div({

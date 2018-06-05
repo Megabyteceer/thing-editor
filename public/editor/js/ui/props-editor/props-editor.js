@@ -1,5 +1,6 @@
 import PropsFieldWrapper from './props-field-wrapper.js';
 import Group from '../group.js';
+import Window from '../window.js';
 
 var editorProps = {
 	className: 'props-editor'
@@ -48,6 +49,20 @@ class PropsEditor extends React.Component {
 			}
 		});
 	}
+	
+	selecField(fieldName) {
+		let fldInput = $(".props-editor #property-editor-" + fieldName);
+		if(fldInput.length > 0) {
+			fldInput.removeClass('shake');
+			setTimeout(() => {
+				fldInput.addClass('shake');
+			}, 1);
+			Window.bringWindowForward(fldInput.closest('.window-body'));
+			fldInput[0].scrollIntoView({});
+		}
+	
+	}
+
 	
 	render() {
 		if (editor.selection.length <= 0) {

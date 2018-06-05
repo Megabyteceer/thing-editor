@@ -280,12 +280,20 @@ button {
 	height:50px;
 }
 
-.scene-tree-view {
+.scene-tree-view-wrap {
 	width:100%;
 	height:100%;
 	background:#fff;
-	overflow-y:auto;
 	font-size: 80%;
+}
+
+.scene-tree-view {
+	overflow-y:auto;
+	height: calc(100% - 21px);
+}
+
+.tree-view-search {
+    border-bottom: 1px solid #cccfda;
 }
 
 .list-item {
@@ -880,6 +888,14 @@ input{
 	background:#ffffff;
 }
 
+.inactive-scene-item {
+    margin:4px 10px;
+    padding:5px;
+    background:#ddd;
+    color:#888;
+    border-radius:10px;
+}
+
 .langs-editor-table {
 	padding: 3px;
 	box-sizing: content-box;
@@ -955,6 +971,19 @@ input{
     flex: auto;
 }
 
+.language-switcher {
+    white-space: nowrap;
+}
+
+.language-switcher .tool-btn {
+    color: #7b7e88;
+    padding: 0 2px;
+    background: #d8dade;
+}
+
+
+
+
 
 
 
@@ -998,15 +1027,6 @@ input{
     100% { transform: rotate(360deg); }
 }
 
-.inactive-scene-item {
-	margin:4px 10px;
-	padding:5px;
-	background:#ddd;
-	color:#888;
-	border-radius:10px;
-}
-
-
 @keyframes fireAnimation{
   0% {
     opacity:1;
@@ -1017,5 +1037,26 @@ input{
   100% {
     opacity:0;
   }
+}
+
+.shake{
+    animation: shake-animation linear 0.3s;
+    animation-iteration-count: 2;
+    transform-origin: 50% 50%;
+}
+
+@keyframes shake-animation{
+    0% {
+        transform:  translate(0px,0px)  ;
+    }
+    25% {
+        transform:  translate(5px,0px)  ;
+    }
+    77% {
+        transform:  translate(-5px,0px)  ;
+    }
+    100% {
+        transform:  translate(0px,0px)  ;
+    }
 }
 

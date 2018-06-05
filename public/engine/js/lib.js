@@ -242,6 +242,11 @@ class Lib {
 	static __serializeObject(o) {
 		var props = {};
 		var propsList = editor.enumObjectsProperties(o);
+		
+		if(o.__beforeSerialization) {
+			o.__beforeSerialization();
+		}
+		
 		propsList.some((p) => {
 			if(!p.notSeriazable) {
 				var val = o[p.name];
@@ -249,15 +254,20 @@ class Lib {
 					props[p.name] = val;
 				}
 			}
-		})
+		});
 		assert(classes.hasOwnProperty(o.constructor.name), 'Attempt to serialize class ' + o.constructor.name + ' which was not loaded properly.');
 		var ret = {
 			c: o.constructor.name,
 			p: props
-		}
+		};
 		if(o.children && o.children.length > 0) {
 			ret[':'] = o.children.filter(__isSerializableObject).map(Lib.__serializeObject);
 		}
+		
+		if(o.__afterSerialization) {
+			o.__afterSerialization();
+		}
+		
 		return ret;
 	}
 

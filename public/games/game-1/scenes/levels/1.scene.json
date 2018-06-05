@@ -98,6 +98,15 @@
 				"template": "Current scene's name: %%",
 				"decimalsCount": 1
 			}
+		},
+		{
+			"c": "Text",
+			"p": {
+				"x": 476,
+				"y": 179,
+				"translatableText": "YES",
+				"style.fontSize": 105
+			}
 		}
 	]
 }

@@ -1,20 +1,16 @@
 import Group from "./group.js";
+import Window from './window.js';
 
 let languages;
 let langsIdsList;
 let oneLanguageTable;
 let idsList;
-let isModified = false;
 
 const tableBodyProps = {className:'langs-editor-table'};
 const langsEditorProps = {className:'langs-editor'};
 const DEFAULT_TEXT = '!!';
 
 export default class LanguageView extends React.Component {
-	
-	static show() {
-		showLanguageEditor();
-	}
 	
 	static async loadTextData() {
 		let ret = editor.fs.openFile('text.json');
@@ -25,6 +21,36 @@ export default class LanguageView extends React.Component {
 		});
 		return ret;
 	}
+	
+	constructor(props) {
+		super(props);
+		this.state = {};
+		this.onToggleClick = this.onToggleClick.bind(this);
+	}
+	
+	onToggleClick() { //show/hide text editor window
+		var t = !this.state.toggled;
+		this.setState({toggled: t});
+		editor.settings.setItem('timeline-showed', t);
+	}
+	
+	render () {
+		var btn = R.btn(this.state.toggled ? 'Close Text Editor' : 'Open Text Editor', this.onToggleClick, undefined, undefined, 1069);
+		var table;
+		if(this.state.toggled) {
+			table = editor.ui.renderWindow('texteditor', 'Text Table', R.fragment(
+				R.btn('×', this.onToggleClick, 'Hide Text Editor', 'close-window-btn'),
+				React.createElement(LanguageTableEditor)), 200, 100, 600, 600, 400, 150);
+			
+			setTimeout(() => {
+				Window.bringWindowForward($('#window-texteditor'));
+			}, 1);
+		}
+		return R.fragment(btn, table);
+	}
+}
+
+class LanguageTableEditor extends React.Component {
 	
 	constructor (props) {
 		super(props);
@@ -51,7 +77,7 @@ export default class LanguageView extends React.Component {
 				for(let langId of idsList) {
 					lang[langId] = DEFAULT_TEXT;
 				}
-				isModified = true;
+				onModified();
 				refreshCachedData();
 				this.forceUpdate();
 			}
@@ -77,7 +103,7 @@ export default class LanguageView extends React.Component {
 				for(let langId of langsIdsList) {
 					languages[langId][enteredName] = DEFAULT_TEXT;
 				}
-				isModified = true;
+				onModified();
 				refreshCachedData();
 				this.forceUpdate();
 			}
@@ -107,7 +133,7 @@ export default class LanguageView extends React.Component {
 					}
 					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({defaultValue: text, onChange:(ev) => {
 						languages[langId][id] = ev.target.value;
-						isModified = true;
+						onModified();
 					}}));
 				})
 			));
@@ -163,19 +189,20 @@ window.makeTranslatableSelectEditablePropertyDecriptor = (name, important) => {
 	return ret;
 };
 
-function onHide() {
-	if(isModified) {
-		editor.fs.saveFile('text.json', languages, true).then(() => {
-			isModified = false;
-		});
+
+let _outjump;
+function onModified() {
+	if(_outjump) {
+		clearTimeout(_outjump);
 	}
+	
+	_outjump = setTimeout(() => {
+		L.onLanguageChanged();
+		editor.fs.saveFile('text.json', languages, true);
+		_outjump = null;
+	}, 1000);
 }
 
 function langIdPriority(l) {
 	return l === 'en' ? ' ' : l;
-}
-
-
-function showLanguageEditor() {
-	editor.ui.modal.showModal(React.createElement(LanguageView), 'Translatable text table').then(onHide);
 }

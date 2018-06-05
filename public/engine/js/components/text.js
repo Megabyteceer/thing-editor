@@ -106,12 +106,23 @@ Object.defineProperties(PIXI.Text.prototype, {
 PIXI.Text.prototype.onLanguageChanged = function onLanguageChanged() {
 	if(this._translatableText) {
 		var t = this._translatableText;
-		_translatableText = null;
+		this._translatableText = null;
 		this.translatableText = t;
 	}
 };
 
 /// #if EDITOR
+
+PIXI.Text.prototype.__beforeSerialization = function __beforeSerialization() {
+	if(this._translatableText) {
+		this.text = null;
+	}
+};
+PIXI.Text.prototype.__afterSerialization = function __beforeSerialization() {
+	if(this._translatableText) {
+		this.text = L(this._translatableText);
+	}
+};
 
 PIXI.Text.EDITOR_icon = 'tree/text';
 PIXI.Text.EDITOR_group = 'Basic';
@@ -128,6 +139,7 @@ PIXI.Text.EDITOR_editableProps = [
 			if(v && v.length === 2 &&  v.charCodeAt(0) === 32) return v.substr(1);
 			return v;
 		},
+		default:' ',
 		important: true
 	},
 	makeTranslatableSelectEditablePropertyDecriptor('translatableText'),

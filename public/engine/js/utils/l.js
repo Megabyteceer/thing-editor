@@ -62,6 +62,14 @@ function refreshTranslantableText(o) {
 	}
 }
 
+L.getCurrentLanguageId = () => {
+	return currentLanguageId;
+};
+
+L.getLanguagesList = () => {
+	return Object.keys(languages);
+};
+
 L.setCurrentLanguage = setCurrentLanguage;
 
 export default L;

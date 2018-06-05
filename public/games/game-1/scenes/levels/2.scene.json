@@ -476,22 +476,9 @@
 			"c": "Label",
 			"p": {
 				"x": 17,
-				"y": 648,
-				"text": "---",
-				"style.align": "left",
-				"style.fill": "#acb",
-				"style.fontSize": 16,
-				"dataPath": "game.scale",
-				"template": "Renderer scale: %%",
-				"decimalsCount": 1
-			}
-		},
-		{
-			"c": "Label",
-			"p": {
-				"x": 17,
 				"y": 588,
-				"text": "---",
+				"text": "Ok",
+				"translatableText": "OK",
 				"style.align": "left",
 				"style.fill": "#acb",
 				"style.fontSize": 16,
@@ -505,7 +492,8 @@
 			"p": {
 				"x": 17,
 				"y": 618,
-				"text": "---",
+				"text": "Yes",
+				"translatableText": "YES",
 				"style.align": "left",
 				"style.fill": "#acb",
 				"style.fontSize": 16,

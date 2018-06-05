@@ -18,6 +18,10 @@ export default class Label extends PIXI.Text {
 	
 	onLanguageChanged() {
 		this.refreshNow();
+		/// #if EDITOR
+		if(game.__EDITORmode || game.__paused) super.onLanguageChanged();
+		/// #endif
+		
 	}
 	
 	update() {
@@ -71,6 +75,16 @@ export default class Label extends PIXI.Text {
 	refreshNow() {
 		this.currentInterval = 0;
 	}
+	
+	/// #if EDITOR
+	__beforeSerialization() {
+		super.__beforeSerialization();
+		if(this._translatableText) {
+			this.template = null;
+		}
+	}
+	
+	/// #endif
 }
 
 Label.formatMoney = formatMoney;

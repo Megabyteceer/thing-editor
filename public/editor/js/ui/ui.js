@@ -20,6 +20,7 @@ import LanguageView from "./language-view.js";
  * @returns {Element}
  */
 R.btn = function (label, onClick, title = undefined, className = undefined, hotkey = false, disabled = false) {
+	assert(onClick, "Function as onCLick handler expected.");
 	className = className || '';
 	return React.createElement(Button, {label, onClick, className, title, hotkey, disabled});
 };
@@ -84,7 +85,7 @@ class UI extends React.Component {
 		return R.div(null,
 			R.btn('Open project...', editor.fs.chooseProject),
 			R.btn('Build', editor.build),
-			R.btn('Text data editor...', LanguageView.show),
+			React.createElement(LanguageView),
 			editor.history.buttonsRenderer(),
 			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 0, 250, 330, 250, 500),
 			renderWindow('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}), 1000, 0, 420, 313, 840, 480),

@@ -64,9 +64,6 @@ var getTypeDescription = (field) => {
 	return typeDescriptions.get(t);
 }
 
-var fieldProps = {className: 'props-field'};
-var fieldPropsImportant = {className: 'props-field props-field-important'};
-
 var labelProps = {className: 'props-label selectable-text', onMouseDown: function (ev) {
 	selectText(ev.target);
 	sp(ev);
@@ -130,7 +127,7 @@ class PropsFieldWrapper extends React.Component {
 			);
 		}
 		
-		return R.div(field.important ? fieldPropsImportant : fieldProps,
+		return R.div({className: field.important ? 'props-field props-field-important' : 'props-field', id:'property-editor-' + field.name},
 			tip,
 			R.div(labelProps, field.name),
 			R.div(wrapperProps,

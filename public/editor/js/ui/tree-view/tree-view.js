@@ -1,15 +1,20 @@
 import TreeNode from './tree-node.js';
 import Window from '../window.js';
+import Selection from "../../utils/selection.js";
 
 var classViewProps = {className: 'vertical-layout'};
 var leftPanelProps = {className: 'left-panel'};
+
+let foundByWhichProperty;
 
 R.renderSceneNode = (node) => {
 	return React.createElement(TreeNode, {node: node, key: __getNodeExtendData(node).id});
 };
 
-function onEmptyClick() {
-	editor.selection.clearSelection(true);
+function onEmptyClick(ev) {
+	if(!isEventFocusOnInputElement(ev)) {
+		editor.selection.clearSelection(true);
+	}
 }
 
 export default class TreeView extends React.Component {
@@ -24,6 +29,11 @@ export default class TreeView extends React.Component {
 		this.onMoveUpClick = this.onMoveUpClick.bind(this);
 		this.onMoveDownClick = this.onMoveDownClick.bind(this);
 		this.onBringDownClick = this.onBringDownClick.bind(this);
+		this.onSearchKeyDown = this.onSearchKeyDown.bind(this);
+		this.onSearchChange = this.onSearchChange.bind(this);
+		this.fundNextBySearch = this.fundNextBySearch.bind(this);
+		this.findNext = this.findNext.bind(this);
+		this.searchString = editor.settings.getItem('tree-search', '');
 	}
 	
 	selectInTree(node, add) {
@@ -35,6 +45,14 @@ export default class TreeView extends React.Component {
 		}
 		editor.selection.select(node, add === true);
 		setTimeout(() => {
+			
+			if(foundByWhichProperty && foundByWhichProperty.has(node) && !add) {
+				let fieldName = foundByWhichProperty.get(node);
+				editor.ui.propsEditor.selecField(fieldName);
+			}
+			
+			foundByWhichProperty = null;
+			
 			var e = $('.scene-tree-view .item-selected');
 			if (e[0]) {
 				Window.bringWindowForward(e.closest('.window-body'));
@@ -152,10 +170,77 @@ export default class TreeView extends React.Component {
 	}
 	
 	onBringDownClick() {
-		var i = 0;
+		let i = 0;
 		while(this.onMoveDownClick(true) && i++ < 100000); //move selected element down until its become bottom.
 		editor.sceneModified(true);
 		editor.refreshTreeViewAndPropertyEditor();
+	}
+	
+	onSearchKeyDown(ev) {
+		if(this.searchString && (ev.keyCode === 13)) {
+			this.fundNextBySearch();
+		}
+	}
+	
+	onSearchChange(ev) {
+		let val = ev.target.value.toLowerCase();
+		let needSearch = this.searchString.length < val.length;
+		this.searchString = val;
+		editor.settings.setItem('tree-search', this.searchString);
+		if(needSearch) {
+			this.fundNextBySearch();
+		}
+	}
+	
+	fundNextBySearch() {
+		foundByWhichProperty = new WeakMap();
+		
+		this.findNext((o) => {
+			if(o.constructor.name.toLowerCase().indexOf(this.searchString) >= 0) return true;
+			
+			let props = editor.enumObjectsProperties(o);
+			for(let p of props) {
+				if(p.type === String) {
+					let val = o[p.name];
+					if(val && val.toLowerCase().indexOf(this.searchString) >= 0) {
+						foundByWhichProperty.set(o, p.name);
+						return true;
+					}
+				}
+			}
+		}, 1);
+	}
+	
+	findNext(condition, direction) {
+		var a = new Selection();
+		
+		if(condition(game.currentContainer)) {
+			a.push(game.currentContainer);
+		}
+		
+		game.currentContainer.forAllChildren((o) => {
+			if(condition(o)) {
+				a.push(o);
+			}
+		});
+		
+		if (a.length > 0) {
+			
+			a.sortSelectedNodes();
+			
+			
+			let i = a.indexOf(editor.selection[0]);
+			if (i >= 0) {
+				i += direction;
+				if (i < 0) i = a.length - 1;
+				if (i >= a.length) i = 0;
+			} else {
+				i = 0;
+			}
+			this.selectInTree(a[i]);
+		} else {
+			editor.selection.clearSelection(true);
+		}
 	}
 	
 	render() {
@@ -176,10 +261,13 @@ export default class TreeView extends React.Component {
 				R.hr(),
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected', "tool-btn", 46, isEmpty)
 	
-	),
-			R.div({className: 'scene-tree-view', onMouseDown: onEmptyClick},
-				game._getScenesStack().map(renderSceneStackItem),
-				game.stage.children.map(renderRoots)
+			),
+			R.div({className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick},
+				R.input({onKeyDown: this.onSearchKeyDown, onChange: this.onSearchChange, className:'tree-view-search', defaultValue: this.searchString, placeholder: 'Search'}),
+				R.div({className: 'scene-tree-view', onMouseDown: onEmptyClick},
+					game._getScenesStack().map(renderSceneStackItem),
+					game.stage.children.map(renderRoots)
+				)
 			)
 		);
 	}
