@@ -61,11 +61,19 @@ const stringToCallData = (s) => {
 	let a = s.split('`');
 	data.p = a[0].split('.').map(pathPartsMapper);
 	if(a.length > 1) {
-		data.v = a[1].split(',');
+		data.v = a[1].split(',').map(turnInToNumberIfNumeric);
 	}
 	_callsCahce[s] = data;
 	return data;
 };
+
+const numChecker = /^[\.0-9]+$/;
+const turnInToNumberIfNumeric = (s) => {
+	if(s.match(numChecker)) {
+		return parseFloat(s);
+	}
+	return s;
+}
 
 const pathPartsMapper = (s) => {
 	if(s.charCodeAt(0) === 35) {//'#'

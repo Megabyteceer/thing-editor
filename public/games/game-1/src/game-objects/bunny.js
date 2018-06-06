@@ -1,12 +1,16 @@
 export default class Bunny extends DSprite {
 	
+	init() {
+		this.gravity = 1;
+	}
+	
 	update() {
 		this.vertexData[2] += Math.random();
 		if (this.y > H - 25) {
 			this.ySpeed *= -1;
 			this.onTouchBounds();
 		} else {
-			this.ySpeed += 1;
+			this.ySpeed += this.gravity;
 		}
 		
 		game.settings.setItem('data1', true);
@@ -17,6 +21,10 @@ export default class Bunny extends DSprite {
 		}
 		this.scale.x = this.xSpeed > 0 ? 1 : -1;
 		super.update();
+	}
+	
+	setGravity(v) {
+		this.gravity = v;
 	}
 	
 	static get globalBunnysCount () {

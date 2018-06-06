@@ -2,7 +2,8 @@
 	"c": "Scene",
 	"p": {
 		"name": "levels/2",
-		"backgroundColor": 1705536
+		"backgroundColor": 1705536,
+		"faderType": "fader/default"
 	},
 	":": [
 		{
@@ -124,7 +125,7 @@
 			"c": "MovieClip",
 			"p": {
 				"x": 480,
-				"y": 380,
+				"y": 280,
 				"timeline": {
 					"l": {
 						"dock": 2,
@@ -137,7 +138,7 @@
 							"n": "y",
 							"t": [
 								{
-									"v": 380,
+									"v": 280,
 									"t": 0
 								},
 								{
@@ -145,7 +146,7 @@
 									"t": 110,
 									"a": "this.stop",
 									"m": 3,
-									"b": 0.4,
+									"b": 0.86,
 									"g": 1
 								},
 								{
@@ -180,7 +181,7 @@
 				"y": 380,
 				"timeline": {
 					"l": {
-						"dock": 2,
+						"dock": 3,
 						"activate": 133
 					},
 					"p": 0.001,
@@ -444,6 +445,7 @@
 		{
 			"c": "Bunny",
 			"p": {
+				"name": "bunny",
 				"x": 460,
 				"y": 537,
 				"image": "bunny.png",
@@ -463,11 +465,10 @@
 					"c": "Text",
 					"p": {
 						"y": -22,
-						"text": "Yes",
 						"translatableText": "YES",
+						"style.fontSize": 34,
 						"style.stroke": "#472",
-						"style.strokeThickness": 5,
-						"style.fontSize": 34
+						"style.strokeThickness": 5
 					}
 				}
 			]
@@ -477,13 +478,11 @@
 			"p": {
 				"x": 17,
 				"y": 588,
-				"text": "Ok",
 				"translatableText": "OK",
+				"style.fontSize": 16,
 				"style.align": "left",
 				"style.fill": "#acb",
-				"style.fontSize": 16,
 				"dataPath": "game.W",
-				"template": "W: %%",
 				"decimalsCount": 1
 			}
 		},
@@ -492,14 +491,60 @@
 			"p": {
 				"x": 17,
 				"y": 618,
-				"text": "Yes",
 				"translatableText": "YES",
+				"style.fontSize": 16,
 				"style.align": "left",
 				"style.fill": "#acb",
-				"style.fontSize": 16,
 				"dataPath": "game.H",
-				"template": "H: %%",
 				"decimalsCount": 1
+			}
+		},
+		{
+			"c": "Button",
+			"p": {
+				"x": 125,
+				"y": 662,
+				"image": "UI/button.png",
+				"onClick": "this.parent.#bunny.setGravity`3"
+			},
+			":": [
+				{
+					"c": "Text",
+					"p": {
+						"y": -22,
+						"text": "Gravity x 3",
+						"style.fontSize": 37,
+						"style.strokeThickness": 6
+					}
+				}
+			]
+		},
+		{
+			"c": "Button",
+			"p": {
+				"x": 382,
+				"y": 662,
+				"image": "UI/button.png",
+				"onClick": "this.parent.#bunny.setGravity`1"
+			},
+			":": [
+				{
+					"c": "Text",
+					"p": {
+						"y": -22,
+						"text": "Gravity x 1",
+						"style.fontSize": 37,
+						"style.strokeThickness": 7
+					}
+				}
+			]
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 6,
+				"image": "bunny.png",
+				"xSpeed": 6
 			}
 		}
 	]
