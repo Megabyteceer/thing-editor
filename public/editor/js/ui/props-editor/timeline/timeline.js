@@ -13,6 +13,9 @@ var timelineElement;
 var lastTimelineBounds;
 
 var affectedMovieclips = new Map();
+
+let beforeChangeRemember;
+
 function removeAffectFromUnselected(all) {
 	affectedMovieclips.forEach((value, o) => {
 		if(all || !__getNodeExtendData(o).isSelected) {
@@ -29,24 +32,23 @@ export default class Timeline extends React.Component {
 		timeline = this;
 		Timeline.timeline = this;
 		this.timelineMarkerRef = this.timelineMarkerRef.bind(this);
-		this.onBeforePropertyChanged = this.onBeforePropertyChanged.bind(this);
-		this.onAfterPropertyChanged = this.onAfterPropertyChanged.bind(this);
 		this.keyframePropretyEditorRef = this.keyframePropretyEditorRef.bind(this);
 		this.onPlayStopToggle = this.onPlayStopToggle.bind(this);
+	}
+	
+	static init() {
+		editor.beforePropertyChanged.add(Timeline.onBeforePropertyChanged);
+		editor.afterPropertyChanged.add(Timeline.onAfterPropertyChanged);
 	}
 	
 	componentDidMount() {
 		timelineElement = $('.timeline')[0];
 		editor.ui.viewport.beforePlayStopToggle.add(this.onPlayStopToggle);
-		editor.beforePropertyChanged.add(this.onBeforePropertyChanged);
-		editor.afterPropertyChanged.add(this.onAfterPropertyChanged);
 	}
 	
 	componentWillUnmount() {
 		timelineElement = null;
 		editor.ui.viewport.beforePlayStopToggle.remove(this.onPlayStopToggle);
-		editor.beforePropertyChanged.remove(this.onBeforePropertyChanged);
-		editor.afterPropertyChanged.remove(this.onAfterPropertyChanged);
 		removeAffectFromUnselected(true);
 	}
 	
@@ -55,37 +57,75 @@ export default class Timeline extends React.Component {
 		this.setTime(0, true);
 	}
 	
-	createKeyframeAtFieldData(fieldData, time) {
+	createKeyframeWithTimelineValue(fieldData, time) { //used for toggle keyframe
 		this.createKeyframeWithCurrentObjectsValue(getMovieclipByFieldData(fieldData), fieldData.n, time);
 		renormalizeFieldTimelineDataAfterChange(fieldData);
 	}
 	
 	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
 		var keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
+		
+		//TODO: check if field was exists and delta its value if so
 		keyFrame.v = o[fieldName];
 		var field = getFieldByNameOrCreate(o, fieldName);
 		renormalizeFieldTimelineDataAfterChange(field);
 	}
 	
-	onBeforePropertyChanged(fieldName) {
+	static onBeforePropertyChanged(fieldName, field) {
+		if(!timelineElement) {
+			beforeChangeRemember = new WeakMap();
+		}
+		
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
-				if(this.needAnimateProperty(o, fieldName)) {
-					getFrameAtTimeOrCreate(o, fieldName, 0);
+				if(timelineElement) {
+					if (timelineElement.isNeedAnimateProperty(o, fieldName)) {
+						getFrameAtTimeOrCreate(o, fieldName, 0);
+					}
+				} else {
+					let val = o[fieldName];
+					if(typeof val === 'number') {
+						beforeChangeRemember.set(o, val);
+					}
 				}
 			}
 		});
 	}
 	
-	needAnimateProperty(o, fieldName) {
+	isNeedAnimateProperty(o, fieldName) {
 		return this.getTime() > 0 || getFieldByName(o, fieldName);
 	}
 	
-	onAfterPropertyChanged(fieldName) {
+	static onAfterPropertyChanged(fieldName, field) {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
-				if(this.needAnimateProperty(o, fieldName)) {
-					this.createKeyframeWithCurrentObjectsValue(o, fieldName);
+				if(timelineElement) {
+					if (timelineElement.isNeedAnimateProperty(o, fieldName)) {
+						timelineElement.createKeyframeWithCurrentObjectsValue(o, fieldName);
+					}
+				} else {
+					let val = o[fieldName];
+					if(typeof val === 'number') {
+						let oldVal = beforeChangeRemember.get(o);
+						if(oldVal !== val) {
+							let delta = val - oldVal;
+							let fld = getFieldByName(o, fieldName);
+							if(fld) {
+								for(let kf of fld.t) {
+									let changedVal = kf.v + d;
+									if(field.hasOwnProperty('min')) {
+										changedVal = Math.max(field.min, changedVal);
+									}
+									if(field.hasOwnProperty('max')) {
+										changedVal = Math.min(field.max, changedVal);
+									}
+									kf.val = changedVal;
+								}
+							}
+						}
+					}
+					renormalizeFieldTimelineDataAfterChange(o.timeline)
+					
 				}
 			}
 		});

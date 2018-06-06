@@ -16,6 +16,7 @@ import Lib from "../../engine/js/lib.js";
 import build from "./utils/build.js";
 import Pool from "/engine/js/utils/pool.js";
 import LanguageView from "./ui/language-view.js";
+import Timeline from "./ui/props-editor/timeline/timeline.js";
 
 export default class Editor {
 	
@@ -56,6 +57,8 @@ export default class Editor {
 			React.createElement(UI, {onMounted: this.onUIMounted}),
 			document.getElementById('root')
 		);
+		
+		Timeline.init();
 	}
 	
 	/**
@@ -216,7 +219,7 @@ export default class Editor {
 			}
 			var changed = false;
 			
-			this.beforePropertyChanged.emit(field.name);
+			this.beforePropertyChanged.emit(field.name, field);
 			
 			if(delta === true) {
 				assert(field.type === Number);
@@ -243,7 +246,7 @@ export default class Editor {
 				}
 			}
 			
-			this.afterPropertyChanged.emit(field.name);
+			this.afterPropertyChanged.emit(field.name, field);
 			
 			if(changed) {
 				this.refreshTreeViewAndPropertyEditor();
