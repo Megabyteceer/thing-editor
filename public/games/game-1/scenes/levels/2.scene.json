@@ -146,7 +146,7 @@
 									"t": 110,
 									"a": "this.stop",
 									"m": 3,
-									"b": 0.86,
+									"b": 0.72,
 									"g": 1
 								},
 								{
@@ -185,7 +185,7 @@
 						"activate": 133
 					},
 					"p": 0.001,
-					"d": 0.92,
+					"d": 0.99,
 					"f": [
 						{
 							"n": "y",
@@ -237,7 +237,7 @@
 								{
 									"v": 635,
 									"t": 199,
-									"j": 119
+									"j": 115
 								}
 							]
 						},
@@ -511,9 +511,11 @@
 				{
 					"c": "Text",
 					"p": {
-						"y": -22,
+						"y": -24,
 						"text": "Gravity x 3",
 						"style.fontSize": 37,
+						"style.fill": "#fff",
+						"style.stroke": "#040",
 						"style.strokeThickness": 6
 					}
 				}
@@ -531,10 +533,12 @@
 				{
 					"c": "Text",
 					"p": {
-						"y": -22,
+						"y": -24,
 						"text": "Gravity x 1",
 						"style.fontSize": 37,
-						"style.strokeThickness": 7
+						"style.fill": "#fff",
+						"style.stroke": "#040",
+						"style.strokeThickness": 6
 					}
 				}
 			]
@@ -542,7 +546,8 @@
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 6,
+				"x": 291,
+				"y": 194,
 				"image": "bunny.png",
 				"xSpeed": 6
 			}

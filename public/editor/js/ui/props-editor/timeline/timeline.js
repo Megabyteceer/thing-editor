@@ -79,7 +79,7 @@ export default class Timeline extends React.Component {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
 				if(timelineElement) {
-					if (timelineElement.isNeedAnimateProperty(o, fieldName)) {
+					if (timeline.isNeedAnimateProperty(o, fieldName)) {
 						getFrameAtTimeOrCreate(o, fieldName, 0);
 					}
 				} else {
@@ -100,8 +100,8 @@ export default class Timeline extends React.Component {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
 				if(timelineElement) {
-					if (timelineElement.isNeedAnimateProperty(o, fieldName)) {
-						timelineElement.createKeyframeWithCurrentObjectsValue(o, fieldName);
+					if (timeline.isNeedAnimateProperty(o, fieldName)) {
+						timeline.createKeyframeWithCurrentObjectsValue(o, fieldName);
 					}
 				} else {
 					let val = o[fieldName];
@@ -112,24 +112,30 @@ export default class Timeline extends React.Component {
 							let fld = getFieldByName(o, fieldName);
 							if(fld) {
 								for(let kf of fld.t) {
-									let changedVal = kf.v + d;
+									let changedVal = kf.v + delta;
 									if(field.hasOwnProperty('min')) {
 										changedVal = Math.max(field.min, changedVal);
 									}
 									if(field.hasOwnProperty('max')) {
 										changedVal = Math.min(field.max, changedVal);
 									}
-									kf.val = changedVal;
+									kf.v = changedVal;
 								}
+								
+								renormalizeFieldTimelineDataAfterChange(fld);
 							}
 						}
 					}
-					renormalizeFieldTimelineDataAfterChange(o.timeline)
-					
+					if(game.__EDITORmode) {
+						o.resetTimeline();
+					}
 				}
 			}
 		});
-		timeline.forceUpdate();
+		if(timelineElement) {
+			timeline.forceUpdate();
+		}
+		
 	}
 	
 	deleteAnimationField(field) {
@@ -195,6 +201,8 @@ export default class Timeline extends React.Component {
 		)
 	}
 }
+
+Timeline.removeAffectFromUnselected = removeAffectFromUnselected;
 
 function getFieldByName(o, name) {
 	if(o._timelineData) {

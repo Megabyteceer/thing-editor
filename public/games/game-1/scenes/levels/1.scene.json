@@ -61,9 +61,9 @@
 				"x": 15,
 				"y": 696,
 				"text": "---",
+				"style.fontSize": 16,
 				"style.align": "left",
 				"style.fill": "#acb",
-				"style.fontSize": 16,
 				"dataPath": "game.currentScene.#b1.x",
 				"template": "Rabbit's X: %%",
 				"isNumeric": true,
@@ -76,9 +76,9 @@
 				"x": 17,
 				"y": 667,
 				"text": "---",
+				"style.fontSize": 16,
 				"style.align": "left",
 				"style.fill": "#acb",
-				"style.fontSize": 16,
 				"dataPath": "Bunny.getRandom",
 				"template": "Banny's random: %%",
 				"isNumeric": true,
@@ -91,22 +91,54 @@
 				"x": 17,
 				"y": 642,
 				"text": "---",
+				"style.fontSize": 16,
 				"style.align": "left",
 				"style.fill": "#acb",
-				"style.fontSize": 16,
 				"dataPath": "game.currentScene.name",
 				"template": "Current scene's name: %%",
 				"decimalsCount": 1
 			}
 		},
 		{
-			"c": "Text",
+			"c": "MovieClip",
 			"p": {
-				"x": 476,
-				"y": 179,
-				"translatableText": "YES",
-				"style.fontSize": 105
-			}
+				"x": 170,
+				"y": 65,
+				"timeline": {
+					"l": {},
+					"p": 0.02,
+					"d": 0.85,
+					"f": [
+						{
+							"n": "x",
+							"t": [
+								{
+									"v": 170,
+									"t": 0,
+									"val": 69
+								},
+								{
+									"v": 367.09662530287426,
+									"t": 147,
+									"val": 266.09662530287426,
+									"m": 1
+								}
+							]
+						}
+					]
+				}
+			},
+			":": [
+				{
+					"c": "Text",
+					"p": {
+						"x": 86,
+						"y": -4,
+						"translatableText": "YES",
+						"style.fontSize": 105
+					}
+				}
+			]
 		}
 	]
 }
