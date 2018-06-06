@@ -124,7 +124,10 @@ class LanguageTableEditor extends React.Component {
 		
 		idsList.some((id) => {
 			lines.push(R.div({key: id, className:'langs-editor-tr'},
-				R.div({className:'langs-editor-th'}, id),
+				R.div({className:'langs-editor-th selectable-text', onMouseDown: function (ev) {
+					selectText(ev.target);
+					sp(ev);
+				}}, id),
 				langsIdsList.map((langId) => {
 					let text = languages[langId][id];
 					if(text === DEFAULT_TEXT) {
