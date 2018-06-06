@@ -1,10 +1,18 @@
 import getValueByPath from '../utils/get-value-by-path.js';
 
-function formatMoney(n, c = 0) {
-		var s = n < 0 ? "-" : "",
-		i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
-		j = (j = i.length) > 3 ? j % 3 : 0;
-	return s + (j ? i.substr(0, j) + " " : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + ' ') + (c ? "." + Math.abs(n - i).toFixed(c).slice(2) : "");
+function formatMoney(num, c = 0) {
+	if (c > 0) {
+		var str = num.toFixed(c).split('.');
+		if (str[0].length > 3) {
+			str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1 ');
+		}
+		if (str[1].length > 3) {
+			str[1] = str[1].replace(/(\d{3})/g, '$1 ');
+		}
+		return str.join('.');
+	} else {
+		return num.toFixed(0).replace(/(\d{3})/g, '$1 ');
+	}
 }
 
 export default class Label extends PIXI.Text {
@@ -152,6 +160,7 @@ As example label with teplate <b>Your money: %% coins</b> will appear on screen 
 		name: 'decimalsCount',
 		type: Number,
 		min: 0,
+		max: 20,
 		disabled:(node) => {
 			return !node.isNumeric;
 		}

@@ -181,7 +181,7 @@ PIXI.Text.EDITOR_editableProps = [
 		type: String,
 		default:'#000000',
 		disabled:(node) => {
-			return node.style.strokeThickness > 0;
+			return node.style.strokeThickness < 1;
 		}
 	},
 	{
