@@ -1,5 +1,5 @@
-var ColorEditor = (props) => {
-	var val = props.value || 0;
+let ColorEditor = (props) => {
+	let val = props.value || 0;
 	
 	return R.input({
 		onChange: props.onChange,

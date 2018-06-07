@@ -1,4 +1,4 @@
-var modalRejectProps = {className: 'modal-reject-text'};
+let modalRejectProps = {className: 'modal-reject-text'};
 
 export default class Prompt extends React.Component {
 	
@@ -17,8 +17,8 @@ export default class Prompt extends React.Component {
 	}
 	
 	onChange(ev) {
-		var val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
-		var reject = this.props.accept ? this.props.accept(val) : undefined;
+		let val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
+		let reject = this.props.accept ? this.props.accept(val) : undefined;
 		this.setState({
 			value: val,
 			rejectReason: reject,

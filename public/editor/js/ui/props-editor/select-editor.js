@@ -43,28 +43,28 @@ class SelectEditor extends React.Component {
 	}
 	
 	onFilterChange(ev) {
-		var val = ev.target.value;
+		let val = ev.target.value;
 		editor.settings.setItem(this.props.field.name + '-filter', val);
 		this.setState({filter: val});
 	}
 	
 	render() {
 		
-		var list = this.props.select || this.props.field.select;
+		let list = this.props.select || this.props.field.select;
 		
-		var items;
+		let items;
 		
 		if (this.state.toggled) {
-			var a = list;
+			let a = list;
 			if(this.props.field) {
 				if(this.state.filter) {
-					var flt = this.state.filter.toLocaleLowerCase();
+					let flt = this.state.filter.toLocaleLowerCase();
 					a = a.filter((i) => {
 						return i.name.toLowerCase().indexOf(flt) >= 0;
 					});
 				}
 				a = a.slice(0, 20);
-				var filterInput = R.input({className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter});
+				let filterInput = R.input({className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter});
 			}
 			
 			
@@ -72,7 +72,7 @@ class SelectEditor extends React.Component {
 			items = R.div({className: 'select-editor-list'}, filterInput, a.map(this.renderItem));
 		}
 		
-		var item;
+		let item;
 		if(this.props.value) {
 			item = list.find((i) => {
 				if (i.value === this.props.value) return i;

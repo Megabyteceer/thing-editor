@@ -3,16 +3,16 @@ import FieldsTimeline from "./timeline-field.js";
 
 const FRAMES_STEP = 3;
 
-var timelineContainerProps = {className: 'timeline list-view', onScroll:onTimelineScroll, onMouseDown:onTimelineMouseDown};
-var objectsTimelineProps = {className: 'objects-timeline'};
-var fieldLabelTimelineProps = {className: 'objects-timeline-labels'};
-var leftTopPanel = {className: 'timeline-left-top-panel', onMouseDown:sp, onMouseMove:sp};
+let timelineContainerProps = {className: 'timeline list-view', onScroll:onTimelineScroll, onMouseDown:onTimelineMouseDown};
+let objectsTimelineProps = {className: 'objects-timeline'};
+let fieldLabelTimelineProps = {className: 'objects-timeline-labels'};
+let leftTopPanel = {className: 'timeline-left-top-panel', onMouseDown:sp, onMouseMove:sp};
 
-var timeline;
-var timelineElement;
-var lastTimelineBounds;
+let timeline;
+let timelineElement;
+let lastTimelineBounds;
 
-var affectedMovieclips = new Map();
+let affectedMovieclips = new Map();
 
 let beforeChangeRemember;
 
@@ -63,11 +63,11 @@ export default class Timeline extends React.Component {
 	}
 	
 	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
-		var keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
+		let keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
 		
 		//TODO: check if field was exists and delta its value if so
 		keyFrame.v = o[fieldName];
-		var field = getFieldByNameOrCreate(o, fieldName);
+		let field = getFieldByNameOrCreate(o, fieldName);
 		renormalizeFieldTimelineDataAfterChange(field);
 	}
 	
@@ -139,8 +139,8 @@ export default class Timeline extends React.Component {
 	}
 	
 	deleteAnimationField(field) {
-		var tl = getTimelineDataByFieldData(field);
-		var i = tl.f.indexOf(field);
+		let tl = getTimelineDataByFieldData(field);
+		let i = tl.f.indexOf(field);
 		assert(i >= 0, "Can't find field in timeline");
 		tl.f.splice(i,1);
 		renormalizeAllLabels(tl);
@@ -206,7 +206,7 @@ Timeline.removeAffectFromUnselected = removeAffectFromUnselected;
 
 function getFieldByName(o, name) {
 	if(o._timelineData) {
-		var fields = o._timelineData.f;
+		let fields = o._timelineData.f;
 		for(let field of fields) {
 			if(field.n === name) {
 				return field;
@@ -216,7 +216,7 @@ function getFieldByName(o, name) {
 }
 
 function getFieldByNameOrCreate(o, name) {
-	var field = getFieldByName(o, name);
+	let field = getFieldByName(o, name);
 	if(!field) {
 		if(!o._timelineData) {
 			o._timelineData = {
@@ -236,13 +236,13 @@ function getFieldByNameOrCreate(o, name) {
 }
 
 function getFrameAtTimeOrCreate(o, name, time) {
-	var field = getFieldByNameOrCreate(o, name);
+	let field = getFieldByNameOrCreate(o, name);
 	for(keyFrame of field.t) {
 		if(keyFrame.t === time) {
 			return keyFrame;
 		}
 	}
-	var keyFrame = {
+	let keyFrame = {
 		v: o[name],	//target Value
 		t: time,	//frame triggering Time
 		m: getDefaultKeyframeTypeForField(o, name), //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
@@ -270,7 +270,7 @@ const keyframeTypesForNumber = [0,1,2,3,4];
 const keyframeTypesDiscreteOnly = [2];
 
 function getKeyframeTypesForField(o, name) {
-	var fieldDesc = editor.getObjectField(o, name);
+	let fieldDesc = editor.getObjectField(o, name);
 	if(fieldDesc.type === Number) {
 		return keyframeTypesForNumber;
 	}
@@ -280,7 +280,7 @@ function getKeyframeTypesForField(o, name) {
 Timeline.getKeyframeTypesForField = getKeyframeTypesForField;
 
 function renormalizeFieldTimelineDataAfterChange(fieldData) { //invalidate cache
-	var timeLineData = fieldData.t;
+	let timeLineData = fieldData.t;
 	timeLineData.sort(sortFieldsByTime);
 	for(let field of timeLineData) {
 		field.n = MovieClip._findNextKeyframe(timeLineData, field.j);
@@ -298,7 +298,7 @@ function renormalizeWholeTimelineData(timelineData) {
 Timeline.renormalizeWholeTimelineData = renormalizeWholeTimelineData;
 
 function getMovieclipByFieldData(fieldData) {
-	for(var o of editor.selection) {
+	for(let o of editor.selection) {
 		if(o._timelineData && o._timelineData.f.some((f) => { //get movieclip by field's timeline data and invalidate whole serialisation cache
 				return f === fieldData;
 			})) {
@@ -320,7 +320,7 @@ const sortFieldsByTime = (a, b) => {
 
 
 const renderObjectsTimeline = (node) => {
-	var key = __getNodeExtendData(node).id;
+	let key = __getNodeExtendData(node).id;
 	if(node instanceof MovieClip && node._timelineData) {
 		return React.createElement(ObjectsTimeline, {node, key});
 	} else {
@@ -357,16 +357,16 @@ class ObjectsTimeline extends React.Component {
 	}
 	
 	render() {
-		var tl = this.props.node._timelineData;
+		let tl = this.props.node._timelineData;
 		
-		var labelsNames = Object.keys(tl.l);
-		var labelsPanel = R.div({
+		let labelsNames = Object.keys(tl.l);
+		let labelsPanel = R.div({
 				onMouseDown:(ev) => { //create new label by right click
 					if(ev.buttons === 2) {
-						var time = mouseTimelineTime;
+						let time = mouseTimelineTime;
 						askForLabelName(labelsNames, "Create new label:").then((name) => {
 							if(name) {
-								var label = {t: time};
+								let label = {t: time};
 								tl.l[name] = label;
 								renormalizeLabel(label, tl);
 								this.forceUpdate();
@@ -425,10 +425,10 @@ class TimeMarker extends React.Component {
 class TimeLabel extends React.Component {
 	
 	render () {
-		var tl = this.props.timelienData;
-		var labelsNamesList = this.props.labelsNamesList;
-		var label = this.props.label;
-		var name = this.props.labelName;
+		let tl = this.props.timelienData;
+		let labelsNamesList = this.props.labelsNamesList;
+		let label = this.props.label;
+		let name = this.props.labelName;
 		
 		return R.div({className:'timeline-label', style:{left: label.t * FRAMES_STEP},
 			onMouseDown: (ev) => {
@@ -466,14 +466,14 @@ function onTimelineScroll(ev) {
 	$('.time-marker-body').css({top: ev.target.scrollTop + 'px'});
 }
 
-var isDragging = false;
-var draggingXShift = 0;
-var draggingLabel;
-var draggingTimelineData;
-var mouseTimelineTime = 0;
+let isDragging = false;
+let draggingXShift = 0;
+let draggingLabel;
+let draggingTimelineData;
+let mouseTimelineTime = 0;
 
 function onTimelineMouseDown(ev) {
-	var b = Timeline.getTimelineWindowBounds();
+	let b = Timeline.getTimelineWindowBounds();
 	if((ev.clientX - b.x) < b.width && (ev.clientY - b.y) < b.height) {
 		if($(ev.target).hasClass('timeline-keyframe')) {
 			draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
@@ -496,10 +496,10 @@ function onMouseMove(ev) {
 	
 	isDragging = (isDragging && (ev.buttons === 1));
 
-	var b = Timeline.getTimelineWindowBounds();
-	var tl = Timeline.getTimelineElement();
+	let b = Timeline.getTimelineWindowBounds();
+	let tl = Timeline.getTimelineElement();
 	if(tl) {
-		var x = ev.clientX - 110 - b.x - draggingXShift;
+		let x = ev.clientX - 110 - b.x - draggingXShift;
 
 		if(ev.buttons !== 0) {
 			if (x < 20) {

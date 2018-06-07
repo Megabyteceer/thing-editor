@@ -8,7 +8,7 @@ import Tip from "../../utils/tip.js";
 import DataPathEditor from "./data-path-editor.js";
 
 
-var typeDescriptions = new Map();
+let typeDescriptions = new Map();
 
 typeDescriptions.set(Number, {
 	renderer: NumberEditor,
@@ -58,17 +58,17 @@ typeDescriptions.set('timeline', {
 });
 
 
-var getTypeDescription = (field) => {
-	var t = field.type || Number;
+let getTypeDescription = (field) => {
+	let t = field.type || Number;
 	assert(typeDescriptions.has(t), "Unknown editable property type: " + t);
 	return typeDescriptions.get(t);
 }
 
-var labelProps = {className: 'props-label selectable-text', onMouseDown: function (ev) {
+let labelProps = {className: 'props-label selectable-text', onMouseDown: function (ev) {
 	selectText(ev.target);
 	sp(ev);
 }};
-var wrapperProps = {className: 'props-wrapper'};
+let wrapperProps = {className: 'props-wrapper'};
 
 class PropsFieldWrapper extends React.Component {
 	
@@ -81,12 +81,12 @@ class PropsFieldWrapper extends React.Component {
 	
 	onChange(ev, delta, deltaVal) {
 		delta = (delta === true);
-		var field = this.props.field;
-		var val = getTypeDescription(field).parser(ev.target);
+		let field = this.props.field;
+		let val = getTypeDescription(field).parser(ev.target);
 		if(field.hasOwnProperty('parser')){
 			val = field.parser(val);
 		}
-		var initialVal = val;
+		let initialVal = val;
 		
 		if (field.hasOwnProperty('min')) {
 			val = Math.max(field.min, val);
@@ -104,22 +104,22 @@ class PropsFieldWrapper extends React.Component {
 	}
 	
 	render() {
-		var field = this.props.field;
-		var node = editor.selection[0];
+		let field = this.props.field;
+		let node = editor.selection[0];
 		editor.ui.propsEditor.__isPropsRenderingAccessTime = true;
-		var value = node[field.name];
+		let value = node[field.name];
 		editor.ui.propsEditor.__isPropsRenderingAccessTime = false;
 		
-		var renderer;
+		let renderer;
 		if (field.hasOwnProperty('select')) {
 			renderer = SelectEditor;
 		} else {
 			renderer = getTypeDescription(field).renderer;
 		}
 		
-		var disabled = field.disabled && field.disabled(node);
+		let disabled = field.disabled && field.disabled(node);
 		
-		var tip;
+		let tip;
 		if(field.hasOwnProperty('tip')) {
 			tip = R.tip(field.name,
 				'Field "' + field.name + '" description:',
@@ -141,7 +141,7 @@ class PropsFieldWrapper extends React.Component {
 	}
 }
 
-var _surrogateEventObj = {target: {value: 0}};
+let _surrogateEventObj = {target: {value: 0}};
 PropsFieldWrapper.surrogateChnageEvent = (val) => {
 	_surrogateEventObj.target.value = val;
 	return _surrogateEventObj;

@@ -107,7 +107,7 @@ Object.defineProperties(PIXI.Text.prototype, {
 
 PIXI.Text.prototype.onLanguageChanged = function onLanguageChanged() {
 	if(this._translatableText) {
-		var t = this._translatableText;
+		let t = this._translatableText;
 		this._translatableText = null;
 		this.translatableText = t;
 	}

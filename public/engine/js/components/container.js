@@ -5,7 +5,7 @@ PIXI.Container.prototype.update = emtyFunction;
 PIXI.Container.prototype.init = emtyFunction;
 PIXI.Container.prototype.onRemove = emtyFunction;
 
-var _labelName;
+let _labelName;
 const gotoLabelAndPlay = (m)  => {
 	if (m.hasLabel(_labelName)) {
 		m.gotoLabel(_labelName);

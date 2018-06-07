@@ -16,9 +16,9 @@ const keyframesClasses = [
 	'timeline-keyframe-jump-roof'
 ];
 
-var fieldLabelTimelineProps = {className: 'objects-timeline-labels', onMouseDown:sp, onMouseMove:sp};
+let fieldLabelTimelineProps = {className: 'objects-timeline-labels', onMouseDown:sp, onMouseMove:sp};
 
-var _scale, _shift;
+let _scale, _shift;
 const scale = (val) => {
 	return (_shift - val) * _scale;
 };
@@ -46,12 +46,12 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	getValueAtTime(time) {
-		var field = this.props.field;
+		let field = this.props.field;
 		if(!field.__cacheTimeline) {
-			var fieldPlayer = Pool.create(FieldPlayer);
-			var c = [];
+			let fieldPlayer = Pool.create(FieldPlayer);
+			let c = [];
 			field.__cacheTimeline = c;
-			var wholeTimelineData = Timeline.getTimelineDataByFieldData(field);
+			let wholeTimelineData = Timeline.getTimelineDataByFieldData(field);
 			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
 			fieldPlayer.reset();
 			calculateCacheSegmentForField(fieldPlayer, c);
@@ -81,8 +81,8 @@ export default class FieldsTimeline extends React.Component {
 	
 	renderKeyframeChart(keyFrame) {
 		if(keyFrame.n && (keyFrame.t < keyFrame.n.t)) {
-			var n = keyFrame.n;
-			var ret = [];
+			let n = keyFrame.n;
+			let ret = [];
 			for(let i = keyFrame.t+1; i <= n.t; i++) {
 				ret.push((i * FRAMES_STEP) + ',' + scale(this.getValueAtTime(i)));
 			}
@@ -92,31 +92,31 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	toggleKeyframeType(keyFrame) {
-		var types = Timeline.getKeyframeTypesForField(editor.selection[0], this.props.field.n);
-		var i = types.indexOf(keyFrame.m);
+		let types = Timeline.getKeyframeTypesForField(editor.selection[0], this.props.field.n);
+		let i = types.indexOf(keyFrame.m);
 		keyFrame.m = types[(i + 1) % types.length];
 		this.onKeyframeChanged(keyFrame);
 	}
 	
 	renderKeyframe(keyFrame) {
-		var loopArrow;
-		var isSelected = isKeyframeSelected(keyFrame);
-		var isNextOfSelected = selectedKeyframe && (selectedKeyframe.n === keyFrame);
+		let loopArrow;
+		let isSelected = isKeyframeSelected(keyFrame);
+		let isNextOfSelected = selectedKeyframe && (selectedKeyframe.n === keyFrame);
 		if(keyFrame.j !== keyFrame.t) {
-			var len = Math.abs(keyFrame.j - keyFrame.t);
+			let len = Math.abs(keyFrame.j - keyFrame.t);
 			len *= FRAMES_STEP;
 			loopArrow = R.svg({className:'loop-arrow', height:11, width:len},
 				R.polyline({points:'0,0 6,6 3,8 0,0 6,9 '+(len/2)+',10 '+(len-3)+',7 '+len+',0'})
 			);
 		}
-		var className = 'timeline-keyframe ' + keyframesClasses[keyFrame.m];
+		let className = 'timeline-keyframe ' + keyframesClasses[keyFrame.m];
 		if(isSelected) {
 			className += ' timeline-keyframe-selected';
 		} else if (isNextOfSelected) {
 			className += ' timeline-keyframe-nextofselected';
 		}
 		
-		var mark;
+		let mark;
 		if(keyFrame.hasOwnProperty('a')) {
 			
 			mark = (keyFrame.a === 'this.stop') ? '■' : 'A';
@@ -166,8 +166,8 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	deleteKeyframe(keyFrame) {
-		var f = this.props.field;
-		var i = f.t.indexOf(keyFrame);
+		let f = this.props.field;
+		let i = f.t.indexOf(keyFrame);
 		assert(i >= 0, "can't delete keyFrame.");
 		if(i > 0) {
 			f.t.splice(i, 1);
@@ -215,13 +215,13 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	gotoLabel(direction) {
-		var field = this.props.field;
-		var currentTime = Timeline.timeline.getTime();
-		var currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
+		let field = this.props.field;
+		let currentTime = Timeline.timeline.getTime();
+		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		
-		var i = field.t.indexOf(currentKeyframe);
+		let i = field.t.indexOf(currentKeyframe);
 		
-		var moved = (currentKeyframe.t - currentTime);
+		let moved = (currentKeyframe.t - currentTime);
 		
 		if(!(((direction > 0) === (moved > 0)) && ((direction < 0) === (moved < 0)))) {
 			i += direction;
@@ -244,9 +244,9 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	onToggleKeyframeClick(time) {
-		var field = this.props.field;
-		var currentTime = time || Timeline.timeline.getTime();
-		var currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
+		let field = this.props.field;
+		let currentTime = time || Timeline.timeline.getTime();
+		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		if(currentKeyframe.t !== currentTime) {
 			Timeline.timeline.createKeyframeWithTimelineValue(field, currentTime);
 			this.forceUpdate();
@@ -256,9 +256,9 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	render() {
-		var field = this.props.field;
+		let field = this.props.field;
 		
-		var label = R.div(fieldLabelTimelineProps,
+		let label = R.div(fieldLabelTimelineProps,
 			field.n,
 			R.br(),
 			R.btn('×', this.onRemoveFieldClick, 'Remove field animation...', 'danger-btn'),
@@ -268,8 +268,8 @@ export default class FieldsTimeline extends React.Component {
 			
 		);
 		
-		var lastKeyframe = field.t[field.t.length - 1];
-		var width = 0;
+		let lastKeyframe = field.t[field.t.length - 1];
+		let width = 0;
 		if(lastKeyframe) {
 			width = Math.max(lastKeyframe.t, lastKeyframe.j);
 		}
@@ -290,7 +290,7 @@ export default class FieldsTimeline extends React.Component {
 			)
 		}
 		
-		var keyframePropsEditor;
+		let keyframePropsEditor;
 		if(selectedKeyframe && field.t.indexOf(selectedKeyframe) >= 0) {
 			keyframePropsEditor = React.createElement(KeyframePropertyEditor, {node:this.props.node, toggleKeyframeType:this.toggleKeyframeType, onKeyframeChanged: this.onKeyframeChanged, timelineData:field, ref: this.keyframePropretyEditorRef, keyFrame: selectedKeyframe});
 		}
@@ -311,14 +311,14 @@ export default class FieldsTimeline extends React.Component {
 	}
 }
 
-var draggingKeyframe, draggingTimeline;
+let draggingKeyframe, draggingTimeline;
 
 const calculateCacheSegmentForField = (fieldPlayer, c) => {
 	fieldPlayer.__dontCallActions = true;
-	var time;
-	var i = 0;
-	var fields = fieldPlayer.timeline;
-	var limit = fields[fields.length-1].t;
+	let time;
+	let i = 0;
+	let fields = fieldPlayer.timeline;
+	let limit = fields[fields.length-1].t;
 	while(!c.hasOwnProperty(fieldPlayer.time)) {
 		time = fieldPlayer.time;
 		c[time] = fieldPlayer.val;
@@ -333,9 +333,9 @@ const calculateCacheSegmentForField = (fieldPlayer, c) => {
 };
 
 
-var selectedKeyframe, selectedTimeline;
+let selectedKeyframe, selectedTimeline;
 
-var selectKeyframeTypes = ['SMOOTH', 'LINEAR', 'DISCRETE', 'JUPM FLOOR', 'JUMP ROOF'];
+let selectKeyframeTypes = ['SMOOTH', 'LINEAR', 'DISCRETE', 'JUPM FLOOR', 'JUMP ROOF'];
 
 class KeyframePropertyEditor extends React.Component {
 	
@@ -354,32 +354,32 @@ class KeyframePropertyEditor extends React.Component {
 	}
 	
 	onGravityChange(ev) {
-		var kf = selectedKeyframe;
+		let kf = selectedKeyframe;
 		kf.g = parseFloat(ev.target.value);
 		this.props.onKeyframeChanged(kf);
 	}
 	
 	onBouncingChange(ev) {
-		var kf = selectedKeyframe;
+		let kf = selectedKeyframe;
 		kf.b = parseFloat(ev.target.value);
 		this.props.onKeyframeChanged(kf);
 	}
 	
 	onActionChange(ev) {
-		var kf = selectedKeyframe;
+		let kf = selectedKeyframe;
 		kf.a = ev.target.value;
 		this.props.onKeyframeChanged(kf);
 	}
 	
 	onSpeedChanged(ev) {
-		var kf = selectedKeyframe;
+		let kf = selectedKeyframe;
 		kf.s = parseFloat(ev.target.value);
 		this.props.onKeyframeChanged(kf);
 		this.forceUpdate();
 	}
 	
 	onSetSpeeedExistsChanged(ev) {
-		var kf = selectedKeyframe;
+		let kf = selectedKeyframe;
 		if(ev.target.checked) {
 			kf.s = 0;
 		} else {
@@ -389,7 +389,7 @@ class KeyframePropertyEditor extends React.Component {
 	}
 	
 	onJumpExistsChanged(ev) {
-		var kf = selectedKeyframe;
+		let kf = selectedKeyframe;
 		if(ev.target.checked) {
 			kf.j = 0;
 		} else {
@@ -399,14 +399,14 @@ class KeyframePropertyEditor extends React.Component {
 	}
 	
 	onJumpChanged(ev) {
-		var kf = selectedKeyframe;
+		let kf = selectedKeyframe;
 		kf.j = Math.round(ev.target.value);
 		this.props.onKeyframeChanged(kf);
 		this.forceUpdate();
 	}
 	
 	onDemptChanged(ev) {
-		var val =  parseFloat(ev.target.value);
+		let val =  parseFloat(ev.target.value);
 		editor.selection.some((o) => {
 			o._timelineData.d = val;
 		});
@@ -417,7 +417,7 @@ class KeyframePropertyEditor extends React.Component {
 	}
 	
 	onPowChanged(ev) {
-		var val =  parseFloat(ev.target.value);
+		let val =  parseFloat(ev.target.value);
 		editor.selection.some((o) => {
 			o._timelineData.p = val;
 		});
@@ -438,12 +438,12 @@ class KeyframePropertyEditor extends React.Component {
 	}
 	
 	render () {
-		var kf = selectedKeyframe;
+		let kf = selectedKeyframe;
 		if(!kf) {
 			return R.div();
 		}
 		
-		var extendEditor;
+		let extendEditor;
 		if(kf.m > 2 ) { //JUMP ROOF, JUMP FLOOR
 			extendEditor = R.span(null,
 				' Gravity: ' ,R.input({value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
@@ -451,7 +451,7 @@ class KeyframePropertyEditor extends React.Component {
 			)
 		} else if(kf.m === 0) { //SMOOTH
 			
-			var presetSelectedValue = presets.find((p) => {
+			let presetSelectedValue = presets.find((p) => {
 				return editor.selection[0]._timelineData.p === p.value.p && editor.selection[0]._timelineData.d === p.value.d;
 			}) || presets[0];
 			
@@ -462,16 +462,16 @@ class KeyframePropertyEditor extends React.Component {
 			)
 		}
 		
-		var b = Timeline.getTimelineWindowBounds();
+		let b = Timeline.getTimelineWindowBounds();
 		
-		var hasSpeed =  kf.hasOwnProperty('s');
-		var speedEditor;
+		let hasSpeed =  kf.hasOwnProperty('s');
+		let speedEditor;
 		if(hasSpeed) {
 			speedEditor = R.input({value: kf.s, type:'number', step:0.1, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 		}
 		
-		var hasJump = kf.j !== kf.t;
-		var jumpEditor;
+		let hasJump = kf.j !== kf.t;
+		let jumpEditor;
 		if(hasJump) {
 			jumpEditor = R.input({value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
 		}
@@ -528,7 +528,7 @@ class PlayingDisplay extends React.Component {
 	}
 	
 	update() {
-		var fieldPlayer = this.props.node.fieldPlayers[this.props.fieldIndex];
+		let fieldPlayer = this.props.node.fieldPlayers[this.props.fieldIndex];
 		this.fieldPlayer = fieldPlayer;
 		if(fieldPlayer && fieldPlayer.time !== this.renderedTime) {
 			this.renderedTime = fieldPlayer.time;
@@ -540,7 +540,7 @@ class PlayingDisplay extends React.Component {
 		if(!this.fieldPlayer) {
 			return R.div();
 		} else {
-			var firedFrame;
+			let firedFrame;
 			if(this.fieldPlayer.__lastFiredKeyframe) {
 				firedFrame = R.div({className:'timeline-fire-indicator', style:{left: this.fieldPlayer.__lastFiredKeyframe.t * FRAMES_STEP}})
 			}

@@ -2,21 +2,21 @@ import PropsFieldWrapper from './props-field-wrapper.js';
 import Group from '../group.js';
 import Window from '../window.js';
 
-var editorProps = {
+let editorProps = {
 	className: 'props-editor'
 };
-var headerProps = {
+let headerProps = {
 	className: 'props-header'
 };
-var headerTextProps = {
+let headerTextProps = {
 	className: 'mid-text-align'
 };
 
 class PropsEditor extends React.Component {
 	
 	onChangeClassClick() {
-		var classesList;
-		var title;
+		let classesList;
+		let title;
 		if(editor.selection[0] instanceof Scene) {
 			classesList = editor.ClassesLoader.sceneClasses;
 			title = "Choose new scene type for current scene";
@@ -30,14 +30,14 @@ class PropsEditor extends React.Component {
 		
 		editor.ui.modal.showListChoose(title, classesList.map(i => i.c)).then((selectedClass) => {
 			if(selectedClass && (editor.selection[0].constructor !== selectedClass)) {
-				var a = editor.selection.slice(0);
-				var selectionData = editor.selection.saveSelection();
+				let a = editor.selection.slice(0);
+				let selectionData = editor.selection.saveSelection();
 				
 				a.some((o) => {
 					o.constructor = selectedClass;
 				});
 
-				var newSceneData = Lib.__serializeObject( game.currentContainer);
+				let newSceneData = Lib.__serializeObject( game.currentContainer);
 				
 				a.some((o) => {
 					assert(o.hasOwnProperty('constructor'));
@@ -69,8 +69,8 @@ class PropsEditor extends React.Component {
 			return 'Nothing selected';
 		}
 		
-		var header;
-		var firstClass = editor.selection[0].constructor;
+		let header;
+		let firstClass = editor.selection[0].constructor;
 		if(editor.selection.some((o) =>{
 			return o.constructor !== firstClass;
 		})) {
@@ -85,13 +85,13 @@ class PropsEditor extends React.Component {
 			);
 		}
 		
-		var props = editor.enumObjectsProperties(editor.selection[0]);
-		var propsFilter = {};
+		let props = editor.enumObjectsProperties(editor.selection[0]);
+		let propsFilter = {};
 		
 		editor.selection.some((o) => {
-			var ps = editor.enumObjectsProperties(o);
+			let ps = editor.enumObjectsProperties(o);
 			ps.some((p) => {
-				var name = p.name;
+				let name = p.name;
 				propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
 			});
 		});
@@ -99,8 +99,8 @@ class PropsEditor extends React.Component {
 			return propsFilter[p.name] === editor.selection.length;
 		});
 		
-		var groups = [];
-		var curGroup, curGroupArray;
+		let groups = [];
+		let curGroup, curGroupArray;
 		props.some((p) => {
 			if (p.type === 'splitter') {
 				if (curGroup) {

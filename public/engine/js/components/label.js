@@ -2,7 +2,7 @@ import getValueByPath from '../utils/get-value-by-path.js';
 
 function formatMoney(num, c = 0) {
 	if (c > 0) {
-		var str = num.toFixed(c).split('.');
+		let str = num.toFixed(c).split('.');
 		if (str[0].length > 3) {
 			str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1 ');
 		}
@@ -36,7 +36,7 @@ export default class Label extends PIXI.Text {
 	update() {
 		if(this.currentInterval <= 0 && this.dataPath) {
 			
-			var val = getValueByPath(this.dataPath, this);
+			let val = getValueByPath(this.dataPath, this);
 			if(val !== undefined) {
 				if(val !== this.showedVal) {
 					this.visible = true;

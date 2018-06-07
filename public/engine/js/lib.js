@@ -1,15 +1,15 @@
 import Pool from "./utils/pool.js";
 
-var prefabs = {};
-var scenes;
-var classes;
-var defaults;
-var textures = {};
-var staticScenes = {};
+let prefabs = {};
+let scenes;
+let classes;
+let defaults;
+let textures = {};
+let staticScenes = {};
 
-var noCacheCounter = 0;
+let noCacheCounter = 0;
 
-var constructRecursive = (o) => {
+let constructRecursive = (o) => {
 	assert(!game.__EDITORmode, "initialization attempt in editing mode.");
 	
 	o.init();
@@ -18,9 +18,9 @@ var constructRecursive = (o) => {
 	__getNodeExtendData(o).constructorCalled = true;
 	///#endif
 	
-	var a = o.children;
-	var arrayLength = a.length;
-	for(var i = 0; i < arrayLength; i++) {
+	let a = o.children;
+	let arrayLength = a.length;
+	for(let i = 0; i < arrayLength; i++) {
 		constructRecursive(a[i]);
 	}
 }
@@ -76,7 +76,7 @@ class Lib {
 	}
 	
 	static _loadClassInstanceById(id) {
-		var ret = Pool.create(classes[id]);
+		let ret = Pool.create(classes[id]);
 		Object.assign(ret, defaults[id]);
 		if(!game.__EDITORmode) {
 			constructRecursive(ret);
@@ -91,7 +91,7 @@ class Lib {
 	static getTexture(name) {
 		
 		/// #if EDITOR
-		var exists = textures.hasOwnProperty(name);
+		let exists = textures.hasOwnProperty(name);
 		if(!exists) {
 			assert(exists, "No texture with name '" + name + "' registred in Lib");
 			return PIXI.Texture.EMPTY;
@@ -136,7 +136,7 @@ class Lib {
 	static _deserializeObject(src) {
 		assert(classes.hasOwnProperty(src.c), 'Unknown class id: ' + src.c);
 		assert(defaults.hasOwnProperty(src.c), 'Class with id ' + src.c + ' has no default values set');
-		var ret = Pool.create(classes[src.c]);
+		let ret = Pool.create(classes[src.c]);
 		Object.assign(ret, defaults[src.c], src.p);
 		if(src.hasOwnProperty(':')) {
 			src[':'].some((src) => {
@@ -151,13 +151,13 @@ class Lib {
 			return staticScenes[name];
 		}
 		
-		var isSceneExists = scenes.hasOwnProperty(name);
+		let isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, "No scene with name '" + name + "'", true);
 		if(!isSceneExists) {
 			name = Object.keys(scenes)[0]; //get any scene
 		}
 		
-		var s = _loadObjectFromData(scenes[name]);
+		let s = _loadObjectFromData(scenes[name]);
 		if(s.isStatic) {
 			staticScenes[name] = s;
 		}
@@ -185,7 +185,7 @@ class Lib {
 			scenes[name] = undefined;
 		} else {
 			assert(editor.ClassesLoader.getClassType(scene.constructor) === Scene, "attempt to save not Scene instance in to scenes list.");
-			var sceneData = Lib.__serializeObject(scene);
+			let sceneData = Lib.__serializeObject(scene);
 			scenes[name] = sceneData;
 			editor.fs.saveFile(Lib.__sceneNameToFileName(name), sceneData, true);
 		}
@@ -197,13 +197,13 @@ class Lib {
 		}
 		assert(typeof name === 'string');
 		assert(editor.ClassesLoader.getClassType(object.constructor) === PIXI.DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
-		var prefabData = Lib.__serializeObject(object);
+		let prefabData = Lib.__serializeObject(object);
 		prefabs[name] = prefabData;
 		editor.fs.saveFile(Lib.__prefabNameToFileName(name), prefabData, true);
 	}
 	
 	static __getNameByPrefab(prefab) {
-		for(var name in prefabs) {
+		for(let name in prefabs) {
 			if(prefabs[name] === prefab) {
 				return name;
 			}
@@ -240,8 +240,8 @@ class Lib {
 	}
 	
 	static __serializeObject(o) {
-		var props = {};
-		var propsList = editor.enumObjectsProperties(o);
+		let props = {};
+		let propsList = editor.enumObjectsProperties(o);
 		
 		if(o.__beforeSerialization) {
 			o.__beforeSerialization();
@@ -249,14 +249,14 @@ class Lib {
 		
 		propsList.some((p) => {
 			if(!p.notSeriazable) {
-				var val = o[p.name];
+				let val = o[p.name];
 				if((val != p.default) && (typeof val != 'undefined') && (val !== null)) {
 					props[p.name] = val;
 				}
 			}
 		});
 		assert(classes.hasOwnProperty(o.constructor.name), 'Attempt to serialize class ' + o.constructor.name + ' which was not loaded properly.');
-		var ret = {
+		let ret = {
 			c: o.constructor.name,
 			p: props
 		};
@@ -276,7 +276,7 @@ class Lib {
 }
 
 const _loadObjectFromData = (src) => {
-	var ret = Lib._deserializeObject(src);
+	let ret = Lib._deserializeObject(src);
 	if(!game.__EDITORmode) {
 		constructRecursive(ret);
 	}

@@ -1,5 +1,5 @@
 function renderGroup(props) {
-	var gid = 'props-group-' + props.key;
+	let gid = 'props-group-' + props.key;
 	return R.div({key: gid, className: 'props-group ' + gid},
 		R.div({
 			className: 'props-group-header clickable clickable-neg',
@@ -12,20 +12,20 @@ function renderGroup(props) {
 
 function groupArray(a, delimitter = '/', level = 0) {
 	
-	var groups = {};
-	var group;
+	let groups = {};
+	let group;
 	
-	var ret = [];
-	for (var item of a) {
+	let ret = [];
+	for (let item of a) {
 		
-		var name = item.key;
-		var np = name.split(delimitter);
+		let name = item.key;
+		let np = name.split(delimitter);
 		if (np.length > (level + 1)) {
 			if (level > 0) {
 				np.splice(0, level);
 			}
 			
-			var groupName = np.shift();
+			let groupName = np.shift();
 			
 			if (!groups.hasOwnProperty(groupName)) {
 				groups[groupName] = [];
@@ -51,9 +51,9 @@ function isGroupHidden(groupId) {
 }
 
 function toggleGroup(ev) {
-	var groupId = ev.target.dataset.groupid;
-	var group = $('.' + groupId + ' .props-group-body');
-	var isHidden = !isGroupHidden(groupId);
+	let groupId = ev.target.dataset.groupid;
+	let group = $('.' + groupId + ' .props-group-body');
+	let isHidden = !isGroupHidden(groupId);
 	editor.settings.setItem(groupId, isHidden);
 	if (isHidden) {
 		group.addClass('hidden');

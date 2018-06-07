@@ -26,7 +26,7 @@ export default class SceneLinkedRequest extends Container {
 			this.requestId = requestsIdCounter++;
 			this.result = null;
 			this.error = null;
-			var requestId = this.requestId;
+			let requestId = this.requestId;
 			
 			fetch(this.waitUrlToRequest, this.options).then((result) => {
 				if(this.requestId === requestId) {
@@ -55,4 +55,4 @@ export default class SceneLinkedRequest extends Container {
 	}
 }
 
-var requestsIdCounter = 0;
+let requestsIdCounter = 0;

@@ -50,7 +50,7 @@ class Selection extends Array {
 	
 	remove(o) {
 		assert(__getNodeExtendData(o).isSelected);
-		var i = this.indexOf(o);
+		let i = this.indexOf(o);
 		assert(i >= 0);
 		__getNodeExtendData(o).isSelected = false;
 		o.filters = null;
@@ -71,8 +71,8 @@ setInterval(() => {
 
 //save/load selection
 
-var getPathOfNode = (node) => {
-	var ret = [];
+let getPathOfNode = (node) => {
+	let ret = [];
 	while (node !== game.stage) {
 		ret.push(node.parent.getChildIndex(node));
 		node = node.parent;
@@ -80,9 +80,9 @@ var getPathOfNode = (node) => {
 	return ret;
 };
 
-var selectNodeByPath = (path, nodeNum) => {
-	var ret = game.stage;
-	for (var i = path.length - 1; i >= 0; i--) {
+let selectNodeByPath = (path, nodeNum) => {
+	let ret = game.stage;
+	for (let i = path.length - 1; i >= 0; i--) {
 		ret = ret.getChildAt(path[i]);
 	}
 	if (nodeNum === 0) {
@@ -94,21 +94,21 @@ var selectNodeByPath = (path, nodeNum) => {
 
 
 //-------- sorting selection --------------------------------
-var curDeepness;
+let curDeepness;
 
-var recalculateNodesDeepness = () => {
+let recalculateNodesDeepness = () => {
 	curDeepness = 0;
 	recalculateNodesDeepnessRecursive(game.stage);
 };
 
-var recalculateNodesDeepnessRecursive = (n) => {
+let recalculateNodesDeepnessRecursive = (n) => {
 	__getNodeExtendData(n).deepness = curDeepness++;
 	if (n.hasOwnProperty('children')) {
 		n.children.some(recalculateNodesDeepnessRecursive);
 	}
 };
 
-var sortByDeepness = (a, b) => {
+let sortByDeepness = (a, b) => {
 	return __getNodeExtendData(a).deepness - __getNodeExtendData(b).deepness;
 };
 

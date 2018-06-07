@@ -14,14 +14,14 @@ export default class TimelineProperty extends React.Component {
 	}
 	
 	onToggleClick() { //show/hide timeline window
-		var t = !this.state.toggled;
+		let t = !this.state.toggled;
 		this.setState({toggled: t});
 		editor.settings.setItem('timeline-showed', t);
 	}
 	
 	render () {
-		var btn = R.btn(this.state.toggled ? 'Close Timeline' : 'Open timeline', this.onToggleClick);
-		var timeline;
+		let btn = R.btn(this.state.toggled ? 'Close Timeline' : 'Open timeline', this.onToggleClick);
+		let timeline;
 		if(this.state.toggled) {
 			timeline = editor.ui.renderWindow('timeline', 'Timeline', React.createElement(Timeline, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 1137, 407);
 			setTimeout(() => {

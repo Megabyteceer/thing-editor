@@ -1,4 +1,4 @@
-var pools = new Map();
+let pools = new Map();
 
 export default class Pool {
 	
@@ -10,7 +10,7 @@ export default class Pool {
 		if (!pools.has(constructor)) {
 			return new constructor();
 		}
-		var a = pools.get(constructor);
+		let a = pools.get(constructor);
 		if (a.length === 0) {
 			return new constructor();
 		}
@@ -18,7 +18,7 @@ export default class Pool {
 	}
 	
 	static dispose(obj) {
-		var key = obj.constructor;
+		let key = obj.constructor;
 		if (!pools.has(key)) {
 			pools.set(key, []);
 		}

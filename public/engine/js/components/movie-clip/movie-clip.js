@@ -14,7 +14,7 @@ export default class MovieClip extends DSprite {
 			if (this.delay > 0) {
 				this.delay--;
 			} else {
-				for(var p of this.fieldPlayers) {
+				for(let p of this.fieldPlayers) {
 					if (this.isPlaying) {
 						p.update();
 					}
@@ -32,12 +32,12 @@ export default class MovieClip extends DSprite {
 		}
 		if(!serializeCache.has(this._timelineData)) {
 			console.warn("MovieClip serialization invoked >>>");
-			var tl = this._timelineData;
-			var fields = tl.f.map((f) => {
+			let tl = this._timelineData;
+			let fields = tl.f.map((f) => {
 				return {
 					n: f.n,
 					t: f.t.map((k) => {
-						var ret = Object.assign({}, k);
+						let ret = Object.assign({}, k);
 						if(ret.j === ret.t) {
 							delete(ret.j);
 						}
@@ -50,12 +50,12 @@ export default class MovieClip extends DSprite {
 				};
 			});
 
-			var labels = {};
+			let labels = {};
 			for(let key in tl.l) {
-				var label = tl.l[key];
+				let label = tl.l[key];
 				labels[key] = label.t;
 			}
-			var c = {
+			let c = {
 				l: labels,
 				p: tl.p,
 				d: tl.d,
@@ -73,7 +73,7 @@ export default class MovieClip extends DSprite {
 /// #endif
 
 	static _findNextKeyframe (timeLineData, time) {
-		var ret;
+		let ret;
 		for(let f of timeLineData) {
 			if(f.t > time) {
 				return f;
@@ -84,10 +84,10 @@ export default class MovieClip extends DSprite {
 	}
 	
 	static _deserializeTimelineData(tl) {
-		var fields = tl.f.map((f) => {
+		let fields = tl.f.map((f) => {
 			
-			var fieldTimeline = f.t.map((k) => {
-				var ret =  Object.assign({}, k);
+			let fieldTimeline = f.t.map((k) => {
+				let ret =  Object.assign({}, k);
 				if(!ret.hasOwnProperty('j')) {
 					ret.j = ret.t;
 				}
@@ -105,10 +105,10 @@ export default class MovieClip extends DSprite {
 			};
 		});
 		
-		var labels = {};
+		let labels = {};
 		for(let key in tl.l) {
-			var labelTime = tl.l[key];
-			var nexts = fields.map((field) => {
+			let labelTime = tl.l[key];
+			let nexts = fields.map((field) => {
 				return MovieClip._findNextKeyframe(field.t, labelTime - 1);
 			});
 			labels[key] = {t: labelTime, n: nexts};
@@ -129,7 +129,7 @@ export default class MovieClip extends DSprite {
 			|| editor.disableFieldsCache
 /// #endif
 		) {
-			var desData = MovieClip._deserializeTimelineData(data);
+			let desData = MovieClip._deserializeTimelineData(data);
 			deserializeCache.set(data, desData);
 /// #if EDITOR
 			serializeCache.set(desData, data);
@@ -141,15 +141,15 @@ export default class MovieClip extends DSprite {
 		assert(Array.isArray(data.f), "Wrong timeline data?");
 		this._timelineData = data;
 
-		var pow = data.p; //smooth fields dynamic parameters
-		var damper = data.d;
+		let pow = data.p; //smooth fields dynamic parameters
+		let damper = data.d;
 		
 		while (this.fieldPlayers.length > 0) {
 			Pool.dispose(this.fieldPlayers.pop());
 		}
-		var fieldsData = data.f;
-		for(var i = 0; i < fieldsData.length; i++) {
-			var p = Pool.create(FieldPlayer);
+		let fieldsData = data.f;
+		for(let i = 0; i < fieldsData.length; i++) {
+			let p = Pool.create(FieldPlayer);
 			p.init(this, fieldsData[i], pow, damper);
 			this.fieldPlayers.push(p);
 		}
@@ -166,7 +166,7 @@ export default class MovieClip extends DSprite {
 	}
 	
 	gotoLabel(labelName) {
-		var label = this._timelineData.l[labelName];
+		let label = this._timelineData.l[labelName];
 		let l = this.fieldPlayers.length;
 		for(let i =0; i < l; i++) {
 			this.fieldPlayers[i].goto(label.t, label.n[i]);
@@ -183,24 +183,24 @@ export default class MovieClip extends DSprite {
 	}
 	
 	playRecursive() {
-		for (var c of this.findChildrenByType(MovieClip)) {
+		for (let c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = true;
 		}
 	}
 	
 	stopRecursive() {
-		for (var c of this.findChildrenByType(MovieClip)) {
+		for (let c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = false;
 		}
 	}
 }
 
 
-var deserializeCache = new WeakMap();
+let deserializeCache = new WeakMap();
 
 /// #if EDITOR
 
-var serializeCache = new WeakMap();
+let serializeCache = new WeakMap();
 MovieClip.EDITOR_group = 'Basic';
 MovieClip.EDITOR_icon = 'tree/movie';
 MovieClip.EDITOR_editableProps = [

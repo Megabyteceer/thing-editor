@@ -1,6 +1,6 @@
 import Group from "./group.js";
 
-var bodyProps = {className: 'list-view', title: 'Double click to open scene.'};
+let bodyProps = {className: 'list-view', title: 'Double click to open scene.'};
 
 const sceneFileFiler = /^scenes\/.*\.scene.json$/gm;
 const sceneExtRemover = /.scene.json$/gm;
@@ -8,7 +8,7 @@ const fileNameToSceneName = (fn) => {
 	return fn.replace('scenes/', '').replace(sceneExtRemover, '');
 };
 
-var sceneNameProps = {
+let sceneNameProps = {
 	className: "selectable-text", title: 'click to select scene`s name', onMouseDown: function (ev) {
 		selectText(ev.target);
 		sp(ev);
@@ -31,7 +31,7 @@ export default class ScenesList extends React.Component {
 	
 	onSaveAsSceneClick() {
 		
-		var defaultSceneName = editor.currentSceneName.split('/');
+		let defaultSceneName = editor.currentSceneName.split('/');
 		defaultSceneName.pop();
 		defaultSceneName = defaultSceneName.join('/');
 		if (defaultSceneName) {
@@ -64,7 +64,7 @@ export default class ScenesList extends React.Component {
 	}
 	
 	renderItem(sceneName, item) {
-		var cls = Lib.getClass(item.c);
+		let cls = Lib.getClass(item.c);
 		
 		if(sceneName === editor.currentSceneName) {
 			this.state.selectedItem = item;
@@ -83,8 +83,8 @@ export default class ScenesList extends React.Component {
 	}
 	
 	render() {
-		var libsScenes = Lib._getAllScenes();
-		var bottomPanelClassName = '';
+		let libsScenes = Lib._getAllScenes();
+		let bottomPanelClassName = '';
 		if (!editor.currentSceneName) {
 			bottomPanelClassName += ' disabled';
 			this.state.selectedItem = null;
@@ -92,8 +92,8 @@ export default class ScenesList extends React.Component {
 			this.state.selectedItem = libsScenes[editor.currentSceneName];
 		}
 		
-		var scenes = [];
-		for (var sceneName in libsScenes) {
+		let scenes = [];
+		for (let sceneName in libsScenes) {
 			if (!ScenesList.isSpecialSceneName(sceneName)) {
 				scenes.push(this.renderItem(sceneName, libsScenes[sceneName]));
 			}
@@ -111,7 +111,7 @@ export default class ScenesList extends React.Component {
 	}
 	
 	static readAllScenesList() {
-		var scenes = {};
+		let scenes = {};
 		return Promise.all(
 			editor.fs.files.filter(fn => fn.match(sceneFileFiler))
 			.map((fn) => {

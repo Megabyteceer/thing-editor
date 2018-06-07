@@ -32,8 +32,8 @@ const faderProperty = {
 
 Object.defineProperty(faderProperty, 'select', {
 	get:() => {
-		var ret = [{name:'default', value:''}];
-		var a = Lib._getAllPrefabs();
+		let ret = [{name:'default', value:''}];
+		let a = Lib._getAllPrefabs();
 		for(let name in a) {
 			if(name.startsWith('fader/')) {
 				ret.push({name:name, value:name})

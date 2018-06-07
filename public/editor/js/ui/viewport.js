@@ -6,22 +6,22 @@ import LanguageSwitcher from "./language-switcher.js";
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
 const PAUSE_ICON = R.icon('pause');
-var selectionData;
-var prefabTitleProps = {className: 'prefabs-mode-title'};
-var prefabLabelProps = {
+let selectionData;
+let prefabTitleProps = {className: 'prefabs-mode-title'};
+let prefabLabelProps = {
 	className: 'selectable-text', onMouseDown: function(ev) {
 		selectText(ev.target);
 		sp(ev);
 	}
 };
 
-var stoppingExecutionTime;
-var playTogglingTime;
-var recoveryCheckingTime;
-var problemOnGameStart,
+let stoppingExecutionTime;
+let playTogglingTime;
+let recoveryCheckingTime;
+let problemOnGameStart,
 	problemOnGameStop;
 
-var savedBackupName;
+let savedBackupName;
 
 export default class Viewport extends React.Component {
 	
@@ -77,7 +77,7 @@ export default class Viewport extends React.Component {
 			
 			game.__doOneStep = false;
 			game.__paused = false;
-			var play = game.__EDITORmode;
+			let play = game.__EDITORmode;
 			this.beforePlayStopToggle.emit(play);
 			Lib.__clearStaticScenes();
 			if(play) { // launch game
@@ -137,9 +137,9 @@ export default class Viewport extends React.Component {
 	
 	render() {
 		
-		var className = 'editor-viewport-wrapper';
-		var statusHeader;
-		var panel;
+		let className = 'editor-viewport-wrapper';
+		let statusHeader;
+		let panel;
 		if(this.state.prefabMode) {
 			className += ' editor-viewport-wrapper-prefab-mode';
 			panel = R.span(null,
@@ -157,7 +157,7 @@ export default class Viewport extends React.Component {
 				})
 			)
 		} else {
-			var pauseResumeBtn, oneStepBtn;
+			let pauseResumeBtn, oneStepBtn;
 			if(window.game && !game.__EDITORmode) {
 				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, undefined, 'big-btn');
 				if(game.__paused) {

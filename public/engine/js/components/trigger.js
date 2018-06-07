@@ -55,7 +55,7 @@ export default class Trigger extends Container {
 	}
 	
 	updatePhase() {
-		var qTo = this._state ? 0 : 1;
+		let qTo = this._state ? 0 : 1;
 		if((this.pow === 1) || ((Math.abs(qTo - this.q) < 0.01) && (Math.abs(this.qSpeed) < 0.01))) {
 			this.triggering = false;
 			this.q = qTo;
@@ -69,7 +69,7 @@ export default class Trigger extends Container {
 		this.visible = this.alpha > 0.01;
 		
 		if (this.scaleShift !== 0) {
-			var s = this.initialScale + this.q * this.scaleShift;
+			let s = this.initialScale + this.q * this.scaleShift;
 			this.scale.x = s;
 			this.scale.y = s;
 		}
@@ -85,7 +85,7 @@ export default class Trigger extends Container {
 	
 	update() {
 		if (this.dataPath) {
-			var s = this.getState();
+			let s = this.getState();
 			if(this._state !== s) {
 				this.toggle();
 			}

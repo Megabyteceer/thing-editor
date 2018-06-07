@@ -5,26 +5,26 @@
 import Selection from "./selection.js";
 import Pool from "../../../engine/js/utils/pool.js";
 
-var blackout = new PIXI.Sprite();
+let blackout = new PIXI.Sprite();
 blackout.texture = PIXI.Texture.WHITE;
 blackout.tint = 30;
 blackout.alpha = 0.9;
 blackout.width = W;
 blackout.height = H;
 
-var currentlyShowedPreview;
+let currentlyShowedPreview;
 
-var draggers = [];
+let draggers = [];
 
 function createDragger(owner, constructor) {
-	var ret = Pool.create(constructor);
+	let ret = Pool.create(constructor);
 	draggers.push(ret);
 	ret.owner = owner;
 	ret.info = __getNodeExtendData(owner);
 	return ret;
 }
 
-var savedSelection;
+let savedSelection;
 
 export default class Overlay {
 	
@@ -74,15 +74,15 @@ export default class Overlay {
 }
 
 const p = new PIXI.Point();
-var overedDragger, draggingDragger;
+let overedDragger, draggingDragger;
 
-var currentPointer = 'initial';
+let currentPointer = 'initial';
 function refreshSelection() {
 	overedDragger = null;
-	var i = draggers.length - 1;
+	let i = draggers.length - 1;
 	while (i >= 0) {
-		var d = draggers[i];
-		var info = __getNodeExtendData(d.owner);
+		let d = draggers[i];
+		let info = __getNodeExtendData(d.owner);
 		if (!info.isSelected || d.info !== info) {
 			d.parent.removeChild(d);
 			Pool.dispose(d);
@@ -95,14 +95,14 @@ function refreshSelection() {
 		}
 		i--;
 	}
-	var newPointer = overedDragger ? ((overedDragger instanceof Rotator) ? 'pointer' : 'move') : 'initial';
+	let newPointer = overedDragger ? ((overedDragger instanceof Rotator) ? 'pointer' : 'move') : 'initial';
 	if(currentPointer !== newPointer) {
 		game.pixiApp.view.style.cursor = newPointer;
 		currentPointer = newPointer;
 	}
 	
 	editor.selection.some((o) => {
-		var info = __getNodeExtendData(o);
+		let info = __getNodeExtendData(o);
 		if (!info.draggerPivot) {
 			info.draggerPivot = createDragger(o, Dragger);
 			game.pixiApp.stage.addChild(info.draggerPivot);
@@ -112,14 +112,14 @@ function refreshSelection() {
 		o.getGlobalPosition(p, true);
 		info.draggerPivot.x = p.x;
 		info.draggerPivot.y = p.y;
-		var r = o.getGlobalRotation();
+		let r = o.getGlobalRotation();
 		info.draggerRotator.x = p.x + Math.cos(r) * 40;
 		info.draggerRotator.y = p.y + Math.sin(r) * 40;
 		info.draggerRotator.rotation = r;
 	});
 }
 
-var startX, startY;
+let startX, startY;
 
 $(window).on('mousedown', (ev) => {
 	if(ev.target === game.pixiApp.view) {
@@ -132,7 +132,7 @@ $(window).on('mousedown', (ev) => {
 		} else if(ev.target === game.pixiApp.view && ev.buttons === 1) {
 			selectByStageClick(ev);
 		} else if(ev.buttons === 2 && editor.selection.length > 0) {
-			var info = __getNodeExtendData(editor.selection[0]);
+			let info = __getNodeExtendData(editor.selection[0]);
 			if(info.draggerPivot) {
 				draggingDragger = info.draggerPivot;
 				draggingDragger.onDrag();
@@ -153,17 +153,17 @@ $(window).on('mousedown', (ev) => {
 	}
 });
 
-var previousAllUnderMouse;
+let previousAllUnderMouse;
 function selectByStageClick(ev) {
-	var allUnderMouse = new Selection();
-	var stack = [game.currentContainer];
-	var i;
+	let allUnderMouse = new Selection();
+	let stack = [game.currentContainer];
+	let i;
 	
 	while (stack.length > 0) {
 		if (stack.length > 1000) throw new Error('owerflow');
-		var o = stack.pop();
-		var childs = o.children;
-		var len = childs.length;
+		let o = stack.pop();
+		let childs = o.children;
+		let len = childs.length;
 		for (i = 0; i < len; i++) {
 			o = childs[i];
 			if (o.children.length > 0) {
@@ -211,19 +211,19 @@ class Dragger extends DSprite {
 	}
 	
 	onDrag() {
-		var o = this.owner;
+		let o = this.owner;
 		
 		if(game.mouse.shiftKey) {
-			var dX = game.mouse.x - startX;
-			var dY = game.mouse.y - startY;
-			var angle = Math.atan2(dY, dX);
+			let dX = game.mouse.x - startX;
+			let dY = game.mouse.y - startY;
+			let angle = Math.atan2(dY, dX);
 			angle /= Math.PI;
 			angle *= 4;
 			angle = Math.round(angle);
 			angle /= 4.0;
 			angle *= Math.PI;
 			
-			var len = Math.sqrt(dX * dX + dY * dY);
+			let len = Math.sqrt(dX * dX + dY * dY);
 			p.x = startX + Math.cos(angle) * len;
 			p.y = startY + Math.sin(angle) * len;
 		} else {
@@ -245,9 +245,9 @@ class Rotator extends DSprite {
 	}
 	
 	onDrag() {
-		var o = this.owner;
-		var info = __getNodeExtendData(o);
-		var r = Math.atan2(game.mouse.y - info.draggerPivot.y, game.mouse.x - info.draggerPivot.x);
+		let o = this.owner;
+		let info = __getNodeExtendData(o);
+		let r = Math.atan2(game.mouse.y - info.draggerPivot.y, game.mouse.x - info.draggerPivot.x);
 		if (game.mouse.shiftKey) {
 			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 		}

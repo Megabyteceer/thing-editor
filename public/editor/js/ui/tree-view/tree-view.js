@@ -2,8 +2,8 @@ import TreeNode from './tree-node.js';
 import Window from '../window.js';
 import Selection from "../../utils/selection.js";
 
-var classViewProps = {className: 'vertical-layout'};
-var leftPanelProps = {className: 'left-panel'};
+let classViewProps = {className: 'vertical-layout'};
+let leftPanelProps = {className: 'left-panel'};
 
 let foundByWhichProperty;
 
@@ -38,7 +38,7 @@ export default class TreeView extends React.Component {
 	
 	selectInTree(node, add) {
 		assert(node, "Attempt to select in tree empty node");
-		var n = node;
+		let n = node;
 		while (n && n.parent) {
 			__getNodeExtendData(n).toggled = true;
 			n = n.parent;
@@ -53,7 +53,7 @@ export default class TreeView extends React.Component {
 			
 			foundByWhichProperty = null;
 			
-			var e = $('.scene-tree-view .item-selected');
+			let e = $('.scene-tree-view .item-selected');
 			if (e[0]) {
 				Window.bringWindowForward(e.closest('.window-body'));
 				e[0].scrollIntoView({});
@@ -63,10 +63,10 @@ export default class TreeView extends React.Component {
 
 	onDeleteClick() {
 		if((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
-			var p = editor.selection[0].parent;
-			var i = p.getChildIndex(editor.selection[0]);
+			let p = editor.selection[0].parent;
+			let i = p.getChildIndex(editor.selection[0]);
 
-			var a = editor.selection.slice(0);
+			let a = editor.selection.slice(0);
 			editor.selection.clearSelection();
 
 			a.some((o) => {
@@ -101,9 +101,9 @@ export default class TreeView extends React.Component {
 	onPasteClick() {
 		if(editor.clipboardData && editor.clipboardData.length > 0) {
 			editor.disableFieldsCache = true;
-			var added = [];
+			let added = [];
 			editor.clipboardData.some((data) => {
-				var o = Lib._deserializeObject(data);
+				let o = Lib._deserializeObject(data);
 				added.push(o);
 				editor.attachToSelected(o, true);
 			});
@@ -118,20 +118,20 @@ export default class TreeView extends React.Component {
 	}
 	
 	onBringUpClick() {
-		var i = 0;
+		let i = 0;
 		while(this.onMoveUpClick(true) && i++ < 100000); //moves selected object up until its become top
 		editor.sceneModified(true);
 		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
 	onMoveUpClick(dontSaveHistoryState) {
-		var ret = false;
+		let ret = false;
 		
 		editor.selection.some((o) => {
 			if(o.parent !== game.stage) {
-				var i = o.parent.getChildIndex(o);
+				let i = o.parent.getChildIndex(o);
 				if (i > 0) {
-					var upper = o.parent.getChildAt(i - 1);
+					let upper = o.parent.getChildAt(i - 1);
 					if(!__getNodeExtendData(upper).isSelected) {
 						o.parent.swapChildren(o, upper);
 						ret = true;
@@ -147,14 +147,14 @@ export default class TreeView extends React.Component {
 	}
 	
 	onMoveDownClick(dontSaveHistoryState) {
-		var ret = false;
-		var a = editor.selection.slice(0);
+		let ret = false;
+		let a = editor.selection.slice(0);
 		a.reverse();
 		a.some((o) => {
 			if(o.parent !== game.stage) {
-				var i = o.parent.getChildIndex(o);
+				let i = o.parent.getChildIndex(o);
 				if(i < (o.parent.children.length - 1)) {
-					var lower = o.parent.getChildAt(i + 1);
+					let lower = o.parent.getChildAt(i + 1);
 					if(!__getNodeExtendData(lower).isSelected) {
 						o.parent.swapChildren(o, lower);
 						ret = true;
@@ -212,7 +212,7 @@ export default class TreeView extends React.Component {
 	}
 	
 	findNext(condition, direction) {
-		var a = new Selection();
+		let a = new Selection();
 		
 		if(condition(game.currentContainer)) {
 			a.push(game.currentContainer);
@@ -246,7 +246,7 @@ export default class TreeView extends React.Component {
 	render() {
 		if (typeof game === 'undefined') return R.spinner();
 		
-		var isEmpty = editor.selection.length === 0;
+		let isEmpty = editor.selection.length === 0;
 		
 		return R.div(classViewProps,
 			R.div(leftPanelProps,
@@ -277,7 +277,7 @@ const renderRoots = (node, i) => {
 	if(node === game.currentContainer) {
 		return R.renderSceneNode(node);
 	} else {
-		var style;
+		let style;
 		if(__getNodeExtendData(node).hidden) {
 			style = {display:'none'};
 		}

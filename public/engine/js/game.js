@@ -15,19 +15,19 @@ window.L = L;
 
 PIXI.settings.MIPMAP_TEXTURES = false;
 
-var stage;
-var app;
+let stage;
+let app;
 
 const FRAME_PERIOD = 1.0;
-var frameCounterTime = 0;
+let frameCounterTime = 0;
 
-var modals = [];
-var hiddingModals = [];
+let modals = [];
+let hiddingModals = [];
 
-var SHOOTTIME = false;
-var currentFader;
-var showStack = [];
-var scale = 1;
+let SHOOTTIME = false;
+let currentFader;
+let showStack = [];
+let scale = 1;
 
 class Game {
 	
@@ -83,8 +83,8 @@ class Game {
 	
 	init(element) {
 		
-		var w = window.innerWidth;
-		var h = window.innerHeight;
+		let w = window.innerWidth;
+		let h = window.innerHeight;
 		scale = Math.min(w / W, h / H);
 		/// #if EDITOR
 		w = W;
@@ -147,14 +147,14 @@ class Game {
 		///#endif
 		
 		window.addEventListener('resize', function() {
-			var w = window.innerWidth / scale;
-			var h = window.innerHeight / scale;
+			let w = window.innerWidth / scale;
+			let h = window.innerHeight / scale;
 			game.stage.scale.x = w / W;
 			game.stage.scale.y = h / H;
 			game.pixiApp.renderer.resize(w, h);
 		});
 		
-		var preloader = new Preloader();
+		let preloader = new Preloader();
 		
 		fetch("assets.json").then(function(response) {
 			return response.json();
@@ -167,7 +167,7 @@ class Game {
 			Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 			
 			assets.images.some((tName) => {
-				var fileName = 'img/' + tName;
+				let fileName = 'img/' + tName;
 				PIXI.loader.add(fileName);
 				Lib.addTexture(tName, fileName);
 			});
@@ -271,7 +271,7 @@ class Game {
 			this.hideModal();
 		}
 		while(showStack.length > 0) {
-			var s = showStack.pop();
+			let s = showStack.pop();
 			this.stage.addChild(s);
 			s.remove();
 		}
@@ -308,12 +308,12 @@ class Game {
 				displayObject = undefined;
 			}
 		}
-		
+		let modalToHide;
 		if(!displayObject) {
 			assert(modals.length > 0, 'Attempt to hide modal when modal list is empty.');
-			var modalToHide = modals.pop();
+			modalToHide = modals.pop();
 		} else {
-			var i = modals.indexOf(displayObject);
+			let i = modals.indexOf(displayObject);
 			assert(i >= 0, 'Attempt to hide modal object which is not in modal list.');
 			modalToHide = modals[i];
 			modals.splice(i, 1)
@@ -327,8 +327,8 @@ class Game {
 	}
 	
 	static mouseEventToGlobalXY(ev) {
-		var b = app.view.getBoundingClientRect();
-		var n = ev.clientX - b.left;
+		let b = app.view.getBoundingClientRect();
+		let n = ev.clientX - b.left;
 		tmpPoint.x = n * (W / b.width);
 		n = ev.clientY - b.top;
 		tmpPoint.y = n * (H / b.height);
@@ -344,7 +344,7 @@ class Game {
 			if((!this.__paused || this.__doOneStep) && !this.__EDITORmode) {
 /// #endif
 				frameCounterTime += dt;
-				var limit = 4;
+				let limit = 4;
 				frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * 4);
 				while(frameCounterTime > FRAME_PERIOD) {
 					
@@ -367,8 +367,8 @@ class Game {
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 			
 			this.currentScene.interactiveChildren = ((this.modalsCount === 0) && !currentFader);
-			var i = this.modalsCount - 1;
-			var isCurrent = !currentFader;
+			let i = this.modalsCount - 1;
+			let isCurrent = !currentFader;
 			while(i >= 0) {
 				modals[i].interactiveChildren = isCurrent;
 				isCurrent = false;
@@ -382,9 +382,9 @@ class Game {
 		if(currentFader) {
 			updateRecursivelly(currentFader);
 		}
-		var i = hiddingModals.length - 1; //hide modals process
+		let i = hiddingModals.length - 1; //hide modals process
 		while(i >= 0) {
-			var m = hiddingModals[i];
+			let m = hiddingModals[i];
 			m.alpha -= 0.1;
 			if(m.alpha <= 0.01) {
 				m.remove();
@@ -395,20 +395,20 @@ class Game {
 	}
 }
 
-var tmpPoint = {};
+let tmpPoint = {};
 
 function updateRecursivelly(o) {
 	o.update();
-	var a = o.children;
-	var arrayLength = a.length;
-	for(var i = arrayLength - 1; i >= 0 && o.parent; i--) {
+	let a = o.children;
+	let arrayLength = a.length;
+	for(let i = arrayLength - 1; i >= 0 && o.parent; i--) {
 		updateRecursivelly(a[i]);
 	}
 }
 
 
 const mouseHandlerGlobal = (ev) => {
-	var p = Game.mouseEventToGlobalXY(ev);
+	let p = Game.mouseEventToGlobalXY(ev);
 	game.mouse.x = Math.round(p.x);
 	game.mouse.y = Math.round(p.y);
 	game.mouse.click = ev.buttons !== 0;

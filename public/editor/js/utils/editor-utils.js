@@ -3,7 +3,7 @@
 window.W = 1280;
 window.H = 720;
 
-var factories = {};
+let factories = {};
 window.R = factories;
 
 ['div', 'span', 'img', 'button', 'input', 'b', 'a', 'br', 'hr', 'svg', 'polyline', 'textarea'].some((factoryType) => {
@@ -32,7 +32,7 @@ R.classIcon = (constructor) => {
 };
 
 R.listItem = (view, item, key, parent) => {
-	var className = 'list-item';
+	let className = 'list-item';
 	if(parent.state.selectedItem === item) {
 		className += ' item-selected';
 	}
@@ -105,8 +105,8 @@ $(window).on('keydown', (ev) => {
 });
 
 window.selectText = function(element) {
-	var selection = window.getSelection();
-	var range = document.createRange();
+	let selection = window.getSelection();
+	let range = document.createRange();
 	range.selectNodeContents(element);
 	selection.removeAllRanges();
 	selection.addRange(range);
@@ -115,10 +115,10 @@ window.selectText = function(element) {
 
 //======== wrapPropertyWithNumberChecker - make numeric property sensitive for NaN assigning
 
-var _definedProps = new WeakMap();
-var _valStore = new WeakMap();
+let _definedProps = new WeakMap();
+let _valStore = new WeakMap();
 
-var _getValStore = (o) => {
+let _getValStore = (o) => {
 	if(!_valStore.has(o)) {
 		_valStore.set(o, {});
 	}
@@ -130,24 +130,25 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	if(!_definedProps.has(constructor)) {
 		_definedProps.set(constructor, {});
 	}
-	var o = _definedProps.get(constructor);
+	let o = _definedProps.get(constructor);
 	if(o.hasOwnProperty(propertyName)) return; //wrapped already
 	o[propertyName] = true;
 	
+	let originalSetter;
 	
-	var newSetter = function(val) {
+	let newSetter = function(val) {
 		assert(!isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.');
 		originalSetter.call(this, val);
 	};
 	
-	var d = Object.getOwnPropertyDescriptor(constructor.prototype, propertyName);
+	let d = Object.getOwnPropertyDescriptor(constructor.prototype, propertyName);
 	if(d) {
 		//console.log("Property " + propertyName + " wraped.")
-		var originalSetter = d.set;
+		originalSetter = d.set;
 		d.set = newSetter;
 	} else {
 		//console.log("Own property " + propertyName + " wraped.")
-		var privValue = '__wrapper_store_' + propertyName;
+		let privValue = '__wrapper_store_' + propertyName;
 		
 		originalSetter = function(val) {
 			_getValStore(this)[privValue] = val;
@@ -163,10 +164,10 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 };
 
 window.isEventFocusOnInputElement = (ev) => {
-	var tag = ev.target.tagName;
-	
+	let tag = ev.target.tagName;
+	let canBePassed;
 	if(ev.type === 'keydown') {
-		var canBePassed = ev.ctrlKey;
+		canBePassed = ev.ctrlKey;
 		if(canBePassed) {
 			switch(ev.keyCode) {  //block cpypaste hotkeys foxused on text inputs only
 				case 67:
@@ -198,7 +199,7 @@ window.assert = (expression, message, dontBreakFlow) => {
 };
 
 window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) => {
-	var ret = {
+	let ret = {
 		name: name,
 		type: String,
 		default: canBeEmpty ? '' : 'EMPTY',
@@ -207,7 +208,7 @@ window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) 
 	Object.defineProperty(ret, 'select', {
 		get: () => {
 			if(canBeEmpty) {
-				var a = Lib.__texturesList.concat();
+				let a = Lib.__texturesList.concat();
 				a[0] = {
 					"name": "none",
 					"value": ""

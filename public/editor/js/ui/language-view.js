@@ -29,14 +29,14 @@ export default class LanguageView extends React.Component {
 	}
 	
 	onToggleClick() { //show/hide text editor window
-		var t = !this.state.toggled;
+		let t = !this.state.toggled;
 		this.setState({toggled: t});
 		editor.settings.setItem('timeline-showed', t);
 	}
 	
 	render () {
-		var btn = R.btn(this.state.toggled ? 'Close Text Editor' : 'Open Text Editor', this.onToggleClick, undefined, undefined, 1069);
-		var table;
+		let btn = R.btn(this.state.toggled ? 'Close Text Editor' : 'Open Text Editor', this.onToggleClick, undefined, undefined, 1069);
+		let table;
 		if(this.state.toggled) {
 			table = editor.ui.renderWindow('texteditor', 'Text Table', R.fragment(
 				R.btn('×', this.onToggleClick, 'Hide Text Editor', 'close-window-btn'),
@@ -71,7 +71,7 @@ class LanguageTableEditor extends React.Component {
 			}
 		).then((enteredName) => {
 			if (enteredName) {
-				var lang = {};
+				let lang = {};
 				languages[enteredName] = lang;
 				
 				for(let langId of idsList) {

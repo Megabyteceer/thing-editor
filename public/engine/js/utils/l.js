@@ -14,7 +14,7 @@ function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%%' entr
 	
 	/// #endif
 	
-	var ret = currentLanguageTable.hasOwnProperty(id) ? currentLanguageTable[id] : id;
+	let ret = currentLanguageTable.hasOwnProperty(id) ? currentLanguageTable[id] : id;
 	if(typeof val1 !== 'undefined') {
 		ret = ret.replace('%%', val1);
 		if(typeof val2 !== 'undefined') {

@@ -1,10 +1,10 @@
 import Prompt from './prompt.js';
 import ChooseList from './choose-list.js';
 
-var modal;
+let modal;
 
-var blackoutProps = {className: 'modal-blackout fadein-animation'};
-var blackoutPropsClosable = {
+let blackoutProps = {className: 'modal-blackout fadein-animation'};
+let blackoutPropsClosable = {
 	className: 'modal-blackout fadein-animation', style: {cursor: 'pointer'}, onClick: (sp) => {
 		if (sp.target.className.indexOf('modal-blackout') === 0) {
 			modal.hideModal();
@@ -12,16 +12,16 @@ var blackoutPropsClosable = {
 	}
 };
 
-var spinnerProps = {className: 'modal-spinner'};
-var bodyProps = {className: 'modal-body'};
-var titleProps = {className: 'modal-title'};
-var contentProps = {className: 'modal-content'};
-var errorProps = {className: 'error'};
+let spinnerProps = {className: 'modal-spinner'};
+let bodyProps = {className: 'modal-body'};
+let titleProps = {className: 'modal-title'};
+let contentProps = {className: 'modal-content'};
+let errorProps = {className: 'error'};
 
-var spinnerShowCounter = 0;
+let spinnerShowCounter = 0;
 
-var renderModal = (props, i) => {
-	var title;
+let renderModal = (props, i) => {
+	let title;
 	
 	if (props.title) {
 		title = R.div(titleProps, props.title);
@@ -41,7 +41,7 @@ var renderModal = (props, i) => {
 
 $(window).on('keydown', (ev) => {
 	if (ev.keyCode === 27) {
-		var m = modal.state.modals[modal.state.modals.length - 1];
+		let m = modal.state.modals[modal.state.modals.length - 1];
 		if (m && !m.noEasyClose) {
 			modal.hideModal();
 			sp(ev);
@@ -49,7 +49,7 @@ $(window).on('keydown', (ev) => {
 	}
 });
 
-var renderSpinner = () => {
+let renderSpinner = () => {
 	return R.div(blackoutProps,
 		R.div(spinnerProps)
 	);
@@ -66,7 +66,7 @@ class Modal extends React.Component {
 	
 	hideModal(val) {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
-		var closedModalItem = modal.state.modals.pop();
+		let closedModalItem = modal.state.modals.pop();
 		modal.forceUpdate();
 		closedModalItem.resolve(val);
 	}
@@ -101,12 +101,14 @@ class Modal extends React.Component {
 	
 	showQuestion(title, message, onYes, yesLabel = 'Ok', onNo, noLabel = 'Cancel', noEasyClose) {
 		
-		var yesBtn = R.btn(yesLabel, () => {
+		let yesBtn = R.btn(yesLabel, () => {
 			modal.hideModal(true);
 			onYes();
 		}, undefined, 'main-btn', 13);
+		
+		let noBtn;
 		if (typeof onNo !== 'undefined') {
-			var noBtn = R.btn(noLabel, () => {
+			noBtn = R.btn(noLabel, () => {
 				modal.hideModal();
 				onNo();
 			});
@@ -139,7 +141,7 @@ class Modal extends React.Component {
 	}
 	
 	render() {
-		var spinner;
+		let spinner;
 		if (spinnerShowCounter > 0) {
 			spinner = renderSpinner();
 		}

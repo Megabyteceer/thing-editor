@@ -28,14 +28,14 @@ class ClessesView extends React.Component {
 		if(editor.selection.length < 1) {
 			editor.ui.modal.showModal('Alert', 'Nothing selected to wrap.')
 		} else {
-			var a = editor.selection.slice(0);
+			let a = editor.selection.slice(0);
 			editor.selection.clearSelection();
-			var wasModified = false;
+			let wasModified = false;
 			a.some((o) => {
 				if(o.parent === game.stage) {
 					editor.ui.modal.showModal('Alert', 'Root element was not wrapped.')
 				} else {
-					var w = Lib._loadClassInstanceById(this.state.selectedItem.c.name);
+					let w = Lib._loadClassInstanceById(this.state.selectedItem.c.name);
 					o.parent.addChildAt(w, o.parent.getChildIndex(o));
 					w.addChild(o);
 					editor.ui.sceneTree.selectInTree(w, true);
@@ -53,7 +53,7 @@ class ClessesView extends React.Component {
 	}
 	
 	renderItem(item) {
-		var tip;
+		let tip;
 		if(item.c.EDITOR_tip) {
 			tip = R.tip('class-' + item.c.name,
 				'Component "' + item.c.name + '" description:',
@@ -61,7 +61,7 @@ class ClessesView extends React.Component {
 			);
 		}
 		
-		var key;
+		let key;
 		if(item.c.hasOwnProperty('EDITOR_group')) {
 			key = item.c.EDITOR_group + '/' + item.c.name;
 		} else {
@@ -91,9 +91,9 @@ class ClessesView extends React.Component {
 	
 	render() {
 		
-		var body;
+		let body;
 		
-		var classes = editor.ClassesLoader.gameObjClasses;
+		let classes = editor.ClassesLoader.gameObjClasses;
 		if (!classes) {
 			body = 'Loading...'
 		} else {
@@ -101,7 +101,7 @@ class ClessesView extends React.Component {
 			body.reverse();
 		}
 		
-		var bottomPanelClassName = '';
+		let bottomPanelClassName = '';
 		if (!this.selectedItem()) {
 			bottomPanelClassName += ' disabled';
 		}

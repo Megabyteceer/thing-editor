@@ -26,7 +26,7 @@ export default class FieldPlayer {
 		this.time = time;
 		this.currentFrame = nextKeyframe;
 		if(nextKeyframe.m === 1) { //LINEAR
-			var dist = nextKeyframe.t - this.time;
+			let dist = nextKeyframe.t - this.time;
 			if(dist > 0) {
 				this.speed = (nextKeyframe.v - this.val) / dist;
 			} else {
@@ -40,12 +40,12 @@ export default class FieldPlayer {
 	}
 	
 	update() {
-		var currentFrame = this.currentFrame;
+		let currentFrame = this.currentFrame;
 		if (this.time === currentFrame.t) {
 /// #if EDITOR
 			this.__lastFiredKeyframe = currentFrame;
 /// #endif
-			var action;
+			let action;
 			if (currentFrame.hasOwnProperty('a')) {
 				action = currentFrame.a;
 			}
@@ -61,7 +61,7 @@ export default class FieldPlayer {
 			this.time = currentFrame.j;
 			this.currentFrame = currentFrame = currentFrame.n;
 			if(currentFrame.m === 1) {// LINEAR Mode
-				var dist = currentFrame.t - this.time;
+				let dist = currentFrame.t - this.time;
 				if(dist > 0) {
 					this.speed = (currentFrame.v - this.val) / dist;
 				} else {

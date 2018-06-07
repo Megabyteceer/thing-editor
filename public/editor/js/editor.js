@@ -90,7 +90,7 @@ export default class Editor {
 		if(!dir) {
 			this.fs.chooseProject(true);
 		} else if(dir !== editor.currentProjectDir) {
-			var data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
+			let data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
 			game.__clearStage();
 			Pool.clearAll();
 			await this.fs.refreshFiles();
@@ -142,7 +142,7 @@ export default class Editor {
 	
 	get currentSceneName() {
 		if(!window.game) return null;
-		var a = game._getScenesStack();
+		let a = game._getScenesStack();
 		if(a.length > 0) {
 			return a[0].name;
 		}
@@ -150,7 +150,7 @@ export default class Editor {
 	}
 	
 	initResize() {
-		var onResize = () => {
+		let onResize = () => {
 			this.W = window.innerWidth;
 			this.H = window.innerHeight;
 		};
@@ -171,10 +171,10 @@ export default class Editor {
 	reloadClasses() {
 		this.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
-		var needRepairScene = game.currentScene != null;
+		let needRepairScene = game.currentScene != null;
 		if(needRepairScene) {
 			this.saveCurrentScene(editor.runningSceneLibSaveSlotName);
-			var selectionData = editor.selection.saveSelection();
+			let selectionData = editor.selection.saveSelection();
 		}
 		
 		
@@ -217,15 +217,15 @@ export default class Editor {
 			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
-			var changed = false;
+			let changed = false;
 			
 			this.beforePropertyChanged.emit(field.name, field);
 			
 			if(delta === true) {
 				assert(field.type === Number);
 				for(let o of this.selection) {
-					var v = o[field.name];
-					var newVal = v + val;
+					let v = o[field.name];
+					let newVal = v + val;
 					if(field.hasOwnProperty('min')) {
 						newVal = Math.max(field.min, newVal);
 					}
@@ -371,10 +371,10 @@ let __saveProjectDescriptorInner = () => {
 	editor.fs.saveFile('project.json', editor.projectDesc);
 };
 
-var selectionsForScenesByName = {};
+let selectionsForScenesByName = {};
 
-var needHistorySave = false;
-var tryToSaveHistory = () => {
+let needHistorySave = false;
+let tryToSaveHistory = () => {
 	if(needHistorySave) {
 		history.addHistoryState();
 		needHistorySave = false;
@@ -384,7 +384,7 @@ var tryToSaveHistory = () => {
 $(window).on('mouseup', tryToSaveHistory);
 $(window).on('keyup', tryToSaveHistory);
 
-var idCounter = 0;
+let idCounter = 0;
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
 	if(!editorNodeData.has(node)) {

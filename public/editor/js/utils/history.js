@@ -1,16 +1,16 @@
 const HISTORY_LEN = 50;
 const STRICT_HISTORY_LEN = 10;
 
-var undosStack = []; //separated undo/redo array for scene and each modal objects
-var redosStack = [];
-var historyUi;
+let undosStack = []; //separated undo/redo array for scene and each modal objects
+let redosStack = [];
+let historyUi;
 
-var instance;
+let instance;
 
 function applyState(state) {
 	assert(state, 'Empty history record');
 	
-	var node = Lib._deserializeObject(state);
+	let node = Lib._deserializeObject(state);
 	assert(game.__EDITORmode);
 	game.__setCurrentContainerContent(node);
 	editor.selection.loadSelection(state.selectionData);
@@ -38,7 +38,7 @@ class History {
 	    if(typeof game === 'undefined') {
 	        return [];
         }
-        var l = game.modalsCount + 1;
+        let l = game.modalsCount + 1;
         if(undosStack.length > l) {
             undosStack.length = l;
         } else if (undosStack.length < l) {
@@ -51,7 +51,7 @@ class History {
         if(typeof game === 'undefined') {
             return [];
         }
-        var l = game.modalsCount + 1;
+        let l = game.modalsCount + 1;
         if(redosStack.length > l) {
             redosStack.length = l;
         } else if (redosStack.length < l) {
@@ -69,7 +69,7 @@ class History {
 		
 		//reduce and limit history
 		if (this._undos.length > HISTORY_LEN) {
-			var i = HISTORY_LEN - 1;
+			let i = HISTORY_LEN - 1;
 			while (i > STRICT_HISTORY_LEN) {
 				i -= 2;
                 this._undos.splice(i, 1);
@@ -79,7 +79,7 @@ class History {
 	}
 	
 	addHistoryState() {
-		var selectionData = editor.selection.saveSelection();
+		let selectionData = editor.selection.saveSelection();
         this._redos.length = 0;
 		this._pushCurrentStateToUndoHistory(selectionData);
 	}
@@ -131,7 +131,7 @@ class History {
 	}
 }
 
-var modifiedStyle = {style: {borderBottom: '1px solid #f66'}};
+let modifiedStyle = {style: {borderBottom: '1px solid #f66'}};
 
 class HistoryUi extends React.Component {
 	constructor(props) {
@@ -150,6 +150,6 @@ class HistoryUi extends React.Component {
 }
 
 
-var historyInstance = new History();
+let historyInstance = new History();
 
 export default historyInstance;

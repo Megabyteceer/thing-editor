@@ -24,22 +24,22 @@ function init() {
 	];
 }
 
-var ClassesLoader = {};
+let ClassesLoader = {};
 
-var classesById = {},
+let classesById = {},
 	classesDefaultsById = {}, //default values for serializable properties of class
 	classPathById = {};
 
-var cacheCounter = 0;
-var embeddedClasses;
-var loadedClssesCount;
+let cacheCounter = 0;
+let embeddedClasses;
+let loadedClssesCount;
 
-var classesLoadedSuccessfullyAtLeastOnce = false;
-var classesRegisterLoaded = false;
+let classesLoadedSuccessfullyAtLeastOnce = false;
+let classesRegisterLoaded = false;
 
 ClassesLoader.init = init;
 
-var errorOccured;
+let errorOccured;
 
 function showError(message) {
 	errorOccured = true;
@@ -63,10 +63,10 @@ function getClassType(c) {
 
 function addClass(c, path) {
 	
-	var classType = getClassType(c);
+	let classType = getClassType(c);
 	if (!classType) return;
 	
-	var name = c.name;
+	let name = c.name;
 	
 	
 	if (classPathById.hasOwnProperty(name)) {
@@ -83,7 +83,7 @@ function addClass(c, path) {
 	classPathById[name] = (((typeof path) === 'string') ? path : false);
 	classesById[name] = c;
 	
-	var item = {c};
+	let item = {c};
 	if (classType === PIXI.DisplayObject) {
 		ClassesLoader.gameObjClasses.push(item);
 	} else {
@@ -93,16 +93,16 @@ function addClass(c, path) {
 }
 
 function enumClassProperties(c) {
-	var cc = c;
-	var props = [];
-	var defaults = {};
-	var i = 50;
+	let cc = c;
+	let props = [];
+	let defaults = {};
+	let i = 50;
 	while (cc && (i-- > 0)) {
 		if (!cc.prototype) {
 			throw 'attempt to enum editable properties of not PIXI.DisplayObject instance';
 		}
 		if (cc.hasOwnProperty('EDITOR_editableProps')) {
-			var addProps = cc.EDITOR_editableProps;
+			let addProps = cc.EDITOR_editableProps;
 			addProps.some((p) => {
 				if (p.type === 'splitter') {
 					p.notSeriazable = true;
@@ -120,7 +120,7 @@ function enumClassProperties(c) {
 					
 				}
 				
-				var ownerClassName = cc.name + ' (' + loadedPath + ')';
+				let ownerClassName = cc.name + ' (' + loadedPath + ')';
 				p.owner = ownerClassName;
 				
 				return props.some((pp) => {
@@ -150,7 +150,7 @@ function clearClasses() {
 
 //load custom game classes
 const jsFiler = /^src\/(game-objects|scenes)\/.*\.js$/gm;
-var head = document.getElementsByTagName('head')[0];
+let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports PIXI.DisplayObject descendants and add them in to Lib.
 	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
@@ -176,17 +176,17 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			));
 		};
 		
-		var scriptSource = '';
+		let scriptSource = '';
 		editor.fs.files.some((fn, i) => {
 			if (fn.match(jsFiler)) {
-				var classPath = fn;
+				let classPath = fn;
 				scriptSource += ("import C" + i + " from '" + location.origin + editor.fs.gameFolder + classPath + "?nocache=" + (cacheCounter++) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
 			}
 		});
 		
-		var src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
+		let src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
 		
-		var script = document.createElement('script');
+		let script = document.createElement('script');
 		editor.ui.modal.showSpinner();
 		script.onerror = function () {
 			editor.ui.modal.hideSpinner();
@@ -212,13 +212,13 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				reject();
 				console.warn('classes were not loaded because of error.')
 			}
-		}
+		};
 		script.type = 'module';
 		script.src = src;
 		head.appendChild(script);
 	});
 }
-var loadedPath;
+let loadedPath;
 function classLoaded(c, path) {
 	loadedPath = path;
 	loadedClssesCount++;
@@ -235,6 +235,6 @@ ClassesLoader.getClassType = getClassType;
 ClassesLoader.classesDefaultsById = classesDefaultsById;
 ClassesLoader.getClassPath = (name) => {
 	return classPathById[name];
-}
+};
 
 export default ClassesLoader;

@@ -22,9 +22,9 @@ export default class DataPathEditor extends React.Component {
 	}
 }
 
-var fieldNameToChoose;
+let fieldNameToChoose;
 const BACK_ITEM = {name:'↰'};
-var parentsPath;
+let parentsPath;
 
 function chooseProperty(parent, path) {
 	if(!parent) {
@@ -35,9 +35,9 @@ function chooseProperty(parent, path) {
 		for(let c of editor.ClassesLoader.gameObjClasses) {
 			c = c.c;
 			
-			var classPath = editor.ClassesLoader.getClassPath(c.name);
+			let classPath = editor.ClassesLoader.getClassPath(c.name);
 			if(classPath) {
-				var engineEntryI = classPath.indexOf('engine/js/components');
+				let engineEntryI = classPath.indexOf('engine/js/components');
 				if(engineEntryI !== 0 && engineEntryI !== 1) {
 					parent[c.name] = c;
 				}
@@ -48,7 +48,7 @@ function chooseProperty(parent, path) {
 		if(path && typeof path === 'string') { //restore current path as default value
 			parentsPath = [];
 			path = path.split('.');
-			for(var pathI = 0; (pathI < path.length-1); pathI++) {
+			for(let pathI = 0; (pathI < path.length-1); pathI++) {
 				let itemName = path[pathI];
 				let p;
 				if(itemName.startsWith('#')) {
@@ -72,8 +72,8 @@ function chooseProperty(parent, path) {
 		
 	}
 	
-	var addedNames ={};
-	var items = [];
+	let addedNames ={};
+	let items = [];
 	
 	if(path.length > 0) {
 		items.push(BACK_ITEM);
@@ -93,7 +93,7 @@ function chooseProperty(parent, path) {
 	}
 	
 	if(parent.constructor) {
-		var props = editor.enumObjectsProperties(parent);
+		let props = editor.enumObjectsProperties(parent);
 		if(props && Array.isArray(props)) {
 			for(let p of props) {
 				if(p.type !== 'splitter') {
@@ -113,7 +113,7 @@ function chooseProperty(parent, path) {
 	
 	editor.ui.modal.showListChoose('Path for ' + fieldNameToChoose + ': ' + path.join('.') + '.', items).then((selected) => {
 		if(selected) {
-			var val;
+			let val;
 			if(selected === BACK_ITEM) {
 				path.pop();
 				val = parentsPath.pop();
@@ -128,7 +128,7 @@ function chooseProperty(parent, path) {
 				val = parent[name];
 			}
 			
-			var type = typeof val;
+			let type = typeof val;
 			if(val && ((type === 'object') || (type === 'function' && editor.ClassesLoader.getClassPath(val.name)))) {
 				chooseProperty(val, path)
 			} else {

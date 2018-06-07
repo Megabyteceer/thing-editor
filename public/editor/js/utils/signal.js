@@ -10,7 +10,7 @@ export default class Signal {
 	}
 	
 	remove(f) {
-		var i = this._listeners.indexOf(f);
+		let i = this._listeners.indexOf(f);
 		assert(i >= 0, 'Handler is not exists');
 		this._listeners.splice(i, 1);
 	}

@@ -1,9 +1,9 @@
 const getValueByPath = (s, this_) => {
 	assert(this_, "'this' object is not provided.");
 	assert(s, "Empty data source path string.");
-	var path = stringToPathData(s);
-	var c;
-	var rootName = path[0];
+	let path = stringToPathData(s);
+	let c;
+	let rootName = path[0];
 	switch (rootName) {
 		case "this":
 			c = this_;
@@ -16,10 +16,10 @@ const getValueByPath = (s, this_) => {
 			
 			c = Lib.getClass(rootName);
 	}
-	var i = 1;
-	var fOwner;
+	let i = 1;
+	let fOwner;
 	while (i < path.length) {
-		var n = path[i];
+		let n = path[i];
 		fOwner = c;
 		if(typeof n === 'string') {
 			c = c[n];

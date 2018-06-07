@@ -1,6 +1,6 @@
 import Group from "./group.js";
 
-var bodyProps = {className: 'list-view'};
+let bodyProps = {className: 'list-view'};
 
 const prefabFileFiler = /^prefabs\/.*\.prefab.json$/gm;
 const prefabExtRemover = /.prefab.json$/gm;
@@ -10,7 +10,7 @@ const fileNameToPrefabName = (fn) => {
 
 const prefabNameFilter = /[^a-z\-\/0-9]/g;
 
-var prefabNameProps = {
+let prefabNameProps = {
 	className: "selectable-text", title: 'click to select prefabs`s name', onMouseDown: function (ev) {
 		selectText(ev.target);
 		sp(ev);
@@ -56,7 +56,7 @@ export default class PrefabsList extends React.Component {
 			editor.ui.modal.showModal('You cant save Scene as prefab. Please select some object from scene first.');
 		} else {
 			
-			var defaultPrefabName = '';
+			let defaultPrefabName = '';
 			if (this.state.selectedItem && this.state.selectedItem.p.name) {
 				defaultPrefabName = this.state.selectedItem.p.name.split('/');
 				defaultPrefabName.pop();
@@ -81,9 +81,9 @@ export default class PrefabsList extends React.Component {
 				}
 			).then((enteredName) => {
 				if (enteredName) {
-					var s = editor.selection[0];
-					var tx = s.x;
-					var ty = s.y;
+					let s = editor.selection[0];
+					let tx = s.x;
+					let ty = s.y;
 					s.x = W / 2;
 					s.y = H / 2;
 					Lib.__savePrefab(s, enteredName);
@@ -97,9 +97,9 @@ export default class PrefabsList extends React.Component {
 	
 	onSelect(item) {
 		if (game.__EDITORmode) {
-			var name = Lib.__getNameByPrefab(item);
+			let name = Lib.__getNameByPrefab(item);
 			PrefabsList.acceptPrefabEdition();
-			var preview = Lib.loadPrefab(name);
+			let preview = Lib.loadPrefab(name);
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);
 			editor.ui.viewport.setPrefabMode(name);
@@ -109,19 +109,19 @@ export default class PrefabsList extends React.Component {
 	}
 		
 	renderItem(prefabName, item) {
-		var cls = Lib.getClass(item.c);
+		let cls = Lib.getClass(item.c);
 		return R.div({key: prefabName},
 			R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'), item, prefabName, this)
 		);
 	}
 	
 	render() {
-		var scenePrefabs = Lib._getAllPrefabs();
+		let scenePrefabs = Lib._getAllPrefabs();
 		
-		var panelClassname = this.state.selectedItem ? '' : 'unclickable';
+		let panelClassname = this.state.selectedItem ? '' : 'unclickable';
 		
-		var prefabs = [];
-		for (var prefabName in scenePrefabs) {
+		let prefabs = [];
+		for (let prefabName in scenePrefabs) {
 			prefabs.push(this.renderItem(prefabName, scenePrefabs[prefabName]));
 		}
 		
@@ -154,7 +154,7 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	static readAllPrefabsList() {
-		var prefabs = {};
+		let prefabs = {};
 		return Promise.all(
 			editor.fs.files.filter(fn => fn.match(prefabFileFiler))
 			.map((fn) => {
@@ -169,7 +169,7 @@ export default class PrefabsList extends React.Component {
 	}
 }
 
-var previewShown = false;
+let previewShown = false;
 
 
 $(document.body).on('click', (ev) =>{

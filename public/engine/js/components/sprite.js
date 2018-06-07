@@ -72,7 +72,7 @@ Object.defineProperty(PIXI.mesh.Mesh.prototype, 'tintB', tintBDesc);
 
 /// #if EDITOR
 
-var blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
+let blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
 	return {name: k, value: PIXI.BLEND_MODES[k]};
 }).sort((a, b) => {
 	return a.value - b.value

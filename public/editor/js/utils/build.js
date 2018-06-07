@@ -1,31 +1,31 @@
 export default class Build {
 	static build() {
 		
-		var scenesSrc = Lib._getAllScenes();
-		var scenes = {};
+		let scenesSrc = Lib._getAllScenes();
+		let scenes = {};
 		Object.keys(scenesSrc).some((sceneName) => {
 			if(sceneName.indexOf(editor.editorFilesPrefix) !== 0) {
 				scenes[sceneName] = scenesSrc[sceneName];
 			}
 		});
 		
-		var prefabsSrc = Lib._getAllPrefabs();
-		var prefabs = {};
+		let prefabsSrc = Lib._getAllPrefabs();
+		let prefabs = {};
 		Object.keys(prefabsSrc).some((prefabName) => {
 			prefabs[prefabName] = prefabsSrc[prefabName];
 		});
 		
-		var images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value != 'WHITE').map((t) => {
+		let images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value != 'WHITE').map((t) => {
 			return t.value;
 		});
 		
-		var fileSavePromises = [];
+		let fileSavePromises = [];
 		
 		fileSavePromises.push(editor.fs.saveFile('.dist/assets.json', {scenes, prefabs, images}));
 		
 
-		var classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
-		var src = [`var classes = {
+		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
+		let src = [`let classes = {
 			"Sprite":PIXI.Sprite,
 			"DSprite":DSprite,
 			"Scene":Scene
@@ -33,8 +33,8 @@ export default class Build {
 		
 		
 		for(let c of classesSrc) {
-			var name = c.c.name;
-			var path = editor.ClassesLoader.getClassPath(name);
+			let name = c.c.name;
+			let path = editor.ClassesLoader.getClassPath(name);
 			if(path) {
 				src.push('import ' + name + ' from "' + path + '"');
 				src.push('classes["' + name + '"] = ' + name + ';');

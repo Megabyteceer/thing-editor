@@ -1,5 +1,5 @@
-var listProps = {className:'list-view'};
-var bodyProps = {className:'resizable-dialog left-align-text'};
+let listProps = {className:'list-view'};
+let bodyProps = {className:'resizable-dialog left-align-text'};
 
 export default class ChooseList extends React.Component {
 	
@@ -18,7 +18,7 @@ export default class ChooseList extends React.Component {
 	}
 	
 	onSearchChange(ev) {
-		var val = ev.target.value;
+		let val = ev.target.value;
 		this.setState({search: val});
 	}
 	
@@ -33,11 +33,11 @@ export default class ChooseList extends React.Component {
 	}
 	
 	renderChoosingItem(i, key) {
-		var icon;
+		let icon;
 		if(i.EDITOR_icon) {
 			icon = R.classIcon(i);
 		}
-		var name = i.name;
+		let name = i.name;
 		return R.div({
 			onMouseDown: ()=>{
 				editor.ui.modal.hideModal(i)
@@ -56,7 +56,7 @@ export default class ChooseList extends React.Component {
 	}
 	
 	searchFilter(i) {
-		var f = this.state.search.toLocaleLowerCase();
+		let f = this.state.search.toLocaleLowerCase();
 		return i.name.toLocaleLowerCase().indexOf(f) >= 0;
 	}
 	

@@ -22,7 +22,7 @@ class Button extends React.Component {
 	onKeyDown(e) {
 		if (this.props.disabled || isEventFocusOnInputElement(e) || (editor.ui.modal.state.modals.length > 0)) return;
 		
-		var needCtrl = this.props.hotkey > 1000;
+		let needCtrl = this.props.hotkey > 1000;
 		if ((e.keyCode === (this.props.hotkey - 1000)) && (needCtrl === e.ctrlKey)) {
 			this.onMouseDown(e);
 			sp(e);

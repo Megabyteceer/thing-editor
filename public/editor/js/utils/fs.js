@@ -1,4 +1,4 @@
-var fs = {
+let fs = {
 	chooseProject: (enforced) => {
 		fs.getJSON('/fs/projects').then((data) => {
 			editor.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
@@ -20,7 +20,7 @@ var fs = {
 		if (!silently) {
 			editor.ui.modal.showSpinner();
 		}
-		var r = $.getJSON(url).fail(handleError);
+		let r = $.getJSON(url).fail(handleError);
 		if (!silently) {
 			r.always(editor.ui.modal.hideSpinner);
 		}
@@ -38,7 +38,7 @@ var fs = {
 			data = JSON.stringify(data, null, '	');
 		}
 		
-		var r = $.ajax({
+		let r = $.ajax({
 			type: "POST",
 			url: '/fs/savefile',
 			data: JSON.stringify({data, filename}),
@@ -62,7 +62,7 @@ function getIconPath(desc) {
 }
 
 function renderProjectItem(desc, i, array) {
-	var icon;
+	let icon;
 	if (desc.icon) {
 		icon = R.img({src: getIconPath(desc)});
 	}

@@ -23,7 +23,7 @@ export default class Button extends DSprite {
 	
 	onRemove() {
 		assert(!game.__EDITORmode, "'destroy()' called in edition mode");
-		var i = allActiveButtons.indexOf(this);
+		let i = allActiveButtons.indexOf(this);
 		assert(i >= 0, 'Button is not in active list.');
 		allActiveButtons.splice(i, 1);
 		this.interactive = false;
@@ -109,12 +109,12 @@ export default class Button extends DSprite {
 	}
 }
 
-var allActiveButtons = [];
+let allActiveButtons = [];
 window.addEventListener('keydown', (ev) => {
 	
-	for(var b of allActiveButtons) {
+	for(let b of allActiveButtons) {
 		if(b.interactive && b.hotkey === ev.keyCode) {
-			var p = b.parent;
+			let p = b.parent;
 			while(p !== game.stage && p.interactiveChildren) {
 				p = p.parent;
 			}

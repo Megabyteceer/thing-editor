@@ -2,7 +2,7 @@ const contentProps = {
 	className: 'window-content'
 }
 
-var emptyImage = new Image();
+let emptyImage = new Image();
 
 class CornerDragger extends React.Component {
 	
@@ -22,7 +22,7 @@ class CornerDragger extends React.Component {
 	dragHandler(ev) {
 		if (this.prevX != ev.pageX || this.prevY != ev.pageY) {
 			if (ev.pageX != 0 || ev.pageY != 0) {
-				var ret = this.props.onDrag(ev.pageX - this.prevX, ev.pageY - this.prevY);
+				let ret = this.props.onDrag(ev.pageX - this.prevX, ev.pageY - this.prevY);
 				if (ret) {
 					this.prevX += ret.x;
 					this.prevY += ret.y;
@@ -88,7 +88,7 @@ class Window extends React.Component {
 	
 	saveState() {
 		const settings = editor.settings;
-		var id = this.id;
+		let id = this.id;
 		settings.setItem(id + '.x', this.state.x);
 		settings.setItem(id + '.y', this.state.y);
 		settings.setItem(id + '.w', this.state.w);
@@ -96,7 +96,7 @@ class Window extends React.Component {
 	}
 	
 	deltaPosition(x, y) {
-		var ret = {x: this.state.x, y: this.state.y};
+		let ret = {x: this.state.x, y: this.state.y};
 		this.setPosition(this.state.x + x, this.state.y + y);
 		ret.x = this.state.x - ret.x;
 		ret.y = this.state.y - ret.y;
@@ -104,7 +104,7 @@ class Window extends React.Component {
 	}
 	
 	deltaL(x, y) {
-		var ret = {x: this.state.w, y: this.state.h};
+		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w - x, this.state.h);
 		ret.x = -(this.state.w - ret.x);
 		ret.y = this.state.h - ret.y;
@@ -113,7 +113,7 @@ class Window extends React.Component {
 	}
 	
 	deltaR(x, y) {
-		var ret = {x: this.state.w, y: this.state.h};
+		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w + x, this.state.h);
 		ret.x = this.state.w - ret.x;
 		ret.y = this.state.h - ret.y;
@@ -121,7 +121,7 @@ class Window extends React.Component {
 	}
 	
 	deltaB(x, y) {
-		var ret = {x: this.state.w, y: this.state.h};
+		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w, this.state.h + y);
 		ret.x = this.state.w - ret.x;
 		ret.y = this.state.h - ret.y;
@@ -129,7 +129,7 @@ class Window extends React.Component {
 	}
 	
 	deltaT(x, y) {
-		var ret = {x: this.state.w, y: this.state.h};
+		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w, this.state.h - y);
 		ret.x = this.state.w - ret.x;
 		ret.y = -(this.state.h - ret.y);
@@ -138,29 +138,29 @@ class Window extends React.Component {
 	}
 	
 	deltaLBCorner(x, y) {
-		var ret = this.deltaL(x, y);
-		var ret2 = this.deltaB(x, y);
+		let ret = this.deltaL(x, y);
+		let ret2 = this.deltaB(x, y);
 		ret.y = ret2.y;
 		return ret;
 	}
 	
 	deltaRBCorner(x, y) {
-		var ret = this.deltaR(x, y);
-		var ret2 = this.deltaB(x, y);
+		let ret = this.deltaR(x, y);
+		let ret2 = this.deltaB(x, y);
 		ret.y = ret2.y;
 		return ret;
 	}
 	
 	deltaRTCorner(x, y) {
-		var ret = this.deltaR(x, y);
-		var ret2 = this.deltaT(x, y);
+		let ret = this.deltaR(x, y);
+		let ret2 = this.deltaT(x, y);
 		ret.y = ret2.y;
 		return ret;
 	}
 	
 	deltaLTCorner(x, y) {
-		var ret = this.deltaL(x, y);
-		var ret2 = this.deltaT(x, y);
+		let ret = this.deltaL(x, y);
+		let ret2 = this.deltaT(x, y);
 		ret.y = ret2.y;
 		return ret;
 	}
