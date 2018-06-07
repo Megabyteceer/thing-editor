@@ -5,12 +5,8 @@
 import Selection from "./selection.js";
 import Pool from "../../../engine/js/utils/pool.js";
 
-let blackout = new PIXI.Sprite();
-blackout.texture = PIXI.Texture.WHITE;
-blackout.tint = 30;
-blackout.alpha = 0.9;
-blackout.width = W;
-blackout.height = H;
+let blackout;
+
 
 let currentlyShowedPreview;
 
@@ -30,6 +26,13 @@ export default class Overlay {
 	
 	constructor() {
 		game.pixiApp.ticker.add(refreshSelection);
+		
+		blackout = new PIXI.Sprite();
+		blackout.texture = PIXI.Texture.WHITE;
+		blackout.tint = 30;
+		blackout.alpha = 0.9;
+		blackout.width = W;
+		blackout.height = H;
 	}
 	
 	getBGcolor() {

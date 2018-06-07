@@ -4,6 +4,7 @@ import getValueByPath from "../utils/get-value-by-path.js";
 export default class Trigger extends Container {
 	
 	init() {
+		this.initialAlpha = this.alpha;
 		this.initialScale = this.scale.x;
 		this.initialX = this.x;
 		this.initialY = this.y;
@@ -65,7 +66,7 @@ export default class Trigger extends Container {
 			this.q += this.qSpeed;
 		}
 		
-		this.alpha = 1 + this.q * this.alphaShift;
+		this.alpha = this.initialAlpha + this.q * this.alphaShift;
 		this.visible = this.alpha > 0.01;
 		
 		if (this.scaleShift !== 0) {
@@ -114,11 +115,17 @@ Trigger.EDITOR_editableProps = [
 		name: 'dataPath',
 		type: 'data-path',
 		important: true,
-		tip: Tip.tips.pathFieldTip
+		tip: Tip.tips.pathFieldTip,
+		disabled: (o) => {
+			return o.constructor.name === 'OrientationTrigger';
+		}
 	},
 	{
 		name: 'invert',
-		type: Boolean
+		type: Boolean,
+		disabled: (o) => {
+			return o.constructor.name === 'OrientationTrigger';
+		}
 	},
 	{
 		name: 'pow',
@@ -144,21 +151,33 @@ Trigger.EDITOR_editableProps = [
 		step: 0.01,
 		min:-1,
 		max:0,
-		default: -1
+		default: -1,
+		disabled: (o) => {
+			return o.constructor.name === 'OrientationTrigger';
+		}
 	},
 	{
 		name: 'scaleShift',
 		type: Number,
 		step: 0.01,
-		min:-1
+		min:-1,
+		disabled: (o) => {
+			return o.constructor.name === 'OrientationTrigger';
+		}
 	},
 	{
 		name: 'xShift',
 		type: Number,
+		disabled: (o) => {
+			return o.constructor.name === 'OrientationTrigger';
+		}
 	},
 	{
 		name: 'yShift',
 		type: Number,
+		disabled: (o) => {
+			return o.constructor.name === 'OrientationTrigger';
+		}
 	}
 ];
 

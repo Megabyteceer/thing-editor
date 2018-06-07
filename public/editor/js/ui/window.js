@@ -168,8 +168,8 @@ class Window extends React.Component {
 	setPosition(x, y) {
 		x = Math.max(0, x);
 		y = Math.max(0, y);
-		x = Math.min(x, editor.W - this.state.w);
-		y = Math.min(y, editor.H - this.state.h);
+		x = Math.min(x, window.innerWidth - this.state.w);
+		y = Math.min(y, window.innerHeight - this.state.h);
 		this.state.x = x;
 		this.state.y = y;
 		if (this.$) {
@@ -180,8 +180,8 @@ class Window extends React.Component {
 	setSize(w, h) {
 		w = Math.max(w, this.props.minW);
 		h = Math.max(h, this.props.minH);
-		w = Math.min(w, editor.W);
-		h = Math.min(h, editor.H);
+		w = Math.min(w, window.innerWidth);
+		h = Math.min(h, window.innerHeight);
 		this.state.w = w;
 		this.state.h = h;
 		if (this.$) {

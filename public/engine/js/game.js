@@ -29,6 +29,11 @@ let currentFader;
 let showStack = [];
 let scale = 1;
 
+let domElement;
+
+let _rendererWidth,
+	_rendererHeight;
+
 class Game {
 	
 	constructor(gameId) {
@@ -79,12 +84,48 @@ class Game {
 		
 	}
 	
-	
-	
-	init(element) {
+	onResize() {
 		
-		let w = window.innerWidth;
-		let h = window.innerHeight;
+		debugger;
+		
+		let w = domElement.clientWidth;
+		let h = domElement.clientHeight;
+		
+		let rotate90;
+		
+		window.W = 1280;
+		window.H = 720;
+		
+		let orientation;
+		if((this.screenOrientation === 'auto') && this.enforcedOrientation) {
+			orientation = this.enforcedOrientation;
+		} else {
+			orientation = this.screenOrientation;
+		}
+		
+		
+		switch(orientation) {
+			case 'auto':
+				if(w < h) {
+					let t = W;
+					W = H;
+					H  = t;
+					rotate90 = true;
+				}
+				break;
+			
+			case 'portrait':
+				rotate90 = w > h;
+				let t = W;
+				W = H;
+				H  = t;
+				break;
+			
+			default: //landscape
+				rotate90 = w < h;
+				break;
+		}
+		
 		scale = Math.min(w / W, h / H);
 		/// #if EDITOR
 		w = W;
@@ -95,16 +136,65 @@ class Game {
 		w /= scale;
 		h /= scale;
 		
-		PIXI.settings.RESOLUTION = scale;
-		app = new PIXI.Application(w, h, {backgroundColor: 0}); //antialias, forceFXAA
+		let needResizeRenderer = _rendererWidth !== w || _rendererHeight !== h;
+		
+		_rendererWidth = w;
+		_rendererHeight = h;
+
+		game.isPortrait = W < H;
+
+		
+		//in running mode
+		if(this.pixiApp && needResizeRenderer) {
+			
+			PIXI.settings.RESOLUTION = scale;
+			
+			let stage = game.stage;
+			
+			if(rotate90) {
+				stage.scale.x = w / H;
+				stage.scale.y = h / W;
+				stage.rotation = Math.PI / 2;
+				stage.x = W;
+			} else {
+				stage.scale.x = w / W;
+				stage.scale.y = h / H;
+				stage.rotation = 0;
+				stage.x = 0;
+			}
+			
+			
+			let renderer = game.pixiApp.renderer;
+			renderer.resolution = scale;
+			
+			if (renderer.rootRenderTarget) {
+				renderer.rootRenderTarget.resolution = scale;
+			}
+			renderer.resize(w, h);
+			
+			stage.forAllChildrenEwerywhere((o) => {
+				if(o.__EDITOR_onOrientationSwitch) {
+					o.__EDITOR_onOrientationSwitch();
+				}
+			});
+		}
+	}
+	
+	init(element) {
+		
+		domElement = element || document.body;
+		
+		this.onResize();
+
+		app = new PIXI.Application(_rendererWidth, _rendererHeight, {backgroundColor: 0}); //antialias, forceFXAA
 		this.pixiApp = app;
-		(element || document.body).appendChild(app.view);
+		domElement.appendChild(app.view);
 		
 		stage = new PIXI.Container();
 		stage.name = 'stage';
 		this.stage = stage;
-		game.stage.scale.x = w / W;
-		game.stage.scale.y = h / H;
+
+		this.onResize();
 		
 		app.stage.addChild(stage);
 		
@@ -115,6 +205,17 @@ class Game {
 
 /// #else
 		this._startGame();
+		let resizeOutjump;
+		$(window).on('resize', () => {
+			if(resizeOutjump) {
+				clearTimeout(resizeOutjump);
+			}
+			resizeOutjump = setTimeout(() => {
+				resizeOutjump = false;
+				this.onResize();
+			}, 200);
+			
+		});
 /// #endif
 	}
 	
@@ -141,18 +242,30 @@ class Game {
 		SHOOTTIME = false;
 	}
 	
+	get screenOrientation() { //'landscape' (default), 'portrait' 'auto'
+		return this._screenOrientation;
+	}
+	
+	set screenOrientation(v) {
+		assert(!v || v === 'auto' || v === 'landscape' || v === 'portrait', 'Wrong value for game.screenOrientation. "auto", "landscape" or "portrait" expected');
+		this._screenOrientation = v;
+		this.onResize();
+	}
+	
+	get enforcedOrientation() { //'landscape', 'portrait'
+		return this._enforcedOrientation;
+	}
+	
+	set enforcedOrientation(v) {
+		assert(!v || v === 'landscape' || v === 'portrait', 'Wrong value for game.enforcedOrientation. "landscape" or "portrait" expected');
+		this._enforcedOrientation = v;
+		this.onResize();
+	}
+	
 	_startGame() {
 		///#if EDITOR
 		throw('game._startGame is for internal usage only. Will be invoked automaticly in production build.');
 		///#endif
-		
-		window.addEventListener('resize', function() {
-			let w = window.innerWidth / scale;
-			let h = window.innerHeight / scale;
-			game.stage.scale.x = w / W;
-			game.stage.scale.y = h / H;
-			game.pixiApp.renderer.resize(w, h);
-		});
 		
 		let preloader = new Preloader();
 		
@@ -374,6 +487,21 @@ class Game {
 				isCurrent = false;
 				i--;
 			}
+		}
+	}
+	
+	forAllChildrenEwerywhere(callback) {
+		
+		game.stage.forAllChildren(callback);
+		
+		for(let s of game._getScenesStack()) {
+			s.forAllChildren(callback);
+		}
+		
+		const staticScenes = Lib._getStaticScenes();
+		for(let n in staticScenes) {
+			let s = staticScenes[n];
+			s.forAllChildren(callback);
 		}
 	}
 	

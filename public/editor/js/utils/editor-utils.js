@@ -1,8 +1,5 @@
 "use strict";
 
-window.W = 1280;
-window.H = 720;
-
 let factories = {};
 window.R = factories;
 

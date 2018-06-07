@@ -44,21 +44,8 @@ function setCurrentLanguage(languageId) {
 	
 }
 
-L.fefreshAllTextEwerywhere = function onLanguageChanged() {
-	
-	game.stage.forAllChildren(refreshTranslantableText);
-	
-	for(let s of game._getScenesStack()) {
-		s.forAllChildren(refreshTranslantableText);
-	}
-	
-	const staticScenes = Lib._getStaticScenes();
-	for(let n in staticScenes) {
-		let s = staticScenes[n];
-		s.forAllChildren(refreshTranslantableText);
-	}
-
-	Lib.__clearStaticScenes()
+L.fefreshAllTextEwerywhere = function fefreshAllTextEwerywhere() {
+	game.forAllChildrenEwerywhere(refreshTranslantableText);
 }
 
 function refreshTranslantableText(o) {

@@ -14,7 +14,7 @@ function groupArray(a, delimitter = '/', level = 0) {
 	
 	let groups = {};
 	let group;
-	
+	let groupName;
 	let ret = [];
 	for (let item of a) {
 		
@@ -25,7 +25,7 @@ function groupArray(a, delimitter = '/', level = 0) {
 				np.splice(0, level);
 			}
 			
-			let groupName = np.shift();
+			groupName = np.shift();
 			
 			if (!groups.hasOwnProperty(groupName)) {
 				groups[groupName] = [];

@@ -40,7 +40,6 @@ export default class Editor {
 		this.settings = new Settings('editor');
 		this.selection = new Selection();
 		
-		this.initResize();
 		this.ClassesLoader = ClassesLoader;
 		this.AssetsLoader = AssetsLoader;
 		
@@ -147,16 +146,6 @@ export default class Editor {
 			return a[0].name;
 		}
 		return game.currentScene ? game.currentScene.name : null;
-	}
-	
-	initResize() {
-		let onResize = () => {
-			this.W = window.innerWidth;
-			this.H = window.innerHeight;
-		};
-		
-		$(window).on('resize', onResize);
-		onResize();
 	}
 	
 	refreshPropsEditor() {
@@ -274,6 +263,7 @@ export default class Editor {
 			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
 		idCounter = 0;
+		game.screenOrientation = editor.projectDesc.screenOrientation;
 		game.showScene(name);
 		
 		if(game.currentScene) {

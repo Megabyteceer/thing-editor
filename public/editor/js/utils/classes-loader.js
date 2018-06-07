@@ -5,6 +5,7 @@ import Button from "/engine/js/components/button.js";
 import Text from "/engine/js/components/text.js";
 import Label from "/engine/js/components/label.js";
 import Trigger from "/engine/js/components/trigger.js";
+import OrientationTrigger from "/engine/js/components/orientation-trigger.js";
 import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
 import NineSlicePlane from "/engine/js/components/nine-slice-plane.js";
 
@@ -20,6 +21,7 @@ function init() {
 		[Button, "/engine/js/components/button.js"],
 		[Label, "/engine/js/components/label.js"],
 		[Trigger,"/engine/js/components/trigger.js" ],
+		[OrientationTrigger,"/engine/js/components/orientation-trigger.js" ],
 		[NineSlicePlane, "/engine/js/components/nine-slice-plane.js"]
 	];
 }
