@@ -6,9 +6,7 @@ export default class OrientationTrigger extends Trigger {
 		
 		super.init();
 		
-		/// #if EDITOR
 		this.__currentOrientationIsPortrait = game.isPortrait;
-		/// #endif
 		this.applyOrientation();
 	}
 	
@@ -22,8 +20,8 @@ export default class OrientationTrigger extends Trigger {
 		this.updatePhase();
 	}
 	
-/// #if EDITOR
-	__EDITOR_onOrientationSwitch() {
+
+	_onOrientationSwitch() {
 		if(this.__currentOrientationIsPortrait !== game.isPortrait) {
 			this.__beforeSerialization();
 			this.__currentOrientationIsPortrait = game.isPortrait;
@@ -31,6 +29,7 @@ export default class OrientationTrigger extends Trigger {
 		}
 	}
 	
+/// #if EDITOR
 	__beforeSerialization() {
 		
 		let alphaD = this.alpha - this.initialAlpha;

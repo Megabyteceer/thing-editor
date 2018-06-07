@@ -172,11 +172,13 @@ class Game {
 			}
 			renderer.resize(w, h);
 			
-			stage.forAllChildrenEwerywhere((o) => {
-				if(o.__EDITOR_onOrientationSwitch) {
-					o.__EDITOR_onOrientationSwitch();
-				}
-			});
+			/// #if EDITOR
+			if(this.__EDITORmode) {
+				this.stage.forAllChildren(procesOrientationSwitch);
+			}
+			/// #endif
+			
+			this.forAllChildrenEwerywhereBack(procesOrientationSwitch);
 		}
 	}
 	
@@ -490,19 +492,26 @@ class Game {
 		}
 	}
 	
-	forAllChildrenEwerywhere(callback) {
-		
-		game.stage.forAllChildren(callback);
-		
+	forAllChildrenEwerywhereBack(callback) {
 		for(let s of game._getScenesStack()) {
+			callback(s);
+			assert(!s.parent, 'Need exclude currentScene here');
 			s.forAllChildren(callback);
 		}
 		
 		const staticScenes = Lib._getStaticScenes();
 		for(let n in staticScenes) {
 			let s = staticScenes[n];
-			s.forAllChildren(callback);
+			if(!s.parent) {
+				callback(s);
+				s.forAllChildren(callback);
+			}
 		}
+	}
+	
+	forAllChildrenEwerywhere(callback) {
+		game.stage.forAllChildren(callback);
+		this.forAllChildrenEwerywhereBack(callback);
 	}
 	
 	updateFrame() {
@@ -534,6 +543,11 @@ function updateRecursivelly(o) {
 	}
 }
 
+const procesOrientationSwitch = (o) => {
+	if(o._onOrientationSwitch) {
+		o._onOrientationSwitch();
+	}
+}
 
 const mouseHandlerGlobal = (ev) => {
 	let p = Game.mouseEventToGlobalXY(ev);
