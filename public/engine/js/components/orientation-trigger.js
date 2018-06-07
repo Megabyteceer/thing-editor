@@ -79,3 +79,13 @@ export default class OrientationTrigger extends Trigger {
 	
 /// #endif
 }
+
+
+/// #if EDITOR
+OrientationTrigger.EDITOR_group = 'Extended';
+OrientationTrigger.EDITOR_icon = 'tree/orientation-trigger';
+OrientationTrigger.EDITOR_tip = `<b>OrientationTrigger</b> - is component which smoothly or instantly <b>switches</b> it's <b>visibility</b> or/and <b>position</b> and <b>scale</b> accordingly of <b>game.isPortrait</b> variable.
+It's main destinguish from Trigger is thet OrientationTrigger switches its state in edition time, so you can edit both states by push "Switch screen orientation button" in view port (Ctrl + O)`;
+
+/// #endif
+

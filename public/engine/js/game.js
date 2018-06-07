@@ -86,8 +86,6 @@ class Game {
 	
 	onResize() {
 		
-		debugger;
-		
 		let w = domElement.clientWidth;
 		let h = domElement.clientHeight;
 		
@@ -141,6 +139,7 @@ class Game {
 		_rendererWidth = w;
 		_rendererHeight = h;
 
+		let prevIsPortrait = game.isPortrait;
 		game.isPortrait = W < H;
 
 		
@@ -170,15 +169,19 @@ class Game {
 			if (renderer.rootRenderTarget) {
 				renderer.rootRenderTarget.resolution = scale;
 			}
+			
 			renderer.resize(w, h);
 			
-			/// #if EDITOR
-			if(this.__EDITORmode) {
-				this.stage.forAllChildren(procesOrientationSwitch);
+			if(prevIsPortrait !== game.isPortrait) {
+				/// #if EDITOR
+				if(this.__EDITORmode) {
+					this.stage.forAllChildren(procesOrientationSwitch);
+				}
+				/// #endif
+				
+				this.forAllChildrenEwerywhereBack(procesOrientationSwitch);
 			}
-			/// #endif
-			
-			this.forAllChildrenEwerywhereBack(procesOrientationSwitch);
+
 		}
 	}
 	

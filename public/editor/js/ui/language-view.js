@@ -35,7 +35,7 @@ export default class LanguageView extends React.Component {
 	}
 	
 	render () {
-		let btn = R.btn(this.state.toggled ? 'Close Text Editor' : 'Open Text Editor', this.onToggleClick, undefined, undefined, 1069);
+		let btn = R.btn(this.state.toggled ? 'Close Text Editor (Ctrl+E)' : 'Open Text Editor (Ctrl+E)', this.onToggleClick, undefined, undefined, 1069);
 		let table;
 		if(this.state.toggled) {
 			table = editor.ui.renderWindow('texteditor', 'Text Table', R.fragment(
