@@ -10,13 +10,26 @@ export default class OrientationTrigger extends Trigger {
 		this.applyOrientation();
 	}
 	
+	set dataPath(v) {
+		
+	}
+	
 	get dataPath() {
 		return 'game.isPortrait';
 	}
 	
+	set invert(v) {
+		
+	}
+	
+	get invert() {
+		return true;
+	}
+	
 	applyOrientation() {
 		this.q = game.isPortrait ? 1 : 0;
-		this._state = game.isPortrait;
+		
+		this._state = !game.isPortrait;
 		this.updatePhase();
 	}
 	
@@ -31,6 +44,17 @@ export default class OrientationTrigger extends Trigger {
 	
 /// #if EDITOR
 	__beforeSerialization() {
+		
+		this.qSpeed = 0;
+		
+		let extData = __getNodeExtendData(this);
+		if(!extData.OrientationTriggerInitValsInited) {
+			extData.OrientationTriggerInitValsInited = true;
+			this.initialAlpha = this.alpha;
+			this.initialScale = this.scale.x;
+			this.initialX = this.x;
+			this.initialY = this.y;
+		}
 		
 		let alphaD = this.alpha - this.initialAlpha;
 		let scaleD = this.scale.x - this.initialScale;
@@ -68,10 +92,6 @@ export default class OrientationTrigger extends Trigger {
 			this.yShift += yD;
 			this.initialY = this.y;
 		}
-		
-		this.q = 0;
-		this._state = false;
-		this.updatePhase();
 	}
 	__afterSerialization() {
 		this.applyOrientation();

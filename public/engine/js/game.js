@@ -81,46 +81,28 @@ class Game {
 			}
 			
 		});
-		
-		
 	}
 	
 	onResize() {
 		
-		window.W = 1280;
-		window.H = 720;
-		
 		let w = domElement.clientWidth;
 		let h = domElement.clientHeight;
-		
-		/// #if EDITOR
-		if(this.enforcedOrientation === 'portrait') {
-			w = H;
-			h = W;
-		} else {
-			w = W;
-			h = H;
-		}
-		/// #endif
-		
-		let stageRotation = 0;
-		let stageX = 0;
-		
+	
 		let orientation;
 		if((this.screenOrientation === 'auto') && this.enforcedOrientation) {
 			orientation = this.enforcedOrientation;
 		} else {
 			orientation = this.screenOrientation;
 		}
+		
+		if(orientation === 'auto') {
+			orientation = (w < h) ? 'portrait' : 'landscape';
+		}
+		
+		window.W = 1280;
+		window.H = 720;
+
 		switch(orientation) {
-			case 'auto':
-				if(w < h) {
-					let t = W;
-					W = H;
-					H  = t;
-				}
-				break;
-			
 			case 'portrait':
 				let t = W;
 				W = H;
@@ -131,18 +113,19 @@ class Game {
 				break;
 		}
 		
+		let stageRotation = 0;
+		let stageX = 0;
 		
-		scale = Math.min(w / W, h / H);
+		let S = 1; //Math.min(w / W, h / H);
 		
-		w /= scale;
-		h /= scale;
+		w /= S;
+		h /= S;
 		
-
+		let needResizeRenderer = _rendererWidth !== W || _rendererHeight !== H || scale !== S;
 		
-		let needResizeRenderer = _rendererWidth !== w || _rendererHeight !== h;
-		
-		_rendererWidth = w;
-		_rendererHeight = h;
+		scale = S;
+		_rendererWidth = W;
+		_rendererHeight = H;
 
 		let prevIsPortrait = game.isPortrait;
 		game.isPortrait = W < H;
