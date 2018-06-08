@@ -86,7 +86,7 @@ class Game {
 	}
 	
 	onResize() {
-		debugger;
+
 		let w = domElement.clientWidth;
 		let h = domElement.clientHeight;
 		
@@ -186,19 +186,23 @@ class Game {
 	}
 	
 	init(element) {
-/// #if EDITOR
-/// #else
+		domElement = element || document.body;
+		/// #if EDITOR
+		this._initInner();
+		return;
+		/// #endif
+		
 		fetch("assets.json").then(function(response) {
 			return response.json();
 		}).then((data) => {
 			assets = data;
-			
 			this.screenOrientation = assets.projDesc.screenOrientation;
-			
-/// #endif
+			this._initInner();
+		});
+	}
+	
+	_initInner() {
 		
-		domElement = element || document.body;
-
 		this.onResize();
 
 		app = new PIXI.Application(_rendererWidth, _rendererHeight, {backgroundColor: 0}); //antialias, forceFXAA
@@ -230,10 +234,6 @@ class Game {
 				this.onResize();
 			}, 200);
 			
-		});
-/// #endif
-/// #if EDITOR
-/// #else
 		});
 /// #endif
 	}
