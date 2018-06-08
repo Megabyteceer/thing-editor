@@ -21,7 +21,7 @@ export default class Build {
 		
 		let fileSavePromises = [];
 		
-		fileSavePromises.push(editor.fs.saveFile('.dist/assets.json', {scenes, prefabs, images}));
+		fileSavePromises.push(editor.fs.saveFile('.dist/assets.json', {scenes, prefabs, images, projectDesc: editor.projectDesc}));
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);

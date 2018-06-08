@@ -17,6 +17,7 @@ PIXI.settings.MIPMAP_TEXTURES = false;
 
 let stage;
 let app;
+let assets;
 
 const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
@@ -85,7 +86,7 @@ class Game {
 	}
 	
 	onResize() {
-		
+		debugger;
 		let w = domElement.clientWidth;
 		let h = domElement.clientHeight;
 		
@@ -186,9 +187,19 @@ class Game {
 	}
 	
 	init(element) {
+/// #if EDITOR
+/// #else
+		fetch("assets.json").then(function(response) {
+			return response.json();
+		}).then((data) => {
+			assets = data;
+			
+			this.screenOrientation = assets.projDesc.screenOrientation;
+			
+/// #endif
 		
 		domElement = element || document.body;
-		
+
 		this.onResize();
 
 		app = new PIXI.Application(_rendererWidth, _rendererHeight, {backgroundColor: 0}); //antialias, forceFXAA
@@ -211,7 +222,7 @@ class Game {
 /// #else
 		this._startGame();
 		let resizeOutjump;
-		$(window).on('resize', () => {
+		window.addEventListener('resize', () => {
 			if(resizeOutjump) {
 				clearTimeout(resizeOutjump);
 			}
@@ -220,6 +231,10 @@ class Game {
 				this.onResize();
 			}, 200);
 			
+		});
+/// #endif
+/// #if EDITOR
+/// #else
 		});
 /// #endif
 	}
@@ -274,25 +289,24 @@ class Game {
 		
 		let preloader = new Preloader();
 		
-		fetch("assets.json").then(function(response) {
-			return response.json();
-		}).then((assets) => {
-			
-			Lib._setPrefabs(assets.prefabs);
-			Lib._setScenes(assets.scenes);
-			
-			Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
-			Lib.addTexture('WHITE', PIXI.Texture.WHITE);
+		Lib._setPrefabs(assets.prefabs);
+		Lib._setScenes(assets.scenes);
+		
+		Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
+		Lib.addTexture('WHITE', PIXI.Texture.WHITE);
+		
+		assets.images.some((tName) => {
+			let fileName = 'img/' + tName;
+			PIXI.loader.add(fileName);
+		});
+		PIXI.loader.load();
+		preloader.start(() => {
 			
 			assets.images.some((tName) => {
 				let fileName = 'img/' + tName;
-				PIXI.loader.add(fileName);
-				Lib.addTexture(tName, fileName);
+				Lib.addTexture(tName, PIXI.utils.TextureCache[fileName]);
 			});
-			PIXI.loader.load();
-			preloader.start(() => {
-				this.showScene('main');
-			});
+			this.showScene('main');
 		});
 	}
 	
@@ -498,8 +512,10 @@ class Game {
 	forAllChildrenEwerywhereBack(callback) {
 		for(let s of game._getScenesStack()) {
 			callback(s);
-			assert(!s.parent, 'Need exclude currentScene here');
-			s.forAllChildren(callback);
+			if(!s.parent) {
+				callback(s);
+				s.forAllChildren(callback);
+			}
 		}
 		
 		const staticScenes = Lib._getStaticScenes();
