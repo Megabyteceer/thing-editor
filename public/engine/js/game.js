@@ -142,12 +142,11 @@ class Game {
 
 		let prevIsPortrait = game.isPortrait;
 		game.isPortrait = W < H;
-
+		
+		PIXI.settings.RESOLUTION = scale;
 		
 		//in running mode
 		if(this.pixiApp && needResizeRenderer) {
-			
-			PIXI.settings.RESOLUTION = scale;
 			
 			let stage = game.stage;
 			
