@@ -110,6 +110,7 @@ export default class Viewport extends React.Component {
 			game.pixiApp.ticker._requestIfNeeded(); //restore broken ticker if necessary.
 			
 			playTogglingTime = false;
+			game.onResize();
 		}
 	}
 	
@@ -133,6 +134,7 @@ export default class Viewport extends React.Component {
 	
 	onToggleOrientationClick() {
 		game.enforcedOrientation = (game.enforcedOrientation === 'portrait') ? 'landscape' : 'portrait';
+		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
 	onReloadAssetsClick() {
@@ -144,6 +146,12 @@ export default class Viewport extends React.Component {
 		let className = 'editor-viewport-wrapper';
 		let statusHeader;
 		let panel;
+		
+		let toggleOrientationBtn;
+		if(window.game && (game.screenOrientation === 'auto')) {
+			toggleOrientationBtn = R.btn(R.icon('orientation-toggle'), this.onToggleOrientationClick, 'Switch screen orientation (Ctrl + O)', 'big-btn', 1079);
+		}
+		
 		if(this.state.prefabMode) {
 			className += ' editor-viewport-wrapper-prefab-mode';
 			panel = R.span(null,
@@ -158,7 +166,8 @@ export default class Viewport extends React.Component {
 					className: 'clickable',
 					type: 'color',
 					defaultValue: '#' + editor.overlay.getBGcolor().toString(16).padStart(6, '0')
-				})
+				}),
+				toggleOrientationBtn
 			)
 		} else {
 			let pauseResumeBtn, oneStepBtn;
@@ -171,20 +180,14 @@ export default class Viewport extends React.Component {
 					statusHeader = 'running';
 				}
 			}
-			
-			let toggleOrientationBtn;
-			if(window.game && (game.screenOrientation === 'auto')) {
-				toggleOrientationBtn = R.btn(R.icon('orientation-toggle'), this.onToggleOrientationClick, 'Switch screen orientation (Ctrl + O)', 'big-btn', 1079);
-			}
-			
 			panel = R.span(undefined,
 				R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
 				R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Rebuild game sources', 'big-btn'),
 				R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
-				toggleOrientationBtn,
 				statusHeader,
 				pauseResumeBtn,
-				oneStepBtn
+				oneStepBtn,
+				toggleOrientationBtn
 			)
 		}
 		

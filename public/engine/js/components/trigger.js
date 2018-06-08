@@ -115,17 +115,11 @@ Trigger.EDITOR_editableProps = [
 		name: 'dataPath',
 		type: 'data-path',
 		important: true,
-		tip: Tip.tips.pathFieldTip,
-		disabled: (o) => {
-			return o.constructor.name === 'OrientationTrigger';
-		}
+		tip: Tip.tips.pathFieldTip
 	},
 	{
 		name: 'invert',
-		type: Boolean,
-		disabled: (o) => {
-			return o.constructor.name === 'OrientationTrigger';
-		}
+		type: Boolean
 	},
 	{
 		name: 'pow',
@@ -151,33 +145,21 @@ Trigger.EDITOR_editableProps = [
 		step: 0.01,
 		min:-1,
 		max:0,
-		default: -1,
-		disabled: (o) => {
-			return o.constructor.name === 'OrientationTrigger';
-		}
+		default: -1
 	},
 	{
 		name: 'scaleShift',
 		type: Number,
 		step: 0.01,
-		min:-1,
-		disabled: (o) => {
-			return o.constructor.name === 'OrientationTrigger';
-		}
+		min:-1
 	},
 	{
 		name: 'xShift',
-		type: Number,
-		disabled: (o) => {
-			return o.constructor.name === 'OrientationTrigger';
-		}
+		type: Number
 	},
 	{
 		name: 'yShift',
-		type: Number,
-		disabled: (o) => {
-			return o.constructor.name === 'OrientationTrigger';
-		}
+		type: Number
 	}
 ];
 

@@ -7,438 +7,492 @@
 	},
 	":": [
 		{
-			"c": "Button",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 1250,
-				"y": 40,
-				"image": "bunny.png",
-				"onClick": "game.closeCurrentScene"
-			}
-		},
-		{
-			"c": "MovieClip",
-			"p": {
-				"x": 220,
-				"y": 380,
-				"timeline": {
-					"l": {
-						"dock": 2,
-						"activate": 133
-					},
-					"p": 0.02,
-					"d": 0.85,
-					"f": [
-						{
-							"n": "y",
-							"t": [
-								{
-									"v": 380,
-									"t": 0
-								},
-								{
-									"v": 380,
-									"t": 110,
-									"a": "this.stop",
-									"m": 3,
-									"b": 0.4,
-									"g": 1
-								},
-								{
-									"v": 250,
-									"t": 143
-								},
-								{
-									"v": 231,
-									"t": 167,
-									"j": 119
-								}
-							]
-						}
-					]
-				}
+				"landscapeX": 272,
+				"landscapeY": 352,
+				"portraitX": 100,
+				"portraitY": 328
 			},
 			":": [
 				{
-					"c": "Button",
+					"c": "MovieClip",
 					"p": {
-						"image": "bunny.png",
-						"onClick": "this.parent.parent.gotoLabelRecursive`dock",
-						"afterClick": "this.parent.gotoLabel`activate"
-					}
+						"timeline": {
+							"l": {
+								"dock": 2,
+								"activate": 133
+							},
+							"p": 0.02,
+							"d": 0.85,
+							"f": [
+								{
+									"n": "y",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"a": "this.stop",
+											"m": 3,
+											"b": 0.4,
+											"g": 1
+										},
+										{
+											"v": -130,
+											"t": 143
+										},
+										{
+											"v": -149,
+											"t": 167,
+											"j": 119
+										}
+									]
+								}
+							]
+						}
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"image": "bunny.png",
+								"onClick": "game.currentScene.gotoLabelRecursive`dock",
+								"afterClick": "this.parent.gotoLabel`activate"
+							}
+						}
+					]
 				}
 			]
 		},
 		{
-			"c": "MovieClip",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 350,
-				"y": 380,
-				"timeline": {
-					"l": {
-						"dock": 2,
-						"activate": 133
-					},
-					"p": 0.02,
-					"d": 0.85,
-					"f": [
-						{
-							"n": "y",
-							"t": [
-								{
-									"v": 380,
-									"t": 0
-								},
-								{
-									"v": 380,
-									"t": 110,
-									"a": "this.stop",
-									"m": 3,
-									"b": 0.4,
-									"g": 1
-								},
-								{
-									"v": 250,
-									"t": 143
-								},
-								{
-									"v": 231,
-									"t": 167,
-									"j": 119
-								}
-							]
-						}
-					]
-				}
+				"landscapeX": 402,
+				"landscapeY": 352,
+				"portraitX": 191,
+				"portraitY": 329
 			},
 			":": [
 				{
-					"c": "Button",
+					"c": "MovieClip",
 					"p": {
-						"image": "bunny.png",
-						"onClick": "this.parent.parent.gotoLabelRecursive`dock",
-						"afterClick": "this.parent.gotoLabel`activate"
-					}
+						"timeline": {
+							"l": {
+								"dock": 2,
+								"activate": 133
+							},
+							"p": 0.02,
+							"d": 0.85,
+							"f": [
+								{
+									"n": "y",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"a": "this.stop",
+											"m": 3,
+											"b": 0.4,
+											"g": 1
+										},
+										{
+											"v": -130,
+											"t": 143
+										},
+										{
+											"v": -149,
+											"t": 167,
+											"j": 119
+										}
+									]
+								}
+							]
+						}
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"image": "bunny.png",
+								"onClick": "game.currentScene.gotoLabelRecursive`dock",
+								"afterClick": "this.parent.gotoLabel`activate"
+							}
+						}
+					]
 				}
 			]
 		},
 		{
-			"c": "MovieClip",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 480,
-				"y": 280,
-				"timeline": {
-					"l": {
-						"dock": 2,
-						"activate": 133
-					},
-					"p": 0.002,
-					"d": 0.98,
-					"f": [
-						{
-							"n": "y",
-							"t": [
-								{
-									"v": 280,
-									"t": 0
-								},
-								{
-									"v": 380,
-									"t": 110,
-									"a": "this.stop",
-									"m": 3,
-									"b": 0.72,
-									"g": 1
-								},
-								{
-									"v": 250,
-									"t": 143
-								},
-								{
-									"v": 231,
-									"t": 167,
-									"j": 119
-								}
-							]
-						}
-					]
-				}
+				"landscapeX": 532,
+				"landscapeY": 352,
+				"portraitX": 287,
+				"portraitY": 331
 			},
 			":": [
 				{
-					"c": "Button",
+					"c": "MovieClip",
 					"p": {
-						"image": "bunny.png",
-						"onClick": "this.parent.parent.gotoLabelRecursive`dock",
-						"afterClick": "this.parent.gotoLabel`activate"
-					}
+						"timeline": {
+							"l": {
+								"dock": 2,
+								"activate": 133
+							},
+							"p": 0.002,
+							"d": 0.98,
+							"f": [
+								{
+									"n": "y",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"a": "this.stop",
+											"m": 3,
+											"b": 0.72,
+											"g": 1
+										},
+										{
+											"v": -130,
+											"t": 143
+										},
+										{
+											"v": -149,
+											"t": 167,
+											"j": 119
+										}
+									]
+								}
+							]
+						}
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"image": "bunny.png",
+								"onClick": "game.currentScene.gotoLabelRecursive`dock",
+								"afterClick": "this.parent.gotoLabel`activate"
+							}
+						}
+					]
 				}
 			]
 		},
 		{
-			"c": "MovieClip",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 610,
-				"y": 380,
-				"timeline": {
-					"l": {
-						"dock": 3,
-						"activate": 133
-					},
-					"p": 0.001,
-					"d": 0.99,
-					"f": [
-						{
-							"n": "y",
-							"t": [
-								{
-									"v": 380,
-									"t": 0
-								},
-								{
-									"v": 380,
-									"t": 110,
-									"a": "this.stop",
-									"m": 3,
-									"b": 0.42,
-									"g": 1
-								},
-								{
-									"v": 250,
-									"t": 175
-								},
-								{
-									"v": 180,
-									"t": 239,
-									"j": 119
-								}
-							]
-						},
-						{
-							"n": "x",
-							"t": [
-								{
-									"v": 610,
-									"t": 0
-								},
-								{
-									"v": 610,
-									"t": 33,
-									"m": 1
-								},
-								{
-									"v": 610,
-									"t": 110,
-									"m": 1
-								},
-								{
-									"v": 567,
-									"t": 152
-								},
-								{
-									"v": 635,
-									"t": 199,
-									"j": 115
-								}
-							]
-						},
-						{
-							"n": "rotation",
-							"t": [
-								{
-									"v": 0,
-									"t": 0
-								},
-								{
-									"v": 0,
-									"t": 34,
-									"m": 1
-								},
-								{
-									"v": 0,
-									"t": 110,
-									"m": 1
-								},
-								{
-									"v": -0.3453655305626828,
-									"t": 162
-								},
-								{
-									"v": 0.2547446402909962,
-									"t": 210,
-									"j": 116
-								}
-							]
-						}
-					]
-				}
+				"landscapeX": 662,
+				"landscapeY": 352,
+				"portraitX": 94,
+				"portraitY": 129
 			},
 			":": [
 				{
-					"c": "Button",
+					"c": "MovieClip",
 					"p": {
-						"image": "bunny.png",
-						"onClick": "this.parent.parent.gotoLabelRecursive`dock",
-						"afterClick": "this.parent.gotoLabel`activate"
-					}
+						"timeline": {
+							"l": {
+								"dock": 3,
+								"activate": 133
+							},
+							"p": 0.001,
+							"d": 0.99,
+							"f": [
+								{
+									"n": "y",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"a": "this.stop",
+											"m": 3,
+											"b": 0.42,
+											"g": 1
+										},
+										{
+											"v": -130,
+											"t": 175
+										},
+										{
+											"v": -200,
+											"t": 239,
+											"j": 119
+										}
+									]
+								},
+								{
+									"n": "x",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 33,
+											"m": 1
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"m": 1
+										},
+										{
+											"v": -43,
+											"t": 152
+										},
+										{
+											"v": 25,
+											"t": 199,
+											"j": 115
+										}
+									]
+								},
+								{
+									"n": "rotation",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 34,
+											"m": 1
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"m": 1
+										},
+										{
+											"v": -0.3453655305626828,
+											"t": 162
+										},
+										{
+											"v": 0.2547446402909962,
+											"t": 210,
+											"j": 116
+										}
+									]
+								}
+							]
+						}
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"image": "bunny.png",
+								"onClick": "game.currentScene.gotoLabelRecursive`dock",
+								"afterClick": "this.parent.gotoLabel`activate"
+							}
+						}
+					]
 				}
 			]
 		},
 		{
-			"c": "MovieClip",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 740,
-				"y": 380,
-				"timeline": {
-					"l": {
-						"dock": 2,
-						"activate": 133
-					},
-					"p": 0.02,
-					"d": 0.85,
-					"f": [
-						{
-							"n": "y",
-							"t": [
-								{
-									"v": 380,
-									"t": 0
-								},
-								{
-									"v": 380,
-									"t": 110,
-									"a": "this.stop",
-									"m": 3,
-									"b": 0.4,
-									"g": 1
-								},
-								{
-									"v": 250,
-									"t": 143
-								},
-								{
-									"v": 231,
-									"t": 167,
-									"j": 119
-								}
-							]
-						}
-					]
-				}
+				"landscapeX": 792,
+				"landscapeY": 352,
+				"portraitX": 162,
+				"portraitY": 125
 			},
 			":": [
 				{
-					"c": "Button",
+					"c": "MovieClip",
 					"p": {
-						"image": "bunny.png",
-						"onClick": "this.parent.parent.gotoLabelRecursive`dock",
-						"afterClick": "this.parent.gotoLabel`activate"
-					}
+						"timeline": {
+							"l": {
+								"dock": 2,
+								"activate": 133
+							},
+							"p": 0.02,
+							"d": 0.85,
+							"f": [
+								{
+									"n": "y",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"a": "this.stop",
+											"m": 3,
+											"b": 0.4,
+											"g": 1
+										},
+										{
+											"v": -130,
+											"t": 143
+										},
+										{
+											"v": -149,
+											"t": 167,
+											"j": 119
+										}
+									]
+								}
+							]
+						}
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"image": "bunny.png",
+								"onClick": "game.currentScene.gotoLabelRecursive`dock",
+								"afterClick": "this.parent.gotoLabel`activate"
+							}
+						}
+					]
 				}
 			]
 		},
 		{
-			"c": "MovieClip",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 870,
-				"y": 380,
-				"timeline": {
-					"l": {
-						"dock": 2,
-						"activate": 133
-					},
-					"p": 0.02,
-					"d": 0.85,
-					"f": [
-						{
-							"n": "y",
-							"t": [
-								{
-									"v": 380,
-									"t": 0
-								},
-								{
-									"v": 380,
-									"t": 110,
-									"a": "this.stop",
-									"m": 3,
-									"b": 0.4,
-									"g": 1
-								},
-								{
-									"v": 250,
-									"t": 143
-								},
-								{
-									"v": 231,
-									"t": 167,
-									"j": 119
-								}
-							]
-						}
-					]
-				}
+				"landscapeX": 922,
+				"landscapeY": 352,
+				"portraitX": 250,
+				"portraitY": 127
 			},
 			":": [
 				{
-					"c": "Button",
+					"c": "MovieClip",
 					"p": {
-						"image": "bunny.png",
-						"onClick": "this.parent.parent.gotoLabelRecursive`dock",
-						"afterClick": "this.parent.gotoLabel`activate"
-					}
+						"timeline": {
+							"l": {
+								"dock": 2,
+								"activate": 133
+							},
+							"p": 0.02,
+							"d": 0.85,
+							"f": [
+								{
+									"n": "y",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"a": "this.stop",
+											"m": 3,
+											"b": 0.4,
+											"g": 1
+										},
+										{
+											"v": -130,
+											"t": 143
+										},
+										{
+											"v": -149,
+											"t": 167,
+											"j": 119
+										}
+									]
+								}
+							]
+						}
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"image": "bunny.png",
+								"onClick": "game.currentScene.gotoLabelRecursive`dock",
+								"afterClick": "this.parent.gotoLabel`activate"
+							}
+						}
+					]
 				}
 			]
 		},
 		{
-			"c": "MovieClip",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 1000,
-				"y": 380,
-				"timeline": {
-					"l": {
-						"dock": 2,
-						"activate": 133
-					},
-					"p": 0.02,
-					"d": 0.85,
-					"f": [
-						{
-							"n": "y",
-							"t": [
-								{
-									"v": 380,
-									"t": 0
-								},
-								{
-									"v": 380,
-									"t": 110,
-									"a": "this.stop",
-									"m": 3,
-									"b": 0.4,
-									"g": 1
-								},
-								{
-									"v": 250,
-									"t": 143
-								},
-								{
-									"v": 231,
-									"t": 167,
-									"j": 119
-								}
-							]
-						}
-					]
-				}
+				"landscapeX": 1052,
+				"landscapeY": 352,
+				"portraitX": 312,
+				"portraitY": 126
 			},
 			":": [
 				{
-					"c": "Button",
+					"c": "MovieClip",
 					"p": {
-						"image": "bunny.png",
-						"onClick": "this.parent.parent.gotoLabelRecursive`dock",
-						"afterClick": "this.parent.gotoLabel`activate"
-					}
+						"timeline": {
+							"l": {
+								"dock": 2,
+								"activate": 133
+							},
+							"p": 0.02,
+							"d": 0.85,
+							"f": [
+								{
+									"n": "y",
+									"t": [
+										{
+											"v": 0,
+											"t": 0
+										},
+										{
+											"v": 0,
+											"t": 110,
+											"a": "this.stop",
+											"m": 3,
+											"b": 0.4,
+											"g": 1
+										},
+										{
+											"v": -130,
+											"t": 143
+										},
+										{
+											"v": -149,
+											"t": 167,
+											"j": 119
+										}
+									]
+								}
+							]
+						}
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"image": "bunny.png",
+								"onClick": "game.currentScene.gotoLabelRecursive`dock",
+								"afterClick": "this.parent.gotoLabel`activate"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -449,6 +503,7 @@
 				"x": 460,
 				"y": 537,
 				"image": "bunny.png",
+				"tint": 1244928,
 				"xSpeed": 14.375
 			}
 		},
@@ -502,23 +557,22 @@
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 291,
-				"y": 194,
+				"x": 289,
+				"y": 192,
 				"image": "bunny.png",
+				"tint": 16735781,
 				"xSpeed": 6
 			}
 		},
 		{
 			"c": "OrientationTrigger",
 			"p": {
-				"x": 251,
-				"y": 669,
-				"state": true,
-				"dataPath": "game.isPortrait",
-				"invert": true,
-				"alphaShift": 1,
-				"xShift": 441,
-				"yShift": 1085
+				"landscapeX": 226,
+				"landscapeY": 686,
+				"portraitX": 182,
+				"portraitY": 684,
+				"portraitScaleY": 0.81,
+				"portraitScaleX": 0.81
 			},
 			":": [
 				{
@@ -527,7 +581,7 @@
 						"x": -107,
 						"y": -7,
 						"image": "UI/button.png",
-						"onClick": "this.parent.#bunny.setGravity`3"
+						"onClick": "this.parent.parent.#bunny.setGravity`3"
 					},
 					":": [
 						{
@@ -549,7 +603,7 @@
 						"x": 150,
 						"y": -7,
 						"image": "UI/button.png",
-						"onClick": "this.parent.#bunny.setGravity`1"
+						"onClick": "this.parent.parent.#bunny.setGravity`1"
 					},
 					":": [
 						{
@@ -564,6 +618,25 @@
 							}
 						}
 					]
+				}
+			]
+		},
+		{
+			"c": "OrientationTrigger",
+			"p": {
+				"name": "close-btn",
+				"landscapeX": 1246,
+				"landscapeY": 40,
+				"portraitX": 378,
+				"portraitY": 39
+			},
+			":": [
+				{
+					"c": "Button",
+					"p": {
+						"image": "bunny.png",
+						"onClick": "game.closeCurrentScene"
+					}
 				}
 			]
 		}

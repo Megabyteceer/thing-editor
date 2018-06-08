@@ -1,6 +1,6 @@
 {
 	"title": "Game-1",
 	"icon": "img/bunny.png",
-	"lastSceneName": "levels/2",
+	"lastSceneName": "main",
 	"screenOrientation": "auto"
 }

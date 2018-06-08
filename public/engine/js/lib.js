@@ -137,12 +137,26 @@ class Lib {
 		assert(classes.hasOwnProperty(src.c), 'Unknown class id: ' + src.c);
 		assert(defaults.hasOwnProperty(src.c), 'Class with id ' + src.c + ' has no default values set');
 		let ret = Pool.create(classes[src.c]);
+		
+		/// #if EDITOR
+		if(ret.__beforeDeserialization) {
+			ret.__beforeDeserialization();
+		}
+		/// #endif
+		
 		Object.assign(ret, defaults[src.c], src.p);
 		if(src.hasOwnProperty(':')) {
 			src[':'].some((src) => {
 				ret.addChild(Lib._deserializeObject(src));
 			});
 		}
+		
+		/// #if EDITOR
+		if(ret.__afterDeserialization) {
+			ret.__afterDeserialization();
+		}
+		/// #endif
+		
 		return ret;
 	}
 	
@@ -171,6 +185,10 @@ class Lib {
 	
 	static hasScene(name) {
 		return scenes.hasOwnProperty(name);
+	}
+	
+	static _getStaticScenes() {
+		return staticScenes;
 	}
 
 /// #if EDITOR
@@ -233,10 +251,6 @@ class Lib {
 	
 	static __clearStaticScenes() {
 		staticScenes = {};
-	}
-	
-	static _getStaticScenes() {
-		return staticScenes;
 	}
 	
 	static __serializeObject(o) {

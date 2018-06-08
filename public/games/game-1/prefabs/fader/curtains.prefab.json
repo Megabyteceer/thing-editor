@@ -1,9 +1,13 @@
 {
-	"c": "Container",
+	"c": "OrientationTrigger",
 	"p": {
 		"name": "fader/curtains",
-		"x": 640,
-		"y": 360
+		"landscapeX": 640,
+		"landscapeY": 360,
+		"landscapeR": -3.3306690738754696e-16,
+		"portraitX": 205,
+		"portraitY": 360,
+		"portraitScaleX": 0.32
 	},
 	":": [
 		{

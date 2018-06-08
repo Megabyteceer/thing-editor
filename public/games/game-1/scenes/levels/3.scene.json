@@ -214,7 +214,7 @@
 		{
 			"c": "Button",
 			"p": {
-				"x": 1088,
+				"x": 1089,
 				"y": 489,
 				"image": "UI/button.png",
 				"onClick": "game.showScene`main"
@@ -449,27 +449,37 @@
 			}
 		},
 		{
-			"c": "Button",
-			"p": {
-				"x": 1250,
-				"y": 40,
-				"image": "bunny.png",
-				"onClick": "game.closeCurrentScene"
-			}
-		},
-		{
 			"c": "Label",
 			"p": {
 				"x": 17,
 				"y": 642,
 				"text": "---",
+				"style.fontSize": 16,
 				"style.align": "left",
 				"style.fill": "#243",
-				"style.fontSize": 16,
 				"dataPath": "game.currentScene.name",
 				"template": "Current scene's name: %%",
 				"decimalsCount": 1
 			}
+		},
+		{
+			"c": "OrientationTrigger",
+			"p": {
+				"name": "close-btn",
+				"landscapeX": 1246,
+				"landscapeY": 40,
+				"portraitX": 376,
+				"portraitY": 42
+			},
+			":": [
+				{
+					"c": "Button",
+					"p": {
+						"image": "bunny.png",
+						"onClick": "game.closeCurrentScene"
+					}
+				}
+			]
 		}
 	]
 }

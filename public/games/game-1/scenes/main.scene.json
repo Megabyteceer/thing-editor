@@ -6,44 +6,27 @@
 	},
 	":": [
 		{
-			"c": "Button",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 1122,
-				"y": 564,
-				"image": "UI/button.png",
-				"onClick": "game.showScene`levels/1"
-			}
-		},
-		{
-			"c": "Button",
-			"p": {
-				"x": 1250,
-				"y": 40,
-				"image": "bunny.png",
-				"onClick": "game.closeCurrentScene"
-			}
-		},
-		{
-			"c": "Button",
-			"p": {
-				"x": 1131,
-				"y": 648,
-				"image": "UI/button.png",
-				"onClick": "game.showScene`levels/2"
-			}
-		},
-		{
-			"c": "PerspectiveSprite",
-			"p": {
-				"x": 256,
-				"y": 315,
-				"image": "UI/button.png",
-				"x0": 20,
-				"x1": 236,
-				"y2": 64,
-				"x3": 256,
-				"y3": 64
-			}
+				"landscapeX": 512,
+				"landscapeY": 338,
+				"portraitX": 81,
+				"portraitY": 225
+			},
+			":": [
+				{
+					"c": "PerspectiveSprite",
+					"p": {
+						"y": -28,
+						"image": "UI/button.png",
+						"x0": 20,
+						"x1": 236,
+						"y2": 64,
+						"x3": 256,
+						"y3": 64
+					}
+				}
+			]
 		},
 		{
 			"c": "NineSlicePlane",
@@ -54,18 +37,74 @@
 			}
 		},
 		{
-			"c": "Label",
+			"c": "OrientationTrigger",
 			"p": {
-				"x": 17,
-				"y": 642,
-				"text": "---",
-				"style.align": "left",
-				"style.fill": "#acb",
-				"style.fontSize": 16,
-				"dataPath": "game.currentScene.name",
-				"template": "Current scene's name: %%",
-				"decimalsCount": 1
-			}
+				"name": "close-btn",
+				"landscapeX": 1246,
+				"landscapeY": 40,
+				"portraitX": 371,
+				"portraitY": 43
+			},
+			":": [
+				{
+					"c": "Button",
+					"p": {
+						"image": "bunny.png",
+						"onClick": "game.closeCurrentScene"
+					}
+				}
+			]
+		},
+		{
+			"c": "OrientationTrigger",
+			"p": {
+				"landscapeX": 1131,
+				"landscapeY": 606,
+				"portraitX": 219,
+				"portraitY": 455
+			},
+			":": [
+				{
+					"c": "Button",
+					"p": {
+						"y": -31,
+						"image": "UI/button.png",
+						"onClick": "game.showScene`levels/1"
+					}
+				},
+				{
+					"c": "Button",
+					"p": {
+						"x": -1,
+						"y": 53,
+						"image": "UI/button.png",
+						"onClick": "game.showScene`levels/2"
+					}
+				}
+			]
+		},
+		{
+			"c": "OrientationTrigger",
+			"p": {
+				"landscapeX": 19,
+				"landscapeY": 689,
+				"portraitX": 16,
+				"portraitY": 692
+			},
+			":": [
+				{
+					"c": "Label",
+					"p": {
+						"text": "---",
+						"style.fontSize": 16,
+						"style.align": "left",
+						"style.fill": "#acb",
+						"dataPath": "game.currentScene.name",
+						"template": "Current scene's name: %%",
+						"decimalsCount": 1
+					}
+				}
+			]
 		}
 	]
 }

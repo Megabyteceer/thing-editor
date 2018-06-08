@@ -38,6 +38,11 @@ class ClessesView extends React.Component {
 					let w = Lib._loadClassInstanceById(this.state.selectedItem.c.name);
 					o.parent.addChildAt(w, o.parent.getChildIndex(o));
 					w.addChild(o);
+					w.x = o.x;
+					w.y = o.y;
+					o.x = 0;
+					o.y = 0;
+					
 					editor.ui.sceneTree.selectInTree(w, true);
 					wasModified =true;
 				}

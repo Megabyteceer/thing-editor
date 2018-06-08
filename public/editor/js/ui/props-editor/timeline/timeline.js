@@ -20,6 +20,15 @@ function removeAffectFromUnselected(all) {
 	affectedMovieclips.forEach((value, o) => {
 		if(all || !__getNodeExtendData(o).isSelected) {
 			o.resetTimeline();
+			if(o.alpha < 0.01) {
+				o.alpha = 1;
+			}
+			if(Math.abs(o.scale.x) < 0.01) {
+				o.scale.x = 1;
+			}
+			if(Math.abs(o.scale.y) < 0.01) {
+				o.scale.y = 1;
+			}
 			affectedMovieclips.delete(o);
 		}
 	});
@@ -237,7 +246,7 @@ function getFieldByNameOrCreate(o, name) {
 
 function getFrameAtTimeOrCreate(o, name, time) {
 	let field = getFieldByNameOrCreate(o, name);
-	for(keyFrame of field.t) {
+	for(let keyFrame of field.t) {
 		if(keyFrame.t === time) {
 			return keyFrame;
 		}

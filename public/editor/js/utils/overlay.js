@@ -8,9 +8,13 @@ import Pool from "../../../engine/js/utils/pool.js";
 let blackout;
 
 
-let currentlyShowedPreview;
+let isPreviewShowed;
 
 let draggers = [];
+
+function checkIfCurrentContainerIsShowedPrefab() {
+	assert(isPreviewShowed === game.currentContainer.name, "game.currentContainer.name is incorrect. Prefabs name expected.");
+}
 
 function createDragger(owner, constructor) {
 	let ret = Pool.create(constructor);
@@ -42,8 +46,9 @@ export default class Overlay {
 	setBGcolor(tint) {
 		if(tint === undefined) {
 			tint = 30;
-		} else if(currentlyShowedPreview) {
-			editor.settings.setItem('prefab-bg'+ currentlyShowedPreview.name, tint);
+		} else if(isPreviewShowed) {
+			checkIfCurrentContainerIsShowedPrefab();
+			editor.settings.setItem('prefab-bg'+ game.currentContainer.name, tint);
 		}
 		
 		blackout.tint = tint;
@@ -55,8 +60,9 @@ export default class Overlay {
 		savedSelection = editor.selection.saveSelection();
 		game.stage.addChild(blackout);
 		__getNodeExtendData(blackout).hidden = true;
-		currentlyShowedPreview = object;
-		game.showModal(currentlyShowedPreview);
+		isPreviewShowed = object.name;
+		game.showModal(object);
+		checkIfCurrentContainerIsShowedPrefab();
 		editor.history.updateUi();
 	}
 	
@@ -64,10 +70,11 @@ export default class Overlay {
 		if (blackout.parent) {
 			game.stage.removeChild(blackout);
 		}
-		if (currentlyShowedPreview) {
-			game.hideModal(currentlyShowedPreview);
+		if (isPreviewShowed) {
+			checkIfCurrentContainerIsShowedPrefab();
+			game.hideModal(game.currentContainer);
 			editor.selection.loadSelection(savedSelection);
-			currentlyShowedPreview = null;
+			isPreviewShowed = null;
 			if(refresh === true) {
 			    editor.refreshTreeViewAndPropertyEditor();
             }

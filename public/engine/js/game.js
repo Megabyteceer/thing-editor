@@ -104,9 +104,7 @@ class Game {
 
 		switch(orientation) {
 			case 'portrait':
-				let t = W;
-				W = H;
-				H  = t;
+				W = 408;
 				break;
 			
 			default: //landscape
@@ -122,7 +120,7 @@ class Game {
 		h /= S;
 		
 		let needResizeRenderer = _rendererWidth !== W || _rendererHeight !== H || scale !== S;
-		
+
 		scale = S;
 		_rendererWidth = W;
 		_rendererHeight = H;
@@ -131,7 +129,14 @@ class Game {
 		game.isPortrait = W < H;
 		
 		PIXI.settings.RESOLUTION = scale;
-		//in running mode
+		
+		
+		/// #if EDITOR
+		needResizeRenderer = true;
+		prevIsPortrait = 0;
+		/// #endif
+		
+		
 		if(this.pixiApp && needResizeRenderer) {
 			
 			let stage = game.stage;
@@ -152,15 +157,8 @@ class Game {
 			renderer.resize(_rendererWidth, _rendererHeight);
 			
 			if(prevIsPortrait !== game.isPortrait) {
-				/// #if EDITOR
-				if(this.__EDITORmode) {
-					this.stage.forAllChildren(procesOrientationSwitch);
-				}
-				/// #endif
-				
-				this.forAllChildrenEwerywhereBack(procesOrientationSwitch);
+				this.forAllChildrenEwerywhere(procesOrientationSwitch);
 			}
-
 		}
 	}
 	
@@ -393,12 +391,11 @@ class Game {
 			this.currentScene = null;
 		}
 	}
+	/// #endif
 	
 	_getScenesStack() {
 		return showStack;
 	}
-	
-	/// #endif
 	
 	showModal(displayObject) {
 		
