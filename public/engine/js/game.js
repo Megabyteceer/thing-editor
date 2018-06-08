@@ -131,7 +131,6 @@ class Game {
 		game.isPortrait = W < H;
 		
 		PIXI.settings.RESOLUTION = scale;
-		PIXI.interaction.InteractionManager.resolution = scale;
 		//in running mode
 		if(this.pixiApp && needResizeRenderer) {
 			
@@ -142,7 +141,10 @@ class Game {
 			
 			let renderer = game.pixiApp.renderer;
 			renderer.resolution = scale;
+			
+			PIXI.interaction.InteractionManager.resolution = scale;
 			renderer.plugins.interaction.resolution = scale;
+			
 			if (renderer.rootRenderTarget) {
 				renderer.rootRenderTarget.resolution = scale;
 			}
