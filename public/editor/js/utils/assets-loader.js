@@ -10,29 +10,29 @@ const textureFiler = /^img\/.*\.(png|jpg)$/gm;
 const textureNameCleaner = /^img\//gm;
 
 const enumAssets = () => {
-	Lib.__clearTexturesList();
+
 	let tmp = new Map();
-	let a = game.pixiApp.stage.findChildrenByType(PIXI.Sprite);
-	a.some((s) => {
-		if(s.image) {
-			tmp.set(s, s.image);
-			s.image = 'EMPTY';
+	game.forAllChildrenEwerywhere((o) => {
+		if(o.image) {
+			tmp.set(o, o.image);
+			o.image = 'EMPTY';
 		}
 	});
 	
 	for(let k of Lib.__texturesList) { //TODO: clear changed only
-		let t = Lib.getTexture(k.name);
-		if(t.textureCacheIds.length > 0) {
-			for(let id of t.textureCacheIds) {
-				delete(PIXI.utils.TextureCache[id]);
-			}
+		if(k.name !== 'EMPTY' && k.name !== 'WHITE') {
+			let t = Lib.getTexture(k.name);
+			PIXI.Texture.removeFromCache(t);
 			t.destroy(true);
 		}
 	}
 	
+	Lib.__clearTexturesList();
 	
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
+	
+	
 	
 	editor.fs.files.some((fn) => {
 		if(fn.match(textureFiler)) {
@@ -40,10 +40,8 @@ const enumAssets = () => {
 		}
 	});
 	
-	a.some((s) => {
-		if(tmp.has(s)) {
-			s.image = tmp.get(s);
-		}
+	tmp.forEach((image, o) => {
+		o.image = image;
 	});
 }
 

@@ -62,7 +62,7 @@ class Lib {
 		
 		if(typeof texture === 'string') {
 			/// #if EDITOR
-			texture += '?noCahce=' + noCacheCounter++
+			texture += '?noCahce=' + noCacheCounter++;
 			/// #endif
 			textures[name] = PIXI.Texture.fromImage(texture);
 		} else {
@@ -93,7 +93,7 @@ class Lib {
 		/// #if EDITOR
 		let exists = textures.hasOwnProperty(name);
 		if(!exists) {
-			assert(exists, "No texture with name '" + name + "' registred in Lib");
+			assert(exists, "No texture with name '" + name + "' registred in Lib", true);
 			return PIXI.Texture.EMPTY;
 		}
 		
