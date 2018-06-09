@@ -53,6 +53,7 @@ class SelectEditor extends React.Component {
 		let list = this.props.select || this.props.field.select;
 		
 		let items;
+		let filterInput;
 		
 		if (this.state.toggled) {
 			let a = list;
@@ -64,7 +65,7 @@ class SelectEditor extends React.Component {
 					});
 				}
 				a = a.slice(0, 20);
-				let filterInput = R.input({className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter});
+				filterInput = R.input({className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter});
 			}
 			
 			

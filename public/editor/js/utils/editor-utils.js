@@ -206,10 +206,10 @@ window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) 
 		get: () => {
 			if(canBeEmpty) {
 				let a = Lib.__texturesList.concat();
-				a[0] = {
+				a.unshift({
 					"name": "none",
 					"value": ""
-				};
+				});
 				return a;
 			} else {
 				return Lib.__texturesList;

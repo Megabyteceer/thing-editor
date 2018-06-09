@@ -289,6 +289,7 @@ button {
 
 .scene-tree-view {
 	overflow-y:auto;
+	overflow-x: hidden;
 	width: 100%;
 	height: calc(100% - 21px);
 }
