@@ -21,7 +21,7 @@ import Timeline from "./ui/props-editor/timeline/timeline.js";
 export default class Editor {
 	
 	get editorFilesPrefix() {
-		return '.editor-tmp.';
+		return '.editor-tmp/';
 	}
 	
 	get runningSceneLibSaveSlotName() {

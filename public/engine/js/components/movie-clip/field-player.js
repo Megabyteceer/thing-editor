@@ -74,7 +74,7 @@ export default class FieldPlayer {
 			if (action) {
 /// #if EDITOR
 				if(!this.__dontCallActions) {
-					console.log('timeline CALL: ' + this.target.name + '; ' + currentFrame.t + '; ' + action);
+					//console.log('timeline CALL: ' + this.target.name + '; ' + currentFrame.t + '; ' + action);
 /// #endif
 					call(action, this.target);
 /// #if EDITOR

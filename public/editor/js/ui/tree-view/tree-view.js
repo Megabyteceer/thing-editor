@@ -57,6 +57,7 @@ export default class TreeView extends React.Component {
 			if (e[0]) {
 				Window.bringWindowForward(e.closest('.window-body'));
 				e[0].scrollIntoView({});
+				e.closest('.scene-tree-view').scrollLeft(0);
 			}
 		}, 1);
 	}
@@ -196,11 +197,12 @@ export default class TreeView extends React.Component {
 		foundByWhichProperty = new WeakMap();
 		
 		this.findNext((o) => {
+			
 			if(o.constructor.name.toLowerCase().indexOf(this.searchString) >= 0) return true;
 			
 			let props = editor.enumObjectsProperties(o);
 			for(let p of props) {
-				if(p.type === String) {
+				if(p.type === String || p.type === 'data-path') { //some new types with string data canbe added here
 					let val = o[p.name];
 					if(val && val.toLowerCase().indexOf(this.searchString) >= 0) {
 						foundByWhichProperty.set(o, p.name);
