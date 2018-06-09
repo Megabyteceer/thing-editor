@@ -7,18 +7,31 @@ export default class Bunny extends DSprite {
 	update() {
 		this.vertexData[2] += Math.random();
 		if (this.y > H - 25) {
-			this.ySpeed *= -1;
+			this.y = H - 25;
 			this.onTouchBounds();
+			this.ySpeed *= -1;
+		} else if(this.y < 0) {
+			this.y = 0;
+			this.onTouchBounds();
+			this.ySpeed *= -1;
 		} else {
 			this.ySpeed += this.gravity;
 		}
 		
 		game.settings.setItem('data1', true);
 		
-		if ((this.x < 0) || (this.x > W)) {
-			this.xSpeed *= -1.0;
+		if (this.x < 0) {
+			this.x = 0;
 			this.onTouchBounds();
+			this.xSpeed *= -1.0;
 		}
+		
+		if (this.x > W) {
+			this.x = W;
+			this.onTouchBounds();
+			this.xSpeed *= -1.0;
+		}
+		
 		this.scale.x = this.xSpeed > 0 ? 1 : -1;
 		super.update();
 	}
