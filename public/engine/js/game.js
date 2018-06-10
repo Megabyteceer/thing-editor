@@ -42,7 +42,7 @@ class Game {
 		this.updateGlobal = this.updateGlobal.bind(this);
 		this.mouse = new PIXI.Point();
 		this.call = call;
-		window.addEventListener('mousemove', mouseHandlerGlobal);
+		
 		window.game = this;
 		
 		Object.defineProperties(this, {
@@ -180,6 +180,8 @@ class Game {
 	
 	_initInner() {
 		
+		window.addEventListener('mousemove', mouseHandlerGlobal);
+		
 		this.onResize();
 
 		app = new PIXI.Application(_rendererWidth, _rendererHeight, {backgroundColor: 0}); //antialias, forceFXAA
@@ -267,6 +269,7 @@ class Game {
 		
 		Lib._setPrefabs(assets.prefabs);
 		Lib._setScenes(assets.scenes);
+		L.setLanguagesAssets(assets.text);
 		
 		Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 		Lib.addTexture('WHITE', PIXI.Texture.WHITE);

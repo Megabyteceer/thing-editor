@@ -20,7 +20,7 @@ function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%%' entr
 
 L.setLanguagesAssets = (_languages, defaultLanguage) => {
 	languages = _languages;
-	defaultLanguage = defaultLanguage || currentLanguageId;
+	defaultLanguage = defaultLanguage || (location.hash.replace('#','')) || currentLanguageId;
 	currentLanguageId = null;
 	setCurrentLanguage(defaultLanguage);
 };
@@ -57,5 +57,14 @@ L.getLanguagesList = () => {
 };
 
 L.setCurrentLanguage = setCurrentLanguage;
+
+///#if EDITOR
+L.__getTextAssets = () => {
+	return languages;
+}
+
+
+///#endif
+
 
 export default L;

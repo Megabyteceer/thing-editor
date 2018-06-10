@@ -1,3 +1,5 @@
+import L from "../../../engine/js/utils/l.js";
+
 export default class Build {
 	static build() {
 		
@@ -21,7 +23,10 @@ export default class Build {
 		
 		let fileSavePromises = [];
 		
-		fileSavePromises.push(editor.fs.saveFile('.dist/assets.json', {scenes, prefabs, images, projectDesc: editor.projectDesc}));
+		
+		let text = L.__getTextAssets();
+		
+		fileSavePromises.push(editor.fs.saveFile('.dist/assets.json', {scenes, prefabs, images, text, projectDesc: editor.projectDesc}));
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
