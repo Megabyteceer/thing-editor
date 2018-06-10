@@ -69,6 +69,28 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 	});
 });
 
+// modules import cache preventing
+var moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
+
+app.use('/', (req, res, next) => {
+	let modulesVersion = req.query ? req.query.v : false;
+	if(modulesVersion && req.path.endsWith('.js')) {
+		
+		let fileName = path.join(__dirname, 'public', req.path);
+		log('STATIC js' + fileName);
+		fs.readFile(fileName, function (err, content) {
+			log('ENG JS proc');
+			if (err) next(err);
+			res.set('Content-Type', 'application/javascript');
+			var rendered = content.toString().replace(moduleImportFixer, '$1?v=' + modulesVersion + '$2');
+			return res.end(rendered);
+		});
+	} else {
+		next();
+	}
+
+});
+
 app.use('/', express.static(path.join(__dirname, 'public'), {dotfiles:'allow'}));
 
 //========= start server ================================================================
@@ -94,14 +116,17 @@ wss.on('connection', function connection(ws) {
 
 //=========== enum files ================================
 const walkSync = (dir, filelist = []) => {
-  fs.readdirSync(dir).forEach(file => {
-
-    filelist = fs.statSync(path.join(dir, file)).isDirectory()
-      ? walkSync(path.join(dir, file), filelist)
-      : filelist.concat(path.join(dir, file));
-
-  });
-  return filelist;
+	fs.readdirSync(dir).forEach(file => {
+		
+		let stats = fs.statSync(path.join(dir, file));
+		
+		if(stats.isDirectory()) {
+			filelist = walkSync(path.join(dir, file), filelist);
+		} else if(stats.size > 0) {
+			filelist.push(path.join(dir, file));
+		}
+	});
+	return filelist;
 };
 
 //============= enum projects ===========================

@@ -32,7 +32,7 @@ function chooseProperty(parent, path) {
 			game,
 			'this':editor.selection[0]
 		};
-		for(let c of editor.ClassesLoader.gameObjClasses) {
+		for(let c of editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses)) {
 			c = c.c;
 			
 			let classPath = editor.ClassesLoader.getClassPath(c.name);

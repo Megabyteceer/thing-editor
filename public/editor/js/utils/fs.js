@@ -20,7 +20,7 @@ let fs = {
 		if (!silently) {
 			editor.ui.modal.showSpinner();
 		}
-		let r = $.getJSON(url).fail(handleError);
+		let r = $.getJSON(url).fail((a,b,c) => {handleError(a,b,c,url)});
 		if (!silently) {
 			r.always(editor.ui.modal.hideSpinner);
 		}
@@ -43,7 +43,7 @@ let fs = {
 			url: '/fs/savefile',
 			data: JSON.stringify({data, filename}),
 			contentType: 'application/json'
-		}).fail(handleError);
+		}).fail((a,b,c) => {handleError(a,b,c,url)});
 		if (!silently) {
 			r.always(editor.ui.modal.hideSpinner);
 		}
@@ -53,8 +53,8 @@ let fs = {
 
 export default fs;
 
-function handleError(er, status, error) {
-	editor.ui.modal.showError(er.responseText || JSON.stringify(error || 'connection error'));
+function handleError(er, status, error, url) {
+	editor.ui.modal.showError('ERROR IN FILE ' + url + ': ' + er.responseText || JSON.stringify(error || 'connection error'));
 }
 
 function getIconPath(desc) {

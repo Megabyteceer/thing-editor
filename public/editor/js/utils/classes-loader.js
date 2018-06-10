@@ -157,7 +157,9 @@ let head = document.getElementsByTagName('head')[0];
 function reloadClasses() { //enums all js files in src folder, detect which of them exports PIXI.DisplayObject descendants and add them in to Lib.
 	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
 	return new Promise((resolve, reject) => {
-		
+		cacheCounter++;
+
+		setTimeout(() => {
 		errorOccured = false;
 		
 		loadedClssesCount = 0;
@@ -172,17 +174,20 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 		window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
 			showError(R.fragment(
-				'attempt to load: '+ loadedPath + ': ' + message,
+				'attempt to load: ' + loadedPath + ': ' + message,
 				R.div({className: 'error-body'}, source.split('?nocache=').shift().split(':' + location.port).pop() + ' (' + lineno + ':' + colno + ')', R.br(), message),
 				'Plese fix error in source code and press button to try again:',
 			));
 		};
 		
+		
+
+		
 		let scriptSource = '';
 		editor.fs.files.some((fn, i) => {
-			if (fn.match(jsFiler)) {
+			if(fn.match(jsFiler)) {
 				let classPath = fn;
-				scriptSource += ("import C" + i + " from '" + location.origin + editor.fs.gameFolder + classPath + "?nocache=" + (cacheCounter++) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
+				scriptSource += ("import C" + i + " from '" + location.origin + editor.fs.gameFolder + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
 			}
 		});
 		
@@ -190,16 +195,16 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 		let script = document.createElement('script');
 		editor.ui.modal.showSpinner();
-		script.onerror = function () {
+		script.onerror = function() {
 			editor.ui.modal.hideSpinner();
 		};
-		script.onload = function () {
+		script.onload = function() {
 			
 			editor.ui.modal.hideSpinner();
 			head.removeChild(script);
 			
 			window.onerror = null;
-			if (!errorOccured) {
+			if(!errorOccured) {
 				Lib._setClasses(classesById, classesDefaultsById);
 				
 				classesLoadedSuccessfullyAtLeastOnce = true;
@@ -218,6 +223,8 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		script.type = 'module';
 		script.src = src;
 		head.appendChild(script);
+
+	},10);
 	});
 }
 let loadedPath;
