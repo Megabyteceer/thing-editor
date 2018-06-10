@@ -13,7 +13,7 @@ var currentGameRoot;
 var PORT = 32023;
 var gamesRoot = __dirname + '/public/games/';
 var clientGamesRoot = '/games/';
-var jsonParser = bodyParser.json();
+var jsonParser = bodyParser.json({limit:1024*1024*200});
 
 // File System acess commands
 
