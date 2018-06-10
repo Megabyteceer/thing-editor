@@ -1,5 +1,5 @@
 {
-	"c": "Scene",
+	"c": "MainMenu",
 	"p": {
 		"name": "main",
 		"backgroundColor": 3032871
@@ -103,8 +103,53 @@
 						"template": "Current scene's name: %%",
 						"decimalsCount": 1
 					}
+				},
+				{
+					"c": "Label",
+					"p": {
+						"y": -25,
+						"text": "---",
+						"style.fontSize": 16,
+						"style.align": "left",
+						"style.fill": "#acb",
+						"dataPath": "MainMenu.count",
+						"template": "Current scene's name: %%",
+						"decimalsCount": 1
+					}
 				}
 			]
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 172,
+				"y": 270,
+				"image": "bunny.png"
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 236,
+				"y": 260,
+				"image": "bunny.png"
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 308,
+				"y": 250,
+				"image": "bunny.png"
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 385,
+				"y": 240,
+				"image": "bunny.png"
+			}
 		}
 	]
 }

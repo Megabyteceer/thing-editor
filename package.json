@@ -23,6 +23,7 @@
   "homepage": "https://github.com/Megabyteceer/thing#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
     "ifdef-loader": "^2.0.3",
     "jquery": "^3.3.1",

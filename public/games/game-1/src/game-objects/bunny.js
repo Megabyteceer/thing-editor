@@ -1,3 +1,5 @@
+import MainMenu from "../scenes/main-scene.js";
+
 export default class Bunny extends DSprite {
 	
 	init() {
@@ -5,11 +7,11 @@ export default class Bunny extends DSprite {
 	}
 	
 	update() {
+		MainMenu.count++;
 		this.vertexData[2] += Math.random();
 		if (this.y > H - 25) {
-			this.y = H - 25;
 			this.onTouchBounds();
-			this.ySpeed *= -1;
+			this.ySpeed = -Math.abs(this.ySpeed);
 		} else if(this.y < 0) {
 			this.y = 0;
 			this.onTouchBounds();
