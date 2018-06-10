@@ -1,4 +1,4 @@
-import getValueByPath from '../utils/get-value-by-path.js';
+import getValueByPath from 'utils/get-value-by-path.js';
 
 function formatMoney(num, c = 0) {
 	if (c > 0) {
@@ -23,7 +23,7 @@ export default class Label extends PIXI.Text {
 		this.text = '';
 		this.showedVal = undefined;
 	}
-	
+
 	onLanguageChanged() {
 		if(this._translatableText) {
 			this.showedVal = undefined;
@@ -31,13 +31,13 @@ export default class Label extends PIXI.Text {
 			/// #if EDITOR
 			if(game.__EDITORmode || game.__paused) super.onLanguageChanged();
 			/// #endif
-			
+
 		}
 	}
-	
+
 	update() {
 		if(this.currentInterval <= 0 && this.dataPath) {
-			
+
 			let val = getValueByPath(this.dataPath, this);
 			if(val !== undefined) {
 				if(val !== this.processedVal) {
@@ -48,8 +48,8 @@ export default class Label extends PIXI.Text {
 				}
 				if(val !== this.showedVal) {
 					this.visible = true;
-					
-					
+
+
 					if(this.isNumeric) {
 						if(this.counterSpeed < 1) {
 							let step = (val - (this.showedVal || 0)) * this.counterSpeed;
@@ -62,11 +62,11 @@ export default class Label extends PIXI.Text {
 						} else {
 							val = formatMoney(this.showedVal, this.decimalsCount);
 						}
-						
+
 					} else {
 						this.showedVal = val;
 					}
-					
+
 					if(this._translatableText) {
 						this.text = L(this._translatableText).replace('%%', val);
 					} else if(this.template) {
@@ -79,17 +79,17 @@ export default class Label extends PIXI.Text {
 				this.showedVal = undefined;
 				this.visible = false;
 			}
-		
+
 			this.currentInterval = this.refreshInterval;
 		} else {
 			this.currentInterval--;
 		}
 	}
-	
+
 	refreshNow() {
 		this.currentInterval = 0;
 	}
-	
+
 	/// #if EDITOR
 	__beforeSerialization() {
 		super.__beforeSerialization();
@@ -97,7 +97,7 @@ export default class Label extends PIXI.Text {
 			this.template = null;
 		}
 	}
-	
+
 	/// #endif
 }
 
@@ -105,7 +105,7 @@ Label.formatMoney = formatMoney;
 
 /// #if EDITOR
 
-import Tip from "/editor/js/utils/tip.js";
+import Tip from "utils/tip.js";
 Label.EDITOR_group = 'Extended';
 Label.EDITOR_icon = 'tree/label';
 Label.EDITOR_tip = `<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.`;

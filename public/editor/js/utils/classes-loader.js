@@ -1,28 +1,28 @@
-import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
-import Pool from "/engine/js/utils/pool.js";
-import Container from "/engine/js/components/container.js";
-import Button from "/engine/js/components/button.js";
-import Text from "/engine/js/components/text.js";
-import Label from "/engine/js/components/label.js";
-import Trigger from "/engine/js/components/trigger.js";
-import OrientationTrigger from "/engine/js/components/orientation-trigger.js";
-import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
-import NineSlicePlane from "/engine/js/components/nine-slice-plane.js";
+import PropsFieldWrapper from 'ui/props-editor/props-field-wrapper.js';
+import Pool from "utils/pool.js";
+import Container from "components/container.js";
+import Button from "components/button.js";
+import Text from "components/text.js";
+import Label from "components/label.js";
+import Trigger from "components/trigger.js";
+import OrientationTrigger from "components/orientation-trigger.js";
+import MovieClip from "components/movie-clip/movie-clip.js";
+import NineSlicePlane from "components/nine-slice-plane.js";
 
 function init() {
 	//embedded engine classes
 	embeddedClasses = [
-		[Container, "/engine/js/components/container.js"],
+		[Container, "components/container.js"],
 		[PIXI.Sprite, false],
 		[DSprite, false],
-		[MovieClip, "/engine/js/components/movie-clip/movie-clip.js"],
+		[MovieClip, "components/movie-clip/movie-clip.js"],
 		[Scene, false],
-		[Text, "/engine/js/components/text.js"],
-		[Button, "/engine/js/components/button.js"],
-		[Label, "/engine/js/components/label.js"],
-		[Trigger,"/engine/js/components/trigger.js" ],
-		[OrientationTrigger,"/engine/js/components/orientation-trigger.js" ],
-		[NineSlicePlane, "/engine/js/components/nine-slice-plane.js"]
+		[Text, "components/text.js"],
+		[Button, "components/button.js"],
+		[Label, "components/label.js"],
+		[Trigger,"components/trigger.js" ],
+		[OrientationTrigger,"components/orientation-trigger.js" ],
+		[NineSlicePlane, "components/nine-slice-plane.js"]
 	];
 }
 
@@ -64,27 +64,27 @@ function getClassType(c) {
 }
 
 function addClass(c, path) {
-	
+
 	let classType = getClassType(c);
 	if (!classType) return;
-	
+
 	let name = c.name;
-	
-	
+
+
 	if (classPathById.hasOwnProperty(name)) {
 		if (classPathById[name] !== path) {
 			showError(R.div(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'));
 			return;
 		}
 	}
-	
+
 	if (path && (path.indexOf('/engine/') < 0)) {
 		console.log('Custom class loded: ' + name + '; ' + path);
 	}
-	
+
 	classPathById[name] = (((typeof path) === 'string') ? path : false);
 	classesById[name] = c;
-	
+
 	let item = {c};
 	if (classType === PIXI.DisplayObject) {
 		ClassesLoader.gameObjClasses.push(item);
@@ -113,18 +113,18 @@ function enumClassProperties(c) {
 						p.default = PropsFieldWrapper.getTypeDescription(p).default;
 					}
 					defaults[p.name] = p.default;
-					
+
 					if(c === cc) { //own properties of this class
 						if(!p.hasOwnProperty('noNullCheck') && (p.type === Number || p.type === 'color' || p.type === 'select')) {
 							wrapPropertyWithNumberChecker(c, p.name);
 						}
 					}
-					
+
 				}
-				
+
 				let ownerClassName = cc.name + ' (' + loadedPath + ')';
 				p.owner = ownerClassName;
-				
+
 				return props.some((pp) => {
 					if(pp.name === p.name) {
 						editor.ui.modal.showError('redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner);
@@ -132,7 +132,7 @@ function enumClassProperties(c) {
 					}
 				});
 			});
-			
+
 			props = addProps.concat(props);
 		}
 		if (cc === PIXI.DisplayObject) {
@@ -161,17 +161,17 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 
 		setTimeout(() => {
 		errorOccured = false;
-		
+
 		loadedClssesCount = 0;
 		clearClasses();
 		console.clear();
 		console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
-		
+
 		enumClassProperties(PIXI.DisplayObject);
 		embeddedClasses.some((a) => {
 			addClass(a[0], a[1]);
 		});
-		
+
 		window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
 			showError(R.fragment(
 				'attempt to load: ' + loadedPath + ': ' + message,
@@ -179,10 +179,6 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				'Plese fix error in source code and press button to try again:',
 			));
 		};
-		
-		
-
-		
 		let scriptSource = '';
 		editor.fs.files.some((fn, i) => {
 			if(fn.match(jsFiler)) {
@@ -190,29 +186,29 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				scriptSource += ("import C" + i + " from '" + location.origin + editor.fs.gameFolder + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
 			}
 		});
-		
+
 		let src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
-		
+
 		let script = document.createElement('script');
 		editor.ui.modal.showSpinner();
 		script.onerror = function() {
 			editor.ui.modal.hideSpinner();
 		};
+
 		script.onload = function() {
-			
 			editor.ui.modal.hideSpinner();
 			head.removeChild(script);
-			
+
 			window.onerror = null;
 			if(!errorOccured) {
 				Lib._setClasses(classesById, classesDefaultsById);
-				
+
 				classesLoadedSuccessfullyAtLeastOnce = true;
-				
+
 				console.log('Loading success.');
 				console.log(loadedClssesCount + ' classes total.');
 				resolve();
-				
+
 				editor.ui.classesList.forceUpdate();
 				Pool.clearAll();
 			} else {
@@ -234,7 +230,7 @@ function classLoaded(c, path) {
 	if(!c.hasOwnProperty('EDITOR_icon')) {
 		c.EDITOR_icon = "tree/game";
 	}
-	
+
 	addClass(c, path);
 }
 

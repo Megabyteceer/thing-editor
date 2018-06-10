@@ -1,6 +1,6 @@
 // automatically cancels request if parent sceneNode is destroyed
 // also freezes request if current scene is frozen by modal object or game is paused
-import Container from "/engine/js/components/container.js";
+import Container from "components/container.js";
 
 export default class SceneLinkedRequest extends Container {
 /// #if EDITOR
@@ -9,7 +9,7 @@ export default class SceneLinkedRequest extends Container {
 	}
 
 /// #endif
-	
+
 	fetch(url, options) {
 		assert(this.parent, "Please attach request to scene or display object before fetch.");
 		this.waitUrlToRequest = url;
@@ -19,15 +19,15 @@ export default class SceneLinkedRequest extends Container {
 			this.reject = reject;
 		});
 	}
-	
+
 	update() {
 		if(this.waitUrlToRequest) {
-			
+
 			this.requestId = requestsIdCounter++;
 			this.result = null;
 			this.error = null;
 			let requestId = this.requestId;
-			
+
 			fetch(this.waitUrlToRequest, this.options).then((result) => {
 				if(this.requestId === requestId) {
 					this.result = result;
@@ -47,7 +47,7 @@ export default class SceneLinkedRequest extends Container {
 			this.remove();
 		}
 	}
-	
+
 	onRemove() {
 		this.waitUrlToRequest = null;
 		this.options = null;

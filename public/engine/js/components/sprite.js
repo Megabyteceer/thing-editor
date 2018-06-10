@@ -1,3 +1,5 @@
+import * as PIXI from 'pixi.js';
+
 export default class DSprite extends PIXI.Sprite {
 	constructor() {
 		super();
@@ -6,9 +8,9 @@ export default class DSprite extends PIXI.Sprite {
 		this.ySpeed = 0;
 		this.rSpeed = 0;
 	}
-	
+
 	onRemove() {}
-	
+
 	update() {
 		this.x += this.xSpeed;
 		this.y += this.ySpeed;

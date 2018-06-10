@@ -1,5 +1,5 @@
 "use strict";
-import Editor from '/editor/js/editor.js';
+import Editor from 'editor.js';
 
 (function () {
 	new Editor();

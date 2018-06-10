@@ -1,4 +1,4 @@
-import Lib from "/engine/js/lib.js";
+import Lib from "lib.js";
 
 const AssetsLoader = {};
 
@@ -18,7 +18,7 @@ const enumAssets = () => {
 			o.image = 'EMPTY';
 		}
 	});
-	
+
 	for(let k of Lib.__texturesList) { //TODO: clear changed only
 		if(k.name !== 'EMPTY' && k.name !== 'WHITE') {
 			let t = Lib.getTexture(k.name);
@@ -26,27 +26,27 @@ const enumAssets = () => {
 			t.destroy(true);
 		}
 	}
-	
+
 	Lib.__clearTexturesList();
-	
+
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
-	
-	
-	
+
+
+
 	editor.fs.files.some((fn) => {
 		if(fn.match(textureFiler)) {
 			Lib.addTexture(fn.replace(textureNameCleaner, ''), editor.fs.gameFolder + fn);
 		}
 	});
-	
+
 	tmp.forEach((image, o) => {
 		o.image = image;
 	});
 }
 
 AssetsLoader.reloadAssets = (refreshFiles) => {
-	
+
 	if(refreshFiles) {
 		editor.fs.refreshFiles().then(enumAssets);
 	} else {

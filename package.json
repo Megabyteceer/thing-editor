@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "node scripts/postinstall.js",
-    "start": "node --inspect index.js"
+    "assets_server": "webpack-dev-server",
+    "start": "concurrently --kill-others \"npm run assets_server\" \"node --inspect index.js\""
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,8 @@
   },
   "homepage": "https://github.com/Megabyteceer/thing#readme",
   "dependencies": {
+    "@pixi/filter-outline": "^2.6.0",
+    "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
@@ -29,11 +32,24 @@
     "jquery": "^3.3.1",
     "opn": "^5.3.0",
     "pixi-filters": "^2.6.0",
-    "pixi.js": "^4.7.1",
+    "pixi.js": "^4.8.1",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
     "reset-css": "^3.0.0",
-    "webpack": "^4.10.2",
+    "webpack": "^4.12.0",
     "ws": "^5.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-builtin-extend": "^1.1.2",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.19",
+    "concurrently": "^3.5.1",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack-cli": "^3.0.3",
+    "webpack-dev-server": "^3.1.4"
   }
 }

@@ -4,9 +4,7 @@ import BooleanEditor from './boolean-editor.js';
 import SelectEditor from './select-editor.js';
 import ColorEditor from './color-editor.js';
 import TimelineEditor from "./timeline/timeline-property.js";
-import Tip from "../../utils/tip.js";
 import DataPathEditor from "./data-path-editor.js";
-
 
 let typeDescriptions = new Map();
 
@@ -71,14 +69,14 @@ let labelProps = {className: 'props-label selectable-text', onMouseDown: functio
 let wrapperProps = {className: 'props-wrapper'};
 
 class PropsFieldWrapper extends React.Component {
-	
-	
+
+
 	constructor(props) {
 		super(props);
 		this.state = {};
 		this.onChange = this.onChange.bind(this);
 	}
-	
+
 	onChange(ev, delta, deltaVal) {
 		delta = (delta === true);
 		let field = this.props.field;
@@ -87,7 +85,7 @@ class PropsFieldWrapper extends React.Component {
 			val = field.parser(val);
 		}
 		let initialVal = val;
-		
+
 		if (field.hasOwnProperty('min')) {
 			val = Math.max(field.min, val);
 		}
@@ -99,26 +97,26 @@ class PropsFieldWrapper extends React.Component {
 		} else {
 			this.props.onChange(field, val);
 		}
-		
+
 		this.setState({value: val});
 	}
-	
+
 	render() {
 		let field = this.props.field;
 		let node = editor.selection[0];
 		editor.ui.propsEditor.__isPropsRenderingAccessTime = true;
 		let value = node[field.name];
 		editor.ui.propsEditor.__isPropsRenderingAccessTime = false;
-		
+
 		let renderer;
 		if (field.hasOwnProperty('select')) {
 			renderer = SelectEditor;
 		} else {
 			renderer = getTypeDescription(field).renderer;
 		}
-		
+
 		let disabled = field.disabled && field.disabled(node);
-		
+
 		let tip;
 		if(field.hasOwnProperty('tip')) {
 			tip = R.tip(field.name,
@@ -126,7 +124,7 @@ class PropsFieldWrapper extends React.Component {
 				field.tip
 			);
 		}
-		
+
 		return R.div({className: field.important ? 'props-field props-field-important' : 'props-field', id:'property-editor-' + field.name},
 			tip,
 			R.div(labelProps, field.name),

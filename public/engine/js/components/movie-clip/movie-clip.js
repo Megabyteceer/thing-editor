@@ -1,14 +1,14 @@
 import DSprite from '../sprite.js';
-import Pool from "../../utils/pool.js";
+import Pool from "utils/pool.js";
 import FieldPlayer from "./field-player.js";
 
 export default class MovieClip extends DSprite {
-	
+
 	constructor() {
 		super();
 		this.fieldPlayers = [];
 	}
-	
+
 	update() {
 		if (this.isPlaying) {
 			if (this.delay > 0) {
@@ -82,10 +82,10 @@ export default class MovieClip extends DSprite {
 		}
 		return ret;
 	}
-	
+
 	static _deserializeTimelineData(tl) {
 		let fields = tl.f.map((f) => {
-			
+
 			let fieldTimeline = f.t.map((k) => {
 				let ret =  Object.assign({}, k);
 				if(!ret.hasOwnProperty('j')) {
@@ -104,7 +104,7 @@ export default class MovieClip extends DSprite {
 				t: fieldTimeline
 			};
 		});
-		
+
 		let labels = {};
 		for(let key in tl.l) {
 			let labelTime = tl.l[key];
@@ -137,13 +137,13 @@ export default class MovieClip extends DSprite {
 		}
 		data = deserializeCache.get(data);
 
-		
+
 		assert(Array.isArray(data.f), "Wrong timeline data?");
 		this._timelineData = data;
 
 		let pow = data.p; //smooth fields dynamic parameters
 		let damper = data.d;
-		
+
 		while (this.fieldPlayers.length > 0) {
 			Pool.dispose(this.fieldPlayers.pop());
 		}
@@ -154,17 +154,17 @@ export default class MovieClip extends DSprite {
 			this.fieldPlayers.push(p);
 		}
 	}
-	
+
 	resetTimeline() {
 		for (let p of this.fieldPlayers) {
 			p.reset();
 		}
 	}
-	
+
 	hasLabel(labelName) {
 		return this._timelineData.l.hasOwnProperty(labelName);
 	}
-	
+
 	gotoLabel(labelName) {
 		let label = this._timelineData.l[labelName];
 		let l = this.fieldPlayers.length;
@@ -173,21 +173,21 @@ export default class MovieClip extends DSprite {
 		}
 		this.play();
 	}
-	
+
 	play() {
 		this.isPlaying = true;
 	}
-	
+
 	stop() {
 		this.isPlaying = false;
 	}
-	
+
 	playRecursive() {
 		for (let c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = true;
 		}
 	}
-	
+
 	stopRecursive() {
 		for (let c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = false;

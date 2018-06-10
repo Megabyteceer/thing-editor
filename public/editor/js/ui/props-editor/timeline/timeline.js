@@ -1,4 +1,4 @@
-import MovieClip from "../../../../../engine/js/components/movie-clip/movie-clip.js";
+import MovieClip from "components/movie-clip/movie-clip.js";
 import FieldsTimeline from "./timeline-field.js";
 
 const FRAMES_STEP = 3;
@@ -44,47 +44,47 @@ export default class Timeline extends React.Component {
 		this.keyframePropretyEditorRef = this.keyframePropretyEditorRef.bind(this);
 		this.onPlayStopToggle = this.onPlayStopToggle.bind(this);
 	}
-	
+
 	static init() {
 		editor.beforePropertyChanged.add(Timeline.onBeforePropertyChanged);
 		editor.afterPropertyChanged.add(Timeline.onAfterPropertyChanged);
 	}
-	
+
 	componentDidMount() {
 		timelineElement = $('.timeline')[0];
 		editor.ui.viewport.beforePlayStopToggle.add(this.onPlayStopToggle);
 	}
-	
+
 	componentWillUnmount() {
 		timelineElement = null;
 		editor.ui.viewport.beforePlayStopToggle.remove(this.onPlayStopToggle);
 		removeAffectFromUnselected(true);
 	}
-	
+
 	onPlayStopToggle() {
 		removeAffectFromUnselected(true);
 		this.setTime(0, true);
 	}
-	
+
 	createKeyframeWithTimelineValue(fieldData, time) { //used for toggle keyframe
 		this.createKeyframeWithCurrentObjectsValue(getMovieclipByFieldData(fieldData), fieldData.n, time);
 		renormalizeFieldTimelineDataAfterChange(fieldData);
 	}
-	
+
 	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
 		let keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
-		
+
 		//TODO: check if field was exists and delta its value if so
 		keyFrame.v = o[fieldName];
 		let field = getFieldByNameOrCreate(o, fieldName);
 		renormalizeFieldTimelineDataAfterChange(field);
 	}
-	
+
 	static onBeforePropertyChanged(fieldName, field) {
 		if(!timelineElement) {
 			beforeChangeRemember = new WeakMap();
 		}
-		
+
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
 				if(timelineElement) {
@@ -100,11 +100,11 @@ export default class Timeline extends React.Component {
 			}
 		});
 	}
-	
+
 	isNeedAnimateProperty(o, fieldName) {
 		return this.getTime() > 0 || getFieldByName(o, fieldName);
 	}
-	
+
 	static onAfterPropertyChanged(fieldName, field) {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
@@ -130,7 +130,7 @@ export default class Timeline extends React.Component {
 									}
 									kf.v = changedVal;
 								}
-								
+
 								renormalizeFieldTimelineDataAfterChange(fld);
 							}
 						}
@@ -144,9 +144,9 @@ export default class Timeline extends React.Component {
 		if(timelineElement) {
 			timeline.forceUpdate();
 		}
-		
+
 	}
-	
+
 	deleteAnimationField(field) {
 		let tl = getTimelineDataByFieldData(field);
 		let i = tl.f.indexOf(field);
@@ -157,11 +157,11 @@ export default class Timeline extends React.Component {
 		editor.sceneModified();
 		this.forceUpdate();
 	}
-	
+
 	getTime() {
 		return this.timelineMarker.state.time;
 	}
-	
+
 	setTime(time, scrollInToView) {
 		this.timelineMarker.setTime(time, scrollInToView);
 		if(game.__EDITORmode) {
@@ -178,26 +178,26 @@ export default class Timeline extends React.Component {
 			editor.refreshPropsEditor();
 		}
 	}
-	
+
 	timelineMarkerRef(ref) {
 		this.timelineMarker = ref;
 	}
-	
+
 	keyframePropretyEditorRef(ref) {
 		keyframePropretyEditor = ref;
 	}
-	
+
 	static getTimelineElement() {
 		return 	timelineElement;
 	}
-	
+
 	static getTimelineWindowBounds() {
 		if(timelineElement) {
 			lastTimelineBounds = timelineElement.getBoundingClientRect();
 		}
 		return lastTimelineBounds;
 	}
-	
+
 	render() {
 		removeAffectFromUnselected();
 		return R.fragment (
@@ -257,7 +257,7 @@ function getFrameAtTimeOrCreate(o, name, time) {
 		m: getDefaultKeyframeTypeForField(o, name), //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
 		j: time	    //Jump to time. If no jump need - equal to 't'
 	};
-	
+
 	field.t.push(keyFrame);
 	renormalizeAllLabels(o._timelineData);
 	return keyFrame;
@@ -360,14 +360,14 @@ function askForLabelName(existingLabelsNames, title, defaultName = '') {
 }
 
 class ObjectsTimeline extends React.Component {
-	
+
 	renderTimeLabel(labelName, labelsNamesList) {
 		return React.createElement(TimeLabel, {key:labelName, timelienData: this.props.node._timelineData, label:this.props.node._timelineData.l[labelName], labelName, labelsNamesList});
 	}
-	
+
 	render() {
 		let tl = this.props.node._timelineData;
-		
+
 		let labelsNames = Object.keys(tl.l);
 		let labelsPanel = R.div({
 				onMouseDown:(ev) => { //create new label by right click
@@ -388,7 +388,7 @@ class ObjectsTimeline extends React.Component {
 			},
 			labelsNames.map((labelName)=> {return this.renderTimeLabel(labelName, labelsNames)})
 		);
-		
+
 		return R.div(objectsTimelineProps,
 			labelsPanel,
 			tl.f.map((field, i) => {
@@ -405,19 +405,19 @@ const timeMarkerLabelProps = {className: 'time-marker-label'};
 const smallTextProps = {className: 'small-text'};
 
 class TimeMarker extends React.Component {
-	
+
 	constructor(params) {
 		super(params);
 		this.state = {time:0};
 	}
-	
+
 	setTime(time, scrollInToView) {
 		this.setState({time});
 		if(scrollInToView) {
 			timelineElement.scrollLeft = time * FRAMES_STEP -  Timeline.getTimelineWindowBounds().width / 2;
 		}
 	}
-	
+
 	render() {
 		return R.div(timeMarkerProps,
 			R.div(fieldLabelTimelineProps),
@@ -432,13 +432,13 @@ class TimeMarker extends React.Component {
 }
 
 class TimeLabel extends React.Component {
-	
+
 	render () {
 		let tl = this.props.timelienData;
 		let labelsNamesList = this.props.labelsNamesList;
 		let label = this.props.label;
 		let name = this.props.labelName;
-		
+
 		return R.div({className:'timeline-label', style:{left: label.t * FRAMES_STEP},
 			onMouseDown: (ev) => {
 				if(ev.buttons === 2) {
@@ -498,11 +498,11 @@ function onTimelineMouseDown(ev) {
 }
 
 function onMouseMove(ev) {
-	
+
 	if($(ev.target).closest('.bottom-panel').length > 0) {
 		return;
 	}
-	
+
 	isDragging = (isDragging && (ev.buttons === 1));
 
 	let b = Timeline.getTimelineWindowBounds();
@@ -519,24 +519,24 @@ function onMouseMove(ev) {
 		} else {
 			draggingLabel = null;
 		}
-		
+
 		mouseTimelineTime = Math.max(0, Math.round((x + tl.scrollLeft) / FRAMES_STEP));
 		timeline.mouseTimelineTime = mouseTimelineTime;
-		
+
 		if(isDragging) {
 			timeline.setTime(mouseTimelineTime);
 		}
-		
+
 		if(draggingLabel && (draggingLabel.t !== mouseTimelineTime)) {
 			draggingLabel.t = mouseTimelineTime;
 			renormalizeLabel(draggingLabel, draggingTimelineData);
 			editor.sceneModified();
 			timeline.forceUpdate();
 		}
-		
+
 		FieldsTimeline.onMouseDrag(mouseTimelineTime, ev.buttons);
 	}
-	
+
 }
 
 $(window).on('mousemove', onMouseMove);

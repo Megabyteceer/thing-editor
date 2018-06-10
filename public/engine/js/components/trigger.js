@@ -1,8 +1,8 @@
 import Container from './container.js';
-import getValueByPath from "../utils/get-value-by-path.js";
+import getValueByPath from "utils/get-value-by-path.js";
 
 export default class Trigger extends Container {
-	
+
 	init() {
 		this.initialAlpha = this.alpha;
 		this.initialScale = this.scale.x;
@@ -22,11 +22,11 @@ export default class Trigger extends Container {
 		this.interactiveChildren = this._state;
 		this.updatePhase();
 	}
-	
+
 	getState() {
 		return this.invert === (!getValueByPath(this.dataPath, this));
 	}
-	
+
 	show() {
 		this._state = true;
 		this.interactiveChildren = true;
@@ -40,13 +40,13 @@ export default class Trigger extends Container {
 	get state () {
 		return this._state;
 	}
-	
+
 	hide() {
 		this._state = false;
 		this.interactiveChildren = false;
 		this.triggering = true;
 	}
-	
+
 	toggle() {
 		if(this._state) {
 			this.hide();
@@ -54,7 +54,7 @@ export default class Trigger extends Container {
 			this.show();
 		}
 	}
-	
+
 	updatePhase() {
 		let qTo = this._state ? 0 : 1;
 		if((this.pow === 1) || ((Math.abs(qTo - this.q) < 0.01) && (Math.abs(this.qSpeed) < 0.01))) {
@@ -65,17 +65,17 @@ export default class Trigger extends Container {
 			this.qSpeed *= this.damp;
 			this.q += this.qSpeed;
 		}
-		
+
 		this.alpha = this.initialAlpha + this.q * this.alphaShift;
 		this.visible = this.alpha > 0.01;
-		
+
 		if (this.scaleShift !== 0) {
 			let s = this.initialScale + this.q * this.scaleShift;
 			this.scale.x = s;
 			this.scale.y = s;
 		}
 		this.visible = (this.alpha > 0.01) && (Math.abs(this.scale.x) > 0.001);
-		
+
 		if (this.xShift !== 0) {
 			this.x = this.initialX + this.q * this.xShift;
 		}
@@ -83,7 +83,7 @@ export default class Trigger extends Container {
 			this.y = this.initialY + this.q * this.yShift;
 		}
 	}
-	
+
 	update() {
 		if (this.dataPath) {
 			let s = this.getState();
@@ -99,7 +99,7 @@ export default class Trigger extends Container {
 
 /// #if EDITOR
 
-import Tip from "/editor/js/utils/tip.js";
+import Tip from "utils/tip.js";
 Trigger.EDITOR_group = 'Extended';
 Trigger.EDITOR_editableProps = [
 		{

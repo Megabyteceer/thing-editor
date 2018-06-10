@@ -2,8 +2,8 @@
     helper and debugging drawing over game's viewport
  */
 
-import Selection from "./selection.js";
-import Pool from "../../../engine/js/utils/pool.js";
+import Selection from "utils/selection.js";
+import Pool from "utils/pool.js";
 
 let blackout;
 
@@ -27,10 +27,10 @@ function createDragger(owner, constructor) {
 let savedSelection;
 
 export default class Overlay {
-	
+
 	constructor() {
 		game.pixiApp.ticker.add(refreshSelection);
-		
+
 		blackout = new PIXI.Sprite();
 		blackout.texture = PIXI.Texture.WHITE;
 		blackout.tint = 30;
@@ -38,11 +38,11 @@ export default class Overlay {
 		blackout.width = W;
 		blackout.height = H;
 	}
-	
+
 	getBGcolor() {
 		return blackout.tint;
 	}
-	
+
 	setBGcolor(tint) {
 		if(tint === undefined) {
 			tint = 30;
@@ -50,10 +50,10 @@ export default class Overlay {
 			checkIfCurrentContainerIsShowedPrefab();
 			editor.settings.setItem('prefab-bg'+ game.currentContainer.name, tint);
 		}
-		
+
 		blackout.tint = tint;
 	}
-	
+
 	showPreview(object) {
 		this.setBGcolor(editor.settings.getItem('prefab-bg' + object.name));
 		this.hidePreview(false);
@@ -65,7 +65,7 @@ export default class Overlay {
 		checkIfCurrentContainerIsShowedPrefab();
 		editor.history.updateUi();
 	}
-	
+
 	hidePreview(refresh = true) {
 		if (blackout.parent) {
 			game.stage.removeChild(blackout);
@@ -110,7 +110,7 @@ function refreshSelection() {
 		game.pixiApp.view.style.cursor = newPointer;
 		currentPointer = newPointer;
 	}
-	
+
 	editor.selection.some((o) => {
 		let info = __getNodeExtendData(o);
 		if (!info.draggerPivot) {
@@ -168,7 +168,7 @@ function selectByStageClick(ev) {
 	let allUnderMouse = new Selection();
 	let stack = [game.currentContainer];
 	let i;
-	
+
 	while (stack.length > 0) {
 		if (stack.length > 1000) throw new Error('owerflow');
 		let o = stack.pop();
@@ -184,10 +184,10 @@ function selectByStageClick(ev) {
 			}
 		}
 	}
-	
+
 	allUnderMouse.sortSelectedNodes();
 	allUnderMouse.reverse();
-	
+
 	if(allUnderMouse.length > 0) {
 		if(!previousAllUnderMouse || previousAllUnderMouse.some((prevObj, i) => {
 			return prevObj !== allUnderMouse[i];
@@ -196,7 +196,7 @@ function selectByStageClick(ev) {
 		} else {
 			i = allUnderMouse.indexOf(editor.selection[0]) + 1;
 		}
-		
+
 		editor.ui.sceneTree.selectInTree(allUnderMouse[i % allUnderMouse.length], ev.ctrlKey);
 	} else {
 		editor.selection.clearSelection(true);
@@ -219,10 +219,10 @@ class Dragger extends DSprite {
 		super();
 		this.texture = PIXI.Texture.fromImage('editor/img/overlay/pivot.png');
 	}
-	
+
 	onDrag() {
 		let o = this.owner;
-		
+
 		if(game.mouse.shiftKey) {
 			let dX = game.mouse.x - startX;
 			let dY = game.mouse.y - startY;
@@ -232,7 +232,7 @@ class Dragger extends DSprite {
 			angle = Math.round(angle);
 			angle /= 4.0;
 			angle *= Math.PI;
-			
+
 			let len = Math.sqrt(dX * dX + dY * dY);
 			p.x = startX + Math.cos(angle) * len;
 			p.y = startY + Math.sin(angle) * len;
@@ -240,9 +240,9 @@ class Dragger extends DSprite {
 			p.x = game.mouse.x;
 			p.y = game.mouse.y;
 		}
-		
+
 		o.parent.toLocal(p, undefined, p, true);
-		
+
 		editor.onSelectedPropsChange('x', Math.round(p.x - o.x), true);
 		editor.onSelectedPropsChange('y', Math.round(p.y - o.y), true);
 	}
@@ -253,7 +253,7 @@ class Rotator extends DSprite {
 		super();
 		this.texture = PIXI.Texture.fromImage('editor/img/overlay/rotator.png');
 	}
-	
+
 	onDrag() {
 		let o = this.owner;
 		let info = __getNodeExtendData(o);
