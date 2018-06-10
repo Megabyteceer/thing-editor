@@ -6,13 +6,7 @@ let currentLanguageTable = {};
 let languages = {};
 let currentLanguageId = 'en';
 
-
 function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%%' entry; val2 - replaces '$$' entry
-	
-	/// #if EDITOR
-	
-	
-	/// #endif
 	
 	let ret = currentLanguageTable.hasOwnProperty(id) ? currentLanguageTable[id] : id;
 	if(typeof val1 !== 'undefined') {

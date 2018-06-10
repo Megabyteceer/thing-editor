@@ -50,6 +50,11 @@ export default class LanguageView extends React.Component {
 	}
 }
 
+const idFixer = /[^a-z\-]/i;
+function texareaID(lang, id) {
+	return lang + '-' + id.replace(idFixer, '-');
+}
+
 class LanguageTableEditor extends React.Component {
 	
 	constructor (props) {
@@ -103,9 +108,25 @@ class LanguageTableEditor extends React.Component {
 				for(let langId of langsIdsList) {
 					languages[langId][enteredName] = DEFAULT_TEXT;
 				}
+				
 				onModified();
 				refreshCachedData();
 				this.forceUpdate();
+				
+				setTimeout(() => {
+					let area = $('.langs-editor-table #' + texareaID('en', enteredName));
+					area.focus();
+					area[0].scrollIntoView({});
+				},2);
+				
+				if(editor.selection.length === 1) {
+					if(editor.selection[0] instanceof PIXI.Text) {
+						let t = editor.selection[0];
+						if((t.text === ' ') && !t.translatableText) {
+							t.translatableText = enteredName;
+						}
+					}
+				}
 			}
 		});
 	}
@@ -134,7 +155,7 @@ class LanguageTableEditor extends React.Component {
 						untranslatedCounts[langId] = (untranslatedCounts[langId] || 0) + 1;
 						totallyUntranslated++;
 					}
-					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({defaultValue: text, onChange:(ev) => {
+					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({defaultValue: text, id:texareaID(langId, id), onChange:(ev) => {
 						languages[langId][id] = ev.target.value;
 						onModified();
 					}}));

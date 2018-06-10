@@ -48,7 +48,8 @@ function chooseProperty(parent, path) {
 		if(path && typeof path === 'string') { //restore current path as default value
 			parentsPath = [];
 			path = path.split('.');
-			for(let pathI = 0; (pathI < path.length-1); pathI++) {
+			let pathI;
+			for(pathI = 0; (pathI < path.length-1); pathI++) {
 				let itemName = path[pathI];
 				let p;
 				if(itemName.startsWith('#')) {

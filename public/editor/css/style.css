@@ -907,7 +907,7 @@ input{
 	box-sizing: content-box;
 	text-align: left;
 	padding-bottom: 3px;
-	max-height: calc(100% - 130px);
+	max-height: calc(100% - 148px);
 	overflow: auto;
 }
 
@@ -985,6 +985,18 @@ input{
     padding: 0 2px;
     background: #d8dade;
 }
+
+#window-texteditor {
+	z-index: 10 !important;
+}
+
+
+
+
+
+
+
+
 
 
 

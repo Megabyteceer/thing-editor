@@ -31,7 +31,6 @@ export default class Label extends PIXI.Text {
 			/// #if EDITOR
 			if(game.__EDITORmode || game.__paused) super.onLanguageChanged();
 			/// #endif
-			
 		}
 	}
 	
@@ -67,15 +66,16 @@ export default class Label extends PIXI.Text {
 						this.showedVal = val;
 					}
 					
-					if(this._translatableText) {
-						this.text = L(this._translatableText).replace('%%', val);
-					} else if(this.template) {
+					if(this.template) {
 						this.text = this.template.replace('%%', val);
+					} else if(this._translatableText) {
+						this.text = L(this._translatableText).replace('%%', val);
 					} else {
 						this.text = val;
 					}
 				}
 			} else {
+				this.processedVal = undefined;
 				this.showedVal = undefined;
 				this.visible = false;
 			}
