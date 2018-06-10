@@ -59,8 +59,8 @@ class LanguageTableEditor extends React.Component {
 	}
 	
 	onAddNewLanguageClick() {
-		editor.ui.modal.showPrompt('Enter new ID:',
-			'',
+		editor.ui.modal.showPrompt('Enter new language ID:',
+			'ru',
 			(val) => { //filter
 				return val.toLowerCase();
 			},
@@ -157,7 +157,7 @@ class LanguageTableEditor extends React.Component {
 				lines
 			),
 			footer,
-			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick)
+			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn')
 		)
 	}
 }

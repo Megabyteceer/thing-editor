@@ -74,12 +74,16 @@ var moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
 app.use('/', (req, res, next) => {
 	let modulesVersion = req.query ? req.query.v : false;
-	if(modulesVersion && req.path.endsWith('.js')) {
-		
+	
+	let needParse = modulesVersion && req.path.endsWith('.js');
+	
+	if(needParse) {
+		needParse = req.path.indexOf('/engine/js/') < 0 && req.path.indexOf('/editor/js/') < 0; //not reload internal editor's and engine's modules
+	}
+	
+	if(needParse) {
 		let fileName = path.join(__dirname, 'public', req.path);
-		log('STATIC js' + fileName);
 		fs.readFile(fileName, function (err, content) {
-			log('ENG JS proc');
 			if (err) next(err);
 			res.set('Content-Type', 'application/javascript');
 			var rendered = content.toString().replace(moduleImportFixer, '$1?v=' + modulesVersion + '$2');

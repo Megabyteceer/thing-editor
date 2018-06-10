@@ -25,12 +25,14 @@ export default class Label extends PIXI.Text {
 	}
 	
 	onLanguageChanged() {
-		this.showedVal = undefined;
-		this.refreshNow();
-		/// #if EDITOR
-		if(game.__EDITORmode || game.__paused) super.onLanguageChanged();
-		/// #endif
-		
+		if(this._translatableText) {
+			this.showedVal = undefined;
+			this.refreshNow();
+			/// #if EDITOR
+			if(game.__EDITORmode || game.__paused) super.onLanguageChanged();
+			/// #endif
+			
+		}
 	}
 	
 	update() {
@@ -38,6 +40,12 @@ export default class Label extends PIXI.Text {
 			
 			let val = getValueByPath(this.dataPath, this);
 			if(val !== undefined) {
+				if(val !== this.processedVal) {
+					if(this.onChanged) {
+						game.call(this.onChanged, this);
+					}
+					this.processedVal = val;
+				}
 				if(val !== this.showedVal) {
 					this.visible = true;
 					
@@ -65,9 +73,6 @@ export default class Label extends PIXI.Text {
 						this.text = this.template.replace('%%', val);
 					} else {
 						this.text = val;
-					}
-					if(this.onChanged) {
-						game.call(this.onChanged, this);
 					}
 				}
 			} else {
