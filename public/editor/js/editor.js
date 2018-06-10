@@ -1,65 +1,65 @@
 import utils from './utils/editor-utils.js';
-import Game from '../../engine/js/game.js';
-import Settings from '../../engine/js/utils/settings.js';
-import Selection from './utils/selection.js';
-import ws from './utils/socket.js';
-import fs from './utils/fs.js';
-import history from './utils/history.js';
-import UI from './ui/ui.js';
-import ClassesLoader from './utils/classes-loader.js';
-import AssetsLoader from './utils/assets-loader.js';
-import ScenesList from "./ui/scenes-list.js";
-import Overlay from "./utils/overlay.js";
-import PrefabsList from "./ui/prefabs-list.js";
-import Signal from "./utils/signal.js";
-import Lib from "../../engine/js/lib.js";
+import Game from 'game.js';
+import Settings from 'utils/settings.js';
+import Selection from 'utils/selection.js';
+import ws from 'utils/socket.js';
+import fs from 'utils/fs.js';
+import history from 'utils/history.js';
+import UI from 'ui/ui.js';
+import ClassesLoader from 'utils/classes-loader.js';
+import AssetsLoader from 'utils/assets-loader.js';
+import ScenesList from "ui/scenes-list.js";
+import Overlay from "utils/overlay.js";
+import PrefabsList from "ui/prefabs-list.js";
+import Signal from "utils/signal.js";
+import Lib from "lib.js";
 import build from "./utils/build.js";
-import Pool from "/engine/js/utils/pool.js";
-import LanguageView from "./ui/language-view.js";
-import Timeline from "./ui/props-editor/timeline/timeline.js";
+import Pool from "utils/pool.js";
+import LanguageView from "ui/language-view.js";
+import Timeline from "ui/props-editor/timeline/timeline.js";
 
 export default class Editor {
-	
+
 	get editorFilesPrefix() {
 		return '.editor-tmp/';
 	}
-	
+
 	get runningSceneLibSaveSlotName() {
 		return this.editorFilesPrefix + 'save';
 	}
-	
+
 	constructor() {
 		/*global editor */
 		window.editor = this;
-		
+
 		this.tryToSaveHistory = tryToSaveHistory;
-		
+
 		this.currenGamePath = 'games/game-1';
 		this.fs = fs;
-		
+
 		this.settings = new Settings('editor');
 		this.selection = new Selection();
-		
+
 		this.ClassesLoader = ClassesLoader;
 		this.AssetsLoader = AssetsLoader;
-		
+
 		this.onUIMounted = this.onUIMounted.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
-		
+
 		this.history = history;
-		
+
 		this.beforePropertyChanged = new Signal();
 		this.afterPropertyChanged = new Signal();
-		
+
 		ReactDOM.render(
 			React.createElement(UI, {onMounted: this.onUIMounted}),
 			document.getElementById('root')
 		);
-		
+
 		Timeline.init();
 	}
-	
+
 	/**
 	 *
 	 * @param ui {UI}
@@ -68,21 +68,21 @@ export default class Editor {
 		/** @member {UI} */
 		this.ui = ui;
 		new Game('tmp.game.id');
-		
+
 		game.__EDITORmode = true;
 		game.init(document.getElementById('viewport-root'));
-		
+
 		this.overlay = new Overlay();
-		
+
 		ClassesLoader.init();
 		AssetsLoader.init();
 		this.openProject();
 	}
-	
+
 	async openProject(dir) {
 		editor.ui.viewport.stopExecution();
 		await askSceneToSaveIfNeed();
-		
+
 		if(!dir) {
 			dir = editor.settings.getItem('last-opened-project');
 		}
@@ -98,9 +98,9 @@ export default class Editor {
 			this.fs.gameFolder = '/games/' + dir + '/';
 			editor.projectDesc = data;
 			this.clipboardData = null;
-			
+
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
-			
+
 			if(Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showQuestion("Scene's backup restoring",
@@ -109,7 +109,7 @@ export default class Editor {
 					async() => {
 						await this.openSceneSafe(editor.runningSceneLibSaveSlotName, editor.projectDesc.lastSceneName);
 						editor.history.currentState._isModified = true;
-						
+
 					}, 'Restore backup',
 					async() => {
 						await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
@@ -122,7 +122,7 @@ export default class Editor {
 			}
 		}
 	}
-	
+
 	openSceneSafe(name, renameAfterOpening) {
 		return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
 			this.loadScene(name);
@@ -138,7 +138,7 @@ export default class Editor {
 			this.ui.forceUpdate();
 		});
 	}
-	
+
 	get currentSceneName() {
 		if(!window.game) return null;
 		let a = game._getScenesStack();
@@ -147,16 +147,16 @@ export default class Editor {
 		}
 		return game.currentScene ? game.currentScene.name : null;
 	}
-	
+
 	refreshPropsEditor() {
 		this.ui.propsEditor.forceUpdate();
 	}
-	
+
 	refreshTreeViewAndPropertyEditor() {
 		this.ui.sceneTree.forceUpdate();
 		this.refreshPropsEditor();
 	}
-	
+
 	reloadClasses() {
 		this.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
@@ -165,8 +165,8 @@ export default class Editor {
 			this.saveCurrentScene(editor.runningSceneLibSaveSlotName);
 			let selectionData = editor.selection.saveSelection();
 		}
-		
-		
+
+
 		return ClassesLoader.reloadClasses().then(() => {
 			if(needRepairScene) {
 				this.loadScene(editor.runningSceneLibSaveSlotName);
@@ -174,18 +174,18 @@ export default class Editor {
 			}
 		});
 	}
-	
+
 	reloadAssets() {
 		return AssetsLoader.reloadAssets();
 	}
-	
+
 	reloadAssetsAndClasses() {
 		return Promise.all([
 			this.reloadClasses(),
 			this.reloadAssets()
 		]);
 	}
-	
+
 	attachToSelected(o, doNotSelect) {
 		if(this.selection.length > 0) {
 			addTo(this.selection[0], o, doNotSelect);
@@ -193,11 +193,11 @@ export default class Editor {
 			this.addToScene(o, doNotSelect);
 		}
 	}
-	
+
 	addToScene(o, doNotSelect) {
 		addTo(game.currentContainer, o, doNotSelect);
 	}
-	
+
 	/**
 	 * set property value received from property editor
 	 */
@@ -207,9 +207,9 @@ export default class Editor {
 				field = editor.getObjectField(this.selection[0], field);
 			}
 			let changed = false;
-			
+
 			this.beforePropertyChanged.emit(field.name, field);
-			
+
 			if(delta === true) {
 				assert(field.type === Number);
 				for(let o of this.selection) {
@@ -234,29 +234,29 @@ export default class Editor {
 					}
 				}
 			}
-			
+
 			this.afterPropertyChanged.emit(field.name, field);
-			
+
 			if(changed) {
 				this.refreshTreeViewAndPropertyEditor();
 				editor.sceneModified();
 			}
 		}
 	}
-	
+
 	/**
 	 * enumerate all editable properties of given DisplayObject.
 	 */
 	enumObjectsProperties(o) {
 		return o.constructor.EDITOR_propslist_cache;
 	}
-	
+
 	getObjectField(o, name) {
 		return editor.enumObjectsProperties(o).find((f) => {
 			return f.name === name;
 		});
 	}
-	
+
 	loadScene(name) {
 		assert(name, 'name should be defined');
 		if(game.currentScene) {
@@ -265,21 +265,21 @@ export default class Editor {
 		idCounter = 0;
 		game.screenOrientation = editor.projectDesc.screenOrientation;
 		game.showScene(name);
-		
+
 		if(game.currentScene) {
 			this.selection.loadSelection(selectionsForScenesByName[name]);
 		}
-		
+
 		if(name === editor.runningSceneLibSaveSlotName) {
 			Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
 		}
 		this.refreshTreeViewAndPropertyEditor();
 	}
-	
+
 	saveProjecrDesc() {
 		debouncedCall(__saveProjectDescriptorInner);
 	}
-	
+
 	sceneModified(saveImmidiatly) {
 		if(game.__EDITORmode) {
 			needHistorySave = true;
@@ -288,17 +288,17 @@ export default class Editor {
 			}
 		}
 	}
-	
+
 	exitPrefabMode() {
 		if(editor.ui.prefabsList) {
 			PrefabsList.acceptPrefabEdition();
 		}
 	}
-	
+
 	get isCurrentSceneModified() {
 		return history.isStateModified;
 	}
-	
+
 	saveCurrentScene(name) {
 		editor.ui.viewport.stopExecution();
 		if(!name) {
@@ -314,7 +314,7 @@ export default class Editor {
 			}
 		}
 	}
-	
+
 	build() {
 		build.build();
 	}
@@ -324,7 +324,7 @@ function askSceneToSaveIfNeed(skip) {
 	editor.exitPrefabMode();
 	if(!skip && editor.isCurrentSceneModified) {
 		return new Promise((resolve) => {
-			
+
 			editor.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
 				() => {
 					editor.saveCurrentScene();
@@ -332,7 +332,7 @@ function askSceneToSaveIfNeed(skip) {
 				}, 'Save',
 				() => {
 					resolve();
-					
+
 				}, 'No save'
 			)
 		});

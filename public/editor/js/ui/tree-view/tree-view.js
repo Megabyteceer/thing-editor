@@ -1,6 +1,6 @@
 import TreeNode from './tree-node.js';
 import Window from '../window.js';
-import Selection from "../../utils/selection.js";
+import Selection from "utils/selection.js";
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};
@@ -18,7 +18,7 @@ function onEmptyClick(ev) {
 }
 
 export default class TreeView extends React.Component {
-	
+
 	constructor (props) {
 		super(props);
 		this.selectInTree = this.selectInTree.bind(this);
@@ -35,7 +35,7 @@ export default class TreeView extends React.Component {
 		this.findNext = this.findNext.bind(this);
 		this.searchString = editor.settings.getItem('tree-search', '');
 	}
-	
+
 	selectInTree(node, add) {
 		assert(node, "Attempt to select in tree empty node");
 		let n = node;
@@ -45,14 +45,14 @@ export default class TreeView extends React.Component {
 		}
 		editor.selection.select(node, add === true);
 		setTimeout(() => {
-			
+
 			if(foundByWhichProperty && foundByWhichProperty.has(node) && !add) {
 				let fieldName = foundByWhichProperty.get(node);
 				editor.ui.propsEditor.selecField(fieldName);
 			}
-			
+
 			foundByWhichProperty = null;
-			
+
 			let e = $('.scene-tree-view .item-selected');
 			if (e[0]) {
 				Window.bringWindowForward(e.closest('.window-body'));
@@ -73,8 +73,8 @@ export default class TreeView extends React.Component {
 			a.some((o) => {
 				o.remove();
 			});
-			
-			
+
+
 			if(i < p.children.length) {
 				this.selectInTree(p.getChildAt(i));
 			} else if(i > 0) {
@@ -86,19 +86,19 @@ export default class TreeView extends React.Component {
 			editor.sceneModified(true);
 		}
 	}
-	
+
 	onCopyClick() {
 		if(editor.selection.length > 0) {
 			editor.clipboardData = editor.selection.map(Lib.__serializeObject);
 			editor.refreshTreeViewAndPropertyEditor();
 		}
 	}
-	
+
 	onCutClick() {
 		this.onCopyClick();
 		this.onDeleteClick();
 	}
-	
+
 	onPasteClick() {
 		if(editor.clipboardData && editor.clipboardData.length > 0) {
 			editor.disableFieldsCache = true;
@@ -117,17 +117,17 @@ export default class TreeView extends React.Component {
 			editor.disableFieldsCache = false;
 		}
 	}
-	
+
 	onBringUpClick() {
 		let i = 0;
 		while(this.onMoveUpClick(true) && i++ < 100000); //moves selected object up until its become top
 		editor.sceneModified(true);
 		editor.refreshTreeViewAndPropertyEditor();
 	}
-	
+
 	onMoveUpClick(dontSaveHistoryState) {
 		let ret = false;
-		
+
 		editor.selection.some((o) => {
 			if(o.parent !== game.stage) {
 				let i = o.parent.getChildIndex(o);
@@ -146,7 +146,7 @@ export default class TreeView extends React.Component {
 		}
 		return ret;
 	}
-	
+
 	onMoveDownClick(dontSaveHistoryState) {
 		let ret = false;
 		let a = editor.selection.slice(0);
@@ -169,20 +169,20 @@ export default class TreeView extends React.Component {
 		}
 		return ret;
 	}
-	
+
 	onBringDownClick() {
 		let i = 0;
 		while(this.onMoveDownClick(true) && i++ < 100000); //move selected element down until its become bottom.
 		editor.sceneModified(true);
 		editor.refreshTreeViewAndPropertyEditor();
 	}
-	
+
 	onSearchKeyDown(ev) {
 		if(this.searchString && (ev.keyCode === 13)) {
 			this.fundNextBySearch();
 		}
 	}
-	
+
 	onSearchChange(ev) {
 		let val = ev.target.value.toLowerCase();
 		let needSearch = this.searchString.length < val.length;
@@ -192,14 +192,14 @@ export default class TreeView extends React.Component {
 			this.fundNextBySearch();
 		}
 	}
-	
+
 	fundNextBySearch() {
 		foundByWhichProperty = new WeakMap();
-		
+
 		this.findNext((o) => {
-			
+
 			if(o.constructor.name.toLowerCase().indexOf(this.searchString) >= 0) return true;
-			
+
 			let props = editor.enumObjectsProperties(o);
 			for(let p of props) {
 				if(p.type === String || p.type === 'data-path') { //some new types with string data canbe added here
@@ -212,25 +212,25 @@ export default class TreeView extends React.Component {
 			}
 		}, 1);
 	}
-	
+
 	findNext(condition, direction) {
 		let a = new Selection();
-		
+
 		if(condition(game.currentContainer)) {
 			a.push(game.currentContainer);
 		}
-		
+
 		game.currentContainer.forAllChildren((o) => {
 			if(condition(o)) {
 				a.push(o);
 			}
 		});
-		
+
 		if (a.length > 0) {
-			
+
 			a.sortSelectedNodes();
-			
-			
+
+
 			let i = a.indexOf(editor.selection[0]);
 			if (i >= 0) {
 				i += direction;
@@ -244,12 +244,12 @@ export default class TreeView extends React.Component {
 			editor.selection.clearSelection(true);
 		}
 	}
-	
+
 	render() {
 		if (typeof game === 'undefined') return R.spinner();
-		
+
 		let isEmpty = editor.selection.length === 0;
-		
+
 		return R.div(classViewProps,
 			R.div(leftPanelProps,
 				R.btn(R.icon('bring-up'), this.onBringUpClick, 'Bring selected up', "tool-btn", undefined, isEmpty),
@@ -262,7 +262,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, editor.clipboardData == null),
 				R.hr(),
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected', "tool-btn", 46, isEmpty)
-	
+
 			),
 			R.div({className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick},
 				R.input({onKeyDown: this.onSearchKeyDown, onChange: this.onSearchChange, className:'tree-view-search', defaultValue: this.searchString, placeholder: 'Search'}),

@@ -1,3 +1,5 @@
+import * as PIXI from 'pixi.js';
+
 PIXI.DisplayObject.prototype.getGlobalRotation = function getGlobalRotation() {
 	let ret = this.rotation;
 	let p = this.parent;
@@ -23,7 +25,7 @@ PIXI.DisplayObject.prototype.remove = function () {
 PIXI.DisplayObject.prototype.findChildrenByType = function (classType) {
 	let ret = [];
 	let stack = [this];
-	
+
 	while (stack.length > 0) {
 		if (stack.length > 1000) throw new Error('owerflow');
 		let o = stack.pop();

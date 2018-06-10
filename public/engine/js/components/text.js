@@ -1,3 +1,5 @@
+import * as PIXI from 'pixi.js';
+
 export default PIXI.Text;
 
 Object.defineProperties(PIXI.Text.prototype, {

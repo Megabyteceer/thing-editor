@@ -1,9 +1,9 @@
-import call from "../../utils/call.js";
+import call from "utils/call.js";
 
 export default class FieldPlayer {
-	
+
 	init(target, data, pow, damper) {
-		
+
 		this.target = target;
 		this.fieldName = data.n;
 		this.timeline = data.t;
@@ -11,7 +11,7 @@ export default class FieldPlayer {
 		this.damper = damper;
 		this.reset();
 	}
-	
+
 	reset() {
 		this.time = 0;
 		this.currentFrame = this.timeline[0];
@@ -21,7 +21,7 @@ export default class FieldPlayer {
 		this.speed = 0;
 		this.target[this.fieldName] = this.val;
 	}
-	
+
 	goto(time, nextKeyframe) {
 		this.time = time;
 		this.currentFrame = nextKeyframe;
@@ -35,10 +35,10 @@ export default class FieldPlayer {
 		} else if (nextKeyframe.m === 2) {//DISCRETE
 			this.speed = 0;
 		}
-		
-		
+
+
 	}
-	
+
 	update() {
 		let currentFrame = this.currentFrame;
 		if (this.time === currentFrame.t) {
@@ -49,15 +49,15 @@ export default class FieldPlayer {
 			if (currentFrame.hasOwnProperty('a')) {
 				action = currentFrame.a;
 			}
-			
+
 			if(currentFrame.hasOwnProperty('s')) {
 				this.speed = currentFrame.s;
 			}
-			
+
 			if (currentFrame.m === 1 || currentFrame.m === 2) { //discrete and linear Mode fields apply exact value
 				this.val = currentFrame.v;
 			}
-			
+
 			this.time = currentFrame.j;
 			this.currentFrame = currentFrame = currentFrame.n;
 			if(currentFrame.m === 1) {// LINEAR Mode
@@ -70,7 +70,7 @@ export default class FieldPlayer {
 			} else if(currentFrame.m === 2) {// DISCRETE Mode
 				this.speed = 0;
 			}
-			
+
 			if (action) {
 /// #if EDITOR
 				if(!this.__dontCallActions) {
@@ -83,7 +83,7 @@ export default class FieldPlayer {
 				if(!this.target.isPlaying) {
 					return;
 				}
-				
+
 			}
 			this.time++;
 		} else {
@@ -98,7 +98,7 @@ export default class FieldPlayer {
 			this.speed += (currentFrame.v - this.val) * this.pow;
 			this.val += this.speed;
 			this.speed *= this.damper;
-			
+
 		} else if(currentFrame.m === 1) { //LINEAR
 			this.val += this.speed;
 		} else if(currentFrame.m === 3) { //JUMP FLOOR
@@ -118,6 +118,6 @@ export default class FieldPlayer {
 		}
 		this.target[this.fieldName] = this.val;
 	}
-	
+
 
 }

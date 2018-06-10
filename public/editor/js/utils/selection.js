@@ -1,5 +1,7 @@
+import { OutlineFilter } from '@pixi/filter-outline';
+
 class Selection extends Array {
-	
+
 	select(object, add) {
 		if (!add) {
 			this.clearSelection();
@@ -12,12 +14,12 @@ class Selection extends Array {
 		this.sortSelectedNodes();
 		editor.refreshTreeViewAndPropertyEditor();
 	}
-	
+
 	sortSelectedNodes() {
 		recalculateNodesDeepness();
 		this.sort(sortByDeepness);
 	}
-	
+
 	loadSelection(data) {
 		if (!data || data.length === 0) {
 			editor.selection.clearSelection();
@@ -26,11 +28,11 @@ class Selection extends Array {
 		}
 		editor.refreshTreeViewAndPropertyEditor();
 	}
-	
+
 	saveSelection() {
 		return this.map(getPathOfNode);
 	}
-	
+
 	clearSelection(refresh) {
 		while (this.length > 0) {
 			this.remove(this[this.length - 1]);
@@ -39,7 +41,7 @@ class Selection extends Array {
 			editor.refreshTreeViewAndPropertyEditor();
 		}
 	}
-	
+
 	add(o) {
 		assert(!__getNodeExtendData(o).isSelected);
 		assert(this.indexOf(o) < 0);
@@ -47,7 +49,7 @@ class Selection extends Array {
 		o.filters = selectedFilters;
 		this.push(o);
 	}
-	
+
 	remove(o) {
 		assert(__getNodeExtendData(o).isSelected);
 		let i = this.indexOf(o);
@@ -60,7 +62,7 @@ class Selection extends Array {
 
 export default Selection;
 
-const selectionFilter = new PIXI.filters.OutlineFilter(2, 0xffff00);
+const selectionFilter = new OutlineFilter(2, 0xffff00);
 const selectedFilters = [selectionFilter];
 
 setInterval(() => {

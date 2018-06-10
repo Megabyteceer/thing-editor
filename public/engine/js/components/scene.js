@@ -1,21 +1,23 @@
+import * as PIXI from 'pixi.js';
+
 class Scene extends PIXI.Container {
 	constructor() {
 		super();
 		this.backgroundColor = 0;
 	}
-	
+
 	onRemove() {}
-	
+
 	onShow() {
-	
+
 	}
-	
+
 	onHide() {
-	
+
 	}
-	
+
 	update() {
-	
+
 	}
 }
 
