@@ -21,6 +21,10 @@ export default class Trigger extends Container {
 		this.triggering = false;
 		this.interactiveChildren = this._state;
 		this.updatePhase();
+		
+		/// #if EDITOR
+		this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
+		/// #endif
 	}
 	
 	getState() {
@@ -95,11 +99,91 @@ export default class Trigger extends Container {
 			this.updatePhase();
 		}
 	}
+/// #if EDITOR
+	
+	set "scale.x"(v) {
+		super['scale.x'] = v;
+		super['scale.y'] = v;
+	}
+	
+	get "scale.x"() {
+		return super['scale.x'];
+	}
+	
+	set "scale.y"(v) {
+		super['scale.x'] = v;
+		super['scale.y'] = v;
+	}
+	
+	get "scale.y"() {
+		return super['scale.x'];
+	}
+	
+	onRemove() {
+		super.onRemove();
+		this.__exitPreviewMode();
+	}
+	
+	__beforeSerialization() {
+		this.__exitPreviewMode();
+	}
+	
+	__onDeselect() {
+		this.__exitPreviewMode();
+	}
+	
+	__goToPreviewMode() {
+		if(this.__PREVIEW_MODE) return;
+		
+		editor.beforePropertyChanged.add(this.__exitPreviewMode);
+		
+		this.initialAlpha = this.alpha;
+		this.initialScale = this.scale.x;
+		this.initialX = this.x;
+		this.initialY = this.y;
+		
+		this.alpha += this.alphaShift;
+		this['scale.x'] += this.scaleShift;
+		this.x += this.xShift;
+		this.y += this.yShift;
+		this.__PREVIEW_MODE = true;
+	}
+	
+	__exitPreviewMode() {
+		if(!this.__PREVIEW_MODE) return;
+		editor.beforePropertyChanged.remove(this.__exitPreviewMode);
+		this.__PREVIEW_MODE = false;
+		this.alpha = this.initialAlpha;
+		this['scale.x'] = this.initialScale;
+		this.x = this.initialX;
+		this.y = this.initialY;
+	}
+	
+/// #endif
 }
 
 /// #if EDITOR
 
+
+let previewBtnProperty = {
+	type: 'btn',
+	title: 'Preview switched',
+	name: 'preview-switched',
+	onClick: (o) => {
+		if(o.__PREVIEW_MODE) {
+			o.__exitPreviewMode();
+			previewBtnProperty.className = undefined;
+		} else {
+			o.__goToPreviewMode();
+			previewBtnProperty.className = 'danger-btn';
+		}
+		editor.refreshPropsEditor();
+	}
+};
+
+
 import Tip from "/editor/js/utils/tip.js";
+
 Trigger.EDITOR_group = 'Extended';
 Trigger.EDITOR_editableProps = [
 		{
@@ -121,6 +205,7 @@ Trigger.EDITOR_editableProps = [
 		name: 'invert',
 		type: Boolean
 	},
+	previewBtnProperty,
 	{
 		name: 'pow',
 		type: Number,

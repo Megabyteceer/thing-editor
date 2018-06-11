@@ -640,6 +640,24 @@
 					}
 				}
 			]
+		},
+		{
+			"c": "Trigger",
+			"p": {
+				"x": 103,
+				"y": 105,
+				"dataPath": "all.bunny.visible",
+				"alphaShift": -0.6099999999999997,
+				"scaleShift": -0.3
+			},
+			":": [
+				{
+					"c": "DSprite",
+					"p": {
+						"image": "bunny.png"
+					}
+				}
+			]
 		}
 	]
 }

@@ -6,6 +6,7 @@ import ColorEditor from './color-editor.js';
 import TimelineEditor from "./timeline/timeline-property.js";
 import Tip from "../../utils/tip.js";
 import DataPathEditor from "./data-path-editor.js";
+import BtnProperty from "./btn-property.js";
 
 
 let typeDescriptions = new Map();
@@ -37,6 +38,11 @@ typeDescriptions.set('data-path', {
 	parser: (target) => {
 		return target.value || null;
 	},
+	default: null
+});
+
+typeDescriptions.set('btn', {
+	renderer: BtnProperty,
 	default: null
 });
 

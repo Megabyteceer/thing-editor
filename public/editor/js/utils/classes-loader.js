@@ -106,7 +106,7 @@ function enumClassProperties(c) {
 		if (cc.hasOwnProperty('EDITOR_editableProps')) {
 			let addProps = cc.EDITOR_editableProps;
 			addProps.some((p) => {
-				if (p.type === 'splitter') {
+				if (p.type === 'splitter' || p.type === 'btn') {
 					p.notSeriazable = true;
 				} else {
 					if (!p.hasOwnProperty('default')) {

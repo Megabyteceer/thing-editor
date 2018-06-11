@@ -31,6 +31,17 @@ export default class OrientationTrigger extends Container {
 		}
 	}
 	
+	_onOrientationSwitch() {
+		
+		/// #if EDITOR
+		this.__currentOrientationIsPortrait = 0; //enforse to applyOrientation
+		/// #endif
+		
+		if(this.__currentOrientationIsPortrait !== game.isPortrait) {
+			this.applyOrientation();
+		}
+	}
+	
 	/// #if EDITOR
 	set alpha(v) {
 		super.alpha = v;
@@ -174,17 +185,6 @@ export default class OrientationTrigger extends Container {
 		this.applyOrientation();
 	}
 	/// #endif
-
-	_onOrientationSwitch() {
-		
-		/// #if EDITOR
-		this.__currentOrientationIsPortrait = 0; //enforse to applyOrientation
-		/// #endif
-		
-		if(this.__currentOrientationIsPortrait !== game.isPortrait) {
-			this.applyOrientation();
-		}
-	}
 }
 
 

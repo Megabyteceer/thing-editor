@@ -46,6 +46,9 @@ class Selection extends Array {
 		__getNodeExtendData(o).isSelected = true;
 		o.filters = selectedFilters;
 		this.push(o);
+		if(o.__onSelect) {
+			o.__onSelect();
+		}
 	}
 	
 	remove(o) {
@@ -55,6 +58,9 @@ class Selection extends Array {
 		__getNodeExtendData(o).isSelected = false;
 		o.filters = null;
 		this.splice(i, 1);
+		if(o.__onDeselect) {
+			o.__onDeselect();
+		}
 	}
 }
 
