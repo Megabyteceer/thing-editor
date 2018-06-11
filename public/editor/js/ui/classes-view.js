@@ -62,6 +62,7 @@ class ClessesView extends React.Component {
 				}
 			});
 			
+			editor.selection.clearSelection();
 			for (let w of added) {
 				editor.ui.sceneTree.selectInTree(w, true);
 			}
