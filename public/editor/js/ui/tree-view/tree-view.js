@@ -261,7 +261,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', "tool-btn", 1088, isEmpty),
 				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, editor.clipboardData == null),
 				R.hr(),
-				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected', "tool-btn", 46, isEmpty)
+				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty)
 	
 			),
 			R.div({className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick},
