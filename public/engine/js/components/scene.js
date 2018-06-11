@@ -1,28 +1,60 @@
-class Scene extends PIXI.Container {
+export default class Scene extends PIXI.Container {
 	constructor() {
 		super();
 		this.backgroundColor = 0;
 	}
 	
-	onRemove() {}
-	
-	onShow() {
-	
+	init() {
+		super.init();
+		this.this.currentScene._refreshAllObjectRefs();
 	}
 	
-	onHide() {
-	
-	}
-	
-	update() {
-	
+	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
+		allObjectToRefresh = {};
+		
+		/// #if EDITOR
+		addAllRefsValidator(this);
+		/// #endif
+		
+		this.all = allObjectToRefresh;
+		this.forAllChildren(_refreshChildRef);
 	}
 }
 
-export default Scene;
-
+let allObjectToRefresh;
+const _refreshChildRef = (o) => {
+	if(o.name) {
+		allObjectToRefresh[o.name] = o;
+	}
+};
 
 /// #if EDITOR
+
+
+
+function addAllRefsValidator(scene) {
+	let refsCounter = {};
+	let deletionValidator = Symbol();
+	
+	scene.all = new Proxy(scene.all, {
+		get:(target, prop) => {
+			if(!game.__EDITORmode) {
+				assert(refsCounter[prop] <= 1, "Attempt to access to object 'all." + prop + "'. But more that one object with that name present on scene " + scene.name + "(" + scene.constructor.name + ").");
+			}
+			let ret = target[prop];
+			assert(ret, "Attempt to access to scene object 'all." + prop + "'. No object with that name found. You can use 'all.name' path only for static objects which always exist on scene.");
+			assert(__getNodeExtendData(ret).__allRefsDeletionValidator === deletionValidator, "Attempt to access to scene object 'all." + prop + "'. Reference to object is presents, but this object was removed from scene already. Use 'all' path only for static objects which never deleted from scene.");
+			return ret;
+		},
+		set:(target, prop, val) => {
+			__getNodeExtendData(val).__allRefsDeletionValidator = deletionValidator;
+			target[prop] = val;
+			let count = refsCounter[prop] || 0;
+			refsCounter[prop] = count + 1;
+		}
+	});
+}
+
 Scene.EDITOR_icon = 'tree/scene';
 
 const faderProperty = {

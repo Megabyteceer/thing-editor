@@ -10,6 +10,7 @@ export default class DataPathEditor extends React.Component {
 	onEditClicked() {
 		if(!this.props.disabled) {
 			fieldNameToChoose = this.props.field.name;
+			game.currentScene._refreshAllObjectRefs();
 			chooseProperty(null, editor.selection[0][fieldNameToChoose]);
 		}
 	}
@@ -30,7 +31,8 @@ function chooseProperty(parent, path) {
 	if(!parent) {
 		parent = {
 			game,
-			'this':editor.selection[0]
+			'this':editor.selection[0],
+			all: game.currentScene.all
 		};
 		for(let c of editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses)) {
 			c = c.c;

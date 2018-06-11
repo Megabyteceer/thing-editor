@@ -7,8 +7,6 @@ export default class DSprite extends PIXI.Sprite {
 		this.rSpeed = 0;
 	}
 	
-	onRemove() {}
-	
 	update() {
 		this.x += this.xSpeed;
 		this.y += this.ySpeed;
