@@ -137,7 +137,7 @@ class Modal extends React.Component {
 	
 	showFatalError(message) {
 		game.__paused = true;
-		this.showError(R.div(null, R.div(null, R.b(null, message)), 'FatalError. Please check console output for exceptions messages, and restart application. If any unsaved changes in current scene, it will ask you to restore automatic created backup.'), 'FatalError', true);
+		this.showError(R.div(null, R.div(null, R.b(null, message)), 'FatalError. Please check console output for exceptions messages, and restart application by press <b>F5</b> button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.'), 'FatalError', true);
 	}
 	
 	render() {

@@ -546,12 +546,13 @@
 			"p": {
 				"x": 17,
 				"y": 618,
-				"translatableText": "YES",
+				"text": " X: %%",
 				"style.fontSize": 16,
 				"style.align": "left",
 				"style.fill": "#acb",
-				"dataPath": "game.H",
-				"decimalsCount": 1
+				"dataPath": "all.bunny.x",
+				"template": "X: %%",
+				"isNumeric": true
 			}
 		},
 		{

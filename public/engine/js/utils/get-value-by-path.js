@@ -8,6 +8,9 @@ const getValueByPath = (s, this_) => {
 		case "this":
 			c = this_;
 			break;
+		case "all":
+			c = game.currentScene.all;
+			break;
 		case "game":
 			c = window.game;
 			break;

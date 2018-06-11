@@ -3,20 +3,29 @@ export default class Scene extends PIXI.Container {
 		super();
 		this.backgroundColor = 0;
 	}
+
+	onShow() {
+		
+	}
+	
+	onHide() {
+		
+	}
 	
 	init() {
 		super.init();
-		this.this.currentScene._refreshAllObjectRefs();
+		this._refreshAllObjectRefs();
 	}
 	
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
-		allObjectToRefresh = {};
-		
+		this.all = {};	
+			
 		/// #if EDITOR
 		addAllRefsValidator(this);
 		/// #endif
 		
-		this.all = allObjectToRefresh;
+		allObjectToRefresh = this.all;
+		
 		this.forAllChildren(_refreshChildRef);
 	}
 }
@@ -31,19 +40,25 @@ const _refreshChildRef = (o) => {
 /// #if EDITOR
 
 
-
+let validatorCounter = 0;
 function addAllRefsValidator(scene) {
 	let refsCounter = {};
-	let deletionValidator = Symbol();
+	let deletionValidator = validatorCounter++;
 	
 	scene.all = new Proxy(scene.all, {
 		get:(target, prop) => {
-			if(!game.__EDITORmode) {
-				assert(refsCounter[prop] <= 1, "Attempt to access to object 'all." + prop + "'. But more that one object with that name present on scene " + scene.name + "(" + scene.constructor.name + ").");
+			
+			if(!target.hasOwnProperty(prop)) {
+				target[prop];
 			}
 			let ret = target[prop];
-			assert(ret, "Attempt to access to scene object 'all." + prop + "'. No object with that name found. You can use 'all.name' path only for static objects which always exist on scene.");
-			assert(__getNodeExtendData(ret).__allRefsDeletionValidator === deletionValidator, "Attempt to access to scene object 'all." + prop + "'. Reference to object is presents, but this object was removed from scene already. Use 'all' path only for static objects which never deleted from scene.");
+			if(!game.__EDITORmode) {
+				let refsWithThanNameCount = refsCounter[prop];
+				assert(ret instanceof PIXI.DisplayObject, "Attempt to access to object 'all." + prop + "'. But " + refsWithThanNameCount + " object with that name present on scene " + scene.name + "(" + scene.constructor.name + ").");
+				assert(!refsWithThanNameCount || refsWithThanNameCount === 1, "Attempt to access to object 'all." + prop + "'. But " + refsWithThanNameCount + " object with name '" + prop + "' present on scene " + scene.name + "(" + scene.constructor.name + ").");
+				assert(ret, "Attempt to access to scene object 'all." + prop + "'. Reference is empty: " + ret);
+				assert(__getNodeExtendData(ret).__allRefsDeletionValidator === deletionValidator, "Attempt to access to scene object 'all." + prop + "'. Reference to object is presents, but this object was removed from scene already. Use 'all' path only for static objects which never deleted from scene.");
+			}
 			return ret;
 		},
 		set:(target, prop, val) => {
@@ -51,6 +66,7 @@ function addAllRefsValidator(scene) {
 			target[prop] = val;
 			let count = refsCounter[prop] || 0;
 			refsCounter[prop] = count + 1;
+			return true;
 		}
 	});
 }
