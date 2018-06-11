@@ -34,6 +34,8 @@ function removeAffectFromUnselected(all) {
 	});
 }
 
+let recordingIsDisabled;
+
 export default class Timeline extends React.Component {
 	constructor(props) {
 		super(props);
@@ -80,6 +82,14 @@ export default class Timeline extends React.Component {
 		renormalizeFieldTimelineDataAfterChange(field);
 	}
 	
+	static disableRecording() {
+		recordingIsDisabled = true;
+	}
+	
+	static enableRecording() {
+		recordingIsDisabled = false;
+	}
+	
 	static onBeforePropertyChanged(fieldName, field) {
 		if(!timelineElement) {
 			beforeChangeRemember = new WeakMap();
@@ -87,7 +97,7 @@ export default class Timeline extends React.Component {
 		
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
-				if(timelineElement) {
+				if(timelineElement && !recordingIsDisabled) {
 					if (timeline.isNeedAnimateProperty(o, fieldName)) {
 						getFrameAtTimeOrCreate(o, fieldName, 0);
 					}
@@ -108,11 +118,11 @@ export default class Timeline extends React.Component {
 	static onAfterPropertyChanged(fieldName, field) {
 		editor.selection.some((o) => {
 			if(o instanceof MovieClip) {
-				if(timelineElement) {
+				if(timelineElement && !recordingIsDisabled) {
 					if (timeline.isNeedAnimateProperty(o, fieldName)) {
 						timeline.createKeyframeWithCurrentObjectsValue(o, fieldName);
 					}
-				} else {
+				} else { //shift all keyframes instead of add keyframe
 					let val = o[fieldName];
 					if(typeof val === 'number') {
 						let oldVal = beforeChangeRemember.get(o);

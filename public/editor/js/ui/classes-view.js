@@ -1,4 +1,5 @@
 import Group from "./group.js";
+import Timeline from "./props-editor/timeline/timeline.js";
 
 
 const bodyProps = {className: 'list-view'};
@@ -45,16 +46,17 @@ class ClessesView extends React.Component {
 					w.x = o.x;
 					w.y = o.y;
 					
-					editor.ui.sceneTree.selectInTree(w);
+					editor.ui.sceneTree.selectInTree(o);
 					
 					// Shift wrapped object to zero. If it is MovieClip its will shift all timeline.
+					Timeline.disableRecording();
 					if (o.x !== 0) {
 						editor.onSelectedPropsChange('x', -o.x, true);
 					}
 					if (o.y !== 0) {
 						editor.onSelectedPropsChange('y', -o.y, true);
 					}
-					
+					Timeline.enableRecording();
 					added.push(w);
 					wasModified = true;
 				}

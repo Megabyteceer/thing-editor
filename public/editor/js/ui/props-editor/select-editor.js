@@ -10,11 +10,41 @@ class SelectEditor extends React.Component {
 			this.state = {};
 		}
 		
+		this.checkForNeedClearFilter = true;
+		
 		this.onToggle = this.onToggle.bind(this);
 		this.onSelect = this.onSelect.bind(this);
 		this.hide = this.hide.bind(this);
 		this.onFilterChange = this.onFilterChange.bind(this);
 		this.renderItem = this.renderItem.bind(this);
+		this.onBlur = this.onBlur.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onMouseLeave = this.onMouseLeave.bind(this);
+		this.onMouseMove = this.onMouseMove.bind(this);
+	}
+	
+	onMouseMove() {
+		this.mouseLeaved = false;
+	}
+	
+	onBlur() {
+		this.isBlured = true;
+		this.checkIfCanHide();
+	}
+	
+	onFocus() {
+		this.isBlured = false;
+	}
+	
+	onMouseLeave() {
+		this.mouseLeaved = true;
+		this.checkIfCanHide();
+	}
+	
+	checkIfCanHide() {
+		if(this.isBlured && this.mouseLeaved) {
+			this.hide();
+		}
 	}
 	
 	hide() {
@@ -43,9 +73,12 @@ class SelectEditor extends React.Component {
 	}
 	
 	onFilterChange(ev) {
-		let val = ev.target.value;
-		editor.settings.setItem(this.props.field.name + '-filter', val);
-		this.setState({filter: val});
+		this.setFilter(ev.target.value);
+	}
+	
+	setFilter(flt) {
+		editor.settings.setItem(this.props.field.name + '-filter', flt);
+		this.setState({filter: flt});
 	}
 	
 	render() {
@@ -65,10 +98,13 @@ class SelectEditor extends React.Component {
 					});
 				}
 				a = a.slice(0, 20);
-				filterInput = R.input({className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter});
+				filterInput = R.input({autoFocus:true, onBlur:this.onBlur, onFocus:this.onFocus, className:'select-editor-filter', placeholder:'Filter', onChange: this.onFilterChange, value:this.state.filter});
 			}
 			
-			
+			if(this.checkForNeedClearFilter && a.length < 1) {
+				this.checkForNeedClearFilter = false;
+				setTimeout(() => {this.setFilter('')}, 1);
+			}
 			
 			items = R.div({className: 'select-editor-list'}, filterInput, a.map(this.renderItem));
 		}
@@ -84,8 +120,10 @@ class SelectEditor extends React.Component {
 			item = list[0];
 		}
 		
-		return R.div({className: 'select-editor', onClick: this.onToggle
-				, onMouseLeave:this.hide
+		return R.div({className: 'select-editor',
+				onClick: this.onToggle,
+				onMouseMove:this.onMouseMove,
+				onMouseLeave:this.onMouseLeave
 			},
 			R.div({className: 'select-editor-current clickable'}, item.name + ' ▾'),
 			items
