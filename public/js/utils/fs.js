@@ -58,7 +58,7 @@ function handleError(er, status, error, url) {
 }
 
 function getIconPath(desc) {
-	return 'games/' + desc.dir + '/' + desc.icon;
+	return '/games/' + desc.dir + '/' + desc.icon;
 }
 
 function renderProjectItem(desc, i, array) {
