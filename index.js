@@ -22,11 +22,19 @@ app.get('/fs/projects', function (req, res) {
 });
 
 app.get('/fs/openProject', function (req, res) {
-	currentGame = req.query.dir;
-	currentGameRoot = gamesRoot + currentGame + '/';
-	process.chdir(gamesRoot + currentGame);
-	log('Project opened: ' + currentGameRoot + '; ' + process.cwd());
-	res.send(fs.readFileSync('thing-project.json'));
+	
+	let folder = gamesRoot + req.query.dir + '/';
+	
+	if(fs.existsSync(folder) && fs.existsSync(folder+'thing-project.json')) {
+		currentGame = req.query.dir;
+		currentGameRoot = folder;
+		process.chdir(currentGameRoot);
+		log('Project opened: ' + currentGameRoot);
+		res.send(fs.readFileSync('thing-project.json'));
+	} else {
+		log('Can\'t open project: ' + req.query.dir);
+		res.send('false');
+	}
 });
 
 var pathFixerExp = /\\/g;

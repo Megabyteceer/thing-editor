@@ -90,6 +90,11 @@ export default class Editor {
 			this.fs.chooseProject(true);
 		} else if(dir !== editor.currentProjectDir) {
 			let data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
+			if(!data) {
+				editor.settings.setItem('last-opened-project', false);
+				editor.ui.modal.showError("Can't open project " + dir).then(() => {this.openProject();});
+				return;
+			}
 			game.__clearStage();
 			Pool.clearAll();
 			await this.fs.refreshFiles();
@@ -101,13 +106,17 @@ export default class Editor {
 			
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
 			
+			if(editor.projectDesc.lastSceneName && !Lib.hasScene(editor.projectDesc.lastSceneName)) {
+				editor.projectDesc.lastSceneName = false;
+			}
+			
 			if(Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showQuestion("Scene's backup restoring",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 						R.div(null, "Do you want to restore scene from backup?")),
 					async() => {
-						await this.openSceneSafe(editor.runningSceneLibSaveSlotName, editor.projectDesc.lastSceneName);
+						await this.openSceneSafe(editor.runningSceneLibSaveSlotName, editor.projectDesc.lastSceneName || 'restored-from-backup');
 						editor.history.currentState._isModified = true;
 						
 					}, 'Restore backup',
