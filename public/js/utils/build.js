@@ -26,7 +26,7 @@ export default class Build {
 		
 		let text = L.__getTextAssets();
 		
-		fileSavePromises.push(editor.fs.saveFile('.dist/assets.json', {scenes, prefabs, images, text, projectDesc: editor.projectDesc}));
+		fileSavePromises.push(editor.fs.saveFile('assets.json', {scenes, prefabs, images, text, projectDesc: editor.projectDesc}));
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
@@ -44,19 +44,27 @@ export default class Build {
 				src.push('import ' + name + ' from "' + path + '"');
 				src.push('classes["' + name + '"] = ' + name + ';');
 			}
-		};
+		}
 		src.push('Lib._setClasses(classes, ');
 		src.push(JSON.stringify(editor.ClassesLoader.classesDefaultsById, null, ' ') + ');');
-		fileSavePromises.push(editor.fs.saveFile('.obj/classes.js', src.join('\n')));
+		fileSavePromises.push(editor.fs.saveFile('src/classes.js', src.join('\n')));
 		
 		Promise.all(fileSavePromises).then(() => {
 			editor.fs.getJSON('/fs/build').then((result) => {
-				if(result.length > 0) {
-					editor.ui.modal.showError(result.map((r, i) =>{
+				
+				if(result.errors.length > 0) {
+					editor.ui.modal.showError(result.errors.map((r, i) =>{
 						return R.div({key:i}, r);
 					}));
 				} else {
-					window.open('/games/' + editor.currentProjectDir + '/.dist');
+					
+					if(result.warnings.length > 0) {
+						editor.ui.modal.showModal(result.warnings.map((r, i) =>{
+							return R.div({key:i}, r);
+						}));
+					}
+					
+					window.open('/games/' + editor.currentProjectDir + '/release');
 				}
 			});
 		})

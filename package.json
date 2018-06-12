@@ -1,6 +1,6 @@
 {
-  "name": "thing_github_train",
-  "version": "0.0.1",
+  "name": "thing-editor",
+  "version": "0.1.0",
   "description": "train",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,13 @@
     "url": "git+https://github.com/Megabyteceer/thing.git"
   },
   "keywords": [
-    "js"
+    "js",
+    "game",
+    "editor",
+    "visual",
+    "engine",
+    "html5",
+    "PIXI"
   ],
   "author": "Megabyte",
   "license": "MIT",

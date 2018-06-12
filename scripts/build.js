@@ -1,66 +1,22 @@
 const webpack = require("webpack");
 const path = require("path");
 
-const ifdefOptions = {
-	EDITOR: false,
-	DEBUG: false,
-	version: 1
-};
+module.exports = function(projectPath, callback, devBuild = false) {
+	console.log('starting build: ' + projectPath);
 
-const symlinksMaker = require('./symlinks-maker.js');
+	let config = require(path.resolve(projectPath, devBuild ? 'config/webpack.dev.js' : 'config/webpack.prod.js'));
 
-
-module.exports = function(projectPath, callback) {
-	console.log('ENTER: ' + projectPath);
-	symlinksMaker.setRootPath(projectPath);
-	
-	var foldersToShare = {
-		'../../../dist-template/index.html': '.dist/index.html',
-		'../../../node_modules/pixi.js/dist/pixi.min.js': '.dist/pixi.min.js',
-		'img': '.dist/img'
-	};
-	symlinksMaker.makeSymlinks(foldersToShare);
-	console.log(1);
-	const loaders = [{
-		test: /\.js$/, 
-		use: [
-			{
-				loader: "ifdef-loader",
-				options: ifdefOptions 
-			},
-			{
-				loader: path.resolve(__dirname, 'assert-strip-loader.js')
-			}
-		]
-	}];
-
-	let config = {
-		mode: 'development', //development, production
-		module: { rules: loaders },
-		entry: projectPath + 'src/index.js',
-		output: {
-			path: projectPath + '.dist',
-			filename: "bundle.js"
-		},
-		resolve: {
-			alias: {
-				'/engine': path.resolve(__dirname, '../public/engine/'),
-				'src': projectPath + 'src/'
-			}
-		}
-	};
-	console.log(3);
 	webpack(config, (err, stats) => {
-		result = [];
-		console.log('RESULT:');
+		result = {errors:[], warnings:[]};
+
 		function errorHandle(err) {
 			var txt = 'ERROR: '+ err;
-			result.push (txt);
+			result.errors.push (txt);
 			console.log(txt);
 		}
 		function warnHandle(err) {
 			var txt = 'WARNING: '+ err;
-			result.push (txt);
+			result.warnings.push (txt);
 			console.log(txt);
 		}
 		if (err) {

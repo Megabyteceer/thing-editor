@@ -358,7 +358,7 @@ function addTo(parent, child, doNotselect) {
 }
 
 let __saveProjectDescriptorInner = () => {
-	editor.fs.saveFile('project.json', editor.projectDesc);
+	editor.fs.saveFile('thing-project.json', editor.projectDesc);
 };
 
 let selectionsForScenesByName = {};

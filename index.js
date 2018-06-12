@@ -11,7 +11,7 @@ var currentGame;
 var currentGameRoot;
 
 var PORT = 32023;
-var gamesRoot = __dirname + '/public/games/';
+var gamesRoot = __dirname + '/../games/';
 var clientGamesRoot = '/games/';
 var jsonParser = bodyParser.json({limit:1024*1024*200});
 
@@ -26,7 +26,7 @@ app.get('/fs/openProject', function (req, res) {
 	currentGameRoot = gamesRoot + currentGame + '/';
 	process.chdir(gamesRoot + currentGame);
 	log('Project opened: ' + currentGameRoot + '; ' + process.cwd());
-	res.send(fs.readFileSync('project.json'));
+	res.send(fs.readFileSync('thing-project.json'));
 });
 
 var pathFixerExp = /\\/g;
@@ -36,7 +36,13 @@ var pathFixer = (fn) => {
 
 app.get('/fs/enum', function (req, res) {
 	if(!currentGame) throw 'No game opened';
-	res.send(walkSync('.').map(pathFixer));
+	
+	let list = walkSync('./img');
+	walkSync('./prefabs', list);
+	walkSync('./scenes', list);
+	walkSync('./src', list);
+	
+	res.send(list.map(pathFixer));
 });
 
 app.get('/fs/delete', function (req, res) {
@@ -72,22 +78,24 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 // modules import cache preventing
 var moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
-app.use('/', (req, res, next) => {
+app.use('/games/', (req, res, next) => {
+	//log("GAMES JS PREPROCESSING: " + req.path);
+	
 	let modulesVersion = req.query ? req.query.v : false;
 	
 	let needParse = modulesVersion && req.path.endsWith('.js');
-	
+
 	if(needParse) {
-		needParse = req.path.indexOf('/engine/js/') < 0 && req.path.indexOf('/editor/js/') < 0; //not reload internal editor's and engine's modules
-	}
-	
-	if(needParse) {
-		let fileName = path.join(__dirname, 'public', req.path);
+		let fileName = path.join(gamesRoot, req.path);
 		fs.readFile(fileName, function (err, content) {
-			if (err) next(err);
-			res.set('Content-Type', 'application/javascript');
-			var rendered = content.toString().replace(moduleImportFixer, '$1?v=' + modulesVersion + '$2');
-			return res.end(rendered);
+			if (err) {
+				log('JS PREPROCESSING ERROR: ' + err);
+				next(err);
+			} else {
+				res.set('Content-Type', 'application/javascript');
+				var rendered = content.toString().replace(moduleImportFixer, '$1?v=' + modulesVersion + '$2');
+				return res.end(rendered);
+			}
 		});
 	} else {
 		next();
@@ -95,13 +103,15 @@ app.use('/', (req, res, next) => {
 
 });
 
-app.use('/', express.static(path.join(__dirname, 'public'), {dotfiles:'allow'}));
+app.use('/games/', express.static(path.join(__dirname, '../games'), {dotfiles:'allow'}));
+app.use('/engine/', express.static(path.join(__dirname, '../engine/public'), {dotfiles:'allow'}));
+app.use('/editor/', express.static(path.join(__dirname, '../editor/public'), {dotfiles:'allow'}));
 
 //========= start server ================================================================
 var server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
 
 const opn = require('opn');
-opn('', {app: ['chrome', /*'--new-window --no-sandbox --js-flags="--max_old_space_size=32768"*/ '--app=http://127.0.0.1:' + PORT]});
+opn('', {app: ['chrome', /*'--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/editor']});
 
 //======== socket connection with client ================================================
 const WebSocket = require('ws');
@@ -121,7 +131,6 @@ wss.on('connection', function connection(ws) {
 //=========== enum files ================================
 const walkSync = (dir, filelist = []) => {
 	fs.readdirSync(dir).forEach(file => {
-		
 		let stats = fs.statSync(path.join(dir, file));
 		
 		if(stats.isDirectory()) {
@@ -140,7 +149,7 @@ const enumProjects = () => {
 	fs.readdirSync(dir).forEach(file => {
 		var dirName = path.join(dir, file);
 		if(fs.statSync(dirName).isDirectory()) {
-			var projDescFile = dirName + '/project.json';
+			var projDescFile = dirName + '/thing-project.json';
 			if(fs.existsSync(projDescFile)) {
 				var desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
 				desc.dir = file;
