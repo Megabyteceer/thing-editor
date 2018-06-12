@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Megabyteceer/thing.git"
+    "url": "git+https://github.com/Megabyteceer/thing-editor.git"
   },
   "keywords": [
     "js",
@@ -24,9 +24,9 @@
   "author": "Megabyte",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Megabyteceer/thing/issues"
+    "url": "https://github.com/Megabyteceer/thing-editor/issues"
   },
-  "homepage": "https://github.com/Megabyteceer/thing#readme",
+  "homepage": "https://github.com/Megabyteceer/thing-editor#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",

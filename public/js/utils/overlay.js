@@ -217,7 +217,7 @@ $(window).on('mouseup', () => {
 class Dragger extends DSprite {
 	constructor() {
 		super();
-		this.texture = PIXI.Texture.fromImage('editor/img/overlay/pivot.png');
+		this.texture = PIXI.Texture.fromImage('img/overlay/pivot.png');
 	}
 	
 	onDrag() {
@@ -251,7 +251,7 @@ class Dragger extends DSprite {
 class Rotator extends DSprite {
 	constructor() {
 		super();
-		this.texture = PIXI.Texture.fromImage('editor/img/overlay/rotator.png');
+		this.texture = PIXI.Texture.fromImage('img/overlay/rotator.png');
 	}
 	
 	onDrag() {
