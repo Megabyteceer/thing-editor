@@ -118,10 +118,12 @@ export default class ScenesList extends React.Component {
 			let c = Lib.getClass(sceneData.c);
 			scenes.push({name:sceneName, __EDITOR_icon: c.__EDITOR_icon});
 		}
-		
-
-		
-		return editor.ui.modal.showListChoose(title, scenes, noEasyClose);
+		return editor.ui.modal.showListChoose(title, scenes, noEasyClose).then((choosed) => {
+			if(choosed) {
+				return choosed.name;
+			}
+			return null;
+		});
 	}
 	
 	static readAllScenesList() {
