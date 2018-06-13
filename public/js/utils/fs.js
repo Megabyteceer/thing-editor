@@ -43,13 +43,13 @@ let fs = {
 			url: '/fs/savefile',
 			data: JSON.stringify({data, filename}),
 			contentType: 'application/json'
-		}).fail((a,b,c) => {handleError(a,b,c,url)});
+		}).fail((a,b,c) => {handleError(a,b,c,filename)});
 		if (!silently) {
 			r.always(editor.ui.modal.hideSpinner);
 		}
 		return r;
 	}
-}
+};
 
 export default fs;
 

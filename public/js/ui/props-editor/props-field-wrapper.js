@@ -6,6 +6,7 @@ import ColorEditor from './color-editor.js';
 import TimelineEditor from "./timeline/timeline-property.js";
 import Tip from "../../utils/tip.js";
 import DataPathEditor from "./data-path-editor.js";
+import CallbackEditor from "./callback-editor.js";
 import BtnProperty from "./btn-property.js";
 
 
@@ -35,6 +36,14 @@ typeDescriptions.set(Boolean, {
 
 typeDescriptions.set('data-path', {
 	renderer: DataPathEditor,
+	parser: (target) => {
+		return target.value || null;
+	},
+	default: null
+});
+
+typeDescriptions.set('callback', {
+	renderer: CallbackEditor,
 	parser: (target) => {
 		return target.value || null;
 	},

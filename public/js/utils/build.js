@@ -3,13 +3,7 @@ import L from "../../../engine/js/utils/l.js";
 export default class Build {
 	static build() {
 		
-		let scenesSrc = Lib._getAllScenes();
-		let scenes = {};
-		Object.keys(scenesSrc).some((sceneName) => {
-			if(sceneName.indexOf(editor.editorFilesPrefix) !== 0) {
-				scenes[sceneName] = scenesSrc[sceneName];
-			}
-		});
+		let scenes = Lib._getAllScenes();
 		
 		let prefabsSrc = Lib._getAllPrefabs();
 		let prefabs = {};

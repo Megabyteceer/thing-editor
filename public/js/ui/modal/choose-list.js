@@ -1,3 +1,4 @@
+import Group from "../group.js";
 let listProps = {className:'list-view'};
 let bodyProps = {className:'resizable-dialog left-align-text'};
 
@@ -38,6 +39,11 @@ export default class ChooseList extends React.Component {
 			icon = R.classIcon(i);
 		}
 		let name = i.name;
+		
+		if(typeof name === 'string') {
+			key = name;
+		}
+		
 		return R.div({
 			onMouseDown: ()=>{
 				editor.ui.modal.hideModal(i)
@@ -65,7 +71,7 @@ export default class ChooseList extends React.Component {
 			R.input(this.searchInputProps),
 			R.btn(R.icon('clear'), this.onSearchCliearClick),
 			R.div(listProps,
-				this.list.map(this.renderChoosingItem)
+				Group.groupArray(this.list.map(this.renderChoosingItem))
 			)
 		);
 	}

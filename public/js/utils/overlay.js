@@ -143,7 +143,7 @@ $(window).on('mousedown', (ev) => {
 			selectByStageClick(ev);
 		} else if(ev.buttons === 2 && editor.selection.length > 0) {
 			let info = __getNodeExtendData(editor.selection[0]);
-			if(info.draggerPivot) {
+			if(info.draggerPivot && info.draggerPivot.owner.parent) {
 				draggingDragger = info.draggerPivot;
 				draggingDragger.onDrag();
 			}
@@ -205,7 +205,7 @@ function selectByStageClick(ev) {
 }
 
 $(window).on('mousemove', () => {
-	if (draggingDragger) {
+	if (draggingDragger && draggingDragger.owner.parent) {
 		draggingDragger.onDrag();
 	}
 });

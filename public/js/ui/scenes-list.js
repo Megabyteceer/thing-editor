@@ -94,9 +94,7 @@ export default class ScenesList extends React.Component {
 		
 		let scenes = [];
 		for (let sceneName in libsScenes) {
-			if (!ScenesList.isSpecialSceneName(sceneName)) {
-				scenes.push(this.renderItem(sceneName, libsScenes[sceneName]));
-			}
+			scenes.push(this.renderItem(sceneName, libsScenes[sceneName]));
 		}
 		
 		scenes = Group.groupArray(scenes);
@@ -108,6 +106,22 @@ export default class ScenesList extends React.Component {
 			),
 			R.div(bodyProps, scenes)
 		)
+	}
+	
+	static chooseScene(title = "Choose scene", noEasyClose, filterCurrent = true) {
+		debugger;
+		let libsScenes = Lib._getAllScenes();
+		
+		let scenes = [];
+		for (let sceneName in libsScenes) {
+			let sceneData = libsScenes[sceneName];
+			let c = Lib.getClass(sceneData.c);
+			scenes.push({name:sceneName, __EDITOR_icon: c.__EDITOR_icon});
+		}
+		
+
+		
+		return editor.ui.modal.showListChoose(title, scenes, noEasyClose);
 	}
 	
 	static readAllScenesList() {
