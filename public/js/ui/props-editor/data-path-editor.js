@@ -83,7 +83,7 @@ function chooseProperty(parent, path) {
 	}
 	
 	if(parent.hasOwnProperty('parent')) {
-		items.push({pureName:'parent', name: R.b(null, 'parent')})
+		items.push({pureName:'parent', name: R.b(null, 'parent')});
 		addedNames['parent'] = true;
 	}
 	
@@ -101,7 +101,7 @@ function chooseProperty(parent, path) {
 			for(let p of props) {
 				if(p.type !== 'splitter') {
 					let name = p.name;
-					items.push({pureName:name, name: R.b(null, name)})
+					items.push({pureName:name, name: R.b(null, name)});
 					addedNames[name] = true;
 				}
 			}
@@ -112,7 +112,7 @@ function chooseProperty(parent, path) {
 		if(!addedNames.hasOwnProperty(name)) {
 			items.push({name});
 		}
-	};
+	}
 	
 	editor.ui.modal.showListChoose('Path for ' + fieldNameToChoose + ': ' + path.join('.') + '.', items).then((selected) => {
 		if(selected) {
@@ -142,5 +142,5 @@ function chooseProperty(parent, path) {
 }
 
 function isFieldGoodForCallbackChoose(fn) {
-	return fn.indexOf('_') !== 0 && fn.indexOf('EDITOR_') !== 0;
+	return fn.charCodeAt(0) !== 95;
 }

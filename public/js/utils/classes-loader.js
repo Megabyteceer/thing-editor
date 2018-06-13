@@ -103,8 +103,8 @@ function enumClassProperties(c) {
 		if (!cc.prototype) {
 			throw 'attempt to enum editable properties of not PIXI.DisplayObject instance';
 		}
-		if (cc.hasOwnProperty('EDITOR_editableProps')) {
-			let addProps = cc.EDITOR_editableProps;
+		if (cc.hasOwnProperty('__EDITOR_editableProps')) {
+			let addProps = cc.__EDITOR_editableProps;
 			addProps.some((p) => {
 				if (p.type === 'splitter' || p.type === 'btn') {
 					p.notSeriazable = true;
@@ -140,7 +140,7 @@ function enumClassProperties(c) {
 		}
 		cc = cc.__proto__;
 	}
-	c.EDITOR_propslist_cache = props;
+	c.__EDITOR_propslist_cache = props;
 	classesDefaultsById[c.name] = defaults;
 }
 
@@ -232,7 +232,7 @@ function classLoaded(c, path) {
 	loadedPath = path;
 	loadedClssesCount++;
 	if(!c.hasOwnProperty('EDITOR_icon')) {
-		c.EDITOR_icon = "tree/game";
+		c.__EDITOR_icon = "tree/game";
 	}
 	
 	addClass(c, path);

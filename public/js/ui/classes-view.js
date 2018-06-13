@@ -79,16 +79,16 @@ class ClessesView extends React.Component {
 	
 	renderItem(item) {
 		let tip;
-		if(item.c.EDITOR_tip) {
+		if(item.c.__EDITOR_tip) {
 			tip = R.tip('class-' + item.c.name,
 				'Component "' + item.c.name + '" description:',
-				item.c.EDITOR_tip
+				item.c.__EDITOR_tip
 			);
 		}
 		
 		let key;
 		if(item.c.hasOwnProperty('EDITOR_group')) {
-			key = item.c.EDITOR_group + '/' + item.c.name;
+			key = item.c.__EDITOR_group + '/' + item.c.name;
 		} else {
 			key = 'Custom/' + item.c.name;
 		}

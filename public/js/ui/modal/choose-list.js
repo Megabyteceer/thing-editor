@@ -34,7 +34,7 @@ export default class ChooseList extends React.Component {
 	
 	renderChoosingItem(i, key) {
 		let icon;
-		if(i.EDITOR_icon) {
+		if(i.__EDITOR_icon) {
 			icon = R.classIcon(i);
 		}
 		let name = i.name;

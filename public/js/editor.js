@@ -257,7 +257,7 @@ export default class Editor {
 	 * enumerate all editable properties of given DisplayObject.
 	 */
 	enumObjectsProperties(o) {
-		return o.constructor.EDITOR_propslist_cache;
+		return o.constructor.__EDITOR_propslist_cache;
 	}
 	
 	getObjectField(o, name) {

@@ -25,7 +25,7 @@ R.icon = (name) => {
 };
 
 R.classIcon = (constructor) => {
-	return R.icon(constructor.EDITOR_icon);
+	return R.icon(constructor.__EDITOR_icon);
 };
 
 R.listItem = (view, item, key, parent) => {
