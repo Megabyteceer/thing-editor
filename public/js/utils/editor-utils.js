@@ -162,7 +162,9 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 
 wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
-
+PIXI.ObservablePoint.__EDITOR_selectableProps = ['x','y'];
+PIXI.Point.__EDITOR_selectableProps = ['x','y'];
+PIXI.mesh.Plane.__EDITOR_selectableProps = [];
 
 window.isEventFocusOnInputElement = (ev) => {
 	let tag = ev.target.tagName;

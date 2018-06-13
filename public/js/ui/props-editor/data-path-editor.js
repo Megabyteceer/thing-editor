@@ -29,7 +29,7 @@ export default class DataPathEditor extends React.Component {
 		
 		let type = typeof val;
 		
-		return ((type !== 'object') && (type !== 'function'));
+		return ((type !== 'object') && (type !== 'function' || !Lib.__hasClass(val.name) || (Lib.getClass(val.name) !== val)));
 	}
 	
 	finalValueChoosed(path) {
@@ -50,7 +50,7 @@ export default class DataPathEditor extends React.Component {
 			return true;
 		}
 		let type = typeof val;
-		if(type === 'object' || type === 'function') {
+		if(type === 'object' || (type === 'function')) {
 			return !val.__EDITOR_isHiddenForChooser;
 		}
 		
@@ -148,7 +148,9 @@ export default class DataPathEditor extends React.Component {
 			if(props && Array.isArray(props)) {
 				for(let p of props) {
 					if(p.type !== 'splitter') {
-						addIfGood(p.name);
+						let name = p.name;
+						items.push({pureName:name, name: R.b(null, name)});
+						addedNames[name] = true;
 					}
 				}
 			}
@@ -156,29 +158,19 @@ export default class DataPathEditor extends React.Component {
 		
 		//ignore names globally
 		addedNames['constructor'] = true;
-		
-		if(typeof parent === 'object') {
-			let needEnum = true;
-			
-			todo enum all, remove which not in list and in Container/DisplayObject instance
-			if(parent instanceof PIXI.DisplayObject) {
-				['remove'].some(addIfGood);
-				needEnum = false;
-			}
-			
-			if(parent instanceof PIXI.Container) {
-				['children', 'interactiveChildren', 'height', 'width'].some(addIfGood);
-				needEnum = false;
-			}
-			
-			if(needEnum) {
-				for(let name in parent) {
-					addIfGood(name);
-				}
-				
-				for(let name of enumProps(parent)) {
-					addIfGood(name);
-				}
+		let type = typeof parent;
+
+		let needEnum = (type === 'object');
+		if((type === 'function') && Lib.__hasClass(parent.name) && (Lib.getClass(parent.name) === parent)) {
+			addedNames['prototype'] = true;
+			addedNames['length'] = true;
+			addedNames['name'] = true;
+			needEnum = true;
+		}
+
+		 if(needEnum) {
+			for(let name of enumProps(parent)) {
+				addIfGood(name);
 			}
 		}
 		
@@ -209,16 +201,39 @@ export default class DataPathEditor extends React.Component {
 	}
 }
 
-function enumProps(obj) {
-	var p = [];
-	for (; obj != null && obj !== Object.prototype; obj = Object.getPrototypeOf(obj)) {
+function enumProps(o) {
 	
-		var op = Object.getOwnPropertyNames(obj);
-		for (var i=0; i<op.length; i++)
+	
+	if(o.hasOwnProperty('__EDITOR_selectableProps')) {
+		return o.__EDITOR_selectableProps;
+	}
+	let p = [];
+	
+	if(!o.__EDITOR_noEnumSelfPropsForSelection) {
+		let op = Object.getOwnPropertyNames(o);
+		for (let i=0; i<op.length; i++)
 			if (p.indexOf(op[i]) == -1)
 				p.push(op[i]);
 	}
-	p.sort();
+	
+	let cc = o.constructor;
+	
+	let switched = false;
+
+	for (; cc != null && cc.prototype && cc !== Function && cc !== Object; cc = cc.__proto__) {
+		
+		if(cc.hasOwnProperty('__EDITOR_selectableProps')) {
+			p = p.concat(cc.__EDITOR_selectableProps);
+			switched = true;
+		} else if(switched) {
+			break;
+		} else {
+			let op = Object.getOwnPropertyNames(cc.prototype);
+			for (let i=0; i<op.length; i++)
+				if (p.indexOf(op[i]) == -1)
+					p.push(op[i]);
+		}
+	}
 	return p;
 }
 
