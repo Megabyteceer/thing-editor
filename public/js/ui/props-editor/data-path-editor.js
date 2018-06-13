@@ -1,3 +1,5 @@
+import PropsFieldWrapper from "./props-field-wrapper.js";
+
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 
 export default class DataPathEditor extends React.Component {
@@ -9,8 +11,8 @@ export default class DataPathEditor extends React.Component {
 	
 	onEditClicked() {
 		if(!this.props.disabled) {
-			this.fieldNameToChoose = this.props.field.name;
-			path = editor.selection[0][this.fieldNameToChoose];
+			this.fieldNameToChoose = this.props.title || this.props.field.name;
+			path = this.props.value;
 			path = this.prepareCurrentPath(path);
 			game.currentScene._refreshAllObjectRefs();
 			
@@ -35,7 +37,7 @@ export default class DataPathEditor extends React.Component {
 	}
 	
 	applyFinalPath(path) {
-		editor.onSelectedPropsChange(this.fieldNameToChoose, path);
+		this.props.onChange(PropsFieldWrapper.surrogateChnageEvent(path));
 	}
 	
 	isFieldGoodForCallbackChoose(fieldName, object) {
@@ -68,7 +70,7 @@ export default class DataPathEditor extends React.Component {
 		if(!parent) {
 			parent = {
 				game,
-				'this':editor.selection[0],
+				'this':this.props.this || editor.selection[0],
 				all: game.currentScene.all
 			};
 			for(let c of editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses)) {

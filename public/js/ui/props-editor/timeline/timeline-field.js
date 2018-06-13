@@ -3,6 +3,7 @@ import Pool from "../../../../../engine/js/utils/pool.js";
 import FieldPlayer from "../../../../../engine/js/components/movie-clip/field-player.js";
 import MovieClip from "../../../../../engine/js/components/movie-clip/movie-clip.js";
 import SelectEditor from "../select-editor.js";
+import CallbackEditor from "../callback-editor.js";
 
 const FRAMES_STEP = 3;
 const DEFAULT_GRAVITY = 1; //JUMP ROOF, JUMP FLOOR default gravity and boouncing
@@ -477,7 +478,8 @@ class KeyframePropertyEditor extends React.Component {
 		}
 		
 		return R.div({className: 'bottom-panel', style:{left: b.left, width:b.width, bottom: window.document.body.clientHeight - b.bottom}},
-			' action: ', R.input({value:kf.a || '', onChange:this.onActionChange}),
+			' action: ',
+			React.createElement(CallbackEditor, {value:kf.a || null, onChange:this.onActionChange, title:'Callback for keyframe ' + kf.t}),
 			' ', R.btn(selectKeyframeTypes[kf.m], () => {this.props.toggleKeyframeType(kf);}, "Switch selected keyframe's' Mode (Ctrl + M)", 'keyframe-type-chooser', 1077), ' ',
 			' speed set: ',
 			R.input({type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),

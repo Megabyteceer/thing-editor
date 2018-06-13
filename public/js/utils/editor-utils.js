@@ -160,6 +160,10 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	Object.defineProperty(constructor.prototype, propertyName, d);
 };
 
+wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
+wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
+
+
 window.isEventFocusOnInputElement = (ev) => {
 	let tag = ev.target.tagName;
 	let canBePassed;
