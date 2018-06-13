@@ -133,22 +133,7 @@ export default class DataPathEditor extends React.Component {
 				}
 			}
 		}
-		
-		if(parent.constructor) {
-			let props = editor.enumObjectsProperties(parent);
-			if(props && Array.isArray(props)) {
-				for(let p of props) {
-					if(p.type !== 'splitter') {
-						let name = p.name;
-						items.push({pureName:name, name: R.b(null, name)});
-						addedNames[name] = true;
-					}
-				}
-			}
-		}
-		
-		
-		
+
 		const addIfGood = (name) => {
 			if (!addedNames.hasOwnProperty(name)) {
 				if (this.isFieldGoodForCallbackChoose(name, parent)) {
@@ -158,12 +143,24 @@ export default class DataPathEditor extends React.Component {
 			}
 		};
 		
+		if(parent.constructor) {
+			let props = editor.enumObjectsProperties(parent);
+			if(props && Array.isArray(props)) {
+				for(let p of props) {
+					if(p.type !== 'splitter') {
+						addIfGood(p.name);
+					}
+				}
+			}
+		}
+		
 		//ignore names globally
 		addedNames['constructor'] = true;
 		
 		if(typeof parent === 'object') {
 			let needEnum = true;
 			
+			todo enum all, remove which not in list and in Container/DisplayObject instance
 			if(parent instanceof PIXI.DisplayObject) {
 				['remove'].some(addIfGood);
 				needEnum = false;
