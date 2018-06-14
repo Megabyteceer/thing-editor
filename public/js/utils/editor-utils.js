@@ -28,6 +28,13 @@ R.classIcon = (constructor) => {
 	return R.icon(constructor.__EDITOR_icon);
 };
 
+let nameProps = {className: 'scene-node-name'};
+let classProps = {className: 'scene-node-class'};
+
+R.sceneNode = (node) => {
+	return R.fragment(R.classIcon(node.constructor), R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + __getNodeExtendData(node).id));
+};
+
 R.listItem = (view, item, key, parent) => {
 	let className = 'list-item';
 	if(parent.state.selectedItem === item) {
@@ -225,4 +232,26 @@ window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) 
 	return ret;
 };
 
-export default null;
+export default {
+	
+	protectAccessToSceneNode: (o, debugName) => {
+		o.remove = () => {
+			assert(false, "Attempt to remove " + debugName);
+		}
+		
+		o.destroy  = () => {
+			assert(false, "Attempt to destroy " + debugName);
+		}
+		
+		o.detachFromParent  = () => {
+			assert(false, "Attempt to detachFromParent " + debugName);
+		}
+		
+		o.__EDITOR_isHiddenForChooser = true;
+		
+		
+	}
+	
+	
+	
+};

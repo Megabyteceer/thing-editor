@@ -72,6 +72,9 @@ export default class Editor {
 		game.__EDITORmode = true;
 		game.init(document.getElementById('viewport-root'));
 		
+		utils.protectAccessToSceneNode(game.stage, "game stage");
+		utils.protectAccessToSceneNode(game.stage.parent, "PIXI stage");
+		
 		this.overlay = new Overlay();
 		
 		ClassesLoader.init();

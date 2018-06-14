@@ -1,6 +1,7 @@
 import PropsFieldWrapper from "./props-field-wrapper.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
+const selectableSceneNodeProps = {className:"selectable-scene-node"};
 
 export default class DataPathEditor extends React.Component {
 	
@@ -51,6 +52,9 @@ export default class DataPathEditor extends React.Component {
 		}
 		let type = typeof val;
 		if(type === 'object' || (type === 'function')) {
+			
+			if(val instanceof PIXI.DisplayObject && __getNodeExtendData(val).hidden) return false;
+			
 			return !val.__EDITOR_isHiddenForChooser;
 		}
 		
@@ -121,15 +125,30 @@ export default class DataPathEditor extends React.Component {
 			items.push(BACK_ITEM);
 		}
 		
-		if(parent.hasOwnProperty('parent') && parent.parent && parent.parent !== game.stage.parent) {
-			items.push({pureName:'parent', name: R.b(null, 'parent')});
-			addedNames['parent'] = true;
+		const addSceneNodeIfValid = (o, name, isChild) => {
+			if(o && (o instanceof PIXI.DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent)) {
+				let item = {pureName: name, name: R.fragment(R.b(null, name + ' '), R.div(selectableSceneNodeProps, R.sceneNode(o)))};
+				
+				if(isChild) {
+					item.child = name;
+				} else {
+					item.pureName = name;
+				}
+				
+				items.push(item);
+				addedNames[name] = true;
+			}
+		};
+		
+		
+		if(parent.hasOwnProperty('parent')) {
+			addSceneNodeIfValid(parent.parent, 'parent');
 		}
 		
 		if(parent.hasOwnProperty('children') && Array.isArray(parent.children)) {
 			for(let child of parent.children) {
 				if(child.name) {
-					items.push({child:child.name, name: R.span(null, 'childeren: ' ,R.b(null, child.name))});
+					addSceneNodeIfValid(child, child.name, true);
 				}
 			}
 		}

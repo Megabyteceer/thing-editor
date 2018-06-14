@@ -115,6 +115,12 @@ app.use('/games/', express.static(path.join(__dirname, '../games'), {dotfiles:'a
 app.use('/engine/', express.static(path.join(__dirname, '../engine/public'), {dotfiles:'allow'}));
 app.use('/editor/', express.static(path.join(__dirname, '../editor/public'), {dotfiles:'allow'}));
 
+
+
+app.get('/', function(req, res) {
+	res.redirect('/editor');
+});
+
 //========= start server ================================================================
 var server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
 

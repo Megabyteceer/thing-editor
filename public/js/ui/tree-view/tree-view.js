@@ -283,12 +283,12 @@ const renderRoots = (node, i) => {
 		if(__getNodeExtendData(node).hidden) {
 			style = {display:'none'};
 		}
-		return R.div({className:'inactive-scene-item', style, key:'na-' + i, title:'This scene node is blocked by modal object for now.'}, R.classIcon(node.constructor), R.b(null, node.name), ' (' + node.constructor.name + ')');
+		return R.div({className:'inactive-scene-item', style, key:'na-' + i, title:'This scene node is blocked by modal object for now.'}, R.sceneNode(node));
 	}
 };
 
 const renderSceneStackItem = (s, i) => {
 	return R.div({className:'stacked-scene-item', title: 'This scene currently in stack.', key: i},
-		R.classIcon(s.constructor), s.name, '(' + s.constructor.name + ') #' +  __getNodeExtendData(s).id
+		R.sceneNode(s)
 	);
 };

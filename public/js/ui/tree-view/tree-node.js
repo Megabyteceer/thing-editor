@@ -1,9 +1,6 @@
 let caretClosed = R.span({className: 'tree-caret'}, '▸');
 let caretOpened = R.span({className: 'tree-caret'}, '▾');
 
-let nameProps = {className: 'scene-node-name'};
-let classProps = {className: 'scene-node-class'};
-
 let lastClickedItem;
 
 class TreeNode extends React.Component {
@@ -72,8 +69,7 @@ class TreeNode extends React.Component {
 		if(state.isSelected) {
 			className += ' item-selected';
 		}
-		let icon = R.classIcon(node.constructor);
-		
+
 		let style;
 		if(node.children.length > 6) {
 			let p = node.children.length / 2;
@@ -91,7 +87,7 @@ class TreeNode extends React.Component {
 			className,
 			style,
 			onMouseDown: this.onMouseDown
-		}, icon, R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + __getNodeExtendData(node).id), caret), childs);
+		}, R.sceneNode(node), caret), childs);
 	}
 }
 
