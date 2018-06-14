@@ -24,8 +24,8 @@ export default class Editor {
 		return '.editor-tmp/';
 	}
 	
-	get runningSceneLibSaveSlotName() {
-		return this.editorFilesPrefix + 'save';
+	get backupSceneLibSaveSlotName() {
+		return this.editorFilesPrefix + 'backup';
 	}
 	
 	constructor() {
@@ -113,19 +113,19 @@ export default class Editor {
 				editor.projectDesc.lastSceneName = false;
 			}
 			
-			if(Lib.hasScene(editor.runningSceneLibSaveSlotName)) {
+			if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showQuestion("Scene's backup restoring",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 						R.div(null, "Do you want to restore scene from backup?")),
 					async() => {
-						await this.openSceneSafe(editor.runningSceneLibSaveSlotName, editor.projectDesc.lastSceneName || 'restored-from-backup');
+						await this.openSceneSafe(editor.backupSceneLibSaveSlotName, editor.projectDesc.lastSceneName || 'restored-from-backup');
 						editor.history.currentState._isModified = true;
 						
 					}, 'Restore backup',
 					async() => {
 						await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
-						Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
+						Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
 					}, 'Delete backup',
 					true
 				);
@@ -151,6 +151,50 @@ export default class Editor {
 		});
 	}
 	
+	saveBackup(includeUnmodified = false) {
+		if(!game.__EDITORmode) {
+			assert(!includeUnmodified, 'Attempt to save important backup in running mode');
+			return;
+		}
+
+		if(!game.currentScene) {
+			assert(!includeUnmodified, 'Attempt to save important backup when project was not loaded yet.');
+			return;
+		}
+
+		savedBackupName = editor.backupSceneLibSaveSlotName;
+		if (!editor.isCurrentSceneModified) {
+			if(!includeUnmodified) {
+				savedBackupName = null;
+				return;
+			}
+			savedBackupName += '-unmodified';
+		}
+		editor.saveCurrentScene(savedBackupName);
+		savedBackupSelectionData = editor.selection.saveSelection();
+	}
+	
+	restoreBackup(includeUnmodified = false) {
+		if(!game.__EDITORmode) {
+			assert(!includeUnmodified, 'Attempt to restore important backup in running mode');
+			return;
+		}
+		
+		if(!savedBackupName) {
+			assert(!includeUnmodified, 'No backup scene was saved bofore restoreing important backup.');
+			return;
+		}
+		editor.loadScene(savedBackupName);
+		savedBackupName = null;
+		editor.selection.loadSelection(savedBackupSelectionData);
+	}
+	
+	cleanupBackup() {
+		if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
+			Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
+		}
+	}
+	
 	get currentSceneName() {
 		if(!window.game) return null;
 		let a = game._getScenesStack();
@@ -172,18 +216,10 @@ export default class Editor {
 	reloadClasses() {
 		this.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
-		let needRepairScene = game.currentScene != null;
-		if(needRepairScene) {
-			this.saveCurrentScene(editor.runningSceneLibSaveSlotName);
-			let selectionData = editor.selection.saveSelection();
-		}
-		
+		editor.saveBackup();
 		
 		return ClassesLoader.reloadClasses().then(() => {
-			if(needRepairScene) {
-				this.loadScene(editor.runningSceneLibSaveSlotName);
-				editor.selection.loadSelection(selectionData);
-			}
+			editor.restoreBackup();
 		});
 	}
 	
@@ -282,8 +318,8 @@ export default class Editor {
 			this.selection.loadSelection(selectionsForScenesByName[name]);
 		}
 		
-		if(name === editor.runningSceneLibSaveSlotName) {
-			Lib.__deleteScene(editor.runningSceneLibSaveSlotName);
+		if(name === editor.backupSceneLibSaveSlotName) {
+			Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
 		}
 		this.refreshTreeViewAndPropertyEditor();
 	}
@@ -372,6 +408,9 @@ function addTo(parent, child, doNotselect) {
 let __saveProjectDescriptorInner = () => {
 	editor.fs.saveFile('thing-project.json', editor.projectDesc);
 };
+
+let savedBackupName;
+let savedBackupSelectionData;
 
 let selectionsForScenesByName = {};
 

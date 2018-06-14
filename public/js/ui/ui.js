@@ -4,7 +4,7 @@ import Viewport from './viewport.js';
 import PropsEditor from './props-editor/props-editor.js';
 import Button from './button.js';
 import Modal from './modal/modal.js';
-import ClessesView from './classes-view.js';
+import ClassesView from './classes-view.js';
 import ScenesList from "./scenes-list.js";
 import PrefabsList from "./prefabs-list.js";
 import LanguageView from "./language-view.js";
@@ -94,7 +94,7 @@ class UI extends React.Component {
 				ref: this.propsEditorRef,
 				onChange: editor.onSelectedPropsChange
 			}), 255, 35, 250, 250, 250, 500),
-			renderWindow('classesLib', 'Classes', React.createElement(ClessesView, {ref: this.classesListRef}), 0, 550, 250, 150, 250, 470),
+			renderWindow('classesLib', 'Classes', React.createElement(ClassesView, {ref: this.classesListRef}), 0, 550, 250, 150, 250, 470),
 			renderWindow('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 255, 550, 250, 150, 250, 470),
 			renderWindow('scenesList', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
 			

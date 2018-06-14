@@ -6,7 +6,7 @@ const bodyProps = {className: 'list-view'};
 const classItemProps = {className: 'class-list-item'};
 const classItemSubProps = {className: 'class-list-item-sub'};
 
-class ClessesView extends React.Component {
+class ClassesView extends React.Component {
 	
 	constructor(props) {
 		super(props);
@@ -18,11 +18,18 @@ class ClessesView extends React.Component {
 	}
 	
 	onAddClick() {
-		editor.addToScene(Lib._loadClassInstanceById(this.state.selectedItem.c.name));
+		editor.addToScene(ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name));
 	}
 	
 	onAddAsChildClick() {
-		editor.attachToSelected(Lib._loadClassInstanceById(this.state.selectedItem.c.name));
+		editor.attachToSelected(ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name));
+	}
+	
+	static loadSafeInstanceByClassName(className) {
+		//editor.saveBackup();
+		let ret = Lib._loadClassInstanceById(className);
+		//editor.cleanupBackup();
+		return ret;
 	}
 	
 	onWrapSelectedClick() {
@@ -39,7 +46,7 @@ class ClessesView extends React.Component {
 				if(o.parent === game.stage) {
 					editor.ui.modal.showModal('Alert', 'Root element was not wrapped.')
 				} else {
-					let w = Lib._loadClassInstanceById(this.state.selectedItem.c.name);
+					let w = ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name);
 					o.parent.addChildAt(w, o.parent.getChildIndex(o));
 					w.addChild(o);
 					
@@ -85,9 +92,8 @@ class ClessesView extends React.Component {
 				item.c.__EDITOR_tip
 			);
 		}
-		
 		let key;
-		if(item.c.hasOwnProperty('EDITOR_group')) {
+		if(item.c.hasOwnProperty('__EDITOR_group')) {
 			key = item.c.__EDITOR_group + '/' + item.c.name;
 		} else {
 			key = 'Custom/' + item.c.name;
@@ -147,4 +153,4 @@ function findNextOfThisType(c, direction) {
 	}, direction);
 }
 
-export default ClessesView;
+export default ClassesView;

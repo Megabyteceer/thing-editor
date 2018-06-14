@@ -6,7 +6,7 @@ import LanguageSwitcher from "./language-switcher.js";
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
 const PAUSE_ICON = R.icon('pause');
-let selectionData;
+
 let prefabTitleProps = {className: 'prefabs-mode-title'};
 let prefabLabelProps = {
 	className: 'selectable-text', onMouseDown: function(ev) {
@@ -20,8 +20,6 @@ let playTogglingTime;
 let recoveryCheckingTime;
 let problemOnGameStart,
 	problemOnGameStop;
-
-let savedBackupName;
 
 export default class Viewport extends React.Component {
 	
@@ -84,13 +82,8 @@ export default class Viewport extends React.Component {
 				problemOnGameStart = true;
 				editor.tryToSaveHistory();
 				
-				savedBackupName = editor.runningSceneLibSaveSlotName;
-				if(!editor.isCurrentSceneModified) {
-					savedBackupName += '-unmodified';
-				}
-				editor.saveCurrentScene(savedBackupName);
+				editor.saveBackup(true);
 				
-				selectionData = editor.selection.saveSelection();
 				game.__EDITORmode = false;
 				Lib.__constructRecursive(game.currentScene);
 				game._processOnShow();
@@ -100,7 +93,8 @@ export default class Viewport extends React.Component {
 				problemOnGameStop = true;
 				game.__clearStage();
 				game.__EDITORmode = true;
-				restorePrestartBackup();
+				editor.restoreBackup(true);
+				
 				problemOnGameStop = false;
 			}
 			
@@ -204,13 +198,4 @@ export default class Viewport extends React.Component {
 			})
 		);
 	}
-}
-
-function restorePrestartBackup() {
-	if(!savedBackupName) {
-		throw error('No backup scene was saved bofore Start attempt. Please restart application.');
-	}
-	editor.loadScene(savedBackupName);
-	savedBackupName = null;
-	editor.selection.loadSelection(selectionData);
 }

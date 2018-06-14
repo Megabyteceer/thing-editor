@@ -43,13 +43,22 @@ ClassesLoader.init = init;
 
 let errorOccured;
 
+let currentLoadingPromiseResolver;
 function showError(message) {
 	errorOccured = true;
+	
+	let r = currentLoadingPromiseResolver;
+	currentLoadingPromiseResolver = null;
 	editor.ui.modal.showError(R.div(null,
 		message,
 		R.btn('I have fixed code, try again', () => {
 			editor.ui.modal.hideModal();
-			ClassesLoader.reloadClasses();
+			
+			ClassesLoader.reloadClasses().then(() => {
+				if(r) {
+					r();
+				}
+			});
 		}, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
 		'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
 }
@@ -158,7 +167,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
 	return new Promise((resolve, reject) => {
 		cacheCounter++;
-
+		currentLoadingPromiseResolver = resolve;
 		setTimeout(() => {
 		errorOccured = false;
 		
@@ -179,9 +188,6 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				'Plese fix error in source code and press button to try again:',
 			));
 		};
-		
-		
-
 		
 		let scriptSource = '';
 		editor.fs.files.some((fn, i) => {
@@ -216,7 +222,6 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				editor.ui.classesList.forceUpdate();
 				Pool.clearAll();
 			} else {
-				reject();
 				console.warn('classes were not loaded because of error.')
 			}
 		};
@@ -231,7 +236,7 @@ let loadedPath;
 function classLoaded(c, path) {
 	loadedPath = path;
 	loadedClssesCount++;
-	if(!c.hasOwnProperty('EDITOR_icon')) {
+	if(!c.hasOwnProperty('__EDITOR_icon')) {
 		c.__EDITOR_icon = "tree/game";
 	}
 	
