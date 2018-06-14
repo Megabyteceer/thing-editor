@@ -115,7 +115,7 @@ export default class Editor {
 				editor.projectDesc.lastSceneName = false;
 			}
 			
-			if(!needReload &&Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
+			if(!needReload && Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showQuestion("Scene's backup restoring",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
