@@ -92,6 +92,8 @@ export default class Editor {
 		if(!dir) {
 			this.fs.chooseProject(true);
 		} else if(dir !== editor.currentProjectDir) {
+			let needReload = editor.currentProjectDir;
+			
 			let data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
 			if(!data) {
 				editor.settings.setItem('last-opened-project', false);
@@ -113,7 +115,7 @@ export default class Editor {
 				editor.projectDesc.lastSceneName = false;
 			}
 			
-			if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
+			if(!needReload &&Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showQuestion("Scene's backup restoring",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
@@ -130,7 +132,10 @@ export default class Editor {
 					true
 				);
 			} else {//open last project's scene
-				this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
+				await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
+				if(needReload) {
+					location.reload();
+				}
 			}
 		}
 	}
