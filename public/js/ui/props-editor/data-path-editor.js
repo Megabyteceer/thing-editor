@@ -137,6 +137,7 @@ export default class DataPathEditor extends React.Component {
 				
 				items.push(item);
 				addedNames[name] = true;
+				return true;
 			}
 		};
 		
@@ -156,8 +157,10 @@ export default class DataPathEditor extends React.Component {
 		const addIfGood = (name) => {
 			if (!addedNames.hasOwnProperty(name)) {
 				if (this.isFieldGoodForCallbackChoose(name, parent)) {
-					items.push({name});
-					addedNames[name] = true;
+					if(!addSceneNodeIfValid(parent[name], name)) {
+						items.push({name});
+						addedNames[name] = true;
+					}
 				}
 			}
 		};
