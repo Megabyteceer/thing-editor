@@ -385,7 +385,7 @@ button {
 .props-label {
 	box-sizing:border-box;
 	padding-left: 15px;
-	width: 40%;
+	width: 50%;
 	max-width: 250px;
 	color: #3a8cff;
 	overflow-x: hidden;
