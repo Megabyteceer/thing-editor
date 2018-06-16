@@ -86,14 +86,18 @@ export default class Editor {
 		editor.ui.viewport.stopExecution();
 		await askSceneToSaveIfNeed();
 		
+		let lastOpenedProject = editor.settings.getItem('last-opened-project');
 		if(!dir) {
-			dir = editor.settings.getItem('last-opened-project');
+			dir = lastOpenedProject;
 		}
 		if(!dir) {
 			this.fs.chooseProject(true);
 		} else if(dir !== editor.currentProjectDir) {
-			let needReload = editor.currentProjectDir;
-			
+			editor.settings.setItem('last-opened-project', dir);
+			if(dir != lastOpenedProject) {
+				location.reload();
+			}
+
 			let data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
 			if(!data) {
 				editor.settings.setItem('last-opened-project', false);
@@ -104,7 +108,6 @@ export default class Editor {
 			Pool.clearAll();
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir;
-			editor.settings.setItem('last-opened-project', dir);
 			this.fs.gameFolder = '/games/' + dir + '/';
 			editor.projectDesc = data;
 			this.clipboardData = null;
@@ -115,7 +118,7 @@ export default class Editor {
 				editor.projectDesc.lastSceneName = false;
 			}
 			
-			if(!needReload && Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
+			if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showQuestion("Scene's backup restoring",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
@@ -133,9 +136,6 @@ export default class Editor {
 				);
 			} else {//open last project's scene
 				await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
-				if(needReload) {
-					location.reload();
-				}
 			}
 		}
 	}
