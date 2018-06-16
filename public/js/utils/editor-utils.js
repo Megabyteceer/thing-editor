@@ -19,7 +19,7 @@ R.spinner = () => {
 let _iconsCache = {};
 R.icon = (name) => {
 	if(!_iconsCache.hasOwnProperty(name)) {
-		_iconsCache[name] = R.img({src: '/editor/img/' + name + '.png'});
+		_iconsCache[name] = R.img({src: '/thing-editor/img/' + name + '.png'});
 	}
 	return _iconsCache[name];
 };

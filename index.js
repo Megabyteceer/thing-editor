@@ -112,20 +112,20 @@ app.use('/games/', (req, res, next) => {
 });
 
 app.use('/games/', express.static(path.join(__dirname, '../games'), {dotfiles:'allow'}));
-app.use('/engine/', express.static(path.join(__dirname, '../engine/public'), {dotfiles:'allow'}));
-app.use('/editor/', express.static(path.join(__dirname, '../editor/public'), {dotfiles:'allow'}));
+app.use('/thing-engine/', express.static(path.join(__dirname, '../thing-engine/public'), {dotfiles:'allow'}));
+app.use('/thing-editor/', express.static(path.join(__dirname, '../thing-editor/public'), {dotfiles:'allow'}));
 
 
 
 app.get('/', function(req, res) {
-	res.redirect('/editor');
+	res.redirect('/thing-editor');
 });
 
 //========= start server ================================================================
 var server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
 
 const opn = require('opn');
-opn('', {app: ['chrome', /*'--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/editor']});
+opn('', {app: ['chrome', /*'--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/thing-editor']});
 
 //======== socket connection with client ================================================
 const WebSocket = require('ws');

@@ -34,13 +34,3 @@ export default class Tip extends React.Component {
 R.tip = (id, header, text) => {
 	return React.createElement(Tip, {id, header, text});
 };
-
-Tip.tips = {
-	pathFieldTip: `Contains string path to javascript variable to get value from.
-As example path can be: <b>game.stage.height</b> or <b>this.parent.name</b>.
-Supports <b>game</b>, <b>this</b> or Component's class name as root object.
-Use '#' to acess to child scene nodes by name: <b>game.currentScene.#myChildElementsName.x</b>.`
-
-	
-	
-};

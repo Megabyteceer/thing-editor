@@ -658,7 +658,7 @@ input{
 
 .field-timeline {
     width: max-content;
-    background: url(/editor/img/timeline.png);
+    background: url(/thing-editor/img/timeline.png);
     height: 40px;
     background-repeat-y: no-repeat;
 }

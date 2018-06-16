@@ -1,30 +1,30 @@
 import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
-import Pool from "/engine/js/utils/pool.js";
-import Container from "/engine/js/components/container.js";
-import Button from "/engine/js/components/button.js";
-import Text from "/engine/js/components/text.js";
-import Label from "/engine/js/components/label.js";
-import NumberInput from "/engine/js/components/number-input.js";
-import Trigger from "/engine/js/components/trigger.js";
-import OrientationTrigger from "/engine/js/components/orientation-trigger.js";
-import MovieClip from "/engine/js/components/movie-clip/movie-clip.js";
-import NineSlicePlane from "/engine/js/components/nine-slice-plane.js";
+import Pool from "/thing-engine/js/utils/pool.js";
+import Container from "/thing-engine/js/components/container.js";
+import Button from "/thing-engine/js/components/button.js";
+import Text from "/thing-engine/js/components/text.js";
+import Label from "/thing-engine/js/components/label.js";
+import NumberInput from "/thing-engine/js/components/number-input.js";
+import Trigger from "/thing-engine/js/components/trigger.js";
+import OrientationTrigger from "/thing-engine/js/components/orientation-trigger.js";
+import MovieClip from "/thing-engine/js/components/movie-clip/movie-clip.js";
+import NineSlicePlane from "/thing-engine/js/components/nine-slice-plane.js";
 
 function init() {
 	//embedded engine classes
 	embeddedClasses = [
-		[Container, "/engine/js/components/container.js"],
+		[Container, "/thing-engine/js/components/container.js"],
 		[PIXI.Sprite, false],
 		[DSprite, false],
-		[MovieClip, "/engine/js/components/movie-clip/movie-clip.js"],
+		[MovieClip, "/thing-engine/js/components/movie-clip/movie-clip.js"],
 		[Scene, false],
-		[Text, "/engine/js/components/text.js"],
-		[Button, "/engine/js/components/button.js"],
-		[Label, "/engine/js/components/label.js"],
-		[NumberInput, "/engine/js/components/number-input.js"],
-		[Trigger,"/engine/js/components/trigger.js" ],
-		[OrientationTrigger,"/engine/js/components/orientation-trigger.js" ],
-		[NineSlicePlane, "/engine/js/components/nine-slice-plane.js"]
+		[Text, "/thing-engine/js/components/text.js"],
+		[Button, "/thing-engine/js/components/button.js"],
+		[Label, "/thing-engine/js/components/label.js"],
+		[NumberInput, "/thing-engine/js/components/number-input.js"],
+		[Trigger,"/thing-engine/js/components/trigger.js" ],
+		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
+		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"]
 	];
 }
 
@@ -89,7 +89,7 @@ function addClass(c, path) {
 		}
 	}
 	
-	if (path && (path.indexOf('/engine/') < 0)) {
+	if (path && (path.indexOf('/thing-engine/') < 0)) {
 		console.log('Custom class loded: ' + name + '; ' + path);
 	}
 	

@@ -1,4 +1,4 @@
-const symlinksMaker = require('../../engine/scripts/symlinks-maker.js');
+const symlinksMaker = require('../../thing-engine/scripts/symlinks-maker.js');
 const path = require('path');
 
 var clientLibs = {
