@@ -316,7 +316,7 @@ export default class Editor {
 			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
 		idCounter = 0;
-		game.screenOrientation = editor.projectDesc.screenOrientation;
+		game.applyProjectSettings(editor.projectDesc);
 		game.showScene(name);
 		
 		if(game.currentScene) {
