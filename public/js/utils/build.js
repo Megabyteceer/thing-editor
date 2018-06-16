@@ -7,7 +7,7 @@ export default class Build {
 		
 		let prefabsSrc = Lib._getAllPrefabs();
 		let prefabs = {};
-		Object.keys(prefabsSrc).some((prefabName) => {
+		Object.keys(prefabsSrc).sort().some((prefabName) => {
 			prefabs[prefabName] = prefabsSrc[prefabName];
 		});
 		
