@@ -1009,11 +1009,11 @@ input{
     overflow-y: auto;
 }
 
-.info-warns-list {
+.props-group-warns-list {
     color:#c70;
 }
 
-.info-errors-list {
+.props-group-errors-list {
     color:#c00;
 }
 

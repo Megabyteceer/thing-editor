@@ -101,7 +101,12 @@ app.use('/games/', (req, res, next) => {
 				next(err);
 			} else {
 				res.set('Content-Type', 'application/javascript');
-				var rendered = content.toString().replace(moduleImportFixer, '$1?v=' + modulesVersion + '$2');
+				var rendered = content.toString().replace(moduleImportFixer, (substr, m1, m2) => {
+					if(m1.indexOf('thing-engine/js/') >= 0 || m1.indexOf('thing-editor/') >= 0) {
+						return substr;
+					}
+					return m1 + '?v=' + modulesVersion + m2;
+				});
 				return res.end(rendered);
 			}
 		});
