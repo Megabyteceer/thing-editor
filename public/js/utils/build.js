@@ -1,4 +1,5 @@
 import L from "../../../thing-engine/js/utils/l.js";
+import Lib from "/thing-engine/js/lib.js";
 
 export default class Build {
 	static build() {
@@ -24,11 +25,8 @@ export default class Build {
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
-		let src = [`let classes = {
-			"Sprite":PIXI.Sprite,
-			"DSprite":DSprite,
-			"Scene":Scene
-		};`];
+		let src = [`import Lib from "/thing-engine/js/lib.js";
+let classes = {};`];
 		
 		
 		for(let c of classesSrc) {

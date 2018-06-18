@@ -112,7 +112,7 @@ app.use('/games/', (req, res, next) => {
 });
 
 app.use('/games/', express.static(path.join(__dirname, '../games'), {dotfiles:'allow'}));
-app.use('/thing-engine/', express.static(path.join(__dirname, '../thing-engine/public'), {dotfiles:'allow'}));
+app.use('/thing-engine/', express.static(path.join(__dirname, '../thing-engine'), {dotfiles:'allow'}));
 app.use('/thing-editor/', express.static(path.join(__dirname, '../thing-editor/public'), {dotfiles:'allow'}));
 
 

@@ -1,3 +1,5 @@
+import Lib from "/thing-engine/js/lib.js";
+
 const HISTORY_LEN = 50;
 const STRICT_HISTORY_LEN = 10;
 

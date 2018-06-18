@@ -1,4 +1,5 @@
 import PropsFieldWrapper from "./props-field-wrapper.js";
+import Lib from "/thing-engine/js/lib.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};

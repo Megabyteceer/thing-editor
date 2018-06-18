@@ -9,15 +9,18 @@ import Trigger from "/thing-engine/js/components/trigger.js";
 import OrientationTrigger from "/thing-engine/js/components/orientation-trigger.js";
 import MovieClip from "/thing-engine/js/components/movie-clip/movie-clip.js";
 import NineSlicePlane from "/thing-engine/js/components/nine-slice-plane.js";
+import DSprite from "/thing-engine/js/components/d-sprite.js";
+import Scene from "/thing-engine/js/components/scene.js";
+import Lib from "/thing-engine/js/lib.js";
 
 function init() {
 	//embedded engine classes
 	embeddedClasses = [
 		[Container, "/thing-engine/js/components/container.js"],
 		[PIXI.Sprite, false],
-		[DSprite, false],
+		[DSprite, "/thing-engine/js/components/d-sprite.js"],
 		[MovieClip, "/thing-engine/js/components/movie-clip/movie-clip.js"],
-		[Scene, false],
+		[Scene, "/thing-engine/js/components/scene.js"],
 		[Text, "/thing-engine/js/components/text.js"],
 		[Button, "/thing-engine/js/components/button.js"],
 		[Label, "/thing-engine/js/components/label.js"],

@@ -1,6 +1,7 @@
 import TreeNode from './tree-node.js';
 import Window from '../window.js';
 import Selection from "../../utils/selection.js";
+import Lib from "/thing-engine/js/lib.js";
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};

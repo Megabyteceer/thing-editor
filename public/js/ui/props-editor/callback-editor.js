@@ -1,5 +1,6 @@
 import DataPathEditor from "./data-path-editor.js";
 import ScenesList from "../scenes-list.js";
+import Lib from "/thing-engine/js/lib.js";
 
 export default class CallbackEditor extends DataPathEditor {
 	

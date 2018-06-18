@@ -1,6 +1,8 @@
 import PropsFieldWrapper from './props-field-wrapper.js';
 import Group from '../group.js';
 import Window from '../window.js';
+import Scene from "/thing-engine/js/components/scene.js";
+import Lib from "/thing-engine/js/lib.js";
 
 let editorProps = {
 	className: 'props-editor'

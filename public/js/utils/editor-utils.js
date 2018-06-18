@@ -1,4 +1,4 @@
-"use strict";
+import Lib from "/thing-engine/js/lib.js";
 
 let factories = {};
 window.R = factories;

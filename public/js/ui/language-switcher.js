@@ -1,5 +1,6 @@
-const languageSwitcherProps = {className: 'language-switcher'};
+import L from "/thing-engine/js/utils/l.js";
 
+const languageSwitcherProps = {className: 'language-switcher'};
 
 export default class LanguageSwitcher extends React.Component {
 	

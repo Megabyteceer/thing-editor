@@ -1,5 +1,6 @@
 import Group from "./group.js";
 import Timeline from "./props-editor/timeline/timeline.js";
+import Lib from "/thing-engine/js/lib.js";
 
 
 const bodyProps = {className: 'list-view'};

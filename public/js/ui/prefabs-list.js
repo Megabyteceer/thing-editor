@@ -1,4 +1,6 @@
 import Group from "./group.js";
+import Scene from "/thing-engine/js/components/scene.js";
+import Lib from "/thing-engine/js/lib.js";
 
 let bodyProps = {className: 'list-view'};
 
