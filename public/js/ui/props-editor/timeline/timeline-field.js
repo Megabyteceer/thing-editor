@@ -481,11 +481,11 @@ class KeyframePropertyEditor extends React.Component {
 			' action: ',
 			React.createElement(CallbackEditor, {value:kf.a || null, onChange:this.onActionChange, title:'Callback for keyframe ' + kf.t}),
 			' ', R.btn(selectKeyframeTypes[kf.m], () => {this.props.toggleKeyframeType(kf);}, "Switch selected keyframe's' Mode (Ctrl + M)", 'keyframe-type-chooser', 1077), ' ',
-			' speed set: ',
-			R.input({type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
+			R.label({htmlFor:'speed-set-checkbox'}, ' speed set:'),
+			R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
 			speedEditor,
-			' jump time: ',
-			R.input({type:'checkbox', onChange: this.onJumpExistsChanged, checked:hasJump}),
+			R.label({htmlFor:'jump-time-checkbox'}, ' jump time:'),
+			R.input({id: 'jump-time-checkbox', type:'checkbox', onChange: this.onJumpExistsChanged, checked:hasJump}),
 			jumpEditor,
 			extendEditor
 		);

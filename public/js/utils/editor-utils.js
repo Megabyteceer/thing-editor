@@ -3,7 +3,7 @@ import Lib from "/thing-engine/js/lib.js";
 let factories = {};
 window.R = factories;
 
-['div', 'span', 'img', 'button', 'input', 'b', 'a', 'br', 'hr', 'svg', 'polyline', 'textarea'].some((factoryType) => {
+['div', 'span', 'img', 'button', 'input', 'label', 'b', 'a', 'br', 'hr', 'svg', 'polyline', 'textarea'].some((factoryType) => {
 	factories[factoryType] = React.createFactory(factoryType);
 });
 

@@ -8,6 +8,10 @@
 	display:none;
 }
 
+label {
+    cursor: pointer;
+}
+
 body,html{
 	font-family: sans-serif;
 	width:100%;
@@ -804,7 +808,7 @@ input{
 
 .bottom-panel input, .bottom-panel .select-editor{
 	width:initial;
-	display:inline-block;
+	vertical-align: middle;
 }
 
 .bottom-panel .select-editor-list {
