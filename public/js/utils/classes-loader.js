@@ -12,12 +12,13 @@ import NineSlicePlane from "/thing-engine/js/components/nine-slice-plane.js";
 import DSprite from "/thing-engine/js/components/d-sprite.js";
 import Scene from "/thing-engine/js/components/scene.js";
 import Lib from "/thing-engine/js/lib.js";
+import Sprite from "/thing-engine/js/components/sprite.js";
 
 function init() {
 	//embedded engine classes
 	embeddedClasses = [
 		[Container, "/thing-engine/js/components/container.js"],
-		[PIXI.Sprite, false],
+		[Sprite, '/thing-engine/js/components/sprite.js'],
 		[DSprite, "/thing-engine/js/components/d-sprite.js"],
 		[MovieClip, "/thing-engine/js/components/movie-clip/movie-clip.js"],
 		[Scene, "/thing-engine/js/components/scene.js"],
