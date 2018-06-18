@@ -1,10 +1,21 @@
 import Window from "./window.js";
 import Group from "./group.js";
 
-const fakeOwner = {};
-
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
+
+
+const needAddInToList = (map, owner) => {
+	if(owner && (owner instanceof PIXI.DisplayObject)) {
+		let exData = __getNodeExtendData(owner);
+		if(!map.has(exData)) {
+			map.set(exData, true);
+			return true;
+		}
+	}
+	return false;
+};
+
 
 export default class Status extends React.Component {
 	
@@ -31,10 +42,10 @@ export default class Status extends React.Component {
 		this.warnsList = ref;
 	}
 	
-	error (message, owner = fakeOwner, fieldName) {
+	error (message, owner, fieldName) {
 		console.error(message);
-		if(!this.errorsMap.has(owner)) {
-			this.errorsMap.set(owner, true);
+		
+		if(needAddInToList(this.errorsMap, owner)) {
 			this.errors.push({owner, message, fieldName});
 			if(this.errorsList) {
 				this.errorsList.forceUpdate();
@@ -44,10 +55,9 @@ export default class Status extends React.Component {
 		}
 	}
 	
-	warn (message, owner = fakeOwner, fieldName) {
+	warn (message, owner, fieldName) {
 		console.warn(message);
-		if(!this.warnsMap.has(owner)) {
-			this.warnsMap.set(owner, true);
+		if(needAddInToList(this.warnsMap, owner)) {
 			this.warns.push({owner, message, fieldName});
 			if(this.errorsList) {
 				this.warnsList.forceUpdate();
@@ -93,6 +103,8 @@ export default class Status extends React.Component {
 	}
 }
 
+const selectableSceneNodeProps = {className:"selectable-scene-node"};
+
 class InfoList extends React.Component {
 	
 	constructor(props) {
@@ -101,15 +113,37 @@ class InfoList extends React.Component {
 	}
 	
 	renderItem(item, i) {
+		
+		let node;
+		if(item.owner && item.owner instanceof PIXI.DisplayObject) {
+			node = R.div(selectableSceneNodeProps, R.sceneNode(item.owner));
+		}
+		
+		if(item.owner && (item.owner instanceof PIXI.DisplayObject)) {
+			let exData = __getNodeExtendData(item.owner);
+			if(!exData.alertRefs) {
+				exData.alertRefs = new WeakMap();
+			}
+			exData.alertRefs.set(item, true);
+		}
 		return R.div({key:i, className:'info-item clickable', onClick:() => {
 			if(item.owner && (item.owner instanceof PIXI.DisplayObject)) {
-				editor.ui.sceneTree.selectInTree(item.owner);
 				
-				if(item.fieldName) {
-					editor.ui.propsEditor.selecField(item.fieldName);
+				let exData = __getNodeExtendData(item.owner);
+				if(!exData.alertRefs.has(item)) {
+					editor.ui.modal.showModal('Object already removed form stage.');
+				} else {
+					if(item.owner.getRootContainer() !== game.currentContainer) {
+						editor.ui.modal.showModal("Object can't be selected because it's container is not active for now.");
+					} else {
+						editor.ui.sceneTree.selectInTree(item.owner);
+						if(item.fieldName) {
+							editor.ui.propsEditor.selecField(item.fieldName);
+						}
+					}
 				}
 			}
-		}}, this.props.icon, item.message);
+		}}, this.props.icon, item.message, node);
 	}
 
 	render() {
