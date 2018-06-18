@@ -79,6 +79,7 @@ export default class Viewport extends React.Component {
 			this.beforePlayStopToggle.emit(play);
 			Lib.__clearStaticScenes();
 			if(play) { // launch game
+				editor.ui.status.clear();
 				problemOnGameStart = true;
 				editor.tryToSaveHistory();
 				

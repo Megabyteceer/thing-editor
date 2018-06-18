@@ -1004,6 +1004,37 @@ input{
     border: #ccc;
 }
 
+#window-info .window-content {
+    background: #fff;
+    overflow-y: auto;
+}
+
+.info-warns-list {
+    color:#c70;
+}
+
+.info-errors-list {
+    color:#c00;
+}
+
+.info-list {
+    padding: 5px 20px;
+}
+
+.info-item {
+    padding: 3px;
+}
+
+.info-badge {
+    float: right;
+    background: #bd0000;
+    color: #fff;
+    padding: 0 5px;
+    margin-top: -1px;
+    margin-bottom: -100%;
+    border: 1px solid #fdd;
+    border-radius: 9px;
+}
 
 
 
@@ -1017,12 +1048,7 @@ input{
 
 
 
-
-
-
-
-
-/*===================== animations ==================================================*/
+    /*===================== animations ==================================================*/
 
 .fadein-animation{
   animation: fadein linear .2s;

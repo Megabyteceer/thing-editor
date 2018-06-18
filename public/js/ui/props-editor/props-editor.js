@@ -53,16 +53,18 @@ class PropsEditor extends React.Component {
 	}
 	
 	selecField(fieldName) {
-		let fldInput = $(".props-editor #property-editor-" + fieldName);
-		if(fldInput.length > 0) {
-			fldInput.removeClass('shake');
-			setTimeout(() => {
-				fldInput.addClass('shake');
-			}, 1);
-			Window.bringWindowForward(fldInput.closest('.window-body'));
-			fldInput[0].scrollIntoView({});
-		}
-	
+		setTimeout(() => {
+			let fldInput = $(".props-editor #property-editor-" + fieldName);
+			if (fldInput.length > 0) {
+				fldInput.removeClass('shake');
+				setTimeout(() => {
+					fldInput.addClass('shake');
+				}, 1);
+				Window.bringWindowForward(fldInput.closest('.window-body'));
+				fldInput[0].scrollIntoView({});
+			}
+			fldInput.find('input').focus();
+		}, 1);
 	}
 
 	

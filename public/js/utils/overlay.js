@@ -170,10 +170,10 @@ function selectByStageClick(ev) {
 	while (stack.length > 0) {
 		if (stack.length > 1000) throw new Error('owerflow');
 		let o = stack.pop();
-		let childs = o.children;
-		let len = childs.length;
+		let children = o.children;
+		let len = children.length;
 		for (i = 0; i < len; i++) {
-			o = childs[i];
+			o = children[i];
 			if (o.children.length > 0) {
 				stack.push(o);
 			}

@@ -8,6 +8,7 @@ import ClassesView from './classes-view.js';
 import ScenesList from "./scenes-list.js";
 import PrefabsList from "./prefabs-list.js";
 import LanguageView from "./language-view.js";
+import Status from "./status.js";
 
 /**
  *
@@ -37,6 +38,7 @@ class UI extends React.Component {
 		
 		this.renderWindow = renderWindow;
 		
+		this.statusRef = this.statusRef.bind(this);
 		this.sceneTreeRef = this.sceneTreeRef.bind(this);
 		this.propsEditorRef = this.propsEditorRef.bind(this);
 		this.viewportRef = this.viewportRef.bind(this);
@@ -48,6 +50,10 @@ class UI extends React.Component {
 	
 	componentDidMount() {
 		this.props.onMounted(this);
+	}
+	
+	statusRef(ref) {
+		this.status = ref;
 	}
 	
 	sceneTreeRef(ref) {
@@ -98,6 +104,7 @@ class UI extends React.Component {
 			renderWindow('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 255, 550, 250, 150, 250, 470),
 			renderWindow('scenesList', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
 			
+			React.createElement(Status, {ref: this.statusRef}),
 			React.createElement(Modal, {ref: this.modalRef})
 		);
 	}
