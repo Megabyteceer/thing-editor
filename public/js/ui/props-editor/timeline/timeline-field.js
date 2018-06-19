@@ -215,7 +215,7 @@ export default class FieldsTimeline extends React.Component {
 		)
 	}
 	
-	gotoLabel(direction) {
+	gotoNextKeyframe(direction) {
 		let field = this.props.field;
 		let currentTime = Timeline.timeline.getTime();
 		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
@@ -237,11 +237,11 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	onGoLeftClick() {
-		this.gotoLabel(-1);
+		this.gotoNextKeyframe(-1);
 	}
 	
 	onGoRightClick() {
-		this.gotoLabel(1);
+		this.gotoNextKeyframe(1);
 	}
 	
 	onToggleKeyframeClick(time) {

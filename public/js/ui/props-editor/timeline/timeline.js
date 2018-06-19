@@ -256,16 +256,40 @@ function getFieldByNameOrCreate(o, name) {
 
 function getFrameAtTimeOrCreate(o, name, time) {
 	let field = getFieldByNameOrCreate(o, name);
-	for(let keyFrame of field.t) {
-		if(keyFrame.t === time) {
+	for (let keyFrame of field.t) {
+		if (keyFrame.t === time) {
 			return keyFrame;
 		}
 	}
+	return createKeyframe(o, name, time, field)
+}
+	
+function createKeyframe (o, name, time, field) {
+
+	let mode;
+	let jumpTime = time;
+	let prevField = MovieClip._findPreviousKeyframe(field.t, time);
+	if(prevField) {
+		mode = prevField.m;
+		if(mode === 3 || mode === 4) {
+			mode = 0;
+		}
+		if(prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
+			jumpTime = prevField.j;
+			prevField.j = prevField.t;
+		}
+	} else {
+		mode = getDefaultKeyframeTypeForField(o, name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
+	}
+	
+	
+	
+	
 	let keyFrame = {
 		v: o[name],	//target Value
 		t: time,	//frame triggering Time
-		m: getDefaultKeyframeTypeForField(o, name), //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
-		j: time	    //Jump to time. If no jump need - equal to 't'
+		m: mode,
+		j: jumpTime	    //Jump to time. If no jump need - equal to 't'
 	};
 	
 	field.t.push(keyFrame);
