@@ -86,9 +86,12 @@ export default class Viewport extends React.Component {
 				
 				editor.saveBackup(true);
 				
+				let sceneData = Lib.__serializeObject(game.currentScene);
+				game.__clearStage();
 				game.__EDITORmode = false;
-				Lib.__constructRecursive(game.currentScene);
-				game._processOnShow();
+				let s = Lib._loadObjectFromData(sceneData);
+				game.currentScene = null;
+				game.showScene(s);
 				problemOnGameStart = false;
 			} else { //stop game
 				
