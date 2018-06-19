@@ -4,6 +4,7 @@ import Container from "/thing-engine/js/components/container.js";
 import Button from "/thing-engine/js/components/button.js";
 import Text from "/thing-engine/js/components/text.js";
 import Label from "/thing-engine/js/components/label.js";
+import PrefabReference from "/thing-engine/js/components/prefab-reference.js";
 import NumberInput from "/thing-engine/js/components/number-input.js";
 import Trigger from "/thing-engine/js/components/trigger.js";
 import OrientationTrigger from "/thing-engine/js/components/orientation-trigger.js";
@@ -30,7 +31,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[NumberInput, "/thing-engine/js/components/number-input.js"],
 		[Trigger,"/thing-engine/js/components/trigger.js" ],
 		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
-		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"]
+		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"],
+		[PrefabReference, "/thing-engine/js/components/prefab-reference.js"]
 	];
 };
 
