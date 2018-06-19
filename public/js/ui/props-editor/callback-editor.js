@@ -20,14 +20,26 @@ export default class CallbackEditor extends DataPathEditor {
 	finalValueChoosed(path) {
 		path = path.join('.');
 		
-		if(path === 'game.showScene') {
-			ScenesList.chooseScene("Choose scene to open:").then((selectedSceneName) => {
-				if(selectedSceneName) {
-					this.applyFinalPath(path + '`' + selectedSceneName);
-				}
-			});
-		} else {
-			this.applyFinalPath(path);
+		switch(path) {
+			case 'game.showScene':
+				ScenesList.chooseScene("Choose scene to open:").then((selectedSceneName) => {
+					if(selectedSceneName) {
+						this.applyFinalPath(path + '`' + selectedSceneName);
+					}
+				});
+				break;
+				
+			case 'FlyText.flyText':
+				editor.ui.modal.showPrompt('Enter text to show', 'Text-1').then((enteredText) => {
+					if(enteredText) {
+						this.applyFinalPath(path + '`' + enteredText);
+					}
+				});
+				break;
+				
+				
+			default:
+				this.applyFinalPath(path);
 		}
 	}
 	

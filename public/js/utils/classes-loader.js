@@ -13,6 +13,7 @@ import NineSlicePlane from "/thing-engine/js/components/nine-slice-plane.js";
 import DSprite from "/thing-engine/js/components/d-sprite.js";
 import Scene from "/thing-engine/js/components/scene.js";
 import Lib from "/thing-engine/js/lib.js";
+import FlyText from "/thing-engine/js/components/fly-text.js";
 import Sprite from "/thing-engine/js/components/sprite.js";
 import DisplayObject from "/thing-engine/js/components/display-object.js";
 
@@ -26,6 +27,7 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[MovieClip, "/thing-engine/js/components/movie-clip/movie-clip.js"],
 		[Scene, "/thing-engine/js/components/scene.js"],
 		[Text, "/thing-engine/js/components/text.js"],
+		[FlyText, "/thing-engine/js/components/fly-text.js"],
 		[Button, "/thing-engine/js/components/button.js"],
 		[Label, "/thing-engine/js/components/label.js"],
 		[NumberInput, "/thing-engine/js/components/number-input.js"],

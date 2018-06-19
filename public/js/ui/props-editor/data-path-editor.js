@@ -79,6 +79,8 @@ export default class DataPathEditor extends React.Component {
 				'this':this.props.this || editor.selection[0],
 				all: game.currentScene.all
 			};
+			parent['FlyText'] = Lib.getClass('FlyText');
+			
 			for(let c of editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses)) {
 				c = c.c;
 				

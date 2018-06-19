@@ -14,10 +14,15 @@ export default class Prompt extends React.Component {
 		setTimeout(() => {
 			$('.modal-content input').focus();
 		},1);
+		this.checkAcceptance(this.state.value);
 	}
 	
 	onChange(ev) {
 		let val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
+		this.checkAcceptance(val);
+	}
+	
+	checkAcceptance(val) {
 		let reject = this.props.accept ? this.props.accept(val) : undefined;
 		this.setState({
 			value: val,
