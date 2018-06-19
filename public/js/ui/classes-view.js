@@ -4,7 +4,6 @@ import Lib from "/thing-engine/js/lib.js";
 
 
 const bodyProps = {className: 'list-view'};
-const classItemProps = {className: 'class-list-item'};
 const classItemSubProps = {className: 'class-list-item-sub'};
 
 class ClassesView extends React.Component {
@@ -101,7 +100,12 @@ class ClassesView extends React.Component {
 		}
 		
 		return R.listItem(
-			R.div(classItemProps,
+			R.div({
+					onDoubleClick:() => {
+						editor.editClassSource(item.c);
+					},
+					className: 'class-list-item'
+				},
 				R.div(classItemSubProps,
 					R.classIcon(item.c),
 					item.c.name,

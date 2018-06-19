@@ -1,19 +1,20 @@
 const log = console.log;
-var bodyParser = require('body-parser');
+let bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const app = express();
+const opn = require('opn');
 
 const build = require('./scripts/build.js');
 
-var currentGame;
-var currentGameRoot;
+let currentGame;
+let currentGameRoot;
 
-var PORT = 32023;
-var gamesRoot = __dirname + '/../games/';
-var clientGamesRoot = '/games/';
-var jsonParser = bodyParser.json({limit:1024*1024*200});
+let PORT = 32023;
+let gamesRoot = __dirname + '/../games/';
+let clientGamesRoot = '/games/';
+let jsonParser = bodyParser.json({limit:1024*1024*200});
 
 // File System acess commands
 
@@ -37,8 +38,8 @@ app.get('/fs/openProject', function (req, res) {
 	}
 });
 
-var pathFixerExp = /\\/g;
-var pathFixer = (fn) => {
+let pathFixerExp = /\\/g;
+let pathFixer = (fn) => {
     return fn.replace(pathFixerExp, '/');
 };
 
@@ -55,13 +56,34 @@ app.get('/fs/enum', function (req, res) {
 
 app.get('/fs/delete', function (req, res) {
 	if(!currentGame) throw 'No game opened';
-	var fn = req.query.f;
+	let fn = req.query.f;
 	try {
 		fs.unlinkSync(fn);
 		res.end('{}');
 	} catch (err) {
-		res.end("Can't delete file " + fn);
+		res.end("Can't delete file: " + fn);
 	}
+});
+
+app.get('/fs/edit', function (req, res) {
+	if(!currentGame) throw 'No game opened';
+	
+	let fn = req.query.f;
+	if(fn.indexOf('thing-engine/js/') >= 0) {
+		fn = path.join(__dirname, '../', fn);
+	} else {
+		fn = path.resolve(currentGameRoot, fn);
+	}
+	setTimeout(() => {
+		"use strict";
+		try {
+			opn(fn);
+			res.end('{}');
+		} catch (err) {
+			res.end("Can't open file to edit: " + fn);
+		}
+	},100);
+
 });
 
 app.get('/fs/build', function (req, res) {
@@ -72,7 +94,7 @@ app.get('/fs/build', function (req, res) {
 });
 
 app.post('/fs/savefile', jsonParser, function (req, res) {
-	var fileName = req.body.filename;
+	let fileName = req.body.filename;
 	//log('Save file: ' + fileName);
     ensureDirectoryExistence(fileName);
 	fs.writeFile(fileName, req.body.data, function(err) {
@@ -84,7 +106,7 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 });
 
 // modules import cache preventing
-var moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
+let moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
 app.use('/games/', (req, res, next) => {
 	//log("GAMES JS PREPROCESSING: " + req.path);
@@ -101,7 +123,7 @@ app.use('/games/', (req, res, next) => {
 				next(err);
 			} else {
 				res.set('Content-Type', 'application/javascript');
-				var rendered = content.toString().replace(moduleImportFixer, (substr, m1, m2) => {
+				let rendered = content.toString().replace(moduleImportFixer, (substr, m1, m2) => {
 					if(m1.indexOf('thing-engine/js/') >= 0 || m1.indexOf('thing-editor/') >= 0) {
 						return substr;
 					}
@@ -127,9 +149,8 @@ app.get('/', function(req, res) {
 });
 
 //========= start server ================================================================
-var server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
+let server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
 
-const opn = require('opn');
 opn('', {app: ['chrome', ' --disable-web-security ', /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/thing-editor']});
 
 //======== socket connection with client ================================================
@@ -163,14 +184,14 @@ const walkSync = (dir, filelist = []) => {
 
 //============= enum projects ===========================
 const enumProjects = () => {
-	var ret = [];
-	var dir = gamesRoot;
+	let ret = [];
+	let dir = gamesRoot;
 	fs.readdirSync(dir).forEach(file => {
-		var dirName = path.join(dir, file);
+		let dirName = path.join(dir, file);
 		if(fs.statSync(dirName).isDirectory()) {
-			var projDescFile = dirName + '/thing-project.json';
+			let projDescFile = dirName + '/thing-project.json';
 			if(fs.existsSync(projDescFile)) {
-				var desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
+				let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
 				desc.dir = file;
 				ret.push(desc);
 			}
@@ -181,7 +202,7 @@ const enumProjects = () => {
 
 //=============== create folder for file ==================
 function ensureDirectoryExistence(filePath) {
-  var dirname = path.dirname(filePath);
+  let dirname = path.dirname(filePath);
   if (fs.existsSync(dirname)) {
     return true;
   }

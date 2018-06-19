@@ -353,6 +353,11 @@ export default class Editor {
 		return history.isStateModified;
 	}
 	
+	editClassSource(c) {
+		let filePath = editor.ClassesLoader.getClassPath(c.name);
+		editor.fs.editFile(filePath);
+	}
+	
 	saveCurrentScene(name) {
 		editor.ui.viewport.stopExecution();
 		if(!name) {

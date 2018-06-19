@@ -112,7 +112,9 @@ export default class PrefabsList extends React.Component {
 		
 	renderItem(prefabName, item) {
 		let cls = Lib.getClass(item.c);
-		return R.div({key: prefabName},
+		return R.div({onDoubleClick:() => {
+				editor.editClassSource(cls);
+			}, key: prefabName},
 			R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'), item, prefabName, this)
 		);
 	}

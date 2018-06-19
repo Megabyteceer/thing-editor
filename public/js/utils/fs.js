@@ -16,6 +16,9 @@ let fs = {
 	deleteFile: (fileName) => {
 		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName));
 	},
+	editFile: (fileName) => {
+		return fs.getJSON('/fs/edit?f=' + encodeURIComponent(fileName));
+	},
 	getJSON(url, silently) {
 		if (!silently) {
 			editor.ui.modal.showSpinner();

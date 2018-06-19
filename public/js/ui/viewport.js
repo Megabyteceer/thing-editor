@@ -150,7 +150,7 @@ export default class Viewport extends React.Component {
 		if(this.state.prefabMode) {
 			className += ' editor-viewport-wrapper-prefab-mode';
 			panel = R.span(null,
-				R.div(prefabTitleProps, 'Prefab edition mode: ', R.br(), R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
+				R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 				R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes', 'main-btn'),
 				R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes'),
 				'BG color:',
