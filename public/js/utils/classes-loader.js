@@ -13,6 +13,7 @@ import DSprite from "/thing-engine/js/components/d-sprite.js";
 import Scene from "/thing-engine/js/components/scene.js";
 import Lib from "/thing-engine/js/lib.js";
 import Sprite from "/thing-engine/js/components/sprite.js";
+import DisplayObject from "/thing-engine/js/components/display-object.js";
 
 function init() {
 	//embedded engine classes
@@ -73,7 +74,7 @@ function getClassType(c) {
 	assert(typeof c === 'function', 'Class expected');
 	while (c) {
 		if (c === Scene) return Scene;
-		if (c === PIXI.DisplayObject) return PIXI.DisplayObject;
+		if (c === DisplayObject) return DisplayObject;
 		c = c.__proto__;
 	}
 }
@@ -101,7 +102,7 @@ function addClass(c, path) {
 	classesById[name] = c;
 	
 	let item = {c};
-	if (classType === PIXI.DisplayObject) {
+	if (classType === DisplayObject) {
 		ClassesLoader.gameObjClasses.push(item);
 	} else {
 		ClassesLoader.sceneClasses.push(item);
@@ -116,7 +117,7 @@ function enumClassProperties(c) {
 	let i = 50;
 	while (cc && (i-- > 0)) {
 		if (!cc.prototype) {
-			throw 'attempt to enum editable properties of not PIXI.DisplayObject instance';
+			throw 'attempt to enum editable properties of not DisplayObject instance';
 		}
 		if (cc.hasOwnProperty('__EDITOR_editableProps')) {
 			let addProps = cc.__EDITOR_editableProps;
@@ -150,7 +151,7 @@ function enumClassProperties(c) {
 			
 			props = addProps.concat(props);
 		}
-		if (cc === PIXI.DisplayObject) {
+		if (cc === DisplayObject) {
 			break;
 		}
 		cc = cc.__proto__;
@@ -169,7 +170,7 @@ function clearClasses() {
 const jsFiler = /^src\/(game-objects|scenes)\/.*\.js$/gm;
 let head = document.getElementsByTagName('head')[0];
 
-function reloadClasses() { //enums all js files in src folder, detect which of them exports PIXI.DisplayObject descendants and add them in to Lib.
+function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
 	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
 	return new Promise((resolve, reject) => {
 		cacheCounter++;
@@ -182,7 +183,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		console.clear();
 		console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
 		
-		enumClassProperties(PIXI.DisplayObject);
+		enumClassProperties(DisplayObject);
 		embeddedClasses.some((a) => {
 			addClass(a[0], a[1]);
 		});

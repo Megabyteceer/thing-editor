@@ -1,4 +1,4 @@
-import L from "../../../thing-engine/js/utils/l.js";
+import L from "/thing-engine/js/utils/l.js";
 import Lib from "/thing-engine/js/lib.js";
 
 export default class Build {

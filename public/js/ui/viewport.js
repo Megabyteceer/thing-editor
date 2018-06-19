@@ -1,5 +1,5 @@
 import PrefabsList from './prefabs-list.js';
-import Lib from "../../../thing-engine/js/lib.js";
+import Lib from "/thing-engine/js/lib.js";
 import Signal from "../utils/signal.js";
 import LanguageSwitcher from "./language-switcher.js";
 

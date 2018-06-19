@@ -1,6 +1,6 @@
 import utils from './utils/editor-utils.js';
-import Game from '../../thing-engine/js/game.js';
-import Settings from '../../thing-engine/js/utils/settings.js';
+import Game from '/thing-engine/js/game.js';
+import Settings from '/thing-engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
 import ws from './utils/socket.js';
 import fs from './utils/fs.js';
@@ -12,7 +12,7 @@ import ScenesList from "./ui/scenes-list.js";
 import Overlay from "./utils/overlay.js";
 import PrefabsList from "./ui/prefabs-list.js";
 import Signal from "./utils/signal.js";
-import Lib from "../../thing-engine/js/lib.js";
+import Lib from "/thing-engine/js/lib.js";
 import build from "./utils/build.js";
 import Pool from "/thing-engine/js/utils/pool.js";
 import LanguageView from "./ui/language-view.js";
@@ -31,6 +31,7 @@ export default class Editor {
 	constructor() {
 		/*global editor */
 		window.editor = this;
+		this.Lib = Lib;
 		
 		this.tryToSaveHistory = tryToSaveHistory;
 		

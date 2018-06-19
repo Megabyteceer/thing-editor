@@ -1,5 +1,6 @@
 import PropsFieldWrapper from "./props-field-wrapper.js";
 import Lib from "/thing-engine/js/lib.js";
+import DisplayObject from "/thing-engine/js/components/display-object.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
@@ -54,7 +55,7 @@ export default class DataPathEditor extends React.Component {
 		let type = typeof val;
 		if(type === 'object' || (type === 'function')) {
 			
-			if(val instanceof PIXI.DisplayObject && __getNodeExtendData(val).hidden) return false;
+			if(val instanceof DisplayObject && __getNodeExtendData(val).hidden) return false;
 			
 			return !val.__EDITOR_isHiddenForChooser;
 		}
@@ -127,7 +128,7 @@ export default class DataPathEditor extends React.Component {
 		}
 		
 		const addSceneNodeIfValid = (o, name, isChild) => {
-			if(o && (o instanceof PIXI.DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent)) {
+			if(o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent)) {
 				let item = {pureName: name, name: R.fragment(R.b(null, name + ' '), R.div(selectableSceneNodeProps, R.sceneNode(o)))};
 				
 				if(isChild) {

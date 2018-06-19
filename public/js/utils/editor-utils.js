@@ -1,5 +1,3 @@
-import Lib from "/thing-engine/js/lib.js";
-
 let factories = {};
 window.R = factories;
 
@@ -218,14 +216,14 @@ window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) 
 	Object.defineProperty(ret, 'select', {
 		get: () => {
 			if(canBeEmpty) {
-				let a = Lib.__texturesList.concat();
+				let a = editor.Lib.__texturesList.concat();
 				a.unshift({
 					"name": "none",
 					"value": ""
 				});
 				return a;
 			} else {
-				return Lib.__texturesList;
+				return editor.Lib.__texturesList;
 			}
 		}
 	});

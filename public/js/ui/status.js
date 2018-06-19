@@ -1,12 +1,13 @@
 import Window from "./window.js";
 import Group from "./group.js";
+import DisplayObject from "/thing-engine/js/components/display-object.js";
 
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
 
 
 const needAddInToList = (map, owner) => {
-	if(owner && (owner instanceof PIXI.DisplayObject)) {
+	if(owner && (owner instanceof DisplayObject)) {
 		let exData = __getNodeExtendData(owner);
 		if(!map.has(exData)) {
 			map.set(exData, true);
@@ -115,11 +116,11 @@ class InfoList extends React.Component {
 	renderItem(item, i) {
 		
 		let node;
-		if(item.owner && item.owner instanceof PIXI.DisplayObject) {
+		if(item.owner && item.owner instanceof DisplayObject) {
 			node = R.div(selectableSceneNodeProps, R.sceneNode(item.owner));
 		}
 		
-		if(item.owner && (item.owner instanceof PIXI.DisplayObject)) {
+		if(item.owner && (item.owner instanceof DisplayObject)) {
 			let exData = __getNodeExtendData(item.owner);
 			if(!exData.alertRefs) {
 				exData.alertRefs = new WeakMap();
@@ -127,7 +128,7 @@ class InfoList extends React.Component {
 			exData.alertRefs.set(item, true);
 		}
 		return R.div({key:i, className:'info-item clickable', onClick:() => {
-			if(item.owner && (item.owner instanceof PIXI.DisplayObject)) {
+			if(item.owner && (item.owner instanceof DisplayObject)) {
 				
 				let exData = __getNodeExtendData(item.owner);
 				if(!exData.alertRefs.has(item)) {
