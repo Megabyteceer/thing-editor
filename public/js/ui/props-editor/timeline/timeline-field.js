@@ -133,9 +133,32 @@ export default class FieldsTimeline extends React.Component {
 					} else {
 						this.forceUpdate();
 					}
-					if (this.props.field.t.indexOf(keyFrame) > 0) {
+					let timeLineData = this.props.field.t;
+					if (timeLineData.indexOf(keyFrame) > 0) {
 						draggingKeyframe = keyFrame;
 						draggingTimeline = this;
+						
+						const onMouseUp = () => {
+							window.removeEventListener('mouseup', onMouseUp);
+							
+							//reduce repeating keyframes
+							let isModified = false;
+							
+							for(let i = 0; i < timeLineData.length; i++) {
+								let kf = timeLineData[i];
+								if((kf !== keyFrame) && (kf.t === keyFrame.t)) {
+									timeLineData.splice(i, 1);
+									i--;
+									isModified = true;
+								}
+							}
+							
+							if(isModified) {
+								Timeline.renormalizeFieldTimelineDataAfterChange(this.props.field);
+								this.forceUpdate();
+							}
+						};
+						window.addEventListener('mouseup', onMouseUp);
 					}
 				}
 			},
@@ -296,6 +319,11 @@ export default class FieldsTimeline extends React.Component {
 			keyframePropsEditor = React.createElement(KeyframePropertyEditor, {node:this.props.node, toggleKeyframeType:this.toggleKeyframeType, onKeyframeChanged: this.onKeyframeChanged, timelineData:field, ref: this.keyframePropretyEditorRef, keyFrame: selectedKeyframe});
 		}
 		
+		let draging;
+		if(draggingKeyframe) {
+			draging = this.renderKeyframe(draggingKeyframe);
+		}
+		
 		return R.div({className: 'field-timeline', onMouseDown:(ev) =>{
 					if(ev.buttons === 2) {
 						this.onToggleKeyframeClick(Timeline.timeline.mouseTimelineTime);
@@ -305,6 +333,7 @@ export default class FieldsTimeline extends React.Component {
 				label,
 				field.t.map(this.renderKeyframe)
 			),
+			draging,
 			field.__cacheTimelineRendered,
 			React.createElement(PlayingDisplay, this.props),
 			keyframePropsEditor
