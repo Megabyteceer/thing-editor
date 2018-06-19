@@ -28,6 +28,7 @@ export default class Viewport extends React.Component {
 		this.state = {};
 		this.onTogglePlay = this.onTogglePlay.bind(this);
 		this.onPauseResumeClick = this.onPauseResumeClick.bind(this);
+		this.stopExecution = this.stopExecution.bind(this);
 		this.onOneStepClick = this.onOneStepClick.bind(this);
 		this.beforePlayStopToggle = new Signal();
 	}

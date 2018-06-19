@@ -78,7 +78,7 @@ export default class Editor {
 		
 		this.overlay = new Overlay();
 		
-		ClassesLoader.init();
+		ClassesLoader.initClassesLoader();
 		AssetsLoader.init();
 		this.openProject();
 	}

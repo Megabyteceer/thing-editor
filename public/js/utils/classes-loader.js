@@ -15,7 +15,8 @@ import Lib from "/thing-engine/js/lib.js";
 import Sprite from "/thing-engine/js/components/sprite.js";
 import DisplayObject from "/thing-engine/js/components/display-object.js";
 
-function init() {
+let ClassesLoader = {};
+ClassesLoader.initClassesLoader = function initClassesLoader() {
 	//embedded engine classes
 	embeddedClasses = [
 		[Container, "/thing-engine/js/components/container.js"],
@@ -31,9 +32,7 @@ function init() {
 		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
 		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"]
 	];
-}
-
-let ClassesLoader = {};
+};
 
 let classesById = {},
 	classesDefaultsById = {}, //default values for serializable properties of class
@@ -46,7 +45,7 @@ let loadedClssesCount;
 let classesLoadedSuccessfullyAtLeastOnce = false;
 let classesRegisterLoaded = false;
 
-ClassesLoader.init = init;
+
 
 let errorOccured;
 
