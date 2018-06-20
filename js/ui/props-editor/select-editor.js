@@ -84,7 +84,9 @@ class SelectEditor extends React.Component {
 	render() {
 		
 		let list = this.props.select || this.props.field.select;
-		
+		if (typeof list === "function") {
+			list = list();
+		}
 		let items;
 		let filterInput;
 		

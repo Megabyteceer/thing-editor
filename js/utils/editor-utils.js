@@ -206,6 +206,22 @@ window.assert = (expression, message, dontBreakFlow) => {
 	}
 };
 
+window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = true) {
+	return () => {
+		let ret = [];
+		if(canBeEmty) {
+			ret.push({name:'default', value:''});
+		}
+		let a = editor.Lib._getAllPrefabs();
+		for(let name in a) {
+			if(!startsWith || name.startsWith(startsWith)) {
+				ret.push({name:name, value:name})
+			}
+		}
+		return ret;
+	}
+}
+
 window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) => {
 	let ret = {
 		name: name,

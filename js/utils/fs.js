@@ -17,7 +17,7 @@ let fs = {
 		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName));
 	},
 	editFile: (fileName) => {
-		return fs.getJSON('/fs/edit?f=' + encodeURIComponent(fileName));
+		return fs.getJSON('/fs/edit?f=' + encodeURIComponent(fileName), true);
 	},
 	getJSON(url, silently) {
 		if (!silently) {

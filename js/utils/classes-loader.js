@@ -141,12 +141,18 @@ function enumClassProperties(c) {
 					
 				}
 				
-				let ownerClassName = cc.name + ' (' + loadedPath + ')';
+				let ownerClassName = c.name + ' (' + loadedPath + ')';
 				p.owner = ownerClassName;
 				
-				return props.some((pp) => {
+				props = props.filter((pp) => {
 					if(pp.name === p.name) {
-						editor.ui.modal.showError('redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner);
+						if(!pp.override) {
+							editor.ui.modal.showError('redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner);
+						} else {
+							Object.assign(p, pp);
+						}
+						return false;
+					} else {
 						return true;
 					}
 				});
