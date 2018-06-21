@@ -343,6 +343,34 @@ export default class Editor {
 		}
 	}
 	
+	centraliseObjectToContent (o) {
+		let b = o.getBounds();
+		let midX = Math.round(b.x + b.width / 2);
+		let midY = Math.round(b.y + b.height / 2);
+		let dX = midX - o.x;
+		let dY = midY - o.y;
+		editor.shiftObject(o, dX, dY);
+		o.children.some((c) => {
+			editor.shiftObject(c, -dX, -dY);
+		});
+		editor.ui.sceneTree.selectInTree(o);
+	}
+	
+	shiftObject(o, dx, dy) {
+		if(dx !== 0 || dy !== 0) {
+			editor.ui.sceneTree.selectInTree(o);
+			// Shift wrapped object to zero. If it is MovieClip its will shift all timeline.
+			Timeline.disableRecording();
+			if (dx !== 0) {
+				editor.onSelectedPropsChange('x', dx, true);
+			}
+			if (dy !== 0) {
+				editor.onSelectedPropsChange('y', dy, true);
+			}
+			Timeline.enableRecording();
+		}
+	}
+	
 	exitPrefabMode() {
 		if(editor.ui.prefabsList) {
 			PrefabsList.acceptPrefabEdition();
