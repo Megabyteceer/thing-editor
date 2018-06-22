@@ -256,7 +256,9 @@ export default class FieldsTimeline extends React.Component {
 				i = 0;
 			}
 		}
+		this.selectKeyframe(field.t[i]);
 		Timeline.timeline.setTime(field.t[i].t, true);
+		
 	}
 	
 	onGoLeftClick() {

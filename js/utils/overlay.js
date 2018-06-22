@@ -241,8 +241,17 @@ class Dragger extends DSprite {
 		
 		o.parent.toLocal(p, undefined, p, true);
 		
-		editor.onSelectedPropsChange('x', Math.round(p.x - o.x), true);
-		editor.onSelectedPropsChange('y', Math.round(p.y - o.y), true);
+		let dX = Math.round(p.x - o.x);
+		let dY = Math.round(p.y - o.y);
+		
+		if(game.mouse.ctrlKey) {
+			editor.moveContainerWithoutChildren(o, dX, dY);
+		} else {
+			editor.onSelectedPropsChange('x', dX, true);
+			editor.onSelectedPropsChange('y', dY, true);
+		}
+		
+		
 	}
 }
 

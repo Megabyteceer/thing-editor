@@ -111,7 +111,6 @@ export default class Editor {
 			editor.currentProjectDir = dir;
 			this.fs.gameFolder = '/games/' + dir + '/';
 			editor.projectDesc = data;
-			this.clipboardData = null;
 			
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
 			
@@ -139,6 +138,14 @@ export default class Editor {
 				await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
 			}
 		}
+	}
+	
+	set clipboardData(cd) {
+		editor.settings.setItem('__EDITOR-clipboard-data', cd);
+	}
+	
+	get clipboardData() {
+		return editor.settings.getItem('__EDITOR-clipboard-data');
 	}
 	
 	openSceneSafe(name, renameAfterOpening) {
@@ -347,8 +354,10 @@ export default class Editor {
 		let b = o.getBounds();
 		let midX = Math.round(b.x + b.width / 2);
 		let midY = Math.round(b.y + b.height / 2);
-		let dX = midX - o.x;
-		let dY = midY - o.y;
+		this.moveContainerWithoutChildren(o, midX - o.x, midY - o.y);
+	}
+	
+	moveContainerWithoutChildren(o, dX, dY) {
 		editor.shiftObject(o, dX, dY);
 		o.children.some((c) => {
 			editor.shiftObject(c, -dX, -dY);
@@ -403,7 +412,9 @@ export default class Editor {
 	}
 	
 	build() {
-		build.build();
+		askSceneToSaveIfNeed().then(() => {
+			build.build();
+		});
 	}
 }
 

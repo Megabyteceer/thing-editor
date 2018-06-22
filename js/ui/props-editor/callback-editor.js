@@ -1,6 +1,7 @@
 import DataPathEditor from "./data-path-editor.js";
 import ScenesList from "../scenes-list.js";
 import Lib from "/thing-engine/js/lib.js";
+import {setValueByPath} from "/thing-engine/js/utils/get-value-by-path.js";
 
 export default class CallbackEditor extends DataPathEditor {
 	
@@ -15,6 +16,11 @@ export default class CallbackEditor extends DataPathEditor {
 		let type = typeof val;
 		
 		return (type === 'function') && (!Lib.__hasClass(val.name) || (Lib.getClass(val.name) !== val));
+	}
+	
+	addAdditionalRoots(parent) {
+		super.addAdditionalRoots(parent);
+		parent['setValueByPath'] = setValueByPath;
 	}
 	
 	finalValueChoosed(path) {
@@ -36,7 +42,15 @@ export default class CallbackEditor extends DataPathEditor {
 					}
 				});
 				break;
-				
+			case 'setValueByPath':
+				editor.ui.modal.showPrompt('Enter data path', 'game.data.').then((enteredText1) => {
+					if(enteredText1) {
+						editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
+							this.applyFinalPath(path + '`' + enteredText1 + (enteredText2 ? ',' + enteredText2 : ''));
+						});
+					}
+				});
+				break;
 				
 			default:
 				this.applyFinalPath(path);

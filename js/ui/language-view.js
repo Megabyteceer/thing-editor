@@ -173,13 +173,13 @@ class LanguageTableEditor extends React.Component {
 		lines = Group.groupArray(lines);
 		
 		return R.div(langsEditorProps,
-			R.btn('+ Add language...', this.onAddNewLanguageClick),
+			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
 			header,
 			R.div(tableBodyProps,
 				lines
 			),
 			footer,
-			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn')
+			R.btn('+ Add language...', this.onAddNewLanguageClick)
 		)
 	}
 }

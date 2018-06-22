@@ -70,8 +70,10 @@ export default class DataPathEditor extends React.Component {
 		);
 	}
 	
+	addAdditionalRoots(parent) {
 	
-	
+	}
+
 	chooseProperty(parent) {
 		if(!parent) {
 			parent = {
@@ -80,6 +82,8 @@ export default class DataPathEditor extends React.Component {
 				all: game.currentScene.all
 			};
 			parent['FlyText'] = Lib.getClass('FlyText');
+			
+			this.addAdditionalRoots(parent);
 			
 			for(let c of editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses)) {
 				c = c.c;
