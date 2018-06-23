@@ -43,3 +43,5 @@ Editor uses nodejs as local server to access project's filesystem, and chrome as
 Documentation is coming-soon. Use example project to understand beginigs.
 Use double click on component in scene tree - to open component's source file to view ond edit.
 Work still in progress.
+
+![Editor screenshot](https://raw.githubusercontent.com/Megabyteceer/thing-editor/master/img/screenshots/thing-editor.jpg)
