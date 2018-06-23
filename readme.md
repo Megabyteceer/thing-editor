@@ -1,10 +1,10 @@
-#Thing-editor
+# Thing-editor
 
 Visual game editor for pixi.js 4.
 
 Project in experimental **alpha-version** yet.
 
-##Installation
+## Installation
 
 Please check if you have latest **nodejs**, **npm**, and **chrome** on your computer, **before installlation**.
 Use next script to install editor and example project.
@@ -26,7 +26,7 @@ npm start
 
 ```
 
-##What is ready:
+## What is ready:
  - Scene tree editor (no drag and drop yet);
  - Property editor;
  - MovieClip component with timeline;
@@ -37,7 +37,7 @@ npm start
  
  
  
-###How it is works:
+### How it is works:
 Editor uses nodejs as local server to access project's filesystem, and chrome as UI.
 
 Documentation is coming-soon. Use example project to understand beginigs.
