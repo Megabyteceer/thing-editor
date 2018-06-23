@@ -114,6 +114,8 @@ export default class Editor {
 			
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
 			
+			game._setGameId('editor.' + editor.projectDesc.id);
+			
 			if(editor.projectDesc.lastSceneName && !Lib.hasScene(editor.projectDesc.lastSceneName)) {
 				editor.projectDesc.lastSceneName = false;
 			}
