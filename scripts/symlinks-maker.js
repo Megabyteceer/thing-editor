@@ -7,6 +7,9 @@ const ef = () => {};
 function createSymlink(src, dest) {
 	if(!src.startsWith('.')) {
 		src = rootPath + src;
+	}
+	
+	if(!fs.existsSync(src)) {
 		throw ("Can't crate symlink. File is not exists: " + src);
 	}
 	
