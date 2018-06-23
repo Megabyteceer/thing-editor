@@ -2,16 +2,15 @@ const fs = require('fs');
 const path = require('path')
 var rootPath = '';
 
-const ef = () => {};
-
-function createSymlink(src, dest) {
+function createSymlink(src, dest, type) {
 	if(!src.startsWith('.')) {
 		src = rootPath + src;
+		if(!fs.existsSync(src)) {
+			throw ("Can't crate symlink. File is not exists: " + src);
+		}
 	}
 	
-	if(!fs.existsSync(src)) {
-		throw ("Can't crate symlink. File is not exists: " + src);
-	}
+	
 	
 	dest = rootPath + dest;
 	console.log(src + ' => ' + dest);
@@ -19,7 +18,10 @@ function createSymlink(src, dest) {
 	if (!fs.existsSync(destFolder)) {
 		fs.mkdirSync(destFolder);
 	}
-	fs.symlink(src, dest, ef);
+	
+	if(!fs.existsSync(dest)) {
+		fs.symlinkSync(src, dest, type || 'file');
+	}
 }
 
 module.exports = {
@@ -27,8 +29,8 @@ module.exports = {
 		rootPath = path;
 	},
 	makeSymlinks: (clientLibs) => {
-		Object.keys(clientLibs).some((k) => {
-			createSymlink(k, clientLibs[k]);
+		clientLibs.some((a) => {
+			createSymlink(a[0], a[1], a[2]);
 		});
 	}
 }
