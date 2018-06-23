@@ -1036,6 +1036,9 @@ input{
     border-radius: 9px;
 }
 
+.timeline .field-editor-wrapper, .timeline .select-editor {
+	display:inline-block;
+}
 
 
 

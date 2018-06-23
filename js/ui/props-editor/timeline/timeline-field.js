@@ -322,7 +322,7 @@ export default class FieldsTimeline extends React.Component {
 		}
 		
 		let draging;
-		if(draggingKeyframe) {
+		if(draggingKeyframe && (field.t.indexOf(draggingKeyframe) >= 0)) {
 			draging = this.renderKeyframe(draggingKeyframe);
 		}
 		

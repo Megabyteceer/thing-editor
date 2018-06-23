@@ -77,3 +77,31 @@ function renderProjectItem(desc, i, array) {
 	}, icon, desc.title);
 }
 
+let originalFetch = window.fetch;
+
+window.fetch = (url, options) => {
+	
+	url = canonicalize(url);
+	
+	if(url.startsWith(location.href)) {
+		return originalFetch(url, options);
+	} else {
+		let headers = new Headers();
+		headers.append("Content-Type", "application/json");
+		return originalFetch('/fs/fetch', {
+			method: 'POST',
+			headers,
+			body: JSON.stringify({url, options})
+		}).then((r) => {
+			return r;
+		});
+	}
+};
+
+function canonicalize(url) {
+	let div = document.createElement('div');
+	div.innerHTML = "<a></a>";
+	div.firstChild.href = url; // Ensures that the href is properly escaped
+	div.innerHTML = div.innerHTML; // Run the current innerHTML back through the parser
+	return div.firstChild.href;
+}

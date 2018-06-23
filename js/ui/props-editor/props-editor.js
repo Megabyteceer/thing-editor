@@ -52,7 +52,7 @@ class PropsEditor extends React.Component {
 		});
 	}
 	
-	selecField(fieldName) {
+	selecField(fieldName, focus) {
 		setTimeout(() => {
 			let fldInput = $(".props-editor #property-editor-" + fieldName);
 			if (fldInput.length > 0) {
@@ -63,7 +63,9 @@ class PropsEditor extends React.Component {
 				Window.bringWindowForward(fldInput.closest('.window-body'));
 				fldInput[0].scrollIntoView({});
 			}
-			fldInput.find('input').focus();
+			if(focus) {
+				fldInput.find('input').focus();
+			}
 		}, 1);
 	}
 
