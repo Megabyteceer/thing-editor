@@ -27,18 +27,21 @@ export default class Build {
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
 		let src = [`import Lib from "/thing-engine/js/lib.js";
 let classes = {};`];
-		
+		let defaults = {};
 		
 		for(let c of classesSrc) {
 			let name = c.c.name;
 			let path = editor.ClassesLoader.getClassPath(name);
 			if(path) {
-				src.push('import ' + name + ' from "' + path + '"');
-				src.push('classes["' + name + '"] = ' + name + ';');
+				if(findClassNameInData(name, scenes) || findClassNameInData(name, prefabs)) { //only referenced classes
+					src.push('import ' + name + ' from "' + path + '"');
+					src.push('classes["' + name + '"] = ' + name + ';');
+					defaults[name] = editor.ClassesLoader.classesDefaultsById[name];
+				}
 			}
 		}
 		src.push('Lib._setClasses(classes, ');
-		src.push(JSON.stringify(editor.ClassesLoader.classesDefaultsById, null, ' ') + ');');
+		src.push(JSON.stringify(defaults, null, ' ') + ');');
 		fileSavePromises.push(editor.fs.saveFile('src/classes.js', src.join('\n')));
 		
 		Promise.all(fileSavePromises).then(() => {
@@ -60,5 +63,22 @@ let classes = {};`];
 				}
 			});
 		})
+	}
+}
+
+function findClassNameInData(name, data) {
+	for(let prefabName in data) {
+		if(findClassNameInPrefabData(name, data[prefabName])) return true;
+	}
+}
+
+function findClassNameInPrefabData(name, data) {
+	if(data.c === name) {
+		return true;
+	}
+	if(data.hasOwnProperty(':')){
+		return data[':'].some((d) => {
+			return findClassNameInPrefabData(name, d);
+		});
 	}
 }

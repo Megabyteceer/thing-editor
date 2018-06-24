@@ -8,6 +8,7 @@ import Tip from "../../utils/tip.js";
 import DataPathEditor from "./data-path-editor.js";
 import CallbackEditor from "./callback-editor.js";
 import BtnProperty from "./btn-property.js";
+import TilemapEditor from "./tilemap-editor.js";
 
 
 let typeDescriptions = new Map();
@@ -65,10 +66,11 @@ typeDescriptions.set('color', {
 
 typeDescriptions.set('timeline', {
 	renderer: TimelineEditor,
-	parser:
-		(movieClip) => {
-			return movieClip.timeline;
-		},
+	default:null
+});
+
+typeDescriptions.set('tilemap', {
+	renderer: TilemapEditor,
 	default:null
 });
 

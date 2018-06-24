@@ -16,6 +16,7 @@ import Lib from "/thing-engine/js/lib.js";
 import FlyText from "/thing-engine/js/components/fly-text.js";
 import Sprite from "/thing-engine/js/components/sprite.js";
 import DisplayObject from "/thing-engine/js/components/display-object.js";
+import Tilemap from "/thing-engine/js/components/tilemap.js";
 
 let ClassesLoader = {};
 ClassesLoader.initClassesLoader = function initClassesLoader() {
@@ -28,6 +29,7 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[Scene, "/thing-engine/js/components/scene.js"],
 		[Text, "/thing-engine/js/components/text.js"],
 		[FlyText, "/thing-engine/js/components/fly-text.js"],
+		[Tilemap, "/thing-engine/js/components/tilemap.js"],
 		[Button, "/thing-engine/js/components/button.js"],
 		[Label, "/thing-engine/js/components/label.js"],
 		[NumberInput, "/thing-engine/js/components/number-input.js"],

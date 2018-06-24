@@ -421,6 +421,7 @@ export default class Editor {
 }
 
 function askSceneToSaveIfNeed(skip) {
+	editor.ui.viewport.stopExecution();
 	editor.exitPrefabMode();
 	if(!skip && editor.isCurrentSceneModified) {
 		return new Promise((resolve) => {

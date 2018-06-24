@@ -1,3 +1,5 @@
+import Tilemap from "/thing-engine/js/components/tilemap.js";
+
 class Selection extends Array {
 	
 	select(object, add) {
@@ -44,7 +46,9 @@ class Selection extends Array {
 		assert(!__getNodeExtendData(o).isSelected);
 		assert(this.indexOf(o) < 0);
 		__getNodeExtendData(o).isSelected = true;
-		o.filters = selectedFilters;
+		if(!o instanceof Tilemap) {
+			o.filters = selectedFilters;
+		}
 		this.push(o);
 		if(o.__onSelect) {
 			o.__onSelect();

@@ -54,7 +54,7 @@ class TreeNode extends React.Component {
 		let state = __getNodeExtendData(node);
 		let childs;
 		let caret;
-		if(nodeHasChildren(node)) {
+		if(nodeHasChildren(node) && !state.hiddenChildren) {
 			if(state.toggled) {
 				caret = caretOpened;
 				childs = R.div({className: 'tree-childs'},
@@ -79,7 +79,7 @@ class TreeNode extends React.Component {
 			};
 		}
 		
-		if(__getNodeExtendData(node).hidden) {
+		if(state.hidden) {
 			style = {display: 'none'};
 		}
 		
