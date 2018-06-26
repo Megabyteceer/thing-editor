@@ -241,8 +241,8 @@ class Dragger extends DSprite {
 		
 		o.parent.toLocal(p, undefined, p, true);
 		
-		let dX = Math.round(p.x - o.x);
-		let dY = Math.round(p.y - o.y);
+		let dX = Math.round(p.x) - o.x;
+		let dY = Math.round(p.y) - o.y;
 		
 		if(game.mouse.ctrlKey) {
 			editor.moveContainerWithoutChildren(o, dX, dY);
