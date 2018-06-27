@@ -213,6 +213,7 @@ export default class FieldsTimeline extends React.Component {
 		if(kf) {
 			this.forceUpdate();
 		}
+		keyframePropsEditor.forceUpdate();
 	}
 	
 	static onMouseDrag(time, buttons) {
@@ -316,10 +317,7 @@ export default class FieldsTimeline extends React.Component {
 			)
 		}
 		
-		let keyframePropsEditor;
-		if(selectedKeyframe && field.t.indexOf(selectedKeyframe) >= 0) {
-			keyframePropsEditor = React.createElement(KeyframePropertyEditor, {node:this.props.node, toggleKeyframeType:this.toggleKeyframeType, onKeyframeChanged: this.onKeyframeChanged, timelineData:field, ref: this.keyframePropretyEditorRef, keyFrame: selectedKeyframe});
-		}
+
 		
 		let draging;
 		if(draggingKeyframe && (field.t.indexOf(draggingKeyframe) >= 0)) {
@@ -338,7 +336,6 @@ export default class FieldsTimeline extends React.Component {
 			draging,
 			field.__cacheTimelineRendered,
 			React.createElement(PlayingDisplay, this.props),
-			keyframePropsEditor
 		);
 	}
 }
@@ -368,11 +365,14 @@ const calculateCacheSegmentForField = (fieldPlayer, c) => {
 let selectedKeyframe, selectedTimeline;
 
 let selectKeyframeTypes = ['SMOOTH', 'LINEAR', 'DISCRETE', 'JUPM FLOOR', 'JUMP ROOF'];
+let keyframePropsEditor;
 
-class KeyframePropertyEditor extends React.Component {
+export class KeyframePropertyEditor extends React.Component {
 	
 	constructor(props) {
+
 		super(props);
+		keyframePropsEditor = this;
 		this.onActionChange = this.onActionChange.bind(this);
 		this.onGravityChange = this.onGravityChange.bind(this);
 		this.onBouncingChange = this.onBouncingChange.bind(this);
@@ -384,29 +384,34 @@ class KeyframePropertyEditor extends React.Component {
 		this.onPowChanged = this.onPowChanged.bind(this);
 		this.onPresetSelected = this.onPresetSelected.bind(this);
 	}
-	
+
+	onKeyframeChanged(kf) {
+		selectedTimeline.onKeyframeChanged(kf);
+	}
+
+
 	onGravityChange(ev) {
 		let kf = selectedKeyframe;
 		kf.g = parseFloat(ev.target.value);
-		this.props.onKeyframeChanged(kf);
+		this.onKeyframeChanged(kf);
 	}
 	
 	onBouncingChange(ev) {
 		let kf = selectedKeyframe;
 		kf.b = parseFloat(ev.target.value);
-		this.props.onKeyframeChanged(kf);
+		this.onKeyframeChanged(kf);
 	}
 	
 	onActionChange(ev) {
 		let kf = selectedKeyframe;
 		kf.a = ev.target.value;
-		this.props.onKeyframeChanged(kf);
+		this.onKeyframeChanged(kf);
 	}
 	
 	onSpeedChanged(ev) {
 		let kf = selectedKeyframe;
 		kf.s = parseFloat(ev.target.value);
-		this.props.onKeyframeChanged(kf);
+		this.onKeyframeChanged(kf);
 		this.forceUpdate();
 	}
 	
@@ -417,7 +422,7 @@ class KeyframePropertyEditor extends React.Component {
 		} else {
 			delete kf.s;
 		}
-		this.props.onKeyframeChanged(kf);
+		this.onKeyframeChanged(kf);
 	}
 	
 	onJumpExistsChanged(ev) {
@@ -427,13 +432,13 @@ class KeyframePropertyEditor extends React.Component {
 		} else {
 			kf.j = kf.t;
 		}
-		this.props.onKeyframeChanged(kf);
+		this.onKeyframeChanged(kf);
 	}
 	
 	onJumpChanged(ev) {
 		let kf = selectedKeyframe;
 		kf.j = Math.round(ev.target.value);
-		this.props.onKeyframeChanged(kf);
+		this.onKeyframeChanged(kf);
 		this.forceUpdate();
 	}
 	
@@ -442,9 +447,9 @@ class KeyframePropertyEditor extends React.Component {
 		editor.selection.some((o) => {
 			o._timelineData.d = val;
 		});
-		this.props.onKeyframeChanged(selectedKeyframe);
+		this.onKeyframeChanged(selectedKeyframe);
 		editor.sceneModified();
-		Timeline.renormalizeWholeTimelineData(this.props.node._timelineData);
+		Timeline.renormalizeWholeTimelineData(selectedTimeline.props.node._timelineData);
 		this.forceUpdate();
 	}
 	
@@ -453,9 +458,9 @@ class KeyframePropertyEditor extends React.Component {
 		editor.selection.some((o) => {
 			o._timelineData.p = val;
 		});
-		this.props.onKeyframeChanged(selectedKeyframe);
+		this.onKeyframeChanged(selectedKeyframe);
 		editor.sceneModified();
-		Timeline.renormalizeWholeTimelineData(this.props.node._timelineData);
+		Timeline.renormalizeWholeTimelineData(selectedTimeline.props.node._timelineData);
 		this.forceUpdate();
 	}
 	
@@ -463,12 +468,12 @@ class KeyframePropertyEditor extends React.Component {
 		editor.selection.some((o) => {
 			Object.assign(o._timelineData, ev.target.value);
 			});
-		this.props.onKeyframeChanged(selectedKeyframe);
+		this.onKeyframeChanged(selectedKeyframe);
 		editor.sceneModified();
-		Timeline.renormalizeWholeTimelineData(this.props.node._timelineData);
+		Timeline.renormalizeWholeTimelineData(selectedTimeline.props.node._timelineData);
 		this.forceUpdate();
 	}
-	
+
 	render () {
 		let kf = selectedKeyframe;
 		if(!kf) {
@@ -508,10 +513,10 @@ class KeyframePropertyEditor extends React.Component {
 			jumpEditor = R.input({value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
 		}
 		
-		return R.div({className: 'bottom-panel', style:{left: b.left, width:b.width, bottom: window.document.body.clientHeight - b.bottom}},
+		return R.div({className: 'bottom-panel'},
 			' action: ',
 			React.createElement(CallbackEditor, {value:kf.a || null, onChange:this.onActionChange, title:'Callback for keyframe ' + kf.t}),
-			' ', R.btn(selectKeyframeTypes[kf.m], () => {this.props.toggleKeyframeType(kf);}, "Switch selected keyframe's' Mode (Ctrl + M)", 'keyframe-type-chooser', 1077), ' ',
+			' ', R.btn(selectKeyframeTypes[kf.m], () => {selectedKeyframe.toggleKeyframeType(kf);}, "Switch selected keyframe's' Mode (Ctrl + M)", 'keyframe-type-chooser', 1077), ' ',
 			R.label({htmlFor:'speed-set-checkbox'}, ' speed set:'),
 			R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
 			speedEditor,

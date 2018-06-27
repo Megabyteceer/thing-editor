@@ -167,7 +167,7 @@ export default class Viewport extends React.Component {
 					defaultValue: '#' + editor.overlay.getBGcolor().toString(16).padStart(6, '0')
 				}),
 				toggleOrientationBtn
-			)
+			);
 		} else {
 			let pauseResumeBtn, oneStepBtn;
 			if(window.game && !game.__EDITORmode) {
@@ -187,7 +187,7 @@ export default class Viewport extends React.Component {
 				pauseResumeBtn,
 				oneStepBtn,
 				toggleOrientationBtn
-			)
+			);
 		}
 		
 		let languagePanel = React.createElement(LanguageSwitcher);

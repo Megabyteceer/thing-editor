@@ -1,12 +1,12 @@
 import MovieClip from "/thing-engine/js/components/movie-clip/movie-clip.js";
 import FieldsTimeline from "./timeline-field.js";
+import {KeyframePropertyEditor} from "./timeline-field.js";
 
 const FRAMES_STEP = 3;
 
 let timelineContainerProps = {className: 'timeline list-view', onScroll:onTimelineScroll, onMouseDown:onTimelineMouseDown};
 let objectsTimelineProps = {className: 'objects-timeline'};
 let fieldLabelTimelineProps = {className: 'objects-timeline-labels'};
-let leftTopPanel = {className: 'timeline-left-top-panel', onMouseDown:sp, onMouseMove:sp};
 
 let timeline;
 let timelineElement;
@@ -209,14 +209,17 @@ export default class Timeline extends React.Component {
 	}
 	
 	render() {
+
+		let keyframePropsEditor = React.createElement(KeyframePropertyEditor);
+
 		removeAffectFromUnselected();
 		return R.fragment (
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
 			R.div(timelineContainerProps,
-				R.div(leftTopPanel),
 				React.createElement(TimeMarker, {timeline: this, ref:this.timelineMarkerRef}),
-				editor.selection.map(renderObjectsTimeline)
-			)
+				editor.selection.map(renderObjectsTimeline),
+			),
+			keyframePropsEditor
 		)
 	}
 }
