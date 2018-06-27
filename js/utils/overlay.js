@@ -10,6 +10,8 @@ let isPreviewShowed;
 
 let draggers = [];
 
+let selectionDisabled;
+
 function checkIfCurrentContainerIsShowedPrefab() {
 	assert(isPreviewShowed === game.currentContainer.name, "game.currentContainer.name is incorrect. Prefabs name expected.");
 }
@@ -52,6 +54,10 @@ export default class Overlay {
 		blackout.tint = tint;
 	}
 	
+	disableSelection(disable) {
+		selectionDisabled = disable;
+	}
+	
 	showPreview(object) {
 		this.setBGcolor(editor.settings.getItem('prefab-bg' + object.name));
 		this.hidePreview(false);
@@ -62,6 +68,10 @@ export default class Overlay {
 		game.showModal(object);
 		checkIfCurrentContainerIsShowedPrefab();
 		editor.history.updateUi();
+	}
+
+	isDraggerOvered () {
+		return overedDragger;
 	}
 	
 	hidePreview(refresh = true) {
@@ -137,9 +147,9 @@ $(window).on('mousedown', (ev) => {
 			} else if (ev.buttons === 1 || ev.buttons === 2) {
 				draggingDragger = overedDragger;
 			}
-		} else if(ev.target === game.pixiApp.view && ev.buttons === 1) {
+		} else if(!selectionDisabled && ev.target === game.pixiApp.view && ev.buttons === 1) {
 			selectByStageClick(ev);
-		} else if(ev.buttons === 2 && editor.selection.length > 0) {
+		} else if(!selectionDisabled && ev.buttons === 2 && editor.selection.length > 0) {
 			let info = __getNodeExtendData(editor.selection[0]);
 			if(info.draggerPivot && info.draggerPivot.owner.parent) {
 				draggingDragger = info.draggerPivot;

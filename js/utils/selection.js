@@ -46,7 +46,7 @@ class Selection extends Array {
 		assert(!__getNodeExtendData(o).isSelected);
 		assert(this.indexOf(o) < 0);
 		__getNodeExtendData(o).isSelected = true;
-		if(!o instanceof Tilemap) {
+		if(!(o instanceof Tilemap)) {
 			o.filters = selectedFilters;
 		}
 		this.push(o);

@@ -160,8 +160,9 @@ app.get('/', function(req, res) {
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
-
-opn('', {app: ['chrome', /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/thing-editor']});
+if(process.argv.indexOf('n') < 0) {
+	opn('', {app: ['chrome', /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/thing-editor']});
+}
 
 //======== socket connection with client ================================================
 const WebSocket = require('ws');

@@ -633,16 +633,16 @@ input{
 
 .timeline {
     cursor: pointer;
-    padding-top: 30px;
+    bottom: 40px;
+    top: 0;
     padding-left: 110px;
     overflow-x: auto;
     background: #bbbbbb;
-    top: 10px;
-    bottom: 36px;
 }
 
 .objects-timeline {
     position: relative;
+    margin-top: 40px;
 }
 
 .objects-timeline-labels {
@@ -754,7 +754,6 @@ input{
 
 .time-marker-body {
 	position: relative;
-	margin-top: -33px;
 	width: 100%;
 	z-index: 1;
 	background: #bbbbbb;
@@ -795,11 +794,11 @@ input{
 }
 
 .bottom-panel {
-    padding: 8px;
-    position: fixed;
-    z-index: 8;
-    background: #cccfda;
-    border-top: 1px solid #567;
+    padding: 3px 8px;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    box-sizing: border-box;
 }
 
 .keyframe-type-chooser {
@@ -823,6 +822,9 @@ input{
 
 .timeline-labels-panel {
 	height: 26px;
+	position: absolute;
+	top: -37px;
+	width: 100%;
 	background: #f7f5b5;
 }
 
@@ -1036,9 +1038,28 @@ input{
     border-radius: 9px;
 }
 
-.timeline .field-editor-wrapper, .timeline .select-editor {
+#window-timeline .select-editor,
+#window-timeline .field-editor-wrapper,
+#window-tilemap .field-editor-wrapper,
+#window-tilemap .select-editor {
 	display:inline-block;
 }
+
+#window-tilemap .window-content {
+	padding: 10px;
+	font-size:120%;
+}
+
+#window-tilemap input {
+	display:inline-block;
+	width: 100px;
+}
+
+
+
+
+
+
 
 
 
