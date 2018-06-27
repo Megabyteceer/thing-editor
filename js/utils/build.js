@@ -34,7 +34,7 @@ let classes = {};`];
 			let path = editor.ClassesLoader.getClassPath(name);
 			if(path) {
 				if(findClassNameInData(name, scenes) || findClassNameInData(name, prefabs)) { //only referenced classes
-					src.push('import ' + name + ' from "' + path + '"');
+					src.push('import ' + name + ' from "' + path + '";');
 					src.push('classes["' + name + '"] = ' + name + ';');
 					defaults[name] = editor.ClassesLoader.classesDefaultsById[name];
 				}
@@ -62,7 +62,7 @@ let classes = {};`];
 					window.open('/games/' + editor.currentProjectDir + '/release');
 				}
 			});
-		})
+		});
 	}
 }
 

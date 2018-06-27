@@ -1,5 +1,4 @@
 import Group from "./group.js";
-import Timeline from "./props-editor/timeline/timeline.js";
 import Lib from "/thing-engine/js/lib.js";
 
 
@@ -34,7 +33,7 @@ class ClassesView extends React.Component {
 	
 	onWrapSelectedClick() {
 		if(editor.selection.length < 1) {
-			editor.ui.modal.showModal('Alert', 'Nothing selected to wrap.')
+			editor.ui.modal.showModal('Alert', 'Nothing selected to wrap.');
 		} else {
 			let a = editor.selection.slice(0);
 			editor.selection.clearSelection();
@@ -44,7 +43,7 @@ class ClassesView extends React.Component {
 			
 			a.some((o) => {
 				if(o.parent === game.stage) {
-					editor.ui.modal.showModal('Alert', 'Root element was not wrapped.')
+					editor.ui.modal.showModal('Alert', 'Root element was not wrapped.');
 				} else {
 					let w = ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name);
 					o.parent.addChildAt(w, o.parent.getChildIndex(o));
@@ -71,10 +70,6 @@ class ClassesView extends React.Component {
 		}
 	}
 	
-	onSelect(item) {
-	
-	}
-	
 	renderItem(item) {
 		let tip;
 		if(item.c.__EDITOR_tip) {
@@ -92,22 +87,22 @@ class ClassesView extends React.Component {
 		
 		return R.listItem(
 			R.div({
-					onDoubleClick:() => {
-						editor.editClassSource(item.c);
-					},
-					className: 'class-list-item'
+				onDoubleClick:() => {
+					editor.editClassSource(item.c);
 				},
-				R.div(classItemSubProps,
-					R.classIcon(item.c),
-					item.c.name,
-					tip
-				),
-				R.btn('<', () => {
-					findNextOfThisType(item.c, -1);
-				}, 'Find previous ' + item.c.name, 'tool-btn'),
-				R.btn('>', () => {
-					findNextOfThisType(item.c, 1);
-				}, 'Find next ' + item.c.name, 'tool-btn')
+				className: 'class-list-item'
+			},
+			R.div(classItemSubProps,
+				R.classIcon(item.c),
+				item.c.name,
+				tip
+			),
+			R.btn('<', () => {
+				findNextOfThisType(item.c, -1);
+			}, 'Find previous ' + item.c.name, 'tool-btn'),
+			R.btn('>', () => {
+				findNextOfThisType(item.c, 1);
+			}, 'Find next ' + item.c.name, 'tool-btn')
 			), item, key, this);
 	}
 	
@@ -122,7 +117,7 @@ class ClassesView extends React.Component {
 		
 		let classes = editor.ClassesLoader.gameObjClasses;
 		if (!classes) {
-			body = 'Loading...'
+			body = 'Loading...';
 		} else {
 			body =  Group.groupArray(classes.map(this.renderItem));
 			body.reverse();
@@ -136,7 +131,7 @@ class ClassesView extends React.Component {
 		return R.fragment(
 			R.div({className: bottomPanelClassName}, R.btn('Add', this.onAddClick), R.btn('Add As Child', this.onAddAsChildClick), R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene.')),
 			R.div(bodyProps, body)
-		)
+		);
 		
 	}
 }

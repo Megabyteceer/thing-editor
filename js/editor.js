@@ -2,7 +2,7 @@ import utils from './utils/editor-utils.js';
 import Game from '/thing-engine/js/game.js';
 import Settings from '/thing-engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
-import ws from './utils/socket.js';
+import ws from './utils/socket.js'; // eslint-disable-line no-unused-vars
 import fs from './utils/fs.js';
 import history from './utils/history.js';
 import UI from './ui/ui.js';
@@ -340,7 +340,7 @@ export default class Editor {
 	}
 	
 	saveProjecrDesc() {
-		debouncedCall(__saveProjectDescriptorInner);
+		window.debouncedCall(__saveProjectDescriptorInner);
 	}
 	
 	sceneModified(saveImmidiatly) {
@@ -435,7 +435,7 @@ function askSceneToSaveIfNeed(skip) {
 					resolve();
 					
 				}, 'No save'
-			)
+			);
 		});
 	} else {
 		return Promise.resolve();

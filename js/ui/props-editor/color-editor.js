@@ -1,4 +1,4 @@
-let ColorEditor = (props) => {
+const ColorEditor = (props) => {
 	let val = props.value || 0;
 	
 	return R.input({
@@ -10,4 +10,4 @@ let ColorEditor = (props) => {
 	});
 };
 
-export default ColorEditor
+export default ColorEditor;

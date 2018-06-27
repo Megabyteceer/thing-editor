@@ -124,47 +124,47 @@ export default class FieldsTimeline extends React.Component {
 		}
 		
 		return R.div({key:keyFrame.t, className:className, onMouseDown: (ev) => {
-				if(ev.buttons === 2) {
-					this.deleteKeyframe(keyFrame);
-					sp(ev);
+			if(ev.buttons === 2) {
+				this.deleteKeyframe(keyFrame);
+				sp(ev);
+			} else {
+				if(this.selectKeyframe(keyFrame)) {
+					//this.toggleKeyframeType(keyFrame);
 				} else {
-					if(this.selectKeyframe(keyFrame)) {
-						//this.toggleKeyframeType(keyFrame);
-					} else {
-						this.forceUpdate();
-					}
-					let timeLineData = this.props.field.t;
-					if (timeLineData.indexOf(keyFrame) > 0) {
-						draggingKeyframe = keyFrame;
-						draggingTimeline = this;
-						
-						const onMouseUp = () => {
-							window.removeEventListener('mouseup', onMouseUp);
-							
-							//reduce repeating keyframes
-							let isModified = false;
-							
-							for(let i = 0; i < timeLineData.length; i++) {
-								let kf = timeLineData[i];
-								if((kf !== keyFrame) && (kf.t === keyFrame.t)) {
-									timeLineData.splice(i, 1);
-									i--;
-									isModified = true;
-								}
-							}
-							
-							if(isModified) {
-								Timeline.renormalizeFieldTimelineDataAfterChange(this.props.field);
-								this.forceUpdate();
-							}
-						};
-						window.addEventListener('mouseup', onMouseUp);
-					}
+					this.forceUpdate();
 				}
-			},
-			style:{left:keyFrame.t * FRAMES_STEP}},
-			mark,
-			loopArrow
+				let timeLineData = this.props.field.t;
+				if (timeLineData.indexOf(keyFrame) > 0) {
+					draggingKeyframe = keyFrame;
+					draggingTimeline = this;
+						
+					const onMouseUp = () => {
+						window.removeEventListener('mouseup', onMouseUp);
+							
+						//reduce repeating keyframes
+						let isModified = false;
+							
+						for(let i = 0; i < timeLineData.length; i++) {
+							let kf = timeLineData[i];
+							if((kf !== keyFrame) && (kf.t === keyFrame.t)) {
+								timeLineData.splice(i, 1);
+								i--;
+								isModified = true;
+							}
+						}
+							
+						if(isModified) {
+							Timeline.renormalizeFieldTimelineDataAfterChange(this.props.field);
+							this.forceUpdate();
+						}
+					};
+					window.addEventListener('mouseup', onMouseUp);
+				}
+			}
+		},
+		style:{left:keyFrame.t * FRAMES_STEP}},
+		mark,
+		loopArrow
 		);
 	}
 	
@@ -183,7 +183,7 @@ export default class FieldsTimeline extends React.Component {
 			if(!kf.a) {
 				delete kf.a;
 			}
- 		}
+		}
 		
 		Timeline.renormalizeFieldTimelineDataAfterChange(this.props.field);
 		this.forceUpdate();
@@ -236,7 +236,7 @@ export default class FieldsTimeline extends React.Component {
 			() => {
 				Timeline.timeline.deleteAnimationField(this.props.field);
 			}, 'Delete'
-		)
+		);
 	}
 	
 	gotoNextKeyframe(direction) {
@@ -291,7 +291,7 @@ export default class FieldsTimeline extends React.Component {
 			R.btn('×', this.onRemoveFieldClick, 'Remove field animation...', 'danger-btn'),
 			R.btn('<', this.onGoLeftClick, 'Previous Keyframe'),
 			R.btn('●', this.onToggleKeyframeClick, 'add/remove Keyframe'),
-			R.btn('>', this.onGoRightClick, 'Next Keyframe'),
+			R.btn('>', this.onGoRightClick, 'Next Keyframe')
 			
 		);
 		
@@ -314,7 +314,7 @@ export default class FieldsTimeline extends React.Component {
 		if(!field.__cacheTimelineRendered) {
 			field.__cacheTimelineRendered = R.svg({className:'timeline-chart', height:'27', width},
 				R.polyline({points:field.t.map(this.renderKeyframeChart, field).join(' ')})
-			)
+			);
 		}
 		
 
@@ -325,17 +325,17 @@ export default class FieldsTimeline extends React.Component {
 		}
 		
 		return R.div({className: 'field-timeline', onMouseDown:(ev) =>{
-					if(ev.buttons === 2) {
-						this.onToggleKeyframeClick(Timeline.timeline.mouseTimelineTime);
-					}
-				}},
-			R.div({style:{width}},
-				label,
-				field.t.map(this.renderKeyframe)
-			),
-			draging,
-			field.__cacheTimelineRendered,
-			React.createElement(PlayingDisplay, this.props),
+			if(ev.buttons === 2) {
+				this.onToggleKeyframeClick(Timeline.timeline.mouseTimelineTime);
+			}
+		}},
+		R.div({style:{width}},
+			label,
+			field.t.map(this.renderKeyframe)
+		),
+		draging,
+		field.__cacheTimelineRendered,
+		React.createElement(PlayingDisplay, this.props)
 		);
 	}
 }
@@ -467,7 +467,7 @@ export class KeyframePropertyEditor extends React.Component {
 	onPresetSelected(ev) {
 		editor.selection.some((o) => {
 			Object.assign(o._timelineData, ev.target.value);
-			});
+		});
 		this.onKeyframeChanged(selectedKeyframe);
 		editor.sceneModified();
 		Timeline.renormalizeWholeTimelineData(selectedTimeline.props.node._timelineData);
@@ -485,7 +485,7 @@ export class KeyframePropertyEditor extends React.Component {
 			extendEditor = R.span(null,
 				' Gravity: ' ,R.input({value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
 				' Bouncing: ' ,R.input({value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
-			)
+			);
 		} else if(kf.m === 0) { //SMOOTH
 			
 			let presetSelectedValue = presets.find((p) => {
@@ -496,10 +496,8 @@ export class KeyframePropertyEditor extends React.Component {
 				' Power: ' ,R.input({value: editor.selection[0]._timelineData.p, type:'number', step:0.001, min: 0.001, max: 0.9, onChange: this.onPowChanged}),
 				' Dempt: ' ,R.input({value: editor.selection[0]._timelineData.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
 				' Preset ', React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
-			)
+			);
 		}
-		
-		let b = Timeline.getTimelineWindowBounds();
 		
 		let hasSpeed =  kf.hasOwnProperty('s');
 		let speedEditor;
@@ -580,7 +578,7 @@ class PlayingDisplay extends React.Component {
 		} else {
 			let firedFrame;
 			if(this.fieldPlayer.__lastFiredKeyframe) {
-				firedFrame = R.div({className:'timeline-fire-indicator', style:{left: this.fieldPlayer.__lastFiredKeyframe.t * FRAMES_STEP}})
+				firedFrame = R.div({className:'timeline-fire-indicator', style:{left: this.fieldPlayer.__lastFiredKeyframe.t * FRAMES_STEP}});
 			}
 			return R.fragment(
 				R.div({className:'timeline-play-indicator', style:{left: this.fieldPlayer.time * FRAMES_STEP}}),

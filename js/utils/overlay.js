@@ -84,8 +84,8 @@ export default class Overlay {
 			editor.selection.loadSelection(savedSelection);
 			isPreviewShowed = null;
 			if(refresh === true) {
-			    editor.refreshTreeViewAndPropertyEditor();
-            }
+				editor.refreshTreeViewAndPropertyEditor();
+			}
 			editor.history.updateUi();
 		}
 	}

@@ -4,7 +4,7 @@ const AssetsLoader = {};
 
 AssetsLoader.init = () => {
 
-}
+};
 
 const textureFiler = /^img\/.*\.(png|jpg)$/gm;
 const textureNameCleaner = /^img\//gm;
@@ -43,7 +43,7 @@ const enumAssets = () => {
 	tmp.forEach((image, o) => {
 		o.image = image;
 	});
-}
+};
 
 AssetsLoader.reloadAssets = (refreshFiles) => {
 	
@@ -52,6 +52,6 @@ AssetsLoader.reloadAssets = (refreshFiles) => {
 	} else {
 		enumAssets();
 	}
-}
+};
 
 export default AssetsLoader;

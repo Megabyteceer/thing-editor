@@ -49,7 +49,6 @@ class TilemapEditor extends React.Component {
 		this.onMouseDown = this.onMouseDown.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
 		this.onMouseUp = this.onMouseUp.bind(this);
-		this.onClick = this.onClick.bind(this);
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onTypeChange = this.onTypeChange.bind(this);
 		this.onSizeChange = this.onSizeChange.bind(this);
@@ -65,7 +64,6 @@ class TilemapEditor extends React.Component {
 		viewport.on('mousedown', this.onMouseDown);
 		viewport.on('mousemove', this.onMouseMove);
 		viewport.on('mouseup', this.onMouseUp);
-		viewport.on('click', this.onClick);
 		$(window).on('keydown', this.onKeyDown);
 		editor.overlay.disableSelection(true);
 		assert(getTilemap() instanceof Tilemap, "Tilemap expected");
@@ -77,19 +75,14 @@ class TilemapEditor extends React.Component {
 		viewport.off('mousedown', this.onMouseDown);
 		viewport.off('mousemove', this.onMouseMove);
 		viewport.off('mouseup', this.onMouseUp);
-		viewport.off('click', this.onClick);
 		$(window).off('keydown', this.onKeyDown);
 		isSetting = false;
 	}
 
 	onKeyDown(ev) {
-		if (!isEventFocusOnInputElement(ev) && (ev.keyCode >= 48) && (ev.keyCode <= 57)) {
+		if (!window.isEventFocusOnInputElement(ev) && (ev.keyCode >= 48) && (ev.keyCode <= 57)) {
 			this.setType((ev.keyCode - 48) % Lib.timapProcessor.types.length);
 		}
-	}
-
-	onClick(ev) {
-
 	}
 
 	onSizeChange(ev) {
@@ -117,49 +110,49 @@ class TilemapEditor extends React.Component {
 
 	setTile(X, Y, type) {
 			
-			let size = this.state.size;
-			
-			X -= Math.floor(size / 2);
-			Y -= Math.floor(size / 2);
-			
-
-			let sceneModified = false;
-			
-			for (let i = 0; i < size; i++) {
-				
-				for (let j = 0; j < size; j++) {
-					
-					if(this.setOneTile(X, Y, type)) {
-						sceneModified = true;
-					}
-					
-					X++;
-				}
-				X -= size;
-				Y++;
-			}
-
-			if(sceneModified) {
-				refreshTilemap();
-				editor.sceneModified();
-			}
-		}
+		let size = this.state.size;
 		
-		setOneTile(X, Y, type) {
+		X -= Math.floor(size / 2);
+		Y -= Math.floor(size / 2);
+		
 
-			X = Math.floor(X);
-			Y = Math.floor(Y);
-
-			if(X < 0 || Y < 0 || X >= getTilemap().columns || Y >= getTilemap().rows) {
-				return;
+		let sceneModified = false;
+		
+		for (let i = 0; i < size; i++) {
+			
+			for (let j = 0; j < size; j++) {
+				
+				if(this.setOneTile(X, Y, type)) {
+					sceneModified = true;
+				}
+				
+				X++;
 			}
-
-			let pt = Lib.timapProcessor.imageToType(getTilemap().getTile(X, Y));
-			if (pt !== type) {
-				Lib.timapProcessor.onTileEditCallback(getTilemap(), X, Y, type);
-				return true;
-			}
+			X -= size;
+			Y++;
 		}
+
+		if(sceneModified) {
+			refreshTilemap();
+			editor.sceneModified();
+		}
+	}
+	
+	setOneTile(X, Y, type) {
+
+		X = Math.floor(X);
+		Y = Math.floor(Y);
+
+		if(X < 0 || Y < 0 || X >= getTilemap().columns || Y >= getTilemap().rows) {
+			return;
+		}
+
+		let pt = Lib.timapProcessor.imageToType(getTilemap().getTile(X, Y));
+		if (pt !== type) {
+			Lib.timapProcessor.onTileEditCallback(getTilemap(), X, Y, type);
+			return true;
+		}
+	}
 
 	onMouseMove(ev) {
 		if(ev.buttons === 0) {
@@ -176,7 +169,7 @@ class TilemapEditor extends React.Component {
 		}
 	}
 
-	onMouseUp(ev) {
+	onMouseUp() {
 		isErasing = false;
 		isSetting = false;
 	}
@@ -199,11 +192,11 @@ class TilemapEditor extends React.Component {
 				'Tile type:',
 				R.b(null, 
 					React.createElement(SelectEditor, {onChange:this.onTypeChange, value:this.state.type, select: Lib.timapProcessor.types.map((t,i) => {
-						return {name:t + '(' + i + ')', value:i}
+						return {name:t + '(' + i + ')', value:i};
 					})})
 				),
 				' Brush size: ',
-				React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size}),
+				React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size})
 			);
 		}
 	}

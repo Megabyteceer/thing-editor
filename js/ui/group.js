@@ -7,7 +7,7 @@ function renderGroup(props) {
 			onClick: toggleGroup
 		}, props.title),
 		R.div({className: 'props-group-body' + (isGroupHidden(gid) ? ' hidden' : '')}, props.content)
-	)
+	);
 }
 
 function groupArray(a, delimitter = '/', level = 0) {

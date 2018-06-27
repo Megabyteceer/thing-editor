@@ -20,7 +20,9 @@ class TreeNode extends React.Component {
 			}
 			this.forceUpdate();
 			sp(ev);
-			return;
+			if(editor.selection.length === 1) {
+				return;
+			}
 		}
 		
 		if(ev.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {

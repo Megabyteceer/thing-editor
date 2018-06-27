@@ -43,7 +43,6 @@ export default class Timeline extends React.Component {
 		timeline = this;
 		Timeline.timeline = this;
 		this.timelineMarkerRef = this.timelineMarkerRef.bind(this);
-		this.keyframePropretyEditorRef = this.keyframePropretyEditorRef.bind(this);
 		this.onPlayStopToggle = this.onPlayStopToggle.bind(this);
 	}
 	
@@ -90,7 +89,7 @@ export default class Timeline extends React.Component {
 		recordingIsDisabled = false;
 	}
 	
-	static onBeforePropertyChanged(fieldName, field) {
+	static onBeforePropertyChanged(fieldName) {
 		if(!timelineElement) {
 			beforeChangeRemember = new WeakMap();
 		}
@@ -193,10 +192,6 @@ export default class Timeline extends React.Component {
 		this.timelineMarker = ref;
 	}
 	
-	keyframePropretyEditorRef(ref) {
-		keyframePropretyEditor = ref;
-	}
-	
 	static getTimelineElement() {
 		return 	timelineElement;
 	}
@@ -217,10 +212,10 @@ export default class Timeline extends React.Component {
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
 			R.div(timelineContainerProps,
 				React.createElement(TimeMarker, {timeline: this, ref:this.timelineMarkerRef}),
-				editor.selection.map(renderObjectsTimeline),
+				editor.selection.map(renderObjectsTimeline)
 			),
 			keyframePropsEditor
-		)
+		);
 	}
 }
 
@@ -246,7 +241,7 @@ function getFieldByNameOrCreate(o, name) {
 				p:0.02,
 				l:{},
 				f:[]
-			}
+			};
 		}
 		field = {
 			n:name,
@@ -264,7 +259,7 @@ function getFrameAtTimeOrCreate(o, name, time) {
 			return keyFrame;
 		}
 	}
-	return createKeyframe(o, name, time, field)
+	return createKeyframe(o, name, time, field);
 }
 	
 function createKeyframe (o, name, time, field) {
@@ -302,13 +297,13 @@ function createKeyframe (o, name, time, field) {
 
 function getDefaultKeyframeTypeForField(o, name) {
 	switch (name) {
-		case 'x':
-		case 'y':
-			return 0; //- SMOOTH
-		case 'alpha':
-			return 1; //- LINEAR
-		default:
-			return getKeyframeTypesForField(o, name)[0];
+	case 'x':
+	case 'y':
+		return 0; //- SMOOTH
+	case 'alpha':
+		return 1; //- LINEAR
+	default:
+		return getKeyframeTypesForField(o, name)[0];
 	}
 }
 
@@ -346,8 +341,8 @@ Timeline.renormalizeWholeTimelineData = renormalizeWholeTimelineData;
 function getMovieclipByFieldData(fieldData) {
 	for(let o of editor.selection) {
 		if(o._timelineData && o._timelineData.f.some((f) => { //get movieclip by field's timeline data and invalidate whole serialisation cache
-				return f === fieldData;
-			})) {
+			return f === fieldData;
+		})) {
 			return o;
 		}
 	}
@@ -383,7 +378,7 @@ function renormalizeLabel(label, timelineData) { //re find keyframes for modifie
 
 function renormalizeAllLabels(timelineData) {
 	for(let key in timelineData.l) {
-        if(!timelineData.l.hasOwnProperty(key)) continue;
+		if(!timelineData.l.hasOwnProperty(key)) continue;
 		renormalizeLabel(timelineData.l[key], timelineData);
 	}
 }
@@ -393,7 +388,7 @@ function askForLabelName(existingLabelsNames, title, defaultName = '') {
 		if(existingLabelsNames.indexOf(nameToCheck) >= 0) {
 			return 'Label with that name already esists.';
 		}
-	})
+	});
 }
 
 class ObjectsTimeline extends React.Component {
@@ -407,23 +402,23 @@ class ObjectsTimeline extends React.Component {
 		
 		let labelsNames = Object.keys(tl.l);
 		let labelsPanel = R.div({
-				onMouseDown:(ev) => { //create new label by right click
-					if(ev.buttons === 2) {
-						let time = mouseTimelineTime;
-						askForLabelName(labelsNames, "Create new label:").then((name) => {
-							if(name) {
-								let label = {t: time};
-								tl.l[name] = label;
-								renormalizeLabel(label, tl);
-								this.forceUpdate();
-							}
-						});
-					}
-				},
-				title:'Right click to add time label',
-				className:'timeline-labels-panel'
+			onMouseDown:(ev) => { //create new label by right click
+				if(ev.buttons === 2) {
+					let time = mouseTimelineTime;
+					askForLabelName(labelsNames, "Create new label:").then((name) => {
+						if(name) {
+							let label = {t: time};
+							tl.l[name] = label;
+							renormalizeLabel(label, tl);
+							this.forceUpdate();
+						}
+					});
+				}
 			},
-			labelsNames.map((labelName)=> {return this.renderTimeLabel(labelName, labelsNames)})
+			title:'Right click to add time label',
+			className:'timeline-labels-panel'
+		},
+		labelsNames.map((labelName)=> {return this.renderTimeLabel(labelName, labelsNames);})
 		);
 		
 		return R.div(objectsTimelineProps,
@@ -431,7 +426,7 @@ class ObjectsTimeline extends React.Component {
 			tl.f.map((field, i) => {
 				return React.createElement(FieldsTimeline, {field, fieldIndex:i, key:field.n, node:this.props.node});
 			})
-		)
+		);
 	}
 }
 
@@ -464,7 +459,7 @@ class TimeMarker extends React.Component {
 					R.b(null, this.state.time), R.span(smallTextProps, 'f ' + (this.state.time/60).toFixed(2) + 's')
 				)
 			)
-		)
+		);
 	}
 }
 
@@ -501,9 +496,9 @@ class TimeLabel extends React.Component {
 				});
 				sp(ev);
 			}
-			},
-			name
-		)
+		},
+		name
+		);
 	}
 }
 
@@ -529,7 +524,7 @@ function onTimelineMouseDown(ev) {
 		}
 		onMouseMove(ev);
 	}
-	if(!isEventFocusOnInputElement(ev)) {
+	if(!window.isEventFocusOnInputElement(ev)) {
 		sp(ev);
 	}
 }

@@ -71,7 +71,7 @@ export default class DataPathEditor extends React.Component {
 	}
 	
 	addAdditionalRoots(parent) {
-	
+		return parent;
 	}
 
 	chooseProperty(parent) {
@@ -198,7 +198,7 @@ export default class DataPathEditor extends React.Component {
 			needEnum = true;
 		}
 
-		 if(needEnum) {
+		if(needEnum) {
 			for(let name of enumProps(parent)) {
 				addIfGood(name);
 			}

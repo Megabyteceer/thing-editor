@@ -1,3 +1,5 @@
+import Tip from "./tip.js";
+
 let factories = {};
 window.R = factories;
 
@@ -50,6 +52,9 @@ R.listItem = (view, item, key, parent) => {
 	}, view);
 };
 
+R.tip = (id, header, text) => {
+	return React.createElement(Tip, {id, header, text});
+};
 
 let _debouncings = new Map();
 window.debouncedCall = (f, timeMs = 0) => {
@@ -75,7 +80,7 @@ window.check = (expression, message) => {
 };
 
 $(window).on('contextmenu', (ev) => {
-	if(isEventFocusOnInputElement(ev)) return;
+	if(window.isEventFocusOnInputElement(ev)) return;
 	if($(ev.target).hasClass('selectable-text')) return;
 	sp(ev);
 	
@@ -87,20 +92,20 @@ $(window).on('keydown', (ev) => {
 		 editor.reloadAssetsAndClasses();*/
 	}
 	
-	if(!isEventFocusOnInputElement(ev)) {
+	if(!window.isEventFocusOnInputElement(ev)) {
 		switch(ev.key) {
-			case "ArrowUp":
-				editor.onSelectedPropsChange('y', -1, true);
-				break;
-			case "ArrowDown":
-				editor.onSelectedPropsChange('y', 1, true);
-				break;
-			case "ArrowLeft":
-				editor.onSelectedPropsChange('x', -1, true);
-				break;
-			case "ArrowRight":
-				editor.onSelectedPropsChange('x', 1, true);
-				break;
+		case "ArrowUp":
+			editor.onSelectedPropsChange('y', -1, true);
+			break;
+		case "ArrowDown":
+			editor.onSelectedPropsChange('y', 1, true);
+			break;
+		case "ArrowLeft":
+			editor.onSelectedPropsChange('x', -1, true);
+			break;
+		case "ArrowRight":
+			editor.onSelectedPropsChange('x', 1, true);
+			break;
 		}
 	}
 	
@@ -165,8 +170,8 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	Object.defineProperty(constructor.prototype, propertyName, d);
 };
 
-wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
-wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
+window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
+window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
 PIXI.ObservablePoint.__EDITOR_selectableProps = ['x','y'];
 PIXI.Point.__EDITOR_selectableProps = ['x','y'];
 PIXI.mesh.Plane.__EDITOR_selectableProps = [];
@@ -178,15 +183,15 @@ window.isEventFocusOnInputElement = (ev) => {
 		canBePassed = ev.ctrlKey;
 		if(canBePassed) {
 			switch(ev.keyCode) {  //block cpypaste hotkeys foxused on text inputs only
-				case 67:
-				case 86:
-				case 88:
-				case 89:
-				case 90:
-					canBePassed = false;
-					break;
-				default:
-					canBePassed = true;
+			case 67:
+			case 86:
+			case 88:
+			case 89:
+			case 90:
+				canBePassed = false;
+				break;
+			default:
+				canBePassed = true;
 			}
 		}
 	}
@@ -196,7 +201,7 @@ window.isEventFocusOnInputElement = (ev) => {
 window.assert = (expression, message, dontBreakFlow) => {
 	message = 'Assert: ' + message;
 	if (!expression) {
-		debugger;
+		
 		if (window.editor) {
 			editor.ui.modal.showError(message);
 		}
@@ -215,12 +220,12 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 		let a = editor.Lib._getAllPrefabs();
 		for(let name in a) {
 			if(!startsWith || name.startsWith(startsWith)) {
-				ret.push({name:name, value:name})
+				ret.push({name:name, value:name});
 			}
 		}
 		return ret;
-	}
-}
+	};
+};
 
 window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) => {
 	let ret = {
@@ -251,15 +256,15 @@ export default {
 	protectAccessToSceneNode: (o, debugName) => {
 		o.remove = () => {
 			assert(false, "Attempt to remove " + debugName);
-		}
+		};
 		
 		o.destroy  = () => {
 			assert(false, "Attempt to destroy " + debugName);
-		}
+		};
 		
 		o.detachFromParent  = () => {
 			assert(false, "Attempt to detachFromParent " + debugName);
-		}
+		};
 		
 		o.__EDITOR_isHiddenForChooser = true;
 		

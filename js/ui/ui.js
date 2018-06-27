@@ -1,5 +1,5 @@
 import Window from './window.js';
-import TreeView from './tree-view/tree-view.js'
+import TreeView from './tree-view/tree-view.js';
 import Viewport from './viewport.js';
 import PropsEditor from './props-editor/props-editor.js';
 import Button from './button.js';
@@ -64,7 +64,7 @@ class UI extends React.Component {
 		this.classesList = ref;
 	}
 
-    prefabsRef(ref) {
+	prefabsRef(ref) {
 		this.prefabsList = ref;
 	}
 	
@@ -123,7 +123,7 @@ class StatusBar extends React.Component {
 	componentDidMount() {
 		$(window).on('mousemove', () =>{
 			this.forceUpdate();
-		})
+		});
 	}
 	
 	render() {

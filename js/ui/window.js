@@ -1,6 +1,6 @@
 const contentProps = {
 	className: 'window-content'
-}
+};
 
 let emptyImage = new Image();
 
@@ -34,7 +34,7 @@ class CornerDragger extends React.Component {
 		}
 	}
 	
-	dragEndHandler(ev) {
+	dragEndHandler() {
 		this.props.onDragEnd();
 	}
 	
@@ -103,7 +103,7 @@ class Window extends React.Component {
 		return ret;
 	}
 	
-	deltaL(x, y) {
+	deltaL(x, y) { // eslint-disable-line no-unused-vars
 		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w - x, this.state.h);
 		ret.x = -(this.state.w - ret.x);
@@ -112,7 +112,7 @@ class Window extends React.Component {
 		return ret;
 	}
 	
-	deltaR(x, y) {
+	deltaR(x, y) { // eslint-disable-line no-unused-vars
 		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w + x, this.state.h);
 		ret.x = this.state.w - ret.x;
@@ -120,7 +120,7 @@ class Window extends React.Component {
 		return ret;
 	}
 	
-	deltaB(x, y) {
+	deltaB(x, y) { // eslint-disable-line no-unused-vars
 		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w, this.state.h + y);
 		ret.x = this.state.w - ret.x;
@@ -128,7 +128,7 @@ class Window extends React.Component {
 		return ret;
 	}
 	
-	deltaT(x, y) {
+	deltaT(x, y) { // eslint-disable-line no-unused-vars
 		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w, this.state.h - y);
 		ret.x = this.state.w - ret.x;
@@ -195,67 +195,67 @@ class Window extends React.Component {
 	
 	render() {
 		return R.div({
-				id: this.id, onMouseDown: this.onMouseDown, className: 'window-body', style: {
-					left: this.state.x,
-					top: this.state.y,
-					width: this.state.w,
-					height: this.state.h
-				}
-			},
-			R.div({
-					className: 'window-header',
-					onDragStart: this.dragStartHandler,
-					onDrag: this.dragHandler,
-					onDragEnd: this.dragEndHandler,
-					draggable: true
-				}, this.props.title,
-				React.createElement(CornerDragger, {
-					className: 'window-dragger',
-					onDragEnd: this.saveState,
-					onDrag: this.deltaPosition
-				})
-			),
-			R.div(contentProps, this.props.content),
-			React.createElement(CornerDragger, {
-				className: 'window-r-dragger',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaR
-			}),
-			React.createElement(CornerDragger, {
-				className: 'window-l-dragger',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaL
-			}),
-			React.createElement(CornerDragger, {
-				className: 'window-b-dragger',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaB
-			}),
-			React.createElement(CornerDragger, {
-				className: 'window-t-dragger',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaT
-			}),
-			React.createElement(CornerDragger, {
-				className: 'window-rb-corner',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaRBCorner
-			}),
-			React.createElement(CornerDragger, {
-				className: 'window-lb-corner',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaLBCorner
-			}),
-			React.createElement(CornerDragger, {
-				className: 'window-rt-corner',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaRTCorner
-			}),
-			React.createElement(CornerDragger, {
-				className: 'window-lt-corner',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaLTCorner
-			})
+			id: this.id, onMouseDown: this.onMouseDown, className: 'window-body', style: {
+				left: this.state.x,
+				top: this.state.y,
+				width: this.state.w,
+				height: this.state.h
+			}
+		},
+		R.div({
+			className: 'window-header',
+			onDragStart: this.dragStartHandler,
+			onDrag: this.dragHandler,
+			onDragEnd: this.dragEndHandler,
+			draggable: true
+		}, this.props.title,
+		React.createElement(CornerDragger, {
+			className: 'window-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaPosition
+		})
+		),
+		R.div(contentProps, this.props.content),
+		React.createElement(CornerDragger, {
+			className: 'window-r-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaR
+		}),
+		React.createElement(CornerDragger, {
+			className: 'window-l-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaL
+		}),
+		React.createElement(CornerDragger, {
+			className: 'window-b-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaB
+		}),
+		React.createElement(CornerDragger, {
+			className: 'window-t-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaT
+		}),
+		React.createElement(CornerDragger, {
+			className: 'window-rb-corner',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaRBCorner
+		}),
+		React.createElement(CornerDragger, {
+			className: 'window-lb-corner',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaLBCorner
+		}),
+		React.createElement(CornerDragger, {
+			className: 'window-rt-corner',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaRTCorner
+		}),
+		React.createElement(CornerDragger, {
+			className: 'window-lt-corner',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaLTCorner
+		})
 		);
 	}
 }
@@ -267,6 +267,6 @@ Window.bringWindowForward = (windowBody) => {
 	}).some((w, i, a) => {
 		w.style.zIndex = (w === windowBody) ? a.length + 2 : i;
 	});
-}
+};
 
 export default Window;

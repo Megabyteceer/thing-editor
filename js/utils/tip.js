@@ -30,7 +30,3 @@ export default class Tip extends React.Component {
 		return R.span( {className:'tip-icon', onMouseDown: this.onMouseDown}, '?');
 	}
 }
-
-R.tip = (id, header, text) => {
-	return React.createElement(Tip, {id, header, text});
-};

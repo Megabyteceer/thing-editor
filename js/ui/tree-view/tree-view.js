@@ -13,7 +13,7 @@ R.renderSceneNode = (node) => {
 };
 
 function onEmptyClick(ev) {
-	if(!isEventFocusOnInputElement(ev)) {
+	if(!window.isEventFocusOnInputElement(ev)) {
 		editor.selection.clearSelection(true);
 	}
 }

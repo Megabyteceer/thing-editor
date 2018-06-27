@@ -21,7 +21,7 @@ const needAddInToList = (map, owner) => {
 export default class Status extends React.Component {
 	
 	constructor(props) {
-		super();
+		super(props);
 		this.errorsMap = new WeakMap();
 		this.warnsMap = new WeakMap();
 		
@@ -89,16 +89,15 @@ export default class Status extends React.Component {
 	render() {
 	
 		if(this.state.toggled) {
+			setTimeout(() => {
+				Window.bringWindowForward($('#window-info'));
+			}, 1);
 			return editor.ui.renderWindow('info', 'Info Window', R.div(null,
 				R.btn('×', this.clear, 'Hide Info Window (Ctrl+I)', 'close-window-btn'),
 				React.createElement(InfoList, {ref: this.errorsListRef, id:'errors-list', title:'Errors:', icon: errorIcon, className:'info-errors-list info-list', list:this.errors}),
 				React.createElement(InfoList, {ref: this.warnsListRef, id:'warns-list', title:'Warnings:', icon: warnIcon, className:'info-warns-list info-list', list:this.warns})
 				
 			), 586, 650, 400, 150, 1137, 407);
-			
-			setTimeout(() => {
-				Window.bringWindowForward($('#window-info'));
-			}, 1);
 		}
 		return R.span();
 	}

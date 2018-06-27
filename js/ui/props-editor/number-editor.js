@@ -82,4 +82,4 @@ let NumberEditor = (props) => {
 	});
 };
 
-export default NumberEditor
+export default NumberEditor;

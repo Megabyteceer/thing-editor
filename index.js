@@ -1,3 +1,7 @@
+/*global require */
+/*global __dirname */
+/*global process */
+
 const log = console.log;
 let bodyParser = require('body-parser');
 const fs = require('fs');
@@ -13,7 +17,6 @@ let currentGameRoot;
 
 let PORT = 32023;
 let gamesRoot = __dirname + '/../games/';
-let clientGamesRoot = '/games/';
 let jsonParser = bodyParser.json({limit:1024*1024*200});
 
 // File System acess commands
@@ -40,7 +43,7 @@ app.get('/fs/openProject', function (req, res) {
 
 let pathFixerExp = /\\/g;
 let pathFixer = (fn) => {
-    return fn.replace(pathFixerExp, '/');
+	return fn.replace(pathFixerExp, '/');
 };
 
 app.get('/fs/enum', function (req, res) {
@@ -92,8 +95,8 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 	fetch(req.body.url, req.body.options).then(res => res.json())
 		.then((data) => {
 			res.set('Content-Type', 'application/json');
-		res.end(JSON.stringify(data));
-	});
+			res.end(JSON.stringify(data));
+		});
 });
 
 app.get('/fs/build', function (req, res) {
@@ -106,7 +109,7 @@ app.get('/fs/build', function (req, res) {
 app.post('/fs/savefile', jsonParser, function (req, res) {
 	let fileName = req.body.filename;
 	//log('Save file: ' + fileName);
-    ensureDirectoryExistence(fileName);
+	ensureDirectoryExistence(fileName);
 	fs.writeFile(fileName, req.body.data, function(err) {
 		if(err) {
 			throw err;
@@ -159,7 +162,7 @@ app.get('/', function(req, res) {
 });
 
 //========= start server ================================================================
-let server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!'));
+let server = app.listen(PORT, () => log('Example app listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
 if(process.argv.indexOf('n') < 0) {
 	opn('', {app: ['chrome', /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/thing-editor']});
 }
@@ -169,7 +172,7 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: PORT + 1 });
 wss.on('connection', function connection(ws) {
 	ws.on('message', function incoming(message) {
-		//console.log('received: %s', message);
+		console.log('received: %s', message);
 	});
 	/*ws.on('close', function onWsClose(){
 		log('Thing closing...');
@@ -213,10 +216,10 @@ const enumProjects = () => {
 
 //=============== create folder for file ==================
 function ensureDirectoryExistence(filePath) {
-  let dirname = path.dirname(filePath);
-  if (fs.existsSync(dirname)) {
-    return true;
-  }
-  ensureDirectoryExistence(dirname);
-  fs.mkdirSync(dirname);
+	let dirname = path.dirname(filePath);
+	if (fs.existsSync(dirname)) {
+		return true;
+	}
+	ensureDirectoryExistence(dirname);
+	fs.mkdirSync(dirname);
 }

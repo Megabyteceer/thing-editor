@@ -1,10 +1,10 @@
-let BtnProperty = (props) => {
+const BtnProperty = (props) => {
 	
-	let field = props.field;
+	const field = props.field;
 	
 	return R.btn(field.name, () => {
 		editor.selection.some(field.onClick);
 	}, field.title, field.className);
 };
 
-export default BtnProperty
+export default BtnProperty;

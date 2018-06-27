@@ -61,7 +61,7 @@ export default class ScenesList extends React.Component {
 	}
 	
 	onSelect(item) {
-		
+		return item; //virtual method
 	}
 	
 	renderItem(sceneName, item) {
@@ -106,20 +106,22 @@ export default class ScenesList extends React.Component {
 				R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')
 			),
 			R.div(bodyProps, scenes)
-		)
+		);
 	}
 	
-	static chooseScene(title = "Choose scene", noEasyClose, filterCurrent = true) {
-		debugger;
+	static chooseScene(title, noEasyClose, filterCurrent = true) {
+		
 		let libsScenes = Lib._getAllScenes();
 		
 		let scenes = [];
 		for (let sceneName in libsScenes) {
-			let sceneData = libsScenes[sceneName];
-			let c = Lib.getClass(sceneData.c);
-			scenes.push({name:sceneName, __EDITOR_icon: c.__EDITOR_icon});
+			if(!filterCurrent || sceneName !== game.currentScene.name) {
+				let sceneData = libsScenes[sceneName];
+				let c = Lib.getClass(sceneData.c);
+				scenes.push({name:sceneName, __EDITOR_icon: c.__EDITOR_icon});
+			}
 		}
-		return editor.ui.modal.showListChoose(title, scenes, noEasyClose).then((choosed) => {
+		return editor.ui.modal.showListChoose(title || "Choose scene", scenes, noEasyClose).then((choosed) => {
 			if(choosed) {
 				return choosed.name;
 			}
@@ -131,14 +133,14 @@ export default class ScenesList extends React.Component {
 		let scenes = {};
 		return Promise.all(
 			editor.fs.files.filter(fn => fn.match(sceneFileFiler))
-			.map((fn) => {
-				return editor.fs.openFile(fn)
-				.then((data) => {
-					scenes[fileNameToSceneName(fn)] = data;
-				});
-			})
+				.map((fn) => {
+					return editor.fs.openFile(fn)
+						.then((data) => {
+							scenes[fileNameToSceneName(fn)] = data;
+						});
+				})
 		).then(() => {
-			Lib._setScenes(scenes)
+			Lib._setScenes(scenes);
 		});
 	}
 	

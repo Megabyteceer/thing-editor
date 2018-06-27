@@ -25,42 +25,42 @@ class History {
 		this.redo = this.redo.bind(this);
 		this.isRedoAvailable = this.isRedoAvailable.bind(this);
 		this.isUndoAvailable = this.isUndoAvailable.bind(this);
-        instance = this;
+		instance = this;
 	}
 
-    isRedoAvailable() {
-        return this._redos.length > 0;
-    }
+	isRedoAvailable() {
+		return this._redos.length > 0;
+	}
 
-    isUndoAvailable() {
-        return this._undos.length > 1;
-    }
+	isUndoAvailable() {
+		return this._undos.length > 1;
+	}
 
 	get _undos() {
-	    if(typeof game === 'undefined') {
-	        return [];
-        }
-        let l = game.modalsCount + 1;
-        if(undosStack.length > l) {
-            undosStack.length = l;
-        } else if (undosStack.length < l) {
-            undosStack.push([]);
-        }
-	    return undosStack[game.modalsCount];
-    }
+		if(typeof game === 'undefined') {
+			return [];
+		}
+		let l = game.modalsCount + 1;
+		if(undosStack.length > l) {
+			undosStack.length = l;
+		} else if (undosStack.length < l) {
+			undosStack.push([]);
+		}
+		return undosStack[game.modalsCount];
+	}
 
 	get _redos() {
-        if(typeof game === 'undefined') {
-            return [];
-        }
-        let l = game.modalsCount + 1;
-        if(redosStack.length > l) {
-            redosStack.length = l;
-        } else if (redosStack.length < l) {
-            redosStack.push([]);
-        }
-	    return redosStack[game.modalsCount];
-    }
+		if(typeof game === 'undefined') {
+			return [];
+		}
+		let l = game.modalsCount + 1;
+		if(redosStack.length > l) {
+			redosStack.length = l;
+		} else if (redosStack.length < l) {
+			redosStack.push([]);
+		}
+		return redosStack[game.modalsCount];
+	}
 
 	_pushCurrentStateToUndoHistory(selectionData) {
 		assert(game.__EDITORmode, "Attempt to use history in running time.");
@@ -74,7 +74,7 @@ class History {
 			let i = HISTORY_LEN - 1;
 			while (i > STRICT_HISTORY_LEN) {
 				i -= 2;
-                this._undos.splice(i, 1);
+				this._undos.splice(i, 1);
 			}
 		}
 		historyUi.forceUpdate();
@@ -82,13 +82,13 @@ class History {
 	
 	addHistoryState() {
 		let selectionData = editor.selection.saveSelection();
-        this._redos.length = 0;
+		this._redos.length = 0;
 		this._pushCurrentStateToUndoHistory(selectionData);
 	}
 	
 	undo() {
 		if (this.isUndoAvailable()) {
-            this._redos.push(this._undos.pop());
+			this._redos.push(this._undos.pop());
 			applyState(this.currentState);
 			historyUi.forceUpdate();
 		}
@@ -96,7 +96,7 @@ class History {
 	
 	redo() {
 		if (this.isRedoAvailable()) {
-            this._undos.push(this._redos.pop());
+			this._undos.push(this._redos.pop());
 			applyState(this.currentState);
 			historyUi.forceUpdate();
 		}
@@ -108,7 +108,7 @@ class History {
 	
 	clearHistory() {
 		this._undos.length = 0;
-        this._redos.length = 0;
+		this._redos.length = 0;
 		this.addHistoryState();
 		historyUi.forceUpdate();
 	}
@@ -118,7 +118,7 @@ class History {
 	}
 	
 	setCurrentStateUnmodified() {
-        this._undos.some((s) => {
+		this._undos.some((s) => {
 			s._isModified = true;
 		});
 		this.currentState._isModified = false;
@@ -144,9 +144,9 @@ class HistoryUi extends React.Component {
 	render() {
 		return R.span(editor.isCurrentSceneModified ? modifiedStyle : null,
 			R.btn('Undo', editor.history.undo, '(Ctrl + Z)', undefined, 1090, !instance.isUndoAvailable() || !game.__EDITORmode),
-            instance._undos.length,
+			instance._undos.length,
 			R.btn('Redo', editor.history.redo, '(Ctrl + Y)', undefined, 1089, !instance.isRedoAvailable() || !game.__EDITORmode),
-            instance._redos.length
+			instance._redos.length
 		);
 	}
 }

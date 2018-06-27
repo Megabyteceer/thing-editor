@@ -49,8 +49,6 @@ let embeddedClasses;
 let loadedClssesCount;
 
 let classesLoadedSuccessfullyAtLeastOnce = false;
-let classesRegisterLoaded = false;
-
 
 
 let errorOccured;
@@ -72,7 +70,7 @@ function showError(message) {
 				}
 			});
 		}, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
-		'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
+	'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
 }
 
 function getClassType(c) {
@@ -137,7 +135,7 @@ function enumClassProperties(c) {
 					
 					if(c === cc) { //own properties of this class
 						if(!p.hasOwnProperty('noNullCheck') && (p.type === Number || p.type === 'color' || p.type === 'select')) {
-							wrapPropertyWithNumberChecker(c, p.name);
+							window.wrapPropertyWithNumberChecker(c, p.name);
 						}
 					}
 					
@@ -183,71 +181,71 @@ let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
 	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		cacheCounter++;
 		currentLoadingPromiseResolver = resolve;
 		setTimeout(() => {
-		errorOccured = false;
+			errorOccured = false;
 		
-		loadedClssesCount = 0;
-		clearClasses();
-		console.clear();
-		console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
+			loadedClssesCount = 0;
+			clearClasses();
+			console.clear();
+			console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
 		
-		enumClassProperties(DisplayObject);
-		embeddedClasses.some((a) => {
-			addClass(a[0], a[1]);
-		});
+			enumClassProperties(DisplayObject);
+			embeddedClasses.some((a) => {
+				addClass(a[0], a[1]);
+			});
 		
-		window.onerror = function loadingErrorHandler(message, source, lineno, colno, error) {
-			showError(R.fragment(
-				'attempt to load: ' + loadedPath + ': ' + message,
-				R.div({className: 'error-body'}, source.split('?nocache=').shift().split(':' + location.port).pop() + ' (' + lineno + ':' + colno + ')', R.br(), message),
-				'Plese fix error in source code and press button to try again:',
-			));
-		};
+			window.onerror = function loadingErrorHandler(message, source, lineno, colno) {
+				showError(R.fragment(
+					'attempt to load: ' + loadedPath + ': ' + message,
+					R.div({className: 'error-body'}, source.split('?nocache=').shift().split(':' + location.port).pop() + ' (' + lineno + ':' + colno + ')', R.br(), message),
+					'Plese fix error in source code and press button to try again:'
+				));
+			};
 		
-		let scriptSource = '';
-		editor.fs.files.some((fn, i) => {
-			if(fn.match(jsFiler)) {
-				let classPath = fn;
-				scriptSource += ("import C" + i + " from '" + location.origin + editor.fs.gameFolder + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
-			}
-		});
+			let scriptSource = '';
+			editor.fs.files.some((fn, i) => {
+				if(fn.match(jsFiler)) {
+					let classPath = fn;
+					scriptSource += ("import C" + i + " from '" + location.origin + editor.fs.gameFolder + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
+				}
+			});
 		
-		let src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
+			let src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
 		
-		let script = document.createElement('script');
-		editor.ui.modal.showSpinner();
-		script.onerror = function() {
-			editor.ui.modal.hideSpinner();
-		};
-		script.onload = function() {
+			let script = document.createElement('script');
+			editor.ui.modal.showSpinner();
+			script.onerror = function() {
+				editor.ui.modal.hideSpinner();
+			};
+			script.onload = function() {
 			
-			editor.ui.modal.hideSpinner();
-			head.removeChild(script);
+				editor.ui.modal.hideSpinner();
+				head.removeChild(script);
 			
-			window.onerror = null;
-			if(!errorOccured) {
-				Lib._setClasses(classesById, classesDefaultsById);
+				window.onerror = null;
+				if(!errorOccured) {
+					Lib._setClasses(classesById, classesDefaultsById);
 				
-				classesLoadedSuccessfullyAtLeastOnce = true;
+					classesLoadedSuccessfullyAtLeastOnce = true;
 				
-				console.log('Loading success.');
-				console.log(loadedClssesCount + ' classes total.');
-				resolve();
+					console.log('Loading success.');
+					console.log(loadedClssesCount + ' classes total.');
+					resolve();
 				
-				editor.ui.classesList.forceUpdate();
-				Pool.clearAll();
-			} else {
-				console.warn('classes were not loaded because of error.')
-			}
-		};
-		script.type = 'module';
-		script.src = src;
-		head.appendChild(script);
+					editor.ui.classesList.forceUpdate();
+					Pool.clearAll();
+				} else {
+					console.warn('classes were not loaded because of error.');
+				}
+			};
+			script.type = 'module';
+			script.src = src;
+			head.appendChild(script);
 
-	},10);
+		},10);
 	});
 }
 let loadedPath;

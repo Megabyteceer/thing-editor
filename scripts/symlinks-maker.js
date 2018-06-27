@@ -1,5 +1,7 @@
+/*global require */
+/*global module */
 const fs = require('fs');
-const path = require('path')
+const path = require('path');
 var rootPath = '';
 
 function createSymlink(src, dest, type) {
@@ -33,4 +35,4 @@ module.exports = {
 			createSymlink(a[0], a[1], a[2]);
 		});
 	}
-}
+};

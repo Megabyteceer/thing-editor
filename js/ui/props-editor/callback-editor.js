@@ -27,33 +27,33 @@ export default class CallbackEditor extends DataPathEditor {
 		path = path.join('.');
 		
 		switch(path) {
-			case 'game.showScene':
-				ScenesList.chooseScene("Choose scene to open:").then((selectedSceneName) => {
-					if(selectedSceneName) {
-						this.applyFinalPath(path + '`' + selectedSceneName);
-					}
-				});
-				break;
+		case 'game.showScene':
+			ScenesList.chooseScene("Choose scene to open:").then((selectedSceneName) => {
+				if(selectedSceneName) {
+					this.applyFinalPath(path + '`' + selectedSceneName);
+				}
+			});
+			break;
 				
-			case 'FlyText.flyText':
-				editor.ui.modal.showPrompt('Enter text to show', 'Text-1').then((enteredText) => {
-					if(enteredText) {
-						this.applyFinalPath(path + '`' + enteredText);
-					}
-				});
-				break;
-			case 'setValueByPath':
-				editor.ui.modal.showPrompt('Enter data path', 'game.data.').then((enteredText1) => {
-					if(enteredText1) {
-						editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
-							this.applyFinalPath(path + '`' + enteredText1 + (enteredText2 ? ',' + enteredText2 : ''));
-						});
-					}
-				});
-				break;
+		case 'FlyText.flyText':
+			editor.ui.modal.showPrompt('Enter text to show', 'Text-1').then((enteredText) => {
+				if(enteredText) {
+					this.applyFinalPath(path + '`' + enteredText);
+				}
+			});
+			break;
+		case 'setValueByPath':
+			editor.ui.modal.showPrompt('Enter data path', 'game.data.').then((enteredText1) => {
+				if(enteredText1) {
+					editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
+						this.applyFinalPath(path + '`' + enteredText1 + (enteredText2 ? ',' + enteredText2 : ''));
+					});
+				}
+			});
+			break;
 				
-			default:
-				this.applyFinalPath(path);
+		default:
+			this.applyFinalPath(path);
 		}
 	}
 	

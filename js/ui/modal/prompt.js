@@ -50,7 +50,7 @@ export default class Prompt extends React.Component {
 				R.input({value: this.state.value, onKeyDown: this.onKeyDown, onChange: this.onChange})
 			),
 			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', 13)
-		)
+		);
 	}
 	
 }

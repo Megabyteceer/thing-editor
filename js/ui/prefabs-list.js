@@ -19,10 +19,6 @@ let prefabNameProps = {
 	}
 };
 
-const prefabNameToFileName = (name) => {
-	return 'prefabs/' + name + '.prefab.json';
-};
-
 export default class PrefabsList extends React.Component {
 	
 	constructor(props) {
@@ -36,14 +32,14 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	onAddClick() {
-        PrefabsList.hidePrefabPreview();
+		PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
 			editor.addToScene(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
 		}
 	}
 	
 	onAddChildClick() {
-        PrefabsList.hidePrefabPreview();
+		PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
 			editor.attachToSelected(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
 		}
@@ -113,9 +109,9 @@ export default class PrefabsList extends React.Component {
 	renderItem(prefabName, item) {
 		let cls = Lib.getClass(item.c);
 		return R.div({onDoubleClick:() => {
-				editor.editClassSource(cls);
-			}, key: prefabName},
-			R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'), item, prefabName, this)
+			editor.editClassSource(cls);
+		}, key: prefabName},
+		R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'), item, prefabName, this)
 		);
 	}
 	
@@ -138,20 +134,20 @@ export default class PrefabsList extends React.Component {
 			),
 			R.btn('Save...', this.onSaveSelectedAsClick, 'Save currently selected on scene object as new prefab.'),
 			R.div(bodyProps, prefabs)
-		)
+		);
 	}
 	
 	static acceptPrefabEdition() {
-        if(previewShown && editor.isCurrentSceneModified) {
+		if(previewShown && editor.isCurrentSceneModified) {
 			Lib.__savePrefab(game.currentContainer, previewShown);
 			editor.ui.prefabsList.forceUpdate();
-        }
+		}
 		PrefabsList.hidePrefabPreview();
 	}
 	
 	static hidePrefabPreview() {
 		if(previewShown) {
-            editor.ui.viewport.setPrefabMode(false);
+			editor.ui.viewport.setPrefabMode(false);
 			previewShown = false;
 			editor.overlay.hidePreview();
 		}
@@ -161,14 +157,14 @@ export default class PrefabsList extends React.Component {
 		let prefabs = {};
 		return Promise.all(
 			editor.fs.files.filter(fn => fn.match(prefabFileFiler))
-			.map((fn) => {
-				return editor.fs.openFile(fn)
-				.then((data) => {
-					prefabs[fileNameToPrefabName(fn)] = data;
-				});
-			})
+				.map((fn) => {
+					return editor.fs.openFile(fn)
+						.then((data) => {
+							prefabs[fileNameToPrefabName(fn)] = data;
+						});
+				})
 		).then(() => {
-			Lib._setPrefabs(prefabs)
+			Lib._setPrefabs(prefabs);
 		});
 	}
 }

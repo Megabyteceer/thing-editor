@@ -2,9 +2,9 @@ let fs = {
 	chooseProject: (enforced) => {
 		fs.getJSON('/fs/projects').then((data) => {
 			editor.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
-			.then((projDir) => {
-				editor.openProject(projDir);
-			})
+				.then((projDir) => {
+					editor.openProject(projDir);
+				});
 		});
 	},
 	refreshFiles: () => {
@@ -23,7 +23,7 @@ let fs = {
 		if (!silently) {
 			editor.ui.modal.showSpinner();
 		}
-		let r = $.getJSON(url).fail((a,b,c) => {handleError(a,b,c,url)});
+		let r = $.getJSON(url).fail((a,b,c) => {handleError(a,b,c,url);});
 		if (!silently) {
 			r.always(editor.ui.modal.hideSpinner);
 		}
@@ -46,7 +46,7 @@ let fs = {
 			url: '/fs/savefile',
 			data: JSON.stringify({data, filename}),
 			contentType: 'application/json'
-		}).fail((a,b,c) => {handleError(a,b,c,filename)});
+		}).fail((a,b,c) => {handleError(a,b,c,filename);});
 		if (!silently) {
 			r.always(editor.ui.modal.hideSpinner);
 		}
@@ -64,7 +64,7 @@ function getIconPath(desc) {
 	return '/games/' + desc.dir + '/' + desc.icon;
 }
 
-function renderProjectItem(desc, i, array) {
+function renderProjectItem(desc, i) {
 	let icon;
 	if (desc.icon) {
 		icon = R.img({src: getIconPath(desc)});
@@ -102,6 +102,7 @@ function canonicalize(url) {
 	let div = document.createElement('div');
 	div.innerHTML = "<a></a>";
 	div.firstChild.href = url; // Ensures that the href is properly escaped
-	div.innerHTML = div.innerHTML; // Run the current innerHTML back through the parser
+	let html = div.innerHTML;
+	div.innerHTML = html; // Run the current innerHTML back through the parser
 	return div.firstChild.href;
 }

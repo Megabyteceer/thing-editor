@@ -4,7 +4,6 @@ import BooleanEditor from './boolean-editor.js';
 import SelectEditor from './select-editor.js';
 import ColorEditor from './color-editor.js';
 import TimelineEditor from "./timeline/timeline-property.js";
-import Tip from "../../utils/tip.js";
 import DataPathEditor from "./data-path-editor.js";
 import CallbackEditor from "./callback-editor.js";
 import BtnProperty from "./btn-property.js";
@@ -16,7 +15,7 @@ let typeDescriptions = new Map();
 typeDescriptions.set(Number, {
 	renderer: NumberEditor,
 	parser: (target) => {
-		return parseFloat(target.value)
+		return parseFloat(target.value);
 	},
 	default: 0
 });
@@ -30,7 +29,7 @@ typeDescriptions.set(String, {
 typeDescriptions.set(Boolean, {
 	renderer: BooleanEditor,
 	parser: (target) => {
-		return target.checked
+		return target.checked;
 	},
 	default: false
 });
@@ -59,7 +58,7 @@ typeDescriptions.set('btn', {
 typeDescriptions.set('color', {
 	renderer: ColorEditor, parser:
 		(target) => {
-			return parseInt(target.value.replace('#', ''), 16)
+			return parseInt(target.value.replace('#', ''), 16);
 		},
 	default: 0xFFFFFF
 });
@@ -79,7 +78,7 @@ let getTypeDescription = (field) => {
 	let t = field.type || Number;
 	assert(typeDescriptions.has(t), "Unknown editable property type: " + t);
 	return typeDescriptions.get(t);
-}
+};
 
 let labelProps = {className: 'props-label selectable-text', onMouseDown: function (ev) {
 	selectText(ev.target);
@@ -103,7 +102,6 @@ class PropsFieldWrapper extends React.Component {
 		if(field.hasOwnProperty('parser')){
 			val = field.parser(val);
 		}
-		let initialVal = val;
 		
 		if (field.hasOwnProperty('min')) {
 			val = Math.max(field.min, val);
@@ -166,4 +164,4 @@ PropsFieldWrapper.surrogateChnageEvent = (val) => {
 
 PropsFieldWrapper.getTypeDescription = getTypeDescription;
 
-export default PropsFieldWrapper
+export default PropsFieldWrapper;

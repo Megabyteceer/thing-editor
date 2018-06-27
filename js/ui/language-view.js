@@ -13,7 +13,7 @@ const DEFAULT_TEXT = '!!';
 
 export default class LanguageView extends React.Component {
 	
-	static async loadTextData() {
+	static loadTextData() {
 		let ret = editor.fs.openFile('text.json');
 		ret.then((data) => {
 			languages = data;
@@ -180,7 +180,7 @@ class LanguageTableEditor extends React.Component {
 			),
 			footer,
 			R.btn('+ Add language...', this.onAddNewLanguageClick)
-		)
+		);
 	}
 }
 

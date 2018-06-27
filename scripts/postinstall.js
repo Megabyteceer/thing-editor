@@ -1,3 +1,5 @@
+/*global require */
+/*global __dirname */
 const symlinksMaker = require('./symlinks-maker.js');
 const path = require('path');
 
