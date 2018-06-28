@@ -81,7 +81,7 @@ class TilemapEditor extends React.Component {
 
 	onKeyDown(ev) {
 		if (!window.isEventFocusOnInputElement(ev) && (ev.keyCode >= 48) && (ev.keyCode <= 57)) {
-			this.setType((ev.keyCode - 48) % Lib.timapProcessor.types.length);
+			this.setType(Math.min(ev.keyCode - 48, Lib.tileMapProcessor.types.length));
 		}
 	}
 
@@ -106,6 +106,10 @@ class TilemapEditor extends React.Component {
 			isErasing = true;
 		}
 		this.onMouseMove(ev);
+	}
+
+	onClearClick() {
+		editor.ui.modal.showQuestion("Are you sure?", "Clear tilemap?", ()=>{getTilemap().clear();});
 	}
 
 	setTile(X, Y, type) {
@@ -147,9 +151,9 @@ class TilemapEditor extends React.Component {
 			return;
 		}
 
-		let pt = Lib.timapProcessor.imageToType(getTilemap().getTile(X, Y));
+		let pt = Lib.tileMapProcessor.imageToType(getTilemap().getTile(X, Y));
 		if (pt !== type) {
-			Lib.timapProcessor.onTileEditCallback(getTilemap(), X, Y, type);
+			Lib.tileMapProcessor.onTileEditCallback(getTilemap(), X, Y, type);
 			return true;
 		}
 	}
@@ -191,12 +195,13 @@ class TilemapEditor extends React.Component {
 			return R.div(null,
 				'Tile type:',
 				R.b(null, 
-					React.createElement(SelectEditor, {onChange:this.onTypeChange, value:this.state.type, select: Lib.timapProcessor.types.map((t,i) => {
-						return {name:t + '(' + i + ')', value:i};
+					React.createElement(SelectEditor, {onChange:this.onTypeChange, value:this.state.type, select: Lib.tileMapProcessor.types.map((t) => {
+						return {name:t.name + '(' + t.value + ')', value:t.value};
 					})})
 				),
 				' Brush size: ',
-				React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size})
+				React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size}),
+				R.btn('Clear', this.onClearClick, "Clear whole tilemap.")
 			);
 		}
 	}

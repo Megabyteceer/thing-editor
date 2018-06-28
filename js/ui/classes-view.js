@@ -69,6 +69,10 @@ class ClassesView extends React.Component {
 			}
 		}
 	}
+
+	onSelect() {
+	
+	}
 	
 	renderItem(item) {
 		let tip;
