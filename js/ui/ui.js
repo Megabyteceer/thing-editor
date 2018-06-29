@@ -124,11 +124,25 @@ class StatusBar extends React.Component {
 		$(window).on('mousemove', () =>{
 			this.forceUpdate();
 		});
+		$(window).on('wheel', () =>{
+			this.forceUpdate();
+		});
 	}
 	
 	render() {
 		if(window.game && game.mouse) {
-			return R.span(null, ' x: ' + game.mouse.x + ' y: ' + game.mouse.y);
+			let txt = ' x: ' + game.mouse.x + ' y: ' + game.mouse.y;
+			let resetZoomBtn;
+			if(game.currentScene) {
+				if(game.currentScene.scale.x !== 1) {
+					txt += ' zoom: ' + game.currentScene.scale.x;
+				}
+				if(game.currentScene.scale.x !== 1 || game.currentScene.x !== 0 || game.currentScene.y !== 0) {
+					resetZoomBtn = R.btn('x', editor.ui.viewport.resetZoom, 'Reset zoom and viewport position', 'reset-zoom-btn');
+				}
+			}
+				
+			return R.span(null, resetZoomBtn, txt);
 		}
 		return R.span();
 	}

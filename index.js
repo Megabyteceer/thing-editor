@@ -172,7 +172,7 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: PORT + 1 });
 wss.on('connection', function connection(ws) {
 	ws.on('message', function incoming(message) {
-		console.log('received: %s', message);
+		//console.log('received: %s', message);
 	});
 	/*ws.on('close', function onWsClose(){
 		log('Thing closing...');

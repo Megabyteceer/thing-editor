@@ -42,6 +42,14 @@ export default class Viewport extends React.Component {
 			stoppingExecutionTime = false;
 		}
 	}
+
+	
+	resetZoom() {
+		game.currentScene.scale.x = 1;
+		game.currentScene.scale.y = 1;
+		game.currentScene.x = 0;
+		game.currentScene.y = 0;
+	}
 	
 	checkIfNeedRecovery() {
 		if(!recoveryCheckingTime) {
@@ -89,7 +97,7 @@ export default class Viewport extends React.Component {
 				let sceneData = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
 				game.__EDITORmode = false;
-				let s = Lib._loadObjectFromData(sceneData);
+				let s = Lib._loadSceneFromData(sceneData);
 				game.currentScene = null;
 				game.showScene(s);
 				problemOnGameStart = false;

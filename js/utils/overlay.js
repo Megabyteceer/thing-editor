@@ -11,6 +11,8 @@ let isPreviewShowed;
 let draggers = [];
 
 let selectionDisabled;
+let isScrolling;
+let scrollingX, scrollingY;
 
 function checkIfCurrentContainerIsShowedPrefab() {
 	assert(isPreviewShowed === game.currentContainer.name, "game.currentContainer.name is incorrect. Prefabs name expected.");
@@ -139,33 +141,41 @@ function refreshSelection() {
 
 let startX, startY;
 
-$(window).on('mousedown', (ev) => {
+$(window).on('mousedown', function onMouseDown(ev) {
 	if(ev.target === game.pixiApp.view) {
-		if (overedDragger) {
-			if(overedDragger instanceof Rotator && ev.buttons === 2) {
-				editor.onSelectedPropsChange('rotation', 0);
-			} else if (ev.buttons === 1 || ev.buttons === 2) {
-				draggingDragger = overedDragger;
+		if(ev.buttons === 4) {
+			if(game.currentScene.isScrollable) {
+				isScrolling = true;
+				scrollingX = game.mouse.x;
+				scrollingY = game.mouse.y;
 			}
-		} else if(!selectionDisabled && ev.target === game.pixiApp.view && ev.buttons === 1) {
-			selectByStageClick(ev);
-		} else if(!selectionDisabled && ev.buttons === 2 && editor.selection.length > 0) {
-			let info = __getNodeExtendData(editor.selection[0]);
-			if(info.draggerPivot && info.draggerPivot.owner.parent) {
-				draggingDragger = info.draggerPivot;
-				draggingDragger.onDrag();
+		} else {
+			if (overedDragger) {
+				if(overedDragger instanceof Rotator && ev.buttons === 2) {
+					editor.onSelectedPropsChange('rotation', 0);
+				} else if (ev.buttons === 1 || ev.buttons === 2) {
+					draggingDragger = overedDragger;
+				}
+			} else if(!selectionDisabled && ev.target === game.pixiApp.view && ev.buttons === 1) {
+				selectByStageClick(ev);
+			} else if(!selectionDisabled && ev.buttons === 2 && editor.selection.length > 0) {
+				let info = __getNodeExtendData(editor.selection[0]);
+				if(info.draggerPivot && info.draggerPivot.owner.parent) {
+					draggingDragger = info.draggerPivot;
+					draggingDragger.onDrag();
+				}
 			}
-		}
-		if(draggingDragger) {
-			startX = draggingDragger.x;
-			startY = draggingDragger.y;
-			if(ev.altKey) {
-				editor.disableFieldsCache = true;
-				editor.selection.some((o) => {
-					o.parent.addChildAt(Lib._deserializeObject(Lib.__serializeObject(o)), o.parent.children.indexOf(o));
-				});
-				editor.disableFieldsCache = false;
-				editor.ui.sceneTree.forceUpdate();
+			if(draggingDragger) {
+				startX = draggingDragger.x;
+				startY = draggingDragger.y;
+				if(ev.altKey) {
+					editor.disableFieldsCache = true;
+					editor.selection.some((o) => {
+						o.parent.addChildAt(Lib._deserializeObject(Lib.__serializeObject(o)), o.parent.children.indexOf(o));
+					});
+					editor.disableFieldsCache = false;
+					editor.ui.sceneTree.forceUpdate();
+				}
 			}
 		}
 	}
@@ -212,7 +222,21 @@ function selectByStageClick(ev) {
 	previousAllUnderMouse = allUnderMouse;
 }
 
-$(window).on('mousemove', () => {
+$(window).on('mousemove', function onMouseMove(ev) {
+	if(isScrolling) {
+		if(ev.buttons !== 4) {
+			isScrolling = false;
+		} else {
+			let dX = game.mouse.x - scrollingX;
+			let dY =  game.mouse.y - scrollingY;
+			game.currentScene.x += dX;
+			game.currentScene.y += dY;
+
+			
+			scrollingX =  game.mouse.x;
+			scrollingY =  game.mouse.y;
+		}
+	}
 	if (draggingDragger && draggingDragger.owner.parent) {
 		draggingDragger.onDrag();
 	}
@@ -221,6 +245,35 @@ $(window).on('mousemove', () => {
 $(window).on('mouseup', () => {
 	draggingDragger = null;
 });
+
+$(window).on('wheel', function onWheel(ev) {
+	if(game.currentScene.isScrollable) {
+		let pivot = game.currentScene.toLocal(game.mouse, game.stage);
+
+
+		let zoom = game.currentScene.scale.x;
+		zoom *= 1 - ev.originalEvent.deltaY/1000;
+
+		if(Math.abs(zoom - 1.0) < 0.01) {
+			zoom = 1;
+		}
+		if(zoom > 5) {
+			zoom = 5;
+		}
+		if(zoom < 0.02) {
+			zoom = 0.02;
+		}
+		game.currentScene.x += (pivot.x * game.currentScene.scale.x - pivot.x * zoom);
+		game.currentScene.y += (pivot.y * game.currentScene.scale.y - pivot.y * zoom);
+
+		game.currentScene.scale.x = zoom;
+		game.currentScene.scale.y = zoom;
+	}
+	sp(ev);
+});
+
+
+
 
 class Dragger extends DSprite {
 	constructor() {

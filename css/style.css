@@ -1055,7 +1055,12 @@ input{
 	width: 100px;
 }
 
-
+.reset-zoom-btn {
+	padding: 0 3px;
+	margin: -7px 7px;
+	position: relative;
+	z-index: 2;
+}
 
 
 
