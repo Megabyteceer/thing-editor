@@ -24,6 +24,17 @@ let onMouseDown = (ev) => {
 	}
 };
 
+let onWheel = (ev) => {
+	let props = propsStore[ev.target.dataset.fieldname];
+	let d = ev.deltaY / -100;
+	d *= (props.field.step || 1);
+	if(ev.ctrlKey) {
+		d *= 10;
+	}
+	deltaValue(props, ev.target, d);
+	sp(ev);
+}
+
 function isClickedAtRightEdge(ev) {
 	let b = ev.target.getBoundingClientRect();
 	return (b.right - ev.clientX) < 20;
@@ -40,16 +51,19 @@ $(window).on('mousemove', (ev) => {
 		if(ev.ctrlKey) {
 			d *= 10;
 		}
-
-		let val = parseFloat(draggingInput.value);
-		let croppedVal = cropVal(val + d, draggingProps);
-		d = croppedVal - val;
-
-		let e = PropsFieldWrapper.surrogateChnageEvent(croppedVal);
-
-		draggingProps.onChange(e, true, d);
+		deltaValue(draggingProps, draggingInput, d);
 	}
 });
+
+function deltaValue(draggingProps, draggingInput, d) {
+	let val = parseFloat(draggingInput.value);
+	let croppedVal = cropVal(val + d, draggingProps);
+	d = croppedVal - val;
+
+	let e = PropsFieldWrapper.surrogateChnageEvent(croppedVal);
+
+	draggingProps.onChange(e, true, d);
+}
 
 function cropVal(val, props) {
 	if(props.field.hasOwnProperty('min')) {
@@ -71,6 +85,7 @@ let NumberEditor = (props) => {
 		onChange: onChange,
 		disabled:props.disabled,
 		value: val,
+		onWheel:onWheel,
 		'data-fieldname': props.field.name,
 		onDoubleClick: onDoubleClick,
 		onMouseDown: onMouseDown,
