@@ -247,29 +247,31 @@ $(window).on('mouseup', () => {
 });
 
 $(window).on('wheel', function onWheel(ev) {
-	if(game.currentScene.isScrollable) {
-		let pivot = game.currentScene.toLocal(game.mouse, game.stage);
+	if(ev.target === game.pixiApp.view) {
+		if(game.currentScene.isScrollable) {
+			let pivot = game.currentScene.toLocal(game.mouse, game.stage);
 
 
-		let zoom = game.currentScene.scale.x;
-		zoom *= 1 - ev.originalEvent.deltaY/1000;
+			let zoom = game.currentScene.scale.x;
+			zoom *= 1 - ev.originalEvent.deltaY/1000;
 
-		if(Math.abs(zoom - 1.0) < 0.01) {
-			zoom = 1;
+			if(Math.abs(zoom - 1.0) < 0.01) {
+				zoom = 1;
+			}
+			if(zoom > 5) {
+				zoom = 5;
+			}
+			if(zoom < 0.02) {
+				zoom = 0.02;
+			}
+			game.currentScene.x += (pivot.x * game.currentScene.scale.x - pivot.x * zoom);
+			game.currentScene.y += (pivot.y * game.currentScene.scale.y - pivot.y * zoom);
+
+			game.currentScene.scale.x = zoom;
+			game.currentScene.scale.y = zoom;
+			sp(ev);
 		}
-		if(zoom > 5) {
-			zoom = 5;
-		}
-		if(zoom < 0.02) {
-			zoom = 0.02;
-		}
-		game.currentScene.x += (pivot.x * game.currentScene.scale.x - pivot.x * zoom);
-		game.currentScene.y += (pivot.y * game.currentScene.scale.y - pivot.y * zoom);
-
-		game.currentScene.scale.x = zoom;
-		game.currentScene.scale.y = zoom;
 	}
-	sp(ev);
 });
 
 
