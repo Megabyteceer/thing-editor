@@ -130,7 +130,7 @@ class InfoList extends React.Component {
 			if(item.owner && (item.owner instanceof DisplayObject)) {
 				
 				let exData = __getNodeExtendData(item.owner);
-				if(!exData.alertRefs.has(item)) {
+				if(!exData.alertRefs || !exData.alertRefs.has(item)) {
 					editor.ui.modal.showModal('Object already removed form stage.');
 				} else {
 					if(item.owner.getRootContainer() !== game.currentContainer) {

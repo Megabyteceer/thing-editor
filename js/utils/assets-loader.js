@@ -11,6 +11,8 @@ const textureNameCleaner = /^img\//gm;
 
 const enumAssets = () => {
 
+	game.pixiApp.stop();
+
 	let tmp = new Map();
 	game.forAllChildrenEwerywhere((o) => {
 		if(o.image) {
@@ -32,21 +34,23 @@ const enumAssets = () => {
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 	
-	
-	
 	editor.fs.files.some((fn) => {
 		if(fn.match(textureFiler)) {
 			Lib.addTexture(fn.replace(textureNameCleaner, ''), editor.fs.gameFolder + fn);
 		}
 	});
-	
-	tmp.forEach((image, o) => {
-		o.image = image;
+
+	Lib.__onAllTexturesLoaded(	() => {
+		tmp.forEach((image, o) => {
+			o.image = image;
+		});
+		game.pixiApp.start();
+		editor.ui.modal.hideSpinner();
 	});
 };
 
 AssetsLoader.reloadAssets = (refreshFiles) => {
-	
+	editor.ui.modal.showSpinner();
 	if(refreshFiles) {
 		editor.fs.refreshFiles().then(enumAssets);
 	} else {
