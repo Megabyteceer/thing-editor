@@ -24,17 +24,6 @@ let onMouseDown = (ev) => {
 	}
 };
 
-let onWheel = (ev) => {
-	let props = propsStore[ev.target.dataset.fieldname];
-	let d = ev.deltaY / -100;
-	d *= (props.field.step || 1);
-	if(ev.ctrlKey) {
-		d *= 10;
-	}
-	deltaValue(props, ev.target, d);
-	sp(ev);
-}
-
 function isClickedAtRightEdge(ev) {
 	let b = ev.target.getBoundingClientRect();
 	return (b.right - ev.clientX) < 20;
@@ -85,7 +74,6 @@ let NumberEditor = (props) => {
 		onChange: onChange,
 		disabled:props.disabled,
 		value: val,
-		onWheel:onWheel,
 		'data-fieldname': props.field.name,
 		onDoubleClick: onDoubleClick,
 		onMouseDown: onMouseDown,
