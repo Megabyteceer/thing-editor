@@ -16,8 +16,15 @@ let fs = {
 	deleteFile: (fileName) => {
 		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName));
 	},
-	editFile: (fileName) => {
-		return fs.getJSON('/fs/edit?f=' + encodeURIComponent(fileName), true);
+	editFile: (fileName, line = -1, char = -1) => {
+		let url = '/fs/edit?f=' + encodeURIComponent(fileName);
+		if(line >= 0) {
+			url += '&l=' + line;
+		}
+		if(char >= 0) {
+			url += '&c=' + char;
+		}
+		return fs.getJSON(url, true);
 	},
 	getJSON(url, silently) {
 		if (!silently) {
