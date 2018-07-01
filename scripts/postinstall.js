@@ -11,6 +11,7 @@ var clientLibs = [
 	['../../node_modules/reset-css/reset.css', 'css/lib/reset.css'],
 	['../../node_modules/jquery/dist/jquery.min.js', 'js/lib/jquery.min.js'],
 	
+	['../../node_modules/howler/dist/howler.core.min.js', '../thing-engine/js/lib/howler.core.min.js'],
 	['../../node_modules/pixi.js/dist/pixi.min.js', '../thing-engine/js/lib/pixi.min.js'],
 	['../../node_modules/pixi-tilemap/bin/pixi-tilemap.js', '../thing-engine/js/lib/pixi-tilemap.js'],
 	['../../node_modules/pixi.js/dist/pixi.js', '../thing-engine/js/lib/pixi.js']

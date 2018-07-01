@@ -2,7 +2,7 @@ import L from "/thing-engine/js/utils/l.js";
 import Lib from "/thing-engine/js/lib.js";
 
 export default class Build {
-	static build() {
+	static build(debug) {
 		
 		let scenes = Lib._getAllScenes();
 		
@@ -45,7 +45,7 @@ let classes = {};`];
 		fileSavePromises.push(editor.fs.saveFile('src/classes.js', src.join('\n')));
 		
 		Promise.all(fileSavePromises).then(() => {
-			editor.fs.getJSON('/fs/build').then((result) => {
+			editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
 				
 				if(result.errors.length > 0) {
 					editor.ui.modal.showError(result.errors.map((r, i) =>{
@@ -59,7 +59,7 @@ let classes = {};`];
 						}));
 					}
 					
-					window.open('/games/' + editor.currentProjectDir + '/release');
+					window.open('/games/' + editor.currentProjectDir + (debug ? '/debug' : '/release'));
 				}
 			});
 		});

@@ -1,4 +1,5 @@
 import Lib from "/thing-engine/js/lib.js";
+import game from "/thing-engine/js/game.js";
 
 const HISTORY_LEN = 50;
 const STRICT_HISTORY_LEN = 10;
@@ -33,7 +34,7 @@ class History {
 	}
 
 	isUndoAvailable() {
-		return this._undos.length > 1;
+		return this._undos && this._undos.length > 1;
 	}
 
 	get _undos() {
@@ -103,7 +104,10 @@ class History {
 	}
 	
 	get currentState() {
-		return this._undos[this._undos.length - 1];
+		let undos = this._undos;
+		if(undos) {
+			return undos[undos.length - 1];
+		}
 	}
 	
 	clearHistory() {
@@ -142,6 +146,9 @@ class HistoryUi extends React.Component {
 	}
 	
 	render() {
+		if(!instance._undos) {
+			return R.span();
+		}
 		return R.span(editor.isCurrentSceneModified ? modifiedStyle : null,
 			R.btn('Undo', editor.history.undo, '(Ctrl + Z)', undefined, 1090, !instance.isUndoAvailable() || !game.__EDITORmode),
 			instance._undos.length,

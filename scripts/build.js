@@ -2,10 +2,10 @@ const webpack = require("webpack");
 const path = require("path");
 /*global require */
 /*global module */
-module.exports = function(projectPath, callback) {
+module.exports = function(projectPath, callback, debug) {
 	console.log('starting build: ' + projectPath);
 
-	let config = require(path.resolve(projectPath, 'config/webpack.prod.js'));
+	let config = require(path.resolve(projectPath, debug ? 'config/webpack.debug.js' : 'config/webpack.prod.js'));
 
 	webpack(config, (err, stats) => {
 		let result = {errors:[], warnings:[]};

@@ -9,6 +9,7 @@ import ScenesList from "./scenes-list.js";
 import PrefabsList from "./prefabs-list.js";
 import LanguageView from "./language-view.js";
 import Status from "./status.js";
+import game from "/thing-engine/js/game.js";
 
 /**
  *
@@ -91,6 +92,7 @@ class UI extends React.Component {
 		return R.div(null,
 			R.btn('Open project...', editor.fs.chooseProject),
 			R.btn('Build', editor.build),
+			R.btn('Build debug', () => {editor.build(true);}),
 			React.createElement(LanguageView),
 			editor.history.buttonsRenderer(),
 			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),
@@ -130,7 +132,7 @@ class StatusBar extends React.Component {
 	}
 	
 	render() {
-		if(window.game && game.mouse) {
+		if(game && game.mouse) {
 			let txt = ' x: ' + game.mouse.x + ' y: ' + game.mouse.y;
 			let resetZoomBtn;
 			if(game.currentScene) {

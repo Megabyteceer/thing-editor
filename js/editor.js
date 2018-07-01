@@ -1,5 +1,5 @@
 import utils from './utils/editor-utils.js';
-import Game from '/thing-engine/js/game.js';
+import game from '/thing-engine/js/game.js';
 import Settings from '/thing-engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
 import ws from './utils/socket.js'; // eslint-disable-line no-unused-vars
@@ -68,10 +68,9 @@ export default class Editor {
 	onUIMounted(ui) {
 		/** @member {UI} */
 		this.ui = ui;
-		new Game('tmp.game.id');
 		
 		game.__EDITORmode = true;
-		game.init(document.getElementById('viewport-root'));
+		game.init(document.getElementById('viewport-root'), 'tmp.game.id');
 		
 		utils.protectAccessToSceneNode(game.stage, "game stage");
 		utils.protectAccessToSceneNode(game.stage.parent, "PIXI stage");
@@ -211,7 +210,6 @@ export default class Editor {
 	}
 	
 	get currentSceneName() {
-		if(!window.game) return null;
 		let a = game._getScenesStack();
 		if(a.length > 0) {
 			return a[0].name;
@@ -413,9 +411,9 @@ export default class Editor {
 		}
 	}
 	
-	build() {
+	build(debug) {
 		askSceneToSaveIfNeed().then(() => {
-			build.build();
+			build.build(debug);
 		});
 	}
 }

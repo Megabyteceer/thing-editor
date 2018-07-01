@@ -103,7 +103,7 @@ app.get('/fs/build', function (req, res) {
 	log('BUILD project: ' + currentGameRoot);
 	build(currentGameRoot, (result) => {
 		res.end(JSON.stringify(result));
-	});
+	}, req.query.debug);
 });
 
 app.post('/fs/savefile', jsonParser, function (req, res) {

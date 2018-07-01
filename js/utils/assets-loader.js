@@ -1,3 +1,4 @@
+import game from "/thing-engine/js/game.js";
 import Lib from "/thing-engine/js/lib.js";
 
 const AssetsLoader = {};

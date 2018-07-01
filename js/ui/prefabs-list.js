@@ -1,6 +1,7 @@
 import Group from "./group.js";
 import Scene from "/thing-engine/js/components/scene.js";
 import Lib from "/thing-engine/js/lib.js";
+import game from "/thing-engine/js/game.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -82,8 +83,8 @@ export default class PrefabsList extends React.Component {
 					let s = editor.selection[0];
 					let tx = s.x;
 					let ty = s.y;
-					s.x = W / 2;
-					s.y = H / 2;
+					s.x = game.W / 2;
+					s.y = game.H / 2;
 					Lib.__savePrefab(s, enteredName);
 					s.x = tx;
 					s.y = ty;

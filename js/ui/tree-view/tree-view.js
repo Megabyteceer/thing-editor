@@ -1,5 +1,6 @@
 import TreeNode from './tree-node.js';
 import Window from '../window.js';
+import game from "/thing-engine/js/game.js";
 import Selection from "../../utils/selection.js";
 import Lib from "/thing-engine/js/lib.js";
 
@@ -247,7 +248,7 @@ export default class TreeView extends React.Component {
 	}
 	
 	render() {
-		if (typeof game === 'undefined') return R.spinner();
+		if (!game.stage) return R.spinner();
 		
 		let isEmpty = editor.selection.length === 0;
 		

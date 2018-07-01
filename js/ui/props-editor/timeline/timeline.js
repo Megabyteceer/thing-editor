@@ -1,6 +1,7 @@
 import MovieClip from "/thing-engine/js/components/movie-clip/movie-clip.js";
 import FieldsTimeline from "./timeline-field.js";
 import {KeyframePropertyEditor} from "./timeline-field.js";
+import game from "/thing-engine/js/game.js";
 
 const FRAMES_STEP = 3;
 

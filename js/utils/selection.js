@@ -1,4 +1,5 @@
 import Tilemap from "/thing-engine/js/components/tilemap.js";
+import game from "/thing-engine/js/game.js";
 
 class Selection extends Array {
 	

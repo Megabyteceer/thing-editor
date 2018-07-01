@@ -2,6 +2,7 @@ import PrefabsList from './prefabs-list.js';
 import Lib from "/thing-engine/js/lib.js";
 import Signal from "../utils/signal.js";
 import LanguageSwitcher from "./language-switcher.js";
+import game from "/thing-engine/js/game.js";
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -155,7 +156,7 @@ export default class Viewport extends React.Component {
 		let panel;
 		
 		let toggleOrientationBtn;
-		if(window.game && (game.screenOrientation === 'auto')) {
+		if(game && (game.screenOrientation === 'auto')) {
 			toggleOrientationBtn = R.btn(R.icon('orientation-toggle'), this.onToggleOrientationClick, 'Switch screen orientation (Ctrl + O)', 'big-btn', 1079);
 		}
 		
@@ -178,7 +179,7 @@ export default class Viewport extends React.Component {
 			);
 		} else {
 			let pauseResumeBtn, oneStepBtn;
-			if(window.game && !game.__EDITORmode) {
+			if(game && !game.__EDITORmode) {
 				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, undefined, 'big-btn');
 				if(game.__paused) {
 					statusHeader = 'paused';
@@ -188,7 +189,7 @@ export default class Viewport extends React.Component {
 				}
 			}
 			panel = R.span(undefined,
-				R.btn((!window.game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
+				R.btn((!game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
 				R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Rebuild game sources', 'big-btn'),
 				R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
 				statusHeader,

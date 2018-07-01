@@ -17,6 +17,7 @@ import FlyText from "/thing-engine/js/components/fly-text.js";
 import Sprite from "/thing-engine/js/components/sprite.js";
 import DisplayObject from "/thing-engine/js/components/display-object.js";
 import Tilemap from "/thing-engine/js/components/tilemap.js";
+import game from "/thing-engine/js/game.js";
 
 let ClassesLoader = {};
 ClassesLoader.initClassesLoader = function initClassesLoader() {
