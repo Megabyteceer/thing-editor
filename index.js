@@ -53,6 +53,7 @@ app.get('/fs/enum', function (req, res) {
 	walkSync('./prefabs', list);
 	walkSync('./scenes', list);
 	walkSync('./src', list);
+	walkSync('./snd', list);
 	
 	res.send(list.map(pathFixer));
 });

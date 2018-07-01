@@ -10,6 +10,7 @@ import PrefabsList from "./prefabs-list.js";
 import LanguageView from "./language-view.js";
 import Status from "./status.js";
 import game from "/thing-engine/js/game.js";
+import SoundsList from './sounds-list.js';
 
 /**
  *
@@ -47,6 +48,7 @@ class UI extends React.Component {
 		this.prefabsRef = this.prefabsRef.bind(this);
 		this.scenesStackRef = this.scenesStackRef.bind(this);
 		this.classesListRef = this.classesListRef.bind(this);
+		this.soundsListRef = this.soundsListRef.bind(this);
 	}
 	
 	componentDidMount() {
@@ -63,6 +65,10 @@ class UI extends React.Component {
 	
 	classesListRef(ref) {
 		this.classesList = ref;
+	}
+	
+	soundsListRef(ref) {
+		this.soundsList = ref;
 	}
 
 	prefabsRef(ref) {
@@ -105,6 +111,7 @@ class UI extends React.Component {
 			renderWindow('classesLib', 'Classes', React.createElement(ClassesView, {ref: this.classesListRef}), 0, 550, 250, 150, 250, 470),
 			renderWindow('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 255, 550, 250, 150, 250, 470),
 			renderWindow('scenesList', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
+			renderWindow('soundsList', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1360, 750, 200, 100, 360, 260),
 			
 			React.createElement(Status, {ref: this.statusRef}),
 			React.createElement(Modal, {ref: this.modalRef})
@@ -135,14 +142,13 @@ class StatusBar extends React.Component {
 		if(game && game.mouse) {
 			let txt = ' x: ' + game.mouse.x + ' y: ' + game.mouse.y;
 			let resetZoomBtn;
-			if(game.currentScene) {
-				if(game.currentScene.scale.x !== 1) {
-					txt += ' zoom: ' + game.currentScene.scale.x;
-				}
-				if(game.currentScene.scale.x !== 1 || game.currentScene.x !== 0 || game.currentScene.y !== 0) {
-					resetZoomBtn = R.btn('x', editor.ui.viewport.resetZoom, 'Reset zoom and viewport position', 'reset-zoom-btn');
-				}
+			if(game.stage.scale.x !== 1) {
+				txt += ' zoom: ' + game.stage.scale.x;
 			}
+			if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
+				resetZoomBtn = R.btn('x', editor.ui.viewport.resetZoom, 'Reset zoom and viewport position', 'reset-zoom-btn');
+			}
+			
 				
 			return R.span(null, resetZoomBtn, txt);
 		}

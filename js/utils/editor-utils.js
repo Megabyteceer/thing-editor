@@ -227,6 +227,22 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 	};
 };
 
+window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = true) {
+	return () => {
+		let ret = [];
+		if(canBeEmty) {
+			ret.push({name:' ', value:''});
+		}
+		let a = editor.Lib.__soundsList;
+		for(let i of a) {
+			if(!startsWith || i.name.startsWith(startsWith)) {
+				ret.push(i);
+			}
+		}
+		return ret;
+	};
+};
+
 window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) => {
 	let ret = {
 		name: name,

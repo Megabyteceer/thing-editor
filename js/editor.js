@@ -17,6 +17,7 @@ import build from "./utils/build.js";
 import Pool from "/thing-engine/js/utils/pool.js";
 import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
+import SoundsList from './ui/sounds-list.js';
 
 export default class Editor {
 	
@@ -237,7 +238,10 @@ export default class Editor {
 	}
 	
 	reloadAssets() {
-		return AssetsLoader.reloadAssets();
+		return Promise.all([
+			AssetsLoader.reloadAssets(),
+			editor.ui.soundsList.reloadSounds()
+		]);
 	}
 	
 	reloadAssetsAndClasses() {

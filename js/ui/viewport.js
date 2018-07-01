@@ -3,6 +3,7 @@ import Lib from "/thing-engine/js/lib.js";
 import Signal from "../utils/signal.js";
 import LanguageSwitcher from "./language-switcher.js";
 import game from "/thing-engine/js/game.js";
+import Sound from '/thing-engine/js/utils/sound.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -46,10 +47,10 @@ export default class Viewport extends React.Component {
 
 	
 	resetZoom() {
-		game.currentScene.scale.x = 1;
-		game.currentScene.scale.y = 1;
-		game.currentScene.x = 0;
-		game.currentScene.y = 0;
+		game.stage.scale.x = 1;
+		game.stage.scale.y = 1;
+		game.stage.x = 0;
+		game.stage.y = 0;
 	}
 	
 	checkIfNeedRecovery() {
@@ -83,6 +84,8 @@ export default class Viewport extends React.Component {
 			this.checkIfNeedRecovery();
 			playTogglingTime = true;
 			
+			Sound.__resetSounds();
+			this.resetZoom();
 			game.__doOneStep = false;
 			game.__paused = false;
 			let play = game.__EDITORmode;
@@ -98,7 +101,7 @@ export default class Viewport extends React.Component {
 				let sceneData = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
 				game.__EDITORmode = false;
-				let s = Lib._loadSceneFromData(sceneData);
+				let s = Lib._loadObjectFromData(sceneData);
 				game.currentScene = null;
 				game.showScene(s);
 				problemOnGameStart = false;

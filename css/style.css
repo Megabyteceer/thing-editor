@@ -1062,6 +1062,11 @@ input{
 	z-index: 2;
 }
 
+.sounds-list .list-item {
+	padding: 5px 20px;
+}
+
+
 
 
 

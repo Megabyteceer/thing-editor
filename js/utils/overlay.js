@@ -3,6 +3,7 @@ import Pool from "/thing-engine/js/utils/pool.js";
 import DSprite from "/thing-engine/js/components/d-sprite.js";
 import Lib from "/thing-engine/js/lib.js";
 import game from "/thing-engine/js/game.js";
+import Scene from "/thing-engine/js/components/scene.js";
 
 let blackout;
 
@@ -62,6 +63,7 @@ export default class Overlay {
 	}
 	
 	showPreview(object) {
+		editor.ui.viewport.resetZoom();
 		this.setBGcolor(editor.settings.getItem('prefab-bg' + object.name));
 		this.hidePreview(false);
 		savedSelection = editor.selection.saveSelection();
@@ -78,6 +80,7 @@ export default class Overlay {
 	}
 	
 	hidePreview(refresh = true) {
+		editor.ui.viewport.resetZoom();
 		if (blackout.parent) {
 			game.stage.removeChild(blackout);
 		}
@@ -145,7 +148,7 @@ let startX, startY;
 $(window).on('mousedown', function onMouseDown(ev) {
 	if(ev.target === game.pixiApp.view) {
 		if(ev.buttons === 4) {
-			if(game.currentScene.isScrollable) {
+			if(isCurrentContainerScrollable()) {
 				isScrolling = true;
 				scrollingX = game.mouse.x;
 				scrollingY = game.mouse.y;
@@ -230,8 +233,8 @@ $(window).on('mousemove', function onMouseMove(ev) {
 		} else {
 			let dX = game.mouse.x - scrollingX;
 			let dY =  game.mouse.y - scrollingY;
-			game.currentScene.x += dX;
-			game.currentScene.y += dY;
+			game.stage.x += dX;
+			game.stage.y += dY;
 
 			
 			scrollingX =  game.mouse.x;
@@ -249,11 +252,11 @@ $(window).on('mouseup', () => {
 
 $(window).on('wheel', function onWheel(ev) {
 	if(ev.target === game.pixiApp.view) {
-		if(game.currentScene.isScrollable) {
-			let pivot = game.currentScene.toLocal(game.mouse, game.stage);
+		if(isCurrentContainerScrollable()) {
+			let pivot = game.stage.toLocal(game.mouse, game.stage);
 
 
-			let zoom = game.currentScene.scale.x;
+			let zoom = game.stage.scale.x;
 			zoom *= 1 - ev.originalEvent.deltaY/1000;
 
 			if(Math.abs(zoom - 1.0) < 0.01) {
@@ -265,17 +268,21 @@ $(window).on('wheel', function onWheel(ev) {
 			if(zoom < 0.02) {
 				zoom = 0.02;
 			}
-			game.currentScene.x += (pivot.x * game.currentScene.scale.x - pivot.x * zoom);
-			game.currentScene.y += (pivot.y * game.currentScene.scale.y - pivot.y * zoom);
+			game.stage.x += (pivot.x * game.stage.scale.x - pivot.x * zoom);
+			game.stage.y += (pivot.y * game.stage.scale.y - pivot.y * zoom);
 
-			game.currentScene.scale.x = zoom;
-			game.currentScene.scale.y = zoom;
+			game.stage.scale.x = zoom;
+			game.stage.scale.y = zoom;
 			sp(ev);
 		}
 	}
 });
 
 
+function isCurrentContainerScrollable() {
+	let c = game.currentContainer;
+	return (c.isScrollable || !(c instanceof Scene));
+}
 
 
 class Dragger extends DSprite {

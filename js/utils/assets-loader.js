@@ -7,7 +7,7 @@ AssetsLoader.init = () => {
 
 };
 
-const textureFiler = /^img\/.*\.(png|jpg)$/gm;
+const textureFiler = /^img\/.*\.(png|jpg)$/gmi;
 const textureNameCleaner = /^img\//gm;
 
 const enumAssets = () => {
@@ -30,7 +30,7 @@ const enumAssets = () => {
 		}
 	}
 	
-	Lib.__clearTexturesList();
+	Lib.__clearAssetsLists();
 	
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
