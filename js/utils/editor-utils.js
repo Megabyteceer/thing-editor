@@ -231,7 +231,7 @@ window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = tr
 	return () => {
 		let ret = [];
 		if(canBeEmty) {
-			ret.push({name:' ', value:''});
+			ret.push({name:' ', value:''});
 		}
 		let a = editor.Lib.__soundsList;
 		for(let i of a) {

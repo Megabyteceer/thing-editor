@@ -2,7 +2,6 @@ import DataPathEditor from "./data-path-editor.js";
 import ScenesList from "../scenes-list.js";
 import Lib from "/thing-engine/js/lib.js";
 import {setValueByPath} from "/thing-engine/js/utils/get-value-by-path.js";
-import game from "/thing-engine/js/game.js";
 
 export default class CallbackEditor extends DataPathEditor {
 	

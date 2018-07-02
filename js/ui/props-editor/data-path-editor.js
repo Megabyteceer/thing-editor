@@ -66,7 +66,7 @@ export default class DataPathEditor extends React.Component {
 	
 	render() {
 		return R.div(fieldEditorWrapperProps,
-			R.input({className:'props-editor-callback', onChange: this.props.onChange, disabled:this.props.disabled, value: this.props.value || ''}),
+			R.input({className:'props-editor-callback', onChange: this.props.onChange, disabled:this.props.disabled, title:this.props.value, value: this.props.value || ''}),
 			R.btn('...', this.onEditClicked, 'Start data source choosing', 'tool-btn')
 		);
 	}
