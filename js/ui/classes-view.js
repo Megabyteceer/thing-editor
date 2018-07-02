@@ -146,10 +146,19 @@ class ClassesView extends React.Component {
 
 
 function findNextOfThisType(c, direction) {
-	editor.ui.sceneTree.findNext((o) => {
-		return o instanceof c;
-		
-	}, direction);
+	if(game.mouse.ctrlKey) {
+		let a = game.currentContainer.findChildrenByType(c);
+		editor.selection.clearSelection();
+		for (let w of a) {
+			editor.ui.sceneTree.selectInTree(w, true);
+		}
+	} else {
+
+		editor.ui.sceneTree.findNext((o) => {
+			return o instanceof c;
+			
+		}, direction);
+	}
 }
 
 export default ClassesView;

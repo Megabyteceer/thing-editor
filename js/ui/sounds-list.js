@@ -6,7 +6,7 @@ let soundsList = [];
 let sounds = {};
 const extRemover = /\.[^\/\.]+$/;
 
-const soundFilter = /^snd\/.*\.(mp3|webm)$/gmi;
+const soundFilter = /^snd\/.*\.(mp3|webm|ogg|weba|wav)$/gmi;
 const soundNameCleaner = /^snd\//gm;
 
 const bodyProps = {className: 'sounds-list'};
@@ -53,7 +53,11 @@ export default class SoundsList extends React.Component {
 	}
 
 	onSelect(item) {
-		Sound.play(item.name);
+		let needPlay = !Lib.getSound(item.name).playing();
+		Sound.stop();
+		if(needPlay) {
+			Sound.play(item.name);
+		}
 	}
 
 	onStopAllClick() {

@@ -4,6 +4,7 @@ import Signal from "../utils/signal.js";
 import LanguageSwitcher from "./language-switcher.js";
 import game from "/thing-engine/js/game.js";
 import Sound from '/thing-engine/js/utils/sound.js';
+import Music from '/thing-engine/js/utils/music.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -92,6 +93,7 @@ export default class Viewport extends React.Component {
 			this.beforePlayStopToggle.emit(play);
 			Lib.__clearStaticScenes();
 			if(play) { // launch game
+				Music.__resetAllMusics();
 				editor.ui.status.clear();
 				problemOnGameStart = true;
 				editor.tryToSaveHistory();
@@ -106,7 +108,7 @@ export default class Viewport extends React.Component {
 				game.showScene(s);
 				problemOnGameStart = false;
 			} else { //stop game
-				
+				Music.stop();
 				problemOnGameStop = true;
 				game.__clearStage();
 				game.__EDITORmode = true;
