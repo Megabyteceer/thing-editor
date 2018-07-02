@@ -17,7 +17,6 @@ import build from "./utils/build.js";
 import Pool from "/thing-engine/js/utils/pool.js";
 import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
-import SoundsList from './ui/sounds-list.js';
 
 export default class Editor {
 	
@@ -109,7 +108,7 @@ export default class Editor {
 			Pool.clearAll();
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir;
-			this.fs.gameFolder = '/games/' + dir + '/';
+			game.resourcesPath = '/games/' + dir + '/';
 			editor.projectDesc = data;
 			
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);

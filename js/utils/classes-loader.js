@@ -213,7 +213,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			editor.fs.files.some((fn, i) => {
 				if(fn.match(jsFiler)) {
 					let classPath = fn;
-					scriptSource += ("import C" + i + " from '" + location.origin + editor.fs.gameFolder + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
+					scriptSource += ("import C" + i + " from '" + location.origin + game.resourcesPath + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
 				}
 			});
 		

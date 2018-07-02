@@ -92,6 +92,7 @@ const getSndPriority = (s) => {
 };
 
 const extsPriority = {
+	weba: 110,
 	webm: 100,
 	mp3: 80,
 	ogg: 90,

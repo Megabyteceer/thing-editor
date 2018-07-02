@@ -20,8 +20,9 @@ export default class Build {
 		
 		
 		let text = L.__getTextAssets();
+		let sounds = Lib.__getSoundsData();
 		
-		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' + JSON.stringify({scenes, prefabs, images, text, projectDesc: editor.projectDesc}) + ';'));
+		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' + JSON.stringify({scenes, prefabs, images, text, sounds, projectDesc: editor.projectDesc}) + ';'));
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);

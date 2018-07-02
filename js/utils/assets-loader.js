@@ -37,7 +37,7 @@ const enumAssets = () => {
 	
 	editor.fs.files.some((fn) => {
 		if(fn.match(textureFiler)) {
-			Lib.addTexture(fn.replace(textureNameCleaner, ''), editor.fs.gameFolder + fn);
+			Lib.addTexture(fn.replace(textureNameCleaner, ''), game.resourcesPath + fn);
 		}
 	});
 

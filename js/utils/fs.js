@@ -1,3 +1,5 @@
+import game from "/thing-engine/js/game.js";
+
 let fs = {
 	chooseProject: (enforced) => {
 		fs.getJSON('/fs/projects').then((data) => {
@@ -37,7 +39,7 @@ let fs = {
 		return r;
 	},
 	openFile(fileName, silently) {
-		return this.getJSON(fs.gameFolder + fileName, silently);
+		return this.getJSON(game.resourcesPath + fileName, silently);
 	},
 	saveFile(filename, data, silently) {
 		if (!silently) {
