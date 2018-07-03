@@ -41,7 +41,7 @@ const enumAssets = () => {
 		}
 	});
 
-	Lib.__onAllTexturesLoaded(	() => {
+	Lib.__onAllAssetsLoaded(() => {
 		tmp.forEach((image, o) => {
 			o.image = image;
 		});

@@ -119,6 +119,18 @@ window.selectText = function(element) {
 	selection.addRange(range);
 };
 
+window.assert = (expression, message, dontBreakFlow) => {
+	message = 'Assert: ' + message;
+	if (!expression) {
+		
+		if (window.editor) {
+			editor.ui.modal.showError(message);
+		}
+		if (!dontBreakFlow) {
+			throw message;
+		}
+	}
+};
 
 //======== wrapPropertyWithNumberChecker - make numeric property sensitive for NaN assigning
 
@@ -143,7 +155,7 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	
 	let originalSetter;
 	
-	let newSetter = function(val) {
+	let newSetter = function wrapPropertyWithNumberCheckerSetter(val) {
 		assert(!isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.');
 		originalSetter.call(this, val);
 	};
@@ -152,6 +164,7 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	if(d) {
 		//console.log("Property " + propertyName + " wraped.")
 		originalSetter = d.set;
+		assert(originalSetter.name !== 'wrapPropertyWithNumberCheckerSetter', "Already wrapped");
 		d.set = newSetter;
 	} else {
 		//console.log("Own property " + propertyName + " wraped.")
@@ -170,6 +183,7 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	Object.defineProperty(constructor.prototype, propertyName, d);
 };
 
+window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
 PIXI.ObservablePoint.__EDITOR_selectableProps = ['x','y'];
@@ -198,18 +212,6 @@ window.isEventFocusOnInputElement = (ev) => {
 	return !canBePassed && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
 };
 
-window.assert = (expression, message, dontBreakFlow) => {
-	message = 'Assert: ' + message;
-	if (!expression) {
-		
-		if (window.editor) {
-			editor.ui.modal.showError(message);
-		}
-		if (!dontBreakFlow) {
-			throw message;
-		}
-	}
-};
 
 window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = true) {
 	return () => {

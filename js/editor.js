@@ -237,10 +237,11 @@ export default class Editor {
 	}
 	
 	reloadAssets() {
-		return Promise.all([
-			AssetsLoader.reloadAssets(),
-			editor.ui.soundsList.reloadSounds()
-		]);
+		return new Promise((resolve) => {
+			Lib.__onAllAssetsLoaded(resolve);
+			AssetsLoader.reloadAssets();
+			editor.ui.soundsList.reloadSounds();
+		});
 	}
 	
 	reloadAssetsAndClasses() {
