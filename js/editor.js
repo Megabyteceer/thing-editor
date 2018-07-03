@@ -70,13 +70,7 @@ export default class Editor {
 		this.ui = ui;
 		
 		game.__EDITORmode = true;
-		game.init(document.getElementById('viewport-root'), 'tmp.game.id');
-		
-		utils.protectAccessToSceneNode(game.stage, "game stage");
-		utils.protectAccessToSceneNode(game.stage.parent, "PIXI stage");
-		
-		this.overlay = new Overlay();
-		
+
 		ClassesLoader.initClassesLoader();
 		AssetsLoader.init();
 		this.openProject();
@@ -104,17 +98,19 @@ export default class Editor {
 				editor.ui.modal.showError("Can't open project " + dir).then(() => {this.openProject();});
 				return;
 			}
-			game.__clearStage();
-			Pool.clearAll();
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir;
-			game.resourcesPath = '/games/' + dir + '/';
 			editor.projectDesc = data;
-			
+
+			game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');
+			this.overlay = new Overlay();
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
 			
-			game._setGameId('editor.' + editor.projectDesc.id);
 			
+			utils.protectAccessToSceneNode(game.stage, "game stage");
+			utils.protectAccessToSceneNode(game.stage.parent, "PIXI stage");
+			
+
 			if(editor.projectDesc.lastSceneName && !Lib.hasScene(editor.projectDesc.lastSceneName)) {
 				editor.projectDesc.lastSceneName = false;
 			}
