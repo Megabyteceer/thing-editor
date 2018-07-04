@@ -9,7 +9,7 @@ const extRemover = /\.[^\/\.]+$/;
 const soundFilter = /^snd\/.*\.(mp3|webm|ogg|weba|wav)$/gmi;
 const soundNameCleaner = /^snd\//gm;
 
-const bodyProps = {className: 'sounds-list'};
+const bodyProps = {className: 'sounds-list list-view'};
 
 let labelProps = {className: 'selectable-text', onMouseDown: function (ev) {
 	selectText(ev.target);
