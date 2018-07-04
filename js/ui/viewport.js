@@ -10,6 +10,8 @@ const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
 const PAUSE_ICON = R.icon('pause');
 
+const SCROLL_IN_TO_SCREEN_FIELD = 30;
+
 let prefabTitleProps = {className: 'prefabs-mode-title'};
 let prefabLabelProps = {
 	className: 'selectable-text', onMouseDown: function(ev) {
@@ -17,6 +19,9 @@ let prefabLabelProps = {
 		sp(ev);
 	}
 };
+
+const zeroPoint = new PIXI.Point();
+const tmpPoint = new PIXI.Point();
 
 let stoppingExecutionTime;
 let playTogglingTime;
@@ -124,6 +129,19 @@ export default class Viewport extends React.Component {
 			
 			playTogglingTime = false;
 			game.onResize();
+		}
+	}
+
+	scrollInToScreen(node) {
+		if(game.currentContainer.isScrollable) {
+			let p = node.toGlobal(zeroPoint, tmpPoint);
+			if(p.x < SCROLL_IN_TO_SCREEN_FIELD || p.x > game.W-SCROLL_IN_TO_SCREEN_FIELD ||
+				p.y < SCROLL_IN_TO_SCREEN_FIELD || p.y > game.H-SCROLL_IN_TO_SCREEN_FIELD) {
+				p = game.stage.toLocal(p);
+
+				game.stage.x = game.W / 2 - p.x * game.stage.scale.x;
+				game.stage.y = game.H / 2 - p.y * game.stage.scale.y;
+			}
 		}
 	}
 	

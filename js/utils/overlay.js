@@ -253,7 +253,7 @@ $(window).on('mouseup', () => {
 $(window).on('wheel', function onWheel(ev) {
 	if(ev.target === game.pixiApp.view) {
 		if(isCurrentContainerScrollable()) {
-			let pivot = game.stage.toLocal(game.mouse, game.stage);
+			let pivot = game.stage.toLocal(game.mouse, game.stage.parent);
 
 
 			let zoom = game.stage.scale.x;

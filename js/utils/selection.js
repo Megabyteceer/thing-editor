@@ -54,6 +54,7 @@ class Selection extends Array {
 		if(o.__onSelect) {
 			o.__onSelect();
 		}
+		editor.ui.viewport.scrollInToScreen(o);
 	}
 	
 	remove(o) {
