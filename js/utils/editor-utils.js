@@ -119,6 +119,12 @@ window.selectText = function(element) {
 	selection.addRange(range);
 };
 
+window.__EDITOReditableProps = (class_, array) => {
+	assert(!class_.hasOwnProperty('__EDITOR_editableProps'), "Editable properties for class" + class_.name + " already assigned.");
+	class_.__EDITOR_editableProps = array;
+};
+
+
 window.assert = (expression, message, dontBreakFlow) => {
 	message = 'Assert: ' + message;
 	if (!expression) {

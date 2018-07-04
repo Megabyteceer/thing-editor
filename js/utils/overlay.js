@@ -114,7 +114,7 @@ function refreshSelection() {
 			info.draggerRotator = null;
 			draggers.splice(i, 1);
 		}
-		if ((Math.abs(d.x - game.mouse.x) < 6) && (Math.abs(d.y - game.mouse.y) < 6)) {
+		if ((Math.abs(d.x - game.mouse.__EDITOR_x) < 6) && (Math.abs(d.y - game.mouse.__EDITOR_y) < 6)) {
 			overedDragger = d;
 		}
 		i--;
@@ -150,8 +150,8 @@ $(window).on('mousedown', function onMouseDown(ev) {
 		if(ev.buttons === 4) {
 			if(isCurrentContainerScrollable()) {
 				isScrolling = true;
-				scrollingX = game.mouse.x;
-				scrollingY = game.mouse.y;
+				scrollingX = game.mouse.__EDITOR_x;
+				scrollingY = game.mouse.__EDITOR_y;
 			}
 		} else {
 			if (overedDragger) {
@@ -231,14 +231,14 @@ $(window).on('mousemove', function onMouseMove(ev) {
 		if(ev.buttons !== 4) {
 			isScrolling = false;
 		} else {
-			let dX = game.mouse.x - scrollingX;
-			let dY =  game.mouse.y - scrollingY;
+			let dX = game.mouse.__EDITOR_x - scrollingX;
+			let dY =  game.mouse.__EDITOR_y - scrollingY;
 			game.stage.x += dX;
 			game.stage.y += dY;
 
 			
-			scrollingX =  game.mouse.x;
-			scrollingY =  game.mouse.y;
+			scrollingX =  game.mouse.__EDITOR_x;
+			scrollingY =  game.mouse.__EDITOR_y;
 		}
 	}
 	if (draggingDragger && draggingDragger.owner.parent) {
@@ -295,8 +295,8 @@ class Dragger extends DSprite {
 		let o = this.owner;
 		
 		if(game.mouse.shiftKey) {
-			let dX = game.mouse.x - startX;
-			let dY = game.mouse.y - startY;
+			let dX = game.mouse.__EDITOR_x - startX;
+			let dY = game.mouse.__EDITOR_y - startY;
 			let angle = Math.atan2(dY, dX);
 			angle /= Math.PI;
 			angle *= 4;
@@ -308,8 +308,8 @@ class Dragger extends DSprite {
 			p.x = startX + Math.cos(angle) * len;
 			p.y = startY + Math.sin(angle) * len;
 		} else {
-			p.x = game.mouse.x;
-			p.y = game.mouse.y;
+			p.x = game.mouse.__EDITOR_x;
+			p.y = game.mouse.__EDITOR_y;
 		}
 		
 		o.parent.toLocal(p, undefined, p, true);
@@ -337,7 +337,7 @@ class Rotator extends DSprite {
 	onDrag() {
 		let o = this.owner;
 		let info = __getNodeExtendData(o);
-		let r = Math.atan2(game.mouse.y - info.draggerPivot.y, game.mouse.x - info.draggerPivot.x);
+		let r = Math.atan2(game.mouse.__EDITOR_y - info.draggerPivot.y, game.mouse.__EDITOR_x - info.draggerPivot.x);
 		if (game.mouse.shiftKey) {
 			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 		}
