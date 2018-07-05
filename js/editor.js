@@ -14,7 +14,6 @@ import PrefabsList from "./ui/prefabs-list.js";
 import Signal from "./utils/signal.js";
 import Lib from "/thing-engine/js/lib.js";
 import build from "./utils/build.js";
-import Pool from "/thing-engine/js/utils/pool.js";
 import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
 import DisplayObject from '/thing-engine/js/components/display-object.js';

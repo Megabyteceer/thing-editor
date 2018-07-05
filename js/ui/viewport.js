@@ -188,7 +188,13 @@ export default class Viewport extends React.Component {
 			panel = R.span(null,
 				R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 				R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes', 'main-btn'),
-				R.btn(R.icon('reject'), PrefabsList.hidePrefabPreview, 'Reject prefab changes'),
+				R.btn(R.icon('reject'), () => {
+					if(editor.history.isUndoAvailable()) {
+						editor.ui.modal.showQuestion("Are you sure?", "Are you really wanted to discard all changes made in prefab?", PrefabsList.hidePrefabPreview, "Discard changes.");
+					} else {
+						PrefabsList.hidePrefabPreview();
+					}
+				}, 'Reject prefab changes'),
 				'BG color:',
 				R.input({
 					onChange: (ev) => {

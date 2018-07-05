@@ -4,6 +4,7 @@ import Container from "/thing-engine/js/components/container.js";
 import Button from "/thing-engine/js/components/button.js";
 import Text from "/thing-engine/js/components/text.js";
 import Label from "/thing-engine/js/components/label.js";
+import ProgressBar from "/thing-engine/js/components/progress-bar.js";
 import PrefabReference from "/thing-engine/js/components/prefab-reference.js";
 import NumberInput from "/thing-engine/js/components/number-input.js";
 import Trigger from "/thing-engine/js/components/trigger.js";
@@ -33,6 +34,7 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[Tilemap, "/thing-engine/js/components/tilemap.js"],
 		[Button, "/thing-engine/js/components/button.js"],
 		[Label, "/thing-engine/js/components/label.js"],
+		[ProgressBar, "/thing-engine/js/components/progress-bar.js"],
 		[NumberInput, "/thing-engine/js/components/number-input.js"],
 		[Trigger,"/thing-engine/js/components/trigger.js" ],
 		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
