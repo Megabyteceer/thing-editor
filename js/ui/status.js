@@ -8,10 +8,9 @@ const warnIcon = R.icon('warn-icon');
 
 
 const needAddInToList = (map, owner) => {
-	if(!owner) {
+	if(!(owner instanceof DisplayObject)) {
 		return true;
-	}
-	if((owner instanceof DisplayObject)) {
+	} else {
 		let exData = __getNodeExtendData(owner);
 		if(!map.has(exData)) {
 			map.set(exData, true);
@@ -121,9 +120,7 @@ class InfoList extends React.Component {
 		let node;
 		if(item.owner && item.owner instanceof DisplayObject) {
 			node = R.div(selectableSceneNodeProps, R.sceneNode(item.owner));
-		}
-		
-		if(item.owner && (item.owner instanceof DisplayObject)) {
+
 			let exData = __getNodeExtendData(item.owner);
 			if(!exData.alertRefs) {
 				exData.alertRefs = new WeakMap();
@@ -131,7 +128,9 @@ class InfoList extends React.Component {
 			exData.alertRefs.set(item, true);
 		}
 		return R.div({key:i, className:'info-item clickable', onClick:() => {
-			if(item.owner && (item.owner instanceof DisplayObject)) {
+			if(typeof item.owner === "function") {
+				item.owner();
+			} else if(item.owner && (item.owner instanceof DisplayObject)) {
 				
 				let exData = __getNodeExtendData(item.owner);
 				if(!exData.alertRefs || !exData.alertRefs.has(item)) {

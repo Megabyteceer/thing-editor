@@ -14,7 +14,18 @@ let fs = {
 			data.sort();
 			data = data.filter((fn) => {
 				if (fn.toLowerCase() !== fn) {
-					editor.ui.status.warn("File with upper cased characters ignored: " + fn);
+					editor.ui.status.warn("File with upper cased characters ignored: " + fn, () => {
+						let a = fn.split('/');
+						let path = [];
+						for(let p of a) {
+							if(p !== p.toLowerCase()) {
+								break;
+							} else {
+								path.push(p);
+							}
+						}
+						fs.editFile(path.join('/'));
+					});
 					return false;
 				}
 				return true;
