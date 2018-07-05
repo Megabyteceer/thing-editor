@@ -8,7 +8,10 @@ const warnIcon = R.icon('warn-icon');
 
 
 const needAddInToList = (map, owner) => {
-	if(owner && (owner instanceof DisplayObject)) {
+	if(!owner) {
+		return true;
+	}
+	if((owner instanceof DisplayObject)) {
 		let exData = __getNodeExtendData(owner);
 		if(!map.has(exData)) {
 			map.set(exData, true);

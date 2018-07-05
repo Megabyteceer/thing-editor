@@ -1066,6 +1066,20 @@ input{
 	padding: 5px 20px;
 }
 
+#window-info .info-item {
+	user-select:text;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

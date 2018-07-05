@@ -17,6 +17,7 @@ import build from "./utils/build.js";
 import Pool from "/thing-engine/js/utils/pool.js";
 import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
+import DisplayObject from '/thing-engine/js/components/display-object.js';
 
 export default class Editor {
 	
@@ -479,6 +480,7 @@ $(window).on('keyup', tryToSaveHistory);
 let idCounter = 0;
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
+	assert(node instanceof DisplayObject, "DisplayObject expected");
 	if(!editorNodeData.has(node)) {
 		editorNodeData.set(node, {id: idCounter++});
 	}
