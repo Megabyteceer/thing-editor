@@ -121,13 +121,42 @@ function enumClassProperties(c) {
 	let props = [];
 	let defaults = {};
 	let i = 50;
+	
+	let path;
+	if(!loadedPath) {
+		path = embeddedClasses.find((a) => {
+			return a[0].name === c.name;
+		});
+		if(path) {
+			path = path[1];
+		}
+	} else {
+		path = loadedPath;
+	}
+
 	while (cc && (i-- > 0)) {
 		if (!cc.prototype) {
 			throw 'attempt to enum editable properties of not DisplayObject instance';
 		}
 		if (cc.hasOwnProperty('__EDITOR_editableProps')) {
-			let addProps = cc.__EDITOR_editableProps;
-			addProps.some((p) => {
+			let addProps = cc.__EDITOR_editableProps.map((p) => {
+
+				let ownerClassName = c.name + ' (' + path + ')';
+				p.owner = ownerClassName;
+				
+				props = props.filter((pp) => {
+					if(pp.name === p.name) {
+						if(!pp.override) {
+							editor.ui.modal.showError('redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner);
+						} else {
+							p = Object.assign({}, p, pp);
+						}
+						return false;
+					} else {
+						return true;
+					}
+				});
+
 				if (p.type === 'splitter' || p.type === 'btn') {
 					p.notSeriazable = true;
 				} else {
@@ -144,21 +173,7 @@ function enumClassProperties(c) {
 					
 				}
 				
-				let ownerClassName = c.name + ' (' + loadedPath + ')';
-				p.owner = ownerClassName;
-				
-				props = props.filter((pp) => {
-					if(pp.name === p.name) {
-						if(!pp.override) {
-							editor.ui.modal.showError('redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner);
-						} else {
-							Object.assign(p, pp);
-						}
-						return false;
-					} else {
-						return true;
-					}
-				});
+				return p;
 			});
 			
 			props = addProps.concat(props);
@@ -184,6 +199,7 @@ let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
 	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
+	loadedPath = null;
 	return new Promise((resolve) => {
 		cacheCounter++;
 		currentLoadingPromiseResolver = resolve;
