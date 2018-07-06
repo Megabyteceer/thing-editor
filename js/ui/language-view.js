@@ -91,8 +91,25 @@ class LanguageTableEditor extends React.Component {
 	}
 	
 	onAddNewKeyClick() {
+
+		let defaultKey = '';
+		for(let o of editor.selection) {
+			let props = editor.enumObjectsProperties(o);
+			for(let p of props) {
+				if(p.isTranslatableKey) {
+					let k = o[p.name];
+					if(k && k !==' ') {
+						if(!L.has(k)) {
+							defaultKey = k;
+						}
+						break;
+					}
+				}
+			}
+		}
+
 		editor.ui.modal.showPrompt('Enter new translatable KEY:',
-			'',
+			defaultKey,
 			(val) => { //filter
 				return val.toUpperCase();
 			},
@@ -204,7 +221,8 @@ window.makeTranslatableSelectEditablePropertyDecriptor = (name, important) => {
 	let ret = {
 		name: name,
 		type: String,
-		important: important
+		important: important,
+		isTranslatableKey: true
 	};
 	Object.defineProperty(ret, 'select', {
 		get: () => {
