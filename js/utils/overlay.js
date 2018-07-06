@@ -6,7 +6,7 @@ import game from "/thing-engine/js/game.js";
 import Scene from "/thing-engine/js/components/scene.js";
 
 let blackout;
-
+let cameraFrame;
 
 let isPreviewShowed;
 
@@ -41,6 +41,9 @@ export default class Overlay {
 		blackout.alpha = 0.9;
 		blackout.width = game.W;
 		blackout.height = game.H;
+
+		cameraFrame = new PIXI.Graphics();
+		
 	}
 	
 	getBGcolor() {
@@ -60,6 +63,30 @@ export default class Overlay {
 	
 	disableSelection(disable) {
 		selectionDisabled = disable;
+	}
+
+	refreshCameraFrame() {
+		if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
+			if(!cameraFrame.parent) {
+				game.stage.addChild(cameraFrame);
+			}
+			if(cameraFrame.__appliedW !== game.W ||
+				cameraFrame.__appliedH !== game.H) {
+
+				const W = 40;
+				cameraFrame.clear();
+				cameraFrame.lineStyle(W, 0x808080, 0.4);
+				cameraFrame.beginFill(0, 0);
+				cameraFrame.drawRect(W/-2, W/-2, game.W + W, game.H + W);
+
+				cameraFrame.__appliedW = game.W;
+				cameraFrame.__appliedH = game.H;
+			}
+		} else {
+			if(cameraFrame.parent) {
+				cameraFrame.parent.removeChild(cameraFrame);
+			}
+		}
 	}
 	
 	showPreview(object) {
@@ -237,6 +264,7 @@ $(window).on('mousemove', function onMouseMove(ev) {
 			
 			scrollingX =  game.mouse.__EDITOR_x;
 			scrollingY =  game.mouse.__EDITOR_y;
+			editor.overlay.refreshCameraFrame();
 		}
 	}
 	if (draggingDragger && draggingDragger.owner.parent) {
@@ -272,7 +300,7 @@ $(window).on('wheel', function onWheel(ev) {
 		game.stage.scale.x = zoom;
 		game.stage.scale.y = zoom;
 		sp(ev);
-		
+		editor.overlay.refreshCameraFrame();
 	}
 });
 
