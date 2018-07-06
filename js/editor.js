@@ -103,6 +103,8 @@ export default class Editor {
 			editor.projectDesc = data;
 
 			game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');
+			game.stage.interactiveChildren = false;
+			
 			this.overlay = new Overlay();
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
 			

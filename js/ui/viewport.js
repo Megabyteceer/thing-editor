@@ -20,6 +20,8 @@ let prefabLabelProps = {
 	}
 };
 
+game.enforcedOrientation = 'landscape';
+
 const zeroPoint = new PIXI.Point();
 const tmpPoint = new PIXI.Point();
 
@@ -112,6 +114,7 @@ export default class Viewport extends React.Component {
 				game.currentScene = null;
 				game.showScene(s);
 				problemOnGameStart = false;
+				game.stage.interactiveChildren = true;
 			} else { //stop game
 				Music.stop();
 				problemOnGameStop = true;
@@ -120,6 +123,7 @@ export default class Viewport extends React.Component {
 				editor.restoreBackup(true);
 				
 				problemOnGameStop = false;
+				game.stage.interactiveChildren = false;
 			}
 			
 			this.forceUpdate();
