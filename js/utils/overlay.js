@@ -148,11 +148,9 @@ let startX, startY;
 $(window).on('mousedown', function onMouseDown(ev) {
 	if(ev.target === game.pixiApp.view) {
 		if(ev.buttons === 4) {
-			if(isCurrentContainerScrollable()) {
-				isScrolling = true;
-				scrollingX = game.mouse.__EDITOR_x;
-				scrollingY = game.mouse.__EDITOR_y;
-			}
+			isScrolling = true;
+			scrollingX = game.mouse.__EDITOR_x;
+			scrollingY = game.mouse.__EDITOR_y;
 		} else {
 			if (overedDragger) {
 				if(overedDragger instanceof Rotator && ev.buttons === 2) {
@@ -252,38 +250,31 @@ $(window).on('mouseup', () => {
 
 $(window).on('wheel', function onWheel(ev) {
 	if(ev.target === game.pixiApp.view) {
-		if(isCurrentContainerScrollable()) {
-			let pivot = game.stage.toLocal(game.mouse, game.stage.parent);
+
+		let pivot = game.stage.toLocal(game.mouse, game.stage.parent);
 
 
-			let zoom = game.stage.scale.x;
-			zoom *= 1 - ev.originalEvent.deltaY/1000;
+		let zoom = game.stage.scale.x;
+		zoom *= 1 - ev.originalEvent.deltaY/1000;
 
-			if(Math.abs(zoom - 1.0) < 0.01) {
-				zoom = 1;
-			}
-			if(zoom > 5) {
-				zoom = 5;
-			}
-			if(zoom < 0.02) {
-				zoom = 0.02;
-			}
-			game.stage.x += (pivot.x * game.stage.scale.x - pivot.x * zoom);
-			game.stage.y += (pivot.y * game.stage.scale.y - pivot.y * zoom);
-
-			game.stage.scale.x = zoom;
-			game.stage.scale.y = zoom;
-			sp(ev);
+		if(Math.abs(zoom - 1.0) < 0.01) {
+			zoom = 1;
 		}
+		if(zoom > 5) {
+			zoom = 5;
+		}
+		if(zoom < 0.02) {
+			zoom = 0.02;
+		}
+		game.stage.x += (pivot.x * game.stage.scale.x - pivot.x * zoom);
+		game.stage.y += (pivot.y * game.stage.scale.y - pivot.y * zoom);
+
+		game.stage.scale.x = zoom;
+		game.stage.scale.y = zoom;
+		sp(ev);
+		
 	}
 });
-
-
-function isCurrentContainerScrollable() {
-	let c = game.currentContainer;
-	return (c.isScrollable || !(c instanceof Scene));
-}
-
 
 class Dragger extends DSprite {
 	constructor() {

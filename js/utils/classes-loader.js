@@ -18,6 +18,7 @@ import FlyText from "/thing-engine/js/components/fly-text.js";
 import Sprite from "/thing-engine/js/components/sprite.js";
 import DisplayObject from "/thing-engine/js/components/display-object.js";
 import Tilemap from "/thing-engine/js/components/tilemap.js";
+import Shape from "/thing-engine/js/components/shape.js";
 import game from "/thing-engine/js/game.js";
 
 let ClassesLoader = {};
@@ -39,7 +40,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[Trigger,"/thing-engine/js/components/trigger.js" ],
 		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
 		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"],
-		[PrefabReference, "/thing-engine/js/components/prefab-reference.js"]
+		[PrefabReference, "/thing-engine/js/components/prefab-reference.js"],
+		[Shape, "/thing-engine/js/components/shape.js"]
 	];
 };
 
