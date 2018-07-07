@@ -68,6 +68,7 @@ export default class Overlay {
 		if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
 			if(!cameraFrame.parent) {
 				game.stage.addChild(cameraFrame);
+				__getNodeExtendData(cameraFrame).hidden = true;
 			}
 			if(cameraFrame.__appliedW !== game.W ||
 				cameraFrame.__appliedH !== game.H) {
