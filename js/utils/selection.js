@@ -64,9 +64,7 @@ class Selection extends Array {
 		__getNodeExtendData(o).isSelected = false;
 		o.filters = null;
 		this.splice(i, 1);
-		if(o.__EDITOR_onDeselect) {
-			o.__EDITOR_onDeselect();
-		}
+		o.__EDITOR_inner_exitPreviewMode();
 	}
 }
 

@@ -218,6 +218,24 @@ window.isEventFocusOnInputElement = (ev) => {
 	return !canBePassed && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
 };
 
+window.makePreviewModeButton = function(title) {
+	let previewBtnProperty = {
+		type: 'btn',
+		title: title,
+		name: title,
+		onClick: (o) => {
+			if(o.__EDITOR_component_in_previewMode) {
+				o.__EDITOR_inner_exitPreviewMode();
+				previewBtnProperty.className = undefined;
+			} else {
+				o.__EDITOR_inner_goToPreviewMode();
+				previewBtnProperty.className = 'danger-btn';
+			}
+			editor.refreshPropsEditor();
+		}
+	};
+	return previewBtnProperty;
+};
 
 window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = true) {
 	return () => {
@@ -276,25 +294,16 @@ window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) 
 };
 
 export default {
-	
 	protectAccessToSceneNode: (o, debugName) => {
 		o.remove = () => {
 			assert(false, "Attempt to remove " + debugName);
 		};
-		
 		o.destroy  = () => {
 			assert(false, "Attempt to destroy " + debugName);
 		};
-		
 		o.detachFromParent  = () => {
 			assert(false, "Attempt to detachFromParent " + debugName);
 		};
-		
 		o.__EDITOR_isHiddenForChooser = true;
-		
-		
 	}
-	
-	
-	
 };

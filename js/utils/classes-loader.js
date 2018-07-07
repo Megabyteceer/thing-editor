@@ -19,6 +19,7 @@ import Sprite from "/thing-engine/js/components/sprite.js";
 import DisplayObject from "/thing-engine/js/components/display-object.js";
 import Tilemap from "/thing-engine/js/components/tilemap.js";
 import Shape from "/thing-engine/js/components/shape.js";
+import Mask from "/thing-engine/js/components/mask.js";
 import game from "/thing-engine/js/game.js";
 
 let ClassesLoader = {};
@@ -41,7 +42,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
 		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"],
 		[PrefabReference, "/thing-engine/js/components/prefab-reference.js"],
-		[Shape, "/thing-engine/js/components/shape.js"]
+		[Shape, "/thing-engine/js/components/shape.js"],
+		[Mask, "/thing-engine/js/components/mask.js"]
 	];
 };
 
