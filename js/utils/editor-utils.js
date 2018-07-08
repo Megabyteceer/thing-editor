@@ -237,17 +237,20 @@ window.makePreviewModeButton = function(title) {
 	return previewBtnProperty;
 };
 
-window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = true) {
+window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = true, filter = null) {
 	return () => {
 		let ret = [];
 		if(canBeEmty) {
-			ret.push({name:'default', value:''});
+			ret.push({name:' ', value:''});
 		}
 		let a = editor.Lib._getAllPrefabs();
 		for(let name in a) {
 			if(!startsWith || name.startsWith(startsWith)) {
 				ret.push({name:name, value:name});
 			}
+		}
+		if(filter) {
+			return ret.filter(filter);
 		}
 		return ret;
 	};

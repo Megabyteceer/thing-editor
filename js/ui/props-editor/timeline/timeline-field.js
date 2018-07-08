@@ -187,6 +187,7 @@ export default class FieldsTimeline extends React.Component {
 		
 		Timeline.renormalizeFieldTimelineDataAfterChange(this.props.field);
 		this.forceUpdate();
+		keyframePropsEditor.forceUpdate();
 	}
 	
 	deleteKeyframe(keyFrame) {
@@ -514,7 +515,7 @@ export class KeyframePropertyEditor extends React.Component {
 		return R.div({className: 'bottom-panel'},
 			' action: ',
 			React.createElement(CallbackEditor, {value:kf.a || null, onChange:this.onActionChange, title:'Callback for keyframe ' + kf.t}),
-			' ', R.btn(selectKeyframeTypes[kf.m], () => {selectedKeyframe.toggleKeyframeType(kf);}, "Switch selected keyframe's' Mode (Ctrl + M)", 'keyframe-type-chooser', 1077), ' ',
+			' ', R.btn(selectKeyframeTypes[kf.m], () => {selectedTimeline.toggleKeyframeType(kf);}, "Switch selected keyframe's' Mode (Ctrl + M)", 'keyframe-type-chooser', 1077), ' ',
 			R.label({htmlFor:'speed-set-checkbox'}, ' speed set:'),
 			R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
 			speedEditor,

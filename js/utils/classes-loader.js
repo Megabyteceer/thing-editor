@@ -21,6 +21,7 @@ import Tilemap from "/thing-engine/js/components/tilemap.js";
 import Shape from "/thing-engine/js/components/shape.js";
 import Mask from "/thing-engine/js/components/mask.js";
 import Fill from "/thing-engine/js/components/fill.js";
+import Spawner from "/thing-engine/js/components/spawner.js";
 import game from "/thing-engine/js/game.js";
 
 let ClassesLoader = {};
@@ -45,7 +46,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[PrefabReference, "/thing-engine/js/components/prefab-reference.js"],
 		[Shape, "/thing-engine/js/components/shape.js"],
 		[Mask, "/thing-engine/js/components/mask.js"],
-		[Fill, "/thing-engine/js/components/fill.js"]
+		[Fill, "/thing-engine/js/components/fill.js"],
+		[Spawner, "/thing-engine/js/components/spawner.js"]
 	];
 };
 
