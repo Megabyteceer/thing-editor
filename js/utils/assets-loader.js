@@ -1,5 +1,7 @@
 import game from "/thing-engine/js/game.js";
 import Lib from "/thing-engine/js/lib.js";
+import Sound from "/thing-engine/js/utils/sound.js";
+import Music from "/thing-engine/js/utils/music.js";
 
 const AssetsLoader = {};
 
@@ -30,6 +32,8 @@ const enumAssets = () => {
 		}
 	}
 	
+	Sound.stop();
+	Music.__resetAllMusics();
 	Lib.__clearAssetsLists();
 	
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
@@ -42,11 +46,21 @@ const enumAssets = () => {
 	});
 
 	Lib.__onAllAssetsLoaded(() => {
+		let emSave = game.__EDITORmode;
+		game.__EDITORmode = true; //enforece update some type of components (tilegrid, fill);
 		tmp.forEach((image, o) => {
 			o.image = image;
 		});
+		game.__EDITORmode = emSave;
+
 		game.pixiApp.start();
 		editor.ui.modal.hideSpinner();
+
+		if(!game.__EDITORmode) {
+			if(game.currentScene) {
+				game.currentScene._playMusic();
+			}
+		}
 	});
 };
 
