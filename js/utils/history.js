@@ -1,8 +1,8 @@
 import Lib from "/thing-engine/js/lib.js";
 import game from "/thing-engine/js/game.js";
 
-const HISTORY_LEN = 50;
-const STRICT_HISTORY_LEN = 10;
+const HISTORY_LEN = 100;
+const STRICT_HISTORY_LEN = 20;
 
 let undosStack = []; //separated undo/redo array for scene and each modal objects
 let redosStack = [];
