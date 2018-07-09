@@ -1,6 +1,9 @@
 import Tilemap from "/thing-engine/js/components/tilemap.js";
 import game from "/thing-engine/js/game.js";
 
+let IS_SELECTION_LOADING_TIME = false;
+let needSaveSelectionInToHistory = false;
+
 class Selection extends Array {
 	
 	select(object, add) {
@@ -22,12 +25,14 @@ class Selection extends Array {
 	}
 	
 	loadSelection(data) {
+		IS_SELECTION_LOADING_TIME = true;
 		if (!data || data.length === 0) {
 			editor.selection.clearSelection();
 		} else {
 			data.some(selectNodeByPath);
 		}
 		editor.refreshTreeViewAndPropertyEditor();
+		IS_SELECTION_LOADING_TIME = false;
 	}
 	
 	saveSelection() {
@@ -55,6 +60,9 @@ class Selection extends Array {
 			o.__onSelect();
 		}
 		editor.ui.viewport.scrollInToScreen(o);
+		if(!IS_SELECTION_LOADING_TIME) {
+			needSaveSelectionInToHistory = true;
+		}
 	}
 	
 	remove(o) {
@@ -65,6 +73,9 @@ class Selection extends Array {
 		o.filters = null;
 		this.splice(i, 1);
 		o.__EDITOR_inner_exitPreviewMode();
+		if(!IS_SELECTION_LOADING_TIME) {
+			needSaveSelectionInToHistory = true;
+		}
 	}
 }
 
@@ -77,6 +88,11 @@ setInterval(() => {
 	if (window.editor && editor.selection.length > 0) {
 		selectionFilter.color ^= 0x063311;
 	}
+	if(needSaveSelectionInToHistory) {
+		editor.history.addHistoryState(true);
+		needSaveSelectionInToHistory = false;
+	}
+
 }, 1000 / 60 * 3);
 
 //save/load selection

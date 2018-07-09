@@ -10,12 +10,17 @@ let historyUi;
 
 let instance;
 
+let lastAppliedTreeData;
+
 function applyState(state) {
 	assert(state, 'Empty history record');
-	
-	let node = Lib._deserializeObject(state);
 	assert(game.__EDITORmode);
-	game.__setCurrentContainerContent(node);
+
+	if(state.treeData !== lastAppliedTreeData) {
+		let node = Lib._deserializeObject(state.treeData);
+		game.__setCurrentContainerContent(node);
+		lastAppliedTreeData = state.treeData;
+	}
 	editor.selection.loadSelection(state.selectionData);
 }
 
@@ -63,15 +68,27 @@ class History {
 		return redosStack[game.modalsCount];
 	}
 
-	_pushCurrentStateToUndoHistory(selectionData) {
+	_pushCurrentStateToUndoHistory(selectionData, selectionOnly) {
 		assert(game.__EDITORmode, "Attempt to use history in running time.");
-		this._undos.push(Lib.__serializeObject(game.currentContainer));
 
-		this.currentState._isModified = true;
+		let historyRecord = {};
+		if(selectionOnly) {
+			if(arraysEqual(selectionData, this.currentState.selectionData)) {
+				return;
+			}
+			historyRecord.treeData = this.currentState.treeData;
+		} else {
+			historyRecord.treeData = Lib.__serializeObject(game.currentContainer);
+			historyRecord.treeData._isModified = true;
+		}
+
+		lastAppliedTreeData = historyRecord.treeData;
+
+		this._undos.push(historyRecord);
 		this.currentState.selectionData = selectionData;
-		
+
 		//reduce and limit history
-		if (this._undos.length > HISTORY_LEN) {
+		if(this._undos.length > HISTORY_LEN) {
 			let i = HISTORY_LEN - 1;
 			while (i > STRICT_HISTORY_LEN) {
 				i -= 2;
@@ -80,11 +97,13 @@ class History {
 		}
 		historyUi.forceUpdate();
 	}
-	
-	addHistoryState() {
+
+	addHistoryState(selectionOnly = false) {
 		let selectionData = editor.selection.saveSelection();
-		this._redos.length = 0;
-		this._pushCurrentStateToUndoHistory(selectionData);
+		if(!selectionOnly) {
+			this._redos.length = 0;
+		}
+		this._pushCurrentStateToUndoHistory(selectionData, selectionOnly);
 	}
 	
 	undo() {
@@ -123,13 +142,13 @@ class History {
 	
 	setCurrentStateUnmodified() {
 		this._undos.some((s) => {
-			s._isModified = true;
+			s.treeData._isModified = true;
 		});
-		this.currentState._isModified = false;
+		this.currentState.treeData._isModified = false;
 	}
 	
 	get isStateModified() {
-		return this.currentState && this.currentState._isModified;
+		return this.currentState && this.currentState.treeData._isModified;
 	}
 	
 	buttonsRenderer() {
@@ -157,6 +176,22 @@ class HistoryUi extends React.Component {
 		);
 	}
 }
+
+function arraysEqual(a, b) {
+	if(a === b) return true;
+	if(a == null || b == null) return false;
+	if(a.length != b.length) return false;
+
+	for (var i = 0; i < a.length; ++i) {
+		if(Array.isArray(a[i])) {
+			if(!arraysEqual(a[i], b[i])) return false;
+		} else {
+			if(a[i] !== b[i]) return false;
+		}
+	}
+	return true;
+}
+
 
 
 let historyInstance = new History();
