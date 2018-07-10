@@ -89,7 +89,9 @@ setInterval(() => {
 		selectionFilter.color ^= 0x063311;
 	}
 	if(needSaveSelectionInToHistory) {
-		editor.history.addHistoryState(true);
+		if(game.__EDITORmode) {
+			editor.history.addHistoryState(true);
+		}
 		needSaveSelectionInToHistory = false;
 	}
 
