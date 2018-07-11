@@ -4,10 +4,6 @@ import Sound from "/thing-engine/js/utils/sound.js";
 
 let soundsList = [];
 let sounds = {};
-const extRemover = /\.[^\/\.]+$/;
-
-const soundFilter = /^snd\/.*\.(mp3|webm|ogg|weba|wav)$/gmi;
-const soundNameCleaner = /^snd\//gm;
 
 const bodyProps = {className: 'sounds-list list-view'};
 
@@ -15,6 +11,8 @@ let labelProps = {className: 'selectable-text', onMouseDown: function (ev) {
 	selectText(ev.target);
 	sp(ev);
 }};
+
+const supportedSoundFormats = ['webm', 'ogg', 'mp3', 'weba'];
 
 export default class SoundsList extends React.Component {
 
@@ -25,33 +23,35 @@ export default class SoundsList extends React.Component {
 	}
 
 	reloadSounds() {
-		soundsList = [];
-		sounds = {};
-
-		editor.fs.files.some((fileName) => {
-			if(fileName.match(soundFilter)) {
-				
-				fileName = fileName.replace(soundNameCleaner, '');
-				let name = fileName.replace(extRemover, '');
-				
-				if(!sounds.hasOwnProperty(name)) {
-					soundsList.push({name, value: name});
-					sounds[name] = [fileName];
-				} else {
-					sounds[name].push(fileName);
+		return new Promise((resolve) => {
+			if(editor.projectDesc.soundFormats) {
+				for(let f of editor.projectDesc.soundFormats) {
+					if(supportedSoundFormats.indexOf(f) < 0) {
+						editor.ui.modal.showError('soundFormats has unsupported format entry: ' + f);
+						editor.openProjectDescToEdit();
+						return;
+					}
 				}
+				editor.fs.getJSON('/fs/build-sounds?nocache=1&formats=' + (editor.projectDesc.soundFormats.join(','))).then((result) => {
+					if(result.errors) {
+						editor.ui.modal.showError(result.errors.map((r, i) =>{
+							return R.div({key:i}, r);
+						}));
+					} else {
+						editor.fs.getJSON('snd/sounds.json').then((soundsData) => {
+							sounds = soundsData;
+							soundsList = [];
+							for(let name in sounds) {
+								soundsList.push({name, value: name});
+							}
+							Lib._setSounds(sounds);
+							resolve();
+						});
+					}
+				});
 			}
 		});
-
-		for(let f in sounds) {
-			let a = sounds[f];
-			a.sort(soundsPriority);
-		}
-
-		Lib._setSounds(sounds);
-
 	}
-
 	onSelect(item) {
 		let needPlay = !Lib.getSound(item.name).playing();
 		Sound.stop();
@@ -86,19 +86,3 @@ export default class SoundsList extends React.Component {
 	}
 
 }
-
-const soundsPriority = (a,b) => {
-	return getSndPriority(b) - getSndPriority(a);
-};
-
-const getSndPriority = (s) => {
-	return extsPriority[s.split('.').pop().toLowerCase()] || 0;
-};
-
-const extsPriority = {
-	weba: 110,
-	webm: 100,
-	mp3: 80,
-	ogg: 90,
-	wav: 70
-};

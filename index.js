@@ -11,6 +11,7 @@ const app = express();
 const opn = require('opn');
 
 const build = require('./scripts/build.js');
+const buildSounds = require('./scripts/build-sounds.js');
 
 let currentGame;
 let currentGameRoot;
@@ -105,6 +106,18 @@ app.get('/fs/build', function (req, res) {
 	build(currentGameRoot, (result) => {
 		res.end(JSON.stringify(result));
 	}, req.query.debug);
+});
+
+app.get('/fs/build-sounds', function (req, res) {
+	log('BUILD sounds: ' + currentGameRoot);
+
+	buildSounds(currentGameRoot,
+		function (result) {
+			res.end(JSON.stringify(result));
+		},
+		req.query.formats.split(','),
+		req.query.nocache
+	);
 });
 
 app.post('/fs/savefile', jsonParser, function (req, res) {

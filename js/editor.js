@@ -76,6 +76,10 @@ export default class Editor {
 		this.openProject();
 	}
 	
+	openProjectDescToEdit() {
+		editor.fs.editFile(editor.currentProjectDir + 'thing-project.json');
+	}
+	
 	async openProject(dir) {
 		editor.ui.viewport.stopExecution();
 		await askSceneToSaveIfNeed();
@@ -236,9 +240,10 @@ export default class Editor {
 	
 	reloadAssets() {
 		return new Promise((resolve) => {
-			Lib.__onAllAssetsLoaded(resolve);
-			AssetsLoader.reloadAssets();
-			editor.ui.soundsList.reloadSounds();
+			editor.ui.soundsList.reloadSounds().then(() => {
+				Lib.__onAllAssetsLoaded(resolve);
+				AssetsLoader.reloadAssets();
+			});
 		});
 	}
 	
