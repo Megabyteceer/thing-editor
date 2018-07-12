@@ -63,7 +63,7 @@ let classes = {};`];
 						}));
 					}
 					
-					window.open('/games/' + editor.currentProjectDir + (debug ? '/debug' : '/release'));
+					window.open('/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release'));
 				}
 			});
 		});

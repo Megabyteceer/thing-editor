@@ -12,7 +12,7 @@ let labelProps = {className: 'selectable-text', onMouseDown: function (ev) {
 }};
 
 const soundNameCleaner = /^snd\//gm;
-const supportedSoundFormats = ['webm', 'ogg', 'mp3', 'weba'];
+const supportedSoundFormats = ['webm', 'ogg', 'mp3', 'weba', 'aac'];
 
 export default class SoundsList extends React.Component {
 
@@ -38,34 +38,44 @@ export default class SoundsList extends React.Component {
 							return R.div({key:i}, r);
 						}));
 					} else {
-						
 
-						const soundFilter =  new RegExp("^snd\/.*\.(" + editor.projectDesc.soundFormats.join('|') + ")$", "gmi");
+						const reloadSoundsInner = () => {
+							const soundFilter =  new RegExp("^snd\/.*\.(" + editor.projectDesc.soundFormats.join('|') + ")$", "gmi");
 
-						sounds = {};
-						editor.fs.files.some((fileName) => {
-							if(fileName.match(soundFilter)) {
+							sounds = {};
+							editor.fs.files.some((fileName) => {
+								if(fileName.match(soundFilter)) {
 
-								fileName = fileName.replace(soundNameCleaner, '');					
-								let name = fileName.split('.');
-								name.pop();
-								name = name.join('.');
-								if(!sounds.hasOwnProperty(name)) {
-									sounds[name] = [];
+									fileName = fileName.replace(soundNameCleaner, '');					
+									let name = fileName.split('.');
+									name.pop();
+									name = name.join('.');
+									if(!sounds.hasOwnProperty(name)) {
+										sounds[name] = [];
+									}
+									sounds[name].push(fileName);
 								}
-								sounds[name].push(fileName);
+							});
+
+							for(let f in sounds) {
+								let a = sounds[f];
+								a.sort(soundsPriority);
 							}
-						});
 
-						for(let f in sounds) {
-							let a = sounds[f];
-							a.sort(soundsPriority);
+							Lib._setSounds(sounds);
+							resolve();
+						};
+
+						if(result.updated) {
+							editor.fs.refreshFiles().then(reloadSoundsInner);
+						} else {
+							reloadSoundsInner();
 						}
-
-						Lib._setSounds(sounds);
-						resolve();
 					}
 				});
+			} else {
+				assert(false, 'no soundFormats option defined', true);
+				resolve();
 			}
 		});
 	}

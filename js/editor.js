@@ -77,7 +77,7 @@ export default class Editor {
 	}
 	
 	openProjectDescToEdit() {
-		editor.fs.editFile(editor.currentProjectDir + 'thing-project.json');
+		editor.fs.editFile('thing-project.json');
 	}
 	
 	async openProject(dir) {
@@ -103,7 +103,7 @@ export default class Editor {
 				return;
 			}
 			await this.fs.refreshFiles();
-			editor.currentProjectDir = dir;
+			editor.currentProjectDir = dir + '/';
 			editor.projectDesc = data;
 
 			game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');

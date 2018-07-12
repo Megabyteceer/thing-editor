@@ -63,6 +63,7 @@ module.exports = function (projectPath, callback, formats, noCache) {
 				if (f.length < 1) {
 					convertNextFile();
 				} else {
+					result.updated = true;
 					convertFile(fn, f.pop(), conv);
 				}
 			};
@@ -86,7 +87,7 @@ module.exports = function (projectPath, callback, formats, noCache) {
 			additionalOptions = ' -dash 1 ';
 		}
 
-		exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, stdout, stderr) => {
+		exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err) => {
 			if (err) {
 				outputError(err);
 			}
