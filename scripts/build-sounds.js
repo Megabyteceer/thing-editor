@@ -19,7 +19,7 @@ module.exports = function (projectPath, callback, formats, noCache) {
 
 	let cache;
 	let cacheFn = path.join(projectPath, 'snd/snd-convert-cache.json');
-	if (fs.exists(cacheFn)) {
+	if (fs.existsSync(cacheFn)) {
 		cache = JSON.parse(fs.readFileSync(cacheFn));
 	} else {
 		cache = {};
@@ -30,27 +30,30 @@ module.exports = function (projectPath, callback, formats, noCache) {
 	for (let fn of files) {
 		if (fn.endsWith('.wav')) {
 			let s = fs.statSync(fn);
-			if (noCache || !cache.hasOwnProperty(fn) || (s.mtimeMs !== cache[fn].mtimeMs)) {
+
+			let shortName = fn.replace(/\\/g, '/');
+			shortName = shortName.split('/snd/');
+			shortName.shift();
+			shortName = shortName.join('/snd/');
+
+			if (noCache || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs)) {
 				filesToConvert.push(fn);
-				cache[fn] = {
+				cache[shortName] = {
 					mtimeMs: s.mtimeMs
 				};
 			}
 		}
 	}
+	if (filesToConvert.length < 1) {
+		callback(result);
+		return;
+	}
+	
 	fs.writeFileSync(cacheFn, JSON.stringify(cache));
 
-	let soundsData;
-	let soundsDataFn = path.join(projectPath, 'snd/sounds.json');
-	if (fs.exists(soundsDataFn)) {
-		soundsData = JSON.parse(fs.readFileSync(soundsDataFn));
-	} else {
-		soundsData = {};
-	}
 
 	function convertNextFile() {
 		if (filesToConvert.length < 1) {
-			fs.writeFileSync(soundsDataFn, JSON.stringify(soundsData));
 			callback(result);
 		} else {
 			let fn = filesToConvert.pop();
@@ -60,15 +63,17 @@ module.exports = function (projectPath, callback, formats, noCache) {
 				if (f.length < 1) {
 					convertNextFile();
 				} else {
-					convertFile(fn, f.pop(), soundsData, conv);
+					convertFile(fn, f.pop(), conv);
 				}
 			};
 			conv();
 		}
 	}
+
 	convertNextFile();
 
-	function convertFile(fn, ext, soundsData, cb) {
+	function convertFile(fn, ext, cb) {
+		console.log('convert sound:' + fn + ' -> ' + ext);
 		let fileParts = path.parse(fn);
 		let resultName = fileParts.dir + '/' + fileParts.name + '.' + ext;
 
@@ -85,31 +90,7 @@ module.exports = function (projectPath, callback, formats, noCache) {
 			if (err) {
 				outputError(err);
 			}
-			getSoundFormat(fn, (sourceFormat) => {
-				getSoundFormat(resultName, (resultFormat) => {
-					soundsData[fileParts.name + '.' + ext] = {
-						s: resultFormat.start_time,
-						d: resultFormat.duration
-					};
-					cb();
-				});
-			});
-		});
-	}
-
-	function getSoundFormat(fn, cb) {
-		exec('ffprobe "' + fn + '" -show_format', (err, stdout, stderr) => {
-			if (err) {
-				outputError(err);
-			}
-			let ret = {};
-			for(let line of stdout.split('\n')) {
-				let a = line.split('=');
-				if(a.length === 2) {
-					ret[a[0].trim()] = a[1].trim();
-				}
-			}
-			cb(ret);
+			cb();
 		});
 	}
 };
