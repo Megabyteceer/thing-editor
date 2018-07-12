@@ -38,72 +38,32 @@ export default class SoundsList extends React.Component {
 							return R.div({key:i}, r);
 						}));
 					} else {
-						editor.fs.openFile('snd/snd-convert-cache.json').then((soundsCache) => {
+						
 
-							const soundFilter =  new RegExp("^snd\/.*\.(" + editor.projectDesc.soundFormats.join('|') + ")$", "gmi");
+						const soundFilter =  new RegExp("^snd\/.*\.(" + editor.projectDesc.soundFormats.join('|') + ")$", "gmi");
 
-							let soundsInProgress = 0;
+						sounds = {};
+						editor.fs.files.some((fileName) => {
+							if(fileName.match(soundFilter)) {
 
-							let sndCanheModified;
-							const finish = () => {
-								if(sndCanheModified) {
-									editor.fs.saveFile('snd/snd-convert-cache.json', soundsCache, true);
+								fileName = fileName.replace(soundNameCleaner, '');					
+								let name = fileName.split('.');
+								name.pop();
+								name = name.join('.');
+								if(!sounds.hasOwnProperty(name)) {
+									sounds[name] = [];
 								}
-								Lib._setSounds(sounds);
-								resolve();
-							};
-
-							sounds = {};
-							editor.fs.files.some((fileName) => {
-								if(fileName.match(soundFilter)) {
-
-									fileName = fileName.replace(soundNameCleaner, '');					
-									let name = fileName.split('.');
-									name.pop();
-									name = name.join('.');
-									
-									if(!sounds.hasOwnProperty(name)) {
-										sounds[name] = [];
-									}
-									let sndData = {src: fileName};
-
-									let cache = soundsCache[name + '.wav'];
-									assert(cache, "snd/snd-convert-cache.json has no info for " + fileName);
-									if(!cache.hasOwnProperty(fileName)) {
-										cache[fileName] = {};
-									}
-									cache = cache[fileName];
-
-									if(cache.hasOwnProperty('start') && cache.hasOwnProperty('duration') && cache.duration > 0) {
-										sndData.s = cache.start;
-										sndData.d = cache.duration;
-									} else {
-										sndCanheModified = true;
-										soundsInProgress++;
-										getSoundParameters(Lib.__sndFileNameToPath(fileName), (res) => {
-											cache.start = res.start;
-											cache.duration = res.duration;
-											sndData.s = res.start;
-											sndData.d = res.duration;
-											soundsInProgress--;
-											if(soundsInProgress === 0) {
-												finish();
-											}
-										});
-									}
-									sounds[name].push(sndData);
-								}
-							});
-
-							for(let f in sounds) {
-								let a = sounds[f];
-								a.sort(soundsPriority);
+								sounds[name].push(fileName);
 							}
-							if(soundsInProgress === 0) {
-								finish();
-							}
-							
 						});
+
+						for(let f in sounds) {
+							let a = sounds[f];
+							a.sort(soundsPriority);
+						}
+
+						Lib._setSounds(sounds);
+						resolve();
 					}
 				});
 			}
@@ -148,61 +108,9 @@ const soundsPriority = (a, b) => {
 };
 
 const getSndPriority = (s) => {
-	let i = editor.projectDesc.soundFormats.indexOf(s.src.split('.').pop().toLowerCase());
+	let i = editor.projectDesc.soundFormats.indexOf(s.split('.').pop().toLowerCase());
 	if(i < 0) {
 		i = 1000;
 	}
 	return i;
 };
-
-let audioCtx;
-function getSoundParameters(src, cb) {
-	let ret = {};
-	ret.duration = 0;
-	ret.start = 0;
-
-	if(!audioCtx) {
-		audioCtx = new AudioContext();
-	}
-	var request = new XMLHttpRequest();
-	request.open('GET', src, true);
-	request.responseType = 'arraybuffer';
-	request.onload = function() {
-		var audioData = request.response;
-		audioCtx.decodeAudioData(audioData).then(function(buffer) {
-
-			let len = buffer.length;
-			let startPos = len;
-			let endPos = 0;
-			
-			for(let c = 0; c < buffer.numberOfChannels; c++) {
-				let data = buffer.getChannelData(c);
-				for(let i = 0; i < len; i++) {
-					if(data[i] !== 0) {
-						if(startPos > i) {
-							startPos = i;
-						}
-						break;
-					}
-				}
-				for(let i = len - 1; i >= 0; i--) {
-					if(data[i] !== 0) {
-						if(endPos < i) {
-							endPos = i;
-						}
-						break;
-					}
-				}
-			}
-
-			const ratePerMs = buffer.sampleRate / 1000;
-			ret.start = startPos / ratePerMs;
-			ret.duration = endPos / ratePerMs - ret.start;
-
-			cb(ret);
-		}).catch(function(e){
-			console.log("Error with decoding audio data" + e.err);
-		});
-	};
-	request.send();
-}
