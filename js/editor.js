@@ -32,7 +32,9 @@ export default class Editor {
 		/*global editor */
 		window.editor = this;
 		this.Lib = Lib;
-		
+		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
+		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
+
 		this.tryToSaveHistory = tryToSaveHistory;
 		
 		this.currenGamePath = 'games/game-1';

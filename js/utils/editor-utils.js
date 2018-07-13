@@ -124,20 +124,6 @@ window.__EDITOReditableProps = (class_, array) => {
 	class_.__EDITOR_editableProps = array;
 };
 
-
-window.assert = (expression, message, dontBreakFlow) => {
-	message = 'Assert: ' + message;
-	if (!expression) {
-		
-		if (window.editor) {
-			editor.ui.modal.showError(message);
-		}
-		if (!dontBreakFlow) {
-			throw message;
-		}
-	}
-};
-
 //======== wrapPropertyWithNumberChecker - make numeric property sensitive for NaN assigning
 
 let _definedProps = new WeakMap();
@@ -189,9 +175,6 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	Object.defineProperty(constructor.prototype, propertyName, d);
 };
 
-window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
-window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
-window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
 PIXI.ObservablePoint.__EDITOR_selectableProps = ['x','y'];
 PIXI.Point.__EDITOR_selectableProps = ['x','y'];
 PIXI.mesh.Plane.__EDITOR_selectableProps = [];
