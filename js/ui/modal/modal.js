@@ -64,6 +64,10 @@ class Modal extends React.Component {
 			modals: []
 		};
 	}
+
+	isUIBlockedByModal() {
+		return spinnerShowCounter > 0 || this.state.modals.length > 0;
+	}
 	
 	hideModal(val) {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');

@@ -65,7 +65,7 @@ export default class PrefabsList extends React.Component {
 				}
 			}
 			
-			editor.ui.modal.showPrompt('Enter name for new prefab:',
+			editor.ui.modal.showPrompt(R.span(null, 'Enter name for new prefab: ', R.sceneNode(editor.selection[0])),
 				defaultPrefabName,
 				(val) => { // filter
 					return val.toLowerCase().replace(prefabNameFilter, '-');
