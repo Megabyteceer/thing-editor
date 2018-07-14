@@ -163,7 +163,9 @@ export default class Viewport extends React.Component {
 	}
 	
 	onReloadClassesClick() {
-		editor.fs.refreshFiles().then(editor.reloadClasses);
+		editor.fs.refreshFiles().then(()=>{
+			editor.reloadClasses().then(Lib.__validateClasses);
+		});
 	}
 	
 	onToggleOrientationClick() {

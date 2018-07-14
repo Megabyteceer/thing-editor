@@ -101,6 +101,7 @@ class UI extends React.Component {
 			R.btn('Build debug', () => {editor.build(true);}),
 			React.createElement(LanguageView),
 			editor.history.buttonsRenderer(),
+			R.btn('Project settings', editor.openProjectDescToEdit),
 			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),
 			renderWindow('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),
 				558, 0, 470, 420, 1362, 742),
@@ -119,13 +120,7 @@ class UI extends React.Component {
 	}
 }
 
-
-
-
-
 export default UI;
-
-
 
 class StatusBar extends React.Component {
 	

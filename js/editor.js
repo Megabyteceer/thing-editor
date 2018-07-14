@@ -253,7 +253,9 @@ export default class Editor {
 		return Promise.all([
 			this.reloadClasses(),
 			this.reloadAssets()
-		]);
+		]).then(()=>{
+			Lib.__validateClasses();
+		});
 	}
 	
 	attachToSelected(o, doNotSelect) {
