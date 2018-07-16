@@ -290,7 +290,16 @@ const renderRoots = (node, i) => {
 };
 
 const renderSceneStackItem = (s, i) => {
+
+	let body;
+	if(typeof s === "string") {
+		body = R.span(null, "waiting for instancing: " + s);
+	} else {
+		body = R.sceneNode(s)
+	}
+
+
 	return R.div({className:'stacked-scene-item', title: 'This scene currently in stack.', key: i},
-		R.sceneNode(s)
+		body
 	);
 };

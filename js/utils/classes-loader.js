@@ -171,14 +171,14 @@ function enumClassProperties(c) {
 					if (!p.hasOwnProperty('default')) {
 						p.default = PropsFieldWrapper.getTypeDescription(p).default;
 					}
-					defaults[p.name] = p.default;
-					
+					if(!p.notSeriazable) {
+						defaults[p.name] = p.default;
+					}
 					if(c === cc) { //own properties of this class
 						if(!p.hasOwnProperty('noNullCheck') && (p.type === Number || p.type === 'color' || p.type === 'select')) {
 							window.wrapPropertyWithNumberChecker(c, p.name);
 						}
 					}
-					
 				}
 				
 				return p;

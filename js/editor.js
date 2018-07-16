@@ -160,7 +160,7 @@ export default class Editor {
 			if(renameAfterOpening) {
 				assert(typeof renameAfterOpening === 'string', 'String expected');
 				name = renameAfterOpening;
-				game.currentScene.name = renameAfterOpening;
+				game.currentScene.__libSceneName = renameAfterOpening;
 			}
 			saveCurrentSceneName(name);
 			history.clearHistory();
@@ -216,6 +216,7 @@ export default class Editor {
 	get currentSceneName() {
 		let a = game._getScenesStack();
 		if(a.length > 0) {
+			assert((typeof a[0]) !== 'string', "Attempt to get name of scene which waiting for instancing.");
 			return a[0].name;
 		}
 		return game.currentScene ? game.currentScene.name : null;
