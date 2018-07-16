@@ -5,10 +5,9 @@ class SelectEditor extends React.Component {
 	constructor(props) {
 		super(props);
 		if(this.props.field) {
-			this.state = {filter: editor.settings.getItem(this.props.field.name + '-filter', '')};
-		} else {
-			this.state = {};
+			this.filterName = (this.props.field.filterName || this.props.field.name) + '-filter';
 		}
+		this.state = {};
 		
 		this.checkForNeedClearFilter = true;
 		
@@ -55,7 +54,10 @@ class SelectEditor extends React.Component {
 	
 	onToggle() {
 		if(!this.state.toggled && !this.props.disabled) {
-			this.setState({toggled: true});
+			this.setState({
+				toggled: true,
+				filter: editor.settings.getItem(this.filterName, '')
+			});
 		}
 	}
 	
@@ -77,7 +79,7 @@ class SelectEditor extends React.Component {
 	}
 	
 	setFilter(flt) {
-		editor.settings.setItem(this.props.field.name + '-filter', flt);
+		editor.settings.setItem(this.filterName, flt);
 		this.setState({filter: flt});
 	}
 	

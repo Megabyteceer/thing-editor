@@ -255,12 +255,13 @@ window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = tr
 	};
 };
 
-window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important) => {
+window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important, filterName = 'image') => {
 	let ret = {
 		name: name,
 		type: String,
 		default: canBeEmpty ? '' : 'EMPTY',
-		important: important
+		important: important,
+		filterName
 	};
 	Object.defineProperty(ret, 'select', {
 		get: () => {
