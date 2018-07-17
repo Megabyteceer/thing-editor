@@ -1070,8 +1070,26 @@ input{
 	user-select:text;
 }
 
+.number-input {
+	position: relative;
+	overflow: hidden;
+}
 
+.number-input-btn-up {
+	padding: 0 5px;
+	position: absolute;
+	right: 3px;
+	top: - 3px;
+	cursor: n-resize;
+}
 
+.number-input-btn-down {
+	padding: 0 5px;
+	position: absolute;
+	right: 3px;
+	bottom: 0;
+	cursor: n-resize;
+}
 
 
 
