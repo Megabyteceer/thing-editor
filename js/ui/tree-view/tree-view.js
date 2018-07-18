@@ -204,12 +204,10 @@ export default class TreeView extends React.Component {
 			
 			let props = editor.enumObjectsProperties(o);
 			for(let p of props) {
-				if(p.type === String || p.type === 'data-path') { //some new types with string data canbe added here
-					let val = o[p.name];
-					if(val && val.toLowerCase().indexOf(this.searchString) >= 0) {
-						foundByWhichProperty.set(o, p.name);
-						return true;
-					}
+				let val = o[p.name];
+				if((typeof val === 'string') && val.toLowerCase().indexOf(this.searchString) >= 0) {
+					foundByWhichProperty.set(o, p.name);
+					return true;
 				}
 			}
 		}, 1);
