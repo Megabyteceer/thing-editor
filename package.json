@@ -41,5 +41,7 @@
     "reset-css": "^3.0.0",
     "ws": "^5.1.0"
   },
-  "eslintIgnore": ["**/node_nodules/**"]
+  "eslintIgnore": [
+    "**/node_nodules/**"
+  ]
 }

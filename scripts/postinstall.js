@@ -13,7 +13,7 @@ var clientLibs = [
 	
 	['../../node_modules/howler/dist/howler.core.min.js', '../thing-engine/js/lib/howler.core.min.js'],
 	['../../node_modules/pixi.js/dist/pixi.min.js', '../thing-engine/js/lib/pixi.min.js'],
-	['../../node_modules/pixi-tilemap/bin/pixi-tilemap.js', '../thing-engine/js/lib/pixi-tilemap.js'],
+	['../../node_modules/pixi-tilemap/dist/pixi-tilemap.js', '../thing-engine/js/lib/pixi-tilemap.js'],
 	['../../node_modules/pixi.js/dist/pixi.js', '../thing-engine/js/lib/pixi.js']
 ];
 
