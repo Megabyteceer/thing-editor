@@ -213,24 +213,12 @@ $(window).on('mousedown', function onMouseDown(ev) {
 let previousAllUnderMouse;
 function selectByStageClick(ev) {
 	let allUnderMouse = new Selection();
-	let stack = [game.currentContainer];
 	let i;
-	
-	while (stack.length > 0) {
-		if (stack.length > 1000) throw new Error('owerflow');
-		let o = stack.pop();
-		let children = o.children;
-		let len = children.length;
-		for (i = 0; i < len; i++) {
-			o = children[i];
-			if (o.children.length > 0) {
-				stack.push(o);
-			}
-			if(o.containsPoint && o.worldVisible && o.containsPoint(game.mouse)) {
-				allUnderMouse.push(o);
-			}
+	game.currentContainer.forAllChildren((o) => {
+		if(o.containsPoint && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.mouse)) {
+			allUnderMouse.push(o);
 		}
-	}
+	});
 	
 	allUnderMouse.sortSelectedNodes();
 	allUnderMouse.reverse();
