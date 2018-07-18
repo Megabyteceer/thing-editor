@@ -439,7 +439,7 @@ function askSceneToSaveIfNeed(skip) {
 				() => {
 					resolve();
 					
-				}, 'No save'
+				}, "Don't save"
 			);
 		});
 	} else {
