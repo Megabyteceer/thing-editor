@@ -1075,20 +1075,27 @@ input{
 	overflow: hidden;
 }
 
-.number-input-btn-up {
+.number-input-btn {
 	padding: 0 5px;
 	position: absolute;
 	right: 3px;
+	cursor: pointer;
+}
+
+.number-input-btn:hover {
+	color:#a9851f;
+}
+
+.number-input-btn:active {
+	transform:scale(0.8);
+}
+
+.number-input-btn-up {
 	top: -6px;
-	cursor: n-resize;
 }
 
 .number-input-btn-down {
-	padding: 0 5px;
-	position: absolute;
-	right: 3px;
 	bottom: -4px;
-	cursor: n-resize;
 }
 
 
