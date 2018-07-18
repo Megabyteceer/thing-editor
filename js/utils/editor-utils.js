@@ -255,7 +255,7 @@ window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = tr
 	};
 };
 
-window.makeImageSelectEditablePropertyDecriptor = (name, canBeEmpty, important, filterName = 'image') => {
+window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important, filterName = 'image') => {
 	let ret = {
 		name: name,
 		type: String,

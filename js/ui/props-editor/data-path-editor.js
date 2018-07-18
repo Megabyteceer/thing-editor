@@ -29,8 +29,12 @@ export default class DataPathEditor extends React.Component {
 	}
 	
 	isItTargetValue(val) {
+		if(this.props.field.isValueValid && !this.props.field.isValueValid(val)) {
+			return false;
+		}
+
 		if (!val) return true;
-		
+
 		let type = typeof val;
 		
 		return ((type !== 'object') && (type !== 'function' || !Lib.__hasClass(val.name) || (Lib.getClass(val.name) !== val)));
@@ -204,8 +208,16 @@ export default class DataPathEditor extends React.Component {
 				addIfGood(name);
 			}
 		}
-		
-		editor.ui.modal.showListChoose('Path for ' + this.fieldNameToChoose + ': ' + path.join('.') + '.', items).then((selected) => {
+
+		let acceptNowBtn;
+		if(!this.props.field.isValueValid || this.props.field.isValueValid(parent)) {
+			acceptNowBtn = R.btn('✔', () => {
+				this.finalValueChoosed(path);
+				editor.ui.modal.hideModal();
+			}, 'Use this path', 'main-btn');
+		}
+
+		editor.ui.modal.showListChoose(R.span(null, 'Path for ' + this.fieldNameToChoose + ': ' + path.join('.') + '.', acceptNowBtn), items).then((selected) => {
 			if(selected) {
 				let val;
 				if(selected === BACK_ITEM) {

@@ -204,8 +204,8 @@ export default class TreeView extends React.Component {
 			
 			let props = editor.enumObjectsProperties(o);
 			for(let p of props) {
-				let val = o[p.name];
-				if((typeof val === 'string') && val.toLowerCase().indexOf(this.searchString) >= 0) {
+				let val = '' + o[p.name];
+				if(val.toLowerCase().indexOf(this.searchString) >= 0) {
 					foundByWhichProperty.set(o, p.name);
 					return true;
 				}
