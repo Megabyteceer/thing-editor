@@ -48,9 +48,12 @@ export default class Status extends React.Component {
 	
 	error (message, owner, fieldName) {
 		console.error(message);
-		
+		let item = {owner, message, fieldName}
+		if(owner && fieldName) {
+			item.val = owner[fieldName];
+		}
 		if(needAddInToList(this.errorsMap, owner)) {
-			this.errors.push({owner, message, fieldName});
+			this.errors.push(item);
 			if(this.errorsList) {
 				this.errorsList.forceUpdate();
 			} else {
@@ -62,7 +65,11 @@ export default class Status extends React.Component {
 	warn (message, owner, fieldName) {
 		console.warn(message);
 		if(needAddInToList(this.warnsMap, owner)) {
-			this.warns.push({owner, message, fieldName});
+			let item = {owner, message, fieldName}
+			if(owner && fieldName) {
+				item.val = owner[fieldName];
+			}
+			this.warns.push(item);
 			if(this.errorsList) {
 				this.warnsList.forceUpdate();
 			} else {
@@ -134,17 +141,33 @@ class InfoList extends React.Component {
 				
 				let exData = __getNodeExtendData(item.owner);
 				if(!exData.alertRefs || !exData.alertRefs.has(item)) {
-					editor.ui.modal.showModal('Object already removed form stage.');
-				} else {
-					if(item.owner.getRootContainer() !== game.currentContainer) {
-						editor.ui.modal.showModal("Object can't be selected because it's container is not active for now.");
-					} else {
-						editor.ui.sceneTree.selectInTree(item.owner);
-						if(item.fieldName) {
-							editor.ui.propsEditor.selecField(item.fieldName, true);
-						}
+					let newOwnerFinded;
+					if(item.hasOwnProperty('val')) {
+						game.forAllChildrenEwerywhere((o) => {
+							if(o.constructor === item.owner.constructor && o[item.fieldName] === item.val) {
+								if(!newOwnerFinded) {
+									item.owner = o;
+									exData = __getNodeExtendData(item.owner);
+									newOwnerFinded = true;
+								}
+							}
+						});
+					}
+					if(!newOwnerFinded) {
+						editor.ui.modal.showModal('Object already removed form stage, or problem was solved.');
+						return;
 					}
 				}
+
+				if(item.owner.getRootContainer() !== game.currentContainer) {
+					editor.ui.modal.showModal("Object can't be selected because it's container is not active for now.");
+				} else {
+					editor.ui.sceneTree.selectInTree(item.owner);
+					if(item.fieldName) {
+						editor.ui.propsEditor.selecField(item.fieldName, true);
+					}
+				}
+				
 			}
 		}}, this.props.icon, item.message, node);
 	}
