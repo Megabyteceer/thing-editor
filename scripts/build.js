@@ -2,26 +2,24 @@ const webpack = require("webpack");
 const path = require("path");
 /*global require */
 /*global module */
-module.exports = function(projectPath, callback, debug) {
-	console.log('starting build: ' + projectPath);
 
-	let config = require(path.resolve(projectPath, debug ? 'config/webpack.debug.js' : 'config/webpack.prod.js'));
+let projectPath = process.argv[2];
+let debug = process.argv.indexOf('debug') >= 0;
 
-	webpack(config, (err, stats) => {
-		let result = {errors:[], warnings:[]};
+let config = require(path.resolve(projectPath, debug ? 'config/webpack.debug.js' : 'config/webpack.prod.js'));
 
-		function errorHandle(err) {
-			var txt = 'ERROR: '+ err;
-			result.errors.push (txt);
-			console.log(txt);
-		}
-		function warnHandle(err) {
+webpack(config, (err, stats) => {
+	let result = {errors:[], warnings:[], debug:debug};
+
+	function errorHandle(err) {
+		var txt = 'ERROR: '+ err;
+		result.errors.push (txt);
+	}
+	function warnHandle(err) {
 			var txt = 'WARNING: '+ err;
 			result.warnings.push (txt);
-			console.log(txt);
 		}
 		if (err) {
-			console.error(err.stack || err);
 			if (err.details) {
 				err.details.some(errorHandle);
 			}
@@ -37,6 +35,5 @@ module.exports = function(projectPath, callback, debug) {
 				info.warnings.some(warnHandle);
 			}
 		}
-		callback(result);
+		console.log(JSON.stringify(result));
 	});
-};

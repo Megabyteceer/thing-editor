@@ -9,8 +9,10 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const opn = require('opn');
+const {
+	exec
+} = require('child_process');
 
-const build = require('./scripts/build.js');
 const buildSounds = require('./scripts/build-sounds.js');
 
 let currentGame;
@@ -103,9 +105,19 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 
 app.get('/fs/build', function (req, res) {
 	log('BUILD project: ' + currentGameRoot);
-	build(currentGameRoot, (result) => {
-		res.end(JSON.stringify(result));
-	}, req.query.debug);
+	exec('node "' +
+	path.resolve(__dirname, 'scripts/build.js') + '" "' +
+	currentGameRoot+'" ' + 
+	(req.query.debug ? 'debug' : ''),
+	(err, stdout, errout) => {
+		if(err) {
+			console.error(err);
+			res.end(JSON.stringify({errors:[stdout, errout], warnings:[]}));
+		} else {
+			log(stdout);
+			res.end(stdout);
+		}
+	});
 });
 
 app.get('/fs/build-sounds', function (req, res) {
