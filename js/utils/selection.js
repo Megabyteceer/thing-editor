@@ -101,7 +101,7 @@ setInterval(() => {
 
 let getPathOfNode = (node) => {
 	let ret = [];
-	while (node !== game.stage) {
+	while (node !== game.currentContainer) {
 		ret.push(node.parent.getChildIndex(node));
 		node = node.parent;
 	}
@@ -109,7 +109,7 @@ let getPathOfNode = (node) => {
 };
 
 let selectNodeByPath = (path, nodeNum) => {
-	let ret = game.stage;
+	let ret = game.currentContainer;
 	for (let i = path.length - 1; i >= 0; i--) {
 		ret = ret.getChildAt(path[i]);
 	}
@@ -126,7 +126,7 @@ let curDeepness;
 
 let recalculateNodesDeepness = () => {
 	curDeepness = 0;
-	recalculateNodesDeepnessRecursive(game.stage);
+	recalculateNodesDeepnessRecursive(game.currentContainer);
 };
 
 let recalculateNodesDeepnessRecursive = (n) => {
