@@ -37,7 +37,7 @@ export default class DataPathEditor extends React.Component {
 
 		let type = typeof val;
 		
-		return ((type !== 'object') && (type !== 'function' || !Lib.__hasClass(val.name) || (Lib.getClass(val.name) !== val)));
+		return ((type !== 'object') && (type !== 'function' || val.prototype));
 	}
 	
 	finalValueChoosed(path) {
@@ -196,7 +196,7 @@ export default class DataPathEditor extends React.Component {
 		let type = typeof parent;
 
 		let needEnum = (type === 'object');
-		if((type === 'function') && Lib.__hasClass(parent.name) && (Lib.getClass(parent.name) === parent)) {
+		if((type === 'function') && parent.prototype) {
 			addedNames['prototype'] = true;
 			addedNames['length'] = true;
 			addedNames['name'] = true;
