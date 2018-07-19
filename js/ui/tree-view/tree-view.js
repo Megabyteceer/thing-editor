@@ -3,6 +3,7 @@ import Window from '../window.js';
 import game from "/thing-engine/js/game.js";
 import Selection from "../../utils/selection.js";
 import Lib from "/thing-engine/js/lib.js";
+import Scene from '/thing-engine/js/components/scene.js';
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};
@@ -27,6 +28,7 @@ export default class TreeView extends React.Component {
 		this.onCopyClick = this.onCopyClick.bind(this);
 		this.onCutClick = this.onCutClick.bind(this);
 		this.onDeleteClick = this.onDeleteClick.bind(this);
+		this.onUnwrapClick = this.onUnwrapClick.bind(this);
 		this.onBringUpClick = this.onBringUpClick.bind(this);
 		this.onMoveUpClick = this.onMoveUpClick.bind(this);
 		this.onMoveDownClick = this.onMoveDownClick.bind(this);
@@ -84,6 +86,40 @@ export default class TreeView extends React.Component {
 			} else if (p !== game.stage) {
 				this.selectInTree(p);
 			}
+			editor.refreshTreeViewAndPropertyEditor();
+			editor.sceneModified(true);
+		}
+	}
+
+	isCanBeUnwrapped() {
+		if(editor.selection.length !== 1) {
+			return;
+		}
+		let o = editor.selection[0];
+		if(o === game.currentContainer) {
+			return !(o instanceof Scene) && o.children && (o.children.length === 1);
+		}
+		return o.children && (o.children.length > 0);
+	}
+
+	onUnwrapClick() {
+		if(this.isCanBeUnwrapped()) {
+			let o = editor.selection[0];
+			let parent = o.parent;
+			let i = parent.getChildIndex(o);
+
+			editor.selection.clearSelection();
+
+			while(o.children.length > 0) {
+				let c = o.getChildAt(o.children.length - 1);
+				c.detachFromParent();
+				parent.addChildAt(c, i);
+				let p = o.toGlobal(c);
+				let p2 = parent.toLocal(p, undefined, c);
+				c.rotation += o.rotation;
+				this.selectInTree(c, true);
+			}
+			o.remove();
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 		}
@@ -249,19 +285,22 @@ export default class TreeView extends React.Component {
 		if (!game.stage) return R.spinner();
 		
 		let isEmpty = editor.selection.length === 0;
-		
+		let isRoot = editor.selection.indexOf(game.currentContainer) >= 0;
+
+
 		return R.div(classViewProps,
 			R.div(leftPanelProps,
-				R.btn(R.icon('bring-up'), this.onBringUpClick, 'Bring selected up', "tool-btn", undefined, isEmpty),
-				R.btn(R.icon('move-up'), this.onMoveUpClick, 'Move selected up', "tool-btn", undefined, isEmpty),
-				R.btn(R.icon('move-down'), this.onMoveDownClick, 'Move selected down', "tool-btn", undefined, isEmpty),
-				R.btn(R.icon('bring-down'), this.onBringDownClick, 'Bring selected down', "tool-btn", undefined, isEmpty),
+				R.btn(R.icon('bring-up'), this.onBringUpClick, 'Bring selected up', "tool-btn", undefined, isEmpty || isRoot),
+				R.btn(R.icon('move-up'), this.onMoveUpClick, 'Move selected up', "tool-btn", undefined, isEmpty || isRoot),
+				R.btn(R.icon('move-down'), this.onMoveDownClick, 'Move selected down', "tool-btn", undefined, isEmpty || isRoot),
+				R.btn(R.icon('bring-down'), this.onBringDownClick, 'Bring selected down', "tool-btn", undefined, isEmpty || isRoot),
 				R.hr(),
 				R.btn(R.icon('copy'), this.onCopyClick, 'Copy selected in to clipboard (Ctrl+C)', "tool-btn", 1067, isEmpty),
-				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', "tool-btn", 1088, isEmpty),
+				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', "tool-btn", 1088, isEmpty || isRoot),
 				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, editor.clipboardData == null),
 				R.hr(),
-				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty)
+				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
+				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Remove selected but keep children.', "tool-btn", undefined, !this.isCanBeUnwrapped())
 	
 			),
 			R.div({className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick},
