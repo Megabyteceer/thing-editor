@@ -9,6 +9,7 @@ export default class ChooseList extends React.Component {
 		super(props);
 		this.state = {search: ''};
 		this.searchInputProps = {
+			autoFocus:true,
 			onChange: this.onSearchChange.bind(this),
 			onKeyDown:this.onKeyDown.bind(this),
 			placeholder: 'Search'

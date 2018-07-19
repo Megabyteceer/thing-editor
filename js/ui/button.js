@@ -8,18 +8,17 @@ class Button extends React.Component {
 	}
 	
 	componentDidMount() {
-		if (this.props.hotkey) {
-			window.addEventListener("keydown", this.onKeyDown);
-		}
+		window.addEventListener("keydown", this.onKeyDown);
 	}
 	
 	componentWillUnmount() {
-		if (this.props.hotkey) {
-			window.removeEventListener("keydown", this.onKeyDown);
-		}
+		window.removeEventListener("keydown", this.onKeyDown);
 	}
 	
 	onKeyDown(e) {
+		if(!this.props.hotkey) {
+			return;
+		}
 		if (this.props.disabled || window.isEventFocusOnInputElement(e) || editor.ui.modal.isUIBlockedByModal()) return;
 		
 		let needCtrl = this.props.hotkey > 1000;

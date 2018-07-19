@@ -154,6 +154,24 @@ export default class PrefabsList extends React.Component {
 		}
 	}
 	
+	static choosePrefab(title, noEasyClose) {
+		
+		let libsPrefabs = Lib._getAllPrefabs();
+		
+		let prefabs = [];
+		for (let name in libsPrefabs) {
+			let sceneData = libsPrefabs[name];
+			let c = Lib.getClass(sceneData.c);
+			prefabs.push({name:name, __EDITOR_icon: c.__EDITOR_icon});
+		}
+		return editor.ui.modal.showListChoose(title || "Choose prefab", prefabs, noEasyClose).then((choosed) => {
+			if(choosed) {
+				return choosed.name;
+			}
+			return null;
+		});
+	}
+
 	static readAllPrefabsList() {
 		let prefabs = {};
 		return Promise.all(
@@ -171,10 +189,3 @@ export default class PrefabsList extends React.Component {
 }
 
 let previewShown = false;
-
-
-$(document.body).on('click', (ev) =>{
-	if(ev.target === document.body){
-		PrefabsList.acceptPrefabEdition();
-	}
-});

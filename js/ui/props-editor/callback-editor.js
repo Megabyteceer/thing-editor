@@ -2,6 +2,7 @@ import DataPathEditor from "./data-path-editor.js";
 import ScenesList from "../scenes-list.js";
 import Lib from "/thing-engine/js/lib.js";
 import {setValueByPath} from "/thing-engine/js/utils/get-value-by-path.js";
+import PrefabsList from "../prefabs-list.js";
 
 export default class CallbackEditor extends DataPathEditor {
 	
@@ -26,6 +27,14 @@ export default class CallbackEditor extends DataPathEditor {
 		path = path.join('.');
 		
 		switch(path) {
+		case 'game.showModal':
+			PrefabsList.choosePrefab("Choose prefab to show as modal:").then((selectedPrefabName) => {
+				if(selectedPrefabName) {
+					this.applyFinalPath(path + '`' + selectedPrefabName);
+				}
+			});
+			break;
+				
 		case 'game.showScene':
 			ScenesList.chooseScene("Choose scene to open:").then((selectedSceneName) => {
 				if(selectedSceneName) {

@@ -133,6 +133,7 @@ class History {
 		this._undos.length = 0;
 		this._redos.length = 0;
 		this.addHistoryState();
+		this.setCurrentStateUnmodified();
 		historyUi.forceUpdate();
 	}
 	
