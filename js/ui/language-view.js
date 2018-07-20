@@ -111,7 +111,7 @@ class LanguageTableEditor extends React.Component {
 		editor.ui.modal.showPrompt('Enter new translatable KEY:',
 			defaultKey,
 			(val) => { //filter
-				return val.toUpperCase();
+				return val;
 			},
 			(val) => { //accept
 				if (oneLanguageTable.hasOwnProperty(val)) {
