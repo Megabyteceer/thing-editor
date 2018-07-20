@@ -66,12 +66,14 @@ export default class CallbackEditor extends DataPathEditor {
 	}
 	
 	
-	isFieldGoodForCallbackChoose(fieldName, object) {
-		if(!super.isFieldGoodForCallbackChoose(fieldName, object)) {
+	isFieldGoodForCallbackChoose(fieldName, object, val) {
+		if(!super.isFieldGoodForCallbackChoose(fieldName, object, val)) {
 			return false;
 		}
 		
-		let val = object[fieldName];
+		if(typeof val === 'undefined') {
+			val = object[fieldName];
+		}
 		if(!val) {
 			return false;
 		}

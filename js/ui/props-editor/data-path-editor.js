@@ -48,12 +48,13 @@ export default class DataPathEditor extends React.Component {
 		this.props.onChange(PropsFieldWrapper.surrogateChnageEvent(path));
 	}
 	
-	isFieldGoodForCallbackChoose(fieldName, object) {
+	isFieldGoodForCallbackChoose(fieldName, object, val) {
 		if(fieldName.charCodeAt(0) === 95) {
 			return false;
 		}
-		
-		let val = object[fieldName];
+		if(typeof val === 'undefined') {
+			val = object[fieldName];
+		}
 		if(!val) {
 			return true;
 		}
@@ -139,7 +140,7 @@ export default class DataPathEditor extends React.Component {
 		}
 		
 		const addSceneNodeIfValid = (o, name, isChild) => {
-			if(o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent)) {
+			if(o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent, o)) {
 				let item = {pureName: name, name: R.fragment(R.b(null, name + ' '), R.div(selectableSceneNodeProps, R.sceneNode(o)))};
 				
 				if(isChild) {
