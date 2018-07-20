@@ -10,7 +10,7 @@ const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
 const PAUSE_ICON = R.icon('pause');
 
-const SCROLL_IN_TO_SCREEN_FIELD = -3;
+const SCROLL_IN_TO_SCREEN_FIELD = 0;
 
 let prefabTitleProps = {className: 'prefabs-mode-title'};
 let prefabLabelProps = {
@@ -22,7 +22,6 @@ let prefabLabelProps = {
 
 game.enforcedOrientation = 'landscape';
 
-const zeroPoint = new PIXI.Point();
 const tmpPoint = new PIXI.Point();
 
 let stoppingExecutionTime;
@@ -138,15 +137,26 @@ export default class Viewport extends React.Component {
 	}
 
 	scrollInToScreen(node) {
-		let p = node.toGlobal(zeroPoint, tmpPoint);
-		if(p.x < SCROLL_IN_TO_SCREEN_FIELD || p.x > game.W-SCROLL_IN_TO_SCREEN_FIELD ||
-			p.y < SCROLL_IN_TO_SCREEN_FIELD || p.y > game.H-SCROLL_IN_TO_SCREEN_FIELD) {
-			p = game.stage.toLocal(p);
+		let b = node.getBounds();
+		let w = b.width / 3;
+		let h = b.height / 3;
 
-			game.stage.x = game.W / 2 - p.x * game.stage.scale.x;
-			game.stage.y = game.H / 2 - p.y * game.stage.scale.y;
+		b.x += w;
+		b.width -= w * 2;
+		b.y += h;
+		b.height -= h * 2;
+
+		if(b.right < SCROLL_IN_TO_SCREEN_FIELD) {
+			game.stage.x -= b.right - SCROLL_IN_TO_SCREEN_FIELD;
+		} else if(b.left > game.W - SCROLL_IN_TO_SCREEN_FIELD) {
+			game.stage.x -= b.left - (game.W - SCROLL_IN_TO_SCREEN_FIELD);
 		}
-	
+
+		if(b.bottom < SCROLL_IN_TO_SCREEN_FIELD) {
+			game.stage.y -= b.bottom - SCROLL_IN_TO_SCREEN_FIELD;
+		} else if(b.top > game.H - SCROLL_IN_TO_SCREEN_FIELD) {
+			game.stage.y -= b.top - (game.H - SCROLL_IN_TO_SCREEN_FIELD);
+		}
 	}
 	
 	onPauseResumeClick() {
