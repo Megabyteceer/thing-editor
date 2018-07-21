@@ -1,6 +1,7 @@
 import Group from "./group.js";
 import Lib from "/thing-engine/js/lib.js";
 import game from "/thing-engine/js/game.js";
+import Scene from "/thing-engine/js/components/scene.js";
 
 
 const bodyProps = {className: 'list-view'};
@@ -37,40 +38,46 @@ class ClassesView extends React.Component {
 	
 	onWrapSelectedClick() {
 		if(editor.selection.length < 1) {
-			editor.ui.modal.showModal('Alert', 'Nothing selected to wrap.');
+			editor.ui.modal.showModal('Nothing selected to be wraped.', 'Alert');
 		} else {
 			let a = editor.selection.slice(0);
-			editor.selection.clearSelection();
-			let wasModified = false;
-			
-			let added = [];
-			
-			a.some((o) => {
-				if(o.parent === game.stage) {
-					editor.ui.modal.showModal('Alert', 'Root element was not wrapped.');
-				} else {
-					let w = ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name);
-					o.parent.addChildAt(w, o.parent.getChildIndex(o));
-					w.addChild(o);
-					
-					w.x = o.x;
-					w.y = o.y;
-					
-					editor.shiftObject(o, -o.x, -o.y);
 
-					added.push(w);
-					wasModified = true;
+			let o = a[0];
+			let parent = o.parent;
+			let x = 0;
+			let y = 0;
+
+			for(let o of a) {
+				if(o.parent !== parent) {
+					editor.ui.modal.showModal('Alert', 'Selected object shoul have same parent to be wrapped.');
+					return;
 				}
-			});
+				x += o.x;
+				y += o.y;
+			}
+			x = Math.round(x / a.length);
+			y = Math.round(y / a.length);
+
+			if(o instanceof Scene) {
+				editor.ui.modal.showModal('Scene can not be wrapped.', 'Alert');
+				return;
+			}
 			
 			editor.selection.clearSelection();
-			for (let w of added) {
-				editor.ui.sceneTree.selectInTree(w, true);
-			}
+			let w = ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name);
+			w.x = 0;
+			w.y = 0;
+			parent.addChildAt(w, parent.getChildIndex(o));
 			
-			if(wasModified) {
-				editor.sceneModified(true);
+			for(let o of a) {
+				w.addChild(o);
 			}
+
+			editor.moveContainerWithoutChildren(w, x, y);
+
+			editor.selection.clearSelection();
+			editor.ui.sceneTree.selectInTree(w);
+			editor.sceneModified(true);
 		}
 	}
 

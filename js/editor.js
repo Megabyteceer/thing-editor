@@ -366,9 +366,9 @@ export default class Editor {
 	
 	moveContainerWithoutChildren(o, dX, dY) {
 		editor.shiftObject(o, dX, dY);
-		o.children.some((c) => {
+		for(let c of o.children) {
 			editor.shiftObject(c, -dX, -dY);
-		});
+		}
 		editor.ui.sceneTree.selectInTree(o);
 	}
 	

@@ -114,8 +114,6 @@ export default class TreeView extends React.Component {
 				let c = o.getChildAt(o.children.length - 1);
 				c.detachFromParent();
 				parent.addChildAt(c, i);
-				let p = o.toGlobal(c);
-				let p2 = parent.toLocal(p, undefined, c);
 				c.rotation += o.rotation;
 				this.selectInTree(c, true);
 			}
@@ -332,7 +330,7 @@ const renderSceneStackItem = (s, i) => {
 	if(typeof s === "string") {
 		body = R.span(null, "waiting for instancing: " + s);
 	} else {
-		body = R.sceneNode(s)
+		body = R.sceneNode(s);
 	}
 
 
