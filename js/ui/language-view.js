@@ -9,7 +9,23 @@ let idsList;
 
 const tableBodyProps = {className:'langs-editor-table'};
 const langsEditorProps = {className:'langs-editor'};
-const DEFAULT_TEXT = '!!';
+
+let view;
+let switcher;
+
+function showTextTable() {
+	setTimeout(() => {
+		Window.bringWindowForward($('#window-texteditor'));
+	}, 1);
+	return new Promise((resolve) => {
+		if(!view) {
+			switcher.onToggleClick();
+			setTimeout(resolve, 1);
+		} else {
+			resolve();
+		}
+	});
+}
 
 export default class LanguageView extends React.Component {
 	
@@ -19,20 +35,40 @@ export default class LanguageView extends React.Component {
 			languages = data;
 			L.setLanguagesAssets(data);
 			refreshCachedData();
+			for(let langId in data) {
+				let txt = data[langId];
+				for(let id in txt) {
+					if(!txt[id]) {
+						editor.ui.status.warn('untranslated text entry ' + id + '/' + id, () => {
+							LanguageView.editKey(id, langId);
+						}); 
+					}
+				}
+			}
 		});
 		return ret;
+	}
+
+	static editKey(key, langId) {
+		showTextTable().then(() => {
+			if(key) {
+				view.createKeyOrEdit(key, langId);
+			} else {
+				view.onAddNewKeyClick();
+			}
+		});
 	}
 	
 	constructor(props) {
 		super(props);
 		this.state = {};
 		this.onToggleClick = this.onToggleClick.bind(this);
+		switcher = this;
 	}
 	
 	onToggleClick() { //show/hide text editor window
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
-		editor.settings.setItem('timeline-showed', t);
 	}
 	
 	render () {
@@ -42,10 +78,6 @@ export default class LanguageView extends React.Component {
 			table = editor.ui.renderWindow('texteditor', 'Text Table', R.fragment(
 				R.btn('×', this.onToggleClick, 'Hide Text Editor', 'close-window-btn'),
 				React.createElement(LanguageTableEditor)), 200, 100, 620, 300, 900, 800);
-			
-			setTimeout(() => {
-				Window.bringWindowForward($('#window-texteditor'));
-			}, 1);
 		}
 		return R.fragment(btn, table);
 	}
@@ -60,6 +92,7 @@ class LanguageTableEditor extends React.Component {
 	
 	constructor (props) {
 		super(props);
+		view = this;
 		this.onAddNewLanguageClick = this.onAddNewLanguageClick.bind(this);
 		this.onAddNewKeyClick = this.onAddNewKeyClick.bind(this);
 	}
@@ -81,7 +114,7 @@ class LanguageTableEditor extends React.Component {
 				languages[enteredName] = lang;
 				
 				for(let langId of idsList) {
-					lang[langId] = DEFAULT_TEXT;
+					lang[langId] = '';
 				}
 				onModified();
 				refreshCachedData();
@@ -123,32 +156,42 @@ class LanguageTableEditor extends React.Component {
 			}
 		).then((enteredName) => {
 			if (enteredName) {
-				for(let langId of langsIdsList) {
-					languages[langId][enteredName] = DEFAULT_TEXT;
-				}
-				
-				onModified();
-				refreshCachedData();
-				this.forceUpdate();
-				
-				setTimeout(() => {
-					let area = $('.langs-editor-table #' + texareaID('en', enteredName));
-					area.focus();
-					area[0].scrollIntoView({});
-				},2);
-				
-				if(editor.selection.length === 1) {
-					if(editor.selection[0] instanceof PIXI.Text) {
-						let t = editor.selection[0];
-						if((t.text === ' ') && !t.translatableText) {
-							t.translatableText = enteredName;
-						}
-					}
-				}
+				this.createKeyOrEdit(enteredName);
 			}
 		});
 	}
 	
+	createKeyOrEdit(key, langId = 'en') {
+		showTextTable().then(() => {
+			if(!oneLanguageTable.hasOwnProperty(key)) {
+				for(let langId of langsIdsList) {
+					languages[langId][key] = '';
+				}
+			
+				onModified();
+				refreshCachedData();
+				this.forceUpdate();
+			
+				if(editor.selection.length === 1) {
+					if(editor.selection[0] instanceof PIXI.Text) {
+						let t = editor.selection[0];
+						if((t.text === ' ') && !t.translatableText) {
+							t.translatableText = key;
+						}
+					}
+				}
+			}
+
+			let area = $('.langs-editor-table #' + texareaID(langId, key));
+			area.focus();
+			area[0].scrollIntoView({});
+			
+			area.removeClass('shake');
+			setTimeout(() => {
+				area.addClass('shake');
+			}, 1);
+		});
+	}
 	
 	render() {
 		
@@ -158,9 +201,6 @@ class LanguageTableEditor extends React.Component {
 			return R.div({key:langId, className:'langs-editor-th'}, langId);
 		}));
 		
-		let untranslatedCounts = {};
-		let totallyUntranslated = 0;
-		
 		idsList.some((id) => {
 			lines.push(R.div({key: id, className:'langs-editor-tr'},
 				R.div({className:'langs-editor-th selectable-text', onMouseDown: function (ev) {
@@ -169,10 +209,6 @@ class LanguageTableEditor extends React.Component {
 				}}, id),
 				langsIdsList.map((langId) => {
 					let text = languages[langId][id];
-					if(text === DEFAULT_TEXT) {
-						untranslatedCounts[langId] = (untranslatedCounts[langId] || 0) + 1;
-						totallyUntranslated++;
-					}
 					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({defaultValue: text, id:texareaID(langId, id), onChange:(ev) => {
 						languages[langId][id] = ev.target.value;
 						onModified();
@@ -180,12 +216,6 @@ class LanguageTableEditor extends React.Component {
 				})
 			));
 		});
-		let footer;
-		if(totallyUntranslated > 0) {
-			footer = R.div({className:'langs-editor-tr langs-editor-footer'}, R.div({className:'langs-editor-th'}, 'Untranslated: ' + totallyUntranslated), langsIdsList.map((langId) => {
-				return R.div({key:langId, className:'langs-editor-th'}, untranslatedCounts[langId]);
-			}));
-		}
 		
 		lines = Group.groupArray(lines);
 		
@@ -195,7 +225,6 @@ class LanguageTableEditor extends React.Component {
 			R.div(tableBodyProps,
 				lines
 			),
-			footer,
 			R.btn('+ Add language...', this.onAddNewLanguageClick)
 		);
 	}

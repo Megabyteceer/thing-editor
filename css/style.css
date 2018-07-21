@@ -1098,7 +1098,11 @@ input{
 	bottom: -4px;
 }
 
-
+.langs-editor-td textarea:focus {
+	font-weight:bold;
+	background:#f0f8ff;
+	border: 1px solid #3a8cff;
+}
 
 
 
