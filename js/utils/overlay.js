@@ -105,6 +105,26 @@ export default class Overlay {
 	isDraggerOvered () {
 		return overedDragger;
 	}
+
+	drawRect(props, owner) {
+		props.field.color = props.field.color  || 0x00ff00;
+
+		let info = __getNodeExtendData(owner);
+		if(!info.rects) {
+			info.rects = {};
+		}
+		let r;
+		if (!info.rects[props.field.name]) {
+			r = createDragger(owner, Rect);
+			r._props = props;
+			info.rects[props.field.name] = r;
+			__getNodeExtendData(r).hidden = true;
+			owner.addChild(r);
+		} else {
+			r = info.rects[props.field.name];
+		}
+		r.refresh();
+	}
 	
 	hidePreview(refresh = true) {
 		editor.ui.viewport.resetZoom();
@@ -139,6 +159,7 @@ function refreshSelection() {
 			Pool.dispose(d);
 			info.draggerPivot = null;
 			info.draggerRotator = null;
+			info.rects = null;
 			draggers.splice(i, 1);
 		}
 		if ((Math.abs(d.x - game.mouse.__EDITOR_x) < 6) && (Math.abs(d.y - game.mouse.__EDITOR_y) < 6)) {
@@ -330,8 +351,6 @@ class Dragger extends DSprite {
 			editor.onSelectedPropsChange('x', dX, true);
 			editor.onSelectedPropsChange('y', dY, true);
 		}
-		
-		
 	}
 }
 
@@ -349,5 +368,35 @@ class Rotator extends DSprite {
 			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 		}
 		editor.onSelectedPropsChange('rotation', Math.round((r - info.draggerRotator.rotation)*1000.0)/1000.0, true);
+	}
+}
+
+class Rect extends PIXI.Graphics {
+	refresh() {
+		let r = this._props.value;
+		if(r.removed) {
+			this.clear();
+			this._drawedColor = false;
+			return;
+		}
+		if(
+			this._drawedColor !== this._props.field.color ||
+			this._drawedW !== r.w ||
+			this._drawedH !== r.h ||
+			this._drawedX !== r.x ||
+			this._drawedY !== r.y
+		) {
+			this.clear();
+			this.lineStyle(1, this._props.field.color, 1);
+			this.beginFill(0, 0);
+			this.drawRect (r.x, r.y, r.w, r.h);
+			this.endFill();
+
+			this._drawedColor = this._props.field.color;
+			this._drawedW = r.w;
+			this._drawedH = r.h;
+			this._drawedX = r.x;
+			this._drawedY = r.y;
+		}
 	}
 }

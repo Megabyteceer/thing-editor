@@ -1104,7 +1104,17 @@ input{
 	border: 1px solid #3a8cff;
 }
 
+.rect-editor{
+	position:relative;
+}
 
+
+
+.rect-prop-label {
+	position:absolute;
+	width: 20px;
+	left: -20px;
+}
 
 
 

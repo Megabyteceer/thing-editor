@@ -8,6 +8,7 @@ import DataPathEditor from "./data-path-editor.js";
 import CallbackEditor from "./callback-editor.js";
 import BtnProperty from "./btn-property.js";
 import TilemapEditor from "./tilemap-editor.js";
+import RectangleEditor from './rect-editor.js';
 
 
 let typeDescriptions = new Map();
@@ -32,6 +33,13 @@ typeDescriptions.set(Boolean, {
 		return target.checked;
 	},
 	default: false
+});
+typeDescriptions.set(PIXI.Rectangle, {
+	renderer: RectangleEditor,
+	parser: (target) => {
+		return target.value;
+	},
+	default: null
 });
 
 typeDescriptions.set('data-path', {
@@ -152,7 +160,8 @@ class PropsFieldWrapper extends React.Component {
 					field,
 					disabled
 				})
-			));
+			)
+		);
 	}
 }
 
