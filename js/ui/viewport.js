@@ -138,8 +138,12 @@ export default class Viewport extends React.Component {
 
 	scrollInToScreen(node) {
 		let b = node.getBounds();
-		let w = b.width / 3;
-		let h = b.height / 3;
+		if(b.width === 0 && b.height === 0) {
+			node.getGlobalPosition(b);
+		}
+
+		let w = Math.max(50, b.width / 3);
+		let h = Math.max(50, b.height / 3);
 
 		b.x += w;
 		b.width -= w * 2;
