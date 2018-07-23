@@ -108,16 +108,25 @@ export default class TreeView extends React.Component {
 			let parent = o.parent;
 			let i = parent.getChildIndex(o);
 
+			let isPrefab = (o === game.currentContainer);
+
 			editor.selection.clearSelection();
 
 			while(o.children.length > 0) {
 				let c = o.getChildAt(o.children.length - 1);
 				c.detachFromParent();
-				parent.addChildAt(c, i);
+				if(isPrefab) {
+					game.__setCurrentContainerContent(c);
+				} else {
+					parent.addChildAt(c, i);
+				}
+				
 				c.rotation += o.rotation;
 				this.selectInTree(c, true);
 			}
-			o.remove();
+			if(!isPrefab) {
+				o.remove();
+			}
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 		}
