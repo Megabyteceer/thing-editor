@@ -56,9 +56,8 @@ class Selection extends Array {
 			o.filters = selectedFilters;
 		}
 		this.push(o);
-		if(o.__onSelect) {
-			o.__onSelect();
-		}
+		o.__onSelect();
+
 		editor.ui.viewport.scrollInToScreen(o);
 		if(!IS_SELECTION_LOADING_TIME) {
 			needSaveSelectionInToHistory = true;

@@ -13,27 +13,7 @@ let timeline;
 let timelineElement;
 let lastTimelineBounds;
 
-let affectedMovieclips = new Map();
-
 let beforeChangeRemember;
-
-function removeAffectFromUnselected(all) {
-	affectedMovieclips.forEach((value, o) => {
-		if(all || !__getNodeExtendData(o).isSelected) {
-			o.resetTimeline();
-			if(o.alpha < 0.01) {
-				o.alpha = 1;
-			}
-			if(Math.abs(o.scale.x) < 0.01) {
-				o.scale.x = 1;
-			}
-			if(Math.abs(o.scale.y) < 0.01) {
-				o.scale.y = 1;
-			}
-			affectedMovieclips.delete(o);
-		}
-	});
-}
 
 let recordingIsDisabled;
 
@@ -60,11 +40,9 @@ export default class Timeline extends React.Component {
 	componentWillUnmount() {
 		timelineElement = null;
 		editor.ui.viewport.beforePlayStopToggle.remove(this.onPlayStopToggle);
-		removeAffectFromUnselected(true);
 	}
 	
 	onPlayStopToggle() {
-		removeAffectFromUnselected(true);
 		this.setTime(0, true);
 	}
 	
@@ -89,7 +67,7 @@ export default class Timeline extends React.Component {
 	static enableRecording() {
 		recordingIsDisabled = false;
 	}
-	
+
 	static onBeforePropertyChanged(fieldName) {
 		if(!timelineElement) {
 			beforeChangeRemember = new WeakMap();
@@ -177,7 +155,6 @@ export default class Timeline extends React.Component {
 		if(game.__EDITORmode) {
 			editor.selection.some((o) => {
 				if(o._timelineData) {
-					affectedMovieclips.set(o, true);
 					o._timelineData.f.some((f) => {
 						if(f.__cacheTimeline.hasOwnProperty(time)) {
 							o[f.n] = f.__cacheTimeline[time];
@@ -208,7 +185,6 @@ export default class Timeline extends React.Component {
 
 		let keyframePropsEditor = React.createElement(KeyframePropertyEditor);
 
-		removeAffectFromUnselected();
 		return R.fragment (
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
 			R.div(timelineContainerProps,
@@ -219,8 +195,6 @@ export default class Timeline extends React.Component {
 		);
 	}
 }
-
-Timeline.removeAffectFromUnselected = removeAffectFromUnselected;
 
 function getFieldByName(o, name) {
 	if(o._timelineData) {

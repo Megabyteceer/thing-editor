@@ -9,10 +9,6 @@ export default class TimelineProperty extends React.Component {
 		this.onToggleClick = this.onToggleClick.bind(this);
 	}
 	
-	componentWillUnmount() {
-		Timeline.removeAffectFromUnselected(true);
-	}
-	
 	onToggleClick() { //show/hide timeline window
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
