@@ -127,8 +127,8 @@ class Modal extends React.Component {
 		), title, noEasyClose);
 	}
 	
-	showPrompt(title, defaultText, filter, accept, noEasyClose) {
-		return this.showModal(React.createElement(Prompt, {defaultText, filter, accept}), title, noEasyClose);
+	showPrompt(title, defaultText, filter, accept, noEasyClose, multiline) {
+		return this.showModal(React.createElement(Prompt, {defaultText, filter, accept, multiline}), title, noEasyClose);
 	}
 	
 	showListChoose(title, list, noEasyClose) {

@@ -664,7 +664,7 @@ input{
     width: max-content;
     background: url(/thing-editor/img/timeline.png);
     height: 40px;
-    background-repeat-y: no-repeat;
+    background-repeat: repeat-x;
 }
 
 .timeline-play-indicator {
@@ -999,7 +999,6 @@ input{
 }
 
 .selectable-scene-node {
-    display: inline-block;
     padding: 2px 8px;
     float: right;
     border-radius: 5px;
@@ -1124,7 +1123,10 @@ input{
 	width: 50%;
 }
 
-
+.prompt-dialogue textarea {
+	min-height: 300px;
+	min-width: 500px;
+}
 
 
 

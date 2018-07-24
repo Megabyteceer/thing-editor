@@ -32,7 +32,7 @@ export default class Prompt extends React.Component {
 	}
 	
 	onKeyDown(ev) {
-		if (ev.keyCode === 13) {
+		if (ev.keyCode === 13 && !this.props.multiline) {
 			this.onAcceptClick();
 		}
 	}
@@ -44,13 +44,13 @@ export default class Prompt extends React.Component {
 	}
 	
 	render() {
+		let input = (this.props.multiline ? R.textarea : R.input);
 		return R.fragment(
 			R.div(modalRejectProps, this.state.rejectReason || ' '),
-			R.div(null,
-				R.input({value: this.state.value, onKeyDown: this.onKeyDown, onChange: this.onChange})
+			R.div({className:'prompt-dialogue'},
+				input({value: this.state.value, onKeyDown: this.onKeyDown, onChange: this.onChange})
 			),
-			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', 13)
+			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', this.props.multiline ? undefined : 13)
 		);
 	}
-	
 }

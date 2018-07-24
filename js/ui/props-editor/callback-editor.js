@@ -1,6 +1,5 @@
 import DataPathEditor from "./data-path-editor.js";
 import ScenesList from "../scenes-list.js";
-import Lib from "/thing-engine/js/lib.js";
 import {setValueByPath} from "/thing-engine/js/utils/get-value-by-path.js";
 import PrefabsList from "../prefabs-list.js";
 
@@ -34,7 +33,6 @@ export default class CallbackEditor extends DataPathEditor {
 				}
 			});
 			break;
-				
 		case 'game.showScene':
 			ScenesList.chooseScene("Choose scene to open:").then((selectedSceneName) => {
 				if(selectedSceneName) {
@@ -42,11 +40,21 @@ export default class CallbackEditor extends DataPathEditor {
 				}
 			});
 			break;
-				
 		case 'FlyText.flyText':
 			editor.ui.modal.showPrompt('Enter text to show', 'Text-1').then((enteredText) => {
 				if(enteredText) {
 					this.applyFinalPath(path + '`' + enteredText);
+				}
+			});
+			break;
+		case 'game.showQuestion':
+			editor.ui.modal.showPrompt('Enter title to show', 'Question Title').then((enteredTitle) => {
+				if(enteredTitle) {
+					editor.ui.modal.showPrompt('Enter message to show', 'Question text', undefined, undefined, undefined, true).then((enteredText) => {
+						if(enteredText) {
+							this.applyFinalPath(path + '`' + enteredTitle + ',' + enteredText);
+						}
+					});
 				}
 			});
 			break;
