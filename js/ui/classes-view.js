@@ -2,6 +2,8 @@ import Group from "./group.js";
 import Lib from "/thing-engine/js/lib.js";
 import game from "/thing-engine/js/game.js";
 import Scene from "/thing-engine/js/components/scene.js";
+import Container from "/thing-engine/js/components/container.js";
+import Tilemap from "/thing-engine/js/components/tilemap.js";
 
 
 const bodyProps = {className: 'list-view'};
@@ -23,7 +25,9 @@ class ClassesView extends React.Component {
 	}
 	
 	onAddAsChildClick() {
-		editor.attachToSelected(ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name));
+		if(isCanBeAddedAsChild()) {
+			editor.attachToSelected(ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name));
+		}
 	}
 	
 	static loadSafeInstanceByClassName(className) {
@@ -102,8 +106,10 @@ class ClassesView extends React.Component {
 		
 		return R.listItem(
 			R.div({
-				onDoubleClick:() => {
-					editor.editClassSource(item.c);
+				onDoubleClick:(ev) => {
+					if(ev.target.tagName !== 'BUTTON') {
+						editor.editClassSource(item.c);
+					}
 				},
 				className: 'class-list-item'
 			},
@@ -144,13 +150,23 @@ class ClassesView extends React.Component {
 		}
 		
 		return R.fragment(
-			R.div({className: bottomPanelClassName}, R.btn('Add', this.onAddClick), R.btn('Add As Child', this.onAddAsChildClick), R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene.')),
+			R.div({className: bottomPanelClassName}, R.btn('Add', this.onAddClick), R.btn('Add As Child', this.onAddAsChildClick, undefined, undefined,undefined, !isCanBeAddedAsChild()), R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene.')),
 			R.div(bodyProps, body)
 		);
 		
 	}
 }
 
+function isCanBeAddedAsChild() {
+	if(editor.selection.length !== 1) {
+		return;
+	}
+	let o = editor.selection[0];
+	if(!(o instanceof Container) || (o instanceof Tilemap)) {
+		return;
+	}
+	return true;
+}
 
 function findNextOfThisType(c, direction) {
 	if(game.mouse.ctrlKey) {
@@ -160,7 +176,6 @@ function findNextOfThisType(c, direction) {
 			editor.ui.sceneTree.selectInTree(w, true);
 		}
 	} else {
-
 		editor.ui.sceneTree.findNext((o) => {
 			return o instanceof c;
 			
