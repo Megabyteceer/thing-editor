@@ -3,6 +3,7 @@ import BooleanEditor from "./boolean-editor.js";
 import PropsFieldWrapper from "./props-field-wrapper.js";
 
 const rectEditorProps = {className:'rect-editor'};
+const propGroupProps = {className:'rect-editor-group'};
 
 const sizeFieldProp = {min:0, step:1};
 const posFieldProp = {step:1};
@@ -22,6 +23,9 @@ export default class RectangleEditor extends React.Component {
 		this.onWChange = this.onWChange.bind(this);
 		this.onHChange = this.onHChange.bind(this);
 		this.onEnabledChange = this.onEnabledChange.bind(this);
+		if(!this.props.value && !this.this.props.field.nullable) {
+			this.onEnabledChange();
+		}
 	}
 
 	onXChange(ev) {
@@ -68,28 +72,44 @@ export default class RectangleEditor extends React.Component {
 	}
 
 	render() {
+
+		editor.selection.some((o) => {
+			let r = o[this.props.field.name];
+			if(r) {
+				editor.overlay.drawRect(this.props, o, r);
+			}
+
+		});
+
+
 		if(editor.selection.length > 1) {
-			return R.span(null, 'Rectangle editor doe not support multily selection.');
+			return R.span(null, 'Rectangle editor does not support multily selection.');
 		}
 		var r = this.props.value;
-		
 		var body;
 		if(r) {
-			editor.overlay.drawRect(this.props, editor.selection[0]);
 			body = R.div(null,
-				xLabel,
-				React.createElement(NumberEditor,{field:posFieldProp, onChange: this.onXChange, value:r.x}),
-				yLabel,
-				React.createElement(NumberEditor,{field:posFieldProp, onChange: this.onYChange, value:r.y}),
-				wLabel,
-				React.createElement(NumberEditor,{field:sizeFieldProp, onChange: this.onWChange, value:r.w}),
-				hLabel,
-				React.createElement(NumberEditor,{field:sizeFieldProp, onChange: this.onHChange, value:r.h})
+				R.div(propGroupProps,
+					xLabel,
+					React.createElement(NumberEditor,{field:posFieldProp, onChange: this.onXChange, value:r.x})
+				),
+				R.div(propGroupProps,
+					yLabel,
+					React.createElement(NumberEditor,{field:posFieldProp, onChange: this.onYChange, value:r.y}),
+				),
+				R.div(propGroupProps,
+					wLabel,
+					React.createElement(NumberEditor,{field:sizeFieldProp, onChange: this.onWChange, value:r.w}),
+				),
+				R.div(propGroupProps,
+					hLabel,
+					React.createElement(NumberEditor,{field:sizeFieldProp, onChange: this.onHChange, value:r.h})
+				)
 			);
 		}
-		
+
 		return R.div(rectEditorProps,
-			React.createElement(BooleanEditor, {onChange: this.onEnabledChange, value:r !== null}),
+			React.createElement(BooleanEditor, {disabled:!this.props.field.nullable, onChange: this.onEnabledChange, value:r !== null}),
 			body
 		);
 	}

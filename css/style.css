@@ -1105,20 +1105,24 @@ input{
 }
 
 .rect-editor{
+	width: 80px;
 	position:relative;
 }
 
-
-
 .rect-prop-label {
+	border-top: 1px solid #ddd;
 	position:absolute;
 	width: 20px;
 	left: -20px;
 }
 
+.rect-editor input {
+	border-top: 1px solid #ddd;
+}
 
-
-
+.rect-editor-group {
+	width: 50%;
+}
 
 
 

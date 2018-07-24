@@ -24,6 +24,7 @@ function createDragger(owner, constructor) {
 	draggers.push(ret);
 	ret.owner = owner;
 	ret.info = __getNodeExtendData(owner);
+	game.pixiApp.stage.addChild(ret);
 	return ret;
 }
 
@@ -106,7 +107,7 @@ export default class Overlay {
 		return overedDragger;
 	}
 
-	drawRect(props, owner) {
+	drawRect(props, owner, rect) {
 		props.field.color = props.field.color  || 0x00ff00;
 
 		let info = __getNodeExtendData(owner);
@@ -117,9 +118,9 @@ export default class Overlay {
 		if (!info.rects[props.field.name]) {
 			r = createDragger(owner, Rect);
 			r._props = props;
+			r._rect = rect;
 			info.rects[props.field.name] = r;
 			__getNodeExtendData(r).hidden = true;
-			owner.addChild(r);
 		} else {
 			r = info.rects[props.field.name];
 		}
@@ -148,9 +149,11 @@ const p = new PIXI.Point();
 let overedDragger, draggingDragger;
 
 let currentPointer = 'initial';
+
 function refreshSelection() {
 	overedDragger = null;
 	let i = draggers.length - 1;
+	
 	while (i >= 0) {
 		let d = draggers[i];
 		let info = __getNodeExtendData(d.owner);
@@ -162,8 +165,11 @@ function refreshSelection() {
 			info.rects = null;
 			draggers.splice(i, 1);
 		}
-		if ((Math.abs(d.x - game.mouse.__EDITOR_x) < 6) && (Math.abs(d.y - game.mouse.__EDITOR_y) < 6)) {
-			overedDragger = d;
+		if(!(d instanceof Rect)) {
+			let s = Math.max(1, game.stage.scale.x) * 6;
+			if ((Math.abs(d.x - game.mouse.__EDITOR_x) < s) && (Math.abs(d.y - game.mouse.__EDITOR_y) < s)) {
+				overedDragger = d;
+			}
 		}
 		i--;
 	}
@@ -177,16 +183,28 @@ function refreshSelection() {
 		let info = __getNodeExtendData(o);
 		if (!info.draggerPivot) {
 			info.draggerPivot = createDragger(o, Dragger);
-			game.pixiApp.stage.addChild(info.draggerPivot);
 			info.draggerRotator = createDragger(o, Rotator);
-			game.pixiApp.stage.addChild(info.draggerRotator);
 		}
+		let s = game.stage.scale.x;
+		let r = o.getGlobalRotation();
 		o.getGlobalPosition(p, true);
 		info.draggerPivot.x = p.x;
 		info.draggerPivot.y = p.y;
-		let r = o.getGlobalRotation();
-		info.draggerRotator.x = p.x + Math.cos(r) * 40;
-		info.draggerRotator.y = p.y + Math.sin(r) * 40;
+		info.draggerPivot.scale.x = info.draggerPivot.scale.y = s;
+
+		for(let rn in info.rects) {
+			let rect = info.rects[rn];
+			rect.x = p.x;
+			rect.y = p.y;
+			rect.scale.x = rect.scale.y = s;
+			if(rect._props.field.rotable) {
+				rect.rotation = r;
+			}
+		}
+		
+		info.draggerRotator.x = p.x + Math.cos(r) * 40 * s;
+		info.draggerRotator.y = p.y + Math.sin(r) * 40 * s;
+		info.draggerRotator.scale.x = info.draggerRotator.scale.y = s;
 		info.draggerRotator.rotation = r;
 	});
 }
@@ -373,7 +391,7 @@ class Rotator extends DSprite {
 
 class Rect extends PIXI.Graphics {
 	refresh() {
-		let r = this._props.value;
+		let r = this._rect;
 		if(r.removed) {
 			this.clear();
 			this._drawedColor = false;
@@ -387,7 +405,7 @@ class Rect extends PIXI.Graphics {
 			this._drawedY !== r.y
 		) {
 			this.clear();
-			this.lineStyle(1, this._props.field.color, 1);
+			this.lineStyle(2/game.stage.scale.x, this._props.field.color, 0.6);
 			this.beginFill(0, 0);
 			this.drawRect (r.x, r.y, r.w, r.h);
 			this.endFill();
