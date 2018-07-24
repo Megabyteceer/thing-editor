@@ -115,6 +115,9 @@ export default class TreeView extends React.Component {
 			while(o.children.length > 0) {
 				let c = o.getChildAt(o.children.length - 1);
 				c.detachFromParent();
+
+				parent.toLocal(c, o, c);
+
 				if(isPrefab) {
 					game.__setCurrentContainerContent(c);
 				} else {
