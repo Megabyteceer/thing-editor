@@ -239,6 +239,13 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 	};
 };
 
+window.onunload = function() {
+	editor.exitPrefabMode();
+	if(editor.isCurrentSceneModified) {
+		editor.saveBackup(true);
+	}
+};
+
 window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = true) {
 	return () => {
 		let ret = [];
