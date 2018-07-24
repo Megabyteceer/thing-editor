@@ -4,6 +4,7 @@ import FieldPlayer from "/thing-engine/js/components/movie-clip/field-player.js"
 import MovieClip from "/thing-engine/js/components/movie-clip/movie-clip.js";
 import SelectEditor from "../select-editor.js";
 import CallbackEditor from "../callback-editor.js";
+import NumberEditor from "../number-editor.js";
 
 const FRAMES_STEP = 3;
 const DEFAULT_GRAVITY = 1; //JUMP ROOF, JUMP FLOOR default gravity and boouncing
@@ -484,8 +485,8 @@ export class KeyframePropertyEditor extends React.Component {
 		let extendEditor;
 		if(kf.m > 2 ) { //JUMP ROOF, JUMP FLOOR
 			extendEditor = R.span(null,
-				' Gravity: ' ,R.input({value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
-				' Bouncing: ' ,R.input({value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
+				' Gravity: ' ,React.createElement(NumberEditor, {value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
+				' Bouncing: ' ,React.createElement(NumberEditor, {value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
 			);
 		} else if(kf.m === 0) { //SMOOTH
 			
@@ -494,8 +495,8 @@ export class KeyframePropertyEditor extends React.Component {
 			}) || presets[0];
 			
 			extendEditor = R.span(null,
-				' Power: ' ,R.input({value: editor.selection[0]._timelineData.p, type:'number', step:0.001, min: 0.001, max: 0.9, onChange: this.onPowChanged}),
-				' Dempt: ' ,R.input({value: editor.selection[0]._timelineData.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
+				' Power: ' ,React.createElement(NumberEditor, {value: editor.selection[0]._timelineData.p, type:'number', step:0.001, min: 0.001, max: 0.9, onChange: this.onPowChanged}),
+				' Dempt: ' ,React.createElement(NumberEditor, {value: editor.selection[0]._timelineData.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
 				' Preset ', React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
 			);
 		}
@@ -503,13 +504,13 @@ export class KeyframePropertyEditor extends React.Component {
 		let hasSpeed =  kf.hasOwnProperty('s');
 		let speedEditor;
 		if(hasSpeed) {
-			speedEditor = R.input({value: kf.s, type:'number', step:0.1, min: -1000, max: 1000, onChange: this.onSpeedChanged});
+			speedEditor = React.createElement(NumberEditor, {value: kf.s, type:'number', step:0.1, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 		}
 		
 		let hasJump = kf.j !== kf.t;
 		let jumpEditor;
 		if(hasJump) {
-			jumpEditor = R.input({value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
+			jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
 		}
 		
 		return R.div({className: 'bottom-panel'},

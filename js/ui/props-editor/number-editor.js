@@ -11,7 +11,7 @@ $(window).on('mousemove', (ev) => {
 	
 	let d = Math.round((lastY - ev.clientY) / 2.001);
 	if (d !== 0) {
-		d = d * (draggingElement.props.field.step || 1);
+		d = d * (draggingElement.step);
 		lastY = ev.clientY;
 		draggingElement.deltaValue(d, ev.ctrlKey);
 	}
@@ -30,18 +30,38 @@ class NumberEditor extends React.Component {
 		this.btnDown = R.span({className:'number-input-btn number-input-btn-down', onClick:this.onDownClick, onMouseDown:this.onMouseDown}, '▼');
 	}
 
+	get step() {
+		if(this.props.field) {
+			return this.props.field.step || 1;
+		}
+		return this.props.step || 1;
+	}
+
+	get max() {
+		if(this.props.field && this.props.field.hasOwnProperty('max')) {
+			return this.props.field.max;
+		}
+		return this.props.max || Number.POSITIVE_INFINITY;
+	}
+
+	get min() {
+		if(this.props.field && this.props.field.hasOwnProperty('min')) {
+			return this.props.field.min;
+		}
+		return this.props.min || Number.NEGATIVE_INFINITY;
+	}
+
 	onUpClick(ev) {
-		this.deltaValue(this.props.field.step || 1, ev.ctrlKey);
+		this.deltaValue(this.step, ev.ctrlKey);
 	}
 		
 	onDownClick(ev) {
-		this.deltaValue(-this.props.field.step || -1, ev.ctrlKey);
+		this.deltaValue(-this.step, ev.ctrlKey);
 	}
 		
 	onChange (ev, forceFormat = false) {
 		forceFormat = (forceFormat===true);
 		let props = this.props;
-		let field = props.field;
 		if(forceFormat) {
 			this.setState({tmpVal: undefined});
 		} else {
@@ -67,14 +87,13 @@ class NumberEditor extends React.Component {
 	}
 
 	onKeyDown(ev) {
-		let step = this.props.field.step || 1;
 		switch(ev.keyCode) {
 			case 38:
-			this.deltaValue(step, ev.ctrlKey);
+			this.deltaValue(this.step, ev.ctrlKey);
 			sp(ev);
 			break;
 			case 40:
-			this.deltaValue(-step, ev.ctrlKey);
+			this.deltaValue(-this.step, ev.ctrlKey);
 			sp(ev);
 			break;
 		}
@@ -84,7 +103,7 @@ class NumberEditor extends React.Component {
 		if(x10) {
 			d *= 10;
 		}
-		let step = this.props.field.step || 1;
+		let step = this.step;
 		let val = this.state.value;
 		let croppedVal = this.cropVal(val + d);
 		croppedVal = Math.round(croppedVal / step) * step;
@@ -96,12 +115,8 @@ class NumberEditor extends React.Component {
 	}
 
 	cropVal(val) {
-		if(this.props.field.hasOwnProperty('min')) {
-			val = Math.max(val, this.props.field.min);
-		}
-		if(this.props.field.hasOwnProperty('max')) {
-			val = Math.min(val, this.props.field.max);
-		}
+		val = Math.max(val, this.min);
+		val = Math.min(val, this.max);
 		return val;
 	}
 
@@ -119,7 +134,7 @@ class NumberEditor extends React.Component {
 
 	render() {
 		let props = this.props;
-		let step = props.field.step || 1;
+		let step = this.step;
 		let val = (typeof this.state.tmpVal !== 'undefined') ? this.state.tmpVal : this.state.value;
 		return R.span(numberEditorProps,
 			R.input({
