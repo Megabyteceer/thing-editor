@@ -88,11 +88,11 @@ class NumberEditor extends React.Component {
 
 	onKeyDown(ev) {
 		switch(ev.keyCode) {
-			case 38:
+		case 38:
 			this.deltaValue(this.step, ev.ctrlKey);
 			sp(ev);
 			break;
-			case 40:
+		case 40:
 			this.deltaValue(-this.step, ev.ctrlKey);
 			sp(ev);
 			break;
@@ -134,7 +134,6 @@ class NumberEditor extends React.Component {
 
 	render() {
 		let props = this.props;
-		let step = this.step;
 		let val = (typeof this.state.tmpVal !== 'undefined') ? this.state.tmpVal : this.state.value;
 		return R.span(numberEditorProps,
 			R.input({
@@ -148,6 +147,6 @@ class NumberEditor extends React.Component {
 			this.btnDown
 		);
 	}
-};
+}
 
 export default NumberEditor;

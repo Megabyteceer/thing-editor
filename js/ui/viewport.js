@@ -22,8 +22,6 @@ let prefabLabelProps = {
 
 game.enforcedOrientation = 'landscape';
 
-const tmpPoint = new PIXI.Point();
-
 let stoppingExecutionTime;
 let playTogglingTime;
 let recoveryCheckingTime;

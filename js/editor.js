@@ -130,7 +130,7 @@ export default class Editor {
 						R.div(null, "Do you want to restore scene from backup?")),
 					async() => {
 						await this.openSceneSafe(editor.backupSceneLibSaveSlotName, editor.projectDesc.lastSceneName || 'restored-from-backup');
-						editor.history.currentState._isModified = true;
+						editor.history.currentState.treeData._isModified = true;
 						
 					}, 'Restore backup',
 					async() => {
