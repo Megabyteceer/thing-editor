@@ -4,8 +4,8 @@ import game from "/thing-engine/js/game.js";
 const HISTORY_LEN = 100;
 const STRICT_HISTORY_LEN = 20;
 
-let undosStack = []; //separated undo/redo array for scene and each modal objects
-let redosStack = [];
+let undosStack = {}; //separated undo/redo array for scene and each modal objects
+let redosStack = {};
 let historyUi;
 
 let instance;
@@ -35,37 +35,37 @@ class History {
 	}
 
 	isRedoAvailable() {
-		return this._redos.length > 0;
+		let r = this._redos;
+		return r && r.length > 0;
 	}
 
 	isUndoAvailable() {
-		return this._undos && this._undos.length > 1;
+		let u = this._undos;
+		return u && u.length > 1;
 	}
 
 	get _undos() {
-		if(typeof game === 'undefined') {
+		if((typeof game === 'undefined') || !game.currentContainer) {
 			return [];
 		}
-		let l = game.modalsCount + 1;
-		if(undosStack.length > l) {
-			undosStack.length = l;
-		} else if (undosStack.length < l) {
-			undosStack.push([]);
+		let n = game.currentContainer.name;
+		assert(n, 'currentContainer name is empty.');
+		if(!undosStack.hasOwnProperty(n)) {
+			undosStack[n] = [];
 		}
-		return undosStack[game.modalsCount];
+		return undosStack[n];
 	}
 
 	get _redos() {
-		if(typeof game === 'undefined') {
+		if((typeof game === 'undefined') || !game.currentContainer) {
 			return [];
 		}
-		let l = game.modalsCount + 1;
-		if(redosStack.length > l) {
-			redosStack.length = l;
-		} else if (redosStack.length < l) {
-			redosStack.push([]);
+		let n = game.currentContainer.name;
+		assert(n, 'currentContainer name is empty.');
+		if(!redosStack.hasOwnProperty(n)) {
+			redosStack[n] = [];
 		}
-		return redosStack[game.modalsCount];
+		return redosStack[n];
 	}
 
 	_pushCurrentStateToUndoHistory(selectionData, selectionOnly) {
@@ -127,12 +127,13 @@ class History {
 		if(undos) {
 			return undos[undos.length - 1];
 		}
+		return null;
 	}
 	
 	clearHistory() {
-		this._undos.length = 0;
-		this._redos.length = 0;
-		this.addHistoryState();
+		if(this._undos.length === 0 && this._redos.length === 0) {
+			this.addHistoryState();
+		}
 		this.setCurrentStateUnmodified();
 		historyUi.forceUpdate();
 	}
