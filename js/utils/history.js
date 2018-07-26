@@ -131,9 +131,6 @@ class History {
 	}
 	
 	clearHistory() {
-		if(this._undos.length === 0 && this._redos.length === 0) {
-			this.addHistoryState();
-		}
 		this.setCurrentStateUnmodified();
 		historyUi.forceUpdate();
 	}
@@ -143,6 +140,9 @@ class History {
 	}
 	
 	setCurrentStateUnmodified() {
+		if(this._undos.length === 0 && this._redos.length === 0) {
+			this.addHistoryState();
+		}
 		this._undos.some((s) => {
 			s.treeData._isModified = true;
 		});
