@@ -264,7 +264,7 @@ function enumProps(o) {
 	
 	let switched = false;
 
-	for (; cc != null && cc.prototype && cc !== Function && cc !== Object; cc = cc.__proto__) {
+	for (; cc && cc.prototype && cc !== Function && cc !== Object; cc = cc.__proto__) {
 		
 		if(cc.hasOwnProperty('__EDITOR_selectableProps')) {
 			p = p.concat(cc.__EDITOR_selectableProps);

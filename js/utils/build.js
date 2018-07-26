@@ -12,7 +12,7 @@ export default class Build {
 			prefabs[prefabName] = prefabsSrc[prefabName];
 		});
 		
-		let images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value != 'WHITE').map((t) => {
+		let images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value !== 'WHITE').map((t) => {
 			return t.value;
 		});
 		

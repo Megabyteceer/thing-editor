@@ -99,6 +99,7 @@ export default class PrefabsList extends React.Component {
 			let name = Lib.__getNameByPrefab(item);
 			PrefabsList.acceptPrefabEdition();
 			let preview = Lib.loadPrefab(name);
+			__getNodeExtendData(preview).__EDITOR_isPreviewObject = true;
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);
 			editor.ui.viewport.setPrefabMode(name);

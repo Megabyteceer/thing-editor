@@ -20,8 +20,8 @@ class CornerDragger extends React.Component {
 	}
 	
 	dragHandler(ev) {
-		if (this.prevX != ev.pageX || this.prevY != ev.pageY) {
-			if (ev.pageX != 0 || ev.pageY != 0) {
+		if (this.prevX !== ev.pageX || this.prevY !== ev.pageY) {
+			if (ev.pageX !== 0 || ev.pageY !== 0) {
 				let ret = this.props.onDrag(ev.pageX - this.prevX, ev.pageY - this.prevY);
 				if (ret) {
 					this.prevX += ret.x;

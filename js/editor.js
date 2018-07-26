@@ -94,7 +94,7 @@ export default class Editor {
 			this.fs.chooseProject(true);
 		} else if(dir !== editor.currentProjectDir) {
 			editor.settings.setItem('last-opened-project', dir);
-			if(dir != lastOpenedProject) {
+			if(dir !== lastOpenedProject) {
 				location.reload();
 			}
 
@@ -291,7 +291,7 @@ export default class Editor {
 				}
 			} else {
 				for(let o of this.selection) {
-					if(o[field.name] != val) {
+					if(o[field.name] !== val) {
 						o[field.name] = val;
 						changed = true;
 					}
