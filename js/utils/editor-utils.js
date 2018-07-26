@@ -241,6 +241,7 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 
 window.onunload = function() {
 	editor.exitPrefabMode();
+	editor.ui.viewport.stopExecution();
 	if(editor.isCurrentSceneModified) {
 		editor.saveBackup(true);
 	}

@@ -153,16 +153,11 @@ export default class Editor {
 		return editor.settings.getItem('__EDITOR-clipboard-data');
 	}
 	
-	openSceneSafe(name, renameAfterOpening) {
+	openSceneSafe(name) {
 		return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
 			this.loadScene(name);
 			document.title = '(' + editor.projectDesc.title + ') - - (' + name + ')';
-			if(renameAfterOpening) {
-				assert(typeof renameAfterOpening === 'string', 'String expected');
-				name = renameAfterOpening;
-				game.currentScene.__libSceneName = renameAfterOpening;
-			}
-			saveCurrentSceneName(name);
+			saveCurrentSceneName(game.currentScene.name);
 			history.clearHistory();
 			history.setCurrentStateUnmodified();
 			this.ui.forceUpdate();
