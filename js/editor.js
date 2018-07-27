@@ -18,6 +18,8 @@ import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
 import DisplayObject from '/thing-engine/js/components/display-object.js';
 
+let isFirstClassesLoading = true;
+
 export default class Editor {
 	
 	get editorFilesPrefix() {
@@ -222,12 +224,14 @@ export default class Editor {
 	}
 	
 	reloadClasses() {
+		let ftl = isFirstClassesLoading;
+		isFirstClassesLoading = false;
 		this.ui.viewport.stopExecution();
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
-		editor.saveBackup();
+		editor.saveBackup(!ftl);
 		
 		return ClassesLoader.reloadClasses().then(() => {
-			editor.restoreBackup();
+			editor.restoreBackup(!ftl);
 		});
 	}
 	
