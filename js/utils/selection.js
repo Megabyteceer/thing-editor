@@ -53,7 +53,7 @@ class Selection extends Array {
 		assert(this.indexOf(o) < 0);
 		__getNodeExtendData(o).isSelected = true;
 		if(!(o instanceof Tilemap)) {
-			o.filters = selectedFilters;
+			o.addFilter(selectionFilter);
 		}
 		this.push(o);
 		o.__onSelect();
@@ -69,7 +69,7 @@ class Selection extends Array {
 		let i = this.indexOf(o);
 		assert(i >= 0);
 		__getNodeExtendData(o).isSelected = false;
-		o.filters = null;
+		o.removeFilter(selectionFilter);
 		this.splice(i, 1);
 		o.__EDITOR_inner_exitPreviewMode();
 		if(!IS_SELECTION_LOADING_TIME) {
@@ -81,7 +81,6 @@ class Selection extends Array {
 export default Selection;
 
 const selectionFilter = new PIXI.filters.OutlineFilter(2, 0xffff00);
-const selectedFilters = [selectionFilter];
 
 setInterval(() => {
 	if (window.editor && editor.selection.length > 0) {
