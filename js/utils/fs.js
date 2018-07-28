@@ -37,6 +37,14 @@ let fs = {
 		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName));
 	},
 	editFile: (fileName, line = -1, char = -1) => {
+
+		let now = Date.now();
+		let lastEdit = fielsEditTimes[fileName];
+		if(lastEdit && lastEdit >  (now - 10000)) {
+			return;
+		}
+		fielsEditTimes[fileName] = now;
+
 		let url = '/fs/edit?f=' + encodeURIComponent(fileName);
 		if(line >= 0) {
 			url += '&l=' + line;
@@ -44,7 +52,7 @@ let fs = {
 		if(char >= 0) {
 			url += '&c=' + char;
 		}
-		return fs.getJSON(url, true);
+		fs.getJSON(url, true);
 	},
 	getJSON(url, silently) {
 		if (!silently) {
@@ -80,6 +88,8 @@ let fs = {
 		return r;
 	}
 };
+
+const fielsEditTimes = {};
 
 export default fs;
 
