@@ -211,7 +211,7 @@ export default class DataPathEditor extends React.Component {
 		}
 
 		let acceptNowBtn;
-		if(!this.props.field.isValueValid || this.props.field.isValueValid(parent)) {
+		if(!this.props.field || !this.props.field.isValueValid || this.props.field.isValueValid(parent)) {
 			acceptNowBtn = R.btn('✔', () => {
 				this.finalValueChoosed(path);
 				editor.ui.modal.hideModal();
