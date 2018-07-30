@@ -140,8 +140,8 @@ export default class Viewport extends React.Component {
 			node.getGlobalPosition(b);
 		}
 
-		let w = Math.max(50, b.width / 3);
-		let h = Math.max(50, b.height / 3);
+		let w = b.width / 4;
+		let h = b.height / 4;
 
 		b.x += w;
 		b.width -= w * 2;
