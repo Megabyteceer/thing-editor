@@ -425,9 +425,8 @@ input{
 }
 
 .select-editor-list{
-	position: absolute;
+	position: fixed;
 	z-index:2;
-	margin-top: -26px;
 	background: #fffde4;
 	padding:10px;
 	border: 1px solid #9e8247;
