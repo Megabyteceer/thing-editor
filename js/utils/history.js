@@ -1,5 +1,6 @@
 import Lib from "/thing-engine/js/lib.js";
 import game from "/thing-engine/js/game.js";
+import Scene from "/thing-engine/js/components/scene.js";
 
 const HISTORY_LEN = 100;
 const STRICT_HISTORY_LEN = 20;
@@ -24,6 +25,20 @@ function applyState(state) {
 	editor.selection.loadSelection(state.selectionData);
 }
 
+function getHistoryName() {
+	if((typeof game === 'undefined') || !game.currentContainer) {
+		return;
+	}
+	let n = game.currentContainer.name;
+	assert(n, 'currentContainer name is empty.');
+	if(game.currentContainer instanceof Scene) {
+		n = 's/' + n;
+	} else {
+		n = 'p/' + n;
+	}
+	return n;
+}
+
 class History {
 	
 	constructor() {
@@ -45,11 +60,10 @@ class History {
 	}
 
 	get _undos() {
-		if((typeof game === 'undefined') || !game.currentContainer) {
-			return [];
+		let n = getHistoryName();
+		if(!n) {
+			return[];
 		}
-		let n = game.currentContainer.name;
-		assert(n, 'currentContainer name is empty.');
 		if(!undosStack.hasOwnProperty(n)) {
 			undosStack[n] = [];
 		}
@@ -57,11 +71,10 @@ class History {
 	}
 
 	get _redos() {
-		if((typeof game === 'undefined') || !game.currentContainer) {
-			return [];
+		let n = getHistoryName();
+		if(!n) {
+			return[];
 		}
-		let n = game.currentContainer.name;
-		assert(n, 'currentContainer name is empty.');
 		if(!redosStack.hasOwnProperty(n)) {
 			redosStack[n] = [];
 		}
