@@ -249,15 +249,25 @@ $(window).on('mousedown', function onMouseDown(ev) {
 	}
 });
 
+
+function isObjectUnder(o) {
+	return (o.containsPoint && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.mouse));
+}
+
 let previousAllUnderMouse;
 function selectByStageClick(ev) {
 	let allUnderMouse = new Selection();
 	let i;
+
 	game.currentContainer.forAllChildren((o) => {
-		if(o.containsPoint && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.mouse)) {
+		if(isObjectUnder(o)) {
 			allUnderMouse.push(o);
 		}
 	});
+
+	if(isObjectUnder(game.currentContainer)) {
+		allUnderMouse.push(game.currentContainer);
+	}
 	
 	allUnderMouse.sortSelectedNodes();
 	allUnderMouse.reverse();

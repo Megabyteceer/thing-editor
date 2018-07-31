@@ -68,7 +68,7 @@ class SelectEditor extends React.Component {
 	
 	renderItem(i) {
 		return R.div({
-			key: i.name, className: 'select-item clickable', onClick: () => {
+			key: i.name, className: 'select-item clickable', onMouseDown: () => {
 				this.onSelect(i);
 			}
 		}, i.name);

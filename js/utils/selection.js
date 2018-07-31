@@ -69,7 +69,9 @@ class Selection extends Array {
 		let i = this.indexOf(o);
 		assert(i >= 0);
 		__getNodeExtendData(o).isSelected = false;
-		o.removeFilter(selectionFilter);
+		if(!(o instanceof Tilemap)) {
+			o.removeFilter(selectionFilter);
+		}
 		this.splice(i, 1);
 		o.__EDITOR_inner_exitPreviewMode();
 		if(!IS_SELECTION_LOADING_TIME) {
