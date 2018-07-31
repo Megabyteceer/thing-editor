@@ -3,16 +3,17 @@ import PropsFieldWrapper from './props-field-wrapper.js';
 const numberEditorProps = {className:'number-input'};
 
 let draggingElement;
-let lastY;
 
-$(window).on('mousemove', (ev) => {
-	if (!ev.buttons) draggingElement = undefined;
+document.addEventListener('mousemove', (ev) => {
+	if (!ev.buttons && draggingElement) {
+		document.exitPointerLock();
+		draggingElement = undefined;
+	}
 	if (!draggingElement) return;
 	
-	let d = Math.round((lastY - ev.clientY) / 2.001);
+	let d = ev.movementY;
 	if (d !== 0) {
 		d = d * (draggingElement.step);
-		lastY = ev.clientY;
 		draggingElement.deltaValue(d, ev.ctrlKey);
 	}
 });
@@ -82,8 +83,8 @@ class NumberEditor extends React.Component {
 	}
 
 	onMouseDown(ev) {
+		ev.target.requestPointerLock();
 		draggingElement = this;
-		lastY = ev.clientY;
 	}
 
 	onKeyDown(ev) {
