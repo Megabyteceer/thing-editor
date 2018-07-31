@@ -123,7 +123,10 @@ export default class PrefabsList extends React.Component {
 		let panelClassname = this.state.selectedItem ? '' : 'unclickable';
 		
 		let prefabs = [];
-		for (let prefabName in scenePrefabs) {
+		let prefabsNames = Object.keys(scenePrefabs);
+		prefabsNames.sort();
+
+		for (let prefabName of prefabsNames) {
 			prefabs.push(this.renderItem(prefabName, scenePrefabs[prefabName]));
 		}
 		
