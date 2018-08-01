@@ -289,7 +289,7 @@ export default class Editor {
 	onObjectsPropertyChanged(o, field, val, delta) {
 		let changed = false;
 		if(typeof field === 'string') {
-			field = editor.getObjectField(this.selection[0], field);
+			field = editor.getObjectField(o, field);
 		}
 		
 		this.beforePropertyChanged.emit(field.name, field);

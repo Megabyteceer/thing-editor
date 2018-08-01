@@ -13,7 +13,7 @@ class TreeNode extends React.Component {
 	
 	onMouseDown(ev) { // == select nodes
 		let state = __getNodeExtendData(this.props.node);
-		if((state.isSelected || isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
+		if((isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
 			state.toggled = !state.toggled;
 			if(!state.toggled) {
 				collapseChildrenRecursively(this.props.node);
