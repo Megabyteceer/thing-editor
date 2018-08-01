@@ -20,6 +20,8 @@ import DisplayObject from '/thing-engine/js/components/display-object.js';
 
 let isFirstClassesLoading = true;
 
+let refreshTreeViewAndPropertyEditorSheduled;
+
 export default class Editor {
 	
 	get editorFilesPrefix() {
@@ -219,8 +221,13 @@ export default class Editor {
 	}
 	
 	refreshTreeViewAndPropertyEditor() {
-		this.ui.sceneTree.forceUpdate();
-		this.refreshPropsEditor();
+		if(refreshTreeViewAndPropertyEditorSheduled) return;
+		refreshTreeViewAndPropertyEditorSheduled = true;
+		setTimeout(()=> {
+			refreshTreeViewAndPropertyEditorSheduled = false;
+			this.ui.sceneTree.forceUpdate();
+			this.refreshPropsEditor();
+		}, 1);
 	}
 	
 	reloadClasses() {
@@ -273,42 +280,49 @@ export default class Editor {
 			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
-			let changed = false;
-			
-			this.beforePropertyChanged.emit(field.name, field);
-			
-			if(delta === true) {
-				assert(field.type === Number);
-				for(let o of this.selection) {
-					let v = o[field.name];
-					let newVal = v + val;
-					if(field.hasOwnProperty('min')) {
-						newVal = Math.max(field.min, newVal);
-					}
-					if(field.hasOwnProperty('max')) {
-						newVal = Math.min(field.max, newVal);
-					}
-					if(v !== newVal) {
-						o[field.name] = newVal;
-						changed = true;
-					}
-				}
-			} else {
-				for(let o of this.selection) {
-					if(o[field.name] !== val) {
-						o[field.name] = val;
-						changed = true;
-					}
-				}
-			}
-			
-			this.afterPropertyChanged.emit(field.name, field);
-			
-			if(changed) {
-				this.refreshTreeViewAndPropertyEditor();
-				editor.sceneModified();
+			for(let o of this.selection) {
+				this.onObjectsPropertyChanged(o, field, val, delta);
 			}
 		}
+	}
+
+	onObjectsPropertyChanged(o, field, val, delta) {
+		let changed = false;
+		if(typeof field === 'string') {
+			field = editor.getObjectField(this.selection[0], field);
+		}
+		
+		this.beforePropertyChanged.emit(field.name, field);
+		
+		if(delta === true) {
+			assert(field.type === Number);
+
+			let v = o[field.name];
+			let newVal = v + val;
+			if(field.hasOwnProperty('min')) {
+				newVal = Math.max(field.min, newVal);
+			}
+			if(field.hasOwnProperty('max')) {
+				newVal = Math.min(field.max, newVal);
+			}
+			if(v !== newVal) {
+				o[field.name] = newVal;
+				changed = true;
+			}
+		} else {
+			if(o[field.name] !== val) {
+				o[field.name] = val;
+				changed = true;
+			}
+		}
+		
+		this.afterPropertyChanged.emit(field.name, field);
+		
+		if(changed) {
+			this.refreshTreeViewAndPropertyEditor();
+			editor.sceneModified();
+		}
+		return changed;
 	}
 	
 	/**
@@ -368,19 +382,17 @@ export default class Editor {
 		for(let c of o.children) {
 			editor.shiftObject(c, -dX, -dY);
 		}
-		editor.ui.sceneTree.selectInTree(o);
 	}
 	
 	shiftObject(o, dx, dy) {
 		if(dx !== 0 || dy !== 0) {
-			editor.ui.sceneTree.selectInTree(o);
 			// Shift wrapped object to zero. If it is MovieClip its will shift all timeline.
 			Timeline.disableRecording();
 			if (dx !== 0) {
-				editor.onSelectedPropsChange('x', dx, true);
+				editor.onObjectsPropertyChanged(o, 'x', dx, true);
 			}
 			if (dy !== 0) {
-				editor.onSelectedPropsChange('y', dy, true);
+				editor.onObjectsPropertyChanged(o, 'y', dy, true);
 			}
 			Timeline.enableRecording();
 		}
