@@ -11,7 +11,7 @@ document.addEventListener('mousemove', (ev) => {
 	}
 	if (!draggingElement) return;
 	
-	let d = ev.movementY;
+	let d = -ev.movementY;
 	if (d !== 0) {
 		d = d * (draggingElement.step);
 		draggingElement.deltaValue(d, ev.ctrlKey);
