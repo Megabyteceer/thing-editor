@@ -34,7 +34,7 @@ typeDescriptions.set(Boolean, {
 	},
 	default: false
 });
-typeDescriptions.set(PIXI.Rectangle, {
+typeDescriptions.set('rect', {
 	renderer: RectangleEditor,
 	parser: (target) => {
 		return target.value;

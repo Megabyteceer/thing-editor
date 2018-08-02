@@ -23,7 +23,7 @@ export default class RectangleEditor extends React.Component {
 		this.onWChange = this.onWChange.bind(this);
 		this.onHChange = this.onHChange.bind(this);
 		this.onEnabledChange = this.onEnabledChange.bind(this);
-		if(!this.props.value && !this.this.props.field.nullable) {
+		if(!this.props.value && !this.props.field.nullable) {
 			this.onEnabledChange();
 		}
 	}
@@ -78,9 +78,7 @@ export default class RectangleEditor extends React.Component {
 			if(r) {
 				editor.overlay.drawRect(this.props, o, r);
 			}
-
 		});
-
 
 		if(editor.selection.length > 1) {
 			return R.span(null, 'Rectangle editor does not support multily selection.');

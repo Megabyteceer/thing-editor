@@ -1118,10 +1118,6 @@ input{
 	border-top: 1px solid #ddd;
 }
 
-.rect-editor-group {
-	width: 50%;
-}
-
 .prompt-dialogue textarea {
 	min-height: 300px;
 	min-width: 500px;
