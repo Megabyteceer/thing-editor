@@ -1076,6 +1076,9 @@ input{
 .number-input-btn {
 	padding: 0 5px;
 	position: absolute;
+	display: inline-block;
+	line-height: 0.7;
+	height: 11px;
 	right: 3px;
 	cursor: pointer;
 }
@@ -1088,12 +1091,9 @@ input{
 	transform:scale(0.8);
 }
 
-.number-input-btn-up {
-	top: -6px;
-}
-
 .number-input-btn-down {
-	bottom: -4px;
+	bottom: -3px;
+	height: 11px;
 }
 
 .langs-editor-td textarea:focus {
