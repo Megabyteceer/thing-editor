@@ -46,7 +46,7 @@ export default class ChooseList extends React.Component {
 		}
 		
 		return R.div({
-			onMouseDown: ()=>{
+			onClick: ()=>{
 				editor.ui.modal.hideModal(i);
 			},
 			className: 'clickable choosing-item',

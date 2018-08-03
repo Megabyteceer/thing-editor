@@ -25,6 +25,7 @@ import Spawner from "/thing-engine/js/components/spawner.js";
 import ClickOutsideTrigger from "/thing-engine/js/components/click-outside-trigger.js";
 import ScrollLayer from "/thing-engine/js/components/scroll-layer.js";
 import game from "/thing-engine/js/game.js";
+import SelectionHighlighter from '/thing-engine/js/components/selection-highlighter.js';
 
 let ClassesLoader = {};
 ClassesLoader.initClassesLoader = function initClassesLoader() {
@@ -46,6 +47,7 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
 		[ClickOutsideTrigger,"/thing-engine/js/components/click-outside-trigger.js" ],
 		[ScrollLayer,"/thing-engine/js/components/scroll-layer.js" ],
+		[SelectionHighlighter,"/thing-engine/js/components/selection-highlighter.js" ],
 		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"],
 		[PrefabReference, "/thing-engine/js/components/prefab-reference.js"],
 		[Shape, "/thing-engine/js/components/shape.js"],

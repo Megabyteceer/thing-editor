@@ -109,10 +109,15 @@ class SelectEditor extends React.Component {
 				this.checkForNeedClearFilter = false;
 				setTimeout(() => {this.setFilter('');}, 1);
 			}
-
-			let b = ReactDOM.findDOMNode(this.refs.body).getBoundingClientRect();
 			
-			items = R.div({className: 'select-editor-list', style:{left:b.left, top:b.top}}, filterInput, a.map(this.renderItem));
+			setTimeout(() => {
+				let b = ReactDOM.findDOMNode(this.refs.body).getBoundingClientRect();
+				let l = ReactDOM.findDOMNode(this.refs.list);
+				l.style.left = b.left + 'px';
+				l.style.top = b.top + 'px';
+			}, 0);
+
+			items = R.div({className: 'select-editor-list', ref:'list'}, filterInput, a.map(this.renderItem));
 		}
 		
 		let item;
