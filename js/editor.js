@@ -374,7 +374,8 @@ export default class Editor {
 		let b = o.getBounds();
 		let midX = Math.round(b.x + b.width / 2);
 		let midY = Math.round(b.y + b.height / 2);
-		this.moveContainerWithoutChildren(o, midX - o.x, midY - o.y);
+		let pos = o.getGlobalPosition();
+		this.moveContainerWithoutChildren(o, midX - pos.x, midY - pos.y);
 	}
 	
 	moveContainerWithoutChildren(o, dX, dY) {
