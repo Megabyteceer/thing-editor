@@ -34,7 +34,7 @@ let fs = {
 		});
 	},
 	deleteFile: (fileName) => {
-		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName));
+		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName), true);
 	},
 	editFile: (fileName, line = -1, char = -1) => {
 

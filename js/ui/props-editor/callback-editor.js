@@ -14,7 +14,7 @@ export default class CallbackEditor extends DataPathEditor {
 		assert(val, "empty value selected in callback chooser. Field filter need improvements: ");
 		
 		let type = typeof val;
-		return (type === 'function') && (!val.prototype);
+		return (type === 'function') && (!CallbackEditor.isFunctionIsClass(val));
 	}
 	
 	addAdditionalRoots(parent) {

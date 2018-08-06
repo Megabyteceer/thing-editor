@@ -2,6 +2,7 @@ import PropsFieldWrapper from "./props-field-wrapper.js";
 import Lib from "/thing-engine/js/lib.js";
 import DisplayObject from "/thing-engine/js/components/display-object.js";
 import game from "/thing-engine/js/game.js";
+import CallbackEditor from "./callback-editor.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
@@ -11,6 +12,10 @@ export default class DataPathEditor extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onEditClicked = this.onEditClicked.bind(this);
+	}
+
+	static isFunctionIsClass(f) {
+		return f.__EDITOR_propslist_cache;
 	}
 	
 	onEditClicked() {
@@ -37,7 +42,7 @@ export default class DataPathEditor extends React.Component {
 
 		let type = typeof val;
 		
-		return ((type !== 'object') && (type !== 'function' || val.prototype));
+		return ((type !== 'object') && (type !== 'function' || CallbackEditor.isFunctionIsClass(val)));
 	}
 	
 	finalValueChoosed(path) {
@@ -197,7 +202,7 @@ export default class DataPathEditor extends React.Component {
 		let type = typeof parent;
 
 		let needEnum = (type === 'object');
-		if((type === 'function') && parent.prototype) {
+		if((type === 'function') && CallbackEditor.isFunctionIsClass(parent)) {
 			addedNames['prototype'] = true;
 			addedNames['length'] = true;
 			addedNames['name'] = true;
@@ -256,7 +261,7 @@ function enumProps(o) {
 	if(!o.__EDITOR_noEnumSelfPropsForSelection) {
 		let op = Object.getOwnPropertyNames(o);
 		for (let i=0; i<op.length; i++)
-			if (p.indexOf(op[i]) == -1)
+			if (p.indexOf(op[i]) === -1)
 				p.push(op[i]);
 	}
 	
@@ -264,7 +269,7 @@ function enumProps(o) {
 	
 	let switched = false;
 
-	for (; cc && cc.prototype && cc !== Function && cc !== Object; cc = cc.__proto__) {
+	for (; cc && CallbackEditor.isFunctionIsClass(cc) && cc !== Function && cc !== Object; cc = cc.__proto__) {
 		
 		if(cc.hasOwnProperty('__EDITOR_selectableProps')) {
 			p = p.concat(cc.__EDITOR_selectableProps);
@@ -274,7 +279,7 @@ function enumProps(o) {
 		} else {
 			let op = Object.getOwnPropertyNames(cc.prototype);
 			for (let i=0; i<op.length; i++)
-				if (p.indexOf(op[i]) == -1)
+				if (p.indexOf(op[i]) === -1)
 					p.push(op[i]);
 		}
 	}
