@@ -96,7 +96,7 @@ export default class Editor {
 		}
 		if(!dir) {
 			this.fs.chooseProject(true);
-		} else if(dir !== editor.currentProjectDir) {
+		} else if((dir + '/') !== editor.currentProjectDir) {
 			editor.settings.setItem('last-opened-project', dir);
 			if(dir !== lastOpenedProject) {
 				location.reload();
