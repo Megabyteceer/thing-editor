@@ -11,10 +11,7 @@ const fileNameToSceneName = (fn) => {
 };
 
 let sceneNameProps = {
-	className: "selectable-text", title: 'click to select scene`s name', onMouseDown: function (ev) {
-		selectText(ev.target);
-		sp(ev);
-	}
+	className: "selectable-text", title: 'click to select scene`s name', onMouseDown: copyTextByClick
 };
 
 const sceneNameFilter = /[^a-z\-\/0-9]/g;

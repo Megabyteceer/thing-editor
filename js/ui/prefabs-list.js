@@ -14,10 +14,7 @@ const fileNameToPrefabName = (fn) => {
 const prefabNameFilter = /[^a-z\-\/0-9]/g;
 
 let prefabNameProps = {
-	className: "selectable-text", title: 'click to select prefabs`s name', onMouseDown: function (ev) {
-		selectText(ev.target);
-		sp(ev);
-	}
+	className: "selectable-text", title: 'click to select prefabs`s name', onMouseDown:copyTextByClick
 };
 
 export default class PrefabsList extends React.Component {

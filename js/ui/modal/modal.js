@@ -18,6 +18,10 @@ let bodyProps = {className: 'modal-body'};
 let titleProps = {className: 'modal-title'};
 let contentProps = {className: 'modal-content'};
 let errorProps = {className: 'error'};
+let notifyProps = {className: 'modal-notification'};
+
+let notifyText;
+let notifyInterval;
 
 let spinnerShowCounter = 0;
 
@@ -81,6 +85,20 @@ class Modal extends React.Component {
 			modal.state.modals.push({content, title, noEasyClose, resolve});
 			modal.forceUpdate();
 		});
+	}
+
+	notify(txt) {
+		notifyText = txt;
+		if(notifyInterval) {
+			clearInterval(notifyInterval);
+			notifyInterval = false;
+		}
+		if(txt) {
+			notifyInterval = setInterval(() => {
+				this.notify();
+			}, 1000);
+		}
+		this.forceUpdate();
 	}
 	
 	componentDidMount() {
@@ -150,7 +168,12 @@ class Modal extends React.Component {
 		if (spinnerShowCounter > 0) {
 			spinner = renderSpinner();
 		}
-		return R.fragment(this.state.modals.map(renderModal), spinner);
+
+		let notify;
+		if(notifyText) {
+			notify = R.div(notifyProps, notifyText);
+		}
+		return R.fragment(this.state.modals.map(renderModal), spinner, notify);
 	}
 }
 

@@ -14,10 +14,7 @@ const SCROLL_IN_TO_SCREEN_FIELD = 0;
 
 let prefabTitleProps = {className: 'prefabs-mode-title'};
 let prefabLabelProps = {
-	className: 'selectable-text', onMouseDown: function(ev) {
-		selectText(ev.target);
-		sp(ev);
-	}
+	className: 'selectable-text', onMouseDown: copyTextByClick
 };
 
 game.enforcedOrientation = 'landscape';

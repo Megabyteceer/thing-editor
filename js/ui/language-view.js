@@ -203,10 +203,7 @@ class LanguageTableEditor extends React.Component {
 		
 		idsList.some((id) => {
 			lines.push(R.div({key: id, className:'langs-editor-tr'},
-				R.div({className:'langs-editor-th selectable-text', onMouseDown: function (ev) {
-					selectText(ev.target);
-					sp(ev);
-				}}, id),
+				R.div({className:'langs-editor-th selectable-text', onMouseDown: copyTextByClick}, id),
 				langsIdsList.map((langId) => {
 					let text = languages[langId][id];
 					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({defaultValue: text, id:texareaID(langId, id), onChange:(ev) => {

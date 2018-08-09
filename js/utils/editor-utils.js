@@ -111,12 +111,9 @@ $(window).on('keydown', (ev) => {
 	
 });
 
-window.selectText = function(element) {
-	let selection = window.getSelection();
-	let range = document.createRange();
-	range.selectNodeContents(element);
-	selection.removeAllRanges();
-	selection.addRange(range);
+window.copyTextByClick = function(ev) {
+	editor.copyToClipboard(ev.target.innerText);
+	sp(ev);
 };
 
 window.__EDITOReditableProps = (class_, array) => {

@@ -148,6 +148,16 @@ export default class Editor {
 			}
 		}
 	}
+
+	copyToClipboard(text) {
+		navigator.permissions.query({
+			name: 'clipboard-read'
+		}).then(() => {
+			navigator.clipboard.writeText(text).then(()=>{
+				editor.ui.modal.notify(R.span(null, R.icon('copy'), '"' + text + '"'));
+			});
+		});
+	}
 	
 	set clipboardData(cd) {
 		editor.settings.setItem('__EDITOR-clipboard-data', cd);

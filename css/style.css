@@ -1123,7 +1123,14 @@ input{
 	min-width: 500px;
 }
 
-
+.modal-notification {
+	position:fixed;
+	right:10px;
+	bottom:10px;
+	padding:20px;
+	background:#85a9a9;
+	color:#fff;
+}
 
 
 
