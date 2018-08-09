@@ -1130,6 +1130,7 @@ input{
 	padding:20px;
 	background:#85a9a9;
 	color:#fff;
+	z-index: 1100;
 }
 
 
