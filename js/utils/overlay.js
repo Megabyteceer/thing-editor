@@ -350,7 +350,7 @@ class Dragger extends DSprite {
 	onDrag() {
 		let o = this.owner;
 		
-		if(game.mouse.shiftKey) {
+		if(game.keys.shiftKey) {
 			let dX = game.mouse.__EDITOR_x - startX;
 			let dY = game.mouse.__EDITOR_y - startY;
 			let angle = Math.atan2(dY, dX);
@@ -373,7 +373,7 @@ class Dragger extends DSprite {
 		let dX = Math.round(p.x) - o.x;
 		let dY = Math.round(p.y) - o.y;
 		
-		if(game.mouse.ctrlKey) {
+		if(game.keys.ctrlKey) {
 			editor.moveContainerWithoutChildren(o, dX, dY);
 		} else {
 			editor.onSelectedPropsChange('x', dX, true);
@@ -392,7 +392,7 @@ class Rotator extends DSprite {
 		let o = this.owner;
 		let info = __getNodeExtendData(o);
 		let r = Math.atan2(game.mouse.__EDITOR_y - info.draggerPivot.y, game.mouse.__EDITOR_x - info.draggerPivot.x);
-		if (game.mouse.shiftKey) {
+		if (game.keys.shiftKey) {
 			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 		}
 		editor.onSelectedPropsChange('rotation', Math.round((r - info.draggerRotator.rotation)*1000.0)/1000.0, true);

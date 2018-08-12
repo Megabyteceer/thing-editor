@@ -51,13 +51,13 @@ class ClassesView extends React.Component {
 			let x = 0;
 			let y = 0;
 
-			for(let o of a) {
-				if(o.parent !== parent) {
+			for(let c of a) {
+				if(c.parent !== parent) {
 					editor.ui.modal.showModal('Alert', 'Selected object shoul have same parent to be wrapped.');
 					return;
 				}
-				x += o.x;
-				y += o.y;
+				x += c.x;
+				y += c.y;
 			}
 			x = Math.round(x / a.length);
 			y = Math.round(y / a.length);
@@ -66,15 +66,28 @@ class ClassesView extends React.Component {
 				editor.ui.modal.showModal('Scene can not be wrapped.', 'Alert');
 				return;
 			}
+			let isPrefab = o === game.currentContainer;
+			let prefabName = game.currentContainer.name;
+			
 			
 			editor.selection.clearSelection();
 			let w = ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name);
 			w.x = 0;
 			w.y = 0;
-			parent.addChildAt(w, parent.getChildIndex(o));
 			
-			for(let o of a) {
-				w.addChild(o);
+			let indexToAdd = parent.getChildIndex(o);
+
+			for(let c of a) {
+				w.addChild(c);
+			}
+			if(isPrefab) {
+				w.name = prefabName;
+				o.name = null;
+				var data = Lib.__serializeObject(w);
+				w = Lib._deserializeObject(data);
+				game.__setCurrentContainerContent(w);
+			} else {
+				parent.addChildAt(w, indexToAdd);
 			}
 
 			editor.moveContainerWithoutChildren(w, x, y);
@@ -169,7 +182,7 @@ function isCanBeAddedAsChild() {
 }
 
 function findNextOfThisType(c, direction) {
-	if(game.mouse.ctrlKey) {
+	if(game.keys.ctrlKey) {
 		let a = game.currentContainer.findChildrenByType(c);
 		editor.selection.clearSelection();
 		for (let w of a) {

@@ -112,6 +112,11 @@ export default class TreeView extends React.Component {
 
 			editor.selection.clearSelection();
 
+			if(isPrefab && o.children.length !== 1) {
+				editor.ui.modal.showError("To unwrap prefab it is should have exactly one children.");
+				return;
+			}
+
 			while(o.children.length > 0) {
 				let c = o.getChildAt(o.children.length - 1);
 				c.detachFromParent();
@@ -119,6 +124,7 @@ export default class TreeView extends React.Component {
 				parent.toLocal(c, o, c);
 
 				if(isPrefab) {
+					c.name = o.name;
 					game.__setCurrentContainerContent(c);
 				} else {
 					parent.addChildAt(c, i);
