@@ -8,6 +8,7 @@ import ProgressBar from "/thing-engine/js/components/progress-bar.js";
 import PrefabReference from "/thing-engine/js/components/prefab-reference.js";
 import NumberInput from "/thing-engine/js/components/number-input.js";
 import Trigger from "/thing-engine/js/components/trigger.js";
+import Resizer from "/thing-engine/js/components/resizer.js";
 import OrientationTrigger from "/thing-engine/js/components/orientation-trigger.js";
 import MovieClip from "/thing-engine/js/components/movie-clip/movie-clip.js";
 import NineSlicePlane from "/thing-engine/js/components/nine-slice-plane.js";
@@ -44,6 +45,7 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[ProgressBar, "/thing-engine/js/components/progress-bar.js"],
 		[NumberInput, "/thing-engine/js/components/number-input.js"],
 		[Trigger,"/thing-engine/js/components/trigger.js" ],
+		[Resizer,"/thing-engine/js/components/resizer.js" ],
 		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
 		[ClickOutsideTrigger,"/thing-engine/js/components/click-outside-trigger.js" ],
 		[ScrollLayer,"/thing-engine/js/components/scroll-layer.js" ],

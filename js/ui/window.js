@@ -182,6 +182,11 @@ class Window extends React.Component {
 		h = Math.max(h, this.props.minH);
 		w = Math.min(w, window.innerWidth);
 		h = Math.min(h, window.innerHeight);
+		if((this.state.w !== w) || (this.state.h !== h)) {
+			if(this.props.onResize) {
+				this.props.onResize();
+			}
+		}
 		this.state.w = w;
 		this.state.h = h;
 		if (this.$) {
