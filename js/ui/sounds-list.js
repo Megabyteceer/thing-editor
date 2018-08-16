@@ -6,7 +6,7 @@ let sounds = {};
 
 const bodyProps = {className: 'sounds-list list-view'};
 
-let labelProps = {className: 'selectable-text', onMouseDown:copyTextByClick};
+let labelProps = {className: 'selectable-text', onMouseDown:window.copyTextByClick};
 
 const soundNameCleaner = /^snd\//gm;
 const supportedSoundFormats = ['webm', 'ogg', 'mp3', 'weba', 'aac'];

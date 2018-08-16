@@ -88,7 +88,7 @@ let getTypeDescription = (field) => {
 	return typeDescriptions.get(t);
 };
 
-let labelProps = {className: 'props-label selectable-text', onMouseDown: copyTextByClick};
+let labelProps = {className: 'props-label selectable-text', onMouseDown: window.copyTextByClick};
 let wrapperProps = {className: 'props-wrapper'};
 
 class PropsFieldWrapper extends React.Component {
