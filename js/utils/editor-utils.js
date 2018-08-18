@@ -236,11 +236,17 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 	};
 };
 
+function delay(ms) {
+	var start = +new Date;
+	while ((+new Date - start) < ms);
+}
+
 window.onunload = function() {
 	editor.exitPrefabMode();
 	editor.ui.viewport.stopExecution();
 	if(editor.isCurrentSceneModified) {
 		editor.saveBackup(true);
+		delay(250);
 	}
 };
 
