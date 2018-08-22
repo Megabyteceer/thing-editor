@@ -17,8 +17,6 @@ let prefabLabelProps = {
 	className: 'selectable-text', onMouseDown: window.copyTextByClick
 };
 
-game.enforcedOrientation = 'landscape';
-
 let stoppingExecutionTime;
 let playTogglingTime;
 let recoveryCheckingTime;
@@ -179,7 +177,7 @@ export default class Viewport extends React.Component {
 	}
 	
 	onToggleOrientationClick() {
-		game.enforcedOrientation = (game.enforcedOrientation === 'portrait') ? 'landscape' : 'portrait';
+		game.__enforcedOrientation = (game.__enforcedOrientation === 'portrait') ? 'landscape' : 'portrait';
 		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
