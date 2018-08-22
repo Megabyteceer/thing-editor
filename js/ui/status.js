@@ -48,7 +48,7 @@ export default class Status extends React.Component {
 	
 	error (message, owner, fieldName) {
 		console.error(message);
-		let item = {owner, message, fieldName}
+		let item = {owner, message, fieldName};
 		if(owner && fieldName) {
 			item.val = owner[fieldName];
 		}
@@ -65,7 +65,7 @@ export default class Status extends React.Component {
 	warn (message, owner, fieldName) {
 		console.warn(message);
 		if(needAddInToList(this.warnsMap, owner)) {
-			let item = {owner, message, fieldName}
+			let item = {owner, message, fieldName};
 			if(owner && fieldName) {
 				item.val = owner[fieldName];
 			}

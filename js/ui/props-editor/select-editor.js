@@ -158,17 +158,17 @@ class SelectEditor extends React.Component {
 		}
 
 		return R.div({
-				className: 'select-editor',
-				onClick: this.onToggle,
-				onMouseMove: this.onMouseMove,
-				onMouseLeave: this.onMouseLeave,
-				onMouseDown: this.onMouseDown,
-				ref: 'body'
-			},
-			R.div({
-				className: 'select-editor-current clickable'
-			}, item.name + ' ▾'),
-			items
+			className: 'select-editor',
+			onClick: this.onToggle,
+			onMouseMove: this.onMouseMove,
+			onMouseLeave: this.onMouseLeave,
+			onMouseDown: this.onMouseDown,
+			ref: 'body'
+		},
+		R.div({
+			className: 'select-editor-current clickable'
+		}, item.name + ' ▾'),
+		items
 		);
 	}
 

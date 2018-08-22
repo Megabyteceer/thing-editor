@@ -1,7 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 /*global require */
-/*global module */
+/*global process */
 
 let projectPath = process.argv[2];
 let debug = process.argv.indexOf('debug') >= 0;
@@ -16,24 +16,24 @@ webpack(config, (err, stats) => {
 		result.errors.push (txt);
 	}
 	function warnHandle(err) {
-			var txt = 'WARNING: '+ err;
-			result.warnings.push (txt);
+		var txt = 'WARNING: '+ err;
+		result.warnings.push (txt);
+	}
+	if (err) {
+		if (err.details) {
+			err.details.some(errorHandle);
 		}
-		if (err) {
-			if (err.details) {
-				err.details.some(errorHandle);
-			}
-		} else {
+	} else {
 
-			const info = stats.toJson();
+		const info = stats.toJson();
 
-			if (stats.hasErrors()) {
-				info.errors.some(errorHandle);
-			}
-
-			if (stats.hasWarnings()) {
-				info.warnings.some(warnHandle);
-			}
+		if (stats.hasErrors()) {
+			info.errors.some(errorHandle);
 		}
-		console.log(JSON.stringify(result));
-	});
+
+		if (stats.hasWarnings()) {
+			info.warnings.some(warnHandle);
+		}
+	}
+	console.log(JSON.stringify(result));
+});
