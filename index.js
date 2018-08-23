@@ -45,8 +45,8 @@ app.get('/fs/openProject', function (req, res) {
 });
 
 let pathFixerExp = /\\/g;
-let pathFixer = (fn) => {
-	return fn.replace(pathFixerExp, '/');
+let pathFixer = (stat) => {
+	stat.name = stat.name.replace(pathFixerExp, '/');
 };
 
 app.get('/fs/enum', function (req, res) {
@@ -57,8 +57,8 @@ app.get('/fs/enum', function (req, res) {
 	walkSync('./scenes', list);
 	walkSync('./src', list);
 	walkSync('./snd', list);
-	
-	res.send(list.map(pathFixer));
+	list.some(pathFixer);
+	res.send(list);
 });
 
 app.get('/fs/delete', function (req, res) {
@@ -216,7 +216,7 @@ const walkSync = (dir, filelist = []) => {
 		if(stats.isDirectory()) {
 			filelist = walkSync(path.join(dir, file), filelist);
 		} else if(stats.size > 0) {
-			filelist.push(path.join(dir, file));
+			filelist.push({name: path.join(dir, file), mtime: stats.mtimeMs});
 		}
 	});
 	return filelist;

@@ -11,8 +11,11 @@ let fs = {
 	},
 	refreshFiles: () => {
 		return fs.getJSON('/fs/enum').then((data) => {
-			data.sort();
-			data = data.filter((fn) => {
+			data.sort((a,b)=>{
+				return b.mtime - a.mtime;
+			});
+			data = data.filter((stat) => {
+				let fn = stat.name;
 				if (fn.toLowerCase() !== fn) {
 					editor.ui.status.warn("File with upper cased characters ignored: " + fn, () => {
 						let a = fn.split('/');
@@ -30,7 +33,8 @@ let fs = {
 				}
 				return true;
 			});
-			fs.files = data;
+			fs.filesExt = data;
+			fs.files = data.map(f => f.name).sort();
 		});
 	},
 	deleteFile: (fileName) => {

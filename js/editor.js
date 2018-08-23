@@ -354,7 +354,9 @@ export default class Editor {
 			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
 		idCounter = 0;
-		game.applyProjectDesc(editor.projectDesc);
+		if(game.applyProjectDesc(editor.projectDesc)) {
+			this.saveProjecrDesc();
+		}
 		game.showScene(name);
 		
 		if(game.currentScene) {

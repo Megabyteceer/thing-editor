@@ -41,9 +41,9 @@ const enumAssets = () => {
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 	
-	editor.fs.files.some((fn) => {
-		if(fn.match(textureFiler)) {
-			Lib.addTexture(fn.replace(textureNameCleaner, ''), game.resourcesPath + fn);
+	editor.fs.filesExt.some((fileStat) => {
+		if(fileStat.name.match(textureFiler)) {
+			Lib.addTexture(fileStat.name.replace(textureNameCleaner, ''), game.resourcesPath + fileStat.name);
 		}
 	});
 
