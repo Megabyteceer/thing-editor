@@ -88,7 +88,7 @@ export default class Editor {
 	
 	async openProject(dir) {
 		editor.ui.viewport.stopExecution();
-		await askSceneToSaveIfNeed();
+		await editor.askSceneToSaveIfNeed();
 		
 		let lastOpenedProject = editor.settings.getItem('last-opened-project');
 		if(!dir) {
@@ -168,7 +168,7 @@ export default class Editor {
 	}
 	
 	openSceneSafe(name) {
-		return askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
+		return editor.askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
 			this.loadScene(name);
 			document.title = '(' + editor.projectDesc.title + ') - - (' + name + ')';
 			saveCurrentSceneName(game.currentScene.name);
@@ -443,31 +443,31 @@ export default class Editor {
 	}
 	
 	build(debug) {
-		askSceneToSaveIfNeed().then(() => {
+		editor.askSceneToSaveIfNeed().then(() => {
 			build.build(debug);
 		});
 	}
-}
 
-function askSceneToSaveIfNeed(skip) {
-	editor.ui.viewport.stopExecution();
-	editor.exitPrefabMode();
-	if(!skip && editor.isCurrentSceneModified) {
-		return new Promise((resolve) => {
-			
-			editor.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
-				() => {
-					editor.saveCurrentScene();
-					resolve();
-				}, 'Save',
-				() => {
-					resolve();
-					
-				}, "Don't save"
-			);
-		});
-	} else {
-		return Promise.resolve();
+	askSceneToSaveIfNeed(skip) {
+		editor.ui.viewport.stopExecution();
+		editor.exitPrefabMode();
+		if(!skip && editor.isCurrentSceneModified) {
+			return new Promise((resolve) => {
+				
+				editor.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
+					() => {
+						editor.saveCurrentScene();
+						resolve();
+					}, 'Save',
+					() => {
+						resolve();
+						
+					}, "Don't save"
+				);
+			});
+		} else {
+			return Promise.resolve();
+		}
 	}
 }
 

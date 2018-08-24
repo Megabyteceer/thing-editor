@@ -1,6 +1,7 @@
 import Group from "./group.js";
 import Lib from "/thing-engine/js/lib.js";
 import game from "/thing-engine/js/game.js";
+import Pool from "/thing-engine/js/utils/pool.js";
 
 let bodyProps = {className: 'list-view', title: 'Double click to open scene.'};
 
@@ -16,6 +17,25 @@ let sceneNameProps = {
 
 const sceneNameFilter = /[^a-z\-\/0-9]/g;
 
+
+function askNewScenenName(defaultSceneName = '') {
+	return editor.ui.modal.showPrompt('Enter name for scene:',
+		defaultSceneName,
+		(val) => { // filter
+			return val.toLowerCase().replace(sceneNameFilter, '');
+		},
+		(val) => { //accept
+			if (Lib.scenes.hasOwnProperty(val)) {
+				return "Name already exists";
+			}
+			if (val.endsWith('/') || val.startsWith('/')) {
+				return 'name can not begin or end with "/"';
+			}
+		}
+	);
+}
+
+
 export default class ScenesList extends React.Component {
 	
 	constructor(props) {
@@ -29,32 +49,31 @@ export default class ScenesList extends React.Component {
 	}
 	
 	onSaveAsSceneClick() {
-		
 		let defaultSceneName = editor.currentSceneName.split('/');
 		defaultSceneName.pop();
 		defaultSceneName = defaultSceneName.join('/');
 		if (defaultSceneName) {
 			defaultSceneName += '/';
 		}
-		
-		editor.ui.modal.showPrompt('Enter name for scene:',
-			defaultSceneName,
-			(val) => { // filter
-				return val.toLowerCase().replace(sceneNameFilter, '');
-			},
-			(val) => { //accept
-				if (Lib.scenes.hasOwnProperty(val)) {
-					return "Name already exists";
-				}
-				if (val.endsWith('/') || val.startsWith('/')) {
-					return 'name can not begin or end with "/"';
-				}
-				
-			}
-		).then((enteredName) => {
+		askNewScenenName(defaultSceneName).then((enteredName) => {
 			if (enteredName) {
 				editor.saveCurrentScene(enteredName);
 			}
+		});
+	}
+
+	onNewSceneClick() {
+		editor.askSceneToSaveIfNeed().then(() => {
+			askNewScenenName().then((enteredName) => {
+				if (enteredName) {
+					editor.ui.modal.showListChoose("Select type for new scene:", editor.ClassesLoader.sceneClasses.map(i => i.c)).then((selectedClass) => {
+						if(selectedClass) {
+							Lib.__saveScene(Pool.create(selectedClass), enteredName);
+							editor.openSceneSafe(enteredName);
+						}
+					});
+				}
+			});
 		});
 	}
 	
@@ -101,7 +120,8 @@ export default class ScenesList extends React.Component {
 		return R.fragment(
 			R.div({className: bottomPanelClassName},
 				R.btn('Save', this.onSaveSceneClick, 'Save current Scene (Ctrl + S)', undefined, 1083),
-				R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.')
+				R.btn('Save As...', this.onSaveAsSceneClick, 'Save current scene under new name.'),
+				R.btn('+', this.onNewSceneClick, 'Create new scene.')
 			),
 			R.div(bodyProps, scenes)
 		);
