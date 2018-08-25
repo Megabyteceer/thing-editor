@@ -10,7 +10,8 @@ var clientLibs = [
 	['../../node_modules/react/umd/react.development.js', 'js/lib/react.development.js'],
 	['../../node_modules/reset-css/reset.css', 'css/lib/reset.css'],
 	['../../node_modules/jquery/dist/jquery.min.js', 'js/lib/jquery.min.js'],
-	
+
+	['../../node_modules/webfontloader/webfontloader.js', '../thing-engine/js/lib/webfontloader.js'],
 	['../../node_modules/howler/dist/howler.core.min.js', '../thing-engine/js/lib/howler.core.min.js'],
 	['../../node_modules/pixi.js/dist/pixi.min.js', '../thing-engine/js/lib/pixi.min.js'],
 	['../../node_modules/pixi.js/dist/pixi.js', '../thing-engine/js/lib/pixi.js']

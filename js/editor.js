@@ -111,8 +111,11 @@ export default class Editor {
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
 			editor.projectDesc = data;
-
-			game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');
+			if(game.applyProjectDesc(editor.projectDesc)) {
+				this.saveProjecrDesc();
+			}
+			await game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');
+			
 			game.stage.interactiveChildren = false;
 			
 			this.overlay = new Overlay();
@@ -354,9 +357,7 @@ export default class Editor {
 			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
 		idCounter = 0;
-		if(game.applyProjectDesc(editor.projectDesc)) {
-			this.saveProjecrDesc();
-		}
+		
 		game.showScene(name);
 		
 		if(game.currentScene) {
