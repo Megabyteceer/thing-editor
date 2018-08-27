@@ -76,6 +76,15 @@ export default class ScenesList extends React.Component {
 			});
 		});
 	}
+
+	onSceneDeleteClick(sceneName, view) {
+		editor.ui.modal.showQuestion('Are you sure?', R.span(null,
+			'Are you sure you want to delete scene: ', view, ' ?'
+		),() => {
+			Lib.__deleteScene(sceneName);
+			this.forceUpdate();
+		});
+	}
 	
 	onSelect(item) {
 		return item; //virtual method
@@ -83,13 +92,21 @@ export default class ScenesList extends React.Component {
 	
 	renderItem(sceneName, item) {
 		let cls = Lib.getClass(item.c);
-		
+		let deleteBtn;
 		if(sceneName === editor.currentSceneName) {
 			this.state.selectedItem = item;
 		} else {
 			this.state.selectedItem = null;
+			deleteBtn = R.btn('×', () => {
+				this.onSceneDeleteClick(sceneName, sceneView);
+			}, 'Delete scene...', 'danger-btn delete-scene-btn');
 		}
 		
+		let sceneView = R.span(null,
+			R.classIcon(cls),
+			R.b(sceneNameProps, sceneName),
+			' (' + cls.name + ')'
+		);
 		
 		return R.div({
 			onDoubleClick: () => {
@@ -97,7 +114,11 @@ export default class ScenesList extends React.Component {
 				editor.openSceneSafe(sceneName);
 			},
 			key: sceneName
-		}, R.listItem(R.span(null, R.classIcon(cls), R.b(sceneNameProps, sceneName), ' (' + cls.name + ')'), item, sceneName, this));
+		}, R.listItem(
+			R.span(null,
+				sceneView,
+				deleteBtn
+			), item, sceneName, this));
 	}
 	
 	render() {

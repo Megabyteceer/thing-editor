@@ -39,8 +39,6 @@ export default class Overlay {
 		blackout.texture = PIXI.Texture.WHITE;
 		blackout.tint = 30;
 		blackout.alpha = 0.9;
-		blackout.width = game.W;
-		blackout.height = game.H;
 
 		cameraFrame = new PIXI.Graphics();
 		
@@ -96,6 +94,8 @@ export default class Overlay {
 		this.hidePreview(false);
 		savedSelection = editor.selection.saveSelection();
 		game.stage.addChild(blackout);
+		blackout.width = game.W;
+		blackout.height = game.H;
 		__getNodeExtendData(blackout).hidden = true;
 		isPreviewShowed = object.name;
 		game.showModal(object);

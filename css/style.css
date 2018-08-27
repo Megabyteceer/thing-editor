@@ -1133,9 +1133,11 @@ input{
 	z-index: 1100;
 }
 
-
-
-
+.delete-scene-btn {
+	padding: 0 4px;
+	position: fixed;
+	right: 10px;
+}
 
 
 
