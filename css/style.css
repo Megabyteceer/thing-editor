@@ -1079,7 +1079,7 @@ input{
 	display: inline-block;
 	line-height: 0.7;
 	height: 11px;
-	right: 3px;
+	right: 0;
 	cursor: pointer;
 }
 
@@ -1089,6 +1089,11 @@ input{
 
 .number-input-btn:active {
 	transform:scale(0.8);
+}
+
+.number-input-btn-up {
+	top: -3px;
+	height: 11px;
 }
 
 .number-input-btn-down {

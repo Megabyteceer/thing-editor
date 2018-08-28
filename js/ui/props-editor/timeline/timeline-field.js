@@ -44,6 +44,7 @@ export default class FieldsTimeline extends React.Component {
 		if(selectedTimeline === this) {
 			selectedTimeline = null;
 			selectedKeyframe = null;
+			keyframePropsEditor.forceUpdate();
 		}
 	}
 	
