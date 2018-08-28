@@ -394,8 +394,10 @@ class Rotator extends DSprite {
 		let r = Math.atan2(game.mouse.__EDITOR_y - info.draggerPivot.y, game.mouse.__EDITOR_x - info.draggerPivot.x);
 		if (game.keys.shiftKey) {
 			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
+		} else {
+			r = Math.round(r * 1000.0) / 1000.0;
 		}
-		editor.onSelectedPropsChange('rotation', Math.round((r - info.draggerRotator.rotation)*1000.0)/1000.0, true);
+		editor.onSelectedPropsChange('rotation', r - info.draggerRotator.rotation, true);
 	}
 }
 
