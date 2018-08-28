@@ -5,12 +5,14 @@ const numberEditorProps = {className:'number-input'};
 let draggingElement;
 let preventClickBecauseOfDragging;
 
-document.addEventListener('mouseup', () => {
+function onMouseUp() {
 	if(draggingElement) {
 		document.exitPointerLock();
 		draggingElement = undefined;
 	}
-});
+}
+
+document.addEventListener('mouseup', onMouseUp);
 
 document.addEventListener('mousemove', (ev) => {
 	if (!draggingElement) return;
@@ -36,6 +38,10 @@ class NumberEditor extends React.Component {
 		this.btnDown = R.span({className:'number-input-btn number-input-btn-down', onClick:this.onDownClick, onMouseDown:this.onMouseDown}, '▼');
 	}
 
+	componentWillUnmount() {
+		onMouseUp();
+	}
+
 	get step() {
 		if(this.props.field) {
 			return this.props.field.step || 1;
@@ -47,14 +53,14 @@ class NumberEditor extends React.Component {
 		if(this.props.field && this.props.field.hasOwnProperty('max')) {
 			return this.props.field.max;
 		}
-		return this.props.max || Number.POSITIVE_INFINITY;
+		return this.props.hasOwnProperty('max') ? this.props.max : Number.POSITIVE_INFINITY;
 	}
 
 	get min() {
 		if(this.props.field && this.props.field.hasOwnProperty('min')) {
 			return this.props.field.min;
 		}
-		return this.props.min || Number.NEGATIVE_INFINITY;
+		return this.props.hasOwnProperty('min') ? this.props.min : Number.NEGATIVE_INFINITY;
 	}
 
 	onUpClick(ev) {

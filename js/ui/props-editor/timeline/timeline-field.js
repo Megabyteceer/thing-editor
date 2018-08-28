@@ -65,7 +65,7 @@ export default class FieldsTimeline extends React.Component {
 					calculateCacheSegmentForField(fieldPlayer, c);
 				}
 			}
-			let len = field.t[field.t.length - 1].t + 1;
+			let len = Math.max(c.length, field.t[field.t.length - 1].t + 1);
 			let lastVal;
 			for(let i = 0; i < len; i++) {
 				if(i in c) {
@@ -101,14 +101,20 @@ export default class FieldsTimeline extends React.Component {
 		this.onKeyframeChanged(keyFrame);
 	}
 	
-	renderKeyframe(keyFrame) {
+	renderKeyframe(keyFrame, keyframeNum) {
 		let loopArrow;
 		let isSelected = isKeyframeSelected(keyFrame);
 		let isNextOfSelected = selectedKeyframe && (selectedKeyframe.n === keyFrame);
 		if(keyFrame.j !== keyFrame.t) {
 			let len = Math.abs(keyFrame.j - keyFrame.t);
 			len *= FRAMES_STEP;
-			loopArrow = R.svg({className:'loop-arrow', height:11, width:len},
+
+			let className = 'loop-arrow';
+			if(keyFrame.j > keyFrame.t) {
+				className += ' loop-arrow-front';
+			}
+
+			loopArrow = R.svg({className, height:11, width:len},
 				R.polyline({points:'0,0 6,6 3,8 0,0 6,9 '+(len/2)+',10 '+(len-3)+',7 '+len+',0'})
 			);
 		}
@@ -125,7 +131,7 @@ export default class FieldsTimeline extends React.Component {
 			mark = (keyFrame.a === 'this.stop') ? '■' : 'A';
 		}
 		
-		return R.div({key:keyFrame.t, className:className, onMouseDown: (ev) => {
+		return R.div({key:keyframeNum, className:className, onMouseDown: (ev) => {
 			if(ev.buttons === 2) {
 				this.deleteKeyframe(keyFrame);
 				sp(ev);
@@ -137,6 +143,13 @@ export default class FieldsTimeline extends React.Component {
 				}
 				let timeLineData = this.props.field.t;
 				if (timeLineData.indexOf(keyFrame) > 0) {
+					if(ev.altKey) {
+						let cloneKeyframe = {};
+						Object.assign(cloneKeyframe, keyFrame);
+						timeLineData.push(cloneKeyframe);
+						keyFrame = cloneKeyframe;
+					}
+
 					draggingKeyframe = keyFrame;
 					draggingTimeline = this;
 						
@@ -433,7 +446,7 @@ export class KeyframePropertyEditor extends React.Component {
 		if(ev.target.checked) {
 			kf.j = 0;
 		} else {
-			kf.j = kf.t;
+			delete kf.j;
 		}
 		this.onKeyframeChanged(kf);
 	}
@@ -508,7 +521,7 @@ export class KeyframePropertyEditor extends React.Component {
 			speedEditor = React.createElement(NumberEditor, {value: kf.s, type:'number', step:0.1, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 		}
 		
-		let hasJump = kf.j !== kf.t;
+		let hasJump = kf.hasOwnProperty('j');
 		let jumpEditor;
 		if(hasJump) {
 			jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});

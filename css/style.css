@@ -696,7 +696,7 @@ input{
 }
 
 .timeline-keyframe-nextofselected {
-    border-bottom: 2px solid #ff9d00;
+    border-bottom: 3px solid #ff9d00;
 }
 
 .timeline-keyframe-linear {
@@ -741,6 +741,11 @@ input{
     fill:none;
     stroke: rgb(0, 136, 0);
     stroke-width: 1.5;
+}
+
+.loop-arrow-front {
+	transform: scaleX(-1);
+	transform-origin: right;
 }
 
 .timeline-chart {
