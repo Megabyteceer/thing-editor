@@ -332,6 +332,11 @@ export default class Editor {
 		this.afterPropertyChanged.emit(field.name, field);
 		
 		if(changed) {
+			let p = o;
+			while((p !== game.stage) && p) {
+				__getNodeExtendData(p).serialisationCache = null;
+				p = p.parent;
+			}
 			this.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified();
 		}
