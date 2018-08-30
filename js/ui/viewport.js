@@ -99,6 +99,7 @@ export default class Viewport extends React.Component {
 				editor.tryToSaveHistory();
 				
 				editor.saveBackup(true);
+				let selectionData = editor.selection.saveSelection();
 				
 				let sceneData = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
@@ -108,6 +109,7 @@ export default class Viewport extends React.Component {
 				game.showScene(s);
 				problemOnGameStart = false;
 				game.stage.interactiveChildren = true;
+				editor.selection.loadSelection(selectionData);
 			} else { //stop game
 				Music.stop();
 				problemOnGameStop = true;

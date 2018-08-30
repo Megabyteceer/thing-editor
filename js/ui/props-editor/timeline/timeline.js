@@ -540,8 +540,7 @@ function onMouseMove(ev) {
 			editor.sceneModified();
 			timeline.forceUpdate();
 		}
-		
-		FieldsTimeline.onMouseDrag(mouseTimelineTime, ev.buttons);
+		FieldsTimeline.onMouseDrag(mouseTimelineTime, ev);
 	}
 	
 }

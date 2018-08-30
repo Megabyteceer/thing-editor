@@ -232,11 +232,15 @@ export default class FieldsTimeline extends React.Component {
 		keyframePropsEditor.forceUpdate();
 	}
 	
-	static onMouseDrag(time, buttons) {
-		if(buttons !== 1) {
+	static onMouseDrag(time, ev) {
+		if(ev.buttons !== 1) {
 			draggingKeyframe = null;
 		}
-		if(draggingKeyframe && (draggingKeyframe.t !== time)) {
+		if(selectedKeyframe && selectedTimeline && ev.ctrlKey && ev.buttons === 1 && selectedKeyframe.j !== time) {
+			selectedKeyframe.j = time;
+			Timeline.renormalizeFieldTimelineDataAfterChange(selectedTimeline.props.field);
+			selectedTimeline.forceUpdate();
+		} else if(draggingKeyframe && (draggingKeyframe.t !== time)) {
 			if(draggingKeyframe.j === draggingKeyframe.t) {
 				draggingKeyframe.j = time;
 			}
