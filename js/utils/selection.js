@@ -29,6 +29,7 @@ class Selection extends Array {
 		if (!data || data.length === 0) {
 			editor.selection.clearSelection();
 		} else {
+			editor.selection.clearSelection();
 			data.some(selectNodeByPath);
 		}
 		editor.refreshTreeViewAndPropertyEditor();
@@ -102,20 +103,32 @@ setInterval(() => {
 let getPathOfNode = (node) => {
 	let ret = [];
 	while (node !== game.currentContainer) {
-		ret.push(node.parent.getChildIndex(node));
+		if(node.name && node.parent.children.filter((c)=>{return c.name === node.name;}).length === 1) {
+			ret.push(node.name);
+		} else {
+			ret.push(node.parent.getChildIndex(node));
+		}
 		node = node.parent;
 	}
 	return ret;
 };
 
-let selectNodeByPath = (path, nodeNum) => {
+let selectNodeByPath = (path) => {
 	let ret = game.currentContainer;
-	for (let i = path.length - 1; i >= 0; i--) {
-		ret = ret.getChildAt(path[i]);
+	for (let i = path.length - 1; i >= 0 && ret; i--) {
+		let p = path[i];
+		if(typeof p === 'number') {
+			if(p < ret.children.length) {
+				ret = ret.getChildAt(p);
+			} else {
+				return;
+			}
+		} else {
+			ret = ret.getChildByName(p);
+		}
 	}
-	if (nodeNum === 0) {
-		editor.ui.sceneTree.selectInTree(ret);
-	} else {
+	
+	if(ret) {
 		editor.selection.add(ret);
 	}
 };
