@@ -83,7 +83,7 @@ export default class ScenesList extends React.Component {
 		),() => {
 			Lib.__deleteScene(sceneName);
 			this.forceUpdate();
-		});
+		}, 'Delete');
 	}
 	
 	onSelect(item) {

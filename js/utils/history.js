@@ -91,6 +91,7 @@ class History {
 			}
 			historyRecord.treeData = this.currentState.treeData;
 		} else {
+			Lib.__invalidateSerialisationCache(game.currentContainer);
 			historyRecord.treeData = Lib.__serializeObject(game.currentContainer);
 			historyRecord.treeData._isModified = true;
 		}
