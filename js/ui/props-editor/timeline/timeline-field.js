@@ -84,10 +84,20 @@ export default class FieldsTimeline extends React.Component {
 	
 	renderKeyframeChart(keyFrame) {
 		if(keyFrame.n && (keyFrame.t < keyFrame.n.t)) {
-			let n = keyFrame.n;
 			let ret = [];
-			for(let i = keyFrame.t+1; i <= n.t; i++) {
-				ret.push((i * FRAMES_STEP) + ',' + scale(this.getValueAtTime(i)));
+			if(keyFrame.n.m === 2) { //DISCRETE next frame is
+				let startTime = ((keyFrame.t) * FRAMES_STEP);
+				let endTime = ((keyFrame.n.t) * FRAMES_STEP);
+				let startValue = scale(this.getValueAtTime(keyFrame.t));
+				let endValue = scale(this.getValueAtTime(keyFrame.n.t));
+				ret.push(startTime + ',' + startValue);
+				ret.push(endTime + ',' + startValue);
+				ret.push(endTime + ',' + endValue);
+			} else {
+				let n = keyFrame.n;
+				for(let i = keyFrame.t+1; i <= n.t; i++) {
+					ret.push((i * FRAMES_STEP) + ',' + scale(this.getValueAtTime(i)));
+				}
 			}
 			return ret.join(' ');
 		}
