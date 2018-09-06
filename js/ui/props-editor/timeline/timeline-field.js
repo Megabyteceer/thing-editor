@@ -33,6 +33,7 @@ export default class FieldsTimeline extends React.Component {
 		this.renderKeyframeChart = this.renderKeyframeChart.bind(this);
 		this.renderKeyframe = this.renderKeyframe.bind(this);
 		this.onKeyframeChanged = this.onKeyframeChanged.bind(this);
+		this.onInsertFramesClicked = this.onInsertFramesClicked.bind(this);
 		this.onRemoveFieldClick = this.onRemoveFieldClick.bind(this);
 		this.onGoLeftClick = this.onGoLeftClick.bind(this);
 		this.onGoRightClick = this.onGoRightClick.bind(this);
@@ -268,6 +269,47 @@ export default class FieldsTimeline extends React.Component {
 			}, 'Delete'
 		);
 	}
+
+	onInsertFramesClicked() {
+		let currentTime = Timeline.timeline.getTime();
+		let t = this.props.field.t;
+		let minTime = Number.MAX_VALUE;
+		for(let f of t) {
+			if(f.t > currentTime) {
+				minTime = Math.min(minTime, f.t-1);
+			}
+			if(f.j > currentTime) {
+				minTime = Math.min(minTime, f.j-1);
+			}
+		}
+
+		minTime -= currentTime;
+
+		editor.ui.modal.showPrompt('Enter framesCount to shift:', '0',
+			(filterValue) => {
+				return filterValue.replace(/[^\d-]/g, '');
+			},
+			(acceptValue) => {
+				let v = parseInt(acceptValue);
+				if(v < -minTime) {
+					return 'Value can\'t be less that -' + minTime;	
+				}
+			}).then((enteredText) => {
+			if(enteredText) {
+				let v = parseInt(enteredText);
+				for(let f of t) {
+					if(f.t > currentTime) {
+						f.t += v;
+					}
+					if(f.j > currentTime) {
+						f.j += v;
+					}
+				}
+				Timeline.renormalizeFieldTimelineDataAfterChange(this.props.field);
+				this.forceUpdate();
+			}
+		});
+	}
 	
 	gotoNextKeyframe(direction) {
 		let field = this.props.field;
@@ -318,7 +360,8 @@ export default class FieldsTimeline extends React.Component {
 		let label = R.div(fieldLabelTimelineProps,
 			field.n,
 			R.br(),
-			R.btn('×', this.onRemoveFieldClick, 'Remove field animation...', 'danger-btn'),
+			R.btn('x', this.onRemoveFieldClick, 'Remove field animation...', 'danger-btn'),
+			R.btn('⇄', this.onInsertFramesClicked, 'Insetr frames at current position'),
 			R.btn('<', this.onGoLeftClick, 'Previous Keyframe'),
 			R.btn('●', this.onToggleKeyframeClick, 'add/remove Keyframe'),
 			R.btn('>', this.onGoRightClick, 'Next Keyframe')
