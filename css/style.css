@@ -1149,6 +1149,13 @@ input{
 	right: 10px;
 }
 
+.sound-preload-checkbox {
+	float: right;
+	width: unset;
+	text-align: center;
+}
+
+
 
 
 
