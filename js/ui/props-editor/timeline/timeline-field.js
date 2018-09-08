@@ -22,9 +22,6 @@ let fieldLabelTimelineProps = {className: 'objects-timeline-labels', onMouseDown
 
 let _scale, _shift;
 const scale = (val) => {
-	if(typeof val !== 'number') {
-		return 0;
-	}
 	return (_shift - val) * _scale;
 };
 
@@ -388,9 +385,13 @@ export default class FieldsTimeline extends React.Component {
 		_shift = field.__cacheTimeline.max + 1/_scale;
 		
 		if(!field.__cacheTimelineRendered) {
-			field.__cacheTimelineRendered = R.svg({className:'timeline-chart', height:'27', width},
-				R.polyline({points:field.t.map(this.renderKeyframeChart, field).join(' ')})
-			);
+			if(isNaN(field.__cacheTimeline.max)) {
+				field.__cacheTimelineRendered = R.span();
+			} else {
+				field.__cacheTimelineRendered = R.svg({className:'timeline-chart', height:'27', width},
+					R.polyline({points:field.t.map(this.renderKeyframeChart, field).join(' ')})
+				);
+			}
 		}
 		
 
