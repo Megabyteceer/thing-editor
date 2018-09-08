@@ -22,6 +22,9 @@ let fieldLabelTimelineProps = {className: 'objects-timeline-labels', onMouseDown
 
 let _scale, _shift;
 const scale = (val) => {
+	if(typeof val !== 'number') {
+		return 0;
+	}
 	return (_shift - val) * _scale;
 };
 
