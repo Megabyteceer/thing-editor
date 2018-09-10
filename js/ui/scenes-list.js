@@ -1,7 +1,7 @@
 import Group from "./group.js";
-import Lib from "/thing-engine/js/lib.js";
-import game from "/thing-engine/js/game.js";
-import Pool from "/thing-engine/js/utils/pool.js";
+import Lib from "thing-engine/js/lib.js";
+import game from "thing-engine/js/game.js";
+import Pool from "thing-engine/js/utils/pool.js";
 
 let bodyProps = {className: 'list-view', title: 'Double click to open scene.'};
 

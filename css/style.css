@@ -1155,6 +1155,9 @@ input{
 	text-align: center;
 }
 
+.danger {
+	color: #f00;
+}
 
 
 

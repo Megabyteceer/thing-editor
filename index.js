@@ -147,41 +147,55 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 // modules import cache preventing
 let moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
-app.use('/games/', (req, res, next) => {
-	//log("GAMES JS PREPROCESSING: " + req.path);
-	
-	let modulesVersion = req.query ? req.query.v : false;
-	
-	let needParse = modulesVersion && req.path.endsWith('.js');
+let moduleImportAbsFixer = /(^\s*import.+from\s*['"])([^.\/])/gm;
 
+function absoluteImportsFixer(fileName, req, res, next, additionalProcessor) {
+	let needParse = req.path.endsWith('.js') && !req.path.endsWith('.min.js');
 	if(needParse) {
-		let fileName = path.join(gamesRoot, req.path);
 		fs.readFile(fileName, function (err, content) {
 			if (err) {
 				log('JS PREPROCESSING ERROR: ' + err);
 				next(err);
 			} else {
 				res.set('Content-Type', 'application/javascript');
-				let rendered = content.toString().replace(moduleImportFixer, (substr, m1, m2) => {
-					if(m1.indexOf('thing-engine/js/') >= 0 || m1.indexOf('thing-editor/') >= 0) {
-						return substr;
-					}
-					return m1 + '?v=' + modulesVersion + m2;
+				let rendered = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2, m3) => {					
+					return m1 + "/" + m2;
 				});
+				if(additionalProcessor) {
+					rendered = additionalProcessor(rendered);
+				}
 				return res.end(rendered);
 			}
 		});
 	} else {
 		next();
 	}
-
+}
+app.use('/games/', (req, res, next) => {
+	absoluteImportsFixer(path.join(__dirname, '../games', req.path), req, res, next, (content) => {
+		let modulesVersion = req.query ? req.query.v : false;
+		if(modulesVersion) {
+			res.set('Content-Type', 'application/javascript');
+			content = content.toString().replace(moduleImportFixer, (substr, m1, m2) => {
+				if(m1.indexOf('thing-engine/js/') >= 0 || m1.indexOf('thing-editor/') >= 0) {
+					return substr;
+				}
+				return m1 + '?v=' + modulesVersion + m2;
+			});
+		}
+		return content;
+	});
+});
+app.use('/thing-engine/', (req, res, next) => {
+	absoluteImportsFixer(path.join(__dirname, '../thing-engine', req.path), req, res, next);
+});
+app.use('/thing-editor/', (req, res, next) => {
+	absoluteImportsFixer(path.join(__dirname, req.path), req, res, next);
 });
 
 app.use('/games/', express.static(path.join(__dirname, '../games'), {dotfiles:'allow'}));
 app.use('/thing-engine/', express.static(path.join(__dirname, '../thing-engine'), {dotfiles:'allow'}));
 app.use('/thing-editor/', express.static(__dirname, {dotfiles:'allow'}));
-
-
 
 app.get('/', function(req, res) {
 	res.redirect('/thing-editor');

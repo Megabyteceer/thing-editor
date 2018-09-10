@@ -1,7 +1,7 @@
 import PropsFieldWrapper from "./props-field-wrapper.js";
-import Lib from "/thing-engine/js/lib.js";
-import DisplayObject from "/thing-engine/js/components/display-object.js";
-import game from "/thing-engine/js/game.js";
+import Lib from "thing-engine/js/lib.js";
+import DisplayObject from "thing-engine/js/components/display-object.js";
+import game from "thing-engine/js/game.js";
 import CallbackEditor from "./callback-editor.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};

@@ -1,4 +1,4 @@
-import L from "/thing-engine/js/utils/l.js";
+import L from "thing-engine/js/utils/l.js";
 
 const languageSwitcherProps = {className: 'language-switcher'};
 

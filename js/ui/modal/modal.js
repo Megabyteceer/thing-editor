@@ -1,6 +1,6 @@
 import Prompt from './prompt.js';
 import ChooseList from './choose-list.js';
-import game from "/thing-engine/js/game.js";
+import game from "thing-engine/js/game.js";
 
 let modal;
 

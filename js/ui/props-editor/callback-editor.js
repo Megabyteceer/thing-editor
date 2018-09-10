@@ -1,6 +1,6 @@
 import DataPathEditor from "./data-path-editor.js";
 import ScenesList from "../scenes-list.js";
-import {setValueByPath} from "/thing-engine/js/utils/get-value-by-path.js";
+import {setValueByPath} from "thing-engine/js/utils/get-value-by-path.js";
 import PrefabsList from "../prefabs-list.js";
 
 export default class CallbackEditor extends DataPathEditor {

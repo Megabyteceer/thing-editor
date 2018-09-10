@@ -1,8 +1,8 @@
-import game from "/thing-engine/js/game.js";
-import Lib from "/thing-engine/js/lib.js";
-import Sound from "/thing-engine/js/utils/sound.js";
-import Music from "/thing-engine/js/utils/music.js";
-import Pool from "/thing-engine/js/utils/pool.js";
+import game from "thing-engine/js/game.js";
+import Lib from "thing-engine/js/lib.js";
+import Sound from "thing-engine/js/utils/sound.js";
+import Music from "thing-engine/js/utils/music.js";
+import Pool from "thing-engine/js/utils/pool.js";
 
 const AssetsLoader = {};
 

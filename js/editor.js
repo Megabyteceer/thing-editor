@@ -1,6 +1,6 @@
 import utils from './utils/editor-utils.js';
-import game from '/thing-engine/js/game.js';
-import Settings from '/thing-engine/js/utils/settings.js';
+import game from 'thing-engine/js/game.js';
+import Settings from 'thing-engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
 import ws from './utils/socket.js'; // eslint-disable-line no-unused-vars
 import fs from './utils/fs.js';
@@ -12,11 +12,11 @@ import ScenesList from "./ui/scenes-list.js";
 import Overlay from "./utils/overlay.js";
 import PrefabsList from "./ui/prefabs-list.js";
 import Signal from "./utils/signal.js";
-import Lib from "/thing-engine/js/lib.js";
+import Lib from "thing-engine/js/lib.js";
 import build from "./utils/build.js";
 import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
-import DisplayObject from '/thing-engine/js/components/display-object.js';
+import DisplayObject from 'thing-engine/js/components/display-object.js';
 
 let isFirstClassesLoading = true;
 

@@ -1,6 +1,6 @@
-import Lib from "/thing-engine/js/lib.js";
+import Lib from "thing-engine/js/lib.js";
 import Group from "./group.js";
-import Sound from "/thing-engine/js/utils/sound.js";
+import Sound from "thing-engine/js/utils/sound.js";
 
 let sounds = {};
 
