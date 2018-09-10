@@ -103,7 +103,7 @@ export default class SoundsList extends React.Component {
 					editor.saveProjecrDesc();
 					this.forceUpdate();
 				}},
-			editor.projectDesc.loadOnDemandSounds.hasOwnProperty(sndName) ? '☑' : '☐'
+			editor.projectDesc.loadOnDemandSounds.hasOwnProperty(sndName) ? '☐' : '☑'
 			)
 			
 		), item, sndName, this);
