@@ -221,7 +221,7 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 	return () => {
 		let ret = [];
 		if(canBeEmty) {
-			ret.push({name:' ', value:''});
+			ret.push({name:' ', value:''});
 		}
 		let a = editor.Lib._getAllPrefabs();
 		for(let name in a) {

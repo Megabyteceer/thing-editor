@@ -77,6 +77,7 @@ export default class SoundsList extends React.Component {
 		});
 	}
 	onSelect(item) {
+		Lib.preloadSound(item.name);
 		let needPlay = !Lib.getSound(item.name).playing();
 		Sound.stop();
 		if(needPlay) {
@@ -89,7 +90,23 @@ export default class SoundsList extends React.Component {
 	}
 
 	renderItem(sndName, item) {
-		return R.listItem(R.span(null, R.icon('sound'), R.b(labelProps, sndName)), item, sndName, this);
+		return R.listItem(R.span(null, R.icon('sound'), R.b(labelProps, sndName), 
+			R.span({className:'sound-preload-checkbox', title:'Preload sound.',
+				onClick: (ev) => {
+					ev.stopPropagation();	
+					var opt = editor.projectDesc.loadOnDemandSounds;
+					if(opt.hasOwnProperty(sndName)) {
+						delete opt[sndName];
+					} else {
+						opt[sndName] = 1;
+					}
+					editor.saveProjecrDesc();
+					this.forceUpdate();
+				}},
+			editor.projectDesc.loadOnDemandSounds.hasOwnProperty(sndName) ? '☑' : '☐'
+			)
+			
+		), item, sndName, this);
 	}
 	
 	render() {
