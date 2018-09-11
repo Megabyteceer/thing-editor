@@ -212,7 +212,7 @@ function refreshSelection() {
 let startX, startY;
 
 $(window).on('mousedown', function onMouseDown(ev) {
-	if(ev.target === game.pixiApp.view) {
+	if(game.pixiApp && (ev.target === game.pixiApp.view)) {
 		if(ev.buttons === 4) {
 			isScrolling = true;
 			scrollingX = game.mouse.__EDITOR_x;
