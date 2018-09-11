@@ -84,7 +84,6 @@ export default class Viewport extends React.Component {
 			this.checkIfNeedRecovery();
 			playTogglingTime = true;
 			
-			Sound.__resetSounds();
 			this.resetZoom();
 			game.__doOneStep = false;
 			game.__paused = false;
@@ -103,6 +102,7 @@ export default class Viewport extends React.Component {
 				
 				let sceneData = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
+				Sound.__resetSounds();
 				game.__EDITORmode = false;
 				let s = Lib._loadObjectFromData(sceneData);
 				game.currentScene = null;
@@ -115,6 +115,7 @@ export default class Viewport extends React.Component {
 				problemOnGameStop = true;
 				game.__clearStage();
 				game.__EDITORmode = true;
+				Sound.__resetSounds();
 				editor.restoreBackup(true);
 				
 				problemOnGameStop = false;

@@ -158,7 +158,7 @@ function absoluteImportsFixer(fileName, req, res, next, additionalProcessor) {
 				next(err);
 			} else {
 				res.set('Content-Type', 'application/javascript');
-				let rendered = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2, m3) => {					
+				let rendered = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2) => {					
 					return m1 + "/" + m2;
 				});
 				if(additionalProcessor) {
