@@ -97,6 +97,7 @@ export default class SoundsList extends React.Component {
 					var opt = editor.projectDesc.loadOnDemandSounds;
 					if(opt.hasOwnProperty(sndName)) {
 						delete opt[sndName];
+						Lib.preloadSound(sndName);
 					} else {
 						opt[sndName] = 1;
 					}
