@@ -151,10 +151,16 @@ class SelectEditor extends React.Component {
 			item = list.find((i) => {
 				if (i.value === this.props.value) return i;
 			});
+			if(!item) {
+				item = R.span({className:'danger'}, this.props.value);
+				editor.ui.status.error('invlid value: ' + this.props.value + ' ▾', editor.selection[0], this.props.field.name);
+			} else {
+				item = item.name + ' ▾';
+			}
 		}
 
 		if (!item) {
-			item = list[0];
+			item = list[0].name + ' ▾';
 		}
 
 		return R.div({
@@ -167,7 +173,7 @@ class SelectEditor extends React.Component {
 		},
 		R.div({
 			className: 'select-editor-current clickable'
-		}, item.name + ' ▾'),
+		}, item),
 		items
 		);
 	}

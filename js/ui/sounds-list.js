@@ -1,6 +1,6 @@
-import Lib from "/thing-engine/js/lib.js";
+import Lib from "thing-engine/js/lib.js";
 import Group from "./group.js";
-import Sound from "/thing-engine/js/utils/sound.js";
+import Sound from "thing-engine/js/utils/sound.js";
 
 let sounds = {};
 
@@ -97,13 +97,14 @@ export default class SoundsList extends React.Component {
 					var opt = editor.projectDesc.loadOnDemandSounds;
 					if(opt.hasOwnProperty(sndName)) {
 						delete opt[sndName];
+						Lib.preloadSound(sndName);
 					} else {
 						opt[sndName] = 1;
 					}
 					editor.saveProjecrDesc();
 					this.forceUpdate();
 				}},
-			editor.projectDesc.loadOnDemandSounds.hasOwnProperty(sndName) ? '☑' : '☐'
+			editor.projectDesc.loadOnDemandSounds.hasOwnProperty(sndName) ? '☐' : '☑'
 			)
 			
 		), item, sndName, this);

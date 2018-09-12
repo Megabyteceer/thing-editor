@@ -1,9 +1,9 @@
 import TreeNode from './tree-node.js';
 import Window from '../window.js';
-import game from "/thing-engine/js/game.js";
+import game from "thing-engine/js/game.js";
 import Selection from "../../utils/selection.js";
-import Lib from "/thing-engine/js/lib.js";
-import Scene from '/thing-engine/js/components/scene.js';
+import Lib from "thing-engine/js/lib.js";
+import Scene from 'thing-engine/js/components/scene.js';
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};

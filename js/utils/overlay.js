@@ -1,8 +1,8 @@
 import Selection from "./selection.js";
-import Pool from "/thing-engine/js/utils/pool.js";
-import DSprite from "/thing-engine/js/components/d-sprite.js";
-import Lib from "/thing-engine/js/lib.js";
-import game from "/thing-engine/js/game.js";
+import Pool from "thing-engine/js/utils/pool.js";
+import DSprite from "thing-engine/js/components/d-sprite.js";
+import Lib from "thing-engine/js/lib.js";
+import game from "thing-engine/js/game.js";
 
 let blackout;
 let cameraFrame;
@@ -212,7 +212,7 @@ function refreshSelection() {
 let startX, startY;
 
 $(window).on('mousedown', function onMouseDown(ev) {
-	if(ev.target === game.pixiApp.view) {
+	if(game.pixiApp && (ev.target === game.pixiApp.view)) {
 		if(ev.buttons === 4) {
 			isScrolling = true;
 			scrollingX = game.mouse.__EDITOR_x;

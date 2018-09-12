@@ -1,10 +1,10 @@
 import PrefabsList from './prefabs-list.js';
-import Lib from "/thing-engine/js/lib.js";
+import Lib from "thing-engine/js/lib.js";
 import Signal from "../utils/signal.js";
 import LanguageSwitcher from "./language-switcher.js";
-import game from "/thing-engine/js/game.js";
-import Sound from '/thing-engine/js/utils/sound.js';
-import Music from '/thing-engine/js/utils/music.js';
+import game from "thing-engine/js/game.js";
+import Sound from 'thing-engine/js/utils/sound.js';
+import Music from 'thing-engine/js/utils/music.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -84,7 +84,6 @@ export default class Viewport extends React.Component {
 			this.checkIfNeedRecovery();
 			playTogglingTime = true;
 			
-			Sound.__resetSounds();
 			this.resetZoom();
 			game.__doOneStep = false;
 			game.__paused = false;
@@ -102,6 +101,7 @@ export default class Viewport extends React.Component {
 				
 				let sceneData = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
+				Sound.__resetSounds();
 				game.__EDITORmode = false;
 				let s = Lib._loadObjectFromData(sceneData);
 				game.currentScene = null;
@@ -114,6 +114,7 @@ export default class Viewport extends React.Component {
 				problemOnGameStop = true;
 				game.__clearStage();
 				game.__EDITORmode = true;
+				Sound.__resetSounds();
 				editor.restoreBackup(true);
 				
 				problemOnGameStop = false;

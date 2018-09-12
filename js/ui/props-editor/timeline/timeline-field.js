@@ -1,7 +1,7 @@
 import Timeline from "./timeline.js";
-import Pool from "/thing-engine/js/utils/pool.js";
-import FieldPlayer from "/thing-engine/js/components/movie-clip/field-player.js";
-import MovieClip from "/thing-engine/js/components/movie-clip/movie-clip.js";
+import Pool from "thing-engine/js/utils/pool.js";
+import FieldPlayer from "thing-engine/js/components/movie-clip/field-player.js";
+import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
 import SelectEditor from "../select-editor.js";
 import CallbackEditor from "../callback-editor.js";
 import NumberEditor from "../number-editor.js";
@@ -385,9 +385,13 @@ export default class FieldsTimeline extends React.Component {
 		_shift = field.__cacheTimeline.max + 1/_scale;
 		
 		if(!field.__cacheTimelineRendered) {
-			field.__cacheTimelineRendered = R.svg({className:'timeline-chart', height:'27', width},
-				R.polyline({points:field.t.map(this.renderKeyframeChart, field).join(' ')})
-			);
+			if(isNaN(field.__cacheTimeline.max)) {
+				field.__cacheTimelineRendered = R.span();
+			} else {
+				field.__cacheTimelineRendered = R.svg({className:'timeline-chart', height:'27', width},
+					R.polyline({points:field.t.map(this.renderKeyframeChart, field).join(' ')})
+				);
+			}
 		}
 		
 
