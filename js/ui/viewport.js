@@ -90,7 +90,6 @@ export default class Viewport extends React.Component {
 			game.__paused = false;
 			let play = game.__EDITORmode;
 			this.beforePlayStopToggle.emit(play);
-			Lib.__clearStaticScenes();
 			game.time = 0;
 			if(play) { // launch game
 				Music.__resetAllMusics();

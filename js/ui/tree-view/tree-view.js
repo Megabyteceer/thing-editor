@@ -342,10 +342,11 @@ const renderRoots = (node, i) => {
 	}
 };
 
-const renderSceneStackItem = (s, i) => {
-
+const renderSceneStackItem = (s, i, a) => {
 	let body;
-	if(typeof s === "string") {
+	if((s === game.currentScene) && (i === (a.length -1))) {
+		return undefined;
+	} else if(typeof s === "string") {
 		body = R.span(null, "waiting for instancing: " + s);
 	} else {
 		body = R.sceneNode(s);
