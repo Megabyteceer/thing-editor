@@ -1,8 +1,8 @@
 import game from "thing-engine/js/game.js";
 import Lib from "thing-engine/js/lib.js";
 import Sound from "thing-engine/js/utils/sound.js";
-import Music from "thing-engine/js/utils/music.js";
 import Pool from "thing-engine/js/utils/pool.js";
+import BgMusic from "thing-engine/js/components/bg-music.js";
 
 const AssetsLoader = {};
 
@@ -34,7 +34,6 @@ const enumAssets = () => {
 	}
 	
 	Sound.stop();
-	Music.__resetAllMusics();
 	Lib.__clearAssetsLists();
 	Pool.clearAll();
 
@@ -57,16 +56,12 @@ const enumAssets = () => {
 
 		game.pixiApp.start();
 		editor.ui.modal.hideSpinner();
-
-		if(!game.__EDITORmode) {
-			if(game.currentScene) {
-				game.currentScene._playMusic();
-			}
-		}
+		BgMusic._recalculateMusic();
 	});
 };
 
 AssetsLoader.reloadAssets = (refreshFiles) => {
+	BgMusic._stopAll();
 	editor.ui.modal.showSpinner();
 	if(refreshFiles) {
 		editor.fs.refreshFiles().then(enumAssets);
