@@ -126,7 +126,9 @@ class Modal extends React.Component {
 		
 		let yesBtn = R.btn(yesLabel, () => {
 			modal.hideModal(true);
-			onYes();
+			if(onYes) {
+				onYes();
+			}
 		}, undefined, 'main-btn', 13);
 		
 		let noBtn;
