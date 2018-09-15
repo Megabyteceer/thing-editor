@@ -1,6 +1,8 @@
 import Lib from "thing-engine/js/lib.js";
 import Group from "./group.js";
 import Sound from "thing-engine/js/utils/sound.js";
+import BgMusic from "thing-engine/js/components/bg-music.js";
+import game from "thing-engine/js/game.js";
 
 let sounds = {};
 
@@ -121,7 +123,8 @@ export default class SoundsList extends React.Component {
 		
 		return R.fragment(
 			R.div(null,
-				R.btn('Stop all', this.onStopAllClick)
+				R.btn('Stop all', this.onStopAllClick),
+				React.createElement(MusicProfiler)
 			),
 			R.div(bodyProps, list)
 		);
@@ -139,3 +142,80 @@ const getSndPriority = (s) => {
 	}
 	return i;
 };
+
+
+const profilerWrapperProps = {className: 'music-profiler-wrapper'};
+const profilerProps = {className: 'music-profiler'};
+const activeSoundProps = {style: {fontWeight: 'bold'}};
+
+class MusicProfiler extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {};
+		this.onToggle = this.onToggle.bind(this);
+	}
+
+	onToggle() {
+		this.setState({toggled: !this.state.toggled});
+		if(!this.state.toggled) {
+			this.interval = setInterval(() => {
+				this.forceUpdate();
+			}, 20);
+		} else {
+			clearInterval(this.interval);
+		}
+	}
+
+	renderMusicItem(m, i) {
+		let state;
+		let playing;
+		if(m._currentFragment) {
+			if(!m._currentFragment.playing()) {
+				state = R.div({class:'danger'}, 'ref to notplaying fragement');
+			} else {
+				playing = true;
+				state = R.div({className: 'sound-vol-bar', style: {width: m._currentFragment.volume() * 100}});
+			}
+		}
+		return R.div({className:'clickable', key:i, onClick:() => {
+			if(m.getRootContainer() === game.currentContainer) {
+				editor.ui.sceneTree.selectInTree(m);
+			} else {
+				let root = m.getRootContainer();
+				if(!root) {
+					root = m;
+					while(root.parent) {
+						root = root.parent;
+					}
+				}
+				editor.ui.modal.showQuestion(
+					'Cant select music object',
+					R.div(null, "Container of this music :", R.sceneNode(root))
+				);
+			}
+		}},
+		R.span((playing && !m.isLoopPos) ? activeSoundProps : null, m.intro),
+		' : ',
+		R.span((playing && m.isLoopPos) ? activeSoundProps : null, m.loop),
+		state
+		);
+	}
+
+	render() {
+		let list;
+		if(this.state.toggled) {
+			if(game.__EDITORmode) {
+				list = 'Start game execution to profile music.';
+			} else {
+				list = BgMusic.__allActiveMusics.map(this.renderMusicItem);
+			}
+			list = R.div(profilerProps, list);
+		}
+		return R.span(profilerWrapperProps, 
+			R.btn('profiler', this.onToggle),
+			list
+		);
+	}
+
+}

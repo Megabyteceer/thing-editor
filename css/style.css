@@ -1159,8 +1159,29 @@ input{
 	color: #f00;
 }
 
+.sound-vol-bar {
+	height: 20px;
+	background: #080;
+	display: inline-block;
+	right: 0;
+	position: absolute;
+}
 
+.music-profiler-wrapper {
+	position: relative;
+}
 
+.music-profiler {
+	min-width: 300px;
+	display: inline-block;
+	padding: 10px;
+	background: #fffffa;
+	border: 1px solid #ffffee;
+	position: absolute;
+	bottom: 0;
+	z-index: 100;
+	padding-right: 110px;
+}
 
 
 
