@@ -25,8 +25,18 @@ export default class Timeline extends React.Component {
 		Timeline.timeline = this;
 		this.timelineMarkerRef = this.timelineMarkerRef.bind(this);
 		this.onPlayStopToggle = this.onPlayStopToggle.bind(this);
+		this.prevFrame =this.prevFrame.bind(this);
+		this.nextFrame =this.nextFrame.bind(this);
 	}
-	
+
+	prevFrame() {
+		this.setTime(Math.max(0, this.getTime() - 1));
+	}
+
+	nextFrame() {
+		this.setTime(this.getTime() + 1);
+	}
+
 	static init() {
 		editor.beforePropertyChanged.add(Timeline.onBeforePropertyChanged);
 		editor.afterPropertyChanged.add(Timeline.onAfterPropertyChanged);
@@ -191,7 +201,11 @@ export default class Timeline extends React.Component {
 				React.createElement(TimeMarker, {timeline: this, ref:this.timelineMarkerRef}),
 				editor.selection.map(renderObjectsTimeline)
 			),
-			keyframePropsEditor
+			keyframePropsEditor,
+			R.span({style:{display:'none'}},
+				R.btn('<', this.prevFrame, undefined, undefined, 188),
+				R.btn('>', this.nextFrame, undefined, undefined, 190)
+			)
 		);
 	}
 }
