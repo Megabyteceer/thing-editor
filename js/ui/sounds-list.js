@@ -156,15 +156,18 @@ class MusicProfiler extends React.Component {
 		this.onToggle = this.onToggle.bind(this);
 	}
 
+	componentDidMount() {
+		this.interval = setInterval(() => {
+			this.forceUpdate();
+		}, 20);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.interval);
+	}
+
 	onToggle() {
 		this.setState({toggled: !this.state.toggled});
-		if(!this.state.toggled) {
-			this.interval = setInterval(() => {
-				this.forceUpdate();
-			}, 20);
-		} else {
-			clearInterval(this.interval);
-		}
 	}
 
 	renderMusicItem(m, i) {
@@ -204,6 +207,7 @@ class MusicProfiler extends React.Component {
 
 	render() {
 		let list;
+		let className;
 		if(this.state.toggled) {
 			if(game.__EDITORmode) {
 				list = 'Start game execution to profile music.';
@@ -211,9 +215,17 @@ class MusicProfiler extends React.Component {
 				list = BgMusic.__allActiveMusics.map(this.renderMusicItem);
 			}
 			list = R.div(profilerProps, list);
+		} else {
+			for(let m of BgMusic.__allActiveMusics) {
+				if(m._currentFragment) {
+					if(!m._currentFragment.volume() === 0) {
+						className = 'danger';
+					}
+				}
+			}
 		}
 		return R.span(profilerWrapperProps, 
-			R.btn('profiler', this.onToggle),
+			R.btn('profiler', this.onToggle, undefined, className),
 			list
 		);
 	}
