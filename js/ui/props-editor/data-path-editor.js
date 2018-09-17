@@ -89,7 +89,9 @@ export default class DataPathEditor extends React.Component {
 	}
 
 	chooseProperty(parent) {
+		let noNeedSort = false;
 		if(!parent) {
+			noNeedSort = true;
 			parent = {
 				game,
 				'this':this.props.this || editor.selection[0],
@@ -202,10 +204,15 @@ export default class DataPathEditor extends React.Component {
 		
 		//ignore names globally
 		addedNames['constructor'] = true;
+		addedNames['prototype'] = true;
 		let type = typeof parent;
 
 		if(type === 'object' || type === 'function') {
-			for(let name of enumProps(parent)) {
+			let props = enumProps(parent);
+			if(!noNeedSort) {
+				props.sort();
+			}
+			for(let name of props) {
 				addIfGood(name);
 			}
 		}
