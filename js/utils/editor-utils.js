@@ -116,8 +116,27 @@ window.copyTextByClick = function(ev) {
 	sp(ev);
 };
 
+const checkDataPath = (s) => {
+	if(s) {
+		if(
+			!s.startsWith('this.') && 
+			!s.startsWith('all.') && 
+			!s.startsWith('game.')
+		) {
+			if(!editor.Lib.classes.hasOwnProperty(s.substr(0, s.indexOf('.')))) {
+				return '"this", "all", "game", or class name expected as root element';
+			}
+		}
+	}
+};
+
 window.__EDITOReditableProps = (class_, array) => {
 	assert(!class_.hasOwnProperty('__EDITOR_editableProps'), "Editable properties for class" + class_.name + " already assigned.");
+	for(let p of array) {
+		if(p.type === 'data-path' || p.type === 'callback') {
+			p.validate = checkDataPath;
+		}
+	}
 	class_.__EDITOR_editableProps = array;
 };
 

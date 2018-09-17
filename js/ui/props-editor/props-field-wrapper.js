@@ -139,6 +139,16 @@ class PropsFieldWrapper extends React.Component {
 		
 		let disabled = field.disabled && field.disabled(node);
 		
+		let className = field.important ? 'props-field props-field-important' : 'props-field';
+		let title;
+
+		if(field.hasOwnProperty('validate')) {
+			title = field.validate(value);
+			if(title) {
+				className += ' props-field-invalid';
+			}
+		}
+
 		let tip;
 		if(field.hasOwnProperty('tip')) {
 			tip = R.tip(field.name,
@@ -147,7 +157,7 @@ class PropsFieldWrapper extends React.Component {
 			);
 		}
 		
-		return R.div({className: field.important ? 'props-field props-field-important' : 'props-field', id:'property-editor-' + field.name},
+		return R.div({className, id:'property-editor-' + field.name, title},
 			tip,
 			R.div(labelProps, field.name),
 			R.div(wrapperProps,

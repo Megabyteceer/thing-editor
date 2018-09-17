@@ -382,6 +382,15 @@ button {
 	color:#0e5a00;
 }
 
+.props-field-invalid {
+	background: #ffcfd4;
+	color:#aa0e00;
+}
+
+.props-field-invalid input{
+	text-decoration: underline wavy red;
+}
+
 .props-field-important input{
 	font-weight:bold;
 }
@@ -406,7 +415,6 @@ button {
 .field-editor-wrapper{
 	display:flex;
 }
-
 
 input{
 	font-family: monospace;
@@ -1156,7 +1164,8 @@ input{
 }
 
 .danger {
-	color: #f00;
+	color: #f00 !important;
+	outline: 1px solid #f00;
 }
 
 .sound-vol-bar {
