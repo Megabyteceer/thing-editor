@@ -204,15 +204,7 @@ export default class DataPathEditor extends React.Component {
 		addedNames['constructor'] = true;
 		let type = typeof parent;
 
-		let needEnum = (type === 'object');
-		if((type === 'function') && CallbackEditor.isFunctionIsClass(parent)) {
-			addedNames['prototype'] = true;
-			addedNames['length'] = true;
-			addedNames['name'] = true;
-			needEnum = true;
-		}
-
-		if(needEnum) {
+		if(type === 'object' || type === 'function') {
 			for(let name of enumProps(parent)) {
 				addIfGood(name);
 			}
@@ -251,46 +243,63 @@ export default class DataPathEditor extends React.Component {
 			}
 		});
 	}
-}
 
-function enumProps(o) {
-	
-	
-	if(o.hasOwnProperty('__EDITOR_selectableProps')) {
-		return o.__EDITOR_selectableProps;
-	}
-	let p = [];
-	
-	if(!o.__EDITOR_noEnumSelfPropsForSelection) {
-		let op = Object.getOwnPropertyNames(o);
-		for (let i=0; i<op.length; i++)
-			if (p.indexOf(op[i]) === -1)
-				p.push(op[i]);
-	}
-	
-	let cc = o.constructor;
-	
-	let switched = false;
-
-	for (; cc && CallbackEditor.isFunctionIsClass(cc) && cc !== Function && cc !== Object; cc = cc.__proto__) {
-		
-		if(cc.hasOwnProperty('__EDITOR_selectableProps')) {
-			p = p.concat(cc.__EDITOR_selectableProps);
-			switched = true;
-		} else if(switched) {
-			break;
-		} else {
-			let op = Object.getOwnPropertyNames(cc.prototype);
-			for (let i=0; i<op.length; i++)
-				if (p.indexOf(op[i]) === -1)
-					p.push(op[i]);
+	static initSelectableProps() {
+		let tmpSprite = new PIXI.Sprite();
+		let spriteProps = enumProps(tmpSprite);
+		for(let p of spriteProps) {
+			let v = tmpSprite[p];
+			if((typeof v) === 'function') {
+				hidePropertyFromEnumerationForChooser(v);
+			}
 		}
+		unhidePropertyFromEnumerationForChooser(tmpSprite.remove);
 	}
-	return p;
 }
-
 
 let path;
 const BACK_ITEM = {name:'↰'};
 let parentsPath;
 
+let enumed;
+
+const hiddenProps = new WeakMap();
+
+const hidePropertyFromEnumerationForChooser = (p) => {
+	hiddenProps.set(p, true);
+};
+const unhidePropertyFromEnumerationForChooser = (p) => {
+	hiddenProps.delete(p);
+};
+
+const enumSub = (o) => {
+	let op = Object.getOwnPropertyNames(o);
+	for (let name of op) {
+		if(!name.startsWith('_')) {
+			try {
+				if(hiddenProps.has(o[name])) {
+					continue;
+				}
+			} catch (er) {} // eslint-disable-line
+
+			if (enumed.indexOf(name) === -1) {
+				enumed.push(name);
+			}
+		}
+	}
+};
+
+function enumProps(o) {
+	enumed = [];
+	enumSub(o);
+	let cc = o.constructor;
+	for (; cc && (cc !== Function) && (cc !== Object); (cc = cc.__proto__)) {
+		let p = cc.prototype;
+		if(p) {
+			enumSub(p);
+		}
+	}
+	return enumed;
+}
+
+	

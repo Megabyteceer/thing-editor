@@ -17,6 +17,7 @@ import build from "./utils/build.js";
 import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
 import DisplayObject from 'thing-engine/js/components/display-object.js';
+import DataPathEditor from './ui/props-editor/data-path-editor.js';
 
 let isFirstClassesLoading = true;
 
@@ -76,10 +77,11 @@ export default class Editor {
 		this.ui = ui;
 		
 		game.__EDITORmode = true;
-
+		editor.game = game;
 		ClassesLoader.initClassesLoader();
 		AssetsLoader.init();
 		this.openProject();
+		DataPathEditor.initSelectableProps();
 	}
 	
 	openProjectDescToEdit() {
@@ -111,7 +113,7 @@ export default class Editor {
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
 			editor.projectDesc = data;
-			editor.game = game;
+
 			if(game.applyProjectDesc(editor.projectDesc)) {
 				this.saveProjecrDesc();
 			}

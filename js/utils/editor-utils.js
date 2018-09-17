@@ -191,10 +191,6 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	Object.defineProperty(constructor.prototype, propertyName, d);
 };
 
-PIXI.ObservablePoint.__EDITOR_selectableProps = ['x','y'];
-PIXI.Point.__EDITOR_selectableProps = ['x','y'];
-PIXI.mesh.Plane.__EDITOR_selectableProps = [];
-
 window.isEventFocusOnInputElement = (ev) => {
 	let tag = ev.target.tagName;
 	let canBePassed;
@@ -261,7 +257,7 @@ function delay(ms) {
 }
 
 window.onunload = function() {
-	if(editor.isCurrentSceneModified && editor.game.__EDITORmode) {
+	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITORmode) {
 		editor.exitPrefabMode();
 		editor.saveBackup(true);
 		delay(250);
