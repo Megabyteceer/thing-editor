@@ -261,9 +261,8 @@ function delay(ms) {
 }
 
 window.onunload = function() {
-	editor.exitPrefabMode();
-	editor.ui.viewport.stopExecution();
-	if(editor.isCurrentSceneModified && !editor.game.__EDITORmode) {
+	if(editor.isCurrentSceneModified && editor.game.__EDITORmode) {
+		editor.exitPrefabMode();
 		editor.saveBackup(true);
 		delay(250);
 	}
