@@ -68,6 +68,9 @@ export default class TreeView extends React.Component {
 
 	onDeleteClick() {
 		if((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
+			
+			editor.rememberPathReferences();
+			
 			let p = editor.selection[0].parent;
 			let i = p.getChildIndex(editor.selection[0]);
 
@@ -86,6 +89,9 @@ export default class TreeView extends React.Component {
 			} else if (p !== game.stage) {
 				this.selectInTree(p);
 			}
+
+			editor.validatePathReferences();
+
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 		}
@@ -104,6 +110,9 @@ export default class TreeView extends React.Component {
 
 	onUnwrapClick() {
 		if(this.isCanBeUnwrapped()) {
+
+			editor.rememberPathReferences();
+
 			let o = editor.selection[0];
 			let parent = o.parent;
 			let i = parent.getChildIndex(o);
@@ -136,6 +145,7 @@ export default class TreeView extends React.Component {
 			if(!isPrefab) {
 				o.remove();
 			}
+			editor.validatePathReferences();
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 		}

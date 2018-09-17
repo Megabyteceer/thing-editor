@@ -66,6 +66,7 @@ class ClassesView extends React.Component {
 				editor.ui.modal.showModal('Scene can not be wrapped.', 'Alert');
 				return;
 			}
+			editor.rememberPathReferences();
 			let isPrefab = o === game.currentContainer;
 			let prefabName = game.currentContainer.name;
 			
@@ -91,7 +92,7 @@ class ClassesView extends React.Component {
 			}
 
 			editor.moveContainerWithoutChildren(w, x, y);
-
+			editor.validatePathReferences();
 			editor.selection.clearSelection();
 			editor.ui.sceneTree.selectInTree(w);
 			editor.sceneModified(true);

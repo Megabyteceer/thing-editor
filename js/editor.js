@@ -18,6 +18,8 @@ import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
 import DisplayObject from 'thing-engine/js/components/display-object.js';
 import DataPathEditor from './ui/props-editor/data-path-editor.js';
+import {getLatestSceneNodeBypath} from 'thing-engine/js/utils/get-value-by-path.js';
+import Scene from 'thing-engine/js/components/scene.js';
 
 let isFirstClassesLoading = true;
 
@@ -474,7 +476,67 @@ export default class Editor {
 			return Promise.resolve();
 		}
 	}
+
+
+
+	rememberPathReferences() {
+		if(game.currentContainer instanceof Scene) {
+			game.currentContainer._refreshAllObjectRefs();
+		}
+		refs = new Map();
+		game.currentContainer.forAllChildren((o) => {
+			let props = editor.enumObjectsProperties(o);
+			let m = null;
+			for(let p of props) {
+				if(p.type === 'data-path' || p.type === 'callback') {
+					let path = o[p.name];
+					if(path) {
+						let targetNode = getLatestSceneNodeBypath(path, o);
+						if(!m) {
+							m = {};
+							refs.set(o, m);
+						}
+						m[p.name] = targetNode;
+					}
+				}
+			}
+		});
+	}
+	
+	validatePathReferences() {
+		if(game.currentContainer instanceof Scene) {
+			game.currentContainer._refreshAllObjectRefs();
+		}
+		refs.forEach(validateRefEntry);
+	}
 }
+
+const validateRefEntry = (m, o) => {
+	for(let fieldname in m) {
+		let path = o[fieldname];
+		let oldRef = m[fieldname];
+		let currentRef = getLatestSceneNodeBypath(path, o);
+		if(currentRef !== oldRef) {
+
+			let was;
+			if(oldRef instanceof DisplayObject) {
+				was = R.sceneNode(oldRef);
+			} else {
+				was = '' + oldRef;
+			}
+			let become;
+			if(currentRef instanceof DisplayObject) {
+				become = R.sceneNode(currentRef);
+			} else {
+				become = '' + currentRef;
+			}
+
+			editor.ui.status.warn(R.span(null, 'path reference is affected: Was: ', was, ' Become: ', become), o, fieldname);
+		}
+	}
+};
+
+let refs;
 
 function saveCurrentSceneName(name) {
 	if(editor.projectDesc.lastSceneName !== name) {

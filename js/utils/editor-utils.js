@@ -19,13 +19,14 @@ R.spinner = () => {
 let _iconsCache = {};
 R.icon = (name) => {
 	if(!_iconsCache.hasOwnProperty(name)) {
+		assert(name, "Icon's name expected.");
 		_iconsCache[name] = R.img({src: '/thing-editor/img/' + name + '.png'});
 	}
 	return _iconsCache[name];
 };
 
 R.classIcon = (constructor) => {
-	return R.icon(constructor.__EDITOR_icon);
+	return R.icon(constructor.__EDITOR_icon || 'tree/game');
 };
 
 let nameProps = {className: 'scene-node-name'};
