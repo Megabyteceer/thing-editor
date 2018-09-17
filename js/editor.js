@@ -111,6 +111,7 @@ export default class Editor {
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
 			editor.projectDesc = data;
+			editor.game = game;
 			if(game.applyProjectDesc(editor.projectDesc)) {
 				this.saveProjecrDesc();
 			}
