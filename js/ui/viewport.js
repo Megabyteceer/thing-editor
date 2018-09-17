@@ -89,6 +89,7 @@ export default class Viewport extends React.Component {
 			let play = game.__EDITORmode;
 			this.beforePlayStopToggle.emit(play);
 			game.time = 0;
+			delete game.__EDITORsceneDataWaitongToStart;
 			if(play) { // launch game
 				editor.ui.status.clear();
 				problemOnGameStart = true;
@@ -96,14 +97,12 @@ export default class Viewport extends React.Component {
 				
 				editor.saveBackup(true);
 				let selectionData = editor.selection.saveSelection();
-				
-				let sceneData = Lib.__serializeObject(game.currentScene);
+				game.__EDITORsceneDataWaitongToStart = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
 				Sound.__resetSounds();
 				game.__EDITORmode = false;
-				let s = Lib._loadObjectFromData(sceneData);
 				game.currentScene = null;
-				game.showScene(s);
+				game.showScene(editor.currentSceneName);
 				problemOnGameStart = false;
 				game.stage.interactiveChildren = true;
 				editor.selection.loadSelection(selectionData);
