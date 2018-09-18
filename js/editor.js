@@ -298,9 +298,17 @@ export default class Editor {
 			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
+			if(field.name === 'name') {
+				editor.rememberPathReferences();
+			}
+
 			for(let o of this.selection) {
 				this.onObjectsPropertyChanged(o, field, val, delta);
 			}
+			if(field.name === 'name') {
+				editor.validatePathReferences();
+			}
+
 		}
 	}
 
