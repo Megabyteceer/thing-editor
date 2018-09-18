@@ -154,6 +154,13 @@ let _getValStore = (o) => {
 	return _valStore.get(o);
 };
 
+window.shakeDomElement = function(e) {
+	e.removeClass('shake');
+	setTimeout(() => {
+		e.addClass('shake');
+	}, 1);
+};
+
 window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(constructor, propertyName) {
 	
 	if(!_definedProps.has(constructor)) {

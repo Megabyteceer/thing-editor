@@ -54,15 +54,20 @@ class PropsEditor extends React.Component {
 	}
 	
 	selecField(fieldName, focus) {
+		let a = fieldName.split(',');
+
+		let fn = a[0];
+		this.refs[fn].onAutoSelect(a);
+
 		setTimeout(() => {
-			let fldInput = $(".props-editor #property-editor-" + fieldName);
+			let fldInput = $(".props-editor #property-editor-" + fn);
 			if (fldInput.length > 0) {
-				fldInput.removeClass('shake');
-				setTimeout(() => {
-					fldInput.addClass('shake');
-				}, 1);
-				Window.bringWindowForward(fldInput.closest('.window-body'));
-				fldInput[0].scrollIntoView({});
+
+				if(fn === fieldName) {
+					window.shakeDomElement(fldInput);
+					Window.bringWindowForward(fldInput.closest('.window-body'));
+					fldInput[0].scrollIntoView({});
+				}
 			}
 			if(focus) {
 				fldInput.find('input').focus();
@@ -130,7 +135,7 @@ class PropsEditor extends React.Component {
 				curGroup = Group.renderGroup({key: p.name, content: curGroupArray, title: p.title});
 			} else {
 				curGroupArray.push(
-					React.createElement(PropsFieldWrapper, {key: p.name, field: p, onChange: this.props.onChange})
+					React.createElement(PropsFieldWrapper, {key: p.name, ref: p.name, field: p, onChange: this.props.onChange})
 				);
 			}
 			

@@ -266,10 +266,22 @@ export default class TreeView extends React.Component {
 			
 			let props = editor.enumObjectsProperties(o);
 			for(let p of props) {
-				let val = '' + o[p.name];
-				if(val.toLowerCase().indexOf(this.searchString) >= 0) {
-					foundByWhichProperty.set(o, p.name);
-					return true;
+				if(p.type === 'timeline') {
+					let timeline = o[p.name];
+					for(let field of timeline.f) {
+						for(let k of field.t) {
+							if(k.a && (k.a.toLowerCase().indexOf(this.searchString) >= 0)) {
+								foundByWhichProperty.set(o, p.name + ',' + field.n + ',' + k.t);
+								return true;
+							}
+						}
+					}
+				} else {
+					let val = '' + o[p.name];
+					if(val.toLowerCase().indexOf(this.searchString) >= 0) {
+						foundByWhichProperty.set(o, p.name);
+						return true;
+					}
 				}
 			}
 		}, 1);

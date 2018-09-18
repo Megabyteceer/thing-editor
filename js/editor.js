@@ -495,16 +495,28 @@ export default class Editor {
 		game.currentContainer.forAllChildren((o) => {
 			let props = editor.enumObjectsProperties(o);
 			let m = null;
+
+			const rememberRef = (path, name) => {
+				if(path) {
+					let targetNode = getLatestSceneNodeBypath(path, o);
+					if(!m) {
+						m = {};
+						refs.set(o, m);
+					}
+					m[name] = {targetNode, path};
+				}
+			};
 			for(let p of props) {
 				if(p.type === 'data-path' || p.type === 'callback') {
-					let path = o[p.name];
-					if(path) {
-						let targetNode = getLatestSceneNodeBypath(path, o);
-						if(!m) {
-							m = {};
-							refs.set(o, m);
+					rememberRef(o[p.name], p.name);
+				} else if(p.type === 'timeline') {
+					let timeline = o[p.name];
+					for(let field of timeline.f) {
+						for(let k of field.t) {
+							if(k.a) {
+								rememberRef(k.a, p.name + ',' + field.n + ',' + k.t);
+							}
 						}
-						m[p.name] = targetNode;
 					}
 				}
 			}
@@ -521,8 +533,10 @@ export default class Editor {
 
 const validateRefEntry = (m, o) => {
 	for(let fieldname in m) {
-		let path = o[fieldname];
-		let oldRef = m[fieldname];
+
+		let item = m[fieldname];
+		let path = item.path;
+		let oldRef = item.targetNode;
 		let currentRef = getLatestSceneNodeBypath(path, o);
 		if(currentRef !== oldRef) {
 
@@ -539,7 +553,7 @@ const validateRefEntry = (m, o) => {
 				become = '' + currentRef;
 			}
 
-			editor.ui.status.warn(R.span(null, 'path reference is affected: Was: ', was, ' Become: ', become), o, fieldname);
+			editor.ui.status.warn(R.span(null, 'path reference (' + path + ') is affected: Was: ', was, ' Become: ', become), o, fieldname);
 		}
 	}
 };

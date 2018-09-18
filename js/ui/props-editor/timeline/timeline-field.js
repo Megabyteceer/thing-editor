@@ -25,6 +25,8 @@ const scale = (val) => {
 	return (_shift - val) * _scale;
 };
 
+const allFieldsTimelines = [];
+
 export default class FieldsTimeline extends React.Component {
 	
 	constructor(props) {
@@ -41,7 +43,36 @@ export default class FieldsTimeline extends React.Component {
 		this.toggleKeyframeType = this.toggleKeyframeType.bind(this);
 	}
 	
+	static onAutoSelect(selectPath) {
+		for(let f of allFieldsTimelines) {
+			if(f.props.field.n === selectPath[1]) {
+				f.onAutoSelect(selectPath);
+				break;
+			}
+		}
+	}
+
+	onAutoSelect(selectPath) {
+		let time = parseInt(selectPath[2]);
+		for(let kf of this.props.field.t) {
+			if(kf.t == time) {
+				this.selectKeyframe(kf);
+				let actionEditField = $('#window-timeline').find('.bottom-panel').find('.props-editor-callback');
+				window.shakeDomElement(actionEditField);
+				actionEditField.focus();
+			}
+		}
+	}
+
+	componentDidMount() {
+		allFieldsTimelines.push(this);
+	}
+
 	componentWillUnmount() {
+		let i = allFieldsTimelines.indexOf(this);
+		assert(i >= 0, 'keyframes list is corrupted');
+		allFieldsTimelines.splice(i, 1);
+
 		if(selectedTimeline === this) {
 			selectedTimeline = null;
 			selectedKeyframe = null;

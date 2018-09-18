@@ -122,6 +122,12 @@ class PropsFieldWrapper extends React.Component {
 		
 		this.setState({value: val});
 	}
+
+	onAutoSelect(selectPath) {
+		if(this.refs.fieldRef && this.refs.fieldRef.onAutoSelect) {
+			this.refs.fieldRef.onAutoSelect(selectPath);
+		}
+	}
 	
 	render() {
 		let field = this.props.field;
@@ -162,6 +168,7 @@ class PropsFieldWrapper extends React.Component {
 			R.div(labelProps, field.name),
 			R.div(wrapperProps,
 				React.createElement(renderer, {
+					ref: (field.type === 'timeline') ? 'fieldRef' : undefined,
 					value,
 					onChange: this.onChange,
 					field,
