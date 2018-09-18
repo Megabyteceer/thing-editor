@@ -20,7 +20,6 @@ const needAddInToList = (map, owner) => {
 	return false;
 };
 
-
 export default class Status extends React.Component {
 	
 	constructor(props) {
@@ -77,7 +76,7 @@ export default class Status extends React.Component {
 			}
 		}
 	}
-	
+
 	clear () {
 		this.errors.length = 0;
 		this.warns.length = 0;
@@ -97,15 +96,14 @@ export default class Status extends React.Component {
 	}
 	
 	render() {
-	
-		if(this.state.toggled) {
+		if(this.state.toggled && ((this.errors.length > 0) || (this.warns.length > 0))) {
 			setTimeout(() => {
 				Window.bringWindowForward($('#window-info'));
 			}, 1);
 			return editor.ui.renderWindow('info', 'Info Window', R.div(null,
 				R.btn('×', this.clear, 'Hide Info Window (Ctrl+I)', 'close-window-btn'),
-				React.createElement(InfoList, {ref: this.errorsListRef, id:'errors-list', title:'Errors:', icon: errorIcon, className:'info-errors-list info-list', list:this.errors}),
-				React.createElement(InfoList, {ref: this.warnsListRef, id:'warns-list', title:'Warnings:', icon: warnIcon, className:'info-warns-list info-list', list:this.warns})
+				React.createElement(InfoList, {ref: this.errorsListRef, id:'errors-list', title:'Errors:', icon: errorIcon, className:'info-errors-list info-list', list:this.errors, itemsMap:this.errorsMap}),
+				React.createElement(InfoList, {ref: this.warnsListRef, id:'warns-list', title:'Warnings:', icon: warnIcon, className:'info-warns-list info-list', list:this.warns, itemsMap: this.warnsMap})
 				
 			), 586, 650, 400, 150, 1137, 407);
 		}
@@ -121,6 +119,17 @@ class InfoList extends React.Component {
 		super(props);
 		this.renderItem = this.renderItem.bind(this);
 	}
+
+	clearItem(item) {
+		let i = this.props.list.indexOf(item);
+		assert(i >= 0, "info list is corrupted");
+		this.props.list.splice(i, 1);
+		if(item.owner instanceof DisplayObject) {
+			let exData = __getNodeExtendData(item.owner);
+			this.props.itemsMap.delete(exData);
+		}
+		editor.ui.status.forceUpdate();
+	}
 	
 	renderItem(item, i) {
 		
@@ -135,6 +144,9 @@ class InfoList extends React.Component {
 			exData.alertRefs.set(item, true);
 		}
 		return R.div({key:i, className:'info-item clickable', onClick:() => {
+			if(!item) {
+				return;
+			}
 			if(typeof item.owner === "function") {
 				item.owner();
 			} else if(item.owner && (item.owner instanceof DisplayObject)) {
@@ -169,7 +181,12 @@ class InfoList extends React.Component {
 				}
 				
 			}
-		}}, this.props.icon, item.message, node);
+		}}, this.props.icon, item.message, node,
+		R.btn('×', () => {
+			this.clearItem(item);
+			item = null;
+		}, undefined, 'clear-item-btn danger-btn')
+		);
 	}
 
 	render() {

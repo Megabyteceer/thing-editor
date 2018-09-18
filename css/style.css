@@ -1035,7 +1035,21 @@ input{
 }
 
 .info-item {
-    padding: 3px;
+    padding: 9px;
+    position: relative;
+}
+
+.info-item .scene-node-item {
+	display: inline-block;
+	outline: 1px solid #58a558;
+}
+
+.clear-item-btn {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: scale(0.5);
+	opacity: 0.6;
 }
 
 .info-badge {
