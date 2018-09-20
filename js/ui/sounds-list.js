@@ -178,7 +178,7 @@ class MusicProfiler extends React.Component {
 				state = R.div({class:'danger'}, 'ref to notplaying fragement');
 			} else {
 				playing = true;
-				state = R.div({className: 'sound-vol-bar', style: {width: m._currentFragment.volume() * 100}});
+				state = R.div({className: 'sound-vol-bar', style: {width: m.getVolume() * 100}});
 			}
 		}
 		return R.div({className:'clickable', key:i, onClick:() => {
