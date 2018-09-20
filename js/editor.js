@@ -17,7 +17,6 @@ import build from "./utils/build.js";
 import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
 import DisplayObject from 'thing-engine/js/components/display-object.js';
-import DataPathEditor from './ui/props-editor/data-path-editor.js';
 import {getLatestSceneNodeBypath} from 'thing-engine/js/utils/get-value-by-path.js';
 import Scene from 'thing-engine/js/components/scene.js';
 
@@ -83,7 +82,6 @@ export default class Editor {
 		ClassesLoader.initClassesLoader();
 		AssetsLoader.init();
 		this.openProject();
-		DataPathEditor.initSelectableProps();
 	}
 	
 	openProjectDescToEdit() {

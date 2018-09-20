@@ -7,6 +7,8 @@ import CallbackEditor from "./callback-editor.js";
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
 
+let inited = false;
+
 export default class DataPathEditor extends React.Component {
 	
 	constructor(props) {
@@ -20,6 +22,10 @@ export default class DataPathEditor extends React.Component {
 	
 	onEditClicked() {
 		if(!this.props.disabled) {
+			if(!inited) {
+				initSelectableProps();
+				inited = true;
+			}
 			this.fieldNameToChoose = this.props.title || this.props.field.name;
 			path = this.props.value;
 			path = this.prepareCurrentPath(path);
@@ -250,18 +256,20 @@ export default class DataPathEditor extends React.Component {
 			}
 		});
 	}
+}
 
-	static initSelectableProps() {
-		let tmpSprite = new PIXI.Sprite();
-		let spriteProps = enumProps(tmpSprite);
-		for(let p of spriteProps) {
+function initSelectableProps() {
+	let tmpSprite = new PIXI.Sprite();
+	let spriteProps = enumProps(tmpSprite);
+	for(let p of spriteProps) {
+		if(!p.startsWith('_')) {
 			let v = tmpSprite[p];
 			if((typeof v) === 'function') {
 				hidePropertyFromEnumerationForChooser(v);
 			}
 		}
-		unhidePropertyFromEnumerationForChooser(tmpSprite.remove);
 	}
+	unhidePropertyFromEnumerationForChooser(tmpSprite.remove);
 }
 
 let path;
