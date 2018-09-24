@@ -115,7 +115,7 @@ export default class Editor {
 			editor.projectDesc = data;
 
 			if(game.applyProjectDesc(editor.projectDesc)) {
-				this.saveProjecrDesc();
+				this.saveProjectDesc();
 			}
 			await game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');
 			
@@ -382,7 +382,7 @@ export default class Editor {
 		this.refreshTreeViewAndPropertyEditor();
 	}
 	
-	saveProjecrDesc() {
+	saveProjectDesc() {
 		window.debouncedCall(__saveProjectDescriptorInner);
 	}
 	
@@ -561,7 +561,7 @@ let refs;
 function saveCurrentSceneName(name) {
 	if(editor.projectDesc.lastSceneName !== name) {
 		editor.projectDesc.lastSceneName = name;
-		editor.saveProjecrDesc();
+		editor.saveProjectDesc();
 		editor.ui.forceUpdate();
 	}
 }

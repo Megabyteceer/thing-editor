@@ -22,6 +22,13 @@ export default class Build {
 		let text = L.__getTextAssets();
 		let sounds = Lib.__getSoundsData();
 		
+		let version = editor.projectDesc.version.split('.');
+		let latest = parseInt(version.pop());
+		latest++;
+		version.push(latest);
+		editor.projectDesc.version = version.join('.');
+		editor.saveProjectDesc();
+
 		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' + JSON.stringify({scenes, prefabs, images, text, sounds, projectDesc: editor.projectDesc}) + ';'));
 		
 
