@@ -44,6 +44,11 @@ let classes = {};`];
 			let name = c.c.name;
 			let path = editor.ClassesLoader.getClassPath(name);
 			if(path) {
+
+				if(path.startsWith('/')) {
+					path = path.substr(1);
+				}
+
 				if(findClassNameInData(name, scenes) || findClassNameInData(name, prefabs)) { //only referenced classes
 					src.push('import ' + name + ' from "' + path + '";');
 					src.push('classes["' + name + '"] = ' + name + ';');
