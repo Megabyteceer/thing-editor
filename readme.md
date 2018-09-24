@@ -6,7 +6,7 @@ Project in experimental **alpha-version** yet.
 
 ## Installation
 
-Please check if you have latest **nodejs**, **npm**, and **chrome** on your computer, **before installlation**.
+Please check if you have latest **nodejs**, **npm**, **chrome**, and **ffmpeg** on your computer, **before installlation**.
 Use next script to install editor and example project.
 After succesfull installation editor should start automaticly as chrome page.
 To start editor manually use **npm start** in **thing-editor** folder

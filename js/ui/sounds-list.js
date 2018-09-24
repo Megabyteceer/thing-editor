@@ -34,8 +34,8 @@ export default class SoundsList extends React.Component {
 				editor.fs.getJSON('/fs/build-sounds?formats=' + (editor.projectDesc.soundFormats.join(','))).then((result) => {
 					if(result.errors) {
 						editor.ui.modal.showError(result.errors.map((r, i) =>{
-							return R.div({key:i}, r);
-						}));
+							return R.div({key:i}, JSON.stringify(r));
+						}), "Sounds processing ffmpeg lib error.");
 					} else {
 
 						const reloadSoundsInner = () => {

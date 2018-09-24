@@ -1167,7 +1167,7 @@ input{
 
 .delete-scene-btn {
 	padding: 0 4px;
-	position: fixed;
+	position: absolute;
 	right: 10px;
 }
 

@@ -9,11 +9,11 @@ const {
 
 module.exports = function (projectPath, callback, formats, noCache) {
 	let result = {};
-	function outputError(err) {
+	function outputError(err, out, outError) {
 		if(!result.errors) {
 			result.errors = [];
 		}
-		result.errors.push(err);
+		result.errors.push({err, out, outError});
 		console.error(err);
 	}
 
@@ -48,12 +48,12 @@ module.exports = function (projectPath, callback, formats, noCache) {
 		callback(result);
 		return;
 	}
-	
-	fs.writeFileSync(cacheFn, JSON.stringify(cache));
-
 
 	function convertNextFile() {
-		if (filesToConvert.length < 1) {
+		if (filesToConvert.length < 1 || result.errors) {
+			if(!result.errors) {
+				fs.writeFileSync(cacheFn, JSON.stringify(cache));
+			}
 			callback(result);
 		} else {
 			let fn = filesToConvert.pop();
@@ -87,9 +87,9 @@ module.exports = function (projectPath, callback, formats, noCache) {
 			additionalOptions = ' -dash 1 ';
 		}
 
-		exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err) => {
+		exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
 			if (err) {
-				outputError(err);
+				outputError(err, out, outError);
 			}
 			cb();
 		});
