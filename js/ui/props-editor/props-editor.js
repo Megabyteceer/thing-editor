@@ -57,7 +57,9 @@ class PropsEditor extends React.Component {
 		let a = fieldName.split(',');
 
 		let fn = a[0];
-		this.refs[fn].onAutoSelect(a);
+		if(this.refs[fn]) {
+			this.refs[fn].onAutoSelect(a);
+		}
 
 		setTimeout(() => {
 			let fldInput = $(".props-editor #property-editor-" + fn);
