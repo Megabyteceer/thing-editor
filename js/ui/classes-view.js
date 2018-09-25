@@ -90,6 +90,7 @@ class ClassesView extends React.Component {
 			} else {
 				parent.addChildAt(w, indexToAdd);
 			}
+			Lib.__invalidateSerialisationCache(w);
 
 			editor.moveContainerWithoutChildren(w, x, y);
 			editor.validatePathReferences();

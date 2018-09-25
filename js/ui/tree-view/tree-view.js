@@ -78,6 +78,7 @@ export default class TreeView extends React.Component {
 			editor.selection.clearSelection();
 
 			a.some((o) => {
+				Lib.__invalidateSerialisationCache(o);
 				o.remove();
 			});
 			
@@ -143,7 +144,7 @@ export default class TreeView extends React.Component {
 				this.selectInTree(c, true);
 			}
 			if(!isPrefab) {
-				o.remove();
+				Lib.__invalidateSerialisationCache(o);
 			}
 			editor.validatePathReferences();
 			editor.refreshTreeViewAndPropertyEditor();
