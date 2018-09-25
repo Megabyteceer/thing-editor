@@ -530,28 +530,30 @@ export default class Editor {
 }
 
 const validateRefEntry = (m, o) => {
-	for(let fieldname in m) {
+	if(o.parent) {
+		for(let fieldname in m) {
 
-		let item = m[fieldname];
-		let path = item.path;
-		let oldRef = item.targetNode;
-		let currentRef = getLatestSceneNodeBypath(path, o);
-		if(currentRef !== oldRef) {
+			let item = m[fieldname];
+			let path = item.path;
+			let oldRef = item.targetNode;
+			let currentRef = getLatestSceneNodeBypath(path, o);
+			if(currentRef !== oldRef) {
 
-			let was;
-			if(oldRef instanceof DisplayObject) {
-				was = R.sceneNode(oldRef);
-			} else {
-				was = '' + oldRef;
+				let was;
+				if(oldRef instanceof DisplayObject) {
+					was = R.sceneNode(oldRef);
+				} else {
+					was = '' + oldRef;
+				}
+				let become;
+				if(currentRef instanceof DisplayObject) {
+					become = R.sceneNode(currentRef);
+				} else {
+					become = '' + currentRef;
+				}
+
+				editor.ui.status.warn(R.span(null, 'path reference (' + path + ') is affected: Was: ', was, ' Become: ', become), o, fieldname);
 			}
-			let become;
-			if(currentRef instanceof DisplayObject) {
-				become = R.sceneNode(currentRef);
-			} else {
-				become = '' + currentRef;
-			}
-
-			editor.ui.status.warn(R.span(null, 'path reference (' + path + ') is affected: Was: ', was, ' Become: ', become), o, fieldname);
 		}
 	}
 };
