@@ -190,7 +190,7 @@ export default class Viewport extends React.Component {
 		let panel;
 		
 		let toggleOrientationBtn;
-		if(game && game.projDesc && (game.projDesc.screenOrientation === 'auto')) {
+		if(game && game.projectDesc && (game.projectDesc.screenOrientation === 'auto')) {
 			toggleOrientationBtn = R.btn(R.icon('orientation-toggle'), this.onToggleOrientationClick, 'Switch screen orientation (Ctrl + O)', 'big-btn', 1079);
 		}
 		
