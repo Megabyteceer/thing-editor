@@ -160,7 +160,7 @@ class History {
 		this._undos.some((s) => {
 			s.treeData._isModified = true;
 		});
-		this.currentState.treeData._isModified = false;
+		delete this.currentState.treeData._isModified;
 	}
 	
 	get isStateModified() {
