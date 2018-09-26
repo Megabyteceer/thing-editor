@@ -38,6 +38,7 @@ class PropsEditor extends React.Component {
 				
 				a.some((o) => {
 					o.constructor = selectedClass;
+					Lib.__invalidateSerialisationCache(o);
 				});
 
 				let newSceneData = Lib.__serializeObject( game.currentContainer);
