@@ -81,7 +81,9 @@ export default class SoundsList extends React.Component {
 	onSelect(item) {
 		Lib.preloadSound(item.name);
 		let needPlay = !Lib.getSound(item.name).playing();
-		Sound.stop();
+		if(game.__EDITORmode) {
+			Sound.stop();
+		}
 		if(needPlay) {
 			Sound.play(item.name);
 		}
