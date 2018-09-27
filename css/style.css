@@ -475,6 +475,8 @@ input{
 	text-align: center;
 	padding:20px;
 	background:#fff;
+	max-height: 70vh;
+	overflow-y: auto;
 }
 
 .project-item-select {

@@ -17,9 +17,7 @@ export default class Build {
 		});
 		
 		let fileSavePromises = [];
-		
-		
-		let text = L.__getTextAssets();
+
 		let sounds = Lib.__getSoundsData();
 		
 		let version = editor.projectDesc.version.split('.');
@@ -29,7 +27,12 @@ export default class Build {
 		editor.projectDesc.version = version.join('.');
 		editor.saveProjectDesc();
 
-		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' + JSON.stringify({scenes, prefabs, images, text, sounds, projectDesc: editor.projectDesc}) + ';'));
+		let assetsObj = {scenes, prefabs, images, sounds, projectDesc: editor.projectDesc};
+		if(editor.projectDesc.embedLocales) {
+			assetsObj.text = L.__getTextAssets();
+		}
+
+		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' + JSON.stringify(assetsObj) + ';'));
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);

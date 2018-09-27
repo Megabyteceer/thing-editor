@@ -108,11 +108,12 @@ export default class Viewport extends React.Component {
 				editor.selection.loadSelection(selectionData);
 			} else { //stop game
 				problemOnGameStop = true;
+				game.__EDITOR_game_topping = true;
 				game.__clearStage();
 				game.__EDITORmode = true;
 				Sound.__resetSounds();
 				editor.restoreBackup(true);
-				
+				game.__EDITOR_game_topping = false;
 				problemOnGameStop = false;
 				game.stage.interactiveChildren = false;
 			}

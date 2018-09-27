@@ -113,6 +113,7 @@ app.get('/fs/build', function (req, res) {
 	path.resolve(__dirname, 'scripts/build.js') + '" "' +
 	currentGameRoot+'" ' + 
 	(req.query.debug ? 'debug' : ''),
+	{maxBuffer: 1024 * 500},
 	(err, stdout, errout) => {
 		if(err) {
 			console.error(err);

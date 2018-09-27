@@ -124,7 +124,7 @@ window.fetch = (url, options) => {
 	
 	url = canonicalize(url);
 	
-	if(url.startsWith(location.href)) {
+	if(url.startsWith(location.origin)) {
 		return originalFetch(url, options);
 	} else {
 		let headers = new Headers();

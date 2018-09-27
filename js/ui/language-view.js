@@ -30,17 +30,13 @@ function showTextTable() {
 export default class LanguageView extends React.Component {
 	
 	static loadTextData() {
-		let langsData = {};
-		let ret = Promise.all(editor.fs.files.filter((fn) => {
+		let langsIds = editor.fs.files.filter((fn) => {
 			return fn.endsWith('.json') && fn.startsWith(editor.projectDesc.localesPath);
 		}).map((fn) => {
-			return editor.fs.openFile(fn).then((data) => {
-				let langId = fn.split('/').pop().split('.').shift();
-				langsData[langId] = L._deserializeLanguage(data);
-			});
-		})).then(() => {
+			return fn.split('/').pop().split('.').shift();
+		});
+		return L.loadLanguages(langsIds, '/games/' + editor.currentProjectDir + editor.projectDesc.localesPath).then((langsData) => {
 			languages = langsData;
-			L.setLanguagesAssets(langsData);
 			refreshCachedData();
 			for(let langId in langsData) {
 				let txt = langsData[langId];
@@ -53,7 +49,6 @@ export default class LanguageView extends React.Component {
 				}
 			}
 		});
-		return ret;
 	}
 
 	static editKey(key, langId) {

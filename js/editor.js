@@ -43,7 +43,6 @@ export default class Editor {
 
 		this.tryToSaveHistory = tryToSaveHistory;
 		
-		this.currenGamePath = 'games/game-1';
 		this.fs = fs;
 		
 		this.settings = new Settings('editor');
