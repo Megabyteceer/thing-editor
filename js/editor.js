@@ -461,6 +461,10 @@ export default class Editor {
 		});
 	}
 
+	tryToSaveHistory() {
+		tryToSaveHistory();
+	}
+
 	askSceneToSaveIfNeed(skip) {
 		editor.ui.viewport.stopExecution();
 		editor.exitPrefabMode();

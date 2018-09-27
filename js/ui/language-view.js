@@ -245,6 +245,7 @@ function refreshCachedData() {
 		return langIdPriority(a) > langIdPriority(b);
 	});
 	oneLanguageTable = languages[langsIdsList[0]];
+	assert(oneLanguageTable, "No localisation data loaded.");
 	idsList = Object.keys(oneLanguageTable);
 	
 	let a = [{name:'none', value:''}];
