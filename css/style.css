@@ -1111,7 +1111,7 @@ input{
 }
 
 .number-input-btn:hover {
-	color:#a9851f;
+	background: #999999;
 }
 
 .number-input-btn:active {
