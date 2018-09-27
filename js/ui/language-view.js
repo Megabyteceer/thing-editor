@@ -30,16 +30,23 @@ function showTextTable() {
 export default class LanguageView extends React.Component {
 	
 	static loadTextData() {
-		let ret = editor.fs.openFile('text.json');
-		ret.then((data) => {
-			languages = data;
-			L.setLanguagesAssets(data);
+		let langsData = {};
+		let ret = Promise.all(editor.fs.files.filter((fn) => {
+			return fn.endsWith('.json') && fn.startsWith(editor.projectDesc.localesPath);
+		}).map((fn) => {
+			return editor.fs.openFile(fn).then((data) => {
+				let langId = fn.split('/').pop().split('.').shift();
+				langsData[langId] = L._deserializeLanguage(data);
+			});
+		})).then(() => {
+			languages = langsData;
+			L.setLanguagesAssets(langsData);
 			refreshCachedData();
-			for(let langId in data) {
-				let txt = data[langId];
+			for(let langId in langsData) {
+				let txt = langsData[langId];
 				for(let id in txt) {
 					if(!txt[id]) {
-						editor.ui.status.warn('untranslated text entry ' + id + '/' + id, () => {
+						editor.ui.status.warn('untranslated text entry ' + langId + '/' + id, () => {
 							LanguageView.editKey(id, langId);
 						}); 
 					}
@@ -51,7 +58,7 @@ export default class LanguageView extends React.Component {
 
 	static editKey(key, langId) {
 		showTextTable().then(() => {
-			if(key) {
+			if(key && !isKeyInvalid(key)) {
 				view.createKeyOrEdit(key, langId);
 			} else {
 				view.onAddNewKeyClick();
@@ -86,6 +93,18 @@ export default class LanguageView extends React.Component {
 const idFixer = /[^a-z\-]/i;
 function texareaID(lang, id) {
 	return lang + '-' + id.replace(idFixer, '-');
+}
+
+function isKeyInvalid(val) {
+	if (oneLanguageTable.hasOwnProperty(val)) {
+		return "ID already exists";
+	}
+	if (val.endsWith('.') || val.startsWith('.')) {
+		return 'ID can not begin or end with "."';
+	}
+	if (val.match(/[^a-z\._\d]/gm)) {
+		return 'ID can contain lowercase letters, digits, "_", and "."';
+	}
 }
 
 class LanguageTableEditor extends React.Component {
@@ -144,16 +163,9 @@ class LanguageTableEditor extends React.Component {
 		editor.ui.modal.showPrompt('Enter new translatable KEY:',
 			defaultKey,
 			(val) => { //filter
-				return val;
+				return val.toLowerCase();
 			},
-			(val) => { //accept
-				if (oneLanguageTable.hasOwnProperty(val)) {
-					return "ID already exists";
-				}
-				if (val.endsWith('/') || val.startsWith('/')) {
-					return 'ID can not begin or end with "/"';
-				}
-			}
+			isKeyInvalid
 		).then((enteredName) => {
 			if (enteredName) {
 				this.createKeyOrEdit(enteredName);
@@ -214,7 +226,7 @@ class LanguageTableEditor extends React.Component {
 			));
 		});
 		
-		lines = Group.groupArray(lines);
+		lines = Group.groupArray(lines, '.');
 		
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
@@ -267,7 +279,10 @@ function onModified() {
 	
 	_outjump = setTimeout(() => {
 		L.fefreshAllTextEwerywhere();
-		editor.fs.saveFile('text.json', languages, true);
+		for(let id in languages) {
+			let content = L.__serializeLanguage(languages[id]);
+			editor.fs.saveFile(editor.projectDesc.localesPath + '/' + id + '.json', content, true);
+		}
 		_outjump = null;
 	}, 600);
 }

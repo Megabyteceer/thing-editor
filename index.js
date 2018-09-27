@@ -16,6 +16,7 @@ const {
 const buildSounds = require('./scripts/build-sounds.js');
 
 let currentGame;
+let currentGameDesc;
 let currentGameRoot;
 
 let PORT = 32023;
@@ -37,7 +38,9 @@ app.get('/fs/openProject', function (req, res) {
 		currentGameRoot = folder;
 		process.chdir(currentGameRoot);
 		log('Project opened: ' + currentGameRoot);
-		res.send(fs.readFileSync('thing-project.json'));
+		let projectDescSrc = fs.readFileSync('thing-project.json')
+		currentGameDesc = JSON.parse(projectDescSrc);
+		res.send(projectDescSrc);
 	} else {
 		log('Can\'t open project: ' + req.query.dir);
 		res.send('false');
@@ -57,6 +60,7 @@ app.get('/fs/enum', function (req, res) {
 	walkSync('./scenes', list);
 	walkSync('./src', list);
 	walkSync('./snd', list);
+	walkSync('./' + currentGameDesc.localesPath, list);
 	list.some(pathFixer);
 	res.send(list);
 });
