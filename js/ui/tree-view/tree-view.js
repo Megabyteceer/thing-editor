@@ -200,6 +200,7 @@ export default class TreeView extends React.Component {
 					let upper = o.parent.getChildAt(i - 1);
 					if(!__getNodeExtendData(upper).isSelected) {
 						o.parent.swapChildren(o, upper);
+						Lib.__invalidateSerialisationCache(o.parent);
 						ret = true;
 					}
 				}
@@ -223,6 +224,7 @@ export default class TreeView extends React.Component {
 					let lower = o.parent.getChildAt(i + 1);
 					if(!__getNodeExtendData(lower).isSelected) {
 						o.parent.swapChildren(o, lower);
+						Lib.__invalidateSerialisationCache(o.parent);
 						ret = true;
 					}
 				}
