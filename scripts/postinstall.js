@@ -5,6 +5,7 @@ const path = require('path');
 
 var clientLibs = [
 	['./thing-engine/node_modules', '../node_modules', 'dir'],
+	['../../thing-engine', '../node_modules/thing-engine', 'dir'],
 	['../../node_modules/pixi-filters/dist/pixi-filters.js', 'js/lib/pixi-filters.js'],
 	['../../node_modules/react-dom/umd/react-dom.development.js', 'js/lib/react-dom.development.js'],
 	['../../node_modules/react/umd/react.development.js', 'js/lib/react.development.js'],
