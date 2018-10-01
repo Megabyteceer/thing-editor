@@ -14,8 +14,8 @@ class TreeNode extends React.Component {
 	onMouseDown(ev) { // == select nodes
 		let state = __getNodeExtendData(this.props.node);
 		if((isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
-			state.toggled = !state.toggled;
-			if(!state.toggled) {
+			state.childsExpanded = !state.childsExpanded;
+			if(!state.childsExpanded) {
 				collapseChildrenRecursively(this.props.node);
 			}
 			this.forceUpdate();
@@ -55,7 +55,7 @@ class TreeNode extends React.Component {
 		let childs;
 		let caret;
 		if(nodeHasChildren(node) && !state.hiddenChildren) {
-			if(state.toggled) {
+			if(state.childsExpanded) {
 				caret = caretOpened;
 				childs = R.div({className: 'tree-childs'},
 					node.children.map(R.renderSceneNode)
@@ -104,7 +104,7 @@ function isClickedAtRightEdge(ev) {
 }
 
 function collapseChildrenRecursively(node) {
-	__getNodeExtendData(node).toggled = false;
+	__getNodeExtendData(node).childsExpanded = false;
 	if(node.hasOwnProperty('children')) {
 		node.children.some(collapseChildrenRecursively);
 	}

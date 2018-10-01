@@ -53,6 +53,11 @@ class Selection extends Array {
 		assert(!__getNodeExtendData(o).isSelected);
 		assert(this.indexOf(o) < 0);
 		__getNodeExtendData(o).isSelected = true;
+		let p = o.parent;
+		while(p && p !== game.stage) {
+			__getNodeExtendData(p).childsExpanded = true;
+			p = p.parent;
+		}
 		if(!(o instanceof Tilemap)) {
 			o.addFilter(selectionFilter);
 		}
