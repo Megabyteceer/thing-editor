@@ -164,6 +164,10 @@ export default class TreeView extends React.Component {
 		this.onDeleteClick();
 	}
 	
+	onPasteWrapClick() {
+		editor.wrapSelected();
+	}
+
 	onPasteClick() {
 		if(editor.clipboardData && editor.clipboardData.length > 0) {
 			editor.disableFieldsCache = true;
@@ -180,6 +184,7 @@ export default class TreeView extends React.Component {
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 			editor.disableFieldsCache = false;
+			return added;
 		}
 	}
 	
@@ -339,6 +344,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('copy'), this.onCopyClick, 'Copy selected in to clipboard (Ctrl+C)', "tool-btn", 1067, isEmpty),
 				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', "tool-btn", 1088, isEmpty || isRoot),
 				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, !editor.clipboardData),
+				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData),
 				R.hr(),
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
 				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Remove selected but keep children.', "tool-btn", undefined, !this.isCanBeUnwrapped())

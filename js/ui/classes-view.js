@@ -41,63 +41,7 @@ class ClassesView extends React.Component {
 	}
 	
 	onWrapSelectedClick() {
-		if(editor.selection.length < 1) {
-			editor.ui.modal.showModal('Nothing selected to be wraped.', 'Alert');
-		} else {
-			let a = editor.selection.slice(0);
-
-			let o = a[0];
-			let parent = o.parent;
-			let x = 0;
-			let y = 0;
-
-			for(let c of a) {
-				if(c.parent !== parent) {
-					editor.ui.modal.showModal('Alert', 'Selected object shoul have same parent to be wrapped.');
-					return;
-				}
-				x += c.x;
-				y += c.y;
-			}
-			x = Math.round(x / a.length);
-			y = Math.round(y / a.length);
-
-			if(o instanceof Scene) {
-				editor.ui.modal.showModal('Scene can not be wrapped.', 'Alert');
-				return;
-			}
-			editor.rememberPathReferences();
-			let isPrefab = o === game.currentContainer;
-			let prefabName = game.currentContainer.name;
-			
-			
-			editor.selection.clearSelection();
-			let w = ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name);
-			w.x = 0;
-			w.y = 0;
-			
-			let indexToAdd = parent.getChildIndex(o);
-
-			for(let c of a) {
-				w.addChild(c);
-			}
-			if(isPrefab) {
-				w.name = prefabName;
-				o.name = null;
-				var data = Lib.__serializeObject(w);
-				w = Lib._deserializeObject(data);
-				game.__setCurrentContainerContent(w);
-			} else {
-				parent.addChildAt(w, indexToAdd);
-			}
-			Lib.__invalidateSerialisationCache(w);
-
-			editor.moveContainerWithoutChildren(w, x, y);
-			editor.validatePathReferences();
-			editor.selection.clearSelection();
-			editor.ui.sceneTree.selectInTree(w);
-			editor.sceneModified(true);
-		}
+		editor.wrapSelected(this.state.selectedItem.c.name);
 	}
 
 	onSelect() {

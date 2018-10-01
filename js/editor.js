@@ -19,6 +19,7 @@ import Timeline from "./ui/props-editor/timeline/timeline.js";
 import DisplayObject from 'thing-engine/js/components/display-object.js';
 import {getLatestSceneNodeBypath} from 'thing-engine/js/utils/get-value-by-path.js';
 import Scene from 'thing-engine/js/components/scene.js';
+import ClassesView from './ui/classes-view.js';
 
 let isFirstClassesLoading = true;
 
@@ -181,6 +182,78 @@ export default class Editor {
 			history.setCurrentStateUnmodified();
 			this.ui.forceUpdate();
 		});
+	}
+
+	wrapSelected(className) {
+
+		let isClipboardWrapping = ((typeof className) !== 'string');
+
+		if(editor.selection.length < 1) {
+			editor.ui.modal.showModal('Nothing selected to be wraped.', 'Alert');
+		} else if(isClipboardWrapping && (!editor.clipboardData || editor.clipboardData.length !== 1)) {
+			editor.ui.modal.showModal('Exactly one container should be copied in to clippoard to wrap selection wuth it.', 'Alert');
+		} else {
+			let a = editor.selection.slice(0);
+
+			let o = a[0];
+			let parent = o.parent;
+			let x = 0;
+			let y = 0;
+
+			for(let c of a) {
+				if(c.parent !== parent) {
+					editor.ui.modal.showModal('Alert', 'Selected object shoul have same parent to be wrapped.');
+					return;
+				}
+				x += c.x;
+				y += c.y;
+			}
+			x = Math.round(x / a.length);
+			y = Math.round(y / a.length);
+
+			if(o instanceof Scene) {
+				editor.ui.modal.showModal('Scene can not be wrapped.', 'Alert');
+				return;
+			}
+			editor.rememberPathReferences();
+			let isPrefab = o === game.currentContainer;
+			let prefabName = game.currentContainer.name;
+			
+			
+			editor.selection.clearSelection();
+			let w;
+			if(!isClipboardWrapping) {
+				w = ClassesView.loadSafeInstanceByClassName(className);
+			} else {
+				editor.disableFieldsCache = true;
+				w = Lib._deserializeObject(editor.clipboardData[0]);
+				editor.disableFieldsCache = false;
+			}
+			w.x = 0;
+			w.y = 0;
+			
+			let indexToAdd = parent.getChildIndex(o);
+
+			for(let c of a) {
+				w.addChild(c);
+			}
+			if(isPrefab) {
+				w.name = prefabName;
+				o.name = null;
+				var data = Lib.__serializeObject(w);
+				w = Lib._deserializeObject(data);
+				game.__setCurrentContainerContent(w);
+			} else {
+				parent.addChildAt(w, indexToAdd);
+			}
+			Lib.__invalidateSerialisationCache(w);
+
+			editor.moveContainerWithoutChildren(w, x, y);
+			editor.validatePathReferences();
+			editor.selection.clearSelection();
+			editor.ui.sceneTree.selectInTree(w);
+			editor.sceneModified(true);
+		}
 	}
 	
 	saveBackup(includeUnmodified = false) {
