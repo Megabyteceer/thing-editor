@@ -130,6 +130,7 @@ export default class TreeView extends React.Component {
 
 				if(isPrefab) {
 					c.name = o.name;
+					Lib.__invalidateSerialisationCache(c);
 					game.__setCurrentContainerContent(c);
 				} else {
 					parent.addChildAt(c, i);
@@ -138,9 +139,13 @@ export default class TreeView extends React.Component {
 				c.rotation += o.rotation;
 				this.selectInTree(c, true);
 			}
+
+			
 			if(!isPrefab) {
-				Lib.__invalidateSerialisationCache(o);
+				Lib.__invalidateSerialisationCache(o.parent);
+				o.remove();
 			}
+			
 			editor.validatePathReferences();
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
