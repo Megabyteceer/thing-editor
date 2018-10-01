@@ -39,9 +39,11 @@ export default class Overlay {
 		blackout.texture = PIXI.Texture.WHITE;
 		blackout.tint = 30;
 		blackout.alpha = 0.9;
-
+		blackout._onRenderResize = () => {
+			blackout.width = game.W;
+			blackout.height = game.H;
+		};
 		cameraFrame = new PIXI.Graphics();
-		
 	}
 	
 	getBGcolor() {
