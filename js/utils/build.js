@@ -32,7 +32,7 @@ export default class Build {
 			assetsObj.text = L.__getTextAssets();
 		}
 
-		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' + JSON.stringify(assetsObj) + ';'));
+		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' + JSON.stringify(assetsObj, null, '	') + ';'));
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
