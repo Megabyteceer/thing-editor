@@ -1,4 +1,3 @@
-import Group from "./group.js";
 import Window from './window.js';
 import L from "thing-engine/js/utils/l.js";
 
@@ -53,7 +52,7 @@ export default class LanguageView extends React.Component {
 
 	static editKey(key, langId) {
 		showTextTable().then(() => {
-			if(key && !isKeyInvalid(key)) {
+			if(key) {
 				view.createKeyOrEdit(key, langId);
 			} else {
 				view.onAddNewKeyClick();
@@ -85,9 +84,9 @@ export default class LanguageView extends React.Component {
 	}
 }
 
-const idFixer = /[^a-z\-]/i;
+const idFixer = /[^0-9a-z\-]/ig;
 function texareaID(lang, id) {
-	return lang + '-' + id.replace(idFixer, '-');
+	return (lang + '-' + id).replace(idFixer, '-');
 }
 
 function isKeyInvalid(val) {
@@ -106,9 +105,16 @@ class LanguageTableEditor extends React.Component {
 	
 	constructor (props) {
 		super(props);
-		view = this;
 		this.onAddNewLanguageClick = this.onAddNewLanguageClick.bind(this);
 		this.onAddNewKeyClick = this.onAddNewKeyClick.bind(this);
+	}
+
+	componentDidMount() {
+		view = this;
+	}
+
+	componentWillUnmount() {
+		view = null;
 	}
 	
 	onAddNewLanguageClick() {
@@ -220,8 +226,6 @@ class LanguageTableEditor extends React.Component {
 				})
 			));
 		});
-		
-		lines = Group.groupArray(lines, '.');
 		
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
