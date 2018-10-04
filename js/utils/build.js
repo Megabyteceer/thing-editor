@@ -1,16 +1,19 @@
 import L from "thing-engine/js/utils/l.js";
 import Lib from "thing-engine/js/lib.js";
 
+function sortObject(obj) {
+	let ret = {};
+	Object.keys(obj).sort().some((name) => {
+		ret[name] = obj[name];
+	});
+	return ret;
+}
+
 export default class Build {
 	static build(debug) {
 		
-		let scenes = Lib._getAllScenes();
-		
-		let prefabsSrc = Lib._getAllPrefabs();
-		let prefabs = {};
-		Object.keys(prefabsSrc).sort().some((prefabName) => {
-			prefabs[prefabName] = prefabsSrc[prefabName];
-		});
+		let scenes = sortObject(Lib._getAllScenes());
+		let prefabs = sortObject(Lib._getAllPrefabs());
 		
 		let images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value !== 'WHITE').map((t) => {
 			return t.value;
