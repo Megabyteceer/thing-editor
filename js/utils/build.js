@@ -18,6 +18,7 @@ export default class Build {
 		let images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value !== 'WHITE').map((t) => {
 			return t.value;
 		});
+		images = images.slice().sort();
 		
 		let fileSavePromises = [];
 
