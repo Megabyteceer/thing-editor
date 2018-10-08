@@ -578,10 +578,12 @@ export default class Editor {
 					rememberRef(o[p.name], p.name);
 				} else if(p.type === 'timeline') {
 					let timeline = o[p.name];
-					for(let field of timeline.f) {
-						for(let k of field.t) {
-							if(k.a) {
-								rememberRef(k.a, p.name + ',' + field.n + ',' + k.t);
+					if(timeline) {
+						for(let field of timeline.f) {
+							for(let k of field.t) {
+								if(k.a) {
+									rememberRef(k.a, p.name + ',' + field.n + ',' + k.t);
+								}
 							}
 						}
 					}

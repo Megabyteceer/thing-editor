@@ -79,7 +79,7 @@ export default class Timeline extends React.Component {
 	}
 
 	static onBeforePropertyChanged(fieldName) {
-		if(!timelineElement) {
+		if((!timelineElement) || recordingIsDisabled) {
 			beforeChangeRemember = new WeakMap();
 		}
 		

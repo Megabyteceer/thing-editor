@@ -347,7 +347,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData),
 				R.hr(),
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
-				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Remove selected but keep children.', "tool-btn", undefined, !this.isCanBeUnwrapped())
+				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Unwrap (remove selected but keep children)', "tool-btn", undefined, !this.isCanBeUnwrapped())
 	
 			),
 			R.div({className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick},
