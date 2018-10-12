@@ -512,11 +512,11 @@ export default class Editor {
 		assert(name, "Name can't be empty");
 		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
 		if(editor.isCurrentSceneModified || (editor.currentSceneName !== name)) {
-			Lib.__saveScene(game.currentScene, name);
 			if(!ScenesList.isSpecialSceneName(name)) {
 				history.setCurrentStateUnmodified();
 				saveCurrentSceneName(name);
 			}
+			Lib.__saveScene(game.currentScene, name);
 		}
 	}
 	
