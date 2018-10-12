@@ -38,7 +38,7 @@ app.get('/fs/openProject', function (req, res) {
 		currentGameRoot = folder;
 		process.chdir(currentGameRoot);
 		log('Project opened: ' + currentGameRoot);
-		let projectDescSrc = fs.readFileSync('thing-project.json')
+		let projectDescSrc = fs.readFileSync('thing-project.json');
 		currentGameDesc = JSON.parse(projectDescSrc);
 		res.send(projectDescSrc);
 	} else {
