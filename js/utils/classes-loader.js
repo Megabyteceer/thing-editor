@@ -28,6 +28,7 @@ import ScrollLayer from "thing-engine/js/components/scroll-layer.js";
 import game from "thing-engine/js/game.js";
 import SelectionHighlighter from 'thing-engine/js/components/selection-highlighter.js';
 import BgMusic from 'thing-engine/js/components/bg-music.js';
+import Spine from 'thing-engine/js/components/spine.js';
 
 let ClassesLoader = {};
 ClassesLoader.initClassesLoader = function initClassesLoader() {
@@ -57,7 +58,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[Mask, "/thing-engine/js/components/mask.js"],
 		[Fill, "/thing-engine/js/components/fill.js"],
 		[Spawner, "/thing-engine/js/components/spawner.js"],
-		[BgMusic, "/thing-engine/js/components/bg-music.js"]
+		[BgMusic, "/thing-engine/js/components/bg-music.js"],
+		[Spine, "/thing-engine/js/components/spine.js"]
 	];
 };
 

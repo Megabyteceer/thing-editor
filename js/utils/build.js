@@ -19,6 +19,17 @@ export default class Build {
 			return t.value;
 		});
 		images = images.slice().sort();
+
+		let resources;
+		for(let r in Lib.resources) {
+			if(!resources) {
+				resources = [];
+			}
+			resources.push(r);
+		}
+		if(resources) {
+			resources.sort();
+		}
 		
 		let fileSavePromises = [];
 
@@ -31,7 +42,7 @@ export default class Build {
 		editor.projectDesc.version = version.join('.');
 		editor.saveProjectDesc();*/
 
-		let assetsObj = {scenes, prefabs, images, sounds, projectDesc: editor.projectDesc};
+		let assetsObj = {scenes, prefabs, images, resources, sounds, projectDesc: editor.projectDesc};
 		if(editor.projectDesc.embedLocales) {
 			assetsObj.text = L.__getTextAssets();
 		}

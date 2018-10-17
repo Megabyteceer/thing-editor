@@ -10,6 +10,7 @@ AssetsLoader.init = () => {
 
 };
 
+const jsonFilter = /^img\/.*\.json$/gmi;
 const textureFiler = /^img\/.*\.(png|jpg)$/gmi;
 const textureNameCleaner = /^img\//gm;
 
@@ -40,9 +41,30 @@ const enumAssets = () => {
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 	
+	let jsonFolders = [];
+
+	editor.fs.filesExt.filter((fileStat) => {
+		if(fileStat.name.match(jsonFilter)) {
+			if(!jsonFolders.some((f) => {
+				return fileStat.name.startsWith(f);
+			})) {
+				let a = fileStat.name.split('/');
+				a.pop();
+				jsonFolders.push(a.join('/'));
+			}
+
+			Lib.addResource(fileStat.name);
+		}
+	});
+
+
 	editor.fs.filesExt.some((fileStat) => {
 		if(fileStat.name.match(textureFiler)) {
-			Lib.addTexture(fileStat.name.replace(textureNameCleaner, ''), game.resourcesPath + fileStat.name);
+			if(!jsonFolders.some((f) => {
+				return fileStat.name.startsWith(f);
+			})) {
+				Lib.addTexture(fileStat.name.replace(textureNameCleaner, ''), game.resourcesPath + fileStat.name);
+			}
 		}
 	});
 

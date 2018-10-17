@@ -289,6 +289,34 @@ window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = tr
 	};
 };
 
+window.makeResourceSelectEditablePropertyDescriptor = (name, canBeEmpty, important, filter) => {
+	let ret = {
+		name: name,
+		type: String,
+		default: '',
+		important: important
+	};
+	Object.defineProperty(ret, 'select', {
+		get: () => {
+			let a = editor.Lib.__resourcesList;
+			if(filter) {
+				a = a.filter(filter);
+			}
+			if(canBeEmpty) {
+				a = a.concat();
+				a.unshift({
+					name: "none",
+					value: ""
+				});
+			}
+			return a;
+		}
+	});
+	return ret;
+
+
+}
+
 window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important, filterName = 'image') => {
 	let ret = {
 		name: name,

@@ -15,7 +15,8 @@ var clientLibs = [
 	['../../node_modules/webfontloader/webfontloader.js', '../thing-engine/js/lib/webfontloader.js'],
 	['../../node_modules/howler/dist/howler.core.min.js', '../thing-engine/js/lib/howler.core.min.js'],
 	['../../node_modules/pixi.js/dist/pixi.min.js', '../thing-engine/js/lib/pixi.min.js'],
-	['../../node_modules/pixi.js/dist/pixi.js', '../thing-engine/js/lib/pixi.js']
+	['../../node_modules/pixi.js/dist/pixi.js', '../thing-engine/js/lib/pixi.js'],
+	['../../node_modules/pixi-spine/bin/pixi-spine.js', '../thing-engine/js/lib/pixi-spine.js']
 ];
 
 symlinksMaker.setRootPath(path.resolve(__dirname)+'/../');
