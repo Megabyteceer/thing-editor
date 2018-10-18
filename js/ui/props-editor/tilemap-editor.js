@@ -112,6 +112,7 @@ class TilemapEditor extends React.Component {
 	onClearClick() {
 		editor.ui.modal.showQuestion("Are you sure?", "Clear tilemap?", ()=>{
 			getTilemap().clear();
+			Lib.__invalidateSerialisationCache(getTilemap());
 			editor.sceneModified();
 		});
 	}
@@ -142,6 +143,7 @@ class TilemapEditor extends React.Component {
 
 		if(sceneModified) {
 			refreshTilemap();
+			Lib.__invalidateSerialisationCache(getTilemap());
 			editor.sceneModified();
 		}
 	}

@@ -1,6 +1,7 @@
 import NumberEditor from "./number-editor.js";
 import BooleanEditor from "./boolean-editor.js";
 import PropsFieldWrapper from "./props-field-wrapper.js";
+import Lib from "thing-engine/js/lib.js";
 
 const rectEditorProps = {className:'rect-editor'};
 const propGroupProps = {className:'rect-editor-group'};
@@ -49,6 +50,7 @@ export default class RectangleEditor extends React.Component {
 		if(this.props.value[name] !== val) {
 			this.props.value[name] = val;
 			this.forceUpdate();
+			Lib.__invalidateSerialisationCache(editor.selection[0]);
 			editor.sceneModified();
 		}
 	}
