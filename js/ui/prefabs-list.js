@@ -27,6 +27,16 @@ export default class PrefabsList extends React.Component {
 		this.onAddClick = this.onAddClick.bind(this);
 		this.onAddChildClick = this.onAddChildClick.bind(this);
 		this.reselectAllowed = true;
+		this.searchInputProps = {
+			className: 'prefabs-search-input',
+			onChange: this.onSearchChange.bind(this),
+			placeholder: 'Search',
+			defaultValue: ''
+		};
+	}
+
+	onSearchChange(ev) {
+		this.setState({filer: ev.target.value.toLowerCase()});
 	}
 	
 	onAddClick() {
@@ -124,17 +134,20 @@ export default class PrefabsList extends React.Component {
 		prefabsNames.sort();
 
 		for (let prefabName of prefabsNames) {
-			prefabs.push(this.renderItem(prefabName, scenePrefabs[prefabName]));
+			if(!this.state.filer || prefabName.indexOf(this.state.filer) >= 0) {
+				prefabs.push(this.renderItem(prefabName, scenePrefabs[prefabName]));
+			}
 		}
-		
-		prefabs = Group.groupArray(prefabs);
-		
+		if(!this.state.filer) {
+			prefabs = Group.groupArray(prefabs);
+		}
 		return R.fragment(
 			R.span({className: panelClassname},
 				R.btn('Add', this.onAddClick, 'Add prefab to scene'),
 				R.btn('Child', this.onAddChildClick, 'Add prefab as children')
 			),
 			R.btn('Save...', this.onSaveSelectedAsClick, 'Save currently selected on scene object as new prefab.'),
+			R.input(this.searchInputProps),
 			R.div(bodyProps, prefabs)
 		);
 	}
