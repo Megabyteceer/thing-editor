@@ -103,7 +103,7 @@ class UI extends React.Component {
 			React.createElement(LanguageView),
 			editor.history.buttonsRenderer(),
 			R.btn('Project settings', editor.openProjectDescToEdit),
-			R.btn('Upscale all text', () => {
+			/*R.btn('Upscale all text', () => {
 				editor.ui.modal.showQuestion('Sure?', 'All existing text scale will be divided by 2 and font size will be increased twice. After all, text fields with not zero maxWidth should be wrapped in to 0.5 scaled container manually.',() => {
 					game.currentContainer.forAllChildren((o) => {
 						if(o instanceof Text) {
@@ -118,7 +118,7 @@ class UI extends React.Component {
 				});
 
 
-			}),
+			}),*/
 
 
 
@@ -134,7 +134,7 @@ class UI extends React.Component {
 			renderWindow('classesLib', 'Classes', React.createElement(ClassesView, {ref: this.classesListRef}), 0, 550, 250, 150, 250, 470),
 			renderWindow('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 255, 550, 250, 150, 250, 470),
 			renderWindow('scenesList', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
-			renderWindow('soundsList', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1360, 750, 200, 100, 360, 260),
+			renderWindow('soundsList', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1194, 750, 200, 100, 360, 260),
 			
 			React.createElement(Status, {ref: this.statusRef}),
 			React.createElement(Modal, {ref: this.modalRef})
