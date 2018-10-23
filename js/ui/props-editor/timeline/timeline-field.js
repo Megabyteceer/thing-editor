@@ -584,7 +584,8 @@ export class KeyframePropertyEditor extends React.Component {
 
 	render () {
 		let kf = selectedKeyframe;
-		if(!kf) {
+		let selectedObjectsTimeline = editor.selection[0]._timelineData;
+		if((!kf) || (!selectedObjectsTimeline)) {
 			return R.div();
 		}
 		
@@ -597,12 +598,12 @@ export class KeyframePropertyEditor extends React.Component {
 		} else if(kf.m === 0) { //SMOOTH
 			
 			let presetSelectedValue = presets.find((p) => {
-				return editor.selection[0]._timelineData.p === p.value.p && editor.selection[0]._timelineData.d === p.value.d;
+				return selectedObjectsTimeline.p === p.value.p && selectedObjectsTimeline.d === p.value.d;
 			}) || presets[0];
 			
 			extendEditor = R.span(null,
-				' Power: ' ,React.createElement(NumberEditor, {value: editor.selection[0]._timelineData.p, type:'number', step:0.001, min: 0.001, max: 0.9, onChange: this.onPowChanged}),
-				' Dempt: ' ,React.createElement(NumberEditor, {value: editor.selection[0]._timelineData.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
+				' Power: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.001, max: 0.9, onChange: this.onPowChanged}),
+				' Dempt: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
 				' Preset ', React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
 			);
 		}
