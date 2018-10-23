@@ -58,6 +58,7 @@ export default class ScenesList extends React.Component {
 		askNewScenenName(defaultSceneName).then((enteredName) => {
 			if (enteredName) {
 				editor.saveCurrentScene(enteredName);
+				this.forceUpdate();
 			}
 		});
 	}
@@ -70,6 +71,7 @@ export default class ScenesList extends React.Component {
 						if(selectedClass) {
 							Lib.__saveScene(Pool.create(selectedClass), enteredName);
 							editor.openSceneSafe(enteredName);
+							this.forceUpdate();
 						}
 					});
 				}
