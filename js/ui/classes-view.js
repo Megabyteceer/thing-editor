@@ -90,6 +90,17 @@ class ClassesView extends React.Component {
 		if ((!editor.ClassesLoader.gameObjClasses) || (editor.ClassesLoader.gameObjClasses.indexOf(this.state.selectedItem) < 0)) return null;
 		return this.state.selectedItem;
 	}
+
+	refresh() {
+		if(this.refreshTimeout) {
+			return;
+		}
+		this.refreshTimeout = setTimeout(() => {
+			this.forceUpdate();
+			this.refreshTimeout = null;
+		}, 1);
+
+	}
 	
 	render() {
 		

@@ -65,6 +65,7 @@ class Selection extends Array {
 		o.__onSelect();
 
 		editor.ui.viewport.scrollInToScreen(o);
+		editor.ui.classesList.refresh();
 		if(!IS_SELECTION_LOADING_TIME) {
 			needSaveSelectionInToHistory = true;
 		}
@@ -83,6 +84,7 @@ class Selection extends Array {
 		if(!IS_SELECTION_LOADING_TIME) {
 			needSaveSelectionInToHistory = true;
 		}
+		editor.ui.classesList.refresh();
 	}
 }
 
