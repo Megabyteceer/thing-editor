@@ -84,7 +84,7 @@ export default class LanguageView extends React.Component {
 	}
 }
 
-const idFixer = /[^0-9a-z\-]/ig;
+const idFixer = /[^0-9a-z\-\/]/ig;
 function texareaID(lang, id) {
 	return (lang + '-' + id).replace(idFixer, '-');
 }
@@ -96,8 +96,8 @@ function isKeyInvalid(val) {
 	if (val.endsWith('.') || val.startsWith('.')) {
 		return 'ID can not begin or end with "."';
 	}
-	if (val.match(/[^a-z\._\d]/gm)) {
-		return 'ID can contain lowercase letters, digits, "_", and "."';
+	if (val.match(/[^a-z\._\d\/]/gm)) {
+		return 'ID can contain lowercase letters, digits, "_", "/" and "."';
 	}
 }
 
