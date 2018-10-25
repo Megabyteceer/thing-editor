@@ -2,6 +2,8 @@ import Timeline from './timeline.js';
 import Window from '../../window.js';
 import FieldsTimeline from './timeline-field.js';
 
+let counter = 0;
+
 export default class TimelineProperty extends React.Component {
 	
 	constructor(props) {
@@ -10,6 +12,18 @@ export default class TimelineProperty extends React.Component {
 		this.onToggleClick = this.onToggleClick.bind(this);
 	}
 	
+	componentWillReceiveProps() {
+		let extProps = __getNodeExtendData(editor.selection[0]);
+		if(extProps.timelineSelectionCounter !== counter) {
+			counter++;
+			extProps.timelineSelectionCounter = counter;
+			if(this.state.toggled) {
+				setTimeout(this.onToggleClick, 2);
+				setTimeout(this.onToggleClick, 3);
+			}
+		}
+	}
+
 	onToggleClick() { //show/hide timeline window
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
