@@ -4,6 +4,7 @@ import Signal from "../utils/signal.js";
 import LanguageSwitcher from "./language-switcher.js";
 import game from "thing-engine/js/game.js";
 import Sound from 'thing-engine/js/utils/sound.js';
+import keys from 'thing-engine/js/utils/keys.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -80,6 +81,7 @@ export default class Viewport extends React.Component {
 	
 	onTogglePlay() {
 		if(!playTogglingTime) {
+			keys.resetAll();
 			this.checkIfNeedRecovery();
 			playTogglingTime = true;
 			
