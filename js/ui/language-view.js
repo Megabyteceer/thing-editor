@@ -84,7 +84,7 @@ export default class LanguageView extends React.Component {
 	}
 }
 
-const idFixer = /[^0-9a-z\-\/]/ig;
+const idFixer = /[^0-9a-z\-]/ig;
 function texareaID(lang, id) {
 	return (lang + '-' + id).replace(idFixer, '-');
 }
