@@ -193,7 +193,7 @@ function refreshSelection() {
 		o.getGlobalPosition(p, true);
 		info.draggerPivot.x = p.x;
 		info.draggerPivot.y = p.y;
-		info.draggerPivot.scale.x = info.draggerPivot.scale.y = s;
+		//info.draggerPivot.scale.x = info.draggerPivot.scale.y = s;
 
 		for(let rn in info.rects) {
 			let rect = info.rects[rn];
@@ -205,9 +205,9 @@ function refreshSelection() {
 			}
 		}
 		
-		info.draggerRotator.x = p.x + Math.cos(r) * 40 * s;
-		info.draggerRotator.y = p.y + Math.sin(r) * 40 * s;
-		info.draggerRotator.scale.x = info.draggerRotator.scale.y = s;
+		info.draggerRotator.x = p.x + Math.cos(r) * 40;
+		info.draggerRotator.y = p.y + Math.sin(r) * 40;
+		//info.draggerRotator.scale.x = info.draggerRotator.scale.y = s;
 		info.draggerRotator.rotation = r;
 	});
 }
