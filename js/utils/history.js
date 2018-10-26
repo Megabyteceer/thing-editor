@@ -86,7 +86,7 @@ class History {
 
 		let historyRecord = {};
 		if(selectionOnly) {
-			if(arraysEqual(selectionData, this.currentState.selectionData)) {
+			if(!this.currentState || arraysEqual(selectionData, this.currentState.selectionData)) {
 				return;
 			}
 			historyRecord.treeData = this.currentState.treeData;
