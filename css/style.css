@@ -589,7 +589,7 @@ input{
 .resizable-dialog {
     position: relative;
     overflow: auto;
-    pointer-events:all;
+    pointer-events:auto;
     resize:both;
     min-height:300px;
     min-width:500px;
