@@ -96,8 +96,8 @@ function isKeyInvalid(val) {
 	if (val.endsWith('.') || val.startsWith('.')) {
 		return 'ID can not begin or end with "."';
 	}
-	if (val.match(/[^a-z\._\d\/]/gm)) {
-		return 'ID can contain lowercase letters, digits, "_", "/" and "."';
+	if (val.match(/[^a-zA-Z\._\d\/]/gm)) {
+		return 'ID can contain letters, digits, "_", "/" and "."';
 	}
 }
 
@@ -164,7 +164,7 @@ class LanguageTableEditor extends React.Component {
 		editor.ui.modal.showPrompt('Enter new translatable KEY:',
 			defaultKey,
 			(val) => { //filter
-				return val.toLowerCase();
+				return val;
 			},
 			isKeyInvalid
 		).then((enteredName) => {
