@@ -25,6 +25,9 @@ let isFirstClassesLoading = true;
 
 let refreshTreeViewAndPropertyEditorSheduled;
 
+let serverAllowedWork;
+let uiMounted;
+
 export default class Editor {
 	
 	get editorFilesPrefix() {
@@ -76,12 +79,23 @@ export default class Editor {
 	onUIMounted(ui) {
 		/** @member {UI} */
 		this.ui = ui;
-		
-		game.__EDITORmode = true;
-		editor.game = game;
-		ClassesLoader.initClassesLoader();
-		AssetsLoader.init();
-		this.openProject();
+		uiMounted = true;
+		this.tryToStart();
+	}
+
+	onServerAllowsWorking() {
+		serverAllowedWork = true;
+		this.tryToStart();
+	}
+
+	tryToStart() {
+		if(uiMounted && serverAllowedWork) {
+			game.__EDITORmode = true;
+			editor.game = game;
+			ClassesLoader.initClassesLoader();
+			AssetsLoader.init();
+			this.openProject();
+		}
 	}
 	
 	openProjectDescToEdit() {

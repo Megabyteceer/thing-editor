@@ -215,16 +215,19 @@ if(process.argv.indexOf('n') < 0) {
 //======== socket connection with client ================================================
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: PORT + 1 });
+let clientsConnected = 0;
 wss.on('connection', function connection(ws) {
 	ws.on('message', function incoming(/*message*/) {
 		//console.log('received: %s', message);
 	});
-	/*ws.on('close', function onWsClose(){
-		log('Thing closing...');
-		server.close();
-		process.exit(0);
-	});*/
-	ws.send('something');
+	ws.on('close', function onWsClose(){
+		clientsConnected--;
+	});
+	clientsConnected++;
+	ws.send(JSON.stringify({clientsConnected}));
+	if(clientsConnected > 1) {
+		ws.close();
+	}
 });
 
 //=========== enum files ================================
