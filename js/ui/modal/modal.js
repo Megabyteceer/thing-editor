@@ -156,7 +156,9 @@ class Modal extends React.Component {
 	}
 	
 	showError(message, title = 'Error!', noEasyClose) {
-		setTimeout(editor.ui.viewport.stopExecution, 0);
+		if(game.stage) {
+			setTimeout(editor.ui.viewport.stopExecution, 0);
+		}
 		return this.showModal(R.div(errorProps, message), R.span(null, R.icon('error'), title), noEasyClose);
 	}
 	
