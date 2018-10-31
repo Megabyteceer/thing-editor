@@ -592,7 +592,7 @@ export class KeyframePropertyEditor extends React.Component {
 		let extendEditor;
 		if(kf.m > 2 ) { //JUMP ROOF, JUMP FLOOR
 			extendEditor = R.span(null,
-				' Gravity: ' ,React.createElement(NumberEditor, {value: kf.g, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onGravityChange}),
+				' Gravity: ' ,React.createElement(NumberEditor, {value: kf.g, type:'number', step:0.0001, min: 0.0001, max: 10, onChange: this.onGravityChange}),
 				' Bouncing: ' ,React.createElement(NumberEditor, {value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
 			);
 		} else if(kf.m === 0) { //SMOOTH
