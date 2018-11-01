@@ -125,6 +125,9 @@ class PropsEditor extends React.Component {
 				}
 
 				if(!p.visible(editor.selection[0])) {
+					curGroupArray.push(
+						R.div({key: p.name})
+					);
 					return;
 				}
 

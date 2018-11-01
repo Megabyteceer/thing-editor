@@ -126,6 +126,7 @@ export default class Overlay {
 			__getNodeExtendData(r).hidden = true;
 		} else {
 			r = info.rects[props.field.name];
+			r._rect = rect;
 		}
 		r.refresh();
 	}
@@ -416,7 +417,7 @@ class Rotator extends DSprite {
 class Rect extends PIXI.Graphics {
 	refresh() {
 		let r = this._rect;
-		if(r.removed) {
+		if(!r || r.removed) {
 			this.clear();
 			this._drawedColor = false;
 			return;
