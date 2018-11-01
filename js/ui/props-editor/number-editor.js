@@ -160,8 +160,8 @@ class NumberEditor extends React.Component {
 				onDoubleClick: this.onDoubleClick,
 				onKeyDown:this.onKeyDown
 			}),
-			this.btnUp,
-			this.btnDown
+			props.disabled ? undefined : this.btnUp,
+			props.disabled ? undefined : this.btnDown
 		);
 	}
 }
