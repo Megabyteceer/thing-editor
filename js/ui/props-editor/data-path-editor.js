@@ -14,12 +14,17 @@ export default class DataPathEditor extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onEditClicked = this.onEditClicked.bind(this);
+		this.onBreakpointClick = this.onBreakpointClick.bind(this);
 	}
 
 	static isFunctionIsClass(f) {
 		return f.__EDITOR_propslist_cache;
 	}
 	
+	onBreakpointClick() {
+		__getNodeExtendData(editor.selection[0]).pathBreakpoint = true;
+	}
+
 	onEditClicked() {
 		if(!this.props.disabled) {
 			if(!inited) {
@@ -86,6 +91,7 @@ export default class DataPathEditor extends React.Component {
 
 		return R.div(fieldEditorWrapperProps,
 			R.input({className:'props-editor-callback', onChange: this.props.onChange, disabled:this.props.disabled, title:val, value: val || ''}),
+			R.btn('■', this.onBreakpointClick, 'Breakpoint', 'tool-btn'),
 			R.btn('...', this.onEditClicked, 'Start data source choosing', 'tool-btn')
 		);
 	}
