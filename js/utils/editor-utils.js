@@ -29,6 +29,12 @@ R.classIcon = (constructor) => {
 	return R.icon(constructor.__EDITOR_icon || 'tree/game');
 };
 
+R.multilineText = (txt) => {
+	return R.div(null, txt.split('\n').map((r, i) =>{
+		return R.div({key:i}, r);
+	}));
+};
+
 let nameProps = {className: 'scene-node-name'};
 let classProps = {className: 'scene-node-class'};
 let sceneNodeProps = {className: 'scene-node-item'};

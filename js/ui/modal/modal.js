@@ -166,7 +166,7 @@ class Modal extends React.Component {
 		if(game.stage) {
 			setTimeout(editor.ui.viewport.stopExecution, 0);
 		}
-		return this.showModal(R.div(errorProps, message), R.span(null, R.icon('error'), title), noEasyClose);
+		return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), title), noEasyClose);
 	}
 	
 	showFatalError(message, additionalText = 'FatalError. Please check console output for exceptions messages, and restart application by press <b>F5</b> button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.') {

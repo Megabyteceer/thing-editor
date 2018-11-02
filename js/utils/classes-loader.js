@@ -29,6 +29,7 @@ import game from "thing-engine/js/game.js";
 import SelectionHighlighter from 'thing-engine/js/components/selection-highlighter.js';
 import BgMusic from 'thing-engine/js/components/bg-music.js';
 import Spine from 'thing-engine/js/components/spine.js';
+import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
 
 let ClassesLoader = {};
 ClassesLoader.initClassesLoader = function initClassesLoader() {
@@ -59,7 +60,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[Fill, "/thing-engine/js/components/fill.js"],
 		[Spawner, "/thing-engine/js/components/spawner.js"],
 		[BgMusic, "/thing-engine/js/components/bg-music.js"],
-		[Spine, "/thing-engine/js/components/spine.js"]
+		[Spine, "/thing-engine/js/components/spine.js"],
+		[MobileJoystick, "/thing-engine/js/components/mobile-joystick.js"]
 	];
 };
 
