@@ -69,8 +69,15 @@ class Modal extends React.Component {
 		};
 	}
 
-	isUIBlockedByModal() {
-		return spinnerShowCounter > 0 || this.state.modals.length > 0;
+	isUIBlockedByModal(element) {
+		if(spinnerShowCounter > 0) {
+			return true;
+		}
+		if(this.state.modals.length > 0) {
+			let topModal = $('.modal-body').last();
+			return !$.contains(topModal[0], element);
+		}
+		return false;
 	}
 	
 	hideModal(val) {
