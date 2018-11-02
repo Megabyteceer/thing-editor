@@ -2,6 +2,7 @@ import game from "thing-engine/js/game.js";
 
 let fs = {
 	chooseProject: (enforced) => {
+		editor.ui.viewport.stopExecution();
 		fs.getJSON('/fs/projects').then((data) => {
 			editor.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
 				.then((projDir) => {
