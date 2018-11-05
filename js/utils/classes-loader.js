@@ -220,6 +220,7 @@ const jsFiler = /^src\/(game-objects|scenes)\/.*\.js$/gm;
 let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
+	editor.ui.status.clear();
 	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
 	loadedPath = null;
 	return new Promise((resolve) => {
