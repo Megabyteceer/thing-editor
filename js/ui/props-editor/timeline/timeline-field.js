@@ -40,7 +40,6 @@ export default class FieldsTimeline extends React.Component {
 		this.onGoLeftClick = this.onGoLeftClick.bind(this);
 		this.onGoRightClick = this.onGoRightClick.bind(this);
 		this.onToggleKeyframeClick = this.onToggleKeyframeClick.bind(this);
-		this.toggleKeyframeType = this.toggleKeyframeType.bind(this);
 	}
 	
 	static onAutoSelect(selectPath) {
@@ -139,8 +138,19 @@ export default class FieldsTimeline extends React.Component {
 	toggleKeyframeType(keyFrame) {
 		let types = Timeline.getKeyframeTypesForField(editor.selection[0], this.props.field.n);
 		let i = types.indexOf(keyFrame.m);
-		keyFrame.m = types[(i + 1) % types.length];
-		this.onKeyframeChanged(keyFrame);
+		this.setKeyframeType(types[(i + 1) % types.length]);
+	}
+
+	setKeyframeType(keyFrame, type) {
+		/// #if EDITOR
+		let types = Timeline.getKeyframeTypesForField(editor.selection[0], this.props.field.n);
+		assert(types.indexOf(type) >= 0, "Type " + selectKeyframeTypes[type] + "is invalid for field '" + this.props.field.n);
+		/// #endif
+
+		if(keyFrame.m !== type) {
+			keyFrame.m = type;
+			this.onKeyframeChanged(keyFrame);
+		}
 	}
 	
 	renderKeyframe(keyFrame, keyframeNum) {
@@ -178,9 +188,7 @@ export default class FieldsTimeline extends React.Component {
 				this.deleteKeyframe(keyFrame);
 				sp(ev);
 			} else {
-				if(this.selectKeyframe(keyFrame)) {
-					//this.toggleKeyframeType(keyFrame);
-				} else {
+				if(!this.selectKeyframe(keyFrame)) {
 					this.forceUpdate();
 				}
 				let timeLineData = this.props.field.t;
@@ -620,10 +628,17 @@ export class KeyframePropertyEditor extends React.Component {
 			jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
 		}
 		
+		let selectableKeyframeTypes = Timeline.getKeyframeTypesForField(editor.selection[0], selectedTimeline.props.field.n).map((mode) => {
+			return {name:selectKeyframeTypes[mode] , value:mode};
+		});
+
 		return R.div({className: 'bottom-panel'},
 			' action: ',
 			React.createElement(CallbackEditor, {value:kf.a || null, onChange:this.onActionChange, title:'Callback for keyframe ' + kf.t}),
-			' ', R.btn(selectKeyframeTypes[kf.m], () => {selectedTimeline.toggleKeyframeType(kf);}, "Switch selected keyframe's' Mode (Ctrl + M)", 'keyframe-type-chooser', 1077), ' ',
+			' ',
+			React.createElement(SelectEditor, {onChange:(ev) => {
+				selectedTimeline.setKeyframeType(kf, ev.target.value);
+			}, value:kf.m, select: selectableKeyframeTypes}),
 			R.label({htmlFor:'speed-set-checkbox'}, ' speed set:'),
 			R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
 			speedEditor,

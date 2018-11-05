@@ -134,10 +134,16 @@ class SelectEditor extends React.Component {
 			}
 
 			setTimeout(() => {
-				let b = ReactDOM.findDOMNode(this.refs.body).getBoundingClientRect();
-				let l = ReactDOM.findDOMNode(this.refs.list);
-				l.style.left = b.left + 'px';
-				l.style.top = b.top + 'px';
+				let b = ReactDOM.findDOMNode(this.refs.body);
+				if(b) {
+					b = b.getBoundingClientRect();
+					let l = ReactDOM.findDOMNode(this.refs.list);
+					if(l) {
+						l.style.left = b.left + 'px';
+						l.style.top = b.top + 'px';
+					}
+				}
+
 			}, 0);
 
 			items = R.div({

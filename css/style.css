@@ -416,6 +416,18 @@ button {
 	display:flex;
 }
 
+.bottom-panel .select-editor-current {
+	background: #fff;
+	padding: 3px 10px;
+}
+
+.bottom-panel .select-editor-list {
+	position: absolute !important;
+	top: unset !important;
+	left: unset !important;
+	bottom:0;
+}
+
 input{
 	font-family: monospace;
 	box-sizing: border-box;
@@ -822,10 +834,6 @@ input{
 .bottom-panel input, .bottom-panel .select-editor{
 	width:initial;
 	vertical-align: middle;
-}
-
-.bottom-panel .select-editor-list {
-	bottom:26px;
 }
 
 .objects-timeline-labels button {
