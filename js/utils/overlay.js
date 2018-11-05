@@ -243,7 +243,11 @@ $(window).on('mousedown', function onMouseDown(ev) {
 				if(ev.altKey) {
 					editor.disableFieldsCache = true;
 					editor.selection.some((o) => {
-						o.parent.addChildAt(Lib._deserializeObject(Lib.__serializeObject(o)), o.parent.children.indexOf(o));
+						let clone = Lib._deserializeObject(Lib.__serializeObject(o));
+						o.parent.addChildAt(clone, o.parent.children.indexOf(o));
+						if(!game.__EDITORmode) {
+							Lib._constructRecursive(clone);
+						}
 					});
 					editor.disableFieldsCache = false;
 					editor.ui.sceneTree.forceUpdate();
