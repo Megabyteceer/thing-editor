@@ -42,7 +42,10 @@ export default class Build {
 		editor.projectDesc.version = version.join('.');
 		editor.saveProjectDesc();*/
 
-		let assetsObj = {scenes, prefabs, images, resources, sounds, projectDesc: editor.projectDesc};
+		let projectDesc = Object.assign({}, editor.projectDesc);
+		delete projectDesc.lastSceneName;
+
+		let assetsObj = {scenes, prefabs, images, resources, sounds, projectDesc};
 		if(editor.projectDesc.embedLocales) {
 			assetsObj.text = L.__getTextAssets();
 		}
