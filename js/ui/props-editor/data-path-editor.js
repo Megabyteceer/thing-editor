@@ -89,9 +89,14 @@ export default class DataPathEditor extends React.Component {
 
 		let val = this.props.value;
 
+		let breakpointBtn;
+		if((!game.__EDITORmode) && val) {
+			breakpointBtn = R.btn('■', this.onBreakpointClick, 'Breakpoint', 'tool-btn breakpoint-btn');
+		}
+
 		return R.div(fieldEditorWrapperProps,
 			R.input({className:'props-editor-callback', onChange: this.props.onChange, disabled:this.props.disabled, title:val, value: val || ''}),
-			R.btn('■', this.onBreakpointClick, 'Breakpoint', 'tool-btn'),
+			breakpointBtn,
 			R.btn('...', this.onEditClicked, 'Start data source choosing', 'tool-btn')
 		);
 	}
