@@ -111,7 +111,7 @@ class SelectEditor extends React.Component {
 				if (this.state.filter) {
 					let flt = this.state.filter.toLocaleLowerCase();
 					a = a.filter((i) => {
-						return (i.name.toLowerCase().indexOf(flt) >= 0) || (i.name === "EMPTY");
+						return (i.name.toLowerCase().indexOf(flt) >= 0) || (i.name === "EMPTY") || !i.value;
 					});
 				}
 				a = a.slice(0, 20);
