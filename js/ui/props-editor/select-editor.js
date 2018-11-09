@@ -38,8 +38,9 @@ class SelectEditor extends React.Component {
 		this.checkIfCanHide();
 	}
 
-	onFocus() {
+	onFocus(event) {
 		this.isBlured = false;
+		event.target.select();
 	}
 
 	onMouseLeave() {
