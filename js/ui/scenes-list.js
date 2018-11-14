@@ -43,6 +43,7 @@ export default class ScenesList extends React.Component {
 		this.state = {};
 		this.onSelect = this.onSelect.bind(this);
 		this.onSaveAsSceneClick = this.onSaveAsSceneClick.bind(this);
+		this.onNewSceneClick = this.onNewSceneClick.bind(this);
 	}
 	
 	onSaveSceneClick() {
