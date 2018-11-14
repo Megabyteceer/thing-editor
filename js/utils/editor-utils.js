@@ -311,7 +311,7 @@ window.makeResourceSelectEditablePropertyDescriptor = (name, canBeEmpty, importa
 			if(filter) {
 				a = a.filter(filter);
 			}
-			if(canBeEmpty) {
+			if(canBeEmpty || a.length < 1) {
 				a = a.concat();
 				a.unshift({
 					name: "none",
