@@ -54,7 +54,7 @@ class TreeNode extends React.Component {
 		let state = __getNodeExtendData(node);
 		let childs;
 		let caret;
-		if(nodeHasChildren(node) && !state.hiddenChildren) {
+		if(nodeHasChildren(node)) {
 			if(state.childsExpanded) {
 				caret = caretOpened;
 				childs = R.div({className: 'tree-childs'},
