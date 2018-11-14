@@ -15,6 +15,10 @@ __onSelect() {
 	super.__onSelect();
 }
 
+__beforeDestroy
+
+## chance do destroy content in editor mode. For cases when onRemove is not calling because of init was not called in editor mode
+
 __beforeSerialization
 __afterSerialization
 __beforeDeserialization

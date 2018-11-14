@@ -55,7 +55,10 @@ class Selection extends Array {
 		__getNodeExtendData(o).isSelected = true;
 		let p = o.parent;
 		while(p && p !== game.stage) {
-			__getNodeExtendData(p).childsExpanded = true;
+			let data = __getNodeExtendData(p);
+			if(!data.hidden) {
+				data.childsExpanded = true;
+			}
 			p = p.parent;
 		}
 		if(!(o instanceof Tilemap)) {
