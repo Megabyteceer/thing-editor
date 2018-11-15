@@ -297,8 +297,22 @@ function selectByStageClick(ev) {
 		} else {
 			i = allUnderMouse.indexOf(editor.selection[0]) + 1;
 		}
-		
-		editor.ui.sceneTree.selectInTree(allUnderMouse[i % allUnderMouse.length], ev.ctrlKey);
+		let o = allUnderMouse[i % allUnderMouse.length];
+
+		let p = o;
+		let isPrevHidden;
+		while(p) {
+			
+			p = p.parent;
+			if(isPrevHidden) {
+				o = p;
+			}
+			if(p) {
+				isPrevHidden = __getNodeExtendData(p).hidden;
+			}
+		}
+
+		editor.ui.sceneTree.selectInTree(o, ev.ctrlKey);
 	} else {
 		editor.selection.clearSelection(true);
 	}
