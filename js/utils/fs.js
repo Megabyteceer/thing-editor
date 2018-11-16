@@ -39,7 +39,7 @@ let fs = {
 		});
 	},
 	deleteFile: (fileName) => {
-		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName), true);
+		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName), true, false);
 	},
 	editFile: (fileName, line = -1, char = -1) => {
 
@@ -59,15 +59,29 @@ let fs = {
 		}
 		fs.getJSON(url, true);
 	},
-	getJSON(url, silently) {
+	getJSON(url, silently=false, async = true) {
 		if (!silently) {
 			editor.ui.modal.showSpinner();
 		}
-		let r = $.getJSON(url).fail((a,b,c) => {handleError(a,b,c,url);});
+
+		let r = $.ajax({
+			type: "GET",
+			url,
+			async,
+			contentType: 'application/json',
+		}).fail((a,b,c) => {handleError(a,b,c,url);});
 		if (!silently) {
 			r.always(editor.ui.modal.hideSpinner);
 		}
-		return r;
+		return new Promise((resolve) => {
+			r.then((data) => {
+				if(typeof data === 'string') {
+					resolve(JSON.parse(data));
+				} else {
+					resolve(data);
+				}
+			});
+		});
 	},
 	openFile(fileName, silently) {
 		return this.getJSON(game.resourcesPath + fileName, silently);
