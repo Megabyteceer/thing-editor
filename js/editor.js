@@ -116,6 +116,7 @@ export default class Editor {
 			editor.settings.setItem('last-opened-project', dir);
 			if(dir !== lastOpenedProject) {
 				location.reload();
+				return;
 			}
 
 			let data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
