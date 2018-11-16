@@ -72,7 +72,7 @@ let fs = {
 	openFile(fileName, silently) {
 		return this.getJSON(game.resourcesPath + fileName, silently);
 	},
-	saveFile(filename, data, silently) {
+	saveFile(filename, data, silently = false, async = false) {
 		if (!silently) {
 			editor.ui.modal.showSpinner();
 		}
@@ -85,7 +85,8 @@ let fs = {
 			type: "POST",
 			url: '/fs/savefile',
 			data: JSON.stringify({data, filename}),
-			contentType: 'application/json'
+			contentType: 'application/json',
+			async
 		}).fail((a,b,c) => {handleError(a,b,c,filename);});
 		if (!silently) {
 			r.always(editor.ui.modal.hideSpinner);

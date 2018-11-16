@@ -269,16 +269,10 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 	};
 };
 
-function delay(ms) {
-	var start = +new Date;
-	while ((+new Date - start) < ms);
-}
-
 window.onunload = function() {
 	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITORmode && !editor.__FatalError) {
 		editor.exitPrefabMode();
 		editor.saveBackup(true);
-		delay(250);
 	}
 };
 
