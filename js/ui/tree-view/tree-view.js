@@ -269,7 +269,14 @@ export default class TreeView extends React.Component {
 		foundByWhichProperty = new WeakMap();
 		
 		this.findNext((o) => {
-			
+			let p = o;
+			while(p) {
+				if(__getNodeExtendData(p).hidden) {
+					return false;
+				}
+				p = p.parent;
+			}
+
 			if(o.constructor.name.toLowerCase().indexOf(this.searchString) >= 0) return true;
 			
 			let props = editor.enumObjectsProperties(o);
