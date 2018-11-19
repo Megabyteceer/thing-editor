@@ -157,7 +157,7 @@ class StatusBar extends React.Component {
 	
 	render() {
 		if(game && game.stage) {
-			let txt = ' x: ' + game.mouse.__EDITOR_x + ' y: ' + game.mouse.__EDITOR_y;
+			let txt = ' x: ' + game.mouse.__EDITOR_scene_x + ' y: ' + game.mouse.__EDITOR_scene_y;
 			let resetZoomBtn;
 			if(game.stage) {
 				if(game.stage.scale.x !== 1) {

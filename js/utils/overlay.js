@@ -259,7 +259,7 @@ $(window).on('mousedown', function onMouseDown(ev) {
 
 
 function isObjectUnder(o) {
-	return (o.containsPoint && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.mouse));
+	return (o.containsPoint && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.__mouse_EDITOR));
 }
 
 let previousAllUnderMouse;
@@ -347,7 +347,7 @@ $(window).on('mouseup', () => {
 $(window).on('wheel', function onWheel(ev) {
 	if(ev.target === game.pixiApp.view) {
 
-		let pivot = game.stage.toLocal(game.mouse, game.stage.parent);
+		let pivot = game.stage.toLocal(game.__mouse_EDITOR, game.stage.parent);
 
 
 		let zoom = game.stage.scale.x;
