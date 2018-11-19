@@ -171,7 +171,7 @@ class TilemapEditor extends React.Component {
 			return;
 		}
 		if(isErasing || isSetting) {
-			let p = getTilemap().toLocal(game.mouse);
+			let p = getTilemap().toLocal(game.__mouse_EDITOR);
 			
 			var X = p.x / getTilemap().tileW;
 			var Y = p.y / getTilemap().tileH;
