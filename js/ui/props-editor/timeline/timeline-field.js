@@ -192,7 +192,7 @@ export default class FieldsTimeline extends React.Component {
 					this.forceUpdate();
 				}
 				let timeLineData = this.props.field.t;
-				if (timeLineData.indexOf(keyFrame) > 0) {
+				if ((timeLineData.indexOf(keyFrame) > 0) || ev.altKey) {
 					if(ev.altKey) {
 						let cloneKeyframe = {};
 						Object.assign(cloneKeyframe, keyFrame);
