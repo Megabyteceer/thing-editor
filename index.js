@@ -41,11 +41,66 @@ app.get('/fs/openProject', function (req, res) {
 		let projectDescSrc = fs.readFileSync('thing-project.json');
 		currentGameDesc = JSON.parse(projectDescSrc);
 		res.send(projectDescSrc);
+		exludeAnotherProjectsFromCodeEditor();
 	} else {
 		log('Can\'t open project: ' + req.query.dir);
 		res.send('false');
 	}
 });
+
+function exludeAnotherProjectsFromCodeEditor() {
+	let jsConfigFN = '../jsconfig.json';
+	let vsSettingsFn = '../.vscode/settings.json';
+	let projectsDirs = enumProjects().map(p => p.dir);
+	for(let i = 0; i < 5; i++) {
+		if(fs.existsSync(jsConfigFN)) {
+			let jsConfig = JSON.parse(fs.readFileSync(jsConfigFN));
+			let oldJsExcludes = jsConfig.exclude;
+			let exclude = [];
+			jsConfig.exclude = exclude;
+			if(Array.isArray(oldJsExcludes)) {
+				
+				for(let k of oldJsExcludes) {
+					if(projectsDirs.indexOf(k.replace(/^games\//, '')) < 0) {
+						jsConfig.exclude.push(k);
+					}
+				}
+			}
+			for(let dir of projectsDirs) {
+				if(dir !== currentGame) {
+					jsConfig.exclude.push('games/' + dir);
+				}
+			}
+			fs.writeFileSync(jsConfigFN, JSON.stringify(jsConfig, undefined, '	'));
+		}
+
+		if(fs.existsSync(vsSettingsFn)) {
+			let config = JSON.parse(fs.readFileSync(vsSettingsFn));
+			let oldExcludes = config['files.exclude'];
+			let exclude = {};
+			config['files.exclude'] = exclude;
+			if(oldExcludes) {
+				for(let k in oldExcludes) {
+					if(!projectsDirs.find((d) => {
+						return k.indexOf('games/' + d) >= 0;
+					})) {
+						exclude[k] = oldExcludes[k];
+					}
+				}
+			}
+			for(let dir of projectsDirs) {
+				if(dir !== currentGame) {
+					exclude['**/games/' + dir + '/**'] = true;
+				}
+			}
+			fs.writeFileSync(vsSettingsFn, JSON.stringify(config, undefined, '	'));
+			
+		}
+		
+		jsConfigFN = '../' + jsConfigFN;
+		vsSettingsFn = '../' + vsSettingsFn;
+	}
+}
 
 let pathFixerExp = /\\/g;
 let pathFixer = (stat) => {
