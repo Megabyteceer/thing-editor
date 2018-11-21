@@ -55,6 +55,7 @@ export default class Viewport extends React.Component {
 	
 	checkIfNeedRecovery() {
 		if(!recoveryCheckingTime) {
+			recoveryCheckingTime = true;
 			setTimeout(() => {
 				if(problemOnGameStart || problemOnGameStop || editor.frameUpdateException) {
 					

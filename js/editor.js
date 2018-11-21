@@ -457,7 +457,9 @@ export default class Editor {
 		}
 		
 		if(name === editor.backupSceneLibSaveSlotName) {
-			Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
+			setTimeout(() => { //ensure page is not reloaded by debugger
+				Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
+			}, 50);
 		}
 		this.refreshTreeViewAndPropertyEditor();
 	}
