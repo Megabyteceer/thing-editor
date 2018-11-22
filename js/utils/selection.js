@@ -87,6 +87,9 @@ class Selection extends Array {
 		if(!IS_SELECTION_LOADING_TIME) {
 			needSaveSelectionInToHistory = true;
 		}
+		if(o.__onUnselect) {
+			o.__onUnselect();
+		}
 		editor.ui.classesList.refresh();
 	}
 }

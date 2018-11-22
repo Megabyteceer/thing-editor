@@ -103,13 +103,16 @@ class PropsEditor extends React.Component {
 		let props = editor.enumObjectsProperties(editor.selection[0]);
 		let propsFilter = {};
 		
-		editor.selection.some((o) => {
+		for(let o of editor.selection) {
+			if(__getNodeExtendData(o).hidePropsEditor) {
+				return __getNodeExtendData(o).hidePropsEditor || 'Not editable';
+			}
 			let ps = editor.enumObjectsProperties(o);
-			ps.some((p) => {
+			for(let p of ps) {
 				let name = p.name;
 				propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
-			});
-		});
+			}
+		}
 		props = props.filter((p) => {
 			return propsFilter[p.name] === editor.selection.length;
 		});

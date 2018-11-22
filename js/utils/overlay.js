@@ -187,7 +187,9 @@ function refreshSelection() {
 		let info = __getNodeExtendData(o);
 		if (!info.draggerPivot) {
 			info.draggerPivot = createDragger(o, Dragger);
-			info.draggerRotator = createDragger(o, Rotator);
+			if(!info.rotatorLocked) {
+				info.draggerRotator = createDragger(o, Rotator);
+			}
 		}
 		let s = game.stage.scale.x;
 		let r = o.getGlobalRotation();
@@ -205,11 +207,12 @@ function refreshSelection() {
 				rect.rotation = r;
 			}
 		}
-		
-		info.draggerRotator.x = p.x + Math.cos(r) * 40;
-		info.draggerRotator.y = p.y + Math.sin(r) * 40;
-		//info.draggerRotator.scale.x = info.draggerRotator.scale.y = s;
-		info.draggerRotator.rotation = r;
+		if(info.draggerRotator) {
+			info.draggerRotator.x = p.x + Math.cos(r) * 40;
+			info.draggerRotator.y = p.y + Math.sin(r) * 40;
+			//info.draggerRotator.scale.x = info.draggerRotator.scale.y = s;
+			info.draggerRotator.rotation = r;
+		}
 	});
 }
 
@@ -356,8 +359,8 @@ $(window).on('wheel', function onWheel(ev) {
 		if(Math.abs(zoom - 1.0) < 0.01) {
 			zoom = 1;
 		}
-		if(zoom > 5) {
-			zoom = 5;
+		if(zoom > 32) {
+			zoom = 32;
 		}
 		if(zoom < 0.02) {
 			zoom = 0.02;

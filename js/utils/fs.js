@@ -6,7 +6,9 @@ let fs = {
 		fs.getJSON('/fs/projects').then((data) => {
 			editor.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
 				.then((projDir) => {
-					editor.openProject(projDir);
+					if(projDir) {
+						editor.openProject(projDir);
+					}
 				});
 		});
 	},

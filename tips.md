@@ -1,12 +1,16 @@
-__getNodeExtendData
-
 
 #display component methods
 
 _onRenderResize
 onLanguageChanged
 
+
+
+#ewerything under this line available in editor only. Wrap code which acces it in to next macros coments: 
 ///#if EDITOR
+
+/// #endif
+
 
 __EDITOR_onCreate  
 ##called after object created via class-view additng to stage
@@ -14,6 +18,8 @@ __EDITOR_onCreate
 __onSelect() {
 	super.__onSelect();
 }
+__onUnselect
+
 
 __beforeDestroy
 
@@ -96,3 +102,18 @@ __onChildSelected
 
 ##tip:
  'Tip text'
+
+
+
+# === editor extendedData =====
+
+__getNodeExtendData(displayObject) - get extended data. Available in editor only
+
+#extendedData's flags:
+
+isSelected
+hidePropsEditor //do not show props editor. Object still can be dragged or rotated
+rotatorLocked  //dont show rotation drag point
+hidden   // hide in scene's tree
+
+__EDITOR_isPreviewObject   // true if object is prefab which currently opened to edite
