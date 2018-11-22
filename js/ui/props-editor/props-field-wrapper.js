@@ -89,6 +89,7 @@ let getTypeDescription = (field) => {
 };
 
 let labelProps = {className: 'props-label selectable-text', onMouseDown: window.copyTextByClick};
+let labelEditorOnlyProps = {className: 'props-label props-label-editor-only selectable-text', onMouseDown: window.copyTextByClick};
 let wrapperProps = {className: 'props-wrapper'};
 
 class PropsFieldWrapper extends React.Component {
@@ -146,7 +147,7 @@ class PropsFieldWrapper extends React.Component {
 		let disabled = field.disabled && field.disabled(node);
 		
 		let className = field.important ? 'props-field props-field-important' : 'props-field';
-		let title;
+		let title = field.name;
 
 		if(field.hasOwnProperty('validate')) {
 			title = field.validate(value);
@@ -165,7 +166,7 @@ class PropsFieldWrapper extends React.Component {
 		
 		return R.div({className, id:'property-editor-' + field.name, title},
 			tip,
-			R.div(labelProps, field.name),
+			R.div(field.name.startsWith('__') ? labelEditorOnlyProps : labelProps, field.name),
 			R.div(wrapperProps,
 				React.createElement(renderer, {
 					ref: (field.type === 'timeline') ? 'fieldRef' : undefined,

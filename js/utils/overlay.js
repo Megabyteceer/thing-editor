@@ -259,7 +259,7 @@ $(window).on('mousedown', function onMouseDown(ev) {
 
 
 function isObjectUnder(o) {
-	return (o.containsPoint && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.__mouse_EDITOR));
+	return (o.containsPoint && o.__selectableByClick && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.__mouse_EDITOR));
 }
 
 let previousAllUnderMouse;

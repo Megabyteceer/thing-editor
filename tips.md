@@ -45,6 +45,8 @@ __onChildSelected
 
 ##name:
  object's editable property name
+  // begin name with '__' to make field exist in editor only
+        such field will not be included in to build.
 
 ##default:
  defaultValue
