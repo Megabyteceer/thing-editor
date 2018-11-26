@@ -57,6 +57,7 @@ export default class Viewport extends React.Component {
 		if(!recoveryCheckingTime) {
 			recoveryCheckingTime = true;
 			setTimeout(() => {
+				recoveryCheckingTime = false;
 				if(problemOnGameStart || problemOnGameStop || editor.frameUpdateException) {
 					
 					playTogglingTime = false;
@@ -74,7 +75,6 @@ export default class Viewport extends React.Component {
 						editor.ui.modal.showFatalError('Exception on frame update.');
 					}
 					game.__EDITORmode = true;
-					recoveryCheckingTime = false;
 				}
 			}, 0);
 		}
