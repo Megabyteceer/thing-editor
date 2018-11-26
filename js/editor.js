@@ -150,7 +150,7 @@ export default class Editor {
 			
 			if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 				//backup restoring
-				editor.ui.modal.showQuestion("Scene's backup restoring",
+				editor.ui.modal.showQuestion("Scene's backup restoring (" + editor.projectDesc.title + ")",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 						R.div(null, "Do you want to restore scene from backup?")),
 					async() => {
