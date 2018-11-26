@@ -9,6 +9,12 @@ function sortObject(obj) {
 	return ret;
 }
 
+const fieldsFilter = (key, value) => {
+	if(!key.startsWith('__')) {
+		return value;
+	}
+};
+
 export default class Build {
 	static build(debug) {
 		
@@ -43,7 +49,9 @@ export default class Build {
 		editor.saveProjectDesc();*/
 
 		let projectDesc = Object.assign({}, editor.projectDesc);
+		let assetsDelimiter = projectDesc.assetsDelimiter ? projectDesc.assetsDelimiter : undefined;
 		delete projectDesc.lastSceneName;
+		delete projectDesc.assetsDelimiter;
 
 		let assetsObj = {scenes, prefabs, images, resources, sounds, projectDesc};
 		if(editor.projectDesc.embedLocales) {
@@ -51,12 +59,7 @@ export default class Build {
 		}
 
 		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' +
-		JSON.stringify(assetsObj, (key, value) => {
-			if(!key.startsWith('__')) {
-				return value;
-			}
-			console.log('filtred:' + key);
-		}, '	') + ';'));
+		JSON.stringify(assetsObj, fieldsFilter, assetsDelimiter) + ';'));
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
@@ -84,7 +87,7 @@ let classes = {};`];
 			}
 		}
 		src.push('Lib._setClasses(classes, ');
-		src.push(JSON.stringify(defaults, null, ' ') + ');');
+		src.push(JSON.stringify(defaults, fieldsFilter, assetsDelimiter) + ');');
 		fileSavePromises.push(editor.fs.saveFile('src/classes.js', src.join('\n')));
 		
 		Promise.all(fileSavePromises).then(() => {
