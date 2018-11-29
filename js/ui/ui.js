@@ -12,6 +12,7 @@ import Status from "./status.js";
 import game from "thing-engine/js/game.js";
 import SoundsList from './sounds-list.js';
 import Text from 'thing-engine/js/components/text.js';
+import TexturesView from './textures-view.js';
 
 /**
  *
@@ -101,6 +102,7 @@ class UI extends React.Component {
 			R.btn('Build', editor.build),
 			R.btn('Build debug', () => {editor.build(true);}),
 			React.createElement(LanguageView),
+			React.createElement(TexturesView),
 			editor.history.buttonsRenderer(),
 			R.btn('Project settings', editor.openProjectDescToEdit),
 			/*R.btn('Upscale all text', () => {

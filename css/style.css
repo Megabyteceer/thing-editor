@@ -1234,6 +1234,42 @@ input{
 	color: #a50000;
 }
 
+#window-texturesviewer .list-view {
+	top: 64px;
+}
+
+.textures-viewer-image {
+	background:url(../img/bg.png);
+	max-width: 256px;
+	max-height: 256px;
+	margin: 10px auto;
+	padding: 10px;
+	display: block;
+}
+
+.textures-viewer-item {
+	margin: 15px;
+	text-align: center;
+	display: inline-block;
+	font-size: 150%;
+}
+
+.texture-preload-checkbox {
+	cursor: pointer;
+	padding: 5px;
+}
+
+.redframe {
+	outline: 7px solid #ff0d00;
+}
+
+
+
+
+
+
+
+
 
 
 

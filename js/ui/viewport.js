@@ -5,6 +5,7 @@ import LanguageSwitcher from "./language-switcher.js";
 import game from "thing-engine/js/game.js";
 import Sound from 'thing-engine/js/utils/sound.js';
 import keys from 'thing-engine/js/utils/keys.js';
+import ClassesView from './classes-view.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -252,8 +253,45 @@ export default class Viewport extends React.Component {
 			),
 			R.div({
 				id: 'viewport-root',
-				className: 'editor-viewport'
+				className: 'editor-viewport',
+				onDragOver: (ev) => {
+					if (canBeDragAccepted(ev)) {
+						ev.dataTransfer.effectAllowed = "copy";
+						ev.dataTransfer.dropEffect = "copy";
+						ev.preventDefault();
+					}
+				},
+				onDrop: (ev) => {
+					let i = canBeDragAccepted(ev);
+					if(i) {
+						let b = ev.target.getBoundingClientRect();
+						let scale = b.width / ev.target.width;
+						let p = {
+							x: (ev.clientX - b.left) / scale,
+							y: (ev.clientY - b.top) / scale
+						};
+
+						i.getAsString((imageId) => {
+							let o = ClassesView.loadSafeInstanceByClassName('DSprite');
+							o.image = imageId;
+
+							game.stage.toLocal(p, undefined, o);
+							editor.addToScene(o);
+							o.x = Math.round(o.x);
+							o.y = Math.round(o.y);
+						});
+					}
+					ev.preventDefault();
+				}
 			})
 		);
+	}
+}
+
+function canBeDragAccepted(ev) {
+	for(let i of ev.dataTransfer.items) {
+		if(i.type ==="text/thing-editor-image-id") {
+			return i;
+		}
 	}
 }
