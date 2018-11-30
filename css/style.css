@@ -364,11 +364,9 @@ button {
 	padding: 3px 15px;
 	background-color:var(--window-header-color);
 	color: #a3adb7;
-	font-size:70%;
 }
 
 .props-group-body {
-	font-family: monospace;
 	background:#fff;
 }
 
@@ -396,6 +394,7 @@ button {
 }
 
 .props-label {
+	font-family: monospace;
 	box-sizing:border-box;
 	padding-left: 15px;
 	width: 50%;
@@ -455,6 +454,7 @@ input{
 	background: #fffde4;
 	padding:10px;
 	border: 1px solid #9e8247;
+	font-family: monospace;
 }
 
 .modal-blackout {
@@ -575,6 +575,7 @@ input{
 }
 
 .selectable-text {
+	font-family: monospace;
 	user-select:text;
 	cursor:text;
 }
@@ -1251,7 +1252,6 @@ input{
 	margin: 15px;
 	text-align: center;
 	display: inline-block;
-	font-size: 150%;
 }
 
 .texture-preload-checkbox {

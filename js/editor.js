@@ -668,6 +668,23 @@ function addTo(parent, child, doNotselect) {
 }
 
 let __saveProjectDescriptorInner = () => {
+
+	//cleanup settings for deleted sounds
+	let loadOnDemandSounds = editor.projectDesc.loadOnDemandSounds;
+	for(let k in loadOnDemandSounds) {
+		if(!Lib.hasSound(k)) {
+			delete loadOnDemandSounds[k];
+		}
+	}
+
+	//cleanup settings for deleted sounds
+	let loadOnDemandTextures = editor.projectDesc.loadOnDemandTextures;
+	for(let k in loadOnDemandTextures) {
+		if(!Lib.hasTexture(k)) {
+			delete loadOnDemandTextures[k];
+		}
+	}
+
 	editor.fs.saveFile('thing-project.json', editor.projectDesc);
 };
 
