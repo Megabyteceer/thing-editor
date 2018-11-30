@@ -23,7 +23,7 @@ export default class RectangleEditor extends React.Component {
 		this.onYChange = this.onYChange.bind(this);
 		this.onWChange = this.onWChange.bind(this);
 		this.onHChange = this.onHChange.bind(this);
-		this.onEnabledChange = this.onEnabledChange.bind(this);
+		this.onEnabledChange = this.onNullCheckboxChange.bind(this);
 		this.checkNullability();
 	}
 
@@ -43,52 +43,65 @@ export default class RectangleEditor extends React.Component {
 
 	checkNullability() {
 		if(!this.props.value && !this.props.field.nullable) {
-			this.onEnabledChange();
+			this.onNullCheckboxChange();
 		}
 	}
 
-	onXChange(ev) {
-		this.changeRectProperty(ev, 'x');
+	onXChange(ev, isDelta, delta) {
+		this.changeRectProperty(ev, isDelta, delta, 'x');
 	}
 
-	onYChange(ev) {
-		this.changeRectProperty(ev, 'y');
+	onYChange(ev, isDelta, delta) {
+		this.changeRectProperty(ev, isDelta, delta, 'y');
 	}
 
-	onWChange(ev) {
-		this.changeRectProperty(ev, 'w');
+	onWChange(ev, isDelta, delta) {
+		this.changeRectProperty(ev, isDelta, delta, 'w');
 	}
 
-	onHChange(ev) {
-		this.changeRectProperty(ev, 'h');
+	onHChange(ev, isDelta, delta) {
+		this.changeRectProperty(ev, isDelta, delta, 'h');
 	}
 
-	changeRectProperty(ev, name) {
+	changeRectProperty(ev, isDelta, delta, name) {
 		let val = ev.target.value;
-		if(this.props.value[name] !== val) {
-			this.props.value[name] = val;
+		let fieldName = this.props.field.name;
+		let updated = false;
+
+		for(let o of editor.selection) {
+			if(isDelta && delta !== 0) {
+				o[fieldName][name] += delta;
+				Lib.__invalidateSerialisationCache(o);
+				updated = true;
+			} else if(o[fieldName][name] !== val) {
+				o[fieldName][name] = val;
+				Lib.__invalidateSerialisationCache(o);
+				updated = true;
+			}
+		}
+		if(updated) {
 			this.forceUpdate();
-			Lib.__invalidateSerialisationCache(editor.selection[0]);
 			editor.sceneModified();
 		}
 	}
 
-	onEnabledChange() {
+	onNullCheckboxChange() {
 		let val;
+		let fieldName = this.props.field.name;
 
-		let extData = __getNodeExtendData(editor.selection[0]);
-
-		if(this.props.value) {
-			extData['removedRect'+this.props.field.name] = this.props.value;
-			this.props.value.removed = true;
-			editor.overlay.drawRect(this.props, editor.selection[0]);
-			val = null;
-		} else {
-			val = extData['removedRect'+this.props.field.name] || {x:0,y:0,w:100,h:50};
-			delete val.removed;
+		for(let o of editor.selection) {
+			let extData = __getNodeExtendData(o);
+			if(o[fieldName]) {
+				extData['removedRect' + fieldName] = o[fieldName];
+				o[fieldName].removed = true;
+				editor.overlay.drawRect(this.props, o);
+			} else {
+				val = extData['removedRect' + fieldName] || {x:0,y:0,w:100,h:50};
+				delete val.removed;
+			}
 		}
-		let e = PropsFieldWrapper.surrogateChnageEvent(val);
-		this.props.onChange(e);
+		this.forceUpdate();
+		editor.sceneModified();
 	}
 
 	render() {
@@ -98,10 +111,6 @@ export default class RectangleEditor extends React.Component {
 			editor.overlay.drawRect(this.props, o, this.props.disabled ? undefined : r);
 		});
 		
-
-		if(editor.selection.length > 1) {
-			return R.span(null, 'Rectangle editor does not support multily selection.');
-		}
 		var r = this.props.value;
 		var body;
 		if(r) {
@@ -126,7 +135,7 @@ export default class RectangleEditor extends React.Component {
 		}
 
 		return R.div(rectEditorProps,
-			React.createElement(BooleanEditor, {disabled:(!this.props.field.nullable) || this.props.disabled, onChange: this.onEnabledChange, value:r !== null}),
+			React.createElement(BooleanEditor, {disabled:(!this.props.field.nullable) || this.props.disabled, onChange: this.onNullCheckboxChange, value:r !== null}),
 			body
 		);
 	}
