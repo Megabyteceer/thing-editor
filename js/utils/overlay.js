@@ -247,6 +247,8 @@ $(window).on('mousedown', function onMouseDown(ev) {
 					editor.disableFieldsCache = true;
 					editor.selection.some((o) => {
 						let clone = Lib._deserializeObject(Lib.__serializeObject(o));
+						increaseNameNumber(o);
+						o.forAllChildren(increaseNameNumber);
 						o.parent.addChildAt(clone, o.parent.children.indexOf(o));
 						if(!game.__EDITORmode) {
 							Lib._constructRecursive(clone);
@@ -260,6 +262,14 @@ $(window).on('mousedown', function onMouseDown(ev) {
 	}
 });
 
+function increaseNameNumber(o) {
+	if(o.name) { //autoincrease latest number in name
+		let a = (/\d+$/mg).exec(o.name);
+		if(a) {
+			o.name = o.name.replace(/\d+$/mg, (parseInt(a[0]) + 1));
+		}
+	}
+}
 
 function isObjectUnder(o) {
 	return (o.containsPoint && (!o.__lockSelection) && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.__mouse_EDITOR));
