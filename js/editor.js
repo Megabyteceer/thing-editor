@@ -265,6 +265,7 @@ export default class Editor {
 	}
 	
 	saveBackup(includeUnmodified = false) {
+		editor.__backupUID = (editor.__backupUID || 0) + 1;
 		if(!game.__EDITORmode) {
 			assert(!includeUnmodified, 'Attempt to save important backup in running mode');
 			return;
@@ -456,10 +457,11 @@ export default class Editor {
 			this.selection.loadSelection(selectionsForScenesByName[name]);
 		}
 		
-		if(name === editor.backupSceneLibSaveSlotName) {
-			setTimeout(() => { //ensure page is not reloaded by debugger
-				if(name === editor.backupSceneLibSaveSlotName && Lib.hasScene(name)) {
-					Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
+		if(name.startsWith(editor.backupSceneLibSaveSlotName)) {
+			let backupUID = editor.__backupUID;
+			setTimeout(() => { //prevent backup deletion if page reloaded
+				if((backupUID === editor.__backupUID) && Lib.hasScene(name)) {
+					Lib.__deleteScene(name);
 				}
 			}, 50);
 		}
