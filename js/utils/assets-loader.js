@@ -84,7 +84,6 @@ const enumAssets = () => {
 };
 
 AssetsLoader.reloadAssets = (refreshFiles) => {
-	editor.ui.status.clear();
 	BgMusic._stopAll();
 	editor.ui.modal.showSpinner();
 	if(refreshFiles) {

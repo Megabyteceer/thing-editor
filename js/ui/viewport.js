@@ -174,6 +174,7 @@ export default class Viewport extends React.Component {
 	}
 	
 	onReloadClassesClick() {
+		editor.ui.status.clear();
 		editor.fs.refreshFiles().then(()=>{
 			editor.reloadClasses().then(Lib.__validateClasses);
 		});
@@ -185,6 +186,7 @@ export default class Viewport extends React.Component {
 	}
 	
 	onReloadAssetsClick() {
+		editor.ui.status.clear();
 		editor.fs.refreshFiles().then(editor.reloadAssets);
 	}
 	
