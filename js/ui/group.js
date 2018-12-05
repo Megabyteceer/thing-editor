@@ -16,6 +16,8 @@ function groupArray(a, delimitter = '/', level = 0) {
 	let group;
 	let groupName;
 	let ret = [];
+	const orders = new Map();
+
 	for (let item of a) {
 		
 		let name = item.key;
@@ -30,6 +32,8 @@ function groupArray(a, delimitter = '/', level = 0) {
 			if (!groups.hasOwnProperty(groupName)) {
 				groups[groupName] = [];
 			}
+			let order = np.shift();
+			orders.set(item, parseFloat(order) || order);
 			group = groups[groupName];
 			group.push(item);
 			
@@ -37,12 +41,15 @@ function groupArray(a, delimitter = '/', level = 0) {
 		}
 		ret.push(item);
 	}
-	
+
 	for (groupName in groups) {
 		group = groups[groupName];
+		group.sort((a,b) => {
+			return orders.get(a) - orders.get(b);
+		});
 		ret.unshift(renderGroup({key: groupName, title: groupName, content: groupArray(group, delimitter, level + 1)}));
 	}
-	
+
 	return ret;
 }
 
