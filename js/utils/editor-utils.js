@@ -318,7 +318,7 @@ window.makeResourceSelectEditablePropertyDescriptor = (name, canBeEmpty, importa
 	return ret;
 
 
-}
+};
 
 window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important, filterName = 'image') => {
 	let ret = {
@@ -326,7 +326,18 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 		type: String,
 		default: canBeEmpty ? '' : 'EMPTY',
 		important: important,
-		filterName
+		filterName,
+		afterEdited: () => {
+			for(let o in editor.selection) {
+				if(!editor.Lib.hasTexture(o[name])) {
+
+					editor.game.__loadDynamicTextures();
+					return;
+				}
+
+			}
+
+		}
 	};
 	Object.defineProperty(ret, 'select', {
 		get: () => {

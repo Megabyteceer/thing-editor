@@ -20,6 +20,7 @@ import DisplayObject from 'thing-engine/js/components/display-object.js';
 import {getLatestSceneNodeBypath} from 'thing-engine/js/utils/get-value-by-path.js';
 import Scene from 'thing-engine/js/components/scene.js';
 import ClassesView from './ui/classes-view.js';
+import TexturesView from './ui/textures-view.js';
 
 let isFirstClassesLoading = true;
 
@@ -70,6 +71,8 @@ export default class Editor {
 		);
 		
 		Timeline.init();
+
+		editor.__unloadedTexture = PIXI.Texture.fromImage('img/loading-texture.png');
 	}
 	
 	/**
@@ -384,10 +387,12 @@ export default class Editor {
 			for(let o of this.selection) {
 				this.onObjectsPropertyChanged(o, field, val, delta);
 			}
+			if(field.afterEdited) {
+				field.afterEdited();
+			}
 			if(field.name === 'name') {
 				editor.validatePathReferences();
 			}
-
 		}
 	}
 
@@ -470,6 +475,10 @@ export default class Editor {
 	
 	saveProjectDesc() {
 		window.debouncedCall(__saveProjectDescriptorInner);
+	}
+
+	refreshTexturesViewer() {
+		TexturesView.refresh();
 	}
 	
 	sceneModified(saveImmidiatly) {
@@ -682,7 +691,7 @@ let __saveProjectDescriptorInner = () => {
 	//cleanup settings for deleted sounds
 	let loadOnDemandTextures = editor.projectDesc.loadOnDemandTextures;
 	for(let k in loadOnDemandTextures) {
-		if(!Lib.hasTexture(k)) {
+		if(!Lib.__hasTextureEvenUnloaded(k)) {
 			delete loadOnDemandTextures[k];
 		}
 	}

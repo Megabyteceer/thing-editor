@@ -10,6 +10,8 @@ import SelectEditor from "./props-editor/select-editor.js";
 	4 - no unload
 */
 
+let view;
+
 const LOADING_TYPES = [
 	{
 		name:'Preload',
@@ -46,6 +48,12 @@ let labelProps = {
 
 export default class TexturesView extends React.Component {
 
+	static refresh() {
+		if(view) {
+			view.forceUpdate();
+		}
+	}
+
 	constructor(props) {
 		super(props);
 		this.state = {};
@@ -81,9 +89,14 @@ class TexturesViewerBody extends React.Component {
 	}
 
 	componentDidMount() {
+		view = this;
 		setTimeout(() => {
 			Window.bringWindowForward($('#window-texturesviewer'));
 		}, 1);
+	}
+
+	componentWillUnmount() {
+		view = null;
 	}
 
 	renderItem(item) {
@@ -109,8 +122,13 @@ class TexturesViewerBody extends React.Component {
 		}, value:opt[name], select: LOADING_TYPES}),
 		);
 		
-		let texture = Lib.getTexture(name);
-		let size = texture.width + 'x' + texture.height;
+		let size;
+		if(Lib.hasTexture(name)) {
+			let texture = Lib.getTexture(name);
+			size = texture.width + 'x' + texture.height;
+		} else {
+			size = '(unloaded)';
+		}
 		let path = this.imagesRoot + name;
 		return R.div({key:name, className:isOnDemandLoading ? 'textures-viewer-item redframe' : 'textures-viewer-item'},
 			R.img({src: path, className:'textures-viewer-image', onDoubleClick:() => {

@@ -103,6 +103,8 @@ __onChildSelected
 ##tip:
  'Tip text'
 
+##afterEdited(o):
+  callback called after property edited by user;
 
 
 # === editor extendedData =====

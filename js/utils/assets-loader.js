@@ -63,7 +63,8 @@ const enumAssets = () => {
 			if(!jsonFolders.some((f) => {
 				return fileStat.name.startsWith(f);
 			})) {
-				Lib.addTexture(fileStat.name.replace(textureNameCleaner, ''), game.resourcesPath + fileStat.name);
+				let imageId = fileStat.name.replace(textureNameCleaner, '');
+				Lib.addTexture(imageId, game.resourcesPath + fileStat.name);
 			}
 		}
 	});
