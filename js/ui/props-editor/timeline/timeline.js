@@ -375,7 +375,7 @@ function renormalizeAllLabels(timelineData) {
 function askForLabelName(existingLabelsNames, title, defaultName = '') {
 	return editor.ui.modal.showPrompt(title, defaultName, undefined, (nameToCheck) => {
 		if(existingLabelsNames.indexOf(nameToCheck) >= 0) {
-			return 'Label with that name already esists.';
+			return 'Label with that name already exists.';
 		}
 	});
 }
