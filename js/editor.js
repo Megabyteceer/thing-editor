@@ -345,8 +345,7 @@ export default class Editor {
 	reloadAssets() {
 		return new Promise((resolve) => {
 			editor.ui.soundsList.reloadSounds().then(() => {
-				Lib.__onAllAssetsLoaded(resolve);
-				AssetsLoader.reloadAssets();
+				AssetsLoader.reloadAssets().then(resolve);
 			});
 		});
 	}
@@ -357,6 +356,9 @@ export default class Editor {
 			this.reloadAssets()
 		]).then(()=>{
 			Lib.__validateClasses();
+			if(game.currentContainer) {
+				game.__loadDynamicTextures();
+			}
 		});
 	}
 	

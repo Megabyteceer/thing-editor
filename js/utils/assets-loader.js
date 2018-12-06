@@ -28,9 +28,7 @@ const enumAssets = () => {
 	
 	for(let k of Lib.__texturesList) { //TODO: clear changed only
 		if(k.name !== 'EMPTY' && k.name !== 'WHITE') {
-			let t = Lib.getTexture(k.name);
-			PIXI.Texture.removeFromCache(t);
-			t.destroy(true);
+			Lib._unloadTexture(k.name);
 		}
 	}
 	
@@ -68,18 +66,20 @@ const enumAssets = () => {
 			}
 		}
 	});
+	return new Promise((resolve) => {
+		Lib.__onAllAssetsLoaded(() => {
+			let emSave = game.__EDITORmode;
+			game.__EDITORmode = true; //enforece update some type of components (tilegrid, fill);
+			tmp.forEach((image, o) => {
+				o.image = image;
+			});
+			game.__EDITORmode = emSave;
 
-	Lib.__onAllAssetsLoaded(() => {
-		let emSave = game.__EDITORmode;
-		game.__EDITORmode = true; //enforece update some type of components (tilegrid, fill);
-		tmp.forEach((image, o) => {
-			o.image = image;
+			game.pixiApp.start();
+			editor.ui.modal.hideSpinner();
+			BgMusic._recalculateMusic();
+			resolve();
 		});
-		game.__EDITORmode = emSave;
-
-		game.pixiApp.start();
-		editor.ui.modal.hideSpinner();
-		BgMusic._recalculateMusic();
 	});
 };
 
@@ -87,9 +87,13 @@ AssetsLoader.reloadAssets = (refreshFiles) => {
 	BgMusic._stopAll();
 	editor.ui.modal.showSpinner();
 	if(refreshFiles) {
-		editor.fs.refreshFiles().then(enumAssets);
+		return new Promise((resolve) => {
+			editor.fs.refreshFiles().then(() => {
+				enumAssets().then(resolve);
+			});
+		});
 	} else {
-		enumAssets();
+		return enumAssets();
 	}
 };
 
