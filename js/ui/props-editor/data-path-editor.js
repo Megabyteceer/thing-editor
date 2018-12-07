@@ -62,6 +62,7 @@ export default class DataPathEditor extends React.Component {
 	
 	applyFinalPath(path) {
 		this.props.onChange(PropsFieldWrapper.surrogateChnageEvent(path));
+		editor.tryToSaveHistory();
 	}
 	
 	isFieldGoodForCallbackChoose(fieldName, object, val) {
