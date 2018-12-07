@@ -28,7 +28,9 @@ const enumAssets = () => {
 	
 	for(let k of Lib.__texturesList) { //TODO: clear changed only
 		if(k.name !== 'EMPTY' && k.name !== 'WHITE') {
-			Lib._unloadTexture(k.name);
+			if(Lib.hasTexture(k.name)) {
+				Lib._unloadTexture(k.name);
+			}
 		}
 	}
 	
@@ -79,6 +81,7 @@ const enumAssets = () => {
 			editor.ui.modal.hideSpinner();
 			BgMusic._recalculateMusic();
 			resolve();
+			editor.refreshTexturesViewer();
 		});
 	});
 };
