@@ -28,16 +28,19 @@ export default class RectangleEditor extends React.Component {
 	}
 
 	componentWillReceiveProps() {
-		this.timeout = setTimeout(() => {
-			this.checkNullability();
-			clearTimeout(this.timeout);
-			this.timeout = null;
-		}, 6);
+		if(!this.timeout) {
+			this.timeout = setTimeout(() => {
+				this.checkNullability();
+				clearTimeout(this.timeout);
+				this.timeout = null;
+			}, 6);
+		}
 	}
 
 	componentWillUnmount() {
 		if(this.timeout) {
 			clearTimeout(this.timeout);
+			this.timeout = null;
 		}
 	}
 
