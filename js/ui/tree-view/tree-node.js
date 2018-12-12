@@ -48,6 +48,10 @@ class TreeNode extends React.Component {
 		}
 		sp(ev);
 	}
+
+	static clearLastClicked() {
+		lastClickedItem = null;
+	}
 	
 	render() {
 		let node = this.props.node;
@@ -67,6 +71,9 @@ class TreeNode extends React.Component {
 		let className = 'list-item';
 		
 		if(state.isSelected) {
+			if(!lastClickedItem) {
+				lastClickedItem = this;
+			}
 			className += ' item-selected';
 		}
 

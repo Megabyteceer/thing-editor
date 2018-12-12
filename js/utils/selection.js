@@ -1,5 +1,6 @@
 import Tilemap from "thing-engine/js/components/tilemap.js";
 import game from "thing-engine/js/game.js";
+import TreeNode from "../ui/tree-view/tree-node.js";
 
 let IS_SELECTION_LOADING_TIME = false;
 let needSaveSelectionInToHistory = false;
@@ -32,6 +33,7 @@ class Selection extends Array {
 			editor.selection.clearSelection();
 			data.some(selectNodeByPath);
 		}
+		TreeNode.clearLastClicked();
 		editor.refreshTreeViewAndPropertyEditor();
 		IS_SELECTION_LOADING_TIME = false;
 	}
@@ -44,6 +46,7 @@ class Selection extends Array {
 		while (this.length > 0) {
 			this.remove(this[this.length - 1]);
 		}
+		TreeNode.clearLastClicked();
 		if (refresh) {
 			editor.refreshTreeViewAndPropertyEditor();
 		}
