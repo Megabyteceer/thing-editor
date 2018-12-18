@@ -118,4 +118,4 @@ hidePropsEditor //do not show props editor. Object still can be dragged or rotat
 rotatorLocked  //dont show rotation drag point
 hidden   // hide in scene's tree
 
-__EDITOR_isPreviewObject   // true if object is prefab which currently opened to edite
+__EDITOR_isPreviewObject   //(read only) true if object is prefab which currently opened to edit
