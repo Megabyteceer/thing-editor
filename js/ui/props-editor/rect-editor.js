@@ -24,6 +24,9 @@ export default class RectangleEditor extends React.Component {
 		this.onWChange = this.onWChange.bind(this);
 		this.onHChange = this.onHChange.bind(this);
 		this.onEnabledChange = this.onNullCheckboxChange.bind(this);
+	}
+
+	componentDidMount() {
 		this.checkNullability();
 	}
 
