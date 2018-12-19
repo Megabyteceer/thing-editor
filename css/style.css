@@ -689,8 +689,7 @@ input{
 
 .field-timeline {
     width: max-content;
-    background: url(/thing-editor/img/timeline.png);
-    height: 40px;
+    background: url(/thing-editor/img/timeline.jpg);
     background-repeat: repeat-x;
 }
 
@@ -715,8 +714,6 @@ input{
 .timeline-keyframe {
 	cursor: w-resize;
     position: absolute;
-    width: 8px;
-    height: 24px;
 }
 
 .timeline-keyframe-selected {
@@ -738,22 +735,22 @@ input{
 }
 
 .timeline-keyframe-smooth {
-	border-top-right-radius:6px;
-	border-bottom-right-radius:6px;
-	background: #33ffa2;
-	border-left: 1px solid #516b00;
+	border-top-right-radius:70%;
+	border-bottom-right-radius:70%;
+	background: #0eca75;
+	border-left: 1px solid #2b3a00;
 }
 
 .timeline-keyframe-jump-floor {
-	border-bottom-left-radius:6px;
-	border-bottom-right-radius:6px;
+	border-bottom-left-radius:70%;
+	border-bottom-right-radius:70%;
 	background: #e2c200;
 	border-left: 1px solid #ad7000;
 }
 
 .timeline-keyframe-jump-roof {
-	border-top-left-radius:6px;
-	border-top-right-radius:6px;
+	border-top-left-radius:70%;
+	border-top-right-radius:70%;
 	background: #e2c200;
 	border-left: 1px solid #ad7000;
 }
