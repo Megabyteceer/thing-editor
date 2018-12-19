@@ -1,6 +1,6 @@
 import Timeline from './timeline.js';
+import TimelineOld from './timeline_old.js';
 import Window from '../../window.js';
-import FieldsTimeline from './timeline-field.js';
 
 let counter = 0;
 
@@ -34,10 +34,10 @@ export default class TimelineProperty extends React.Component {
 		if(!this.state.toggled) {
 			this.onToggleClick();
 			setTimeout(()=> {
-				FieldsTimeline.onAutoSelect(selectPath);
+				Timeline.onAutoSelect(selectPath);
 			}, 1);
 		} else {
-			FieldsTimeline.onAutoSelect(selectPath);
+			Timeline.onAutoSelect(selectPath);
 		}
 	}
 	
@@ -46,7 +46,11 @@ export default class TimelineProperty extends React.Component {
 		let timeline;
 		if(this.state.toggled) {
 			timeline = editor.ui.renderWindow('timeline', 'Timeline',
-				React.createElement(Timeline, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 1137, 407);
+				R.div(null,
+					
+					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
+					React.createElement(TimelineOld, {onCloseClick:this.onToggleClick})
+				), 586, 650, 400, 150, 1137, 407);
 			setTimeout(() => {
 				Window.bringWindowForward($('#window-propsEditor'));
 				Window.bringWindowForward($('#window-timeline'));
