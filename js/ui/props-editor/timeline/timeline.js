@@ -2,20 +2,33 @@ import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
 import ObjectsTimeline from "./objects-timeline.js";
 import TimeMarker from "./time-marker.js";
 import game from "thing-engine/js/game.js";
+import TimelineKeyframe from "./timeline-keyframe.js";
+
+let widthZoom;
+let heightZoom;
 
 let timeMarker;
 function timeMarkerRef(ref) {
 	timeMarker = ref;
 }
 
+const selectedComponents = [];
+function clearSelection() {
+	while(selectedComponents.length > 0) {
+		selectedComponents.pop().setState({isSelected: false});
+
+	}
+}
 
 export default class Timeline extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			heightZoom: editor.settings.getItem('timeline-height-zoom', 40),
-			widthZoom: editor.settings.getItem('timeline-width-zoom', 3)
 
+		heightZoom = editor.settings.getItem('timeline-height-zoom', 40);
+		widthZoom = editor.settings.getItem('timeline-width-zoom', 3);
+		this.state = {
+			heightZoom,
+			widthZoom
 		};
 		this.prevFrame =this.prevFrame.bind(this);
 		this.nextFrame =this.nextFrame.bind(this);
@@ -23,34 +36,43 @@ export default class Timeline extends React.Component {
 		this.onWheel = this.onWheel.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
+		this.onMouseUp = this.onMouseUp.bind(this);
 	}
 
 	componentDidMount() {
+		clearSelection();
 		Timeline.timelineDOMElement = $('.timeline')[0];
+		window.addEventListener('mousemove', this.onMouseMove);
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener('mousemove', this.onMouseMove);
 	}
 
 	onWheel(ev) {
 		let delta = (ev.deltaY < 0) ? 1.5 : 0.66666666;
 		if(ev.ctrlKey) {
-			let heightZoom = this.state.heightZoom;
+			heightZoom = this.state.heightZoom;
 			heightZoom *= delta;
 			if(heightZoom < 40) {
 				heightZoom = 40;
 			} else if(heightZoom > 135) {
 				heightZoom = 135;
 			}
-			editor.settings.setItem('timeline-height-zoom', heightZoom),
-			this.setState({heightZoom: Math.floor(heightZoom)});
+			editor.settings.setItem('timeline-height-zoom', heightZoom);
+			heightZoom=Math.floor(heightZoom);
+			this.setState({heightZoom});
 		} else {
-			let widthZoom = this.state.widthZoom;
+			widthZoom = this.state.widthZoom;
 			widthZoom *= delta;
 			if(widthZoom < 2) {
 				widthZoom = 2;
 			} else if(widthZoom > 28.5) {
 				widthZoom = 28.5;
 			}
-			editor.settings.setItem('timeline-width-zoom', widthZoom),
-			this.setState({widthZoom: Math.floor(widthZoom)});
+			editor.settings.setItem('timeline-width-zoom', widthZoom);
+			widthZoom = Math.floor(widthZoom);
+			this.setState({widthZoom});
 		}
 		sp(ev);
 	}
@@ -67,8 +89,8 @@ export default class Timeline extends React.Component {
 		let key = __getNodeExtendData(node).id;
 		if(node instanceof MovieClip && node._timelineData) {
 			return React.createElement(ObjectsTimeline, {node, key,
-				heightZoom: this.state.heightZoom,
-				widthZoom: this.state.widthZoom
+				heightZoom,
+				widthZoom
 			});
 		} else {
 			return R.div({key});
@@ -103,7 +125,7 @@ export default class Timeline extends React.Component {
 			R.div({
 				onScroll:onTimelineScroll,
 				onMouseDown:this.onMouseDown,
-				onMouseMove:this.onMouseMove,
+				onMouseUp:this.onMouseUp,
 				className: 'timeline list-view',
 				onWheel: this.onWheel
 			},
@@ -118,23 +140,57 @@ export default class Timeline extends React.Component {
 
 	}
 
+	onMouseUp() {
+		if(draggingComponent) {
+			//Timeline.renormalizeFieldTimelineDataAfterChange();
+			if(reduceRepeatingKeyframesInSelected()) {
+				this.forceUpdate();
+			}
+
+			draggingXShift = 0;
+			draggingComponent = null;
+		}
+	}
+
 	onMouseDown(ev) {
 		isDragging = true;
 		this.onMouseMove(ev);
-		if(!window.isEventFocusOnInputElement(ev)) {
-			sp(ev);
-		}
 	}
 
 	onMouseMove(ev) {
 		isDragging = (isDragging && (ev.buttons === 1));
-		let tl = Timeline.timelineDOMElement;
-		let b = tl.getBoundingClientRect();
-		let x = ev.clientX - 110 - b.x;
 		if(isDragging) {
-			let time = Math.max(0, Math.round((x + tl.scrollLeft) / this.state.widthZoom));
-			this.setTime(time, true);
+			let time = mouseEventToTime(ev);
+			if(draggingComponent) {
+				let delta = time - prevDragTime;
+				if(delta !== 0) {
+					for(let c of selectedComponents) {
+						let t = c.getTime();
+						delta = Math.max(0, t + delta) - t;
+						if(delta === 0) {
+							return;
+						}
+					}
+					draggingComponent.setTime(draggingComponent.getTime() + delta);
+					prevDragTime += delta;
+				}
+				this.setTime(prevDragTime, true);
+			} else {
+				this.setTime(time, true);
+			}
 		}
+	}
+
+	static unregisterDragableComponent(component) {
+		let i = selectedComponents.indexOf(component);
+		if(i >= 0) {
+			selectedComponents.splice(i, 1);
+		}
+	}
+
+	static registerDragableComponent(component) {
+		assert(component.getTime && component.setTime, "Dragable component should have 'getTime', 'setTime(time)' function as dragging interface");
+		component.onMouseDown = onDragableMouseDown.bind(component);
 	}
 
 	static fieldDataChanged(fieldData, node) { //invalidate cache
@@ -151,6 +207,26 @@ export default class Timeline extends React.Component {
 	}
 }
 
+let draggingComponent;
+let draggingXShift = 0;
+let prevDragTime;
+
+function onDragableMouseDown(ev) {
+	clearSelection();
+	selectedComponents.push(this);
+	this.setState({isSelected:true});
+	draggingComponent = this;
+	draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
+	prevDragTime = mouseEventToTime(ev);
+}
+
+function mouseEventToTime(ev) {
+	let tl = Timeline.timelineDOMElement;
+	let b = tl.getBoundingClientRect();
+	let x = ev.clientX - 110 - b.x - draggingXShift;
+	return Math.max(0, Math.round((x + tl.scrollLeft) / widthZoom));
+}
+
 const sortFieldsByTime = (a, b) => {
 	return a.t - b.t;
 };
@@ -160,5 +236,35 @@ function onTimelineScroll(ev) {
 	$('.time-marker-body').css({top: ev.target.scrollTop + 'px'});
 }
 
-
 let isDragging = false;
+
+function getSelectedLines() {
+	let ret = [];
+	for(let c of selectedComponents) {
+		if(c instanceof TimelineKeyframe) {
+			let l = c.props.owner.props.owner.props.field.t;
+			if(ret.indexOf(l) < 0) {
+				ret.push(l);
+			}
+		}
+	}
+	return ret;
+}
+
+function reduceRepeatingKeyframesInSelected() {
+	let isModified = false;
+	for(let timeLineData of getSelectedLines()) {
+		for(let i = 0; i < timeLineData.length; i++) {
+			let kf = timeLineData[i];
+			for(let j = i+1; j < timeLineData.length; j++) {
+				let keyFrame = timeLineData[j];
+				if((kf !== keyFrame) && (kf.t === keyFrame.t)) {
+					timeLineData.splice(j, 1);
+					j--;
+					isModified = true;
+				}
+			}
+		}
+		return isModified;
+	}
+}

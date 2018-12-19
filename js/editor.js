@@ -15,7 +15,7 @@ import Signal from "./utils/signal.js";
 import Lib from "thing-engine/js/lib.js";
 import build from "./utils/build.js";
 import LanguageView from "./ui/language-view.js";
-import Timeline from "./ui/props-editor/timeline/timeline_old.js";
+import Timeline from "./ui/props-editor/timeline/timeline.js";
 import DisplayObject from 'thing-engine/js/components/display-object.js';
 import {getLatestSceneNodeBypath} from 'thing-engine/js/utils/get-value-by-path.js';
 import Scene from 'thing-engine/js/components/scene.js';

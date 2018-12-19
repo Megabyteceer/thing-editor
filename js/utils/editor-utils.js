@@ -215,7 +215,7 @@ window.isEventFocusOnInputElement = (ev) => {
 	if(ev.type === 'keydown') {
 		canBePassed = ev.ctrlKey;
 		if(canBePassed) {
-			switch(ev.keyCode) {  //block cpypaste hotkeys foxused on text inputs only
+			switch(ev.keyCode) {  //block cpypaste hotkeys focused on text inputs only
 			case 67:
 			case 86:
 			case 88:

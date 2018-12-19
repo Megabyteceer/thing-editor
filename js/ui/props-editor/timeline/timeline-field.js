@@ -1,7 +1,6 @@
 import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
-import Timeline from "./timeline_old.js";
+import Timeline from "./timeline.js";
 import Line from "./timeline-line.js";
-
 
 export default class FieldsTimeline extends React.Component {
 
@@ -9,7 +8,6 @@ export default class FieldsTimeline extends React.Component {
 		super(props);
 
 	}
-
 
 	onToggleKeyframeClick(time) {
 		let field = this.props.field;
@@ -21,6 +19,13 @@ export default class FieldsTimeline extends React.Component {
 		} else {
 			this.deleteKeyframe(currentKeyframe);
 		}
+	}
+
+	onChanged() {
+		Timeline.fieldDataChanged(
+			this.props.field, 
+			this.props.owner.props.node
+		);
 	}
 
 	render() {

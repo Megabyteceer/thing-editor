@@ -1,3 +1,5 @@
+import Timeline from "./timeline.js";
+
 const keyframesClasses = [
 	'timeline-keyframe-smooth',
 	'timeline-keyframe-linear',
@@ -10,7 +12,41 @@ const keyframesClasses = [
 
 export default class TimelineKeyframe extends React.Component {
 
+	constructor(props) {
+		super(props);
+		this.getTime = this.getTime.bind(this);
+		this.setTime = this.setTime.bind(this);
+		Timeline.registerDragableComponent(this);
+	}
 
+	componentWillUnmount() {
+		Timeline.unregisterDragableComponent(this);
+	}
+
+	getTime() {
+		const keyFrame = this.props.keyFrame;
+		return keyFrame.t;
+	}
+
+	setTime(time) {
+		const keyFrame = this.props.keyFrame;
+		if(keyFrame.t === 0) {
+			if(this.props.owner.props.owner.props.field.t.indexOf(keyFrame) === 0) { //initial keyframe is locked for dragging
+				return;
+			}
+		}
+		if(keyFrame.t !== time) {
+			if(keyFrame.j === keyFrame.t) {
+				keyFrame.j = time;
+			}
+			keyFrame.t = time;
+			this.onChanged();
+		}
+	}
+
+	onChanged() {
+		this.props.owner.props.owner.onChanged();
+	}
 
 	render() {
 		const keyFrame = this.props.keyFrame;
@@ -28,7 +64,6 @@ export default class TimelineKeyframe extends React.Component {
 			if(keyFrame.j > keyFrame.t) {
 				className += ' loop-arrow-front';
 			}
-
 			loopArrow = R.svg({className, height:11, width:len},
 				R.polyline({points:'0,0 6,6 3,8 0,0 6,9 '+(len/2)+',10 '+(len-3)+',7 '+len+',0'})
 			);
@@ -45,6 +80,7 @@ export default class TimelineKeyframe extends React.Component {
 		}
 		
 		return R.div({className:className,
+			onMouseDown: this.onMouseDown,
 			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
 		mark,
 		loopArrow
