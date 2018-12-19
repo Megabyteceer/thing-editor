@@ -344,7 +344,9 @@ function getTimelineDataByFieldData(fieldData) {
 Timeline.getTimelineDataByFieldData = getTimelineDataByFieldData;
 Timeline.renormalizeFieldTimelineDataAfterChange = renormalizeFieldTimelineDataAfterChange;
 
-
+const sortFieldsByTime = (a, b) => {
+	return a.t - b.t;
+};
 
 
 const renderObjectsTimeline = (node) => {
