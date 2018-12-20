@@ -672,6 +672,7 @@ function saveCurrentSceneName(name) {
 
 function addTo(parent, child, doNotselect) {
 	parent.addChild(child);
+	Lib.__reassignIds(child);
 	Lib.__invalidateSerialisationCache(child);
 	if(!doNotselect) {
 		editor.ui.sceneTree.selectInTree(child);
