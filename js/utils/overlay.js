@@ -248,6 +248,7 @@ $(window).on('mousedown', function onMouseDown(ev) {
 					editor.disableFieldsCache = true;
 					editor.selection.some((o) => {
 						let clone = Lib._deserializeObject(Lib.__serializeObject(o));
+						Lib.__reassignIds(o);
 						increaseNameNumber(o);
 						o.forAllChildren(increaseNameNumber);
 						o.parent.addChildAt(clone, o.parent.children.indexOf(o));
