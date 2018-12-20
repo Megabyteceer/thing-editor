@@ -7,11 +7,40 @@ const scale = (val) => {
 	return (_shift - val) * _scale;
 };
 
+let widthZoom;
+let heightZoom;
+let idCounter = 1;
+
+let chartsCache = new WeakMap();
+
 export default class Line extends React.Component {
 
 	constructor(props) {
 		super(props);
 		this.renderKeyframe = this.renderKeyframe.bind(this);
+		this.renderKeyframeChart = this.renderKeyframeChart.bind(this);
+	}
+
+	renderKeyframeChart(keyFrame) {
+		if(keyFrame.n && (keyFrame.t < keyFrame.n.t)) {
+			let ret = [];
+			if(keyFrame.n.m === 2) { //DISCRETE next frame is
+				let startTime = ((keyFrame.t) * widthZoom);
+				let endTime = ((keyFrame.n.t) * widthZoom);
+				let startValue = scale(this.getValueAtTime(keyFrame.t));
+				let endValue = scale(this.getValueAtTime(keyFrame.n.t));
+				ret.push(startTime + ',' + startValue);
+				ret.push(endTime + ',' + startValue);
+				ret.push(endTime + ',' + endValue);
+			} else {
+				let n = keyFrame.n;
+				for(let i = keyFrame.t+1; i <= n.t; i++) {
+					ret.push((i * widthZoom) + ',' + scale(this.getValueAtTime(i)));
+				}
+			}
+			return ret.join(' ');
+		}
+		return '';
 	}
 
 	getValueAtTime(time) {
@@ -48,11 +77,24 @@ export default class Line extends React.Component {
 		return field.__cacheTimeline[time];
 	}
 
-	renderKeyframe(keyFrame, i) {
-		return React.createElement(TimelineKeyframe, {key: i, keyFrame, owner:this});
+	renderKeyframe(keyFrame) {
+		if(!keyFrame.hasOwnProperty('_react_id')) {
+			keyFrame._react_id = idCounter++;
+		}
+		return React.createElement(TimelineKeyframe, {key: keyFrame._react_id, keyFrame, owner:this});
+	}
+
+	static invalideteChartsRenderCache(field = null) {
+		if(field) {
+			chartsCache.delete(field);
+		} else {
+			chartsCache = new WeakMap();
+		}
 	}
 
 	render() {
+		widthZoom = this.props.owner.props.owner.props.widthZoom;
+		heightZoom = this.props.owner.props.owner.props.heightZoom;
 		const ownerProps =this.props.owner.props;
 		let field = ownerProps.field;
 
@@ -62,8 +104,8 @@ export default class Line extends React.Component {
 			width = Math.max(lastKeyframe.t, lastKeyframe.j);
 		}
 		width += 300;
-		width *= ownerProps.owner.props.widthZoom;
-		let height = ownerProps.owner.props.heightZoom;
+		width *= widthZoom;
+		let height = heightZoom;
 		
 		this.getValueAtTime(lastKeyframe.t); //cache timeline's values
 		_scale = field.__cacheTimeline.max - field.__cacheTimeline.min;
@@ -73,8 +115,21 @@ export default class Line extends React.Component {
 		_scale = 25.0 / _scale;
 		_shift = field.__cacheTimeline.max + 1/_scale;
 		
+		if(!chartsCache.has(field)) {
+			if(isNaN(field.__cacheTimeline.max)) {
+				chartsCache.set(field, R.span());
+			} else {
+				chartsCache.set(field,
+					R.svg({className:'timeline-chart', height, width},
+						R.polyline({points:field.t.map(this.renderKeyframeChart, field).join(' ')})
+					)
+				);
+			}
+		}
+
 		return R.div({style:{width, height}},
 			field.t.map(this.renderKeyframe),
+			chartsCache.get(field),
 			React.createElement(PlayingDisplay, this.props)
 		);
 	}
@@ -124,7 +179,6 @@ class PlayingDisplay extends React.Component {
 			return R.div();
 		} else {
 			let firedFrame;
-			let widthZoom = this.props.owner.props.owner.props.widthZoom;
 			if(this.fieldPlayer.__lastFiredKeyframe) {
 				firedFrame = R.div({className:'timeline-fire-indicator', style:{left: this.fieldPlayer.__lastFiredKeyframe.t * widthZoom}});
 			}

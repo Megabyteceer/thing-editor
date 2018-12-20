@@ -4,6 +4,7 @@ import TimeMarker from "./time-marker.js";
 import game from "thing-engine/js/game.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
 import {KeyframePropertyEditor} from "./keyframe-property-editor.js";
+import Line from "./timeline-line.js";
 
 
 let widthZoom;
@@ -62,8 +63,8 @@ export default class Timeline extends React.Component {
 		window.addEventListener('mousemove', this.onMouseMove);
 		editor.history.beforeHistoryJump.add(this._beforeHistoryJump);
 		editor.history.afterHistoryJump.add(this._afterHistoryJump);
-		editor.beforePropertyChanged.add(onBeforePropertyChanged);
-		editor.afterPropertyChanged.add(onAfterPropertyChanged);
+		editor.beforePropertyChanged.add(this.onBeforePropertyChanged);
+		editor.afterPropertyChanged.add(this.onAfterPropertyChanged);
 	}
 
 	componentWillUnmount() {
@@ -78,26 +79,36 @@ export default class Timeline extends React.Component {
 		let delta = (ev.deltaY < 0) ? 1.5 : 0.66666666;
 		if(ev.ctrlKey) {
 			heightZoom = this.state.heightZoom;
+			let tmp = heightZoom;
+			
 			heightZoom *= delta;
 			if(heightZoom < 40) {
 				heightZoom = 40;
 			} else if(heightZoom > 135) {
 				heightZoom = 135;
 			}
-			editor.settings.setItem('timeline-height-zoom', heightZoom);
-			heightZoom=Math.floor(heightZoom);
-			this.setState({heightZoom});
+			if(tmp !== heightZoom) {
+				editor.settings.setItem('timeline-height-zoom', heightZoom);
+				heightZoom=Math.floor(heightZoom);
+				Line.invalideteChartsRenderCache();
+				this.setState({heightZoom});
+			}
+
 		} else {
 			widthZoom = this.state.widthZoom;
+			let tmp = widthZoom;
 			widthZoom *= delta;
 			if(widthZoom < 2) {
 				widthZoom = 2;
 			} else if(widthZoom > 28.5) {
 				widthZoom = 28.5;
 			}
-			editor.settings.setItem('timeline-width-zoom', widthZoom);
-			widthZoom = Math.floor(widthZoom);
-			this.setState({widthZoom});
+			if(tmp !== widthZoom) {
+				editor.settings.setItem('timeline-width-zoom', widthZoom);
+				widthZoom = Math.floor(widthZoom);
+				Line.invalideteChartsRenderCache();
+				this.setState({widthZoom});
+			}
 		}
 		sp(ev);
 	}
@@ -223,14 +234,17 @@ export default class Timeline extends React.Component {
 	}
 
 	static fieldDataChanged(fieldData, node) { //invalidate cache
+		assert(node instanceof MovieClip, 'Movieclip expected');
+		assert(node._timelineData.f.indexOf(fieldData) >= 0, 'field data is not beyond this movieclip.');
 		let timeLineData = fieldData.t;
+
 		timeLineData.sort(sortFieldsByTime);
 		for(let field of timeLineData) {
 			field.n = MovieClip._findNextKeyframe(timeLineData, field.j);
 		}
 	
 		fieldData.__cacheTimeline = false;
-		fieldData.__cacheTimelineRendered = null;
+		Line.invalideteChartsRenderCache(fieldData);
 		MovieClip.invalidateSerializeCache(node);
 		editor.sceneModified();
 	}
@@ -303,19 +317,6 @@ function onTimelineScroll(ev) {
 
 let isDragging = false;
 
-function getSelectedLines() {
-	let ret = [];
-	for(let c of selectedComponents) {
-		if(c instanceof TimelineKeyframe) {
-			let l = c.props.owner.props.owner.props.field.t;
-			if(ret.indexOf(l) < 0) {
-				ret.push(l);
-			}
-		}
-	}
-	return ret;
-}
-
 function getSelectedKeyframes() {
 	let ret = [];
 	for(let c of selectedComponents) {
@@ -328,7 +329,8 @@ function getSelectedKeyframes() {
 
 function reduceRepeatingKeyframesInSelected() {
 	let isModified = false;
-	for(let timeLineData of getSelectedLines()) {
+	for(let keyframeComponent of getSelectedKeyframes()) {
+		let timeLineData = keyframeComponent.props.owner.props.owner.props.field.t;
 		for(let i = 0; i < timeLineData.length; i++) {
 			let kf = timeLineData[i];
 			for(let j = i+1; j < timeLineData.length; j++) {
@@ -337,9 +339,13 @@ function reduceRepeatingKeyframesInSelected() {
 					timeLineData.splice(j, 1);
 					j--;
 					isModified = true;
+					Timeline.fieldDataChanged(
+						keyframeComponent.props.owner.props.owner.props.field,
+						keyframeComponent.props.owner.props.owner.props.owner.props.node
+					);
 				}
 			}
 		}
-		return isModified;
 	}
+	return isModified;
 }
