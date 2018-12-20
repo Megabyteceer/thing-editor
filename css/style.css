@@ -720,6 +720,10 @@ input{
     outline: 2px solid #ff9d00;
 }
 
+.timeline-label-selected {
+    outline: 2px solid #ff0000;
+}
+
 .timeline-keyframe-nextofselected {
     border-bottom: 3px solid #ff9d00;
 }
@@ -860,6 +864,7 @@ input{
 	color: #fff;
 	margin-top:10px;
 	padding: 0 5px;
+	padding-right: 15px;
 	border-left: 1px solid #f00;
 }
 

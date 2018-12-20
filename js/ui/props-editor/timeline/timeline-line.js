@@ -9,7 +9,6 @@ const scale = (val) => {
 
 let widthZoom;
 let heightZoom;
-let idCounter = 1;
 
 let chartsCache = new WeakMap();
 
@@ -78,9 +77,6 @@ export default class Line extends React.Component {
 	}
 
 	renderKeyframe(keyFrame) {
-		if(!keyFrame.hasOwnProperty('___react_id')) {
-			keyFrame.___react_id = idCounter++;
-		}
 		return React.createElement(TimelineKeyframe, {key: keyFrame.___react_id, keyFrame, owner:this});
 	}
 

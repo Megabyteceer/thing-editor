@@ -5,6 +5,7 @@ import game from "thing-engine/js/game.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
 import {KeyframePropertyEditor} from "./keyframe-property-editor.js";
 import Line from "./timeline-line.js";
+import TimeLabel from "./timeline-label.js";
 
 
 let widthZoom;
@@ -205,7 +206,7 @@ export default class Timeline extends React.Component {
 	onMouseMove(ev) {
 		isDragging = (isDragging && (ev.buttons === 1));
 		if(isDragging) {
-			let time = mouseEventToTime(ev);
+			let time = Timeline.mouseEventToTime(ev);
 			if(draggingComponent) {
 				let delta = time - prevDragTime;
 				if(delta !== 0) {
@@ -241,6 +242,12 @@ export default class Timeline extends React.Component {
 		component.onMouseDown = onDragableMouseDown.bind(component);
 	}
 
+	static allFieldDataChanged(movieclip) {
+		for(let f of movieclip._timelineData.f) {
+			Timeline.fieldDataChanged(f, movieclip);
+		}
+	}
+
 	static fieldDataChanged(fieldData, node) { //invalidate cache
 		assert(node instanceof MovieClip, 'Movieclip expected');
 		assert(node._timelineData.f.indexOf(fieldData) >= 0, 'field data is not beyond this movieclip.');
@@ -257,7 +264,7 @@ export default class Timeline extends React.Component {
 		editor.sceneModified();
 	}
 
-	static _justModifiedKeyframe(keyFrame) {
+	static _justModifiedSelectable(keyFrame) {
 		justModifiedKeyframes.push(keyFrame);
 	}
 
@@ -272,7 +279,7 @@ export default class Timeline extends React.Component {
 				for(let c of justModifiedKeyframes) {
 					select(c);
 				}
-				this.setTime(justModifiedKeyframes[0].props.keyFrame.t, true);
+				this.setTime(justModifiedKeyframes[0].getTime(), true);
 			}
 		}, 0);
 	}
@@ -357,6 +364,12 @@ export default class Timeline extends React.Component {
 		Timeline.fieldDataChanged(field, o);
 	}
 
+	static mouseEventToTime(ev) {
+		let tl = Timeline.timelineDOMElement;
+		let b = tl.getBoundingClientRect();
+		let x = ev.clientX - 110 - b.x - draggingXShift;
+		return Math.max(0, Math.round((x + tl.scrollLeft) / widthZoom));
+	}
 }
 
 
@@ -420,9 +433,6 @@ function createKeyframe (o, name, time, field) {
 		mode = getDefaultKeyframeTypeForField(o, name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
 	}
 	
-	
-	
-	
 	let keyFrame = {
 		v: o[name],	//target Value
 		t: time,	//frame triggering Time
@@ -431,7 +441,7 @@ function createKeyframe (o, name, time, field) {
 	};
 	
 	field.t.push(keyFrame);
-	renormalizeAllLabels(o._timelineData);
+	TimeLabel.renormalizeAllLabels(o);
 	return keyFrame;
 }
 
@@ -460,20 +470,6 @@ function getKeyframeTypesForField(o, name) {
 
 Timeline.getKeyframeTypesForField = getKeyframeTypesForField;
 
-function renormalizeLabel(label, timelineData) { //re find keyframes for modified label
-	label.n = timelineData.f.map((fieldTimeline) => {
-		return MovieClip._findNextKeyframe(fieldTimeline.t, label.t - 1);
-	});
-	MovieClip.invalidateSerializeCache(timelineData);
-}
-
-function renormalizeAllLabels(timelineData) {
-	for(let key in timelineData.l) {
-		if(!timelineData.l.hasOwnProperty(key)) continue;
-		renormalizeLabel(timelineData.l[key], timelineData);
-	}
-}
-
 let draggingComponent;
 let draggingXShift = 0;
 let prevDragTime;
@@ -491,14 +487,7 @@ function onDragableMouseDown(ev) {
 	}
 	draggingComponent = this;
 	draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
-	prevDragTime = mouseEventToTime(ev);
-}
-
-function mouseEventToTime(ev) {
-	let tl = Timeline.timelineDOMElement;
-	let b = tl.getBoundingClientRect();
-	let x = ev.clientX - 110 - b.x - draggingXShift;
-	return Math.max(0, Math.round((x + tl.scrollLeft) / widthZoom));
+	prevDragTime = Timeline.mouseEventToTime(ev);
 }
 
 const sortFieldsByTime = (a, b) => {

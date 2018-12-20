@@ -20,7 +20,7 @@ export default class TimelineKeyframe extends React.Component {
 	}
 
 	componentDidMount() {
-		Timeline._justModifiedKeyframe(this);
+		Timeline._justModifiedSelectable(this);
 	}
 
 	componentWillReceiveProps(props) {
@@ -35,11 +35,9 @@ export default class TimelineKeyframe extends React.Component {
 			k1.g !== k2.g ||
 			k1.b !== k2.b
 		) {
-			Timeline._justModifiedKeyframe(this);
+			Timeline._justModifiedSelectable(this);
 		}
 	}
-
-	
 
 	componentWillUnmount() {
 		Timeline.unregisterDragableComponent(this);
@@ -74,7 +72,6 @@ export default class TimelineKeyframe extends React.Component {
 		const keyFrame = this.props.keyFrame;
 
 		let loopArrow;
-		const isSelected = this.state && this.state.isSelected;
 		const p = this.props.owner.props.owner.props.owner.props;
 		const width = p.widthZoom;
 		const height = p.heightZoom - 16;
@@ -91,7 +88,7 @@ export default class TimelineKeyframe extends React.Component {
 			);
 		}
 		let className = 'timeline-keyframe ' + keyframesClasses[keyFrame.m];
-		if(isSelected) {
+		if(this.state && this.state.isSelected) {
 			className += ' timeline-keyframe-selected';
 		}
 		
