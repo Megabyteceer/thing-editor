@@ -3,6 +3,8 @@ import ObjectsTimeline from "./objects-timeline.js";
 import TimeMarker from "./time-marker.js";
 import game from "thing-engine/js/game.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
+import {KeyframePropertyEditor} from "./keyframe-property-editor.js";
+
 
 let widthZoom;
 let heightZoom;
@@ -15,9 +17,21 @@ function timeMarkerRef(ref) {
 const selectedComponents = [];
 function clearSelection() {
 	while(selectedComponents.length > 0) {
-		selectedComponents.pop().setState({isSelected: false});
-
+		unselect(selectedComponents[selectedComponents.length - 1]);
 	}
+}
+
+function select(component) {
+	assert(selectedComponents.indexOf(component) < 0, "Compinent already selected");
+	component.setState({isSelected: true});
+	selectedComponents.push(component);
+}
+
+function unselect(component) {
+	let i = selectedComponents.indexOf(component);
+	assert(i >= 0, "Compinent is not selected");
+	component.setState({isSelected: false});
+	selectedComponents.splice(i, 1);
 }
 
 export default class Timeline extends React.Component {
@@ -130,7 +144,8 @@ export default class Timeline extends React.Component {
 				onWheel: this.onWheel
 			},
 			React.createElement(TimeMarker, {owner: this, ref:timeMarkerRef}),
-			editor.selection.map(this.renderObjectsTimeline)
+			editor.selection.map(this.renderObjectsTimeline),
+			React.createElement(KeyframePropertyEditor, {owner: this, keyframes:getSelectedKeyframes()})
 			),
 			R.span({style:{display:'none'}},
 				R.btn('<', this.prevFrame, undefined, undefined, 188),
@@ -146,7 +161,7 @@ export default class Timeline extends React.Component {
 			if(reduceRepeatingKeyframesInSelected()) {
 				this.forceUpdate();
 			}
-
+			
 			draggingXShift = 0;
 			draggingComponent = null;
 		}
@@ -171,7 +186,10 @@ export default class Timeline extends React.Component {
 							return;
 						}
 					}
-					draggingComponent.setTime(draggingComponent.getTime() + delta);
+					for(let c of selectedComponents) {
+						c.setTime(c.getTime() + delta);
+					}
+					
 					prevDragTime += delta;
 				}
 				this.setTime(prevDragTime, true);
@@ -212,9 +230,16 @@ let draggingXShift = 0;
 let prevDragTime;
 
 function onDragableMouseDown(ev) {
-	clearSelection();
-	selectedComponents.push(this);
-	this.setState({isSelected:true});
+	if(!this.state || !this.state.isSelected) {
+		if(!ev.ctrlKey) {
+			clearSelection();
+		}
+		select(this);
+	} else {
+		if(ev.ctrlKey) {
+			unselect(this);
+		}
+	}
 	draggingComponent = this;
 	draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
 	prevDragTime = mouseEventToTime(ev);
@@ -246,6 +271,16 @@ function getSelectedLines() {
 			if(ret.indexOf(l) < 0) {
 				ret.push(l);
 			}
+		}
+	}
+	return ret;
+}
+
+function getSelectedKeyframes() {
+	let ret = [];
+	for(let c of selectedComponents) {
+		if(c instanceof TimelineKeyframe) {
+			ret.push(c);
 		}
 	}
 	return ret;
