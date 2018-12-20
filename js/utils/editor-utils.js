@@ -43,7 +43,7 @@ let classProps = {className: 'scene-node-class'};
 let sceneNodeProps = {className: 'scene-node-item'};
 
 R.sceneNode = (node) => {
-	return R.span(sceneNodeProps, R.classIcon(node.constructor), R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + __getNodeExtendData(node).id));
+	return R.span(sceneNodeProps, R.classIcon(node.constructor), R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + node.___id));
 };
 
 R.listItem = (view, item, key, parent) => {

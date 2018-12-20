@@ -350,7 +350,7 @@ const sortFieldsByTime = (a, b) => {
 
 
 const renderObjectsTimeline = (node) => {
-	let key = __getNodeExtendData(node).id;
+	let key = node.___id;
 	if(node instanceof MovieClip && node._timelineData) {
 		return React.createElement(ObjectsTimeline, {node, key});
 	} else {

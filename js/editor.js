@@ -721,7 +721,7 @@ let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
 	assert(node instanceof DisplayObject, "DisplayObject expected");
 	if(!editorNodeData.has(node)) {
-		editorNodeData.set(node, {id:node.___id}); //todo remove id from extended data. use o.___id
+		editorNodeData.set(node, {});
 	}
 	return editorNodeData.get(node);
 };
