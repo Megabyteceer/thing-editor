@@ -460,6 +460,8 @@ export default class Editor {
 		
 		game.showScene(name);
 		
+		__getNodeExtendData(game.currentContainer).childsExpanded = true;
+
 		if(game.currentScene) {
 			this.selection.loadSelection(selectionsForScenesByName[name]);
 		}
