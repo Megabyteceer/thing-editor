@@ -55,6 +55,8 @@ ___h  #property returns dom's div which will be highlighted in window during cod
  object's editable property name
   // begin name with '__' to make field exist in editor only
         such field will not be included in to build.
+  // begin name with '___' to make field exist in editor memory only
+        such field will not be saved in to any file.
 
 ##default:
  defaultValue

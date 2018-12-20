@@ -14,6 +14,8 @@ function timeMarkerRef(ref) {
 	timeMarker = ref;
 }
 
+const justModifiedKeyframes = [];
+
 const selectedComponents = [];
 function clearSelection() {
 	while(selectedComponents.length > 0) {
@@ -51,15 +53,24 @@ export default class Timeline extends React.Component {
 		this.onMouseDown = this.onMouseDown.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
 		this.onMouseUp = this.onMouseUp.bind(this);
+		this._afterHistoryJump = this._afterHistoryJump.bind(this);
 	}
 
 	componentDidMount() {
 		clearSelection();
 		Timeline.timelineDOMElement = $('.timeline')[0];
 		window.addEventListener('mousemove', this.onMouseMove);
+		editor.history.beforeHistoryJump.add(this._beforeHistoryJump);
+		editor.history.afterHistoryJump.add(this._afterHistoryJump);
+		editor.beforePropertyChanged.add(onBeforePropertyChanged);
+		editor.afterPropertyChanged.add(onAfterPropertyChanged);
 	}
 
 	componentWillUnmount() {
+		editor.beforePropertyChanged.remove(onBeforePropertyChanged);
+		editor.afterPropertyChanged.remove(onAfterPropertyChanged);
+		editor.history.beforeHistoryJump.remove(this._beforeHistoryJump);
+		editor.history.afterHistoryJump.remove(this._afterHistoryJump);
 		window.removeEventListener('mousemove', this.onMouseMove);
 	}
 
@@ -223,6 +234,35 @@ export default class Timeline extends React.Component {
 		MovieClip.invalidateSerializeCache(node);
 		editor.sceneModified();
 	}
+
+	static _justModifiedKeyframe(keyFrame) {
+		justModifiedKeyframes.push(keyFrame);
+	}
+
+	_beforeHistoryJump() {
+		justModifiedKeyframes.length = 0;
+	}
+	
+	_afterHistoryJump() {
+		setTimeout(() => {
+			if(justModifiedKeyframes.length > 0) {
+				clearSelection();
+				for(let c of justModifiedKeyframes) {
+					select(c);
+				}
+				this.setTime(justModifiedKeyframes[0].props.keyFrame.t, true);
+			}
+		}, 0);
+	}
+}
+
+function onBeforePropertyChanged(/*fieldName*/) {
+	throw 'TODO';
+
+}
+
+function onAfterPropertyChanged(/*fieldName, field*/) {
+	throw 'TODO';
 }
 
 let draggingComponent;

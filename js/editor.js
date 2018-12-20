@@ -69,8 +69,6 @@ export default class Editor {
 			React.createElement(UI, {onMounted: this.onUIMounted}),
 			document.getElementById('root')
 		);
-		
-		Timeline.init();
 
 		editor.__unloadedTexture = PIXI.Texture.fromImage('img/loading-texture.png');
 	}
@@ -456,7 +454,6 @@ export default class Editor {
 		if(game.currentScene) {
 			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
-		idCounter = 0;
 		
 		game.showScene(name);
 		
@@ -719,12 +716,11 @@ let tryToSaveHistory = () => {
 $(window).on('mouseup', tryToSaveHistory);
 $(window).on('keyup', tryToSaveHistory);
 
-let idCounter = 0;
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
 	assert(node instanceof DisplayObject, "DisplayObject expected");
 	if(!editorNodeData.has(node)) {
-		editorNodeData.set(node, {id: idCounter++});
+		editorNodeData.set(node, {id:node.___id}); //todo remove id from extended data. use o.___id
 	}
 	return editorNodeData.get(node);
 };

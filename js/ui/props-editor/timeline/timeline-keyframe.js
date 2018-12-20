@@ -19,6 +19,28 @@ export default class TimelineKeyframe extends React.Component {
 		Timeline.registerDragableComponent(this);
 	}
 
+	componentDidMount() {
+		Timeline._justModifiedKeyframe(this);
+	}
+
+	componentWillReceiveProps(props) {
+		let k1 = this.props.keyFrame;
+		let k2 = props.keyFrame;
+		if(
+			k1.t !== k2.t ||
+			k1.v !== k2.v ||
+			k1.m !== k2.m ||
+			k1.a !== k2.a ||
+			k1.s !== k2.s ||
+			k1.g !== k2.g ||
+			k1.b !== k2.b
+		) {
+			Timeline._justModifiedKeyframe(this);
+		}
+	}
+
+	
+
 	componentWillUnmount() {
 		Timeline.unregisterDragableComponent(this);
 	}
