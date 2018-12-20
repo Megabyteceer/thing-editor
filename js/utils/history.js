@@ -17,14 +17,16 @@ let lastAppliedTreeData;
 function applyState(state) {
 	assert(state, 'Empty history record');
 	assert(game.__EDITORmode);
-
-	if(state.treeData !== lastAppliedTreeData) {
+	let stateChanged = state.treeData !== lastAppliedTreeData;
+	if(stateChanged) {
 		instance.beforeHistoryJump.emit();
 		let node = Lib._deserializeObject(state.treeData);
 		game.__setCurrentContainerContent(node);
 		editor.selection.loadSelection(state.selectionData);
-		historyUi.forceUpdate();
 		lastAppliedTreeData = state.treeData;
+	}
+	historyUi.forceUpdate();
+	if(stateChanged) {
 		instance.afterHistoryJump.emit();
 	}
 }
