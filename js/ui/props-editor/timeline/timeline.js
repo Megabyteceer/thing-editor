@@ -15,6 +15,10 @@ function timeMarkerRef(ref) {
 	timeMarker = ref;
 }
 
+let beforeChangeRemember;
+
+let recordingIsDisabled;
+let timelineInstance;
 const justModifiedKeyframes = [];
 
 const selectedComponents = [];
@@ -60,16 +64,20 @@ export default class Timeline extends React.Component {
 	componentDidMount() {
 		clearSelection();
 		Timeline.timelineDOMElement = $('.timeline')[0];
+		timelineInstance = this;
 		window.addEventListener('mousemove', this.onMouseMove);
 		editor.history.beforeHistoryJump.add(this._beforeHistoryJump);
 		editor.history.afterHistoryJump.add(this._afterHistoryJump);
-		editor.beforePropertyChanged.add(this.onBeforePropertyChanged);
-		editor.afterPropertyChanged.add(this.onAfterPropertyChanged);
+	}
+
+	static init() {
+		editor.beforePropertyChanged.add(Timeline.onBeforePropertyChanged);
+		editor.afterPropertyChanged.add(Timeline.onAfterPropertyChanged);
 	}
 
 	componentWillUnmount() {
-		editor.beforePropertyChanged.remove(onBeforePropertyChanged);
-		editor.afterPropertyChanged.remove(onAfterPropertyChanged);
+		Timeline.timelineDOMElement = null;
+		timelineInstance = null;
 		editor.history.beforeHistoryJump.remove(this._beforeHistoryJump);
 		editor.history.afterHistoryJump.remove(this._afterHistoryJump);
 		window.removeEventListener('mousemove', this.onMouseMove);
@@ -268,15 +276,202 @@ export default class Timeline extends React.Component {
 			}
 		}, 0);
 	}
+
+	static onBeforePropertyChanged(fieldName) {
+		if((!Timeline.timelineDOMElement) || recordingIsDisabled) {
+			beforeChangeRemember = new WeakMap();
+		}
+		
+		editor.selection.some((o) => {
+			if(o instanceof MovieClip) {
+				if(Timeline.timelineDOMElement && !recordingIsDisabled) {
+					if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
+						getFrameAtTimeOrCreate(o, fieldName, 0);
+					}
+				} else {
+					let val = o[fieldName];
+					if(typeof val === 'number') {
+						beforeChangeRemember.set(o, val);
+					}
+				}
+			}
+		});
+	}
+
+	static onAfterPropertyChanged(fieldName, field) {
+		editor.selection.some((o) => {
+			if(o instanceof MovieClip) {
+				if(Timeline.timelineDOMElement && !recordingIsDisabled) {
+					if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
+						timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName);
+					}
+				} else { //shift all keyframes instead of add keyframe
+					let val = o[fieldName];
+					if(typeof val === 'number') {
+						let oldVal = beforeChangeRemember.get(o);
+						if(oldVal !== val) {
+							let delta = val - oldVal;
+							let fld = getFieldByName(o, fieldName);
+							if(fld) {
+								for(let kf of fld.t) {
+									let changedVal = kf.v + delta;
+									if(field.hasOwnProperty('min')) {
+										changedVal = Math.max(field.min, changedVal);
+									}
+									if(field.hasOwnProperty('max')) {
+										changedVal = Math.min(field.max, changedVal);
+									}
+									kf.v = changedVal;
+								}
+								Timeline.fieldDataChanged(fld, o);
+							}
+						}
+					}
+					if(game.__EDITORmode) {
+						o.resetTimeline();
+					}
+				}
+			}
+		});
+		if(timelineInstance) {
+			timelineInstance.forceUpdate();
+		}
+	}
+
+	isNeedAnimateProperty(o, fieldName) {
+		return this.getTime() > 0 || getFieldByName(o, fieldName);
+	}
+	
+	static disableRecording() {
+		recordingIsDisabled = true;
+	}
+	
+	static enableRecording() {
+		recordingIsDisabled = false;
+	}
+
+	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
+		let keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
+		keyFrame.v = o[fieldName];
+		let field = getFieldByNameOrCreate(o, fieldName);
+		Timeline.fieldDataChanged(field, o);
+	}
+
 }
 
-function onBeforePropertyChanged(/*fieldName*/) {
-	throw 'TODO';
 
+function getFieldByName(o, name) {
+	if(o._timelineData) {
+		let fields = o._timelineData.f;
+		for(let field of fields) {
+			if(field.n === name) {
+				return field;
+			}
+		}
+	}
 }
 
-function onAfterPropertyChanged(/*fieldName, field*/) {
-	throw 'TODO';
+function getFieldByNameOrCreate(o, name) {
+	let field = getFieldByName(o, name);
+	if(!field) {
+		if(!o._timelineData) {
+			o._timelineData = {
+				d:0.85,
+				p:0.02,
+				l:{},
+				f:[]
+			};
+		}
+		field = {
+			n:name,
+			t:[]
+		};
+		o._timelineData.f.push(field);
+	}
+	return field;
+}
+
+function getFrameAtTimeOrCreate(o, name, time) {
+	let field = getFieldByNameOrCreate(o, name);
+	for (let keyFrame of field.t) {
+		if (keyFrame.t === time) {
+			return keyFrame;
+		}
+	}
+	return createKeyframe(o, name, time, field);
+}
+
+	
+function createKeyframe (o, name, time, field) {
+
+	let mode;
+	let jumpTime = time;
+	let prevField = MovieClip._findPreviousKeyframe(field.t, time);
+	if(prevField) {
+		mode = prevField.m;
+		if(mode === 3 || mode === 4) {
+			mode = 0;
+		}
+		if(prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
+			jumpTime = prevField.j;
+			prevField.j = prevField.t;
+		}
+	} else {
+		mode = getDefaultKeyframeTypeForField(o, name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
+	}
+	
+	
+	
+	
+	let keyFrame = {
+		v: o[name],	//target Value
+		t: time,	//frame triggering Time
+		m: mode,
+		j: jumpTime	    //Jump to time. If no jump need - equal to 't'
+	};
+	
+	field.t.push(keyFrame);
+	renormalizeAllLabels(o._timelineData);
+	return keyFrame;
+}
+
+function getDefaultKeyframeTypeForField(o, name) {
+	switch (name) {
+	case 'x':
+	case 'y':
+		return 0; //- SMOOTH
+	case 'alpha':
+		return 1; //- LINEAR
+	default:
+		return getKeyframeTypesForField(o, name)[0];
+	}
+}
+
+const keyframeTypesForNumber = [0,1,2,3,4];
+const keyframeTypesDiscreteOnly = [2];
+
+function getKeyframeTypesForField(o, name) {
+	let fieldDesc = editor.getObjectField(o, name);
+	if(fieldDesc.type === Number) {
+		return keyframeTypesForNumber;
+	}
+	return keyframeTypesDiscreteOnly;
+}
+
+Timeline.getKeyframeTypesForField = getKeyframeTypesForField;
+
+function renormalizeLabel(label, timelineData) { //re find keyframes for modified label
+	label.n = timelineData.f.map((fieldTimeline) => {
+		return MovieClip._findNextKeyframe(fieldTimeline.t, label.t - 1);
+	});
+	MovieClip.invalidateSerializeCache(timelineData);
+}
+
+function renormalizeAllLabels(timelineData) {
+	for(let key in timelineData.l) {
+		if(!timelineData.l.hasOwnProperty(key)) continue;
+		renormalizeLabel(timelineData.l[key], timelineData);
+	}
 }
 
 let draggingComponent;

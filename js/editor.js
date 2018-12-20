@@ -64,7 +64,7 @@ export default class Editor {
 		
 		this.beforePropertyChanged = new Signal();
 		this.afterPropertyChanged = new Signal();
-		
+		Timeline.init();
 		ReactDOM.render(
 			React.createElement(UI, {onMounted: this.onUIMounted}),
 			document.getElementById('root')
@@ -241,7 +241,7 @@ export default class Editor {
 			}
 			w.x = 0;
 			w.y = 0;
-			
+			Lib.__reassignIds(w);
 			let indexToAdd = parent.getChildIndex(o);
 
 			for(let c of a) {

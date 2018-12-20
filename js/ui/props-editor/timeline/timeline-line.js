@@ -78,10 +78,10 @@ export default class Line extends React.Component {
 	}
 
 	renderKeyframe(keyFrame) {
-		if(!keyFrame.hasOwnProperty('_react_id')) {
-			keyFrame._react_id = idCounter++;
+		if(!keyFrame.hasOwnProperty('___react_id')) {
+			keyFrame.___react_id = idCounter++;
 		}
-		return React.createElement(TimelineKeyframe, {key: keyFrame._react_id, keyFrame, owner:this});
+		return React.createElement(TimelineKeyframe, {key: keyFrame.___react_id, keyFrame, owner:this});
 	}
 
 	static invalideteChartsRenderCache(field = null) {
