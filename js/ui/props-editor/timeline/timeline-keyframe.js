@@ -1,4 +1,5 @@
 import Timeline from "./timeline.js";
+import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
 
 const keyframesClasses = [
 	'timeline-keyframe-smooth',
@@ -71,6 +72,15 @@ export default class TimelineKeyframe extends React.Component {
 
 	deleteKeyframe() {
 		this.props.owner.deleteKeyframe(this.props.keyFrame);
+	}
+
+	clone() {
+		let timeLineData = this.props.owner.props.owner.props.field.t;
+		let keyFrame = this.props.keyFrame;
+		let cloneKeyframe = {};
+		Object.assign(cloneKeyframe, keyFrame);
+		cloneKeyframe.___react_id = MovieClip.__generateKeyframeId();
+		timeLineData.push(cloneKeyframe);
 	}
 	
 	onKeyframeMouseDown(ev) {

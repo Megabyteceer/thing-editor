@@ -505,9 +505,22 @@ function onDragableMouseDown(ev) {
 			unselect(this);
 		}
 	}
+
+	if(ev.altKey) {
+		cloneSelectedKeyframes();
+	}
+	
 	draggingComponent = this;
 	draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
 	prevDragTime = Timeline.mouseEventToTime(ev);
+}
+
+function cloneSelectedKeyframes() {
+	for(let c of selectedComponents) {
+		if(c instanceof TimelineKeyframe) {
+			c.clone();
+		}
+	}
 }
 
 const sortFieldsByTime = (a, b) => {
