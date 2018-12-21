@@ -244,6 +244,17 @@ export default class Timeline extends React.Component {
 				}
 				this.setTime(prevDragTime, true);
 			} else {
+				if(ev.ctrlKey) {
+					for(let c of selectedComponents) {
+						if(c instanceof TimelineKeyframe) {
+							let kf = c.props.keyFrame;
+							if(kf.j !== time) {
+								kf.j = time;
+								c.onChanged();
+							}
+						}
+					}
+				}
 				this.setTime(time, true);
 			}
 		}
