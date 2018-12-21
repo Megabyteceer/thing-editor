@@ -771,8 +771,11 @@ input{
 	border-left: 1px solid #ad7000;
 }
 
-
-
+.timelilne-select-frame {
+	pointer-events: none;
+	position: absolute;
+	border:1px dashed #080;
+}
 
 .loop-arrow {
     pointer-events: none;

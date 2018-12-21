@@ -3,10 +3,13 @@ import ObjectsTimeline from "./objects-timeline.js";
 import TimeMarker from "./time-marker.js";
 import game from "thing-engine/js/game.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
-import {KeyframePropertyEditor} from "./keyframe-property-editor.js";
+import {
+	KeyframePropertyEditor
+} from "./keyframe-property-editor.js";
 import Line from "./timeline-line.js";
 import TimeLabel from "./timeline-label.js";
 import TimelineLoopPoint from "./timeline-loop-point.js";
+import TimelineSelectFrame from "./timeline-select-frame.js";
 
 
 let widthZoom;
@@ -17,6 +20,12 @@ function timeMarkerRef(ref) {
 	timeMarker = ref;
 }
 
+let selectionFrame;
+
+function selectionFrameRef(ref) {
+	selectionFrame = ref;
+}
+
 let beforeChangeRemember;
 
 let recordingIsDisabled;
@@ -25,7 +34,7 @@ const justModifiedKeyframes = [];
 
 const selectedComponents = [];
 function clearSelection() {
-	while(selectedComponents.length > 0) {
+	while (selectedComponents.length > 0) {
 		unselect(selectedComponents[selectedComponents.length - 1]);
 	}
 }
@@ -53,8 +62,8 @@ export default class Timeline extends React.Component {
 			heightZoom,
 			widthZoom
 		};
-		this.prevFrame =this.prevFrame.bind(this);
-		this.nextFrame =this.nextFrame.bind(this);
+		this.prevFrame = this.prevFrame.bind(this);
+		this.nextFrame = this.nextFrame.bind(this);
 		this.renderObjectsTimeline = this.renderObjectsTimeline.bind(this);
 		this.onWheel = this.onWheel.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
@@ -64,8 +73,8 @@ export default class Timeline extends React.Component {
 	}
 
 	static unselectKeyframe(keyframe) {
-		for(let c of selectedComponents) {
-			if(c.props.keyFrame === keyframe) {
+		for (let c of selectedComponents) {
+			if (c.props.keyFrame === keyframe) {
 				unselect(c);
 				return;
 			}
@@ -77,6 +86,7 @@ export default class Timeline extends React.Component {
 		Timeline.timelineDOMElement = $('.timeline')[0];
 		timelineInstance = this;
 		window.addEventListener('mousemove', this.onMouseMove);
+		window.addEventListener('mouseup', this.onMouseUp);
 		editor.history.beforeHistoryJump.add(this._beforeHistoryJump);
 		editor.history.afterHistoryJump.add(this._afterHistoryJump);
 	}
@@ -92,23 +102,24 @@ export default class Timeline extends React.Component {
 		editor.history.beforeHistoryJump.remove(this._beforeHistoryJump);
 		editor.history.afterHistoryJump.remove(this._afterHistoryJump);
 		window.removeEventListener('mousemove', this.onMouseMove);
+		window.removeEventListener('mouseup', this.onMouseUp);
 	}
 
 	onWheel(ev) {
 		let delta = (ev.deltaY < 0) ? 1.5 : 0.66666666;
-		if(ev.ctrlKey) {
+		if (ev.ctrlKey) {
 			heightZoom = this.state.heightZoom;
 			let tmp = heightZoom;
-			
+
 			heightZoom *= delta;
-			if(heightZoom < 40) {
+			if (heightZoom < 40) {
 				heightZoom = 40;
-			} else if(heightZoom > 135) {
+			} else if (heightZoom > 135) {
 				heightZoom = 135;
 			}
-			if(tmp !== heightZoom) {
+			if (tmp !== heightZoom) {
 				editor.settings.setItem('timeline-height-zoom', heightZoom);
-				heightZoom=Math.floor(heightZoom);
+				heightZoom = Math.floor(heightZoom);
 				Line.invalideteChartsRenderCache();
 				this.setState({heightZoom});
 				this.centralizeSelection();
@@ -118,12 +129,12 @@ export default class Timeline extends React.Component {
 			widthZoom = this.state.widthZoom;
 			let tmp = widthZoom;
 			widthZoom *= delta;
-			if(widthZoom < 2) {
+			if (widthZoom < 2) {
 				widthZoom = 2;
-			} else if(widthZoom > 28.5) {
+			} else if (widthZoom > 28.5) {
 				widthZoom = 28.5;
 			}
-			if(tmp !== widthZoom) {
+			if (tmp !== widthZoom) {
 				editor.settings.setItem('timeline-width-zoom', widthZoom);
 				widthZoom = Math.floor(widthZoom);
 				Line.invalideteChartsRenderCache();
@@ -136,7 +147,7 @@ export default class Timeline extends React.Component {
 
 	centralizeSelection() {
 		setTimeout(() => {
-			if(selectedComponents.length > 0) {
+			if (selectedComponents.length > 0) {
 				timeMarker.scrollInToView(selectedComponents[0].getTime());
 			}
 		}, 0);
@@ -150,7 +161,7 @@ export default class Timeline extends React.Component {
 		this.setTime(this.getTime() + 1, true);
 	}
 
-	renderObjectsTimeline (node) {
+	renderObjectsTimeline(node) {
 		let key = node.___id;
 		if(node instanceof MovieClip && node._timelineData) {
 			return React.createElement(ObjectsTimeline, {owner:this, node, key,
@@ -165,14 +176,14 @@ export default class Timeline extends React.Component {
 	getTime() {
 		return timeMarker.state.time;
 	}
-	
+
 	setTime(time, scrollInToView) {
 		timeMarker.setTime(time, scrollInToView);
-		if(game.__EDITORmode) {
+		if (game.__EDITORmode) {
 			editor.selection.some((o) => {
-				if(o._timelineData) {
+				if (o._timelineData) {
 					o._timelineData.f.some((f) => {
-						if(f.__cacheTimeline.hasOwnProperty(time)) {
+						if (f.__cacheTimeline.hasOwnProperty(time)) {
 							o[f.n] = f.__cacheTimeline[time];
 						}
 					});
@@ -185,71 +196,91 @@ export default class Timeline extends React.Component {
 
 
 	render() {
-		return R.fragment (
+		return R.fragment(
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
 			R.div({
-				onScroll:onTimelineScroll,
-				onMouseDown:this.onMouseDown,
-				onMouseUp:this.onMouseUp,
+				onScroll: onTimelineScroll,
+				onMouseDown: this.onMouseDown,
 				className: 'timeline list-view',
 				onWheel: this.onWheel
 			},
-			React.createElement(TimeMarker, {owner: this, ref:timeMarkerRef}),
+			React.createElement(TimeMarker, {
+				owner: this,
+				ref: timeMarkerRef
+			}),
 			editor.selection.map(this.renderObjectsTimeline),
-			React.createElement(KeyframePropertyEditor, {owner: this, keyframes:getSelectedKeyframes()})
+			React.createElement(KeyframePropertyEditor, {
+				owner: this,
+				keyframes: getSelectedKeyframes()
+			})
 			),
-			R.span({style:{display:'none'}},
-				R.btn('<', this.prevFrame, undefined, undefined, 188),
-				R.btn('>', this.nextFrame, undefined, undefined, 190)
+			React.createElement(TimelineSelectFrame, {
+				ref: selectionFrameRef
+			}),
+			R.span({
+				style: {
+					display: 'none'
+				}
+			},
+			R.btn('<', this.prevFrame, undefined, undefined, 188),
+			R.btn('>', this.nextFrame, undefined, undefined, 190)
 			)
 		);
 
 	}
 
 	onMouseUp() {
-		if(draggingComponent) {
+		if (draggingComponent) {
 			//Timeline.renormalizeFieldTimelineDataAfterChange();
-			if(reduceRepeatingKeyframesInSelected()) {
+			if (reduceRepeatingKeyframesInSelected()) {
 				this.forceUpdate();
 			}
-			
+
 			draggingXShift = 0;
 			draggingComponent = null;
+		} else {
+			let selectedRect = selectionFrame.getRectAndFinishDragging();
+			if (selectedRect && selectedRect.width > 12) {
+				selectElementsInRectangle(selectedRect);
+			}
 		}
 	}
 
 	onMouseDown(ev) {
 		isDragging = true;
 		this.onMouseMove(ev);
+		if (!draggingComponent) {
+			selectionFrame.onMouseDown(ev);
+		}
 	}
 
 	onMouseMove(ev) {
 		isDragging = (isDragging && (ev.buttons === 1));
-		if(isDragging) {
+		if (isDragging) {
 			let time = Timeline.mouseEventToTime(ev);
-			if(draggingComponent) {
+			if (draggingComponent) {
 				let delta = time - prevDragTime;
-				if(delta !== 0) {
-					for(let c of selectedComponents) {
+				if (delta !== 0) {
+					for (let c of selectedComponents) {
 						let t = c.getTime();
 						delta = Math.max(0, t + delta) - t;
-						if(delta === 0) {
+						if (delta === 0) {
 							return;
 						}
 					}
-					for(let c of selectedComponents) {
+					for (let c of selectedComponents) {
 						c.setTime(c.getTime() + delta);
 					}
-					
+
 					prevDragTime += delta;
 				}
 				this.setTime(prevDragTime, true);
 			} else {
-				if(ev.ctrlKey) {
-					for(let c of selectedComponents) {
-						if(c instanceof TimelineKeyframe || c instanceof TimelineLoopPoint) {
+				if (ev.ctrlKey) {
+					for (let c of selectedComponents) {
+						if (c instanceof TimelineKeyframe || c instanceof TimelineLoopPoint) {
 							let kf = c.props.keyFrame;
-							if(kf.j !== time) {
+							if (kf.j !== time) {
 								kf.j = time;
 								c.onChanged();
 							}
@@ -259,11 +290,12 @@ export default class Timeline extends React.Component {
 				this.setTime(time, true);
 			}
 		}
+		selectionFrame.onMouseMove(ev);
 	}
 
 	static unregisterDragableComponent(component) {
 		let i = selectedComponents.indexOf(component);
-		if(i >= 0) {
+		if (i >= 0) {
 			selectedComponents.splice(i, 1);
 		}
 	}
@@ -274,7 +306,7 @@ export default class Timeline extends React.Component {
 	}
 
 	static allFieldDataChanged(movieclip) {
-		for(let f of movieclip._timelineData.f) {
+		for (let f of movieclip._timelineData.f) {
 			Timeline.fieldDataChanged(f, movieclip);
 		}
 	}
@@ -285,10 +317,10 @@ export default class Timeline extends React.Component {
 		let timeLineData = fieldData.t;
 
 		timeLineData.sort(sortFieldsByTime);
-		for(let field of timeLineData) {
+		for (let field of timeLineData) {
 			field.n = MovieClip._findNextKeyframe(timeLineData, field.j);
 		}
-	
+
 		fieldData.__cacheTimeline = false;
 		Line.invalideteChartsRenderCache(fieldData);
 		MovieClip.invalidateSerializeCache(node);
@@ -302,12 +334,12 @@ export default class Timeline extends React.Component {
 	_beforeHistoryJump() {
 		justModifiedKeyframes.length = 0;
 	}
-	
+
 	_afterHistoryJump() {
 		setTimeout(() => {
-			if(justModifiedKeyframes.length > 0) {
+			if (justModifiedKeyframes.length > 0) {
 				clearSelection();
-				for(let c of justModifiedKeyframes) {
+				for (let c of justModifiedKeyframes) {
 					select(c);
 				}
 				this.setTime(justModifiedKeyframes[0].getTime(), true);
@@ -316,19 +348,19 @@ export default class Timeline extends React.Component {
 	}
 
 	static onBeforePropertyChanged(fieldName) {
-		if((!Timeline.timelineDOMElement) || recordingIsDisabled) {
+		if ((!Timeline.timelineDOMElement) || recordingIsDisabled) {
 			beforeChangeRemember = new WeakMap();
 		}
-		
+
 		editor.selection.some((o) => {
-			if(o instanceof MovieClip) {
-				if(Timeline.timelineDOMElement && !recordingIsDisabled) {
+			if (o instanceof MovieClip) {
+				if (Timeline.timelineDOMElement && !recordingIsDisabled) {
 					if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
 						getFrameAtTimeOrCreate(o, fieldName, 0);
 					}
 				} else {
 					let val = o[fieldName];
-					if(typeof val === 'number') {
+					if (typeof val === 'number') {
 						beforeChangeRemember.set(o, val);
 					}
 				}
@@ -338,25 +370,25 @@ export default class Timeline extends React.Component {
 
 	static onAfterPropertyChanged(fieldName, field) {
 		editor.selection.some((o) => {
-			if(o instanceof MovieClip) {
-				if(Timeline.timelineDOMElement && !recordingIsDisabled) {
+			if (o instanceof MovieClip) {
+				if (Timeline.timelineDOMElement && !recordingIsDisabled) {
 					if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
 						timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName);
 					}
 				} else { //shift all keyframes instead of add keyframe
 					let val = o[fieldName];
-					if(typeof val === 'number') {
+					if (typeof val === 'number') {
 						let oldVal = beforeChangeRemember.get(o);
-						if(oldVal !== val) {
+						if (oldVal !== val) {
 							let delta = val - oldVal;
 							let fld = getFieldByName(o, fieldName);
-							if(fld) {
-								for(let kf of fld.t) {
+							if (fld) {
+								for (let kf of fld.t) {
 									let changedVal = kf.v + delta;
-									if(field.hasOwnProperty('min')) {
+									if (field.hasOwnProperty('min')) {
 										changedVal = Math.max(field.min, changedVal);
 									}
-									if(field.hasOwnProperty('max')) {
+									if (field.hasOwnProperty('max')) {
 										changedVal = Math.min(field.max, changedVal);
 									}
 									kf.v = changedVal;
@@ -365,13 +397,13 @@ export default class Timeline extends React.Component {
 							}
 						}
 					}
-					if(game.__EDITORmode) {
+					if (game.__EDITORmode) {
 						o.resetTimeline();
 					}
 				}
 			}
 		});
-		if(timelineInstance) {
+		if (timelineInstance) {
 			timelineInstance.forceUpdate();
 		}
 	}
@@ -379,11 +411,11 @@ export default class Timeline extends React.Component {
 	isNeedAnimateProperty(o, fieldName) {
 		return this.getTime() > 0 || getFieldByName(o, fieldName);
 	}
-	
+
 	static disableRecording() {
 		recordingIsDisabled = true;
 	}
-	
+
 	static enableRecording() {
 		recordingIsDisabled = false;
 	}
@@ -405,10 +437,10 @@ export default class Timeline extends React.Component {
 
 
 function getFieldByName(o, name) {
-	if(o._timelineData) {
+	if (o._timelineData) {
 		let fields = o._timelineData.f;
-		for(let field of fields) {
-			if(field.n === name) {
+		for (let field of fields) {
+			if (field.n === name) {
 				return field;
 			}
 		}
@@ -417,18 +449,18 @@ function getFieldByName(o, name) {
 
 function getFieldByNameOrCreate(o, name) {
 	let field = getFieldByName(o, name);
-	if(!field) {
-		if(!o._timelineData) {
+	if (!field) {
+		if (!o._timelineData) {
 			o._timelineData = {
-				d:0.85,
-				p:0.02,
-				l:{},
-				f:[]
+				d: 0.85,
+				p: 0.02,
+				l: {},
+				f: []
 			};
 		}
 		field = {
-			n:name,
-			t:[]
+			n: name,
+			t: []
 		};
 		o._timelineData.f.push(field);
 	}
@@ -445,33 +477,33 @@ function getFrameAtTimeOrCreate(o, name, time) {
 	return createKeyframe(o, name, time, field);
 }
 
-	
-function createKeyframe (o, name, time, field) {
+
+function createKeyframe(o, name, time, field) {
 
 	let mode;
 	let jumpTime = time;
 	let prevField = MovieClip._findPreviousKeyframe(field.t, time);
-	if(prevField) {
+	if (prevField) {
 		mode = prevField.m;
-		if(mode === 3 || mode === 4) {
+		if (mode === 3 || mode === 4) {
 			mode = 0;
 		}
-		if(prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
+		if (prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
 			jumpTime = prevField.j;
 			prevField.j = prevField.t;
 		}
 	} else {
 		mode = getDefaultKeyframeTypeForField(o, name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
 	}
-	
+
 	let keyFrame = {
-		v: o[name],	//target Value
-		t: time,	//frame triggering Time
+		v: o[name], //target Value
+		t: time, //frame triggering Time
 		m: mode,
-		j: jumpTime,	    //Jump to time. If no jump need - equal to 't'
+		j: jumpTime, //Jump to time. If no jump need - equal to 't'
 		___react_id: MovieClip.__generateKeyframeId()
 	};
-	
+
 	field.t.push(keyFrame);
 	TimeLabel.renormalizeAllLabels(o);
 	return keyFrame;
@@ -489,12 +521,12 @@ function getDefaultKeyframeTypeForField(o, name) {
 	}
 }
 
-const keyframeTypesForNumber = [0,1,2,3,4];
+const keyframeTypesForNumber = [0, 1, 2, 3, 4];
 const keyframeTypesDiscreteOnly = [2];
 
 function getKeyframeTypesForField(o, name) {
 	let fieldDesc = editor.getObjectField(o, name);
-	if(fieldDesc.type === Number) {
+	if (fieldDesc.type === Number) {
 		return keyframeTypesForNumber;
 	}
 	return keyframeTypesDiscreteOnly;
@@ -507,29 +539,29 @@ let draggingXShift = 0;
 let prevDragTime;
 
 function onDragableMouseDown(ev) {
-	if(!this.state || !this.state.isSelected) {
-		if(!ev.ctrlKey) {
+	if (!this.state || !this.state.isSelected) {
+		if (!ev.ctrlKey) {
 			clearSelection();
 		}
 		select(this);
 	} else {
-		if(ev.ctrlKey) {
+		if (ev.ctrlKey) {
 			unselect(this);
 		}
 	}
 
-	if(ev.altKey) {
+	if (ev.altKey) {
 		cloneSelectedKeyframes();
 	}
-	
+
 	draggingComponent = this;
 	draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
 	prevDragTime = Timeline.mouseEventToTime(ev);
 }
 
 function cloneSelectedKeyframes() {
-	for(let c of selectedComponents) {
-		if(c instanceof TimelineKeyframe) {
+	for (let c of selectedComponents) {
+		if (c instanceof TimelineKeyframe) {
 			c.clone();
 		}
 	}
@@ -548,8 +580,8 @@ let isDragging = false;
 
 function getSelectedKeyframes() {
 	let ret = [];
-	for(let c of selectedComponents) {
-		if(c instanceof TimelineKeyframe) {
+	for (let c of selectedComponents) {
+		if (c instanceof TimelineKeyframe) {
 			ret.push(c);
 		}
 	}
@@ -558,13 +590,13 @@ function getSelectedKeyframes() {
 
 function reduceRepeatingKeyframesInSelected() {
 	let isModified = false;
-	for(let keyframeComponent of getSelectedKeyframes()) {
+	for (let keyframeComponent of getSelectedKeyframes()) {
 		let timeLineData = keyframeComponent.props.owner.props.owner.props.field.t;
-		for(let i = 0; i < timeLineData.length; i++) {
+		for (let i = 0; i < timeLineData.length; i++) {
 			let kf = timeLineData[i];
-			for(let j = i+1; j < timeLineData.length; j++) {
+			for (let j = i + 1; j < timeLineData.length; j++) {
 				let keyFrame = timeLineData[j];
-				if((kf !== keyFrame) && (kf.t === keyFrame.t)) {
+				if ((kf !== keyFrame) && (kf.t === keyFrame.t)) {
 					timeLineData.splice(j, 1);
 					j--;
 					isModified = true;
@@ -577,4 +609,62 @@ function reduceRepeatingKeyframesInSelected() {
 		}
 	}
 	return isModified;
+}
+
+function selectElementsInRectangle(rect) {
+	let a = $(Timeline.timelineDOMElement).find('.timeline-keyframe,.timeline-loop-point,.timeline-label');
+	clearSelection();
+	for(let c of a) {
+		let r = c.getBoundingClientRect();
+		if(r.right > rect.left && r.left < rect.right) {
+			if(r.bottom > rect.top && r.top < rect.bottom) {
+				simulatedMouseEvent(c, {ctrlKey:true});
+			}
+		}
+	}
+	simulatedMouseEvent(window.document.body, {type: 'mouseup'});
+}
+
+function simulatedMouseEvent(target, options) {
+
+	const event = window.document.createEvent('MouseEvents');
+	const opts = Object.assign({ // These are the default values, set up for un-modified left clicks
+		type: 'mousedown',
+		canBubble: true,
+		cancelable: true,
+		view: target.ownerDocument.defaultView,
+		detail: 1,
+		screenX: 0, //The coordinates within the entire page
+		screenY: 0,
+		clientX: 0, //The coordinates within the viewport
+		clientY: 0,
+		ctrlKey: false,
+		altKey: false,
+		shiftKey: false,
+		metaKey: false, //I *think* 'meta' is 'Cmd/Apple' on Mac, and 'Windows key' on Win. Not sure, though!
+		button: 0, //0 = left, 1 = middle, 2 = right
+		relatedTarget: null,
+	}, options);
+
+	//Pass in the options
+	event.initMouseEvent(
+		opts.type,
+		opts.canBubble,
+		opts.cancelable,
+		opts.view,
+		opts.detail,
+		opts.screenX,
+		opts.screenY,
+		opts.clientX,
+		opts.clientY,
+		opts.ctrlKey,
+		opts.altKey,
+		opts.shiftKey,
+		opts.metaKey,
+		opts.button,
+		opts.relatedTarget
+	);
+
+	//Fire the event
+	target.dispatchEvent(event);
 }
