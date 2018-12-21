@@ -690,7 +690,8 @@ input{
 .field-timeline {
     width: max-content;
     background: url(/thing-editor/img/timeline.jpg);
-    background-repeat: repeat-x;
+	background-repeat: repeat-x;
+	position: relative;
 }
 
 .timeline-play-indicator {
@@ -717,6 +718,17 @@ input{
 }
 
 .timeline-keyframe-selected {
+    outline: 2px solid #ff9d00;
+}
+
+.timeline-loop-point {
+	cursor: w-resize;
+	position: absolute;
+	bottom: 0;
+	height: 14px;
+}
+
+.timeline-loop-point-selected,.timeline-loop-point:hover {
     outline: 2px solid #ff9d00;
 }
 

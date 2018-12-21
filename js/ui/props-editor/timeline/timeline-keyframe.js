@@ -127,7 +127,7 @@ export default class TimelineKeyframe extends React.Component {
 			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
 		mark,
 		loopArrow,
-		keyFrame.___react_id
+		keyFrame.v
 		);
 	}
 }

@@ -6,6 +6,7 @@ import TimelineKeyframe from "./timeline-keyframe.js";
 import {KeyframePropertyEditor} from "./keyframe-property-editor.js";
 import Line from "./timeline-line.js";
 import TimeLabel from "./timeline-label.js";
+import TimelineLoopPoint from "./timeline-loop-point.js";
 
 
 let widthZoom;
@@ -246,7 +247,7 @@ export default class Timeline extends React.Component {
 			} else {
 				if(ev.ctrlKey) {
 					for(let c of selectedComponents) {
-						if(c instanceof TimelineKeyframe) {
+						if(c instanceof TimelineKeyframe || c instanceof TimelineLoopPoint) {
 							let kf = c.props.keyFrame;
 							if(kf.j !== time) {
 								kf.j = time;

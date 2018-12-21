@@ -2,6 +2,7 @@ import Pool from "thing-engine/js/utils/pool.js";
 import FieldPlayer from "thing-engine/js/components/movie-clip/field-player.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
 import Timeline from "./timeline.js";
+import TimelineLoopPoint from "./timeline-loop-point.js";
 
 let _scale, _shift;
 const scale = (val) => {
@@ -137,6 +138,19 @@ export default class Line extends React.Component {
 			}
 		}
 
+		let keyframes = [];
+		let loopPopints = [];
+
+		for(let k of field.t) {
+			keyframes.push(this.renderKeyframe(k));
+			if(k.t !== k.j) {
+				loopPopints.push(
+					React.createElement(TimelineLoopPoint, {key: k.___react_id, owner:this, keyFrame:k, widthZoom})
+				);
+			}
+		}
+			
+
 		return R.div(
 			{
 				style:{width, height}, onMouseDown:(ev) =>{
@@ -144,7 +158,8 @@ export default class Line extends React.Component {
 						this.props.owner.onToggleKeyframeClick(Timeline.mouseEventToTime(ev));
 					}
 				}},
-			field.t.map(this.renderKeyframe),
+			keyframes,
+			loopPopints,
 			chartsCache.get(field),
 			React.createElement(PlayingDisplay, this.props)
 		);
