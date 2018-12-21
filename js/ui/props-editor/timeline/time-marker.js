@@ -16,17 +16,21 @@ export default class TimeMarker extends React.Component {
 	setTime(time, scrollInToView) {
 		this.setState({time});
 		if(scrollInToView) {
-			let hw = Timeline.timelineDOMElement.clientWidth / 2;
-			let x = time * this.props.owner.state.widthZoom - hw;
-			if(Math.abs(Timeline.timelineDOMElement.scrollLeft - x) > hw) {
-				Timeline.timelineDOMElement.scrollLeft = x;
-			} else {
-				let s = Timeline.timelineDOMElement.scrollLeft;
-				if(s < (x + 150 - hw)) {
-					Timeline.timelineDOMElement.scrollLeft = (x + 150 - hw);
-				} else if(s > (x - 40 + hw)) {
-					Timeline.timelineDOMElement.scrollLeft = (x - 40 + hw);
-				}
+			this.scrollInToView(time);
+		}
+	}
+
+	scrollInToView(time) {
+		let hw = Timeline.timelineDOMElement.clientWidth / 2;
+		let x = time * this.props.owner.state.widthZoom - hw;
+		if(Math.abs(Timeline.timelineDOMElement.scrollLeft - x) > hw) {
+			Timeline.timelineDOMElement.scrollLeft = x;
+		} else {
+			let s = Timeline.timelineDOMElement.scrollLeft;
+			if(s < (x + 150 - hw)) {
+				Timeline.timelineDOMElement.scrollLeft = (x + 150 - hw);
+			} else if(s > (x - 40 + hw)) {
+				Timeline.timelineDOMElement.scrollLeft = (x - 40 + hw);
 			}
 		}
 	}

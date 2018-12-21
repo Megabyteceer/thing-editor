@@ -18,6 +18,12 @@ export default class ObjectsTimeline extends React.Component {
 		this.forceUpdate();
 	}
 
+	createKeyframeWithTimelineValue(fieldData, time) { //used for toggle keyframe
+		this.props.owner.setTime(time);
+		this.props.owner.createKeyframeWithCurrentObjectsValue(this.props.node, fieldData.n, time);
+		Timeline.fieldDataChanged(fieldData, this.props.node);
+	}
+
 	render() {
 		let tl = this.props.node._timelineData;
 

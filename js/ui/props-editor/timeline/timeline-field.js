@@ -14,7 +14,7 @@ export default class FieldsTimeline extends React.Component {
 		let currentTime = time || Timeline.getTime();
 		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		if(currentKeyframe.t !== currentTime) {
-			this.createKeyframeWithTimelineValue(field, currentTime);
+			this.props.owner.createKeyframeWithTimelineValue(field, currentTime);
 			this.forceUpdate();
 		} else {
 			this.deleteKeyframe(currentKeyframe);

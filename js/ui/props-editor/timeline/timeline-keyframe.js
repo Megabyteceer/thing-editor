@@ -16,6 +16,7 @@ export default class TimelineKeyframe extends React.Component {
 		super(props);
 		this.getTime = this.getTime.bind(this);
 		this.setTime = this.setTime.bind(this);
+		this.onKeyframeMouseDown = this.onKeyframeMouseDown.bind(this);
 		Timeline.registerDragableComponent(this);
 	}
 
@@ -68,6 +69,19 @@ export default class TimelineKeyframe extends React.Component {
 		this.props.owner.props.owner.onChanged();
 	}
 
+	deleteKeyframe() {
+		this.props.owner.deleteKeyframe(this.props.keyFrame);
+	}
+	
+	onKeyframeMouseDown(ev) {
+		if(ev.buttons === 2) {
+			this.deleteKeyframe();
+			sp(ev);
+		} else {
+			this.onMouseDown(ev);
+		}
+	}
+
 	render() {
 		const keyFrame = this.props.keyFrame;
 
@@ -99,7 +113,7 @@ export default class TimelineKeyframe extends React.Component {
 		}
 		
 		return R.div({className:className,
-			onMouseDown: this.onMouseDown,
+			onMouseDown: this.onKeyframeMouseDown,
 			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
 		mark,
 		loopArrow,

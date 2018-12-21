@@ -1,6 +1,7 @@
 import Pool from "thing-engine/js/utils/pool.js";
 import FieldPlayer from "thing-engine/js/components/movie-clip/field-player.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
+import Timeline from "./timeline.js";
 
 let _scale, _shift;
 const scale = (val) => {
@@ -76,6 +77,19 @@ export default class Line extends React.Component {
 		return field.__cacheTimeline[time];
 	}
 
+	deleteKeyframe(keyFrame) {
+		let f = this.props.owner.props.field;
+		let i = f.t.indexOf(keyFrame);
+		assert(i >= 0, "can't delete keyFrame.");
+		if(i > 0) {
+			Timeline.unselectKeyframe(keyFrame);
+			f.t.splice(i, 1);
+			this.props.owner.onChanged();
+			this.forceUpdate();
+		}
+
+	}
+
 	renderKeyframe(keyFrame) {
 		return React.createElement(TimelineKeyframe, {key: keyFrame.___react_id, keyFrame, owner:this});
 	}
@@ -108,8 +122,8 @@ export default class Line extends React.Component {
 		if(_scale === 0) {
 			_scale = 1;
 		}
-		_scale = 25.0 / _scale;
-		_shift = field.__cacheTimeline.max + 1/_scale;
+		_scale = (heightZoom - 10) / _scale;
+		_shift = field.__cacheTimeline.max + 1 / _scale;
 		
 		if(!chartsCache.has(field)) {
 			if(isNaN(field.__cacheTimeline.max)) {
@@ -123,7 +137,13 @@ export default class Line extends React.Component {
 			}
 		}
 
-		return R.div({style:{width, height}},
+		return R.div(
+			{
+				style:{width, height}, onMouseDown:(ev) =>{
+					if(ev.buttons === 2) {
+						this.props.owner.onToggleKeyframeClick(Timeline.mouseEventToTime(ev));
+					}
+				}},
 			field.t.map(this.renderKeyframe),
 			chartsCache.get(field),
 			React.createElement(PlayingDisplay, this.props)

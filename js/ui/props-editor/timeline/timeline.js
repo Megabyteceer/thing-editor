@@ -62,6 +62,15 @@ export default class Timeline extends React.Component {
 		this._afterHistoryJump = this._afterHistoryJump.bind(this);
 	}
 
+	static unselectKeyframe(keyframe) {
+		for(let c of selectedComponents) {
+			if(c.props.keyFrame === keyframe) {
+				unselect(c);
+				return;
+			}
+		}
+	}
+
 	componentDidMount() {
 		clearSelection();
 		Timeline.timelineDOMElement = $('.timeline')[0];
@@ -101,6 +110,7 @@ export default class Timeline extends React.Component {
 				heightZoom=Math.floor(heightZoom);
 				Line.invalideteChartsRenderCache();
 				this.setState({heightZoom});
+				this.centralizeSelection();
 			}
 
 		} else {
@@ -117,9 +127,18 @@ export default class Timeline extends React.Component {
 				widthZoom = Math.floor(widthZoom);
 				Line.invalideteChartsRenderCache();
 				this.setState({widthZoom});
+				this.centralizeSelection();
 			}
 		}
 		sp(ev);
+	}
+
+	centralizeSelection() {
+		setTimeout(() => {
+			if(selectedComponents.length > 0) {
+				timeMarker.scrollInToView(selectedComponents[0].getTime());
+			}
+		}, 0);
 	}
 
 	prevFrame() {
@@ -133,7 +152,7 @@ export default class Timeline extends React.Component {
 	renderObjectsTimeline (node) {
 		let key = node.___id;
 		if(node instanceof MovieClip && node._timelineData) {
-			return React.createElement(ObjectsTimeline, {node, key,
+			return React.createElement(ObjectsTimeline, {owner:this, node, key,
 				heightZoom,
 				widthZoom
 			});
@@ -437,7 +456,8 @@ function createKeyframe (o, name, time, field) {
 		v: o[name],	//target Value
 		t: time,	//frame triggering Time
 		m: mode,
-		j: jumpTime	    //Jump to time. If no jump need - equal to 't'
+		j: jumpTime,	    //Jump to time. If no jump need - equal to 't'
+		___react_id: MovieClip.__generateKeyframeId()
 	};
 	
 	field.t.push(keyFrame);
