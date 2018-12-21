@@ -28,6 +28,8 @@ function selectionFrameRef(ref) {
 
 let beforeChangeRemember;
 
+let timeDragging;
+
 let recordingIsDisabled;
 let timelineInstance;
 const justModifiedKeyframes = [];
@@ -193,7 +195,10 @@ export default class Timeline extends React.Component {
 		}
 	}
 
+	startTimeDragging() {
+		timeDragging = true;
 
+	}
 
 	render() {
 		return R.fragment(
@@ -229,7 +234,8 @@ export default class Timeline extends React.Component {
 
 	}
 
-	onMouseUp() {
+	onMouseUp(ev) {
+		timeDragging = false;
 		if (draggingComponent) {
 			//Timeline.renormalizeFieldTimelineDataAfterChange();
 			if (reduceRepeatingKeyframesInSelected()) {
@@ -241,7 +247,7 @@ export default class Timeline extends React.Component {
 		} else {
 			let selectedRect = selectionFrame.getRectAndFinishDragging();
 			if (selectedRect && selectedRect.width > 12) {
-				selectElementsInRectangle(selectedRect);
+				selectElementsInRectangle(selectedRect, ev.shiftKey);
 			}
 		}
 	}
@@ -249,7 +255,7 @@ export default class Timeline extends React.Component {
 	onMouseDown(ev) {
 		isDragging = true;
 		this.onMouseMove(ev);
-		if (!draggingComponent) {
+		if (!draggingComponent && !ev.ctrlKey && !timeDragging) {
 			selectionFrame.onMouseDown(ev);
 		}
 	}
@@ -283,11 +289,14 @@ export default class Timeline extends React.Component {
 							if (kf.j !== time) {
 								kf.j = time;
 								c.onChanged();
+								c.props.owner.forceUpdate();
 							}
 						}
 					}
 				}
-				this.setTime(time, true);
+				if(timeDragging) {
+					this.setTime(time);
+				}
 			}
 		}
 		selectionFrame.onMouseMove(ev);
@@ -540,12 +549,12 @@ let prevDragTime;
 
 function onDragableMouseDown(ev) {
 	if (!this.state || !this.state.isSelected) {
-		if (!ev.ctrlKey) {
+		if (!ev.ctrlKey && !ev.shiftKey) {
 			clearSelection();
 		}
 		select(this);
 	} else {
-		if (ev.ctrlKey) {
+		if (!ev.shiftKey && ev.ctrlKey) {
 			unselect(this);
 		}
 	}
@@ -611,14 +620,16 @@ function reduceRepeatingKeyframesInSelected() {
 	return isModified;
 }
 
-function selectElementsInRectangle(rect) {
+function selectElementsInRectangle(rect, shiftKey) {
 	let a = $(Timeline.timelineDOMElement).find('.timeline-keyframe,.timeline-loop-point,.timeline-label');
-	clearSelection();
+	if(!shiftKey) {
+		clearSelection();
+	}
 	for(let c of a) {
 		let r = c.getBoundingClientRect();
 		if(r.right > rect.left && r.left < rect.right) {
 			if(r.bottom > rect.top && r.top < rect.bottom) {
-				simulatedMouseEvent(c, {ctrlKey:true});
+				simulatedMouseEvent(c, {shiftKey, ctrlKey:true});
 			}
 		}
 	}

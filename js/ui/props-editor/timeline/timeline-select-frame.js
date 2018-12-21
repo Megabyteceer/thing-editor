@@ -23,6 +23,7 @@ export default class TimelineSelectFrame extends React.Component {
 		if(isDragging) {
 			w = ev.clientX - timelineRect.x - x;
 			h = ev.clientY - timelineRect.y - y;
+			this.forceUpdate();
 		}
 	}
 
@@ -31,6 +32,9 @@ export default class TimelineSelectFrame extends React.Component {
 			isDragging = false;
 			
 			let a = $('.timelilne-select-frame');
+			if(a.length < 1) {
+				return;
+			}
 			let ret = a[0].getBoundingClientRect();
 			this.forceUpdate();
 

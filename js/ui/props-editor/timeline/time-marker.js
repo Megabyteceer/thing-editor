@@ -1,6 +1,5 @@
 import Timeline from "./timeline.js";
 
-const timeMarkerProps = {className: 'time-marker-body'};
 const timeMarkerLineProps = {className: 'time-marker-v-line'};
 const timeMarkerLabelProps = {className: 'time-marker-label'};
 const smallTextProps = {className: 'small-text'};
@@ -11,8 +10,13 @@ export default class TimeMarker extends React.Component {
 	constructor(params) {
 		super(params);
 		this.state = {time:0};
+		this.onMouseDown = this.onMouseDown.bind(this);
 	}
-	
+
+	onMouseDown() {
+		this.props.owner.startTimeDragging();
+	}
+
 	setTime(time, scrollInToView) {
 		this.setState({time});
 		if(scrollInToView) {
@@ -36,7 +40,7 @@ export default class TimeMarker extends React.Component {
 	}
 	
 	render() {
-		return R.div(timeMarkerProps,
+		return R.div({className: 'time-marker-body', onMouseDown:this.onMouseDown},
 			R.div(fieldLabelTimelineProps),
 			R.div({className: 'time-marker', style:{left: this.state.time * this.props.owner.state.widthZoom}},
 				R.div(timeMarkerLineProps),
