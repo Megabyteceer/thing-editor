@@ -34,13 +34,19 @@ export default class TimelineLoopPoint extends React.Component {
 	}
 
 	onLoopPointMouseDown(ev) {
-		if(ev.buttont === 2) {
-			let keyFrame = this.props.keyFrame;
-			keyFrame.j = keyFrame.t;
-			this.onChanged();
+		if(ev.buttons === 2) {
+			this.deleteLoopPoint();
+			sp(ev);
 		} else {
 			this.onMouseDown(ev);
 		}
+	}
+
+	deleteLoopPoint() {
+		let keyFrame = this.props.keyFrame;
+		keyFrame.j = keyFrame.t;
+		this.onChanged();
+		this.props.owner.forceUpdate();
 	}
 
 	onChanged() {

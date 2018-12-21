@@ -11,7 +11,7 @@ export default class FieldsTimeline extends React.Component {
 
 	onToggleKeyframeClick(time) {
 		let field = this.props.field;
-		let currentTime = time || Timeline.getTime();
+		let currentTime = time || this.props.owner.props.owner.getTime();
 		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		if(currentKeyframe.t !== currentTime) {
 			this.props.owner.createKeyframeWithTimelineValue(field, currentTime);

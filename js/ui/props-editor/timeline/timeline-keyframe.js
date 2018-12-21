@@ -126,8 +126,7 @@ export default class TimelineKeyframe extends React.Component {
 			onMouseDown: this.onKeyframeMouseDown,
 			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
 		mark,
-		loopArrow,
-		keyFrame.v
+		loopArrow
 		);
 	}
 }
