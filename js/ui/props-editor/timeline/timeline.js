@@ -64,6 +64,8 @@ export default class Timeline extends React.Component {
 			heightZoom,
 			widthZoom
 		};
+		this.prevKeyFrame = this.prevKeyFrame.bind(this);
+		this.nextKeyFrame = this.nextKeyFrame.bind(this);
 		this.prevFrame = this.prevFrame.bind(this);
 		this.nextFrame = this.nextFrame.bind(this);
 		this.renderObjectsTimeline = this.renderObjectsTimeline.bind(this);
@@ -155,6 +157,50 @@ export default class Timeline extends React.Component {
 		}, 0);
 	}
 
+	nextKeyFrame() {
+		let time = this.getTime();
+		let allKeyframes = this._getAllKeyframes();
+		for(let k of allKeyframes) {
+			if(k.t > time) {
+				this.setTime(k.t, true);
+				return;
+			}
+		}
+		this.setTime(0, true);
+	}
+
+	_getAllKeyframes() {
+		let allKeyframes = [];
+		for(let m of editor.selection) {
+			if(m instanceof MovieClip && m._timelineData) {
+				for( let f of m._timelineData.f) {
+					allKeyframes = allKeyframes.concat(f.t);
+				}
+			}
+		}
+		allKeyframes.sort(sortFieldsByTime);
+		return allKeyframes;
+	}
+
+	prevKeyFrame() {
+		let time = this.getTime();
+		let allKeyframes = this._getAllKeyframes();
+		if(allKeyframes.length > 0) {
+			if(time === 0) {
+				this.setTime(allKeyframes[allKeyframes.length - 1].t, true);
+			} else {
+				let reClosestKeyframe = allKeyframes[0];
+				for(let k of allKeyframes) {
+					if(k.t >= time) {
+						this.setTime(reClosestKeyframe.t, true);
+						return;
+					}
+					reClosestKeyframe = k;
+				}
+			}
+		}
+	}
+
 	prevFrame() {
 		this.setTime(Math.max(0, this.getTime() - 1), true);
 	}
@@ -228,7 +274,9 @@ export default class Timeline extends React.Component {
 				}
 			},
 			R.btn('<', this.prevFrame, undefined, undefined, 188),
-			R.btn('>', this.nextFrame, undefined, undefined, 190)
+			R.btn('>', this.nextFrame, undefined, undefined, 190),
+			R.btn('<<', this.prevKeyFrame, undefined, undefined, 1188),
+			R.btn('>>', this.nextKeyFrame, undefined, undefined, 1190)
 			)
 		);
 

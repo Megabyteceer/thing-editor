@@ -881,6 +881,7 @@ input{
 	padding: 0 5px;
 	padding-right: 15px;
 	border-left: 1px solid #f00;
+	cursor: w-resize;
 }
 
 .tip-icon{
