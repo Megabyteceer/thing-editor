@@ -44,6 +44,15 @@ export default class ObjectsTimeline extends React.Component {
 		let tl = this.props.node._timelineData;
 
 		let labelsNames = Object.keys(tl.l);
+		let width = 0;
+		for(let f of tl.f) {
+			if(f.t[f.t.length -1].t > width) {
+				width = f.t[f.t.length -1].t;
+			}
+		}
+		width += 500;
+		width *= this.props.widthZoom;
+
 		let labelsPanel = R.div({
 			onMouseDown:(ev) => { //create new label by right click
 				if(ev.buttons === 2) {
@@ -62,6 +71,7 @@ export default class ObjectsTimeline extends React.Component {
 					this.props.owner.startTimeDragging();
 				}
 			},
+			style:{width},
 			title:'Right click to add time label',
 			className:'timeline-labels-panel'
 		},
