@@ -41,6 +41,9 @@ export default class ObjectsTimeline extends React.Component {
 							this.onLabelChange(label);
 						}
 					});
+				} else {
+					this.props.owner.setTime(Timeline.mouseEventToTime(ev));
+					this.props.owner.startTimeDragging();
 				}
 			},
 			title:'Right click to add time label',

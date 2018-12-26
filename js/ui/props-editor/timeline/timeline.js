@@ -310,8 +310,8 @@ export default class Timeline extends React.Component {
 
 	onMouseMove(ev) {
 		isDragging = (isDragging && (ev.buttons === 1));
+		let time = Timeline.mouseEventToTime(ev);
 		if (isDragging) {
-			let time = Timeline.mouseEventToTime(ev);
 			if (draggingComponent) {
 				let delta = time - prevDragTime;
 				if (delta !== 0) {
@@ -342,10 +342,10 @@ export default class Timeline extends React.Component {
 						}
 					}
 				}
-				if(timeDragging) {
-					this.setTime(time);
-				}
 			}
+		}
+		if(timeDragging) {
+			this.setTime(time);
 		}
 		selectionFrame.onMouseMove(ev);
 	}
