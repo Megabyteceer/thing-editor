@@ -79,7 +79,7 @@ export default class TimelineKeyframe extends React.Component {
 	}
 
 	deleteKeyframe() {
-		this.props.owner.deleteKeyframe(this.props.keyFrame);
+		this.props.owner.props.owner.deleteKeyframe(this.props.keyFrame);
 	}
 
 	clone() {

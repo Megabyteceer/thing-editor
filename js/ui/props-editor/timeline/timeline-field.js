@@ -10,6 +10,7 @@ export default class FieldsTimeline extends React.Component {
 		this.onRemoveFieldClick = this.onRemoveFieldClick.bind(this);
 		this.onGoLeftClick = this.onGoLeftClick.bind(this);
 		this.onGoRightClick = this.onGoRightClick.bind(this);
+		this.onToggleKeyframeClick = this.onToggleKeyframeClick.bind(this);
 	}
 
 	onToggleKeyframeClick(time) {
@@ -24,6 +25,17 @@ export default class FieldsTimeline extends React.Component {
 		}
 	}
 
+	deleteKeyframe(keyFrame) {
+		let f = this.props.field;
+		let i = f.t.indexOf(keyFrame);
+		assert(i >= 0, "can't delete keyFrame.");
+		if(i > 0) {
+			Timeline.unselectKeyframe(keyFrame);
+			f.t.splice(i, 1);
+			this.onChanged();
+			this.forceUpdate();
+		}
+	}
 	
 	onRemoveFieldClick() {
 		editor.ui.modal.showQuestion("Field animation delete", "Are you sure you want to delete animation track for field '" + this.props.field.n + "'?",
