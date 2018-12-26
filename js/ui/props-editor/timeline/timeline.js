@@ -134,8 +134,9 @@ export default class Timeline extends React.Component {
 				this.setState({heightZoom});
 				this.centralizeSelection();
 			}
-
-		} else {
+			sp(ev);
+		}
+		if(ev.shiftKey) {
 			widthZoom = this.state.widthZoom;
 			let tmp = widthZoom;
 			widthZoom *= delta;
@@ -151,8 +152,9 @@ export default class Timeline extends React.Component {
 				this.setState({widthZoom});
 				this.centralizeSelection();
 			}
+			sp(ev);
 		}
-		sp(ev);
+		
 	}
 
 	centralizeSelection() {
