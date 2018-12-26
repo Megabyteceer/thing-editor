@@ -24,6 +24,13 @@ export default class ObjectsTimeline extends React.Component {
 		Timeline.fieldDataChanged(fieldData, this.props.node);
 	}
 
+	shouldComponentUpdate(nextProps) {
+		return this.props.node !== nextProps.node ||
+		this.props.heightZoom !== nextProps.heightZoom ||
+		this.props.widthZoom !== nextProps.widthZoom;
+
+	}
+
 	render() {
 		let tl = this.props.node._timelineData;
 

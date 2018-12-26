@@ -26,6 +26,7 @@ export default class FieldsTimeline extends React.Component {
 			this.props.field, 
 			this.props.owner.props.node
 		);
+		this.forceUpdate();
 	}
 
 	render() {
