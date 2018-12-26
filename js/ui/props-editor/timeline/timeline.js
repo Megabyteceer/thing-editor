@@ -85,6 +85,12 @@ export default class Timeline extends React.Component {
 		}
 	}
 
+	selectKeyframe(kf) {
+		clearSelection();
+		select(kf.___view);
+		this.setTime(kf.t, true);
+	}
+
 	componentDidMount() {
 		clearSelection();
 		Timeline.timelineDOMElement = $('.timeline')[0];
@@ -162,11 +168,11 @@ export default class Timeline extends React.Component {
 		let allKeyframes = this._getAllKeyframes();
 		for(let k of allKeyframes) {
 			if(k.t > time) {
-				this.setTime(k.t, true);
+				this.selectKeyframe(k);
 				return;
 			}
 		}
-		this.setTime(0, true);
+		this.selectKeyframe(allKeyframes[0]);
 	}
 
 	_getAllKeyframes() {
@@ -187,12 +193,12 @@ export default class Timeline extends React.Component {
 		let allKeyframes = this._getAllKeyframes();
 		if(allKeyframes.length > 0) {
 			if(time === 0) {
-				this.setTime(allKeyframes[allKeyframes.length - 1].t, true);
+				this.selectKeyframe(allKeyframes[allKeyframes.length - 1]);
 			} else {
 				let reClosestKeyframe = allKeyframes[0];
 				for(let k of allKeyframes) {
 					if(k.t >= time) {
-						this.setTime(reClosestKeyframe.t, true);
+						this.selectKeyframe(reClosestKeyframe);
 						return;
 					}
 					reClosestKeyframe = k;

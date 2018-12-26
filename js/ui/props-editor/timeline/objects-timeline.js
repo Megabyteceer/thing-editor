@@ -1,6 +1,8 @@
 import FieldsTimeline from "./timeline-field.js";
 import Timeline from "./timeline.js";
 import TimeLabel from "./timeline-label.js";
+import Line from "./timeline-line.js";
+import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
 
 const objectsTimelineProps = {className: 'objects-timeline'};
 
@@ -29,6 +31,20 @@ export default class ObjectsTimeline extends React.Component {
 		this.props.heightZoom !== nextProps.heightZoom ||
 		this.props.widthZoom !== nextProps.widthZoom;
 
+	}
+		
+	deleteAnimationField(fieldData) {
+		let timelineData = this.props.node._timelineData;
+		let i = timelineData.f.indexOf(fieldData);
+		for(let k of fieldData.f) {
+			Timeline.unselectKeyframe(k);
+		}
+		assert(i >= 0, "Can't find field in timeline");
+		timelineData.f.splice(i,1);
+		Line.invalideteChartsRenderCache(timelineData);
+		MovieClip.invalidateSerializeCache(this.props.node);
+		editor.sceneModified();
+		this.forceUpdate();
 	}
 
 	render() {

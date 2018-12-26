@@ -1,12 +1,15 @@
 import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
 import Timeline from "./timeline.js";
 import Line from "./timeline-line.js";
+import TimelilneFieldControls from "./timeline-field-controls.js";
 
 export default class FieldsTimeline extends React.Component {
 
 	constructor(props) {
 		super(props);
-
+		this.onRemoveFieldClick = this.onRemoveFieldClick.bind(this);
+		this.onGoLeftClick = this.onGoLeftClick.bind(this);
+		this.onGoRightClick = this.onGoRightClick.bind(this);
 	}
 
 	onToggleKeyframeClick(time) {
@@ -19,6 +22,45 @@ export default class FieldsTimeline extends React.Component {
 		} else {
 			this.deleteKeyframe(currentKeyframe);
 		}
+	}
+
+	
+	onRemoveFieldClick() {
+		editor.ui.modal.showQuestion("Field animation delete", "Are you sure you want to delete animation track for field '" + this.props.field.n + "'?",
+			() => {
+				this.props.owner.deleteAnimationField(this.props.field);
+			}, 'Delete'
+		);
+	}
+	
+	gotoNextKeyframe(direction) {
+		let field = this.props.field;
+		let timeline = this.props.owner.props.owner;
+		let currentTime = timeline.getTime();
+		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
+		
+		let i = field.t.indexOf(currentKeyframe);
+		
+		let moved = (currentKeyframe.t - currentTime);
+		
+		if(!(((direction > 0) === (moved > 0)) && ((direction < 0) === (moved < 0)))) {
+			i += direction;
+			if(i < 0) {
+				i = field.t.length -1;
+			}
+			else if(i >= field.t.length) {
+				i = 0;
+			}
+		}
+		timeline.selectKeyframe(field.t[i]);
+	}
+	
+	onGoLeftClick() {
+		this.gotoNextKeyframe(-1);
+	}
+	
+	onGoRightClick() {
+		this.gotoNextKeyframe(1);
 	}
 
 	onChanged() {
@@ -39,25 +81,8 @@ export default class FieldsTimeline extends React.Component {
 				height 
 			}
 		},
-		React.createElement(Label, {owner: this}),
+		React.createElement(TimelilneFieldControls, {owner: this}),
 		React.createElement(Line, {owner: this})
-		);
-	}
-}
-
-
-const fieldLabelTimelineProps = {className: 'objects-timeline-labels', onMouseDown:sp, onMouseMove:sp};
-class Label extends React.Component {
-
-	render() {
-		let fieldTimeline = this.props.owner;
-		return R.div(fieldLabelTimelineProps,
-			fieldTimeline.props.field.n,
-			R.br()/*,
-			R.btn('x', fieldTimeline.onRemoveFieldClick, 'Remove field animation...', 'danger-btn'),
-			R.btn('<', fieldTimeline.onGoLeftClick, 'Previous Keyframe'),
-			R.btn('●', fieldTimeline.onToggleKeyframeClick, 'add/remove Keyframe'),
-			R.btn('>', fieldTimeline.onGoRightClick, 'Next Keyframe')*/
 		);
 	}
 }

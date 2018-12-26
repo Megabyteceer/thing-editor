@@ -19,6 +19,7 @@ export default class TimelineKeyframe extends React.Component {
 		this.setTime = this.setTime.bind(this);
 		this.onKeyframeMouseDown = this.onKeyframeMouseDown.bind(this);
 		Timeline.registerDragableComponent(this);
+		props.keyFrame.___view = this;
 	}
 
 	componentDidMount() {
@@ -28,6 +29,10 @@ export default class TimelineKeyframe extends React.Component {
 	componentWillReceiveProps(props) {
 		let k1 = this.props.keyFrame;
 		let k2 = props.keyFrame;
+		if(k1.___view === this) {
+			k1.___view = null;
+		}
+		k2.___view = this;
 		if(
 			k1.t !== k2.t ||
 			k1.v !== k2.v ||
@@ -42,6 +47,9 @@ export default class TimelineKeyframe extends React.Component {
 	}
 
 	componentWillUnmount() {
+		if(this.props.keyFrame.___view === this) {
+			this.props.keyFrame.___view = null;
+		}
 		Timeline.unregisterDragableComponent(this);
 	}
 
