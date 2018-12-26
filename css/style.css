@@ -663,6 +663,8 @@ input{
     cursor: pointer;
     bottom: 40px;
     top: 0;
+    right: 0;
+    left: 0;
     padding-left: 110px;
     overflow-x: auto;
     background: #bbbbbb;
