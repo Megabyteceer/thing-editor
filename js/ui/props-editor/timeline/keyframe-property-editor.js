@@ -17,6 +17,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		this.onSetSpeeedExistsChanged = this.onSetSpeeedExistsChanged.bind(this);
 		this.onSpeedChanged = this.onSpeedChanged.bind(this);
 		this.onJumpChanged = this.onJumpChanged.bind(this);
+		this.resetJumpTime = this.resetJumpTime.bind(this);
 		this.onDemptChanged = this.onDemptChanged.bind(this);
 		this.onPowChanged = this.onPowChanged.bind(this);
 		this.onPresetSelected = this.onPresetSelected.bind(this);
@@ -110,6 +111,13 @@ export default class KeyframePropertyEditor extends React.Component {
 		this.onKeyframeChanged();
 	}
 
+	resetJumpTime() {
+		for(let k of this.props.keyframes) {
+			k.props.keyFrame.j = k.props.keyFrame.t;
+		}
+		this.onKeyframeChanged();
+	}
+
 	onDemptChanged(ev) {
 		let val =  parseFloat(ev.target.value);
 		for(let k of this.props.keyframes) {
@@ -191,7 +199,10 @@ export default class KeyframePropertyEditor extends React.Component {
 			if(hasSpeed) {
 				speedEditor = React.createElement(NumberEditor, {value: kf.s, type:'number', step:0.1, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 			}
-
+			let jumpReset;
+			if(kf.j !== kf.t) {
+				jumpReset = R.btn('x', this.resetJumpTime, "Remove loop point");
+			}
 			let jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
 
 			body = R.fragment(
@@ -204,6 +215,7 @@ export default class KeyframePropertyEditor extends React.Component {
 				speedEditor,
 				R.label({htmlFor:'jump-time-checkbox'}, ' jump time:'),
 				jumpEditor,
+				jumpReset,
 				extendEditor
 			);
 		}
