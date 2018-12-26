@@ -3,9 +3,7 @@ import ObjectsTimeline from "./objects-timeline.js";
 import TimeMarker from "./time-marker.js";
 import game from "thing-engine/js/game.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
-import {
-	KeyframePropertyEditor
-} from "./keyframe-property-editor.js";
+import KeyframePropertyEditor from "./keyframe-property-editor.js";
 import Line from "./timeline-line.js";
 import TimeLabel from "./timeline-label.js";
 import TimelineLoopPoint from "./timeline-loop-point.js";
@@ -257,34 +255,36 @@ export default class Timeline extends React.Component {
 	render() {
 		return R.fragment(
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
-			R.div({
-				onScroll: onTimelineScroll,
-				onMouseDown: this.onMouseDown,
-				className: 'timeline list-view',
-				onWheel: this.onWheel
-			},
-			React.createElement(TimeMarker, {
-				owner: this,
-				ref: timeMarkerRef
-			}),
-			editor.selection.map(this.renderObjectsTimeline),
+			R.div(
+				{
+					onScroll: onTimelineScroll,
+					onMouseDown: this.onMouseDown,
+					className: 'timeline',
+					onWheel: this.onWheel
+				},
+				React.createElement(TimeMarker, {
+					owner: this,
+					ref: timeMarkerRef
+				}),
+				editor.selection.map(this.renderObjectsTimeline)
+			),
 			React.createElement(KeyframePropertyEditor, {
 				owner: this,
 				keyframes: getSelectedKeyframes()
-			})
-			),
+			}),
 			React.createElement(TimelineSelectFrame, {
 				ref: selectionFrameRef
 			}),
-			R.span({
-				style: {
-					display: 'none'
-				}
-			},
-			R.btn('<', this.prevFrame, undefined, undefined, 188),
-			R.btn('>', this.nextFrame, undefined, undefined, 190),
-			R.btn('<<', this.prevKeyFrame, undefined, undefined, 1188),
-			R.btn('>>', this.nextKeyFrame, undefined, undefined, 1190)
+			R.span(
+				{
+					style: {
+						display: 'none'
+					}
+				},
+				R.btn('<', this.prevFrame, undefined, undefined, 188),
+				R.btn('>', this.nextFrame, undefined, undefined, 190),
+				R.btn('<<', this.prevKeyFrame, undefined, undefined, 1188),
+				R.btn('>>', this.nextKeyFrame, undefined, undefined, 1190)
 			)
 		);
 
@@ -498,8 +498,33 @@ export default class Timeline extends React.Component {
 		let x = ev.clientX - 110 - b.x - draggingXShift;
 		return Math.max(0, Math.round((x + tl.scrollLeft) / widthZoom));
 	}
-}
 
+	static onAutoSelect(selectPath) {
+		for(let o of editor.selection) {
+			if(o._timelineData) {
+				for(let f of o._timelineData.f) {
+					if(f.n === selectPath[1]) {
+						let time = parseInt(selectPath[2]);
+						for(let kf of f.t) {
+							if(kf.t == time) {
+								if(!kf.___view.state || ! kf.___view.state.isSelected) {
+									select(kf.___view);
+									timelineInstance.forceUpdate();
+								}
+								setTimeout(() => {
+									let actionEditField = $('#window-timeline').find('.bottom-panel').find('.props-editor-callback');
+									window.shakeDomElement(actionEditField);
+									actionEditField.focus();
+								}, 1);
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 function getFieldByName(o, name) {
 	if (o._timelineData) {
@@ -558,7 +583,7 @@ function createKeyframe(o, name, time, field) {
 			prevField.j = prevField.t;
 		}
 	} else {
-		mode = getDefaultKeyframeTypeForField(o, name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
+		mode = getDefaultKeyframeTypeForField([o], name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
 	}
 
 	let keyFrame = {
@@ -578,6 +603,7 @@ function getDefaultKeyframeTypeForField(o, name) {
 	switch (name) {
 	case 'x':
 	case 'y':
+	case 'rotation':
 		return 0; //- SMOOTH
 	case 'alpha':
 		return 1; //- LINEAR
@@ -589,12 +615,14 @@ function getDefaultKeyframeTypeForField(o, name) {
 const keyframeTypesForNumber = [0, 1, 2, 3, 4];
 const keyframeTypesDiscreteOnly = [2];
 
-function getKeyframeTypesForField(o, name) {
-	let fieldDesc = editor.getObjectField(o, name);
-	if (fieldDesc.type === Number) {
-		return keyframeTypesForNumber;
+function getKeyframeTypesForField(objects, name) {
+	for(let o of objects) {
+		let fieldDesc = editor.getObjectField(o, name);
+		if (fieldDesc.type !== Number) {
+			return keyframeTypesDiscreteOnly;
+		}
 	}
-	return keyframeTypesDiscreteOnly;
+	return keyframeTypesForNumber;
 }
 
 Timeline.getKeyframeTypesForField = getKeyframeTypesForField;
@@ -690,6 +718,7 @@ function selectElementsInRectangle(rect, shiftKey) {
 		}
 	}
 	simulatedMouseEvent(window.document.body, {type: 'mouseup'});
+	timelineInstance.forceUpdate();
 }
 
 function simulatedMouseEvent(target, options) {

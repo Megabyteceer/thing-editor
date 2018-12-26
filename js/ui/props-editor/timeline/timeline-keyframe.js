@@ -1,5 +1,6 @@
 import Timeline from "./timeline.js";
 import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
+import KeyframePropertyEditor from "./keyframe-property-editor.js";
 
 const keyframesClasses = [
 	'timeline-keyframe-smooth',
@@ -8,8 +9,6 @@ const keyframesClasses = [
 	'timeline-keyframe-jump-floor',
 	'timeline-keyframe-jump-roof'
 ];
-
-
 
 export default class TimelineKeyframe extends React.Component {
 
@@ -70,6 +69,19 @@ export default class TimelineKeyframe extends React.Component {
 				keyFrame.j = time;
 			}
 			keyFrame.t = time;
+			this.onChanged();
+		}
+	}
+
+	setKeyframeType(type) {
+		let keyFrame = this.props.keyFrame;
+		/// #if EDITOR
+		let types = Timeline.getKeyframeTypesForField([this.props.owner.props.owner.props.owner.props.node], this.props.owner.props.owner.props.field.n);
+		assert(types.indexOf(type) >= 0, "Type " + KeyframePropertyEditor.selectKeyframeTypes[type] + "is invalid for field '" + this.props.owner.props.owner.props.field.n);
+		/// #endif
+
+		if(keyFrame.m !== type) {
+			keyFrame.m = type;
 			this.onChanged();
 		}
 	}

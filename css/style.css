@@ -659,6 +659,7 @@ input{
 }
 
 .timeline {
+	position: absolute;
     cursor: pointer;
     bottom: 40px;
     top: 0;
@@ -851,6 +852,10 @@ input{
 
 .keyframe-type-chooser {
 	width: 140px;
+}
+
+.bottom-panel .number-input input {
+	width: 80px;
 }
 
 .bottom-panel input, .bottom-panel .select-editor{

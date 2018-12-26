@@ -26,13 +26,6 @@ export default class ObjectsTimeline extends React.Component {
 		Timeline.fieldDataChanged(fieldData, this.props.node);
 	}
 
-	shouldComponentUpdate(nextProps) {
-		return this.props.node !== nextProps.node ||
-		this.props.heightZoom !== nextProps.heightZoom ||
-		this.props.widthZoom !== nextProps.widthZoom;
-
-	}
-		
 	deleteAnimationField(fieldData) {
 		let timelineData = this.props.node._timelineData;
 		let i = timelineData.f.indexOf(fieldData);
