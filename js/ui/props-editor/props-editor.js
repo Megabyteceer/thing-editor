@@ -119,7 +119,7 @@ class PropsEditor extends React.Component {
 		
 		let groups = [];
 		let curGroup, curGroupArray;
-		props.some((p) => {
+		for(let p of props) {
 			if(p.visible) {
 				for(let o of editor.selection) {
 					if(!p.visible(o)) {
@@ -147,8 +147,7 @@ class PropsEditor extends React.Component {
 					React.createElement(PropsFieldWrapper, {key: p.name, ref: p.name, field: p, onChange: this.props.onChange})
 				);
 			}
-			
-		});
+		}
 		assert(curGroup, "Properties list started not with splitter.");
 		groups.push(curGroup);
 		return R.div(editorProps, header, groups);

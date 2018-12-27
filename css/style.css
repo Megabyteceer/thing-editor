@@ -659,9 +659,12 @@ input{
 }
 
 .timeline {
+	position: absolute;
     cursor: pointer;
     bottom: 40px;
     top: 0;
+    right: 0;
+    left: 0;
     padding-left: 110px;
     overflow-x: auto;
     background: #bbbbbb;
@@ -689,9 +692,9 @@ input{
 
 .field-timeline {
     width: max-content;
-    background: url(/thing-editor/img/timeline.png);
-    height: 40px;
-    background-repeat: repeat-x;
+    background: url(/thing-editor/img/timeline.jpg);
+	background-repeat: repeat-x;
+	position: relative;
 }
 
 .timeline-play-indicator {
@@ -715,12 +718,25 @@ input{
 .timeline-keyframe {
 	cursor: w-resize;
     position: absolute;
-    width: 8px;
-    height: 24px;
 }
 
 .timeline-keyframe-selected {
     outline: 2px solid #ff9d00;
+}
+
+.timeline-loop-point {
+	cursor: w-resize;
+	position: absolute;
+	bottom: 0;
+	height: 14px;
+}
+
+.timeline-loop-point-selected,.timeline-loop-point:hover {
+    outline: 2px solid #ff9d00;
+}
+
+.timeline-label-selected {
+    outline: 2px solid #ff0000;
 }
 
 .timeline-keyframe-nextofselected {
@@ -738,28 +754,31 @@ input{
 }
 
 .timeline-keyframe-smooth {
-	border-top-right-radius:6px;
-	border-bottom-right-radius:6px;
-	background: #33ffa2;
-	border-left: 1px solid #516b00;
+	border-top-right-radius:70%;
+	border-bottom-right-radius:70%;
+	background: #0eca75;
+	border-left: 1px solid #2b3a00;
 }
 
 .timeline-keyframe-jump-floor {
-	border-bottom-left-radius:6px;
-	border-bottom-right-radius:6px;
+	border-bottom-left-radius:70%;
+	border-bottom-right-radius:70%;
 	background: #e2c200;
 	border-left: 1px solid #ad7000;
 }
 
 .timeline-keyframe-jump-roof {
-	border-top-left-radius:6px;
-	border-top-right-radius:6px;
+	border-top-left-radius:70%;
+	border-top-right-radius:70%;
 	background: #e2c200;
 	border-left: 1px solid #ad7000;
 }
 
-
-
+.timelilne-select-frame {
+	pointer-events: none;
+	position: absolute;
+	border:1px dashed #080;
+}
 
 .loop-arrow {
     pointer-events: none;
@@ -837,6 +856,10 @@ input{
 	width: 140px;
 }
 
+.bottom-panel .number-input input {
+	width: 80px;
+}
+
 .bottom-panel input, .bottom-panel .select-editor{
 	width:initial;
 	vertical-align: middle;
@@ -863,7 +886,9 @@ input{
 	color: #fff;
 	margin-top:10px;
 	padding: 0 5px;
+	padding-right: 15px;
 	border-left: 1px solid #f00;
+	cursor: w-resize;
 }
 
 .tip-icon{

@@ -43,7 +43,7 @@ let classProps = {className: 'scene-node-class'};
 let sceneNodeProps = {className: 'scene-node-item'};
 
 R.sceneNode = (node) => {
-	return R.span(sceneNodeProps, R.classIcon(node.constructor), R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + __getNodeExtendData(node).id));
+	return R.span(sceneNodeProps, R.classIcon(node.constructor), R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + node.___id));
 };
 
 R.listItem = (view, item, key, parent) => {
@@ -215,7 +215,7 @@ window.isEventFocusOnInputElement = (ev) => {
 	if(ev.type === 'keydown') {
 		canBePassed = ev.ctrlKey;
 		if(canBePassed) {
-			switch(ev.keyCode) {  //block cpypaste hotkeys foxused on text inputs only
+			switch(ev.keyCode) {  //block cpypaste hotkeys focused on text inputs only
 			case 67:
 			case 86:
 			case 88:

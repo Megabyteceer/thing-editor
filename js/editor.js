@@ -64,13 +64,11 @@ export default class Editor {
 		
 		this.beforePropertyChanged = new Signal();
 		this.afterPropertyChanged = new Signal();
-		
+		Timeline.init();
 		ReactDOM.render(
 			React.createElement(UI, {onMounted: this.onUIMounted}),
 			document.getElementById('root')
 		);
-		
-		Timeline.init();
 
 		editor.__unloadedTexture = PIXI.Texture.fromImage('img/loading-texture.png');
 	}
@@ -243,7 +241,7 @@ export default class Editor {
 			}
 			w.x = 0;
 			w.y = 0;
-			
+			Lib.__reassignIds(w);
 			let indexToAdd = parent.getChildIndex(o);
 
 			for(let c of a) {
@@ -456,10 +454,11 @@ export default class Editor {
 		if(game.currentScene) {
 			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
 		}
-		idCounter = 0;
 		
 		game.showScene(name);
 		
+		__getNodeExtendData(game.currentContainer).childsExpanded = true;
+
 		if(game.currentScene) {
 			this.selection.loadSelection(selectionsForScenesByName[name]);
 		}
@@ -673,6 +672,7 @@ function saveCurrentSceneName(name) {
 
 function addTo(parent, child, doNotselect) {
 	parent.addChild(child);
+	Lib.__reassignIds(child);
 	Lib.__invalidateSerialisationCache(child);
 	if(!doNotselect) {
 		editor.ui.sceneTree.selectInTree(child);
@@ -717,12 +717,11 @@ let tryToSaveHistory = () => {
 $(window).on('mouseup', tryToSaveHistory);
 $(window).on('keyup', tryToSaveHistory);
 
-let idCounter = 0;
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
 	assert(node instanceof DisplayObject, "DisplayObject expected");
 	if(!editorNodeData.has(node)) {
-		editorNodeData.set(node, {id: idCounter++});
+		editorNodeData.set(node, {});
 	}
 	return editorNodeData.get(node);
 };

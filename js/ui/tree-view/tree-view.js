@@ -11,7 +11,7 @@ let leftPanelProps = {className: 'left-panel'};
 let foundByWhichProperty;
 
 R.renderSceneNode = (node) => {
-	return React.createElement(TreeNode, {node: node, key: __getNodeExtendData(node).id});
+	return React.createElement(TreeNode, {node: node, key: node.___id});
 };
 
 function onEmptyClick(ev) {

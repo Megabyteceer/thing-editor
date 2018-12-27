@@ -1,172 +1,243 @@
 import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
-import FieldsTimeline from "./timeline-field.js";
-import {KeyframePropertyEditor} from "./timeline-field.js";
+import ObjectsTimeline from "./objects-timeline.js";
+import TimeMarker from "./time-marker.js";
 import game from "thing-engine/js/game.js";
+import TimelineKeyframe from "./timeline-keyframe.js";
+import KeyframePropertyEditor from "./keyframe-property-editor.js";
+import Line from "./timeline-line.js";
+import TimeLabel from "./timeline-label.js";
+import TimelineLoopPoint from "./timeline-loop-point.js";
+import TimelineSelectFrame from "./timeline-select-frame.js";
 
-const FRAMES_STEP = 3;
 
-let timelineContainerProps = {className: 'timeline list-view', onScroll:onTimelineScroll, onMouseDown:onTimelineMouseDown};
-let objectsTimelineProps = {className: 'objects-timeline'};
-let fieldLabelTimelineProps = {className: 'objects-timeline-labels'};
+let widthZoom;
+let heightZoom;
 
-let timeline;
-let timelineElement;
-let lastTimelineBounds;
+let timeMarker;
+function timeMarkerRef(ref) {
+	timeMarker = ref;
+}
+
+let selectionFrame;
+
+function selectionFrameRef(ref) {
+	selectionFrame = ref;
+}
 
 let beforeChangeRemember;
 
+let timeDragging;
+
 let recordingIsDisabled;
+let timelineInstance;
+const justModifiedKeyframes = [];
+
+const selectedComponents = [];
+function clearSelection() {
+	while (selectedComponents.length > 0) {
+		unselect(selectedComponents[selectedComponents.length - 1]);
+	}
+}
+
+function select(component) {
+	assert(selectedComponents.indexOf(component) < 0, "Compinent already selected");
+	component.setState({isSelected: true});
+	selectedComponents.push(component);
+}
+
+function unselect(component) {
+	let i = selectedComponents.indexOf(component);
+	assert(i >= 0, "Compinent is not selected");
+	component.setState({isSelected: false});
+	selectedComponents.splice(i, 1);
+}
 
 export default class Timeline extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
-		timeline = this;
-		Timeline.timeline = this;
-		this.timelineMarkerRef = this.timelineMarkerRef.bind(this);
-		this.onPlayStopToggle = this.onPlayStopToggle.bind(this);
-		this.prevFrame =this.prevFrame.bind(this);
-		this.nextFrame =this.nextFrame.bind(this);
+
+		heightZoom = editor.settings.getItem('timeline-height-zoom', 40);
+		widthZoom = editor.settings.getItem('timeline-width-zoom', 3);
+		this.state = {
+			heightZoom,
+			widthZoom
+		};
+		this.prevKeyFrame = this.prevKeyFrame.bind(this);
+		this.nextKeyFrame = this.nextKeyFrame.bind(this);
+		this.prevFrame = this.prevFrame.bind(this);
+		this.nextFrame = this.nextFrame.bind(this);
+		this.renderObjectsTimeline = this.renderObjectsTimeline.bind(this);
+		this.onWheel = this.onWheel.bind(this);
+		this.onMouseDown = this.onMouseDown.bind(this);
+		this.onMouseMove = this.onMouseMove.bind(this);
+		this.onMouseUp = this.onMouseUp.bind(this);
+		this._afterHistoryJump = this._afterHistoryJump.bind(this);
 	}
 
-	prevFrame() {
-		this.setTime(Math.max(0, this.getTime() - 1));
+	static unselectKeyframe(keyframe) {
+		for (let c of selectedComponents) {
+			if (c.props.keyFrame === keyframe) {
+				unselect(c);
+				return;
+			}
+		}
 	}
 
-	nextFrame() {
-		this.setTime(this.getTime() + 1);
+	selectKeyframe(kf) {
+		clearSelection();
+		select(kf.___view);
+		this.setTime(kf.t, true);
+	}
+
+	componentDidMount() {
+		clearSelection();
+		Timeline.timelineDOMElement = $('.timeline')[0];
+		timelineInstance = this;
+		window.addEventListener('mousemove', this.onMouseMove);
+		window.addEventListener('mouseup', this.onMouseUp);
+		editor.history.beforeHistoryJump.add(this._beforeHistoryJump);
+		editor.history.afterHistoryJump.add(this._afterHistoryJump);
 	}
 
 	static init() {
 		editor.beforePropertyChanged.add(Timeline.onBeforePropertyChanged);
 		editor.afterPropertyChanged.add(Timeline.onAfterPropertyChanged);
 	}
-	
-	componentDidMount() {
-		timelineElement = $('.timeline')[0];
-		editor.ui.viewport.beforePlayStopToggle.add(this.onPlayStopToggle);
-	}
-	
+
 	componentWillUnmount() {
-		timelineElement = null;
-		editor.ui.viewport.beforePlayStopToggle.remove(this.onPlayStopToggle);
-	}
-	
-	onPlayStopToggle() {
-		this.setTime(0, true);
-	}
-	
-	createKeyframeWithTimelineValue(fieldData, time) { //used for toggle keyframe
-		this.createKeyframeWithCurrentObjectsValue(getMovieclipByFieldData(fieldData), fieldData.n, time);
-		renormalizeFieldTimelineDataAfterChange(fieldData);
-	}
-	
-	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
-		let keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
-		
-		//TODO: check if field was exists and delta its value if so
-		keyFrame.v = o[fieldName];
-		let field = getFieldByNameOrCreate(o, fieldName);
-		renormalizeFieldTimelineDataAfterChange(field);
-	}
-	
-	static disableRecording() {
-		recordingIsDisabled = true;
-	}
-	
-	static enableRecording() {
-		recordingIsDisabled = false;
+		Timeline.timelineDOMElement = null;
+		timelineInstance = null;
+		editor.history.beforeHistoryJump.remove(this._beforeHistoryJump);
+		editor.history.afterHistoryJump.remove(this._afterHistoryJump);
+		window.removeEventListener('mousemove', this.onMouseMove);
+		window.removeEventListener('mouseup', this.onMouseUp);
 	}
 
-	static onBeforePropertyChanged(fieldName) {
-		if((!timelineElement) || recordingIsDisabled) {
-			beforeChangeRemember = new WeakMap();
+	onWheel(ev) {
+		let delta = (ev.deltaY < 0) ? 1.5 : 0.66666666;
+		if (ev.ctrlKey) {
+			heightZoom = this.state.heightZoom;
+			let tmp = heightZoom;
+
+			heightZoom *= delta;
+			if (heightZoom < 40) {
+				heightZoom = 40;
+			} else if (heightZoom > 135) {
+				heightZoom = 135;
+			}
+			if (tmp !== heightZoom) {
+				editor.settings.setItem('timeline-height-zoom', heightZoom);
+				heightZoom = Math.floor(heightZoom);
+				Line.invalideteChartsRenderCache();
+				this.setState({heightZoom});
+				this.centralizeSelection();
+			}
+			sp(ev);
 		}
-		
-		editor.selection.some((o) => {
-			if(o instanceof MovieClip) {
-				if(timelineElement && !recordingIsDisabled) {
-					if (timeline.isNeedAnimateProperty(o, fieldName)) {
-						getFrameAtTimeOrCreate(o, fieldName, 0);
-					}
-				} else {
-					let val = o[fieldName];
-					if(typeof val === 'number') {
-						beforeChangeRemember.set(o, val);
-					}
-				}
+		if(ev.shiftKey) {
+			widthZoom = this.state.widthZoom;
+			let tmp = widthZoom;
+			widthZoom *= delta;
+			if (widthZoom < 2) {
+				widthZoom = 2;
+			} else if (widthZoom > 28.5) {
+				widthZoom = 28.5;
 			}
-		});
-	}
-	
-	isNeedAnimateProperty(o, fieldName) {
-		return this.getTime() > 0 || getFieldByName(o, fieldName);
-	}
-	
-	static onAfterPropertyChanged(fieldName, field) {
-		editor.selection.some((o) => {
-			if(o instanceof MovieClip) {
-				if(timelineElement && !recordingIsDisabled) {
-					if (timeline.isNeedAnimateProperty(o, fieldName)) {
-						timeline.createKeyframeWithCurrentObjectsValue(o, fieldName);
-					}
-				} else { //shift all keyframes instead of add keyframe
-					let val = o[fieldName];
-					if(typeof val === 'number') {
-						let oldVal = beforeChangeRemember.get(o);
-						if(oldVal !== val) {
-							let delta = val - oldVal;
-							let fld = getFieldByName(o, fieldName);
-							if(fld) {
-								for(let kf of fld.t) {
-									let changedVal = kf.v + delta;
-									if(field.hasOwnProperty('min')) {
-										changedVal = Math.max(field.min, changedVal);
-									}
-									if(field.hasOwnProperty('max')) {
-										changedVal = Math.min(field.max, changedVal);
-									}
-									kf.v = changedVal;
-								}
-								
-								renormalizeFieldTimelineDataAfterChange(fld);
-							}
-						}
-					}
-					if(game.__EDITORmode) {
-						o.resetTimeline();
-					}
-				}
+			if (tmp !== widthZoom) {
+				editor.settings.setItem('timeline-width-zoom', widthZoom);
+				widthZoom = Math.floor(widthZoom);
+				Line.invalideteChartsRenderCache();
+				this.setState({widthZoom});
+				this.centralizeSelection();
 			}
-		});
-		if(timelineElement) {
-			timeline.forceUpdate();
+			sp(ev);
 		}
 		
 	}
-	
-	deleteAnimationField(field) {
-		let tl = getTimelineDataByFieldData(field);
-		let i = tl.f.indexOf(field);
-		assert(i >= 0, "Can't find field in timeline");
-		tl.f.splice(i,1);
-		renormalizeAllLabels(tl);
-		MovieClip.invalidateSerializeCache(tl);
-		editor.sceneModified();
-		this.forceUpdate();
+
+	centralizeSelection() {
+		setTimeout(() => {
+			if (selectedComponents.length > 0) {
+				timeMarker.scrollInToView(selectedComponents[0].getTime());
+			}
+		}, 0);
 	}
-	
+
+	nextKeyFrame() {
+		let time = this.getTime();
+		let allKeyframes = this._getAllKeyframes();
+		for(let k of allKeyframes) {
+			if(k.t > time) {
+				this.selectKeyframe(k);
+				return;
+			}
+		}
+		this.selectKeyframe(allKeyframes[0]);
+	}
+
+	_getAllKeyframes() {
+		let allKeyframes = [];
+		for(let m of editor.selection) {
+			if(m instanceof MovieClip && m._timelineData) {
+				for( let f of m._timelineData.f) {
+					allKeyframes = allKeyframes.concat(f.t);
+				}
+			}
+		}
+		allKeyframes.sort(sortFieldsByTime);
+		return allKeyframes;
+	}
+
+	prevKeyFrame() {
+		let time = this.getTime();
+		let allKeyframes = this._getAllKeyframes();
+		if(allKeyframes.length > 0) {
+			if(time === 0) {
+				this.selectKeyframe(allKeyframes[allKeyframes.length - 1]);
+			} else {
+				let reClosestKeyframe = allKeyframes[0];
+				for(let k of allKeyframes) {
+					if(k.t >= time) {
+						this.selectKeyframe(reClosestKeyframe);
+						return;
+					}
+					reClosestKeyframe = k;
+				}
+			}
+		}
+	}
+
+	prevFrame() {
+		this.setTime(Math.max(0, this.getTime() - 1), true);
+	}
+
+	nextFrame() {
+		this.setTime(this.getTime() + 1, true);
+	}
+
+	renderObjectsTimeline(node) {
+		let key = node.___id;
+		if(node instanceof MovieClip && node._timelineData) {
+			return React.createElement(ObjectsTimeline, {owner:this, node, key,
+				heightZoom,
+				widthZoom
+			});
+		} else {
+			return R.div({key});
+		}
+	}
+
 	getTime() {
-		return this.timelineMarker.state.time;
+		return timeMarker.state.time;
 	}
-	
+
 	setTime(time, scrollInToView) {
-		this.timelineMarker.setTime(time, scrollInToView);
-		if(game.__EDITORmode) {
+		timeMarker.setTime(time, scrollInToView);
+		if (game.__EDITORmode) {
 			editor.selection.some((o) => {
-				if(o._timelineData) {
+				if (o._timelineData) {
 					o._timelineData.f.some((f) => {
-						if(f.__cacheTimeline.hasOwnProperty(time)) {
+						if (f.__cacheTimeline.hasOwnProperty(time)) {
 							o[f.n] = f.__cacheTimeline[time];
 						}
 					});
@@ -175,46 +246,291 @@ export default class Timeline extends React.Component {
 			editor.refreshPropsEditor();
 		}
 	}
-	
-	timelineMarkerRef(ref) {
-		this.timelineMarker = ref;
+
+	startTimeDragging() {
+		timeDragging = true;
+
 	}
-	
-	static getTimelineElement() {
-		return 	timelineElement;
-	}
-	
-	static getTimelineWindowBounds() {
-		if(timelineElement) {
-			lastTimelineBounds = timelineElement.getBoundingClientRect();
-		}
-		return lastTimelineBounds;
-	}
-	
+
 	render() {
-
-		let keyframePropsEditor = React.createElement(KeyframePropertyEditor);
-
-		return R.fragment (
+		return R.fragment(
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
-			R.div(timelineContainerProps,
-				React.createElement(TimeMarker, {timeline: this, ref:this.timelineMarkerRef}),
-				editor.selection.map(renderObjectsTimeline)
+			R.div(
+				{
+					onScroll: onTimelineScroll,
+					onMouseDown: this.onMouseDown,
+					className: 'timeline',
+					onWheel: this.onWheel
+				},
+				React.createElement(TimeMarker, {
+					owner: this,
+					ref: timeMarkerRef
+				}),
+				editor.selection.map(this.renderObjectsTimeline)
 			),
-			keyframePropsEditor,
-			R.span({style:{display:'none'}},
+			React.createElement(KeyframePropertyEditor, {
+				owner: this,
+				keyframes: getSelectedKeyframes()
+			}),
+			React.createElement(TimelineSelectFrame, {
+				ref: selectionFrameRef
+			}),
+			R.span(
+				{
+					style: {
+						display: 'none'
+					}
+				},
 				R.btn('<', this.prevFrame, undefined, undefined, 188),
-				R.btn('>', this.nextFrame, undefined, undefined, 190)
+				R.btn('>', this.nextFrame, undefined, undefined, 190),
+				R.btn('<<', this.prevKeyFrame, undefined, undefined, 1188),
+				R.btn('>>', this.nextKeyFrame, undefined, undefined, 1190)
 			)
 		);
+
+	}
+
+	onMouseUp(ev) {
+		timeDragging = false;
+		if (draggingComponent) {
+			//Timeline.renormalizeFieldTimelineDataAfterChange();
+			if (reduceRepeatingKeyframesInSelected()) {
+				this.forceUpdate();
+			}
+
+			draggingXShift = 0;
+			draggingComponent = null;
+		} else {
+			let selectedRect = selectionFrame.getRectAndFinishDragging();
+			if (selectedRect && selectedRect.width > 12) {
+				selectElementsInRectangle(selectedRect, ev.shiftKey);
+			}
+		}
+	}
+
+	onMouseDown(ev) {
+		isDragging = true;
+		this.onMouseMove(ev);
+		if (!draggingComponent && !ev.ctrlKey && !timeDragging) {
+			selectionFrame.onMouseDown(ev);
+		}
+	}
+
+	onMouseMove(ev) {
+		isDragging = (isDragging && (ev.buttons === 1));
+		let time = Timeline.mouseEventToTime(ev);
+		if (isDragging) {
+			if (draggingComponent) {
+				let delta = time - prevDragTime;
+				if (delta !== 0) {
+					for (let c of selectedComponents) {
+						let t = c.getTime();
+						delta = Math.max(0, t + delta) - t;
+						if (delta === 0) {
+							return;
+						}
+					}
+					for (let c of selectedComponents) {
+						c.setTime(c.getTime() + delta);
+					}
+
+					prevDragTime += delta;
+				}
+				this.setTime(prevDragTime, true);
+			} else {
+				if (ev.ctrlKey) {
+					for (let c of selectedComponents) {
+						if (c instanceof TimelineKeyframe || c instanceof TimelineLoopPoint) {
+							let kf = c.props.keyFrame;
+							if (kf.j !== time) {
+								kf.j = time;
+								c.onChanged();
+								c.props.owner.forceUpdate();
+							}
+						}
+					}
+				}
+			}
+		}
+		if(timeDragging) {
+			this.setTime(time);
+		}
+		selectionFrame.onMouseMove(ev);
+	}
+
+	static unregisterDragableComponent(component) {
+		let i = selectedComponents.indexOf(component);
+		if (i >= 0) {
+			selectedComponents.splice(i, 1);
+		}
+	}
+
+	static registerDragableComponent(component) {
+		assert(component.getTime && component.setTime, "Dragable component should have 'getTime', 'setTime(time)' function as dragging interface");
+		component.onMouseDown = onDragableMouseDown.bind(component);
+	}
+
+	static allFieldDataChanged(movieclip) {
+		for (let f of movieclip._timelineData.f) {
+			Timeline.fieldDataChanged(f, movieclip);
+		}
+	}
+
+	static fieldDataChanged(fieldData, node) { //invalidate cache
+		assert(node instanceof MovieClip, 'Movieclip expected');
+		assert(node._timelineData.f.indexOf(fieldData) >= 0, 'field data is not beyond this movieclip.');
+		let timeLineData = fieldData.t;
+
+		timeLineData.sort(sortFieldsByTime);
+		for (let field of timeLineData) {
+			field.n = MovieClip._findNextKeyframe(timeLineData, field.j);
+		}
+
+		fieldData.__cacheTimeline = false;
+		Line.invalideteChartsRenderCache(fieldData);
+		MovieClip.invalidateSerializeCache(node);
+		editor.sceneModified();
+	}
+
+	static _justModifiedSelectable(keyFrame) {
+		justModifiedKeyframes.push(keyFrame);
+	}
+
+	_beforeHistoryJump() {
+		justModifiedKeyframes.length = 0;
+	}
+
+	_afterHistoryJump() {
+		setTimeout(() => {
+			if (justModifiedKeyframes.length > 0) {
+				clearSelection();
+				for (let c of justModifiedKeyframes) {
+					select(c);
+				}
+				this.setTime(justModifiedKeyframes[0].getTime(), true);
+			}
+		}, 0);
+	}
+
+	static onBeforePropertyChanged(fieldName) {
+		if ((!Timeline.timelineDOMElement) || recordingIsDisabled) {
+			beforeChangeRemember = new WeakMap();
+		}
+
+		editor.selection.some((o) => {
+			if (o instanceof MovieClip) {
+				if (Timeline.timelineDOMElement && !recordingIsDisabled) {
+					if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
+						getFrameAtTimeOrCreate(o, fieldName, 0);
+					}
+				} else {
+					let val = o[fieldName];
+					if (typeof val === 'number') {
+						beforeChangeRemember.set(o, val);
+					}
+				}
+			}
+		});
+	}
+
+	static onAfterPropertyChanged(fieldName, field) {
+		editor.selection.some((o) => {
+			if (o instanceof MovieClip) {
+				if (Timeline.timelineDOMElement && !recordingIsDisabled) {
+					if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
+						timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName);
+					}
+				} else { //shift all keyframes instead of add keyframe
+					let val = o[fieldName];
+					if (typeof val === 'number') {
+						let oldVal = beforeChangeRemember.get(o);
+						if (oldVal !== val) {
+							let delta = val - oldVal;
+							let fld = getFieldByName(o, fieldName);
+							if (fld) {
+								for (let kf of fld.t) {
+									let changedVal = kf.v + delta;
+									if (field.hasOwnProperty('min')) {
+										changedVal = Math.max(field.min, changedVal);
+									}
+									if (field.hasOwnProperty('max')) {
+										changedVal = Math.min(field.max, changedVal);
+									}
+									kf.v = changedVal;
+								}
+								Timeline.fieldDataChanged(fld, o);
+							}
+						}
+					}
+					if (game.__EDITORmode) {
+						o.resetTimeline();
+					}
+				}
+			}
+		});
+		if (timelineInstance) {
+			timelineInstance.forceUpdate();
+		}
+	}
+
+	isNeedAnimateProperty(o, fieldName) {
+		return this.getTime() > 0 || getFieldByName(o, fieldName);
+	}
+
+	static disableRecording() {
+		recordingIsDisabled = true;
+	}
+
+	static enableRecording() {
+		recordingIsDisabled = false;
+	}
+
+	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
+		let keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
+		keyFrame.v = o[fieldName];
+		let field = getFieldByNameOrCreate(o, fieldName);
+		Timeline.fieldDataChanged(field, o);
+	}
+
+	static mouseEventToTime(ev) {
+		let tl = Timeline.timelineDOMElement;
+		let b = tl.getBoundingClientRect();
+		let x = ev.clientX - 110 - b.x - draggingXShift;
+		return Math.max(0, Math.round((x + tl.scrollLeft) / widthZoom));
+	}
+
+	static onAutoSelect(selectPath) {
+		for(let o of editor.selection) {
+			if(o._timelineData) {
+				for(let f of o._timelineData.f) {
+					if(f.n === selectPath[1]) {
+						let time = parseInt(selectPath[2]);
+						for(let kf of f.t) {
+							if(kf.t == time) {
+								if(!kf.___view.state || ! kf.___view.state.isSelected) {
+									select(kf.___view);
+									timelineInstance.forceUpdate();
+								}
+								setTimeout(() => {
+									let actionEditField = $('#window-timeline').find('.bottom-panel').find('.props-editor-callback');
+									window.shakeDomElement(actionEditField);
+									actionEditField.focus();
+								}, 1);
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
 function getFieldByName(o, name) {
-	if(o._timelineData) {
+	if (o._timelineData) {
 		let fields = o._timelineData.f;
-		for(let field of fields) {
-			if(field.n === name) {
+		for (let field of fields) {
+			if (field.n === name) {
 				return field;
 			}
 		}
@@ -223,18 +539,18 @@ function getFieldByName(o, name) {
 
 function getFieldByNameOrCreate(o, name) {
 	let field = getFieldByName(o, name);
-	if(!field) {
-		if(!o._timelineData) {
+	if (!field) {
+		if (!o._timelineData) {
 			o._timelineData = {
-				d:0.85,
-				p:0.02,
-				l:{},
-				f:[]
+				d: 0.85,
+				p: 0.02,
+				l: {},
+				f: []
 			};
 		}
 		field = {
-			n:name,
-			t:[]
+			n: name,
+			t: []
 		};
 		o._timelineData.f.push(field);
 	}
@@ -250,37 +566,36 @@ function getFrameAtTimeOrCreate(o, name, time) {
 	}
 	return createKeyframe(o, name, time, field);
 }
-	
-function createKeyframe (o, name, time, field) {
+
+
+function createKeyframe(o, name, time, field) {
 
 	let mode;
 	let jumpTime = time;
 	let prevField = MovieClip._findPreviousKeyframe(field.t, time);
-	if(prevField) {
+	if (prevField) {
 		mode = prevField.m;
-		if(mode === 3 || mode === 4) {
+		if (mode === 3 || mode === 4) {
 			mode = 0;
 		}
-		if(prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
+		if (prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
 			jumpTime = prevField.j;
 			prevField.j = prevField.t;
 		}
 	} else {
-		mode = getDefaultKeyframeTypeForField(o, name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
+		mode = getDefaultKeyframeTypeForField([o], name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
 	}
-	
-	
-	
-	
+
 	let keyFrame = {
-		v: o[name],	//target Value
-		t: time,	//frame triggering Time
+		v: o[name], //target Value
+		t: time, //frame triggering Time
 		m: mode,
-		j: jumpTime	    //Jump to time. If no jump need - equal to 't'
+		j: jumpTime, //Jump to time. If no jump need - equal to 't'
+		___react_id: MovieClip.__generateKeyframeId()
 	};
-	
+
 	field.t.push(keyFrame);
-	renormalizeAllLabels(o._timelineData);
+	TimeLabel.renormalizeAllLabels(o);
 	return keyFrame;
 }
 
@@ -288,6 +603,7 @@ function getDefaultKeyframeTypeForField(o, name) {
 	switch (name) {
 	case 'x':
 	case 'y':
+	case 'rotation':
 		return 0; //- SMOOTH
 	case 'alpha':
 		return 1; //- LINEAR
@@ -296,200 +612,57 @@ function getDefaultKeyframeTypeForField(o, name) {
 	}
 }
 
-const keyframeTypesForNumber = [0,1,2,3,4];
+const keyframeTypesForNumber = [0, 1, 2, 3, 4];
 const keyframeTypesDiscreteOnly = [2];
 
-function getKeyframeTypesForField(o, name) {
-	let fieldDesc = editor.getObjectField(o, name);
-	if(fieldDesc.type === Number) {
-		return keyframeTypesForNumber;
+function getKeyframeTypesForField(objects, name) {
+	for(let o of objects) {
+		let fieldDesc = editor.getObjectField(o, name);
+		if (fieldDesc.type !== Number) {
+			return keyframeTypesDiscreteOnly;
+		}
 	}
-	return keyframeTypesDiscreteOnly;
+	return keyframeTypesForNumber;
 }
 
 Timeline.getKeyframeTypesForField = getKeyframeTypesForField;
 
-function renormalizeFieldTimelineDataAfterChange(fieldData) { //invalidate cache
-	let timeLineData = fieldData.t;
-	timeLineData.sort(sortFieldsByTime);
-	for(let field of timeLineData) {
-		field.n = MovieClip._findNextKeyframe(timeLineData, field.j);
+let draggingComponent;
+let draggingXShift = 0;
+let prevDragTime;
+
+function onDragableMouseDown(ev) {
+	if (!this.state || !this.state.isSelected) {
+		if (!ev.ctrlKey && !ev.shiftKey) {
+			clearSelection();
+		}
+		select(this);
+	} else {
+		if (!ev.shiftKey && ev.ctrlKey) {
+			unselect(this);
+		}
 	}
 
-	fieldData.__cacheTimeline = false;
-	fieldData.__cacheTimelineRendered = null;
-	MovieClip.invalidateSerializeCache(getTimelineDataByFieldData(fieldData));
-	editor.sceneModified();
+	if (ev.altKey) {
+		cloneSelectedKeyframes();
+	}
+
+	draggingComponent = this;
+	draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
+	prevDragTime = Timeline.mouseEventToTime(ev);
 }
 
-function renormalizeWholeTimelineData(timelineData) {
-	timelineData.f.some(renormalizeFieldTimelineDataAfterChange);
-}
-Timeline.renormalizeWholeTimelineData = renormalizeWholeTimelineData;
-
-function getMovieclipByFieldData(fieldData) {
-	for(let o of editor.selection) {
-		if(o._timelineData && o._timelineData.f.some((f) => { //get movieclip by field's timeline data and invalidate whole serialisation cache
-			return f === fieldData;
-		})) {
-			return o;
+function cloneSelectedKeyframes() {
+	for (let c of selectedComponents) {
+		if (c instanceof TimelineKeyframe) {
+			c.clone();
 		}
 	}
 }
-
-function getTimelineDataByFieldData(fieldData) {
-	return getMovieclipByFieldData(fieldData)._timelineData;
-}
-
-Timeline.getTimelineDataByFieldData = getTimelineDataByFieldData;
-Timeline.renormalizeFieldTimelineDataAfterChange = renormalizeFieldTimelineDataAfterChange;
 
 const sortFieldsByTime = (a, b) => {
 	return a.t - b.t;
 };
-
-
-const renderObjectsTimeline = (node) => {
-	let key = __getNodeExtendData(node).id;
-	if(node instanceof MovieClip && node._timelineData) {
-		return React.createElement(ObjectsTimeline, {node, key});
-	} else {
-		return R.div({key});
-	}
-};
-
-function renormalizeLabel(label, timelineData) { //re find keyframes for modified label
-	label.n = timelineData.f.map((fieldTimeline) => {
-		return MovieClip._findNextKeyframe(fieldTimeline.t, label.t - 1);
-	});
-	MovieClip.invalidateSerializeCache(timelineData);
-}
-
-function renormalizeAllLabels(timelineData) {
-	for(let key in timelineData.l) {
-		if(!timelineData.l.hasOwnProperty(key)) continue;
-		renormalizeLabel(timelineData.l[key], timelineData);
-	}
-}
-
-function askForLabelName(existingLabelsNames, title, defaultName = '') {
-	return editor.ui.modal.showPrompt(title, defaultName, undefined, (nameToCheck) => {
-		if(existingLabelsNames.indexOf(nameToCheck) >= 0) {
-			return 'Label with that name already exists.';
-		}
-	});
-}
-
-class ObjectsTimeline extends React.Component {
-	
-	renderTimeLabel(labelName, labelsNamesList) {
-		return React.createElement(TimeLabel, {key:labelName, timelienData: this.props.node._timelineData, label:this.props.node._timelineData.l[labelName], labelName, labelsNamesList});
-	}
-	
-	render() {
-		let tl = this.props.node._timelineData;
-		
-		let labelsNames = Object.keys(tl.l);
-		let labelsPanel = R.div({
-			onMouseDown:(ev) => { //create new label by right click
-				if(ev.buttons === 2) {
-					let time = mouseTimelineTime;
-					askForLabelName(labelsNames, "Create new label:").then((name) => {
-						if(name) {
-							let label = {t: time};
-							tl.l[name] = label;
-							renormalizeLabel(label, tl);
-							this.forceUpdate();
-						}
-					});
-				}
-			},
-			title:'Right click to add time label',
-			className:'timeline-labels-panel'
-		},
-		labelsNames.map((labelName)=> {return this.renderTimeLabel(labelName, labelsNames);})
-		);
-		
-		return R.div(objectsTimelineProps,
-			labelsPanel,
-			tl.f.map((field, i) => {
-				return React.createElement(FieldsTimeline, {field, fieldIndex:i, key:field.n, node:this.props.node});
-			})
-		);
-	}
-}
-
-
-const timeMarkerProps = {className: 'time-marker-body'};
-const timeMarkerLineProps = {className: 'time-marker-v-line'};
-const timeMarkerLabelProps = {className: 'time-marker-label'};
-const smallTextProps = {className: 'small-text'};
-
-class TimeMarker extends React.Component {
-	
-	constructor(params) {
-		super(params);
-		this.state = {time:0};
-	}
-	
-	setTime(time, scrollInToView) {
-		this.setState({time});
-		if(scrollInToView) {
-			timelineElement.scrollLeft = time * FRAMES_STEP -  Timeline.getTimelineWindowBounds().width / 2;
-		}
-	}
-	
-	render() {
-		return R.div(timeMarkerProps,
-			R.div(fieldLabelTimelineProps),
-			R.div({className: 'time-marker', style:{left: this.state.time * FRAMES_STEP}},
-				R.div(timeMarkerLineProps),
-				R.div(timeMarkerLabelProps,
-					R.b(null, this.state.time), R.span(smallTextProps, 'f ' + (this.state.time/60).toFixed(2) + 's')
-				)
-			)
-		);
-	}
-}
-
-class TimeLabel extends React.Component {
-	
-	render () {
-		let tl = this.props.timelienData;
-		let labelsNamesList = this.props.labelsNamesList;
-		let label = this.props.label;
-		let name = this.props.labelName;
-		
-		return R.div({className:'timeline-label', style:{left: label.t * FRAMES_STEP},
-			onMouseDown: (ev) => {
-				if(ev.buttons === 2) {
-					editor.ui.modal.showQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
-						delete tl.l[name];
-						timeline.forceUpdate();
-					}, R.span(null, R.icon('delete'), ' Delete'));
-				} else {
-					draggingXShift = ev.clientX - $(ev.target).closest('.timeline-label')[0].getBoundingClientRect().x;
-					draggingLabel = label;
-					draggingTimelineData = tl;
-				}
-				sp(ev);
-			},
-			onDoubleClick: (ev) => { //rename label by double click
-				askForLabelName(labelsNamesList, "Rename label", name).then((enteredName) => {
-					if(enteredName) {
-						tl.l[enteredName] = label;
-						delete tl.l[name];
-						MovieClip.invalidateSerializeCache(tl);
-						timeline.forceUpdate();
-					}
-				});
-				sp(ev);
-			}
-		},
-		name
-		);
-	}
-}
 
 function onTimelineScroll(ev) {
 	$('.objects-timeline-labels').css({left: ev.target.scrollLeft + 'px'});
@@ -497,67 +670,97 @@ function onTimelineScroll(ev) {
 }
 
 let isDragging = false;
-let draggingXShift = 0;
-let draggingLabel;
-let draggingTimelineData;
-let mouseTimelineTime = 0;
 
-function onTimelineMouseDown(ev) {
-	let b = Timeline.getTimelineWindowBounds();
-	if((ev.clientX - b.x) < b.width && (ev.clientY - b.y) < b.height) {
-		if($(ev.target).hasClass('timeline-keyframe')) {
-			draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
-		} else {
-			draggingXShift = 0;
-			isDragging = true;
+function getSelectedKeyframes() {
+	let ret = [];
+	for (let c of selectedComponents) {
+		if (c instanceof TimelineKeyframe) {
+			ret.push(c);
 		}
-		onMouseMove(ev);
 	}
-	if(!window.isEventFocusOnInputElement(ev)) {
-		sp(ev);
-	}
+	return ret;
 }
 
-function onMouseMove(ev) {
-	
-	if($(ev.target).closest('.bottom-panel').length > 0) {
-		return;
-	}
-	
-	isDragging = (isDragging && (ev.buttons === 1));
-
-	let b = Timeline.getTimelineWindowBounds();
-	let tl = Timeline.getTimelineElement();
-	if(tl) {
-		let x = ev.clientX - 110 - b.x - draggingXShift;
-
-		if(ev.buttons !== 0) {
-			if (x < 20) {
-				tl.scrollLeft -= 20;
-			} else if ((x - b.width + 110) > -20) {
-				tl.scrollLeft += 50;
+function reduceRepeatingKeyframesInSelected() {
+	let isModified = false;
+	for (let keyframeComponent of getSelectedKeyframes()) {
+		let timeLineData = keyframeComponent.props.owner.props.owner.props.field.t;
+		for (let i = 0; i < timeLineData.length; i++) {
+			let kf = timeLineData[i];
+			for (let j = i + 1; j < timeLineData.length; j++) {
+				let keyFrame = timeLineData[j];
+				if ((kf !== keyFrame) && (kf.t === keyFrame.t)) {
+					timeLineData.splice(j, 1);
+					j--;
+					isModified = true;
+					Timeline.fieldDataChanged(
+						keyframeComponent.props.owner.props.owner.props.field,
+						keyframeComponent.props.owner.props.owner.props.owner.props.node
+					);
+				}
 			}
-		} else {
-			draggingLabel = null;
 		}
-		
-		mouseTimelineTime = Math.max(0, Math.round((x + tl.scrollLeft) / FRAMES_STEP));
-		timeline.mouseTimelineTime = mouseTimelineTime;
-		
-		if(isDragging) {
-			timeline.setTime(mouseTimelineTime);
-		}
-		
-		if(draggingLabel && (draggingLabel.t !== mouseTimelineTime)) {
-			draggingLabel.t = mouseTimelineTime;
-			renormalizeLabel(draggingLabel, draggingTimelineData);
-			editor.sceneModified();
-			timeline.forceUpdate();
-		}
-		FieldsTimeline.onMouseDrag(mouseTimelineTime, ev);
 	}
-	
+	return isModified;
 }
 
-$(window).on('mousemove', onMouseMove);
+function selectElementsInRectangle(rect, shiftKey) {
+	let a = $(Timeline.timelineDOMElement).find('.timeline-keyframe,.timeline-loop-point,.timeline-label');
+	if(!shiftKey) {
+		clearSelection();
+	}
+	for(let c of a) {
+		let r = c.getBoundingClientRect();
+		if(r.right > rect.left && r.left < rect.right) {
+			if(r.bottom > rect.top && r.top < rect.bottom) {
+				simulatedMouseEvent(c, {shiftKey, ctrlKey:true});
+			}
+		}
+	}
+	simulatedMouseEvent(window.document.body, {type: 'mouseup'});
+	timelineInstance.forceUpdate();
+}
 
+function simulatedMouseEvent(target, options) {
+
+	const event = window.document.createEvent('MouseEvents');
+	const opts = Object.assign({ // These are the default values, set up for un-modified left clicks
+		type: 'mousedown',
+		canBubble: true,
+		cancelable: true,
+		view: target.ownerDocument.defaultView,
+		detail: 1,
+		screenX: 0, //The coordinates within the entire page
+		screenY: 0,
+		clientX: 0, //The coordinates within the viewport
+		clientY: 0,
+		ctrlKey: false,
+		altKey: false,
+		shiftKey: false,
+		metaKey: false, //I *think* 'meta' is 'Cmd/Apple' on Mac, and 'Windows key' on Win. Not sure, though!
+		button: 0, //0 = left, 1 = middle, 2 = right
+		relatedTarget: null,
+	}, options);
+
+	//Pass in the options
+	event.initMouseEvent(
+		opts.type,
+		opts.canBubble,
+		opts.cancelable,
+		opts.view,
+		opts.detail,
+		opts.screenX,
+		opts.screenY,
+		opts.clientX,
+		opts.clientY,
+		opts.ctrlKey,
+		opts.altKey,
+		opts.shiftKey,
+		opts.metaKey,
+		opts.button,
+		opts.relatedTarget
+	);
+
+	//Fire the event
+	target.dispatchEvent(event);
+}

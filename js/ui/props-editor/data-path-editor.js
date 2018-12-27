@@ -22,7 +22,8 @@ export default class DataPathEditor extends React.Component {
 	}
 	
 	onBreakpointClick() {
-		__getNodeExtendData(editor.selection[0]).pathBreakpoint = true;
+		let node = editor.selection[0];
+		node.___pathBreakpoint = node[this.props.field.name];
 	}
 
 	onEditClicked() {
@@ -91,7 +92,7 @@ export default class DataPathEditor extends React.Component {
 		let val = this.props.value;
 
 		let breakpointBtn;
-		if((!game.__EDITORmode) && val) {
+		if(val) {
 			breakpointBtn = R.btn('■', this.onBreakpointClick, 'Breakpoint', 'tool-btn breakpoint-btn');
 		}
 

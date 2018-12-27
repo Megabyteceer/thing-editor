@@ -1,6 +1,7 @@
 import Lib from "thing-engine/js/lib.js";
 import game from "thing-engine/js/game.js";
 import Scene from "thing-engine/js/components/scene.js";
+import Signal from "./signal.js";
 
 const HISTORY_LEN = 100;
 const STRICT_HISTORY_LEN = 20;
@@ -16,13 +17,18 @@ let lastAppliedTreeData;
 function applyState(state) {
 	assert(state, 'Empty history record');
 	assert(game.__EDITORmode);
-
-	if(state.treeData !== lastAppliedTreeData) {
+	let stateChanged = state.treeData !== lastAppliedTreeData;
+	if(stateChanged) {
+		instance.beforeHistoryJump.emit();
 		let node = Lib._deserializeObject(state.treeData);
 		game.__setCurrentContainerContent(node);
+		editor.selection.loadSelection(state.selectionData);
 		lastAppliedTreeData = state.treeData;
 	}
-	editor.selection.loadSelection(state.selectionData);
+	historyUi.forceUpdate();
+	if(stateChanged) {
+		instance.afterHistoryJump.emit();
+	}
 }
 
 function getHistoryName() {
@@ -47,6 +53,8 @@ class History {
 		this.isRedoAvailable = this.isRedoAvailable.bind(this);
 		this.isUndoAvailable = this.isUndoAvailable.bind(this);
 		instance = this;
+		this.beforeHistoryJump = new Signal();
+		this.afterHistoryJump = new Signal();
 	}
 
 	isRedoAvailable() {
@@ -124,7 +132,6 @@ class History {
 		if (this.isUndoAvailable()) {
 			this._redos.push(this._undos.pop());
 			applyState(this.currentState);
-			historyUi.forceUpdate();
 		}
 	}
 	
@@ -132,7 +139,6 @@ class History {
 		if (this.isRedoAvailable()) {
 			this._undos.push(this._redos.pop());
 			applyState(this.currentState);
-			historyUi.forceUpdate();
 		}
 	}
 	

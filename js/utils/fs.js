@@ -94,7 +94,7 @@ let fs = {
 		}
 		
 		if(typeof data !== 'string') {
-			data = JSON.stringify(data, null, '	');
+			data = JSON.stringify(data, fieldsFilter, '	');
 		}
 		
 		let r = $.ajax({
@@ -108,6 +108,12 @@ let fs = {
 			r.always(editor.ui.modal.hideSpinner);
 		}
 		return r;
+	}
+};
+
+const fieldsFilter = (key, value) => {
+	if(!key.startsWith('___')) {
+		return value;
 	}
 };
 
