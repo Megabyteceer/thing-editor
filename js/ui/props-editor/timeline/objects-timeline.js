@@ -29,7 +29,7 @@ export default class ObjectsTimeline extends React.Component {
 	deleteAnimationField(fieldData) {
 		let timelineData = this.props.node._timelineData;
 		let i = timelineData.f.indexOf(fieldData);
-		for(let k of fieldData.f) {
+		for(let k of fieldData.t) {
 			Timeline.unselectKeyframe(k);
 		}
 		assert(i >= 0, "Can't find field in timeline");
