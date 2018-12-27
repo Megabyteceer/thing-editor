@@ -269,12 +269,15 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 	};
 };
 
-window.onunload = function() {
+window.addEventListener('beforeunload', function(ev) {
 	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITORmode && !editor.__FatalError) {
 		editor.exitPrefabMode();
 		editor.saveBackup(true);
+		ev.preventDefault();
+		ev.returnValue = '';
+		return null;
 	}
-};
+});
 
 window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = true) {
 	return () => {
