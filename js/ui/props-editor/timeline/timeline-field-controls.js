@@ -1,10 +1,10 @@
-const fieldLabelTimelineProps = {className: 'objects-timeline-labels', onMouseDown:sp, onMouseMove:sp};
+
 
 export default class TimelilneFieldControls extends React.Component {
 
 	render() {
 		let fieldTimeline = this.props.owner;
-		return R.div(fieldLabelTimelineProps,
+		return R.div({className: 'objects-timeline-labels', onMouseDown:sp, onMouseMove:sp, style:{height: this.props.owner.props.owner.props.heightZoom}},
 			fieldTimeline.props.field.n,
 			R.br(),
 			R.btn('x', fieldTimeline.onRemoveFieldClick, 'Remove field animation...', 'danger-btn'),

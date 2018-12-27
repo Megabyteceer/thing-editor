@@ -14,6 +14,10 @@ let heightZoom;
 
 let chartsCache = new WeakMap();
 
+const filterUndefineds = (v) => {
+	return v !== undefined;
+};
+
 export default class Line extends React.Component {
 
 	constructor(props) {
@@ -29,14 +33,23 @@ export default class Line extends React.Component {
 				let startTime = ((keyFrame.t) * widthZoom);
 				let endTime = ((keyFrame.n.t) * widthZoom);
 				let startValue = scale(this.getValueAtTime(keyFrame.t));
-				let endValue = scale(this.getValueAtTime(keyFrame.n.t));
-				ret.push(startTime + ',' + startValue);
-				ret.push(endTime + ',' + startValue);
-				ret.push(endTime + ',' + endValue);
+				if(!isNaN(startValue)) {
+					let endValue = scale(this.getValueAtTime(keyFrame.n.t));
+					if(!isNaN(endValue)) {
+						ret.push(startTime + ',' + startValue);
+						ret.push(endTime + ',' + startValue);
+						ret.push(endTime + ',' + endValue);
+					}
+				}
+				
 			} else {
 				let n = keyFrame.n;
-				for(let i = keyFrame.t+1; i <= n.t; i++) {
-					ret.push((i * widthZoom) + ',' + scale(this.getValueAtTime(i)));
+				for(let i = keyFrame.t + ((keyFrame.t > 0) ? 1 : 0); i <= n.t; i++) {
+					let v = scale(this.getValueAtTime(i));
+					if(isNaN(v)) {
+						break;
+					}
+					ret.push((i * widthZoom) + ',' + v);
 				}
 			}
 			return ret.join(' ');
@@ -57,22 +70,14 @@ export default class Line extends React.Component {
 			for(let label in wholeTimelineData.l) {
 				label = wholeTimelineData.l[label];
 				if(!c.hasOwnProperty(label.t)) { //time at this label is not calculated yet
-					fieldPlayer.goto(label.t, label.n[this.props.fieldIndex]);
+					fieldPlayer.goto(label.t, label.n[this.props.owner.props.fieldIndex]);
 					calculateCacheSegmentForField(fieldPlayer, c);
 				}
 			}
-			let len = Math.max(c.length, field.t[field.t.length - 1].t + 1);
-			let lastVal;
-			for(let i = 0; i < len; i++) {
-				if(i in c) {
-					lastVal = c[i];
-				} else {
-					c[i] = lastVal;
-				}
-				
-			}
-			c.min = Math.min.apply(null, c);
-			c.max = Math.max.apply(null, c);
+			let filtredValues = c.filter(filterUndefineds);
+
+			c.min = Math.min.apply(null, filtredValues);
+			c.max = Math.max.apply(null, filtredValues);
 			Pool.dispose(fieldPlayer);
 		}
 		return field.__cacheTimeline[time];

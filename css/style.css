@@ -687,7 +687,7 @@ input{
     backface-visibility: hidden;
     margin-left: -110px;
     background: #cccfda;
-    z-index: 6;
+    z-index: 1;
 }
 
 .field-timeline {
@@ -718,6 +718,11 @@ input{
 .timeline-keyframe {
 	cursor: w-resize;
     position: absolute;
+}
+
+.timeline-keyframe-unreachable{
+	opacity: 0.5;
+	outline: 1px solid #f00;
 }
 
 .timeline-keyframe-selected {

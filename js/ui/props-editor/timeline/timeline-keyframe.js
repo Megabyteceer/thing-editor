@@ -135,14 +135,19 @@ export default class TimelineKeyframe extends React.Component {
 		if(this.state && this.state.isSelected) {
 			className += ' timeline-keyframe-selected';
 		}
+
+		let isUnreachable = isNaN(this.props.owner.getValueAtTime(keyFrame.t));
+		if(isUnreachable) {
+			className += ' timeline-keyframe-unreachable';
+		}
 		
 		let mark;
 		if(keyFrame.hasOwnProperty('a')) {
-			
 			mark = (keyFrame.a === 'this.stop') ? '■' : 'A';
 		}
 		
 		return R.div({className:className,
+			title: isUnreachable ? 'Keyframe is unreacvhable because of loop or "this.stop" action' : undefined,
 			onMouseDown: this.onKeyframeMouseDown,
 			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
 		mark,
