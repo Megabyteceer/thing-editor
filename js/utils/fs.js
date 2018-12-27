@@ -1,5 +1,44 @@
 import game from "thing-engine/js/game.js";
 
+
+let requestsInProgress = [];
+
+function request(func, args, async) {
+	
+	let obj = {func, args, async};
+	return new Promise((resolve) => {
+		obj.resolve = resolve;
+		requestsInProgress.push(obj);
+		tryToFlushRequests();
+	});
+}
+
+function tryToFlushRequests() {
+	while(requestsInProgress.length > 0) {
+		let r = requestsInProgress[0];
+		if(r.started) {
+			break;
+		}
+		r.started = true;
+		r.func.apply(undefined, r.args).then((data) => {
+			if(!r.async) {
+				if(r !== requestsInProgress[0]) {
+					assert(false, 'request queu is corrupted');
+				}
+				requestsInProgress.shift();
+				tryToFlushRequests();
+			}
+			r.resolve(data);
+		});
+		if(!r.async) {
+			break;
+		} else {
+			requestsInProgress.shift();
+		}
+		
+	}
+}
+
 let fs = {
 	chooseProject: (enforced) => {
 		editor.ui.viewport.stopExecution();
@@ -61,53 +100,59 @@ let fs = {
 		}
 		fs.getJSON(url, true);
 	},
-	getJSON(url, silently=false, async = true) {
-		if (!silently) {
-			editor.ui.modal.showSpinner();
-		}
+	getJSON(url, silently=false, async = true) { //eslint-disable-line no-unused-vars
 
-		let r = $.ajax({
-			type: "GET",
-			url,
-			async,
-			contentType: 'application/json',
-		}).fail((a,b,c) => {handleError(a,b,c,url);});
-		if (!silently) {
-			r.always(editor.ui.modal.hideSpinner);
-		}
-		return new Promise((resolve) => {
-			r.then((data) => {
-				if(typeof data === 'string') {
-					resolve(JSON.parse(data));
-				} else {
-					resolve(data);
-				}
+		return request((url, silently=false) => {
+			
+			if (!silently) {
+				editor.ui.modal.showSpinner();
+			}
+			let r = $.ajax({
+				type: "GET",
+				url,
+				contentType: 'application/json',
+			}).fail((a,b,c) => {handleError(a,b,c,url);});
+			if (!silently) {
+				r.always(editor.ui.modal.hideSpinner);
+			}
+			return new Promise((resolve) => {
+				r.then((data) => {
+					if(typeof data === 'string') {
+						resolve(JSON.parse(data));
+					} else {
+						resolve(data);
+					}
+				});
 			});
-		});
+
+		} , arguments, async);
 	},
 	openFile(fileName, silently) {
 		return this.getJSON(game.resourcesPath + fileName, silently);
 	},
-	saveFile(filename, data, silently = false, async = false) {
-		if (!silently) {
-			editor.ui.modal.showSpinner();
-		}
-		
-		if(typeof data !== 'string') {
-			data = JSON.stringify(data, fieldsFilter, '	');
-		}
-		
-		let r = $.ajax({
-			type: "POST",
-			url: '/fs/savefile',
-			data: JSON.stringify({data, filename}),
-			contentType: 'application/json',
-			async
-		}).fail((a,b,c) => {handleError(a,b,c,filename);});
-		if (!silently) {
-			r.always(editor.ui.modal.hideSpinner);
-		}
-		return r;
+	saveFile(filename, data, silently = false, async = false) { //eslint-disable-line no-unused-vars
+
+		return request((url, silently = false) => {
+
+			if (!silently) {
+				editor.ui.modal.showSpinner();
+			}
+			
+			if(typeof data !== 'string') {
+				data = JSON.stringify(data, fieldsFilter, '	');
+			}
+			
+			let r = $.ajax({
+				type: "POST",
+				url: '/fs/savefile',
+				data: JSON.stringify({data, filename}),
+				contentType: 'application/json'
+			}).fail((a,b,c) => {handleError(a,b,c,filename);});
+			if (!silently) {
+				r.always(editor.ui.modal.hideSpinner);
+			}
+			return r;
+		} , arguments, async);
 	}
 };
 
