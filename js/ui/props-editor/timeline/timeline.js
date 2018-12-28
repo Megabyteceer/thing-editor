@@ -217,7 +217,7 @@ export default class Timeline extends React.Component {
 
 	renderObjectsTimeline(node) {
 		let key = node.___id;
-		if(node instanceof MovieClip && node._timelineData) {
+		if(node instanceof MovieClip) {
 			return React.createElement(ObjectsTimeline, {owner:this, node, key,
 				heightZoom,
 				widthZoom

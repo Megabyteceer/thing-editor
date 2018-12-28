@@ -43,11 +43,13 @@ export default class ObjectsTimeline extends React.Component {
 	render() {
 		let tl = this.props.node._timelineData;
 
-		let labelsNames = Object.keys(tl.l);
+		let labelsNames = tl ? Object.keys(tl.l) : [];
 		let width = 0;
-		for(let f of tl.f) {
-			if(f.t[f.t.length -1].t > width) {
-				width = f.t[f.t.length -1].t;
+		if(tl) {
+			for(let f of tl.f) {
+				if(f.t[f.t.length -1].t > width) {
+					width = f.t[f.t.length -1].t;
+				}
 			}
 		}
 		width += 500;
@@ -55,7 +57,7 @@ export default class ObjectsTimeline extends React.Component {
 
 		let labelsPanel = R.div({
 			onMouseDown:(ev) => { //create new label by right click
-				if(ev.buttons === 2) {
+				if(tl && ev.buttons === 2) {
 					let time = Timeline.mouseEventToTime(ev);
 
 					TimeLabel.askForLabelName(labelsNames, "Create new label:").then((name) => {
@@ -72,7 +74,7 @@ export default class ObjectsTimeline extends React.Component {
 				}
 			},
 			style:{width},
-			title:'Right click to add time label',
+			title:tl && 'Right click to add time label',
 			className:'timeline-labels-panel'
 		},
 		labelsNames.map((labelName)=> {
@@ -82,7 +84,7 @@ export default class ObjectsTimeline extends React.Component {
 
 		return R.div(objectsTimelineProps,
 			labelsPanel,
-			tl.f.map((field, i) => {
+			tl && tl.f.map((field, i) => {
 				return React.createElement(FieldsTimeline, {field, fieldIndex:i, key:field.n, owner:this});
 			})
 		);
