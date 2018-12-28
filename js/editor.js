@@ -116,6 +116,7 @@ export default class Editor {
 		} else if((dir + '/') !== editor.currentProjectDir) {
 			editor.settings.setItem('last-opened-project', dir);
 			if(dir !== lastOpenedProject) {
+				editor.__projectReloading = true;
 				location.reload();
 				return;
 			}
