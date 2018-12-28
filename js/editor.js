@@ -70,6 +70,12 @@ export default class Editor {
 			document.getElementById('root')
 		);
 
+		setInterval(() => { //keep props editor and tree actual during scene is launched
+			if(!game.__EDITORmode && !game.__paused) {
+				editor.refreshTreeViewAndPropertyEditor();
+			}
+		}, 300);
+
 		editor.__unloadedTexture = PIXI.Texture.fromImage('img/loading-texture.png');
 	}
 	
