@@ -283,11 +283,13 @@ export default class TreeView extends React.Component {
 			for(let p of props) {
 				if(p.type === 'timeline') {
 					let timeline = o[p.name];
-					for(let field of timeline.f) {
-						for(let k of field.t) {
-							if(k.a && (k.a.toLowerCase().indexOf(this.searchString) >= 0)) {
-								foundByWhichProperty.set(o, p.name + ',' + field.n + ',' + k.t);
-								return true;
+					if(timeline) {
+						for(let field of timeline.f) {
+							for(let k of field.t) {
+								if(k.a && (k.a.toLowerCase().indexOf(this.searchString) >= 0)) {
+									foundByWhichProperty.set(o, p.name + ',' + field.n + ',' + k.t);
+									return true;
+								}
 							}
 						}
 					}
