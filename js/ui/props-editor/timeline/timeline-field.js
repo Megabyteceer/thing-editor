@@ -105,7 +105,9 @@ export default class FieldsTimeline extends React.Component {
 			this.props.owner.props.node
 		);
 		this.forceUpdate();
-		this.applyValueToMovielcip(this.props.owner.props.owner.getTime());
+		setTimeout(() => {
+			this.applyValueToMovielcip(this.props.owner.props.owner.getTime());
+		}, 1);
 	}
 
 	render() {
