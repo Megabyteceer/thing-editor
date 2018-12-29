@@ -104,6 +104,10 @@ export default class Overlay {
 		game.showModal(object);
 		__getNodeExtendData(object).childsExpanded = true;
 		checkIfCurrentContainerIsShowedPrefab();
+		game.stage.x = -object.x + game.W / 2;
+		game.stage.y = -object.y + game.H / 2;
+		blackout.x = -game.stage.x;
+		blackout.y = -game.stage.y;
 		editor.history.updateUi();
 	}
 
