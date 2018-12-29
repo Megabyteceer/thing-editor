@@ -295,7 +295,13 @@ export default class Timeline extends React.Component {
 			if (reduceRepeatingKeyframesInSelected()) {
 				this.forceUpdate();
 			}
+			if((ev.clientX > 0) && (Math.abs(draggingStartX - ev.clientX) < 2)) {
+				if(selectedComponents.length > 1) {
+					clearSelection();
+					select(draggingComponent);
+				}
 
+			}
 			draggingXShift = 0;
 			draggingComponent = null;
 		} else {
@@ -315,6 +321,12 @@ export default class Timeline extends React.Component {
 	}
 
 	onMouseMove(ev) {
+
+		if (Math.abs(draggingStartX - ev.clientX) > 20) {
+			draggingStartX = -10000;
+		}
+
+
 		isDragging = (isDragging && (ev.buttons === 1));
 		let time = Timeline.mouseEventToTime(ev);
 		if (isDragging) {
@@ -626,10 +638,12 @@ function getKeyframeTypesForField(objects, name) {
 Timeline.getKeyframeTypesForField = getKeyframeTypesForField;
 
 let draggingComponent;
+let draggingStartX;
 let draggingXShift = 0;
 let prevDragTime;
 
 function onDragableMouseDown(ev) {
+	draggingStartX = ev.clientX;
 	if (!this.state || !this.state.isSelected) {
 		if (!ev.ctrlKey && !ev.shiftKey) {
 			clearSelection();
