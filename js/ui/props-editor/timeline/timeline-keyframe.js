@@ -59,8 +59,9 @@ export default class TimelineKeyframe extends React.Component {
 
 	setTime(time) {
 		const keyFrame = this.props.keyFrame;
-		if(keyFrame.t === 0) {
-			if(this.props.owner.props.owner.props.field.t.indexOf(keyFrame) === 0) { //initial keyframe is locked for dragging
+		if(keyFrame.t === 0) {//initial keyframe is locked for dragging
+			let t = this.props.owner.props.owner.props.field.t;
+			if((t.length > 1) && (t[t.length-1].t !== 0)) { // but if latest keyframe has zero time it is cloning drag and you can drag it
 				return;
 			}
 		}
