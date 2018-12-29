@@ -300,7 +300,7 @@ export default class Timeline extends React.Component {
 			draggingComponent = null;
 		} else {
 			let selectedRect = selectionFrame.getRectAndFinishDragging();
-			if (selectedRect && selectedRect.width > 12) {
+			if (selectedRect) {
 				selectElementsInRectangle(selectedRect, ev.shiftKey);
 			}
 		}
