@@ -237,9 +237,7 @@ export default class Timeline extends React.Component {
 			editor.selection.some((o) => {
 				if (o._timelineData) {
 					o._timelineData.f.some((f) => {
-						if (f.__cacheTimeline.hasOwnProperty(time)) {
-							o[f.n] = f.__cacheTimeline[time];
-						}
+						f.___view.applyValueToMovielcip(time);
 					});
 				}
 			});
@@ -386,7 +384,7 @@ export default class Timeline extends React.Component {
 			field.n = MovieClip._findNextKeyframe(timeLineData, field.j);
 		}
 
-		fieldData.__cacheTimeline = false;
+		fieldData.___cacheTimeline = false;
 		Line.invalideteChartsRenderCache(fieldData);
 		MovieClip.invalidateSerializeCache(node);
 		editor.sceneModified();

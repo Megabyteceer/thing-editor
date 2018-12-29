@@ -42,11 +42,7 @@ export default class KeyframePropertyEditor extends React.Component {
 					delete kf.a;
 				}
 			}
-
-			let fieldTimelineEditor = k.props.owner.props.owner;
-			let objectTimelineEditor = fieldTimelineEditor.props.owner;
-			Timeline.fieldDataChanged(fieldTimelineEditor.props.field, objectTimelineEditor.props.node);
-			fieldTimelineEditor.forceUpdate();
+			kf.___view.onChanged();
 		}
 		this.forceUpdate();
 	}

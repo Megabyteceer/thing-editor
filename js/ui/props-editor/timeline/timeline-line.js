@@ -59,10 +59,10 @@ export default class Line extends React.Component {
 
 	getValueAtTime(time) {
 		let field = this.props.owner.props.field;
-		if(!field.__cacheTimeline) {
+		if(!field.___cacheTimeline) {
 			let fieldPlayer = Pool.create(FieldPlayer);
 			let c = [];
-			field.__cacheTimeline = c;
+			field.___cacheTimeline = c;
 			let wholeTimelineData = this.props.owner.props.owner.props.node._timelineData;
 			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
 			fieldPlayer.reset();
@@ -80,7 +80,7 @@ export default class Line extends React.Component {
 			c.max = Math.max.apply(null, filtredValues);
 			Pool.dispose(fieldPlayer);
 		}
-		return field.__cacheTimeline[time];
+		return field.___cacheTimeline[time];
 	}
 
 	renderKeyframe(keyFrame) {
@@ -111,15 +111,15 @@ export default class Line extends React.Component {
 		let height = heightZoom;
 		
 		this.getValueAtTime(lastKeyframe.t); //cache timeline's values
-		_scale = field.__cacheTimeline.max - field.__cacheTimeline.min;
+		_scale = field.___cacheTimeline.max - field.___cacheTimeline.min;
 		if(_scale === 0) {
 			_scale = 1;
 		}
 		_scale = (heightZoom - 10) / _scale;
-		_shift = field.__cacheTimeline.max + 1 / _scale;
+		_shift = field.___cacheTimeline.max + 1 / _scale;
 		
 		if(!chartsCache.has(field)) {
-			if(isNaN(field.__cacheTimeline.max)) {
+			if(isNaN(field.___cacheTimeline.max)) {
 				chartsCache.set(field, R.span());
 			} else {
 				chartsCache.set(field,

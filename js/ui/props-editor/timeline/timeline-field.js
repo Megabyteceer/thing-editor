@@ -11,6 +11,30 @@ export default class FieldsTimeline extends React.Component {
 		this.onGoLeftClick = this.onGoLeftClick.bind(this);
 		this.onGoRightClick = this.onGoRightClick.bind(this);
 		this.onToggleKeyframeClick = this.onToggleKeyframeClick.bind(this);
+		props.field.___view = this;
+	}
+
+	componentWillReceiveProps(props) {
+		let k1 = this.props.field;
+		let k2 = props.field;
+		if(k1.___view === this) {
+			k1.___view = null;
+		}
+		k2.___view = this;
+	}
+
+	applyValueToMovielcip(time) {
+		let f = this.props.field;
+		let o = this.props.owner.props.node;
+		if (f.___cacheTimeline.hasOwnProperty(time)) {
+			o[f.n] = f.___cacheTimeline[time];
+		}
+	}
+
+	componentWillUnmount() {
+		if(this.props.field.___view === this) {
+			this.props.field.___view = null;
+		}
 	}
 
 	onToggleKeyframeClick(time) {
@@ -81,6 +105,7 @@ export default class FieldsTimeline extends React.Component {
 			this.props.owner.props.node
 		);
 		this.forceUpdate();
+		this.applyValueToMovielcip(this.props.owner.props.owner.getTime());
 	}
 
 	render() {
