@@ -88,13 +88,7 @@ export default class PrefabsList extends React.Component {
 			).then((enteredName) => {
 				if (enteredName) {
 					let s = editor.selection[0];
-					let tx = s.x;
-					let ty = s.y;
-					s.x = game.W / 2;
-					s.y = game.H / 2;
 					Lib.__savePrefab(s, enteredName);
-					s.x = tx;
-					s.y = ty;
 					this.forceUpdate();
 				}
 			});
