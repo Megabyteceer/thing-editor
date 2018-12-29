@@ -716,7 +716,9 @@ let selectionsForScenesByName = {};
 let needHistorySave = false;
 let tryToSaveHistory = () => {
 	if(needHistorySave) {
-		history.addHistoryState();
+		setTimeout(() => {
+			history.addHistoryState();
+		}, 1);
 		needHistorySave = false;
 	}
 };
