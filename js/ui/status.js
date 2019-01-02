@@ -47,7 +47,7 @@ export default class Status extends React.Component {
 	
 	error (message, owner, fieldName) {
 		console.error(message);
-		let item = {owner, message, fieldName};
+		let item = {owner, wonerId: owner.___id, message, fieldName};
 		if(owner && fieldName) {
 			item.val = owner[fieldName];
 		}
@@ -101,7 +101,7 @@ export default class Status extends React.Component {
 				Window.bringWindowForward($('#window-info'));
 			}, 1);
 			return editor.ui.renderWindow('info', 'Info Window', R.div(null,
-				R.btn('×', this.clear, 'Hide Info Window (Ctrl+I)', 'close-window-btn'),
+				R.btn('×', this.clear, 'Hide Info Window', 'close-window-btn'),
 				React.createElement(InfoList, {ref: this.errorsListRef, id:'errors-list', title:'Errors:', icon: errorIcon, className:'info-errors-list info-list', list:this.errors, itemsMap:this.errorsMap}),
 				React.createElement(InfoList, {ref: this.warnsListRef, id:'warns-list', title:'Warnings:', icon: warnIcon, className:'info-warns-list info-list', list:this.warns, itemsMap: this.warnsMap})
 				
@@ -154,17 +154,17 @@ class InfoList extends React.Component {
 				let exData = __getNodeExtendData(item.owner);
 				if(!exData.alertRefs || !exData.alertRefs.has(item)) {
 					let newOwnerFinded;
-					if(item.hasOwnProperty('val')) {
-						game.forAllChildrenEwerywhere((o) => {
-							if(o.constructor === item.owner.constructor && o[item.fieldName] === item.val) {
-								if(!newOwnerFinded) {
-									item.owner = o;
-									exData = __getNodeExtendData(item.owner);
-									newOwnerFinded = true;
-								}
+
+					game.forAllChildrenEwerywhere((o) => {
+						if(o.constructor === item.owner.constructor && o.___id === item.wonerId) {
+							if(!newOwnerFinded) {
+								item.owner = o;
+								exData = __getNodeExtendData(item.owner);
+								newOwnerFinded = true;
 							}
-						});
-					}
+						}
+					});
+
 					if(!newOwnerFinded) {
 						editor.ui.modal.showModal('Object already removed form stage, or problem was solved.');
 						return;
