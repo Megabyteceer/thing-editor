@@ -104,7 +104,7 @@ let fs = {
 
 		return request((url, silently=false) => {
 			
-			if (!silently) {
+			if (!silently || !async) {
 				editor.ui.modal.showSpinner();
 			}
 			let r = $.ajax({
@@ -112,7 +112,7 @@ let fs = {
 				url,
 				contentType: 'application/json',
 			}).fail((a,b,c) => {handleError(a,b,c,url);});
-			if (!silently) {
+			if (!silently || !async) {
 				r.always(editor.ui.modal.hideSpinner);
 			}
 			return new Promise((resolve) => {
@@ -134,7 +134,7 @@ let fs = {
 
 		return request((url, silently = false) => {
 
-			if (!silently) {
+			if (!silently || !async) {
 				editor.ui.modal.showSpinner();
 			}
 			
@@ -148,7 +148,7 @@ let fs = {
 				data: JSON.stringify({data, filename}),
 				contentType: 'application/json'
 			}).fail((a,b,c) => {handleError(a,b,c,filename);});
-			if (!silently) {
+			if (!silently || !async) {
 				r.always(editor.ui.modal.hideSpinner);
 			}
 			return r;
