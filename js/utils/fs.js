@@ -162,6 +162,8 @@ const fieldsFilter = (key, value) => {
 	}
 };
 
+fs.fieldsFilter = fieldsFilter;
+
 const fielsEditTimes = {};
 
 export default fs;
