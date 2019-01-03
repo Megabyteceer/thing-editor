@@ -5,10 +5,8 @@ let requestsInProgress = [];
 
 function request(func, args, async) {
 	
-	let obj = {func, args, async};
 	return new Promise((resolve) => {
-		obj.resolve = resolve;
-		requestsInProgress.push(obj);
+		requestsInProgress.push({func, args, async, resolve});
 		tryToFlushRequests();
 	});
 }
@@ -34,6 +32,7 @@ function tryToFlushRequests() {
 			break;
 		} else {
 			requestsInProgress.shift();
+			tryToFlushRequests();
 		}
 		
 	}
