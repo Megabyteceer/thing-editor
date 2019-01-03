@@ -673,7 +673,12 @@ function cloneSelectedKeyframes() {
 }
 
 const sortFieldsByTime = (a, b) => {
-	return a.t - b.t;
+	if(a.t !== b.t) {
+		return a.t - b.t;
+	}
+	a = (a.___view && a.___view.state && a.___view.state.isSelected) ? 0 : 1;
+	b = (b.___view && b.___view.state && b.___view.state.isSelected) ? 0 : 1;
+	return a - b;
 };
 
 function onTimelineScroll(ev) {
