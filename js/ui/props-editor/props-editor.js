@@ -131,7 +131,7 @@ class PropsEditor extends React.Component {
 					curGroupArray.push(
 						R.div({key: p.name})
 					);
-					break;
+					continue;
 				}
 
 			} 
