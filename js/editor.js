@@ -554,8 +554,9 @@ export default class Editor {
 				history.setCurrentStateUnmodified();
 				saveCurrentSceneName(name);
 			}
-			Lib.__saveScene(game.currentScene, name);
+			return Lib.__saveScene(game.currentScene, name);
 		}
+		return Promise.resolve();
 	}
 	
 	build(debug) {
@@ -576,8 +577,7 @@ export default class Editor {
 				
 				editor.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
 					() => {
-						editor.saveCurrentScene();
-						resolve();
+						editor.saveCurrentScene().then(resolve);
 					}, 'Save',
 					() => {
 						resolve();
