@@ -4,7 +4,9 @@ import game from "thing-engine/js/game.js";
 let requestsInProgress = [];
 
 function request(func, args, async) {
-	
+	for(let r of requestsInProgress) {
+		assert(r.async, "Attempt to make request during sync request in progress.");
+	}
 	return new Promise((resolve) => {
 		requestsInProgress.push({func, args, async, resolve});
 		tryToFlushRequests();
@@ -34,7 +36,6 @@ function tryToFlushRequests() {
 			requestsInProgress.shift();
 			tryToFlushRequests();
 		}
-		
 	}
 }
 
@@ -79,7 +80,11 @@ let fs = {
 		});
 	},
 	deleteFile: (fileName) => {
-		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName), true, false);
+		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName), true, false).then((data) => {
+			if(data.error) {
+				editor.ui.modal.showError(data.error);	
+			}
+		});
 	},
 	editFile: (fileName, line = -1, char = -1) => {
 

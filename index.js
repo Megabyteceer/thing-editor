@@ -127,7 +127,7 @@ app.get('/fs/delete', function (req, res) {
 		fs.unlinkSync(fn);
 		res.end('{}');
 	} catch (err) {
-		res.end("Can't delete file: " + fn);
+		res.end('{"error": "Can not delete file: ' + fn + '"}');
 	}
 });
 

@@ -59,7 +59,7 @@ export default class Build {
 		}
 
 		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' +
-		JSON.stringify(assetsObj, fieldsFilter, assetsDelimiter) + ';'));
+		JSON.stringify(assetsObj, fieldsFilter, assetsDelimiter) + ';', false, true));
 		
 
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
@@ -88,7 +88,7 @@ let classes = {};`];
 		}
 		src.push('Lib._setClasses(classes, ');
 		src.push(JSON.stringify(defaults, fieldsFilter, assetsDelimiter) + ');');
-		fileSavePromises.push(editor.fs.saveFile('src/classes.js', src.join('\n')));
+		fileSavePromises.push(editor.fs.saveFile('src/classes.js', src.join('\n'), false, true));
 		
 		Promise.all(fileSavePromises).then(() => {
 			editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
