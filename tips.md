@@ -4,6 +4,9 @@
 _onRenderResize
 onLanguageChanged
 
+#called when parent trigger come disabled
+_onDisableByTrigger
+
 
 
 #ewerything under this line available in editor only. Wrap code which acces it in to next macros coments: 
