@@ -81,7 +81,7 @@ export default class DataPathEditor extends React.Component {
 			
 			if(val instanceof DisplayObject && __getNodeExtendData(val).hidden) return false;
 			
-			return !val.__EDITOR_isHiddenForChooser;
+			return !val.hasOwnProperty('__EDITOR_isHiddenForChooser');
 		}
 		
 		return true;
