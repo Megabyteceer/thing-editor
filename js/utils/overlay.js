@@ -175,7 +175,7 @@ function refreshSelection() {
 			draggers.splice(i, 1);
 		}
 		if(!(d instanceof Rect)) {
-			let s = Math.max(1, game.stage.scale.x) * 6;
+			let s = 6;
 			if ((Math.abs(d.x - game.mouse.__EDITOR_x) < s) && (Math.abs(d.y - game.mouse.__EDITOR_y) < s)) {
 				overedDragger = d;
 			}
