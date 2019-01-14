@@ -106,7 +106,7 @@ let fs = {
 	},
 	getJSON(url, silently=false, async = true) { //eslint-disable-line no-unused-vars
 
-		return request((url, silently=false) => {
+		return request(function getJSON_sub(url, silently=false) {
 			
 			if (!silently || !async) {
 				editor.ui.modal.showSpinner();
@@ -136,7 +136,7 @@ let fs = {
 	},
 	saveFile(filename, data, silently = false, async = false) { //eslint-disable-line no-unused-vars
 
-		return request((url, silently = false) => {
+		return request(function saveFile_sub(url, silently = false) {
 
 			if (!silently || !async) {
 				editor.ui.modal.showSpinner();
