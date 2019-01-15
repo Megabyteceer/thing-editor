@@ -134,29 +134,32 @@ let fs = {
 	openFile(fileName, silently) {
 		return this.getJSON(game.resourcesPath + fileName, silently);
 	},
-	saveFile(filename, data, silently = false, async = false) { //eslint-disable-line no-unused-vars
-
+	postJSON(url, data, silently = false, async = false) {
 		return request(function saveFile_sub(url, silently = false) {
 
 			if (!silently || !async) {
 				editor.ui.modal.showSpinner();
 			}
 			
-			if(typeof data !== 'string') {
-				data = JSON.stringify(data, fieldsFilter, '	');
-			}
-			
 			let r = $.ajax({
 				type: "POST",
 				url: '/fs/savefile',
-				data: JSON.stringify({data, filename}),
+				data: JSON.stringify(data),
 				contentType: 'application/json'
-			}).fail((a,b,c) => {handleError(a,b,c,filename);});
+			}).fail((a,b,c) => {handleError(a,b,c,url);});
 			if (!silently || !async) {
 				r.always(editor.ui.modal.hideSpinner);
 			}
 			return r;
 		} , arguments, async);
+
+
+	},
+	saveFile(filename, data, silently = false, async = false) { //eslint-disable-line no-unused-vars
+		if(typeof data !== 'string') {
+			data = JSON.stringify(data, fieldsFilter, '	');
+		}
+		return fs.postJSON('/fs/savefile', {data, filename}, silently, async);
 	}
 };
 
