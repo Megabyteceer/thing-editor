@@ -21,6 +21,16 @@ export default class SoundsList extends React.Component {
 		this.onSelect = this.onSelect.bind(this);
 	}
 
+	rebuildSounds(noCacheSoundName) {
+		let options = {
+			formats: editor.projectDesc.soundFormats,
+			noCacheSoundName,
+			bitrates: editor.projectDesc.soundBitrates,
+			defaultBitrate: editor.projectDesc.soundDefaultBitrate
+		};
+		return editor.fs.postJSON('/fs/build-sounds', options);
+	}
+
 	reloadSounds() {
 		return new Promise((resolve) => {
 			if(editor.projectDesc.soundFormats) {
@@ -31,7 +41,7 @@ export default class SoundsList extends React.Component {
 						return;
 					}
 				}
-				editor.fs.getJSON('/fs/build-sounds?formats=' + (editor.projectDesc.soundFormats.join(','))).then((result) => {
+				this.rebuildSounds().then((result) => {
 					if(result.errors) {
 						editor.ui.modal.showError(result.errors.map((r, i) =>{
 							return R.div({key:i}, JSON.stringify(r));

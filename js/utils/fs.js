@@ -143,7 +143,7 @@ let fs = {
 			
 			let r = $.ajax({
 				type: "POST",
-				url: '/fs/savefile',
+				url: url,
 				data: JSON.stringify(data),
 				contentType: 'application/json'
 			}).fail((a,b,c) => {handleError(a,b,c,url);});

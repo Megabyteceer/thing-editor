@@ -180,15 +180,14 @@ app.get('/fs/build', function (req, res) {
 	});
 });
 
-app.get('/fs/build-sounds', function (req, res) {
+app.post('/fs/build-sounds', jsonParser, function (req, res) {
 	log('BUILD sounds: ' + currentGameRoot);
 
 	buildSounds(currentGameRoot,
 		function (result) {
 			res.end(JSON.stringify(result));
 		},
-		req.query.formats.split(','),
-		req.query.nocache
+		req.body
 	);
 });
 

@@ -137,9 +137,8 @@ export default class Editor {
 			editor.currentProjectDir = dir + '/';
 			editor.projectDesc = data;
 
-			if(game.applyProjectDesc(editor.projectDesc)) {
-				this.saveProjectDesc();
-			}
+			let isProjectDescriptorModified = game.applyProjectDesc(editor.projectDesc);
+
 			await game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');
 			
 			game.stage.interactiveChildren = false;
@@ -147,7 +146,10 @@ export default class Editor {
 			this.overlay = new Overlay();
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
 			
-			
+			if(isProjectDescriptorModified) {
+				this.saveProjectDesc();
+			}
+
 			utils.protectAccessToSceneNode(game.stage, "game stage");
 			utils.protectAccessToSceneNode(game.stage.parent, "PIXI stage");
 			
@@ -356,14 +358,16 @@ export default class Editor {
 	}
 	
 	reloadAssetsAndClasses() {
-		return Promise.all([
-			this.reloadClasses(),
-			this.reloadAssets()
-		]).then(()=>{
-			Lib.__validateClasses();
-			if(game.currentContainer) {
-				game.__loadDynamicTextures();
-			}
+		return new Promise((resolve) => {
+			this.reloadClasses().then(() => {
+				this.reloadAssets().then(() => {
+					Lib.__validateClasses();
+					if(game.currentContainer) {
+						game.__loadDynamicTextures();
+					}
+					resolve();
+				});
+			});
 		});
 	}
 	

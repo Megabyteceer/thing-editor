@@ -7,7 +7,8 @@ const {
 /*global require */
 /*global module */
 
-module.exports = function (projectPath, callback, formats, noCache) {
+module.exports = function (projectPath, callback, options) {
+
 	let result = {};
 	function outputError(err, out, outError) {
 		if(!result.errors) {
@@ -26,7 +27,9 @@ module.exports = function (projectPath, callback, formats, noCache) {
 	}
 	let filesToConvert = [];
 
-	let files = walkSync(path.join(projectPath, 'snd'));
+	let soundsPath = path.join(projectPath, 'snd/');
+
+	let files = walkSync(soundsPath);
 	for (let fn of files) {
 		if (fn.endsWith('.wav')) {
 			let s = fs.statSync(fn);
@@ -36,7 +39,7 @@ module.exports = function (projectPath, callback, formats, noCache) {
 			shortName.shift();
 			shortName = shortName.join('/snd/');
 
-			if (noCache || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs)) {
+			if ((options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs)) {
 				filesToConvert.push(fn);
 				cache[shortName] = {
 					mtimeMs: s.mtimeMs
@@ -58,7 +61,7 @@ module.exports = function (projectPath, callback, formats, noCache) {
 		} else {
 			let fn = filesToConvert.pop();
 
-			let f = formats.slice(0);
+			let f = options.formats.slice(0);
 			const conv = () => {
 				if (f.length < 1) {
 					convertNextFile();
@@ -74,7 +77,12 @@ module.exports = function (projectPath, callback, formats, noCache) {
 	convertNextFile();
 
 	function convertFile(fn, ext, cb) {
-		console.log('convert sound:' + fn + ' -> ' + ext);
+		let shortFilename = fn.replace(soundsPath, '');
+		shortFilename = shortFilename.replace(/\.wav$/gmi, '');
+		shortFilename = shortFilename.replace('\\', '/');
+		let bitrate = options.bitrates[shortFilename] || options.defaultBitrate || 96;
+
+		console.log('convert sound:' + fn + ' -> ' + ext + ' ' + bitrate + 'Kb');
 		let fileParts = path.parse(fn);
 		let resultName = fileParts.dir + '/' + fileParts.name + '.' + ext;
 
@@ -84,8 +92,10 @@ module.exports = function (projectPath, callback, formats, noCache) {
 
 		let additionalOptions = '';
 		if(ext === 'webm') {
-			additionalOptions = ' -dash 1 ';
+			additionalOptions = '-dash 1 ';
 		}
+
+		additionalOptions += '-b:a ' + bitrate + 'k ';
 
 		exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
 			if (err) {
