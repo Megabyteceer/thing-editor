@@ -134,7 +134,7 @@ let fs = {
 	openFile(fileName, silently) {
 		return this.getJSON(game.resourcesPath + fileName, silently);
 	},
-	postJSON(url, data, silently = false, async = false) {
+	postJSON(url, data, silently = false, async = false) {//eslint-disable-line no-unused-vars
 		return request(function saveFile_sub(url, silently = false) {
 
 			if (!silently || !async) {
@@ -155,7 +155,7 @@ let fs = {
 
 
 	},
-	saveFile(filename, data, silently = false, async = false) { //eslint-disable-line no-unused-vars
+	saveFile(filename, data, silently = false, async = false) { 
 		if(typeof data !== 'string') {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
