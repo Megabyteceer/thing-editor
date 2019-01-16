@@ -31,6 +31,22 @@ export default class SoundsList extends React.Component {
 		return editor.fs.postJSON('/fs/build-sounds', options);
 	}
 
+	static chooseSound(title, noEasyClose) {
+		let libSounds = Lib.__getSoundsData();
+		
+		let sounds = [];
+		for (let name in libSounds) {
+			sounds.push({name});
+		}
+		return editor.ui.modal.showListChoose(title || "Choose sound", sounds, noEasyClose).then((choosed) => {
+			if(choosed) {
+				return choosed.name;
+			}
+			return null;
+		});
+
+	}
+
 	reloadSounds() {
 		return new Promise((resolve) => {
 			if(editor.projectDesc.soundFormats) {
