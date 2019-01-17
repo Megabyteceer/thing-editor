@@ -38,6 +38,7 @@ export default class Viewport extends React.Component {
 	
 	stopExecution() {
 		if(!stoppingExecutionTime) {
+			editor.exitPrefabMode();
 			stoppingExecutionTime = true;
 			if(!game.__EDITORmode) {
 				this.onTogglePlay();
@@ -209,7 +210,7 @@ export default class Viewport extends React.Component {
 				R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 				R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes (Enter)', 'main-btn', 13),
 				R.btn(R.icon('reject'), () => {
-					if(editor.isCurrentSceneModified) {
+					if(editor.isCurrentContainerModified) {
 						editor.ui.modal.showQuestion("Are you sure?", "Are you really wanted to discard all changes made in prefab?", PrefabsList.hidePrefabPreview, "Discard changes.");
 					} else {
 						PrefabsList.hidePrefabPreview();

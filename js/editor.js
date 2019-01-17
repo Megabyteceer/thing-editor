@@ -537,9 +537,15 @@ export default class Editor {
 			PrefabsList.acceptPrefabEdition();
 		}
 	}
-	
-	get isCurrentSceneModified() {
+	get isCurrentContainerModified() {
 		return history.isStateModified;
+	}
+
+	get isCurrentSceneModified() {
+		if(game.currentScene !== game.currentContainer) {
+			alert("acess to isCurrentSceneModified in prefab mode");
+		}
+		return this.isCurrentContainerModified;
 	}
 	
 	editClassSource(c) {
@@ -572,7 +578,6 @@ export default class Editor {
 
 	askSceneToSaveIfNeed(skip) {
 		editor.ui.viewport.stopExecution();
-		editor.exitPrefabMode();
 		if(!skip && editor.isCurrentSceneModified) {
 			return new Promise((resolve) => {
 				

@@ -270,7 +270,7 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 };
 
 window.addEventListener('beforeunload', function(ev) {
-	editor.exitPrefabMode();
+	editor.ui.viewport.stopExecution();
 	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITORmode && !editor.__projectReloading && !editor.__FatalError) {
 		editor.saveBackup(true);
 		ev.preventDefault();

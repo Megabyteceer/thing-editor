@@ -194,7 +194,7 @@ class HistoryUi extends React.Component {
 		if(!instance._undos) {
 			return R.span();
 		}
-		return R.span(editor.isCurrentSceneModified ? modifiedStyle : null,
+		return R.span(editor.isCurrentContainerModified ? modifiedStyle : null,
 			R.btn('Undo', editor.history.undo, '(Ctrl + Z)', undefined, 1090, !instance.isUndoAvailable() || !game.__EDITORmode),
 			instance._undos.length,
 			R.btn('Redo', editor.history.redo, '(Ctrl + Y)', undefined, 1089, !instance.isRedoAvailable() || !game.__EDITORmode),

@@ -147,7 +147,7 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	static acceptPrefabEdition() {
-		if(previewShown && editor.isCurrentSceneModified) {
+		if(previewShown && editor.isCurrentContainerModified) {
 			editor.history.setCurrentStateUnmodified();
 			Lib.__savePrefab(game.currentContainer, previewShown);
 			editor.ui.prefabsList.forceUpdate();
