@@ -107,7 +107,7 @@ setInterval(() => {
 	}
 	if(needSaveSelectionInToHistory) {
 		if(game.__EDITORmode) {
-			editor.history.addHistoryState(true);
+			editor.history.addSelectionHistoryState();
 		}
 		needSaveSelectionInToHistory = false;
 	}

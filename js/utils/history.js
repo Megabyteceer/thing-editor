@@ -22,9 +22,9 @@ function applyState(state) {
 		instance.beforeHistoryJump.emit();
 		let node = Lib._deserializeObject(state.treeData);
 		game.__setCurrentContainerContent(node);
-		editor.selection.loadSelection(state.selectionData);
-		lastAppliedTreeData = state.treeData;
 	}
+	editor.selection.loadSelection(state.selectionData);
+	lastAppliedTreeData = state.treeData;
 	historyUi.forceUpdate();
 	if(stateChanged) {
 		instance.afterHistoryJump.emit();
@@ -118,6 +118,10 @@ class History {
 			}
 		}
 		historyUi.forceUpdate();
+	}
+
+	addSelectionHistoryState() {
+		this.addHistoryState(true);
 	}
 
 	addHistoryState(selectionOnly = false) {
