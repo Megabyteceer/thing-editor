@@ -97,7 +97,7 @@ export default class Viewport extends React.Component {
 			if(play) { // launch game
 				editor.ui.status.clear();
 				problemOnGameStart = true;
-				editor.tryToSaveHistory();
+				editor.saveHistoryNow();
 				
 				editor.saveBackup(true);
 				let selectionData = editor.selection.saveSelection();

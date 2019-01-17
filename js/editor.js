@@ -46,7 +46,8 @@ export default class Editor {
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
 
-		this.tryToSaveHistory = tryToSaveHistory;
+		this.sheduleHistorySave = sheduleHistorySave;
+		this.saveHistoryNow = saveHistoryNow;
 		
 		this.fs = fs;
 		
@@ -497,7 +498,7 @@ export default class Editor {
 		if(game.__EDITORmode) {
 			needHistorySave = true;
 			if(saveImmidiatly === true) {
-				tryToSaveHistory();
+				sheduleHistorySave();
 			}
 		}
 	}
@@ -713,18 +714,30 @@ let savedBackupSelectionData;
 
 let selectionsForScenesByName = {};
 
+let historySaveSheduled;
 let needHistorySave = false;
-let tryToSaveHistory = () => {
-	if(needHistorySave) {
-		setTimeout(() => {
-			history.addHistoryState();
+let sheduleHistorySave = () => {
+	if(!historySaveSheduled && needHistorySave) {
+		historySaveSheduled = setTimeout(() => {
+			saveHistoryNow();
 		}, 1);
 		needHistorySave = false;
 	}
 };
 
-$(window).on('mouseup', tryToSaveHistory);
-$(window).on('keyup', tryToSaveHistory);
+let saveHistoryNow = () => {
+	if(historySaveSheduled || needHistorySave) {
+		history.addHistoryState();
+		needHistorySave = false;
+		if(historySaveSheduled) {
+			clearInterval(historySaveSheduled);
+		}
+		historySaveSheduled = null;
+	}
+};
+
+$(window).on('mouseup', sheduleHistorySave);
+$(window).on('keyup', sheduleHistorySave);
 
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {

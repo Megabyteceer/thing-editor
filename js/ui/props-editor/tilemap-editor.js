@@ -125,14 +125,14 @@ class TilemapEditor extends React.Component {
 		Y -= Math.floor(size / 2);
 		
 
-		let sceneModified = false;
+		let sceneWasModified = false;
 		
 		for (let i = 0; i < size; i++) {
 			
 			for (let j = 0; j < size; j++) {
 				
 				if(this.setOneTile(X, Y, type)) {
-					sceneModified = true;
+					sceneWasModified = true;
 				}
 				
 				X++;
@@ -141,7 +141,7 @@ class TilemapEditor extends React.Component {
 			Y++;
 		}
 
-		if(sceneModified) {
+		if(sceneWasModified) {
 			refreshTilemap();
 			Lib.__invalidateSerialisationCache(getTilemap());
 			editor.sceneModified();
