@@ -4,11 +4,22 @@ import game from "thing-engine/js/game.js";
 let requestsInProgress = [];
 
 function request(func, args, async) {
-	for(let r of requestsInProgress) {
-		assert(r.async, "Attempt to make request during sync request in progress.");
-	}
 	return new Promise((resolve) => {
-		requestsInProgress.push({func, args, async, resolve});
+
+		let i;
+		if(!args[0].startsWith('/fs/build')) {
+			i = setTimeout(() => {
+				editor.ui.status.warn('Request timout: ' + args[0]);
+			}, 2000);
+		}
+
+
+		requestsInProgress.push({func, args, async, resolve: (data) => {
+			if(i) {
+				clearInterval(i);
+			}
+			resolve(data);
+		}});
 		tryToFlushRequests();
 	});
 }
