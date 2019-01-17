@@ -1063,9 +1063,10 @@ input{
     border: #ccc;
 }
 
-#window-info .window-content {
+#window-info .status-body {
     background: #fff;
-    overflow-y: auto;
+	overflow-y: auto;
+	height: 100%;
 }
 
 .props-group-warns-list {

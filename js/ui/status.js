@@ -100,11 +100,12 @@ export default class Status extends React.Component {
 			setTimeout(() => {
 				Window.bringWindowForward($('#window-info'));
 			}, 1);
-			return editor.ui.renderWindow('info', 'Info Window', R.div(null,
-				R.btn('×', this.clear, 'Hide Info Window', 'close-window-btn'),
-				React.createElement(InfoList, {ref: this.errorsListRef, id:'errors-list', title:'Errors:', icon: errorIcon, className:'info-errors-list info-list', list:this.errors, itemsMap:this.errorsMap}),
-				React.createElement(InfoList, {ref: this.warnsListRef, id:'warns-list', title:'Warnings:', icon: warnIcon, className:'info-warns-list info-list', list:this.warns, itemsMap: this.warnsMap})
-				
+			return editor.ui.renderWindow('info', 'Info Window', R.fragment(
+				R.btn('×', this.clear, 'Hide all', 'close-window-btn'),
+				R.div({className:"status-body"},
+					React.createElement(InfoList, {ref: this.errorsListRef, id:'errors-list', title:'Errors:', icon: errorIcon, className:'info-errors-list info-list', list:this.errors, itemsMap:this.errorsMap}),
+					React.createElement(InfoList, {ref: this.warnsListRef, id:'warns-list', title:'Warnings:', icon: warnIcon, className:'info-warns-list info-list', list:this.warns, itemsMap: this.warnsMap})
+				)
 			), 586, 650, 400, 150, 1137, 407);
 		}
 		return R.span();
