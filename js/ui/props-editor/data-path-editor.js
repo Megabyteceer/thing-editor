@@ -18,9 +18,7 @@ export default class DataPathEditor extends React.Component {
 	}
 
 	static isFunctionIsClass(f) {
-		return f.__EDITOR_propslist_cache ||
-		f === game.Sound
-		;
+		return f.prototype;
 	}
 	
 	onBreakpointClick() {
