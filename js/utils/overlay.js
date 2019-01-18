@@ -16,6 +16,8 @@ let selectionDisabled;
 let isScrolling;
 let scrollingX, scrollingY;
 
+let helpersIsVisible = true;
+
 function checkIfCurrentContainerIsShowedPrefab() {
 	assert(isPreviewShowed === game.currentContainer.name, "game.currentContainer.name is incorrect. Prefabs name expected.");
 }
@@ -45,6 +47,7 @@ export default class Overlay {
 			blackout.height = game.H;
 		};
 		cameraFrame = new PIXI.Graphics();
+		this.helpersIsVisible = true;
 	}
 	
 	getBGcolor() {
@@ -135,6 +138,11 @@ export default class Overlay {
 		}
 		r.refresh();
 	}
+
+	hideHelpers(hideHelpers) {
+		helpersIsVisible = !hideHelpers;
+		this.helpersIsVisible = helpersIsVisible;
+	}
 	
 	hidePreview(refresh = true) {
 		editor.ui.viewport.resetZoom();
@@ -165,6 +173,7 @@ function refreshSelection() {
 	
 	while (i >= 0) {
 		let d = draggers[i];
+		d.visible = helpersIsVisible;
 		let info = __getNodeExtendData(d.owner);
 		if (!info.isSelected || d.info !== info) {
 			d.parent.removeChild(d);
@@ -174,7 +183,7 @@ function refreshSelection() {
 			info.rects = null;
 			draggers.splice(i, 1);
 		}
-		if(!(d instanceof Rect)) {
+		if(helpersIsVisible && !(d instanceof Rect)) {
 			let s = 6;
 			if ((Math.abs(d.x - game.mouse.__EDITOR_x) < s) && (Math.abs(d.y - game.mouse.__EDITOR_y) < s)) {
 				overedDragger = d;

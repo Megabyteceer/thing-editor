@@ -66,6 +66,7 @@ class Selection extends Array {
 		}
 		if(!(o instanceof Tilemap)) {
 			o.addFilter(selectionFilter);
+			selectionFilter.thickness = 2;
 		}
 		this.push(o);
 		o.__onSelect();
@@ -104,6 +105,7 @@ const selectionFilter = new PIXI.filters.OutlineFilter(2, 0xffff00);
 setInterval(() => {
 	if (window.editor && editor.selection.length > 0) {
 		selectionFilter.color ^= 0x063311;
+		selectionFilter.thickness = editor.overlay.helpersIsVisible ? 2 : 0;
 	}
 	if(needSaveSelectionInToHistory) {
 		if(game.__EDITORmode) {

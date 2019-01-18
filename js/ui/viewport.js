@@ -34,6 +34,13 @@ export default class Viewport extends React.Component {
 		this.stopExecution = this.stopExecution.bind(this);
 		this.onOneStepClick = this.onOneStepClick.bind(this);
 		this.beforePlayStopToggle = new Signal();
+		this.onHelpersToggle = this.onHelpersToggle.bind(this);
+		this.helpersHidden = false;
+	}
+
+	onHelpersToggle() {
+		this.helpersHidden = !this.helpersHidden;
+		editor.overlay.hideHelpers(this.helpersHidden);
 	}
 	
 	stopExecution() {
@@ -253,6 +260,12 @@ export default class Viewport extends React.Component {
 		
 		return R.div({className},
 			R.div({className: 'editor-viewport-panel'},
+
+				R.btn("toggle helpers", () => {
+					$('#helpers-checkbox').click();
+				}, undefined, "hidden", 1072),
+				R.input({id:"helpers-checkbox", className:'clickable', type:'checkbox', title: "Hide helpers (Ctrl + H)", onChange: this.onHelpersToggle, defaultChecked:this.helpersHidden}),
+
 				languagePanel,
 				panel
 			),
