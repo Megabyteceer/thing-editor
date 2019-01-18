@@ -505,10 +505,10 @@ export default class Editor {
 	
 	centraliseObjectToContent (o) {
 		let b = o.getBounds();
-		let midX = Math.round(b.x + b.width / 2);
-		let midY = Math.round(b.y + b.height / 2);
+		let midX = b.x + b.width / 2;
+		let midY = b.y + b.height / 2;
 		let pos = o.getGlobalPosition();
-		this.moveContainerWithoutChildren(o, midX - pos.x, midY - pos.y);
+		this.moveContainerWithoutChildren(o, Math.round(midX - pos.x), Math.round(midY - pos.y));
 	}
 	
 	moveContainerWithoutChildren(o, dX, dY) {
