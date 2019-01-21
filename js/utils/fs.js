@@ -147,21 +147,24 @@ let fs = {
 	},
 	postJSON(url, data, silently = false, async = false) {//eslint-disable-line no-unused-vars
 		return request(function saveFile_sub(url, silently = false) {
-
-			if (!silently || !async) {
-				editor.ui.modal.showSpinner();
-			}
-			
-			let r = $.ajax({
-				type: "POST",
-				url: url,
-				data: JSON.stringify(data),
-				contentType: 'application/json'
-			}).fail((a,b,c) => {handleError(a,b,c,url);});
-			if (!silently || !async) {
-				r.always(editor.ui.modal.hideSpinner);
-			}
-			return r;
+			return new Promise((resolve) => {
+				if (!silently || !async) {
+					editor.ui.modal.showSpinner();
+				}
+				
+				let r = $.ajax({
+					type: "POST",
+					url: url,
+					data: JSON.stringify(data),
+					contentType: 'application/json'
+				}).fail((a,b,c) => {handleError(a,b,c,url);});
+				if (!silently || !async) {
+					r.always(editor.ui.modal.hideSpinner);
+				}
+				r.then((res) => {
+					resolve(JSON.parse(res));
+				});
+			});
 		} , arguments, async);
 
 
