@@ -162,7 +162,7 @@ let fs = {
 					r.always(editor.ui.modal.hideSpinner);
 				}
 				r.then((res) => {
-					resolve(JSON.parse(res));
+					resolve(res && JSON.parse(res));
 				});
 			});
 		} , arguments, async);
