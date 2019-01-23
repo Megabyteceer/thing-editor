@@ -142,7 +142,7 @@ class LanguageTableEditor extends React.Component {
 			}
 		});
 	}
-	
+
 	onAddNewKeyClick() {
 
 		let defaultKey = '';
@@ -216,7 +216,46 @@ class LanguageTableEditor extends React.Component {
 		
 		idsList.some((id) => {
 			lines.push(R.div({key: id, className:'langs-editor-tr'},
-				R.div({className:'langs-editor-th selectable-text', onMouseDown: window.copyTextByClick}, id),
+				R.div({className:'langs-editor-th selectable-text',
+					title: "Click to copy, Double click to rename, Right click to delete",
+					onContextMenu: (ev) => {
+						let currentKey = ev.target.innerText;
+						sp(ev);
+						return editor.ui.modal.showQuestion('Translatable key delete', 'Delete key ' + currentKey + '?', () => {
+							for(let id in languages) {
+								let l = languages[id];
+								delete l[currentKey];
+							}
+							onModified();
+							refreshCachedData();
+							this.forceUpdate();
+						});
+					},
+					onClick: window.copyTextByClick,
+					onDoubleClick: (ev) => {
+						let currentKey = ev.target.innerText;
+
+						return editor.ui.modal.showPrompt("Translatable key rename:", currentKey, undefined, (nameToCheck) => {
+							if(nameToCheck === currentKey) {
+								return 'Please rename key.';
+							}
+							if(oneLanguageTable.hasOwnProperty(nameToCheck)) {
+								return 'Key with that name already exists.';
+							}
+						}).then((newKey) => {
+							if(newKey) {
+								for(let id in languages) {
+									let l = languages[id];
+									l[newKey] = l[currentKey];
+									delete l[currentKey];
+								}
+								onModified();
+								refreshCachedData();
+								this.forceUpdate();
+							}
+						});
+					}
+				}, id),
 				langsIdsList.map((langId) => {
 					let text = languages[langId][id];
 					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({defaultValue: text, id:texareaID(langId, id), onChange:(ev) => {
