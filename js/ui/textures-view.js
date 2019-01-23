@@ -129,7 +129,7 @@ class TexturesViewerBody extends React.Component {
 		} else {
 			size = '(unloaded)';
 		}
-		let path = this.imagesRoot + name;
+		let path = this.imagesRoot + name + '?noCache=' + Lib.__noCacheCounter;
 		return R.div({key:name, className:isOnDemandLoading ? 'textures-viewer-item redframe' : 'textures-viewer-item'},
 			R.img({src: path, className:'textures-viewer-image', onDoubleClick:() => {
 				editor.fs.editFile(path);
