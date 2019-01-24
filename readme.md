@@ -7,11 +7,13 @@ Project in experimental **alpha-version** yet.
 ## Installation
 
 Please check if you have latest **nodejs**, **npm**, **chrome**, and **ffmpeg** on your computer, **before installlation**.
-Use next script to install editor and example project.
+Use next script with administrator rights, to install editor and example project.
 After succesfull installation editor should start automaticly as chrome page.
 To start editor manually use **npm start** in **thing-editor** folder
 
 ```
+
+#administrator's rights is required to make symlinks
 
 mkdir game_editor_here
 cd game_editor_here
@@ -45,3 +47,6 @@ Use double click on component in scene tree - to open component's source file to
 Work still in progress.
 
 ![Editor screenshot](https://raw.githubusercontent.com/Megabyteceer/thing-editor/master/img/screenshots/thing-editor.jpg)
+
+### Projects made with thing-engine
+[Zombie hunters](http://zh.pixel-cave.com)
