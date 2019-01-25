@@ -112,6 +112,7 @@ export default class Overlay {
 		blackout.x = -game.stage.x;
 		blackout.y = -game.stage.y;
 		editor.history.updateUi();
+		game.__loadDynamicTextures();
 	}
 
 	isDraggerOvered () {
@@ -158,6 +159,7 @@ export default class Overlay {
 				editor.refreshTreeViewAndPropertyEditor();
 			}
 			editor.history.updateUi();
+			game.__loadDynamicTextures();
 		}
 	}
 }
