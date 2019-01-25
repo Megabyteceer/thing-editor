@@ -240,9 +240,11 @@ window.makePreviewModeButton = function(title) {
 			if(o.__EDITOR_component_in_previewMode) {
 				o.__EDITOR_inner_exitPreviewMode();
 				previewBtnProperty.className = undefined;
+				editor.game.__loadDynamicTextures();
 			} else {
 				o.__EDITOR_inner_goToPreviewMode();
 				previewBtnProperty.className = 'danger-btn';
+				editor.game.__loadDynamicTextures();
 			}
 			editor.refreshPropsEditor();
 		}
