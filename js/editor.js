@@ -507,8 +507,13 @@ export default class Editor {
 		let b = o.getBounds();
 		let midX = b.x + b.width / 2;
 		let midY = b.y + b.height / 2;
+		let p = new PIXI.Point(midX, midY);
+		o.parent.toLocal(p, undefined, p);
 		let pos = o.getGlobalPosition();
-		this.moveContainerWithoutChildren(o, Math.round(midX - pos.x), Math.round(midY - pos.y));
+		let p2 = new PIXI.Point();
+		o.parent.toLocal(pos, undefined, p2);
+		
+		this.moveContainerWithoutChildren(o, Math.round(p.x - p2.x), Math.round(p.y - p2.y));
 	}
 	
 	moveContainerWithoutChildren(o, dX, dY) {
