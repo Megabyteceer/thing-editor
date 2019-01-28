@@ -31,8 +31,6 @@ function createDragger(owner, constructor) {
 	return ret;
 }
 
-let savedSelection;
-
 export default class Overlay {
 	
 	constructor() {
@@ -98,7 +96,6 @@ export default class Overlay {
 		editor.ui.viewport.resetZoom();
 		this.setBGcolor(editor.settings.getItem('prefab-bg' + object.name));
 		this.hidePreview(false);
-		savedSelection = editor.selection.saveSelection();
 		game.stage.addChild(blackout);
 		blackout.width = game.W;
 		blackout.height = game.H;
@@ -111,6 +108,12 @@ export default class Overlay {
 		game.stage.y = -object.y + game.H / 2;
 		blackout.x = -game.stage.x;
 		blackout.y = -game.stage.y;
+		setTimeout(() => {
+			let selectionData = game.settings.getItem('prefab-selection' + game.currentContainer.name);
+			if(selectionData) {
+				editor.selection.loadSelection(selectionData);
+			}
+		}, 1);
 		editor.history.updateUi();
 		game.__loadDynamicTextures();
 	}
@@ -152,8 +155,9 @@ export default class Overlay {
 		}
 		if (isPreviewShowed) {
 			checkIfCurrentContainerIsShowedPrefab();
+			let selectionData = editor.selection.saveSelection();
+			game.settings.setItem('prefab-selection' + game.currentContainer.name, selectionData);	
 			game.hideModal(game.currentContainer);
-			editor.selection.loadSelection(savedSelection);
 			isPreviewShowed = null;
 			if(refresh === true) {
 				editor.refreshTreeViewAndPropertyEditor();
