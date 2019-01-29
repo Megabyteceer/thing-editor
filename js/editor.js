@@ -417,7 +417,7 @@ export default class Editor {
 		this.beforePropertyChanged.emit(field.name, field);
 		
 		if(delta === true) {
-			assert(field.type === Number);
+			assert(field.type === Number, "editable field descriptor type: Number expected");
 
 			let v = o[field.name];
 			let newVal = v + val;
