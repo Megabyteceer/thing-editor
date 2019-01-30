@@ -99,9 +99,9 @@ export default class TreeView extends React.Component {
 		}
 		let o = editor.selection[0];
 		if(o === game.currentContainer) {
-			return !(o instanceof Scene) && o.children && (o.children.length === 1);
+			return !(o instanceof Scene) && (o.children.length === 1);
 		}
-		return o.children && (o.children.length > 0);
+		return o.children.length > 0;
 	}
 
 	onUnwrapClick() {
