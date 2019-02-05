@@ -190,7 +190,6 @@ export default class Viewport extends React.Component {
 	
 	onToggleOrientationClick() {
 		game.__enforcedOrientation = (game.__enforcedOrientation === 'portrait') ? 'landscape' : 'portrait';
-		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
 	onReloadAssetsClick() {

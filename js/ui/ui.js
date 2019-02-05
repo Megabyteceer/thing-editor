@@ -166,7 +166,7 @@ class StatusBar extends React.Component {
 					x: game.mouse.__EDITOR_scene_x,
 					y: game.mouse.__EDITOR_scene_y
 				});
-				txt += ' (x: ' + p.x + '; y: ' + p.y + ')';
+				txt += ' (x: ' + Math.round(p.x) + '; y: ' + Math.round(p.y) + ')';
 			}
 			
 			let resetZoomBtn;
