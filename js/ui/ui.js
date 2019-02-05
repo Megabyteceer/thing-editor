@@ -149,23 +149,20 @@ export default UI;
 class StatusBar extends React.Component {
 	
 	componentDidMount() {
-		$(window).on('mousemove', () =>{
+		const f = () => {
 			this.forceUpdate();
-		});
-		$(window).on('wheel', () =>{
-			this.forceUpdate();
-		});
+		};
+		$(window).on('mousedown', f);
+		$(window).on('mousemove', f);
+		$(window).on('wheel', f);
 	}
-	
+
 	render() {
 		if(game && game.stage) {
 			let txt = ' x: ' + game.mouse.__EDITOR_scene_x + ' y: ' + game.mouse.__EDITOR_scene_y;
 			
 			if(editor.selection.length > 0) {
-				let p = editor.selection[0].toLocal({
-					x: game.mouse.__EDITOR_scene_x,
-					y: game.mouse.__EDITOR_scene_y
-				});
+				let p = editor.selection[0].toLocal(game.__mouse_EDITOR);
 				txt += ' (x: ' + Math.round(p.x) + '; y: ' + Math.round(p.y) + ')';
 			}
 			
