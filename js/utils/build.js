@@ -98,14 +98,22 @@ let classes = {};`];
 						return R.div({key:i}, r);
 					}));
 				} else {
+					let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
 					
+					if(!window.open(url)) {
+						editor.ui.modal.showModal(R.div(null,
+							"click to open: ",
+							R.a({href: url, target: '_blank'}, url),
+							R.br(),
+							"Check browser's status bar to allow automatic opening after build."
+						), "building finished.");
+					}
+							
 					if(result.warnings.length > 0) {
 						editor.ui.modal.showModal(result.warnings.map((r, i) =>{
 							return R.div({key:i}, r);
 						}));
 					}
-					
-					window.open('/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release'));
 				}
 			});
 		});
