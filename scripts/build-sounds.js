@@ -39,11 +39,12 @@ module.exports = function (projectPath, callback, options) {
 			shortName.shift();
 			shortName = shortName.join('/snd/');
 
-			if ((options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs)) {
+			let bitrate = getBitrate(fn);
+
+			if ((options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName][bitrate])) {
 				filesToConvert.push(fn);
-				cache[shortName] = {
-					mtimeMs: s.mtimeMs
-				};
+				cache[shortName] = {};
+				cache[shortName][bitrate] = s.mtimeMs;
 			}
 		}
 	}
@@ -76,11 +77,15 @@ module.exports = function (projectPath, callback, options) {
 
 	convertNextFile();
 
-	function convertFile(fn, ext, cb) {
+	function getBitrate(fn) {
 		let shortFilename = fn.replace(soundsPath, '');
 		shortFilename = shortFilename.replace(/\.wav$/gmi, '');
 		shortFilename = shortFilename.replace('\\', '/');
-		let bitrate = options.bitrates[shortFilename] || options.defaultBitrate || 96;
+		return options.bitrates[shortFilename] || options.defaultBitrate || 96;
+	}
+
+	function convertFile(fn, ext, cb) {
+		let bitrate = getBitrate(fn);
 
 		console.log('convert sound:' + fn + ' -> ' + ext + ' ' + bitrate + 'Kb');
 		let fileParts = path.parse(fn);
