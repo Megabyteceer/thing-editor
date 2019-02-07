@@ -517,9 +517,18 @@ export default class Editor {
 	}
 	
 	moveContainerWithoutChildren(o, dX, dY) {
+
+		for(let c of o.children) {
+			__getNodeExtendData(c).globalPos = {
+				x: c.transform.worldTransform.tx,
+				y: c.transform.worldTransform.ty
+			};
+		}
+
 		editor.shiftObject(o, dX, dY);
 		for(let c of o.children) {
-			editor.shiftObject(c, -dX, -dY);
+			let p = o.toLocal(__getNodeExtendData(c).globalPos);
+			editor.shiftObject(c, Math.round(p.x - c.x), Math.round(p.y - c.y));
 		}
 	}
 	
