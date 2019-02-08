@@ -116,16 +116,19 @@ class SelectEditor extends React.Component {
 					});
 				}
 				a = a.slice(0, 20);
-				filterInput = R.input({
-					autoFocus: true,
-					onBlur: this.onBlur,
-					onFocus: this.onFocus,
-					className: 'select-editor-filter',
-					placeholder: 'Filter',
-					onChange: this.onFilterChange,
-					value: this.state.filter
-				});
+
 			}
+
+			filterInput = R.input({
+				autoFocus: true,
+				onBlur: this.onBlur,
+				onFocus: this.onFocus,
+				className: 'select-editor-filter',
+				placeholder: 'Filter',
+				onChange: this.onFilterChange,
+				value: this.state.filter,
+				style: this.props.field ? undefined : {width: 0, margin: 0, position:'fixed', padding: 0, height: 0}
+			});
 
 			if (this.checkForNeedClearFilter && a.length < 1) {
 				this.checkForNeedClearFilter = false;
