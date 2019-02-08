@@ -293,7 +293,7 @@ function increaseNameNumber(o) {
 }
 
 function isObjectUnder(o) {
-	return (o.containsPoint && (!o.__lockSelection) && o.worldVisible && !__getNodeExtendData(o).hidden && o.containsPoint(game.__mouse_EDITOR));
+	return (o.containsPoint && (!o.__lockSelection) && o.worldVisible && o.containsPoint(game.__mouse_EDITOR));
 }
 
 let previousAllUnderMouse;
@@ -334,7 +334,7 @@ function selectByStageClick(ev) {
 		let o = allUnderMouse[i % allUnderMouse.length];
 
 		let p = o;
-		let isPrevHidden;
+		let isPrevHidden = __getNodeExtendData(o).hidden;
 		while(p) {
 			
 			p = p.parent;

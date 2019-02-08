@@ -2,6 +2,7 @@ import Group from "./group.js";
 import Scene from "thing-engine/js/components/scene.js";
 import Lib from "thing-engine/js/lib.js";
 import game from "thing-engine/js/game.js";
+import PrefabReference from "thing-engine/js/components/prefab-reference.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -94,10 +95,13 @@ export default class PrefabsList extends React.Component {
 			});
 		}
 	}
-	
-	onSelect(item) {
+
+	static editPrfefab(name) {
 		if (game.__EDITORmode) {
-			let name = Lib.__getNameByPrefab(item);
+			if(!Lib.hasPrefab(name)) {
+				editor.ui.modal.showError("No prefab with name " + name + " exists.");
+				return;
+			}
 			PrefabsList.acceptPrefabEdition();
 			let preview = Lib.loadPrefab(name);
 			__getNodeExtendData(preview).__EDITOR_isPreviewObject = true;
@@ -107,6 +111,10 @@ export default class PrefabsList extends React.Component {
 			editor.history.clearHistory();
 			previewShown = name;
 		}
+	}
+	
+	onSelect(item) {
+		PrefabsList.editPrfefab( Lib.__getNameByPrefab(item));
 	}
 		
 	renderItem(prefabName, item) {
@@ -147,12 +155,17 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	static acceptPrefabEdition() {
-		if(previewShown && editor.isCurrentContainerModified) {
+		let name = previewShown;
+		let isChanged = previewShown && editor.isCurrentContainerModified;
+		if(isChanged) {
 			editor.history.setCurrentStateUnmodified();
 			Lib.__savePrefab(game.currentContainer, previewShown);
 			editor.ui.prefabsList.forceUpdate();
 		}
 		PrefabsList.hidePrefabPreview();
+		if(isChanged) {
+			PrefabReference.__refreshPrefabRefs(name);
+		}
 	}
 	
 	static hidePrefabPreview() {
