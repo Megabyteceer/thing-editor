@@ -45,7 +45,15 @@ function groupArray(a, delimitter = '/', level = 0) {
 	for (groupName in groups) {
 		group = groups[groupName];
 		group.sort((a,b) => {
-			return orders.get(a) - orders.get(b);
+			a = orders.get(a);
+			b = orders.get(b);
+			if(typeof a === 'number') {
+				return a - b;
+			}
+			if(a === b) {
+				return 0;
+			}
+			return (a > b) ? 1 : -1;
 		});
 		ret.unshift(renderGroup({key: groupName, title: groupName, content: groupArray(group, delimitter, level + 1)}));
 	}
