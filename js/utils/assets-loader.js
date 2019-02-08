@@ -3,6 +3,7 @@ import Lib from "thing-engine/js/lib.js";
 import Sound from "thing-engine/js/utils/sound.js";
 import Pool from "thing-engine/js/utils/pool.js";
 import BgMusic from "thing-engine/js/components/bg-music.js";
+import TexturesView from "../ui/textures-view.js";
 
 const AssetsLoader = {};
 
@@ -80,6 +81,7 @@ const enumAssets = () => {
 			game.pixiApp.start();
 			editor.ui.modal.hideSpinner();
 			BgMusic._recalculateMusic();
+			TexturesView.applyFoldersPropsToAllImages();
 			resolve();
 			editor.refreshTexturesViewer();
 		});

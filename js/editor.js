@@ -149,6 +149,8 @@ export default class Editor {
 			
 			if(isProjectDescriptorModified) {
 				this.saveProjectDesc();
+			} else {
+				__saveProjectDescriptorInner(true); // try to cleanup descriptor
 			}
 
 			utils.protectAccessToSceneNode(game.stage, "game stage");
@@ -707,25 +709,31 @@ function addTo(parent, child, doNotselect) {
 	}
 }
 
-let __saveProjectDescriptorInner = () => {
+let __saveProjectDescriptorInner = (cleanOnly = false) => {
+	let isCleanedUp = false;
 
 	//cleanup settings for deleted sounds
 	let loadOnDemandSounds = editor.projectDesc.loadOnDemandSounds;
-	for(let k in loadOnDemandSounds) {
+	let a = Object.keys(loadOnDemandSounds);
+	for(let k of a) {
 		if(!Lib.hasSound(k)) {
 			delete loadOnDemandSounds[k];
+			isCleanedUp = true;
 		}
 	}
 
 	//cleanup settings for deleted sounds
 	let loadOnDemandTextures = editor.projectDesc.loadOnDemandTextures;
-	for(let k in loadOnDemandTextures) {
+	a = Object.keys(loadOnDemandTextures);
+	for(let k of a) {
 		if(!Lib.__hasTextureEvenUnloaded(k)) {
 			delete loadOnDemandTextures[k];
+			isCleanedUp = true;
 		}
 	}
-
-	editor.fs.saveFile('thing-project.json', editor.projectDesc);
+	if(!cleanOnly || isCleanedUp) {
+		editor.fs.saveFile('thing-project.json', editor.projectDesc);
+	}
 };
 
 let savedBackupName;

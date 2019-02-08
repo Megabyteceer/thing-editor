@@ -55,7 +55,11 @@ function groupArray(a, delimitter = '/', level = 0) {
 			}
 			return (a > b) ? 1 : -1;
 		});
-		ret.unshift(renderGroup({key: groupName, title: groupName, content: groupArray(group, delimitter, level + 1)}));
+		let i = 0;
+		while(i < ret.length && ret[i].key.endsWith(' ::')) {
+			i++;
+		}
+		ret.splice(i, 0, renderGroup({key: groupName, title: groupName, content: groupArray(group, delimitter, level + 1)}));
 	}
 
 	return ret;
