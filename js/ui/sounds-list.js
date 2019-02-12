@@ -86,9 +86,10 @@ export default class SoundsList extends React.Component {
 								let a = sounds[f];
 								a.sort(soundsPriority);
 							}
-
+							BgMusic._stopAll();
 							Lib._setSounds(sounds);
 							resolve();
+							BgMusic._recalculateMusic();
 						};
 
 						if(result.updated) {
