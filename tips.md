@@ -1,128 +1,135 @@
 
-#display component methods
+# Display component's callbacks
 
-_onRenderResize
-onLanguageChanged
+### _onRenderResize
+### onLanguageChanged
 
-#called when parent trigger come disabled
-_onDisableByTrigger
+### _onDisableByTrigger
+called when parent trigger come disabled
 
 
-
-#ewerything under this line available in editor only. Wrap code which acces it in to next macros coments: 
+## Editor mode callbacks. Wrap code which acces it in to next macros coments: 
+```
 ///#if EDITOR
 
 /// #endif
+```
+
+### __EDITOR_onCreate  
+called after object created via class-view additng to stage
+
+### __onSelect() { super.__onSelect(); }
+### __onUnselect
 
 
-__EDITOR_onCreate  
-##called after object created via class-view additng to stage
+### __beforeDestroy
+chance do destroy content in editor mode. For cases when onRemove is not calling because of init was not called in editor mode
 
-__onSelect() {
-	super.__onSelect();
-}
-__onUnselect
+### __beforeSerialization
+### __afterSerialization
+### __beforeDeserialization
+### __afterDeserialization
+
+### __goToPreviewMode
+### __exitPreviewMode
+should be binded to this
+this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
+
+###__onChildSelected
 
 
-__beforeDestroy
 
-## chance do destroy content in editor mode. For cases when onRemove is not calling because of init was not called in editor mode
 
-__beforeSerialization
-__afterSerialization
-__beforeDeserialization
-__afterDeserialization
-
-__goToPreviewMode
-__exitPreviewMode
-#should be binded to this
-#this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
-
-__onChildSelected
-
-#debugging helper
-___h  #property returns dom's div which will be highlighted in window during code stopped on breakpoint. Useful to determine where scene's elements are loacated on screen.
+## debugging helper
+### ___h
+property returns dom's div which will be highlighted in window during code stopped on breakpoint. Useful to determine where scene's elements are loacated on screen.
 
 
 ---
 
-#editable fields description options:
+# Editable fields description options:
 
-##type:
+### type:
  Number, String, Boolean, 'rect', 'data-path', 'callback', 'btn', 'color', 'splitter'
 
-##title:
+### title:
  readable name
 
-##name:
+### name:
  object's editable property name
   // begin name with '__' to make field exist in editor only
         such field will not be included in to build.
   // begin name with '___' to make field exist in editor memory only
         such field will not be saved in to any file.
 
-##default:
+### default:
  defaultValue
 
-##min, max, step:
+### min, max, step:
  optional for Number property
 
-##select:
+### select:
  array of {name: 'Readable Name', value: 1} objects to select values from.
 
-##disabled:
+### disabled:
  function(selectedObject) {
     return true if field is readonly
  }
 
-##notSeriazable:
+### notSeriazable:
  true - if not need save it in to data. Useful for editor helpers fierlds.
 
-##important:
+### important:
  true - if field should be highlighted in editor
 
-##override:
+### override:
  true - if field with same name already registred in super class, and need to redefine its appearance
 
-##visible:
+### visible:
  function(selected object) {
    retur false if field should be hidden.
  }
 
-##validate:
+### validate:
  function(val) {
    return 'return message if invalid.'
  }
 
-##isValueValid:
+### isValueValid:
  function(val) { // validator fot path selector ('data-path', 'callback')
    return true if value is valid as target for 'data-path'.
  }
 
-##onClick:
+### onClick:
  function(selectedObject) {
    click handler for 'btn' property
  }
 
-##noNullCheck:
+### noNullCheck:
  true - if numeric value does not need NaN checking
 
-##tip:
+### tip:
  'Tip text'
 
-##afterEdited(o):
+### afterEdited(o):
   callback called after property edited by user;
 
 
-# === editor extendedData =====
+# Editor extendedData
+## __getNodeExtendData(displayObject)
+get extended data. Available in editor only
 
-__getNodeExtendData(displayObject) - get extended data. Available in editor only
+## extendedData's flags:
 
-#extendedData's flags:
+### isSelected
+### hidePropsEditor
+do not show props editor. Object still can be dragged or rotated
 
-isSelected
-hidePropsEditor //do not show props editor. Object still can be dragged or rotated
-rotatorLocked  //dont show rotation drag point
-hidden   // hide in scene's tree
+### rotatorLocked
+dont show rotation drag point
 
-__EDITOR_isPreviewObject   //(read only) true if object is prefab which currently opened to edit
+### hidden
+hide in scene's tree
+
+### __EDITOR_isPreviewObject
+ //(read only) true if object is prefab which currently opened to edit
