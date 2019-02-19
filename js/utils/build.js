@@ -15,6 +15,17 @@ const fieldsFilter = (key, value) => {
 	}
 };
 
+let errorLinesStarted = false;
+const isLineError = (l) => {
+	if(l.startsWith('ERROR: ')) {
+		errorLinesStarted = true;
+	}
+	if(l.startsWith('WARNING: ')) {
+		errorLinesStarted = false;
+	}
+	return errorLinesStarted;
+};
+
 export default class Build {
 	static build(debug) {
 		
@@ -93,8 +104,11 @@ let classes = {};`];
 		Promise.all(fileSavePromises).then(() => {
 			editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
 				
-				if(result.errors.length > 0) {
-					editor.ui.modal.showError(result.errors.map((r, i) =>{
+				errorLinesStarted = false;
+
+				if(result.find(isLineError)) {
+					errorLinesStarted = false;
+					editor.ui.modal.showError(result.filter(isLineError).map((r, i) =>{
 						return R.div({key:i}, r);
 					}));
 				} else {
@@ -109,8 +123,8 @@ let classes = {};`];
 						), "building finished.");
 					}
 							
-					if(result.warnings.length > 0) {
-						editor.ui.modal.showModal(result.warnings.map((r, i) =>{
+					if(result.length > 0) {
+						editor.ui.modal.showModal(result.map((r, i) =>{
 							return R.div({key:i}, r);
 						}));
 					}

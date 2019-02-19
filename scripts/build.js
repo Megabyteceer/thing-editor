@@ -9,15 +9,14 @@ let debug = process.argv.indexOf('debug') >= 0;
 let config = require(path.resolve(projectPath, debug ? 'config/webpack.debug.js' : 'config/webpack.prod.js'));
 
 webpack(config, (err, stats) => {
-	let result = {errors:[], warnings:[], debug:debug};
 
 	function errorHandle(err) {
 		var txt = 'ERROR: '+ err;
-		result.errors.push (txt);
+		console.error(txt);
 	}
 	function warnHandle(err) {
 		var txt = 'WARNING: '+ err;
-		result.warnings.push (txt);
+		console.log(txt);
 	}
 	if (err) {
 		if (err.details) {
@@ -35,5 +34,4 @@ webpack(config, (err, stats) => {
 			info.warnings.some(warnHandle);
 		}
 	}
-	console.log(JSON.stringify(result));
 });

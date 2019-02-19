@@ -172,10 +172,10 @@ app.get('/fs/build', function (req, res) {
 	(err, stdout, errout) => {
 		if(err) {
 			console.error(err);
-			res.end(JSON.stringify({errors:[stdout, errout], warnings:[]}));
+			res.end(JSON.stringify({errors:[stdout.split('\n'), errout.split('\n')], warnings:[]}));
 		} else {
 			log(stdout);
-			res.end(stdout);
+			res.end(JSON.stringify(stdout.split('\n')));
 		}
 	});
 });
