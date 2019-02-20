@@ -553,6 +553,10 @@ input{
 	padding:7px;
 }
 
+.prefab-list-item {
+	position: relative;
+}
+
 .modal-content input {
 	font-size:130%;
 	width: 50%;
@@ -1217,6 +1221,7 @@ input{
 	padding: 0 4px;
 	position: absolute;
 	right: 10px;
+	margin-top: 0;
 }
 
 .sound-preload-checkbox {

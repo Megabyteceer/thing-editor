@@ -116,13 +116,29 @@ export default class PrefabsList extends React.Component {
 	onSelect(item) {
 		PrefabsList.editPrfefab( Lib.__getNameByPrefab(item));
 	}
-		
+	
+	onPrefabDeleteClick(prefabName) {
+		editor.ui.modal.showQuestion('Are you sure?', R.span(null,
+			'Are you sure you want to delete prefab: ', R.b(null, prefabName), ' ?'
+		),() => {
+			Lib.__deletePrefab(prefabName);
+			this.forceUpdate();
+		}, 'Delete');
+
+	}
+
 	renderItem(prefabName, item) {
 		let cls = Lib.getClass(item.c);
 		return R.div({onDoubleClick:() => {
 			editor.editClassSource(cls);
-		}, key: prefabName},
-		R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'), item, prefabName, this)
+		}, key: prefabName, className:'prefab-list-item'},
+		R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'
+			,
+			R.btn('×', () => {
+				this.onPrefabDeleteClick(prefabName);
+			}, 'Delete scene...', 'danger-btn delete-scene-btn')
+		
+		), item, prefabName, this)
 		);
 	}
 	
