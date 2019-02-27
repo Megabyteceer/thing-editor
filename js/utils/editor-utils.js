@@ -275,6 +275,7 @@ window.addEventListener('beforeunload', function(ev) {
 	if(!editor.game.__EDITORmode) { //backup already exist
 		return;
 	}
+	editor.saveCurrentScenesSelectionGlobally();
 	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITORmode && !editor.__projectReloading && !editor.__FatalError) {
 		editor.saveBackup(true);
 		ev.preventDefault();

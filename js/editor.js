@@ -206,6 +206,9 @@ export default class Editor {
 			this.loadScene(name);
 			document.title = '(' + editor.projectDesc.title + ') - - (' + name + ')';
 			saveCurrentSceneName(game.currentScene.name);
+			if(game.currentScene) {
+				this.selection.loadSelection(game.settings.getItem('__EDITOR_scene_selection' + editor.currentSceneName));
+			}
 			history.clearHistory();
 			history.setCurrentStateUnmodified();
 			this.ui.forceUpdate();
@@ -288,6 +291,8 @@ export default class Editor {
 			assert(!includeUnmodified, 'Attempt to save important backup when project was not loaded yet.');
 			return;
 		}
+
+		this.saveCurrentScenesSelectionGlobally();
 
 		savedBackupName = editor.backupSceneLibSaveSlotName;
 		if (!editor.isCurrentSceneModified) {
@@ -462,21 +467,21 @@ export default class Editor {
 			return f.name === name;
 		});
 	}
+
+	saveCurrentScenesSelectionGlobally() {
+		if(game.currentScene) {
+			game.settings.setItem('__EDITOR_scene_selection' + editor.currentSceneName, this.selection.saveSelection());
+		}
+	}
 	
 	loadScene(name) {
 		assert(name, 'name should be defined');
-		if(game.currentScene) {
-			selectionsForScenesByName[editor.currentSceneName] = this.selection.saveSelection();
-		}
+		this.saveCurrentScenesSelectionGlobally();
 		
 		game.showScene(name);
 		
 		__getNodeExtendData(game.currentContainer).childsExpanded = true;
 
-		if(game.currentScene) {
-			this.selection.loadSelection(selectionsForScenesByName[name]);
-		}
-		
 		if(name.startsWith(editor.backupSceneLibSaveSlotName)) {
 			let backupUID = editor.__backupUID;
 			setTimeout(() => { //prevent backup deletion if page reloaded
@@ -738,8 +743,6 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 
 let savedBackupName;
 let savedBackupSelectionData;
-
-let selectionsForScenesByName = {};
 
 let historySaveSheduled;
 let needHistorySave = false;
