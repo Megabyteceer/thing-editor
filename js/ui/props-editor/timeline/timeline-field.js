@@ -43,7 +43,7 @@ export default class FieldsTimeline extends React.Component {
 		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
 		if(currentKeyframe.t !== currentTime) {
 			this.props.owner.createKeyframeWithTimelineValue(field, currentTime);
-			this.forceUpdate();
+			this.forceUpdateDebounced();
 		} else {
 			this.deleteKeyframe(currentKeyframe);
 		}
@@ -57,7 +57,7 @@ export default class FieldsTimeline extends React.Component {
 			Timeline.unselectKeyframe(keyFrame);
 			f.t.splice(i, 1);
 			this.onChanged();
-			this.forceUpdate();
+			this.forceUpdateDebounced();
 		}
 	}
 	
@@ -99,12 +99,21 @@ export default class FieldsTimeline extends React.Component {
 		this.gotoNextKeyframe(1);
 	}
 
+	forceUpdateDebounced() {
+		if(!this.forceUpdateDebouncedTimer) {
+			this.forceUpdateDebouncedTimer = setTimeout(() => {
+				this.forceUpdateDebouncedTimer = null;
+				this.forceUpdate();
+			}, 0);
+		}
+	}
+
 	onChanged() {
 		Timeline.fieldDataChanged(
 			this.props.field, 
 			this.props.owner.props.node
 		);
-		this.forceUpdate();
+		this.forceUpdateDebounced();
 		setTimeout(() => {
 			this.applyValueToMovielcip(this.props.owner.props.owner.getTime());
 		}, 1);
