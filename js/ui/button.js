@@ -21,7 +21,7 @@ class Button extends React.Component {
 		}
 		let needCtrl = this.props.hotkey > 1000;
 		
-		if (this.props.disabled || (window.isEventFocusOnInputElement(e) && !needCtrl) || editor.ui.modal.isUIBlockedByModal(ReactDOM.findDOMNode(this))) return;
+		if (this.props.disabled || (window.isEventFocusOnInputElement(e) && (this.props.hotkey !== 1083)) || editor.ui.modal.isUIBlockedByModal(ReactDOM.findDOMNode(this))) return; // 1083 - Ctrl + S (Save scene)
 		
 		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
 			this.onMouseDown(e);
