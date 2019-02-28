@@ -137,7 +137,7 @@ export default class TimelineKeyframe extends React.Component {
 			className += ' timeline-keyframe-selected';
 		}
 
-		let isUnreachable = isNaN(this.props.owner.getValueAtTime(keyFrame.t));
+		let isUnreachable = (typeof keyFrame.v === "number") && isNaN(this.props.owner.getValueAtTime(keyFrame.t));
 		if(isUnreachable) {
 			className += ' timeline-keyframe-unreachable';
 		}
