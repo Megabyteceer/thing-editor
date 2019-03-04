@@ -166,29 +166,31 @@ class Window extends React.Component {
 	}
 	
 	setPosition(x, y) {
+		this.state.x = x;
+		this.state.y = y;
 		x = Math.max(0, x);
 		y = Math.max(0, y);
 		x = Math.min(x, window.innerWidth - this.state.w);
 		y = Math.min(y, window.innerHeight - this.state.h);
-		this.state.x = x;
-		this.state.y = y;
 		if (this.$) {
 			this.$.css({left: x + 'px', top: y + 'px'});
 		}
 	}
 	
 	setSize(w, h) {
-		w = Math.max(w, this.props.minW);
-		h = Math.max(h, this.props.minH);
-		w = Math.min(w, window.innerWidth);
-		h = Math.min(h, window.innerHeight);
 		if((this.state.w !== w) || (this.state.h !== h)) {
 			if(this.props.onResize) {
 				this.props.onResize();
 			}
 		}
+
 		this.state.w = w;
 		this.state.h = h;
+		w = Math.max(w, this.props.minW);
+		h = Math.max(h, this.props.minH);
+		w = Math.min(w, window.innerWidth);
+		h = Math.min(h, window.innerHeight);
+		
 		if (this.$) {
 			this.$.css({width: w + 'px', height: h + 'px'});
 		}
