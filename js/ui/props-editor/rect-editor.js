@@ -26,7 +26,7 @@ export default class RectangleEditor extends React.Component {
 		this.onEnabledChange = this.onNullCheckboxChange.bind(this);
 	}
 
-	componentDidMount() {
+	componentWillMount() {
 		this.checkNullability();
 	}
 
@@ -92,7 +92,6 @@ export default class RectangleEditor extends React.Component {
 	}
 
 	onNullCheckboxChange() {
-		let val;
 		let fieldName = this.props.field.name;
 
 		for(let o of editor.selection) {
@@ -102,8 +101,8 @@ export default class RectangleEditor extends React.Component {
 				o[fieldName].removed = true;
 				editor.overlay.drawRect(this.props, o);
 			} else {
-				val = extData['removedRect' + fieldName] || {x:0,y:0,w:100,h:50};
-				delete val.removed;
+				o[fieldName] = extData['removedRect' + fieldName] || {x:0,y:0,w:100,h:50};
+				delete o[fieldName].removed;
 			}
 		}
 		this.forceUpdate();
