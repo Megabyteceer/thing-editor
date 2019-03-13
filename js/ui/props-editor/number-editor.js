@@ -50,17 +50,17 @@ class NumberEditor extends React.Component {
 	}
 
 	get max() {
-		if(this.props.field && this.props.field.hasOwnProperty('max')) {
+		if(this.props.field && !isNaN(this.props.field.max)) {
 			return this.props.field.max;
 		}
-		return this.props.hasOwnProperty('max') ? this.props.max : Number.POSITIVE_INFINITY;
+		return !isNaN(this.props.max) ? this.props.max : Number.POSITIVE_INFINITY;
 	}
 
 	get min() {
-		if(this.props.field && this.props.field.hasOwnProperty('min')) {
+		if(this.props.field && !isNaN(this.props.field.min)) {
 			return this.props.field.min;
 		}
-		return this.props.hasOwnProperty('min') ? this.props.min : Number.NEGATIVE_INFINITY;
+		return !isNaN(this.props.min) ? this.props.min : Number.NEGATIVE_INFINITY;
 	}
 
 	onUpClick(ev) {
