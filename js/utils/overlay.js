@@ -401,7 +401,6 @@ $(window).on('wheel', function onWheel(ev) {
 
 		game.stage.scale.x = zoom;
 		game.stage.scale.y = zoom;
-		sp(ev);
 		editor.overlay.refreshCameraFrame();
 	}
 });
