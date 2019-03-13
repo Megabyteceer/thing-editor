@@ -484,7 +484,7 @@ export default class Timeline extends React.Component {
 	}
 
 	isNeedAnimateProperty(o, fieldName) {
-		return this.getTime() > 0 || getFieldByName(o, fieldName);
+		return (this.getTime() > 0 && fieldName !== 'isPlaying') || getFieldByName(o, fieldName);
 	}
 
 	static disableRecording() {
@@ -616,6 +616,9 @@ function getDefaultKeyframeTypeForField(o, name) {
 	case 'rotation':
 		return 0; //- SMOOTH
 	case 'alpha':
+	case 'tintR':
+	case 'tintG':
+	case 'tintB':
 		return 1; //- LINEAR
 	default:
 		return getKeyframeTypesForField(o, name)[0];
