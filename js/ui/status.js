@@ -47,7 +47,7 @@ export default class Status extends React.Component {
 	
 	error (message, owner, fieldName) {
 		console.error(message);
-		let item = {owner, wonerId: owner.___id, message, fieldName};
+		let item = {owner, wonerId: owner && owner.___id, message, fieldName};
 		if(owner && fieldName) {
 			item.val = owner[fieldName];
 		}
