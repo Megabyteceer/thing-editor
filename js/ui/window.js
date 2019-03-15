@@ -53,14 +53,11 @@ class Window extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		const settings = editor.settings;
 		const id = 'window-' + props.id;
 		this.id = id;
 		
 		this.state = {};
-		this.setSize(settings.getItem(id + '.w', props.w), settings.getItem(id + '.h', props.h));
-		this.setPosition(settings.getItem(id + '.x', props.x), settings.getItem(id + '.y', props.y));
-		
+		this.onClientResize();
 		this.saveState = this.saveState.bind(this);
 		this.deltaPosition = this.deltaPosition.bind(this);
 		this.deltaLBCorner = this.deltaLBCorner.bind(this);
@@ -82,8 +79,8 @@ class Window extends React.Component {
 	}
 	
 	onClientResize() {
-		this.setPosition(this.state.x, this.state.y);
-		this.setSize(this.state.w, this.state.h);
+		this.setSize(editor.settings.getItem(this.id + '.w', this.props.w), editor.settings.getItem(this.id + '.h', this.props.h));
+		this.setPosition(editor.settings.getItem(this.id + '.x', this.props.x), editor.settings.getItem(this.id + '.y', this.props.y));
 	}
 	
 	saveState() {
