@@ -123,7 +123,7 @@ let classes = {};`];
 						), "building finished.");
 					}
 							
-					if(result.length > 0) {
+					if(result.find((l) => {return l;})) {
 						editor.ui.modal.showModal(result.map((r, i) =>{
 							return R.div({key:i}, r);
 						}));
