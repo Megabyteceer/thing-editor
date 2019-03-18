@@ -186,6 +186,10 @@ function enumClassProperties(c) {
 					if (!p.hasOwnProperty('default')) {
 						p.default = PropsFieldWrapper.getTypeDescription(p).default;
 					}
+					if(p.type === 'ref') {
+						p.notSeriazable = true;
+						defaults[p.name] = p.default;
+					}
 					if(!p.notSeriazable) {
 						defaults[p.name] = p.default;
 					}

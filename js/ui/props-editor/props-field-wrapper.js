@@ -9,6 +9,7 @@ import CallbackEditor from "./callback-editor.js";
 import BtnProperty from "./btn-property.js";
 import TilemapEditor from "./tilemap-editor.js";
 import RectangleEditor from './rect-editor.js';
+import RefFieldEditor from './ref-field-editor.js';
 
 
 let typeDescriptions = new Map();
@@ -52,6 +53,14 @@ typeDescriptions.set('data-path', {
 
 typeDescriptions.set('callback', {
 	renderer: CallbackEditor,
+	parser: (target) => {
+		return target.value || null;
+	},
+	default: null
+});
+
+typeDescriptions.set('ref', {
+	renderer: RefFieldEditor,
 	parser: (target) => {
 		return target.value || null;
 	},

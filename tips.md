@@ -50,7 +50,7 @@ property returns dom's div which will be highlighted in window during code stopp
 # Editable fields description options:
 
 ### type:
- Number, String, Boolean, 'rect', 'data-path', 'callback', 'btn', 'color', 'splitter'
+ Number, String, Boolean, 'rect', 'data-path', 'callback', 'btn', 'color', 'splitter', 'ref'
 
 ### title:
  readable name
