@@ -1,55 +1,5 @@
 import game from "thing-engine/js/game.js";
 
-
-let requestsInProgress = [];
-
-function request(func, args, async) {
-	return new Promise((resolve) => {
-
-		let i;
-		if(!args[0].startsWith('/fs/build')) {
-			i = setTimeout(() => {
-				editor.ui.status.warn('Request timout: ' + args[0]);
-			}, 2000);
-		}
-
-
-		requestsInProgress.push({func, args, async, resolve: (data) => {
-			if(i) {
-				clearInterval(i);
-			}
-			resolve(data);
-		}});
-		tryToFlushRequests();
-	});
-}
-
-function tryToFlushRequests() {
-	while(requestsInProgress.length > 0) {
-		let r = requestsInProgress[0];
-		if(r.started) {
-			break;
-		}
-		r.started = true;
-		r.func.apply(undefined, r.args).then((data) => {
-			if(!r.async) {
-				if(r !== requestsInProgress[0]) {
-					assert(false, 'request queu is corrupted');
-				}
-				requestsInProgress.shift();
-				tryToFlushRequests();
-			}
-			r.resolve(data);
-		});
-		if(!r.async) {
-			break;
-		} else {
-			requestsInProgress.shift();
-			tryToFlushRequests();
-		}
-	}
-}
-
 let fs = {
 	chooseProject: (enforced) => {
 		editor.ui.viewport.stopExecution();
@@ -116,58 +66,53 @@ let fs = {
 		fs.getJSON(url, true);
 	},
 	getJSON(url, silently=false, async = true) { //eslint-disable-line no-unused-vars
-
-		return request(function getJSON_sub(url, silently=false) {
-			
-			if (!silently || !async) {
-				editor.ui.modal.showSpinner();
-			}
-			let r = $.ajax({
+		if (!silently || !async) {
+			editor.ui.modal.showSpinner();
+		}
+		return new Promise((resolve) => {
+			AJAX({
 				type: "GET",
 				url,
 				contentType: 'application/json',
-			}).fail((a,b,c) => {handleError(a,b,c,url);});
-			if (!silently || !async) {
-				r.always(editor.ui.modal.hideSpinner);
-			}
-			return new Promise((resolve) => {
-				r.then((data) => {
-					if(typeof data === 'string') {
-						resolve(JSON.parse(data));
-					} else {
-						resolve(data);
+				async
+			}, (returnedUrl, data) => {
+				assert(url === returnedUrl, 'Responce is not match with request');
+				if (!silently || !async) {
+					editor.ui.modal.hideSpinner();
+				}
+				if (data) {
+					if (typeof data === 'string') {
+						data = JSON.parse(data);
 					}
-				});
+					resolve(data);
+				}
 			});
-
-		} , arguments, async);
+		});
 	},
 	openFile(fileName, silently) {
 		return this.getJSON(game.resourcesPath + fileName, silently);
 	},
 	postJSON(url, data, silently = false, async = false) {//eslint-disable-line no-unused-vars
-		return request(function saveFile_sub(url, silently = false) {
-			return new Promise((resolve) => {
-				if (!silently || !async) {
-					editor.ui.modal.showSpinner();
-				}
+		return new Promise((resolve) => {
+			if (!silently || !async) {
+				editor.ui.modal.showSpinner();
+			}
+
+			AJAX({
+				type: "POST",
+				url: url,
+				data: JSON.stringify(data),
+				contentType: 'application/json',
+				async
+			}, (returnedUrl, data) => {
+				assert(url === returnedUrl, 'Responce is not match with request');
 				
-				let r = $.ajax({
-					type: "POST",
-					url: url,
-					data: JSON.stringify(data),
-					contentType: 'application/json'
-				}).fail((a,b,c) => {handleError(a,b,c,url);});
 				if (!silently || !async) {
-					r.always(editor.ui.modal.hideSpinner);
+					editor.ui.modal.hideSpinner();
 				}
-				r.then((res) => {
-					resolve(res && JSON.parse(res));
-				});
+				resolve(data);
 			});
-		} , arguments, async);
-
-
+		});
 	},
 	saveFile(filename, data, silently = false, async = false) { 
 		if(typeof data !== 'string') {
@@ -190,7 +135,7 @@ const fielsEditTimes = {};
 export default fs;
 
 function handleError(er, status, error, url) {
-	editor.ui.modal.showError('ERROR IN FILE ' + url + ': ' + er.responseText || JSON.stringify(error || 'connection error'));
+	editor.ui.modal.showError('ERROR IN FILE ' + url + ': ' + (er.responseText || JSON.stringify(error || 'connection error')));
 }
 
 function getIconPath(desc) {
@@ -238,4 +183,23 @@ function canonicalize(url) {
 	let html = div.innerHTML;
 	div.innerHTML = html; // Run the current innerHTML back through the parser
 	return div.firstChild.href;
+}
+
+let requestNum = 0;
+let _ajaxHandlers = [];
+let worker = new Worker("js/utils/fs-worker.js");
+worker.onmessage = function (event) {
+	let d = JSON.parse(event.data);
+	if (d.error) {
+		handleError.apply(null, d.error);
+		_ajaxHandlers.shift()(d.url);
+	} else {
+		_ajaxHandlers.shift()(d.url, d.data);
+	}
+};
+
+function AJAX(options, callback) {
+	_ajaxHandlers.push(callback);
+	options.requestNum = requestNum++;
+	worker.postMessage(JSON.stringify(options));
 }
