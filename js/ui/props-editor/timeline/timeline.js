@@ -417,7 +417,9 @@ export default class Timeline extends React.Component {
 				for (let c of justModifiedKeyframes) {
 					select(c);
 				}
-				this.setTime(justModifiedKeyframes[0].getTime(), true);
+				if(timeMarker) {
+					this.setTime(justModifiedKeyframes[0].getTime(), true);
+				}
 			}
 		}, 0);
 	}
