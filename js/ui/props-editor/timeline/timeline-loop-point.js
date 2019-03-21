@@ -63,7 +63,10 @@ export default class TimelineLoopPoint extends React.Component {
 
 		let className = 'timeline-loop-point';
 		if(this.state && this.state.isSelected) {
-			className = 'timeline-loop-point timeline-loop-point-selected';
+			className += ' timeline-loop-point-selected';
+		}
+		else if(keyFrame.___view.state && keyFrame.___view.state.isSelected) {
+			className += ' timeline-loop-point-owner-selected';
 		}
 
 		return R.div({className:className,

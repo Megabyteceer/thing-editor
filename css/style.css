@@ -745,6 +745,10 @@ input{
     outline: 2px solid #ff9d00;
 }
 
+.timeline-loop-point-owner-selected {
+	outline: 2px solid #ffc669;
+}
+
 .timeline-label-selected {
     outline: 2px solid #ff0000;
 }
