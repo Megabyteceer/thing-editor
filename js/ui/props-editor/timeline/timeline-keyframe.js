@@ -148,7 +148,7 @@ export default class TimelineKeyframe extends React.Component {
 		}
 		
 		return R.div({className:className,
-			title: isUnreachable ? 'Keyframe is unreacvhable because of loop or "this.stop" action' : undefined,
+			title: isUnreachable ? 'Keyframe is unreachable because of loop or "this.stop" action' : undefined,
 			onMouseDown: this.onKeyframeMouseDown,
 			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
 		mark,

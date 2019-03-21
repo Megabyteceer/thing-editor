@@ -399,6 +399,7 @@ export default class Timeline extends React.Component {
 		fieldData.___cacheTimeline = false;
 		Line.invalideteChartsRenderCache(fieldData);
 		MovieClip.invalidateSerializeCache(node);
+		TimeLabel.renormalizeAllLabels(node);
 		editor.sceneModified();
 	}
 
@@ -607,7 +608,7 @@ function createKeyframe(o, name, time, field) {
 	};
 
 	field.t.push(keyFrame);
-	TimeLabel.renormalizeAllLabels(o);
+	Timeline.fieldDataChanged(field, o);
 	return keyFrame;
 }
 
