@@ -114,7 +114,7 @@ export default class Editor {
 		editor.ui.viewport.stopExecution();
 		await editor.askSceneToSaveIfNeed();
 		
-		let lastOpenedProject = editor.settings.getItem('last-opened-project');
+		let lastOpenedProject = location.search ? location.search.replace('?','') : editor.settings.getItem('last-opened-project');
 		if(!dir) {
 			dir = lastOpenedProject;
 		}
