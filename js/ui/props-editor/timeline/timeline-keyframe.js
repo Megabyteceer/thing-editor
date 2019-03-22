@@ -117,6 +117,7 @@ export default class TimelineKeyframe extends React.Component {
 		const keyFrame = this.props.keyFrame;
 
 		let loopArrow;
+		let randomMeter;
 		const p = this.props.owner.props.owner.props.owner.props;
 		const width = p.widthZoom;
 		const height = p.heightZoom - 16;
@@ -132,6 +133,13 @@ export default class TimelineKeyframe extends React.Component {
 				R.polyline({points:'0,0 6,6 3,8 0,0 6,9 '+(len/2)+',10 '+(len-3)+',7 '+len+',0'})
 			);
 		}
+		if(keyFrame.hasOwnProperty('r')) {
+			let len = keyFrame.r * width;
+			randomMeter = R.svg({className: "keyframe-random-meter", height:4, width:len},
+				R.polyline({points:'0,3 1,1 ' + (len-2) + ',1 ' + (len)+',3'})
+			);
+		}
+
 		let className = 'timeline-keyframe ' + keyframesClasses[keyFrame.m];
 		if(this.state && this.state.isSelected) {
 			className += ' timeline-keyframe-selected';
@@ -152,7 +160,8 @@ export default class TimelineKeyframe extends React.Component {
 			onMouseDown: this.onKeyframeMouseDown,
 			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
 		mark,
-		loopArrow
+		loopArrow,
+		randomMeter
 		);
 	}
 }

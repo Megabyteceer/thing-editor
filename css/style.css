@@ -804,6 +804,22 @@ input{
     stroke-width: 1.5;
 }
 
+.keyframe-random-meter {
+    pointer-events: none;
+	position: absolute;
+	left: 0;
+    top: -3px;
+    fill:none;
+    stroke: rgb(41, 119, 184);
+    stroke-width: 1.5;
+}
+
+.timeline-keyframe-selected .keyframe-random-meter {
+	stroke: rgb(194, 75, 28);
+	z-index: 1;
+}
+
+
 .loop-arrow-front {
 	transform: scaleX(-1);
 	transform-origin: right;

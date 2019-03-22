@@ -65,7 +65,7 @@ export default class Line extends React.Component {
 			field.___cacheTimeline = c;
 			let wholeTimelineData = this.props.owner.props.owner.props.node._timelineData;
 			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
-			fieldPlayer.reset();
+			fieldPlayer.reset(true);
 			calculateCacheSegmentForField(fieldPlayer, c);
 			for(let label in wholeTimelineData.l) {
 				label = wholeTimelineData.l[label];
@@ -170,7 +170,7 @@ const calculateCacheSegmentForField = (fieldPlayer, c) => {
 		if(time > limit) {
 			break;
 		}
-		fieldPlayer.update();
+		fieldPlayer.update(true);
 		
 		assert(i++ < 100000, 'Timeline values cache calculation looped and failed.');
 	}

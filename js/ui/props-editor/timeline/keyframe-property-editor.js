@@ -6,6 +6,20 @@ import SelectEditor from "../select-editor.js";
 const DEFAULT_GRAVITY = 1; //JUMP ROOF, JUMP FLOOR default gravity and boouncing
 const DEFAULT_BOUNCING = 0.4;
 
+// m - mode (0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF)
+// v - target value
+
+// s - speed set
+
+// t - time
+// j - time to jump (loop time)
+// r - random delay (max random value to decrease distance to next keyframe
+
+// a - action (callback)
+
+// g,b - gravity,bouncing for JUMP keyframes
+
+
 export default class KeyframePropertyEditor extends React.Component {
 	
 	constructor(props) {
@@ -15,7 +29,9 @@ export default class KeyframePropertyEditor extends React.Component {
 		this.onGravityChange = this.onGravityChange.bind(this);
 		this.onBouncingChange = this.onBouncingChange.bind(this);
 		this.onSetSpeeedExistsChanged = this.onSetSpeeedExistsChanged.bind(this);
+		this.onSetRandomExistsChanged = this.onSetRandomExistsChanged.bind(this);
 		this.onSpeedChanged = this.onSpeedChanged.bind(this);
+		this.onRandomChanged = this.onRandomChanged.bind(this);
 		this.onJumpChanged = this.onJumpChanged.bind(this);
 		this.resetJumpTime = this.resetJumpTime.bind(this);
 		this.onDemptChanged = this.onDemptChanged.bind(this);
@@ -86,6 +102,14 @@ export default class KeyframePropertyEditor extends React.Component {
 		}
 		this.onKeyframeChanged();
 	}
+
+	onRandomChanged(ev) {
+		let val = parseInt(ev.target.value);
+		for(let k of this.props.keyframes) {
+			k.props.keyFrame.r = val;
+		}
+		this.onKeyframeChanged();
+	}
 	
 	onSetSpeeedExistsChanged(ev) {
 		for(let k of this.props.keyframes) {
@@ -98,7 +122,18 @@ export default class KeyframePropertyEditor extends React.Component {
 		}
 		this.onKeyframeChanged();
 	}
-	
+
+	onSetRandomExistsChanged(ev) {
+		for(let k of this.props.keyframes) {
+			if(ev.target.checked) {
+				k.props.keyFrame.r = 0;
+			} else {
+				delete k.props.keyFrame.r;
+			}
+		}
+		this.onKeyframeChanged();
+	}
+
 	onJumpChanged(ev) {
 		let val = parseFloat(ev.target.value);
 		for(let k of this.props.keyframes) {
@@ -186,7 +221,7 @@ export default class KeyframePropertyEditor extends React.Component {
 				extendEditor = R.span(null,
 					' Power: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.001, max: 0.9, onChange: this.onPowChanged}),
 					' Dempt: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
-					' Preset ', React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
+					' Preset ' ,React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
 				);
 			}
 			
@@ -195,6 +230,12 @@ export default class KeyframePropertyEditor extends React.Component {
 			if(hasSpeed) {
 				speedEditor = React.createElement(NumberEditor, {value: kf.s, type:'number', step:0.1, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 			}
+			let hasRandom =  kf.hasOwnProperty('r');
+			let randomEditor;
+			if(hasRandom) {
+				randomEditor = React.createElement(NumberEditor, {value: kf.r, type:'number', step:1, min: 1, max:1000, onChange: this.onRandomChanged});
+			}
+
 			let jumpReset;
 			if(kf.j !== kf.t) {
 				jumpReset = R.btn('x', this.resetJumpTime, "Remove loop point");
@@ -209,6 +250,9 @@ export default class KeyframePropertyEditor extends React.Component {
 				R.label({htmlFor:'speed-set-checkbox'}, ' speed set:'),
 				R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
 				speedEditor,
+				R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer that defined on timeline'}, ' random time:'),
+				R.input({id: 'random-set-checkbox', type:'checkbox', onChange: this.onSetRandomExistsChanged, checked:hasRandom}),
+				randomEditor,
 				R.label({htmlFor:'jump-time-checkbox'}, ' jump time:'),
 				jumpEditor,
 				jumpReset,
