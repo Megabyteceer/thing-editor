@@ -67,10 +67,14 @@ export default class Timeline extends React.Component {
 		this.prevFrame = this.prevFrame.bind(this);
 		this.nextFrame = this.nextFrame.bind(this);
 		this.renderObjectsTimeline = this.renderObjectsTimeline.bind(this);
-		this.onWheel = this.onWheel.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
 		this.onMouseUp = this.onMouseUp.bind(this);
+		this.verticalZoomIn = this.verticalZoomIn.bind(this);
+		this.verticalZoomOut = this.verticalZoomOut.bind(this);
+		this._afterHistoryJump = this._afterHistoryJump.bind(this);
+		this.horisontalZoomIn = this.horisontalZoomIn.bind(this);
+		this.horisontalZoomOut = this.horisontalZoomOut.bind(this);
 		this._afterHistoryJump = this._afterHistoryJump.bind(this);
 	}
 
@@ -113,46 +117,58 @@ export default class Timeline extends React.Component {
 		window.removeEventListener('mouseup', this.onMouseUp);
 	}
 
-	onWheel(ev) {
-		let delta = (ev.deltaY < 0) ? 1.5 : 0.66666666;
-		if (ev.ctrlKey) {
-			heightZoom = this.state.heightZoom;
-			let tmp = heightZoom;
+	verticalZoomIn() {
+		this.verticalZoom(1.5);
+	}
 
-			heightZoom *= delta;
-			if (heightZoom < 40) {
-				heightZoom = 40;
-			} else if (heightZoom > 135) {
-				heightZoom = 135;
-			}
-			if (tmp !== heightZoom) {
-				editor.settings.setItem('timeline-height-zoom', heightZoom);
-				heightZoom = Math.floor(heightZoom);
-				Line.invalideteChartsRenderCache();
-				this.setState({heightZoom});
-				this.centralizeSelection();
-			}
-			sp(ev);
+	verticalZoomOut() {
+		this.verticalZoom(0.66666666);
+	}
+
+	verticalZoom(delta) {
+	
+		heightZoom = this.state.heightZoom;
+		let tmp = heightZoom;
+
+		heightZoom *= delta;
+		if (heightZoom < 40) {
+			heightZoom = 40;
+		} else if (heightZoom > 135) {
+			heightZoom = 135;
 		}
-		if(ev.shiftKey) {
-			widthZoom = this.state.widthZoom;
-			let tmp = widthZoom;
-			widthZoom *= delta;
-			if (widthZoom < 2) {
-				widthZoom = 2;
-			} else if (widthZoom > 28.5) {
-				widthZoom = 28.5;
-			}
-			if (tmp !== widthZoom) {
-				editor.settings.setItem('timeline-width-zoom', widthZoom);
-				widthZoom = Math.floor(widthZoom);
-				Line.invalideteChartsRenderCache();
-				this.setState({widthZoom});
-				this.centralizeSelection();
-			}
-			sp(ev);
+		if (tmp !== heightZoom) {
+			editor.settings.setItem('timeline-height-zoom', heightZoom);
+			heightZoom = Math.floor(heightZoom);
+			Line.invalideteChartsRenderCache();
+			this.setState({heightZoom});
+			this.centralizeSelection();
 		}
-		
+	}
+
+	horisontalZoomIn() {
+		this.horisontalZoom(1.5);
+	}
+
+	horisontalZoomOut() {
+		this.horisontalZoom(0.66666666);
+	}
+
+	horisontalZoom(delta) {
+		widthZoom = this.state.widthZoom;
+		let tmp = widthZoom;
+		widthZoom *= delta;
+		if (widthZoom < 2) {
+			widthZoom = 2;
+		} else if (widthZoom > 28.5) {
+			widthZoom = 28.5;
+		}
+		if (tmp !== widthZoom) {
+			editor.settings.setItem('timeline-width-zoom', widthZoom);
+			widthZoom = Math.floor(widthZoom);
+			Line.invalideteChartsRenderCache();
+			this.setState({widthZoom});
+			this.centralizeSelection();
+		}
 	}
 
 	centralizeSelection() {
@@ -257,8 +273,7 @@ export default class Timeline extends React.Component {
 				{
 					onScroll: onTimelineScroll,
 					onMouseDown: this.onMouseDown,
-					className: 'timeline',
-					onWheel: this.onWheel
+					className: 'timeline'
 				},
 				React.createElement(TimeMarker, {
 					owner: this,

@@ -41,7 +41,14 @@ export default class TimeMarker extends React.Component {
 	
 	render() {
 		return R.div({className: 'time-marker-body', onMouseDown:this.onMouseDown},
-			R.div(fieldLabelTimelineProps),
+			R.div(fieldLabelTimelineProps,
+				'↕',
+				R.btn('+', this.props.owner.verticalZoomIn, 'Vertical Zoom In'),
+				R.btn('-', this.props.owner.verticalZoomOut, 'Vertical Zoom Out'),
+				' ↔',
+				R.btn('+', this.props.owner.horisontalZoomIn, 'Horizontal Zoom In'),
+				R.btn('-', this.props.owner.horisontalZoomOut, 'Horizontal Zoom Out')
+			),
 			R.div({className: 'time-marker', style:{left: this.state.time * this.props.owner.state.widthZoom}},
 				R.div(timeMarkerLineProps),
 				R.div(timeMarkerLabelProps,
