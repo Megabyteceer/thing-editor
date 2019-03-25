@@ -79,6 +79,10 @@ export default class Editor {
 
 		editor.__unloadedTexture = PIXI.Texture.fromImage('img/loading-texture.png');
 	}
+
+	deselectMovieclip(o) {
+		Timeline.deselectMovieclip(o);
+	}
 	
 	/**
 	 *
