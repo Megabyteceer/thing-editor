@@ -607,8 +607,18 @@ function createKeyframe(o, name, time, field) {
 			mode = 0;
 		}
 		if (prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
-			jumpTime = prevField.j;
-			prevField.j = prevField.t;
+			let labelBetweenKeyframes = null;
+			for(let lName in o.timeline.l) {
+				let lTime = o.timeline.l[lName];
+				if(lTime >= prevField.t && lTime <= time) {
+					labelBetweenKeyframes = true;
+					break;
+				}
+			}
+			if(!labelBetweenKeyframes) {
+				jumpTime = prevField.j;
+				prevField.j = prevField.t;
+			}
 		}
 	} else {
 		mode = getDefaultKeyframeTypeForField([o], name); //Mode 0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF
