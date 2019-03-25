@@ -723,9 +723,7 @@ function getSelectedKeyframes() {
 	let ret = [];
 	for (let c of selectedComponents) {
 		if (c instanceof TimelineKeyframe) {
-			if(__getNodeExtendData(c.props.owner.props.owner.props.owner.props.node).isSelected) {
-				ret.push(c);
-			}
+			ret.push(c);
 		}
 	}
 	return ret;
