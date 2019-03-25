@@ -228,12 +228,13 @@ export default class KeyframePropertyEditor extends React.Component {
 			let hasSpeed =  kf.hasOwnProperty('s');
 			let speedEditor;
 			if(hasSpeed) {
-				speedEditor = React.createElement(NumberEditor, {value: kf.s, type:'number', step:0.1, min: -1000, max: 1000, onChange: this.onSpeedChanged});
+				let edFied = editor.getObjectField(editor.selection[0], kf.___view.props.owner.props.owner.props.field.n);
+				speedEditor = React.createElement(NumberEditor, {value: kf.s, type:'number', step:(edFied.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 			}
 			let hasRandom =  kf.hasOwnProperty('r');
 			let randomEditor;
 			if(hasRandom) {
-				randomEditor = React.createElement(NumberEditor, {value: kf.r, type:'number', step:1, min: 1, max:1000, onChange: this.onRandomChanged});
+				randomEditor = React.createElement(NumberEditor, {value: kf.r, type:'number', step:1, min: -1000, max:kf.n.t - kf.j - 1, onChange: this.onRandomChanged});
 			}
 
 			let jumpReset;
