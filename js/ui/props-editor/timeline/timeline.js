@@ -295,7 +295,7 @@ export default class Timeline extends React.Component {
 			if (reduceRepeatingKeyframesInSelected()) {
 				this.forceUpdate();
 			}
-			if((ev.clientX > 0) && (Math.abs(draggingStartX - ev.clientX) < 2)) {
+			if((ev.clientX > 0) && !ev.ctrlKey && (Math.abs(draggingStartX - ev.clientX) < 2)) {
 				if(selectedComponents.length > 1) {
 					clearSelection();
 					select(draggingComponent);
@@ -698,7 +698,9 @@ function getSelectedKeyframes() {
 	let ret = [];
 	for (let c of selectedComponents) {
 		if (c instanceof TimelineKeyframe) {
-			ret.push(c);
+			if(__getNodeExtendData(c.props.owner.props.owner.props.owner.props.node).isSelected) {
+				ret.push(c);
+			}
 		}
 	}
 	return ret;
