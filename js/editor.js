@@ -530,10 +530,7 @@ export default class Editor {
 	moveContainerWithoutChildren(o, dX, dY) {
 
 		for(let c of o.children) {
-			__getNodeExtendData(c).globalPos = {
-				x: c.transform.worldTransform.tx,
-				y: c.transform.worldTransform.ty
-			};
+			__getNodeExtendData(c).globalPos = c.getGlobalPosition();
 		}
 
 		editor.shiftObject(o, dX, dY);
