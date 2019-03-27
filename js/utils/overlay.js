@@ -119,6 +119,19 @@ export default class Overlay {
 			}
 		}, 2000);
 	}
+
+	guideY(y, from) {
+		guideSprite.scale.x = 100;
+		guideSprite.scale.y = 0.1;
+		from.toGlobal({x:0, y}, guideSprite);
+		game.stage.parent.addChild(guideSprite);
+		clearTimeout(guideSpriteTimeout);
+		guideSpriteTimeout = setTimeout(() => {
+			if(guideSprite.parent) {
+				guideSprite.parent.removeChild(guideSprite);
+			}
+		}, 2000);
+	}
 	
 	showPreview(object) {
 		editor.ui.viewport.resetZoom();
