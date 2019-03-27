@@ -91,6 +91,34 @@ export default class Overlay {
 			}
 		}
 	}
+
+	highlightObject(o) {
+		if(!o.filters || o.filters.indexOf(highlightFilter) < 0) {
+			o.addFilter(highlightFilter);
+			setTimeout(() => {
+				o.removeFilter(highlightFilter);
+			}, 100);
+			setTimeout(() => {
+				o.addFilter(highlightFilter);
+			}, 200);
+			setTimeout(() => {
+				o.removeFilter(highlightFilter);
+			}, 300);
+		}
+	}
+
+	guideX(x, from) {
+		guideSprite.scale.x = 0.1;
+		guideSprite.scale.y = 100;
+		from.toGlobal({x, y:0}, guideSprite);
+		game.stage.parent.addChild(guideSprite);
+		clearTimeout(guideSpriteTimeout);
+		guideSpriteTimeout = setTimeout(() => {
+			if(guideSprite.parent) {
+				guideSprite.parent.removeChild(guideSprite);
+			}
+		}, 2000);
+	}
 	
 	showPreview(object) {
 		editor.ui.viewport.resetZoom();
@@ -167,6 +195,13 @@ export default class Overlay {
 		}
 	}
 }
+
+const guideSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+guideSprite.anchor.x = 0.5;
+guideSprite.anchor.y = 0.5;
+let guideSpriteTimeout;
+
+const highlightFilter = new PIXI.filters.OutlineFilter(2, 0xff0000);
 
 const p = new PIXI.Point();
 let overedDragger, draggingDragger;
