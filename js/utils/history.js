@@ -29,6 +29,9 @@ function applyState(state) {
 	if(stateChanged) {
 		instance.afterHistoryJump.emit();
 	}
+	if(state.fieldName) {
+		editor.ui.propsEditor.selecField(state.fieldName);
+	}
 }
 
 function getHistoryName() {
@@ -92,7 +95,8 @@ class History {
 	_pushCurrentStateToUndoHistory(selectionData, selectionOnly) {
 		assert(game.__EDITORmode, "Attempt to use history in running time.");
 
-		let historyRecord = {};
+		let historyRecord = {fieldName: editor._lastChangedFiledName};
+		editor._lastChangedFiledName = null;
 		if(selectionOnly) {
 			if(!this.currentState || arraysEqual(selectionData, this.currentState.selectionData)) {
 				return;

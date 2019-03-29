@@ -454,7 +454,8 @@ export default class Editor {
 		if(changed) {
 			Lib.__invalidateSerialisationCache(o);
 			this.refreshTreeViewAndPropertyEditor();
-			editor.sceneModified();
+			editor._lastChangedFiledName = field.name;
+			editor.sceneModified(false);
 		}
 		return changed;
 	}
