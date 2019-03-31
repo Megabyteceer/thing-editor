@@ -38,11 +38,13 @@ npm start
  - multilanguage text;
  - build project as release folder;
  - load custom user components form project's js folder
- 
+ - postponed resources loading for each scene
+
 ## What is need to do:
  - atlases packing for projects created in thing-editor.
  - sounds bitrate settings UI
  - drag and drop for "scene-tree" and "classes list"
+ - examples and documentation
  
 ### How it is works:
 Editor uses nodejs as local server to access project's filesystem, and chrome as UI.
