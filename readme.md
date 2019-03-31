@@ -2,7 +2,9 @@
 
 Visual game editor for pixi.js 4.
 
-Project in experimental **alpha-version** yet.
+![Editor screenshot](https://raw.githubusercontent.com/Megabyteceer/thing-editor/master/img/screenshots/thing-editor.jpg)
+
+Project in experimental **beta-version**.
 
 ## Installation
 
@@ -31,13 +33,16 @@ npm start
 ## What is ready:
  - Scene tree editor (no drag and drop yet);
  - Property editor;
- - MovieClip component with timeline;
+ - MovieClip component with physic-based timeline;
  - Portrait/landscape switching;
  - multilanguage text;
  - build project as release folder;
  - load custom user components form project's js folder
  
- 
+## What is need to do:
+ - atlases packing for projects created in thing-editor.
+ - sounds bitrate settings UI
+ - drag and drop for "scene-tree" and "classes list"
  
 ### How it is works:
 Editor uses nodejs as local server to access project's filesystem, and chrome as UI.
@@ -45,8 +50,6 @@ Editor uses nodejs as local server to access project's filesystem, and chrome as
 Documentation is coming-soon. Use example project to understand beginigs.
 Use double click on component in scene tree - to open component's source file to view and edit.
 Work still in progress.
-
-![Editor screenshot](https://raw.githubusercontent.com/Megabyteceer/thing-editor/master/img/screenshots/thing-editor.jpg)
 
 ### Projects made with thing-engine
 [Zombie hunters](http://zh.pixel-cave.com)
