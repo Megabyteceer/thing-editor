@@ -1242,6 +1242,13 @@ input{
 	z-index: 1100;
 }
 
+.modal-notification-centred {
+	right: calc(50% - 300px);
+	bottom: unset;
+	top: 20%;
+	width: 600px;
+}
+
 .delete-scene-btn {
 	padding: 0 4px;
 	position: absolute;

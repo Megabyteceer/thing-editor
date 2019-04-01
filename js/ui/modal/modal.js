@@ -19,6 +19,7 @@ let titleProps = {className: 'modal-title'};
 let contentProps = {className: 'modal-content'};
 let errorProps = {className: 'error'};
 let notifyProps = {className: 'modal-notification'};
+let notifyPropsDuringSpinner = {className: 'modal-notification modal-notification-centred'};
 
 let notifyText;
 let notifyInterval;
@@ -183,7 +184,7 @@ class Modal extends React.Component {
 
 		let notify;
 		if(notifyText) {
-			notify = R.div(notifyProps, notifyText);
+			notify = R.div(spinner ? notifyPropsDuringSpinner : notifyProps, notifyText);
 		}
 		return R.fragment(this.state.modals.map(renderModal), spinner, notify);
 	}

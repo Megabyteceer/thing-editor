@@ -269,23 +269,7 @@ if(process.argv.indexOf('n') < 0) {
 	opn('', {app: ['chrome', /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/thing-editor']});
 }
 
-//======== socket connection with client ================================================
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: PORT + 1 });
-let clientsConnected = 0;
-wss.on('connection', function connection(ws) {
-	ws.on('message', function incoming(/*message*/) {
-		//console.log('received: %s', message);
-	});
-	ws.on('close', function onWsClose(){
-		clientsConnected--;
-	});
-	clientsConnected++;
-	ws.send(JSON.stringify({clientsConnected}));
-	if(clientsConnected > 1) {
-		ws.close();
-	}
-});
+require('./scripts/server-socket.js');
 
 //=========== enum files ================================
 const walkSync = (dir, filelist = []) => {

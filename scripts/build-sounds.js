@@ -7,6 +7,8 @@ const {
 /*global require */
 /*global module */
 
+const wss = require('./server-socket.js');
+
 module.exports = function (projectPath, callback, options) {
 
 	let result = {};
@@ -87,7 +89,9 @@ module.exports = function (projectPath, callback, options) {
 	function convertFile(fn, ext, cb) {
 		let bitrate = getBitrate(fn);
 
-		console.log('convert sound:' + fn + ' -> ' + ext + ' ' + bitrate + 'Kb');
+		let logTxt = 'convert sound:' + fn + ' -> ' + ext + ' ' + bitrate + 'Kb';
+		console.log(logTxt);
+		wss.notify(logTxt);
 		let fileParts = path.parse(fn);
 		let resultName = fileParts.dir + '/' + fileParts.name + '.' + ext;
 
