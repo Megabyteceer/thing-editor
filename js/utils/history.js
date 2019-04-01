@@ -29,9 +29,6 @@ function applyState(state) {
 	if(stateChanged) {
 		instance.afterHistoryJump.emit();
 	}
-	if(state.fieldName) {
-		editor.ui.propsEditor.selecField(state.fieldName);
-	}
 }
 
 function getHistoryName() {
@@ -138,6 +135,9 @@ class History {
 	
 	undo() {
 		if (this.isUndoAvailable()) {
+			if(this.currentState.fieldName) {
+				editor.ui.propsEditor.selectField(this.currentState.fieldName);
+			}
 			this._redos.push(this._undos.pop());
 			applyState(this.currentState);
 		}
@@ -147,6 +147,9 @@ class History {
 		if (this.isRedoAvailable()) {
 			this._undos.push(this._redos.pop());
 			applyState(this.currentState);
+			if(this.currentState.fieldName) {
+				editor.ui.propsEditor.selectField(this.currentState.fieldName);
+			}
 		}
 	}
 	

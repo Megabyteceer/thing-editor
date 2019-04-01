@@ -54,7 +54,7 @@ class PropsEditor extends React.Component {
 		});
 	}
 	
-	selecField(fieldName, focus) {
+	selectField(fieldName, focus) {
 		let a = fieldName.split(',');
 
 		let fn = a[0];
@@ -63,7 +63,7 @@ class PropsEditor extends React.Component {
 		}
 
 		setTimeout(() => {
-			let fldInput = $(".props-editor #property-editor-" + fn);
+			let fldInput = $(".props-editor #property-editor-" + fn.replace('.', '_'));
 			if (fldInput.length > 0) {
 
 				if(fn === fieldName) {

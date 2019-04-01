@@ -48,7 +48,7 @@ export default class TreeView extends React.Component {
 			
 			if(foundByWhichProperty && foundByWhichProperty.has(node) && !add) {
 				let fieldName = foundByWhichProperty.get(node);
-				editor.ui.propsEditor.selecField(fieldName);
+				editor.ui.propsEditor.selectField(fieldName);
 			}
 			
 			foundByWhichProperty = null;

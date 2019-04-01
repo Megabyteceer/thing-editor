@@ -178,7 +178,7 @@ class InfoList extends React.Component {
 					editor.ui.sceneTree.selectInTree(item.owner);
 					if(item.fieldName) {
 						setTimeout(() => {
-							editor.ui.propsEditor.selecField(item.fieldName, true);
+							editor.ui.propsEditor.selectField(item.fieldName, true);
 						}, 1);
 					}
 				}

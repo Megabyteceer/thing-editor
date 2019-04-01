@@ -173,7 +173,7 @@ class PropsFieldWrapper extends React.Component {
 			);
 		}
 		
-		return R.div({className, id:'property-editor-' + field.name, title},
+		return R.div({className, id:'property-editor-' + field.name.replace('.', '_'), title},
 			tip,
 			R.div(field.name.startsWith('__') ? labelEditorOnlyProps : labelProps, field.name),
 			R.div(wrapperProps,
