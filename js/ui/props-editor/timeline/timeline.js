@@ -382,7 +382,7 @@ export default class Timeline extends React.Component {
 							if (kf.j !== time) {
 								kf.j = time;
 								c.onChanged();
-								c.props.owner.forceUpdateDebounced();
+								c.props.owner.forceUpdate();
 							}
 						}
 					}

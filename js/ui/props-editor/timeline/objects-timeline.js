@@ -44,9 +44,7 @@ export default class ObjectsTimeline extends React.Component {
 
 	render() {
 		let tl = this.props.node._timelineData;
-		if(game.__EDITORmode) {
-			MovieClip.__checkTimelineIsUnic(this.props.node);
-		}
+
 		let labelsNames = tl ? Object.keys(tl.l) : [];
 		let width = 0;
 		if(tl) {
