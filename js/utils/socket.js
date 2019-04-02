@@ -6,13 +6,15 @@ ws.onopen = function open() {
 
 ws.onmessage = function incoming(data) {
 	data = JSON.parse(data.data);
-	if(data.hasOwnProperty('clientsConnected') && data.clientsConnected !== 1) {
-		editor.ui.modal.showFatalError('Thing-editor already launched.', '');
-		ws.onclose = undefined;
-	} else {
-		editor.onServerAllowsWorking();
-	}
-	if(data.hasOwnProperty('notifyText')) {
+	if(data.hasOwnProperty('clientsConnected')) {
+		
+		if(data.clientsConnected !== 1) {
+			editor.ui.modal.showFatalError('Thing-editor already launched.', '');
+			ws.onclose = undefined;
+		} else {
+			editor.onServerAllowsWorking();
+		}
+	} else if(data.hasOwnProperty('notifyText')) {
 		editor.ui.modal.notify(data.notifyText);
 	}
 	
