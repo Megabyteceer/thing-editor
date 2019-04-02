@@ -3,6 +3,7 @@ import Timeline from "./timeline.js";
 import TimeLabel from "./timeline-label.js";
 import Line from "./timeline-line.js";
 import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
+import game from "thing-engine/js/game.js";
 
 const objectsTimelineProps = {className: 'objects-timeline'};
 
@@ -43,7 +44,9 @@ export default class ObjectsTimeline extends React.Component {
 
 	render() {
 		let tl = this.props.node._timelineData;
-
+		if(game.__EDITORmode) {
+			MovieClip.__checkTimelineIsUnic(this.props.node);
+		}
 		let labelsNames = tl ? Object.keys(tl.l) : [];
 		let width = 0;
 		if(tl) {
