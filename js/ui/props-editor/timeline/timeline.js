@@ -284,7 +284,7 @@ export default class Timeline extends React.Component {
 				{
 					onScroll: onTimelineScroll,
 					onMouseDown: this.onMouseDown,
-					className: 'timeline'
+					className: game.__EDITORmode ? 'timeline' : 'timeline disabled'
 				},
 				React.createElement(TimeMarker, {
 					owner: this,
@@ -293,10 +293,12 @@ export default class Timeline extends React.Component {
 				editor.selection.map(this.renderObjectsTimeline)
 			),
 			React.createElement(KeyframePropertyEditor, {
+				className: game.__EDITORmode ? undefined : 'disabled',
 				owner: this,
 				keyframes: getSelectedKeyframes()
 			}),
 			React.createElement(TimelineSelectFrame, {
+				className: game.__EDITORmode ? undefined : 'disabled',
 				ref: selectionFrameRef
 			}),
 			R.span(
@@ -317,9 +319,8 @@ export default class Timeline extends React.Component {
 	onMouseUp(ev) {
 		timeDragging = false;
 		if (draggingComponent) {
-			//Timeline.renormalizeFieldTimelineDataAfterChange();
 			if (reduceRepeatingKeyframesInSelected()) {
-				this.forceUpdate();
+				this.forceUpdateDebounced();
 			}
 			if((ev.clientX > 0) && !ev.ctrlKey && (Math.abs(draggingStartX - ev.clientX) < 2)) {
 				if(selectedComponents.length > 1) {
@@ -381,7 +382,7 @@ export default class Timeline extends React.Component {
 							if (kf.j !== time) {
 								kf.j = time;
 								c.onChanged();
-								c.props.owner.forceUpdate();
+								c.props.owner.forceUpdateDebounced();
 							}
 						}
 					}
@@ -392,6 +393,15 @@ export default class Timeline extends React.Component {
 			this.setTime(time);
 		}
 		selectionFrame.onMouseMove(ev);
+	}
+
+	forceUpdateDebounced() {
+		if(!this.forceUpdateDebouncedTimer) {
+			this.forceUpdateDebouncedTimer = setTimeout(() => {
+				this.forceUpdateDebouncedTimer = null;
+				this.forceUpdate();
+			}, 0);
+		}
 	}
 
 	static unregisterDragableComponent(component) {
@@ -508,7 +518,7 @@ export default class Timeline extends React.Component {
 			}
 		});
 		if (timelineInstance) {
-			timelineInstance.forceUpdate();
+			timelineInstance.forceUpdateDebounced();
 		}
 	}
 
@@ -548,7 +558,7 @@ export default class Timeline extends React.Component {
 							if(kf.t == time) {
 								if(!kf.___view.state || ! kf.___view.state.isSelected) {
 									select(kf.___view);
-									timelineInstance.forceUpdate();
+									timelineInstance.forceUpdateDebounced();
 								}
 								setTimeout(() => {
 									let actionEditField = $('#window-timeline').find('.bottom-panel').find('.props-editor-callback');
@@ -777,7 +787,7 @@ function selectElementsInRectangle(rect, shiftKey) {
 		}
 	}
 	simulatedMouseEvent(window.document.body, {type: 'mouseup'});
-	timelineInstance.forceUpdate();
+	timelineInstance.forceUpdateDebounced();
 }
 
 function simulatedMouseEvent(target, options) {
