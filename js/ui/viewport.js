@@ -108,7 +108,7 @@ export default class Viewport extends React.Component {
 				editor.saveHistoryNow();
 				
 				editor.saveBackup(true);
-				let selectionData = editor.selection.saveSelection();
+				game.__EDITORselectionDataWaitingToSelect = editor.selection.saveSelection();
 				game.__EDITORsceneDataWaitongToStart = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
 				Sound.__resetSounds();
@@ -117,7 +117,6 @@ export default class Viewport extends React.Component {
 				game.showScene(editor.currentSceneName);
 				problemOnGameStart = false;
 				game.stage.interactiveChildren = true;
-				editor.selection.loadSelection(selectionData);
 			} else { //stop game
 				problemOnGameStop = true;
 				game.__EDITOR_game_topping = true;
