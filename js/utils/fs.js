@@ -110,6 +110,9 @@ let fs = {
 				if (!silently || !async) {
 					editor.ui.modal.hideSpinner();
 				}
+				if(data) {
+					data = JSON.parse(data);
+				}
 				resolve(data);
 			});
 		});
