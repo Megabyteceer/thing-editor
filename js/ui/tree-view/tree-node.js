@@ -12,6 +12,9 @@ class TreeNode extends React.Component {
 	}
 	
 	onMouseDown(ev) { // == select nodes
+		if(!this.props.node.parent) {
+			return;
+		}
 		let state = __getNodeExtendData(this.props.node);
 		if((isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
 			state.childsExpanded = !state.childsExpanded;
