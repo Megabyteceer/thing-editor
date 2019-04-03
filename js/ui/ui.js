@@ -152,9 +152,9 @@ class StatusBar extends React.Component {
 		const f = () => {
 			this.forceUpdate();
 		};
-		$(window).on('mousedown', f);
-		$(window).on('mousemove', f);
-		$(window).on('wheel', f);
+		window.addEventListener('mousedown', f);
+		window.addEventListener('mousemove', f);
+		window.addEventListener('wheel', f);
 	}
 
 	render() {
