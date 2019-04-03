@@ -260,7 +260,7 @@ export default class Viewport extends React.Component {
 			R.div({className: 'editor-viewport-panel'},
 
 				R.btn("toggle helpers", () => {
-					$('#helpers-checkbox').click();
+					document.querySelector('#helpers-checkbox').click();
 				}, undefined, "hidden", 1072),
 				R.input({id:"helpers-checkbox", className:'clickable', type:'checkbox', title: "Hide helpers (Ctrl + H)", onChange: this.onHelpersToggle, defaultChecked:this.helpersHidden}),
 

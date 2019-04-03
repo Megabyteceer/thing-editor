@@ -32,11 +32,11 @@ export default class TimelineSelectFrame extends React.Component {
 		if(isDragging) {
 			isDragging = false;
 			
-			let a = $('.timelilne-select-frame');
-			if(a.length < 1) {
+			let a = document.querySelector('.timelilne-select-frame');
+			if(!a) {
 				return;
 			}
-			let ret = a[0].getBoundingClientRect();
+			let ret = a.getBoundingClientRect();
 			this.forceUpdate();
 
 			return ret;

@@ -63,17 +63,17 @@ class PropsEditor extends React.Component {
 		}
 
 		setTimeout(() => {
-			let fldInput = $(".props-editor #property-editor-" + fn.replace('.', '_'));
-			if (fldInput.length > 0) {
+			let fldInput = document.querySelector(".props-editor #property-editor-" + fn.replace('.', '_'));
+			if (fldInput) {
 
 				if(fn === fieldName) {
 					window.shakeDomElement(fldInput);
 					Window.bringWindowForward(fldInput.closest('.window-body'));
-					fldInput[0].scrollIntoView({});
+					fldInput.scrollIntoView({});
 				}
 			}
 			if(focus) {
-				fldInput.find('input').focus();
+				fldInput.querySelector('input').focus();
 			}
 		}, 1);
 	}

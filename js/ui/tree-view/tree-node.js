@@ -109,7 +109,7 @@ function nodeHasChildren(node) {
 }
 
 function isClickedAtRightEdge(ev) {
-	let b = $(ev.currentTarget).closest('.scene-tree-view')[0].getBoundingClientRect();
+	let b = ev.currentTarget.closest('.scene-tree-view').getBoundingClientRect();
 	return (b.right - ev.clientX) < 40;
 }
 

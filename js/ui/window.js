@@ -71,11 +71,11 @@ class Window extends React.Component {
 		
 		this.onMouseDown = this.onMouseDown.bind(this);
 		
-		$(window).on('resize', this.onClientResize.bind(this));
+		window.addEventListener('resize', this.onClientResize.bind(this));
 	}
 	
 	componentDidMount() {
-		this.$ = $('#' + this.id);
+		this.$ = document.querySelector('#' + this.id);
 	}
 	
 	onClientResize() {
@@ -170,7 +170,8 @@ class Window extends React.Component {
 		this.state.x = x;
 		this.state.y = y;
 		if (this.$) {
-			this.$.css({left: x + 'px', top: y + 'px'});
+			this.$.style.left = x + 'px';
+			this.$.style.top = y + 'px';
 		}
 	}
 	
@@ -187,7 +188,8 @@ class Window extends React.Component {
 		this.state.w = w;
 		this.state.h = h;
 		if (this.$) {
-			this.$.css({width: w + 'px', height: h + 'px'});
+			this.$.style.width = w + 'px';
+			this.$.style.height = h + 'px';
 		}
 	}
 	
@@ -263,7 +265,6 @@ class Window extends React.Component {
 }
 
 Window.bringWindowForward = (windowBody) => {
-	windowBody = windowBody[0];
 	Array.from(document.getElementsByClassName('window-body')).sort((a, b) => {
 		return a.style.zIndex - b.style.zIndex;
 	}).some((w, i, a) => {

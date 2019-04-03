@@ -286,7 +286,7 @@ function refreshSelection() {
 
 let startX, startY;
 
-$(window).on('mousedown', function onMouseDown(ev) {
+window.addEventListener('mousedown', function onMouseDown(ev) {
 	if(game.pixiApp && (ev.target === game.pixiApp.view)) {
 		if(ev.buttons === 4) {
 			isScrolling = true;
@@ -401,7 +401,7 @@ function selectByStageClick(ev) {
 	previousAllUnderMouse = allUnderMouse;
 }
 
-$(window).on('mousemove', function onMouseMove(ev) {
+window.addEventListener('mousemove', function onMouseMove(ev) {
 	if(isScrolling) {
 		if(ev.buttons !== 4) {
 			isScrolling = false;
@@ -422,18 +422,18 @@ $(window).on('mousemove', function onMouseMove(ev) {
 	}
 });
 
-$(window).on('mouseup', () => {
+window.addEventListener('mouseup', () => {
 	draggingDragger = null;
 });
 
-$(window).on('wheel', function onWheel(ev) {
+window.addEventListener('wheel', function onWheel(ev) {
 	if(ev.target === game.pixiApp.view) {
 
 		let pivot = game.stage.toLocal(game.__mouse_EDITOR, game.stage.parent);
 
 
 		let zoom = game.stage.scale.x;
-		zoom *= 1 - ev.originalEvent.deltaY/1000;
+		zoom *= 1 - ev.deltaY/1000;
 
 		if(Math.abs(zoom - 1.0) < 0.01) {
 			zoom = 1;

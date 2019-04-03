@@ -45,7 +45,7 @@ let renderModal = (props, i) => {
 	);
 };
 
-$(window).on('keydown', (ev) => {
+window.addEventListener('keydown', (ev) => {
 	if (ev.keyCode === 27) {
 		let m = modal.state.modals[modal.state.modals.length - 1];
 		if (m && !m.noEasyClose) {
@@ -75,8 +75,9 @@ class Modal extends React.Component {
 			return true;
 		}
 		if(this.state.modals.length > 0) {
-			let topModal = $('.modal-body').last();
-			return !$.contains(topModal[0], element);
+			let topModal = document.querySelectorAll('.modal-body');
+			topModal = topModal[topModal.length -1];
+			return !topModal.contains(element);
 		}
 		return false;
 	}

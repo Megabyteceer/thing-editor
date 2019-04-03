@@ -31,7 +31,6 @@
     "body-parser": "^1.18.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
-    "jquery": "^3.3.1",
     "node-fetch": "^2.1.2",
     "opn": "^5.3.0",
     "pixi-filters": "^2.6.0",

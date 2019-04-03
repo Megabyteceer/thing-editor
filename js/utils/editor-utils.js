@@ -90,14 +90,13 @@ window.check = (expression, message) => {
 	}
 };
 
-$(window).on('contextmenu', (ev) => {
+window.addEventListener('contextmenu', (ev) => {
 	if(window.isEventFocusOnInputElement(ev)) return;
-	if($(ev.target).hasClass('selectable-text')) return;
 	sp(ev);
 	
 });
 
-$(window).on('keydown', (ev) => {
+window.addEventListener('keydown', (ev) => {
 	if(ev.key === 'F5') {
 		/* sp(ev);
 		 editor.reloadAssetsAndClasses();*/
@@ -164,9 +163,9 @@ let _getValStore = (o) => {
 };
 
 window.shakeDomElement = function(e) {
-	e.removeClass('shake');
+	e.classList.remove('shake');
 	setTimeout(() => {
-		e.addClass('shake');
+		e.classList.add('shake');
 	}, 1);
 };
 

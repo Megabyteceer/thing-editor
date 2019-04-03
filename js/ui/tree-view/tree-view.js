@@ -53,11 +53,11 @@ export default class TreeView extends React.Component {
 			
 			foundByWhichProperty = null;
 			
-			let e = $('.scene-tree-view .item-selected');
-			if (e[0]) {
+			let e = document.querySelector('.scene-tree-view .item-selected');
+			if (e) {
 				Window.bringWindowForward(e.closest('.window-body'));
-				e[0].scrollIntoView({});
-				e.closest('.scene-tree-view').scrollLeft(0);
+				e.scrollIntoView({});
+				e.closest('.scene-tree-view').scrollLeft = 0;
 			}
 		}, 1);
 	}

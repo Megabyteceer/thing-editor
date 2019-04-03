@@ -71,13 +71,13 @@ function isGroupHidden(groupId) {
 
 function toggleGroup(ev) {
 	let groupId = ev.target.dataset.groupid;
-	let group = $('.' + groupId + ' .props-group-body');
+	let group = document.querySelector('.' + groupId + ' .props-group-body');
 	let isHidden = !isGroupHidden(groupId);
 	editor.settings.setItem(groupId, isHidden);
 	if (isHidden) {
-		group.addClass('hidden');
+		group.classList.add('hidden');
 	} else {
-		group.removeClass('hidden');
+		group.classList.remove('hidden');
 	}
 }
 

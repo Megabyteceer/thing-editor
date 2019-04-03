@@ -14,7 +14,7 @@ let switcher;
 
 function showTextTable() {
 	setTimeout(() => {
-		Window.bringWindowForward($('#window-texteditor'));
+		Window.bringWindowForward(document.querySelector('#window-texteditor'));
 	}, 1);
 	return new Promise((resolve) => {
 		if(!view) {
@@ -195,14 +195,11 @@ class LanguageTableEditor extends React.Component {
 				}
 			}
 
-			let area = $('.langs-editor-table #' + texareaID(langId, key));
+			let area = document.querySelector('.langs-editor-table #' + texareaID(langId, key));
 			area.focus();
-			area[0].scrollIntoView({});
+			area.scrollIntoView({});
 			
-			area.removeClass('shake');
-			setTimeout(() => {
-				area.addClass('shake');
-			}, 1);
+			window.shakeDomElement(area);
 		});
 	}
 	

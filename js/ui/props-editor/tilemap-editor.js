@@ -24,8 +24,8 @@ export default class tilemapEditorRenderer extends React.Component {
 		if(this.state.toggled) {
 			tilemapEditor = editor.ui.renderWindow('tilemap', 'Tilemap Editor', React.createElement(TilemapEditor, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 737, 307);
 			setTimeout(() => {
-				Window.bringWindowForward($('#window-propsEditor'));
-				Window.bringWindowForward($('#window-tilemap'));
+				Window.bringWindowForward(document.querySelector('#window-propsEditor'));
+				Window.bringWindowForward(document.querySelector('#window-tilemap'));
 			}, 1);
 		}
 		return R.fragment(btn, tilemapEditor);
@@ -61,11 +61,11 @@ class TilemapEditor extends React.Component {
 
 
 	componentDidMount() {
-		viewport = $('#viewport-root canvas');
-		viewport.on('mousedown', this.onMouseDown);
-		viewport.on('mousemove', this.onMouseMove);
-		viewport.on('mouseup', this.onMouseUp);
-		$(window).on('keydown', this.onKeyDown);
+		viewport = document.querySelector('#viewport-root canvas');
+		viewport.addEventListener('mousedown', this.onMouseDown);
+		viewport.addEventListener('mousemove', this.onMouseMove);
+		viewport.addEventListener('mouseup', this.onMouseUp);
+		window.addEventListener('keydown', this.onKeyDown);
 		editor.overlay.disableSelection(true);
 		assert(getTilemap() instanceof Tilemap, "Tilemap expected");
 		refreshTilemap();
@@ -73,10 +73,10 @@ class TilemapEditor extends React.Component {
 	
 	componentWillUnmount() {
 		editor.overlay.disableSelection(false);
-		viewport.off('mousedown', this.onMouseDown);
-		viewport.off('mousemove', this.onMouseMove);
-		viewport.off('mouseup', this.onMouseUp);
-		$(window).off('keydown', this.onKeyDown);
+		viewport.removeEventListener('mousedown', this.onMouseDown);
+		viewport.removeEventListener('mousemove', this.onMouseMove);
+		viewport.removeEventListener('mouseup', this.onMouseUp);
+		window.removeEventListener('keydown', this.onKeyDown);
 		isSetting = false;
 	}
 

@@ -12,8 +12,8 @@ export default class Prompt extends React.Component {
 	
 	componentDidMount() {
 		setTimeout(() => {
-			$('.modal-content input').focus();
-		},1);
+			document.querySelector('.modal-content input').focus();
+		}, 1);
 		this.checkAcceptance(this.state.value);
 	}
 	

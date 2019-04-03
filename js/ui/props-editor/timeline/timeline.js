@@ -95,7 +95,7 @@ export default class Timeline extends React.Component {
 
 	componentDidMount() {
 		clearSelection();
-		Timeline.timelineDOMElement = $('.timeline')[0];
+		Timeline.timelineDOMElement = document.querySelector('.timeline');
 		timelineInstance = this;
 		window.addEventListener('mousemove', this.onMouseMove);
 		window.addEventListener('mouseup', this.onMouseUp);
@@ -561,9 +561,8 @@ export default class Timeline extends React.Component {
 									timelineInstance.forceUpdateDebounced();
 								}
 								setTimeout(() => {
-									let actionEditField = $('#window-timeline').find('.bottom-panel').find('.props-editor-callback');
+									let actionEditField = document.querySelector('#window-timeline').querySelector('.bottom-panel').querySelector('.props-editor-callback');
 									window.shakeDomElement(actionEditField);
-									actionEditField.focus();
 								}, 1);
 								return;
 							}
@@ -734,8 +733,8 @@ const sortFieldsByTime = (a, b) => {
 };
 
 function onTimelineScroll(ev) {
-	$('.objects-timeline-labels').css({left: ev.target.scrollLeft + 'px'});
-	$('.time-marker-body').css({top: ev.target.scrollTop + 'px'});
+	document.querySelector('.objects-timeline-labels').style.left = ev.target.scrollLeft + 'px';
+	document.querySelector('.time-marker-body').style.top = ev.target.scrollTop + 'px';
 }
 
 let isDragging = false;
@@ -774,7 +773,7 @@ function reduceRepeatingKeyframesInSelected() {
 }
 
 function selectElementsInRectangle(rect, shiftKey) {
-	let a = $(Timeline.timelineDOMElement).find('.timeline-keyframe,.timeline-loop-point,.timeline-label');
+	let a = Timeline.timelineDOMElement.querySelectorAll('.timeline-keyframe,.timeline-loop-point,.timeline-label');
 	if(!shiftKey) {
 		clearSelection();
 	}

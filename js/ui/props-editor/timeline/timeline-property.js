@@ -35,8 +35,8 @@ export default class TimelineProperty extends React.Component {
 					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
 				), 586, 650, 400, 150, 1137, 407);
 			setTimeout(() => {
-				Window.bringWindowForward($('#window-propsEditor'));
-				Window.bringWindowForward($('#window-timeline'));
+				Window.bringWindowForward(document.querySelector('#window-propsEditor'));
+				Window.bringWindowForward(document.querySelector('#window-timeline'));
 			}, 1);
 		}
 		return R.fragment(btn, timeline);
