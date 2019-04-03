@@ -214,7 +214,7 @@ class LanguageTableEditor extends React.Component {
 		idsList.some((id) => {
 			lines.push(R.div({key: id, className:'langs-editor-tr'},
 				R.div({className:'langs-editor-th selectable-text',
-					title: "Click to copy, Double click to rename, Right click to delete",
+					title: "Right click to copy, Double click to rename, Left click to delete",
 					onContextMenu: (ev) => {
 						let currentKey = ev.target.innerText;
 						sp(ev);

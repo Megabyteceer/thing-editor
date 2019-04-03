@@ -15,7 +15,9 @@ const SCROLL_IN_TO_SCREEN_FIELD = 0;
 
 let prefabTitleProps = {className: 'prefabs-mode-title'};
 let prefabLabelProps = {
-	className: 'selectable-text', onMouseDown: window.copyTextByClick
+	className: 'selectable-text',
+	title: 'right click to select prefab`s name',
+	onMouseDown: window.copyTextByClick
 };
 
 let stoppingExecutionTime;
