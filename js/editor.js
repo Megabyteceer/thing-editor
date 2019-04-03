@@ -768,8 +768,8 @@ let saveHistoryNow = () => {
 	}
 };
 
-$(window).on('mouseup', sheduleHistorySave);
-$(window).on('keyup', sheduleHistorySave);
+window.addEventListener('mouseup', sheduleHistorySave);
+window.addEventListener('keyup', sheduleHistorySave);
 
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
