@@ -6,6 +6,7 @@ import Text from "thing-engine/js/components/text.js";
 import Label from "thing-engine/js/components/label.js";
 import ProgressBar from "thing-engine/js/components/progress-bar.js";
 import PrefabReference from "thing-engine/js/components/prefab-reference.js";
+import Scissors from "thing-engine/js/components/scissors.js";
 import NumberInput from "thing-engine/js/components/number-input.js";
 import Trigger from "thing-engine/js/components/trigger.js";
 import Resizer from "thing-engine/js/components/resizer.js";
@@ -56,6 +57,7 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[SelectionHighlighter,"/thing-engine/js/components/selection-highlighter.js" ],
 		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"],
 		[PrefabReference, "/thing-engine/js/components/prefab-reference.js"],
+		[Scissors, "/thing-engine/js/components/scissors.js"],
 		[Shape, "/thing-engine/js/components/shape.js"],
 		[Mask, "/thing-engine/js/components/mask.js"],
 		[Fill, "/thing-engine/js/components/fill.js"],
