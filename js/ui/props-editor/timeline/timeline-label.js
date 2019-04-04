@@ -105,7 +105,7 @@ export default class TimeLabel extends React.Component {
 		let label = this.props.label;
 		let name = this.props.labelName;
 		
-		return R.div({className, style:{left: label.t * this.props.owner.props.widthZoom},
+		return R.div({className, id:'timeline-label-' + name.replace('.', '-').replace('#', '-') , style:{left: label.t * this.props.owner.props.widthZoom},
 			onMouseDown: this.onLabelMouseDown,
 			onDoubleClick: this.onDoubleClick
 		},

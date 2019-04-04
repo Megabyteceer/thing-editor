@@ -293,6 +293,12 @@ export default class TreeView extends React.Component {
 								}
 							}
 						}
+						for(let label in timeline.l) {
+							if(label.toLowerCase().indexOf(this.searchString) >= 0) {
+								foundByWhichProperty.set(o, p.name + ',,' + label);
+								return true;
+							}
+						}
 					}
 				} else {
 					let val = '' + o[p.name];

@@ -551,20 +551,26 @@ export default class Timeline extends React.Component {
 	static onAutoSelect(selectPath) {
 		for(let o of editor.selection) {
 			if(o._timelineData) {
-				for(let f of o._timelineData.f) {
-					if(f.n === selectPath[1]) {
-						let time = parseInt(selectPath[2]);
-						for(let kf of f.t) {
-							if(kf.t == time) {
-								if(!kf.___view.state || ! kf.___view.state.isSelected) {
-									select(kf.___view);
-									timelineInstance.forceUpdateDebounced();
+				if(!selectPath[1]) { //label
+					let labelView = document.querySelector('#window-timeline').querySelector('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-'));
+					window.shakeDomElement(labelView);
+					return;
+				} else  {
+					for(let f of o._timelineData.f) {
+						if(f.n === selectPath[1]) {
+							let time = parseInt(selectPath[2]);
+							for(let kf of f.t) {
+								if(kf.t == time) {
+									if(!kf.___view.state || ! kf.___view.state.isSelected) {
+										select(kf.___view);
+										timelineInstance.forceUpdateDebounced();
+									}
+									setTimeout(() => {
+										let actionEditField = document.querySelector('#window-timeline').querySelector('.bottom-panel').querySelector('.props-editor-callback');
+										window.shakeDomElement(actionEditField);
+									}, 1);
+									return;
 								}
-								setTimeout(() => {
-									let actionEditField = document.querySelector('#window-timeline').querySelector('.bottom-panel').querySelector('.props-editor-callback');
-									window.shakeDomElement(actionEditField);
-								}, 1);
-								return;
 							}
 						}
 					}
