@@ -34,6 +34,7 @@ export default class LanguageView extends React.Component {
 		}).map((fn) => {
 			return fn.split('/').pop().split('.').shift();
 		});
+		langsIds.sort();
 		return L.loadLanguages(langsIds, '/games/' + editor.currentProjectDir + editor.projectDesc.localesPath).then((langsData) => {
 			languages = langsData;
 			refreshCachedData();
