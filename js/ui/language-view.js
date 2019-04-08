@@ -217,19 +217,27 @@ class LanguageTableEditor extends React.Component {
 				R.div({className:'langs-editor-th selectable-text',
 					title: "Right click to copy, Double click to rename, Left click to delete",
 					onContextMenu: (ev) => {
-						let currentKey = ev.target.innerText;
 						sp(ev);
-						return editor.ui.modal.showQuestion('Translatable key delete', 'Delete key ' + currentKey + '?', () => {
-							for(let id in languages) {
-								let l = languages[id];
-								delete l[currentKey];
-							}
-							onModified();
-							refreshCachedData();
-							this.forceUpdate();
-						});
 					},
-					onClick: window.copyTextByClick,
+					onMouseDown: (ev) => {
+						let currentKey = ev.target.innerText;
+						
+						if(ev.buttons !== 2) {
+							return editor.ui.modal.showQuestion('Translatable key delete', 'Delete key ' + currentKey + '?', () => {
+								for(let id in languages) {
+									let l = languages[id];
+									delete l[currentKey];
+								}
+								onModified();
+								refreshCachedData();
+								this.forceUpdate();
+							});
+						}
+						else {
+							window.copyTextByClick(ev);
+						}
+						sp(ev);
+					},
 					onDoubleClick: (ev) => {
 						let currentKey = ev.target.innerText;
 
