@@ -9,6 +9,13 @@ export default class TimelineProperty extends React.Component {
 		this.onToggleClick = this.onToggleClick.bind(this);
 	}
 
+	componentDidMount() {
+		setTimeout(() => {
+			Window.bringWindowForward(document.querySelector('#window-propsEditor'));
+			Window.bringWindowForward(document.querySelector('#window-timeline'));
+		}, 1);
+	}
+
 	onToggleClick() { //show/hide timeline window
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
@@ -34,10 +41,6 @@ export default class TimelineProperty extends React.Component {
 				R.div({title:''},
 					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
 				), 586, 650, 400, 150, 1137, 407);
-			setTimeout(() => {
-				Window.bringWindowForward(document.querySelector('#window-propsEditor'));
-				Window.bringWindowForward(document.querySelector('#window-timeline'));
-			}, 1);
 		}
 		return R.fragment(btn, timeline);
 	}
