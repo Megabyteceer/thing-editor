@@ -523,7 +523,7 @@ export default class Timeline extends React.Component {
 	}
 
 	isNeedAnimateProperty(o, fieldName) {
-		return (this.getTime() > 0 && fieldName !== 'isPlaying' && fieldName !== 'delay') || getFieldByName(o, fieldName);
+		return (this.getTime() > 0 && fieldName !== 'isPlaying' && fieldName !== 'delay' && fieldName !== 'name') || getFieldByName(o, fieldName);
 	}
 
 	static disableRecording() {
