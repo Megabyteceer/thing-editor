@@ -67,6 +67,10 @@ export default class Overlay {
 		selectionDisabled = disable;
 	}
 
+	get isPreviewShowed() {
+		return isPreviewShowed;
+	}
+
 	refreshCameraFrame() {
 		if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
 			if(!cameraFrame.parent) {

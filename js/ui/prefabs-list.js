@@ -90,6 +90,9 @@ export default class PrefabsList extends React.Component {
 				if (enteredName) {
 					let s = editor.selection[0];
 					Lib.__savePrefab(s, enteredName);
+					if(editor.overlay.isPreviewShowed) {
+						PrefabsList.editPrfefab(enteredName);
+					}
 					this.forceUpdate();
 				}
 			});
