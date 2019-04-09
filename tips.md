@@ -38,13 +38,6 @@ this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
 ###__onChildSelected
 
 
-
-
-## debugging helper
-### ___h
-property returns dom's div which will be highlighted in window during code stopped on breakpoint. Useful to determine where scene's elements are loacated on screen.
-
-
 ---
 
 # Editable fields description options:
