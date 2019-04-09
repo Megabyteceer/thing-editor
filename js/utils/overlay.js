@@ -278,6 +278,10 @@ function refreshSelection() {
 			if(rect._props.field.rotable) {
 				rect.rotation = r;
 			}
+			if(!rect._props.field.noscalable) {
+				rect.scale.x = o.worldTransform.a;
+				rect.scale.y = o.worldTransform.d;
+			}
 		}
 		if(info.draggerRotator) {
 			info.draggerRotator.x = p.x + Math.cos(r) * 40;

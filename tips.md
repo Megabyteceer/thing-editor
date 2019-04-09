@@ -68,7 +68,7 @@ property returns dom's div which will be highlighted in window during code stopp
 ### min, max, step:
  optional for Number property
 
- nullable,minX,maxX,minY,maxY,minW,maxW,minH,maxH - additionally supported for 'rect' fields
+ nullable,rotable,noscalable,minX,maxX,minY,maxY,minW,maxW,minH,maxH - additionally supported for 'rect' fields
 
 ### select:
  array of {name: 'Readable Name', value: 1} objects to select values from.
