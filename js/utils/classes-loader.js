@@ -33,6 +33,8 @@ import Spine from 'thing-engine/js/components/spine.js';
 import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
 import Delay from 'thing-engine/js/components/delay.js';
 
+let attachedScript;
+
 let ClassesLoader = {};
 ClassesLoader.initClassesLoader = function initClassesLoader() {
 	//embedded engine classes
@@ -293,6 +295,10 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 					console.warn('classes were not loaded because of error.');
 				}
 			};
+			if(attachedScript) {
+				attachedScript.remove();
+			}
+			attachedScript = script;
 			script.type = 'module';
 			script.src = src;
 			head.appendChild(script);
