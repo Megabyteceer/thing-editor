@@ -517,29 +517,29 @@ export default class Editor {
 	
 	centraliseObjectToContent (o) {
 		let b = o.getBounds();
-		let midX;
-		let midY;
-		if(b.width > 0) {
-			midX = b.x + b.width / 2;
+		let p;
+		if(b.width > 0 || b.height > 0) {
+			let b = o.getBounds();
+			let midX = b.x + b.width / 2;
+			let midY = b.y + b.height / 2;
+			p = new PIXI.Point(midX, midY);
+			o.parent.toLocal(p, undefined, p);
 		} else {
-			midX = 0;
+			let midX = 0;
 			for(let c of o.children) {
 				midX += c.x;
 			}
 			midX /= o.children.length;
-		}
-		if(b.height > 0) {
-			midY = b.y + b.height / 2;
-		} else {
-			midY = 0;
+		
+			let midY = 0;
 			for(let c of o.children) {
 				midY += c.y;
 			}
 			midY /= o.children.length;
+			p = new PIXI.Point(midX, midY);
+			o.parent.toLocal(p, o, p);
 		}
 
-		let p = new PIXI.Point(midX, midY);
-		o.parent.toLocal(p, o, p);
 		let pos = o.getGlobalPosition();
 		let p2 = new PIXI.Point();
 		o.parent.toLocal(pos, undefined, p2);
