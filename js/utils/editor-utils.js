@@ -122,10 +122,10 @@ window.addEventListener('keydown', (ev) => {
 });
 
 window.copyTextByClick = function(ev) {
-	if(ev.buttons === 2) {
+	if(ev.ctrlKey) {
 		editor.copyToClipboard(ev.target.innerText);
+		sp(ev);
 	}
-	sp(ev);
 };
 
 const checkDataPath = (s) => {

@@ -44,7 +44,7 @@ FILTER_SELECT.unshift({
 
 let labelProps = {
 	className: 'selectable-text',
-	title: 'right click to select texture`s name',
+	title: 'Ctrl+click to copy texture`s name',
 	onMouseDown: window.copyTextByClick
 };
 

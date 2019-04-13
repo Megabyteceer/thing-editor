@@ -215,14 +215,14 @@ class LanguageTableEditor extends React.Component {
 		idsList.some((id) => {
 			lines.push(R.div({key: id, className:'langs-editor-tr'},
 				R.div({className:'langs-editor-th selectable-text',
-					title: "Right click to copy, Double click to rename, Left click to delete",
+					title: "Ctrl+click to copy key, Double click to rename, Right click to delete",
 					onContextMenu: (ev) => {
 						sp(ev);
 					},
 					onMouseDown: (ev) => {
 						let currentKey = ev.target.innerText;
 						
-						if(ev.buttons !== 2) {
+						if(ev.buttons === 2) {
 							return editor.ui.modal.showQuestion('Translatable key delete', 'Delete key ' + currentKey + '?', () => {
 								for(let id in languages) {
 									let l = languages[id];
@@ -233,7 +233,7 @@ class LanguageTableEditor extends React.Component {
 								this.forceUpdate();
 							});
 						}
-						else {
+						else if(ev.ctrlKey) {
 							window.copyTextByClick(ev);
 						}
 						sp(ev);

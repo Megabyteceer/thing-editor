@@ -1,6 +1,14 @@
 import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
 import Timeline from "./timeline.js";
 
+
+let labelNamesProps = {
+	className: 'selectable-text',
+	title: 'Ctrl+click to copy field`s name',
+	onMouseDown: window.copyTextByClick
+};
+
+
 export default class TimeLabel extends React.Component {
 	
 	constructor(props) {
@@ -109,7 +117,7 @@ export default class TimeLabel extends React.Component {
 			onMouseDown: this.onLabelMouseDown,
 			onDoubleClick: this.onDoubleClick
 		},
-		name
+		R.span(labelNamesProps, name)
 		);
 	}
 }
