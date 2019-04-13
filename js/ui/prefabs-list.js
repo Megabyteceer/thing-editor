@@ -125,6 +125,9 @@ export default class PrefabsList extends React.Component {
 			'Are you sure you want to delete prefab: ', R.b(null, prefabName), ' ?'
 		),() => {
 			Lib.__deletePrefab(prefabName);
+			if(previewShown === prefabName) {
+				PrefabsList.hidePrefabPreview();
+			}
 			this.forceUpdate();
 		}, 'Delete');
 
