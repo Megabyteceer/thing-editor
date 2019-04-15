@@ -159,6 +159,9 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 		.then((data) => {
 			res.set('Content-Type', 'application/json');
 			res.end(JSON.stringify(data));
+		}).catch((err) => {
+			res.set('Content-Type', 'application/json');
+			res.end(JSON.stringify(err));
 		});
 });
 
