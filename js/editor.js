@@ -607,7 +607,29 @@ export default class Editor {
 				history.setCurrentStateUnmodified();
 				saveCurrentSceneName(name);
 			}
-			return Lib.__saveScene(game.currentScene, name);
+			
+			let tmpOrientation = game.___enforcedOrientation;
+			if (game.projectDesc.screenOrientation === 'auto') {
+				game.___enforcedOrientation = 'landscape';
+				game.__enforcedW = game.projectDesc.width;
+				game.__enforcedH = game.projectDesc.height;
+			} if (game.projectDesc.screenOrientation === 'portrait') {
+				game.__enforcedW = game.projectDesc.portraitWidth;
+				game.__enforcedH = game.projectDesc.portraitHeight;
+			} else {
+				game.__enforcedW = game.projectDesc.width;
+				game.__enforcedH = game.projectDesc.height;
+			}
+
+			game.onResize();
+			let ret =  Lib.__saveScene(game.currentScene, name);
+
+			game.___enforcedOrientation = tmpOrientation;
+			delete game.__enforcedW;
+			delete game.__enforcedH;
+			game.onResize();
+			return ret;
+
 		}
 		return Promise.resolve();
 	}
