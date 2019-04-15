@@ -80,6 +80,9 @@ export default class RectangleEditor extends React.Component {
 				Lib.__invalidateSerialisationCache(o);
 				updated = true;
 			}
+			if(this.props.field.hasOwnProperty('parser')){
+				o[fieldName] = this.props.field.parser(o[fieldName], o);
+			}
 		}
 		if(updated) {
 			this.forceUpdate();
