@@ -21,9 +21,13 @@ export default class RefFieldEditor extends React.Component {
 		} else if(val && typeof val === 'object') {
 			return R.btn("[Object...]", () => {
 				if(this.props.value) {
-					editor.ui.modal.showModal(JSON.stringify(this.props.value, undefined, '\n'). split('\n').map((l) => {
-						return R.span(null,l, R.br());
-					}));
+					try {
+						editor.ui.modal.showModal(JSON.stringify(this.props.value, undefined, '\n'). split('\n').map((l) => {
+							return R.span(null,l, R.br());
+						}));
+					} catch (er) {
+						editor.ui.modal.showModal('Object has curcular structures');
+					}
 				}
 			});
 		} else {
