@@ -33,6 +33,7 @@ import Spine from 'thing-engine/js/components/spine.js';
 import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
 import Delay from 'thing-engine/js/components/delay.js';
 import HTMLOverlay from 'thing-engine/js/components/html-overlay.js';
+import TextInput from 'thing-engine/js/components/text-input.js';
 
 let attachedScript;
 
@@ -68,7 +69,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[BgMusic, "/thing-engine/js/components/bg-music.js"],
 		[Spine, "/thing-engine/js/components/spine.js"],
 		[MobileJoystick, "/thing-engine/js/components/mobile-joystick.js"],
-		[HTMLOverlay, "/thing-engine/js/components/html-overlay.js"]
+		[HTMLOverlay, "/thing-engine/js/components/html-overlay.js"],
+		[TextInput, "/thing-engine/js/components/text-input.js"]
 	];
 };
 
