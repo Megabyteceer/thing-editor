@@ -121,12 +121,12 @@ export default class Viewport extends React.Component {
 				game.stage.interactiveChildren = true;
 			} else { //stop game
 				problemOnGameStop = true;
-				game.__EDITOR_game_topping = true;
+				game.__EDITOR_game_stopping = true;
 				game.__clearStage();
 				game.__EDITORmode = true;
 				Sound.__resetSounds();
 				editor.restoreBackup(true);
-				game.__EDITOR_game_topping = false;
+				game.__EDITOR_game_stopping = false;
 				problemOnGameStop = false;
 				game.stage.interactiveChildren = false;
 			}
