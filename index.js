@@ -154,7 +154,6 @@ app.get('/fs/edit', function (req, res) {
 
 app.post('/fs/fetch', jsonParser, function (req, res) {
 	let fetch = require('node-fetch');
-	req.body.options.headers = { 'Content-Type': 'application/json' };
 	fetch(req.body.url, req.body.options).then(res => res.json())
 		.then((data) => {
 			res.set('Content-Type', 'application/json');
