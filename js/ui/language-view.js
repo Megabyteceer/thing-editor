@@ -34,7 +34,7 @@ export default class LanguageView extends React.Component {
 		}).map((fn) => {
 			return fn.split('/').pop().split('.').shift();
 		});
-		langsIds.sort();
+
 		return L.loadLanguages(langsIds, '/games/' + editor.currentProjectDir + editor.projectDesc.localesPath).then((langsData) => {
 			languages = langsData;
 			refreshCachedData();
@@ -286,7 +286,7 @@ class LanguageTableEditor extends React.Component {
 function refreshCachedData() {
 	langsIdsList = Object.keys(languages);
 	langsIdsList.sort((a, b) => {
-		return langIdPriority(a) > langIdPriority(b);
+		return (langIdPriority(a) > langIdPriority(b)) ? 1 : -1;
 	});
 	oneLanguageTable = languages[langsIdsList[0]];
 	assert(oneLanguageTable, "No localisation data loaded.");
