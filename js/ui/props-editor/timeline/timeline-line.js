@@ -166,12 +166,11 @@ const calculateCacheSegmentForField = (fieldPlayer, c) => {
 	let limit = fields[fields.length-1].t;
 	while(!c.hasOwnProperty(fieldPlayer.time)) {
 		time = fieldPlayer.time;
+		fieldPlayer.update(true);
 		c[time] = fieldPlayer.val;
 		if(time > limit) {
 			break;
 		}
-		fieldPlayer.update(true);
-		
 		assert(i++ < 100000, 'Timeline values cache calculation looped and failed.');
 	}
 	fieldPlayer.__dontCallActions = false;
@@ -206,7 +205,7 @@ class PlayingDisplay extends React.Component {
 				firedFrame = R.div({className:'timeline-fire-indicator', style:{left: this.fieldPlayer.__lastFiredKeyframe.t * widthZoom}});
 			}
 			return R.fragment(
-				R.div({className:'timeline-play-indicator', style:{left: this.fieldPlayer.time * widthZoom}}),
+				R.div({className:'timeline-play-indicator', style:{left: (this.fieldPlayer.time - 1) * widthZoom}}),
 				firedFrame
 			);
 		}
