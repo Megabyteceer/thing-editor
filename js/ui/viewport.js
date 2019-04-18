@@ -210,6 +210,8 @@ export default class Viewport extends React.Component {
 		if(game && game.projectDesc && (game.projectDesc.screenOrientation === 'auto')) {
 			toggleOrientationBtn = R.btn(R.icon('orientation-toggle'), this.onToggleOrientationClick, 'Switch screen orientation (Ctrl + O)', 'big-btn', 1079);
 		}
+
+		let reloadAssetsBtn = R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn');
 		
 		if(this.state.prefabMode) {
 			className += ' editor-viewport-wrapper-prefab-mode';
@@ -232,6 +234,7 @@ export default class Viewport extends React.Component {
 					type: 'color',
 					defaultValue: '#' + editor.overlay.getBGcolor().toString(16).padStart(6, '0')
 				}),
+				reloadAssetsBtn,
 				toggleOrientationBtn
 			);
 		} else {
@@ -248,7 +251,7 @@ export default class Viewport extends React.Component {
 			panel = R.span(undefined,
 				R.btn((!game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
 				R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Rebuild game sources', 'big-btn'),
-				R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
+				reloadAssetsBtn,
 				statusHeader,
 				pauseResumeBtn,
 				oneStepBtn,
