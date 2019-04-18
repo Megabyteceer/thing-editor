@@ -141,6 +141,9 @@ function isCanBeAddedAsChild() {
 function findNextOfThisType(c, direction) {
 	if(game.keys.ctrlKey) {
 		let a = game.currentContainer.findChildrenByType(c);
+		if(game.currentContainer instanceof c) {
+			a.push(game.currentContainer);
+		}
 		editor.selection.clearSelection();
 		for (let w of a) {
 			editor.ui.sceneTree.selectInTree(w, true);
