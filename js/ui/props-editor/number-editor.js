@@ -34,12 +34,19 @@ class NumberEditor extends React.Component {
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onUpClick = this.onUpClick.bind(this);
 		this.onDownClick = this.onDownClick.bind(this);
+		this.onBlur = this.onBlur.bind(this);
 		this.btnUp = R.span({className:'number-input-btn number-input-btn-up', onClick:this.onUpClick, onMouseDown:this.onMouseDown}, '▲');
 		this.btnDown = R.span({className:'number-input-btn number-input-btn-down', onClick:this.onDownClick, onMouseDown:this.onMouseDown}, '▼');
 	}
 
 	componentWillUnmount() {
 		onMouseUp();
+	}
+
+	onBlur() {
+		if(this.state) {
+			delete this.state.tmpVal;
+		}
 	}
 
 	get step() {
@@ -154,6 +161,7 @@ class NumberEditor extends React.Component {
 		let val = (typeof this.state.tmpVal !== 'undefined') ? this.state.tmpVal : this.state.value;
 		return R.span(numberEditorProps,
 			R.input({
+				onBlur: this.onBlur,
 				onChange: this.onChange,
 				disabled:props.disabled,
 				value: val,
