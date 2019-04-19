@@ -273,6 +273,7 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 };
 
 window.addEventListener('beforeunload', function() {
+	editor.exitPrefabMode();
 	if(!editor.game.__EDITORmode) { //backup already exist
 		return;
 	}
