@@ -718,7 +718,11 @@ function onDragableMouseDown(ev) {
 
 	draggingComponent = this;
 	draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
-	prevDragTime = (this.props.label || this.props.keyFrame).t;
+	if(this instanceof TimelineLoopPoint) {
+		prevDragTime = this.props.keyFrame.j;
+	} else {
+		prevDragTime = (this.props.label || this.props.keyFrame).t;
+	}
 }
 
 function cloneSelectedKeyframes() {
