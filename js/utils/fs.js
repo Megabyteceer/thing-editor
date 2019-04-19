@@ -138,7 +138,7 @@ const fielsEditTimes = {};
 export default fs;
 
 function handleError(er, status, error, url) {
-	editor.ui.modal.showError('ERROR IN FILE ' + url + ': ' + (er.responseText || JSON.stringify(error || 'connection error')));
+	editor.ui.modal.showError('ERROR IN FILE ' + url + ': ' + ((er && er.responseText) || JSON.stringify(error || 'connection error')));
 }
 
 function getIconPath(desc) {

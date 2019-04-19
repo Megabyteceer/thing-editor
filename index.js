@@ -1,6 +1,7 @@
 /*global require */
 /*global __dirname */
 /*global process */
+/*global Buffer */
 
 const log = console.log;
 let bodyParser = require('body-parser');
@@ -172,13 +173,18 @@ app.get('/fs/build', function (req, res) {
 	(req.query.debug ? 'debug' : ''),
 	{maxBuffer: 1024 * 5000},
 	(err, stdout, errout) => {
-		if(err) {
-			console.error(err);
-			res.end(JSON.stringify({errors:[stdout.split('\n'), errout.split('\n')], warnings:[]}));
-		} else {
-			log(stdout);
-			res.end(JSON.stringify(stdout.split('\n')));
+		log(errout);
+		if(errout instanceof Buffer) {
+			errout = errout.toString();
 		}
+		if(stdout instanceof Buffer) {
+			stdout = stdout.toString();
+		}
+		let ret = stdout.split('\n').concat(errout.split('\n'));
+		if(err) {
+			ret.unshift('ERROR: ' + JSON.stringify(err));
+		}
+		res.end(JSON.stringify(ret));
 	});
 });
 
