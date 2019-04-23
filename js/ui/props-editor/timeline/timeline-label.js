@@ -17,13 +17,21 @@ export default class TimeLabel extends React.Component {
 		this.onLabelMouseDown = this.onLabelMouseDown.bind(this);
 		Timeline.registerDragableComponent(this);
 	}
-
 	
 	componentDidMount() {
 		Timeline._justModifiedSelectable(this);
+		this.props.label.___view = this;
 	}
 
 	componentWillReceiveProps(props) {
+
+		let k1 = this.props.label;
+		let k2 = props.label;
+		if(k1.___view === this) {
+			k1.___view = null;
+		}
+		k2.___view = this;
+
 		if(this.props.label.t !== props.label.t) {
 			Timeline._justModifiedSelectable(this);
 		}

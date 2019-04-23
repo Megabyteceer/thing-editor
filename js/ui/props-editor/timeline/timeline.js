@@ -782,63 +782,39 @@ function reduceRepeatingKeyframesInSelected() {
 	return isModified;
 }
 
+function selectIfInRect(rect, component) {
+	let view = component.___view;
+	if(view.state && view.state.isSelected) {
+		return;
+	}
+	let domElement = ReactDOM.findDOMNode(view);
+	let r = domElement.getBoundingClientRect();
+	if(r.right > rect.left && r.left < rect.right) {
+		if(r.bottom > rect.top && r.top < rect.bottom) {
+			select(view);
+		}
+	}
+}
+
 function selectElementsInRectangle(rect, shiftKey) {
-	let a = Timeline.timelineDOMElement.querySelectorAll('.timeline-keyframe,.timeline-loop-point,.timeline-label');
 	if(!shiftKey) {
 		clearSelection();
 	}
-	for(let c of a) {
-		let r = c.getBoundingClientRect();
-		if(r.right > rect.left && r.left < rect.right) {
-			if(r.bottom > rect.top && r.top < rect.bottom) {
-				simulatedMouseEvent(c, {shiftKey, ctrlKey:true});
+
+	for(let o of editor.selection) {
+		if((o instanceof MovieClip) && (o._timelineData)) {
+			for(let f of o._timelineData.f) {
+				for(let kf of f.t) {
+					selectIfInRect(rect, kf);
+				}
+			}
+			for(let labelName in o._timelineData.l) {
+				let label = o._timelineData.l[labelName];
+				selectIfInRect(rect, label);
 			}
 		}
 	}
-	simulatedMouseEvent(window.document.body, {type: 'mouseup'});
+
+	timelineInstance.onMouseUp({});
 	timelineInstance.forceUpdateDebounced();
-}
-
-function simulatedMouseEvent(target, options) {
-
-	const event = window.document.createEvent('MouseEvents');
-	const opts = Object.assign({ // These are the default values, set up for un-modified left clicks
-		type: 'mousedown',
-		canBubble: true,
-		cancelable: true,
-		view: target.ownerDocument.defaultView,
-		detail: 1,
-		screenX: 0, //The coordinates within the entire page
-		screenY: 0,
-		clientX: 0, //The coordinates within the viewport
-		clientY: 0,
-		ctrlKey: false,
-		altKey: false,
-		shiftKey: false,
-		metaKey: false, //I *think* 'meta' is 'Cmd/Apple' on Mac, and 'Windows key' on Win. Not sure, though!
-		button: 0, //0 = left, 1 = middle, 2 = right
-		relatedTarget: null,
-	}, options);
-
-	//Pass in the options
-	event.initMouseEvent(
-		opts.type,
-		opts.canBubble,
-		opts.cancelable,
-		opts.view,
-		opts.detail,
-		opts.screenX,
-		opts.screenY,
-		opts.clientX,
-		opts.clientY,
-		opts.ctrlKey,
-		opts.altKey,
-		opts.shiftKey,
-		opts.metaKey,
-		opts.button,
-		opts.relatedTarget
-	);
-
-	//Fire the event
-	target.dispatchEvent(event);
 }
