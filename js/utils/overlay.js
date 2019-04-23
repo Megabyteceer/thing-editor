@@ -112,9 +112,15 @@ export default class Overlay {
 	}
 
 	guideX(x, from) {
+		let tx = from.scale.x;
+		let ty = from.scale.y;
+		from.scale.x = from.scale.y = 1;
+		guideSprite.rotation = from.getGlobalRotation();
 		guideSprite.scale.x = 0.1;
 		guideSprite.scale.y = 100;
 		from.toGlobal({x, y:0}, guideSprite);
+		from.scale.x = tx;
+		from.scale.y = ty;
 		game.stage.parent.addChild(guideSprite);
 		clearTimeout(guideSpriteTimeout);
 		guideSpriteTimeout = setTimeout(() => {
@@ -125,9 +131,15 @@ export default class Overlay {
 	}
 
 	guideY(y, from) {
+		let tx = from.scale.x;
+		let ty = from.scale.y;
+		from.scale.x = from.scale.y = 1;
+		guideSprite.rotation = from.getGlobalRotation();
 		guideSprite.scale.x = 100;
 		guideSprite.scale.y = 0.1;
 		from.toGlobal({x:0, y}, guideSprite);
+		from.scale.x = tx;
+		from.scale.y = ty;
 		game.stage.parent.addChild(guideSprite);
 		clearTimeout(guideSpriteTimeout);
 		guideSpriteTimeout = setTimeout(() => {
