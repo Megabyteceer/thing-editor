@@ -73,7 +73,10 @@ class PropsEditor extends React.Component {
 				}
 			}
 			if(focus) {
-				fldInput.querySelector('input').focus();
+				let input = fldInput.querySelector('input');
+				if(input) {
+					input.focus();
+				}
 			}
 		}, 1);
 	}
