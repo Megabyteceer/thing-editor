@@ -563,14 +563,20 @@ export default class Editor {
 	shiftObject(o, dx, dy) {
 		if(dx !== 0 || dy !== 0) {
 			// Shift wrapped object to zero. If it is MovieClip its will shift all timeline.
-			Timeline.disableRecording();
-			if (dx !== 0) {
-				editor.onObjectsPropertyChanged(o, 'x', dx, true);
+			
+			if(o.__shiftObject) {
+				o.__shiftObject(dx, dy);
+			} else {
+
+				Timeline.disableRecording();
+				if (dx !== 0) {
+					editor.onObjectsPropertyChanged(o, 'x', dx, true);
+				}
+				if (dy !== 0) {
+					editor.onObjectsPropertyChanged(o, 'y', dy, true);
+				}
+				Timeline.enableRecording();
 			}
-			if (dy !== 0) {
-				editor.onObjectsPropertyChanged(o, 'y', dy, true);
-			}
-			Timeline.enableRecording();
 		}
 	}
 	
