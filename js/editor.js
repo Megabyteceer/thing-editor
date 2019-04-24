@@ -516,6 +516,9 @@ export default class Editor {
 	}
 	
 	centraliseObjectToContent (o) {
+		if(!o.children.length) {
+			return;
+		}
 		let b = o.getBounds();
 		let p;
 		if(b.width > 0 || b.height > 0) {
