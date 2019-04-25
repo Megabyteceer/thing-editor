@@ -90,6 +90,7 @@ export default class SoundsList extends React.Component {
 							Lib._setSounds(sounds);
 							resolve();
 							BgMusic._recalculateMusic();
+							this.forceUpdate();
 						};
 
 						if(result.updated) {
