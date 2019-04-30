@@ -181,7 +181,9 @@ export default class PrefabsList extends React.Component {
 		let isChanged = previewShown && editor.isCurrentContainerModified;
 		if(isChanged) {
 			editor.history.setCurrentStateUnmodified();
-			Lib.__savePrefab(game.currentContainer, previewShown);
+			editor._callInPortraitMode(() => {
+				Lib.__savePrefab(game.currentContainer, previewShown);
+			});
 			editor.ui.prefabsList.forceUpdate();
 		}
 		PrefabsList.hidePrefabPreview();

@@ -616,31 +616,36 @@ export default class Editor {
 				history.setCurrentStateUnmodified();
 				saveCurrentSceneName(name);
 			}
-			
-			let tmpOrientation = game.___enforcedOrientation;
-			if (game.projectDesc.screenOrientation === 'auto') {
-				game.___enforcedOrientation = 'landscape';
-				game.__enforcedW = game.projectDesc.width;
-				game.__enforcedH = game.projectDesc.height;
-			} if (game.projectDesc.screenOrientation === 'portrait') {
-				game.__enforcedW = game.projectDesc.portraitWidth;
-				game.__enforcedH = game.projectDesc.portraitHeight;
-			} else {
-				game.__enforcedW = game.projectDesc.width;
-				game.__enforcedH = game.projectDesc.height;
-			}
-
-			game.onResize();
-			let ret =  Lib.__saveScene(game.currentScene, name);
-
-			game.___enforcedOrientation = tmpOrientation;
-			delete game.__enforcedW;
-			delete game.__enforcedH;
-			game.onResize();
+			let ret;
+			this._callInPortraitMode(() => {
+				ret =  Lib.__saveScene(game.currentScene, name);
+			});
 			return ret;
 
 		}
 		return Promise.resolve();
+	}
+
+	_callInPortraitMode(callback) {
+		let tmpOrientation = game.___enforcedOrientation;
+		if (game.projectDesc.screenOrientation === 'auto') {
+			game.___enforcedOrientation = 'landscape';
+			game.__enforcedW = game.projectDesc.width;
+			game.__enforcedH = game.projectDesc.height;
+		} if (game.projectDesc.screenOrientation === 'portrait') {
+			game.__enforcedW = game.projectDesc.portraitWidth;
+			game.__enforcedH = game.projectDesc.portraitHeight;
+		} else {
+			game.__enforcedW = game.projectDesc.width;
+			game.__enforcedH = game.projectDesc.height;
+		}
+		game.onResize();
+		callback();
+		game.___enforcedOrientation = tmpOrientation;
+		delete game.__enforcedW;
+		delete game.__enforcedH;
+		game.onResize();
+
 	}
 	
 	build(debug) {
