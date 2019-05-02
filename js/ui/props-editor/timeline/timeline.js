@@ -284,7 +284,7 @@ export default class Timeline extends React.Component {
 				{
 					onScroll: onTimelineScroll,
 					onMouseDown: this.onMouseDown,
-					className: game.__EDITORmode ? 'timeline' : 'timeline disabled'
+					className: 'timeline'
 				},
 				React.createElement(TimeMarker, {
 					owner: this,
