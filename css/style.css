@@ -996,14 +996,24 @@ input{
 	top:0;
 	bottom:0;
 	position:absolute;
-	
+	width: 100%;
+}
+
+.langs-editor-wrapper {
+	height: calc(100% - 60px);
+	overflow-x: auto;
+	overflow-y: hidden;
+	position: absolute;
+    left: 4px;
+    right: 4px;
 }
 
 .langs-editor-table {
 	box-sizing: content-box;
 	text-align: left;
 	padding-bottom: 3px;
-	max-height: calc(100% - 148px);
+	height: calc(100% - 40px);
+	position: absolute;
 	overflow: auto;
 }
 

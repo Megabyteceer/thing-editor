@@ -8,6 +8,7 @@ let idsList;
 
 const tableBodyProps = {className:'langs-editor-table'};
 const langsEditorProps = {className:'langs-editor'};
+const langsEditorWrapperProps = {className:'langs-editor-wrapper'};
 
 let view;
 let switcher;
@@ -274,9 +275,11 @@ class LanguageTableEditor extends React.Component {
 		
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
-			header,
-			R.div(tableBodyProps,
-				lines
+			R.div(langsEditorWrapperProps, 
+				header,
+				R.div(tableBodyProps,
+					lines
+				)
 			),
 			R.btn('+ Add language...', this.onAddNewLanguageClick)
 		);
