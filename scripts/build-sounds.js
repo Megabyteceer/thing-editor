@@ -43,10 +43,11 @@ module.exports = function (projectPath, callback, options) {
 
 			let bitrate = getBitrate(fn);
 
-			if ((options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName][bitrate])) {
+			if ((options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs) || (bitrate !== cache[shortName].bitrate)) {
 				filesToConvert.push(fn);
 				cache[shortName] = {};
-				cache[shortName][bitrate] = s.mtimeMs;
+				cache[shortName].mtimeMs = s.mtimeMs;
+				cache[shortName].bitrate = bitrate;
 			}
 		}
 	}
