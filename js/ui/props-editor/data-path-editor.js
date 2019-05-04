@@ -23,7 +23,7 @@ export default class DataPathEditor extends React.Component {
 	
 	onBreakpointClick() {
 		let node = editor.selection[0];
-		node.___pathBreakpoint = node[this.props.field.name];
+		node.___pathBreakpoint = this.props.value || node[this.props.field.name];
 	}
 
 	onEditClicked() {
