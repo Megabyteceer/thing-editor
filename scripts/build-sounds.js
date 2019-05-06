@@ -107,12 +107,39 @@ module.exports = function (projectPath, callback, options) {
 
 		additionalOptions += '-b:a ' + bitrate + 'k ';
 
-		exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
-			if (err) {
-				outputError(err, out, outError);
+		let timoutCounter = 0;
+
+		let errorArgs;
+
+		function conversionAttempt() {
+			timoutCounter++;
+			if(timoutCounter > 5) {
+				if(errorArgs) {
+					outputError.apply(null, errorArgs);
+				}
+				cb();
+				return;
 			}
-			cb();
-		});
+
+			try {
+				fs.accessSync(fn, fs.constants.R_OK | fs.constants.W_OK);
+			} catch(err) {
+				console.log('file reading blocked: ' + fn);
+				setTimeout(conversionAttempt, 1000);
+				return;
+			}
+
+
+			exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
+				if (err) {
+					errorArgs = arguments;
+					setTimeout(conversionAttempt, 1000);
+				} else {
+					cb();
+				}
+			});
+		}
+		conversionAttempt();
 	}
 };
 

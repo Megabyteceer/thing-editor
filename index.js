@@ -31,7 +31,6 @@ app.get('/fs/projects', function (req, res) {
 });
 
 app.get('/fs/openProject', function (req, res) {
-	
 	let folder = gamesRoot + req.query.dir + '/';
 	
 	if(fs.existsSync(folder) && fs.existsSync(folder+'thing-project.json')) {
@@ -41,6 +40,7 @@ app.get('/fs/openProject', function (req, res) {
 		log('Project opened: ' + currentGameRoot);
 		let projectDescSrc = fs.readFileSync('thing-project.json');
 		currentGameDesc = JSON.parse(projectDescSrc);
+		initWatchers();
 		res.send(projectDescSrc);
 		exludeAnotherProjectsFromCodeEditor();
 	} else {
@@ -48,6 +48,54 @@ app.get('/fs/openProject', function (req, res) {
 		res.send('false');
 	}
 });
+
+const watchers = [];
+let changedFiles = {};
+let filechangedTimeout;
+
+const filterWatchFiles = /.(json|png|wav|jpg)$/mg;
+function initWatchers() {
+	while(watchers.length) {
+		watchers.pop().close();
+	}
+	getDataFolders().some((subFolder) => {
+		let watcher = fs.watch(currentGameRoot + subFolder, { recursive : true });
+		subFolder = subFolder + '/';
+		watchers.push(watcher);
+		watcher.on('change', (eventType, filename) => {
+			if(filterWatchFiles.test(filename)) {
+				filename = subFolder + filename.replace(pathFixerExp, '/');
+				
+				if(eventType === 'change' && fs.existsSync(filename)) {
+					try{
+						let stats = fs.statSync(filename);
+						if(stats.isFile() && stats.size > 0) {
+							changedFiles[filename] = {name: filename, mtime: stats.mtimeMs};
+							if(filechangedTimeout) {
+								clearTimeout(filechangedTimeout);
+							}
+							filechangedTimeout = setTimeout(filesChangedProcess, 500);
+						}
+					} catch (er) {
+						er; //for case if tmp file is not exist
+					}
+				}
+			}
+		});
+	});
+}
+function filesChangedProcess() {
+	filechangedTimeout = null;
+	let files = [];
+	for(let fileName in changedFiles) {
+		let s = changedFiles[fileName];
+		pathFixer(s);
+		log('file changed: ' + fileName);
+		files.push(s);
+	}
+	wss.filesChanged(files);
+	changedFiles = {};
+}
 
 function exludeAnotherProjectsFromCodeEditor() {
 	let jsConfigFN = '../jsconfig.json';
@@ -108,17 +156,22 @@ let pathFixer = (stat) => {
 	stat.name = stat.name.replace(pathFixerExp, '/');
 };
 
-app.get('/fs/enum', function (req, res) {
+function getDataFolders() {
+	return ['snd', 'img', 'src', 'scenes', 'prefabs', currentGameDesc.localesPath];
+}
+
+function enumFiles() {
 	if(!currentGame) throw 'No game opened';
-	
-	let list = walkSync('./img');
-	walkSync('./prefabs', list);
-	walkSync('./scenes', list);
-	walkSync('./src', list);
-	walkSync('./snd', list);
-	walkSync('./' + currentGameDesc.localesPath, list);
+	let list;
+	for (let f of getDataFolders()) {
+		list = walkSync('./' + f, list);
+	}
 	list.some(pathFixer);
-	res.send(list);
+	return list;
+}
+
+app.get('/fs/enum', function (req, res) {
+	res.send(enumFiles());
 });
 
 app.get('/fs/delete', function (req, res) {
@@ -277,7 +330,7 @@ if(process.argv.indexOf('n') < 0) {
 	opn('', {app: ['chrome', /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/thing-editor']});
 }
 
-require('./scripts/server-socket.js');
+let wss = require('./scripts/server-socket.js');
 
 //=========== enum files ================================
 const walkSync = (dir, filelist = []) => {

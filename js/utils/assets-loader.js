@@ -15,13 +15,13 @@ const jsonFilter = /^img\/.*\.json$/gmi;
 const textureFiler = /^img\/.*\.(png|jpg)$/gmi;
 const textureNameCleaner = /^img\//gm;
 
-const enumAssets = () => {
+const enumAssets = (onlyThisFiles) => {
 
 	game.pixiApp.stop();
 
 	let tmp = new Map();
 	game.forAllChildrenEwerywhere((o) => {
-		if(o.image) {
+		if(o.image && (!onlyThisFiles || onlyThisFiles.has(o.image))) {
 			tmp.set(o, o.image);
 			o.image = 'EMPTY';
 		}
@@ -29,15 +29,19 @@ const enumAssets = () => {
 	
 	for(let k of Lib.__texturesList) { //TODO: clear changed only
 		if(k.name !== 'EMPTY' && k.name !== 'WHITE') {
-			if(Lib.hasTexture(k.name)) {
-				Lib._unloadTexture(k.name);
+			if(!onlyThisFiles || onlyThisFiles.has(k.name)) {
+				if(Lib.hasTexture(k.name)) {
+					Lib._unloadTexture(k.name);
+				}
 			}
 		}
 	}
 	
 	Sound.stop();
-	Lib.__clearAssetsLists();
-	Pool.clearAll();
+	if(!onlyThisFiles) {
+		Lib.__clearAssetsLists();
+		Pool.clearAll();
+	}
 
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
@@ -53,8 +57,9 @@ const enumAssets = () => {
 				a.pop();
 				jsonFolders.push(a.join('/'));
 			}
-
-			Lib.addResource(fileStat.name);
+			if(!onlyThisFiles || onlyThisFiles.has(fileStat.name)) {
+				Lib.addResource(fileStat.name);
+			}
 		}
 	});
 
@@ -65,7 +70,9 @@ const enumAssets = () => {
 				return fileStat.name.startsWith(f);
 			})) {
 				let imageId = fileStat.name.replace(textureNameCleaner, '');
-				Lib.addTexture(imageId, game.resourcesPath + fileStat.name);
+				if((!onlyThisFiles || onlyThisFiles.has(imageId))) {
+					Lib.addTexture(imageId, game.resourcesPath + fileStat.name);
+				}
 			}
 		}
 	});
@@ -82,22 +89,23 @@ const enumAssets = () => {
 			editor.ui.modal.hideSpinner();
 			BgMusic._recalculateMusic();
 			TexturesView.applyFoldersPropsToAllImages();
+			game.__loadDynamicTextures(undefined, onlyThisFiles);
 			resolve();
 			editor.refreshTexturesViewer();
 		});
 	});
 };
 
-AssetsLoader.reloadAssets = (refreshFiles) => {
+AssetsLoader.reloadAssets = (refreshFiles, onlyThisFiles = null) => {
 	editor.ui.modal.showSpinner();
 	if(refreshFiles) {
 		return new Promise((resolve) => {
 			editor.fs.refreshFiles().then(() => {
-				enumAssets().then(resolve);
+				enumAssets(onlyThisFiles).then(resolve);
 			});
 		});
 	} else {
-		return enumAssets();
+		return enumAssets(onlyThisFiles);
 	}
 };
 

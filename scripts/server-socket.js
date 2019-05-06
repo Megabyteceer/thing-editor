@@ -13,6 +13,7 @@ wss.on('connection', function connection(ws) {
 	});
 	ws.on('close', function onWsClose(){
 		clientsConnected--;
+		clicentSocket = null;
 	});
 	clientsConnected++;
 	ws.send(JSON.stringify({clientsConnected}));
@@ -24,8 +25,17 @@ wss.on('connection', function connection(ws) {
 });
 
 
+function send(data) {
+	if(clicentSocket) {
+		clicentSocket.send(JSON.stringify(data));
+	}
+}
+
 module.exports = {
 	notify: function notify(notifyText) {
-		clicentSocket.send(JSON.stringify({notifyText}));
+		send({notifyText});
+	},
+	filesChanged: function(filesChanged) {
+		send({filesChanged});
 	}
 };

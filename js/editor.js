@@ -125,8 +125,10 @@ export default class Editor {
 		if(!dir) {
 			this.fs.chooseProject(true);
 		} else if((dir + '/') !== editor.currentProjectDir) {
+			editor.projectOpeningInProgress = true;
 			editor.settings.setItem('last-opened-project', dir);
 			if(dir !== lastOpenedProject) {
+				editor.projectOpeningInProgress = false;
 				editor.__projectReloading = true;
 				location.reload();
 				return;
@@ -134,6 +136,7 @@ export default class Editor {
 
 			let data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
 			if(!data) {
+				editor.projectOpeningInProgress = false;
 				editor.settings.setItem('last-opened-project', false);
 				editor.ui.modal.showError("Can't open project " + dir).then(() => {this.openProject();});
 				return;
@@ -184,6 +187,7 @@ export default class Editor {
 			} else {//open last project's scene
 				await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
 			}
+			editor.projectOpeningInProgress = false;
 		}
 	}
 

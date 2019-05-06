@@ -196,7 +196,7 @@ export default class Viewport extends React.Component {
 	onReloadAssetsClick() {
 		editor.ui.status.clear();
 		editor.fs.refreshFiles().then(() => {
-			editor.reloadAssets().then(game.__loadDynamicTextures);
+			editor.reloadAssets();
 		});
 	}
 	

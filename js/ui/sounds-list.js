@@ -47,7 +47,8 @@ export default class SoundsList extends React.Component {
 
 	}
 
-	reloadSounds() {
+	reloadSounds(onlyThisFiles = null) {
+		assert(!this.soundsReloadingInProgress, "Sounds loading already in progress.");
 		return new Promise((resolve) => {
 			if(editor.projectDesc.soundFormats) {
 				for(let f of editor.projectDesc.soundFormats) {
@@ -57,7 +58,9 @@ export default class SoundsList extends React.Component {
 						return;
 					}
 				}
+				this.soundsReloadingInProgress = true;
 				this.rebuildSounds().then((result) => {
+					this.soundsReloadingInProgress = false;
 					if(result.errors) {
 						editor.ui.modal.showError(result.errors.map((r, i) =>{
 							return R.div({key:i}, JSON.stringify(r));
@@ -75,11 +78,14 @@ export default class SoundsList extends React.Component {
 									let name = fileName.split('.');
 									name.pop();
 									name = name.join('.');
-									if(!sounds.hasOwnProperty(name)) {
-										sounds[name] = [];
+									if(!onlyThisFiles || onlyThisFiles.has(name +'.wav')) {
+										if(!sounds.hasOwnProperty(name)) {
+											sounds[name] = [];
+										}
+										sounds[name].push(fileName);
 									}
-									sounds[name].push(fileName);
 								}
+								
 							});
 
 							for(let f in sounds) {
@@ -87,7 +93,7 @@ export default class SoundsList extends React.Component {
 								a.sort(soundsPriority);
 							}
 							BgMusic._stopAll();
-							Lib._setSounds(sounds);
+							Lib._setSounds(sounds, onlyThisFiles && true);
 							resolve();
 							BgMusic._recalculateMusic();
 							this.forceUpdate();
