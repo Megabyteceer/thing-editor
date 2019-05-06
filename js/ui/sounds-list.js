@@ -46,11 +46,24 @@ export default class SoundsList extends React.Component {
 		});
 
 	}
-	
-	deleteSounds (soundsNames) {
-		for(let name of soundsNames) {
-			
-		}
+
+	deleteSounds(soundsFilesNames) {
+		this.rebuildSounds().then(() => {
+			editor.fs.refreshFiles().then(() => {
+				for(let name of soundsFilesNames) {
+					let sndName = name.replace(/\.wav$/gmi, '');
+					Lib.__deleteSound(sndName);
+					let fileNameWithFolder = 'snd/' + sndName;
+					for(let fileName of editor.fs.files) {
+						if(fileName.startsWith('snd/') && fileName.substring(0, fileName.length - 4) === fileNameWithFolder) {
+							editor.fs.deleteFile(fileName);
+						}
+					}
+				}
+				BgMusic._recalculateMusic();
+				this.forceUpdate();
+			});
+		});
 	}
 
 	reloadSounds(onlyThisFiles = null) {
