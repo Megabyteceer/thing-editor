@@ -51,6 +51,7 @@ app.get('/fs/openProject', function (req, res) {
 
 const watchers = [];
 let changedFiles = {};
+let deletedFiles = {};
 let filechangedTimeout;
 
 const filterWatchFiles = /.(json|png|wav|jpg)$/mg;
@@ -63,27 +64,37 @@ function initWatchers() {
 		subFolder = subFolder + '/';
 		watchers.push(watcher);
 		watcher.on('change', (eventType, filename) => {
-			if(filterWatchFiles.test(filename)) {
+			log('file changed event: ' + eventType + '; ' + filename);
+			if(filename && filterWatchFiles.test(filename)) {
 				filename = subFolder + filename.replace(pathFixerExp, '/');
 				
-				if(eventType === 'change' && fs.existsSync(filename)) {
-					try{
-						let stats = fs.statSync(filename);
-						if(stats.isFile() && stats.size > 0) {
-							changedFiles[filename] = {name: filename, mtime: stats.mtimeMs};
-							if(filechangedTimeout) {
-								clearTimeout(filechangedTimeout);
+				if(eventType === 'change' || eventType === 'rename') {
+					if(fs.existsSync(filename)) {
+						try{
+							let stats = fs.statSync(filename);
+							if(stats.isFile() && stats.size > 0) {
+								fileChangeShedule(filename, stats.mtime);
 							}
-							filechangedTimeout = setTimeout(filesChangedProcess, 500);
+						} catch (er) {
+							log("file change handler error: " + er); //for case if tmp file is not exist
 						}
-					} catch (er) {
-						er; //for case if tmp file is not exist
+					} else {
+						fileChangeShedule(filename, 0, true);
 					}
 				}
 			}
 		});
 	});
 }
+
+function fileChangeShedule(name, mtime, deleted = false) {
+	changedFiles[name] = {name, mtime, deleted};
+	if(filechangedTimeout) {
+		clearTimeout(filechangedTimeout);
+	}
+	filechangedTimeout = setTimeout(filesChangedProcess, 500);
+}
+
 function filesChangedProcess() {
 	filechangedTimeout = null;
 	let files = [];

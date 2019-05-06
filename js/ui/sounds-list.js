@@ -46,6 +46,12 @@ export default class SoundsList extends React.Component {
 		});
 
 	}
+	
+	deleteSounds (soundsNames) {
+		for(let name of soundsNames) {
+			
+		}
+	}
 
 	reloadSounds(onlyThisFiles = null) {
 		assert(!this.soundsReloadingInProgress, "Sounds loading already in progress.");

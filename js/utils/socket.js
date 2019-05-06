@@ -6,6 +6,14 @@ ws.onopen = function open() {
 	ws.send('something');
 };
 
+function addAssetNameInToMap(name, map) {
+	if(!map) {
+		map = new Map();
+	}
+	map.set(name.substr(4), true);
+	return map;
+}
+
 ws.onmessage = function incoming(data) {
 	data = JSON.parse(data.data);
 	if(data.hasOwnProperty('clientsConnected')) {
@@ -21,17 +29,21 @@ ws.onmessage = function incoming(data) {
 	} else if(data.hasOwnProperty('filesChanged') && !editor.projectOpeningInProgress) {
 		let imagesUpdated;
 		let soundsUpdated;
+		let imagesDeleted;
+		let soundsDeleted;
 		for(let file of data.filesChanged) {
 			if(file.name.startsWith('img/')) {
-				if(!imagesUpdated) {
-					imagesUpdated = new Map();
+				if(file.deleted) {
+					imagesDeleted = addAssetNameInToMap(file.name, imagesDeleted);
+				} else {
+					imagesUpdated = addAssetNameInToMap(file.name, imagesUpdated);
 				}
-				imagesUpdated.set(file.name.substr(4), true);
 			} else if(file.name.startsWith('snd/') && file.name.endsWith('.wav')) {
-				if(!soundsUpdated) {
-					soundsUpdated = new Map();
+				if(file.deleted) {
+					soundsDeleted = addAssetNameInToMap(file.name, soundsDeleted);
+				} else {
+					soundsUpdated = addAssetNameInToMap(file.name, soundsUpdated);
 				}
-				soundsUpdated.set(file.name.substr(4), true);
 			}
 		}
 		
@@ -40,6 +52,12 @@ ws.onmessage = function incoming(data) {
 		}
 		if(soundsUpdated && !editor.ui.soundsList.soundsReloadingInProgress) {
 			editor.ui.soundsList.reloadSounds(soundsUpdated);
+		}
+		if(imagesDeleted) {
+			AssetsLoader.deleteAssets(imagesDeleted.keys());
+		}
+		if(soundsDeleted) {
+			editor.ui.soundsList.deleteSounds(soundsDeleted.keys());
 		}
 	}
 	
