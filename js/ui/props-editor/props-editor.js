@@ -54,7 +54,7 @@ class PropsEditor extends React.Component {
 		});
 	}
 	
-	selectField(fieldName, focus) {
+	selectField(fieldName, focus, selectAll) {
 		let a = fieldName.split(',');
 
 		let fn = a[0];
@@ -72,10 +72,13 @@ class PropsEditor extends React.Component {
 					fldInput.scrollIntoView({});
 				}
 			}
-			if(focus) {
+			if(focus || selectAll) {
 				let input = fldInput.querySelector('input');
 				if(input) {
 					input.focus();
+					if(selectAll) {
+						input.select();
+					}
 				}
 			}
 		}, 1);
