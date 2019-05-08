@@ -21,6 +21,7 @@ import {getLatestSceneNodeBypath} from 'thing-engine/js/utils/get-value-by-path.
 import Scene from 'thing-engine/js/components/scene.js';
 import ClassesView from './ui/classes-view.js';
 import TexturesView from './ui/textures-view.js';
+import MovieClip from 'thing-engine/js/components/movie-clip/movie-clip.js';
 
 let isFirstClassesLoading = true;
 
@@ -404,6 +405,7 @@ export default class Editor {
 	 */
 	onSelectedPropsChange(field, val, delta) {
 		if(this.selection.length > 0) {
+			let oldVals = this.selection.map(o => o[field.name]);
 			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
@@ -418,7 +420,9 @@ export default class Editor {
 				field.afterEdited();
 			}
 			if(field.name === 'name') {
-				editor.validatePathReferences();
+				_validateRefEntryOldName = oldVals;
+				_validateRefEntryNewName = val;
+				editor.validatePathReferences(oldVals, val);
 			}
 		}
 	}
@@ -681,6 +685,8 @@ export default class Editor {
 
 
 	rememberPathReferences() {
+		_validateRefEntryOldName = null;
+		_validateRefEntryNewName = null;
 		if(game.currentContainer instanceof Scene) {
 			game.currentContainer._refreshAllObjectRefs();
 		}
@@ -726,6 +732,62 @@ export default class Editor {
 	}
 }
 
+let _validateRefEntryOldName;
+let _validateRefEntryNewName;
+
+const tryToFixDataPath = (node, fieldname, path, oldRef) => {
+	if(!oldRef.parent) {
+		return;
+	}
+	let fn = fieldname.split(',');
+	let keyframe;
+	if(fn.length > 1) {
+		//it is keyframe action
+		for(let f of node._timelineData.f) {
+			if(f.n === fn[1]) {
+				let targetTime = parseInt(fn[2]);
+				for(let kf of f.t) {
+					if(kf.t == targetTime) {
+						keyframe = kf;
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	let repairNode;
+	let newPath = path;
+	if(_validateRefEntryOldName) { //it is was renaming. try to fix .#names
+		for(let oldName of _validateRefEntryOldName) {
+			if(oldName) {
+				let pathFixer = new RegExp('\.#' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
+				let pathFixer2 = new RegExp('\.all\.' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
+				newPath = newPath.replace(pathFixer, '\.#' + _validateRefEntryNewName + '$1');
+				newPath = newPath.replace(pathFixer2, '\.all\.' + _validateRefEntryNewName + '$1');
+			}
+		}
+		repairNode = getLatestSceneNodeBypath(newPath, node);
+	} else {
+
+
+
+
+
+	}
+	if(repairNode === oldRef) {
+		if(keyframe) {
+			keyframe.a = newPath;
+		} else {
+			node[fieldname] = newPath;
+		}
+		Lib.__invalidateSerialisationCache(node);
+		MovieClip.invalidateSerializeCache(node);
+		return true;
+	}
+};
+
 const validateRefEntry = (m, o) => {
 	if(o.parent) {
 		for(let fieldname in m) {
@@ -734,8 +796,11 @@ const validateRefEntry = (m, o) => {
 			let path = item.path;
 			let oldRef = item.targetNode;
 			let currentRef = getLatestSceneNodeBypath(path, o);
+			
 			if(currentRef !== oldRef) {
-
+				if(tryToFixDataPath(o, fieldname, path, oldRef)) {
+					continue;
+				}
 				let was;
 				if(oldRef instanceof DisplayObject) {
 					was = R.sceneNode(oldRef);
