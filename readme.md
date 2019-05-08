@@ -54,5 +54,5 @@ Use double click on component in scene tree - to open component's source file to
 Work still in progress.
 
 ### Projects made with thing-engine
-[Zombie Hunters](http://zh.pixel-cave.com)
-[Handless Millionaire](http://hm.pixel-cave.com)
+ - [Zombie Hunters](http://zh.pixel-cave.com)
+ - [Handless Millionaire](http://hm.pixel-cave.com)
