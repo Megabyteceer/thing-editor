@@ -282,9 +282,9 @@ export default class Editor {
 			}
 			Lib.__invalidateSerialisationCache(w);
 
-			editor.validatePathReferences();
 			editor.selection.clearSelection();
 			editor.ui.sceneTree.selectInTree(w);
+			editor.validatePathReferences();
 			editor.sceneModified(true);
 		}
 	}
@@ -736,7 +736,7 @@ let _validateRefEntryOldName;
 let _validateRefEntryNewName;
 
 const tryToFixDataPath = (node, fieldname, path, oldRef) => {
-	if(!oldRef.parent) {
+	if(!oldRef || !oldRef.parent) {
 		return;
 	}
 	let fn = fieldname.split(',');
@@ -769,12 +769,49 @@ const tryToFixDataPath = (node, fieldname, path, oldRef) => {
 			}
 		}
 		repairNode = getLatestSceneNodeBypath(newPath, node);
-	} else {
+	} else { //node added or removed
 
+		assert(editor.selection.length === 1, "More that one item selected after wrap/unwrap operation.");
+		let changedNode = editor.selection[0];
+		let changedName = changedNode.name;
+		if(!changedName) {
+			changedName = 'new' + changedNode.constructor.name;
+			let i = 1;
+			while(changedNode.parent.getChildByName(changedName + i)){
+				i++;
+			}
+			changedName += i;
+			changedNode.name = changedName;
+			Lib.__invalidateSerialisationCache(changedNode);
+			setTimeout(() => {
+				editor.ui.propsEditor.selectField('name', true, true);
+			}, 1);
+		}
 
-
-
-
+		let pathParts = path.split('.');
+		for(let i = 0; i < pathParts.length;) { //try to remove one of the part of chain
+			i++;
+			let a = pathParts.slice(0);
+			a.splice(i, 1);
+			newPath = a.join('.');
+			repairNode = getLatestSceneNodeBypath(newPath, node, true);
+			if(repairNode === oldRef) {
+				break;
+			}
+		}
+		if(repairNode !== oldRef) {
+			changedName = '#' + changedName;
+			for(let i = 0; i < pathParts.length;) { //try to insert new name somwhere in chain
+				i++;
+				let a = pathParts.slice(0);
+				a.splice(i, 0, changedName);
+				newPath = a.join('.');
+				repairNode = getLatestSceneNodeBypath(newPath, node, true);
+				if(repairNode === oldRef) {
+					break;
+				}
+			}
+		}
 	}
 	if(repairNode === oldRef) {
 		if(keyframe) {
