@@ -64,7 +64,7 @@ export default class ChooseList extends React.Component {
 	
 	searchFilter(i) {
 		let f = this.state.search.toLocaleLowerCase();
-		return (i.pureName || i.name).toLocaleLowerCase().indexOf(f) >= 0;
+		return i.noFilter || (i.pureName || i.name).toLocaleLowerCase().indexOf(f) >= 0;
 	}
 	
 	render() {

@@ -303,7 +303,7 @@ function initSelectableProps() {
 }
 
 let path;
-const BACK_ITEM = {name:'↰', order: 10000000};
+const BACK_ITEM = {name:'↰', noFilter:true, order: 10000000};
 let parentsPath;
 
 let enumed;
