@@ -90,10 +90,19 @@ this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
    return 'return message if invalid.'
  }
 
+### parser:
+ function(val) {
+   return parsed/changed Val.
+ }
+
 ### isValueValid:
  function(val) { // validator fot path selector ('data-path', 'callback')
    return true if value is valid as target for 'data-path'.
  }
+
+ add __EDITOR_isHiddenForChooser = true; for any object or field to make it invisible for data path chooser
+ add __EDITOR_isGoodForChooser = true; for any object or field to make it higlighted in path chooser
+ add __EDITOR_ChooserOrder = 20; to make field or objects priority in data pant chooser
 
 ### onClick:
  function(selectedObject) {

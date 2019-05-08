@@ -177,7 +177,7 @@ export default class DataPathEditor extends React.Component {
 				} else {
 					item.pureName = name;
 				}
-				
+				item.order = 100000;
 				items.push(item);
 				addedNames[name] = true;
 				return true;
@@ -201,7 +201,21 @@ export default class DataPathEditor extends React.Component {
 			if (!addedNames.hasOwnProperty(name)) {
 				if (this.isFieldGoodForCallbackChoose(name, parent)) {
 					if(!addSceneNodeIfValid(parent[name], name)) {
-						items.push({name});
+						let order = 0;
+						let isBold;
+						try{
+							order = parent[name].__EDITOR_ChooserOrder || 0;
+							if(parent[name].__EDITOR_isGoodForChooser) {
+								order += 100;
+								isBold = true;
+							}
+						} catch(er){}// eslint-disable-line no-empty
+						if(!isBold) {
+							items.push({name});
+						} else {
+							items.push({pureName:name, name: R.b(null, name), order});
+						}
+
 						addedNames[name] = true;
 					}
 				}
@@ -214,7 +228,7 @@ export default class DataPathEditor extends React.Component {
 				for(let p of props) {
 					if(p.type !== 'splitter') {
 						let name = p.name;
-						items.push({pureName:name, name: R.b(null, name)});
+						items.push({pureName:name, name: R.b(null, name), order: 10000});
 						addedNames[name] = true;
 					}
 				}
@@ -243,8 +257,11 @@ export default class DataPathEditor extends React.Component {
 				editor.ui.modal.hideModal();
 			}, 'Use this path', 'main-btn');
 		}
-
-		editor.ui.modal.showListChoose(R.span(null, 'Path for ' + this.fieldNameToChoose + ': ' + path.join('.') + '.', acceptNowBtn), items).then((selected) => {
+		items.sort((a, b) => {
+			return (b.order || 0) - (a.order || 0);
+		});
+		editor.ui.modal.showListChoose(R.span(null, 'Path for ' + this.fieldNameToChoose + ': ' + path.join('.') + '.', acceptNowBtn),
+			items).then((selected) => {
 			if(selected) {
 				let val;
 				if(selected === BACK_ITEM) {
@@ -286,7 +303,7 @@ function initSelectableProps() {
 }
 
 let path;
-const BACK_ITEM = {name:'↰'};
+const BACK_ITEM = {name:'↰', order: 10000000};
 let parentsPath;
 
 let enumed;
