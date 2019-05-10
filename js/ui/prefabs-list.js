@@ -18,6 +18,8 @@ let prefabNameProps = {
 	className: "selectable-text", title: 'Ctrl+click to copy prefabs`s name', onMouseDown:window.copyTextByClick
 };
 
+let _editPrefabPromiseResolve;
+
 export default class PrefabsList extends React.Component {
 	
 	constructor(props) {
@@ -100,20 +102,27 @@ export default class PrefabsList extends React.Component {
 	}
 
 	static editPrfefab(name) {
-		if (game.__EDITORmode) {
-			if(!Lib.hasPrefab(name)) {
-				editor.ui.modal.showError("No prefab with name " + name + " exists.");
-				return;
+		return new Promise((resolve) => {
+			if (game.__EDITORmode) {
+				if(!Lib.hasPrefab(name)) {
+					editor.ui.modal.showError("No prefab with name " + name + " exists.");
+					resolve();
+					return;
+				}
+				PrefabsList.acceptPrefabEdition();
+				let preview = Lib.loadPrefab(name);
+				__getNodeExtendData(preview).__EDITOR_isPreviewObject = true;
+				editor.overlay.showPreview(preview);
+				editor.ui.sceneTree.selectInTree(preview);
+				editor.ui.viewport.setPrefabMode(name);
+				editor.history.clearHistory();
+				previewShown = name;
+				_editPrefabPromiseResolve = resolve;
 			}
-			PrefabsList.acceptPrefabEdition();
-			let preview = Lib.loadPrefab(name);
-			__getNodeExtendData(preview).__EDITOR_isPreviewObject = true;
-			editor.overlay.showPreview(preview);
-			editor.ui.sceneTree.selectInTree(preview);
-			editor.ui.viewport.setPrefabMode(name);
-			editor.history.clearHistory();
-			previewShown = name;
-		}
+			else {
+				resolve();
+			}
+		});
 	}
 	
 	onSelect(item) {
@@ -197,7 +206,10 @@ export default class PrefabsList extends React.Component {
 			editor.ui.viewport.setPrefabMode(false);
 			previewShown = false;
 			editor.overlay.hidePreview();
+			_editPrefabPromiseResolve();
+			_editPrefabPromiseResolve = null;
 		}
+		assert(!_editPrefabPromiseResolve, "Prefab editing promise should be resolved.");
 	}
 	
 	static choosePrefab(title, noEasyClose) {
