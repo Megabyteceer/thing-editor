@@ -325,7 +325,6 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 				let info = __getNodeExtendData(editor.selection[0]);
 				if(info.draggerPivot && info.draggerPivot.owner.parent) {
 					draggingDragger = info.draggerPivot;
-					draggingDragger.onDrag();
 				}
 			}
 			if(draggingDragger) {
@@ -346,6 +345,7 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 					editor.disableFieldsCache = false;
 					editor.ui.sceneTree.forceUpdate();
 				}
+				draggingDragger.onDrag();
 			}
 		}
 	}
