@@ -71,13 +71,14 @@ class PropsEditor extends React.Component {
 					Window.bringWindowForward(fldInput.closest('.window-body'));
 					fldInput.scrollIntoView({});
 				}
-			}
-			if(focus || selectAll) {
-				let input = fldInput.querySelector('input');
-				if(input) {
-					input.focus();
-					if(selectAll) {
-						input.select();
+				
+				if(focus || selectAll) {
+					let input = fldInput.querySelector('input');
+					if(input) {
+						input.focus();
+						if(selectAll) {
+							input.select();
+						}
 					}
 				}
 			}
