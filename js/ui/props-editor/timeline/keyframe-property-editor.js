@@ -19,6 +19,7 @@ const DEFAULT_BOUNCING = 0.4;
 
 // g,b - gravity,bouncing for JUMP keyframes
 
+let instance;
 
 export default class KeyframePropertyEditor extends React.Component {
 	
@@ -38,10 +39,26 @@ export default class KeyframePropertyEditor extends React.Component {
 		this.onPowChanged = this.onPowChanged.bind(this);
 		this.onPresetSelected = this.onPresetSelected.bind(this);
 		this.onTypeSelect = this.onTypeSelect.bind(this);
+		instance = this;
+	}
+
+	forceUpdateDebounced() {
+		if(!this.forceUpdateDebouncedTimer) {
+			this.forceUpdateDebouncedTimer = setTimeout(() => {
+				this.forceUpdateDebouncedTimer = null;
+				this.forceUpdate();
+			}, 0);
+		}
+	}
+
+	static refresh() {
+		if(instance) {
+			instance.forceUpdateDebounced();
+		}
 	}
 
 	onKeyframeChanged() {
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 
 			let kf = k.props.keyFrame;
 			if(kf.m < 3) {
@@ -64,7 +81,7 @@ export default class KeyframePropertyEditor extends React.Component {
 	}
 
 	onObjectChanged() {
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			let objectTimelineEditor = k.props.owner.props.owner.props.owner;
 			Timeline.allFieldDataChanged(objectTimelineEditor.props.node);
 			objectTimelineEditor.forceUpdate();
@@ -74,7 +91,7 @@ export default class KeyframePropertyEditor extends React.Component {
 
 	onGravityChange(ev) {
 		let val = parseFloat(ev.target.value);
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			k.props.keyFrame.g = val;
 		}
 		this.onKeyframeChanged();
@@ -82,22 +99,26 @@ export default class KeyframePropertyEditor extends React.Component {
 	
 	onBouncingChange(ev) {
 		let val = parseFloat(ev.target.value);
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			k.props.keyFrame.b = val;
 		}
 		this.onKeyframeChanged();
 	}
 	
 	onActionChange(ev) {
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			k.props.keyFrame.a = ev.target.value;
 		}
 		this.onKeyframeChanged();
 	}
+
+	get keyframes() {
+		return this.props.keyframesGetter();
+	}
 	
 	onSpeedChanged(ev) {
 		let val = parseFloat(ev.target.value);
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			k.props.keyFrame.s = val;
 		}
 		this.onKeyframeChanged();
@@ -105,14 +126,14 @@ export default class KeyframePropertyEditor extends React.Component {
 
 	onRandomChanged(ev) {
 		let val = parseInt(ev.target.value);
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			k.props.keyFrame.r = val;
 		}
 		this.onKeyframeChanged();
 	}
 	
 	onSetSpeeedExistsChanged(ev) {
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			if(ev.target.checked) {
 				k.props.keyFrame.s = 0;
 			} else {
@@ -124,7 +145,7 @@ export default class KeyframePropertyEditor extends React.Component {
 	}
 
 	onSetRandomExistsChanged(ev) {
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			if(ev.target.checked) {
 				k.props.keyFrame.r = 0;
 			} else {
@@ -136,14 +157,14 @@ export default class KeyframePropertyEditor extends React.Component {
 
 	onJumpChanged(ev) {
 		let val = parseFloat(ev.target.value);
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			k.props.keyFrame.j = val;
 		}
 		this.onKeyframeChanged();
 	}
 
 	resetJumpTime() {
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			k.props.keyFrame.j = k.props.keyFrame.t;
 		}
 		this.onKeyframeChanged();
@@ -151,7 +172,7 @@ export default class KeyframePropertyEditor extends React.Component {
 
 	onDemptChanged(ev) {
 		let val =  parseFloat(ev.target.value);
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			let o = k.props.owner.props.owner.props.owner.props.node;
 			o._timelineData.d = val;
 		}
@@ -160,7 +181,7 @@ export default class KeyframePropertyEditor extends React.Component {
 	
 	onPowChanged(ev) {
 		let val =  parseFloat(ev.target.value);
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			let o = k.props.owner.props.owner.props.owner.props.node;
 			o._timelineData.p = val;
 		}
@@ -168,7 +189,7 @@ export default class KeyframePropertyEditor extends React.Component {
 	}
 	
 	onPresetSelected(ev) {
-		for(let k of this.props.keyframes) {
+		for(let k of this.keyframes) {
 			let o = k.props.owner.props.owner.props.owner.props.node;
 			Object.assign(o._timelineData, ev.target.value);
 		}
@@ -176,7 +197,7 @@ export default class KeyframePropertyEditor extends React.Component {
 	}
 
 	onTypeSelect(ev) {
-		for(let kfView of this.props.keyframes) {
+		for(let kfView of this.keyframes) {
 			kfView.setKeyframeType(ev.target.value);
 		}
 		this.onKeyframeChanged();
@@ -185,7 +206,7 @@ export default class KeyframePropertyEditor extends React.Component {
 
 	render () {
 
-		let kfView = this.props.keyframes[0];
+		let kfView = this.keyframes[0];
 		if(!kfView) {
 			return R.fragment();
 		}
@@ -197,7 +218,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		let keyframeTypeSelect = React.createElement(SelectEditor, {onChange:this.onTypeSelect, value:kf.m, select: selectableKeyframeTypes});
 
 		let body;
-		if(this.props.keyframes.length > 1) {
+		if(this.keyframes.length > 1) {
 			body = keyframeTypeSelect;
 		} else {
 

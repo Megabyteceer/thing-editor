@@ -43,6 +43,7 @@ function select(component) {
 	assert(selectedComponents.indexOf(component) < 0, "Compinent already selected");
 	component.setState({isSelected: true});
 	selectedComponents.push(component);
+	KeyframePropertyEditor.refresh();
 }
 
 function unselect(component) {
@@ -50,6 +51,7 @@ function unselect(component) {
 	assert(i >= 0, "Compinent is not selected");
 	component.setState({isSelected: false});
 	selectedComponents.splice(i, 1);
+	KeyframePropertyEditor.refresh();
 }
 
 export default class Timeline extends React.Component {
@@ -295,7 +297,7 @@ export default class Timeline extends React.Component {
 			React.createElement(KeyframePropertyEditor, {
 				className: game.__EDITORmode ? undefined : 'disabled',
 				owner: this,
-				keyframes: getSelectedKeyframes()
+				keyframesGetter: getSelectedKeyframes
 			}),
 			React.createElement(TimelineSelectFrame, {
 				className: game.__EDITORmode ? undefined : 'disabled',
@@ -413,7 +415,7 @@ export default class Timeline extends React.Component {
 
 	static registerDragableComponent(component) {
 		assert(component.getTime && component.setTime, "Dragable component should have 'getTime', 'setTime(time)' function as dragging interface");
-		component.onMouseDown = onDragableMouseDown.bind(component);
+		component.onDragableMouseDown = onDragableMouseDown.bind(component);
 	}
 
 	static allFieldDataChanged(movieclip) {

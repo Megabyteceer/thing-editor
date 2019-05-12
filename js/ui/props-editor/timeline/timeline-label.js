@@ -70,7 +70,7 @@ export default class TimeLabel extends React.Component {
 		
 			sp(ev);
 		} else {
-			this.onMouseDown(ev);
+			this.onDragableMouseDown(ev);
 		}
 	}
 
