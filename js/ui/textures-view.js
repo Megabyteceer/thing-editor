@@ -8,7 +8,6 @@ import game from "thing-engine/js/game.js";
 /*loading bits
 	1 - on demand
 	2 - early precache
-	4 - no unload
 */
 
 let view;
@@ -24,15 +23,7 @@ const LOADING_TYPES = [
 	},
 	{
 		name:'Early Precache',
-		value: 3
-	},
-	{
-		name:'On Demand, No Unload',
-		value: 5
-	},
-	{
-		name:'Early Precache, No Unload',
-		value: 7
+		value: 2
 	}
 ];
 

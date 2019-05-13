@@ -184,6 +184,7 @@ export default class SoundsList extends React.Component {
 				this.forceUpdate();
 				
 			}, value:mode, select: soundPreloadingModes}),
+			
 			React.createElement(SelectEditor, {onChange:(ev) => {
 				bitrate = ev.target.value;
 				var opt = editor.projectDesc.soundBitrates;
@@ -196,6 +197,7 @@ export default class SoundsList extends React.Component {
 				this.forceUpdate();
 				this.rebuildSounds();
 			}, value:bitrate, select: bitratesWitDefault})
+			
 			)
 			
 		), item, sndName, this);
@@ -214,12 +216,12 @@ export default class SoundsList extends React.Component {
 			R.div({className: 'sounds-list-header'},
 				R.btn('Stop all', this.onStopAllClick),
 				React.createElement(MusicProfiler),
-				editor.projectDesc ? React.createElement(SelectEditor, {onChange:(ev) => {
+				editor.projectDesc ? R.span({title: "Default bitrate"}, React.createElement(SelectEditor, {title: 'Default bitrate', onChange:(ev) => {
 					editor.projectDesc.soundDefaultBitrate = ev.target.value;
 					editor.saveProjectDesc();
 					this.forceUpdate();
 					editor.ui.modal.notify('Bitrate changes will be applied on next assets loading');
-				}, value:editor.projectDesc.soundDefaultBitrate, select: bitrates}) : undefined
+				}, value:editor.projectDesc.soundDefaultBitrate, select: bitrates})) : undefined
 			),
 			R.div(bodyProps, list)
 		);
