@@ -426,11 +426,8 @@ button {
 	padding: 3px 10px;
 }
 
-.bottom-panel .select-editor-list {
-	position: absolute !important;
-	top: unset !important;
-	left: unset !important;
-	bottom:0;
+.bottom-panel .select-editor-list, .sound-preload-ui .select-editor-list {
+	transform: translateY(-100%);
 }
 
 input{
@@ -1266,10 +1263,15 @@ input{
 	margin-top: 0;
 }
 
-.sound-preload-checkbox {
-	float: right;
+.sound-preload-ui {
+	display: inline-block;
+	position: absolute;
+	right: 4px;
 	width: unset;
-	text-align: center;
+}
+
+.sound-preload-ui .select-editor, .sounds-list-header .select-editor {
+	display: inline-block;
 }
 
 .danger {

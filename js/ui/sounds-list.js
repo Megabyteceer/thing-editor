@@ -21,6 +21,10 @@ let soundPreloadingModeDescs = {
 	2: "Sound will be precached after game start"
 };
 
+let bitrates = [48, 64, 80, 96, 112, 128, 160, 192].map((b) => {return {name:b + 'Kb', value: b};});
+let bitratesWitDefault = bitrates.slice();
+bitratesWitDefault.unshift({name:'..', value:undefined});
+
 const soundNameCleaner = /^snd\//gm;
 const supportedSoundFormats = ['webm', 'ogg', 'mp3', 'weba', 'aac'];
 
@@ -160,9 +164,10 @@ export default class SoundsList extends React.Component {
 	renderItem(sndName, item) {
 
 		let mode = editor.projectDesc.loadOnDemandSounds[sndName] || 0;
+		let bitrate = editor.projectDesc.soundBitrates[sndName] || 0;
 
 		return R.listItem(R.span(null, R.icon('sound'), R.b(labelProps, sndName), 
-			R.span({className: 'sound-preload-checkbox', title: soundPreloadingModeDescs[mode],
+			R.span({className: 'sound-preload-ui', title: soundPreloadingModeDescs[mode],
 				onClick: (ev) => {
 					ev.stopPropagation();
 				}},
@@ -178,7 +183,20 @@ export default class SoundsList extends React.Component {
 				editor.saveProjectDesc();
 				this.forceUpdate();
 				
-			}, value:mode, select: soundPreloadingModes}))
+			}, value:mode, select: soundPreloadingModes}),
+			React.createElement(SelectEditor, {onChange:(ev) => {
+				bitrate = ev.target.value;
+				var opt = editor.projectDesc.soundBitrates;
+				if(!bitrate) {
+					delete opt[sndName];
+				} else {
+					opt[sndName] = bitrate;
+				}
+				editor.saveProjectDesc();
+				this.forceUpdate();
+				this.rebuildSounds();
+			}, value:bitrate, select: bitratesWitDefault})
+			)
 			
 		), item, sndName, this);
 	}
@@ -193,9 +211,15 @@ export default class SoundsList extends React.Component {
 		list = Group.groupArray(list);
 		
 		return R.fragment(
-			R.div(null,
+			R.div({className: 'sounds-list-header'},
 				R.btn('Stop all', this.onStopAllClick),
-				React.createElement(MusicProfiler)
+				React.createElement(MusicProfiler),
+				editor.projectDesc ? React.createElement(SelectEditor, {onChange:(ev) => {
+					editor.projectDesc.soundDefaultBitrate = ev.target.value;
+					editor.saveProjectDesc();
+					this.forceUpdate();
+					editor.ui.modal.notify('Bitrate changes will be applied on next assets loading');
+				}, value:editor.projectDesc.soundDefaultBitrate, select: bitrates}) : undefined
 			),
 			R.div(bodyProps, list)
 		);
