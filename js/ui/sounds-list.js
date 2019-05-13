@@ -3,12 +3,23 @@ import Group from "./group.js";
 import Sound from "thing-engine/js/utils/sound.js";
 import BgMusic from "thing-engine/js/components/bg-music.js";
 import game from "thing-engine/js/game.js";
+import SelectEditor from "./props-editor/select-editor.js";
 
 let sounds = {};
 
 const bodyProps = {className: 'sounds-list list-view'};
 
 let labelProps = {className: 'selectable-text', title: 'Ctrl+click to copy sound`s name', onMouseDown:window.copyTextByClick};
+let soundPreloadingModes = [
+	{name: '-', value: undefined},
+	{name: 'on demand', value: 1},
+	{name: 'precache', value: 2}
+];
+let soundPreloadingModeDescs = {
+	0: "Sound will be loaded before game start",
+	1: "Sound will be loaded on entering scene which own this sound as BGMusic,\nor manually by calling Lib.preloadSound('soundName') in onShow method of scene.",
+	2: "Sound will be precached after game start"
+};
 
 const soundNameCleaner = /^snd\//gm;
 const supportedSoundFormats = ['webm', 'ogg', 'mp3', 'weba', 'aac'];
@@ -147,22 +158,27 @@ export default class SoundsList extends React.Component {
 	}
 
 	renderItem(sndName, item) {
+
+		let mode = editor.projectDesc.loadOnDemandSounds[sndName] || 0;
+
 		return R.listItem(R.span(null, R.icon('sound'), R.b(labelProps, sndName), 
-			R.span({className:'sound-preload-checkbox', title:'Preload sound.',
+			R.span({className: 'sound-preload-checkbox', title: soundPreloadingModeDescs[mode],
 				onClick: (ev) => {
-					ev.stopPropagation();	
-					var opt = editor.projectDesc.loadOnDemandSounds;
-					if(opt.hasOwnProperty(sndName)) {
-						delete opt[sndName];
-						Lib.preloadSound(sndName);
-					} else {
-						opt[sndName] = 1;
-					}
-					editor.saveProjectDesc();
-					this.forceUpdate();
+					ev.stopPropagation();
 				}},
-			editor.projectDesc.loadOnDemandSounds.hasOwnProperty(sndName) ? '☐' : '☑'
-			)
+			React.createElement(SelectEditor, {onChange:(ev) => {
+				mode = ev.target.value;
+				var opt = editor.projectDesc.loadOnDemandSounds;
+				if(!mode) {
+					delete opt[sndName];
+					Lib.preloadSound(sndName);
+				} else {
+					opt[sndName] = mode;
+				}
+				editor.saveProjectDesc();
+				this.forceUpdate();
+				
+			}, value:mode, select: soundPreloadingModes}))
 			
 		), item, sndName, this);
 	}
