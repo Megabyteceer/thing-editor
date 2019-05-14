@@ -67,24 +67,27 @@ export default class DataPathEditor extends React.Component {
 	}
 	
 	isFieldGoodForCallbackChoose(fieldName, object, val) {
-		if(fieldName.charCodeAt(0) === 95) {
-			return false;
-		}
-		if(typeof val === 'undefined') {
-			val = object[fieldName];
-		}
-		if(!val) {
+		try{
+			if(fieldName.charCodeAt(0) === 95) {
+				return false;
+			}
+			if(typeof val === 'undefined') {
+				val = object[fieldName];
+			}
+			if(!val) {
+				return true;
+			}
+			let type = typeof val;
+			if(type === 'object' || (type === 'function')) {
+				
+				if(val instanceof DisplayObject && __getNodeExtendData(val).hidden) return false;
+				
+				return !val.hasOwnProperty('__EDITOR_isHiddenForChooser');
+			}
+			
 			return true;
-		}
-		let type = typeof val;
-		if(type === 'object' || (type === 'function')) {
-			
-			if(val instanceof DisplayObject && __getNodeExtendData(val).hidden) return false;
-			
-			return !val.hasOwnProperty('__EDITOR_isHiddenForChooser');
-		}
-		
-		return true;
+		} catch (er) {} // eslint-disable-line no-empty
+
 	}
 	
 	render() {
