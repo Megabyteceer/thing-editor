@@ -42,6 +42,13 @@ export default class KeyframePropertyEditor extends React.Component {
 		instance = this;
 	}
 
+	componentWillUnmount() {
+		if(this.forceUpdateDebouncedTimer) {
+			clearInterval(this.forceUpdateDebouncedTimer);
+			this.forceUpdateDebouncedTimer = null;
+		}
+	}
+
 	forceUpdateDebounced() {
 		if(!this.forceUpdateDebouncedTimer) {
 			this.forceUpdateDebouncedTimer = setTimeout(() => {
