@@ -481,35 +481,38 @@ class Dragger extends DSprite {
 	
 	onDrag() {
 		let o = this.owner;
+		let info = __getNodeExtendData(o);
+		if(info.draggerPivot) {
 		
-		if(game.keys.shiftKey) {
-			let dX = game.mouse.__EDITOR_x - startX;
-			let dY = game.mouse.__EDITOR_y - startY;
-			let angle = Math.atan2(dY, dX);
-			angle /= Math.PI;
-			angle *= 4;
-			angle = Math.round(angle);
-			angle /= 4.0;
-			angle *= Math.PI;
+			if(game.keys.shiftKey) {
+				let dX = game.mouse.__EDITOR_x - startX;
+				let dY = game.mouse.__EDITOR_y - startY;
+				let angle = Math.atan2(dY, dX);
+				angle /= Math.PI;
+				angle *= 4;
+				angle = Math.round(angle);
+				angle /= 4.0;
+				angle *= Math.PI;
+				
+				let len = Math.sqrt(dX * dX + dY * dY);
+				p.x = startX + Math.cos(angle) * len;
+				p.y = startY + Math.sin(angle) * len;
+			} else {
+				p.x = game.mouse.__EDITOR_x;
+				p.y = game.mouse.__EDITOR_y;
+			}
 			
-			let len = Math.sqrt(dX * dX + dY * dY);
-			p.x = startX + Math.cos(angle) * len;
-			p.y = startY + Math.sin(angle) * len;
-		} else {
-			p.x = game.mouse.__EDITOR_x;
-			p.y = game.mouse.__EDITOR_y;
-		}
-		
-		o.parent.toLocal(p, undefined, p, true);
-		
-		let dX = Math.round(p.x) - o.x;
-		let dY = Math.round(p.y) - o.y;
-		
-		if(game.keys.ctrlKey) {
-			editor.moveContainerWithoutChildren(o, dX, dY);
-		} else {
-			editor.onSelectedPropsChange('x', dX, true);
-			editor.onSelectedPropsChange('y', dY, true);
+			o.parent.toLocal(p, undefined, p, true);
+			
+			let dX = Math.round(p.x) - o.x;
+			let dY = Math.round(p.y) - o.y;
+			
+			if(game.keys.ctrlKey) {
+				editor.moveContainerWithoutChildren(o, dX, dY);
+			} else {
+				editor.onSelectedPropsChange('x', dX, true);
+				editor.onSelectedPropsChange('y', dY, true);
+			}
 		}
 	}
 }
@@ -523,13 +526,15 @@ class Rotator extends DSprite {
 	onDrag() {
 		let o = this.owner;
 		let info = __getNodeExtendData(o);
-		let r = Math.atan2(game.mouse.__EDITOR_y - info.draggerPivot.y, game.mouse.__EDITOR_x - info.draggerPivot.x);
-		if (game.keys.shiftKey) {
-			r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
-		} else {
-			r = Math.round(r * 1000.0) / 1000.0;
+		if(info.draggerPivot) {
+			let r = Math.atan2(game.mouse.__EDITOR_y - info.draggerPivot.y, game.mouse.__EDITOR_x - info.draggerPivot.x);
+			if (game.keys.shiftKey) {
+				r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
+			} else {
+				r = Math.round(r * 1000.0) / 1000.0;
+			}
+			editor.onSelectedPropsChange('rotation', r - info.draggerRotator.rotation, true);
 		}
-		editor.onSelectedPropsChange('rotation', r - info.draggerRotator.rotation, true);
 	}
 }
 
