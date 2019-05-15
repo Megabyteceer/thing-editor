@@ -1,7 +1,6 @@
 import game from "thing-engine/js/game.js";
 import Lib from "thing-engine/js/lib.js";
 import Sound from "thing-engine/js/utils/sound.js";
-import Pool from "thing-engine/js/utils/pool.js";
 import BgMusic from "thing-engine/js/components/bg-music.js";
 import TexturesView from "../ui/textures-view.js";
 
@@ -40,7 +39,6 @@ const enumAssets = (onlyThisFiles) => {
 	Sound.stop();
 	if(!onlyThisFiles) {
 		Lib.__clearAssetsLists();
-		Pool.clearAll();
 	}
 
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
