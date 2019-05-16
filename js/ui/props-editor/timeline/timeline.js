@@ -719,7 +719,7 @@ function onDragableMouseDown(ev) {
 	}
 
 	draggingComponent = this;
-	draggingXShift = ev.clientX - ev.target.getBoundingClientRect().x;
+	draggingXShift = ev.clientX - ev.currentTarget.getBoundingClientRect().x;
 	if(this instanceof TimelineLoopPoint) {
 		prevDragTime = this.props.keyFrame.j;
 	} else {
