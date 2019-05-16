@@ -355,36 +355,39 @@ export default class Timeline extends React.Component {
 			draggingStartX = -10000;
 		}
 
+		isDragging = isDragging && ev.buttons > 0;
 
-		isDragging = (isDragging && (ev.buttons === 1));
 		let time = Timeline.mouseEventToTime(ev);
 		if (isDragging) {
 			if (draggingComponent) {
-				let delta = time - prevDragTime;
-				if (delta !== 0) {
-					for (let c of selectedComponents) {
-						let t = c.getTime();
-						delta = Math.max(0, t + delta) - t;
-						if (delta === 0) {
-							return;
+				if(ev.buttons === 1) {
+					let delta = time - prevDragTime;
+					if (delta !== 0) {
+						for (let c of selectedComponents) {
+							let t = c.getTime();
+							delta = Math.max(0, t + delta) - t;
+							if (delta === 0) {
+								return;
+							}
 						}
-					}
-					for (let c of selectedComponents) {
-						c.setTime(c.getTime() + delta);
-					}
+						for (let c of selectedComponents) {
+							c.setTime(c.getTime() + delta);
+						}
 
-					prevDragTime += delta;
+						prevDragTime += delta;
+					}
+					this.setTime(prevDragTime, true);
 				}
-				this.setTime(prevDragTime, true);
 			} else {
 				if (ev.ctrlKey) {
 					for (let c of selectedComponents) {
 						if (c instanceof TimelineKeyframe || c instanceof TimelineLoopPoint) {
-							let kf = c.props.keyFrame;
+						let kf = c.props.keyFrame;
 							if (kf.j !== time) {
 								kf.j = time;
 								c.onChanged();
 								c.props.owner.forceUpdate();
+								KeyframePropertyEditor.refresh();
 							}
 						}
 					}

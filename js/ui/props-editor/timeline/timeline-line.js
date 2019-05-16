@@ -146,7 +146,7 @@ export default class Line extends React.Component {
 		return R.div(
 			{
 				style:{width, height}, onMouseDown:(ev) =>{
-					if(ev.buttons === 2) {
+					if(ev.buttons === 2 && !ev.ctrlKey) {
 						this.props.owner.onToggleKeyframeClick(Timeline.mouseEventToTime(ev));
 					}
 				}},
