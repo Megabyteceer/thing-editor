@@ -88,8 +88,11 @@ export default class TimeLabel extends React.Component {
 		}
 	}
 	
-	static askForLabelName(existingLabelsNames, title, defaultName = '') {
+	static askForLabelName(existingLabelsNames, title, defaultName = '', allowedDoublicatName = null) {
 		return editor.ui.modal.showPrompt(title, defaultName, undefined, (nameToCheck) => {
+			if(nameToCheck === allowedDoublicatName) {
+				return;
+			}
 			if(existingLabelsNames.indexOf(nameToCheck) >= 0) {
 				return 'Label with that name already exists.';
 			}
@@ -101,8 +104,8 @@ export default class TimeLabel extends React.Component {
 		let label = this.props.label;
 		let name = this.props.labelName;
 
-		TimeLabel.askForLabelName(this.props.labelsNamesList, "Rename label", name).then((enteredName) => {
-			if(enteredName) {
+		TimeLabel.askForLabelName(this.props.labelsNamesList, "Rename label", name, name).then((enteredName) => {
+			if(enteredName && (name !== enteredName)) {
 				tl.l[enteredName] = label;
 				delete tl.l[name];
 				this.onChanged();
