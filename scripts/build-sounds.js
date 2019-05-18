@@ -16,7 +16,7 @@ module.exports = function (projectPath, callback, options) {
 		if(!result.errors) {
 			result.errors = [];
 		}
-		result.errors.push({err, out, outError});
+		result.errors.push({err: err || "Please install ffmpeg, add its bin folder to PATH and restart thing-editor server.", out, outError});
 		console.error(err);
 	}
 
