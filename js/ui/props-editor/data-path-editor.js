@@ -18,7 +18,7 @@ export default class DataPathEditor extends React.Component {
 	}
 
 	static isFunctionIsClass(f) {
-		return f.prototype;
+		return f.name && (f.name[0] !== f.name.toLowerCase()[0]);
 	}
 	
 	onBreakpointClick() {
@@ -54,7 +54,7 @@ export default class DataPathEditor extends React.Component {
 
 		let type = typeof val;
 		
-		return ((type !== 'object') && (type !== 'function' || CallbackEditor.isFunctionIsClass(val)));
+		return ((type !== 'object') && (type !== 'function' || !CallbackEditor.isFunctionIsClass(val)));
 	}
 	
 	finalValueChoosed(path) {
@@ -166,7 +166,23 @@ export default class DataPathEditor extends React.Component {
 		
 		let addedNames ={};
 		let items = [];
-		
+
+		//ignore names globally
+		addedNames['constructor'] = true;
+		addedNames['prototype'] = true;
+		addedNames['tempDisplayObjectParent'] = true;
+		if(parent instanceof DisplayObject) {
+			addedNames['init'] = true;
+			addedNames['update'] = true;
+			addedNames['onRemove'] = true;
+			addedNames['renderCanvas'] = true;
+			addedNames['renderWebGL'] = true;
+		}
+		let topPathElement = path[path.length - 1];
+		if(topPathElement && topPathElement.startsWith('#')) {
+			addedNames['parent'] = true; // prevent to go from parent to child and back
+		}
+
 		if(path.length > 0) {
 			items.push(BACK_ITEM);
 		}
@@ -188,7 +204,7 @@ export default class DataPathEditor extends React.Component {
 		};
 		
 		
-		if(parent.hasOwnProperty('parent')) {
+		if(parent.hasOwnProperty('parent') && !addedNames.hasOwnProperty('parent')) {
 			addSceneNodeIfValid(parent.parent, 'parent');
 		}
 		
@@ -225,7 +241,7 @@ export default class DataPathEditor extends React.Component {
 			}
 		};
 		
-		if(parent.constructor) {
+		if(parent.constructor && !this.itIsCallbackEditor) {
 			let props = editor.enumObjectsProperties(parent);
 			if(props && Array.isArray(props)) {
 				for(let p of props) {
@@ -237,10 +253,8 @@ export default class DataPathEditor extends React.Component {
 				}
 			}
 		}
-		
-		//ignore names globally
-		addedNames['constructor'] = true;
-		addedNames['prototype'] = true;
+
+
 		let type = typeof parent;
 
 		if(type === 'object' || type === 'function') {
@@ -263,7 +277,7 @@ export default class DataPathEditor extends React.Component {
 		items.sort((a, b) => {
 			return (b.order || 0) - (a.order || 0);
 		});
-		editor.ui.modal.showListChoose(R.span(null, 'Path for ' + this.fieldNameToChoose + ': ' + path.join('.') + '.', acceptNowBtn),
+		editor.ui.modal.showListChoose(R.span(null, 'Path for ' + this.fieldNameToChoose + ': ' + path.join('.') + '.', R.br(), (parent instanceof DisplayObject) ? R.sceneNode(parent) : undefined, acceptNowBtn),
 			items).then((selected) => {
 			if(selected) {
 				let val;

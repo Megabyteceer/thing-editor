@@ -6,7 +6,11 @@ import SoundsList from "../sounds-list.js";
 
 export default class CallbackEditor extends DataPathEditor {
 	
-	
+	constructor(props) {
+		super(props);
+		this.itIsCallbackEditor = true;
+	}
+
 	prepareCurrentPath(path) {
 		return path ? path.split('`')[0] : null;
 	}
