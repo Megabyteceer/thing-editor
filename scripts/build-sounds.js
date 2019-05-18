@@ -1,5 +1,7 @@
 const path = require("path");
 const fs = require('fs');
+const md5File = require('md5-file');
+
 const {
 	exec
 } = require('child_process');
@@ -12,11 +14,11 @@ const wss = require('./server-socket.js');
 module.exports = function (projectPath, callback, options) {
 
 	let result = {};
-	function outputError(err, out, outError) {
+	function outputError(err, outError, out) {
 		if(!result.errors) {
 			result.errors = [];
 		}
-		result.errors.push({err: err || "Please install ffmpeg, add its bin folder to PATH and restart thing-editor server.", out, outError});
+		result.errors.push({err, out, outError});
 		console.error(err);
 	}
 
@@ -48,11 +50,24 @@ module.exports = function (projectPath, callback, options) {
 				return fs.existsSync(fileNameWithoutExt + ext);
 			});
 
+			let hash;
+			if(cache.hasOwnProperty(shortName) && (s.mtimeMs !== cache[shortName].mtimeMs)) {
+				hash = md5File.sync(fn);
+				if(cache[shortName].hash === hash) {
+					cache[shortName].mtimeMs = s.mtimeMs;
+				}
+			}
+
 			if (!allTargetFilesExists || (options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs) || (bitrate !== cache[shortName].bitrate)) {
 				filesToConvert.push(fn);
-				cache[shortName] = {};
-				cache[shortName].mtimeMs = s.mtimeMs;
-				cache[shortName].bitrate = bitrate;
+				if(!hash) {
+					hash = md5File.sync(fn);
+				}
+				cache[shortName] = {
+					mtimeMs: s.mtimeMs,
+					bitrate,
+					hash
+				};
 			}
 		}
 	}
@@ -137,7 +152,9 @@ module.exports = function (projectPath, callback, options) {
 
 			exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
 				if (err) {
-					errorArgs = arguments;
+					errorArgs = [err, outError, out];
+					console.log(err, out);
+					console.error(outError);
 					setTimeout(conversionAttempt, 1000);
 				} else {
 					cb();
