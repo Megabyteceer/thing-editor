@@ -128,8 +128,8 @@ export default class DataPathEditor extends React.Component {
 				
 				let classPath = editor.ClassesLoader.getClassPath(c.name);
 				if(classPath) {
-					let engineEntryI = classPath.indexOf('engine/js/components');
-					if(engineEntryI !== 0 && engineEntryI !== 1) {
+					let engineEntryI = classPath.indexOf('thing-engine/js/components');
+					if(engineEntryI < 0 || c.__EDITOR_isGoodForChooser || c.__EDITOR_isGoodForCallbackChooser) {
 						parent[c.name] = c;
 					}
 				}
@@ -224,7 +224,7 @@ export default class DataPathEditor extends React.Component {
 						let isBold;
 						try{
 							order = parent[name].__EDITOR_ChooserOrder || 0;
-							if(parent[name].__EDITOR_isGoodForChooser) {
+							if(parent[name].__EDITOR_isGoodForChooser || (this.itIsCallbackEditor && parent[name].__EDITOR_isGoodForCallbackChooser)) {
 								order += 100;
 								isBold = true;
 							}
@@ -270,7 +270,7 @@ export default class DataPathEditor extends React.Component {
 		let acceptNowBtn;
 		if(!this.props.field || !this.props.field.isValueValid || this.props.field.isValueValid(parent)) {
 			acceptNowBtn = R.btn('✔', () => {
-				this.finalValueChoosed(path);
+				this.finalValueChoosed(path, parent);
 				editor.ui.modal.hideModal();
 			}, 'Use this path', 'main-btn');
 		}
@@ -296,7 +296,7 @@ export default class DataPathEditor extends React.Component {
 				}
 				
 				if(this.isItTargetValue(val)) {
-					this.finalValueChoosed(path);
+					this.finalValueChoosed(path, val);
 				} else {
 					this.chooseProperty(val, path);
 				}

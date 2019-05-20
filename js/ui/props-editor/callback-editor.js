@@ -27,7 +27,7 @@ export default class CallbackEditor extends DataPathEditor {
 		parent['setValueByPath'] = setValueByPath;
 	}
 	
-	finalValueChoosed(path) {
+	finalValueChoosed(path, val) {
 		path = path.join('.');
 		
 		switch(path) {
@@ -81,6 +81,10 @@ export default class CallbackEditor extends DataPathEditor {
 			break;
 				
 		default:
+			if((typeof(val) === 'function') && (val.length > 0)) {
+				path += '`';
+				editor.ui.propsEditor.selectField(this.props.field ? this.props.field.name : '.keyframe-callback-editor', true);
+			}
 			this.applyFinalPath(path);
 		}
 	}
@@ -98,6 +102,6 @@ export default class CallbackEditor extends DataPathEditor {
 			return false;
 		}
 		let type = typeof val;
-		return type === 'object' || type === 'function';
+		return (type === 'object' || type === 'function') && !val.__EDITOR_isHiddenForCallbackChooser;
 	}
 }

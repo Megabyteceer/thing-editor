@@ -64,6 +64,9 @@ class PropsEditor extends React.Component {
 
 		setTimeout(() => {
 			let fldInput = document.querySelector(".props-editor #property-editor-" + fn.replace('.', '_'));
+			if(!fldInput) {
+				fldInput = document.querySelector(fieldName);
+			}
 			if (fldInput) {
 
 				if(fn === fieldName) {

@@ -101,7 +101,9 @@ this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
  }
 
  add __EDITOR_isHiddenForChooser = true; for any object or field to make it invisible for data path chooser
+ add __EDITOR_isHiddenForCallbackChooser = true; for any object or field to make it invisible for callback path chooser
  add __EDITOR_isGoodForChooser = true; for any object or field to make it higlighted in path chooser
+ add __EDITOR_isGoodForCallbackChooser = true; for any object or field to make it higlighted in callback chooser
  add __EDITOR_ChooserOrder = 20; to make field or objects priority in data pant chooser
 
 ### onClick:
