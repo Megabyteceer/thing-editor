@@ -82,7 +82,8 @@ export default class DataPathEditor extends React.Component {
 				
 				if(val instanceof DisplayObject && __getNodeExtendData(val).hidden) return false;
 				
-				return !val.hasOwnProperty('__EDITOR_isHiddenForChooser');
+				return !val.hasOwnProperty('__EDITOR_isHiddenForChooser')  &&
+					(this.itIsCallbackEditor || !val.hasOwnProperty('__EDITOR_isHiddenForDataChooser'));
 			}
 			
 			return true;
@@ -111,14 +112,13 @@ export default class DataPathEditor extends React.Component {
 	}
 
 	chooseProperty(parent) {
-		let noNeedSort = false;
 		if(!parent) {
-			noNeedSort = true;
 			parent = {
 				game,
 				'this':this.props.this || editor.selection[0],
 				all: game.currentScene.all
 			};
+			_rootParent = parent;
 			parent['FlyText'] = Lib.getClass('FlyText');
 			
 			this.addAdditionalRoots(parent);
@@ -259,10 +259,15 @@ export default class DataPathEditor extends React.Component {
 
 		if(type === 'object' || type === 'function') {
 			let props = enumProps(parent);
-			if(!noNeedSort) {
+			if(parent !== _rootParent) {
 				props.sort();
 			}
 			for(let name of props) {
+				if(type === 'function') {
+					if(name === 'length' || name === 'name') {
+						continue;
+					}
+				}
 				addIfGood(name);
 			}
 		}
@@ -350,6 +355,8 @@ const enumSub = (o) => {
 		}
 	}
 };
+
+let _rootParent;
 
 function enumProps(o) {
 	enumed = [];
