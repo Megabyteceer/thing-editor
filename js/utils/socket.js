@@ -26,7 +26,7 @@ ws.onmessage = function incoming(data) {
 		}
 	} else if(data.hasOwnProperty('notifyText')) {
 		editor.ui.modal.notify(data.notifyText);
-	} else if(data.hasOwnProperty('filesChanged') && !editor.projectOpeningInProgress) {
+	} else if(data.hasOwnProperty('filesChanged') && editor.projectDesc && !editor.projectOpeningInProgress) {
 		let imagesUpdated;
 		let soundsUpdated;
 		let imagesDeleted;
