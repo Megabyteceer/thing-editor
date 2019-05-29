@@ -327,13 +327,7 @@ app.use('/thing-editor/', (req, res, next) => {
 	absoluteImportsFixer(path.join(__dirname, req.path), req, res, next);
 });
 
-app.use('/games/', express.static(path.join(__dirname, '../games'), {dotfiles:'allow'}));
-app.use('/thing-engine/', express.static(path.join(__dirname, '../thing-engine'), {dotfiles:'allow'}));
-app.use('/thing-editor/', express.static(__dirname, {dotfiles:'allow'}));
-
-app.get('/', function(req, res) {
-	res.redirect('/thing-editor');
-});
+app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
