@@ -772,22 +772,7 @@ const tryToFixDataPath = (node, fieldname, path, oldRef) => {
 	} else { //node added or removed
 
 		assert(editor.selection.length === 1, "More that one item selected after wrap/unwrap operation.");
-		let changedNode = editor.selection[0];
-		let changedName = changedNode.name;
-		if(!changedName) {
-			changedName = 'new' + changedNode.constructor.name;
-			let i = 1;
-			while(changedNode.parent.getChildByName(changedName + i)){
-				i++;
-			}
-			changedName += i;
-			changedNode.name = changedName;
-			Lib.__invalidateSerialisationCache(changedNode);
-			setTimeout(() => {
-				editor.ui.propsEditor.selectField('name', true, true);
-			}, 1);
-		}
-
+		
 		let pathParts = path.split('.');
 		for(let i = 0; i < pathParts.length;) { //try to remove one of the part of chain
 			i++;
@@ -799,9 +784,38 @@ const tryToFixDataPath = (node, fieldname, path, oldRef) => {
 				break;
 			}
 		}
-		if(repairNode !== oldRef) {
+
+		if(repairNode !== oldRef) { //try to insert "parent" somwhere in chain
+			for(let i = 0; i < pathParts.length;) { 
+				i++;
+				let a = pathParts.slice(0);
+				a.splice(i, 0, 'parent');
+				newPath = a.join('.');
+				repairNode = getLatestSceneNodeBypath(newPath, node, true);
+				if(repairNode === oldRef) {
+					break;
+				}
+			}
+		}
+
+		if(repairNode !== oldRef) { //try to insert new name somwhere in chain
+			let changedNode = editor.selection[0];
+			let changedName = changedNode.name;
+			if(!changedName) {
+				changedName = 'new' + changedNode.constructor.name;
+				let i = 1;
+				while(changedNode.parent.getChildByName(changedName + i)){
+					i++;
+				}
+				changedName += i;
+				changedNode.name = changedName;
+				Lib.__invalidateSerialisationCache(changedNode);
+				setTimeout(() => {
+					editor.ui.propsEditor.selectField('name', true, true);
+				}, 1);
+			}
 			changedName = '#' + changedName;
-			for(let i = 0; i < pathParts.length;) { //try to insert new name somwhere in chain
+			for(let i = 0; i < pathParts.length;) { 
 				i++;
 				let a = pathParts.slice(0);
 				a.splice(i, 0, changedName);
@@ -820,7 +834,9 @@ const tryToFixDataPath = (node, fieldname, path, oldRef) => {
 			node[fieldname] = newPath;
 		}
 		Lib.__invalidateSerialisationCache(node);
-		MovieClip.invalidateSerializeCache(node);
+		if(node instanceof MovieClip) {
+			MovieClip.invalidateSerializeCache(node);
+		}
 		return true;
 	}
 };
