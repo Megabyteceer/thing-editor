@@ -147,7 +147,7 @@ class LanguageTableEditor extends React.Component {
 
 	onAddNewKeyClick() {
 
-		let defaultKey = '';
+		let defaultKey = editor.projectDesc.__localesNewKeysPrefix;
 		for(let o of editor.selection) {
 			let props = editor.enumObjectsProperties(o);
 			for(let p of props) {

@@ -163,9 +163,11 @@ class SelectEditor extends React.Component {
 			});
 			if(!item) {
 				item = R.span({className:'danger'}, this.props.value);
-				setTimeout(() => {
-					editor.ui.status.error('invlid value: ' + this.props.value + ' ▾', editor.selection[0], this.props.field.name);
-				}, 1);
+				if(!this.props.field.isTranslatableKey) {
+					setTimeout(() => {
+						editor.ui.status.error('invalid enum value: ' + this.props.value + ' ▾', editor.selection[0], this.props.field.name);
+					}, 1);
+				}
 			} else {
 				item = item.name + ' ▾';
 			}
