@@ -611,8 +611,8 @@ input{
     overflow: auto;
     pointer-events:auto;
     resize:both;
-    min-height:300px;
-    min-width:500px;
+    min-height:400px;
+    min-width:630px;
     
 }
 
