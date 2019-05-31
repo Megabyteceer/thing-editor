@@ -330,8 +330,13 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 			if(draggingDragger) {
 				startX = draggingDragger.x;
 				startY = draggingDragger.y;
-				shiftX = draggingDragger.x - game.mouse.__EDITOR_x;
-				shiftY = draggingDragger.y - game.mouse.__EDITOR_y;
+				if(ev.buttons === 2) {
+					shiftX = 0;
+					shiftY = 0;
+				} else {
+					shiftX = draggingDragger.x - game.mouse.__EDITOR_x;
+					shiftY = draggingDragger.y - game.mouse.__EDITOR_y;
+				}
 				if(ev.altKey) {
 					editor.disableFieldsCache = true;
 					editor.selection.some((o) => {
