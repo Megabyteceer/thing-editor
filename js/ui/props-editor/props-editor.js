@@ -105,7 +105,7 @@ class PropsEditor extends React.Component {
 				R.classIcon(firstClass),
 				R.span(headerTextProps,
 					R.b(null, firstClass.name), ' selected ',
-					R.btn('...', this.onChangeClassClick, 'Change objects Class')
+					R.btn('...', this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITORmode)
 				)
 			);
 		}
