@@ -304,6 +304,7 @@ function refreshSelection() {
 }
 
 let startX, startY;
+let shiftX, shiftY;
 
 window.addEventListener('mousedown', function onMouseDown(ev) {
 	if(game.pixiApp && (ev.target === game.pixiApp.view)) {
@@ -329,6 +330,8 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 			if(draggingDragger) {
 				startX = draggingDragger.x;
 				startY = draggingDragger.y;
+				shiftX = draggingDragger.x - game.mouse.__EDITOR_x;
+				shiftY = draggingDragger.y - game.mouse.__EDITOR_y;
 				if(ev.altKey) {
 					editor.disableFieldsCache = true;
 					editor.selection.some((o) => {
@@ -484,8 +487,8 @@ class Dragger extends DSprite {
 		if(info.draggerPivot) {
 		
 			if(game.keys.shiftKey) {
-				let dX = game.mouse.__EDITOR_x - startX;
-				let dY = game.mouse.__EDITOR_y - startY;
+				let dX = game.mouse.__EDITOR_x + shiftX - startX;
+				let dY = game.mouse.__EDITOR_y + shiftY - startY;
 				let angle = Math.atan2(dY, dX);
 				angle /= Math.PI;
 				angle *= 4;
@@ -497,8 +500,8 @@ class Dragger extends DSprite {
 				p.x = startX + Math.cos(angle) * len;
 				p.y = startY + Math.sin(angle) * len;
 			} else {
-				p.x = game.mouse.__EDITOR_x;
-				p.y = game.mouse.__EDITOR_y;
+				p.x = game.mouse.__EDITOR_x + shiftX;
+				p.y = game.mouse.__EDITOR_y + shiftY;
 			}
 			
 			o.parent.toLocal(p, undefined, p, true);
@@ -526,7 +529,7 @@ class Rotator extends DSprite {
 		let o = this.owner;
 		let info = __getNodeExtendData(o);
 		if(info.draggerPivot) {
-			let r = Math.atan2(game.mouse.__EDITOR_y - info.draggerPivot.y, game.mouse.__EDITOR_x - info.draggerPivot.x);
+			let r = Math.atan2(game.mouse.__EDITOR_y + shiftY - info.draggerPivot.y, game.mouse.__EDITOR_x + shiftX - info.draggerPivot.x);
 			if (game.keys.shiftKey) {
 				r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 			} else {
