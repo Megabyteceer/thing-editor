@@ -105,24 +105,6 @@ class UI extends React.Component {
 			React.createElement(TexturesView),
 			editor.history.buttonsRenderer(),
 			R.btn('Project settings', editor.openProjectDescToEdit),
-			/*R.btn('Upscale all text', () => {
-				editor.ui.modal.showQuestion('Sure?', 'All existing text scale will be divided by 2 and font size will be increased twice. After all, text fields with not zero maxWidth should be wrapped in to 0.5 scaled container manually.',() => {
-					game.currentContainer.forAllChildren((o) => {
-						if(o instanceof Text) {
-							if(o.maxWidth === 0) {
-								o['scale.x'] /= 2;
-								o['scale.y'] /= 2;
-							}
-							o.style.fontSize *= 2;
-							o.maxWidth *= 2;
-						}
-					});
-				});
-
-
-			}),*/
-
-
 
 			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),
 			renderWindow('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),

@@ -682,8 +682,6 @@ export default class Editor {
 		}
 	}
 
-
-
 	rememberPathReferences() {
 		_validateRefEntryOldName = null;
 		_validateRefEntryNewName = null;
@@ -691,37 +689,8 @@ export default class Editor {
 			game.currentContainer._refreshAllObjectRefs();
 		}
 		refs = new Map();
-		game.currentContainer.forAllChildren((o) => {
-			let props = editor.enumObjectsProperties(o);
-			let m = null;
-
-			const rememberRef = (path, name) => {
-				if(path) {
-					let targetNode = getLatestSceneNodeBypath(path, o);
-					if(!m) {
-						m = {};
-						refs.set(o, m);
-					}
-					m[name] = {targetNode, path};
-				}
-			};
-			for(let p of props) {
-				if(p.type === 'data-path' || p.type === 'callback') {
-					rememberRef(o[p.name], p.name);
-				} else if(p.type === 'timeline') {
-					let timeline = o[p.name];
-					if(timeline) {
-						for(let field of timeline.f) {
-							for(let k of field.t) {
-								if(k.a) {
-									rememberRef(k.a, p.name + ',' + field.n + ',' + k.t);
-								}
-							}
-						}
-					}
-				}
-			}
-		});
+		_rememberPathReference(game.currentContainer);
+		game.currentContainer.forAllChildren(_rememberPathReference);
 	}
 	
 	validatePathReferences() {
@@ -840,6 +809,39 @@ const tryToFixDataPath = (node, fieldname, path, oldRef) => {
 		return true;
 	}
 };
+
+
+function _rememberPathReference(o) {
+	let props = editor.enumObjectsProperties(o);
+	let m = null;
+
+	const rememberRef = (path, name) => {
+		if(path) {
+			let targetNode = getLatestSceneNodeBypath(path, o);
+			if(!m) {
+				m = {};
+				refs.set(o, m);
+			}
+			m[name] = {targetNode, path};
+		}
+	};
+	for(let p of props) {
+		if(p.type === 'data-path' || p.type === 'callback') {
+			rememberRef(o[p.name], p.name);
+		} else if(p.type === 'timeline') {
+			let timeline = o[p.name];
+			if(timeline) {
+				for(let field of timeline.f) {
+					for(let k of field.t) {
+						if(k.a) {
+							rememberRef(k.a, p.name + ',' + field.n + ',' + k.t);
+						}
+					}
+				}
+			}
+		}
+	}
+}
 
 const validateRefEntry = (m, o) => {
 	if(o.parent) {
