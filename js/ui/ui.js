@@ -145,7 +145,7 @@ class StatusBar extends React.Component {
 			
 			if(editor.selection.length > 0) {
 				let p = editor.selection[0].toLocal(game.__mouse_EDITOR);
-				txt += ' (x: ' + Math.round(p.x) + '; y: ' + Math.round(p.y) + ')';
+				txt += ' (x: ' + Math.round(p.x - editor.selection[0].pivot.x) + '; y: ' + Math.round(p.y - editor.selection[0].pivot.y) + ')';
 			}
 			
 			let resetZoomBtn;
