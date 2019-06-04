@@ -2,7 +2,7 @@ import Window from './window.js';
 import TreeView from './tree-view/tree-view.js';
 import Viewport from './viewport.js';
 import PropsEditor from './props-editor/props-editor.js';
-import Button from './button.js';
+import EditorButton from './editor-button.js';
 import Modal from './modal/modal.js';
 import ClassesView from './classes-view.js';
 import ScenesList from "./scenes-list.js";
@@ -11,7 +11,6 @@ import LanguageView from "./language-view.js";
 import Status from "./status.js";
 import game from "thing-engine/js/game.js";
 import SoundsList from './sounds-list.js';
-import Text from 'thing-engine/js/components/text.js';
 import TexturesView from './textures-view.js';
 
 /**
@@ -27,7 +26,7 @@ import TexturesView from './textures-view.js';
 R.btn = function (label, onClick, title = undefined, className = undefined, hotkey = false, disabled = false) {
 	assert(onClick, "Function as onCLick handler expected.");
 	className = className || '';
-	return React.createElement(Button, {label, onClick, className, title, hotkey, disabled});
+	return React.createElement(EditorButton, {label, onClick, className, title, hotkey, disabled});
 };
 
 function renderWindow(id, title, content, x, y, minW, minH, w, h, onResize) {

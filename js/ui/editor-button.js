@@ -1,4 +1,4 @@
-class Button extends React.Component {
+class EditorButton extends React.Component {
 	
 	constructor(props) {
 		super(props);
@@ -51,4 +51,4 @@ class Button extends React.Component {
 	}
 }
 
-export default Button;
+export default EditorButton;
