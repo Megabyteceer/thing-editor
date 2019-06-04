@@ -95,7 +95,7 @@ class TreeNode extends React.Component {
 		
 		return R.fragment(R.div({
 			onDoubleClick:() => {
-				editor.editClassSource(node.constructor);
+				editor.editClassSource(node);
 			},
 			className,
 			style,

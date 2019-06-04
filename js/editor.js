@@ -22,6 +22,7 @@ import Scene from 'thing-engine/js/components/scene.js';
 import ClassesView from './ui/classes-view.js';
 import TexturesView from './ui/textures-view.js';
 import MovieClip from 'thing-engine/js/components/movie-clip/movie-clip.js';
+import PrefabReference from 'thing-engine/js/components/prefab-reference.js';
 
 let isFirstClassesLoading = true;
 
@@ -608,6 +609,13 @@ export default class Editor {
 	}
 	
 	editClassSource(c) {
+		if(c instanceof DisplayObject) {
+			if((c instanceof PrefabReference) && c.__previewNode) {
+				c = c.__previewNode.constructor;
+			} else {
+				c = c.constructor;
+			}
+		}
 		let filePath = editor.ClassesLoader.getClassPath(c.name);
 		editor.fs.editFile(filePath);
 	}
