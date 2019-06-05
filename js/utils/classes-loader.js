@@ -24,6 +24,7 @@ import Shape from "thing-engine/js/components/shape.js";
 import Mask from "thing-engine/js/components/mask.js";
 import Fill from "thing-engine/js/components/fill.js";
 import Spawner from "thing-engine/js/components/spawner.js";
+import SpawnerRing from "thing-engine/js/components/spawner-ring.js";
 import ClickOutsideTrigger from "thing-engine/js/components/click-outside-trigger.js";
 import ScrollLayer from "thing-engine/js/components/scroll-layer.js";
 import game from "thing-engine/js/game.js";
@@ -66,6 +67,7 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[Mask, "/thing-engine/js/components/mask.js"],
 		[Fill, "/thing-engine/js/components/fill.js"],
 		[Spawner, "/thing-engine/js/components/spawner.js"],
+		[SpawnerRing, "/thing-engine/js/components/spawner-ring.js"],
 		[BgMusic, "/thing-engine/js/components/bg-music.js"],
 		[Spine, "/thing-engine/js/components/spine.js"],
 		[MobileJoystick, "/thing-engine/js/components/mobile-joystick.js"],
