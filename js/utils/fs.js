@@ -137,10 +137,6 @@ const fielsEditTimes = {};
 
 export default fs;
 
-function handleError(er, status, error, url) {
-	editor.ui.modal.showError('ERROR IN FILE ' + url + ': ' + ((er && er.responseText) || JSON.stringify(error || 'connection error')));
-}
-
 function getIconPath(desc) {
 	return '/games/' + desc.dir + '/' + desc.icon;
 }
@@ -194,7 +190,7 @@ let worker = new Worker("js/utils/fs-worker.js");
 worker.onmessage = function (event) {
 	let d = JSON.parse(event.data);
 	if (d.error) {
-		handleError.apply(null, d.error);
+		editor.ui.modal.showError('File system worker error: ' + JSON.stringify(d));
 		_ajaxHandlers.shift()(d.url);
 	} else {
 		_ajaxHandlers.shift()(d.url, d.data);

@@ -12,7 +12,7 @@ self.onmessage = function (event) {
 			xhr.send(d.data);
 			self.postMessage(JSON.stringify({url: d.url, data: xhr.responseText}));
 		} catch(er) {
-			self.postMessage(JSON.stringify({url: d.url, error: arguments}));
+			self.postMessage(JSON.stringify({request: d, error: arguments}));
 		}
 	}
 };
