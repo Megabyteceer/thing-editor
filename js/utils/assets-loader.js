@@ -26,7 +26,7 @@ const enumAssets = (onlyThisFiles) => {
 		}
 	});
 	
-	for(let k of Lib.__texturesList) { //TODO: clear changed only
+	for(let k of Lib.__texturesList) {
 		if(k.name !== 'EMPTY' && k.name !== 'WHITE') {
 			if(!onlyThisFiles || onlyThisFiles.has(k.name)) {
 				if(Lib.hasTexture(k.name)) {
