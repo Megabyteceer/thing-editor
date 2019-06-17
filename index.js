@@ -302,8 +302,8 @@ function absoluteImportsFixer(fileName, req, res, next, additionalProcessor) {
 		next();
 	}
 }
-app.use('/games/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, '../games', req.path), req, res, next, (content) => {
+app.use('/', (req, res, next) => {
+	absoluteImportsFixer(path.join(__dirname, '..', req.path), req, res, next, (content) => {
 		let modulesVersion = req.query ? req.query.v : false;
 		if(modulesVersion) {
 			res.set('Content-Type', 'application/javascript');
