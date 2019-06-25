@@ -261,7 +261,7 @@ export default class KeyframePropertyEditor extends React.Component {
 			}) || presets[0];
 			
 			extendEditor = R.span(null,
-				' Power: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.001, max: 0.9, onChange: this.onPowChanged}),
+				' Power: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 0.9, onChange: this.onPowChanged}),
 				' Dempt: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
 				' Preset ' ,React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
 			);
