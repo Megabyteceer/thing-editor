@@ -35,6 +35,7 @@ import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
 import Delay from 'thing-engine/js/components/delay.js';
 import HTMLOverlay from 'thing-engine/js/components/html-overlay.js';
 import TextInput from 'thing-engine/js/components/text-input.js';
+import L from 'thing-engine/js/utils/l.js';
 
 let attachedScript;
 
@@ -236,6 +237,7 @@ let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
 	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
+	L.__clearUppercaseKeys();
 	loadedPath = null;
 	return new Promise((resolve) => {
 		cacheCounter++;
