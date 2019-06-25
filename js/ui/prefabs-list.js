@@ -3,6 +3,7 @@ import Scene from "thing-engine/js/components/scene.js";
 import Lib from "thing-engine/js/lib.js";
 import game from "thing-engine/js/game.js";
 import PrefabReference from "thing-engine/js/components/prefab-reference.js";
+import Container from "thing-engine/js/components/container.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -143,7 +144,13 @@ export default class PrefabsList extends React.Component {
 	}
 
 	renderItem(prefabName, item) {
-		let cls = Lib.getClass(item.c);
+		let cls;
+		if(Lib.__hasClass(item.c)) {
+			cls = Lib.getClass(item.c);
+		} else {
+			cls = Container;
+			editor.ui.status.warn('Prefab "' + prefabName + '" has unknown type: ' + item.c);
+		}
 		return R.div({onDoubleClick:() => {
 			editor.editClassSource(cls);
 		}, key: prefabName, className:'prefab-list-item'},
