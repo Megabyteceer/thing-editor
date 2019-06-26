@@ -322,6 +322,7 @@ function initSelectableProps() {
 		}
 	}
 	unhidePropertyFromEnumerationForChooser(tmpSprite.remove);
+	unhidePropertyFromEnumerationForChooser(tmpSprite.gotoLabelRecursive);
 }
 
 let path;
