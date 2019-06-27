@@ -26,6 +26,10 @@ let recoveryCheckingTime;
 let problemOnGameStart,
 	problemOnGameStop;
 
+document.addEventListener('fullscreenchange', () => {
+	game.onResize();
+});
+
 export default class Viewport extends React.Component {
 	
 	constructor(props) {
@@ -255,7 +259,10 @@ export default class Viewport extends React.Component {
 				statusHeader,
 				pauseResumeBtn,
 				oneStepBtn,
-				toggleOrientationBtn
+				toggleOrientationBtn,
+				R.btn('⛶', () => {
+					document.querySelector('#viewport-root').requestFullscreen();
+				}, 'Go fullscreen (F11)', undefined, 122)
 			);
 		}
 		
@@ -275,6 +282,11 @@ export default class Viewport extends React.Component {
 			R.div({
 				id: 'viewport-root',
 				className: 'editor-viewport',
+				onDoubleClick: (ev) => {
+					if(ev.ctrlKey) {
+						this.resetZoom();
+					}
+				},
 				onDragOver: (ev) => {
 					if (canBeDragAccepted(ev)) {
 						ev.dataTransfer.effectAllowed = "copy";
