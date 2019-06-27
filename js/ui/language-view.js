@@ -196,12 +196,12 @@ class LanguageTableEditor extends React.Component {
 					}
 				}
 			}
-
-			let area = document.querySelector('.langs-editor-table #' + texareaID(langId, key));
-			area.focus();
-			area.scrollIntoView({});
-			
-			window.shakeDomElement(area);
+			setTimeout(() => {
+				let area = document.querySelector('.langs-editor-table #' + texareaID(langId, key));
+				area.focus();
+				area.scrollIntoView({});
+				window.shakeDomElement(area);
+			}, 10);
 		});
 	}
 	
