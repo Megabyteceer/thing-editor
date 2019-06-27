@@ -144,8 +144,8 @@ export default class Timeline extends React.Component {
 		let tmp = heightZoom;
 
 		heightZoom *= delta;
-		if (heightZoom < 40) {
-			heightZoom = 40;
+		if (heightZoom < 20) {
+			heightZoom = 20;
 		} else if (heightZoom > 135) {
 			heightZoom = 135;
 		}
@@ -170,14 +170,18 @@ export default class Timeline extends React.Component {
 		widthZoom = this.state.widthZoom;
 		let tmp = widthZoom;
 		widthZoom *= delta;
-		if (widthZoom < 2) {
-			widthZoom = 2;
+		if (widthZoom < 0.5) {
+			widthZoom = 0.5;
 		} else if (widthZoom > 28.5) {
 			widthZoom = 28.5;
 		}
 		if (tmp !== widthZoom) {
 			editor.settings.setItem('timeline-width-zoom', widthZoom);
-			widthZoom = Math.floor(widthZoom);
+			if(widthZoom < 1.00001) {
+				widthZoom = Math.round(widthZoom * 20) / 20.0;
+			} else {
+				widthZoom = Math.round(widthZoom);
+			}
 			Line.invalideteChartsRenderCache();
 			this.setState({widthZoom});
 			this.centralizeSelection();
