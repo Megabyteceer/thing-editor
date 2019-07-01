@@ -28,6 +28,13 @@ export default class TimelineSelectFrame extends React.Component {
 		}
 	}
 
+	cancelSelection() {
+		if(isDragging) {
+			isDragging = false;
+			this.forceUpdate();
+		}
+	}
+
 	getRectAndFinishDragging() {
 		if(isDragging) {
 			isDragging = false;

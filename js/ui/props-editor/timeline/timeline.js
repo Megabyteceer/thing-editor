@@ -386,7 +386,7 @@ export default class Timeline extends React.Component {
 				if (ev.ctrlKey) {
 					for (let c of selectedComponents) {
 						if (c instanceof TimelineKeyframe || c instanceof TimelineLoopPoint) {
-						let kf = c.props.keyFrame;
+							let kf = c.props.keyFrame;
 							if (kf.j !== time) {
 								kf.j = time;
 								c.onChanged();
@@ -752,6 +752,7 @@ const sortFieldsByTime = (a, b) => {
 };
 
 function onTimelineScroll(ev) {
+	selectionFrame.cancelSelection();
 	document.querySelector('.objects-timeline-labels').style.left = ev.target.scrollLeft + 'px';
 	document.querySelector('.time-marker-body').style.top = ev.target.scrollTop + 'px';
 }
