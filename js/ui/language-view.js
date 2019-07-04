@@ -12,6 +12,7 @@ const langsEditorWrapperProps = {className:'langs-editor-wrapper'};
 
 let view;
 let switcher;
+let externalLangsData;
 
 function showTextTable() {
 	setTimeout(() => {
@@ -48,6 +49,12 @@ export default class LanguageView extends React.Component {
 						}); 
 					}
 				}
+			}
+			if(editor.projectDesc.__externalLocalesSource) {
+				L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource, true).then((_externalLangsData) => {
+					externalLangsData = _externalLangsData;
+					refreshCachedData();
+				});
 			}
 		});
 	}
@@ -294,12 +301,15 @@ function refreshCachedData() {
 	oneLanguageTable = languages[langsIdsList[0]];
 	assert(oneLanguageTable, "No localisation data loaded.");
 	idsList = Object.keys(oneLanguageTable);
-	
+	let idsForDropdown = idsList;
+	if(externalLangsData) {
+		idsForDropdown = Object.keys(Object.assign({}, oneLanguageTable ,externalLangsData));
+	}
 	let a = [{name:'none', value:''}];
-	for(let id of idsList) {
+	for(let id of idsForDropdown) {
 		a.push({name:id, value:id});
 	}
-	
+
 	LanguageView._keysSelectableList = a;
 }
 
