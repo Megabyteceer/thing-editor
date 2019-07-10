@@ -1,3 +1,12 @@
+const allHotkeyedButtons = [];
+window.addEventListener("keydown", (ev) => {
+	for(let b of allHotkeyedButtons) {
+		if(b.onKeyDown(ev)) { //call only first button with this hotkey
+			return;
+		}
+	}
+});
+
 class EditorButton extends React.Component {
 	
 	constructor(props) {
@@ -8,11 +17,16 @@ class EditorButton extends React.Component {
 	}
 	
 	componentDidMount() {
-		window.addEventListener("keydown", this.onKeyDown);
+		if(this.props.hotkey) {
+			allHotkeyedButtons.unshift(this);
+		}
 	}
 	
 	componentWillUnmount() {
-		window.removeEventListener("keydown", this.onKeyDown);
+		let i = allHotkeyedButtons.indexOf(this);
+		if(i >= 0) {
+			allHotkeyedButtons.splice(i, 1);
+		}
 	}
 	
 	onKeyDown(e) {
@@ -26,6 +40,7 @@ class EditorButton extends React.Component {
 		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
 			this.onMouseDown(e);
 			sp(e);
+			return true;
 		}
 	}
 	
