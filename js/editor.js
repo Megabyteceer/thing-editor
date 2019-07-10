@@ -748,8 +748,6 @@ const tryToFixDataPath = (node, fieldname, path, oldRef) => {
 		repairNode = getLatestSceneNodeBypath(newPath, node);
 	} else { //node added or removed
 
-		assert(editor.selection.length === 1, "More that one item selected after wrap/unwrap operation.");
-		
 		let pathParts = path.split('.');
 		for(let i = 0; i < pathParts.length;) { //try to remove one of the part of chain
 			i++;
