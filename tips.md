@@ -44,6 +44,8 @@ this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
 
 ### type:
  Number, String, Boolean, 'rect', 'data-path', 'callback', 'btn', 'color', 'splitter', 'ref'
+ //'ref' fields used to null reference at reusing object from pool. If reference used in property setter, such reference could be not cleared before first property set. So you should null such references in onRemove method
+ //'btn' could has additionbal 'title' (tooltip), 'hotkey' properties
 
 ### title:
  readable name
