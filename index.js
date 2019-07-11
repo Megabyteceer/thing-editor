@@ -335,7 +335,7 @@ if(process.argv.indexOf('n') < 0) {
 	
 	open('http://127.0.0.1:' + PORT + '/thing-editor', {app: [
 		(process.platform == 'darwin') ?
-			'/usr/bin/open -a "/Applications/Google Chrome.app"'
+			'Google Chrome'
 			:
 			'chrome'
 		, /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/]});
