@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "node scripts/postinstall.js",
-    "start": "node --inspect index.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
