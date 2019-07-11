@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const app = express();
-const opn = require('opn');
+const open = require('open');
 const {
 	exec
 } = require('child_process');
@@ -208,7 +208,7 @@ app.get('/fs/edit', function (req, res) {
 	setTimeout(() => {
 		"use strict";
 		try {
-			opn(fn);
+			open(fn);
 			res.end('{}');
 		} catch (err) {
 			res.end("Can't open file to edit: " + fn);
@@ -332,7 +332,13 @@ app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
 if(process.argv.indexOf('n') < 0) {
-	opn('', {app: ['chrome', /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/ 'http://127.0.0.1:' + PORT + '/thing-editor']});
+	
+	open('http://127.0.0.1:' + PORT + '/thing-editor', {app: [
+		(process.platform == 'darwin') ?
+			'/usr/bin/open -a "/Applications/Google Chrome.app"'
+			:
+			'chrome'
+		, /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/]});
 }
 
 let wss = require('./scripts/server-socket.js');
