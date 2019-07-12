@@ -82,6 +82,7 @@ let classesById = {},
 	classPathById = {};
 
 let cacheCounter = 0;
+const embeddedClassesMap = new Map();
 let embeddedClasses;
 let loadedClssesCount;
 
@@ -254,6 +255,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			enumClassProperties(DisplayObject);
 			enumClassProperties(Delay);
 			embeddedClasses.some((a) => {
+				embeddedClassesMap.set(a[0], true);
 				addClass(a[0], a[1]);
 			});
 		
@@ -325,6 +327,11 @@ function classLoaded(c, path) {
 	
 	addClass(c, path);
 }
+
+
+ClassesLoader.isItEmbeddedClass = (c) => {
+	return embeddedClassesMap.hs(c);
+};
 
 ClassesLoader.reloadClasses = reloadClasses;
 ClassesLoader.classLoaded = classLoaded;

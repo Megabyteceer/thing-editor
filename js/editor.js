@@ -225,6 +225,17 @@ export default class Editor {
 		});
 	}
 
+	openUrl(url) {
+		if(!window.open(url)) {
+			editor.ui.modal.showModal(R.div(null,
+				"click to open: ",
+				R.a({href: url, target: '_blank'}, url),
+				R.br(),
+				"Check browser's status bar to allow automatic opening after build."
+			), "building finished.");
+		}
+	}
+
 	wrapSelected(className) {
 
 		let isClipboardWrapping = ((typeof className) !== 'string');

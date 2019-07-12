@@ -173,19 +173,21 @@ class PropsFieldWrapper extends React.Component {
 			);
 		}
 		
-		return R.div({className, id:'property-editor-' + field.name.replace('.', '_'), title},
-			tip,
-			R.div(field.name.startsWith('__') ? labelEditorOnlyProps : labelProps, field.name),
-			R.div(wrapperProps,
-				React.createElement(renderer, {
-					ref: (field.type === 'timeline') ? 'fieldRef' : undefined,
-					value,
-					onChange: this.onChange,
-					field,
-					disabled
-				})
-			)
-		);
+		return R.div({className, id:'property-editor-' + field.name.replace('.', '_'),
+			title,
+			'data-help': field.helpUrl
+		},
+		tip,
+		R.div(field.name.startsWith('__') ? labelEditorOnlyProps : labelProps, field.name),
+		R.div(wrapperProps,
+			React.createElement(renderer, {
+				ref: (field.type === 'timeline') ? 'fieldRef' : undefined,
+				value,
+				onChange: this.onChange,
+				field,
+				disabled
+			})
+		));
 	}
 }
 

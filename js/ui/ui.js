@@ -12,6 +12,7 @@ import Status from "./status.js";
 import game from "thing-engine/js/game.js";
 import SoundsList from './sounds-list.js';
 import TexturesView from './textures-view.js';
+import Help from '../utils/help.js';
 
 /**
  *
@@ -104,6 +105,7 @@ class UI extends React.Component {
 			React.createElement(TexturesView),
 			editor.history.buttonsRenderer(),
 			R.btn('Project settings', editor.openProjectDescToEdit),
+			React.createElement(Help),
 
 			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),
 			renderWindow('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),

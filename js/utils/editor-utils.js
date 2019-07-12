@@ -3,7 +3,7 @@ import Tip from "./tip.js";
 let factories = {};
 window.R = factories;
 
-['div', 'span', 'img', 'button', 'input', 'label', 'b', 'a', 'br', 'hr', 'svg', 'polyline', 'textarea'].some((factoryType) => {
+['div', 'span', 'img', 'button', 'input', 'label', 'b', 'a', 'br', 'hr', 'svg', 'polyline', 'textarea', 'iframe'].some((factoryType) => {
 	factories[factoryType] = React.createFactory(factoryType);
 });
 
@@ -46,13 +46,14 @@ R.sceneNode = (node) => {
 	return R.span(sceneNodeProps, R.classIcon(node.constructor), R.span(nameProps, node.name), R.span(classProps, ' (' + node.constructor.name + ') #' + node.___id));
 };
 
-R.listItem = (view, item, key, parent) => {
+R.listItem = (view, item, key, parent, help) => {
 	let className = 'list-item';
 	if(parent.state.selectedItem === item) {
 		className += ' item-selected';
 	}
 	
 	return R.div({
+		'data-help' : help,
 		className: className, key: key, onClick: () => {
 			if(parent.state.selectedItem !== item || parent.reselectAllowed) {
 				parent.state.selectedItem = item;
@@ -147,6 +148,13 @@ window.__EDITOReditableProps = (class_, array) => {
 	for(let p of array) {
 		if(p.type === 'data-path' || p.type === 'callback') {
 			p.validate = checkDataPath;
+		}
+		if(!p.helpUrl && !window.editor) { // !editor - detect embedded classes, which loaded before editor created
+			let cn = class_.name;
+			if(cn === 'DisplayObject') {
+				cn = 'Container';
+			}
+			p.helpUrl = 'components.' + cn + '#' + p.name.replace('.', '');
 		}
 	}
 	class_.__EDITOR_editableProps = array;

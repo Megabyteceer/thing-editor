@@ -82,7 +82,7 @@ class ClassesView extends React.Component {
 			R.btn('>', () => {
 				findNextOfThisType(item.c, 1);
 			}, 'Find next ' + item.c.name, 'tool-btn')
-			), item, key, this);
+			), item, key, this, 'components.' + item.c.name);
 	}
 	
 	selectedItem() {

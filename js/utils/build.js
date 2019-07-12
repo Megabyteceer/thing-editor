@@ -113,14 +113,7 @@ let classes = {};`];
 				} else {
 					let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
 					
-					if(!window.open(url)) {
-						editor.ui.modal.showModal(R.div(null,
-							"click to open: ",
-							R.a({href: url, target: '_blank'}, url),
-							R.br(),
-							"Check browser's status bar to allow automatic opening after build."
-						), "building finished.");
-					}
+					editor.openUrl(url);
 							
 					if(result.find((l) => {return l;})) {
 						editor.ui.modal.showModal(result.map((r, i) =>{
