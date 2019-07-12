@@ -97,8 +97,7 @@ let classes = {};`];
 				}
 			}
 		}
-		src.push('Lib._setClasses(classes, ');
-		src.push(JSON.stringify(defaults, fieldsFilter, assetsDelimiter) + ');');
+		src.push('Lib._setClasses(classes, ' + JSON.stringify(defaults, fieldsFilter, assetsDelimiter) + ');');
 		fileSavePromises.push(editor.fs.saveFile('src/classes.js', src.join('\n'), false, true));
 		
 		Promise.all(fileSavePromises).then(() => {

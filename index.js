@@ -51,7 +51,6 @@ app.get('/fs/openProject', function (req, res) {
 
 const watchers = [];
 let changedFiles = {};
-let deletedFiles = {};
 let filechangedTimeout;
 
 const filterWatchFiles = /.(json|png|wav|jpg)$/mg;

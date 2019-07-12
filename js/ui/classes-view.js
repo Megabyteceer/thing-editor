@@ -1,7 +1,6 @@
 import Group from "./group.js";
 import Lib from "thing-engine/js/lib.js";
 import game from "thing-engine/js/game.js";
-import Scene from "thing-engine/js/components/scene.js";
 import Container from "thing-engine/js/components/container.js";
 import Tilemap from "thing-engine/js/components/tilemap.js";
 
