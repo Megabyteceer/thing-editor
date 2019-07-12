@@ -48,7 +48,7 @@ this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
  //'btn' could has additionbal 'title' (tooltip), 'hotkey' properties
 
 ### title:
- readable name
+ readable name for group header
 
 ### name:
  object's editable property name
@@ -66,7 +66,7 @@ this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
  nullable,rotable,noscalable,minX,maxX,minY,maxY,minW,maxW,minH,maxH - additionally supported for 'rect' fields
 
 ### select:
- array of {name: 'Readable Name', value: 1} objects to select values from.
+array of {name: 'Readable Name', value: 1} objects to select values from ad drop-down list
 
 ### disabled:
  function(selectedObject) {
