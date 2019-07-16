@@ -90,7 +90,7 @@ class NumberEditor extends React.Component {
 		} else {
 			this.setState({tmpVal: ev.target.value});
 		}
-		let val = parseFloat(ev.target.value);
+		let val = (props.field && props.field.basis) ? parseInt(ev.target.value, props.field.basis) : parseFloat(ev.target.value);
 		if(isNaN(val) && !forceFormat) {
 			return;
 		}
@@ -164,7 +164,7 @@ class NumberEditor extends React.Component {
 				onBlur: this.onBlur,
 				onChange: this.onChange,
 				disabled:props.disabled,
-				value: val,
+				value: (props.field && props.field.basis) ? val.toString(props.field.basis) : val,
 				onDoubleClick: this.onDoubleClick,
 				onKeyDown:this.onKeyDown
 			}),

@@ -65,6 +65,10 @@ this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
 
  nullable,rotable,noscalable,minX,maxX,minY,maxY,minW,maxW,minH,maxH - additionally supported for 'rect' fields
 
+### basis:
+ optional for Number property
+ defines basis for representing value in property editor
+
 ### select:
 array of {name: 'Readable Name', value: 1} objects to select values from ad drop-down list
 
