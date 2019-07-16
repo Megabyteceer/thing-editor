@@ -49,7 +49,7 @@ class EditorButton extends React.Component {
 			editor.ui.modal.showModal(this.props.onClick.name, 'Button Handler:');
 		} else {
 			if (this.props.disabled) return;
-			this.props.onClick();
+			this.props.onClick(ev);
 			ev.target.blur();
 		}
 		sp(ev);

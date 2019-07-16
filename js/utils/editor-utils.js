@@ -54,10 +54,10 @@ R.listItem = (view, item, key, parent, help) => {
 	
 	return R.div({
 		'data-help' : help,
-		className: className, key: key, onClick: () => {
+		className: className, key: key, onClick: (ev) => {
 			if(parent.state.selectedItem !== item || parent.reselectAllowed) {
 				parent.state.selectedItem = item;
-				parent.onSelect(item);
+				parent.onSelect(item, ev);
 				parent.forceUpdate();
 			}
 		}

@@ -4,6 +4,7 @@ import Lib from "thing-engine/js/lib.js";
 import game from "thing-engine/js/game.js";
 import PrefabReference from "thing-engine/js/components/prefab-reference.js";
 import Container from "thing-engine/js/components/container.js";
+import ClassesView from "./classes-view.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -43,17 +44,28 @@ export default class PrefabsList extends React.Component {
 		this.setState({filer: ev.target.value.toLowerCase()});
 	}
 	
-	onAddClick() {
+	onAddClick(ev) {
 		PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
-			editor.addToScene(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
+			editor.addToScene(this._loadPrefab(ev.ctrKey));
+		}
+	}
+
+	_loadPrefab(asReference) {
+		let prefabName = Lib.__getNameByPrefab(this.state.selectedItem);
+		if(asReference) {
+			return Lib.loadPrefab(prefabName)
+		} else {
+			let ret = ClassesView.loadSafeInstanceByClassName('PrefabReference');
+			ret.prefabName = prefabName;
+			return ret;
 		}
 	}
 	
-	onAddChildClick() {
+	onAddChildClick(ev) {
 		PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
-			editor.attachToSelected(Lib.loadPrefab(Lib.__getNameByPrefab(this.state.selectedItem)));
+			editor.attachToSelected(this._loadPrefab(ev.ctrKey));
 		}
 	}
 	
@@ -126,8 +138,20 @@ export default class PrefabsList extends React.Component {
 		});
 	}
 	
-	onSelect(item) {
-		PrefabsList.editPrfefab( Lib.__getNameByPrefab(item));
+	onSelect(item, ev) {
+		if(ev.ctrlKey) {
+			while(editor.selection[0] instanceof PrefabReference) {
+				let p = editor.selection[0].parent;
+				if(p === editor.game.stage) {
+					break;
+				}
+				editor.selection.clearSelection();
+				editor.selection.add(p);
+			}
+			this.onAddChildClick(ev);
+		} else {
+			PrefabsList.editPrfefab( Lib.__getNameByPrefab(item));
+		}
 	}
 	
 	onPrefabDeleteClick(prefabName) {
@@ -183,8 +207,8 @@ export default class PrefabsList extends React.Component {
 		}
 		return R.fragment(
 			R.span({className: panelClassname},
-				R.btn('Add', this.onAddClick, 'Add prefab to scene'),
-				R.btn('Child', this.onAddChildClick, 'Add prefab as children')
+				R.btn('Add', this.onAddClick, 'Add prefab to scene. (Hold Ctrl key to add prefab as Reference)'),
+				R.btn('Child', this.onAddChildClick, 'Add prefab as children. (Hold Ctrl key to add prefab as Reference)')
 			),
 			R.btn('Save...', this.onSaveSelectedAsClick, 'Save currently selected on scene object as new prefab.'),
 			R.input(this.searchInputProps),
