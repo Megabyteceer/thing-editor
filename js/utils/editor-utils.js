@@ -240,10 +240,11 @@ window.isEventFocusOnInputElement = (ev) => {
 	return !canBePassed && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
 };
 
-window.makePreviewModeButton = function(title) {
+window.makePreviewModeButton = function(title, helpUrl) {
 	let previewBtnProperty = {
 		type: 'btn',
-		title: title,
+		title,
+		helpUrl,
 		name: title,
 		onClick: (o) => {
 			if(o.__EDITOR_component_in_previewMode) {
