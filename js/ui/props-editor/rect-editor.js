@@ -44,7 +44,7 @@ export default class RectangleEditor extends React.Component {
 	}
 
 	checkNullability() {
-		if(!this.props.value && !this.props.field.nullable) {
+		if(!editor.selection[0][this.props.field.name] && !this.props.field.nullable) {
 			this.onNullCheckboxChange();
 		}
 	}
@@ -116,7 +116,7 @@ export default class RectangleEditor extends React.Component {
 			editor.overlay.drawRect(this.props, o, this.props.disabled ? undefined : r);
 		});
 		
-		let r = this.props.value;
+		let r = editor.selection[0][f.name];
 		let body;
 		if(r) {
 			body = R.div(null,
