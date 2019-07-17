@@ -47,14 +47,14 @@ export default class PrefabsList extends React.Component {
 	onAddClick(ev) {
 		PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
-			editor.addToScene(this._loadPrefab(ev.ctrKey));
+			editor.addToScene(this._loadPrefab(ev.altKey));
 		}
 	}
 
 	_loadPrefab(asReference) {
 		let prefabName = Lib.__getNameByPrefab(this.state.selectedItem);
-		if(asReference) {
-			return Lib.loadPrefab(prefabName)
+		if(!asReference) {
+			return Lib.loadPrefab(prefabName);
 		} else {
 			let ret = ClassesView.loadSafeInstanceByClassName('PrefabReference');
 			ret.prefabName = prefabName;
@@ -65,7 +65,7 @@ export default class PrefabsList extends React.Component {
 	onAddChildClick(ev) {
 		PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
-			editor.attachToSelected(this._loadPrefab(ev.ctrKey));
+			editor.attachToSelected(this._loadPrefab(ev.altKey));
 		}
 	}
 	
@@ -139,7 +139,7 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	onSelect(item, ev) {
-		if(ev.ctrlKey) {
+		if(ev.altKey) {
 			while(editor.selection[0] instanceof PrefabReference) {
 				let p = editor.selection[0].parent;
 				if(p === editor.game.stage) {
@@ -207,8 +207,8 @@ export default class PrefabsList extends React.Component {
 		}
 		return R.fragment(
 			R.span({className: panelClassname},
-				R.btn('Add', this.onAddClick, 'Add prefab to scene. (Hold Ctrl key to add prefab as Reference)'),
-				R.btn('Child', this.onAddChildClick, 'Add prefab as children. (Hold Ctrl key to add prefab as Reference)')
+				R.btn('Add', this.onAddClick, 'Add prefab to scene. (Hold Alt key to add prefab as Reference)'),
+				R.btn('Child', this.onAddChildClick, 'Add prefab as children. (Hold Alt key to add prefab as Reference)')
 			),
 			R.btn('Save...', this.onSaveSelectedAsClick, 'Save currently selected on scene object as new prefab.'),
 			R.input(this.searchInputProps),
