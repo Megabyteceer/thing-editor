@@ -82,7 +82,7 @@ class TilemapEditor extends React.Component {
 
 	onKeyDown(ev) {
 		if (!window.isEventFocusOnInputElement(ev) && (ev.keyCode >= 48) && (ev.keyCode <= 57)) {
-			this.setType(Math.min(ev.keyCode - 48, Lib.tileMapProcessor.types.length));
+			this.setType(Math.min(ev.keyCode - 48, Tilemap.tileMapProcessor.types.length));
 		}
 	}
 
@@ -157,9 +157,9 @@ class TilemapEditor extends React.Component {
 			return;
 		}
 
-		let pt = Lib.tileMapProcessor.imageToType(getTilemap().getTile(X, Y));
+		let pt = Tilemap.tileMapProcessor.imageToType(getTilemap().getTile(X, Y));
 		if (pt !== type) {
-			Lib.tileMapProcessor.onTileEditCallback(getTilemap(), X, Y, type);
+			Tilemap.tileMapProcessor.onTileEditCallback(getTilemap(), X, Y, type);
 			return true;
 		}
 	}
@@ -201,7 +201,7 @@ class TilemapEditor extends React.Component {
 			return R.div(null,
 				'Tile type:',
 				R.b(null, 
-					React.createElement(SelectEditor, {onChange:this.onTypeChange, value:this.state.type, select: Lib.tileMapProcessor.types.map((t) => {
+					React.createElement(SelectEditor, {onChange:this.onTypeChange, value:this.state.type, select: Tilemap.tileMapProcessor.types.map((t) => {
 						return {name:t.name + '(' + t.value + ')', value:t.value};
 					})})
 				),
