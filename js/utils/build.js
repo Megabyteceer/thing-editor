@@ -59,10 +59,8 @@ export default class Build {
 		editor.projectDesc.version = version.join('.');
 		editor.saveProjectDesc();*/
 
-		let projectDesc = Object.assign({}, editor.projectDesc);
-		let assetsDelimiter = projectDesc.assetsDelimiter ? projectDesc.assetsDelimiter : undefined;
-		delete projectDesc.lastSceneName;
-		delete projectDesc.assetsDelimiter;
+		let projectDesc = editor.projectDesc;
+		let assetsDelimiter = projectDesc.__assetsDelimiter ? projectDesc.__assetsDelimiter : undefined;
 
 		let assetsObj = {scenes, prefabs, images, resources, sounds, projectDesc};
 		if(editor.projectDesc.embedLocales) {
