@@ -166,8 +166,8 @@ export default class Editor {
 			utils.protectAccessToSceneNode(game.stage.parent, "PIXI stage");
 			
 
-			if(editor.projectDesc.lastSceneName && !Lib.hasScene(editor.projectDesc.lastSceneName)) {
-				editor.projectDesc.lastSceneName = false;
+			if(editor.projectDesc.__lastSceneName && !Lib.hasScene(editor.projectDesc.__lastSceneName)) {
+				editor.projectDesc.__lastSceneName = false;
 			}
 			
 			if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
@@ -176,18 +176,18 @@ export default class Editor {
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 						R.div(null, "Do you want to restore scene from backup?")),
 					async() => {
-						await this.openSceneSafe(editor.backupSceneLibSaveSlotName, editor.projectDesc.lastSceneName || 'restored-from-backup');
+						await this.openSceneSafe(editor.backupSceneLibSaveSlotName, editor.projectDesc.__lastSceneName || 'restored-from-backup');
 						editor.history.currentState.treeData._isModified = true;
 						
 					}, 'Restore backup',
 					async() => {
-						await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
+						await this.openSceneSafe(editor.projectDesc.__lastSceneName || 'main');
 						Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
 					}, 'Delete backup',
 					true
 				);
 			} else {//open last project's scene
-				await this.openSceneSafe(editor.projectDesc.lastSceneName || 'main');
+				await this.openSceneSafe(editor.projectDesc.__lastSceneName || 'main');
 			}
 			editor.projectOpeningInProgress = false;
 		}
@@ -349,7 +349,7 @@ export default class Editor {
 	}
 	
 	get currentSceneName() {
-		return editor.projectDesc ? editor.projectDesc.lastSceneName : null;
+		return editor.projectDesc ? editor.projectDesc.__lastSceneName : null;
 	}
 	
 	refreshPropsEditor() {
@@ -895,8 +895,8 @@ const validateRefEntry = (m, o) => {
 let refs;
 
 function saveCurrentSceneName(name) {
-	if(editor.projectDesc.lastSceneName !== name) {
-		editor.projectDesc.lastSceneName = name;
+	if(editor.projectDesc.__lastSceneName !== name) {
+		editor.projectDesc.__lastSceneName = name;
 		editor.saveProjectDesc();
 		editor.ui.forceUpdate();
 	}
