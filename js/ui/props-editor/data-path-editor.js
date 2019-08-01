@@ -82,8 +82,8 @@ export default class DataPathEditor extends React.Component {
 				
 				if(val instanceof DisplayObject && __getNodeExtendData(val).hidden) return false;
 				
-				return !val.hasOwnProperty('__EDITOR_isHiddenForChooser')  &&
-					(this.itIsCallbackEditor || !val.hasOwnProperty('__EDITOR_isHiddenForDataChooser'));
+				return !val.hasOwnProperty('___EDITOR_isHiddenForChooser')  &&
+					(this.itIsCallbackEditor || !val.hasOwnProperty('___EDITOR_isHiddenForDataChooser'));
 			}
 			
 			return true;
@@ -129,7 +129,7 @@ export default class DataPathEditor extends React.Component {
 				let classPath = editor.ClassesLoader.getClassPath(c.name);
 				if(classPath) {
 					let engineEntryI = classPath.indexOf('thing-engine/js/components');
-					if(engineEntryI < 0 || c.__EDITOR_isGoodForChooser || c.__EDITOR_isGoodForCallbackChooser) {
+					if(engineEntryI < 0 || c.___EDITOR_isGoodForChooser || c.___EDITOR_isGoodForCallbackChooser) {
 						parent[c.name] = c;
 					}
 				}
@@ -223,8 +223,8 @@ export default class DataPathEditor extends React.Component {
 						let order = 0;
 						let isBold;
 						try{
-							order = parent[name].__EDITOR_ChooserOrder || 0;
-							if(parent[name].__EDITOR_isGoodForChooser || (this.itIsCallbackEditor && parent[name].__EDITOR_isGoodForCallbackChooser)) {
+							order = parent[name].___EDITOR_ChooserOrder || 0;
+							if(parent[name].___EDITOR_isGoodForChooser || (this.itIsCallbackEditor && parent[name].___EDITOR_isGoodForCallbackChooser)) {
 								order += 100;
 								isBold = true;
 							}

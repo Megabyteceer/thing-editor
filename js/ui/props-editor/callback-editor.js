@@ -102,6 +102,6 @@ export default class CallbackEditor extends DataPathEditor {
 			return false;
 		}
 		let type = typeof val;
-		return (type === 'object' || type === 'function') && !val.__EDITOR_isHiddenForCallbackChooser;
+		return (type === 'object' || type === 'function') && !val.___EDITOR_isHiddenForCallbackChooser;
 	}
 }

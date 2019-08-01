@@ -375,6 +375,6 @@ export default {
 		o.detachFromParent  = () => {
 			assert(false, "Attempt to detachFromParent " + debugName);
 		};
-		o.__EDITOR_isHiddenForChooser = true;
+		o.___EDITOR_isHiddenForChooser = true;
 	}
 };
