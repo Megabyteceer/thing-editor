@@ -98,6 +98,7 @@ let getTypeDescription = (field) => {
 };
 
 let labelProps = {className: 'props-label selectable-text', title: 'Ctrl+click to copy field`s name', onMouseDown: window.copyTextByClick};
+let labelInvalidProps = {className: 'props-label selectable-text', onMouseDown: window.copyTextByClick};
 let labelEditorOnlyProps = {className: 'props-label props-label-editor-only selectable-text', title: 'Ctrl+click to copy field`s name', onMouseDown: window.copyTextByClick};
 let wrapperProps = {className: 'props-wrapper'};
 
@@ -157,10 +158,11 @@ class PropsFieldWrapper extends React.Component {
 		
 		let className = field.important ? 'props-field props-field-important' : 'props-field';
 		let title = field.name;
-
+		let isInvalid;
 		if(field.hasOwnProperty('validate')) {
 			title = field.validate(value);
 			if(title) {
+				isInvalid = true;
 				className += ' props-field-invalid';
 			}
 		}
@@ -178,7 +180,7 @@ class PropsFieldWrapper extends React.Component {
 			'data-help': field.helpUrl
 		},
 		tip,
-		R.div(field.name.startsWith('__') ? labelEditorOnlyProps : labelProps, field.name),
+		R.div(field.name.startsWith('__') ? labelEditorOnlyProps : (isInvalid ? labelInvalidProps : labelProps), field.name),
 		R.div(wrapperProps,
 			React.createElement(renderer, {
 				ref: (field.type === 'timeline') ? 'fieldRef' : undefined,
