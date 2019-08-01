@@ -309,14 +309,12 @@ window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = tr
 };
 
 window.makeResourceSelectEditablePropertyDescriptor = (name, canBeEmpty, important, filter) => {
-	let ret = {
+	return {
 		name: name,
 		type: String,
 		default: '',
-		important: important
-	};
-	Object.defineProperty(ret, 'select', {
-		get: () => {
+		important: important,
+		select:  () => {
 			let a = editor.Lib.__resourcesList;
 			if(filter) {
 				a = a.filter(filter);
@@ -330,14 +328,11 @@ window.makeResourceSelectEditablePropertyDescriptor = (name, canBeEmpty, importa
 			}
 			return a;
 		}
-	});
-	return ret;
-
-
+	};
 };
 
 window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important, filterName = 'image') => {
-	let ret = {
+	return {
 		name: name,
 		type: String,
 		default: canBeEmpty ? '' : 'EMPTY',
@@ -353,10 +348,8 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 
 			}
 
-		}
-	};
-	Object.defineProperty(ret, 'select', {
-		get: () => {
+		},
+		select: () => {
 			if(canBeEmpty) {
 				let a = editor.Lib.__texturesList.concat();
 				a.unshift({
@@ -368,8 +361,7 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 				return editor.Lib.__texturesList;
 			}
 		}
-	});
-	return ret;
+	};
 };
 
 export default {

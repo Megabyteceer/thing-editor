@@ -314,18 +314,15 @@ function refreshCachedData() {
 }
 
 window.makeTranslatableSelectEditablePropertyDecriptor = (name, important) => {
-	let ret = {
+	return {
 		name: name,
 		type: String,
 		important: important,
-		isTranslatableKey: true
-	};
-	Object.defineProperty(ret, 'select', {
-		get: () => {
+		isTranslatableKey: true,
+		select: () => {
 			return LanguageView._keysSelectableList;
 		}
-	});
-	return ret;
+	};
 };
 
 
