@@ -17,21 +17,29 @@ let headerTextProps = {
 
 class PropsEditor extends React.Component {
 	
-	onChangeClassClick() {
+	static showSelectClass(isScene, title) {
 		let classesList;
-		let title;
-		if(editor.selection[0] instanceof Scene) {
+		
+		if(isScene) {
 			classesList = editor.ClassesLoader.sceneClasses;
-			title = "Choose new scene type for current scene";
 		} else {
 			classesList = editor.ClassesLoader.gameObjClasses;
+		}
+		return editor.ui.modal.showListChoose(title, classesList.map(i => i.c));
+	}
+
+	onChangeClassClick() {
+		let title;
+		let isScene = editor.selection[0] instanceof Scene;
+		if(isScene) {
+			title = "Choose new scene type for current scene";
+		} else {
 			title = "Choose new type for " + editor.selection.length + " selected element";
 			if(editor.selection.length > 1) {
 				title += 's';
 			}
 		}
-		
-		editor.ui.modal.showListChoose(title, classesList.map(i => i.c)).then((selectedClass) => {
+		PropsEditor.showSelectClass(isScene, title).then((selectedClass) => {
 			if(selectedClass && (editor.selection[0].constructor !== selectedClass)) {
 				let a = editor.selection.slice(0);
 				let selectionData = editor.selection.saveSelection();

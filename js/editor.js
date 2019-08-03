@@ -373,8 +373,14 @@ export default class Editor {
 		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
 		editor.saveBackup(!ftl);
 		
-		return ClassesLoader.reloadClasses().then(() => {
-			editor.restoreBackup(!ftl);
+		return new Promise((resolve) => {
+			editor.fs.refreshFiles().then(()=>{
+				ClassesLoader.reloadClasses().then(() => {
+					Lib.__validateClasses();
+					editor.restoreBackup(!ftl);
+					resolve();
+				});
+			});
 		});
 	}
 	
@@ -388,9 +394,8 @@ export default class Editor {
 	
 	reloadAssetsAndClasses() {
 		return new Promise((resolve) => {
-			this.reloadClasses().then(() => {
-				this.reloadAssets().then(() => {
-					Lib.__validateClasses();
+			this.reloadAssets().then(() => {
+				this.reloadClasses().then(() => {
 					if(game.currentContainer) {
 						game.__loadDynamicTextures();
 					}

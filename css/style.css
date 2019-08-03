@@ -442,6 +442,15 @@ input{
 	white-space:nowrap;
 }
 
+.classes-top-panel {
+	white-space:nowrap;
+}
+
+.template-desc {
+	font-size: small;
+	color: #555;
+}
+
 .select-editor-current {
 	padding-left: 10px;
 }
