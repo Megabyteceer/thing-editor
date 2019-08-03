@@ -35,6 +35,8 @@ export default class ChooseList extends React.Component {
 	}
 	
 	renderChoosingItem(i, key) {
+		assert((typeof i.name === 'string') || i.pureName, "pureName property expected for non plain text named items.");
+		
 		let icon;
 		if(i.__EDITOR_icon) {
 			icon = R.classIcon(i);
