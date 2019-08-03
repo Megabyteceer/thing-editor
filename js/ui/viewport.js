@@ -188,9 +188,7 @@ export default class Viewport extends React.Component {
 	
 	onReloadClassesClick() {
 		editor.ui.status.clear();
-		editor.fs.refreshFiles().then(()=>{
-			editor.reloadClasses().then(Lib.__validateClasses);
-		});
+		editor.reloadClasses();
 	}
 	
 	onToggleOrientationClick() {
@@ -254,7 +252,7 @@ export default class Viewport extends React.Component {
 			}
 			panel = R.span(undefined,
 				R.btn((!game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
-				R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Rebuild game sources', 'big-btn'),
+				R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Reload Custom Components', 'big-btn'),
 				reloadAssetsBtn,
 				statusHeader,
 				pauseResumeBtn,
