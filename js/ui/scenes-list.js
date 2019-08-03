@@ -72,7 +72,11 @@ export default class ScenesList extends React.Component {
 					editor.ui.modal.showListChoose("Select type for new scene:", editor.ClassesLoader.sceneClasses.map(i => i.c)).then((selectedClass) => {
 						if(selectedClass) {
 							Lib.__saveScene(Pool.create(selectedClass), enteredName);
-							editor.openSceneSafe(enteredName);
+							editor.openSceneSafe(enteredName).then(() => {
+								if(editor.game.currentScene.__EDITOR_onCreate) {
+									editor.game.currentScene.__EDITOR_onCreate();
+								}
+							});
 							this.forceUpdate();
 						}
 					});
