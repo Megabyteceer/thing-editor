@@ -65,7 +65,7 @@ let fs = {
 		}
 		fs.getJSON(url, true);
 	},
-	getJSON(url, silently=false, async = true) { //eslint-disable-line no-unused-vars
+	getJSON(url, silently=false, async = true, isJSON = true) { //eslint-disable-line no-unused-vars
 		if (!silently || !async) {
 			editor.ui.modal.showSpinner();
 		}
@@ -73,7 +73,7 @@ let fs = {
 			AJAX({
 				type: "GET",
 				url,
-				contentType: 'application/json',
+				contentType: isJSON ? 'application/json' : undefined,
 				async
 			}, (returnedUrl, data) => {
 				assert(url === returnedUrl, 'Responce is not match with request');
@@ -81,7 +81,7 @@ let fs = {
 					editor.ui.modal.hideSpinner();
 				}
 				if (data) {
-					if (typeof data === 'string') {
+					if (isJSON && (typeof data === 'string')) {
 						data = JSON.parse(data);
 					}
 					resolve(data);
