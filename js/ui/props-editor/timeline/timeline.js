@@ -64,6 +64,7 @@ export default class Timeline extends React.Component {
 			heightZoom,
 			widthZoom
 		};
+		this.deleteSelectedKeyframes = this.deleteSelectedKeyframes.bind(this);
 		this.prevKeyFrame = this.prevKeyFrame.bind(this);
 		this.nextKeyFrame = this.nextKeyFrame.bind(this);
 		this.prevFrame = this.prevFrame.bind(this);
@@ -136,6 +137,24 @@ export default class Timeline extends React.Component {
 
 	verticalZoomOut() {
 		this.verticalZoom(0.66666666);
+	}
+
+	deleteSelectedKeyframes() {
+		let i = selectedComponents.length - 1;
+		if(i < 0) {
+			return;
+		}
+		while(i >= 0) {
+			let c = selectedComponents[i];
+			if(c instanceof TimelineKeyframe) {
+				c.props.owner.props.owner.deleteKeyframe(c.props.keyFrame);
+			} else if(c instanceof TimeLabel) {
+				c.removeLabel();
+			} else if(c instanceof TimelineLoopPoint) {
+				c.deleteLoopPoint();
+			}
+			i--;
+		}
 	}
 
 	verticalZoom(delta) {
@@ -285,6 +304,7 @@ export default class Timeline extends React.Component {
 
 	render() {
 		return R.fragment(
+			(selectedComponents.length > 0) ? R.btn('', this.deleteSelectedKeyframes, undefined, 'hidden', 46) : undefined,
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
 			R.div(
 				{

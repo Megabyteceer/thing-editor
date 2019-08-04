@@ -59,15 +59,18 @@ export default class TimeLabel extends React.Component {
 		this.props.owner.onLabelChange(this.props.label);
 	}
 
-	onLabelMouseDown(ev) {
-		let tl = this.props.owner.props.node._timelineData;
+	deleteLabel() {
 		let name = this.props.labelName;
+		editor.ui.modal.showQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
+			let tl = this.props.owner.props.node._timelineData;
+			delete tl.l[name];
+			this.onChanged();
+		}, R.span(null, R.icon('delete'), ' Delete'));
+	}
+
+	onLabelMouseDown(ev) {
 		if(ev.buttons === 2) {
-			editor.ui.modal.showQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
-				delete tl.l[name];
-				this.onChanged();
-			}, R.span(null, R.icon('delete'), ' Delete'));
-		
+			this.deleteLabel();
 			sp(ev);
 		} else {
 			this.onDragableMouseDown(ev);
