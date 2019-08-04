@@ -272,9 +272,7 @@ Window.bringWindowForward = (windowBody) => {
 		Array.from(document.getElementsByClassName('window-body')).sort((a, b) => {
 			return a.style.zIndex - b.style.zIndex;
 		}).some((w, i, a) => {
-			
 			w.style.zIndex = (w === windowBody) ? a.length + 2 : i;
-			console.log(w.id + '  ' + w.style.zIndex);
 		});
 	}, 1);
 };
