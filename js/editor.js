@@ -296,6 +296,7 @@ export default class Editor {
 
 			editor.selection.clearSelection();
 			editor.ui.sceneTree.selectInTree(w);
+			__getNodeExtendData(w).childsExpanded = true;
 			editor.validatePathReferences();
 			editor.sceneModified(true);
 		}
