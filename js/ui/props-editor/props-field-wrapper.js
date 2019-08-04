@@ -157,13 +157,14 @@ class PropsFieldWrapper extends React.Component {
 		let disabled = field.disabled && field.disabled(node);
 		
 		let className = field.important ? 'props-field props-field-important' : 'props-field';
-		let title = field.name;
 		let isInvalid;
 		if(field.hasOwnProperty('validate')) {
-			title = field.validate(value);
-			if(title) {
+			let validationError = field.validate(value);
+			if(validationError) {
 				isInvalid = true;
-				className += ' props-field-invalid';
+				setTimeout(() => {
+					editor.ui.status.error(validationError, node, field.name);
+				}, 1);
 			}
 		}
 
@@ -176,7 +177,7 @@ class PropsFieldWrapper extends React.Component {
 		}
 		
 		return R.div({className, id:'property-editor-' + field.name.replace('.', '_'),
-			title,
+			title: field.name,
 			'data-help': field.helpUrl
 		},
 		tip,
