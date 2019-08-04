@@ -157,6 +157,7 @@ window.__EDITOReditableProps = (class_, array) => {
 			p.helpUrl = 'components.' + cn + '#' + p.name.replace('.', '');
 		}
 	}
+	array.reverse();
 	class_.__EDITOR_editableProps = array;
 };
 

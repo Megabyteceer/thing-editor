@@ -174,7 +174,7 @@ function enumClassProperties(c) {
 			throw 'attempt to enum editable properties of not DisplayObject instance';
 		}
 		if (cc.hasOwnProperty('__EDITOR_editableProps')) {
-			let addProps = cc.__EDITOR_editableProps.map((p) => {
+			cc.__EDITOR_editableProps.some((p) => {
 				assert(p.name, 'Class ' + c.name + ' has roperty with no name defined');
 				assert(p.type, 'Class ' + c.name + ' has roperty "' + p.name + '" with no type defined.');
 				let ownerClassName = c.name + ' (' + path + ')';
@@ -184,6 +184,7 @@ function enumClassProperties(c) {
 					if(pp.name === p.name) {
 						if(!pp.override) {
 							editor.ui.modal.showError('redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner);
+							editor.editClassSource(cc);
 						} else {
 							p = Object.assign({}, p, pp);
 						}
@@ -212,11 +213,8 @@ function enumClassProperties(c) {
 						}
 					}
 				}
-				
-				return p;
+				props.unshift(p);
 			});
-			
-			props = addProps.concat(props);
 		}
 		if (cc === DisplayObject) {
 			break;
