@@ -1,6 +1,11 @@
 import Timeline from './timeline.js';
 import Window from '../../window.js';
 
+function bingTimelineForward() {
+	Window.bringWindowForward('#window-propsEditor');
+	Window.bringWindowForward('#window-timeline');
+}
+
 export default class TimelineProperty extends React.Component {
 	
 	constructor(props) {
@@ -10,16 +15,16 @@ export default class TimelineProperty extends React.Component {
 	}
 
 	componentDidMount() {
-		setTimeout(() => {
-			Window.bringWindowForward(document.querySelector('#window-propsEditor'));
-			Window.bringWindowForward(document.querySelector('#window-timeline'));
-		}, 1);
+		bingTimelineForward();
 	}
 
 	onToggleClick() { //show/hide timeline window
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
 		editor.settings.setItem('timeline-showed', t);
+		if(t) {
+			bingTimelineForward();
+		}
 	}
 
 	onAutoSelect(selectPath) {

@@ -23,10 +23,8 @@ export default class tilemapEditorRenderer extends React.Component {
 		let tilemapEditor;
 		if(this.state.toggled) {
 			tilemapEditor = editor.ui.renderWindow('tilemap', 'Tilemap Editor', React.createElement(TilemapEditor, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 737, 307);
-			setTimeout(() => {
-				Window.bringWindowForward(document.querySelector('#window-propsEditor'));
-				Window.bringWindowForward(document.querySelector('#window-tilemap'));
-			}, 1);
+			Window.bringWindowForward('#window-propsEditor');
+			Window.bringWindowForward('#window-tilemap');
 		}
 		return R.fragment(btn, tilemapEditor);
 	}

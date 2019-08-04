@@ -97,9 +97,7 @@ export default class Status extends React.Component {
 	
 	render() {
 		if(this.state.toggled && ((this.errors.length > 0) || (this.warns.length > 0))) {
-			setTimeout(() => {
-				Window.bringWindowForward(document.querySelector('#window-info'));
-			}, 1);
+			Window.bringWindowForward('#window-info');
 			return editor.ui.renderWindow('info', 'Info Window', R.fragment(
 				R.btn('×', this.clear, 'Hide all', 'close-window-btn'),
 				R.div({className:"status-body"},

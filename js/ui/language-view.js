@@ -15,9 +15,7 @@ let switcher;
 let externalLangsData;
 
 function showTextTable() {
-	setTimeout(() => {
-		Window.bringWindowForward(document.querySelector('#window-texteditor'));
-	}, 1);
+	Window.bringWindowForward('#window-texteditor');
 	return new Promise((resolve) => {
 		if(!view) {
 			switcher.onToggleClick();

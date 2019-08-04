@@ -108,9 +108,7 @@ class TexturesViewerBody extends React.Component {
 
 	componentDidMount() {
 		view = this;
-		setTimeout(() => {
-			Window.bringWindowForward(document.querySelector('#window-texturesviewer'));
-		}, 1);
+		Window.bringWindowForward('#window-texturesviewer');
 	}
 
 	componentWillUnmount() {

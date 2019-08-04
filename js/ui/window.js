@@ -265,11 +265,18 @@ class Window extends React.Component {
 }
 
 Window.bringWindowForward = (windowBody) => {
-	Array.from(document.getElementsByClassName('window-body')).sort((a, b) => {
-		return a.style.zIndex - b.style.zIndex;
-	}).some((w, i, a) => {
-		w.style.zIndex = (w === windowBody) ? a.length + 2 : i;
-	});
+	setTimeout(() => {
+		if(typeof windowBody === 'string') {
+			windowBody = document.querySelector(windowBody);
+		}
+		Array.from(document.getElementsByClassName('window-body')).sort((a, b) => {
+			return a.style.zIndex - b.style.zIndex;
+		}).some((w, i, a) => {
+			
+			w.style.zIndex = (w === windowBody) ? a.length + 2 : i;
+			console.log(w.id + '  ' + w.style.zIndex);
+		});
+	}, 1);
 };
 
 export default Window;
