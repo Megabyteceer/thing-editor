@@ -28,7 +28,7 @@ const isLineError = (l) => {
 
 export default class Build {
 	static build(debug) {
-		
+		debug = (debug === true);
 		let scenes = sortObject(Lib._getAllScenes());
 		let prefabs = sortObject(Lib._getAllPrefabs());
 		
