@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"baseUrl": ".",
+		"rootDir": "."
+	},
+	"exclude": [
+		"*/node_modules/*",
+		"node_modules",
+		"games/crash",
+		"games/hm",
+		"games/jogo_de_bicho",
+		"games/monsters",
+		"games/plinko",
+		"games/rocket_dice",
+		"games/sic_bo",
+		"games/zh"
+	]
+}
