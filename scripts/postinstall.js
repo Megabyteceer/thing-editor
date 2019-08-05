@@ -2,6 +2,7 @@
 /*global __dirname */
 const symlinksMaker = require('./symlinks-maker.js');
 const path = require('path');
+const fs = require('fs');
 
 var clientLibs = [
 	['./thing-engine/node_modules', '../node_modules', 'dir'],
@@ -22,3 +23,24 @@ var clientLibs = [
 
 symlinksMaker.setRootPath(path.resolve(__dirname)+'/../');
 symlinksMaker.makeSymlinks(clientLibs);
+
+function copyRecursiveSync(src, dest) {
+	var exists = fs.existsSync(src);
+	var stats = exists && fs.statSync(src);
+	var isDirectory = exists && stats.isDirectory();
+	if (exists && isDirectory) {
+		if(!fs.existsSync(dest)) {
+			fs.mkdirSync(dest);
+		}
+		fs.readdirSync(src).forEach(function(childItemName) {
+			copyRecursiveSync(path.join(src, childItemName),
+				path.join(dest, childItemName));
+		});
+	} else {
+		if(!fs.existsSync(dest)) {
+			fs.linkSync(src, dest);
+		}
+	}
+}
+
+copyRecursiveSync(path.join(__dirname, 'vscode.folder.settings'), path.join(__dirname, '../../'));
