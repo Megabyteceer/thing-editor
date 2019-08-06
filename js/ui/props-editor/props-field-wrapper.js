@@ -93,7 +93,7 @@ typeDescriptions.set('tilemap', {
 
 let getTypeDescription = (field) => {
 	let t = field.type || Number;
-	assert(typeDescriptions.has(t), "Unknown editable property type: " + t);
+	assert(typeDescriptions.has(t), "Unknown editable property type: " + t + " for property " + field.name + " in class " + field.owner, 40000);
 	return typeDescriptions.get(t);
 };
 

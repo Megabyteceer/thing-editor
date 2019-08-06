@@ -975,7 +975,7 @@ window.addEventListener('keyup', sheduleHistorySave);
 
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
-	assert(node instanceof DisplayObject, "DisplayObject expected");
+	assert(node instanceof DisplayObject, "__getNodeExtendData expected DisplayObject", 40901);
 	if(!editorNodeData.has(node)) {
 		editorNodeData.set(node, {});
 	}

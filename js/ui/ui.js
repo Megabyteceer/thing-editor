@@ -25,7 +25,7 @@ import Help from '../utils/help.js';
  * @returns {Element}
  */
 R.btn = function (label, onClick, title = undefined, className = undefined, hotkey = false, disabled = false) {
-	assert(onClick, "Function as onCLick handler expected.");
+	assert(onClick, "Function as onClick handler expected.");
 	className = className || '';
 	return React.createElement(EditorButton, {label, onClick, className, title, hotkey, disabled});
 };

@@ -144,7 +144,7 @@ const checkDataPath = (s) => {
 };
 
 window.__EDITOReditableProps = (class_, array) => {
-	assert(!class_.hasOwnProperty('__EDITOR_editableProps'), "Editable properties for class" + class_.name + " already assigned.");
+	assert(!class_.hasOwnProperty('__EDITOR_editableProps'), "Editable properties for class '" + class_.name + "' already defined.", 40003);
 	for(let p of array) {
 		if(p.type === 'data-path' || p.type === 'callback') {
 			p.validate = checkDataPath;
@@ -192,7 +192,7 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	let originalSetter;
 	
 	let newSetter = function wrapPropertyWithNumberCheckerSetter(val) {
-		assert(!isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.');
+		assert(!isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.', 10001);
 		originalSetter.call(this, val);
 	};
 	
@@ -368,13 +368,13 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 export default {
 	protectAccessToSceneNode: (o, debugName) => {
 		o.remove = () => {
-			assert(false, "Attempt to remove " + debugName);
+			assert(false, "Attempt to remove system node" + debugName, 10002);
 		};
 		o.destroy  = () => {
-			assert(false, "Attempt to destroy " + debugName);
+			assert(false, "Attempt to destroy system node " + debugName, 10003);
 		};
 		o.detachFromParent  = () => {
-			assert(false, "Attempt to detachFromParent " + debugName);
+			assert(false, "Attempt to detachFromParent system node " + debugName, 10004);
 		};
 		o.___EDITOR_isHiddenForChooser = true;
 	}

@@ -175,8 +175,8 @@ function enumClassProperties(c) {
 		}
 		if (cc.hasOwnProperty('__EDITOR_editableProps')) {
 			cc.__EDITOR_editableProps.some((p) => {
-				assert(p.name, 'Class ' + c.name + ' has roperty with no name defined');
-				assert(p.type, 'Class ' + c.name + ' has roperty "' + p.name + '" with no type defined.');
+				assert(p.name, 'Class ' + c.name + ' has roperty with no name defined', 40001);
+				assert(p.type, 'Class ' + c.name + ' has roperty "' + p.name + '" with no type defined.', 40002);
 				let ownerClassName = c.name + ' (' + path + ')';
 				p.owner = ownerClassName;
 				

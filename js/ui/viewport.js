@@ -83,11 +83,11 @@ export default class Viewport extends React.Component {
 					}
 					if(problemOnGameStart) {
 						problemOnGameStart = false;
-						editor.ui.modal.showFatalError('Exception on game starting.');
+						editor.ui.modal.showFatalError('Exception on game starting.', 10011);
 					}
 					if(editor.frameUpdateException) {
 						editor.frameUpdateException = false;
-						editor.ui.modal.showFatalError('Exception on frame update.');
+						editor.ui.modal.showFatalError('Exception on frame update.', 10010);
 					}
 					game.__EDITORmode = true;
 				}
