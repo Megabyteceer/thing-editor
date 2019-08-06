@@ -89,9 +89,9 @@ class Modal extends React.Component {
 		closedModalItem.resolve(val);
 	}
 	
-	showModal(content, title, noEasyClose) {
+	showModal(content, title, noEasyClose, toBottom = false) {
 		return new Promise((resolve) => {
-			modal.state.modals.push({content, title, noEasyClose, resolve});
+			modal.state.modals[toBottom ? 'unshift' : 'push']({content, title, noEasyClose, resolve});
 			modal.forceUpdate();
 		});
 	}
@@ -164,17 +164,17 @@ class Modal extends React.Component {
 		return this.showModal(React.createElement(ChooseList, {list}), title, noEasyClose);
 	}
 	
-	showError(message, title = 'Error!', noEasyClose) {
+	showError(message, errorCode, title = 'Error!', noEasyClose, toBottom) {
 		if(game.stage) {
 			setTimeout(editor.ui.viewport.stopExecution, 0);
 		}
-		return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), title), noEasyClose);
+		return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), title), noEasyClose, toBottom);
 	}
 	
-	showFatalError(message, additionalText = 'FatalError. Please check console output (F12) for exceptions messages, and restart application (Reload page) by press (F5) button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.') {
+	showFatalError(message, errorCode, additionalText = 'FatalError. Please check console output (F12) for exceptions messages, and restart application (Reload page) by press (F5) button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.') {
 		game.__paused = true;
 		editor.__FatalError = true;
-		this.showError(R.div(null, R.div(null, R.b(null, message)), additionalText), 'FatalError', true);
+		this.showError(R.div(null, R.div(null, R.b(null, message)), additionalText), errorCode, 'FatalError', true, true);
 	}
 	
 	render() {

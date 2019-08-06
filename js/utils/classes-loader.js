@@ -92,7 +92,7 @@ let classesLoadedSuccessfullyAtLeastOnce = false;
 let errorOccured;
 
 let currentLoadingPromiseResolver;
-function showError(message) {
+function showError(message, errorCode) {
 	errorOccured = true;
 	
 	let r = currentLoadingPromiseResolver;
@@ -108,6 +108,7 @@ function showError(message) {
 				}
 			});
 		}, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
+	errorCode,
 	'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
 }
 
@@ -130,7 +131,7 @@ function addClass(c, path) {
 	
 	if (classPathById.hasOwnProperty(name)) {
 		if (classPathById[name] !== path) {
-			showError(R.div(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'));
+			showError(R.div(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'), 30008);
 			return;
 		}
 	}
@@ -183,7 +184,7 @@ function enumClassProperties(c) {
 				props = props.filter((pp) => {
 					if(pp.name === p.name) {
 						if(!pp.override) {
-							editor.ui.modal.showError('redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner);
+							editor.ui.modal.showError('Redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner, 40004);
 							editor.editClassSource(cc);
 						} else {
 							p = Object.assign({}, p, pp);
@@ -262,10 +263,10 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				let fn = source.split('?').shift().split(':' + location.port).pop();
 				editor.fs.editFile('../../' + fn, lineno, colno);
 				showError(R.fragment(
-					'attempt to load: ' + loadedPath + ': ' + message,
+					'Attempt to load: ' + loadedPath + ': ' + message,
 					R.div({className: 'error-body'}, fn + ' (' + lineno + ':' + colno + ')', R.br(), message),
 					'Plese fix error in source code and press button to try again:'
-				));
+				), 30009);
 			};
 		
 			let scriptSource = '';

@@ -85,12 +85,6 @@ window.sp = (ev) => {
 	ev.preventDefault();
 };
 
-window.check = (expression, message) => {
-	if(!expression) {
-		editor.ui.modal.showError(message);
-	}
-};
-
 window.addEventListener('contextmenu', (ev) => {
 	if(window.isEventFocusOnInputElement(ev)) return;
 	sp(ev);
@@ -288,7 +282,7 @@ window.addEventListener('beforeunload', function() {
 		return;
 	}
 	editor.saveCurrentScenesSelectionGlobally();
-	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITORmode && !editor.__projectReloading && !editor.__FatalError) {
+	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITORmode && !editor.__projectReloading) {
 		editor.saveBackup(true);
 	}
 });

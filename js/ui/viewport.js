@@ -79,24 +79,23 @@ export default class Viewport extends React.Component {
 					
 					if(problemOnGameStop) {
 						problemOnGameStop = false;
-						editor.ui.modal.showFatalError('Exception on game stopping.');
+						editor.ui.modal.showFatalError('Exception on game stopping.', 20001);
 					}
 					if(problemOnGameStart) {
 						problemOnGameStart = false;
-						editor.ui.modal.showFatalError('Exception on game starting.', 10011);
+						editor.ui.modal.showFatalError('Exception on game starting.', 20002);
 					}
 					if(editor.frameUpdateException) {
 						editor.frameUpdateException = false;
-						editor.ui.modal.showFatalError('Exception on frame update.', 10010);
+						editor.ui.modal.showFatalError('Exception on frame update.', 20003);
 					}
-					game.__EDITORmode = true;
 				}
 			}, 0);
 		}
 	}
 	
 	onTogglePlay() {
-		if(!playTogglingTime) {
+		if(!playTogglingTime && !editor.__FatalError) {
 			Keys.resetAll();
 			this.checkIfNeedRecovery();
 			playTogglingTime = true;

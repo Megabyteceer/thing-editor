@@ -119,7 +119,7 @@ export default class TreeView extends React.Component {
 			editor.selection.clearSelection();
 
 			if(isPrefab && o.children.length !== 1) {
-				editor.ui.modal.showError("To unwrap prefab it is should have exactly one children.");
+				editor.ui.modal.showError("To unwrap prefab it is should have exactly one children.", 30005);
 				return;
 			}
 

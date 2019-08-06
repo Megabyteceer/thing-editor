@@ -97,16 +97,16 @@ class ClassesView extends React.Component {
 								let a = enteredClassName.split('/').filter(i => i);
 								enteredClassName = a.pop();
 								if(!enteredClassName) {
-									editor.ui.modal.showError('Wrong name.');
+									editor.ui.modal.showError('Wrong component name provided.', 30001);
 									return;
 								} 
-								if(enteredClassName.match('/^\d/m')) {
-									editor.ui.modal.showError('Class name can not start with digit.');
+								if(enteredClassName.match('/^[\d_]/m')) {
+									editor.ui.modal.showError('Class name can not start with digit or "_".', 30002);
 									return;
 								}
 								enteredClassName = enteredClassName.substr(0, 1).toUpperCase() + enteredClassName.substr(1);
 								if (Lib.__hasClass(enteredClassName)) {
-									editor.ui.modal.showError("Component with name '" + enteredClassName + "' already exists");
+									editor.ui.modal.showError("Component with name '" + enteredClassName + "' already exists.", 30003);
 									return;
 								}
 								let classFoldername = a.join('/');

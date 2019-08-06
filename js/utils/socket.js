@@ -19,7 +19,7 @@ ws.onmessage = function incoming(data) {
 	if(data.hasOwnProperty('clientsConnected')) {
 		
 		if(data.clientsConnected !== 1) {
-			editor.ui.modal.showFatalError('Thing-editor already launched.', '');
+			editor.ui.modal.showFatalError('Thing-editor already launched.', 20004);
 			ws.onclose = undefined;
 		} else {
 			editor.onServerAllowsWorking();
@@ -68,7 +68,7 @@ ws.onclose = function incoming() {
 };
 
 function closeWindow() {
-	editor.ui.modal.showFatalError("Page can be closed now.", '');
+	editor.ui.modal.showFatalError("Page can be closed now.", 20005);
 }
 
 export default ws;

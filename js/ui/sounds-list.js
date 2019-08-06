@@ -87,7 +87,7 @@ export default class SoundsList extends React.Component {
 			if(editor.projectDesc.soundFormats) {
 				for(let f of editor.projectDesc.soundFormats) {
 					if(supportedSoundFormats.indexOf(f) < 0) {
-						editor.ui.modal.showError('soundFormats has unsupported format entry: ' + f);
+						editor.ui.modal.showError('soundFormats has unsupported format entry: ' + f + "; Expected one of: 'webm', 'ogg', 'mp3', 'weba', or 'aac'", 30004);
 						editor.openProjectDescToEdit();
 						return;
 					}
@@ -98,7 +98,7 @@ export default class SoundsList extends React.Component {
 					if(result.errors) {
 						editor.ui.modal.showError(result.errors.map((r, i) =>{
 							return R.div({key:i}, JSON.stringify(r));
-						}), "Sounds processing ffmpeg lib error.");
+						}), 30007, "Sounds processing ffmpeg lib error.");
 					} else {
 
 						const reloadSoundsInner = () => {

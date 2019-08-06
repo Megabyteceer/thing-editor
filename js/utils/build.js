@@ -105,9 +105,9 @@ let classes = {};`];
 
 				if(result.find(isLineError)) {
 					errorLinesStarted = false;
-					editor.ui.modal.showError(result.filter(isLineError).map((r, i) =>{
+					editor.ui.modal.showError(R.div(null, R.div(null, "Build errors: "), result.filter(isLineError).map((r, i) =>{
 						return R.div({key:i}, r);
-					}));
+					})), 30006);
 				} else {
 					let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
 					
