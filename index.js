@@ -63,7 +63,7 @@ function initWatchers() {
 		subFolder = subFolder + '/';
 		watchers.push(watcher);
 		watcher.on('change', (eventType, filename) => {
-			log('file changed event: ' + eventType + '; ' + filename);
+			//log('file changed event: ' + eventType + '; ' + filename);
 			if(filename && filterWatchFiles.test(filename)) {
 				filename = subFolder + filename.replace(pathFixerExp, '/');
 				
@@ -75,7 +75,7 @@ function initWatchers() {
 								fileChangeShedule(filename, stats.mtime);
 							}
 						} catch (er) {
-							log("file change handler error: " + er); //for case if tmp file is not exist
+							//log("file change handler error: " + er); //for case if tmp file is not exist
 						}
 					} else {
 						fileChangeShedule(filename, 0, true);
@@ -100,7 +100,7 @@ function filesChangedProcess() {
 	for(let fileName in changedFiles) {
 		let s = changedFiles[fileName];
 		pathFixer(s);
-		log('file changed: ' + fileName);
+		//log('file changed: ' + fileName);
 		files.push(s);
 	}
 	wss.filesChanged(files);
