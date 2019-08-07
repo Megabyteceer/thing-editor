@@ -2,6 +2,7 @@ import Window from "./window.js";
 import game from "thing-engine/js/game.js";
 import Group from "./group.js";
 import DisplayObject from "thing-engine/js/components/display-object.js";
+import Help from "../utils/help.js";
 
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
@@ -48,7 +49,7 @@ export default class Status extends React.Component {
 	error (message, errorCode, owner, fieldName) {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.error(errorCode + ': ' + message);
-		let item = {owner, wonerId: owner && owner.___id, message, fieldName};
+		let item = {owner, ownerId: owner && owner.___id, message, fieldName, errorCode};
 		if(owner && fieldName) {
 			item.val = owner[fieldName];
 		}
@@ -66,7 +67,7 @@ export default class Status extends React.Component {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message);
 		if(needAddInToList(this.warnsMap, owner)) {
-			let item = {owner, message, fieldName};
+			let item = {owner, ownerId: owner && owner.___id, message, fieldName, errorCode};
 			if(owner && fieldName) {
 				item.val = owner[fieldName];
 			}
@@ -144,7 +145,7 @@ class InfoList extends React.Component {
 			}
 			exData.alertRefs.set(item, true);
 		}
-		return R.div({key:i, className:'info-item clickable', onClick:() => {
+		return R.div({key:i, className:'info-item clickable', title: "Click line to go problem.", onClick:() => {
 			if(!item) {
 				return;
 			}
@@ -157,7 +158,7 @@ class InfoList extends React.Component {
 					let newOwnerFinded;
 
 					game.forAllChildrenEwerywhere((o) => {
-						if(o.constructor === item.owner.constructor && o.___id === item.wonerId) {
+						if(o.constructor === item.owner.constructor && o.___id === item.ownerId) {
 							if(!newOwnerFinded) {
 								item.owner = o;
 								exData = __getNodeExtendData(item.owner);
@@ -185,6 +186,9 @@ class InfoList extends React.Component {
 				
 			}
 		}}, this.props.icon, item.message, node,
+		R.btn('?', () => {
+			Help.openErrorCodeHelp(item.errorCode);
+		}, 'Open docs for this notification (F1)', 'error-status-help-button', 112),
 		R.btn('×', () => {
 			this.clearItem(item);
 			item = null;

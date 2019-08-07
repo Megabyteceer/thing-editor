@@ -479,6 +479,7 @@ input{
 	padding: 10px 20px;
 	color: #b1c0d0;
 	font-weight:bold;
+	position: relative;
 }
 
 .modal-title img {
@@ -1353,8 +1354,22 @@ input{
 	outline: 7px solid #ff0d00;
 }
 
+.error-help-button {
+    margin: 0;
+    position: absolute;
+    right: 10px;
+}
 
+.error-status-help-button {
+	transform: scale(.5);
+    top: 0;
+    right: 20px;
+    position: absolute;
+}
 
+.info-item .selectable-scene-node {
+	margin-right: 40px;
+}
 
 
 

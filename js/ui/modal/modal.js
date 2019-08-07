@@ -1,6 +1,7 @@
 import Prompt from './prompt.js';
 import ChooseList from './choose-list.js';
 import game from "thing-engine/js/game.js";
+import Help from 'thing-editor/js/utils/help.js';
 
 let modal;
 
@@ -168,7 +169,9 @@ class Modal extends React.Component {
 		if(game.stage) {
 			setTimeout(editor.ui.viewport.stopExecution, 0);
 		}
-		return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), title), noEasyClose, toBottom);
+		return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), errorCode, ' ', title, R.btn('?', () => {
+			Help.openErrorCodeHelp(errorCode);
+		}, 'Open docs for this error (F1)', 'error-help-button', 112)), noEasyClose, toBottom);
 	}
 	
 	showFatalError(message, errorCode, additionalText = 'FatalError. Please check console output (F12) for exceptions messages, and restart application (Reload page) by press (F5) button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.') {
