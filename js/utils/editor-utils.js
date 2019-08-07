@@ -151,7 +151,10 @@ window.__EDITOReditableProps = (class_, array) => {
 			p.helpUrl = 'components.' + cn + '#' + p.name.replace('.', '');
 		}
 	}
-	array.reverse();
+	if(!array.__EDITOR_propsArrayReversedAlredy) {
+		array.reverse();
+		array.__EDITOR_propsArrayReversedAlredy = true;
+	}
 	class_.__EDITOR_editableProps = array;
 };
 
