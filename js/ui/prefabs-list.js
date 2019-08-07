@@ -173,7 +173,9 @@ export default class PrefabsList extends React.Component {
 			cls = Lib.getClass(item.c);
 		} else {
 			cls = Container;
-			editor.ui.status.warn('Prefab "' + prefabName + '" has unknown type: ' + item.c);
+			editor.ui.status.warn('Prefab "' + prefabName + '" has unknown type: ' + item.c, 30028, () => {
+				PrefabsList.editPrfefab(prefabName);
+			});
 		}
 		return R.div({onDoubleClick:() => {
 			editor.editClassSource(cls);

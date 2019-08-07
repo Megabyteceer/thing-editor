@@ -45,8 +45,9 @@ export default class Status extends React.Component {
 		this.warnsList = ref;
 	}
 	
-	error (message, owner, fieldName) {
-		console.error(message);
+	error (message, errorCode, owner, fieldName) {
+		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
+		console.error(errorCode + ': ' + message);
 		let item = {owner, wonerId: owner && owner.___id, message, fieldName};
 		if(owner && fieldName) {
 			item.val = owner[fieldName];
@@ -61,7 +62,8 @@ export default class Status extends React.Component {
 		}
 	}
 	
-	warn (message, owner, fieldName) {
+	warn (message, errorCode, owner, fieldName) {
+		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message);
 		if(needAddInToList(this.warnsMap, owner)) {
 			let item = {owner, message, fieldName};

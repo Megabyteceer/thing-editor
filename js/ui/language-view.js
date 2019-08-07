@@ -42,7 +42,7 @@ export default class LanguageView extends React.Component {
 				let txt = langsData[langId];
 				for(let id in txt) {
 					if(!txt[id]) {
-						editor.ui.status.warn('untranslated text entry ' + langId + '/' + id, () => {
+						editor.ui.status.warn('Untranslated text entry ' + langId + '/' + id, 30027, () => {
 							LanguageView.editKey(id, langId);
 						}); 
 					}

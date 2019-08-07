@@ -2,7 +2,7 @@ import utils from './utils/editor-utils.js';
 import game from 'thing-engine/js/game.js';
 import Settings from 'thing-engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
-import ws from './utils/socket.js'; // eslint-disable-line no-unused-vars
+import './utils/socket.js';
 import fs from './utils/fs.js';
 import history from './utils/history.js';
 import UI from './ui/ui.js';
@@ -150,7 +150,7 @@ export default class Editor {
 			let isProjectDescriptorModified = game.applyProjectDesc(editor.projectDesc);
 
 			await game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');
-			
+			Lib.__onProjectOpen();
 			game.stage.interactiveChildren = false;
 			
 			this.overlay = new Overlay();
@@ -717,6 +717,14 @@ export default class Editor {
 		_rememberPathReference(game.currentContainer);
 		game.currentContainer.forAllChildren(_rememberPathReference);
 	}
+
+	getFieldNameByValue(node, fieldValue) {
+		for(let p of this.enumObjectsProperties(node)) {
+			if(node[p.name] === fieldValue) {
+				return p.name;
+			}
+		}
+	}
 	
 	validatePathReferences() {
 		if(game.currentContainer instanceof Scene) {
@@ -892,7 +900,7 @@ const validateRefEntry = (m, o) => {
 					become = '' + currentRef;
 				}
 
-				editor.ui.status.warn(R.span(null, 'path reference (' + path + ') is affected: Was: ', was, ' Become: ', become), o, fieldname);
+				editor.ui.status.warn(R.span(null, 'Path reference (' + path + ') is affected: Was: ', was, ' Become: ', become), 30026, o, fieldname);
 			}
 		}
 	}

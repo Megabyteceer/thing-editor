@@ -20,7 +20,7 @@ let fs = {
 			data = data.filter((stat) => {
 				let fn = stat.name;
 				if (fn.toLowerCase() !== fn) {
-					editor.ui.status.warn("File with upper cased characters ignored: " + fn, () => {
+					editor.ui.status.warn("File with upper cased characters ignored: " + fn, 30029, () => {
 						let a = fn.split('/');
 						let path = [];
 						for(let p of a) {
