@@ -26,12 +26,10 @@ window.addEventListener('mousedown', (ev) => {
 export default class Help extends React.Component {
 
 	static openErrorCodeHelp(errorCode) {
-		if(errorCode) {
-			errorCode = '#' + errorCode;
-		} else {
-			errorCode = '';
+		if(!errorCode) {
+			errorCode = 90001;
 		}
-		editor.openUrl(HELP_ROOT + 'Error-Mesages' + errorCode);
+		editor.openUrl(HELP_ROOT + 'Error-Mesages#' + errorCode);
 	}
 
 	render() {
