@@ -282,7 +282,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			let script = document.createElement('script');
 			editor.ui.modal.showSpinner();
 			script.onerror = function() {
-				showError("Can not load script; Please check Broswer's console for error details, and fix problem to continue.", 30011);
+				showError("Can not load script; Please check Broswer's console for error details, and fix problem to continue.", 31001);
 				script.onload();
 			};
 			script.onload = function() {
