@@ -301,6 +301,13 @@ export default class Editor {
 			editor.sceneModified(true);
 		}
 	}
+
+	onEditorRenderResize() {
+		editor.refreshTreeViewAndPropertyEditor();
+		if(editor.overlay) {
+			editor.overlay.onEditorRenderResize();
+		}
+	}
 	
 	saveBackup(includeUnmodified = false) {
 		editor.__backupUID = (editor.__backupUID || 0) + 1;

@@ -31,6 +31,8 @@ function createDragger(owner, constructor) {
 	return ret;
 }
 
+let viewportCanvasScale;
+
 export default class Overlay {
 	
 	constructor() {
@@ -40,14 +42,21 @@ export default class Overlay {
 		blackout.texture = PIXI.Texture.WHITE;
 		blackout.tint = 30;
 		blackout.alpha = 0.9;
-		blackout._onRenderResize = () => {
-			blackout.width = game.W;
-			blackout.height = game.H;
-		};
 		cameraFrame = new PIXI.Graphics();
 		this.helpersIsVisible = true;
+		this.onEditorRenderResize();
 	}
 	
+	onEditorRenderResize() {
+		blackout.width = game.W * 2;
+		blackout.height = game.H * 2;
+	
+		let canvas = document.querySelector('#viewport-root canvas');
+		let bounds = canvas.getBoundingClientRect();
+		viewportCanvasScale = game.W / bounds.width;
+		this.refreshCameraFrame();
+	}
+
 	getBGcolor() {
 		return blackout.tint;
 	}
@@ -153,8 +162,6 @@ export default class Overlay {
 		this.setBGcolor(editor.settings.getItem('prefab-bg' + object.name));
 		this.hidePreview(false);
 		game.stage.addChild(blackout);
-		blackout.width = game.W;
-		blackout.height = game.H;
 		__getNodeExtendData(blackout).hidden = true;
 		isPreviewShowed = object.name;
 		game.showModal(object);
@@ -253,7 +260,7 @@ function refreshSelection() {
 			draggers.splice(i, 1);
 		}
 		if(helpersIsVisible && !(d instanceof Rect)) {
-			let s = 6;
+			let s = 6 * viewportCanvasScale;
 			if ((Math.abs(d.x - game.mouse.__EDITOR_x) < s) && (Math.abs(d.y - game.mouse.__EDITOR_y) < s)) {
 				overedDragger = d;
 			}
@@ -274,18 +281,19 @@ function refreshSelection() {
 				info.draggerRotator = createDragger(o, Rotator);
 			}
 		}
-		let s = game.stage.scale.x;
+		let draggersScale = viewportCanvasScale;
+
 		let r = o.getGlobalRotation();
 		o.getGlobalPosition(p, true);
 		info.draggerPivot.x = p.x;
 		info.draggerPivot.y = p.y;
-		//info.draggerPivot.scale.x = info.draggerPivot.scale.y = s;
+		info.draggerPivot.scale.x = info.draggerPivot.scale.y = draggersScale;
 
 		for(let rn in info.rects) {
 			let rect = info.rects[rn];
 			rect.x = p.x;
 			rect.y = p.y;
-			rect.scale.x = rect.scale.y = s;
+			rect.scale.x = rect.scale.y = game.stage.scale.x;
 			if(rect._props.field.rotable) {
 				rect.rotation = r;
 			}
@@ -295,9 +303,9 @@ function refreshSelection() {
 			}
 		}
 		if(info.draggerRotator) {
-			info.draggerRotator.x = p.x + Math.cos(r) * 40;
-			info.draggerRotator.y = p.y + Math.sin(r) * 40;
-			//info.draggerRotator.scale.x = info.draggerRotator.scale.y = s;
+			info.draggerRotator.x = p.x + Math.cos(r) * 40 * draggersScale;
+			info.draggerRotator.y = p.y + Math.sin(r) * 40 * draggersScale;
+			info.draggerRotator.scale.x = info.draggerRotator.scale.y = draggersScale;
 			info.draggerRotator.rotation = r;
 		}
 	});
@@ -561,7 +569,7 @@ class Rect extends PIXI.Graphics {
 			this._drawedY !== r.y
 		) {
 			this.clear();
-			this.lineStyle(2/game.stage.scale.x, this._props.field.color, 0.6);
+			this.lineStyle(2 * viewportCanvasScale, this._props.field.color, 0.6, 0);
 			this.beginFill(0, 0);
 			this.drawRect (r.x, r.y, r.w, r.h);
 			this.endFill();
