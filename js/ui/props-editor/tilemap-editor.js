@@ -80,7 +80,9 @@ class TilemapEditor extends React.Component {
 
 	onKeyDown(ev) {
 		if (!window.isEventFocusOnInputElement(ev) && (ev.keyCode >= 48) && (ev.keyCode <= 57)) {
-			this.setType(Math.min(ev.keyCode - 48, Tilemap.tileMapProcessor.types.length));
+			this.setType(Math.min(ev.keyCode - 48,
+				(Tilemap.tileMapProcessor && Tilemap.tileMapProcessor.types) ?
+					Tilemap.tileMapProcessor.types.length : getTilemap().__maxTileIndex));
 		}
 	}
 
@@ -193,15 +195,21 @@ class TilemapEditor extends React.Component {
 	}
 
 	render() {
+
+		let typeSelector;
+		if(Tilemap.tileMapProcessor && Tilemap.tileMapProcessor.types) {
+			typeSelector = React.createElement(SelectEditor, {onChange:this.onTypeChange, value:this.state.type, select: Tilemap.tileMapProcessor.types});
+		} else {
+			typeSelector = React.createElement(NumberEditor,{field:{min: 0, max: getTilemap().__maxTileIndex}, disabled:this.props.disabled, onChange: this.onTypeChange, value: this.state.type});
+		}
+
 		if(editor.selection.length !== 1) {
 			return R.div(null, "Please select only one tilemap component at once.");
 		} else {
 			return R.div(null,
 				'Tile type:',
 				R.b(null, 
-					React.createElement(SelectEditor, {onChange:this.onTypeChange, value:this.state.type, select: Tilemap.tileMapProcessor.types.map((t) => {
-						return {name:t.name + '(' + t.value + ')', value:t.value};
-					})})
+					typeSelector
 				),
 				' Brush size: ',
 				React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size}),

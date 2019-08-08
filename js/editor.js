@@ -23,6 +23,8 @@ import ClassesView from './ui/classes-view.js';
 import TexturesView from './ui/textures-view.js';
 import MovieClip from 'thing-engine/js/components/movie-clip/movie-clip.js';
 import PrefabReference from 'thing-engine/js/components/prefab-reference.js';
+import Tilemap from 'thing-engine/js/components/tilemap.js';
+import defaultTilemapProcessor from './utils/default-tilemap-processor.js';
 
 let isFirstClassesLoading = true;
 
@@ -151,6 +153,7 @@ export default class Editor {
 
 			await game.init(document.getElementById('viewport-root'), 'editor.' + editor.projectDesc.id, '/games/' + dir + '/');
 			Lib.__onProjectOpen();
+			Tilemap.tileMapProcessor = defaultTilemapProcessor;
 			game.stage.interactiveChildren = false;
 			
 			this.overlay = new Overlay();

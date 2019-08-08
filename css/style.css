@@ -1087,6 +1087,10 @@ input{
     color:#c70;
 }
 
+#window-tilemap .select-editor {
+	width: 200px;
+}
+
 .props-group-errors-list {
     color:#c00;
 }
