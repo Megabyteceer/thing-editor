@@ -769,10 +769,6 @@ input{
     outline: 2px solid #ff0000;
 }
 
-.timeline-keyframe-nextofselected {
-    border-bottom: 3px solid #ff9d00;
-}
-
 .timeline-keyframe-linear {
 	background: #8db2ff;
 	border-left: 1px solid #456aa1;
@@ -870,16 +866,6 @@ input{
 	background: #d33;
 }
 
-.timeline-left-top-panel {
-	cursor: default;
-	position: fixed;
-	width: 110px;
-	background: #cccfda;
-	height: 40px;
-	margin-left: -110px;
-	margin-top: -40px;
-}
-
 .time-marker-v-line {
 	position:absolute;
 	pointer-events:none;
@@ -901,10 +887,6 @@ input{
     width: 100%;
     bottom: 0;
     box-sizing: border-box;
-}
-
-.keyframe-type-chooser {
-	width: 140px;
 }
 
 .bottom-panel .number-input input {
@@ -982,12 +964,6 @@ input{
 	top:0;
 }
 
-.tip-header {
-	font-size:120%;
-	font-weight:bold;
-	margin-bottom:6px;
-}
-
 .tip-paragraph {
 	margin: 10px;
 	line-height: 1.6;
@@ -1062,24 +1038,10 @@ input{
     text-align: left;
 }
 
-.langs-editor-footer .langs-editor-th {
-    height: 30px;
-    background: #a95;
-    color: #fff;
-    padding: 5px;
-    text-align: left;
-}
-
 .langs-editor-tr {
     white-space: nowrap;
     box-sizing: border-box;
 }
-
-.langs-editor .props-group {
-    margin: 0;
-    border: 1px solid #567;
-}
-
 
 .langs-editor textarea {
 	height: 100%;
@@ -1106,10 +1068,6 @@ input{
     color: #7b7e88;
     padding: 0 2px;
     background: #d8dade;
-}
-
-#window-texteditor {
-	z-index: 10 !important;
 }
 
 .selectable-scene-node {
