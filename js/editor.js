@@ -764,10 +764,12 @@ const tryToFixDataPath = (node, fieldname, path, oldRef) => {
 	if(_validateRefEntryOldName) { //it is was renaming. try to fix .#names
 		for(let oldName of _validateRefEntryOldName) {
 			if(oldName) {
-				let pathFixer = new RegExp('\.#' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
+				let pathFixer = new RegExp('\\.#' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
 				let pathFixer2 = new RegExp('\.all\.' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
+				let pathFixer3 = new RegExp('^all\.' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
 				newPath = newPath.replace(pathFixer, '\.#' + _validateRefEntryNewName + '$1');
 				newPath = newPath.replace(pathFixer2, '\.all\.' + _validateRefEntryNewName + '$1');
+				newPath = newPath.replace(pathFixer3, 'all\.' + _validateRefEntryNewName + '$1');
 			}
 		}
 		repairNode = getLatestSceneNodeBypath(newPath, node);
