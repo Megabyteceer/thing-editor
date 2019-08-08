@@ -52,7 +52,7 @@ class TilemapEditor extends React.Component {
 		this.onTypeChange = this.onTypeChange.bind(this);
 		this.onSizeChange = this.onSizeChange.bind(this);
 		this.state= {
-			type: editor.settings.getItem('tilemap-type', 0),
+			type: editor.settings.getItem('tilemap-type', 1),
 			size: editor.settings.getItem('tilemap-size', 1)
 		};
 	}
