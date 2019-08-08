@@ -87,6 +87,14 @@ button {
 	outline: none;
 }
 
+.menu-btn {
+    margin: 0;
+    border-radius: 0;
+    background: #fff5;
+    padding: 7px 21px;
+    margin-left: 2px;
+}
+
 .disabled {
 	opacity:0.5;
 	pointer-events:none;
@@ -126,6 +134,7 @@ button {
 	cursor:move;
 	font-size: 70%;
 	padding: 2px;
+	padding-left: 10px;
 	box-sizing: border-box;
 	position:relative;
 }

@@ -56,7 +56,7 @@ export default class TreeView extends React.Component {
 			let e = document.querySelector('.scene-tree-view .item-selected');
 			if (e) {
 				Window.bringWindowForward(e.closest('.window-body'));
-				e.scrollIntoView({});
+				e.scrollIntoView({block: "center", inline: "center"});
 				e.closest('.scene-tree-view').scrollLeft = 0;
 			}
 		}, 1);

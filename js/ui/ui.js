@@ -98,13 +98,13 @@ class UI extends React.Component {
 	
 	render() {
 		return R.div(null,
-			R.btn('Open project...', editor.fs.chooseProject),
-			R.btn('Build', editor.build),
-			R.btn('Build debug', () => {editor.build(true);}),
+			R.btn('Open project...', editor.fs.chooseProject, undefined, 'menu-btn'),
+			R.btn('Build', editor.build, "Build release version of game.", 'menu-btn'),
+			R.btn('Build debug', () => {editor.build(true);}, "Build debug version of game.\nContains asserts.", 'menu-btn'),
 			React.createElement(LanguageView),
 			React.createElement(TexturesView),
 			editor.history.buttonsRenderer(),
-			R.btn('Project settings', editor.openProjectDescToEdit),
+			R.btn('Project settings', editor.openProjectDescToEdit, undefined, 'menu-btn'),
 			React.createElement(Help),
 
 			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),

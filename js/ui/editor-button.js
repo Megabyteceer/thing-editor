@@ -7,6 +7,15 @@ window.addEventListener("keydown", (ev) => {
 	}
 });
 
+const hotheysBlockedWhenInputFocused = {
+	1067: true,
+	1088: true,
+	1086: true
+};
+function isCopyPasteBtn(btn) {
+	return btn.props.hotkey && hotheysBlockedWhenInputFocused.hasOwnProperty(btn.props.hotkey);
+}
+
 class EditorButton extends React.Component {
 	
 	constructor(props) {
@@ -16,17 +25,37 @@ class EditorButton extends React.Component {
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 	
+	componentWillReceiveProps(props) {
+		if(this.props.hotkey !== props.hotkey) {
+			if(!props.hotkey && this.props.hotkey) {
+				this.unregisterHotkey();
+			} else if(props.hotkey && !this.props.hotkey) {
+				this.registerHotkey();
+			}
+		}
+	}
+
 	componentDidMount() {
 		if(this.props.hotkey) {
-			allHotkeyedButtons.unshift(this);
+			this.registerHotkey();
+		}
+	}
+
+	registerHotkey() {
+		allHotkeyedButtons.unshift(this);
+	}
+
+	unregisterHotkey() {
+		if(this.props.hotkey) {
+			let i = allHotkeyedButtons.indexOf(this);
+			if(i >= 0) {
+				allHotkeyedButtons.splice(i, 1);
+			}
 		}
 	}
 	
 	componentWillUnmount() {
-		let i = allHotkeyedButtons.indexOf(this);
-		if(i >= 0) {
-			allHotkeyedButtons.splice(i, 1);
-		}
+		this.unregisterHotkey();
 	}
 	
 	onKeyDown(e) {
@@ -35,7 +64,13 @@ class EditorButton extends React.Component {
 		}
 		let needCtrl = this.props.hotkey > 1000;
 		
-		if (this.props.disabled || (window.isEventFocusOnInputElement(e) && (this.props.hotkey !== 1083)) || editor.ui.modal.isUIBlockedByModal(ReactDOM.findDOMNode(this))) return; // 1083 - Ctrl + S (Save scene)
+		if (
+			this.props.disabled || 
+			(window.isEventFocusOnInputElement(e) && (isCopyPasteBtn(this))) ||
+			editor.ui.modal.isUIBlockedByModal(ReactDOM.findDOMNode(this))
+		) {
+			return;
+		}
 		
 		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
 			this.onMouseDown(e);

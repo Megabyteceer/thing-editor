@@ -37,7 +37,7 @@ export default class Help extends React.Component {
 			editor.openUrl(latestClickedHelpURL);
 		},
 		'Click any element and then press (F1) to see its description.',
-		undefined,
+		'menu-btn',
 		112
 		));
 	}

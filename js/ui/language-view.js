@@ -15,7 +15,6 @@ let switcher;
 let externalLangsData;
 
 function showTextTable() {
-	Window.bringWindowForward('#window-texteditor');
 	return new Promise((resolve) => {
 		if(!view) {
 			switcher.onToggleClick();
@@ -77,10 +76,13 @@ export default class LanguageView extends React.Component {
 	onToggleClick() { //show/hide text editor window
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
+		if(t) {
+			Window.bringWindowForward('#window-texteditor');
+		}
 	}
 	
 	render () {
-		let btn = R.btn(this.state.toggled ? 'Close Text Editor (Ctrl+E)' : 'Open Text Editor (Ctrl+E)', this.onToggleClick, undefined, undefined, 1069);
+		let btn = R.btn(this.state.toggled ? 'Close Text Editor (Ctrl+E)' : 'Open Text Editor (Ctrl+E)', this.onToggleClick, undefined, 'menu-btn', 1069);
 		let table;
 		if(this.state.toggled) {
 			table = editor.ui.renderWindow('texteditor', 'Text Table', R.fragment(
@@ -204,7 +206,7 @@ class LanguageTableEditor extends React.Component {
 			setTimeout(() => {
 				let area = document.querySelector('.langs-editor-table #' + texareaID(langId, key));
 				area.focus();
-				area.scrollIntoView({});
+				area.scrollIntoView({block: "center", inline: "center"});
 				window.shakeDomElement(area);
 			}, 10);
 		});

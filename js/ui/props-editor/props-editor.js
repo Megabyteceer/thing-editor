@@ -80,7 +80,7 @@ class PropsEditor extends React.Component {
 				if(fn === fieldName) {
 					window.shakeDomElement(fldInput);
 					Window.bringWindowForward(fldInput.closest('.window-body'));
-					fldInput.scrollIntoView({});
+					fldInput.scrollIntoView({block: "center", inline: "center"});
 				}
 				
 				if(focus || selectAll) {
