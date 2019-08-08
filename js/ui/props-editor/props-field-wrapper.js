@@ -162,6 +162,7 @@ class PropsFieldWrapper extends React.Component {
 			let validationError = field.validate(value);
 			if(validationError) {
 				isInvalid = true;
+				className += ' props-field-invalid';
 				setTimeout(() => {
 					editor.ui.status.error(validationError, 30011, node, field.name);
 				}, 1);
