@@ -259,7 +259,7 @@ export default class Viewport extends React.Component {
 				toggleOrientationBtn,
 				R.btn('⛶', () => {
 					document.querySelector('#viewport-root').requestFullscreen();
-				}, 'Go fullscreen (F11)', undefined, 122)
+				}, 'Go fullscreen')
 			);
 		}
 		
