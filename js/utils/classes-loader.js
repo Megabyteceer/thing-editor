@@ -330,7 +330,7 @@ function classLoaded(c, path) {
 
 
 ClassesLoader.isItEmbeddedClass = (c) => {
-	return embeddedClassesMap.hs(c);
+	return embeddedClassesMap.has(c);
 };
 
 ClassesLoader.reloadClasses = reloadClasses;
