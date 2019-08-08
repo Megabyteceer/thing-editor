@@ -56,3 +56,6 @@ Work still in progress.
 ### Projects made with thing-engine
  - [Zombie Hunters](http://zh.pixel-cave.com)
  - [Handless Millionaire](http://hm.pixel-cave.com)
+
+### Documentation
+For detailed documentation please check our [Wiki](https://github.com/Megabyteceer/thing-editor/wiki).
