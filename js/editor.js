@@ -254,14 +254,14 @@ export default class Editor {
 			let parent = o.parent;
 			for(let c of a) {
 				if(c.parent !== parent) {
-					editor.ui.modal.showModal('Alert', 'Selected object shoul have same parent to be wrapped.');
+					editor.ui.modal.showModal('Selected object shoul have same parent to be wrapped.', 'Alert');
 					return;
 				}
 			}
 
 
 			if(o instanceof Scene) {
-				editor.ui.modal.showModal('Scene can not be wrapped.', 'Alert');
+				editor.ui.modal.showModal("Scene can not be wrapped, you can change scene's type instead.", 'Alert');
 				return;
 			}
 			editor.rememberPathReferences();
