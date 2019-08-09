@@ -9,6 +9,7 @@ window.addEventListener("keydown", (ev) => {
 
 const hotheysBlockedWhenInputFocused = {
 	8: true,
+	13: true,
 	37: true,
 	38: true,
 	39: true,
