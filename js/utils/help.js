@@ -33,7 +33,7 @@ export default class Help extends React.Component {
 	}
 
 	render() {
-		return R.span(doNotDisturbHelpIdProps, R.btn('Help', () => {
+		return R.span(doNotDisturbHelpIdProps, R.btn('Help (F1)', () => {
 			editor.openUrl(latestClickedHelpURL);
 		},
 		'Click any element and then press (F1) to see its description.',
