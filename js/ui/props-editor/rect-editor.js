@@ -19,7 +19,7 @@ export default class RectangleEditor extends React.Component {
 		this.onYChange = this.onYChange.bind(this);
 		this.onWChange = this.onWChange.bind(this);
 		this.onHChange = this.onHChange.bind(this);
-		this.onEnabledChange = this.onNullCheckboxChange.bind(this);
+		this.onNullCheckboxChange = this.onNullCheckboxChange.bind(this);
 	}
 
 	componentWillMount() {
@@ -99,6 +99,7 @@ export default class RectangleEditor extends React.Component {
 				extData['removedRect' + fieldName] = o[fieldName];
 				o[fieldName].removed = true;
 				editor.overlay.drawRect(this.props, o);
+				o[fieldName] = null;
 			} else {
 				o[fieldName] = extData['removedRect' + fieldName] || {x:0,y:0,w:100,h:50};
 				delete o[fieldName].removed;
@@ -140,7 +141,7 @@ export default class RectangleEditor extends React.Component {
 		}
 
 		return R.div(rectEditorProps,
-			React.createElement(BooleanEditor, {disabled:(!f.nullable) || this.props.disabled, onChange: this.onNullCheckboxChange, value:r !== null}),
+			f.nullable ? React.createElement(BooleanEditor, {disabled:this.props.disabled, onChange: this.onNullCheckboxChange, value:r !== null}) : undefined,
 			body
 		);
 	}
