@@ -14,6 +14,10 @@ const hotheysBlockedWhenInputFocused = {
 	39: true,
 	40: true,
 	46: true,
+	188: true,
+	190: true,
+	1188: true,
+	1190: true,
 	1067: true,
 	1088: true,
 	1086: true

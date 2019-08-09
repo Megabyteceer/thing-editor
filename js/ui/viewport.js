@@ -118,7 +118,7 @@ export default class Viewport extends React.Component {
 				game.__clearStage();
 				Sound.__resetSounds();
 				game.__EDITORmode = false;
-				game.currentScene = null;
+				game._setCurrentScene(null);
 				game.showScene(editor.currentSceneName);
 				problemOnGameStart = false;
 				game.stage.interactiveChildren = true;

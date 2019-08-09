@@ -254,8 +254,12 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			enumClassProperties(DisplayObject);
 			enumClassProperties(Delay);
 			embeddedClasses.some((a) => {
-				embeddedClassesMap.set(a[0], true);
-				addClass(a[0], a[1]);
+				let c = a[0];
+				if(!c.___EDITOR_isGoodForCallbackChooser && !c.___EDITOR_isGoodForChooser) {
+					c.___EDITOR_isHiddenForChooser = true;
+				}
+				embeddedClassesMap.set(c, true);
+				addClass(c, a[1]);
 			});
 		
 			window.onerror = function loadingErrorHandler(message, source, lineno, colno) {
@@ -301,6 +305,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 					resolve();
 				
 					editor.ui.classesList.forceUpdate();
+					game.__destroyCurrentScene();
 					Pool.clearAll();
 				} else {
 					console.warn('classes were not loaded because of error.');

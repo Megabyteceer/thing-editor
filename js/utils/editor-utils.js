@@ -122,7 +122,7 @@ window.copyTextByClick = function(ev) {
 		sp(ev);
 	}
 };
-
+/*
 const checkDataPath = (s) => {
 	if(s) {
 		if(
@@ -135,14 +135,14 @@ const checkDataPath = (s) => {
 			}
 		}
 	}
-};
+};*/
 
 window.__EDITOReditableProps = (class_, array) => {
 	assert(!class_.hasOwnProperty('__EDITOR_editableProps'), "Editable properties for class '" + class_.name + "' already defined.", 40003);
 	for(let p of array) {
-		if(p.type === 'data-path' || p.type === 'callback') {
+		/*if(p.type === 'data-path' || p.type === 'callback') {
 			p.validate = checkDataPath;
-		}
+		}*/
 		if(!p.helpUrl && !window.editor) { // !editor - detect embedded classes, which loaded before editor created
 			let cn = class_.name;
 			if(cn === 'DisplayObject') {

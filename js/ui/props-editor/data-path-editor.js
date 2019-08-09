@@ -113,28 +113,11 @@ export default class DataPathEditor extends React.Component {
 
 	chooseProperty(parent) {
 		if(!parent) {
-			parent = {
-				game,
-				'this':this.props.this || editor.selection[0],
-				all: game.currentScene.all
-			};
+			parent = game;
 			_rootParent = parent;
 			parent['FlyText'] = Lib.getClass('FlyText');
 			
 			this.addAdditionalRoots(parent);
-			
-			for(let c of editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses)) {
-				c = c.c;
-				
-				let classPath = editor.ClassesLoader.getClassPath(c.name);
-				if(classPath) {
-					let engineEntryI = classPath.indexOf('thing-engine/js/components');
-					if(engineEntryI < 0 || c.___EDITOR_isGoodForChooser || c.___EDITOR_isGoodForCallbackChooser) {
-						parent[c.name] = c;
-					}
-				}
-			}
-			
 			
 			if(path && typeof path === 'string') { //restore current path as default value
 				parentsPath = [];
