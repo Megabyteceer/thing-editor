@@ -106,18 +106,31 @@ export default class DataPathEditor extends React.Component {
 			R.btn('...', this.onEditClicked, 'Start data source choosing', 'tool-btn')
 		);
 	}
-	
-	addAdditionalRoots(parent) {
-		return parent;
-	}
 
 	chooseProperty(parent) {
+
+		let addedNames ={};
+		let items = [];
+		const addSceneNodeIfValid = (o, name, isChild, order = 100000) => {
+			if(o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent, o)) {
+				let item = {order, pureName: name, name: R.fragment(R.b(null, name + ' '), R.div(selectableSceneNodeProps, R.sceneNode(o)))};
+				
+				if(isChild) {
+					item.child = name;
+				} else {
+					item.pureName = name;
+				}
+				items.push(item);
+				addedNames[name] = true;
+				return true;
+			}
+		};
+
 		if(!parent) {
 			parent = game;
 			_rootParent = parent;
-			parent['FlyText'] = Lib.getClass('FlyText');
 			
-			this.addAdditionalRoots(parent);
+			addSceneNodeIfValid(editor.selection[0], 'this', false, 1000000);
 			
 			if(path && typeof path === 'string') { //restore current path as default value
 				parentsPath = [];
@@ -147,8 +160,7 @@ export default class DataPathEditor extends React.Component {
 			
 		}
 		
-		let addedNames ={};
-		let items = [];
+
 
 		//ignore names globally
 		addedNames['constructor'] = true;
@@ -169,23 +181,7 @@ export default class DataPathEditor extends React.Component {
 		if(path.length > 0) {
 			items.push(BACK_ITEM);
 		}
-		
-		const addSceneNodeIfValid = (o, name, isChild) => {
-			if(o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent, o)) {
-				let item = {pureName: name, name: R.fragment(R.b(null, name + ' '), R.div(selectableSceneNodeProps, R.sceneNode(o)))};
-				
-				if(isChild) {
-					item.child = name;
-				} else {
-					item.pureName = name;
-				}
-				item.order = 100000;
-				items.push(item);
-				addedNames[name] = true;
-				return true;
-			}
-		};
-		
+
 		
 		if(parent.hasOwnProperty('parent') && !addedNames.hasOwnProperty('parent')) {
 			addSceneNodeIfValid(parent.parent, 'parent');
@@ -280,7 +276,11 @@ export default class DataPathEditor extends React.Component {
 					let name = selected.pureName || selected.name;
 					path.push(name);
 					parentsPath.push(parent);
-					val = parent[name];
+					if(name === 'this') {
+						val = editor.selection[0];
+					} else {
+						val = parent[name];
+					}
 				}
 				
 				if(this.isItTargetValue(val)) {

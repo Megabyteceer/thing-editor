@@ -22,11 +22,6 @@ export default class CallbackEditor extends DataPathEditor {
 		return (type === 'function') && (!CallbackEditor.isFunctionIsClass(val));
 	}
 	
-	addAdditionalRoots(parent) {
-		super.addAdditionalRoots(parent);
-		parent['setValueByPath'] = setValueByPath;
-	}
-	
 	finalValueChoosed(path, val) {
 		path = path.join('.');
 		
