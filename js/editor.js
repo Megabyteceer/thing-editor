@@ -137,13 +137,14 @@ export default class Editor {
 				location.reload();
 				return;
 			}
-
+			editor.settings.setItem('last-opened-project', false);
 			let data = await this.fs.getJSON('/fs/openProject?dir=' + dir);
 			if(!data) {
 				editor.projectOpeningInProgress = false;
-				editor.settings.setItem('last-opened-project', false);
 				editor.ui.modal.showError("Can't open project " + dir).then(() => {this.openProject();});
 				return;
+			} else {
+				editor.settings.setItem('last-opened-project', dir);
 			}
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
