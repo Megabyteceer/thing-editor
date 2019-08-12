@@ -171,7 +171,7 @@ class ClassesView extends React.Component {
 		
 		return R.listItem(
 			R.div({
-				onClick:(ev) => {
+				onMouseDown:(ev) => {
 					if(ev.altKey) {
 						setTimeout(ev.ctrlKey ? this.onAddAsChildClick : this.onAddClick, 1);
 					} else if(ev.ctrlKey) {
@@ -190,10 +190,12 @@ class ClassesView extends React.Component {
 				item.c.name,
 				tip
 			),
-			R.btn('<', () => {
+			R.btn('<', (ev) => {
+				sp(ev);
 				findNextOfThisType(item.c, -1);
 			}, 'Find previous ' + item.c.name, 'tool-btn'),
-			R.btn('>', () => {
+			R.btn('>', (ev) => {
+				sp(ev);
 				findNextOfThisType(item.c, 1);
 			}, 'Find next ' + item.c.name, 'tool-btn')
 			), item, key, this, 'components.' + item.c.name);
