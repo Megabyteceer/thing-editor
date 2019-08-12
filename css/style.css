@@ -212,7 +212,8 @@ button {
     background: #cccfda; 
 }
 ::-webkit-scrollbar-thumb {
-    background: #acb5be; 
+	background: #acb5be;
+	border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
     background: #9ea9b4; 
@@ -315,6 +316,7 @@ button {
 	border-top:1px solid #eee;
 	padding:2px;
 	cursor:pointer;
+	background: #fff;
 }
 
 .list-item:hover{
@@ -364,7 +366,7 @@ button {
 }
 
 .props-group{
-	margin: 3px;
+	margin: 3px 0;
 	border-radius:6px;
 	overflow:hidden;
 }
@@ -534,7 +536,6 @@ input{
 	right: 3px;
 	position: absolute;
 	overflow-y: auto;
-	background:#fff;
 }
 
 .error {
