@@ -155,8 +155,10 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	onPrefabDeleteClick(prefabName) {
-		editor.ui.modal.showQuestion('Are you sure?', R.span(null,
-			'Are you sure you want to delete prefab: ', R.b(null, prefabName), ' ?'
+		editor.ui.modal.showQuestion('Are you sure?', R.span({className:'danger'},
+			'Are you sure you want to delete prefab: ', R.b(null, prefabName), ' ?',
+			R.br(),
+			'You cannot undo this action.'
 		),() => {
 			Lib.__deletePrefab(prefabName);
 			if(previewShown === prefabName) {
@@ -184,7 +186,7 @@ export default class PrefabsList extends React.Component {
 			,
 			R.btn('×', () => {
 				this.onPrefabDeleteClick(prefabName);
-			}, 'Delete scene...', 'danger-btn delete-scene-btn')
+			}, 'Delete prefab...', 'danger-btn delete-scene-btn')
 		
 		), item, prefabName, this)
 		);
