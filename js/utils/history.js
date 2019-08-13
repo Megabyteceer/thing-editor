@@ -24,6 +24,9 @@ function applyState(state) {
 		game.__setCurrentContainerContent(node);
 	}
 	editor.selection.loadSelection(state.selectionData);
+	game.stage.x = state.selectionData._stageX;
+	game.stage.y = state.selectionData._stageY;
+	game.stage.scale.x = game.stage.scale.y = state.selectionData._stageS;
 	lastAppliedTreeData = state.treeData;
 	historyUi.forceUpdate();
 	if(stateChanged) {
@@ -127,6 +130,9 @@ class History {
 
 	addHistoryState(selectionOnly = false) {
 		let selectionData = editor.selection.saveSelection();
+		selectionData._stageX = game.stage.x;
+		selectionData._stageY = game.stage.y;
+		selectionData._stageS = game.stage.scale.x;
 		if(!selectionOnly) {
 			this._redos.length = 0;
 		}
