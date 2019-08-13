@@ -24,6 +24,7 @@ class SelectEditor extends React.Component {
 	}
 
 	onMouseDown(ev) {
+		sp(ev);
 		if (ev.buttons === 2) {
 			editor.copyToClipboard(this.props.value);
 		}
@@ -80,7 +81,8 @@ class SelectEditor extends React.Component {
 		return R.div({
 			key: i.name,
 			className: 'select-item clickable',
-			onMouseDown: () => {
+			onMouseDown: (ev) => {
+				sp(ev);
 				this.onSelect(i);
 			}
 		}, i.name);
