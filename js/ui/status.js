@@ -101,7 +101,7 @@ export default class Status extends React.Component {
 	render() {
 		if(this.state.toggled && ((this.errors.length > 0) || (this.warns.length > 0))) {
 			Window.bringWindowForward('#window-info');
-			return editor.ui.renderWindow('info', 'Info Window', R.fragment(
+			return editor.ui.renderWindow('info', 'Notifications', R.fragment(
 				R.btn('×', this.clear, 'Hide all', 'close-window-btn'),
 				R.div({className:"status-body"},
 					React.createElement(InfoList, {ref: this.errorsListRef, id:'errors-list', title:'Errors:', icon: errorIcon, className:'info-errors-list info-list', list:this.errors, itemsMap:this.errorsMap}),
@@ -192,7 +192,7 @@ class InfoList extends React.Component {
 		R.btn('×', () => {
 			this.clearItem(item);
 			item = null;
-		}, undefined, 'clear-item-btn danger-btn')
+		}, "Hide notification", 'clear-item-btn danger-btn')
 		);
 	}
 
