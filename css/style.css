@@ -1304,6 +1304,9 @@ input{
 #window-texturesviewer .select-editor {
 	display: inline-block;
 }
+#window-texteditor .props-group-body {
+	padding: 0;
+}
 
 .textures-viewer-image {
 	background:url(../img/bg.png);

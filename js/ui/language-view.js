@@ -1,5 +1,6 @@
 import Window from './window.js';
 import L from "thing-engine/js/utils/l.js";
+import Group from './group.js';
 
 let languages;
 let langsIdsList;
@@ -279,7 +280,8 @@ class LanguageTableEditor extends React.Component {
 				})
 			));
 		});
-		
+		lines = Group.groupArray(lines, '.');
+
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
 			R.div(langsEditorWrapperProps, 
