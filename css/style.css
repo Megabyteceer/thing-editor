@@ -1301,6 +1301,9 @@ input{
 #window-texturesviewer .list-view {
 	top: 64px;
 }
+#window-texturesviewer .select-editor {
+	display: inline-block;
+}
 
 .textures-viewer-image {
 	background:url(../img/bg.png);

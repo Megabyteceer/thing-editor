@@ -10,12 +10,15 @@ import game from "thing-engine/js/game.js";
 	2 - early precache
 */
 
+const FILTER_ALL = 1000;
+const DEFAULT_LOADING = 1001;
+
 let view;
 
 const LOADING_TYPES = [
 	{
 		name:'default',
-		value:undefined
+		value:1001
 	},
 	{
 		name:'On Demand',
@@ -30,7 +33,7 @@ const LOADING_TYPES = [
 const FILTER_SELECT = LOADING_TYPES.slice();
 FILTER_SELECT.unshift({
 	name: 'All',
-	value: false
+	value: FILTER_ALL
 });
 
 let labelProps = {
@@ -98,7 +101,7 @@ class TexturesViewerBody extends React.Component {
 		super(props);
 		this.renderItem = this.renderItem.bind(this);
 		this.imagesRoot = '../../games/' + editor.currentProjectDir + 'img/';
-		this.state = {filter: false};
+		this.state = {filter: FILTER_ALL};
 		this.refreshView = this.refreshView.bind(this);
 	}
 
@@ -133,13 +136,14 @@ class TexturesViewerBody extends React.Component {
 			},
 			React.createElement(SelectEditor, {onChange:(ev) => {
 				if(opt[name] !== ev.target.value) {
-					if(ev.target.value) {
+					if(ev.target.value !== DEFAULT_LOADING) {
 						opt[name] = ev.target.value;
 						game.__loadDynamicTextures();
 					} else {
 						game.__loadImageIfUnloaded(name);
 						delete opt[name];
 					}
+					this.setState({filter: FILTER_ALL});
 					editor.saveProjectDesc();
 					this.forceUpdate();
 				}
@@ -179,7 +183,14 @@ class TexturesViewerBody extends React.Component {
 	}
 
 	render() {
-		let list = Lib.__texturesList.map(this.renderItem);
+		let list = Lib.__texturesList;
+		if(this.state.filter !== FILTER_ALL) {
+			let filter = this.state.filter;
+			list = list.filter((t) => {
+				return (editor.projectDesc.loadOnDemandTextures[t.name] || 1001) === filter;
+			});
+		}
+		list = list.map(this.renderItem);
 		let folders = {};
 		for(let i of list) {
 			let folderName = i.key.substring(0, i.key.lastIndexOf('/'));
@@ -193,7 +204,7 @@ class TexturesViewerBody extends React.Component {
 					React.createElement(SelectEditor, {onChange:(ev) => {
 						let opt = editor.projectDesc.__loadOnDemandTexturesFolders;
 						if(opt[folderName] !== ev.target.value) {
-							if(ev.target.value) {
+							if(ev.target.value !== DEFAULT_LOADING) {
 								let a = Object.keys(opt);
 								for(let f of a) {
 									if(f.startsWith(folderName + '/')) {
@@ -213,6 +224,7 @@ class TexturesViewerBody extends React.Component {
 								}
 							}
 							editor.saveProjectDesc();
+							this.setState({filter: FILTER_ALL});
 							this.forceUpdate();
 						}
 					}, value:editor.projectDesc.__loadOnDemandTexturesFolders[folderName], select: LOADING_TYPES}),
@@ -224,6 +236,7 @@ class TexturesViewerBody extends React.Component {
 		return R.div(null,
 			R.btn(R.icon('reload-assets'), editor.ui.viewport.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
 			R.span(null,
+				"Filter by loading mode: ",
 				React.createElement(SelectEditor, {onChange:(ev) => {
 					this.setState({filter: ev.target.value});
 				}, value:this.state.filter, select: FILTER_SELECT})
