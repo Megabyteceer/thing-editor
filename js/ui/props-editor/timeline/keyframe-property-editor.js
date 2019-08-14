@@ -3,13 +3,13 @@ import Timeline from "./timeline.js";
 import NumberEditor from "../number-editor.js";
 import SelectEditor from "../select-editor.js";
 
-const DEFAULT_GRAVITY = 1; //JUMP ROOF, JUMP FLOOR default gravity and boouncing
+const DEFAULT_GRAVITY = 1; //BOUNCE ⬆, BOUNCE ⬇ default gravity and boouncing
 const DEFAULT_BOUNCING = 0.4;
 
-// m - mode (0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - JUMP FLOOR, 4 - JUMP ROOF)
+// m - mode (0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - BOUNCE ⬇, 4 - BOUNCE ⬆)
 // v - target value
 
-// s - speed set
+// s - set speed
 
 // t - time
 // j - time to jump (loop time)
@@ -17,7 +17,7 @@ const DEFAULT_BOUNCING = 0.4;
 
 // a - action (callback)
 
-// g,b - gravity,bouncing for JUMP keyframes
+// g,b - gravity,bouncing for BOUNCE keyframes
 
 let instance;
 
@@ -69,7 +69,7 @@ export default class KeyframePropertyEditor extends React.Component {
 
 			let kf = k.props.keyFrame;
 			if(kf.m < 3) {
-				delete kf.b; //JUMP ROOF, JUMP FLOOR  gravity and boouncing delete
+				delete kf.b; //BOUNCE ⬆, BOUNCE ⬇  gravity and boouncing delete
 				delete kf.g;
 			} else {
 				if(!kf.hasOwnProperty('b')) {
@@ -99,7 +99,7 @@ export default class KeyframePropertyEditor extends React.Component {
 	onGravityChange(ev) {
 		let val = parseFloat(ev.target.value);
 		for(let k of this.keyframes) {
-			if(k.props.keyFrame.m > 2) { //3 - JUMP FLOOR, 4 - JUMP ROOF
+			if(k.props.keyFrame.m > 2) { //3 - BOUNCE ⬇, 4 - BOUNCE ⬆
 				k.props.keyFrame.g = val;
 			}
 		}
@@ -109,7 +109,7 @@ export default class KeyframePropertyEditor extends React.Component {
 	onBouncingChange(ev) {
 		let val = parseFloat(ev.target.value);
 		for(let k of this.keyframes) {
-			if(k.props.keyFrame.m > 2) { //3 - JUMP FLOOR, 4 - JUMP ROOF
+			if(k.props.keyFrame.m > 2) { //3 - BOUNCE ⬇, 4 - BOUNCE ⬆
 				k.props.keyFrame.b = val;
 			}
 		}
@@ -229,8 +229,20 @@ export default class KeyframePropertyEditor extends React.Component {
 
 		let selectableKeyframeTypes;
 
+
+		let speedSetPossible = false;
+		let speedVal = false;
+
+
 		for(let k of keyframes) {
-			let types = Timeline.getKeyframeTypesForField(editor.selection, k.props.owner.props.owner.props.field.n);
+
+			let fieldsProps = k.props.owner.props.owner.props;
+			speedSetPossible |= ((typeof fieldsProps.owner.props.node[fieldsProps.field.n]) === 'number');
+			if(speedVal === false && k.props.keyFrame.hasOwnProperty('s')) {
+				speedVal = k.props.keyFrame.s;
+			}
+
+			let types = Timeline.getKeyframeTypesForField(editor.selection, fieldsProps.field.n);
 			if(!selectableKeyframeTypes || (selectableKeyframeTypes.length > types.length) ) {
 				selectableKeyframeTypes = types;
 			}
@@ -249,7 +261,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		}
 		
 		let extendEditor;
-		if(kf.m > 2 ) { //JUMP ROOF, JUMP FLOOR
+		if(kf.m > 2 ) { //BOUNCE ⬆, BOUNCE ⬇
 			extendEditor = R.span(null,
 				' Gravity: ' ,React.createElement(NumberEditor, {value: kf.g, type:'number', step:0.0001, min: 0.0001, max: 10, onChange: this.onGravityChange}),
 				' Bouncing: ' ,React.createElement(NumberEditor, {value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
@@ -262,7 +274,7 @@ export default class KeyframePropertyEditor extends React.Component {
 			
 			extendEditor = R.span(null,
 				' Power: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 0.9, onChange: this.onPowChanged}),
-				' Dempt: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
+				' Damp: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
 				' Preset ' ,React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
 			);
 		}
@@ -271,7 +283,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		let speedEditor;
 		if(hasSpeed) {
 			let edFied = editor.getObjectField(editor.selection[0], kf.___view.props.owner.props.owner.props.field.n);
-			speedEditor = React.createElement(NumberEditor, {value: kf.s, type:'number', step:(edFied.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged});
+			speedEditor = React.createElement(NumberEditor, {value: speedVal, type:'number', step:(edFied.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 		}
 		let hasRandom =  kf.hasOwnProperty('r');
 		let randomEditor;
@@ -286,19 +298,19 @@ export default class KeyframePropertyEditor extends React.Component {
 		let jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
 
 		body = R.fragment(
-			' action: ',
+			' Action: ',
 			R.span({className: 'keyframe-callback-editor'},
 				React.createElement(CallbackEditor, {value:kf.a || null, onChange:this.onActionChange, title:'Callback for keyframe ' + kf.t})
 			),
 			' ',
 			React.createElement(SelectEditor, {onChange:this.onTypeSelect, value:kf.m, select: selectableKeyframeTypes}),
-			R.label({htmlFor:'speed-set-checkbox'}, ' speed set:'),
-			R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}),
+			speedSetPossible ? R.label({htmlFor:'speed-set-checkbox'}, ' Set speed:') : undefined,
+			speedSetPossible ? R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}) : undefined,
 			speedEditor,
-			R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer that defined on timeline'}, ' random time:'),
+			R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster'}, ' Time random:'),
 			R.input({id: 'random-set-checkbox', type:'checkbox', onChange: this.onSetRandomExistsChanged, checked:hasRandom}),
 			randomEditor,
-			R.label({htmlFor:'jump-time-checkbox'}, ' jump time:'),
+			R.label({htmlFor:'jump-time-checkbox'}, ' Loop:'),
 			jumpEditor,
 			jumpReset,
 			extendEditor
@@ -310,7 +322,7 @@ export default class KeyframePropertyEditor extends React.Component {
 	}
 }
 
-KeyframePropertyEditor.selectKeyframeTypes = ['SMOOTH', 'LINEAR', 'DISCRETE', 'JUPM FLOOR', 'JUMP ROOF'];
+KeyframePropertyEditor.selectKeyframeTypes = ['SMOOTH', 'LINEAR', 'DISCRETE', 'BOUNCE ⬇', 'BOUNCE ⬆'];
 
 const presets = [
 	{name : 'None', value:{}},

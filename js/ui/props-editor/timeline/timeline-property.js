@@ -45,7 +45,7 @@ export default class TimelineProperty extends React.Component {
 			timeline = editor.ui.renderWindow('timeline', 'Timeline',
 				R.div({title:''},
 					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
-				), 586, 650, 1260, 150, 1260, 407);
+				), 586, 650, 1270, 150, 1270, 407);
 		}
 		return R.fragment(btn, timeline);
 	}
