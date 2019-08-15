@@ -11,16 +11,13 @@ window.addEventListener('mousedown', (ev) => {
 				return;
 			}
 			if(t.dataset.help) {
-				latestClickedHelpURL = t.dataset.help;
-				if(!latestClickedHelpURL.startsWith('http')) {
-					latestClickedHelpURL = HELP_ROOT + latestClickedHelpURL;
-				}
+				Help.setCurrenHelp(t.dataset.help);
 				return;
 			}
 		}
 		t = t.parentNode;
 	}
-	latestClickedHelpURL = HELP_ROOT;
+	latestClickedHelpURL = HELP_ROOT + 'editor.Overview';
 }, true);
 
 export default class Help extends React.Component {
@@ -30,6 +27,13 @@ export default class Help extends React.Component {
 			errorCode = 90001;
 		}
 		editor.openUrl(HELP_ROOT + 'Error-Mesages#' + errorCode);
+	}
+
+	static setCurrenHelp(url) {
+		latestClickedHelpURL = url;
+		if(!latestClickedHelpURL.startsWith('http')) {
+			latestClickedHelpURL = HELP_ROOT + latestClickedHelpURL;
+		}
 	}
 
 	render() {

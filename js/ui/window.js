@@ -1,3 +1,5 @@
+import Help from "../utils/help.js";
+
 const contentProps = {
 	className: 'window-content'
 };
@@ -206,7 +208,8 @@ class Window extends React.Component {
 				top: this.state.y,
 				width: this.state.w,
 				height: this.state.h
-			}
+			},
+			'data-help': 'editor.' + this.props.helpId
 		},
 		R.div({
 			className: 'window-header',
@@ -266,10 +269,13 @@ class Window extends React.Component {
 	}
 }
 
-Window.bringWindowForward = (windowBody) => {
+Window.bringWindowForward = (windowBody, setCurrentHelp) => {
 	setTimeout(() => {
 		if(typeof windowBody === 'string') {
 			windowBody = document.querySelector(windowBody);
+		}
+		if(setCurrentHelp) {
+			Help.setCurrenHelp(windowBody.dataset.help);
 		}
 		Array.from(document.getElementsByClassName('window-body')).sort((a, b) => {
 			return a.style.zIndex - b.style.zIndex;

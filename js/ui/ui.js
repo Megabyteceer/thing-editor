@@ -30,8 +30,8 @@ R.btn = function (label, onClick, title = undefined, className = undefined, hotk
 	return React.createElement(EditorButton, {label, onClick, className, title, hotkey, disabled});
 };
 
-function renderWindow(id, title, content, x, y, minW, minH, w, h, onResize) {
-	return React.createElement(Window, {id, title, content, x, y, minW, minH, w, h, onResize});
+function renderWindow(id, helpId, title, content, x, y, minW, minH, w, h, onResize) {
+	return React.createElement(Window, {id, helpId, title, content, x, y, minW, minH, w, h, onResize});
 }
 
 class UI extends React.Component {
@@ -97,7 +97,7 @@ class UI extends React.Component {
 	}
 	
 	render() {
-		return R.div(null,
+		return R.div({"data-help": 'editor.MainMenu'},
 			R.btn('Open project...', editor.fs.chooseProject, undefined, 'menu-btn'),
 			R.btn('Build', editor.build, "Build release version of game.", 'menu-btn'),
 			R.btn('Build debug', () => {editor.build(true);}, "Build debug version of game.\nContains asserts.", 'menu-btn'),
@@ -107,19 +107,19 @@ class UI extends React.Component {
 			R.btn('Project settings', editor.openProjectDescToEdit, undefined, 'menu-btn'),
 			React.createElement(Help),
 
-			renderWindow('sceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),
-			renderWindow('viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),
+			renderWindow('sceneTree', 'SceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),
+			renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),
 				558, 0, 470, 420, 1362, 742, ()=>{
 					game._onContainerResize();
 				}),
-			renderWindow('propsEditor', 'Properties', React.createElement(PropsEditor, {
+			renderWindow('propsEditor', 'Properties', 'Properties', React.createElement(PropsEditor, {
 				ref: this.propsEditorRef,
 				onChange: editor.onSelectedPropsChange
 			}), 255, 35, 250, 250, 250, 500),
-			renderWindow('classesLib', 'Classes', React.createElement(ClassesView, {ref: this.classesListRef}), 0, 550, 250, 150, 250, 470),
-			renderWindow('prefabsList', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 255, 550, 250, 150, 250, 470),
-			renderWindow('scenesList', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
-			renderWindow('soundsList', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1194, 750, 200, 100, 360, 260),
+			renderWindow('classesLib', 'Classes', 'Classes', React.createElement(ClassesView, {ref: this.classesListRef}), 0, 550, 250, 150, 250, 470),
+			renderWindow('prefabsList', 'Prefabs', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 255, 550, 250, 150, 250, 470),
+			renderWindow('scenesList', 'Scenes', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
+			renderWindow('soundsList', 'Sounds', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1194, 750, 200, 100, 360, 260),
 			
 			React.createElement(Status, {ref: this.statusRef}),
 			React.createElement(Modal, {ref: this.modalRef})

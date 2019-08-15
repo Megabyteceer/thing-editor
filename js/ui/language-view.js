@@ -78,7 +78,7 @@ export default class LanguageView extends React.Component {
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
 		if(t) {
-			Window.bringWindowForward('#window-texteditor');
+			Window.bringWindowForward('#window-texteditor', true);
 		}
 	}
 	
@@ -86,7 +86,7 @@ export default class LanguageView extends React.Component {
 		let btn = R.btn(this.state.toggled ? 'Close Text Editor (Ctrl+E)' : 'Open Text Editor (Ctrl+E)', this.onToggleClick, undefined, 'menu-btn', 1069);
 		let table;
 		if(this.state.toggled) {
-			table = editor.ui.renderWindow('texteditor', 'Text Table', R.fragment(
+			table = editor.ui.renderWindow('texteditor', 'Text', 'Text Table', R.fragment(
 				R.btn('×', this.onToggleClick, 'Hide Text Editor', 'close-window-btn'),
 				React.createElement(LanguageTableEditor)), 200, 100, 620, 300, 900, 800);
 		}

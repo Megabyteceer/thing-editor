@@ -3,7 +3,7 @@ import Window from '../../window.js';
 
 function bingTimelineForward() {
 	Window.bringWindowForward('#window-propsEditor');
-	Window.bringWindowForward('#window-timeline');
+	Window.bringWindowForward('#window-timeline', true);
 }
 
 export default class TimelineProperty extends React.Component {
@@ -42,7 +42,7 @@ export default class TimelineProperty extends React.Component {
 		let btn = R.btn(this.state.toggled ? 'Close Timeline (Ctrl+L)' : 'Open timeline (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
 		let timeline;
 		if(this.state.toggled) {
-			timeline = editor.ui.renderWindow('timeline', 'Timeline',
+			timeline = editor.ui.renderWindow('timeline', 'Timeline', 'Timeline',
 				R.div({title:''},
 					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
 				), 586, 650, 1270, 150, 1270, 407);
