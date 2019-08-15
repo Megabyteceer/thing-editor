@@ -213,7 +213,7 @@ class TilemapEditor extends React.Component {
 				),
 				' Brush size: ',
 				React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size}),
-				R.btn('Clear', this.onClearClick, "Clear whole tilemap.")
+				R.btn('Clear map', this.onClearClick, "Clear whole tilemap.", 'danger')
 			);
 		}
 	}
