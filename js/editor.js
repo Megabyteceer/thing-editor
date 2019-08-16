@@ -60,7 +60,9 @@ export default class Editor {
 		
 		this.ClassesLoader = ClassesLoader;
 		this.AssetsLoader = AssetsLoader;
-		
+
+		this.callInitIfGameRuns = callInitIfGameRuns;
+
 		this.onUIMounted = this.onUIMounted.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
@@ -303,6 +305,7 @@ export default class Editor {
 			__getNodeExtendData(w).childsExpanded = true;
 			editor.validatePathReferences();
 			editor.sceneModified(true);
+			callInitIfGameRuns(w);
 		}
 	}
 
@@ -936,6 +939,23 @@ function addTo(parent, child, doNotselect) {
 	if(!doNotselect) {
 		editor.ui.sceneTree.selectInTree(child);
 		editor.sceneModified(true);
+	}
+	callInitIfGameRuns(child);
+}
+
+function __callInitIfNotCalled(node) {
+	assert(!game.__EDITORmode, "Attempt to init object in editor mode.");
+	let d = __getNodeExtendData(node);
+	if(!d.constructorCalled) {
+		node.init();
+		d.constructorCalled = true;
+	}
+}
+
+function callInitIfGameRuns(node) {
+	if(!game.__EDITORmode) {
+		__callInitIfNotCalled(node);
+		node.forAllChildren(__callInitIfNotCalled);
 	}
 }
 
