@@ -1,8 +1,8 @@
 import PropsFieldWrapper from "./props-field-wrapper.js";
-import Lib from "thing-engine/js/lib.js";
 import DisplayObject from "thing-engine/js/components/display-object.js";
 import game from "thing-engine/js/game.js";
 import CallbackEditor from "./callback-editor.js";
+import {getLatestSceneNodeBypath} from "thing-engine/js/utils/get-value-by-path.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
@@ -15,10 +15,21 @@ export default class DataPathEditor extends React.Component {
 		super(props);
 		this.onEditClicked = this.onEditClicked.bind(this);
 		this.onBreakpointClick = this.onBreakpointClick.bind(this);
+		this.onGotoTargetClick = this.onGotoTargetClick.bind(this);
 	}
 
 	static isFunctionIsClass(f) {
 		return f.name && (f.name[0] !== f.name.toLowerCase()[0]);
+	}
+
+	onGotoTargetClick() {
+		game.currentScene._refreshAllObjectRefs();
+		let node = getLatestSceneNodeBypath(this.props.value, editor.selection[0]);
+		if(node) {
+			editor.ui.sceneTree.selectInTree(node);
+		} else {
+			editor.ui.modal.notify('Not targets to display object.');
+		}
 	}
 	
 	onBreakpointClick() {
@@ -104,10 +115,16 @@ export default class DataPathEditor extends React.Component {
 			chooseBtn = R.btn('...', this.onEditClicked, 'Start data source choosing', 'tool-btn');
 		}
 
+		let gotoButton;
+		if(val) {
+			gotoButton = R.btn('🡒', this.onGotoTargetClick, 'Find target object', 'tool-btn' );
+		}
+
 		return R.div(fieldEditorWrapperProps,
 			R.input({className:'props-editor-callback', onChange: this.props.onChange, disabled:this.props.disabled, title:val, value: val || ''}),
 			breakpointBtn,
-			chooseBtn
+			chooseBtn,
+			gotoButton
 		);
 	}
 
