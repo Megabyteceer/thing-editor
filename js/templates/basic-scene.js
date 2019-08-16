@@ -1,6 +1,6 @@
 // this class automaticly generated with Thing-Editor's component's Wizard,
 // and contain full list of scene's methods, include scene
-// For details: https:// TODO:
+// For details: https://github.com/Megabyteceer/thing-editor/wiki/Custom-Comonents#custom-component-methods
 
 import BASE_CLASS_NAME from "BASE_CLASS_PATH";
 
