@@ -30,6 +30,15 @@ export default class tilemapEditorRenderer extends React.Component {
 	}
 }
 
+const hoverRect = {};
+const hoverRectPropsMock = {
+	field: {
+		name: 'tilemap_hower_rect',
+		color: 0x55aa55
+	}
+
+};
+
 let viewport;
 let isSetting;
 let isErasing;
@@ -47,6 +56,7 @@ class TilemapEditor extends React.Component {
 		super(props);
 		this.onMouseDown = this.onMouseDown.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
+		this.onMouseOut = this.onMouseOut.bind(this);
 		this.onMouseUp = this.onMouseUp.bind(this);
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onTypeChange = this.onTypeChange.bind(this);
@@ -62,6 +72,7 @@ class TilemapEditor extends React.Component {
 		viewport = document.querySelector('#viewport-root canvas');
 		viewport.addEventListener('mousedown', this.onMouseDown);
 		viewport.addEventListener('mousemove', this.onMouseMove);
+		viewport.addEventListener('mouseout', this.onMouseOut);
 		viewport.addEventListener('mouseup', this.onMouseUp);
 		window.addEventListener('keydown', this.onKeyDown);
 		editor.overlay.disableSelection(true);
@@ -73,6 +84,7 @@ class TilemapEditor extends React.Component {
 		editor.overlay.disableSelection(false);
 		viewport.removeEventListener('mousedown', this.onMouseDown);
 		viewport.removeEventListener('mousemove', this.onMouseMove);
+		viewport.removeEventListener('mouseout', this.onMouseOut);
 		viewport.removeEventListener('mouseup', this.onMouseUp);
 		window.removeEventListener('keydown', this.onKeyDown);
 		isSetting = false;
@@ -164,17 +176,35 @@ class TilemapEditor extends React.Component {
 		}
 	}
 
+	onMouseOut() {
+		editor.overlay.drawRect(hoverRectPropsMock, getTilemap());
+	}
+
 	onMouseMove(ev) {
+		
+		let tilemap = getTilemap();
+
+		let p = tilemap.toLocal(game.__mouse_EDITOR);
+		
+		
+		var X = p.x / tilemap.tileW;
+		var Y = p.y / tilemap.tileH;
+		let size = this.state.size;
+
+		hoverRect.x = Math.floor(X - Math.floor(size / 2)) * tilemap.tileW;
+		hoverRect.y = Math.floor(Y - Math.floor(size / 2)) * tilemap.tileH;
+		hoverRect.w = size  * tilemap.tileW;
+		hoverRect.h = size  * tilemap.tileH;
+
+		editor.overlay.drawRect(hoverRectPropsMock, tilemap, hoverRect);
+
+
 		if(ev.buttons === 0) {
 			isErasing = false;
 			isSetting = false;
 			return;
 		}
 		if(isErasing || isSetting) {
-			let p = getTilemap().toLocal(game.__mouse_EDITOR);
-			
-			var X = p.x / getTilemap().tileW;
-			var Y = p.y / getTilemap().tileH;
 			this.setTile(X, Y, isErasing ? -1 : this.state.type);
 		}
 	}
