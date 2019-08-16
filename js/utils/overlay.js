@@ -119,6 +119,14 @@ export default class Overlay {
 		}
 	}
 
+	guideAngle(a, from) {
+		guideSprite.rotation = a;
+		guideSprite.scale.x = 100;
+		guideSprite.scale.y = 0.1;
+		from.toGlobal({x:0, y:0}, guideSprite);
+		showGuideSprite();
+	}
+
 	guideX(x, from) {
 		let tx = from.scale.x;
 		let ty = from.scale.y;
@@ -129,13 +137,7 @@ export default class Overlay {
 		from.toGlobal({x, y:0}, guideSprite);
 		from.scale.x = tx;
 		from.scale.y = ty;
-		game.stage.parent.addChild(guideSprite);
-		clearTimeout(guideSpriteTimeout);
-		guideSpriteTimeout = setTimeout(() => {
-			if(guideSprite.parent) {
-				guideSprite.parent.removeChild(guideSprite);
-			}
-		}, 2000);
+		showGuideSprite();
 	}
 
 	guideY(y, from) {
@@ -148,13 +150,7 @@ export default class Overlay {
 		from.toGlobal({x:0, y}, guideSprite);
 		from.scale.x = tx;
 		from.scale.y = ty;
-		game.stage.parent.addChild(guideSprite);
-		clearTimeout(guideSpriteTimeout);
-		guideSpriteTimeout = setTimeout(() => {
-			if(guideSprite.parent) {
-				guideSprite.parent.removeChild(guideSprite);
-			}
-		}, 2000);
+		showGuideSprite();
 	}
 	
 	showPreview(object) {
@@ -235,6 +231,16 @@ const guideSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
 guideSprite.anchor.x = 0.5;
 guideSprite.anchor.y = 0.5;
 let guideSpriteTimeout;
+
+function showGuideSprite() {
+	game.stage.parent.addChild(guideSprite);
+	clearTimeout(guideSpriteTimeout);
+	guideSpriteTimeout = setTimeout(() => {
+		if(guideSprite.parent) {
+			guideSprite.parent.removeChild(guideSprite);
+		}
+	}, 500);
+}
 
 const highlightFilter = new PIXI.filters.OutlineFilter(2, 0xff0000);
 
@@ -512,6 +518,7 @@ class Dragger extends DSprite {
 				let len = Math.sqrt(dX * dX + dY * dY);
 				p.x = startX + Math.cos(angle) * len;
 				p.y = startY + Math.sin(angle) * len;
+				editor.overlay.guideAngle(angle, o);
 			} else {
 				p.x = game.mouse.__EDITOR_x + shiftX;
 				p.y = game.mouse.__EDITOR_y + shiftY;
