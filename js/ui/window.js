@@ -274,7 +274,7 @@ Window.bringWindowForward = (windowBody, setCurrentHelp) => {
 		if(typeof windowBody === 'string') {
 			windowBody = document.querySelector(windowBody);
 		}
-		if(setCurrentHelp) {
+		if(setCurrentHelp && windowBody) {
 			Help.setCurrenHelp(windowBody.dataset.help);
 		}
 		Array.from(document.getElementsByClassName('window-body')).sort((a, b) => {
