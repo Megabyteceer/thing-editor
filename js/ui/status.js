@@ -157,7 +157,7 @@ class InfoList extends React.Component {
 				if(!exData.alertRefs || !exData.alertRefs.has(item)) {
 					let newOwnerFinded;
 
-					game.forAllChildrenEwerywhere((o) => {
+					game.forAllChildrenEverywhere((o) => {
 						if(o.constructor === item.owner.constructor && o.___id === item.ownerId) {
 							if(!newOwnerFinded) {
 								item.owner = o;

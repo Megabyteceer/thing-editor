@@ -176,15 +176,15 @@ function enumClassProperties(c) {
 		}
 		if (cc.hasOwnProperty('__EDITOR_editableProps')) {
 			cc.__EDITOR_editableProps.some((p) => {
-				assert(p.name, 'Class ' + c.name + ' has roperty with no name defined', 40001);
-				assert(p.type, 'Class ' + c.name + ' has roperty "' + p.name + '" with no type defined.', 40002);
+				assert(p.name, 'Class ' + c.name + ' has property with no name defined', 40001);
+				assert(p.type, 'Class ' + c.name + ' has property "' + p.name + '" with no type defined.', 40002);
 				let ownerClassName = c.name + ' (' + path + ')';
 				p.owner = ownerClassName;
 				
 				props = props.filter((pp) => {
 					if(pp.name === p.name) {
 						if(!pp.override) {
-							editor.ui.modal.showError('Redefenition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner, 40004);
+							editor.ui.modal.showError('Redefinition of property "' + p.name + '" at class ' + ownerClassName + '. Already defined at: ' + pp.owner, 40004);
 							editor.editClassSource(cc);
 						} else {
 							p = Object.assign({}, p, pp);
@@ -269,7 +269,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				showError(R.fragment(
 					'Attempt to load: ' + loadedPath + ': ' + message,
 					R.div({className: 'error-body'}, fn + ' (' + lineno + ':' + colno + ')', R.br(), message),
-					'Plese fix error in source code and press button to try again:'
+					'Please fix error in source code and press button to try again:'
 				), 30009);
 			};
 		
@@ -286,7 +286,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			let script = document.createElement('script');
 			editor.ui.modal.showSpinner();
 			script.onerror = function() {
-				showError("Can not load script; Please check Broswer's console for error details, and fix problem to continue.", 31001);
+				showError("Can not load script; Please check Browser's console for error details, and fix problem to continue.", 31001);
 				script.onload();
 			};
 			script.onload = function() {

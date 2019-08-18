@@ -54,7 +54,7 @@ class Selection extends Array {
 	
 	add(o) {
 		assert(!__getNodeExtendData(o).isSelected, "Node is selected already.");
-		assert(this.indexOf(o) < 0, "Node is registred in selected list already.");
+		assert(this.indexOf(o) < 0, "Node is registered in selected list already.");
 		__getNodeExtendData(o).isSelected = true;
 		let p = o.parent;
 		while(p && p !== game.stage) {
@@ -81,7 +81,7 @@ class Selection extends Array {
 	remove(o) {
 		assert(__getNodeExtendData(o).isSelected, "Node is not selected.");
 		let i = this.indexOf(o);
-		assert(i >= 0, "Node is not registred in selected list.");
+		assert(i >= 0, "Node is not registered in selected list.");
 		__getNodeExtendData(o).isSelected = false;
 		if(!(o instanceof Tilemap)) {
 			o.removeFilter(selectionFilter);

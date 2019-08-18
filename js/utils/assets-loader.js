@@ -19,7 +19,7 @@ const enumAssets = (onlyThisFiles) => {
 	game.pixiApp.stop();
 
 	let tmp = new Map();
-	game.forAllChildrenEwerywhere((o) => {
+	game.forAllChildrenEverywhere((o) => {
 		if(o.image && (!onlyThisFiles || onlyThisFiles.has(o.image))) {
 			tmp.set(o, o.image);
 			o.image = 'EMPTY';

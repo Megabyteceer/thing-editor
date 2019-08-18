@@ -84,7 +84,7 @@ array of {name: 'Readable Name', value: 1} objects to select values from ad drop
  true - if field should be highlighted in editor
 
 ### override:
- true - if field with same name already registred in super class, and need to redefine its appearance
+ true - if field with same name already registered in super class, and need to redefine its appearance
 
 ### visible:
  function(selected object) {

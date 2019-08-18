@@ -555,7 +555,7 @@ export default class Editor {
 		}
 	}
 	
-	centraliseObjectToContent (o) {
+	centralizeObjectToContent (o) {
 		if(!o.children.length) {
 			return;
 		}

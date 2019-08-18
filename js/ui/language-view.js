@@ -301,7 +301,7 @@ function refreshCachedData() {
 		return (langIdPriority(a) > langIdPriority(b)) ? 1 : -1;
 	});
 	oneLanguageTable = languages[langsIdsList[0]];
-	assert(oneLanguageTable, "No localisation data loaded.");
+	assert(oneLanguageTable, "No localization data loaded.");
 	idsList = Object.keys(oneLanguageTable);
 	let idsForDropdown = idsList;
 	if(externalLangsData) {
@@ -335,7 +335,7 @@ function onModified() {
 	}
 	
 	_outjump = setTimeout(() => {
-		L.fefreshAllTextEwerywhere();
+		L.fefreshAllTextEverywhere();
 		for(let id in languages) {
 			let content = L.__serializeLanguage(languages[id]);
 			editor.fs.saveFile(editor.projectDesc.localesPath + '/' + id + '.json', content, true);
