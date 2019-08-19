@@ -1,5 +1,9 @@
 function renderGroup(props) {
 	let gid = 'props-group-' + props.key;
+					
+	const nameChecker = /[^a-zA-Z_\.\-]/gm;
+	assert(!props.key.match(nameChecker), 'Group name "' + props.key + '" contains wrong symbols', 99999);
+
 	return R.div({key: gid, className: 'props-group ' + gid},
 		R.div({
 			className: 'props-group-header clickable clickable-neg',
