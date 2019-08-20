@@ -724,8 +724,8 @@ export default class Editor {
 	rememberPathReferences() {
 		_validateRefEntryOldName = null;
 		_validateRefEntryNewName = null;
-		if(game.currentContainer instanceof Scene) {
-			game.currentContainer._refreshAllObjectRefs();
+		if(game.currentScene) {
+			game.currentScene._refreshAllObjectRefs();
 		}
 		refs = new Map();
 		_rememberPathReference(game.currentContainer);
