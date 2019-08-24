@@ -17,14 +17,13 @@ import build from "./utils/build.js";
 import LanguageView from "./ui/language-view.js";
 import Timeline from "./ui/props-editor/timeline/timeline.js";
 import DisplayObject from 'thing-engine/js/components/display-object.js';
-import {getLatestSceneNodeBypath} from 'thing-engine/js/utils/get-value-by-path.js';
 import Scene from 'thing-engine/js/components/scene.js';
 import ClassesView from './ui/classes-view.js';
 import TexturesView from './ui/textures-view.js';
-import MovieClip from 'thing-engine/js/components/movie-clip/movie-clip.js';
 import PrefabReference from 'thing-engine/js/components/prefab-reference.js';
 import Tilemap from 'thing-engine/js/components/tilemap.js';
 import defaultTilemapProcessor from './utils/default-tilemap-processor.js';
+import DataPathFixer from './utils/data-path-fixer.js';
 
 let isFirstClassesLoading = true;
 
@@ -230,7 +229,7 @@ export default class Editor {
 			this.ui.forceUpdate();
 		});
 	}
-
+	
 	openUrl(url) {
 		if(!window.open(url)) {
 			editor.ui.modal.showModal(R.div(null,
@@ -267,7 +266,7 @@ export default class Editor {
 				editor.ui.modal.showModal("Scene can not be wrapped, you can change scene's type instead.", 'Alert');
 				return;
 			}
-			editor.rememberPathReferences();
+			DataPathFixer.rememberPathReferences();
 			let isPrefab = o === game.currentContainer;
 			let prefabName = game.currentContainer.name;
 			
@@ -303,7 +302,7 @@ export default class Editor {
 			editor.selection.clearSelection();
 			editor.ui.sceneTree.selectInTree(w);
 			__getNodeExtendData(w).childsExpanded = true;
-			editor.validatePathReferences();
+			DataPathFixer.validatePathReferences();
 			editor.sceneModified(true);
 			callInitIfGameRuns(w);
 		}
@@ -442,7 +441,7 @@ export default class Editor {
 				field = editor.getObjectField(this.selection[0], field);
 			}
 			if(field.name === 'name') {
-				editor.rememberPathReferences();
+				DataPathFixer.rememberPathReferences();
 			}
 
 			for(let o of this.selection) {
@@ -452,9 +451,7 @@ export default class Editor {
 				field.afterEdited();
 			}
 			if(field.name === 'name') {
-				_validateRefEntryOldName = oldVals;
-				_validateRefEntryNewName = val;
-				editor.validatePathReferences(oldVals, val);
+				DataPathFixer.validatePathReferences(oldVals, val);
 			}
 		}
 	}
@@ -722,17 +719,6 @@ export default class Editor {
 		}
 	}
 
-	rememberPathReferences() {
-		_validateRefEntryOldName = null;
-		_validateRefEntryNewName = null;
-		if(game.currentScene) {
-			game.currentScene._refreshAllObjectRefs();
-		}
-		refs = new Map();
-		_rememberPathReference(game.currentContainer);
-		game.currentContainer.forAllChildren(_rememberPathReference);
-	}
-
 	getFieldNameByValue(node, fieldValue) {
 		for(let p of this.enumObjectsProperties(node)) {
 			if(node[p.name] === fieldValue) {
@@ -740,190 +726,7 @@ export default class Editor {
 			}
 		}
 	}
-	
-	validatePathReferences() {
-		if(game.currentContainer instanceof Scene) {
-			game.currentContainer._refreshAllObjectRefs();
-		}
-		refs.forEach(validateRefEntry);
-	}
 }
-
-let _validateRefEntryOldName;
-let _validateRefEntryNewName;
-
-const tryToFixDataPath = (node, fieldname, path, oldRef) => {
-	if(!oldRef || !oldRef.parent) {
-		return;
-	}
-	let fn = fieldname.split(',');
-	let keyframe;
-	if(fn.length > 1) {
-		//it is keyframe action
-		for(let f of node._timelineData.f) {
-			if(f.n === fn[1]) {
-				let targetTime = parseInt(fn[2]);
-				for(let kf of f.t) {
-					if(kf.t == targetTime) {
-						keyframe = kf;
-						break;
-					}
-				}
-				break;
-			}
-		}
-	}
-
-	let repairNode;
-	let newPath = path;
-	if(_validateRefEntryOldName) { //it is was renaming. try to fix .#names
-		for(let oldName of _validateRefEntryOldName) {
-			if(oldName) {
-				let pathFixer = new RegExp('\\.#' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
-				let pathFixer2 = new RegExp('\.all\.' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
-				let pathFixer3 = new RegExp('^all\.' + oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(\.|`|$)');
-				newPath = newPath.replace(pathFixer, '\.#' + _validateRefEntryNewName + '$1');
-				newPath = newPath.replace(pathFixer2, '\.all\.' + _validateRefEntryNewName + '$1');
-				newPath = newPath.replace(pathFixer3, 'all\.' + _validateRefEntryNewName + '$1');
-			}
-		}
-		repairNode = getLatestSceneNodeBypath(newPath, node);
-	} else { //node added or removed
-
-		let pathParts = path.split('.');
-		for(let i = 0; i < pathParts.length;) { //try to remove one of the part of chain
-			i++;
-			let a = pathParts.slice(0);
-			a.splice(i, 1);
-			newPath = a.join('.');
-			repairNode = getLatestSceneNodeBypath(newPath, node, true);
-			if(repairNode === oldRef) {
-				break;
-			}
-		}
-
-		if(repairNode !== oldRef) { //try to insert "parent" somwhere in chain
-			for(let i = 0; i < pathParts.length;) { 
-				i++;
-				let a = pathParts.slice(0);
-				a.splice(i, 0, 'parent');
-				newPath = a.join('.');
-				repairNode = getLatestSceneNodeBypath(newPath, node, true);
-				if(repairNode === oldRef) {
-					break;
-				}
-			}
-		}
-
-		if(repairNode !== oldRef) { //try to insert new name somwhere in chain
-			let changedNode = editor.selection[0];
-			let changedName = changedNode.name;
-			if(!changedName) {
-				changedName = 'new' + changedNode.constructor.name;
-				let i = 1;
-				while(changedNode.parent.getChildByName(changedName + i)){
-					i++;
-				}
-				changedName += i;
-				changedNode.name = changedName;
-				Lib.__invalidateSerialisationCache(changedNode);
-				setTimeout(() => {
-					editor.ui.propsEditor.selectField('name', true, true);
-				}, 1);
-			}
-			changedName = '#' + changedName;
-			for(let i = 0; i < pathParts.length;) { 
-				i++;
-				let a = pathParts.slice(0);
-				a.splice(i, 0, changedName);
-				newPath = a.join('.');
-				repairNode = getLatestSceneNodeBypath(newPath, node, true);
-				if(repairNode === oldRef) {
-					break;
-				}
-			}
-		}
-	}
-	if(repairNode === oldRef) {
-		if(keyframe) {
-			keyframe.a = newPath;
-		} else {
-			node[fieldname] = newPath;
-		}
-		Lib.__invalidateSerialisationCache(node);
-		if(node instanceof MovieClip) {
-			MovieClip.invalidateSerializeCache(node);
-		}
-		return true;
-	}
-};
-
-
-function _rememberPathReference(o) {
-	let props = editor.enumObjectsProperties(o);
-	let m = null;
-
-	const rememberRef = (path, name) => {
-		if(path) {
-			let targetNode = getLatestSceneNodeBypath(path, o);
-			if(!m) {
-				m = {};
-				refs.set(o, m);
-			}
-			m[name] = {targetNode, path};
-		}
-	};
-	for(let p of props) {
-		if(p.type === 'data-path' || p.type === 'callback') {
-			rememberRef(o[p.name], p.name);
-		} else if(p.type === 'timeline') {
-			let timeline = o[p.name];
-			if(timeline) {
-				for(let field of timeline.f) {
-					for(let k of field.t) {
-						if(k.a) {
-							rememberRef(k.a, p.name + ',' + field.n + ',' + k.t);
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-const validateRefEntry = (m, o) => {
-	if(o.parent) {
-		for(let fieldname in m) {
-
-			let item = m[fieldname];
-			let path = item.path;
-			let oldRef = item.targetNode;
-			let currentRef = getLatestSceneNodeBypath(path, o);
-			
-			if(currentRef !== oldRef) {
-				if(tryToFixDataPath(o, fieldname, path, oldRef)) {
-					continue;
-				}
-				let was;
-				if(oldRef instanceof DisplayObject) {
-					was = R.sceneNode(oldRef);
-				} else {
-					was = '' + oldRef;
-				}
-				let become;
-				if(currentRef instanceof DisplayObject) {
-					become = R.sceneNode(currentRef);
-				} else {
-					become = '' + currentRef;
-				}
-
-				editor.ui.status.warn(R.span(null, 'Path reference (' + path + ') is affected: Was: ', was, ' Become: ', become), 30026, o, fieldname);
-			}
-		}
-	}
-};
-
-let refs;
 
 function saveCurrentSceneName(name) {
 	if(editor.projectDesc.__lastSceneName !== name) {

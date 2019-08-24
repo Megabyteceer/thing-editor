@@ -26,7 +26,7 @@ export default class Help extends React.Component {
 		if(!errorCode) {
 			errorCode = 90001;
 		}
-		editor.openUrl(HELP_ROOT + 'Error-Mesages#' + errorCode);
+		editor.openUrl(HELP_ROOT + 'Error-Messages#' + errorCode);
 	}
 
 	static setCurrenHelp(url) {

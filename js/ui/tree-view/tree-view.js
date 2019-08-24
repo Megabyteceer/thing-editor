@@ -4,6 +4,7 @@ import game from "thing-engine/js/game.js";
 import Selection from "../../utils/selection.js";
 import Lib from "thing-engine/js/lib.js";
 import Scene from 'thing-engine/js/components/scene.js';
+import DataPathFixer from 'thing-editor/js/utils/data-path-fixer.js';
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};
@@ -65,7 +66,7 @@ export default class TreeView extends React.Component {
 	onDeleteClick() {
 		if((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
 			
-			editor.rememberPathReferences();
+			DataPathFixer.rememberPathReferences();
 			
 			let p = editor.selection[0].parent;
 			let i = p.getChildIndex(editor.selection[0]);
@@ -87,7 +88,7 @@ export default class TreeView extends React.Component {
 				this.selectInTree(p);
 			}
 
-			editor.validatePathReferences();
+			DataPathFixer.validatePathReferences();
 
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
@@ -108,7 +109,7 @@ export default class TreeView extends React.Component {
 	onUnwrapClick() {
 		if(this.isCanBeUnwrapped()) {
 
-			editor.rememberPathReferences();
+			DataPathFixer.rememberPathReferences();
 
 			let o = editor.selection[0];
 			let parent = o.parent;
@@ -147,7 +148,7 @@ export default class TreeView extends React.Component {
 				o.remove();
 			}
 			
-			editor.validatePathReferences();
+			DataPathFixer.validatePathReferences();
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 		}
