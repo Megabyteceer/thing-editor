@@ -95,12 +95,24 @@ class UI extends React.Component {
 	modalRef(ref) {
 		this.modal = ref;
 	}
+
+	onBuildClick() {
+		editor.build();
+	}
+
+	onBuildDebugClick() {
+		editor.build(true);
+	}
+	
+	onOpenProjectClick() {
+		editor.fs.chooseProject();
+	}
 	
 	render() {
 		return R.div({"data-help": 'editor.MainMenu'},
-			R.btn('Open project...', editor.fs.chooseProject, undefined, 'menu-btn'),
-			R.btn('Build', editor.build, "Build release version of game.", 'menu-btn'),
-			R.btn('Build debug', () => {editor.build(true);}, "Build debug version of game.\nContains asserts.", 'menu-btn'),
+			R.btn('Open project...', this.onOpenProjectClick, undefined, 'menu-btn'),
+			R.btn('Build', this.onBuildClick, "Build release version of game.", 'menu-btn'),
+			R.btn('Build debug', this.onBuildDebugClick, "Build debug version of game.\nContains asserts.", 'menu-btn'),
 			React.createElement(LanguageView),
 			React.createElement(TexturesView),
 			editor.history.buttonsRenderer(),

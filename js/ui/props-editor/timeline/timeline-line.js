@@ -22,6 +22,7 @@ export default class Line extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.onMouseDown = this.onMouseDown.bind(this);
 		this.renderKeyframe = this.renderKeyframe.bind(this);
 		this.renderKeyframeChart = this.renderKeyframeChart.bind(this);
 	}
@@ -95,6 +96,12 @@ export default class Line extends React.Component {
 		}
 	}
 
+	onMouseDown(ev) {
+		if(ev.buttons === 2 && !ev.ctrlKey) {
+			this.props.owner.togleKeyframe(Timeline.mouseEventToTime(ev));
+		}
+	}
+
 	render() {
 		widthZoom = this.props.owner.props.owner.props.widthZoom;
 		heightZoom = this.props.owner.props.owner.props.heightZoom;
@@ -145,11 +152,7 @@ export default class Line extends React.Component {
 
 		return R.div(
 			{
-				style:{width, height}, onMouseDown:(ev) =>{
-					if(ev.buttons === 2 && !ev.ctrlKey) {
-						this.props.owner.onToggleKeyframeClick(Timeline.mouseEventToTime(ev));
-					}
-				}},
+				style:{width, height}, onMouseDown:this.onMouseDown},
 			keyframes,
 			loopPopints,
 			chartsCache.get(field),

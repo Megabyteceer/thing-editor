@@ -11,6 +11,7 @@ export default class FieldsTimeline extends React.Component {
 		this.onGoLeftClick = this.onGoLeftClick.bind(this);
 		this.onGoRightClick = this.onGoRightClick.bind(this);
 		this.onToggleKeyframeClick = this.onToggleKeyframeClick.bind(this);
+		this.togleKeyframe = this.togleKeyframe.bind(this);
 		props.field.___view = this;
 	}
 
@@ -37,12 +38,15 @@ export default class FieldsTimeline extends React.Component {
 		}
 	}
 
-	onToggleKeyframeClick(time) {
+	onToggleKeyframeClick() {
+		this.togleKeyframe(this.props.owner.props.owner.getTime());
+	}
+
+	togleKeyframe(time) {
 		let field = this.props.field;
-		let currentTime = (typeof time === "string") ? time : this.props.owner.props.owner.getTime();
-		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
-		if(currentKeyframe.t !== currentTime) {
-			this.props.owner.createKeyframeWithTimelineValue(field, currentTime);
+		let currentKeyframe = MovieClip._findNextKeyframe(field.t, time-1);
+		if(currentKeyframe.t !== time) {
+			this.props.owner.createKeyframeWithTimelineValue(field, time);
 			this.forceUpdateDebounced();
 		} else {
 			this.deleteKeyframe(currentKeyframe);

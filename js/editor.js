@@ -460,6 +460,7 @@ export default class Editor {
 	}
 
 	onObjectsPropertyChanged(o, field, val, delta) {
+		assert((!delta) || (typeof delta === 'boolean'), "Delta expected to be bool");
 		let changed = false;
 		if(typeof field === 'string') {
 			field = editor.getObjectField(o, field);
@@ -467,7 +468,7 @@ export default class Editor {
 		
 		this.beforePropertyChanged.emit(field.name, field);
 		
-		if(delta === true) {
+		if(delta) {
 			assert(field.type === Number, "editable field descriptor type: Number expected");
 
 			let v = o[field.name];
@@ -549,7 +550,7 @@ export default class Editor {
 	sceneModified(saveImmidiatly) {
 		if(game.__EDITORmode) {
 			needHistorySave = true;
-			if(saveImmidiatly === true) {
+			if(saveImmidiatly) {
 				sheduleHistorySave();
 			}
 		}

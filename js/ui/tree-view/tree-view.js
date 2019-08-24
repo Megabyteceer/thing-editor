@@ -43,7 +43,7 @@ export default class TreeView extends React.Component {
 	
 	selectInTree(node, add) {
 		assert(node, "Attempt to select in tree empty node");
-		editor.selection.select(node, add === true);
+		editor.selection.select(node, add);
 		setTimeout(() => {
 			
 			if(foundByWhichProperty && foundByWhichProperty.has(node) && !add) {

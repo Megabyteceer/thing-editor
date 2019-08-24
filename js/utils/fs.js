@@ -4,7 +4,7 @@ let fs = {
 	chooseProject: (enforced) => {
 		editor.ui.viewport.stopExecution();
 		fs.getJSON('/fs/projects').then((data) => {
-			editor.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced === true)
+			editor.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced)
 				.then((projDir) => {
 					if(projDir) {
 						editor.openProject(projDir);

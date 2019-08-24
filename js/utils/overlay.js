@@ -218,7 +218,7 @@ export default class Overlay {
 			game.settings.setItem('prefab-selection' + game.currentContainer.name, selectionData);	
 			game.hideModal(game.currentContainer);
 			isPreviewShowed = null;
-			if(refresh === true) {
+			if(refresh) {
 				editor.refreshTreeViewAndPropertyEditor();
 			}
 			editor.history.updateUi();

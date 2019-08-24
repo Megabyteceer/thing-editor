@@ -112,7 +112,7 @@ class PropsFieldWrapper extends React.Component {
 	}
 	
 	onChange(ev, delta, deltaVal) {
-		delta = (delta === true);
+		assert((!delta) || (typeof delta === 'boolean'), "Delta expected to be bool");
 		let field = this.props.field;
 		let val = getTypeDescription(field).parser(ev.target);
 		if(field.hasOwnProperty('parser')){
