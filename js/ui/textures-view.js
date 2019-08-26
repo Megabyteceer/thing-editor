@@ -100,9 +100,10 @@ class TexturesViewerBody extends React.Component {
 	constructor(props) {
 		super(props);
 		this.renderItem = this.renderItem.bind(this);
-		this.imagesRoot = '../../games/' + editor.currentProjectDir + 'img/';
+		this.imagesRoot = '/games/' + editor.currentProjectDir + 'img/';
 		this.state = {filter: FILTER_ALL};
 		this.refreshView = this.refreshView.bind(this);
+		this.checkForUnusedImages = this.checkForUnusedImages.bind(this);
 	}
 
 	refreshView() {
@@ -165,11 +166,11 @@ class TexturesViewerBody extends React.Component {
 		} else {
 			size = '(unloaded)';
 		}
-		let path = this.imagesRoot + name + '?noCache=' + Lib.__noCacheCounter;
+		let path = this.getImagePath(name) + '?noCache=' + Lib.__noCacheCounter;
+		
 		return R.div({key:name, className:isOnDemandLoading ? 'textures-viewer-item redframe' : 'textures-viewer-item'},
 			R.img({src: path, className:'textures-viewer-image', onDoubleClick:() => {
 				editor.fs.editFile(path.split('?')[0]);
-
 			},
 			onDragStart(ev) {
 				ev.dataTransfer.setData("text/thing-editor-image-id", name);
@@ -180,6 +181,10 @@ class TexturesViewerBody extends React.Component {
 			size,
 			onDemandSwitcher
 		);
+	}
+
+	getImagePath(name) {
+		return this.imagesRoot + name;
 	}
 
 	render() {
@@ -235,6 +240,7 @@ class TexturesViewerBody extends React.Component {
 
 		return R.div(null,
 			R.btn(R.icon('reload-assets'), editor.ui.viewport.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
+			R.btn(R.icon('cleanup-assets'), this.checkForUnusedImages, 'Check for images unused it prefabs and scenes. Its still can be used in code ar in not standart fields', 'big-btn'),
 			R.span(null,
 				"Filter by loading mode: ",
 				React.createElement(SelectEditor, {onChange:(ev) => {
@@ -246,4 +252,55 @@ class TexturesViewerBody extends React.Component {
 			)
 		);
 	}
+
+	checkForUnusedImages() {
+
+		editor.askSceneToSaveIfNeed().then(() => {
+
+			editor.ui.status.clear();
+
+			let allTextures = new Set(Object.values(Lib.__texturesList).map(i => i.name));
+	
+			function checkValue(key, value) {
+				if(value && (typeof value === 'string')) {
+					if(allTextures.has(value)) {
+						allTextures.delete(value);
+					}
+				}
+				return value;
+			}
+	
+			function checkDataForImages(data) {
+				JSON.stringify(data, checkValue);
+			}
+	
+			function checkListForImages(list) {
+				for(let key in list) {
+					checkDataForImages(list[key]);
+				}
+			}
+	
+			checkListForImages(Lib.prefabs);
+			checkListForImages(Lib.scenes);
+	
+			for(let imageName of allTextures) {
+				editor.ui.status.warn('No refs to: ' + imageName, 99999, () => {
+					let path = this.getImagePath(imageName);
+					let view = R.img({src: path, className:'textures-viewer-image'});
+					editor.ui.modal.showQuestion('Are you sure?', R.span({className:'danger'},
+						'Are you sure you want to delete image: ', R.b(null, imageName), ' ?',
+						R.br(),
+						'You cannot undo this action.',
+						R.br(),
+						view
+					),() => {
+						Lib._unloadTexture(imageName);
+						editor.fs.deleteFile('img/' + imageName);
+					}, 'Delete');
+					
+				});
+			}
+		});
+	}
 }
+
