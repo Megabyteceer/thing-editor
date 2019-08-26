@@ -168,7 +168,7 @@ export default class SoundsList extends React.Component {
 
 		return R.listItem(R.span(null, R.icon('sound'), R.b(labelProps, sndName), 
 			R.span({className: 'sound-preload-ui', title: soundPreloadingModeDescs[mode],
-				onClick: (ev) => {
+				onMouseDown: (ev) => {
 					ev.stopPropagation();
 				}},
 			React.createElement(SelectEditor, {onChange:(ev) => {

@@ -24,7 +24,6 @@ class SelectEditor extends React.Component {
 	}
 
 	onMouseDown(ev) {
-		sp(ev);
 		if (ev.buttons === 2) {
 			editor.copyToClipboard(this.props.value);
 		}
