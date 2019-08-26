@@ -17,7 +17,7 @@ let fs = {
 			data.sort((a,b)=>{
 				return b.mtime - a.mtime;
 			});
-			if(editor.game.projectDesc && editor.game.projectDesc.__allowUpperCaseFiles) {
+			if(editor.game.projectDesc && !editor.game.projectDesc.__allowUpperCaseFiles) {
 				data = data.filter((stat) => {
 					let fn = stat.name;
 					if (fn.toLowerCase() !== fn) {
