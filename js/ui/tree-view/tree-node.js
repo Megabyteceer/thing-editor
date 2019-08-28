@@ -82,10 +82,9 @@ class TreeNode extends React.Component {
 
 		let style;
 		if(node.children.length > 6) {
-			let p = node.children.length / 2;
 			style = {
-				paddingTop: p,
-				paddingBottom: p
+				paddingTop: 9,
+				paddingBottom: 9
 			};
 		}
 		
