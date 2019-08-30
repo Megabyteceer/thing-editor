@@ -463,7 +463,7 @@ export default class Editor {
 			field = editor.getObjectField(o, field);
 		}
 		
-		this.beforePropertyChanged.emit(field.name, field);
+		this.beforePropertyChanged.emit(o, field.name, field);
 		
 		if(delta) {
 			assert(field.type === Number, "editable field descriptor type: Number expected");
@@ -487,7 +487,7 @@ export default class Editor {
 			}
 		}
 		
-		this.afterPropertyChanged.emit(field.name, field);
+		this.afterPropertyChanged.emit(o, field.name, field);
 		
 		if(changed) {
 			Lib.__invalidateSerialisationCache(o);

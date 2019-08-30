@@ -490,62 +490,61 @@ export default class Timeline extends React.Component {
 		}, 0);
 	}
 
-	static onBeforePropertyChanged(fieldName) {
+	static onBeforePropertyChanged(o, fieldName) {
 		if ((!Timeline.timelineDOMElement) || recordingIsDisabled) {
 			beforeChangeRemember = new WeakMap();
 		}
 
-		editor.selection.some((o) => {
-			if (o instanceof MovieClip) {
-				if (Timeline.timelineDOMElement && !recordingIsDisabled) {
-					if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
-						getFrameAtTimeOrCreate(o, fieldName, 0);
-					}
-				} else {
-					let val = o[fieldName];
-					if (typeof val === 'number') {
-						beforeChangeRemember.set(o, val);
-					}
+		if (o instanceof MovieClip) {
+			if (Timeline.timelineDOMElement && !recordingIsDisabled) {
+				if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
+					getFrameAtTimeOrCreate(o, fieldName, 0);
+				}
+			} else {
+				let val = o[fieldName];
+				if (typeof val === 'number') {
+					beforeChangeRemember.set(o, val);
 				}
 			}
-		});
+		}
+
 	}
 
-	static onAfterPropertyChanged(fieldName, field) {
-		editor.selection.some((o) => {
-			if (o instanceof MovieClip) {
-				if (Timeline.timelineDOMElement && !recordingIsDisabled) {
-					if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
-						timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName);
-					}
-				} else { //shift all keyframes instead of add keyframe
-					let val = o[fieldName];
-					if (typeof val === 'number') {
-						let oldVal = beforeChangeRemember.get(o);
-						if (oldVal !== val) {
-							let delta = val - oldVal;
-							let fld = getFieldByName(o, fieldName);
-							if (fld) {
-								for (let kf of fld.t) {
-									let changedVal = kf.v + delta;
-									if (field.hasOwnProperty('min')) {
-										changedVal = Math.max(field.min, changedVal);
-									}
-									if (field.hasOwnProperty('max')) {
-										changedVal = Math.min(field.max, changedVal);
-									}
-									kf.v = changedVal;
+	static onAfterPropertyChanged(o, fieldName, field) {
+
+		if (o instanceof MovieClip) {
+			if (Timeline.timelineDOMElement && !recordingIsDisabled) {
+				if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
+					timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName);
+				}
+			} else { //shift all keyframes instead of add keyframe
+				let val = o[fieldName];
+				if (typeof val === 'number') {
+					let oldVal = beforeChangeRemember.get(o);
+					if (oldVal !== val) {
+						let delta = val - oldVal;
+						let fld = getFieldByName(o, fieldName);
+						if (fld) {
+							for (let kf of fld.t) {
+								let changedVal = kf.v + delta;
+								if (field.hasOwnProperty('min')) {
+									changedVal = Math.max(field.min, changedVal);
 								}
-								Timeline.fieldDataChanged(fld, o);
+								if (field.hasOwnProperty('max')) {
+									changedVal = Math.min(field.max, changedVal);
+								}
+								kf.v = changedVal;
 							}
+							Timeline.fieldDataChanged(fld, o);
 						}
 					}
-					if (game.__EDITORmode) {
-						o.resetTimeline();
-					}
+				}
+				if (game.__EDITORmode) {
+					o.resetTimeline();
 				}
 			}
-		});
+		}
+
 		if (timelineInstance) {
 			timelineInstance.forceUpdateDebounced();
 		}
