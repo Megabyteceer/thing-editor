@@ -35,6 +35,7 @@ import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
 import Delay from 'thing-engine/js/components/delay.js';
 import HTMLOverlay from 'thing-engine/js/components/html-overlay.js';
 import TextInput from 'thing-engine/js/components/text-input.js';
+import ParticleContainer from 'thing-engine/js/components/particle-container.js';
 import L from 'thing-engine/js/utils/l.js';
 
 let attachedScript;
@@ -73,7 +74,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[Spine, "/thing-engine/js/components/spine.js"],
 		[MobileJoystick, "/thing-engine/js/components/mobile-joystick.js"],
 		[HTMLOverlay, "/thing-engine/js/components/html-overlay.js"],
-		[TextInput, "/thing-engine/js/components/text-input.js"]
+		[TextInput, "/thing-engine/js/components/text-input.js"],
+		[ParticleContainer, "/thing-engine/js/components/particle-container.js"]
 	];
 };
 
