@@ -53,6 +53,11 @@ Documentation is coming-soon. Use example project to understand beginigs.
 Use double click on component in scene tree - to open component's source file to view and edit.
 Work still in progress.
 
+## Sponsored:
+
+[![BGaming](https://www.bgaming.com/img/b-gaming-logo-color.svg)](https://www.bgaming.com/)
+
+
 ### Projects made with thing-engine
  - [Zombie Hunters](http://zh.pixel-cave.com)
  - [Handless Millionaire](http://hm.pixel-cave.com)
