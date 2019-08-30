@@ -6,6 +6,7 @@ import game from "thing-engine/js/game.js";
 import Sound from 'thing-engine/js/utils/sound.js';
 import Keys from 'thing-engine/js/utils/keys.js';
 import ClassesView from './classes-view.js';
+import Spine from 'thing-engine/js/components/spine.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -116,6 +117,7 @@ export default class Viewport extends React.Component {
 				game.__EDITORselectionDataWaitingToSelect = editor.selection.saveSelection();
 				game.__EDITORsceneDataWaitongToStart = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
+				Spine.clearPool();
 				Sound.__resetSounds();
 				game.__EDITORmode = false;
 				game._setCurrentScene(null);
