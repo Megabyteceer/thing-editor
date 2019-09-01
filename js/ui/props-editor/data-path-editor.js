@@ -150,9 +150,6 @@ export default class DataPathEditor extends React.Component {
 		if(!parent) {
 			parent = game;
 			_rootParent = parent;
-			
-			addSceneNodeIfValid(editor.selection[0], 'this', false, 1000000);
-			
 			if(path && typeof path === 'string') { //restore current path as default value
 				parentsPath = [];
 				path = path.split('.');
@@ -178,9 +175,11 @@ export default class DataPathEditor extends React.Component {
 				parentsPath = [parent];
 				path = [];
 			}
-			
 		}
 		
+		if(path.length === 0) {
+			addSceneNodeIfValid(editor.selection[0], 'this', false, 1000000);
+		}
 
 
 		//ignore names globally
