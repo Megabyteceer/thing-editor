@@ -103,6 +103,9 @@ function isKeyInvalid(val) {
 	if (oneLanguageTable.hasOwnProperty(val)) {
 		return "ID already exists";
 	}
+	if (L.__isExternalKey(val)) {
+		return "ID already exists in external data " + editor.game.projectDesc.__externalLocalesSource;
+	}
 	if (val.endsWith('.') || val.startsWith('.')) {
 		return 'ID can not begin or end with "."';
 	}
@@ -186,6 +189,12 @@ class LanguageTableEditor extends React.Component {
 	
 	createKeyOrEdit(key, langId = 'en') {
 		showTextTable().then(() => {
+
+			if(L.__isExternalKey(key)) {
+				editor.ui.status.warn("Can not etit key '" + key + "', because it is external (" + editor.game.projectDesc.__externalLocalesSource + ").", 99999);
+				return;
+			} 
+
 			if(!oneLanguageTable.hasOwnProperty(key)) {
 				for(let langId of langsIdsList) {
 					languages[langId][key] = '';
