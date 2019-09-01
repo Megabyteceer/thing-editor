@@ -5,6 +5,8 @@ import game from "thing-engine/js/game.js";
 import PrefabReference from "thing-engine/js/components/prefab-reference.js";
 import Container from "thing-engine/js/components/container.js";
 import ClassesView from "./classes-view.js";
+import DataPathFixer from "../utils/data-path-fixer.js";
+import OrientationTrigger from "thing-engine/js/components/orientation-trigger.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -103,12 +105,48 @@ export default class PrefabsList extends React.Component {
 				}
 			).then((enteredName) => {
 				if (enteredName) {
+
+					const fin = () => {
+						if(editor.overlay.isPreviewShowed) {
+							PrefabsList.editPrfefab(enteredName);
+						}
+						this.forceUpdate();
+					};
+
 					let s = editor.selection[0];
 					Lib.__savePrefab(s, enteredName);
-					if(editor.overlay.isPreviewShowed) {
-						PrefabsList.editPrfefab(enteredName);
+					if(s !== game.currentContainer) {
+						editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
+							
+							let data = Lib.__serializeObject(s);
+							data = {c :"PrefabReference", p: data.p};
+							let ref = Lib._deserializeObject(data);
+							
+							ref.x = s.x; // for cases when save orientation trigger. its clear's x/y before serialization
+							ref.y = s.y;
+							ref.alpha = s.alpha;
+							ref.rotation = s.rotation;
+							ref.scale.x = s.scale.x;
+							ref.scale.y = s.scale.y;
+							
+							ref.prefabName = enteredName;
+							ref.inheritProps = !(s instanceof OrientationTrigger);
+
+							s.parent.addChildAt(ref, s.parent.getChildIndex(s));
+							s.remove();
+							
+							Lib.__invalidateSerialisationCache(ref.parent);
+
+							editor.ui.sceneTree.selectInTree(ref);
+
+							editor.refreshTreeViewAndPropertyEditor();
+							editor.sceneModified(true);
+							fin();
+						}, 'Convert to PrefabReference', fin, 'Keep as copy', true);
+					} else {
+						fin();
 					}
-					this.forceUpdate();
+					
 				}
 			});
 		}
@@ -155,7 +193,7 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	onPrefabDeleteClick(prefabName) {
-		editor.ui.modal.showQuestion('Are you sure?', R.span({className:'danger'},
+		editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className:'danger'},
 			'Are you sure you want to delete prefab: ', R.b(null, prefabName), ' ?',
 			R.br(),
 			'You cannot undo this action.'

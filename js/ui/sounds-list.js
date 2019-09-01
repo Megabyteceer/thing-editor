@@ -291,7 +291,7 @@ class MusicProfiler extends React.Component {
 						root = root.parent;
 					}
 				}
-				editor.ui.modal.showQuestion(
+				editor.ui.modal.showEditorQuestion(
 					'Cant select music object',
 					R.div(null, "Container of this music :", R.sceneNode(root))
 				);

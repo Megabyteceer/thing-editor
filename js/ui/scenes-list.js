@@ -86,7 +86,7 @@ export default class ScenesList extends React.Component {
 	}
 
 	onSceneDeleteClick(sceneName, view) {
-		editor.ui.modal.showQuestion('Are you sure?', R.span({className:'danger'},
+		editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className:'danger'},
 			'Are you sure you want to delete scene: ', view, ' ?',
 			R.br(),
 			'You cannot undo this action.'

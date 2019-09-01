@@ -61,7 +61,7 @@ export default class TimeLabel extends React.Component {
 
 	deleteLabel() {
 		let name = this.props.labelName;
-		editor.ui.modal.showQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
+		editor.ui.modal.showEditorQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
 			let tl = this.props.owner.props.node._timelineData;
 			delete tl.l[name];
 			this.onChanged();

@@ -177,7 +177,7 @@ export default class Editor {
 			
 			if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 				//backup restoring
-				editor.ui.modal.showQuestion("Scene's backup restoring (" + editor.projectDesc.title + ")",
+				editor.ui.modal.showEditorQuestion("Scene's backup restoring (" + editor.projectDesc.title + ")",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 						R.div(null, "Do you want to restore scene from backup?")),
 					async() => {
@@ -704,7 +704,7 @@ export default class Editor {
 		if(!skip && editor.isCurrentSceneModified) {
 			return new Promise((resolve) => {
 				
-				editor.ui.modal.showQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
+				editor.ui.modal.showEditorQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
 					() => {
 						editor.saveCurrentScene().then(resolve);
 					}, 'Save',

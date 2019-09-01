@@ -241,7 +241,7 @@ class LanguageTableEditor extends React.Component {
 						let currentKey = ev.target.innerText;
 						
 						if(ev.buttons === 2) {
-							return editor.ui.modal.showQuestion('Translatable key delete', 'Delete key ' + currentKey + '?', () => {
+							return editor.ui.modal.showEditorQuestion('Translatable key delete', 'Delete key ' + currentKey + '?', () => {
 								for(let id in languages) {
 									let l = languages[id];
 									delete l[currentKey];

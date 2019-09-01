@@ -132,7 +132,7 @@ class Modal extends React.Component {
 		}
 	}
 	
-	showQuestion(title, message, onYes, yesLabel = 'Ok', onNo, noLabel = 'Cancel', noEasyClose) {
+	showEditorQuestion(title, message, onYes, yesLabel = 'Ok', onNo, noLabel = 'Cancel', noEasyClose) {
 		
 		let yesBtn = R.btn(yesLabel, () => {
 			modal.hideModal(true);

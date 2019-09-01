@@ -66,7 +66,7 @@ export default class FieldsTimeline extends React.Component {
 	}
 	
 	onRemoveFieldClick() {
-		editor.ui.modal.showQuestion("Field animation delete", "Are you sure you want to delete animation track for field '" + this.props.field.n + "'?",
+		editor.ui.modal.showEditorQuestion("Field animation delete", "Are you sure you want to delete animation track for field '" + this.props.field.n + "'?",
 			() => {
 				this.props.owner.deleteAnimationField(this.props.field);
 			}, 'Delete'
