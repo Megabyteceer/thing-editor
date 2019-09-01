@@ -295,7 +295,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		if(kf.j !== kf.t) {
 			jumpReset = R.btn('x', this.resetJumpTime, "Remove loop point");
 		}
-		let jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: 0, max: 99999999, onChange: this.onJumpChanged});
+		let jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: -99999999, max: 99999999, onChange: this.onJumpChanged});
 
 		body = R.fragment(
 			' Action: ',
