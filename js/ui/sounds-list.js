@@ -330,3 +330,7 @@ class MusicProfiler extends React.Component {
 	}
 
 }
+
+Sound.play.___EDITOR_callbackParameterChooserFunction = () => {
+	return SoundsList.chooseSound("Choose sound to play:");
+};

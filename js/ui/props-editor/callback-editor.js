@@ -25,57 +25,27 @@ export default class CallbackEditor extends DataPathEditor {
 	finalValueChoosed(path, val) {
 		path = path.join('.');
 		
-		switch(path) {
-		case 'Sound.play':
-			SoundsList.chooseSound("Choose sound to play:").then((selectedPrefabName) => {
-				if(selectedPrefabName) {
-					this.applyFinalPath(path + '`' + selectedPrefabName);
+		if(val.___EDITOR_callbackParameterChooserFunction) {
+			val.___EDITOR_callbackParameterChooserFunction().then((params) => {
+				if(!Array.isArray(params)) {
+					params = [params];
+				}
+				params = params.map((p) => {
+					if(typeof p === 'number') {
+						return p.toString();
+					}
+					return p;
+				});
+
+				for(let p of params) {
+					assert((p.indexOf(',') < 0) && (p.indexOf('`') < 0), "parameter chooser returned parameter containing wrong symbol (, or `)");
+				}
+				params = params.join(',');
+				if(params) {
+					this.applyFinalPath(path + '`' + params);
 				}
 			});
-			break;
-		case 'showModal':
-			PrefabsList.choosePrefab("Choose prefab to show as modal:").then((selectedPrefabName) => {
-				if(selectedPrefabName) {
-					this.applyFinalPath(path + '`' + selectedPrefabName);
-				}
-			});
-			break;
-		case 'showScene':
-			ScenesList.chooseScene("Choose scene to open:").then((selectedSceneName) => {
-				if(selectedSceneName) {
-					this.applyFinalPath(path + '`' + selectedSceneName);
-				}
-			});
-			break;
-		case 'classes.FlyText.flyText':
-			editor.ui.modal.showPrompt('Enter text to show', 'Text-1').then((enteredText) => {
-				if(enteredText) {
-					this.applyFinalPath(path + '`' + enteredText);
-				}
-			});
-			break;
-		case 'showQuestion':
-			editor.ui.modal.showPrompt('Enter title to show', 'Question Title').then((enteredTitle) => {
-				if(enteredTitle) {
-					editor.ui.modal.showPrompt('Enter message to show', 'Question text', undefined, undefined, undefined, true).then((enteredText) => {
-						if(enteredText) {
-							this.applyFinalPath(path + '`' + enteredTitle + ',' + enteredText);
-						}
-					});
-				}
-			});
-			break;
-		case 'setValueByPath':
-			editor.ui.modal.showPrompt('Enter data path', '').then((enteredText1) => {
-				if(enteredText1) {
-					editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
-						this.applyFinalPath(path + '`' + enteredText1 + (enteredText2 ? ',' + enteredText2 : ''));
-					});
-				}
-			});
-			break;
-				
-		default:
+		} else {
 			if((typeof(val) === 'function') && (val.length > 0)) {
 				path += '`';
 				editor.ui.propsEditor.selectField(this.props.field ? this.props.field.name : '.keyframe-callback-editor', true);
