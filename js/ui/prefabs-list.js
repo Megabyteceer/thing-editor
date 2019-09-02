@@ -24,6 +24,8 @@ let prefabNameProps = {
 
 let _editPrefabPromiseResolve;
 
+let instance;
+
 export default class PrefabsList extends React.Component {
 	
 	constructor(props) {
@@ -40,6 +42,7 @@ export default class PrefabsList extends React.Component {
 			placeholder: 'Search',
 			defaultValue: ''
 		};
+		instance = this;
 	}
 
 	onSearchChange(ev) {
@@ -169,6 +172,7 @@ export default class PrefabsList extends React.Component {
 				editor.history.clearHistory();
 				previewShown = name;
 				_editPrefabPromiseResolve = resolve;
+				instance.setState({selectedItem: (Lib._getAllPrefabs())[name]});
 			}
 			else {
 				resolve();
