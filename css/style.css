@@ -1083,7 +1083,6 @@ input{
 }
 
 #window-info .status-body {
-	background: #fff;
 	overflow-y: auto;
 	height: 100%;
 }
