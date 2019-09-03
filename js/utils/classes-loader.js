@@ -335,11 +335,36 @@ function classLoaded(c, path) {
 	addClass(c, path);
 }
 
+function validateClasses() {
+	let classOnValidation;
+	let propertyName;
+	let validationTimeout = setTimeout(() => {
+		editor.editClassSource(classOnValidation);
+		if(propertyName) {
+			editor.ui.modal.showFatalError('Class validation error. ' + classOnValidation.name + ' throws error if filed ' + propertyName + ' assigned first.');
+		} else {
+			editor.ui.modal.showFatalError('Class validation error. ' + classOnValidation.name + ' throws error in constructor.');
+		}
+	}, 0);
+	for(let name in Lib.classes) {
+		classOnValidation = classesById[name];
+		let p = classesDefaultsById[name];
+		for(let propName in p) {
+			propertyName = null;
+			let o = new classOnValidation();
+			propertyName = propName;
+			o[propName] = p[propName];
+			Object.assign(o, p);
+		}
+	}
+	clearTimeout(validationTimeout);
+}
 
 ClassesLoader.isItEmbeddedClass = (c) => {
 	return embeddedClassesMap.has(c);
 };
 
+ClassesLoader.validateClasses = validateClasses;
 ClassesLoader.reloadClasses = reloadClasses;
 ClassesLoader.classLoaded = classLoaded;
 ClassesLoader.getClassType = getClassType;

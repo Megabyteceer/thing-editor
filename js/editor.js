@@ -390,7 +390,7 @@ export default class Editor {
 		return new Promise((resolve) => {
 			editor.fs.refreshFiles().then(()=>{
 				ClassesLoader.reloadClasses().then(() => {
-					Lib.__validateClasses();
+					ClassesLoader.validateClasses();
 					editor.restoreBackup(!ftl);
 					resolve();
 				});
