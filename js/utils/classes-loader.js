@@ -341,9 +341,9 @@ function validateClasses() {
 	let validationTimeout = setTimeout(() => {
 		editor.editClassSource(classOnValidation);
 		if(propertyName) {
-			editor.ui.modal.showFatalError('Class validation error. ' + classOnValidation.name + ' throws error if filed ' + propertyName + ' assigned first.');
+			editor.ui.modal.showFatalError('Class validation error. ' + classOnValidation.name + ' throws error if filed ' + propertyName + ' assigned first.', 99999);
 		} else {
-			editor.ui.modal.showFatalError('Class validation error. ' + classOnValidation.name + ' throws error in constructor.');
+			editor.ui.modal.showFatalError('Class validation error. ' + classOnValidation.name + ' throws error in constructor.', 99999);
 		}
 	}, 0);
 	for(let name in Lib.classes) {
