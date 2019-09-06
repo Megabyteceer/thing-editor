@@ -109,8 +109,8 @@ export default class PrefabsList extends React.Component {
 			).then((enteredName) => {
 				if (enteredName) {
 
-					const fin = () => {
-						if(editor.overlay.isPreviewShowed) {
+					const fin = (isConvertedToRef) => {
+						if(editor.overlay.isPreviewShowed && !isConvertedToRef) {
 							PrefabsList.editPrfefab(enteredName);
 						}
 						this.forceUpdate();
@@ -144,7 +144,7 @@ export default class PrefabsList extends React.Component {
 
 							editor.refreshTreeViewAndPropertyEditor();
 							editor.sceneModified(true);
-							fin();
+							fin(true);
 						}, 'Convert to PrefabReference', fin, 'Keep as copy', true);
 					} else {
 						fin();
