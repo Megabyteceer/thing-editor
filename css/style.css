@@ -600,7 +600,6 @@ input{
 
 .selectable-text {
 	font-family: monospace;
-	user-select:text;
 	cursor:text;
 }
 

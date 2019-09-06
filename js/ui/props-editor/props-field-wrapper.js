@@ -98,7 +98,7 @@ let getTypeDescription = (field) => {
 };
 
 let labelProps = {className: 'props-label selectable-text', title: 'Ctrl+click to copy field`s name', onMouseDown: window.copyTextByClick};
-let labelInvalidProps = {className: 'props-label selectable-text', onMouseDown: window.copyTextByClick};
+let labelInvalidProps = {className: 'props-label selectable-text', onMouseDown: window.copyTextByClick, title: 'Ctrl+click to copy'};
 let labelEditorOnlyProps = {className: 'props-label props-label-editor-only selectable-text', title: 'Ctrl+click to copy field`s name', onMouseDown: window.copyTextByClick};
 let wrapperProps = {className: 'props-wrapper'};
 
