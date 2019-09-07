@@ -7,6 +7,7 @@ import Sound from 'thing-engine/js/utils/sound.js';
 import Keys from 'thing-engine/js/utils/keys.js';
 import ClassesView from './classes-view.js';
 import Spine from 'thing-engine/js/components/spine.js';
+import SelectEditor from './props-editor/select-editor.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -20,6 +21,10 @@ let prefabLabelProps = {
 	title: 'Ctrl+click to copy prefab`s name',
 	onMouseDown: window.copyTextByClick
 };
+
+const SPEED_SELECT = [0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
+	return { value, name : '×' + value};
+});
 
 let stoppingExecutionTime;
 let playTogglingTime;
@@ -262,7 +267,12 @@ export default class Viewport extends React.Component {
 				toggleOrientationBtn,
 				R.btn('⛶', () => {
 					document.querySelector('#viewport-root').requestFullscreen();
-				}, 'Go fullscreen')
+				}, 'Go fullscreen'),
+				'Speed:',
+				React.createElement(SelectEditor, {onChange:(ev) => {
+					game.__speedMultiplier = ev.target.value;
+					this.forceUpdate();
+				}, value: game.__speedMultiplier, select: SPEED_SELECT})
 			);
 		}
 		
