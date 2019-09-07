@@ -3,6 +3,7 @@ import DisplayObject from "thing-engine/js/components/display-object.js";
 import game from "thing-engine/js/game.js";
 import CallbackEditor from "./callback-editor.js";
 import {getLatestSceneNodeBypath} from "thing-engine/js/utils/get-value-by-path.js";
+import PrefabsList from "../prefabs-list.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
@@ -25,7 +26,12 @@ export default class DataPathEditor extends React.Component {
 	onGotoTargetClick() {
 		game.currentScene._refreshAllObjectRefs();
 		let node = getLatestSceneNodeBypath(this.props.value, editor.selection[0]);
-		if(node) {
+		if(node.getRootContainer() !== game.currentContainer) {
+			PrefabsList.hidePrefabPreview();
+		}
+		if(node.getRootContainer() !== game.currentContainer) {
+			editor.ui.modal.notify('Target object is not in current container to be selected.');
+		} else if(node) {
 			editor.ui.sceneTree.selectInTree(node);
 		} else {
 			editor.ui.modal.notify('Not targets to display object.');
