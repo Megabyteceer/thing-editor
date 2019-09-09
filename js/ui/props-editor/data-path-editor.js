@@ -163,7 +163,9 @@ export default class DataPathEditor extends React.Component {
 				for(pathI = 0; (pathI < path.length-1); pathI++) {
 					let itemName = path[pathI];
 					let p;
-					if(itemName.startsWith('#')) {
+					if((itemName === 'this') && (pathI === 0)) {
+						p = editor.selection[0];
+					} else if(itemName.startsWith('#')) {
 						p = parent.getChildByName(itemName.substr(1));
 					} else {
 						p = parent[itemName];
