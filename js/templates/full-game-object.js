@@ -96,7 +96,7 @@ __EDITOReditableProps(NEW_CLASS_NAME, [ //list of editable properties
 	{
 		type: 'splitter',
 		title: 'NEW_CLASS_NAME',
-		name: 'NEW_CLASS_NAME'
+		name: 'NEW_CLASS_NAME-props'
 	}/*,
 	{
 		name:'myProperty',
