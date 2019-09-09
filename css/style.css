@@ -312,6 +312,7 @@ button {
 }
 
 .list-item {
+	position: relative;
 	white-space: nowrap;
 	border-top:1px solid #eee;
 	padding:2px;
@@ -338,10 +339,8 @@ button {
 
 .tree-caret {
 	line-height: 0.50;
-	position: absolute;
-	right: 0;
-	z-index: 3;
-	margin-left: -2000px;
+    position: absolute;
+    right: 0;
 	font-size: 290%;
 	color: #6c6b6a;
 	pointer-events:none;
