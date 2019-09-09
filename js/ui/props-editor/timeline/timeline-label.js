@@ -8,6 +8,9 @@ let labelNamesProps = {
 	onMouseDown: window.copyTextByClick
 };
 
+const labelStartMarkerProps = {
+	className: 'timeline-label-pointer'
+};
 
 export default class TimeLabel extends React.Component {
 	
@@ -131,6 +134,7 @@ export default class TimeLabel extends React.Component {
 			onMouseDown: this.onLabelMouseDown,
 			onDoubleClick: this.onDoubleClick
 		},
+		R.div(labelStartMarkerProps),
 		R.span(labelNamesProps, name)
 		);
 	}
