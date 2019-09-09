@@ -48,10 +48,6 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 		
 	}
 
-	getPreloadingProgress() {
-		return 1;
-	}
-
 	onLanguageChanged() {
 		//super.onLanguageChanged();
 
