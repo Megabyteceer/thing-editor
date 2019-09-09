@@ -38,7 +38,6 @@ import ParticleContainer from 'thing-engine/js/components/particle-container.js'
 import L from 'thing-engine/js/utils/l.js';
 
 // runtime creation components
-import SceneLinkedRequest from 'thing-engine/js/components/scene-linked-request.js';
 import SceneLinkedPromise from 'thing-engine/js/components/scene-linked-promise.js';
 import Delay from 'thing-engine/js/components/delay.js';
 
@@ -86,7 +85,6 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 let classesById = {},
 	classesDefaultsById = {}, //default values for serializable properties of class
 	classPathById = {
-		'SceneLinkedRequest': 'thing-engine/js/components/scene-linked-request.js',
 		'SceneLinkedPromise': 'thing-engine/js/components/scene-linked-promise.js',
 		'Delay': 'thing-engine/js/components/delay.js'
 	};
@@ -263,7 +261,6 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 			enumClassProperties(DisplayObject);
 			enumClassProperties(Delay);
-			enumClassProperties(SceneLinkedRequest);
 			enumClassProperties(SceneLinkedPromise);
 			embeddedClasses.some((a) => {
 				let c = a[0];
