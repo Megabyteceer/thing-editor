@@ -32,11 +32,15 @@ import SelectionHighlighter from 'thing-engine/js/components/selection-highlight
 import BgMusic from 'thing-engine/js/components/bg-music.js';
 import Spine from 'thing-engine/js/components/spine.js';
 import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
-import Delay from 'thing-engine/js/components/delay.js';
 import HTMLOverlay from 'thing-engine/js/components/html-overlay.js';
 import TextInput from 'thing-engine/js/components/text-input.js';
 import ParticleContainer from 'thing-engine/js/components/particle-container.js';
 import L from 'thing-engine/js/utils/l.js';
+
+// runtime creation components
+import SceneLinkedRequest from 'thing-engine/js/components/scene-linked-request.js';
+import SceneLinkedPromise from 'thing-engine/js/components/scene-linked-promise.js';
+import Delay from 'thing-engine/js/components/delay.js';
 
 let attachedScript;
 
@@ -81,7 +85,11 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 
 let classesById = {},
 	classesDefaultsById = {}, //default values for serializable properties of class
-	classPathById = {};
+	classPathById = {
+		'SceneLinkedRequest': 'thing-engine/js/components/scene-linked-request.js',
+		'SceneLinkedPromise': 'thing-engine/js/components/scene-linked-promise.js',
+		'Delay': 'thing-engine/js/components/delay.js'
+	};
 
 let cacheCounter = 0;
 const embeddedClassesMap = new Map();
@@ -255,6 +263,8 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 			enumClassProperties(DisplayObject);
 			enumClassProperties(Delay);
+			enumClassProperties(SceneLinkedRequest);
+			enumClassProperties(SceneLinkedPromise);
 			embeddedClasses.some((a) => {
 				let c = a[0];
 				if(!c.___EDITOR_isGoodForCallbackChooser && !c.___EDITOR_isGoodForChooser) {

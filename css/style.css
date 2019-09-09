@@ -338,8 +338,8 @@ button {
 
 .tree-caret {
 	line-height: 0.50;
-	float: right;
-	position: relative;
+	position: absolute;
+	right: 0;
 	z-index: 3;
 	margin-left: -2000px;
 	font-size: 290%;
@@ -625,6 +625,15 @@ input{
 
 .left-align-text {
 	text-align: left;
+}
+
+.stack-item {
+	text-align: left;
+}
+
+.stack-item b {
+	display: inline-block;
+	width: 300px;
 }
 
 .resizable-dialog {

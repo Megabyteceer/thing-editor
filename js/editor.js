@@ -504,6 +504,40 @@ export default class Editor {
 	enumObjectsProperties(o) {
 		return o.constructor.__EDITOR_propslist_cache;
 	}
+
+	__getCurrentStack(title) {
+		let a = (new Error()).stack.split('\n');
+		a.shift();
+		a.shift();
+		a = a.map((s) => {
+			let functionName;
+			if(s.indexOf(' (') > 0) {
+				functionName = s.split(' (');
+				s = functionName[1];
+				functionName = functionName[0];
+			} else {
+				functionName = '';
+			}
+
+			s = s.split('/');
+			s.shift();
+			s.shift();
+			s.shift();
+			s = s.join('/');
+			if(s.indexOf('?') > 0) {
+				s = s.split('?');
+				let a = s[1].split(':');
+				s = s[0] + ':' + a[1];
+			}
+			return {functionName, path: s};
+		});
+		return R.div(null, R.b(null, title), ' was created at:', a.map((i,key) => {
+			return R.div({key, className: 'list-item stack-item', onClick: () => {
+				let a = i.path.split(':');
+				editor.fs.editFile('/' + a[0], parseInt(a[1]));
+			}}, R.b(null, i.functionName), ' (', i.path, ')');
+		}));
+	}
 	
 	getObjectField(o, name) {
 		return editor.enumObjectsProperties(o).find((f) => {
