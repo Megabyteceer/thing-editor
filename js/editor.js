@@ -760,6 +760,15 @@ export default class Editor {
 			}
 		}
 	}
+
+	validateCallbackParameter(txt) {
+		if(txt.indexOf(',') >= 0) {
+			return "Parameter can not contain commas. Use your own javascript function instead.";
+		}
+		if(txt.indexOf('`') >= 0) {
+			return "Parameter can not contain apostrophes. Use your own javascript function instead.";
+		}
+	}
 }
 
 function saveCurrentSceneName(name) {
