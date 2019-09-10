@@ -9,8 +9,19 @@ function sortObject(obj) {
 	return ret;
 }
 
+let isDebugBuild;
+
+const filterChildsByName = (childData) => {
+	return !childData.hasOwnProperty('p') ||
+		!childData.p.hasOwnProperty('name') ||
+		!childData.p.name.startsWith(isDebugBuild ? '___' : '__');
+};
+
 const fieldsFilter = (key, value) => {
 	if(!key.startsWith('__')) {
+		if(key === ':' && Array.isArray(value)) { // cut off __ objects
+			return value.filter(filterChildsByName);
+		}
 		return value;
 	}
 };
@@ -28,6 +39,7 @@ const isLineError = (l) => {
 
 export default class Build {
 	static build(debug) {
+		isDebugBuild = debug;
 		let scenes = sortObject(Lib._getAllScenes());
 		let prefabs = sortObject(Lib._getAllPrefabs());
 		
