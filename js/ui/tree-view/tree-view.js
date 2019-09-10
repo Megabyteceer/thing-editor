@@ -12,6 +12,9 @@ let leftPanelProps = {className: 'left-panel'};
 let foundByWhichProperty;
 
 R.renderSceneNode = (node) => {
+	if(__getNodeExtendData(node).hidden) {
+		return;
+	}
 	assert(typeof node.___id === 'number', "scene object without ___id detected.", 40902);
 	return React.createElement(TreeNode, {node: node, key: node.___id});
 };
