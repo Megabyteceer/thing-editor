@@ -219,15 +219,16 @@ app.get('/fs/edit', function (req, res) {
 });
 
 app.post('/fs/fetch', jsonParser, function (req, res) {
+	function sendResponse(data) {
+		if(typeof data !== 'string') {
+			data = JSON.stringify(data);
+		}
+		res.end(data);
+	}
+
 	let fetch = require('node-fetch');
-	fetch(req.body.url, req.body.options).then(res => res.json())
-		.then((data) => {
-			res.set('Content-Type', 'application/json');
-			res.end(JSON.stringify(data));
-		}).catch((err) => {
-			res.set('Content-Type', 'application/json');
-			res.end(JSON.stringify(err));
-		});
+	fetch(req.body.url, req.body.options).then((res) => res.text())
+		.then(sendResponse).catch(sendResponse);
 });
 
 app.get('/fs/build', function (req, res) {
