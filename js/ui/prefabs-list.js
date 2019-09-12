@@ -5,7 +5,6 @@ import game from "thing-engine/js/game.js";
 import PrefabReference from "thing-engine/js/components/prefab-reference.js";
 import Container from "thing-engine/js/components/container.js";
 import ClassesView from "./classes-view.js";
-import DataPathFixer from "../utils/data-path-fixer.js";
 import OrientationTrigger from "thing-engine/js/components/orientation-trigger.js";
 
 let bodyProps = {className: 'list-view'};
@@ -16,7 +15,7 @@ const fileNameToPrefabName = (fn) => {
 	return fn.replace('prefabs/', '').replace(prefabExtRemover, '');
 };
 
-const prefabNameFilter = /[^a-z\-\/0-9]/g;
+const prefabNameFilter = /[^a-z\-\/0-9_]/g;
 
 let prefabNameProps = {
 	className: "selectable-text", title: 'Ctrl+click to copy prefabs`s name', onMouseDown:window.copyTextByClick
