@@ -713,6 +713,12 @@ const keyframeTypesDiscreteOnly = [2];
 function getKeyframeTypesForField(objects, name) {
 	for(let o of objects) {
 		let fieldDesc = editor.getObjectField(o, name);
+		if(!fieldDesc) {
+			setTimeout(() => {
+				editor.ui.status.warn("Property '" + name + "' is not exists anymore, but movieclip have animation for it.", 99999, o);
+			}, 0);
+			return [];
+		}
 		if (fieldDesc.type !== Number) {
 			return keyframeTypesDiscreteOnly;
 		}
