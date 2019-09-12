@@ -32,7 +32,9 @@ export default class RefFieldEditor extends React.Component {
 			} else {
 				title = '' + val;
 			}
-
+			if (!this.props.value) {
+				return '' + this.props.value;
+			}
 			return R.btn(title, () => {
 				if(this.props.value) {
 					if(React.isValidElement(this.props.value)) {
