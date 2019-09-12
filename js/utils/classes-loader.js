@@ -1,4 +1,7 @@
 import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
+import L from 'thing-engine/js/utils/l.js';
+import SceneLinkedPromise from 'thing-engine/js/components/scene-linked-promise.js';
+import Delay from 'thing-engine/js/components/delay.js';
 import Pool from "thing-engine/js/utils/pool.js";
 import Container from "thing-engine/js/components/container.js";
 import Button from "thing-engine/js/components/button.js";
@@ -35,11 +38,7 @@ import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
 import HTMLOverlay from 'thing-engine/js/components/html-overlay.js';
 import TextInput from 'thing-engine/js/components/text-input.js';
 import ParticleContainer from 'thing-engine/js/components/particle-container.js';
-import L from 'thing-engine/js/utils/l.js';
-
-// runtime creation components
-import SceneLinkedPromise from 'thing-engine/js/components/scene-linked-promise.js';
-import Delay from 'thing-engine/js/components/delay.js';
+import MultilineText from 'thing-engine/js/components/multiline-text.js';
 
 let attachedScript;
 
@@ -78,7 +77,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[MobileJoystick, "/thing-engine/js/components/mobile-joystick.js"],
 		[HTMLOverlay, "/thing-engine/js/components/html-overlay.js"],
 		[TextInput, "/thing-engine/js/components/text-input.js"],
-		[ParticleContainer, "/thing-engine/js/components/particle-container.js"]
+		[ParticleContainer, "/thing-engine/js/components/particle-container.js"],
+		[MultilineText, "/thing-engine/js/components/multiline-text.js"]
 	];
 };
 
