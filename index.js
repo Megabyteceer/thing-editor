@@ -219,16 +219,18 @@ app.get('/fs/edit', function (req, res) {
 });
 
 app.post('/fs/fetch', jsonParser, function (req, res) {
-	function sendResponse(data) {
-		if(typeof data !== 'string') {
-			data = JSON.stringify(data);
-		}
-		res.end(data);
-	}
+
 
 	let fetch = require('node-fetch');
-	fetch(req.body.url, req.body.options).then((res) => res.text())
-		.then(sendResponse).catch(sendResponse);
+	fetch(req.body.url, req.body.options).then((rsponce) => rsponce.text())
+		.then((data) => {
+			if(typeof data !== 'string') {
+				data = JSON.stringify(data);
+			}
+			res.end(data);
+		}).catch((err) => {
+			res.status(500).send("Thing-editor proxy fetch fails with result: " + JSON.stringify(err));	
+		});
 });
 
 app.get('/fs/build', function (req, res) {
