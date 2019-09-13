@@ -15,6 +15,7 @@ const hotheysBlockedWhenInputFocused = {
 	39: true,
 	40: true,
 	46: true,
+	90: true,
 	188: true,
 	190: true,
 	1188: true,
@@ -23,12 +24,33 @@ const hotheysBlockedWhenInputFocused = {
 	1088: true,
 	1086: true
 };
-function isCopyPasteBtn(btn) {
+function isHotkeyBlockedOnInput(btn) {
 	return btn.props.hotkey && hotheysBlockedWhenInputFocused.hasOwnProperty(btn.props.hotkey);
 }
 
 class EditorButton extends React.Component {
 	
+	onKeyDown(e) {
+		if(!this.props.hotkey) {
+			return;
+		}
+		let needCtrl = this.props.hotkey > 1000;
+		
+		if (
+			this.props.disabled || 
+			(window.isEventFocusOnInputElement(e) && (isHotkeyBlockedOnInput(this))) ||
+			((this.props.hotkey !== 112) && editor.ui.modal.isUIBlockedByModal(ReactDOM.findDOMNode(this))) // F1 - help hotkey works always
+		) {
+			return;
+		}
+		
+		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
+			this.onMouseDown(e);
+			sp(e);
+			return true;
+		}
+	}
+
 	constructor(props) {
 		super(props);
 		this.state = {};
@@ -67,27 +89,6 @@ class EditorButton extends React.Component {
 	
 	componentWillUnmount() {
 		this.unregisterHotkey();
-	}
-	
-	onKeyDown(e) {
-		if(!this.props.hotkey) {
-			return;
-		}
-		let needCtrl = this.props.hotkey > 1000;
-		
-		if (
-			this.props.disabled || 
-			(window.isEventFocusOnInputElement(e) && (isCopyPasteBtn(this))) ||
-			((this.props.hotkey !== 112) && editor.ui.modal.isUIBlockedByModal(ReactDOM.findDOMNode(this))) // F1 - help hotkey works always
-		) {
-			return;
-		}
-		
-		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
-			this.onMouseDown(e);
-			sp(e);
-			return true;
-		}
 	}
 	
 	onMouseDown(ev) {

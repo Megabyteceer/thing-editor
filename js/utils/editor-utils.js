@@ -218,24 +218,7 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 
 window.isEventFocusOnInputElement = (ev) => {
 	let tag = ev.target.tagName;
-	let canBePassed;
-	if(ev.type === 'keydown') {
-		canBePassed = ev.ctrlKey;
-		if(canBePassed) {
-			switch(ev.keyCode) {  //block cpypaste hotkeys focused on text inputs only
-			case 67:
-			case 86:
-			case 88:
-			case 89:
-			case 90:
-				canBePassed = false;
-				break;
-			default:
-				canBePassed = true;
-			}
-		}
-	}
-	return !canBePassed && (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+	return (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
 };
 
 window.makePreviewModeButton = function(title, helpUrl) {
