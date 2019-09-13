@@ -114,7 +114,6 @@ export default class Viewport extends React.Component {
 			game.__time = 0;
 			delete game.__EDITORsceneDataWaitongToStart;
 			game.data = {};
-			Lib.__idCounter = 0;
 			if(play) { // launch game
 				editor.ui.status.clear();
 				problemOnGameStart = true;

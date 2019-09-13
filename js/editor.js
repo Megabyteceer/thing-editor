@@ -282,7 +282,6 @@ export default class Editor {
 			}
 			w.x = 0;
 			w.y = 0;
-			Lib.__reassignIds(w);
 			let indexToAdd = parent.getChildIndex(o);
 
 			for(let c of a) {
