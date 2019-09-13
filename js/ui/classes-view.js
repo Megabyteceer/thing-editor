@@ -1,11 +1,8 @@
 import Group from "./group.js";
 import Lib from "thing-engine/js/lib.js";
 import game from "thing-engine/js/game.js";
-import Container from "thing-engine/js/components/container.js";
-import Tilemap from "thing-engine/js/components/tilemap.js";
 import fs from "../utils/fs.js";
 import PropsEditor from "./props-editor/props-editor.js";
-
 
 const bodyProps = {className: 'list-view'};
 const classItemSubProps = {className: 'class-list-item-sub'};
@@ -26,7 +23,7 @@ class ClassesView extends React.Component {
 	}
 	
 	onAddAsChildClick() {
-		if(isCanBeAddedAsChild()) {
+		if(editor.isCanBeAddedAsChild()) {
 			editor.attachToSelected(ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name));
 		}
 	}
@@ -238,7 +235,7 @@ class ClassesView extends React.Component {
 			R.div({className: 'classes-top-panel'},
 				R.span({className: bottomPanelClassName},
 					R.btn('Add', this.onAddClick, 'Add object to the scene. (Alt + Ctrl + [item click])'),
-					R.btn('Child', this.onAddAsChildClick, 'Add object as child of selected object. (Alt + [item click])', undefined,undefined, !isCanBeAddedAsChild()),
+					R.btn('Child', this.onAddAsChildClick, 'Add object as child of selected object. (Alt + [item click])', undefined,undefined, !editor.isCanBeAddedAsChild()),
 					R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene. (Ctrl + [item click])')
 				),
 				R.btn('New', this.onNewComponentClick, 'Create new custom component.')
@@ -247,17 +244,6 @@ class ClassesView extends React.Component {
 		);
 		
 	}
-}
-
-function isCanBeAddedAsChild() {
-	if(editor.selection.length !== 1) {
-		return;
-	}
-	let o = editor.selection[0];
-	if(!(o instanceof Container) || (o instanceof Tilemap)) {
-		return;
-	}
-	return true;
 }
 
 function findNextOfThisType(c, direction) {

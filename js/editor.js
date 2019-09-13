@@ -24,6 +24,8 @@ import PrefabReference from 'thing-engine/js/components/prefab-reference.js';
 import Tilemap from 'thing-engine/js/components/tilemap.js';
 import defaultTilemapProcessor from './utils/default-tilemap-processor.js';
 import DataPathFixer from './utils/data-path-fixer.js';
+import Container from 'thing-engine/js/components/container.js';
+import Shape from 'thing-engine/js/components/shape.js';
 
 let isFirstClassesLoading = true;
 
@@ -305,6 +307,17 @@ export default class Editor {
 			editor.sceneModified(true);
 			callInitIfGameRuns(w);
 		}
+	}
+
+	isCanBeAddedAsChild() {
+		if(editor.selection.length !== 1) {
+			return;
+		}
+		let o = editor.selection[0];
+		if(!(o instanceof Container) || (o instanceof Tilemap) || (o instanceof Shape)) {
+			return;
+		}
+		return true;
 	}
 
 	onEditorRenderResize() {
