@@ -24,7 +24,7 @@ let PORT = 32023;
 let gamesRoot = __dirname + '/../games/';
 let jsonParser = bodyParser.json({limit:1024*1024*200});
 
-// File System acess commands
+//========= File System acess commands ====================
 
 app.get('/fs/projects', function (req, res) {
 	res.send(enumProjects());
@@ -49,6 +49,194 @@ app.get('/fs/openProject', function (req, res) {
 	}
 });
 
+app.get('/fs/enum', function (req, res) {
+	res.send(enumFiles());
+});
+
+app.get('/fs/delete', function (req, res) {
+	if(!currentGame) throw 'No game opened';
+	let fn = req.query.f;
+	try {
+		fs.unlinkSync(fn);
+		res.end('{}');
+	} catch (err) {
+		res.end('{"error": "Can not delete file: ' + fn + '"}');
+	}
+});
+
+app.get('/fs/edit', function (req, res) {
+	if(!currentGame) throw 'No game opened';
+	
+	let fn = req.query.f;
+	if(fn.indexOf('/') === 0) {
+		fn = path.join(__dirname, '..', fn);
+	} else if(fn.indexOf('thing-engine/js/') >= 0) {
+		fn = path.join(__dirname, '../', fn);
+	} else {
+		fn = path.resolve(currentGameRoot, fn);
+	}
+	setTimeout(() => {
+		"use strict";
+		try {
+			open(fn);
+			res.end('{}');
+		} catch (err) {
+			res.end("Can't open file to edit: " + fn);
+		}
+	},100);
+
+});
+
+app.post('/fs/fetch', jsonParser, function (req, res) {
+
+
+	let fetch = require('node-fetch');
+	fetch(req.body.url, req.body.options).then((rsponce) => rsponce.text())
+		.then((data) => {
+			if(typeof data !== 'string') {
+				data = JSON.stringify(data);
+			}
+			res.end(data);
+		}).catch((err) => {
+			console.error(err);
+			res.status(500).send("Thing-editor proxy fetch fails with result: " + JSON.stringify(err));	
+		});
+});
+
+app.get('/fs/build', function (req, res) {
+	log('BUILD project: ' + currentGameRoot);
+	exec('node "' +
+	path.resolve(__dirname, 'scripts/build.js') + '" "' +
+	currentGameRoot+'" ' + 
+	(req.query.debug ? 'debug' : ''),
+	{maxBuffer: 1024 * 5000},
+	(err, stdout, errout) => {
+		log(errout);
+		if(errout instanceof Buffer) {
+			errout = errout.toString();
+		}
+		if(stdout instanceof Buffer) {
+			stdout = stdout.toString();
+		}
+		let ret = stdout.split('\n').concat(errout.split('\n'));
+		if(err) {
+			ret.unshift('ERROR: ' + JSON.stringify(err));
+		}
+		res.end(JSON.stringify(ret));
+	});
+});
+
+app.post('/fs/build-sounds', jsonParser, function (req, res) {
+	log('BUILD sounds: ' + currentGameRoot);
+
+	buildSounds(currentGameRoot,
+		function (result) {
+			res.end(JSON.stringify(result));
+		},
+		req.body
+	);
+});
+
+app.post('/fs/savefile', jsonParser, function (req, res) {
+	let fileName = req.body.filename;
+	//log('Save file: ' + fileName);
+	ensureDirectoryExistence(fileName);
+	fs.writeFile(fileName, req.body.data, function(err) {
+		if(err) {
+			throw err;
+		}
+		res.end();
+	});
+});
+
+app.use('/', (req, res, next) => {
+	absoluteImportsFixer(path.join(__dirname, '..', req.path), req, res, next, addJsExtensionAndPreventCache);
+});
+app.use('/thing-engine/', (req, res, next) => {
+	absoluteImportsFixer(path.join(__dirname, '../thing-engine', req.path), req, res, next);
+});
+app.use('/thing-editor/', (req, res, next) => {
+	absoluteImportsFixer(path.join(__dirname, req.path), req, res, next);
+});
+
+app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
+
+//========= start server ================================================================
+let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
+if(process.argv.indexOf('n') < 0) {
+	
+	open('http://127.0.0.1:' + PORT + '/thing-editor', {app: [
+		(process.platform == 'darwin') ?
+			'Google Chrome'
+			:
+			'chrome'
+		, /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/]});
+}
+
+let wss = require('./scripts/server-socket.js');
+
+//=========== enum files ================================
+let pathSeparatorReplaceExp = /\\/g;
+let pathSeparatorReplace = (stat) => {
+	stat.name = stat.name.replace(pathSeparatorReplaceExp, '/');
+};
+
+function getDataFolders() {
+	return ['snd', 'img', 'src', 'scenes', 'prefabs', currentGameDesc.localesPath];
+}
+
+function enumFiles() {
+	if(!currentGame) throw 'No game opened';
+	let list;
+	for (let f of getDataFolders()) {
+		list = walkSync('./' + f, list);
+	}
+	list.some(pathSeparatorReplace);
+	return list;
+}
+
+const walkSync = (dir, filelist = []) => {
+	fs.readdirSync(dir).forEach(file => {
+		let stats = fs.statSync(path.join(dir, file));
+		
+		if(stats.isDirectory()) {
+			filelist = walkSync(path.join(dir, file), filelist);
+		} else if(stats.size > 0) {
+			filelist.push({name: path.join(dir, file), mtime: stats.mtimeMs});
+		}
+	});
+	return filelist;
+};
+
+//============= enum projects ===========================
+const enumProjects = () => {
+	let ret = [];
+	let dir = gamesRoot;
+	fs.readdirSync(dir).forEach(file => {
+		let dirName = path.join(dir, file);
+		if(fs.statSync(dirName).isDirectory()) {
+			let projDescFile = dirName + '/thing-project.json';
+			if(fs.existsSync(projDescFile)) {
+				let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
+				desc.dir = file;
+				ret.push(desc);
+			}
+		}
+	});
+	return ret;
+};
+
+//=============== create folder for file ==================
+function ensureDirectoryExistence(filePath) {
+	let dirname = path.dirname(filePath);
+	if (fs.existsSync(dirname)) {
+		return true;
+	}
+	ensureDirectoryExistence(dirname);
+	fs.mkdirSync(dirname);
+}
+
+//=============== project's files changin watcher ================
 const watchers = [];
 let changedFiles = {};
 let filechangedTimeout;
@@ -107,6 +295,8 @@ function filesChangedProcess() {
 	changedFiles = {};
 }
 
+//=============== vs-code integration ==================
+
 function exludeAnotherProjectsFromCodeEditor() { // hides another projects from vs code
 	let jsConfigFN = '../jsconfig.json';
 	let vsSettingsFn = '../.vscode/settings.json';
@@ -161,125 +351,8 @@ function exludeAnotherProjectsFromCodeEditor() { // hides another projects from 
 	}
 }
 
-let pathSeparatorReplaceExp = /\\/g;
-let pathSeparatorReplace = (stat) => {
-	stat.name = stat.name.replace(pathSeparatorReplaceExp, '/');
-};
+//=============== module importing fixer ==================
 
-function getDataFolders() {
-	return ['snd', 'img', 'src', 'scenes', 'prefabs', currentGameDesc.localesPath];
-}
-
-function enumFiles() {
-	if(!currentGame) throw 'No game opened';
-	let list;
-	for (let f of getDataFolders()) {
-		list = walkSync('./' + f, list);
-	}
-	list.some(pathSeparatorReplace);
-	return list;
-}
-
-app.get('/fs/enum', function (req, res) {
-	res.send(enumFiles());
-});
-
-app.get('/fs/delete', function (req, res) {
-	if(!currentGame) throw 'No game opened';
-	let fn = req.query.f;
-	try {
-		fs.unlinkSync(fn);
-		res.end('{}');
-	} catch (err) {
-		res.end('{"error": "Can not delete file: ' + fn + '"}');
-	}
-});
-
-app.get('/fs/edit', function (req, res) {
-	if(!currentGame) throw 'No game opened';
-	
-	let fn = req.query.f;
-	if(fn.indexOf('/') === 0) {
-		fn = path.join(__dirname, '..', fn);
-	} else if(fn.indexOf('thing-engine/js/') >= 0) {
-		fn = path.join(__dirname, '../', fn);
-	} else {
-		fn = path.resolve(currentGameRoot, fn);
-	}
-	setTimeout(() => {
-		"use strict";
-		try {
-			open(fn);
-			res.end('{}');
-		} catch (err) {
-			res.end("Can't open file to edit: " + fn);
-		}
-	},100);
-
-});
-
-app.post('/fs/fetch', jsonParser, function (req, res) {
-
-
-	let fetch = require('node-fetch');
-	fetch(req.body.url, req.body.options).then((rsponce) => rsponce.text())
-		.then((data) => {
-			if(typeof data !== 'string') {
-				data = JSON.stringify(data);
-			}
-			res.end(data);
-		}).catch((err) => {
-			res.status(500).send("Thing-editor proxy fetch fails with result: " + JSON.stringify(err));	
-		});
-});
-
-app.get('/fs/build', function (req, res) {
-	log('BUILD project: ' + currentGameRoot);
-	exec('node "' +
-	path.resolve(__dirname, 'scripts/build.js') + '" "' +
-	currentGameRoot+'" ' + 
-	(req.query.debug ? 'debug' : ''),
-	{maxBuffer: 1024 * 5000},
-	(err, stdout, errout) => {
-		log(errout);
-		if(errout instanceof Buffer) {
-			errout = errout.toString();
-		}
-		if(stdout instanceof Buffer) {
-			stdout = stdout.toString();
-		}
-		let ret = stdout.split('\n').concat(errout.split('\n'));
-		if(err) {
-			ret.unshift('ERROR: ' + JSON.stringify(err));
-		}
-		res.end(JSON.stringify(ret));
-	});
-});
-
-app.post('/fs/build-sounds', jsonParser, function (req, res) {
-	log('BUILD sounds: ' + currentGameRoot);
-
-	buildSounds(currentGameRoot,
-		function (result) {
-			res.end(JSON.stringify(result));
-		},
-		req.body
-	);
-});
-
-app.post('/fs/savefile', jsonParser, function (req, res) {
-	let fileName = req.body.filename;
-	//log('Save file: ' + fileName);
-	ensureDirectoryExistence(fileName);
-	fs.writeFile(fileName, req.body.data, function(err) {
-		if(err) {
-			throw err;
-		}
-		res.end();
-	});
-});
-
-// modules import cache preventing
 let moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
 let moduleImportAbsFixer = /(^\s*import.+from\s*['"])([^.\/])/gm;
@@ -293,13 +366,13 @@ function absoluteImportsFixer(fileName, req, res, next, additionalProcessor) {
 				next(err);
 			} else {
 				res.set('Content-Type', 'application/javascript');
-				let rendered = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2) => {					
+				let resultJsContent = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2) => {					
 					return m1 + "/" + m2;
 				});
 				if(additionalProcessor) {
-					rendered = additionalProcessor(rendered);
+					resultJsContent = additionalProcessor(req, res, resultJsContent);
 				}
-				return res.end(rendered);
+				return res.end(resultJsContent);
 			}
 		});
 	} else {
@@ -307,85 +380,19 @@ function absoluteImportsFixer(fileName, req, res, next, additionalProcessor) {
 	}
 }
 
-app.use('/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, '..', req.path), req, res, next, (content) => {
-		let modulesVersion = req.query ? req.query.v : false;
-		if(modulesVersion) {
-			res.set('Content-Type', 'application/javascript');
-			content = content.toString().replace(moduleImportFixer, (substr, m1, m2) => {
-				if(!m1.toLowerCase().endsWith('.js')) {
-					m1 += '.js';
-				}
-				if(m1.indexOf('thing-engine/js/') >= 0 || m1.indexOf('thing-editor/') >= 0) {
-					return m1 + m2;
-				}
-				return m1 + '?v=' + modulesVersion + m2;
-			});
-		}
-		return content;
-	});
-});
-app.use('/thing-engine/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, '../thing-engine', req.path), req, res, next);
-});
-app.use('/thing-editor/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, req.path), req, res, next);
-});
-
-app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
-
-//========= start server ================================================================
-let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
-if(process.argv.indexOf('n') < 0) {
-	
-	open('http://127.0.0.1:' + PORT + '/thing-editor', {app: [
-		(process.platform == 'darwin') ?
-			'Google Chrome'
-			:
-			'chrome'
-		, /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/]});
-}
-
-let wss = require('./scripts/server-socket.js');
-
-//=========== enum files ================================
-const walkSync = (dir, filelist = []) => {
-	fs.readdirSync(dir).forEach(file => {
-		let stats = fs.statSync(path.join(dir, file));
-		
-		if(stats.isDirectory()) {
-			filelist = walkSync(path.join(dir, file), filelist);
-		} else if(stats.size > 0) {
-			filelist.push({name: path.join(dir, file), mtime: stats.mtimeMs});
-		}
-	});
-	return filelist;
-};
-
-//============= enum projects ===========================
-const enumProjects = () => {
-	let ret = [];
-	let dir = gamesRoot;
-	fs.readdirSync(dir).forEach(file => {
-		let dirName = path.join(dir, file);
-		if(fs.statSync(dirName).isDirectory()) {
-			let projDescFile = dirName + '/thing-project.json';
-			if(fs.existsSync(projDescFile)) {
-				let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
-				desc.dir = file;
-				ret.push(desc);
+function addJsExtensionAndPreventCache(req, res, content) {
+	let modulesVersion = req.query ? req.query.v : false;
+	if(modulesVersion) {
+		res.set('Content-Type', 'application/javascript');
+		content = content.toString().replace(moduleImportFixer, (substr, m1, m2) => {
+			if(!m1.toLowerCase().endsWith('.js')) {
+				m1 += '.js';
 			}
-		}
-	});
-	return ret;
-};
-
-//=============== create folder for file ==================
-function ensureDirectoryExistence(filePath) {
-	let dirname = path.dirname(filePath);
-	if (fs.existsSync(dirname)) {
-		return true;
+			if(m1.indexOf('thing-engine/js/') >= 0 || m1.indexOf('thing-editor/') >= 0) {
+				return m1 + m2;
+			}
+			return m1 + '?v=' + modulesVersion + m2;
+		});
 	}
-	ensureDirectoryExistence(dirname);
-	fs.mkdirSync(dirname);
+	return content;
 }
