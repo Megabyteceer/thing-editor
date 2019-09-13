@@ -65,7 +65,7 @@ function initWatchers() {
 		watcher.on('change', (eventType, filename) => {
 			//log('file changed event: ' + eventType + '; ' + filename);
 			if(filename && filterWatchFiles.test(filename)) {
-				filename = subFolder + filename.replace(pathFixerExp, '/');
+				filename = subFolder + filename.replace(pathSeparatorReplaceExp, '/');
 				
 				if(eventType === 'change' || eventType === 'rename') {
 					if(fs.existsSync(filename)) {
@@ -99,7 +99,7 @@ function filesChangedProcess() {
 	let files = [];
 	for(let fileName in changedFiles) {
 		let s = changedFiles[fileName];
-		pathFixer(s);
+		pathSeparatorReplace(s);
 		//log('file changed: ' + fileName);
 		files.push(s);
 	}
@@ -107,7 +107,7 @@ function filesChangedProcess() {
 	changedFiles = {};
 }
 
-function exludeAnotherProjectsFromCodeEditor() {
+function exludeAnotherProjectsFromCodeEditor() { // hides another projects from vs code
 	let jsConfigFN = '../jsconfig.json';
 	let vsSettingsFn = '../.vscode/settings.json';
 	let projectsDirs = enumProjects().map(p => p.dir);
@@ -161,9 +161,9 @@ function exludeAnotherProjectsFromCodeEditor() {
 	}
 }
 
-let pathFixerExp = /\\/g;
-let pathFixer = (stat) => {
-	stat.name = stat.name.replace(pathFixerExp, '/');
+let pathSeparatorReplaceExp = /\\/g;
+let pathSeparatorReplace = (stat) => {
+	stat.name = stat.name.replace(pathSeparatorReplaceExp, '/');
 };
 
 function getDataFolders() {
@@ -176,7 +176,7 @@ function enumFiles() {
 	for (let f of getDataFolders()) {
 		list = walkSync('./' + f, list);
 	}
-	list.some(pathFixer);
+	list.some(pathSeparatorReplace);
 	return list;
 }
 
@@ -306,6 +306,7 @@ function absoluteImportsFixer(fileName, req, res, next, additionalProcessor) {
 		next();
 	}
 }
+
 app.use('/', (req, res, next) => {
 	absoluteImportsFixer(path.join(__dirname, '..', req.path), req, res, next, (content) => {
 		let modulesVersion = req.query ? req.query.v : false;
