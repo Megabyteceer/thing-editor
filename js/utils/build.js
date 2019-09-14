@@ -1,37 +1,39 @@
 import L from "thing-engine/js/utils/l.js";
 import Lib from "thing-engine/js/lib.js";
 
-function sortObject(obj) {
+let prefixToCutOff;
+
+function isPrefabNameValidForBuild(prefabName) {
+	return !prefabName.startsWith('prefixToCutOff') && (prefabName.indexOf('/' + prefixToCutOff) < 0);
+}
+
+function filterObjectsData(obj) {
 	let ret = {};
-	Object.keys(obj).sort().some((name) => {
+	Object.keys(obj).filter(isPrefabNameValidForBuild).sort().some((name) => {
 		ret[name] = obj[name];
 	});
 	return ret;
 }
 
-let isDebugBuild;
-
-const filterChildsByName = (childData) => {
+const filterChildrenByName = (childData) => {
 	if(!childData.hasOwnProperty('p')) {
 		return true;
 	}
 	if(childData.p.hasOwnProperty('name') &&
-		childData.p.name.startsWith(isDebugBuild ? '___' : '__')) {
+		childData.p.name.startsWith(prefixToCutOff)) {
 		return false;
 	}
 	if(childData.p.hasOwnProperty('prefabName') &&
-		childData.p.prefabName.startsWith('__')) {
+		!isPrefabNameValidForBuild(childData.p.prefabName)) {
 		return false;
 	}
-		
-		
 	return true;
 };
 
 const fieldsFilter = (key, value) => {
 	if(!key.startsWith('__')) {
 		if(key === ':' && Array.isArray(value)) { // cut off __ objects
-			return value.filter(filterChildsByName);
+			return value.filter(filterChildrenByName);
 		}
 		return value;
 	}
@@ -50,9 +52,9 @@ const isLineError = (l) => {
 
 export default class Build {
 	static build(debug) {
-		isDebugBuild = debug;
-		let scenes = sortObject(Lib._getAllScenes());
-		let prefabs = sortObject(Lib._getAllPrefabs());
+		prefixToCutOff = (debug ? '___' : '__');
+		let scenes = filterObjectsData(Lib._getAllScenes());
+		let prefabs = filterObjectsData(Lib._getAllPrefabs());
 		
 		let images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value !== 'WHITE').map((t) => {
 			return t.value;
