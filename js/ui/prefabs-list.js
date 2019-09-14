@@ -45,7 +45,7 @@ export default class PrefabsList extends React.Component {
 	}
 
 	onSearchChange(ev) {
-		this.setState({filer: ev.target.value.toLowerCase()});
+		this.setState({filter: ev.target.value.toLowerCase()});
 	}
 	
 	onAddClick(ev) {
@@ -243,11 +243,11 @@ export default class PrefabsList extends React.Component {
 		prefabsNames.sort();
 
 		for (let prefabName of prefabsNames) {
-			if(!this.state.filer || prefabName.indexOf(this.state.filer) >= 0) {
+			if(!this.state.filter || prefabName.indexOf(this.state.filter) >= 0) {
 				prefabs.push(this.renderItem(prefabName, scenePrefabs[prefabName]));
 			}
 		}
-		if(!this.state.filer) {
+		if(!this.state.filter) {
 			prefabs = Group.groupArray(prefabs);
 		}
 		return R.fragment(

@@ -1021,6 +1021,11 @@ input{
 	right: 4px;
 }
 
+.language-search-input {
+	margin: 5px;
+	width: 226px;
+}
+
 .langs-editor-table {
 	box-sizing: content-box;
 	text-align: left;

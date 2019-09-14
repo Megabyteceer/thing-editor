@@ -88,7 +88,7 @@ export default class LanguageView extends React.Component {
 		if(this.state.toggled) {
 			table = editor.ui.renderWindow('texteditor', 'Text', 'Text Table', R.fragment(
 				R.btn('×', this.onToggleClick, 'Hide Text Editor', 'close-window-btn'),
-				React.createElement(LanguageTableEditor)), 200, 100, 620, 300, 900, 800);
+				React.createElement(LanguageTableEditor)), 200, 100, 710, 300, 900, 800);
 		}
 		return R.fragment(btn, table);
 	}
@@ -120,6 +120,17 @@ class LanguageTableEditor extends React.Component {
 		super(props);
 		this.onAddNewLanguageClick = this.onAddNewLanguageClick.bind(this);
 		this.onAddNewKeyClick = this.onAddNewKeyClick.bind(this);
+		this.state = {};
+		this.searchInputProps = {
+			className: 'language-search-input',
+			onChange: this.onSearchChange.bind(this),
+			placeholder: 'Search',
+			defaultValue: ''
+		};
+	}
+
+	onSearchChange(ev) {
+		this.setState({filter: ev.target.value.toLowerCase()});
 	}
 
 	componentDidMount() {
@@ -231,6 +242,15 @@ class LanguageTableEditor extends React.Component {
 		}));
 		
 		idsList.some((id) => {
+			let filter = this.state.filter;
+			if(filter) {
+				if(id.indexOf(filter) < 0) {
+					if(langsIdsList.every(langId => languages[langId][id].toLowerCase().indexOf(filter) < 0)) {
+						return;
+					}
+				}
+			}
+
 			lines.push(R.div({key: id, className:'langs-editor-tr'},
 				R.div({className:'langs-editor-th selectable-text',
 					title: "Ctrl+click to copy key, Double click to rename, Right click to delete",
@@ -289,17 +309,21 @@ class LanguageTableEditor extends React.Component {
 				})
 			));
 		});
-		lines = Group.groupArray(lines, '.');
+
+		if(!this.state.filter) {
+			lines = Group.groupArray(lines, '.');
+		}
 
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
+			R.btn('+ Add language...', this.onAddNewLanguageClick),
+			R.input(this.searchInputProps),
 			R.div(langsEditorWrapperProps, 
 				header,
 				R.div(tableBodyProps,
 					lines
 				)
-			),
-			R.btn('+ Add language...', this.onAddNewLanguageClick)
+			)
 		);
 	}
 }
