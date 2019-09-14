@@ -314,7 +314,15 @@ export default class Editor {
 			return;
 		}
 		let o = editor.selection[0];
-		if(!(o instanceof Container) || (o instanceof Tilemap) || (o instanceof Shape)) {
+		if(!(o instanceof Container)) {
+			return;
+		}
+		return editor.isCanBeAdded();
+	}
+
+	isCanBeAdded() {
+		let o = editor.selection[0];
+		if((o instanceof Tilemap) || (o instanceof Shape)) {
 			return;
 		}
 		return true;
