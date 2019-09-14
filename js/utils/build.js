@@ -3,13 +3,13 @@ import Lib from "thing-engine/js/lib.js";
 
 let prefixToCutOff;
 
-function isPrefabNameValidForBuild(prefabName) {
-	return !prefabName.startsWith('prefixToCutOff') && (prefabName.indexOf('/' + prefixToCutOff) < 0);
+function isFileNameValidForBuild(prefabName) {
+	return !prefabName.startsWith(prefixToCutOff) && (prefabName.indexOf('/' + prefixToCutOff) < 0);
 }
 
 function filterObjectsData(obj) {
 	let ret = {};
-	Object.keys(obj).filter(isPrefabNameValidForBuild).sort().some((name) => {
+	Object.keys(obj).filter(isFileNameValidForBuild).sort().some((name) => {
 		ret[name] = obj[name];
 	});
 	return ret;
@@ -24,7 +24,7 @@ const filterChildrenByName = (childData) => {
 		return false;
 	}
 	if(childData.p.hasOwnProperty('prefabName') &&
-		!isPrefabNameValidForBuild(childData.p.prefabName)) {
+		!isFileNameValidForBuild(childData.p.prefabName)) {
 		return false;
 	}
 	return true;
@@ -36,6 +36,11 @@ const fieldsFilter = (key, value) => {
 			return value.filter(filterChildrenByName);
 		}
 		return value;
+	}
+	if(typeof value === 'object') { //its prefab or scene data
+		if(isFileNameValidForBuild(key)) {
+			return value;
+		}
 	}
 };
 
@@ -59,7 +64,7 @@ export default class Build {
 		let images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value !== 'WHITE').map((t) => {
 			return t.value;
 		});
-		images = images.slice().sort();
+		images = images.slice().filter(isFileNameValidForBuild).sort();
 
 		let resources;
 		for(let r in Lib.resources) {
@@ -69,12 +74,12 @@ export default class Build {
 			resources.push(r);
 		}
 		if(resources) {
-			resources.sort();
+			resources = resources.filter(isFileNameValidForBuild).sort();
 		}
 		
 		let fileSavePromises = [];
 
-		let sounds = Lib.__getSoundsData();
+		let sounds = filterObjectsData(Lib.__getSoundsData());
 		/*
 		let version = editor.projectDesc.version.split('.');
 		let latest = parseInt(version.pop());
