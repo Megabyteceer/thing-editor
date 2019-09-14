@@ -20,5 +20,11 @@
 	<script src="js/lib/pixi-filters.js"></script>
 
 	<script type="module" src="client-index.js"></script>
+	<script>
+	if(!window.PIXI) {
+		document.write('<h1>Could not fetch required js libraries. Looks like symlinks were not created. Please reinstall Thing Editor with Administrator access.</h1>')
+	}
+	
+	</script>
 	
 </html>

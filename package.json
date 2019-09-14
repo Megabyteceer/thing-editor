@@ -39,6 +39,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "reset-css": "^3.0.0",
+    "sudo-prompt": "^9.0.0",
     "ws": "^5.1.0"
   },
   "eslintIgnore": [

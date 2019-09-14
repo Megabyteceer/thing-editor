@@ -1,5 +1,21 @@
 /*global require */
 /*global __dirname */
+/*global __filename */
+/*global process */
+
+if((process.argv.indexOf('-accessGranted') < 0) && process.platform.startsWith('win')) {
+	console.log('Windows detected. Attempt to grant admin access ' + process.platform);
+	var sudo = require('sudo-prompt');
+	var options = {
+		name: 'Thing Engine'
+	};
+	sudo.exec('node "' + __filename + '" -accessGranted', options,
+		function (error) {
+			if (error) throw error;
+		}
+	);
+}
+
 const symlinksMaker = require('./symlinks-maker.js');
 const path = require('path');
 const fs = require('fs');
@@ -21,7 +37,7 @@ var clientLibs = [
 	['../../node_modules/pixi-spine/bin/pixi-spine.js', '../thing-engine/js/lib/pixi-spine.js']
 ];
 
-symlinksMaker.setRootPath(path.resolve(__dirname)+'/../');
+symlinksMaker.setRootPath(path.resolve(__dirname) + '/../');
 symlinksMaker.makeSymlinks(clientLibs);
 
 function copyRecursiveSync(src, dest) {
@@ -29,15 +45,15 @@ function copyRecursiveSync(src, dest) {
 	var stats = exists && fs.statSync(src);
 	var isDirectory = exists && stats.isDirectory();
 	if (exists && isDirectory) {
-		if(!fs.existsSync(dest)) {
+		if (!fs.existsSync(dest)) {
 			fs.mkdirSync(dest);
 		}
-		fs.readdirSync(src).forEach(function(childItemName) {
+		fs.readdirSync(src).forEach(function (childItemName) {
 			copyRecursiveSync(path.join(src, childItemName),
 				path.join(dest, childItemName));
 		});
 	} else {
-		if(!fs.existsSync(dest)) {
+		if (!fs.existsSync(dest)) {
 			fs.linkSync(src, dest);
 		}
 	}
