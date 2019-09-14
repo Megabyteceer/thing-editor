@@ -12,9 +12,20 @@ function sortObject(obj) {
 let isDebugBuild;
 
 const filterChildsByName = (childData) => {
-	return !childData.hasOwnProperty('p') ||
-		!childData.p.hasOwnProperty('name') ||
-		!childData.p.name.startsWith(isDebugBuild ? '___' : '__');
+	if(!childData.hasOwnProperty('p')) {
+		return true;
+	}
+	if(childData.p.hasOwnProperty('name') &&
+		childData.p.name.startsWith(isDebugBuild ? '___' : '__')) {
+		return false;
+	}
+	if(childData.p.hasOwnProperty('prefabName') &&
+		childData.p.prefabName.startsWith('__')) {
+		return false;
+	}
+		
+		
+	return true;
 };
 
 const fieldsFilter = (key, value) => {
