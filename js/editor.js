@@ -244,6 +244,10 @@ export default class Editor {
 	}
 
 	wrapSelected(className) {
+		if(!game.__EDITORmode) {
+			editor.ui.modal.showModal("Can not wrap in running mode.");
+			return;
+		}
 
 		let isClipboardWrapping = ((typeof className) !== 'string');
 

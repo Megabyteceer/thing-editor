@@ -236,7 +236,7 @@ class ClassesView extends React.Component {
 				R.span({className: bottomPanelClassName},
 					R.btn('Add', this.onAddClick, 'Add object to the scene. (Alt + Ctrl + [item click])'),
 					R.btn('Child', this.onAddAsChildClick, 'Add object as child of selected object. (Alt + [item click])', undefined,undefined, !editor.isCanBeAddedAsChild()),
-					R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene. (Ctrl + [item click])')
+					R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene. (Ctrl + [item click])', undefined, undefined, !game.__EDITORmode)
 				),
 				R.btn('New', this.onNewComponentClick, 'Create new custom component.')
 			),

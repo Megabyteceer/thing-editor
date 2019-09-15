@@ -103,6 +103,9 @@ export default class TreeView extends React.Component {
 			return;
 		}
 		let o = editor.selection[0];
+		if((o.parent === game.stage) && !game.__EDITORmode) {
+			return;
+		}
 		if(o === game.currentContainer) {
 			return !(o instanceof Scene) && (o.children.length === 1);
 		}
@@ -351,7 +354,7 @@ export default class TreeView extends React.Component {
 		if (!game.stage) return R.spinner();
 		
 		let isEmpty = editor.selection.length === 0;
-		let isRoot = editor.selection.indexOf(game.currentContainer) >= 0;
+		let isRoot = editor.selection.some(isObjectRoot);
 
 
 		return R.div(classViewProps,
@@ -364,7 +367,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('copy'), this.onCopyClick, 'Copy selected in to clipboard (Ctrl+C)', "tool-btn", 1067, isEmpty),
 				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', "tool-btn", 1088, isEmpty || isRoot),
 				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, !editor.clipboardData || !editor.isCanBeAdded()),
-				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData),
+				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData || !game.__EDITORmode),
 				R.hr(),
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
 				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Unwrap (remove selected but keep children)', "tool-btn", undefined, !this.isCanBeUnwrapped())
@@ -381,8 +384,12 @@ export default class TreeView extends React.Component {
 	}
 }
 
+const isObjectRoot = (node) => {
+	return node.parent === game.stage;
+};
+
 const renderRoots = (node, i) => {
-	if(node === game.currentContainer) {
+	if((node === game.currentContainer) || !game.__EDITORmode) {
 		return R.renderSceneNode(node);
 	} else {
 		let style;
