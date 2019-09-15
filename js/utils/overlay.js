@@ -400,7 +400,18 @@ function selectByStageClick(ev) {
 					allUnderMouse.push(o);
 				}
 			} else {
-				allUnderMouse.push(o);
+				let p = o;
+				while(p) {
+					if(p === game.stage) {
+						allUnderMouse.push(o);
+						break;
+					}
+					if(p.__lockSelection) {
+						break;
+					}
+					p = p.parent;
+				}
+				
 			}
 		}
 	});
