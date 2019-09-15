@@ -525,8 +525,8 @@ export default class Editor {
 		return o.constructor.__EDITOR_propslist_cache;
 	}
 
-	__getCurrentStack(title) {
-		let a = (new Error()).stack.split('\n');
+	showStack(stack) {
+		let a = stack.stack.split('\n');
 		a.shift();
 		a.shift();
 		a = a.map((s) => {
@@ -551,12 +551,16 @@ export default class Editor {
 			}
 			return {functionName, path: s};
 		});
-		return R.div(null, R.b(null, title), ' was created at:', a.map((i,key) => {
+		editor.ui.modal.showModal(R.div(null, R.b(null, stack.title), ' was created at:', a.map((i,key) => {
 			return R.div({key, className: 'list-item stack-item', onClick: () => {
 				let a = i.path.split(':');
 				editor.fs.editFile('/' + a[0], parseInt(a[1]));
 			}}, R.b(null, i.functionName), ' (', i.path, ')');
-		}));
+		})));
+	}
+
+	__getCurrentStack(title) {
+		return {title, stack: (new Error()).stack};
 	}
 	
 	getObjectField(o, name) {

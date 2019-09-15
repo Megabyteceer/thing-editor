@@ -39,6 +39,8 @@ export default class RefFieldEditor extends React.Component {
 				if(this.props.value) {
 					if(React.isValidElement(this.props.value)) {
 						editor.ui.modal.showModal(this.props.value);
+					} else if(this.props.field.onClick) {
+						this.props.field.onClick(this.props.value);
 					} else {
 						try {
 							editor.ui.modal.showModal(JSON.stringify(this.props.value, undefined, '\n'). split('\n').map((l) => {
