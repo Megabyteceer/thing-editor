@@ -7,7 +7,7 @@ let modal;
 
 let blackoutProps = {className: 'modal-blackout fadein-animation'};
 let blackoutPropsClosable = {
-	className: 'modal-blackout fadein-animation', style: {cursor: 'pointer'}, onClick: (sp) => {
+	className: 'modal-blackout fadein-animation', style: {cursor: 'pointer'}, onMouseDown: (sp) => {
 		if (sp.target.className.indexOf('modal-blackout') === 0) {
 			modal.hideModal();
 		}
