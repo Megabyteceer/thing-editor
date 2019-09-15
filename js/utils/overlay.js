@@ -223,6 +223,7 @@ export default class Overlay {
 			}
 			editor.history.updateUi();
 			game.__loadDynamicTextures();
+			editor.selection.loadSelection(editor.history.currentState.selectionData);
 		}
 	}
 }
