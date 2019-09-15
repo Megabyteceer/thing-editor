@@ -51,12 +51,12 @@ export default class PrefabsList extends React.Component {
 	onAddClick(ev) {
 		PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
-			editor.addToScene(this._loadPrefab(ev.altKey));
+			editor.addToScene(this._loadPrefab(this.state.selectedItem, ev.altKey));
 		}
 	}
 
-	_loadPrefab(asReference) {
-		let prefabName = Lib.__getNameByPrefab(this.state.selectedItem);
+	_loadPrefab(item, asReference) {
+		let prefabName = Lib.__getNameByPrefab(item);
 		if(!asReference) {
 			return Lib.loadPrefab(prefabName);
 		} else {
@@ -69,8 +69,15 @@ export default class PrefabsList extends React.Component {
 	onAddChildClick(ev) {
 		PrefabsList.hidePrefabPreview();
 		if (this.state.selectedItem) {
-			editor.attachToSelected(this._loadPrefab(ev.altKey));
+			this._addPrefabToChild(this.state.selectedItem, ev.altKey);
 		}
+	}
+
+	_addPrefabToChild(item, asReference) {
+		if(previewShown === Lib.__getNameByPrefab(item)) {
+			PrefabsList.hidePrefabPreview(); // exit to level up
+		}
+		editor.attachToSelected(this._loadPrefab(item, asReference));
 	}
 	
 	onSaveSelectedAsClick() {
@@ -179,7 +186,7 @@ export default class PrefabsList extends React.Component {
 		});
 	}
 	
-	onSelect(item, ev) {
+	onSelect(item, ev, currentItem) {
 		if(ev.altKey) {
 			while(editor.selection[0] instanceof PrefabReference) {
 				let p = editor.selection[0].parent;
@@ -189,7 +196,8 @@ export default class PrefabsList extends React.Component {
 				editor.selection.clearSelection();
 				editor.selection.add(p);
 			}
-			this.onAddChildClick(ev);
+			this._addPrefabToChild(item, true);
+			return currentItem;
 		} else {
 			PrefabsList.editPrfefab( Lib.__getNameByPrefab(item));
 		}

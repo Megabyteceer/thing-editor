@@ -56,9 +56,11 @@ R.listItem = (view, item, key, parent, help) => {
 		'data-help' : help,
 		className: className, key: key, onMouseDown: (ev) => {
 			if(parent.state.selectedItem !== item || parent.reselectAllowed) {
-				parent.state.selectedItem = item;
-				parent.onSelect(item, ev);
-				parent.forceUpdate();
+				let itemToSelect = parent.onSelect(item, ev, parent.state.selectedItem) || item;
+				if(parent.state.selectedItem !== itemToSelect) {
+					parent.state.selectedItem = itemToSelect;
+					parent.forceUpdate();
+				}
 			}
 		}
 	}, view);
