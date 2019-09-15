@@ -27,7 +27,7 @@ export default class DataPathEditor extends React.Component {
 		game.currentScene._refreshAllObjectRefs();
 		let node = getLatestSceneNodeBypath(this.props.value, editor.selection[0]);
 		if(node.getRootContainer() !== game.currentContainer) {
-			PrefabsList.hidePrefabPreview();
+			PrefabsList.exitPrefabEdit();
 		}
 		if(node.getRootContainer() !== game.currentContainer) {
 			editor.ui.modal.notify('Target object is not in current container to be selected.');

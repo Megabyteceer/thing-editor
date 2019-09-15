@@ -229,9 +229,9 @@ export default class Viewport extends React.Component {
 				R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes (Enter)', 'main-btn', 13),
 				R.btn(R.icon('reject'), () => {
 					if(editor.isCurrentContainerModified) {
-						editor.ui.modal.showEditorQuestion("Are you sure?", "Are you really wanted to discard all changes made in prefab?", PrefabsList.hidePrefabPreview, "Discard changes.");
+						editor.ui.modal.showEditorQuestion("Are you sure?", "Are you really wanted to discard all changes made in prefab?", PrefabsList.exitPrefabEdit, "Discard changes.");
 					} else {
-						PrefabsList.hidePrefabPreview();
+						PrefabsList.exitPrefabEdit();
 					}
 				}, 'Reject prefab changes (Esc)', undefined, 27),
 				'BG color:',
