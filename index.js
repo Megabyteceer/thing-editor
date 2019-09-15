@@ -150,13 +150,7 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 });
 
 app.use('/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, '..', req.path), req, res, next, addJsExtensionAndPreventCache);
-});
-app.use('/thing-engine/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, '../thing-engine', req.path), req, res, next);
-});
-app.use('/thing-editor/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, req.path), req, res, next);
+	absoluteImportsFixer(path.join(__dirname, '..', req.path), req, res, next);
 });
 
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
@@ -357,7 +351,7 @@ let moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
 let moduleImportAbsFixer = /(^\s*import.+from\s*['"])([^.\/])/gm;
 
-function absoluteImportsFixer(fileName, req, res, next, additionalProcessor) {
+function absoluteImportsFixer(fileName, req, res, next) {
 	let needParse = req.path.endsWith('.js') && !req.path.endsWith('.min.js');
 	if(needParse) {
 		fs.readFile(fileName, function (err, content) {
@@ -369,9 +363,7 @@ function absoluteImportsFixer(fileName, req, res, next, additionalProcessor) {
 				let resultJsContent = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2) => {					
 					return m1 + "/" + m2;
 				});
-				if(additionalProcessor) {
-					resultJsContent = additionalProcessor(req, res, resultJsContent);
-				}
+				resultJsContent = addJsExtensionAndPreventCache(req, res, resultJsContent);
 				return res.end(resultJsContent);
 			}
 		});
