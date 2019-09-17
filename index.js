@@ -61,7 +61,7 @@ app.get('/fs/enum', function (req, res) {
 
 app.get('/fs/delete', function (req, res) {
 	if(!currentGame) throw 'No game opened';
-	let fn = req.query.f;
+	let fn = mapFileUrl(req.query.f);
 	try {
 		fs.unlinkSync(fn);
 		res.end('{}');
@@ -142,7 +142,7 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 });
 
 app.post('/fs/savefile', jsonParser, function (req, res) {
-	let fileName = req.body.filename;
+	let fileName = mapFileUrl(req.body.filename);
 	//log('Save file: ' + fileName);
 	ensureDirectoryExistence(fileName);
 	fs.writeFile(fileName, req.body.data, function(err) {
@@ -163,12 +163,13 @@ app.use('/games/',  (req, res) => {
 
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 
+function mapFileUrl(url) {
+	return mapAssetUrl('/' + currentGame + '/' + url);
+}
 
 function mapAssetUrl(url) {
 	let fileName = url.split('?')[0];
-	log("GET: " + fileName);
 	if(assetsMap.has(fileName)) {
-		log("REPLACED: " + fileName + ' => ' + assetsMap.get(fileName));
 		return assetsMap.get(fileName);
 	} else {
 		return '/games' + url;
