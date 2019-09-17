@@ -105,7 +105,7 @@ export default class SoundsList extends React.Component {
 							const soundFilter =  new RegExp("^snd\/.*\.(" + editor.projectDesc.soundFormats.join('|') + ")$", "gmi");
 
 							sounds = {};
-							editor.fs.files.some((fileName) => {
+							editor.fs.files.snd.some((fileName) => {
 								if(fileName.match(soundFilter)) {
 
 									fileName = fileName.replace(soundNameCleaner, '');					

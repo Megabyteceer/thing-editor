@@ -14,33 +14,39 @@ let fs = {
 	},
 	refreshFiles: () => {
 		return fs.getJSON('/fs/enum').then((data) => {
-			data.sort((a,b)=>{
-				return b.mtime - a.mtime;
-			});
-			if(editor.game.projectDesc && !editor.game.projectDesc.__allowUpperCaseFiles) {
-				data = data.filter((stat) => {
-					let fn = stat.name;
-					if (fn.toLowerCase() !== fn) {
-						editor.ui.status.warn("File with upper cased characters ignored: " + fn, 30029, () => {
-							let a = fn.split('/');
-							let path = [];
-							for(let p of a) {
-								if(p !== p.toLowerCase()) {
-									break;
-								} else {
-									path.push(p);
-								}
-							}
-							fs.editFile(path.join('/'));
-						});
-						return false;
-					}
-					return true;
+			fs.filesExt = {};
+			fs.files = {};
+			for(let type in data) {
+				let files = data[type];
+				files.sort((a,b) => {
+					return b.mtime - a.mtime;
 				});
-			}
 
-			fs.filesExt = data;
-			fs.files = data.map(f => f.name).sort();
+				if(editor.game.projectDesc && !editor.game.projectDesc.__allowUpperCaseFiles) {
+					files = files.filter((stat) => {
+						let fn = stat.name;
+						if (fn.toLowerCase() !== fn) {
+							editor.ui.status.warn("File with upper cased characters ignored: " + fn, 30029, () => {
+								let a = fn.split('/');
+								let path = [];
+								for(let p of a) {
+									if(p !== p.toLowerCase()) {
+										break;
+									} else {
+										path.push(p);
+									}
+								}
+								fs.editFile(path.join('/'));
+							});
+							return false;
+						}
+						return true;
+					});
+				}
+
+				fs.filesExt[type] = files;
+				fs.files[type] = files.map(f => f.name).sort();
+			}
 		});
 	},
 	deleteFile: (fileName) => {

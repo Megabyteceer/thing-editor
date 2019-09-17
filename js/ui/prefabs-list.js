@@ -305,7 +305,7 @@ export default class PrefabsList extends React.Component {
 	static readAllPrefabsList() {
 		let prefabs = {};
 		return Promise.all(
-			editor.fs.files.filter(fn => fn.match(prefabFileFiler))
+			editor.fs.files.prefabs.filter(fn => fn.match(prefabFileFiler))
 				.map((fn) => {
 					return editor.fs.openFile(fn)
 						.then((data) => {
