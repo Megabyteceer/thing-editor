@@ -74,11 +74,8 @@ app.get('/fs/edit', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	
 	let fn = req.query.f;
-	if(fn.indexOf('thing-engine/js/') >= 0) {
-		fn = path.join(__dirname, '../', fn);
-	} else {
-		fn = path.join(__dirname, '..', fn);
-	}
+	fn = path.join(fullRoot, fn);
+
 	setTimeout(() => {
 		"use strict";
 		try {
@@ -258,7 +255,6 @@ function enumFiles() {
 			if(!type.startsWith('src')) {
 				if(!assetsMap.has(assetURL)) {
 					assetsMap.set(assetURL, fileData.name);
-					log('MAP: ' + assetURL + ' => '+ fileData.name);
 					fileData.name = assetName;
 				} else {
 					return false;
