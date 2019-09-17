@@ -73,7 +73,7 @@ app.get('/fs/delete', function (req, res) {
 app.get('/fs/edit', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	
-	let fn = req.query.f;
+	let fn = mapFileUrl(req.query.f);
 	fn = path.join(fullRoot, fn);
 
 	setTimeout(() => {
@@ -161,7 +161,12 @@ app.use('/games/',  (req, res) => {
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 
 function mapFileUrl(url) {
-	return mapAssetUrl('/' + currentGame + '/' + url);
+	let fileName =url.replace('/games', '');
+	if(assetsMap.has(fileName)) {
+		return assetsMap.get(fileName);
+	} else {
+		return url;
+	}
 }
 
 function mapAssetUrl(url) {
@@ -214,7 +219,6 @@ function getDataFolders() {
 			if(fs.existsSync(libRootFolder)) {
 				for(let type of ASSETS_FOLDERS_NAMES) {
 					let assetsFolder = path.join(libRootFolder, type);
-					log("CHECK FOLDER: " + assetsFolder);
 					if(fs.existsSync(assetsFolder)) {
 						ret.push({
 							type,

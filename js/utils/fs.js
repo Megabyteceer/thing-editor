@@ -1,5 +1,3 @@
-import game from "thing-engine/js/game.js";
-
 let fs = {
 	chooseProject: (enforced) => {
 		editor.ui.viewport.stopExecution();
@@ -50,7 +48,7 @@ let fs = {
 		});
 	},
 	deleteFile: (fileName) => {
-		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(fileName), true, false).then((data) => {
+		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(editor.game.resourcesPath + fileName), true, false).then((data) => {
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
 			}
@@ -99,7 +97,7 @@ let fs = {
 		});
 	},
 	openFile(fileName, silently) {
-		return this.getJSON(game.resourcesPath + fileName, silently);
+		return this.getJSON(editor.game.resourcesPath + fileName, silently);
 	},
 	postJSON(url, data, silently = false, async = false) {//eslint-disable-line no-unused-vars
 		return new Promise((resolve) => {
@@ -130,7 +128,7 @@ let fs = {
 		if(typeof data !== 'string') {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
-		return fs.postJSON('/fs/savefile', {data, filename}, silently, async);
+		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async);
 	}
 };
 
