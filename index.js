@@ -238,7 +238,7 @@ function enumFiles() {
 
 	assetsMap = new Map();
 
-	let gameURL = '/' + currentGameRoot.replace(pathSeparatorReplaceExp, '/');
+	let gameURL = '/' + currentGame + '/';
 
 	for (let f of getDataFolders()) {
 		let type = f.type;
