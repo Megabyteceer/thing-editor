@@ -105,26 +105,30 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 });
 
 app.get('/fs/build', function (req, res) {
+	
 	log('BUILD project: ' + currentGameRoot);
-	exec('node "' +
-	path.resolve(__dirname, 'scripts/build.js') + '" "' +
+
+	let command = 'node "' +
+	path.join(__dirname, 'scripts/build.js') + '" "' +
 	currentGameRoot+'" ' + 
-	(req.query.debug ? 'debug' : ''),
-	{maxBuffer: 1024 * 5000},
-	(err, stdout, errout) => {
-		log(errout);
-		if(errout instanceof Buffer) {
-			errout = errout.toString();
-		}
-		if(stdout instanceof Buffer) {
-			stdout = stdout.toString();
-		}
-		let ret = stdout.split('\n').concat(errout.split('\n'));
-		if(err) {
-			ret.unshift('ERROR: ' + JSON.stringify(err));
-		}
-		res.end(JSON.stringify(ret));
-	});
+	(req.query.debug ? 'debug' : '');
+
+	exec(command,
+		{maxBuffer: 1024 * 5000},
+		(err, stdout, errout) => {
+			log(errout);
+			if(errout instanceof Buffer) {
+				errout = errout.toString();
+			}
+			if(stdout instanceof Buffer) {
+				stdout = stdout.toString();
+			}
+			let ret = stdout.split('\n').concat(errout.split('\n'));
+			if(err) {
+				ret.unshift('ERROR: ' + JSON.stringify(err));
+			}
+			res.end(JSON.stringify(ret));
+		});
 });
 
 app.post('/fs/build-sounds', jsonParser, function (req, res) {
@@ -165,7 +169,7 @@ function mapFileUrl(url) {
 	if(assetsMap.has(fileName)) {
 		return assetsMap.get(fileName);
 	} else {
-		return url;
+		return path.join(fullRoot, url);
 	}
 }
 

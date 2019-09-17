@@ -6,7 +6,7 @@ const path = require("path");
 let projectPath = process.argv[2];
 let debug = process.argv.indexOf('debug') >= 0;
 
-let config = require(path.resolve(projectPath, debug ? 'config/webpack.debug.js' : 'config/webpack.prod.js'));
+let config = require(path.join(projectPath, debug ? 'config/webpack.debug.js' : 'config/webpack.prod.js'));
 
 webpack(config, (err, stats) => {
 
