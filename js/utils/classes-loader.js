@@ -241,7 +241,6 @@ function clearClasses() {
 }
 
 //load custom game classes
-const jsFiler = /^src\/(game-objects|scenes)\/.*\.js$/gm;
 let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
@@ -274,7 +273,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			window.onerror = function loadingErrorHandler(message, source, lineno, colno) {
 
 				let fn = source.split('?').shift().split(':' + location.port).pop();
-				editor.fs.editFile('../../' + fn, lineno, colno);
+				editor.fs.editFile(fn, lineno, colno);
 				showError(R.fragment(
 					'Attempt to load: ' + loadedPath + ': ' + message,
 					R.div({className: 'error-body'}, fn + ' (' + lineno + ':' + colno + ')', R.br(), message),
@@ -283,11 +282,10 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			};
 		
 			let scriptSource = '';
-			editor.fs.files.some((fn, i) => {
-				if(fn.match(jsFiler)) {
-					let classPath = fn;
-					scriptSource += ("import C" + i + " from '" + location.origin + game.resourcesPath + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
-				}
+			let classesList = editor.fs.files['src/game-objects'].concat(editor.fs.files['src/scenes']);
+			classesList.some((fn, i) => {
+				let classPath = fn;
+				scriptSource += ("import C" + i + " from '" + location.origin + '/' + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
 			});
 		
 			let src = 'data:application/javascript,' + encodeURIComponent(scriptSource);

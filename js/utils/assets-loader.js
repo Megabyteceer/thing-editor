@@ -46,7 +46,7 @@ const enumAssets = (onlyThisFiles) => {
 	
 	let jsonFolders = [];
 
-	editor.fs.filesExt.filter((fileStat) => {
+	editor.fs.filesExt.img.filter((fileStat) => {
 		if(fileStat.name.match(jsonFilter)) {
 			if(!jsonFolders.some((f) => {
 				return fileStat.name.startsWith(f);
@@ -62,7 +62,7 @@ const enumAssets = (onlyThisFiles) => {
 	});
 
 
-	editor.fs.filesExt.some((fileStat) => {
+	editor.fs.filesExt.img.some((fileStat) => {
 		if(fileStat.name.match(textureFiler)) {
 			if(!jsonFolders.some((f) => {
 				return fileStat.name.startsWith(f);

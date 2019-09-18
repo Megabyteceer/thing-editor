@@ -10,6 +10,9 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const open = require('open');
+
+process.chdir(path.join(__dirname, '..'));
+
 const {
 	exec
 } = require('child_process');
@@ -19,9 +22,11 @@ const buildSounds = require('./scripts/build-sounds.js');
 let currentGame;
 let currentGameDesc;
 let currentGameRoot;
+let fullRoot = path.join(__dirname, '../');
+let assetsMap = new Map();
 
 let PORT = 32023;
-let gamesRoot = __dirname + '/../games/';
+let gamesRoot = 'games';
 let jsonParser = bodyParser.json({limit:1024*1024*200});
 
 //========= File System acess commands ====================
@@ -31,18 +36,19 @@ app.get('/fs/projects', function (req, res) {
 });
 
 app.get('/fs/openProject', function (req, res) {
-	let folder = gamesRoot + req.query.dir + '/';
-	
-	if(fs.existsSync(folder) && fs.existsSync(folder+'thing-project.json')) {
+	let folder = path.join(gamesRoot, req.query.dir, '/');
+	let descPath = path.join(folder, 'thing-project.json');
+	if(fs.existsSync(descPath)) {
 		currentGame = req.query.dir;
 		currentGameRoot = folder;
-		process.chdir(currentGameRoot);
 		log('Project opened: ' + currentGameRoot);
-		let projectDescSrc = fs.readFileSync('thing-project.json');
+		let projectDescSrc = fs.readFileSync(descPath);
 		currentGameDesc = JSON.parse(projectDescSrc);
+
 		initWatchers();
 		res.send(projectDescSrc);
 		exludeAnotherProjectsFromCodeEditor();
+
 	} else {
 		log('Can\'t open project: ' + req.query.dir);
 		res.send('false');
@@ -55,7 +61,7 @@ app.get('/fs/enum', function (req, res) {
 
 app.get('/fs/delete', function (req, res) {
 	if(!currentGame) throw 'No game opened';
-	let fn = req.query.f;
+	let fn = mapFileUrl(req.query.f);
 	try {
 		fs.unlinkSync(fn);
 		res.end('{}');
@@ -67,14 +73,11 @@ app.get('/fs/delete', function (req, res) {
 app.get('/fs/edit', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	
-	let fn = req.query.f;
-	if(fn.indexOf('/') === 0) {
-		fn = path.join(__dirname, '..', fn);
-	} else if(fn.indexOf('thing-engine/js/') >= 0) {
-		fn = path.join(__dirname, '../', fn);
-	} else {
-		fn = path.resolve(currentGameRoot, fn);
+	let fn = mapFileUrl(req.query.f);
+	if(!fn.startsWith(fullRoot)) {
+		fn = path.join(fullRoot, fn);
 	}
+
 	setTimeout(() => {
 		"use strict";
 		try {
@@ -104,26 +107,31 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 });
 
 app.get('/fs/build', function (req, res) {
+	
 	log('BUILD project: ' + currentGameRoot);
-	exec('node "' +
-	path.resolve(__dirname, 'scripts/build.js') + '" "' +
+
+	let command = 'node "' +
+	path.join(__dirname, 'scripts/build.js') + '" "' +
 	currentGameRoot+'" ' + 
-	(req.query.debug ? 'debug' : ''),
-	{maxBuffer: 1024 * 5000},
-	(err, stdout, errout) => {
-		log(errout);
-		if(errout instanceof Buffer) {
-			errout = errout.toString();
-		}
-		if(stdout instanceof Buffer) {
-			stdout = stdout.toString();
-		}
-		let ret = stdout.split('\n').concat(errout.split('\n'));
-		if(err) {
-			ret.unshift('ERROR: ' + JSON.stringify(err));
-		}
-		res.end(JSON.stringify(ret));
-	});
+	(req.query.debug ? 'debug' : '');
+	command = command.replace(pathSeparatorReplaceExp, '/');
+	log('COMMAND: ' + command);
+	exec(command,
+		{maxBuffer: 1024 * 5000},
+		(err, stdout, errout) => {
+			log(errout);
+			if(errout instanceof Buffer) {
+				errout = errout.toString();
+			}
+			if(stdout instanceof Buffer) {
+				stdout = stdout.toString();
+			}
+			let ret = stdout.split('\n').concat(errout.split('\n'));
+			if(err) {
+				ret.unshift('ERROR: ' + JSON.stringify(err));
+			}
+			res.end(JSON.stringify(ret));
+		});
 });
 
 app.post('/fs/build-sounds', jsonParser, function (req, res) {
@@ -138,7 +146,7 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 });
 
 app.post('/fs/savefile', jsonParser, function (req, res) {
-	let fileName = req.body.filename;
+	let fileName = mapFileUrl(req.body.filename);
 	//log('Save file: ' + fileName);
 	ensureDirectoryExistence(fileName);
 	fs.writeFile(fileName, req.body.data, function(err) {
@@ -153,7 +161,31 @@ app.use('/', (req, res, next) => {
 	absoluteImportsFixer(path.join(__dirname, '..', req.path), req, res, next);
 });
 
+app.use('/games/',  (req, res) => {
+	res.sendFile(path.join(fullRoot, mapAssetUrl(req.path)));
+});
+
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
+
+function mapFileUrl(url) {
+	let fileName =url.replace('/games', '');
+	if(assetsMap.has(fileName)) {
+		return assetsMap.get(fileName);
+	} else {
+		return path.join(fullRoot, url);
+	}
+}
+
+function mapAssetUrl(url) {
+	let fileName = url.split('?')[0];
+	if(assetsMap.has(fileName)) {
+		return assetsMap.get(fileName);
+	} else {
+		return '/games' + url;
+	}
+}
+
+
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
@@ -175,18 +207,76 @@ let pathSeparatorReplace = (stat) => {
 	stat.name = stat.name.replace(pathSeparatorReplaceExp, '/');
 };
 
+const ASSETS_FOLDERS_NAMES = ['snd', 'img', 'src/scenes', 'src/game-objects', 'scenes', 'prefabs'];
 function getDataFolders() {
-	return ['snd', 'img', 'src', 'scenes', 'prefabs', currentGameDesc.localesPath];
+	let ret = ASSETS_FOLDERS_NAMES.map((type) => {
+		return {
+			type,
+			path: path.join(currentGameRoot, type)
+		};
+	});
+	ret.push({
+		type: 'i18n',
+		path: path.join(currentGameRoot, currentGameDesc.localesPath)
+	});
+
+	if(currentGameDesc.libs) {
+		for(let libName of currentGameDesc.libs) {
+			let libRootFolder = path.join(__dirname, '..', libName);
+			if(fs.existsSync(libRootFolder)) {
+				for(let type of ASSETS_FOLDERS_NAMES) {
+					let assetsFolder = path.join(libRootFolder, type);
+					if(fs.existsSync(assetsFolder)) {
+						ret.push({
+							type,
+							path: path.join(libName, type)
+						});
+					}
+				}
+			} else {
+				throw new Error("library folder '" + libName + "' not found.");
+			}
+		}
+	}
+	return ret;
 }
 
 function enumFiles() {
 	if(!currentGame) throw 'No game opened';
-	let list;
+	let ret = {};
+
+	assetsMap = new Map();
+
+	let gameURL = '/' + currentGame + '/';
+
 	for (let f of getDataFolders()) {
-		list = walkSync('./' + f, list);
+		let type = f.type;
+		if(!ret[type]) {
+			ret[type] = [];
+		}
+		let a = [];
+		
+		walkSync(f.path, a);
+		a = a.filter((fileData) => {
+			pathSeparatorReplace(fileData);
+
+
+			let assetName = fileData.name.substr(f.path.length - type.length);
+			let assetURL = gameURL + assetName;
+			if(!type.startsWith('src')) {
+				if(!assetsMap.has(assetURL)) {
+					assetsMap.set(assetURL, fileData.name);
+					fileData.name = assetName;
+				} else {
+					return false;
+				}
+			}
+			return true;
+
+		});
+		ret[type] = ret[type].concat(a);
 	}
-	list.some(pathSeparatorReplace);
-	return list;
+	return ret;
 }
 
 const walkSync = (dir, filelist = []) => {
@@ -205,7 +295,7 @@ const walkSync = (dir, filelist = []) => {
 //============= enum projects ===========================
 const enumProjects = () => {
 	let ret = [];
-	let dir = gamesRoot;
+	let dir = path.join(__dirname, '..', gamesRoot);
 	fs.readdirSync(dir).forEach(file => {
 		let dirName = path.join(dir, file);
 		if(fs.statSync(dirName).isDirectory()) {
@@ -240,14 +330,18 @@ function initWatchers() {
 	while(watchers.length) {
 		watchers.pop().close();
 	}
-	getDataFolders().some((subFolder) => {
-		let watcher = fs.watch(currentGameRoot + subFolder, { recursive : true });
-		subFolder = subFolder + '/';
+	getDataFolders().some((assetsFolderData) => {
+		if((assetsFolderData.type !== 'img') && (assetsFolderData.type !== 'snd')) {
+			return;
+		}
+		let assetsFolder = assetsFolderData.path;
+		let watcher = fs.watch(assetsFolder, { recursive : true });
+		assetsFolder = assetsFolder + '/';
 		watchers.push(watcher);
 		watcher.on('change', (eventType, filename) => {
 			//log('file changed event: ' + eventType + '; ' + filename);
 			if(filename && filterWatchFiles.test(filename)) {
-				filename = subFolder + filename.replace(pathSeparatorReplaceExp, '/');
+				filename = assetsFolder + filename.replace(pathSeparatorReplaceExp, '/');
 				
 				if(eventType === 'change' || eventType === 'rename') {
 					if(fs.existsSync(filename)) {

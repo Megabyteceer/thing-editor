@@ -29,8 +29,8 @@ function showTextTable() {
 export default class LanguageView extends React.Component {
 	
 	static loadTextData() {
-		let langsIds = editor.fs.files.filter((fn) => {
-			return fn.endsWith('.json') && fn.startsWith(editor.projectDesc.localesPath);
+		let langsIds = editor.fs.files.i18n.filter((fn) => {
+			return fn.endsWith('.json');
 		}).map((fn) => {
 			return fn.split('/').pop().split('.').shift();
 		});

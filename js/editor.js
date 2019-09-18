@@ -118,7 +118,7 @@ export default class Editor {
 	}
 	
 	openProjectDescToEdit() {
-		editor.fs.editFile('thing-project.json');
+		editor.fs.editFile(game.resourcesPath + 'thing-project.json');
 	}
 	
 	async openProject(dir) {

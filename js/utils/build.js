@@ -31,7 +31,7 @@ const filterChildrenByName = (childData) => {
 };
 
 const fieldsFilter = (key, value) => {
-	if(!key.startsWith('__')) {
+	if(!key.startsWith(prefixToCutOff)) {
 		if(key === ':' && Array.isArray(value)) { // cut off __ objects
 			return value.filter(filterChildrenByName);
 		}
@@ -116,6 +116,7 @@ let classes = {};`];
 				if(path.startsWith('/')) {
 					path = path.substr(1);
 				}
+				path = path.replace('games/' + editor.currentProjectDir, '');
 
 				if(findClassNameInData(name, scenes) || findClassNameInData(name, prefabs)) { //only referenced classes
 					src.push('import ' + name + ' from "' + path + '";');

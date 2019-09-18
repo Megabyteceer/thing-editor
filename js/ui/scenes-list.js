@@ -183,7 +183,7 @@ export default class ScenesList extends React.Component {
 	static readAllScenesList() {
 		let scenes = {};
 		return Promise.all(
-			editor.fs.files.filter(fn => fn.match(sceneFileFiler))
+			editor.fs.files.scenes.filter(fn => fn.match(sceneFileFiler))
 				.map((fn) => {
 					return editor.fs.openFile(fn)
 						.then((data) => {
