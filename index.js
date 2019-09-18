@@ -74,7 +74,9 @@ app.get('/fs/edit', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	
 	let fn = mapFileUrl(req.query.f);
-	fn = path.join(fullRoot, fn);
+	if(!fn.startsWith(fullRoot)) {
+		fn = path.join(fullRoot, fn);
+	}
 
 	setTimeout(() => {
 		"use strict";
@@ -112,7 +114,8 @@ app.get('/fs/build', function (req, res) {
 	path.join(__dirname, 'scripts/build.js') + '" "' +
 	currentGameRoot+'" ' + 
 	(req.query.debug ? 'debug' : '');
-
+	command = command.replace(pathSeparatorReplaceExp, '/');
+	log('COMMAND: ' + command);
 	exec(command,
 		{maxBuffer: 1024 * 5000},
 		(err, stdout, errout) => {
