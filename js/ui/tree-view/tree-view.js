@@ -78,7 +78,7 @@ export default class TreeView extends React.Component {
 			editor.selection.clearSelection();
 
 			a.some((o) => {
-				Lib.__invalidateSerialisationCache(o);
+				Lib.__invalidateSerializationCache(o);
 				o.remove();
 			});
 			
@@ -103,7 +103,7 @@ export default class TreeView extends React.Component {
 			return;
 		}
 		let o = editor.selection[0];
-		if((o.parent === game.stage) && !game.__EDITORmode) {
+		if((o.parent === game.stage) && !game.__EDITOR_mode) {
 			return;
 		}
 		if(o === game.currentContainer) {
@@ -138,7 +138,7 @@ export default class TreeView extends React.Component {
 
 				if(isPrefab) {
 					c.name = o.name;
-					Lib.__invalidateSerialisationCache(c);
+					Lib.__invalidateSerializationCache(c);
 					game.__setCurrentContainerContent(c);
 				} else {
 					parent.addChildAt(c, i);
@@ -150,7 +150,7 @@ export default class TreeView extends React.Component {
 
 			
 			if(!isPrefab) {
-				Lib.__invalidateSerialisationCache(o.parent);
+				Lib.__invalidateSerializationCache(o.parent);
 				o.remove();
 			}
 			
@@ -213,7 +213,7 @@ export default class TreeView extends React.Component {
 					let upper = o.parent.getChildAt(i - 1);
 					if(!__getNodeExtendData(upper).isSelected) {
 						o.parent.swapChildren(o, upper);
-						Lib.__invalidateSerialisationCache(o.parent);
+						Lib.__invalidateSerializationCache(o.parent);
 						ret = true;
 					}
 				}
@@ -237,7 +237,7 @@ export default class TreeView extends React.Component {
 					let lower = o.parent.getChildAt(i + 1);
 					if(!__getNodeExtendData(lower).isSelected) {
 						o.parent.swapChildren(o, lower);
-						Lib.__invalidateSerialisationCache(o.parent);
+						Lib.__invalidateSerializationCache(o.parent);
 						ret = true;
 					}
 				}
@@ -367,7 +367,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('copy'), this.onCopyClick, 'Copy selected in to clipboard (Ctrl+C)', "tool-btn", 1067, isEmpty),
 				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', "tool-btn", 1088, isEmpty || isRoot),
 				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, !editor.clipboardData || !editor.isCanBeAdded()),
-				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData || !game.__EDITORmode),
+				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData || !game.__EDITOR_mode),
 				R.hr(),
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
 				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Unwrap (remove selected but keep children)', "tool-btn", undefined, !this.isCanBeUnwrapped())
@@ -389,7 +389,7 @@ const isObjectRoot = (node) => {
 };
 
 const renderRoots = (node, i) => {
-	if((node === game.currentContainer) || !game.__EDITORmode) {
+	if((node === game.currentContainer) || !game.__EDITOR_mode) {
 		return R.renderSceneNode(node);
 	} else {
 		let style;

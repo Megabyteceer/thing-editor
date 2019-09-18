@@ -96,7 +96,7 @@ export default class Build {
 			assetsObj.text = L.__getTextAssets();
 		}
 
-		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssest = ' +
+		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssets = ' +
 		JSON.stringify(assetsObj, fieldsFilter, assetsDelimiter) + ';', false, true));
 		
 

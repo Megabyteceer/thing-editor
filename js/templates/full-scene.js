@@ -103,7 +103,7 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 
 /// #if EDITOR
 
-__EDITOReditableProps(NEW_CLASS_NAME, [ //list of editable properties
+__EDITOR_editableProps(NEW_CLASS_NAME, [ //list of editable properties
 	{
 		type: 'splitter',
 		title: 'NEW_CLASS_NAME',

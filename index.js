@@ -115,7 +115,6 @@ app.get('/fs/build', function (req, res) {
 	currentGameRoot+'" ' + 
 	(req.query.debug ? 'debug' : '');
 	command = command.replace(pathSeparatorReplaceExp, '/');
-	log('COMMAND: ' + command);
 	exec(command,
 		{maxBuffer: 1024 * 5000},
 		(err, stdout, errout) => {
@@ -348,13 +347,13 @@ function initWatchers() {
 						try{
 							let stats = fs.statSync(filename);
 							if(stats.isFile() && stats.size > 0) {
-								fileChangeShedule(filename, stats.mtime);
+								fileChangeSchedule(filename, stats.mtime);
 							}
 						} catch (er) {
 							//log("file change handler error: " + er); //for case if tmp file is not exist
 						}
 					} else {
-						fileChangeShedule(filename, 0, true);
+						fileChangeSchedule(filename, 0, true);
 					}
 				}
 			}
@@ -362,7 +361,7 @@ function initWatchers() {
 	});
 }
 
-function fileChangeShedule(name, mtime, deleted = false) {
+function fileChangeSchedule(name, mtime, deleted = false) {
 	changedFiles[name] = {name, mtime, deleted};
 	if(filechangedTimeout) {
 		clearTimeout(filechangedTimeout);

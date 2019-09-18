@@ -285,7 +285,7 @@ export default class Timeline extends React.Component {
 
 	setTime(time, scrollInToView) {
 		timeMarker.setTime(time, scrollInToView);
-		if (game.__EDITORmode) {
+		if (game.__EDITOR_mode) {
 			editor.selection.some((o) => {
 				if (o._timelineData) {
 					o._timelineData.f.some((f) => {
@@ -319,12 +319,12 @@ export default class Timeline extends React.Component {
 				editor.selection.map(this.renderObjectsTimeline)
 			),
 			React.createElement(KeyframePropertyEditor, {
-				className: game.__EDITORmode ? undefined : 'disabled',
+				className: game.__EDITOR_mode ? undefined : 'disabled',
 				owner: this,
 				keyframesGetter: getSelectedKeyframes
 			}),
 			React.createElement(TimelineSelectFrame, {
-				className: game.__EDITORmode ? undefined : 'disabled',
+				className: game.__EDITOR_mode ? undefined : 'disabled',
 				ref: selectionFrameRef
 			}),
 			R.span(
@@ -539,7 +539,7 @@ export default class Timeline extends React.Component {
 						}
 					}
 				}
-				if (game.__EDITORmode) {
+				if (game.__EDITOR_mode) {
 					o.resetTimeline();
 				}
 			}

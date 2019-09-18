@@ -46,7 +46,7 @@ class PropsEditor extends React.Component {
 				
 				a.some((o) => {
 					o.constructor = selectedClass;
-					Lib.__invalidateSerialisationCache(o);
+					Lib.__invalidateSerializationCache(o);
 				});
 
 				let newSceneData = Lib.__serializeObject( game.currentContainer);
@@ -113,7 +113,7 @@ class PropsEditor extends React.Component {
 				R.classIcon(firstClass),
 				R.span(headerTextProps,
 					R.b(null, firstClass.name), ' selected ',
-					R.btn('...', this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITORmode)
+					R.btn('...', this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode)
 				)
 			);
 		}

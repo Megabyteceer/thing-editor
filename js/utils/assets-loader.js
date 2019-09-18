@@ -76,12 +76,12 @@ const enumAssets = (onlyThisFiles) => {
 	});
 	return new Promise((resolve) => {
 		Lib.__onAllAssetsLoaded(() => {
-			let emSave = game.__EDITORmode;
-			game.__EDITORmode = true; //enforece update some type of components (tilegrid, fill);
+			let emSave = game.__EDITOR_mode;
+			game.__EDITOR_mode = true; //enforece update some type of components (tilegrid, fill);
 			tmp.forEach((image, o) => {
 				o.image = image;
 			});
-			game.__EDITORmode = emSave;
+			game.__EDITOR_mode = emSave;
 
 			game.pixiApp.start();
 			editor.ui.modal.hideSpinner();

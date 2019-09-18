@@ -204,16 +204,16 @@ function enumClassProperties(c) {
 				});
 
 				if (p.type === 'splitter' || p.type === 'btn') {
-					p.notSeriazable = true;
+					p.notSerializable = true;
 				} else {
 					if (!p.hasOwnProperty('default')) {
 						p.default = PropsFieldWrapper.getTypeDescription(p).default;
 					}
 					if(p.type === 'ref') {
-						p.notSeriazable = true;
+						p.notSerializable = true;
 						defaults[p.name] = p.default;
 					}
-					if(!p.notSeriazable) {
+					if(!p.notSerializable) {
 						defaults[p.name] = p.default;
 					}
 					if(c === cc) { //own properties of this class
@@ -244,7 +244,7 @@ function clearClasses() {
 let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
-	assert(game.__EDITORmode, "Attempt to reload modules in runned mode.");
+	assert(game.__EDITOR_mode, "Attempt to reload modules in runned mode.");
 	L.__clearUppercaseKeys();
 	loadedPath = null;
 	return new Promise((resolve) => {

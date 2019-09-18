@@ -161,7 +161,7 @@ export default class Overlay {
 		__getNodeExtendData(blackout).hidden = true;
 		isPreviewShowed = object.name;
 		game.showModal(object);
-		__getNodeExtendData(object).childsExpanded = true;
+		__getNodeExtendData(object).childrenExpanded = true;
 		checkIfCurrentContainerIsShowedPrefab();
 		game.stage.x = -object.x + game.W / 2;
 		game.stage.y = -object.y + game.H / 2;
@@ -360,7 +360,7 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 						increaseNameNumber(o);
 						o.forAllChildren(increaseNameNumber);
 						o.parent.addChildAt(clone, o.parent.children.indexOf(o));
-						if(!game.__EDITORmode) {
+						if(!game.__EDITOR_mode) {
 							Lib._constructRecursive(clone);
 						}
 					});

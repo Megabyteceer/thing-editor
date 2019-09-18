@@ -149,7 +149,7 @@ export default class SoundsList extends React.Component {
 	onSelect(item) {
 		Lib.preloadSound(item.name);
 		let needPlay = !Lib.getSound(item.name).playing();
-		if(game.__EDITORmode) {
+		if(game.__EDITOR_mode) {
 			Sound.stop();
 		}
 		if(needPlay) {
@@ -308,7 +308,7 @@ class MusicProfiler extends React.Component {
 		let list;
 		let className;
 		if(this.state.toggled) {
-			if(game.__EDITORmode) {
+			if(game.__EDITOR_mode) {
 				list = 'Start game execution to profile music.';
 			} else {
 				list = BgMusic.__allActiveMusics.map(this.renderMusicItem);

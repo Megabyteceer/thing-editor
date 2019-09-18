@@ -73,11 +73,11 @@ export default class RectangleEditor extends React.Component {
 		for(let o of editor.selection) {
 			if(isDelta && delta !== 0) {
 				o[fieldName][name] += delta;
-				Lib.__invalidateSerialisationCache(o);
+				Lib.__invalidateSerializationCache(o);
 				updated = true;
 			} else if(o[fieldName][name] !== val) {
 				o[fieldName][name] = val;
-				Lib.__invalidateSerialisationCache(o);
+				Lib.__invalidateSerializationCache(o);
 				updated = true;
 			}
 			if(this.props.field.hasOwnProperty('parser')){

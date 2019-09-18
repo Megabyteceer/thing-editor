@@ -16,7 +16,7 @@ let lastAppliedTreeData;
 
 function applyState(state) {
 	assert(state, 'Empty history record');
-	assert(game.__EDITORmode);
+	assert(game.__EDITOR_mode);
 	let stateChanged = state.treeData !== lastAppliedTreeData;
 	if(stateChanged) {
 		instance.beforeHistoryJump.emit();
@@ -93,7 +93,7 @@ class History {
 	}
 
 	_pushCurrentStateToUndoHistory(selectionData, selectionOnly) {
-		assert(game.__EDITORmode, "Attempt to use history in running time.");
+		assert(game.__EDITOR_mode, "Attempt to use history in running time.");
 
 		let historyRecord = {fieldName: editor._lastChangedFiledName};
 		editor._lastChangedFiledName = null;
@@ -103,7 +103,7 @@ class History {
 			}
 			historyRecord.treeData = this.currentState.treeData;
 		} else {
-			Lib.__invalidateSerialisationCache(game.currentContainer);
+			Lib.__invalidateSerializationCache(game.currentContainer);
 			historyRecord.treeData = Lib.__serializeObject(game.currentContainer);
 			historyRecord.treeData._isModified = true;
 		}
@@ -206,9 +206,9 @@ class HistoryUi extends React.Component {
 			return R.span();
 		}
 		return R.span(null,
-			R.btn('Undo', editor.history.undo, '(Ctrl + Z)', 'menu-btn', 1090, !instance.isUndoAvailable() || !game.__EDITORmode),
+			R.btn('Undo', editor.history.undo, '(Ctrl + Z)', 'menu-btn', 1090, !instance.isUndoAvailable() || !game.__EDITOR_mode),
 			//instance._undos.length,
-			R.btn('Redo', editor.history.redo, '(Ctrl + Y)', 'menu-btn', 1089, !instance.isRedoAvailable() || !game.__EDITORmode),
+			R.btn('Redo', editor.history.redo, '(Ctrl + Y)', 'menu-btn', 1089, !instance.isRedoAvailable() || !game.__EDITOR_mode),
 			//instance._redos.length
 		);
 	}

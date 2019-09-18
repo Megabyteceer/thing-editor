@@ -59,7 +59,7 @@ export default class Viewport extends React.Component {
 		if(!stoppingExecutionTime) {
 			editor.exitPrefabMode();
 			stoppingExecutionTime = true;
-			if(!game.__EDITORmode) {
+			if(!game.__EDITOR_mode) {
 				this.onTogglePlay();
 			}
 			stoppingExecutionTime = false;
@@ -109,10 +109,10 @@ export default class Viewport extends React.Component {
 			this.resetZoom();
 			game.__doOneStep = false;
 			game.__paused = false;
-			let play = game.__EDITORmode;
+			let play = game.__EDITOR_mode;
 			this.beforePlayStopToggle.emit(play);
 			game.__time = 0;
-			delete game.__EDITORsceneDataWaitongToStart;
+			delete game.__EDITOR_sceneDataWaitingToStart;
 			if(play) { // launch game
 				game.data = {};
 				editor.ui.status.clear();
@@ -120,12 +120,12 @@ export default class Viewport extends React.Component {
 				editor.saveHistoryNow();
 				
 				editor.saveBackup(true);
-				game.__EDITORselectionDataWaitingToSelect = editor.selection.saveSelection();
-				game.__EDITORsceneDataWaitongToStart = Lib.__serializeObject(game.currentScene);
+				game.__EDITOR_selectionDataWaitingToSelect = editor.selection.saveSelection();
+				game.__EDITOR_sceneDataWaitingToStart = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
 				Spine.clearPool();
 				Sound.__resetSounds();
-				game.__EDITORmode = false;
+				game.__EDITOR_mode = false;
 				game._setCurrentScene(null);
 				game.showScene(editor.currentSceneName);
 				problemOnGameStart = false;
@@ -134,7 +134,7 @@ export default class Viewport extends React.Component {
 				problemOnGameStop = true;
 				game.__EDITOR_game_stopping = true;
 				game.__clearStage();
-				game.__EDITORmode = true;
+				game.__EDITOR_mode = true;
 				Sound.__resetSounds();
 				editor.restoreBackup(true);
 				game.__EDITOR_game_stopping = false;
@@ -248,7 +248,7 @@ export default class Viewport extends React.Component {
 			);
 		} else {
 			let pauseResumeBtn, oneStepBtn;
-			if(game && !game.__EDITORmode) {
+			if(game && !game.__EDITOR_mode) {
 				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume (Ctrl + P)", 'big-btn', 1080);
 				if(game.__paused) {
 					statusHeader = 'paused';
@@ -258,7 +258,7 @@ export default class Viewport extends React.Component {
 				}
 			}
 			panel = R.span(undefined,
-				R.btn((!game || game.__EDITORmode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
+				R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
 				R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Reload Custom Components', 'big-btn'),
 				reloadAssetsBtn,
 				statusHeader,

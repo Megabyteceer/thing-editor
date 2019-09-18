@@ -139,7 +139,7 @@ const checkDataPath = (s) => {
 	}
 };*/
 
-window.__EDITOReditableProps = (class_, array) => {
+window.__EDITOR_editableProps = (class_, array) => {
 	assert(!class_.hasOwnProperty('__EDITOR_editableProps'), "Editable properties for class '" + class_.name + "' already defined.", 40003);
 	for(let p of array) {
 		/*if(p.type === 'data-path' || p.type === 'callback') {
@@ -266,11 +266,11 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = 
 
 window.addEventListener('beforeunload', function() {
 	editor.exitPrefabMode();
-	if(!editor.game.__EDITORmode) { //backup already exist
+	if(!editor.game.__EDITOR_mode) { //backup already exist
 		return;
 	}
 	editor.saveCurrentScenesSelectionGlobally();
-	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITORmode && !editor.__projectReloading) {
+	if(window.editor && editor.game && editor.isCurrentSceneModified && editor.game.__EDITOR_mode && !editor.__projectReloading) {
 		editor.saveBackup(true);
 	}
 });

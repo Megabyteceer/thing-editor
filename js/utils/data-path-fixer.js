@@ -105,7 +105,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 					}
 					changedName += i;
 					changedNode.name = changedName;
-					Lib.__invalidateSerialisationCache(changedNode);
+					Lib.__invalidateSerializationCache(changedNode);
 					setTimeout(() => {
 						editor.ui.propsEditor.selectField('name', true, true);
 					}, 1);
@@ -162,7 +162,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 	} else {
 		node[fieldname] = finalPath;
 	}
-	Lib.__invalidateSerialisationCache(node);
+	Lib.__invalidateSerializationCache(node);
 	if(node instanceof MovieClip) {
 		MovieClip.invalidateSerializeCache(node);
 	}

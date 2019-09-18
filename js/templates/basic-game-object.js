@@ -29,7 +29,7 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 
 //NEW_CLASS_NAME.__EDITOR_group = "Custom/MyComponentsSubGroup"; //group in Classes List Window for more comfort
 
-__EDITOReditableProps(NEW_CLASS_NAME, [ //list of editable properties
+__EDITOR_editableProps(NEW_CLASS_NAME, [ //list of editable properties
 	{
 		type: 'splitter',
 		title: 'NEW_CLASS_NAME',

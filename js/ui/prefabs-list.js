@@ -142,7 +142,7 @@ export default class PrefabsList extends React.Component {
 							s.parent.addChildAt(ref, s.parent.getChildIndex(s));
 							s.remove();
 							
-							Lib.__invalidateSerialisationCache(ref.parent);
+							Lib.__invalidateSerializationCache(ref.parent);
 
 							editor.ui.sceneTree.selectInTree(ref);
 
@@ -160,7 +160,7 @@ export default class PrefabsList extends React.Component {
 	}
 
 	static editPrfefab(name) {
-		if (game.__EDITORmode) {
+		if (game.__EDITOR_mode) {
 			if(!Lib.hasPrefab(name)) {
 				editor.ui.modal.showError("No prefab with name " + name + " exists.");
 				return;

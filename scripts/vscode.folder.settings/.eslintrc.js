@@ -14,7 +14,7 @@ module.exports = {
         "assert": false,
         "selectText": false,
         "sp": false,
-        "__EDITOReditableProps": false,
+        "__EDITOR_editableProps": false,
         "__getNodeExtendData": false,
         "ReactDOM": false,
         "React": false,

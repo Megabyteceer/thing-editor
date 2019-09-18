@@ -8,7 +8,7 @@ import PrefabsList from "../prefabs-list.js";
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
 
-let inited = false;
+let initialized = false;
 
 export default class DataPathEditor extends React.Component {
 	
@@ -45,9 +45,9 @@ export default class DataPathEditor extends React.Component {
 
 	onEditClicked() {
 		if(!this.props.disabled) {
-			if(!inited) {
+			if(!initialized) {
 				initSelectableProps();
-				inited = true;
+				initialized = true;
 			}
 			this.fieldNameToChoose = this.props.title || this.props.field.name;
 			path = this.props.value;
@@ -80,7 +80,7 @@ export default class DataPathEditor extends React.Component {
 	
 	applyFinalPath(path) {
 		this.props.onChange(PropsFieldWrapper.surrogateChnageEvent(path));
-		editor.sheduleHistorySave();
+		editor.scheduleHistorySave();
 	}
 	
 	isFieldGoodForCallbackChoose(fieldName, object, val) {
@@ -113,11 +113,11 @@ export default class DataPathEditor extends React.Component {
 		let val = this.props.value;
 
 		let breakpointBtn;
-		if(val && !game.__EDITORmode) {
+		if(val && !game.__EDITOR_mode) {
 			breakpointBtn = R.btn('■', this.onBreakpointClick, 'Breakpoint', 'tool-btn breakpoint-btn');
 		}
 		let chooseBtn;
-		if(game.__EDITORmode) {
+		if(game.__EDITOR_mode) {
 			chooseBtn = R.btn('...', this.onEditClicked, 'Start data source choosing', 'tool-btn');
 		}
 

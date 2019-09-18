@@ -60,7 +60,7 @@ class Selection extends Array {
 		while(p && p !== game.stage) {
 			let data = __getNodeExtendData(p);
 			if(!data.hidden) {
-				data.childsExpanded = true;
+				data.childrenExpanded = true;
 			}
 			p = p.parent;
 		}
@@ -114,7 +114,7 @@ setInterval(() => {
 		}
 	}
 	if(needSaveSelectionInToHistory) {
-		if(game.__EDITORmode) {
+		if(game.__EDITOR_mode) {
 			editor.history.addSelectionHistoryState();
 		}
 		needSaveSelectionInToHistory = false;

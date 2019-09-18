@@ -83,7 +83,7 @@ let fs = {
 				contentType: isJSON ? 'application/json' : undefined,
 				async
 			}, (returnedUrl, data) => {
-				assert(url === returnedUrl, 'Responce is not match with request');
+				assert(url === returnedUrl, 'Response is not match with request');
 				if (!silently || !async) {
 					editor.ui.modal.hideSpinner();
 				}
@@ -112,7 +112,7 @@ let fs = {
 				contentType: 'application/json',
 				async
 			}, (returnedUrl, data) => {
-				assert(url === returnedUrl, 'Responce is not match with request');
+				assert(url === returnedUrl, 'Response is not match with request');
 				
 				if (!silently || !async) {
 					editor.ui.modal.hideSpinner();

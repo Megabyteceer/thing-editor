@@ -29,7 +29,7 @@ import Shape from 'thing-engine/js/components/shape.js';
 
 let isFirstClassesLoading = true;
 
-let refreshTreeViewAndPropertyEditorSheduled;
+let refreshTreeViewAndPropertyEditorScheduled;
 
 let serverAllowedWork;
 let uiMounted;
@@ -51,7 +51,7 @@ export default class Editor {
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
 
-		this.sheduleHistorySave = sheduleHistorySave;
+		this.scheduleHistorySave = scheduleHistorySave;
 		this.saveHistoryNow = saveHistoryNow;
 		
 		this.fs = fs;
@@ -79,7 +79,7 @@ export default class Editor {
 		);
 
 		setInterval(() => { //keep props editor and tree actual during scene is launched
-			if(!game.__EDITORmode && !game.__paused) {
+			if(!game.__EDITOR_mode && !game.__paused) {
 				editor.refreshTreeViewAndPropertyEditor();
 			}
 		}, 300);
@@ -109,7 +109,7 @@ export default class Editor {
 
 	tryToStart() {
 		if(uiMounted && serverAllowedWork) {
-			game.__EDITORmode = true;
+			game.__EDITOR_mode = true;
 			editor.game = game;
 			ClassesLoader.initClassesLoader();
 			AssetsLoader.init();
@@ -244,7 +244,7 @@ export default class Editor {
 	}
 
 	wrapSelected(className) {
-		if(!game.__EDITORmode) {
+		if(!game.__EDITOR_mode) {
 			editor.ui.modal.showModal("Can not wrap in running mode.");
 			return;
 		}
@@ -302,11 +302,11 @@ export default class Editor {
 			} else {
 				parent.addChildAt(w, indexToAdd);
 			}
-			Lib.__invalidateSerialisationCache(w);
+			Lib.__invalidateSerializationCache(w);
 
 			editor.selection.clearSelection();
 			editor.ui.sceneTree.selectInTree(w);
-			__getNodeExtendData(w).childsExpanded = true;
+			__getNodeExtendData(w).childrenExpanded = true;
 			DataPathFixer.validatePathReferences();
 			editor.sceneModified(true);
 			callInitIfGameRuns(w);
@@ -341,7 +341,7 @@ export default class Editor {
 	
 	saveBackup(includeUnmodified = false) {
 		editor.__backupUID = (editor.__backupUID || 0) + 1;
-		if(!game.__EDITORmode) {
+		if(!game.__EDITOR_mode) {
 			assert(!includeUnmodified, 'Attempt to save important backup in running mode');
 			return;
 		}
@@ -366,7 +366,7 @@ export default class Editor {
 	}
 	
 	restoreBackup(includeUnmodified = false) {
-		if(!game.__EDITORmode) {
+		if(!game.__EDITOR_mode) {
 			assert(!includeUnmodified, 'Attempt to restore important backup in running mode');
 			return;
 		}
@@ -395,10 +395,10 @@ export default class Editor {
 	}
 	
 	refreshTreeViewAndPropertyEditor() {
-		if(refreshTreeViewAndPropertyEditorSheduled) return;
-		refreshTreeViewAndPropertyEditorSheduled = true;
+		if(refreshTreeViewAndPropertyEditorScheduled) return;
+		refreshTreeViewAndPropertyEditorScheduled = true;
 		setTimeout(()=> {
-			refreshTreeViewAndPropertyEditorSheduled = false;
+			refreshTreeViewAndPropertyEditorScheduled = false;
 			this.ui.sceneTree.forceUpdate();
 			this.refreshPropsEditor();
 		}, 1);
@@ -408,7 +408,7 @@ export default class Editor {
 		let ftl = isFirstClassesLoading;
 		isFirstClassesLoading = false;
 		this.ui.viewport.stopExecution();
-		assert(game.__EDITORmode, 'tried to reload classes in running mode.');
+		assert(game.__EDITOR_mode, 'tried to reload classes in running mode.');
 		editor.saveBackup(!ftl);
 		
 		return new Promise((resolve) => {
@@ -514,7 +514,7 @@ export default class Editor {
 		this.afterPropertyChanged.emit(o, field.name, field);
 		
 		if(changed) {
-			Lib.__invalidateSerialisationCache(o);
+			Lib.__invalidateSerializationCache(o);
 			this.refreshTreeViewAndPropertyEditor();
 			editor._lastChangedFiledName = field.name;
 			editor.sceneModified(false);
@@ -585,7 +585,7 @@ export default class Editor {
 		
 		game.showScene(name);
 		
-		__getNodeExtendData(game.currentContainer).childsExpanded = true;
+		__getNodeExtendData(game.currentContainer).childrenExpanded = true;
 
 		if(name.startsWith(editor.backupSceneLibSaveSlotName)) {
 			let backupUID = editor.__backupUID;
@@ -606,11 +606,11 @@ export default class Editor {
 		TexturesView.refresh();
 	}
 	
-	sceneModified(saveImmidiatly) {
-		if(game.__EDITORmode) {
+	sceneModified(saveImmediately) {
+		if(game.__EDITOR_mode) {
 			needHistorySave = true;
-			if(saveImmidiatly) {
-				sheduleHistorySave();
+			if(saveImmediately) {
+				scheduleHistorySave();
 			}
 		}
 	}
@@ -717,7 +717,7 @@ export default class Editor {
 			name = editor.currentSceneName;
 		}
 		assert(name, "Name can't be empty");
-		assert(game.__EDITORmode, "tried to save scene in runnig mode.");
+		assert(game.__EDITOR_mode, "tried to save scene in runnig mode.");
 		if(editor.isCurrentSceneModified || (editor.currentSceneName !== name)) {
 			if(!ScenesList.isSpecialSceneName(name)) {
 				history.setCurrentStateUnmodified();
@@ -810,7 +810,7 @@ function saveCurrentSceneName(name) {
 function addTo(parent, child, doNotselect) {
 	parent.addChild(child);
 	Lib.__reassignIds(child);
-	Lib.__invalidateSerialisationCache(child);
+	Lib.__invalidateSerializationCache(child);
 	if(!doNotselect) {
 		editor.ui.sceneTree.selectInTree(child);
 		editor.sceneModified(true);
@@ -819,7 +819,7 @@ function addTo(parent, child, doNotselect) {
 }
 
 function __callInitIfNotCalled(node) {
-	assert(!game.__EDITORmode, "Attempt to init object in editor mode.");
+	assert(!game.__EDITOR_mode, "Attempt to init object in editor mode.");
 	let d = __getNodeExtendData(node);
 	if(!d.constructorCalled) {
 		node.init();
@@ -828,7 +828,7 @@ function __callInitIfNotCalled(node) {
 }
 
 function callInitIfGameRuns(node) {
-	if(!game.__EDITORmode) {
+	if(!game.__EDITOR_mode) {
 		__callInitIfNotCalled(node);
 		node.forAllChildren(__callInitIfNotCalled);
 	}
@@ -864,11 +864,11 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 let savedBackupName;
 let savedBackupSelectionData;
 
-let historySaveSheduled;
+let historySaveScheduled;
 let needHistorySave = false;
-let sheduleHistorySave = () => {
-	if(!historySaveSheduled && needHistorySave) {
-		historySaveSheduled = setTimeout(() => {
+let scheduleHistorySave = () => {
+	if(!historySaveScheduled && needHistorySave) {
+		historySaveScheduled = setTimeout(() => {
 			saveHistoryNow();
 		}, 1);
 		needHistorySave = false;
@@ -876,18 +876,18 @@ let sheduleHistorySave = () => {
 };
 
 let saveHistoryNow = () => {
-	if(historySaveSheduled || needHistorySave) {
+	if(historySaveScheduled || needHistorySave) {
 		history.addHistoryState();
 		needHistorySave = false;
-		if(historySaveSheduled) {
-			clearInterval(historySaveSheduled);
+		if(historySaveScheduled) {
+			clearInterval(historySaveScheduled);
 		}
-		historySaveSheduled = null;
+		historySaveScheduled = null;
 	}
 };
 
-window.addEventListener('mouseup', sheduleHistorySave);
-window.addEventListener('keyup', sheduleHistorySave);
+window.addEventListener('mouseup', scheduleHistorySave);
+window.addEventListener('keyup', scheduleHistorySave);
 
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
