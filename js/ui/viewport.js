@@ -113,8 +113,8 @@ export default class Viewport extends React.Component {
 			this.beforePlayStopToggle.emit(play);
 			game.__time = 0;
 			delete game.__EDITORsceneDataWaitongToStart;
-			game.data = {};
 			if(play) { // launch game
+				game.data = {};
 				editor.ui.status.clear();
 				problemOnGameStart = true;
 				editor.saveHistoryNow();
