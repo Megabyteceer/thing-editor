@@ -1,8 +1,8 @@
+const GROUP_ID_CHECKER = /[^0-9a-zA-Z_\-]/gm;
+
 function renderGroup(props) {
 	let gid = 'props-group-' + props.key;
-					
-	const nameChecker = /[^0-9a-zA-Z_\.\-]/gm;
-	assert(!props.key.match(nameChecker), 'Group name "' + props.key + '" contains wrong symbols', 99999);
+	assert(!props.key.match(GROUP_ID_CHECKER), 'Group name "' + props.key + '" contains wrong symbols', 99999);
 
 	return R.div({key: gid, className: 'props-group ' + gid},
 		R.div({
@@ -14,18 +14,19 @@ function renderGroup(props) {
 	);
 }
 
-function groupArray(a, delimitter = '/', level = 0) {
+function groupArray(a, delimiter = '/', level = 0) {
 	
 	let groups = {};
 	let group;
-	let groupName;
+	let groupName = '';
 	let ret = [];
 	const orders = new Map();
 
 	for (let item of a) {
 		
 		let name = item.key;
-		let np = name.split(delimitter);
+		let np = name.split(delimiter);
+		let groupId = np.slice(0, level + 1).join('-_-');
 		if (np.length > (level + 1)) {
 			if (level > 0) {
 				np.splice(0, level);
@@ -34,11 +35,13 @@ function groupArray(a, delimitter = '/', level = 0) {
 			groupName = np.shift();
 			
 			if (!groups.hasOwnProperty(groupName)) {
+				group = [];
 				groups[groupName] = [];
 			}
 			let order = np.shift();
 			orders.set(item, parseFloat(order) || order);
 			group = groups[groupName];
+			group.__groupId = groupId;
 			group.push(item);
 			
 			continue;
@@ -63,7 +66,7 @@ function groupArray(a, delimitter = '/', level = 0) {
 		while(i < ret.length && ret[i].key.endsWith(' ::')) {
 			i++;
 		}
-		ret.splice(i, 0, renderGroup({key: groupName, title: groupName, content: groupArray(group, delimitter, level + 1)}));
+		ret.splice(i, 0, renderGroup({key: group.__groupId.replace(GROUP_ID_CHECKER, '__'), title: groupName, content: groupArray(group, delimiter, level + 1)}));
 	}
 
 	return ret;
