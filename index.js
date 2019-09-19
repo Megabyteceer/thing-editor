@@ -29,7 +29,7 @@ let PORT = 32023;
 let gamesRoot = 'games';
 let jsonParser = bodyParser.json({limit:1024*1024*200});
 
-//========= File System acess commands ====================
+//========= File System access commands ====================
 
 app.get('/fs/projects', function (req, res) {
 	res.send(enumProjects());
@@ -47,7 +47,7 @@ app.get('/fs/openProject', function (req, res) {
 
 		initWatchers();
 		res.send(projectDescSrc);
-		exludeAnotherProjectsFromCodeEditor();
+		excludeAnotherProjectsFromCodeEditor();
 
 	} else {
 		log('Can\'t open project: ' + req.query.dir);
@@ -94,7 +94,7 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 
 
 	let fetch = require('node-fetch');
-	fetch(req.body.url, req.body.options).then((rsponce) => rsponce.text())
+	fetch(req.body.url, req.body.options).then((response) => response.text())
 		.then((data) => {
 			if(typeof data !== 'string') {
 				data = JSON.stringify(data);
@@ -117,15 +117,15 @@ app.get('/fs/build', function (req, res) {
 	command = command.replace(pathSeparatorReplaceExp, '/');
 	exec(command,
 		{maxBuffer: 1024 * 5000},
-		(err, stdout, errout) => {
-			log(errout);
-			if(errout instanceof Buffer) {
-				errout = errout.toString();
+		(err, stdOut, errOut) => {
+			log(errOut);
+			if(errOut instanceof Buffer) {
+				errOut = errOut.toString();
 			}
-			if(stdout instanceof Buffer) {
-				stdout = stdout.toString();
+			if(stdOut instanceof Buffer) {
+				stdOut = stdOut.toString();
 			}
-			let ret = stdout.split('\n').concat(errout.split('\n'));
+			let ret = stdOut.split('\n').concat(errOut.split('\n'));
 			if(err) {
 				ret.unshift('ERROR: ' + JSON.stringify(err));
 			}
@@ -278,17 +278,17 @@ function enumFiles() {
 	return ret;
 }
 
-const walkSync = (dir, filelist = []) => {
+const walkSync = (dir, fileList = []) => {
 	fs.readdirSync(dir).forEach(file => {
 		let stats = fs.statSync(path.join(dir, file));
 		
 		if(stats.isDirectory()) {
-			filelist = walkSync(path.join(dir, file), filelist);
+			fileList = walkSync(path.join(dir, file), fileList);
 		} else if(stats.size > 0) {
-			filelist.push({name: path.join(dir, file), mtime: stats.mtimeMs});
+			fileList.push({name: path.join(dir, file), mtime: stats.mtimeMs});
 		}
 	});
-	return filelist;
+	return fileList;
 };
 
 //============= enum projects ===========================
@@ -319,10 +319,10 @@ function ensureDirectoryExistence(filePath) {
 	fs.mkdirSync(dirname);
 }
 
-//=============== project's files changin watcher ================
+//=============== project's files changing watcher ================
 const watchers = [];
 let changedFiles = {};
-let filechangedTimeout;
+let fileChangedTimeout;
 
 const filterWatchFiles = /.(json|png|wav|jpg)$/mg;
 function initWatchers() {
@@ -345,7 +345,6 @@ function initWatchers() {
 				filename = path.join(assetsFolder, filename);
 				
 				if(eventType === 'change' || eventType === 'rename') {
-					debugger;
 					if(fs.existsSync(fullFileName)) {
 						try{
 							let stats = fs.statSync(fullFileName);
@@ -366,14 +365,14 @@ function initWatchers() {
 
 function fileChangeSchedule(name, mtime, deleted = false) {
 	changedFiles[name] = {name, mtime, deleted};
-	if(filechangedTimeout) {
-		clearTimeout(filechangedTimeout);
+	if(fileChangedTimeout) {
+		clearTimeout(fileChangedTimeout);
 	}
-	filechangedTimeout = setTimeout(filesChangedProcess, 500);
+	fileChangedTimeout = setTimeout(filesChangedProcess, 500);
 }
 
 function filesChangedProcess() {
-	filechangedTimeout = null;
+	fileChangedTimeout = null;
 	let files = [];
 	for(let fileName in changedFiles) {
 		let s = changedFiles[fileName];
@@ -387,9 +386,9 @@ function filesChangedProcess() {
 
 //=============== vs-code integration ==================
 
-function exludeAnotherProjectsFromCodeEditor() { // hides another projects from vs code
-	let jsConfigFN = '../jsconfig.json';
-	let vsSettingsFn = '../.vscode/settings.json';
+function excludeAnotherProjectsFromCodeEditor() { // hides another projects from vs code
+	let jsConfigFN = './jsconfig.json';
+	let vsSettingsFn = './.vscode/settings.json';
 	let projectsDirs = enumProjects().map(p => p.dir);
 	for(let i = 0; i < 5; i++) {
 		if(fs.existsSync(jsConfigFN)) {
