@@ -92,16 +92,16 @@ let classesById = {},
 let cacheCounter = 0;
 const embeddedClassesMap = new Map();
 let embeddedClasses;
-let loadedClssesCount;
+let loadedClassesCount;
 
 let classesLoadedSuccessfullyAtLeastOnce = false;
 
 
-let errorOccured;
+let errorOccurred;
 
 let currentLoadingPromiseResolver;
 function showError(message, errorCode) {
-	errorOccured = true;
+	errorOccurred = true;
 	
 	let r = currentLoadingPromiseResolver;
 	currentLoadingPromiseResolver = null;
@@ -115,7 +115,7 @@ function showError(message, errorCode) {
 					r();
 				}
 			});
-		}, 'check DeveloperTools (F12) for additiona error description', 'main-btn')),
+		}, 'check DeveloperTools (F12) for additional error description', 'main-btn')),
 	errorCode,
 	'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
 }
@@ -145,7 +145,7 @@ function addClass(c, path) {
 	}
 	
 	if (path && (path.indexOf('/thing-engine/') < 0)) {
-		console.log('Custom class loded: ' + name + '; ' + path);
+		console.log('Custom class loaded: ' + name + '; ' + path);
 	}
 	
 	classPathById[name] = (((typeof path) === 'string') ? path : false);
@@ -230,7 +230,7 @@ function enumClassProperties(c) {
 		}
 		cc = cc.__proto__;
 	}
-	c.__EDITOR_propslist_cache = props;
+	c.__EDITOR_propsListCache = props;
 	classesDefaultsById[c.name] = defaults;
 }
 
@@ -244,16 +244,16 @@ function clearClasses() {
 let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
-	assert(game.__EDITOR_mode, "Attempt to reload modules in runned mode.");
+	assert(game.__EDITOR_mode, "Attempt to reload modules in running mode.");
 	L.__clearUppercaseKeys();
 	loadedPath = null;
 	return new Promise((resolve) => {
 		cacheCounter++;
 		currentLoadingPromiseResolver = resolve;
 		setTimeout(() => {
-			errorOccured = false;
+			errorOccurred = false;
 		
-			loadedClssesCount = 0;
+			loadedClassesCount = 0;
 			clearClasses();
 			console.clear();
 			console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
@@ -302,13 +302,13 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				head.removeChild(script);
 			
 				window.onerror = null;
-				if(!errorOccured) {
+				if(!errorOccurred) {
 					Lib._setClasses(classesById, classesDefaultsById);
 				
 					classesLoadedSuccessfullyAtLeastOnce = true;
 				
 					console.log('Loading success.');
-					console.log(loadedClssesCount + ' classes total.');
+					console.log(loadedClassesCount + ' classes total.');
 					resolve();
 				
 					editor.ui.classesList.forceUpdate();
@@ -332,7 +332,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 let loadedPath;
 function classLoaded(c, path) {
 	loadedPath = path;
-	loadedClssesCount++;
+	loadedClassesCount++;
 	if(!c.hasOwnProperty('__EDITOR_icon')) {
 		c.__EDITOR_icon = "tree/game";
 	}
