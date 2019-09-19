@@ -333,19 +333,22 @@ function initWatchers() {
 		if((assetsFolderData.type !== 'img') && (assetsFolderData.type !== 'snd')) {
 			return;
 		}
-		let assetsFolder = assetsFolderData.path;
-		let watcher = fs.watch(assetsFolder, { recursive : true });
-		assetsFolder = assetsFolder + '/';
+		let assetsFolder = assetsFolderData.type + '/';
+		let watcher = fs.watch(assetsFolderData.path, { recursive : true });
 		watchers.push(watcher);
 		watcher.on('change', (eventType, filename) => {
+			filename = filename.replace(pathSeparatorReplaceExp, '/');
 			//log('file changed event: ' + eventType + '; ' + filename);
 			if(filename && filterWatchFiles.test(filename)) {
-				filename = assetsFolder + filename.replace(pathSeparatorReplaceExp, '/');
+
+				let fullFileName = path.join(assetsFolderData.path, filename);
+				filename = path.join(assetsFolder, filename);
 				
 				if(eventType === 'change' || eventType === 'rename') {
-					if(fs.existsSync(filename)) {
+					debugger;
+					if(fs.existsSync(fullFileName)) {
 						try{
-							let stats = fs.statSync(filename);
+							let stats = fs.statSync(fullFileName);
 							if(stats.isFile() && stats.size > 0) {
 								fileChangeSchedule(filename, stats.mtime);
 							}
