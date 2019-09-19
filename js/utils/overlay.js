@@ -357,6 +357,16 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 					editor.selection.some((o) => {
 						let clone = Lib._deserializeObject(Lib.__serializeObject(o));
 						Lib.__reassignIds(o);
+						
+						let cloneExData = __getNodeExtendData(clone);
+						let exData = __getNodeExtendData(o);
+						if(exData.hidePropsEditor) {
+							cloneExData.hidePropsEditor = exData.hidePropsEditor;
+						}
+						if(exData.rotatorLocked) {
+							cloneExData.rotatorLocked = exData.rotatorLocked;
+						}
+						
 						increaseNameNumber(o);
 						o.forAllChildren(increaseNameNumber);
 						o.parent.addChildAt(clone, o.parent.children.indexOf(o));
