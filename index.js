@@ -255,7 +255,9 @@ function enumFiles() {
 		}
 		let a = [];
 		
-		walkSync(f.path, a);
+		if(fs.existsSync(f.path)) {
+			walkSync(f.path, a);
+		}
 		a = a.filter((fileData) => {
 			pathSeparatorReplace(fileData);
 
