@@ -43,11 +43,11 @@ export default class RefFieldEditor extends React.Component {
 						this.props.field.onClick(this.props.value);
 					} else {
 						try {
-							editor.ui.modal.showModal(JSON.stringify(this.props.value, undefined, '\n'). split('\n').map((l) => {
-								return R.span(null,l, R.br());
+							editor.ui.modal.showModal(JSON.stringify(this.props.value, undefined, '\n'). split('\n').map((l, key) => {
+								return R.span({key},l, R.br());
 							}));
 						} catch (er) {
-							editor.ui.modal.showModal('Object has curcular structures');
+							editor.ui.modal.showModal('Object has circular structures');
 						}
 					}
 				}
