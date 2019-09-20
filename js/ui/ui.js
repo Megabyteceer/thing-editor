@@ -121,7 +121,7 @@ class UI extends React.Component {
 
 			renderWindow('sceneTree', 'SceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 330, 250, 500),
 			renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),
-				558, 0, 470, 420, 1362, 742, ()=>{
+				558, 0, 470, 460, 1362, 742, ()=>{
 					game._onContainerResize();
 				}),
 			renderWindow('propsEditor', 'Properties', 'Properties', React.createElement(PropsEditor, {
