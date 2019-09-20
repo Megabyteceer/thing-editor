@@ -76,14 +76,8 @@ export default class KeyframePropertyEditor extends React.Component {
 					let fieldView = kf.___view.props.owner.props.owner;
 					let fieldName = fieldView.props.field.n;
 					let node = fieldView.props.owner.props.node;
-					let editableFields = editor.enumObjectsProperties(node);
-					let step = 1;
-					for(let f of editableFields) {
-						if(f.name === fieldName) {
-							step = f.step || 1;
-							break;
-						}
-					}
+					let fieldDesc = editor.getObjectField(node, fieldName);
+					let step = fieldDesc.step || 1;
 
 					kf.b = DEFAULT_BOUNCING;
 					kf.g = DEFAULT_GRAVITY * step;
