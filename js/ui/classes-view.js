@@ -46,7 +46,7 @@ class ClassesView extends React.Component {
 		editor.ui.modal.showListChoose("Choose template for new Custom Component", [
 			{
 				title: "Basic Game Object",
-				desc: "Cretes simple game object. Then you can programm this object's logic with javascript. This type of object will contain only basic methods of game object 'init', 'update', 'onRemove', but you can add any method you want manually.",
+				desc: "Creates simple game object. Then you can program this object's logic with javascript. This type of object will contain only basic methods of game object 'init', 'update', 'onRemove', but you can add any method you want manually.",
 				path: 'basic-game-object.js',
 				isScene: false
 			},
@@ -58,7 +58,7 @@ class ClassesView extends React.Component {
 			},
 			{
 				title: "Full Game Object",
-				desc: "Contains all the mothods of game object. Include 'game mothods', and 'editor mode methods'.",
+				desc: "Contains all the methods of game object. Include 'game methods', and 'editor mode methods'.",
 				path: 'full-game-object.js',
 				isScene: false
 			},
@@ -77,22 +77,22 @@ class ClassesView extends React.Component {
 			return tmp;
 		})).then((selectedTemplate) => {
 			if(selectedTemplate) {
-				PropsEditor.showSelectClass(selectedTemplate.isScene, 'Choose base Component').then((selectedBaseClass) => {
-					if(selectedBaseClass) {
-						editor.ui.modal.showPrompt('Enter Component Name',
-							selectedTemplate.isScene ? 'MyNewScene' : 'MyNewComponent',
-							(val) => { //filter
-								return  val.replace(/[^a-zA-Z0-9\/]/gm, '_');
-							},
-							(val) => { //accept
-								if (Lib.__hasClass(val)) {
-									return "Component with name '" + val + "' already exists";
-								}
-							}
-						).then((enteredClassName) => {
-							if(enteredClassName) {
-								let a = enteredClassName.split('/').filter(i => i);
-								enteredClassName = a.pop();
+				editor.ui.modal.showPrompt('Enter Component Name',
+					selectedTemplate.isScene ? 'MyNewScene' : 'MyNewComponent',
+					(val) => { //filter
+						return  val.replace(/[^a-zA-Z0-9\/]/gm, '_');
+					},
+					(val) => { //accept
+						if (Lib.__hasClass(val)) {
+							return "Component with name '" + val + "' already exists";
+						}
+					}
+				).then((enteredClassName) => {
+					if(enteredClassName) {
+						PropsEditor.showSelectClass(selectedTemplate.isScene, 'Choose base Component').then((selectedBaseClass) => {
+							if(selectedBaseClass) {
+								let enteredClassNameParts = enteredClassName.split('/').filter(i => i);
+								enteredClassName = enteredClassNameParts.pop();
 								if(!enteredClassName) {
 									editor.ui.modal.showError('Wrong component name provided.', 30001);
 									return;
@@ -106,34 +106,43 @@ class ClassesView extends React.Component {
 									editor.ui.modal.showError("Component with name '" + enteredClassName + "' already exists.", 30003);
 									return;
 								}
-								let classFoldername = a.join('/');
+								let classFoldername = enteredClassNameParts.join('/');
+								if(classFoldername) {
+									classFoldername += '/';
+								}
 								fs.getJSON('/thing-editor/js/templates/' + selectedTemplate.path, false, false, false).then((templateSrc) => {
 									
-									//add or remove super mothod call if its exists
-									let baseClassInsance = new selectedBaseClass();
+									//add or remove super method call if its exists
+									let baseClassInstance = new selectedBaseClass();
 									const regex = /(\/\/)(super\.)([a-zA-Z_]+)(\(\);)/gm;
 									templateSrc = templateSrc.replace(regex, (substr, m1, m2, m3, m4) => {
-										let isSuperClassHasThgisMethod = baseClassInsance[m3];
-										if(isSuperClassHasThgisMethod) {
+										let isSuperClassHasThisMethod = baseClassInstance[m3];
+										if(isSuperClassHasThisMethod) {
 											return m2 + m3 + m4;
 										} else {
 											return '';
 										}
 									});
+									let targetFolderName = (selectedTemplate.isScene ?'src/scenes/' : 'src/game-objects/');
 
-									const baseClassPath = editor.ClassesLoader.getClassPath(selectedBaseClass.name);
-
+									let baseClassPath = editor.ClassesLoader.getClassPath(selectedBaseClass.name);
+									let isProjectsCustomComponent = baseClassPath.startsWith(game.resourcesPath.substr(1));
+									if(isProjectsCustomComponent) {
+										baseClassPath = './' + 
+										enteredClassNameParts.map(() => {return '../';}).join('') +
+										baseClassPath.substr(game.resourcesPath.length - 1 + targetFolderName.length);
+									}
 									templateSrc = templateSrc.replace(/NEW_CLASS_NAME/gm, enteredClassName);
 									templateSrc = templateSrc.replace(/BASE_CLASS_NAME/gm, selectedBaseClass.name);
-									templateSrc = templateSrc.replace(/\/BASE_CLASS_PATH/gm, baseClassPath);
+									templateSrc = templateSrc.replace(/\/BASE_CLASS_PATH/gm, baseClassPath); //this line is necessary because server side fixes import paths with / automatically
 									templateSrc = templateSrc.replace(/BASE_CLASS_PATH/gm, baseClassPath);
 
 									let fileName = enteredClassName.replace(/[A-Z]/gm, (substr, offset) => {
 										return ((offset === 0) ? '' : '-') + substr.toLowerCase();
 									});
-									fileName = (selectedTemplate.isScene ?'src/scenes/' : 'src/game-objects/') + classFoldername + '/' + fileName + '.js';
+									fileName = targetFolderName + classFoldername + fileName + '.js';
 									fs.saveFile(fileName, templateSrc).then(() => {
-										editor.fs.editFile(fileName);
+										editor.fs.editFile(game.resourcesPath + fileName);
 										editor.reloadClasses();
 									});
 

@@ -1,4 +1,4 @@
-// this class automaticly generated with Thing-Editor's component's Wizard,
+// this class automatically generated with Thing-Editor's component's Wizard,
 // and contain basic game-object's methods.
 // For details: https://github.com/Megabyteceer/thing-editor/wiki/Custom-Components#custom-component-methods
 

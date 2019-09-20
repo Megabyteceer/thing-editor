@@ -1,5 +1,5 @@
-// this class automaticly generated with Thing-Editor's component's Wizard,
-// and contain all possible methods. Remove any of methods you dont need.
+// this class automatically generated with Thing-Editor's component's Wizard,
+// and contain all possible methods. Remove any of methods you do not need.
 // For details: https://github.com/Megabyteceer/thing-editor/wiki/Custom-Components#custom-component-methods
 
 import BASE_CLASS_NAME from "BASE_CLASS_PATH";

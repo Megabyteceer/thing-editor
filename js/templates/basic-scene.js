@@ -1,4 +1,4 @@
-// this class automaticly generated with Thing-Editor's component's Wizard,
+// this class automatically generated with Thing-Editor's component's Wizard,
 // and contain full list of scene's methods, include scene
 // For details: https://github.com/Megabyteceer/thing-editor/wiki/Custom-Components#custom-component-methods
 
@@ -25,13 +25,13 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 	}
 
 	onHide() {
-		// Add each time scene dissapears from game screen
+		// Add each time scene disappears from game screen
 
 		//super.onHide();
 	}
 
 	onRemove() {
-		// Add on scene descroying code here
+		// Add on scene destroying code here
 
 		//super.onRemove();
 	}
