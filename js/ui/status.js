@@ -60,6 +60,7 @@ export default class Status extends React.Component {
 			} else {
 				this.show();
 			}
+			editor.pauseGame();
 		}
 	}
 	

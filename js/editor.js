@@ -87,8 +87,8 @@ export default class Editor {
 		editor.__unloadedTexture = PIXI.Texture.fromImage('img/loading-texture.png');
 	}
 
-	deselectMovieclip(o) {
-		Timeline.deselectMovieclip(o);
+	deselectMovieClip(o) {
+		Timeline.deselectMovieClip(o);
 	}
 	
 	/**
@@ -252,9 +252,9 @@ export default class Editor {
 		let isClipboardWrapping = ((typeof className) !== 'string');
 
 		if(editor.selection.length < 1) {
-			editor.ui.modal.showModal('Nothing selected to be wraped.', 'Alert');
+			editor.ui.modal.showModal('Nothing selected to be wrapped.', 'Alert');
 		} else if(isClipboardWrapping && (!editor.clipboardData || editor.clipboardData.length !== 1)) {
-			editor.ui.modal.showModal('Exactly one container should be copied in to clippoard to wrap selection wuth it.', 'Alert');
+			editor.ui.modal.showModal('Exactly one container should be copied in to clipBoard to wrap selection with it.', 'Alert');
 		} else {
 			let a = editor.selection.slice(0);
 
@@ -262,7 +262,7 @@ export default class Editor {
 			let parent = o.parent;
 			for(let c of a) {
 				if(c.parent !== parent) {
-					editor.ui.modal.showModal('Selected object shoul have same parent to be wrapped.', 'Alert');
+					editor.ui.modal.showModal('Selected object should have same parent to be wrapped.', 'Alert');
 					return;
 				}
 			}
@@ -372,7 +372,7 @@ export default class Editor {
 		}
 		
 		if(!savedBackupName) {
-			assert(!includeUnmodified, 'No backup scene was saved bofore restoreing important backup.');
+			assert(!includeUnmodified, 'No backup scene was saved before restoring important backup.');
 			return;
 		}
 		editor.loadScene(savedBackupName);
@@ -460,7 +460,7 @@ export default class Editor {
 	 */
 	onSelectedPropsChange(field, val, delta) {
 		if(this.selection.length > 0) {
-			let oldVals = this.selection.map(o => o[field.name]);
+			let oldValues = this.selection.map(o => o[field.name]);
 			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
@@ -475,7 +475,7 @@ export default class Editor {
 				field.afterEdited();
 			}
 			if(field.name === 'name') {
-				DataPathFixer.validatePathReferences(oldVals, val);
+				DataPathFixer.validatePathReferences(oldValues, val);
 			}
 		}
 	}
@@ -694,7 +694,7 @@ export default class Editor {
 
 	get isCurrentSceneModified() {
 		if(game.currentScene !== game.currentContainer) {
-			alert("acess to isCurrentSceneModified in prefab mode");
+			alert("access to isCurrentSceneModified in prefab mode");
 		}
 		return this.isCurrentContainerModified;
 	}
@@ -717,7 +717,7 @@ export default class Editor {
 			name = editor.currentSceneName;
 		}
 		assert(name, "Name can't be empty");
-		assert(game.__EDITOR_mode, "tried to save scene in runnig mode.");
+		assert(game.__EDITOR_mode, "tried to save scene in running mode.");
 		if(editor.isCurrentSceneModified || (editor.currentSceneName !== name)) {
 			if(!ScenesList.isSpecialSceneName(name)) {
 				history.setCurrentStateUnmodified();
@@ -731,6 +731,13 @@ export default class Editor {
 
 		}
 		return Promise.resolve();
+	}
+
+	pauseGame() {
+		if(!game.__paused && !game.__EDITOR_mode) {
+			game.__paused = true;
+			editor.ui.viewport.forceUpdate();
+		}
 	}
 
 	_callInPortraitMode(callback) {
@@ -807,11 +814,11 @@ function saveCurrentSceneName(name) {
 	}
 }
 
-function addTo(parent, child, doNotselect) {
+function addTo(parent, child, doNotSelect) {
 	parent.addChild(child);
 	Lib.__reassignIds(child);
 	Lib.__invalidateSerializationCache(child);
-	if(!doNotselect) {
+	if(!doNotSelect) {
 		editor.ui.sceneTree.selectInTree(child);
 		editor.sceneModified(true);
 	}

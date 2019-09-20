@@ -106,7 +106,7 @@ export default class Timeline extends React.Component {
 		editor.history.afterHistoryJump.add(this._afterHistoryJump);
 	}
 
-	static deselectMovieclip(o) {
+	static deselectMovieClip(o) {
 		for(let i = selectedComponents.length - 1; i >= 0; i--) {
 			let c = selectedComponents[i];
 			if(c instanceof TimelineKeyframe) {
