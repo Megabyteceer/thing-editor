@@ -283,9 +283,15 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 			let scriptSource = '';
 			let classesList = editor.fs.files['src/game-objects'].concat(editor.fs.files['src/scenes']);
-			classesList.some((fn, i) => {
-				let classPath = fn;
-				scriptSource += ("import C" + i + " from '" + location.origin + '/' + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
+			classesList.some((classPath, i) => {
+				let wrongSymbolPos = classPath.search(/[^a-zA-Z_\-\.\d\/]/gm);
+				if(wrongSymbolPos >= 0) {
+					editor.ui.status.warn("file " + classPath + " ignored because of wrong symbol '" + classPath[wrongSymbolPos] + "' in it's name: ", 99999, () => {
+						editor.fs.editFile(classPath);
+					});
+				} else {
+					scriptSource += ("import C" + i + " from '" + location.origin + '/' + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
+				}
 			});
 		
 			let src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
