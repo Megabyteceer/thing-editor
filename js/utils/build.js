@@ -1,6 +1,5 @@
 import L from "thing-engine/js/utils/l.js";
 import Lib from "thing-engine/js/lib.js";
-import AssetsLoader from "./assets-loader.js";
 
 let prefixToCutOff;
 
@@ -77,15 +76,6 @@ export default class Build {
 		if(resources) {
 			resources = resources.filter(isFileNameValidForBuild).sort();
 		}
-
-		AssetsLoader.resetAtlasMetaForSpineNames();
-		resources = resources.map((r) => { //add spines metadata
-			let metadata = AssetsLoader.getAtlasMetaForSpineName(r);
-			if(metadata) {
-				return {name: r, metadata};
-			}
-			return name;
-		});
 		
 		let fileSavePromises = [];
 
