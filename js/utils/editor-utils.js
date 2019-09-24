@@ -232,16 +232,18 @@ window.makePreviewModeButton = function(title, helpUrl) {
 		onClick: (o) => {
 			if(o.__EDITOR_component_in_previewMode) {
 				o.__EDITOR_inner_exitPreviewMode();
-				previewBtnProperty.className = undefined;
-				editor.game.__loadDynamicTextures();
 			} else {
 				o.__EDITOR_inner_goToPreviewMode();
-				previewBtnProperty.className = 'danger-btn';
-				editor.game.__loadDynamicTextures();
 			}
 			editor.refreshPropsEditor();
 		}
 	};
+	Object.defineProperty(previewBtnProperty, 'className', {
+		get: () => {
+			let o = editor.selection[0];
+			return (o.__EDITOR_component_in_previewMode) ? 'danger-btn' : undefined;
+		}
+	});
 	return previewBtnProperty;
 };
 
