@@ -46,6 +46,7 @@ const enumAssets = (onlyThisFiles) => {
 	
 	let jsonFolders = [];
 
+	AssetsLoader.resetAtlasMetaForSpineNames();
 	editor.fs.filesExt.img.filter((fileStat) => {
 		if(fileStat.name.match(jsonFilter)) {
 			if(!jsonFolders.some((f) => {
@@ -56,7 +57,8 @@ const enumAssets = (onlyThisFiles) => {
 				jsonFolders.push(a.join('/'));
 			}
 			if(!onlyThisFiles || onlyThisFiles.has(fileStat.name)) {
-				Lib.addResource(fileStat.name);
+				let metadata = AssetsLoader.getAtlasMetaForSpineName(fileStat.name);
+				Lib.addResource(fileStat.name, metadata);
 			}
 		}
 	});
@@ -77,7 +79,7 @@ const enumAssets = (onlyThisFiles) => {
 	return new Promise((resolve) => {
 		Lib.__onAllAssetsLoaded(() => {
 			let emSave = game.__EDITOR_mode;
-			game.__EDITOR_mode = true; //enforece update some type of components (tilegrid, fill);
+			game.__EDITOR_mode = true; //enforced update some type of components (tilegrid, fill);
 			tmp.forEach((image, o) => {
 				o.image = image;
 			});
@@ -93,6 +95,38 @@ const enumAssets = (onlyThisFiles) => {
 		});
 	});
 };
+
+let alreadyLoadedAtlases;
+
+AssetsLoader.resetAtlasMetaForSpineNames = () => {
+	alreadyLoadedAtlases = {};
+}
+
+AssetsLoader.getAtlasMetaForSpineName = (spineName) => {
+	let defaultAtlasName = spineName.replace(/.json$/, '.atlas');
+	if(!editor.fs.filesExt.img.find((fileData) => {
+		return fileData.name === defaultAtlasName;
+	})) {
+		let folderName = spineName.replace(/\/[^\/]+$/gm, "/");
+		if(alreadyLoadedAtlases[folderName]) {
+			return {spineAtlas: false};
+		}
+		let firstAtlasInFolder = editor.fs.filesExt.img.find((fileData) => {
+			return fileData.name.startsWith(folderName) && fileData.name.endsWith('.atlas');
+		});
+		if(firstAtlasInFolder) {
+			alreadyLoadedAtlases[folderName] = true;
+			return {
+				spineAtlasFile: firstAtlasInFolder.name
+			}
+		} else {
+			editor.ui.status.warn("Could not find atlas for " + spineName, 99999, () => {
+				editor.fs.editFile(spineName);
+			});
+		}
+		
+	}
+}
 
 AssetsLoader.deleteAssets = (assetsNames) => {
 	for(let name of assetsNames) {
