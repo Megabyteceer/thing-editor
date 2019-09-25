@@ -433,14 +433,14 @@ export default class Timeline extends React.Component {
 		}
 	}
 
-	static unregisterDragableComponent(component) {
+	static unregisterDraggableComponent(component) {
 		let i = selectedComponents.indexOf(component);
 		if (i >= 0) {
 			selectedComponents.splice(i, 1);
 		}
 	}
 
-	static registerDragableComponent(component) {
+	static registerDraggableComponent(component) {
 		assert(component.getTime && component.setTime, "Dragable component should have 'getTime', 'setTime(time)' function as dragging interface");
 		component.onDragableMouseDown = onDragableMouseDown.bind(component);
 	}

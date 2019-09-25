@@ -17,7 +17,7 @@ export default class TimelineKeyframe extends React.Component {
 		this.getTime = this.getTime.bind(this);
 		this.setTime = this.setTime.bind(this);
 		this.onKeyframeMouseDown = this.onKeyframeMouseDown.bind(this);
-		Timeline.registerDragableComponent(this);
+		Timeline.registerDraggableComponent(this);
 		props.keyFrame.___view = this;
 	}
 
@@ -49,7 +49,7 @@ export default class TimelineKeyframe extends React.Component {
 		if(this.props.keyFrame.___view === this) {
 			this.props.keyFrame.___view = null;
 		}
-		Timeline.unregisterDragableComponent(this);
+		Timeline.unregisterDraggableComponent(this);
 	}
 
 	getTime() {
@@ -152,7 +152,7 @@ export default class TimelineKeyframe extends React.Component {
 		
 		let mark;
 		if(keyFrame.hasOwnProperty('a')) {
-			mark = (keyFrame.a === 'this.stop') ? '■' : 'A';
+			mark = p.node.__EDITOR_getKeyframeIcon(keyFrame.a);
 		}
 		
 		return R.div({className:className,

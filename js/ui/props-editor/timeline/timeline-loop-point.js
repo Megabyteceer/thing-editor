@@ -5,7 +5,7 @@ export default class TimelineLoopPoint extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onLoopPointMouseDown = this.onLoopPointMouseDown.bind(this);
-		Timeline.registerDragableComponent(this);
+		Timeline.registerDraggableComponent(this);
 	}
 	
 	componentDidMount() {
@@ -54,7 +54,7 @@ export default class TimelineLoopPoint extends React.Component {
 	}
 
 	componentWillUnmount() {
-		Timeline.unregisterDragableComponent(this);
+		Timeline.unregisterDraggableComponent(this);
 	}
 
 	render() {

@@ -18,7 +18,7 @@ export default class TimeLabel extends React.Component {
 		super(props);
 		this.onDoubleClick = this.onDoubleClick.bind(this);
 		this.onLabelMouseDown = this.onLabelMouseDown.bind(this);
-		Timeline.registerDragableComponent(this);
+		Timeline.registerDraggableComponent(this);
 	}
 	
 	componentDidMount() {
@@ -42,7 +42,7 @@ export default class TimeLabel extends React.Component {
 
 
 	componentWillUnmount() {
-		Timeline.unregisterDragableComponent(this);
+		Timeline.unregisterDraggableComponent(this);
 	}
 
 	getTime() {
