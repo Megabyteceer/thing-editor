@@ -57,11 +57,11 @@ export default class Overlay {
 		this.refreshCameraFrame();
 	}
 
-	getBGcolor() {
+	getBGColor() {
 		return blackout.tint;
 	}
 	
-	setBGcolor(tint) {
+	setBGColor(tint) {
 		if(tint === undefined) {
 			tint = 30;
 		} else if(isPreviewShowed) {
@@ -155,7 +155,7 @@ export default class Overlay {
 	
 	showPreview(object) {
 		editor.ui.viewport.resetZoom();
-		this.setBGcolor(editor.settings.getItem('prefab-bg' + object.name));
+		this.setBGColor(editor.settings.getItem('prefab-bg' + object.name));
 		this.hidePreview(false);
 		game.stage.addChild(blackout);
 		__getNodeExtendData(blackout).hidden = true;

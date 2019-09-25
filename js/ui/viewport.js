@@ -208,6 +208,18 @@ export default class Viewport extends React.Component {
 			editor.reloadAssets();
 		});
 	}
+
+	jsFilesChanged() {
+		this.setState({
+			needReloadCode: true
+		});
+	}
+
+	jsFilesReloaded() {
+		this.setState({
+			needReloadCode: false
+		});
+	}
 	
 	render() {
 		
@@ -237,11 +249,11 @@ export default class Viewport extends React.Component {
 				'BG color:',
 				R.input({
 					onChange: (ev) => {
-						editor.overlay.setBGcolor(parseInt(ev.target.value.replace('#', ''), 16));
+						editor.overlay.setBGColor(parseInt(ev.target.value.replace('#', ''), 16));
 					},
 					className: 'clickable',
 					type: 'color',
-					defaultValue: '#' + editor.overlay.getBGcolor().toString(16).padStart(6, '0')
+					defaultValue: '#' + editor.overlay.getBGColor().toString(16).padStart(6, '0')
 				}),
 				reloadAssetsBtn,
 				toggleOrientationBtn
@@ -257,9 +269,11 @@ export default class Viewport extends React.Component {
 					statusHeader = 'running';
 				}
 			}
+			let needReloadCode = this.state.needReloadCode;
+
 			panel = R.span(undefined,
 				R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
-				R.btn(R.icon('recompile'), this.onReloadClassesClick, 'Reload Custom Components', 'big-btn'),
+				R.btn(R.icon('recompile'), this.onReloadClassesClick, needReloadCode ? 'source code modified externally. Click here to load changes.' : 'Reload Custom Components', needReloadCode ? 'big-btn red-frame' : 'big-btn'),
 				reloadAssetsBtn,
 				statusHeader,
 				pauseResumeBtn,

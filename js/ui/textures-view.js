@@ -168,7 +168,7 @@ class TexturesViewerBody extends React.Component {
 		}
 		let path = this.getImagePath(name) + '?noCache=' + Lib.__noCacheCounter;
 		
-		return R.div({key:name, className:isOnDemandLoading ? 'textures-viewer-item redframe' : 'textures-viewer-item'},
+		return R.div({key:name, className:isOnDemandLoading ? 'textures-viewer-item red-frame' : 'textures-viewer-item'},
 			R.img({src: path, className:'textures-viewer-image', onDoubleClick:() => {
 				editor.fs.editFile(path.split('?')[0]);
 			},

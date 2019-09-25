@@ -326,13 +326,13 @@ const watchers = [];
 let changedFiles = {};
 let fileChangedTimeout;
 
-const filterWatchFiles = /.(json|png|wav|jpg)$/mg;
+const filterWatchFiles = /.(json|png|wav|jpg|.js)$/mg;
 function initWatchers() {
 	while(watchers.length) {
 		watchers.pop().close();
 	}
 	getDataFolders().some((assetsFolderData) => {
-		if((assetsFolderData.type !== 'img') && (assetsFolderData.type !== 'snd')) {
+		if((assetsFolderData.type !== 'img') && (assetsFolderData.type !== 'snd') && (!assetsFolderData.type.startsWith('src/'))) {
 			return;
 		}
 		let assetsFolder = assetsFolderData.type + '/';

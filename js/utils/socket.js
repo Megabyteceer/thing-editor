@@ -31,6 +31,7 @@ ws.onmessage = function incoming(data) {
 		let soundsUpdated;
 		let imagesDeleted;
 		let soundsDeleted;
+		let srcChanged;
 		for(let file of data.filesChanged) {
 			if(file.name.startsWith('img/')) {
 				if(file.deleted) {
@@ -44,6 +45,9 @@ ws.onmessage = function incoming(data) {
 				} else {
 					soundsUpdated = addAssetNameInToMap(file.name, soundsUpdated);
 				}
+			} else if(file.name.endsWith('.js')) {
+				srcChanged = true;
+				
 			}
 		}
 		
@@ -58,6 +62,9 @@ ws.onmessage = function incoming(data) {
 		}
 		if(soundsDeleted) {
 			editor.ui.soundsList.deleteSounds(soundsDeleted.keys());
+		}
+		if(srcChanged) {
+			editor.ui.viewport.jsFilesChanged();
 		}
 	}
 	

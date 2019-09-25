@@ -417,6 +417,7 @@ export default class Editor {
 					ClassesLoader.validateClasses();
 					editor.restoreBackup(!ftl);
 					resolve();
+					this.ui.viewport.jsFilesReloaded();
 				});
 			});
 		});
