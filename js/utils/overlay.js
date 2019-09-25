@@ -403,12 +403,10 @@ function selectByStageClick(ev) {
 
 	game.currentContainer.forAllChildren((o) => {
 		if(isObjectUnder(o)) {
-			if(o.constructor.name === 'SpineSprite') {
-				while(!(o instanceof Spine)) {
-					o = o.parent;
-				}
-				if(allUnderMouse.indexOf(o) < 0) {
-					allUnderMouse.push(o);
+			let parentWhichHideChildren = getParentWhichHideChildren(o);
+			if(parentWhichHideChildren) {
+				if(allUnderMouse.indexOf(parentWhichHideChildren) < 0) {
+					allUnderMouse.push(parentWhichHideChildren);
 				}
 			} else {
 				let p = o;
@@ -440,28 +438,31 @@ function selectByStageClick(ev) {
 		})) {
 			i = 0;
 		} else {
-			i = allUnderMouse.indexOf(editor.selection[0]) + 1;
+			i = allUnderMouse.indexOf(getParentWhichHideChildren(editor.selection[0]) || editor.selection[0]) + 1;
 		}
 		let o = allUnderMouse[i % allUnderMouse.length];
-
-		let p = o;
-		let isPrevHidden = __getNodeExtendData(o).hidden;
-		while(p) {
-			
-			p = p.parent;
-			if(isPrevHidden) {
-				o = p;
-			}
-			if(p) {
-				isPrevHidden = __getNodeExtendData(p).hidden;
-			}
-		}
-
 		editor.ui.sceneTree.selectInTree(o, ev.ctrlKey);
 	} else {
 		editor.selection.clearSelection(true);
 	}
 	previousAllUnderMouse = allUnderMouse;
+}
+
+function getParentWhichHideChildren(o) {
+	let ret;
+	while(o) {
+		o = o.parent;
+		if(o) {
+			let d = __getNodeExtendData(o);
+			if(d.hideAllChildren) {
+				ret = o;
+			}
+			if(d.hidden) {
+				ret = o.parent;
+			}
+		}
+	}
+	return ret;
 }
 
 window.addEventListener('mousemove', function onMouseMove(ev) {
