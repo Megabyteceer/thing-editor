@@ -102,16 +102,16 @@ window.addEventListener('keydown', (ev) => {
 	if(!window.isEventFocusOnInputElement(ev)) {
 		switch(ev.key) {
 		case "ArrowUp":
-			editor.onSelectedPropsChange('y', -1, true);
+			editor.onSelectedPropsChange('y', ev.ctrlKey ? -10 : -1, true);
 			break;
 		case "ArrowDown":
-			editor.onSelectedPropsChange('y', 1, true);
+			editor.onSelectedPropsChange('y', ev.ctrlKey ? 10 : 1, true);
 			break;
 		case "ArrowLeft":
-			editor.onSelectedPropsChange('x', -1, true);
+			editor.onSelectedPropsChange('x', ev.ctrlKey ? -10 : -1, true);
 			break;
 		case "ArrowRight":
-			editor.onSelectedPropsChange('x', 1, true);
+			editor.onSelectedPropsChange('x', ev.ctrlKey ? 10 : 1, true);
 			break;
 		}
 	}

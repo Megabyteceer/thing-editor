@@ -3,7 +3,6 @@ import Pool from "thing-engine/js/utils/pool.js";
 import DSprite from "thing-engine/js/components/d-sprite.js";
 import Lib from "thing-engine/js/lib.js";
 import game from "thing-engine/js/game.js";
-import Spine from "thing-engine/js/components/spine.js";
 
 let blackout;
 let cameraFrame;
@@ -304,7 +303,7 @@ function refreshSelection() {
 			if(rect._props.field.rotable) {
 				rect.rotation = r;
 			}
-			if(!rect._props.field.noscalable) {
+			if(!rect._props.field.notScalable) {
 				rect.scale.x = o.worldTransform.a;
 				rect.scale.y = o.worldTransform.d;
 			}
@@ -384,7 +383,7 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 });
 
 function increaseNameNumber(o) {
-	if(o.name) { //autoincrease latest number in name
+	if(o.name) { // auto-increase latest number in name
 		let a = (/\d+$/mg).exec(o.name);
 		if(a) {
 			o.name = o.name.replace(/\d+$/mg, (parseInt(a[0]) + 1));
