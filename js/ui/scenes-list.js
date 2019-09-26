@@ -18,7 +18,7 @@ let sceneNameProps = {
 const sceneNameFilter = /[^a-z\-\/0-9]/g;
 
 
-function askNewScenenName(defaultSceneName = '') {
+function askNewSceneName(defaultSceneName = '') {
 	return editor.ui.modal.showPrompt('Enter name for scene:',
 		defaultSceneName,
 		(val) => { // filter
@@ -26,7 +26,7 @@ function askNewScenenName(defaultSceneName = '') {
 		},
 		(val) => { //accept
 			if (Lib.scenes.hasOwnProperty(val)) {
-				return "Name already exists";
+				return "Scene with such name already exists";
 			}
 			if (val.endsWith('/') || val.startsWith('/')) {
 				return 'name can not begin or end with "/"';
@@ -57,7 +57,7 @@ export default class ScenesList extends React.Component {
 		if (defaultSceneName) {
 			defaultSceneName += '/';
 		}
-		askNewScenenName(defaultSceneName).then((enteredName) => {
+		askNewSceneName(defaultSceneName).then((enteredName) => {
 			if (enteredName) {
 				editor.saveCurrentScene(enteredName);
 				this.forceUpdate();
@@ -67,7 +67,7 @@ export default class ScenesList extends React.Component {
 
 	onNewSceneClick() {
 		editor.askSceneToSaveIfNeed().then(() => {
-			askNewScenenName().then((enteredName) => {
+			askNewSceneName().then((enteredName) => {
 				if (enteredName) {
 					editor.ui.modal.showListChoose("Select type for new scene:", editor.ClassesLoader.sceneClasses.map(i => i.c)).then((selectedClass) => {
 						if(selectedClass) {

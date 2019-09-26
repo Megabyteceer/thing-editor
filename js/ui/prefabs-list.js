@@ -103,8 +103,8 @@ export default class PrefabsList extends React.Component {
 					return val.toLowerCase().replace(prefabNameFilter, '-');
 				},
 				(val) => { //accept
-					if (Lib.scenes.hasOwnProperty(val)) {
-						return "Name already exists";
+					if (Lib.prefabs.hasOwnProperty(val)) {
+						return "Prefab with such name already exists";
 					}
 					if (val.endsWith('/') || val.startsWith('/')) {
 						return 'name can not begin or end with "/"';
@@ -115,7 +115,7 @@ export default class PrefabsList extends React.Component {
 
 					const fin = (isConvertedToRef) => {
 						if(editor.overlay.isPreviewShowed && !isConvertedToRef) {
-							PrefabsList.editPrfefab(enteredName);
+							PrefabsList.editPrefab(enteredName);
 						}
 						this.forceUpdate();
 					};
@@ -159,7 +159,7 @@ export default class PrefabsList extends React.Component {
 		}
 	}
 
-	static editPrfefab(name) {
+	static editPrefab(name) {
 		if (game.__EDITOR_mode) {
 			if(!Lib.hasPrefab(name)) {
 				editor.ui.modal.showError("No prefab with name " + name + " exists.");
@@ -190,7 +190,7 @@ export default class PrefabsList extends React.Component {
 			this._addPrefabToChild(item, true);
 			return currentItem;
 		} else {
-			PrefabsList.editPrfefab( Lib.__getNameByPrefab(item));
+			PrefabsList.editPrefab( Lib.__getNameByPrefab(item));
 		}
 	}
 	
@@ -216,7 +216,7 @@ export default class PrefabsList extends React.Component {
 		} else {
 			cls = Container;
 			editor.ui.status.warn('Prefab "' + prefabName + '" has unknown type: ' + item.c, 30028, () => {
-				PrefabsList.editPrfefab(prefabName);
+				PrefabsList.editPrefab(prefabName);
 			});
 		}
 		return R.div({onDoubleClick:() => {
