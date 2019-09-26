@@ -10,6 +10,8 @@ const keyframesClasses = [
 	'timeline-keyframe-jump-roof'
 ];
 
+const SPEED_SET_MARK = R.img({className: 'timeline-speed-set-marker', src: '/thing-editor/img/timeline/speed-set.png'});
+
 export default class TimelineKeyframe extends React.Component {
 
 	constructor(props) {
@@ -159,6 +161,7 @@ export default class TimelineKeyframe extends React.Component {
 			title: isUnreachable ? 'Keyframe is unreachable because of loop or "this.stop" action' : undefined,
 			onMouseDown: this.onKeyframeMouseDown,
 			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
+		keyFrame.hasOwnProperty('s') ? SPEED_SET_MARK : undefined,
 		mark,
 		loopArrow,
 		randomMeter

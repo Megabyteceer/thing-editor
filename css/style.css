@@ -746,6 +746,11 @@ input{
 	border:1px solid #f00;
 }
 
+.timeline-speed-set-marker{
+	position: absolute;
+	bottom: -6px;
+}
+
 .timeline-keyframe {
 	cursor: w-resize;
 	position: absolute;
