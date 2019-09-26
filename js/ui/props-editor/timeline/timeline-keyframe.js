@@ -109,7 +109,7 @@ export default class TimelineKeyframe extends React.Component {
 			this.deleteKeyframe();
 			sp(ev);
 		} else {
-			this.onDragableMouseDown(ev);
+			this.onDraggableMouseDown(ev);
 		}
 	}
 

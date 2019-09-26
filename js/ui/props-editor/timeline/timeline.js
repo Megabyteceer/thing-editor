@@ -442,7 +442,7 @@ export default class Timeline extends React.Component {
 
 	static registerDraggableComponent(component) {
 		assert(component.getTime && component.setTime, "Dragable component should have 'getTime', 'setTime(time)' function as dragging interface");
-		component.onDragableMouseDown = onDragableMouseDown.bind(component);
+		component.onDraggableMouseDown = onDraggableMouseDown.bind(component);
 	}
 
 	static allFieldDataChanged(movieclip) {
@@ -736,7 +736,7 @@ let draggingStartX;
 let draggingXShift = 0;
 let prevDragTime;
 
-function onDragableMouseDown(ev) {
+function onDraggableMouseDown(ev) {
 	draggingStartX = ev.clientX;
 	if (!this.state || !this.state.isSelected) {
 		if (!ev.ctrlKey && !ev.shiftKey) {

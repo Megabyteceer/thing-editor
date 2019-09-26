@@ -76,27 +76,27 @@ export default class TimeLabel extends React.Component {
 			this.deleteLabel();
 			sp(ev);
 		} else {
-			this.onDragableMouseDown(ev);
+			this.onDraggableMouseDown(ev);
 		}
 	}
 
-	static renormalizeLabel(label, movieclip) { //re find keyframes for modified label
-		label.n = movieclip._timelineData.f.map((fieldTimeline) => {
+	static renormalizeLabel(label, movieClip) { //re find keyframes for modified label
+		label.n = movieClip._timelineData.f.map((fieldTimeline) => {
 			return MovieClip._findNextKeyframe(fieldTimeline.t, label.t - 1);
 		});
-		MovieClip.invalidateSerializeCache(movieclip);
+		MovieClip.invalidateSerializeCache(movieClip);
 	}
 	
-	static renormalizeAllLabels(movieclip) {
-		for(let key in movieclip._timelineData.l) {
-			if(!movieclip._timelineData.l.hasOwnProperty(key)) continue;
-			TimeLabel.renormalizeLabel(movieclip._timelineData.l[key], movieclip);
+	static renormalizeAllLabels(movieClip) {
+		for(let key in movieClip._timelineData.l) {
+			if(!movieClip._timelineData.l.hasOwnProperty(key)) continue;
+			TimeLabel.renormalizeLabel(movieClip._timelineData.l[key], movieClip);
 		}
 	}
 	
-	static askForLabelName(existingLabelsNames, title, defaultName = '', allowedDoublicatName = null) {
+	static askForLabelName(existingLabelsNames, title, defaultName = '', allowedDuplicateName = null) {
 		return editor.ui.modal.showPrompt(title, defaultName, undefined, (nameToCheck) => {
-			if(nameToCheck === allowedDoublicatName) {
+			if(nameToCheck === allowedDuplicateName) {
 				return;
 			}
 			if(existingLabelsNames.indexOf(nameToCheck) >= 0) {

@@ -38,7 +38,7 @@ export default class TimelineLoopPoint extends React.Component {
 			this.deleteLoopPoint();
 			sp(ev);
 		} else {
-			this.onDragableMouseDown(ev);
+			this.onDraggableMouseDown(ev);
 		}
 	}
 
