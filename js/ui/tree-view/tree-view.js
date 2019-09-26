@@ -203,7 +203,7 @@ export default class TreeView extends React.Component {
 		editor.refreshTreeViewAndPropertyEditor();
 	}
 	
-	onMoveUpClick(dontSaveHistoryState) {
+	onMoveUpClick(doNotSaveHistoryState) {
 		let ret = false;
 		
 		editor.selection.some((o) => {
@@ -219,14 +219,14 @@ export default class TreeView extends React.Component {
 				}
 			}
 		});
-		if(dontSaveHistoryState !== true) {
+		if(doNotSaveHistoryState !== true) {
 			editor.sceneModified(true);
 			editor.refreshTreeViewAndPropertyEditor();
 		}
 		return ret;
 	}
 	
-	onMoveDownClick(dontSaveHistoryState) {
+	onMoveDownClick(doNotSaveHistoryState) {
 		let ret = false;
 		let a = editor.selection.slice(0);
 		a.reverse();
@@ -243,7 +243,7 @@ export default class TreeView extends React.Component {
 				}
 			}
 		});
-		if(dontSaveHistoryState !== true) {
+		if(doNotSaveHistoryState !== true) {
 			editor.sceneModified(true);
 			editor.refreshTreeViewAndPropertyEditor();
 		}
