@@ -1,8 +1,4 @@
 import DataPathEditor from "./data-path-editor.js";
-import ScenesList from "../scenes-list.js";
-import {setValueByPath} from "thing-engine/js/utils/get-value-by-path.js";
-import PrefabsList from "../prefabs-list.js";
-import SoundsList from "../sounds-list.js";
 
 export default class CallbackEditor extends DataPathEditor {
 	
@@ -22,11 +18,11 @@ export default class CallbackEditor extends DataPathEditor {
 		return (type === 'function') && (!CallbackEditor.isFunctionIsClass(val));
 	}
 	
-	finalValueChoosed(path, val) {
+	finalValueChoosed(path, val, parent) {
 		path = path.join('.');
 		
 		if(val.___EDITOR_callbackParameterChooserFunction) {
-			val.___EDITOR_callbackParameterChooserFunction().then((params) => {
+			val.___EDITOR_callbackParameterChooserFunction(parent).then((params) => {
 				if(!Array.isArray(params)) {
 					params = [params];
 				}

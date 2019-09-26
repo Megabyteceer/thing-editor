@@ -282,7 +282,7 @@ export default class DataPathEditor extends React.Component {
 		let acceptNowBtn;
 		if(!this.props.field || !this.props.field.isValueValid || this.props.field.isValueValid(parent)) {
 			acceptNowBtn = R.btn('✔', () => {
-				this.finalValueChoosed(path, parent);
+				this.finalValueChoosed(path, parent, parentsPath[parentsPath.length - 1]);
 				editor.ui.modal.hideModal();
 			}, 'Use this path', 'main-btn');
 		}
@@ -312,7 +312,7 @@ export default class DataPathEditor extends React.Component {
 				}
 				
 				if(this.isItTargetValue(val)) {
-					this.finalValueChoosed(path, val);
+					this.finalValueChoosed(path, val, parent);
 				} else {
 					this.chooseProperty(val, path);
 				}
