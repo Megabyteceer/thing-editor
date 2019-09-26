@@ -196,7 +196,7 @@ class PropsFieldWrapper extends React.Component {
 }
 
 let _surrogateEventObj = {target: {value: 0}};
-PropsFieldWrapper.surrogateChnageEvent = (val) => {
+PropsFieldWrapper.surrogateChangeEvent = (val) => {
 	_surrogateEventObj.target.value = val;
 	return _surrogateEventObj;
 };

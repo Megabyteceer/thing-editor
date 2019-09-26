@@ -23,6 +23,13 @@ class SelectEditor extends React.Component {
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 
+	componentWillUnmount() {
+		if(this.hideTimeout) {
+			clearTimeout(this.hideTimeout);
+			this.hideTimeout = null;
+		}
+	}
+
 	onMouseDown(ev) {
 		if (ev.buttons === 2) {
 			editor.copyToClipboard(this.props.value);
@@ -34,12 +41,18 @@ class SelectEditor extends React.Component {
 	}
 
 	onBlur() {
-		this.isBlured = true;
-		this.checkIfCanHide();
+		this.isBlurred = true;
+		if(this.hideTimeout) {
+			clearTimeout(this.hideTimeout);
+		}
+		this.hideTimeout = setTimeout(() => {
+			this.checkIfCanHide();
+			this.hideTimeout = null;
+		}, 5);
 	}
 
 	onFocus(event) {
-		this.isBlured = false;
+		this.isBlurred = false;
 		event.target.select();
 	}
 
@@ -49,7 +62,7 @@ class SelectEditor extends React.Component {
 	}
 
 	checkIfCanHide() {
-		if (this.isBlured && this.mouseLeaved) {
+		if (this.isBlurred && this.mouseLeaved) {
 			this.hide();
 		}
 	}
@@ -72,7 +85,7 @@ class SelectEditor extends React.Component {
 	}
 
 	onSelect(item) {
-		this.props.onChange(PropsFieldWrapper.surrogateChnageEvent(item.value));
+		this.props.onChange(PropsFieldWrapper.surrogateChangeEvent(item.value));
 		this.hide();
 	}
 

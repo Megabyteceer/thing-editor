@@ -97,7 +97,7 @@ class NumberEditor extends React.Component {
 		if(!val) {
 			val = 0;
 		}
-		props.onChange(PropsFieldWrapper.surrogateChnageEvent(this.cropVal(val)));
+		props.onChange(PropsFieldWrapper.surrogateChangeEvent(this.cropVal(val)));
 	}
 
 	onDoubleClick(ev) {
@@ -133,7 +133,7 @@ class NumberEditor extends React.Component {
 		croppedVal = Math.round(croppedVal / step) * step;
 		d = croppedVal - val;
 		
-		let e = PropsFieldWrapper.surrogateChnageEvent(croppedVal);
+		let e = PropsFieldWrapper.surrogateChangeEvent(croppedVal);
 		this.setState({tmpVal:undefined, value: croppedVal});
 		this.props.onChange(e, true, d);
 	}
