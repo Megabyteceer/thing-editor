@@ -26,6 +26,9 @@ export default class DataPathEditor extends React.Component {
 	onGotoTargetClick() {
 		game.currentScene._refreshAllObjectRefs();
 		let node = getLatestSceneNodeBypath(this.props.value, editor.selection[0]);
+		if(!node) {
+			return;
+		}
 		if(node.getRootContainer() !== game.currentContainer) {
 			PrefabsList.exitPrefabEdit();
 		}
