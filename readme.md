@@ -40,7 +40,6 @@ npm start
 
 ## What is need to do:
  - atlases packing for projects created in thing-editor.
- - sounds bitrate settings UI
  - drag and drop for "scene-tree" and "classes list"
  - examples and documentation
  

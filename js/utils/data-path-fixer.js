@@ -7,6 +7,9 @@ import DisplayObject from "thing-engine/js/components/display-object.js";
 export default class DataPathFixer {
 
 	static rememberPathReferences() {
+		if(beforeNameEditOldValues) {
+			DataPathFixer.onNameBlur();
+		}
 		_validateRefEntryOldName = null;
 		_validateRefEntryNewName = null;
 		if(game.currentScene) {
@@ -25,8 +28,25 @@ export default class DataPathFixer {
 		}
 		refs.forEach(validateRefEntry);
 	}
+
+	static beforeNameEdit(newName) {
+		nameEditNameName = newName;
+		if(!beforeNameEditOldValues) {
+			DataPathFixer.rememberPathReferences();
+			beforeNameEditOldValues = editor.selection.map(o => o.name);
+		}
+	}
+
+	static onNameBlur() {
+		if(beforeNameEditOldValues) {
+			DataPathFixer.validatePathReferences(beforeNameEditOldValues, nameEditNameName);
+			beforeNameEditOldValues = null;
+		}
+	}
 }
 
+let nameEditNameName;
+let beforeNameEditOldValues;
 
 let _validateRefEntryOldName;
 let _validateRefEntryNewName;
@@ -94,7 +114,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 				}
 			}
 
-			if(repairNode !== oldRef) { //try to insert new name somwhere in chain
+			if(repairNode !== oldRef) { //try to insert new name somewhere in chain
 				let changedNode = editor.selection[0];
 				let changedName = changedNode.name;
 				if(!changedName) {

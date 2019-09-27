@@ -56,6 +56,8 @@ export default class Editor {
 		
 		this.fs = fs;
 		
+		this.DataPathFixer = DataPathFixer;
+
 		this.settings = new Settings('editor');
 		this.selection = new Selection();
 		
@@ -461,22 +463,19 @@ export default class Editor {
 	 */
 	onSelectedPropsChange(field, val, delta) {
 		if(this.selection.length > 0) {
-			let oldValues = this.selection.map(o => o[field.name]);
+			
 			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
-			if(field.name === 'name') {
-				DataPathFixer.rememberPathReferences();
+			if(field.beforeEdited) { /// 99999
+				field.beforeEdited(val);
 			}
-
+			
 			for(let o of this.selection) {
 				this.onObjectsPropertyChanged(o, field, val, delta);
 			}
 			if(field.afterEdited) {
 				field.afterEdited();
-			}
-			if(field.name === 'name') {
-				DataPathFixer.validatePathReferences(oldValues, val);
 			}
 		}
 	}

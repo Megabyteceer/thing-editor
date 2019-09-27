@@ -109,6 +109,13 @@ class PropsFieldWrapper extends React.Component {
 		super(props);
 		this.state = {};
 		this.onChange = this.onChange.bind(this);
+		this._onBlur = this._onBlur.bind(this);
+	}
+
+	_onBlur() {
+		if(this.props.field.onBlur) {
+			this.props.field.onBlur();
+		}
 	}
 	
 	onChange(ev, delta, deltaVal) {
@@ -188,6 +195,7 @@ class PropsFieldWrapper extends React.Component {
 				ref: (field.type === 'timeline') ? 'fieldRef' : undefined,
 				value,
 				onChange: this.onChange,
+				onBlur: this._onBlur,
 				field,
 				disabled
 			})
