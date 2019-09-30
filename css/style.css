@@ -756,6 +756,10 @@ input{
 	position: absolute;
 }
 
+.timeline-keyframe img {
+	pointer-events: none;
+}
+
 .timeline-keyframe-unreachable{
 	opacity: 0.5;
 	outline: 1px solid #f00;
