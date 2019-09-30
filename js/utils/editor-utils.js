@@ -20,7 +20,14 @@ let _iconsCache = {};
 R.icon = (name) => {
 	if(!_iconsCache.hasOwnProperty(name)) {
 		assert(name, "Icon's name expected.");
-		_iconsCache[name] = R.img({src: '/thing-editor/img/' + name + '.png'});
+		let src;
+		if(name.startsWith('/')) {
+			src = name;
+		} else {
+			src = '/thing-editor/img/' + name;
+		}
+		src += '.png';
+		_iconsCache[name] = R.img({src});
 	}
 	return _iconsCache[name];
 };
