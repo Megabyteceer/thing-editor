@@ -261,6 +261,9 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	static acceptPrefabEdition() {
+		if(document.activeElement && document.activeElement.tagName === "INPUT") {
+			document.activeElement.blur();
+		}
 		let name = previewShown;
 		let isChanged = previewShown && editor.isCurrentContainerModified;
 		if(isChanged) {
