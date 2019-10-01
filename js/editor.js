@@ -328,10 +328,7 @@ export default class Editor {
 
 	isCanBeAdded() {
 		let o = editor.selection[0];
-		if((o instanceof Tilemap) || (o instanceof Shape)) {
-			return;
-		}
-		return true;
+		return o && !o.constructor.__canNotHaveChildren; // 99999
 	}
 
 	onEditorRenderResize() {
