@@ -87,7 +87,8 @@ export default class DataPathEditor extends React.Component {
 	}
 	
 	isFieldGoodForCallbackChoose(fieldName, object, val) {
-		try{
+		editor.rememberTryTime();
+		try {
 			if(fieldName.charCodeAt(0) === 95) {
 				return false;
 			}
@@ -107,8 +108,9 @@ export default class DataPathEditor extends React.Component {
 			}
 			
 			return true;
-		} catch (er) {} // eslint-disable-line no-empty
-
+		} catch (er) { // eslint-disable-line no-empty
+			editor.checkTryTime();
+		}
 	}
 	
 	render() {
@@ -232,13 +234,16 @@ export default class DataPathEditor extends React.Component {
 					if(!addSceneNodeIfValid(parent[name], name)) {
 						let order = 0;
 						let isBold;
-						try{
+						editor.rememberTryTime();
+						try {
 							order = parent[name].___EDITOR_ChooserOrder || 0;
 							if(parent[name].___EDITOR_isGoodForChooser || (this.itIsCallbackEditor && parent[name].___EDITOR_isGoodForCallbackChooser)) {
 								order += 100;
 								isBold = true;
 							}
-						} catch(er){}// eslint-disable-line no-empty
+						} catch(er) {// eslint-disable-line no-empty
+							editor.checkTryTime();
+						}
 						if(!isBold) {
 							items.push({name});
 						} else {
@@ -358,11 +363,14 @@ const enumSub = (o) => {
 	let op = Object.getOwnPropertyNames(o);
 	for (let name of op) {
 		if(!name.startsWith('_')) {
+			editor.rememberTryTime();
 			try {
 				if(hiddenProps.has(o[name])) {
 					continue;
 				}
-			} catch (er) {} // eslint-disable-line
+			} catch (er) { // eslint-disable-line
+				editor.checkTryTime();
+			}
 
 			if (enumed.indexOf(name) === -1) {
 				enumed.push(name);

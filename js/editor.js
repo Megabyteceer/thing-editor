@@ -822,7 +822,21 @@ export default class Editor {
 			return "Parameter can not contain apostrophes. Use your own javascript function instead.";
 		}
 	}
+
+	rememberTryTime() {
+		tryTime = Date.now();
+	}
+
+	checkTryTime() {
+		if(!tryCatchWarned && ((Date.now() - tryTime) > 1000)) {
+			tryCatchWarned = true;
+			editor.ui.status.warn("Looks like you stopped on caught exception, probably you need to disable 'stop on caught exception' option in your debugger.", 99999);
+		}
+	}
 }
+
+let tryCatchWarned;
+let tryTime;
 
 function saveCurrentSceneName(name) {
 	if(editor.projectDesc.__lastSceneName !== name) {
