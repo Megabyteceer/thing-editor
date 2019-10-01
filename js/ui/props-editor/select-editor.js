@@ -1,5 +1,8 @@
 import PropsFieldWrapper from './props-field-wrapper.js';
 
+const CLASS_NAME = 'select-editor-current clickable';
+const CLASS_NAME_DISABLED = 'select-editor-current disabled';
+
 class SelectEditor extends React.Component {
 
 	constructor(props) {
@@ -200,7 +203,7 @@ class SelectEditor extends React.Component {
 			ref: 'body'
 		},
 		R.div({
-			className: 'select-editor-current clickable'
+			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
 		}, item),
 		items
 		);
