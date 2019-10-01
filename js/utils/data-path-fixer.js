@@ -261,7 +261,6 @@ const validateRefEntry = (m, o) => {
 							splitter = ',';
 							return ret;
 						}) ,') is affected: Was: ', was, ' Become: ', become), 30026, o, fieldname);
-						return;
 					}
 				}
 			}

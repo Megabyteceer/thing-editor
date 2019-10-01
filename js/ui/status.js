@@ -8,17 +8,26 @@ const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
 
 
-const needAddInToList = (map, owner) => {
+const needAddInToList = (map, owner, fieldName) => {
 	if(!(owner instanceof DisplayObject)) {
 		return true;
 	} else {
 		let exData = __getNodeExtendData(owner);
+		if(!fieldName) {
+			fieldName = '_no_field_name_';
+		}
 		if(!map.has(exData)) {
-			map.set(exData, true);
+			let o = {};
+			o[fieldName] = true;
+			map.set(exData, o);
 			return true;
+		} else {
+			let o = map.get(exData);
+			let ret = !o[fieldName];
+			o[fieldName] = true;
+			return ret;
 		}
 	}
-	return false;
 };
 
 export default class Status extends React.Component {
@@ -53,7 +62,7 @@ export default class Status extends React.Component {
 		if(owner && fieldName) {
 			item.val = owner[fieldName];
 		}
-		if(needAddInToList(this.errorsMap, owner)) {
+		if(needAddInToList(this.errorsMap, owner, fieldName)) {
 			this.errors.push(item);
 			if(this.errorsList) {
 				this.errorsList.forceUpdate();
@@ -67,7 +76,7 @@ export default class Status extends React.Component {
 	warn (message, errorCode, owner, fieldName) {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message);
-		if(needAddInToList(this.warnsMap, owner)) {
+		if(needAddInToList(this.warnsMap, owner, fieldName)) {
 			let item = {owner, ownerId: owner && owner.___id, message, fieldName, errorCode};
 			if(owner && fieldName) {
 				item.val = owner[fieldName];
