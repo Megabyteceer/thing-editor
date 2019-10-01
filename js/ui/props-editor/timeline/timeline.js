@@ -149,7 +149,7 @@ export default class Timeline extends React.Component {
 			if(c instanceof TimelineKeyframe) {
 				c.props.owner.props.owner.deleteKeyframe(c.props.keyFrame);
 			} else if(c instanceof TimeLabel) {
-				c.removeLabel();
+				c.deleteLabel();
 			} else if(c instanceof TimelineLoopPoint) {
 				c.deleteLoopPoint();
 			}
