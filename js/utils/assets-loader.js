@@ -77,7 +77,7 @@ const enumAssets = (onlyThisFiles) => {
 	return new Promise((resolve) => {
 		Lib.__onAllAssetsLoaded(() => {
 			let emSave = game.__EDITOR_mode;
-			game.__EDITOR_mode = true; //enforece update some type of components (tilegrid, fill);
+			game.__EDITOR_mode = true; //enforce update some type of components (tileGrid, fill);
 			tmp.forEach((image, o) => {
 				o.image = image;
 			});
@@ -87,7 +87,7 @@ const enumAssets = (onlyThisFiles) => {
 			editor.ui.modal.hideSpinner();
 			BgMusic._recalculateMusic();
 			TexturesView.applyFoldersPropsToAllImages();
-			game.__loadDynamicTextures(undefined, onlyThisFiles);
+			game.__loadDynamicTextures(onlyThisFiles);
 			resolve();
 			editor.refreshTexturesViewer();
 		});

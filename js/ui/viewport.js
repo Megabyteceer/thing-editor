@@ -45,7 +45,6 @@ export default class Viewport extends React.Component {
 		this.onPauseResumeClick = this.onPauseResumeClick.bind(this);
 		this.stopExecution = this.stopExecution.bind(this);
 		this.onOneStepClick = this.onOneStepClick.bind(this);
-		this.beforePlayStopToggle = new Signal();
 		this.onHelpersToggle = this.onHelpersToggle.bind(this);
 		this.helpersHidden = false;
 	}
@@ -110,7 +109,6 @@ export default class Viewport extends React.Component {
 			game.__doOneStep = false;
 			game.__paused = false;
 			let play = game.__EDITOR_mode;
-			this.beforePlayStopToggle.emit(play);
 			game.__time = 0;
 			delete game.__EDITOR_sceneDataWaitingToStart;
 			if(play) { // launch game
@@ -339,6 +337,7 @@ export default class Viewport extends React.Component {
 						});
 					}
 					ev.preventDefault();
+					game.__loadDynamicTextures();
 				}
 			})
 		);

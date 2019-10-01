@@ -649,6 +649,24 @@ export default class Editor {
 		
 		this.moveContainerWithoutChildren(o, Math.round(p.x - p2.x), Math.round(p.y - p2.y));
 	}
+
+	waitForCondition(condition) {
+		if(condition()) {
+			return Promise.resolve();
+		}
+		return new Promise((resolve) => {
+			let i = setInterval(() => {
+				if(condition()
+				/// #if EDITOR
+				|| game.__EDITOR_mode
+				/// #endif
+				) {
+					resolve();
+					clearInterval(i);
+				}
+			}, 100);
+		});
+	}
 	
 	moveContainerWithoutChildren(o, dX, dY) {
 
