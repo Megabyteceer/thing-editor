@@ -46,6 +46,7 @@ class NumberEditor extends React.Component {
 	onBlur() {
 		if(this.state) {
 			delete this.state.tmpVal;
+			this.forceUpdate();
 		}
 	}
 
