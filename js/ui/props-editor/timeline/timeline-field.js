@@ -24,7 +24,7 @@ export default class FieldsTimeline extends React.Component {
 		k2.___view = this;
 	}
 
-	applyValueToMovielcip(time) {
+	applyValueToMovieClip(time) {
 		let f = this.props.field;
 		let o = this.props.owner.props.node;
 		if (f.___cacheTimeline.hasOwnProperty(time)) {
@@ -119,7 +119,7 @@ export default class FieldsTimeline extends React.Component {
 		);
 		this.forceUpdateDebounced();
 		setTimeout(() => {
-			this.applyValueToMovielcip(this.props.owner.props.owner.getTime());
+			this.applyValueToMovieClip(this.props.owner.props.owner.getTime());
 		}, 1);
 	}
 

@@ -35,7 +35,7 @@ export default class ObjectsTimeline extends React.Component {
 		assert(i >= 0, "Can't find field in timeline");
 		timelineData.f.splice(i,1);
 		this.props.node._disposePlayers();
-		Line.invalideteChartsRenderCache(timelineData);
+		Line.invalidateChartsRenderCache(timelineData);
 		MovieClip.invalidateSerializeCache(this.props.node);
 		editor.sceneModified();
 		this.forceUpdate();

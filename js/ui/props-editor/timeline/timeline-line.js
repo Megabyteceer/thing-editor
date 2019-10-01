@@ -88,7 +88,7 @@ export default class Line extends React.Component {
 		return React.createElement(TimelineKeyframe, {key: keyFrame.___react_id, keyFrame, owner:this});
 	}
 
-	static invalideteChartsRenderCache(field = null) {
+	static invalidateChartsRenderCache(field = null) {
 		if(field) {
 			chartsCache.delete(field);
 		} else {

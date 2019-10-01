@@ -40,7 +40,7 @@ function clearSelection() {
 }
 
 function select(component) {
-	assert(selectedComponents.indexOf(component) < 0, "Compinent already selected");
+	assert(selectedComponents.indexOf(component) < 0, "Component already selected");
 	component.setState({isSelected: true});
 	selectedComponents.push(component);
 	KeyframePropertyEditor.refresh();
@@ -48,7 +48,7 @@ function select(component) {
 
 function unselect(component) {
 	let i = selectedComponents.indexOf(component);
-	assert(i >= 0, "Compinent is not selected");
+	assert(i >= 0, "Component is not selected");
 	component.setState({isSelected: false});
 	selectedComponents.splice(i, 1);
 	KeyframePropertyEditor.refresh();
@@ -76,8 +76,8 @@ export default class Timeline extends React.Component {
 		this.verticalZoomIn = this.verticalZoomIn.bind(this);
 		this.verticalZoomOut = this.verticalZoomOut.bind(this);
 		this._afterHistoryJump = this._afterHistoryJump.bind(this);
-		this.horisontalZoomIn = this.horisontalZoomIn.bind(this);
-		this.horisontalZoomOut = this.horisontalZoomOut.bind(this);
+		this.horizontalZoomIn = this.horizontalZoomIn.bind(this);
+		this.horizontalZoomOut = this.horizontalZoomOut.bind(this);
 		this._afterHistoryJump = this._afterHistoryJump.bind(this);
 	}
 
@@ -171,21 +171,21 @@ export default class Timeline extends React.Component {
 		if (tmp !== heightZoom) {
 			editor.settings.setItem('timeline-height-zoom', heightZoom);
 			heightZoom = Math.floor(heightZoom);
-			Line.invalideteChartsRenderCache();
+			Line.invalidateChartsRenderCache();
 			this.setState({heightZoom});
 			this.centralizeSelection();
 		}
 	}
 
-	horisontalZoomIn() {
-		this.horisontalZoom(1.5);
+	horizontalZoomIn() {
+		this.horizontalZoom(1.5);
 	}
 
-	horisontalZoomOut() {
-		this.horisontalZoom(0.66666666);
+	horizontalZoomOut() {
+		this.horizontalZoom(0.66666666);
 	}
 
-	horisontalZoom(delta) {
+	horizontalZoom(delta) {
 		widthZoom = this.state.widthZoom;
 		let tmp = widthZoom;
 		widthZoom *= delta;
@@ -201,7 +201,7 @@ export default class Timeline extends React.Component {
 			} else {
 				widthZoom = Math.round(widthZoom);
 			}
-			Line.invalideteChartsRenderCache();
+			Line.invalidateChartsRenderCache();
 			this.setState({widthZoom});
 			this.centralizeSelection();
 		}
@@ -289,7 +289,7 @@ export default class Timeline extends React.Component {
 			editor.selection.some((o) => {
 				if (o._timelineData) {
 					o._timelineData.f.some((f) => {
-						f.___view.applyValueToMovielcip(time);
+						f.___view.applyValueToMovieClip(time);
 					});
 				}
 			});
@@ -441,13 +441,13 @@ export default class Timeline extends React.Component {
 	}
 
 	static registerDraggableComponent(component) {
-		assert(component.getTime && component.setTime, "Dragable component should have 'getTime', 'setTime(time)' function as dragging interface");
+		assert(component.getTime && component.setTime, "Draggable component should have 'getTime', 'setTime(time)' function as dragging interface");
 		component.onDraggableMouseDown = onDraggableMouseDown.bind(component);
 	}
 
-	static allFieldDataChanged(movieclip) {
-		for (let f of movieclip._timelineData.f) {
-			Timeline.fieldDataChanged(f, movieclip);
+	static allFieldDataChanged(movieClip) {
+		for (let f of movieClip._timelineData.f) {
+			Timeline.fieldDataChanged(f, movieClip);
 		}
 	}
 
@@ -462,7 +462,7 @@ export default class Timeline extends React.Component {
 		}
 
 		fieldData.___cacheTimeline = false;
-		Line.invalideteChartsRenderCache(fieldData);
+		Line.invalidateChartsRenderCache(fieldData);
 		MovieClip.invalidateSerializeCache(node);
 		TimeLabel.renormalizeAllLabels(node);
 		editor.sceneModified();
