@@ -53,6 +53,10 @@ class CornerDragger extends React.Component {
 	}
 }
 
+function  getResolutionPrefix() {
+	return '_' + window.innerWidth + 'x' + window.innerHeight;
+}
+
 class Window extends React.Component {
 	
 	constructor(props) {
@@ -83,13 +87,14 @@ class Window extends React.Component {
 	}
 	
 	onClientResize() {
-		this.setSize(editor.settings.getItem(this.id + '.w', this.props.w), editor.settings.getItem(this.id + '.h', this.props.h));
-		this.setPosition(editor.settings.getItem(this.id + '.x', this.props.x), editor.settings.getItem(this.id + '.y', this.props.y));
+		let id = this.id + getResolutionPrefix();
+		this.setSize(editor.settings.getItem(id + '.w', this.props.w), editor.settings.getItem(id + '.h', this.props.h));
+		this.setPosition(editor.settings.getItem(id + '.x', this.props.x), editor.settings.getItem(id + '.y', this.props.y));
 	}
 	
 	saveState() {
 		const settings = editor.settings;
-		let id = this.id;
+		let id = this.id + getResolutionPrefix();
 		settings.setItem(id + '.x', this.state.x);
 		settings.setItem(id + '.y', this.state.y);
 		settings.setItem(id + '.w', this.state.w);
