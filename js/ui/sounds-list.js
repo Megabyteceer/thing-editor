@@ -150,7 +150,7 @@ export default class SoundsList extends React.Component {
 		Lib.preloadSound(item.name);
 		let needPlay = !Lib.getSound(item.name).playing();
 		if(game.__EDITOR_mode) {
-			Sound.stop();
+			Sound.__stop();
 		}
 		if(needPlay) {
 			Sound.play(item.name);
@@ -158,7 +158,7 @@ export default class SoundsList extends React.Component {
 	}
 
 	onStopAllClick() {
-		Sound.stop();
+		Sound.__stop();
 	}
 
 	renderItem(sndName, item) {

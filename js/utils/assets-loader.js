@@ -36,7 +36,7 @@ const enumAssets = (onlyThisFiles) => {
 		}
 	}
 	
-	Sound.stop();
+	Sound.__stop();
 	if(!onlyThisFiles) {
 		Lib.__clearAssetsLists();
 	}

@@ -14,7 +14,7 @@ let heightZoom;
 
 let chartsCache = new WeakMap();
 
-const filterUndefineds = (v) => {
+const filterUndefined = (v) => {
 	return v !== undefined;
 };
 
@@ -75,10 +75,10 @@ export default class Line extends React.Component {
 					calculateCacheSegmentForField(fieldPlayer, c);
 				}
 			}
-			let filtredValues = c.filter(filterUndefineds);
+			let filteredValues = c.filter(filterUndefined);
 
-			c.min = Math.min.apply(null, filtredValues);
-			c.max = Math.max.apply(null, filtredValues);
+			c.min = Math.min.apply(null, filteredValues);
+			c.max = Math.max.apply(null, filteredValues);
 			Pool.dispose(fieldPlayer);
 		}
 		return field.___cacheTimeline[time];
@@ -98,7 +98,7 @@ export default class Line extends React.Component {
 
 	onMouseDown(ev) {
 		if(ev.buttons === 2 && !ev.ctrlKey) {
-			this.props.owner.togleKeyframe(Timeline.mouseEventToTime(ev));
+			this.props.owner.toggleKeyframe(Timeline.mouseEventToTime(ev));
 		}
 	}
 
@@ -138,12 +138,12 @@ export default class Line extends React.Component {
 		}
 
 		let keyframes = [];
-		let loopPopints = [];
+		let loopPoints = [];
 
 		for(let k of field.t) {
 			keyframes.push(this.renderKeyframe(k));
 			if(k.t !== k.j) {
-				loopPopints.push(
+				loopPoints.push(
 					React.createElement(TimelineLoopPoint, {key: k.___react_id, owner:this, keyFrame:k, widthZoom})
 				);
 			}
@@ -154,7 +154,7 @@ export default class Line extends React.Component {
 			{
 				style:{width, height}, onMouseDown:this.onMouseDown},
 			keyframes,
-			loopPopints,
+			loopPoints,
 			chartsCache.get(field),
 			React.createElement(PlayingDisplay, this.props)
 		);
@@ -162,7 +162,7 @@ export default class Line extends React.Component {
 }
 
 const calculateCacheSegmentForField = (fieldPlayer, c) => {
-	fieldPlayer.__dontCallActions = true;
+	fieldPlayer.__doNotCallActions = true;
 	let time;
 	let i = 0;
 	let fields = fieldPlayer.timeline;
@@ -176,7 +176,7 @@ const calculateCacheSegmentForField = (fieldPlayer, c) => {
 		}
 		assert(i++ < 100000, 'Timeline values cache calculation looped and failed.');
 	}
-	fieldPlayer.__dontCallActions = false;
+	fieldPlayer.__doNotCallActions = false;
 };
 
 
