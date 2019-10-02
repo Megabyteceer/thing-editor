@@ -27,7 +27,8 @@ export default class PrefabsList extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.state = {};
+		let filter = editor.settings.getItem('prefabs-filter', '');
+		this.state = {filter};
 		this.onSelect = this.onSelect.bind(this);
 		this.onSaveSelectedAsClick = this.onSaveSelectedAsClick.bind(this);
 		this.onAddClick = this.onAddClick.bind(this);
@@ -37,13 +38,15 @@ export default class PrefabsList extends React.Component {
 			className: 'prefabs-search-input',
 			onChange: this.onSearchChange.bind(this),
 			placeholder: 'Search',
-			defaultValue: ''
+			defaultValue: filter
 		};
 		instance = this;
 	}
 
 	onSearchChange(ev) {
-		this.setState({filter: ev.target.value.toLowerCase()});
+		let filter= ev.target.value.toLowerCase();
+		editor.settings.setItem('prefabs-filter', filter);
+		this.setState({filter});
 	}
 	
 	onAddClick(ev) {
@@ -235,7 +238,7 @@ export default class PrefabsList extends React.Component {
 	render() {
 		let scenePrefabs = Lib._getAllPrefabs();
 		
-		let panelClassname = this.state.selectedItem ? '' : 'unclickable';
+		let panelClassName = this.state.selectedItem ? '' : 'unclickable';
 		
 		let prefabs = [];
 		let prefabsNames = Object.keys(scenePrefabs);
@@ -250,7 +253,7 @@ export default class PrefabsList extends React.Component {
 			prefabs = Group.groupArray(prefabs);
 		}
 		return R.fragment(
-			R.span({className: panelClassname},
+			R.span({className: panelClassName},
 				R.btn('Add', this.onAddClick, 'Add prefab to scene. (Hold Alt key to add prefab as Reference)'),
 				R.btn('Child', this.onAddChildClick, 'Add prefab as children. (Hold Alt key to add prefab as Reference)')
 			),
