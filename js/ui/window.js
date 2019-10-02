@@ -54,7 +54,7 @@ class CornerDragger extends React.Component {
 }
 
 function  getResolutionPrefix() {
-	return '_' + window.innerWidth + 'x' + window.innerHeight;
+	return '_' + Math.round(window.innerWidth / 20) + 'x' + Math.round(window.innerHeight / 20) ;
 }
 
 class Window extends React.Component {
