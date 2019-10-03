@@ -28,11 +28,11 @@ class ClassesView extends React.Component {
 		}
 	}
 	
-	static loadSafeInstanceByClassName(className) {
+	static loadSafeInstanceByClassName(className, isForWrapping) {
 		// editor.saveBackup();
 		let ret = Lib._loadClassInstanceById(className);
 		if(ret.__EDITOR_onCreate) {
-			ret.__EDITOR_onCreate();
+			ret.__EDITOR_onCreate(isForWrapping);
 		}
 		// editor.cleanupBackup();
 		return ret;

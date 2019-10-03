@@ -282,7 +282,7 @@ export default class Editor {
 			editor.selection.clearSelection();
 			let w;
 			if(!isClipboardWrapping) {
-				w = ClassesView.loadSafeInstanceByClassName(className);
+				w = ClassesView.loadSafeInstanceByClassName(className, true);
 			} else {
 				editor.disableFieldsCache = true;
 				w = Lib._deserializeObject(editor.clipboardData[0]);
