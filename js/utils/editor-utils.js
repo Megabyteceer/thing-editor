@@ -77,14 +77,14 @@ R.tip = (id, header, text) => {
 	return React.createElement(Tip, {id, header, text});
 };
 
-let _debouncings = new Map();
+let _outJumpsMap = new Map();
 window.debouncedCall = (f, timeMs = 0) => {
-	if(_debouncings.has(f)) {
-		clearTimeout(_debouncings.get(f));
-		_debouncings.delete(f);
+	if(_outJumpsMap.has(f)) {
+		clearTimeout(_outJumpsMap.get(f));
+		_outJumpsMap.delete(f);
 	}
-	_debouncings.set(f, setTimeout(() => {
-		_debouncings.delete(f);
+	_outJumpsMap.set(f, setTimeout(() => {
+		_outJumpsMap.delete(f);
 		f();
 	}, timeMs));
 };
@@ -160,9 +160,9 @@ window.__EDITOR_editableProps = (class_, array) => {
 			p.helpUrl = 'components.' + cn + '#' + p.name.replace('.', '');
 		}
 	}
-	if(!array.__EDITOR_propsArrayReversedAlredy) {
+	if(!array.__EDITOR_propsArrayReversedAlready) {
 		array.reverse();
-		array.__EDITOR_propsArrayReversedAlredy = true;
+		array.__EDITOR_propsArrayReversedAlready = true;
 	}
 	class_.__EDITOR_editableProps = array;
 };
@@ -204,12 +204,12 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	
 	let d = Object.getOwnPropertyDescriptor(constructor.prototype, propertyName);
 	if(d) {
-		//console.log("Property " + propertyName + " wraped.")
+		//console.log("Property " + propertyName + " wrapped.")
 		originalSetter = d.set;
 		assert(originalSetter.name !== 'wrapPropertyWithNumberCheckerSetter', "Already wrapped");
 		d.set = newSetter;
 	} else {
-		//console.log("Own property " + propertyName + " wraped.")
+		//console.log("Own property " + propertyName + " wrapped.")
 		let privValue = '__wrapper_store_' + propertyName;
 		
 		originalSetter = function(val) {
@@ -254,10 +254,10 @@ window.makePreviewModeButton = function(title, helpUrl) {
 	return previewBtnProperty;
 };
 
-window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmty = true, filter = null) {
+window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmpty = true, filter = null) {
 	return () => {
 		let ret = [];
-		if(canBeEmty) {
+		if(canBeEmpty) {
 			ret.push({name:' ', value:''});
 		}
 		let a = editor.Lib._getAllPrefabs();
@@ -284,10 +284,10 @@ window.addEventListener('beforeunload', function() {
 	}
 });
 
-window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmty = true) {
+window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmpty = true) {
 	return () => {
 		let ret = [];
-		if(canBeEmty) {
+		if(canBeEmpty) {
 			ret.push({name:' ', value:''});
 		}
 		let a = editor.Lib.__soundsList;

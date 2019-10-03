@@ -903,22 +903,22 @@ let savedBackupSelectionData;
 let historySaveScheduled;
 let needHistorySave = false;
 let scheduleHistorySave = () => {
-	if(!historySaveScheduled && needHistorySave) {
+	if(!historySaveScheduled) {
 		historySaveScheduled = setTimeout(() => {
+			historySaveScheduled = null;
 			saveHistoryNow();
 		}, 1);
-		needHistorySave = false;
 	}
 };
 
 let saveHistoryNow = () => {
-	if(historySaveScheduled || needHistorySave) {
+	if(needHistorySave) {
 		history.addHistoryState();
 		needHistorySave = false;
 		if(historySaveScheduled) {
 			clearInterval(historySaveScheduled);
+			historySaveScheduled = null;
 		}
-		historySaveScheduled = null;
 	}
 };
 
