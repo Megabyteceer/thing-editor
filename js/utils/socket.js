@@ -47,7 +47,7 @@ ws.onmessage = function incoming(data) {
 				}
 			} else if(file.name.endsWith('.js')) {
 				srcChanged = true;
-			} else if(file.name.endsWith('.json')) {
+			} else if(file.name.endsWith('.json') && !filesIgnoring[file.name]) {
 				editor.ui.status.warn("File changed externally: " + file.name, 99999);
 			}
 		}
@@ -69,6 +69,18 @@ ws.onmessage = function incoming(data) {
 		}
 	}
 	
+};
+
+const filesIgnoring = {};
+
+ws.ignoreFileChanging = function(fileName) {
+	filesIgnoring[fileName] = true;
+};
+
+ws.notIgnoreFileChanging = function(fileName) {
+	setTimeout(() => {
+		delete filesIgnoring[fileName];
+	}, 2000);
 };
 
 ws.onclose = function incoming() {

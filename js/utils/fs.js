@@ -1,3 +1,5 @@
+import ws from "./socket.js";
+
 let fs = {
 	chooseProject: (enforced) => {
 		editor.ui.viewport.stopExecution();
@@ -48,7 +50,9 @@ let fs = {
 		});
 	},
 	deleteFile: (fileName) => {
+		ws.ignoreFileChanging(fileName);
 		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(editor.game.resourcesPath + fileName), true, false).then((data) => {
+			ws.notIgnoreFileChanging(fileName);
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
 			}
@@ -57,11 +61,11 @@ let fs = {
 	editFile: (fileName, line = -1, char = -1) => {
 
 		let now = Date.now();
-		let lastEdit = fielsEditTimes[fileName];
+		let lastEdit = filesEditTimes[fileName];
 		if(lastEdit && lastEdit >  (now - 10000)) {
 			return;
 		}
-		fielsEditTimes[fileName] = now;
+		filesEditTimes[fileName] = now;
 
 		let url = '/fs/edit?f=' + encodeURIComponent(fileName);
 		if(line >= 0) {
@@ -128,7 +132,10 @@ let fs = {
 		if(typeof data !== 'string') {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
-		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async);
+		ws.ignoreFileChanging(filename);
+		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async).then(() => {
+			ws.notIgnoreFileChanging(filename);
+		});
 	}
 };
 
@@ -140,7 +147,7 @@ const fieldsFilter = (key, value) => {
 
 fs.fieldsFilter = fieldsFilter;
 
-const fielsEditTimes = {};
+const filesEditTimes = {};
 
 export default fs;
 
