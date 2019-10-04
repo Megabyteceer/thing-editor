@@ -13,12 +13,12 @@ let labelProps = {className: 'selectable-text', title: 'Ctrl+click to copy sound
 let soundPreloadingModes = [
 	{name: '-', value: undefined},
 	{name: 'on demand', value: 1},
-	{name: 'precache', value: 2}
+	{name: 'pre-cache', value: 2}
 ];
-let soundPreloadingModeDescs = {
+let soundPreloadingModeDescriptions = {
 	0: "Sound will be loaded before game start",
 	1: "Sound will be loaded on entering scene which own this sound as BGMusic,\nor manually by calling Lib.preloadSound('soundName') in onShow method of scene.",
-	2: "Sound will be precached after game start"
+	2: "Sound will be pre-cached after game start"
 };
 
 let bitrates = [48, 64, 80, 96, 112, 128, 160, 192].map((b) => {return {name:b + 'Kb', value: b};});
@@ -167,7 +167,7 @@ export default class SoundsList extends React.Component {
 		let bitrate = editor.projectDesc.soundBitrates[sndName] || 0;
 
 		return R.listItem(R.span(null, R.icon('sound'), R.b(labelProps, sndName), 
-			R.span({className: 'sound-preload-ui', title: soundPreloadingModeDescs[mode],
+			R.span({className: 'sound-preload-ui', title: soundPreloadingModeDescriptions[mode],
 				onMouseDown: (ev) => {
 					ev.stopPropagation();
 				}},
@@ -272,7 +272,7 @@ class MusicProfiler extends React.Component {
 		let playing;
 		if(m._currentFragment) {
 			if(!m._currentFragment.playing()) {
-				state = R.div({class:'danger'}, 'ref to notplaying fragement');
+				state = R.div({className:'danger'}, 'ref to not playing fragment');
 			} else {
 				playing = true;
 				state = R.div({className: 'sound-vol-bar-bg'},
