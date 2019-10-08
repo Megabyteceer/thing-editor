@@ -142,19 +142,20 @@ class PropsEditor extends React.Component {
 		let curGroup, curGroupArray;
 		for(let p of props) {
 			if(p.visible) {
+				let invisible;
 				for(let o of editor.selection) {
 					if(!p.visible(o)) {
 						o[p.name] = editor.ClassesLoader.classesDefaultsById[o.constructor.name][p.name];
+						invisible = true;
 					}
 				}
 
-				if(!p.visible(editor.selection[0])) {
+				if(invisible) {
 					curGroupArray.push(
 						R.div({key: p.name})
 					);
 					continue;
 				}
-
 			} 
 
 			if (p.type === 'splitter') {
