@@ -83,11 +83,12 @@ ws.ignoreFileChanging = function(fileName) {
 
 ws.notIgnoreFileChanging = function(fileName) {
 	setTimeout(() => {
+		assert(filesIgnoring[fileName] > 0, 'ignoring vas no started.');
 		filesIgnoring[fileName]--;
 		if(filesIgnoring[fileName] === 0) {
 			delete filesIgnoring[fileName];
 		}
-	}, 1000);
+	}, 2000);
 };
 
 ws.onclose = function incoming() {
