@@ -74,13 +74,20 @@ ws.onmessage = function incoming(data) {
 const filesIgnoring = {};
 
 ws.ignoreFileChanging = function(fileName) {
-	filesIgnoring[fileName] = true;
+	if(filesIgnoring[fileName]) {
+		filesIgnoring[fileName]++;
+	} else {
+		filesIgnoring[fileName] = 1;
+	}
 };
 
 ws.notIgnoreFileChanging = function(fileName) {
 	setTimeout(() => {
-		delete filesIgnoring[fileName];
-	}, 2000);
+		filesIgnoring[fileName]--;
+		if(filesIgnoring[fileName] === 0) {
+			delete filesIgnoring[fileName];
+		}
+	}, 1000);
 };
 
 ws.onclose = function incoming() {
