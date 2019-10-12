@@ -116,6 +116,36 @@ export default class TreeView extends React.Component {
 		return o.children.length > 0;
 	}
 
+	onExportAsPngClick() {
+		let s = editor.selection[0];
+		if(s.width > 0 && s.height > 0) {
+			let p = s.parent;
+			let i = p.children.indexOf(s);
+			let f = s.filters;
+			let c = new PIXI.Container();
+			let c2 = new PIXI.Container();
+			c.scale.x = 4;
+			c.scale.y = 4;
+			c.addChild(s);
+			c2.addChild(c);
+			s.filters = [];
+			editor.ui.modal.showSpinner();
+			game.pixiApp.renderer.extract.canvas(c2).toBlob(function(b){
+				var a = document.createElement('a');
+				document.body.append(a);
+				a.download = (s.name || 'image') + '.png';
+				a.href = URL.createObjectURL(b);
+				a.click();
+				a.remove();
+				s.filters = f;
+				p.addChildAt(s, i);
+				editor.ui.modal.hideSpinner();
+			}, 'image/png');
+		} else {
+			editor.ui.modal.showModal("Nothing visible selected to export.");
+		}
+	}
+
 	onUnwrapClick() {
 		if(this.isCanBeUnwrapped()) {
 
@@ -371,12 +401,12 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('copy'), this.onCopyClick, 'Copy selected in to clipboard (Ctrl+C)', "tool-btn", 1067, isEmpty),
 				R.btn(R.icon('cut'), this.onCutClick, 'Cut selected (Ctrl+X)', "tool-btn", 1088, isEmpty || isRoot),
 				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, !editor.clipboardData || !editor.isCanBeAdded()),
-				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData || !game.__EDITOR_mode),
+				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData || !game.__EDITOR_mode || isEmpty),
 				R.hr(),
 				R.btn(R.icon('clone'), this.onCloneClick, 'Clone (Ctrl + D)', "tool-btn", 1068, isEmpty || isRoot), // 99999
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
-				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Unwrap (remove selected but keep children)', "tool-btn", undefined, !this.isCanBeUnwrapped())
-	
+				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Unwrap (remove selected but keep children)', "tool-btn", undefined, !this.isCanBeUnwrapped()),
+				R.btn(R.icon('export-selected'), this.onExportAsPngClick, 'Export selected', "tool-btn", undefined, isEmpty)
 			),
 			R.div({className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick},
 				R.input({onKeyDown: this.onSearchKeyDown, onChange: this.onSearchChange, className:'tree-view-search', defaultValue: this.searchString, placeholder: 'Search'}),
