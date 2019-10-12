@@ -58,6 +58,48 @@ class History {
 		instance = this;
 		this.beforeHistoryJump = new Signal();
 		this.afterHistoryJump = new Signal();
+
+		window.addEventListener('mouseup', this.scheduleHistorySave);
+		window.addEventListener('keyup', this.scheduleHistorySave);
+
+	}
+
+	_sceneModifiedInner(saveImmediately) {
+		clearSelectionSaveTimer();
+		if(game.__EDITOR_mode) {
+			needHistorySave = true;
+			if(saveImmediately) {
+				instance.scheduleHistorySave();
+			}
+		}
+	}
+
+	scheduleHistorySave() {
+		if(!historySaveScheduled) {
+			historySaveScheduled = setTimeout(() => {
+				historySaveScheduled = null;
+				instance.saveHistoryNow();
+			}, 1);
+		}
+	}
+	
+	scheduleSelectionSave() {
+		clearSelectionSaveTimer();
+		if(game.__EDITOR_mode) {
+			needSaveSelectionInToHistory = setTimeout(saveSelectionState, 50);
+		}
+	}
+
+	saveHistoryNow() {
+		if(needHistorySave) {
+			clearSelectionSaveTimer();
+			instance.addHistoryState();
+			needHistorySave = false;
+			if(historySaveScheduled) {
+				clearInterval(historySaveScheduled);
+				historySaveScheduled = null;
+			}
+		}
 	}
 
 	isRedoAvailable() {
@@ -195,6 +237,11 @@ class History {
 	}
 }
 
+
+
+let historySaveScheduled;
+let needHistorySave = false;
+
 class HistoryUi extends React.Component {
 	constructor(props) {
 		super(props);
@@ -212,6 +259,22 @@ class HistoryUi extends React.Component {
 			//instance._redos.length
 		);
 	}
+}
+
+let needSaveSelectionInToHistory = false;
+
+function clearSelectionSaveTimer() {
+	if(needSaveSelectionInToHistory) {
+		clearInterval(needSaveSelectionInToHistory);
+		needSaveSelectionInToHistory = null;
+	}
+}
+
+function saveSelectionState() {
+	if(game.__EDITOR_mode) {
+		editor.history.addSelectionHistoryState();
+	}
+	needSaveSelectionInToHistory = false;
 }
 
 function arraysEqual(a, b) {

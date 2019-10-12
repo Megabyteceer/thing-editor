@@ -3,7 +3,7 @@ import game from "thing-engine/js/game.js";
 import TreeNode from "../ui/tree-view/tree-node.js";
 
 let IS_SELECTION_LOADING_TIME = false;
-let needSaveSelectionInToHistory = false;
+
 
 class Selection extends Array {
 	
@@ -74,7 +74,7 @@ class Selection extends Array {
 		editor.ui.viewport.scrollInToScreen(o);
 		editor.ui.classesList.refresh();
 		if(!IS_SELECTION_LOADING_TIME) {
-			needSaveSelectionInToHistory = true;
+			editor.history.scheduleSelectionSave();
 		}
 	}
 	
@@ -89,7 +89,7 @@ class Selection extends Array {
 		this.splice(i, 1);
 		o.__EDITOR_inner_exitPreviewMode();
 		if(!IS_SELECTION_LOADING_TIME) {
-			needSaveSelectionInToHistory = true;
+			editor.history.scheduleSelectionSave();
 		}
 		if(o.__onUnselect) {
 			o.__onUnselect();
@@ -113,13 +113,6 @@ setInterval(() => {
 			selectionFilter.enabled = 5;
 		}
 	}
-	if(needSaveSelectionInToHistory) {
-		if(game.__EDITOR_mode) {
-			editor.history.addSelectionHistoryState();
-		}
-		needSaveSelectionInToHistory = false;
-	}
-
 }, 1000 / 60 * 3);
 
 //save/load selection

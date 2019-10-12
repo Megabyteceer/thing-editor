@@ -279,42 +279,44 @@ function refreshSelection() {
 		currentPointer = newPointer;
 	}
 	
-	editor.selection.some((o) => {
-		let info = __getNodeExtendData(o);
-		if (!info.draggerPivot) {
-			info.draggerPivot = createDragger(o, Dragger);
-			if(!info.rotatorLocked) {
-				info.draggerRotator = createDragger(o, Rotator);
-			}
-		}
-		let draggersScale = viewportCanvasScale;
+	editor.selection.some(refreshDraggersForNode);
+}
 
-		let r = o.getGlobalRotation();
-		o.getGlobalPosition(p, true);
-		info.draggerPivot.x = p.x;
-		info.draggerPivot.y = p.y;
-		info.draggerPivot.scale.x = info.draggerPivot.scale.y = draggersScale;
+function refreshDraggersForNode(o) {
+	let info = __getNodeExtendData(o);
+	if (!info.draggerPivot) {
+		info.draggerPivot = createDragger(o, Dragger);
+		if(!info.rotatorLocked) {
+			info.draggerRotator = createDragger(o, Rotator);
+		}
+	}
+	let draggersScale = viewportCanvasScale;
 
-		for(let rn in info.rects) {
-			let rect = info.rects[rn];
-			rect.x = p.x;
-			rect.y = p.y;
-			rect.scale.x = rect.scale.y = game.stage.scale.x;
-			if(rect._props.field.rotable) {
-				rect.rotation = r;
-			}
-			if(!rect._props.field.notScalable) {
-				rect.scale.x = o.worldTransform.a;
-				rect.scale.y = o.worldTransform.d;
-			}
+	let r = o.getGlobalRotation();
+	o.getGlobalPosition(p, true);
+	info.draggerPivot.x = p.x;
+	info.draggerPivot.y = p.y;
+	info.draggerPivot.scale.x = info.draggerPivot.scale.y = draggersScale;
+
+	for(let rn in info.rects) {
+		let rect = info.rects[rn];
+		rect.x = p.x;
+		rect.y = p.y;
+		rect.scale.x = rect.scale.y = game.stage.scale.x;
+		if(rect._props.field.rotable) {
+			rect.rotation = r;
 		}
-		if(info.draggerRotator) {
-			info.draggerRotator.x = p.x + Math.cos(r) * 40 * draggersScale;
-			info.draggerRotator.y = p.y + Math.sin(r) * 40 * draggersScale;
-			info.draggerRotator.scale.x = info.draggerRotator.scale.y = draggersScale;
-			info.draggerRotator.rotation = r;
+		if(!rect._props.field.notScalable) {
+			rect.scale.x = o.worldTransform.a;
+			rect.scale.y = o.worldTransform.d;
 		}
-	});
+	}
+	if(info.draggerRotator) {
+		info.draggerRotator.x = p.x + Math.cos(r) * 40 * draggersScale;
+		info.draggerRotator.y = p.y + Math.sin(r) * 40 * draggersScale;
+		info.draggerRotator.scale.x = info.draggerRotator.scale.y = draggersScale;
+		info.draggerRotator.rotation = r;
+	}
 }
 
 let startX, startY;
@@ -352,44 +354,15 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 					shiftY = draggingDragger.y - game.mouse.__EDITOR_y;
 				}
 				if(ev.altKey) {
-					editor.disableFieldsCache = true;
-					editor.selection.some((o) => {
-						let clone = Lib._deserializeObject(Lib.__serializeObject(o));
-						Lib.__reassignIds(o);
-						
-						let cloneExData = __getNodeExtendData(clone);
-						let exData = __getNodeExtendData(o);
-						if(exData.hidePropsEditor) {
-							cloneExData.hidePropsEditor = exData.hidePropsEditor;
-						}
-						if(exData.rotatorLocked) {
-							cloneExData.rotatorLocked = exData.rotatorLocked;
-						}
-						
-						increaseNameNumber(o);
-						o.forAllChildren(increaseNameNumber);
-						o.parent.addChildAt(clone, o.parent.children.indexOf(o));
-						if(!game.__EDITOR_mode) {
-							Lib._constructRecursive(clone);
-						}
-					});
-					editor.disableFieldsCache = false;
-					editor.ui.sceneTree.forceUpdate();
+					let clone = editor.cloneSelected(draggingDragger.owner);
+					refreshDraggersForNode(clone);
+					draggingDragger = __getNodeExtendData(clone).draggerPivot;
 				}
 				draggingDragger.onDrag();
 			}
 		}
 	}
 });
-
-function increaseNameNumber(o) {
-	if(o.name) { // auto-increase latest number in name
-		let a = (/\d+$/mg).exec(o.name);
-		if(a) {
-			o.name = o.name.replace(/\d+$/mg, (parseInt(a[0]) + 1));
-		}
-	}
-}
 
 function isObjectUnder(o) {
 	return (o.containsPoint && (!o.__lockSelection) && o.worldVisible && o.containsPoint(game.__mouse_EDITOR));

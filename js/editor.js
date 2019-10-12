@@ -25,7 +25,6 @@ import Tilemap from 'thing-engine/js/components/tilemap.js';
 import defaultTilemapProcessor from './utils/default-tilemap-processor.js';
 import DataPathFixer from './utils/data-path-fixer.js';
 import Container from 'thing-engine/js/components/container.js';
-import Shape from 'thing-engine/js/components/shape.js';
 
 let isFirstClassesLoading = true;
 
@@ -51,8 +50,8 @@ export default class Editor {
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
 
-		this.scheduleHistorySave = scheduleHistorySave;
-		this.saveHistoryNow = saveHistoryNow;
+		this.scheduleHistorySave = history.scheduleHistorySave;
+		this.saveHistoryNow = history.saveHistoryNow;
 		
 		this.fs = fs;
 		
@@ -243,6 +242,64 @@ export default class Editor {
 				"Check browser's status bar to allow automatic opening after build."
 			), "building finished.");
 		}
+	}
+
+	cloneSelected(dragObject) {
+		let ret;
+		DataPathFixer.rememberPathReferences();
+
+		editor.disableFieldsCache = true;
+		let allCloned = [];
+
+		editor.selection.some((o) => {
+
+			
+
+			let clone = Lib._deserializeObject(Lib.__serializeObject(o));
+			allCloned.push(clone);
+			if(dragObject) {
+				if(o === dragObject) {
+					ret = clone;
+				}
+			}
+			Lib.__reassignIds(clone);
+			
+			let cloneExData = __getNodeExtendData(clone);
+			let exData = __getNodeExtendData(o);
+			if(exData.hidePropsEditor) {
+				cloneExData.hidePropsEditor = exData.hidePropsEditor;
+			}
+			if(exData.rotatorLocked) {
+				cloneExData.rotatorLocked = exData.rotatorLocked;
+			}
+			
+			increaseNameNumber(clone);
+			clone.forAllChildren(increaseNameNumber);
+
+			o.parent.addChildAt(clone, o.parent.children.indexOf(o) + 1);
+
+			if(!game.__EDITOR_mode) {
+				Lib._constructRecursive(clone);
+			}
+			Lib.__invalidateSerializationCache(clone);
+
+		});
+
+		editor.selection.clearSelection();
+		for(let c of allCloned) {
+			editor.selection.add(c);
+		}
+
+		editor.disableFieldsCache = false;
+
+		if(!dragObject) {
+			editor.onSelectedPropsChange('y', 10, true);
+		}
+		
+		DataPathFixer.validatePathReferences();
+		editor.refreshTreeViewAndPropertyEditor();
+		editor.sceneModified();
+		return ret;
 	}
 
 	wrapSelected(className) {
@@ -604,12 +661,7 @@ export default class Editor {
 	}
 	
 	sceneModified(saveImmediately) {
-		if(game.__EDITOR_mode) {
-			needHistorySave = true;
-			if(saveImmediately) {
-				scheduleHistorySave();
-			}
-		}
+		editor.history._sceneModifiedInner(saveImmediately);
 	}
 	
 	centralizeObjectToContent (o) {
@@ -900,31 +952,6 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 let savedBackupName;
 let savedBackupSelectionData;
 
-let historySaveScheduled;
-let needHistorySave = false;
-let scheduleHistorySave = () => {
-	if(!historySaveScheduled) {
-		historySaveScheduled = setTimeout(() => {
-			historySaveScheduled = null;
-			saveHistoryNow();
-		}, 1);
-	}
-};
-
-let saveHistoryNow = () => {
-	if(needHistorySave) {
-		history.addHistoryState();
-		needHistorySave = false;
-		if(historySaveScheduled) {
-			clearInterval(historySaveScheduled);
-			historySaveScheduled = null;
-		}
-	}
-};
-
-window.addEventListener('mouseup', scheduleHistorySave);
-window.addEventListener('keyup', scheduleHistorySave);
-
 let editorNodeData = new WeakMap();
 window.__getNodeExtendData = (node) => {
 	assert(node instanceof DisplayObject, "__getNodeExtendData expected DisplayObject", 40901);
@@ -941,3 +968,12 @@ window.__resetNodeExtendData = (node) => {
 	}
 	editorNodeData.delete(node);
 };
+
+function increaseNameNumber(o) {
+	if(o.name) { // auto-increase latest number in name
+		let a = (/\d+$/mg).exec(o.name);
+		if(a) {
+			o.name = o.name.replace(/\d+$/mg, (parseInt(a[0]) + 1));
+		}
+	}
+}
