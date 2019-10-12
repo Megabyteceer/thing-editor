@@ -3,7 +3,7 @@ import Timeline from "./timeline.js";
 import NumberEditor from "../number-editor.js";
 import SelectEditor from "../select-editor.js";
 
-const DEFAULT_GRAVITY = 1; //BOUNCE ⬆, BOUNCE ⬇ default gravity and boouncing
+const DEFAULT_GRAVITY = 1; //BOUNCE ⬆, BOUNCE ⬇ default gravity and bouncing
 const DEFAULT_BOUNCING = 0.4;
 
 // m - mode (0 - SMOOTH, 1 - LINEAR, 2 - DISCRETE, 3 - BOUNCE ⬇, 4 - BOUNCE ⬆)
@@ -29,13 +29,13 @@ export default class KeyframePropertyEditor extends React.Component {
 		this.onActionChange = this.onActionChange.bind(this);
 		this.onGravityChange = this.onGravityChange.bind(this);
 		this.onBouncingChange = this.onBouncingChange.bind(this);
-		this.onSetSpeeedExistsChanged = this.onSetSpeeedExistsChanged.bind(this);
+		this.onSetSpeedExistsChanged = this.onSetSpeedExistsChanged.bind(this);
 		this.onSetRandomExistsChanged = this.onSetRandomExistsChanged.bind(this);
 		this.onSpeedChanged = this.onSpeedChanged.bind(this);
 		this.onRandomChanged = this.onRandomChanged.bind(this);
 		this.onJumpChanged = this.onJumpChanged.bind(this);
 		this.resetJumpTime = this.resetJumpTime.bind(this);
-		this.onDemptChanged = this.onDemptChanged.bind(this);
+		this.onDampChanged = this.onDampChanged.bind(this);
 		this.onPowChanged = this.onPowChanged.bind(this);
 		this.onPresetSelected = this.onPresetSelected.bind(this);
 		this.onTypeSelect = this.onTypeSelect.bind(this);
@@ -69,7 +69,7 @@ export default class KeyframePropertyEditor extends React.Component {
 
 			let kf = k.props.keyFrame;
 			if(kf.m < 3) {
-				delete kf.b; //BOUNCE ⬆, BOUNCE ⬇  gravity and boouncing delete
+				delete kf.b; //BOUNCE ⬆, BOUNCE ⬇  gravity and bouncing delete
 				delete kf.g;
 			} else {
 				if(!kf.hasOwnProperty('b')) {
@@ -152,7 +152,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		this.onKeyframeChanged();
 	}
 	
-	onSetSpeeedExistsChanged(ev) {
+	onSetSpeedExistsChanged(ev) {
 		for(let k of this.keyframes) {
 			let p = k.props.owner.props.owner.props;
 			if(((typeof p.owner.props.node[p.field.n]) === 'number') && (ev.target.checked)) {
@@ -190,7 +190,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		this.onKeyframeChanged();
 	}
 
-	onDemptChanged(ev) {
+	onDampChanged(ev) {
 		let val =  parseFloat(ev.target.value);
 		for(let k of this.keyframes) {
 			let o = k.props.owner.props.owner.props.owner.props.node;
@@ -280,7 +280,7 @@ export default class KeyframePropertyEditor extends React.Component {
 			
 			extendEditor = R.span(null,
 				' Power: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 0.9, onChange: this.onPowChanged}),
-				' Damp: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDemptChanged}),
+				' Damp: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDampChanged}),
 				' Preset ' ,React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
 			);
 		}
@@ -288,8 +288,8 @@ export default class KeyframePropertyEditor extends React.Component {
 		let hasSpeed =  kf.hasOwnProperty('s');
 		let speedEditor;
 		if(hasSpeed) {
-			let edFied = editor.getObjectField(editor.selection[0], kf.___view.props.owner.props.owner.props.field.n);
-			speedEditor = React.createElement(NumberEditor, {value: speedVal, type:'number', step:(edFied.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged});
+			let edField = editor.getObjectField(editor.selection[0], kf.___view.props.owner.props.owner.props.field.n);
+			speedEditor = React.createElement(NumberEditor, {value: speedVal, type:'number', step:(edField.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 		}
 		let hasRandom =  kf.hasOwnProperty('r');
 		let randomEditor;
@@ -311,7 +311,7 @@ export default class KeyframePropertyEditor extends React.Component {
 			' ',
 			React.createElement(SelectEditor, {onChange:this.onTypeSelect, value:kf.m, select: selectableKeyframeTypes}),
 			speedSetPossible ? R.label({htmlFor:'speed-set-checkbox'}, ' Set speed:') : undefined,
-			speedSetPossible ? R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeeedExistsChanged, checked:hasSpeed}) : undefined,
+			speedSetPossible ? R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeedExistsChanged, checked:hasSpeed}) : undefined,
 			speedEditor,
 			R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster'}, ' Time random:'),
 			R.input({id: 'random-set-checkbox', type:'checkbox', onChange: this.onSetRandomExistsChanged, checked:hasRandom}),
@@ -340,7 +340,7 @@ const presets = [
 		d:0.95,
 		p:0.03
 	}},
-	{name: 'Baloon', value:{
+	{name: 'Balloon', value:{
 		d:0.9,
 		p:0.001
 	}},
