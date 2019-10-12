@@ -1,7 +1,6 @@
 export default class Signal {
 	constructor() {
 		this._listeners = [];
-		this._listenersOnce = [];
 	}
 	
 	add(f) {
@@ -23,9 +22,5 @@ export default class Signal {
 		this._listeners.some((l) => {
 			l.apply(null, arguments);
 		});
-		this._listenersOnce.some((l) => {
-			l.apply(null, arguments);
-		});
-		this._listenersOnce.length = 0;
 	}
 }
