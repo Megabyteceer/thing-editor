@@ -3,6 +3,7 @@ import Lib from "thing-engine/js/lib.js";
 import game from "thing-engine/js/game.js";
 import fs from "../utils/fs.js";
 import PropsEditor from "./props-editor/props-editor.js";
+import Overlay from "../utils/overlay.js";
 
 const bodyProps = {className: 'list-view'};
 const classItemSubProps = {className: 'class-list-item-sub'};
@@ -257,7 +258,9 @@ class ClassesView extends React.Component {
 
 function findNextOfThisType(c, direction) {
 	if(game.keys.ctrlKey) {
-		let a = game.currentContainer.findChildrenByType(c);
+		let a = game.currentContainer.findChildrenByType(c).filter((o) => {
+			return !Overlay.getParentWhichHideChildren(o);	
+		});
 		if(game.currentContainer instanceof c) {
 			a.push(game.currentContainer);
 		}
@@ -267,7 +270,7 @@ function findNextOfThisType(c, direction) {
 		}
 	} else {
 		editor.ui.sceneTree.findNext((o) => {
-			return o instanceof c;
+			return (o instanceof c) && !Overlay.getParentWhichHideChildren(o);
 			
 		}, direction);
 	}

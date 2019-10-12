@@ -419,6 +419,8 @@ function selectByStageClick(ev) {
 	}
 	previousAllUnderMouse = allUnderMouse;
 }
+Overlay.getParentWhichHideChildren = getParentWhichHideChildren;
+
 
 function getParentWhichHideChildren(o) {
 	let ret;
