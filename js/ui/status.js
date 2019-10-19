@@ -178,22 +178,17 @@ class InfoList extends React.Component {
 					});
 
 					if(!newOwnerFinded) {
-						editor.ui.modal.showModal('Object already removed form stage, or problem was solved.');
+						editor.ui.modal.showInfo('Object already removed form stage, or problem was solved.', undefined, 99999);
 						return;
 					}
 				}
 
-				if(item.owner.getRootContainer() !== game.currentContainer) {
-					editor.ui.modal.showModal("Object can't be selected because it's container is not active for now.");
-				} else {
-					editor.ui.sceneTree.selectInTree(item.owner);
-					if(item.fieldName) {
-						setTimeout(() => {
-							editor.ui.propsEditor.selectField(item.fieldName, true);
-						}, 1);
-					}
+				editor.ui.sceneTree.selectInTree(item.owner);
+				if(item.fieldName) {
+					setTimeout(() => {
+						editor.ui.propsEditor.selectField(item.fieldName, true);
+					}, 1);
 				}
-				
 			}
 		}}, this.props.icon, item.message, node,
 		R.btn('?', () => {

@@ -83,11 +83,11 @@ export default class PrefabsList extends React.Component {
 	
 	onSaveSelectedAsClick() {
 		if (editor.selection.length === 0) {
-			editor.ui.modal.showModal('Nothing is selected in scene.');
+			editor.ui.modal.showInfo('Nothing is selected in scene.', undefined, 99999);
 		} else if (editor.selection.length > 1) {
-			editor.ui.modal.showModal('More that one object selected.');
+			editor.ui.modal.showInfo('More that one object selected.', undefined, 99999);
 		} else if (editor.ClassesLoader.getClassType(editor.selection[0].constructor) === Scene) {
-			editor.ui.modal.showModal('You cant save Scene as prefab. Please select some object from scene first.');
+			editor.ui.modal.showInfo('You can not save Scene as prefab. Please select some object from scene first.', undefined, 99999);
 		} else {
 			
 			let defaultPrefabName = '';

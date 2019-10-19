@@ -97,6 +97,15 @@ class Modal extends React.Component {
 		});
 	}
 
+	showInfo(message, title, errorCode) {
+		this.showModal(message, errorCode ?
+			R.span(null, R.icon('info'), errorCode, ' ', title, R.btn('?', () => {
+				Help.openErrorCodeHelp(errorCode);
+			}, 'Open docs for this message (F1)', 'error-help-button', 112))
+			: title
+		);
+	}
+
 	notify(txt) {
 		notifyText = txt;
 		if(notifyInterval) {

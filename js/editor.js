@@ -235,12 +235,12 @@ export default class Editor {
 	
 	openUrl(url) {
 		if(!window.open(url)) {
-			editor.ui.modal.showModal(R.div(null,
+			editor.ui.modal.showInfo(R.div(null,
 				"click to open: ",
 				R.a({href: url, target: '_blank'}, url),
 				R.br(),
 				"Check browser's status bar to allow automatic opening after build."
-			), "building finished.");
+			), "building finished.", 99999);
 		}
 	}
 
@@ -303,17 +303,14 @@ export default class Editor {
 	}
 
 	wrapSelected(className) {
-		if(!game.__EDITOR_mode) {
-			editor.ui.modal.showModal("Can not wrap in running mode.");
-			return;
-		}
+		assert(game.__EDITOR_mode, "Can not wrap in running mode.");
 
 		let isClipboardWrapping = ((typeof className) !== 'string');
 
 		if(editor.selection.length < 1) {
-			editor.ui.modal.showModal('Nothing selected to be wrapped.', 'Alert');
+			assert(false, 'Nothing selected to be wrapped.');
 		} else if(isClipboardWrapping && (!editor.clipboardData || editor.clipboardData.length !== 1)) {
-			editor.ui.modal.showModal('Exactly one container should be copied in to clipBoard to wrap selection with it.', 'Alert');
+			assert(false, 'Exactly one container should be copied in to clipBoard to wrap selection with it.');
 		} else {
 			let a = editor.selection.slice(0);
 
@@ -321,14 +318,14 @@ export default class Editor {
 			let parent = o.parent;
 			for(let c of a) {
 				if(c.parent !== parent) {
-					editor.ui.modal.showModal('Selected object should have same parent to be wrapped.', 'Alert');
+					editor.ui.modal.showInfo('Selected object should have same parent to be wrapped.', 'Can not wrap', 99999);
 					return;
 				}
 			}
 
 
 			if(o instanceof Scene) {
-				editor.ui.modal.showModal("Scene can not be wrapped, you can change scene's type instead.", 'Alert');
+				editor.ui.modal.showInfo("Scene can not be wrapped, you can change scene's type instead.", 'Can not wrap', 99999);
 				return;
 			}
 			DataPathFixer.rememberPathReferences();

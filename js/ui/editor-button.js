@@ -93,7 +93,7 @@ class EditorButton extends React.Component {
 	
 	onMouseDown(ev) {
 		if (ev.button === 2) {
-			editor.ui.modal.showModal(this.props.onClick.name, 'Button Handler:');
+			editor.ui.modal.showModal(this.props.onClick.name, "Button's Handler:");
 		} else {
 			if (this.props.disabled) return;
 			this.props.onClick(ev);
