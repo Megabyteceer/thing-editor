@@ -147,8 +147,6 @@ export default class Editor {
 				editor.projectOpeningInProgress = false;
 				editor.ui.modal.showError("Can't open project " + dir).then(() => {this.openProject();});
 				return;
-			} else {
-				editor.settings.setItem('last-opened-project', dir);
 			}
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
@@ -163,6 +161,8 @@ export default class Editor {
 			
 			this.overlay = new Overlay();
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
+			
+			editor.settings.setItem('last-opened-project', dir);
 			
 			if(isProjectDescriptorModified) {
 				this.saveProjectDesc();
