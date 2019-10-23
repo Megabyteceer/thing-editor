@@ -69,7 +69,7 @@ export default class SoundsList extends React.Component {
 					let sndName = name.replace(/\.wav$/gmi, '');
 					Lib.__deleteSound(sndName);
 					let fileNameWithFolder = 'snd/' + sndName;
-					for(let fileName of editor.fs.files) {
+					for(let fileName of editor.fs.files.snd) {
 						if(fileName.startsWith('snd/') && fileName.substring(0, fileName.length - 4) === fileNameWithFolder) {
 							editor.fs.deleteFile(fileName);
 						}
