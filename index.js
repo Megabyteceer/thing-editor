@@ -135,13 +135,26 @@ app.get('/fs/build', function (req, res) {
 
 app.post('/fs/build-sounds', jsonParser, function (req, res) {
 	log('BUILD sounds: ' + currentGameRoot);
+	let fullResult = {};
 
-	buildSounds(currentGameRoot,
-		function (result) {
-			res.end(JSON.stringify(result));
-		},
-		req.body
-	);
+	let foldersToProcess = ([currentGameRoot].concat((currentGameDesc.libs || []).map(getLibRoot)));
+
+	const processOneFolder = () => {
+		if(foldersToProcess.length > 0) {
+			let folderName = foldersToProcess.shift();
+			buildSounds(folderName,
+				function (result) {
+					for(let key of Object.keys(result)) {
+						fullResult[key] = fullResult[key] || result[key];
+					}
+					processOneFolder();
+				}, req.body
+			);
+		} else {
+			res.end(JSON.stringify(fullResult));
+		}
+	};
+	processOneFolder();
 });
 
 app.post('/fs/savefile', jsonParser, function (req, res) {
@@ -206,6 +219,10 @@ let pathSeparatorReplace = (stat) => {
 	stat.name = stat.name.replace(pathSeparatorReplaceExp, '/');
 };
 
+function getLibRoot(libName) {
+	return path.join(__dirname, '..', libName);
+}
+
 const ASSETS_FOLDERS_NAMES = ['snd', 'img', 'src/scenes', 'src/game-objects', 'scenes', 'prefabs'];
 function getDataFolders() {
 	let ret = ASSETS_FOLDERS_NAMES.map((type) => {
@@ -221,7 +238,7 @@ function getDataFolders() {
 
 	if(currentGameDesc.libs) {
 		for(let libName of currentGameDesc.libs) {
-			let libRootFolder = path.join(__dirname, '..', libName);
+			let libRootFolder = getLibRoot(libName);
 			if(fs.existsSync(libRootFolder)) {
 				for(let type of ASSETS_FOLDERS_NAMES) {
 					let assetsFolder = path.join(libRootFolder, type);
