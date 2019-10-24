@@ -170,11 +170,11 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 });
 
 app.use('/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, '..', req.path), req, res, next);
+	absoluteImportsFixer(path.join(__dirname, '..', decodeURIComponent(req.path)), req, res, next);
 });
 
 app.use('/games/',  (req, res) => {
-	res.sendFile(path.join(fullRoot, mapAssetUrl(req.path)));
+	res.sendFile(path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path))));
 });
 
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
