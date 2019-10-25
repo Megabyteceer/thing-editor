@@ -114,7 +114,7 @@ let classes = {};`];
 				return 'direct-include';
 			}
 			return classesSrc.some((c) => {
-				return c.c.prototype instanceof class_;
+				return (c.c.prototype instanceof class_) && findRef(c.c.prototype.constructor);
 			});
 		};
 
