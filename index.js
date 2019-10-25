@@ -66,7 +66,7 @@ app.get('/fs/delete', function (req, res) {
 		fs.unlinkSync(fn);
 		res.end('{}');
 	} catch (err) {
-		res.end('{"error": "Can not delete file: ' + fn + '"}');
+		res.end(JSON.stringify({error: 'Can not delete file: ' + fn}));
 	}
 });
 
@@ -84,7 +84,7 @@ app.get('/fs/edit', function (req, res) {
 			open(fn);
 			res.end('{}');
 		} catch (err) {
-			res.end("Can't open file to edit: " + fn);
+			res.end(JSON.stringify({error: 'Can not open file to edit: ' + fn}));
 		}
 	},100);
 
