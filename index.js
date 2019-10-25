@@ -327,6 +327,23 @@ const enumProjects = () => {
 	});
 	return ret;
 };
+//============= enum libs ===========================
+const enumLibs = (ret = [], dir = '.') => {
+	fs.readdirSync(dir).forEach(file => {
+		let dirName = path.join(dir, file);
+		if(fs.statSync(dirName).isDirectory()) {
+			let libDescFile = path.join(dirName, '/thing-lib.json');
+			if(fs.existsSync(libDescFile)) {
+				let len = ret.length;
+				enumLibs(ret, dirName);
+				if(ret.length === len) {
+					ret.push(dirName.replace(pathSeparatorReplaceExp, '/').replace('./',''));
+				}
+			}
+		}
+	});
+	return ret;
+};
 
 //=============== create folder for file ==================
 function ensureDirectoryExistence(filePath) {
@@ -405,7 +422,9 @@ function filesChangedProcess() {
 function excludeAnotherProjectsFromCodeEditor() { // hides another projects from vs code
 	let jsConfigFN = './jsconfig.json';
 	let vsSettingsFn = './.vscode/settings.json';
-	let projectsDirs = enumProjects().map(p => p.dir);
+	
+	let dirsToExclude = enumProjects().filter(g => g.dir !== currentGame).map(p => 'games/' + p.dir).concat(enumLibs([]).filter(isLibNotInProject));
+
 	for(let i = 0; i < 5; i++) {
 		if(fs.existsSync(jsConfigFN)) {
 			let jsConfig = JSON.parse(fs.readFileSync(jsConfigFN));
@@ -415,14 +434,14 @@ function excludeAnotherProjectsFromCodeEditor() { // hides another projects from
 			if(Array.isArray(oldJsExcludes)) {
 				
 				for(let k of oldJsExcludes) {
-					if(projectsDirs.indexOf(k.replace(/^games\//, '')) < 0) {
-						jsConfig.exclude.push(k);
+					if(!isLibInProject(k)) {
+						exclude.push(k);
 					}
 				}
 			}
-			for(let dir of projectsDirs) {
-				if(dir !== currentGame) {
-					jsConfig.exclude.push('games/' + dir);
+			for(let dir of dirsToExclude) {
+				if(!isLibInProject(dir) && (exclude.indexOf(dir) < 0)) {
+					exclude.push(dir);
 				}
 			}
 			fs.writeFileSync(jsConfigFN, JSON.stringify(jsConfig, undefined, '	'));
@@ -435,17 +454,13 @@ function excludeAnotherProjectsFromCodeEditor() { // hides another projects from
 			config['files.exclude'] = exclude;
 			if(oldExcludes) {
 				for(let k in oldExcludes) {
-					if(!projectsDirs.find((d) => {
-						return k.indexOf('games/' + d) >= 0;
-					})) {
+					if(!isLibInProject(k.replace(/(^\*\*\/|\/\*\*$)/gm,''))) {
 						exclude[k] = oldExcludes[k];
 					}
 				}
 			}
-			for(let dir of projectsDirs) {
-				if(dir !== currentGame) {
-					exclude['**/games/' + dir + '/**'] = true;
-				}
+			for(let dir of dirsToExclude) {
+				exclude['**/' + dir + '/**'] = true;
 			}
 			fs.writeFileSync(vsSettingsFn, JSON.stringify(config, undefined, '	'));
 			
@@ -454,6 +469,14 @@ function excludeAnotherProjectsFromCodeEditor() { // hides another projects from
 		jsConfigFN = '../' + jsConfigFN;
 		vsSettingsFn = '../' + vsSettingsFn;
 	}
+}
+
+function isLibNotInProject(libName) {
+	return !isLibInProject(libName);
+}
+
+function isLibInProject(libName) {
+	return (currentGameDesc.libs && (currentGameDesc.libs.indexOf(libName) >= 0)) || (libName === ('games/' + currentGame));
 }
 
 //=============== module importing fixer ==================
