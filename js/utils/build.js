@@ -108,6 +108,16 @@ import Lib from "thing-engine/js/lib.js";
 let classes = {};`];
 		let defaults = {};
 		
+		const findRef = (class_) => {
+			let name = class_.name;
+			if(findClassNameInData(name, scenes) || findClassNameInData(name, prefabs)) {
+				return 'direct-include';
+			}
+			return classesSrc.some((c) => {
+				return c.c.prototype instanceof class_;
+			});
+		};
+
 		for(let c of classesSrc) {
 			let name = c.c.name;
 			let path = editor.ClassesLoader.getClassPath(name);
@@ -118,10 +128,13 @@ let classes = {};`];
 				}
 				path = path.replace('games/' + editor.currentProjectDir, '');
 
-				if(findClassNameInData(name, scenes) || findClassNameInData(name, prefabs)) { //only referenced classes
+				let isReferred = findRef(c.c);
+				if(isReferred) { //only referenced classes
 					src.push('import ' + name + ' from "' + path + '";');
 					src.push('classes["' + name + '"] = ' + name + ';');
-					defaults[name] = editor.ClassesLoader.classesDefaultsById[name];
+					if(isReferred === 'direct-include') {
+						defaults[name] = editor.ClassesLoader.classesDefaultsById[name];
+					}
 				}
 			}
 		}
