@@ -168,36 +168,6 @@ function renderProjectItem(desc, i) {
 	}, icon, desc.title);
 }
 
-let originalFetch = window.fetch;
-
-window.fetch = (url, options) => {
-	
-	url = canonicalize(url);
-	
-	if(!editor.projectDesc.__proxyFetchesViaNodeServer || url.startsWith(location.origin)) {
-		return originalFetch(url, options);
-	} else {
-		let headers = new Headers();
-		headers.append("Content-Type", "application/json");
-		return originalFetch('/fs/fetch', {
-			method: 'POST',
-			headers,
-			body: JSON.stringify({url, options})
-		}).then((r) => {
-			return r;
-		});
-	}
-};
-
-function canonicalize(url) {
-	let div = document.createElement('div');
-	div.innerHTML = "<a></a>";
-	div.firstChild.href = url; // Ensures that the href is properly escaped
-	let html = div.innerHTML;
-	div.innerHTML = html; // Run the current innerHTML back through the parser
-	return div.firstChild.href;
-}
-
 let requestNum = 0;
 let _ajaxHandlers = [];
 let worker = new Worker("js/utils/fs-worker.js");
