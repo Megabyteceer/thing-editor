@@ -14,6 +14,9 @@ export default class DataPathEditor extends React.Component {
 	
 	constructor(props) {
 		super(props);
+		if(this.props.field) {
+			this.props.field.notAnimate = true;
+		}
 		this.onEditClicked = this.onEditClicked.bind(this);
 		this.onBreakpointClick = this.onBreakpointClick.bind(this);
 		this.onGotoTargetClick = this.onGotoTargetClick.bind(this);
