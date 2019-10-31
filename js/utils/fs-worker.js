@@ -11,8 +11,8 @@ self.onmessage = function (event) {
 			xhr.setRequestHeader("Content-Type", d.contentType);
 			xhr.send(d.data);
 			self.postMessage(JSON.stringify({url: d.url, data: xhr.responseText}));
-		} catch(er) {
-			self.postMessage(JSON.stringify({request: d, error: arguments}));
+		} catch(error) {
+			self.postMessage(JSON.stringify({request: d, error}));
 		}
 	}
 };

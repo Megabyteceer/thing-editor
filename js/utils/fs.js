@@ -175,7 +175,7 @@ worker.onmessage = function (event) {
 	let d = JSON.parse(event.data);
 	if (d.error) {
 		editor.ui.modal.showError('File system worker error: ' + JSON.stringify(d));
-		_ajaxHandlers.shift()(d.url);
+		_ajaxHandlers.shift()(d.request.url);
 	} else {
 		_ajaxHandlers.shift()(d.url, d.data);
 	}
