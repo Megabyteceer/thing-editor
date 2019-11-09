@@ -2,6 +2,7 @@ import CallbackEditor from "../callback-editor.js";
 import Timeline from "./timeline.js";
 import NumberEditor from "../number-editor.js";
 import SelectEditor from "../select-editor.js";
+import PowDampPresetSelector from "../pow-damp-preset-selector.js";
 
 const DEFAULT_GRAVITY = 1; //BOUNCE ⬆, BOUNCE ⬇ default gravity and bouncing
 const DEFAULT_BOUNCING = 0.4;
@@ -208,10 +209,11 @@ export default class KeyframePropertyEditor extends React.Component {
 		this.onObjectChanged();
 	}
 	
-	onPresetSelected(ev) {
+	onPresetSelected(pow, damp) {
 		for(let k of this.keyframes) {
 			let o = k.props.owner.props.owner.props.owner.props.node;
-			Object.assign(o._timelineData, ev.target.value);
+			o._timelineData.p = pow;
+			o._timelineData.d = damp;
 		}
 		this.onObjectChanged();
 	}
@@ -274,14 +276,13 @@ export default class KeyframePropertyEditor extends React.Component {
 			);
 		} else if(kf.m === 0) { //SMOOTH
 			
-			let presetSelectedValue = presets.find((p) => {
-				return selectedObjectsTimeline.p === p.value.p && selectedObjectsTimeline.d === p.value.d;
-			}) || presets[0];
-			
 			extendEditor = R.span(null,
-				' Power: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 0.9, onChange: this.onPowChanged}),
-				' Damp: ' ,React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.01, max: 0.99, onChange: this.onDampChanged}),
-				' Preset ' ,React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onPresetSelected, select:presets})
+				' Power: ', React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 0.9, onChange: this.onPowChanged}),
+				' Damp: ', React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.00, max: 0.99, onChange: this.onDampChanged}),
+				' Preset ', React.createElement(PowDampPresetSelector, {
+					pow: selectedObjectsTimeline.p,
+					damp: selectedObjectsTimeline.d,
+					onPresetSelected: this.onPresetSelected})
 			);
 		}
 		
@@ -330,26 +331,3 @@ export default class KeyframePropertyEditor extends React.Component {
 
 KeyframePropertyEditor.selectKeyframeTypes = ['SMOOTH', 'LINEAR', 'DISCRETE', 'BOUNCE ⬇', 'BOUNCE ⬆'];
 
-const presets = [
-	{name : 'None', value:{}},
-	{name: 'Alive', value:{
-		d:0.85,
-		p:0.02
-	}},
-	{name: 'Bouncy', value:{
-		d:0.95,
-		p:0.03
-	}},
-	{name: 'Balloon', value:{
-		d:0.9,
-		p:0.001
-	}},
-	{name: 'Fast', value:{
-		d:0.85,
-		p:0.05
-	}},
-	{name: 'Inert', value:{
-		d:0.98,
-		p:0.002
-	}}
-];

@@ -10,6 +10,7 @@ import BtnProperty from "./btn-property.js";
 import TilemapEditor from "./tilemap-editor.js";
 import RectangleEditor from './rect-editor.js';
 import RefFieldEditor from './ref-field-editor.js';
+import {PowDampPresetEditor} from './pow-damp-preset-selector.js';
 
 
 let typeDescriptions = new Map();
@@ -87,6 +88,11 @@ typeDescriptions.set('timeline', {
 
 typeDescriptions.set('tilemap', {
 	renderer: TilemapEditor,
+	default:null
+});
+
+typeDescriptions.set('pow-damp-preset', {
+	renderer: PowDampPresetEditor,
 	default:null
 });
 
