@@ -95,7 +95,7 @@ class SelectEditor extends React.Component {
 	renderItem(i) {
 		return R.div({
 			key: i.name,
-			className: 'select-item clickable',
+			className: i === this.selectedItem ? 'select-item selected-item' : 'select-item clickable',
 			onMouseDown: (ev) => {
 				sp(ev);
 				this.onSelect(i);
@@ -122,6 +122,21 @@ class SelectEditor extends React.Component {
 		}
 		let items;
 		let filterInput;
+
+		let item;
+		if (this.props.value) {
+			item = list.find((i) => {
+				if (i.value === this.props.value) return i;
+			});
+			if(!item) {
+				item = R.span({className:'danger'}, this.props.value);
+				if(this.props.field && !this.props.field.isTranslatableKey) {
+					setTimeout(() => {
+						editor.ui.status.error('Invalid enum value: ' + this.props.value + ' ▾', 30012, editor.selection[0], this.props.field.name);
+					}, 1);
+				}
+			}
+		}
 
 		if (this.state.toggled) {
 			let a = list;
@@ -167,31 +182,17 @@ class SelectEditor extends React.Component {
 
 			}, 0);
 
+			this.selectedItem = item;
+
 			items = R.div({
 				className: 'select-editor-list',
 				ref: 'list'
 			}, filterInput, a.map(this.renderItem));
 		}
 
-		let item;
-		if (this.props.value) {
-			item = list.find((i) => {
-				if (i.value === this.props.value) return i;
-			});
-			if(!item) {
-				item = R.span({className:'danger'}, this.props.value);
-				if(this.props.field && !this.props.field.isTranslatableKey) {
-					setTimeout(() => {
-						editor.ui.status.error('Invalid enum value: ' + this.props.value + ' ▾', 30012, editor.selection[0], this.props.field.name);
-					}, 1);
-				}
-			} else {
-				item = item.name + ' ▾';
-			}
-		}
 
 		if (!item) {
-			item = list[0].name + ' ▾';
+			item = list[0];
 		}
 
 		return R.div({
@@ -204,7 +205,7 @@ class SelectEditor extends React.Component {
 		},
 		R.div({
 			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
-		}, item),
+		}, item.name ? (item.name + ' ▾') : item),
 		items
 		);
 	}

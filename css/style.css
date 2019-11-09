@@ -476,6 +476,10 @@ input{
 	font-family: monospace;
 }
 
+.selected-item{
+	background: #fff67a;
+}
+
 .modal-blackout {
 	position:fixed;
 	top:0;
