@@ -74,6 +74,7 @@ export default class Editor {
 		this.beforePropertyChanged = new Signal();
 		this.afterPropertyChanged = new Signal();
 		Timeline.init();
+		editor.Timeline = Timeline;
 		ReactDOM.render(
 			React.createElement(UI, {onMounted: this.onUIMounted}),
 			document.getElementById('root')

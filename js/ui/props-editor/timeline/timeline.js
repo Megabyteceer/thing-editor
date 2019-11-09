@@ -40,6 +40,10 @@ function clearSelection() {
 }
 
 function select(component) {
+	let k = component.props.keyFrame;
+	if(k) {
+		k.___keepLoopPoint = (k.t !== k.j);
+	}
 	assert(selectedComponents.indexOf(component) < 0, "Component already selected");
 	component.setState({isSelected: true});
 	selectedComponents.push(component);
@@ -47,6 +51,10 @@ function select(component) {
 }
 
 function unselect(component) {
+	let k = component.props.keyFrame;
+	if(k) {
+		delete k.___keepLoopPoint;
+	}
 	let i = selectedComponents.indexOf(component);
 	assert(i >= 0, "Component is not selected");
 	component.setState({isSelected: false});
@@ -87,6 +95,12 @@ export default class Timeline extends React.Component {
 				unselect(c);
 				return;
 			}
+		}
+	}
+
+	static unselectComponent(loopPointView) {
+		if(selectedComponents.indexOf(loopPointView) >= 0) {
+			unselect(loopPointView);
 		}
 	}
 
@@ -754,11 +768,19 @@ function onDraggableMouseDown(ev) {
 	}
 
 	draggingComponent = this;
-	draggingXShift = ev.clientX - ev.currentTarget.getBoundingClientRect().x;
+	let isInvertedShift;
 	if(this instanceof TimelineLoopPoint) {
 		prevDragTime = this.props.keyFrame.j;
+		isInvertedShift = this.props.keyFrame.j > this.props.keyFrame.t;
 	} else {
 		prevDragTime = (this.props.label || this.props.keyFrame).t;
+	}
+
+	let bounds = ev.currentTarget.getBoundingClientRect();
+	if(isInvertedShift) {
+		draggingXShift = ev.clientX - bounds.x - bounds.width;
+	} else {
+		draggingXShift = ev.clientX - bounds.x;
 	}
 }
 
@@ -821,7 +843,10 @@ function reduceRepeatingKeyframesInSelected() {
 }
 
 function selectIfInRect(rect, component) {
-	let view = component.___view;
+	selectViewIfInRect(rect, component.___view);
+}
+
+function selectViewIfInRect(rect, view) {
 	if(view.state && view.state.isSelected) {
 		return;
 	}
@@ -844,6 +869,9 @@ function selectElementsInRectangle(rect, shiftKey) {
 			for(let f of o._timelineData.f) {
 				for(let kf of f.t) {
 					selectIfInRect(rect, kf);
+					if(kf.___loopPointView) {
+						selectViewIfInRect(rect, kf.___loopPointView);
+					}
 				}
 			}
 			for(let labelName in o._timelineData.l) {

@@ -98,7 +98,7 @@ export default class Line extends React.Component {
 
 	onMouseDown(ev) {
 		if(ev.buttons === 2 && !ev.ctrlKey) {
-			this.props.owner.toggleKeyframe(Timeline.mouseEventToTime(ev));
+			this.props.owner.toggleKeyframe(editor.Timeline.mouseEventToTime(ev));
 		}
 	}
 
@@ -142,7 +142,7 @@ export default class Line extends React.Component {
 
 		for(let k of field.t) {
 			keyframes.push(this.renderKeyframe(k));
-			if(k.t !== k.j) {
+			if(k.t !== k.j || k.___keepLoopPoint) {
 				loopPoints.push(
 					React.createElement(TimelineLoopPoint, {key: k.___react_id, owner:this, keyFrame:k, widthZoom})
 				);

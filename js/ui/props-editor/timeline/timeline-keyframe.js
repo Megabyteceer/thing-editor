@@ -68,7 +68,7 @@ export default class TimelineKeyframe extends React.Component {
 			}
 		}
 		if(keyFrame.t !== time) {
-			if(keyFrame.j === keyFrame.t) {
+			if(keyFrame.j === keyFrame.t && !keyFrame.___keepLoopPoint) {
 				keyFrame.j = time;
 			}
 			keyFrame.t = time;

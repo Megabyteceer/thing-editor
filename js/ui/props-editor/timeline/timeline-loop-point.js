@@ -10,12 +10,15 @@ export default class TimelineLoopPoint extends React.Component {
 	
 	componentDidMount() {
 		Timeline._justModifiedSelectable(this);
+		this.props.keyFrame.___loopPointView = this;
 	}
 
 	componentWillReceiveProps(props) {
 		let t1 = this.props.keyFrame;
 		let t2 = props.keyFrame;
 		if(t1.j !== t2.j) {
+			delete t1.___loopPointView;
+			t2.___loopPointView = this;
 			Timeline._justModifiedSelectable(this);
 		}
 	}
@@ -43,6 +46,7 @@ export default class TimelineLoopPoint extends React.Component {
 	}
 
 	deleteLoopPoint() {
+		Timeline.unselectComponent(this);
 		let keyFrame = this.props.keyFrame;
 		keyFrame.j = keyFrame.t;
 		this.onChanged();
@@ -54,6 +58,7 @@ export default class TimelineLoopPoint extends React.Component {
 	}
 
 	componentWillUnmount() {
+		delete this.props.keyFrame.___loopPointView;
 		Timeline.unregisterDraggableComponent(this);
 	}
 
@@ -69,13 +74,15 @@ export default class TimelineLoopPoint extends React.Component {
 			className += ' timeline-loop-point-owner-selected';
 		}
 
+		let w = (width < 8) ? 8 : width;
+		let l = keyFrame.j * width;
+		if(keyFrame.j > keyFrame.t) {
+			l = l - w;
+		}
 		return R.div({className:className,
 			title: 'Loop point',
 			onMouseDown: this.onLoopPointMouseDown,
-			style:{width: (width < 8) ? 8 : width, left:keyFrame.j * width}},
-		
+			style:{width: w, left:l}},
 		);
-
 	}
-
 }
