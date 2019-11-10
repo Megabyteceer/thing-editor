@@ -225,8 +225,9 @@ export default class PrefabsList extends React.Component {
 		return R.div({onDoubleClick:() => {
 			editor.editClassSource(cls);
 		}, key: prefabName, className:'prefab-list-item'},
-		R.listItem(R.span(null, R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')'
-			,
+		R.listItem(R.span(null,
+			item.___libInfo ? item.___libInfo.icon : undefined,
+			R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')',
 			R.btn('×', () => {
 				this.onPrefabDeleteClick(prefabName);
 			}, 'Delete prefab...', 'danger-btn delete-scene-btn')
@@ -311,11 +312,14 @@ export default class PrefabsList extends React.Component {
 	static readAllPrefabsList() {
 		let prefabs = {};
 		return Promise.all(
-			editor.fs.files.prefabs.filter(fn => fn.match(prefabFileFiler))
+			editor.fs.filesExt.prefabs.filter(fn => fn.name.match(prefabFileFiler))
 				.map((fn) => {
-					return editor.fs.openFile(fn)
+					return editor.fs.openFile(fn.name)
 						.then((data) => {
-							prefabs[fileNameToPrefabName(fn)] = data;
+							if(fn.lib) {
+								data.___libInfo = R.libInfo(fn.lib);
+							}
+							prefabs[fileNameToPrefabName(fn.name)] = data;
 						});
 				})
 		).then(() => {

@@ -128,6 +128,7 @@ export default class ScenesList extends React.Component {
 			key: sceneName
 		}, R.listItem(
 			R.span(null,
+				item.___libInfo ? item.___libInfo.icon : undefined,
 				sceneView,
 				deleteBtn
 			), item, sceneName, this));
@@ -183,11 +184,14 @@ export default class ScenesList extends React.Component {
 	static readAllScenesList() {
 		let scenes = {};
 		return Promise.all(
-			editor.fs.files.scenes.filter(fn => fn.match(sceneFileFiler))
+			editor.fs.filesExt.scenes.filter(fn => fn.name.match(sceneFileFiler))
 				.map((fn) => {
-					return editor.fs.openFile(fn)
+					return editor.fs.openFile(fn.name)
 						.then((data) => {
-							scenes[fileNameToSceneName(fn)] = data;
+							if(fn.lib) {
+								data.___libInfo = R.libInfo(fn.lib);
+							}
+							scenes[fileNameToSceneName(fn.name)] = data;
 						});
 				})
 		).then(() => {

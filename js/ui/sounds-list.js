@@ -105,7 +105,8 @@ export default class SoundsList extends React.Component {
 							const soundFilter =  new RegExp("^snd\/.*\.(" + editor.projectDesc.soundFormats.join('|') + ")$", "gmi");
 
 							sounds = {};
-							editor.fs.files.snd.some((fileName) => {
+							editor.fs.filesExt.snd.some((fileInfo) => {
+								let fileName = fileInfo.name;
 								if(fileName.match(soundFilter)) {
 
 									fileName = fileName.replace(soundNameCleaner, '');					
@@ -115,6 +116,9 @@ export default class SoundsList extends React.Component {
 									if(!onlyThisFiles || onlyThisFiles.has(name +'.wav')) {
 										if(!sounds.hasOwnProperty(name)) {
 											sounds[name] = [];
+											if(fileInfo.lib) {
+												sounds[name].___libInfo = R.libInfo(fileInfo.lib);
+											}
 										}
 										sounds[name].push(fileName);
 									}
@@ -166,7 +170,7 @@ export default class SoundsList extends React.Component {
 		let mode = editor.projectDesc.loadOnDemandSounds[sndName] || 0;
 		let bitrate = editor.projectDesc.soundBitrates[sndName] || 0;
 
-		return R.listItem(R.span(null, R.icon('sound'), R.b(labelProps, sndName), 
+		return R.listItem(R.span(null, item.___libInfo ? item.___libInfo.icon : undefined, R.icon('sound'), R.b(labelProps, sndName), 
 			R.span({className: 'sound-preload-ui', title: soundPreloadingModeDescriptions[mode],
 				onMouseDown: (ev) => {
 					ev.stopPropagation();

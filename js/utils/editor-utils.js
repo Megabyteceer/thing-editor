@@ -32,6 +32,18 @@ R.icon = (name) => {
 	return _iconsCache[name];
 };
 
+let libNum = 0;
+let _libInfoCache = {};
+R.libInfo = (libName) => {
+	if(!_libInfoCache.hasOwnProperty(libName)) {
+		_libInfoCache[libName] = {
+			name: libName,
+			icon: R.span({title: "LIBRARY: " + libName, className: 'lib-icon'}, R.icon('lib' + (libNum++ % 5)))
+		};
+	}
+	return _libInfoCache[libName];
+}
+
 R.classIcon = (constructor) => {
 	return R.icon(constructor.__EDITOR_icon || 'tree/game');
 };

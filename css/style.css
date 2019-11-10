@@ -976,6 +976,10 @@ input{
 	user-select: none;
 }
 
+.lib-icon {
+	margin-right: 5px;
+}
+
 .tip-icon:hover{
 	transform:scale(1.3);
 }

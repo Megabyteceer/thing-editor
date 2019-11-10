@@ -282,15 +282,16 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			};
 		
 			let scriptSource = '';
-			let classesList = editor.fs.files['src/game-objects'].concat(editor.fs.files['src/scenes']);
-			classesList.some((classPath, i) => {
+			let classesList = editor.fs.filesExt['src/game-objects'].concat(editor.fs.filesExt['src/scenes']);
+			classesList.some((classInfo, i) => {
+				let classPath = classInfo.name;
 				let wrongSymbolPos = classPath.search(/[^a-zA-Z_\-\.\d\/]/gm);
 				if(wrongSymbolPos >= 0) {
 					editor.ui.status.warn("file " + classPath + " ignored because of wrong symbol '" + classPath[wrongSymbolPos] + "' in it's name: ", 99999, () => {
 						editor.fs.editFile(classPath);
 					});
 				} else {
-					scriptSource += ("import C" + i + " from '" + location.origin + '/' + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "');");
+					scriptSource += ("import C" + i + " from '" + location.origin + '/' + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "', '" + (classInfo.lib || '') + "');");
 				}
 			});
 		
@@ -336,11 +337,14 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 	});
 }
 let loadedPath;
-function classLoaded(c, path) {
+function classLoaded(c, path, libName) {
 	loadedPath = path;
 	loadedClassesCount++;
 	if(!c.hasOwnProperty('__EDITOR_icon')) {
 		c.__EDITOR_icon = "tree/game";
+	}
+	if(libName) {
+		c.___libInfo = R.libInfo(libName);
 	}
 	
 	addClass(c, path);

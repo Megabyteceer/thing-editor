@@ -245,7 +245,8 @@ function getDataFolders() {
 					if(fs.existsSync(assetsFolder)) {
 						ret.push({
 							type,
-							path: path.join(libName, type)
+							path: path.join(libName, type),
+							lib: libName
 						});
 					}
 				}
@@ -278,7 +279,9 @@ function enumFiles() {
 		a = a.filter((fileData) => {
 			pathSeparatorReplace(fileData);
 
-
+			if(f.lib) {
+				fileData.lib = f.lib;
+			}
 			let assetName = fileData.name.substr(f.path.length - type.length);
 			let assetURL = gameURL + assetName;
 			if(!type.startsWith('src')) {

@@ -100,7 +100,7 @@ class SelectEditor extends React.Component {
 				sp(ev);
 				this.onSelect(i);
 			}
-		}, i.name);
+		}, i.visibleName || i.name);
 	}
 
 	onFilterChange(ev) {

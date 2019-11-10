@@ -69,7 +69,7 @@ const enumAssets = (onlyThisFiles) => {
 			})) {
 				let imageId = fileStat.name.replace(textureNameCleaner, '');
 				if((!onlyThisFiles || onlyThisFiles.has(imageId))) {
-					Lib.addTexture(imageId, game.resourcesPath + fileStat.name, true && onlyThisFiles);
+					Lib.addTexture(imageId, game.resourcesPath + fileStat.name, true && onlyThisFiles, fileStat.lib);
 				}
 			}
 		}

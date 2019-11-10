@@ -192,6 +192,7 @@ class ClassesView extends React.Component {
 				},
 				className: 'class-list-item'
 			},
+			item.c.___libInfo ? item.c.___libInfo.icon : undefined,
 			R.div(classItemSubProps,
 				R.classIcon(item.c),
 				item.c.name,
