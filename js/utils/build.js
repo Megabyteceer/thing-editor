@@ -61,7 +61,7 @@ export default class Build {
 		let scenes = filterObjectsData(Lib._getAllScenes());
 		let prefabs = filterObjectsData(Lib._getAllPrefabs());
 		
-		let images = Lib.__texturesList.filter(n => n.value !== 'EMPTY' && n.value !== 'WHITE').map((t) => {
+		let images = Lib.__texturesList.filter(n => !Lib.getTexture(n.name).__noIncludeInToBuild).map((t) => {
 			return t.value;
 		});
 		images = images.slice().filter(isFileNameValidForBuild).sort();

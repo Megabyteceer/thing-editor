@@ -42,7 +42,7 @@ R.libInfo = (libName) => {
 		};
 	}
 	return _libInfoCache[libName];
-}
+};
 
 R.classIcon = (constructor) => {
 	return R.icon(constructor.__EDITOR_icon || 'tree/game');

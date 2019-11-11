@@ -40,7 +40,8 @@ const enumAssets = (onlyThisFiles) => {
 	if(!onlyThisFiles) {
 		Lib.__clearAssetsLists();
 	}
-
+	PIXI.Texture.EMPTY.__noIncludeInToBuild = true;
+	PIXI.Texture.WHITE.__noIncludeInToBuild = true;
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 	
