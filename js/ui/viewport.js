@@ -235,12 +235,12 @@ export default class Viewport extends React.Component {
 			className += ' editor-viewport-wrapper-prefab-mode';
 			panel = R.span(null,
 				R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
-				R.btn(R.icon('accept'), PrefabsList.acceptPrefabEdition, 'Accept prefab changes (Enter)', 'main-btn', 13),
+				R.btn(R.icon('accept'), () => {PrefabsList.acceptPrefabEdition(true);}, 'Accept prefab changes (Enter)', 'main-btn', 13),
 				R.btn(R.icon('reject'), () => {
 					if(editor.isCurrentContainerModified) {
-						editor.ui.modal.showEditorQuestion("Are you sure?", "Are you really wanted to discard all changes made in prefab?", PrefabsList.exitPrefabEdit, "Discard changes.");
+						editor.ui.modal.showEditorQuestion("Are you sure?", "Are you really wanted to discard all changes made in prefab?", () => {PrefabsList.exitPrefabEdit(true);}, "Discard changes.");
 					} else {
-						PrefabsList.exitPrefabEdit();
+						PrefabsList.exitPrefabEdit(true);
 					}
 				}, 'Reject prefab changes (Esc)', undefined, 27),
 				'BG color:',

@@ -23,6 +23,8 @@ let prefabNameProps = {
 
 let instance;
 
+let prefabsStack = [];
+
 export default class PrefabsList extends React.Component {
 	
 	constructor(props) {
@@ -75,7 +77,7 @@ export default class PrefabsList extends React.Component {
 	}
 
 	_addPrefabToChild(item, asReference) {
-		if(previewShown === Lib.__getNameByPrefab(item)) {
+		if(getCurrentPrefabName() === Lib.__getNameByPrefab(item)) {
 			PrefabsList.exitPrefabEdit(); // exit to level up
 		}
 		editor.attachToSelected(this._loadPrefab(item, asReference));
@@ -162,20 +164,24 @@ export default class PrefabsList extends React.Component {
 		}
 	}
 
-	static editPrefab(name) {
+	static editPrefab(name, stepInToStack = false) {
 		if (game.__EDITOR_mode) {
 			if(!Lib.hasPrefab(name)) {
 				editor.ui.modal.showError("No prefab with name " + name + " exists.");
 				return;
 			}
+			let a = prefabsStack.slice();
 			PrefabsList.acceptPrefabEdition();
+			if(stepInToStack) {
+				prefabsStack = a;
+			}
 			let preview = Lib.loadPrefab(name);
 			__getNodeExtendData(preview).isPreviewObject = true;
 			editor.overlay.showPreview(preview);
 			editor.ui.sceneTree.selectInTree(preview);
 			editor.ui.viewport.setPrefabMode(name);
 			editor.history.clearHistory();
-			previewShown = name;
+			prefabsStack.push(name);
 			instance.setState({selectedItem: (Lib._getAllPrefabs())[name]});
 		}
 	}
@@ -204,7 +210,7 @@ export default class PrefabsList extends React.Component {
 			'You cannot undo this action.'
 		),() => {
 			Lib.__deletePrefab(prefabName);
-			if(previewShown === prefabName) {
+			if(getCurrentPrefabName() === prefabName) {
 				PrefabsList.exitPrefabEdit();
 			}
 			this.forceUpdate();
@@ -264,30 +270,37 @@ export default class PrefabsList extends React.Component {
 		);
 	}
 	
-	static acceptPrefabEdition() {
+	static acceptPrefabEdition(oneStepOnly = false) {
 		if(document.activeElement && document.activeElement.tagName === "INPUT") {
 			document.activeElement.blur();
 		}
-		let name = previewShown;
-		let isChanged = previewShown && editor.isCurrentContainerModified;
+		let name = getCurrentPrefabName();
+		let isChanged = prefabsStack.length && editor.isCurrentContainerModified;
 		if(isChanged) {
 			editor.history.setCurrentStateUnmodified();
 			editor._callInPortraitMode(() => {
-				Lib.__savePrefab(game.currentContainer, previewShown);
+				Lib.__savePrefab(game.currentContainer, getCurrentPrefabName());
 			});
 			editor.ui.prefabsList.forceUpdate();
 		}
-		PrefabsList.exitPrefabEdit();
+		PrefabsList.exitPrefabEdit(oneStepOnly);
 		if(isChanged) {
 			PrefabReference.__refreshPrefabRefs(name);
 		}
 	}
 	
-	static exitPrefabEdit() {
-		if(previewShown) {
+	static exitPrefabEdit(oneStepOnly = false) {
+		if(prefabsStack.length) {
 			editor.ui.viewport.setPrefabMode(false);
-			previewShown = false;
 			editor.overlay.hidePreview();
+			if(oneStepOnly) {
+				prefabsStack.pop();
+				if(prefabsStack.length > 0) {
+					PrefabsList.editPrefab(prefabsStack.pop(), true);
+				}
+			} else {
+				prefabsStack.length = 0;
+			}
 		}
 	}
 	
@@ -328,4 +341,6 @@ export default class PrefabsList extends React.Component {
 	}
 }
 
-let previewShown = false;
+function getCurrentPrefabName() {
+	return prefabsStack[prefabsStack.length - 1];
+}
