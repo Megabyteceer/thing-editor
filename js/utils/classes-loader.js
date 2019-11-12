@@ -39,6 +39,7 @@ import HTMLOverlay from 'thing-engine/js/components/html-overlay.js';
 import TextInput from 'thing-engine/js/components/text-input.js';
 import ParticleContainer from 'thing-engine/js/components/particle-container.js';
 import MultilineText from 'thing-engine/js/components/multiline-text.js';
+import StaticTrigger from 'thing-engine/js/components/static-trigger.js';
 
 let attachedScript;
 
@@ -78,7 +79,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[HTMLOverlay, "/thing-engine/js/components/html-overlay.js"],
 		[TextInput, "/thing-engine/js/components/text-input.js"],
 		[ParticleContainer, "/thing-engine/js/components/particle-container.js"],
-		[MultilineText, "/thing-engine/js/components/multiline-text.js"]
+		[MultilineText, "/thing-engine/js/components/multiline-text.js"],
+		[StaticTrigger, "/thing-engine/js/components/static-trigger.js"]
 	];
 };
 
