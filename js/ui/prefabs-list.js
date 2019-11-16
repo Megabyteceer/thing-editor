@@ -6,6 +6,7 @@ import PrefabReference from "thing-engine/js/components/prefab-reference.js";
 import Container from "thing-engine/js/components/container.js";
 import ClassesView from "./classes-view.js";
 import OrientationTrigger from "thing-engine/js/components/orientation-trigger.js";
+import getValueByPath from "thing-engine/js/utils/get-value-by-path.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -322,6 +323,21 @@ export default class PrefabsList extends React.Component {
 		});
 	}
 
+	static checkPrefabReferenceForLoops(o) {
+		let loopName = getCurrentPrefabName();
+		let prefabName = o.__getPrefabName();
+		if(loopName && prefabName) {
+			checkedPrefabsNames = {};
+			checkedPrefabsNames[prefabName] = true;
+			if(checkPrefabDataForLoops((Lib._getAllPrefabs())[prefabName], loopName)) {
+				editor.ui.status.error('PrefabReference to prefab "' + prefabName + '" was cleared because of loop referencing. ', 99999, o);
+				o.dynamicPrefabName = null;
+				o.prefabName = null;
+				Lib.__invalidateSerializationCache(o);
+			}
+		}
+	}
+
 	static readAllPrefabsList() {
 		let prefabs = {};
 		return Promise.all(
@@ -337,6 +353,32 @@ export default class PrefabsList extends React.Component {
 				})
 		).then(() => {
 			Lib._setPrefabs(prefabs);
+		});
+	}
+}
+
+let checkedPrefabsNames;
+function checkPrefabDataForLoops(data, loopName) {
+	
+	if(data.c === "PrefabReference") {
+		let prefabName;
+
+		if(data.p.dynamicPrefabName) {
+			prefabName = getValueByPath(data.p.dynamicPrefabName, game);
+		} else {
+			prefabName = data.p.prefabName;
+		}
+		if(prefabName === loopName) {
+			return true;
+		}
+		if(!checkedPrefabsNames[prefabName]) {
+			checkedPrefabsNames[prefabName] = true;
+			checkPrefabDataForLoops(Lib._getAllPrefabs()[prefabName], loopName);
+		}
+	}
+	if(data[':']) {
+		return Object.values(data[':']).some((d) => {
+			return checkPrefabDataForLoops(d, loopName);
 		});
 	}
 }
