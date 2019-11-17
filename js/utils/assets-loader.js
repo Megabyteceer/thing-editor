@@ -10,7 +10,7 @@ AssetsLoader.init = () => {
 
 };
 
-const jsonFilter = /^img\/.*\.json$/gmi;
+const jsonFilter =   /^img\/.*\.(xml|json)$/gmi;
 const textureFiler = /^img\/.*\.(png|jpg)$/gmi;
 const textureNameCleaner = /^img\//gm;
 

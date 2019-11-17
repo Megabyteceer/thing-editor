@@ -40,6 +40,7 @@ import TextInput from 'thing-engine/js/components/text-input.js';
 import ParticleContainer from 'thing-engine/js/components/particle-container.js';
 import MultilineText from 'thing-engine/js/components/multiline-text.js';
 import StaticTrigger from 'thing-engine/js/components/static-trigger.js';
+import BitmapText from 'thing-engine/js/components/bitmap-text.js';
 
 let attachedScript;
 
@@ -80,7 +81,8 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[TextInput, "/thing-engine/js/components/text-input.js"],
 		[ParticleContainer, "/thing-engine/js/components/particle-container.js"],
 		[MultilineText, "/thing-engine/js/components/multiline-text.js"],
-		[StaticTrigger, "/thing-engine/js/components/static-trigger.js"]
+		[StaticTrigger, "/thing-engine/js/components/static-trigger.js"],
+		[BitmapText, "/thing-engine/js/components/bitmap-text.js"]
 	];
 };
 
