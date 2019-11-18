@@ -119,6 +119,9 @@ class SelectEditor extends React.Component {
 		let list = this.props.select || this.props.field.select;
 		if (typeof list === "function") {
 			list = list();
+			if(list.length === 0) {
+				return R.span({className: 'danger'}, "empty values list");
+			}
 		}
 		let items;
 		let filterInput;
