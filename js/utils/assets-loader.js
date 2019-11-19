@@ -10,7 +10,7 @@ AssetsLoader.init = () => {
 
 };
 
-const jsonFilter =   /^img\/.*\.(xml|json)$/gmi;
+const resourcesFilter =   /^img\/.*\.(xml|json)$/gmi;
 const textureFiler = /^img\/.*\.(png|jpg)$/gmi;
 const textureNameCleaner = /^img\//gm;
 
@@ -48,7 +48,7 @@ const enumAssets = (onlyThisFiles) => {
 	let jsonFolders = [];
 
 	editor.fs.filesExt.img.filter((fileStat) => {
-		if(fileStat.name.match(jsonFilter)) {
+		if(fileStat.name.match(resourcesFilter)) {
 			if(!jsonFolders.some((f) => {
 				return fileStat.name.startsWith(f);
 			})) {
