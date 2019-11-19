@@ -276,13 +276,14 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 			window.onerror = function loadingErrorHandler(message, source, lineno, colno) {
 
-				let fn = source.split('?').shift().split(':' + location.port).pop();
+				let fn = loadedPath || source.split('?').shift().split(':' + location.port).pop();
 				editor.fs.editFile(fn, lineno, colno);
 				showError(R.fragment(
 					'Attempt to load: ' + loadedPath + ': ' + message,
 					R.div({className: 'error-body'}, fn + ' (' + lineno + ':' + colno + ')', R.br(), message),
 					'Please fix error in source code and press button to try again:'
 				), 30009);
+				loadedPath = null;
 			};
 		
 			let scriptSource = '';
@@ -352,6 +353,7 @@ function classLoaded(c, path, libName) {
 	}
 	
 	addClass(c, path);
+	loadedPath = null;
 }
 
 function validateClasses() {
