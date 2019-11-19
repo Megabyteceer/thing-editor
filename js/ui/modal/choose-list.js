@@ -71,7 +71,7 @@ export default class ChooseList extends React.Component {
 	
 	render() {
 		return R.div(bodyProps,
-			R.input(this.searchInputProps),
+			this.props.noSearchField ? undefined : R.input(this.searchInputProps),
 			R.btn(R.icon('clear'), this.onSearchCliearClick),
 			R.div(listProps,
 				Group.groupArray(this.list.map(this.renderChoosingItem))

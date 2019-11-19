@@ -170,8 +170,8 @@ class Modal extends React.Component {
 		return this.showModal(React.createElement(Prompt, {defaultText, filter, accept, multiline}), title, noEasyClose);
 	}
 	
-	showListChoose(title, list, noEasyClose) {
-		return this.showModal(React.createElement(ChooseList, {list}), title, noEasyClose);
+	showListChoose(title, list, noEasyClose, noSearchField) {
+		return this.showModal(React.createElement(ChooseList, {list, noSearchField}), title, noEasyClose);
 	}
 	
 	showError(message, errorCode, title = 'Error!', noEasyClose, toBottom) {

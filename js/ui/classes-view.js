@@ -76,7 +76,7 @@ class ClassesView extends React.Component {
 				R.div({className: 'template-desc'}, tmp.desc)
 			);
 			return tmp;
-		})).then((selectedTemplate) => {
+		}), false, true).then((selectedTemplate) => {
 			if(selectedTemplate) {
 				editor.ui.modal.showPrompt('Enter Component Name',
 					selectedTemplate.isScene ? 'MyNewScene' : 'MyNewComponent',
