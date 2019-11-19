@@ -121,9 +121,6 @@ class TexturesViewerBody extends React.Component {
 
 	renderItem(item) {
 		let name = item.value;
-		if (name === 'WHITE' || name === 'EMPTY') {
-			return R.div({key:name});
-		}
 		var opt = editor.projectDesc.loadOnDemandTextures;
 		let isOnDemandLoading = opt.hasOwnProperty(name);
 
@@ -162,6 +159,9 @@ class TexturesViewerBody extends React.Component {
 		let size;
 		if(Lib.hasTexture(name)) {
 			let texture = Lib.getTexture(name);
+			if(texture.__noIncludeInToBuild) {
+				return undefined;
+			}
 			size = texture.width + 'x' + texture.height;
 		} else {
 			size = '(unloaded)';
@@ -195,7 +195,7 @@ class TexturesViewerBody extends React.Component {
 				return (editor.projectDesc.loadOnDemandTextures[t.name] || 1001) === filter;
 			});
 		}
-		list = list.map(this.renderItem);
+		list = list.map(this.renderItem).filter(i => i);
 		let folders = {};
 		for(let i of list) {
 			let folderName = i.key.substring(0, i.key.lastIndexOf('/'));
