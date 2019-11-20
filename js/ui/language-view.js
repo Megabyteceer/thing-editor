@@ -202,7 +202,7 @@ class LanguageTableEditor extends React.Component {
 		showTextTable().then(() => {
 
 			if(L.__isExternalKey(key)) {
-				editor.ui.status.warn("Can not etit key '" + key + "', because it is external (" + editor.game.projectDesc.__externalLocalesSource + ").", 99999);
+				editor.ui.status.warn("Can not edit key '" + key + "', because it is external (" + editor.game.projectDesc.__externalLocalesSource + ").", 99999);
 				return;
 			} 
 

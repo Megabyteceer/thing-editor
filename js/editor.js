@@ -241,7 +241,7 @@ export default class Editor {
 				R.a({href: url, target: '_blank'}, url),
 				R.br(),
 				"Check browser's status bar to allow automatic opening after build."
-			), "building finished.", 99999);
+			), "building finished.", 30011);
 		}
 	}
 
@@ -319,14 +319,14 @@ export default class Editor {
 			let parent = o.parent;
 			for(let c of a) {
 				if(c.parent !== parent) {
-					editor.ui.modal.showInfo('Selected object should have same parent to be wrapped.', 'Can not wrap', 99999);
+					editor.ui.modal.showInfo('Selected object should have same parent to be wrapped.', 'Can not wrap', 30012);
 					return;
 				}
 			}
 
 
 			if(o instanceof Scene) {
-				editor.ui.modal.showInfo("Scene can not be wrapped, you can change scene's type instead.", 'Can not wrap', 99999);
+				editor.ui.modal.showInfo("Scene can not be wrapped, you can change scene's type instead.", 'Can not wrap', 30013);
 				return;
 			}
 			DataPathFixer.rememberPathReferences();
@@ -383,7 +383,7 @@ export default class Editor {
 
 	isCanBeAdded() {
 		let o = editor.selection[0];
-		return o && !o.constructor.__canNotHaveChildren; // 99999
+		return o && !o.constructor.__canNotHaveChildren; // 99999 - describe class metadata
 	}
 
 	onEditorRenderResize() {
@@ -519,7 +519,7 @@ export default class Editor {
 			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
-			if(field.beforeEdited) { /// 99999
+			if(field.beforeEdited) {
 				field.beforeEdited(val);
 			}
 			
@@ -877,7 +877,7 @@ export default class Editor {
 	checkTryTime() {
 		if(!tryCatchWarned && ((Date.now() - tryTime) > 1000)) {
 			tryCatchWarned = true;
-			editor.ui.status.warn("Looks like you stopped on caught exception, probably you need to disable 'stop on caught exception' option in your debugger.", 99999);
+			editor.ui.status.warn("Looks like you stopped on caught exception, probably you need to disable 'stop on caught exception' option in your debugger.", 30014);
 		}
 	}
 }
