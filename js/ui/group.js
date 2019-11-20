@@ -2,7 +2,7 @@ const GROUP_ID_CHECKER = /[^0-9a-zA-Z_\-]/gm;
 
 function renderGroup(props) {
 	let gid = 'props-group-' + props.key;
-	assert(!props.key.match(GROUP_ID_CHECKER), 'Group name "' + props.key + '" contains wrong symbols', 99999);
+	assert(!props.key.match(GROUP_ID_CHECKER), 'Group name "' + props.key + '" contains wrong symbols', 90001);
 
 	return R.div({key: gid, className: 'props-group ' + gid},
 		R.div({
