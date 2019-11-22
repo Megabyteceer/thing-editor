@@ -83,7 +83,9 @@ export default class TreeView extends React.Component {
 
 			a.some((o) => {
 				Lib.__invalidateSerializationCache(o);
-				o.remove();
+				if(o.parent) {
+					o.remove();
+				}
 			});
 			
 			
