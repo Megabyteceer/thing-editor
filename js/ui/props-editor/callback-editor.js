@@ -23,6 +23,9 @@ export default class CallbackEditor extends DataPathEditor {
 		
 		if(val.___EDITOR_callbackParameterChooserFunction) {
 			val.___EDITOR_callbackParameterChooserFunction(parent).then((params) => {
+				if(!params) {
+					return;
+				}
 				if(!Array.isArray(params)) {
 					params = [params];
 				}
