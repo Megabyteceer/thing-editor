@@ -47,7 +47,7 @@ export default class RefFieldEditor extends React.Component {
 								return R.span({key},l, R.br());
 							}));
 						} catch (er) {
-							editor.ui.modal.showInfo("Object has circular structures and can not be represented as text. Please check browser's console to see reference's value.", undefined, 99999);
+							editor.ui.modal.showInfo("Object has circular structures and can not be represented as text. Please check browser's console to see reference's value.", undefined, 32039);
 						}
 					}
 					console.dir(this.props.value);

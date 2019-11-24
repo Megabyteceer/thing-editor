@@ -178,7 +178,7 @@ class InfoList extends React.Component {
 					});
 
 					if(!newOwnerFinded) {
-						editor.ui.modal.showInfo('Object already removed form stage, or problem was solved.', undefined, 99999);
+						editor.ui.modal.showInfo('Object already removed form stage, or problem was solved.', undefined, 32042);
 						return;
 					}
 				}

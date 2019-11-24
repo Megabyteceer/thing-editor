@@ -86,11 +86,11 @@ export default class PrefabsList extends React.Component {
 	
 	onSaveSelectedAsClick() {
 		if (editor.selection.length === 0) {
-			editor.ui.modal.showInfo('Nothing is selected in scene.', undefined, 99999);
+			editor.ui.modal.showInfo('Nothing is selected in scene.', undefined, 32035);
 		} else if (editor.selection.length > 1) {
-			editor.ui.modal.showInfo('More that one object selected.', undefined, 99999);
+			editor.ui.modal.showInfo('More that one object selected.', undefined, 32036);
 		} else if (editor.ClassesLoader.getClassType(editor.selection[0].constructor) === Scene) {
-			editor.ui.modal.showInfo('You can not save Scene as prefab. Please select some object from scene first.', undefined, 99999);
+			editor.ui.modal.showInfo('You can not save Scene as prefab. Please select some object from scene first.', undefined, 32037);
 		} else {
 			
 			let defaultPrefabName = '';
@@ -225,7 +225,7 @@ export default class PrefabsList extends React.Component {
 			cls = Lib.getClass(item.c);
 		} else {
 			cls = Container;
-			editor.ui.status.warn('Prefab "' + prefabName + '" has unknown type: ' + item.c, 30028, () => {
+			editor.ui.status.warn('Prefab "' + prefabName + '" has unknown type: ' + item.c, 32018, () => {
 				PrefabsList.editPrefab(prefabName);
 			});
 		}
@@ -330,7 +330,7 @@ export default class PrefabsList extends React.Component {
 			checkedPrefabsNames = {};
 			checkedPrefabsNames[prefabName] = true;
 			if(checkPrefabDataForLoops((Lib._getAllPrefabs())[prefabName], loopName)) {
-				editor.ui.status.error('PrefabReference to prefab "' + prefabName + '" was cleared because of loop referencing. ', 99999, o);
+				editor.ui.status.error('PrefabReference to prefab "' + prefabName + '" was cleared because of loop referencing. ', 32038, o);
 				o.dynamicPrefabName = null;
 				o.prefabName = null;
 				Lib.__invalidateSerializationCache(o);

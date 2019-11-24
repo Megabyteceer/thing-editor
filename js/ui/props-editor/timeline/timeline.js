@@ -732,7 +732,7 @@ function getKeyframeTypesForField(objects, name) {
 		let fieldDesc = editor.getObjectField(o, name);
 		if(!fieldDesc) {
 			setTimeout(() => {
-				editor.ui.status.warn("Property '" + name + "' is not exists anymore, but movieclip have animation for it.", 99999, o);
+				editor.ui.status.warn("Property '" + name + "' is not exists anymore, but movieClip have animation for it.", 32040, o);
 			}, 0);
 			return [];
 		}

@@ -284,7 +284,7 @@ class TexturesViewerBody extends React.Component {
 			checkListForImages(Lib.scenes);
 	
 			for(let imageName of allTextures) {
-				editor.ui.status.warn('No refs to: ' + imageName, 99999, () => {
+				editor.ui.status.warn('No refs to: ' + imageName, 32043, () => {
 					let path = this.getImagePath(imageName);
 					let view = R.img({src: path, className:'textures-viewer-image'});
 					editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className:'danger'},

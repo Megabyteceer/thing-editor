@@ -260,7 +260,7 @@ const validateRefEntry = (m, o) => {
 							let ret = ((oldRefs[partNum] !== currentRefs[partNum]) ? R.b : R.span)({key : partNum}, pathPart, partNum < (pathParts.length-1) ? splitter : undefined);
 							splitter = ',';
 							return ret;
-						}) ,') is affected: Was: ', was, ' Become: ', become), 30026, o, fieldname);
+						}) ,') is affected: Was: ', was, ' Become: ', become), 32016, o, fieldname);
 					}
 				}
 			}

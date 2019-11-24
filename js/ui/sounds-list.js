@@ -224,7 +224,7 @@ export default class SoundsList extends React.Component {
 					editor.projectDesc.soundDefaultBitrate = ev.target.value;
 					editor.saveProjectDesc();
 					this.forceUpdate();
-					editor.ui.modal.showInfo('Bitrate changes will be applied on next assets loading.', undefined, 99999);
+					editor.ui.modal.showInfo('Bitrate changes will be applied on next assets loading.', undefined, 32041);
 				}, value:editor.projectDesc.soundDefaultBitrate, select: bitrates})) : undefined
 			),
 			R.div(bodyProps, list)

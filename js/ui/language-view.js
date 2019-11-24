@@ -42,7 +42,7 @@ export default class LanguageView extends React.Component {
 				let txt = langsData[langId];
 				for(let id in txt) {
 					if(!txt[id]) {
-						editor.ui.status.warn('Untranslated text entry ' + langId + '/' + id, 30027, () => {
+						editor.ui.status.warn('Untranslated text entry ' + langId + '/' + id, 32017, () => {
 							LanguageView.editKey(id, langId);
 						}); 
 					}
@@ -202,7 +202,7 @@ class LanguageTableEditor extends React.Component {
 		showTextTable().then(() => {
 
 			if(L.__isExternalKey(key)) {
-				editor.ui.status.warn("Can not edit key '" + key + "', because it is external (" + editor.game.projectDesc.__externalLocalesSource + ").", 99999);
+				editor.ui.status.warn("Can not edit key '" + key + "', because it is external (" + editor.game.projectDesc.__externalLocalesSource + ").", 32034);
 				return;
 			} 
 

@@ -405,7 +405,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('paste'), this.onPasteClick, 'Paste (Ctrl+V)', "tool-btn", 1086, !editor.clipboardData || !editor.isCanBeAdded()),
 				R.btn(R.icon('paste-wrap'), this.onPasteWrapClick, 'Paste wrap', "tool-btn", undefined, !editor.clipboardData || !game.__EDITOR_mode || isEmpty),
 				R.hr(),
-				R.btn(R.icon('clone'), this.onCloneClick, 'Clone (Ctrl + D)', "tool-btn", 1068, isEmpty || isRoot), // 99999
+				R.btn(R.icon('clone'), this.onCloneClick, 'Clone (Ctrl + D)', "tool-btn", 1068, isEmpty || isRoot),
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
 				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Unwrap (remove selected but keep children)', "tool-btn", undefined, !this.isCanBeUnwrapped()),
 				R.btn(R.icon('export-selected'), this.onExportAsPngClick, 'Export selected', "tool-btn", undefined, isEmpty)

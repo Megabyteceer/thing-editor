@@ -292,7 +292,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				let classPath = classInfo.name;
 				let wrongSymbolPos = classPath.search(/[^a-zA-Z_\-\.\d\/]/gm);
 				if(wrongSymbolPos >= 0) {
-					editor.ui.status.warn("file " + classPath + " ignored because of wrong symbol '" + classPath[wrongSymbolPos] + "' in it's name: ", 99999, () => {
+					editor.ui.status.warn("File " + classPath + " ignored because of wrong symbol '" + classPath[wrongSymbolPos] + "' in it's name", 32044, () => {
 						editor.fs.editFile(classPath);
 					});
 				} else {
