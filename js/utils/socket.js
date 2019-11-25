@@ -48,7 +48,7 @@ ws.onmessage = function incoming(data) {
 			} else if(file.name.endsWith('.js')) {
 				srcChanged = true;
 			} else if(file.name.endsWith('.json') && (file.name.indexOf('/.') < 0) && !file.name.startsWith('snd/') && !filesIgnoring[file.name]) {
-				editor.ui.status.warn("File changed externally: " + file.name, 99999);
+				editor.ui.status.warn("File changed externally: " + file.name, 32045);
 			}
 		}
 		
