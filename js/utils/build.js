@@ -56,7 +56,8 @@ const isLineError = (l) => {
 };
 
 export default class Build {
-	static build(debug) {
+	static build(debug, skipWebpack) {
+		let debugPrefix = (debug && editor.projectDesc.__buildDebugAssets) ? '_debug' : '';
 		prefixToCutOff = (debug ? '___' : '__');
 		let scenes = filterObjectsData(Lib._getAllScenes());
 		let prefabs = filterObjectsData(Lib._getAllPrefabs());
@@ -96,7 +97,7 @@ export default class Build {
 			assetsObj.text = L.__getTextAssets();
 		}
 
-		fileSavePromises.push(editor.fs.saveFile('assets.js', 'window._thingEngineAssets = ' +
+		fileSavePromises.push(editor.fs.saveFile('assets' + debugPrefix + '.js', 'window._thingEngineAssets = ' +
 		JSON.stringify(assetsObj, fieldsFilter, assetsDelimiter) + ';', false, true));
 		
 
@@ -147,30 +148,35 @@ let classes = {};`];
 			}
 		}
 		src.push('Lib._setClasses(classes, ' + JSON.stringify(defaults, fieldsFilter, assetsDelimiter) + ');');
-		fileSavePromises.push(editor.fs.saveFile('src/classes.js', src.join('\n'), false, true));
+		fileSavePromises.push(editor.fs.saveFile('src/classes' + debugPrefix + '.js', src.join('\n'), false, true));
 		
 		Promise.all(fileSavePromises).then(() => {
-			editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
-				
-				errorLinesStarted = false;
-
-				if(result.find(isLineError)) {
-					errorLinesStarted = false;
-					editor.ui.modal.showError(R.div(null, R.div(null, "Build errors: "), result.filter(isLineError).map((r, i) =>{
-						return R.div({key:i}, r);
-					})), 30006);
-				} else {
-					let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
-					
-					editor.openUrl(url);
-							
-					if(result.find((l) => {return l;})) {
-						editor.ui.modal.showModal(result.map((r, i) =>{
-							return R.div({key:i}, r);
-						}));
-					}
+			if(!skipWebpack) {
+				if(!debug && editor.projectDesc.__buildDebugAssets) {
+					Build.build(true, true);
 				}
-			});
+				editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
+					
+					errorLinesStarted = false;
+
+					if(result.find(isLineError)) {
+						errorLinesStarted = false;
+						editor.ui.modal.showError(R.div(null, R.div(null, "Build errors: "), result.filter(isLineError).map((r, i) =>{
+							return R.div({key:i}, r);
+						})), 30006);
+					} else {
+						let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
+						
+						editor.openUrl(url);
+								
+						if(result.find((l) => {return l;})) {
+							editor.ui.modal.showModal(result.map((r, i) =>{
+								return R.div({key:i}, r);
+							}));
+						}
+					}
+				});
+			}
 		});
 	}
 }
