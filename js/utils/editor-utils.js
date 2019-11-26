@@ -242,6 +242,21 @@ window.isEventFocusOnInputElement = (ev) => {
 	return (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
 };
 
+window.makePreviewSoundButton = function(propName) {
+	return {
+		type: 'btn',
+		title: 'Preview ' + propName + ' sound',
+		name: propName + ' ▶',
+		visible: (o) => {
+			return o[propName];
+		},
+		onClick: (o) => {
+			editor.ui.soundsList.soundClick(o[propName], o.volume || 1);
+		}
+	};
+};
+
+
 window.makePreviewModeButton = function(title, helpUrl) {
 	let previewBtnProperty = {
 		type: 'btn',

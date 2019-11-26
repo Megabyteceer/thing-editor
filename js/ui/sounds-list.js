@@ -151,13 +151,17 @@ export default class SoundsList extends React.Component {
 		});
 	}
 	onSelect(item) {
-		Lib.preloadSound(item.name);
-		let needPlay = !Lib.getSound(item.name).playing();
+		this.soundClick(item.name);
+	}
+
+	soundClick(name, volume = 1) {
+		Lib.preloadSound(name);
+		let needPlay = !Lib.getSound(name).playing();
 		if(game.__EDITOR_mode) {
 			Sound.__stop();
 		}
 		if(needPlay) {
-			Sound.play(item.name);
+			Sound.play(name, volume);
 		}
 	}
 
