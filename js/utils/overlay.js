@@ -425,7 +425,7 @@ Overlay.getParentWhichHideChildren = getParentWhichHideChildren;
 function getParentWhichHideChildren(o) {
 	let ret;
 	while(o) {
-		o = o.parent;
+		
 		if(o) {
 			let d = __getNodeExtendData(o);
 			if(d.hideAllChildren) {
@@ -434,6 +434,7 @@ function getParentWhichHideChildren(o) {
 			if(d.hidden) {
 				ret = o.parent;
 			}
+			o = o.parent;
 		}
 	}
 	return ret;
