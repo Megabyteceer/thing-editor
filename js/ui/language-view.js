@@ -139,6 +139,7 @@ class LanguageTableEditor extends React.Component {
 
 	componentWillUnmount() {
 		view = null;
+		L.__validateTextData();
 	}
 	
 	onAddNewLanguageClick() {

@@ -369,7 +369,7 @@ function initWatchers() {
 		watchers.pop().close();
 	}
 	getDataFolders().some((assetsFolderData) => {
-		let assetsFolder = assetsFolderData.type + '/';
+		let assetsFolder = ((assetsFolderData.type === 'i18n' ) ? currentGameDesc.localesPath : assetsFolderData.type) + '/';
 		let watcher = fs.watch(assetsFolderData.path, { recursive : true });
 		watchers.push(watcher);
 		watcher.on('change', (eventType, filename) => {
