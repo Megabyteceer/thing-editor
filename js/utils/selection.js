@@ -1,6 +1,9 @@
 import Tilemap from "thing-engine/js/components/tilemap.js";
 import game from "thing-engine/js/game.js";
 import TreeNode from "../ui/tree-view/tree-node.js";
+import Overlay from "./overlay.js";
+import PrefabReference from "thing-engine/js/components/prefab-reference.js";
+import PrefabsList from "../ui/prefabs-list.js";
 
 let IS_SELECTION_LOADING_TIME = false;
 
@@ -53,6 +56,20 @@ class Selection extends Array {
 	}
 	
 	add(o) {
+		let nodePath = getPathOfNode(o);
+		let hidingParent = Overlay.getParentWhichHideChildren(o);
+		if(hidingParent) {
+			if(hidingParent instanceof PrefabReference) {
+				let parentPath = getPathOfNode(hidingParent);
+				nodePath.length -= parentPath.length;
+				editor.ui.modal.showEditorQuestion("Object is in inside prefab", "Do you want to go to prefab '" + hidingParent.prefabName + "', containing this object?", () => {
+					PrefabsList.editPrefab(hidingParent.prefabName);
+					editor.selection.loadSelection([nodePath]);
+				});
+			}
+			editor.ui.modal.showInfo('Can not select object, because it is hidden by parent ' + hidingParent.constructor.name + '; ' + o.___info, 'Can not select object', 30015);
+			return;
+		}
 		assert(!__getNodeExtendData(o).isSelected, "Node is selected already.");
 		assert(this.indexOf(o) < 0, "Node is registered in selected list already.");
 		__getNodeExtendData(o).isSelected = true;
