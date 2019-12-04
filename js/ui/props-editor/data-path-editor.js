@@ -4,6 +4,7 @@ import game from "thing-engine/js/game.js";
 import CallbackEditor from "./callback-editor.js";
 import {getLatestSceneNodeBypath} from "thing-engine/js/utils/get-value-by-path.js";
 import PrefabsList from "../prefabs-list.js";
+import Lib from "thing-engine/js/lib.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
@@ -233,6 +234,7 @@ export default class DataPathEditor extends React.Component {
 
 		const addIfGood = (name) => {
 			if (!addedNames.hasOwnProperty(name)) {
+				Lib.__outdatedReferencesDetectionDisabled = true;
 				if (this.isFieldGoodForCallbackChoose(name, parent)) {
 					if(!addSceneNodeIfValid(parent[name], name)) {
 						let order = 0;
@@ -256,6 +258,7 @@ export default class DataPathEditor extends React.Component {
 						addedNames[name] = true;
 					}
 				}
+				Lib.__outdatedReferencesDetectionDisabled = false;
 			}
 		};
 		
@@ -385,6 +388,7 @@ const enumSub = (o) => {
 let _rootParent;
 
 function enumProps(o) {
+	Lib.__outdatedReferencesDetectionDisabled = true;
 	enumed = [];
 	enumSub(o);
 	let cc = o.constructor;
@@ -394,6 +398,7 @@ function enumProps(o) {
 			enumSub(p);
 		}
 	}
+	Lib.__outdatedReferencesDetectionDisabled = false;
 	return enumed;
 }
 
