@@ -15,6 +15,9 @@ let view;
 let switcher;
 let externalLangsData;
 
+
+let ignoreEdit;
+
 function showTextTable() {
 	return new Promise((resolve) => {
 		if(!view) {
@@ -58,13 +61,19 @@ export default class LanguageView extends React.Component {
 	}
 
 	static editKey(key, langId) {
-		showTextTable().then(() => {
-			if(key) {
-				view.createKeyOrEdit(key, langId);
-			} else {
-				view.onAddNewKeyClick();
-			}
-		});
+		if(!ignoreEdit) {
+			ignoreEdit = true;
+			setTimeout(() => {
+				ignoreEdit = false;
+			}, 10);
+			showTextTable().then(() => {
+				if(key) {
+					view.createKeyOrEdit(key, langId);
+				} else {
+					view.onAddNewKeyClick();
+				}
+			});
+		}
 	}
 	
 	constructor(props) {
