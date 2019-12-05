@@ -78,16 +78,11 @@ export default class TreeView extends React.Component {
 			let p = editor.selection[0].parent;
 			let i = p.getChildIndex(editor.selection[0]);
 
-			let a = editor.selection.slice(0);
-			editor.selection.clearSelection();
-
-			a.some((o) => {
+			while(editor.selection.length > 0) {
+				let o = editor.selection[0];
 				Lib.__invalidateSerializationCache(o);
-				if(o.parent) {
-					o.remove();
-				}
-			});
-			
+				o.remove();
+			}
 			
 			if(i < p.children.length) {
 				this.selectInTree(p.getChildAt(i));
