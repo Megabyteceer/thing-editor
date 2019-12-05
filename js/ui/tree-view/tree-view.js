@@ -126,13 +126,26 @@ export default class TreeView extends React.Component {
 			let f = s.filters;
 			let c = new PIXI.Container();
 			let c2 = new PIXI.Container();
-			c.scale.x = 4;
-			c.scale.y = 4;
 			c.addChild(s);
 			c2.addChild(c);
 			s.filters = [];
 			editor.ui.modal.showSpinner();
+			let b = c2.getLocalBounds();
+			c2.getLocalBounds = () => {
+				if(b.x < 0 ) {
+					b.x = Math.ceil(b.x);
+				} else {
+					b.x = Math.floor(b.x);
+				}
+				if(b.y < 0 ) {
+					b.y = Math.ceil(b.y);
+				} else {
+					b.y = Math.floor(b.y);
+				}
+				return b;
+			};
 			game.pixiApp.renderer.extract.canvas(c2).toBlob(function(b){
+				delete c2.getLocalBounds;
 				var a = document.createElement('a');
 				document.body.append(a);
 				a.download = (s.name || 'image') + '.png';
