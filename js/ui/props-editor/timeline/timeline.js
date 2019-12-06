@@ -463,6 +463,7 @@ export default class Timeline extends React.Component {
 		for (let f of movieClip._timelineData.f) {
 			Timeline.fieldDataChanged(f, movieClip);
 		}
+		Timeline._invalidateNodeCache(movieClip);
 	}
 
 	static fieldDataChanged(fieldData, node) { //invalidate cache
@@ -477,6 +478,10 @@ export default class Timeline extends React.Component {
 
 		fieldData.___cacheTimeline = false;
 		Line.invalidateChartsRenderCache(fieldData);
+		Timeline._invalidateNodeCache(node);
+	}
+
+	static _invalidateNodeCache(node) {
 		MovieClip.invalidateSerializeCache(node);
 		TimeLabel.renormalizeAllLabels(node);
 		editor.sceneModified();
