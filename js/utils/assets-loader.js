@@ -18,24 +18,6 @@ const enumAssets = (onlyThisFiles) => {
 
 	game.pixiApp.stop();
 
-	let tmp = new Map();
-	game.forAllChildrenEverywhere((o) => {
-		if(o.image && (!onlyThisFiles || onlyThisFiles.has(o.image))) {
-			tmp.set(o, o.image);
-			o.image = 'EMPTY';
-		}
-	});
-	
-	for(let k of Lib.__texturesList) {
-		if(k.name !== 'EMPTY' && k.name !== 'WHITE') {
-			if(!onlyThisFiles || onlyThisFiles.has(k.name)) {
-				if(Lib.hasTexture(k.name)) {
-					Lib._unloadTexture(k.name);
-				}
-			}
-		}
-	}
-	
 	Sound.__stop();
 	if(!onlyThisFiles) {
 		Lib.__clearAssetsLists();
@@ -56,8 +38,8 @@ const enumAssets = (onlyThisFiles) => {
 				a.pop();
 				jsonFolders.push(a.join('/'));
 			}
-			if(!onlyThisFiles || onlyThisFiles.has(fileStat.name)) {
-				Lib.addResource(fileStat.name);
+			if(!onlyThisFiles || onlyThisFiles.has(fileStat.name.replace(/^img\//, ''))) {
+				Lib.addResource(fileStat.name, true);
 			}
 		}
 	});
@@ -77,13 +59,6 @@ const enumAssets = (onlyThisFiles) => {
 	});
 	return new Promise((resolve) => {
 		Lib.__onAllAssetsLoaded(() => {
-			let emSave = game.__EDITOR_mode;
-			game.__EDITOR_mode = true; //enforce update some type of components (tileGrid, fill);
-			tmp.forEach((image, o) => {
-				o.image = image;
-			});
-			game.__EDITOR_mode = emSave;
-
 			game.pixiApp.start();
 			editor.ui.modal.hideSpinner();
 			BgMusic._recalculateMusic();
