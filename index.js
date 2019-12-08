@@ -368,13 +368,27 @@ function initWatchers() {
 	while(watchers.length) {
 		watchers.pop().close();
 	}
+	let watchFolders = new Set();
+
 	getDataFolders().some((assetsFolderData) => {
 		let assetsFolder = ((assetsFolderData.type === 'i18n' ) ? currentGameDesc.localesPath : assetsFolderData.type) + '/';
+		
+		if(assetsFolderData.type === 'src/game-objects' || assetsFolderData.type ===  'src/scenes') {
+			assetsFolderData.path = assetsFolderData.path.replace(/src(\\|\/)(game-objects|scenes)$/ ,'src');
+			assetsFolder = 'src/';
+		}
+		if(watchFolders.has(assetsFolderData.path)) {
+			return;
+		}
+		watchFolders.add(assetsFolderData.path);
+
+		// log('watch: ' + assetsFolderData.path);
+
 		let watcher = fs.watch(assetsFolderData.path, { recursive : true });
 		watchers.push(watcher);
 		watcher.on('change', (eventType, filename) => {
 			filename = filename.replace(pathSeparatorReplaceExp, '/');
-			//log('file changed event: ' + eventType + '; ' + filename);
+			// log('file changed event: ' + eventType + '; ' + filename);
 			if(filename && filterWatchFiles.test(filename)) {
 
 				let fullFileName = path.join(assetsFolderData.path, filename);
