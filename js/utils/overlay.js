@@ -466,7 +466,7 @@ window.addEventListener('mouseup', () => {
 });
 
 window.addEventListener('wheel', function onWheel(ev) {
-	if(ev.target === game.pixiApp.view) {
+	if(game.pixiApp && (ev.target === game.pixiApp.view)) {
 
 		let pivot = game.stage.toLocal(game.__mouse_EDITOR, game.stage.parent);
 
