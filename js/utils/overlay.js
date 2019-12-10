@@ -424,7 +424,7 @@ Overlay.getParentWhichHideChildren = getParentWhichHideChildren;
 
 function getParentWhichHideChildren(o) {
 	let ret;
-	o = o.parent;
+	o = o && o.parent;
 	while(o) {
 		
 		if(o) {
