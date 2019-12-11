@@ -97,7 +97,14 @@ export default class Build {
 			assetsObj.text = L.__getTextAssets();
 		}
 
-		fileSavePromises.push(editor.fs.saveFile('assets' + debugPrefix + '.js', 'window._thingEngineAssets = ' +
+		let assertCode = '';
+		if(debug) {
+			assertCode = `if(window._thingEngineAssets) {
+				alert('window._thingEngineAssets already defined.');	
+			};`;
+		}
+
+		fileSavePromises.push(editor.fs.saveFile('assets' + debugPrefix + '.js', assertCode + 'window._thingEngineAssets = ' +
 		JSON.stringify(assetsObj, fieldsFilter, assetsDelimiter) + ';', false, true));
 		
 
