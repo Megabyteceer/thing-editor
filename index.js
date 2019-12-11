@@ -109,7 +109,7 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 app.get('/fs/build', function (req, res) {
 	
 	log('BUILD project: ' + currentGameRoot);
-
+	wss.showSpinner();
 	let command = 'node "' +
 	path.join(__dirname, 'scripts/build.js') + '" "' +
 	currentGameRoot+'" ' + 
@@ -130,6 +130,7 @@ app.get('/fs/build', function (req, res) {
 				ret.unshift('ERROR: ' + JSON.stringify(err));
 			}
 			res.end(JSON.stringify(ret));
+			wss.hideSpinner();
 		});
 });
 

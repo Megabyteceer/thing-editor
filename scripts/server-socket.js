@@ -3,6 +3,8 @@
 
 let PORT = 32024;
 
+let spinnerShown = 0;
+
 const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: PORT });
 let clientsConnected = 0;
@@ -22,6 +24,10 @@ wss.on('connection', function connection(ws) {
 	} else {
 		clicentSocket = ws;
 	}
+
+	for(let i = 0; i < spinnerShown; i++) {
+		module.exports.showSpinner(true);
+	}
 });
 
 
@@ -37,5 +43,15 @@ module.exports = {
 	},
 	filesChanged: function(filesChanged) {
 		send({filesChanged});
+	},
+	showSpinner: function(isReshow) {
+		if(!isReshow) {
+			spinnerShown++;
+		}
+		send({showSpinner: true});
+	},
+	hideSpinner: function() {
+		spinnerShown--;
+		send({hideSpinner: true});
 	}
 };

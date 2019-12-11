@@ -26,6 +26,10 @@ ws.onmessage = function incoming(data) {
 		}
 	} else if(data.hasOwnProperty('notifyText')) {
 		editor.ui.modal.notify(data.notifyText);
+	} else if(data.hasOwnProperty('showSpinner')) {
+		editor.ui.modal.showSpinner();
+	} else if(data.hasOwnProperty('hideSpinner')) {
+		editor.ui.modal.hideSpinner();
 	} else if(data.hasOwnProperty('filesChanged') && editor.projectDesc && !editor.projectOpeningInProgress) {
 		let imagesUpdated;
 		let soundsUpdated;
