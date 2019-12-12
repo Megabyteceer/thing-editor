@@ -234,7 +234,11 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 		};
 	}
 	
-	Object.defineProperty(constructor.prototype, propertyName, d);
+	try {
+		Object.defineProperty(constructor.prototype, propertyName, d);
+	} catch(er) {
+		assert(false, "Can not add NaN checking for property '" + propertyName + "'. Please make this property configurable or add noNullCheck flag in it`s descriptor.", 40903);
+	}
 };
 
 window.isEventFocusOnInputElement = (ev) => {
