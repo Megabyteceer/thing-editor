@@ -249,7 +249,6 @@ let head = document.getElementsByTagName('head')[0];
 
 function reloadClasses() { //enums all js files in src folder, detect which of them exports DisplayObject descendants and add them in to Lib.
 	assert(game.__EDITOR_mode, "Attempt to reload modules in running mode.");
-	L.__clearUppercaseKeys();
 	loadedPath = null;
 	return new Promise((resolve) => {
 		cacheCounter++;
