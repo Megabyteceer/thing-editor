@@ -602,8 +602,10 @@ export default class Timeline extends React.Component {
 		for(let o of editor.selection) {
 			if(o._timelineData) {
 				if(!selectPath[1]) { //label
-					let labelView = document.querySelector('#window-timeline').querySelector('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-'));
-					window.shakeDomElement(labelView);
+					getTimelineWindow().then((w) => {
+						let labelView = w.querySelector('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-'));
+						window.shakeDomElement(labelView);
+					});
 					return;
 				} else  {
 					for(let f of o._timelineData.f) {
@@ -615,10 +617,12 @@ export default class Timeline extends React.Component {
 										select(kf.___view);
 										timelineInstance.forceUpdateDebounced();
 									}
-									setTimeout(() => {
-										let actionEditField = document.querySelector('#window-timeline').querySelector('.bottom-panel').querySelector('.props-editor-callback');
+
+									getTimelineWindow().then((w) => {
+										let actionEditField = w.querySelector('.bottom-panel').querySelector('.props-editor-callback');
 										window.shakeDomElement(actionEditField);
-									}, 1);
+									});
+
 									return;
 								}
 							}
@@ -628,6 +632,18 @@ export default class Timeline extends React.Component {
 			}
 		}
 	}
+}
+
+function getTimelineWindow() {
+	return new Promise((resolve) => {
+		let interval = setInterval(() => {
+			let w = document.querySelector('#window-timeline');
+			if(w) {
+				clearInterval(interval);
+				resolve(w);
+			}
+		}, 1);
+	});
 }
 
 function getFieldByName(o, name) {

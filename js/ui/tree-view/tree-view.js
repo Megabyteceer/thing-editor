@@ -9,7 +9,18 @@ import DataPathFixer from 'thing-editor/js/utils/data-path-fixer.js';
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};
 
-let foundByWhichProperty;
+let searchEntries = new Map();
+let currentSearchedField;
+function addSearchEntry(o, field) {
+	let a;
+	if(!searchEntries.has(o)) {
+		a = [];
+		searchEntries.set(o, a);
+	} else {
+		a = searchEntries.get(o);
+	}
+	a.push(field);
+}
 
 R.renderSceneNode = (node) => {
 	if(__getNodeExtendData(node).hidden) {
@@ -45,17 +56,14 @@ export default class TreeView extends React.Component {
 		this.searchString = editor.settings.getItem('tree-search', '');
 	}
 	
-	selectInTree(node, add) {
+	selectInTree(node, add, fieldName) {
 		assert(node, "Attempt to select in tree empty node");
 		editor.selection.select(node, add);
 		setTimeout(() => {
 			
-			if(foundByWhichProperty && foundByWhichProperty.has(node) && !add) {
-				let fieldName = foundByWhichProperty.get(node);
+			if(fieldName && !add) {
 				editor.ui.propsEditor.selectField(fieldName);
 			}
-			
-			foundByWhichProperty = null;
 			
 			let e = document.querySelector('.scene-tree-view .item-selected');
 			if (e) {
@@ -302,7 +310,7 @@ export default class TreeView extends React.Component {
 	}
 	
 	onSearchKeyDown(ev) {
-		if(this.searchString && (ev.keyCode === 13)) {
+		if(this.searchString && (ev.keyCode === 13) && !ev.repeat) {
 			this.fundNextBySearch();
 		}
 	}
@@ -318,9 +326,9 @@ export default class TreeView extends React.Component {
 	}
 	
 	fundNextBySearch() {
-		foundByWhichProperty = new WeakMap();
-		
+	
 		this.findNext((o) => {
+			let ret;
 			let p = o;
 			while(p) {
 				if(__getNodeExtendData(p).hidden) {
@@ -339,30 +347,33 @@ export default class TreeView extends React.Component {
 						for(let field of timeline.f) {
 							for(let k of field.t) {
 								if(k.a && (k.a.toLowerCase().indexOf(this.searchString) >= 0)) {
-									foundByWhichProperty.set(o, p.name + ',' + field.n + ',' + k.t);
-									return true;
+									addSearchEntry(o, p.name + ',' + field.n + ',' + k.t);
+									ret = true;
 								}
 							}
 						}
 						for(let label in timeline.l) {
 							if(label.toLowerCase().indexOf(this.searchString) >= 0) {
-								foundByWhichProperty.set(o, p.name + ',,' + label);
-								return true;
+								addSearchEntry(o, p.name + ',,' + label);
+								ret = true;
 							}
 						}
 					}
 				} else {
 					let val = '' + o[p.name];
 					if(val.toLowerCase().indexOf(this.searchString) >= 0) {
-						foundByWhichProperty.set(o, p.name);
-						return true;
+						addSearchEntry(o, p.name);
+						ret = true;
 					}
 				}
 			}
+			return ret;
 		}, 1);
 	}
 	
 	findNext(condition, direction) {
+		searchEntries.clear();
+
 		let a = new Selection();
 		
 		if(condition(game.currentContainer)) {
@@ -379,16 +390,37 @@ export default class TreeView extends React.Component {
 			
 			a.sortSelectedNodes();
 			
-			
+			let field;
 			let i = a.indexOf(editor.selection[0]);
 			if (i >= 0) {
-				i += direction;
-				if (i < 0) i = a.length - 1;
-				if (i >= a.length) i = 0;
+				let o = editor.selection[0];
+				if(searchEntries.has(o)) {
+					let entries = searchEntries.get(o);
+					let i = entries.findIndex(e => (e === currentSearchedField));
+					if(i >= 0) {
+						i++;
+						field = entries[i];
+					} else {
+						field = entries[0];
+					}
+				}
+				if(!field) {
+					i += direction;
+					if (i < 0) i = a.length - 1;
+					if (i >= a.length) i = 0;
+				}
 			} else {
 				i = 0;
 			}
-			this.selectInTree(a[i]);
+			if(!field) {
+				let o = a[i];
+				if(searchEntries.has(o)) {
+					field = searchEntries.get(o)[0];
+				}
+			}
+
+			currentSearchedField = field;
+			this.selectInTree(a[i], false, field);
 		} else {
 			editor.selection.clearSelection(true);
 		}
