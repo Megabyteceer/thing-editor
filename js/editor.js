@@ -341,6 +341,7 @@ export default class Editor {
 			} else {
 				editor.disableFieldsCache = true;
 				w = Lib._deserializeObject(editor.clipboardData[0]);
+				Lib.__reassignIds(w);
 				editor.disableFieldsCache = false;
 			}
 			w.x = 0;
