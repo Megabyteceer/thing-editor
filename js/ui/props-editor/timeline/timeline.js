@@ -615,6 +615,11 @@ export default class Timeline extends React.Component {
 								if(kf.t == time) {
 									if(!kf.___view.state || ! kf.___view.state.isSelected) {
 										select(kf.___view);
+										let kfNode = ReactDOM.findDOMNode(kf.___view);
+										if(kfNode) {
+											kfNode.scrollIntoView({block: "center", inline: "center"});
+											window.shakeDomElement(kfNode);
+										}
 										timelineInstance.forceUpdateDebounced();
 									}
 
