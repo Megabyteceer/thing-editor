@@ -49,7 +49,7 @@ ws.onmessage = function incoming(data) {
 				} else {
 					soundsUpdated = addAssetNameInToMap(file.name, soundsUpdated);
 				}
-			} else if(file.name.endsWith('.js')) {
+			} else if(file.name.endsWith('.js') && !filesIgnoring[file.name]) {
 				srcChanged = true;
 			} else if(file.name.endsWith('.json') && (file.name.indexOf('/.') < 0) && !file.name.startsWith('snd/') && !filesIgnoring[file.name]) {
 				editor.ui.status.warn("File changed externally: " + file.name, 32045);
