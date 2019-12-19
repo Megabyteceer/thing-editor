@@ -100,6 +100,11 @@ let fs = {
 			});
 		});
 	},
+	exec(filename) {
+		this.postJSON('/fs/exec', {
+			filename
+		});
+	},
 	openFile(fileName, silently) {
 		return this.getJSON(editor.game.resourcesPath + fileName, silently);
 	},

@@ -118,6 +118,11 @@ class UI extends React.Component {
 			editor.history.buttonsRenderer(),
 			R.btn('Project settings', editor.openProjectDescToEdit, undefined, 'menu-btn'),
 			React.createElement(Help),
+			editor.fs.filesExt && editor.fs.filesExt.scripts.map((s) => {
+				return R.span({key: s.name}, R.btn(s.name.replace('scripts/', ''), () => {
+					editor.fs.exec(s.name);
+				}));
+			}),
 
 			renderWindow('sceneTree', 'SceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 460, 250, 500),
 			renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),

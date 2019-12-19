@@ -11,6 +11,11 @@ const express = require('express');
 const app = express();
 const open = require('open');
 
+function requireUncached(m) {
+	delete require.cache[require.resolve(m)];
+	return require(m);
+}
+
 process.chdir(path.join(__dirname, '..'));
 
 const {
@@ -158,6 +163,17 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 	processOneFolder();
 });
 
+app.post('/fs/exec', jsonParser, function (req, res) {
+	let fileName = mapFileUrl('/' + currentGame + '/' + req.body.filename);
+	let m = requireUncached(fileName);
+	m.main(function(err) {
+		if(err) {
+			throw err;
+		}
+		res.end();
+	}, currentGameDesc, currentGameRoot, wss);
+});
+
 app.post('/fs/savefile', jsonParser, function (req, res) {
 	let fileName = mapFileUrl(req.body.filename);
 	//log('Save file: ' + fileName);
@@ -224,7 +240,7 @@ function getLibRoot(libName) {
 	return path.join(__dirname, '..', libName);
 }
 
-const ASSETS_FOLDERS_NAMES = ['snd', 'img', 'src/scenes', 'src/game-objects', 'scenes', 'prefabs'];
+const ASSETS_FOLDERS_NAMES = ['snd', 'img', 'src/scenes', 'src/game-objects', 'scenes', 'prefabs', 'scripts'];
 function getDataFolders() {
 	let ret = ASSETS_FOLDERS_NAMES.map((type) => {
 		return {
@@ -378,7 +394,7 @@ function initWatchers() {
 			assetsFolderData.path = assetsFolderData.path.replace(/src(\\|\/)(game-objects|scenes)$/ ,'src');
 			assetsFolder = 'src/';
 		}
-		if(watchFolders.has(assetsFolderData.path)) {
+		if(!fs.existsSync(assetsFolderData.path) || watchFolders.has(assetsFolderData.path)) {
 			return;
 		}
 		watchFolders.add(assetsFolderData.path);
