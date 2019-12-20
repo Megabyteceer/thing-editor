@@ -13,6 +13,9 @@ const needAddInToList = (map, owner, fieldName) => {
 		return true;
 	} else {
 		let exData = __getNodeExtendData(owner);
+
+		exData.statusWarnOwnerId = owner.___id;
+
 		if(!fieldName) {
 			fieldName = '_no_field_name_';
 		}
@@ -148,12 +151,6 @@ class InfoList extends React.Component {
 		let node;
 		if(item.owner && item.owner instanceof DisplayObject) {
 			node = R.div(selectableSceneNodeProps, R.sceneNode(item.owner));
-
-			let exData = __getNodeExtendData(item.owner);
-			if(!exData.alertRefs) {
-				exData.alertRefs = new WeakMap();
-			}
-			exData.alertRefs.set(item, true);
 		}
 		return R.div({key:i, className:'info-item clickable', title: "Click line to go problem.", onClick:() => {
 			if(!item) {
@@ -162,16 +159,14 @@ class InfoList extends React.Component {
 			if(typeof item.owner === "function") {
 				item.owner();
 			} else if(item.owner && (item.owner instanceof DisplayObject)) {
-				
-				let exData = __getNodeExtendData(item.owner);
-				if(!exData.alertRefs || !exData.alertRefs.has(item)) {
+				let extendData = __getNodeExtendData(item.owner);
+				if((item.owner.___id !== item.ownerId) || (extendData.statusWarnOwnerId !== item.ownerId)) {
 					let newOwnerFinded;
 
 					game.forAllChildrenEverywhere((o) => {
 						if(o.constructor === item.owner.constructor && o.___id === item.ownerId) {
 							if(!newOwnerFinded) {
 								item.owner = o;
-								exData = __getNodeExtendData(item.owner);
 								newOwnerFinded = true;
 							}
 						}
