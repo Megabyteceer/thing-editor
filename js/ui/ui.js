@@ -121,7 +121,7 @@ class UI extends React.Component {
 			editor.fs.filesExt && editor.fs.filesExt.scripts.map((s) => {
 				return R.span({key: s.name}, R.btn(s.name.replace('scripts/', '').replace(/\.js$/, ''), () => {
 					editor.fs.exec(s.name);
-				}));
+				}, undefined, 'menu-btn'));
 			}),
 
 			renderWindow('sceneTree', 'SceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 460, 250, 500),
