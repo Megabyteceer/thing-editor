@@ -122,15 +122,19 @@ window.addEventListener('keydown', (ev) => {
 		switch(ev.key) {
 		case "ArrowUp":
 			editor.onSelectedPropsChange('y', ev.ctrlKey ? -10 : -1, true);
+			sp(ev);
 			break;
 		case "ArrowDown":
 			editor.onSelectedPropsChange('y', ev.ctrlKey ? 10 : 1, true);
+			sp(ev);
 			break;
 		case "ArrowLeft":
 			editor.onSelectedPropsChange('x', ev.ctrlKey ? -10 : -1, true);
+			sp(ev);
 			break;
 		case "ArrowRight":
 			editor.onSelectedPropsChange('x', ev.ctrlKey ? 10 : 1, true);
+			sp(ev);
 			break;
 		}
 	}
@@ -243,7 +247,7 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 
 window.isEventFocusOnInputElement = (ev) => {
 	let tag = ev.target.tagName;
-	return (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT');
+	return (((tag === 'INPUT') && (ev.target.type !== 'checkbox')) || tag === 'TEXTAREA' || tag === 'SELECT');
 };
 
 window.makePreviewSoundButton = function(propName) {
