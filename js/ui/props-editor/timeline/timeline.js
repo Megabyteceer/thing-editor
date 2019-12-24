@@ -129,6 +129,7 @@ export default class Timeline extends React.Component {
 				}
 			}
 		}
+		o.resetTimeline();
 	}
 
 	static init() {

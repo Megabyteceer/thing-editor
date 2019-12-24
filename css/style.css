@@ -725,6 +725,15 @@ input{
 	z-index: 1;
 }
 
+.preview-frame-marker {
+	color: #8c8f9a;
+	top: 15px;
+    position: absolute;
+    font-size: 70%;
+    border-left: 1px solid #002200;
+    height: 20px;
+}
+
 .field-timeline {
 	width: max-content;
 	background: url(/thing-editor/img/timeline.jpg);

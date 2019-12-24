@@ -3,6 +3,7 @@ import Timeline from "./timeline.js";
 import TimeLabel from "./timeline-label.js";
 import Line from "./timeline-line.js";
 import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
+import editorUtils from "thing-editor/js/utils/editor-utils.js";
 
 const objectsTimelineProps = {className: 'objects-timeline'};
 
@@ -56,6 +57,13 @@ export default class ObjectsTimeline extends React.Component {
 		width += 500;
 		width *= this.props.widthZoom;
 
+		let previewMarker;
+		if(this.props.node.__previewFrame) {
+			previewMarker = R.div({className: 'preview-frame-marker', title: 'Ctrl+click to set preview frame.', style: {
+				left: this.props.node.__previewFrame * this.props.widthZoom
+			}}, 'Preview frame'); // 99999
+		}
+
 		let labelsPanel = R.div({
 			onMouseDown:(ev) => { //create new label by right click
 				if(tl && ev.buttons === 2) {
@@ -69,6 +77,8 @@ export default class ObjectsTimeline extends React.Component {
 							this.onLabelChange(label);
 						}
 					});
+				} else if(ev.ctrlKey) {
+					editor.onObjectsPropertyChanged(this.props.node, '__previewFrame',  Timeline.mouseEventToTime(ev));
 				} else {
 					this.props.owner.setTime(Timeline.mouseEventToTime(ev));
 					this.props.owner.startTimeDragging();
@@ -78,6 +88,7 @@ export default class ObjectsTimeline extends React.Component {
 			title:tl && 'Right click to add time label',
 			className:'timeline-labels-panel'
 		},
+		previewMarker,
 		labelsNames.map((labelName)=> {
 			return this.renderTimeLabel(labelName, labelsNames);
 		}));
