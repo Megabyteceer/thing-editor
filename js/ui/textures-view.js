@@ -287,6 +287,12 @@ class TexturesViewerBody extends React.Component {
 				if(Lib.getTexture(imageName).__noIncludeInToBuild) {
 					continue;
 				}
+				let fileInfo = editor.fs.filesExt.img.find((fn) => {
+					return fn.name.substring(4) === imageName;
+				});
+				if(fileInfo && fileInfo.lib) {
+					return;
+				}
 				editor.ui.status.warn('No refs to: ' + imageName, 32043, () => {
 					let path = this.getImagePath(imageName);
 					let view = R.img({src: path, className:'textures-viewer-image'});
