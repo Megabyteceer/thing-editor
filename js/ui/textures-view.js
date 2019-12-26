@@ -284,7 +284,8 @@ class TexturesViewerBody extends React.Component {
 			checkListForImages(Lib.scenes);
 	
 			for(let imageName of allTextures) {
-				if(Lib.getTexture(imageName).__noIncludeInToBuild) {
+				let texture = Lib.getTexture(imageName);
+				if(texture.__noIncludeInToBuild && (texture !== PIXI.Texture.EMPTY)) {
 					continue;
 				}
 				let fileInfo = editor.fs.filesExt.img.find((fn) => {
