@@ -129,7 +129,9 @@ export default class Timeline extends React.Component {
 				}
 			}
 		}
-		o.resetTimeline();
+		if(game.__EDITOR_mode) {
+			o.resetTimeline();
+		}
 	}
 
 	static init() {
