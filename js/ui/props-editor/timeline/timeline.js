@@ -8,6 +8,7 @@ import Line from "./timeline-line.js";
 import TimeLabel from "./timeline-label.js";
 import TimelineLoopPoint from "./timeline-loop-point.js";
 import TimelineSelectFrame from "./timeline-select-frame.js";
+import Lib from "thing-engine/js/lib.js";
 
 
 let widthZoom;
@@ -696,7 +697,7 @@ function getFrameAtTimeOrCreate(o, name, time) {
 }
 
 
-function createKeyframe(o, name, time, field) {
+function createKeyframe(o, name, time, field, isAutomaticCreation) {
 
 	let mode;
 	let jumpTime = time;
@@ -732,9 +733,50 @@ function createKeyframe(o, name, time, field) {
 		___react_id: MovieClip.__generateKeyframeId()
 	};
 
+	if(!isAutomaticCreation && (name === 'image') && prevField) {
+		let step = time - prevField.t;
+		if(increaseNumberInName(prevField.v) === o.image) {
+			if(Lib.hasTexture(increaseNumberInName(o.image))) {
+				editor.ui.modal.showEditorQuestion("Animation generator", "Do you want to create keyframes for all same images?",
+					() => {
+						let image = o.image;
+						while(true) {// eslint-disable-line no-constant-condition
+							image = increaseNumberInName(image);
+							if(Lib.hasTexture(image)) {
+								time += step;
+								o[name] = image;
+								createKeyframe(o, name, time, field, true);
+							} else {
+								break;
+							}
+						}
+						timelineInstance.forceUpdateDebounced();
+					}
+				);
+			}
+		}
+	}
+
+
 	field.t.push(keyFrame);
 	Timeline.fieldDataChanged(field, o);
 	return keyFrame;
+}
+
+function increaseNumberInName(v) {
+	let regex = /\d+/gm;
+	let a = regex.exec(v);
+	if(a) {
+		let oldNum = a.pop();
+		let newNum = (parseInt(oldNum) + 1).toString();
+		while(newNum.length < oldNum.length) {
+			newNum =  '0' + newNum;
+		}
+		a.shift();
+		let n = v.lastIndexOf(oldNum);
+		return v.substr(0, n) + newNum + v.substr(n + oldNum.length);
+	}
+	return v;
 }
 
 function getDefaultKeyframeTypeForField(o, name) {
