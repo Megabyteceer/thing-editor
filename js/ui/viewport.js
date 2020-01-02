@@ -109,7 +109,7 @@ export default class Viewport extends React.Component {
 			game.__paused = false;
 			let play = game.__EDITOR_mode;
 			game.__time = 0;
-			delete game.__EDITOR_sceneDataWaitingToStart;
+			delete game.__EDITOR_currentSceneData;
 			if(play) { // launch game
 				game.data = {};
 				editor.ui.status.clear();
@@ -118,7 +118,7 @@ export default class Viewport extends React.Component {
 				
 				editor.saveBackup(true);
 				game.__EDITOR_selectionDataWaitingToSelect = editor.selection.saveSelection();
-				game.__EDITOR_sceneDataWaitingToStart = Lib.__serializeObject(game.currentScene);
+				game.__EDITOR_currentSceneData = Lib.__serializeObject(game.currentScene);
 				game.__clearStage();
 				Spine.clearPool();
 				Sound.__resetSounds();
