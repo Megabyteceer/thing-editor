@@ -422,22 +422,23 @@ Overlay.getParentWhichHideChildren = getParentWhichHideChildren;
 
 
 function getParentWhichHideChildren(o) {
-	let ret;
-	o = o && o.parent;
+	let parents = [];
 	while(o) {
-		
-		if(o) {
-			let d = __getNodeExtendData(o);
-			if(d.hideAllChildren) {
-				ret = o;
-			}
-			if(d.hidden) {
-				ret = o.parent;
-			}
-			o = o.parent;
+		parents.unshift(o);
+		o = o.parent;
+	}
+
+	for(let i = 0; i < parents.length; i++) {
+		o = parents[i];
+		let d = __getNodeExtendData(o);
+		if(d.hideAllChildren) {
+			return o;
+		}
+		if(d.hidden) {
+			assert(i > 0, "Cannot get parent hides children.");
+			return parents[i-1];
 		}
 	}
-	return ret;
 }
 
 window.addEventListener('mousemove', function onMouseMove(ev) {
