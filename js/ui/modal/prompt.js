@@ -14,7 +14,10 @@ export default class Prompt extends React.Component {
 		setTimeout(() => {
 			let input = document.querySelector('.modal-content input');
 			if(input) {
-				input.focus();
+				try {
+					input.focus();
+					input.setSelectionRange(0, input.value.length);
+				} catch (er) {} // eslint-disable-line no-empty
 			}
 		}, 1);
 		this.checkAcceptance(this.state.value);
