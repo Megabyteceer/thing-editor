@@ -606,8 +606,7 @@ export default class Timeline extends React.Component {
 		for(let o of editor.selection) {
 			if(o._timelineData) {
 				if(!selectPath[1]) { //label
-					getTimelineWindow().then((w) => {
-						let labelView = w.querySelector('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-'));
+					getTimelineWindow('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView) => {
 						window.shakeDomElement(labelView);
 					});
 					return;
@@ -627,8 +626,8 @@ export default class Timeline extends React.Component {
 										timelineInstance.forceUpdateDebounced();
 									}
 
-									getTimelineWindow().then((w) => {
-										let actionEditField = w.querySelector('.bottom-panel').querySelector('.props-editor-callback');
+									getTimelineWindow('.bottom-panel').then((w) => {
+										let actionEditField = w.querySelector('.props-editor-callback');
 										window.shakeDomElement(actionEditField);
 									});
 
@@ -643,10 +642,15 @@ export default class Timeline extends React.Component {
 	}
 }
 
-function getTimelineWindow() {
+function getTimelineWindow(childSelector) {
 	return new Promise((resolve) => {
 		let interval = setInterval(() => {
 			let w = document.querySelector('#window-timeline');
+			if(w) {
+				if(childSelector) {
+					w = w.querySelector(childSelector);
+				}
+			}
 			if(w) {
 				clearInterval(interval);
 				resolve(w);
