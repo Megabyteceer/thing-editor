@@ -421,11 +421,15 @@ function selectByStageClick(ev) {
 Overlay.getParentWhichHideChildren = getParentWhichHideChildren;
 
 
-function getParentWhichHideChildren(o) {
+function getParentWhichHideChildren(o, closest = false) {
 	let parents = [];
 	while(o) {
 		parents.unshift(o);
 		o = o.parent;
+	}
+
+	if(closest) {
+		parents.reverse();
 	}
 
 	for(let i = 0; i < parents.length; i++) {
@@ -435,8 +439,13 @@ function getParentWhichHideChildren(o) {
 			return o;
 		}
 		if(d.hidden) {
-			assert(i > 0, "Cannot get parent hides children.");
-			return parents[i-1];
+			if(!closest) {
+				assert(i > 0, "Cannot get parent hides children.");
+				return parents[i-1];
+			} else {
+				assert(i < (parents.length - 1), "Cannot get parent hides children.");
+				return parents[i+1];
+			}
 		}
 	}
 }

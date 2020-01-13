@@ -4,6 +4,7 @@ import TreeNode from "../ui/tree-view/tree-node.js";
 import Overlay from "./overlay.js";
 import PrefabReference from "thing-engine/js/components/prefab-reference.js";
 import PrefabsList from "../ui/prefabs-list.js";
+import getValueByPath from "thing-engine/js/utils/get-value-by-path.js";
 
 let IS_SELECTION_LOADING_TIME = false;
 
@@ -57,15 +58,24 @@ class Selection extends Array {
 	
 	add(o) {
 		let nodePath = getPathOfNode(o);
-		let hidingParent = Overlay.getParentWhichHideChildren(o);
+		let hidingParent = Overlay.getParentWhichHideChildren(o, true);
 		if(hidingParent) {
 			if(hidingParent instanceof PrefabReference) {
 				let parentPath = getPathOfNode(hidingParent);
 				nodePath.length -= parentPath.length;
-				editor.ui.modal.showEditorQuestion("Object is in inside prefab", "Do you want to go to prefab '" + hidingParent.prefabName + "', containing this object?", () => {
-					PrefabsList.editPrefab(hidingParent.prefabName);
-					editor.selection.loadSelection([nodePath]);
-				});
+
+				let prefabName;
+				if(hidingParent.dynamicPrefabName) {
+					prefabName = getValueByPath(hidingParent.dynamicPrefabName, game);
+				} else {
+					prefabName = hidingParent.prefabName;
+				}
+				if(prefabName) {
+					editor.ui.modal.showEditorQuestion("Object is in inside prefab", "Do you want to go to prefab '" + prefabName + "', containing this object?", () => {
+						PrefabsList.editPrefab(prefabName);
+						editor.selection.loadSelection([nodePath]);
+					});
+				}
 			}
 			editor.ui.modal.showInfo('Can not select object, because it is hidden by parent ' + hidingParent.constructor.name + '; ' + o.___info, 'Can not select object', 30015);
 			return;
