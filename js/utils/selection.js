@@ -59,7 +59,7 @@ class Selection extends Array {
 	add(o) {
 		let nodePath = getPathOfNode(o);
 		let hidingParent = Overlay.getParentWhichHideChildren(o, true);
-		if(hidingParent) {
+		if(hidingParent && (hidingParent !== o)) {
 			if(hidingParent instanceof PrefabReference) {
 				let parentPath = getPathOfNode(hidingParent);
 				nodePath.length -= parentPath.length;
