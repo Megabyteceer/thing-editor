@@ -142,9 +142,12 @@ function addClass(c, path) {
 	
 	
 	if (classPathById.hasOwnProperty(name)) {
-		if (classPathById[name] !== path) {
-			showError(R.div(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'), 30008);
-			return;
+		let anotherPath = classPathById[name];
+		if (anotherPath !== path) {
+			if((editor.fs.files['src/game-objects'].indexOf(anotherPath) >= 0) || (editor.fs.files['src/scenes'].indexOf(anotherPath) >= 0)) {
+				showError(R.div(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'), 30008);
+				return;
+			}
 		}
 	}
 	
