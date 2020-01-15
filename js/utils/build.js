@@ -195,6 +195,9 @@ function findClassNameInData(name, data) {
 }
 
 function findClassNameInPrefabData(name, data) {
+	if(!filterChildrenByName(data)) {
+		return false;
+	}
 	if(data.c === name) {
 		return true;
 	}
