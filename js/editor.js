@@ -271,9 +271,6 @@ export default class Editor {
 			if(exData.hidePropsEditor) {
 				cloneExData.hidePropsEditor = exData.hidePropsEditor;
 			}
-			if(exData._isShapeVertex) {
-				cloneExData._isShapeVertex = exData._isShapeVertex;
-			}
 			if(exData.rotatorLocked) {
 				cloneExData.rotatorLocked = exData.rotatorLocked;
 			}
