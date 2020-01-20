@@ -323,7 +323,7 @@ window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmpty = t
 	return () => {
 		let ret = [];
 		if(canBeEmpty) {
-			ret.push({name:' ', value:''});
+			ret.push({name:'EMPTY', value:''});
 		}
 		let a = editor.Lib.__soundsList;
 		for(let i of a) {
