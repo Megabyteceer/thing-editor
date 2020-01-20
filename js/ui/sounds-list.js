@@ -131,7 +131,7 @@ export default class SoundsList extends React.Component {
 								a.sort(soundsPriority);
 							}
 							BgMusic._stopAll();
-							Lib._setSounds(sounds, onlyThisFiles && true);
+							Lib._setSounds(sounds, !!onlyThisFiles);
 							resolve();
 							BgMusic._recalculateMusic();
 							this.forceUpdate();
