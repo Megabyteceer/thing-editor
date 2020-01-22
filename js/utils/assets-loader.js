@@ -74,13 +74,14 @@ AssetsLoader.deleteAssets = (assetsNames) => {
 	for(let name of assetsNames) {
 		if(Lib.hasTexture(name)) {
 			Lib._unloadTexture(name, true);
-			let i = Lib.__texturesList.find(textureItem => textureItem.name === name);
-			i = Lib.__texturesList.indexOf(i);
-			assert(i >= 0, "can not remove deleted texture: " + name);
-			Lib.__texturesList.splice(i, 1);
-		} else if(Lib.resources.hasOwnProperty(name)) {
+			let i = Lib.__texturesList.findIndex(textureItem => textureItem.name === name);
+			if(i >= 0) {
+				Lib.__texturesList.splice(i, 1);
+			}
+		}
+		if(Lib.resources.hasOwnProperty(name)) {
 			delete(Lib.resources[name]);
-			let i = Lib.__resourcesList.indexOf(name);
+			let i = Lib.__resourcesList.findIndex(item => item.name === name);
 			assert(i >= 0, "can not remove deleted resource: " + name);
 			Lib.__resourcesList.splice(i, 1);
 		}
