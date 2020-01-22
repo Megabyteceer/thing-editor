@@ -238,6 +238,7 @@ function enumClassProperties(c) {
 		cc = cc.__proto__;
 	}
 	c.__EDITOR_propsListCache = props;
+	delete defaults.___id;
 	classesDefaultsById[c.name] = defaults;
 }
 
