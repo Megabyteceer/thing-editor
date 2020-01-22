@@ -1433,6 +1433,31 @@ input{
 
 /*===================== animations ==================================================*/
 
+.red-blink{
+	animation: red-blink-frames linear 1s;
+	animation-iteration-count: infinite;
+	transform-origin: 50% 50%;
+	color: #ff0000;
+  }
+  
+  @keyframes red-blink-frames{
+	0% {
+	  opacity:1;
+	}
+	48% {
+	  opacity:1;
+	}
+	50% {
+	  opacity:0;
+	}
+	98% {
+	  opacity:0;
+	}
+	100% {
+	  opacity:1;
+	}
+  }
+
 .fadein-animation{
   animation: fadein linear .2s;
   animation-iteration-count: 1;

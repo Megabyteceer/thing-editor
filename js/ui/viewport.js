@@ -260,7 +260,7 @@ export default class Viewport extends React.Component {
 			if(game && !game.__EDITOR_mode) {
 				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume (Ctrl + P)", 'big-btn', 1080);
 				if(game.__paused) {
-					statusHeader = 'paused';
+					statusHeader = R.span({className: "red-blink"}, 'paused');
 					oneStepBtn = R.btn('One step', this.onOneStepClick, "(Ctrl + [)", undefined, 1219);
 				} else {
 					statusHeader = 'running';
