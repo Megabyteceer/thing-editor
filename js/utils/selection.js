@@ -146,7 +146,7 @@ setInterval(() => {
 
 let getPathOfNode = (node) => {
 	let ret = [];
-	while (node !== game.currentContainer) {
+	while (node !== game.currentContainer && node !== game.currentFader) {
 		assert(node.parent !== game.stage, "selected object is is not in current container.");
 		if(node.name && node.parent.children.filter((c)=>{return c.name === node.name;}).length === 1) {
 			ret.push(node.name);
