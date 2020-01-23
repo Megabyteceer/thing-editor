@@ -524,13 +524,15 @@ export default class Timeline extends React.Component {
 					getFrameAtTimeOrCreate(o, fieldName, 0);
 				}
 			} else {
-				let val = o[fieldName];
-				if (typeof val === 'number') {
-					beforeChangeRemember.set(o, val);
+				let editableField = editor.getObjectField(o, fieldName);
+
+				if (editableField.type === Number) {
+					beforeChangeRemember.set(o, o[fieldName]);
+				} else if(game.__EDITOR_mode && getFieldByName(o, fieldName)) {
+					editor.ui.modal.showInfo("Could not change '" + fieldName + "' field`s  value, because '" + fieldName + "' field is animated and it`s type is not numeric", "Could not change '" + fieldName + "' value", 99999);
 				}
 			}
 		}
-
 	}
 
 	static onAfterPropertyChanged(o, fieldName, field) {
@@ -541,8 +543,9 @@ export default class Timeline extends React.Component {
 					timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName);
 				}
 			} else { //shift all keyframes instead of add keyframe
-				let val = o[fieldName];
-				if (typeof val === 'number') {
+				let editableField = editor.getObjectField(o, fieldName);
+				if (editableField.type === Number) {
+					let val = o[fieldName];
 					let oldVal = beforeChangeRemember.get(o);
 					if (oldVal !== val) {
 						let delta = val - oldVal;
