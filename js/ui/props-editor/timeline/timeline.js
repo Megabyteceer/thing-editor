@@ -742,7 +742,8 @@ function createKeyframe(o, name, time, field, isAutomaticCreation) {
 
 	if(!isAutomaticCreation && (name === 'image') && prevField) {
 		let step = time - prevField.t;
-		if(increaseNumberInName(prevField.v) === o.image) {
+		let nextName = increaseNumberInName(prevField.v);
+		if((nextName !== prevField.v) && (nextName === o.image)) {
 			if(Lib.hasTexture(increaseNumberInName(o.image))) {
 				editor.ui.modal.showEditorQuestion("Animation generator", "Do you want to create keyframes for all same images?",
 					() => {
