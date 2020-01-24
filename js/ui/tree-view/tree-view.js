@@ -5,6 +5,7 @@ import Selection from "../../utils/selection.js";
 import Lib from "thing-engine/js/lib.js";
 import Scene from 'thing-engine/js/components/scene.js';
 import DataPathFixer from 'thing-editor/js/utils/data-path-fixer.js';
+import Overlay from 'thing-editor/js/utils/overlay.js';
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};
@@ -329,12 +330,8 @@ export default class TreeView extends React.Component {
 	
 		this.findNext((o) => {
 			let ret;
-			let p = o;
-			while(p) {
-				if(__getNodeExtendData(p).hidden) {
-					return false;
-				}
-				p = p.parent;
+			if(Overlay.getParentWhichHideChildren(o)) {
+				return;
 			}
 
 			if(o.constructor.name.toLowerCase().indexOf(this.searchString) >= 0) return true;
@@ -359,7 +356,7 @@ export default class TreeView extends React.Component {
 							}
 						}
 					}
-				} else {
+				} else if(p.type !== 'splitter') {
 					let val = '' + o[p.name];
 					if(val.toLowerCase().indexOf(this.searchString) >= 0) {
 						addSearchEntry(o, p.name);
