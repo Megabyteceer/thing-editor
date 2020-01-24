@@ -79,10 +79,11 @@ AssetsLoader.deleteAssets = (assetsNames) => {
 				Lib.__texturesList.splice(i, 1);
 			}
 		}
-		if(Lib.resources.hasOwnProperty(name)) {
-			delete(Lib.resources[name]);
-			let i = Lib.__resourcesList.findIndex(item => item.name === name);
-			assert(i >= 0, "can not remove deleted resource: " + name);
+		let resourceName = 'img/' + name;
+		if(Lib.resources.hasOwnProperty(resourceName)) {
+			delete(Lib.resources[resourceName]);
+			let i = Lib.__resourcesList.findIndex(item => item.name === resourceName);
+			assert(i >= 0, "can not remove deleted resource: " + resourceName);
 			Lib.__resourcesList.splice(i, 1);
 		}
 	}
