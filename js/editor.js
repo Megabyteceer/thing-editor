@@ -383,12 +383,13 @@ export default class Editor {
 		if(!(o instanceof Container)) {
 			return;
 		}
-		return editor.isCanBeAdded();
+		o = editor.selection[0];
+		return o && !o.constructor.__canNotHaveChildren;
 	}
 
 	isCanBeAdded() {
 		let o = editor.selection[0];
-		return o && !o.constructor.__canNotHaveChildren; // 99999 - describe class metadata
+		return !o || !o.constructor.__canNotHaveChildren; // 99999 - describe class metadata
 	}
 
 	onEditorRenderResize() {
