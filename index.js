@@ -76,6 +76,9 @@ app.get('/fs/delete', function (req, res) {
 });
 
 app.get('/fs/edit', function (req, res) {
+	if(buildProjectAndExit) {
+		return;
+	}
 	if(!currentGame) throw 'No game opened';
 	
 	let fn = mapFileUrl(req.query.f);
@@ -215,20 +218,39 @@ function mapAssetUrl(url) {
 }
 
 
+//=========== parse arguments ============================================================
+let openChrome = true;
+let buildProjectAndExit;
+let params = process.argv.slice(2);
+while(params.length) {
+	switch(params.shift()) {
+	case 'n':
+		openChrome = false;
+		break;
+	case 'build':
+		buildProjectAndExit = params.shift();
+	}
+}
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
-if(process.argv.indexOf('n') < 0) {
-	
-	open('http://127.0.0.1:' + PORT + '/thing-editor', {app: [
+let wss = require('./scripts/server-socket.js');
+
+if(openChrome) {
+
+	let editorURL = 'http://127.0.0.1:' + PORT + '/thing-editor';
+	if(buildProjectAndExit) {
+		editorURL += '?buildProjectAndExit=' + encodeURIComponent(buildProjectAndExit);
+	}
+
+	open(editorURL, {app: [
 		(process.platform == 'darwin') ?
 			'Google Chrome'
 			:
 			'chrome'
-		, /*--new-window --no-sandbox --js-flags="--max_old_space_size=32768"--app=*/]});
+		, buildProjectAndExit && '--new-window --headless --disable-gpu --incognito --js-flags="--max_old_space_size=32768"']}
+	);
 }
-
-let wss = require('./scripts/server-socket.js');
 
 //=========== enum files ================================
 let pathSeparatorReplaceExp = /\\/g;

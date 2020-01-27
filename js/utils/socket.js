@@ -3,7 +3,7 @@ import AssetsLoader from "./assets-loader.js";
 const ws = new WebSocket('ws://' + location.hostname + ':' + (parseInt(location.port) + 1));
 
 ws.onopen = function open() {
-	ws.send('something');
+	// connected to server socket
 };
 
 function addAssetNameInToMap(name, map) {
@@ -85,6 +85,17 @@ ws.ignoreFileChanging = function(fileName) {
 	}
 };
 
+let exitInProgress = false;
+ws.exitWithResult = function(success, error) {
+	exitInProgress = true;
+	ws.send(JSON.stringify({
+		exitWithResult:{success, error}
+	}));
+	setTimeout(() => {
+		window.close();
+	}, 1000);
+};
+
 ws.notIgnoreFileChanging = function(fileName) {
 	setTimeout(() => {
 		assert(filesIgnoring[fileName] > 0, 'ignoring vas no started.');
@@ -96,7 +107,9 @@ ws.notIgnoreFileChanging = function(fileName) {
 };
 
 ws.onclose = function incoming() {
-	closeWindow();
+	if(!exitInProgress) {
+		closeWindow();
+	}
 };
 
 function closeWindow() {

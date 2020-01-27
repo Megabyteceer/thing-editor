@@ -2,6 +2,7 @@ import Prompt from './prompt.js';
 import ChooseList from './choose-list.js';
 import game from "thing-engine/js/game.js";
 import Help from 'thing-editor/js/utils/help.js';
+import ws from 'thing-editor/js/utils/socket.js';
 
 let modal;
 
@@ -175,12 +176,28 @@ class Modal extends React.Component {
 	}
 	
 	showError(message, errorCode, title = 'Error!', noEasyClose, toBottom) {
-		if(game.stage) {
-			setTimeout(editor.ui.viewport.stopExecution, 0);
+		if(editor.buildProjectAndExit) {
+			if(typeof message === 'object') {
+				try {
+					let txt = [];
+					JSON.stringify(message, (key, value) => {
+						if(key !== 'type' && typeof value === 'string') {
+							txt.push(value);	
+						}
+						return value;
+					});
+					message = txt.join('\n');
+				} catch (er) {} // eslint-disable-line no-empty
+			}
+			ws.exitWithResult(undefined, (editor.buildProjectAndExit ? ('Build failed: ' + editor.buildProjectAndExit + '\n') : '') + message + '; Error code: ' + errorCode);
+		} else {
+			if(game.stage) {
+				setTimeout(editor.ui.viewport.stopExecution, 0);
+			}
+			return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), errorCode, ' ', title, R.btn('?', () => {
+				Help.openErrorCodeHelp(errorCode);
+			}, 'Open docs for this error (F1)', 'error-help-button', 112)), noEasyClose, toBottom);
 		}
-		return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), errorCode, ' ', title, R.btn('?', () => {
-			Help.openErrorCodeHelp(errorCode);
-		}, 'Open docs for this error (F1)', 'error-help-button', 112)), noEasyClose, toBottom);
 	}
 	
 	showFatalError(message, errorCode, additionalText = 'FatalError. Please check console output (F12) for exceptions messages, and restart application (Reload page) by press (F5) button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.') {

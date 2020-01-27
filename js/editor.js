@@ -2,7 +2,7 @@ import utils from './utils/editor-utils.js';
 import game from 'thing-engine/js/game.js';
 import Settings from 'thing-engine/js/utils/settings.js';
 import Selection from './utils/selection.js';
-import './utils/socket.js';
+import ws from './utils/socket.js';
 import fs from './utils/fs.js';
 import history from './utils/history.js';
 import UI from './ui/ui.js';
@@ -128,7 +128,10 @@ export default class Editor {
 		editor.ui.viewport.stopExecution();
 		await editor.askSceneToSaveIfNeed();
 		
-		let lastOpenedProject = location.search ? location.search.replace('?','') : editor.settings.getItem('last-opened-project');
+		if(location.search && location.search.indexOf('?buildProjectAndExit=') === 0) {
+			editor.buildProjectAndExit = location.search.replace('?buildProjectAndExit=', '');
+		}
+		let lastOpenedProject = editor.buildProjectAndExit || editor.settings.getItem('last-opened-project');
 		if(!dir) {
 			dir = lastOpenedProject;
 		}
@@ -180,7 +183,7 @@ export default class Editor {
 				editor.projectDesc.__lastSceneName = false;
 			}
 			
-			if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
+			if(!editor.buildProjectAndExit && Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showEditorQuestion("Scene's backup restoring (" + editor.projectDesc.title + ")",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
@@ -198,6 +201,13 @@ export default class Editor {
 				);
 			} else {//open last project's scene
 				await this.openSceneSafe(editor.projectDesc.__lastSceneName || 'main');
+				if(editor.buildProjectAndExit) {
+					editor.build().then(() => {
+						editor.build(true).then(() => {
+							ws.exitWithResult('build complete');
+						});
+					});
+				}
 			}
 			editor.projectOpeningInProgress = false;
 		}
@@ -834,8 +844,8 @@ export default class Editor {
 	}
 	
 	build(debug) {
-		editor.askSceneToSaveIfNeed().then(() => {
-			build.build(debug);
+		return editor.askSceneToSaveIfNeed().then(() => {
+			return build.build(debug);
 		});
 	}
 

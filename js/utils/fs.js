@@ -59,7 +59,9 @@ let fs = {
 		});
 	},
 	editFile: (fileName, line = -1, char = -1) => {
-
+		if(editor.buildProjectAndExit) {
+			return;
+		}
 		let now = Date.now();
 		let lastEdit = filesEditTimes[fileName];
 		if(lastEdit && lastEdit >  (now - 10000)) {
