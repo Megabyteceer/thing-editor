@@ -922,17 +922,14 @@ function addTo(parent, child, doNotSelect) {
 
 function __callInitIfNotCalled(node) {
 	assert(!game.__EDITOR_mode, "Attempt to init object in editor mode.");
-	let d = __getNodeExtendData(node);
-	if(!d.constructorCalled) {
-		node.init();
-		d.constructorCalled = true;
+	if(!node._thing_initialized) {
+		Lib._constructRecursive(node);
 	}
 }
 
 function callInitIfGameRuns(node) {
 	if(!game.__EDITOR_mode) {
 		__callInitIfNotCalled(node);
-		node.forAllChildren(__callInitIfNotCalled);
 	}
 }
 
