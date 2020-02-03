@@ -535,12 +535,12 @@ export default class Timeline extends React.Component {
 		}
 	}
 
-	static onAfterPropertyChanged(o, fieldName, field) {
+	static onAfterPropertyChanged(o, fieldName, field, val, delta) {
 
 		if (o instanceof MovieClip) {
 			if (Timeline.timelineDOMElement && !recordingIsDisabled) {
 				if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
-					timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName);
+					timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName, undefined, delta, val);
 				}
 			} else { //shift all keyframes instead of add keyframe
 				let editableField = editor.getObjectField(o, fieldName);
@@ -591,11 +591,24 @@ export default class Timeline extends React.Component {
 		recordingIsDisabled = false;
 	}
 
-	createKeyframeWithCurrentObjectsValue(o, fieldName, time) {
+	createKeyframeWithCurrentObjectsValue(o, fieldName, time, isDelta, deltaValue) {
 		let keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
-		keyFrame.v = o[fieldName];
+		if(isDelta) {
+			let editableField = editor.getObjectField(o, fieldName);
+			let step = editableField.step || 1;
+			keyFrame.v = Math.round((keyFrame.v + deltaValue) / step) * step;
+
+		} else {
+			keyFrame.v = o[fieldName];
+		}
 		let field = getFieldByNameOrCreate(o, fieldName);
 		Timeline.fieldDataChanged(field, o);
+		if(isDelta && keyFrame.___view) {
+			let timelineVal = keyFrame.___view.props.owner.getValueAtTime(keyFrame.t);
+			if(!isNaN(timelineVal)) {
+				o[fieldName] = timelineVal;
+			}
+		}
 	}
 
 	static mouseEventToTime(ev) {
@@ -691,6 +704,15 @@ function getFieldByNameOrCreate(o, name) {
 		o._timelineData.f.push(field);
 	}
 	return field;
+}
+
+function getFrameAtTime(o, name, time) {
+	let field = getFieldByNameOrCreate(o, name);
+	for (let keyFrame of field.t) {
+		if (keyFrame.t === time) {
+			return keyFrame;
+		}
+	}
 }
 
 function getFrameAtTimeOrCreate(o, name, time) {
