@@ -1,5 +1,4 @@
 import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
-import L from 'thing-engine/js/utils/l.js';
 import SceneLinkedPromise from 'thing-engine/js/components/scene-linked-promise.js';
 import Delay from 'thing-engine/js/components/delay.js';
 import Pool from "thing-engine/js/utils/pool.js";
@@ -34,6 +33,7 @@ import game from "thing-engine/js/game.js";
 import SelectionHighlighter from 'thing-engine/js/components/selection-highlighter.js';
 import BgMusic from 'thing-engine/js/components/bg-music.js';
 import Spine from 'thing-engine/js/components/spine.js';
+import ReplaceableSpine from 'thing-engine/js/components/replaceable-spine.js';
 import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
 import HTMLOverlay from 'thing-engine/js/components/html-overlay.js';
 import TextInput from 'thing-engine/js/components/text-input.js';
@@ -76,6 +76,7 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[SpawnerRing, "/thing-engine/js/components/spawner-ring.js"],
 		[BgMusic, "/thing-engine/js/components/bg-music.js"],
 		[Spine, "/thing-engine/js/components/spine.js"],
+		[ReplaceableSpine, "/thing-engine/js/components/replaceable-spine.js"],
 		[MobileJoystick, "/thing-engine/js/components/mobile-joystick.js"],
 		[HTMLOverlay, "/thing-engine/js/components/html-overlay.js"],
 		[TextInput, "/thing-engine/js/components/text-input.js"],
