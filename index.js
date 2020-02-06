@@ -82,6 +82,8 @@ app.get('/fs/edit', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	
 	let fn = mapFileUrl(req.query.f);
+	let line = req.query.l;
+	let char = req.query.c;
 	if(!fn.startsWith(fullRoot)) {
 		fn = path.join(fullRoot, fn);
 	}
@@ -89,7 +91,12 @@ app.get('/fs/edit', function (req, res) {
 	setTimeout(() => {
 		"use strict";
 		try {
-			open(fn);
+			if(line) {
+				let arg = fn + ':' + line + (char ? ':' + char : '');
+				open('', {app: ['code', '-r', '-g', arg]});
+			} else {
+				open(fn);
+			}
 			res.end('{}');
 		} catch (err) {
 			res.end(JSON.stringify({error: 'Can not open file to edit: ' + fn}));
