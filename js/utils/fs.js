@@ -1,10 +1,11 @@
 import ws from "./socket.js";
+import Group from "../ui/group.js";
 
 let fs = {
 	chooseProject: (enforced) => {
 		editor.ui.viewport.stopExecution();
 		fs.getJSON('/fs/projects').then((data) => {
-			editor.ui.modal.showModal(data.map(renderProjectItem), R.span(null, R.icon('open'), 'Choose project to open:'), enforced)
+			editor.ui.modal.showModal(R.div({className:'project-open-chooser'}, Group.groupArray(data.map(renderProjectItem))), R.span(null, R.icon('open'), 'Choose project to open:'), enforced)
 				.then((projDir) => {
 					if(projDir) {
 						editor.openProject(projDir);
@@ -167,9 +168,9 @@ function renderProjectItem(desc, i) {
 	if (desc.icon) {
 		icon = R.img({src: getIconPath(desc)});
 	}
-	
+	let key = desc.__group ? desc.__group + '/' + i : i;
 	return R.div({
-		className: 'project-item-select clickable', key: i, onClick: () => {
+		className: 'project-item-select clickable', key, onClick: () => {
 			editor.ui.modal.hideModal(desc.dir);
 		}
 	}, icon, desc.title);
