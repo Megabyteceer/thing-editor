@@ -303,15 +303,22 @@ export default class Timeline extends React.Component {
 
 	setTime(time, scrollInToView) {
 		timeMarker.setTime(time, scrollInToView);
+		this.applyCurrentTimeValuesToFields(editor.selection);
 		if (game.__EDITOR_mode) {
-			editor.selection.some((o) => {
+			editor.refreshPropsEditor();
+		}
+	}
+
+	applyCurrentTimeValuesToFields(nodes) {
+		if (game.__EDITOR_mode) {
+			let time = this.getTime();
+			nodes.some((o) => {
 				if (o._timelineData) {
 					o._timelineData.f.some((f) => {
 						f.___view.applyValueToMovieClip(time);
 					});
 				}
 			});
-			editor.refreshPropsEditor();
 		}
 	}
 

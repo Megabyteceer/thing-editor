@@ -3,12 +3,15 @@ import Timeline from "./timeline.js";
 import TimeLabel from "./timeline-label.js";
 import Line from "./timeline-line.js";
 import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
-import editorUtils from "thing-editor/js/utils/editor-utils.js";
 
 const objectsTimelineProps = {className: 'objects-timeline'};
 
 
 export default class ObjectsTimeline extends React.Component {
+
+	componentDidMount() {
+		this.props.owner.applyCurrentTimeValuesToFields([this.props.node]);
+	}
 
 	renderTimeLabel(labelName, labelsNamesList) {
 		return React.createElement(TimeLabel, {key:labelName, owner: this, label:this.props.node._timelineData.l[labelName], labelName, labelsNamesList});
