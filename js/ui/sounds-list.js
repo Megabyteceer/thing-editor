@@ -32,8 +32,21 @@ export default class SoundsList extends React.Component {
 
 	constructor(props) {
 		super(props);
-		this.state = {};
+		let filter = editor.settings.getItem('sounds-filter', '');
+		this.state = {filter};
+		this.searchInputProps = {
+			className: 'sounds-search-input',
+			onChange: this.onSearchChange.bind(this),
+			placeholder: 'Search',
+			defaultValue: filter
+		};
 		this.onSelect = this.onSelect.bind(this);
+	}
+
+	onSearchChange(ev) {
+		let filter= ev.target.value.toLowerCase();
+		editor.settings.setItem('sounds-filter', filter);
+		this.setState({filter});
 	}
 
 	rebuildSounds(noCacheSoundName) {
@@ -215,11 +228,15 @@ export default class SoundsList extends React.Component {
 		let list = [];
 		this.state.selectedItem = null;
 		for (let sndName of Lib.__soundsList) {
-			list.push(this.renderItem(sndName.name, sndName));
+			if(!this.state.filter || sndName.name.indexOf(this.state.filter) >= 0) {
+				list.push(this.renderItem(sndName.name, sndName));
+			}
 		}
 
-		list = Group.groupArray(list);
-		
+		if(!this.state.filter) {
+			list = Group.groupArray(list);
+		}
+
 		return R.fragment(
 			R.div({className: 'sounds-list-header'},
 				R.btn('Stop all', this.onStopAllClick),
@@ -229,7 +246,8 @@ export default class SoundsList extends React.Component {
 					editor.saveProjectDesc();
 					this.forceUpdate();
 					editor.ui.modal.showInfo('Bitrate changes will be applied on next assets loading.', undefined, 32041);
-				}, value:editor.projectDesc.soundDefaultBitrate, select: bitrates})) : undefined
+				}, value:editor.projectDesc.soundDefaultBitrate, select: bitrates})) : undefined,
+				R.input(this.searchInputProps)
 			),
 			R.div(bodyProps, list)
 		);

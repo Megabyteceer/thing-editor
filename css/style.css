@@ -1309,6 +1309,18 @@ input{
 	right: 4px;
 	width: unset;
 }
+.sounds-list-header {
+	white-space: nowrap;
+}
+
+.sounds-search-input {
+	width: calc(100% - 225px);
+	outline: 2px solid red !important;
+}
+
+.sounds-search-input:placeholder-shown {
+	outline: none !important;
+}
 
 .sound-preload-ui .select-editor, .sounds-list-header .select-editor {
 	display: inline-block;
