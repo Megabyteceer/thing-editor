@@ -382,7 +382,7 @@ function selectByStageClick(ev) {
 		if(isObjectUnder(o)) {
 			let parentWhichHideChildren = getParentWhichHideChildren(o);
 			if(parentWhichHideChildren) {
-				if(allUnderMouse.indexOf(parentWhichHideChildren) < 0) {
+				if((parentWhichHideChildren !== game.stage) && (allUnderMouse.indexOf(parentWhichHideChildren) < 0)) {
 					allUnderMouse.push(parentWhichHideChildren);
 				}
 			} else {
