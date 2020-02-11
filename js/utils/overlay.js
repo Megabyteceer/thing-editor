@@ -402,10 +402,6 @@ function selectByStageClick(ev) {
 		}
 	});
 
-	if(isObjectUnder(game.currentContainer)) {
-		allUnderMouse.push(game.currentContainer);
-	}
-	
 	allUnderMouse.sortSelectedNodes();
 	allUnderMouse.reverse();
 	
