@@ -146,8 +146,7 @@ setInterval(() => {
 
 let getPathOfNode = (node) => {
 	let ret = [];
-	while (node !== game.currentContainer && node !== game.currentFader) {
-		assert(node.parent !== game.stage, "selected object is is not in current container.");
+	while (node !== game.stage) {
 		if(node.name && node.parent.children.filter((c)=>{return c.name === node.name;}).length === 1) {
 			ret.push(node.name);
 		} else {
@@ -159,7 +158,7 @@ let getPathOfNode = (node) => {
 };
 
 let selectNodeByPath = (path) => {
-	let ret = game.currentContainer;
+	let ret = game.stage;
 	for (let i = path.length - 1; i >= 0 && ret; i--) {
 		let p = path[i];
 		if(typeof p === 'number') {
@@ -173,7 +172,7 @@ let selectNodeByPath = (path) => {
 		}
 	}
 	
-	if(ret) {
+	if(ret && ret !== game.stage) {
 		editor.selection.add(ret);
 	}
 };
