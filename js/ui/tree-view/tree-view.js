@@ -373,15 +373,24 @@ export default class TreeView extends React.Component {
 
 		let a = new Selection();
 		
-		if(condition(game.currentContainer)) {
-			a.push(game.currentContainer);
-		}
+		if(game.__EDITOR_mode) {
 
-		game.currentContainer.forAllChildren((o) => {
-			if(condition(o)) {
-				a.push(o);
+		
+			if(condition(game.currentContainer)) {
+				a.push(game.currentContainer);
 			}
-		});
+			game.currentContainer.forAllChildren((o) => {
+				if(condition(o)) {
+					a.push(o);
+				}
+			});
+		} else {
+			game.stage.forAllChildren((o) => {
+				if(condition(o)) {
+					a.push(o);
+				}
+			});
+		}
 		
 		if (a.length > 0) {
 			
