@@ -94,7 +94,7 @@ class TreeNode extends React.Component {
 		
 		return R.fragment(R.div({
 			onDoubleClick:(ev) => {
-				if(!isClickedAtRightEdge(ev)) {
+				if(!isClickedAtRightEdge(ev) && !ev.ctrlKey) {
 					editor.editClassSource(node);
 				}
 			},
