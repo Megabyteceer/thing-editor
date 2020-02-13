@@ -227,7 +227,9 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 		if(d) {
 			//console.log("Property " + propertyName + " wrapped.")
 			originalSetter = d.set;
-			assert(originalSetter.name !== 'wrapPropertyWithNumberCheckerSetter', "Already wrapped");
+			if(originalSetter.name === 'wrapPropertyWithNumberCheckerSetter') {
+				return;
+			}
 			d.set = newSetter;
 			break;
 		}
