@@ -624,9 +624,9 @@ export default class Editor {
 			return {functionName, path: s};
 		});
 		editor.ui.modal.showModal(R.div(null, R.b(null, stack.title), ' was created at:', a.map((i,key) => {
-			return R.div({key, className: 'list-item stack-item', onClick: () => {
+			return R.div({key, className: 'list-item stack-item', onMouseDown: () => {
 				let a = i.path.split(':');
-				editor.fs.editFile('/' + a[0], parseInt(a[1]));
+				editor.fs.editFile('/' + a[0], parseInt(a[1]), parseInt(a[2]));
 			}}, R.b(null, i.functionName), ' (', i.path, ')');
 		})));
 	}
