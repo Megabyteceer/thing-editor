@@ -101,7 +101,7 @@ app.get('/fs/edit', function (req, res) {
 		} catch (err) {
 			res.end(JSON.stringify({error: 'Can not open file to edit: ' + fn}));
 		}
-	},100);
+	}, 1);
 
 });
 
