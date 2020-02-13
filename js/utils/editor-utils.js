@@ -218,13 +218,23 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 		originalSetter.call(this, val);
 	};
 	
-	let d = Object.getOwnPropertyDescriptor(constructor.prototype, propertyName);
-	if(d) {
-		//console.log("Property " + propertyName + " wrapped.")
-		originalSetter = d.set;
-		assert(originalSetter.name !== 'wrapPropertyWithNumberCheckerSetter', "Already wrapped");
-		d.set = newSetter;
-	} else {
+
+	let d;
+	
+	let prot = constructor.prototype;
+	while (prot) {
+		d = Object.getOwnPropertyDescriptor(prot, propertyName);
+		if(d) {
+			//console.log("Property " + propertyName + " wrapped.")
+			originalSetter = d.set;
+			assert(originalSetter.name !== 'wrapPropertyWithNumberCheckerSetter', "Already wrapped");
+			d.set = newSetter;
+			break;
+		}
+		prot = Object.getPrototypeOf(prot);
+	}
+	
+	if(!d) {
 		//console.log("Own property " + propertyName + " wrapped.")
 		let privValue = '__wrapper_store_' + propertyName;
 		
