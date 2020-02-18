@@ -292,15 +292,17 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 			let scriptSource = '';
 			let classesList = editor.fs.filesExt['src/game-objects'].concat(editor.fs.filesExt['src/scenes']);
-			classesList.some((classInfo, i) => {
+			classesList.forEach((classInfo, i) => {
 				let classPath = classInfo.name;
-				let wrongSymbolPos = classPath.search(/[^a-zA-Z_\-\.\d\/]/gm);
-				if(wrongSymbolPos >= 0) {
-					editor.ui.status.warn("File " + classPath + " ignored because of wrong symbol '" + classPath[wrongSymbolPos] + "' in it's name", 32044, () => {
-						editor.fs.editFile(classPath);
-					});
-				} else {
-					scriptSource += ("import C" + i + " from '" + location.origin + '/' + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "', '" + (classInfo.lib || '') + "');");
+				if(classPath.endsWith('.js')) {
+					let wrongSymbolPos = classPath.search(/[^a-zA-Z_\-\.\d\/]/gm);
+					if(wrongSymbolPos >= 0) {
+						editor.ui.status.warn("File " + classPath + " ignored because of wrong symbol '" + classPath[wrongSymbolPos] + "' in it's name", 32044, () => {
+							editor.fs.editFile(classPath);
+						});
+					} else {
+						scriptSource += ("import C" + i + " from '" + location.origin + '/' + classPath + "?v=" + (cacheCounter) + "'; editor.ClassesLoader.classLoaded(C" + i + ", '" + classPath + "', '" + (classInfo.lib || '') + "');");
+					}
 				}
 			});
 		
