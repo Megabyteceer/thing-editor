@@ -348,7 +348,7 @@ function enumFiles() {
 
 const walkSync = (dir, fileList = []) => {
 	fs.readdirSync(dir).forEach(file => {
-		if(!file.startsWith('___')) {
+		if(!file.startsWith('~')) {
 			let fullPath = path.join(dir, file);
 			let stats = fs.statSync(fullPath);
 			if(stats.isDirectory()) {
