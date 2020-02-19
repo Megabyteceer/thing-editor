@@ -549,6 +549,7 @@ function isLibInProject(libName) {
 let moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
 let moduleImportAbsFixer = /(^\s*import.+from\s*['"])([^.\/])/gm;
+let moduleEmptyImportAbsFixer = /(^\s*import\s*['"])([^.\/])/gm;
 
 function absoluteImportsFixer(fileName, req, res, next) {
 	let needParse = req.path.endsWith('.js') && !req.path.endsWith('.min.js');
@@ -560,6 +561,9 @@ function absoluteImportsFixer(fileName, req, res, next) {
 			} else {
 				res.set('Content-Type', 'application/javascript');
 				let resultJsContent = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2) => {					
+					return m1 + "/" + m2;
+				});
+				resultJsContent = resultJsContent.replace(moduleEmptyImportAbsFixer, (substr, m1, m2) => {
 					return m1 + "/" + m2;
 				});
 				resultJsContent = addJsExtensionAndPreventCache(req, res, resultJsContent);
