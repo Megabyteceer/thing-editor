@@ -184,9 +184,9 @@ let classes = {};`];
 								}));
 							}
 						}
+						resolve();
 					});
 				}
-				resolve();
 			});
 			
 
