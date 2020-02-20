@@ -844,8 +844,10 @@ export default class Editor {
 	}
 	
 	build(debug) {
-		return editor.askSceneToSaveIfNeed().then(() => {
-			return build.build(debug);
+		return new Promise((resolve) => {
+			editor.askSceneToSaveIfNeed().then(() => {
+				build.build(debug).then(resolve);
+			});
 		});
 	}
 
