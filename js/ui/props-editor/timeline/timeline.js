@@ -602,7 +602,7 @@ export default class Timeline extends React.Component {
 
 	createKeyframeWithCurrentObjectsValue(o, fieldName, time, isDelta, deltaValue) {
 		let keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
-		if(isDelta) {
+		if(isDelta && !getFrameAtTimeOrCreateReturnedNewKeyframe) {
 			let editableField = editor.getObjectField(o, fieldName);
 			let step = editableField.step || 1;
 			keyFrame.v = Math.round((keyFrame.v + deltaValue) / step) * step;
@@ -724,13 +724,16 @@ function getFrameAtTime(o, name, time) {
 	}
 }
 
+let getFrameAtTimeOrCreateReturnedNewKeyframe;
 function getFrameAtTimeOrCreate(o, name, time) {
 	let field = getFieldByNameOrCreate(o, name);
 	for (let keyFrame of field.t) {
 		if (keyFrame.t === time) {
+			getFrameAtTimeOrCreateReturnedNewKeyframe = false;
 			return keyFrame;
 		}
 	}
+	getFrameAtTimeOrCreateReturnedNewKeyframe = true;
 	return createKeyframe(o, name, time, field);
 }
 
