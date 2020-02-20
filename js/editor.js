@@ -775,7 +775,7 @@ export default class Editor {
 
 	get isCurrentSceneModified() {
 		if(game.currentScene !== game.currentContainer) {
-			alert("access to isCurrentSceneModified in prefab mode");
+			editor.ui.modal.showError("access to isCurrentSceneModified in prefab mode", 90001);
 		}
 		return this.isCurrentContainerModified;
 	}
