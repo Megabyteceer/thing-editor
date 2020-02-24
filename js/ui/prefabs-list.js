@@ -253,7 +253,7 @@ export default class PrefabsList extends React.Component {
 		prefabsNames.sort();
 
 		for (let prefabName of prefabsNames) {
-			if(!this.state.filter || prefabName.indexOf(this.state.filter) >= 0) {
+			if(!this.state.filter || prefabName.search(this.state.filter) >= 0) {
 				prefabs.push(this.renderItem(prefabName, scenePrefabs[prefabName]));
 			}
 		}
