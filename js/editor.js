@@ -307,10 +307,6 @@ export default class Editor {
 
 		editor.disableFieldsCache = false;
 
-		if(!dragObject) {
-			editor.onSelectedPropsChange('y', 10, true);
-		}
-		
 		DataPathFixer.validatePathReferences();
 		editor.refreshTreeViewAndPropertyEditor();
 		editor.sceneModified();
