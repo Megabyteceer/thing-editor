@@ -97,7 +97,7 @@ export default class TreeView extends React.Component {
 
 			while(i < p.children.length) {
 				let c = p.getChildAt(i++);
-				if(!Overlay.getParentWhchHideChildren(c, true)) {
+				if(!Overlay.getParentWhichHideChildren(c, true)) {
 					this.selectInTree(c);
 					isNextChildSelected = true;
 				}
