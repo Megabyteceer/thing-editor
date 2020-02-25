@@ -93,11 +93,27 @@ export default class TreeView extends React.Component {
 				o.remove();
 			}
 			
-			if(i < p.children.length) {
-				this.selectInTree(p.getChildAt(i));
-			} else if(i > 0) {
-				this.selectInTree(p.getChildAt(i - 1));
-			} else if (p !== game.stage) {
+			let isNextChildSelected = false;
+
+			while(i < p.children.length) {
+				let c = p.getChildAt(i++);
+				if(!Overlay.getParentWhchHideChildren(c, true)) {
+					this.selectInTree(c);
+					isNextChildSelected = true;
+				}
+			}
+			i--;
+			if(!isNextChildSelected) {
+				while(i >= 0) {
+					let c = p.getChildAt(i--);
+					if(!Overlay.getParentWhichHideChildren(c, true)) {
+						this.selectInTree(c);
+						isNextChildSelected = true;
+					}
+				}
+			}
+
+			if (!isNextChildSelected && (p !== game.stage)) {
 				this.selectInTree(p);
 			}
 
