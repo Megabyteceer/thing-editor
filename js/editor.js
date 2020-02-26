@@ -350,7 +350,7 @@ export default class Editor {
 				w = ClassesView.loadSafeInstanceByClassName(className, true);
 			} else {
 				editor.disableFieldsCache = true;
-				w = Lib._deserializeObject(editor.clipboardData[0]);
+				w = Lib._deserializeObject({c: editor.clipboardData[0].c, p: editor.clipboardData[0].p});
 				Lib.__reassignIds(w);
 				editor.disableFieldsCache = false;
 			}
