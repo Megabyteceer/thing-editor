@@ -360,7 +360,11 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 					} else {
 						let clone = editor.cloneSelected(draggingDragger.owner);
 						refreshDraggersForNode(clone);
-						draggingDragger = __getNodeExtendData(clone).draggerPivot;
+						if(__getNodeExtendData(draggingDragger.owner).draggerPivot === draggingDragger) {
+							draggingDragger = __getNodeExtendData(clone).draggerPivot;
+						} else {
+							draggingDragger = __getNodeExtendData(clone).draggerRotator;
+						}
 					}
 				}
 				draggingDragger.onDrag();
