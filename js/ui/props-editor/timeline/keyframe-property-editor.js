@@ -148,7 +148,8 @@ export default class KeyframePropertyEditor extends React.Component {
 	onRandomChanged(ev) {
 		let val = parseInt(ev.target.value);
 		for(let k of this.keyframes) {
-			k.props.keyFrame.r = val;
+			let kf = k.props.keyFrame;
+			kf.r = Math.min(val, kf.n.t - kf.j - 1);
 		}
 		this.onKeyframeChanged();
 	}
@@ -238,14 +239,14 @@ export default class KeyframePropertyEditor extends React.Component {
 		let selectableKeyframeTypes;
 
 
-		let speedSetPossible = false;
+		let speedSetPossible = true;
 		let speedVal = false;
 
 
 		for(let k of keyframes) {
 
 			let fieldsProps = k.props.owner.props.owner.props;
-			speedSetPossible |= ((typeof fieldsProps.owner.props.node[fieldsProps.field.n]) === 'number');
+			speedSetPossible &= ((typeof fieldsProps.owner.props.node[fieldsProps.field.n]) === 'number');
 			if(speedVal === false && k.props.keyFrame.hasOwnProperty('s')) {
 				speedVal = k.props.keyFrame.s;
 			}
@@ -288,14 +289,14 @@ export default class KeyframePropertyEditor extends React.Component {
 		
 		let hasSpeed =  kf.hasOwnProperty('s');
 		let speedEditor;
-		if(hasSpeed) {
+		if(hasSpeed && speedSetPossible) {
 			let edField = editor.getObjectField(editor.selection[0], kf.___view.props.owner.props.owner.props.field.n);
 			speedEditor = React.createElement(NumberEditor, {value: speedVal, type:'number', step:(edField.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged});
 		}
 		let hasRandom =  kf.hasOwnProperty('r');
 		let randomEditor;
 		if(hasRandom) {
-			randomEditor = React.createElement(NumberEditor, {value: kf.r, type:'number', step:1, min: -1000, max:kf.n.t - kf.j - 1, onChange: this.onRandomChanged});
+			randomEditor = React.createElement(NumberEditor, {value: kf.r, type:'number', step:1, min: -1000, onChange: this.onRandomChanged});
 		}
 
 		let jumpReset;
