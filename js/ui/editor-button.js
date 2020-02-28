@@ -1,3 +1,5 @@
+import DataPathFixer from "../utils/data-path-fixer.js";
+
 const allHotkeyedButtons = [];
 window.addEventListener("keydown", (ev) => {
 	for(let b of allHotkeyedButtons) {
@@ -96,6 +98,7 @@ class EditorButton extends React.Component {
 			editor.ui.modal.showModal(this.props.onClick.name, "Button's Handler:");
 		} else {
 			if (this.props.disabled) return;
+			DataPathFixer.onNameBlur();
 			this.props.onClick(ev);
 			ev.target.blur();
 		}
