@@ -50,7 +50,9 @@ app.get('/fs/openProject', function (req, res) {
 		let projectDescSrc = fs.readFileSync(descPath);
 		currentGameDesc = JSON.parse(projectDescSrc);
 
-		initWatchers();
+		if(!buildProjectAndExit) {
+			initWatchers();
+		}
 		res.send(projectDescSrc);
 		excludeAnotherProjectsFromCodeEditor();
 
