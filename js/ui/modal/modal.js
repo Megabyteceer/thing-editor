@@ -92,6 +92,9 @@ class Modal extends React.Component {
 	}
 	
 	showModal(content, title, noEasyClose, toBottom = false) {
+		if(document.activeElement) {
+			document.activeElement.blur();
+		}
 		return new Promise((resolve) => {
 			modal.state.modals[toBottom ? 'unshift' : 'push']({content, title, noEasyClose, resolve});
 			modal.forceUpdate();
