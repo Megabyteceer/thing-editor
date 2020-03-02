@@ -188,12 +188,8 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 	let fileName = mapFileUrl(req.body.filename);
 	//log('Save file: ' + fileName);
 	ensureDirectoryExistence(fileName);
-	fs.writeFile(fileName, req.body.data, function(err) {
-		if(err) {
-			throw err;
-		}
-		res.end();
-	});
+	fs.writeFileSync(fileName, req.body.data);
+	res.end();
 });
 
 app.use('/', (req, res, next) => {
