@@ -16,12 +16,12 @@ if(fs.existsSync(descPath)) {
 	projectDesc = JSON.parse(fs.readFileSync(descPath));
 }
 
-let confPath;
-if (projectDesc && projectDesc.__webpack) {
-	confPath = path.join(__dirname, isDebug ? projectDesc.__webpack.debug : projectDesc.__webpack.production);
-} else {
-	confPath = path.join(projectPath, isDebug ? 'config/webpack.debug.js' : 'config/webpack.prod.js');
+let confPath = isDebug ? projectDesc.__webpack.debug : projectDesc.__webpack.production;
+
+if(fs.existsSync(path.join(projectPath, confPath))) {
+	confPath = path.join(projectPath, confPath);
 }
+
 const projectConfig = require(confPath);
 
 const webpack = require("webpack");
