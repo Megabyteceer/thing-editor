@@ -37,26 +37,29 @@ export default class LanguageView extends React.Component {
 		}).map((fn) => {
 			return fn.split('/').pop().split('.').shift();
 		});
-
-		return L.loadLanguages(langsIds, '/games/' + editor.currentProjectDir + editor.projectDesc.localesPath).then((langsData) => {
-			languages = langsData;
-			refreshCachedData();
-			for(let langId in langsData) {
-				let txt = langsData[langId];
-				for(let id in txt) {
-					if(!txt[id]) {
-						editor.ui.status.warn('Untranslated text entry ' + langId + '/' + id, 32017, () => {
-							LanguageView.editKey(id, langId);
-						}); 
+		return new Promise((resolve) => {
+			return L.loadLanguages(langsIds, '/games/' + editor.currentProjectDir + editor.projectDesc.localesPath).then((langsData) => {
+				languages = langsData;
+				refreshCachedData();
+				for(let langId in langsData) {
+					let txt = langsData[langId];
+					for(let id in txt) {
+						if(!txt[id]) {
+							editor.ui.status.warn('Untranslated text entry ' + langId + '/' + id, 32017, () => {
+								LanguageView.editKey(id, langId);
+							}); 
+						}
 					}
 				}
-			}
-			if(editor.projectDesc.__externalLocalesSource) {
-				L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource, true).then((_externalLangsData) => {
-					externalLangsData = _externalLangsData;
-					refreshCachedData();
-				});
-			}
+				if(editor.projectDesc.__externalLocalesSource) {
+					L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource, true).then((_externalLangsData) => {
+						externalLangsData = _externalLangsData;
+						refreshCachedData();
+					}).then(resolve);
+				} else {
+					resolve();
+				}
+			});
 		});
 	}
 
