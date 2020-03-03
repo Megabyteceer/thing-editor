@@ -135,11 +135,16 @@ class Window extends React.Component {
 	}
 	
 	deltaT(x, y) { // eslint-disable-line no-unused-vars
+		let startY = this.state.y;
 		let ret = {x: this.state.w, y: this.state.h};
 		this.setSize(this.state.w, this.state.h - y);
 		ret.x = this.state.w - ret.x;
 		ret.y = -(this.state.h - ret.y);
 		this.setPosition(this.state.x, this.state.y + ret.y);
+		let appliedDeltaY = this.state.y - startY;
+		if(appliedDeltaY !== y) {
+			this.setSize(this.state.w, this.state.h - (appliedDeltaY - y));
+		}
 		return ret;
 	}
 	
