@@ -806,7 +806,7 @@ function createKeyframe(o, name, time, field, isAutomaticCreation) {
 }
 
 function increaseNumberInName(v) {
-	let regex = /\d+/gm;
+	let regex = /(\d+)(?!.*\d)/gm;
 	let a = regex.exec(v);
 	if(a) {
 		let oldNum = a.pop();
