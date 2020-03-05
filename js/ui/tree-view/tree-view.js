@@ -100,6 +100,7 @@ export default class TreeView extends React.Component {
 				if(!Overlay.getParentWhichHideChildren(c, true)) {
 					this.selectInTree(c);
 					isNextChildSelected = true;
+					break;
 				}
 			}
 			i--;
@@ -109,6 +110,7 @@ export default class TreeView extends React.Component {
 					if(!Overlay.getParentWhichHideChildren(c, true)) {
 						this.selectInTree(c);
 						isNextChildSelected = true;
+						break;
 					}
 				}
 			}
