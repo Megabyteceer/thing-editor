@@ -4,6 +4,7 @@ import Sound from "thing-engine/js/utils/sound.js";
 import BgMusic from "thing-engine/js/components/bg-music.js";
 import game from "thing-engine/js/game.js";
 import SelectEditor from "./props-editor/select-editor.js";
+import MusicFragment from "thing-engine/js/utils/music-fragment.js";
 
 let sounds = {};
 
@@ -143,7 +144,7 @@ export default class SoundsList extends React.Component {
 								let a = sounds[f];
 								a.sort(soundsPriority);
 							}
-							BgMusic._stopAll();
+							MusicFragment.__stopAll();
 							Lib._setSounds(sounds, !!onlyThisFiles);
 							resolve();
 							BgMusic._recalculateMusic();
@@ -302,7 +303,7 @@ class MusicProfiler extends React.Component {
 			} else {
 				playing = true;
 				state = R.div({className: 'sound-vol-bar-bg'},
-					R.div({className: 'sound-vol-bar', style: {width: m.getVolume() * 100}})
+					R.div({className: 'sound-vol-bar', style: {width: m.__getVolume() * 100}})
 				);
 			}
 		}
