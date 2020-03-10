@@ -405,18 +405,21 @@ function ensureDirectoryExistence(filePath) {
 }
 
 //=============== project's files changing watcher ================
-const watchers = [];
+let watchers = [];
 let changedFiles = {};
 let fileChangedTimeout;
 
 const filterWatchFiles = /\.(json|png|wav|jpg|js)$/mg;
 function initWatchers() {
-	while(watchers.length) {
-		watchers.pop().close();
-	}
-	let watchFolders = new Set();
 
-	getDataFolders().some((assetsFolderData) => {
+	let watchFolders = new Set();
+	let foldersToWatch = getDataFolders();
+
+	for(let w of watchers) {
+		w.deleteIt = true;
+	}
+
+	for(let assetsFolderData of foldersToWatch) {
 		let assetsFolder = ((assetsFolderData.type === 'i18n' ) ? currentGameDesc.localesPath : assetsFolderData.type) + '/';
 		
 		if(assetsFolderData.type === 'src/game-objects' || assetsFolderData.type ===  'src/scenes') {
@@ -424,13 +427,23 @@ function initWatchers() {
 			assetsFolder = 'src/';
 		}
 		if(!fs.existsSync(assetsFolderData.path) || watchFolders.has(assetsFolderData.path)) {
-			return;
+			continue;
 		}
 		watchFolders.add(assetsFolderData.path);
 
 		// log('watch: ' + assetsFolderData.path);
 
+		if(watchers.find((w) => {
+			if(w.path === assetsFolderData.path) {
+				w.deleteIt = false;
+				return true;
+			}
+		})) {
+			continue;
+		}
+
 		let watcher = fs.watch(assetsFolderData.path, { recursive : true });
+		watcher.path = assetsFolderData.path;
 		watchers.push(watcher);
 		watcher.on('change', (eventType, filename) => {
 			filename = filename.replace(pathSeparatorReplaceExp, '/');
@@ -456,6 +469,14 @@ function initWatchers() {
 				}
 			}
 		});
+	}
+
+	watchers = watchers.filter((w) => {
+		if(w.deleteIt) {
+			w.close();
+			return false;
+		}
+		return true;
 	});
 }
 
