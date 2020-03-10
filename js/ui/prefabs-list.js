@@ -253,7 +253,7 @@ export default class PrefabsList extends React.Component {
 		prefabsNames.sort();
 
 		for (let prefabName of prefabsNames) {
-			if(!this.state.filter || prefabName.search(this.state.filter) >= 0) {
+			if(!this.state.filter || this._searchByRegexpOrText(prefabName, this.state.filter) >= 0) {
 				prefabs.push(this.renderItem(prefabName, scenePrefabs[prefabName]));
 			}
 		}
@@ -269,6 +269,14 @@ export default class PrefabsList extends React.Component {
 			R.input(this.searchInputProps),
 			R.div(bodyProps, prefabs)
 		);
+	}
+	
+	_searchByRegexpOrText(source, query) {
+		try {
+			return source.search(query);
+		} catch(er) {
+			return source.indexOf(query);
+		}
 	}
 	
 	static acceptPrefabEdition(oneStepOnly = false) {
