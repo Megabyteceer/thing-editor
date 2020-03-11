@@ -199,7 +199,7 @@ app.use('/', (req, res, next) => {
 });
 
 app.use('/games/',  (req, res) => {
-	res.sendFile(path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path))));
+	res.sendFile(path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path))), {dotfiles:'allow'});
 });
 
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
