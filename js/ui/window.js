@@ -143,7 +143,10 @@ class Window extends React.Component {
 		this.setPosition(this.state.x, this.state.y + ret.y);
 		let appliedDeltaY = this.state.y - startY;
 		if(appliedDeltaY !== y) {
-			this.setSize(this.state.w, this.state.h - (appliedDeltaY - y));
+			let newH = this.state.h - (appliedDeltaY - y);
+			if(newH <= this.props.minH) {
+				this.setSize(this.state.w, newH);
+			}
 		}
 		return ret;
 	}
