@@ -602,7 +602,7 @@ function addJsExtensionAndPreventCache(req, res, content) {
 			if(!m1.toLowerCase().endsWith('.js')) {
 				m1 += '.js';
 			}
-			if(m1.indexOf('thing-engine/js/') >= 0 || m1.indexOf('thing-editor/') >= 0) {
+			if(m1.indexOf('thing-editor/') >= 0) {
 				return m1 + m2;
 			}
 			return m1 + '?v=' + modulesVersion + m2;

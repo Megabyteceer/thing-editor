@@ -48,8 +48,8 @@ addSoundsFolderToCopy();
 
 
 let alias = {
-	'/thing-engine': path.resolve(__dirname, ''),
-	'thing-engine': path.resolve(__dirname, '')
+	'/thing-editor': path.resolve(__dirname, '..'),
+	'thing-editor': path.resolve(__dirname, '..')
 };
 
 let projectDesc = JSON.parse(fs.readFileSync('./thing-project.json'));
@@ -59,7 +59,7 @@ if(projectDesc.libs) {
 	libs.reverse();
 
 	for(let libName of libs) {
-		let libRootFolder = path.join(__dirname, '..', libName);
+		let libRootFolder = path.join(__dirname, '../..', libName);
 		if(!fs.existsSync(libRootFolder)) {
 			libRootFolder = require.resolve(libName);
 		}
@@ -114,7 +114,7 @@ module.exports = {
 					}
 				},
 				'ifdef-loader?{"EDITOR":false,"DEBUG":' + (isDebug ? 'true' : 'false') + '}',
-				path.resolve(__dirname, 'scripts/assert-strip-loader.js')
+				path.resolve(__dirname, 'assert-strip-loader.js')
 			]
 		}]
 	}

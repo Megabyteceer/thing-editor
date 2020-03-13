@@ -18,11 +18,8 @@ To start editor manually use **npm start** in **thing-editor** folder
 mkdir game_editor_here
 cd game_editor_here
 git clone https://github.com/Megabyteceer/thing-editor.git
-git clone https://github.com/Megabyteceer/thing-engine.git
 git clone https://github.com/Megabyteceer/thing-project-example.git games/thing-project-example
-cd thing-engine
-npm i
-cd ../thing-editor
+cd thing-editor
 npm i
 npm start
 
@@ -55,7 +52,7 @@ Work still in progress.
 [![BGaming](https://www.bgaming.com/img/b-gaming-logo-color.svg)](https://www.bgaming.com/)
 
 
-### Projects made with thing-engine
+### Projects made with thing-editor
  - [Zombie Hunters](http://zh.pixel-cave.com)
  - [Handless Millionaire](http://hm.pixel-cave.com)
 

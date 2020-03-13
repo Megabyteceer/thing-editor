@@ -152,7 +152,7 @@ function addClass(c, path) {
 		}
 	}
 	
-	if (path && (path.indexOf('/thing-engine/') < 0)) {
+	if (path && (path.indexOf('/thing-editor/') !== 0)) {
 		console.log('Custom class loaded: ' + name + '; ' + path);
 	}
 	

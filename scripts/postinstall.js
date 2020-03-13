@@ -24,8 +24,8 @@ if((process.argv.indexOf('-access-granted') < 0) && process.platform.startsWith(
 	const symlinksMaker = require('./symlinks-maker.js');
 
 	var clientLibs = [
-		['./thing-engine/node_modules', '../node_modules', 'dir'],
-		['../../thing-engine', '../node_modules/thing-engine', 'dir']
+		['./thing-editor/node_modules', '../node_modules', 'dir'],
+		['../../thing-editor', '../node_modules/thing-editor', 'dir']
 	];
 
 	symlinksMaker.setRootPath(path.resolve(__dirname) + '/../');
