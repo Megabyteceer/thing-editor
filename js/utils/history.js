@@ -1,6 +1,6 @@
-import Lib from "thing-engine/js/lib.js";
-import game from "thing-engine/js/game.js";
-import Scene from "thing-engine/js/components/scene.js";
+import Lib from "thing-editor/js/engine/lib.js";
+import game from "thing-editor/js/engine/game.js";
+import Scene from "thing-editor/js/engine/components/scene.js";
 import Signal from "./signal.js";
 
 const HISTORY_LEN = 100;

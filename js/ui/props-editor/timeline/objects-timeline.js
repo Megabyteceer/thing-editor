@@ -2,7 +2,7 @@ import FieldsTimeline from "./timeline-field.js";
 import Timeline from "./timeline.js";
 import TimeLabel from "./timeline-label.js";
 import Line from "./timeline-line.js";
-import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
+import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
 
 const objectsTimelineProps = {className: 'objects-timeline'};
 

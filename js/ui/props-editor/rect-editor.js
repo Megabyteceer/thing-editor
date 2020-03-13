@@ -1,6 +1,6 @@
 import NumberEditor from "./number-editor.js";
 import BooleanEditor from "./boolean-editor.js";
-import Lib from "thing-engine/js/lib.js";
+import Lib from "thing-editor/js/engine/lib.js";
 
 const rectEditorProps = {className:'rect-editor'};
 const propGroupProps = {className:'rect-editor-group'};

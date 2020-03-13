@@ -1,10 +1,10 @@
-import Lib from "thing-engine/js/lib.js";
+import Lib from "thing-editor/js/engine/lib.js";
 import Group from "./group.js";
-import Sound from "thing-engine/js/utils/sound.js";
-import BgMusic from "thing-engine/js/components/bg-music.js";
-import game from "thing-engine/js/game.js";
+import Sound from "thing-editor/js/engine/utils/sound.js";
+import BgMusic from "thing-editor/js/engine/components/bg-music.js";
+import game from "thing-editor/js/engine/game.js";
 import SelectEditor from "./props-editor/select-editor.js";
-import MusicFragment from "thing-engine/js/utils/music-fragment.js";
+import MusicFragment from "thing-editor/js/engine/utils/music-fragment.js";
 
 let sounds = {};
 

@@ -1,5 +1,5 @@
 import Window from './window.js';
-import L from "thing-engine/js/utils/l.js";
+import L from "thing-editor/js/engine/utils/l.js";
 import Group from './group.js';
 
 let languages;

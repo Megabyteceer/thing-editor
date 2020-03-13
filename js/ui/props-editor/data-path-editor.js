@@ -1,10 +1,10 @@
 import PropsFieldWrapper from "./props-field-wrapper.js";
-import DisplayObject from "thing-engine/js/components/display-object.js";
-import game from "thing-engine/js/game.js";
+import DisplayObject from "thing-editor/js/engine/components/display-object.js";
+import game from "thing-editor/js/engine/game.js";
 import CallbackEditor from "./callback-editor.js";
-import {getLatestSceneNodeBypath} from "thing-engine/js/utils/get-value-by-path.js";
+import {getLatestSceneNodeBypath} from "thing-editor/js/engine/utils/get-value-by-path.js";
 import PrefabsList from "../prefabs-list.js";
-import Lib from "thing-engine/js/lib.js";
+import Lib from "thing-editor/js/engine/lib.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};

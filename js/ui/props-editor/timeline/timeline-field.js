@@ -1,4 +1,4 @@
-import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
+import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
 import Timeline from "./timeline.js";
 import Line from "./timeline-line.js";
 import TimelilneFieldControls from "./timeline-field-controls.js";

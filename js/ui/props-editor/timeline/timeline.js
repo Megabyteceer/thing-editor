@@ -1,14 +1,14 @@
-import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
+import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
 import ObjectsTimeline from "./objects-timeline.js";
 import TimeMarker from "./time-marker.js";
-import game from "thing-engine/js/game.js";
+import game from "thing-editor/js/engine/game.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
 import KeyframePropertyEditor from "./keyframe-property-editor.js";
 import Line from "./timeline-line.js";
 import TimeLabel from "./timeline-label.js";
 import TimelineLoopPoint from "./timeline-loop-point.js";
 import TimelineSelectFrame from "./timeline-select-frame.js";
-import Lib from "thing-engine/js/lib.js";
+import Lib from "thing-editor/js/engine/lib.js";
 
 
 let widthZoom;

@@ -1,8 +1,8 @@
-import Lib from "thing-engine/js/lib.js";
+import Lib from "thing-editor/js/engine/lib.js";
 import group from "./group.js";
 import Window from "./window.js";
 import SelectEditor from "./props-editor/select-editor.js";
-import game from "thing-engine/js/game.js";
+import game from "thing-editor/js/engine/game.js";
 
 
 /*loading bits

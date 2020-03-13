@@ -1,46 +1,46 @@
 import PropsFieldWrapper from '../ui/props-editor/props-field-wrapper.js';
-import SceneLinkedPromise from 'thing-engine/js/components/scene-linked-promise.js';
-import Delay from 'thing-engine/js/components/delay.js';
-import Pool from "thing-engine/js/utils/pool.js";
-import Container from "thing-engine/js/components/container.js";
-import Button from "thing-engine/js/components/button.js";
-import Text from "thing-engine/js/components/text.js";
-import Label from "thing-engine/js/components/label.js";
-import ProgressBar from "thing-engine/js/components/progress-bar.js";
-import PrefabReference from "thing-engine/js/components/prefab-reference.js";
-import Scissors from "thing-engine/js/components/scissors.js";
-import NumberInput from "thing-engine/js/components/number-input.js";
-import Trigger from "thing-engine/js/components/trigger.js";
-import Resizer from "thing-engine/js/components/resizer.js";
-import OrientationTrigger from "thing-engine/js/components/orientation-trigger.js";
-import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
-import NineSlicePlane from "thing-engine/js/components/nine-slice-plane.js";
-import DSprite from "thing-engine/js/components/d-sprite.js";
-import Scene from "thing-engine/js/components/scene.js";
-import Lib from "thing-engine/js/lib.js";
-import FlyText from "thing-engine/js/components/fly-text.js";
-import Sprite from "thing-engine/js/components/sprite.js";
-import DisplayObject from "thing-engine/js/components/display-object.js";
-import Tilemap from "thing-engine/js/components/tilemap.js";
-import Shape from "thing-engine/js/components/shape.js";
-import Mask from "thing-engine/js/components/mask.js";
-import Fill from "thing-engine/js/components/fill.js";
-import Spawner from "thing-engine/js/components/spawner.js";
-import SpawnerRing from "thing-engine/js/components/spawner-ring.js";
-import ClickOutsideTrigger from "thing-engine/js/components/click-outside-trigger.js";
-import ScrollLayer from "thing-engine/js/components/scroll-layer.js";
-import game from "thing-engine/js/game.js";
-import SelectionHighlighter from 'thing-engine/js/components/selection-highlighter.js';
-import BgMusic from 'thing-engine/js/components/bg-music.js';
-import Spine from 'thing-engine/js/components/spine.js';
-import ReplaceableSpine from 'thing-engine/js/components/replaceable-spine.js';
-import MobileJoystick from 'thing-engine/js/components/mobile-joystick.js';
-import HTMLOverlay from 'thing-engine/js/components/html-overlay.js';
-import TextInput from 'thing-engine/js/components/text-input.js';
-import ParticleContainer from 'thing-engine/js/components/particle-container.js';
-import MultilineText from 'thing-engine/js/components/multiline-text.js';
-import StaticTrigger from 'thing-engine/js/components/static-trigger.js';
-import BitmapText from 'thing-engine/js/components/bitmap-text.js';
+import SceneLinkedPromise from 'thing-editor/js/engine/components/scene-linked-promise.js';
+import Delay from 'thing-editor/js/engine/components/delay.js';
+import Pool from "thing-editor/js/engine/utils/pool.js";
+import Container from "thing-editor/js/engine/components/container.js";
+import Button from "thing-editor/js/engine/components/button.js";
+import Text from "thing-editor/js/engine/components/text.js";
+import Label from "thing-editor/js/engine/components/label.js";
+import ProgressBar from "thing-editor/js/engine/components/progress-bar.js";
+import PrefabReference from "thing-editor/js/engine/components/prefab-reference.js";
+import Scissors from "thing-editor/js/engine/components/scissors.js";
+import NumberInput from "thing-editor/js/engine/components/number-input.js";
+import Trigger from "thing-editor/js/engine/components/trigger.js";
+import Resizer from "thing-editor/js/engine/components/resizer.js";
+import OrientationTrigger from "thing-editor/js/engine/components/orientation-trigger.js";
+import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
+import NineSlicePlane from "thing-editor/js/engine/components/nine-slice-plane.js";
+import DSprite from "thing-editor/js/engine/components/d-sprite.js";
+import Scene from "thing-editor/js/engine/components/scene.js";
+import Lib from "thing-editor/js/engine/lib.js";
+import FlyText from "thing-editor/js/engine/components/fly-text.js";
+import Sprite from "thing-editor/js/engine/components/sprite.js";
+import DisplayObject from "thing-editor/js/engine/components/display-object.js";
+import Tilemap from "thing-editor/js/engine/components/tilemap.js";
+import Shape from "thing-editor/js/engine/components/shape.js";
+import Mask from "thing-editor/js/engine/components/mask.js";
+import Fill from "thing-editor/js/engine/components/fill.js";
+import Spawner from "thing-editor/js/engine/components/spawner.js";
+import SpawnerRing from "thing-editor/js/engine/components/spawner-ring.js";
+import ClickOutsideTrigger from "thing-editor/js/engine/components/click-outside-trigger.js";
+import ScrollLayer from "thing-editor/js/engine/components/scroll-layer.js";
+import game from "thing-editor/js/engine/game.js";
+import SelectionHighlighter from 'thing-editor/js/engine/components/selection-highlighter.js';
+import BgMusic from 'thing-editor/js/engine/components/bg-music.js';
+import Spine from 'thing-editor/js/engine/components/spine.js';
+import ReplaceableSpine from 'thing-editor/js/engine/components/replaceable-spine.js';
+import MobileJoystick from 'thing-editor/js/engine/components/mobile-joystick.js';
+import HTMLOverlay from 'thing-editor/js/engine/components/html-overlay.js';
+import TextInput from 'thing-editor/js/engine/components/text-input.js';
+import ParticleContainer from 'thing-editor/js/engine/components/particle-container.js';
+import MultilineText from 'thing-editor/js/engine/components/multiline-text.js';
+import StaticTrigger from 'thing-editor/js/engine/components/static-trigger.js';
+import BitmapText from 'thing-editor/js/engine/components/bitmap-text.js';
 
 let attachedScript;
 
@@ -48,50 +48,50 @@ let ClassesLoader = {};
 ClassesLoader.initClassesLoader = function initClassesLoader() {
 	//embedded engine classes
 	embeddedClasses = [
-		[Container, "/thing-engine/js/components/container.js"],
-		[Sprite, '/thing-engine/js/components/sprite.js'],
-		[DSprite, "/thing-engine/js/components/d-sprite.js"],
-		[MovieClip, "/thing-engine/js/components/movie-clip/movie-clip.js"],
-		[Scene, "/thing-engine/js/components/scene.js"],
-		[Text, "/thing-engine/js/components/text.js"],
-		[FlyText, "/thing-engine/js/components/fly-text.js"],
-		[Tilemap, "/thing-engine/js/components/tilemap.js"],
-		[Button, "/thing-engine/js/components/button.js"],
-		[Label, "/thing-engine/js/components/label.js"],
-		[ProgressBar, "/thing-engine/js/components/progress-bar.js"],
-		[NumberInput, "/thing-engine/js/components/number-input.js"],
-		[Trigger,"/thing-engine/js/components/trigger.js" ],
-		[Resizer,"/thing-engine/js/components/resizer.js" ],
-		[OrientationTrigger,"/thing-engine/js/components/orientation-trigger.js" ],
-		[ClickOutsideTrigger,"/thing-engine/js/components/click-outside-trigger.js" ],
-		[ScrollLayer,"/thing-engine/js/components/scroll-layer.js" ],
-		[SelectionHighlighter,"/thing-engine/js/components/selection-highlighter.js" ],
-		[NineSlicePlane, "/thing-engine/js/components/nine-slice-plane.js"],
-		[PrefabReference, "/thing-engine/js/components/prefab-reference.js"],
-		[Scissors, "/thing-engine/js/components/scissors.js"],
-		[Shape, "/thing-engine/js/components/shape.js"],
-		[Mask, "/thing-engine/js/components/mask.js"],
-		[Fill, "/thing-engine/js/components/fill.js"],
-		[Spawner, "/thing-engine/js/components/spawner.js"],
-		[SpawnerRing, "/thing-engine/js/components/spawner-ring.js"],
-		[BgMusic, "/thing-engine/js/components/bg-music.js"],
-		[Spine, "/thing-engine/js/components/spine.js"],
-		[ReplaceableSpine, "/thing-engine/js/components/replaceable-spine.js"],
-		[MobileJoystick, "/thing-engine/js/components/mobile-joystick.js"],
-		[HTMLOverlay, "/thing-engine/js/components/html-overlay.js"],
-		[TextInput, "/thing-engine/js/components/text-input.js"],
-		[ParticleContainer, "/thing-engine/js/components/particle-container.js"],
-		[MultilineText, "/thing-engine/js/components/multiline-text.js"],
-		[StaticTrigger, "/thing-engine/js/components/static-trigger.js"],
-		[BitmapText, "/thing-engine/js/components/bitmap-text.js"]
+		[Container, "/thing-editor/js/engine/components/container.js"],
+		[Sprite, '/thing-editor/js/engine/components/sprite.js'],
+		[DSprite, "/thing-editor/js/engine/components/d-sprite.js"],
+		[MovieClip, "/thing-editor/js/engine/components/movie-clip/movie-clip.js"],
+		[Scene, "/thing-editor/js/engine/components/scene.js"],
+		[Text, "/thing-editor/js/engine/components/text.js"],
+		[FlyText, "/thing-editor/js/engine/components/fly-text.js"],
+		[Tilemap, "/thing-editor/js/engine/components/tilemap.js"],
+		[Button, "/thing-editor/js/engine/components/button.js"],
+		[Label, "/thing-editor/js/engine/components/label.js"],
+		[ProgressBar, "/thing-editor/js/engine/components/progress-bar.js"],
+		[NumberInput, "/thing-editor/js/engine/components/number-input.js"],
+		[Trigger,"/thing-editor/js/engine/components/trigger.js" ],
+		[Resizer,"/thing-editor/js/engine/components/resizer.js" ],
+		[OrientationTrigger,"/thing-editor/js/engine/components/orientation-trigger.js" ],
+		[ClickOutsideTrigger,"/thing-editor/js/engine/components/click-outside-trigger.js" ],
+		[ScrollLayer,"/thing-editor/js/engine/components/scroll-layer.js" ],
+		[SelectionHighlighter,"/thing-editor/js/engine/components/selection-highlighter.js" ],
+		[NineSlicePlane, "/thing-editor/js/engine/components/nine-slice-plane.js"],
+		[PrefabReference, "/thing-editor/js/engine/components/prefab-reference.js"],
+		[Scissors, "/thing-editor/js/engine/components/scissors.js"],
+		[Shape, "/thing-editor/js/engine/components/shape.js"],
+		[Mask, "/thing-editor/js/engine/components/mask.js"],
+		[Fill, "/thing-editor/js/engine/components/fill.js"],
+		[Spawner, "/thing-editor/js/engine/components/spawner.js"],
+		[SpawnerRing, "/thing-editor/js/engine/components/spawner-ring.js"],
+		[BgMusic, "/thing-editor/js/engine/components/bg-music.js"],
+		[Spine, "/thing-editor/js/engine/components/spine.js"],
+		[ReplaceableSpine, "/thing-editor/js/engine/components/replaceable-spine.js"],
+		[MobileJoystick, "/thing-editor/js/engine/components/mobile-joystick.js"],
+		[HTMLOverlay, "/thing-editor/js/engine/components/html-overlay.js"],
+		[TextInput, "/thing-editor/js/engine/components/text-input.js"],
+		[ParticleContainer, "/thing-editor/js/engine/components/particle-container.js"],
+		[MultilineText, "/thing-editor/js/engine/components/multiline-text.js"],
+		[StaticTrigger, "/thing-editor/js/engine/components/static-trigger.js"],
+		[BitmapText, "/thing-editor/js/engine/components/bitmap-text.js"]
 	];
 };
 
 let classesById = {},
 	classesDefaultsById = {}, //default values for serializable properties of class
 	classPathById = {
-		'SceneLinkedPromise': 'thing-engine/js/components/scene-linked-promise.js',
-		'Delay': 'thing-engine/js/components/delay.js'
+		'SceneLinkedPromise': 'thing-editor/js/engine/components/scene-linked-promise.js',
+		'Delay': 'thing-editor/js/engine/components/delay.js'
 	};
 
 let cacheCounter = 0;

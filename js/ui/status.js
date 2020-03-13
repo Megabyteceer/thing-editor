@@ -1,7 +1,7 @@
 import Window from "./window.js";
-import game from "thing-engine/js/game.js";
+import game from "thing-editor/js/engine/game.js";
 import Group from "./group.js";
-import DisplayObject from "thing-engine/js/components/display-object.js";
+import DisplayObject from "thing-editor/js/engine/components/display-object.js";
 import Help from "../utils/help.js";
 
 const errorIcon = R.icon('error-icon');

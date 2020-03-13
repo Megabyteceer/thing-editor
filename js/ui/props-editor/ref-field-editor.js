@@ -1,4 +1,4 @@
-import DisplayObject from "thing-engine/js/components/display-object.js";
+import DisplayObject from "thing-editor/js/engine/components/display-object.js";
 
 export default class RefFieldEditor extends React.Component {
 

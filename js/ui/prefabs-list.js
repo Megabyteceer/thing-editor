@@ -1,12 +1,12 @@
 import Group from "./group.js";
-import Scene from "thing-engine/js/components/scene.js";
-import Lib from "thing-engine/js/lib.js";
-import game from "thing-engine/js/game.js";
-import PrefabReference from "thing-engine/js/components/prefab-reference.js";
-import Container from "thing-engine/js/components/container.js";
+import Scene from "thing-editor/js/engine/components/scene.js";
+import Lib from "thing-editor/js/engine/lib.js";
+import game from "thing-editor/js/engine/game.js";
+import PrefabReference from "thing-editor/js/engine/components/prefab-reference.js";
+import Container from "thing-editor/js/engine/components/container.js";
 import ClassesView from "./classes-view.js";
-import OrientationTrigger from "thing-engine/js/components/orientation-trigger.js";
-import getValueByPath from "thing-engine/js/utils/get-value-by-path.js";
+import OrientationTrigger from "thing-editor/js/engine/components/orientation-trigger.js";
+import getValueByPath from "thing-editor/js/engine/utils/get-value-by-path.js";
 
 let bodyProps = {className: 'list-view'};
 

@@ -1,7 +1,7 @@
-import game from "thing-engine/js/game.js";
-import Lib from "thing-engine/js/lib.js";
-import Sound from "thing-engine/js/utils/sound.js";
-import BgMusic from "thing-engine/js/components/bg-music.js";
+import game from "thing-editor/js/engine/game.js";
+import Lib from "thing-editor/js/engine/lib.js";
+import Sound from "thing-editor/js/engine/utils/sound.js";
+import BgMusic from "thing-editor/js/engine/components/bg-music.js";
 import TexturesView from "../ui/textures-view.js";
 
 const AssetsLoader = {};

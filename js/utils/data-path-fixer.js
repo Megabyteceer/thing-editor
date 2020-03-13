@@ -1,8 +1,8 @@
-import game from "thing-engine/js/game.js";
-import {getLatestSceneNodeBypath, getLatestSceneNodesByComplexPath} from "thing-engine/js/utils/get-value-by-path.js";
-import Lib from "thing-engine/js/lib.js";
-import MovieClip from "thing-engine/js/components/movie-clip/movie-clip.js";
-import DisplayObject from "thing-engine/js/components/display-object.js";
+import game from "thing-editor/js/engine/game.js";
+import {getLatestSceneNodeBypath, getLatestSceneNodesByComplexPath} from "thing-editor/js/engine/utils/get-value-by-path.js";
+import Lib from "thing-editor/js/engine/lib.js";
+import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
+import DisplayObject from "thing-editor/js/engine/components/display-object.js";
 
 export default class DataPathFixer {
 

@@ -1,7 +1,7 @@
 import Selection from "./selection.js";
-import Pool from "thing-engine/js/utils/pool.js";
-import DSprite from "thing-engine/js/components/d-sprite.js";
-import game from "thing-engine/js/game.js";
+import Pool from "thing-editor/js/engine/utils/pool.js";
+import DSprite from "thing-editor/js/engine/components/d-sprite.js";
+import game from "thing-editor/js/engine/game.js";
 
 let blackout;
 let cameraFrame;

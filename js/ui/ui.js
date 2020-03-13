@@ -9,7 +9,7 @@ import ScenesList from "./scenes-list.js";
 import PrefabsList from "./prefabs-list.js";
 import LanguageView from "./language-view.js";
 import Status from "./status.js";
-import game from "thing-engine/js/game.js";
+import game from "thing-editor/js/engine/game.js";
 import SoundsList from './sounds-list.js';
 import TexturesView from './textures-view.js';
 import Help from '../utils/help.js';

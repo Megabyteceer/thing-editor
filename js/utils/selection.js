@@ -1,10 +1,10 @@
-import Tilemap from "thing-engine/js/components/tilemap.js";
-import game from "thing-engine/js/game.js";
+import Tilemap from "thing-editor/js/engine/components/tilemap.js";
+import game from "thing-editor/js/engine/game.js";
 import TreeNode from "../ui/tree-view/tree-node.js";
 import Overlay from "./overlay.js";
-import PrefabReference from "thing-engine/js/components/prefab-reference.js";
+import PrefabReference from "thing-editor/js/engine/components/prefab-reference.js";
 import PrefabsList from "../ui/prefabs-list.js";
-import getValueByPath from "thing-engine/js/utils/get-value-by-path.js";
+import getValueByPath from "thing-editor/js/engine/utils/get-value-by-path.js";
 
 let IS_SELECTION_LOADING_TIME = false;
 

@@ -1,5 +1,5 @@
-import Pool from "thing-engine/js/utils/pool.js";
-import FieldPlayer from "thing-engine/js/components/movie-clip/field-player.js";
+import Pool from "thing-editor/js/engine/utils/pool.js";
+import FieldPlayer from "thing-editor/js/engine/components/movie-clip/field-player.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
 import Timeline from "./timeline.js";
 import TimelineLoopPoint from "./timeline-loop-point.js";

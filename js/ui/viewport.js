@@ -1,11 +1,11 @@
 import PrefabsList from './prefabs-list.js';
-import Lib from "thing-engine/js/lib.js";
+import Lib from "thing-editor/js/engine/lib.js";
 import LanguageSwitcher from "./language-switcher.js";
-import game from "thing-engine/js/game.js";
-import Sound from 'thing-engine/js/utils/sound.js';
-import Keys from 'thing-engine/js/utils/keys.js';
+import game from "thing-editor/js/engine/game.js";
+import Sound from 'thing-editor/js/engine/utils/sound.js';
+import Keys from 'thing-editor/js/engine/utils/keys.js';
 import ClassesView from './classes-view.js';
-import Spine from 'thing-engine/js/components/spine.js';
+import Spine from 'thing-editor/js/engine/components/spine.js';
 import SelectEditor from './props-editor/select-editor.js';
 
 const PLAY_ICON = R.icon('play');
