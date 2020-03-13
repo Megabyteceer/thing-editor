@@ -21,6 +21,7 @@ git clone https://github.com/Megabyteceer/thing-editor.git
 git clone https://github.com/Megabyteceer/thing-project-example.git games/thing-project-example
 cd thing-editor
 npm i
+npm run-script create_env
 npm start
 
 ```

@@ -26,7 +26,6 @@ import Sprite from './components/sprite.js';
 import Tilemap from './components/tilemap.js';
 import {setValueByPath} from './utils/get-value-by-path.js';
 import SceneLinkedPromise from './components/scene-linked-promise.js';
-import SharedThingEngineUtils from 'thing-games-utils/common/src/utils/shared-thing-engine-utils.js';
 import ResourceLoader from './utils/resource-loader.js';
 
 
@@ -1178,6 +1177,19 @@ class Game {
 		});
 	}
 
+	applyCSS(css) {
+		let head = document.head || document.getElementsByTagName('head')[0];
+		let style = document.createElement('style');
+
+		style.type = 'text/css';
+		if (style.styleSheet){
+			style.styleSheet.cssText = css;
+		} else {
+			style.appendChild(document.createTextNode(css));
+		}
+		head.appendChild(style);
+	}
+
 	/// #if DEBUG
 
 	get __speedMultiplier() {
@@ -1436,7 +1448,7 @@ function loadFonts() {
 							for(let family of families) {
 								if(fontsProviderName === 'custom') {
 									let fontPath = game.resourcesPath + `fonts/` + family.replace(/ /g, '');
-									SharedThingEngineUtils.applyCSS(`
+									game.applyCSS(`
 										@font-face {
 											font-family: '` + family + `';
 											src: url('` + fontPath + `.woff2') format('woff2'),
