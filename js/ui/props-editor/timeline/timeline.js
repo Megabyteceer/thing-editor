@@ -715,15 +715,6 @@ function getFieldByNameOrCreate(o, name) {
 	return field;
 }
 
-function getFrameAtTime(o, name, time) {
-	let field = getFieldByNameOrCreate(o, name);
-	for (let keyFrame of field.t) {
-		if (keyFrame.t === time) {
-			return keyFrame;
-		}
-	}
-}
-
 let getFrameAtTimeOrCreateReturnedNewKeyframe;
 function getFrameAtTimeOrCreate(o, name, time) {
 	let field = getFieldByNameOrCreate(o, name);
