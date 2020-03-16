@@ -80,7 +80,6 @@ function checkForOldReferences(o) {
 /// #endif
 
 let prefabs = {};
-let prefabNames = [];
 let scenes;
 let classes;
 let defaults;
@@ -156,9 +155,6 @@ export default class Lib {
 	static _setPrefabs(p) {
 		prefabs = p;
 		Lib.prefabs = p;
-		
-		prefabNames = Object.keys(p);
-		Lib.prefabNames = prefabNames;
 
 
 		/// #if EDITOR
