@@ -55,7 +55,6 @@ export default class Spine extends Container {
 			}
 
 			this.spineContent = getSpineInstance(this.spineData);
-			this.spineContent.skeleton.setToSetupPose();
 			this.spineContent.state.timeScale = this._speed;
 			/// #if EDITOR
 			__getNodeExtendData(this.spineContent).hidden = true;
@@ -346,24 +345,9 @@ export default class Spine extends Container {
 
 	static allocatePool(name, count) {
 		if(count > 0) {
-			let a = [];
-			let i;
 			while(count-- > 0) {
-				i = getSpineInstance(name);
-				i.update(0);
-				a.push(i);
-			}
-			i.forAllChildren((c) => {
-				if(c.texture) {
-					let bt = c.texture.baseTexture;
-					if(!bindedTextures[bt.imageUrl] && game.pixiApp.renderer.bindTexture) {
-						game.pixiApp.renderer.bindTexture(bt);
-						bindedTextures[bt.imageUrl] = true;
-					}
-				}
-			});
-			while(a.length > 0) {
-				disposeSpineInstance(a.pop());
+				const spine = getSpineInstance(name);
+				disposeSpineInstance(spine);
 			}
 		}
 	}

@@ -28,8 +28,6 @@ import {setValueByPath} from './utils/get-value-by-path.js';
 import SceneLinkedPromise from './components/scene-linked-promise.js';
 import ResourceLoader from './utils/resource-loader.js';
 
-
-PIXI.settings.MIPMAP_TEXTURES = false;
 PIXI.settings.WRAP_MODE = PIXI.WRAP_MODES.REPEAT;
 
 let stage;
@@ -413,6 +411,7 @@ class Game {
 			webfontloader: null,
 			fontHolderText: 'ЯSфz',// 99999
 			muteOnFocusLost: true,
+			mipmap: false,// 99999
 			version:"0.0.1",
 			soundFormats: [
 				"ogg",
@@ -452,6 +451,9 @@ class Game {
 
 		let so = projectDescriptor.screenOrientation;
 		assert(so === 'auto' || so === 'landscape' || so === 'portrait', 'Wrong value for "screenOrientation". "auto", "landscape" or "portrait" expected', 30010);
+		
+		PIXI.settings.MIPMAP_TEXTURES = projectDescriptor.mipmap;
+		
 		this.projectDesc = projectDescriptor;
 		this.onResize();
 		return isModified;
