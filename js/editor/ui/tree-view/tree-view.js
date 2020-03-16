@@ -4,8 +4,8 @@ import game from "thing-editor/js/engine/game.js";
 import Selection from "../../utils/selection.js";
 import Lib from "thing-editor/js/engine/lib.js";
 import Scene from 'thing-editor/js/engine/components/scene.js';
-import DataPathFixer from 'thing-editor/js/utils/data-path-fixer.js';
-import Overlay from 'thing-editor/js/utils/overlay.js';
+import DataPathFixer from 'thing-editor/js/editor/utils/data-path-fixer.js';
+import Overlay from 'thing-editor/js/editor/utils/overlay.js';
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};

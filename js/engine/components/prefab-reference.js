@@ -1,5 +1,5 @@
 /// #if EDITOR
-import PrefabsList from "thing-editor/js/ui/prefabs-list.js";
+import PrefabsList from "thing-editor/js/editor/ui/prefabs-list.js";
 import game from "../game.js";
 import MovieClip from "./movie-clip/movie-clip.js";
 

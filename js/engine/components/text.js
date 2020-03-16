@@ -312,7 +312,7 @@ Text.prototype._refreshAnchor = function() {
 
 /// #if EDITOR
 
-import LanguageView from "thing-editor/js/ui/language-view.js";
+import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 
 Text.prototype.__EDITOR_onCreate = function __EDITOR_onCreate() {
 	this.text = "New Text 1";

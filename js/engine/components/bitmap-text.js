@@ -228,7 +228,7 @@ BitmapText.__EDITOR_icon= "tree/bitmap-text";
 BitmapText.__EDITOR_group = "Basic";
 BitmapText.__canNotHaveChildren = true;
 
-import LanguageView from "thing-editor/js/ui/language-view.js";
+import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 
 __EDITOR_editableProps(BitmapText, [ //list of editable properties
 	{

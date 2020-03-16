@@ -4,7 +4,7 @@
 // usage  L('TEXT_ID', val, val2); //val - will replace '%d' entry in result string, val2 will replace '%s'. Useful fo localised templates.
 
 /// #if EDITOR
-import LanguageView from "thing-editor/js/ui/language-view.js";
+import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 /// #endif
 import game from "../game.js";
 

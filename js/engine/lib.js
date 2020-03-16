@@ -8,7 +8,7 @@ import ResourceLoader from "./utils/resource-loader.js";
 /// #if EDITOR
 let _oldDefaults = {};
 let _oldClasses = {};
-import ClassesLoader from "thing-editor/js/utils/classes-loader.js";
+import ClassesLoader from "thing-editor/js/editor/utils/classes-loader.js";
 
 function accessToOldReferenceDetector(obj, prop) {
 	if(!Lib.__outdatedReferencesDetectionDisabled) {

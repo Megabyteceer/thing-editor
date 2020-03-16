@@ -1,8 +1,8 @@
 import Prompt from './prompt.js';
 import ChooseList from './choose-list.js';
 import game from "thing-editor/js/engine/game.js";
-import Help from 'thing-editor/js/utils/help.js';
-import ws from 'thing-editor/js/utils/socket.js';
+import Help from 'thing-editor/js/editor/utils/help.js';
+import ws from 'thing-editor/js/editor/utils/socket.js';
 
 let modal;
 

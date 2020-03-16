@@ -1,6 +1,6 @@
 import game from "../game.js";
 /// #if EDITOR
-import fs from "thing-editor/js/utils/fs.js";
+import fs from "thing-editor/js/editor/utils/fs.js";
 /// #endif
 
 //local data storage

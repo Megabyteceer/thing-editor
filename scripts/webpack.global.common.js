@@ -116,6 +116,15 @@ module.exports = {
 				'ifdef-loader?{"EDITOR":false,"DEBUG":' + (isDebug ? 'true' : 'false') + '}',
 				path.resolve(__dirname, 'assert-strip-loader.js')
 			]
+		},
+		{
+			test: /\.js$/,
+			include: [
+				path.resolve(__dirname, "../js/editor")
+			],
+			loaders:[
+				path.resolve(__dirname, 'editor-code-bundle-prevent.js')
+			]
 		}]
 	}
 };

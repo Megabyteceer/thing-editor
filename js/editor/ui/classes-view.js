@@ -111,7 +111,7 @@ class ClassesView extends React.Component {
 								if(classFoldername) {
 									classFoldername += '/';
 								}
-								fs.getJSON('/thing-editor/js/templates/' + selectedTemplate.path, false, false, false).then((templateSrc) => {
+								fs.getJSON('/thing-editor/js/editor/templates/' + selectedTemplate.path, false, false, false).then((templateSrc) => {
 									
 									//add or remove super method call if its exists
 									let baseClassInstance = new selectedBaseClass();

@@ -178,7 +178,7 @@ function renderProjectItem(desc, i) {
 
 let requestNum = 0;
 let _ajaxHandlers = [];
-let worker = new Worker("js/utils/fs-worker.js");
+let worker = new Worker("js/editor/utils/fs-worker.js");
 worker.onmessage = function (event) {
 	let d = JSON.parse(event.data);
 	if (d.error) {

@@ -4,8 +4,8 @@ import Lib from './lib.js';
 import DisplayObject from './components/display-object.js';
 import Container from './components/container.js';
 /// #if EDITOR
-import PrefabsList from 'thing-editor/js/ui/prefabs-list.js';
-import ScenesList from 'thing-editor/js/ui/scenes-list.js';
+import PrefabsList from 'thing-editor/js/editor/ui/prefabs-list.js';
+import ScenesList from 'thing-editor/js/editor/ui/scenes-list.js';
 /// #endif
 /// #if DEBUG
 import MusicFragment from './utils/music-fragment.js';
