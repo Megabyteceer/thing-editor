@@ -383,11 +383,8 @@ const enumLibs = (ret = [], dir = '.') => {
 		if(fs.statSync(dirName).isDirectory()) {
 			let libDescFile = path.join(dirName, '/thing-lib.json');
 			if(fs.existsSync(libDescFile)) {
-				let len = ret.length;
+				ret.push(dirName.replace(pathSeparatorReplaceExp, '/').replace('./',''));
 				enumLibs(ret, dirName);
-				if(ret.length === len) {
-					ret.push(dirName.replace(pathSeparatorReplaceExp, '/').replace('./',''));
-				}
 			}
 		}
 	});
@@ -560,7 +557,9 @@ function isLibNotInProject(libName) {
 }
 
 function isLibInProject(libName) {
-	return (currentGameDesc.libs && (currentGameDesc.libs.indexOf(libName) >= 0)) || (libName === ('games/' + currentGame));
+	return (currentGameDesc.libs && (currentGameDesc.libs.findIndex((f) => {
+		return f.startsWith(libName);	
+	}) >= 0)) || (libName === ('games/' + currentGame));
 }
 
 //=============== module importing fixer ==================
