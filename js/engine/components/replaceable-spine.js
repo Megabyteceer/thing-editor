@@ -26,7 +26,10 @@ export default class ReplaceableSpine extends Spine {
 
 	showReplacers() {
 		this.isReplacerShowed = true;
-		this.spineContent.visible = false;
+
+		if (this.spineContent) {
+			this.spineContent.visible = false;
+		}
 
 		for (let c of this.children) {
 			if(c !== this.spineContent) {
@@ -37,13 +40,21 @@ export default class ReplaceableSpine extends Spine {
 
 	hideReplacers() {
 		this.isReplacerShowed = false;
-		this.spineContent.visible = true;
+		
+		if (this.spineContent) {
+			this.spineContent.visible = true;
+		}
 		
 		for (let c of this.children) {
 			if(c !== this.spineContent) {
 				c.visible = false;
 			}
 		}
+	}
+	
+	onRemove() {
+		super.onRemove();
+		this.isReplacerShowed = null;
 	}
 }
 
