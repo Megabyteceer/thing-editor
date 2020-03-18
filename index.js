@@ -41,6 +41,10 @@ app.get('/fs/projects', function (req, res) {
 });
 
 app.get('/fs/openProject', function (req, res) {
+	if(chromeConnectTimeout) {
+		clearTimeout(chromeConnectTimeout);
+		chromeConnectTimeout = null;
+	}
 	let folder = path.join(gamesRoot, req.query.dir, '/');
 	let descPath = path.join(folder, 'thing-project.json');
 	if(fs.existsSync(descPath)) {
@@ -240,19 +244,23 @@ while(params.length) {
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
 let wss = require('./scripts/server-socket.js');
-
+let chromeConnectTimeout;
 if(openChrome) {
 
 	let editorURL = 'http://127.0.0.1:' + PORT + '/thing-editor';
 	if(buildProjectAndExit) {
 		editorURL += '?buildProjectAndExit=' + encodeURIComponent(buildProjectAndExit);
+		chromeConnectTimeout = setTimeout(() => {
+			console.log('chrome connection timeout.');
+			process.exit(1);
+		}, 15000);
 	}
 
 	open(editorURL, {app: [
 		(process.platform == 'darwin') && 'Google Chrome' ||
 		(process.platform == 'win32') && 'chrome' ||
 			'google-chrome'
-		, buildProjectAndExit && '--new-window --headless --disable-gpu --incognito --js-flags="--max_old_space_size=32768"']}
+		, buildProjectAndExit && '--no-sandbox --new-window --headless --disable-gpu --incognito --js-flags="--max_old_space_size=32768"']}
 	);
 }
 
