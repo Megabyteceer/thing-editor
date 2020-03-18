@@ -256,7 +256,7 @@ if(openChrome) {
 		}, 15000);
 	}
 
-	open(editorURL, {app: [
+	open(editorURL, {wait: true, app: [
 		(process.platform == 'darwin') && 'Google Chrome' ||
 		(process.platform == 'win32') && 'chrome' ||
 			'google-chrome'
