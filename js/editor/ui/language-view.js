@@ -51,7 +51,7 @@ export default class LanguageView extends React.Component {
 						}
 					}
 				}
-				if(editor.projectDesc.__externalLocalesSource) {
+				if(editor.projectDesc.__externalLocalesSource && !editor.buildProjectAndExit) {
 					L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource, true).then((_externalLangsData) => {
 						externalLangsData = _externalLangsData;
 						refreshCachedData();
