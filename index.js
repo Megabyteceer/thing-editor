@@ -249,10 +249,9 @@ if(openChrome) {
 	}
 
 	open(editorURL, {app: [
-		(process.platform == 'darwin') ?
-			'Google Chrome'
-			:
-			'chrome'
+		(process.platform == 'darwin') && 'Google Chrome' ||
+		(process.platform == 'win32') && 'chrome' ||
+			'google-chrome'
 		, buildProjectAndExit && '--new-window --headless --disable-gpu --incognito --js-flags="--max_old_space_size=32768"']}
 	);
 }
