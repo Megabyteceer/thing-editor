@@ -256,16 +256,22 @@ if(openChrome) {
 		}, 15000);
 	}
 
-	const subprocess = open(editorURL, {app: [
+	open(editorURL, {app: [
 		(process.platform == 'darwin') && 'Google Chrome' ||
 		(process.platform == 'win32') && 'chrome' ||
 			'google-chrome'
 		, buildProjectAndExit && '--enable-logging=stderr --v=1 --no-sandbox --new-window --headless --disable-gpu --incognito --js-flags="--max_old_space_size=32768"']}
-	);
-	subprocess.stdout.setEncoding('utf8');
-	subprocess.stdout.on('data', (chunk) => {
-		console.log(chunk);
-	});
+	)
+		.then((subprocess) => {
+			subprocess.stdout.setEncoding('utf8');
+			subprocess.stdout.on('data', (chunk) => {
+				console.log(chunk);
+			});
+			subprocess.stderr.setEncoding('utf8');
+			subprocess.stderr.on('data', (chunk) => {
+				console.log(chunk);
+			});
+		});
 }
 
 //=========== enum files ================================
