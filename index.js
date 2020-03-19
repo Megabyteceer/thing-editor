@@ -16,9 +16,6 @@ function requireUncached(m) {
 	return require(m);
 }
 
-console.log('__dirname: ' + __dirname);
-console.log('chdir attempt: ' + path.resolve(__dirname, '..'));
-
 process.chdir(path.resolve(__dirname, '..'));
 
 const {
@@ -53,7 +50,6 @@ app.get('/fs/openProject', function (req, res) {
 	if(fs.existsSync(descPath)) {
 		currentGame = req.query.dir;
 		currentGameRoot = folder;
-		log('Project opened: ' + currentGameRoot + '; cwd: ' + process.cwd());
 		let projectDescSrc = fs.readFileSync(descPath);
 		currentGameDesc = JSON.parse(projectDescSrc);
 
@@ -62,11 +58,8 @@ app.get('/fs/openProject', function (req, res) {
 		}
 		res.send(projectDescSrc);
 		excludeAnotherProjectsFromCodeEditor();
-
 	} else {
-		log('Can\'t open project: ' + descPath + '; cwd: ' + process.cwd());
-		process.chdir('/builds/bgaming/');
-		log('Can\'t open project: ' + descPath + '; cwd: ' + process.cwd());
+		log('Can\'t open project: ' + descPath);
 		res.send('false');
 	}
 });
