@@ -50,7 +50,7 @@ app.get('/fs/openProject', function (req, res) {
 	if(fs.existsSync(descPath)) {
 		currentGame = req.query.dir;
 		currentGameRoot = folder;
-		log('Project opened: ' + currentGameRoot);
+		log('Project opened: ' + currentGameRoot + '; cwd: ' + process.cwd());
 		let projectDescSrc = fs.readFileSync(descPath);
 		currentGameDesc = JSON.parse(projectDescSrc);
 
@@ -61,6 +61,8 @@ app.get('/fs/openProject', function (req, res) {
 		excludeAnotherProjectsFromCodeEditor();
 
 	} else {
+		log('Can\'t open project: ' + descPath + '; cwd: ' + process.cwd());
+		process.chdir(path.join(__dirname, '../'));
 		log('Can\'t open project: ' + descPath + '; cwd: ' + process.cwd());
 		res.send('false');
 	}
