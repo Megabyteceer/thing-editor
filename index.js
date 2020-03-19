@@ -128,7 +128,10 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 });
 
 app.get('/fs/build', function (req, res) {
-	
+	if(buildAndExitTimeout) {
+		clearTimeout(buildAndExitTimeout);
+		buildAndExitTimeout = null;
+	}
 	log('BUILD project' + (req.query.debug ? ' (debug)' : '') + ': ' + currentGameRoot);
 	wss.showSpinner();
 	let command = 'node "' +
@@ -245,6 +248,7 @@ while(params.length) {
 let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
 let wss = require('./scripts/server-socket.js');
 let chromeConnectTimeout;
+let buildAndExitTimeout;
 if(openChrome) {
 
 	let editorURL = 'http://127.0.0.1:' + PORT + '/thing-editor';
@@ -254,14 +258,25 @@ if(openChrome) {
 			console.log('chrome connection timeout.');
 			process.exit(1);
 		}, 15000);
+		buildAndExitTimeout = setTimeout(() => {
+			console.log('chrome have not call build command.');
+			process.exit(1);
+		}, 40000);
 	}
+	const os = require('os');
+	let app = buildProjectAndExit ? [
+		'--no-sandbox',
+		'--headless',
+		'--disable-gpu',
+		'--remote-debugging-port=' + (PORT + 2),
+		'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data')
+	] : [];
 
-	open(editorURL, {app: [
-		(process.platform == 'darwin') && 'Google Chrome' ||
-		(process.platform == 'win32') && 'chrome' ||
-			'google-chrome'
-		, buildProjectAndExit && '--no-sandbox --new-window --headless --disable-gpu --incognito --js-flags="--max_old_space_size=32768"']}
-	);
+	app.unshift((process.platform == 'darwin') && 'Google Chrome' ||
+	(process.platform == 'win32') && 'chrome' ||
+		'google-chrome');
+
+	open(editorURL, {app});
 }
 
 //=========== enum files ================================
