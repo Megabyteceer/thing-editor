@@ -61,7 +61,7 @@ app.get('/fs/openProject', function (req, res) {
 		excludeAnotherProjectsFromCodeEditor();
 
 	} else {
-		log('Can\'t open project: ' + req.query.dir);
+		log('Can\'t open project: ' + descPath);
 		res.send('false');
 	}
 });
