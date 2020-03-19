@@ -16,6 +16,7 @@ function requireUncached(m) {
 	return require(m);
 }
 
+console.log('__dirname: ' + __dirname);
 console.log('chdir attempt: ' + path.resolve(__dirname, '..'));
 
 process.chdir(path.resolve(__dirname, '..'));
