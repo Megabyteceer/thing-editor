@@ -62,7 +62,7 @@ app.get('/fs/openProject', function (req, res) {
 
 	} else {
 		log('Can\'t open project: ' + descPath + '; cwd: ' + process.cwd());
-		process.chdir(path.join(__dirname, '../'));
+		process.chdir('/builds/bgaming/');
 		log('Can\'t open project: ' + descPath + '; cwd: ' + process.cwd());
 		res.send('false');
 	}
