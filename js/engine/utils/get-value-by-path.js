@@ -115,7 +115,7 @@ const getLatestSceneNodeBypath = (path, _this, suspendWarning = false) => {
 	} catch (er) {
 		editor.checkTryTime();
 		if(!suspendWarning) {
-			console.warn('path validation exception: (' + path + '): ' + _this.___info + ((typeof er) === 'object' ? er.message : er));
+			console.warn('path validation exception: (' + path + '): ' + _this.___info + ' ' + ((typeof er) === 'object' ? er.message : er));
 		}
 	}
 	return latestDetectedSceneNode;
