@@ -182,7 +182,7 @@ export default class Sound {
 		}
 	}
 
-	static playPitched(soundId, pitchStep = 1.0594630943592953, pitchLimit = 3, resetTimeout = 200) {
+	static playPitched(soundId, resetTimeout = 200, pitchStep = 1.0594630943592953, pitchLimit = 3) {
 		let prevTime = pitchTimeouts[soundId];
 		let d = game.time - prevTime;
 		if(d < 2) {
