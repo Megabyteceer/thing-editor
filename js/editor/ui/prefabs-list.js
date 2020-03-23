@@ -367,7 +367,9 @@ export default class PrefabsList extends React.Component {
 
 let checkedPrefabsNames;
 function checkPrefabDataForLoops(data, loopName) {
-	
+	if(!data) {
+		return;
+	}
 	if(data.c === "PrefabReference") {
 		let prefabName;
 
