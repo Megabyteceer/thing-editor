@@ -157,6 +157,10 @@ app.get('/fs/build', function (req, res) {
 });
 
 app.post('/fs/build-sounds', jsonParser, function (req, res) {
+	if(buildSoundsTimeout) {
+		clearTimeout(buildSoundsTimeout);
+		buildSoundsTimeout = null;
+	}
 	log('BUILD sounds: ' + currentGameRoot);
 	let fullResult = {};
 
@@ -174,6 +178,10 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 				}, req.body
 			);
 		} else {
+			buildAndExitTimeout = setTimeout(() => {
+				console.log('ERROR: chrome have not call build command.');
+				process.exit(1);
+			}, 40000);
 			res.end(JSON.stringify(fullResult));
 		}
 	};
@@ -247,17 +255,19 @@ let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT
 let wss = require('./scripts/server-socket.js');
 let chromeConnectTimeout;
 let buildAndExitTimeout;
+let buildSoundsTimeout;
 if(openChrome) {
 
 	let editorURL = 'http://127.0.0.1:' + PORT + '/thing-editor';
 	if(buildProjectAndExit) {
 		editorURL += '?buildProjectAndExit=' + encodeURIComponent(buildProjectAndExit);
 		chromeConnectTimeout = setTimeout(() => {
-			console.log('chrome connection timeout.');
+			console.log('ERROR: chrome connection timeout.');
 			process.exit(1);
 		}, 15000);
-		buildAndExitTimeout = setTimeout(() => {
-			console.log('chrome have not call build command.');
+	
+		buildSoundsTimeout = setTimeout(() => {
+			console.log('ERROR: chrome have not call build SOUNDS command.');
 			process.exit(1);
 		}, 40000);
 	}
