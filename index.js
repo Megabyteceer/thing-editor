@@ -180,7 +180,7 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 		} else {
 			if(buildProjectAndExit) {
 				buildAndExitTimeout = setTimeout(() => {
-					console.log('ERROR: chrome have not call build command.');
+					console.error('ERROR: chrome have not call build command.');
 					process.exit(1);
 				}, 40000);
 			}
@@ -264,12 +264,12 @@ if(openChrome) {
 	if(buildProjectAndExit) {
 		editorURL += '?buildProjectAndExit=' + encodeURIComponent(buildProjectAndExit);
 		chromeConnectTimeout = setTimeout(() => {
-			console.log('ERROR: chrome connection timeout.');
+			console.error('ERROR: chrome connection timeout.');
 			process.exit(1);
 		}, 15000);
 	
 		buildSoundsTimeout = setTimeout(() => {
-			console.log('ERROR: chrome have not call build SOUNDS command.');
+			console.error('ERROR: chrome have not call build SOUNDS command.');
 			process.exit(1);
 		}, 40000);
 	}
@@ -610,7 +610,7 @@ function absoluteImportsFixer(fileName, req, res, next) {
 	if(needParse) {
 		fs.readFile(fileName, function (err, content) {
 			if (err) {
-				log('JS PREPROCESSING ERROR: ' + err);
+				console.error('JS PREPROCESSING ERROR: ' + err);
 				next(err);
 			} else {
 				res.set('Content-Type', 'application/javascript');
