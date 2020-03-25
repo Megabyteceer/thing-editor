@@ -203,6 +203,9 @@ function AJAX_ordered(url, options, async, callback) {
 				}
 				callback(url, txt);
 				next();
+			}).catch((err) => {
+				ws.exitWithResult(undefined, 'fs error: ' + err.message);
+				
 			});
 		});
 	};
