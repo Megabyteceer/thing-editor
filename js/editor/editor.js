@@ -859,6 +859,7 @@ export default class Editor {
 	build(debug) {
 		return new Promise((resolve) => {
 			editor.askSceneToSaveIfNeed().then(() => {
+				editor.serverLog("build call 2");
 				build.build(debug).then(resolve);
 			});
 		});
