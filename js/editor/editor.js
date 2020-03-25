@@ -172,6 +172,8 @@ export default class Editor {
 			this.overlay = new Overlay();
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
 			
+			editor.serverLog("assets loaded.");
+
 			editor.settings.setItem('last-opened-project', dir);
 			
 			if(isProjectDescriptorModified) {
@@ -205,8 +207,11 @@ export default class Editor {
 					true
 				);
 			} else {//open last project's scene
-				await this.openSceneSafe(editor.projectDesc.__lastSceneName || 'main');
+				editor.serverLog("openSceneSafe call");
+				await this.openSceneSafe(!editor.buildProjectAndExit && editor.projectDesc.__lastSceneName || 'main');
+				editor.serverLog("openSceneSafe finished");
 				if(editor.buildProjectAndExit) {
+					editor.serverLog("build call");
 					editor.build().then(() => {
 						editor.build(true).then(() => {
 							ws.exitWithResult('build complete');
@@ -217,6 +222,10 @@ export default class Editor {
 
 			editor.projectOpeningInProgress = false;
 		}
+	}
+
+	serverLog(txt) {
+		ws.log(txt);
 	}
 
 	copyToClipboard(text) {
@@ -506,7 +515,9 @@ export default class Editor {
 	reloadAssetsAndClasses() {
 		return new Promise((resolve) => {
 			this.reloadAssets().then(() => {
+				editor.serverLog("reloadAssets loaded.");
 				this.reloadClasses().then(() => {
+					editor.serverLog("reloadClasses loaded.");
 					if(game.currentContainer) {
 						game.__loadDynamicTextures();
 					}

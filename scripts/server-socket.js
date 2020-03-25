@@ -22,6 +22,8 @@ wss.on('connection', function connection(ws) {
 				console.log(result.success);
 			}
 			process.exit(result.error ? 1 : 0);
+		} else if(data.hasOwnProperty('log')) {
+			console.log(data.log);
 		}
 	});
 	ws.on('close', function onWsClose(){

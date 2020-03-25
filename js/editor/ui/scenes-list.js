@@ -195,6 +195,7 @@ export default class ScenesList extends React.Component {
 						});
 				})
 		).then(() => {
+			editor.serverLog("scenes loaded.");
 			Lib._setScenes(scenes);
 		});
 	}

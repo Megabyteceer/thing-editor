@@ -96,6 +96,10 @@ ws.exitWithResult = function(success, error) {
 	}, 1000);
 };
 
+ws.log = function(txt) {
+	ws.send(JSON.stringify({log: txt}));
+};
+
 ws.notIgnoreFileChanging = function(fileName) {
 	setTimeout(() => {
 		assert(filesIgnoring[fileName] > 0, 'ignoring vas no started.');
