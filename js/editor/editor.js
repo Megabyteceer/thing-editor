@@ -130,6 +130,11 @@ export default class Editor {
 		
 		if(location.search && location.search.indexOf('?buildProjectAndExit=') === 0) {
 			editor.buildProjectAndExit = location.search.replace('?buildProjectAndExit=', '');
+			if(editor.buildProjectAndExit) {
+				window.addEventListener('error', function (errEv) {
+					ws.exitWithResult(undefined, "UNCAUGHT ERROR: " + JSON.stringify(errEv, ["message", "filename", "lineno", "colno"]));
+				});
+			}
 		}
 		let lastOpenedProject = editor.buildProjectAndExit || editor.settings.getItem('last-opened-project');
 		if(!dir) {
@@ -208,12 +213,6 @@ export default class Editor {
 						});
 					});
 				}
-			}
-
-			if(editor.buildProjectAndExit) {
-				window.addEventListener('error', function (errEv) {
-					ws.exitWithResult(undefined, "UNCAUGHT ERROR: " + JSON.stringify(errEv, ["message", "filename", "lineno", "colno"]));
-				});
 			}
 
 			editor.projectOpeningInProgress = false;
