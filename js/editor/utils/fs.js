@@ -193,6 +193,9 @@ function AJAX_ordered(d, callback) {
 		if(!d.async) {
 			requestInProgress = true;
 		}
+
+		editor.serverLog('XMLHttpRequest: ' + d.url);
+
 		var xhr = new XMLHttpRequest();
 		xhr.open(d.type, d.url, true);
 		xhr.setRequestHeader("Content-Type", d.contentType);
@@ -200,8 +203,21 @@ function AJAX_ordered(d, callback) {
 			if(!d.async) {
 				requestInProgress = false;
 			}
+			editor.serverLog('success: ' + d.url);
 			callback(d.url, xhr.responseText);
 			next();
+		});
+		xhr.addEventListener("error", () => {
+			if(!d.async) {
+				requestInProgress = false;
+			}
+			editor.ui.modal.showError('fs error (' + d.url + '): ' + xhr.responseText);
+		});
+		xhr.addEventListener("timeout ", () => {
+			if(!d.async) {
+				requestInProgress = false;
+			}
+			editor.ui.modal.showError('fs timeout: ' + d.url);
 		});
 		xhr.send(d.data);
 	};
