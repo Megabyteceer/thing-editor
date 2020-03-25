@@ -84,12 +84,10 @@ let fs = {
 			editor.ui.modal.showSpinner();
 		}
 		return new Promise((resolve) => {
-			AJAX_ordered({
-				type: "GET",
-				url,
-				contentType: isJSON ? 'application/json' : undefined,
-				async
-			}, (returnedUrl, data) => {
+			AJAX_ordered(url, {
+				method: "GET",
+				headers: isJSON ? {'Content-Type': 'application/json'} : undefined
+			}, async, (returnedUrl, data) => {
 				assert(url === returnedUrl, 'Response is not match with request');
 				if (!silently || !async) {
 					editor.ui.modal.hideSpinner();
@@ -117,13 +115,11 @@ let fs = {
 				editor.ui.modal.showSpinner();
 			}
 			editor.serverLog("AJAX start");
-			AJAX_ordered({
-				type: "POST",
-				url: url,
-				data: JSON.stringify(data),
-				contentType: 'application/json',
-				async
-			}, (returnedUrl, data) => {
+			AJAX_ordered(url, {
+				method: "POST",
+				body: JSON.stringify(data),
+				headers: {'Content-Type': 'application/json'}
+			}, async, (returnedUrl, data) => {
 				editor.serverLog("AJAX finish");
 				assert(url === returnedUrl, 'Response is not match with request');
 				
@@ -188,41 +184,29 @@ function next() {
 	}
 }
 
-function AJAX_ordered(d, callback) {
+function AJAX_ordered(url, options, async, callback) {
 	const attempt = () => {
-		if(!d.async) {
+		if(!async) {
 			requestInProgress = true;
 		}
 
-		editor.serverLog('XMLHttpRequest: ' + d.url);
+		editor.serverLog('XMLHttpRequest: ' + url);
 
-		var xhr = new XMLHttpRequest();
-		xhr.open(d.type, d.url, true);
-		xhr.setRequestHeader("Content-Type", d.contentType);
-		xhr.addEventListener("load", () => {
-			if(!d.async) {
-				requestInProgress = false;
-			}
-			editor.serverLog('success: ' + d.url);
-			callback(d.url, xhr.responseText);
-			next();
+
+		fetch(url, options).then((response) => {
+			response.text().then((txt) => {
+				editor.serverLog('success: ' + url);
+	
+				if(!async) {
+					requestInProgress = false;
+				}
+				callback(url, txt);
+				next();
+			});
 		});
-		xhr.addEventListener("error", () => {
-			if(!d.async) {
-				requestInProgress = false;
-			}
-			editor.ui.modal.showError('fs error (' + d.url + '): ' + xhr.responseText);
-		});
-		xhr.addEventListener("timeout ", () => {
-			if(!d.async) {
-				requestInProgress = false;
-			}
-			editor.ui.modal.showError('fs timeout: ' + d.url);
-		});
-		xhr.send(d.data);
 	};
 
-	if(requestInProgress && !d.async) {
+	if(requestInProgress && !async) {
 		inProgress.push(attempt);
 	} else {
 		attempt();

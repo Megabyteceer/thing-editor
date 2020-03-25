@@ -208,7 +208,7 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 	log('Save file step 2');
 	fs.writeFileSync(fileName, req.body.data);
 	log('Save file step 3');
-	res.end('true');
+	res.end();
 	log('Save file step 4');
 });
 
