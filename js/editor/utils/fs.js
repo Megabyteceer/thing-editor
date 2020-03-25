@@ -116,7 +116,7 @@ let fs = {
 			if (!silently || !async) {
 				editor.ui.modal.showSpinner();
 			}
-
+			editor.serverLog("AJAX start");
 			AJAX({
 				type: "POST",
 				url: url,
@@ -124,6 +124,7 @@ let fs = {
 				contentType: 'application/json',
 				async
 			}, (returnedUrl, data) => {
+				editor.serverLog("AJAX finish");
 				assert(url === returnedUrl, 'Response is not match with request');
 				
 				if (!silently || !async) {
