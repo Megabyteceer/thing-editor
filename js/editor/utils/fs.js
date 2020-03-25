@@ -194,6 +194,7 @@ function AJAX_ordered(url, options, async, callback) {
 
 
 		fetch(url, options).then((response) => {
+			editor.serverLog('bla bla: ' + url);
 			response.text().then((txt) => {
 				editor.serverLog('success: ' + url);
 	
