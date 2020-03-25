@@ -84,7 +84,7 @@ let fs = {
 			editor.ui.modal.showSpinner();
 		}
 		return new Promise((resolve) => {
-			AJAX({
+			AJAX_ordered({
 				type: "GET",
 				url,
 				contentType: isJSON ? 'application/json' : undefined,
@@ -117,7 +117,7 @@ let fs = {
 				editor.ui.modal.showSpinner();
 			}
 			editor.serverLog("AJAX start");
-			AJAX({
+			AJAX_ordered({
 				type: "POST",
 				url: url,
 				data: JSON.stringify(data),
@@ -179,21 +179,36 @@ function renderProjectItem(desc, i) {
 	}, icon, desc.title);
 }
 
-let requestNum = 0;
-let _ajaxHandlers = [];
-let worker = new Worker("js/editor/utils/fs-worker.js");
-worker.onmessage = function (event) {
-	let d = JSON.parse(event.data);
-	if (d.error) {
-		editor.ui.modal.showError('File system worker error: ' + JSON.stringify(d));
-		_ajaxHandlers.shift()(d.request.url);
-	} else {
-		_ajaxHandlers.shift()(d.url, d.data);
-	}
-};
+let requestInProgress = false;
+let inProgress = [];
 
-function AJAX(options, callback) {
-	_ajaxHandlers.push(callback);
-	options.requestNum = requestNum++;
-	worker.postMessage(JSON.stringify(options));
+function next() {
+	if(inProgress.length) {
+		(inProgress.shift())();
+	}
+}
+
+function AJAX_ordered(d, callback) {
+	const attempt = () => {
+		if(!d.async) {
+			requestInProgress = true;
+		}
+		var xhr = new XMLHttpRequest();
+		xhr.open(d.type, d.url, true);
+		xhr.setRequestHeader("Content-Type", d.contentType);
+		xhr.addEventListener("load", () => {
+			if(!d.async) {
+				requestInProgress = false;
+			}
+			callback(d.url, xhr.responseText);
+			next();
+		});
+		xhr.send(d.data);
+	};
+
+	if(requestInProgress && !d.async) {
+		inProgress.push(attempt);
+	} else {
+		attempt();
+	}
 }
