@@ -206,7 +206,7 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 	ensureDirectoryExistence(fileName);
 	fs.writeFileSync(fileName, req.body.data);
 	res.end();
-	log('file saved');
+	log('file saved ' + Date.now());
 });
 
 app.use('/', (req, res, next) => {

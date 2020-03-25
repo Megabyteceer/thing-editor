@@ -91,9 +91,10 @@ ws.exitWithResult = function(success, error) {
 	ws.send(JSON.stringify({
 		exitWithResult:{success, error}
 	}));
+	/*
 	setTimeout(() => {
 		window.close();
-	}, 1000);
+	}, 1000);*/
 };
 
 ws.log = function(txt) {
