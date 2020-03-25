@@ -27,6 +27,7 @@ wss.on('connection', function connection(ws) {
 		}
 	});
 	ws.on('close', function onWsClose(){
+		console.log('client closed');
 		clientsConnected--;
 		clientSocket = null;
 	});
