@@ -209,6 +209,13 @@ export default class Editor {
 					});
 				}
 			}
+
+			if(editor.buildProjectAndExit) {
+				window.addEventListener('error', function (errEv) {
+					ws.exitWithResult(undefined, "UNCAUGHT ERROR: " + JSON.stringify(errEv, ["message", "filename", "lineno", "colno"]));
+				});
+			}
+
 			editor.projectOpeningInProgress = false;
 		}
 	}
