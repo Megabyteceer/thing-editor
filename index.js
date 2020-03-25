@@ -203,9 +203,11 @@ app.post('/fs/exec', jsonParser, function (req, res) {
 
 app.post('/fs/savefile', jsonParser, function (req, res) {
 	let fileName = mapFileUrl(req.body.filename);
-	//log('Save file: ' + fileName);
+	log('Save file: ' + fileName);
 	ensureDirectoryExistence(fileName);
+	log('Save file step 2');
 	fs.writeFileSync(fileName, req.body.data);
+	log('Save file step 3');
 	res.end();
 });
 

@@ -141,7 +141,9 @@ let fs = {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
 		ws.ignoreFileChanging(filename);
+		editor.serverLog("save file request");
 		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async).then(() => {
+			editor.serverLog("save file responsed");
 			ws.notIgnoreFileChanging(filename);
 		});
 	}
