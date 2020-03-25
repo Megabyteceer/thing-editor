@@ -180,7 +180,7 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 		} else {
 			if(buildProjectAndExit) {
 				buildAndExitTimeout = setTimeout(() => {
-					console.error('ERROR: chrome have not call build command.');
+					console.error('ERROR: chrome have not call build command. Exit');
 					process.exit(1);
 				}, 40000);
 			}
