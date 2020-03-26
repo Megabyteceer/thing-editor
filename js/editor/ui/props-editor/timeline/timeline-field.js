@@ -30,7 +30,10 @@ export default class FieldsTimeline extends React.Component {
 		if (f.___cacheTimeline.hasOwnProperty(time)) {
 			o[f.n] = f.___cacheTimeline[time];
 		} else {
-			o[f.n] = MovieClip._findPreviousKeyframe(f.t, time).v;
+			time = MovieClip._findPreviousKeyframe(f.t, time).t;
+			if (f.___cacheTimeline.hasOwnProperty(time)) {
+				o[f.n] = f.___cacheTimeline[time];
+			}
 		}
 	}
 

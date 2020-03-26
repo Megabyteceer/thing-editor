@@ -169,11 +169,11 @@ const calculateCacheSegmentForField = (fieldPlayer, c) => {
 	let limit = fields[fields.length-1].t;
 	while(!c.hasOwnProperty(fieldPlayer.time)) {
 		time = fieldPlayer.time;
-		fieldPlayer.update(true);
-		c[time] = fieldPlayer.val;
 		if(time > limit) {
 			break;
 		}
+		fieldPlayer.update(true);
+		c[time] = fieldPlayer.val;
 		assert(i++ < 100000, 'Timeline values cache calculation looped and failed.');
 	}
 	fieldPlayer.__doNotCallActions = false;
