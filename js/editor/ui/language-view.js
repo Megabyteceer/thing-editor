@@ -39,7 +39,6 @@ export default class LanguageView extends React.Component {
 		});
 		return new Promise((resolve) => {
 			return L.loadLanguages(langsIds, '/games/' + editor.currentProjectDir + editor.projectDesc.localesPath).then((langsData) => {
-				editor.serverLog("lang data loaded.");
 				languages = langsData;
 				refreshCachedData();
 				for(let langId in langsData) {
@@ -54,7 +53,6 @@ export default class LanguageView extends React.Component {
 				}
 				if(editor.projectDesc.__externalLocalesSource && !editor.buildProjectAndExit) {
 					L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource, true).then((_externalLangsData) => {
-						editor.serverLog("external i18n data loaded.");
 						externalLangsData = _externalLangsData;
 						refreshCachedData();
 					}).then(resolve);

@@ -90,7 +90,6 @@ export default class Build {
 			editor.projectDesc.version = version.join('.');
 			editor.saveProjectDesc();*/
 
-			editor.serverLog("build step 1");
 			let projectDesc = editor.projectDesc;
 			let assetsDelimiter = projectDesc.__assetsDelimiter ? projectDesc.__assetsDelimiter : undefined;
 
@@ -109,7 +108,6 @@ export default class Build {
 			await editor.fs.saveFile('assets' + debugPrefix + '.js', assertCode + 'window._thingEngineAssets = ' +
 			JSON.stringify(assetsObj, fieldsFilter, assetsDelimiter) + ';', false, true);
 			
-			editor.serverLog("build step 2");
 			let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
 			classesSrc.sort((a, b) => {
 				if(a.c.name > b.c.name) {
@@ -125,8 +123,6 @@ export default class Build {
 	import Lib from "thing-editor/js/engine/lib.js";
 	let classes = {};`];
 			let defaults = {};
-
-			editor.serverLog("build step 3");
 
 			const findRef = (class_) => {
 				let name = class_.name;
@@ -161,17 +157,11 @@ export default class Build {
 			src.push('Lib._setClasses(classes, ' + JSON.stringify(defaults, fieldsFilter, assetsDelimiter) + ');');
 			await editor.fs.saveFile('src/classes' + debugPrefix + '.js', src.join('\n'), false, true);
 
-			editor.serverLog("build step 4");
-
-
-			editor.serverLog("assets saved");
 			if(!skipWebpack) {
 				if(!debug && editor.projectDesc.__buildDebugAssets) {
 					Build.build(true, true);
 				}
-				editor.serverLog("build request");
 				editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
-					editor.serverLog("build request finish");
 					errorLinesStarted = false;
 
 					if(result.find(isLineError)) {

@@ -360,7 +360,6 @@ export default class PrefabsList extends React.Component {
 						});
 				})
 		).then(() => {
-			editor.serverLog("prefabs loaded.");
 			Lib._setPrefabs(prefabs);
 		});
 	}

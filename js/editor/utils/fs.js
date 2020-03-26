@@ -114,13 +114,11 @@ let fs = {
 			if (!silently || !async) {
 				editor.ui.modal.showSpinner();
 			}
-			editor.serverLog("AJAX start");
 			AJAX_ordered(url, {
 				method: "POST",
 				body: JSON.stringify(data),
 				headers: {'Content-Type': 'application/json'}
 			}, async, (returnedUrl, data) => {
-				editor.serverLog("AJAX finish");
 				assert(url === returnedUrl, 'Response is not match with request');
 				
 				if (!silently || !async) {
@@ -138,9 +136,7 @@ let fs = {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
 		ws.ignoreFileChanging(filename);
-		editor.serverLog("save file request");
 		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async).then(() => {
-			editor.serverLog("save file responsed");
 			ws.notIgnoreFileChanging(filename);
 		});
 	}
@@ -189,15 +185,8 @@ function AJAX_ordered(url, options, async, callback) {
 		if(!async) {
 			requestInProgress = true;
 		}
-
-		editor.serverLog('XMLHttpRequest: ' + url);
-
-
 		fetch(url, options).then((response) => {
-			editor.serverLog('bla bla: ' + url);
 			response.text().then((txt) => {
-				editor.serverLog('success: ' + url);
-	
 				if(!async) {
 					requestInProgress = false;
 				}
