@@ -15,6 +15,7 @@ wss.on('connection', function connection(ws) {
 	ws.on('message', function incoming(data) {
 		data = JSON.parse(data);
 		if(data.hasOwnProperty('exitWithResult')) {
+			process.env.buildProjectAndExit = null;
 			let result = data.exitWithResult;
 			if(result.error) {
 				console.error(result.error);
@@ -26,8 +27,11 @@ wss.on('connection', function connection(ws) {
 			console.log(data.log);
 		}
 	});
-	ws.on('close', function onWsClose(){
-		console.log('client closed ' + Date.now());
+	ws.on('close', function onWsClose() {
+		if(process.env.buildProjectAndExit) {
+			console.error('thing-editor closed connection unexpectedly.');
+			process.exit(1);
+		}
 		clientsConnected--;
 		clientSocket = null;
 	});
