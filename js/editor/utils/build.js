@@ -56,11 +56,10 @@ const isLineError = (l) => {
 };
 
 export default class Build {
-	static build(debug, skipWebpack) {
+	static build(debug) {
 
 		return new Promise(async (resolve) => {
 
-			let debugPrefix = (debug && editor.projectDesc.__buildDebugAssets) ? '_debug' : '';
 			prefixToCutOff = (debug ? '___' : '__');
 			let scenes = filterObjectsData(Lib._getAllScenes());
 			let prefabs = filterObjectsData(Lib._getAllPrefabs());
@@ -91,7 +90,6 @@ export default class Build {
 			editor.saveProjectDesc();*/
 
 			let projectDesc = editor.projectDesc;
-			let assetsDelimiter = projectDesc.__assetsDelimiter ? projectDesc.__assetsDelimiter : undefined;
 
 			let assetsObj = {scenes, prefabs, images, resources, sounds, projectDesc};
 			if(editor.projectDesc.embedLocales) {
@@ -105,8 +103,8 @@ export default class Build {
 				};`;
 			}
 
-			await editor.fs.saveFile('assets' + debugPrefix + '.js', assertCode + 'window._thingEngineAssets = ' +
-			JSON.stringify(assetsObj, fieldsFilter, assetsDelimiter) + ';', false, true);
+			await editor.fs.saveFile('assets.js', assertCode + 'window._thingEngineAssets = ' +
+			JSON.stringify(assetsObj, fieldsFilter) + ';', false, true);
 			
 			let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
 			classesSrc.sort((a, b) => {
@@ -154,35 +152,30 @@ export default class Build {
 					}
 				}
 			}
-			src.push('Lib._setClasses(classes, ' + JSON.stringify(defaults, fieldsFilter, assetsDelimiter) + ');');
-			await editor.fs.saveFile('src/classes' + debugPrefix + '.js', src.join('\n'), false, true);
+			src.push('Lib._setClasses(classes, ' + JSON.stringify(defaults, fieldsFilter) + ');');
+			await editor.fs.saveFile('src/classes.js', src.join('\n'), false, true);
 
-			if(!skipWebpack) {
-				if(!debug && editor.projectDesc.__buildDebugAssets) {
-					Build.build(true, true);
-				}
-				editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
+			editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
+				errorLinesStarted = false;
+
+				if(result.find(isLineError)) {
 					errorLinesStarted = false;
-
-					if(result.find(isLineError)) {
-						errorLinesStarted = false;
-						editor.ui.modal.showError(R.div(null, R.div(null, "Build errors: "), result.filter(isLineError).map((r, i) =>{
+					editor.ui.modal.showError(R.div(null, R.div(null, "Build errors: "), result.filter(isLineError).map((r, i) =>{
+						return R.div({key:i}, r);
+					})), 30006);
+				} else if(!editor.buildProjectAndExit) {
+					let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
+					
+					editor.openUrl(url);
+							
+					if(result.find((l) => {return l;})) {
+						editor.ui.modal.showModal(result.map((r, i) =>{
 							return R.div({key:i}, r);
-						})), 30006);
-					} else if(!editor.buildProjectAndExit) {
-						let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
-						
-						editor.openUrl(url);
-								
-						if(result.find((l) => {return l;})) {
-							editor.ui.modal.showModal(result.map((r, i) =>{
-								return R.div({key:i}, r);
-							}));
-						}
+						}));
 					}
-					resolve();
-				});
-			}
+				}
+				resolve();
+			});
 		});
 	}
 }
