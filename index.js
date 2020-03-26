@@ -278,6 +278,7 @@ if(openChrome) {
 		'--no-sandbox',
 		'--headless',
 		'--disable-gpu',
+		'--disable-dev-shm-usage',
 		'--js-flags="--max_old_space_size=8192"',
 		'--remote-debugging-port=' + (PORT + 2),
 		'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data')
