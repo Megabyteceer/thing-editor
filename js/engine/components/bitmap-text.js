@@ -316,16 +316,6 @@ __EDITOR_editableProps(BitmapText, [ //list of editable properties
 
 	},
 	{
-		name: 'maxWidth',
-		type: Number,
-		afterEdited: (overrideO) => {
-			let o = overrideO || editor.selection[0];
-			afterEdited(o, o.maxWidth);
-		},
-		min: 0,
-		noNullCheck: true
-	},
-	{
 		name: 'maxW',
 		type: Number,
 		afterEdited: (overrideO) => {

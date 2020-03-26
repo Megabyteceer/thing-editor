@@ -34,7 +34,7 @@ export default class Delay extends Container {
 	static delay(callback, delayFrames, container = game.currentContainer) {
 		assert(!game.__EDITOR_mode, "Attempt to create Delay.delay() in editing mode.", 10007);
 		assert(callback, "Delay.delay(). Function expected as first parameter, but " + (typeof callback) + ' received.', 10008);
-		assert(typeof delayFrames === 'number', "Delay.delay(). Number expected as second parameter, but " + (typeof callback) + ' received.', 10009);
+		assert(typeof delayFrames === 'number', "Delay.delay(). Number expected as second parameter, but " + (typeof delayFrames) + ' received.', 10009);
 		
 		if(delayFrames <= 0) {
 			callback();
