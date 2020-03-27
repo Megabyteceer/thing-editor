@@ -120,6 +120,14 @@ export default class Scissors extends Container {
 		}
 	}
 
+	enable() { /// 99999
+		this.enabled = true;
+	}
+
+	disable() { /// 99999
+		this.enabled = false;
+	}
+
 	/// #if EDITOR
 	__beforeSerialization() {
 		this._disposeMaskScissor();
@@ -129,6 +137,9 @@ export default class Scissors extends Container {
 
 
 /// #if EDITOR
+Scissors.prototype.enable.___EDITOR_isGoodForCallbackChooser = true;
+Scissors.prototype.disable.___EDITOR_isGoodForCallbackChooser = true;
+
 Scissors.__EDITOR_group = 'Basic';
 Scissors.__EDITOR_icon = 'tree/scissor';
 Scissors.__EDITOR_tip = `<b>Scissors</b> - component which cuts it's content with rectangle area. Scissors works extremely fast against of Mask. Scissors does not support usage of filters or masks for its children or parents. In editor when you select children or parent of Scissor component, its could display with wrong masking because of selection higlight filter. You could disable helpers (Ctrl+H) to minimize effect. In release build, where is no selection - all will be fine.`;
