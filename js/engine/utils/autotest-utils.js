@@ -1,5 +1,4 @@
 import getValueByPath from "./get-value-by-path.js";
-import game from "../game.js";
 import Button from "../components/button.js";
 import ws from "thing-editor/js/editor/utils/socket.js";
 
@@ -8,7 +7,7 @@ let testsStoppedByUser;
 
 function startTimeout(stepName, timeout) {
 	console.log('auto-test step > ' + stepName);
-	ws.log('auto-test step > ' + stepName);
+	testLog('auto-test step > ' + stepName);
 	assert(!timeoutHandler, "Previous auto-test step was not finished.");
 	timeoutHandler = setTimeout(() => {
 		throw new Error("Auto-test step fail by timeout: " + stepName);
@@ -20,14 +19,18 @@ function finishTimeout() {
 	timeoutHandler = null;
 }
 
-export function stopTests() {
+export function _stopTests() {
 	finishTimeout();
 	window.__EDITOR_isAutotestInProgress = false;
 	testsStoppedByUser = true;
 }
 
-export function onTestsStart() {
+export function _onTestsStart() {
 	testsStoppedByUser = false;
+}
+
+export function testLog(txt) {
+	ws.log(txt);
 }
 
 export function testWait(name, condition, timeout = 20000) {

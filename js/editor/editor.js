@@ -25,7 +25,7 @@ import Tilemap from 'thing-editor/js/engine/components/tilemap.js';
 import defaultTilemapProcessor from './utils/default-tilemap-processor.js';
 import DataPathFixer from './utils/data-path-fixer.js';
 import Container from 'thing-editor/js/engine/components/container.js';
-import {onTestsStart} from '../engine/utils/autotest-utils.js';
+import {_onTestsStart} from '../engine/utils/autotest-utils.js';
 
 let isFirstClassesLoading = true;
 
@@ -241,7 +241,7 @@ export default class Editor {
 				});
 				setTimeout(async () => {
 					ws.log('Auto-test start...');
-					onTestsStart();
+					_onTestsStart();
 					editor.__preBuildAutoTest().then(() => {
 						ws.log('Auto-test finished successfully');
 						editor.openSceneSafe(sceneName).then(resolve);

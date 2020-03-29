@@ -206,19 +206,22 @@ class Game {
 		S = 1;
 		/// #endif
 
-		if(this.pixiApp && this.pixiApp.renderer &&  this.pixiApp.renderer.gl) {
-			let maxTextureSize = 1024;
-			let gl = this.pixiApp.renderer.gl;
-			maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-			if(maxTextureSize < 3000) {
-				S = Math.min(1, S);
-			}
+		if(this.pixiApp && this.pixiApp.renderer) {
+			game.isCanvasMode = !this.pixiApp.renderer.gl; /// 99999 game.isCanvasMode
+			if(!game.isCanvasMode) {
+				let maxTextureSize = 1024;
+				let gl = this.pixiApp.renderer.gl;
+				maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+				if(maxTextureSize < 3000) {
+					S = Math.min(1, S);
+				}
 
-			if(w * S > maxTextureSize) {
-				S = maxTextureSize / w;
-			}
-			if(h * S > maxTextureSize) {
-				S = maxTextureSize / h;
+				if(w * S > maxTextureSize) {
+					S = maxTextureSize / w;
+				}
+				if(h * S > maxTextureSize) {
+					S = maxTextureSize / h;
+				}
 			}
 		}
 	
