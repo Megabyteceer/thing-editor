@@ -152,10 +152,6 @@ function addClass(c, path) {
 		}
 	}
 	
-	if (path && (path.indexOf('/thing-editor/') !== 0)) {
-		console.log('Custom class loaded: ' + name + '; ' + path);
-	}
-	
 	classPathById[name] = (((typeof path) === 'string') ? path : false);
 	classesById[name] = c;
 	
@@ -263,9 +259,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		
 			loadedClassesCount = 0;
 			clearClasses();
-			console.clear();
-			console.log('%c editor: classes loading begin:', 'font-weight:bold; padding:10px; padding-right: 300px; font-size:130%; color:#040; background:#cdc;');
-		
+
 			enumClassProperties(DisplayObject);
 			enumClassProperties(Delay);
 			enumClassProperties(SceneLinkedPromise);
@@ -311,7 +305,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			let script = document.createElement('script');
 			editor.ui.modal.showSpinner();
 			script.onerror = function() {
-				showError("Can not load script; Please check Browser's console for error details, and fix problem to continue.", 31001);
+				showError("Can not load custom component; Please check Browser's console for error details, and fix problem to continue.", 31001);
 				script.onload();
 			};
 			script.onload = function() {
@@ -325,15 +319,13 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				
 					classesLoadedSuccessfullyAtLeastOnce = true;
 				
-					console.log('Loading success.');
-					console.log(loadedClassesCount + ' classes total.');
 					resolve();
 				
 					editor.ui.classesList.forceUpdate();
 					game.__destroyCurrentScene();
 					Pool.clearAll();
 				} else {
-					console.warn('classes were not loaded because of error.');
+					console.warn('custom components were not loaded because of error.');
 				}
 			};
 			if(attachedScript) {

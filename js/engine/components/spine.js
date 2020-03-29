@@ -370,8 +370,6 @@ export default class Spine extends Container {
 	}
 }
 
-const bindedTextures = {};
-
 /// #if EDITOR
 Spine.__EDITOR_group = 'Extended';
 Spine.__EDITOR_icon = 'tree/spine';

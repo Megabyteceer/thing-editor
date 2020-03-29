@@ -139,7 +139,7 @@ export default class Editor {
 				console.error = (txt) => {
 					errorOrigin(txt);
 					ws.exitWithResult(undefined, "CONSOLE ERROR CAPTURED: " + txt);
-				}
+				};
 			}
 		}
 		let lastOpenedProject = editor.buildProjectAndExit || editor.settings.getItem('last-opened-project');
