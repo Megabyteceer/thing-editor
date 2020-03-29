@@ -117,6 +117,7 @@ class UI extends React.Component {
 			React.createElement(TexturesView),
 			editor.history.buttonsRenderer(),
 			R.btn('Project settings', editor.openProjectDescToEdit, undefined, 'menu-btn'),
+			editor.__preBuildAutoTest && R.btn('Test', editor.testProject, "Launch auto-tests", 'menu-btn'),
 			React.createElement(Help),
 			editor.fs.filesExt && editor.fs.filesExt.scripts.map((s) => {
 				return R.span({key: s.name}, R.btn(s.name.replace('scripts/', '').replace(/\.js$/, ''), () => {

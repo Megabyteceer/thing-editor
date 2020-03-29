@@ -25,6 +25,7 @@ import Tilemap from 'thing-editor/js/engine/components/tilemap.js';
 import defaultTilemapProcessor from './utils/default-tilemap-processor.js';
 import DataPathFixer from './utils/data-path-fixer.js';
 import Container from 'thing-editor/js/engine/components/container.js';
+import {onTestsStart} from '../engine/utils/autotest-utils.js';
 
 let isFirstClassesLoading = true;
 
@@ -132,8 +133,13 @@ export default class Editor {
 			editor.buildProjectAndExit = location.search.replace('?buildProjectAndExit=', '');
 			if(editor.buildProjectAndExit) {
 				window.addEventListener('error', function (errEv) {
-					ws.exitWithResult(undefined, "UNCAUGHT ERROR: " + JSON.stringify(errEv, ["message", "filename", "lineno", "colno"]));
+					ws.exitWithResult(undefined, "UNCAUGHT ERROR: " + JSON.stringify(errEv, ["message", "filename", "lineno", "colno", "stack"]));
 				});
+				let errorOrigin = console.error;
+				console.error = (txt) => {
+					errorOrigin(txt);
+					ws.exitWithResult(undefined, "CONSOLE ERROR CAPTURED: " + txt);
+				}
 			}
 		}
 		let lastOpenedProject = editor.buildProjectAndExit || editor.settings.getItem('last-opened-project');
@@ -205,11 +211,13 @@ export default class Editor {
 					true
 				);
 			} else {//open last project's scene
-				await this.openSceneSafe(!editor.buildProjectAndExit && editor.projectDesc.__lastSceneName || 'main');
+				await this.openSceneSafe(!editor.buildProjectAndExit && editor.projectDesc.__lastSceneName || editor.projectDesc.mainScene || 'main');
 				if(editor.buildProjectAndExit) {
-					editor.build().then(() => {
-						editor.build(true).then(() => {
-							ws.exitWithResult('build complete');
+					editor.testProject().then(() => {
+						editor.build().then(() => {
+							editor.build(true).then(() => {
+								ws.exitWithResult('build complete');
+							});
 						});
 					});
 				}
@@ -217,6 +225,33 @@ export default class Editor {
 
 			editor.projectOpeningInProgress = false;
 		}
+	}
+
+	testProject() {
+		return new Promise(async (resolve) => {
+			if(editor.__preBuildAutoTest) {
+				let sceneName = editor.currentSceneName;
+				await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
+				if(game.__EDITOR_mode) {
+					editor.ui.viewport.onTogglePlay();
+					window.__EDITOR_isAutotestInProgress = true; // 99999
+				}
+				await editor.waitForCondition(() => {
+					return game.currentContainer;
+				});
+				setTimeout(async () => {
+					ws.log('Auto-test start...');
+					onTestsStart();
+					editor.__preBuildAutoTest().then(() => {
+						ws.log('Auto-test finished successfully');
+						editor.openSceneSafe(sceneName).then(resolve);
+					});
+				}, 1000);
+
+			} else {
+				resolve();
+			}
+		});
 	}
 
 	copyToClipboard(text) {
@@ -874,9 +909,11 @@ export default class Editor {
 	}
 
 	getFieldNameByValue(node, fieldValue) {
-		for(let p of this.enumObjectsProperties(node)) {
-			if(node[p.name] === fieldValue) {
-				return p.name;
+		if(node instanceof DisplayObject) {
+			for(let p of editor.enumObjectsProperties(node)) {
+				if(node[p.name] === fieldValue) {
+					return p.name;
+				}
 			}
 		}
 	}

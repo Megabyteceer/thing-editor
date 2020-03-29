@@ -7,6 +7,7 @@ import Keys from 'thing-editor/js/engine/utils/keys.js';
 import ClassesView from './classes-view.js';
 import Spine from 'thing-editor/js/engine/components/spine.js';
 import SelectEditor from './props-editor/select-editor.js';
+import {stopTests} from 'thing-editor/js/engine/utils/autotest-utils.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -100,6 +101,7 @@ export default class Viewport extends React.Component {
 	
 	onTogglePlay() {
 		if(!playTogglingTime && !editor.__FatalError) {
+			stopTests();
 			Keys.resetAll();
 			this.checkIfNeedRecovery();
 			playTogglingTime = true;
