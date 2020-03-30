@@ -30,6 +30,7 @@ export function _onTestsStart() {
 }
 
 export function testLog(txt) {
+	console.log(txt);
 	ws.log(txt);
 }
 
