@@ -996,6 +996,17 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 			isCleanedUp = true;
 		}
 	}
+
+	let loadOnDemandFolders = editor.projectDesc.__loadOnDemandTexturesFolders;
+	a = Object.keys(loadOnDemandFolders);
+	for(let k of a) {
+		let k2 = k + '/';
+		if(!Lib.__texturesList.find(t => t.name.startsWith(k2))) {
+			delete loadOnDemandFolders[k];
+			isCleanedUp = true;
+		}
+	}
+
 	if(!cleanOnly || isCleanedUp) {
 		editor.fs.saveFile('thing-project.json', editor.projectDesc);
 	}
