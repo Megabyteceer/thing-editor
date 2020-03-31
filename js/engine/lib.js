@@ -42,7 +42,7 @@ let deserializationDeepness = 0;
 
 function markOldReferences(o) {
 	o.___EDITOR_markedOldReferences = new Map();
-	for(let f in Object.getOwnPropertyNames(o)) {
+	for(let f of Object.getOwnPropertyNames(o)) {
 		if((o[f] instanceof DisplayObject)) {
 			if(f !== 'tempDisplayObjectParent') {
 				o[f] = accessDetectionProxy(o.constructor, f);
