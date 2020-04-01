@@ -220,7 +220,7 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 	let originalSetter;
 	
 	let newSetter = function wrapPropertyWithNumberCheckerSetter(val) {
-		assert(!isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.', 10001);
+		assert(typeof val === 'number' && !isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.', 10001);
 		originalSetter.call(this, val);
 	};
 	

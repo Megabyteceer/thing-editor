@@ -591,7 +591,7 @@ export default class Lib {
 		o.interactiveChildren = true;
 
 		/// #if EDITOR
-		o.___id = null;
+		delete o.___id;
 		delete o.___pathBreakpoint;
 		window.__resetNodeExtendData(o);
 		if(needRefreshSelection) {
