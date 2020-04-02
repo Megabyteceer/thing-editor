@@ -91,7 +91,7 @@ module.exports = {
 		"babel-polyfill",
 		"whatwg-fetch",
 		'webfontloader',
-		process.env.THING_ENGINE_DEBUG_BUILD ? 'howler/dist/howler.core.js' : 'howler/dist/howler.core.min.js',
+		process.env.THING_ENGINE_DEBUG_BUILD ? 'howler/dist/howler.js' : 'howler/dist/howler.core.min.js',
 		'./assets.js',
 		'./src/index.js'
 	],
