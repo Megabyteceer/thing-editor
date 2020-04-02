@@ -93,6 +93,7 @@ module.exports = {
 		'webfontloader',
 		process.env.THING_ENGINE_DEBUG_BUILD ? 'howler/dist/howler.js' : 'howler/dist/howler.core.min.js',
 		'./assets.js',
+		'./src/classes.js',
 		'./src/index.js'
 	],
 	resolve: {
