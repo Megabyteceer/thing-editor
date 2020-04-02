@@ -45,8 +45,8 @@ export default class Scissors extends Container {
 		}
 	}
 
-	renderCanvas(renderer) {
-		super.renderCanvas(renderer);
+	_renderCanvas(renderer) {
+		super._renderCanvas(renderer);
 		if(this._enabled) {
 			if(!this.mask) {
 				this.mask = new PIXI.Graphics();

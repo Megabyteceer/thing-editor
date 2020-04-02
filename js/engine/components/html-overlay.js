@@ -80,6 +80,11 @@ export default class HTMLOverlay extends ScrollLayer {
 		super.render(renderer);
 	}
 
+	_renderCanvas(renderer) {
+		this._renderHtmlContainer();
+		super._renderCanvas(renderer);
+	}
+
 	_renderHtmlContainer() {
 
 		if(this.currentHtmlOpacity > 0.001

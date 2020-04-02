@@ -194,6 +194,16 @@ export default class Tilemap extends Container {
 		super.render(renderer);
 	}
 
+	_renderCanvas(renderer) {
+		/// #if EDITOR
+		if(this._needRenewAll) {
+			this.renewAllMap();
+		}
+		/// #endif
+		this.updateView();
+		super._renderCanvas(renderer);
+	}
+
 	createTypedMap() {
 		const imageToType = (Tilemap.tileMapProcessor && Tilemap.tileMapProcessor.imageToType) || (i => i);
 		let data = this._tileMapData || this.map;
