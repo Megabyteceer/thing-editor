@@ -480,7 +480,9 @@ class Game {
 
 		let isFlickeringDevice = maliDetect();
 
-		app = new PIXI.Application(_rendererWidth, _rendererHeight, {
+		app = new PIXI.Application({
+			width: _rendererWidth,
+			height: _rendererHeight,
 			backgroundColor: 0,
 			preserveDrawingBuffer: isFlickeringDevice
 		}); //antialias, forceFXAA
