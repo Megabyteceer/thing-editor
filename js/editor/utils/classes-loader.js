@@ -97,10 +97,8 @@ let classesById = {},
 let cacheCounter = 0;
 const embeddedClassesMap = new Map();
 let embeddedClasses;
-let loadedClassesCount;
 
 let classesLoadedSuccessfullyAtLeastOnce = false;
-
 
 let errorOccurred;
 
@@ -256,8 +254,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 		currentLoadingPromiseResolver = resolve;
 		setTimeout(() => {
 			errorOccurred = false;
-		
-			loadedClassesCount = 0;
+
 			clearClasses();
 
 			enumClassProperties(DisplayObject);
@@ -342,7 +339,6 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 let loadedPath;
 function classLoaded(c, path, libName) {
 	loadedPath = path;
-	loadedClassesCount++;
 	if(!c.hasOwnProperty('__EDITOR_icon')) {
 		c.__EDITOR_icon = "tree/game";
 	}

@@ -207,8 +207,6 @@ export default class DataPathEditor extends React.Component {
 			addedNames['init'] = true;
 			addedNames['update'] = true;
 			addedNames['onRemove'] = true;
-			addedNames['renderCanvas'] = true;
-			addedNames['renderWebGL'] = true;
 		}
 		let topPathElement = path[path.length - 1];
 		if(topPathElement && topPathElement.startsWith('#')) {
