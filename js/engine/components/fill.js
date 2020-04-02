@@ -142,7 +142,7 @@ export default class Fill extends PIXI.Mesh {
 		return super.texture;
 	}
 
-	calculateUvs() {
+	render(renderer) {
 		if(this.meshResized) {
 			this.refreshSize();
 			this.meshResized = false;
@@ -153,7 +153,21 @@ export default class Fill extends PIXI.Mesh {
 		if(this.transparencyUpdated) {
 			this.updateTransparency();
 		}
-		super.calculateUvs();
+		super.render(renderer);
+	}
+
+	_renderCanvas(renderer) {
+		if(this.meshResized) {
+			this.refreshSize();
+			this.meshResized = false;
+		}
+		if (this.fillUpdated) {
+			this.updateFilling();
+		}
+		if(this.transparencyUpdated) {
+			this.updateTransparency();
+		}
+		super._renderCanvas(renderer);
 	}
 
 	set transparentTop(v) {
