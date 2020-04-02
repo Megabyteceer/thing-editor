@@ -1,6 +1,6 @@
 # Thing-editor
 
-Visual game editor for pixi.js 4.
+Visual game editor for pixi.js 5.
 
 ![Editor screenshot](https://raw.githubusercontent.com/wiki/Megabyteceer/thing-editor/img/full-editor.jpg)
 
