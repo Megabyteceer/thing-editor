@@ -1,7 +1,7 @@
 import Lib from "../lib.js";
 
 const Sprite = PIXI.Sprite;
-const Mesh = PIXI.mesh.Mesh;
+const Mesh = PIXI.Mesh;
 
 export default Sprite;
 

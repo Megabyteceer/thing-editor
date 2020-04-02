@@ -7,7 +7,7 @@ const zeroPoint = new PIXI.Point();
 const p1 = new PIXI.Point();
 const p2 = new PIXI.Point();
 
-export default class Fill extends PIXI.mesh.Plane {
+export default class Fill extends PIXI.SimplePlane {
 
 	constructor() {
 		super(Lib.getTexture('WHITE'));
@@ -31,7 +31,6 @@ export default class Fill extends PIXI.mesh.Plane {
 		this._applied_verticesX = this.verticesX;
 		this._applied_verticesY = this.verticesY;
 		super._refresh();
-		this.vertexDirty++;
 		this.updateFilling();
 		this.fillUpdated = false;
 	}
@@ -44,7 +43,6 @@ export default class Fill extends PIXI.mesh.Plane {
 		super.refresh(forced);
 		if(this.fillUpdated) {
 			this.updateFilling();
-			this.dirty++;
 			this.fillUpdated = false;
 		}
 	}
