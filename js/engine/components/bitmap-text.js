@@ -15,7 +15,7 @@ const alignValues = {
 	'bottom': 1.0
 };
 
-export default class BitmapText extends PIXI.extras.BitmapText {
+export default class BitmapText extends PIXI.BitmapText {
 	
 	constructor() {
 		super('', {font: {name:'', size: 32}, align: "left", tint: 0xFFFFFF});
