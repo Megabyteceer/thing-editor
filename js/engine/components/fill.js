@@ -1,113 +1,76 @@
-import Lib from "../lib.js";
-import game from "../game.js";
 
 const PI_2 = Math.PI * 2;
 
-const zeroPoint = new PIXI.Point();
-const p1 = new PIXI.Point();
-const p2 = new PIXI.Point();
+const vertexSrc = `
 
-export default class Fill extends PIXI.mesh.Plane {
+	precision mediump float;
+
+	attribute vec2 aVertexPosition;
+	attribute float aColor;
+	attribute vec2 aTextureCoord;
+
+	uniform mat3 translationMatrix;
+	uniform mat3 projectionMatrix;
+	uniform vec4 uColor;
+
+	varying vec2 vUvs;
+	varying vec4 vColor;
+
+	void main() {
+
+	vUvs = aTextureCoord;
+	vColor = uColor * aColor;
+	gl_Position = vec4((projectionMatrix * translationMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
+
+}`;
+
+const fragmentSrc = `
+
+	precision mediump float;
+
+	varying vec4 vColor;
+	varying vec2 vUvs;
+
+	uniform sampler2D uSampler;
+
+	void main() {
+
+	gl_FragColor = texture2D(uSampler, vUvs) * vColor;
+}`;
+
+export default class Fill extends PIXI.Mesh {
 
 	constructor() {
-		super(Lib.getTexture('WHITE'));
-		this.uploadUvTransform = false;
-		this.autoUpdate = false;
+
+		super(new PIXI.PlaneGeometry(2, 2, 2, 2), new PIXI.MeshMaterial(PIXI.Texture.WHITE, {
+			program: PIXI.Program.from(vertexSrc, fragmentSrc)
+		}));
+		this.geometry.addAttribute('aColor',
+			[0, 0, 1, 1], 1);
 	}
 
-	init() {
-		super.init();
-		this.initialScaleX = this.scale.x;
-		this.initialScaleY = this.scale.y;
-		this.applyAutoCrop();
-	}
+	refreshSize() {
+		let g = this.geometry;
+		g.segWidth = this.verticesX;
+		g.segHeight = this.verticesY;
 
-	_onRenderResize() {
-		
-		this.applyAutoCrop();
-	}
-
-	_refresh() {
+		g.width = this.texture.width;
+		g.height = this.texture.height;
+		g.build();
 		this._applied_verticesX = this.verticesX;
 		this._applied_verticesY = this.verticesY;
-		super._refresh();
-		this.vertexDirty++;
 		this.updateFilling();
-		this.fillUpdated = false;
-	}
-
-	refresh(forced) {
-		forced = forced || this._applied_verticesX !== this.verticesX || this._applied_verticesY !== this.verticesY;
-		if(forced) {
-			this.fillUpdated = true;
-		}
-		super.refresh(forced);
-		if(this.fillUpdated) {
-			this.updateFilling();
-			this.dirty++;
-			this.fillUpdated = false;
-		}
-	}
-
-	applyAutoCrop() {
-		if(this.autoCrop) {
-			/// #if EDITOR
-			if(game.__EDITOR_mode) {
-				return;
-			}
-			if(this.getGlobalRotation() !== 0) {
-				editor.ui.status.warn("autoCrop does not work correct for rotated Fill", 99999, this, 'autoCrop');
-			}
-			/// #endif
-
-			let w = this.texture.width;
-			let h = this.texture.height;
-			
-
-			this.pivot.x = 0;
-			this.pivot.y = 0;
-			this.scale.x = this.initialScaleX;
-			this.scale.y = this.initialScaleY;
-
-			p1.x = game.W;
-			p1.y = game.H;
-			this.toLocal(p1, game.currentContainer, p2, false);
-			this.toLocal(zeroPoint, game.currentContainer, p1);
-
-
-			let cropLeft = Math.floor(Math.max(0, p1.x));
-			let cropRight = Math.floor(Math.max(0, w - p2.x));
-			if((cropLeft + cropRight) >= w) {
-				this.visible = false;
-				return;
-			}
-			this.cropLeftRight(cropLeft, cropRight);
-			this.scale.x *= this.initialScaleX;
-			this.pivot.x = -cropLeft / this.scale.x * this.initialScaleX;
-
-		
-			let cropTop = Math.floor(Math.max(0, p1.y));
-			let cropBottom = Math.floor(Math.max(0, h - p2.y));
-			if((cropTop + cropBottom) >= h) {
-				this.visible = false;
-				return;
-			}
-			this.cropTopBottom(cropTop, cropBottom);
-			this.scale.y *= this.initialScaleY;
-			this.pivot.y = -cropTop / this.scale.y * this.initialScaleY;
-
-			this.visible = true;
-		}
+		this.updateTransparency();
 	}
 
 	cropLeftRight(leftSize, rightSize) {
 		let textureW = this.texture.width;
 		leftSize /= textureW;
 		rightSize /= textureW;
-		if(leftSize < 0) {
+		if (leftSize < 0) {
 			leftSize = 0;
 		}
-		if(rightSize < 0) {
+		if (rightSize < 0) {
 			rightSize = 0;
 		}
 		this.scale.x = Math.min(1, 1 - leftSize - rightSize);
@@ -119,10 +82,10 @@ export default class Fill extends PIXI.mesh.Plane {
 		let textureH = this.texture.height;
 		topSize /= textureH;
 		bottomSize /= textureH;
-		if(topSize < 0) {
+		if (topSize < 0) {
 			topSize = 0;
 		}
-		if(bottomSize < 0) {
+		if (bottomSize < 0) {
 			bottomSize = 0;
 		}
 		this.scale.y = Math.min(1, 1 - topSize - bottomSize);
@@ -168,8 +131,163 @@ export default class Fill extends PIXI.mesh.Plane {
 		super.update();
 	}
 
+	set texture(v) {
+		if(v !== super.texture) {
+			super.texture = v;
+			this.meshResized = true;
+		}
+	}
+
+	get texture() {
+		return super.texture;
+	}
+
+	calculateUvs() {
+		if(this.meshResized) {
+			this.refreshSize();
+			this.meshResized = false;
+		}
+		if (this.fillUpdated) {
+			this.updateFilling();
+		}
+		if(this.transparencyUpdated) {
+			this.updateTransparency();
+		}
+		super.calculateUvs();
+	}
+
+	set transparentTop(v) {
+		if(this._transparentTop !== v) {
+			this._transparentTop = v;
+			this.transparencyUpdated = true;
+		}
+	}
+
+	get transparentTop() {
+		return this._transparentTop;
+	}
+
+	set transparentBottom(v) {
+		if(this._transparentBottom !== v) {
+			this._transparentBottom = v;
+			this.transparencyUpdated = true;
+		}
+	}
+
+	get transparentBottom() {
+		return this._transparentBottom;
+	}
+
+	set transparentLeft(v) {
+		if(this._transparentLeft !== v) {
+			this._transparentLeft = v;
+			this.transparencyUpdated = true;
+		}
+	}
+
+	get transparentLeft() {
+		return this._transparentLeft;
+	}
+
+	set transparentRight(v) {
+		if(this._transparentRight !== v) {
+			this._transparentRight = v;
+			this.transparencyUpdated = true;
+		}
+	}
+
+	get transparentRight() {
+		return this._transparentRight;
+	}
+
+	set alpha(v) {
+		if(super.alpha !== v) {
+			this.transparencyUpdated = true;
+			super.alpha = v;
+		}
+	}
+
+	get alpha() {
+		return super.alpha;
+	}
+
+	set tintR(v) {
+		if(super.tintR !== v) {
+			this.transparencyUpdated = true;
+			super.tintR = v;
+		}
+	}
+
+	get tintR() {
+		return super.tintR;
+	}
+
+	set verticesX(v) {
+		if(this._verticesX !== v) {
+			this._verticesX = v;
+			this.meshResized = true;
+		}
+	}
+
+	get verticesX() {
+		return this._verticesX;
+	}
+
+	set verticesY(v) {
+		if(this._verticesY !== v) {
+			this._verticesY = v;
+			this.meshResized = true;
+		}
+	}
+
+	get verticesY() {
+		return this._verticesY;
+	}
+
+	updateTransparency() {
+		let len = this.verticesX * this.verticesY;
+
+		let buffer = this.geometry.buffers[3];
+
+		if(buffer.data.length !== len) {
+			buffer.data = new Float32Array(len);
+		}
+		let a = buffer.data;
+
+		for(let i = 0; i < len; i++) {
+			a[i] = 1;
+		}
+		
+		if(this.transparentTop) {
+			for(let i = this.verticesX - 1; i >= 0; i--) {
+				a[i] = 0;
+			}
+		}
+
+		if(this.transparentBottom) {
+			for(let i = len - this.verticesX; i < len; i++) {
+				a[i] = 0;
+			}
+		}
+
+		if(this.transparentLeft) {
+			for(let i = 0; i < len; i += this.verticesX) {
+				a[i] = 0;
+			}
+		}
+
+		if(this.transparentRight) {
+			for(let i = this.verticesX - 1; i < len; i += this.verticesX) {
+				a[i] = 0;
+			}
+		}
+
+		buffer.update();
+		this.transparencyUpdated = false;
+	}
+
 	updateFilling() {
-		let a = this.uvs;
+		let a = this.uvBuffer.data;
 		let i = 0;
 		let curxShift, curyShift;
 		curyShift = this._yShift;
@@ -180,8 +298,8 @@ export default class Fill extends PIXI.mesh.Plane {
 		let xWaveStep = this._xWaveStep / stepsX;
 		let yWaveStep = this._yWaveStep / stepsY;
 
-		if(this._xWaveAmp !== 0 || this._yWaveAmp !== 0) {
-			
+		if (this._xWaveAmp !== 0 || this._yWaveAmp !== 0) {
+
 			let curYWavePhase = this._yWavePhase;
 			for (let y = 0; y <= stepsY; y++) {
 
@@ -208,18 +326,8 @@ export default class Fill extends PIXI.mesh.Plane {
 				curyShift += yStep;
 			}
 		}
-		this.multiplyUvs();
-	}
-
-	set texture(t) {
-		if(super.texture !== t) {
-			super.texture = t;
-			this.fillUpdated = true;
-		}
-	}
-
-	get texture() {
-		return super.texture;
+		this.uvBuffer.update();
+		this.fillUpdated = false;
 	}
 
 	get xRepeat() {
@@ -227,7 +335,7 @@ export default class Fill extends PIXI.mesh.Plane {
 	}
 
 	set xRepeat(v) {
-		if(this._xRepeat !== v) {
+		if (this._xRepeat !== v) {
 			this._xRepeat = v;
 			this.fillUpdated = true;
 		}
@@ -338,123 +446,139 @@ export default class Fill extends PIXI.mesh.Plane {
 
 Fill.__EDITOR_group = 'Basic';
 Fill.__EDITOR_icon = 'tree/fill';
-__EDITOR_editableProps(Fill, [
-	{
-		type: 'splitter',
-		title: 'Fill sprite:',
-		name: 'fill-sprite'
-	},
-	{
-		name: 'verticesX',
-		type: Number,
-		default: 2,
-		min: 2,
-		max: 30,
-		step: 1,
-		important: true
-	},
-	{
-		name: 'verticesY',
-		type: Number,
-		default: 2,
-		min: 2,
-		max: 30,
-		step: 1,
-		important: true
-	},
-	{
-		name: 'autoCrop', // 99999
-		type: Boolean
-	},
-	{
-		name: 'xRepeat',
-		type: Number,
-		default: 1,
-		step: 0.001
-	},
-	{
-		name: 'yRepeat',
-		type: Number,
-		default: 1,
-		step: 0.001
-	},
-	{
-		name: 'xShift',
-		type: Number,
-		step: 0.0001
-	},
-	{
-		name: 'yShift',
-		type: Number,
-		step: 0.0001
-	},
-	{
-		name: 'xShiftSpeed',
-		type: Number,
-		step: 0.00001
-	},
-	{
-		name: 'yShiftSpeed',
-		type: Number,
-		step: 0.00001
-	},
-	{
-		type: 'splitter',
-		title: 'Wave effect:',
-		name: 'wave-effect'
-	},
-	{
-		name: 'xWaveAmp',
-		step: 0.001,
-		type: Number
-	},
-	{
-		name: 'xWaveStep',
-		type: Number,
-		default: 1,
-		step: 0.001,
-		visible: o => o.xWaveAmp !== 0
-	},
-	{
-		name: 'xWavePhase',
-		type: Number,
-		step: 0.001,
-		min: 0,
-		max: PI_2,
-		visible: o => o.xWaveAmp !== 0
-	},
-	{
-		name: 'xWaveSpeed',
-		type: Number,
-		step: 0.0001,
-		visible: o => o.xWaveAmp !== 0
-	},
-	{
-		name: 'yWaveAmp',
-		step: 0.001,
-		type: Number
-	},
-	{
-		name: 'yWaveStep',
-		type: Number,
-		default: 1,
-		step: 0.001,
-		visible: o => o.yWaveAmp !== 0
-	},
-	{
-		name: 'yWavePhase',
-		type: Number,
-		step: 0.001,
-		min: 0,
-		max: PI_2,
-		visible: o => o.yWaveAmp !== 0
-	},
-	{
-		name: 'yWaveSpeed',
-		type: Number,
-		step: 0.0001,
-		visible: o => o.yWaveAmp !== 0
-	}
+__EDITOR_editableProps(Fill, [{
+	type: 'splitter',
+	title: 'Fill sprite:',
+	name: 'fill-sprite'
+},
+{
+	name: 'verticesX',
+	type: Number,
+	default: 2,
+	min: 2,
+	max: 30,
+	step: 1,
+	important: true
+},
+{
+	name: 'verticesY',
+	type: Number,
+	default: 2,
+	min: 2,
+	max: 30,
+	step: 1,
+	important: true
+},
+{
+	name: 'xRepeat',
+	type: Number,
+	default: 1,
+	step: 0.001
+},
+{
+	name: 'yRepeat',
+	type: Number,
+	default: 1,
+	step: 0.001
+},
+{
+	name: 'xShift',
+	type: Number,
+	step: 0.0001
+},
+{
+	name: 'yShift',
+	type: Number,
+	step: 0.0001
+},
+{
+	name: 'xShiftSpeed',
+	type: Number,
+	step: 0.00001
+},
+{
+	name: 'yShiftSpeed',
+	type: Number,
+	step: 0.00001
+},
+{
+	type: 'splitter',
+	title: 'Wave effect:',
+	name: 'wave-effect'
+},
+{
+	name: 'xWaveAmp',
+	step: 0.001,
+	type: Number
+},
+{
+	name: 'xWaveStep',
+	type: Number,
+	default: 1,
+	step: 0.001,
+	visible: o => o.xWaveAmp !== 0
+},
+{
+	name: 'xWavePhase',
+	type: Number,
+	step: 0.001,
+	min: 0,
+	max: PI_2,
+	visible: o => o.xWaveAmp !== 0
+},
+{
+	name: 'xWaveSpeed',
+	type: Number,
+	step: 0.0001,
+	visible: o => o.xWaveAmp !== 0
+},
+{
+	name: 'yWaveAmp',
+	step: 0.001,
+	type: Number
+},
+{
+	name: 'yWaveStep',
+	type: Number,
+	default: 1,
+	step: 0.001,
+	visible: o => o.yWaveAmp !== 0
+},
+{
+	name: 'yWavePhase',
+	type: Number,
+	step: 0.001,
+	min: 0,
+	max: PI_2,
+	visible: o => o.yWaveAmp !== 0
+},
+{
+	name: 'yWaveSpeed',
+	type: Number,
+	step: 0.0001,
+	visible: o => o.yWaveAmp !== 0
+},
+{
+	type: 'splitter',
+	title: 'Transparency:',
+	name: 'Transparency'
+},
+{
+	name: 'transparentTop',
+	type: Boolean
+},
+{
+	name: 'transparentBottom',
+	type: Boolean
+},
+{
+	name: 'transparentLeft',
+	type: Boolean
+},
+{
+	name: 'transparentRight',
+	type: Boolean
+},
 ]);
 
 /// #endif

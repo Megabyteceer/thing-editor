@@ -480,7 +480,9 @@ class Game {
 
 		let isFlickeringDevice = maliDetect();
 
-		app = new PIXI.Application(_rendererWidth, _rendererHeight, {
+		app = new PIXI.Application({
+			width: _rendererWidth,
+			height: _rendererHeight,
 			backgroundColor: 0,
 			preserveDrawingBuffer: isFlickeringDevice
 		}); //antialias, forceFXAA
@@ -1559,7 +1561,7 @@ function loadDynamicTextures(
 		let texturesSettings = game.projectDesc.loadOnDemandTextures;
 
 		game.stage.forAllChildren((o) => {
-			if(o instanceof Sprite || o instanceof PIXI.mesh.Mesh || o instanceof Tilemap) {
+			if(o instanceof Sprite || o instanceof PIXI.Mesh || o instanceof Tilemap) {
 				let image = o.image;
 				if( image && (!Lib.hasTexture(image) && texturesSettings.hasOwnProperty(image))
 					/// #if EDITOR

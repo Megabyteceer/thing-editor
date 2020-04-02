@@ -118,6 +118,16 @@ class UI extends React.Component {
 			editor.history.buttonsRenderer(),
 			R.btn('Project settings', editor.openProjectDescToEdit, undefined, 'menu-btn'),
 			editor.__preBuildAutoTest && R.btn('Test', editor.testProject, "Launch auto-tests", 'menu-btn'),
+			R.btn('fix white sprite', () => {
+				game.currentContainer.forAllChildren((o) => {
+					if(o.image === 'WHITE') {
+						editor.onObjectsPropertyChanged(o, 'scale.x', o.scale.x * 0.625);
+						editor.onObjectsPropertyChanged(o, 'scale.y', o.scale.y * 0.625);
+						editor.onObjectsPropertyChanged(o, 'pivot.x', o.pivot.x * 1.6);
+						editor.onObjectsPropertyChanged(o, 'pivot.y', o.pivot.y * 1.6);
+					}
+				});
+			}, 'F7', 'menu-btn', 118),
 			React.createElement(Help),
 			editor.fs.filesExt && editor.fs.filesExt.scripts.map((s) => {
 				return R.span({key: s.name}, R.btn(s.name.replace('scripts/', '').replace(/\.js$/, ''), () => {

@@ -128,6 +128,7 @@ class Selection extends Array {
 export default Selection;
 
 const selectionFilter = new PIXI.filters.OutlineFilter(2, 0xffff00);
+selectionFilter.padding = 2;
 
 setInterval(() => {
 	if (window.editor && editor.selection.length > 0) {

@@ -1,6 +1,6 @@
 import Lib from "../lib.js";
 
-export default class NineSlicePlane extends PIXI.mesh.NineSlicePlane {
+export default class NineSlicePlane extends PIXI.NineSlicePlane {
 	
 	constructor() {
 		super(Lib.getTexture('WHITE'), 3,3,3,3);

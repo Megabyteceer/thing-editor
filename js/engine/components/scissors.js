@@ -45,8 +45,8 @@ export default class Scissors extends Container {
 		}
 	}
 
-	renderCanvas(renderer) {
-		super.renderCanvas(renderer);
+	_renderCanvas(renderer) {
+		super._renderCanvas(renderer);
 		if(this._enabled) {
 			if(!this.mask) {
 				this.mask = new PIXI.Graphics();
@@ -78,13 +78,13 @@ export default class Scissors extends Container {
 		}
 	}
 
-	renderWebGL(renderer) {
+	render(renderer) {
 		let gl;
 		let isVasEnabled;
 		let prevScissors;
 		if(this._enabled) {
 			gl = renderer.gl;
-			renderer.flush();
+			renderer.batch.flush();
 
 			isVasEnabled = gl.isEnabled(gl.SCISSOR_TEST);
 			if(isVasEnabled) {
@@ -109,8 +109,8 @@ export default class Scissors extends Container {
 				gl.scissor(p1.x * resolution, (game.H - p2.y) * resolution, (p2.x - p1.x) * resolution, (p2.y - p1.y) * resolution);
 			}
 		}
-		super.renderWebGL(renderer);
-		renderer.flush();
+		super.render(renderer);
+		renderer.batch.flush();
 		if(this._enabled) {
 			if(isVasEnabled) {
 				gl.scissor.apply(gl, prevScissors);

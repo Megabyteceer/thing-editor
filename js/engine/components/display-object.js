@@ -69,17 +69,17 @@ DisplayObject.prototype.findParentByName = function (name) {
 };
 
 DisplayObject.prototype.addFilter = function addFilter(f) {
-	if(!this._filters) {
-		this._filters = [f];
+	if(!this.filters) {
+		this.filters = [f];
 	} else {
-		this._filters.push(f);
+		this.filters.push(f);
 	}
 };
 
 DisplayObject.prototype.removeFilter = function removeFilter(f) {
-	let i = this._filters.indexOf(f);
+	let i = this.filters.indexOf(f);
 	if(i >= 0) {
-		this._filters.splice(i, 1);
+		this.filters.splice(i, 1);
 	}
 };
 

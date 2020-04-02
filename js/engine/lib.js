@@ -251,7 +251,7 @@ export default class Lib {
 			}
 			texture += '?noCache=' + Lib.__noCacheCounter;
 			
-			textures[name] = PIXI.Texture.fromImage(texture);
+			textures[name] = PIXI.Texture.from(texture);
 		} else
 		{
 		/// #endif

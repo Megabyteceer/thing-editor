@@ -1,7 +1,7 @@
 import Lib from "../lib.js";
 
 const Sprite = PIXI.Sprite;
-const Mesh = PIXI.mesh.Mesh;
+const Mesh = PIXI.Mesh;
 
 export default Sprite;
 
@@ -93,7 +93,9 @@ Sprite.prototype.__EDITOR_onCreate = function (isWrapping) {
 };
 Mesh.prototype.__EDITOR_onCreate = Sprite.prototype.__EDITOR_onCreate;
 
-Sprite.__blendModesSelect = Object.keys(PIXI.BLEND_MODES).map((k) => {
+Sprite.__blendModesSelect = Object.keys(PIXI.BLEND_MODES).filter((k) => {
+	return isNaN(parseInt(k));
+}).map((k) => {
 	return {name: k, value: PIXI.BLEND_MODES[k]};
 }).sort((a, b) => {
 	return a.value - b.value;
