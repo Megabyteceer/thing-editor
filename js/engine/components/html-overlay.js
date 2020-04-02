@@ -75,14 +75,9 @@ export default class HTMLOverlay extends ScrollLayer {
 		}
 	}
 
-	renderWebGL(renderer) {
+	render(renderer) {
 		this._renderHtmlContainer();
-		super.renderWebGL(renderer);
-	}
-
-	renderCanvas(renderer) {
-		this._renderHtmlContainer();
-		super.renderCanvas(renderer);
+		super.render(renderer);
 	}
 
 	_renderHtmlContainer() {

@@ -1559,7 +1559,7 @@ function loadDynamicTextures(
 		let texturesSettings = game.projectDesc.loadOnDemandTextures;
 
 		game.stage.forAllChildren((o) => {
-			if(o instanceof Sprite || o instanceof PIXI.mesh.Mesh || o instanceof Tilemap) {
+			if(o instanceof Sprite || o instanceof PIXI.Mesh || o instanceof Tilemap) {
 				let image = o.image;
 				if( image && (!Lib.hasTexture(image) && texturesSettings.hasOwnProperty(image))
 					/// #if EDITOR

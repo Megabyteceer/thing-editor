@@ -11,6 +11,7 @@ export default class Tilemap extends Container {
 	constructor() {
 		super();
 		this.tiles = new Map();
+		this.autoUpdate = false;
 	}
 
 	init() {
@@ -34,11 +35,11 @@ export default class Tilemap extends Container {
 	}
 	
 	set texture(t) {
-		if(this._texture !== t) {
-			this._texture = t;
+		if(super.texture !== t) {
+			super.texture = t;
 			for(let t of this.children) {
 				if(t instanceof Tile8x8) {
-					t._texture = this._texture;
+					t.texture = this.texture;
 				}
 			}
 			/// #if EDITOR
@@ -48,7 +49,7 @@ export default class Tilemap extends Container {
 	}
 
 	get texture() {
-		return this._texture;
+		return super.texture;
 	}
 	
 	getTile(X, Y) {
@@ -125,7 +126,7 @@ export default class Tilemap extends Container {
 			/// #endif
 
 			if(t8x8.visible) {
-				t8x8.update8x8View();
+				t8x8.updateView();
 			}
 		}
 	}
@@ -183,14 +184,14 @@ export default class Tilemap extends Container {
 		}
 	}
 
-	renderWebGL(renderer) {
+	render(renderer) {
 		/// #if EDITOR
 		if(this._needRenewAll) {
 			this.renewAllMap();
 		}
 		/// #endif
 		this.updateView();
-		super.renderWebGL(renderer);
+		super.render(renderer);
 	}
 
 	createTypedMap() {
@@ -198,24 +199,14 @@ export default class Tilemap extends Container {
 		let data = this._tileMapData || this.map;
 		return data.map(imageToType);
 	}
-
-	renderCanvas(renderer) {
-		/// #if EDITOR
-		if(this._needRenewAll) {
-			this.renewAllMap();
-		}
-		/// #endif
-		this.updateView();
-		super.renderCanvas(renderer);
-	}
 	
 	renewAllMap() {
 		if(!Lib.hasTexture(this.image)) {
 			return;
 		}
 
-		let tw = this._texture.width;
-		let th = this._texture.height;
+		let tw = this.texture.width;
+		let th = this.texture.height;
 		assert(tw > 0 && th > 0, "Wrong texture for tilemap");
 
 		this.srcTileW = (this.tileW + this.wField * 2);
@@ -333,14 +324,12 @@ const clear8x8tile = (t) => {
 };
 
 
-class Tile8x8 extends PIXI.mesh.Mesh {
+class Tile8x8 extends PIXI.SimpleMesh {
 
 	constructor() {
 		super();
-		this.drawMode = PIXI.mesh.Mesh.DRAW_MODES.TRIANGLES;
+		this.drawMode = PIXI.DRAW_MODES.TRIANGLES;
 		this.map = [];
-		this.colors = new Float32Array([]);
-		this.autoUpdate = false;
 	}
 
 	setProps() {
@@ -349,7 +338,7 @@ class Tile8x8 extends PIXI.mesh.Mesh {
 		this.__lockSelection = true;
 		/// #endif
 
-		this._texture = this.parent._texture;
+		this.texture = this.parent.texture;
 		this.pivot.x = 4 * this.parent.tileW;
 		this.pivot.y = 4 * this.parent.tileH;
 		this.tileW = this.parent.tileW;
@@ -374,17 +363,17 @@ class Tile8x8 extends PIXI.mesh.Mesh {
 		this.needRefresh = true;
 	}
 
-	update8x8View() {
+	updateView() {
 		if(this.needRefresh) {
 			///#if EDITOR
 			this.setProps();
 			///#endif
-			this._refresh();
+			this.refreshTiles();
 			this.needRefresh = false;
 		}
 	}
 
-	_refresh() {
+	refreshTiles() {
 		const vertices = [];
 		const uvs = [];
 		const indices = [];
@@ -432,15 +421,12 @@ class Tile8x8 extends PIXI.mesh.Mesh {
 			}
 		}
 
-		this.vertices = new Float32Array(vertices);
-		this.uvs = new Float32Array(uvs);
-		this.indices = new Uint16Array(indices);
-
-		this.dirty++;
-		this.indexDirty++;
-		this.vertexDirty++;
-
-		this.multiplyUvs();
+		this.verticesBuffer.data = new Float32Array(vertices);
+		this.uvBuffer.data = new Float32Array(uvs);
+		this.geometry.buffers[2].data = new Uint16Array(indices);
+		this.uvBuffer._updateID++;
+		this.verticesBuffer._updateID++;
+		this.geometry.buffers[2]._updateID++;
 	}
 }
 
