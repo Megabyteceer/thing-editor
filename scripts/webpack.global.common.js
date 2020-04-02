@@ -11,7 +11,7 @@ const glob = require('glob');
 
 const ignore = '*/.*|' + (isDebug ?'*/___*' : '*/__*');
 
-let copyFilesList = ['assets.js'];
+let copyFilesList = [];
 
 let addedFiles = new Set();
 
@@ -84,7 +84,17 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 copyFilesList.reverse();
 
+const webpack = require('webpack');
+
 module.exports = {
+	entry: [
+		"babel-polyfill",
+		"whatwg-fetch",
+		'webfontloader',
+		process.env.THING_ENGINE_DEBUG_BUILD ? 'howler/dist/howler.core.js' : 'howler/dist/howler.core.min.js',
+		'./assets.js',
+		'./src/index.js'
+	],
 	resolve: {
 		alias/*,
 		modules: ['node_modules', path.join(__dirname, '..')]*/
@@ -93,8 +103,10 @@ module.exports = {
 		maxAssetSize: 1000000
 	},
 	plugins: [
-		new CopyWebpackPlugin(copyFilesList)
-	],
+		new CopyWebpackPlugin(copyFilesList),
+		new webpack.ProvidePlugin({
+			PIXI: 'pixi.js-legacy',
+		})],
 	module: {
 		noParse: /webfontloader/,
 		rules: [{
