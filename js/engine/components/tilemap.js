@@ -333,11 +333,11 @@ const clear8x8tile = (t) => {
 };
 
 
-class Tile8x8 extends PIXI.Mesh {
+class Tile8x8 extends PIXI.mesh.Mesh {
 
 	constructor() {
 		super();
-		this.drawMode = PIXI.Mesh.DRAW_MODES.TRIANGLES;
+		this.drawMode = PIXI.mesh.Mesh.DRAW_MODES.TRIANGLES;
 		this.map = [];
 		this.colors = new Float32Array([]);
 		this.autoUpdate = false;
