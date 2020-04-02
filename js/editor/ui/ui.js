@@ -119,7 +119,7 @@ class UI extends React.Component {
 			R.btn('Project settings', editor.openProjectDescToEdit, undefined, 'menu-btn'),
 			editor.__preBuildAutoTest && R.btn('Test', editor.testProject, "Launch auto-tests", 'menu-btn'),
 			R.btn('fix white sprite', () => {
-				editor.selection.some((o) => {
+				game.currentContainer.forAllChildren((o) => {
 					if(o.image === 'WHITE') {
 						editor.onObjectsPropertyChanged(o, 'scale.x', o.scale.x * 0.625);
 						editor.onObjectsPropertyChanged(o, 'scale.y', o.scale.y * 0.625);
