@@ -135,14 +135,14 @@ export default class BgMusic extends Container {
 	}
 
 	play(fade) {
-		if(!isNaN(fade)) {
+		if(typeof fade === 'number') {
 			this.fade = fade;
 		}
 		this.isPlaying = true;
 	}
 
 	stop(fade) {
-		if(!isNaN(fade)) {
+		if(typeof fade === 'number') {
 			this.fade = fade;
 		}
 		this.isPlaying = false;

@@ -30,15 +30,15 @@ export default class FlyText extends Text {
 		}
 	}
 	
-	static flyText(text, X = NaN, Y = NaN, type = 'flytext', lengthAdd = 0, container) {
+	static flyText(text, X = null, Y = null, type = 'flytext', lengthAdd = 0, container) {
 		assert(!game.__EDITOR_mode, "Attempt to call FlyText.flyText() in editing mode.", 10010);
 		assert(game.currentContainer, "FlyText.flyText() can be invoked only after first scene has been shown", 10011);
 
 
-		if (isNaN(X)) {
+		if (typeof X === 'number') {
 			X = game.W / 2;
 		}
-		if (isNaN(Y)) {
+		if (typeof Y === 'number') {
 			Y = game.H / 2;
 		}
 		
