@@ -266,12 +266,10 @@ class Game {
 			} else {
 				stage.rotation = 0;
 				/// #if EDITOR
-				if(false) { //eslint-disable-line no-constant-condition
-					/// #endif
-					stage.x = 0;
-					/// #if EDITOR
-				}
+				/*
 				/// #endif
+				stage.x = 0;
+				//*/
 			}
 			
 			if (needResizeRenderer) {
@@ -456,6 +454,8 @@ class Game {
 		PIXI.settings.MIPMAP_TEXTURES = projectDescriptor.mipmap
 			? PIXI.MIPMAP_MODES.ON
 			: PIXI.MIPMAP_MODES.OFF;
+
+		PIXI.settings.GC_MODE = PIXI.GC_MODES.MANUAL;
 		
 		this.projectDesc = projectDescriptor;
 		this.onResize();

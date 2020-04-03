@@ -112,7 +112,7 @@ export default class DataPathEditor extends React.Component {
 			}
 			
 			return true;
-		} catch (er) { // eslint-disable-line no-empty
+		} catch (er) {
 			editor.checkTryTime();
 		}
 	}
