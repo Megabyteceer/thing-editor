@@ -96,18 +96,18 @@ export default class Fill extends PIXI.Mesh {
 	update() {
 		if (this.xShiftSpeed !== 0) {
 			this.xShift += this.xShiftSpeed;
-			if (this._xShift > 1) {
-				this._xShift -= 1;
+			if (this._xShift > 2) {
+				this._xShift -= 2;
 			} else if (this._xShift < 0) {
-				this._xShift += 1;
+				this._xShift += 2;
 			}
 		}
 		if (this.yShiftSpeed !== 0) {
 			this.yShift += this.yShiftSpeed;
-			if (this._yShift > 1) {
-				this._yShift -= 1;
+			if (this._yShift > 2) {
+				this._yShift -= 2;
 			} else if (this._yShift < 0) {
-				this._yShift += 1;
+				this._yShift += 2;
 			}
 		}
 
@@ -134,12 +134,22 @@ export default class Fill extends PIXI.Mesh {
 	set texture(v) {
 		if(v !== super.texture) {
 			super.texture = v;
+			v.baseTexture.wrapMode = this._wrapMode;
 			this.meshResized = true;
 		}
 	}
 
 	get texture() {
 		return super.texture;
+	}
+
+	set wrapMode(v) {
+		this.texture.baseTexture.wrapMode = v;
+		this._wrapMode = v;
+	}
+
+	get wrapMode() {
+		return this._wrapMode;
 	}
 
 	render(renderer) {
@@ -593,6 +603,25 @@ __EDITOR_editableProps(Fill, [{
 	name: 'transparentRight',
 	type: Boolean
 },
+{
+	name: 'wrapMode', /// 99999 apply to texture once
+	type: Number,
+	select: [
+		{
+			name: 'CLAMP',
+			value: PIXI.WRAP_MODES.CLAMP
+		},
+		{
+			name: 'REPEAT',
+			value: PIXI.WRAP_MODES.REPEAT
+		},
+		{
+			name: 'MIRRORED_REPEAT',
+			value: PIXI.WRAP_MODES.MIRRORED_REPEAT
+		}
+	],
+	default: PIXI.WRAP_MODES.REPEAT
+}
 ]);
 
 /// #endif

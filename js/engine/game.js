@@ -28,8 +28,6 @@ import {setValueByPath} from './utils/get-value-by-path.js';
 import SceneLinkedPromise from './components/scene-linked-promise.js';
 import ResourceLoader from './utils/resource-loader.js';
 
-PIXI.settings.WRAP_MODE = PIXI.WRAP_MODES.REPEAT;
-
 let stage;
 let app;
 let assets;
