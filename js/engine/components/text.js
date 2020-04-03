@@ -269,15 +269,6 @@ Text.prototype._onTextureUpdate = function _onTextureUpdate() { // centred text 
 	this.maxWidth = this._maxWidth || 0; // recalculate max width
 };
 
-let _originalRenderWebGL = Text.prototype.renderWebGL;
-Text.prototype.renderWebGL = function renderWebGL(renderer) {
-	// if the object is not visible or the alpha is 0 then no need to render this element
-	if (!this.visible || this.worldAlpha <= 0 || !this.renderable) {
-		return;
-	}
-	_originalRenderWebGL.call(this, renderer);
-};
-
 Text.prototype.onRemove = function() {
 	/// #if EDITOR
 	editor._root_onRemovedCalled = true;
