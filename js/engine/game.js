@@ -453,7 +453,9 @@ class Game {
 		let so = projectDescriptor.screenOrientation;
 		assert(so === 'auto' || so === 'landscape' || so === 'portrait', 'Wrong value for "screenOrientation". "auto", "landscape" or "portrait" expected', 30010);
 		
-		PIXI.settings.MIPMAP_TEXTURES = projectDescriptor.mipmap;
+		PIXI.settings.MIPMAP_TEXTURES = projectDescriptor.mipmap
+			? PIXI.MIPMAP_MODES.ON
+			: PIXI.MIPMAP_MODES.OFF;
 		
 		this.projectDesc = projectDescriptor;
 		this.onResize();
