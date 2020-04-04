@@ -90,15 +90,14 @@ export default class MusicFragment {
 				this._currentFragment.loop(false);
 				this._currentFragment.on('end', this.onIntroEnd);
 			}
-		} else {
-			assert(this.loop);
+		} else if(this.loop) {
 			this.isLoopPos = true;
 			this._playMusicFragment(this.loop, this.loopPos);
 			if(this._currentFragment) {
 				this._currentFragment.loop(true);
 			}
 		}
-		assert(this._currentFragment);
+		assert(this._currentFragment || (!this.loop && this.isLoopPos));
 	}
 
 	onIntroEnd() {
@@ -106,8 +105,8 @@ export default class MusicFragment {
 			let vol = this.getVolume();
 			this._releaseCurrentFragment();
 			this._playMusicFragment(this.loop, 0, vol);
+			this.isLoopPos = true;
 			if(this._currentFragment) {
-				this.isLoopPos = true;
 				this._currentFragment.loop(true);
 			}
 		}
@@ -169,7 +168,7 @@ export default class MusicFragment {
 			if(!allActiveFragments.hasOwnProperty(f.musicFragmentHash)) {
 				fragment.startPlay();
 			}
-			assert(fragment._currentFragment);
+			assert(fragment._currentFragment || (!fragment.loop && fragment.isLoopPos));
 		}
 
 		for(let h in allActiveFragments) {
