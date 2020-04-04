@@ -247,18 +247,26 @@ class Game {
 			rendererWidth = this.W;
 			rendererHeight = this.H;
 		}
+
+		rendererWidth *= S;
+		rendererHeight *= S;
+		rendererWidth = Math.round(rendererWidth);
+		rendererHeight = Math.round(rendererHeight);
+
 		let needResizeRenderer = (_rendererWidth !== rendererWidth) || (_rendererHeight !== rendererHeight) || (scale !== S);
 
 		//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-		_rendererWidth = rendererWidth;
-		_rendererHeight = rendererHeight;
-		scale = S;
-		PIXI.settings.RESOLUTION = scale;
-
-
 
 		if (this.pixiApp) {
+
+
+			_rendererWidth = rendererWidth;
+			_rendererHeight = rendererHeight;
+			scale = S;
+
+
 			let stage = game.stage;
+			this.pixiApp.stage.scale.x = this.pixiApp.stage.scale.y = scale;
 			game._isCanvasRotated = rotateCanvas;
 			if(rotateCanvas) {
 				stage.rotation = Math.PI / 2.0;
@@ -288,15 +296,6 @@ class Game {
 				if(!this.__enforcedW) {
 					/// #endif
 					let renderer = game.pixiApp.renderer;
-					renderer.resolution = scale;
-
-					PIXI.interaction.InteractionManager.resolution = scale;
-					renderer.plugins.interaction.resolution = scale;
-
-					if (renderer.rootRenderTarget) {
-						renderer.rootRenderTarget.resolution = scale;
-					}
-
 					renderer.resize(_rendererWidth, _rendererHeight);
 					/// #if EDITOR
 				}
@@ -310,6 +309,10 @@ class Game {
 				}
 				/// #endif
 			}
+
+			assert(_rendererWidth, "Render's size was not calculated correctly.");
+			assert(_rendererHeight, "Render's size was not calculated correctly.");
+	
 		}
 	}
 
@@ -474,9 +477,6 @@ class Game {
 	__initAfterFontsLoaded() {
 
 		this.onResize();
-
-		assert(_rendererWidth, "Render's size was not calculated correctly.");
-		assert(_rendererHeight, "Render's size was not calculated correctly.");
 
 		let isFlickeringDevice = maliDetect();
 
