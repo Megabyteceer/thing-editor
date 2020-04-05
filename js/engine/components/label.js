@@ -36,6 +36,7 @@ export default class Label extends Text {
 		this.currentInterval = 0;
 		this.text = '';
 		this.showedVal = undefined;
+		this.processedVal = undefined;
 		this.lastUpdateTime = game.time;
 	}
 	
