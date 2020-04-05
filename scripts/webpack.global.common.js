@@ -89,7 +89,7 @@ const webpack = require('webpack');
 
 let entry = [
 	"babel-polyfill",
-	"whatwg-fetch",
+	"whatwg-fetch"
 ];
 if(projectDesc.webfontloader && Object.keys(projectDesc.webfontloader).some((k) => {
 	let p = projectDesc.webfontloader[k];
