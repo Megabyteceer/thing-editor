@@ -15,32 +15,33 @@ let copyFilesList = [];
 
 let addedFiles = new Set();
 
+let projectHasSounds;
+
 function addSoundsFolderToCopy(libName) {
-	glob((libName || '.') + '/snd/**/*.@(webm|weba|ogg|aac|mp3)', {absolute: true, ignore}, function (er, files) {
-		for(let from of files) {
-			let a = from.split('/snd/');
-			a.shift();
-			let to =  './snd/' + a.join('/snd/');
-			if(!addedFiles.has(to)) {
-				addedFiles.add(to);
-				copyFilesList.push({from, to});
-			}
+	let files = glob((libName || '.') + '/snd/**/*.@(webm|weba|ogg|aac|mp3)', {absolute: true, sync:true, ignore});
+	for(let from of files) {
+		let a = from.split('/snd/');
+		a.shift();
+		let to =  './snd/' + a.join('/snd/');
+		if(!addedFiles.has(to)) {
+			addedFiles.add(to);
+			copyFilesList.push({from, to});
+			projectHasSounds = true;
 		}
-	});
+	}
 }
 
 function addImagesFolderToCopy(libName) {
-	glob((libName || '.') + '/img/**/*.@(png|jpg|atlas|json|xml)', {absolute: true, ignore}, function (er, files) {
-		for(let from of files) {
-			let a = from.split('/img/');
-			a.shift();
-			let to =  './img/' + a.join('/img/');
-			if(!addedFiles.has(to)) {
-				addedFiles.add(to);
-				copyFilesList.push({from, to});
-			}
+	let files = glob((libName || '.') + '/img/**/*.@(png|jpg|atlas|json|xml)', {absolute: true, sync:true, ignore});
+	for(let from of files) {
+		let a = from.split('/img/');
+		a.shift();
+		let to =  './img/' + a.join('/img/');
+		if(!addedFiles.has(to)) {
+			addedFiles.add(to);
+			copyFilesList.push({from, to});
 		}
-	});
+	}
 }
 
 addImagesFolderToCopy();
@@ -86,16 +87,28 @@ copyFilesList.reverse();
 
 const webpack = require('webpack');
 
+let entry = [
+	"babel-polyfill",
+	"whatwg-fetch",
+];
+if(projectDesc.webfontloader && Object.keys(projectDesc.webfontloader).some((k) => {
+	let p = projectDesc.webfontloader[k];
+	return Array.isArray(p.families) && p.families.length > 0;
+})) {
+	entry.push('webfontloader');
+}
+if(projectHasSounds) {
+	entry.push(process.env.THING_ENGINE_DEBUG_BUILD ? 'howler/dist/howler.js' : 'howler/dist/howler.core.min.js');
+}
+
+entry = entry.concat([
+	'./assets.js',
+	'./src/classes.js',
+	'./src/index.js'
+]);
+
 module.exports = {
-	entry: [
-		"babel-polyfill",
-		"whatwg-fetch",
-		'webfontloader',
-		process.env.THING_ENGINE_DEBUG_BUILD ? 'howler/dist/howler.js' : 'howler/dist/howler.core.min.js',
-		'./assets.js',
-		'./src/classes.js',
-		'./src/index.js'
-	],
+	entry,
 	resolve: {
 		alias/*,
 		modules: ['node_modules', path.join(__dirname, '..')]*/
