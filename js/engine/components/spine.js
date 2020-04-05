@@ -337,9 +337,13 @@ export default class Spine extends Container {
 		if (typeof texture === 'string') {
 			texture = getValueByPath(texture, this);
 		}
-		this.spineContent.hackTextureBySlotName(slotName, texture, texture.orig || texture.frame);
-		if(PIXI.Texture.EMPTY._uvs) { //spine adds _uvs for EMPTY texture fix
-			PIXI.Texture.EMPTY._uvs = null;
+		
+		assert(texture !== PIXI.Texture.EMPTY, 'There is problems with setting EMPTY texture to slot (texture should have width and height');
+		
+		if (texture) {
+			this.spineContent.hackTextureBySlotName(slotName, texture, texture.orig || texture.frame);
+		} else {
+			this.spineContent.hackTextureBySlotName(slotName, null);
 		}
 	}
 
