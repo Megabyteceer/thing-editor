@@ -1025,7 +1025,7 @@ class Game {
 		}
 	}
 
-	getLoadingCount(
+	getLoadingCount( /// 99999  getLoadingProgress removed
 	/// #if EDITOR
 		ignoreInGamePromises = false
 	/// #endif
