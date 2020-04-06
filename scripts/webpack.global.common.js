@@ -136,7 +136,11 @@ module.exports = {
 				{
 					loader: 'babel-loader',
 					options: {
-						presets: ['@babel/preset-env']
+						presets: [['@babel/preset-env',
+							{
+								"useBuiltIns": "entry",
+								"targets": "last 3 Chrome versions, last 3 Firefox versions, last 2 Edge versions, last 2 Opera versions, last 3 ChromeAndroid versions, last 5 FirefoxAndroid versions, last 3 iOS versions, last 3 Safari versions"
+							}]]
 					}
 				},
 				'ifdef-loader?{"EDITOR":false,"DEBUG":' + (isDebug ? 'true' : 'false') + '}',
