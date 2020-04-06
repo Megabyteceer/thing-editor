@@ -117,6 +117,10 @@ module.exports = {
 		alias/*,
 		modules: ['node_modules', path.join(__dirname, '..')]*/
 	},
+	devtool: isDebug ? 'inline-source-map' : undefined,
+	optimization: {
+		minimize: !isDebug
+	},
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(process.cwd(), isDebug ? 'debug' : 'release')
