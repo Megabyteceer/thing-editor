@@ -469,7 +469,7 @@ input{
 
 .select-editor-list{
 	position: fixed;
-	z-index:2;
+	z-index:30;
 	background: #fffde4;
 	padding:10px;
 	border: 1px solid #9e8247;

@@ -3,6 +3,8 @@ import PropsFieldWrapper from './props-field-wrapper.js';
 const CLASS_NAME = 'select-editor-current clickable';
 const CLASS_NAME_DISABLED = 'select-editor-current disabled';
 
+let openedList;
+
 class SelectEditor extends React.Component {
 
 	constructor(props) {
@@ -30,6 +32,14 @@ class SelectEditor extends React.Component {
 		if(this.hideTimeout) {
 			clearTimeout(this.hideTimeout);
 			this.hideTimeout = null;
+		}
+		this._hideList();
+	}
+
+	_hideList() {
+		if(openedList === this) {
+			ReactDOM.render(R.fragment, document.getElementById('select-lists-root'));
+			openedList = null;
 		}
 	}
 
@@ -75,6 +85,7 @@ class SelectEditor extends React.Component {
 			this.setState({
 				toggled: false
 			});
+			this._hideList();
 		}
 	}
 
@@ -123,7 +134,6 @@ class SelectEditor extends React.Component {
 				return R.span({className: 'danger'}, "empty values list");
 			}
 		}
-		let items;
 		let filterInput;
 
 		let item;
@@ -186,11 +196,12 @@ class SelectEditor extends React.Component {
 			}, 0);
 
 			this.selectedItem = item;
+			openedList = this;
 
-			items = R.div({
+			ReactDOM.render( R.div({
 				className: 'select-editor-list',
 				ref: 'list'
-			}, filterInput, a.map(this.renderItem));
+			}, filterInput, a.map(this.renderItem)), document.getElementById('select-lists-root'));
 		}
 
 
@@ -208,8 +219,7 @@ class SelectEditor extends React.Component {
 		},
 		R.div({
 			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
-		}, item.name ? (item.name + ' ▾') : item),
-		items
+		}, item.name ? (item.name + ' ▾') : item)
 		);
 	}
 
