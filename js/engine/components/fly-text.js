@@ -35,10 +35,10 @@ export default class FlyText extends Text {
 		assert(game.currentContainer, "FlyText.flyText() can be invoked only after first scene has been shown", 10011);
 
 
-		if (typeof X === 'number') {
+		if (typeof X !== 'number') {
 			X = game.W / 2;
 		}
-		if (typeof Y === 'number') {
+		if (typeof Y !== 'number') {
 			Y = game.H / 2;
 		}
 		
