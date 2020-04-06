@@ -18,6 +18,10 @@ export default class TimelineProperty extends React.Component {
 		bingTimelineForward();
 	}
 
+	componentWillUnmount() {
+		ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
+	}
+
 	onToggleClick() { //show/hide timeline window
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
@@ -46,8 +50,12 @@ export default class TimelineProperty extends React.Component {
 				R.div({title:''},
 					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
 				), 586, 650, 1270, 150, 1270, 407);
+
+			ReactDOM.render(timeline, document.getElementById('additional-windows-root'));
+		} else {
+			ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
 		}
-		return R.fragment(btn, timeline);
+		return btn;
 	}
 }
 

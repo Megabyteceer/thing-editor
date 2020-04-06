@@ -1,9 +1,5 @@
 import Help from "../utils/help.js";
 
-const contentProps = {
-	className: 'window-content'
-};
-
 const WORKAREA_TOP_PADDING = 30;
 
 let emptyImage = new Image();
@@ -190,8 +186,8 @@ class Window extends React.Component {
 	}
 	
 	setSize(w, h) {
-		w = Math.max(w, this.props.minW);
-		h = Math.max(h, this.props.minH);
+		w = Math.max(w, 100);
+		h = Math.max(h, 120);
 		w = Math.min(w, window.innerWidth);
 		h = Math.min(h, window.innerHeight - WORKAREA_TOP_PADDING);
 		if((this.state.w !== w) || (this.state.h !== h)) {
@@ -204,6 +200,22 @@ class Window extends React.Component {
 		if (this.$) {
 			this.$.style.width = w + 'px';
 			this.$.style.height = h + 'px';
+			let s = this.$.querySelector('.window-content').style;
+				
+			if(this.state.w < this.props.minW || this.state.h < this.props.minH) {
+				let scale = Math.min(this.state.w / this.props.minW, this.state.h / this.props.minH);
+				this.state.renderedScale = scale;
+				s.transform = 'scale(' + scale + ')';
+				s.transformOrigin = 'left top';
+				s.width = (Math.max(this.state.w / scale, this.props.minW)) + 'px';
+				s.height = (Math.max(this.state.h / scale, this.props.minH) - 24 / scale) + 'px';
+			} else {
+				this.state.renderedScale = 1;
+				s.transform = null;
+				s.transformOrigin = null;
+				s.width = null;
+				s.height = null;
+			}
 		}
 	}
 	
@@ -212,6 +224,21 @@ class Window extends React.Component {
 	}
 	
 	render() {
+
+		let contentProps = {
+			className: 'window-content'
+		};
+		if(this.state.w < this.props.minW || this.state.h < this.props.minH) {
+			let scale = Math.min(this.state.w / this.props.minW, this.state.h / this.props.minH);
+			this.state.renderedScale = scale;
+			contentProps.style = {
+				transform: 'scale(' + scale + ')',
+				transformOrigin: 'left top',
+				width: (Math.max(this.state.w / scale, this.props.minW)) + 'px',
+				height: (Math.max(this.state.h / scale, this.props.minH) - 24 / scale) + 'px'
+			};
+		}
+
 		return R.div({
 			id: this.id, onMouseDown: this.onMouseDown, className: 'window-body', style: {
 				left: this.state.x,

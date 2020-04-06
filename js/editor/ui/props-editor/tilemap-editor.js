@@ -12,6 +12,10 @@ export default class tilemapEditorRenderer extends React.Component {
 		this.state = {toggled:true};
 		this.onToggleClick = this.onToggleClick.bind(this);
 	}
+
+	componentWillUnmount() {
+		ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
+	}
 	
 	onToggleClick() {
 		let t = !this.state.toggled;
@@ -20,13 +24,15 @@ export default class tilemapEditorRenderer extends React.Component {
 	
 	render () {
 		let btn = R.btn(this.state.toggled ? 'Close TileEditor (Ctrl+L)' : 'Open TileEditor (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
-		let tilemapEditor;
 		if(this.state.toggled) {
-			tilemapEditor = editor.ui.renderWindow('tilemap', 'TileEditor', 'Tilemap Editor', React.createElement(TilemapEditor, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 737, 307);
+			let tilemapEditor = editor.ui.renderWindow('tilemap', 'TileEditor', 'Tilemap Editor', React.createElement(TilemapEditor, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 737, 307);
 			Window.bringWindowForward('#window-propsEditor');
 			Window.bringWindowForward('#window-tilemap', true);
+			ReactDOM.render(tilemapEditor, document.getElementById('additional-windows-root'));
+		} else {
+			ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
 		}
-		return R.fragment(btn, tilemapEditor);
+		return btn;
 	}
 }
 
@@ -236,13 +242,18 @@ class TilemapEditor extends React.Component {
 		if(editor.selection.length !== 1) {
 			return R.div(null, "Please select only one tilemap component at once.");
 		} else {
-			return R.div(null,
-				'Tile type:',
-				R.b(null, 
-					typeSelector
+			return R.fragment(
+				R.span({style:{whiteSpace: 'nowrap'}},
+					'Tile type:',
+					R.b(null, 
+						typeSelector
+					)
 				),
-				' Brush size: ',
-				React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size}),
+				R.span({style:{whiteSpace: 'nowrap'}},
+					' Brush size: ',
+					React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size})
+				),
+				R.br(),
 				R.btn('Clear map', this.onClearClick, "Clear whole tilemap.", 'danger')
 			);
 		}
