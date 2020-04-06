@@ -5,8 +5,6 @@ import game from "../game.js";
 
 let loadingResources = [];
 
-let maxCount = 1;
-
 export default class ResourceLoader {
 
 	constructor() {
@@ -41,16 +39,6 @@ export default class ResourceLoader {
 
 		if(!isReattempt) {
 			loadingResources.push(this);
-		}
-
-		if(ResourceLoader.preloader) {
-			this.loader.onProgress.add(() => {
-				if(ResourceLoader.preloader) {
-					let currentCount = ResourceLoader.getLoadingCount();
-					maxCount = Math.max(currentCount, maxCount);
-					ResourceLoader.preloader.onProgress((maxCount - currentCount) / maxCount * 100);
-				}
-			});
 		}
 		
 		this.loader.onLoad.add((loader, resource) => {

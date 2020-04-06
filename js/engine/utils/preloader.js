@@ -7,13 +7,13 @@ export default class Preloader {
 	constructor() {
 		this.updatePreloader = this.updatePreloader.bind(this);
 		
-		this.texturesProgress = 0;
 		this.currentProgress = 0;
 		
 		game.pixiApp.ticker.add(this.updatePreloader);
 		
 		ResourceLoader.preloader = this;
 		this.complete = false;
+		this.maxCount = 0;
 	}
 	
 	updatePreloader() {
@@ -21,9 +21,10 @@ export default class Preloader {
 		this.preloaderBar = this.preloaderBar || document.getElementsByClassName('preloader-bar')[0];
 		this.preloader = this.preloader || document.getElementsByClassName('preloader')[0];
 
-		let soundsProgress = game.getLoadingProgress() * 100;
-		let progress = (this.texturesProgress + soundsProgress) / 2.0;
-		
+		let progressCount = game.getLoadingCount();
+		this.maxCount = Math.max(this.maxCount, progressCount);
+		let progress = (this.maxCount - progressCount) / this.maxCount * 100.0;
+
 		this.currentProgress = stepTo(this.currentProgress, progress, 2);
 		if(this.preloaderText) {
 			this.preloaderText.innerHTML = 'Loading ' + Math.round(this.currentProgress) + '%';
@@ -34,13 +35,9 @@ export default class Preloader {
 		if(this.complete) {
 			this.destroy();
 		}
-		this.complete = this.texturesCompleted && soundsProgress >= 100 && this.started && this.currentProgress >= 100;
+		this.complete = this.texturesCompleted && progress >= 100 && this.started && this.currentProgress >= 100;
 	}
-	
-	onProgress(progress) {
-		this.texturesProgress = progress;
-	}
-	
+
 	destroy() {
 		if(this.preloader) {
 			this.preloader.parentElement.removeChild(this.preloader);
@@ -51,7 +48,6 @@ export default class Preloader {
 	
 	onComplete() {
 		this.texturesCompleted = true;
-		this.texturesProgress = 100;
 	}
 	
 	start(callback) {

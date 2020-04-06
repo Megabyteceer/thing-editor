@@ -403,7 +403,7 @@ export default class Lib {
 		let preloadingStarted = {};
 
 		const preloadOneSound = () => {
-			if(game.getLoadingProgress() === 1) {
+			if(game.getLoadingCount() === 0) {
 				for(let name in sounds) {
 					if(game.projectDesc.loadOnDemandSounds[name] === 2) {
 						if(Lib.preloadSound(name)) {
@@ -426,21 +426,15 @@ export default class Lib {
 		interval = setInterval(preloadOneSound, 1000);
 	}
 
-	static getSoundsLoadingProgress() {
+	static getSoundsLoadingCount() {
 		let total = 0;
-		let loaded = 0;
-
 		for(let sn in soundsHowlers) {
 			let s = soundsHowlers[sn];
-			total ++;
-			if(isSoundLoaded(s)) {
-				loaded++;
+			if(!isSoundLoaded(s)) {
+				total++;
 			}
 		}
-		if(total > 0) {
-			return loaded / total;
-		}
-		return 1;
+		return total;
 	}
 
 	static hasSound(soundId) {
@@ -845,7 +839,7 @@ export default class Lib {
 
 		let interval = setInterval(() => {
 
-			if(game.getLoadingProgress(true) < 1) {
+			if(game.getLoadingCount(true) > 0) {
 				return;
 			}
 

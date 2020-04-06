@@ -662,7 +662,7 @@ class Game {
 	}
 
 	_processScenesStack() {
-		assert(game.getLoadingProgress() >= 1, "Attempt to change stack during loading");
+		assert(game.getLoadingCount() === 0, "Attempt to change stack during loading");
 		while(true) { // eslint-disable-line no-constant-condition
 			let topStackElement = showStack[showStack.length -1];
 			if(topStackElement === game.currentScene) {
@@ -807,7 +807,7 @@ class Game {
 			loadDynamicTextures();
 			
 			editor.waitForCondition(() => {
-				return game.getLoadingProgress() >= 1;
+				return game.getLoadingCount() === 0;
 			}).then(() => {
 				editor.ui.modal.hideSpinner();
 				s.remove();
@@ -1025,31 +1025,25 @@ class Game {
 		}
 	}
 
-	getLoadingProgress(
+	getLoadingCount(
 	/// #if EDITOR
 		ignoreInGamePromises = false
 	/// #endif
 	) {
-		let total = 1;
-		let progress = Lib.getSoundsLoadingProgress();
+		let count = Lib.getSoundsLoadingCount();
 
-		total += ResourceLoader.getLoadingCount();
+		count += ResourceLoader.getLoadingCount();
 		/// #if EDITOR
 		if(!ignoreInGamePromises) {
 		/// #endif
 			if(currentFader) {
-				total += currentFader.findChildrenByType(SceneLinkedPromise).length;
+				count += currentFader.findChildrenByType(SceneLinkedPromise).length;
 			}
 		/// #if EDITOR
 		}
-
-		if(texturesLoadingScheduled) {
-			total ++;
-		}
 		/// #endif
 		
-		progress /= total;
-		return progress;
+		return count;
 	}
 
 	forAllChildrenEverywhere(callback) {
@@ -1072,7 +1066,7 @@ class Game {
 			return;
 		}
 		if(game._isWaitingToHideFader) {
-			if(game.getLoadingProgress() >= 1) {
+			if(game.getLoadingCount() === 0) {
 				game._processScenesStack();
 				if(!game.currentScene._onShowCalled) {
 					game.currentScene._onShowCalled = true;
@@ -1693,7 +1687,7 @@ Game.prototype.closeCurrentScene.___EDITOR_isGoodForChooser = true;
 Game.prototype.faderEnd.___EDITOR_isGoodForChooser = true;
 Game.prototype.faderShoot.___EDITOR_isGoodForChooser = true;
 FullScreen.___EDITOR_isGoodForChooser = true;
-Game.prototype.getLoadingProgress.___EDITOR_isGoodForChooser = true;
+Game.prototype.getLoadingCount.___EDITOR_isGoodForChooser = true;
 Game.prototype.hideModal.___EDITOR_isGoodForChooser = true;
 game.isMobile.___EDITOR_isGoodForChooser = true;
 Keys.___EDITOR_isGoodForChooser = true;
