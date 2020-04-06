@@ -320,7 +320,7 @@ Text.prototype.__EDITOR_onCreate = function __EDITOR_onCreate() {
 
 Text.prototype.__beforeSerialization = function __beforeSerialization() {
 	if(this._translatableText) {
-		this.text = null;
+		this.text = '';
 	}
 	if(this.maxWidth > 0) {
 		this.scale.x = 1;
@@ -362,7 +362,7 @@ __EDITOR_editableProps(Text, [
 			if(v && v.length === 2 &&  v.charCodeAt(0) === 32) return v.substr(1);
 			return v;
 		},
-		default:' ',
+		default:'',
 		important: true,
 		disabled:(node) => {
 			return node.translatableText;

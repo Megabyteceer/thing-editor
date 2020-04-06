@@ -188,7 +188,7 @@ class LanguageTableEditor extends React.Component {
 			for(let p of props) {
 				if(p.isTranslatableKey) {
 					let k = o[p.name];
-					if(k && k !==' ') {
+					if(k) {
 						if(!L.has(k)) {
 							defaultKey = k;
 						}
@@ -231,7 +231,7 @@ class LanguageTableEditor extends React.Component {
 				if(editor.selection.length === 1) {
 					if(editor.selection[0] instanceof PIXI.Text) {
 						let t = editor.selection[0];
-						if((t.text === ' ') && !t.translatableText) {
+						if(!t.text && !t.translatableText) {
 							t.translatableText = key;
 						}
 					}

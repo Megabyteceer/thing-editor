@@ -38,9 +38,7 @@ export default class TextInput extends PIXI.Text {
 	update() {
 		if(this.htmlInput) {
 			let t = this.text;
-			if(t === ' ') {
-				t = '';
-			}
+
 			if(t != this.htmlInput.value) {
 				let val = this.filterText(this.htmlInput.value);
 				this.htmlInput.value = val;
