@@ -382,7 +382,7 @@ function selectByStageClick(ev) {
 	let allUnderMouse = new Selection();
 	let i;
 
-	game.stage.forAllChildren((o) => {
+	game.currentContainer.forAllChildren((o) => {
 		if(isObjectUnder(o)) {
 			let parentWhichHideChildren = getParentWhichHideChildren(o);
 			if(parentWhichHideChildren) {
