@@ -271,7 +271,7 @@ class Game {
 			game._isCanvasRotated = rotateCanvas;
 			if(rotateCanvas) {
 				stage.rotation = Math.PI / 2.0;
-				stage.x = this.H;
+				stage.x = this.H * scale;
 			} else {
 				stage.rotation = 0;
 				/// #if EDITOR
@@ -1301,7 +1301,7 @@ const latestXY = {};
 const mouseHandlerGlobal = (ev) => {
 
 	let mouse = game.mouse;
-	let p = game.stage.toLocal(ev.data.global);
+	let p = game.stage.toLocal(ev.data.global, game.stage);
 
 	let x = Math.round(p.x);
 	let y = Math.round(p.y);
