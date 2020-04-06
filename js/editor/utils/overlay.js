@@ -382,7 +382,9 @@ function selectByStageClick(ev) {
 	let allUnderMouse = new Selection();
 	let i;
 
-	game.currentContainer.forAllChildren((o) => {
+	let c = isPreviewShowed ? game.currentContainer : game.stage;
+
+	c.forAllChildren((o) => {
 		if(isObjectUnder(o)) {
 			let parentWhichHideChildren = getParentWhichHideChildren(o);
 			if(parentWhichHideChildren) {
