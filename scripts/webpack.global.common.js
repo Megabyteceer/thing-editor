@@ -99,7 +99,7 @@ if(projectDesc.webfontloader && Object.keys(projectDesc.webfontloader).some((k) 
 	entry.push('webfontloader');
 }
 if(projectHasSounds) {
-	entry.push(process.env.THING_ENGINE_DEBUG_BUILD ? 'howler/dist/howler.js' : 'howler/dist/howler.core.min.js');
+	entry.push(isDebug ? 'howler/dist/howler.js' : 'howler/dist/howler.core.min.js');
 }
 
 entry = entry.concat([
@@ -113,6 +113,10 @@ module.exports = {
 	resolve: {
 		alias/*,
 		modules: ['node_modules', path.join(__dirname, '..')]*/
+	},
+	output: {
+		filename: 'bundle.js',
+		path: path.resolve(process.cwd(), isDebug ? 'debug' : 'release')
 	},
 	performance: {
 		maxAssetSize: 1000000
