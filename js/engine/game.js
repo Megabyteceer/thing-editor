@@ -257,7 +257,7 @@ class Game {
 
 		//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-		if (this.pixiApp) {
+		if (game.pixiApp) {
 
 
 			_rendererWidth = rendererWidth;
@@ -266,7 +266,8 @@ class Game {
 
 
 			let stage = game.stage;
-			this.pixiApp.stage.scale.x = this.pixiApp.stage.scale.y = scale;
+			game.renderScale = scale;
+			game.stage.scale.x = game.stage.scale.y = scale;
 			game._isCanvasRotated = rotateCanvas;
 			if(rotateCanvas) {
 				stage.rotation = Math.PI / 2.0;

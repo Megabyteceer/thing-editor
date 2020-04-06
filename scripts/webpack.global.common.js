@@ -50,7 +50,8 @@ addSoundsFolderToCopy();
 
 let alias = {
 	'/thing-editor': path.resolve(__dirname, '..'),
-	'thing-editor': path.resolve(__dirname, '..')
+	'thing-editor': path.resolve(__dirname, '..'),
+	'src': path.resolve(process.cwd(), 'src')
 };
 
 let projectDesc = JSON.parse(fs.readFileSync('./thing-project.json'));
