@@ -80,6 +80,11 @@ class Window extends React.Component {
 	
 	componentDidMount() {
 		this.$ = document.querySelector('#' + this.id);
+		Window.all[this.props.id] = this;
+	}
+
+	componentWillUnmount() {
+		delete Window.all[this.props.id];
 	}
 	
 	onClientResize() {
@@ -305,6 +310,8 @@ class Window extends React.Component {
 		);
 	}
 }
+
+Window.all = {};
 
 Window.bringWindowForward = (windowBody, setCurrentHelp) => {
 	setTimeout(() => {

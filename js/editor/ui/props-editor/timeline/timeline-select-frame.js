@@ -1,4 +1,5 @@
 import Timeline from "./timeline.js";
+import Window from "../../window.js";
 
 let timelineRect;
 let isDragging;
@@ -13,8 +14,9 @@ export default class TimelineSelectFrame extends React.Component {
 	onMouseDown(ev) {
 		timelineRect = Timeline.timelineDOMElement.getBoundingClientRect();
 		isDragging = true;
-		x = ev.clientX - timelineRect.x;
-		y = ev.clientY - timelineRect.y;
+		let s = Window.all.timeline.state.renderedScale;
+		x = (ev.clientX - timelineRect.x) / s;
+		y = (ev.clientY - timelineRect.y) / s;
 		w = 0;
 		h = 0;
 		this.forceUpdate();
@@ -22,8 +24,10 @@ export default class TimelineSelectFrame extends React.Component {
 
 	onMouseMove(ev) {
 		if(isDragging) {
-			w = ev.clientX - timelineRect.x - x;
-			h = ev.clientY - timelineRect.y - y;
+			let s = Window.all.timeline.state.renderedScale;
+
+			w = (ev.clientX - timelineRect.x) / s - x;
+			h = (ev.clientY - timelineRect.y) / s - y;
 			this.forceUpdate();
 		}
 	}
