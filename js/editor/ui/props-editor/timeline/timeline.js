@@ -9,6 +9,7 @@ import TimeLabel from "./timeline-label.js";
 import TimelineLoopPoint from "./timeline-loop-point.js";
 import TimelineSelectFrame from "./timeline-select-frame.js";
 import Lib from "thing-editor/js/engine/lib.js";
+import Window from "../../window.js";
 
 
 let widthZoom;
@@ -623,8 +624,10 @@ export default class Timeline extends React.Component {
 	static mouseEventToTime(ev) {
 		let tl = Timeline.timelineDOMElement;
 		let b = tl.getBoundingClientRect();
-		let x = ev.clientX - 110 - b.x - draggingXShift;
-		return Math.max(0, Math.round((x + tl.scrollLeft) / widthZoom));
+		let s = Window.all.timeline.state.renderedScale;
+		
+		let x = ev.clientX - 110 * s - b.x - draggingXShift;
+		return Math.max(0, Math.round((x + tl.scrollLeft) / widthZoom / s));
 	}
 
 	static onAutoSelect(selectPath) {
