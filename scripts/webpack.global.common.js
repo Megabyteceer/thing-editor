@@ -108,8 +108,11 @@ entry = entry.concat([
 	'./src/index.js'
 ]);
 
+const mode = isDebug ? 'development' : 'production';
+
 module.exports = {
 	entry,
+	mode: mode,
 	resolve: {
 		alias/*,
 		modules: ['node_modules', path.join(__dirname, '..')]*/
@@ -122,6 +125,9 @@ module.exports = {
 		maxAssetSize: 1000000
 	},
 	plugins: [
+		new webpack.DefinePlugin({
+			'process.env.NODE_ENV': JSON.stringify(mode)
+		}),
 		new CopyWebpackPlugin(copyFilesList),
 		new webpack.ProvidePlugin({
 			PIXI: 'pixi.js-legacy',
