@@ -5,6 +5,17 @@ const CLASS_NAME_DISABLED = 'select-editor-current disabled';
 
 let openedList;
 
+let labelNamesProps = {
+	className: 'selectable-text',
+	title: 'Ctrl+click to copy value.',
+	onClick(ev) {
+		if(ev.ctrlKey) {
+			sp(ev);
+		}
+	},
+	onMouseDown:window.copyTextByClick
+};
+
 class SelectEditor extends React.Component {
 
 	constructor(props) {
@@ -25,7 +36,6 @@ class SelectEditor extends React.Component {
 		this.onFocus = this.onFocus.bind(this);
 		this.onMouseLeave = this.onMouseLeave.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
-		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 
 	componentWillUnmount() {
@@ -40,12 +50,6 @@ class SelectEditor extends React.Component {
 		if(openedList === this) {
 			ReactDOM.render(R.fragment, document.getElementById('select-lists-root'));
 			openedList = null;
-		}
-	}
-
-	onMouseDown(ev) {
-		if (ev.buttons === 2) {
-			editor.copyToClipboard(this.props.value);
 		}
 	}
 
@@ -214,12 +218,11 @@ class SelectEditor extends React.Component {
 			onClick: this.onToggle,
 			onMouseMove: this.onMouseMove,
 			onMouseLeave: this.onMouseLeave,
-			onMouseDown: this.onMouseDown,
 			ref: 'body'
 		},
 		R.div({
 			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
-		}, item.name ? (item.name + ' ▾') : item)
+		}, R.span(labelNamesProps, item.name ? item.name : item),' ▾')
 		);
 	}
 
