@@ -438,10 +438,6 @@ button {
 	margin-top: -3px;
 }
 
-.bottom-panel .select-editor-list, .sound-preload-ui .select-editor-list {
-	transform: translateY(-100%);
-}
-
 input{
 	font-family: monospace;
 	box-sizing: border-box;

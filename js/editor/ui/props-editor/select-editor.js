@@ -191,6 +191,9 @@ class SelectEditor extends React.Component {
 				if(b) {
 					b = b.getBoundingClientRect();
 					let l = ReactDOM.findDOMNode(this.refs.list);
+					if(b.top > window.innerHeight * 0.6) {
+						b.y -= l.clientHeight;
+					}
 					if(l) {
 						l.style.left = b.left + 'px';
 						l.style.top = b.top + 'px';
