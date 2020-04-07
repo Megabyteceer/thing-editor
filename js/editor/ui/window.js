@@ -242,6 +242,8 @@ class Window extends React.Component {
 				width: (Math.max(this.state.w / scale, this.props.minW)) + 'px',
 				height: (Math.max(this.state.h / scale, this.props.minH) - 24 / scale) + 'px'
 			};
+		} else {
+			this.state.renderedScale = 1;
 		}
 
 		return R.div({
