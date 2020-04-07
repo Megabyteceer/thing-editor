@@ -149,7 +149,8 @@ window.addEventListener('keydown', (ev) => {
 
 window.copyTextByClick = function(ev) {
 	if(ev.ctrlKey) {
-		editor.copyToClipboard(ev.target.innerText);
+		editor.copyToClipboard(ev.target.hasAttribute('ctrlclickcopyvalue') ? 
+			ev.target.getAttribute('ctrlclickcopyvalue') : ev.target.innerText);
 		sp(ev);
 	}
 };

@@ -5,17 +5,6 @@ const CLASS_NAME_DISABLED = 'select-editor-current disabled';
 
 let openedList;
 
-let labelNamesProps = {
-	className: 'selectable-text',
-	title: 'Ctrl+click to copy value.',
-	onClick(ev) {
-		if(ev.ctrlKey) {
-			sp(ev);
-		}
-	},
-	onMouseDown:window.copyTextByClick
-};
-
 class SelectEditor extends React.Component {
 
 	constructor(props) {
@@ -225,7 +214,17 @@ class SelectEditor extends React.Component {
 		},
 		R.div({
 			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
-		}, R.span(labelNamesProps, item.name ? item.name : item),' ▾')
+		}, R.span({
+			ctrlclickcopyvalue: (typeof item.value === 'undefined') ? item : item.value,
+			className: 'selectable-text',
+			title: 'Ctrl+click to copy value.',
+			onClick(ev) {
+				if(ev.ctrlKey) {
+					sp(ev);
+				}
+			},
+			onMouseDown:window.copyTextByClick
+		}, item.name ? item.name : item),' ▾')
 		);
 	}
 
