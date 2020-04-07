@@ -60,6 +60,7 @@ export default class TimelineKeyframe extends React.Component {
 	}
 
 	setTime(time) {
+		assert(!isNaN(time));
 		const keyFrame = this.props.keyFrame;
 		if(keyFrame.t === 0) {//initial keyframe is locked for dragging
 			let t = this.props.owner.props.owner.props.field.t;
