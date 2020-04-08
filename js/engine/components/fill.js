@@ -153,20 +153,11 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	render(renderer) {
-		if(this.meshResized) {
-			this.refreshSize();
-			this.meshResized = false;
-		}
-		if (this.fillUpdated) {
-			this.updateFilling();
-		}
-		if(this.transparencyUpdated) {
-			this.updateTransparency();
-		}
+		this.validateFill();
 		super.render(renderer);
 	}
 
-	_renderCanvas(renderer) {
+	validateFill() {
 		if(this.meshResized) {
 			this.refreshSize();
 			this.meshResized = false;
@@ -177,6 +168,10 @@ export default class Fill extends PIXI.Mesh {
 		if(this.transparencyUpdated) {
 			this.updateTransparency();
 		}
+	}
+
+	_renderCanvas(renderer) {
+
 		super._renderCanvas(renderer);
 	}
 
