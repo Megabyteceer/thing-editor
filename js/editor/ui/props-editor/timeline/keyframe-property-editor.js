@@ -305,6 +305,12 @@ export default class KeyframePropertyEditor extends React.Component {
 		}
 		let jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: -99999999, max: 99999999, onChange: this.onJumpChanged});
 
+		if(document.activeElement && document.activeElement.className === 'props-editor-callback') {
+			setTimeout(() => {
+				document.querySelector('.keyframe-callback-editor .props-editor-callback').focus();
+			});
+		}
+
 		body = R.fragment(
 			' Action: ',
 			R.span({className: 'keyframe-callback-editor'},

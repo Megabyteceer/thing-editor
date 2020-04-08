@@ -9,7 +9,7 @@ window.addEventListener("keydown", (ev) => {
 	}
 });
 
-const hotheysBlockedWhenInputFocused = {
+const hotkeysBlockedWhenInputFocused = {
 	8: true,
 	13: true,
 	37: true,
@@ -20,14 +20,12 @@ const hotheysBlockedWhenInputFocused = {
 	90: true,
 	188: true,
 	190: true,
-	1188: true,
-	1190: true,
 	1067: true,
 	1088: true,
 	1086: true
 };
 function isHotkeyBlockedOnInput(btn) {
-	return btn.props.hotkey && hotheysBlockedWhenInputFocused.hasOwnProperty(btn.props.hotkey);
+	return btn.props.hotkey && hotkeysBlockedWhenInputFocused.hasOwnProperty(btn.props.hotkey);
 }
 
 class EditorButton extends React.Component {
