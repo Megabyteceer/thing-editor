@@ -382,9 +382,7 @@ function selectByStageClick(ev) {
 	let allUnderMouse = new Selection();
 	let i;
 
-	let c = isPreviewShowed ? game.currentContainer : game.stage;
-
-	c.forAllChildren((o) => {
+	const checkNodeToSelect = (o) => {
 		if(isObjectUnder(o)) {
 			let parentWhichHideChildren = getParentWhichHideChildren(o);
 			if(parentWhichHideChildren) {
@@ -406,7 +404,13 @@ function selectByStageClick(ev) {
 				
 			}
 		}
-	});
+	};
+
+	let c = isPreviewShowed ? game.currentContainer : game.stage;
+
+
+	checkNodeToSelect(c);
+	c.forAllChildren(checkNodeToSelect);
 
 	allUnderMouse.sortSelectedNodes();
 	allUnderMouse.reverse();
