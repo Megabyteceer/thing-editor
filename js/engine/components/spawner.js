@@ -20,6 +20,10 @@ export default class Spawner extends Container {
 		this.enabled = false;
 	}
 
+	setSpeed(speed) { // 99999
+		this.speed = speed;
+	}
+
 	update() {
 		if(this.enabled && this.worldVisible) {
 			if(this.delay > 0) {
@@ -106,6 +110,7 @@ const spawnPointRet = new PIXI.Point();
 Spawner.prototype.enable.___EDITOR_isGoodForCallbackChooser = true;
 Spawner.prototype.disable.___EDITOR_isGoodForCallbackChooser = true;
 Spawner.prototype.spawn.___EDITOR_isGoodForCallbackChooser = true;
+Spawner.prototype.setSpeed.___EDITOR_isGoodForCallbackChooser = true;
 
 Spawner.__EDITOR_group = 'Basic';
 Spawner.__EDITOR_icon = 'tree/spawner';
