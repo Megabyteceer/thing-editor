@@ -14,6 +14,7 @@ export default class Preloader {
 		ResourceLoader.preloader = this;
 		this.complete = false;
 		this.maxCount = 0;
+		this.progressItems = Array.from(document.querySelectorAll('.progress-item'));
 	}
 	
 	updatePreloader() {
@@ -31,6 +32,12 @@ export default class Preloader {
 		}
 		if(this.preloaderBar) {
 			this.preloaderBar.style.width = (this.currentProgress) + '%';
+		}
+		if(this.progressItems.length > 0) {
+			let reachedItemsCount = this.progressItems.length * this.currentProgress / 100;
+			for(let i = 0; i < reachedItemsCount; i++) {
+				this.progressItems[i].classList.add("progress-item-on");
+			}
 		}
 		if(this.complete) {
 			this.destroy();
