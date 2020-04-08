@@ -783,6 +783,10 @@ input{
 	outline: 2px solid #ff9d00;
 }
 
+.keyframe-callback-editor .props-editor-callback:focus {
+	width: 800px;
+}
+
 .timeline-loop-point {
 	cursor: w-resize;
 	position: absolute;
