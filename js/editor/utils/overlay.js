@@ -289,7 +289,7 @@ function refreshDraggersForNode(o) {
 			info.draggerRotator = createDragger(o, Rotator);
 		}
 	}
-	let draggersScale = viewportCanvasScale;
+	let draggersScale = 1;
 
 	let r = o.getGlobalRotation();
 	o.getGlobalPosition(p, true);
