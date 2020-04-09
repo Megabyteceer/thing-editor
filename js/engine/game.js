@@ -345,6 +345,9 @@ class Game {
 
 
 		/// #if DEBUG
+		this._FPS = 0; // 99999
+		this.FPS = 0;
+
 		if (false) { /*eslint-disable-line no-constant-condition */
 			/// #endif
 			assert(editor, '"assert" invoking was not removed from release build. Check if "assert-strip-loader.js" is not removed from webpack config.');
@@ -949,6 +952,18 @@ class Game {
 	}
 
 	_updateGlobal(dt) {
+		/// #if DEBUG
+		this._FPS++;
+		let now = Date.now();
+		if((now - lastFPSTime) >= 1000) {
+			this.FPS = this._FPS;
+			this._FPS = 0;
+			lastFPSTime = now;
+		}
+
+
+
+		/// #endif
 
 		/// #if EDITOR
 		editor.ui.viewport.checkIfNeedRecovery();
@@ -1654,6 +1669,8 @@ function loadDynamicTextures(
 }
 
 /// #if DEBUG
+let lastFPSTime = 0;
+
 let __speedMultiplier;
 
 game.__speedMultiplier = 1;
