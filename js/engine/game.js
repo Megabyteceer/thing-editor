@@ -201,7 +201,7 @@ class Game {
 		S *= s;
 		S = Math.min(3, S);
 		/// #if EDITOR
-		S = 1;
+		//S = 1;
 		/// #endif
 
 		if(this.pixiApp && this.pixiApp.renderer) {
