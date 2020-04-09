@@ -113,10 +113,10 @@ export default class HTMLOverlay extends ScrollLayer {
 
 			recalcCanvasBounds();
 
-			this._htmlDiv.style.left = (_canvasBoundsCache.left + Math.round(this.parent.worldTransform.tx) * canvasScale) + 'px';
+			this._htmlDiv.style.left = (_canvasBoundsCache.left + Math.round(this.parent.worldTransform.tx) * canvasScale / game.stage.scale.x) + 'px';
 			
 
-			this._htmlDiv.style.top = (_canvasBoundsCache.top + Math.round(this.parent.worldTransform.ty) * canvasScale) + 'px';
+			this._htmlDiv.style.top = (_canvasBoundsCache.top + Math.round(this.parent.worldTransform.ty) * canvasScale / game.stage.scale.x) + 'px';
 			
 
 
@@ -126,7 +126,7 @@ export default class HTMLOverlay extends ScrollLayer {
 			
 			if(Math.abs(this.currentHtmlScale - this.worldTransform.a) > 0.001) {
 				this.currentHtmlScale = this.worldTransform.a;
-				this._htmlDiv.style.transform = 'scale(' + this.currentHtmlScale.toFixed(3) + ')';
+				this._htmlDiv.style.transform = 'scale(' + (this.currentHtmlScale / game.stage.scale.x).toFixed(3) + ')';
 			}
 		} else {
 			this._releaseHtmlDiv();
