@@ -129,6 +129,11 @@ export default class Scissors extends Container {
 		this.enabled = false;
 	}
 
+	onRemove() {
+		super.onRemove();
+		this._disposeMaskScissor();
+	}
+
 	/// #if EDITOR
 	__beforeSerialization() {
 		this._disposeMaskScissor();
