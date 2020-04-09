@@ -79,7 +79,7 @@ export default class Overlay {
 	}
 
 	refreshCameraFrame() {
-		if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
+		if(game.stage.scale.x !== game.renderScale || game.stage.x !== 0 || game.stage.y !== 0) {
 			game.stage.addChild(cameraFrame); //move frame to front
 			__getNodeExtendData(cameraFrame).hidden = true;
 			
