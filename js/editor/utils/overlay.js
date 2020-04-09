@@ -545,9 +545,24 @@ class Dragger extends DSprite {
 			}
 			
 			o.parent.toLocal(p, undefined, p, true);
-			
-			let dX = Math.round(p.x) - o.x;
-			let dY = Math.round(p.y) - o.y;
+			if(isNaN(p.x)) {
+				let parent = o.parent;
+				while (parent) {
+					if(parent.scale.x === 0) {
+						editor.ui.status.warn("Can not drag object because it`s parent has zero scale.x", undefined, parent, 'scale.x');
+						return;
+					}
+					if(parent.scale.y === 0) {
+						editor.ui.status.warn("Can not drag object because it`s parent has zero scale.y", undefined, parent, 'scale.y');
+						return;
+					}
+					parent = parent.parent;
+				}
+				editor.ui.status.warn("Can not move object.", undefined, o);
+				return;
+			}
+			let dX = (Math.round(p.x) - o.x);
+			let dY = (Math.round(p.y) - o.y);
 			
 			if(game.keys.ctrlKey) {
 				editor.moveContainerWithoutChildren(o, dX, dY);
