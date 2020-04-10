@@ -161,8 +161,8 @@ export default class Overlay {
 		game.showModal(object);
 		__getNodeExtendData(object).childrenExpanded = true;
 		checkIfCurrentContainerIsShowedPrefab();
-		game.stage.x = -object.x + game.W / 2;
-		game.stage.y = -object.y + game.H / 2;
+		game.stage.x = (-object.x + game.W / 2) * game.renderScale;
+		game.stage.y = (-object.y + game.H / 2) * game.renderScale;
 		blackout.x = -game.stage.x;
 		blackout.y = -game.stage.y;
 		setTimeout(() => {
