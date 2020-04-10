@@ -27,6 +27,10 @@ function getSpineInstance(name) {
 		ret.autoUpdate = false;
 		assert(!ret._poolName, "Spine structure changed. Pooling needs refactoring (_poolName field renaming).");
 		ret._poolName = name;
+		
+		// TODO: remove this hack after https://github.com/pixijs/pixi.js/pull/6540
+		ret.findChildrenByType(PIXI.Graphics).forEach((gr) => gr._resolveDirectShader(game.pixiApp.renderer));
+		
 		return ret;
 	}
 	return p.pop();
