@@ -396,16 +396,37 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 
 		},
 		select: () => {
+			let ret;
 			if(canBeEmpty) {
-				let a = editor.Lib.__texturesList.concat();
-				a.unshift({
+				ret = editor.Lib.__texturesList.concat();
+				ret.unshift({
 					"name": "none",
 					"value": ""
 				});
-				return a;
 			} else {
-				return editor.Lib.__texturesList;
+				ret = editor.Lib.__texturesList;
 			}
+			let currentVal = false;
+			for(let o of editor.selection) {
+				if(currentVal !== false && currentVal !== o[name]) {
+					return ret;
+				}
+				currentVal = o[name];
+			}
+			if((currentVal !== false) && ((!ret.find((i) => {
+				return i.value === currentVal;
+			})))) {
+				let a = [];
+				for(let i of ret) {
+					if(i.value.indexOf(currentVal.replace(/\.(png|jpg)/,'')) >= 0 || currentVal.indexOf(i.value.replace(/\.(png|jpg)/,'')) >= 0) {
+						a.unshift(i);
+					} else {
+						a.push(i);
+					}
+				}
+				ret = a;
+			}
+			return ret;
 		}
 	};
 };
