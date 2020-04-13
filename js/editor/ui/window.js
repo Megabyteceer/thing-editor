@@ -212,8 +212,8 @@ class Window extends React.Component {
 				this.state.renderedScale = scale;
 				s.transform = 'scale(' + scale + ')';
 				s.transformOrigin = 'left top';
-				s.width = (Math.max(this.state.w / scale, this.props.minW)) + 'px';
-				s.height = (Math.max(this.state.h / scale, this.props.minH) - 24 / scale) + 'px';
+				s.width = ((Math.max(this.state.w / scale, this.props.minW)) - 4 / scale) + 'px';
+				s.height = (Math.max(this.state.h / scale, this.props.minH) - 20 / scale) + 'px';
 			} else {
 				this.state.renderedScale = 1;
 				s.transform = null;
@@ -239,8 +239,8 @@ class Window extends React.Component {
 			contentProps.style = {
 				transform: 'scale(' + scale + ')',
 				transformOrigin: 'left top',
-				width: (Math.max(this.state.w / scale, this.props.minW)) + 'px',
-				height: (Math.max(this.state.h / scale, this.props.minH) - 24 / scale) + 'px'
+				width: ((Math.max(this.state.w / scale, this.props.minW)) - 4 / scale) + 'px',
+				height: (Math.max(this.state.h / scale, this.props.minH) - 20 / scale) + 'px'
 			};
 		} else {
 			this.state.renderedScale = 1;
