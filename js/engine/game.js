@@ -1316,7 +1316,7 @@ const latestXY = {};
 const mouseHandlerGlobal = (ev) => {
 
 	let mouse = game.mouse;
-	let p = game.stage.toLocal(ev.data.global, game.stage);
+	let p = game.stage.toLocal(ev.data.global, game.pixiApp.stage);
 
 	let x = Math.round(p.x);
 	let y = Math.round(p.y);
