@@ -49,7 +49,7 @@ export default class MobileJoystick extends DSprite {
 
 	onDown(ev) {
 		this.isTouched = true;
-		game.stage.toLocal(ev.data.global, undefined, ev.data.global, true);
+		game.stage.toLocal(ev.data.global, game.pixiApp.stage, ev.data.global, true);
 		this.touchX = ev.data.global.x;
 		this.touchY = ev.data.global.y;
 		this.touchId = ev.data.pointerId;
@@ -60,7 +60,7 @@ export default class MobileJoystick extends DSprite {
 	onMove(ev) {
 		if(this.touchId === ev.data.pointerId) {
 
-			game.stage.toLocal(ev.data.global, undefined, ev.data.global, true);
+			game.stage.toLocal(ev.data.global, game.pixiApp.stage, ev.data.global, true);
 			
 			let dx = ev.data.global.x - this.touchX;
 			let dy = ev.data.global.y - this.touchY;

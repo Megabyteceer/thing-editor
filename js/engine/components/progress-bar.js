@@ -35,9 +35,6 @@ export default class ProgressBar extends Container {
 		this.bar = this.findChildByName('bar');
 		this.cap = this.findChildByName('cap');
 
-		if(this.cap) {
-			this._capBounds = this.cap.getLocalBounds();
-		}
 		this.buttonMode = this.interactive;
 		this.on('pointerdown', this.onDown);
 		this._applyBgHeight();
@@ -79,7 +76,7 @@ export default class ProgressBar extends Container {
 	update() {
 		if(this.scrolling) {
 			if(game.mouse.click) {
-				let p = this.toLocal(game.mouse, null, tmpPoint, true);
+				let p = this.toLocal(game.mouse, game.stage, tmpPoint, true);
 				let q = p.y / this._height;
 				if(q < 0) {
 					q = 0;
