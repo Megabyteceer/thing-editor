@@ -22,14 +22,14 @@ export default class MusicFragment {
 
 	constructor(bgMusic) {
 		if(bgMusic.dynamicPreloading) {
-			this.loop && Lib.preloadSound(this.loop
+			bgMusic.loop && Lib.preloadSound(bgMusic.loop
 				/// #if EDITOR
-				, this
+				, bgMusic
 				/// #endif
 			);
-			this.intro && Lib.preloadSound(this.intro
+			bgMusic.intro && Lib.preloadSound(bgMusic.intro
 				/// #if EDITOR
-				, this
+				, bgMusic
 				/// #endif
 			);
 		}
