@@ -144,7 +144,9 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set wrapMode(v) {
-		this.texture.baseTexture.wrapMode = v;
+		if(this.texture &&this.texture.baseTexture) {
+			this.texture.baseTexture.wrapMode = v;
+		}
 		this._wrapMode = v;
 	}
 
