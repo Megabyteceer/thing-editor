@@ -33,7 +33,6 @@ import game from "thing-editor/js/engine/game.js";
 import SelectionHighlighter from 'thing-editor/js/engine/components/selection-highlighter.js';
 import BgMusic from 'thing-editor/js/engine/components/bg-music.js';
 import Spine from 'thing-editor/js/engine/components/spine.js';
-import ReplaceableSpine from 'thing-editor/js/engine/components/replaceable-spine.js';
 import MobileJoystick from 'thing-editor/js/engine/components/mobile-joystick.js';
 import HTMLOverlay from 'thing-editor/js/engine/components/html-overlay.js';
 import TextInput from 'thing-editor/js/engine/components/text-input.js';
@@ -76,7 +75,6 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[SpawnerRing, "/thing-editor/js/engine/components/spawner-ring.js"],
 		[BgMusic, "/thing-editor/js/engine/components/bg-music.js"],
 		[Spine, "/thing-editor/js/engine/components/spine.js"],
-		[ReplaceableSpine, "/thing-editor/js/engine/components/replaceable-spine.js"],
 		[MobileJoystick, "/thing-editor/js/engine/components/mobile-joystick.js"],
 		[HTMLOverlay, "/thing-editor/js/engine/components/html-overlay.js"],
 		[TextInput, "/thing-editor/js/engine/components/text-input.js"],
