@@ -433,7 +433,6 @@ class Game {
 			__loadOnDemandTexturesFolders:{
 				
 			},
-			localesPath: 'locales',
 			embedLocales: true,
 			__localesNewKeysPrefix: '',
 			__externalLocalesSource: '',
@@ -1525,7 +1524,7 @@ function loadLocalizations() {
 		L.setLanguagesAssets(assets.text);
 		return Promise.resolve(assets.text);
 	} else {
-		return L.loadLanguages(undefined, game.resourcesPath + game.projectDesc.localesPath);
+		return L.loadLanguages(undefined, game.resourcesPath + 'i18n');
 	}
 }
 

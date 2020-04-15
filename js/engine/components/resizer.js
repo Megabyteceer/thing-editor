@@ -1,5 +1,6 @@
 import Container from "./container.js";
 import game from "../game.js";
+import Lib from "../lib.js";
 
 export default class Resizer extends Container {
 
@@ -52,7 +53,7 @@ export default class Resizer extends Container {
 	/// #if EDITOR
 	__beforeSerialization() {
 
-		if(!game.projectDesc.dynamicStageSize) {
+		if(!game.projectDesc.dynamicStageSize && !Lib.__getSceneOrPrefabLibName(this.getRootContainer() || game.currentContainer)) {
 			editor.ui.status.warn("Resizer is not useful if projects dynamicStageSize is not set to true", 32025, this);
 		}
 

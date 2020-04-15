@@ -301,7 +301,7 @@ function getLibRoot(libName) {
 	return path.join(__dirname, '..', libName);
 }
 
-const ASSETS_FOLDERS_NAMES = ['snd', 'img', 'src/scenes', 'src/game-objects', 'scenes', 'prefabs', 'scripts'];
+const ASSETS_FOLDERS_NAMES = ['snd', 'img', 'src/scenes', 'src/game-objects', 'scenes', 'prefabs', 'scripts', 'i18n'];
 function getDataFolders() {
 	let ret = [];
 	if(currentGameDesc.libs) {
@@ -329,10 +329,6 @@ function getDataFolders() {
 			type,
 			path: path.join(currentGameRoot, type)
 		});
-	});
-	ret.push({
-		type: 'i18n',
-		path: path.join(currentGameRoot, currentGameDesc.localesPath)
 	});
 
 	return ret;
@@ -455,7 +451,7 @@ function initWatchers() {
 	}
 
 	for(let assetsFolderData of foldersToWatch) {
-		let assetsFolder = ((assetsFolderData.type === 'i18n' ) ? currentGameDesc.localesPath : assetsFolderData.type) + '/';
+		let assetsFolder = assetsFolderData.type + '/';
 		
 		if(assetsFolderData.type === 'src/game-objects' || assetsFolderData.type ===  'src/scenes') {
 			assetsFolderData.path = assetsFolderData.path.replace(/src(\\|\/)(game-objects|scenes)$/ ,'src');

@@ -13,7 +13,7 @@ const langsEditorWrapperProps = {className:'langs-editor-wrapper'};
 
 let view;
 let switcher;
-let externalLangsData;
+let externalLangsData = {};
 
 
 let ignoreEdit;
@@ -32,34 +32,43 @@ function showTextTable() {
 export default class LanguageView extends React.Component {
 	
 	static loadTextData() {
-		let langsIds = editor.fs.files.i18n.filter((fn) => {
-			return fn.endsWith('.json');
-		}).map((fn) => {
-			return fn.split('/').pop().split('.').shift();
-		});
-		return new Promise((resolve) => {
-			return L.loadLanguages(langsIds, '/games/' + editor.currentProjectDir + editor.projectDesc.localesPath).then((langsData) => {
-				languages = langsData;
-				refreshCachedData();
-				for(let langId in langsData) {
-					let txt = langsData[langId];
-					for(let id in txt) {
-						if(!txt[id]) {
-							editor.ui.status.warn('Untranslated text entry ' + langId + '/' + id, 32017, () => {
-								LanguageView.editKey(id, langId);
-							}); 
-						}
-					}
-				}
-				if(editor.projectDesc.__externalLocalesSource) {
-					L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource, true).then((_externalLangsData) => {
-						externalLangsData = _externalLangsData;
-						refreshCachedData();
-					}).then(resolve);
-				} else {
-					resolve();
+
+		let loadings = editor.fs.filesExt.i18n.map((localesPath) => {
+			let langId = localesPath.name.split('/').pop().split('.').shift();
+			let folder;
+
+			if(localesPath.lib) {
+				folder = '/' + localesPath.lib + '/' + localesPath.name;
+			} else {
+				folder = '/games/' + editor.currentProjectDir + localesPath.name.replace(/\/..\.json$/,'');
+			}
+			let isExternalLanguageData = Boolean(localesPath.lib);
+			return L.loadLanguages(langId, folder, isExternalLanguageData).then((langData) => {
+				if(isExternalLanguageData) {
+					externalLangsData[langId] = Object.assign(externalLangsData[langId] || {}, langData);
 				}
 			});
+		});
+
+		if(editor.projectDesc.__externalLocalesSource) {
+			loadings.push(L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource, true).then((_externalLangsData) => {
+				externalLangsData['en'] = Object.assign(externalLangsData['en'] || {}, _externalLangsData);
+			}));
+		}
+
+		return Promise.all(loadings).then(() => {
+			languages = L.__getTextAssets();
+			refreshCachedData();
+			for(let langId in languages) {
+				let txt = languages[langId];
+				for(let id in txt) {
+					if(!txt[id]) {
+						editor.ui.status.warn('Untranslated text entry ' + langId + '/' + id, 32017, () => {
+							LanguageView.editKey(id, langId);
+						}); 
+					}
+				}
+			}
 		});
 	}
 
@@ -347,12 +356,10 @@ function refreshCachedData() {
 		return (langIdPriority(a) > langIdPriority(b)) ? 1 : -1;
 	});
 	oneLanguageTable = languages[langsIdsList[0]];
-	assert(oneLanguageTable, "No localization data loaded.");
 	idsList = Object.keys(oneLanguageTable);
-	let idsForDropdown = idsList;
-	if(externalLangsData) {
-		idsForDropdown = Object.keys(Object.assign({}, oneLanguageTable ,externalLangsData));
-	}
+	assert(oneLanguageTable, "No localization data loaded.");
+	let idsForDropdown = Object.keys(oneLanguageTable);
+
 	let a = [{name:'none', value:''}];
 	for(let id of idsForDropdown) {
 		a.push({name:id, value:id});
@@ -381,10 +388,23 @@ function onModified() {
 	}
 	
 	_outjump = setTimeout(() => {
-		L.fefreshAllTextEverywhere();
+
+		let projectText = {};
 		for(let id in languages) {
-			let content = L.__serializeLanguage(languages[id]);
-			editor.fs.saveFile(editor.projectDesc.localesPath + '/' + id + '.json', content, true);
+			let l = languages[id];
+			projectText[id] = {};
+			for(let key in l) {
+				if(!L.__isExternalKey(key)) {
+					projectText[id][key] = l[key];
+				}
+			}
+		}
+		L.setLanguagesAssets(projectText);
+
+		L.fefreshAllTextEverywhere();
+		for(let id in projectText) {
+			let content = L.__serializeLanguage(projectText[id]);
+			editor.fs.saveFile('i18n/' + id + '.json', content, true);
 		}
 		_outjump = null;
 	}, 600);

@@ -24,7 +24,7 @@ function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%d' entr
 	/// #if EDITOR
 	if(!currentLanguageTable.hasOwnProperty(id)
 		/// #if EDITOR
-		&& !externalLangsData.hasOwnProperty(id)
+		&& !externalLangsData[currentLanguageId].hasOwnProperty(id)
 		/// #endif
 	) {
 		let fieldName;
@@ -75,12 +75,12 @@ function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%d' entr
 	let ret;
 	if(currentLanguageTable.hasOwnProperty(id)
 	/// #if EDITOR
-	|| externalLangsData.hasOwnProperty(id)
+	|| externalLangsData[currentLanguageId].hasOwnProperty(id)
 	/// #endif
 	) {
 		ret = currentLanguageTable[id]
 		/// #if EDITOR
-			|| externalLangsData[id];
+			|| externalLangsData[currentLanguageId][id];
 		/// #endif
 	} else {
 		ret = id;
@@ -135,37 +135,37 @@ function setCurrentLanguage(languageId) {
 	
 }
 
-L.loadLanguages = function(langsIds, path
+L.loadLanguages = function(langId, path
 /// #if EDITOR	
 	, isExternalLocalesSource
 /// #endif
 ) {
 	assert(path, "Path to i18n data folder expected");
 
-	if(!langsIds) {
+	if(!langId) {
 		assert(langIdToApplyAfterLoading, "For not embedded languages you should call L.setCurrentLanguage('en') before game.init");
-		langsIds = [langIdToApplyAfterLoading];
+		langId = langIdToApplyAfterLoading;
 	}
 
 	return new Promise((resolve) => {
-		Promise.all(langsIds.map((langId) => {
-			let fn = 
+
+		let fn = 
+		/// #if EDITOR	
+		isExternalLocalesSource ? path :
+		/// #endif
+			path + '/' + langId + '.json';
+		return game.fetchResource(fn).then((data) => {
+			data = L._deserializeLanguage(data);
 			/// #if EDITOR	
-			isExternalLocalesSource ? path :
+			if(!isExternalLocalesSource) {
 			/// #endif
-				path + '/' + langId + '.json';
-			return game.fetchResource(fn).then((data) => {
-				/// #if EDITOR	
-				if(!isExternalLocalesSource) {
-				/// #endif
-					languages[langId] = L._deserializeLanguage(data);
-				/// #if EDITOR	
-				} else {
-					externalLangsData = L._deserializeLanguage(data);
-				}
-				/// #endif
-			});
-		})).then(() => {
+				languages[langId] = data;
+			/// #if EDITOR	
+			} else {
+				externalLangsData[langId] = Object.assign(externalLangsData[langId] || {}, data);
+			}
+			/// #endif
+
 			/// #if EDITOR	
 			if(!isExternalLocalesSource) {
 			/// #endif
@@ -173,7 +173,7 @@ L.loadLanguages = function(langsIds, path
 				resolve(languages);
 			/// #if EDITOR	
 			} else {
-				resolve(externalLangsData);
+				resolve(data);
 			}
 			/// #endif
 		});
@@ -190,7 +190,7 @@ L.loadLanguages = function(langsIds, path
 L.has = (id) => {
 	return currentLanguageTable.hasOwnProperty(id)
 	/// #if EDITOR
-	|| externalLangsData.hasOwnProperty(id)
+	|| externalLangsData[currentLanguageId].hasOwnProperty(id)
 	/// #endif
 	;
 };
@@ -316,12 +316,22 @@ L.__serializeLanguage = (langData) => {
 };
 
 L.__isExternalKey = (key) => {
-	return externalLangsData.hasOwnProperty(key);
+	return externalLangsData[currentLanguageId].hasOwnProperty(key);
 };
 
 L.__getTextAssets = () => {
+	let ret = {};
+	for(let langId in languages) {
+		ret[langId] = Object.assign({}, externalLangsData[langId], languages[langId]);
+	}
+	return ret;
+};
+
+L.__getProjectTextAssets = () => {
 	return languages;
 };
+
+
 ///#endif
 
 

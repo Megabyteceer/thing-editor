@@ -43,7 +43,7 @@ Object.defineProperties(Text.prototype, {
 				if(val) {
 					/// #if EDITOR
 					if(!L.has(val)) {
-						editor.ui.status.warn("translatableText refers to not existing key.", 32032, this, 'translatableText');
+						editor.ui.status.warn('translatableText refers to not existing key: "' + val + '"', 32032, this, 'translatableText');
 					}
 					/// #endif
 					this.text = L(val);
