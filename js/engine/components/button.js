@@ -121,7 +121,11 @@ export default class Button extends DSprite {
 	}
 	
 	onDown(ev) {
-		if(game.time === latestClickTime) {
+		if(game.time === latestClickTime
+		/// #if EDITOR
+			&& !game.__paused
+		/// #endif
+		) {
 			return;
 		}
 		latestClickTime = game.time;
