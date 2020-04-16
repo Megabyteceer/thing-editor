@@ -328,7 +328,7 @@ export default class Timeline extends React.Component {
 				nextLeftLabelName = labelName;
 			}
 		}
-		if(nextLeftLabel) {
+		if(nextLeftLabel && game.currentContainer) {
 			let labelShift = time - nextLeftLabel.t;
 
 			for(let m of game.currentContainer.findChildrenByType(MovieClip)) {
