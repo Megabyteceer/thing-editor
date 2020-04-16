@@ -311,7 +311,7 @@ export default class Timeline extends React.Component {
 	}
 
 	_syncOtherMovieclips(time) {
-		if(!game.__EDITOR_mode) {
+		if(!game.__EDITOR_mode || !editor.selection[0]._timelineData) {
 			return;
 		}
 
