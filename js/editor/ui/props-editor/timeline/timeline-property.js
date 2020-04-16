@@ -16,6 +16,7 @@ export default class TimelineProperty extends React.Component {
 
 	componentDidMount() {
 		bingTimelineForward();
+		this._renderWindow();
 	}
 
 	componentWillUnmount() {
@@ -43,19 +44,26 @@ export default class TimelineProperty extends React.Component {
 	}
 	
 	render () {
-		let btn = R.btn(this.state.toggled ? 'Close Timeline (Ctrl+L)' : 'Open timeline (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
-		let timeline;
+		return R.btn(this.state.toggled ? 'Close Timeline (Ctrl+L)' : 'Open timeline (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
+	}
+
+	componentDidUpdate() {
+		this._renderWindow();
+	}
+
+	_renderWindow() {
 		if(this.state.toggled) {
-			timeline = editor.ui.renderWindow('timeline', 'Timeline', 'Timeline',
+			
+			let timeline = editor.ui.renderWindow('timeline', 'Timeline', 'Timeline',
 				R.div({title:''},
 					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
 				), 586, 650, 1270, 150, 1270, 407);
 
 			ReactDOM.render(timeline, document.getElementById('additional-windows-root'));
 		} else {
-			ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
+			ReactDOM.render(R.div(null), document.getElementById('additional-windows-root'));
 		}
-		return btn;
+
 	}
 }
 

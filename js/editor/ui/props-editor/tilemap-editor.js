@@ -23,7 +23,18 @@ export default class tilemapEditorRenderer extends React.Component {
 	}
 	
 	render () {
-		let btn = R.btn(this.state.toggled ? 'Close TileEditor (Ctrl+L)' : 'Open TileEditor (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
+		return R.btn(this.state.toggled ? 'Close TileEditor (Ctrl+L)' : 'Open TileEditor (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
+	}
+
+	componentDidUpdate() {
+		this._renderWindow();
+	}
+	
+	componentDidMount() {
+		this._renderWindow();
+	}
+
+	_renderWindow() {
 		if(this.state.toggled) {
 			let tilemapEditor = editor.ui.renderWindow('tilemap', 'TileEditor', 'Tilemap Editor', React.createElement(TilemapEditor, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 737, 307);
 			Window.bringWindowForward('#window-propsEditor');
@@ -32,7 +43,6 @@ export default class tilemapEditorRenderer extends React.Component {
 		} else {
 			ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
 		}
-		return btn;
 	}
 }
 
