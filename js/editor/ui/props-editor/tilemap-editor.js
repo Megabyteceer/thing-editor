@@ -14,7 +14,7 @@ export default class tilemapEditorRenderer extends React.Component {
 	}
 
 	componentWillUnmount() {
-		ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
+		ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
 	}
 	
 	onToggleClick() {
@@ -29,7 +29,7 @@ export default class tilemapEditorRenderer extends React.Component {
 	componentDidUpdate() {
 		this._renderWindow();
 	}
-	
+
 	componentDidMount() {
 		this._renderWindow();
 	}
@@ -41,7 +41,7 @@ export default class tilemapEditorRenderer extends React.Component {
 			Window.bringWindowForward('#window-tilemap', true);
 			ReactDOM.render(tilemapEditor, document.getElementById('additional-windows-root'));
 		} else {
-			ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
+			ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
 		}
 	}
 }

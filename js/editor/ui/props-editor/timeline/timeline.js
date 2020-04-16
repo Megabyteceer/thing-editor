@@ -32,7 +32,7 @@ let timeDragging;
 
 let recordingIsDisabled;
 let timelineInstance;
-const justModifiedKeyframes = [];
+const justModifiedKeyframes = new Set();
 
 const selectedComponents = [];
 function clearSelection() {
@@ -305,9 +305,33 @@ export default class Timeline extends React.Component {
 	setTime(time, scrollInToView) {
 		timeMarker.setTime(time, scrollInToView);
 		this.applyCurrentTimeValuesToFields(editor.selection, time);
+		
+		// apply same animation state to all movieClips around
+		let nextLeftLabel;
+		let nextLeftLabelName;
 
-		if (game.__EDITOR_mode) {
-			editor.refreshPropsEditor();
+		for(let labelName in editor.selection[0]._timelineData.l) {
+			let label = editor.selection[0]._timelineData.l[labelName];
+			if((label.t <= time) && (!nextLeftLabel || nextLeftLabel.t < label.t)) {
+				nextLeftLabel = label;
+				nextLeftLabelName = labelName;
+			}
+		}
+		if(nextLeftLabel) {
+			let labelShift = time - nextLeftLabel.t;
+
+			for(let m of game.currentContainer.findChildrenByType(MovieClip)) {
+
+				if(m.hasLabel(nextLeftLabelName) && !__getNodeExtendData(m).isSelected) {
+					let time = m._timelineData.l[nextLeftLabelName].t + labelShift;
+					m.__applyCurrentTimeValuesToFields(time);
+				}
+			}
+
+
+			if (game.__EDITOR_mode) {
+				editor.refreshPropsEditor();
+			}
 		}
 	}
 
@@ -317,11 +341,7 @@ export default class Timeline extends React.Component {
 				time = this.getTime();
 			}
 			nodes.some((o) => {
-				if (o._timelineData) {
-					o._timelineData.f.some((f) => {
-						o.__applyValueToMovieClip(f, time);
-					});
-				}
+				o.__applyCurrentTimeValuesToFields(time);
 			});
 		}
 	}
@@ -503,22 +523,23 @@ export default class Timeline extends React.Component {
 	}
 
 	static _justModifiedSelectable(keyFrame) {
-		justModifiedKeyframes.push(keyFrame);
+		justModifiedKeyframes.add(keyFrame);
 	}
 
 	_beforeHistoryJump() {
-		justModifiedKeyframes.length = 0;
+		justModifiedKeyframes.clear();
 	}
 
 	_afterHistoryJump() {
 		setTimeout(() => {
-			if (justModifiedKeyframes.length > 0) {
+			let v = justModifiedKeyframes.values();
+			if (v.length > 0) {
 				clearSelection();
-				for (let c of justModifiedKeyframes) {
+				for (let c of v) {
 					select(c);
 				}
 				if(timeMarker) {
-					this.setTime(justModifiedKeyframes[0].getTime(), true);
+					this.setTime(v[0].getTime(), true);
 				}
 			}
 		}, 0);
@@ -714,6 +735,14 @@ function getFieldByNameOrCreate(o, name) {
 			n: name,
 			t: []
 		};
+
+		/// #if EDITOR
+
+		field.___timelineData = o._timelineData;
+		field.___fieldIndex = o._timelineData.f.length;
+
+		/// #endif
+
 		o._timelineData.f.push(field);
 	}
 	return field;

@@ -10,7 +10,9 @@ let factories = {};
 window.R = factories;
 
 ['div', 'span', 'img', 'button', 'input', 'label', 'b', 'a', 'br', 'hr', 'svg', 'polyline', 'textarea', 'iframe'].some((factoryType) => {
-	factories[factoryType] = React.createFactory(factoryType);
+	factories[factoryType] = (...theArgs) => {
+		return React.createElement.call(this, factoryType, ...theArgs);
+	};
 });
 
 R.fragment = function(...theArgs) {

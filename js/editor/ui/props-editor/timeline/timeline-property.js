@@ -20,7 +20,7 @@ export default class TimelineProperty extends React.Component {
 	}
 
 	componentWillUnmount() {
-		ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
+		ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
 	}
 
 	onToggleClick() { //show/hide timeline window
@@ -61,7 +61,7 @@ export default class TimelineProperty extends React.Component {
 
 			ReactDOM.render(timeline, document.getElementById('additional-windows-root'));
 		} else {
-			ReactDOM.render(R.div(null), document.getElementById('additional-windows-root'));
+			ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
 		}
 
 	}

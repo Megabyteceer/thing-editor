@@ -104,12 +104,22 @@ export default class MovieClip extends DSprite {
 			});
 			labels[key] = {t: labelTime, n: nextList};
 		}
-		return {
+
+		const ret = {
 			l: labels,
 			p: tl.p,
 			d: tl.d,
 			f: fields
 		};
+
+		/// #if EDITOR
+		fields.forEach((f, i) => {
+			f.___timelineData = ret;
+			f.___fieldIndex = i;
+		});
+		/// #endif
+
+		return ret;
 	}
 
 	_disposePlayers() {
@@ -379,16 +389,24 @@ export default class MovieClip extends DSprite {
 		this[field.n] = MovieClip.__getValueAtTime(field, time);
 	}
 
+	__applyCurrentTimeValuesToFields(time) {
+		if (this._timelineData) {
+			for(let f of this._timelineData.f) {
+				this.__applyValueToMovieClip(f, time);
+			}
+		}
+	}
+
 	static __getValueAtTime(field, time) {
 		if(!field.___cacheTimeline) {
 			let fieldPlayer = Pool.create(FieldPlayer);
 			let c = [];
 			field.___cacheTimeline = c;
-			let wholeTimelineData = field.___view.props.owner.props.node._timelineData;
+			let wholeTimelineData = field.___timelineData;
 			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
 			fieldPlayer.reset(true);
 			calculateCacheSegmentForField(fieldPlayer, c);
-			const fieldIndex = field.___view.props.fieldIndex;
+			const fieldIndex = field.___fieldIndex;
 			for(let label in wholeTimelineData.l) {
 				label = wholeTimelineData.l[label];
 				if(!c.hasOwnProperty(label.t)) { //time at this label is not calculated yet

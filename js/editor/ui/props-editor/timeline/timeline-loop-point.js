@@ -13,7 +13,7 @@ export default class TimelineLoopPoint extends React.Component {
 		this.props.keyFrame.___loopPointView = this;
 	}
 
-	componentWillReceiveProps(props) {
+	UNSAFE_componentWillReceiveProps(props) {
 		let t1 = this.props.keyFrame;
 		let t2 = props.keyFrame;
 		if(t1 !== t2) {

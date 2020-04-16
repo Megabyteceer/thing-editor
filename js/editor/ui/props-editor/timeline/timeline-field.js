@@ -15,7 +15,7 @@ export default class FieldsTimeline extends React.Component {
 		props.field.___view = this;
 	}
 
-	componentWillReceiveProps(props) {
+	UNSAFE_componentWillReceiveProps(props) {
 		let k1 = this.props.field;
 		let k2 = props.field;
 		if(k1.___view === this) {

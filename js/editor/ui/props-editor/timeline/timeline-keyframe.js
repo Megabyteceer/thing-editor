@@ -27,7 +27,7 @@ export default class TimelineKeyframe extends React.Component {
 		Timeline._justModifiedSelectable(this);
 	}
 
-	componentWillReceiveProps(props) {
+	UNSAFE_componentWillReceiveProps(props) {
 		let k1 = this.props.keyFrame;
 		let k2 = props.keyFrame;
 		if(k1.___view === this) {
