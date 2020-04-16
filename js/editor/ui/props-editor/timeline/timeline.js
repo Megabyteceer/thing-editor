@@ -120,6 +120,7 @@ export default class Timeline extends React.Component {
 		window.addEventListener('mouseup', this.onMouseUp);
 		editor.history.beforeHistoryJump.add(this._beforeHistoryJump);
 		editor.history.afterHistoryJump.add(this._afterHistoryJump);
+		this._syncOtherMovieclips(this.getTime());
 	}
 
 	static deselectMovieClip(o) {
@@ -304,6 +305,14 @@ export default class Timeline extends React.Component {
 
 	setTime(time, scrollInToView) {
 		timeMarker.setTime(time, scrollInToView);
+		this._syncOtherMovieclips(time);
+	}
+
+	_syncOtherMovieclips(time) {
+		if(!game.__EDITOR_mode) {
+			return;
+		}
+
 		this.applyCurrentTimeValuesToFields(editor.selection, time);
 		
 		// apply same animation state to all movieClips around
@@ -321,13 +330,15 @@ export default class Timeline extends React.Component {
 			let labelShift = time - nextLeftLabel.t;
 
 			for(let m of game.currentContainer.findChildrenByType(MovieClip)) {
-
-				if(m.hasLabel(nextLeftLabelName) && !__getNodeExtendData(m).isSelected) {
-					let time = m._timelineData.l[nextLeftLabelName].t + labelShift;
-					m.__applyCurrentTimeValuesToFields(time);
+				if(!__getNodeExtendData(m).isSelected) {
+					if(m.hasLabel(nextLeftLabelName)) {
+						let time = m._timelineData.l[nextLeftLabelName].t + labelShift;
+						m.__applyCurrentTimeValuesToFields(time);
+					} else {
+						m.resetTimeline();
+					}
 				}
 			}
-
 
 			if (game.__EDITOR_mode) {
 				editor.refreshPropsEditor();

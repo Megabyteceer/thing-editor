@@ -1,5 +1,6 @@
 import Timeline from './timeline.js';
 import Window from '../../window.js';
+import MovieClip from 'thing-editor/js/engine/components/movie-clip/movie-clip.js';
 
 function bingTimelineForward() {
 	Window.bringWindowForward('#window-propsEditor');
@@ -20,7 +21,7 @@ export default class TimelineProperty extends React.Component {
 	}
 
 	componentWillUnmount() {
-		ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
+		this._hideWindow();
 	}
 
 	onToggleClick() { //show/hide timeline window
@@ -61,9 +62,16 @@ export default class TimelineProperty extends React.Component {
 
 			ReactDOM.render(timeline, document.getElementById('additional-windows-root'));
 		} else {
-			ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
+			this._hideWindow();
 		}
+	}
 
+	_hideWindow() {
+		ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
+
+		for(let m of editor.game.currentContainer.findChildrenByType(MovieClip)) {
+			m.resetTimeline();
+		}
 	}
 }
 
