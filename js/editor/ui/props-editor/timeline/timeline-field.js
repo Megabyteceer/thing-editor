@@ -24,19 +24,6 @@ export default class FieldsTimeline extends React.Component {
 		k2.___view = this;
 	}
 
-	applyValueToMovieClip(time) {
-		let f = this.props.field;
-		let o = this.props.owner.props.node;
-		if (f.___cacheTimeline.hasOwnProperty(time)) {
-			o[f.n] = f.___cacheTimeline[time];
-		} else {
-			time = MovieClip._findPreviousKeyframe(f.t, time).t;
-			if (f.___cacheTimeline.hasOwnProperty(time)) {
-				o[f.n] = f.___cacheTimeline[time];
-			}
-		}
-	}
-
 	componentWillUnmount() {
 		if(this.props.field.___view === this) {
 			this.props.field.___view = null;
@@ -118,13 +105,12 @@ export default class FieldsTimeline extends React.Component {
 	}
 
 	onChanged() {
-		Timeline.fieldDataChanged(
-			this.props.field, 
-			this.props.owner.props.node
-		);
+		let node = this.props.owner.props.node;
+		let field = this.props.field;
+		Timeline.fieldDataChanged(field, node);
 		this.forceUpdateDebounced();
 		setTimeout(() => {
-			this.applyValueToMovieClip(this.props.owner.props.owner.getTime());
+			node.__applyValueToMovieClip(field, this.props.owner.props.owner.getTime());
 		}, 1);
 	}
 

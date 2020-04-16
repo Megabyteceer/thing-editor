@@ -305,6 +305,7 @@ export default class Timeline extends React.Component {
 	setTime(time, scrollInToView) {
 		timeMarker.setTime(time, scrollInToView);
 		this.applyCurrentTimeValuesToFields(editor.selection, time);
+
 		if (game.__EDITOR_mode) {
 			editor.refreshPropsEditor();
 		}
@@ -318,7 +319,7 @@ export default class Timeline extends React.Component {
 			nodes.some((o) => {
 				if (o._timelineData) {
 					o._timelineData.f.some((f) => {
-						f.___view.applyValueToMovieClip(time);
+						o.__applyValueToMovieClip(f, time);
 					});
 				}
 			});
@@ -614,7 +615,7 @@ export default class Timeline extends React.Component {
 		let field = getFieldByNameOrCreate(o, fieldName);
 		Timeline.fieldDataChanged(field, o);
 		if(isDelta && keyFrame.___view) {
-			let timelineVal = keyFrame.___view.props.owner.getValueAtTime(keyFrame.t);
+			let timelineVal = MovieClip.__getValueAtTime(field, keyFrame.t);
 			if(!isNaN(timelineVal)) {
 				o[fieldName] = timelineVal;
 			}

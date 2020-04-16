@@ -1,8 +1,6 @@
-import Pool from "thing-editor/js/engine/utils/pool.js";
-import FieldPlayer from "thing-editor/js/engine/components/movie-clip/field-player.js";
 import TimelineKeyframe from "./timeline-keyframe.js";
-import Timeline from "./timeline.js";
 import TimelineLoopPoint from "./timeline-loop-point.js";
+import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
 
 let _scale, _shift;
 const scale = (val) => {
@@ -14,10 +12,6 @@ let heightZoom;
 
 let chartsCache = new WeakMap();
 
-const filterUndefined = (v) => {
-	return v !== undefined;
-};
-
 export default class Line extends React.Component {
 
 	constructor(props) {
@@ -28,14 +22,16 @@ export default class Line extends React.Component {
 	}
 
 	renderKeyframeChart(keyFrame) {
+		let field = this.props.owner.props.field;
+
 		if(keyFrame.n && (keyFrame.t < keyFrame.n.t)) {
 			let ret = [];
 			if(keyFrame.n.m === 2) { //DISCRETE next frame is
 				let startTime = ((keyFrame.t) * widthZoom);
 				let endTime = ((keyFrame.n.t) * widthZoom);
-				let startValue = scale(this.getValueAtTime(keyFrame.t));
+				let startValue = scale(MovieClip.__getValueAtTime(field, (keyFrame.t)));
 				if(!isNaN(startValue)) {
-					let endValue = scale(this.getValueAtTime(keyFrame.n.t));
+					let endValue = scale(MovieClip.__getValueAtTime(field, (keyFrame.n.t)));
 					if(!isNaN(endValue)) {
 						ret.push(startTime + ',' + startValue);
 						ret.push(endTime + ',' + startValue);
@@ -46,7 +42,7 @@ export default class Line extends React.Component {
 			} else {
 				let n = keyFrame.n;
 				for(let i = keyFrame.t + ((keyFrame.t > 0) ? 1 : 0); i <= n.t; i++) {
-					let v = scale(this.getValueAtTime(i));
+					let v = scale(MovieClip.__getValueAtTime(field, i));
 					if(isNaN(v)) {
 						break;
 					}
@@ -56,32 +52,6 @@ export default class Line extends React.Component {
 			return ret.join(' ');
 		}
 		return '';
-	}
-
-	getValueAtTime(time) {
-		let field = this.props.owner.props.field;
-		if(!field.___cacheTimeline) {
-			let fieldPlayer = Pool.create(FieldPlayer);
-			let c = [];
-			field.___cacheTimeline = c;
-			let wholeTimelineData = this.props.owner.props.owner.props.node._timelineData;
-			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
-			fieldPlayer.reset(true);
-			calculateCacheSegmentForField(fieldPlayer, c);
-			for(let label in wholeTimelineData.l) {
-				label = wholeTimelineData.l[label];
-				if(!c.hasOwnProperty(label.t)) { //time at this label is not calculated yet
-					fieldPlayer.goto(label.t, label.n[this.props.owner.props.fieldIndex]);
-					calculateCacheSegmentForField(fieldPlayer, c);
-				}
-			}
-			let filteredValues = c.filter(filterUndefined);
-
-			c.min = Math.min.apply(null, filteredValues);
-			c.max = Math.max.apply(null, filteredValues);
-			Pool.dispose(fieldPlayer);
-		}
-		return field.___cacheTimeline[time];
 	}
 
 	renderKeyframe(keyFrame) {
@@ -117,7 +87,7 @@ export default class Line extends React.Component {
 		width *= widthZoom;
 		let height = heightZoom;
 		
-		this.getValueAtTime(lastKeyframe.t); //cache timeline's values
+		MovieClip.__getValueAtTime(field, lastKeyframe.t); //cache timeline's values
 		_scale = field.___cacheTimeline.max - field.___cacheTimeline.min;
 		if(_scale === 0) {
 			_scale = 1;
@@ -160,26 +130,6 @@ export default class Line extends React.Component {
 		);
 	}
 }
-
-const calculateCacheSegmentForField = (fieldPlayer, c) => {
-	fieldPlayer.__doNotCallActions = true;
-	let time;
-	let i = 0;
-	let fields = fieldPlayer.timeline;
-	let limit = fields[fields.length-1].t;
-	while(!c.hasOwnProperty(fieldPlayer.time)) {
-		time = fieldPlayer.time;
-		if(time > limit) {
-			break;
-		}
-		fieldPlayer.update(true);
-		c[time] = fieldPlayer.val;
-		assert(i++ < 100000, 'Timeline values cache calculation looped and failed.');
-	}
-	fieldPlayer.__doNotCallActions = false;
-};
-
-
 
 class PlayingDisplay extends React.Component {
 	componentDidMount() {

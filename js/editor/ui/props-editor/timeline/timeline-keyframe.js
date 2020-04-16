@@ -121,7 +121,9 @@ export default class TimelineKeyframe extends React.Component {
 
 		let loopArrow;
 		let randomMeter;
-		const p = this.props.owner.props.owner.props.owner.props;
+		let props = this.props.owner.props.owner.props;
+		const field = props.field;
+		const p = props.owner.props;
 		const width = p.widthZoom;
 		const height = p.heightZoom - 16;
 		if(keyFrame.j !== keyFrame.t) {
@@ -148,7 +150,7 @@ export default class TimelineKeyframe extends React.Component {
 			className += ' timeline-keyframe-selected';
 		}
 
-		let isUnreachable = (typeof keyFrame.v === "number") && isNaN(this.props.owner.getValueAtTime(keyFrame.t));
+		let isUnreachable = (typeof keyFrame.v === "number") && isNaN(MovieClip.__getValueAtTime(field, keyFrame.t));
 		if(isUnreachable) {
 			className += ' timeline-keyframe-unreachable';
 		}

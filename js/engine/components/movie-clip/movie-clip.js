@@ -375,6 +375,45 @@ export default class MovieClip extends DSprite {
 		return this.___previewFrame;
 	}
 
+	__applyValueToMovieClip(field, time) {
+		this[field.n] = MovieClip.__getValueAtTime(field, time);
+	}
+
+	static __getValueAtTime(field, time) {
+		if(!field.___cacheTimeline) {
+			let fieldPlayer = Pool.create(FieldPlayer);
+			let c = [];
+			field.___cacheTimeline = c;
+			let wholeTimelineData = field.___view.props.owner.props.node._timelineData;
+			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
+			fieldPlayer.reset(true);
+			calculateCacheSegmentForField(fieldPlayer, c);
+			const fieldIndex = field.___view.props.fieldIndex;
+			for(let label in wholeTimelineData.l) {
+				label = wholeTimelineData.l[label];
+				if(!c.hasOwnProperty(label.t)) { //time at this label is not calculated yet
+					fieldPlayer.goto(label.t, label.n[fieldIndex]);
+					calculateCacheSegmentForField(fieldPlayer, c);
+				}
+			}
+			let filteredValues = c.filter(filterUndefined);
+
+			c.min = Math.min.apply(null, filteredValues);
+			c.max = Math.max.apply(null, filteredValues);
+			Pool.dispose(fieldPlayer);
+		}
+		if(field.___cacheTimeline.hasOwnProperty(time)) {
+			return field.___cacheTimeline[time];
+		} else {
+			let prevKeyframe = MovieClip._findPreviousKeyframe(field.t, time);
+			time = prevKeyframe.t;
+			if (field.___cacheTimeline.hasOwnProperty(time)) {
+				return field.___cacheTimeline[time];
+			}
+			return prevKeyframe.v;
+		}
+	}
+
 	/// #endif
 }
 
@@ -382,6 +421,30 @@ export default class MovieClip extends DSprite {
 let deserializeCache = new WeakMap();
 
 /// #if EDITOR
+
+const filterUndefined = (v) => {
+	return v !== undefined;
+};
+
+const calculateCacheSegmentForField = (fieldPlayer, cacheArray) => {
+	fieldPlayer.__doNotCallActions = true;
+	let time;
+	let i = 0;
+	let fields = fieldPlayer.timeline;
+	let limit = fields[fields.length-1].t;
+	while(!cacheArray.hasOwnProperty(fieldPlayer.time)) {
+		time = fieldPlayer.time;
+		if(time > limit) {
+			break;
+		}
+		fieldPlayer.update(true);
+		cacheArray[time] = fieldPlayer.val;
+		assert(i++ < 100000, 'Timeline values cache calculation looped and failed.');
+	}
+	fieldPlayer.__doNotCallActions = false;
+};
+
+
 
 MovieClip.prototype.play.___EDITOR_isGoodForChooser = true;
 MovieClip.prototype.stop.___EDITOR_isGoodForChooser = true;
