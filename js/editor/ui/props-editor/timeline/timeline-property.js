@@ -68,7 +68,7 @@ export default class TimelineProperty extends React.Component {
 
 	_hideWindow() {
 		ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
-		if(editor.game.currentContainer) {
+		if(editor.game.currentContainer && editor.game.__EDITOR_mode) {
 			for(let m of editor.game.currentContainer.findChildrenByType(MovieClip)) {
 				m.resetTimeline();
 			}
