@@ -16,7 +16,7 @@ export default class TimelineLoopPoint extends React.Component {
 	componentWillReceiveProps(props) {
 		let t1 = this.props.keyFrame;
 		let t2 = props.keyFrame;
-		if(t1.j !== t2.j) {
+		if(t1 !== t2) {
 			delete t1.___loopPointView;
 			t2.___loopPointView = this;
 			Timeline._justModifiedSelectable(this);
