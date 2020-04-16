@@ -132,14 +132,15 @@ export default class Timeline extends React.Component {
 				}
 			}
 		}
-		if(game.__EDITOR_mode) {
-			o.resetTimeline();
-		}
 	}
 
 	static init() {
 		editor.beforePropertyChanged.add(Timeline.onBeforePropertyChanged);
 		editor.afterPropertyChanged.add(Timeline.onAfterPropertyChanged);
+	}
+
+	UNSAFE_componentWillReceiveProps() { 
+		this._syncOtherMovieclips(this.getTime());
 	}
 
 	componentWillUnmount() {
@@ -306,6 +307,7 @@ export default class Timeline extends React.Component {
 	setTime(time, scrollInToView) {
 		timeMarker.setTime(time, scrollInToView);
 		this._syncOtherMovieclips(time);
+		editor.refreshPropsEditor();
 	}
 
 	_syncOtherMovieclips(time) {
@@ -338,10 +340,6 @@ export default class Timeline extends React.Component {
 						m.resetTimeline();
 					}
 				}
-			}
-
-			if (game.__EDITOR_mode) {
-				editor.refreshPropsEditor();
 			}
 		}
 	}
