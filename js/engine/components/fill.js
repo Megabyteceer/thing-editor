@@ -98,7 +98,7 @@ export default class Fill extends PIXI.Mesh {
 			this.xShift += this.xShiftSpeed;
 			if (this._xShift > 2) {
 				this._xShift -= 2;
-			} else if (this._xShift < 0) {
+			} else if (this._xShift < -2) {
 				this._xShift += 2;
 			}
 		}
