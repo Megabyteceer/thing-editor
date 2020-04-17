@@ -1365,7 +1365,12 @@ if(window.cordova) {
 /// #if DEBUG
 if (PIXI.utils.isMobile.any) {
 	window.addEventListener('error', function (msg, url, line, col, error) {
-		game.__showDebugError(JSON.stringify({msg, url, line, col, error}));
+		let txt = JSON.stringify({msg, url, line, col, error});
+		if(game) {
+			game.__showDebugError(txt);
+		} else {
+			alert(txt);
+		}
 	});
 }
 /// #endif

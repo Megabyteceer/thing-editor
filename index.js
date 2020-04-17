@@ -113,7 +113,11 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 
 
 	let fetch = require('node-fetch');
-	fetch(req.body.url, req.body.options).then((response) => response.text())
+	fetch(req.body.url, req.body.options)
+		.then((response) => {
+			res.set('digest', response.headers.get('digest'));
+			return response.text();
+		})
 		.then((data) => {
 			if(typeof data !== 'string') {
 				data = JSON.stringify(data);

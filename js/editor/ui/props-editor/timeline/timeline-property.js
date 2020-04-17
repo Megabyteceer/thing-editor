@@ -1,5 +1,6 @@
 import Timeline from './timeline.js';
 import Window from '../../window.js';
+import MovieClip from 'thing-editor/js/engine/components/movie-clip/movie-clip.js';
 
 function bingTimelineForward() {
 	Window.bringWindowForward('#window-propsEditor');
@@ -16,10 +17,11 @@ export default class TimelineProperty extends React.Component {
 
 	componentDidMount() {
 		bingTimelineForward();
+		this._renderWindow();
 	}
 
 	componentWillUnmount() {
-		ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
+		this._hideWindow();
 	}
 
 	onToggleClick() { //show/hide timeline window
@@ -43,19 +45,34 @@ export default class TimelineProperty extends React.Component {
 	}
 	
 	render () {
-		let btn = R.btn(this.state.toggled ? 'Close Timeline (Ctrl+L)' : 'Open timeline (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
-		let timeline;
+		return R.btn(this.state.toggled ? 'Close Timeline (Ctrl+L)' : 'Open timeline (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
+	}
+
+	componentDidUpdate() {
+		this._renderWindow();
+	}
+
+	_renderWindow() {
 		if(this.state.toggled) {
-			timeline = editor.ui.renderWindow('timeline', 'Timeline', 'Timeline',
+			
+			let timeline = editor.ui.renderWindow('timeline', 'Timeline', 'Timeline',
 				R.div({title:''},
 					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
 				), 586, 650, 1270, 150, 1270, 407);
 
 			ReactDOM.render(timeline, document.getElementById('additional-windows-root'));
 		} else {
-			ReactDOM.render(R.div(), document.getElementById('additional-windows-root'));
+			this._hideWindow();
 		}
-		return btn;
+	}
+
+	_hideWindow() {
+		ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
+		if(editor.game.currentContainer && editor.game.__EDITOR_mode) {
+			for(let m of editor.game.currentContainer.findChildrenByType(MovieClip)) {
+				m.resetTimeline();
+			}
+		}
 	}
 }
 

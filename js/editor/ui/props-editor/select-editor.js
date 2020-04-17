@@ -37,7 +37,7 @@ class SelectEditor extends React.Component {
 
 	_hideList() {
 		if(openedList === this) {
-			ReactDOM.render(R.fragment, document.getElementById('select-lists-root'));
+			ReactDOM.render(R.fragment(), document.getElementById('select-lists-root'));
 			openedList = null;
 		}
 	}
@@ -175,31 +175,31 @@ class SelectEditor extends React.Component {
 				}, 1);
 			}
 
-			setTimeout(() => {
-				let b = ReactDOM.findDOMNode(this.refs.body);
-				if(b) {
-					b = b.getBoundingClientRect();
-					let l = ReactDOM.findDOMNode(this.refs.list);
-					if(b.top > window.innerHeight * 0.6) {
-						b.y -= l.clientHeight;
-					}
-					if(l) {
-						l.style.left = b.left + 'px';
-						l.style.top = b.top + 'px';
-					}
-				}
-
-			}, 0);
-
 			this.selectedItem = item;
-			openedList = this;
 
-			ReactDOM.render( R.div({
-				className: 'select-editor-list',
-				ref: 'list'
-			}, filterInput, a.map(this.renderItem)), document.getElementById('select-lists-root'));
+			setTimeout(() => {
+				setTimeout(() => {
+					let b = ReactDOM.findDOMNode(this.refs.body);
+					if(b) {
+						b = b.getBoundingClientRect();
+						let l = document.getElementById('select-list-content');
+						if(b.top > window.innerHeight * 0.6) {
+							b.y -= l.clientHeight;
+						}
+						if(l) {
+							l.style.left = b.left + 'px';
+							l.style.top = b.top + 'px';
+						}
+					}
+				}, 0);
+				openedList = this;
+
+				ReactDOM.render( R.div({
+					className: 'select-editor-list',
+					id: 'select-list-content',
+				}, filterInput, a.map(this.renderItem)), document.getElementById('select-lists-root'));
+			}, 0);
 		}
-
 
 		if (!item) {
 			item = list[0];

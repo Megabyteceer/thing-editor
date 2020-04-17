@@ -51,6 +51,12 @@ export default class Trigger extends Container {
 		this._state = true;
 		this.interactiveChildren = true;
 		this.triggering = true;
+
+		/// #if EDITOR
+		if(this.pow === 1 && game.__paused) {
+			this.updatePhase();
+		}
+		/// #endif
 	}
 
 	set state (val) {
@@ -72,6 +78,12 @@ export default class Trigger extends Container {
 		}
 		this.triggering = true;
 		this.forAllChildren(processOnDisable);
+
+		/// #if EDITOR
+		if(this.pow === 1 && game.__paused) {
+			this.updatePhase();
+		}
+		/// #endif
 	}
 	
 	toggle() {

@@ -26,7 +26,7 @@ export default class RectangleEditor extends React.Component {
 		this.checkNullability();
 	}
 
-	componentWillReceiveProps() {
+	UNSAFE_componentWillReceiveProps() {
 		if(!this.timeout) {
 			this.timeout = setTimeout(() => {
 				this.checkNullability();

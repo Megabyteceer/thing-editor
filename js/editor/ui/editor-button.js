@@ -58,7 +58,7 @@ class EditorButton extends React.Component {
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 	
-	componentWillReceiveProps(props) {
+	UNSAFE_componentWillReceiveProps(props) {
 		if(this.props.hotkey !== props.hotkey) {
 			if(!props.hotkey && this.props.hotkey) {
 				this.unregisterHotkey();

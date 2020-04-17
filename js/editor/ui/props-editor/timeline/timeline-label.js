@@ -26,7 +26,7 @@ export default class TimeLabel extends React.Component {
 		this.props.label.___view = this;
 	}
 
-	componentWillReceiveProps(props) {
+	UNSAFE_componentWillReceiveProps(props) {
 
 		let k1 = this.props.label;
 		let k2 = props.label;
