@@ -16,16 +16,19 @@ export default class FullScreen {
 	}
 
 	static _openInner() {
-		game._fireNextOnResizeImmediately();
-		if (elem.requestFullscreen) {
-			elem.requestFullscreen();
-		} else if (elem.mozRequestFullScreen) {
-			elem.mozRequestFullScreen();
-		} else if (elem.webkitRequestFullscreen) {
-			elem.webkitRequestFullscreen();
-		} else if (elem.msRequestFullscreen) {
-			elem.msRequestFullscreen();
-		}
+		try {
+			if (elem.requestFullscreen) {
+				elem.requestFullscreen();
+			} else if (elem.mozRequestFullScreen) {
+				elem.mozRequestFullScreen();
+			} else if (elem.webkitRequestFullscreen) {
+				elem.webkitRequestFullscreen();
+			} else if (elem.msRequestFullscreen) {
+				elem.msRequestFullscreen();
+			}
+			game._fireNextOnResizeImmediately();
+		
+		} catch(err) {} // eslint-disable-line no-empty
 	}
 
 	static toggle() {
