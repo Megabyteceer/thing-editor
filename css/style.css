@@ -1068,6 +1068,7 @@ input{
 	box-sizing: content-box;
 	text-align: left;
 	padding-bottom: 3px;
+	min-width: 700px;
 	height: calc(100% - 40px);
 	position: absolute;
 	overflow: auto;
@@ -1393,6 +1394,8 @@ input{
 }
 #window-texteditor .props-group-body {
 	padding: 0;
+	transform-origin: top right;
+	transform: scale(0.98);
 }
 
 .textures-viewer-image {

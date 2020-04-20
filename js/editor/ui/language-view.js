@@ -15,6 +15,7 @@ const langsEditorWrapperProps = {className:'langs-editor-wrapper'};
 let view;
 let switcher;
 
+let libSourceFolders = {};
 let langsByLib = {};
 let currentLibName = 'project-locales';
 let localesSourcesList;
@@ -43,6 +44,9 @@ export default class LanguageView extends React.Component {
 
 			if(localesPath.lib) {
 				folder = '/' + localesPath.lib + '/' + localesPath.name;
+				let a = localesPath.name.split('/');
+				a.pop();
+				libSourceFolders[localesPath.lib] = a.join('/');
 			} else {
 				folder = '/games/' + editor.currentProjectDir + localesPath.name.replace(/\/..\.json$/,'');
 			}
@@ -187,7 +191,6 @@ class LanguageTableEditor extends React.Component {
 					lang[langId] = '';
 				}
 				onModified();
-				refreshCachedData();
 				this.forceUpdate();
 			}
 		});
@@ -252,7 +255,6 @@ class LanguageTableEditor extends React.Component {
 				}
 			
 				onModified();
-				refreshCachedData();
 				this.forceUpdate();
 			
 				if(editor.selection.length === 1) {
@@ -307,7 +309,6 @@ class LanguageTableEditor extends React.Component {
 									delete l[currentKey];
 								}
 								onModified();
-								refreshCachedData();
 								this.forceUpdate();
 							});
 						}
@@ -334,7 +335,6 @@ class LanguageTableEditor extends React.Component {
 									delete l[currentKey];
 								}
 								onModified();
-								refreshCachedData();
 								this.forceUpdate();
 							}
 						});
@@ -358,7 +358,7 @@ class LanguageTableEditor extends React.Component {
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
 			R.btn('+ Add language...', this.onAddNewLanguageClick),
 			R.input(this.searchInputProps),
-			R.div(null, 'Localization data source: ',
+			(localesSourcesList.length > 1) ? R.div(null, 'Localization data source: ',
 				React.createElement(SelectEditor, {onChange: (ev) => {
 					if(ev.target.value !== currentLibName) {
 						currentLibName = ev.target.value;
@@ -369,7 +369,7 @@ class LanguageTableEditor extends React.Component {
 				}, value: currentLibName, select: localesSourcesList.map((s) => {
 					return {name: s, value: s};
 				})})
-			),
+			) : undefined,
 			R.div(langsEditorWrapperProps, 
 				header,
 				R.div(tableBodyProps,
@@ -384,15 +384,12 @@ function refreshCachedData() {
 
 	languagesMerged = {};
 
-	if(editor.projectDesc.__externalLocalesSource) {
-		languagesMerged.en = langsByLib[editor.projectDesc.__externalLocalesSource].en;
-	}
-
 	if(editor.projectDesc.libs) {
 		localesSourcesList = editor.projectDesc.libs.filter(libName => langsByLib[libName]);
 	} else {
 		localesSourcesList = [];
 	}
+
 	localesSourcesList.push('project-locales');
 	for(let libName of localesSourcesList) {
 		let libLang = langsByLib[libName];
@@ -402,6 +399,13 @@ function refreshCachedData() {
 			}
 		}
 	}
+
+	if(editor.projectDesc.__externalLocalesSource) {
+		for(let langId in langsByLib[editor.projectDesc.__externalLocalesSource]) {
+			languagesMerged[langId] = Object.assign(languagesMerged[langId] || {}, langsByLib[editor.projectDesc.__externalLocalesSource][langId]);
+		}
+	}
+
 	currentLanguage = langsByLib[currentLibName];
 
 	L.setLanguagesAssets(languagesMerged);
@@ -443,31 +447,25 @@ function onModified() {
 	}
 	
 	_outjump = setTimeout(() => {
-
-		refreshCachedData();
-
 		L.fefreshAllTextEverywhere();
 
 		for(let id in langsByLib[currentLibName]) {
 			let content = L.__serializeLanguage(langsByLib[currentLibName][id]);
 
-
-			check saving
-
-			check saving of external src
 			let fileName;
 			if(currentLibName.endsWith('.json')) {
 				fileName = currentLibName;
 			} else if (currentLibName === 'project-locales'){
 				fileName = 'i18n/' + '' + id + '.json';
 			} else {
-				fileName = currentLibName + '/i18n/' + id + '.json';
+				fileName = libSourceFolders[currentLibName] + '/' + id + '.json';
 			}
 
-			editor.fs.saveFile(fileName, content, true);
+			editor.fs.saveFile(fileName, content, true, false);
 		}
 		_outjump = null;
 	}, 600);
+	refreshCachedData();
 }
 
 function langIdPriority(l) {
