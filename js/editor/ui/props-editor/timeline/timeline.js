@@ -658,7 +658,7 @@ export default class Timeline extends React.Component {
 		let s = Window.all.timeline.state.renderedScale;
 		
 		let x = ev.clientX - 110 * s - b.x - draggingXShift;
-		return Math.max(0, Math.round((x + tl.scrollLeft) / widthZoom / s));
+		return Math.max(0, Math.round((x + tl.scrollLeft * s) / widthZoom / s));
 	}
 
 	static onAutoSelect(selectPath) {
