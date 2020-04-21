@@ -284,7 +284,7 @@ L.__serializeLanguage = (langData) => {
 };
 
 L.__getTextAssets = () => {
-	languages;
+	return languages;
 };
 
 ///#endif
