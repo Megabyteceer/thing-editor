@@ -955,6 +955,26 @@ export default class Lib {
 			p = p.parent;
 		}
 	}
+
+	static __getSceneOrPrefabLibName(o) {
+		if(o instanceof Scene) {
+			let fileName = 'scenes/' + o.name + '.scene.json';
+			let f = editor.fs.filesExt.scenes.find((f) => {
+				return f.name === fileName;
+			});
+			if(f) {
+				return f.lib;
+			}
+		} else {
+			let fileName = 'prefabs/' +o.name + '.prefab.json';
+			let f = editor.fs.filesExt.prefabs.find((f) => {
+				return f.name === fileName;
+			});
+			if(f) {
+				return f.lib;
+			}
+		}
+	}
 	
 	static __serializeObject(o) {
 		

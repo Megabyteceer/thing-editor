@@ -1044,12 +1044,19 @@ input{
 }
 
 .langs-editor-wrapper {
-	height: calc(100% - 60px);
+	height: calc(100% - 95px);
 	overflow-x: auto;
 	overflow-y: hidden;
 	position: absolute;
 	left: 4px;
 	right: 4px;
+}
+
+.langs-editor .select-editor {
+	background: #ffffff;
+	margin: 10px;
+	display: inline-block;
+	width: 300px;
 }
 
 .language-search-input {
@@ -1061,6 +1068,7 @@ input{
 	box-sizing: content-box;
 	text-align: left;
 	padding-bottom: 3px;
+	min-width: 700px;
 	height: calc(100% - 40px);
 	position: absolute;
 	overflow: auto;
@@ -1386,6 +1394,8 @@ input{
 }
 #window-texteditor .props-group-body {
 	padding: 0;
+	transform-origin: top right;
+	transform: scale(0.98);
 }
 
 .textures-viewer-image {
