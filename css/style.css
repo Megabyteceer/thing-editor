@@ -272,6 +272,10 @@ button {
 	height: 100%;
 }
 
+#is-mobile-checkbox:checked {
+	outline: 1px solid #f00;
+}
+
 .editor-viewport-panel{text-align: center;width: 80px;}
 
 .editor-viewport-wrapper{

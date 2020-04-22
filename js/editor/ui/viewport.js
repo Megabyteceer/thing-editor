@@ -47,6 +47,7 @@ export default class Viewport extends React.Component {
 		this.onOneStepClick = this.onOneStepClick.bind(this);
 		this.onHelpersToggle = this.onHelpersToggle.bind(this);
 		this.helpersHidden = false;
+		game.isMobile.any = editor.settings.setItem('mobileMode', game.isMobile.any);
 	}
 
 	onHelpersToggle() {
@@ -298,6 +299,10 @@ export default class Viewport extends React.Component {
 					document.querySelector('#helpers-checkbox').click();
 				}, undefined, "hidden", 1072),
 				R.input({id:"helpers-checkbox", className:'clickable', type:'checkbox', title: "Hide helpers (Ctrl + H)", onChange: this.onHelpersToggle, defaultChecked:this.helpersHidden}),
+				R.input({id:"is-mobile-checkbox", className:'clickable', type:'checkbox', title: "game.isMobile.any", onChange: (ev) => {
+					game.isMobile.any = ev.target.checked;
+					editor.settings.setItem('mobileMode', game.isMobile.any);
+				}, defaultChecked:game.isMobile.any}),
 
 				languagePanel,
 				panel
