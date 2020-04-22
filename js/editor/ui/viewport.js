@@ -47,7 +47,7 @@ export default class Viewport extends React.Component {
 		this.onOneStepClick = this.onOneStepClick.bind(this);
 		this.onHelpersToggle = this.onHelpersToggle.bind(this);
 		this.helpersHidden = false;
-		game.isMobile.any = editor.settings.setItem('mobileMode', game.isMobile.any);
+		game.isMobile.any = editor.settings.getItem('mobileMode', game.isMobile.any);
 	}
 
 	onHelpersToggle() {
