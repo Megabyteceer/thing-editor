@@ -1,6 +1,7 @@
 import game from "../game.js";
 import Lib from "../lib.js";
 import BgMusic from "../components/bg-music.js";
+import MusicFragment from "./music-fragment.js";
 
 const MIN_VOL_THRESHOLD = 0.005;
 const MIN_VOL_ENABLE = 0.05;
@@ -131,6 +132,7 @@ export default class Sound {
 
 	/// #if EDITOR
 	static __resetSounds() {
+		MusicFragment.__stopAll();
 		for(let s of Lib.__soundsList) {
 			let snd = Lib.getSound(s.name);
 			snd.off('fade');
