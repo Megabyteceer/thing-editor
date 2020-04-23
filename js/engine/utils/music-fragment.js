@@ -174,7 +174,10 @@ export default class MusicFragment {
 		for(let h in allActiveFragments) {
 			if(!hashesToPlay.hasOwnProperty(h)) {
 				allActiveFragments[h]._fadeToVol = 0;
-				allActiveFragments[h].owner = null;
+				if (allActiveFragments[h].owner) {
+					allActiveFragments[h]._fadeSpeed = allActiveFragments[h].owner.fade;
+					allActiveFragments[h].owner = null;
+				}
 			}
 		}
 	}
