@@ -131,7 +131,7 @@ export default class Editor {
 		await editor.askSceneToSaveIfNeed();
 		
 		if(location.search && location.search.indexOf('?buildProjectAndExit=') === 0) {
-			editor.buildProjectAndExit = location.search.replace('?buildProjectAndExit=', '');
+			editor.buildProjectAndExit = JSON.parse(decodeURIComponent(location.search.replace('?buildProjectAndExit=', '')));
 			if(editor.buildProjectAndExit) {
 				window.addEventListener('error', function (errEv) {
 					ws.exitWithResult(undefined, "UNCAUGHT ERROR: " + JSON.stringify(errEv, ["message", "filename", "lineno", "colno", "stack"]));
@@ -143,7 +143,7 @@ export default class Editor {
 				};
 			}
 		}
-		let lastOpenedProject = editor.buildProjectAndExit || editor.settings.getItem('last-opened-project');
+		let lastOpenedProject = editor.buildProjectAndExit ? editor.buildProjectAndExit.projectName : editor.settings.getItem('last-opened-project');
 		if(!dir) {
 			dir = lastOpenedProject;
 		}
@@ -230,7 +230,7 @@ export default class Editor {
 
 	testProject() {
 		return new Promise(async (resolve) => {
-			if(editor.__preBuildAutoTest) {
+			if(editor.__preBuildAutoTest && (!editor.buildProjectAndExit || !editor.buildProjectAndExit.skipTests)) {
 				let sceneName = editor.currentSceneName;
 				await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
 				if(game.__EDITOR_mode) {
@@ -883,6 +883,13 @@ export default class Editor {
 	
 	build(debug) {
 		return new Promise((resolve) => {
+			if(editor.buildProjectAndExit) {
+				if((debug && editor.buildProjectAndExit.skipDebugBuild) ||
+					(!debug && editor.buildProjectAndExit.skipReleaseBuild)) {
+					resolve();
+					return;
+				}
+			}
 			editor.askSceneToSaveIfNeed().then(() => {
 				build.build(debug).then(resolve);
 			});

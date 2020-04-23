@@ -251,7 +251,12 @@ while(params.length) {
 		openChrome = false;
 		break;
 	case 'build':
-		buildProjectAndExit = params.shift();
+		buildProjectAndExit = {
+			projectName: params.shift(),
+			skipTests: process.argv.indexOf('skip-tests') > 0,
+			skipDebugBuild: process.argv.indexOf('skip-debug-build') > 0,
+			skipReleaseBuild: process.argv.indexOf('skip-release-build') > 0
+		};
 		process.env.buildProjectAndExit = buildProjectAndExit;
 	}
 }
@@ -266,7 +271,7 @@ if(openChrome) {
 
 	let editorURL = 'http://127.0.0.1:' + PORT + '/thing-editor';
 	if(buildProjectAndExit) {
-		editorURL += '?buildProjectAndExit=' + encodeURIComponent(buildProjectAndExit);
+		editorURL += '?buildProjectAndExit=' + encodeURIComponent(JSON.stringify(buildProjectAndExit));
 		chromeConnectTimeout = setTimeout(() => {
 			console.error('ERROR: chrome connection timeout.');
 			process.exit(1);

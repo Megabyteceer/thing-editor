@@ -192,7 +192,7 @@ class Modal extends React.Component {
 					message = txt.join('\n');
 				} catch (er) {} // eslint-disable-line no-empty
 			}
-			ws.exitWithResult(undefined, (editor.buildProjectAndExit ? ('Build failed: ' + editor.buildProjectAndExit + '\n') : '') + message + '; Error code: ' + errorCode);
+			ws.exitWithResult(undefined, (editor.buildProjectAndExit ? ('Build failed: ' + editor.buildProjectAndExit.projectName + '\n') : '') + message + '; Error code: ' + errorCode);
 		} else {
 			if(game.stage) {
 				setTimeout(editor.ui.viewport.stopExecution, 0);
