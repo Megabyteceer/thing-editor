@@ -31,6 +31,13 @@ const getValueByPath = (valuePath, this_
 	}
 	let i = 1;
 	let fOwner;
+
+	/// #if EDITOR
+	if(!c && isLatestNodeGetting) {
+		return c;
+	}
+	/// #endif
+
 	while (i < path.length) {
 		let n = path[i];
 		fOwner = c;
