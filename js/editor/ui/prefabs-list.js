@@ -7,6 +7,7 @@ import Container from "thing-editor/js/engine/components/container.js";
 import ClassesView from "./classes-view.js";
 import OrientationTrigger from "thing-editor/js/engine/components/orientation-trigger.js";
 import getValueByPath from "thing-editor/js/engine/utils/get-value-by-path.js";
+import {_searchByRegexpOrText} from "../utils/editor-utils.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -254,7 +255,7 @@ export default class PrefabsList extends React.Component {
 
 		for (let prefabName of prefabsNames) {
 			let item = scenePrefabs[prefabName];
-			if(!this.state.filter || this._searchByRegexpOrText(prefabName, this.state.filter) >= 0 || (this.state.selectedItem === item)) {
+			if(_searchByRegexpOrText(prefabName, this.state.filter) || (this.state.selectedItem === item)) {
 				prefabs.push(this.renderItem(prefabName, item));
 			}
 		}
@@ -271,15 +272,7 @@ export default class PrefabsList extends React.Component {
 			R.div(bodyProps, prefabs)
 		);
 	}
-	
-	_searchByRegexpOrText(source, query) {
-		try {
-			return source.search(query);
-		} catch(er) {
-			return source.indexOf(query);
-		}
-	}
-	
+
 	static acceptPrefabEdition(oneStepOnly = false) {
 		if(document.activeElement && document.activeElement.tagName === "INPUT") {
 			document.activeElement.blur();

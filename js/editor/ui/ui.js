@@ -144,8 +144,8 @@ class UI extends React.Component {
 				ref: this.propsEditorRef,
 				onChange: editor.onSelectedPropsChange
 			}), 255, 35, 250, 250, 250, 500),
-			renderWindow('classesLib', 'Classes', 'Classes', React.createElement(ClassesView, {ref: this.classesListRef}), 0, 550, 250, 150, 250, 470),
-			renderWindow('prefabsList', 'Prefabs', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 255, 550, 260, 150, 250, 470),
+			renderWindow('classesLib', 'Classes', 'Classes', React.createElement(ClassesView, {ref: this.classesListRef}), 0, 550, 320, 150, 320, 470),
+			renderWindow('prefabsList', 'Prefabs', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 325, 550, 260, 150, 250, 470),
 			renderWindow('scenesList', 'Scenes', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
 			renderWindow('soundsList', 'Sounds', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1194, 750, 200, 100, 360, 260),
 			

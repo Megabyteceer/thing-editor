@@ -433,6 +433,18 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 	};
 };
 
+function _searchByRegexpOrText(source, query) {
+	if(!query) return true;
+	try {
+		return source.search(query) >= 0;
+	} catch(er) {
+		return source.indexOf(query) >= 0;
+	}
+}
+
+export {_searchByRegexpOrText};
+
+
 export default {
 	protectAccessToSceneNode: (o, debugName) => {
 		o.remove = () => {

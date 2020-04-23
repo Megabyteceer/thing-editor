@@ -1377,13 +1377,17 @@ input{
 	padding-right: 110px;
 }
 
-.prefabs-search-input {
+.prefabs-search-input, .classes-search-input {
 	width: calc(100% - 200px);
 	outline: 2px solid red !important;
 }
 
-.prefabs-search-input:placeholder-shown {
+.prefabs-search-input:placeholder-shown, .classes-search-input:placeholder-shown {
 	outline: none !important;
+}
+
+.classes-search-input {
+	width: calc(100% - 250px);
 }
 
 .breakpoint-btn {

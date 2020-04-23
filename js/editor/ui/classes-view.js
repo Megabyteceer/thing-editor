@@ -4,6 +4,7 @@ import game from "thing-editor/js/engine/game.js";
 import fs from "../utils/fs.js";
 import PropsEditor from "./props-editor/props-editor.js";
 import Overlay from "../utils/overlay.js";
+import {_searchByRegexpOrText} from "../utils/editor-utils.js";
 
 const bodyProps = {className: 'list-view'};
 const classItemSubProps = {className: 'class-list-item-sub'};
@@ -12,11 +13,24 @@ class ClassesView extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		this.state = {};
+		let filter = editor.settings.getItem('prefabs-filter', '');
+		this.state = {filter};
 		this.renderItem = this.renderItem.bind(this);
 		this.onAddClick = this.onAddClick.bind(this);
 		this.onAddAsChildClick = this.onAddAsChildClick.bind(this);
 		this.onWrapSelectedClick = this.onWrapSelectedClick.bind(this);
+		this.searchInputProps = {
+			className: 'classes-search-input',
+			onChange: this.onSearchChange.bind(this),
+			placeholder: 'Search',
+			defaultValue: filter
+		};
+	}
+
+	onSearchChange(ev) {
+		let filter= ev.target.value.toLowerCase();
+		editor.settings.setItem('prefabs-filter', filter);
+		this.setState({filter});
 	}
 	
 	onAddClick() {
@@ -233,7 +247,15 @@ class ClassesView extends React.Component {
 		if (!classes) {
 			body = 'Loading...';
 		} else {
-			body =  Group.groupArray(classes.map(this.renderItem));
+
+			body =  classes.filter((c) => {
+				return _searchByRegexpOrText(c.c.name.toLowerCase(), this.state.filter.toLowerCase()) || (this.state.selectedItem === c)
+			}).map(this.renderItem);
+
+			if(!this.state.filter) {
+				body = Group.groupArray(body);
+			}
+
 			body.reverse();
 		}
 		
@@ -249,7 +271,8 @@ class ClassesView extends React.Component {
 					R.btn('Child', this.onAddAsChildClick, 'Add object as child of selected object. (Alt + [item click])', undefined,undefined, !editor.isCanBeAddedAsChild()),
 					R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene. (Ctrl + [item click])', undefined, undefined, !game.__EDITOR_mode)
 				),
-				R.btn('New', this.onNewComponentClick, 'Create new custom component.')
+				R.btn('New', this.onNewComponentClick, 'Create new custom component.'),
+				R.input(this.searchInputProps)
 			),
 			R.div(bodyProps, body)
 		);
