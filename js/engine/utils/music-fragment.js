@@ -163,7 +163,7 @@ export default class MusicFragment {
 			}
 
 			fragment._fadeToVol = f._cachedTargetVol;
-			fragment._fadeSpeed = f.fade;
+			fragment._fadeSpeed = f.getFade();
 			fragment.owner = f;
 			if(!allActiveFragments.hasOwnProperty(f.musicFragmentHash)) {
 				fragment.startPlay();
@@ -175,7 +175,7 @@ export default class MusicFragment {
 			if(!hashesToPlay.hasOwnProperty(h)) {
 				allActiveFragments[h]._fadeToVol = 0;
 				if (allActiveFragments[h].owner) {
-					allActiveFragments[h]._fadeSpeed = allActiveFragments[h].owner.fade;
+					allActiveFragments[h]._fadeSpeed = allActiveFragments[h].owner.getFade();
 					allActiveFragments[h].owner = null;
 				}
 			}
