@@ -166,6 +166,13 @@ export default class BgMusic extends Container {
 		}
 	}
 
+	static _clearCustomFades(fade = null) {
+		for(let m of allActiveMusics) {
+			m.customFade = fade;
+		}
+		MusicFragment._applyFadeForAll(fade);
+	}
+
 	/// #id EDITOR
 	static get __allActiveMusics() {
 		return allActiveMusics;

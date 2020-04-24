@@ -148,6 +148,12 @@ export default class MusicFragment {
 		}
 	}
 
+	static _applyFadeForAll(fade) {
+		for(let h in allActiveFragments) {
+			allActiveFragments[h]._fadeSpeed = fade;
+		}
+	}
+
 	static setPlayingBGMusics(bgMusics) {
 		let hashesToPlay = {};
 		for(let f of bgMusics) {

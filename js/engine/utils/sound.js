@@ -39,6 +39,9 @@ export default class Sound {
 	static set musicVol(v) {
 		assert(!isNaN(v), "invalid value for 'musicVol'. Valid number value expected.", 10001);
 		v = Math.max(0, Math.min(1, v));
+		if(musicVol !== v) {
+			BgMusic._clearCustomFades(0.2);
+		}
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
 		BgMusic._recalculateMusic();
@@ -72,6 +75,7 @@ export default class Sound {
 
 	static set musicEnabled(val) {
 		if(Sound.musicEnabled !== val) {
+			BgMusic._clearCustomFades(0.2);
 			let minMusEnablingVolume = Math.max(MIN_VOL_ENABLE, musicVol);
 			if(val) {
 				Sound.musicVol = game.settings.getItem('musicVolEnabling', minMusEnablingVolume);
