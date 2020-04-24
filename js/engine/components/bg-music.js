@@ -136,16 +136,16 @@ export default class BgMusic extends Container {
 	}
 
 	play(fade) {
-		this.customFade = typeof fade === 'number' ? fade : this.fade;
+		this.customFade = fade;
 		this.isPlaying = true;
 	}
 
 	stop(fade) {
-		this.customFade = typeof fade === 'number' ? fade : this.fade;
+		this.customFade = fade;
 		this.isPlaying = false;
 	}
 	
-	getFade() {
+	_getFade() {
 		return typeof this.customFade === 'number' ? this.customFade : this.fade;
 	}
 
