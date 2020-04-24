@@ -50,6 +50,7 @@ export default class BgMusic extends Container {
 		BgMusic._recalculateMusic();
 		this._externalVolume = 0;
 		this._musInitialized = false;
+		this.customFade = null;
 	}
 
 	setVolume(v) {
@@ -135,17 +136,17 @@ export default class BgMusic extends Container {
 	}
 
 	play(fade) {
-		if(typeof fade === 'number') {
-			this.fade = fade;
-		}
+		this.customFade = fade;
 		this.isPlaying = true;
 	}
 
 	stop(fade) {
-		if(typeof fade === 'number') {
-			this.fade = fade;
-		}
+		this.customFade = fade;
 		this.isPlaying = false;
+	}
+	
+	_getFade() {
+		return typeof this.customFade === 'number' ? this.customFade : this.fade;
 	}
 
 	resetPosition() {
@@ -163,6 +164,13 @@ export default class BgMusic extends Container {
 			setTimeout(recalculateMusic, 1);
 			musicRecalculationIsScheduled = true;
 		}
+	}
+
+	static _clearCustomFades(fade = null) {
+		for(let m of allActiveMusics) {
+			m.customFade = fade;
+		}
+		MusicFragment._applyFadeForAll(fade);
 	}
 
 	/// #id EDITOR

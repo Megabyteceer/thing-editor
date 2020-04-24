@@ -148,6 +148,12 @@ export default class MusicFragment {
 		}
 	}
 
+	static _applyFadeForAll(fade) {
+		for(let h in allActiveFragments) {
+			allActiveFragments[h]._fadeSpeed = fade;
+		}
+	}
+
 	static setPlayingBGMusics(bgMusics) {
 		let hashesToPlay = {};
 		for(let f of bgMusics) {
@@ -163,7 +169,7 @@ export default class MusicFragment {
 			}
 
 			fragment._fadeToVol = f._cachedTargetVol;
-			fragment._fadeSpeed = f.fade;
+			fragment._fadeSpeed = f._getFade();
 			fragment.owner = f;
 			if(!allActiveFragments.hasOwnProperty(f.musicFragmentHash)) {
 				fragment.startPlay();
@@ -175,7 +181,8 @@ export default class MusicFragment {
 			if(!hashesToPlay.hasOwnProperty(h)) {
 				allActiveFragments[h]._fadeToVol = 0;
 				if (allActiveFragments[h].owner) {
-					allActiveFragments[h]._fadeSpeed = allActiveFragments[h].owner.fade;
+					allActiveFragments[h]._fadeSpeed = allActiveFragments[h].owner._getFade();
+					allActiveFragments[h].owner.customFade = null;
 					allActiveFragments[h].owner = null;
 				}
 			}
