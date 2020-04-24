@@ -629,6 +629,7 @@ input{
 .choosing-item {
 	padding: 4px;
 	border-bottom: 1px solid #eee;
+	position: relative;
 }
 
 .left-align-text {
@@ -1141,7 +1142,9 @@ input{
 
 .selectable-scene-node {
 	padding: 2px 8px;
-	float: right;
+	position: absolute;
+    top: 2px;
+    right: 0;
 	border-radius: 5px;
 	border: #ccc;
 }
