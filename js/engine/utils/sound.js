@@ -253,6 +253,65 @@ function hideSndDebugger() {
 	sndDebuggerShowed = false;
 }
 
+
+function openIndexedDB () {
+// This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
+	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
+
+	var openDB = indexedDB.open("MyDatabase", 1);
+
+	openDB.onupgradeneeded = function() {
+		var db = {};
+		db.result = openDB.result;
+		db.store = db.result.createObjectStore("MyObjectStore", {keyPath: "id"});
+	};
+
+	return openDB;
+}
+
+function getStoreIndexedDB (openDB) {
+	var db = {};
+	db.result = openDB.result;
+	db.tx = db.result.transaction("MyObjectStore", "readwrite");
+	db.store = db.tx.objectStore("MyObjectStore");
+	return db;
+}
+
+function saveIndexedDB (filename, filedata) {
+	var openDB = openIndexedDB();
+	openDB.onsuccess = function() {
+		var db = getStoreIndexedDB(openDB);
+
+		db.store.put({id: filename, data: filedata});
+	};
+	return true;
+}
+
+
+function loadIndexedDB (filename, callback) {
+	var openDB = openIndexedDB();
+
+	openDB.onsuccess = function() {
+		var db = getStoreIndexedDB(openDB);
+
+		var getData;
+		if (filename) {
+			getData = db.store.get(filename);
+		}
+
+		getData.onsuccess = function() {
+			callback(getData.result && getData.result.data);
+		};
+
+		db.tx.oncomplete = function() {
+			db.result.close();
+		};
+	};
+
+	return true;
+}
+
+
 function showSndDebugger() {
 
 	if(!sndDebugger) {
@@ -267,6 +326,17 @@ function showSndDebugger() {
 		sndDebugger.style.maxHeight = "90vh";
 		sndDebugger.style.overflowY = "auto";
 		document.body.appendChild(sndDebugger);
+
+		let libSounds = Lib.__getSoundsData();
+		for(let sndName in libSounds) {
+			loadIndexedDB(sndName, (data) => {
+				if(data) {
+					dataStore[sndName] = data;
+					Lib.__overrideSound(sndName, data.data);
+					showSndDebugger();
+				}
+			});
+		}
 	}
 	sndDebuggerShowed = true;
 	sndDebugger.style.display = 'block';
@@ -278,10 +348,10 @@ function showSndDebugger() {
 	let libSounds = Lib.__getSoundsData();
 	for(let sndName in libSounds) {
 		soundNames[i] = sndName;
-		txt.push('<tr><td><b>' + sndName + '</b></td><td><input value="Загрузить..." style="width:90px;" type="file" accept="audio/x-wav" class="snd-override" id="' + i + '-soundNum"/></td><td>');
+		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name">' + sndName + '</b></td><td><input value="Загрузить..." style="width:90px;" type="file" accept="audio/x-wav" class="snd-override"/></td><td>');
 		let overrideData = getOverrideData(sndName);
 		if(overrideData) {
-			txt.push(' ЗАГРУЖЕН (' + overrideData.name + ')</td><td><button class="snd-clear" id="' + i + '-soundNum">х</button>');
+			txt.push(' ЗАГРУЖЕН (' + overrideData.name + ')</td><td><button class="snd-clear">х</button>');
 		} else {
 			txt.push('-</td><td>-');
 		}
@@ -292,7 +362,13 @@ function showSndDebugger() {
 	sndDebugger.innerHTML = txt.join('');
 
 	function sndNameByEvent(ev) {
-		return soundNames[parseInt(ev.target.id)];
+		let t = ev.target;
+		while(t) {
+			if(t.id && t.id.indexOf('-soundNum') > 0) {
+				return soundNames[parseInt(t.id)];
+			}
+			t = t.parentElement;
+		}
 	}
 	
 	for(let fileChooser of document.querySelectorAll('.snd-override')) {
@@ -320,6 +396,17 @@ function showSndDebugger() {
 		});
 	}
 
+	for(let a of document.querySelectorAll('.snd-name')) {
+		a.addEventListener('click', (ev) => {
+			let sndName = sndNameByEvent(ev);
+			Sound.play(sndName);
+			clearTimeout(timeouts[sndName]);
+			timeouts[sndName] = setTimeout(() => {
+				Lib.getSound(sndName).stop();
+			}, 2000);
+		});
+	}
+
 	for(let clearBtn of document.querySelectorAll('.snd-clear')) {
 		clearBtn.addEventListener('click', (ev) => {
 			setOverrideData(sndNameByEvent(ev));
@@ -329,6 +416,7 @@ function showSndDebugger() {
 
 }
 
+const timeouts = {};
 
 window.addEventListener('keydown', (ev) => {
 	if(ev.keyCode === 115) {
@@ -344,10 +432,11 @@ window.addEventListener('keydown', (ev) => {
 let dataStore = {};
 
 function setOverrideData(sndName, data) {
-	dataStore['__snd_override' + sndName] = data;
+	dataStore[sndName] = data;
+	saveIndexedDB(sndName, data);
 }
 
 function getOverrideData(sndName) {
-	return dataStore['__snd_override' + sndName];
+	return dataStore[sndName];
 }
 /// #endif
