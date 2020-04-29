@@ -70,6 +70,7 @@ export default class Shape extends PIXI.Graphics {
 					y: DEFAULT_POINTS[this._shapePoints.length][1]
 				};
 				this._shapePoints.push(p);
+				Object.freeze(p);
 			}
 			/// #endif
 			if(this._shapePoints.length > 2) {
@@ -264,7 +265,6 @@ export default class Shape extends PIXI.Graphics {
 	__afterDeserialization() {
 		this.__deserialized = true;
 
-		/// #if EDITOR
 
 		//turn containers in to visible points shapes
 		if(this.shape === SHAPE_POLY) {
@@ -280,7 +280,7 @@ export default class Shape extends PIXI.Graphics {
 			}
 			// ================
 		}
-		/// #endif
+
 		this._drawThing();
 	}
 
@@ -351,12 +351,28 @@ export default class Shape extends PIXI.Graphics {
 				});
 			}
 		}
+
+		this._shapePoints.some(i => Object.freeze(i));
+
 		this._drawThing();
 
 
 		if(this.shape !== SHAPE_POLY || !isAnyPointSelected && !__getNodeExtendData(this).isSelected) {
 			this.__stopPointsRefreshInterval();
 		}
+	}
+
+	set _shapePoints(v) {
+		this.__shapePoints = v;
+		if(v) {
+			for(let o of v) {
+				Object.freeze(o);
+			}
+		}
+	}
+
+	get _shapePoints() {
+		return this.__shapePoints;
 	}
 
 	__newPointView(src) {
