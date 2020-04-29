@@ -71,12 +71,14 @@ app.get('/fs/enum', function (req, res) {
 app.get('/fs/delete', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	let fn = mapFileUrl(req.query.f);
-	try {
+
+	attemptFSOperation(() => {
 		fs.unlinkSync(fn);
+	}).then(() => {
 		res.end('{}');
-	} catch (err) {
+	}).catch(() => {
 		res.end(JSON.stringify({error: 'Can not delete file: ' + fn}));
-	}
+	});
 });
 
 app.get('/fs/edit', function (req, res) {
@@ -208,8 +210,13 @@ app.post('/fs/exec', jsonParser, function (req, res) {
 app.post('/fs/savefile', jsonParser, function (req, res) {
 	let fileName = mapFileUrl(req.body.filename);
 	ensureDirectoryExistence(fileName);
-	fs.writeFileSync(fileName, req.body.data);
-	res.end();
+	attemptFSOperation(() => {
+		fs.writeFileSync(fileName, req.body.data);
+	}).then(() => {
+		res.end('{}');
+	}).catch(() => {
+		res.end(JSON.stringify({error: 'Can not save file: ' + fileName}));
+	});
 });
 
 app.use('/', (req, res, next) => {
@@ -343,6 +350,8 @@ function getDataFolders() {
 	return ret;
 }
 
+const filesToEnumFilter = /\.(js|json|xml|atlas|png|jpg|wav|mp3|ogg|aac|weba)$/;
+
 function enumFiles() {
 	if(!currentGame) throw 'No game opened';
 	let ret = {};
@@ -364,27 +373,48 @@ function enumFiles() {
 			walkSync(f.path, a);
 		}
 		a = a.filter((fileData) => {
-			pathSeparatorReplace(fileData);
 
-			if(f.lib) {
-				fileData.lib = f.lib;
-			}
-			let assetName = fileData.name.substr(f.path.length - type.length);
-			let assetURL = gameURL + assetName;
-			if(!type.startsWith('src')) {
-				if(!assetsMap.has(assetURL)) {
-					assetsMap.set(assetURL, fileData.name);
-					fileData.name = assetName;
-				} else {
-					return false;
+			if(fileData.name.match(filesToEnumFilter)) {
+
+				pathSeparatorReplace(fileData);
+
+				if(f.lib) {
+					fileData.lib = f.lib;
 				}
+				let assetName = fileData.name.substr(f.path.length - type.length);
+				let assetURL = gameURL + assetName;
+				if(!type.startsWith('src')) {
+					if(!assetsMap.has(assetURL)) {
+						assetsMap.set(assetURL, fileData.name);
+						fileData.name = assetName;
+					} else {
+						return false;
+					}
+				}
+				return true;
 			}
-			return true;
-
 		});
 		ret[type] = ret[type].concat(a);
 	}
 	return ret;
+}
+
+function attemptFSOperation(cb) {
+	return new Promise((resolve, reject) => {
+		try {
+			cb();
+			resolve();
+		} catch (er) {
+			setTimeout(() => {
+				try {
+					cb();
+					resolve();
+				} catch (er) {
+					reject();
+				}
+			}, 1000);
+		}
+	});
 }
 
 const walkSync = (dir, fileList = []) => {

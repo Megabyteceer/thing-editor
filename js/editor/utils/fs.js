@@ -136,7 +136,10 @@ let fs = {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
 		ws.ignoreFileChanging(filename);
-		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async).then(() => {
+		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async).then((data) => {
+			if(data.error) {
+				editor.ui.modal.showError(data.error);	
+			}
 			ws.notIgnoreFileChanging(filename);
 		});
 	}
