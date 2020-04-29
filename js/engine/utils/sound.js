@@ -314,7 +314,11 @@ function loadIndexedDB (filename, callback) {
 
 function showSndDebugger() {
 
-	if(!sndDebugger) {
+	/// #if EDITOR
+	return;
+	/// #endif
+
+	if(!sndDebugger) { // eslint-disable-line no-unreachable
 		sndDebugger = document.createElement('div');
 		sndDebugger.style.position="fixed";
 		sndDebugger.style.right="0";
