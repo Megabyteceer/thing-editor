@@ -48,33 +48,42 @@ export default class ResourceLoader {
 			}
 		});
 
-		this.loader.onError.add((err, loader, resource) => {
-			if(!this.errorResourceResources) {
-				this.errorResourceResources = [];
-			}
-			this.errorResourceResources.push(resource);
-		});
+		let errorResourceResources;
 
 		this.loader.load(() => {
 			if(game._loadingErrorIsDisplayed) {
 				return;
 			}
-			this.resources = Object.assign(this.resources, this.loader.resources);
-			if(this.errorResourceResources) {
+
+			for(let res of Object.values(this.loader.resources)) {
+				if(res.error) {
+					if(!errorResourceResources) {
+						errorResourceResources = [];
+					}
+					if(this.resources[res.name]) {
+						errorResourceResources.push(res);
+					} else {
+						errorResourceResources = errorResourceResources.concat(Object.keys(this.resources).map(k => this.loader.resources[k]));
+						break;
+					}
+				}
+			}
+
+			if(errorResourceResources) {
 				if(this.attempt++ < 3) {
 					setTimeout(() => {
 						this.loader = new PIXI.Loader();
 						this.count = 1;
-						for(let r of this.errorResourceResources) {
+						for(let r of errorResourceResources) {
 							this.add(r.name, r.url);
 						}
 						this.load(cb, true);
-						this.errorResourceResources = null;
 					}, this.attempt * 1000);
 				} else {
-					game._onLoadingError(this.errorResourceResources[0].url);
+					game._onLoadingError(errorResourceResources[0].url);
 				}
 			} else {
+				this.resources = Object.assign(this.resources, this.loader.resources);
 				assert(this.count === 1, "Resources count error.");
 			
 				let i = loadingResources.indexOf(this);
