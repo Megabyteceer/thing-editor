@@ -128,7 +128,7 @@ export default class Shape extends PIXI.Graphics {
 	}
 
 	set shape(s) {
-		this.__EDITOR_shape = s;
+		this._shape = s;
 		if(this.__deserialized) {
 			/// #if EDITOR
 			if(s === SHAPE_POLY) {
@@ -153,7 +153,7 @@ export default class Shape extends PIXI.Graphics {
 	}
 
 	get shape() {
-		return this.__EDITOR_shape;
+		return this._shape;
 	}
 
 	set width(s) {
@@ -179,87 +179,87 @@ export default class Shape extends PIXI.Graphics {
 	}
 	
 	set shapeRadius(s) {
-		this.__EDITOR_shapeRadius = s;
+		this._shapeRadius = s;
 		if(this.__deserialized) {
 			this._drawThing();
 		}
 	}
 
 	get shapeRadius() {
-		return this.__EDITOR_shapeRadius;
+		return this._shapeRadius;
 	}
 
 	set shapeLineColor(s) {
-		this.__EDITOR_lColor = s;
+		this._lColor = s;
 		if(this.__deserialized) {
 			this._drawThing();
 		}
 	}
 
 	get shapeLineColor() {
-		return this.__EDITOR_lColor;
+		return this._lColor;
 	}
 
 	set shapeFillColor(s) {
-		this.__EDITOR_fColor = s;
+		this._fColor = s;
 		if(this.__deserialized) {
 			this._drawThing();
 		}
 	}
 
 	get shapeFillColor() {
-		return this.__EDITOR_fColor;
+		return this._fColor;
 	}
 
 	set shapeFillAlpha(s) {
-		this.__EDITOR_fAlpha = s;
+		this._fAlpha = s;
 		if(this.__deserialized) {
 			this._drawThing();
 		}
 	}
 
 	get shapeFillAlpha() {
-		return this.__EDITOR_fAlpha;
+		return this._fAlpha;
 	}
 
 	set shapeLineAlpha(s) {
-		this.__EDITOR_lAlpha = s;
+		this._lAlpha = s;
 		if(this.__deserialized) {
 			this._drawThing();
 		}
 	}
 
 	get shapeLineAlpha() {
-		return this.__EDITOR_lAlpha;
+		return this._lAlpha;
 	}
 
 	set shapeLineWidth(s) {
-		this.__EDITOR_lWidth = s;
+		this._lWidth = s;
 		if(this.__deserialized) {
 			this._drawThing();
 		}
 	}
 
 	get shapeLineWidth() {
-		return this.__EDITOR_lWidth;
+		return this._lWidth;
 	}
 
 	set shapeLineAlignment(s) {
-		this.__EDITOR_lAlignment = s;
+		this._lAlignment = s;
 		if(this.__deserialized) {
 			this._drawThing();
 		}
 	}
 
 	get shapeLineAlignment() {
-		return this.__EDITOR_lAlignment;
+		return this._lAlignment;
 	}
 
 	/// #if EDITOR
 
 	__EDITOR_onCreate() {
 		this.__deserialized = true;
-		this.shape = this.shape;
+		this.shape = this._shape;
 	}
 
 	__afterDeserialization() {
