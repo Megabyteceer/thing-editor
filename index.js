@@ -224,7 +224,12 @@ app.use('/', (req, res, next) => {
 });
 
 app.use('/games/',  (req, res) => {
-	res.sendFile(path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path))), {dotfiles:'allow'});
+	let fileName = path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path)));
+	if(fs.existsSync(fileName)) {
+		res.sendFile(fileName, {dotfiles:'allow'});
+	} else {
+		res.sendStatus(404);
+	}
 });
 
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
