@@ -13,7 +13,7 @@ class ClassesView extends React.Component {
 	
 	constructor(props) {
 		super(props);
-		let filter = editor.settings.getItem('prefabs-filter', '');
+		let filter = editor.settings.getItem('classes-filter', '');
 		this.state = {filter};
 		this.renderItem = this.renderItem.bind(this);
 		this.onAddClick = this.onAddClick.bind(this);
@@ -29,7 +29,7 @@ class ClassesView extends React.Component {
 
 	onSearchChange(ev) {
 		let filter= ev.target.value.toLowerCase();
-		editor.settings.setItem('prefabs-filter', filter);
+		editor.settings.setItem('classes-filter', filter);
 		this.setState({filter});
 	}
 	
