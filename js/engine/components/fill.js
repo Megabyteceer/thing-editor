@@ -161,6 +161,11 @@ export default class Fill extends PIXI.Mesh {
 		super.render(renderer);
 	}
 
+	_renderCanvas(renderer) {
+		this.validateFill();
+		super._renderCanvas(renderer);
+	}
+
 	validateFill() {
 		if(this.meshResized) {
 			this.refreshSize();
