@@ -184,7 +184,7 @@ let curDeepness;
 
 let recalculateNodesDeepness = () => {
 	curDeepness = 0;
-	recalculateNodesDeepnessRecursive(game.currentContainer);
+	recalculateNodesDeepnessRecursive(game.stage);
 };
 
 let recalculateNodesDeepnessRecursive = (n) => {
