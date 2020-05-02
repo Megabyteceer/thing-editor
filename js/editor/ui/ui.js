@@ -179,10 +179,10 @@ class StatusBar extends React.Component {
 			
 			let resetZoomBtn;
 			if(game.stage) {
-				if(game.stage.scale.x !== game.renderScale) {
-					txt += ' zoom: ' + (game.stage.scale.x / game.renderScale);
+				if(game.stage.scale.x !== 1) {
+					txt += ' zoom: ' + game.stage.scale.x;
 				}
-				if(game.stage.scale.x !== game.renderScale || game.stage.x !== 0 || game.stage.y !== 0) {
+				if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
 					resetZoomBtn = R.btn('x', editor.ui.viewport.resetZoom, 'Reset zoom and viewport position (Ctrl + double-click on viewport)', 'reset-zoom-btn');
 				}
 			}

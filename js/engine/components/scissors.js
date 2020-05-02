@@ -100,14 +100,14 @@ export default class Scissors extends Container {
 
 			/// #endif
 
+			var resolution = renderer.resolution;
+
 			this._applyScissorHitArea();
 
-			let H = game.pixiApp.renderer.height;
-
 			if(game._isCanvasRotated) {
-				gl.scissor(p2.x, (H - p2.y), (p1.x - p2.x), (p2.y - p1.y));
+				gl.scissor(p2.x * resolution, (game.W - p2.y) * resolution, (p1.x - p2.x) * resolution, (p2.y - p1.y) * resolution);
 			} else {
-				gl.scissor(p1.x, (H - p2.y), (p2.x - p1.x), (p2.y - p1.y));
+				gl.scissor(p1.x * resolution, (game.H - p2.y) * resolution, (p2.x - p1.x) * resolution, (p2.y - p1.y) * resolution);
 			}
 		}
 		super.render(renderer);

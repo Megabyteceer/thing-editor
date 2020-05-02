@@ -22,12 +22,12 @@ export default class NumberInput extends Container {
 		let p = game.mouseEventToGlobalXY(ev);
 		if(this.hitArea) {
 			this.toLocal(p, undefined, p);
-			if(this.hitArea.contains(p.x * game.renderScale, p.y * game.renderScale)) {
+			if(this.hitArea.contains(p.x, p.y)) {
 				d = ev.deltaY;
 				ev.stopPropagation();
 			}
 		} else {
-			if(this.getBounds().contains(p.x * game.renderScale, p.y * game.renderScale)) {
+			if(this.getBounds().contains(p.x, p.y)) {
 				d = ev.deltaY;
 				ev.stopPropagation();
 			}

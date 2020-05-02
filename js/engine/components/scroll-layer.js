@@ -50,7 +50,7 @@ export default class ScrollLayer extends Container {
 		if(this._mouseHandlerContainer !== game.pixiApp.renderer.plugins.interaction) {
 			if(this._mouseHandlerContainer.isCanBePressed) {
 				let p = game.mouseEventToGlobalXY(ev);
-				if(this._mouseHandlerContainer.getBounds().contains(p.x * game.renderScale, p.y * game.renderScale)) {
+				if(this._mouseHandlerContainer.getBounds().contains(p.x, p.y)) {
 					d = ev.deltaY;
 					ev.stopPropagation();
 				}

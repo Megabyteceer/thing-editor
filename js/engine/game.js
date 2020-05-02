@@ -261,7 +261,6 @@ class Game {
 
 
 			let stage = game.stage;
-			game.renderScale = 1;
 
 			game._isCanvasRotated = rotateCanvas;
 			if(rotateCanvas) {
@@ -539,19 +538,6 @@ class Game {
 		this._gameInitializedResolve();
 		delete this._gameInitializedResolve;
 
-		if(game.isCanvasMode) {
-			const canvas = document.createElement('canvas');
-
-			canvas.width = 20;
-			canvas.height = 20;
-		
-			const context = canvas.getContext('2d');
-		
-			context.fillStyle = 'white';
-			context.fillRect(0, 0, 20, 20);
-		
-			PIXI.Texture.WHITE = new PIXI.Texture(new PIXI.BaseTexture(new PIXI.resources.CanvasResource(canvas)));
-		}
 		/// #if EDITOR
 		return;
 		/// #endif
