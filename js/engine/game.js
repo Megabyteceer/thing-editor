@@ -201,7 +201,7 @@ class Game {
 		S *= s;
 		S = Math.min(3, S);
 		/// #if EDITOR
-		//S = 1;
+		S = Math.min(S, 1);
 		/// #endif
 
 		if(this.pixiApp && this.pixiApp.renderer) {
@@ -248,11 +248,6 @@ class Game {
 			rendererHeight = this.H;
 		}
 
-		rendererWidth *= S;
-		rendererHeight *= S;
-		rendererWidth = Math.round(rendererWidth);
-		rendererHeight = Math.round(rendererHeight);
-
 		let needResizeRenderer = (_rendererWidth !== rendererWidth) || (_rendererHeight !== rendererHeight) || (scale !== S);
 
 		//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -266,8 +261,8 @@ class Game {
 
 
 			let stage = game.stage;
-			game.renderScale = scale;
-			game.stage.scale.x = game.stage.scale.y = scale;
+			game.renderScale = 1;
+
 			game._isCanvasRotated = rotateCanvas;
 			if(rotateCanvas) {
 				stage.rotation = Math.PI / 2.0;
@@ -297,6 +292,16 @@ class Game {
 				if(!this.__enforcedW) {
 					/// #endif
 					let renderer = game.pixiApp.renderer;
+
+					renderer.resolution = scale;
+
+					PIXI.interaction.InteractionManager.resolution = scale;
+					renderer.plugins.interaction.resolution = scale;
+
+					if (renderer.rootRenderTarget) {
+						renderer.rootRenderTarget.resolution = scale;
+					}
+
 					renderer.resize(_rendererWidth, _rendererHeight);
 					/// #if EDITOR
 				}
@@ -533,6 +538,20 @@ class Game {
 
 		this._gameInitializedResolve();
 		delete this._gameInitializedResolve;
+
+		if(game.isCanvasMode) {
+			const canvas = document.createElement('canvas');
+
+			canvas.width = 20;
+			canvas.height = 20;
+		
+			const context = canvas.getContext('2d');
+		
+			context.fillStyle = 'white';
+			context.fillRect(0, 0, 20, 20);
+		
+			PIXI.Texture.WHITE = new PIXI.Texture(new PIXI.BaseTexture(new PIXI.resources.CanvasResource(canvas)));
+		}
 		/// #if EDITOR
 		return;
 		/// #endif

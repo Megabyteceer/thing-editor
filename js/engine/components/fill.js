@@ -173,12 +173,7 @@ export default class Fill extends PIXI.Mesh {
 			this.updateTransparency();
 		}
 	}
-
-	_renderCanvas(renderer) {
-
-		super._renderCanvas(renderer);
-	}
-
+	
 	set transparentTop(v) {
 		if(this._transparentTop !== v) {
 			this._transparentTop = v;
