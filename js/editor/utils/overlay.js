@@ -79,7 +79,7 @@ export default class Overlay {
 	}
 
 	refreshCameraFrame() {
-		if(game.stage.scale.x !== game.renderScale || game.stage.x !== 0 || game.stage.y !== 0) {
+		if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
 			game.stage.addChild(cameraFrame); //move frame to front
 			__getNodeExtendData(cameraFrame).hidden = true;
 			
@@ -161,8 +161,8 @@ export default class Overlay {
 		game.showModal(object);
 		__getNodeExtendData(object).childrenExpanded = true;
 		checkIfCurrentContainerIsShowedPrefab();
-		game.stage.x = (-object.x + game.W / 2) * game.renderScale;
-		game.stage.y = (-object.y + game.H / 2) * game.renderScale;
+		game.stage.x = -object.x + game.W / 2;
+		game.stage.y = -object.y + game.H / 2;
 		blackout.x = -game.stage.x;
 		blackout.y = -game.stage.y;
 		setTimeout(() => {

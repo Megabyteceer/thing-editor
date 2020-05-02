@@ -68,8 +68,8 @@ export default class Viewport extends React.Component {
 
 	
 	resetZoom() {
-		game.stage.scale.x = game.renderScale;
-		game.stage.scale.y = game.renderScale;
+		game.stage.scale.x = 1;
+		game.stage.scale.y = 1;
 		game.stage.x = 0;
 		game.stage.y = 0;
 	}
