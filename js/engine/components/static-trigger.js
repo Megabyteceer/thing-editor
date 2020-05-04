@@ -11,7 +11,7 @@ export default class StaticTrigger extends Container {
 
 	__validateStaticTrigger() {
 		if(this.parent && (this.parent === game.stage || this.parent.parent === game.stage)) {
-			editor.ui.status.error("StaticTrigger can not be root element or child of root element, because its removes parent.", 32049, this);
+			editor.ui.status.error("StaticTrigger can not be root element or child of root element, because it does remove parent.", 32049, this);
 		}
 		if(!this.dataPath && this.dataPath.startsWith('this.') && this.dataPath.startsWith('all.')) {
 			editor.ui.status.error("StaticTrigger`s dataPath can refer to global variables only. Like isMobile.any", 32050, this, 'dataPath');
