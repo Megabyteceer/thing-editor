@@ -240,7 +240,7 @@ class TexturesViewerBody extends React.Component {
 
 		return R.div(null,
 			R.btn(R.icon('reload-assets'), editor.ui.viewport.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
-			R.btn(R.icon('cleanup-assets'), this.checkForUnusedImages, 'Check for images unused it prefabs and scenes. Its still can be used in code ar in not standart fields', 'big-btn'),
+			R.btn(R.icon('cleanup-assets'), this.checkForUnusedImages, 'Auto-clean. Check for images unused in prefabs and scenes. It is still can be used in code or in not standard fields', 'big-btn'),
 			R.span(null,
 				"Filter by loading mode: ",
 				React.createElement(SelectEditor, {onChange:(ev) => {
@@ -292,7 +292,7 @@ class TexturesViewerBody extends React.Component {
 					return fn.name.substring(4) === imageName;
 				});
 				if(fileInfo && fileInfo.lib) {
-					return;
+					continue;
 				}
 				editor.ui.status.warn('No refs to: ' + imageName, 32043, () => {
 					let path = this.getImagePath(imageName);
