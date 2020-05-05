@@ -37,7 +37,6 @@ npm start
  - postponed resources loading for each scene
 
 ## What is need to do:
- - atlases packing for projects created in thing-editor.
  - drag and drop for "scene-tree" and "classes list"
  - examples and documentation
  
