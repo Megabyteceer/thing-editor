@@ -226,7 +226,11 @@ app.use('/', (req, res, next) => {
 app.use('/games/',  (req, res) => {
 	let fileName = path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path)));
 	if(fs.existsSync(fileName)) {
-		res.sendFile(fileName, {dotfiles:'allow'});
+		attemptFSOperation(() => {
+			res.sendFile(fileName, {dotfiles:'allow'}).catch(() => {
+				res.sendStatus(505);
+			});
+		});
 	} else {
 		res.sendStatus(404);
 	}
