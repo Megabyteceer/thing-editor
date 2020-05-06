@@ -96,7 +96,7 @@ export default class Spine extends Container {
 				this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
 				
 				this._animationIsDirty = false;
-				this.spineContent.update(0);
+				this.spineContent.update(this.__previewFrame);
 			}
 		}
 		/// #endif
@@ -128,15 +128,28 @@ export default class Spine extends Container {
 
 	__goToPreviewMode() {
 		if(this.spineContent) {
+			this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
 			this.spineContent.autoUpdate = true;
 		}
+	}
+
+	set __previewFrame(v) {
+		this.___previewFrame = v;
+		if(game.__EDITOR_mode && this.spineContent) {
+			this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
+			this.spineContent.update(this.__previewFrame);
+		}
+	}
+
+	get __previewFrame() {
+		return this.___previewFrame || 0;
 	}
 	
 	__exitPreviewMode() {
 		if(this.spineContent) {
 			this.spineContent.autoUpdate = false;
 			this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
-			this.spineContent.update(0);
+			this.spineContent.update(this.__previewFrame);
 		}
 	}
 
@@ -162,7 +175,12 @@ export default class Spine extends Container {
 
 		if (isNeedSetInitialAnimation) {
 			this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
-			this.spineContent.update(0);
+			this.spineContent.update(
+				/// #if EDITOR
+				game.__EDITOR_mode ? this.__previewFrame :
+				/// #endif
+					0
+			);
 		} else {
 			this._refreshAnimation();
 		}
@@ -534,6 +552,12 @@ __EDITOR_editableProps(Spine, [
 	{
 		name:'__duration',
 		type:'ref'
+	},
+	{
+		name:'__previewFrame',
+		type:Number,
+		min: 0,
+		step: 0.001
 	},
 	window.makePreviewModeButton('Preview animation', 'components.Spine#preview-animation'),
 ]);
