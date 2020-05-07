@@ -565,6 +565,12 @@ __EDITOR_editableProps(Spine, [
 Spine.prototype.play.___EDITOR_isGoodForCallbackChooser = true;
 Spine.prototype.stop.___EDITOR_isGoodForCallbackChooser = true;
 Spine.prototype.setCurrentAnimation.___EDITOR_isGoodForCallbackChooser = true;
+Spine.prototype.setCurrentAnimation.___EDITOR_callbackParameterChooserFunction = (context) => {
+	const spineContent = context.spineContent;
+	const list = spineContent.skeleton.data.animations.map((a) => ({name: a.name}));
+	return editor.ui.modal.showListChoose("Choose spine skin", list)
+		.then((choose) => choose ? choose.name : null);
+};
 Spine.prototype.setCurrentSkin.___EDITOR_isGoodForCallbackChooser = true;
 Spine.prototype.setCurrentSkin.___EDITOR_callbackParameterChooserFunction = (context) => {
 	const spineContent = context.spineContent;
