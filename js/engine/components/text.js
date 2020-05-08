@@ -85,10 +85,40 @@ Object.defineProperties(Text.prototype, {
 	},
 	'style.fill': {
 		get: function () {
-			return this.style.fill;
+			return this._styleFill;
 		},
 		set: function (val) {
-			this.style.fill = val;
+			if(val && val.indexOf(',') >= 0) {
+				/// #if EDITOR
+				val = val.replace(/(\s|")/g,'');
+				/// #endif
+				this.style.fill = val.split(',')
+				/// #if EDITOR
+					.filter((c) => {	
+						return isColor(c, this);
+					});
+				if(this.style.fill.length === 0) {
+					this.style.fill = '#000';
+				}
+				/// #endif
+			} else {
+				this.style.fill = val;
+			}
+			this._styleFill = val;
+		}, configurable: true
+	},
+	'style.fillGradientStops': {
+		get: function () {
+			return this._styleFillGradientStops;
+		},
+		set: function (val) {
+			if(val) {
+				val = val.replace(/\s/g,'');
+				this.style.fillGradientStops = val.split(',').map(i => i ? parseFloat(i) : 1);
+			} else {
+				this.style.fillGradientStops.length = 0;
+			}
+			this._styleFillGradientStops = val;
 		}, configurable: true
 	},
 	'style.fontFamily': {
@@ -312,6 +342,20 @@ Text.prototype._refreshAnchor = function() {
 
 /// #if EDITOR
 
+function isColor(strColor, node) {
+	var s = new Option().style;
+	s.color = strColor;
+	if(s.color) {
+		return true;
+	} else {
+		if(!game.__EDITOR_mode) {
+			editor.ui.status.error("Wrong color gradient entry: " + strColor, 99999, node, "style.fill");
+		}
+	}
+}
+  
+  
+
 import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 
 Text.prototype.__EDITOR_onCreate = function __EDITOR_onCreate() {
@@ -415,6 +459,13 @@ __EDITOR_editableProps(Text, [
 		name: 'style.fill',
 		type: String,
 		default:'#ffffff'
+	},
+	{
+		name: 'style.fillGradientStops',
+		type: String,
+		visible: (node) => {
+			return node._styleFill && node._styleFill.indexOf(',') >= 0;
+		}
 	},
 	{
 		name: 'style.strokeThickness',
