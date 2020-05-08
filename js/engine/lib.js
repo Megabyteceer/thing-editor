@@ -521,16 +521,31 @@ export default class Lib {
 	/// #endif
 	) {
 		
-		/// #if EDITOR
+		/// #if DEBUG
 		if(!textures.hasOwnProperty(name)) {
+
 			if(!game.projectDesc.loadOnDemandTextures.hasOwnProperty(name)) {
+				/// #if EDITOR
 				editor.ui.status.error("No texture with name '" + name + "' registered in Lib", 32010, owner);
-			} else if(!game.currentFader && !game.__EDITOR_mode) {
+				/*
+				/// #endif
+				if(!Lib.__alertedImages) {
+					Lib.__alertedImages = {};
+				}
+				if(!Lib.__alertedImages[name]) {
+					Lib.__alertedImages[name] = true;
+					alert("Wrong texture name: " + name);
+				}
+				//*/
+			}
+			/// #if EDITOR
+			else if(!game.currentFader && !game.__EDITOR_mode) {
 				editor.ui.status.error("Texture with name '" + name + "' is not loaded. Need add to scene static invisible sprite with that texture to automatically load it at scene beginning.", 32051, owner);
 			}
 			return editor.__wrongTexture;
+			/// #endif
+			return PIXI.Texture.WHITE; // eslint-disable-line no-unreachable
 		}
-		
 		/// #endif
 		
 		return textures[name];
