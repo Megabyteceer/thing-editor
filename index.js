@@ -525,9 +525,10 @@ function initWatchers() {
 		watcher.path = assetsFolderData.path;
 		watchers.push(watcher);
 		watcher.on('change', (eventType, filename) => {
-			filename = filename.replace(pathSeparatorReplaceExp, '/');
-			// log('file changed event: ' + eventType + '; ' + filename);
 			if(filename && filterWatchFiles.test(filename)) {
+				
+				filename = filename.replace(pathSeparatorReplaceExp, '/');
+				// log('file changed event: ' + eventType + '; ' + filename);
 
 				let fullFileName = path.join(assetsFolderData.path, filename);
 				filename = path.join(assetsFolder, filename);
