@@ -113,8 +113,12 @@ function addAllRefsValidator(scene) {
 		},
 		set:(target, prop, val) => {
 			__getNodeExtendData(val).__allRefsDeletionValidator = deletionValidator;
-			target[prop] = val;
 			let count = refsCounter[prop] || 0;
+			if(count) {
+				target[prop] = "name_duplicate_error";
+			} else {
+				target[prop] = val;
+			}
 			refsCounter[prop] = count + 1;
 			return true;
 		}
