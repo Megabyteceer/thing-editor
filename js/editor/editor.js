@@ -363,7 +363,7 @@ export default class Editor {
 		if(editor.selection.length < 1) {
 			assert(false, 'Nothing selected to be wrapped.');
 		} else if(isClipboardWrapping && (!editor.clipboardData || editor.clipboardData.length !== 1)) {
-			assert(false, 'Exactly one container should be copied in to clipBoard to wrap selection with it.');
+			editor.ui.status.error('Exactly one container should be copied in to clipBoard to wrap selection with it.');
 		} else {
 			let a = editor.selection.slice(0);
 
