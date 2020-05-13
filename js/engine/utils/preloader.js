@@ -23,7 +23,7 @@ export default class Preloader {
 		this.preloader = this.preloader || document.getElementsByClassName('preloader')[0];
 
 		let progressCount = game.getLoadingCount();
-		this.maxCount = Math.max(this.maxCount, progressCount);
+		this.maxCount = Math.max(1, this.maxCount, progressCount);
 		let progress = (this.maxCount - progressCount) / this.maxCount * 100.0;
 
 		this.currentProgress = stepTo(this.currentProgress, progress, 2);
@@ -36,7 +36,7 @@ export default class Preloader {
 		if(this.progressItems.length > 0) {
 			let reachedItemsCount = this.progressItems.length * this.currentProgress / 100;
 			for(let i = 0; i < reachedItemsCount; i++) {
-				this.progressItems[i] && this.progressItems[i].classList.add("progress-item-on");
+				this.progressItems[i].classList.add("progress-item-on");
 			}
 		}
 		if(this.complete) {
