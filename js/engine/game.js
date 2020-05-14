@@ -445,7 +445,6 @@ class Game {
 			autoFullscreenDesktop: false,
 			autoFullscreenMobile: false,
 			__proxyFetchesViaNodeServer: false,
-			__allowUpperCaseFiles : false,
 			__group: '', // 99999,
 			__webpack: { // 99999,
 				debug: 'config/webpack.debug.js',

@@ -23,28 +23,6 @@ let fs = {
 					return b.mtime - a.mtime;
 				});
 
-				if(editor.game.projectDesc && !editor.game.projectDesc.__allowUpperCaseFiles) {
-					files = files.filter((stat) => {
-						let fn = stat.name;
-						if (fn.toLowerCase() !== fn) {
-							editor.ui.status.warn("File with upper cased characters ignored: " + fn, 32019, () => {
-								let a = fn.split('/');
-								let path = [];
-								for(let p of a) {
-									if(p !== p.toLowerCase()) {
-										break;
-									} else {
-										path.push(p);
-									}
-								}
-								fs.editFile(path.join('/'));
-							});
-							return false;
-						}
-						return true;
-					});
-				}
-
 				fs.filesExt[type] = files;
 				fs.files[type] = files.map(f => f.name).sort();
 			}
