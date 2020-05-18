@@ -202,7 +202,7 @@ class Game {
 		S = Math.min(3, S);
 		/// #if EDITOR
 		if(!document.fullscreenElement) {
-			S = Math.min(S, 1);
+			S = 1;
 		}
 		/// #endif
 
