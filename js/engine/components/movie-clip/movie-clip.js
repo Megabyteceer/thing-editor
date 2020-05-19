@@ -4,6 +4,7 @@ import Lib from '../../lib.js';
 
 
 const ICON_STOP = R.img({src: '/thing-editor/img/timeline/stop.png'});
+const ICON_SOUND = R.img({src: '/thing-editor/img/timeline/sound.png'});
 const ICON_REMOVE = R.img({src: '/thing-editor/img/timeline/remove.png'});
 const ICON_DEFAULT = R.img({src: '/thing-editor/img/timeline/default.png'});
 
@@ -253,6 +254,9 @@ export default class MovieClip extends DSprite {
 		case 'this.parent.parent.remove':
 			return ICON_REMOVE;
 		default:
+			if(action.startsWith('Sound.play')) {
+				return ICON_SOUND;
+			}
 			return ICON_DEFAULT;
 		}
 	}
