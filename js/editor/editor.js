@@ -26,6 +26,7 @@ import defaultTilemapProcessor from './utils/default-tilemap-processor.js';
 import DataPathFixer from './utils/data-path-fixer.js';
 import Container from 'thing-editor/js/engine/components/container.js';
 import {_onTestsStart} from '../engine/utils/autotest-utils.js';
+import OrientationTrigger from '../engine/components/orientation-trigger.js';
 
 let isFirstClassesLoading = true;
 
@@ -396,8 +397,10 @@ export default class Editor {
 				Lib.__reassignIds(w);
 				editor.disableFieldsCache = false;
 			}
-			w.x = 0;
-			w.y = 0;
+			if(!(w instanceof OrientationTrigger)) {
+				w.x = 0;
+				w.y = 0;
+			}
 			let indexToAdd = parent.getChildIndex(o);
 
 			for(let c of a) {
