@@ -227,6 +227,7 @@ app.use('/games/',  (req, res) => {
 	let fileName = path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path)));
 	if(fs.existsSync(fileName)) {
 		attemptFSOperation(() => {
+			fs.accessSync(fileName, fs.constants.R_OK);
 			res.sendFile(fileName, {dotfiles:'allow'});
 		}).catch(() => {
 			res.sendStatus(505);
@@ -409,20 +410,22 @@ function enumFiles() {
 }
 
 function attemptFSOperation(cb) {
+	let timeout = 20;
 	return new Promise((resolve, reject) => {
-		try {
-			cb();
-			resolve();
-		} catch (er) {
-			setTimeout(() => {
-				try {
-					cb();
-					resolve();
-				} catch (er) {
+		const attempt = () => {
+			try {
+				cb();
+				resolve();
+			} catch (er) {
+				"FS OPERATION ATTEMPT FAILURE.";
+				if(timeout-- > 0) {
+					setTimeout(attempt, 1000);
+				} else {
 					reject();
 				}
-			}, 1000);
-		}
+			}
+		};
+		attempt();
 	});
 }
 
