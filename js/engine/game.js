@@ -1548,34 +1548,13 @@ const pathToTextureName = (path) => {
 	return path.replace(game.resourcesPath + 'img/', '');
 };
 
-/// #if EDITOR
-let texturesLoadingScheduled;
-/// #endif
 
 function loadDynamicTextures(
 	/// #if EDITOR
 	onlyThisFiles
 	/// #endif
 ) {
-	/// #if EDITOR
-	if(texturesLoadingScheduled) {
-		return;
-	}
 
-	for(let o of game.stage.children) {
-		o.__EDITOR_tmp_visible = o.visible;
-		o.visible = (o === game.currentFader);
-	}
-
-	texturesLoadingScheduled = setTimeout(() => {
-		for(let o of game.stage.children) {
-			if(o.hasOwnProperty('__EDITOR_tmp_visible')) {
-				o.visible = o.__EDITOR_tmp_visible;
-				delete o.__EDITOR_tmp_visible;
-			}
-		}
-		texturesLoadingScheduled = false;
-		/// #endif
 		assert(ResourceLoader.getLoadingCount() === 0, "Textures loading already in progress.");
 		let loader;
 		let texturesInProgress;
@@ -1685,9 +1664,6 @@ function loadDynamicTextures(
 			}
 			/// #endif
 		}
-	/// #if EDITOR
-	}, 1);
-	/// #endif
 }
 
 /// #if DEBUG
