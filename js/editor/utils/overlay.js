@@ -254,7 +254,7 @@ function refreshSelection() {
 	
 	while (i >= 0) {
 		let d = draggers[i];
-		d.visible = helpersIsVisible;
+		d.visible = helpersIsVisible && !document.fullscreenElement;
 		let info = __getNodeExtendData(d.owner);
 		if (!info.isSelected || d.info !== info) {
 			d.parent.removeChild(d);
@@ -379,6 +379,11 @@ function isObjectUnder(o) {
 
 let previousAllUnderMouse;
 function selectByStageClick(ev) {
+
+	if(document.fullscreenElement) {
+		return;
+	}
+
 	let allUnderMouse = new Selection();
 	let i;
 

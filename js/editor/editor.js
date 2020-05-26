@@ -506,7 +506,7 @@ export default class Editor {
 	}
 	
 	refreshTreeViewAndPropertyEditor() {
-		if(refreshTreeViewAndPropertyEditorScheduled) return;
+		if(refreshTreeViewAndPropertyEditorScheduled || document.fullscreenElement) return;
 		refreshTreeViewAndPropertyEditorScheduled = true;
 		setTimeout(()=> {
 			refreshTreeViewAndPropertyEditorScheduled = false;

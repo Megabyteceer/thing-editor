@@ -132,6 +132,10 @@ selectionFilter.padding = 2;
 
 setInterval(() => {
 	if (window.editor && editor.selection.length > 0) {
+		if(document.fullscreenElement) {
+			selectionFilter.enabled = 0;
+			return;
+		}
 		selectionFilter.color ^= 0x063311;
 		if(!editor.overlay.helpersIsVisible) {
 			if(selectionFilter.enabled > 0) {
