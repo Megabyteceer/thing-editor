@@ -1555,115 +1555,115 @@ function loadDynamicTextures(
 	/// #endif
 ) {
 
-		assert(ResourceLoader.getLoadingCount() === 0, "Textures loading already in progress.");
-		let loader;
-		let texturesInProgress;
-		let spritesWaitingOfTextures;
-		/// #if EDITOR
-		let spinnerShowed;
+	assert(ResourceLoader.getLoadingCount() === 0, "Textures loading already in progress.");
+	let loader;
+	let texturesInProgress;
+	let spritesWaitingOfTextures;
+	/// #if EDITOR
+	let spinnerShowed;
 
-		let currentContainerSymbol = {};
-		let currentContainer = game.currentContainer;
-		if(currentContainer) {
-			__getNodeExtendData(game.currentContainer)._currentContainerSymbol = currentContainerSymbol;
-		}
-		/// #endif
-		let texturesLocked = {};
-		let texturesSettings = game.projectDesc.loadOnDemandTextures;
+	let currentContainerSymbol = {};
+	let currentContainer = game.currentContainer;
+	if(currentContainer) {
+		__getNodeExtendData(game.currentContainer)._currentContainerSymbol = currentContainerSymbol;
+	}
+	/// #endif
+	let texturesLocked = {};
+	let texturesSettings = game.projectDesc.loadOnDemandTextures;
 
-		game.stage.forAllChildren((o) => {
-			if(o instanceof Sprite || o instanceof PIXI.Mesh || o instanceof Tilemap) {
-				let image = o.image;
-				if( image && (!Lib.hasTexture(image) && texturesSettings.hasOwnProperty(image))
+	game.stage.forAllChildren((o) => {
+		if(o instanceof Sprite || o instanceof PIXI.Mesh || o instanceof Tilemap) {
+			let image = o.image;
+			if( image && (!Lib.hasTexture(image) && texturesSettings.hasOwnProperty(image))
+				/// #if EDITOR
+				&& (!onlyThisFiles || onlyThisFiles.has(image))
+				/// #endif
+			) {
+				o.texture = 
+				/// #if EDITOR
+				editor.__unloadedTexture ||
+				/// #endif
+				Lib.getTexture('EMPTY');
+
+				if(!loader) {
+					texturesInProgress = {};
+					spritesWaitingOfTextures = [];
+					loader = new ResourceLoader();
+
 					/// #if EDITOR
-					&& (!onlyThisFiles || onlyThisFiles.has(image))
+					if(game.__EDITOR_mode) {
+						spinnerShowed = true;
+						editor.ui.modal.showSpinner();
+					}
 					/// #endif
-				) {
-					o.texture = 
-					/// #if EDITOR
-					editor.__unloadedTexture ||
-					/// #endif
-					Lib.getTexture('EMPTY');
-
-					if(!loader) {
-						texturesInProgress = {};
-						spritesWaitingOfTextures = [];
-						loader = new ResourceLoader();
-
+				}
+				if(!texturesInProgress.hasOwnProperty(image)) {
+					texturesInProgress[image] = true;
+					let fullPath = textureNameToPath(image);
+					loader.add(fullPath
 						/// #if EDITOR
-						if(game.__EDITOR_mode) {
-							spinnerShowed = true;
-							editor.ui.modal.showSpinner();
-						}
+						, fullPath + '?noCache=' + Lib.__noCacheCounter
 						/// #endif
-					}
-					if(!texturesInProgress.hasOwnProperty(image)) {
-						texturesInProgress[image] = true;
-						let fullPath = textureNameToPath(image);
-						loader.add(fullPath
-							/// #if EDITOR
-							, fullPath + '?noCache=' + Lib.__noCacheCounter
-							/// #endif
-						);
-					}
-					spritesWaitingOfTextures.push(o);
-				} else if(texturesSettings.hasOwnProperty(image)) {
-					if(!o.texture.baseTexture) { //static scene appeared with ref to destroyed texture
-						o.texture = Lib.getTexture(image);
-					}
-					texturesLocked[image] = true;
+					);
 				}
-			}
-		});
-		/// #if EDITOR
-		let unloaded = false;
-		/// #endif
-		for(let image in texturesSettings) {
-			let textureLoadingMode = texturesSettings[image];
-			if((textureLoadingMode & 4) === 0) {
-				if(!texturesLocked.hasOwnProperty(image) && Lib.hasTexture(image)) {
-					Lib._unloadTexture(image);
-					/// #if EDITOR
-					unloaded = true;
-					/// #endif
+				spritesWaitingOfTextures.push(o);
+			} else if(texturesSettings.hasOwnProperty(image)) {
+				if(!o.texture.baseTexture) { //static scene appeared with ref to destroyed texture
+					o.texture = Lib.getTexture(image);
 				}
+				texturesLocked[image] = true;
 			}
 		}
-		/// #if EDITOR
-		if(unloaded) {
-			editor.refreshTexturesViewer();
+	});
+	/// #if EDITOR
+	let unloaded = false;
+	/// #endif
+	for(let image in texturesSettings) {
+		let textureLoadingMode = texturesSettings[image];
+		if((textureLoadingMode & 4) === 0) {
+			if(!texturesLocked.hasOwnProperty(image) && Lib.hasTexture(image)) {
+				Lib._unloadTexture(image);
+				/// #if EDITOR
+				unloaded = true;
+				/// #endif
+			}
 		}
-		/// #endif
+	}
+	/// #if EDITOR
+	if(unloaded) {
+		editor.refreshTexturesViewer();
+	}
+	/// #endif
 
-		if(loader) {
-			loader.load((loader, resources) => {
-				/// #if EDITOR
-				if(spinnerShowed) {
-					editor.ui.modal.hideSpinner();
-				}
-				assert((currentContainer === game.currentContainer) && (!currentContainer || (__getNodeExtendData(game.currentContainer)._currentContainerSymbol === currentContainerSymbol)), "current container has changed during additional textures loading.");
-				/// #endif
-				for(let path in resources) {
-					let imageId = pathToTextureName(path);
-					Lib.addTexture(imageId, resources[path].texture);
-				}
-				for(let o of spritesWaitingOfTextures) {
-					let t = o.image;
-					o.image = "EMPTY";
-					o.image = t;
-					assert(o.texture, 'texture ' + t + ' was not loaded correctly');
-				}
-				/// #if EDITOR
-				editor.refreshTexturesViewer();
-				/// #endif
-			});
-		} else {
+	if(loader) {
+		loader.load((loader, resources) => {
 			/// #if EDITOR
 			if(spinnerShowed) {
 				editor.ui.modal.hideSpinner();
 			}
+			assert((currentContainer === game.currentContainer) && (!currentContainer || (__getNodeExtendData(game.currentContainer)._currentContainerSymbol === currentContainerSymbol)), "current container has changed during additional textures loading.");
 			/// #endif
+			for(let path in resources) {
+				let imageId = pathToTextureName(path);
+				Lib.addTexture(imageId, resources[path].texture);
+			}
+			for(let o of spritesWaitingOfTextures) {
+				let t = o.image;
+				o.image = "EMPTY";
+				o.image = t;
+				assert(o.texture, 'texture ' + t + ' was not loaded correctly');
+			}
+			/// #if EDITOR
+			editor.refreshTexturesViewer();
+			/// #endif
+		});
+	} else {
+		/// #if EDITOR
+		if(spinnerShowed) {
+			editor.ui.modal.hideSpinner();
 		}
+		/// #endif
+	}
 }
 
 /// #if DEBUG
