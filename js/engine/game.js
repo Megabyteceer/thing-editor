@@ -267,7 +267,7 @@ class Game {
 			game._isCanvasRotated = rotateCanvas;
 			if(rotateCanvas) {
 				stage.rotation = Math.PI / 2.0;
-				stage.x = this.H * scale;
+				stage.x = this.H;
 			} else {
 				stage.rotation = 0;
 				/// #if EDITOR
