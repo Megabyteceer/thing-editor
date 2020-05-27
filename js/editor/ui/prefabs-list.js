@@ -274,6 +274,10 @@ export default class PrefabsList extends React.Component {
 	}
 
 	static acceptPrefabEdition(oneStepOnly = false) {
+		if(editor.checkSceneHandlers.some(f => f())) {
+			return;
+		}
+
 		if(document.activeElement && document.activeElement.tagName === "INPUT") {
 			document.activeElement.blur();
 		}
