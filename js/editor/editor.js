@@ -48,6 +48,7 @@ export default class Editor {
 	constructor() {
 		/*global editor */
 		window.editor = this;
+		this.checkSceneHandlers = [];
 		this.Lib = Lib;
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'y');
@@ -834,6 +835,10 @@ export default class Editor {
 	}
 	
 	saveCurrentScene(name) {
+		for(let f of editor.checkSceneHandlers) {
+			f();
+		}
+
 		editor.ui.viewport.stopExecution();
 		if(!name) {
 			name = editor.currentSceneName;
