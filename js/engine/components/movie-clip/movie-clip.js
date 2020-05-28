@@ -324,6 +324,10 @@ export default class MovieClip extends DSprite {
 		Lib.__invalidateSerializationCache(o);
 		deserializeCache.delete(serializeCache.get(timelineData));
 		serializeCache.delete(timelineData);
+		timelineData.f.forEach((f, i) => {
+			f.___timelineData = timelineData;
+			f.___fieldIndex = i;
+		});
 	}
 
 	__onUnselect() {
