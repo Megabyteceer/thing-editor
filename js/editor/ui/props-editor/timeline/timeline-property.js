@@ -2,7 +2,7 @@ import Timeline from './timeline.js';
 import Window from '../../window.js';
 import MovieClip from 'thing-editor/js/engine/components/movie-clip/movie-clip.js';
 
-function bingTimelineForward() {
+function bringTimelineForward() {
 	Window.bringWindowForward('#window-propsEditor');
 	Window.bringWindowForward('#window-timeline', true);
 }
@@ -16,7 +16,7 @@ export default class TimelineProperty extends React.Component {
 	}
 
 	componentDidMount() {
-		bingTimelineForward();
+		bringTimelineForward();
 		this._renderWindow();
 	}
 
@@ -29,7 +29,7 @@ export default class TimelineProperty extends React.Component {
 		this.setState({toggled: t});
 		editor.settings.setItem('timeline-showed', t);
 		if(t) {
-			bingTimelineForward();
+			bringTimelineForward();
 		}
 	}
 
