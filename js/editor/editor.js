@@ -269,6 +269,7 @@ export default class Editor {
 	
 	set clipboardData(cd) {
 		editor.settings.setItem('__EDITOR-clipboard-data', cd);
+		editor.settings.removeItem('__EDITOR-clipboard-data-timeline-name');
 	}
 	
 	get clipboardData() {

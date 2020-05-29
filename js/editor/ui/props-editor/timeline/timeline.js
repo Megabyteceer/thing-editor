@@ -96,7 +96,7 @@ export default class Timeline extends React.Component {
 	}
 
 	static get isPasteAvailable() {
-		return editor.settings.getItem('timeline-clipboard-data-name');
+		return editor.settings.getItem('__EDITOR-clipboard-data-timeline-name');
 	}
 
 	static copySelection() {
@@ -116,7 +116,7 @@ export default class Timeline extends React.Component {
 				keyframesCount++;
 				let fieledName = c.props.owner.props.owner.props.field.n;
 				fieldsByName[fieledName] = fieldsByName[fieledName] || [];
-				
+
 				let hash = k.t + '_' + fieledName;
 				assert(!addedFramesCheck[hash]);
 				addedFramesCheck[hash] = true;
@@ -131,7 +131,7 @@ export default class Timeline extends React.Component {
 		}
 
 		if((labels.length > 0) || (keyframesCount > 0)) {
-			editor.settings.setItem('timeline-clipboard-data', {fields, labels});
+			editor.settings.setItem('__EDITOR-clipboard-data-timeline', {fields, labels});
 			let name = "";
 			if(keyframesCount) {
 				name += "Keyframes: " + keyframesCount;
@@ -142,14 +142,15 @@ export default class Timeline extends React.Component {
 				}
 				name += "Labels: " + labels.length;
 			}
-			editor.settings.setItem('timeline-clipboard-data-name', 'Paste: \n'+ name);
+			editor.settings.removeItem('__EDITOR-clipboard-data');
+			editor.settings.setItem('__EDITOR-clipboard-data-timeline-name', 'Paste: \n'+ name);
 			editor.ui.modal.notify("Copied: " + name);
-			timelineInstance.forceUpdateDebounced();
+			editor.refreshTreeViewAndPropertyEditor();
 		}
 	}
 
 	static pasteSelection() {
-		let data = editor.settings.getItem('timeline-clipboard-data');
+		let data = editor.settings.getItem('__EDITOR-clipboard-data-timeline');
 		if(data) {
 			
 			let allKeyframesToSelect = [];
@@ -164,8 +165,8 @@ export default class Timeline extends React.Component {
 					if(!tl.l[labelData.n]) {
 						let l = {t: labelData.t};
 						tl.l[labelData.n] = l;
-						allKeyframesToSelect.push(l);
 					}
+					allKeyframesToSelect.push(tl.l[labelData.n]);
 				}
 				for(let field of data.fields) {
 					for(let keyframeData of field.keyframes) {
