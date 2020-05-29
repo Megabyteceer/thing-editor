@@ -143,6 +143,8 @@ export default class TreeView extends React.Component {
 	onExportAsPngClick() {
 		let s = editor.selection[0];
 		if(s.width > 0 && s.height > 0) {
+			let tmpVisible = s.visible;
+			s.visible = true;
 			let p = s.parent;
 			let i = p.children.indexOf(s);
 			let f = s.filters;
@@ -167,6 +169,7 @@ export default class TreeView extends React.Component {
 				return b;
 			};
 			game.pixiApp.renderer.extract.canvas(c2).toBlob(function(b){
+				s.visible = tmpVisible;
 				delete c2.getLocalBounds;
 				var a = document.createElement('a');
 				document.body.append(a);
