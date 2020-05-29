@@ -47,16 +47,6 @@ let renderModal = (props, i) => {
 	);
 };
 
-window.addEventListener('keydown', (ev) => {
-	if (ev.keyCode === 27) {
-		let m = modal.state.modals[modal.state.modals.length - 1];
-		if (m && !m.noEasyClose) {
-			modal.hideModal();
-			sp(ev);
-		}
-	}
-});
-
 let renderSpinner = () => {
 	return R.div(blackoutProps,
 		R.div(spinnerProps)
@@ -79,7 +69,7 @@ class Modal extends React.Component {
 		if(this.state.modals.length > 0) {
 			let topModal = document.querySelectorAll('.modal-body');
 			topModal = topModal[topModal.length -1];
-			return !topModal.contains(element);
+			return !topModal.contains(element) && !element.classList.contains('modal-close-button');
 		}
 		return false;
 	}
@@ -218,7 +208,17 @@ class Modal extends React.Component {
 		if(notifyText) {
 			notify = R.div(spinner ? notifyPropsDuringSpinner : notifyProps, notifyText);
 		}
-		return R.fragment(this.state.modals.map(renderModal), spinner, notify);
+
+		let hotkeyButton;
+		if(this.state.modals.length > 0) {
+			hotkeyButton = R.btn('х', () => {
+				let m = modal.state.modals[modal.state.modals.length - 1];
+				if (m && !m.noEasyClose) {
+					modal.hideModal();
+				}
+			}, undefined, "modal-close-button hidden", 27);
+		}
+		return R.fragment(this.state.modals.map(renderModal), spinner, notify, hotkeyButton);
 	}
 }
 
