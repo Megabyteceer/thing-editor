@@ -91,6 +91,103 @@ export default class Timeline extends React.Component {
 		this._afterHistoryJump = this._afterHistoryJump.bind(this);
 	}
 
+	static get isElementsSelected() {
+		return selectedComponents.length > 0;
+	}
+
+	static get isPasteAvailable() {
+		return editor.settings.getItem('timeline-clipboard-data-name');
+	}
+
+	static copySelection() {
+		let keyframesCount = 0;
+		let labels = [];
+		let fields = [];
+		let fieldsByName = {};
+		let addedFramesCheck = {};
+		selectedComponents.forEach((c) => {
+			if(c instanceof TimelineKeyframe) {
+				let k = {};
+				for(let name in c.props.keyFrame) {
+					if((name.length === 1) && (name !== 'n')) {
+						k[name] = c.props.keyFrame[name];
+					}
+				}
+				keyframesCount++;
+				let fieledName = c.props.owner.props.owner.props.field.n;
+				fieldsByName[fieledName] = fieldsByName[fieledName] || [];
+				
+				let hash = k.t + '_' + fieledName;
+				assert(!addedFramesCheck[hash]);
+				addedFramesCheck[hash] = true;
+				
+				fieldsByName[fieledName].push(k);
+			} else if(c instanceof TimeLabel) {
+				labels.push({n: c.props.labelName, t: c.props.label.t});
+			}
+		});
+		for(let name in fieldsByName) {
+			fields.push({name, keyframes: fieldsByName[name]});
+		}
+
+		if((labels.length > 0) || (keyframesCount > 0)) {
+			editor.settings.setItem('timeline-clipboard-data', {fields, labels});
+			let name = "";
+			if(keyframesCount) {
+				name += "Keyframes: " + keyframesCount;
+			}
+			if(labels.length) {
+				if(name) {
+					name += '\n';
+				}
+				name += "Labels: " + labels.length;
+			}
+			editor.settings.setItem('timeline-clipboard-data-name', 'Paste: \n'+ name);
+			editor.ui.modal.notify("Copied: " + name);
+			timelineInstance.forceUpdateDebounced();
+		}
+	}
+
+	static pasteSelection() {
+		let data = editor.settings.getItem('timeline-clipboard-data');
+		if(data) {
+			
+			let allKeyframesToSelect = [];
+			for(let o of editor.selection) {
+
+				if(!o._timelineData) {
+					o._timelineData = {l:{}, f:[]};
+				}
+				let tl = o._timelineData;
+
+				for(let labelData of data.labels) {
+					if(!tl.l[labelData.n]) {
+						let l = {t: labelData.t};
+						tl.l[labelData.n] = l;
+						allKeyframesToSelect.push(l);
+					}
+				}
+				for(let field of data.fields) {
+					for(let keyframeData of field.keyframes) {
+						let k = getFrameAtTimeOrCreate(o, field.name, keyframeData.t);
+						Object.assign(k, keyframeData);
+						allKeyframesToSelect.push(k);
+					}
+				}
+				TimeLabel.renormalizeAllLabels(o);
+				Timeline.allFieldDataChanged(o);
+			}
+			timelineInstance.forceUpdateDebounced();
+			setTimeout(() => {
+				clearSelection();
+				allKeyframesToSelect.forEach((kf) => {
+					select(kf.___view);
+				});
+			}, 1);
+			editor.sceneModified();
+		}
+	}
+
 	static unselectKeyframe(keyframe) {
 		for (let c of selectedComponents) {
 			if (c.props.keyFrame === keyframe) {
