@@ -177,12 +177,21 @@ export default class Sound {
 			}
 			volume = volume * Sound.soundsVol;
 			if(volume > 0.01) {
-				s.volume(volume);
-				s.rate(rate);
-				if(seek !== 0) {
-					s.seek(seek);
+				if(multiInstanced) {
+					s.soundIdSaved = s.play();
+					s.volume(volume, s.soundIdSaved);
+					s.rate(rate, s.soundIdSaved);
+					if(seek !== 0) {
+						s.seek(seek, s.soundIdSaved);
+					}
+				} else {
+					s.volume(volume);
+					s.rate(rate);
+					if(seek !== 0) {
+						s.seek(seek);
+					}
+					s.soundIdSaved = s.play(s.soundIdSaved);
 				}
-				s.soundIdSaved = s.play(multiInstanced ? undefined : s.soundIdSaved);
 				s.lastPlayStartFrame = game.time + 2;
 			}
 		}
