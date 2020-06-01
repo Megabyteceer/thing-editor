@@ -131,7 +131,12 @@ export default class Timeline extends React.Component {
 		}
 
 		if((labels.length > 0) || (keyframesCount > 0)) {
-			editor.settings.setItem('__EDITOR-clipboard-data-timeline', {fields, labels});
+			editor.settings.setItem('__EDITOR-clipboard-data-timeline', {
+				fields,
+				labels,
+				p: editor.selection[0]._timelineData.p,
+				d:  editor.selection[0]._timelineData.d
+			});
 			let name = "";
 			if(keyframesCount) {
 				name += "Keyframes: " + keyframesCount;
@@ -157,7 +162,7 @@ export default class Timeline extends React.Component {
 			for(let o of editor.selection) {
 
 				if(!o._timelineData) {
-					o._timelineData = {l:{}, f:[]};
+					o._timelineData = {l:{}, f:[], p: data.p, d: data.d};
 				}
 				let tl = o._timelineData;
 
