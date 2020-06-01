@@ -128,6 +128,14 @@ export default class Label extends Text {
 			this.text = val;
 		}
 	}
+
+	freezeCounter() {
+		this.currentInterval = 1000000000;
+	}
+
+	unfreezeCounter() {
+		this.currentInterval = 0;
+	}
 	
 	refreshNow() {
 		this.currentInterval = 0;
