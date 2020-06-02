@@ -448,6 +448,50 @@ let deserializeCache = new WeakMap();
 
 /// #if EDITOR
 
+
+MovieClip.prototype.gotoLabel.___EDITOR_callbackParameterChooserFunction = (context) => {
+	
+	return new Promise((resolve) => {
+
+		let addedLabels = {};
+
+		const CUSTOM_LABEL_ITEM = {name: 'Custom label...'};
+
+		let labels = [];
+
+		if(context.timeline) {
+			for(let name in context.timeline.l) {
+				if(!addedLabels[name]) {
+					labels.push({name: R.b(null, name), pureName: name});
+					addedLabels[name] = true;
+				}
+			}
+		}
+
+
+		labels.push(CUSTOM_LABEL_ITEM);
+
+		return editor.ui.modal.showListChoose("Choose label to go", labels).then((choosed) => {
+			if(choosed) {
+				if(choosed === CUSTOM_LABEL_ITEM) {
+					editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
+						resolve([enteredText]);
+					});
+				} else {
+					resolve([choosed.pureName]);
+				}
+			}
+			return null;
+		});
+
+
+
+		
+
+	});
+};
+
+
 const filterUndefined = (v) => {
 	return v !== undefined;
 };
