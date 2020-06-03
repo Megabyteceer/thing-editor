@@ -214,11 +214,15 @@ class LanguageTableEditor extends React.Component {
 			}
 		}
 		if(!defaultKey) {
-			let a = idsList[0].split('.');
-			a.pop();
-			defaultKey = a.join('.');
-			if(defaultKey) {
-				defaultKey += '.';
+			if(idsList[0]) {
+				let a = idsList[0].split('.');
+				a.pop();
+				defaultKey = a.join('.');
+				if(defaultKey) {
+					defaultKey += '.';
+				}
+			} else if(currentLibName !== 'project-locales') {
+				defaultKey = currentLibName.split('/').pop() + '.';
 			}
 		}
 
