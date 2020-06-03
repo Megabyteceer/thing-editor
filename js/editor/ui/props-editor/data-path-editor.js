@@ -5,6 +5,7 @@ import CallbackEditor from "./callback-editor.js";
 import {getLatestSceneNodeBypath} from "thing-editor/js/engine/utils/get-value-by-path.js";
 import PrefabsList from "../prefabs-list.js";
 import Lib from "thing-editor/js/engine/lib.js";
+import callByPath from "thing-editor/js/engine/utils/call-by-path.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
@@ -28,6 +29,12 @@ export default class DataPathEditor extends React.Component {
 	}
 
 	onGotoTargetClick() {
+
+		if(this.props.value && this.props.value.startsWith('Sound.play')) {
+			callByPath(this.props.value, editor.selection[0]);
+			return;
+		}
+
 		game.currentScene._refreshAllObjectRefs();
 		let node = getLatestSceneNodeBypath(this.props.value, editor.selection[0]);
 		if(!node) {
