@@ -68,12 +68,19 @@ export default class Delay extends Container {
 				editor.ui.status.warn('Delay was removed before its triggered', 32021, this);
 			}
 		}
+		this.callback = null;
 	}
 	/// #endif
 	
 	constructor() {
 		super();
 		this.visible = false;
+	}
+
+	skip() { // 99999
+		this.callback();
+		this.callback = null;
+		this.remove();
 	}
 
 	update() {
