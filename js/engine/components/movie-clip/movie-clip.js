@@ -181,7 +181,6 @@ export default class MovieClip extends DSprite {
 	hasLabel(labelName) {
 		/// #if EDITOR
 		if(!this._timelineData) {
-			editor.ui.status.error("MovieClip has no timeline.", 32003, this, 'timeline');
 			return;
 		}
 		/// #endif
@@ -244,6 +243,15 @@ export default class MovieClip extends DSprite {
 	}
 
 	/// #if EDITOR
+
+	init() {
+		super.init();
+		/// #if EDITOR
+		if((this.constructor === MovieClip) && !this._timelineData) {
+			editor.ui.status.error("MovieClip " + this.___info + " has no timeline.", 32003, this, 'timeline');
+		}
+		/// #endif
+	}
 
 	__EDITOR_getKeyframeIcon(action) {
 		switch(action) {
