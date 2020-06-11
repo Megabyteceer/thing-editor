@@ -331,7 +331,7 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmpty =
 
 window.addEventListener('beforeunload', function() {
 	editor.exitPrefabMode();
-	if(!editor.game.__EDITOR_mode) { //backup already exist
+	if(!editor.game || !editor.game.__EDITOR_mode) { //backup already exist
 		return;
 	}
 	editor.saveCurrentScenesSelectionGlobally();
