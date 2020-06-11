@@ -84,7 +84,7 @@ export default class TexturesView extends React.Component {
 	}
 
 	render() {
-		let btn = R.btn(this.state.toggled ? 'Close Textures Viewer (Ctrl+I)' : 'Open Textures Viewer (Ctrl+I)', this.onToggleClick, undefined, 'menu-btn', 1073);
+		let btn = R.btn(this.state.toggled ? 'Close Textures Viewer (Ctrl+U)' : 'Open Textures Viewer (Ctrl+U)', this.onToggleClick, undefined, 'menu-btn', 1085);
 		let table;
 		if (this.state.toggled) {
 			table = editor.ui.renderWindow('texturesviewer', 'Textures', 'Textures Viewer', R.fragment(

@@ -115,10 +115,10 @@ export default class Viewport extends React.Component {
 			delete game.__EDITOR_currentSceneData;
 			if(play) { // launch game
 				game.data = {};
+				editor.overlay.exitIsolation();
 				editor.ui.status.clear();
 				problemOnGameStart = true;
 				editor.saveHistoryNow();
-				
 				editor.saveBackup(true);
 				game.__EDITOR_selectionDataWaitingToSelect = editor.selection.saveSelection();
 				game.__EDITOR_currentSceneData = Lib.__serializeObject(game.currentScene);

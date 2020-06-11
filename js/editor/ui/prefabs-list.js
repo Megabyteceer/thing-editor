@@ -297,6 +297,9 @@ export default class PrefabsList extends React.Component {
 	}
 	
 	static exitPrefabEdit(oneStepOnly = false) {
+		if(editor.overlay) {
+			editor.overlay.exitIsolation();
+		}
 		if(prefabsStack.length) {
 			editor.ui.viewport.setPrefabMode(false);
 			editor.overlay.hidePreview();

@@ -3,8 +3,20 @@ import Pool from "thing-editor/js/engine/utils/pool.js";
 import DSprite from "thing-editor/js/engine/components/d-sprite.js";
 import game from "thing-editor/js/engine/game.js";
 
-let blackout;
+let blackouts = [];
+let previewBlackout;
+let isolationBlackout;
 let cameraFrame;
+
+function createBlackout() {
+	let b = new PIXI.Sprite();
+	b.texture = PIXI.Texture.WHITE;
+	b.tint = 30;
+	b.alpha = 0.9;
+	__getNodeExtendData(b).hidden = true;
+	blackouts.push(b);
+	return b;
+}
 
 let isPreviewShowed;
 
@@ -15,6 +27,8 @@ let isScrolling;
 let scrollingX, scrollingY;
 
 let helpersIsVisible = true;
+
+let isolation = [];
 
 function checkIfCurrentContainerIsShowedPrefab() {
 	assert(isPreviewShowed === game.currentContainer.name, "game.currentContainer.name is incorrect. Prefabs name expected.");
@@ -36,19 +50,27 @@ export default class Overlay {
 	constructor() {
 		game.pixiApp.ticker.add(refreshSelection);
 		
-		blackout = new PIXI.Sprite();
-		blackout.texture = PIXI.Texture.WHITE;
-		blackout.tint = 30;
-		blackout.alpha = 0.9;
+		previewBlackout = createBlackout();
+		isolationBlackout = createBlackout();
+		isolationBlackout.anchor.x = 0.5;
+		isolationBlackout.anchor.y = 0.5;
+		let originalRender = isolationBlackout.render.bind(isolationBlackout);
+		isolationBlackout.render = function(renderer) {
+			originalRender(renderer);
+			for(let o of isolation) {
+				o.render(renderer);
+			}
+		}.bind(isolationBlackout);
 		cameraFrame = new PIXI.Graphics();
 		this.helpersIsVisible = true;
 		this.onEditorRenderResize();
 	}
 	
 	onEditorRenderResize() {
-		blackout.width = game.W * 2;
-		blackout.height = game.H * 2;
-	
+		for(let b of blackouts) {
+			b.width = game.W * 2;
+			b.height = game.H * 2;
+		}
 		let canvas = document.querySelector('#viewport-root canvas');
 		let bounds = canvas.getBoundingClientRect();
 		viewportCanvasScale = game.W / bounds.width;
@@ -56,7 +78,7 @@ export default class Overlay {
 	}
 
 	getBGColor() {
-		return blackout.tint;
+		return previewBlackout.tint;
 	}
 	
 	setBGColor(tint) {
@@ -67,11 +89,36 @@ export default class Overlay {
 			editor.settings.setItem('prefab-bg'+ game.currentContainer.name, tint);
 		}
 		
-		blackout.tint = tint;
+		previewBlackout.tint = tint;
 	}
 	
-	disableSelection(disable) {
+	disableSelectionByStageClick(disable) {
 		selectionDisabled = disable;
+	}
+
+	toggleIsolation() {
+		if(this.isIsolated) {
+			this.exitIsolation();
+		} else {
+			this.isolateSelected();
+		}
+	}
+
+	isolateSelected() {
+		isolation = editor.selection.slice();
+		game.stage.addChild(isolationBlackout);
+		isolationBlackout.parent.toLocal(editor.selection[0], editor.selection[0].parent, isolationBlackout);
+		this.isIsolated = isolation.length > 0;
+		editor.refreshTreeViewAndPropertyEditor();
+	}
+
+	exitIsolation() {
+		if(isolation.length > 0) {
+			isolation.length = 0;
+			this.isIsolated = false;
+			isolationBlackout.detachFromParent();
+			editor.refreshTreeViewAndPropertyEditor();
+		}
 	}
 
 	get isPreviewShowed() {
@@ -96,9 +143,7 @@ export default class Overlay {
 				cameraFrame.__appliedH = game.H;
 			}
 		} else {
-			if(cameraFrame.parent) {
-				cameraFrame.parent.removeChild(cameraFrame);
-			}
+			cameraFrame.detachFromParent();
 		}
 	}
 
@@ -152,19 +197,19 @@ export default class Overlay {
 	}
 	
 	showPreview(object) {
+		this.exitIsolation();
 		editor.ui.viewport.resetZoom();
 		this.setBGColor(editor.settings.getItem('prefab-bg' + object.name));
 		this.hidePreview(false);
-		game.stage.addChild(blackout);
-		__getNodeExtendData(blackout).hidden = true;
+		game.stage.addChild(previewBlackout);
 		isPreviewShowed = object.name;
 		game.showModal(object);
 		__getNodeExtendData(object).childrenExpanded = true;
 		checkIfCurrentContainerIsShowedPrefab();
 		game.stage.x = -object.x + game.W / 2;
 		game.stage.y = -object.y + game.H / 2;
-		blackout.x = -game.stage.x;
-		blackout.y = -game.stage.y;
+		previewBlackout.x = -game.stage.x;
+		previewBlackout.y = -game.stage.y;
 		setTimeout(() => {
 			let selectionData = game.settings.getItem('prefab-selection' + game.currentContainer.name);
 			if(selectionData) {
@@ -206,10 +251,9 @@ export default class Overlay {
 	}
 	
 	hidePreview(refresh = true) {
+		this.exitIsolation();
 		editor.ui.viewport.resetZoom();
-		if (blackout.parent) {
-			game.stage.removeChild(blackout);
-		}
+		previewBlackout.detachFromParent();
 		if (isPreviewShowed) {
 			checkIfCurrentContainerIsShowedPrefab();
 			let selectionData = editor.selection.saveSelection();
@@ -235,9 +279,7 @@ function showGuideSprite() {
 	game.stage.parent.addChild(guideSprite);
 	clearTimeout(guideSpriteTimeout);
 	guideSpriteTimeout = setTimeout(() => {
-		if(guideSprite.parent) {
-			guideSprite.parent.removeChild(guideSprite);
-		}
+		guideSprite.detachFromParent();
 	}, 500);
 }
 
@@ -257,7 +299,7 @@ function refreshSelection() {
 		d.visible = helpersIsVisible && !document.fullscreenElement;
 		let info = __getNodeExtendData(d.owner);
 		if (!info.isSelected || d.info !== info) {
-			d.parent.removeChild(d);
+			d.detachFromParent();
 			Pool.dispose(d);
 			info.draggerPivot = null;
 			info.draggerRotator = null;
@@ -411,11 +453,16 @@ function selectByStageClick(ev) {
 		}
 	};
 
-	let c = isPreviewShowed ? game.currentContainer : game.stage;
-
-
-	checkNodeToSelect(c);
-	c.forAllChildren(checkNodeToSelect);
+	let a;
+	if(isolation.length > 0) {
+		a = isolation;
+	} else {
+		a = [isPreviewShowed ? game.currentContainer : game.stage];
+	}
+	for(let c of a) {
+		checkNodeToSelect(c);
+		c.forAllChildren(checkNodeToSelect);
+	}
 
 	allUnderMouse.sortSelectedNodes();
 	allUnderMouse.reverse();

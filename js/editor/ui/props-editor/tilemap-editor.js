@@ -91,13 +91,13 @@ class TilemapEditor extends React.Component {
 		viewport.addEventListener('mouseout', this.onMouseOut);
 		viewport.addEventListener('mouseup', this.onMouseUp);
 		window.addEventListener('keydown', this.onKeyDown);
-		editor.overlay.disableSelection(true);
+		editor.overlay.disableSelectionByStageClick(true);
 		assert(getTilemap() instanceof Tilemap, "Tilemap expected");
 		refreshTilemap();
 	}
 	
 	componentWillUnmount() {
-		editor.overlay.disableSelection(false);
+		editor.overlay.disableSelectionByStageClick(false);
 		viewport.removeEventListener('mousedown', this.onMouseDown);
 		viewport.removeEventListener('mousemove', this.onMouseMove);
 		viewport.removeEventListener('mouseout', this.onMouseOut);
