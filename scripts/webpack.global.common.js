@@ -20,13 +20,15 @@ let projectHasSounds;
 function addSoundsFolderToCopy(libName) {
 	let files = glob((libName || '.') + '/snd/**/*.@(webm|weba|ogg|aac|mp3)', {absolute: true, sync:true, ignore});
 	for(let from of files) {
-		let a = from.split('/snd/');
-		a.shift();
-		let to =  './snd/' + a.join('/snd/');
-		if(!addedFiles.has(to)) {
-			addedFiles.add(to);
-			copyFilesList.push({from, to});
-			projectHasSounds = true;
+		if(from.indexOf('/~') < 0) {
+			let a = from.split('/snd/');
+			a.shift();
+			let to =  './snd/' + a.join('/snd/');
+			if(!addedFiles.has(to)) {
+				addedFiles.add(to);
+				copyFilesList.push({from, to});
+				projectHasSounds = true;
+			}
 		}
 	}
 }
@@ -34,12 +36,14 @@ function addSoundsFolderToCopy(libName) {
 function addImagesFolderToCopy(libName) {
 	let files = glob((libName || '.') + '/img/**/*.@(png|jpg|atlas|json|xml)', {absolute: true, sync:true, ignore});
 	for(let from of files) {
-		let a = from.split('/img/');
-		a.shift();
-		let to =  './img/' + a.join('/img/');
-		if(!addedFiles.has(to)) {
-			addedFiles.add(to);
-			copyFilesList.push({from, to});
+		if(from.indexOf('/~') < 0) {
+			let a = from.split('/img/');
+			a.shift();
+			let to =  './img/' + a.join('/img/');
+			if(!addedFiles.has(to)) {
+				addedFiles.add(to);
+				copyFilesList.push({from, to});
+			}
 		}
 	}
 }
