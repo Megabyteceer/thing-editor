@@ -97,12 +97,11 @@ app.get('/fs/edit', function (req, res) {
 	setTimeout(() => {
 		"use strict";
 		try {
+			open(fn);
 			if(line) {
 				let arg = fn + ':' + line + (char ? ':' + char : '');
 				open('', {app: ['code', '-r', '-g', arg]});
-			} else {
-				open(fn);
-			}
+			} 
 			res.end('{}');
 		} catch (err) {
 			res.end(JSON.stringify({error: 'Can not open file to edit: ' + fn}));
