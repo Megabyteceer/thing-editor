@@ -1320,6 +1320,9 @@ const latestXY = {};
 
 const mouseHandlerGlobal = (ev) => {
 
+	if(!isFinite(ev.data.global.x)) {
+		return;
+	}
 	let mouse = game.mouse;
 	let p = game.stage.toLocal(ev.data.global, game.pixiApp.stage);
 
