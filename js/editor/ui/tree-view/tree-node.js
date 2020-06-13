@@ -1,3 +1,5 @@
+import game from "thing-editor/js/engine/game.js";
+
 let caretClosed = R.span({className: 'tree-caret'}, '▸');
 let caretOpened = R.span({className: 'tree-caret'}, '▾');
 
@@ -81,7 +83,7 @@ class TreeNode extends React.Component {
 		}
 
 		let style;
-		if(node.children.length > 6) {
+		if(!game.__EDITOR_mode && node.children.length > 6) {
 			style = {
 				paddingTop: 9,
 				paddingBottom: 9
