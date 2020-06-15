@@ -265,6 +265,9 @@ class Game {
 			let stage = game.stage;
 
 			game._isCanvasRotated = rotateCanvas;
+			
+			DisplayObject.applyWorldCoordsGetters();
+
 			if(rotateCanvas) {
 				stage.rotation = Math.PI / 2.0;
 				stage.x = this.H;

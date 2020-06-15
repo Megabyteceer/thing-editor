@@ -85,7 +85,40 @@ DisplayObject.prototype.removeFilter = function removeFilter(f) {
 
 export default DisplayObject;
 
+let appliedCoordXGetter;
 
+function getCoordX() {
+	return this.worldTransform.tx;
+}
+function getCoordY() {
+	return this.worldTransform.ty;
+}
+
+DisplayObject.applyWorldCoordsGetters = () => {
+	if(game._isCanvasRotated) {
+		Object.defineProperties(DisplayObject.prototype, {
+			'worldX': { // 99999
+				get: getCoordY,
+				configurable: true
+			},
+			'worldY': {
+				get: getCoordX,
+				configurable: true
+			}
+		});
+	} else {
+		Object.defineProperties(DisplayObject.prototype, {
+			'worldX': {
+				get: getCoordX,
+				configurable: true
+			},
+			'worldY': {
+				get: getCoordY,
+				configurable: true
+			}
+		});
+	}
+};
 
 Object.defineProperties(DisplayObject.prototype, {
 	'___info': {

@@ -72,6 +72,7 @@ export default class Viewport extends React.Component {
 		game.stage.scale.y = 1;
 		game.stage.x = 0;
 		game.stage.y = 0;
+		game.onResize();
 	}
 	
 	checkIfNeedRecovery() {
@@ -302,6 +303,7 @@ export default class Viewport extends React.Component {
 				R.input({id:"is-mobile-checkbox", className:'clickable', type:'checkbox', title: "game.isMobile.any", onChange: (ev) => {
 					game.isMobile.any = ev.target.checked;
 					editor.settings.setItem('mobileMode', game.isMobile.any);
+					this.resetZoom();
 				}, defaultChecked:game.isMobile.any}),
 
 				languagePanel,
