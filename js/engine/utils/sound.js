@@ -130,8 +130,8 @@ export default class Sound {
 	}
 
 	static init() {
-		soundsVol = game.settings.getItem('soundsVol', 1);
-		musicVol = game.settings.getItem('musicVol', 0.7);
+		soundsVol = game.settings.getItem('soundsVol', game.projectDesc.defaultSoundsVol, 1);
+		musicVol = game.settings.getItem('musicVol', game.projectDesc.defaultMusVol, 0.7);
 	}
 
 	/// #if EDITOR

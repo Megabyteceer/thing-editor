@@ -439,6 +439,8 @@ class Game {
 			__loadOnDemandTexturesFolders:{
 				
 			},
+			defaultMusVol: 0.7,
+			defaultSoundsVol: 1,
 			embedLocales: true,
 			__localesNewKeysPrefix: '',
 			__externalLocalesSource: '',
