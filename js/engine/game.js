@@ -1245,6 +1245,9 @@ const mouseHandlerGlobalDown = (ev) => {
 		latestXY[ev.data.pointerId] = o;
 		latestXYPriority.unshift(o);
 	}
+	if(!game.isFocused) {
+		focusChangeHandler(true);
+	}
 	game.mouse.click = true;
 	mouseHandlerGlobal(ev);
 	if(
