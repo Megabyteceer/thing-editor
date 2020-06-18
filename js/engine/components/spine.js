@@ -153,6 +153,10 @@ export default class Spine extends Container {
 		}
 	}
 
+	__afterDeserialization() {
+		this.tint = this.tint; // eslint-disable-line no-self-assign
+	}
+
 	/// #endif
 
 	gotoLabelRecursive(labelName) {
