@@ -155,11 +155,15 @@ export default class DataPathEditor extends React.Component {
 		}
 
 		let functionTip;
-		if(this.state && this.state.focus) {
+		if(val && this.state && this.state.focus) {
+			game.currentScene._refreshAllObjectRefs();
 			let f = getValueByPath(val, editor.selection[0], true);
 			if(typeof f === 'function') {
 				let firstLine = f.toString().split('\n').shift();
 				let params = firstLine.split('(').pop().split(')').shift();
+				if(!params) {
+					params = 'no parameters';
+				}
 				functionTip = R.span(functionTipWrapperProps, R.span(functionTipProps, params));
 			}
 		}
