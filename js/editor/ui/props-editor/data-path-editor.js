@@ -2,13 +2,15 @@ import PropsFieldWrapper from "./props-field-wrapper.js";
 import DisplayObject from "thing-editor/js/engine/components/display-object.js";
 import game from "thing-editor/js/engine/game.js";
 import CallbackEditor from "./callback-editor.js";
-import {getLatestSceneNodeBypath} from "thing-editor/js/engine/utils/get-value-by-path.js";
+import getValueByPath, {getLatestSceneNodeBypath} from "thing-editor/js/engine/utils/get-value-by-path.js";
 import PrefabsList from "../prefabs-list.js";
 import Lib from "thing-editor/js/engine/lib.js";
 import callByPath from "thing-editor/js/engine/utils/call-by-path.js";
 
 const fieldEditorWrapperProps = {className:"field-editor-wrapper"};
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
+const functionTipProps = {className:"path-editor-function-tip"};
+const functionTipWrapperProps = {className:"path-editor-function-tip-wrapper"};
 
 let initialized = false;
 
@@ -22,6 +24,16 @@ export default class DataPathEditor extends React.Component {
 		this.onEditClicked = this.onEditClicked.bind(this);
 		this.onBreakpointClick = this.onBreakpointClick.bind(this);
 		this.onGotoTargetClick = this.onGotoTargetClick.bind(this);
+		this.onFocus = this.onFocus.bind(this);
+		this.onBlur = this.onBlur.bind(this);
+	}
+
+	onFocus() {
+		this.setState({focus: true});
+	}
+
+	onBlur() {
+		this.setState({focus: false});
 	}
 
 	static isFunctionIsClass(f) {
@@ -142,11 +154,30 @@ export default class DataPathEditor extends React.Component {
 			gotoButton = R.btn('🡒', this.onGotoTargetClick, 'Find target object', 'tool-btn' );
 		}
 
+		let functionTip;
+		if(this.state && this.state.focus) {
+			let f = getValueByPath(val, editor.selection[0], true);
+			if(typeof f === 'function') {
+				let firstLine = f.toString().split('\n').shift();
+				let params = firstLine.split('(').pop().split(')').shift();
+				functionTip = R.span(functionTipWrapperProps, R.span(functionTipProps, params));
+			}
+		}
+
 		return R.div(fieldEditorWrapperProps,
-			R.input({className:'props-editor-callback', onChange: this.props.onChange, disabled:this.props.disabled, title:val, value: val || ''}),
+			R.input({
+				className:'props-editor-callback',
+				onChange: this.props.onChange,
+				disabled: this.props.disabled,
+				title:val,
+				value: val || '',
+				onFocus: this.onFocus,
+				onBlur: this.onBlur
+			}),
 			breakpointBtn,
 			chooseBtn,
-			gotoButton
+			gotoButton,
+			functionTip
 		);
 	}
 

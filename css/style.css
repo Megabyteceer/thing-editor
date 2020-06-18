@@ -1450,8 +1450,20 @@ input{
 	margin-right: 40px;
 }
 
+.path-editor-function-tip {
+	position: absolute;
+    top: -30px;
+    right: 0;
+    padding: 3px 20px;
+    border: 1px solid #f3b842;
+    color: #563800;
+    z-index: 5;
+    background: #fff8e8;
+}
 
-
+.path-editor-function-tip-wrapper{
+	position: relative;
+}
 
 
 
