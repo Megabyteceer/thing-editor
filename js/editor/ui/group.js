@@ -78,8 +78,8 @@ function isGroupHidden(groupId) {
 
 function toggleGroup(ev) {
 	let groupId = ev.target.dataset.groupid;
-	let group = document.querySelector('.' + groupId + ' .props-group-body');
-	let isHidden = !isGroupHidden(groupId);
+	let group = ev.target.closest('.props-group').querySelector('.props-group-body');
+	let isHidden = !group.classList.contains('hidden');
 	editor.settings.setItem(groupId, isHidden);
 	if (isHidden) {
 		group.classList.add('hidden');
