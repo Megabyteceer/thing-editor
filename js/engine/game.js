@@ -227,18 +227,12 @@ class Game {
 	
 		if(dynamicStageSize) {
 			if(rotateCanvas) {
-				this.H = Math.round(w);
-				this.W = Math.round(h);
+				this.H = w;
+				this.W = h;
 			} else {
-				this.W = Math.round(w);
-				this.H = Math.round(h);
+				this.W = w;
+				this.H = h;
 			}
-		}
-		if(this.W & 1) {
-			this.W++;
-		}
-		if(this.H & 1) {
-			this.H++;
 		}
 
 		let rendererWidth, rendererHeight;
@@ -248,6 +242,16 @@ class Game {
 		} else {
 			rendererWidth = this.W;
 			rendererHeight = this.H;
+		}
+
+		this.W = Math.round(this.W);
+		this.H = Math.round(this.H);
+
+		if(this.W & 1) { //make even game logical size only. Keep canvas fit to client
+			this.W++;
+		}
+		if(this.H & 1) {
+			this.H++;
 		}
 
 		let needResizeRenderer = (_rendererWidth !== rendererWidth) || (_rendererHeight !== rendererHeight) || (scale !== S);
@@ -306,7 +310,7 @@ class Game {
 						renderer.rootRenderTarget.resolution = scale;
 					}
 
-					renderer.resize(_rendererWidth, _rendererHeight);
+					renderer.resize(_rendererWidth + 0.0001, _rendererHeight + 0.0001); //prevent canvas size decreasing by pixel because of Math.ceil
 					/// #if EDITOR
 				}
 				/// #endif
