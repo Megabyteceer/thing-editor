@@ -444,6 +444,7 @@ class Game {
 			},
 			defaultMusVol: 1,
 			defaultSoundsVol: 1,
+			keepSoundWhilePageUpdate: false,  // 99999
 			embedLocales: true,
 			__localesNewKeysPrefix: '',
 			__externalLocalesSource: '',
@@ -962,6 +963,11 @@ class Game {
 	}
 
 	_updateGlobal(dt) {
+
+		if(!game.isFocused && game.projectDesc.keepSoundWhilePageUpdate) {
+			focusChangeHandler(true);
+		}
+
 		/// #if DEBUG
 		this._FPS++;
 		let now = Date.now();
