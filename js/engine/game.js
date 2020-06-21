@@ -1740,6 +1740,10 @@ Game.prototype.showModal.___EDITOR_callbackParameterChooserFunction = () => {
 Game.prototype.showScene.___EDITOR_callbackParameterChooserFunction = () => {
 	return ScenesList.chooseScene("Choose scene to open:");
 };
+Game.prototype.replaceScene.___EDITOR_callbackParameterChooserFunction = () => {
+	return ScenesList.chooseScene("Choose scene which will replace current scene:");
+};
+
 Game.prototype.showQuestion.___EDITOR_callbackParameterChooserFunction = () => {
 	return new Promise((resolve) => {
 		editor.ui.modal.showPrompt('Enter title to show', 'Question Title', undefined, editor.validateCallbackParameter).then((enteredTitle) => {
