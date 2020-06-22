@@ -20,7 +20,16 @@ export default class ParticleContainer extends Container {
 		}
 		/// #endif
 	}
+
+	render(renderer) {
+		this.children.sort(sortByAlpha);
+		super.render(renderer);
+	}
 }
+
+const sortByAlpha = (a,b) => {
+	return b.alpha - a.alpha;
+};
 
 /// #if EDITOR
 ParticleContainer.__EDITOR_icon = 'tree/particle-container';
