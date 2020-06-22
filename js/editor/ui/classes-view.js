@@ -214,11 +214,11 @@ class ClassesView extends React.Component {
 			),
 			R.btn('<', (ev) => {
 				sp(ev);
-				findNextOfThisType(item.c, -1);
+				findNextOfThisType(item.c, -1, ev.ctrlKey);
 			}, 'Find previous ' + item.c.name, 'tool-btn'),
 			R.btn('>', (ev) => {
 				sp(ev);
-				findNextOfThisType(item.c, 1);
+				findNextOfThisType(item.c, 1, ev.ctrlKey);
 			}, 'Find next ' + item.c.name, 'tool-btn')
 			), item, key, this, 'components.' + item.c.name);
 	}
@@ -280,8 +280,8 @@ class ClassesView extends React.Component {
 	}
 }
 
-function findNextOfThisType(c, direction) {
-	if(game.keys.ctrlKey) {
+function findNextOfThisType(c, direction, findAll) {
+	if(findAll) {
 		let a = game.currentContainer.findChildrenByType(c).filter((o) => {
 			return !Overlay.getParentWhichHideChildren(o);	
 		});
