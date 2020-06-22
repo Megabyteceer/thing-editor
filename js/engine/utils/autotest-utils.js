@@ -1,6 +1,7 @@
 import getValueByPath from "./get-value-by-path.js";
 import Button from "../components/button.js";
 import ws from "thing-editor/js/editor/utils/socket.js";
+import game from "../game.js";
 
 let timeoutHandler;
 let testsStoppedByUser;
@@ -21,7 +22,7 @@ function finishTimeout() {
 
 export function _stopTests() {
 	finishTimeout();
-	window.__EDITOR_isAutotestInProgress = false;
+	game.__EDITOR_isAutotestInProgress = false;
 	testsStoppedByUser = true;
 }
 

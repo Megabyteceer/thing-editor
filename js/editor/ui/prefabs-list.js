@@ -274,8 +274,8 @@ export default class PrefabsList extends React.Component {
 	}
 
 	static acceptPrefabEdition(oneStepOnly = false) {
-		if(editor.checkSceneHandlers.some(f => f())) {
-			return;
+		for(let f of editor.checkSceneHandlers) {
+			f();
 		}
 
 		if(document.activeElement && document.activeElement.tagName === "INPUT") {

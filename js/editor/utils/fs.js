@@ -17,6 +17,13 @@ let fs = {
 		return fs.getJSON('/fs/enum').then((data) => {
 			fs.filesExt = {};
 			fs.files = {};
+			if(data.hasOwnProperty('libsSettings')) {
+				fs.libsSettings = data.libsSettings;
+				delete data.libsSettings;
+			} else {
+				fs.libsSettings = {};
+			}
+
 			for(let type in data) {
 				let files = data[type];
 				files.sort((a,b) => {

@@ -405,6 +405,16 @@ function enumFiles() {
 		});
 		ret[type] = ret[type].concat(a);
 	}
+
+	if(currentGameDesc.libs) {
+		for(let libName of currentGameDesc.libs) {
+			let libSettingsFilename = path.join(getLibRoot(libName), 'settings.json');
+			if(fs.existsSync(libSettingsFilename)) {
+				ret.libsSettings = Object.assign(ret.libsSettings || {}, JSON.parse(fs.readFileSync(libSettingsFilename)));
+			}
+		}
+	}
+
 	return ret;
 }
 

@@ -5,15 +5,29 @@ const fs = require('fs');
 /*global require */
 /*global process */
 
+function getLibRoot(libName) {
+	return path.join(__dirname, '../..', libName);
+}
 
 const projectPath = path.join(__dirname, '../../', process.argv[2]);
 process.chdir(projectPath);
 const isDebug = process.argv.indexOf('debug') >= 0;
 
-let projectDesc;
+let projectDesc = {};
 const descPath = path.join(projectPath, 'thing-project.json');
 if(fs.existsSync(descPath)) {
-	projectDesc = JSON.parse(fs.readFileSync(descPath));
+	let pureProjectDesc = JSON.parse(fs.readFileSync(descPath));
+	
+	if(pureProjectDesc.libs) {
+		for(let libName of pureProjectDesc.libs) {
+			let libSettingsFilename = path.join(getLibRoot(libName), 'settings.json');
+			if(fs.existsSync(libSettingsFilename)) {
+				projectDesc = Object.assign(projectDesc, JSON.parse(fs.readFileSync(libSettingsFilename)));
+			}
+		}
+	}
+	projectDesc = Object.assign(projectDesc, pureProjectDesc);
+
 }
 
 let confPath = isDebug ? projectDesc.__webpack.debug : projectDesc.__webpack.production;

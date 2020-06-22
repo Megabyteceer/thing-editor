@@ -169,7 +169,7 @@ export default class Editor {
 			}
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
-			editor.projectDesc = data;
+			editor.projectDesc = Object.assign(this.fs.libsSettings, data);
 
 			let isProjectDescriptorModified = game.applyProjectDesc(editor.projectDesc);
 
@@ -237,7 +237,7 @@ export default class Editor {
 				await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
 				if(game.__EDITOR_mode) {
 					editor.ui.viewport.onTogglePlay();
-					window.__EDITOR_isAutotestInProgress = true; // 99999
+					game.__EDITOR_isAutotestInProgress = true; // 99999
 				}
 				await editor.waitForCondition(() => {
 					return game.currentContainer;
@@ -1024,8 +1024,17 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 		}
 	}
 
+	let descToSave = Object.assign({}, editor.projectDesc);
+
 	if(!cleanOnly || isCleanedUp) {
-		editor.fs.saveFile('thing-project.json', editor.projectDesc);
+		for(let key in editor.fs.libsSettings) {
+			if(descToSave.hasOwnProperty(key)) {
+				if(JSON.stringify(descToSave[key]) === JSON.stringify(editor.fs.libsSettings[key])) {
+					delete descToSave[key];
+				}
+			}
+		}
+		editor.fs.saveFile('thing-project.json', descToSave);
 	}
 };
 

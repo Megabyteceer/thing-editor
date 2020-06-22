@@ -81,13 +81,6 @@ export default class Build {
 			}
 			
 			let sounds = filterObjectsData(Lib.__getSoundsData());
-			/*
-			let version = editor.projectDesc.version.split('.');
-			let latest = parseInt(version.pop());
-			latest++;
-			version.push(latest);
-			editor.projectDesc.version = version.join('.');
-			editor.saveProjectDesc();*/
 
 			let projectDesc = editor.projectDesc;
 
