@@ -40,6 +40,8 @@ export default class ScrollLayer extends Container {
 		this.autoScrolling = false;
 		this.xSpeed = 0;
 		this.ySpeed = 0;
+		this._virtualScrollX = this.x;
+		this._virtualScrollY = this.y;
 	}
 
 	onWheel(ev) {
@@ -103,11 +105,11 @@ export default class ScrollLayer extends Container {
 		if (game.mouse.click) {
 			if(this.fullArea.w > this.visibleArea.w) {
 				this.xSpeed = (game.mouse.x - mouseX_prev);
-				this.x += this.xSpeed;
+				this._virtualScrollX += this.xSpeed;
 			}
 			if(this.fullArea.h > this.visibleArea.h) {
 				this.ySpeed = (game.mouse.y - mouseY_prev);
-				this.y += this.ySpeed;
+				this._virtualScrollY += this.ySpeed;
 			}
 			mouseX_prev = game.mouse.x;
 			mouseY_prev = game.mouse.y;
@@ -128,8 +130,8 @@ export default class ScrollLayer extends Container {
 
 			if(!game.mouse.click) {
 				
-				this.x += this.xSpeed;
-				this.y += this.ySpeed;
+				this._virtualScrollX += this.xSpeed;
+				this._virtualScrollY += this.ySpeed;
 				if(!this.autoScrolling) {
 					if(game.isMobile.any) {
 						this.xSpeed *= this.mobileInertia;
@@ -151,58 +153,53 @@ export default class ScrollLayer extends Container {
 
 			if (this.autoScrolling) {
 				this._checkScrollToBounds();
-				this.xSpeed += (this.scrollToX - this.x) * 0.06;
-				this.ySpeed += (this.scrollToY - this.y) * 0.06;
+				this.xSpeed += (this.scrollToX - this._virtualScrollX) * 0.06;
+				this.ySpeed += (this.scrollToY - this._virtualScrollY) * 0.06;
 				this.xSpeed *= 0.7;
 				this.ySpeed *= 0.7;
-				if ((Math.abs(this.scrollToX - this.x) <= 1) && (Math.abs(this.xSpeed) < 0.5) && (Math.abs(this.scrollToY - this.y) <= 1) && (Math.abs(this.ySpeed) < 0.5)) {
+				if ((Math.abs(this.scrollToX - this._virtualScrollX) <= 1) && (Math.abs(this.xSpeed) < 0.5) && (Math.abs(this.scrollToY - this._virtualScrollY) <= 1) && (Math.abs(this.ySpeed) < 0.5)) {
 					this.xSpeed = 0;
 					this.ySpeed = 0;
 					if (this.callAfterScroll) {
 						this.callAfterScroll();
 					}
-					this.x = this.scrollToX;
-					this.y = this.scrollToY;
+					this._virtualScrollX = this.scrollToX;
+					this._virtualScrollY = this.scrollToY;
 					this.callAfterScroll = false;
 					this.autoScrolling = false;
 				}
-			} else if(Math.abs(this.xSpeed) < 0.1 && Math.abs(this.ySpeed) < 0.1) {
-				this.xSpeed = 0;
-				this.ySpeed = 0;
-				this.x = Math.round(this.x);
-				this.y = Math.round(this.y);
 			}
 			
 			let limitShift = 0;
 
-			if ((v.x - this.x) < f.x) {
-				limitShift = -(f.x - (v.x - this.x));
-			} else if (((v.x + v.w) - this.x) > (f.x + f.w)) {
-				limitShift = (((v.x + v.w) - this.x) - (f.x + f.w));
+			if ((v.x - this._virtualScrollX) < f.x) {
+				limitShift = -(f.x - (v.x - this._virtualScrollX));
+			} else if (((v.x + v.w) - this._virtualScrollX) > (f.x + f.w)) {
+				limitShift = (((v.x + v.w) - this._virtualScrollX) - (f.x + f.w));
 			}
 			if(limitShift !== 0) {
 				if(this.bouncingBounds) {
 					this.xSpeed *= 0.95;
-					this.x = stepTo(this.x, this.x + limitShift, Math.abs(limitShift / 4));
+					this._virtualScrollX = stepTo(this._virtualScrollX, this._virtualScrollX + limitShift, Math.abs(limitShift / 4));
 				} else {
 					this.xSpeed = 0;
-					this.x += limitShift;
+					this._virtualScrollX += limitShift;
 				}
 			}
 			
 			limitShift = 0;
-			if ((v.y - this.y) < f.y) {
-				limitShift = -(f.y - (v.y - this.y));
-			} else if (((v.y + v.h) - this.y) > (f.y + f.h)) {
-				limitShift = (((v.y + v.h) - this.y) - (f.y + f.h));
+			if ((v.y - this._virtualScrollY) < f.y) {
+				limitShift = -(f.y - (v.y - this._virtualScrollY));
+			} else if (((v.y + v.h) - this._virtualScrollY) > (f.y + f.h)) {
+				limitShift = (((v.y + v.h) - this._virtualScrollY) - (f.y + f.h));
 			}
 			if(limitShift !== 0) {
 				if(this.bouncingBounds) {
 					this.ySpeed *= 0.95;
-					this.y = stepTo(this.y, this.y + limitShift, Math.abs(limitShift / 4));
+					this._virtualScrollY = stepTo(this._virtualScrollY, this._virtualScrollY + limitShift, Math.abs(limitShift / 4));
 				} else {
 					this.ySpeed = 0;
-					this.y += limitShift;
+					this._virtualScrollY += limitShift;
 				}
 			}
 
@@ -228,19 +225,19 @@ export default class ScrollLayer extends Container {
 	}
 
 	get relativeScrollY() {
-		return -(this.autoScrolling ? this.scrollToY : this.y) / Math.max(1, this.fullArea.h - this.visibleArea.h);
+		return -(this.autoScrolling ? this.scrollToY : this._virtualScrollY) / Math.max(1, this.fullArea.h - this.visibleArea.h);
 	}
 
 	set relativeScrollY(val) {
-		this.y = -val * (this.fullArea.h - this.visibleArea.h);
+		this._virtualScrollY = -val * (this.fullArea.h - this.visibleArea.h);
 	}
 
 	get relativeScrollX() {
-		return -(this.autoScrolling ? this.scrollToX : this.x) / Math.max(1, this.fullArea.w - this.visibleArea.w);
+		return -(this.autoScrolling ? this.scrollToX : this._virtualScrollX) / Math.max(1, this.fullArea.w - this.visibleArea.w);
 	}
 
 	set relativeScrollX(val) {
-		this.x = -val * (this.fullArea.w - this.visibleArea.w);
+		this._virtualScrollX = -val * (this.fullArea.w - this.visibleArea.w);
 	}
 
 	get isXScrollAvailable() {
@@ -249,6 +246,24 @@ export default class ScrollLayer extends Container {
 	
 	get isYScrollAvailable() {
 		return this.visibleArea.h < this.fullArea.h;
+	}
+
+	set _virtualScrollX(v) {
+		this.__virtualScrollX = v;
+		this.x = Math.round(v);
+	}
+
+	get _virtualScrollX() {
+		return this.__virtualScrollX;
+	}
+
+	set _virtualScrollY(v) {
+		this.__virtualScrollY = v;
+		this.y = Math.round(v);
+	}
+
+	get _virtualScrollY() {
+		return this.__virtualScrollY;
 	}
 
 	_checkScrollToBounds() {
@@ -321,8 +336,8 @@ export default class ScrollLayer extends Container {
 		this._checkScrollToBounds();
 
 		if (instantly) {
-			this.x = this.scrollToX;
-			this.y = this.scrollToY;
+			this._virtualScrollX = this.scrollToX;
+			this._virtualScrollY = this.scrollToY;
 		}
 		this.callAfterScroll = callback;
 	}
