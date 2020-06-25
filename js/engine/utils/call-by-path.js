@@ -29,6 +29,8 @@ const callByPath = (callbackPath, this_) => {
 		let n = path[i];
 		fOwner = c;
 		if(typeof n === 'string') {
+			assert(n.indexOf(',') < 0, "Comma ',' character detected in field name in callback`s path: " + callbackPath + '". Use "`" character to separate callback\s parameter block.', 10025);
+			/// #endif
 			c = c[n];
 		} else {
 			c = c.getChildByName(n.s);
