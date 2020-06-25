@@ -377,9 +377,15 @@ export default class Spine extends Container {
 
 	static allocatePool(name, count) {
 		if(count > 0) {
+			let a = [];
+			let i;
 			while(count-- > 0) {
-				const spine = getSpineInstance(name);
-				disposeSpineInstance(spine);
+				i = getSpineInstance(name);
+				i.update(1);
+				a.push(i);
+			}
+			while(a.length > 0) {
+				disposeSpineInstance(a.pop());
 			}
 		}
 	}
