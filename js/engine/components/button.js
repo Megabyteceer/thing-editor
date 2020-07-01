@@ -92,11 +92,11 @@ export default class Button extends DSprite {
 
 	callClick() {
 		if(this.isCanBePressed) {
-			this._executeOnClick();
+			this._executeOnClick('invoke');
 		}
 	}
 
-	_executeOnClick() {
+	_executeOnClick(source) {
 		/// #if EDITOR
 		if(game.__EDITOR_mode) {
 			return;
@@ -104,6 +104,10 @@ export default class Button extends DSprite {
 		/// #endif
 		assert(this.isCanBePressed, "_executeOnClick called for button which could not be pressed at the moment.");
 		
+		if(Button.globalOnClick) { // 99999
+			Button.globalOnClick(this, source);
+		}
+
 		Button.clickedButton = this;
 		if(this.callback) {
 			this.callback();
@@ -120,7 +124,7 @@ export default class Button extends DSprite {
 		}
 	}
 	
-	onDown(ev) {
+	onDown(ev, source = 'pointerdown') {
 		if(game.time === latestClickTime
 		/// #if EDITOR
 			&& !game.__paused
@@ -148,7 +152,7 @@ export default class Button extends DSprite {
 				}
 				Button.downedButton = this;
 				this.curDelay = this.repeatDelay;
-				this._executeOnClick();
+				this._executeOnClick(source);
 			}
 		}
 	}
@@ -178,7 +182,7 @@ export default class Button extends DSprite {
 				this.curDelay--;
 				if(this.curDelay === 0) {
 					if(this.isCanBePressed) {
-						this._executeOnClick();
+						this._executeOnClick('autorepeat');
 					}
 					this.curDelay = this.repeatInterval;
 				}
@@ -248,8 +252,8 @@ export default class Button extends DSprite {
 	static _tryToClickByKeycode(keyCode) {
 		for(let b of allActiveButtons) {
 			if((b.hotkey === keyCode) && b.isCanBePressed) {
-				b._executeOnClick();
-				return true;
+				b.onDown(null, 'hotkey');
+				return b;
 			}
 		}
 	}
@@ -284,13 +288,8 @@ window.addEventListener('keydown', (ev) => {
 		return;
 	}
 	/// #endif
-	for(let b of allActiveButtons) {
-		if((b.hotkey === ev.keyCode) && b.isCanBePressed) {
-			downedByKeycodeButton = b;
-			b.onDown();
-			break;
-		}
-	}
+
+	downedByKeycodeButton = Button._tryToClickByKeycode(ev.keyCode);
 });
 
 window.addEventListener('keyup', (ev) => {
