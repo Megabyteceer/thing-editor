@@ -34,6 +34,9 @@ class Settings {
 		if ((val !== this.data[name]) || (typeof(val) === 'object')) {
 			this.data[name] = val;
 			this.changed();
+			if(Settings.globalOnChanged) { // 99999
+				Settings.globalOnChanged(name, val);
+			}
 		}
 	}
 	
