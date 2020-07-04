@@ -57,6 +57,8 @@ const hoverRectPropsMock = {
 
 let viewport;
 let isSetting;
+let isPicking;
+
 let isErasing;
 function getTilemap() {
 	return editor.selection[0];
@@ -129,7 +131,11 @@ class TilemapEditor extends React.Component {
 		}
 
 		if(ev.buttons === 1) {
-			isSetting = true;
+			if(ev.ctrlKey) { // 99999
+				isPicking = true;
+			} else {
+				isSetting = true;
+			}
 		}
 		if(ev.buttons === 2) {
 			isErasing = true;
@@ -186,7 +192,11 @@ class TilemapEditor extends React.Component {
 		}
 
 		let pt = Tilemap.tileMapProcessor.imageToType(getTilemap().getTile(X, Y));
-		if (pt !== type) {
+		if(isPicking) {
+			if(pt >= 0) {
+				this.setState({type: pt});
+			}
+		} else if (pt !== type) {
 			Tilemap.tileMapProcessor.onTileEditCallback(getTilemap(), X, Y, type);
 			return true;
 		}
@@ -218,9 +228,10 @@ class TilemapEditor extends React.Component {
 		if(ev.buttons === 0) {
 			isErasing = false;
 			isSetting = false;
+			isPicking = false;
 			return;
 		}
-		if(isErasing || isSetting) {
+		if(isErasing || isSetting || isPicking) {
 			this.setTile(X, Y, isErasing ? -1 : this.state.type);
 		}
 	}
