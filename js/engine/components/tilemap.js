@@ -35,11 +35,11 @@ export default class Tilemap extends Container {
 	}
 	
 	set texture(t) {
-		if(super.texture !== t) {
-			super.texture = t;
-			for(let t of this.children) {
-				if(t instanceof Tile8x8) {
-					t.texture = this.texture;
+		if(this._texture !== t) {
+			this._texture = t;
+			for(let c of this.children) {
+				if(c instanceof Tile8x8) {
+					c.texture = t;
 				}
 			}
 			/// #if EDITOR
@@ -49,7 +49,7 @@ export default class Tilemap extends Container {
 	}
 
 	get texture() {
-		return super.texture;
+		return this._texture;
 	}
 	
 	getTile(X, Y) {
