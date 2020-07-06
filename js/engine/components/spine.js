@@ -55,6 +55,7 @@ export default class Spine extends Container {
 				return;
 			}
 
+			this.updateTime = 0;
 			this.spineContent = getSpineInstance(this.spineData);
 			this.spineContent.state.timeScale = this._speed;
 			/// #if EDITOR
@@ -321,7 +322,9 @@ export default class Spine extends Container {
 
 			if (this.tint !== this.spineContent.tint) {
 				this.spineContent.tint = this.tint;
-				isNeedUpdate = true;
+				if(!this.isPlaying) {
+					isNeedUpdate = true;
+				}
 			}
 			
 			if(this._animationIsDirty && this._currentAnimation) {
@@ -332,7 +335,7 @@ export default class Spine extends Container {
 				
 				const trackEntry = this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
 				trackEntry.mixDuration = this._setImmediately ? 0 : this.mixDuration;
-
+				this.updateTime = 0;
 				this._animationIsDirty = false;
 				this._setImmediately = false;
 				if(!this.isPlaying) {
@@ -340,7 +343,7 @@ export default class Spine extends Container {
 				}
 			}
 			if(this.isPlaying) {
-				this.spineContent.update(0.01666666666667);
+				this.updateTime += 0.01666666666667;
 			} else if (isNeedUpdate) {
 				this.spineContent.update(0);
 			}
@@ -351,6 +354,22 @@ export default class Spine extends Container {
 				c.update();
 			}
 		}
+	}
+
+	render(renderer) {
+		if(this.spineContent && this.updateTime > 0) {
+			this.spineContent.update(this.updateTime);
+			this.updateTime = 0;
+		}
+		super.render(renderer);
+	}
+
+	_renderCanvas(renderer) {
+		if(this.spineContent && this.updateTime > 0) {
+			this.spineContent.update(this.updateTime);
+			this.updateTime = 0;
+		}
+		super._renderCanvas(renderer);
 	}
 
 	hackTextureBySlotName(slotName, texture) {
