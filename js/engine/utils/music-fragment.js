@@ -1,7 +1,6 @@
 import {stepTo} from "../utils/utils.js";
 import Lib from "../lib.js";
 import game from "../game.js";
-import Sound from "./sound.js";
 
 const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01
 

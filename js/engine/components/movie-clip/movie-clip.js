@@ -192,7 +192,7 @@ export default class MovieClip extends DSprite {
 		/// #if EDITOR
 		if(this.__logLevel) {
 			let stack = editor.__getCurrentStack("gotoLabel");
-			if(this._goToLabelNextFrame) {
+			if(this._goToLabelNextFrame && (this._goToLabelNextFrame !== labelName)) {
 				editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; time: ' + game.time, 99999, this, undefined, true);
 			}
 			editor.ui.status.warn(
@@ -200,7 +200,7 @@ export default class MovieClip extends DSprite {
 					R.btn('Show stack...', () => {
 						editor.showStack(stack);
 					}),
-					'gotoLabel: ' + labelName + '; time: ' + game.time
+					((this._goToLabelNextFrame === labelName) ? 'repeated gotoLabel: ' : 'gotoLabel: ') + labelName + '; time: ' + game.time
 				),
 				99999, this, undefined, true);
 		}
