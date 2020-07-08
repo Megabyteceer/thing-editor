@@ -203,7 +203,9 @@ class TilemapEditor extends React.Component {
 	}
 
 	onMouseOut() {
-		editor.overlay.drawRect(hoverRectPropsMock, getTilemap());
+		if(getTilemap()) {
+			editor.overlay.drawRect(hoverRectPropsMock, getTilemap());
+		}
 	}
 
 	onMouseMove(ev) {
