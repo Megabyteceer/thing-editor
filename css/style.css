@@ -692,7 +692,7 @@ input{
 .close-window-btn {
 	position: absolute;
 	padding: 0 3px;
-	right: -4px;
+	right: 2px;
 	top: -21px;
 	font-weight: bold;
 	background: #de3535;
