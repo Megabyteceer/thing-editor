@@ -118,17 +118,19 @@ export default class MusicFragment {
 		assert(!this._currentFragment, 'MusicFragment already playing.');
 
 		if(s) {
-			s = Lib.getSound(s, true);
-			s.volume(startVol);
-			/// #if DEBUG
-			s.rate(game.__speedMultiplier);
-			/// #endif
-			s.seek(pos);
-			s.soundIdSaved = s.play(s.soundIdSaved);
+			try {
+				s = Lib.getSound(s, true);
+				s.volume(startVol);
+				/// #if DEBUG
+				s.rate(game.__speedMultiplier);
+				/// #endif
+				s.seek(pos);
+				s.soundIdSaved = s.play(s.soundIdSaved);
 
-			this._currentFragment = s;
-			assert(s._sounds.length === 1, "Music started in more that one instance.");
-			allActiveFragments[this.musicFragmentHash] = this;
+				this._currentFragment = s;
+				assert(s._sounds.length === 1, "Music started in more that one instance.");
+				allActiveFragments[this.musicFragmentHash] = this;
+			} catch(er) {} // eslint-disable-line no-empty
 		}
 	}
 

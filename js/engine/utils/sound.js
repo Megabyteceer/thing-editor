@@ -177,22 +177,24 @@ export default class Sound {
 			}
 			volume = volume * Sound.soundsVol;
 			if(volume > 0.01) {
-				if(multiInstanced) {
-					s.soundIdSaved = s.play();
-					s.volume(volume, s.soundIdSaved);
-					s.rate(rate, s.soundIdSaved);
-					if(seek !== 0) {
-						s.seek(seek, s.soundIdSaved);
+				try {
+					if(multiInstanced) {
+						s.soundIdSaved = s.play();
+						s.volume(volume, s.soundIdSaved);
+						s.rate(rate, s.soundIdSaved);
+						if(seek !== 0) {
+							s.seek(seek, s.soundIdSaved);
+						}
+					} else {
+						s.volume(volume);
+						s.rate(rate);
+						if(seek !== 0) {
+							s.seek(seek);
+						}
+						s.soundIdSaved = s.play(s.soundIdSaved);
 					}
-				} else {
-					s.volume(volume);
-					s.rate(rate);
-					if(seek !== 0) {
-						s.seek(seek);
-					}
-					s.soundIdSaved = s.play(s.soundIdSaved);
-				}
-				s.lastPlayStartFrame = game.time + 2;
+					s.lastPlayStartFrame = game.time + 2;
+				} catch(er) {} // eslint-disable-line no-empty
 			}
 		}
 	}
@@ -351,7 +353,8 @@ function showSndDebugger() {
 			});
 		}
 	}
-	sndDebuggerShowed = true;
+	
+	sndDebuggerShowed = true; // eslint-disable-line no-unreachable
 	sndDebugger.style.display = 'block';
 	
 	let soundNames = {};
@@ -384,7 +387,7 @@ function showSndDebugger() {
 		}
 	}
 	
-	for(let fileChooser of document.querySelectorAll('.snd-override')) {
+	for(let fileChooser of document.querySelectorAll('.snd-override')) {  // eslint-disable-line no-unreachable
 
 		fileChooser.addEventListener("change", function(ev) {
 			var files = fileChooser.files;
@@ -409,7 +412,7 @@ function showSndDebugger() {
 		});
 	}
 
-	for(let a of document.querySelectorAll('.snd-name')) {
+	for(let a of document.querySelectorAll('.snd-name')) {  // eslint-disable-line no-unreachable
 		a.addEventListener('click', (ev) => {
 			let sndName = sndNameByEvent(ev);
 			Sound.play(sndName);
@@ -420,7 +423,7 @@ function showSndDebugger() {
 		});
 	}
 
-	for(let clearBtn of document.querySelectorAll('.snd-clear')) {
+	for(let clearBtn of document.querySelectorAll('.snd-clear')) {  // eslint-disable-line no-unreachable
 		clearBtn.addEventListener('click', (ev) => {
 			setOverrideData(sndNameByEvent(ev));
 			showSndDebugger();
