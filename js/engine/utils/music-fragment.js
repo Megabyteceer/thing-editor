@@ -96,7 +96,7 @@ export default class MusicFragment {
 				this._currentFragment.loop(true);
 			}
 		}
-		assert(this._currentFragment || (!this.loop && this.isLoopPos));
+		assert(this._currentFragment || (!this.loop && this.isLoopPos), "Failed to play Music intro: " + (this.intro || 'EMPTY') + '; loop: ' + (this.loop || 'EMPTY'));
 	}
 
 	onIntroEnd() {
