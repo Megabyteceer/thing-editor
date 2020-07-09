@@ -2,6 +2,7 @@ import Group from "./group.js";
 import Lib from "thing-editor/js/engine/lib.js";
 import game from "thing-editor/js/engine/game.js";
 import Pool from "thing-editor/js/engine/utils/pool.js";
+import Scene from "thing-editor/js/engine/components/scene.js";
 
 let bodyProps = {className: 'list-view', title: 'Double click to open scene.'};
 
@@ -101,7 +102,7 @@ export default class ScenesList extends React.Component {
 	}
 	
 	renderItem(sceneName, item) {
-		let cls = Lib.getClass(item.c);
+		let cls = Lib.__hasClass(item.c) ? Lib.getClass(item.c) : Scene;
 		let deleteBtn;
 		if(sceneName === editor.currentSceneName) {
 			this.state.selectedItem = item;

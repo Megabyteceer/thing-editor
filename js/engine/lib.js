@@ -621,10 +621,16 @@ export default class Lib {
 		if(!classes.hasOwnProperty(src.c)) {
 			if(_oldClasses.hasOwnProperty(src.c)) {
 				ret = Pool.create(_oldClasses[src.c]);
-				assert(false, "Class " + src.c + " was not loaded. Latest valid version used.", 32011);
+				editor.ui.status.error("Class " + src.c + " was not loaded. Latest valid version used.", 32011, ret);
 			} else {
-				ret = Pool.create(classes['Container']);
-				assert(false, "Unknown class " + src.c + " was replaced with class Container.", 32012);
+				let replaceClassName = (Object.values(scenes).indexOf(src) >= 0) ? 'Scene' : 'Container';
+
+				ret = Pool.create(classes[replaceClassName]);
+				let oldClassname = src.c;
+				src.c = replaceClassName;
+				setTimeout(() => { // wait for id assign
+					editor.ui.status.error( "Unknown class " + oldClassname + " was replaced with class " + replaceClassName + ".", 32012, ret);
+				}, 1);
 			}
 		}
 		assert(defaults.hasOwnProperty(src.c), 'Class ' + src.c + ' has no default values set');
