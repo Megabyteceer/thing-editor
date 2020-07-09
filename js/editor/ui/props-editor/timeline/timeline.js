@@ -535,7 +535,9 @@ export default class Timeline extends React.Component {
 	}
 
 	onMouseMove(ev) {
-
+		if(!Window.all.timeline) {
+			return;
+		}
 		if (Math.abs(draggingStartX - ev.clientX) > 20) {
 			draggingStartX = -10000;
 		}
