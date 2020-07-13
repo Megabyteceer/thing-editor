@@ -114,8 +114,12 @@ export default class BitmapText extends PIXI.BitmapText {
 	}
 
 	set "font.size" (v) {
-		this.font.size = v;
 		/// #if EDITOR
+		if(this.font) {
+		/// #endif
+			this.font.size = v;
+		/// #if EDITOR
+		}
 		if((v === 0) && this.font.name) {
 			this.font.size = BitmapText.fonts[this.font.name].size;
 		}
