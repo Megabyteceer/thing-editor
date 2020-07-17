@@ -35,8 +35,8 @@ class NumberEditor extends React.Component {
 		this.onUpClick = this.onUpClick.bind(this);
 		this.onDownClick = this.onDownClick.bind(this);
 		this.onBlur = this.onBlur.bind(this);
-		this.btnUp = R.span({className:'number-input-btn number-input-btn-up', onClick:this.onUpClick, onMouseDown:this.onMouseDown}, '▲');
-		this.btnDown = R.span({className:'number-input-btn number-input-btn-down', onClick:this.onDownClick, onMouseDown:this.onMouseDown}, '▼');
+		this.btnUp = R.span({className:'number-input-btn number-input-btn-up', onMouseUp:this.onUpClick, onMouseDown:this.onMouseDown}, '▲');
+		this.btnDown = R.span({className:'number-input-btn number-input-btn-down', onMouseUp:this.onDownClick, onMouseDown:this.onMouseDown}, '▼');
 	}
 
 	componentWillUnmount() {
