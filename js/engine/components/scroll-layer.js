@@ -7,6 +7,14 @@ let draggingLayer;
 let mouseX_prev;
 let mouseY_prev;
 
+const WHEEL_EVENT_OPTIONS = 
+/// #if EDITOR
+true;
+/*
+/// #endif
+{ passive: false, capture: true };
+//*/
+
 export default class ScrollLayer extends Container {
 
 	constructor() {
@@ -36,7 +44,7 @@ export default class ScrollLayer extends Container {
 			this._mouseHandlerContainer = game.pixiApp.renderer.plugins.interaction;
 		}
 		this._mouseHandlerContainer.on('pointerdown', this.onDown);
-		document.addEventListener('wheel', this.onWheel, { passive: false, capture: true });
+		document.addEventListener('wheel', this.onWheel, WHEEL_EVENT_OPTIONS);
 		this.autoScrolling = false;
 		this.xSpeed = 0;
 		this.ySpeed = 0;
@@ -121,7 +129,7 @@ export default class ScrollLayer extends Container {
 		if(draggingLayer === this) {
 			draggingLayer = null;
 		}
-		document.removeEventListener('wheel', this.onWheel, true);
+		document.removeEventListener('wheel', this.onWheel, WHEEL_EVENT_OPTIONS);
 		this._mouseHandlerContainer.removeListener('pointerdown', this.onDown);
 		super.onRemove();
 	}
