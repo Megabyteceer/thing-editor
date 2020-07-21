@@ -621,7 +621,14 @@ __EDITOR_editableProps(Fill, [{
 			value: PIXI.WRAP_MODES.MIRRORED_REPEAT
 		}
 	],
-	default: PIXI.WRAP_MODES.REPEAT
+	default: PIXI.WRAP_MODES.REPEAT,
+	afterEdited:() => {
+		for(let o of editor.selection) {
+			if(o.texture !== PIXI.Texture.WHITE && o.texture !== PIXI.Texture.EMPTY) {
+				o.texture.baseTexture.update();
+			}
+		}
+	}
 }
 ]);
 
