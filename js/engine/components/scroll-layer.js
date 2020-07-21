@@ -173,11 +173,13 @@ export default class ScrollLayer extends Container {
 			
 			let limitShift = 0;
 
-			if ((v.x - this._virtualScrollX) < f.x) {
-				limitShift = -(f.x - (v.x - this._virtualScrollX));
-			} else if (((v.x + v.w) - this._virtualScrollX) > (f.x + f.w)) {
+			if(((v.x + v.w) - this._virtualScrollX) > (f.x + f.w)) {
 				limitShift = (((v.x + v.w) - this._virtualScrollX) - (f.x + f.w));
 			}
+			if((v.x - this._virtualScrollX - limitShift) < f.x) {
+				limitShift = -(f.x - (v.x - this._virtualScrollX));
+			}
+			
 			if(limitShift !== 0) {
 				if(this.bouncingBounds) {
 					this.xSpeed *= 0.95;
@@ -189,11 +191,13 @@ export default class ScrollLayer extends Container {
 			}
 			
 			limitShift = 0;
-			if ((v.y - this._virtualScrollY) < f.y) {
-				limitShift = -(f.y - (v.y - this._virtualScrollY));
-			} else if (((v.y + v.h) - this._virtualScrollY) > (f.y + f.h)) {
+			if (((v.y + v.h) - this._virtualScrollY) > (f.y + f.h)) {
 				limitShift = (((v.y + v.h) - this._virtualScrollY) - (f.y + f.h));
 			}
+			if ((v.y - this._virtualScrollY - limitShift) < f.y) {
+				limitShift = -(f.y - (v.y - this._virtualScrollY));
+			}
+			
 			if(limitShift !== 0) {
 				if(this.bouncingBounds) {
 					this.ySpeed *= 0.95;
