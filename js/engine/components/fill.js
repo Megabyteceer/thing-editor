@@ -132,7 +132,6 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set texture(v) {
-		super.texture = v;
 		if(v !== super.texture) {
 
 			this.meshResized = super.texture.width !== v.width || super.texture.height !== v.height;
@@ -622,14 +621,7 @@ __EDITOR_editableProps(Fill, [{
 			value: PIXI.WRAP_MODES.MIRRORED_REPEAT
 		}
 	],
-	default: PIXI.WRAP_MODES.REPEAT,
-	afterEdited:() => {
-		for(let o of editor.selection) {
-			if(o.texture !== PIXI.Texture.WHITE && o.texture !== PIXI.Texture.EMPTY) {
-				o.texture.baseTexture.update();
-			}
-		}
-	}
+	default: PIXI.WRAP_MODES.REPEAT
 }
 ]);
 
