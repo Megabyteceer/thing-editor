@@ -1003,14 +1003,15 @@ class Game {
 			frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * game.projectDesc.framesSkipLimit);
 			while (frameCounterTime > FRAME_PERIOD) {
 
-				this._updateFrame();
-				
 				/// #if DEBUG
 				frameCounterTime -= FRAME_PERIOD / game.__speedMultiplier;
 				/*
 				/// #endif
 				frameCounterTime -= FRAME_PERIOD;
 				//*/
+
+				game.isUpdateBeforeRender = !(frameCounterTime > FRAME_PERIOD); // 99999
+				this._updateFrame();
 
 				/// #if EDITOR
 				if (this.__doOneStep) {

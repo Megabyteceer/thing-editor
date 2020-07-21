@@ -349,27 +349,16 @@ export default class Spine extends Container {
 			}
 		}
 
+		if(game.isUpdateBeforeRender && this.updateTime > 0) {
+			this.spineContent.update(this.updateTime);
+			this.updateTime = 0;
+		}
+
 		for (let c of this.children) {
 			if(c !== this.spineContent) {
 				c.update();
 			}
 		}
-	}
-
-	render(renderer) {
-		if(this.spineContent && this.updateTime > 0) {
-			this.spineContent.update(this.updateTime);
-			this.updateTime = 0;
-		}
-		super.render(renderer);
-	}
-
-	_renderCanvas(renderer) {
-		if(this.spineContent && this.updateTime > 0) {
-			this.spineContent.update(this.updateTime);
-			this.updateTime = 0;
-		}
-		super._renderCanvas(renderer);
 	}
 
 	hackTextureBySlotName(slotName, texture) {
