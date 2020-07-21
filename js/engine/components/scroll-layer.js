@@ -36,7 +36,7 @@ export default class ScrollLayer extends Container {
 			this._mouseHandlerContainer = game.pixiApp.renderer.plugins.interaction;
 		}
 		this._mouseHandlerContainer.on('pointerdown', this.onDown);
-		document.addEventListener('wheel', this.onWheel, true);
+		document.addEventListener('wheel', this.onWheel, { passive: false, capture: true });
 		this.autoScrolling = false;
 		this.xSpeed = 0;
 		this.ySpeed = 0;
@@ -48,6 +48,7 @@ export default class ScrollLayer extends Container {
 		if(this.autoScrolling) {
 			return;
 		}
+		ev.preventDefault();
 		let d = 0;
 		if(this._mouseHandlerContainer !== game.pixiApp.renderer.plugins.interaction) {
 			if(this._mouseHandlerContainer.isCanBePressed) {
