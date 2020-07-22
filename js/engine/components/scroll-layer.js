@@ -9,7 +9,7 @@ let mouseY_prev;
 
 const WHEEL_EVENT_OPTIONS = 
 /// #if EDITOR
-{ passive: false, capture: false};
+true;
 /*
 /// #endif
 { passive: false, capture: true };
@@ -56,7 +56,13 @@ export default class ScrollLayer extends Container {
 		if(this.autoScrolling) {
 			return;
 		}
+
+		/// #if EDITOR
+		/*
+		/// #endif
 		ev.preventDefault();
+		//*/
+
 		let d = 0;
 		if(this._mouseHandlerContainer !== game.pixiApp.renderer.plugins.interaction) {
 			if(this._mouseHandlerContainer.isCanBePressed) {
