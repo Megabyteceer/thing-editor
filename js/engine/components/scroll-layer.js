@@ -9,7 +9,7 @@ let mouseY_prev;
 
 const WHEEL_EVENT_OPTIONS = 
 /// #if EDITOR
-true;
+{ passive: false, capture: false};
 /*
 /// #endif
 { passive: false, capture: true };
