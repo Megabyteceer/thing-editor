@@ -336,7 +336,11 @@ export default class Editor {
 			increaseNameNumber(clone);
 			clone.forAllChildren(increaseNameNumber);
 
-			o.parent.addChildAt(clone, o.parent.children.indexOf(o) + 1);
+			let i = o.parent.children.indexOf(o) + 1;
+			while(o.parent.children[i] && ((allCloned.indexOf(o.parent.children[i]) >= 0) || __getNodeExtendData(o.parent.children[i]).isSelected)) {
+				i++;
+			}
+			o.parent.addChildAt(clone, i);
 
 			if(!game.__EDITOR_mode) {
 				Lib._constructRecursive(clone);
