@@ -1452,6 +1452,7 @@ input{
 
 .path-editor-function-tip {
 	position: absolute;
+	white-space: nowrap;
     top: -30px;
     right: 0;
     padding: 3px 20px;
