@@ -24,7 +24,7 @@ import BgMusic from './components/bg-music.js';
 import Button from './components/button.js';
 import Sprite from './components/sprite.js';
 import Tilemap from './components/tilemap.js';
-import {setValueByPath} from './utils/get-value-by-path.js';
+import getValueByPath, {setValueByPath} from './utils/get-value-by-path.js';
 import SceneLinkedPromise from './components/scene-linked-promise.js';
 import ResourceLoader from './utils/resource-loader.js';
 
@@ -338,7 +338,8 @@ class Game {
 
 	init(element, gameId, resourcesPath = '') {
 
-		//make objects visible by text path fo getValueByPath methods
+		//make objects visible by text path fo getValueByPath methods]
+		this.getValueByPath = getValueByPath;
 		this.game = game;
 		this.Sound = Sound;
 		this.L = L;
