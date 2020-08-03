@@ -340,6 +340,7 @@ class Game {
 
 		//make objects visible by text path fo getValueByPath methods]
 		this.getValueByPath = getValueByPath;
+		game.Lib = Lib;
 		this.game = game;
 		this.Sound = Sound;
 		this.L = L;
@@ -585,8 +586,6 @@ class Game {
 
 	_startGame() {
 		let preloader = new Preloader();
-		Object.values(assets.prefabs).forEach(Lib._filterStaticTriggersRecursive);
-		Object.values(assets.scenes).forEach(Lib._filterStaticTriggersRecursive);
 		Lib._setPrefabs(assets.prefabs);
 		Lib._setScenes(assets.scenes);
 		Lib._setSounds(assets.sounds);
@@ -613,6 +612,8 @@ class Game {
 					Lib.addTexture(tName, texture);
 				}
 			});
+			Object.values(assets.prefabs).forEach(Lib._filterStaticTriggersRecursive);
+			Object.values(assets.scenes).forEach(Lib._filterStaticTriggersRecursive);
 			this.showScene(assets.projectDesc.mainScene || 'main');
 			Lib._preCacheSoundsAndTextures();
 		});
