@@ -5,7 +5,18 @@ let fs = {
 	chooseProject: (enforced) => {
 		editor.ui.viewport.stopExecution();
 		fs.getJSON('/fs/projects').then((data) => {
-			editor.ui.modal.showModal(R.div({className:'project-open-chooser'}, Group.groupArray(data.map(renderProjectItem))), R.span(null, R.icon('open'), 'Choose project to open:'), enforced)
+			const projectOrder = (projDesc) => {
+				return editor.settings.getItem(projDesc.id + '_EDITOR_lastOpenTime', 0);
+			};
+			data.sort((a, b) => {
+				return projectOrder(b) - projectOrder(a);
+			});
+			editor.ui.modal.showModal(R.div({className:'project-open-chooser'}, Group.groupArray(data.map(renderProjectItem)).sort((a, b) => {
+				// sort projects groups
+				if(a.key < b.key) return -1;
+				if(a.key > b.key) return 1;
+				return 0;
+			})), R.span(null, R.icon('open'), 'Choose project to open:'), enforced)
 				.then((projDir) => {
 					if(projDir) {
 						editor.openProject(projDir);

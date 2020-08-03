@@ -170,6 +170,7 @@ export default class Editor {
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
 			editor.projectDesc = Object.assign(this.fs.libsSettings, data);
+			editor.settings.setItem(editor.projectDesc.id + '_EDITOR_lastOpenTime', Date.now());
 
 			let isProjectDescriptorModified = game.applyProjectDesc(editor.projectDesc);
 
