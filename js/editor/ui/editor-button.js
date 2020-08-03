@@ -38,6 +38,7 @@ class EditorButton extends React.Component {
 		
 		if (
 			this.props.disabled || 
+			((this.props.hotkey === 1067) && window.getSelection().toString()) ||
 			(window.isEventFocusOnInputElement(e) && (isHotkeyBlockedOnInput(this))) ||
 			((this.props.hotkey !== 112) && editor.ui.modal.isUIBlockedByModal(ReactDOM.findDOMNode(this))) // F1 - help hotkey works always
 		) {
