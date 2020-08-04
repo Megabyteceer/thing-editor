@@ -2,6 +2,11 @@ import Container from "./container.js";
 import game from "../game.js";
 import Lib from "../lib.js";
 
+const p0 = new PIXI.Point(0,0);
+const p1 = new PIXI.Point(1,1);
+const p = new PIXI.Point();
+const p2 = new PIXI.Point();
+
 export default class Resizer extends Container {
 
 	init() {
@@ -14,24 +19,56 @@ export default class Resizer extends Container {
 	}
 
 	recalculateSize() {
-		if(this.resizeX) {
-			this.scale.x = game.W / game.projectDesc.width;
+		if(this.fixed && this.parent) {
+			if(this.relativeX || this.relativeY) {
+				p.x = this._xPos * game.W;
+				p.y = this._yPos * game.H;
+				this.parent.toLocal(p, game.stage, p, false);
+				if(this.relativeX) {
+					this.x = p.x;
+				}
+				if(this.relativeY) {
+					this.y = p.y;
+				}
+			}
+
+			if(this.resizeX || this.resizeY) {
+				this.parent.toLocal(p0, game.stage, p, false);
+				this.parent.toLocal(p1, game.stage, p2, false);
+				if(this.resizeX) {
+					this.scale.x = game.W / game.projectDesc.width * ((p.x - p2.x) || 0.000001);
+				}
+				if(this.resizeY) {
+					this.scale.y = game.H / game.projectDesc.height * ((p.y - p2.y) || 0.000001);
+				}
+			}
+		} else {
+			if(this.resizeX) {
+				this.scale.x = game.W / game.projectDesc.width;
+			}
+			if(this.resizeY) {
+				this.scale.y = game.H / game.projectDesc.height;
+			}
+			if(this.relativeX) {
+				this.x = Math.round(game.W * this._xPos);
+			}
+			if(this.relativeY) {
+				this.y = Math.round(game.H * this._yPos);
+			}
 		}
-		if(this.resizeY) {
-			this.scale.y = game.H / game.projectDesc.height;
+	}
+
+	update() {
+		if(this.fixed) {
+			this.recalculateSize();
 		}
-		if(this.relativeX) {
-			this.x = Math.round(game.W * this.xPos);
-		}
-		if(this.relativeY) {
-			this.y = Math.round(game.H * this.yPos);
-		}
+		super.update();
 	}
 
 	set xPos(v) {
 		this._xPos = v;
 		if(this.relativeX) {
-			this.x = Math.round(game.W * v);
+			this.recalculateSize();
 		}
 	}
 
@@ -42,7 +79,7 @@ export default class Resizer extends Container {
 	set yPos(v) {
 		this._yPos = v;
 		if(this.relativeY) {
-			this.y = Math.round(game.H * v);
+			this.recalculateSize();
 		}
 	}
 
@@ -154,6 +191,12 @@ __EDITOR_editableProps(Resizer, [
 			return o.relativeY;
 		}
 
+	},{
+		type:Boolean, // 99999
+		name:'fixed',
+		visible:(o) => {
+			return o.resizeX || o.resizeY || o.relativeY || o.relativeX;
+		}
 	}
 ]);
 
