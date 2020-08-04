@@ -89,22 +89,8 @@ export default class Resizer extends Container {
 
 	/// #if EDITOR
 	__beforeSerialization() {
-
 		if(!game.projectDesc.dynamicStageSize && !Lib.__getSceneOrPrefabLibName(this.getRootContainer() || game.currentContainer)) {
 			editor.ui.status.warn("Resizer is not useful if projects dynamicStageSize is not set to true", 32025, this);
-		}
-
-		if(this.resizeX) {
-			this.scale.x = 1;
-		}
-		if(this.resizeY) {
-			this.scale.y = 1;
-		}
-		if(this.relativeX) {
-			this.x = 0;
-		}
-		if(this.relativeY) {
-			this.y = 0;
 		}
 	}
 
@@ -138,8 +124,19 @@ export default class Resizer extends Container {
 		this.recalculateSize();
 	}
 
-	__afterSerialization() {
-		this.recalculateSize();
+	__afterSerialization(data) {
+		if(this.resizeX) {
+			delete data.p['scale.x'];
+		}
+		if(this.resizeY) {
+			delete data.p['scale.y'];
+		}
+		if(this.relativeX) {
+			delete data.p.x;
+		}
+		if(this.relativeY) {
+			delete data.p.y;
+		}
 	}
 	/// #endif
 }
