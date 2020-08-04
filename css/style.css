@@ -968,6 +968,10 @@ input{
 	cursor: w-resize;
 }
 
+.timeline-label:hover {
+	z-index: 1;
+}
+
 .timeline-label-pointer {
 	height: 26px;
 	bottom: 0;
