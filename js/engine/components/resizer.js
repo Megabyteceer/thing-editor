@@ -36,10 +36,10 @@ export default class Resizer extends Container {
 				this.parent.toLocal(p0, game.stage, p, false);
 				this.parent.toLocal(p1, game.stage, p2, false);
 				if(this.resizeX) {
-					this.scale.x = game.W / game.projectDesc.width * ((p.x - p2.x) || 0.000001);
+					this.scale.x = game.W / game.projectDesc.width * ((p2.x - p.x) || 0.000001);
 				}
 				if(this.resizeY) {
-					this.scale.y = game.H / game.projectDesc.height * ((p.y - p2.y) || 0.000001);
+					this.scale.y = game.H / game.projectDesc.height * ((p2.y - p.y) || 0.000001);
 				}
 			}
 		} else {
