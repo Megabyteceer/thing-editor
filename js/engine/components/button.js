@@ -22,7 +22,7 @@ export default class Button extends DSprite {
 
 		assert(!game.__EDITOR_mode, "'init()' called in edition mode");
 		assert(allActiveButtons.indexOf(this) < 0, "Button already in active list.");
-		allActiveButtons.push(this);
+		allActiveButtons.unshift(this);
 
 		this.buttonMode = true;
 		this.initialScale = this.scale.x;
