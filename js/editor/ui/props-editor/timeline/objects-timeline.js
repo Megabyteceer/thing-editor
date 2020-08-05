@@ -92,9 +92,15 @@ export default class ObjectsTimeline extends React.Component {
 			className:'timeline-labels-panel'
 		},
 		previewMarker,
-		labelsNames.map((labelName)=> {
-			return this.renderTimeLabel(labelName, labelsNames);
-		}));
+		labelsNames
+			.sort((l1, l2) => {
+				const t1 = this.props.node._timelineData.l[l1].t;
+				const t2 = this.props.node._timelineData.l[l2].t;
+				return t1 === t2 ? l2.length - l1.length : t2 - t1;
+			})
+			.map((labelName)=> {
+				return this.renderTimeLabel(labelName, labelsNames);
+			}));
 
 
 		return R.div(objectsTimelineProps,
