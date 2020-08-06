@@ -338,7 +338,11 @@ let loadedPath;
 function classLoaded(c, path, libName) {
 	loadedPath = path;
 	if(!c.hasOwnProperty('__EDITOR_icon')) {
-		c.__EDITOR_icon = "tree/game";
+		if(c.prototype instanceof MovieClip) {
+			c.__EDITOR_icon = "tree/movie-custom";
+		} else {
+			c.__EDITOR_icon = "tree/game";
+		}
 	}
 	if(libName) {
 		c.___libInfo = R.libInfo(libName);
