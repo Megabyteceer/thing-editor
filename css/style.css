@@ -545,6 +545,7 @@ input{
 	right: 3px;
 	position: absolute;
 	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 .error {
