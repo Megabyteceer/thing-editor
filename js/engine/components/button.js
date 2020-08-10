@@ -104,7 +104,7 @@ export default class Button extends DSprite {
 		/// #endif
 		assert(this.isCanBePressed, "_executeOnClick called for button which could not be pressed at the moment.");
 		
-		if(Button.globalOnClick) { // 99999
+		if(Button.globalOnClick) {
 			Button.globalOnClick(this, source);
 		}
 
@@ -163,12 +163,12 @@ export default class Button extends DSprite {
 		if(this.isCanBePressed) {
 			if(this.onClick) {
 				if(typeof getValueByPath(this.onClick, this, true) !== 'function') {
-					editor.ui.status.warn('Wrong onclick handler.', 99999, this, 'onClick');
+					editor.ui.status.error('Wrong onClick handler: ' + this.onClick, 32054, this, 'onClick');
 				}
 			}
 			if(this.afterClick) {
 				if(typeof getValueByPath(this.afterClick, this, true) !== 'function') {
-					editor.ui.status.warn('Wrong afterClick handler.', 99999, this, 'afterClick');
+					editor.ui.status.error('Wrong afterClick handler: ' + this.afterClick, 32055, this, 'afterClick');
 				}
 			}
 		}

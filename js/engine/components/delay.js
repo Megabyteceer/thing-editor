@@ -77,7 +77,7 @@ export default class Delay extends Container {
 		this.visible = false;
 	}
 
-	skip() { // 99999
+	skip() {
 		this.callback();
 		this.callback = null;
 		this.remove();
