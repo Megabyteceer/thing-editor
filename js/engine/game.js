@@ -1534,10 +1534,7 @@ function loadFonts() {
 					let webFontOptions = game.projectDesc.webfontloader;
 					webFontOptions.timeout = webFontOptions.timeout || 6000;
 					let resolved = false;
-					setTimeout(() => {
-						webFontOptions.active();
-					}, webFontOptions.timeout + 500);
-					webFontOptions.active = () => {
+					webFontOptions.inactive = webFontOptions.active = () => {
 						if(resolved) {
 							return;
 						}
