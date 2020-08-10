@@ -678,7 +678,7 @@ export default class Timeline extends React.Component {
 				if (editableField.type === Number) {
 					beforeChangeRemember.set(o, o[fieldName]);
 				} else if(game.__EDITOR_mode && getFieldByName(o, fieldName)) {
-					editor.ui.modal.showInfo("Could not change '" + fieldName + "' field`s  value, because '" + fieldName + "' field is animated and it`s type is not numeric", "Could not change '" + fieldName + "' value", 99999);
+					editor.ui.modal.showInfo("Could not change '" + fieldName + "' field`s  value, because '" + fieldName + "' field is animated and it`s type is not numeric", "Could not change '" + fieldName + "' value", 30016);
 				}
 			}
 		}

@@ -3,7 +3,7 @@ import Tip from "./tip.js";
 
 /*
 /// #endif
-throw 'Editor time sources was accidentally imported in to final game build. Please wrap with "#ifdef EDITOR" tags all thing-editor imports, which start not with "thing-editor/js/engine/". More: 99999';
+throw 'Editor time sources was accidentally imported in to final game build. Please wrap with "#ifdef EDITOR" tags all thing-editor imports, which start not with "thing-editor/js/engine/". More: 99999_';
 //*/
 
 let factories = {};

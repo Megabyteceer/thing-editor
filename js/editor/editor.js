@@ -46,7 +46,6 @@ export default class Editor {
 	}
 	
 	constructor() {
-		/*global editor */
 		window.editor = this;
 		this.checkSceneHandlers = [];
 		this.Lib = Lib;
@@ -238,7 +237,7 @@ export default class Editor {
 				await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
 				if(game.__EDITOR_mode) {
 					editor.ui.viewport.onTogglePlay();
-					game.__EDITOR_isAutotestInProgress = true; // 99999
+					game.__EDITOR_isAutotestInProgress = true; // 99999_
 				}
 				await editor.waitForCondition(() => {
 					return game.currentContainer;
@@ -452,7 +451,7 @@ export default class Editor {
 
 	isCanBeAdded() {
 		let o = editor.selection[0];
-		return !o || !o.constructor.__canNotHaveChildren; // 99999 - describe class metadata
+		return !o || !o.constructor.__canNotHaveChildren;
 	}
 
 	onEditorRenderResize() {

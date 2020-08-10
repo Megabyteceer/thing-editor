@@ -484,7 +484,7 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
 				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Unwrap (remove selected but keep children)', "tool-btn", undefined, !this.isCanBeUnwrapped()),
 				R.btn(R.icon('export-selected'), this.onExportAsPngClick, 'Export selected', "tool-btn", undefined, isEmpty),
-				editor.overlay.isolation ? /// 99999
+				editor.overlay.isolation ?
 					R.btn(R.icon('exit-isolation'), this.onIsolateClick, 'Exit isolation (Ctrl + I)', "tool-btn", 1073) :
 					R.btn(R.icon('isolate-selected'), this.onIsolateClick, 'Isolate selected (Ctrl + I)', "tool-btn", 1073, isEmpty)
 			),
