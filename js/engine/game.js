@@ -207,7 +207,7 @@ class Game {
 		/// #endif
 
 		if(this.pixiApp && this.pixiApp.renderer) {
-			game.isCanvasMode = !this.pixiApp.renderer.gl; /// 99999 game.isCanvasMode
+			game.isCanvasMode = !this.pixiApp.renderer.gl;
 			if(!game.isCanvasMode) {
 				let maxTextureSize = 1024;
 				let gl = this.pixiApp.renderer.gl;
