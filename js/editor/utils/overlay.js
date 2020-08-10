@@ -97,7 +97,7 @@ export default class Overlay {
 	}
 
 	toggleIsolation() {
-		if(this.isIsolated) {
+		if(this.isolation) {
 			this.exitIsolation();
 		} else {
 			this.isolateSelected();
@@ -108,14 +108,14 @@ export default class Overlay {
 		isolation = editor.selection.slice();
 		game.stage.addChild(isolationBlackout);
 		isolationBlackout.parent.toLocal(editor.selection[0], editor.selection[0].parent, isolationBlackout);
-		this.isIsolated = isolation.length > 0;
+		this.isolation = (isolation.length > 0) && isolation;
 		editor.refreshTreeViewAndPropertyEditor();
 	}
 
 	exitIsolation() {
 		if(isolation.length > 0) {
 			isolation.length = 0;
-			this.isIsolated = false;
+			this.isolation = null;
 			isolationBlackout.detachFromParent();
 			editor.refreshTreeViewAndPropertyEditor();
 		}

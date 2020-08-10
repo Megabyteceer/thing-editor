@@ -397,18 +397,22 @@ export default class TreeView extends React.Component {
 		searchEntries.clear();
 
 		let a = new Selection();
-		
-		if(game.__EDITOR_mode) {
 
-		
-			if(condition(game.currentContainer)) {
-				a.push(game.currentContainer);
+		const searchIn = (o) => {
+			if(condition(o)) {
+				a.push(o);
 			}
-			game.currentContainer.forAllChildren((o) => {
+			o.forAllChildren((o) => {
 				if(condition(o)) {
 					a.push(o);
 				}
 			});
+		};
+		
+		if(editor.overlay.isolation) {
+			editor.overlay.isolation.forEach(searchIn);
+		} else if(game.__EDITOR_mode) {
+			searchIn(game.currentContainer);
 		} else {
 			game.stage.forAllChildren((o) => {
 				if(condition(o)) {
@@ -480,16 +484,23 @@ export default class TreeView extends React.Component {
 				R.btn(R.icon('delete'), this.onDeleteClick, 'Remove selected (Del)', "tool-btn", 46, isEmpty || isRoot),
 				R.btn(R.icon('unwrap'), this.onUnwrapClick, 'Unwrap (remove selected but keep children)', "tool-btn", undefined, !this.isCanBeUnwrapped()),
 				R.btn(R.icon('export-selected'), this.onExportAsPngClick, 'Export selected', "tool-btn", undefined, isEmpty),
-				editor.overlay.isIsolated ? /// 99999
+				editor.overlay.isolation ? /// 99999
 					R.btn(R.icon('exit-isolation'), this.onIsolateClick, 'Exit isolation (Ctrl + I)', "tool-btn", 1073) :
 					R.btn(R.icon('isolate-selected'), this.onIsolateClick, 'Isolate selected (Ctrl + I)', "tool-btn", 1073, isEmpty)
 			),
 			R.div({className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick},
 				R.input({onKeyDown: this.onSearchKeyDown, onChange: this.onSearchChange, className:'tree-view-search', defaultValue: this.searchString, placeholder: 'Search'}),
-				R.div({className: 'scene-tree-view', onMouseDown: onEmptyClick},
-					game._getScenesStack().map(renderSceneStackItem),
-					game.stage.children.map(renderRoots)
-				)
+				
+				editor.overlay.isolation ? 
+					R.div({className: 'scene-tree-view ', onMouseDown: onEmptyClick},
+						R.btn('Ctrl + I to exit isolation', this.onIsolateClick, undefined, 'danger clickable'),
+						editor.overlay.isolation.map(R.renderSceneNode)
+					)
+					:
+					R.div({className: 'scene-tree-view', onMouseDown: onEmptyClick},
+						game._getScenesStack().map(renderSceneStackItem),
+						game.stage.children.map(renderRoots)
+					)
 			)
 		);
 	}
