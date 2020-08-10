@@ -781,7 +781,7 @@ class Game {
 	}
 
 	/// #if DEBUG
-	__showDebugError(txt, errorCode = 90000) { // 99999
+	__showDebugError(txt, errorCode = 90000) {
 		/// #if EDITOR
 		editor.ui.modal.showError(txt, errorCode);
 		return;
@@ -1012,7 +1012,7 @@ class Game {
 				frameCounterTime -= FRAME_PERIOD;
 				//*/
 
-				game.isUpdateBeforeRender = !(frameCounterTime > FRAME_PERIOD); // 99999
+				game.isUpdateBeforeRender = !(frameCounterTime > FRAME_PERIOD);
 				this._updateFrame();
 
 				/// #if EDITOR
@@ -1064,7 +1064,7 @@ class Game {
 		}
 	}
 
-	getLoadingCount( /// 99999  getLoadingProgress removed
+	getLoadingCount(
 	/// #if EDITOR
 		ignoreInGamePromises = false
 	/// #endif
