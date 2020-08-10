@@ -101,7 +101,7 @@ let constructRecursive = (o) => {
 
 	/// #if EDITOR
 	let extData = __getNodeExtendData(o);
-	assert(!extData.constructorCalled, "init() method was already called for object " + o.___info, 99999);
+	assert(!extData.constructorCalled, "init() method was already called for object " + o.___info, 90001);
 
 	editor._root_initCalled = false;
 	/// #endif
@@ -1205,7 +1205,7 @@ Lib._loadObjectFromData = _loadObjectFromData;
 
 const __isSerializableObject = (o) => {
 	let exData = __getNodeExtendData(o);
-	return !exData.hidden && !exData.noSerialize; /// 99999 noSerialize
+	return !exData.hidden && !exData.noSerialize;
 };
 
 /// #endif

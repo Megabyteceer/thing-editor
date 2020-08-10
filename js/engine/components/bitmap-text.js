@@ -39,7 +39,7 @@ export default class BitmapText extends PIXI.BitmapText {
 		/// #if EDITOR
 		if(!BitmapText.fonts[this._font.name]) {
 			setTimeout(() => {
-				editor.ui.status.error('BitmapFont is not exists: ' + this._font.name, 99999, this, 'font.name');
+				editor.ui.status.error('BitmapFont is not exists: ' + this._font.name, 32053, this, 'font.name');
 			}, 0);
 			return;
 		}
