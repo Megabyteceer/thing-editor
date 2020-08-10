@@ -360,7 +360,7 @@ class Game {
 
 
 		/// #if DEBUG
-		this._FPS = 0; // 99999
+		this._FPS = 0;
 		this.FPS = 0;
 
 		if (false) { /*eslint-disable-line no-constant-condition */
@@ -430,9 +430,9 @@ class Game {
 			dynamicStageSize: false,
 			preventUpscale: false,
 			webfontloader: null,
-			fontHolderText: 'ЯSфz',// 99999
+			fontHolderText: 'ЯSфz',
 			muteOnFocusLost: true,
-			mipmap: false,// 99999
+			mipmap: false,
 			version:"0.0.1",
 			soundFormats: [
 				"ogg",
@@ -450,15 +450,15 @@ class Game {
 			},
 			defaultMusVol: 1,
 			defaultSoundsVol: 1,
-			keepSoundWhilePageUpdate: false,  // 99999
+			keepSoundWhilePageUpdate: false,
 			embedLocales: true,
 			__localesNewKeysPrefix: '',
 			__externalLocalesSource: '',
 			autoFullscreenDesktop: false,
 			autoFullscreenMobile: false,
 			__proxyFetchesViaNodeServer: false,
-			__group: '', // 99999,
-			__webpack: { // 99999,
+			__group: '',
+			__webpack: {
 				debug: 'config/webpack.debug.js',
 				production: 'config/webpack.prod.js'
 			}
@@ -781,7 +781,7 @@ class Game {
 	}
 
 	/// #if DEBUG
-	__showDebugError(txt, errorCode = 99999) { // 99999
+	__showDebugError(txt, errorCode = 90000) { // 99999
 		/// #if EDITOR
 		editor.ui.modal.showError(txt, errorCode);
 		return;
