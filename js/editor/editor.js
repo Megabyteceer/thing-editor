@@ -303,6 +303,11 @@ export default class Editor {
 	}
 
 	cloneSelected(dragObject) {
+		if(editor.selection.some((o) => o.parent === game.stage)) {
+			editor.ui.modal.showInfo('Can not clone root object', '', 30017);
+			return;
+		}
+
 		let ret;
 		DataPathFixer.rememberPathReferences();
 

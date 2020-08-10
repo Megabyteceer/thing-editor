@@ -395,18 +395,17 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 					shiftY = draggingDragger.y - game.mouse.__EDITOR_y;
 				}
 				if(ev.altKey) {
-					if(__getNodeExtendData(game.currentContainer).isSelected) {
-						editor.ui.modal.showInfo('Can not clone root object.', '', 99999);
-						draggingDragger = null;
-						return;
-					} else {
-						let clone = editor.cloneSelected(draggingDragger.owner);
+					let clone = editor.cloneSelected(draggingDragger.owner);
+					if(clone) {
 						refreshDraggersForNode(clone);
 						if(__getNodeExtendData(draggingDragger.owner).draggerPivot === draggingDragger) {
 							draggingDragger = __getNodeExtendData(clone).draggerPivot;
 						} else {
 							draggingDragger = __getNodeExtendData(clone).draggerRotator;
 						}
+					} else {
+						draggingDragger = null;
+						return;
 					}
 				}
 				draggingDragger.onDrag();
