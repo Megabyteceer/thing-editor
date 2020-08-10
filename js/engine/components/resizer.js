@@ -189,7 +189,7 @@ __EDITOR_editableProps(Resizer, [
 		}
 
 	},{
-		type:Boolean, // 99999
+		type:Boolean, // 99999_
 		name:'fixed',
 		visible:(o) => {
 			return o.resizeX || o.resizeY || o.relativeY || o.relativeX;

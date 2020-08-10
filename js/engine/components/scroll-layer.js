@@ -425,7 +425,7 @@ __EDITOR_editableProps(ScrollLayer, [
 		default: 0.92
 	},
 	{
-		name: 'bouncingBounds', /// 99999
+		name: 'bouncingBounds',
 		type: Boolean,
 		default: true
 	},

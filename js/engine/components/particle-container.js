@@ -5,7 +5,7 @@ import game from "../game.js";
 
 export default class ParticleContainer extends Container {
 
-	forAllChildren(callback) { // 99999 refactored to regular container
+	forAllChildren(callback) {
 		/// #if EDITOR
 		if(game.__EDITOR_mode) {
 			super.forAllChildren(callback);

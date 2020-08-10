@@ -69,7 +69,7 @@ export default class PrefabReference extends Container {
 							for(let f of this.__previewNode._timelineData.f) {
 								if(fn === f.n && this[fn] !== f.t[0].v) {
 									this[fn] = f.t[0].v;
-									editor.ui.status.warn('Value of PrefabReference property "' + fn + '" was changed to ' +  this[fn] + ' because its refers to MovieClip where animation starts with that value.', 99999, this, fn);
+									editor.ui.status.warn('Value of PrefabReference property "' + fn + '" was changed to ' +  this[fn] + ' because its refers to MovieClip where animation starts with that value.', 30018, this, fn);
 									editor.sceneModified();
 								}
 							}

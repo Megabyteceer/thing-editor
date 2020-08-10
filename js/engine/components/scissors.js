@@ -121,11 +121,11 @@ export default class Scissors extends Container {
 		}
 	}
 
-	enable() { /// 99999
+	enable() {
 		this.enabled = true;
 	}
 
-	disable() { /// 99999
+	disable() {
 		this.enabled = false;
 	}
 
