@@ -91,6 +91,8 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 /// #if EDITOR
 
 //NEW_CLASS_NAME.__EDITOR_group = "Custom/MyComponentsSubGroup"; //group in Classes List Window for more comfort
+//NEW_CLASS_NAME.__EDITOR_icon= "CURRENT_PROJECT_DIR/tree-icons/icon";
+//NEW_CLASS_NAME.__canNotHaveChildren = true; //uncomment this line if your component should have no children
 
 __EDITOR_editableProps(NEW_CLASS_NAME, [ //list of editable properties
 	{

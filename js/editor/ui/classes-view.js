@@ -147,6 +147,7 @@ class ClassesView extends React.Component {
 										enteredClassNameParts.map(() => {return '../';}).join('') +
 										baseClassPath.substr(game.resourcesPath.length - 1 + targetFolderName.length);
 									}
+									templateSrc = templateSrc.replace(/CURRENT_PROJECT_DIR/gm, '/games/' + (editor.currentProjectDir.replace(/\/$/, '')));
 									templateSrc = templateSrc.replace(/NEW_CLASS_NAME/gm, enteredClassName);
 									templateSrc = templateSrc.replace(/BASE_CLASS_NAME/gm, selectedBaseClass.name);
 									templateSrc = templateSrc.replace(/\/BASE_CLASS_PATH/gm, baseClassPath); //this line is necessary because server side fixes import paths with / automatically
