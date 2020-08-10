@@ -62,9 +62,9 @@ export default class ObjectsTimeline extends React.Component {
 
 		let previewMarker;
 		if(this.props.node.__previewFrame) {
-			previewMarker = R.div({className: 'preview-frame-marker', title: 'Ctrl+click to set preview frame.', style: {
+			previewMarker = R.div({className: 'preview-frame-marker', style: {
 				left: this.props.node.__previewFrame * this.props.widthZoom
-			}}, 'Preview frame'); // 99999
+			}}, 'Preview frame');
 		}
 
 		let labelsPanel = R.div({
@@ -88,7 +88,7 @@ export default class ObjectsTimeline extends React.Component {
 				}
 			},
 			style:{width},
-			title:tl && 'Right click to add time label',
+			title:tl && 'Right click to add time label\nCtrl + click to set preview frame',
 			className:'timeline-labels-panel'
 		},
 		previewMarker,

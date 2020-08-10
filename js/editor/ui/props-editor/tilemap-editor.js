@@ -131,7 +131,7 @@ class TilemapEditor extends React.Component {
 		}
 
 		if(ev.buttons === 1) {
-			if(ev.ctrlKey) { // 99999
+			if(ev.ctrlKey) {
 				isPicking = true;
 			} else {
 				isSetting = true;
