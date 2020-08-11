@@ -113,7 +113,12 @@ export default class FieldPlayer {
 				/// #if EDITOR
 				if(!this.__doNotCallActions) {
 					if(this.target.__logLevel > 1) {
-						editor.ui.status.warn('action call: ' + action + '; timeline time: ' + this.time, 99999, this.target, undefined, true);
+						editor.ui.status.warn('action call: ' + action + '; timeline time: ' + this.time, 30019, this.target, undefined, true);
+						if(this.target.__logLevel === 3) {
+							/// break on callbacks
+							console.log('callback: ' + action);
+							debugger;
+						}
 					}
 					/// #endif
 					callByPath(action, this.target);

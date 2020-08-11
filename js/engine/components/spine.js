@@ -548,7 +548,7 @@ __EDITOR_editableProps(Spine, [
 		disabled:(node) => node.useParentTint
 	},
 	{
-		name:'useParentTint', //99999
+		name:'useParentTint',
 		type:Boolean,
 		default: false
 	},

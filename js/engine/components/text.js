@@ -306,7 +306,6 @@ Text.prototype.onRemove = function() {
 	this._maxWidth = 0;
 };
 
-// 99999
 Text.prototype.setTextByPath = function(path) {
 	this.text = getValueByPath(path, this);
 };
@@ -349,7 +348,7 @@ function isColor(strColor, node) {
 		return true;
 	} else {
 		if(!game.__EDITOR_mode) {
-			editor.ui.status.error("Wrong color gradient entry: " + strColor, 99999, node, "style.fill");
+			editor.ui.status.error("Wrong color gradient entry: " + strColor, 32057, node, "style.fill");
 		}
 	}
 }

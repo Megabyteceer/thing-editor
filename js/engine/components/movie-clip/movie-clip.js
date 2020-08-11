@@ -193,7 +193,7 @@ export default class MovieClip extends DSprite {
 		if(this.__logLevel) {
 			let stack = editor.__getCurrentStack("gotoLabel");
 			if(this._goToLabelNextFrame && (this._goToLabelNextFrame !== labelName)) {
-				editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; time: ' + game.time, 99999, this, undefined, true);
+				editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; time: ' + game.time, 30021, this, undefined, true);
 			}
 			editor.ui.status.warn(
 				R.span(null, 
@@ -202,7 +202,7 @@ export default class MovieClip extends DSprite {
 					}),
 					((this._goToLabelNextFrame === labelName) ? 'repeated gotoLabel: ' : 'gotoLabel: ') + labelName + '; time: ' + game.time
 				),
-				99999, this, undefined, true);
+				30020, this, undefined, true);
 		}
 		/// #endif
 		this._goToLabelNextFrame = labelName;
@@ -397,7 +397,7 @@ export default class MovieClip extends DSprite {
 		}
 	}
 
-	get __previewFrame() { // 99999
+	get __previewFrame() {
 		return this.___previewFrame;
 	}
 
@@ -556,12 +556,13 @@ __EDITOR_editableProps(MovieClip, [
 		type: 'timeline'
 	},
 	{
-		name: '__logLevel', // 99999
+		name: '__logLevel',
 		type: Number,
 		select: [
 			{name: 'disabled', value: 0},
 			{name: 'level 1', value: 1},
-			{name: 'level 2', value: 2}
+			{name: 'level 2', value: 2},
+			{name: 'break on callbacks', value: 3}
 		]
 	},
 	{

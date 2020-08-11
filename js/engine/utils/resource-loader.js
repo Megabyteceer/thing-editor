@@ -8,7 +8,7 @@ let loadingResources = [];
 export default class ResourceLoader {
 
 	constructor() {
-		assert(!game._loadingErrorIsDisplayed, "Attempt to create loader when game loading failed already.", 99999);
+		assert(!game._loadingErrorIsDisplayed, "Attempt to create loader when game loading failed already.", 90001);
 		this.loader = new PIXI.Loader();
 		this.attempt = 0;
 		this.count = 1; // 1 - is loading holder

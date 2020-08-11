@@ -85,7 +85,7 @@ const stepToR = (val, target, step) => {
 	return val - step;
 };
 
-function deepClone(o) { /// 99999
+function deepClone(o) {
 	return JSON.parse(JSON.stringify(o));
 }
 

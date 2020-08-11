@@ -20,7 +20,7 @@ export default class Spawner extends Container {
 		this.enabled = false;
 	}
 
-	setSpeed(speed) { // 99999
+	setSpeed(speed) {
 		this.speed = speed;
 	}
 
@@ -76,7 +76,7 @@ export default class Spawner extends Container {
 
 		/// #if EDITOR
 		if(this.___containerID !== this._container.___id) {
-			editor.ui.status.error("Spawner's target container has been removed. Please disable spawner before removing target container or use not removable target container.", 99999, this, 'container');
+			editor.ui.status.error("Spawner's target container has been removed. Please disable spawner before removing target container or use not removable target container.", 32056, this, 'container');
 			this.disable();
 			return;
 		}

@@ -163,16 +163,6 @@ L.has = (id) => {
 	return currentLanguageTable.hasOwnProperty(id);
 };
 
-L.getArray = (id) => { // 99999
-	const result = [];
-	let index = 0;
-	while (L.has(`${id}.${index}`)) {
-		result.push(L(`${id}.${index}`));
-		index += 1;
-	}
-	return result;
-};
-
 L.fefreshAllTextEverywhere = function fefreshAllTextEverywhere() {
 	if(game.stage) {
 		game.forAllChildrenEverywhere(refreshTranslantableText);

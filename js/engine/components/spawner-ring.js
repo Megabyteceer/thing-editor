@@ -43,7 +43,7 @@ export default class SpawnerRing extends Container {
 
 		/// #if EDITOR
 		if(this.___containerID !== this._container.___id) {
-			editor.ui.status.error("SpawnerRing's target container has been removed. Please disable spawner before removing target container or use not removable target container.", 99999, this, 'container');
+			editor.ui.status.error("SpawnerRing's target container has been removed. Please disable spawner before removing target container or use not removable target container.", 32055, this, 'container');
 			return;
 		}
 		/// #endif
