@@ -2,16 +2,19 @@ import getValueByPath from "./get-value-by-path.js";
 import Button from "../components/button.js";
 import ws from "thing-editor/js/editor/utils/socket.js";
 import game from "../game.js";
+import SceneLinkedPromise from "../components/scene-linked-promise.js";
 
 let timeoutHandler;
 let testsStoppedByUser;
 
 function startTimeout(stepName, timeout) {
-	console.log('auto-test step > ' + stepName);
 	testLog('auto-test step > ' + stepName);
 	assert(!timeoutHandler, "Previous auto-test step was not finished.");
 	timeoutHandler = setTimeout(() => {
-		throw new Error("Auto-test step fail by timeout: " + stepName);
+		throw new Error("Auto-test step fail by timeout: " + stepName + `
+		CurrentScene: ${game.currentScene.___info}
+		Promises: ${game.stage.findChildrenByType(SceneLinkedPromise).map(p => p.name).join(', ')}
+		`);
 	}, timeout);
 }
 
