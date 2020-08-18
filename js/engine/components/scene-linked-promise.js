@@ -114,8 +114,6 @@ export default class SceneLinkedPromise extends Container {
 			if(this._promiseWaitForResult) {
 				editor.ui.status.warn('SceneLinkedPromise was removed before its resolved or rejected.', 10061, this);
 			}
-		} else {
-			this._promiseWaitForResult = false;
 		}
 		/// #endif
 
