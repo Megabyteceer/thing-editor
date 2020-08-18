@@ -12,7 +12,10 @@ function startTimeout(stepName, timeout) {
 	assert(!timeoutHandler, "Previous auto-test step was not finished.");
 	timeoutHandler = setTimeout(() => {
 		throw new Error("Auto-test step fail by timeout: " + stepName + `
-		CurrentScene: ${game.currentScene.___info}
+		staged objects: ${game.stage.children.map((o) => {
+		return o.___info;
+	}).join('\n')
+}
 		Promises: ${game.stage.findChildrenByType(SceneLinkedPromise).map(p => p.name).join(', ')}
 		`);
 	}, timeout);
