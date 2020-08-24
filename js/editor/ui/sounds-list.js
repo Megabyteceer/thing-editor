@@ -297,8 +297,8 @@ class MusicProfiler extends React.Component {
 	renderMusicItem(m, i) {
 		let state;
 		let playing;
-		if(m._currentFragment) {
-			if(!m._currentFragment.playing()) {
+		if(m.__currentFragment) {
+			if(!m.__currentFragment.playing()) {
 				state = R.div({className:'danger'}, 'ref to not playing fragment');
 			} else {
 				playing = true;
@@ -343,8 +343,8 @@ class MusicProfiler extends React.Component {
 			list = R.div(profilerProps, list);
 		} else {
 			for(let m of BgMusic.__allActiveMusics) {
-				if(m._currentFragment) {
-					if(!m._currentFragment.volume() === 0) {
+				if(m.__currentFragment) {
+					if(!m.__currentFragment.volume() === 0) {
 						className = 'danger';
 					}
 				}

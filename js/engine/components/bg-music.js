@@ -145,8 +145,8 @@ export default class BgMusic extends Container {
 		this.isPlaying = false;
 	}
 	
-	_getFade() {
-		return typeof this.customFade === 'number' ? this.customFade : this.fade;
+	_getFade(isFadeOut) {
+		return typeof this.customFade === 'number' ? this.customFade : (isFadeOut ? this.fadeOut : this.fadeIn);
 	}
 
 	resetPosition() {
@@ -173,7 +173,15 @@ export default class BgMusic extends Container {
 		MusicFragment._applyFadeForAll(fade);
 	}
 
-	/// #id EDITOR
+	set fade(val) { // transition from fade to fadeIn fadeOut
+		this.fadeIn = val;
+		this.fadeOut = val;
+		/// #if EDITOR
+		Lib.__invalidateSerializationCache(this);
+		/// #endif
+	}
+
+	/// #if EDITOR
 	static get __allActiveMusics() {
 		return allActiveMusics;
 	}
@@ -190,10 +198,10 @@ export default class BgMusic extends Container {
 	}
 
 	__getVolume() {
-		return this._currentFragment && this._currentFragment.volume();
+		return this.__currentFragment && this.__currentFragment.volume();
 	}
 
-	get _currentFragment() {
+	get __currentFragment() {
 		if(this._getTargetVol() > MIN_VOL_THRESHOLD) {
 			return MusicFragment.__getFragment(this.musicFragmentHash);
 		}
@@ -346,7 +354,13 @@ __EDITOR_editableProps(BgMusic, [
 		type: 'data-path'
 	},
 	{
-		name: 'fade',
+		name: 'fadeIn', // 99999
+		type: Number,
+		default: 0.2,
+		min: 0,
+		step: 0.01
+	},{
+		name: 'fadeOut',
 		type: Number,
 		default: 0.2,
 		min: 0,
