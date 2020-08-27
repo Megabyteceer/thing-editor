@@ -1,4 +1,5 @@
 import PropsFieldWrapper from './props-field-wrapper.js';
+import {_searchByRegexpOrText} from "../../utils/editor-utils.js";
 
 const CLASS_NAME = 'select-editor-current clickable';
 const CLASS_NAME_DISABLED = 'select-editor-current disabled';
@@ -150,7 +151,7 @@ class SelectEditor extends React.Component {
 				if (this.state.filter) {
 					let flt = this.state.filter.toLocaleLowerCase();
 					a = a.filter((i) => {
-						return i === this.selectedItem || (i.name.toLowerCase().indexOf(flt) >= 0) || (i.name === "EMPTY") || !i.value;
+						return i === this.selectedItem || _searchByRegexpOrText(i.name, flt) || (i.name === "EMPTY") || !i.value;
 					});
 				}
 				a = a.slice(0, 20);
