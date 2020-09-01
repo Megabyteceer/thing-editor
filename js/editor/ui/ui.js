@@ -108,9 +108,14 @@ class UI extends React.Component {
 		editor.fs.chooseProject();
 	}
 	
+	onOpenProjectFolderClick() {
+		editor.fs.editFile('/games/' + editor.currentProjectDir);
+	}
+	
 	render() {
 		return R.div({"data-help": 'editor.MainMenu'},
 			R.btn('Open project...', this.onOpenProjectClick, undefined, 'menu-btn'),
+			R.btn('Browse...', this.onOpenProjectFolderClick, "Reveal in File Explorer", 'menu-btn'),
 			R.btn('Build', this.onBuildClick, "Build release version of game.", 'menu-btn'),
 			R.btn('Build debug', this.onBuildDebugClick, "Build debug version of game.\nContains asserts.", 'menu-btn'),
 			React.createElement(LanguageView),

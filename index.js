@@ -95,19 +95,17 @@ app.get('/fs/edit', function (req, res) {
 	}
 
 	setTimeout(() => {
-		"use strict";
 		try {
 			open(fn);
 			if(line) {
 				let arg = fn + ':' + line + (char ? ':' + char : '');
 				open('', {app: ['code', '-r', '-g', arg]});
-			} 
+			}
 			res.end('{}');
 		} catch (err) {
 			res.end(JSON.stringify({error: 'Can not open file to edit: ' + fn}));
 		}
 	}, 1);
-
 });
 
 app.post('/fs/fetch', jsonParser, function (req, res) {

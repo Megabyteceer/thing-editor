@@ -61,7 +61,7 @@ let fs = {
 		}
 		let now = Date.now();
 		let lastEdit = filesEditTimes[fileName];
-		if(lastEdit && lastEdit >  (now - 10000)) {
+		if(lastEdit && lastEdit >  (now - 1000)) {
 			return;
 		}
 		filesEditTimes[fileName] = now;
