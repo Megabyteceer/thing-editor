@@ -46,7 +46,10 @@ R.libInfo = (libName) => {
 	if(!_libInfoCache.hasOwnProperty(libName)) {
 		_libInfoCache[libName] = {
 			name: libName,
-			icon: R.span({title: "LIBRARY: " + libName, className: 'lib-icon'}, R.icon('lib' + (libNum++ % 5)))
+			icon: R.span({onDoubleClick: (ev) => {
+				editor.fs.editFile(libName);
+				sp(ev);
+			}, title: "LIBRARY: " + libName, className: 'lib-icon'}, R.icon('lib' + (libNum++ % 5)))
 		};
 	}
 	return _libInfoCache[libName];
