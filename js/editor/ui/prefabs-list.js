@@ -156,7 +156,7 @@ export default class PrefabsList extends React.Component {
 							editor.refreshTreeViewAndPropertyEditor();
 							editor.sceneModified(true);
 							fin(true);
-						}, 'Convert to PrefabReference', fin, 'Keep as copy', true);
+						}, 'Convert to PrefabReference', fin, 'Keep original', true);
 					} else {
 						fin();
 					}
