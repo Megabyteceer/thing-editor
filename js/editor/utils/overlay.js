@@ -616,7 +616,9 @@ class Dragger extends DSprite {
 			let dY = (Math.round(p.y) - o.y);
 			
 			if(game.keys.ctrlKey) {
-				editor.moveContainerWithoutChildren(o, dX, dY);
+				for(let s of editor.selection) {
+					editor.moveContainerWithoutChildren(s, dX, dY);
+				}
 			} else {
 				editor.onSelectedPropsChange('x', dX, true);
 				editor.onSelectedPropsChange('y', dY, true);
