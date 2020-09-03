@@ -18,7 +18,7 @@ export default class Pool {
 		let i = Math.floor(Math.random() * a.length);
 		let ret = a[i];
 		a.splice(i, 1);
-		assert(!ret.hasOwnProperty('children') || ret.children.length === 0, "Pool contains DisplayObject with non empty children.", 90001);
+		assert(!ret.hasOwnProperty('children') || ret.children.length === 0, "Pool contains " + constructor.name + " with non empty children.", 90001);
 		return ret;
 		/// #endif
 
