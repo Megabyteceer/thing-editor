@@ -175,7 +175,7 @@ export default class Timeline extends React.Component {
 				}
 				for(let field of data.fields) {
 					for(let keyframeData of field.keyframes) {
-						let k = getFrameAtTimeOrCreate(o, field.name, keyframeData.t);
+						let k = getFrameAtTimeOrCreate(o, field.name, keyframeData.t, true);
 						Object.assign(k, keyframeData);
 						allKeyframesToSelect.push(k);
 					}
@@ -866,7 +866,7 @@ function getFieldByNameOrCreate(o, name) {
 }
 
 let getFrameAtTimeOrCreateReturnedNewKeyframe;
-function getFrameAtTimeOrCreate(o, name, time) {
+function getFrameAtTimeOrCreate(o, name, time, doNotModifyEarlyKeyframes) {
 	let field = getFieldByNameOrCreate(o, name);
 	for (let keyFrame of field.t) {
 		if (keyFrame.t === time) {
@@ -875,11 +875,11 @@ function getFrameAtTimeOrCreate(o, name, time) {
 		}
 	}
 	getFrameAtTimeOrCreateReturnedNewKeyframe = true;
-	return createKeyframe(o, name, time, field);
+	return createKeyframe(o, name, time, field, false, doNotModifyEarlyKeyframes);
 }
 
 
-function createKeyframe(o, name, time, field, isAutomaticCreation) {
+function createKeyframe(o, name, time, field, isAutomaticCreation, doNotModifyEarlyKeyframes) {
 
 	let mode;
 	let jumpTime = time;
@@ -889,18 +889,20 @@ function createKeyframe(o, name, time, field, isAutomaticCreation) {
 		if (mode === 3 || mode === 4) {
 			mode = 0;
 		}
-		if (prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
-			let labelBetweenKeyframes = null;
-			for(let lName in o.timeline.l) {
-				let lTime = o.timeline.l[lName];
-				if(lTime >= prevField.t && lTime <= time) {
-					labelBetweenKeyframes = true;
-					break;
+		if(!doNotModifyEarlyKeyframes) {
+			if (prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
+				let labelBetweenKeyframes = null;
+				for(let lName in o.timeline.l) {
+					let lTime = o.timeline.l[lName];
+					if(lTime >= prevField.t && lTime <= time) {
+						labelBetweenKeyframes = true;
+						break;
+					}
 				}
-			}
-			if(!labelBetweenKeyframes) {
-				jumpTime = prevField.j;
-				prevField.j = prevField.t;
+				if(!labelBetweenKeyframes) {
+					jumpTime = prevField.j;
+					prevField.j = prevField.t;
+				}
 			}
 		}
 	} else {
