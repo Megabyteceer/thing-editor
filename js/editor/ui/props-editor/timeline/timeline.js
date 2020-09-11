@@ -919,14 +919,15 @@ function createKeyframe(o, name, time, field, isAutomaticCreation, doNotModifyEa
 
 	if(!isAutomaticCreation && (name === 'image') && prevField) {
 		let step = time - prevField.t;
-		let nextName = increaseNumberInName(prevField.v);
+		let nameStep = increaseNumberInName(prevField.v, 1) === o.image ? 1 : -1;
+		let nextName = increaseNumberInName(prevField.v, nameStep);
 		if((nextName !== prevField.v) && (nextName === o.image)) {
-			if(Lib.hasTexture(increaseNumberInName(o.image))) {
+			if(Lib.hasTexture(increaseNumberInName(o.image, nameStep))) {
 				editor.ui.modal.showEditorQuestion("Animation generator", "Do you want to create keyframes for all same images?",
 					() => {
 						let image = o.image;
 						while(true) {// eslint-disable-line no-constant-condition
-							image = increaseNumberInName(image);
+							image = increaseNumberInName(image, nameStep);
 							if(Lib.hasTexture(image)) {
 								time += step;
 								o[name] = image;
@@ -948,12 +949,12 @@ function createKeyframe(o, name, time, field, isAutomaticCreation, doNotModifyEa
 	return keyFrame;
 }
 
-function increaseNumberInName(v) {
+function increaseNumberInName(v, step = 1) {
 	let regex = /(\d+)(?!.*\d)/gm;
 	let a = regex.exec(v);
 	if(a) {
 		let oldNum = a.pop();
-		let newNum = (parseInt(oldNum) + 1).toString();
+		let newNum = (parseInt(oldNum) + step).toString();
 		while(newNum.length < oldNum.length) {
 			newNum =  '0' + newNum;
 		}
