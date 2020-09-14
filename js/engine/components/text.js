@@ -427,6 +427,31 @@ __EDITOR_editableProps(Text, [
 		name: 'text-style'
 	},
 	{
+		type: 'btn',
+		title: 'Copy text style.',
+		name: 'Copy style', // 99999
+		onClick: (o) => {
+			const styleProperties = editor.enumObjectsProperties(o)
+				.filter((property) => {
+					return property.name.startsWith('style.');
+				})
+				.map((property) => ({property: property.name, value: o[property.name]}));
+			editor.settings.setItem('__EDITOR-clipboard-data-text-style', styleProperties);
+			editor.ui.modal.notify("Copied current text style");
+		},
+	},
+	{
+		type: 'btn',
+		title: 'Paste text style.',
+		name: 'Paste style', // 99999
+		onClick: (o) => {
+			editor.ui.modal.notify("Text style pasted");
+			editor.settings.getItem('__EDITOR-clipboard-data-text-style', [])
+				.forEach(({property, value}) => editor.onObjectsPropertyChanged(o, property, value, false));
+		},
+		visible:() => !!editor.settings.getItem('__EDITOR-clipboard-data-text-style', false),
+	},
+	{
 		name: 'style.fontSize',
 		type: Number,
 		min:1,
