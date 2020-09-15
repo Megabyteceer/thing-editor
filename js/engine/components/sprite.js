@@ -152,14 +152,20 @@ const SPRITE_EDITABLE_PROPS = [
 Sprite.__EDITOR_group = 'Basic';
 
 const MESH_EDITABLE_PROPS = SPRITE_EDITABLE_PROPS.slice();
-MESH_EDITABLE_PROPS.push({
-	name: 'CENTRALIZE PIVOT',
-	type: 'btn',
-	onClick: (o) => {
-		editor.onObjectsPropertyChanged(o, 'pivot.x', Math.round(o.texture.width / 2));
-		editor.onObjectsPropertyChanged(o, 'pivot.y', Math.round(o.texture.height / 2));
-	}
-});
+MESH_EDITABLE_PROPS.push(
+	{
+		type: 'splitter',
+		title: 'Mesh',
+		name: 'Mesh-props'
+	},
+	{
+		name: 'CENTRALIZE PIVOT',
+		type: 'btn',
+		onClick: (o) => {
+			editor.onObjectsPropertyChanged(o, 'pivot.x', Math.round(o.texture.width / 2));
+			editor.onObjectsPropertyChanged(o, 'pivot.y', Math.round(o.texture.height / 2));
+		}
+	});
 __EDITOR_editableProps(Sprite, SPRITE_EDITABLE_PROPS);
 __EDITOR_editableProps(Mesh, MESH_EDITABLE_PROPS);
 Sprite.__EDITOR_icon = 'tree/sprite';
