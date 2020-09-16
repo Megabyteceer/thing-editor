@@ -211,7 +211,12 @@ export default class MovieClip extends DSprite {
 
 	gotoRandomLabel() {
 		assert(arguments.length > 1, "Two or more arguments expected for method gotoRandomLabel.", 10056);
-		this.gotoLabel(arguments[Math.floor(Math.random() * arguments.length)]);
+		
+		const labelName = arguments[Math.floor(Math.random() * arguments.length)];
+		
+		if (this.hasLabel(labelName)) {
+			this.gotoLabel(labelName);
+		}
 	}
 
 	gotoLabelIf(labelName, variablePath, invert) {
