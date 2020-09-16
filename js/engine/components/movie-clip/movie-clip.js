@@ -214,7 +214,7 @@ export default class MovieClip extends DSprite {
 		
 		const labelName = arguments[Math.floor(Math.random() * arguments.length)];
 		
-		if (this.hasLabel(labelName)) {
+		if (labelName) {
 			this.gotoLabel(labelName);
 		}
 	}
