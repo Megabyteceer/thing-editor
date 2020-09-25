@@ -342,9 +342,11 @@ button {
 }
 
 .tree-caret {
-	line-height: 0.50;
+	line-height: 0.33;
+	height: 19px;
     position: absolute;
-    right: 0;
+	right: 0;
+	background: inherit;
 	font-size: 290%;
 	color: #6c6b6a;
 	pointer-events:none;
