@@ -132,16 +132,19 @@ export default class SceneLinkedPromise extends Container {
 
 
 	then(handler) {
+		assert(this._promiseWaitForResult, "Promise is already finished.", 99999);
 		this._resolveHandlers.push(handler);
 		return this;
 	}
 
 	catch(handler) {
+		assert(this._promiseWaitForResult, "Promise is already finished.", 99999);
 		this._rejectHandlers.push(handler);
 		return this;
 	}
 
 	finally(handler) {
+		assert(this._promiseWaitForResult, "Promise is already finished.", 99999);
 		this._finallyHandlers.push(handler);
 		return this;
 	}
