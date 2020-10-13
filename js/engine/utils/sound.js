@@ -166,6 +166,19 @@ export default class Sound {
 			return;
 		}
 		let s = Lib.getSound(soundId);
+
+		/// #if DEBUG
+		/*
+		/// #endif
+		if(!s) {
+			let er = new Error('Attempt to play unknown sound "' + soundId + '"');
+			setTimeout(() => {
+				throw er;
+			});
+			return;
+		}
+		//*/
+
 		if(s.lastPlayStartFrame < game.time
 		/// #if EDITOR
 		|| game.__EDITOR_mode

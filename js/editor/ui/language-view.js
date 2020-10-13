@@ -406,7 +406,8 @@ function refreshCachedData() {
 
 	if(editor.projectDesc.__externalLocalesSource) {
 		for(let langId in langsByLib[editor.projectDesc.__externalLocalesSource]) {
-			languagesMerged[langId] = Object.assign(languagesMerged[langId] || {}, langsByLib[editor.projectDesc.__externalLocalesSource][langId]);
+			const externalData = Object.assign({}, langsByLib[editor.projectDesc.__externalLocalesSource][langId]);
+			languagesMerged[langId] = Object.assign(externalData, languagesMerged[langId] || {});
 		}
 	}
 

@@ -100,8 +100,8 @@ Sprite.__blendModesSelect = Object.keys(PIXI.BLEND_MODES).filter((k) => {
 }).sort((a, b) => {
 	return a.value - b.value;
 });
-Sprite.__EDITOR_group = 'Basic';
-__EDITOR_editableProps(Sprite, [
+
+const SPRITE_EDITABLE_PROPS = [
 	{
 		type: 'splitter',
 		title: 'Sprite:',
@@ -147,9 +147,27 @@ __EDITOR_editableProps(Sprite, [
 		select: Sprite.__blendModesSelect,
 		notAnimate: true
 	}
-]);
+];
 
-__EDITOR_editableProps(Mesh, Sprite.__EDITOR_editableProps);
+Sprite.__EDITOR_group = 'Basic';
+
+const MESH_EDITABLE_PROPS = SPRITE_EDITABLE_PROPS.slice();
+MESH_EDITABLE_PROPS.push(
+	{
+		type: 'splitter',
+		title: 'Mesh',
+		name: 'Mesh-props'
+	},
+	{
+		name: 'CENTRALIZE PIVOT',
+		type: 'btn',
+		onClick: (o) => {
+			editor.onObjectsPropertyChanged(o, 'pivot.x', Math.round(o.texture.width / 2));
+			editor.onObjectsPropertyChanged(o, 'pivot.y', Math.round(o.texture.height / 2));
+		}
+	});
+__EDITOR_editableProps(Sprite, SPRITE_EDITABLE_PROPS);
+__EDITOR_editableProps(Mesh, MESH_EDITABLE_PROPS);
 Sprite.__EDITOR_icon = 'tree/sprite';
 
 /// #endif

@@ -1,3 +1,4 @@
+import game from "../game.js";
 
 const PI_2 = Math.PI * 2;
 
@@ -40,11 +41,15 @@ const fragmentSrc = `
 
 export default class Fill extends PIXI.Mesh {
 
-	constructor() {
+	constructor(material) {
 
-		super(new PIXI.PlaneGeometry(2, 2, 2, 2), new PIXI.MeshMaterial(PIXI.Texture.WHITE, {
-			program: PIXI.Program.from(vertexSrc, fragmentSrc)
-		}));
+		if(!material) {
+			material = new PIXI.MeshMaterial(PIXI.Texture.WHITE, {
+				program: PIXI.Program.from(vertexSrc, fragmentSrc)
+			});
+		}
+
+		super(new PIXI.PlaneGeometry(2, 2, 2, 2), material);
 		this.geometry.addAttribute('aColor',
 			[0, 0, 1, 1], 1);
 	}
@@ -96,18 +101,22 @@ export default class Fill extends PIXI.Mesh {
 	update() {
 		if (this.xShiftSpeed !== 0) {
 			this.xShift += this.xShiftSpeed;
-			if (this._xShift > 2) {
-				this._xShift -= 2;
-			} else if (this._xShift < -2) {
-				this._xShift += 2;
+			if(game.isCanvasMode) {
+				if (this._xShift > 2) {
+					this._xShift -= 2;
+				} else if (this._xShift < -2) {
+					this._xShift += 2;
+				}
 			}
 		}
 		if (this.yShiftSpeed !== 0) {
 			this.yShift += this.yShiftSpeed;
-			if (this._yShift > 2) {
-				this._yShift -= 2;
-			} else if (this._yShift < 0) {
-				this._yShift += 2;
+			if(game.isCanvasMode) {
+				if (this._yShift > 2) {
+					this._yShift -= 2;
+				} else if (this._yShift < -2) {
+					this._yShift += 2;
+				}
 			}
 		}
 
