@@ -8,6 +8,7 @@ import ClassesView from "./classes-view.js";
 import OrientationTrigger from "thing-editor/js/engine/components/orientation-trigger.js";
 import getValueByPath from "thing-editor/js/engine/utils/get-value-by-path.js";
 import {_searchByRegexpOrText} from "../utils/editor-utils.js";
+import fs from "../utils/fs.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -211,7 +212,13 @@ export default class PrefabsList extends React.Component {
 			R.br(),
 			'You cannot undo this action.'
 		),() => {
-			Lib.__deletePrefab(prefabName);
+			Lib.__deletePrefab(prefabName).then(() => {
+				fs.refreshFiles().then(() => {
+					PrefabsList.readAllPrefabsList().then(() => {
+						this.forceUpdate();
+					});
+				});
+			});
 			if(getCurrentPrefabName() === prefabName) {
 				PrefabsList.exitPrefabEdit();
 			}
