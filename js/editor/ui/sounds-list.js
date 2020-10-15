@@ -118,20 +118,25 @@ export default class SoundsList extends React.Component {
 										return s.name === wavFullName;
 									})) {
 										editor.ui.status.warn("Sound file '" + fileInfo.name + "' has no .wav version. Please use wav sounds. Other formats will be generated automatically.", 99999, () => {
-											editor.fs.editFile(editor.game.resourcesPath + fileInfo.name);
+											editor.copyToClipboard(name);
+											let sndFolder = fileInfo.name.split('/');
+											sndFolder.pop();
+											sndFolder = sndFolder.join('/');
+											editor.fs.editFile((fileInfo.lib ? (fileInfo.lib + '/') : editor.game.resourcesPath) + sndFolder);
 										});
-									}
-									if(!onlyThisFiles || onlyThisFiles.has(wavName)) {
-										if(!sounds.hasOwnProperty(name)) {
-											sounds[name] = [];
-											if(fileInfo.lib) {
-												sounds[name].___libInfo = R.libInfo(fileInfo.lib);
+									} else {
+										if(!onlyThisFiles || onlyThisFiles.has(wavName)) {
+											if(!sounds.hasOwnProperty(name)) {
+												sounds[name] = [];
+												if(fileInfo.lib) {
+													sounds[name].___libInfo = R.libInfo(fileInfo.lib);
+												}
 											}
+											sounds[name].push(fileName);
 										}
-										sounds[name].push(fileName);
 									}
 								}
-								
+
 							});
 
 							for(let f in sounds) {
