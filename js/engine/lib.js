@@ -284,21 +284,6 @@ export default class Lib {
 		/// #endif
 	}
 
-	/// #if EDITOR
-	static __deleteSound(soundName) {
-		if(soundsHowlers.hasOwnProperty(soundName)) {
-			let s = soundsHowlers[soundName];
-			s.unload();
-			delete soundsHowlers[soundName];
-			let i = Lib.__soundsList.find(i => i.name === soundName);
-			i = Lib.__soundsList.indexOf(i);
-			assert(i >= 0, "Sound was not registered in sounds list: " + soundName);
-			Lib.__soundsList.splice(i, 1);
-			delete sounds[soundName];
-		}
-	}
-	/// #endif
-
 	/// #if DEBUG
 	static __overrideSound(name, src) {
 		let opt = {src};

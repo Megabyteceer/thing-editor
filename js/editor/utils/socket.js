@@ -60,13 +60,13 @@ ws.onmessage = function incoming(data) {
 			AssetsLoader.reloadAssets(true, imagesUpdated);
 		}
 		if(soundsUpdated && !editor.ui.soundsList.soundsReloadingInProgress) {
-			editor.ui.soundsList.reloadSounds(soundsUpdated);
+			editor.ui.soundsList.reloadSounds(soundsUpdated, true);
 		}
 		if(imagesDeleted) {
 			AssetsLoader.deleteAssets(imagesDeleted.keys());
 		}
 		if(soundsDeleted) {
-			editor.ui.soundsList.deleteSounds(soundsDeleted.keys());
+			editor.ui.soundsList.afterDeleteSounds(soundsDeleted.keys());
 		}
 		if(srcChanged) {
 			editor.ui.viewport.jsFilesChanged();
