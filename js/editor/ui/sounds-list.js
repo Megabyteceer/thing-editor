@@ -117,12 +117,10 @@ export default class SoundsList extends React.Component {
 									if(!editor.fs.filesExt.snd.find((s) => {
 										return s.name === wavFullName;
 									})) {
-										editor.ui.status.warn("Sound file '" + fileInfo.name + "' has no .wav version. Please use wav sounds. Other formats will be generated automatically.", 99999, () => {
-											editor.copyToClipboard(name);
-											let sndFolder = fileInfo.name.split('/');
-											sndFolder.pop();
-											sndFolder = sndFolder.join('/');
-											editor.fs.editFile((fileInfo.lib ? (fileInfo.lib + '/') : editor.game.resourcesPath) + sndFolder);
+										editor.ui.status.warn("Sound file '" + fileInfo.name + "' has no .wav version. Click to delete.", 99999, () => {
+											editor.fs.deleteFile(fileInfo.name);
+											editor.ui.modal.notify(fileInfo.name + ' deleted.');
+											return true;
 										});
 									} else {
 										if(!onlyThisFiles || onlyThisFiles.has(wavName)) {
@@ -136,7 +134,6 @@ export default class SoundsList extends React.Component {
 										}
 									}
 								}
-
 							});
 
 							for(let f in sounds) {
