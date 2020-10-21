@@ -48,6 +48,7 @@ export default class BgMusic extends Container {
 		assert(i >= 0, 'BgMusic reference lost');
 		allActiveMusics.splice(i, 1);
 		BgMusic._recalculateMusic();
+		MusicFragment.onMusicRemove(this);
 		this._externalVolume = 0;
 		this._musInitialized = false;
 		this.customFade = null;
