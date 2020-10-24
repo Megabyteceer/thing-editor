@@ -24,6 +24,8 @@ ws.onmessage = function incoming(data) {
 		} else {
 			editor.onServerAllowsWorking();
 		}
+	} else if(data.hasOwnProperty('call')) {
+		editor.callByPath('this.' + data.call, window);
 	} else if(data.hasOwnProperty('notifyText')) {
 		editor.ui.modal.notify(data.notifyText);
 	} else if(data.hasOwnProperty('showSpinner')) {
