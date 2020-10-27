@@ -301,6 +301,18 @@ export default class Spine extends Container {
 		this.play(animationName, mixDuration);
 	}
 
+	playIfNot(animationName, mixDuration, playIfStopped = true, animationNamesRegexp) {
+		try {
+			if (RegExp(animationNamesRegexp).test(this.currentAnimation)) return;
+		} catch(e) {
+			assert(true, 'Invalid regular expression for playIfNot function (Spine)');
+		}
+		
+		if (!this.isPlaying && !playIfStopped) return;
+
+		this.play(animationName, mixDuration);
+	}
+
 	stop(isNeedRefresh) {
 		if (!this.isPlaying) return;
 
