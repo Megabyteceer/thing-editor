@@ -23,6 +23,7 @@ body,html{
 }
 
 hr{
+	width: 80%;
 	border:0;
 	border-bottom:1px solid #aaa;
 }
@@ -79,12 +80,11 @@ img {
 }
 
 button {
-	background:#e6e7e9;
-	border:0;
-	border-radius:6px;
-	margin:5px;
-	padding: 4px 12px;
-	outline: none;
+	background: #e6e7e9;
+    border-radius: 2px;
+    padding: 4px 12px;
+    outline: none;
+    border: 1px solid #aaa;
 }
 
 .menu-btn {
@@ -123,7 +123,7 @@ button {
 	box-sizing: content-box;
 	background: var(--window-bg-color);
 	border: 1px solid var(--window-header-color);
-	border-radius: 4px;
+	border-radius: 2px;
 }
 
 .window-header {
@@ -372,7 +372,7 @@ button {
 
 .props-group{
 	margin: 3px 0;
-	border-radius:6px;
+	border-radius:2px;
 	overflow:hidden;
 }
 
@@ -390,6 +390,10 @@ button {
 .props-field {
 	border-bottom: 1px solid #c6c6c6;
 	display: flex;
+}
+
+.props-field:last-child {
+	border-bottom: none;
 }
 
 .props-field-important {
@@ -413,9 +417,8 @@ button {
 .props-label {
 	font-family: monospace;
 	box-sizing:border-box;
-	padding-left: 15px;
 	width: 50%;
-	max-width: 150px;
+	max-width: 200px;
 	color: #3a8cff;
 	overflow-x: hidden;
 	font-size: 120%;
@@ -448,7 +451,7 @@ input{
 	font-family: monospace;
 	box-sizing: border-box;
 	width: 100%;
-	padding: 3px;
+	padding: 3px 10px;
 	border:none;
 }
 
@@ -466,7 +469,7 @@ input{
 }
 
 .select-editor-current {
-	padding-left: 10px;
+	padding: 0 10px;
 }
 
 .select-editor-list{
@@ -622,6 +625,7 @@ input{
 }
 
 .left-panel {
+	text-align: center;
 	width: 40px;
 }
 
@@ -663,7 +667,7 @@ input{
 }
 
 .tool-btn {
-	padding: 0;
+	padding: 3px;
 	background:none;
 }
 
@@ -695,11 +699,11 @@ input{
 .close-window-btn {
 	position: absolute;
 	padding: 0 3px;
-	right: 2px;
-	top: -21px;
+	right: 0;
+	top: -18px;
 	font-weight: bold;
 	background: #de3535;
-	color: #de3535;
+	color: #ffcece;
 }
 
 .timeline {

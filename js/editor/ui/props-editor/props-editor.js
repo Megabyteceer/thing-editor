@@ -11,8 +11,9 @@ let editorProps = {
 let headerProps = {
 	className: 'props-header'
 };
-let headerTextProps = {
-	className: 'mid-text-align'
+
+const MIXED_ICON = {
+	__EDITOR_icon: 'tree/mixed-type'
 };
 
 class PropsEditor extends React.Component {
@@ -110,17 +111,10 @@ class PropsEditor extends React.Component {
 		if(editor.selection.some((o) =>{
 			return o.constructor !== firstClass;
 		})) {
-			header =  R.div(headerProps,'Mixed types selected');
+			header = R.fragment(R.classIcon(MIXED_ICON), ' Mixed types selected', '...');
 		} else {
-			header = R.div(headerProps,
-				R.classIcon(firstClass),
-				R.span(headerTextProps,
-					R.b(null, firstClass.name), ' selected ',
-					R.btn('...', this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode)
-				)
-			);
+			header = R.fragment(R.classIcon(firstClass), ' ', R.b(null, firstClass.name), '...');
 		}
-		
 		let props = editor.enumObjectsProperties(editor.selection[0]);
 		let propsFilter = {};
 		
@@ -172,7 +166,9 @@ class PropsEditor extends React.Component {
 		}
 		assert(curGroup, "Properties list started not with splitter.");
 		groups.push(curGroup);
-		return R.div(editorProps, header, groups);
+		return R.div(editorProps, R.div(headerProps,
+			R.btn(header, this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode)
+		), groups);
 	}
 }
 

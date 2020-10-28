@@ -265,7 +265,7 @@ export default class Viewport extends React.Component {
 				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume (Ctrl + P)", 'big-btn', 1080);
 				if(game.__paused) {
 					statusHeader = R.span({className: "red-blink"}, 'paused');
-					oneStepBtn = R.btn('One step', this.onOneStepClick, "(Ctrl + [)", undefined, 1219);
+					oneStepBtn = R.btn('One step', this.onOneStepClick, "(Ctrl + [)", 'big-btn', 1219);
 				} else {
 					statusHeader = 'running';
 				}
@@ -274,15 +274,19 @@ export default class Viewport extends React.Component {
 
 			panel = R.span(undefined,
 				R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
+				R.hr(),
 				R.btn(R.icon('recompile'), this.onReloadClassesClick, needReloadCode ? 'source code modified externally. Click here to load changes.' : 'Reload Custom Components', needReloadCode ? 'big-btn danger' : 'big-btn'),
 				reloadAssetsBtn,
+				R.hr(),
 				statusHeader,
 				pauseResumeBtn,
 				oneStepBtn,
+				R.hr(),
 				toggleOrientationBtn,
 				R.btn('⛶', () => {
 					document.querySelector('#viewport-root').requestFullscreen();
-				}, 'Go fullscreen'),
+				}, 'Go fullscreen', 'big-btn'),
+				R.hr(),
 				'Speed:',
 				React.createElement(SelectEditor, {onChange:(ev) => {
 					game.__speedMultiplier = ev.target.value;
@@ -307,6 +311,7 @@ export default class Viewport extends React.Component {
 				}, defaultChecked:game.isMobile.any}),
 
 				languagePanel,
+				R.hr(),
 				panel
 			),
 			R.div({
