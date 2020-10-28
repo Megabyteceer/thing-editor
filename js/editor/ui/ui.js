@@ -113,6 +113,11 @@ class UI extends React.Component {
 	}
 	
 	render() {
+
+		editor.fs.filesExt && editor.fs.filesExt.scripts.sort((a, b) => {
+			return (a.name > b.name) ? 1 : -1;
+		});
+
 		return R.div({"data-help": 'editor.MainMenu'},
 			R.btn('Open project...', this.onOpenProjectClick, undefined, 'menu-btn'),
 			R.btn('Browse...', this.onOpenProjectFolderClick, "Reveal in File Explorer", 'menu-btn'),
