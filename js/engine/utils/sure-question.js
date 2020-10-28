@@ -57,6 +57,7 @@ export default class SureQuestion {
 					if(L.has(yesLabel)) {
 						tf.translatableText = yesLabel;
 					} else {
+						tf.translatableText = null;
 						tf.text = yesLabel;
 					}
 				}
@@ -72,6 +73,7 @@ export default class SureQuestion {
 					if(L.has(noLabel)) {
 						tf.translatableText = noLabel;
 					} else {
+						tf.translatableText = null;
 						tf.text = noLabel;
 					}
 				}
