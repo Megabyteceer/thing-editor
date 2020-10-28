@@ -264,8 +264,8 @@ class LanguageTableEditor extends React.Component {
 				if(editor.selection.length === 1) {
 					if(editor.selection[0] instanceof PIXI.Text) {
 						let t = editor.selection[0];
-						if(!t.text && !t.translatableText) {
-							t.translatableText = key;
+						if(((!t.text) || (t.text === 'New Text 1')) && !t.translatableText) {
+							editor.onObjectsPropertyChanged(t, 'translatableText', key);
 						}
 					}
 				}
