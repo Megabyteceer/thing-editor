@@ -253,7 +253,7 @@ export default class MovieClip extends DSprite {
 		super.init();
 		/// #if EDITOR
 		if((this.constructor === MovieClip) && !this._timelineData) {
-			editor.ui.status.error("MovieClip " + this.___info + " has no timeline.", 32003, this, 'timeline');
+			editor.ui.status.warn("MovieClip " + this.___info + " has no timeline.", 32003, this, 'timeline');
 		}
 		/// #endif
 	}

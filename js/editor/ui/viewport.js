@@ -275,7 +275,7 @@ export default class Viewport extends React.Component {
 			panel = R.span(undefined,
 				R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
 				R.hr(),
-				R.btn(R.icon('recompile'), this.onReloadClassesClick, needReloadCode ? 'source code modified externally. Click here to load changes.' : 'Reload Custom Components', needReloadCode ? 'big-btn danger' : 'big-btn'),
+				R.btn(R.icon('recompile'), this.onReloadClassesClick, needReloadCode ? 'source code modified externally. Click here to load changes.' : 'Reload Custom Components', needReloadCode ? 'big-btn red-frame' : 'big-btn'),
 				reloadAssetsBtn,
 				R.hr(),
 				statusHeader,

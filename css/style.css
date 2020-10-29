@@ -21,6 +21,9 @@ body,html{
 	background: var(--bg-color);
 	user-select: none;
 }
+button * {
+	vertical-align: bottom !important;
+}
 
 hr{
 	width: 80%;
@@ -84,7 +87,11 @@ button {
     border-radius: 2px;
     padding: 4px 12px;
     outline: none;
-    border: 1px solid #aaa;
+    border: 1px solid #bcbfca;
+}
+
+.toggled-button {
+	box-shadow: 0 0 4px #00103099 inset;
 }
 
 .menu-btn {
@@ -348,7 +355,7 @@ button {
 	right: 0;
 	background: inherit;
 	font-size: 290%;
-	color: #6c6b6a;
+	color: #64615d;
 	pointer-events:none;
 }
 
@@ -492,7 +499,7 @@ input{
 	width:100%;
 	height:100%;
 	z-index: 1000;
-	background: rgba(0,16,62,0.5);
+	background: rgba(0, 10, 30, 0.7);
 }
 
 .modal-title {
@@ -545,7 +552,7 @@ input{
 
 .list-view {
 	bottom: 3px;
-	top: 35px;
+	top: 27px;
 	left: 3px;
 	right: 3px;
 	position: absolute;
@@ -1259,6 +1266,8 @@ input{
 	height: 11px;
 	right: -6px;
 	cursor: pointer;
+	font-size: 90%;
+	color: #64615d;
 }
 
 .number-input-btn:hover {
@@ -1270,7 +1279,7 @@ input{
 }
 
 .number-input-btn-up {
-	top: -3px;
+	top: -1px;
 	height: 11px;
 }
 
@@ -1324,9 +1333,17 @@ input{
 }
 
 .delete-scene-btn {
-	padding: 0 4px;
+	width: 18px;
+	height: 18px;
+	background: none;
+	background-image: url("/thing-editor/img/delete.png") !important;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
 	position: absolute;
 	right: 10px;
+	top: 7px;
+	border: none;
 	margin-top: 0;
 }
 
@@ -1355,7 +1372,6 @@ input{
 
 .danger {
 	color: #f00 !important;
-	outline: 1px solid #f00;
 }
 
 .sound-vol-bar-bg {
@@ -1441,7 +1457,8 @@ input{
 }
 
 .red-frame {
-	outline: 7px solid #ff0d00;
+	position: relative;
+	outline: 2px solid #ff0d00;
 }
 
 .error-help-button {
