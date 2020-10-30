@@ -1457,8 +1457,7 @@ input{
 }
 
 .red-frame {
-	position: relative;
-	outline: 2px solid #ff0d00;
+	outline: 1px solid #ff0d00;
 }
 
 .error-help-button {
