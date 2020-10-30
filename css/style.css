@@ -560,6 +560,14 @@ input{
 	overflow-x: hidden;
 }
 
+.modal-content .list-view {
+	top: 50px;
+}
+
+.choose-list-header * {
+	vertical-align: top;
+}
+
 .error {
 	color: #be0000;
 	text-align: left;
