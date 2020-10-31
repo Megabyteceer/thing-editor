@@ -335,7 +335,7 @@ class Game {
 	}
 
 	init(element, gameId, resourcesPath = '') {
-
+		game.additionalLoadingsInProgress = 0;
 		//make objects visible by text path fo getValueByPath methods]
 		this.getValueByPath = getValueByPath;
 		game.Lib = Lib;
@@ -482,17 +482,24 @@ class Game {
 		this.onResize();
 		return isModified;
 	}
-
+	
+	/// #if EDITOR
+	async _initInner() {
+		/*
+	/// #endif
 	_initInner() {
+		//*/
+		game.additionalLoadingsInProgress++;
+
+		/// #if EDITOR
+		await
+		/// #endif
 		Promise.all([
 			loadFonts(),
 			loadLocalizations()
 		]).then(() => {
-			this.__initAfterFontsLoaded();
+			game.additionalLoadingsInProgress--;
 		});
-	}
-
-	__initAfterFontsLoaded() {
 
 		this.onResize();
 
@@ -1070,6 +1077,9 @@ class Game {
 		let count = Lib.getSoundsLoadingCount();
 
 		count += ResourceLoader.getLoadingCount();
+		if(game.additionalLoadingsInProgress) {
+			count += game.additionalLoadingsInProgress;
+		}
 		/// #if EDITOR
 		if(!ignoreInGamePromises) {
 		/// #endif
