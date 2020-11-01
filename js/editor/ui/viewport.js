@@ -247,6 +247,7 @@ export default class Viewport extends React.Component {
 						PrefabsList.exitPrefabEdit(true);
 					}
 				}, 'Reject prefab changes (Esc)', undefined, 27),
+				R.hr(),
 				'BG color:',
 				R.input({
 					onChange: (ev) => {
@@ -256,6 +257,7 @@ export default class Viewport extends React.Component {
 					type: 'color',
 					defaultValue: '#' + editor.overlay.getBGColor().toString(16).padStart(6, '0')
 				}),
+				R.hr(),
 				reloadAssetsBtn,
 				toggleOrientationBtn
 			);

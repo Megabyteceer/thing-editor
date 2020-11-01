@@ -1340,19 +1340,23 @@ input{
 	width: 600px;
 }
 
-.delete-scene-btn {
+.delete-scene-btn, .delete-scene-btn:hover{
 	width: 18px;
 	height: 18px;
-	background: none;
+	background: #ffffff;
 	background-image: url("/thing-editor/img/delete.png") !important;
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
 	position: absolute;
-	right: 10px;
-	top: 7px;
+	right: 1px;
+	top: 10px;
 	border: none;
 	margin-top: 0;
+}
+
+#window-prefabsList .delete-scene-btn {
+	top: 7px;
 }
 
 .sound-preload-ui {
