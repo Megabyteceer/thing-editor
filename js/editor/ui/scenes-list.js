@@ -121,7 +121,7 @@ export default class ScenesList extends React.Component {
 		);
 		
 		return R.div({
-			onClick: () => {
+			onDoubleClick: () => {
 				if(editor.currentSceneName !== sceneName) {
 					editor.ui.viewport.stopExecution();
 					editor.openSceneSafe(sceneName);
