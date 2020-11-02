@@ -1370,7 +1370,7 @@ input{
 }
 
 .sounds-search-input {
-	width: calc(100% - 225px);
+	width: calc(100% - 201px);
 	outline: 2px solid red !important;
 }
 
@@ -1420,7 +1420,7 @@ input{
 }
 
 .prefabs-search-input, .classes-search-input {
-	width: calc(100% - 200px);
+	width: calc(100% - 176px);
 	outline: 2px solid red !important;
 }
 
@@ -1429,7 +1429,7 @@ input{
 }
 
 .classes-search-input {
-	width: calc(100% - 250px);
+	width: calc(100% - 217px);
 }
 
 .breakpoint-btn {
