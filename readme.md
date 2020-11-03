@@ -17,7 +17,7 @@ To start editor manually use **npm start** in **thing-editor** folder
 
 mkdir game_editor_here
 cd game_editor_here
-git clone https://github.com/Megabyteceer/thing-editor.git
+git clone ssh://git@xdevteam.com:37234/bgaming/games/thing-editor.git
 git clone https://github.com/Megabyteceer/thing-project-example.git games/thing-project-example
 cd thing-editor
 npm i
