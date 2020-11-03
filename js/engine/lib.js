@@ -1,3 +1,5 @@
+/** @typedef {typeof import('pixi.js-legacy')} PIXI*/
+
 import Pool from "./utils/pool.js";
 import Scene from "./components/scene.js";
 import DisplayObject from "./components/display-object.js";
@@ -9,6 +11,7 @@ import ResourceLoader from "./utils/resource-loader.js";
 let _oldDefaults = {};
 let _oldClasses = {};
 import ClassesLoader from "thing-editor/js/editor/utils/classes-loader.js";
+import Container from "./components/container.js";
 
 function accessToOldReferenceDetector(obj, prop) {
 	if(!Lib.__outdatedReferencesDetectionDisabled) {
@@ -134,7 +137,9 @@ export default class Lib {
 		assert(classes.hasOwnProperty(className), "No class with name '" + className + "' registered in Lib", 10043);
 		return classes[className];
 	}
-	
+	/**
+	 * @protected
+	 */
 	static _setClasses(c, def) {
 		defaults = def;
 		classes = c;
@@ -146,12 +151,16 @@ export default class Lib {
 		Object.assign(_oldDefaults, def);
 		/// #endif
 	}
-	
+	/**
+	 * @protected
+	 */
 	static _setScenes(s) {
 		scenes = s;
 		Lib.scenes = s;
 	}
-	
+	/**
+	 * @protected
+	 */
 	static _setPrefabs(p) {
 		prefabs = p;
 		Lib.prefabs = p;
@@ -167,7 +176,9 @@ export default class Lib {
 		}
 		/// #endif
 	}
-	
+	/**
+	 * @protected
+	 */
 	static addResource(fileName
 		/// #if EDITOR
 		, isReloading
@@ -211,7 +222,9 @@ export default class Lib {
 			}
 		});
 	}
-
+	/**
+	 * @protected
+	 */
 	static addTexture(name, texture
 		/// #if EDITOR
 		, addToBegin = false, libName
@@ -261,7 +274,9 @@ export default class Lib {
 		}
 		/// #endif
 	}
-
+	/**
+	 * @protected
+	 */
 	static _unloadTexture(name
 		/// #if EDITOR
 		, ___removeFromEditorList = false
@@ -285,6 +300,9 @@ export default class Lib {
 	}
 
 	/// #if DEBUG
+	/**
+	 * @protected
+	 */
 	static __overrideSound(name, src) {
 		let opt = {src};
 		let s = loadSound(opt);
@@ -306,7 +324,9 @@ export default class Lib {
 	}
 
 	/// #endif
-
+	/**
+	 * @protected
+	 */
 	static _filterStaticTriggers(childsData) {
 		if(childsData.c === 'StaticTrigger') {
 			return childsData.p.invert !== !getValueByPath(childsData.p.dataPath || defaults.StaticTrigger.dataPath, game);
@@ -316,7 +336,9 @@ export default class Lib {
 			});
 		}
 	}
-
+	/**
+	 * @protected
+	 */
 	static _filterStaticTriggersRecursive(data) {
 		if(data[':']) {
 			let a = data[':'].filter(Lib._filterStaticTriggers);
@@ -324,7 +346,9 @@ export default class Lib {
 			a.forEach(Lib._filterStaticTriggersRecursive);
 		}
 	}
-
+	/**
+	 * @protected
+	 */
 	static _setSounds(soundsMap,
 		/// #if EDITOR
 		updateOnly = false
@@ -382,7 +406,9 @@ export default class Lib {
 			/// #endif
 		}
 	}
-
+	/**
+	 * @protected
+	 */
 	static _preCacheSoundsAndTextures() {
 		let interval;
 		let preloadingStarted = {};
@@ -410,7 +436,9 @@ export default class Lib {
 		};
 		interval = setInterval(preloadOneSound, 1000);
 	}
-
+	/**
+	 * @protected
+	 */
 	static getSoundsLoadingCount() {
 		let total = 0;
 		for(let sn in soundsHowlers) {
@@ -461,7 +489,9 @@ export default class Lib {
 			}
 		}
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __clearAssetsLists() {
 		textures = {};
 		Lib.resources = {};
@@ -535,7 +565,9 @@ export default class Lib {
 		
 		return textures[name];
 	}
-	
+	/**
+	 * @return {Container & PIXI.Container & DisplayObject}
+	 */
 	static loadPrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
 		/// #if EDITOR
@@ -550,7 +582,9 @@ export default class Lib {
 		/// #endif
 		return _loadObjectFromData(prefabs[name]); // eslint-disable-line no-unreachable
 	}
-	
+	/**
+	 * @protected
+	 */
 	static destroyObjectAndChildren(o) {
 		/// #if EDITOR
 		let extData = __getNodeExtendData(o);
@@ -594,7 +628,9 @@ export default class Lib {
 		markOldReferences(o);
 		/// #endif
 	}
-	
+	/**
+	 * @protected
+	 */
 	static _deserializeObject(src) {
 		let ret;
 		/// #if EDITOR
@@ -699,7 +735,10 @@ export default class Lib {
 
 		return ret;
 	}
-	
+
+	/**
+	 * @return {Scene & Container & PIXI.Container & DisplayObject}
+	 */
 	static loadScene(name) {
 		if(
 		/// #if EDITOR
@@ -766,22 +805,30 @@ export default class Lib {
 	static hasScene(name) {
 		return scenes.hasOwnProperty(name);
 	}
-	
+	/**
+	 * @protected
+	 */
 	static _getStaticScenes() {
 		return staticScenes;
 	}
 
 	/// #if EDITOR
-
+	/**
+	 * @protected
+	 */
 	static __reassignIds(o) {
 		o.___id = Lib.__idCounter++;
 		o.children.some(Lib.__reassignIds);
 	}
-
+	/**
+	 * @protected
+	 */
 	static __hasTextureEvenUnloaded(name) {
 		return __allTextures.hasOwnProperty(name);
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __dataHasClass(data, class_) {
 		let c = classes[data.c];
 		while(c) {
@@ -801,11 +848,15 @@ export default class Lib {
 			}
 		}
 	}
-
+	/**
+	 * @protected
+	 */
 	static __hasClass(className) {
 		return classes.hasOwnProperty(className);
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __saveScene(scene, name) {
 		
 		assert(game.__EDITOR_mode, "attempt to save scene in running mode: " + name);
@@ -836,11 +887,15 @@ export default class Lib {
 		return Promise.resolve();
 	}
 
-	
+	/**
+	 * @protected
+	 */
 	static get __noCacheCounter() {
 		return noCacheCounter++;
 	}
-
+	/**
+	 * @protected
+	 */
 	static __onAllAssetsLoaded(callback) {
 
 		let interval = setInterval(() => {
@@ -862,7 +917,9 @@ export default class Lib {
 			clearInterval(interval);
 		},20);
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __savePrefab(object, name) {
 		
 		assert(game.__EDITOR_mode, "attempt to save prefab in running mode: " + name);
@@ -885,11 +942,15 @@ export default class Lib {
 		Lib.__savePrefabData(name);
 		object.name = tmpName;
 	}
-
+	/**
+	 * @protected
+	 */
 	static __savePrefabData(prefabName) {
 		editor.fs.saveFile(Lib.__prefabNameToFileName(prefabName), prefabs[prefabName], true);
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __getNameByPrefab(prefab) {
 		if(prefabs[prefab.p.name] === prefab) {
 			return prefab.p.name;
@@ -901,32 +962,44 @@ export default class Lib {
 		}
 		assert(false, "unknown prefab name");
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __deletePrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "attempt to delete not existing prefab: " + name);
 		delete prefabs[name];
 		return editor.fs.deleteFile(Lib.__prefabNameToFileName(name));
 	}
-
+	/**
+	 * @protected
+	 */
 	static __deleteScene(name) {
 		assert(scenes.hasOwnProperty(name), "attempt to delete not existing scene: " + name);
 		delete scenes[name];
 		return editor.fs.deleteFile(Lib.__sceneNameToFileName(name));
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __sceneNameToFileName(sceneName) {
 		return 'scenes/' + sceneName + '.scene.json';
 	}
-
+	/**
+	 * @protected
+	 */
 	static __prefabNameToFileName(sceneName) {
 		return 'prefabs/' + sceneName + '.prefab.json';
 	}
-
+	/**
+	 * @protected
+	 */
 	static __onProjectOpen() {
 		_oldClasses = {};
 		_oldDefaults = {};
 	}
-	
+		/**
+	 * @protected
+	 */
 	static _getAllScenes() {
 		if(!scenes) return undefined;
 		let ret = {};
@@ -938,11 +1011,15 @@ export default class Lib {
 		}
 		return ret;
 	}
-	
+	/**
+	 * @protected
+	 */
 	static _getAllPrefabs() {
 		return prefabs;
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __clearStaticScenes() {
 		for(let sceneName in staticScenes) {
 			let s = staticScenes[sceneName];
@@ -953,7 +1030,9 @@ export default class Lib {
 		}
 		staticScenes = {};
 	}
-
+	/**
+	 * @protected
+	 */
 	static __invalidateSerializationCache(o) {
 		let p = o;
 		while((p !== game.stage) && p) {
@@ -961,7 +1040,9 @@ export default class Lib {
 			p = p.parent;
 		}
 	}
-
+	/**
+	 * @protected
+	 */
 	static __getSceneOrPrefabLibName(o) {
 		if(o instanceof Scene) {
 			let fileName = 'scenes/' + o.name + '.scene.json';
@@ -981,7 +1062,9 @@ export default class Lib {
 			}
 		}
 	}
-	
+	/**
+	 * @protected
+	 */
 	static __serializeObject(o) {
 		
 		o.__EDITOR_inner_exitPreviewMode();
@@ -1055,6 +1138,9 @@ function loadSound(opt) {
 	return s;
 }
 
+/**
+ * @return {Container}
+ */
 const _loadObjectFromData = (src) => {
 	let ret = Lib._deserializeObject(src);
 	

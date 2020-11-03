@@ -1,3 +1,5 @@
+/** @typedef {typeof import('pixi.js-legacy')} PIXI*/
+
 import DisplayObject from "./display-object.js";
 import Container from "./container.js";
 import game from "../game.js";

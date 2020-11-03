@@ -1,3 +1,5 @@
+/** @typedef {typeof import('pixi.js-legacy')} PIXI*/
+
 import './utils/utils.js';
 import Settings from './utils/settings.js';
 import Lib from './lib.js';
@@ -62,17 +64,26 @@ class Game {
 	get modalsCount() {
 		return modals.length;
 	}
-
+	/** Scene or top modal object (if present) currently shown on stage. 
+	 * @type {Container & PIXI.Container & DisplayObject} 
+	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentcontainer--displayobject
+	*/
 	get currentContainer() {
 		if (modals.length > 0) {
 			return modals[modals.length - 1]; //top modal is active
 		}
 		return this.currentScene; //current scene is active if no modals on screen
 	}
-
+	/** current fader (if present). 
+	 * @type {Container & PIXI.Container & DisplayObject | null} 
+	*/
 	get currentFader() {
 		return currentFader;
 	}
+
+	/**
+	* @protected
+	 */
 
 	onResize() {
 		let w, h;
@@ -413,6 +424,9 @@ class Game {
 	addOnClickOnce(callback) {
 		onClickOnceCallbacks.push(callback);
 	}
+	/**
+	* @protected
+	 */
 
 	applyProjectDesc(projectDescriptor) {
 		let def = {
@@ -484,6 +498,10 @@ class Game {
 	}
 	
 	/// #if EDITOR
+	/**
+	* @protected
+	 */
+
 	async _initInner() {
 		/*
 	/// #endif
@@ -564,10 +582,16 @@ class Game {
 		
 		window.addEventListener('resize', this._onContainerResize.bind(this));
 	}
+	/**
+	* @protected
+	 */
 
 	_fireNextOnResizeImmediately() {
 		fireNextOnResizeImmediately = true;
 	}
+	/**
+	* @protected
+	 */
 
 	_onContainerResize() {
 		if (resizeOutJump) {
@@ -588,6 +612,9 @@ class Game {
 			}, game.isMobile.any ? 1 : 200);
 		}
 	}
+	/**
+	* @protected
+	 */
 
 	_startGame() {
 		let preloader = new Preloader();
@@ -623,7 +650,9 @@ class Game {
 			Lib._preCacheSoundsAndTextures();
 		});
 	}
-
+	/**
+	* @protected
+	 */
 	_setCurrentScene(scene) {
 		if(scene) {
 			game.all = scene.all;
@@ -638,6 +667,9 @@ class Game {
 		game.currentScene = scene; // eslint-disable-line no-unreachable
 	}
 
+	/**
+	* @protected
+	 */
 	_setCurrentSceneContent(scene) {
 		assert(!game.currentScene, "Attempt to set current scene content with previous scene exists.");
 		scene = checkScene(scene);
@@ -687,6 +719,9 @@ class Game {
 		game._isWaitingToHideFader = true;
 	}
 
+	/**
+	* @protected
+	 */
 	_processScenesStack() {
 		assert(game.getLoadingCount() === 0, "Attempt to change stack during loading");
 		while(true) { // eslint-disable-line no-constant-condition
@@ -753,6 +788,9 @@ class Game {
 		game._startFaderIfNeed(faderType);
 	}
 
+	/**
+	* @protected
+	 */
 	_startFaderIfNeed(faderType) {
 		if(showStack[showStack.length - 1] !== game.currentScene) {
 			/// #if EDITOR
@@ -797,21 +835,32 @@ class Game {
 
 	/// #if EDITOR
 
+	/** Time in frames since game start */
 	get time() {
 		return this.__time;
 	}
 
+	/** Scene currently shown on stage. 
+	 * @type {Scene & Container & PIXI.Container & DisplayObject} 
+	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentscene--scene
+	*/
 	get currentScene() {
 		return __currentSceneValue;
 	}
-
+	
+	/**
+	* @protected
+	 */
 	__destroyCurrentScene() {
 		if (this.currentScene) {
 			Lib.destroyObjectAndChildren(this.currentScene);
 			this._setCurrentScene(null);
 		}
 	}
-
+	
+	/**
+	* @protected
+	 */
 	get __enforcedOrientation() {
 		return this.___enforcedOrientation;
 	}
@@ -823,7 +872,10 @@ class Game {
 			this.onResize();
 		}
 	}
-
+	
+	/**
+	* @protected
+	 */
 	__loadImageIfUnloaded(name) {
 		if(!Lib.hasTexture(name)) {
 			editor.ui.modal.showSpinner();
@@ -840,7 +892,10 @@ class Game {
 			});
 		}
 	}
-
+	
+	/**
+	* @protected
+	 */
 	__setCurrentContainerContent(object) {
 		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
 		if (modals.length > 0) {
@@ -854,7 +909,10 @@ class Game {
 			this.showScene(object);
 		}
 	}
-
+	
+	/**
+	* @protected
+	 */
 	__clearStage() {
 		while (this.modalsCount > 0) {
 			this.hideModal(undefined, true);
@@ -883,19 +941,36 @@ class Game {
 	}
 	/// #endif
 	/**
-	 * @return {(Array.<Scene|string>)}
+	 * @return {Array<Scene|string>}
 	 * returned array can contain scenes or scenes names. Names will be instanced in to scenes just before showing on screen
 	 */
 	_getScenesStack() {
 		return showStack;
 	}
-
-	showQuestion(title, message, yesLabel, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/sure-question') {
+	/**
+	 * @param {string} title
+	 * @param {string} message
+	 * @param {string} yesLabel
+	 * @param {Function} onYes
+	 * @param {Function} noLabel
+	 * @param {Function} onNo
+	 * @param {boolean} easyClose
+	 * @param {string} prefab
+	 * 
+	 * @return {DisplayObject}
+	 */
+	showQuestion(title, message, yesLabel=null, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/sure-question') {
 		let o = Lib.loadPrefab(prefab);
 		SureQuestion.init(o, title, message, yesLabel, onYes, noLabel, onNo, easyClose);
 		return game.showModal(o);
 	}
 
+	/**
+	 * @param {DisplayObject|string} displayObject - display object or prefab's name
+	 * @param {Function} callback
+	 * 
+	 * @return {DisplayObject}
+	 */
 	showModal(displayObject, callback) {
 		/// #if DEBUG
 		if (game.__EDITOR_mode && !__getNodeExtendData(displayObject).isPreviewObject) {
@@ -918,12 +993,11 @@ class Game {
 		/// #endif
 		return displayObject;
 	}
-
-	hideModal(displayObject, instantly) {
-		if (displayObject === 'instantly') {
-			displayObject = undefined;
-			instantly = true;
-		}
+	/**
+	 * @param {DisplayObject|null} displayObject - display object to hide or null to hide top level modal
+	 * @param {boolean} instantly
+	 */
+	hideModal(displayObject = null, instantly = false) {
 		let modalToHide;
 		if (!displayObject) {
 			assert(modals.length > 0, 'Attempt to hide modal when modal list is empty.', 10038);
@@ -963,7 +1037,9 @@ class Game {
 		editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
 	}
-
+	/**
+	* @protected
+	 */
 	mouseEventToGlobalXY(ev) {
 		let b = app.view.getBoundingClientRect();
 		let n = ev.clientX - b.left;
@@ -972,7 +1048,9 @@ class Game {
 		tmpPoint.y = n * (game.H / b.height);
 		return tmpPoint;
 	}
-
+	/**
+	* @protected
+	 */
 	_updateGlobal(dt) {
 
 		if(!game.isFocused && game.projectDesc.keepSoundWhilePageUpdate) {
@@ -1097,7 +1175,9 @@ class Game {
 		game.stage.forAllChildren(callback);
 		game.forAllChildrenEverywhereBack(callback);
 	}
-
+	/**
+	* @protected
+	 */
 	_hideCurrentFaderAndStartScene() {
 		currentFader.gotoLabelRecursive('hide fader');
 		hidingFaders.unshift(currentFader);
@@ -1107,7 +1187,9 @@ class Game {
 		currentFader = null;
 		BgMusic._recalculateMusic();
 	}
-
+	/**
+	* @protected
+	 */
 	_updateFrame() {
 		if(game._loadingErrorIsDisplayed) {
 			return;
@@ -1169,7 +1251,9 @@ class Game {
 		this.time++;
 		//*/
 	}
-
+	/**
+	 * @protected
+	 */
 	fetchResource(url) { /// #
 		return new Promise((resolve) => {
 			let loader = new ResourceLoader();
@@ -1179,7 +1263,9 @@ class Game {
 			});
 		});
 	}
-
+	/**
+	* @protected
+	 */
 	_onLoadingError(url) {
 		if(game._loadingErrorIsDisplayed) {
 			return;
@@ -1239,11 +1325,15 @@ class Game {
 	}
 
 	/// #if DEBUG
-
+	/**
+	 * @protected
+	 */
 	get __speedMultiplier() {
 		return __speedMultiplier;
 	}
-
+	/**
+	 * @protected
+	 */
 	set __speedMultiplier(v) {
 		if(v !== __speedMultiplier) {
 			__speedMultiplier = v;
