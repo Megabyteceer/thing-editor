@@ -566,7 +566,7 @@ export default class Lib {
 		return textures[name];
 	}
 	/**
-	 * @return {Container & PIXI.Container & DisplayObject}
+	 * @return {Container}
 	 */
 	static loadPrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
@@ -737,7 +737,7 @@ export default class Lib {
 	}
 
 	/**
-	 * @return {Scene & Container & PIXI.Container & DisplayObject}
+	 * @return {Scene}
 	 */
 	static loadScene(name) {
 		if(

@@ -1,4 +1,6 @@
 /** @typedef {typeof import('pixi.js-legacy')} PIXI*/
+/// <reference path="../../global.d.ts" />
+/// <reference path="../../node_modules/pixi.js-legacy/pixi.js-legacy.d.ts" />
 
 import './utils/utils.js';
 import Settings from './utils/settings.js';
@@ -61,11 +63,22 @@ let fireNextOnResizeImmediately;
 
 class Game {
 
+	constructor() {
+		this.data = {};
+		this.isMobile = PIXI.utils.isMobile;
+
+
+		/// #if EDITOR
+		this.isUpdateBeforeRender = false;
+		this.__EDITOR_mode = false;
+		/// #endif
+	}
+
 	get modalsCount() {
 		return modals.length;
 	}
 	/** Scene or top modal object (if present) currently shown on stage. 
-	 * @type {Container & PIXI.Container & DisplayObject} 
+	 * @type {Container} 
 	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentcontainer--displayobject
 	*/
 	get currentContainer() {
@@ -75,7 +88,7 @@ class Game {
 		return this.currentScene; //current scene is active if no modals on screen
 	}
 	/** current fader (if present). 
-	 * @type {Container & PIXI.Container & DisplayObject | null} 
+	 * @type {Container | null} 
 	*/
 	get currentFader() {
 		return currentFader;
@@ -662,9 +675,10 @@ class Game {
 		/// #if EDITOR
 		__currentSceneValue = scene;
 		return;
+		/*
 		/// #endif
-		
-		game.currentScene = scene; // eslint-disable-line no-unreachable
+		game.currentScene = scene;
+		//*/
 	}
 
 	/**
@@ -753,9 +767,13 @@ class Game {
 		}
 	}
 
+	/**
+	 * @param {Scene | string} scene - scene name or scene instance
+	 * @param {string} faderType - name of fader prefab
+	 */
 	replaceScene(scene, faderType) {
 		/// #if EDITOR
-		assert(checkSceneName(scene) || true);
+		assert(checkSceneName(scene));
 		/// #endif
 		assert(showStack.length > 0, "Can not replace scene. No scene to replace is present.");
 		tryRemoveScene(showStack.pop());
@@ -763,9 +781,13 @@ class Game {
 		game._startFaderIfNeed(faderType);
 	}
 
+	/**
+	 * @param {Scene | string} scene - scene name or scene instance
+	 * @param {string} faderType - name of fader prefab
+	 */
 	showScene(scene, faderType) {
 		/// #if EDITOR
-		assert(checkSceneName(scene) || true);
+		assert(checkSceneName(scene));
 		/// #endif
 		showStack.push(scene);
 		/// #if EDITOR
@@ -776,12 +798,18 @@ class Game {
 		game._startFaderIfNeed(faderType);
 	}
 
+	/**
+	 * @param {string} faderType - name of fader prefab
+	 */
 	closeAllScenes(faderType) {
 		while (showStack.length > 1) {
 			game.closeCurrentScene(faderType);
 		}
 	}
 
+	/**
+	 * @param {string} faderType - name of fader prefab
+	 */
 	closeCurrentScene(faderType) {
 		assert(showStack.length > 1, "Can't close latest scene", 10035);
 		tryRemoveScene(showStack.pop());
@@ -841,7 +869,7 @@ class Game {
 	}
 
 	/** Scene currently shown on stage. 
-	 * @type {Scene & Container & PIXI.Container & DisplayObject} 
+	 * @type {Scene}
 	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentscene--scene
 	*/
 	get currentScene() {
@@ -967,7 +995,7 @@ class Game {
 
 	/**
 	 * @param {DisplayObject|string} displayObject - display object or prefab's name
-	 * @param {Function} callback
+	 * @param {Function} [callback]
 	 * 
 	 * @return {DisplayObject}
 	 */
@@ -1472,10 +1500,9 @@ const mouseHandlerGlobal = (ev) => {
 };
 
 const game = new Game();
-game.data = {};
 export default game;
+export {Game};
 
-game.isMobile = PIXI.utils.isMobile;
 if(window.cordova) {
 	document.addEventListener('backbutton', function () {
 		Button._tryToClickByKeycode(27);
@@ -1802,6 +1829,7 @@ function checkSceneName(scene) {
 	} else {
 		assert(scene instanceof Scene, );
 	}
+	return true;
 }
 
 let __isCurrentFaderUpdateInProgress;
