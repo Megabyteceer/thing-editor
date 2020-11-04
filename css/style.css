@@ -880,6 +880,9 @@ input{
 	stroke-width: 1.5;
 }
 
+.timeline-keyframe:nth-child(3n) .loop-arrow{ stroke: rgb(0, 103, 106); }
+.timeline-keyframe:nth-child(3n+1) .loop-arrow{ stroke: rgb(106, 104, 0); }
+
 .keyframe-random-meter {
 	pointer-events: none;
 	position: absolute;
