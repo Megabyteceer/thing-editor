@@ -41,7 +41,11 @@ export default class FullScreen {
 
 	static close() {
 		game.addOnClickOnce(FullScreen._closeInner);
+		/// #if EDITOR
+		/*
+		/// #endif
 		game.projectDesc.autoFullscreenMobile = game.projectDesc.autoFullscreenDesktop = false;
+		//*/
 	}
 
 	static _closeInner() {
