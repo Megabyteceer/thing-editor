@@ -1,7 +1,6 @@
 /// #if EDITOR
 import game from '../../game.js';
 import Lib from '../../lib.js';
-import Container from "../container.js";
 
 const ICON_STOP = R.img({src: '/thing-editor/img/timeline/stop.png'});
 const ICON_SOUND = R.img({src: '/thing-editor/img/timeline/sound.png'});
@@ -15,7 +14,7 @@ import DSprite from '../d-sprite.js';
 import Pool from "../../utils/pool.js";
 import FieldPlayer from "./field-player.js";
 import getValueByPath from 'thing-editor/js/engine/utils/get-value-by-path.js';
-
+import Container from "../container.js";
 
 let idCounter = 1;
 
