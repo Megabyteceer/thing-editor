@@ -49,6 +49,9 @@ class Container extends PIXI.Container { // js docks hack for editor time
 		return [];
 	}
 	set children(v){}
+
+	/** @return {boolean} */
+	get isCanBePressed() {};
 }
 
 Container = PIXI.Container;
@@ -75,6 +78,11 @@ Container.prototype.onRemove = () => {
 	/// #endif
 };
 
+/**
+ * search child recursively
+ * @param {string} name
+ * @return {Container}
+ */
 Container.prototype.findChildByName = function findChildByName(name) {
 	assert(name, 'Empty name received.', 10005);
 	let stack = [this];
@@ -112,6 +120,10 @@ const _findByTypeInner = (o) => {
 };
 
 /// #if DEBUG
+/**
+ * @param {string} name
+ * @return {Container}
+ */
 Container.prototype.getChildByName = function(name) {
 	let ret;
 	for(let c of this.children) {
@@ -127,7 +139,10 @@ Container.prototype.getChildByName = function(name) {
 };
 
 /// #endif
-
+/**
+ * @param {typeof Container} classType
+ * @return {Array<Container>}
+ */
 Container.prototype.findChildrenByType = function (classType) {
 	assert(classType.prototype instanceof DisplayObject, "DisplayObject inherited class expected.", 10053);
 	findByTypeClass = classType;
@@ -143,6 +158,10 @@ const _findByNameInner = (o) => {
 		findByTypeRet.push(o);
 	}
 };
+/**
+ * @param {string} name
+ * @return {Array<Container>}
+ */
 Container.prototype.findChildrenByName = function (name) {
 	assert(name, "Name expected", 10054);
 	findByNameName = name;
@@ -153,6 +172,9 @@ Container.prototype.findChildrenByName = function (name) {
 
 assert(!Container.prototype.forAllChildren, "forAllChildren method needs renaming, because of PIXI changes.");
 
+/**
+ * @param {(o:Container)=>void} callback
+ */
 Container.prototype.forAllChildren = function (callback) {
 	for (let o of this.children) {
 		callback(o);

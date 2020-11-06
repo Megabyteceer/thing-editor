@@ -1475,6 +1475,10 @@ input{
 	outline: 1px solid #ff0d00;
 }
 
+#window-viewport .red-frame {
+	position: relative;
+}
+
 .error-help-button {
 	margin: 0;
 	position: absolute;

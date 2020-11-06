@@ -22,7 +22,7 @@ import Help from '../utils/help.js';
  * @param className
  * @param hotkey
  * @param disabled
- * @returns {Element}
+ * @return {Element}
  */
 R.btn = function (label, onClick, title = undefined, className = undefined, hotkey = false, disabled = false) {
 	assert(onClick, "Function as onClick handler expected.");
