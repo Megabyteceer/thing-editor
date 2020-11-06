@@ -1,5 +1,3 @@
-/** @typedef {typeof import('pixi.js-legacy')} PIXI*/
-
 import Pool from "./utils/pool.js";
 import Scene from "./components/scene.js";
 import DisplayObject from "./components/display-object.js";

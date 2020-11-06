@@ -1,5 +1,3 @@
-/** @typedef {typeof import('pixi.js-legacy')} PIXI*/
-import MovieClip from "./movie-clip/movie-clip.js";
 import game from "../game.js";
 import DisplayObject from "./display-object.js";
 
@@ -42,6 +40,9 @@ class Container extends PIXI.Container { // js docks hack for editor time
 	 * @override
 	 */
 	destroy(){};
+
+	/** @param {string} labelName */
+	gotoLabelRecursive(labelName){};
 
 	/** @return {Array<Container>} */
 	get children() {
@@ -172,68 +173,9 @@ Object.defineProperty(Container.prototype, 'isCanBePressed', {
 	enumerable:true
 });
 
-Container.prototype.gotoLabelRecursive = function (labelName) {
-	if(this instanceof MovieClip) {
-		if (this.hasLabel(labelName)) {
-			this.delay = 0;
-			this.gotoLabel(labelName);
-		}
-	}
-	for(let c of this.children) {
-		c.gotoLabelRecursive(labelName);
-	}
-};
-
 export default Container;
 
 /// #if EDITOR
-
-Container.prototype.gotoLabelRecursive.___EDITOR_callbackParameterChooserFunction = (context) => {
-	
-	return new Promise((resolve) => {
-		let movieClips = context.findChildrenByType(MovieClip);
-		if(context instanceof MovieClip) {
-			movieClips.push(context);
-		}
-
-		let addedLabels = {};
-
-		const CUSTOM_LABEL_ITEM = {name: 'Custom label...'};
-
-		let labels = [];
-		movieClips.forEach((m) => {
-			if(m.timeline) {
-				for(let name in m.timeline.l) {
-					if(!addedLabels[name]) {
-						labels.push({name: R.b(null, name), pureName: name});
-						addedLabels[name] = true;
-					}
-				}
-			}
-		});
-
-		labels.push(CUSTOM_LABEL_ITEM);
-
-		return editor.ui.modal.showListChoose("Choose label to go recursive", labels).then((choosed) => {
-			if(choosed) {
-				if(choosed === CUSTOM_LABEL_ITEM) {
-					editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
-						resolve([enteredText]);
-					});
-				} else {
-					resolve([choosed.pureName]);
-				}
-			}
-			return null;
-		});
-
-
-
-		
-
-	});
-};
-
 
 DisplayObject.prototype.__isAnyChildSelected = function __onSelect() {
 	for(let o of editor.selection) {
@@ -246,7 +188,6 @@ DisplayObject.prototype.__isAnyChildSelected = function __onSelect() {
 	}
 };
 
-Container.prototype.gotoLabelRecursive.___EDITOR_isGoodForCallbackChooser = true;
 Container.prototype.destroy.___EDITOR_isHiddenForChooser = true;
 Container.__EDITOR_icon = 'tree/container';
 Container.__EDITOR_group = 'Basic';

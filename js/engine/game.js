@@ -1,6 +1,4 @@
-/** @typedef {typeof import('pixi.js-legacy')} PIXI*/
-/// <reference path="../../global.d.ts" />
-/// <reference path="../../node_modules/pixi.js-legacy/pixi.js-legacy.d.ts" />
+/// <reference path="../../index.d.ts" />
 
 import './utils/utils.js';
 import Settings from './utils/settings.js';
