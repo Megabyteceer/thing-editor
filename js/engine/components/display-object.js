@@ -6,7 +6,7 @@ import Lib from "../lib.js";
 import game from "../game.js";
 
 const DisplayObject = PIXI.DisplayObject;
-
+/** returns object rotation relative to it`s scene */
 DisplayObject.prototype.getGlobalRotation = function getGlobalRotation() {
 	let ret = this.rotation;
 	let p = this.parent;

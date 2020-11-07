@@ -1,64 +1,7 @@
 import game from "../game.js";
 import DisplayObject from "./display-object.js";
 
-/// #if EDITOR
-
-class Container extends PIXI.Container { // js docks hack for editor time
-
-	/** @return {number} */
-	getGlobalRotation(){return 0;};
-
-	/** @param {Function} classType 
-	 * @return {Container}*/
-	findParentByType(classType){};
-	
-	/** @param {string} name 
-	 * @return {Container}*/
-	findParentByName(name){};
-
-	/** @param {PIXI.Point} resultPoint 
-	* @param {boolean} skipUpdate 
-	* @return {PIXI.Point}*/
-	getScenePosition(resultPoint, skipUpdate){};
-
-	/** @return {Container}*/
-	getRootContainer(){};
-
-	/** call in only in your own init methods as super.init(); */
-	init(){};
-
-	/** remove object from scene */
-	remove(){};
-	
-	addFilter(filter){};
-
-	removeFilter(filter){};
-
-	detachFromParent(){};
-
-	/** @private
-	 * @override
-	 */
-	destroy(){};
-
-	/** @param {string} labelName */
-	gotoLabelRecursive(labelName){};
-
-	/** @return {Array<Container>} */
-	get children() {
-		return [];
-	}
-	set children(v){}
-
-	/** @return {boolean} */
-	get isCanBePressed() {};
-}
-
-Container = PIXI.Container;
-/*
-/// #endif
 const Container = PIXI.Container;
-//*/
 
 Container.prototype.update = function update() {
 	for (let c of this.children) {

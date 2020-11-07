@@ -1,20 +1,7 @@
 import Lib from "../lib.js";
-import Container from "./container.js";
 
-
-/// #if EDITOR
-
-class Sprite extends Container { // js docks hack for editor time
-}
-class Mesh extends Container { // js docks hack for editor time
-}
-Sprite = PIXI.Sprite;
-Mesh = PIXI.Mesh;
-/*
-/// #endif
 const Sprite = PIXI.Sprite;
 const Mesh = PIXI.Mesh;
-//*/
 
 export default Sprite;
 

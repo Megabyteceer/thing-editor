@@ -1499,7 +1499,6 @@ const mouseHandlerGlobal = (ev) => {
 
 const game = new Game();
 export default game;
-export {Game};
 
 if(window.cordova) {
 	document.addEventListener('backbutton', function () {
