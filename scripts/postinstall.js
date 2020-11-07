@@ -48,7 +48,7 @@ function copyRecursiveSync(src, dest) {
 		});
 	} else {
 		if (!fs.existsSync(dest)) {
-			fs.linkSync(src, dest);
+			fs.copyFileSync(src, dest);
 		}
 	}
 }
