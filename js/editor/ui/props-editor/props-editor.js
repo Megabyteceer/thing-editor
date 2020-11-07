@@ -113,7 +113,11 @@ class PropsEditor extends React.Component {
 		})) {
 			header = R.fragment(R.classIcon(MIXED_ICON), ' Mixed types selected', '...');
 		} else {
-			header = R.fragment(R.classIcon(firstClass), ' ', R.b(null, firstClass.name), '...');
+			header = R.fragment(R.classIcon(firstClass), ' ', R.b( {
+				className: 'selectable-text',
+				title: 'Ctrl+click to copy Class`s name',
+				onMouseDown: window.copyTextByClick
+			}, firstClass.name), '...');
 		}
 		let props = editor.enumObjectsProperties(editor.selection[0]);
 		let propsFilter = {};
