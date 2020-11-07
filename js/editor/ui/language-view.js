@@ -90,6 +90,8 @@ export default class LanguageView extends React.Component {
 				ignoreEdit = false;
 			}, 10);
 			showTextTable().then(() => {
+				currentLibName = 'project-locales';
+				refreshCachedData();
 				if(key) {
 					view.createKeyOrEdit(key, langId);
 				} else {
@@ -234,21 +236,23 @@ class LanguageTableEditor extends React.Component {
 			isKeyInvalid
 		).then((enteredName) => {
 			if (enteredName) {
-				this.createKeyOrEdit(enteredName);
+				this.createKeyOrEdit(enteredName, undefined, true);
 			}
 		});
 	}
-	
-	createKeyOrEdit(key, langId = 'en') {
+
+	createKeyOrEdit(key, langId = 'en', enforceCreateInCurrentSource = false) {
 		showTextTable().then(() => {
 
-			if(!oneLanguageTable.hasOwnProperty(key)) { // find key in another source
-				for(let src of  localesSourcesList) {
-					if(langsByLib[src][langId].hasOwnProperty(key)) {
-						currentLibName = src;
-						refreshCachedData();
-						this.forceUpdate();
-						break;
+			if(!enforceCreateInCurrentSource) {
+				if(!oneLanguageTable.hasOwnProperty(key)) { // find key in another source
+					for(let src of  localesSourcesList) {
+						if(langsByLib[src][langId].hasOwnProperty(key)) {
+							currentLibName = src;
+							refreshCachedData();
+							this.forceUpdate();
+							break;
+						}
 					}
 				}
 			}
@@ -346,7 +350,9 @@ class LanguageTableEditor extends React.Component {
 				}, id),
 				langsIdsList.map((langId) => {
 					let text = currentLanguage[langId][id];
-					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({defaultValue: text, id:texareaID(langId, id), onChange:(ev) => {
+					
+					let areaId = texareaID(langId, id);
+					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({key:currentLibName + '_' + areaId ,defaultValue: text, id: areaId, onChange:(ev) => {
 						currentLanguage[langId][id] = ev.target.value;
 						onModified();
 					}}));
