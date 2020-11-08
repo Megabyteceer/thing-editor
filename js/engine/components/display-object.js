@@ -48,7 +48,7 @@ DisplayObject.prototype.onRemove = () => {
 };
 
 DisplayObject.prototype.remove = function remove() {
-	Lib.destroyObjectAndChildren(this);
+	Lib.destroyObjectAndChildren(this, true);
 };
 
 DisplayObject.prototype.findParentByType = function (classType) {

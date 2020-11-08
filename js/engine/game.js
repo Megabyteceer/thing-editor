@@ -64,7 +64,8 @@ class Game {
 	constructor() {
 		this.data = {};
 		this.isMobile = PIXI.utils.isMobile;
-
+		/** @type { { [key: string]: PIXI.Container; } } */
+		this.all = null;
 
 		/// #if EDITOR
 		this.isUpdateBeforeRender = false;
@@ -721,12 +722,12 @@ class Game {
 			let i = modals.indexOf(m);
 			if(i >= 0) {
 				modals.splice(i, 1);
-				m.remove();
+				Lib.destroyObjectAndChildren(m);
 			}
 		}
 		while (hidingModals.length > 0) {
 			let m = hidingModals.pop();
-			m.remove();
+			Lib.destroyObjectAndChildren(m);
 		}
 		game._isWaitingToHideFader = true;
 	}
@@ -757,7 +758,7 @@ class Game {
 			let i = hidingFaders.indexOf(currentHidingFaderInUpdate);
 			assert(i >= 0, "hidingFaders list is corrupted");
 			hidingFaders.splice(i, 1);
-			currentHidingFaderInUpdate.remove();
+			Lib.destroyObjectAndChildren(currentHidingFaderInUpdate);
 			currentHidingFaderInUpdate = null;
 			/// #if EDITOR
 			editor.refreshTreeViewAndPropertyEditor();
@@ -914,7 +915,7 @@ class Game {
 				return game.getLoadingCount() === 0;
 			}).then(() => {
 				editor.ui.modal.hideSpinner();
-				s.remove();
+				Lib.destroyObjectAndChildren(s);
 			});
 		}
 	}
@@ -945,7 +946,7 @@ class Game {
 		}
 		while (hidingModals.length > 0) {
 			let m = hidingModals.pop();
-			m.remove();
+			Lib.destroyObjectAndChildren(m);
 		}
 
 		while (showStack.length > 0) {
@@ -955,12 +956,12 @@ class Game {
 		tryRemoveCurrentScene();
 
 		if (currentFader) {
-			currentFader.remove();
+			Lib.destroyObjectAndChildren(currentFader);
 			currentFader = null;
 		}
 		game._isWaitingToHideFader = false;
 		while (hidingFaders.length > 0) {
-			hidingFaders.pop().remove();
+			Lib.destroyObjectAndChildren(hidingFaders.pop());
 		}
 		Lib.__clearStaticScenes();
 		BgMusic._recalculateMusic();
@@ -1053,7 +1054,7 @@ class Game {
 			game.__EDITOR_mode
 			/// #endif
 		) {
-			modalToHide.remove();
+			Lib.destroyObjectAndChildren(modalToHide);
 		} else {
 			modalToHide.interactiveChildren = false;
 			hidingModals.push(modalToHide);
@@ -1260,7 +1261,7 @@ class Game {
 				let m = hidingModals[i];
 				m.alpha -= 0.1;
 				if (m.alpha <= 0.01) {
-					m.remove();
+					Lib.destroyObjectAndChildren(m);
 					hidingModals.splice(i, 1);
 					/// #if EDITOR
 					editor.refreshTreeViewAndPropertyEditor();
@@ -1270,6 +1271,7 @@ class Game {
 			}
 		}
 		this.keys.update();
+		Lib._cleanupRemoveHolders();
 		/// #if EDITOR
 		this.__time++;
 		/*
@@ -1545,7 +1547,7 @@ function tryRemoveCurrentScene() {
 function tryRemoveScene(s) {
 	if((s instanceof Scene) && (s !== game.currentScene)) {
 		if (!s.isStatic && (showStack.indexOf(s) < 0)) {
-			s.remove();
+			Lib.destroyObjectAndChildren(s);
 		} else {
 			s.detachFromParent();
 		}

@@ -76,7 +76,7 @@ function checkForOldReferences(o) {
 		}
 	}
 }
-
+let noCacheCounter = 0;
 
 /// #endif
 
@@ -89,8 +89,22 @@ let sounds = {};
 let soundsHowlers = {};
 let staticScenes = {};
 
-
-let noCacheCounter = 0;
+class RemoveHolder extends PIXI.Container {
+	constructor () {
+		super();
+		this.visible = false;
+	}
+	onRemove() {
+		super.onRemove();
+		let i = removeHoldersToCleanup.indexOf(this);
+		if(i >= 0) {
+			removeHoldersToCleanup.splice(i, 1);
+		}
+	}
+	update() {}
+}
+/** @type RemoveHolder[] */
+const removeHoldersToCleanup = [];
 
 let constructRecursive = (o) => {
 	assert(!game.__EDITOR_mode, "initialization attempt in editing mode.");
@@ -583,8 +597,9 @@ export default class Lib {
 	}
 	/**
 	 * @protected
+	 * @param {PIXI.DisplayObject} o
 	 */
-	static destroyObjectAndChildren(o) {
+	static destroyObjectAndChildren(o, itsRootRemoving) {
 		/// #if EDITOR
 		let extData = __getNodeExtendData(o);
 		o.__EDITOR_inner_exitPreviewMode();
@@ -608,8 +623,24 @@ export default class Lib {
 			editor.selection.remove(o);
 		}
 		/// #endif
-		
-		o.detachFromParent();
+		if(itsRootRemoving
+			/// #if EDITOR
+			&& !game.__EDITOR_mode
+			/// #endif
+			) {
+			let r = Pool.create(RemoveHolder);
+			/// #if EDITOR
+			Lib._constructRecursive(r);
+			Lib.__reassignIds(r);
+			/// #endif
+			let c = o.parent.children;
+			c[c.indexOf(o)] = r;
+			r.parent = o.parent;
+			removeHoldersToCleanup.push(r);
+			o.parent = null;
+		} else {
+			o.detachFromParent();
+		}
 		while(o.children.length > 0) {
 			Lib.destroyObjectAndChildren(o.getChildAt(o.children.length - 1));
 		}
@@ -796,7 +827,15 @@ export default class Lib {
 		/// #endif
 		return s;
 	}
-	
+	/**
+	 * @protected
+	 */
+	static _cleanupRemoveHolders() {
+		while(removeHoldersToCleanup.length > 0) {
+			Lib.destroyObjectAndChildren(removeHoldersToCleanup.pop());
+		}
+	}	
+
 	static hasPrefab(name) {
 		return prefabs.hasOwnProperty(name);
 	}
