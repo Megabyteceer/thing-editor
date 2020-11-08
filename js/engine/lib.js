@@ -245,12 +245,13 @@ export default class Lib {
 		}
 
 		if(!__allTextures.hasOwnProperty(name)) {
-			if(addToBegin) {
-				Lib.__texturesList.splice(2, 0, {name, visibleName, value: name});
-			} else {
-				Lib.__texturesList.push({name, visibleName, value: name});
-			}
+			Lib.__texturesList.push({name, visibleName, value: name});
 			__allTextures[name] = true;
+		} else if(addToBegin) {
+			let curIndex = Lib.__texturesList.findIndex(i => i.name === name);
+			assert(curIndex > 0, "textures list is corrupted");
+			let entry = Lib.__texturesList.splice(curIndex, 1);
+			Lib.__texturesList.splice(2, 0, entry[0]);
 		}
 		/// #endif
 		
