@@ -23,13 +23,13 @@ patch(
 	removeFilter(filter: PIXI.Filter):void;
 	gotoLabelRecursive(labelName:string);
 	isCanBePressed:boolean;
-	findParentByType(classType: typeof PIXI.Container): PIXI.Container;
+	findParentByType<T extends PIXI.Container>(classType: new () => T): T;
 	findParentByName(name: string): PIXI.Container;
 	
 	/** search child recursively by it's name */
 	findChildByName(name:string):Container;
 	/** search all children of defined type recursively */
-	findChildrenByType(classType: typeof Container):Container[];
+	findChildrenByType<T extends PIXI.Container>(classType: new () => T):T[];
 	/** search all children by name */
 	findChildrenByName(name: string):Container[];
 	forAllChildren (callback: (o:Container)=>void):void;
