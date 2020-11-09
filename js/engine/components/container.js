@@ -21,6 +21,14 @@ Container.prototype.onRemove = () => {
 	/// #endif
 };
 
+let _findChildName;
+let _findChildRet;
+const _findChildInner = (o) => {
+	if(o.name === _findChildName) {
+		assert(!_findChildRet, 'More that one element with name "' + _findChildName + '" exists.', 10006);
+		_findChildRet = o;
+	}
+}
 /**
  * search child recursively
  * @param {string} name
@@ -28,29 +36,10 @@ Container.prototype.onRemove = () => {
  */
 Container.prototype.findChildByName = function findChildByName(name) {
 	assert(name, 'Empty name received.', 10005);
-	let stack = [this];
-	while (stack.length > 0) {
-		if (stack.length > 1000) throw new Error('overflow');
-		let o = stack.pop();
-		let children = o.children;
-		let len = children.length;
-		for (let i =  0; i < len; i++) {
-			o = children[i];
-			if(o.name === name) {
-				/// #if DEBUG
-				o.name = '';
-				let double = this.findChildByName(name);
-				o.name = name;
-				assert(!double, 'More that one element with name "' + name + '" exists.', 10006);
-				/// #endif
-				return o;
-			}
-			if (o.children.length > 0) {
-				stack.push(o);
-			}
-		}
-	}
-	return null;
+	_findChildName = name;
+	_findChildRet = null;
+	this.forAllChildren(_findChildInner);
+	return _findChildRet;
 };
 
 let findByTypeRet;
