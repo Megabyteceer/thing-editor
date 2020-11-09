@@ -11,6 +11,11 @@ const allFragments = {};
 
 const allActiveFragments = {};
 
+/// #if EDITOR
+let __ownersValidationId = 0;
+/// #endif
+
+
 setInterval(() => {
 	for(let h in allActiveFragments) {
 		allActiveFragments[h]._updateFading();
@@ -59,6 +64,15 @@ export default class MusicFragment {
 			return this._currentFragment._sounds[0]._volume;
 		}
 		return 0;
+	}
+
+	static onMusicRemove(bgMusic) {
+		for(let h in allActiveFragments) {
+			let f = allActiveFragments[h];
+			if(f.owner === bgMusic) {
+				clearFragmentsOwner(f);
+			}
+		}
 	}
 
 	static resetPosition(musicFragmentHash) {
@@ -110,7 +124,10 @@ export default class MusicFragment {
 			}
 		}
 		if(this.owner) {
-			this.owner._onIntroFinish();	
+			/// #if EDITOR
+			assert(__getNodeExtendData(this.owner).__fragmentOwnerId === this.__fragmentOwnerId, "fragment refers to outdated owner.", 90001);
+			/// #endif
+			this.owner._onIntroFinish();
 		}
 	}
 
@@ -172,6 +189,11 @@ export default class MusicFragment {
 			fragment._fadeToVol = f._cachedTargetVol;
 			fragment._fadeSpeed = f._getFade(fragment._fadeToVol < MIN_VOL_THRESHOLD);
 			fragment.owner = f;
+			/// #if EDITOR
+			__getNodeExtendData(f).__fragmentOwnerId = __ownersValidationId;
+			fragment.__fragmentOwnerId = __ownersValidationId;
+			__ownersValidationId++;
+			/// #endif
 			if(!allActiveFragments.hasOwnProperty(f.musicFragmentHash)) {
 				fragment.startPlay();
 			}
@@ -182,9 +204,7 @@ export default class MusicFragment {
 			if(!hashesToPlay.hasOwnProperty(h)) {
 				allActiveFragments[h]._fadeToVol = 0;
 				if (allActiveFragments[h].owner) {
-					allActiveFragments[h]._fadeSpeed = allActiveFragments[h].owner._getFade(true);
-					allActiveFragments[h].owner.customFade = null;
-					allActiveFragments[h].owner = null;
+					clearFragmentsOwner(allActiveFragments[h]);
 				}
 			}
 		}
@@ -221,4 +241,11 @@ export default class MusicFragment {
 	}
 	/// #endif
 
+}
+
+
+function clearFragmentsOwner(fragment) {
+	fragment._fadeSpeed = fragment.owner._getFade(true);
+	fragment.owner.customFade = null;
+	fragment.owner = null;
 }

@@ -2,7 +2,6 @@
 import game from '../../game.js';
 import Lib from '../../lib.js';
 
-
 const ICON_STOP = R.img({src: '/thing-editor/img/timeline/stop.png'});
 const ICON_SOUND = R.img({src: '/thing-editor/img/timeline/sound.png'});
 const ICON_REMOVE = R.img({src: '/thing-editor/img/timeline/remove.png'});
@@ -15,7 +14,7 @@ import DSprite from '../d-sprite.js';
 import Pool from "../../utils/pool.js";
 import FieldPlayer from "./field-player.js";
 import getValueByPath from 'thing-editor/js/engine/utils/get-value-by-path.js';
-
+import Container from "../container.js";
 
 let idCounter = 1;
 
@@ -253,7 +252,7 @@ export default class MovieClip extends DSprite {
 		super.init();
 		/// #if EDITOR
 		if((this.constructor === MovieClip) && !this._timelineData) {
-			editor.ui.status.error("MovieClip " + this.___info + " has no timeline.", 32003, this, 'timeline');
+			editor.ui.status.warn("MovieClip " + this.___info + " has no timeline.", 32003, this, 'timeline');
 		}
 		/// #endif
 	}
@@ -459,8 +458,65 @@ export default class MovieClip extends DSprite {
 
 let deserializeCache = new WeakMap();
 
-/// #if EDITOR
+Container.prototype.gotoLabelRecursive = function (labelName) {
+	if(this instanceof MovieClip) {
+		if (this.hasLabel(labelName)) {
+			this.delay = 0;
+			this.gotoLabel(labelName);
+		}
+	}
+	for(let c of this.children) {
+		c.gotoLabelRecursive(labelName);
+	}
+};
 
+/// #if EDITOR
+Container.prototype.gotoLabelRecursive.___EDITOR_callbackParameterChooserFunction = (context) => {
+
+	return new Promise((resolve) => {
+		let movieClips = context.findChildrenByType(MovieClip);
+		if(context instanceof MovieClip) {
+			movieClips.push(context);
+		}
+
+		let addedLabels = {};
+
+		const CUSTOM_LABEL_ITEM = {name: 'Custom label...'};
+
+		let labels = [];
+		movieClips.forEach((m) => {
+			if(m.timeline) {
+				for(let name in m.timeline.l) {
+					if(!addedLabels[name]) {
+						labels.push({name: R.b(null, name), pureName: name});
+						addedLabels[name] = true;
+					}
+				}
+			}
+		});
+
+		labels.push(CUSTOM_LABEL_ITEM);
+
+		return editor.ui.modal.showListChoose("Choose label to go recursive", labels).then((choosed) => {
+			if(choosed) {
+				if(choosed === CUSTOM_LABEL_ITEM) {
+					editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
+						resolve([enteredText]);
+					});
+				} else {
+					resolve([choosed.pureName]);
+				}
+			}
+			return null;
+		});
+
+
+
+		
+
+	});
+};
+	
 
 MovieClip.prototype.gotoLabel.___EDITOR_callbackParameterChooserFunction = (context) => {
 	
@@ -534,6 +590,7 @@ MovieClip.prototype.stop.___EDITOR_isGoodForChooser = true;
 MovieClip.prototype.playRecursive.___EDITOR_isGoodForChooser = true;
 MovieClip.prototype.stopRecursive.___EDITOR_isGoodForChooser = true;
 MovieClip.prototype.gotoLabel.___EDITOR_isGoodForChooser = true;
+Container.prototype.gotoLabelRecursive.___EDITOR_isGoodForCallbackChooser = true;
 
 let serializeCache = new WeakMap();
 MovieClip.__EDITOR_group = 'Basic';

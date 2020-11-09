@@ -153,6 +153,7 @@ export default class Sound {
 	 * @param {number} volume 
 	 * @param {number} rate - pitch (1 - default);
 	 * @param {number} seek - start position in seconds
+	 * @param {boolean} multiInstanced - do not stop previous sound with same id
 	 */
 	static play(soundId, volume = 1.0, rate = 1.0, seek = 0.0, multiInstanced = false) {
 		/// #if DEBUG

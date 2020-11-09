@@ -71,5 +71,8 @@ module.exports = {
 	hideSpinner: function() {
 		spinnerShown--;
 		send({hideSpinner: true});
+	},
+	call: function(callPath) {
+		send({call: callPath});
 	}
 };

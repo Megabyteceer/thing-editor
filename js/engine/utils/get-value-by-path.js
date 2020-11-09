@@ -16,7 +16,9 @@ const getValueByPath = (valuePath, this_
 	let c;
 	let rootName = path[0];
 	/// #if EDITOR
-	pathDebugging(this_, valuePath);
+	if(!isLatestNodeGetting) {
+		pathDebugging(this_, valuePath);
+	}
 	/// #endif
 	if(rootName === 'this') {
 		c = this_;

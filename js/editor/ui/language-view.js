@@ -90,6 +90,8 @@ export default class LanguageView extends React.Component {
 				ignoreEdit = false;
 			}, 10);
 			showTextTable().then(() => {
+				currentLibName = 'project-locales';
+				refreshCachedData();
 				if(key) {
 					view.createKeyOrEdit(key, langId);
 				} else {
@@ -115,7 +117,7 @@ export default class LanguageView extends React.Component {
 	}
 	
 	render () {
-		let btn = R.btn(this.state.toggled ? 'Close Text Editor (Ctrl+E)' : 'Open Text Editor (Ctrl+E)', this.onToggleClick, undefined, 'menu-btn', 1069);
+		let btn = R.btn('Text (Ctrl+E)', this.onToggleClick, undefined, this.state.toggled ? 'menu-btn toggled-button' : 'menu-btn', 1069);
 		let table;
 		if(this.state.toggled) {
 			table = editor.ui.renderWindow('texteditor', 'Text', 'Text Table', R.fragment(
@@ -234,21 +236,23 @@ class LanguageTableEditor extends React.Component {
 			isKeyInvalid
 		).then((enteredName) => {
 			if (enteredName) {
-				this.createKeyOrEdit(enteredName);
+				this.createKeyOrEdit(enteredName, undefined, true);
 			}
 		});
 	}
-	
-	createKeyOrEdit(key, langId = 'en') {
+
+	createKeyOrEdit(key, langId = 'en', enforceCreateInCurrentSource = false) {
 		showTextTable().then(() => {
 
-			if(!oneLanguageTable.hasOwnProperty(key)) { // find key in another source
-				for(let src of  localesSourcesList) {
-					if(langsByLib[src][langId].hasOwnProperty(key)) {
-						currentLibName = src;
-						refreshCachedData();
-						this.forceUpdate();
-						break;
+			if(!enforceCreateInCurrentSource) {
+				if(!oneLanguageTable.hasOwnProperty(key)) { // find key in another source
+					for(let src of  localesSourcesList) {
+						if(langsByLib[src][langId].hasOwnProperty(key)) {
+							currentLibName = src;
+							refreshCachedData();
+							this.forceUpdate();
+							break;
+						}
 					}
 				}
 			}
@@ -264,8 +268,8 @@ class LanguageTableEditor extends React.Component {
 				if(editor.selection.length === 1) {
 					if(editor.selection[0] instanceof PIXI.Text) {
 						let t = editor.selection[0];
-						if(!t.text && !t.translatableText) {
-							t.translatableText = key;
+						if(((!t.text) || (t.text === 'New Text 1')) && !t.translatableText) {
+							editor.onObjectsPropertyChanged(t, 'translatableText', key);
 						}
 					}
 				}
@@ -346,7 +350,9 @@ class LanguageTableEditor extends React.Component {
 				}, id),
 				langsIdsList.map((langId) => {
 					let text = currentLanguage[langId][id];
-					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({defaultValue: text, id:texareaID(langId, id), onChange:(ev) => {
+					
+					let areaId = texareaID(langId, id);
+					return R.div({key: langId, className:'langs-editor-td'}, R.textarea({key:currentLibName + '_' + areaId ,defaultValue: text, id: areaId, onChange:(ev) => {
 						currentLanguage[langId][id] = ev.target.value;
 						onModified();
 					}}));

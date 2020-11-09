@@ -1,4 +1,4 @@
-import Text from "/thing-editor/js/engine/components/text.js";
+import Text from "thing-editor/js/engine/components/text.js";
 import game from "thing-editor/js/engine/game.js";
 
 const CENTER = 'center';

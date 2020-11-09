@@ -1,6 +1,6 @@
 import Help from "../utils/help.js";
 
-const WORKAREA_TOP_PADDING = 30;
+const WORKAREA_TOP_PADDING = 32;
 
 let emptyImage = new Image();
 

@@ -24,6 +24,8 @@ ws.onmessage = function incoming(data) {
 		} else {
 			editor.onServerAllowsWorking();
 		}
+	} else if(data.hasOwnProperty('call')) {
+		editor.callByPath('this.' + data.call, window);
 	} else if(data.hasOwnProperty('notifyText')) {
 		editor.ui.modal.notify(data.notifyText);
 	} else if(data.hasOwnProperty('showSpinner')) {
@@ -60,13 +62,13 @@ ws.onmessage = function incoming(data) {
 			AssetsLoader.reloadAssets(true, imagesUpdated);
 		}
 		if(soundsUpdated && !editor.ui.soundsList.soundsReloadingInProgress) {
-			editor.ui.soundsList.reloadSounds(soundsUpdated);
+			editor.ui.soundsList.reloadSounds(soundsUpdated, true);
 		}
 		if(imagesDeleted) {
 			AssetsLoader.deleteAssets(imagesDeleted.keys());
 		}
 		if(soundsDeleted) {
-			editor.ui.soundsList.deleteSounds(soundsDeleted.keys());
+			editor.ui.soundsList.afterDeleteSounds(soundsDeleted.keys());
 		}
 		if(srcChanged) {
 			editor.ui.viewport.jsFilesChanged();

@@ -40,6 +40,8 @@ export default class Scene extends Container {
 	}
 
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
+		
+		/** @type { { [key: string]: PIXI.Container; } } */
 		this.all = {};
 			
 		/// #if EDITOR
@@ -56,7 +58,7 @@ export default class Scene extends Container {
 	/// #if EDITOR
 	__afterDeserialization() {
 		if(!game.__EDITOR_mode) {
-			this.all =ACCES__ALL_ASSERTING_PROXY;
+			this.all = ACCES__ALL_ASSERTING_PROXY;
 		} else {
 			this.all = undefined;
 		}
@@ -66,7 +68,7 @@ export default class Scene extends Container {
 	}
 
 	remove() { //allows editor to hide scene`s remove method and do not hide DisplayObject's remove method
-		super.remove();
+		throw new Error("Scenes remove() method chould not be called.");
 	}
 
 	/// #endif

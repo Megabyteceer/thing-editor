@@ -330,7 +330,7 @@ export default class Tilemap extends Container {
 Object.defineProperty(Tilemap.prototype, 'image', Sprite.imagePropertyDescriptor);
 
 const clear8x8tile = (t) => {
-	t.remove();
+	Lib.destroyObjectAndChildren(t);
 };
 
 

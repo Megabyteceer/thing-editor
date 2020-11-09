@@ -58,6 +58,7 @@ app.get('/fs/openProject', function (req, res) {
 		}
 		res.send(projectDescSrc);
 		excludeAnotherProjectsFromCodeEditor();
+		require('./scripts/pixi-typings-patch.js')(currentGameRoot);
 	} else {
 		log('Can\'t open project: ' + descPath);
 		res.send('false');

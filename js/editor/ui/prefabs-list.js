@@ -8,6 +8,7 @@ import ClassesView from "./classes-view.js";
 import OrientationTrigger from "thing-editor/js/engine/components/orientation-trigger.js";
 import getValueByPath from "thing-editor/js/engine/utils/get-value-by-path.js";
 import {_searchByRegexpOrText} from "../utils/editor-utils.js";
+import fs from "../utils/fs.js";
 
 let bodyProps = {className: 'list-view'};
 
@@ -19,6 +20,7 @@ const fileNameToPrefabName = (fn) => {
 
 const prefabNameFilter = /[^a-z\-\/0-9_]/g;
 
+const classNameProps = {className: 'scene-node-class'};
 let prefabNameProps = {
 	className: "selectable-text", title: 'Ctrl+click to copy prefabs`s name', onMouseDown:window.copyTextByClick
 };
@@ -207,11 +209,18 @@ export default class PrefabsList extends React.Component {
 	
 	onPrefabDeleteClick(prefabName) {
 		editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className:'danger'},
-			'Are you sure you want to delete prefab: ', R.b(null, prefabName), ' ?',
+			'Are you sure you want to delete prefab: ', R.br(), R.br(), R.b(null, prefabName), ' ?',
+			R.br(),
 			R.br(),
 			'You cannot undo this action.'
 		),() => {
-			Lib.__deletePrefab(prefabName);
+			Lib.__deletePrefab(prefabName).then(() => {
+				fs.refreshFiles().then(() => {
+					PrefabsList.readAllPrefabsList().then(() => {
+						this.forceUpdate();
+					});
+				});
+			});
 			if(getCurrentPrefabName() === prefabName) {
 				PrefabsList.exitPrefabEdit();
 			}
@@ -235,10 +244,10 @@ export default class PrefabsList extends React.Component {
 		}, key: prefabName, className:'prefab-list-item'},
 		R.listItem(R.span(null,
 			item.___libInfo ? item.___libInfo.icon : undefined,
-			R.classIcon(cls), R.b(prefabNameProps, prefabName), ' (' + cls.name + ')',
-			R.btn('×', () => {
+			R.classIcon(cls), R.b(prefabNameProps, prefabName), R.span(classNameProps, ' (' + cls.name + ')'),
+			R.btn(' ', () => {
 				this.onPrefabDeleteClick(prefabName);
-			}, 'Delete prefab...', 'danger-btn delete-scene-btn')
+			}, 'Delete prefab...', 'delete-scene-btn')
 		
 		), item, prefabName, this)
 		);

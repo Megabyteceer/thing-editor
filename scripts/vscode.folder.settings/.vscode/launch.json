@@ -2,15 +2,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
+            "type": "pwa-chrome",
             "request": "launch",
             "name": "Editor",
-            "disableNetworkCache": false,
-            "url": "http://127.0.0.1:32023/thing-editor",
+            "smartStep": false,
+            "sourceMaps": false,
             "webRoot": "${workspaceRoot}",
             "enableContentValidation": false,
             "runtimeArgs": [
-              //  "--disable-web-security"
+              "--app=http://127.0.0.1:32023/thing-editor"
             ]
         }
     ]

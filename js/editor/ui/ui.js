@@ -22,7 +22,7 @@ import Help from '../utils/help.js';
  * @param className
  * @param hotkey
  * @param disabled
- * @returns {Element}
+ * @return {Element}
  */
 R.btn = function (label, onClick, title = undefined, className = undefined, hotkey = false, disabled = false) {
 	assert(onClick, "Function as onClick handler expected.");
@@ -113,6 +113,11 @@ class UI extends React.Component {
 	}
 	
 	render() {
+
+		editor.fs.filesExt && editor.fs.filesExt.scripts.sort((a, b) => {
+			return (a.name > b.name) ? 1 : -1;
+		});
+
 		return R.div({"data-help": 'editor.MainMenu'},
 			R.btn('Open project...', this.onOpenProjectClick, undefined, 'menu-btn'),
 			R.btn('Browse...', this.onOpenProjectFolderClick, "Reveal in File Explorer", 'menu-btn'),

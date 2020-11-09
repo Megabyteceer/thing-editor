@@ -12,6 +12,7 @@ const fileNameToSceneName = (fn) => {
 	return fn.replace('scenes/', '').replace(sceneExtRemover, '');
 };
 
+const classNameProps = {className: 'scene-node-class'};
 let sceneNameProps = {
 	className: "selectable-text", title: 'Ctrl+click to copy scene`s name', onMouseDown: window.copyTextByClick
 };
@@ -88,8 +89,8 @@ export default class ScenesList extends React.Component {
 
 	onSceneDeleteClick(sceneName, view) {
 		editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className:'danger'},
-			'Are you sure you want to delete scene: ', view, ' ?',
-			R.br(),
+			'Are you sure you want to delete scene: ',R.br(),R.br(), view, ' ?',
+			R.br(),R.br(),
 			'You cannot undo this action.'
 		),() => {
 			Lib.__deleteScene(sceneName);
@@ -108,15 +109,15 @@ export default class ScenesList extends React.Component {
 			this.state.selectedItem = item;
 		} else {
 			this.state.selectedItem = null;
-			deleteBtn = R.btn('×', () => {
+			deleteBtn = R.btn(' ', () => {
 				this.onSceneDeleteClick(sceneName, sceneView);
-			}, 'Delete scene...', 'danger-btn delete-scene-btn');
+			}, 'Delete scene...', 'delete-scene-btn');
 		}
 		
 		let sceneView = R.span(null,
 			R.classIcon(cls),
 			R.b(sceneNameProps, sceneName),
-			' (' + cls.name + ')'
+			R.span(classNameProps, ' (' + cls.name + ')')
 		);
 		
 		return R.div({

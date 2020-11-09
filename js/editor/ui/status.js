@@ -157,7 +157,9 @@ class InfoList extends React.Component {
 				return;
 			}
 			if(typeof item.owner === "function") {
-				item.owner();
+				if(item.owner()) {
+					this.clearItem(item);
+				}
 			} else if(item.owner && (item.owner instanceof DisplayObject)) {
 				let extendData = __getNodeExtendData(item.owner);
 				if((item.owner.___id !== item.ownerId) || (extendData.statusWarnOwnerId !== item.ownerId)) {

@@ -76,26 +76,11 @@ export default class SoundsList extends React.Component {
 
 	}
 
-	deleteSounds(soundsFilesNames) {
-		this.rebuildSounds().then(() => {
-			editor.fs.refreshFiles().then(() => {
-				for(let name of soundsFilesNames) {
-					let sndName = name.replace(/\.wav$/gmi, '');
-					Lib.__deleteSound(sndName);
-					let fileNameWithFolder = 'snd/' + sndName;
-					for(let fileName of editor.fs.files.snd) {
-						if(fileName.startsWith('snd/') && fileName.substring(0, fileName.length - 4) === fileNameWithFolder) {
-							editor.fs.deleteFile(fileName);
-						}
-					}
-				}
-				BgMusic._recalculateMusic();
-				this.forceUpdate();
-			});
-		});
+	afterDeleteSounds() {
+		editor.ui.soundsList.reloadSounds(null, true);
 	}
 
-	reloadSounds(onlyThisFiles = null) {
+	reloadSounds(onlyThisFiles = null, updateFilesForced = false) {
 		assert(!this.soundsReloadingInProgress, "Sounds loading already in progress.");
 		return new Promise((resolve) => {
 			if(editor.projectDesc.soundFormats) {
@@ -127,17 +112,28 @@ export default class SoundsList extends React.Component {
 									let name = fileName.split('.');
 									name.pop();
 									name = name.join('.');
-									if(!onlyThisFiles || onlyThisFiles.has(name +'.wav')) {
-										if(!sounds.hasOwnProperty(name)) {
-											sounds[name] = [];
-											if(fileInfo.lib) {
-												sounds[name].___libInfo = R.libInfo(fileInfo.lib);
+									let wavName = name +'.wav';
+									let wavFullName = 'snd/' + name +'.wav';
+									if(!editor.fs.filesExt.snd.find((s) => {
+										return s.name === wavFullName;
+									})) {
+										editor.ui.status.warn("Sound file '" + fileInfo.name + "' has no .wav version. Click to delete.", 99999, () => {
+											editor.fs.deleteFile(fileInfo.name);
+											editor.ui.modal.notify(fileInfo.name + ' deleted.');
+											return true;
+										});
+									} else {
+										if(!onlyThisFiles || onlyThisFiles.has(wavName)) {
+											if(!sounds.hasOwnProperty(name)) {
+												sounds[name] = [];
+												if(fileInfo.lib) {
+													sounds[name].___libInfo = R.libInfo(fileInfo.lib);
+												}
 											}
+											sounds[name].push(fileName);
 										}
-										sounds[name].push(fileName);
 									}
 								}
-								
 							});
 
 							for(let f in sounds) {
@@ -151,7 +147,7 @@ export default class SoundsList extends React.Component {
 							this.forceUpdate();
 						};
 
-						if(result.updated) {
+						if(result.updated || updateFilesForced) {
 							editor.fs.refreshFiles().then(reloadSoundsInner);
 						} else {
 							reloadSoundsInner();

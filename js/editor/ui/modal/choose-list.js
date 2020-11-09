@@ -1,5 +1,6 @@
 import Group from "../group.js";
 let listProps = {className:'list-view'};
+let listHeaderProps = {className:'choose-list-header'};
 let bodyProps = {className:'resizable-dialog left-align-text'};
 
 export default class ChooseList extends React.Component {
@@ -71,8 +72,10 @@ export default class ChooseList extends React.Component {
 	
 	render() {
 		return R.div(bodyProps,
-			this.props.noSearchField ? undefined : R.input(this.searchInputProps),
-			R.btn(R.icon('clear'), this.onSearchCliearClick),
+			this.props.noSearchField ? undefined : R.div(listHeaderProps,
+				R.input(this.searchInputProps),
+				R.btn(R.icon('clear'), this.onSearchCliearClick, 'Clear search')
+			),
 			R.div(listProps,
 				Group.groupArray(this.list.map(this.renderChoosingItem))
 			)

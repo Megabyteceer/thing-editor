@@ -1,3 +1,5 @@
+/// <reference path="../../index.d.ts" />
+
 import './utils/utils.js';
 import Settings from './utils/settings.js';
 import Lib from './lib.js';
@@ -59,20 +61,41 @@ let fireNextOnResizeImmediately;
 
 class Game {
 
+	constructor() {
+		this.data = {};
+		this.isMobile = PIXI.utils.isMobile;
+		/** @type { { [key: string]: PIXI.Container; } } */
+		this.all = null;
+
+		/// #if EDITOR
+		this.isUpdateBeforeRender = false;
+		this.__EDITOR_mode = false;
+		/// #endif
+	}
+
 	get modalsCount() {
 		return modals.length;
 	}
-
+	/** Scene or top modal object (if present) currently shown on stage. 
+	 * @type {Container} 
+	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentcontainer--displayobject
+	*/
 	get currentContainer() {
 		if (modals.length > 0) {
 			return modals[modals.length - 1]; //top modal is active
 		}
 		return this.currentScene; //current scene is active if no modals on screen
 	}
-
+	/** current fader (if present). 
+	 * @type {Container | null} 
+	*/
 	get currentFader() {
 		return currentFader;
 	}
+
+	/**
+	* @protected
+	 */
 
 	onResize() {
 		let w, h;
@@ -335,7 +358,7 @@ class Game {
 	}
 
 	init(element, gameId, resourcesPath = '') {
-
+		game.additionalLoadingsInProgress = 0;
 		//make objects visible by text path fo getValueByPath methods]
 		this.getValueByPath = getValueByPath;
 		game.Lib = Lib;
@@ -413,6 +436,9 @@ class Game {
 	addOnClickOnce(callback) {
 		onClickOnceCallbacks.push(callback);
 	}
+	/**
+	* @protected
+	 */
 
 	applyProjectDesc(projectDescriptor) {
 		let def = {
@@ -482,17 +508,28 @@ class Game {
 		this.onResize();
 		return isModified;
 	}
+	
+	/// #if EDITOR
+	/**
+	* @protected
+	 */
 
+	async _initInner() {
+		/*
+	/// #endif
 	_initInner() {
+		//*/
+		game.additionalLoadingsInProgress++;
+
+		/// #if EDITOR
+		await
+		/// #endif
 		Promise.all([
 			loadFonts(),
 			loadLocalizations()
 		]).then(() => {
-			this.__initAfterFontsLoaded();
+			game.additionalLoadingsInProgress--;
 		});
-	}
-
-	__initAfterFontsLoaded() {
 
 		this.onResize();
 
@@ -557,10 +594,16 @@ class Game {
 		
 		window.addEventListener('resize', this._onContainerResize.bind(this));
 	}
+	/**
+	* @protected
+	 */
 
 	_fireNextOnResizeImmediately() {
 		fireNextOnResizeImmediately = true;
 	}
+	/**
+	* @protected
+	 */
 
 	_onContainerResize() {
 		if (resizeOutJump) {
@@ -581,6 +624,9 @@ class Game {
 			}, game.isMobile.any ? 1 : 200);
 		}
 	}
+	/**
+	* @protected
+	 */
 
 	_startGame() {
 		let preloader = new Preloader();
@@ -616,7 +662,9 @@ class Game {
 			Lib._preCacheSoundsAndTextures();
 		});
 	}
-
+	/**
+	* @protected
+	 */
 	_setCurrentScene(scene) {
 		if(scene) {
 			game.all = scene.all;
@@ -626,11 +674,15 @@ class Game {
 		/// #if EDITOR
 		__currentSceneValue = scene;
 		return;
+		/*
 		/// #endif
-		
-		game.currentScene = scene; // eslint-disable-line no-unreachable
+		game.currentScene = scene;
+		//*/
 	}
 
+	/**
+	* @protected
+	 */
 	_setCurrentSceneContent(scene) {
 		assert(!game.currentScene, "Attempt to set current scene content with previous scene exists.");
 		scene = checkScene(scene);
@@ -670,16 +722,19 @@ class Game {
 			let i = modals.indexOf(m);
 			if(i >= 0) {
 				modals.splice(i, 1);
-				m.remove();
+				Lib.destroyObjectAndChildren(m);
 			}
 		}
 		while (hidingModals.length > 0) {
 			let m = hidingModals.pop();
-			m.remove();
+			Lib.destroyObjectAndChildren(m);
 		}
 		game._isWaitingToHideFader = true;
 	}
 
+	/**
+	* @protected
+	 */
 	_processScenesStack() {
 		assert(game.getLoadingCount() === 0, "Attempt to change stack during loading");
 		while(true) { // eslint-disable-line no-constant-condition
@@ -703,7 +758,7 @@ class Game {
 			let i = hidingFaders.indexOf(currentHidingFaderInUpdate);
 			assert(i >= 0, "hidingFaders list is corrupted");
 			hidingFaders.splice(i, 1);
-			currentHidingFaderInUpdate.remove();
+			Lib.destroyObjectAndChildren(currentHidingFaderInUpdate);
 			currentHidingFaderInUpdate = null;
 			/// #if EDITOR
 			editor.refreshTreeViewAndPropertyEditor();
@@ -711,9 +766,13 @@ class Game {
 		}
 	}
 
+	/**
+	 * @param {Scene | string} scene - scene name or scene instance
+	 * @param {string} faderType - name of fader prefab
+	 */
 	replaceScene(scene, faderType) {
 		/// #if EDITOR
-		assert(checkSceneName(scene) || true);
+		assert(checkSceneName(scene));
 		/// #endif
 		assert(showStack.length > 0, "Can not replace scene. No scene to replace is present.");
 		tryRemoveScene(showStack.pop());
@@ -721,9 +780,13 @@ class Game {
 		game._startFaderIfNeed(faderType);
 	}
 
+	/**
+	 * @param {Scene | string} scene - scene name or scene instance
+	 * @param {string} faderType - name of fader prefab
+	 */
 	showScene(scene, faderType) {
 		/// #if EDITOR
-		assert(checkSceneName(scene) || true);
+		assert(checkSceneName(scene));
 		/// #endif
 		showStack.push(scene);
 		/// #if EDITOR
@@ -734,18 +797,27 @@ class Game {
 		game._startFaderIfNeed(faderType);
 	}
 
+	/**
+	 * @param {string} faderType - name of fader prefab
+	 */
 	closeAllScenes(faderType) {
 		while (showStack.length > 1) {
 			game.closeCurrentScene(faderType);
 		}
 	}
 
+	/**
+	 * @param {string} faderType - name of fader prefab
+	 */
 	closeCurrentScene(faderType) {
 		assert(showStack.length > 1, "Can't close latest scene", 10035);
 		tryRemoveScene(showStack.pop());
 		game._startFaderIfNeed(faderType);
 	}
 
+	/**
+	* @protected
+	 */
 	_startFaderIfNeed(faderType) {
 		if(showStack[showStack.length - 1] !== game.currentScene) {
 			/// #if EDITOR
@@ -790,21 +862,32 @@ class Game {
 
 	/// #if EDITOR
 
+	/** Time in frames since game start */
 	get time() {
 		return this.__time;
 	}
 
+	/** Scene currently shown on stage. 
+	 * @type {Scene}
+	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentscene--scene
+	*/
 	get currentScene() {
 		return __currentSceneValue;
 	}
-
+	
+	/**
+	* @protected
+	 */
 	__destroyCurrentScene() {
 		if (this.currentScene) {
 			Lib.destroyObjectAndChildren(this.currentScene);
 			this._setCurrentScene(null);
 		}
 	}
-
+	
+	/**
+	* @protected
+	 */
 	get __enforcedOrientation() {
 		return this.___enforcedOrientation;
 	}
@@ -816,7 +899,10 @@ class Game {
 			this.onResize();
 		}
 	}
-
+	
+	/**
+	* @protected
+	 */
 	__loadImageIfUnloaded(name) {
 		if(!Lib.hasTexture(name)) {
 			editor.ui.modal.showSpinner();
@@ -829,11 +915,14 @@ class Game {
 				return game.getLoadingCount() === 0;
 			}).then(() => {
 				editor.ui.modal.hideSpinner();
-				s.remove();
+				Lib.destroyObjectAndChildren(s);
 			});
 		}
 	}
-
+	
+	/**
+	* @protected
+	 */
 	__setCurrentContainerContent(object) {
 		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
 		if (modals.length > 0) {
@@ -847,14 +936,17 @@ class Game {
 			this.showScene(object);
 		}
 	}
-
+	
+	/**
+	* @protected
+	 */
 	__clearStage() {
 		while (this.modalsCount > 0) {
 			this.hideModal(undefined, true);
 		}
 		while (hidingModals.length > 0) {
 			let m = hidingModals.pop();
-			m.remove();
+			Lib.destroyObjectAndChildren(m);
 		}
 
 		while (showStack.length > 0) {
@@ -864,31 +956,48 @@ class Game {
 		tryRemoveCurrentScene();
 
 		if (currentFader) {
-			currentFader.remove();
+			Lib.destroyObjectAndChildren(currentFader);
 			currentFader = null;
 		}
 		game._isWaitingToHideFader = false;
 		while (hidingFaders.length > 0) {
-			hidingFaders.pop().remove();
+			Lib.destroyObjectAndChildren(hidingFaders.pop());
 		}
 		Lib.__clearStaticScenes();
 		BgMusic._recalculateMusic();
 	}
 	/// #endif
 	/**
-	 * @return {(Array.<Scene|string>)}
+	 * @return {Array<Scene|string>}
 	 * returned array can contain scenes or scenes names. Names will be instanced in to scenes just before showing on screen
 	 */
 	_getScenesStack() {
 		return showStack;
 	}
-
-	showQuestion(title, message, yesLabel, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/sure-question') {
+	/**
+	 * @param {string} title
+	 * @param {string} message
+	 * @param {string} yesLabel
+	 * @param {Function} onYes
+	 * @param {Function} noLabel
+	 * @param {Function} onNo
+	 * @param {boolean} easyClose
+	 * @param {string} prefab
+	 * 
+	 * @return {DisplayObject}
+	 */
+	showQuestion(title, message, yesLabel=null, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/sure-question') {
 		let o = Lib.loadPrefab(prefab);
 		SureQuestion.init(o, title, message, yesLabel, onYes, noLabel, onNo, easyClose);
 		return game.showModal(o);
 	}
 
+	/**
+	 * @param {DisplayObject|string} displayObject - display object or prefab's name
+	 * @param {Function} [callback]
+	 * 
+	 * @return {DisplayObject}
+	 */
 	showModal(displayObject, callback) {
 		/// #if DEBUG
 		if (game.__EDITOR_mode && !__getNodeExtendData(displayObject).isPreviewObject) {
@@ -911,12 +1020,11 @@ class Game {
 		/// #endif
 		return displayObject;
 	}
-
-	hideModal(displayObject, instantly) {
-		if (displayObject === 'instantly') {
-			displayObject = undefined;
-			instantly = true;
-		}
+	/**
+	 * @param {DisplayObject|null} displayObject - display object to hide or null to hide top level modal
+	 * @param {boolean} instantly
+	 */
+	hideModal(displayObject = null, instantly = false) {
 		let modalToHide;
 		if (!displayObject) {
 			assert(modals.length > 0, 'Attempt to hide modal when modal list is empty.', 10038);
@@ -946,7 +1054,7 @@ class Game {
 			game.__EDITOR_mode
 			/// #endif
 		) {
-			modalToHide.remove();
+			Lib.destroyObjectAndChildren(modalToHide);
 		} else {
 			modalToHide.interactiveChildren = false;
 			hidingModals.push(modalToHide);
@@ -956,7 +1064,9 @@ class Game {
 		editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
 	}
-
+	/**
+	* @protected
+	 */
 	mouseEventToGlobalXY(ev) {
 		let b = app.view.getBoundingClientRect();
 		let n = ev.clientX - b.left;
@@ -965,7 +1075,9 @@ class Game {
 		tmpPoint.y = n * (game.H / b.height);
 		return tmpPoint;
 	}
-
+	/**
+	* @protected
+	 */
 	_updateGlobal(dt) {
 
 		if(!game.isFocused && game.projectDesc.keepSoundWhilePageUpdate) {
@@ -1070,6 +1182,9 @@ class Game {
 		let count = Lib.getSoundsLoadingCount();
 
 		count += ResourceLoader.getLoadingCount();
+		if(game.additionalLoadingsInProgress) {
+			count += game.additionalLoadingsInProgress;
+		}
 		/// #if EDITOR
 		if(!ignoreInGamePromises) {
 		/// #endif
@@ -1087,7 +1202,9 @@ class Game {
 		game.stage.forAllChildren(callback);
 		game.forAllChildrenEverywhereBack(callback);
 	}
-
+	/**
+	* @protected
+	 */
 	_hideCurrentFaderAndStartScene() {
 		currentFader.gotoLabelRecursive('hide fader');
 		hidingFaders.unshift(currentFader);
@@ -1097,7 +1214,9 @@ class Game {
 		currentFader = null;
 		BgMusic._recalculateMusic();
 	}
-
+	/**
+	* @protected
+	 */
 	_updateFrame() {
 		if(game._loadingErrorIsDisplayed) {
 			return;
@@ -1142,7 +1261,7 @@ class Game {
 				let m = hidingModals[i];
 				m.alpha -= 0.1;
 				if (m.alpha <= 0.01) {
-					m.remove();
+					Lib.destroyObjectAndChildren(m);
 					hidingModals.splice(i, 1);
 					/// #if EDITOR
 					editor.refreshTreeViewAndPropertyEditor();
@@ -1152,6 +1271,7 @@ class Game {
 			}
 		}
 		this.keys.update();
+		Lib._cleanupRemoveHolders();
 		/// #if EDITOR
 		this.__time++;
 		/*
@@ -1159,7 +1279,9 @@ class Game {
 		this.time++;
 		//*/
 	}
-
+	/**
+	 * @protected
+	 */
 	fetchResource(url) { /// #
 		return new Promise((resolve) => {
 			let loader = new ResourceLoader();
@@ -1169,7 +1291,9 @@ class Game {
 			});
 		});
 	}
-
+	/**
+	* @protected
+	 */
 	_onLoadingError(url) {
 		if(game._loadingErrorIsDisplayed) {
 			return;
@@ -1229,11 +1353,15 @@ class Game {
 	}
 
 	/// #if DEBUG
-
+	/**
+	 * @protected
+	 */
 	get __speedMultiplier() {
 		return __speedMultiplier;
 	}
-
+	/**
+	 * @protected
+	 */
 	set __speedMultiplier(v) {
 		if(v !== __speedMultiplier) {
 			__speedMultiplier = v;
@@ -1372,10 +1500,8 @@ const mouseHandlerGlobal = (ev) => {
 };
 
 const game = new Game();
-game.data = {};
 export default game;
 
-game.isMobile = PIXI.utils.isMobile;
 if(window.cordova) {
 	document.addEventListener('backbutton', function () {
 		Button._tryToClickByKeycode(27);
@@ -1421,7 +1547,7 @@ function tryRemoveCurrentScene() {
 function tryRemoveScene(s) {
 	if((s instanceof Scene) && (s !== game.currentScene)) {
 		if (!s.isStatic && (showStack.indexOf(s) < 0)) {
-			s.remove();
+			Lib.destroyObjectAndChildren(s);
 		} else {
 			s.detachFromParent();
 		}
@@ -1702,6 +1828,7 @@ function checkSceneName(scene) {
 	} else {
 		assert(scene instanceof Scene, );
 	}
+	return true;
 }
 
 let __isCurrentFaderUpdateInProgress;
