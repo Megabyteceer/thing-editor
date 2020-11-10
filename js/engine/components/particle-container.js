@@ -20,11 +20,6 @@ export default class ParticleContainer extends Container {
 		}
 		/// #endif
 	}
-
-	render(renderer) {
-		this.children.sort(sortByAlpha);
-		super.render(renderer);
-	}
 }
 
 const sortByAlpha = (a,b) => {
