@@ -16,7 +16,9 @@ patch(
 	/** call in only in your own update methods as super.update(); */
 	protected update():void;
 	/** remove object from scene */
-	protected remove():void;
+	remove():void;
+	/** remove object from scene without placing empty object in lace of it */
+	removeWithoutHolder():void;
 	/** destructor */
 	protected onRemove():void;
 	addFilter(filter: PIXI.Filter):void;

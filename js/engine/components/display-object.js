@@ -51,6 +51,10 @@ DisplayObject.prototype.remove = function remove() {
 	Lib.destroyObjectAndChildren(this, true);
 };
 
+DisplayObject.prototype.removeWithoutHolder = function remove() { // 99999
+	Lib.destroyObjectAndChildren(this);
+};
+
 DisplayObject.prototype.findParentByType = function (classType) {
 	assert(classType.prototype instanceof DisplayObject, "DisplayObject inherited class expected.", 10053);
 	let p = this.parent;
