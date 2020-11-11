@@ -259,7 +259,11 @@ export default class Lib {
 		}
 
 		if(!__allTextures.hasOwnProperty(name)) {
-			Lib.__texturesList.push({name, visibleName, value: name});
+			if(addToBegin) {
+				Lib.__texturesList.splice(2, 0, {name, visibleName, value: name});
+			} else {
+				Lib.__texturesList.push({name, visibleName, value: name});
+			}
 			__allTextures[name] = true;
 		} else if(addToBegin) {
 			let curIndex = Lib.__texturesList.findIndex(i => i.name === name);
