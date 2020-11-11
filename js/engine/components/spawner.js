@@ -47,6 +47,23 @@ export default class Spawner extends Container {
 		return this.interval;
 	}
 
+	setTargetContainer(targetContainer) {
+		if(targetContainer) {
+			this._container = (targetContainer instanceof Container) ? targetContainer : getValueByPath(targetContainer, this);
+			/// #if EDITOR
+			if(!this._container) {
+				editor.ui.status.error("Spawner targeted to not existing container: " + this.container, 32007, this, 'container');
+				this._container = game.currentContainer;
+			}
+			/// #endif
+		} else {
+			this._container = game.currentContainer;
+		}
+		/// #if EDITOR
+		this.___containerID = this._container.___id;
+		/// #endif
+	}
+
 	spawn() {
 		/// #if EDITOR
 		if(!this.prefabToSpawn) {
@@ -58,20 +75,7 @@ export default class Spawner extends Container {
 		}
 		/// #endif
 		if (!this._container) {
-			if(this.container) {
-				this._container = getValueByPath(this.container, this);
-				/// #if EDITOR
-				if(!this._container) {
-					editor.ui.status.error("Spawner targeted to not existing container: " + this.container, 32007, this, 'container');
-					this._container = game.currentContainer;
-				}
-				/// #endif
-			} else {
-				this._container = game.currentContainer;
-			}
-			/// #if EDITOR
-			this.___containerID = this._container.___id;
-			/// #endif
+			this.setTargetContainer(this.container);
 		}
 
 		/// #if EDITOR
