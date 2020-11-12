@@ -24,6 +24,9 @@ export default class BgMusic extends Container {
 		super.init();
 		assert(allActiveMusics.indexOf(this) < 0, "BgMusic reference already registered");
 		allActiveMusics.push(this);
+		/// #if DEBUG
+		this.__initCalled = true;
+		/// #endif
 		BgMusic._recalculateMusic();
 		if(!this.dynamicPreloading) {
 			Lib.preloadSound(this.intro
@@ -45,8 +48,13 @@ export default class BgMusic extends Container {
 	onRemove() {
 		super.onRemove();
 		let i = allActiveMusics.indexOf(this);
-		assert(i >= 0, 'BgMusic reference lost');
-		allActiveMusics.splice(i, 1);
+		/// #if DEBUG
+		assert((!this.__initCalled) || (i >= 0), "BgMusic reference lost");
+		this.__initCalled = false;
+		/// #endif
+		if(i >= 0) { // could be removed before initialization in parent init method
+			allActiveMusics.splice(i, 1);
+		}
 		BgMusic._recalculateMusic();
 		MusicFragment.onMusicRemove(this);
 		this._externalVolume = 0;

@@ -15,6 +15,10 @@ export default class Button extends DSprite {
 	init() {
 		super.init();
 
+		/// #if DEBUG
+		this.__initCalled = true;
+		/// #endif
+		
 		this.on('pointerdown', this.onDown);
 		this.on('pointerup', this.onUp);
 		this.on('pointerover', this.onOver);
@@ -45,8 +49,14 @@ export default class Button extends DSprite {
 
 		assert(!game.__EDITOR_mode, "'destroy()' called in edition mode");
 		let i = allActiveButtons.indexOf(this);
-		assert(i >= 0, 'Button is not in active list.');
-		allActiveButtons.splice(i, 1);
+		/// #if DEBUG
+		assert((!this.__initCalled) || (i >= 0), "Button is not in active list.");
+		this.__initCalled = false;
+		/// #endif
+
+		if(i >= 0) { // could be removed before initialization in parent init method
+			allActiveButtons.splice(i, 1);
+		}
 		if(downedByKeycodeButton === this) {
 			downedByKeycodeButton = null;
 		}
