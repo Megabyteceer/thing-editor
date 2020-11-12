@@ -196,7 +196,7 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 
 app.post('/fs/exec', jsonParser, function (req, res) {
 	let fileName = mapFileUrl('/' + currentGame + '/' + req.body.filename);
-	let m = requireUncached(fileName);
+	let m = requireUncached(path.join(__dirname, '..', fileName));
 	m.main(function(err) {
 		if(err) {
 			throw err;
