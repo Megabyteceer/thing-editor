@@ -62,7 +62,9 @@ let fireNextOnResizeImmediately;
 class Game {
 
 	constructor() {
+		/** @type { GameDataModel } */
 		this.data = {};
+		
 		this.isMobile = PIXI.utils.isMobile;
 		/** @type { { [key: string]: PIXI.Container; } } */
 		this.all = null;

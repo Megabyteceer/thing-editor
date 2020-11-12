@@ -58,6 +58,7 @@ app.get('/fs/openProject', function (req, res) {
 		}
 		res.send(projectDescSrc);
 		excludeAnotherProjectsFromCodeEditor();
+		applyProjectTypings();
 		require('./scripts/pixi-typings-patch.js')(currentGameRoot);
 	} else {
 		log('Can\'t open project: ' + descPath);
@@ -654,6 +655,33 @@ function isLibInProject(libName) {
 	return (currentGameDesc.libs && (currentGameDesc.libs.findIndex((f) => {
 		return f.startsWith(libName);	
 	}) >= 0)) || (libName === ('games/' + currentGame));
+}
+
+function applyProjectTypings() {
+	let typings = [];
+	const typingsPath = path.join(__dirname, '../current-project-typings.js');
+	if(currentGameDesc.libs) {
+		for(let libName of currentGameDesc.libs) {
+			let libTypings = path.join(getLibRoot(libName), 'typings.js');
+			if(fs.existsSync(libTypings)) {
+				typings.push(fs.readFileSync(libTypings, 'utf8'));
+			}
+		}
+	}
+	let gameTypingsPath = path.join(currentGameRoot, 'typings.js');
+	if(fs.existsSync(gameTypingsPath)) {
+		typings.push(fs.readFileSync(gameTypingsPath, 'utf8'));
+	}
+	if(typings.length > 0) {
+		fs.writeFileSync(typingsPath, `// thing-editor auto generated file.
+export default null;
+
+` + typings.join('\n'));
+	} else {
+		if(fs.existsSync(typingsPath)) {
+			fs.unlinkSync(typingsPath);
+		}
+	}
 }
 
 //=============== module importing fixer ==================
