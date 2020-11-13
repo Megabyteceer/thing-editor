@@ -1,7 +1,10 @@
 {
 	"compilerOptions": {
 		"baseUrl": ".",
-		"rootDir": "."
+		"rootDir": ".",
+        "paths": {
+            "/*": ["./*"]
+        },
 	},
 	"exclude": [
 		"*/node_modules/*",
