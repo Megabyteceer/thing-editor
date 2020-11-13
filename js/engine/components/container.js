@@ -1,3 +1,5 @@
+/// <reference path="../../../index.d.ts" />
+
 import game from "../game.js";
 import DisplayObject from "./display-object.js";
 
