@@ -5,6 +5,28 @@ import game from "../game.js";
 
 let loadingResources = [];
 
+assert(PIXI.Spritesheet.prototype.parse instanceof Function, 'Thing editor needs refactoring of atlases error handling.');
+const origin_parse = PIXI.Spritesheet.prototype.parse;
+PIXI.Spritesheet.prototype.parse = function(resource) {
+	try {
+		origin_parse.apply(this, arguments);
+	} catch(er) {
+		game._onLoadingError('Spritesheet parsing error (' + this.data.meta.image +'): ' + er.message);
+	}
+}
+assert(PIXI.BitmapFontLoader.parse instanceof Function, 'Thing editor needs refactoring of BitmapText atlases error handling.');
+const origin_font_parse = PIXI.BitmapFontLoader.parse;
+PIXI.BitmapFontLoader.parse = function(resource) {
+	try {
+		origin_font_parse.apply(this, arguments);
+	} catch(er) {
+		game._onLoadingError('BitmapText parsing error (' + resource.name +'): ' + er.message);
+	}
+}
+
+
+
+
 export default class ResourceLoader {
 
 	constructor() {
