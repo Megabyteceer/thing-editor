@@ -10,7 +10,7 @@
             "webRoot": "${workspaceRoot}",
             "enableContentValidation": false,
             "runtimeArgs": [
-              "--app=http://127.0.0.1:32023/thing-editor"
+              "--app=http://127.0.0.1:32023/thing-editor?vscode-integration"
             ]
         }
     ]

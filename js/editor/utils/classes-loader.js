@@ -313,9 +313,15 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 					Lib._setClasses(classesById, classesDefaultsById);
 				
 					classesLoadedSuccessfullyAtLeastOnce = true;
-				
-					resolve();
-				
+
+					if(window.location.href.indexOf('vscode-integration') >= 0) {
+						fetch('http://127.0.0.1:32025/classes-reloaded&' + encodeURIComponent(editor.currentProjectDir)).then(resolve).catch(() => {
+							editor.ui.modal.notify("vscode integration extension error.");
+							resolve();
+						});
+					} else {
+						resolve();
+					}
 					editor.ui.classesList.forceUpdate();
 					game.__destroyCurrentScene();
 					Pool.clearAll();
