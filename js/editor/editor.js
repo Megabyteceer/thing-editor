@@ -59,6 +59,7 @@ export default class Editor {
 		this.fs = fs;
 		
 		this.DataPathFixer = DataPathFixer;
+		this.projectDesc = null;
 
 		this.settings = new Settings('editor');
 		this.selection = new Selection();
