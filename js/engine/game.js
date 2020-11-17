@@ -70,6 +70,10 @@ class Game {
 		this.all = null;
 
 		/// #if EDITOR
+		this.isPortrait = false;
+		this.isFocused = false;
+		this.isCanvasMode = false;
+		this._isCanvasRotated = false;
 		this.isUpdateBeforeRender = false;
 		this.__EDITOR_mode = false;
 		/// #endif
@@ -168,7 +172,9 @@ class Game {
 		}
 
 		if(game.isPortrait) {
+			/** game screen current width */
 			this.W = this.projectDesc.portraitWidth || 408;
+			/** game screen current height */
 			this.H = this.projectDesc.portraitHeight || 720;
 		} else {
 			this.W = this.projectDesc.width || 1280;
@@ -379,6 +385,8 @@ class Game {
 		/// #endif
 		this.time = 0;
 		//*/
+
+		/** @type ThingProjectSettings */
 		this.projectDesc = this.projectDesc || {};
 
 
@@ -411,6 +419,11 @@ class Game {
 		this.__mouse_EDITOR = {x: 0, y: 0};
 		/// #endif
 
+		/**
+		 * @typedef {Object} Mouse
+		 * @property {boolean} click
+		 */
+		/** @type {Mouse & PIXI.Point}*/
 		this.mouse = new PIXI.Point();
 		/// #if EDITOR
 		this.mouse.___EDITOR_isGoodForChooser = true;

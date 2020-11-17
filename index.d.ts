@@ -16,6 +16,31 @@ class TEditor extends Editor {
 declare global {
 	interface GameDataModel {
 	}
+
+	/** @see https://github.com/Megabyteceer/thing-editor/wiki/ProjectSettings */
+	interface ThingProjectSettings {
+		defaultFont: string;
+		screenOrientation: "auto"|"landscape"|"portrait";
+		width: number;
+		height: number;
+		portraitWidth: number;
+		portraitHeight: number;
+		renderResolution: number;
+		renderResolutionMobile: number;
+		framesSkipLimit: number;
+		dynamicStageSize: boolean;
+		preventUpscale: boolean;
+		muteOnFocusLost: boolean;
+		mipmap: boolean;
+		version: string;
+		soundFormats: string[];
+		soundDefaultBitrate: number;
+		defaultMusVol: number;
+		defaultSoundsVol: number;
+		keepSoundWhilePageUpdate: boolean;
+		autoFullscreenDesktop: boolean;
+		autoFullscreenMobile: boolean;
+	}
 }
 
 declare global {
