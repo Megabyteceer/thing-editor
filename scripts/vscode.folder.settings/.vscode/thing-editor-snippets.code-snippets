@@ -1,0 +1,18 @@
+{
+	"/// #if EDITOR": {
+		"scope": "javascript",
+		"prefix": "///",
+		"body": [
+			"/// #if EDITOR\n\n\n/// #endif"
+		],
+		"description": "Editor only code block."
+	},	"/// #if DEBUG": {
+		"scope": "javascript",
+		"prefix": "///",
+		"body": [
+			"/// #if DEBUG\n\n\n/// #endif"
+		],
+		"description": "Debug build only code block."
+	}
+}
+
