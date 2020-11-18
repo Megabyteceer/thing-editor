@@ -46,6 +46,11 @@ const getValueByPath = (valuePath, this_
 		if(typeof n === 'string') {
 			c = c[n];
 		} else {
+			/// #if EDITOR
+			if(!c.getChildByName) {
+				return "getChildByName for not a Container.";
+			}
+			/// #endif
 			c = c.getChildByName(n.s);
 		}
 		if(!c) {
