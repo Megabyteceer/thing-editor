@@ -48,7 +48,6 @@ class UI extends React.Component {
 		this.viewportRef = this.viewportRef.bind(this);
 		this.modalRef = this.modalRef.bind(this);
 		this.prefabsRef = this.prefabsRef.bind(this);
-		this.scenesStackRef = this.scenesStackRef.bind(this);
 		this.classesListRef = this.classesListRef.bind(this);
 		this.soundsListRef = this.soundsListRef.bind(this);
 	}
@@ -56,42 +55,35 @@ class UI extends React.Component {
 	componentDidMount() {
 		this.props.onMounted(this);
 	}
-	
+	/** @param ref {Status} */
 	statusRef(ref) {
 		this.status = ref;
 	}
-	
+	/** @param ref {TreeView} */
 	sceneTreeRef(ref) {
 		this.sceneTree = ref;
 	}
-	
+	/** @param ref {ClassesView} */
 	classesListRef(ref) {
 		this.classesList = ref;
 	}
-	
+	/** @param ref {SoundsList} */
 	soundsListRef(ref) {
 		this.soundsList = ref;
 	}
-
+	/** @param ref {PrefabsList} */
 	prefabsRef(ref) {
 		this.prefabsList = ref;
 	}
-	
-	scenesStackRef(ref) {
-		this.scenesStack = ref;
-	}
-	
+	/** @param ref {Viewport} */
 	viewportRef(ref) {
 		this.viewport = ref;
 	}
-	
-	/**
-	 * @param ref {PropsEditor}
-	 */
+	/** @param ref {PropsEditor} */
 	propsEditorRef(ref) {
 		this.propsEditor = ref;
 	}
-	
+	/** @param ref {Modal} */
 	modalRef(ref) {
 		this.modal = ref;
 	}
