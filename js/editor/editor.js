@@ -154,6 +154,7 @@ export default class Editor {
 		if(!dir) {
 			this.fs.chooseProject(true);
 		} else if((dir + '/') !== editor.currentProjectDir) {
+			this.ui.modal.showSpinner();
 			editor.projectOpeningInProgress = true;
 			editor.settings.setItem('last-opened-project', dir);
 			if(dir !== lastOpenedProject) {
@@ -228,6 +229,8 @@ export default class Editor {
 					});
 				}
 			}
+
+			this.ui.modal.hideSpinner();
 
 			editor.projectOpeningInProgress = false;
 		}
