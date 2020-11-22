@@ -315,20 +315,11 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 					classesLoadedSuccessfullyAtLeastOnce = true;
 
 					if(window.location.href.indexOf('vscode-integration') >= 0) {
-						let a = /*[editor.currentProjectDir];
-						if(editor.projectDesc.libs) {
-							a = a.concat(editor.projectDesc.libs);
-						}*/
-						['.js'] // reload all scripts
-						Promise.all(a.map((url) => {
-							return fetch('http://127.0.0.1:32025/classes-reloaded&' + encodeURIComponent(url));
-						})).then(resolve).catch(() => {
+						fetch('http://127.0.0.1:32025/classes-reloaded&.js').catch(() => {
 							editor.ui.status.error("vscode integration extension error.");
-							resolve();
 						});
-					} else {
-						resolve();
 					}
+					resolve();
 					editor.ui.classesList.forceUpdate();
 					game.__destroyCurrentScene();
 					Pool.clearAll();
