@@ -200,10 +200,13 @@ export default class Lib {
 		}
 		/// #if EDITOR
 		if(isReloading && Lib.resources[fileName]) {
-			let oldTextures = Lib.resources[fileName].textures;
-			if(oldTextures) {
-				for(let oldTextureName in oldTextures) {
-					Lib._unloadTexture(oldTextureName, true);
+			let c = Lib.resources[fileName].children;
+			if(c) {
+				for(let childRes of c) {
+					if(childRes.texture) {
+						PIXI.Texture.removeFromCache(childRes.texture);
+						childRes.texture.destroy(true);
+					}
 				}
 			}
 		}
@@ -222,6 +225,25 @@ export default class Lib {
 		loader.load((loader, resources) => {
 			
 			let res = resources[fileName];
+			/// #if EDITOR
+			if(isReloading && res.spineData) {
+				setTimeout(() => {
+					game.forAllChildrenEverywhere((c) => {
+						if(c instanceof game.classes.Spine) {
+							c._releaseSpine();
+						}
+					});
+					if(game.classes) {
+						game.classes.Spine.clearPool();
+					}
+					game.forAllChildrenEverywhere((c) => {
+						if(c instanceof game.classes.Spine) {
+							c._initSpine();
+						}
+					});
+				}, 0);
+			}
+			/// #endif
 			Lib.resources[fileName] = res;
 			if(res.textures) {
 				for(let name in res.textures) {

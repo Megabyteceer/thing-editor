@@ -29,6 +29,8 @@ const enumAssets = (onlyThisFiles) => {
 	
 	let jsonFolders = [];
 
+	let resourcesToReload = {};
+
 	editor.fs.filesExt.img.filter((fileStat) => {
 		if(fileStat.name.match(resourcesFilter)) {
 			if(!jsonFolders.some((f) => {
@@ -39,11 +41,28 @@ const enumAssets = (onlyThisFiles) => {
 				jsonFolders.push(a.join('/'));
 			}
 			if(!onlyThisFiles || onlyThisFiles.has(fileStat.name.replace(/^img\//, ''))) {
-				Lib.addResource(fileStat.name, true);
+				resourcesToReload[fileStat.name] = true;
 			}
 		}
 	});
 
+	if(onlyThisFiles) {
+		for(let fn of onlyThisFiles) {
+			fn = fn[0];
+			for(let resName in Lib.resources) {
+				let res = Lib.resources[resName];
+				if(res.children.find((c) => {
+					return c.url.endsWith('/img/' + fn);
+				})) {
+					resourcesToReload[res.name] = true;
+				}
+			}
+		}
+	}
+	
+	for(let name in resourcesToReload) {
+		Lib.addResource(name, true);
+	}
 
 	editor.fs.filesExt.img.some((fileStat) => {
 		if(fileStat.name.match(textureFiler)) {
