@@ -76,7 +76,6 @@ function checkForOldReferences(o) {
 		}
 	}
 }
-let noCacheCounter = 0;
 
 /// #endif
 
@@ -279,8 +278,6 @@ export default class Lib {
 			if(game.projectDesc.loadOnDemandTextures.hasOwnProperty(name)) {
 				return;
 			}
-			texture += '?noCache=' + Lib.__noCacheCounter;
-			
 			textures[name] = PIXI.Texture.from(texture);
 		} else
 		{
@@ -929,12 +926,6 @@ export default class Lib {
 		return Promise.resolve();
 	}
 
-	/**
-	 * @protected
-	 */
-	static get __noCacheCounter() {
-		return noCacheCounter++;
-	}
 	/**
 	 * @protected
 	 */

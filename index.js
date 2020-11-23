@@ -225,6 +225,7 @@ app.use('/', (req, res, next) => {
 app.use('/games/',  (req, res) => {
 	let fileName = path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path)));
 	if(fs.existsSync(fileName)) {
+		res.setHeader('Cache-Control', 'no-store');
 		attemptFSOperation(() => {
 			fs.accessSync(fileName, fs.constants.R_OK);
 			res.sendFile(fileName, {dotfiles:'allow'});

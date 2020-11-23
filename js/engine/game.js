@@ -1760,11 +1760,7 @@ function loadDynamicTextures(
 				if(!texturesInProgress.hasOwnProperty(image)) {
 					texturesInProgress[image] = true;
 					let fullPath = textureNameToPath(image);
-					loader.add(fullPath
-						/// #if EDITOR
-						, fullPath + '?noCache=' + Lib.__noCacheCounter
-						/// #endif
-					);
+					loader.add(fullPath);
 				}
 				spritesWaitingOfTextures.push(o);
 			} else if(texturesSettings.hasOwnProperty(image)) {
