@@ -95,9 +95,10 @@ export default class SoundsList extends React.Component {
 				this.rebuildSounds().then((result) => {
 					this.soundsReloadingInProgress = false;
 					if(result.errors) {
-						editor.ui.modal.showError(result.errors.map((r, i) =>{
+						editor.ui.modal.showError(R.fragment(R.b(null, 'Make sure ffmpeg library is installed and it is aded to the PATH.'), result.errors.map((r, i) =>{
 							return R.div({key:i}, JSON.stringify(r));
-						}), 30007, "Sounds processing ffmpeg lib error.");
+						})), 30007, "Sounds processing ffmpeg lib error.");
+						resolve();
 					} else {
 
 						const reloadSoundsInner = () => {
