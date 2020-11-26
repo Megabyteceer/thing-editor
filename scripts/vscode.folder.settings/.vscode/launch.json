@@ -5,8 +5,7 @@
             "type": "pwa-chrome",
             "request": "launch",
             "name": "Editor",
-            "sourceMaps": false,
-            "outFiles": [],
+            "outFiles": ["**/bundle.js"],
             "webRoot": "${workspaceRoot}",
             "enableContentValidation": false,
             "runtimeArgs": [
