@@ -362,6 +362,8 @@ function getDataFolders() {
 
 const filesToEnumFilter = /\.(js|json|xml|atlas|png|jpg|wav|mp3|ogg|aac|weba)$/;
 
+let lastFilesEnum;
+
 function enumFiles() {
 	if(!currentGame) throw 'No game opened';
 	let ret = {};
@@ -415,7 +417,7 @@ function enumFiles() {
 			}
 		}
 	}
-
+	lastFilesEnum = ret;
 	return ret;
 }
 
@@ -551,7 +553,22 @@ function initWatchers() {
 						try{
 							let stats = fs.statSync(fullFileName);
 							if(stats.isFile() && stats.size > 0) {
-								fileChangeSchedule(filename, stats.mtime);
+								let existingFileDesc;
+								if(lastFilesEnum) {
+									let normalizedName = fullFileName.replace(pathSeparatorReplaceExp, '/');
+									for(let i in lastFilesEnum) {
+										i = lastFilesEnum[i];
+										existingFileDesc = i.find((a) => {
+											return normalizedName.endsWith(a.name);
+										});
+										if(existingFileDesc) {
+											break;
+										}
+									}
+									if(!existingFileDesc || (existingFileDesc.mtime !== stats.mtimeMs)) {
+										fileChangeSchedule(filename, stats.mtime);
+									}
+								}
 							}
 						} catch (er) {
 							//log("file change handler error: " + er); //for case if tmp file is not exist
