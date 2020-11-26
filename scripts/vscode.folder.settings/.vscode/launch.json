@@ -5,8 +5,8 @@
             "type": "pwa-chrome",
             "request": "launch",
             "name": "Editor",
-            "smartStep": false,
             "sourceMaps": false,
+            "outFiles": [],
             "webRoot": "${workspaceRoot}",
             "enableContentValidation": false,
             "runtimeArgs": [
