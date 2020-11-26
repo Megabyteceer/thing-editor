@@ -549,33 +549,35 @@ function initWatchers() {
 				filename = path.join(assetsFolder, filename);
 				
 				if(eventType === 'change' || eventType === 'rename') {
-					if(fs.existsSync(fullFileName)) {
-						try{
-							let stats = fs.statSync(fullFileName);
-							if(stats.isFile() && stats.size > 0) {
-								let existingFileDesc;
-								if(lastFilesEnum) {
-									let normalizedName = fullFileName.replace(pathSeparatorReplaceExp, '/');
-									for(let i in lastFilesEnum) {
-										i = lastFilesEnum[i];
-										existingFileDesc = i.find((a) => {
-											return normalizedName.endsWith(a.name);
-										});
-										if(existingFileDesc) {
-											break;
+					setTimeout(() => {
+						if(fs.existsSync(fullFileName)) {
+							try{
+								let stats = fs.statSync(fullFileName);
+								if(stats.isFile() && stats.size > 0) {
+									let existingFileDesc;
+									if(lastFilesEnum) {
+										let normalizedName = fullFileName.replace(pathSeparatorReplaceExp, '/');
+										for(let i in lastFilesEnum) {
+											i = lastFilesEnum[i];
+											existingFileDesc = i.find((a) => {
+												return normalizedName.endsWith(a.name);
+											});
+											if(existingFileDesc) {
+												break;
+											}
+										}
+										if(!existingFileDesc || (existingFileDesc.mtime !== stats.mtimeMs)) {
+											fileChangeSchedule(filename, stats.mtime);
 										}
 									}
-									if(!existingFileDesc || (existingFileDesc.mtime !== stats.mtimeMs)) {
-										fileChangeSchedule(filename, stats.mtime);
-									}
 								}
+							} catch (er) {
+								//log("file change handler error: " + er); //for case if tmp file is not exist
 							}
-						} catch (er) {
-							//log("file change handler error: " + er); //for case if tmp file is not exist
+						} else {
+							fileChangeSchedule(filename, 0, true);
 						}
-					} else {
-						fileChangeSchedule(filename, 0, true);
-					}
+					}, 100);
 				}
 			}
 		});
