@@ -23,6 +23,11 @@ function getSpineInstance(name) {
 	let p = pool(name);
 	if(p.length === 0) {
 		let res = Lib.resources[name];
+		
+		if (!res.spineData) {
+			res.spineData = generateSpineData(res.data, name);
+		}
+		
 		let ret = new PIXI.spine.Spine(res.spineData);
 		ret.autoUpdate = false;
 		assert(!ret._poolName, "Spine structure changed. Pooling needs refactoring (_poolName field renaming).");
@@ -32,6 +37,37 @@ function getSpineInstance(name) {
 	}
 	return p.pop();
 }
+function generateSpineData(skeletonData, spineName) {
+	const spineAtlas = createSpineTextureAtlas(skeletonData, spineName);
+	const spineAtlasLoader = new PIXI.spine.core.AtlasAttachmentLoader(spineAtlas);
+	const spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
+	return spineJsonParser.readSkeletonData(skeletonData);
+}
+function createSpineTextureAtlas(skeletonData, spineName) {
+  // Fetch all texture names used in the spine
+  const nonTextureItemTypes = ['path', 'clipping', 'boundingbox', 'point'];
+	const defaultSkinAttachments = Array.isArray(skeletonData.skins)
+		? skeletonData.skins.find(({ name }) => name === 'default').attachments
+		: skeletonData.skins.default; // spine version before 3.8 support;
+	const textureNamesSet = new Set();
+  Object.values(defaultSkinAttachments).forEach(slot => {
+		Object.keys(slot)
+			.filter(itemName => !nonTextureItemTypes.includes(slot[itemName].type))
+			.forEach(textureName => textureNamesSet.add(slot[textureName].path || textureName));
+  });
+
+  const textureAtlas = new PIXI.spine.core.TextureAtlas();
+
+  textureNamesSet.forEach(texturePath => {
+		const textureFileName = texturePath.substring(texturePath.lastIndexOf('/'));
+		const texture = Lib.getTextureEndingWith(texturePath + '.png') || Lib.getTextureEndingWith(texturePath + '.jpg') ||
+			Lib.getTextureEndingWith(textureFileName + '.png') || Lib.getTextureEndingWith(textureFileName + '.jpg');
+		assert(texture, `can't find texture (${texturePath}.png or ${texturePath}.jpg) for spine (${spineName})`)
+    textureAtlas.addTexture(texturePath, texture);
+  });
+
+  return textureAtlas;
+};
 
 function disposeSpineInstance(o) {
 	o.visible = true;
@@ -494,7 +530,7 @@ __EDITOR_editableProps(Spine, [
 	},
 	window.makeResourceSelectEditablePropertyDescriptor('spineData', true, true,(r) => {
 		let res = Lib.resources[r.name];
-		return res.hasOwnProperty('spineData');
+		return res.data && res.data.hasOwnProperty('skeleton');
 	}),
 	animationNamePropDesc,
 	skinNamePropDesc,

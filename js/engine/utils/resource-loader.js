@@ -37,8 +37,8 @@ export default class ResourceLoader {
 		this.resources = {};
 	}
 
-	add(name, url) {
-		this.loader.add(name, url);
+	add(name, url, options) {
+		this.loader.add(name, url, options);
 		this.resources[name] = true;
 		this.count++;
 	}

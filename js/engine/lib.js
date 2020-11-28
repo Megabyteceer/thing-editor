@@ -190,11 +190,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static addResource(fileName
-		/// #if EDITOR
-		, isReloading
-		/// #endif
-	) {
+	static addResource(fileName, isReloading, options) {
 		if(game._loadingErrorIsDisplayed) {
 			return;
 		}
@@ -219,7 +215,7 @@ export default class Lib {
 
 		let loader = new ResourceLoader();
 		
-		loader.add(fileName, game.resourcesPath + fileName);
+		loader.add(fileName, game.resourcesPath + fileName, options);
 		
 		
 		loader.load((loader, resources) => {
@@ -564,6 +560,11 @@ export default class Lib {
 	
 	static hasTexture(name) {
 		return textures.hasOwnProperty(name);
+	}
+	
+	static getTextureEndingWith(name) {
+		const textureName = Object.keys(textures).find((textureName) => textureName.endsWith(name));
+		return textureName && Lib.getTexture(textureName);
 	}
 	
 	static getTexture(name

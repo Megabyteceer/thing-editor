@@ -10,6 +10,7 @@ AssetsLoader.init = () => {
 
 };
 
+const atlasesFilter =   /^img\/.*\.(atlas)$/gmi;
 const resourcesFilter =   /^img\/.*\.(xml|json)$/gmi;
 const textureFiler = /^img\/.*\.(png|jpg)$/gmi;
 const textureNameCleaner = /^img\//gm;
@@ -27,15 +28,18 @@ const enumAssets = (onlyThisFiles) => {
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 	
-	let jsonFolders = [];
+	const jsonFolders = [];
+	const checkIsInJsonFolder = (name) => {
+		const containingFolderPath = name.substring(0, name.lastIndexOf('/'));
+		return jsonFolders.indexOf(containingFolderPath) !== -1
+	};
 
 	let resourcesToReload = {};
+	let atlasesMap = {};
 
 	editor.fs.filesExt.img.filter((fileStat) => {
 		if(fileStat.name.match(resourcesFilter)) {
-			if(!jsonFolders.some((f) => {
-				return fileStat.name.startsWith(f);
-			})) {
+			if(!checkIsInJsonFolder(fileStat.name)) {
 				let a = fileStat.name.split('/');
 				a.pop();
 				jsonFolders.push(a.join('/'));
@@ -43,6 +47,10 @@ const enumAssets = (onlyThisFiles) => {
 			if(!onlyThisFiles || onlyThisFiles.has(fileStat.name.replace(/^img\//, ''))) {
 				resourcesToReload[fileStat.name] = true;
 			}
+		}
+		
+		if(fileStat.name.match(atlasesFilter)) {
+			atlasesMap[fileStat.name] = true;
 		}
 	});
 
@@ -61,14 +69,16 @@ const enumAssets = (onlyThisFiles) => {
 	}
 	
 	for(let name in resourcesToReload) {
-		Lib.addResource(name, true);
+		if (atlasesMap[name.slice(0, -5) + '.atlas']) {
+			Lib.addResource(name, true);
+		} else {
+			Lib.addResource(name, true, {metadata: { spineAtlas: false }});
+		}
 	}
 
 	editor.fs.filesExt.img.some((fileStat) => {
 		if(fileStat.name.match(textureFiler)) {
-			if(!jsonFolders.some((f) => {
-				return fileStat.name.startsWith(f);
-			})) {
+			if(!checkIsInJsonFolder(fileStat.name)) {
 				let imageId = fileStat.name.replace(textureNameCleaner, '');
 				if((!onlyThisFiles || onlyThisFiles.has(imageId))) {
 					Lib.addTexture(imageId, game.resourcesPath + fileStat.name, !!onlyThisFiles, fileStat.lib);
