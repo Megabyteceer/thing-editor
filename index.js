@@ -559,11 +559,13 @@ function initWatchers() {
 										let normalizedName = fullFileName.replace(pathSeparatorReplaceExp, '/');
 										for(let i in lastFilesEnum) {
 											i = lastFilesEnum[i];
-											existingFileDesc = i.find((a) => {
-												return normalizedName.endsWith(a.name);
-											});
-											if(existingFileDesc) {
-												break;
+											if(Array.isArray(i)) {
+												existingFileDesc = i.find((a) => {
+													return normalizedName.endsWith(a.name);
+												});
+												if(existingFileDesc) {
+													break;
+												}
 											}
 										}
 										if(!existingFileDesc || (existingFileDesc.mtime !== stats.mtimeMs)) {
@@ -572,7 +574,7 @@ function initWatchers() {
 									}
 								}
 							} catch (er) {
-								//log("file change handler error: " + er); //for case if tmp file is not exist
+								log("file change handler error: " + er); //for case if tmp file is not exist
 							}
 						} else {
 							fileChangeSchedule(filename, 0, true);
