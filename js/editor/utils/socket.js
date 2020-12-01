@@ -46,7 +46,7 @@ ws.onmessage = function incoming(data) {
 				} else {
 					imagesUpdated = addAssetNameInToMap(file.name, imagesUpdated);
 				}
-			} else if(file.name.startsWith('i18n/') && file.name.endsWith('.json')) {
+			} else if(file.name.startsWith('i18n/') && file.name.endsWith('.json') && !filesIgnoring[file.name]) {
 				textUpdated = true;
 			} else if(file.name.startsWith('snd/') && file.name.endsWith('.wav')) {
 				if(file.deleted) {
