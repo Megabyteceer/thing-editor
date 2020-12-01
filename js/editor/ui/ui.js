@@ -50,6 +50,8 @@ class UI extends React.Component {
 		this.prefabsRef = this.prefabsRef.bind(this);
 		this.classesListRef = this.classesListRef.bind(this);
 		this.soundsListRef = this.soundsListRef.bind(this);
+
+		this.LanguageView = LanguageView;
 	}
 	
 	componentDidMount() {

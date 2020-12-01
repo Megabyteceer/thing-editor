@@ -36,6 +36,10 @@ function showTextTable() {
 
 export default class LanguageView extends React.Component {
 	
+	static onTextDataChanged() {
+		LanguageView.loadTextData().then(editor.ui.forceUpdate);
+	}
+
 	static loadTextData() {
 
 		let loadings = editor.fs.filesExt.i18n.map((localesPath) => {
