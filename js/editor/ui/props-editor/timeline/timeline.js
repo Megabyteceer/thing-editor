@@ -31,6 +31,7 @@ let beforeChangeRemember;
 let timeDragging;
 
 let recordingIsDisabled;
+/** @type {Timeline} */
 let timelineInstance;
 const justModifiedKeyframes = new Set();
 
