@@ -209,7 +209,7 @@ export default class MusicFragment {
 			}
 		}
 	}
-	/// #if DEBUG
+
 	static __applyGameSpeed(rate) {
 		for(let h in allActiveFragments) {
 			let f = allActiveFragments[h];
@@ -219,7 +219,6 @@ export default class MusicFragment {
 		}
 	}
 
-	/// #endif
 
 	/// #if EDITOR
 	static ___currentPos(musicFragmentHash) {
