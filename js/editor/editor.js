@@ -722,6 +722,50 @@ export default class Editor {
 			}, 50);
 		}
 		this.refreshTreeViewAndPropertyEditor();
+		this.regenerateCurrentSceneMapTypings();
+	}
+
+	regenerateCurrentSceneMapTypings() {
+		if(!game.currentScene || !game.__EDITOR_mode) {
+			return;
+		}
+		let json = {};
+		game.currentScene._refreshAllObjectRefs();
+		for(let n of Object.keys(game.currentScene.all)) {
+			try {
+				let v = game.all[n].constructor.name;
+				json[n] = v;
+			} catch(er) {}
+		}
+		let jsonString = JSON.stringify(json);
+		if(editor.__currentAllMap !== jsonString) {
+			editor.__currentAllMap = jsonString;
+
+			let imported = {};
+			let imports = [];
+			let declarations = [];
+			for(let name of Object.keys(json)) {
+				let className = json[name];
+				if(!imported.hasOwnProperty(className)) {
+					imported[className] = true;
+					imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
+				}
+				declarations.push('"' +name + '":' + className + ';');
+			}
+
+			let mapJS = `// thing-editor auto generated file.
+export default null;
+`
++ imports.join('\n') +
+`
+declare global {
+	interface ThingSceneAllMap {`
++ declarations.join('\n') +
+	`}
+}
+`;
+			fs.saveFile('../../current-scene-typings.js', mapJS, true, true);
+		}
 	}
 	
 	saveProjectDesc() {

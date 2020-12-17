@@ -41,7 +41,7 @@ export default class Scene extends Container {
 
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
 		
-		/** @type { { [key: string]: PIXI.Container; } } */
+		/** @type {ThingSceneAllMap} */
 		this.all = {};
 			
 		/// #if EDITOR

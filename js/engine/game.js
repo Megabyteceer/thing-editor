@@ -66,7 +66,7 @@ class Game {
 		this.data = {};
 		
 		this.isMobile = PIXI.utils.isMobile;
-		/** @type { { [key: string]: PIXI.Container; } } */
+		/** @type { ThingSceneAllMap } */
 		this.all = null;
 
 		/// #if EDITOR

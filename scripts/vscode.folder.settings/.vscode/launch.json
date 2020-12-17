@@ -5,12 +5,12 @@
             "type": "pwa-chrome",
             "request": "launch",
             "name": "Editor",
-            "outFiles": ["**/bundle.js"],
             "webRoot": "${workspaceRoot}",
+            "outFiles": [],
+            "sourceMaps": false,
+            "vueComponentPaths": [],
             "enableContentValidation": false,
-            "runtimeArgs": [
-              "--app=http://127.0.0.1:32023/thing-editor?vscode-integration"
-            ]
-        }
+            "runtimeArgs": ["--disable-popup-blocking", "--app=http://127.0.0.1:32023/thing-editor?vscode-integration"]
+        },
     ]
 }
