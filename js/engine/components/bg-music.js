@@ -397,4 +397,22 @@ __EDITOR_editableProps(BgMusic, [
 	}
 ]);
 
+/** @type string */
+BgMusic.prototype.intro;
+/** @type string */
+BgMusic.prototype.loop;
+/** @type boolean */
+BgMusic.prototype.isPlaying;
+/** @type boolean */
+BgMusic.prototype.resetPositionOnPlay;
+/** @type number */
+BgMusic.prototype.volume;
+/** @type number */
+BgMusic.prototype.fadeIn;
+/** @type number */
+BgMusic.prototype.fadeOut;
+/** @type number */
+BgMusic.prototype.volumeUnderModals;
+/** @type boolean */
+BgMusic.prototype.dynamicPreloading;
 /// #endif

@@ -644,4 +644,45 @@ __EDITOR_editableProps(Fill, [{
 }
 ]);
 
+/** @type number */
+Fill.prototype.verticesX;
+/** @type number */
+Fill.prototype.verticesY;
+/** @type number */
+Fill.prototype.xRepeat;
+/** @type number */
+Fill.prototype.yRepeat;
+/** @type number */
+Fill.prototype.xShift;
+/** @type number */
+Fill.prototype.yShift;
+/** @type number */
+Fill.prototype.xShiftSpeed;
+/** @type number */
+Fill.prototype.yShiftSpeed;
+/** @type number */
+Fill.prototype.xWaveAmp;
+/** @type number */
+Fill.prototype.xWaveStep;
+/** @type number */
+Fill.prototype.xWavePhase;
+/** @type number */
+Fill.prototype.xWaveSpeed;
+/** @type number */
+Fill.prototype.yWaveAmp;
+/** @type number */
+Fill.prototype.yWaveStep;
+/** @type number */
+Fill.prototype.yWavePhase;
+/** @type number */
+Fill.prototype.yWaveSpeed;
+/** @type Boolean */
+Fill.prototype.transparentTop;
+/** @type Boolean */
+Fill.prototype.transparentBottom;
+/** @type Boolean */
+Fill.prototype.transparentLeft;
+/** @type Boolean */
+Fill.prototype.transparentRight;
+
 /// #endif

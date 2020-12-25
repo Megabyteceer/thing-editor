@@ -1390,7 +1390,7 @@ class Game {
 	/// #endif
 }
 
-let tmpPoint = {};
+let tmpPoint = new PIXI.Point();
 
 const processOnResize = (o) => {
 	if (o._onRenderResize) {

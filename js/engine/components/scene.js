@@ -163,4 +163,7 @@ Useful for "cut scenes" and "message scenes" which should be shown only once bef
 	}
 ]);
 
+/** @type number */
+Scene.prototype.backgroundColor;
+
 /// #endif
