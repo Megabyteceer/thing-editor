@@ -102,7 +102,7 @@ interface EditableFieldDescription{
 	/** 'btn' onClick handler */
 	onClick?: (o:DisplayObject) => void,
 	/** 'data-path' chosen value validation */
-	isValueValid?: (o:any) => boolean,]
+	isValueValid?: (o:any) => boolean,
 	/** shows alert for filed if it's value is wrong*/
 	validate?: (o:DisplayObject) => String | null,
 	parser?: (inputValue:any) => any,

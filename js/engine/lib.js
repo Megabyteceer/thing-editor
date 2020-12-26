@@ -602,6 +602,7 @@ export default class Lib {
 		return textures[name];
 	}
 	/**
+	 * @param {string} name
 	 * @return {Container}
 	 */
 	static loadPrefab(name) {

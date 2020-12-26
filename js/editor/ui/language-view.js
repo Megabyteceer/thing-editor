@@ -392,7 +392,7 @@ class LanguageTableEditor extends React.Component {
 						this.forceUpdate();
 					}
 
-				}, value: currentLibName, select: localesSourcesList.map((s) => {
+				}, noCopyValue:true, value: currentLibName, select: localesSourcesList.map((s) => {
 					return {name: s, value: s};
 				})})
 			) : undefined,

@@ -1455,8 +1455,7 @@ input{
 	background:url(../img/bg.png);
 	max-width: 256px;
 	max-height: 256px;
-	margin: 10px auto;
-	padding: 10px;
+	margin: 0 auto;
 	display: block;
 }
 
