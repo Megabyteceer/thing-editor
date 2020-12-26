@@ -918,19 +918,26 @@ class Game {
 	/**
 	* @protected
 	 */
-	__loadImageIfUnloaded(name) {
-		if(!Lib.hasTexture(name)) {
+	__loadImagesIfUnloaded(names) {
+		names = names.filter(n => !Lib.hasTexture(n));
+		if(names.length) {
 			editor.ui.modal.showSpinner();
-			let s = Lib._loadClassInstanceById('Sprite');
-			s.image = name;
-			stage.addChildAt(s, 0);
+			let sprites = [];
+			while(names.length) {
+				let s = Lib._loadClassInstanceById('Sprite');
+				s.image = names.pop();
+				stage.addChildAt(s, 0);
+				sprites.push(s);
+			}
 			loadDynamicTextures();
-			
+
 			editor.waitForCondition(() => {
 				return game.getLoadingCount() === 0;
 			}).then(() => {
 				editor.ui.modal.hideSpinner();
-				Lib.destroyObjectAndChildren(s);
+				while(sprites.length) {
+					Lib.destroyObjectAndChildren(sprites.pop());
+				}
 			});
 		}
 	}

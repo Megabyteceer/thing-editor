@@ -8,17 +8,20 @@ import game from "thing-editor/js/engine/game.js";
 /*loading bits
 	1 - on demand
 	2 - early precache
+	4 - mipmaps
+	8 - wrap mode repeat
+	16 - wrap mode repeat mirror
 */
 
-const FILTER_ALL = 1000;
-const DEFAULT_LOADING = 1001;
+const FILTER_ALL =      1000000000;
+const DEFAULT_LOADING = 0;
 
 let view;
 
 const LOADING_TYPES = [
 	{
 		name:'default',
-		value:1001
+		value:DEFAULT_LOADING
 	},
 	{
 		name:'On Demand',
@@ -138,14 +141,14 @@ class TexturesViewerBody extends React.Component {
 						opt[name] = ev.target.value;
 						game.__loadDynamicTextures();
 					} else {
-						game.__loadImageIfUnloaded(name);
+						game.__loadImagesIfUnloaded([name]);
 						delete opt[name];
 					}
 					this.setState({filter: FILTER_ALL});
 					editor.saveProjectDesc();
 					this.forceUpdate();
 				}
-			}, value:opt[name], select: LOADING_TYPES}),
+			}, noCopyValue:true, value:opt[name], select: LOADING_TYPES}),
 			);
 		} else {
 			if(opt[name] != folderProps) {
@@ -192,7 +195,7 @@ class TexturesViewerBody extends React.Component {
 		if(this.state.filter !== FILTER_ALL) {
 			let filter = this.state.filter;
 			list = list.filter((t) => {
-				return (editor.projectDesc.loadOnDemandTextures[t.name] || 1001) === filter;
+				return (editor.projectDesc.loadOnDemandTextures[t.name] || DEFAULT_LOADING) === filter;
 			});
 		}
 		list = list.map(this.renderItem).filter(i => i);
@@ -218,13 +221,19 @@ class TexturesViewerBody extends React.Component {
 								}
 								opt[folderName] = ev.target.value;
 							} else {
+								let imagesToLoad = [];
 								delete opt[folderName];
 								let optImg = editor.projectDesc.loadOnDemandTextures;
 								let a = Object.keys(optImg);
 								for(let f of a) {
 									if(f.startsWith(folderName + '/')) {
-										game.__loadImageIfUnloaded(f);
-										delete optImg[f];
+										imagesToLoad.push(f);
+									}
+								}
+								if(imagesToLoad.length) {
+									game.__loadImagesIfUnloaded(imagesToLoad);
+									while(imagesToLoad.length) {
+										delete editor.projectDesc.loadOnDemandTextures[imagesToLoad.pop()];
 									}
 								}
 							}
@@ -232,8 +241,8 @@ class TexturesViewerBody extends React.Component {
 							this.setState({filter: FILTER_ALL});
 							this.forceUpdate();
 						}
-					}, value:editor.projectDesc.__loadOnDemandTexturesFolders[folderName], select: LOADING_TYPES}),
-					
+					}, noCopyValue:true, value:editor.projectDesc.__loadOnDemandTexturesFolders[folderName], select: LOADING_TYPES}),
+
 				));
 			}
 		}
@@ -245,7 +254,7 @@ class TexturesViewerBody extends React.Component {
 				"Filter by loading mode: ",
 				React.createElement(SelectEditor, {onChange:(ev) => {
 					this.setState({filter: ev.target.value});
-				}, value:this.state.filter, select: FILTER_SELECT})
+				}, noCopyValue:true, value:this.state.filter, select: FILTER_SELECT})
 			),
 			R.div({className:'list-view'},
 				group.groupArray(list)
