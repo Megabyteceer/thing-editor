@@ -1459,6 +1459,10 @@ input{
 	display: block;
 }
 
+.texture-mipmap-check {
+	width: unset;
+}
+
 .textures-viewer-item {
 	margin: 15px;
 	text-align: center;

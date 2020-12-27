@@ -294,10 +294,10 @@ export default class Lib {
 		}
 		/// #endif
 		
-		assert(texture || game.projectDesc.loadOnDemandTextures.hasOwnProperty(name), "Invalid texture name: " + name);
+		assert(texture || game._getTextureSettingsBits(name, 3), "Invalid texture name: " + name);
 		/// #if EDITOR
 		if(typeof texture === 'string') {
-			if(game.projectDesc.loadOnDemandTextures.hasOwnProperty(name)) {
+			if(game._getTextureSettingsBits(name, 3)) {
 				return;
 			}
 			textures[name] = PIXI.Texture.from(texture);
@@ -309,6 +309,22 @@ export default class Lib {
 		/// #if EDITOR
 		}
 		/// #endif
+		let baseTexture = textures[name].baseTexture;
+		switch(game._getTextureSettingsBits(name, 24)) {
+		case 0:
+			baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP;
+			break;
+		case 8:
+			baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+			break;
+		default:
+			baseTexture.wrapMode = PIXI.WRAP_MODES.MIRRORED_REPEAT;
+			break;
+		}
+		
+		baseTexture.mipmap = game._getTextureSettingsBits(name, 4) ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
+
+
 	}
 	/**
 	 * @protected
@@ -459,7 +475,7 @@ export default class Lib {
 					}
 				}
 				for(let imageId in game.projectDesc.loadOnDemandTextures) {
-					if(game.projectDesc.loadOnDemandTextures[imageId] === 2) {
+					if(game._getTextureSettingsBits(imageId, 3) === 2) {
 						if(!preloadingStarted[imageId]) {
 							preloadingStarted[imageId] = true;
 							(new Image()).src = game._textureNameToPath(imageId);
@@ -575,7 +591,7 @@ export default class Lib {
 		/// #if DEBUG
 		if(!textures.hasOwnProperty(name)) {
 
-			if(!game.projectDesc.loadOnDemandTextures.hasOwnProperty(name)) {
+			if(!game._getTextureSettingsBits(name, 3)) {
 				/// #if EDITOR
 				editor.ui.status.error("No texture with name '" + name + "' registered in Lib", 32010, owner);
 				/*
@@ -962,7 +978,7 @@ export default class Lib {
 
 			if(Lib.__texturesList.some((t) => {
 				if(!textures[t.name]) {
-					return !game.projectDesc.loadOnDemandTextures.hasOwnProperty(t.name);
+					return !game._getTextureSettingsBits(t.name, 3);
 				}
 				return !isTextureValid(textures[t.name]);
 			})) {

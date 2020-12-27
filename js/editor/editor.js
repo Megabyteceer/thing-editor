@@ -237,7 +237,7 @@ export default class Editor {
 	}
 
 	testProject() {
-		return new Promise(async (resolve) => {
+		return new Promise(async (resolve) => { // eslint-disable-line no-async-promise-executor
 			if(editor.__preBuildAutoTest && (!editor.buildProjectAndExit || !editor.buildProjectAndExit.skipTests)) {
 				let sceneName = editor.currentSceneName;
 				await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
@@ -735,7 +735,7 @@ export default class Editor {
 			try {
 				let v = game.all[n].constructor.name;
 				json[n] = v;
-			} catch(er) {}
+			} catch(er) {} // eslint-disable-line no-empty
 		}
 		let jsonString = JSON.stringify(json);
 		if(editor.__currentAllMap !== jsonString) {
@@ -1082,6 +1082,8 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 			isCleanedUp = true;
 		}
 	}
+
+	setTimeout(TexturesView.applyFoldersPropsToAllImages, 0);
 
 	let descToSave = Object.assign({}, editor.projectDesc);
 

@@ -4,15 +4,6 @@ import Window from "./window.js";
 import SelectEditor from "./props-editor/select-editor.js";
 import game from "thing-editor/js/engine/game.js";
 
-
-/*loading bits
-	1 - on demand
-	2 - early precache
-	4 - mipmaps
-	8 - wrap mode repeat
-	16 - wrap mode repeat mirror
-*/
-
 const FILTER_ALL =      1000000000;
 const DEFAULT_LOADING = 0;
 
@@ -75,13 +66,11 @@ export default class TexturesView extends React.Component {
 	}
 
 	static applyFoldersPropsToAllImages() {
-		let opt = editor.projectDesc.loadOnDemandTextures;
 		for(let i of Lib.__texturesList) {
 			let name = i.value;
 			let folderProps = isParentFolderPropsDefined(name);
-			if(folderProps && (opt[name] != folderProps)) {
-				opt[name] = folderProps;
-				editor.saveProjectDesc();
+			if(typeof folderProps === 'number') {
+				game.__setTextureSettingsBits(name, folderProps, 3);
 			}
 		}
 	}
@@ -124,8 +113,8 @@ class TexturesViewerBody extends React.Component {
 
 	renderItem(item) {
 		let name = item.value;
-		var opt = editor.projectDesc.loadOnDemandTextures;
-		let isOnDemandLoading = opt.hasOwnProperty(name);
+		
+		let isOnDemandLoading = game._getTextureSettingsBits(name, 3);
 
 		let onDemandSwitcher;
 		
@@ -136,24 +125,21 @@ class TexturesViewerBody extends React.Component {
 				title: 'Texture preloading mode'
 			},
 			React.createElement(SelectEditor, {onChange:(ev) => {
-				if(opt[name] !== ev.target.value) {
+				if(isOnDemandLoading !== ev.target.value) {
+					game.__setTextureSettingsBits(name, ev.target.value, 3);
 					if(ev.target.value !== DEFAULT_LOADING) {
-						opt[name] = ev.target.value;
 						game.__loadDynamicTextures();
 					} else {
 						game.__loadImagesIfUnloaded([name]);
-						delete opt[name];
 					}
 					this.setState({filter: FILTER_ALL});
-					editor.saveProjectDesc();
 					this.forceUpdate();
 				}
-			}, noCopyValue:true, value:opt[name], select: LOADING_TYPES}),
+			}, noCopyValue:true, value:isOnDemandLoading, select: LOADING_TYPES}),
 			);
 		} else {
-			if(opt[name] != folderProps) {
-				opt[name] = folderProps;
-				editor.saveProjectDesc();
+			if(isOnDemandLoading != folderProps) {
+				game.__setTextureSettingsBits(name, folderProps, 3);
 				window.debouncedCall(this.refreshView);
 				window.debouncedCall(game.__loadDynamicTextures);
 			}
@@ -180,9 +166,47 @@ class TexturesViewerBody extends React.Component {
 			}
 			}),
 			R.b(labelProps, name),
-			R.br(),	
+			R.br(),
 			size,
-			onDemandSwitcher
+			onDemandSwitcher,
+			game.projectDesc.mipmap ? undefined : R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "generate Mip-Maps",
+				onChange: (ev) => {
+					let isMipMaps = ev.target.checked;
+					game.__setTextureSettingsBits(name, isMipMaps ? 4 : 0, 4);
+					if(Lib.hasTexture(name)) {
+						let baseTexture = Lib.getTexture(name).baseTexture;
+						baseTexture.mipmap = isMipMaps ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
+						baseTexture.update();
+					}
+				},
+				defaultChecked: game._getTextureSettingsBits(name, 4)}
+			),
+			R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "wrap texture",
+				onChange: (ev) => {
+					let isWrap = ev.target.checked;
+					game.__setTextureSettingsBits(name, isWrap ? 8 : 0, 24);
+					if(Lib.hasTexture(name)) {
+						let baseTexture = Lib.getTexture(name).baseTexture;
+						baseTexture.wrapMode = isWrap ? PIXI.WRAP_MODES.REPEAT : PIXI.WRAP_MODES.CLAMP;
+						baseTexture.update();
+					}
+					this.forceUpdate();
+				},
+				checked: game._getTextureSettingsBits(name, 8)}
+			),
+			R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "mirror-wrap texture",
+				onChange: (ev) => {
+					let isWrap = ev.target.checked;
+					game.__setTextureSettingsBits(name, isWrap ? 16 : 0, 24);
+					if(Lib.hasTexture(name)) {
+						let baseTexture = Lib.getTexture(name).baseTexture;
+						baseTexture.wrapMode = isWrap ? PIXI.WRAP_MODES.MIRRORED_REPEAT : PIXI.WRAP_MODES.CLAMP;
+						baseTexture.update();
+					}
+					this.forceUpdate();
+				},
+				checked: game._getTextureSettingsBits(name, 16)}
+			)
 		);
 	}
 
@@ -220,6 +244,7 @@ class TexturesViewerBody extends React.Component {
 									}
 								}
 								opt[folderName] = ev.target.value;
+								editor.saveProjectDesc();
 							} else {
 								let imagesToLoad = [];
 								delete opt[folderName];
@@ -233,11 +258,10 @@ class TexturesViewerBody extends React.Component {
 								if(imagesToLoad.length) {
 									game.__loadImagesIfUnloaded(imagesToLoad);
 									while(imagesToLoad.length) {
-										delete editor.projectDesc.loadOnDemandTextures[imagesToLoad.pop()];
+										game.__setTextureSettingsBits(imagesToLoad.pop(), 0, 3);
 									}
 								}
 							}
-							editor.saveProjectDesc();
 							this.setState({filter: FILTER_ALL});
 							this.forceUpdate();
 						}
