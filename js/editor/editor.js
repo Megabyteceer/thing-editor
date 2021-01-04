@@ -172,7 +172,25 @@ export default class Editor {
 			}
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
+
+
+			let folderSettings;
+			let imagesSettings;
+
+			if(this.fs.libsSettings) {
+				folderSettings = this.fs.libsSettings.__loadOnDemandTexturesFolders;
+				imagesSettings = this.fs.libsSettings.loadOnDemandTextures;
+			}
+
 			editor.projectDesc = Object.assign(this.fs.libsSettings, data);
+			
+			if(folderSettings) {
+				this.fs.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, editor.projectDesc.__loadOnDemandTexturesFolders);
+			}
+			if(imagesSettings) {
+				this.fs.libsSettings.loadOnDemandTextures = Object.assign(imagesSettings, editor.projectDesc.loadOnDemandTextures);
+			}
+
 			editor.settings.setItem(editor.projectDesc.id + '_EDITOR_lastOpenTime', Date.now());
 
 			let isProjectDescriptorModified = game.applyProjectDesc(editor.projectDesc);
@@ -1063,7 +1081,7 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 		}
 	}
 
-	//cleanup settings for deleted sounds
+	//cleanup settings for deleted textures
 	let loadOnDemandTextures = editor.projectDesc.loadOnDemandTextures;
 	a = Object.keys(loadOnDemandTextures);
 	for(let k of a) {

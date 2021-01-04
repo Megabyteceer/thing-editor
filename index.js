@@ -413,7 +413,19 @@ function enumFiles() {
 		for(let libName of currentGameDesc.libs) {
 			let libSettingsFilename = path.join(getLibRoot(libName), 'settings.json');
 			if(fs.existsSync(libSettingsFilename)) {
+				let folderSettings;
+				let imagesSettings;
+				if(ret.libsSettings) {
+					folderSettings = ret.libsSettings.__loadOnDemandTexturesFolders;
+					imagesSettings = ret.libsSettings.loadOnDemandTextures;
+				}
 				ret.libsSettings = Object.assign(ret.libsSettings || {}, JSON.parse(fs.readFileSync(libSettingsFilename)));
+				if(folderSettings) {
+					ret.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, ret.libsSettings.__loadOnDemandTexturesFolders);
+				}
+				if(imagesSettings) {
+					ret.libsSettings.loadOnDemandTextures = Object.assign(imagesSettings, ret.libsSettings.loadOnDemandTextures);
+				}
 			}
 		}
 	}

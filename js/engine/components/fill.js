@@ -150,25 +150,11 @@ export default class Fill extends PIXI.Mesh {
 			(super.texture.width !== v.width || super.texture.height !== v.height);
 
 			super.texture = v;
-			if(v && v.baseTexture) {
-				v.baseTexture.wrapMode = this._wrapMode;
-			}
 		}
 	}
 
 	get texture() {
 		return super.texture;
-	}
-
-	set wrapMode(v) {
-		if(this.texture && this.texture.baseTexture) {
-			this.texture.baseTexture.wrapMode = v;
-		}
-		this._wrapMode = v;
-	}
-
-	get wrapMode() {
-		return this._wrapMode;
 	}
 
 	render(renderer) {
@@ -485,31 +471,6 @@ export default class Fill extends PIXI.Mesh {
 Fill.__EDITOR_group = 'Basic';
 Fill.__EDITOR_icon = 'tree/fill';
 __EDITOR_editableProps(Fill, [{
-	name: 'wrapMode',
-	type: Number,
-	select: [
-		{
-			name: 'CLAMP',
-			value: PIXI.WRAP_MODES.CLAMP
-		},
-		{
-			name: 'REPEAT',
-			value: PIXI.WRAP_MODES.REPEAT
-		},
-		{
-			name: 'MIRRORED_REPEAT',
-			value: PIXI.WRAP_MODES.MIRRORED_REPEAT
-		}
-	],
-	default: PIXI.WRAP_MODES.REPEAT,
-	afterEdited:() => {
-		for(let o of editor.selection) {
-			if(o.texture !== PIXI.Texture.WHITE && o.texture !== PIXI.Texture.EMPTY) {
-				o.texture.baseTexture.update();
-			}
-		}
-	}
-},{
 	type: 'splitter',
 	title: 'Fill sprite:',
 	name: 'fill-sprite'

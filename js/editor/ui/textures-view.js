@@ -146,12 +146,14 @@ class TexturesViewerBody extends React.Component {
 		}
 
 		let size;
+		let isPowOf2;
 		if(Lib.hasTexture(name)) {
 			let texture = Lib.getTexture(name);
 			if(texture.__noIncludeInToBuild) {
 				return undefined;
 			}
 			size = texture.width + 'x' + texture.height;
+			isPowOf2 = texture.baseTexture.isPowerOfTwo;
 		} else {
 			size = '(unloaded)';
 		}
@@ -172,7 +174,7 @@ class TexturesViewerBody extends React.Component {
 			game.projectDesc.mipmap ? undefined : R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "generate Mip-Maps",
 				onChange: (ev) => {
 					let isMipMaps = ev.target.checked;
-					game.__setTextureSettingsBits(name, isMipMaps ? 4 : 0, 4);
+					game.__setTextureSettingsBits(name, isMipMaps ? 4 : 0, 4); //99999
 					if(Lib.hasTexture(name)) {
 						let baseTexture = Lib.getTexture(name).baseTexture;
 						baseTexture.mipmap = isMipMaps ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
@@ -181,10 +183,10 @@ class TexturesViewerBody extends React.Component {
 				},
 				defaultChecked: game._getTextureSettingsBits(name, 4)}
 			),
-			R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "wrap texture",
+			isPowOf2 ? R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "wrap texture",
 				onChange: (ev) => {
 					let isWrap = ev.target.checked;
-					game.__setTextureSettingsBits(name, isWrap ? 8 : 0, 24);
+					game.__setTextureSettingsBits(name, isWrap ? 8 : 0, 24);//99999
 					if(Lib.hasTexture(name)) {
 						let baseTexture = Lib.getTexture(name).baseTexture;
 						baseTexture.wrapMode = isWrap ? PIXI.WRAP_MODES.REPEAT : PIXI.WRAP_MODES.CLAMP;
@@ -193,8 +195,8 @@ class TexturesViewerBody extends React.Component {
 					this.forceUpdate();
 				},
 				checked: game._getTextureSettingsBits(name, 8)}
-			),
-			R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "mirror-wrap texture",
+			) : undefined,
+			isPowOf2 ? R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "mirror-wrap texture",
 				onChange: (ev) => {
 					let isWrap = ev.target.checked;
 					game.__setTextureSettingsBits(name, isWrap ? 16 : 0, 24);
@@ -206,7 +208,7 @@ class TexturesViewerBody extends React.Component {
 					this.forceUpdate();
 				},
 				checked: game._getTextureSettingsBits(name, 16)}
-			)
+			): undefined
 		);
 	}
 
