@@ -70,9 +70,9 @@ const enumAssets = (onlyThisFiles) => {
 	
 	for(let name in resourcesToReload) {
 		if (atlasesMap[name.slice(0, -5) + '.atlas']) {
-			Lib.addResource(name, true);
+			Lib.addResource(name, undefined, true);
 		} else {
-			Lib.addResource(name, true, {metadata: { spineAtlas: false }});
+			Lib.addResource(name, {metadata: { spineAtlas: false }}, true);
 		}
 	}
 

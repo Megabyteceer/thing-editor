@@ -677,7 +677,7 @@ class Game {
 		if(assets.resources) {
 			for(let r of assets.resources) {
 				if (assets.resourcesMetadata && assets.resourcesMetadata[r]) {
-					Lib.addResource(r, false, {metadata: assets.resourcesMetadata[r]});
+					Lib.addResource(r, {metadata: assets.resourcesMetadata[r]});
 				} else {
 					Lib.addResource(r);
 				}

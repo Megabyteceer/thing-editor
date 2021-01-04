@@ -190,7 +190,11 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static addResource(fileName, isReloading, options) {
+	static addResource(fileName, options
+		/// #if EDITOR
+		, isReloading
+		/// #endif
+	) {
 		if(game._loadingErrorIsDisplayed) {
 			return;
 		}
