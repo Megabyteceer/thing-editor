@@ -70,11 +70,16 @@ export default class Build {
 			images = images.slice().filter(isFileNameValidForBuild).sort();
 
 			let resources;
+			let resourcesMetadata = {};
 			for(let r in Lib.resources) {
 				if(!resources) {
 					resources = [];
 				}
 				resources.push(r);
+				
+				if (Lib.resources[r].metadata) {
+					resourcesMetadata[r] = Lib.resources[r].metadata;
+				}
 			}
 			if(resources) {
 				resources = resources.filter(isFileNameValidForBuild).sort();
@@ -84,7 +89,7 @@ export default class Build {
 
 			let projectDesc = editor.projectDesc;
 
-			let assetsObj = {scenes, prefabs, images, resources, sounds, projectDesc};
+			let assetsObj = {scenes, prefabs, images, resources, resourcesMetadata, sounds, projectDesc};
 			if(editor.projectDesc.embedLocales) {
 				assetsObj.text = L.__getTextAssets();
 			}

@@ -676,7 +676,11 @@ class Game {
 		Lib._setSounds(assets.sounds);
 		if(assets.resources) {
 			for(let r of assets.resources) {
-				Lib.addResource(r);
+				if (assets.resourcesMetadata && assets.resourcesMetadata[r]) {
+					Lib.addResource(r, {metadata: assets.resourcesMetadata[r]});
+				} else {
+					Lib.addResource(r);
+				}
 			}
 		}
 		Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
