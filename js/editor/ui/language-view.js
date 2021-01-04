@@ -36,7 +36,19 @@ function showTextTable() {
 
 export default class LanguageView extends React.Component {
 	
-	static loadTextData() {
+	static onTextDataChanged() {
+		LanguageView.loadTextData(true).then(() => {
+			editor.ui.forceUpdate();
+			if(view) {
+				switcher.onToggleClick();
+				setTimeout(() => {
+					switcher.onToggleClick();
+				}, 1);
+			}
+		});
+	}
+
+	static loadTextData(isItHotReloading) {
 
 		let loadings = editor.fs.filesExt.i18n.map((localesPath) => {
 			let langId = localesPath.name.split('/').pop().split('.').shift();
@@ -67,7 +79,7 @@ export default class LanguageView extends React.Component {
 			}));
 		}
 
-		return Promise.all(loadings).then(() => {
+		let ret =  Promise.all(loadings).then(() => {
 			refreshCachedData();
 			switcher.forceUpdate();
 			for(let langId in languagesMerged) {
@@ -80,7 +92,11 @@ export default class LanguageView extends React.Component {
 					}
 				}
 			}
-		});
+		})
+		if(isItHotReloading) {
+			ret.catch((er) => {});
+		}
+		return ret;
 	}
 
 	static editKey(key, langId) {
@@ -376,7 +392,7 @@ class LanguageTableEditor extends React.Component {
 						this.forceUpdate();
 					}
 
-				}, value: currentLibName, select: localesSourcesList.map((s) => {
+				}, noCopyValue:true, value: currentLibName, select: localesSourcesList.map((s) => {
 					return {name: s, value: s};
 				})})
 			) : undefined,

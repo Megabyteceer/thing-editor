@@ -38,6 +38,7 @@ ws.onmessage = function incoming(data) {
 		let imagesDeleted;
 		let soundsDeleted;
 		let srcChanged;
+		let textUpdated;
 		for(let file of data.filesChanged) {
 			if(file.name.startsWith('img/')) {
 				if(file.deleted) {
@@ -45,6 +46,8 @@ ws.onmessage = function incoming(data) {
 				} else {
 					imagesUpdated = addAssetNameInToMap(file.name, imagesUpdated);
 				}
+			} else if(file.name.startsWith('i18n/') && file.name.endsWith('.json') && !filesIgnoring[file.name]) {
+				textUpdated = true;
 			} else if(file.name.startsWith('snd/') && file.name.endsWith('.wav')) {
 				if(file.deleted) {
 					soundsDeleted = addAssetNameInToMap(file.name, soundsDeleted);
@@ -66,6 +69,9 @@ ws.onmessage = function incoming(data) {
 		}
 		if(imagesDeleted) {
 			AssetsLoader.deleteAssets(imagesDeleted.keys());
+		}
+		if(textUpdated) {
+			editor.ui.LanguageView.onTextDataChanged();
 		}
 		if(soundsDeleted) {
 			editor.ui.soundsList.afterDeleteSounds(soundsDeleted.keys());

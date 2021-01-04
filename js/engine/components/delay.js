@@ -115,4 +115,6 @@ __EDITOR_editableProps(Delay, [
 	}
 ]);
 Delay.__EDITOR_icon = 'tree/timer';
+/** @type number */
+Delay.prototype.delay;
 /// #endif

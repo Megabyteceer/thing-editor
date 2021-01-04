@@ -413,7 +413,19 @@ function enumFiles() {
 		for(let libName of currentGameDesc.libs) {
 			let libSettingsFilename = path.join(getLibRoot(libName), 'settings.json');
 			if(fs.existsSync(libSettingsFilename)) {
+				let folderSettings;
+				let imagesSettings;
+				if(ret.libsSettings) {
+					folderSettings = ret.libsSettings.__loadOnDemandTexturesFolders;
+					imagesSettings = ret.libsSettings.loadOnDemandTextures;
+				}
 				ret.libsSettings = Object.assign(ret.libsSettings || {}, JSON.parse(fs.readFileSync(libSettingsFilename)));
+				if(folderSettings) {
+					ret.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, ret.libsSettings.__loadOnDemandTexturesFolders);
+				}
+				if(imagesSettings) {
+					ret.libsSettings.loadOnDemandTextures = Object.assign(imagesSettings, ret.libsSettings.loadOnDemandTextures);
+				}
 			}
 		}
 	}
@@ -559,11 +571,13 @@ function initWatchers() {
 										let normalizedName = fullFileName.replace(pathSeparatorReplaceExp, '/');
 										for(let i in lastFilesEnum) {
 											i = lastFilesEnum[i];
-											existingFileDesc = i.find((a) => {
-												return normalizedName.endsWith(a.name);
-											});
-											if(existingFileDesc) {
-												break;
+											if(Array.isArray(i)) {
+												existingFileDesc = i.find((a) => {
+													return normalizedName.endsWith(a.name);
+												});
+												if(existingFileDesc) {
+													break;
+												}
 											}
 										}
 										if(!existingFileDesc || (existingFileDesc.mtime !== stats.mtimeMs)) {
@@ -572,7 +586,7 @@ function initWatchers() {
 									}
 								}
 							} catch (er) {
-								//log("file change handler error: " + er); //for case if tmp file is not exist
+								log("file change handler error: " + er); //for case if tmp file is not exist
 							}
 						} else {
 							fileChangeSchedule(filename, 0, true);

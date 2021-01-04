@@ -66,7 +66,7 @@ class Game {
 		this.data = {};
 		
 		this.isMobile = PIXI.utils.isMobile;
-		/** @type { { [key: string]: PIXI.Container; } } */
+		/** @type { ThingSceneAllMap } */
 		this.all = null;
 
 		/// #if EDITOR
@@ -414,7 +414,7 @@ class Game {
 
 		/// #if EDITOR
 		if (!editor) {
-			throw "#if EDITOR was not cutted of by assert-strip-loader";
+			throw "#if EDITOR was not cut-of by assert-strip-loader";
 		}
 		this.__mouse_EDITOR = {x: 0, y: 0};
 		/// #endif
@@ -447,6 +447,32 @@ class Game {
 		this._initInner();
 		return ret;
 	}
+
+	/* texture settings bits
+	1 - load on demand
+	2 - load on demand with early precache
+	4 - generate mip-maps
+	8 - wrap mode repeat
+	16 - wrap mode repeat mirror
+	*/
+	_getTextureSettingsBits(name, mask) {
+		let s = game.projectDesc.loadOnDemandTextures;
+		return s.hasOwnProperty(name) ? (s[name] & mask) : 0;
+	}
+	/// #if EDITOR
+	__setTextureSettingsBits(name, bits, mask = 0xffffffff ) {
+		let current = game._getTextureSettingsBits(name, 0xffffffff);
+		let n = (current & (mask ^ 0xffffffff)) | bits;
+		if(n !== current) {
+			if(n === 0) {
+				delete game.projectDesc.loadOnDemandTextures[name];
+			} else {
+				game.projectDesc.loadOnDemandTextures[name] = n;
+			}
+			editor.saveProjectDesc();
+		}
+	}
+	/// #endif
 
 	addOnClickOnce(callback) {
 		onClickOnceCallbacks.push(callback);
@@ -661,9 +687,9 @@ class Game {
 		Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 
 		let loader = new ResourceLoader();
-		let texturesSettings = game.projectDesc.loadOnDemandTextures;
+		
 		assets.images.some((tName) => {
-			if(!texturesSettings.hasOwnProperty(tName)) {
+			if(!game._getTextureSettingsBits(tName, 3)) {
 				loader.add(textureNameToPath(tName));
 			}
 		});
@@ -922,19 +948,26 @@ class Game {
 	/**
 	* @protected
 	 */
-	__loadImageIfUnloaded(name) {
-		if(!Lib.hasTexture(name)) {
+	__loadImagesIfUnloaded(names) {
+		names = names.filter(n => !Lib.hasTexture(n));
+		if(names.length) {
 			editor.ui.modal.showSpinner();
-			let s = Lib._loadClassInstanceById('Sprite');
-			s.image = name;
-			stage.addChildAt(s, 0);
+			let sprites = [];
+			while(names.length) {
+				let s = Lib._loadClassInstanceById('Sprite');
+				s.image = names.pop();
+				stage.addChildAt(s, 0);
+				sprites.push(s);
+			}
 			loadDynamicTextures();
-			
+
 			editor.waitForCondition(() => {
 				return game.getLoadingCount() === 0;
 			}).then(() => {
 				editor.ui.modal.hideSpinner();
-				Lib.destroyObjectAndChildren(s);
+				while(sprites.length) {
+					Lib.destroyObjectAndChildren(sprites.pop());
+				}
 			});
 		}
 	}
@@ -1394,7 +1427,7 @@ class Game {
 	/// #endif
 }
 
-let tmpPoint = {};
+let tmpPoint = new PIXI.Point();
 
 const processOnResize = (o) => {
 	if (o._onRenderResize) {
@@ -1733,12 +1766,11 @@ function loadDynamicTextures(
 	}
 	/// #endif
 	let texturesLocked = {};
-	let texturesSettings = game.projectDesc.loadOnDemandTextures;
 
 	game.stage.forAllChildren((o) => {
 		if(o instanceof Sprite || o instanceof PIXI.Mesh || o instanceof Tilemap) {
 			let image = o.image;
-			if( image && (!Lib.hasTexture(image) && texturesSettings.hasOwnProperty(image))
+			if( image && (!Lib.hasTexture(image) && game._getTextureSettingsBits(image, 3))
 				/// #if EDITOR
 				&& (!onlyThisFiles || onlyThisFiles.has(image))
 				/// #endif
@@ -1767,7 +1799,7 @@ function loadDynamicTextures(
 					loader.add(fullPath);
 				}
 				spritesWaitingOfTextures.push(o);
-			} else if(texturesSettings.hasOwnProperty(image)) {
+			} else if(game._getTextureSettingsBits(image, 3)) {
 				if(!o.texture.baseTexture) { //static scene appeared with ref to destroyed texture
 					o.texture = Lib.getTexture(image);
 				}
@@ -1778,9 +1810,11 @@ function loadDynamicTextures(
 	/// #if EDITOR
 	let unloaded = false;
 	/// #endif
-	for(let image in texturesSettings) {
-		let textureLoadingMode = texturesSettings[image];
-		if((textureLoadingMode & 4) === 0) {
+
+	for(let image in game.projectDesc.loadOnDemandTextures) {
+		let textureLoadingMode = game._getTextureSettingsBits(image, 3);
+		
+		if(textureLoadingMode) {
 			if(!texturesLocked.hasOwnProperty(image) && Lib.hasTexture(image)) {
 				Lib._unloadTexture(image);
 				/// #if EDITOR
@@ -1848,7 +1882,7 @@ function checkSceneName(scene) {
 
 let __isCurrentFaderUpdateInProgress;
 
-game.__loadDynamicTextures = loadDynamicTextures;
+Game.prototype.__loadDynamicTextures = loadDynamicTextures;
 Game.prototype.forAllChildrenEverywhereBack.___EDITOR_isHiddenForChooser = true;
 Game.prototype.forAllChildrenEverywhere.___EDITOR_isHiddenForChooser = true;
 Game.prototype.init.___EDITOR_isHiddenForChooser = true;

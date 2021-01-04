@@ -380,5 +380,7 @@ __EDITOR_editableProps(NumberInput, [
 	}
 ]);
 
+/** @type number */
+NumberInput.prototype.step;
 
 /// #endif

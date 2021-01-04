@@ -152,6 +152,9 @@ __EDITOR_editableProps(MobileJoystick, [
 		override: true
 	}
 ]);
+/** @type boolean */
+MobileJoystick.prototype.isKeysController;
+
 MobileJoystick.__EDITOR_group = 'Mobile';
 MobileJoystick.__EDITOR_icon = 'tree/scroll';
 MobileJoystick.__EDITOR_tip = '<b>joystick.isActivated</b> - true if user have activated this joystick.<br><b>joystick.isTouched</b> - true if user have touching this joystick now.<br><b>joystick.joystickAngle</b> - direction where user drags this joystick now.';

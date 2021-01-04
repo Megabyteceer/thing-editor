@@ -4,9 +4,6 @@ export default class DSprite extends Sprite {
 	constructor() {
 		super();
 		this.anchor.set(0.5);
-		this.xSpeed = 0;
-		this.ySpeed = 0;
-		this.rSpeed = 0;
 	}
 
 	angleBySpeed() {
@@ -47,4 +44,12 @@ __EDITOR_editableProps(DSprite, [
 ]);
 
 DSprite.__EDITOR_icon = 'tree/dsprite';
+
+/** @type number */
+DSprite.prototype.xSpeed;
+/** @type number */
+DSprite.prototype.ySpeed;
+/** @type number */
+DSprite.prototype.rSpeed;
+
 /// #endif

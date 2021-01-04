@@ -379,5 +379,17 @@ Button.prototype.enable.___EDITOR_isGoodForCallbackChooser = true;
 Button.prototype.disable.___EDITOR_isGoodForCallbackChooser = true;
 Button.prototype.callClick.___EDITOR_isGoodForCallbackChooser = true;
 
+/** @type number */
+Button.prototype.hotkey;
+/** @type string */
+Button.prototype.sndClick;
+/** @type string */
+Button.prototype.sndOver;
+/** @type number */
+Button.prototype.repeatDelay;
+/** @type number */
+Button.prototype.repeatInterval;
+/** @type boolean */
+Button.prototype.interactive;
 
 /// #endif

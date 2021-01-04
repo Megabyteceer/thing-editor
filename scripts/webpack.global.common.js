@@ -72,6 +72,7 @@ if(projectDesc.libs) {
 		if(fs.existsSync(libRootFolder)) {
 
 			alias[libName] = libRootFolder;
+			alias['/' + libName] = libRootFolder;
 
 			if(fs.existsSync(path.join(libRootFolder, 'snd'))) {
 				addSoundsFolderToCopy(libRootFolder);

@@ -317,7 +317,7 @@ export default class KeyframePropertyEditor extends React.Component {
 				React.createElement(CallbackEditor, {value:kf.a || null, onChange:this.onActionChange, title:'Callback for keyframe ' + kf.t})
 			),
 			' ',
-			React.createElement(SelectEditor, {onChange:this.onTypeSelect, value:kf.m, select: selectableKeyframeTypes}),
+			R.span({title:'Keyframe type'}, React.createElement(SelectEditor, {onChange:this.onTypeSelect, noCopyValue:true, value:kf.m, select: selectableKeyframeTypes})),
 			speedSetPossible ? R.label({htmlFor:'speed-set-checkbox'}, ' Set speed:') : undefined,
 			speedSetPossible ? R.input({id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeedExistsChanged, checked:hasSpeed}) : undefined,
 			speedEditor,
