@@ -913,7 +913,7 @@ class Game {
 	}
 
 	/** Scene currently shown on stage. 
-	 * @type {Scene}
+	 * @type {CurrentSceneType}
 	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentscene--scene
 	*/
 	get currentScene() {

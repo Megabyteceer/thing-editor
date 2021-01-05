@@ -760,7 +760,7 @@ export default class Editor {
 			editor.__currentAllMap = jsonString;
 
 			let imported = {};
-			let imports = [];
+			let imports = ['import ' + game.currentScene.constructor.name + ' from "' + ClassesLoader.getClassPath(game.currentScene.constructor.name) + '";'];
 			let declarations = [];
 			for(let name of Object.keys(json)) {
 				let className = json[name];
@@ -777,6 +777,7 @@ export default null;
 + imports.join('\n') +
 `
 declare global {
+	type CurrentSceneType = ` + game.currentScene.constructor.name + `;
 	interface ThingSceneAllMap {`
 + declarations.join('\n') +
 	`}
