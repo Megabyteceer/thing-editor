@@ -119,7 +119,11 @@ function addAllRefsValidator(scene) {
 			if(!count) {
 				target[prop] = val;
 			}
-			refsCounter[prop] = count + 1;
+			count++;
+			refsCounter[prop] = count;
+			if((count > 1) && game.__EDITOR_mode) {
+				delete target[prop];
+			}
 			return true;
 		}
 	});

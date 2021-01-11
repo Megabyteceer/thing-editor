@@ -256,16 +256,25 @@ export default class TreeView extends React.Component {
 
 	onPasteClick() {
 		if(editor.clipboardData && editor.clipboardData.length > 0) {
+
+			DataPathFixer.rememberPathReferences();
+
 			editor.disableFieldsCache = true;
 			let added = [];
 			editor.clipboardData.some((data) => {
 				let o = Lib._deserializeObject(data);
 				added.push(o);
+				__getNodeExtendData(o).__isJustCloned = true;
 				editor.attachToSelected(o, true);
 			});
 			editor.selection.clearSelection();
+			
+			DataPathFixer.validatePathReferences();
+
 			while (added.length > 0) {
-				editor.selection.add(added.shift());
+				let o = added.shift();
+				__getNodeExtendData(o).__isJustCloned = false;
+				editor.selection.add(o);
 			}
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);

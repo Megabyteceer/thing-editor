@@ -361,6 +361,7 @@ export default class Editor {
 			if(exData.noSerialize) {
 				cloneExData.noSerialize = exData.noSerialize;
 			}
+			cloneExData.__isJustCloned = true;
 			
 			increaseNameNumber(clone);
 			clone.forAllChildren(increaseNameNumber);
@@ -386,6 +387,10 @@ export default class Editor {
 		editor.disableFieldsCache = false;
 
 		DataPathFixer.validatePathReferences();
+		for(let c of allCloned) {
+			let cloneExData = __getNodeExtendData(c);
+			cloneExData.__isJustCloned = false;
+		}
 		editor.refreshTreeViewAndPropertyEditor();
 		editor.sceneModified();
 		return ret;

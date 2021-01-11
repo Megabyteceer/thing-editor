@@ -58,6 +58,20 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 
 	assert(pathes.length === oldRefs.length, "DataPathFixer refs count does not match.");
 	
+	let clones = [];
+	game.currentContainer.forAllChildren((o) => {
+		if(__getNodeExtendData(o).__isJustCloned) {
+			if(o.name) {
+				clones.push(o);
+			}
+			o.forAllChildren((c) => {
+				if(c.name) {
+					clones.push(c);
+				}
+			});
+		}
+	});
+
 	for(let j = 0; j < oldRefs.length; j++) {
 
 		let currentRef = currentRefs[j];
@@ -74,71 +88,87 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 
 		let repairNode;
 		let newPath = path;
-		if(_validateRefEntryOldName) { //it is was renaming. try to fix .#names
-			for(let oldName of _validateRefEntryOldName) {
-				if(oldName) {
-					oldName = oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-					let pathFixer = new RegExp('\\.#' + oldName + '(\\.|$)');
-					let pathFixer2 = new RegExp('(\\.all\\.)' + oldName + '(\\.|$)');
-					let pathFixer3 = new RegExp('^all\\.' + oldName + '(\\.|$)');
-					newPath = newPath.replace(pathFixer, '.#' + _validateRefEntryNewName + '$1');
-					newPath = newPath.replace(pathFixer2, '$1' + _validateRefEntryNewName + '$2');
-					newPath = newPath.replace(pathFixer3, 'all.' + _validateRefEntryNewName + '$1');
-				}
-			}
-			repairNode = getLatestSceneNodeBypath(newPath, node);
-		} else { //node added or removed
 
-			let pathParts = path.split('.');
-			for(let i = 0; i < pathParts.length;) { //try to remove one of the part of chain
-				i++;
-				let a = pathParts.slice(0);
-				a.splice(i, 1);
-				newPath = a.join('.');
-				repairNode = getLatestSceneNodeBypath(newPath, node, true);
+		
+		if(clones.length) { //is was clone or paste. try to rename cloned nodes to fix ref
+			for(let c of clones) {
+				let tmpName = c.name;
+				c.name += '-copy';
+				game.currentScene._refreshAllObjectRefs();
+				repairNode = getLatestSceneNodeBypath(newPath, node);
 				if(repairNode === oldRef) {
 					break;
 				}
+				c.name = tmpName;
 			}
+		}
+		if(repairNode !== oldRef) {
+			if(_validateRefEntryOldName) { //it is was renaming. try to fix .#names
+				for(let oldName of _validateRefEntryOldName) {
+					if(oldName) {
+						oldName = oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+						let pathFixer = new RegExp('\\.#' + oldName + '(\\.|$)');
+						let pathFixer2 = new RegExp('(\\.all\\.)' + oldName + '(\\.|$)');
+						let pathFixer3 = new RegExp('^all\\.' + oldName + '(\\.|$)');
+						newPath = newPath.replace(pathFixer, '.#' + _validateRefEntryNewName + '$1');
+						newPath = newPath.replace(pathFixer2, '$1' + _validateRefEntryNewName + '$2');
+						newPath = newPath.replace(pathFixer3, 'all.' + _validateRefEntryNewName + '$1');
+					}
+				}
+				repairNode = getLatestSceneNodeBypath(newPath, node);
+			} else { //node added or removed
 
-			if(repairNode !== oldRef) { //try to insert "parent" somwhere in chain
-				for(let i = 0; i < pathParts.length;) { 
+				let pathParts = path.split('.');
+				for(let i = 0; i < pathParts.length;) { //try to remove one of the part of chain
 					i++;
 					let a = pathParts.slice(0);
-					a.splice(i, 0, 'parent');
+					a.splice(i, 1);
 					newPath = a.join('.');
 					repairNode = getLatestSceneNodeBypath(newPath, node, true);
 					if(repairNode === oldRef) {
 						break;
 					}
 				}
-			}
 
-			if(repairNode !== oldRef) { //try to insert new name somewhere in chain
-				let changedNode = editor.selection[0];
-				let changedName = changedNode.name;
-				if(!changedName) {
-					changedName = 'new' + changedNode.constructor.name;
-					let i = 1;
-					while(changedNode.parent.getChildByName(changedName + i)){
+				if(repairNode !== oldRef) { //try to insert "parent" somwhere in chain
+					for(let i = 0; i < pathParts.length;) { 
 						i++;
+						let a = pathParts.slice(0);
+						a.splice(i, 0, 'parent');
+						newPath = a.join('.');
+						repairNode = getLatestSceneNodeBypath(newPath, node, true);
+						if(repairNode === oldRef) {
+							break;
+						}
 					}
-					changedName += i;
-					changedNode.name = changedName;
-					Lib.__invalidateSerializationCache(changedNode);
-					setTimeout(() => {
-						editor.ui.propsEditor.selectField('name', true, true);
-					}, 1);
 				}
-				changedName = '#' + changedName;
-				for(let i = 0; i < pathParts.length;) { 
-					i++;
-					let a = pathParts.slice(0);
-					a.splice(i, 0, changedName);
-					newPath = a.join('.');
-					repairNode = getLatestSceneNodeBypath(newPath, node, true);
-					if(repairNode === oldRef) {
-						break;
+
+				if(repairNode !== oldRef) { //try to insert new name somewhere in chain
+					let changedNode = editor.selection[0];
+					let changedName = changedNode.name;
+					if(!changedName) {
+						changedName = 'new' + changedNode.constructor.name;
+						let i = 1;
+						while(changedNode.parent.getChildByName(changedName + i)){
+							i++;
+						}
+						changedName += i;
+						changedNode.name = changedName;
+						Lib.__invalidateSerializationCache(changedNode);
+						setTimeout(() => {
+							editor.ui.propsEditor.selectField('name', true, true);
+						}, 1);
+					}
+					changedName = '#' + changedName;
+					for(let i = 0; i < pathParts.length;) { 
+						i++;
+						let a = pathParts.slice(0);
+						a.splice(i, 0, changedName);
+						newPath = a.join('.');
+						repairNode = getLatestSceneNodeBypath(newPath, node, true);
+						if(repairNode === oldRef) {
+							break;
+						}
 					}
 				}
 			}
