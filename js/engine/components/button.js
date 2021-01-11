@@ -172,7 +172,11 @@ export default class Button extends DSprite {
 		/// #if EDITOR
 		if(this.isCanBePressed) {
 			if(this.onClick) {
-				if(typeof getValueByPath(this.onClick, this, true) !== 'function') {
+				let f;
+				try {
+					f = getValueByPath(this.onClick, this, true);
+				} catch (er){}
+				if(typeof f !== 'function') {
 					editor.ui.status.error('Wrong onClick handler: ' + this.onClick, 32054, this, 'onClick');
 				}
 			}
