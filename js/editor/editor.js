@@ -764,7 +764,7 @@ export default class Editor {
 		if(editor.__currentAllMap !== jsonString) {
 			editor.__currentAllMap = jsonString;
 
-			let imported = {};
+			let imported = {Container:true};
 			let imports = ['import ' + game.currentScene.constructor.name + ' from "' + ClassesLoader.getClassPath(game.currentScene.constructor.name) + '";'];
 			let declarations = [];
 			for(let name of Object.keys(json)) {
@@ -773,7 +773,7 @@ export default class Editor {
 					imported[className] = true;
 					imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
 				}
-				declarations.push('"' +name + '":' + className + ';');
+				declarations.push('"' +name + '":' + ((className==='Container') ? 'PIXI.Container' : className) + ';');
 			}
 
 			let mapJS = `// thing-editor auto generated file.
@@ -783,7 +783,9 @@ export default null;
 `
 declare global {
 	type CurrentSceneType = ` + game.currentScene.constructor.name + `;
-	interface ThingSceneAllMap {`
+	interface ThingSceneAllMap {
+		[key: string]: PIXI.Container;
+`
 + declarations.join('\n') +
 	`}
 }

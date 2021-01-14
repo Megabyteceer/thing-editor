@@ -30,11 +30,11 @@ const _findChildInner = (o) => {
 		assert(!_findChildRet, 'More that one element with name "' + _findChildName + '" exists.', 10006);
 		_findChildRet = o;
 	}
-}
+};
 /**
  * search child recursively
  * @param {string} name
- * @return {Container}
+ * @return {PIXI.Container}
  */
 Container.prototype.findChildByName = function findChildByName(name) {
 	assert(name, 'Empty name received.', 10005);
@@ -56,7 +56,7 @@ const _findByTypeInner = (o) => {
 /// #if DEBUG
 /**
  * @param {string} name
- * @return {Container}
+ * @return {PIXI.Container}
  */
 Container.prototype.getChildByName = function(name) {
 	let ret;
@@ -107,7 +107,7 @@ Container.prototype.findChildrenByName = function (name) {
 assert(!Container.prototype.forAllChildren, "forAllChildren method needs renaming, because of PIXI changes.");
 
 /**
- * @param {(o:Container)=>void} callback
+ * @param {(o:PIXI.Container)=>void} callback
  */
 Container.prototype.forAllChildren = function (callback) {
 	for (let o of this.children) {

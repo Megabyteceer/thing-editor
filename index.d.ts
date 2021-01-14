@@ -5,9 +5,9 @@ import 'current-scene-typings.js';
 import Editor from 'thing-editor/js/editor/editor.js';
 import game from 'thing-editor/js/engine/game.js';
 
-import Container from './js/engine/components/container';
-import DisplayObject from './js/engine/components/display-object';
-import MovieClip from './js/engine/components/movie-clip/movie-clip';
+import Container from '/thing-editor/js/engine/components/container.js';
+import DisplayObject from '/thing-editor/js/engine/components/display-object.js';
+import MovieClip from '/thing-editor/js/engine/components/movie-clip/movie-clip.js';
 
 class TEditor extends Editor {
 	game:typeof game;
@@ -19,10 +19,6 @@ class TEditor extends Editor {
 declare global {
 
 	interface GameDataModel {
-	}
-
-	interface ThingSceneAllMap {
-		[key: string]: PIXI.Container;
 	}
 
 	/** @see https://github.com/Megabyteceer/thing-editor/wiki/ProjectSettings */

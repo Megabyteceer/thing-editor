@@ -39,7 +39,9 @@ const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
 
 let hideTheseModalsUnderFader;
+/** @type PIXI.Container[] */
 let modals = [];
+/** @type PIXI.Container[] */
 let hidingModals = [];
 
 let currentFader;
@@ -83,7 +85,7 @@ class Game {
 		return modals.length;
 	}
 	/** Scene or top modal object (if present) currently shown on stage. 
-	 * @type {Container} 
+	 * @type {PIXI.Container} 
 	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentcontainer--displayobject
 	*/
 	get currentContainer() {
@@ -93,7 +95,7 @@ class Game {
 		return this.currentScene; //current scene is active if no modals on screen
 	}
 	/** current fader (if present). 
-	 * @type {Container | null} 
+	 * @type {PIXI.Container | null} 
 	*/
 	get currentFader() {
 		return currentFader;

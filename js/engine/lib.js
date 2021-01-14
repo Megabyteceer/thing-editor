@@ -624,7 +624,7 @@ export default class Lib {
 	}
 	/**
 	 * @param {string} name
-	 * @return {Container}
+	 * @return {PIXI.Container}
 	 */
 	static loadPrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
@@ -672,7 +672,7 @@ export default class Lib {
 			/// #if EDITOR
 			&& !game.__EDITOR_mode
 			/// #endif
-			) {
+		) {
 			let r = Pool.create(RemoveHolder);
 			/// #if EDITOR
 			Lib._constructRecursive(r);
@@ -1074,7 +1074,7 @@ export default class Lib {
 		_oldClasses = {};
 		_oldDefaults = {};
 	}
-		/**
+	/**
 	 * @protected
 	 */
 	static _getAllScenes() {
@@ -1216,7 +1216,7 @@ function loadSound(opt) {
 }
 
 /**
- * @return {Container}
+ * @return {PIXI.Container}
  */
 const _loadObjectFromData = (src) => {
 	let ret = Lib._deserializeObject(src);
