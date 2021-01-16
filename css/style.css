@@ -383,6 +383,10 @@ button {
 	overflow:hidden;
 }
 
+.props-group-helpers .props-group-header {
+	font-size: xx-small;
+}
+
 .props-group-header {
 	padding: 3px 15px;
 	background-color:var(--window-header-color);
