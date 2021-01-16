@@ -8,7 +8,10 @@ const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
 
 
-const needAddInToList = (map, owner, fieldName) => {
+const needAddInToList = (map, owner, fieldName, errorCode) => {
+	if(game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode) >= 0)) { /// 99999
+		return;
+	}
 	if(!(owner instanceof DisplayObject)) {
 		return true;
 	} else {
@@ -65,7 +68,7 @@ export default class Status extends React.Component {
 		if(owner && fieldName) {
 			item.val = owner[fieldName];
 		}
-		if(needAddInToList(this.errorsMap, owner, fieldName)) {
+		if(needAddInToList(this.errorsMap, owner, fieldName, errorCode)) {
 			this.errors.push(item);
 			if(this.errorsList) {
 				this.errorsList.forceUpdate();
@@ -79,7 +82,7 @@ export default class Status extends React.Component {
 	warn (message, errorCode, owner, fieldName, doNoFilterRepeats = false) {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message);
-		if(doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName)) {
+		if(doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
 			let item = {owner, ownerId: owner && owner.___id, message, fieldName, errorCode};
 			if(owner && fieldName) {
 				item.val = owner[fieldName];
