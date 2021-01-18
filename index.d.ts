@@ -49,7 +49,7 @@ declare global {
 
 interface EditableFieldDescription{
 	name: string,
-	type: 'call' | 'data-path' | 'splitter' | 'rect' | 'callback' | 'ref' | 'btn' | 'color' | BooleanConstructor | StringConstructor | NumberConstructor,
+	type: 'data-path' | 'splitter' | 'rect' | 'callback' | 'ref' | 'btn' | 'color' | BooleanConstructor | StringConstructor | NumberConstructor,
 	/** 'splitter' visible title */
 	title?: string,
 	default?: any,
