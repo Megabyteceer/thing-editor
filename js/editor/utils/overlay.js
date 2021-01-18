@@ -497,9 +497,7 @@ function getParentWhichHideChildren(o, closest = false) {
 
 	for(let i = 0; i < parents.length; i++) {
 		o = parents[i];
-		if(o.__hideChildren) {
-			return o;
-		}
+		
 		let d = __getNodeExtendData(o);
 		if(d.hideAllChildren) {
 			return o;
@@ -512,6 +510,9 @@ function getParentWhichHideChildren(o, closest = false) {
 				assert(i < (parents.length - 1), "Cannot get parent hides children.");
 				return parents[i+1];
 			}
+		}
+		if(o.__hideChildren) {
+			return o;
 		}
 	}
 }
