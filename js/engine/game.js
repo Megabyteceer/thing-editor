@@ -367,15 +367,6 @@ class Game {
 		});
 	}
 
-	downloadFile(url) {
-		var a = document.createElement('a');
-    a.setAttribute('download', '');
-		a.href = url;
-		document.body.append(a);
-		a.click();
-		a.remove();
-	}
-
 	init(element, gameId, resourcesPath = '') {
 		game.additionalLoadingsInProgress = 0;
 		//make objects visible by text path fo getValueByPath methods]
