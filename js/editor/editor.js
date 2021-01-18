@@ -364,7 +364,6 @@ export default class Editor {
 			cloneExData.__isJustCloned = true;
 			
 			increaseNameNumber(clone);
-			clone.forAllChildren(increaseNameNumber);
 
 			let i = o.parent.children.indexOf(o) + 1;
 			while(o.parent.children[i] && ((allCloned.indexOf(o.parent.children[i]) >= 0) || __getNodeExtendData(o.parent.children[i]).isSelected)) {
