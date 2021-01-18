@@ -48,8 +48,20 @@ function addImagesFolderToCopy(libName) {
 	}
 }
 
+function addIndexFileToCopy(libName) {
+	const indexFile = `${libName || '.'}/index.html`;
+	if (fs.existsSync(indexFile) && !addedFiles.has(indexFile)) {
+		addedFiles.add(indexFile);
+		copyFilesList.push({
+			from: path.resolve(indexFile),
+			to: indexFile
+		});
+	}
+}
+
 addImagesFolderToCopy();
 addSoundsFolderToCopy();
+addIndexFileToCopy();
 
 
 let alias = {
@@ -80,12 +92,12 @@ if(projectDesc.libs) {
 			if(fs.existsSync(path.join(libRootFolder, 'img'))) {
 				addImagesFolderToCopy(libRootFolder);
 			}
+			addIndexFileToCopy();
 		} else {
 			throw new Error("library folder '" + libName + "' not found.");
 		}
 	}
 }
-
 
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
