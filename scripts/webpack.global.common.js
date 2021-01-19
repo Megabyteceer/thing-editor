@@ -115,6 +115,9 @@ entry = entry.concat([
 
 const mode = isDebug ? 'development' : 'production';
 
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const imageminMozjpeg = require('imagemin-mozjpeg');
+
 module.exports = {
 	entry,
 	mode: mode,
@@ -140,7 +143,20 @@ module.exports = {
 		new CopyWebpackPlugin(copyFilesList),
 		new webpack.ProvidePlugin({
 			PIXI: 'pixi.js-legacy',
-		})],
+		}),
+		new ImageminPlugin({
+			onlyUseIfSmaller: true,
+			plugins: [
+				imageminMozjpeg({
+					quality: 66,
+					progressive: true
+				})
+			],
+			pngquant: {
+				quality: '95-100'
+			}
+		})
+	],
 	module: {
 		noParse: /webfontloader/,
 		rules: [{
