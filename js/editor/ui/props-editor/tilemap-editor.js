@@ -219,13 +219,16 @@ class TilemapEditor extends React.Component {
 		var Y = p.y / tilemap.tileH;
 		let size = this.state.size;
 
-		hoverRect.x = Math.floor(X - Math.floor(size / 2)) * tilemap.tileW;
-		hoverRect.y = Math.floor(Y - Math.floor(size / 2)) * tilemap.tileH;
-		hoverRect.w = size  * tilemap.tileW;
-		hoverRect.h = size  * tilemap.tileH;
-
-		editor.overlay.drawRect(hoverRectPropsMock, tilemap, hoverRect);
-
+		
+		if(X >= 0 && Y >= 0 && X < tilemap.columns && Y < tilemap.rows) {
+			hoverRect.x = Math.floor(X - Math.floor(size / 2)) * tilemap.tileW;
+			hoverRect.y = Math.floor(Y - Math.floor(size / 2)) * tilemap.tileH;
+			hoverRect.w = size  * tilemap.tileW;
+			hoverRect.h = size  * tilemap.tileH;
+			editor.overlay.drawRect(hoverRectPropsMock, tilemap, hoverRect);
+		} else {
+			editor.overlay.drawRect(hoverRectPropsMock, tilemap);
+		}
 
 		if(ev.buttons === 0) {
 			isErasing = false;
