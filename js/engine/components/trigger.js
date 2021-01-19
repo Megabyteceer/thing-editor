@@ -265,7 +265,8 @@ __EDITOR_editableProps(Trigger, [
 	},
 	{
 		name: 'state',
-		type: Boolean
+		type: Boolean,
+		disabled: o => o.dataPath
 	},
 	{
 		name: 'dataPath',
