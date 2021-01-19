@@ -634,4 +634,8 @@ __EDITOR_editableProps(MovieClip, [
 	}
 ]);
 
+/** @type boolean */
+MovieClip.prototype.isPlaying;
+/** @type number */
+MovieClip.prototype.delay;
 /// #endif

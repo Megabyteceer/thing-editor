@@ -190,7 +190,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static addResource(fileName
+	static addResource(fileName, options
 		/// #if EDITOR
 		, isReloading
 		/// #endif
@@ -219,7 +219,7 @@ export default class Lib {
 
 		let loader = new ResourceLoader();
 		
-		loader.add(fileName, game.resourcesPath + fileName);
+		loader.add(fileName, game.resourcesPath + fileName, options);
 		
 		
 		loader.load((loader, resources) => {
@@ -294,10 +294,10 @@ export default class Lib {
 		}
 		/// #endif
 		
-		assert(texture || game.projectDesc.loadOnDemandTextures.hasOwnProperty(name), "Invalid texture name: " + name);
+		assert(texture || game._getTextureSettingsBits(name, 3), "Invalid texture name: " + name);
 		/// #if EDITOR
 		if(typeof texture === 'string') {
-			if(game.projectDesc.loadOnDemandTextures.hasOwnProperty(name)) {
+			if(game._getTextureSettingsBits(name, 3)) {
 				return;
 			}
 			textures[name] = PIXI.Texture.from(texture);
@@ -309,6 +309,22 @@ export default class Lib {
 		/// #if EDITOR
 		}
 		/// #endif
+		let baseTexture = textures[name].baseTexture;
+		switch(game._getTextureSettingsBits(name, 24)) {
+		case 0:
+			baseTexture.wrapMode = PIXI.WRAP_MODES.CLAMP;
+			break;
+		case 8:
+			baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+			break;
+		default:
+			baseTexture.wrapMode = PIXI.WRAP_MODES.MIRRORED_REPEAT;
+			break;
+		}
+		
+		baseTexture.mipmap = game._getTextureSettingsBits(name, 4) ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
+
+
 	}
 	/**
 	 * @protected
@@ -459,7 +475,7 @@ export default class Lib {
 					}
 				}
 				for(let imageId in game.projectDesc.loadOnDemandTextures) {
-					if(game.projectDesc.loadOnDemandTextures[imageId] === 2) {
+					if(game._getTextureSettingsBits(imageId, 3) === 2) {
 						if(!preloadingStarted[imageId]) {
 							preloadingStarted[imageId] = true;
 							(new Image()).src = game._textureNameToPath(imageId);
@@ -566,6 +582,11 @@ export default class Lib {
 		return textures.hasOwnProperty(name);
 	}
 	
+	static getTextureEndingWith(name) {
+		const textureName = Object.keys(textures).find((textureName) => textureName.endsWith(name));
+		return textureName && Lib.getTexture(textureName);
+	}
+	
 	static getTexture(name
 	/// #if EDITOR
 		, owner
@@ -575,7 +596,7 @@ export default class Lib {
 		/// #if DEBUG
 		if(!textures.hasOwnProperty(name)) {
 
-			if(!game.projectDesc.loadOnDemandTextures.hasOwnProperty(name)) {
+			if(!game._getTextureSettingsBits(name, 3)) {
 				/// #if EDITOR
 				editor.ui.status.error("No texture with name '" + name + "' registered in Lib", 32010, owner);
 				/*
@@ -602,7 +623,8 @@ export default class Lib {
 		return textures[name];
 	}
 	/**
-	 * @return {Container}
+	 * @param {string} name
+	 * @return {PIXI.Container}
 	 */
 	static loadPrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
@@ -650,7 +672,7 @@ export default class Lib {
 			/// #if EDITOR
 			&& !game.__EDITOR_mode
 			/// #endif
-			) {
+		) {
 			let r = Pool.create(RemoveHolder);
 			/// #if EDITOR
 			Lib._constructRecursive(r);
@@ -961,7 +983,7 @@ export default class Lib {
 
 			if(Lib.__texturesList.some((t) => {
 				if(!textures[t.name]) {
-					return !game.projectDesc.loadOnDemandTextures.hasOwnProperty(t.name);
+					return !game._getTextureSettingsBits(t.name, 3);
 				}
 				return !isTextureValid(textures[t.name]);
 			})) {
@@ -1052,7 +1074,7 @@ export default class Lib {
 		_oldClasses = {};
 		_oldDefaults = {};
 	}
-		/**
+	/**
 	 * @protected
 	 */
 	static _getAllScenes() {
@@ -1194,7 +1216,7 @@ function loadSound(opt) {
 }
 
 /**
- * @return {Container}
+ * @return {PIXI.Container}
  */
 const _loadObjectFromData = (src) => {
 	let ret = Lib._deserializeObject(src);

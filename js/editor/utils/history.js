@@ -79,6 +79,7 @@ class History {
 			historySaveScheduled = setTimeout(() => {
 				historySaveScheduled = null;
 				instance.saveHistoryNow();
+				editor.regenerateCurrentSceneMapTypings();
 			}, 1);
 		}
 	}

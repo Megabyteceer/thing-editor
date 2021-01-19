@@ -108,7 +108,7 @@ class TreeNode extends React.Component {
 }
 
 function nodeHasChildren(node) {
-	return node.children.length > 0;
+	return node.children.length > 0 && ! node.__hideChildren;
 }
 
 function isClickedAtRightEdge(ev) {

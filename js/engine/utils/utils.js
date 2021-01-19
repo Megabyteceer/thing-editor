@@ -27,7 +27,7 @@ window.fetch = (url, options) => {
 	
 	url = canonicalize(url);
 	
-	if(!game.projectDesc || !game.projectDesc.__proxyFetchesViaNodeServer || url.startsWith(location.origin)) {
+	if(!game.projectDesc || !game.projectDesc.__proxyFetchesViaNodeServer || url.startsWith(location.origin) || window.location.href.startsWith('file://')) {
 		return originalFetch(url, options);
 	} else {
 		let headers = new Headers();

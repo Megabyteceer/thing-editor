@@ -293,7 +293,7 @@ export default class Viewport extends React.Component {
 				React.createElement(SelectEditor, {onChange:(ev) => {
 					game.__speedMultiplier = ev.target.value;
 					this.forceUpdate();
-				}, value: game.__speedMultiplier, select: SPEED_SELECT})
+				}, noCopyValue:true, value: game.__speedMultiplier, select: SPEED_SELECT})
 			);
 		}
 		

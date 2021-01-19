@@ -44,6 +44,7 @@ const tintRDesc = {
 		return this.tint >> 16;
 	},
 	set:function (v) {
+		assert(!isNaN(v), "invalid value for 'tintR'. Valid number value expected.", 10001);
 		this.tint = (this.tint & 0xFFFF) | (v << 16);
 	}, configurable: true
 };
@@ -56,6 +57,7 @@ const tintGDesc = {
 		return (this.tint & 0xFF00) >> 8;
 	},
 	set:function (v) {
+		assert(!isNaN(v), "invalid value for 'tintG'. Valid number value expected.", 10001);
 		this.tint = (this.tint & 0xFF00FF) | (v << 8);
 	}, configurable: true
 };
@@ -68,6 +70,7 @@ const tintBDesc = {
 		return this.tint & 0xFF;
 	},
 	set:function (v) {
+		assert(!isNaN(v), "invalid value for 'tintB'. Valid number value expected.", 10001);
 		this.tint = (this.tint & 0xFFFF00) | v;
 	}, configurable: true
 };

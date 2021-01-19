@@ -178,7 +178,10 @@ export default class Trigger extends Container {
 		this.__checkInteractionWarning();
 	}
 
-	__afterSerialization() {
+	__afterSerialization(serializedData) {
+		if(this.dataPath) {
+			delete serializedData.p.state;
+		}
 		if(this.__visibleInEditorSave) {
 			this.__visibleInEditor = this.__visibleInEditorSave;
 			delete this.__visibleInEditorSave;
@@ -262,7 +265,8 @@ __EDITOR_editableProps(Trigger, [
 	},
 	{
 		name: 'state',
-		type: Boolean
+		type: Boolean,
+		disabled: o => o.dataPath
 	},
 	{
 		name: 'dataPath',

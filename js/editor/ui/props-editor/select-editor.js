@@ -218,8 +218,8 @@ class SelectEditor extends React.Component {
 		}, R.span({
 			ctrlclickcopyvalue: (typeof item.value === 'undefined') ? item : item.value,
 			className: 'selectable-text',
-			title: 'Ctrl+click to copy value.',
-			onClick(ev) {
+			title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
+			onClick: (ev) => {
 				if(ev.ctrlKey) {
 					sp(ev);
 				}

@@ -29,7 +29,7 @@ export default class PowDampPresetSelector extends React.Component {
 			return pow === p.value.p && damp === p.value.d;
 		}) || presets[0];
 		
-		return React.createElement(SelectEditor, {value:presetSelectedValue.value, onChange: this.onSelect, select:presets});
+		return React.createElement(SelectEditor, {value:presetSelectedValue.value, noCopyValue:true, onChange: this.onSelect, select:presets});
 	}
 }
 

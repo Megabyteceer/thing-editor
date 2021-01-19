@@ -202,7 +202,7 @@ export default class SoundsList extends React.Component {
 				editor.saveProjectDesc();
 				this.forceUpdate();
 				
-			}, value:mode, select: soundPreloadingModes}),
+			}, noCopyValue:true, value:mode, select: soundPreloadingModes}),
 			
 			React.createElement(SelectEditor, {onChange:(ev) => {
 				bitrate = ev.target.value;
@@ -215,7 +215,7 @@ export default class SoundsList extends React.Component {
 				editor.saveProjectDesc();
 				this.forceUpdate();
 				this.rebuildSounds();
-			}, value:bitrate, select: bitratesWitDefault})
+			}, noCopyValue:true, value:bitrate, select: bitratesWitDefault})
 			
 			)
 			
@@ -244,7 +244,7 @@ export default class SoundsList extends React.Component {
 					editor.saveProjectDesc();
 					this.forceUpdate();
 					editor.ui.modal.showInfo('Bitrate changes will be applied on next assets loading.', undefined, 32041);
-				}, value:editor.projectDesc.soundDefaultBitrate, select: bitrates})) : undefined,
+				}, noCopyValue:true, value:editor.projectDesc.soundDefaultBitrate, select: bitrates})) : undefined,
 				R.input(this.searchInputProps)
 			),
 			R.div(bodyProps, list)

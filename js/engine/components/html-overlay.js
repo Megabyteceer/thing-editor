@@ -201,4 +201,18 @@ __EDITOR_editableProps(HTMLOverlay, [
 		visible: () => {}
 	},
 ]);
+
+/** @type boolean */
+HTMLOverlay.prototype.innerHTML;
+/** @type string */
+HTMLOverlay.prototype.handleScroll;
+/** @type number */
+HTMLOverlay.prototype.zIndex;
+/** @type string */
+HTMLOverlay.prototype.className;
+/** @type number */
+HTMLOverlay.prototype.fadeSpeed;
+/** @type boolean */
+HTMLOverlay.prototype.bouncingBounds;
+
 /// #endif

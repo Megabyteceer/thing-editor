@@ -234,7 +234,17 @@ __EDITOR_editableProps(DisplayObject, [
 		default: false
 	},
 	{
+		type: 'splitter',
+		title: 'Helpers:',
+		name: 'helpers'
+	},
+	{
 		name: '__lockSelection',
+		type: Boolean,
+		default: false
+	},
+	{
+		name: '__hideChildren', /// 99999
 		type: Boolean,
 		default: false
 	},

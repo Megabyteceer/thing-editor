@@ -157,7 +157,11 @@ export default class DataPathEditor extends React.Component {
 		let functionTip;
 		if(val && this.state && this.state.focus) {
 			game.currentScene._refreshAllObjectRefs();
-			let f = getValueByPath(val, editor.selection[0], true);
+			let f;
+			try {
+				f = getValueByPath(val, editor.selection[0], true);
+			} catch (er) {}// eslint-disable-line no-empty
+
 			if(typeof f === 'function') {
 				let firstLine = f.toString().split('\n').shift();
 				let params = firstLine.split('(').pop().split(')').shift();
@@ -281,12 +285,13 @@ export default class DataPathEditor extends React.Component {
 						let isBold;
 						editor.rememberTryTime();
 						try {
-							order = parent[name].___EDITOR_ChooserOrder || 0;
-							if(parent[name].___EDITOR_isGoodForChooser || (this.itIsCallbackEditor && parent[name].___EDITOR_isGoodForCallbackChooser)) {
+							let val = parent[name];
+							order = val.___EDITOR_ChooserOrder || 0;
+							if(val.___EDITOR_isGoodForChooser || (this.itIsCallbackEditor && val.___EDITOR_isGoodForCallbackChooser) || val === game.data) {
 								order += 100;
 								isBold = true;
 							}
-						} catch(er) {// eslint-disable-line no-empty
+						} catch(er) {// eslin t-disable-line no-empty
 							editor.checkTryTime();
 						}
 						if(!isBold) {

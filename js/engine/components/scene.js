@@ -41,7 +41,7 @@ export default class Scene extends Container {
 
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
 		
-		/** @type { { [key: string]: PIXI.Container; } } */
+		/** @type {ThingSceneAllMap} */
 		this.all = {};
 			
 		/// #if EDITOR
@@ -119,7 +119,11 @@ function addAllRefsValidator(scene) {
 			if(!count) {
 				target[prop] = val;
 			}
-			refsCounter[prop] = count + 1;
+			count++;
+			refsCounter[prop] = count;
+			if((count > 1) && game.__EDITOR_mode) {
+				delete target[prop];
+			}
 			return true;
 		}
 	});
@@ -162,5 +166,8 @@ Useful for "cut scenes" and "message scenes" which should be shown only once bef
 		select:window.makePrefabSelector('fader/', true)
 	}
 ]);
+
+/** @type number */
+Scene.prototype.backgroundColor;
 
 /// #endif

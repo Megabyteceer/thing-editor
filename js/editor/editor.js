@@ -172,7 +172,25 @@ export default class Editor {
 			}
 			await this.fs.refreshFiles();
 			editor.currentProjectDir = dir + '/';
+
+
+			let folderSettings;
+			let imagesSettings;
+
+			if(this.fs.libsSettings) {
+				folderSettings = this.fs.libsSettings.__loadOnDemandTexturesFolders;
+				imagesSettings = this.fs.libsSettings.loadOnDemandTextures;
+			}
+
 			editor.projectDesc = Object.assign(this.fs.libsSettings, data);
+			
+			if(folderSettings) {
+				this.fs.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, editor.projectDesc.__loadOnDemandTexturesFolders);
+			}
+			if(imagesSettings) {
+				this.fs.libsSettings.loadOnDemandTextures = Object.assign(imagesSettings, editor.projectDesc.loadOnDemandTextures);
+			}
+
 			editor.settings.setItem(editor.projectDesc.id + '_EDITOR_lastOpenTime', Date.now());
 
 			let isProjectDescriptorModified = game.applyProjectDesc(editor.projectDesc);
@@ -237,7 +255,7 @@ export default class Editor {
 	}
 
 	testProject() {
-		return new Promise(async (resolve) => {
+		return new Promise(async (resolve) => { // eslint-disable-line no-async-promise-executor
 			if(editor.__preBuildAutoTest && (!editor.buildProjectAndExit || !editor.buildProjectAndExit.skipTests)) {
 				let sceneName = editor.currentSceneName;
 				await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
@@ -343,9 +361,9 @@ export default class Editor {
 			if(exData.noSerialize) {
 				cloneExData.noSerialize = exData.noSerialize;
 			}
+			cloneExData.__isJustCloned = true;
 			
 			increaseNameNumber(clone);
-			clone.forAllChildren(increaseNameNumber);
 
 			let i = o.parent.children.indexOf(o) + 1;
 			while(o.parent.children[i] && ((allCloned.indexOf(o.parent.children[i]) >= 0) || __getNodeExtendData(o.parent.children[i]).isSelected)) {
@@ -368,6 +386,10 @@ export default class Editor {
 		editor.disableFieldsCache = false;
 
 		DataPathFixer.validatePathReferences();
+		for(let c of allCloned) {
+			let cloneExData = __getNodeExtendData(c);
+			cloneExData.__isJustCloned = false;
+		}
 		editor.refreshTreeViewAndPropertyEditor();
 		editor.sceneModified();
 		return ret;
@@ -722,6 +744,53 @@ export default class Editor {
 			}, 50);
 		}
 		this.refreshTreeViewAndPropertyEditor();
+		this.regenerateCurrentSceneMapTypings();
+	}
+
+	regenerateCurrentSceneMapTypings() {
+		if(!game.currentScene || !game.__EDITOR_mode) {
+			return;
+		}
+		let json = {};
+		game.currentScene._refreshAllObjectRefs();
+		for(let n of Object.keys(game.currentScene.all)) {
+			try {
+				let v = game.all[n].constructor.name;
+				json[n] = v;
+			} catch(er) {} // eslint-disable-line no-empty
+		}
+		let jsonString = JSON.stringify(json);
+		if(editor.__currentAllMap !== jsonString) {
+			editor.__currentAllMap = jsonString;
+
+			let imported = {Container:true};
+			let imports = ['import ' + game.currentScene.constructor.name + ' from "' + ClassesLoader.getClassPath(game.currentScene.constructor.name) + '";'];
+			let declarations = [];
+			for(let name of Object.keys(json)) {
+				let className = json[name];
+				if(!imported.hasOwnProperty(className)) {
+					imported[className] = true;
+					imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
+				}
+				declarations.push('"' +name + '":' + ((className==='Container') ? 'PIXI.Container' : className) + ';');
+			}
+
+			let mapJS = `// thing-editor auto generated file.
+export default null;
+`
++ imports.join('\n') +
+`
+declare global {
+	type CurrentSceneType = ` + game.currentScene.constructor.name + `;
+	interface ThingSceneAllMap {
+		[key: string]: PIXI.Container;
+`
++ declarations.join('\n') +
+	`}
+}
+`;
+			fs.saveFile('../../current-scene-typings.js', mapJS, true, true);
+		}
 	}
 	
 	saveProjectDesc() {
@@ -1019,7 +1088,7 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 		}
 	}
 
-	//cleanup settings for deleted sounds
+	//cleanup settings for deleted textures
 	let loadOnDemandTextures = editor.projectDesc.loadOnDemandTextures;
 	a = Object.keys(loadOnDemandTextures);
 	for(let k of a) {
@@ -1038,6 +1107,8 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 			isCleanedUp = true;
 		}
 	}
+
+	setTimeout(TexturesView.applyFoldersPropsToAllImages, 0);
 
 	let descToSave = Object.assign({}, editor.projectDesc);
 

@@ -190,7 +190,7 @@ export default class Timeline extends React.Component {
 				allKeyframesToSelect.forEach((kf) => {
 					select(kf.___view);
 				});
-			}, 1);
+			}, 2);
 			editor.sceneModified();
 		}
 	}
