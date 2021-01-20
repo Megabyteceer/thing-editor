@@ -1,3 +1,6 @@
+/// <reference path="../../index.d.ts" />
+
+
 import Pool from "./utils/pool.js";
 import Scene from "./components/scene.js";
 import DisplayObject from "./components/display-object.js";
@@ -9,7 +12,6 @@ import ResourceLoader from "./utils/resource-loader.js";
 let _oldDefaults = {};
 let _oldClasses = {};
 import ClassesLoader from "thing-editor/js/editor/utils/classes-loader.js";
-import Container from "./components/container.js";
 
 function accessToOldReferenceDetector(obj, prop) {
 	if(!Lib.__outdatedReferencesDetectionDisabled) {
@@ -1350,6 +1352,10 @@ Lib.__texturesList = [];
 let __allTextures = {};
 Lib.__soundsList = [];
 Lib._loadObjectFromData = _loadObjectFromData;
+
+
+/** @type {ThingProjectClassesList} */
+Lib.classes = null;
 
 const __isSerializableObject = (o) => {
 	let exData = __getNodeExtendData(o);
