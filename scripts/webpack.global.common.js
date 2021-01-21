@@ -145,6 +145,7 @@ module.exports = {
 			PIXI: 'pixi.js-legacy',
 		}),
 		new ImageminPlugin({
+			disable: isDebug,
 			onlyUseIfSmaller: true,
 			plugins: [
 				imageminMozjpeg({
@@ -153,7 +154,9 @@ module.exports = {
 				})
 			],
 			pngquant: {
-				quality: '95-100'
+				speed: 1,
+				strip: true,
+				quality: [0.65, 0.80]
 			}
 		})
 	],
