@@ -7,9 +7,12 @@ window.assert = (expression, message, errorCode) => {
 		/// #if EDITOR
 		if (window.editor) {
 			editor.ui.modal.showError(message, errorCode);
-		}
-		if(game.__EDITOR_mode) {
-			editor.saveBackup();
+
+			if(editor.game && editor.game.__EDITOR_mode) {
+				editor.saveBackup();
+			}
+		} else {
+			alert(message);
 		}
 		/*
 		/// #endif
