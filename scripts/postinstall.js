@@ -1,8 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 
-const from = '../node_modules';
-const to = '../../node_modules';
+const from = path.join(__dirname, '../node_modules');
+const to = path.join(__dirname, '../../node_modules');
 if (!fs.existsSync(to)) {
 	fs.renameSync(from, to);
 } 
