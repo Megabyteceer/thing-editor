@@ -1,3 +1,6 @@
+/// <reference path="../../index.d.ts" />
+
+
 import Pool from "./utils/pool.js";
 import Scene from "./components/scene.js";
 import DisplayObject from "./components/display-object.js";
@@ -9,7 +12,6 @@ import ResourceLoader from "./utils/resource-loader.js";
 let _oldDefaults = {};
 let _oldClasses = {};
 import ClassesLoader from "thing-editor/js/editor/utils/classes-loader.js";
-import Container from "./components/container.js";
 
 function accessToOldReferenceDetector(obj, prop) {
 	if(!Lib.__outdatedReferencesDetectionDisabled) {
@@ -1264,8 +1266,10 @@ function scheduleTextureRefresh(name) {
 }
 
 function refreshAllTextures() {
+	/// #if EDITOR
 	let emSave = game.__EDITOR_mode;
 	game.__EDITOR_mode = true; //enforce update some type of components (tileGrid, fill);
+	/// #endif
 	texturesRefreshSchedulledTimeout = null;
 	game.forAllChildrenEverywhere((o) => {
 		if(o.image && texturesRefreshSchedulledNames.has(o.image)) {
@@ -1275,8 +1279,9 @@ function refreshAllTextures() {
 		}
 	});
 	texturesRefreshSchedulledNames.clear();
+	/// #if EDITOR
 	game.__EDITOR_mode = emSave;
-
+	/// #endif
 }
 
 function cutMp3Gaps(s) {
@@ -1350,6 +1355,10 @@ Lib.__texturesList = [];
 let __allTextures = {};
 Lib.__soundsList = [];
 Lib._loadObjectFromData = _loadObjectFromData;
+
+
+/** @type {ThingProjectClassesList} */
+Lib.classes = null;
 
 const __isSerializableObject = (o) => {
 	let exData = __getNodeExtendData(o);

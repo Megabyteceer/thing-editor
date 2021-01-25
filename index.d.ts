@@ -1,4 +1,4 @@
-/// <reference path="node_modules/pixi.js-legacy/pixi.js-legacy.d.ts" />
+/// <reference path="../node_modules/pixi.js-legacy/pixi.js-legacy.d.ts" />
 
 import 'current-project-typings.js';
 import 'current-scene-typings.js';

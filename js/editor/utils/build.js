@@ -44,16 +44,6 @@ const fieldsFilter = (key, value) => {
 	}
 };
 
-let errorLinesStarted = false;
-const isLineError = (l) => {
-	if(l.startsWith('ERROR: ')) {
-		errorLinesStarted = true;
-	}
-	if(l.startsWith('WARNING: ')) {
-		errorLinesStarted = false;
-	}
-	return errorLinesStarted;
-};
 
 export default class Build {
 	static build(debug) {
@@ -154,22 +144,16 @@ export default class Build {
 			await editor.fs.saveFile('src/classes.js', src.join('\n'), false, true);
 
 			editor.fs.getJSON('/fs/build' + (debug ? '?debug=1' : '')).then((result) => {
-				errorLinesStarted = false;
 
-				if(result.find(isLineError)) {
-					errorLinesStarted = false;
-					editor.ui.modal.showError(R.div(null, R.div(null, "Build errors: "), result.filter(isLineError).map((r, i) =>{
-						return R.div({key:i}, r);
-					})), 30006);
+				if(!result.isSuccess) {
+					editor.ui.modal.showError(R.div({dangerouslySetInnerHTML: {__html: result.output}}), 30006);
 				} else if(!editor.buildProjectAndExit) {
 					let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
 					
 					editor.openUrl(url);
 							
-					if(result.find((l) => {return l;})) {
-						editor.ui.modal.showModal(result.map((r, i) =>{
-							return R.div({key:i}, r);
-						}));
+					if(result.output) {
+						editor.ui.modal.showModal(R.div({style:{textAlign: 'left'}, dangerouslySetInnerHTML: {__html: result.output}}));
 					}
 				}
 				resolve();

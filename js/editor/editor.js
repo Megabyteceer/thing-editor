@@ -763,15 +763,17 @@ export default class Editor {
 		if(editor.__currentAllMap !== jsonString) {
 			editor.__currentAllMap = jsonString;
 
-			let imported = {Container:true};
-			let imports = ['import ' + game.currentScene.constructor.name + ' from "' + ClassesLoader.getClassPath(game.currentScene.constructor.name) + '";'];
+			let classesList = [];
+			let imports = [];
 			let declarations = [];
+			
+			for(let className in Lib.classes) {
+				imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
+				classesList.push(className + ': typeof ' + className + ';');
+			}
+			
 			for(let name of Object.keys(json)) {
 				let className = json[name];
-				if(!imported.hasOwnProperty(className)) {
-					imported[className] = true;
-					imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
-				}
 				declarations.push('"' +name + '":' + ((className==='Container') ? 'PIXI.Container' : className) + ';');
 			}
 
@@ -782,6 +784,13 @@ export default null;
 `
 declare global {
 	type CurrentSceneType = ` + game.currentScene.constructor.name + `;
+
+	interface ThingProjectClassesList {
+		` +
+		classesList.join('\n')
+	+ `
+	}
+
 	interface ThingSceneAllMap {
 		[key: string]: PIXI.Container;
 `
