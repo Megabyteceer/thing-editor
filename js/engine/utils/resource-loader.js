@@ -13,16 +13,16 @@ PIXI.Spritesheet.prototype.parse = function(resource) {
 	} catch(er) {
 		game._onLoadingError('Spritesheet parsing error (' + this.data.meta.image +'): ' + er.message);
 	}
-}
-assert(PIXI.BitmapFontLoader.parse instanceof Function, 'Thing editor needs refactoring of BitmapText atlases error handling.');
-const origin_font_parse = PIXI.BitmapFontLoader.parse;
-PIXI.BitmapFontLoader.parse = function(resource) {
+};
+assert(PIXI.BitmapFont.install instanceof Function, 'Thing editor needs refactoring of BitmapFont atlases error handling.');
+const origin_font_install = PIXI.BitmapFont.install;
+PIXI.BitmapFont.install = function(resource) {
 	try {
-		origin_font_parse.apply(this, arguments);
+		origin_font_install.apply(this, arguments);
 	} catch(er) {
-		game._onLoadingError('BitmapText parsing error (' + resource.name +'): ' + er.message);
+		game._onLoadingError('BitmapFont installing error: ' + er.message + (resource ? JSON.stringify(resource, null, ' ') : ''));
 	}
-}
+};
 
 
 

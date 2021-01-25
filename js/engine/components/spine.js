@@ -4,7 +4,7 @@ import game from "../game.js";
 import getValueByPath from '../utils/get-value-by-path.js';
 
 /// #if EDITOR
-import "/node_modules/pixi-spine/bin/pixi-spine.js";
+import "/node_modules/pixi-spine/dist/pixi-spine.js";
 /*
 /// #endif
 import "pixi-spine";

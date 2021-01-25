@@ -334,7 +334,7 @@ class Game {
 
 					renderer.resolution = scale;
 
-					PIXI.interaction.InteractionManager.resolution = scale;
+					PIXI.InteractionManager.resolution = scale;
 					renderer.plugins.interaction.resolution = scale;
 
 					if (renderer.rootRenderTarget) {
@@ -1053,7 +1053,7 @@ class Game {
 	 * @return {DisplayObject}
 	 */
 	showModal(displayObject, callback) {
-		/// #if DEBUG
+		/// #if EDITOR
 		if (game.__EDITOR_mode && !__getNodeExtendData(displayObject).isPreviewObject) {
 			assert(false, 'Attempt to show modal in editor mode: ' + (displayObject.name || displayObject), 10047);
 			return;

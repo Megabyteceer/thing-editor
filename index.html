@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>Thing Editor</title>
-		<link rel="stylesheet" href="/thing-editor/node_modules/reset-css/reset.css"/>
+		<link rel="stylesheet" href="/node_modules/reset-css/reset.css"/>
 		<link rel="stylesheet" href="css/style.css"/>
 		
 		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -14,17 +14,17 @@
 	<div id="select-lists-root"></div>
 	
 	<body/>
-	<script src="/thing-editor/node_modules/react/umd/react.production.min.js"></script>
-	<script src="/thing-editor/node_modules/react-dom/umd/react-dom.production.min.js"></script>
+	<script src="/node_modules/react/umd/react.production.min.js"></script>
+	<script src="/node_modules/react-dom/umd/react-dom.production.min.js"></script>
 	<script src="/node_modules/howler/dist/howler.core.min.js"></script>
 	<script src="/node_modules/pixi.js-legacy/dist/pixi-legacy.js"></script>
 	<script src="/node_modules/webfontloader/webfontloader.js"></script>
-	<script src="/thing-editor/node_modules/pixi-filters/dist/pixi-filters.js"></script>
+	<script src="/node_modules/pixi-filters/dist/pixi-filters.js"></script>
 
 	<script type="module" src="client-index.js"></script>
 	<script>
 	if(!window.PIXI) {
-		document.write('<div class="modal-body danger"><div class="modal-content">Could not fetch required js libraries.<br>Looks like symlinks were not created.<br><h3>Please reinstall Thing Editor with Administrator access.</h3></div></div>')
+		document.write('<div class="modal-body danger"><div class="modal-content">Could not fetch required js libraries.<br>Looks like no node_modules in root dir.<br><h3>Please reinstall Thing Editor or run `npm run create_env`.</h3></div></div>')
 	}
 	
 	</script>

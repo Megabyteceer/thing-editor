@@ -10,6 +10,8 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const open = require('open');
+const AnsiToHtml = require('ansi-to-html');
+const AnsiToHtmlConverter = new AnsiToHtml({bg: '#FFF',fg: '#000', newline: true});
 
 function requireUncached(m) {
 	delete require.cache[require.resolve(m)];
@@ -152,11 +154,11 @@ app.get('/fs/build', function (req, res) {
 			if(stdOut instanceof Buffer) {
 				stdOut = stdOut.toString();
 			}
-			let ret = stdOut.split('\n').concat(errOut.split('\n'));
-			if(err) {
-				ret.unshift('ERROR: ' + JSON.stringify(err));
-			}
-			res.end(JSON.stringify(ret));
+			let output = `${err ? `ERROR: ${JSON.stringify(err)}\n` : ''}${stdOut || ''}`;
+			res.end(JSON.stringify({
+				isSuccess: output.indexOf('BUILD FAILED!') === -1,
+				output: AnsiToHtmlConverter.toHtml(output),
+			}));
 			wss.hideSpinner();
 		});
 });
