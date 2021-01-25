@@ -40,29 +40,12 @@ const projectConfig = require(confPath);
 
 const webpack = require("webpack");
 webpack(projectConfig, (err, stats) => {
-
-	function errorHandle(err) {
-		var txt = 'ERROR: '+ err;
-		console.error(txt);
+	const isErrors = err || stats.hasErrors();
+	if (isErrors) {
+		console.error(`\n[1m[31mBUILD FAILED![0m\n\n${err ? err.message : stats.toString({warnings: false, assets: false, modules: false, colors: true})}`);
 	}
-	function warnHandle(err) {
-		var txt = 'WARNING: '+ err;
-		console.log(txt);
-	}
-	if (err) {
-		if (err.details) {
-			err.details.some(errorHandle);
-		}
-	} else {
-
-		const info = stats.toJson();
-
-		if (stats.hasErrors()) {
-			info.errors.some(errorHandle);
-		}
-
-		if (stats.hasWarnings()) {
-			info.warnings.some(warnHandle);
-		}
+	if (stats) {
+		console.log(isErrors ? '[1m[31mBUILD FAILED![0m\n' : '[1m[32mBUILD SUCCESS![0m\n');
+		console.log(stats.toString({assets: false, modules: false, colors: true}));
 	}
 });

@@ -94,7 +94,6 @@ copyFilesList.reverse();
 const webpack = require('webpack');
 
 let entry = [
-	"babel-polyfill",
 	"whatwg-fetch"
 ];
 if(projectDesc.webfontloader && Object.keys(projectDesc.webfontloader).some((k) => {
@@ -115,10 +114,7 @@ entry = entry.concat([
 
 const mode = isDebug ? 'development' : 'production';
 
-const ImageminPlugin = require('imagemin-webpack-plugin').default;
-const imageminMozjpeg = require('imagemin-mozjpeg');
-
-module.exports = {
+const config = {
 	entry,
 	mode: mode,
 	resolve: {
@@ -134,30 +130,18 @@ module.exports = {
 		path: path.resolve(process.cwd(), isDebug ? 'debug' : 'release')
 	},
 	performance: {
-		maxAssetSize: 1000000
+		maxAssetSize: 2000000,
+		maxEntrypointSize: 2000000
 	},
 	plugins: [
 		new webpack.DefinePlugin({
 			'process.env.NODE_ENV': JSON.stringify(mode)
 		}),
-		new CopyWebpackPlugin(copyFilesList),
+		new CopyWebpackPlugin({
+			patterns: copyFilesList,
+		}),
 		new webpack.ProvidePlugin({
 			PIXI: 'pixi.js-legacy',
-		}),
-		new ImageminPlugin({
-			disable: isDebug,
-			onlyUseIfSmaller: true,
-			plugins: [
-				imageminMozjpeg({
-					quality: 66,
-					progressive: true
-				})
-			],
-			pngquant: {
-				speed: 1,
-				strip: true,
-				quality: [0.65, 0.80]
-			}
 		})
 	],
 	module: {
@@ -171,18 +155,25 @@ module.exports = {
 		{
 			test: /\.js$/,
 			exclude: [/min\.js$/],
-			loaders: [
+			use: [
 				{
 					loader: 'babel-loader',
 					options: {
 						presets: [['@babel/preset-env',
 							{
 								"useBuiltIns": "entry",
-								"targets": "last 3 Chrome versions, last 3 Firefox versions, last 2 Edge versions, last 2 Opera versions, last 3 ChromeAndroid versions, last 5 FirefoxAndroid versions, last 3 iOS versions, last 3 Safari versions"
+								"corejs": "3.8",
+								"targets": "last 3 Chrome versions, last 3 Firefox versions, last 3 ChromeAndroid versions, last 3 iOS versions, last 3 Safari versions"
 							}]]
 					}
 				},
-				'ifdef-loader?{"EDITOR":false,"DEBUG":' + (isDebug ? 'true' : 'false') + '}',
+				{ 
+					loader: "ifdef-loader",
+					options: {
+						EDITOR: false,
+						DEBUG: !!isDebug,
+					} 
+				},
 				path.resolve(__dirname, 'assert-strip-loader.js')
 			]
 		},
@@ -191,9 +182,40 @@ module.exports = {
 			include: [
 				path.resolve(__dirname, "../js/editor")
 			],
-			loaders:[
+			use:[
 				path.resolve(__dirname, 'editor-code-bundle-prevent.js')
 			]
 		}]
 	}
 };
+
+if (!isDebug) {
+	const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
+	
+	config.plugins.push(new ImageMinimizerPlugin({
+		loader: false,
+		severityError: 'warning',
+		minimizerOptions: {
+			plugins: [
+				[
+					'mozjpeg',
+					{
+						quality: 66,
+						progressive: true
+					}
+				],
+				[
+					'pngquant',
+					{
+						speed: 1,
+						strip: true,
+						quality: [0.65, 0.80],
+						dithering: false,
+					}
+				]
+			],
+		},
+	}));
+}
+
+module.exports = config;

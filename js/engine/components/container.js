@@ -63,7 +63,13 @@ Container.prototype.getChildByName = function(name) {
 	for(let c of this.children) {
 		if(c.name === name) {
 			if(ret) {
-				editor.ui.status.error("getChildByName called, but more that one object with name '"+ name + "' present in container " + this.___info, 10052, ret);
+				let errorTxt = "getChildByName called, but more that one object with name '"+ name + "' present in container " + this.___info;
+				/// #if EDITOR
+				editor.ui.status.error(errorTxt, 10052, ret);
+				/*
+				/// #endif
+				alert(errorTxt);
+				//*/
 				return undefined;
 			}
 			ret = c;

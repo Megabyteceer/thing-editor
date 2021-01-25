@@ -62,7 +62,11 @@ const fs = require('fs');
 const wss = require('./server-socket.js');
 
 function applyPatchesToFile(folder) {
-	let fn = path.join(folder, 'node_modules/pixi.js-legacy/pixi.js-legacy.d.ts');
+	tryToPatchFile(path.join(folder, 'node_modules/pixi.js/pixi.js.d.ts'));
+	tryToPatchFile(path.join(folder, 'node_modules/pixi.js-legacy/pixi.js-legacy.d.ts'));
+}
+
+function tryToPatchFile(fn) {
 	if(fs.existsSync(fn)) {
 		let txt = fs.readFileSync(fn, 'utf8');
 		let isChanged = false;

@@ -14,11 +14,17 @@ const alignValues = {
 	'top': 0.0,
 	'bottom': 1.0
 };
+const EMPTY_FONT_NAME = 'EMPTY';
+const emptyFontData = new PIXI.BitmapFontData();
+emptyFontData.info[0] = {face: EMPTY_FONT_NAME, size: 32};
+emptyFontData.page[0] = {id: 0, file: ''};
+emptyFontData.common[0] = {lineHeight: 32};
+PIXI.BitmapFont.install(emptyFontData, PIXI.Texture.EMPTY);
 
 export default class BitmapText extends PIXI.BitmapText {
 	
 	constructor() {
-		super('', {font: {name:'', size: 32}, align: "left", tint: 0xFFFFFF});
+		super('', {fontName: EMPTY_FONT_NAME, fontSize: 32});
 	}
 
 	init() {
@@ -32,19 +38,21 @@ export default class BitmapText extends PIXI.BitmapText {
 	}
 
 	updateText() {
-		if(!this.font.name) {
+		if(this.fontName === EMPTY_FONT_NAME) {
 			return;
 		}
 
 		/// #if EDITOR
-		if(!BitmapText.fonts[this._font.name]) {
+		if(!PIXI.BitmapFont.available[this.fontName]) {
 			setTimeout(() => {
-				editor.ui.status.error('BitmapFont is not exists: ' + this._font.name, 32053, this, 'font.name');
+				editor.ui.status.error('BitmapFont is not exists: ' + this._fontName, 32053, this, 'fontName');
 			}, 0);
 			return;
 		}
+		if(this.fontSize === 0) {
+			this.fontSize = PIXI.BitmapFont.available[this.fontName].size;
+		}
 		/// #endif
-
 		super.updateText();
 		this.maxW = this._maxW || 0; // recalculate max width
 	}
@@ -86,8 +94,7 @@ export default class BitmapText extends PIXI.BitmapText {
 	}
 
 	clearBitmapText() {
-		this._glyphs.length = 0;
-		this.children.length = 0;
+		this.removeChildren();
 	}
 
 	onRemove() {
@@ -103,44 +110,37 @@ export default class BitmapText extends PIXI.BitmapText {
 	}
 
 	set "font.name" (v) {
-		this.font.name = v;
+		this.fontName = v;
 		/// #if EDITOR
-		this.updateText();
+		this.validate();
 		/// #endif
 	}
 
 	get "font.name" () {
-		return this.font.name;
+		return this.fontName;
 	}
 
 	set "font.size" (v) {
+		this.fontSize = v;
 		/// #if EDITOR
-		if(this.font) {
-		/// #endif
-			this.font.size = v;
-		/// #if EDITOR
-		}
-		if((v === 0) && this.font.name) {
-			this.font.size = BitmapText.fonts[this.font.name].size;
-		}
-		this.updateText();
+		this.validate();
 		/// #endif
 	}
 
 	get "font.size" () {
-		return this.font.size;
+		return this.fontSize;
 	}
 
 	set "font.align" (v) {
-		this.font.align = v;
+		this.align = v;
 		this.anchor.x = alignValues[v];
 		/// #if EDITOR
-		this.updateText();
+		this.validate();
 		/// #endif
 	}
 
 	get "font.align" () {
-		return this.font.align;
+		return this.align;
 	}
 
 	set verticalAlign (v) {
@@ -206,11 +206,11 @@ export default class BitmapText extends PIXI.BitmapText {
 	}
 
 	__EDITOR_onCreate() {
-		let fontName = Object.keys(BitmapText.fonts)[0];
+		const fontName = Object.keys(PIXI.BitmapFont.available).find((name) => name !== EMPTY_FONT_NAME);
 		if(fontName) {
 			this.text = 'New BitmapText 1';
-			this.font.name = fontName;
-			this.font.size = BitmapText.fonts[fontName].size;
+			this.fontName = fontName;
+			this.fontSize = PIXI.BitmapFont.available[fontName].size;
 		}
 		this.__afterDeserialization();
 	}
@@ -227,12 +227,12 @@ export default class BitmapText extends PIXI.BitmapText {
 }
 
 /// #if EDITOR
+import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 
 BitmapText.__EDITOR_icon= "tree/bitmap-text";
 BitmapText.__EDITOR_group = "Basic";
 BitmapText.__canNotHaveChildren = true;
 
-import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 
 __EDITOR_editableProps(BitmapText, [ //list of editable properties
 	{
@@ -261,10 +261,10 @@ __EDITOR_editableProps(BitmapText, [ //list of editable properties
 	{
 		name:'font.name',
 		type:String,
-		default:'',
+		default:EMPTY_FONT_NAME,
 		select:() => {
-			let names = Object.keys(BitmapText.fonts);
-			if(names.length === 0) {
+			let names = Object.keys(PIXI.BitmapFont.available);
+			if(!names.find((name) => name !== EMPTY_FONT_NAME)) {
 				setTimeout(() => {
 					editor.ui.status.warn("It is no any bitmap fonts (xml) files in '/img' subfolders.", 32046, editor.selection[0]);
 				}, 0);
