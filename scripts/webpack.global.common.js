@@ -200,7 +200,7 @@ if (!isDebug) {
 				[
 					'mozjpeg',
 					{
-						quality: 66,
+						quality: 67,
 						progressive: true
 					}
 				],
@@ -209,7 +209,7 @@ if (!isDebug) {
 					{
 						speed: 1,
 						strip: true,
-						quality: [0.65, 0.80],
+						quality: [0.95, 1],
 						dithering: false,
 					}
 				]
