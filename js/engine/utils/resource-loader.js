@@ -14,18 +14,6 @@ PIXI.Spritesheet.prototype.parse = function(resource) {
 		game._onLoadingError('Spritesheet parsing error (' + this.data.meta.image +'): ' + er.message);
 	}
 };
-assert(PIXI.BitmapFont.install instanceof Function, 'Thing editor needs refactoring of BitmapFont atlases error handling.');
-const origin_font_install = PIXI.BitmapFont.install;
-PIXI.BitmapFont.install = function(resource) {
-	try {
-		origin_font_install.apply(this, arguments);
-	} catch(er) {
-		game._onLoadingError('BitmapFont installing error: ' + er.message + (resource ? JSON.stringify(resource, null, ' ') : ''));
-	}
-};
-
-
-
 
 export default class ResourceLoader {
 
