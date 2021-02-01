@@ -1,4 +1,5 @@
 import L from "thing-editor/js/engine/utils/l.js";
+import game from "../game.js";
 import getValueByPath from "thing-editor/js/engine/utils/get-value-by-path.js";
 
 const CENTER = 'center';
@@ -15,6 +16,23 @@ const alignValues = {
 	'bottom': 1.0
 };
 const EMPTY_FONT_NAME = 'EMPTY';
+
+
+assert(PIXI.BitmapFont.install instanceof Function, 'Thing editor needs refactoring of BitmapFont atlases error handling.');
+const origin_font_install = PIXI.BitmapFont.install;
+PIXI.BitmapFont.install = function(resource, textures) {
+	try {
+		Object.values(textures instanceof PIXI.Texture ? [textures] : textures).forEach((texture) => {
+			if (!texture || texture === PIXI.Texture.EMPTY) return;
+			texture.baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
+		});
+		origin_font_install.apply(this, arguments);
+	} catch(er) {
+		game._onLoadingError('BitmapFont installing error: ' + er.message + (resource ? JSON.stringify(resource, null, ' ') : ''));
+	}
+};
+
+
 const emptyFontData = new PIXI.BitmapFontData();
 emptyFontData.info[0] = {face: EMPTY_FONT_NAME, size: 32};
 emptyFontData.page[0] = {id: 0, file: ''};
