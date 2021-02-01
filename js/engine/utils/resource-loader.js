@@ -16,8 +16,12 @@ PIXI.Spritesheet.prototype.parse = function(resource) {
 };
 assert(PIXI.BitmapFont.install instanceof Function, 'Thing editor needs refactoring of BitmapFont atlases error handling.');
 const origin_font_install = PIXI.BitmapFont.install;
-PIXI.BitmapFont.install = function(resource) {
+PIXI.BitmapFont.install = function(resource, textures) {
 	try {
+		Object.values(textures instanceof PIXI.Texture ? [textures] : textures).forEach((texture) => {
+			if (!texture || texture === PIXI.Texture.EMPTY) return;
+			texture.baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
+		});
 		origin_font_install.apply(this, arguments);
 	} catch(er) {
 		game._onLoadingError('BitmapFont installing error: ' + er.message + (resource ? JSON.stringify(resource, null, ' ') : ''));
