@@ -30,6 +30,8 @@ if(fs.existsSync(descPath)) {
 
 }
 
+process.env.projectDesc = JSON.stringify(projectDesc);
+
 let confPath = isDebug ? projectDesc.__webpack.debug : projectDesc.__webpack.production;
 
 if(fs.existsSync(path.join(projectPath, confPath))) {
