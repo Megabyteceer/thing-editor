@@ -529,7 +529,7 @@ class Game {
 				debug: 'config/webpack.debug.js',
 				production: 'config/webpack.prod.js'
 			},
-			jpgQuality: 67, // 99999
+			jpgQuality: 95, // 99999
 			pngQuality: [0.95, 1] // 99999
 		};
 		let isModified = false;
