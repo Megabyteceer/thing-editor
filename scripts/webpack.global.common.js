@@ -58,7 +58,8 @@ let alias = {
 	'src': path.resolve(process.cwd(), 'src')
 };
 
-let projectDesc = JSON.parse(fs.readFileSync('./thing-project.json'));
+const projectDesc = JSON.parse(process.env.projectDesc);
+
 if(projectDesc.libs) {
 
 	let libs = projectDesc.libs.slice();
