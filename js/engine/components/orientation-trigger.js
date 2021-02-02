@@ -278,7 +278,9 @@ export default class OrientationTrigger extends Container {
 			editor.ui.status.warn("Orientation trigger is not useful if projects screenOrientation is not set to 'auto'", 32023, this);
 		}
 		IGNORE_DIRECT_PROPS = false;
-		this.applyOrientation();
+		if(game.__EDITOR_mode) {
+			this.applyOrientation();
+		}
 	}
 
 	__shiftObject(dx, dy) {
