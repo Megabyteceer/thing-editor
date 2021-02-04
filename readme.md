@@ -58,3 +58,4 @@ Work still in progress.
 
 ### Documentation
 For detailed documentation please check our [Wiki](https://github.com/Megabyteceer/thing-editor/wiki).
+
