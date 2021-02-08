@@ -1055,7 +1055,7 @@ export default class Lib {
 	static __deleteScene(name) {
 		assert(scenes.hasOwnProperty(name), "attempt to delete not existing scene: " + name);
 		delete scenes[name];
-		return editor.fs.deleteFile(Lib.__sceneNameToFileName(name));
+		return editor.fs.deleteFile(Lib.__sceneNameToFileName(name), true);
 	}
 	/**
 	 * @protected
