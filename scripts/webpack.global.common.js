@@ -58,7 +58,8 @@ let alias = {
 	'src': path.resolve(process.cwd(), 'src')
 };
 
-let projectDesc = JSON.parse(fs.readFileSync('./thing-project.json'));
+const projectDesc = JSON.parse(process.env.projectDesc);
+
 if(projectDesc.libs) {
 
 	let libs = projectDesc.libs.slice();
@@ -200,7 +201,7 @@ if (!isDebug) {
 				[
 					'mozjpeg',
 					{
-						quality: 67,
+						quality: projectDesc.jpgQuality,
 						progressive: true
 					}
 				],
@@ -209,7 +210,7 @@ if (!isDebug) {
 					{
 						speed: 1,
 						strip: true,
-						quality: [0.95, 1],
+						quality: projectDesc.pngQuality,
 						dithering: false,
 					}
 				]

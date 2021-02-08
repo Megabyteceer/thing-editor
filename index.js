@@ -72,11 +72,33 @@ app.get('/fs/enum', function (req, res) {
 	res.send(enumFiles());
 });
 
+const backupsFilter = {};
+
 app.get('/fs/delete', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	let fn = mapFileUrl(req.query.f);
-
+	let backup = req.query.backup;
 	attemptFSOperation(() => {
+		if(backup) {
+			let fileSize = fs.statSync(fn).size;
+			if(backupsFilter[fn] !== fileSize) {
+				let dir = path.dirname(fn);
+				let deleteOlder = Date.now() - 1000 * 60 * 60 * 24 * 2;
+				for(let file of fs.readdirSync(dir)) {
+					if(file.startsWith('~deleted_')) {
+						let fullPath = path.join(dir, file);
+						let stats = fs.statSync(fullPath);
+						if(stats.ctimeMs < deleteOlder) {
+							fs.unlinkSync(fullPath);
+						}
+					}
+				}
+				let historyName = path.join(dir, '~deleted_' + path.basename(fn) + '_'+ new Date().toUTCString().replace(/[\W]/gm, '_'));
+				fs.renameSync(fn, historyName);
+				backupsFilter[fn] = fileSize;
+				return;
+			}
+		}
 		fs.unlinkSync(fn);
 	}).then(() => {
 		res.end('{}');

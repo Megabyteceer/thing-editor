@@ -390,7 +390,7 @@ export default class Shape extends PIXI.Graphics {
 		this.addChild(p);
 		let extData = __getNodeExtendData(p);
 		extData.rotatorLocked = true;
-		extData.hidePropsEditor = "Polygon's vertex is selected";
+		extData.hidePropsEditor = {title: "Polygon's vertex is selected", visibleFields: {x:true, y:true}};
 		extData.noSerialize = true;
 		return p;
 	}

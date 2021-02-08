@@ -528,7 +528,9 @@ class Game {
 			__webpack: {
 				debug: 'config/webpack.debug.js',
 				production: 'config/webpack.prod.js'
-			}
+			},
+			jpgQuality: 95, // 99999
+			pngQuality: [0.95, 1] // 99999
 		};
 		let isModified = false;
 		for(let name in def) {

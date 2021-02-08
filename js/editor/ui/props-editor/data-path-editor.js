@@ -109,7 +109,7 @@ export default class DataPathEditor extends React.Component {
 		editor.scheduleHistorySave();
 	}
 	
-	isFieldGoodForCallbackChoose(fieldName, object, val) {
+	isFieldGoodForCallbackChoose(fieldName, object, val, isChild) {
 		editor.rememberTryTime();
 		try {
 			if(fieldName.charCodeAt(0) === 95) {
@@ -124,7 +124,7 @@ export default class DataPathEditor extends React.Component {
 			let type = typeof val;
 			if(type === 'object' || (type === 'function')) {
 				
-				if(val instanceof DisplayObject && __getNodeExtendData(val).hidden) return false;
+				if(isChild && val instanceof DisplayObject && __getNodeExtendData(val).hidden) return false;
 				
 				return !val.hasOwnProperty('___EDITOR_isHiddenForChooser')  &&
 					(this.itIsCallbackEditor || !val.hasOwnProperty('___EDITOR_isHiddenForDataChooser'));
@@ -194,7 +194,7 @@ export default class DataPathEditor extends React.Component {
 		let addedNames ={};
 		let items = [];
 		const addSceneNodeIfValid = (o, name, isChild, order = 100000) => {
-			if(o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent, o)) {
+			if(o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(name, parent, o, isChild)) {
 				let item = {order, pureName: name, name: R.fragment(R.b(null, name + ' '), R.div(selectableSceneNodeProps, R.sceneNode(o)))};
 				
 				if(isChild) {

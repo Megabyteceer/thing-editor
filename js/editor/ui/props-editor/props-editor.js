@@ -123,13 +123,16 @@ class PropsEditor extends React.Component {
 		let propsFilter = {};
 		
 		for(let o of editor.selection) {
-			if(__getNodeExtendData(o).hidePropsEditor) {
-				return __getNodeExtendData(o).hidePropsEditor || 'Not editable';
+			let hidePropsEditor = __getNodeExtendData(o).hidePropsEditor;
+			if(hidePropsEditor && !hidePropsEditor.visibleFields) {
+				return hidePropsEditor.title || 'Not editable';
 			}
 			let ps = editor.enumObjectsProperties(o);
 			for(let p of ps) {
 				let name = p.name;
-				propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
+				if((!hidePropsEditor) || hidePropsEditor.visibleFields[name] || name === 'basic') {
+					propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
+				}
 			}
 		}
 		props = props.filter((p) => {

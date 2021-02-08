@@ -46,9 +46,9 @@ let fs = {
 			}
 		});
 	},
-	deleteFile: (fileName) => {
+	deleteFile: (fileName, backup) => {
 		ws.ignoreFileChanging(fileName);
-		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(editor.game.resourcesPath + fileName), true, false).then((data) => {
+		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(editor.game.resourcesPath + fileName) + (backup ? '&backup=1' : ''), true, false).then((data) => {
 			ws.notIgnoreFileChanging(fileName);
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
