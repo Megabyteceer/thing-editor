@@ -325,8 +325,7 @@ export default class Lib {
 		}
 		
 		baseTexture.mipmap = game._getTextureSettingsBits(name, 4) ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
-
-
+		baseTexture.update();
 	}
 	/**
 	 * @protected
