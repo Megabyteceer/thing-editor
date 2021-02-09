@@ -57,6 +57,7 @@ export default class Tilemap extends Container {
 	}
 	
 	setTile(X, Y, i) {
+		assert(X >= 0 && Y >= 0, "wrong tile coordinates", 90001);
 		/// #if EDITOR
 		if(i < 0) {
 			i = -1;
@@ -90,6 +91,10 @@ export default class Tilemap extends Container {
 			r.clearMap();
 			r.x = (X * 8 + 4) * this.tileW - this.wField;
 			r.y = (Y * 8 + 4) * this.tileH - this.hField;
+			r.xRandomShift = X << 3;
+			r.yRandomShift = Y << 3;
+			r.verticesRandomization = this.verticesRandomization;
+			r.verticesRandomizationMod = this.verticesRandomization * 2 + 1;
 			this.tiles.set(key, r);
 			this.addChild(r);
 			r.setProps();
@@ -333,7 +338,6 @@ const clear8x8tile = (t) => {
 	Lib.destroyObjectAndChildren(t);
 };
 
-
 class Tile8x8 extends PIXI.SimpleMesh {
 
 	constructor() {
@@ -383,6 +387,24 @@ class Tile8x8 extends PIXI.SimpleMesh {
 		}
 	}
 
+	rndX(x,y) {
+		if(!this.verticesRandomization) {
+			return 0;
+		}
+		x += this.xRandomShift;
+		y += this.yRandomShift;
+		return ((x * 12347 + y * 7323) ^ 123949) % this.verticesRandomizationMod - this.verticesRandomization;
+	}
+
+	rndY(x,y) {
+		if(!this.verticesRandomization) {
+			return 0;
+		}
+		x += this.xRandomShift;
+		y += this.yRandomShift;
+		return ((x * 27389 + y * 12765) ^ 123949) % this.verticesRandomizationMod - this.verticesRandomization;
+	}
+
 	refreshTiles() {
 		const vertices = [];
 		const uvs = [];
@@ -406,13 +428,13 @@ class Tile8x8 extends PIXI.SimpleMesh {
 
 					let px = x*w;
 					let py = y*h;
-					vertices.push(px, py);
+					vertices.push(px + this.rndX(x, y), py + this.rndY(x, y));
 					px += sW;
-					vertices.push(px, py);
+					vertices.push(px + this.rndX(x+1, y), py + this.rndY(x+1, y));
 					py += sH;
-					vertices.push(px, py);
+					vertices.push(px + this.rndX(x+1, y+1), py + this.rndY(x+1, y+1));
 					px -= sW;
-					vertices.push(px, py);
+					vertices.push(px + this.rndX(x, y+1), py + this.rndY(x, y+1));
 
 					px = (i % this.tilesOnTextureW)* uvW;
 					py = Math.floor(i/this.tilesOnTextureW) * uvH;
@@ -494,6 +516,13 @@ __EDITOR_editableProps(Tilemap, [
 	},
 	{
 		name: 'hField',
+		type: Number,
+		min:0,
+		max:128,
+		default: 0
+	},
+	{
+		name: 'verticesRandomization', // 99999
 		type: Number,
 		min:0,
 		max:128,
