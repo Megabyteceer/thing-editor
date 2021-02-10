@@ -324,7 +324,10 @@ export default class Lib {
 			break;
 		}
 		
-		baseTexture.mipmap = game._getTextureSettingsBits(name, 4) ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
+		if (game._getTextureSettingsBits(name, 4)) {
+			baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
+		}
+
 		if(!game.isCanvasMode) {
 			game.pixiApp.renderer.texture.updateTexture(baseTexture);
 		}
