@@ -352,7 +352,7 @@ export default class MovieClip extends DSprite {
 	}
 
 	__afterSerialization(data) {
-		if(data.p.timeline) {
+		if(data.p.timeline) { // remove animated props from object props
 			for(let f of data.p.timeline.f) {
 				delete data.p[f.n];
 			}
