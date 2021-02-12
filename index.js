@@ -123,7 +123,7 @@ app.get('/fs/edit', function (req, res) {
 	setTimeout(() => {
 		try {
 			open(fn);
-			if(line) {
+			if(line && fs.lstatSync(fn).isFile()) {
 				let arg = fn + ':' + line + (char ? ':' + char : '');
 				open('', {app: ['code', '-r', '-g', arg]});
 			}
