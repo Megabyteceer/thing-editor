@@ -32,6 +32,7 @@ let promiseIDCounter = 0;
 
 export default class SceneLinkedPromise extends Container {
 
+	/** @return {SceneLinkedPromise} */
 	static promise(handler, container = game.currentContainer) {
 		assert(!game.__EDITOR_mode, "Attempt to create SceneLinkedPromise.promise() in editing mode.", 10057);
 		
