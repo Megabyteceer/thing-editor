@@ -22,13 +22,7 @@ export default class OrientationTrigger extends Container {
 			this['scale.y'] = this.portraitScaleY;
 			super.alpha = this.portraitAlpha;
 			this.rotation = this.portraitR;
-			if(this.onPortrait
-				/// #if EDITOR
-				&& (!game.__EDITOR_mode || this.onPortrait.startsWith('setValueByPath`') || this.__callInEditorMode)
-			/// #endif
-			) {
-				callByPath(this.onPortrait, this);
-			}
+			this._callHandler(this.onPortrait);
 		} else {
 			this.x = this.landscapeX;
 			this.y = this.landscapeY;
@@ -36,20 +30,23 @@ export default class OrientationTrigger extends Container {
 			this['scale.y'] = this.landscapeScaleY;
 			this.alpha = this.landscapeAlpha;
 			this.rotation = this.landscapeR;
-			if(this.onLandscape
-				/// #if EDITOR
-				&& (!game.__EDITOR_mode || this.onLandscape.startsWith('setValueByPath`') || this.__callInEditorMode)
-			/// #endif
-			) {
-				callByPath(this.onLandscape, this);
-			}
+			this._callHandler(this.onLandscape);
 		}
-		this.visible = (this.alpha > 0.015) && (Math.abs(this.scale.x) > 0.0015) && (Math.abs(this.scale.y) > 0.0015);
-		
 		
 		/// #if EDITOR
 		if(game.__EDITOR_mode) this.visible = true;
 		/// #endif
+	}
+
+	_callHandler(handler) {
+		this.visible = (this.alpha > 0.015) && (Math.abs(this.scale.x) > 0.0015) && (Math.abs(this.scale.y) > 0.0015);
+		if(handler
+			/// #if EDITOR
+			&& (!game.__EDITOR_mode || handler.startsWith('setValueByPath`') || this.__callInEditorMode)
+		/// #endif
+		) {
+			callByPath(handler, this);
+		}
 	}
 	
 	update() {
