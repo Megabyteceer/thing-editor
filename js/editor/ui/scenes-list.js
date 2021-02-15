@@ -106,9 +106,9 @@ export default class ScenesList extends React.Component {
 		let cls = Lib.__hasClass(item.c) ? Lib.getClass(item.c) : Scene;
 		let deleteBtn;
 		if(sceneName === editor.currentSceneName) {
-			this.state.selectedItem = item;
+			this.selectedItem = item;
 		} else {
-			this.state.selectedItem = null;
+			this.selectedItem = null;
 			deleteBtn = R.btn(' ', () => {
 				this.onSceneDeleteClick(sceneName, sceneView);
 			}, 'Delete scene...', 'delete-scene-btn');
@@ -141,9 +141,6 @@ export default class ScenesList extends React.Component {
 		let bottomPanelClassName = '';
 		if (!editor.currentSceneName) {
 			bottomPanelClassName += ' disabled';
-			this.state.selectedItem = null;
-		} else {
-			this.state.selectedItem = libsScenes[editor.currentSceneName];
 		}
 		
 		let scenes = [];

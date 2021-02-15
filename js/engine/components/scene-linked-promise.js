@@ -51,7 +51,9 @@ export default class SceneLinkedPromise extends Container {
 		let promiseId = promiseIDCounter++;
 		d._promiseId = promiseId;
 
-
+		/// #if DEBUG
+		d.__passedHandlersDebug = null;
+		/// #endif
 
 		handler(
 			(data) => {
@@ -214,7 +216,7 @@ export default class SceneLinkedPromise extends Container {
 		if(this._promiseResultWaiting !== EMPTY_RESULT_SYMBOL) {
 			let r = this._promiseResultWaiting;
 			/// #if DEBUG
-			let __passedHandlersDebug = [];
+			this.__passedHandlersDebug = [];
 
 			let id = this._promiseId;
 			let errorTimeout = setTimeout(() => {
@@ -229,7 +231,7 @@ export default class SceneLinkedPromise extends Container {
 				/// #if DEBUG
 				let handler = this._resolveHandlers.shift(); //in debug build no catch errors to 
 				let currentResult = handler(r);
-				__passedHandlersDebug.push({handler, currentResult});
+				this.__passedHandlersDebug.push({handler, currentResult});
 				if(typeof currentResult !== 'undefined') {
 					r = currentResult;
 				}
@@ -261,7 +263,7 @@ export default class SceneLinkedPromise extends Container {
 		if(this._promiseErrorWaiting !== EMPTY_RESULT_SYMBOL) {
 			let r = this._promiseErrorWaiting;
 			/// #if DEBUG
-			let __passedHandlersDebug = [];
+			this.__passedHandlersDebug = [];
 
 			/// #endif
 			while(this._rejectHandlers.length > 0) {
@@ -269,7 +271,7 @@ export default class SceneLinkedPromise extends Container {
 				
 				let handler = this._rejectHandlers.shift();
 				let currentResult = handler(r);
-				__passedHandlersDebug.push({handler, currentResult});
+				this.__passedHandlersDebug.push({handler, currentResult});
 				if(typeof currentResult !== 'undefined') {
 					r = currentResult;
 				}

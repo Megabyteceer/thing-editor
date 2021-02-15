@@ -242,9 +242,8 @@ class Game {
 		if(this.pixiApp && this.pixiApp.renderer) {
 			game.isCanvasMode = !this.pixiApp.renderer.gl;
 			if(!game.isCanvasMode) {
-				let maxTextureSize = 1024;
 				let gl = this.pixiApp.renderer.gl;
-				maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+				let maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
 				if(maxTextureSize < 3000) {
 					S = Math.min(1, S);
 				}
@@ -661,9 +660,9 @@ class Game {
 			resizeOutJump = setTimeout(() => {
 				resizeOutJump = false;
 				if(game.isMobile.any) {
-					[20,40,80,200,500,1000,1500,2000,3000].some((i)=>{
+					for(let i of [20,40,80,200,500,1000,1500,2000,3000]) {
 						setTimeout(this.onResize, i);
-					});
+					}
 				}
 				this.onResize();
 			}, game.isMobile.any ? 1 : 200);
@@ -1576,11 +1575,7 @@ if(window.cordova) {
 if (PIXI.utils.isMobile.any) {
 	window.addEventListener('error', function (msg, url, line, col, error) {
 		let txt = JSON.stringify({msg, url, line, col, error});
-		if(game) {
-			game.__showDebugError(txt);
-		} else {
-			alert(txt);
-		}
+		game.__showDebugError(txt);
 	});
 }
 /// #endif

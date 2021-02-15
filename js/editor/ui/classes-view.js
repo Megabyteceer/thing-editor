@@ -34,12 +34,12 @@ class ClassesView extends React.Component {
 	}
 	
 	onAddClick() {
-		editor.addToScene(ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name));
+		editor.addToScene(ClassesView.loadSafeInstanceByClassName(this.selectedItem.c.name));
 	}
 	
 	onAddAsChildClick() {
 		if(editor.isCanBeAddedAsChild()) {
-			editor.attachToSelected(ClassesView.loadSafeInstanceByClassName(this.state.selectedItem.c.name));
+			editor.attachToSelected(ClassesView.loadSafeInstanceByClassName(this.selectedItem.c.name));
 		}
 	}
 	
@@ -54,7 +54,7 @@ class ClassesView extends React.Component {
 	}
 	
 	onWrapSelectedClick() {
-		editor.wrapSelected(this.state.selectedItem.c.name);
+		editor.wrapSelected(this.selectedItem.c.name);
 	}
 
 	onNewComponentClick() {
@@ -224,9 +224,13 @@ class ClassesView extends React.Component {
 			), item, key, this, 'components.' + item.c.name);
 	}
 	
-	selectedItem() {
-		if ((!editor.ClassesLoader.gameObjClasses) || (editor.ClassesLoader.gameObjClasses.indexOf(this.state.selectedItem) < 0)) return null;
-		return this.state.selectedItem;
+	set selectedItem(v) {
+		this._selectedItem = v;
+	}
+
+	get selectedItem() {
+		if ((!editor.ClassesLoader.gameObjClasses) || (editor.ClassesLoader.gameObjClasses.indexOf(this._selectedItem) < 0)) return null;
+		return this._selectedItem;
 	}
 
 	refresh() {
@@ -250,7 +254,7 @@ class ClassesView extends React.Component {
 		} else {
 
 			body =  classes.filter((c) => {
-				return _searchByRegexpOrText(c.c.name.toLowerCase(), this.state.filter.toLowerCase()) || (this.state.selectedItem === c)
+				return _searchByRegexpOrText(c.c.name.toLowerCase(), this.state.filter.toLowerCase()) || (this.selectedItem === c)
 			}).map(this.renderItem);
 
 			if(!this.state.filter) {
@@ -261,7 +265,7 @@ class ClassesView extends React.Component {
 		}
 		
 		let bottomPanelClassName = '';
-		if (!this.selectedItem()) {
+		if (!this.selectedItem) {
 			bottomPanelClassName += ' disabled';
 		}
 		
