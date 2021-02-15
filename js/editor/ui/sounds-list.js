@@ -224,7 +224,7 @@ export default class SoundsList extends React.Component {
 	
 	render() {
 		let list = [];
-		this.state.selectedItem = null;
+		this.selectedItem = null;
 		for (let sndName of Lib.__soundsList) {
 			if(!this.state.filter || sndName.name.indexOf(this.state.filter) >= 0) {
 				list.push(this.renderItem(sndName.name, sndName));
@@ -341,7 +341,7 @@ class MusicProfiler extends React.Component {
 		} else {
 			for(let m of BgMusic.__allActiveMusics) {
 				if(m.__currentFragment) {
-					if(!m.__currentFragment.volume() === 0) {
+					if(m.__currentFragment.volume() === 0) {
 						className = 'danger';
 					}
 				}
