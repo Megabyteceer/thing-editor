@@ -175,6 +175,7 @@ export default class Timeline extends React.Component {
 					allKeyframesToSelect.push(tl.l[labelData.n]);
 				}
 				for(let field of data.fields) {
+					getFrameAtTimeOrCreate(o, field.name, 0);
 					for(let keyframeData of field.keyframes) {
 						let k = getFrameAtTimeOrCreate(o, field.name, keyframeData.t, true);
 						Object.assign(k, keyframeData);
@@ -764,7 +765,7 @@ export default class Timeline extends React.Component {
 	static mouseEventToTime(ev) {
 		let tl = Timeline.timelineDOMElement;
 		let b = tl.getBoundingClientRect();
-		let s = Window.all.timeline.state.renderedScale;
+		let s = Window.all.timeline.renderedScale;
 		
 		let x = ev.clientX - 110 * s - b.x - draggingXShift;
 		return Math.max(0, Math.round((x + tl.scrollLeft * s) / widthZoom / s));

@@ -22,13 +22,11 @@ export default class OrientationTrigger extends Container {
 			this['scale.y'] = this.portraitScaleY;
 			super.alpha = this.portraitAlpha;
 			this.rotation = this.portraitR;
-			if(this.onPortrait
+			this._callHandler(this.onPortrait
 				/// #if EDITOR
-				&& (!game.__EDITOR_mode || this.onPortrait.startsWith('setValueByPath`') || this.__callInEditorMode)
-			/// #endif
-			) {
-				callByPath(this.onPortrait, this);
-			}
+				, 'onPortrait'
+				/// #endif
+			);
 		} else {
 			this.x = this.landscapeX;
 			this.y = this.landscapeY;
@@ -36,20 +34,47 @@ export default class OrientationTrigger extends Container {
 			this['scale.y'] = this.landscapeScaleY;
 			this.alpha = this.landscapeAlpha;
 			this.rotation = this.landscapeR;
-			if(this.onLandscape
+			this._callHandler(this.onLandscape
 				/// #if EDITOR
-				&& (!game.__EDITOR_mode || this.onLandscape.startsWith('setValueByPath`') || this.__callInEditorMode)
-			/// #endif
-			) {
-				callByPath(this.onLandscape, this);
-			}
+				, 'onLandscape'
+				/// #endif
+			);
 		}
-		this.visible = (this.alpha > 0.015) && (Math.abs(this.scale.x) > 0.0015) && (Math.abs(this.scale.y) > 0.0015);
-		
 		
 		/// #if EDITOR
 		if(game.__EDITOR_mode) this.visible = true;
 		/// #endif
+	}
+
+	_callHandler(handler
+		/// #if EDITOR
+		, handlerName
+		/// #endif
+	) {
+
+		this.visible = (this.alpha > 0.015) && (Math.abs(this.scale.x) > 0.0015) && (Math.abs(this.scale.y) > 0.0015);
+		
+		/// #if EDITOR
+		if(handler) {
+			let h = handler.split('`')[0];
+			if(h === 'this.update') {
+				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 99999, this, handlerName);
+				return;
+			}
+			else if (h === 'this.parent.update' && this.parent.children.indexOf(this) < (this.parent.children.length - 1)) {
+				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.parent.update", but it is not last children of parent. Please move this OrientationTrigger to the end of the list.', 99999, this, handlerName);
+				return;
+			}
+		}
+	
+		/// #endif
+		if(handler
+			/// #if EDITOR
+			&& (!game.__EDITOR_mode || handler.startsWith('setValueByPath`') || this.__callInEditorMode)
+		/// #endif
+		) {
+			callByPath(handler, this);
+		}
 	}
 	
 	update() {

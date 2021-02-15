@@ -9,11 +9,11 @@ throw 'Editor time sources was accidentally imported in to final game build. Ple
 let factories = {};
 window.R = factories;
 
-['div', 'span', 'img', 'button', 'input', 'label', 'b', 'a', 'br', 'hr', 'svg', 'polyline', 'textarea', 'iframe'].some((factoryType) => {
+for(let factoryType of ['div', 'span', 'img', 'button', 'input', 'label', 'b', 'a', 'br', 'hr', 'svg', 'polyline', 'textarea', 'iframe']) {
 	factories[factoryType] = (...theArgs) => {
 		return React.createElement.call(this, factoryType, ...theArgs);
 	};
-});
+}
 
 R.fragment = function(...theArgs) {
 	return React.createElement(React.Fragment, null, ...theArgs);
@@ -60,7 +60,7 @@ R.classIcon = (constructor) => {
 };
 
 R.multilineText = (txt) => {
-	if(!(typeof txt === 'string')) {
+	if(typeof txt !== 'string') {
 		return txt;
 	}
 	return R.div(null, txt.split('\n').map((r, i) =>{
@@ -78,17 +78,17 @@ R.sceneNode = (node) => {
 
 R.listItem = (view, item, key, parent, help) => {
 	let className = 'list-item';
-	if(parent.state.selectedItem === item) {
+	if(parent.selectedItem === item) {
 		className += ' item-selected';
 	}
 	
 	return R.div({
 		'data-help' : help,
 		className: className, key: key, onMouseDown: (ev) => {
-			if(parent.state.selectedItem !== item || parent.reselectAllowed) {
-				let itemToSelect = parent.onSelect(item, ev, parent.state.selectedItem) || item;
-				if(parent.state.selectedItem !== itemToSelect) {
-					parent.state.selectedItem = itemToSelect;
+			if(parent.selectedItem !== item || parent.reselectAllowed) {
+				let itemToSelect = parent.onSelect(item, ev, parent.selectedItem) || item;
+				if(parent.selectedItem !== itemToSelect) {
+					parent.selectedItem = itemToSelect;
 					parent.forceUpdate();
 				}
 			}
@@ -418,9 +418,9 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 				}
 				currentVal = o[name];
 			}
-			if((typeof currentVal === "string") && ((!ret.find((i) => {
+			if((typeof currentVal === "string") && (!ret.find((i) => {
 				return i.value === currentVal;
-			})))) {
+			}))) {
 				let a = [];
 				for(let i of ret) {
 					if(i.value.indexOf(currentVal.replace(/\.(png|jpg)/,'')) >= 0 || currentVal.indexOf(i.value.replace(/\.(png|jpg)/,'')) >= 0) {

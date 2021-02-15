@@ -182,7 +182,7 @@ export default class Editor {
 				imagesSettings = this.fs.libsSettings.loadOnDemandTextures;
 			}
 
-			editor.projectDesc = Object.assign(this.fs.libsSettings, data);
+			editor.projectDesc = this.fs.libsSettings ? Object.assign(this.fs.libsSettings, data) : data;
 			
 			if(folderSettings) {
 				this.fs.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, editor.projectDesc.__loadOnDemandTexturesFolders);
@@ -473,8 +473,7 @@ export default class Editor {
 		if(!(o instanceof Container)) {
 			return;
 		}
-		o = editor.selection[0];
-		return o && !o.constructor.__canNotHaveChildren;
+		return !o.constructor.__canNotHaveChildren;
 	}
 
 	isCanBeAdded() {
@@ -798,7 +797,7 @@ declare global {
 	`}
 }
 `;
-			fs.saveFile('../../current-scene-typings.js', mapJS, true, true);
+			fs.saveFile('../../current-scene-typings.d.ts', mapJS, true, true);
 		}
 	}
 	
@@ -967,7 +966,7 @@ declare global {
 			game.___enforcedOrientation = 'landscape';
 			game.__enforcedW = game.projectDesc.width;
 			game.__enforcedH = game.projectDesc.height;
-		} if (game.projectDesc.screenOrientation === 'portrait') {
+		} else if (game.projectDesc.screenOrientation === 'portrait') {
 			game.__enforcedW = game.projectDesc.portraitWidth;
 			game.__enforcedH = game.projectDesc.portraitHeight;
 		} else {

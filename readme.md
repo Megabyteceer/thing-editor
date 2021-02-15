@@ -49,7 +49,7 @@ Work still in progress.
 
 ## Sponsored:
 
-[![BGaming](https://www.bgaming.com/img/b-gaming-logo-color.svg)](https://www.bgaming.com/)
+[<img src="https://bgaming-games-boost-staging.bgaming.workers.dev/brands/b-gaming-logo-final-big.png" width="400" alt="BGaming">](https://www.bgaming.com/)
 
 
 ### Projects made with thing-editor

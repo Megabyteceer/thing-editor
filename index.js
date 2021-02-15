@@ -123,7 +123,7 @@ app.get('/fs/edit', function (req, res) {
 	setTimeout(() => {
 		try {
 			open(fn);
-			if(line) {
+			if(line && fs.lstatSync(fn).isFile()) {
 				let arg = fn + ':' + line + (char ? ':' + char : '');
 				open('', {app: ['code', '-r', '-g', arg]});
 			}
@@ -170,9 +170,6 @@ app.get('/fs/build', function (req, res) {
 		{maxBuffer: 1024 * 5000},
 		(err, stdOut, errOut) => {
 			log(errOut);
-			if(errOut instanceof Buffer) {
-				errOut = errOut.toString();
-			}
 			if(stdOut instanceof Buffer) {
 				stdOut = stdOut.toString();
 			}
@@ -465,7 +462,6 @@ function attemptFSOperation(cb) {
 				cb();
 				resolve();
 			} catch (er) {
-				"FS OPERATION ATTEMPT FAILURE.";
 				if(timeout-- > 0) {
 					setTimeout(attempt, 1000);
 				} else {

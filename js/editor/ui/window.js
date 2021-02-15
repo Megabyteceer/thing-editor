@@ -74,16 +74,17 @@ class Window extends React.Component {
 		this.deltaT = this.deltaT.bind(this);
 		
 		this.onMouseDown = this.onMouseDown.bind(this);
-		
-		window.addEventListener('resize', this.onClientResize.bind(this));
+		this.onClientResize = this.onClientResize.bind(this);
 	}
 	
 	componentDidMount() {
+		window.addEventListener('resize', this.onClientResize);
 		this.$ = document.querySelector('#' + this.id);
 		Window.all[this.props.id] = this;
 	}
 
 	componentWillUnmount() {
+		window.removeEventListener('resize', this.onClientResize);
 		delete Window.all[this.props.id];
 	}
 	
@@ -209,13 +210,13 @@ class Window extends React.Component {
 				
 			if(this.state.w < this.props.minW || this.state.h < this.props.minH) {
 				let scale = Math.min(this.state.w / this.props.minW, this.state.h / this.props.minH);
-				this.state.renderedScale = scale;
+				this.renderedScale = scale;
 				s.transform = 'scale(' + scale + ')';
 				s.transformOrigin = 'left top';
 				s.width = ((Math.max(this.state.w / scale, this.props.minW)) - 4 / scale) + 'px';
 				s.height = (Math.max(this.state.h / scale, this.props.minH) - 20 / scale) + 'px';
 			} else {
-				this.state.renderedScale = 1;
+				this.renderedScale = 1;
 				s.transform = null;
 				s.transformOrigin = null;
 				s.width = null;
@@ -235,7 +236,7 @@ class Window extends React.Component {
 		};
 		if(this.state.w < this.props.minW || this.state.h < this.props.minH) {
 			let scale = Math.min(this.state.w / this.props.minW, this.state.h / this.props.minH);
-			this.state.renderedScale = scale;
+			this.renderedScale = scale;
 			contentProps.style = {
 				transform: 'scale(' + scale + ')',
 				transformOrigin: 'left top',
@@ -243,7 +244,7 @@ class Window extends React.Component {
 				height: (Math.max(this.state.h / scale, this.props.minH) - 20 / scale) + 'px'
 			};
 		} else {
-			this.state.renderedScale = 1;
+			this.renderedScale = 1;
 		}
 
 		return R.div({
@@ -325,7 +326,7 @@ Window.bringWindowForward = (windowBody, setCurrentHelp) => {
 		}
 		Array.from(document.getElementsByClassName('window-body')).sort((a, b) => {
 			return a.style.zIndex - b.style.zIndex;
-		}).some((w, i, a) => {
+		}).forEach((w, i, a) => {
 			w.style.zIndex = (w === windowBody) ? a.length + 2 : i;
 		});
 	}, 1);
