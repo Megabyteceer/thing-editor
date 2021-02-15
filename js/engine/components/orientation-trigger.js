@@ -22,7 +22,11 @@ export default class OrientationTrigger extends Container {
 			this['scale.y'] = this.portraitScaleY;
 			super.alpha = this.portraitAlpha;
 			this.rotation = this.portraitR;
-			this._callHandler(this.onPortrait);
+			this._callHandler(this.onPortrait
+				/// #if EDITOR
+				, 'onPortrait'
+				/// #endif
+			);
 		} else {
 			this.x = this.landscapeX;
 			this.y = this.landscapeY;
@@ -30,7 +34,11 @@ export default class OrientationTrigger extends Container {
 			this['scale.y'] = this.landscapeScaleY;
 			this.alpha = this.landscapeAlpha;
 			this.rotation = this.landscapeR;
-			this._callHandler(this.onLandscape);
+			this._callHandler(this.onLandscape
+				/// #if EDITOR
+				, 'onLandscape'
+				/// #endif
+			);
 		}
 		
 		/// #if EDITOR
@@ -38,8 +46,28 @@ export default class OrientationTrigger extends Container {
 		/// #endif
 	}
 
-	_callHandler(handler) {
+	_callHandler(handler
+		/// #if EDITOR
+		, handlerName
+		/// #endif
+	) {
+
 		this.visible = (this.alpha > 0.015) && (Math.abs(this.scale.x) > 0.0015) && (Math.abs(this.scale.y) > 0.0015);
+		
+		/// #if EDITOR
+		if(handler) {
+			let h = handler.split('`')[0];
+			if(h === 'this.update') {
+				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 99999, this, handlerName);
+				return;
+			}
+			else if (h === 'this.parent.update' && this.parent.children.indexOf(this) < (this.parent.children.length - 1)) {
+				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.parent.update", but it is not last children of parent. Please move this OrientationTrigger to the end of the list.', 99999, this, handlerName);
+				return;
+			}
+		}
+	
+		/// #endif
 		if(handler
 			/// #if EDITOR
 			&& (!game.__EDITOR_mode || handler.startsWith('setValueByPath`') || this.__callInEditorMode)
