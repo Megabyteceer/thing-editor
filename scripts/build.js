@@ -1,6 +1,7 @@
 
 const path = require("path");
 const fs = require('fs');
+const ChildProcess = require('child_process');
 /*global __dirname */
 /*global require */
 /*global process */
@@ -31,6 +32,13 @@ if(fs.existsSync(descPath)) {
 }
 
 process.env.projectDesc = JSON.stringify(projectDesc);
+try {
+	process.env.BUILD_VERSION = ChildProcess.execSync("git describe --always --tags", {cwd: projectPath})
+		.toString()
+		.trim();
+} catch(e) {
+	process.env.BUILD_VERSION = Date.now();
+}
 
 let confPath = isDebug ? projectDesc.__webpack.debug : projectDesc.__webpack.production;
 
