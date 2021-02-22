@@ -94,29 +94,34 @@ copyFilesList.reverse();
 
 const webpack = require('webpack');
 
-let entry = [
+let bundleEntries = [
 	"whatwg-fetch"
 ];
 if(projectDesc.webfontloader && Object.keys(projectDesc.webfontloader).some((k) => {
 	let p = projectDesc.webfontloader[k];
 	return Array.isArray(p.families) && p.families.length > 0;
 })) {
-	entry.push('webfontloader');
+	bundleEntries.push('webfontloader');
 }
 if(projectHasSounds) {
-	entry.push(isDebug ? 'howler/dist/howler.js' : 'howler/dist/howler.core.min.js');
+	bundleEntries.push(isDebug ? 'howler/dist/howler.js' : 'howler/dist/howler.core.min.js');
 }
 
-entry = entry.concat([
+bundleEntries = bundleEntries.concat([
 	'./assets.js',
 	'./src/classes.js',
 	'./src/index.js'
 ]);
 
 const mode = isDebug ? 'development' : 'production';
+const buildPath = path.resolve(process.cwd(), isDebug ? 'debug' : 'release');
+
+fs.rmdirSync(buildPath, {force: true, recursive: true});
 
 const config = {
-	entry,
+	entry: {
+		bundle: bundleEntries
+	},
 	mode: mode,
 	resolve: {
 		alias/*,
@@ -127,8 +132,8 @@ const config = {
 		minimize: !isDebug
 	},
 	output: {
-		filename: 'bundle.js',
-		path: path.resolve(process.cwd(), isDebug ? 'debug' : 'release')
+		filename: '[name].js',
+		path: buildPath,
 	},
 	performance: {
 		maxAssetSize: 2000000,
