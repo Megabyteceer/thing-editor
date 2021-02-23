@@ -486,7 +486,9 @@ Overlay.getParentWhichHideChildren = getParentWhichHideChildren;
 
 function getParentWhichHideChildren(o, closest = false) {
 	let parents = [];
-	o = o.parent;
+	if(o) {
+		o = o.parent;
+	}
 	while(o) {
 		parents.unshift(o);
 		o = o.parent;
