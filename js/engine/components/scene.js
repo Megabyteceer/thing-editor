@@ -74,9 +74,18 @@ export default class Scene extends Container {
 	/// #endif
 }
 
+/// #if EDITOR
+import PrefabReference from "./prefab-reference.js";
+/// #endif
+
 let allObjectToRefresh;
 const _refreshChildRef = (o) => {
 	if(o.name) {
+		/// #if EDITOR
+		if(game.__EDITOR_mode && (o.parent instanceof PrefabReference) && (o.parent.__previewNode === o)) {
+			return;
+		}
+		/// #endif
 		allObjectToRefresh[o.name] = o;
 	}
 };
