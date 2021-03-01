@@ -30,7 +30,12 @@ export default class TextInput extends PIXI.Text {
 
 	filterText(txt) {
 		if(this.inputType === 'number') {
-			return txt.replace(',', '.').replace(/[^0-9\.]/gm, '');
+			txt = txt.replace(',', '.').replace(/[^0-9\.]/gm, '');
+			let a = txt.split('.');
+			if(a.length > 2) {
+				a.length = 2;
+				txt = a.join('.');
+			}
 		}
 		return txt;
 	}
