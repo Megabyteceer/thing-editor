@@ -46,15 +46,18 @@ function generateSpineData(skeletonData, spineName) {
 function createSpineTextureAtlas(skeletonData, spineName) {
 	// Fetch all texture names used in the spine
 	const nonTextureItemTypes = ['path', 'clipping', 'boundingbox', 'point'];
-	const defaultSkinAttachments = Array.isArray(skeletonData.skins)
-		? skeletonData.skins.find(({ name }) => name === 'default').attachments
-		: skeletonData.skins.default; // spine version before 3.8 support;
+	const skinAttachments = Array.isArray(skeletonData.skins)
+		? skeletonData.skins.map((skin) => skin.attachments)
+		: [skeletonData.skins.default]; // spine version before 3.8 support;
 	const textureNamesSet = new Set();
-	Object.values(defaultSkinAttachments).forEach(slot => {
-		Object.keys(slot)
-			.filter(itemName => !nonTextureItemTypes.includes(slot[itemName].type))
-			.forEach(textureName => textureNamesSet.add(slot[textureName].path || textureName));
+	skinAttachments.forEach((attachments) => {
+		Object.values(attachments).forEach(slot => {
+			Object.keys(slot)
+				.filter(itemName => !nonTextureItemTypes.includes(slot[itemName].type))
+				.forEach(textureName => textureNamesSet.add(slot[textureName].path || textureName));
+		});
 	});
+
 
 	const textureAtlas = new PIXI.spine.core.TextureAtlas();
 
