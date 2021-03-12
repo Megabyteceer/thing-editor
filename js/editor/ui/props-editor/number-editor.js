@@ -166,6 +166,9 @@ class NumberEditor extends React.Component {
 	render() {
 		let props = this.props;
 		let val = (typeof this.state.tmpVal !== 'undefined') ? this.state.tmpVal : this.state.value;
+		if(props.field && props.field.notSerializable && (typeof val === 'undefined')) {
+			val = props.field.default;
+		}
 		return R.span(numberEditorProps,
 			R.input({
 				onBlur: this.onBlur,
