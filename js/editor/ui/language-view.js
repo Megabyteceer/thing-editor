@@ -73,11 +73,14 @@ export default class LanguageView extends React.Component {
 			});
 		});
 
-		if(editor.projectDesc.__externalLocalesSource) {
-			loadings.push(L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource).then((langData) => {
-				langsByLib[editor.projectDesc.__externalLocalesSource] = {en: langData};
+		const externalLocalesSource = Array.isArray(editor.projectDesc.__externalLocalesSource)
+			? editor.projectDesc.__externalLocalesSource
+			: [editor.projectDesc.__externalLocalesSource];
+		externalLocalesSource.forEach((src) => {
+			loadings.push(L.loadLanguages(['en'], src).then((langData) => {
+				langsByLib[src] = {en: langData};
 			}));
-		}
+		});
 
 		let ret =  Promise.all(loadings).then(() => {
 			refreshCachedData();
@@ -92,7 +95,7 @@ export default class LanguageView extends React.Component {
 					}
 				}
 			}
-		})
+		});
 		if(isItHotReloading) {
 			ret.catch((er) => {});
 		}
@@ -416,20 +419,25 @@ function refreshCachedData() {
 		localesSourcesList = [];
 	}
 
-	localesSourcesList.push('project-locales');
+	const externalLocalesSource = Array.isArray(editor.projectDesc.__externalLocalesSource)
+		? editor.projectDesc.__externalLocalesSource
+		: [editor.projectDesc.__externalLocalesSource];
+	externalLocalesSource
+		.filter((src) => langsByLib[src])
+		.forEach((src) => localesSourcesList.push(src));
+
+	if (langsByLib['project-locales']) {
+		localesSourcesList.push('project-locales');
+	} else if (currentLibName === 'project-locales') {
+		currentLibName = localesSourcesList[0];
+	}
+
 	for(let libName of localesSourcesList) {
 		let libLang = langsByLib[libName];
 		if(libLang) {
 			for(let langId in libLang) {
 				languagesMerged[langId] = Object.assign(languagesMerged[langId] || {}, libLang[langId]);
 			}
-		}
-	}
-
-	if(editor.projectDesc.__externalLocalesSource) {
-		for(let langId in langsByLib[editor.projectDesc.__externalLocalesSource]) {
-			const externalData = Object.assign({}, langsByLib[editor.projectDesc.__externalLocalesSource][langId]);
-			languagesMerged[langId] = Object.assign(externalData, languagesMerged[langId] || {});
 		}
 	}
 
@@ -481,7 +489,12 @@ function onModified() {
 
 			let fileName;
 			if(currentLibName.endsWith('.json')) {
-				fileName = currentLibName;
+				const isExternalLocalesSource = Array.isArray(editor.projectDesc.__externalLocalesSource)
+					? editor.projectDesc.__externalLocalesSource.indexOf(currentLibName) >= 0
+					: editor.projectDesc.__externalLocalesSource === currentLibName;
+				fileName = isExternalLocalesSource
+					? '../..' + currentLibName
+					: currentLibName;
 			} else if (currentLibName === 'project-locales'){
 				fileName = 'i18n/' + '' + id + '.json';
 			} else {

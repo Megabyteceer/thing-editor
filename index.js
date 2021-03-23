@@ -373,10 +373,10 @@ function getDataFolders() {
 	}
 
 	ASSETS_FOLDERS_NAMES.forEach((type) => {
-		ret.push({
-			type,
-			path: path.join(currentGameRoot, type)
-		});
+		const typePath = path.join(currentGameRoot, type);
+		if (fs.existsSync(typePath)) {
+			ret.push({type, path: typePath});
+		}
 	});
 
 	return ret;

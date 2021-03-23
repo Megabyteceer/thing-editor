@@ -518,8 +518,9 @@ class Game {
 			defaultSoundsVol: 1,
 			keepSoundWhilePageUpdate: false,
 			embedLocales: true,
+			localeResourcesPath: "",
 			__localesNewKeysPrefix: '',
-			__externalLocalesSource: '',
+			__externalLocalesSource: [],
 			autoFullscreenDesktop: false,
 			autoFullscreenMobile: false,
 			__proxyFetchesViaNodeServer: false,
@@ -1731,7 +1732,8 @@ function loadLocalizations() {
 		L.setLanguagesAssets(assets.text);
 		return Promise.resolve(assets.text);
 	} else {
-		return L.loadLanguages(undefined, game.resourcesPath + 'i18n');
+		const localesPath = game.projectDesc.localeResourcesPath || (game.resourcesPath + 'i18n');
+		return L.loadLanguages(undefined, localesPath);
 	}
 }
 
