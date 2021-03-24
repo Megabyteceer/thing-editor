@@ -30,7 +30,7 @@ import Lib from "../lib.js";
 /// #endif
 
 export default class Delay extends Container {
-
+	/** @return {Delay} */
 	static delay(callback, delayFrames, container = game.currentContainer) {
 		assert(!game.__EDITOR_mode, "Attempt to create Delay.delay() in editing mode.", 10007);
 		assert(callback, "Delay.delay(). Function expected as first parameter, but " + (typeof callback) + ' received.', 10008);

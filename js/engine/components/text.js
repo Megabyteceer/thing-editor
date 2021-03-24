@@ -285,6 +285,13 @@ assert(d, "Text component needs refactoring", 90001);
 const originalTextSetter = d.set;
 d.set = function(v) {
 	if(this.textTransform && v) {
+		/// #if EDITOR
+		if(typeof v === 'number') {
+			editor.ui.status.error('textTransform is set fo label which shows numeric value. Set it to "none".', 99999, this, 'textTransform');
+			originalTextSetter.call(this, v);
+			return;
+		}
+		/// #endif
 		originalTextSetter.call(this, applyTextTransform(v, this.textTransform));
 	} else {
 		originalTextSetter.call(this, v);

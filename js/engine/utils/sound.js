@@ -6,6 +6,11 @@ import MusicFragment from "./music-fragment.js";
 const MIN_VOL_THRESHOLD = 0.005;
 const MIN_VOL_ENABLE = 0.05;
 
+
+function normalizeVolForEnabling(vol, defaultVol) {
+	return (vol > MIN_VOL_ENABLE) ? vol : defaultVol;
+}
+
 export default class Sound {
 
 	static get soundsVol() {
@@ -76,11 +81,11 @@ export default class Sound {
 	static set musicEnabled(val) {
 		if(Sound.musicEnabled !== val) {
 			BgMusic._clearCustomFades(0.2);
-			let minMusEnablingVolume = Math.max(MIN_VOL_ENABLE, musicVol);
+
 			if(val) {
-				Sound.musicVol = game.settings.getItem('musicVolEnabling', minMusEnablingVolume);
+				Sound.musicVol = normalizeVolForEnabling(game.settings.getItem('musicVolEnabling'), game.projectDesc.defaultMusVol);
 			} else {
-				game.settings.setItem('musicVolEnabling', minMusEnablingVolume);
+				game.settings.setItem('musicVolEnabling', musicVol);
 				Sound.musicVol = 0;
 			}
 			Sound.rememberEnablings();
@@ -103,12 +108,11 @@ export default class Sound {
 
 	static set soundEnabled(val) {
 		if(Sound.soundEnabled !== val) {
-			let minSndEnablingVolume = Math.max(MIN_VOL_ENABLE, soundsVol);
 			
 			if(val) {
-				Sound.soundsVol = game.settings.getItem('soundsVolEnabling', minSndEnablingVolume);
+				Sound.soundsVol = normalizeVolForEnabling(game.settings.getItem('soundsVolEnabling'), game.projectDesc.defaultSoundsVol);
 			} else {
-				game.settings.setItem('soundsVolEnabling', minSndEnablingVolume);
+				game.settings.setItem('soundsVolEnabling', soundsVol);
 				Sound.soundsVol = 0;
 			}
 			Sound.rememberEnablings();
