@@ -19,7 +19,7 @@ let langIdToApplyAfterLoading;
 let warnedIds = {};
 /// #endif
 
-function L(id, val1 = undefined, val2 = undefined) {
+function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%d' entry; val2 - replaces '%s' entry
 
 	/// #if EDITOR
 	if(!currentLanguageTable.hasOwnProperty(id)) {

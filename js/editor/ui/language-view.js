@@ -73,15 +73,14 @@ export default class LanguageView extends React.Component {
 			});
 		});
 
-		const externalTranslations = Array.isArray(editor.projectDesc.__externalTranslations)
-			? editor.projectDesc.__externalTranslations
-			: [editor.projectDesc.__externalTranslations];
-		externalTranslations.forEach((src) => {
-			if (!src) return;
-			loadings.push(L.loadLanguages(['en'], src).then((langData) => {
-				langsByLib[src] = {en: langData};
-			}));
-		});
+		if (editor.projectDesc.__externalTranslations) {
+			editor.projectDesc.__externalTranslations.forEach((src) => {
+				if (!src) return;
+				loadings.push(L.loadLanguages(['en'], src).then((langData) => {
+					langsByLib[src] = {en: langData};
+				}));
+			});
+		}
 
 		let ret =  Promise.all(loadings).then(() => {
 			refreshCachedData();
@@ -420,12 +419,11 @@ function refreshCachedData() {
 		localesSourcesList = [];
 	}
 
-	const externalTranslations = Array.isArray(editor.projectDesc.__externalTranslations)
-		? editor.projectDesc.__externalTranslations
-		: [editor.projectDesc.__externalTranslations];
-	externalTranslations
-		.filter((src) => src && langsByLib[src])
-		.forEach((src) => localesSourcesList.push(src));
+	if (editor.projectDesc.__externalTranslations) {
+		editor.projectDesc.__externalTranslations
+			.filter((src) => src && langsByLib[src])
+			.forEach((src) => localesSourcesList.push(src));
+	}
 
 	if (langsByLib['project-locales']) {
 		localesSourcesList.push('project-locales');
@@ -490,10 +488,7 @@ function onModified() {
 
 			let fileName;
 			if(currentLibName.endsWith('.json')) {
-				const isexternalTranslations = Array.isArray(editor.projectDesc.__externalTranslations)
-					? editor.projectDesc.__externalTranslations.indexOf(currentLibName) >= 0
-					: editor.projectDesc.__externalTranslations === currentLibName;
-				fileName = isexternalTranslations
+				fileName = editor.projectDesc.__externalTranslations && editor.projectDesc.__externalTranslations.indexOf(currentLibName) >= 0
 					? '../..' + currentLibName
 					: currentLibName;
 			} else if (currentLibName === 'project-locales'){
