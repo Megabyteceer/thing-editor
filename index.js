@@ -50,6 +50,7 @@ app.get('/fs/openProject', function (req, res) {
 	let folder = path.join(gamesRoot, req.query.dir, '/');
 	let descPath = path.join(folder, 'thing-project.json');
 	if(fs.existsSync(descPath)) {
+		res.set('Set-Cookie', 'isThingEditor=1; Path=/; Expires=Thu, 31 Oct 2999 00:00:00 GMT;');
 		currentGame = req.query.dir;
 		currentGameRoot = folder;
 		let projectDescSrc = fs.readFileSync(descPath);
