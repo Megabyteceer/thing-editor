@@ -23,7 +23,7 @@ window.assert = (expression, message, errorCode) => {
 	}
 };
 
-if(document.cookie.indexOf('isThingEditor')) { //enable proxy if game launched on local editor host only
+if(document.cookie.indexOf('isThingEditor') >= 0) { //enable proxy if game launched on local editor host only
 	let originalFetch = window.fetch;
 
 	window.fetch = (url, options) => {
