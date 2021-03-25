@@ -350,7 +350,7 @@ function getLibRoot(libName) {
 }
 
 const ASSETS_FOLDERS_NAMES = ['snd', 'img', 'src/scenes', 'src/game-objects', 'scenes', 'prefabs', 'scripts', 'i18n'];
-function getDataFolders() {
+function getDataFolders(existingOnly = true) {
 	let ret = [];
 	if(currentGameDesc.libs) {
 		for(let libName of currentGameDesc.libs) {
@@ -374,7 +374,7 @@ function getDataFolders() {
 
 	ASSETS_FOLDERS_NAMES.forEach((type) => {
 		const typePath = path.join(currentGameRoot, type);
-		if (fs.existsSync(typePath)) {
+		if (!existingOnly || fs.existsSync(typePath)) {
 			ret.push({type, path: typePath});
 		}
 	});
@@ -394,7 +394,7 @@ function enumFiles() {
 
 	let gameURL = '/' + currentGame + '/';
 
-	let folders = getDataFolders();
+	let folders = getDataFolders(false);
 	folders.reverse();
 	for (let f of folders) {
 		let type = f.type;
