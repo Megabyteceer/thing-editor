@@ -19,13 +19,6 @@ let langIdToApplyAfterLoading;
 let warnedIds = {};
 /// #endif
 
-/**
- * Returns translated and formatted string by id
- * @param {String} id - path to string in a translations json.
- * @param {Object|Number} [val1] - usually a number (replaces '%d' entry). If Object - it's used as context (can contain %d and %s as keys).
- * @param {String} [val2] - replaces '%s' entry
- * @returns {String} - translated and formatted string
- */
 function L(id, val1 = undefined, val2 = undefined) {
 
 	/// #if EDITOR
@@ -70,29 +63,21 @@ function L(id, val1 = undefined, val2 = undefined) {
 		}
 	}
 	/// #endif
-	
-	if (L.idProcessor) {
-		id = L.idProcessor(id, val1);
-	}
-	
-	const context = typeof val1 === 'object' && val1 !== null
-		? {...val1}
-		: {'%d': val1, '%s': val2};
-	
+
 	let ret;
 	if(currentLanguageTable.hasOwnProperty(id)) {
 		ret = currentLanguageTable[id];
 		
 		if (L.messageProcessor) {
-			ret = L.messageProcessor(ret, context);
+			ret = L.messageProcessor(ret, val1, val2);
 		}
 	} else {
 		ret = id;
 	}
-	if(typeof context['%d'] !== 'undefined') {
-		ret = ret.replace('%d', context['%d']);
-		if(typeof context['%s'] !== 'undefined') {
-			ret = ret.replace('%s', context['%s']);
+	if(typeof val1 !== 'undefined') {
+		ret = ret.replace('%d', val1);
+		if(typeof val2 !== 'undefined') {
+			ret = ret.replace('%s', val2);
 		}
 	}
 	return ret;

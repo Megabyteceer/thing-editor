@@ -541,6 +541,10 @@ function initWatchers() {
 
 	let watchFolders = new Set();
 	let foldersToWatch = getDataFolders();
+	
+	if (currentGameDesc.__externalTranslations) {
+		currentGameDesc.__externalTranslations.forEach((src) => foldersToWatch.push({type: 'i18n', path: path.join(__dirname,`../${src}`)}));
+	}
 
 	for(let w of watchers) {
 		w.deleteIt = true;

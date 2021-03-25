@@ -73,10 +73,11 @@ export default class LanguageView extends React.Component {
 			});
 		});
 
-		const externalLocalesSource = Array.isArray(editor.projectDesc.__externalLocalesSource)
-			? editor.projectDesc.__externalLocalesSource
-			: [editor.projectDesc.__externalLocalesSource];
-		externalLocalesSource.forEach((src) => {
+		const externalTranslations = Array.isArray(editor.projectDesc.__externalTranslations)
+			? editor.projectDesc.__externalTranslations
+			: [editor.projectDesc.__externalTranslations];
+		externalTranslations.forEach((src) => {
+			if (!src) return;
 			loadings.push(L.loadLanguages(['en'], src).then((langData) => {
 				langsByLib[src] = {en: langData};
 			}));
@@ -419,11 +420,11 @@ function refreshCachedData() {
 		localesSourcesList = [];
 	}
 
-	const externalLocalesSource = Array.isArray(editor.projectDesc.__externalLocalesSource)
-		? editor.projectDesc.__externalLocalesSource
-		: [editor.projectDesc.__externalLocalesSource];
-	externalLocalesSource
-		.filter((src) => langsByLib[src])
+	const externalTranslations = Array.isArray(editor.projectDesc.__externalTranslations)
+		? editor.projectDesc.__externalTranslations
+		: [editor.projectDesc.__externalTranslations];
+	externalTranslations
+		.filter((src) => src && langsByLib[src])
 		.forEach((src) => localesSourcesList.push(src));
 
 	if (langsByLib['project-locales']) {
@@ -489,10 +490,10 @@ function onModified() {
 
 			let fileName;
 			if(currentLibName.endsWith('.json')) {
-				const isExternalLocalesSource = Array.isArray(editor.projectDesc.__externalLocalesSource)
-					? editor.projectDesc.__externalLocalesSource.indexOf(currentLibName) >= 0
-					: editor.projectDesc.__externalLocalesSource === currentLibName;
-				fileName = isExternalLocalesSource
+				const isexternalTranslations = Array.isArray(editor.projectDesc.__externalTranslations)
+					? editor.projectDesc.__externalTranslations.indexOf(currentLibName) >= 0
+					: editor.projectDesc.__externalTranslations === currentLibName;
+				fileName = isexternalTranslations
 					? '../..' + currentLibName
 					: currentLibName;
 			} else if (currentLibName === 'project-locales'){
