@@ -18,6 +18,7 @@ let langIdToApplyAfterLoading;
 /// #if EDITOR
 let warnedIds = {};
 /// #endif
+
 function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%d' entry; val2 - replaces '%s' entry
 
 	/// #if EDITOR
@@ -62,14 +63,14 @@ function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%d' entr
 		}
 	}
 	/// #endif
-	
-	if (L.idProcessor) {
-		id = L.idProcessor(id, val1);
-	}
-	
+
 	let ret;
 	if(currentLanguageTable.hasOwnProperty(id)) {
 		ret = currentLanguageTable[id];
+		
+		if (L.messageProcessor) {
+			ret = L.messageProcessor(ret, val1, val2);
+		}
 	} else {
 		ret = id;
 	}

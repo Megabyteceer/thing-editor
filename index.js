@@ -350,7 +350,7 @@ function getLibRoot(libName) {
 }
 
 const ASSETS_FOLDERS_NAMES = ['snd', 'img', 'src/scenes', 'src/game-objects', 'scenes', 'prefabs', 'scripts', 'i18n'];
-function getDataFolders() {
+function getDataFolders(existingOnly = true) {
 	let ret = [];
 	if(currentGameDesc.libs) {
 		for(let libName of currentGameDesc.libs) {
@@ -373,10 +373,10 @@ function getDataFolders() {
 	}
 
 	ASSETS_FOLDERS_NAMES.forEach((type) => {
-		ret.push({
-			type,
-			path: path.join(currentGameRoot, type)
-		});
+		const typePath = path.join(currentGameRoot, type);
+		if (!existingOnly || fs.existsSync(typePath)) {
+			ret.push({type, path: typePath});
+		}
 	});
 
 	return ret;
@@ -394,7 +394,7 @@ function enumFiles() {
 
 	let gameURL = '/' + currentGame + '/';
 
-	let folders = getDataFolders();
+	let folders = getDataFolders(false);
 	folders.reverse();
 	for (let f of folders) {
 		let type = f.type;
@@ -541,6 +541,10 @@ function initWatchers() {
 
 	let watchFolders = new Set();
 	let foldersToWatch = getDataFolders();
+	
+	if (currentGameDesc.__externalTranslations) {
+		currentGameDesc.__externalTranslations.forEach((src) => foldersToWatch.push({type: 'i18n', path: path.join(__dirname,`../${src}`)}));
+	}
 
 	for(let w of watchers) {
 		w.deleteIt = true;
