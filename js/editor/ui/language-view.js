@@ -109,8 +109,6 @@ export default class LanguageView extends React.Component {
 				ignoreEdit = false;
 			}, 10);
 			showTextTable().then(() => {
-				currentLibName = 'project-locales';
-				refreshCachedData();
 				if(key) {
 					view.createKeyOrEdit(key, langId);
 				} else {
@@ -295,9 +293,8 @@ class LanguageTableEditor extends React.Component {
 			}
 			setTimeout(() => {
 				let area = document.querySelector('.langs-editor-table #' + texareaID(langId, key));
+				editor.ui.scrollInToViewAndShake(area);
 				area.focus();
-				area.scrollIntoView({block: "center", inline: "center"});
-				window.shakeDomElement(area);
 			}, 10);
 		});
 	}
