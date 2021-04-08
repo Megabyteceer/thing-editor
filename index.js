@@ -576,6 +576,9 @@ function initWatchers() {
 		let watcher = fs.watch(assetsFolderData.path, { recursive : true });
 		watcher.path = assetsFolderData.path;
 		watchers.push(watcher);
+		watcher.on('error', () => {
+			console.log("Watcher error");
+		});
 		watcher.on('change', (eventType, filename) => {
 			if(filename && filterWatchFiles.test(filename)) {
 				
