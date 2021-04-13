@@ -97,7 +97,7 @@ export default class LanguageView extends React.Component {
 			}
 		});
 		if(isItHotReloading) {
-			ret.catch((er) => {});
+			ret.catch((er) => {}); // eslint-disable-line no-unused-vars
 		}
 		return ret;
 	}

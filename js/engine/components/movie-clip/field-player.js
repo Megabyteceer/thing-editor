@@ -117,7 +117,7 @@ export default class FieldPlayer {
 						if(this.target.__logLevel === 3) {
 							/// break on callbacks
 							console.log('callback: ' + action);
-							debugger;
+							debugger; // eslint-disable-line no-debugger
 						}
 					}
 					/// #endif

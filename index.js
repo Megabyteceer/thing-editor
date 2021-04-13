@@ -80,6 +80,7 @@ app.get('/fs/delete', function (req, res) {
 	let fn = mapFileUrl(req.query.f);
 	let backup = req.query.backup;
 	attemptFSOperation(() => {
+		ignoreFileChanging(fn);
 		if(backup) {
 			let fileSize = fs.statSync(fn).size;
 			if(backupsFilter[fn] !== fileSize) {
@@ -232,6 +233,7 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 	let fileName = mapFileUrl(req.body.filename);
 	ensureDirectoryExistence(fileName);
 	attemptFSOperation(() => {
+		ignoreFileChanging(fileName);
 		fs.writeFileSync(fileName, req.body.data);
 	}).then(() => {
 		res.end('{}');
@@ -536,6 +538,18 @@ let watchers = [];
 let changedFiles = {};
 let fileChangedTimeout;
 
+const filesIgnore = {};
+
+function ignoreFileChanging(fileName) {
+	fileName = path.resolve(fileName);
+	if(filesIgnore[fileName]) {
+		clearTimeout(filesIgnore[fileName]);
+	}
+	filesIgnore[fileName] = setTimeout(() => {
+		delete filesIgnore[fileName];
+	}, 2000);
+}
+
 const filterWatchFiles = /\.(json|png|wav|jpg|js)$/mg;
 function initWatchers() {
 
@@ -543,7 +557,7 @@ function initWatchers() {
 	let foldersToWatch = getDataFolders();
 	
 	if (currentGameDesc.__externalTranslations) {
-		currentGameDesc.__externalTranslations.forEach((src) => foldersToWatch.push({type: 'i18n', path: path.join(__dirname,`../${src}`)}));
+		currentGameDesc.__externalTranslations.forEach((src) => foldersToWatch.push({type: 'i18n', isExternalTranslationFile: true, path: path.join(__dirname,`../${src}`)}));
 	}
 
 	for(let w of watchers) {
@@ -585,8 +599,17 @@ function initWatchers() {
 				filename = filename.replace(pathSeparatorReplaceExp, '/');
 				// log('file changed event: ' + eventType + '; ' + filename);
 
-				let fullFileName = path.join(assetsFolderData.path, filename);
-				filename = path.join(assetsFolder, filename);
+				let fullFileName;
+				if(assetsFolderData.isExternalTranslationFile) {
+					fullFileName = assetsFolderData.path;
+				} else {
+					fullFileName = path.join(assetsFolderData.path, filename);
+					filename = path.join(assetsFolder, filename);
+				}
+
+				if(filesIgnore[path.resolve(fullFileName)]) {
+					return;
+				}
 				
 				if(eventType === 'change' || eventType === 'rename') {
 					setTimeout(() => {
@@ -609,6 +632,9 @@ function initWatchers() {
 											}
 										}
 										if(!existingFileDesc || (existingFileDesc.mtime !== stats.mtimeMs)) {
+											if(assetsFolderData.isExternalTranslationFile) {
+												filename = 'i18n/en.json'; // enforce textView to reload.
+											}
 											fileChangeSchedule(filename, stats.mtime);
 										}
 									}
