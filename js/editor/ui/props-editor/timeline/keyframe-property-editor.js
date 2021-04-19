@@ -278,7 +278,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		} else if(kf.m === 0) { //SMOOTH
 			
 			extendEditor = R.span(null,
-				' Power: ', React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 0.9, onChange: this.onPowChanged}),
+				' Power: ', React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 0.999, onChange: this.onPowChanged}),
 				' Damp: ', React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.00, max: 0.99, onChange: this.onDampChanged}),
 				' Preset ', React.createElement(PowDampPresetSelector, {
 					pow: selectedObjectsTimeline.p,
