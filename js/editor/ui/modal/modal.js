@@ -122,6 +122,7 @@ class Modal extends React.Component {
 	showSpinner() {
 		spinnerShowCounter++;
 		if (spinnerShowCounter === 1) {
+			document.documentElement.style.pointerEvents = 'none';
 			modal.forceUpdate();
 		}
 	}
@@ -130,6 +131,7 @@ class Modal extends React.Component {
 		spinnerShowCounter--;
 		if (spinnerShowCounter === 0) {
 			setTimeout(() => {
+				document.documentElement.style.pointerEvents = null;
 				modal.forceUpdate();
 			}, 10);
 		}
