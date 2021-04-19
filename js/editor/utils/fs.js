@@ -1,4 +1,3 @@
-import ws from "./socket.js";
 import Group from "../ui/group.js";
 
 let fs = {

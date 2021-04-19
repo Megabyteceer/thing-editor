@@ -7,7 +7,7 @@ let loadingResources = [];
 
 assert(PIXI.Spritesheet.prototype.parse instanceof Function, 'Thing editor needs refactoring of atlases error handling.');
 const origin_parse = PIXI.Spritesheet.prototype.parse;
-PIXI.Spritesheet.prototype.parse = function(resource) {
+PIXI.Spritesheet.prototype.parse = function() {
 	try {
 		origin_parse.apply(this, arguments);
 	} catch(er) {

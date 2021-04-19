@@ -175,7 +175,7 @@ export default class Button extends DSprite {
 				let f;
 				try {
 					f = getValueByPath(this.onClick, this, true);
-				} catch (er){}
+				} catch (er){} // eslint-disable-line no-empty
 				if(typeof f !== 'function') {
 					editor.ui.status.error('Wrong onClick handler: ' + this.onClick, 32054, this, 'onClick');
 				}
