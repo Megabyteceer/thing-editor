@@ -258,7 +258,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			enumClassProperties(DisplayObject);
 			enumClassProperties(Delay);
 			enumClassProperties(SceneLinkedPromise);
-			embeddedClasses.some((a) => {
+			embeddedClasses.forEach((a) => {
 				let c = a[0];
 				if(!c.___EDITOR_isGoodForCallbackChooser && !c.___EDITOR_isGoodForChooser) {
 					c.___EDITOR_isHiddenForChooser = true;

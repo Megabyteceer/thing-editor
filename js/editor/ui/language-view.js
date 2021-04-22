@@ -307,7 +307,7 @@ class LanguageTableEditor extends React.Component {
 			return R.div({key:langId, className:'langs-editor-th'}, langId);
 		}));
 		
-		idsList.some((id) => {
+		idsList.forEach((id) => {
 			let filter = this.state.filter;
 			if(filter) {
 				if(id.indexOf(filter) < 0) {
