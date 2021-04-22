@@ -23,28 +23,28 @@ window.assert = (expression, message, errorCode) => {
 	}
 };
 
+if(document.cookie.indexOf('isThingEditor') >= 0) { //enable proxy if game launched on local editor host only
+	let originalFetch = window.fetch;
 
-let originalFetch = window.fetch;
-
-window.fetch = (url, options) => {
-	
-	url = canonicalize(url);
-	
-	if(!game.projectDesc || !game.projectDesc.__proxyFetchesViaNodeServer || url.startsWith(location.origin) || window.location.href.startsWith('file://')) {
-		return originalFetch(url, options);
-	} else {
-		let headers = new Headers();
-		headers.append("Content-Type", "application/json");
-		return originalFetch('/fs/fetch', {
-			method: 'POST',
-			headers,
-			body: JSON.stringify({url, options})
-		}).then((r) => {
-			return r;
-		});
-	}
-};
-
+	window.fetch = (url, options) => {
+		
+		url = canonicalize(url);
+		
+		if(!game.projectDesc || !game.projectDesc.__proxyFetchesViaNodeServer || url.startsWith(location.origin) || window.location.href.startsWith('file://')) {
+			return originalFetch(url, options);
+		} else {
+			let headers = new Headers();
+			headers.append("Content-Type", "application/json");
+			return originalFetch('/fs/fetch', {
+				method: 'POST',
+				headers,
+				body: JSON.stringify({url, options})
+			}).then((r) => {
+				return r;
+			});
+		}
+	};
+}
 function canonicalize(url) {
 	let div = document.createElement('div');
 	div.innerHTML = "<a></a>";

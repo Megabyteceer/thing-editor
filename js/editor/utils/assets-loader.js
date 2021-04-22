@@ -31,7 +31,7 @@ const enumAssets = (onlyThisFiles) => {
 	const jsonFolders = [];
 	const checkIsInJsonFolder = (name) => {
 		const containingFolderPath = name.substring(0, name.lastIndexOf('/'));
-		return jsonFolders.indexOf(containingFolderPath) !== -1
+		return jsonFolders.indexOf(containingFolderPath) !== -1;
 	};
 
 	let resourcesToReload = {};

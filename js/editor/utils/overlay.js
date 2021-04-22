@@ -484,11 +484,9 @@ function selectByStageClick(ev) {
 Overlay.getParentWhichHideChildren = getParentWhichHideChildren;
 
 
-function getParentWhichHideChildren(o, closest = false) {
+function getParentWhichHideChildren(child, closest = false) {
 	let parents = [];
-	if(o) {
-		o = o.parent;
-	}
+	let o = child;
 	while(o) {
 		parents.unshift(o);
 		o = o.parent;
@@ -503,19 +501,29 @@ function getParentWhichHideChildren(o, closest = false) {
 		
 		let d = __getNodeExtendData(o);
 		if(d.hideAllChildren) {
-			return o;
+			if(o !== child) {
+				return o;
+			}
 		}
 		if(d.hidden) {
 			if(!closest) {
 				assert(i > 0, "Cannot get parent hides children.");
-				return parents[i-1];
+				o = parents[i-1];
+				if(o !== child) {
+					return o;
+				}
 			} else {
 				assert(i < (parents.length - 1), "Cannot get parent hides children.");
-				return parents[i+1];
+				o = parents[i+1];
+				if(o !== child) {
+					return o;
+				}
 			}
 		}
 		if(o.__hideChildren) {
-			return o;
+			if(o !== child) {
+				return o;
+			}
 		}
 	}
 }

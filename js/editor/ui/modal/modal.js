@@ -122,6 +122,9 @@ class Modal extends React.Component {
 	showSpinner() {
 		spinnerShowCounter++;
 		if (spinnerShowCounter === 1) {
+			if(game.stage) {
+				game.stage.interactiveChildren = false;
+			}
 			modal.forceUpdate();
 		}
 	}
@@ -130,6 +133,9 @@ class Modal extends React.Component {
 		spinnerShowCounter--;
 		if (spinnerShowCounter === 0) {
 			setTimeout(() => {
+				if(game.stage) {
+					game.stage.interactiveChildren = true;
+				}
 				modal.forceUpdate();
 			}, 10);
 		}

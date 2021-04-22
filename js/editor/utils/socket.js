@@ -46,7 +46,7 @@ ws.onmessage = function incoming(data) {
 				} else {
 					imagesUpdated = addAssetNameInToMap(file.name, imagesUpdated);
 				}
-			} else if(file.name.startsWith('i18n/') && file.name.endsWith('.json') && !filesIgnoring[file.name]) {
+			} else if(file.name.startsWith('i18n/') && file.name.endsWith('.json')) {
 				textUpdated = true;
 			} else if(file.name.startsWith('snd/') && file.name.endsWith('.wav')) {
 				if(file.deleted) {
@@ -54,9 +54,9 @@ ws.onmessage = function incoming(data) {
 				} else {
 					soundsUpdated = addAssetNameInToMap(file.name, soundsUpdated);
 				}
-			} else if(file.name.endsWith('.js') && !filesIgnoring[file.name]) {
+			} else if(file.name.endsWith('.js')) {
 				srcChanged = true;
-			} else if(file.name.endsWith('.json') && (file.name.indexOf('/.') < 0) && !file.name.startsWith('snd/') && !filesIgnoring[file.name]) {
+			} else if(file.name.endsWith('.json') && (file.name.indexOf('/.') < 0) && !file.name.startsWith('snd/')) {
 				editor.ui.status.warn("File changed externally: " + file.name, 32045);
 			}
 		}
@@ -83,16 +83,6 @@ ws.onmessage = function incoming(data) {
 	
 };
 
-const filesIgnoring = {};
-
-ws.ignoreFileChanging = function(fileName) {
-	if(filesIgnoring[fileName]) {
-		filesIgnoring[fileName]++;
-	} else {
-		filesIgnoring[fileName] = 1;
-	}
-};
-
 let exitInProgress = false;
 ws.exitWithResult = function(success, error) {
 	exitInProgress = true;
@@ -106,16 +96,6 @@ ws.exitWithResult = function(success, error) {
 
 ws.log = function(txt) {
 	ws.send(JSON.stringify({log: txt}));
-};
-
-ws.notIgnoreFileChanging = function(fileName) {
-	setTimeout(() => {
-		assert(filesIgnoring[fileName] > 0, 'ignoring vas no started.');
-		filesIgnoring[fileName]--;
-		if(filesIgnoring[fileName] === 0) {
-			delete filesIgnoring[fileName];
-		}
-	}, 2000);
 };
 
 ws.onclose = function incoming() {

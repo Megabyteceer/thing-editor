@@ -1,4 +1,3 @@
-import ws from "./socket.js";
 import Group from "../ui/group.js";
 
 let fs = {
@@ -47,9 +46,7 @@ let fs = {
 		});
 	},
 	deleteFile: (fileName, backup) => {
-		ws.ignoreFileChanging(fileName);
 		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(editor.game.resourcesPath + fileName) + (backup ? '&backup=1' : ''), true, false).then((data) => {
-			ws.notIgnoreFileChanging(fileName);
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
 			}
@@ -131,12 +128,10 @@ let fs = {
 		if(typeof data !== 'string') {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
-		ws.ignoreFileChanging(filename);
 		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async).then((data) => {
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
 			}
-			ws.notIgnoreFileChanging(filename);
 		});
 	}
 };

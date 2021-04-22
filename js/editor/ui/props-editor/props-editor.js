@@ -82,9 +82,8 @@ class PropsEditor extends React.Component {
 			if (fldInput) {
 
 				if(fn === fieldName) {
-					window.shakeDomElement(fldInput);
 					Window.bringWindowForward(fldInput.closest('.window-body'));
-					fldInput.scrollIntoView({block: "center", inline: "center"});
+					editor.ui.scrollInToViewAndShake(fldInput);
 				}
 				
 				if(focus || selectAll) {

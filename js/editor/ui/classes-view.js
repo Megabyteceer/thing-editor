@@ -254,7 +254,7 @@ class ClassesView extends React.Component {
 		} else {
 
 			body =  classes.filter((c) => {
-				return _searchByRegexpOrText(c.c.name.toLowerCase(), this.state.filter.toLowerCase()) || (this.selectedItem === c)
+				return _searchByRegexpOrText(c.c.name.toLowerCase(), this.state.filter.toLowerCase()) || (this.selectedItem === c);
 			}).map(this.renderItem);
 
 			if(!this.state.filter) {

@@ -73,10 +73,13 @@ export default class LanguageView extends React.Component {
 			});
 		});
 
-		if(editor.projectDesc.__externalLocalesSource) {
-			loadings.push(L.loadLanguages(['en'], editor.projectDesc.__externalLocalesSource).then((langData) => {
-				langsByLib[editor.projectDesc.__externalLocalesSource] = {en: langData};
-			}));
+		if (editor.projectDesc.__externalTranslations) {
+			editor.projectDesc.__externalTranslations.forEach((src) => {
+				if (!src) return;
+				loadings.push(L.loadLanguages(['en'], src).then((langData) => {
+					langsByLib[src] = {en: langData};
+				}));
+			});
 		}
 
 		let ret =  Promise.all(loadings).then(() => {
@@ -92,9 +95,9 @@ export default class LanguageView extends React.Component {
 					}
 				}
 			}
-		})
+		});
 		if(isItHotReloading) {
-			ret.catch((er) => {});
+			ret.catch((er) => {}); // eslint-disable-line no-unused-vars
 		}
 		return ret;
 	}
@@ -106,8 +109,6 @@ export default class LanguageView extends React.Component {
 				ignoreEdit = false;
 			}, 10);
 			showTextTable().then(() => {
-				currentLibName = 'project-locales';
-				refreshCachedData();
 				if(key) {
 					view.createKeyOrEdit(key, langId);
 				} else {
@@ -292,9 +293,8 @@ class LanguageTableEditor extends React.Component {
 			}
 			setTimeout(() => {
 				let area = document.querySelector('.langs-editor-table #' + texareaID(langId, key));
+				editor.ui.scrollInToViewAndShake(area);
 				area.focus();
-				area.scrollIntoView({block: "center", inline: "center"});
-				window.shakeDomElement(area);
 			}, 10);
 		});
 	}
@@ -416,20 +416,24 @@ function refreshCachedData() {
 		localesSourcesList = [];
 	}
 
-	localesSourcesList.push('project-locales');
+	if (editor.projectDesc.__externalTranslations) {
+		editor.projectDesc.__externalTranslations
+			.filter((src) => src && langsByLib[src])
+			.forEach((src) => localesSourcesList.push(src));
+	}
+
+	if (langsByLib['project-locales']) {
+		localesSourcesList.push('project-locales');
+	} else if (currentLibName === 'project-locales') {
+		currentLibName = localesSourcesList[0];
+	}
+
 	for(let libName of localesSourcesList) {
 		let libLang = langsByLib[libName];
 		if(libLang) {
 			for(let langId in libLang) {
 				languagesMerged[langId] = Object.assign(languagesMerged[langId] || {}, libLang[langId]);
 			}
-		}
-	}
-
-	if(editor.projectDesc.__externalLocalesSource) {
-		for(let langId in langsByLib[editor.projectDesc.__externalLocalesSource]) {
-			const externalData = Object.assign({}, langsByLib[editor.projectDesc.__externalLocalesSource][langId]);
-			languagesMerged[langId] = Object.assign(externalData, languagesMerged[langId] || {});
 		}
 	}
 
@@ -481,7 +485,9 @@ function onModified() {
 
 			let fileName;
 			if(currentLibName.endsWith('.json')) {
-				fileName = currentLibName;
+				fileName = editor.projectDesc.__externalTranslations && editor.projectDesc.__externalTranslations.indexOf(currentLibName) >= 0
+					? '../..' + currentLibName
+					: currentLibName;
 			} else if (currentLibName === 'project-locales'){
 				fileName = 'i18n/' + '' + id + '.json';
 			} else {
