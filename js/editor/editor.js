@@ -869,9 +869,14 @@ declare global {
 	moveContainerWithoutChildren(o, dX, dY) {
 
 		for(let c of o.children) {
-			__getNodeExtendData(c).globalPos = c.getGlobalPosition();
+			let p = c.getGlobalPosition();
+			__getNodeExtendData(c).globalPos = p;
+			let p2 = o.toLocal(p);
+			if(isNaN(p2.x) || isNaN(p2.y)) {
+				editor.ui.status.warn("Object has zero scale and ant be moved without affecting children`s positions.", 99999, o);
+				return;
+			}
 		}
-
 		editor.shiftObject(o, dX, dY);
 		for(let c of o.children) {
 			let p = o.toLocal(__getNodeExtendData(c).globalPos);
