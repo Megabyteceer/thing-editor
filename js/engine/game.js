@@ -858,6 +858,12 @@ class Game {
 	 * @param {string} faderType - name of fader prefab
 	 */
 	closeCurrentScene(faderType) {
+		/// #if EDITOR
+		if(showStack.length <= 1) {
+			editor.ui.modal.notify("It is no other scene in stack to close current scene.");
+			return;
+		}
+		/// #endif
 		assert(showStack.length > 1, "Can't close latest scene", 10035);
 		tryRemoveScene(showStack.pop());
 		game._startFaderIfNeed(faderType);
