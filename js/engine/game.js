@@ -34,6 +34,8 @@ let stage;
 let app;
 let assets;
 
+let contextLoseTime = 0;
+
 const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
@@ -1282,6 +1284,20 @@ class Game {
 		if(game._loadingErrorIsDisplayed) {
 			return;
 		}
+
+		if(!game.isCanvasMode) {
+			if(game.pixiApp.renderer.gl.isContextLost()) {
+				if(game.isFocused) {
+					contextLoseTime++;
+					if(contextLoseTime === 60) {
+						window.location.reload();
+					}
+				}
+				return;
+			}
+			contextLoseTime = 0;
+		}
+
 		if(game._isWaitingToHideFader) {
 			if(game.getLoadingCount() === 0) {
 				game._processScenesStack();
