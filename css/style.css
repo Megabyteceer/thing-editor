@@ -1274,6 +1274,7 @@ input{
 }
 
 .number-input-btn {
+	overflow: hidden;
 	padding: 0 5px;
 	position: absolute;
 	display: inline-block;

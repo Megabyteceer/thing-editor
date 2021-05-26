@@ -161,7 +161,11 @@ export default class Button extends DSprite {
 						this.scale.y = this.initialScale  * (this.isOvered ? 1 : 0.9);
 				}
 				Button.downedButton = this;
-				this.curDelay = this.repeatDelay;
+				this.curDelay = this.repeatDelay
+				/// #if EDITOR
+				* game.__speedMultiplier
+				/// #endif
+				;
 				this._executeOnClick(source);
 			}
 		}
@@ -198,7 +202,11 @@ export default class Button extends DSprite {
 					if(this.isCanBePressed) {
 						this._executeOnClick('autorepeat');
 					}
-					this.curDelay = this.repeatInterval;
+					this.curDelay = this.repeatInterval
+					/// #if EDITOR
+					* game.__speedMultiplier
+					/// #endif
+					;
 				}
 			}
 		}

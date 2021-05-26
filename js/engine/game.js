@@ -34,6 +34,8 @@ let stage;
 let app;
 let assets;
 
+let contextLoseTime = 0;
+
 const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
@@ -858,6 +860,12 @@ class Game {
 	 * @param {string} faderType - name of fader prefab
 	 */
 	closeCurrentScene(faderType) {
+		/// #if EDITOR
+		if(showStack.length <= 1) {
+			editor.ui.modal.notify("It is no other scene in stack to close current scene.");
+			return;
+		}
+		/// #endif
 		assert(showStack.length > 1, "Can't close latest scene", 10035);
 		tryRemoveScene(showStack.pop());
 		game._startFaderIfNeed(faderType);
@@ -1276,6 +1284,20 @@ class Game {
 		if(game._loadingErrorIsDisplayed) {
 			return;
 		}
+
+		if(!game.isCanvasMode) {
+			if(game.pixiApp.renderer.gl.isContextLost()) {
+				if(game.isFocused) {
+					contextLoseTime++;
+					if(contextLoseTime === 60) {
+						window.location.reload();
+					}
+				}
+				return;
+			}
+			contextLoseTime = 0;
+		}
+
 		if(game._isWaitingToHideFader) {
 			if(game.getLoadingCount() === 0) {
 				game._processScenesStack();
@@ -1689,7 +1711,7 @@ function loadFonts() {
 
 								for(let w of weights) {
 									let span = document.createElement('span');
-									span.style.fontFamily = fontName;
+									span.style.fontFamily = `"${fontName}"`;
 									span.style.fontWeight = w;
 									span.innerHTML = game.projectDesc.fontHolderText;
 									fontHolder.appendChild(span);
