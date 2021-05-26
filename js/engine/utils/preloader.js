@@ -14,7 +14,15 @@ export default class Preloader {
 		ResourceLoader.preloader = this;
 		this.complete = false;
 		this.maxCount = 0;
-		this.progressItems = Array.from(document.querySelectorAll('.progress-item'));
+		this.progressGroupItems = [];
+		this.progressGroup = Array.from(document.querySelectorAll('.progress-group'));
+		if (this.progressGroup.length) {
+			this.progressGroup.forEach(group => this.progressGroupItems.push(Array.from(group.querySelectorAll('.progress-item'))))
+		}
+		this.progressItems = Array.from(document.querySelectorAll(':not(.progress-group) > .progress-item'));
+		if (this.progressItems.length) {
+			this.progressGroupItems.push(this.progressItems)
+		}
 	}
 	
 	updatePreloader() {
@@ -33,11 +41,13 @@ export default class Preloader {
 		if(this.preloaderBar) {
 			this.preloaderBar.style.width = (this.currentProgress) + '%';
 		}
-		if(this.progressItems.length > 0) {
-			let reachedItemsCount = this.progressItems.length * this.currentProgress / 100;
-			for(let i = 0; i < reachedItemsCount; i++) {
-				this.progressItems[i].classList.add("progress-item-on");
-			}
+		if (this.progressGroupItems.length) {
+			this.progressGroupItems.forEach(group => {
+				let reachedItemsCount = group.length * this.currentProgress / 100;
+				for(let i = 0; i < reachedItemsCount; i++) {
+					group[i].classList.add("progress-item-on");
+				}
+			})
 		}
 		if(this.complete) {
 			this.destroy();
