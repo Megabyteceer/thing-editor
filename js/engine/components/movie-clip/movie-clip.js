@@ -192,7 +192,7 @@ export default class MovieClip extends DSprite {
 		if(this.__logLevel) {
 			let stack = editor.__getCurrentStack("gotoLabel");
 			if(this._goToLabelNextFrame && (this._goToLabelNextFrame !== labelName)) {
-				editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; time: ' + game.time, 30021, this, undefined, true);
+				editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; new label:' + labelName + '; time: ' + game.time, 30021, this, undefined, true);
 			}
 			editor.ui.status.warn(
 				R.span(null, 
