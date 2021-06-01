@@ -101,7 +101,7 @@ __EDITOR_editableProps(ClickOutsideTrigger, [
 	},
 	{
 		name: 'additionalContainers', //99999
-		type: 'data-path'
+		type: String
 	}
 ]);
 ClickOutsideTrigger.__EDITOR_group = 'Basic';
