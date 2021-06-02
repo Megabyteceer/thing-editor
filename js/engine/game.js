@@ -136,19 +136,22 @@ class Game {
 
 		if ((this.projectDesc.screenOrientation === 'auto')) {
 			orientation = this.__enforcedOrientation;
-			if(this.__enforcedOrientation === 'portrait') {
+		} else {
+		/// #endif
+			orientation = this.projectDesc.screenOrientation;
+		/// #if EDITOR
+		}
+		
+		if (dynamicStageSize) {
+			if(orientation === 'portrait') {
 				if(w > h*0.8) {
 					w = Math.round(h*0.8);
 				}
 			} else {
 				if(h > w*0.8) {
 					h = Math.round(w*0.8);
-				} 
+				}
 			}
-		} else {
-		/// #endif
-			orientation = this.projectDesc.screenOrientation;
-		/// #if EDITOR
 		}
 		/// #endif
 
