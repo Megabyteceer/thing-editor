@@ -66,6 +66,7 @@ export default class Editor {
 		
 		this.ClassesLoader = ClassesLoader;
 		this.AssetsLoader = AssetsLoader;
+		this.TexturesView = TexturesView;
 
 		this.callInitIfGameRuns = callInitIfGameRuns;
 
