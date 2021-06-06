@@ -174,7 +174,12 @@ class Game {
 			game.isPortrait = false;
 			break;
 		}
-		if(!PIXI.utils.isMobile.any ) { //rotate canvas for fixed orientation projects on mobile only
+	
+		if(!PIXI.utils.isMobile.any // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false	
+			/// #endif
+		) { //rotate canvas for fixed orientation projects on mobile only
 			rotateCanvas = false;
 		}
 
@@ -226,7 +231,11 @@ class Game {
 		}
 
 		let s = 1;
-		if(this.isMobile.any) {
+		if(this.isMobile.any // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false	
+			/// #endif
+		) {
 			if(game.projectDesc.renderResolutionMobile) {
 				s = game.projectDesc.renderResolutionMobile;
 			}
@@ -664,13 +673,21 @@ class Game {
 		} else {
 			resizeOutJump = setTimeout(() => {
 				resizeOutJump = false;
-				if(game.isMobile.any) {
+				if(game.isMobile.any // eslint-disable-line no-constant-condition
+					/// #if EDITOR
+					&& false	
+					/// #endif
+				) {
 					for(let i of [20,40,80,200,500,1000,1500,2000,3000]) {
 						setTimeout(this.onResize, i);
 					}
 				}
 				this.onResize();
-			}, game.isMobile.any ? 1 : 200);
+			}, game.isMobile.any // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false	
+			/// #endif
+				? 1 : 200);
 		}
 	}
 	/**
