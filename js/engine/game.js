@@ -485,6 +485,22 @@ class Game {
 				game.projectDesc.loadOnDemandTextures[name] = n;
 			}
 			editor.saveProjectDesc();
+
+			const TEXTURE_BITS = 4 | 8 | 16;
+			if(Lib.hasTexture(name) && ((current & TEXTURE_BITS) !== (n & TEXTURE_BITS))) {
+				let baseTexture = Lib.getTexture(name).baseTexture;
+				baseTexture.mipmap = (n & 4) ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
+				const w = PIXI.WRAP_MODES;
+				if(n & 16) {
+					baseTexture.wrapMode = w.MIRRORED_REPEAT;
+				} else if (n & 8) {
+					baseTexture.wrapMode = w.REPEAT;
+				} else {
+					baseTexture.wrapMode = w.CLAMP;
+				}
+				baseTexture.update();
+				editor.TexturesView.refresh();
+			}
 		}
 	}
 	/// #endif

@@ -175,11 +175,6 @@ class TexturesViewerBody extends React.Component {
 				onChange: (ev) => {
 					let isMipMaps = ev.target.checked;
 					game.__setTextureSettingsBits(name, isMipMaps ? 4 : 0, 4); //99999
-					if(Lib.hasTexture(name)) {
-						let baseTexture = Lib.getTexture(name).baseTexture;
-						baseTexture.mipmap = isMipMaps ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
-						baseTexture.update();
-					}
 				},
 				defaultChecked: game._getTextureSettingsBits(name, 4)}
 			),
@@ -187,12 +182,6 @@ class TexturesViewerBody extends React.Component {
 				onChange: (ev) => {
 					let isWrap = ev.target.checked;
 					game.__setTextureSettingsBits(name, isWrap ? 8 : 0, 24);//99999
-					if(Lib.hasTexture(name)) {
-						let baseTexture = Lib.getTexture(name).baseTexture;
-						baseTexture.wrapMode = isWrap ? PIXI.WRAP_MODES.REPEAT : PIXI.WRAP_MODES.CLAMP;
-						baseTexture.update();
-					}
-					this.forceUpdate();
 				},
 				checked: game._getTextureSettingsBits(name, 8)}
 			) : undefined,
@@ -200,12 +189,6 @@ class TexturesViewerBody extends React.Component {
 				onChange: (ev) => {
 					let isWrap = ev.target.checked;
 					game.__setTextureSettingsBits(name, isWrap ? 16 : 0, 24);
-					if(Lib.hasTexture(name)) {
-						let baseTexture = Lib.getTexture(name).baseTexture;
-						baseTexture.wrapMode = isWrap ? PIXI.WRAP_MODES.MIRRORED_REPEAT : PIXI.WRAP_MODES.CLAMP;
-						baseTexture.update();
-					}
-					this.forceUpdate();
 				},
 				checked: game._getTextureSettingsBits(name, 16)}
 			): undefined

@@ -463,6 +463,25 @@ export default class Fill extends PIXI.Mesh {
 			this.fillUpdated = true;
 		}
 	}
+
+	/// #if EDITOR
+	set TEXTURE_WRAP_MODE(v) {
+		if(this.texture) {
+			let bits = 0;
+			if(v === PIXI.WRAP_MODES.REPEAT) {
+				bits = 8;
+			} else if(v === PIXI.WRAP_MODES.MIRRORED_REPEAT) {
+				bits = 16;
+			}
+			game.__setTextureSettingsBits(this.image, bits, 24);
+		}
+	}
+
+	get TEXTURE_WRAP_MODE() {
+		return this.texture ? this.texture.baseTexture.wrapMode : PIXI.WRAP_MODES.CLAMP;
+	}
+	
+	/// #endif
 }
 
 
@@ -524,6 +543,19 @@ __EDITOR_editableProps(Fill, [{
 	name: 'yShiftSpeed',
 	type: Number,
 	step: 0.00001
+},
+{
+	name: 'TEXTURE_WRAP_MODE',
+	type: Number,
+	notSerializable: true,
+	select: [
+		{name: 'CLAMP', value: PIXI.WRAP_MODES.CLAMP},
+		{name: 'REPEAT', value: PIXI.WRAP_MODES.REPEAT},
+		{name: 'MIRRORED_REPEAT', value: PIXI.WRAP_MODES.MIRRORED_REPEAT}
+	],
+	disabled:(o) => {
+		return !o.image || o.image === 'EMPTY' || o.image === "WHITE" || !o.texture.baseTexture.isPowerOfTwo;
+	}
 },
 {
 	type: 'splitter',
