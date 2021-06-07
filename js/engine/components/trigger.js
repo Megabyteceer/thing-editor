@@ -27,7 +27,7 @@ export default class Trigger extends Container {
 	}
 	
 	getState() {
-		return this.invert === (!getValueByPath(this.dataPath, this));
+		return !!this.invert === (!getValueByPath(this.dataPath, this));
 	}
 
 	applyInstantly() {
@@ -35,7 +35,7 @@ export default class Trigger extends Container {
 		if (this.dataPath) {
 			this._state = this.getState();
 		} else {
-			this._state = this.invert;
+			this._state = !!this.invert;
 		}
 		if (this._state) {
 			this.q = 0;
