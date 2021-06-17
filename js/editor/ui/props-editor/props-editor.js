@@ -16,6 +16,13 @@ const MIXED_ICON = {
 	__EDITOR_icon: 'tree/mixed-type'
 };
 
+const NOTHING_SELECTED = R.div({style: {
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	height: '100%'
+}}, 'Nothing selected');
+
 class PropsEditor extends React.Component {
 	
 	static showSelectClass(isScene, title) {
@@ -102,7 +109,7 @@ class PropsEditor extends React.Component {
 	
 	render() {
 		if (editor.selection.length <= 0) {
-			return 'Nothing selected';
+			return NOTHING_SELECTED;
 		}
 		
 		let header;

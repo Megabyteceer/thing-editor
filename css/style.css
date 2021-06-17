@@ -13,7 +13,7 @@ label {
 }
 
 body,html{
-	font-family: sans-serif;
+	font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
 	width:100%;
 	height:100%;
 	color:#595550;
@@ -25,10 +25,14 @@ button * {
 	vertical-align: bottom !important;
 }
 
+button:disabled {
+	color: unset;
+}
+
 hr{
 	width: 80%;
 	border:0;
-	border-bottom:1px solid #aaa;
+	border-bottom:1px solid #c1c1c1;
 }
 
 h1{
@@ -85,9 +89,10 @@ img {
 button {
 	background: #e6e7e9;
     border-radius: 2px;
-    padding: 4px 12px;
+    padding: 3px 12px;
     outline: none;
-    border: 1px solid #bcbfca;
+	margin: 1px;
+    border: none;
 }
 
 .toggled-button {
@@ -125,17 +130,18 @@ button {
 }
 
 .window-body {
-	box-shadow: .5px 3px 0 1px rgba(0,0,30,0.08);
+	box-shadow: 0 1px 3px rgba(23, 27, 43, 0.3);
 	position:fixed;
 	box-sizing: content-box;
 	background: var(--window-bg-color);
-	border: 1px solid var(--window-header-color);
 	border-radius: 2px;
 }
 
 .window-header {
 	width:100%;
 	height:17px;
+	border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
 	background:var(--window-header-color);
 	color:#9ab;
 	cursor:move;
@@ -216,14 +222,16 @@ button {
 	height: 15px;
 }
 ::-webkit-scrollbar-track {
-	background: #cccfda; 
+	background: #cccfda;
+	border-radius: 2px;
+	box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
 }
 ::-webkit-scrollbar-thumb {
 	background: #acb5be;
-	border-radius: 3px;
+	border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-	background: #9ea9b4; 
+	background: #9ea9b4;
 }
 
 .window-r-dragger{
@@ -325,7 +333,6 @@ button {
 .list-item {
 	position: relative;
 	white-space: nowrap;
-	border-top:1px solid #eee;
 	padding:2px;
 	cursor:pointer;
 	background: #fff;
@@ -378,7 +385,7 @@ button {
 }
 
 .props-group{
-	margin: 3px 0;
+	margin-bottom: 3px;
 	border-radius:2px;
 	overflow:hidden;
 }
@@ -627,10 +634,6 @@ input{
 	font-size: 90%;
 }
 
-.list-view .props-group{
-	border:1px solid #567;
-}
-
 .selectable-text {
 	font-family: monospace;
 	cursor:text;
@@ -650,6 +653,7 @@ input{
 
 .props-header {
 	padding: 0 5px;
+	margin-bottom: 2px;
 }
 
 .choosing-item {
@@ -1062,7 +1066,6 @@ input{
 .props-wrapper .tool-btn, .class-list-item .tool-btn {
 	margin:0;
 	padding: 3px;
-	border:1px solid #a4a4a4;
 	background:#ffffff;
 }
 
@@ -1157,6 +1160,7 @@ input{
 
 .class-list-item {
 	display: flex;
+	align-items: center;
 }
 
 .class-list-item-sub {
@@ -1378,7 +1382,7 @@ input{
 }
 
 .sounds-search-input {
-	width: calc(100% - 201px);
+	width: calc(100% - 204px);
 	outline: 2px solid red !important;
 }
 

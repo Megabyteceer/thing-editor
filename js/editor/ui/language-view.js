@@ -320,9 +320,7 @@ class LanguageTableEditor extends React.Component {
 			lines.push(R.div({key: id, className:'langs-editor-tr'},
 				R.div({className:'langs-editor-th selectable-text',
 					title: "Ctrl+click to copy key, Double click to rename, Right click to delete",
-					onContextMenu: (ev) => {
-						sp(ev);
-					},
+					onContextMenu: sp,
 					onMouseDown: (ev) => {
 						let currentKey = ev.target.innerText;
 						

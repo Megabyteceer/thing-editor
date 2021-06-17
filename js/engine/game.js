@@ -79,7 +79,7 @@ class Game {
 		this.isCanvasMode = false;
 		this._isCanvasRotated = false;
 		this.isUpdateBeforeRender = false;
-		this.__EDITOR_mode = false;
+		this.__EDITOR_mode = true;
 		/// #endif
 	}
 
