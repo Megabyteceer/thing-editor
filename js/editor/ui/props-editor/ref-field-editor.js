@@ -4,7 +4,7 @@ export default class RefFieldEditor extends React.Component {
 
 	constructor() {
 		super();
-		this.props = {onMouseEnter: this.onMouseEnter.bind(this)};
+		this.renderProps = {onMouseEnter: this.onMouseEnter.bind(this)};
 	}
 
 	onMouseEnter() {
@@ -18,7 +18,7 @@ export default class RefFieldEditor extends React.Component {
 		let val = this.props.value;
 
 		if(val instanceof DisplayObject) {
-			return R.span(this.props, R.btn(R.sceneNode(val),
+			return R.span(this.renderProps, R.btn(R.sceneNode(val),
 				() => {
 					if(this.props.value) {
 						editor.selection.select(this.props.value);
