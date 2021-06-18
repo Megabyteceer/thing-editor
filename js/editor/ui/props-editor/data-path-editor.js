@@ -150,7 +150,7 @@ export default class DataPathEditor extends React.Component {
 
 		let gotoButton;
 		if(val) {
-			gotoButton = R.btn('🡒', this.onGotoTargetClick, 'Find target object', 'tool-btn' );
+			gotoButton = R.btn('→', this.onGotoTargetClick, 'Find target object', 'tool-btn' );
 		}
 
 		let functionTip;
