@@ -460,9 +460,8 @@ button {
 
 .bottom-panel .select-editor-current {
 	background: #fff;
-	padding: 3px 10px;
-	padding-bottom: 0;
-	margin-top: -3px;
+	padding: 0 10px;
+	border-radius: 2px;
 }
 
 input{
@@ -471,6 +470,10 @@ input{
 	width: 100%;
 	padding: 3px 10px;
 	border:none;
+}
+
+.bottom-panel input {
+	border-radius: 2px;
 }
 
 .select-editor {
@@ -957,28 +960,38 @@ input{
 }
 
 .bottom-panel {
+	display: flex;
+	align-items: center;
 	white-space: nowrap;
-	padding: 3px 8px;
+	padding: 0 8px;
 	position: absolute;
 	width: 100%;
-	bottom: 3px;
+	bottom: 8px;
 	box-sizing: border-box;
 }
 
 .bottom-panel .number-input input {
 	width: 80px;
-	margin-top: -3px;
+}
+
+.timeline-buttons-group {
+	display: inline-block;
+	background: #ddd;
+	padding-left: 0;
+	border-radius: 14px;
+	margin: 1px;
 }
 
 .bottom-panel input, .bottom-panel .select-editor{
 	width:initial;
-	vertical-align: middle;
 }
 
 .objects-timeline-labels button {
 	padding:0 4px;
-	border-radius:0;
+	border-radius:2px;
 	margin:1px;
+	background: transparent;
+	vertical-align: top;
 }
 
 .timeline-labels-panel {
@@ -1299,12 +1312,12 @@ input{
 }
 
 .number-input-btn-up {
-	top: -1px;
+	top: 0;
 	height: 11px;
 }
 
 .number-input-btn-down {
-	bottom: -3px;
+	bottom: -2px;
 	height: 11px;
 }
 
@@ -1450,6 +1463,7 @@ input{
 
 #window-texturesviewer .list-view {
 	top: 64px;
+	text-align: center;
 }
 #window-texturesviewer .select-editor {
 	display: inline-block;
@@ -1460,6 +1474,12 @@ input{
 	transform: scale(0.98);
 }
 
+
+.textures-viewer-top-bar {
+    display: flex;
+    align-items: center;
+}
+
 .textures-viewer-image {
 	background:url(../img/bg.png);
 	max-width: 256px;
@@ -1468,14 +1488,22 @@ input{
 	display: block;
 }
 
+.folder-loading-settings{
+	position: absolute;
+	left: 5px;
+}
+
 .texture-mipmap-check {
 	width: unset;
 }
 
 .textures-viewer-item {
-	margin: 15px;
-	text-align: center;
-	display: inline-block;
+	width: 265px;
+    height: 300px;
+    margin: 5px;
+    text-align: center;
+    vertical-align: top;
+    display: inline-block;
 }
 
 .texture-preload-checkbox {

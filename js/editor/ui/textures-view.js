@@ -24,6 +24,8 @@ const LOADING_TYPES = [
 	}
 ];
 
+const topBarProps = {className: 'textures-viewer-top-bar'};
+
 const FILTER_SELECT = LOADING_TYPES.slice();
 FILTER_SELECT.unshift({
 	name: 'All',
@@ -257,13 +259,15 @@ class TexturesViewerBody extends React.Component {
 		}
 
 		return R.div(null,
-			R.btn(R.icon('reload-assets'), editor.ui.viewport.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
-			R.btn(R.icon('cleanup-assets'), this.checkForUnusedImages, 'Auto-clean. Check for images unused in prefabs and scenes. It is still can be used in code or in not standard fields', 'big-btn'),
-			R.span(null,
-				"Filter by loading mode: ",
-				React.createElement(SelectEditor, {onChange:(ev) => {
-					this.setState({filter: ev.target.value});
-				}, noCopyValue:true, value:this.state.filter, select: FILTER_SELECT})
+			R.div(topBarProps,
+				R.btn(R.icon('reload-assets'), editor.ui.viewport.onReloadAssetsClick, 'Reload game assets', 'big-btn'),
+				R.btn(R.icon('cleanup-assets'), this.checkForUnusedImages, 'Auto-clean. Check for images unused in prefabs and scenes. It is still can be used in code or in not standard fields', 'big-btn'),
+				R.span(null,
+					"\u00A0Filter by loading mode: ",
+					React.createElement(SelectEditor, {onChange:(ev) => {
+						this.setState({filter: ev.target.value});
+					}, noCopyValue:true, value:this.state.filter, select: FILTER_SELECT})
+				)
 			),
 			R.div({className:'list-view'},
 				group.groupArray(list)
