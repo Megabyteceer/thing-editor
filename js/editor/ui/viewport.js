@@ -46,6 +46,10 @@ export default class Viewport extends React.Component {
 		this.stopExecution = this.stopExecution.bind(this);
 		this.onOneStepClick = this.onOneStepClick.bind(this);
 		this.onHelpersToggle = this.onHelpersToggle.bind(this);
+		this.onDoubleClick = this.onDoubleClick.bind(this);
+		this.onDragOver = this.onDragOver.bind(this);
+		this.onDrop = this.onDrop.bind(this);
+		this.onMobileToggle = this.onMobileToggle.bind(this);
 		this.helpersHidden = false;
 		game.isMobile.any = editor.settings.getItem('mobileMode', game.isMobile.any);
 	}
@@ -221,7 +225,55 @@ export default class Viewport extends React.Component {
 			needReloadCode: false
 		});
 	}
-	
+
+	onBgColorChange(ev) {
+		editor.overlay.setBGColor(parseInt(ev.target.value.replace('#', ''), 16));
+	}
+
+	onDoubleClick(ev) {
+		if(ev.ctrlKey) {
+			this.resetZoom();
+		}
+	}
+
+	onDragOver(ev) {
+		if (canBeDragAccepted(ev)) {
+			ev.dataTransfer.effectAllowed = "copy";
+			ev.dataTransfer.dropEffect = "copy";
+			ev.preventDefault();
+		}
+	}
+
+	onMobileToggle (ev) {
+		game.isMobile.any = ev.target.checked;
+		editor.settings.setItem('mobileMode', game.isMobile.any);
+		this.resetZoom();
+	}
+
+	onDrop(ev) {
+		let i = canBeDragAccepted(ev);
+		if(i) {
+			let b = ev.target.getBoundingClientRect();
+			let scale = b.width / ev.target.width;
+			let p = {
+				x: (ev.clientX - b.left) / scale,
+				y: (ev.clientY - b.top) / scale
+			};
+
+			i.getAsString((imageId) => {
+				let o = ClassesView.loadSafeInstanceByClassName('DSprite');
+				o.image = imageId;
+
+				game.stage.toLocal(p, undefined, o);
+				editor.addToScene(o);
+				o.x = Math.round(o.x);
+				o.y = Math.round(o.y);
+			});
+		}
+		sp(ev);
+		game.__loadDynamicTextures();
+	}
+
 	render() {
 		
 		let className = 'editor-viewport-wrapper';
@@ -250,9 +302,7 @@ export default class Viewport extends React.Component {
 				R.hr(),
 				'BG color:',
 				R.input({
-					onChange: (ev) => {
-						editor.overlay.setBGColor(parseInt(ev.target.value.replace('#', ''), 16));
-					},
+					onChange: this.onBgColorChange,
 					className: 'clickable',
 					type: 'color',
 					defaultValue: '#' + editor.overlay.getBGColor().toString(16).padStart(6, '0')
@@ -283,7 +333,7 @@ export default class Viewport extends React.Component {
 				statusHeader,
 				pauseResumeBtn,
 				oneStepBtn,
-				R.hr(),
+				(statusHeader) && R.hr(),
 				toggleOrientationBtn,
 				R.btn('⛶', () => {
 					document.querySelector('#viewport-root').requestFullscreen();
@@ -306,11 +356,7 @@ export default class Viewport extends React.Component {
 					document.querySelector('#helpers-checkbox').click();
 				}, undefined, "hidden", 1072),
 				R.input({id:"helpers-checkbox", className:'clickable', type:'checkbox', title: "Hide helpers (Ctrl + H)", onChange: this.onHelpersToggle, defaultChecked:this.helpersHidden}),
-				R.input({id:"is-mobile-checkbox", className:'clickable', type:'checkbox', title: "game.isMobile.any", onChange: (ev) => {
-					game.isMobile.any = ev.target.checked;
-					editor.settings.setItem('mobileMode', game.isMobile.any);
-					this.resetZoom();
-				}, defaultChecked:game.isMobile.any}),
+				R.input({id:"is-mobile-checkbox", className:'clickable', type:'checkbox', title: "game.isMobile.any", onChange: this.onMobileToggle, defaultChecked:game.isMobile.any}),
 
 				languagePanel,
 				R.hr(),
@@ -319,41 +365,9 @@ export default class Viewport extends React.Component {
 			R.div({
 				id: 'viewport-root',
 				className: 'editor-viewport',
-				onDoubleClick: (ev) => {
-					if(ev.ctrlKey) {
-						this.resetZoom();
-					}
-				},
-				onDragOver: (ev) => {
-					if (canBeDragAccepted(ev)) {
-						ev.dataTransfer.effectAllowed = "copy";
-						ev.dataTransfer.dropEffect = "copy";
-						ev.preventDefault();
-					}
-				},
-				onDrop: (ev) => {
-					let i = canBeDragAccepted(ev);
-					if(i) {
-						let b = ev.target.getBoundingClientRect();
-						let scale = b.width / ev.target.width;
-						let p = {
-							x: (ev.clientX - b.left) / scale,
-							y: (ev.clientY - b.top) / scale
-						};
-
-						i.getAsString((imageId) => {
-							let o = ClassesView.loadSafeInstanceByClassName('DSprite');
-							o.image = imageId;
-
-							game.stage.toLocal(p, undefined, o);
-							editor.addToScene(o);
-							o.x = Math.round(o.x);
-							o.y = Math.round(o.y);
-						});
-					}
-					ev.preventDefault();
-					game.__loadDynamicTextures();
-				}
+				onDoubleClick: this.onDoubleClick,
+				onDragOver: this.onDragOver,
+				onDrop: this.onDrop,
 			})
 		);
 	}

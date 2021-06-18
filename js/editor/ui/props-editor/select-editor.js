@@ -219,16 +219,18 @@ class SelectEditor extends React.Component {
 			ctrlclickcopyvalue: (typeof item.value === 'undefined') ? item : item.value,
 			className: 'selectable-text',
 			title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
-			onClick: (ev) => {
-				if(ev.ctrlKey) {
-					sp(ev);
-				}
-			},
+			onClick: stopPropagationIfCtrl,
 			onMouseDown:window.copyTextByClick
 		}, item.name ? item.name : item),' ▾')
 		);
 	}
 
 }
+
+const stopPropagationIfCtrl = (ev) => {
+	if(ev.ctrlKey) {
+		sp(ev);
+	}
+};
 
 export default SelectEditor;
