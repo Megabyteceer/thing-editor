@@ -2,9 +2,9 @@ import DisplayObject from "thing-editor/js/engine/components/display-object.js";
 
 export default class RefFieldEditor extends React.Component {
 
-	constructor() {
-		super();
-		this.renderProps = {onMouseEnter: this.onMouseEnter.bind(this)};
+	constructor(props) {
+		super(props);
+		this.RENDER_PROPS = {onMouseEnter: this.onMouseEnter.bind(this)};
 	}
 
 	onMouseEnter() {
@@ -18,7 +18,7 @@ export default class RefFieldEditor extends React.Component {
 		let val = this.props.value;
 
 		if(val instanceof DisplayObject) {
-			return R.span(this.renderProps, R.btn(R.sceneNode(val),
+			return R.span(this.RENDER_PROPS, R.btn(R.sceneNode(val),
 				() => {
 					if(this.props.value) {
 						editor.selection.select(this.props.value);
