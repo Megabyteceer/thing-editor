@@ -90,20 +90,26 @@ function toggleGroup(ev) {
 		group.style.transform = 'scaleY(0)';
 		group.style.transformOrigin = 'top left';
 		let height;
-		setTimeout(() => {
-			height = window.getComputedStyle(group).getPropertyValue("height");
-			group.style.maxHeight = '0px';
-			group.style.position = 'unset';
-			group.style.opacity = 1;
-			group.style.transition = 'all 0.1s';
-			setTimeout(() => {
-				group.style.transform = 'scaleY(1)';
-				group.style.maxHeight = height;
-				setTimeout(() => {
-					group.style.maxHeight = 'unset';
-				}, 114);
-			}, 10);
-		},10);
+		let timer = setInterval(() => {
+			height = group.clientHeight;
+			if(height > 0) {
+				clearInterval(timer);
+				group.style.maxHeight = '0px';
+				group.style.position = 'unset';
+				group.style.opacity = 1;
+				group.style.transition = 'all 0.1s';
+				timer = setInterval(() => {
+					if(group.clientHeight === 6) {
+						clearInterval(timer);
+						group.style.transform = 'scaleY(1)';
+						group.style.maxHeight = height + 'px';
+						setTimeout(() => {
+							group.style.maxHeight = 'unset';
+						}, 114);
+					}
+				}, 1);
+			}
+		},1);
 	} else {
 		group.style.transform = 'scaleY(1)';
 		group.style.transformOrigin = 'top left';
