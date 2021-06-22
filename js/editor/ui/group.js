@@ -84,7 +84,7 @@ function toggleGroup(ev) {
 	if (!isHidden) {
 		group.classList.remove('hidden');
 		group.style.transition = 'unset';
-		group.style.opacity = 0.01;
+		group.style.opacity = 0.001;
 		group.style.position = 'absolute';
 		group.style.maxHeight = 'unset';
 		group.style.transform = 'scaleY(0)';
