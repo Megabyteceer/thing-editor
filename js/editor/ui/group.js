@@ -84,19 +84,36 @@ function toggleGroup(ev) {
 	if (!isHidden) {
 		group.classList.remove('hidden');
 		group.style.transition = 'unset';
-		group.style.maxHeight = '0px';
-		group.style.transition = 'all 0.2s';
+		group.style.opacity = 0.01;
+		group.style.position = 'absolute';
+		group.style.maxHeight = 'unset';
+		group.style.transform = 'scaleY(0)';
+		group.style.transformOrigin = 'top left';
+		let height;
 		setTimeout(() => {
-			group.style.maxHeight = '400px';
-		}, 1);
-		setTimeout(() => {
-			group.style.maxHeight = 'unset';
-		}, 244);
+			height = window.getComputedStyle(group).getPropertyValue("height");
+			group.style.maxHeight = '0px';
+			group.style.position = 'unset';
+			group.style.opacity = 1;
+			group.style.transition = 'all 0.1s';
+			setTimeout(() => {
+				group.style.transform = 'scaleY(1)';
+				group.style.maxHeight = height;
+				setTimeout(() => {
+					group.style.maxHeight = 'unset';
+				}, 114);
+			}, 17);
+		},17);
+		
+		
 	} else {
+		group.style.transform = 'scaleY(1)';
+		group.style.transformOrigin = 'top left';
 		group.style.transition = 'unset';
 		group.style.maxHeight = group.clientHeight + 'px';
 		group.style.transition = 'all 0.1s';
 		setTimeout(() => {
+			group.style.transform = 'scaleY(0)';
 			group.style.maxHeight = '0px';
 		}, 1);
 		setTimeout(() => {
