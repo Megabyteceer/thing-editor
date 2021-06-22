@@ -303,7 +303,7 @@ export default class KeyframePropertyEditor extends React.Component {
 		if(kf.j !== kf.t) {
 			jumpReset = R.btn('x', this.resetJumpTime, "Remove loop point");
 		}
-		let jumpEditor = React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: -99999999, max: 99999999, onChange: this.onJumpChanged});
+		let jumpEditor = R.span(null, React.createElement(NumberEditor, {value: kf.j, type:'number', step:1, min: -99999999, max: 99999999, onChange: this.onJumpChanged}));
 
 		if(document.activeElement && document.activeElement.className === 'props-editor-callback') {
 			setTimeout(() => {
@@ -324,11 +324,9 @@ export default class KeyframePropertyEditor extends React.Component {
 			R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster'}, '\u00A0Time random:'),
 			R.input({className:'clickable', id: 'random-set-checkbox', type:'checkbox', onChange: this.onSetRandomExistsChanged, checked:hasRandom}),
 			randomEditor,
-			R.span(null,
-				R.label({htmlFor:'jump-time-checkbox'}, '\u00A0Loop:\u00A0'),
-				jumpEditor,
-				jumpReset
-			),
+			R.label({htmlFor:'jump-time-checkbox'}, '\u00A0Loop:\u00A0'),
+			jumpEditor,
+			jumpReset,
 			extendEditor
 		);
 
