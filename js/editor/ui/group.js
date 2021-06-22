@@ -102,10 +102,8 @@ function toggleGroup(ev) {
 				setTimeout(() => {
 					group.style.maxHeight = 'unset';
 				}, 114);
-			}, 17);
-		},17);
-		
-		
+			}, 10);
+		},10);
 	} else {
 		group.style.transform = 'scaleY(1)';
 		group.style.transformOrigin = 'top left';
