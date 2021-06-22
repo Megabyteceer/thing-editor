@@ -387,7 +387,8 @@ button {
 
 .props-group{
 	margin-bottom: 3px;
-	border-radius:2px;
+	border-radius: 4px;
+	border: 1px solid var(--window-header-color);
 	overflow:hidden;
 }
 
@@ -402,7 +403,7 @@ button {
 }
 
 .props-group-body {
-	padding-left: 15px;
+	padding: 3px;
 	background:#fff;
 }
 
@@ -1092,6 +1093,7 @@ input{
 }
 
 .langs-editor {
+	padding: 4px;
 	top:0;
 	bottom:0;
 	position:absolute;
@@ -1133,8 +1135,8 @@ input{
 	display: inline-block;
 	width: 350px;
 	height: 50px;
-	border-top: 1px solid #aaa;
-	border-left: 1px solid #aaa;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
 	vertical-align: top;
 }
 
@@ -1150,6 +1152,18 @@ input{
 	color: #ccc;
 }
 
+.langs-editor-tr:first-of-type .langs-editor-td, .langs-editor-tr:first-of-type .langs-editor-th{
+	border-top: none;
+}
+
+.langs-editor-th:first-of-type{
+	border-left: none;
+}
+
+.langs-editor-header {
+	margin-bottom: 3px;
+}
+
 .langs-editor-header .langs-editor-th {
 	height: 30px;
 	background: #789;
@@ -1159,6 +1173,7 @@ input{
 }
 
 .langs-editor-tr {
+	display: block;
 	white-space: nowrap;
 	box-sizing: border-box;
 }
@@ -1313,12 +1328,12 @@ input{
 }
 
 .number-input-btn-up {
-	top: 0;
+	top: -1px;
 	height: 11px;
 }
 
 .number-input-btn-down {
-	bottom: -2px;
+	bottom: -3px;
 	height: 11px;
 }
 
@@ -1469,12 +1484,6 @@ input{
 #window-texturesviewer .select-editor {
 	display: inline-block;
 }
-#window-texteditor .props-group-body {
-	padding: 0;
-	transform-origin: top right;
-	transform: scale(0.98);
-}
-
 
 .textures-viewer-top-bar {
     display: flex;

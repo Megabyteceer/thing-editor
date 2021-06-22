@@ -81,10 +81,27 @@ function toggleGroup(ev) {
 	let group = ev.target.closest('.props-group').querySelector('.props-group-body');
 	let isHidden = !group.classList.contains('hidden');
 	editor.settings.setItem(groupId, isHidden);
-	if (isHidden) {
-		group.classList.add('hidden');
-	} else {
+	if (!isHidden) {
 		group.classList.remove('hidden');
+		group.style.transition = 'unset';
+		group.style.maxHeight = '0px';
+		group.style.transition = 'all 0.2s';
+		setTimeout(() => {
+			group.style.maxHeight = '400px';
+		}, 1);
+		setTimeout(() => {
+			group.style.maxHeight = 'unset';
+		}, 244);
+	} else {
+		group.style.transition = 'unset';
+		group.style.maxHeight = group.clientHeight + 'px';
+		group.style.transition = 'all 0.1s';
+		setTimeout(() => {
+			group.style.maxHeight = '0px';
+		}, 1);
+		setTimeout(() => {
+			group.classList.add('hidden');
+		}, 114);
 	}
 }
 

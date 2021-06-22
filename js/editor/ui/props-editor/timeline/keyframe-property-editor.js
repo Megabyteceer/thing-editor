@@ -291,12 +291,12 @@ export default class KeyframePropertyEditor extends React.Component {
 		let speedEditor;
 		if(hasSpeed && speedSetPossible) {
 			let edField = editor.getObjectField(editor.selection[0], kf.___view.props.owner.props.owner.props.field.n);
-			speedEditor = React.createElement(NumberEditor, {value: speedVal, type:'number', step:(edField.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged});
+			speedEditor = R.span(null,React.createElement(NumberEditor, {value: speedVal, type:'number', step:(edField.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged}));
 		}
 		let hasRandom =  kf.hasOwnProperty('r');
 		let randomEditor;
 		if(hasRandom) {
-			randomEditor = React.createElement(NumberEditor, {value: kf.r, type:'number', step:1, min: -1000, onChange: this.onRandomChanged});
+			randomEditor = R.span(null, React.createElement(NumberEditor, {value: kf.r, type:'number', step:1, min: -1000, onChange: this.onRandomChanged}));
 		}
 
 		let jumpReset;
@@ -321,7 +321,7 @@ export default class KeyframePropertyEditor extends React.Component {
 			speedSetPossible ? R.label({htmlFor:'speed-set-checkbox'}, '\u00A0Set speed:') : undefined,
 			speedSetPossible ? R.input({className:'clickable', id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeedExistsChanged, checked:hasSpeed}) : undefined,
 			speedEditor,
-			R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster'}, ' Time random:'),
+			R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster'}, '\u00A0Time random:'),
 			R.input({className:'clickable', id: 'random-set-checkbox', type:'checkbox', onChange: this.onSetRandomExistsChanged, checked:hasRandom}),
 			randomEditor,
 			R.span(null,
