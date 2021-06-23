@@ -11,14 +11,18 @@ const {
 
 const wss = require('./server-socket.js');
 
-module.exports = function (projectPath, callback, options) {
+module.exports = async function (projectPath, options) {
+	let resolve;
+	let retPromise = new Promise((_resolve) => {
+		resolve = _resolve;
+	});
 	let result = {};
 	let soundsPath = path.join(projectPath, 'snd/');
 	if(!fs.existsSync(soundsPath)) {
-		callback(result);
-		return;
+		resolve(result);
+		return retPromise;
 	}
-	
+	wss.notify("Sounds processing...");
 	function outputError(err, outError, out) {
 		if(!result.errors) {
 			result.errors = [];
@@ -56,7 +60,7 @@ module.exports = function (projectPath, callback, options) {
 
 			let hash;
 			if(cache.hasOwnProperty(shortName) && (s.mtimeMs !== cache[shortName].mtimeMs)) {
-				hash = md5File.sync(fn);
+				hash = await md5FileSafe(fn);
 				if(cache[shortName].hash === hash) {
 					cache[shortName].mtimeMs = s.mtimeMs;
 				}
@@ -65,7 +69,7 @@ module.exports = function (projectPath, callback, options) {
 			if (!allTargetFilesExists || (options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs) || (bitrate !== cache[shortName].bitrate)) {
 				filesToConvert.push(fn);
 				if(!hash) {
-					hash = md5File.sync(fn);
+					hash = await md5FileSafe(fn);
 				}
 				cache[shortName] = {
 					mtimeMs: s.mtimeMs,
@@ -76,8 +80,8 @@ module.exports = function (projectPath, callback, options) {
 		}
 	}
 	if (filesToConvert.length < 1) {
-		callback(result);
-		return;
+		resolve(result);
+		return retPromise;
 	}
 
 	function convertNextFile() {
@@ -85,7 +89,7 @@ module.exports = function (projectPath, callback, options) {
 			if(!result.errors) {
 				fs.writeFileSync(cacheFn, JSON.stringify(cache));
 			}
-			callback(result);
+			resolve(result);
 		} else {
 			let fn = filesToConvert.pop();
 
@@ -167,8 +171,22 @@ module.exports = function (projectPath, callback, options) {
 		}
 		conversionAttempt();
 	}
+	return retPromise;
 };
 
+function md5FileSafe(fn) {
+	return new Promise((resolve) => {
+		try {
+			resolve(md5File.sync(fn));
+		} catch (er) { // eslint-disable-line no-empty
+			setInterval(() => {
+				try {
+					resolve(md5File.sync(fn));
+				} catch (er) {}// eslint-disable-line no-empty
+			}, 1000);
+		}
+	});
+}
 
 //=========== enum files ================================
 const walkSync = (dir, filelist = []) => {
