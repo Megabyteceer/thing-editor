@@ -435,6 +435,7 @@ button {
 }
 
 .props-label {
+	padding-left: 10px;
 	font-family: monospace;
 	box-sizing:border-box;
 	width: 50%;
@@ -446,7 +447,6 @@ button {
 
 .props-label-editor-only {
 	color: #999999;
-
 }
 
 .props-wrapper {
