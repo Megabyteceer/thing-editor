@@ -4,8 +4,6 @@ Visual game editor for pixi.js 5.
 
 ![Editor screenshot](https://raw.githubusercontent.com/wiki/Megabyteceer/thing-editor/img/full-editor.jpg)
 
-Project in experimental **beta-version**.
-
 ## Installation
 
 Please check if you have latest **git**, **nodejs**, **npm**, **chrome**, and **ffmpeg** on your computer, **before installlation**.
