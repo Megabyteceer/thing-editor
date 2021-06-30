@@ -1328,7 +1328,7 @@ input{
 }
 
 .number-input-btn-up {
-	top: -1px;
+	top: 0;
 	height: 11px;
 }
 
