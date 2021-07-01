@@ -80,7 +80,7 @@ function toggleGroup(ev) {
 	let groupId = ev.target.dataset.groupid;
 	let group = ev.target.closest('.props-group').querySelector('.props-group-body');
 	let isHidden = group.classList.contains('hidden');
-	editor.settings.setItem(groupId, isHidden);
+	editor.settings.setItem(groupId, !isHidden);
 	if (isHidden) {
 		group.classList.remove('hidden');
 		group.style.transition = 'unset';
