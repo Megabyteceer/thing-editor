@@ -79,9 +79,9 @@ function isGroupHidden(groupId) {
 function toggleGroup(ev) {
 	let groupId = ev.target.dataset.groupid;
 	let group = ev.target.closest('.props-group').querySelector('.props-group-body');
-	let isHidden = !group.classList.contains('hidden');
+	let isHidden = group.classList.contains('hidden');
 	editor.settings.setItem(groupId, isHidden);
-	if (!isHidden) {
+	if (isHidden) {
 		group.classList.remove('hidden');
 		group.style.transition = 'unset';
 		group.style.opacity = 0.001;
@@ -99,7 +99,7 @@ function toggleGroup(ev) {
 				group.style.opacity = 1;
 				group.style.transition = 'all 0.1s';
 				timer = setInterval(() => {
-					if(group.clientHeight === 6) {
+					if(group.clientHeight === 0) {
 						clearInterval(timer);
 						group.style.transform = 'scaleY(1)';
 						group.style.maxHeight = height + 'px';

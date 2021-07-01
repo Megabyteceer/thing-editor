@@ -29,6 +29,15 @@ button:disabled {
 	color: unset;
 }
 
+input {
+	user-select:all;
+	font-family: monospace;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 3px 10px;
+	border:none;
+}
+
 hr{
 	width: 80%;
 	border:0;
@@ -60,20 +69,12 @@ b{
 	font-weight:bold;
 }
 
-input {
-	user-select:all;
-}
-
 textarea:focus, input:focus{
 	outline: 0;
 }
 
 img {
 	vertical-align: middle;
-}
-
-.checkbox{
-	cursor:pointer;
 }
 
 .unclickable{
@@ -291,7 +292,14 @@ button {
 	outline: 1px solid #f00;
 }
 
-.editor-viewport-panel{text-align: center;width: 80px;}
+.editor-viewport-panel {
+	text-align: center;
+	width: 80px;
+}
+
+.editor-viewport-panel input{
+	margin: 0;
+}
 
 .editor-viewport-wrapper{
 	display: flex;
@@ -403,7 +411,7 @@ button {
 }
 
 .props-group-body {
-	padding: 3px;
+	padding: 0 3px;
 	background:#fff;
 }
 
@@ -466,12 +474,15 @@ button {
 	border-radius: 2px;
 }
 
-input{
-	font-family: monospace;
-	box-sizing: border-box;
-	width: 100%;
-	padding: 3px 10px;
-	border:none;
+.bottom-panel input[type="checkbox" i], .bottom-panel .select-editor, .bottom-panel .number-input, .bottom-panel .props-editor-callback {
+	border-radius: 2px;
+	margin: 0 5px;
+}
+
+.bottom-panel button {
+	border-radius: 2px;
+	margin: 0;
+	margin-right: 5px;
 }
 
 .bottom-panel input {
@@ -728,7 +739,7 @@ input{
 	position: absolute;
 	padding: 0 3px;
 	right: 0;
-	top: -18px;
+	top: -17px;
 	font-weight: bold;
 	background: #de3535;
 	color: #ffcece;
@@ -973,7 +984,8 @@ input{
 }
 
 .bottom-panel .number-input input {
-	width: 80px;
+	width: 62px;
+    padding: 3px 6px;
 }
 
 .timeline-buttons-group {
@@ -1197,6 +1209,9 @@ input{
 }
 
 .language-switcher {
+	display: flex;
+    justify-content: center;
+    align-items: center;
 	white-space: nowrap;
 }
 

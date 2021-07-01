@@ -272,15 +272,15 @@ export default class KeyframePropertyEditor extends React.Component {
 		let extendEditor;
 		if(kf.m > 2 ) { //BOUNCE ⬆, BOUNCE ⬇
 			extendEditor = R.span(null,
-				'\u00A0Gravity:\u00A0' ,React.createElement(NumberEditor, {value: kf.g, type:'number', step:0.0001, min: 0.0001, max: 10, onChange: this.onGravityChange}),
-				'\u00A0Bouncing:\u00A0' ,React.createElement(NumberEditor, {value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
+				'Gravity:' ,React.createElement(NumberEditor, {value: kf.g, type:'number', step:0.0001, min: 0.0001, max: 10, onChange: this.onGravityChange}),
+				'Bouncing:' ,React.createElement(NumberEditor, {value: kf.b, type:'number', step:0.01, min: 0.01, max: 10, onChange: this.onBouncingChange})
 			);
 		} else if(kf.m === 0) { //SMOOTH
 			
 			extendEditor = R.span(null,
-				'\u00A0Power:\u00A0', React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 1, onChange: this.onPowChanged}),
-				'\u00A0Damp:\u00A0', React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.00, max: 1, onChange: this.onDampChanged}),
-				'\u00A0Preset\u00A0', React.createElement(PowDampPresetSelector, {
+				'Power:', React.createElement(NumberEditor, {value: selectedObjectsTimeline.p, type:'number', step:0.001, min: 0.00001, max: 1, onChange: this.onPowChanged}),
+				'Damp:', React.createElement(NumberEditor, {value: selectedObjectsTimeline.d, type:'number', step:0.01, min: 0.00, max: 1, onChange: this.onDampChanged}),
+				'Preset', React.createElement(PowDampPresetSelector, {
 					pow: selectedObjectsTimeline.p,
 					damp: selectedObjectsTimeline.d,
 					onPresetSelected: this.onPresetSelected})
@@ -312,19 +312,18 @@ export default class KeyframePropertyEditor extends React.Component {
 		}
 
 		body = R.fragment(
-			'Action:\u00A0',
+			'Action:',
 			R.span({className: 'keyframe-callback-editor'},
 				React.createElement(CallbackEditor, {value:kf.a || null, onChange:this.onActionChange, title:'Callback for keyframe ' + kf.t})
 			),
-			'\u00A0',
 			R.span({title:'Keyframe type'}, React.createElement(SelectEditor, {onChange:this.onTypeSelect, noCopyValue:true, value:kf.m, select: selectableKeyframeTypes})),
-			speedSetPossible ? R.label({htmlFor:'speed-set-checkbox'}, '\u00A0Set speed:') : undefined,
+			speedSetPossible ? R.label({htmlFor:'speed-set-checkbox'}, 'Set speed:') : undefined,
 			speedSetPossible ? R.input({className:'clickable', id: 'speed-set-checkbox', type:'checkbox', onChange: this.onSetSpeedExistsChanged, checked:hasSpeed}) : undefined,
 			speedEditor,
-			R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster'}, '\u00A0Time random:'),
+			R.label({htmlFor:'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster'}, 'Time random:'),
 			R.input({className:'clickable', id: 'random-set-checkbox', type:'checkbox', onChange: this.onSetRandomExistsChanged, checked:hasRandom}),
 			randomEditor,
-			R.label({htmlFor:'jump-time-checkbox'}, '\u00A0Loop:\u00A0'),
+			R.label({htmlFor:'jump-time-checkbox'}, 'Loop:'),
 			jumpEditor,
 			jumpReset,
 			extendEditor
