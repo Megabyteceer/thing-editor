@@ -440,6 +440,7 @@ function refreshCachedData() {
 	L.setLanguagesAssets(languagesMerged);
 
 	langsIdsList = Object.keys(currentLanguage);
+	LanguageView.isOnlyOneLanguage = langsIdsList.length < 2;
 	langsIdsList.sort((a, b) => {
 		return (langIdPriority(a) > langIdPriority(b)) ? 1 : -1;
 	});
