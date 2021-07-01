@@ -99,7 +99,7 @@ function toggleGroup(ev) {
 				group.style.opacity = 1;
 				group.style.transition = 'all 0.1s';
 				timer = setInterval(() => {
-					if(group.clientHeight === 0) {
+					if(group.clientHeight <= 6) {
 						clearInterval(timer);
 						group.style.transform = 'scaleY(1)';
 						group.style.maxHeight = height + 'px';

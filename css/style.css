@@ -411,8 +411,12 @@ button {
 }
 
 .props-group-body {
-	padding: 0 3px;
+	padding: 3px;
 	background:#fff;
+}
+
+.props-editor .props-group-body {
+	padding: 0 3px;
 }
 
 .props-field {
