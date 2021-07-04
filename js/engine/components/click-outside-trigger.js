@@ -1,6 +1,7 @@
 import Container from "./container.js";
 import game from "../game.js";
 import callByPath from "../utils/call-by-path.js";
+import getValueByPath from "../utils/get-value-by-path.js";
 
 let interaction;
 
@@ -16,6 +17,20 @@ export default class ClickOutsideTrigger extends Container {
 		super.init();
 		this.onStageDown = this.onStageDown.bind(this);
 		this.handlerAdded = false;
+		this._insideContainers = [this];
+		if(this.additionalContainers) {
+			for(let path of this.additionalContainers.split(',')) {
+				let c = getValueByPath(path, this);
+				/// #if EDITOR
+				if(!(c instanceof Container)) {
+					editor.ui.status.error('Wrong "additionalContainers" entry: ' + path, 99999, this, 'additionalContainers');
+					c = this;
+					continue;
+				}
+				/// #endif
+				this._insideContainers.push(c);
+			}
+		}
 	}
 
 	onRemove() {
@@ -31,9 +46,9 @@ export default class ClickOutsideTrigger extends Container {
 		if(!ev.target) {
 			this.fire();
 		} else {
-			let p = ev.target.parent;
+			let p = ev.target;
 			while(p) {
-				if(p === this) {
+				if(this._insideContainers.indexOf(p) >= 0) {
 					return;
 				}
 				if(p === game.stage) {
@@ -83,6 +98,10 @@ __EDITOR_editableProps(ClickOutsideTrigger, [
 		name: 'onClickOutside',
 		type: 'callback',
 		important: true
+	},
+	{
+		name: 'additionalContainers', //99999
+		type: String
 	}
 ]);
 ClickOutsideTrigger.__EDITOR_group = 'Basic';

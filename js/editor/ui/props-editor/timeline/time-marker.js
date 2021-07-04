@@ -5,6 +5,8 @@ const timeMarkerLabelProps = {className: 'time-marker-label'};
 const smallTextProps = {className: 'small-text'};
 let fieldLabelTimelineProps = {className: 'objects-timeline-labels'};
 
+const buttonsGroupProps = {className: 'timeline-buttons-group'};
+
 export default class TimeMarker extends React.Component {
 	
 	constructor(params) {
@@ -42,14 +44,20 @@ export default class TimeMarker extends React.Component {
 	render() {
 		return R.div({className: 'time-marker-body', onMouseDown:this.onMouseDown},
 			R.div(fieldLabelTimelineProps,
-				'↕',
-				R.btn('-', this.props.owner.verticalZoomOut, 'Vertical Zoom Out'),
-				R.btn('+', this.props.owner.verticalZoomIn, 'Vertical Zoom In'),
-				' ↔',
-				R.btn('-', this.props.owner.horizontalZoomOut, 'Horizontal Zoom Out (Ctrl + "+")', undefined, 1189),
-				R.btn('+', this.props.owner.horizontalZoomIn, 'Horizontal Zoom In (Ctrl + "-")', undefined, 1187),
-				R.btn('copy', Timeline.copySelection, "Copy selected keyframes and labels. (Ctrl + C)", undefined, 1067, !Timeline.isElementsSelected),
-				R.btn('paste', Timeline.pasteSelection, Timeline.isPasteAvailable + ' (Ctrl + V)', undefined, 1086, !Timeline.isPasteAvailable)
+				R.span(buttonsGroupProps,
+					'\u00A0↕',
+					R.btn('-', this.props.owner.verticalZoomOut, 'Vertical Zoom Out'),
+					R.btn('+', this.props.owner.verticalZoomIn, 'Vertical Zoom In')
+				),
+				R.span(buttonsGroupProps,
+					' ↔',
+					R.btn('-', this.props.owner.horizontalZoomOut, 'Horizontal Zoom Out (Ctrl + "+")', undefined, 1189),
+					R.btn('+', this.props.owner.horizontalZoomIn, 'Horizontal Zoom In (Ctrl + "-")', undefined, 1187)
+				),
+				R.span(buttonsGroupProps,
+					R.btn('copy', Timeline.copySelection, "Copy selected keyframes and labels. (Ctrl + C)", undefined, 1067, !Timeline.isElementsSelected),
+					R.btn('paste', Timeline.pasteSelection, Timeline.isPasteAvailable + ' (Ctrl + V)', undefined, 1086, !Timeline.isPasteAvailable)
+				)
 			),
 			R.div({className: 'time-marker', style:{left: this.state.time * this.props.owner.state.widthZoom}},
 				R.div(timeMarkerLineProps),

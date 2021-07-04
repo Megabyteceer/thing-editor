@@ -288,6 +288,21 @@ window.makePreviewSoundButton = function(propName) {
 	};
 };
 
+const onPreviewButtonClick = (o) => {
+	if(o.__EDITOR_component_in_previewMode) {
+		o.__EDITOR_inner_exitPreviewMode();
+	} else {
+		o.__EDITOR_inner_goToPreviewMode();
+	}
+	editor.refreshPropsEditor();
+};
+
+const classNamePropertyDescriptor = {
+	get: () => {
+		let o = editor.selection[0];
+		return (o.__EDITOR_component_in_previewMode) ? 'danger-btn' : undefined;
+	}
+};
 
 window.makePreviewModeButton = function(title, helpUrl) {
 	let previewBtnProperty = {
@@ -295,21 +310,9 @@ window.makePreviewModeButton = function(title, helpUrl) {
 		title,
 		helpUrl,
 		name: title,
-		onClick: (o) => {
-			if(o.__EDITOR_component_in_previewMode) {
-				o.__EDITOR_inner_exitPreviewMode();
-			} else {
-				o.__EDITOR_inner_goToPreviewMode();
-			}
-			editor.refreshPropsEditor();
-		}
+		onClick: onPreviewButtonClick
 	};
-	Object.defineProperty(previewBtnProperty, 'className', {
-		get: () => {
-			let o = editor.selection[0];
-			return (o.__EDITOR_component_in_previewMode) ? 'danger-btn' : undefined;
-		}
-	});
+	Object.defineProperty(previewBtnProperty, 'className', classNamePropertyDescriptor);
 	return previewBtnProperty;
 };
 

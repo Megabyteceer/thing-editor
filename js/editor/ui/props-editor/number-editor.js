@@ -4,12 +4,17 @@ const numberEditorProps = {className:'number-input'};
 
 let draggingElement;
 let preventClickBecauseOfDragging;
+let downedArrow;
 
+function clearDownedArrayRef() {
+	downedArrow = null;
+}
 function onMouseUp() {
 	if(draggingElement) {
 		document.exitPointerLock();
 		draggingElement = undefined;
 	}
+	setTimeout(clearDownedArrayRef, 1);
 }
 
 document.addEventListener('mouseup', onMouseUp);
@@ -72,13 +77,13 @@ class NumberEditor extends React.Component {
 	}
 
 	onUpClick(ev) {
-		if(!preventClickBecauseOfDragging) {
+		if(!preventClickBecauseOfDragging && downedArrow === ev.target) {
 			this.deltaValue(this.step, ev.ctrlKey);
 		}
 	}
 		
 	onDownClick(ev) {
-		if(!preventClickBecauseOfDragging) {
+		if(!preventClickBecauseOfDragging && downedArrow === ev.target) {
 			this.deltaValue(-this.step, ev.ctrlKey);
 		}
 	}
@@ -114,6 +119,7 @@ class NumberEditor extends React.Component {
 	onMouseDown(ev) {
 		ev.target.requestPointerLock();
 		draggingElement = this;
+		downedArrow = ev.target;
 		preventClickBecauseOfDragging = false;
 	}
 

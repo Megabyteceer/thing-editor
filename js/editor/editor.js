@@ -66,6 +66,7 @@ export default class Editor {
 		
 		this.ClassesLoader = ClassesLoader;
 		this.AssetsLoader = AssetsLoader;
+		this.TexturesView = TexturesView;
 
 		this.callInitIfGameRuns = callInitIfGameRuns;
 
@@ -967,6 +968,8 @@ declare global {
 
 	_callInPortraitMode(callback) {
 		let tmpOrientation = game.___enforcedOrientation;
+		let tmpIsMobile = game.isMobile.any;
+		game.isMobile.any = false;
 		if (game.projectDesc.screenOrientation === 'auto') {
 			game.___enforcedOrientation = 'landscape';
 			game.__enforcedW = game.projectDesc.width;
@@ -983,6 +986,7 @@ declare global {
 		game.___enforcedOrientation = tmpOrientation;
 		delete game.__enforcedW;
 		delete game.__enforcedH;
+		game.isMobile.any = tmpIsMobile;
 		game.onResize();
 
 	}

@@ -264,17 +264,12 @@ class ClassesView extends React.Component {
 			body.reverse();
 		}
 		
-		let bottomPanelClassName = '';
-		if (!this.selectedItem) {
-			bottomPanelClassName += ' disabled';
-		}
-		
 		return R.fragment(
 			R.div({className: 'classes-top-panel'},
-				R.span({className: bottomPanelClassName},
-					R.btn('Add', this.onAddClick, 'Add object to the scene. (Alt + Ctrl + [item click])'),
-					R.btn('Child', this.onAddAsChildClick, 'Add object as child of selected object. (Alt + [item click])', undefined,undefined, !editor.isCanBeAddedAsChild()),
-					R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene. (Ctrl + [item click])', undefined, undefined, !game.__EDITOR_mode)
+				R.span(null,
+					R.btn('Add', this.onAddClick, 'Add object to the scene. (Alt + Ctrl + [item click])', undefined,undefined, !this.selectedItem),
+					R.btn('Child', this.onAddAsChildClick, 'Add object as child of selected object. (Alt + [item click])', undefined,undefined, !this.selectedItem || !editor.isCanBeAddedAsChild()),
+					R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene. (Ctrl + [item click])', undefined, undefined, !this.selectedItem || !game.__EDITOR_mode || !editor.selection.length)
 				),
 				R.btn('New', this.onNewComponentClick, 'Create new custom component.'),
 				R.input(this.searchInputProps)

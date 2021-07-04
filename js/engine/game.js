@@ -79,7 +79,7 @@ class Game {
 		this.isCanvasMode = false;
 		this._isCanvasRotated = false;
 		this.isUpdateBeforeRender = false;
-		this.__EDITOR_mode = false;
+		this.__EDITOR_mode = true;
 		/// #endif
 	}
 
@@ -136,19 +136,22 @@ class Game {
 
 		if ((this.projectDesc.screenOrientation === 'auto')) {
 			orientation = this.__enforcedOrientation;
-			if(this.__enforcedOrientation === 'portrait') {
+		} else {
+		/// #endif
+			orientation = this.projectDesc.screenOrientation;
+		/// #if EDITOR
+		}
+		
+		if (dynamicStageSize) {
+			if(orientation === 'portrait') {
 				if(w > h*0.8) {
 					w = Math.round(h*0.8);
 				}
 			} else {
 				if(h > w*0.8) {
 					h = Math.round(w*0.8);
-				} 
+				}
 			}
-		} else {
-		/// #endif
-			orientation = this.projectDesc.screenOrientation;
-		/// #if EDITOR
 		}
 		/// #endif
 
@@ -171,7 +174,12 @@ class Game {
 			game.isPortrait = false;
 			break;
 		}
-		if(!PIXI.utils.isMobile.any ) { //rotate canvas for fixed orientation projects on mobile only
+	
+		if(!PIXI.utils.isMobile.any // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false	
+			/// #endif
+		) { //rotate canvas for fixed orientation projects on mobile only
 			rotateCanvas = false;
 		}
 
@@ -223,7 +231,11 @@ class Game {
 		}
 
 		let s = 1;
-		if(this.isMobile.any) {
+		if(this.isMobile.any // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false	
+			/// #endif
+		) {
 			if(game.projectDesc.renderResolutionMobile) {
 				s = game.projectDesc.renderResolutionMobile;
 			}
@@ -473,6 +485,22 @@ class Game {
 				game.projectDesc.loadOnDemandTextures[name] = n;
 			}
 			editor.saveProjectDesc();
+
+			const TEXTURE_BITS = 4 | 8 | 16;
+			if(Lib.hasTexture(name) && ((current & TEXTURE_BITS) !== (n & TEXTURE_BITS))) {
+				let baseTexture = Lib.getTexture(name).baseTexture;
+				baseTexture.mipmap = (n & 4) ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF;
+				const w = PIXI.WRAP_MODES;
+				if(n & 16) {
+					baseTexture.wrapMode = w.MIRRORED_REPEAT;
+				} else if (n & 8) {
+					baseTexture.wrapMode = w.REPEAT;
+				} else {
+					baseTexture.wrapMode = w.CLAMP;
+				}
+				baseTexture.update();
+				editor.TexturesView.refresh();
+			}
 		}
 	}
 	/// #endif
@@ -661,13 +689,21 @@ class Game {
 		} else {
 			resizeOutJump = setTimeout(() => {
 				resizeOutJump = false;
-				if(game.isMobile.any) {
+				if(game.isMobile.any // eslint-disable-line no-constant-condition
+					/// #if EDITOR
+					&& false	
+					/// #endif
+				) {
 					for(let i of [20,40,80,200,500,1000,1500,2000,3000]) {
 						setTimeout(this.onResize, i);
 					}
 				}
 				this.onResize();
-			}, game.isMobile.any ? 1 : 200);
+			}, game.isMobile.any // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false	
+			/// #endif
+				? 1 : 200);
 		}
 	}
 	/**
