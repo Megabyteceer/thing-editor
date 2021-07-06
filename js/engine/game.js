@@ -547,6 +547,7 @@ class Game {
 			defaultMusVol: 1,
 			defaultSoundsVol: 1,
 			keepSoundWhilePageUpdate: false,
+			keepUpdateUnfocused: false,
 			embedLocales: true,
 			__localesNewKeysPrefix: '',
 			__externalTranslations: [],
@@ -654,7 +655,21 @@ class Game {
 
 		app.stage.addChild(stage);
 
-		app.ticker.add(this._updateGlobal);
+		
+		if(game.projectDesc.keepUpdateUnfocused // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false			
+			/// #endif
+		) { // 99999
+			setInterval(() => {
+				if(!game.isFocused) {
+					game._updateGlobal();
+				}
+			}, 1000/60);
+		} else {
+			app.ticker.add(this._updateGlobal);
+		}
+
 		Sound.init();
 
 		this._gameInitializedResolve();
