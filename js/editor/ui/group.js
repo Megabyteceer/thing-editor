@@ -79,12 +79,50 @@ function isGroupHidden(groupId) {
 function toggleGroup(ev) {
 	let groupId = ev.target.dataset.groupid;
 	let group = ev.target.closest('.props-group').querySelector('.props-group-body');
-	let isHidden = !group.classList.contains('hidden');
-	editor.settings.setItem(groupId, isHidden);
+	let isHidden = group.classList.contains('hidden');
+	editor.settings.setItem(groupId, !isHidden);
 	if (isHidden) {
-		group.classList.add('hidden');
-	} else {
 		group.classList.remove('hidden');
+		group.style.transition = 'unset';
+		group.style.opacity = 0.001;
+		group.style.position = 'absolute';
+		group.style.maxHeight = 'unset';
+		group.style.transform = 'scaleY(0)';
+		group.style.transformOrigin = 'top left';
+		let height;
+		let timer = setInterval(() => {
+			height = group.clientHeight;
+			if(height > 0) {
+				clearInterval(timer);
+				group.style.maxHeight = '0px';
+				group.style.position = 'unset';
+				group.style.opacity = 1;
+				group.style.transition = 'all 0.1s';
+				timer = setInterval(() => {
+					if(group.clientHeight <= 6) {
+						clearInterval(timer);
+						group.style.transform = 'scaleY(1)';
+						group.style.maxHeight = height + 'px';
+						setTimeout(() => {
+							group.style.maxHeight = 'unset';
+						}, 114);
+					}
+				}, 1);
+			}
+		},1);
+	} else {
+		group.style.transform = 'scaleY(1)';
+		group.style.transformOrigin = 'top left';
+		group.style.transition = 'unset';
+		group.style.maxHeight = group.clientHeight + 'px';
+		group.style.transition = 'all 0.1s';
+		setTimeout(() => {
+			group.style.transform = 'scaleY(0)';
+			group.style.maxHeight = '0px';
+		}, 1);
+		setTimeout(() => {
+			group.classList.add('hidden');
+		}, 114);
 	}
 }
 

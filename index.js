@@ -197,14 +197,12 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 	const processOneFolder = () => {
 		if(foldersToProcess.length > 0) {
 			let folderName = foldersToProcess.shift();
-			buildSounds(folderName,
-				function (result) {
-					for(let key of Object.keys(result)) {
-						fullResult[key] = fullResult[key] || result[key];
-					}
-					processOneFolder();
-				}, req.body
-			);
+			buildSounds(folderName, req.body).then(function (result) {
+				for(let key of Object.keys(result)) {
+					fullResult[key] = fullResult[key] || result[key];
+				}
+				processOneFolder();
+			});
 		} else {
 			if(buildProjectAndExit) {
 				buildAndExitTimeout = setTimeout(() => {

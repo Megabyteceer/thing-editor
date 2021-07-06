@@ -139,7 +139,7 @@ export default class LanguageView extends React.Component {
 		if(this.state.toggled) {
 			table = editor.ui.renderWindow('texteditor', 'Text', 'Text Table', R.fragment(
 				R.btn('×', this.onToggleClick, 'Hide Text Editor', 'close-window-btn'),
-				React.createElement(LanguageTableEditor)), 200, 100, 710, 300, 900, 800);
+				React.createElement(LanguageTableEditor)), 200, 100, 720, 300, 900, 800);
 		}
 		return R.fragment(btn, table);
 	}
@@ -317,7 +317,7 @@ class LanguageTableEditor extends React.Component {
 				}
 			}
 
-			lines.push(R.div({key: id, className:'langs-editor-tr'},
+			lines.push(R.span({key: id, className:'langs-editor-tr'},
 				R.div({className:'langs-editor-th selectable-text',
 					title: "Ctrl+click to copy key, Double click to rename, Right click to delete",
 					onContextMenu: sp,
@@ -440,6 +440,7 @@ function refreshCachedData() {
 	L.setLanguagesAssets(languagesMerged);
 
 	langsIdsList = Object.keys(currentLanguage);
+	LanguageView.isOnlyOneLanguage = langsIdsList.length < 2;
 	langsIdsList.sort((a, b) => {
 		return (langIdPriority(a) > langIdPriority(b)) ? 1 : -1;
 	});

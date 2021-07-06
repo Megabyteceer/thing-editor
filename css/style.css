@@ -29,6 +29,15 @@ button:disabled {
 	color: unset;
 }
 
+input {
+	user-select:all;
+	font-family: monospace;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 3px 10px;
+	border:none;
+}
+
 hr{
 	width: 80%;
 	border:0;
@@ -60,20 +69,12 @@ b{
 	font-weight:bold;
 }
 
-input {
-	user-select:all;
-}
-
 textarea:focus, input:focus{
 	outline: 0;
 }
 
 img {
 	vertical-align: middle;
-}
-
-.checkbox{
-	cursor:pointer;
 }
 
 .unclickable{
@@ -291,7 +292,14 @@ button {
 	outline: 1px solid #f00;
 }
 
-.editor-viewport-panel{text-align: center;width: 80px;}
+.editor-viewport-panel {
+	text-align: center;
+	width: 80px;
+}
+
+.editor-viewport-panel input{
+	margin: 0;
+}
 
 .editor-viewport-wrapper{
 	display: flex;
@@ -375,6 +383,7 @@ button {
 }
 
 .scene-node-class {
+	font-size: 85%;
 	color:#aaa;
 }
 
@@ -386,7 +395,8 @@ button {
 
 .props-group{
 	margin-bottom: 3px;
-	border-radius:2px;
+	border-radius: 4px;
+	border: 1px solid var(--window-header-color);
 	overflow:hidden;
 }
 
@@ -401,8 +411,12 @@ button {
 }
 
 .props-group-body {
-	padding-left: 15px;
+	padding: 3px;
 	background:#fff;
+}
+
+.props-editor .props-group-body {
+	padding: 0 3px;
 }
 
 .props-field {
@@ -433,6 +447,7 @@ button {
 }
 
 .props-label {
+	padding-left: 10px;
 	font-family: monospace;
 	box-sizing:border-box;
 	width: 50%;
@@ -444,7 +459,6 @@ button {
 
 .props-label-editor-only {
 	color: #999999;
-
 }
 
 .props-wrapper {
@@ -460,17 +474,23 @@ button {
 
 .bottom-panel .select-editor-current {
 	background: #fff;
-	padding: 3px 10px;
-	padding-bottom: 0;
-	margin-top: -3px;
+	padding: 0 10px;
+	border-radius: 2px;
 }
 
-input{
-	font-family: monospace;
-	box-sizing: border-box;
-	width: 100%;
-	padding: 3px 10px;
-	border:none;
+.bottom-panel input[type="checkbox" i], .bottom-panel .select-editor, .bottom-panel .number-input, .bottom-panel .props-editor-callback {
+	border-radius: 2px;
+	margin: 0 5px;
+}
+
+.bottom-panel button {
+	border-radius: 2px;
+	margin: 0;
+	margin-right: 5px;
+}
+
+.bottom-panel input {
+	border-radius: 2px;
 }
 
 .select-editor {
@@ -723,7 +743,7 @@ input{
 	position: absolute;
 	padding: 0 3px;
 	right: 0;
-	top: -18px;
+	top: -17px;
 	font-weight: bold;
 	background: #de3535;
 	color: #ffcece;
@@ -957,28 +977,39 @@ input{
 }
 
 .bottom-panel {
+	display: flex;
+	align-items: center;
 	white-space: nowrap;
-	padding: 3px 8px;
+	padding: 0 8px;
 	position: absolute;
 	width: 100%;
-	bottom: 3px;
+	bottom: 8px;
 	box-sizing: border-box;
 }
 
 .bottom-panel .number-input input {
-	width: 80px;
-	margin-top: -3px;
+	width: 62px;
+    padding: 3px 6px;
+}
+
+.timeline-buttons-group {
+	display: inline-block;
+	background: #ddd;
+	padding-left: 0;
+	border-radius: 14px;
+	margin: 1px;
 }
 
 .bottom-panel input, .bottom-panel .select-editor{
 	width:initial;
-	vertical-align: middle;
 }
 
 .objects-timeline-labels button {
 	padding:0 4px;
-	border-radius:0;
+	border-radius:2px;
 	margin:1px;
+	background: transparent;
+	vertical-align: top;
 }
 
 .timeline-labels-panel {
@@ -1078,6 +1109,7 @@ input{
 }
 
 .langs-editor {
+	padding: 4px;
 	top:0;
 	bottom:0;
 	position:absolute;
@@ -1119,8 +1151,8 @@ input{
 	display: inline-block;
 	width: 350px;
 	height: 50px;
-	border-top: 1px solid #aaa;
-	border-left: 1px solid #aaa;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
 	vertical-align: top;
 }
 
@@ -1136,6 +1168,18 @@ input{
 	color: #ccc;
 }
 
+.langs-editor-tr:first-of-type .langs-editor-td, .langs-editor-tr:first-of-type .langs-editor-th{
+	border-top: none;
+}
+
+.langs-editor-th:first-of-type{
+	border-left: none;
+}
+
+.langs-editor-header {
+	margin-bottom: 3px;
+}
+
 .langs-editor-header .langs-editor-th {
 	height: 30px;
 	background: #789;
@@ -1145,6 +1189,7 @@ input{
 }
 
 .langs-editor-tr {
+	display: block;
 	white-space: nowrap;
 	box-sizing: border-box;
 }
@@ -1168,6 +1213,9 @@ input{
 }
 
 .language-switcher {
+	display: flex;
+    justify-content: center;
+    align-items: center;
 	white-space: nowrap;
 }
 
@@ -1299,7 +1347,7 @@ input{
 }
 
 .number-input-btn-up {
-	top: -1px;
+	top: 0;
 	height: 11px;
 }
 
@@ -1450,14 +1498,15 @@ input{
 
 #window-texturesviewer .list-view {
 	top: 64px;
+	text-align: center;
 }
 #window-texturesviewer .select-editor {
 	display: inline-block;
 }
-#window-texteditor .props-group-body {
-	padding: 0;
-	transform-origin: top right;
-	transform: scale(0.98);
+
+.textures-viewer-top-bar {
+    display: flex;
+    align-items: center;
 }
 
 .textures-viewer-image {
@@ -1468,14 +1517,22 @@ input{
 	display: block;
 }
 
+.folder-loading-settings{
+	position: absolute;
+	left: 5px;
+}
+
 .texture-mipmap-check {
 	width: unset;
 }
 
 .textures-viewer-item {
-	margin: 15px;
-	text-align: center;
-	display: inline-block;
+	width: 265px;
+    height: 300px;
+    margin: 5px;
+    text-align: center;
+    vertical-align: top;
+    display: inline-block;
 }
 
 .texture-preload-checkbox {

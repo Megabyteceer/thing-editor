@@ -8,6 +8,7 @@ import ClassesView from './classes-view.js';
 import Spine from 'thing-editor/js/engine/components/spine.js';
 import SelectEditor from './props-editor/select-editor.js';
 import {_stopTests} from 'thing-editor/js/engine/utils/autotest-utils.js';
+import LanguageView from './language-view.js';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -347,7 +348,7 @@ export default class Viewport extends React.Component {
 			);
 		}
 		
-		let languagePanel = React.createElement(LanguageSwitcher);
+		let languagePanel = LanguageView.isOnlyOneLanguage ? undefined : React.createElement(LanguageSwitcher);
 		
 		return R.div({className},
 			R.div({className: 'editor-viewport-panel'},
