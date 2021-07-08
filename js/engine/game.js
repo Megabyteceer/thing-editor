@@ -666,9 +666,10 @@ class Game {
 					game._updateGlobal(1);
 				}
 			}, 1000/60);
+		} else {
+			app.ticker.add(this._updateGlobal);
 		}
-		app.ticker.add(this._updateGlobal);
-
+		
 		Sound.init();
 
 		this._gameInitializedResolve();
