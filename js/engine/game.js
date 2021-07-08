@@ -663,7 +663,7 @@ class Game {
 		) { // 99999
 			setInterval(() => {
 				if(!game.isFocused) {
-					game._updateGlobal();
+					game._updateGlobal(1);
 				}
 			}, 1000/60);
 		}
