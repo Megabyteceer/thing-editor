@@ -174,6 +174,7 @@ export default class Fill extends PIXI.Mesh {
 		}
 		if (this.fillUpdated) {
 			this.updateFilling();
+			assert(!this.fillUpdated, "'updateFilling' method of class '" + this.constructor.name + "' has no set fillUpdated to false. Please add this.fillUpdated = false; inside the updateFilling method.");
 		}
 		if(this.transparencyUpdated) {
 			this.updateTransparency();
