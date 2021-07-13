@@ -297,6 +297,10 @@ export default class Spine extends Container {
 			this._refreshAnimation();
 		}
 	}
+	
+	get currentFrame() {
+		return this.spineContent.state.tracks[0].getAnimationTime();
+	}
 
 	_releaseSpine() {
 		if(this.spineContent) {
@@ -325,6 +329,19 @@ export default class Spine extends Container {
 			this.currentAnimation = animationName;
 			const trackEntry = this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
 			trackEntry.mixDuration = mixDuration;
+		}
+		this.isPlaying = true;
+	}
+	
+	playFromFrame(frame, animationName = this._currentAnimation, mixDuration = this.mixDuration) {
+		if (!this.spineContent) return;
+
+		if(animationName) {
+			this.currentAnimation = animationName;
+			this._animationIsDirty = false;
+			const trackEntry = this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
+			trackEntry.mixDuration = mixDuration;
+			trackEntry.trackTime = frame;
 		}
 		this.isPlaying = true;
 	}
