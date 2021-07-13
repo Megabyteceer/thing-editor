@@ -65,6 +65,7 @@ export default class Fill extends PIXI.Mesh {
 		this._applied_verticesX = this.verticesX;
 		this._applied_verticesY = this.verticesY;
 		this.updateFilling();
+		this.fillUpdated = false;
 		this.updateTransparency();
 	}
 
@@ -174,6 +175,7 @@ export default class Fill extends PIXI.Mesh {
 		}
 		if (this.fillUpdated) {
 			this.updateFilling();
+			this.fillUpdated = false;
 		}
 		if(this.transparencyUpdated) {
 			this.updateTransparency();
@@ -351,7 +353,6 @@ export default class Fill extends PIXI.Mesh {
 			}
 		}
 		this.uvBuffer.update();
-		this.fillUpdated = false;
 	}
 
 	get xRepeat() {
