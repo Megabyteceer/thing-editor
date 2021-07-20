@@ -661,8 +661,11 @@ class Game {
 			&& false
 			/// #endif
 		) { // 99999
+			let lastTime = Date.now();
 			setInterval(() => {
-				game._updateGlobal(1);
+				let now = Date.now();
+				game._updateGlobal((now - lastTime) / 60);
+				lastTime = now;
 			}, 1000/60);
 		} else {
 			app.ticker.add(this._updateGlobal);
