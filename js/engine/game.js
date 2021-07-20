@@ -662,11 +662,12 @@ class Game {
 			/// #endif
 		) { // 99999
 			let lastTime = Date.now();
+			const fameDuration = 1000/60;
 			setInterval(() => {
 				let now = Date.now();
-				game._updateGlobal((now - lastTime) / 60);
+				game._updateGlobal((now - lastTime) / fameDuration);
 				lastTime = now;
-			}, 1000/60);
+			}, fameDuration);
 		} else {
 			app.ticker.add(this._updateGlobal);
 		}
@@ -1207,9 +1208,6 @@ class Game {
 			this._FPS = 0;
 			lastFPSTime = now;
 		}
-
-
-
 		/// #endif
 
 		/// #if EDITOR
