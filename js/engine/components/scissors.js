@@ -47,7 +47,11 @@ export default class Scissors extends Container {
 
 	_renderCanvas(renderer) {
 		super._renderCanvas(renderer);
-		if(this._enabled) {
+		if(this._enabled
+		/// #if EDITOR
+			&& (!this.__disableInEditorMode || !game.__EDITOR_mode)
+		/// #endif
+		) {
 			if(!this.mask) {
 				this.mask = new PIXI.Graphics();
 				/// #if EDITOR
@@ -82,7 +86,11 @@ export default class Scissors extends Container {
 		let gl;
 		let isVasEnabled;
 		let prevScissors;
-		if(this._enabled) {
+		if(this._enabled
+		/// #if EDITOR
+			&& (!this.__disableInEditorMode || !game.__EDITOR_mode)
+		/// #endif
+		) {
 			gl = renderer.gl;
 			renderer.batch.flush();
 
@@ -112,7 +120,11 @@ export default class Scissors extends Container {
 		}
 		super.render(renderer);
 		renderer.batch.flush();
-		if(this._enabled) {
+		if(this._enabled
+		/// #if EDITOR
+			&& (!this.__disableInEditorMode || !game.__EDITOR_mode)
+		/// #endif
+		) {
 			if(isVasEnabled) {
 				gl.scissor.apply(gl, prevScissors);
 			} else {
@@ -166,6 +178,10 @@ __EDITOR_editableProps(Scissors, [
 		name: 'enabled',
 		type: Boolean,
 		default: true
+	},
+	{
+		name: '__disableInEditorMode', /// 99999
+		type: Boolean
 	}
 ]);
 /// #endif
