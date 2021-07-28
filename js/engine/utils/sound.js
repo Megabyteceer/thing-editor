@@ -163,11 +163,11 @@ export default class Sound {
 		/// #if DEBUG
 		rate = rate * game.__speedMultiplier;
 		/// #endif
-		if(!game.isFocused // eslint-disable-line no-constant-condition
+		if(Sound.isSoundsLockedByBrowser || (!game.isFocused // eslint-disable-line no-constant-condition
 		/// #if EDITOR
 			&& false
 		/// #endif
-		&& game.projectDesc.muteOnFocusLost) {
+		&& game.projectDesc.muteOnFocusLost)) {
 			return;
 		}
 		let s = Lib.getSound(soundId);
@@ -235,6 +235,28 @@ export default class Sound {
 		Sound.play(soundId, 1, pitch, 0, true);
 	}
 
+	static checkSoundLockByBrowser() {
+		Sound.isSoundsLockedByBrowser = true; // 99999
+		game.additionalLoadingsInProgress++;
+		EMPTY_SOUND = new Howl({ src: 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV' });
+		const blockedHanlder = () => soundLockHandler(true);
+		const unblockedHanlder = () => soundLockHandler(false);
+		EMPTY_SOUND.once('playerror', blockedHanlder);
+		EMPTY_SOUND.once('play', unblockedHanlder);
+		soundLockTimeoutId = setTimeout(blockedHanlder, 500);
+		try {
+			EMPTY_SOUND.play();
+		} catch(er) {
+			soundLockHandler(true);
+		}
+	}
+
+	static _unlockSound() {
+		if(Sound.isSoundsLockedByBrowser) {
+			soundLockHandler(false);
+		}
+	}
+
 	/// #if EDITOR
 	static __stop() {
 		if(game.__EDITOR_mode) {
@@ -245,6 +267,26 @@ export default class Sound {
 	}
 	/// #endif
 }
+
+let EMPTY_SOUND;
+let soundLockTimeoutId;
+let isHandlerShootAlready;
+const soundLockHandler = (isLocked) => {
+	if(!isHandlerShootAlready) {
+		game.additionalLoadingsInProgress--;
+		isHandlerShootAlready = true;
+		clearTimeout(soundLockTimeoutId);
+	}
+	if(!isLocked) {
+		EMPTY_SOUND.off('playerror');
+		EMPTY_SOUND.off('play');
+		EMPTY_SOUND.unload();
+		Sound.isSoundsLockedByBrowser = false;
+		if(game.classes.BgMusic) {
+			game.classes.BgMusic._recalculateMusic();
+		}
+	}
+};
 
 let pitches = {};
 let pitchTimeouts = {};

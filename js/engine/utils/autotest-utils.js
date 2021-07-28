@@ -61,13 +61,10 @@ export function testWait(name, condition, timeout = 20000) {
 	});
 }
 
-export function testClickBtn(btnPath, timeout = 20000) {
-	return new Promise(async(resolve) => {
-		await testWait("Attempt to click button: " + btnPath, () => {
-			let b = getValueByPath(btnPath, {});
-			return (b instanceof Button) && b.isCanBePressed;
-		}, timeout);
-		getValueByPath(btnPath, {}).callClick();
-		resolve();
-	});
+export async function testClickBtn(btnPath, timeout = 20000) {
+	await testWait("Attempt to click button: " + btnPath, () => {
+		let b = getValueByPath(btnPath, {});
+		return (b instanceof Button) && b.isCanBePressed;
+	}, timeout);
+	getValueByPath(btnPath, {}).callClick();
 }

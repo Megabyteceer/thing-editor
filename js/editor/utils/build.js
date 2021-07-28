@@ -153,7 +153,6 @@ let classes = {};`];
 				editor.ui.modal.showModal(R.div({style:{textAlign: 'left'}, dangerouslySetInnerHTML: {__html: result.output}}));
 			}
 		}
-
 	}
 }
 

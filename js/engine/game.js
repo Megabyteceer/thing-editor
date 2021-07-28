@@ -592,6 +592,9 @@ class Game {
 		/*
 	/// #endif
 	_initInner() {
+		if(assets.sounds && Object.keys(assets.sounds).length) {
+			Sound.checkSoundLockByBrowser();
+		}
 		//*/
 		game.additionalLoadingsInProgress++;
 
@@ -1514,6 +1517,7 @@ const mouseHandlerGlobalDown = (ev) => {
 		/// #endif
 		
 		game.currentContainer && game.currentContainer.onMouseDown && game.currentContainer.interactiveChildren) {
+		Sound._unlockSound();
 		game.currentContainer.onMouseDown(game.mouse, ev);
 	}
 };

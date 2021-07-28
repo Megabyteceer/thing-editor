@@ -267,11 +267,11 @@ function recalculateMusic() {
 	}
 
 	priorities.sort(sortReverted);
-	let muteAllNext = game._loadingErrorIsDisplayed || ((!game.isFocused
+	let muteAllNext = Sound.isSoundsLockedByBrowser || (game._loadingErrorIsDisplayed || ((!game.isFocused
 	/// #if EDITOR
 		&& false
 	/// #endif
-	) && game.projectDesc.muteOnFocusLost);
+	) && game.projectDesc.muteOnFocusLost));
 
 	/// #if EDITOR
 	muteAllNext = muteAllNext || game.__EDITOR_mode;
