@@ -17,7 +17,7 @@ patch(
 	protected update():void;
 	/** remove object from scene */
 	remove():void;
-	/** remove object from scene without placing empty object in lace of it */
+	/** remove object from scene without placing empty object in place of it */
 	removeWithoutHolder():void;
 	/** destructor */
 	protected onRemove():void;

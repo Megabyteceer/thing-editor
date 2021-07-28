@@ -116,7 +116,7 @@ bundleEntries = bundleEntries.concat([
 const mode = isDebug ? 'development' : 'production';
 const buildPath = path.resolve(process.cwd(), isDebug ? 'debug' : 'release');
 
-fs.rmdirSync(buildPath, {force: true, recursive: true});
+(fs.rmSync || fs.rmdirSync)(buildPath, {force:true, recursive: true});
 
 const config = {
 	entry: {

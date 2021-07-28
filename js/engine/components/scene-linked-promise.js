@@ -213,7 +213,7 @@ export default class SceneLinkedPromise extends Container {
 		}
 		/// #endif
 
-		if(this._promiseResultWaiting !== EMPTY_RESULT_SYMBOL) {
+		if(this._promiseResultWaiting !== EMPTY_RESULT_SYMBOL && ((this.getRootContainer() === game.currentContainer) || (this.getRootContainer() === game.currentFader))) {
 			let r = this._promiseResultWaiting;
 			/// #if DEBUG
 			this.__passedHandlersDebug = [];

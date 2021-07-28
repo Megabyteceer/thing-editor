@@ -175,9 +175,9 @@ app.get('/fs/build', function (req, res) {
 			if(stdOut instanceof Buffer) {
 				stdOut = stdOut.toString();
 			}
-			let output = `${err ? `ERROR: ${JSON.stringify(err)}\n` : ''}${stdOut || ''}`;
+			let output = `${err ? `ERROR: ${JSON.stringify(err.stack || err)}\n` : ''}${stdOut || ''}`;
 			res.end(JSON.stringify({
-				isSuccess: output.indexOf('BUILD FAILED!') === -1,
+				isSuccess: Boolean(!err && output.indexOf('BUILD FAILED!') === -1),
 				output: AnsiToHtmlConverter.toHtml(output),
 			}));
 			wss.hideSpinner();

@@ -65,6 +65,7 @@ export default class Fill extends PIXI.Mesh {
 		this._applied_verticesX = this.verticesX;
 		this._applied_verticesY = this.verticesY;
 		this.updateFilling();
+		this.fillUpdated = false;
 		this.updateTransparency();
 	}
 
@@ -174,7 +175,7 @@ export default class Fill extends PIXI.Mesh {
 		}
 		if (this.fillUpdated) {
 			this.updateFilling();
-			assert(!this.fillUpdated, "'updateFilling' method of class '" + this.constructor.name + "' has no set fillUpdated to false. Please add this.fillUpdated = false; inside the updateFilling method.");
+			this.fillUpdated = false;
 		}
 		if(this.transparencyUpdated) {
 			this.updateTransparency();
@@ -352,7 +353,6 @@ export default class Fill extends PIXI.Mesh {
 			}
 		}
 		this.uvBuffer.update();
-		this.fillUpdated = false;
 	}
 
 	get xRepeat() {
