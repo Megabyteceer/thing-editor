@@ -255,31 +255,24 @@ export default class Editor {
 		}
 	}
 
-	testProject() {
-		return new Promise(async (resolve) => { // eslint-disable-line no-async-promise-executor
-			if(editor.__preBuildAutoTest && (!editor.buildProjectAndExit || !editor.buildProjectAndExit.skipTests)) {
-				let sceneName = editor.currentSceneName;
-				await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
-				if(game.__EDITOR_mode) {
-					editor.ui.viewport.onTogglePlay();
-					game.__EDITOR_isAutotestInProgress = true; // 99999_
-				}
-				await editor.waitForCondition(() => {
-					return game.currentContainer;
-				});
-				setTimeout(async () => {
-					ws.log('Auto-test start...');
-					_onTestsStart();
-					editor.__preBuildAutoTest().then(() => {
-						ws.log('Auto-test finished successfully');
-						editor.openSceneSafe(sceneName).then(resolve);
-					});
-				}, 1000);
-
-			} else {
-				resolve();
+	async testProject() {
+		if(editor.__preBuildAutoTest && (!editor.buildProjectAndExit || !editor.buildProjectAndExit.skipTests)) {
+			let sceneName = editor.currentSceneName;
+			await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
+			if(game.__EDITOR_mode) {
+				editor.ui.viewport.onTogglePlay();
+				game.__EDITOR_isAutotestInProgress = true; // 99999_
 			}
-		});
+			await editor.waitForCondition(() => {
+				return game.currentContainer;
+			});
+			await timeout(1000);
+			ws.log('Auto-test start...');
+			_onTestsStart();
+			await editor.__preBuildAutoTest();
+			ws.log('Auto-test finished successfully');
+			return editor.openSceneSafe(sceneName);
+		}
 	}
 
 	copyToClipboard(text) {
@@ -1168,4 +1161,8 @@ function increaseNameNumber(o) {
 			o.name = o.name.replace(/\d+$/mg, (parseInt(a[0]) + 1));
 		}
 	}
+}
+
+function timeout(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }

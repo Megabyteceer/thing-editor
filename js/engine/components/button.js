@@ -135,6 +135,7 @@ export default class Button extends DSprite {
 	}
 	
 	onDown(ev, source = 'pointerdown') {
+		Sound._unlockSound();
 		if(game.time === latestClickTime
 		/// #if EDITOR
 			&& !game.__paused
