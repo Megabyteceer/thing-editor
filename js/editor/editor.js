@@ -48,6 +48,12 @@ export default class Editor {
 	
 	constructor() {
 		window.editor = this;
+		editor.editorArguments = {};
+		if(window.location.hash) {
+			for(let arg of window.location.hash.substr(1).split(',')) {
+				editor.editorArguments[arg] = true;
+			}
+		}
 		this.checkSceneHandlers = [];
 		this.Lib = Lib;
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
@@ -256,7 +262,7 @@ export default class Editor {
 	}
 
 	async testProject() {
-		if(editor.__preBuildAutoTest && (!editor.buildProjectAndExit || !editor.buildProjectAndExit.skipTests)) {
+		if(editor.__preBuildAutoTest && (!editor.editorArguments['skip-tests'])) {
 			let sceneName = editor.currentSceneName;
 			await editor.openSceneSafe(editor.projectDesc.mainScene || 'main');
 			if(game.__EDITOR_mode) {
@@ -987,8 +993,8 @@ declare global {
 	build(debug) {
 		return new Promise((resolve) => {
 			if(editor.buildProjectAndExit) {
-				if((debug && editor.buildProjectAndExit.skipDebugBuild) ||
-					(!debug && editor.buildProjectAndExit.skipReleaseBuild)) {
+				if((debug && editor.editorArguments['skip-debug-build']) ||
+					(!debug && editor.editorArguments['skip-release-build'])) {
 					resolve();
 					return;
 				}
