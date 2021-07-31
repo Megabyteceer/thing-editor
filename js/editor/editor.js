@@ -281,6 +281,58 @@ export default class Editor {
 		}
 	}
 
+	async exportAsPng(object, width = 0, height = 0) {
+		return new Promise((resolve) => {
+			if(object.width > 0 && object.height > 0) {
+				let tmpVisible = object.visible;
+				object.visible = true;
+				let oldParent = object.parent;
+				let oldIndex;
+				if(oldParent) {
+					oldIndex = oldParent.children.indexOf(object);
+				}
+				let f = object.filters;
+				let c = new PIXI.Container();
+				let c2 = new PIXI.Container();
+				c.addChild(object);
+				c2.addChild(c);
+
+				object.filters = [];
+				editor.ui.modal.showSpinner();
+				let b = c.getLocalBounds();
+				c.getLocalBounds = () => {
+					if(b.x < 0 ) {
+						b.x = Math.ceil(b.x);
+					} else {
+						b.x = Math.floor(b.x);
+					}
+					if(b.y < 0 ) {
+						b.y = Math.ceil(b.y);
+					} else {
+						b.y = Math.floor(b.y);
+					}
+					return b;
+				};
+				if(width > 0 && height > 0) {
+					let scale = Math.min(width / b.width, height / b.height);
+					object.scale.x = object.scale.y = scale;
+				}
+				game.pixiApp.renderer.extract.canvas(c2).toBlob(function(b){
+					object.visible = tmpVisible;
+					delete c.getLocalBounds;
+					object.filters = f;
+					if(oldParent) {
+						oldParent.addChildAt(object, oldIndex);
+					}else {
+						object.detachFromParent();
+					}
+					editor.ui.modal.hideSpinner();
+					resolve(b);
+				}, 'image/png');
+			}
+		});
+	}
+
 	copyToClipboard(text) {
 		navigator.permissions.query({
 			name: 'clipboard-read'
