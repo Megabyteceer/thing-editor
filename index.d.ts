@@ -104,7 +104,7 @@ interface EditableFieldDescription{
 	parser?: (inputValue:any) => any,
 	visible?: (o:DisplayObject) => boolean,
 	disabled?: (o:DisplayObject) => boolean,
-	afterEdited?: (o:DisplayObject) => void,
+	afterEdited?: () => void,
 	beforeEdited?: (o:DisplayObject) => void,
 }
 

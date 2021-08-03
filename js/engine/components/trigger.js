@@ -227,12 +227,15 @@ export default class Trigger extends Container {
 	}
 
 	get visible() {
-		return this.__visibleInEditor || this._visible;
+		return this.__visibleInEditor || this._visible || (this.__visibleInEditorMode && game.__EDITOR_mode);
 	}
 
 	set visible(v) {
 		delete this.__visibleInEditor;
 		this._visible = v;
+		if(!v) {
+			this.__visibleInEditorMode = false;
+		}
 	}
 		
 /// #endif
@@ -339,6 +342,10 @@ Use '#' to access to child scene nodes by name: <b>game.currentScene.#myChildEle
 	{
 		name: 'onDisable',
 		type: 'callback'
+	},
+	{
+		name: '__visibleInEditorMode', /// 99999
+		type: Boolean
 	}
 ]);
 
