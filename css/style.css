@@ -38,6 +38,10 @@ input {
 	border:none;
 }
 
+input:disabled {
+	background: #44444433;
+}
+
 hr{
 	width: 80%;
 	border:0;
