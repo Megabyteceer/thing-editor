@@ -345,7 +345,13 @@ Use '#' to access to child scene nodes by name: <b>game.currentScene.#myChildEle
 	},
 	{
 		name: '__keepVisibleInEditor', /// 99999
-		type: Boolean
+		type: Boolean,
+		afterEdited: () => {
+			let o = editor.selection[0];
+			if(!o.__keepVisibleInEditor) {
+				o.visible = false;
+			}
+		}
 	}
 ]);
 
