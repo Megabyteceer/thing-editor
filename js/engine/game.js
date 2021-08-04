@@ -1680,6 +1680,13 @@ const focusChangeHandler = (activated) => {
 		game.isFocused = activated;
 		if(game.pixiApp) {
 			setTimeout(() => {
+				if(game.projectDesc.muteOnFocusLost // eslint-disable-line no-constant-condition
+					/// #if EDITOR
+					&& false
+					/// #endif
+				) {
+					BgMusic._clearCustomFades(0.2);
+				}
 				BgMusic._recalculateMusic();
 				game.keys.resetAll();
 			}, 10);
