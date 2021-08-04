@@ -102,15 +102,15 @@ let fs = {
 	openFile(fileName, silently) {
 		return this.getJSON(editor.game.resourcesPath + fileName, silently);
 	},
-	postJSON(url, data, silently = false, async = false) {//eslint-disable-line no-unused-vars
+	postJSON(url, data, silently = false, async = false, donNotJSON = false) {//eslint-disable-line no-unused-vars
 		return new Promise((resolve) => {
 			if (!silently || !async) {
 				editor.ui.modal.showSpinner();
 			}
 			AJAX_ordered(url, {
 				method: "POST",
-				body: JSON.stringify(data),
-				headers: {'Content-Type': 'application/json'}
+				body: donNotJSON ? data : JSON.stringify(data),
+				headers: donNotJSON ? {'Content-Type': 'application/octet-stream'} : {'Content-Type': 'application/json'}
 			}, async, (returnedUrl, data) => {
 				assert(url === returnedUrl, 'Response is not match with request');
 				
@@ -125,10 +125,10 @@ let fs = {
 		});
 	},
 	saveFile(filename, data, silently = false, async = false) { 
-		if(typeof data !== 'string') {
+		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
-		return fs.postJSON('/fs/savefile', {data, filename : editor.game.resourcesPath + filename}, silently, async).then((data) => {
+		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(editor.game.resourcesPath + filename), data, silently, async, true).then((data) => {
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
 			}

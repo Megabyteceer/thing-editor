@@ -144,47 +144,16 @@ export default class TreeView extends React.Component {
 		editor.overlay.toggleIsolation();
 	}
 
-	onExportAsPngClick() {
-		let s = editor.selection[0];
-		if(s.width > 0 && s.height > 0) {
-			let tmpVisible = s.visible;
-			s.visible = true;
-			let p = s.parent;
-			let i = p.children.indexOf(s);
-			let f = s.filters;
-			let c = new PIXI.Container();
-			let c2 = new PIXI.Container();
-			c.addChild(s);
-			c2.addChild(c);
-			s.filters = [];
-			editor.ui.modal.showSpinner();
-			let b = c2.getLocalBounds();
-			c2.getLocalBounds = () => {
-				if(b.x < 0 ) {
-					b.x = Math.ceil(b.x);
-				} else {
-					b.x = Math.floor(b.x);
-				}
-				if(b.y < 0 ) {
-					b.y = Math.ceil(b.y);
-				} else {
-					b.y = Math.floor(b.y);
-				}
-				return b;
-			};
-			game.pixiApp.renderer.extract.canvas(c2).toBlob(function(b){
-				s.visible = tmpVisible;
-				delete c2.getLocalBounds;
-				var a = document.createElement('a');
-				document.body.append(a);
-				a.download = (s.name || 'image') + '.png';
-				a.href = URL.createObjectURL(b);
-				a.click();
-				a.remove();
-				s.filters = f;
-				p.addChildAt(s, i);
-				editor.ui.modal.hideSpinner();
-			}, 'image/png');
+	async onExportAsPngClick() {
+		let o = editor.selection[0];
+		let blob = await editor.exportAsPng(o);
+		if(blob) {
+			var a = document.createElement('a');
+			document.body.append(a);
+			a.download = (o.name || 'image') + '.png';
+			a.href = URL.createObjectURL(blob);
+			a.click();
+			a.remove();
 		} else {
 			editor.ui.modal.showModal("Nothing visible selected to export.");
 		}

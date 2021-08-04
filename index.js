@@ -35,6 +35,7 @@ let assetsMap = new Map();
 let PORT = 32023;
 let gamesRoot = 'games';
 let jsonParser = bodyParser.json({limit:1024*1024*200});
+let rawParser = bodyParser.raw({limit:1024*1024*200});
 
 //========= File System access commands ====================
 
@@ -227,12 +228,12 @@ app.post('/fs/exec', jsonParser, function (req, res) {
 	}, currentGameDesc, currentGameRoot, wss);
 });
 
-app.post('/fs/savefile', jsonParser, function (req, res) {
-	let fileName = mapFileUrl(req.body.filename);
+app.post('/fs/savefile', rawParser, function (req, res) {
+	let fileName = mapFileUrl(req.query.filename);
 	ensureDirectoryExistence(fileName);
 	attemptFSOperation(() => {
 		ignoreFileChanging(fileName);
-		fs.writeFileSync(fileName, req.body.data);
+		fs.writeFileSync(fileName, req.body);
 	}).then(() => {
 		res.end('{}');
 	}).catch(() => {
@@ -283,21 +284,21 @@ function mapAssetUrl(url) {
 //=========== parse arguments ============================================================
 let openChrome = true;
 let buildProjectAndExit;
+let editorArguments = [];
 let params = process.argv.slice(2);
 while(params.length) {
-	switch(params.shift()) {
+	let arg = params.shift();
+	switch(arg) {
 	case 'n':
 		openChrome = false;
 		break;
 	case 'build':
 		buildProjectAndExit = {
-			projectName: params.shift(),
-			skipTests: process.argv.indexOf('skip-tests') > 0,
-			skipDebugBuild: process.argv.indexOf('skip-debug-build') > 0,
-			skipReleaseBuild: process.argv.indexOf('skip-release-build') > 0
+			projectName: params.shift()
 		};
 		process.env.buildProjectAndExit = buildProjectAndExit;
 	}
+	editorArguments.push(arg);
 }
 
 //========= start server ================================================================
@@ -335,7 +336,9 @@ if(openChrome) {
 	app.unshift((process.platform == 'darwin') && 'Google Chrome' ||
 	(process.platform == 'win32') && 'chrome' ||
 		'google-chrome');
-
+	if(editorArguments) {
+		editorURL += '#' + editorArguments.join(',');
+	}
 	open(editorURL, {app});
 }
 
