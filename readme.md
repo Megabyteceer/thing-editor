@@ -4,11 +4,9 @@ Visual game editor for pixi.js 5.
 
 ![Editor screenshot](https://raw.githubusercontent.com/wiki/Megabyteceer/thing-editor/img/full-editor.jpg)
 
-Project in experimental **beta-version**.
-
 ## Installation
 
-Please check if you have latest **nodejs**, **npm**, **chrome**, and **ffmpeg** on your computer, **before installlation**.
+Please check if you have latest **git**, **nodejs**, **npm**, **chrome**, and **ffmpeg** on your computer, **before installlation**.
 Use next script to install editor and example project.
 After succesfull installation editor should start automaticly as chrome page.
 To start editor manually use **npm start** in **thing-editor** folder
@@ -17,7 +15,7 @@ To start editor manually use **npm start** in **thing-editor** folder
 
 mkdir game_editor_here
 cd game_editor_here
-git clone ssh://git@xdevteam.com:37234/bgaming/games/thing-editor.git
+git clone https://github.com/Megabyteceer/thing-editor.git
 git clone https://github.com/Megabyteceer/thing-project-example.git games/thing-project-example
 cd thing-editor
 npm i
@@ -58,3 +56,4 @@ Work still in progress.
 
 ### Documentation
 For detailed documentation please check our [Wiki](https://github.com/Megabyteceer/thing-editor/wiki).
+
