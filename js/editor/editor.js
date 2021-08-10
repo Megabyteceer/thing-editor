@@ -799,6 +799,9 @@ export default class Editor {
 	}
 
 	regenerateCurrentSceneMapTypings() {
+		if(editor.editorArguments['no-vscode-integration']) {
+			return;
+		}
 		if(!game.currentScene || !game.__EDITOR_mode) {
 			return;
 		}

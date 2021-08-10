@@ -314,7 +314,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				
 					classesLoadedSuccessfullyAtLeastOnce = true;
 
-					if(window.location.href.indexOf('vscode-integration') >= 0) {
+					if(!editor.editorArguments['no-vscode-integration']) {
 						fetch('http://127.0.0.1:32025/classes-reloaded&.js').catch(() => {
 							editor.ui.status.error("vscode integration extension error.", 30022);
 						});

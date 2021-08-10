@@ -286,7 +286,8 @@ function mapAssetUrl(url) {
 //=========== parse arguments ============================================================
 let openChrome = true;
 let buildProjectAndExit;
-let editorArguments = [];
+let editorArgumentsArray = [];
+let editorArguments = {};
 let params = process.argv.slice(2);
 while(params.length) {
 	let arg = params.shift();
@@ -311,9 +312,9 @@ while(params.length) {
 			console.warn('WARNING: node_modules_path points to not existing folder: ' + modulesPath);
 		}
 	}
-	editorArguments.push(arg);
+	editorArgumentsArray.push(arg);
+	editorArguments[arg] = true;
 }
-
 
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 
@@ -353,8 +354,8 @@ if(openChrome) {
 	app.unshift((process.platform == 'darwin') && 'Google Chrome' ||
 	(process.platform == 'win32') && 'chrome' ||
 		'google-chrome');
-	if(editorArguments) {
-		editorURL += '#' + editorArguments.join(',');
+	if(editorArgumentsArray.length) {
+		editorURL += '#' + editorArgumentsArray.join(',');
 	}
 	open(editorURL, {app});
 }
@@ -702,6 +703,10 @@ function filesChangedProcess() {
 //=============== vs-code integration ==================
 
 function excludeAnotherProjectsFromCodeEditor() { // hides another projects from vs code
+	if(editorArguments['no-vscode-integration']) {
+		return;
+	}
+	
 	let jsConfigFN = './jsconfig.json';
 	let vsSettingsFn = './.vscode/settings.json';
 	
@@ -764,6 +769,9 @@ function isLibInProject(libName) {
 }
 
 function applyProjectTypings() {
+	if(editorArguments['no-vscode-integration']) {
+		return;
+	}
 	let typings = [];
 	const typingsPath = path.join(__dirname, '../current-project-typings.js');
 	if(currentGameDesc.libs) {
