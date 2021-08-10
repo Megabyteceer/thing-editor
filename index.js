@@ -340,6 +340,9 @@ if(openChrome) {
 			process.exit(1);
 		}, 40000);
 	}
+	if(editorArgumentsArray.length) {
+		editorURL += '#' + editorArgumentsArray.join(',');
+	}
 	const os = require('os');
 	let app = buildProjectAndExit ? [
 		'--no-sandbox',
@@ -349,14 +352,12 @@ if(openChrome) {
 		'--js-flags="--max_old_space_size=8192"',
 		'--remote-debugging-port=' + (PORT + 2),
 		'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data')
-	] : [];
+	] : ['--app=' + editorURL];
 
 	app.unshift((process.platform == 'darwin') && 'Google Chrome' ||
 	(process.platform == 'win32') && 'chrome' ||
 		'google-chrome');
-	if(editorArgumentsArray.length) {
-		editorURL += '#' + editorArgumentsArray.join(',');
-	}
+
 	open(editorURL, {app});
 }
 
