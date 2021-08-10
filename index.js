@@ -242,7 +242,11 @@ app.post('/fs/savefile', rawParser, function (req, res) {
 });
 
 app.use('/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, '..', decodeURIComponent(req.path)), req, res, next);
+	if(!req.path.startsWith('/node_modules/')) {
+		absoluteImportsFixer(path.join(__dirname, '..', decodeURIComponent(req.path)), req, res, next);
+	} else {
+		next();
+	}
 });
 
 app.use('/games/',  (req, res) => {
@@ -259,8 +263,6 @@ app.use('/games/',  (req, res) => {
 		res.sendStatus(404);
 	}
 });
-
-app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 
 function mapFileUrl(url) {
 	let fileName =url.replace('/games', '');
@@ -297,9 +299,24 @@ while(params.length) {
 			projectName: params.shift()
 		};
 		process.env.buildProjectAndExit = buildProjectAndExit;
+		break;
+	case 'node_modules_path':
+		var modulesPath = params.shift();
+		if(!path.isAbsolute(modulesPath)) {
+			modulesPath = path.join(__dirname, modulesPath);
+		}
+		if(fs.existsSync(modulesPath)) {
+			app.use('/node_modules/', express.static(modulesPath, {dotfiles:'allow'}));
+		} else {
+			console.warn('WARNING: node_modules_path points to not existing folder: ' + modulesPath);
+		}
 	}
 	editorArguments.push(arg);
 }
+
+
+app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
+
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
