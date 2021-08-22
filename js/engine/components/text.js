@@ -287,7 +287,7 @@ d.set = function(v) {
 	if(this.textTransform && v) {
 		/// #if EDITOR
 		if(typeof v === 'number') {
-			editor.ui.status.error('textTransform is set fo label which shows numeric value. Set it to "none".', 99999, this, 'textTransform');
+			editor.ui.status.error('textTransform is set for label which shows numeric value. Please set it to "none" to avoid senseless processing.', 10075, this, 'textTransform');
 			originalTextSetter.call(this, v);
 			return;
 		}
@@ -436,7 +436,7 @@ __EDITOR_editableProps(Text, [
 	{
 		type: 'btn',
 		title: 'Copy text style.',
-		name: 'Copy style', // 99999
+		name: 'Copy style',
 		onClick: (o) => {
 			const styleProperties = editor.enumObjectsProperties(o)
 				.filter((property) => {
@@ -450,7 +450,7 @@ __EDITOR_editableProps(Text, [
 	{
 		type: 'btn',
 		title: 'Paste text style.',
-		name: 'Paste style', // 99999
+		name: 'Paste style',
 		onClick: (o) => {
 			editor.ui.modal.notify("Text style pasted");
 			editor.settings.getItem('__EDITOR-clipboard-data-text-style', [])

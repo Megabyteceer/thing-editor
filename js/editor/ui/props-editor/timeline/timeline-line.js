@@ -149,7 +149,7 @@ class PlayingDisplay extends React.Component {
 	}
 	
 	render () {
-		if(!this.fieldPlayer) {
+		if(!this.fieldPlayer || typeof this.fieldPlayer.__processedTime === 'undefined') {
 			return R.div();
 		} else {
 			let firedFrame;
@@ -157,7 +157,7 @@ class PlayingDisplay extends React.Component {
 				firedFrame = R.div({className:'timeline-fire-indicator', style:{left: this.fieldPlayer.__lastFiredKeyframe.t * widthZoom}});
 			}
 			return R.fragment(
-				R.div({className:'timeline-play-indicator', style:{left: (this.fieldPlayer.time - 1) * widthZoom}}),
+				R.div({className:'timeline-play-indicator', style:{left: (this.fieldPlayer.__processedTime) * widthZoom}}),
 				firedFrame
 			);
 		}

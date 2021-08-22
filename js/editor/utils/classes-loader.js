@@ -40,6 +40,7 @@ import ParticleContainer from 'thing-editor/js/engine/components/particle-contai
 import MultilineText from 'thing-editor/js/engine/components/multiline-text.js';
 import StaticTrigger from 'thing-editor/js/engine/components/static-trigger.js';
 import BitmapText from 'thing-editor/js/engine/components/bitmap-text.js';
+import fs from "./fs.js";
 
 let attachedScript;
 
@@ -284,9 +285,9 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			classesList.forEach((classInfo, i) => {
 				let classPath = classInfo.name;
 				if(classPath.endsWith('.js')) {
-					let wrongSymbolPos = classPath.search(/[^a-zA-Z_\-\.\d\/]/gm);
-					if(wrongSymbolPos >= 0) {
-						editor.ui.status.warn("File " + classPath + " ignored because of wrong symbol '" + classPath[wrongSymbolPos] + "' in it's name", 32044, () => {
+					let wrongSymbol = fs.hasWrongSymbol(classPath);
+					if(wrongSymbol) {
+						editor.ui.status.warn("File " + classPath + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044, () => {
 							editor.fs.editFile(classPath);
 						});
 					} else {
