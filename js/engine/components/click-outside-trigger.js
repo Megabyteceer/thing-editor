@@ -23,7 +23,7 @@ export default class ClickOutsideTrigger extends Container {
 				let c = getValueByPath(path, this);
 				/// #if EDITOR
 				if(!(c instanceof Container)) {
-					editor.ui.status.error('Wrong "additionalContainers" entry: ' + path, 99999, this, 'additionalContainers');
+					editor.ui.status.error('Wrong "additionalContainers" entry: ' + path, 10070, this, 'additionalContainers');
 					c = this;
 					continue;
 				}
@@ -100,7 +100,7 @@ __EDITOR_editableProps(ClickOutsideTrigger, [
 		important: true
 	},
 	{
-		name: 'additionalContainers', //99999
+		name: 'additionalContainers',
 		type: String
 	}
 ]);

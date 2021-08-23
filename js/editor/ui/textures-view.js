@@ -176,14 +176,14 @@ class TexturesViewerBody extends React.Component {
 			game.projectDesc.mipmap ? undefined : R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "generate Mip-Maps",
 				onChange: (ev) => {
 					let isMipMaps = ev.target.checked;
-					game.__setTextureSettingsBits(name, isMipMaps ? 4 : 0, 4); //99999
+					game.__setTextureSettingsBits(name, isMipMaps ? 4 : 0, 4);
 				},
 				defaultChecked: game._getTextureSettingsBits(name, 4)}
 			),
 			isPowOf2 ? R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "wrap texture",
 				onChange: (ev) => {
 					let isWrap = ev.target.checked;
-					game.__setTextureSettingsBits(name, isWrap ? 8 : 0, 24);//99999
+					game.__setTextureSettingsBits(name, isWrap ? 8 : 0, 24);
 				},
 				checked: game._getTextureSettingsBits(name, 8)}
 			) : undefined,

@@ -559,8 +559,8 @@ class Game {
 				debug: 'config/webpack.debug.js',
 				production: 'config/webpack.prod.js'
 			},
-			jpgQuality: 95, // 99999
-			pngQuality: [0.95, 1] // 99999
+			jpgQuality: 95,
+			pngQuality: [0.95, 1]
 		};
 		let isModified = false;
 		for(let name in def) {
@@ -1700,6 +1700,13 @@ const focusChangeHandler = (activated) => {
 		game.isFocused = activated;
 		if(game.pixiApp) {
 			setTimeout(() => {
+				if(game.projectDesc.muteOnFocusLost // eslint-disable-line no-constant-condition
+					/// #if EDITOR
+					&& false
+					/// #endif
+				) {
+					BgMusic._clearCustomFades(0.2);
+				}
 				BgMusic._recalculateMusic();
 				game.keys.resetAll();
 			}, 10);

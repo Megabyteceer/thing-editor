@@ -47,7 +47,7 @@ export default class MusicFragment {
 		assert(this._currentFragment, "MusicFragment wrongly registered as active");
 		let curVol = this.getVolume();
 		if(this._fadeToVol !== curVol) {
-			curVol = stepTo(curVol, this._fadeToVol, Math.max((game.isFocused ? 0 : 0.2), 1 / (this._fadeSpeed + 0.0001) * FADE_STEP));
+			curVol = stepTo(curVol, this._fadeToVol, 1 / (this._fadeSpeed + 0.0001) * FADE_STEP);
 
 			if(curVol < MIN_VOL_THRESHOLD && this._fadeToVol < MIN_VOL_THRESHOLD) {
 				this._releaseCurrentFragment();

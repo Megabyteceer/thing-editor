@@ -35,6 +35,7 @@ let assetsMap = new Map();
 let PORT = 32023;
 let gamesRoot = 'games';
 let jsonParser = bodyParser.json({limit:1024*1024*200});
+let rawParser = bodyParser.raw({limit:1024*1024*200});
 
 //========= File System access commands ====================
 
@@ -227,12 +228,12 @@ app.post('/fs/exec', jsonParser, function (req, res) {
 	}, currentGameDesc, currentGameRoot, wss);
 });
 
-app.post('/fs/savefile', jsonParser, function (req, res) {
-	let fileName = mapFileUrl(req.body.filename);
+app.post('/fs/savefile', rawParser, function (req, res) {
+	let fileName = mapFileUrl(req.query.filename);
 	ensureDirectoryExistence(fileName);
 	attemptFSOperation(() => {
 		ignoreFileChanging(fileName);
-		fs.writeFileSync(fileName, req.body.data);
+		fs.writeFileSync(fileName, req.body);
 	}).then(() => {
 		res.end('{}');
 	}).catch(() => {
@@ -241,7 +242,11 @@ app.post('/fs/savefile', jsonParser, function (req, res) {
 });
 
 app.use('/', (req, res, next) => {
-	absoluteImportsFixer(path.join(__dirname, '..', decodeURIComponent(req.path)), req, res, next);
+	if(!req.path.startsWith('/node_modules/')) {
+		absoluteImportsFixer(path.join(__dirname, '..', decodeURIComponent(req.path)), req, res, next);
+	} else {
+		next();
+	}
 });
 
 app.use('/games/',  (req, res) => {
@@ -258,8 +263,6 @@ app.use('/games/',  (req, res) => {
 		res.sendStatus(404);
 	}
 });
-
-app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 
 function mapFileUrl(url) {
 	let fileName =url.replace('/games', '');
@@ -283,22 +286,38 @@ function mapAssetUrl(url) {
 //=========== parse arguments ============================================================
 let openChrome = true;
 let buildProjectAndExit;
+let editorArgumentsArray = [];
+let editorArguments = {};
 let params = process.argv.slice(2);
 while(params.length) {
-	switch(params.shift()) {
+	let arg = params.shift();
+	switch(arg) {
 	case 'n':
 		openChrome = false;
 		break;
 	case 'build':
 		buildProjectAndExit = {
-			projectName: params.shift(),
-			skipTests: process.argv.indexOf('skip-tests') > 0,
-			skipDebugBuild: process.argv.indexOf('skip-debug-build') > 0,
-			skipReleaseBuild: process.argv.indexOf('skip-release-build') > 0
+			projectName: params.shift()
 		};
 		process.env.buildProjectAndExit = buildProjectAndExit;
+		break;
+	case 'node_modules_path':
+		var modulesPath = params.shift();
+		if(!path.isAbsolute(modulesPath)) {
+			modulesPath = path.join(__dirname, modulesPath);
+		}
+		if(fs.existsSync(modulesPath)) {
+			app.use('/node_modules/', express.static(modulesPath, {dotfiles:'allow'}));
+		} else {
+			console.warn('WARNING: node_modules_path points to not existing folder: ' + modulesPath);
+		}
 	}
+	editorArgumentsArray.push(arg);
+	editorArguments[arg] = true;
 }
+
+app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
+
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
@@ -321,6 +340,9 @@ if(openChrome) {
 			process.exit(1);
 		}, 40000);
 	}
+	if(editorArgumentsArray.length) {
+		editorURL += '#' + editorArgumentsArray.join(',');
+	}
 	const os = require('os');
 	let app = buildProjectAndExit ? [
 		'--no-sandbox',
@@ -330,7 +352,7 @@ if(openChrome) {
 		'--js-flags="--max_old_space_size=8192"',
 		'--remote-debugging-port=' + (PORT + 2),
 		'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data')
-	] : [];
+	] : ['--app=' + editorURL];
 
 	app.unshift((process.platform == 'darwin') && 'Google Chrome' ||
 	(process.platform == 'win32') && 'chrome' ||
@@ -682,6 +704,10 @@ function filesChangedProcess() {
 //=============== vs-code integration ==================
 
 function excludeAnotherProjectsFromCodeEditor() { // hides another projects from vs code
+	if(editorArguments['no-vscode-integration']) {
+		return;
+	}
+	
 	let jsConfigFN = './jsconfig.json';
 	let vsSettingsFn = './.vscode/settings.json';
 	
@@ -744,6 +770,9 @@ function isLibInProject(libName) {
 }
 
 function applyProjectTypings() {
+	if(editorArguments['no-vscode-integration']) {
+		return;
+	}
 	let typings = [];
 	const typingsPath = path.join(__dirname, '../current-project-typings.js');
 	if(currentGameDesc.libs) {

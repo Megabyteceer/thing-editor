@@ -13,6 +13,7 @@ class TEditor extends Editor {
 	game:typeof game;
 	_root_initCalled:boolean;
 	_root_onRemovedCalled:boolean;
+	editorArguments:{};
 }
 
 
