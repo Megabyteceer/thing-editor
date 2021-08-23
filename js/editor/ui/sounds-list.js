@@ -118,7 +118,7 @@ export default class SoundsList extends React.Component {
 									if(!editor.fs.filesExt.snd.find((s) => {
 										return s.name === wavFullName;
 									})) {
-										editor.ui.status.warn("Sound file '" + fileInfo.name + "' has no .wav version. Click to delete.", 99999, () => {
+										editor.ui.status.warn("Sound file '" + fileInfo.name + "' has no .wav version. Click to delete.", 30024, () => {
 											editor.fs.deleteFile(fileInfo.name);
 											editor.ui.modal.notify(fileInfo.name + ' deleted.');
 											return true;

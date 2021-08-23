@@ -18,6 +18,9 @@ export default class FieldPlayer {
 		/// #endif
 	) {
 		this.time = 0;
+		/// #if DEBUG
+		this.__processedTime = undefined;
+		/// #endif
 		this.currentFrame = this.timeline[0];
 		if(this.currentFrame.hasOwnProperty('r')
 			/// #if EDITOR
@@ -66,6 +69,9 @@ export default class FieldPlayer {
 		ignoreRandom = false
 		/// #endif
 	) {
+		/// #if DEBUG
+		this.__processedTime = this.time;
+		/// #endif
 		let currentFrame = this.currentFrame;
 		if (this.time === currentFrame.t) {
 			/// #if EDITOR

@@ -363,7 +363,7 @@ __EDITOR_editableProps(BgMusic, [
 		type: 'data-path'
 	},
 	{
-		name: 'fadeIn', // 99999
+		name: 'fadeIn',
 		type: Number,
 		default: 0.2,
 		min: 0,

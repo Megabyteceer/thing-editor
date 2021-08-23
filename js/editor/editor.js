@@ -799,6 +799,9 @@ export default class Editor {
 	}
 
 	regenerateCurrentSceneMapTypings() {
+		if(editor.editorArguments['no-vscode-integration']) {
+			return;
+		}
 		if(!game.currentScene || !game.__EDITOR_mode) {
 			return;
 		}
@@ -925,7 +928,7 @@ declare global {
 			__getNodeExtendData(c).globalPos = p;
 			let p2 = o.toLocal(p);
 			if(isNaN(p2.x) || isNaN(p2.y)) {
-				editor.ui.status.warn("Object has zero scale and ant be moved without affecting children`s positions.", 99999, o);
+				editor.ui.status.warn("Object has zero scale and can not be moved without affecting children`s positions.", 30023, o);
 				return;
 			}
 		}

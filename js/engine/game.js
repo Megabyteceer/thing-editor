@@ -558,8 +558,8 @@ class Game {
 				debug: 'config/webpack.debug.js',
 				production: 'config/webpack.prod.js'
 			},
-			jpgQuality: 95, // 99999
-			pngQuality: [0.95, 1] // 99999
+			jpgQuality: 95,
+			pngQuality: [0.95, 1]
 		};
 		let isModified = false;
 		for(let name in def) {

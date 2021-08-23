@@ -9,7 +9,7 @@ const warnIcon = R.icon('warn-icon');
 
 
 const needAddInToList = (map, owner, fieldName, errorCode) => {
-	if(game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode) >= 0)) { /// 99999
+	if(game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode) >= 0)) {
 		return;
 	}
 	if(!(owner instanceof DisplayObject)) {

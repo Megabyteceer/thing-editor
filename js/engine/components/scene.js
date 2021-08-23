@@ -68,7 +68,7 @@ export default class Scene extends Container {
 	}
 
 	remove() { //allows editor to hide scene`s remove method and do not hide DisplayObject's remove method
-		assert(false, "Scenes remove() method should not be called. Use game.closeCurrentScene() method instead.", 99999);
+		assert(false, "Scenes remove() method should not be called. Use game.closeCurrentScene() method instead.", 10074);
 	}
 
 	/// #endif
