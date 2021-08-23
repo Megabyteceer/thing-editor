@@ -242,11 +242,7 @@ app.post('/fs/savefile', rawParser, function (req, res) {
 });
 
 app.use('/', (req, res, next) => {
-	if(!req.path.startsWith('/node_modules/')) {
-		absoluteImportsFixer(path.join(__dirname, '..', decodeURIComponent(req.path)), req, res, next);
-	} else {
-		next();
-	}
+	absoluteImportsFixer(path.join(__dirname, '..', decodeURIComponent(req.path)), req, res, next);
 });
 
 app.use('/games/',  (req, res) => {
