@@ -547,7 +547,6 @@ class Game {
 			defaultMusVol: 1,
 			defaultSoundsVol: 1,
 			keepSoundWhilePageUpdate: false,
-			keepUpdateUnfocused: false,
 			embedLocales: true,
 			__localesNewKeysPrefix: '',
 			__externalTranslations: [],
@@ -657,29 +656,8 @@ class Game {
 		this.onResize();
 
 		app.stage.addChild(stage);
-
-		if(game.projectDesc.keepUpdateUnfocused // eslint-disable-line no-constant-condition
-			/// #if EDITOR
-			&& false
-			/// #endif
-		) { // 99999
-			let lastTime = Date.now();
-			let lastTickerTime = Date.now();
-			const fameDuration = 1000/60;
-			setInterval(() => {
-				let now = Date.now();
-				if(now - lastTickerTime > 300) { // update game if it has ben not updated for 300ms by pixi ticker
-					game._updateGlobal((now - lastTime) / fameDuration);
-				}
-				lastTime = now;
-			}, fameDuration);
-			app.ticker.add((dt) => {
-				lastTickerTime = Date.now();
-				this._updateGlobal(dt);
-			});
-		} else {
-			app.ticker.add(this._updateGlobal);
-		}
+		
+		app.ticker.add(this._updateGlobal);
 
 		Sound.init();
 
