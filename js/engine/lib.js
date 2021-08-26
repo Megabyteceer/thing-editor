@@ -146,13 +146,11 @@ import TLib from "../../prefabs-typing.js";
 /*/ts*/
 
 class LibClass /*ts*/extends TLib /*/ts*/{
+	/*ts*/
 	constructor() {
-		/*ts*/
 		super();
-		/*/ts*/
-		//assert(false, "Lib can not be instanced.");
 	}
-	
+	/*/ts*/
 	getClass(className) {
 		assert(classes.hasOwnProperty(className), "No class with name '" + className + "' registered in Lib", 10043);
 		return classes[className];

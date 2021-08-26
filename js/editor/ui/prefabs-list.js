@@ -303,6 +303,7 @@ export default class PrefabsList extends React.Component {
 		PrefabsList.exitPrefabEdit(oneStepOnly);
 		if(isChanged) {
 			PrefabReference.__refreshPrefabRefs(name);
+			editor.regeneratePrefabsTypings();
 		}
 	}
 	

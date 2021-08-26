@@ -254,7 +254,7 @@ export default class Editor {
 					});
 				}
 			}
-
+			this.regeneratePrefabsTypings();
 			this.ui.modal.hideSpinner();
 
 			editor.projectOpeningInProgress = false;
@@ -853,6 +853,59 @@ declare global {
 }
 `;
 			fs.saveFile('../../current-scene-typings.d.ts', mapJS, true, true);
+		}
+	}
+
+	regeneratePrefabsTypings() {
+
+		if(editor.editorArguments['no-vscode-integration']) {
+			return;
+		}
+		if(!game.currentScene || !game.__EDITOR_mode) {
+			return;
+		}
+		let json = {};
+		let classes = {};
+
+		for(let n in Lib.prefabs) {
+			let className = Lib.prefabs[n].c;
+			while(className === 'PrefabReference') {
+				let prefabName = Lib.prefabs[n].p && Lib.prefabs[n].p.prefabName;
+				if(prefabName) {
+					className = Lib.prefabs[prefabName].c;
+				} else {
+					break;
+				}
+			}
+			json[n] = className;
+			classes[className] = true;
+		}
+		let jsonString = JSON.stringify(json);
+		if(editor.__currentPrefabsMap !== jsonString) {
+			editor.__currentPrefabsMap = jsonString;
+
+			let imports = [];
+			let declarations = [];
+			
+			for(let prefabName in json) {
+				declarations.push("loadPrefab(prefabName: '" + prefabName + "'):" + json[prefabName] + ";");
+			}
+			for(let className in classes) {
+				imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
+			}
+
+			let mapJS = `// thing-editor auto generated file.
+`
++ imports.join('\n') +
+`
+export default class TLib {
+`
++ declarations.join('\n') + `
+loadPrefab(prefabName:string) {
+	return null;
+}
+}`;
+			fs.saveFile('../../thing-editor/prefabs-typing.ts', mapJS, true, true);
 		}
 	}
 	
