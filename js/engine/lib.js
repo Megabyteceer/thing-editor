@@ -141,19 +141,26 @@ let constructRecursive = (o) => {
 	}
 };
 
-export default class Lib {
+/*ts*/
+import TLib from "../../prefabs-typing.js";
+/*/ts*/
+
+class LibClass /*ts*/extends TLib /*/ts*/{
 	constructor() {
-		assert(false, "Lib can not be instanced.");
+		/*ts*/
+		super();
+		/*/ts*/
+		//assert(false, "Lib can not be instanced.");
 	}
 	
-	static getClass(className) {
+	getClass(className) {
 		assert(classes.hasOwnProperty(className), "No class with name '" + className + "' registered in Lib", 10043);
 		return classes[className];
 	}
 	/**
 	 * @protected
 	 */
-	static _setClasses(c, def) {
+	_setClasses(c, def) {
 		defaults = def;
 		classes = c;
 		Lib.classes = c;
@@ -167,14 +174,14 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _setScenes(s) {
+	_setScenes(s) {
 		scenes = s;
 		Lib.scenes = s;
 	}
 	/**
 	 * @protected
 	 */
-	static _setPrefabs(p) {
+	_setPrefabs(p) {
 		prefabs = p;
 		Lib.prefabs = p;
 
@@ -192,7 +199,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static addResource(fileName, options
+	addResource(fileName, options
 		/// #if EDITOR
 		, isReloading
 		/// #endif
@@ -260,7 +267,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static addTexture(name, texture
+	addTexture(name, texture
 		/// #if EDITOR
 		, addToBegin = false, libName
 		/// #endif
@@ -336,7 +343,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _unloadTexture(name
+	_unloadTexture(name
 		/// #if EDITOR
 		, ___removeFromEditorList = false
 		/// #endif
@@ -362,7 +369,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __overrideSound(name, src) {
+	__overrideSound(name, src) {
 		let opt = {src};
 		let s = loadSound(opt);
 		s.lastPlayStartFrame = 0;
@@ -386,7 +393,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _filterStaticTriggers(childsData) {
+	_filterStaticTriggers(childsData) {
 		if(childsData.c === 'StaticTrigger') {
 			return childsData.p.invert !== !getValueByPath(childsData.p.dataPath || defaults.StaticTrigger.dataPath, game);
 		} else {
@@ -398,7 +405,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _filterStaticTriggersRecursive(data) {
+	_filterStaticTriggersRecursive(data) {
 		if(data[':']) {
 			let a = data[':'].filter(Lib._filterStaticTriggers);
 			data[':'] = a;
@@ -408,7 +415,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _setSounds(soundsMap,
+	_setSounds(soundsMap,
 		/// #if EDITOR
 		updateOnly = false
 		/// #endif
@@ -468,7 +475,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _preCacheSoundsAndTextures() {
+	_preCacheSoundsAndTextures() {
 		let interval;
 		let preloadingStarted = {};
 
@@ -498,7 +505,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static getSoundsLoadingCount() {
+	getSoundsLoadingCount() {
 		let total = 0;
 		for(let sn in soundsHowlers) {
 			let s = soundsHowlers[sn];
@@ -509,11 +516,11 @@ export default class Lib {
 		return total;
 	}
 
-	static hasSound(soundId) {
+	hasSound(soundId) {
 		return sounds.hasOwnProperty(soundId);
 	}
 
-	static getSound(soundId, __dynamicPreloading) {
+	getSound(soundId, __dynamicPreloading) {
 		assert(soundsHowlers.hasOwnProperty(soundId), "No sound with id '" + soundId + "' found.");
 		let s = soundsHowlers[soundId];
 		/// #if EDITOR
@@ -529,7 +536,7 @@ export default class Lib {
 		return s;
 	}
 
-	static preloadSound(soundId
+	preloadSound(soundId
 		/// #if EDITOR
 		, owner
 		/// #endif
@@ -551,7 +558,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __clearAssetsLists() {
+	__clearAssetsLists() {
 		textures = {};
 		Lib.resources = {};
 		Lib.__texturesList = [];
@@ -559,7 +566,7 @@ export default class Lib {
 		Lib.__resourcesList = [];
 	}
 	
-	static _loadClassInstanceById(id) {
+	_loadClassInstanceById(id) {
 		let ret = Pool.create(classes[id]);
 		Object.assign(ret, defaults[id]
 		/// #if EDITOR
@@ -585,16 +592,16 @@ export default class Lib {
 		return ret;
 	}
 	
-	static hasTexture(name) {
+	hasTexture(name) {
 		return textures.hasOwnProperty(name);
 	}
 	
-	static getTextureEndingWith(name) {
+	getTextureEndingWith(name) {
 		const textureName = Object.keys(textures).find((textureName) => textureName.endsWith(name));
 		return textureName && Lib.getTexture(textureName);
 	}
 	
-	static getTexture(name
+	getTexture(name
 	/// #if EDITOR
 		, owner
 	/// #endif
@@ -629,29 +636,12 @@ export default class Lib {
 		
 		return textures[name];
 	}
-	/**
-	 * @param {string} name
-	 * @return {PIXI.Container}
-	 */
-	static loadPrefab(name) {
-		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
-		/// #if EDITOR
-		if(name.indexOf(editor.editorFilesPrefix) !== 0) {
-			prefabs[name].p.name = name;
-		}
-		let ret = _loadObjectFromData(prefabs[name]);
-		if(!game.__EDITOR_mode) {
-			Lib.__reassignIds(ret);
-		}
-		return ret;
-		/// #endif
-		return _loadObjectFromData(prefabs[name]); // eslint-disable-line no-unreachable
-	}
+
 	/**
 	 * @protected
 	 * @param {PIXI.DisplayObject} o
 	 */
-	static destroyObjectAndChildren(o, itsRootRemoving) {
+	destroyObjectAndChildren(o, itsRootRemoving) {
 		/// #if EDITOR
 		let extData = __getNodeExtendData(o);
 		o.__EDITOR_inner_exitPreviewMode();
@@ -713,7 +703,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _deserializeObject(src) {
+	_deserializeObject(src) {
 		let ret;
 		/// #if EDITOR
 		deserializationDeepness++;
@@ -821,7 +811,7 @@ export default class Lib {
 	/**
 	 * @return {Scene}
 	 */
-	static loadScene(name) {
+	loadScene(name) {
 		if(
 		/// #if EDITOR
 			!game.__EDITOR_mode &&
@@ -882,23 +872,23 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _cleanupRemoveHolders() {
+	_cleanupRemoveHolders() {
 		while(removeHoldersToCleanup.length > 0) {
 			Lib.destroyObjectAndChildren(removeHoldersToCleanup.pop());
 		}
 	}	
 
-	static hasPrefab(name) {
+	hasPrefab(name) {
 		return prefabs.hasOwnProperty(name);
 	}
 
-	static hasScene(name) {
+	hasScene(name) {
 		return scenes.hasOwnProperty(name);
 	}
 	/**
 	 * @protected
 	 */
-	static _getStaticScenes() {
+	_getStaticScenes() {
 		return staticScenes;
 	}
 
@@ -906,20 +896,20 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __reassignIds(o) {
+	__reassignIds(o) {
 		o.___id = Lib.__idCounter++;
 		o.children.some(Lib.__reassignIds);
 	}
 	/**
 	 * @protected
 	 */
-	static __hasTextureEvenUnloaded(name) {
+	__hasTextureEvenUnloaded(name) {
 		return __allTextures.hasOwnProperty(name);
 	}
 	/**
 	 * @protected
 	 */
-	static __dataHasClass(data, class_) {
+	__dataHasClass(data, class_) {
 		let c = classes[data.c];
 		while(c) {
 			if(c === class_) {
@@ -941,13 +931,13 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __hasClass(className) {
+	__hasClass(className) {
 		return classes.hasOwnProperty(className);
 	}
 	/**
 	 * @protected
 	 */
-	static __saveScene(scene, name) {
+	__saveScene(scene, name) {
 		
 		assert(game.__EDITOR_mode, "attempt to save scene in running mode: " + name);
 		
@@ -980,7 +970,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __onAllAssetsLoaded(callback) {
+	__onAllAssetsLoaded(callback) {
 
 		let interval = setInterval(() => {
 
@@ -1004,7 +994,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __savePrefab(object, name) {
+	__savePrefab(object, name) {
 		
 		assert(game.__EDITOR_mode, "attempt to save prefab in running mode: " + name);
 		assert(typeof name === 'string');
@@ -1029,13 +1019,13 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __savePrefabData(prefabName) {
+	__savePrefabData(prefabName) {
 		editor.fs.saveFile(Lib.__prefabNameToFileName(prefabName), prefabs[prefabName], true);
 	}
 	/**
 	 * @protected
 	 */
-	static __getNameByPrefab(prefab) {
+	__getNameByPrefab(prefab) {
 		if(prefabs[prefab.p.name] === prefab) {
 			return prefab.p.name;
 		}
@@ -1049,7 +1039,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __deletePrefab(name) {
+	__deletePrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "attempt to delete not existing prefab: " + name);
 		delete prefabs[name];
 		return editor.fs.deleteFile(Lib.__prefabNameToFileName(name));
@@ -1057,7 +1047,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __deleteScene(name) {
+	__deleteScene(name) {
 		assert(scenes.hasOwnProperty(name), "attempt to delete not existing scene: " + name);
 		delete scenes[name];
 		return editor.fs.deleteFile(Lib.__sceneNameToFileName(name), true);
@@ -1065,26 +1055,26 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __sceneNameToFileName(sceneName) {
+	__sceneNameToFileName(sceneName) {
 		return 'scenes/' + sceneName + '.scene.json';
 	}
 	/**
 	 * @protected
 	 */
-	static __prefabNameToFileName(sceneName) {
+	__prefabNameToFileName(sceneName) {
 		return 'prefabs/' + sceneName + '.prefab.json';
 	}
 	/**
 	 * @protected
 	 */
-	static __onProjectOpen() {
+	__onProjectOpen() {
 		_oldClasses = {};
 		_oldDefaults = {};
 	}
 	/**
 	 * @protected
 	 */
-	static _getAllScenes() {
+	_getAllScenes() {
 		if(!scenes) return undefined;
 		let ret = {};
 		let keys = Object.keys(scenes);
@@ -1098,13 +1088,13 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static _getAllPrefabs() {
+	_getAllPrefabs() {
 		return prefabs;
 	}
 	/**
 	 * @protected
 	 */
-	static __clearStaticScenes() {
+	__clearStaticScenes() {
 		for(let sceneName in staticScenes) {
 			let s = staticScenes[sceneName];
 			let scenesStack = game._getScenesStack();
@@ -1117,7 +1107,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __invalidateSerializationCache(o) {
+	__invalidateSerializationCache(o) {
 		let p = o;
 		while((p !== game.stage) && p) {
 			__getNodeExtendData(p).serializationCache = null;
@@ -1127,7 +1117,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __getSceneOrPrefabLibName(o) {
+	__getSceneOrPrefabLibName(o) {
 		if(o instanceof Scene) {
 			let fileName = 'scenes/' + o.name + '.scene.json';
 			let f = editor.fs.filesExt.scenes.find((f) => {
@@ -1149,7 +1139,7 @@ export default class Lib {
 	/**
 	 * @protected
 	 */
-	static __serializeObject(o) {
+	__serializeObject(o) {
 		
 		o.__EDITOR_inner_exitPreviewMode();
 		if(o.__beforeSerialization) {
@@ -1206,6 +1196,8 @@ export default class Lib {
 	/// #endif
 
 }
+
+const Lib = new LibClass();
 
 function loadSound(opt) {
 	let s = new Howl(opt);
@@ -1371,3 +1363,20 @@ const __isSerializableObject = (o) => {
 };
 
 /// #endif
+
+Lib.loadPrefab = function loadPrefab(name) {
+	assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
+	/// #if EDITOR
+	if(name.indexOf(editor.editorFilesPrefix) !== 0) {
+		prefabs[name].p.name = name;
+	}
+	let ret = _loadObjectFromData(prefabs[name]);
+	if(!game.__EDITOR_mode) {
+		Lib.__reassignIds(ret);
+	}
+	return ret;
+	/// #endif
+	return _loadObjectFromData(prefabs[name]); // eslint-disable-line no-unreachable
+};
+
+export default Lib;
