@@ -798,6 +798,10 @@ export default class Editor {
 		this.regenerateCurrentSceneMapTypings();
 	}
 
+	_getImportSrcForClass(className) {
+		return 'import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";';
+	}
+
 	regenerateCurrentSceneMapTypings() {
 		if(editor.editorArguments['no-vscode-integration']) {
 			return;
@@ -822,7 +826,7 @@ export default class Editor {
 			let declarations = [];
 			
 			for(let className in Lib.classes) {
-				imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
+				imports.push(editor._getImportSrcForClass(className));
 				classesList.push(className + ': typeof ' + className + ';');
 			}
 			
@@ -871,7 +875,7 @@ declare global {
 			let className = Lib.prefabs[n].c;
 			while(className === 'PrefabReference') {
 				let prefabName = Lib.prefabs[n].p && Lib.prefabs[n].p.prefabName;
-				if(prefabName) {
+				if(prefabName && Lib.prefabs[prefabName]) {
 					className = Lib.prefabs[prefabName].c;
 				} else {
 					break;
@@ -891,7 +895,7 @@ declare global {
 				declarations.push("loadPrefab(prefabName: '" + prefabName + "'):" + json[prefabName] + ";");
 			}
 			for(let className in classes) {
-				imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
+				imports.push(editor._getImportSrcForClass(className));
 			}
 
 			let mapJS = `// thing-editor auto generated file.
