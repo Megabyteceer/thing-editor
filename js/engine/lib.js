@@ -141,16 +141,24 @@ let constructRecursive = (o) => {
 	}
 };
 
+/// #if EDITOR
 /*ts*/
 import TLib from "../../prefabs-typing.js";
 /*/ts*/
+/// #endif
 
-class LibClass /*ts*/extends TLib /*/ts*/{
+class LibClass
+/// #if EDITOR
+/*ts*/extends TLib /*/ts*/
+/// #endif
+{
+/// #if EDITOR
 	/*ts*/
 	constructor() {
 		super();
 	}
 	/*/ts*/
+	/// #endif
 	getClass(className) {
 		assert(classes.hasOwnProperty(className), "No class with name '" + className + "' registered in Lib", 10043);
 		return classes[className];
