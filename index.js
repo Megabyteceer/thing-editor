@@ -822,6 +822,7 @@ function absoluteImportsFixer(fileName, req, res, next) {
 					return m1 + "/" + m2;
 				});
 				resultJsContent = addJsExtensionAndPreventCache(req, res, resultJsContent);
+				resultJsContent = resultJsContent.replace(/\/\*ts\*\//g, '/*ts  ').replace(/\/\*\/ts\*\//g, '   ts*/');
 				return res.end(resultJsContent);
 			}
 		});

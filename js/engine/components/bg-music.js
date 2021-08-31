@@ -60,6 +60,7 @@ export default class BgMusic extends Container {
 		this._externalVolume = 0;
 		this._musInitialized = false;
 		this.customFade = null;
+		this.onIntroFinish = null;
 	}
 
 	setVolume(v) {

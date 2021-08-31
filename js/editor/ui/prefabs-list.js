@@ -303,6 +303,7 @@ export default class PrefabsList extends React.Component {
 		PrefabsList.exitPrefabEdit(oneStepOnly);
 		if(isChanged) {
 			PrefabReference.__refreshPrefabRefs(name);
+			editor.regeneratePrefabsTypings();
 		}
 	}
 	
@@ -321,6 +322,14 @@ export default class PrefabsList extends React.Component {
 			} else {
 				prefabsStack.length = 0;
 			}
+		}
+	}
+
+	static getPrefabNameFromPrefabRef(ref) {
+		if(ref.dynamicPrefabName) {
+			return getValueByPath(ref.dynamicPrefabName, game);
+		} else {
+			return ref.prefabName;
 		}
 	}
 	
@@ -382,13 +391,7 @@ function checkPrefabDataForLoops(data, loopName) {
 		return;
 	}
 	if(data.c === "PrefabReference") {
-		let prefabName;
-
-		if(data.p.dynamicPrefabName) {
-			prefabName = getValueByPath(data.p.dynamicPrefabName, game);
-		} else {
-			prefabName = data.p.prefabName;
-		}
+		let prefabName = PrefabsList.getPrefabNameFromPrefabRef(data.p);
 		if(prefabName === loopName) {
 			return true;
 		}

@@ -254,7 +254,7 @@ export default class Editor {
 					});
 				}
 			}
-
+			this.regeneratePrefabsTypings();
 			this.ui.modal.hideSpinner();
 
 			editor.projectOpeningInProgress = false;
@@ -798,6 +798,10 @@ export default class Editor {
 		this.regenerateCurrentSceneMapTypings();
 	}
 
+	_getImportSrcForClass(className) {
+		return 'import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";';
+	}
+
 	regenerateCurrentSceneMapTypings() {
 		if(editor.editorArguments['no-vscode-integration']) {
 			return;
@@ -809,8 +813,11 @@ export default class Editor {
 		game.currentScene._refreshAllObjectRefs();
 		for(let n of Object.keys(game.currentScene.all)) {
 			try {
-				let v = game.all[n].constructor.name;
-				json[n] = v;
+				let className = game.all[n].constructor.name;
+				if(className === 'PrefabReference') {
+					className = this.getClassNameOfPrefab(PrefabsList.getPrefabNameFromPrefabRef(game.all[n]));
+				}
+				json[n] = className;
 			} catch(er) {} // eslint-disable-line no-empty
 		}
 		let jsonString = JSON.stringify(json);
@@ -822,7 +829,7 @@ export default class Editor {
 			let declarations = [];
 			
 			for(let className in Lib.classes) {
-				imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
+				imports.push(editor._getImportSrcForClass(className));
 				classesList.push(className + ': typeof ' + className + ';');
 			}
 			
@@ -854,6 +861,64 @@ declare global {
 `;
 			fs.saveFile('../../current-scene-typings.d.ts', mapJS, true, true);
 		}
+	}
+
+	regeneratePrefabsTypings() {
+
+		if(editor.editorArguments['no-vscode-integration']) {
+			return;
+		}
+		if(!game.currentScene || !game.__EDITOR_mode) {
+			return;
+		}
+		let json = {};
+		let classes = {};
+
+		for(let n in Lib.prefabs) {
+			let className = this.getClassNameOfPrefab(n);
+			json[n] = className;
+			classes[className] = true;
+		}
+		let jsonString = JSON.stringify(json);
+		if(editor.__currentPrefabsMap !== jsonString) {
+			editor.__currentPrefabsMap = jsonString;
+
+			let imports = [];
+			let declarations = [];
+			
+			for(let prefabName in json) {
+				declarations.push("loadPrefab(prefabName: '" + prefabName + "'):" + json[prefabName] + ";");
+			}
+			for(let className in classes) {
+				imports.push(editor._getImportSrcForClass(className));
+			}
+
+			let mapJS = `// thing-editor auto generated file.
+`
++ imports.join('\n') +
+`
+export default class TLib {
+`
++ declarations.join('\n') + `
+loadPrefab(prefabName:string) {
+	return null;
+}
+}`;
+			fs.saveFile('../../thing-editor/prefabs-typing.ts', mapJS, true, true);
+		}
+	}
+
+	getClassNameOfPrefab(prefabName) {
+		let className = Lib.prefabs[prefabName].c;
+		while(className === 'PrefabReference') {
+			prefabName = Lib.prefabs[prefabName].p && PrefabsList.getPrefabNameFromPrefabRef(Lib.prefabs[prefabName].p);
+			if(prefabName && Lib.prefabs[prefabName]) {
+				className = Lib.prefabs[prefabName].c;
+			} else {
+				break;
+			}
+		}
+		return className;
 	}
 	
 	saveProjectDesc() {
