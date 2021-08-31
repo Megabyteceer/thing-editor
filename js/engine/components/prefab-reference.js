@@ -40,8 +40,9 @@ export default class PrefabReference extends Container {
 			if(!Lib.hasPrefab(prefabName)) {
 				editor.ui.status.warn("Prefab with name " + prefabName + " is not exists.", 32024, this, 'prefabName');
 			} else {
-
+				Lib.__isPrefabPreviewLoading++;
 				this.__previewNode = Lib.loadPrefab(prefabName);
+				Lib.__isPrefabPreviewLoading--;
 				if(!allRefs[prefabName]) {
 					allRefs[prefabName] = [];
 				}

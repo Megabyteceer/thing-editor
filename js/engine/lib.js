@@ -793,7 +793,12 @@ class LibClass
 			/// #endif
 			for(let childData of childrenData) {
 				/// #if EDITOR
-				if(game.__EDITOR_mode || !childData.p.hasOwnProperty('name') || !childData.p.name.startsWith('___')) {
+
+				let isVisible = game.__EDITOR_mode || !childData.p.hasOwnProperty('name') || !childData.p.name.startsWith('___');
+				if(isVisible && Lib.__isPrefabPreviewLoading) {
+					isVisible = !childData.p.hasOwnProperty('name') || !childData.p.name.startsWith('____'); //99999
+				}
+				if(isVisible) {
 				/// #endif
 					ret.addChild(Lib._deserializeObject(childData));
 				/// #if EDITOR
@@ -1350,6 +1355,8 @@ Lib.__getSoundsData = () => {
 /// #endif
 
 /// #if EDITOR
+Lib.__isPrefabPreviewLoading = 0;
+
 Lib._constructRecursive = constructRecursive;
 
 Lib.__idCounter = 1;
