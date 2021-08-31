@@ -904,7 +904,7 @@ loadPrefab(prefabName:string) {
 	return null;
 }
 }`;
-			fs.saveFile('../../thing-editor/prefabs-typing.ts', mapJS, true, true);
+			fs.saveFile('../../prefabs-typing.ts', mapJS, true, true);
 		}
 	}
 
