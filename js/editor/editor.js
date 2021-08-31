@@ -813,8 +813,11 @@ export default class Editor {
 		game.currentScene._refreshAllObjectRefs();
 		for(let n of Object.keys(game.currentScene.all)) {
 			try {
-				let v = game.all[n].constructor.name;
-				json[n] = v;
+				let className = game.all[n].constructor.name;
+				if(className === 'PrefabReference') {
+					className = this.getClassNameOfPrefab(PrefabsList.getPrefabNameFromPrefabRef(game.all[n]));
+				}
+				json[n] = className;
 			} catch(er) {} // eslint-disable-line no-empty
 		}
 		let jsonString = JSON.stringify(json);
@@ -872,15 +875,7 @@ declare global {
 		let classes = {};
 
 		for(let n in Lib.prefabs) {
-			let className = Lib.prefabs[n].c;
-			while(className === 'PrefabReference') {
-				let prefabName = Lib.prefabs[n].p && Lib.prefabs[n].p.prefabName;
-				if(prefabName && Lib.prefabs[prefabName]) {
-					className = Lib.prefabs[prefabName].c;
-				} else {
-					break;
-				}
-			}
+			let className = this.getClassNameOfPrefab(n);
 			json[n] = className;
 			classes[className] = true;
 		}
@@ -911,6 +906,19 @@ loadPrefab(prefabName:string) {
 }`;
 			fs.saveFile('../../thing-editor/prefabs-typing.ts', mapJS, true, true);
 		}
+	}
+
+	getClassNameOfPrefab(prefabName) {
+		let className = Lib.prefabs[prefabName].c;
+		while(className === 'PrefabReference') {
+			prefabName = Lib.prefabs[prefabName].p && PrefabsList.getPrefabNameFromPrefabRef(Lib.prefabs[prefabName].p);
+			if(prefabName && Lib.prefabs[prefabName]) {
+				className = Lib.prefabs[prefabName].c;
+			} else {
+				break;
+			}
+		}
+		return className;
 	}
 	
 	saveProjectDesc() {
