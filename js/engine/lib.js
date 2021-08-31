@@ -143,7 +143,7 @@ let constructRecursive = (o) => {
 
 /// #if EDITOR
 /*ts*/
-import TLib from "../../prefabs-typing.js";
+import TLib from "../../../prefabs-typing.js";
 /*/ts*/
 /// #endif
 
