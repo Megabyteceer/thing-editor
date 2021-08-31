@@ -8,18 +8,13 @@ const allRefs = {};
 
 import Container from "./container.js";
 import Lib from "../lib.js";
-import getValueByPath from "../utils/get-value-by-path.js";
-
 
 export default class PrefabReference extends Container {
 
 	/// #if EDITOR
 
 	__getPrefabName() {
-		if(this.dynamicPrefabName) {
-			return getValueByPath(this.dynamicPrefabName, this);
-		}
-		return this.prefabName;
+		return PrefabsList.getPrefabNameFromPrefabRef(this);
 	}
 
 	set prefabName(n) {

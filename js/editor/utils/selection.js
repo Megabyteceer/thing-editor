@@ -64,12 +64,8 @@ class Selection extends Array {
 				let parentPath = getPathOfNode(hidingParent);
 				nodePath.length -= parentPath.length;
 
-				let prefabName;
-				if(hidingParent.dynamicPrefabName) {
-					prefabName = getValueByPath(hidingParent.dynamicPrefabName, game);
-				} else {
-					prefabName = hidingParent.prefabName;
-				}
+				let prefabName = PrefabsList.getPrefabNameFromPrefabRef(hidingParent);
+
 				if(prefabName) {
 					editor.ui.modal.showEditorQuestion("Object is in inside prefab", "Do you want to go to prefab '" + prefabName + "', containing this object?", () => {
 						PrefabsList.editPrefab(prefabName);
