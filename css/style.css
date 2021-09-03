@@ -1430,7 +1430,7 @@ button {
 }
 
 .sounds-search-input {
-	width: calc(100% - 204px);
+	width: calc(100% - 213px);
 	outline: 2px solid red !important;
 }
 
