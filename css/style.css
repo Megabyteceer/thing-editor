@@ -1434,7 +1434,7 @@ button {
 }
 
 .sounds-search-input {
-	width: calc(100% - 204px);
+	width: calc(100% - 213px);
 	outline: 2px solid red !important;
 }
 
@@ -1550,6 +1550,26 @@ button {
 
 #window-viewport .red-frame {
 	position: relative;
+}
+
+#window-viewport .resolution {
+	position: relative;
+	bottom: 10px;
+}
+
+#window-viewport .resolution-selector {
+	font-size: 65%;
+	width: 80px;
+}
+
+#window-viewport .resolution-selector .select-editor-current {
+	overflow-x: hidden;
+	padding: 5px 0;
+    margin: 0 8px;
+}
+
+#window-viewport .resolution-selector .select-editor {
+	padding: 10px 0;
 }
 
 .error-help-button {

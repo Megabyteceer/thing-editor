@@ -537,6 +537,7 @@ export default class Editor {
 		editor.refreshTreeViewAndPropertyEditor();
 		if(editor.overlay) {
 			editor.overlay.onEditorRenderResize();
+			editor.ui.viewport.forceUpdate();
 		}
 	}
 	
@@ -1085,21 +1086,36 @@ loadPrefab(prefabName:string) {
 		}
 	}
 
+	_getProjectViewportSize(doNotFixOrientation) {
+		if (game.projectDesc.screenOrientation === 'auto') {
+			if(!doNotFixOrientation) {
+				game.___enforcedOrientation = 'landscape';
+			}
+			return {
+				w: game.projectDesc.width,
+				h: game.projectDesc.height
+			};
+		} else if (game.projectDesc.screenOrientation === 'portrait') {
+			return {
+				w: game.projectDesc.portraitWidth,
+				h: game.projectDesc.portraitHeight
+			};
+		} else {
+			return {
+				w: game.projectDesc.width,
+				h: game.projectDesc.height
+			};
+		}
+	}
+
 	_callInPortraitMode(callback) {
 		let tmpOrientation = game.___enforcedOrientation;
 		let tmpIsMobile = game.isMobile.any;
 		game.isMobile.any = false;
-		if (game.projectDesc.screenOrientation === 'auto') {
-			game.___enforcedOrientation = 'landscape';
-			game.__enforcedW = game.projectDesc.width;
-			game.__enforcedH = game.projectDesc.height;
-		} else if (game.projectDesc.screenOrientation === 'portrait') {
-			game.__enforcedW = game.projectDesc.portraitWidth;
-			game.__enforcedH = game.projectDesc.portraitHeight;
-		} else {
-			game.__enforcedW = game.projectDesc.width;
-			game.__enforcedH = game.projectDesc.height;
-		}
+		let size = this._getProjectViewportSize();
+		game.__enforcedW = size.w;
+		game.__enforcedH = size.h;
+
 		game.onResize();
 		callback();
 		game.___enforcedOrientation = tmpOrientation;
@@ -1107,7 +1123,6 @@ loadPrefab(prefabName:string) {
 		delete game.__enforcedH;
 		game.isMobile.any = tmpIsMobile;
 		game.onResize();
-
 	}
 	
 	build(debug) {

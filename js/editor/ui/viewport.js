@@ -37,6 +37,16 @@ document.addEventListener('fullscreenchange', () => {
 	game.onResize();
 });
 
+let currentResolution;
+const resolutions = [
+	{name: "Responsive", value: false},
+	{name: "Project Fixed", value: true},
+	{name: "Pixel 2 XL", value: {w:823, h:411}},
+	{name: "iPhone 6/7/8", value: {w:667, h:375}},
+	{name: "iPhone X", value: {w:812, h:375}},
+	{name: "iPad", value: {w:1024, h:768}}
+];
+
 export default class Viewport extends React.Component {
 	
 	constructor(props) {
@@ -53,6 +63,18 @@ export default class Viewport extends React.Component {
 		this.onMobileToggle = this.onMobileToggle.bind(this);
 		this.helpersHidden = false;
 		game.isMobile.any = editor.settings.getItem('mobileMode', game.isMobile.any);
+		let currentResolutionSettings = JSON.stringify(editor.settings.getItem('viewportMode', null));
+		let currentItem = resolutions.find((i) => {
+			return currentResolutionSettings === JSON.stringify(i.value);
+		});
+		if(currentItem) {
+			this.setCurrentResolution(currentItem.value);
+		}
+	}
+
+	setCurrentResolution(resolution) {
+		currentResolution = resolution;
+		game.__setFixedViewport(currentResolution);
 	}
 
 	onHelpersToggle() {
@@ -282,8 +304,22 @@ export default class Viewport extends React.Component {
 		let panel;
 		
 		let toggleOrientationBtn;
-		if(game && game.projectDesc && (game.projectDesc.screenOrientation === 'auto')) {
+		if(editor.projectDesc && (editor.projectDesc.screenOrientation === 'auto')) {
 			toggleOrientationBtn = R.btn(R.icon('orientation-toggle'), this.onToggleOrientationClick, 'Switch screen orientation (Ctrl + O)', 'big-btn', 1079);
+		}
+
+		let resolutionSelect;
+		if(editor.projectDesc && editor.projectDesc.dynamicStageSize) {
+			resolutionSelect = R.div({className: 'resolution-selector'},
+				React.createElement(SelectEditor, {onChange: (ev) => {
+					if(ev.target.value !== currentResolution) {
+						this.setCurrentResolution(ev.target.value);
+						editor.settings.setItem('viewportMode', currentResolution);
+						this.forceUpdate();
+					}
+				}, noCopyValue:true, value: currentResolution, select: resolutions}),
+				R.div({className: 'resolution'}, game.W + '×' + game.H)
+			);
 		}
 
 		let reloadAssetsBtn = R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn');
@@ -310,7 +346,8 @@ export default class Viewport extends React.Component {
 				}),
 				R.hr(),
 				reloadAssetsBtn,
-				toggleOrientationBtn
+				toggleOrientationBtn,
+				resolutionSelect
 			);
 		} else {
 			let pauseResumeBtn, oneStepBtn;
@@ -336,6 +373,7 @@ export default class Viewport extends React.Component {
 				oneStepBtn,
 				(statusHeader) && R.hr(),
 				toggleOrientationBtn,
+				resolutionSelect,
 				R.btn('⛶', () => {
 					document.querySelector('#viewport-root').requestFullscreen();
 				}, 'Go fullscreen', 'big-btn'),

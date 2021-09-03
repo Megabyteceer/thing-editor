@@ -91,7 +91,7 @@ interface EditableFieldDescription{
 	/** 'btn' hotkey. Add 1000 if it needs Ctrl */
 	hotkey?: Number,
 	notAnimate?: Boolean,
-	tip?: String,
+	tip?: string | (() => string | undefined),
 	/** id for store current 'filter' value for 'select list' property. its allows to keep same filter for fields with different names*/
 	filterName?: String,
 	helpUrl?: string,
