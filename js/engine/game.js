@@ -125,6 +125,22 @@ class Game {
 		let orientation;
 		/// #if EDITOR
 
+		if(this.__fixedViewport) {
+			if(this.__fixedViewport === true) {
+				let size = editor._getProjectViewportSize(true);
+				w = size.w;
+				h = size.h;
+			} else {
+				w = this.__fixedViewport.w;
+				h = this.__fixedViewport.h;
+				
+			}if(this.__enforcedOrientation === 'portrait') {
+				let tmp = w;
+				w = h;
+				h = tmp;
+			}
+		}
+
 		if(this.__enforcedW) {
 			w = this.__enforcedW;
 		}
@@ -373,6 +389,13 @@ class Game {
 	
 		}
 	}
+
+	/// #if EDITOR
+	__setFixedViewport(fixedViewport) {
+		this.__fixedViewport = fixedViewport;
+		this.onResize();
+	}
+	/// #endif
 
 	openUrl(url, target = '_blank') {
 		game.addOnClickOnce(() => {
