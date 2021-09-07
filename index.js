@@ -58,7 +58,12 @@ app.get('/fs/openProject', function (req, res) {
 		currentGameDesc = JSON.parse(projectDescSrc);
 
 		if(!buildProjectAndExit) {
-			initWatchers();
+			try {
+				initWatchers();
+			} catch (err) {
+				console.error('WATCHING ERROR:');
+				console.error(err);
+			}
 		}
 		res.send(projectDescSrc);
 		excludeAnotherProjectsFromCodeEditor();
