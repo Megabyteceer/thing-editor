@@ -133,6 +133,12 @@ let fs = {
 				editor.ui.modal.showError(data.error);	
 			}
 		});
+	},
+	hasWrongSymbol(fileName) {
+		let wrongSymbolPos = fileName.search(/[^a-zA-Z_\-\.\d\/]/gm);
+		if(wrongSymbolPos >= 0) {
+			return fileName[wrongSymbolPos];
+		}
 	}
 };
 
@@ -158,11 +164,16 @@ function renderProjectItem(desc, i) {
 		icon = R.img({src: getIconPath(desc)});
 	}
 	let key = desc.__group ? desc.__group + '/' + i : i;
+	let isProjectWrong;
+	let wrongSymbol = fs.hasWrongSymbol(desc.dir);
+	if(wrongSymbol) {
+		isProjectWrong = 'Project is blocked because of wrong symbol "' + wrongSymbol + '" in its folder name.';
+	}
 	return R.div({
-		className: 'project-item-select clickable', key, onClick: () => {
+		className: isProjectWrong ? 'project-item-select unclickable' : 'project-item-select clickable', key, onClick: () => {
 			editor.ui.modal.hideModal(desc.dir);
 		}
-	}, icon, desc.title);
+	}, icon, desc.title, isProjectWrong ? R.span({className: 'danger small-text'}, ' (' + isProjectWrong + ')') : undefined);
 }
 
 let requestInProgress = false;

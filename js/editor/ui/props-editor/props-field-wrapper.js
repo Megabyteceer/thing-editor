@@ -184,10 +184,13 @@ class PropsFieldWrapper extends React.Component {
 
 		let tip;
 		if(field.hasOwnProperty('tip')) {
-			tip = R.tip(field.name,
-				'Field "' + field.name + '" description:',
-				field.tip
-			);
+			tip = ((typeof field.tip === 'function') ? field.tip() : field.tip);
+			if(tip) {
+				tip = R.tip(field.name,
+					'Field "' + field.name + '" description:',
+					tip
+				);
+			}
 		}
 		
 		return R.div({className, id:'property-editor-' + field.name.replace('.', '_'),

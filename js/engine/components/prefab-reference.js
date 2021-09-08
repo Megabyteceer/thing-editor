@@ -8,18 +8,13 @@ const allRefs = {};
 
 import Container from "./container.js";
 import Lib from "../lib.js";
-import getValueByPath from "../utils/get-value-by-path.js";
-
 
 export default class PrefabReference extends Container {
 
 	/// #if EDITOR
 
 	__getPrefabName() {
-		if(this.dynamicPrefabName) {
-			return getValueByPath(this.dynamicPrefabName, this);
-		}
-		return this.prefabName;
+		return PrefabsList.getPrefabNameFromPrefabRef(this);
 	}
 
 	set prefabName(n) {
@@ -45,8 +40,9 @@ export default class PrefabReference extends Container {
 			if(!Lib.hasPrefab(prefabName)) {
 				editor.ui.status.warn("Prefab with name " + prefabName + " is not exists.", 32024, this, 'prefabName');
 			} else {
-
+				Lib.__isPrefabPreviewLoading++;
 				this.__previewNode = Lib.loadPrefab(prefabName);
+				Lib.__isPrefabPreviewLoading--;
 				if(!allRefs[prefabName]) {
 					allRefs[prefabName] = [];
 				}

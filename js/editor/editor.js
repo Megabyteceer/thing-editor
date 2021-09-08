@@ -254,7 +254,7 @@ export default class Editor {
 					});
 				}
 			}
-
+			this.regeneratePrefabsTypings();
 			this.ui.modal.hideSpinner();
 
 			editor.projectOpeningInProgress = false;
@@ -537,6 +537,7 @@ export default class Editor {
 		editor.refreshTreeViewAndPropertyEditor();
 		if(editor.overlay) {
 			editor.overlay.onEditorRenderResize();
+			editor.ui.viewport.forceUpdate();
 		}
 	}
 	
@@ -798,7 +799,14 @@ export default class Editor {
 		this.regenerateCurrentSceneMapTypings();
 	}
 
+	_getImportSrcForClass(className) {
+		return 'import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";';
+	}
+
 	regenerateCurrentSceneMapTypings() {
+		if(editor.editorArguments['no-vscode-integration']) {
+			return;
+		}
 		if(!game.currentScene || !game.__EDITOR_mode) {
 			return;
 		}
@@ -806,8 +814,11 @@ export default class Editor {
 		game.currentScene._refreshAllObjectRefs();
 		for(let n of Object.keys(game.currentScene.all)) {
 			try {
-				let v = game.all[n].constructor.name;
-				json[n] = v;
+				let className = game.all[n].constructor.name;
+				if(className === 'PrefabReference') {
+					className = this.getClassNameOfPrefab(PrefabsList.getPrefabNameFromPrefabRef(game.all[n]));
+				}
+				json[n] = className;
 			} catch(er) {} // eslint-disable-line no-empty
 		}
 		let jsonString = JSON.stringify(json);
@@ -819,7 +830,7 @@ export default class Editor {
 			let declarations = [];
 			
 			for(let className in Lib.classes) {
-				imports.push('import ' + className + ' from "' + ClassesLoader.getClassPath(className) + '";');
+				imports.push(editor._getImportSrcForClass(className));
 				classesList.push(className + ': typeof ' + className + ';');
 			}
 			
@@ -851,6 +862,64 @@ declare global {
 `;
 			fs.saveFile('../../current-scene-typings.d.ts', mapJS, true, true);
 		}
+	}
+
+	regeneratePrefabsTypings() {
+
+		if(editor.editorArguments['no-vscode-integration']) {
+			return;
+		}
+		if(!game.currentScene || !game.__EDITOR_mode) {
+			return;
+		}
+		let json = {};
+		let classes = {};
+
+		for(let n in Lib.prefabs) {
+			let className = this.getClassNameOfPrefab(n);
+			json[n] = className;
+			classes[className] = true;
+		}
+		let jsonString = JSON.stringify(json);
+		if(editor.__currentPrefabsMap !== jsonString) {
+			editor.__currentPrefabsMap = jsonString;
+
+			let imports = [];
+			let declarations = [];
+			
+			for(let prefabName in json) {
+				declarations.push("loadPrefab(prefabName: '" + prefabName + "'):" + json[prefabName] + ";");
+			}
+			for(let className in classes) {
+				imports.push(editor._getImportSrcForClass(className));
+			}
+
+			let mapJS = `// thing-editor auto generated file.
+`
++ imports.join('\n') +
+`
+export default class TLib {
+`
++ declarations.join('\n') + `
+loadPrefab(prefabName:string) {
+	return null;
+}
+}`;
+			fs.saveFile('../../prefabs-typing.ts', mapJS, true, true);
+		}
+	}
+
+	getClassNameOfPrefab(prefabName) {
+		let className = Lib.prefabs[prefabName].c;
+		while(className === 'PrefabReference') {
+			prefabName = Lib.prefabs[prefabName].p && PrefabsList.getPrefabNameFromPrefabRef(Lib.prefabs[prefabName].p);
+			if(prefabName && Lib.prefabs[prefabName]) {
+				className = Lib.prefabs[prefabName].c;
+			} else {
+				break;
+			}
+		}
+		return className;
 	}
 	
 	saveProjectDesc() {
@@ -925,7 +994,7 @@ declare global {
 			__getNodeExtendData(c).globalPos = p;
 			let p2 = o.toLocal(p);
 			if(isNaN(p2.x) || isNaN(p2.y)) {
-				editor.ui.status.warn("Object has zero scale and ant be moved without affecting children`s positions.", 99999, o);
+				editor.ui.status.warn("Object has zero scale and can not be moved without affecting children`s positions.", 30023, o);
 				return;
 			}
 		}
@@ -1017,21 +1086,36 @@ declare global {
 		}
 	}
 
+	_getProjectViewportSize(doNotFixOrientation) {
+		if (game.projectDesc.screenOrientation === 'auto') {
+			if(!doNotFixOrientation) {
+				game.___enforcedOrientation = 'landscape';
+			}
+			return {
+				w: game.projectDesc.width,
+				h: game.projectDesc.height
+			};
+		} else if (game.projectDesc.screenOrientation === 'portrait') {
+			return {
+				w: game.projectDesc.portraitWidth,
+				h: game.projectDesc.portraitHeight
+			};
+		} else {
+			return {
+				w: game.projectDesc.width,
+				h: game.projectDesc.height
+			};
+		}
+	}
+
 	_callInPortraitMode(callback) {
 		let tmpOrientation = game.___enforcedOrientation;
 		let tmpIsMobile = game.isMobile.any;
 		game.isMobile.any = false;
-		if (game.projectDesc.screenOrientation === 'auto') {
-			game.___enforcedOrientation = 'landscape';
-			game.__enforcedW = game.projectDesc.width;
-			game.__enforcedH = game.projectDesc.height;
-		} else if (game.projectDesc.screenOrientation === 'portrait') {
-			game.__enforcedW = game.projectDesc.portraitWidth;
-			game.__enforcedH = game.projectDesc.portraitHeight;
-		} else {
-			game.__enforcedW = game.projectDesc.width;
-			game.__enforcedH = game.projectDesc.height;
-		}
+		let size = this._getProjectViewportSize();
+		game.__enforcedW = size.w;
+		game.__enforcedH = size.h;
+
 		game.onResize();
 		callback();
 		game.___enforcedOrientation = tmpOrientation;
@@ -1039,7 +1123,6 @@ declare global {
 		delete game.__enforcedH;
 		game.isMobile.any = tmpIsMobile;
 		game.onResize();
-
 	}
 	
 	build(debug) {

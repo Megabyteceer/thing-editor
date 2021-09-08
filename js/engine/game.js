@@ -125,6 +125,22 @@ class Game {
 		let orientation;
 		/// #if EDITOR
 
+		if(this.__fixedViewport) {
+			if(this.__fixedViewport === true) {
+				let size = editor._getProjectViewportSize(true);
+				w = size.w;
+				h = size.h;
+			} else {
+				w = this.__fixedViewport.w;
+				h = this.__fixedViewport.h;
+				
+			}if(this.__enforcedOrientation === 'portrait') {
+				let tmp = w;
+				w = h;
+				h = tmp;
+			}
+		}
+
 		if(this.__enforcedW) {
 			w = this.__enforcedW;
 		}
@@ -374,6 +390,13 @@ class Game {
 		}
 	}
 
+	/// #if EDITOR
+	__setFixedViewport(fixedViewport) {
+		this.__fixedViewport = fixedViewport;
+		this.onResize();
+	}
+	/// #endif
+
 	openUrl(url, target = '_blank') {
 		game.addOnClickOnce(() => {
 			window.open(url, target);
@@ -558,8 +581,8 @@ class Game {
 				debug: 'config/webpack.debug.js',
 				production: 'config/webpack.prod.js'
 			},
-			jpgQuality: 95, // 99999
-			pngQuality: [0.95, 1] // 99999
+			jpgQuality: 95,
+			pngQuality: [0.95, 1]
 		};
 		let isModified = false;
 		for(let name in def) {
@@ -1680,6 +1703,13 @@ const focusChangeHandler = (activated) => {
 		game.isFocused = activated;
 		if(game.pixiApp) {
 			setTimeout(() => {
+				if(game.projectDesc.muteOnFocusLost // eslint-disable-line no-constant-condition
+					/// #if EDITOR
+					&& false
+					/// #endif
+				) {
+					BgMusic._clearCustomFades(0.2);
+				}
 				BgMusic._recalculateMusic();
 				game.keys.resetAll();
 			}, 10);

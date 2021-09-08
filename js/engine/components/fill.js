@@ -488,6 +488,10 @@ export default class Fill extends PIXI.Mesh {
 
 /// #if EDITOR
 
+const isWrapDisabled = (o) => {
+	return !o.image || o.image === 'EMPTY' || o.image === "WHITE" || !o.texture.baseTexture.isPowerOfTwo;
+};
+
 Fill.__EDITOR_group = 'Basic';
 Fill.__EDITOR_icon = 'tree/fill';
 __EDITOR_editableProps(Fill, [{
@@ -549,14 +553,17 @@ __EDITOR_editableProps(Fill, [{
 	name: 'TEXTURE_WRAP_MODE',
 	type: Number,
 	notSerializable: true,
+	tip:() => {
+		if(isWrapDisabled(editor.selection[0])) {
+			return `WrapMode is disabled for textures with sizes not equal to <b>power of two (2, 4, 8, 16, 32, 64...)</b> <a target="_blank" href="https://github.com/Megabyteceer/thing-editor/wiki/editor.Textures#wrapping">Read mode...</a>`
+		}
+	},
 	select: [
 		{name: 'CLAMP', value: PIXI.WRAP_MODES.CLAMP},
 		{name: 'REPEAT', value: PIXI.WRAP_MODES.REPEAT},
 		{name: 'MIRRORED_REPEAT', value: PIXI.WRAP_MODES.MIRRORED_REPEAT}
 	],
-	disabled:(o) => {
-		return !o.image || o.image === 'EMPTY' || o.image === "WHITE" || !o.texture.baseTexture.isPowerOfTwo;
-	}
+	disabled:isWrapDisabled
 },
 {
 	type: 'splitter',

@@ -8,10 +8,10 @@
             "webRoot": "${workspaceRoot}",
             "outFiles": [],
             "sourceMaps": false,
-            "url": "http://127.0.0.1:32023/thing-editor?vscode-integration",
+            "url": "http://127.0.0.1:32023/thing-editor",
             "vueComponentPaths": [],
             "enableContentValidation": false,
-            "runtimeArgs": ["--disable-popup-blocking", "--unlimited-storage", "--app=http://127.0.0.1:32023/thing-editor?vscode-integration"]
+            "runtimeArgs": ["--disable-popup-blocking", "--unlimited-storage", "--app=http://127.0.0.1:32023/thing-editor"]
         }
     ]
 }

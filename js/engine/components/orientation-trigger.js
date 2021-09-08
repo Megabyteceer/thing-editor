@@ -58,11 +58,11 @@ export default class OrientationTrigger extends Container {
 		if(handler) {
 			let h = handler.split('`')[0];
 			if(h === 'this.update') {
-				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 99999, this, handlerName);
+				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 10071, this, handlerName);
 				return;
 			}
 			else if (h === 'this.parent.update' && this.parent.children.indexOf(this) < (this.parent.children.length - 1)) {
-				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.parent.update", but it is not last children of parent. Please move this OrientationTrigger to the end of the list.', 99999, this, handlerName);
+				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.parent.update", but it is not last children of parent. Please move this OrientationTrigger to the end of the list.', 10072, this, handlerName);
 				return;
 			}
 		}

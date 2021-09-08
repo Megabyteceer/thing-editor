@@ -60,6 +60,7 @@ export default class BgMusic extends Container {
 		this._externalVolume = 0;
 		this._musInitialized = false;
 		this.customFade = null;
+		this.onIntroFinish = null;
 	}
 
 	setVolume(v) {
@@ -363,7 +364,7 @@ __EDITOR_editableProps(BgMusic, [
 		type: 'data-path'
 	},
 	{
-		name: 'fadeIn', // 99999
+		name: 'fadeIn',
 		type: Number,
 		default: 0.2,
 		min: 0,

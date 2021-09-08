@@ -216,8 +216,8 @@ class SelectEditor extends React.Component {
 		R.div({
 			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
 		}, R.span({
-			ctrlclickcopyvalue: (typeof item.value === 'undefined') ? item : item.value,
-			className: 'selectable-text',
+			ctrlclickcopyvalue: this.props.noCopyValue ? undefined : ((typeof item.value === 'undefined') ? item : item.value),
+			className: this.props.noCopyValue ? undefined : 'selectable-text',
 			title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
 			onClick: stopPropagationIfCtrl,
 			onMouseDown:window.copyTextByClick

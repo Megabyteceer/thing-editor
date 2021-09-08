@@ -51,7 +51,7 @@ DisplayObject.prototype.remove = function remove() {
 	Lib.destroyObjectAndChildren(this, true);
 };
 
-DisplayObject.prototype.removeWithoutHolder = function remove() { // 99999
+DisplayObject.prototype.removeWithoutHolder = function remove() {
 	Lib.destroyObjectAndChildren(this);
 };
 
@@ -244,7 +244,7 @@ __EDITOR_editableProps(DisplayObject, [
 		default: false
 	},
 	{
-		name: '__hideChildren', /// 99999
+		name: '__hideChildren',
 		type: Boolean,
 		default: false
 	},

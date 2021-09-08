@@ -143,7 +143,7 @@ class UI extends React.Component {
 
 			renderWindow('sceneTree', 'SceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 500, 250, 500),
 			renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),
-				558, 0, 470, 535, 1362, 742, ()=>{
+				558, 0, 470, 600, 1362, 742, ()=>{
 					if(game.projectDesc) {
 						game._onContainerResize();
 					}
@@ -155,7 +155,7 @@ class UI extends React.Component {
 			renderWindow('classesLib', 'Classes', 'Classes', React.createElement(ClassesView, {ref: this.classesListRef}), 0, 550, 320, 150, 320, 470),
 			renderWindow('prefabsList', 'Prefabs', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 325, 550, 260, 150, 250, 470),
 			renderWindow('scenesList', 'Scenes', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
-			renderWindow('soundsList', 'Sounds', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1194, 750, 200, 100, 360, 260),
+			renderWindow('soundsList', 'Sounds', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1194, 750, 300, 100, 360, 260),
 			
 			React.createElement(Status, {ref: this.statusRef}),
 			React.createElement(Modal, {ref: this.modalRef})
