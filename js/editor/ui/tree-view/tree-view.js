@@ -6,6 +6,7 @@ import Lib from "thing-editor/js/engine/lib.js";
 import Scene from 'thing-editor/js/engine/components/scene.js';
 import DataPathFixer from 'thing-editor/js/editor/utils/data-path-fixer.js';
 import Overlay from 'thing-editor/js/editor/utils/overlay.js';
+import Timeline from "../props-editor/timeline/timeline.js";
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};
@@ -347,7 +348,7 @@ export default class TreeView extends React.Component {
 						for(let field of timeline.f) {
 							for(let k of field.t) {
 								if(k.a && (k.a.toLowerCase().indexOf(this.searchString) >= 0)) {
-									addSearchEntry(o, p.name + ',' + field.n + ',' + k.t);
+									addSearchEntry(o, Timeline.makePathForKeyframeAutoSelect(p, field, k));
 									ret = true;
 								}
 							}

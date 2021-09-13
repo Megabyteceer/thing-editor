@@ -6,6 +6,7 @@ const ICON_STOP = R.img({src: '/thing-editor/img/timeline/stop.png'});
 const ICON_SOUND = R.img({src: '/thing-editor/img/timeline/sound.png'});
 const ICON_REMOVE = R.img({src: '/thing-editor/img/timeline/remove.png'});
 const ICON_DEFAULT = R.img({src: '/thing-editor/img/timeline/default.png'});
+import Timeline from "/thing-editor/js/editor/ui/props-editor/timeline/timeline.js";
 
 /// #endif
 
@@ -150,6 +151,25 @@ export default class MovieClip extends DSprite {
 				/// #if EDITOR
 				serializeCache.set(desData, data);
 			}
+
+			const fields = desData.f;
+			for(let fieldNum = 0; fieldNum < fields.length; fieldNum++) {
+				const field = fields[fieldNum];
+				for(let kf of field.t) {
+					if(kf.a === 'this.remove') {
+						fieldNum++;
+						for(; fieldNum < fields.length; fieldNum++) {
+							const field2 = fields[fieldNum];
+							for(let kf of field2.t) {
+								if(kf.a && kf.a.startsWith('this.')) {
+									editor.ui.status.warn("MovieClip '" + kf.a + "' action detected after 'this.remove'. Its may cause invalid action. Please move 'this.remove' action to the bottom field of the timeline.", 99999, this, Timeline.makePathForKeyframeAutoSelect("timeline", field2, kf));
+								}
+							}
+						}
+					}
+				}
+			}
+
 			/// #endif
 			data = desData;
 		} else {

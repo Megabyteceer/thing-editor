@@ -771,6 +771,10 @@ export default class Timeline extends React.Component {
 		return Math.max(0, Math.round((x + tl.scrollLeft * s) / widthZoom / s));
 	}
 
+	static makePathForKeyframeAutoSelect(property, field, keyframe) {
+		return (property.name || property) + ',' + field.n + ',' + keyframe.t;
+	}
+
 	static onAutoSelect(selectPath) {
 		for(let o of editor.selection) {
 			if(o._timelineData) {
