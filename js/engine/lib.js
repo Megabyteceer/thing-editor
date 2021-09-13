@@ -1053,7 +1053,7 @@ class LibClass
 	__deletePrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "attempt to delete not existing prefab: " + name);
 		delete prefabs[name];
-		return editor.fs.deleteFile(Lib.__prefabNameToFileName(name));
+		return editor.fs.deleteFile(Lib.__prefabNameToFileName(name), true);
 	}
 	/**
 	 * @protected
