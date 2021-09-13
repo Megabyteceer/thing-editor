@@ -1586,7 +1586,8 @@ button {
 }
 
 .info-item .selectable-scene-node {
-	margin-right: 40px;
+	position: relative;
+	display: inline-block;
 }
 
 .path-editor-function-tip {
