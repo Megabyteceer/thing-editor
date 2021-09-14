@@ -125,6 +125,9 @@ export default class Viewport extends React.Component {
 					}
 				}
 			}, 0);
+			if(game.settings.getItem('__EDITOR_is-portrait-orientation')) {
+				game.__enforcedOrientation = 'portrait';
+			}
 		}
 	}
 	
@@ -228,6 +231,7 @@ export default class Viewport extends React.Component {
 	
 	onToggleOrientationClick() {
 		game.__enforcedOrientation = (game.__enforcedOrientation === 'portrait') ? 'landscape' : 'portrait';
+		game.settings.setItem('__EDITOR_is-portrait-orientation', (game.__enforcedOrientation === 'portrait'));
 	}
 	
 	onReloadAssetsClick() {
