@@ -151,25 +151,6 @@ export default class MovieClip extends DSprite {
 				/// #if EDITOR
 				serializeCache.set(desData, data);
 			}
-
-			const fields = desData.f;
-			for(let fieldNum = 0; fieldNum < fields.length; fieldNum++) {
-				const field = fields[fieldNum];
-				for(let kf of field.t) {
-					if(kf.a === 'this.remove') {
-						fieldNum++;
-						for(; fieldNum < fields.length; fieldNum++) {
-							const field2 = fields[fieldNum];
-							for(let kf of field2.t) {
-								if(kf.a && kf.a.startsWith('this.')) {
-									editor.ui.status.warn("MovieClip '" + kf.a + "' action detected after 'this.remove'. Its may cause invalid action. Please move 'this.remove' action to the bottom field of the timeline.", 99999, this, Timeline.makePathForKeyframeAutoSelect("timeline", field2, kf));
-								}
-							}
-						}
-					}
-				}
-			}
-
 			/// #endif
 			data = desData;
 		} else {
@@ -270,11 +251,30 @@ export default class MovieClip extends DSprite {
 
 	init() {
 		super.init();
-		/// #if EDITOR
 		if((this.constructor === MovieClip) && !this._timelineData) {
 			editor.ui.status.warn("MovieClip " + this.___info + " has no timeline.", 32003, this, 'timeline');
 		}
-		/// #endif
+
+		let fields = this._timelineData;
+		if(fields) {
+			fields = fields.f;
+			for(let fieldNum = 0; fieldNum < fields.length; fieldNum++) {
+				const field = fields[fieldNum];
+				for(let kf of field.t) {
+					if(kf.a === 'this.remove') {
+						fieldNum++;
+						for(; fieldNum < fields.length; fieldNum++) {
+							const field2 = fields[fieldNum];
+							for(let kf2 of field2.t) {
+								if(kf2.a && kf2.a.startsWith('this.') && (kf.t === kf2.t)) {
+									editor.ui.status.error("MovieClip '" + kf2.a + "' action detected after 'this.remove'. Its may cause invalid action. Please move 'this.remove' action to the bottom field of the timeline.", 99999, this, Timeline.makePathForKeyframeAutoSelect("timeline", field2, kf2));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	__EDITOR_getKeyframeIcon(action) {

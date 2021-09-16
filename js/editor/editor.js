@@ -28,6 +28,7 @@ import Container from 'thing-editor/js/engine/components/container.js';
 import {_onTestsStart} from '../engine/utils/autotest-utils.js';
 import OrientationTrigger from '../engine/components/orientation-trigger.js';
 import callByPath from '../engine/utils/call-by-path.js';
+import Pool from "../engine/utils/pool.js";
 
 let isFirstClassesLoading = true;
 
@@ -390,9 +391,6 @@ export default class Editor {
 		let allCloned = [];
 
 		editor.selection.some((o) => {
-
-			
-
 			let clone = Lib._deserializeObject(Lib.__serializeObject(o));
 			allCloned.push(clone);
 			if(dragObject) {
@@ -400,8 +398,6 @@ export default class Editor {
 					ret = clone;
 				}
 			}
-			Lib.__reassignIds(clone);
-			
 			let cloneExData = __getNodeExtendData(clone);
 			let exData = __getNodeExtendData(o);
 			if(exData.hidePropsEditor) {
@@ -485,7 +481,6 @@ export default class Editor {
 			} else {
 				editor.disableFieldsCache = true;
 				w = Lib._deserializeObject({c: editor.clipboardData[0].c, p: editor.clipboardData[0].p});
-				Lib.__reassignIds(w);
 				editor.disableFieldsCache = false;
 			}
 			if(!(w instanceof OrientationTrigger)) {
@@ -780,6 +775,7 @@ export default class Editor {
 	}
 	
 	loadScene(name) {
+		Pool.__resetIdCounter();
 		assert(name, 'name should be defined');
 		this.saveCurrentScenesSelectionGlobally();
 		
@@ -1204,7 +1200,6 @@ function saveCurrentSceneName(name) {
 
 function addTo(parent, child, doNotSelect) {
 	parent.addChild(child);
-	Lib.__reassignIds(child);
 	Lib.__invalidateSerializationCache(child);
 	if(!doNotSelect) {
 		editor.ui.sceneTree.selectInTree(child);

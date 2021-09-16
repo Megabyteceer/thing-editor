@@ -56,7 +56,7 @@ interface EditableFieldDescription{
 	default?: any,
 	min?: number,
 	max?: number,
-	/** disables editor-time null checking for number type editable fields */
+	/** disables NaN checking for numeric fields */
 	noNullCheck?: boolean,
 	step?: number,
 	/** basis for property display format. default value is 10 (decimal) */

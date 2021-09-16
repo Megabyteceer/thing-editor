@@ -46,7 +46,6 @@ export default class Delay extends Container {
 			let d = Pool.create(Delay);
 			/// #if EDITOR
 			Lib._constructRecursive(d);
-			Lib.__reassignIds(d);
 			/// #endif
 			d.delay = delayFrames;
 			d.callback = callback;
