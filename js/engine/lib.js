@@ -695,7 +695,6 @@ class LibClass
 		o.interactiveChildren = true;
 
 		/// #if EDITOR
-		delete o.___id;
 		delete o.___pathBreakpoint;
 		window.__resetNodeExtendData(o);
 		if(needRefreshSelection) {
