@@ -9,6 +9,7 @@ import Spine from 'thing-editor/js/engine/components/spine.js';
 import SelectEditor from './props-editor/select-editor.js';
 import {_stopTests} from 'thing-editor/js/engine/utils/autotest-utils.js';
 import LanguageView from './language-view.js';
+import Pool from "../../engine/utils/pool.js";
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -144,6 +145,7 @@ export default class Viewport extends React.Component {
 			let play = game.__EDITOR_mode;
 			game.__time = 0;
 			delete game.__EDITOR_currentSceneData;
+			Pool.__resetIdCounter();
 			if(play) { // launch game
 				game.data = {};
 				editor.overlay.exitIsolation();

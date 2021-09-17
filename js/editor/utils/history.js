@@ -2,6 +2,7 @@ import Lib from "thing-editor/js/engine/lib.js";
 import game from "thing-editor/js/engine/game.js";
 import Scene from "thing-editor/js/engine/components/scene.js";
 import Signal from "./signal.js";
+import Pool from "../../engine/utils/pool.js";
 
 const HISTORY_LEN = 100;
 const STRICT_HISTORY_LEN = 20;
@@ -20,6 +21,7 @@ function applyState(state) {
 	let stateChanged = state.treeData !== lastAppliedTreeData;
 	if(stateChanged) {
 		instance.beforeHistoryJump.emit();
+		Pool.__resetIdCounter();
 		let node = Lib._deserializeObject(state.treeData);
 		game.__setCurrentContainerContent(node);
 	}

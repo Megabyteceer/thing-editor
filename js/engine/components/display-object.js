@@ -251,6 +251,8 @@ __EDITOR_editableProps(DisplayObject, [
 	{
 		name: '___id',
 		type: Number,
+		notSerializable: true,
+		noNullCheck: true,
 		disabled: () => {
 			return true;
 		}
