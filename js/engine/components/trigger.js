@@ -46,15 +46,6 @@ export default class Trigger extends Container {
 		this.updatePhase();
 		this.interactiveChildren = this._state || (!this.isApplyInteractivity);
 	}
-
-	_onRenderResize() {
-		/// #if EDITOR
-		if(game.__EDITOR_mode) {
-			return;
-		}
-		/// #endif
-		this.applyInstantly();
-	}
 		
 	show() {
 		this._state = true;
