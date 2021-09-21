@@ -54,6 +54,12 @@ export default class Editor {
 				editor.editorArguments[arg] = true;
 			}
 		}
+		
+		// Block page leave by back navigation
+		const cloneStateInHistory = () => window.history.pushState(window.history.state, document.title);
+		cloneStateInHistory();
+		window.onpopstate = cloneStateInHistory;
+		
 		this.checkSceneHandlers = [];
 		this.Lib = Lib;
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
