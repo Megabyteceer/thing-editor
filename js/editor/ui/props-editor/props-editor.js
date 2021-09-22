@@ -53,10 +53,10 @@ class PropsEditor extends React.Component {
 				let selectionData = editor.selection.saveSelection();
 				
 				a.some((o) => {
-					o.constructor = selectedClass;
-					if(selectedClass.__beforeChangeToThisType) {
-						selectedClass.__beforeChangeToThisType(o);
+					if(o.constructor.__beforeChangeToThisType) {
+						o.constructor.__beforeChangeToThisType(o);
 					}
+					o.constructor = selectedClass;
 					Lib.__invalidateSerializationCache(o);
 				});
 
