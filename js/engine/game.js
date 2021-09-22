@@ -1419,7 +1419,7 @@ class Game {
 	/**
 	 * @protected
 	 */
-	fetchResource(url) { /// #
+	fetchResource(url) {
 		return new Promise((resolve) => {
 			let loader = new ResourceLoader();
 			loader.add(url, url);

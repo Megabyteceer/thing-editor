@@ -809,9 +809,6 @@ class LibClass
 		return ret;
 	}
 
-	/// #if EDITOR
-	
-
 	/**
 	 * @return {Scene}
 	 */
