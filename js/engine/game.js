@@ -679,8 +679,9 @@ class Game {
 		this.onResize();
 
 		app.stage.addChild(stage);
-
+		
 		app.ticker.add(this._updateGlobal);
+
 		Sound.init();
 
 		this._gameInitializedResolve();
@@ -1217,9 +1218,6 @@ class Game {
 			this._FPS = 0;
 			lastFPSTime = now;
 		}
-
-
-
 		/// #endif
 
 		/// #if EDITOR
@@ -1232,7 +1230,7 @@ class Game {
 			ScrollLayer.updateGlobal();
 		
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
-			/// #if DEBUG
+			/// #if EDITOR
 			dt = 1;
 			/// #endif
 
@@ -1421,7 +1419,7 @@ class Game {
 	/**
 	 * @protected
 	 */
-	fetchResource(url) { /// #
+	fetchResource(url) {
 		return new Promise((resolve) => {
 			let loader = new ResourceLoader();
 			loader.add(url, url);

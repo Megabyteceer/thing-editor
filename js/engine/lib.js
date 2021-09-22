@@ -584,7 +584,6 @@ class LibClass
 		if(ret instanceof Scene) {
 			ret.all = '"scene.all" is not initialized yet.';
 		}
-
 		if(!game.__EDITOR_mode) {
 		/// #endif
 			
@@ -592,7 +591,7 @@ class LibClass
 			
 		/// #if EDITOR
 		}
-		Lib.__reassignIds(ret);
+		
 		/// #endif
 		
 		return ret;
@@ -679,7 +678,6 @@ class LibClass
 			let r = Pool.create(RemoveHolder);
 			/// #if EDITOR
 			Lib._constructRecursive(r);
-			Lib.__reassignIds(r);
 			/// #endif
 			let c = o.parent.children;
 			c[c.indexOf(o)] = r;
@@ -697,7 +695,6 @@ class LibClass
 		o.interactiveChildren = true;
 
 		/// #if EDITOR
-		delete o.___id;
 		delete o.___pathBreakpoint;
 		window.__resetNodeExtendData(o);
 		if(needRefreshSelection) {
@@ -713,9 +710,6 @@ class LibClass
 		let ret;
 		/// #if EDITOR
 		deserializationDeepness++;
-		if(!src.p.hasOwnProperty('___id')) {
-			src.p.___id = Lib.__idCounter++;
-		}
 
 		if(!classes.hasOwnProperty(src.c)) {
 			if(_oldClasses.hasOwnProperty(src.c)) {
@@ -753,9 +747,6 @@ class LibClass
 
 			ret = Lib._deserializeObject(prefabs[prefabName]);
 			if(!src.p.hasOwnProperty('inheritProps')) {
-				/// #if EDITOR
-				ret.___id = src.p.___id;
-				/// #endif
 				Object.assign(ret, defaults[src.c]
 				/// #if EDITOR
 				|| _oldDefaults[src.c]
@@ -771,7 +762,6 @@ class LibClass
 		} else {
 			ret = Pool.create(classes[src.c]);
 			/// #if EDITOR
-			ret.___id = src.p.___id;
 			if(ret.__beforeDeserialization) {
 				ret.__beforeDeserialization();
 			}
@@ -904,13 +894,6 @@ class LibClass
 	}
 
 	/// #if EDITOR
-	/**
-	 * @protected
-	 */
-	__reassignIds(o) {
-		o.___id = Lib.__idCounter++;
-		o.children.some(Lib.__reassignIds);
-	}
 	/**
 	 * @protected
 	 */
@@ -1053,7 +1036,7 @@ class LibClass
 	__deletePrefab(name) {
 		assert(prefabs.hasOwnProperty(name), "attempt to delete not existing prefab: " + name);
 		delete prefabs[name];
-		return editor.fs.deleteFile(Lib.__prefabNameToFileName(name));
+		return editor.fs.deleteFile(Lib.__prefabNameToFileName(name), true);
 	}
 	/**
 	 * @protected
@@ -1234,9 +1217,7 @@ const _loadObjectFromData = (src) => {
 	/// #if EDITOR
 	if(!game.__EDITOR_mode) {
 		/// #endif
-		
 		constructRecursive(ret);
-		
 		/// #if EDITOR
 	}
 	/// #endif
@@ -1359,8 +1340,6 @@ Lib.__isPrefabPreviewLoading = 0;
 
 Lib._constructRecursive = constructRecursive;
 
-Lib.__idCounter = 1;
-
 Lib.__texturesList = [];
 let __allTextures = {};
 Lib.__soundsList = [];
@@ -1384,9 +1363,6 @@ Lib.loadPrefab = function loadPrefab(name) {
 		prefabs[name].p.name = name;
 	}
 	let ret = _loadObjectFromData(prefabs[name]);
-	if(!game.__EDITOR_mode) {
-		Lib.__reassignIds(ret);
-	}
 	return ret;
 	/// #endif
 	return _loadObjectFromData(prefabs[name]); // eslint-disable-line no-unreachable

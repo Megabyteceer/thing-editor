@@ -1,4 +1,6 @@
+import PrefabsList from "../ui/prefabs-list.js";
 import AssetsLoader from "./assets-loader.js";
+import fs from "./fs.js";
 
 const ws = new WebSocket('ws://' + location.hostname + ':' + (parseInt(location.port) + 1));
 
@@ -57,6 +59,12 @@ ws.onmessage = function incoming(data) {
 			} else if(file.name.endsWith('.js')) {
 				srcChanged = true;
 			} else if(file.name.endsWith('.json') && (file.name.indexOf('/.') < 0) && !file.name.startsWith('snd/')) {
+				if(file.name.startsWith('prefabs')) {
+					if(PrefabsList.prefabChangedExternally()) {
+						return;
+					}
+				}
+				fs.fileChangedExternally(file.name);
 				editor.ui.status.warn("File changed externally: " + file.name, 32045);
 			}
 		}

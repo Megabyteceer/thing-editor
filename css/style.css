@@ -38,6 +38,10 @@ input {
 	border:none;
 }
 
+input:disabled {
+	background: #44444433;
+}
+
 hr{
 	width: 80%;
 	border:0;
@@ -1582,7 +1586,8 @@ button {
 }
 
 .info-item .selectable-scene-node {
-	margin-right: 40px;
+	position: relative;
+	display: inline-block;
 }
 
 .path-editor-function-tip {

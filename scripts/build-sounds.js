@@ -6,6 +6,7 @@ const {
 	exec
 } = require('child_process');
 
+/*global __dirname */
 /*global require */
 /*global module */
 
@@ -156,9 +157,12 @@ module.exports = async function (projectPath, options) {
 				setTimeout(conversionAttempt, 1000);
 				return;
 			}
+			let ffmpegPath = path.join(__dirname, '../ffmpeg/bin/ffmpeg.exe');
+			if(!fs.existsSync(ffmpegPath)) {
+				ffmpegPath = 'ffmpeg';
+			}
 
-
-			exec('ffmpeg -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
+			exec(ffmpegPath + ' -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
 				if (err) {
 					errorArgs = [err, outError, out];
 					console.log(err, out);

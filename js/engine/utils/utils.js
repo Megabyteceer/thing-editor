@@ -18,7 +18,6 @@ window.assert = (expression, message, errorCode) => {
 		/// #endif
 		alert(message);
 		//*/
-		
 		throw message;
 	}
 };

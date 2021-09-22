@@ -46,7 +46,7 @@ export default class Trigger extends Container {
 		this.updatePhase();
 		this.interactiveChildren = this._state || (!this.isApplyInteractivity);
 	}
-	
+		
 	show() {
 		this._state = true;
 		this.interactiveChildren = true;
@@ -227,12 +227,15 @@ export default class Trigger extends Container {
 	}
 
 	get visible() {
-		return this.__visibleInEditor || this._visible;
+		return this.__visibleInEditor || this._visible || (this.__keepVisibleInEditor && game.__EDITOR_mode);
 	}
 
 	set visible(v) {
 		delete this.__visibleInEditor;
 		this._visible = v;
+		if(!v) {
+			this.__keepVisibleInEditor = false;
+		}
 	}
 		
 /// #endif
@@ -339,6 +342,16 @@ Use '#' to access to child scene nodes by name: <b>game.currentScene.#myChildEle
 	{
 		name: 'onDisable',
 		type: 'callback'
+	},
+	{
+		name: '__keepVisibleInEditor', /// 99999
+		type: Boolean,
+		afterEdited: () => {
+			let o = editor.selection[0];
+			if(!o.__keepVisibleInEditor) {
+				o.visible = false;
+			}
+		}
 	}
 ]);
 

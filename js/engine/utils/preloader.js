@@ -9,7 +9,7 @@ export default class Preloader {
 		
 		this.currentProgress = 0;
 		
-		game.pixiApp.ticker.add(this.updatePreloader);
+		this.updateInterval = setInterval(this.updatePreloader);
 		
 		ResourceLoader.preloader = this;
 		this.complete = false;
@@ -47,7 +47,7 @@ export default class Preloader {
 				for(let i = 0; i < reachedItemsCount; i++) {
 					group[i].classList.add("progress-item-on");
 				}
-			})
+			});
 		}
 		if(this.complete) {
 			this.destroy();
@@ -59,7 +59,7 @@ export default class Preloader {
 		if(this.preloader) {
 			this.preloader.parentElement.removeChild(this.preloader);
 		}
-		game.pixiApp.ticker.remove(this.updatePreloader);
+		clearInterval(this.updateInterval);
 		this.callback();
 	}
 	

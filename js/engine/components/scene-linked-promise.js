@@ -39,7 +39,6 @@ export default class SceneLinkedPromise extends Container {
 		let d = Pool.create(SceneLinkedPromise);
 		/// #if EDITOR
 		Lib._constructRecursive(d);
-		Lib.__reassignIds(d);
 		/// #endif
 		container.addChild(d);
 		/// #if EDITOR
