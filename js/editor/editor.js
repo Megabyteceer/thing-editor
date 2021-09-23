@@ -1044,6 +1044,9 @@ loadPrefab(prefabName:string) {
 	}
 	
 	editClassSource(c) {
+		if(editor.editorArguments['no-vscode-integration']) {
+			return;
+		}
 		if(c instanceof DisplayObject) {
 			if((c instanceof PrefabReference) && c.__previewNode) {
 				c = c.__previewNode.constructor;
