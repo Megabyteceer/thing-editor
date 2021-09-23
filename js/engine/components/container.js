@@ -58,14 +58,14 @@ const _findByTypeInner = (o) => {
  * @param {string} name
  * @return {PIXI.Container}
  */
-Container.prototype.getChildByName = function(name) {
+Container.prototype.getChildByName = function(name, debugThis) {
 	let ret;
 	for(let c of this.children) {
 		if(c.name === name) {
 			if(ret) {
 				let errorTxt = "getChildByName called, but more that one object with name '"+ name + "' present in container " + this.___info;
 				/// #if EDITOR
-				editor.ui.status.error(errorTxt, 10052, ret);
+				editor.ui.status.error(errorTxt, 10052, debugThis || ret);
 				/*
 				/// #endif
 				alert(errorTxt);
