@@ -11,6 +11,7 @@
             "url": "http://127.0.0.1:32023/thing-editor",
             "vueComponentPaths": [],
             "enableContentValidation": false,
+            "cleanUp": false,
             "runtimeArgs": ["--disable-popup-blocking", "--unlimited-storage", "--app=http://127.0.0.1:32023/thing-editor"]
         }
     ]

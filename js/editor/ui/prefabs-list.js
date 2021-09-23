@@ -168,6 +168,16 @@ export default class PrefabsList extends React.Component {
 		}
 	}
 
+	static prefabChangedExternally() {
+		if(editor.overlay.isPreviewShowed) {
+			return false;
+		}
+		PrefabsList.readAllPrefabsList().then(() => {
+			instance.forceUpdate();
+		});
+		return true;
+	}
+
 	static editPrefab(name, stepInToStack = false) {
 		if (game.__EDITOR_mode) {
 			if(!Lib.hasPrefab(name)) {

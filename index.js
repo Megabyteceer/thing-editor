@@ -58,7 +58,12 @@ app.get('/fs/openProject', function (req, res) {
 		currentGameDesc = JSON.parse(projectDescSrc);
 
 		if(!buildProjectAndExit) {
-			initWatchers();
+			try {
+				initWatchers();
+			} catch (err) {
+				console.error('WATCHING ERROR:');
+				console.error(err);
+			}
 		}
 		res.send(projectDescSrc);
 		excludeAnotherProjectsFromCodeEditor();
@@ -88,7 +93,7 @@ app.get('/fs/delete', function (req, res) {
 				let dir = path.dirname(fn);
 				let deleteOlder = Date.now() - 1000 * 60 * 60 * 24 * 2;
 				for(let file of fs.readdirSync(dir)) {
-					if(file.startsWith('~deleted_')) {
+					if(file.startsWith('~deleted')) {
 						let fullPath = path.join(dir, file);
 						let stats = fs.statSync(fullPath);
 						if(stats.ctimeMs < deleteOlder) {
@@ -96,7 +101,7 @@ app.get('/fs/delete', function (req, res) {
 						}
 					}
 				}
-				let historyName = path.join(dir, '~deleted_' + path.basename(fn) + '_'+ new Date().toUTCString().replace(/[\W]/gm, '_'));
+				let historyName = path.join(dir, '~deleted(' + path.basename(fn) + ')'+ new Date().toUTCString().replace(/[\W]/gm, '_') + '.log');
 				fs.renameSync(fn, historyName);
 				backupsFilter[fn] = fileSize;
 				return;
@@ -320,7 +325,7 @@ app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 
 
 //========= start server ================================================================
-let server = app.listen(PORT, () => log('Thing-editor listening on port ' + PORT + '!')); // eslint-disable-line no-unused-vars
+let server = app.listen(PORT, () => log('Thing-editor listening on: http://127.0.0.1:' + PORT + '/thing-editor')); // eslint-disable-line no-unused-vars
 let wss = require('./scripts/server-socket.js');
 let chromeConnectTimeout;
 let buildAndExitTimeout;

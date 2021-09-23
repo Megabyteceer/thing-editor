@@ -3,6 +3,7 @@ import {getLatestSceneNodeBypath, getLatestSceneNodesByComplexPath} from "thing-
 import Lib from "thing-editor/js/engine/lib.js";
 import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
 import DisplayObject from "thing-editor/js/engine/components/display-object.js";
+import Timeline from "../ui/props-editor/timeline/timeline.js";
 
 export default class DataPathFixer {
 
@@ -245,7 +246,7 @@ function _rememberPathReference(o) {
 				for(let field of timeline.f) {
 					for(let k of field.t) {
 						if(k.a) {
-							rememberRef(k.a, p.name + ',' + field.n + ',' + k.t);
+							rememberRef(k.a, Timeline.makePathForKeyframeAutoSelect(p, field, k));
 						}
 					}
 				}

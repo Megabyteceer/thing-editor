@@ -281,12 +281,15 @@ export default class OrientationTrigger extends Container {
 	
 	__beforeSerialization() {
 		IGNORE_DIRECT_PROPS = true;
-		this.x = 0;
-		this.y = 0;
-		this.rotation = 0;
-		this.alpha = 1;
-		this.scale.x = 1;
-		this.scale.y = 1;
+		if(!this.__itIsTypeChanging) {
+			this.x = 0;
+			this.y = 0;
+			this.rotation = 0;
+			this.alpha = 1;
+			this.scale.x = 1;
+			this.scale.y = 1;
+		}
+		this.__itIsTypeChanging = false;
 	}
 	
 	__afterSerialization() {
@@ -318,6 +321,7 @@ export default class OrientationTrigger extends Container {
 	}
 
 	static __beforeChangeToThisType(o) {
+		o.__itIsTypeChanging = true;
 		o.landscapeX = o.portraitX = o.x;
 		o.landscapeY = o.portraitY = o.y;
 		o.landscapeScaleX = o.portraitScaleX = o['scale.x'];

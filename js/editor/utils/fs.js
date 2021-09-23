@@ -124,11 +124,32 @@ let fs = {
 			});
 		});
 	},
-	saveFile(filename, data, silently = false, async = false) { 
+	fileChangedExternally(fileName) {
+		externallyChangedFiles[fileName] = true;
+	},
+	async saveFile(fileName, data, silently = false, async = false) { 
+		if(externallyChangedFiles[fileName]) {
+			if(! await new Promise((resolve) => {
+				editor.ui.modal.showEditorQuestion(
+					"File overwrite",
+					R.span(null,
+						'File ', R.b(null,  fileName), ' is changed externally!',
+						R.br(),
+						'Are you sure you want to overwrite changes?'
+					),
+					() => {resolve(true);},
+					"Overwrite",
+					() => {resolve();}
+				);
+			})) {
+				return;
+			}
+		}
+		delete externallyChangedFiles[fileName];
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
-		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(editor.game.resourcesPath + filename), data, silently, async, true).then((data) => {
+		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(editor.game.resourcesPath + fileName), data, silently, async, true).then((data) => {
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
 			}
@@ -175,6 +196,8 @@ function renderProjectItem(desc, i) {
 		}
 	}, icon, desc.title, isProjectWrong ? R.span({className: 'danger small-text'}, ' (' + isProjectWrong + ')') : undefined);
 }
+
+const externallyChangedFiles = {};
 
 let requestInProgress = false;
 let inProgress = [];
