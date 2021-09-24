@@ -22,6 +22,8 @@ class TreeNode extends React.Component {
 			state.childrenExpanded = !state.childrenExpanded;
 			if(!state.childrenExpanded) {
 				collapseChildrenRecursively(this.props.node);
+			} else if (ev.altKey) {
+				expandChildrenRecursively(this.props.node);
 			}
 			this.forceUpdate();
 			sp(ev);
@@ -120,6 +122,13 @@ function collapseChildrenRecursively(node) {
 	__getNodeExtendData(node).childrenExpanded = false;
 	if(node.hasOwnProperty('children')) {
 		node.children.some(collapseChildrenRecursively);
+	}
+}
+
+function expandChildrenRecursively(node) {
+	__getNodeExtendData(node).childrenExpanded = true;
+	if(node.hasOwnProperty('children')) {
+		node.children.some(expandChildrenRecursively);
 	}
 }
 
