@@ -56,6 +56,11 @@ export default class Scene extends Container {
 		}
 	}
 	/// #if EDITOR
+
+	__beforeDeserialization() {
+		delete this.__libSceneName;
+	}
+
 	__afterDeserialization() {
 		if(!game.__EDITOR_mode) {
 			this.all = ACCES__ALL_ASSERTING_PROXY;
