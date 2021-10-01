@@ -194,7 +194,11 @@ function renderProjectItem(desc) {
 		className: isProjectWrong ? 'project-item-select unclickable' : 'project-item-select clickable', key, onClick: () => {
 			editor.ui.modal.hideModal(desc.dir);
 		}
-	}, icon, desc.title, isProjectWrong ? R.span({className: 'danger small-text'}, ' (' + isProjectWrong + ')') : undefined);
+	}, icon,
+	R.div({className: 'project-item-title'}, desc.title,
+		R.div({className: 'small-text'}, desc.dir.split('/').pop()),
+	),
+	isProjectWrong ? R.span({className: 'danger small-text'}, ' (' + isProjectWrong + ')') : undefined);
 }
 
 const externallyChangedFiles = {};

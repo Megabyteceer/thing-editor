@@ -577,12 +577,21 @@ button {
 	border: 1px solid #bfc6cc;
 	border-radius:10px;
 	color: #476582;
-	font-size: 150%;
+	font-size: 120%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	white-space: nowrap;
+}
+
+.project-item-title {
+	text-align: right;
+	display: inline-block;
 }
 
 .project-item-select img {
-	max-height: 30px;
-	margin: 0 20px;
+	max-height: 40px;
+	max-width: 50%;
 }
 
 .list-view {
