@@ -517,17 +517,18 @@ const walkSync = (dir, fileList = []) => {
 };
 
 //============= enum projects ===========================
-const enumProjects = () => {
-	let ret = [];
-	let dir = path.join(__dirname, '..', gamesRoot);
+const enumProjects = (ret = [], subDir = '') => {
+	let dir = path.join(__dirname, '..', gamesRoot, subDir);
 	fs.readdirSync(dir).forEach(file => {
 		let dirName = path.join(dir, file);
 		if(fs.statSync(dirName).isDirectory()) {
 			let projDescFile = dirName + '/thing-project.json';
 			if(fs.existsSync(projDescFile)) {
 				let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
-				desc.dir = file;
+				desc.dir = subDir ? (subDir + '/' + file) : file;
 				ret.push(desc);
+			} else {
+				enumProjects(ret, subDir ? (subDir + '/' + file): file);
 			}
 		}
 	});

@@ -10,7 +10,7 @@ let fs = {
 			data.sort((a, b) => {
 				return projectOrder(b) - projectOrder(a);
 			});
-			editor.ui.modal.showModal(R.div({className:'project-open-chooser'}, Group.groupArray(data.map(renderProjectItem)).sort((a, b) => {
+			editor.ui.modal.showModal(R.div({className:'project-open-chooser'}, Group.groupArray(data.map(renderProjectItem), undefined, undefined, true).sort((a, b) => {
 				// sort projects groups
 				if(a.key < b.key) return -1;
 				if(a.key > b.key) return 1;
@@ -179,12 +179,12 @@ function getIconPath(desc) {
 	return '/games/' + desc.dir + '/' + desc.icon;
 }
 
-function renderProjectItem(desc, i) {
+function renderProjectItem(desc) {
 	let icon;
 	if (desc.icon) {
 		icon = R.img({src: getIconPath(desc)});
 	}
-	let key = desc.__group ? desc.__group + '/' + i : i;
+	let key = (desc.__group && !desc.dir.startsWith(desc.__group + '/')) ? desc.__group + '/' + desc.dir : desc.dir;
 	let isProjectWrong;
 	let wrongSymbol = fs.hasWrongSymbol(desc.dir);
 	if(wrongSymbol) {

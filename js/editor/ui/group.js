@@ -14,7 +14,7 @@ function renderGroup(props) {
 	);
 }
 
-function groupArray(a, delimiter = '/', level = 0) {
+function groupArray(a, delimiter = '/', level = 0, noSort = false) {
 	
 	let groups = {};
 	let group;
@@ -51,22 +51,24 @@ function groupArray(a, delimiter = '/', level = 0) {
 
 	for (groupName in groups) {
 		group = groups[groupName];
-		group.sort((a,b) => {
-			a = orders.get(a);
-			b = orders.get(b);
-			if(typeof a === 'number') {
-				return a - b;
-			}
-			if(a === b) {
-				return 0;
-			}
-			return (a > b) ? 1 : -1;
-		});
+		if(!noSort) {
+			group.sort((a,b) => {
+				a = orders.get(a);
+				b = orders.get(b);
+				if(typeof a === 'number') {
+					return a - b;
+				}
+				if(a === b) {
+					return 0;
+				}
+				return (a > b) ? 1 : -1;
+			});
+		}
 		let i = 0;
 		while(i < ret.length && ret[i].key.endsWith(' ::')) {
 			i++;
 		}
-		ret.splice(i, 0, renderGroup({key: group.__groupId.replace(GROUP_ID_CHECKER, '__'), title: groupName, content: groupArray(group, delimiter, level + 1)}));
+		ret.splice(i, 0, renderGroup({key: group.__groupId.replace(GROUP_ID_CHECKER, '__'), title: groupName, content: groupArray(group, delimiter, level + 1, noSort)}));
 	}
 
 	return ret;
