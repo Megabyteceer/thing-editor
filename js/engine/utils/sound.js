@@ -242,7 +242,7 @@ export default class Sound {
 		const blockedHanlder = () => soundLockHandler(true);
 		const unblockedHanlder = () => soundLockHandler(false);
 		EMPTY_SOUND.once('playerror', blockedHanlder);
-		EMPTY_SOUND.once('play', unblockedHanlder);
+		EMPTY_SOUND.once('end', unblockedHanlder);
 		soundLockTimeoutId = setTimeout(blockedHanlder, 500);
 		try {
 			EMPTY_SOUND.play();

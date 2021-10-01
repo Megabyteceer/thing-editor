@@ -615,9 +615,6 @@ class Game {
 		/*
 	/// #endif
 	_initInner() {
-		if(assets.sounds && Object.keys(assets.sounds).length) {
-			Sound.checkSoundLockByBrowser();
-		}
 		//*/
 		game.additionalLoadingsInProgress++;
 
@@ -763,6 +760,13 @@ class Game {
 		});
 		loader.load();
 		preloader.start(() => {
+			/// #if EDITOR
+			/*
+			/// #endif
+			if(assets.sounds && Object.keys(assets.sounds).length) {
+				Sound.checkSoundLockByBrowser();
+			}
+			//*/
 			assets.images.some((tName) => {
 				let texture = PIXI.utils.TextureCache[textureNameToPath(tName)];
 				if(texture) {
