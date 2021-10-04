@@ -863,7 +863,7 @@ declare global {
 	`}
 }
 `;
-			fs.saveFile('../../current-scene-typings.d.ts', mapJS, true, true);
+			fs.saveFile('/current-scene-typings.d.ts', mapJS, true, true);
 		}
 	}
 
@@ -908,7 +908,7 @@ loadPrefab(prefabName:string) {
 	return null;
 }
 }`;
-			fs.saveFile('../../prefabs-typing.ts', mapJS, true, true);
+			fs.saveFile('/prefabs-typing.ts', mapJS, true, true);
 		}
 	}
 

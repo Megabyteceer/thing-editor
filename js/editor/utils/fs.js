@@ -125,7 +125,7 @@ let fs = {
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
-		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(editor.game.resourcesPath + fileName), data, silently, async, true).then((data) => {
+		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName)), data, silently, async, true).then((data) => {
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
 			}

@@ -270,6 +270,10 @@ app.use('/games/',  (req, res) => {
 });
 
 function mapFileUrl(url) {
+	if(!url.startsWith('/games')) {
+		url = path.join(__dirname, '..', url);
+		return url;
+	}
 	let fileName =url.replace('/games', '');
 	if(assetsMap.has(fileName)) {
 		return assetsMap.get(fileName);
