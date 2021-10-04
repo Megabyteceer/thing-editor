@@ -1492,12 +1492,14 @@ button {
 	padding-right: 110px;
 }
 
-.prefabs-search-input, .classes-search-input {
-	width: calc(100% - 176px);
+
+
+.projects-search-input {
+	width: 100% !important;
 	outline: 2px solid red !important;
 }
 
-.prefabs-search-input:placeholder-shown, .classes-search-input:placeholder-shown {
+.projects-search-input:placeholder-shown, .prefabs-search-input:placeholder-shown, .classes-search-input:placeholder-shown {
 	outline: none !important;
 }
 

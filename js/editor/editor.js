@@ -29,6 +29,7 @@ import {_onTestsStart} from '../engine/utils/autotest-utils.js';
 import OrientationTrigger from '../engine/components/orientation-trigger.js';
 import callByPath from '../engine/utils/call-by-path.js';
 import Pool from "../engine/utils/pool.js";
+import ProjectsList from "./ui/projects-list.js";
 
 let isFirstClassesLoading = true;
 
@@ -166,7 +167,7 @@ export default class Editor {
 			dir = lastOpenedProject;
 		}
 		if(!dir) {
-			this.fs.chooseProject(true);
+			ProjectsList.chooseProject(true);
 		} else if((dir + '/') !== editor.currentProjectDir) {
 			this.ui.modal.showSpinner();
 			editor.projectOpeningInProgress = true;
