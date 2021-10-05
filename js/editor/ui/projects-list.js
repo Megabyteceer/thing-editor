@@ -74,7 +74,7 @@ export default class ProjectsList extends React.Component {
 				return i.title.toLowerCase().indexOf(f) >= 0 || i.dir.toLowerCase().indexOf(f) >= 0;
 			}).map(renderProjectItem);
 		} else {
-			items = group.groupArray(items.map(renderProjectItem)).sort((a, b) => {
+			items = group.groupArray(items.map(renderProjectItem), undefined, undefined, true).sort((a, b) => {
 				// sort projects groups
 				if(a.key < b.key) return -1;
 				if(a.key > b.key) return 1;
