@@ -377,6 +377,9 @@ let pathSeparatorReplace = (stat) => {
 };
 
 function getLibRoot(libName) {
+	if(libName.startsWith('.')) {
+		return path.join(currentGameRoot, libName);
+	}
 	return path.join(__dirname, '..', libName);
 }
 

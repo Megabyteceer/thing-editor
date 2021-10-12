@@ -84,7 +84,9 @@ export default class ProjectsList extends React.Component {
 
 		return R.div({className:'project-open-chooser'},
 			R.input(this.searchInputProps),
-			items
+			R.div({className: 'projects-list'}, 
+				items
+			)
 		);
 	}
 }

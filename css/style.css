@@ -1502,6 +1502,11 @@ button {
 	outline: 2px solid red !important;
 }
 
+.projects-list {
+	max-height: calc(70vh - 60px);
+	overflow-y: auto;
+}
+
 .projects-search-input:placeholder-shown, .prefabs-search-input:placeholder-shown, .classes-search-input:placeholder-shown {
 	outline: none !important;
 }
