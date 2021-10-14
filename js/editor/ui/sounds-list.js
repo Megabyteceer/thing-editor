@@ -5,6 +5,7 @@ import BgMusic from "thing-editor/js/engine/components/bg-music.js";
 import game from "thing-editor/js/engine/game.js";
 import SelectEditor from "./props-editor/select-editor.js";
 import MusicFragment from "thing-editor/js/engine/utils/music-fragment.js";
+import ws from "../utils/socket.js";
 
 let sounds = {};
 
@@ -57,6 +58,7 @@ export default class SoundsList extends React.Component {
 			bitrates: editor.projectDesc.soundBitrates,
 			defaultBitrate: editor.projectDesc.soundDefaultBitrate
 		};
+		ws.log((new Error((new Date()).toLocaleString() + ': fs/build-sounds call')).stack);
 		return editor.fs.postJSON('/fs/build-sounds', options);
 	}
 

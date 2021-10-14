@@ -167,7 +167,7 @@ app.get('/fs/build', function (req, res) {
 		clearTimeout(buildAndExitTimeout);
 		buildAndExitTimeout = null;
 	}
-	log('BUILD project' + (req.query.debug ? ' (debug)' : '') + ': ' + currentGameRoot);
+	log('BUILD project' + (req.query.debug ? ' (debug)' : '') + ': ' + currentGameRoot + '; ' + (new Date()).toString());
 	wss.showSpinner();
 	let command = 'node "' +
 	path.join(__dirname, 'scripts/build.js') + '" "' +
@@ -699,7 +699,7 @@ function filesChangedProcess() {
 	for(let fileName in changedFiles) {
 		let s = changedFiles[fileName];
 		pathSeparatorReplace(s);
-		//log('file changed: ' + fileName);
+		log('file changed: ' + fileName);
 		files.push(s);
 	}
 	wss.filesChanged(files);
