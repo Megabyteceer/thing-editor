@@ -209,9 +209,8 @@ let _getValStore = (o) => {
 
 window.shakeDomElement = function(e) {
 	e.classList.remove('shake');
-	setTimeout(() => {
-		e.classList.add('shake');
-	}, 1);
+	e.offsetWidth;
+	e.classList.add('shake');
 };
 
 window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(constructor, propertyName) {
