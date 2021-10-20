@@ -206,7 +206,7 @@ export default class Editor {
 				this.fs.libsSettings.loadOnDemandTextures = Object.assign(imagesSettings, editor.projectDesc.loadOnDemandTextures);
 			}
 
-			editor.settings.setItem(editor.projectDesc.id + '_EDITOR_lastOpenTime', Date.now());
+			editor.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
 
 			let isProjectDescriptorModified = game.applyProjectDesc(editor.projectDesc);
 

@@ -33,7 +33,7 @@ export default class ProjectsList extends React.Component {
 		editor.ui.viewport.stopExecution();
 		fs.getJSON('/fs/projects').then((data) => {
 			const projectOrder = (projDesc) => {
-				return editor.settings.getItem(projDesc.id + '_EDITOR_lastOpenTime', 0);
+				return editor.settings.getItem(projDesc.dir + '_EDITOR_lastOpenTime', 0);
 			};
 			data.sort((a, b) => {
 				return projectOrder(b) - projectOrder(a);
