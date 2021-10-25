@@ -12,6 +12,7 @@ const app = express();
 const open = require('open');
 const AnsiToHtml = require('ansi-to-html');
 const AnsiToHtmlConverter = new AnsiToHtml({bg: '#FFF',fg: '#000', newline: true});
+const crypto = require('crypto');
 
 function requireUncached(m) {
 	delete require.cache[require.resolve(m)];
@@ -85,6 +86,9 @@ app.get('/fs/delete', function (req, res) {
 	if(!currentGame) throw 'No game opened';
 	let fn = mapFileUrl(req.query.f);
 	let backup = req.query.backup;
+	if(!fs.existsSync(fn)) {
+		throw 'File does not exists ' + fn;
+	}
 	attemptFSOperation(() => {
 		ignoreFileChanging(fn);
 		if(backup) {
@@ -393,9 +397,11 @@ function getDataFolders(existingOnly = true) {
 				for(let type of ASSETS_FOLDERS_NAMES) {
 					let assetsFolder = path.join(libRootFolder, type);
 					if(fs.existsSync(assetsFolder)) {
+
+						let libPath = libName.startsWith('.') ? path.join(currentGameRoot, libName, type) : path.join(libName, type);
 						ret.push({
 							type,
-							path: path.join(libName, type),
+							path: libPath,
 							lib: libName
 						});
 					}
@@ -430,6 +436,7 @@ function enumFiles() {
 
 	let folders = getDataFolders(false);
 	folders.reverse();
+	var sameFiles;
 	for (let f of folders) {
 		let type = f.type;
 		if(!ret[type]) {
@@ -456,6 +463,12 @@ function enumFiles() {
 						assetsMap.set(assetURL, fileData.name);
 						fileData.name = assetName;
 					} else {
+						if(!assetURL.startsWith('/' + currentGame + '/snd/') || assetURL.endsWith('.wav')) {
+							if(getFileHash(path.join(fullRoot, mapAssetUrl(assetURL))) === getFileHash(path.join(fullRoot, fileData.name))) {
+								sameFiles = sameFiles || [];
+								sameFiles.push({assetName, overlaps: fileData.name});
+							}
+						}
 						return false;
 					}
 				}
@@ -486,6 +499,9 @@ function enumFiles() {
 		}
 	}
 	lastFilesEnum = ret;
+	if(sameFiles) {
+		wss.sameFiles(sameFiles);
+	}
 	return ret;
 }
 
@@ -859,4 +875,11 @@ function addJsExtensionAndPreventCache(req, res, content) {
 		});
 	}
 	return content;
+}
+
+function getFileHash(fileName) {
+	const fileBuffer = fs.readFileSync(fileName);
+	const hashSum = crypto.createHash('sha256');
+	hashSum.update(fileBuffer);
+	return hashSum.digest('hex');
 }

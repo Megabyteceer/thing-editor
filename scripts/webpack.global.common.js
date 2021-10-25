@@ -170,6 +170,13 @@ const config = {
 				{
 					loader: 'babel-loader',
 					options: {
+						"plugins": [
+							[
+								"@babel/plugin-transform-block-scoping", {
+									"throwIfClosureRequired": false
+								}
+							]
+						],
 						presets: [['@babel/preset-env',
 							{
 								"useBuiltIns": "entry",

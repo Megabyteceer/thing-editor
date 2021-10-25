@@ -9,7 +9,10 @@ const warnIcon = R.icon('warn-icon');
 
 
 const needAddInToList = (map, owner, fieldName, errorCode) => {
-	if(game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode) >= 0)) {
+	editor.waitForCondition(() => {
+		return game.projectDesc; 
+	});
+	if(game.projectDesc && game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode) >= 0)) {
 		return;
 	}
 	if(!(owner instanceof DisplayObject)) {
@@ -63,7 +66,7 @@ export default class Status extends React.Component {
 	
 	error (message, errorCode, owner, fieldName) {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
-		console.error(errorCode + ': ' + message);
+		console.error(errorCode + ': ' + message + getErrorDetailsUrl(errorCode));
 		let item = {owner, ownerId: owner && owner.___id, message, fieldName, errorCode};
 		if(owner && fieldName) {
 			item.val = owner[fieldName];
@@ -81,7 +84,7 @@ export default class Status extends React.Component {
 	
 	warn (message, errorCode, owner, fieldName, doNoFilterRepeats = false) {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
-		console.warn(message);
+		console.warn(message + getErrorDetailsUrl(errorCode));
 		if(doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
 			let item = {owner, ownerId: owner && owner.___id, message, fieldName, errorCode};
 			if(owner && fieldName) {
@@ -129,6 +132,14 @@ export default class Status extends React.Component {
 	}
 }
 
+function getErrorDetailsUrl(errorCode) {
+	if (errorCode && (errorCode < 90000)) {
+		return " DETAILS: " + Help.getUrlForError(errorCode);
+	}
+	return '';
+}
+
+
 const selectableSceneNodeProps = {className:"selectable-scene-node"};
 
 class InfoList extends React.Component {
@@ -155,12 +166,12 @@ class InfoList extends React.Component {
 		if(item.owner && item.owner instanceof DisplayObject) {
 			node = R.div(selectableSceneNodeProps, R.sceneNode(item.owner));
 		}
-		return R.div({key:i, className:'info-item clickable', title: "Click line to go problem.", onClick:() => {
+		return R.div({key:i, className:'info-item clickable', title: "Click line to go problem.", onClick:async (ev) => {
 			if(!item) {
 				return;
 			}
 			if(typeof item.owner === "function") {
-				if(item.owner()) {
+				if(await item.owner(ev)) {
 					this.clearItem(item);
 				}
 			} else if(item.owner && (item.owner instanceof DisplayObject)) {

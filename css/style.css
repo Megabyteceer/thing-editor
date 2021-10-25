@@ -508,6 +508,7 @@ button {
 .template-desc {
 	font-size: small;
 	color: #555;
+	white-space: initial;
 }
 
 .select-editor-current {
