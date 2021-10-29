@@ -52,6 +52,9 @@ export default class SoundsList extends React.Component {
 	}
 
 	rebuildSounds(noCacheSoundName) {
+		if(editor.editorArguments['skip-sounds-build']) {
+			return Promise.resolve({});
+		}
 		let options = {
 			formats: editor.projectDesc.soundFormats,
 			noCacheSoundName,
