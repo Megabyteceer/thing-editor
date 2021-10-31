@@ -66,7 +66,12 @@ if(projectDesc.libs) {
 	libs.reverse();
 
 	for(let libName of libs) {
-		let libRootFolder = path.join(__dirname, '../..', libName);
+		let libRootFolder;
+		if(libName.startsWith('.')) {
+			libRootFolder = path.join(process.cwd(), libName);
+		} else {
+			libRootFolder = path.join(__dirname, '../..', libName);
+		}
 		if(!fs.existsSync(libRootFolder)) {
 			libRootFolder = require.resolve(libName);
 		}
@@ -165,6 +170,13 @@ const config = {
 				{
 					loader: 'babel-loader',
 					options: {
+						"plugins": [
+							[
+								"@babel/plugin-transform-block-scoping", {
+									"throwIfClosureRequired": false
+								}
+							]
+						],
 						presets: [['@babel/preset-env',
 							{
 								"useBuiltIns": "entry",

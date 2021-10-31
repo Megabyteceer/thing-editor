@@ -13,6 +13,7 @@ import game from "thing-editor/js/engine/game.js";
 import SoundsList from './sounds-list.js';
 import TexturesView from './textures-view.js';
 import Help from '../utils/help.js';
+import ProjectsList from "./projects-list.js";
 
 /**
  *
@@ -99,7 +100,7 @@ class UI extends React.Component {
 	}
 	
 	onOpenProjectClick() {
-		editor.fs.chooseProject();
+		ProjectsList.chooseProject();
 	}
 	
 	onOpenProjectFolderClick() {

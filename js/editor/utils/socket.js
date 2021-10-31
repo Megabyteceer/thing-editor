@@ -1,3 +1,4 @@
+import Sound from "../../engine/utils/sound.js";
 import PrefabsList from "../ui/prefabs-list.js";
 import AssetsLoader from "./assets-loader.js";
 import fs from "./fs.js";
@@ -30,6 +31,26 @@ ws.onmessage = function incoming(data) {
 		editor.callByPath('this.' + data.call, window);
 	} else if(data.hasOwnProperty('notifyText')) {
 		editor.ui.modal.notify(data.notifyText);
+	} else if(data.hasOwnProperty('sameFiles')) {
+		for(let i of data.sameFiles) {
+			editor.ui.status.warn("File overlaps the same file in library. " + i.assetName + ' => ' + i.overlaps, 99999, async (ev) => {
+				let preview;
+				if(i.assetName.startsWith('img/')) {
+					preview = R.div(null, R.img({src: '/' + i.overlaps}));
+				} else if(i.assetName.startsWith('snd/')) {
+					Sound.play(i.assetName.substr(4).split('.').shift());
+				}
+				preview = R.div(null, i.assetName, preview);
+				let answer = ev.ctrlKey || (await editor.ui.modal.showEditorQuestion('A you sure you want to remove duplicate file?', preview, async () => {
+				}, R.span({className: 'danger'}, R.img({src: 'img/delete.png'}), "Delete duplicate file")));
+				Sound.__stop();
+				if(answer) {
+					await fs.deleteFile(i.assetName);
+					editor.reloadAssets();
+				}
+				return answer;
+			});
+		}
 	} else if(data.hasOwnProperty('showSpinner')) {
 		editor.ui.modal.showSpinner();
 	} else if(data.hasOwnProperty('hideSpinner')) {

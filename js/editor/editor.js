@@ -29,6 +29,7 @@ import {_onTestsStart} from '../engine/utils/autotest-utils.js';
 import OrientationTrigger from '../engine/components/orientation-trigger.js';
 import callByPath from '../engine/utils/call-by-path.js';
 import Pool from "../engine/utils/pool.js";
+import ProjectsList from "./ui/projects-list.js";
 
 let isFirstClassesLoading = true;
 
@@ -166,7 +167,7 @@ export default class Editor {
 			dir = lastOpenedProject;
 		}
 		if(!dir) {
-			this.fs.chooseProject(true);
+			ProjectsList.chooseProject(true);
 		} else if((dir + '/') !== editor.currentProjectDir) {
 			this.ui.modal.showSpinner();
 			editor.projectOpeningInProgress = true;
@@ -205,7 +206,7 @@ export default class Editor {
 				this.fs.libsSettings.loadOnDemandTextures = Object.assign(imagesSettings, editor.projectDesc.loadOnDemandTextures);
 			}
 
-			editor.settings.setItem(editor.projectDesc.id + '_EDITOR_lastOpenTime', Date.now());
+			editor.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
 
 			let isProjectDescriptorModified = game.applyProjectDesc(editor.projectDesc);
 
@@ -862,7 +863,7 @@ declare global {
 	`}
 }
 `;
-			fs.saveFile('../../current-scene-typings.d.ts', mapJS, true, true);
+			fs.saveFile('/current-scene-typings.d.ts', mapJS, true, true);
 		}
 	}
 
@@ -907,7 +908,7 @@ loadPrefab(prefabName:string) {
 	return null;
 }
 }`;
-			fs.saveFile('../../prefabs-typing.ts', mapJS, true, true);
+			fs.saveFile('/prefabs-typing.ts', mapJS, true, true);
 		}
 	}
 
