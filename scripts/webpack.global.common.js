@@ -216,13 +216,6 @@ if (!isDebug) {
 		minimizerOptions: {
 			plugins: [
 				[
-					'mozjpeg',
-					{
-						quality: projectDesc.jpgQuality,
-						progressive: true
-					}
-				],
-				[
 					'pngquant',
 					{
 						speed: 1,
