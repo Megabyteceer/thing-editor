@@ -16,6 +16,8 @@ let copyFilesList = [];
 let addedFiles = new Set();
 
 let projectHasSounds;
+let hasSpinesVersion3 = false;
+let hasSpinesVersion4 = false;
 
 function addSoundsFolderToCopy(libName) {
 	let files = glob((libName || '.') + '/snd/**/*.@(webm|weba|ogg|aac|mp3)', {absolute: true, sync:true, ignore});
@@ -40,6 +42,16 @@ function addImagesFolderToCopy(libName) {
 			let a = from.split('/img/');
 			a.shift();
 			let to =  './img/' + a.join('/img/');
+			
+			if (from.endsWith('.json')) {
+				const jsonContent = fs.readFileSync(from);
+				if (/"spine":"4\.[^"]*"/.test(jsonContent)) {
+					hasSpinesVersion4 = true;
+				} else if(/"spine":"3\.[^"]*"/.test(jsonContent)) {
+					hasSpinesVersion3 = true;
+				}
+			}
+			
 			if(!addedFiles.has(to)) {
 				addedFiles.add(to);
 				copyFilesList.push({from, to});
@@ -151,9 +163,6 @@ const config = {
 		new CopyWebpackPlugin({
 			patterns: copyFilesList,
 		}),
-		new webpack.ProvidePlugin({
-			PIXI: 'pixi.js-legacy',
-		})
 	],
 	module: {
 		noParse: /webfontloader/,
@@ -206,6 +215,20 @@ const config = {
 		}]
 	}
 };
+
+const providePluginOptions = {
+	PIXI: 'pixi.js-legacy',
+};
+if (hasSpinesVersion3 && hasSpinesVersion4) {
+	providePluginOptions['PIXI.spine'] = 'pixi-spine';
+	console.warn(`❗️ Both versions of Spine are used in project (3.8 and 4.0). So bundle size will be increased to support both versions`);
+} else if (hasSpinesVersion3) {
+	providePluginOptions['PIXI.spine'] = '@pixi-spine/all-3.8';
+} else if (hasSpinesVersion4) {
+	providePluginOptions['PIXI.spine'] = '@pixi-spine/all-4.0';
+}
+config.plugins.push(new webpack.ProvidePlugin(providePluginOptions));
+config.plugins.push(new webpack.DefinePlugin({'process.env.SPINE_VERSION': JSON.stringify(providePluginOptions['PIXI.spine'])}));
 
 if (!isDebug) {
 	const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
