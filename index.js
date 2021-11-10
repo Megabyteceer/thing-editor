@@ -334,6 +334,7 @@ app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on: http://127.0.0.1:' + PORT + '/thing-editor')); // eslint-disable-line no-unused-vars
+server.timeout = 10000000;
 let wss = require('./scripts/server-socket.js');
 let chromeConnectTimeout;
 let buildAndExitTimeout;
