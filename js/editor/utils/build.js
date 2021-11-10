@@ -1,5 +1,6 @@
 import L from "thing-editor/js/engine/utils/l.js";
 import Lib from "thing-editor/js/engine/lib.js";
+import ws from "./socket.js";
 
 let prefixToCutOff;
 
@@ -47,6 +48,9 @@ const fieldsFilter = (key, value) => {
 
 export default class Build {
 	static async build(debug) {
+
+		ws.log("Build.build call stack: " + (new Error('')).stack);
+
 		prefixToCutOff = (debug ? '___' : '__');
 		let scenes = filterObjectsData(Lib._getAllScenes());
 		let prefabs = filterObjectsData(Lib._getAllPrefabs());

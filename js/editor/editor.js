@@ -1132,6 +1132,7 @@ loadPrefab(prefabName:string) {
 	}
 	
 	build(debug) {
+		ws.log("editor.build call stack: " + (new Error('')).stack);
 		return new Promise((resolve) => {
 			if(editor.buildProjectAndExit) {
 				if((debug && editor.editorArguments['skip-debug-build']) ||
