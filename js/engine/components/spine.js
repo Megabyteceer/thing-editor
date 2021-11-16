@@ -32,9 +32,8 @@ function getSpineInstance(name) {
 }
 function generateSpineData(skeletonData, spineName) {
 	const spineAtlas = createSpineTextureAtlas(skeletonData, spineName);
-	const spineAtlasLoader = new PIXI.spine.core.AtlasAttachmentLoader(spineAtlas);
-	const spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
-	return spineJsonParser.readSkeletonData(skeletonData);
+	const spineJsonParser = (new PIXI.spine.SpineParser()).createJsonParser();
+	return spineJsonParser.readSkeletonData(spineAtlas, skeletonData);
 }
 function createSpineTextureAtlas(skeletonData, spineName) {
 	// Fetch all texture names used in the spine
@@ -52,7 +51,7 @@ function createSpineTextureAtlas(skeletonData, spineName) {
 	});
 
 
-	const textureAtlas = new PIXI.spine.core.TextureAtlas();
+	const textureAtlas = new PIXI.spine.TextureAtlas();
 
 	textureNamesSet.forEach(texturePath => {
 		const textureFileName = texturePath.substring(texturePath.lastIndexOf('/'));
