@@ -198,10 +198,7 @@ export default class BgMusic extends Container {
 
 	get ___currentPos() {
 		let f = MusicFragment.___currentPos(this.musicFragmentHash);
-		if(f) {
-			return f.___currentPos;
-		}
-		return 0;
+		return f || 0;
 	}
 	set ___currentPos(val) {
 		
