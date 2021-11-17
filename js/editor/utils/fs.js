@@ -1,3 +1,5 @@
+let libsByFileName = {};
+
 let fs = {
 	refreshFiles: () => {
 		return fs.getJSON('/fs/enum').then((data) => {
@@ -10,6 +12,7 @@ let fs = {
 				fs.libsSettings = {};
 			}
 
+			libsByFileName = {};
 			for(let type in data) {
 				let files = data[type];
 				files.sort((a,b) => {
@@ -18,6 +21,12 @@ let fs = {
 
 				fs.filesExt[type] = files;
 				fs.files[type] = files.map(f => f.name).sort();
+				
+				for(let f of files) {
+					if(f.lib) {
+						libsByFileName[f.name] = f.lib;
+					}
+				}
 			}
 		});
 	},
@@ -103,7 +112,7 @@ let fs = {
 	fileChangedExternally(fileName) {
 		externallyChangedFiles[fileName] = true;
 	},
-	async saveFile(fileName, data, silently = false, async = false) { 
+	async saveFile(fileName, data, silently = false, async = false) {
 		if(externallyChangedFiles[fileName]) {
 			if(! await new Promise((resolve) => {
 				editor.ui.modal.showEditorQuestion(
@@ -125,9 +134,31 @@ let fs = {
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
-		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName)), data, silently, async, true).then((data) => {
+
+		let libName = fs.getFileLibName(fileName);
+		let copyAssetToProject;
+		if(libName) {
+			copyAssetToProject = !await new Promise((resolve) => {
+				editor.ui.modal.showEditorQuestion(
+					"You have edited asset '" + fileName + "' located in library '" + libName + "'",
+					"Do you want to save changes in library or make projects local copy?",
+					() => {resolve(true);},
+					"Save in library",
+					() => {resolve();},
+					"Copy to project"
+				);
+			});
+		}
+
+		return fs.postJSON('/fs/savefile?copyAssetToProject=' + (copyAssetToProject ? '1' : '') + '&filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName)), data, silently, async, true).then((data) => {
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
+			} else {
+				if(copyAssetToProject) {
+					fs.refreshFiles().then(() => {
+						editor.ui.forceUpdate();
+					});
+				}
 			}
 		});
 	},
@@ -136,6 +167,9 @@ let fs = {
 		if(wrongSymbolPos >= 0) {
 			return fileName[wrongSymbolPos];
 		}
+	},
+	getFileLibName(fileName) {
+		return libsByFileName[fileName];
 	}
 };
 

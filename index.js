@@ -238,7 +238,13 @@ app.post('/fs/exec', jsonParser, function (req, res) {
 });
 
 app.post('/fs/savefile', rawParser, function (req, res) {
-	let fileName = mapFileUrl(req.query.filename);
+	
+	let fileName = req.query.filename;
+	if(!req.query.copyAssetToProject) {
+		fileName = mapFileUrl(req.query.filename);
+	} else {
+		fileName = path.join(__dirname, '..', req.query.filename);
+	}
 	ensureDirectoryExistence(fileName);
 	attemptFSOperation(() => {
 		ignoreFileChanging(fileName);
@@ -330,7 +336,6 @@ while(params.length) {
 }
 
 app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
-
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on: http://127.0.0.1:' + PORT + '/thing-editor')); // eslint-disable-line no-unused-vars
@@ -558,18 +563,24 @@ const enumProjects = (ret = [], subDir = '') => {
 	});
 	return ret;
 };
+
 //============= enum libs ===========================
 const enumLibs = (ret = [], dir = '.') => {
-	fs.readdirSync(dir).forEach(file => {
-		let dirName = path.join(dir, file);
-		if(fs.statSync(dirName).isDirectory()) {
-			let libDescFile = path.join(dirName, '/thing-lib.json');
-			if(fs.existsSync(libDescFile)) {
-				ret.push(dirName.replace(pathSeparatorReplaceExp, '/').replace('./',''));
-				enumLibs(ret, dirName);
+	if((dir.indexOf('node_modules') < 0) && (dir.indexOf('.git') < 0)) {
+		fs.readdirSync(dir).forEach(file => {
+			let dirName = path.join(dir, file);
+			if(fs.statSync(dirName).isDirectory()) {
+				let libDescFile = path.join(dirName, '/thing-lib.json');
+				if(fs.existsSync(libDescFile)) {
+					ret.push(dirName.replace(pathSeparatorReplaceExp, '/').replace('./',''));
+				}
+				let projDescFile = path.join(dirName, '/thing-project.json');
+				if(!fs.existsSync(projDescFile)) {
+					enumLibs(ret, dirName);
+				}
 			}
-		}
-	});
+		});
+	}
 	return ret;
 };
 
@@ -743,50 +754,47 @@ function excludeAnotherProjectsFromCodeEditor() { // hides another projects from
 	
 	let dirsToExclude = enumProjects().filter(g => g.dir !== currentGame).map(p => 'games/' + p.dir).concat(enumLibs([]).filter(isLibNotInProject));
 
-	for(let i = 0; i < 5; i++) {
-		if(fs.existsSync(jsConfigFN)) {
-			let jsConfig = JSON.parse(fs.readFileSync(jsConfigFN));
-			let oldJsExcludes = jsConfig.exclude;
-			let exclude = [];
-			jsConfig.exclude = exclude;
-			if(Array.isArray(oldJsExcludes)) {
-				
-				for(let k of oldJsExcludes) {
-					if(!isLibInProject(k)) {
-						exclude.push(k);
-					}
+	if(fs.existsSync(jsConfigFN)) {
+		let jsConfig = JSON.parse(fs.readFileSync(jsConfigFN));
+		let oldJsExcludes = jsConfig.exclude;
+		let exclude = [];
+		jsConfig.exclude = exclude;
+		if(Array.isArray(oldJsExcludes)) {
+			for(let k of oldJsExcludes) {
+				if(!isLibInProject(k)) {
+					exclude.push(k);
 				}
 			}
-			for(let dir of dirsToExclude) {
-				if(!isLibInProject(dir) && (exclude.indexOf(dir) < 0)) {
-					exclude.push(dir);
-				}
-			}
-			fs.writeFileSync(jsConfigFN, JSON.stringify(jsConfig, undefined, '	'));
 		}
-
-		if(fs.existsSync(vsSettingsFn)) {
-			let config = JSON.parse(fs.readFileSync(vsSettingsFn));
-			let oldExcludes = config['files.exclude'];
-			let exclude = {};
-			config['files.exclude'] = exclude;
-			if(oldExcludes) {
-				for(let k in oldExcludes) {
-					if(!isLibInProject(k.replace(/(^\*\*\/|\/\*\*$)/gm,''))) {
-						exclude[k] = oldExcludes[k];
-					}
-				}
+		for(let dir of dirsToExclude) {
+			if(!isLibInProject(dir) && (exclude.indexOf(dir) < 0)) {
+				exclude.push(dir);
 			}
-			for(let dir of dirsToExclude) {
-				exclude['**/' + dir + '/**'] = true;
-			}
-			fs.writeFileSync(vsSettingsFn, JSON.stringify(config, undefined, '	'));
-			
 		}
-		
-		jsConfigFN = '../' + jsConfigFN;
-		vsSettingsFn = '../' + vsSettingsFn;
+		fs.writeFileSync(jsConfigFN, JSON.stringify(jsConfig, undefined, '	'));
 	}
+
+	if(fs.existsSync(vsSettingsFn)) {
+		let config = JSON.parse(fs.readFileSync(vsSettingsFn));
+		let oldExcludes = config['files.exclude'];
+		let exclude = {};
+		config['files.exclude'] = exclude;
+		if(oldExcludes) {
+			for(let k in oldExcludes) {
+				if(!isLibInProject(k.replace(/(^\*\*\/|\/\*\*$)/gm,''))) {
+					exclude[k] = oldExcludes[k];
+				}
+			}
+		}
+		for(let dir of dirsToExclude) {
+			exclude['**/' + dir + '/**'] = true;
+		}
+		fs.writeFileSync(vsSettingsFn, JSON.stringify(config, undefined, '	'));
+	}
+	
+	jsConfigFN = '../' + jsConfigFN;
+	vsSettingsFn = '../' + vsSettingsFn;
+
 }
 
 function isLibNotInProject(libName) {
