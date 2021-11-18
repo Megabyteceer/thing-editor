@@ -96,8 +96,8 @@ class History {
 	saveHistoryNow() {
 		if(needHistorySave) {
 			clearSelectionSaveTimer();
-			instance.addHistoryState();
 			needHistorySave = false;
+			instance.addHistoryState();
 			if(historySaveScheduled) {
 				clearInterval(historySaveScheduled);
 				historySaveScheduled = null;
