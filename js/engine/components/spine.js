@@ -33,7 +33,11 @@ function getSpineInstance(name) {
 function generateSpineData(skeletonData, spineName) {
 	const spineAtlas = createSpineTextureAtlas(skeletonData, spineName);
 	const spineJsonParser = (new PIXI.spine.SpineParser()).createJsonParser();
+	/// #if EDITOR
 	return spineJsonParser.readSkeletonData(spineAtlas, skeletonData);
+	/// #endif
+	spineJsonParser.attachmentLoader = new PIXI.spine.AtlasAttachmentLoader(spineAtlas);
+	return spineJsonParser.readSkeletonData(skeletonData);
 }
 function createSpineTextureAtlas(skeletonData, spineName) {
 	// Fetch all texture names used in the spine
@@ -52,11 +56,18 @@ function createSpineTextureAtlas(skeletonData, spineName) {
 
 
 	const textureAtlas = new PIXI.spine.TextureAtlas();
-
+	const basePath = spineName.substring(4, spineName.lastIndexOf('/')) + '/';
 	textureNamesSet.forEach(texturePath => {
-		const textureFileName = texturePath.substring(texturePath.lastIndexOf('/'));
-		const texture = Lib.getTextureEndingWith(texturePath + '.png') || Lib.getTextureEndingWith(texturePath + '.jpg') ||
-			Lib.getTextureEndingWith(textureFileName + '.png') || Lib.getTextureEndingWith(textureFileName + '.jpg');
+		let texture;
+		if (Lib.hasTexture(basePath + texturePath + '.png')) {
+			texture = Lib.getTexture(basePath + texturePath + '.png');
+		} else if (Lib.hasTexture(basePath + texturePath + '.jpg')) {
+			texture = Lib.getTexture(basePath + texturePath + '.jpg');
+		} else {
+			const textureFileName = texturePath.substring(texturePath.lastIndexOf('/'));
+			texture = Lib.getTextureEndingWith(texturePath + '.png') || Lib.getTextureEndingWith(texturePath + '.jpg') ||
+				Lib.getTextureEndingWith(textureFileName + '.png') || Lib.getTextureEndingWith(textureFileName + '.jpg');
+		}
 		assert(texture, `can't find texture (${texturePath}.png or ${texturePath}.jpg) for spine (${spineName})`);
 		textureAtlas.addTexture(texturePath, texture);
 	});
