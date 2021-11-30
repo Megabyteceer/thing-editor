@@ -208,6 +208,10 @@ export default class BgMusic extends Container {
 		return this.__currentFragment && this.__currentFragment.volume();
 	}
 
+	get __isLoopPos() {
+		return MusicFragment.__isLoopPosition(this.musicFragmentHash);
+	}
+
 	get __currentFragment() {
 		if(this._getTargetVol() > MIN_VOL_THRESHOLD) {
 			return MusicFragment.__getFragment(this.musicFragmentHash);

@@ -319,9 +319,9 @@ class MusicProfiler extends React.Component {
 				);
 			}
 		}},
-		R.span((playing && !m.isLoopPos) ? activeSoundProps : null, m.intro),
+		R.span((playing && !m.__isLoopPos) ? activeSoundProps : null, m.intro),
 		' : ',
-		R.span((playing && m.isLoopPos) ? activeSoundProps : null, m.loop),
+		R.span((playing && m.__isLoopPos) ? activeSoundProps : null, m.loop),
 		state
 		);
 	}
