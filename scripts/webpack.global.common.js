@@ -150,6 +150,7 @@ const config = {
 	},
 	output: {
 		filename: '[name].js',
+		chunkFilename: 'chunks/[id].js',
 		path: buildPath,
 	},
 	performance: {
@@ -217,7 +218,7 @@ const config = {
 };
 
 const providePluginOptions = {
-	PIXI: 'pixi.js-legacy',
+	PIXI: 'pixi.js',
 };
 if (hasSpinesVersion3 && hasSpinesVersion4) {
 	providePluginOptions['PIXI.spine'] = 'pixi-spine';
