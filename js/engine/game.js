@@ -481,7 +481,11 @@ class Game {
 
 		assets = window._thingEngineAssets; /*eslint-disable-line no-unreachable */
 		this.applyProjectDesc(assets.projectDesc);
-		this._initInner();
+		if (PIXI.utils.isWebGLSupported()) {
+			this._initInner();
+		} else {
+			import('pixi.js-legacy').then(() => this._initInner());
+		}
 		return ret;
 	}
 
