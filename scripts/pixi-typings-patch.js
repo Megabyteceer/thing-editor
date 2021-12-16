@@ -1,15 +1,20 @@
+/*global require */
+/*global module */
+/*global __dirname */
+
 // add vscode intellisense for injected methods
 let patches = [];
 const PATCH_BEGIN = ` // thing-editor patch begin
 `;
 
 patch(
-	'class DisplayObject extends PIXI.utils.EventEmitter {',
+	'node_modules/@pixi/display/index.d.ts',
+	'export declare abstract class DisplayObject extends EventEmitter {',
 	`
 	/** returns object rotation relative to it's scene */
 	getGlobalRotation():number;
-	getScenePosition(resultPoint: PIXI.Point, skipUpdate: boolean): PIXI.Point;
-	getRootContainer(): PIXI.Container;
+	getScenePosition(resultPoint: Point, skipUpdate: boolean): Point;
+	getRootContainer(): Container;
 	detachFromParent():void;
 	/** call in only in your own init methods as super.init(); */
 	protected init():void;
@@ -21,17 +26,17 @@ patch(
 	removeWithoutHolder():void;
 	/** destructor */
 	protected onRemove():void;
-	addFilter(filter: PIXI.Filter):void;
-	removeFilter(filter: PIXI.Filter):void;
+	addFilter(filter: Filter):void;
+	removeFilter(filter: Filter):void;
 	gotoLabelRecursive(labelName:string);
 	isCanBePressed:boolean;
-	findParentByType<T extends PIXI.Container>(classType: new () => T): T;
-	findParentByName(name: string): PIXI.Container;
+	findParentByType<T extends Container>(classType: new () => T): T;
+	findParentByName(name: string): Container;
 	
 	/** search child recursively by it's name */
 	findChildByName(name:string):Container;
 	/** search all children of defined type recursively */
-	findChildrenByType<T extends PIXI.Container>(classType: new () => T):T[];
+	findChildrenByType<T extends Container>(classType: new () => T):T[];
 	/** search all children by name */
 	findChildrenByName(name: string):Container[];
 	forAllChildren (callback: (o:Container)=>void):void;
@@ -39,72 +44,72 @@ patch(
 	`);
 	
 patch(
-	'class Sprite extends PIXI.Container {',
+	'node_modules/@pixi/sprite/index.d.ts',
+	'export declare class Sprite extends Container {',
 	`
 	image: string;
 	`);
 	
 patch(
-	'class Text extends PIXI.Sprite {',
+	'node_modules/@pixi/text/index.d.ts',
+	'declare class Text_2 extends Sprite {',
 	`
 	setAlign(align:string):void;
 	`);
 
-function patch(find, insert) {
-	patches.push(find);
-	patches.push(find + PATCH_BEGIN + insert + `
+function patch(fileName, find, insert) {
+	patches.push({
+		fileName,
+		find,
+		insert: find + PATCH_BEGIN + insert + `
 	// thing-editor patch end
-`);
+`});
 }
 
 const path = require('path');
 const fs = require('fs');
 const wss = require('./server-socket.js');
 
-function applyPatchesToFile(folder) {
-	tryToPatchFile(path.join(folder, 'node_modules/pixi.js/pixi.js.d.ts'));
-	tryToPatchFile(path.join(folder, 'node_modules/pixi.js-legacy/pixi.js-legacy.d.ts'));
-}
+function tryToPatch(folder) {
+	for(let patch of patches) {
+		var fn = path.join(folder, patch.fileName);
+		if(fs.existsSync(fn)) {
+			patch.done = true;
+			let txt = fs.readFileSync(fn, 'utf8');
+			if(txt.indexOf(PATCH_BEGIN) > 0) {
+				return;
+			}
 
-function tryToPatchFile(fn) {
-	if(fs.existsSync(fn)) {
-		let txt = fs.readFileSync(fn, 'utf8');
-		let isChanged = false;
-		if(txt.indexOf(PATCH_BEGIN) > 0) {
-			return;
-		}
-		for(let i = 0; i < patches.length; i += 2) {
-			let find = patches[i];
-			let insert = patches[i + 1];
+			let find = patch.find;
+			let insert = patch.insert;
 			if(txt.indexOf(find) > 0) {
 				txt = txt.replace(find, insert);
-				isChanged = true;
+				fs.writeFileSync(fn, txt);
+				console.log('PIXI typings patched: ' + fn);
+				wss.notify('PIXI typings patched: ' + fn);
 			} else {
 				console.error('PIXI typings patch "' + find + '" was not applied: ' + fn);
+				wss.notify('PIXI typings patch "' + find + '" was not applied: ' + fn);
 			}
-		}
-
-		if(isChanged) {
-			fs.writeFileSync(fn, txt);
-			console.log('PIXI typings patched: ' + fn);
-			wss.notify('PIXI typings patched: ' + fn);
-		} else {
-			console.error('PIXI typings was not patched: ' + fn);
-			wss.notify('PIXI typings was not patched: ' + fn);
 		}
 	}
 }
 
-
 module.exports = function(projectRoot) {
 	projectRoot = path.join(__dirname, '../..', projectRoot);
-	applyPatchesToFile(path.join(__dirname, '..'));
+	tryToPatch(path.join(__dirname, '..'));
 	while(fs.existsSync(projectRoot)) {
-		applyPatchesToFile(projectRoot);
+		tryToPatch(projectRoot);
 		let parentPath = path.join(projectRoot, '..');
 		if(parentPath === projectRoot) {
 			break;
 		}
 		projectRoot = parentPath;
 	}
-}
+	for(let patch of patches) {
+		if(!patch.done) {
+			console.error('PIXI typings was not found: ' + patch.fileName);
+			wss.notify('PIXI typings was not found: ' + patch.fileName);
+		}
+	}
+};
