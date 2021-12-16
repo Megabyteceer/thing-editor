@@ -839,10 +839,18 @@ export default class Editor {
 			
 			for(let name of Object.keys(json)) {
 				let className = json[name];
+				if(Scene.__refsCounter[name] > 1) {
+					declarations.push(`/**
+					* @deprecated ${Scene.__refsCounter[name]} objects with that name exist on scene
+					*/`);
+				}
 				declarations.push('"' +name + '":' + ((className==='Container') ? 'PIXI.Container' : className) + ';');
 			}
 
 			let mapJS = `// thing-editor auto generated file.
+
+import * as PIXI from ` + `"pixi.js"; // '+' - to prevent import path fixing
+
 export default null;
 `
 + imports.join('\n') +
