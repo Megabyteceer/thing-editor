@@ -112,23 +112,9 @@ let fs = {
 	fileChangedExternally(fileName) {
 		externallyChangedFiles[fileName] = true;
 	},
-	async saveFile(fileName, data, silently = false, async = false) {
+	saveFile(fileName, data, silently = false, async = false) {
 		if(externallyChangedFiles[fileName]) {
-			if(! await new Promise((resolve) => {
-				editor.ui.modal.showEditorQuestion(
-					"File overwrite",
-					R.span(null,
-						'File ', R.b(null,  fileName), ' is changed externally!',
-						R.br(),
-						'Are you sure you want to overwrite changes?'
-					),
-					() => {resolve(true);},
-					"Overwrite",
-					() => {resolve();}
-				);
-			})) {
-				return;
-			}
+			editor.ui.modal.notify('Externally modified file "' + fileName + '" was overridden.');
 		}
 		delete externallyChangedFiles[fileName];
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
@@ -136,29 +122,13 @@ let fs = {
 		}
 
 		let libName = fs.getFileLibName(fileName);
-		let copyAssetToProject;
 		if(libName) {
-			copyAssetToProject = !await new Promise((resolve) => {
-				editor.ui.modal.showEditorQuestion(
-					"You have edited asset '" + fileName + "' located in library '" + libName + "'",
-					"Do you want to save changes in library or make projects local copy?",
-					() => {resolve(true);},
-					"Save in library",
-					() => {resolve();},
-					"Copy to project"
-				);
-			});
+			editor.ui.modal.notify('Library "' + libName + '" asset modified.');
 		}
 
-		return fs.postJSON('/fs/savefile?copyAssetToProject=' + (copyAssetToProject ? '1' : '') + '&filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName)), data, silently, async, true).then((data) => {
+		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName)), data, silently, async, true).then((data) => {
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
-			} else {
-				if(copyAssetToProject) {
-					fs.refreshFiles().then(() => {
-						editor.ui.forceUpdate();
-					});
-				}
 			}
 		});
 	},
