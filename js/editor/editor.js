@@ -325,7 +325,7 @@ export default class Editor {
 					let scale = Math.min(width / b.width, height / b.height);
 					object.scale.x = object.scale.y = scale;
 				}
-				game.pixiApp.renderer.extract.canvas(c2).toBlob(function(b){
+				game.pixiApp.renderer.plugins.extract.canvas(c2).toBlob(function(b){
 					object.visible = tmpVisible;
 					delete c.getLocalBounds;
 					object.filters = f;
