@@ -289,7 +289,7 @@ class LibClass
 
 		let visibleName;
 		if(libName) {
-			visibleName = R.span(null, R.libInfo(libName).icon, name);
+			visibleName = R.span(null, R.libInfo(libName, 'img/' + name).icon, name);
 		} else {
 			visibleName = name;
 		}

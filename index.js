@@ -237,14 +237,21 @@ app.post('/fs/exec', jsonParser, function (req, res) {
 	}, currentGameDesc, currentGameRoot, wss);
 });
 
+app.post('/fs/copyAssetToProject', rawParser, function (req, res) {
+	let from = mapFileUrl(req.query.filename);
+	let to = path.join(__dirname, '..', req.query.filename);
+	attemptFSOperation(() => {
+		ignoreFileChanging(to);
+		fs.copyFileSync(from, to);
+	}).then(() => {
+		res.end('{}');
+	}).catch(() => {
+		res.end(JSON.stringify({error: 'Can not copy file from "' + from + '" to "' + to + '"'}));
+	});
+});
+
 app.post('/fs/savefile', rawParser, function (req, res) {
-	
-	let fileName = req.query.filename;
-	if(!req.query.copyAssetToProject) {
-		fileName = mapFileUrl(req.query.filename);
-	} else {
-		fileName = path.join(__dirname, '..', req.query.filename);
-	}
+	let fileName = mapFileUrl(req.query.filename);
 	ensureDirectoryExistence(fileName);
 	attemptFSOperation(() => {
 		ignoreFileChanging(fileName);

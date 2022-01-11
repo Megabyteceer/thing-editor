@@ -128,7 +128,7 @@ export default class SoundsList extends React.Component {
 											if(!sounds.hasOwnProperty(name)) {
 												sounds[name] = [];
 												if(fileInfo.lib) {
-													sounds[name].___libInfo = R.libInfo(fileInfo.lib);
+													sounds[name].___libInfo = R.libInfo(fileInfo.lib, wavFullName);
 												}
 											}
 											sounds[name].push(fileName);

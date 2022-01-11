@@ -188,7 +188,7 @@ export default class ScenesList extends React.Component {
 					return editor.fs.openFile(fn.name)
 						.then((data) => {
 							if(fn.lib) {
-								data.___libInfo = R.libInfo(fn.lib);
+								data.___libInfo = R.libInfo(fn.lib, fn.name);
 							}
 							scenes[fileNameToSceneName(fn.name)] = data;
 						});

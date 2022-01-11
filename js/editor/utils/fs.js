@@ -132,6 +132,17 @@ let fs = {
 			}
 		});
 	},
+	copyAssetToProject(fileName) {
+		return fs.postJSON('/fs/copyAssetToProject?filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName))).then((data) => {
+			if(data.error) {
+				editor.ui.modal.showError(data.error);	
+			} else {
+				fs.refreshFiles().then(() => {
+					editor.ui.forceUpdate();
+				});
+			}
+		});
+	},
 	hasWrongSymbol(fileName) {
 		let wrongSymbolPos = fileName.search(/[^a-zA-Z_\-\.\d\/]/gm);
 		if(wrongSymbolPos >= 0) {
