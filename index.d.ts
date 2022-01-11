@@ -1,5 +1,6 @@
-/// <reference path="../node_modules/pixi.js-legacy/pixi.js-legacy.d.ts" />
 /// <reference path="../current-scene-typings.d.ts" />
+
+import * as PIXI_ from "pixi.js";
 
 import 'current-project-typings.js';
 import Editor from 'thing-editor/js/editor/editor.js';
@@ -110,6 +111,7 @@ interface EditableFieldDescription{
 }
 
 declare global {
+	var PIXI: typeof PIXI_;
 	var editor: TEditor;
 	function assert(expression: boolean, message?: string, errorCode?: number);
 	function __getNodeExtendData(node:Container): any;

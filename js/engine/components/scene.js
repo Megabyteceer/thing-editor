@@ -109,6 +109,7 @@ Scene.prototype.remove.___EDITOR_isHiddenForChooser = true;
 let validatorCounter = 0;
 function addAllRefsValidator(scene) {
 	let refsCounter = {};
+	Scene.__refsCounter = refsCounter;
 	let deletionValidator = validatorCounter++;
 	
 	scene.all = new Proxy(scene.all, {
@@ -135,9 +136,6 @@ function addAllRefsValidator(scene) {
 			}
 			count++;
 			refsCounter[prop] = count;
-			if((count > 1) && game.__EDITOR_mode) {
-				delete target[prop];
-			}
 			return true;
 		}
 	});
