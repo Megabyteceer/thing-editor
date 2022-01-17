@@ -810,6 +810,9 @@ function isLibNotInProject(libName) {
 
 function isLibInProject(libName) {
 	return (currentGameDesc.libs && (currentGameDesc.libs.findIndex((f) => {
+		if(f.startsWith('.')) {
+			f = path.join('games', currentGame, f).replace(/\\/mg, '/');
+		}
 		return f.startsWith(libName);	
 	}) >= 0)) || (libName === ('games/' + currentGame));
 }
