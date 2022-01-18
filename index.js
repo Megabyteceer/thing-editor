@@ -240,6 +240,7 @@ app.post('/fs/exec', jsonParser, function (req, res) {
 app.post('/fs/copyAssetToProject', rawParser, function (req, res) {
 	let from = mapFileUrl(req.query.filename);
 	let to = path.join(__dirname, '..', req.query.filename);
+	ensureDirectoryExistence(to);
 	attemptFSOperation(() => {
 		ignoreFileChanging(to);
 		fs.copyFileSync(from, to);
