@@ -557,15 +557,17 @@ const walkSync = (dir, fileList = []) => {
 const enumProjects = (ret = [], subDir = '') => {
 	let dir = path.join(__dirname, '..', gamesRoot, subDir);
 	fs.readdirSync(dir).forEach(file => {
-		let dirName = path.join(dir, file);
-		if(fs.statSync(dirName).isDirectory()) {
-			let projDescFile = dirName + '/thing-project.json';
-			if(fs.existsSync(projDescFile)) {
-				let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
-				desc.dir = subDir ? (subDir + '/' + file) : file;
-				ret.push(desc);
-			} else {
-				enumProjects(ret, subDir ? (subDir + '/' + file): file);
+		if(file !== '.git' && file !== 'node_modules') {
+			let dirName = path.join(dir, file);
+			if(fs.statSync(dirName).isDirectory()) {
+				let projDescFile = dirName + '/thing-project.json';
+				if(fs.existsSync(projDescFile)) {
+					let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
+					desc.dir = subDir ? (subDir + '/' + file) : file;
+					ret.push(desc);
+				} else {
+					enumProjects(ret, subDir ? (subDir + '/' + file): file);
+				}
 			}
 		}
 	});
@@ -574,8 +576,8 @@ const enumProjects = (ret = [], subDir = '') => {
 
 //============= enum libs ===========================
 const enumLibs = (ret = [], dir = '.') => {
-	if((dir.indexOf('node_modules') < 0) && (dir.indexOf('.git') < 0)) {
-		fs.readdirSync(dir).forEach(file => {
+	fs.readdirSync(dir).forEach(file => {
+		if(file !== '.git' && file !== 'node_modules') {
 			let dirName = path.join(dir, file);
 			if(fs.statSync(dirName).isDirectory()) {
 				let libDescFile = path.join(dirName, '/thing-lib.json');
@@ -587,8 +589,8 @@ const enumLibs = (ret = [], dir = '.') => {
 					enumLibs(ret, dirName);
 				}
 			}
-		});
-	}
+		}
+	});
 	return ret;
 };
 
