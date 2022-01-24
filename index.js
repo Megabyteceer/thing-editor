@@ -237,14 +237,22 @@ app.post('/fs/exec', jsonParser, function (req, res) {
 	}, currentGameDesc, currentGameRoot, wss);
 });
 
+app.post('/fs/copyAssetToProject', rawParser, function (req, res) {
+	let from = mapFileUrl(req.query.filename);
+	let to = path.join(__dirname, '..', req.query.filename);
+	ensureDirectoryExistence(to);
+	attemptFSOperation(() => {
+		ignoreFileChanging(to);
+		fs.copyFileSync(from, to);
+	}).then(() => {
+		res.end('{}');
+	}).catch(() => {
+		res.end(JSON.stringify({error: 'Can not copy file from "' + from + '" to "' + to + '"'}));
+	});
+});
+
 app.post('/fs/savefile', rawParser, function (req, res) {
-	
-	let fileName = req.query.filename;
-	if(!req.query.copyAssetToProject) {
-		fileName = mapFileUrl(req.query.filename);
-	} else {
-		fileName = path.join(__dirname, '..', req.query.filename);
-	}
+	let fileName = mapFileUrl(req.query.filename);
 	ensureDirectoryExistence(fileName);
 	attemptFSOperation(() => {
 		ignoreFileChanging(fileName);
@@ -549,15 +557,17 @@ const walkSync = (dir, fileList = []) => {
 const enumProjects = (ret = [], subDir = '') => {
 	let dir = path.join(__dirname, '..', gamesRoot, subDir);
 	fs.readdirSync(dir).forEach(file => {
-		let dirName = path.join(dir, file);
-		if(fs.statSync(dirName).isDirectory()) {
-			let projDescFile = dirName + '/thing-project.json';
-			if(fs.existsSync(projDescFile)) {
-				let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
-				desc.dir = subDir ? (subDir + '/' + file) : file;
-				ret.push(desc);
-			} else {
-				enumProjects(ret, subDir ? (subDir + '/' + file): file);
+		if(file !== '.git' && file !== 'node_modules') {
+			let dirName = path.join(dir, file);
+			if(fs.statSync(dirName).isDirectory()) {
+				let projDescFile = dirName + '/thing-project.json';
+				if(fs.existsSync(projDescFile)) {
+					let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
+					desc.dir = subDir ? (subDir + '/' + file) : file;
+					ret.push(desc);
+				} else {
+					enumProjects(ret, subDir ? (subDir + '/' + file): file);
+				}
 			}
 		}
 	});
@@ -566,8 +576,8 @@ const enumProjects = (ret = [], subDir = '') => {
 
 //============= enum libs ===========================
 const enumLibs = (ret = [], dir = '.') => {
-	if((dir.indexOf('node_modules') < 0) && (dir.indexOf('.git') < 0)) {
-		fs.readdirSync(dir).forEach(file => {
+	fs.readdirSync(dir).forEach(file => {
+		if(file !== '.git' && file !== 'node_modules') {
 			let dirName = path.join(dir, file);
 			if(fs.statSync(dirName).isDirectory()) {
 				let libDescFile = path.join(dirName, '/thing-lib.json');
@@ -579,8 +589,8 @@ const enumLibs = (ret = [], dir = '.') => {
 					enumLibs(ret, dirName);
 				}
 			}
-		});
-	}
+		}
+	});
 	return ret;
 };
 
@@ -803,6 +813,9 @@ function isLibNotInProject(libName) {
 
 function isLibInProject(libName) {
 	return (currentGameDesc.libs && (currentGameDesc.libs.findIndex((f) => {
+		if(f.startsWith('.')) {
+			f = path.join('games', currentGame, f).replace(/\\/mg, '/');
+		}
 		return f.startsWith(libName);	
 	}) >= 0)) || (libName === ('games/' + currentGame));
 }

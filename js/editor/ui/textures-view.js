@@ -169,7 +169,7 @@ class TexturesViewerBody extends React.Component {
 				ev.dataTransfer.setData("text/thing-editor-image-id", name);
 			}
 			}),
-			R.b(labelProps, name),
+			R.b(labelProps, item.visibleName || name),
 			R.br(),
 			size,
 			onDemandSwitcher,

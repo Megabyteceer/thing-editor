@@ -341,7 +341,7 @@ export default class Viewport extends React.Component {
 
 			panel = R.span(null,
 				R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
-				fileLibraryName ? R.libInfo(fileLibraryName).icon : undefined,
+				fileLibraryName ? R.libInfo(fileLibraryName, Lib.__prefabNameToFileName(this.state.prefabMode)).icon : undefined,
 				R.btn(R.icon('accept'), () => {PrefabsList.acceptPrefabEdition(true);}, 'Accept prefab changes (Enter)', 'main-btn', 13),
 				R.btn(R.icon('reject'), () => {
 					if(editor.isCurrentContainerModified) {

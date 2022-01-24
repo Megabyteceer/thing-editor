@@ -77,7 +77,7 @@ function tryToPatch(folder) {
 			patch.done = true;
 			let txt = fs.readFileSync(fn, 'utf8');
 			if(txt.indexOf(PATCH_BEGIN) > 0) {
-				return;
+				continue;
 			}
 
 			let find = patch.find;
