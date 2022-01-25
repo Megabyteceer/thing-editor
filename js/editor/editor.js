@@ -289,56 +289,157 @@ export default class Editor {
 		}
 	}
 
-	async exportAsPng(object, width = 0, height = 0) {
-		return new Promise((resolve) => {
-			if(object.width > 0 && object.height > 0) {
-				let tmpVisible = object.visible;
-				object.visible = true;
-				let oldParent = object.parent;
-				let oldIndex;
-				if(oldParent) {
-					oldIndex = oldParent.children.indexOf(object);
-				}
-				let f = object.filters;
-				let c = new PIXI.Container();
-				let c2 = new PIXI.Container();
-				c.addChild(object);
-				c2.addChild(c);
+	async exportAsPng(object, width = 0, height = 0, cropAlphaThreshold = 1) {
 
-				object.filters = [];
-				editor.ui.modal.showSpinner();
-				let b = c.getLocalBounds();
-				c.getLocalBounds = () => {
-					if(b.x < 0 ) {
-						b.x = Math.ceil(b.x);
-					} else {
-						b.x = Math.floor(b.x);
-					}
-					if(b.y < 0 ) {
-						b.y = Math.ceil(b.y);
-					} else {
-						b.y = Math.floor(b.y);
-					}
-					return b;
-				};
-				if(width > 0 && height > 0) {
-					let scale = Math.min(width / b.width, height / b.height);
-					object.scale.x = object.scale.y = scale;
-				}
-				game.pixiApp.renderer.plugins.extract.canvas(c2).toBlob(function(b){
-					object.visible = tmpVisible;
-					delete c.getLocalBounds;
-					object.filters = f;
-					if(oldParent) {
-						oldParent.addChildAt(object, oldIndex);
-					}else {
-						object.detachFromParent();
-					}
-					editor.ui.modal.hideSpinner();
-					resolve(b);
-				}, 'image/png');
+		if(object.width > 0 && object.height > 0) {
+			let tmpVisible = object.visible;
+			object.visible = true;
+			let oldParent = object.parent;
+			let oldIndex;
+			if(oldParent) {
+				oldIndex = oldParent.children.indexOf(object);
 			}
-		});
+			let f = object.filters;
+			let c = new PIXI.Container();
+			let c2 = new PIXI.Container();
+			c.addChild(object);
+			c2.addChild(c);
+
+			object.filters = [];
+			editor.ui.modal.showSpinner();
+
+			let b = c.getLocalBounds();
+
+			let canvas = game.pixiApp.renderer.plugins.extract.canvas(c);
+			let ctx = canvas.getContext('2d', {
+				alpha: true
+			});
+			let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+			let cropTop = 0;
+			while(cropTop < canvas.height) {
+				let isEmptyLine = true;
+				let y = cropTop * canvas.width * 4 + 3;
+				for(let x = 0; x < canvas.width; x++) {
+					if(imageData[x * 4 + y] >= cropAlphaThreshold) {
+						isEmptyLine = false;
+						break;
+					}
+				}
+				if(!isEmptyLine) {
+					break;
+				}
+				cropTop++;
+			}
+
+			let cropBottom = 0;
+			while(cropBottom < canvas.height) {
+				let isEmptyLine = true;
+				let y = (canvas.height - 1 - cropBottom) * canvas.width * 4 + 3 ;
+				for(let x = 0; x < canvas.width; x++) {
+					if(imageData[x * 4 + y] >= cropAlphaThreshold) {
+						isEmptyLine = false;
+						break;
+					}
+				}
+				if(!isEmptyLine) {
+					break;
+				}
+				cropBottom++;
+			}
+
+			let cropLeft = 0;
+			while(cropLeft < canvas.width) {
+				let isEmptyLine = true;
+				let x = cropLeft * 4 + 3;
+				for(let y = 0; y < canvas.height; y++) {
+					if(imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
+						isEmptyLine = false;
+						break;
+					}
+				}
+				if(!isEmptyLine) {
+					break;
+				}
+				cropLeft++;
+			}
+
+			let cropRight = 0;
+			while(cropRight < canvas.width) {
+				let isEmptyLine = true;
+				let x = (canvas.width - 1 - cropRight) * 4 + 3;
+				for(let y = 0; y < canvas.height; y++) {
+					if(imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
+						isEmptyLine = false;
+						break;
+					}
+				}
+				if(!isEmptyLine) {
+					break;
+				}
+				cropRight++;
+			}
+
+			b.y += cropTop;
+			b.height -= cropTop + cropBottom;
+			b.x += cropLeft;
+			b.width -= cropLeft + cropRight;
+
+			let b2 = c2.getLocalBounds();
+			c2.getLocalBounds = () => {
+				return b2;
+			};
+
+			if(width > 0 && height > 0) {
+				
+				b2.x = 0;
+				b2.y = 0;
+				b2.width = width;
+				b2.height = height;
+
+				let scale = Math.min(width / b.width, height / b.height);
+				b.y *= scale;
+				b.x *= scale;
+				b.width *= scale;
+				b.height *= scale;
+
+				c.scale.x = c.scale.y = scale;
+				c.x = -b.x + (width - b.width) / 2;
+				c.y = -b.y + (height - b.height) / 2;
+			} else {
+				b2.y += cropTop;
+				b2.height -= cropTop + cropBottom;
+				b2.x += cropLeft;
+				b2.width -= cropLeft + cropRight;
+				if(b2.x < 0 ) {
+					b2.x = Math.floor(b2.x);
+				} else {
+					b2.x = Math.ceil(b2.x);
+				}
+				if(b2.y < 0 ) {
+					b2.y = Math.floor(b2.y);
+				} else {
+					b2.y = Math.ceil(b2.y);
+				}
+			}
+
+			canvas = game.pixiApp.renderer.plugins.extract.canvas(c2);
+
+			let png = await new Promise((resolve) => {
+				canvas.toBlob(resolve, 'image/png');
+			});
+			object.visible = tmpVisible;
+			delete c.getLocalBounds;
+			delete c2.getLocalBounds;
+			object.filters = f;
+			if(oldParent) {
+				oldParent.addChildAt(object, oldIndex);
+			}else {
+				object.detachFromParent();
+			}
+			editor.ui.modal.hideSpinner();
+			return png;
+		}
 	}
 
 	copyToClipboard(text) {
