@@ -15,8 +15,6 @@ const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
 const PAUSE_ICON = R.icon('pause');
 
-const SCROLL_IN_TO_SCREEN_FIELD = 0;
-
 let prefabTitleProps = {className: 'prefabs-mode-title'};
 let prefabLabelProps = {
 	className: 'selectable-text',
@@ -186,29 +184,13 @@ export default class Viewport extends React.Component {
 	}
 
 	scrollInToScreen(node) {
-		let b = node.getBounds();
-		if(b.width === 0 && b.height === 0) {
-			node.getGlobalPosition(b);
-		}
-
-		let w = b.width / 4;
-		let h = b.height / 4;
-
-		b.x += w;
-		b.width -= w * 2;
-		b.y += h;
-		b.height -= h * 2;
-
-		if(b.right < SCROLL_IN_TO_SCREEN_FIELD) {
-			game.stage.x -= b.right - SCROLL_IN_TO_SCREEN_FIELD;
-		} else if(b.left > game.W - SCROLL_IN_TO_SCREEN_FIELD) {
-			game.stage.x -= b.left - (game.W - SCROLL_IN_TO_SCREEN_FIELD);
-		}
-
-		if(b.bottom < SCROLL_IN_TO_SCREEN_FIELD) {
-			game.stage.y -= b.bottom - SCROLL_IN_TO_SCREEN_FIELD;
-		} else if(b.top > game.H - SCROLL_IN_TO_SCREEN_FIELD) {
-			game.stage.y -= b.top - (game.H - SCROLL_IN_TO_SCREEN_FIELD);
+		let p = game.stage.parent.toLocal(node, node.parent);
+		let W = game.W;
+		let H = game.H;
+		if(p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
+			game.stage.toLocal(node, node.parent, p);
+			game.stage.x = game.W / 2 - p.x * game.stage.scale.x;
+			game.stage.y = game.H / 2 - p.y * game.stage.scale.y;
 		}
 	}
 	
