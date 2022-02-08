@@ -40,19 +40,42 @@ R.icon = (name) => {
 	return _iconsCache[name];
 };
 
-let libNum = 0;
+let libNumCounter = 0;
+let libNumbers = {};
 let _libInfoCache = {};
-R.libInfo = (libName) => {
-	if(!_libInfoCache.hasOwnProperty(libName)) {
-		_libInfoCache[libName] = {
+R.libInfo = (libName, fileName) => {
+	let cacheKey =  libName + '~' + fileName;
+	if(!libNumbers[libName]) {
+		libNumbers[libName] = libNumCounter;
+		libNumCounter++;
+	}
+	if(!_libInfoCache.hasOwnProperty(cacheKey)) {
+		_libInfoCache[cacheKey] = {
 			name: libName,
-			icon: R.span({onDoubleClick: (ev) => {
-				editor.fs.editFile(libName);
-				sp(ev);
-			}, title: "LIBRARY: " + libName, className: 'lib-icon'}, R.icon('lib' + (libNum++ % 5)))
+			icon: R.span({
+				onDoubleClick: (ev) => {
+					editor.fs.editFile(libName);
+					sp(ev);
+				},
+				onMouseDown: (fileName ? (ev) => {
+					if(ev.button === 2) {
+						editor.ui.modal.showEditorQuestion(
+							"Copy file?",
+							R.span(null, R.b(null, fileName),R.br(), R.br(), "FROM LIB (" + libName + ") => PROJECT"),
+							() => {
+								editor.fs.copyAssetToProject(fileName);
+							}
+						);
+						sp(ev);
+					}
+				} : undefined),
+				title: "LIBRARY: " + libName,
+				className: fileName ? 'lib-icon clickable' : 'lib-icon'},
+			R.icon('lib' + (libNumbers[libName] % 5))
+			)
 		};
 	}
-	return _libInfoCache[libName];
+	return _libInfoCache[cacheKey];
 };
 
 R.classIcon = (constructor) => {
@@ -209,9 +232,8 @@ let _getValStore = (o) => {
 
 window.shakeDomElement = function(e) {
 	e.classList.remove('shake');
-	setTimeout(() => {
-		e.classList.add('shake');
-	}, 1);
+	e.offsetWidth;
+	e.classList.add('shake');
 };
 
 window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(constructor, propertyName) {

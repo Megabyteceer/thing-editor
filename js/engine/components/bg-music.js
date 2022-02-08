@@ -57,6 +57,7 @@ export default class BgMusic extends Container {
 		}
 		BgMusic._recalculateMusic();
 		MusicFragment.onMusicRemove(this);
+		this.musicFragmentHash = undefined;
 		this._externalVolume = 0;
 		this._musInitialized = false;
 		this.customFade = null;
@@ -198,10 +199,7 @@ export default class BgMusic extends Container {
 
 	get ___currentPos() {
 		let f = MusicFragment.___currentPos(this.musicFragmentHash);
-		if(f) {
-			return f.___currentPos;
-		}
-		return 0;
+		return f || 0;
 	}
 	set ___currentPos(val) {
 		
@@ -209,6 +207,10 @@ export default class BgMusic extends Container {
 
 	__getVolume() {
 		return this.__currentFragment && this.__currentFragment.volume();
+	}
+
+	get __isLoopPos() {
+		return MusicFragment.__isLoopPosition(this.musicFragmentHash);
 	}
 
 	get __currentFragment() {

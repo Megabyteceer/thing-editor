@@ -6,6 +6,9 @@ const fs = require('fs');
 /*global process */
 
 function getLibRoot(libName) {
+	if(libName.startsWith('.')) {
+		return path.join(process.cwd(), libName);
+	}
 	return path.join(__dirname, '../..', libName);
 }
 

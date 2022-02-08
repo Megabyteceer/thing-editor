@@ -128,7 +128,7 @@ export default class SoundsList extends React.Component {
 											if(!sounds.hasOwnProperty(name)) {
 												sounds[name] = [];
 												if(fileInfo.lib) {
-													sounds[name].___libInfo = R.libInfo(fileInfo.lib);
+													sounds[name].___libInfo = R.libInfo(fileInfo.lib, wavFullName);
 												}
 											}
 											sounds[name].push(fileName);
@@ -319,9 +319,9 @@ class MusicProfiler extends React.Component {
 				);
 			}
 		}},
-		R.span((playing && !m.isLoopPos) ? activeSoundProps : null, m.intro),
+		R.span((playing && !m.__isLoopPos) ? activeSoundProps : null, m.intro),
 		' : ',
-		R.span((playing && m.isLoopPos) ? activeSoundProps : null, m.loop),
+		R.span((playing && m.__isLoopPos) ? activeSoundProps : null, m.loop),
 		state
 		);
 	}

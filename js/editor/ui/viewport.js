@@ -10,6 +10,7 @@ import SelectEditor from './props-editor/select-editor.js';
 import {_stopTests} from 'thing-editor/js/engine/utils/autotest-utils.js';
 import LanguageView from './language-view.js';
 import Pool from "../../engine/utils/pool.js";
+import fs from "../utils/fs.js";
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -314,8 +315,15 @@ export default class Viewport extends React.Component {
 		
 		if(this.state.prefabMode) {
 			className += ' editor-viewport-wrapper-prefab-mode';
+
+			let fileLibraryName = fs.getFileLibName(Lib.__prefabNameToFileName(this.state.prefabMode));
+			if(fileLibraryName) {
+				className += ' editor-viewport-wrapper-prefab-mode-lib';
+			}
+
 			panel = R.span(null,
 				R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
+				fileLibraryName ? R.libInfo(fileLibraryName, Lib.__prefabNameToFileName(this.state.prefabMode)).icon : undefined,
 				R.btn(R.icon('accept'), () => {PrefabsList.acceptPrefabEdition(true);}, 'Accept prefab changes (Enter)', 'main-btn', 13),
 				R.btn(R.icon('reject'), () => {
 					if(editor.isCurrentContainerModified) {

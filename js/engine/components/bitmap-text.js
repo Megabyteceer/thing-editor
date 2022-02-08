@@ -128,6 +128,14 @@ export default class BitmapText extends PIXI.BitmapText {
 	}
 
 	set "font.name" (v) {
+		/// #if EDITOR
+		let names = Object.keys(PIXI.BitmapFont.available);
+		if(!names.find((name) => name === v)) {
+			editor.ui.status.warn("It is no any bitmap font name '" + v + "' in '/img' subfolders.", 99999, this, "font.name");
+			return;
+		}
+		
+		/// #endif
 		this.fontName = v;
 		/// #if EDITOR
 		this.validate();

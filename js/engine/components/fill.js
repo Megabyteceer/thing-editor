@@ -181,6 +181,14 @@ export default class Fill extends PIXI.Mesh {
 			this.updateTransparency();
 		}
 	}
+
+	calculateVertices() {
+		if(this.meshResized) {
+			this.refreshSize();
+			this.meshResized = false;
+		}
+		super.calculateVertices();
+	}
 	
 	set transparentTop(v) {
 		if(this._transparentTop !== v) {

@@ -33,7 +33,11 @@ const callByPath = (callbackPath, this_) => {
 			/// #endif
 			c = c[n];
 		} else {
-			c = c.getChildByName(n.s);
+			c = c.getChildByName(n.s
+				/// #if EDITOR
+				, this_
+				/// #endif
+			);
 		}
 		
 		assert(c, "Can't find " + ((typeof n === 'string') ? "property '" + n : "child '#" + n.s) + "' in callback`s path: " + callbackPath, 10025);

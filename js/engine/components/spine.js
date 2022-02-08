@@ -3,13 +3,6 @@ import Lib from "../lib.js";
 import game from "../game.js";
 import getValueByPath from '../utils/get-value-by-path.js';
 
-/// #if EDITOR
-import "/node_modules/pixi-spine/dist/pixi-spine.js";
-/*
-/// #endif
-import "pixi-spine";
-//*/
-
 const poolMap = new Map();
 
 function pool(name) {
@@ -39,8 +32,11 @@ function getSpineInstance(name) {
 }
 function generateSpineData(skeletonData, spineName) {
 	const spineAtlas = createSpineTextureAtlas(skeletonData, spineName);
-	const spineAtlasLoader = new PIXI.spine.core.AtlasAttachmentLoader(spineAtlas);
-	const spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
+	const spineJsonParser = (new PIXI.spine.SpineParser()).createJsonParser();
+	/// #if EDITOR
+	return spineJsonParser.readSkeletonData(spineAtlas, skeletonData);
+	/// #endif
+	spineJsonParser.attachmentLoader = new PIXI.spine.AtlasAttachmentLoader(spineAtlas);
 	return spineJsonParser.readSkeletonData(skeletonData);
 }
 function createSpineTextureAtlas(skeletonData, spineName) {
@@ -59,12 +55,19 @@ function createSpineTextureAtlas(skeletonData, spineName) {
 	});
 
 
-	const textureAtlas = new PIXI.spine.core.TextureAtlas();
-
+	const textureAtlas = new PIXI.spine.TextureAtlas();
+	const basePath = spineName.substring(4, spineName.lastIndexOf('/')) + '/';
 	textureNamesSet.forEach(texturePath => {
-		const textureFileName = texturePath.substring(texturePath.lastIndexOf('/'));
-		const texture = Lib.getTextureEndingWith(texturePath + '.png') || Lib.getTextureEndingWith(texturePath + '.jpg') ||
-			Lib.getTextureEndingWith(textureFileName + '.png') || Lib.getTextureEndingWith(textureFileName + '.jpg');
+		let texture;
+		if (Lib.hasTexture(basePath + texturePath + '.png')) {
+			texture = Lib.getTexture(basePath + texturePath + '.png');
+		} else if (Lib.hasTexture(basePath + texturePath + '.jpg')) {
+			texture = Lib.getTexture(basePath + texturePath + '.jpg');
+		} else {
+			const textureFileName = texturePath.substring(texturePath.lastIndexOf('/'));
+			texture = Lib.getTextureEndingWith(texturePath + '.png') || Lib.getTextureEndingWith(texturePath + '.jpg') ||
+				Lib.getTextureEndingWith(textureFileName + '.png') || Lib.getTextureEndingWith(textureFileName + '.jpg');
+		}
 		assert(texture, `can't find texture (${texturePath}.png or ${texturePath}.jpg) for spine (${spineName})`);
 		textureAtlas.addTexture(texturePath, texture);
 	});

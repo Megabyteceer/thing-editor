@@ -1,28 +1,6 @@
-import Group from "../ui/group.js";
+let libsByFileName = {};
 
 let fs = {
-	chooseProject: (enforced) => {
-		editor.ui.viewport.stopExecution();
-		fs.getJSON('/fs/projects').then((data) => {
-			const projectOrder = (projDesc) => {
-				return editor.settings.getItem(projDesc.id + '_EDITOR_lastOpenTime', 0);
-			};
-			data.sort((a, b) => {
-				return projectOrder(b) - projectOrder(a);
-			});
-			editor.ui.modal.showModal(R.div({className:'project-open-chooser'}, Group.groupArray(data.map(renderProjectItem)).sort((a, b) => {
-				// sort projects groups
-				if(a.key < b.key) return -1;
-				if(a.key > b.key) return 1;
-				return 0;
-			})), R.span(null, R.icon('open'), 'Choose project to open:'), enforced)
-				.then((projDir) => {
-					if(projDir) {
-						editor.openProject(projDir);
-					}
-				});
-		});
-	},
 	refreshFiles: () => {
 		return fs.getJSON('/fs/enum').then((data) => {
 			fs.filesExt = {};
@@ -34,6 +12,7 @@ let fs = {
 				fs.libsSettings = {};
 			}
 
+			libsByFileName = {};
 			for(let type in data) {
 				let files = data[type];
 				files.sort((a,b) => {
@@ -42,6 +21,12 @@ let fs = {
 
 				fs.filesExt[type] = files;
 				fs.files[type] = files.map(f => f.name).sort();
+				
+				for(let f of files) {
+					if(f.lib) {
+						libsByFileName[f.name] = f.lib;
+					}
+				}
 			}
 		});
 	},
@@ -127,31 +112,34 @@ let fs = {
 	fileChangedExternally(fileName) {
 		externallyChangedFiles[fileName] = true;
 	},
-	async saveFile(fileName, data, silently = false, async = false) { 
+	saveFile(fileName, data, silently = false, async = false) {
 		if(externallyChangedFiles[fileName]) {
-			if(! await new Promise((resolve) => {
-				editor.ui.modal.showEditorQuestion(
-					"File overwrite",
-					R.span(null,
-						'File ', R.b(null,  fileName), ' is changed externally!',
-						R.br(),
-						'Are you sure you want to overwrite changes?'
-					),
-					() => {resolve(true);},
-					"Overwrite",
-					() => {resolve();}
-				);
-			})) {
-				return;
-			}
+			editor.ui.modal.notify('Externally modified file "' + fileName + '" was overridden.');
 		}
 		delete externallyChangedFiles[fileName];
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fieldsFilter, '	');
 		}
-		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(editor.game.resourcesPath + fileName), data, silently, async, true).then((data) => {
+
+		let libName = fs.getFileLibName(fileName);
+		if(libName) {
+			editor.ui.modal.notify('Library "' + libName + '" asset modified.');
+		}
+
+		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName)), data, silently, async, true).then((data) => {
 			if(data.error) {
 				editor.ui.modal.showError(data.error);	
+			}
+		});
+	},
+	copyAssetToProject(fileName) {
+		return fs.postJSON('/fs/copyAssetToProject?filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName))).then((data) => {
+			if(data.error) {
+				editor.ui.modal.showError(data.error);	
+			} else {
+				fs.refreshFiles().then(() => {
+					editor.ui.forceUpdate();
+				});
 			}
 		});
 	},
@@ -160,6 +148,9 @@ let fs = {
 		if(wrongSymbolPos >= 0) {
 			return fileName[wrongSymbolPos];
 		}
+	},
+	getFileLibName(fileName) {
+		return libsByFileName[fileName];
 	}
 };
 
@@ -174,28 +165,6 @@ fs.fieldsFilter = fieldsFilter;
 const filesEditTimes = {};
 
 export default fs;
-
-function getIconPath(desc) {
-	return '/games/' + desc.dir + '/' + desc.icon;
-}
-
-function renderProjectItem(desc, i) {
-	let icon;
-	if (desc.icon) {
-		icon = R.img({src: getIconPath(desc)});
-	}
-	let key = desc.__group ? desc.__group + '/' + i : i;
-	let isProjectWrong;
-	let wrongSymbol = fs.hasWrongSymbol(desc.dir);
-	if(wrongSymbol) {
-		isProjectWrong = 'Project is blocked because of wrong symbol "' + wrongSymbol + '" in its folder name.';
-	}
-	return R.div({
-		className: isProjectWrong ? 'project-item-select unclickable' : 'project-item-select clickable', key, onClick: () => {
-			editor.ui.modal.hideModal(desc.dir);
-		}
-	}, icon, desc.title, isProjectWrong ? R.span({className: 'danger small-text'}, ' (' + isProjectWrong + ')') : undefined);
-}
 
 const externallyChangedFiles = {};
 

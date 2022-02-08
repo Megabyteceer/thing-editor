@@ -47,6 +47,7 @@ const fieldsFilter = (key, value) => {
 
 export default class Build {
 	static async build(debug) {
+
 		prefixToCutOff = (debug ? '___' : '__');
 		let scenes = filterObjectsData(Lib._getAllScenes());
 		let prefabs = filterObjectsData(Lib._getAllPrefabs());
@@ -125,8 +126,9 @@ let classes = {};`];
 				if(path.startsWith('/')) {
 					path = path.substr(1);
 				}
-				path = path.replace('games/' + editor.currentProjectDir, '');
-
+				if(path.startsWith('games/')) {
+					path = editor.currentProjectDir.split('/').map(() => {return '..';}).join('/') + '/../' + path;
+				}
 				let isReferred = findRef(c.c);
 				if(isReferred) { //only referenced classes
 					src.push('import ' + name + ' from "' + path + '";');

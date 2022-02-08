@@ -134,8 +134,8 @@ export default class Sound {
 	}
 
 	static init() {
-		soundsVol = game.settings.getItem('soundsVol', game.projectDesc.defaultSoundsVol, 1);
-		musicVol = game.settings.getItem('musicVol', game.projectDesc.defaultMusVol, 0.7);
+		soundsVol = game.settings.getItem('soundsVol', game.projectDesc.defaultSoundsVol);
+		musicVol = game.settings.getItem('musicVol', game.projectDesc.defaultMusVol);
 	}
 
 	/// #if EDITOR
@@ -242,7 +242,7 @@ export default class Sound {
 		const blockedHanlder = () => soundLockHandler(true);
 		const unblockedHanlder = () => soundLockHandler(false);
 		EMPTY_SOUND.once('playerror', blockedHanlder);
-		EMPTY_SOUND.once('play', unblockedHanlder);
+		EMPTY_SOUND.once('end', unblockedHanlder);
 		soundLockTimeoutId = setTimeout(blockedHanlder, 500);
 		try {
 			EMPTY_SOUND.play();

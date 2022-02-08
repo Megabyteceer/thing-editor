@@ -3,7 +3,6 @@
 import './utils/utils.js';
 import Settings from './utils/settings.js';
 import Lib from './lib.js';
-import DisplayObject from './components/display-object.js';
 import Container from './components/container.js';
 /// #if EDITOR
 import PrefabsList from 'thing-editor/js/editor/ui/prefabs-list.js';
@@ -482,7 +481,11 @@ class Game {
 
 		assets = window._thingEngineAssets; /*eslint-disable-line no-unreachable */
 		this.applyProjectDesc(assets.projectDesc);
-		this._initInner();
+		if (PIXI.utils.isWebGLSupported()) {
+			this._initInner();
+		} else {
+			import('pixi.js-legacy').then(() => this._initInner());
+		}
 		return ret;
 	}
 
@@ -615,9 +618,6 @@ class Game {
 		/*
 	/// #endif
 	_initInner() {
-		if(assets.sounds && Object.keys(assets.sounds).length) {
-			Sound.checkSoundLockByBrowser();
-		}
 		//*/
 		game.additionalLoadingsInProgress++;
 
@@ -763,6 +763,13 @@ class Game {
 		});
 		loader.load();
 		preloader.start(() => {
+			/// #if EDITOR
+			/*
+			/// #endif
+			if(assets.sounds && Object.keys(assets.sounds).length) {
+				Sound.checkSoundLockByBrowser();
+			}
+			//*/
 			assets.images.some((tName) => {
 				let texture = PIXI.utils.TextureCache[textureNameToPath(tName)];
 				if(texture) {
@@ -1110,7 +1117,7 @@ class Game {
 	 * @param {boolean} easyClose
 	 * @param {string} prefab
 	 * 
-	 * @return {DisplayObject}
+	 * @return {Container}
 	 */
 	showQuestion(title, message, yesLabel=null, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/sure-question') {
 		let o = Lib.loadPrefab(prefab);
@@ -1119,10 +1126,10 @@ class Game {
 	}
 
 	/**
-	 * @param {DisplayObject|string} displayObject - display object or prefab's name
+	 * @param {Container|string} displayObject - display object or prefab's name
 	 * @param {Function} [callback]
 	 * 
-	 * @return {DisplayObject}
+	 * @return {Container}
 	 */
 	showModal(displayObject, callback) {
 		/// #if EDITOR
@@ -1134,7 +1141,7 @@ class Game {
 		if (typeof displayObject === "string") {
 			displayObject = Lib.loadPrefab(displayObject);
 		}
-		assert(displayObject instanceof DisplayObject, "Attempt to show not DisplayObject as modal");
+		assert(displayObject instanceof Container, "Attempt to show not DisplayObject as modal");
 		assert(!(displayObject instanceof Scene), 'Scene can not be used as modal', 10037);
 		modals.push(displayObject);
 		displayObject._onModalHide = callback;
@@ -1147,7 +1154,7 @@ class Game {
 		return displayObject;
 	}
 	/**
-	 * @param {DisplayObject|null} displayObject - display object to hide or null to hide top level modal
+	 * @param {Container|null} displayObject - display object to hide or null to hide top level modal
 	 * @param {boolean} instantly
 	 */
 	hideModal(displayObject = null, instantly = false) {

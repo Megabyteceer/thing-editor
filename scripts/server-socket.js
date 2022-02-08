@@ -74,5 +74,8 @@ module.exports = {
 	},
 	call: function(callPath) {
 		send({call: callPath});
+	},
+	sameFiles: function(sameFiles) {
+		send({sameFiles});
 	}
 };

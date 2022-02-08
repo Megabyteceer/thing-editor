@@ -44,7 +44,7 @@ module.exports = async function (projectPath, options) {
 	
 	let files = walkSync(soundsPath);
 	for (let fn of files) {
-		if (fn.endsWith('.wav')) {
+		if (fn.endsWith('.wav') && (fn.indexOf('/~') < 0) && (fn.indexOf('\\~') < 0)) {
 			let s = fs.statSync(fn);
 
 			let shortName = fn.replace(/\\/g, '/');

@@ -221,6 +221,12 @@ export default class MusicFragment {
 
 
 	/// #if EDITOR
+
+	static __isLoopPosition(musicFragmentHash) {
+		let f = allActiveFragments[musicFragmentHash];
+		return f && f.isLoopPos;
+	}
+
 	static ___currentPos(musicFragmentHash) {
 		let f = MusicFragment.__getFragment(musicFragmentHash);
 		return f ? f.seek() : 0;
