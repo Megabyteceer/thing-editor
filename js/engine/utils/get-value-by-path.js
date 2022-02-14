@@ -83,7 +83,14 @@ const getValueByPath = (valuePath, this_
 
 const setValueByPath = (valuePath, val, this_) => {
 	assert(this_, "'this' object is not provided in to 'setValueByPath'", 10030);
-	assert(valuePath, "Empty setValueByPath string.", 10031);
+	/// #if EDITOR
+	if(!game.__EDITOR_mode) {
+	/// #endif
+		assert(valuePath, "Empty setValueByPath string.", 10031);
+	/// #if EDITOR
+	}
+	/// #endif
+
 	let path = stringToCallData(valuePath).p;
 	let c;
 	let rootName = path[0];

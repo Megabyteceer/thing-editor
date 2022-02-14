@@ -1282,6 +1282,14 @@ loadPrefab(prefabName:string) {
 					return p.name;
 				}
 			}
+			let pathEntry1 = '`' + fieldValue + ',';
+			let pathEntry2 = ',' + fieldValue;
+			for(let p of editor.enumObjectsProperties(node)) {
+				var val = node[p.name];
+				if((typeof val === 'string') && ((val.indexOf(pathEntry1) >= 0) || (val.indexOf(pathEntry2) >= 0))) {
+					return p.name;
+				}
+			}
 		}
 	}
 

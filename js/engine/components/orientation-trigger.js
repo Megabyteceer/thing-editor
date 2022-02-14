@@ -70,7 +70,7 @@ export default class OrientationTrigger extends Container {
 		/// #endif
 		if(handler
 			/// #if EDITOR
-			&& (!game.__EDITOR_mode || handler.startsWith('setValueByPath`') || this.__callInEditorMode)
+			&& (!game.__EDITOR_mode || isHandlerIsSetValueByPath(handler) || this.__callInEditorMode)
 		/// #endif
 		) {
 			callByPath(handler, this);
@@ -96,7 +96,7 @@ export default class OrientationTrigger extends Container {
 	/// #if EDITOR
 
 	__callIfValueByPathSetter(path) {
-		if(path && path.startsWith('setValueByPath`')) {
+		if(path && isHandlerIsSetValueByPath(path)) {
 			try {
 				callByPath(path, this);
 			} catch(er) {
@@ -335,6 +335,14 @@ export default class OrientationTrigger extends Container {
 
 
 /// #if EDITOR
+
+function isHandlerIsSetValueByPath(handler) {
+	if(handler.startsWith('setValueByPath`')) {
+		let params = handler.split('`')[1].split(',');
+		return params[0] && params[1];
+	}
+}
+
 OrientationTrigger.__EDITOR_group = 'Mobile';
 OrientationTrigger.__EDITOR_icon = 'tree/orientation-trigger';
 OrientationTrigger.__EDITOR_tip = `<b>OrientationTrigger</b> - is component which smoothly or instantly <b>switches</b> it's <b>visibility</b> or/and <b>position</b> and <b>scale</b> accordingly of <b>game.isPortrait</b> variable.
