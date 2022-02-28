@@ -1048,6 +1048,7 @@ button {
 
 .timeline-label:hover {
 	z-index: 1;
+	text-decoration: underline;
 }
 
 .timeline-label-pointer {
