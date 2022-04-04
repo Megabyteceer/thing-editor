@@ -87,6 +87,15 @@ function disposeSpineInstance(o) {
 
 export default class Spine extends Container {
 
+	/// #if EDITOR
+	init() {
+		super.init();
+		if(!this.spineData) {
+			editor.ui.status.error('No spineData set for Spine component.', 99999, this, 'spineData');
+		}
+	}
+	/// #endif
+
 	_initSpine() {
 		assert(!this.spineContent, "spine content was not disposed released properly.");
 		if(this.spineData) {
