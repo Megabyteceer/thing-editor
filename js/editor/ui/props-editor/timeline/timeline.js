@@ -778,37 +778,41 @@ export default class Timeline extends React.Component {
 	static onAutoSelect(selectPath) {
 		for(let o of editor.selection) {
 			if(o._timelineData) {
-				if(!selectPath[1]) { //label
-					getTimelineWindow('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView) => {
-						window.shakeDomElement(labelView);
-					});
-					return;
-				} else  {
-					for(let f of o._timelineData.f) {
-						if(f.n === selectPath[1]) {
-							let time = parseInt(selectPath[2]);
-							for(let kf of f.t) {
-								if(kf.t == time) {
-									if(!kf.___view.state || ! kf.___view.state.isSelected) {
-										select(kf.___view);
-										let kfNode = ReactDOM.findDOMNode(kf.___view);
-										if(kfNode) {
-											kfNode.scrollIntoView({block: "center", inline: "center"});
-											window.shakeDomElement(kfNode);
+				if(selectPath[2]) { // select label or keyframe.
+					if(!selectPath[1]) { //label
+						getTimelineWindow('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView) => {
+							window.shakeDomElement(labelView);
+						});
+						return;
+					} else  {
+						for(let f of o._timelineData.f) {
+							if(f.n === selectPath[1]) {
+								let time = parseInt(selectPath[2]);
+								for(let kf of f.t) {
+									if(kf.t == time) {
+										if(!kf.___view.state || ! kf.___view.state.isSelected) {
+											select(kf.___view);
+											let kfNode = ReactDOM.findDOMNode(kf.___view);
+											if(kfNode) {
+												kfNode.scrollIntoView({block: "center", inline: "center"});
+												window.shakeDomElement(kfNode);
+											}
+											timelineInstance.forceUpdateDebounced();
 										}
-										timelineInstance.forceUpdateDebounced();
+
+										getTimelineWindow('.bottom-panel').then((w) => {
+											let actionEditField = w.querySelector('.props-editor-callback');
+											window.shakeDomElement(actionEditField);
+										});
+
+										return;
 									}
-
-									getTimelineWindow('.bottom-panel').then((w) => {
-										let actionEditField = w.querySelector('.props-editor-callback');
-										window.shakeDomElement(actionEditField);
-									});
-
-									return;
 								}
 							}
 						}
 					}
+				} else { //select timeline property. Shake whole timeline window.
+					window.shakeDomElement(window.document.querySelector('#window-timeline'));
 				}
 			}
 		}
@@ -847,12 +851,7 @@ function getFieldByNameOrCreate(o, name) {
 	let field = getFieldByName(o, name);
 	if (!field) {
 		if (!o._timelineData) {
-			o._timelineData = {
-				d: 0.85,
-				p: 0.02,
-				l: {},
-				f: []
-			};
+			o.__initTimeline();
 		}
 		field = {
 			n: name,
