@@ -484,9 +484,7 @@ function onModified() {
 
 			let fileName;
 			if(currentLibName.endsWith('.json')) {
-				fileName = editor.projectDesc.__externalTranslations && editor.projectDesc.__externalTranslations.indexOf(currentLibName) >= 0
-					? '../..' + currentLibName
-					: currentLibName;
+				fileName = currentLibName;
 			} else if (currentLibName === 'project-locales'){
 				fileName = 'i18n/' + '' + id + '.json';
 			} else {
