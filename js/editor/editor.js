@@ -1013,7 +1013,7 @@ declare global {
 export default class TLib {
 `
 + declarations.join('\n') + `
-loadPrefab(prefabName:string) {
+loadPrefab(prefabName:string):Container {
 	return null;
 }
 }`;
