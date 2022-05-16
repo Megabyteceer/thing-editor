@@ -1238,7 +1238,7 @@ class Game {
 		
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
 			/// #if EDITOR
-			dt = 1;
+			dt = Math.min(dt, 1);
 			/// #endif
 
 			frameCounterTime += dt;
