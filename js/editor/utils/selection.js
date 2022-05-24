@@ -150,7 +150,8 @@ let getPathOfNode = (node) => {
 		if(node.name && node.parent.children.filter((c)=>{return c.name === node.name;}).length === 1) {
 			ret.push(node.name);
 		} else {
-			ret.push(node.parent.getChildIndex(node));
+			let children = node.parent.children.filter(c => !__getNodeExtendData(c).hidden);
+			ret.push(children.indexOf(node));
 		}
 		node = node.parent;
 	}
@@ -162,8 +163,9 @@ let selectNodeByPath = (path) => {
 	for (let i = path.length - 1; i >= 0 && ret; i--) {
 		let p = path[i];
 		if(typeof p === 'number') {
-			if(p < ret.children.length) {
-				ret = ret.getChildAt(p);
+			let children = ret.children.filter(c => !__getNodeExtendData(c).hidden);
+			if(p < children.length) {
+				ret = children[p];
 			} else {
 				return;
 			}
