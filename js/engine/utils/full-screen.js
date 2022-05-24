@@ -17,6 +17,9 @@ export default class FullScreen {
 
 	static _openInner() {
 		try {
+			/// #if EDITOR
+			elem = document.querySelector('#viewport-root');
+			/// #endif
 			if (elem.requestFullscreen) {
 				elem.requestFullscreen();
 			} else if (elem.mozRequestFullScreen) {
