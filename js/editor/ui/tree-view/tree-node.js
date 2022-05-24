@@ -1,4 +1,5 @@
 import game from "thing-editor/js/engine/game.js";
+import Overlay from "../../utils/overlay.js";
 
 let caretClosed = R.span({className: 'tree-caret'}, '▸');
 let caretOpened = R.span({className: 'tree-caret'}, '▾');
@@ -38,8 +39,11 @@ class TreeNode extends React.Component {
 			let to = Math.max(i1, i2);
 			while(from <= to) {
 				let n = p.getChildAt(from);
-				if(n !== lastClickedItem.props.node) {
-					editor.selection.select(n, true);
+				let hidingParent = Overlay.getParentWhichHideChildren(n, true);
+				if(!hidingParent || (hidingParent === n)) {
+					if(n !== lastClickedItem.props.node) {
+						editor.selection.select(n, true);
+					}
 				}
 				from++;
 			}
