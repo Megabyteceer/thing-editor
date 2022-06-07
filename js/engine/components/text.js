@@ -256,26 +256,7 @@ Object.defineProperties(Text.prototype, {
 		},
 		set: function (val) {
 			this._maxWidth = val;
-			if(this._maxWidth !== 0) {
-				if(this._texture.width > this._maxWidth) {
-					var q = this._maxWidth / this._texture.width;
-					if(this.scale.x !== q || this.scale.y !== q) {
-						this.scale.x = q;
-						this.scale.y = q;
-						if(this.parent) {
-							this.updateTransform();
-						}
-					}
-				} else {
-					if(this.scale.x !== 1 || this.scale.y !== 1) {
-						this.scale.x = 1;
-						this.scale.y = 1;
-						if(this.parent) {
-							this.updateTransform();
-						}
-					}
-				}
-			}
+			this.recalculateTextSize();
 		}, configurable: true
 	}
 });
@@ -344,6 +325,29 @@ Text.prototype.onLanguageChanged = function onLanguageChanged() {
 
 Text.prototype._refreshAnchor = function() {
 	this.anchor.set(alignValues[this.style.align], alignValues[this._verticalAlign]);
+};
+
+Text.prototype.recalculateTextSize = function() {
+	if(this._maxWidth !== 0) {
+		if(this._texture.width > this._maxWidth) {
+			var q = this._maxWidth / this._texture.width;
+			if(this.scale.x !== q || this.scale.y !== q) {
+				this.scale.x = q;
+				this.scale.y = q;
+				if(this.parent) {
+					this.updateTransform();
+				}
+			}
+		} else {
+			if(this.scale.x !== 1 || this.scale.y !== 1) {
+				this.scale.x = 1;
+				this.scale.y = 1;
+				if(this.parent) {
+					this.updateTransform();
+				}
+			}
+		}
+	}
 };
 
 /// #if EDITOR
