@@ -564,6 +564,7 @@ class LibClass
 	/**
 	 * @protected
 	 */
+	/// #if EDITOR
 	__clearAssetsLists() {
 		textures = {};
 		Lib.resources = {};
@@ -571,6 +572,7 @@ class LibClass
 		__allTextures = {};
 		Lib.__resourcesList = [];
 	}
+	/// #endif
 	
 	_loadClassInstanceById(id) {
 		let ret = Pool.create(classes[id]);
