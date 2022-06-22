@@ -5,7 +5,12 @@ function getIconPath(desc) {
 	return '/games/' + desc.dir + '/' + desc.icon;
 }
 
+let topItem;
+
 function renderProjectItem(desc) {
+	if(!topItem) {
+		topItem =  desc;
+	}
 	let icon;
 	if (desc.icon) {
 		icon = R.img({src: getIconPath(desc)});
@@ -53,6 +58,11 @@ export default class ProjectsList extends React.Component {
 		this.state = {filter};
 		this.searchInputProps = {
 			className: 'projects-search-input',
+			onKeyDown: (e) => {
+				if(e.key === 'Enter') {
+					editor.ui.modal.hideModal(topItem.dir);
+				}
+			},
 			onChange: this.onSearchChange.bind(this),
 			placeholder: 'Search',
 			defaultValue: filter,
@@ -67,6 +77,7 @@ export default class ProjectsList extends React.Component {
 	}
 
 	render() {
+		topItem = null;
 		let f = this.state.filter.toLowerCase();
 		let items = this.props.data;
 		if(f) {
