@@ -122,7 +122,7 @@ export default class Spine extends Container {
 		this._setImmediately = setImmediately;
 
 		/// #if EDITOR
-		if(game.__EDITOR_mode) {
+		if(game.__EDITOR_mode && !this.__isDeserialization) {
 			
 			if(this.spineContent) {
 				if(!this._currentAnimation) {
@@ -197,9 +197,15 @@ export default class Spine extends Container {
 			this.spineContent.update(this.__previewFrame);
 		}
 	}
+	
+	__beforeDeserialization() {
+		this.__isDeserialization = true;
+	}
 
 	__afterDeserialization() {
 		this.tint = this.tint; // eslint-disable-line no-self-assign
+		this.__isDeserialization = false;
+		this._refreshAnimation();
 	}
 
 	/// #endif
