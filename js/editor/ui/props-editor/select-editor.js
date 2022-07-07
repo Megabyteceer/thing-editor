@@ -165,7 +165,7 @@ class SelectEditor extends React.Component {
 				className: 'select-editor-filter',
 				placeholder: 'Filter',
 				onChange: this.onFilterChange,
-				value: this.state.filter,
+				defaultValue: this.state.filter,
 				style: this.props.field ? undefined : {width: 0, margin: 0, position:'fixed', padding: 0, height: 0}
 			});
 
