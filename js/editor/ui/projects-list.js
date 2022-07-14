@@ -59,7 +59,7 @@ export default class ProjectsList extends React.Component {
 		this.searchInputProps = {
 			className: 'projects-search-input',
 			onKeyDown: (e) => {
-				if(e.key === 'Enter') {
+				if(e.key === 'Enter' && topItem) {
 					editor.ui.modal.hideModal(topItem.dir);
 				}
 			},
