@@ -66,7 +66,10 @@ export default class ProjectsList extends React.Component {
 			onChange: this.onSearchChange.bind(this),
 			placeholder: 'Search',
 			defaultValue: filter,
-			autoFocus: true
+			autoFocus: true,
+			onFocus: (event) => {
+				event.target.select();
+			}
 		};
 	}
 
