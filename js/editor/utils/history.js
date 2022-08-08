@@ -186,6 +186,7 @@ class History {
 	
 	undo() {
 		if (this.isUndoAvailable()) {
+			editor.overlay.exitIsolation();
 			if(this.currentState.fieldName) {
 				editor.ui.propsEditor.selectField(this.currentState.fieldName);
 			}
