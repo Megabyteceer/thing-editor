@@ -1,3 +1,8 @@
+import Lib from "../../engine/lib.js";
+import PrefabsList from "../ui/prefabs-list.js";
+import ScenesList from "../ui/scenes-list.js";
+import AssetsLoader from "./assets-loader.js";
+
 let libsByFileName = {};
 
 let fs = {
@@ -138,7 +143,23 @@ let fs = {
 				editor.ui.modal.showError(data.error);	
 			} else {
 				fs.refreshFiles().then(() => {
-					editor.ui.forceUpdate();
+					if(fileName.startsWith('prefabs/')) {
+						PrefabsList.readAllPrefabsList().then(() => {
+							editor.ui.forceUpdate();
+						});
+					} else if(fileName.startsWith('snd/')) {
+						editor.ui.soundsList.reloadSounds(undefined, true).then(() => {
+							editor.ui.forceUpdate();
+						});
+					} else if(fileName.startsWith('img/')) {
+						AssetsLoader.reloadAssets(true).then(() => {
+							editor.ui.forceUpdate();
+						});
+					} else if(fileName.startsWith('scenes/')) {
+						ScenesList.readAllScenesList().then(() => {
+							editor.ui.forceUpdate();
+						});
+					} 
 				});
 			}
 		});

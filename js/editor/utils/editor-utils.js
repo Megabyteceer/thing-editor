@@ -49,6 +49,12 @@ R.libInfo = (libName, fileName) => {
 		libNumbers[libName] = libNumCounter;
 		libNumCounter++;
 	}
+	let title = "LIBRARY: " + libName;
+	
+	if(fileName) {
+		title += '\n(right-click on lib icon to copy asset to the project)';
+	}
+				
 	if(!_libInfoCache.hasOwnProperty(cacheKey)) {
 		_libInfoCache[cacheKey] = {
 			name: libName,
@@ -69,7 +75,7 @@ R.libInfo = (libName, fileName) => {
 						sp(ev);
 					}
 				} : undefined),
-				title: "LIBRARY: " + libName,
+				title,
 				className: fileName ? 'lib-icon clickable' : 'lib-icon'},
 			R.icon('lib' + (libNumbers[libName] % 5))
 			)
