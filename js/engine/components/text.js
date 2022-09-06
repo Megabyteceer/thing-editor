@@ -255,8 +255,10 @@ Object.defineProperties(Text.prototype, {
 			return this._maxWidth;
 		},
 		set: function (val) {
-			this._maxWidth = val;
-			this.recalculateTextSize();
+			if(this._maxWidth !== val) {
+				this._maxWidth = val;
+				this.recalculateTextSize();
+			}
 		}, configurable: true
 	}
 });
@@ -284,7 +286,7 @@ let _original_onTextureUpdate = Text.prototype._onTextureUpdate;
 Text.prototype._onTextureUpdate = function _onTextureUpdate() { // centred text with odd width is blurred bug fix
 	this.checkAlignBlur();
 	_original_onTextureUpdate.call(this);
-	this.maxWidth = this._maxWidth || 0; // recalculate max width
+	this.recalculateTextSize();
 };
 
 Text.prototype.onRemove = function() {
