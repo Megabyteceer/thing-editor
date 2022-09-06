@@ -1349,6 +1349,10 @@ function callInitIfGameRuns(node) {
 }
 
 let __saveProjectDescriptorInner = (cleanOnly = false) => {
+	if(editor.buildProjectAndExit) {
+		return;
+	}
+	
 	let isCleanedUp = false;
 
 	//cleanup settings for deleted sounds
