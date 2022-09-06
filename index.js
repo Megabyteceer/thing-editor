@@ -681,6 +681,10 @@ function initWatchers() {
 				if(filesIgnore[path.resolve(fullFileName)]) {
 					return;
 				}
+
+				if(filename.startsWith('~') || (filename.indexOf('/~') >= 0) || (filename.indexOf('\\~') >= 0)) {
+					return;
+				}
 				
 				if(eventType === 'change' || eventType === 'rename') {
 					setTimeout(() => {
