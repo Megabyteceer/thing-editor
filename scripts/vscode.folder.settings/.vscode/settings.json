@@ -4,6 +4,9 @@
 		"**/.svn": true,
 		"**/.hg": true,
 		"**/CVS": true,
+		"**/assets.js": true,
+		"**/classes.js": true,
+		"**/bundle.js": true,
 		"**/.DS_Store": true
 	}
 }
