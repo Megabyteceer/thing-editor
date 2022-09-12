@@ -90,6 +90,7 @@ DisplayObject.prototype.removeFilter = function removeFilter(f) {
 export default DisplayObject;
 
 Object.defineProperties(DisplayObject.prototype, {
+	/// #if DEBUG
 	'___info': {
 		get: function () {
 			let ret = getObjectName(this);
@@ -100,7 +101,9 @@ Object.defineProperties(DisplayObject.prototype, {
 			}
 			return ret;
 		}
-	},'scale.x': {
+	},
+	/// #endif
+	'scale.x': {
 		get: function () {
 			return this.transform.scale.x;
 		},
@@ -237,6 +240,30 @@ __EDITOR_editableProps(DisplayObject, [
 		type: 'splitter',
 		title: 'Helpers:',
 		name: 'helpers'
+	},
+	{
+		type: 'btn',
+		name: 'Align X ↔',
+		onClick: () => { ///99999
+			let firstObject = editor.selection[0];
+			let p = firstObject.getRootContainer().toLocal(firstObject, firstObject.parent);
+			for(let i = 1; i < editor.selection.length; i++) {
+				let o = editor.selection[i];
+				editor.onObjectsPropertyChanged(o, 'x', o.parent.toLocal(p, firstObject.getRootContainer()).x);
+			}
+		}
+	},
+	{
+		type: 'btn',
+		name: 'Align Y ↕',
+		onClick: () => { ///99999
+			let firstObject = editor.selection[0];
+			let p = firstObject.getRootContainer().toLocal(firstObject, firstObject.parent);
+			for(let i = 1; i < editor.selection.length; i++) {
+				let o = editor.selection[i];
+				editor.onObjectsPropertyChanged(o, 'y', o.parent.toLocal(p, firstObject.getRootContainer()).y);
+			}
+		}
 	},
 	{
 		name: '__lockSelection',
