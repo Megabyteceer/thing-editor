@@ -29,6 +29,7 @@ function showTextTable() {
 			switcher.onToggleClick();
 			setTimeout(resolve, 1);
 		} else {
+			Window.bringWindowForward('#window-texteditor', true);
 			resolve();
 		}
 	});
