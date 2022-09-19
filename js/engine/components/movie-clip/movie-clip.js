@@ -401,6 +401,10 @@ export default class MovieClip extends DSprite {
 
 	__afterDeserialization() {
 		if(game.__EDITOR_mode) {
+			if((this.constructor !== MovieClip) && (!this._timelineData)) {
+				this.__initTimeline();
+				Lib.__invalidateSerializationCache(this);
+			}
 			this.resetTimeline();
 		}
 	}
