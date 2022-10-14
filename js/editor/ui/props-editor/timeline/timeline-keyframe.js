@@ -109,7 +109,12 @@ export default class TimelineKeyframe extends React.Component {
 	
 	onKeyframeMouseDown(ev) {
 		if(ev.buttons === 2) {
-			this.deleteKeyframe();
+			if(this.props.keyFrame.hasOwnProperty('a')) { /// 99999
+				delete this.props.keyFrame.a;
+				this.onChanged();
+			} else {
+				this.deleteKeyframe();
+			}
 			sp(ev);
 		} else {
 			this.onDraggableMouseDown(ev);
