@@ -20,17 +20,15 @@ export default class FullScreen {
 			/// #if EDITOR
 			elem = document.querySelector('#viewport-root');
 			/// #endif
-			if (elem.requestFullscreen) {
-				elem.requestFullscreen();
-			} else if (elem.mozRequestFullScreen) {
-				elem.mozRequestFullScreen();
-			} else if (elem.webkitRequestFullscreen) {
-				elem.webkitRequestFullscreen();
-			} else if (elem.msRequestFullscreen) {
-				elem.msRequestFullscreen();
+			let f = elem.requestFullscreen || elem.mozRequestFullScreen || elem.webkitRequestFullscreen || elem.msRequestFullscreen;
+			if(f) {
+				f.call(elem).then(() => {
+					if(game.projectDesc.screenOrientation === 'portrait' || game.projectDesc.screenOrientation === 'landscape') {
+						screen.orientation.lock(game.projectDesc.screenOrientation).catch(() => {});
+					}
+				});
 			}
 			game._fireNextOnResizeImmediately();
-		
 		} catch(err) {} // eslint-disable-line no-empty
 	}
 
