@@ -112,6 +112,7 @@ export default class TimelineKeyframe extends React.Component {
 			if(this.props.keyFrame.hasOwnProperty('a')) { /// 99999
 				delete this.props.keyFrame.a;
 				this.onChanged();
+				KeyframePropertyEditor.refresh();
 			} else {
 				this.deleteKeyframe();
 			}

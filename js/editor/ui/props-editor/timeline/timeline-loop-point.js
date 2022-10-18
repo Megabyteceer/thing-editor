@@ -48,6 +48,8 @@ export default class TimelineLoopPoint extends React.Component {
 	deleteLoopPoint() {
 		Timeline.unselectComponent(this);
 		let keyFrame = this.props.keyFrame;
+		delete keyFrame.___keepLoopPoint;
+		delete keyFrame.___loopPointView;
 		keyFrame.j = keyFrame.t;
 		this.onChanged();
 		this.props.owner.forceUpdate();

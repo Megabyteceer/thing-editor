@@ -187,7 +187,7 @@ export default class KeyframePropertyEditor extends React.Component {
 
 	resetJumpTime() {
 		for(let k of this.keyframes) {
-			k.props.keyFrame.j = k.props.keyFrame.t;
+			k.props.keyFrame.___loopPointView.deleteLoopPoint();
 		}
 		this.onKeyframeChanged();
 	}
