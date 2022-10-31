@@ -10,7 +10,7 @@ export default class StaticTrigger extends Container {
 	}
 
 	__validateStaticTrigger() {
-		if(this.parent && (this.parent === game.stage || this.parent.parent === game.stage)) {
+		if((this.parent === game.currentContainer) || (this === game.currentContainer)) {
 			editor.ui.status.error("StaticTrigger can not be root element or child of root element, because it does remove parent.", 32049, this);
 		}
 		if(this.dataPath && (this.dataPath.startsWith('this.') || this.dataPath.startsWith('all.'))) {
