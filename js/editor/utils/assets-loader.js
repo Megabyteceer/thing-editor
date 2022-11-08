@@ -10,8 +10,8 @@ AssetsLoader.init = () => {
 
 };
 
-const atlasesFilter =   /^img\/.*\.(atlas)$/gmi;
-const resourcesFilter =   /^img\/.*\.(xml|json)$/gmi;
+const atlasesFilter = /^img\/.*\.(atlas)$/gmi;
+const resourcesFilter = /^img\/.*\.(xml|json)$/gmi;
 const textureFiler = /^img\/.*\.(png|jpg)$/gmi;
 const textureNameCleaner = /^img\//gm;
 
@@ -27,7 +27,7 @@ const enumAssets = (onlyThisFiles) => {
 	PIXI.Texture.WHITE.__noIncludeInToBuild = true;
 	Lib.addTexture('EMPTY', PIXI.Texture.EMPTY);
 	Lib.addTexture('WHITE', PIXI.Texture.WHITE);
-	
+
 	const jsonFolders = [];
 	const checkIsInJsonFolder = (name) => {
 		const containingFolderPath = name.substring(0, name.lastIndexOf('/'));
@@ -48,7 +48,7 @@ const enumAssets = (onlyThisFiles) => {
 				resourcesToReload[fileStat.name] = true;
 			}
 		}
-		
+
 		if(fileStat.name.match(atlasesFilter)) {
 			atlasesMap[fileStat.name] = true;
 		}
@@ -67,12 +67,12 @@ const enumAssets = (onlyThisFiles) => {
 			}
 		}
 	}
-	
+
 	for(let name in resourcesToReload) {
-		if (atlasesMap[name.slice(0, -5) + '.atlas']) {
+		if(atlasesMap[name.slice(0, -5) + '.atlas']) {
 			Lib.addResource(name, undefined, true);
 		} else {
-			Lib.addResource(name, {metadata: { spineAtlas: false }}, true);
+			Lib.addResource(name, {metadata: {spineAtlas: false}}, true);
 		}
 	}
 
@@ -110,7 +110,7 @@ AssetsLoader.deleteAssets = (assetsNames) => {
 		}
 		let resourceName = 'img/' + name;
 		if(Lib.resources.hasOwnProperty(resourceName)) {
-			delete(Lib.resources[resourceName]);
+			delete (Lib.resources[resourceName]);
 			let i = Lib.__resourcesList.findIndex(item => item.name === resourceName);
 			assert(i >= 0, "can not remove deleted resource: " + resourceName);
 			Lib.__resourcesList.splice(i, 1);

@@ -10,7 +10,7 @@ const bodyProps = {className: 'list-view'};
 const classItemSubProps = {className: 'class-list-item-sub'};
 
 class ClassesView extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		let filter = editor.settings.getItem('classes-filter', '');
@@ -28,21 +28,21 @@ class ClassesView extends React.Component {
 	}
 
 	onSearchChange(ev) {
-		let filter= ev.target.value.toLowerCase();
+		let filter = ev.target.value.toLowerCase();
 		editor.settings.setItem('classes-filter', filter);
 		this.setState({filter});
 	}
-	
+
 	onAddClick() {
 		editor.addToScene(ClassesView.loadSafeInstanceByClassName(this.selectedItem.c.name));
 	}
-	
+
 	onAddAsChildClick() {
 		if(editor.isCanBeAddedAsChild()) {
 			editor.attachToSelected(ClassesView.loadSafeInstanceByClassName(this.selectedItem.c.name));
 		}
 	}
-	
+
 	static loadSafeInstanceByClassName(className, isForWrapping) {
 		// editor.saveBackup();
 		let ret = Lib._loadClassInstanceById(className);
@@ -52,7 +52,7 @@ class ClassesView extends React.Component {
 		// editor.cleanupBackup();
 		return ret;
 	}
-	
+
 	onWrapSelectedClick() {
 		editor.wrapSelected(this.selectedItem.c.name);
 	}
@@ -95,10 +95,10 @@ class ClassesView extends React.Component {
 				editor.ui.modal.showPrompt('Enter Component Name',
 					selectedTemplate.isScene ? 'MyNewScene' : 'MyNewComponent',
 					(val) => { //filter
-						return  val.replace(/[^a-zA-Z0-9\/]/gm, '_');
+						return val.replace(/[^a-zA-Z0-9\/]/gm, '_');
 					},
 					(val) => { //accept
-						if (Lib.__hasClass(val)) {
+						if(Lib.__hasClass(val)) {
 							return "Component with name '" + val + "' already exists";
 						}
 					}
@@ -111,13 +111,13 @@ class ClassesView extends React.Component {
 								if(!enteredClassName) {
 									editor.ui.modal.showError('Wrong component name provided.', 30001);
 									return;
-								} 
+								}
 								if(enteredClassName.match('/^[\d_]/m')) {
 									editor.ui.modal.showError('Class name can not start with digit or "_".', 30002);
 									return;
 								}
 								enteredClassName = enteredClassName.substr(0, 1).toUpperCase() + enteredClassName.substr(1);
-								if (Lib.__hasClass(enteredClassName)) {
+								if(Lib.__hasClass(enteredClassName)) {
 									editor.ui.modal.showError("Component with name '" + enteredClassName + "' already exists.", 30003);
 									return;
 								}
@@ -126,7 +126,7 @@ class ClassesView extends React.Component {
 									classFoldername += '/';
 								}
 								fs.getJSON('/thing-editor/js/editor/templates/' + selectedTemplate.path, false, false, false).then((templateSrc) => {
-									
+
 									//add or remove super method call if its exists
 									let baseClassInstance = new selectedBaseClass();
 									const regex = /(\/\/)(super\.)([a-zA-Z_]+)(\(\);)/gm;
@@ -138,14 +138,14 @@ class ClassesView extends React.Component {
 											return '';
 										}
 									});
-									let targetFolderName = (selectedTemplate.isScene ?'src/scenes/' : 'src/game-objects/');
+									let targetFolderName = (selectedTemplate.isScene ? 'src/scenes/' : 'src/game-objects/');
 
 									let baseClassPath = editor.ClassesLoader.getClassPath(selectedBaseClass.name);
 									let isProjectsCustomComponent = baseClassPath.startsWith(game.resourcesPath.substr(1));
 									if(isProjectsCustomComponent) {
-										baseClassPath = './' + 
-										enteredClassNameParts.map(() => {return '../';}).join('') +
-										baseClassPath.substr(game.resourcesPath.length - 1 + targetFolderName.length);
+										baseClassPath = './' +
+											enteredClassNameParts.map(() => {return '../';}).join('') +
+											baseClassPath.substr(game.resourcesPath.length - 1 + targetFolderName.length);
 									}
 									templateSrc = templateSrc.replace(/CURRENT_PROJECT_DIR/gm, '/games/' + (editor.currentProjectDir.replace(/\/$/, '')));
 									templateSrc = templateSrc.replace(/NEW_CLASS_NAME/gm, enteredClassName);
@@ -163,7 +163,7 @@ class ClassesView extends React.Component {
 									});
 
 								});
-								
+
 							}
 						});
 					}
@@ -173,9 +173,9 @@ class ClassesView extends React.Component {
 	}
 
 	onSelect() {
-	
+
 	}
-	
+
 	renderItem(item) {
 		let tip;
 		if(item.c.__EDITOR_tip) {
@@ -190,46 +190,42 @@ class ClassesView extends React.Component {
 		} else {
 			key = 'Custom/' + item.c.name;
 		}
-		
+
 		return R.listItem(
 			R.div({
-				onMouseDown:(ev) => {
+				onMouseDown: (ev) => {
 					if(ev.altKey) {
 						setTimeout(ev.ctrlKey ? this.onAddClick : this.onAddAsChildClick, 1);
 					} else if(ev.ctrlKey) {
 						setTimeout(this.onWrapSelectedClick, 1);
 					}
 				},
-				onDoubleClick:(ev) => {
+				onDoubleClick: (ev) => {
 					if(ev.target.tagName !== 'BUTTON') {
 						editor.editClassSource(item.c);
 					}
 				},
 				className: 'class-list-item'
-			},
-			item.c.___libInfo ? item.c.___libInfo.icon : undefined,
-			R.div(classItemSubProps,
+			}, item.c.___libInfo ? item.c.___libInfo.icon : undefined, R.div(classItemSubProps,
 				R.classIcon(item.c),
 				item.c.name,
 				tip
-			),
-			R.btn('<', (ev) => {
+			), R.btn('<', (ev) => {
 				sp(ev);
 				findNextOfThisType(item.c, -1, ev.ctrlKey);
-			}, 'Find previous ' + item.c.name, 'tool-btn'),
-			R.btn('>', (ev) => {
+			}, 'Find previous ' + item.c.name, 'tool-btn'), R.btn('>', (ev) => {
 				sp(ev);
 				findNextOfThisType(item.c, 1, ev.ctrlKey);
 			}, 'Find next ' + item.c.name, 'tool-btn')
 			), item, key, this, 'components.' + item.c.name);
 	}
-	
+
 	set selectedItem(v) {
 		this._selectedItem = v;
 	}
 
 	get selectedItem() {
-		if ((!editor.ClassesLoader.gameObjClasses) || (editor.ClassesLoader.gameObjClasses.indexOf(this._selectedItem) < 0)) return null;
+		if((!editor.ClassesLoader.gameObjClasses) || (editor.ClassesLoader.gameObjClasses.indexOf(this._selectedItem) < 0)) return null;
 		return this._selectedItem;
 	}
 
@@ -243,17 +239,17 @@ class ClassesView extends React.Component {
 		}, 1);
 
 	}
-	
+
 	render() {
-		
+
 		let body;
-		
+
 		let classes = editor.ClassesLoader.gameObjClasses;
-		if (!classes) {
+		if(!classes) {
 			body = 'Loading...';
 		} else {
 
-			body =  classes.filter((c) => {
+			body = classes.filter((c) => {
 				return _searchByRegexpOrText(c.c.name.toLowerCase(), this.state.filter.toLowerCase()) || (this.selectedItem === c);
 			}).map(this.renderItem);
 
@@ -263,12 +259,12 @@ class ClassesView extends React.Component {
 
 			body.reverse();
 		}
-		
+
 		return R.fragment(
 			R.div({className: 'classes-top-panel'},
 				R.span(null,
-					R.btn('Add', this.onAddClick, 'Add object to the scene. (Alt + Ctrl + [item click])', undefined,undefined, !this.selectedItem),
-					R.btn('Child', this.onAddAsChildClick, 'Add object as child of selected object. (Alt + [item click])', undefined,undefined, !this.selectedItem || !editor.isCanBeAddedAsChild()),
+					R.btn('Add', this.onAddClick, 'Add object to the scene. (Alt + Ctrl + [item click])', undefined, undefined, !this.selectedItem),
+					R.btn('Child', this.onAddAsChildClick, 'Add object as child of selected object. (Alt + [item click])', undefined, undefined, !this.selectedItem || !editor.isCanBeAddedAsChild()),
 					R.btn('Wrap', this.onWrapSelectedClick, 'Wrap each selected element on scene. (Ctrl + [item click])', undefined, undefined, !this.selectedItem || !game.__EDITOR_mode || !editor.selection.length)
 				),
 				R.btn('New', this.onNewComponentClick, 'Create new custom component.'),
@@ -276,26 +272,26 @@ class ClassesView extends React.Component {
 			),
 			R.div(bodyProps, body)
 		);
-		
+
 	}
 }
 
 function findNextOfThisType(c, direction, findAll) {
 	if(findAll) {
 		let a = game.currentContainer.findChildrenByType(c).filter((o) => {
-			return !Overlay.getParentWhichHideChildren(o);	
+			return !Overlay.getParentWhichHideChildren(o);
 		});
 		if(game.currentContainer instanceof c) {
 			a.push(game.currentContainer);
 		}
 		editor.selection.clearSelection();
-		for (let w of a) {
+		for(let w of a) {
 			editor.ui.sceneTree.selectInTree(w, true);
 		}
 	} else {
 		editor.ui.sceneTree.findNext((o) => {
 			return (o instanceof c) && !Overlay.getParentWhichHideChildren(o);
-			
+
 		}, direction);
 	}
 }

@@ -20,22 +20,22 @@ import Container from "../container.js";
 let idCounter = 1;
 
 export default class MovieClip extends DSprite {
-	
+
 	constructor() {
 		super();
 		this.fieldPlayers = [];
 	}
 
 	update() {
-		if (this.isPlaying) {
-			if (this.delay > 0) {
+		if(this.isPlaying) {
+			if(this.delay > 0) {
 				this.delay--;
 			} else {
 				if(this._goToLabelNextFrame) {
 					let label = this._timelineData.l[this._goToLabelNextFrame];
 					this._goToLabelNextFrame = false;
 					let l = this.fieldPlayers.length;
-					for(let i =0; i < l; i++) {
+					for(let i = 0; i < l; i++) {
 						this.fieldPlayers[i].goto(label.t, label.n[i]);
 					}
 				}
@@ -48,7 +48,7 @@ export default class MovieClip extends DSprite {
 		super.update();
 	}
 
-	static _findNextKeyframe (timeLineData, time) {
+	static _findNextKeyframe(timeLineData, time) {
 		let ret;
 		for(let f of timeLineData) {
 			if(f.t > time) {
@@ -58,8 +58,8 @@ export default class MovieClip extends DSprite {
 		}
 		return ret;
 	}
-	
-	static _findPreviousKeyframe (timeLineData, time) {
+
+	static _findPreviousKeyframe(timeLineData, time) {
 		let ret;
 		for(let f of timeLineData) {
 			if(f.t > time) {
@@ -69,17 +69,17 @@ export default class MovieClip extends DSprite {
 		}
 		return ret;
 	}
-	
+
 	static _deserializeTimelineData(tl) {
 		let fields = tl.f.map((f) => {
-			
+
 			let fieldTimeline = f.t.map((k) => {
 				/// #if EDITOR
 				if(!k.hasOwnProperty('___react_id')) {
 					k.___react_id = MovieClip.__generateKeyframeId();
 				}
 				/// #endif
-				let ret =  Object.assign({}, k);
+				let ret = Object.assign({}, k);
 				if(!ret.hasOwnProperty('j')) {
 					ret.j = ret.t;
 				}
@@ -96,7 +96,7 @@ export default class MovieClip extends DSprite {
 				t: fieldTimeline
 			};
 		});
-		
+
 		let labels = {};
 		for(let key in tl.l) {
 			let labelTime = tl.l[key];
@@ -124,7 +124,7 @@ export default class MovieClip extends DSprite {
 	}
 
 	_disposePlayers() {
-		while (this.fieldPlayers.length > 0) {
+		while(this.fieldPlayers.length > 0) {
 			Pool.dispose(this.fieldPlayers.pop());
 		}
 	}
@@ -132,20 +132,20 @@ export default class MovieClip extends DSprite {
 	set timeline(data) {
 		this._goToLabelNextFrame = false;
 		this._disposePlayers();
-		
+
 		if(data === null) {
 			this._timelineData = null;
 			return;
 		}
 
 		if(!deserializeCache.has(data)
-		/// #if EDITOR
+			/// #if EDITOR
 			|| editor.disableFieldsCache
-		/// #endif
+			/// #endif
 		) {
 			let desData = MovieClip._deserializeTimelineData(data);
 			/// #if EDITOR
-			if (!editor.disableFieldsCache) {
+			if(!editor.disableFieldsCache) {
 				/// #endif
 				deserializeCache.set(data, desData);
 				/// #if EDITOR
@@ -156,14 +156,14 @@ export default class MovieClip extends DSprite {
 		} else {
 			data = deserializeCache.get(data);
 		}
-		
+
 		assert(Array.isArray(data.f), "Wrong timeline data?");
 		this._timelineData = data;
 
 		let pow = data.p; //smooth fields dynamic parameters
 		let damper = data.d;
-		
-		
+
+
 		let fieldsData = data.f;
 		for(let i = 0; i < fieldsData.length; i++) {
 			let p = Pool.create(FieldPlayer);
@@ -171,13 +171,13 @@ export default class MovieClip extends DSprite {
 			this.fieldPlayers.push(p);
 		}
 	}
-	
+
 	resetTimeline() {
-		for (let p of this.fieldPlayers) {
+		for(let p of this.fieldPlayers) {
 			p.reset();
 		}
 	}
-	
+
 	hasLabel(labelName) {
 		/// #if EDITOR
 		if(!this._timelineData) {
@@ -186,7 +186,7 @@ export default class MovieClip extends DSprite {
 		/// #endif
 		return this._timelineData.l.hasOwnProperty(labelName);
 	}
-	
+
 	gotoLabel(labelName) {
 		assert(this.hasLabel(labelName), "Label '" + labelName + "' not found.", 10055);
 		/// #if EDITOR
@@ -196,7 +196,7 @@ export default class MovieClip extends DSprite {
 				editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; new label:' + labelName + '; time: ' + game.time, 30021, this, undefined, true);
 			}
 			editor.ui.status.warn(
-				R.span(null, 
+				R.span(null,
 					R.btn('Show stack...', () => {
 						editor.showStack(stack);
 					}),
@@ -211,10 +211,10 @@ export default class MovieClip extends DSprite {
 
 	gotoRandomLabel() {
 		assert(arguments.length > 1, "Two or more arguments expected for method gotoRandomLabel.", 10056);
-		
+
 		const labelName = arguments[Math.floor(Math.random() * arguments.length)];
-		
-		if (labelName) {
+
+		if(labelName) {
 			this.gotoLabel(labelName);
 		}
 	}
@@ -224,25 +224,25 @@ export default class MovieClip extends DSprite {
 			this.gotoLabel(labelName);
 		}
 	}
-	
+
 	play() {
 		this.isPlaying = true;
 	}
-	
+
 	stop() {
 		this.isPlaying = false;
 	}
-	
+
 	playRecursive() {
 		this.isPlaying = true;
-		for (let c of this.findChildrenByType(MovieClip)) {
+		for(let c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = true;
 		}
 	}
-	
+
 	stopRecursive() {
 		this.isPlaying = false;
-		for (let c of this.findChildrenByType(MovieClip)) {
+		for(let c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = false;
 		}
 	}
@@ -279,17 +279,17 @@ export default class MovieClip extends DSprite {
 
 	__EDITOR_getKeyframeIcon(action) {
 		switch(action) {
-		case 'this.stop':
-			return ICON_STOP;
-		case 'this.remove':
-		case 'this.parent.remove':
-		case 'this.parent.parent.remove':
-			return ICON_REMOVE;
-		default:
-			if(action.startsWith('Sound.play')) {
-				return ICON_SOUND;
-			}
-			return ICON_DEFAULT;
+			case 'this.stop': // eslint-disable-line indent
+				return ICON_STOP; // eslint-disable-line indent
+			case 'this.remove': // eslint-disable-line indent
+			case 'this.parent.remove': // eslint-disable-line indent
+			case 'this.parent.parent.remove': // eslint-disable-line indent
+				return ICON_REMOVE; // eslint-disable-line indent
+			default: // eslint-disable-line indent
+				if(action.startsWith('Sound.play')) { // eslint-disable-line indent
+					return ICON_SOUND; // eslint-disable-line indent
+				} // eslint-disable-line indent
+				return ICON_DEFAULT; // eslint-disable-line indent
 		}
 	}
 
@@ -299,7 +299,7 @@ export default class MovieClip extends DSprite {
 			return null;
 		}
 		if(!serializeCache.has(this._timelineData) ||
-		editor.disableFieldsCache
+			editor.disableFieldsCache
 		) {
 			//console.warn("MovieClip serialization invoked >>>");
 			let tl = this._timelineData;
@@ -310,7 +310,7 @@ export default class MovieClip extends DSprite {
 						let ret = Object.assign({}, k);
 						let tmpJ = ret.j;
 						if(ret.j === ret.t && !k.___keepLoopPoint) {
-							delete(ret.j);
+							delete (ret.j);
 						}
 
 						if((typeof this[f.n]) !== 'number') {
@@ -322,8 +322,8 @@ export default class MovieClip extends DSprite {
 						}
 						if(ret.r === 0) {
 							delete ret.r;
-						} else if (ret.r > 0) {
-							ret.r = Math.min(ret.r , ret.n.t - tmpJ - 1);
+						} else if(ret.r > 0) {
+							ret.r = Math.min(ret.r, ret.n.t - tmpJ - 1);
 						}
 						delete ret.n;
 						return ret;
@@ -350,7 +350,7 @@ export default class MovieClip extends DSprite {
 		return serializeCache.get(this._timelineData);
 	}
 
-	static invalidateSerializeCache (o) {
+	static invalidateSerializeCache(o) {
 		assert(o instanceof MovieClip, "MovieClip expected");
 		let timelineData = o._timelineData;
 		Lib.__invalidateSerializationCache(o);
@@ -434,7 +434,7 @@ export default class MovieClip extends DSprite {
 	}
 
 	__applyCurrentTimeValuesToFields(time) {
-		if (this._timelineData) {
+		if(this._timelineData) {
 			for(let f of this._timelineData.f) {
 				this.__applyValueToMovieClip(f, time);
 			}
@@ -469,7 +469,7 @@ export default class MovieClip extends DSprite {
 		} else {
 			let prevKeyframe = MovieClip._findPreviousKeyframe(field.t, time);
 			time = prevKeyframe.t;
-			if (field.___cacheTimeline.hasOwnProperty(time)) {
+			if(field.___cacheTimeline.hasOwnProperty(time)) {
 				return field.___cacheTimeline[time];
 			}
 			return prevKeyframe.v;
@@ -497,7 +497,7 @@ let deserializeCache = new WeakMap();
 
 Container.prototype.gotoLabelRecursive = function (labelName) {
 	if(this instanceof MovieClip) {
-		if (this.hasLabel(labelName)) {
+		if(this.hasLabel(labelName)) {
 			this.delay = 0;
 			this.gotoLabel(labelName);
 		}
@@ -549,14 +549,14 @@ Container.prototype.gotoLabelRecursive.___EDITOR_callbackParameterChooserFunctio
 
 
 
-		
+
 
 	});
 };
-	
+
 
 MovieClip.prototype.gotoLabel.___EDITOR_callbackParameterChooserFunction = (context) => {
-	
+
 	return new Promise((resolve) => {
 
 		let addedLabels = {};
@@ -592,7 +592,7 @@ MovieClip.prototype.gotoLabel.___EDITOR_callbackParameterChooserFunction = (cont
 
 
 
-		
+
 
 	});
 };
@@ -607,7 +607,7 @@ const calculateCacheSegmentForField = (fieldPlayer, cacheArray) => {
 	let time;
 	let i = 0;
 	let fields = fieldPlayer.timeline;
-	let limit = fields[fields.length-1].t;
+	let limit = fields[fields.length - 1].t;
 	while(!cacheArray.hasOwnProperty(fieldPlayer.time)) {
 		time = fieldPlayer.time;
 		if(time > limit) {

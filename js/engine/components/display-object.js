@@ -10,7 +10,7 @@ const DisplayObject = PIXI.DisplayObject;
 DisplayObject.prototype.getGlobalRotation = function getGlobalRotation() {
 	let ret = this.rotation;
 	let p = this.parent;
-	while (p && p !== game.stage) {
+	while(p && p !== game.stage) {
 		ret += p.rotation;
 		p = p.parent;
 	}
@@ -23,7 +23,7 @@ DisplayObject.prototype.getScenePosition = function getScenePosition(resultPoint
 
 DisplayObject.prototype.getRootContainer = function getRootContainer() {
 	let p = this;
-	while (p && (p.parent !== game.stage) && p.parent) {
+	while(p && (p.parent !== game.stage) && p.parent) {
 		p = p.parent;
 	}
 	return p;
@@ -58,7 +58,7 @@ DisplayObject.prototype.removeWithoutHolder = function remove() {
 DisplayObject.prototype.findParentByType = function (classType) {
 	assert(classType.prototype instanceof DisplayObject, "DisplayObject inherited class expected.", 10053);
 	let p = this.parent;
-	while (p && !(p instanceof classType)) {
+	while(p && !(p instanceof classType)) {
 		p = p.parent;
 	}
 	return p;
@@ -66,7 +66,7 @@ DisplayObject.prototype.findParentByType = function (classType) {
 
 DisplayObject.prototype.findParentByName = function (name) {
 	let p = this.parent;
-	while (p && p.name !== name) {
+	while(p && p.name !== name) {
 		p = p.parent;
 	}
 	return p;
@@ -191,16 +191,16 @@ __EDITOR_editableProps(DisplayObject, [
 	{
 		name: 'name',
 		type: String,
-		parser:(name) => {
+		parser: (name) => {
 			return name && name.replace('.', '_').replace('#', '_').replace('`', '_').replace(',', '_');
 		},
-		disabled:(node) => {
+		disabled: (node) => {
 			return node.parent === game.stage;
 		},
-		beforeEdited:(val) => {
+		beforeEdited: (val) => {
 			editor.DataPathFixer.beforeNameEdit(val);
 		},
-		onBlur:() => {
+		onBlur: () => {
 			editor.DataPathFixer.onNameBlur();
 		},
 		notAnimate: true

@@ -65,7 +65,7 @@ export default class PrefabReference extends Container {
 							for(let f of this.__previewNode._timelineData.f) {
 								if(fn === f.n && this[fn] !== f.t[0].v) {
 									this[fn] = f.t[0].v;
-									editor.ui.status.warn('Value of PrefabReference property "' + fn + '" was changed to ' +  this[fn] + ' because its refers to MovieClip where animation starts with that value.', 30018, this, fn);
+									editor.ui.status.warn('Value of PrefabReference property "' + fn + '" was changed to ' + this[fn] + ' because its refers to MovieClip where animation starts with that value.', 30018, this, fn);
 									editor.sceneModified();
 								}
 							}
@@ -138,7 +138,7 @@ export default class PrefabReference extends Container {
 		if(!a) {
 			return;
 		}
-		a = a.slice(0);		
+		a = a.slice(0);
 		for(let r of a) {
 			r.__exitPreview();
 			r.__refreshPreview();
@@ -166,7 +166,7 @@ __EDITOR_editableProps(PrefabReference, [
 	},
 	{
 		type: String,
-		select:window.makePrefabSelector(undefined, true),
+		select: window.makePrefabSelector(undefined, true),
 		name: 'prefabName'
 	},
 	{
@@ -182,7 +182,7 @@ __EDITOR_editableProps(PrefabReference, [
 	{
 		name: '__preview',
 		type: Boolean,
-		default: true		
+		default: true
 	}
 ]);
 

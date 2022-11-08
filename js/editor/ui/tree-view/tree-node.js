@@ -7,13 +7,13 @@ let caretOpened = R.span({className: 'tree-caret'}, '▾');
 let lastClickedItem;
 
 class TreeNode extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
-		
+
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
-	
+
 	onMouseDown(ev) { // == select nodes
 		if(!this.props.node.parent) {
 			return;
@@ -23,14 +23,14 @@ class TreeNode extends React.Component {
 			state.childrenExpanded = !state.childrenExpanded;
 			if(!state.childrenExpanded) {
 				collapseChildrenRecursively(this.props.node);
-			} else if (ev.altKey) {
+			} else if(ev.altKey) {
 				expandChildrenRecursively(this.props.node);
 			}
 			this.forceUpdate();
 			sp(ev);
 			return;
 		}
-		
+
 		if(ev.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
 			let p = this.props.node.parent;
 			let i1 = p.getChildIndex(lastClickedItem.props.node);
@@ -50,7 +50,7 @@ class TreeNode extends React.Component {
 		} else {
 			editor.selection.select(this.props.node, ev.ctrlKey);
 		}
-		
+
 		if(state.isSelected) {
 			lastClickedItem = this;
 		}
@@ -63,7 +63,7 @@ class TreeNode extends React.Component {
 	static clearLastClicked() {
 		lastClickedItem = null;
 	}
-	
+
 	render() {
 		let node = this.props.node;
 		let state = __getNodeExtendData(node);
@@ -80,7 +80,7 @@ class TreeNode extends React.Component {
 			}
 		}
 		let className = 'list-item';
-		
+
 		if(state.isSelected) {
 			if(!lastClickedItem) {
 				lastClickedItem = this;
@@ -95,13 +95,13 @@ class TreeNode extends React.Component {
 				paddingBottom: 9
 			};
 		}
-		
+
 		if(state.hidden) {
 			style = {display: 'none'};
 		}
-		
+
 		return R.fragment(R.div({
-			onDoubleClick:(ev) => {
+			onDoubleClick: (ev) => {
 				if(!isClickedAtRightEdge(ev) && !ev.ctrlKey) {
 					editor.editClassSource(node);
 				}
@@ -114,7 +114,7 @@ class TreeNode extends React.Component {
 }
 
 function nodeHasChildren(node) {
-	return node.children.length > 0 && ! node.__hideChildren;
+	return node.children.length > 0 && !node.__hideChildren;
 }
 
 function isClickedAtRightEdge(ev) {

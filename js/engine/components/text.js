@@ -26,15 +26,15 @@ const TEXT_TRANSFORM = {
 	'lowercase': 3
 };
 const applyTextTransform = (value, textTransform) => {
-	if (textTransform === TEXT_TRANSFORM.none) return value;
-	if (textTransform === TEXT_TRANSFORM.uppercase) return value.toUpperCase();
-	if (textTransform === TEXT_TRANSFORM.lowercase) return value.toLowerCase();
-	if (textTransform === TEXT_TRANSFORM.capitalize) return value.replace(/(?:^|\s)\S/g, (char) => char.toUpperCase());
+	if(textTransform === TEXT_TRANSFORM.none) return value;
+	if(textTransform === TEXT_TRANSFORM.uppercase) return value.toUpperCase();
+	if(textTransform === TEXT_TRANSFORM.lowercase) return value.toLowerCase();
+	if(textTransform === TEXT_TRANSFORM.capitalize) return value.replace(/(?:^|\s)\S/g, (char) => char.toUpperCase());
 	assert(false, `Invalid "textTransform" value for text (${textTransform})`);
 };
 
 Object.defineProperties(Text.prototype, {
-	translatableText:{
+	translatableText: {
 		get: function () {
 			return this._translatableText;
 		},
@@ -90,11 +90,11 @@ Object.defineProperties(Text.prototype, {
 		set: function (val) {
 			if(val && val.indexOf(',') >= 0) {
 				/// #if EDITOR
-				val = val.replace(/(\s|")/g,'');
+				val = val.replace(/(\s|")/g, '');
 				/// #endif
 				this.style.fill = val.split(',')
-				/// #if EDITOR
-					.filter((c) => {	
+					/// #if EDITOR
+					.filter((c) => {
 						return isColor(c, this);
 					});
 				if(this.style.fill.length === 0) {
@@ -113,7 +113,7 @@ Object.defineProperties(Text.prototype, {
 		},
 		set: function (val) {
 			if(val) {
-				val = val.replace(/\s/g,'');
+				val = val.replace(/\s/g, '');
 				this.style.fillGradientStops = val.split(',').map(i => i ? parseFloat(i) : 1);
 			} else {
 				this.style.fillGradientStops.length = 0;
@@ -236,10 +236,10 @@ Object.defineProperties(Text.prototype, {
 		}, configurable: true
 	},
 	'textTransform': {
-		get: function() {
+		get: function () {
 			return this._textTransform;
 		},
-		set: function(v) {
+		set: function (v) {
 			if(v !== this._textTransform) {
 				this._textTransform = v;
 				if(v && this._text) {
@@ -266,7 +266,7 @@ Object.defineProperties(Text.prototype, {
 let d = Object.getOwnPropertyDescriptor(Text.prototype, 'text');
 assert(d, "Text component needs refactoring", 90001);
 const originalTextSetter = d.set;
-d.set = function(v) {
+d.set = function (v) {
 	if(this.textTransform && v) {
 		/// #if EDITOR
 		if(typeof v === 'number') {
@@ -289,18 +289,18 @@ Text.prototype._onTextureUpdate = function _onTextureUpdate() { // centred text 
 	this.recalculateTextSize();
 };
 
-Text.prototype.onRemove = function() {
+Text.prototype.onRemove = function () {
 	/// #if EDITOR
 	editor._root_onRemovedCalled = true;
 	/// #endif
 	this._maxWidth = 0;
 };
 
-Text.prototype.setTextByPath = function(path) {
+Text.prototype.setTextByPath = function (path) {
 	this.text = getValueByPath(path, this);
 };
 
-Text.prototype.setAlign = function(align) {
+Text.prototype.setAlign = function (align) {
 	this['style.align'] = align;
 };
 
@@ -325,11 +325,11 @@ Text.prototype.onLanguageChanged = function onLanguageChanged() {
 	}
 };
 
-Text.prototype._refreshAnchor = function() {
+Text.prototype._refreshAnchor = function () {
 	this.anchor.set(alignValues[this.style.align], alignValues[this._verticalAlign]);
 };
 
-Text.prototype.recalculateTextSize = function() {
+Text.prototype.recalculateTextSize = function () {
 	if(this._maxWidth !== 0) {
 		if(this._texture.width > this._maxWidth) {
 			var q = this._maxWidth / this._texture.width;
@@ -365,8 +365,8 @@ function isColor(strColor, node) {
 		}
 	}
 }
-  
-  
+
+
 
 import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 
@@ -402,7 +402,7 @@ __EDITOR_editableProps(Text, [
 		name: 'image',
 		type: String,
 		override: true,
-		visible:(node) => {
+		visible: (node) => {
 			return !(node instanceof Text);
 		}
 	},
@@ -415,12 +415,12 @@ __EDITOR_editableProps(Text, [
 		name: 'text',
 		type: String,
 		parser: (v) => {
-			if(v && v.length === 2 &&  v.charCodeAt(0) === 32) return v.substr(1);
+			if(v && v.length === 2 && v.charCodeAt(0) === 32) return v.substr(1);
 			return v;
 		},
-		default:'',
+		default: '',
 		important: true,
-		disabled:(node) => {
+		disabled: (node) => {
 			return node.translatableText;
 		}
 	},
@@ -462,13 +462,13 @@ __EDITOR_editableProps(Text, [
 			editor.settings.getItem('__EDITOR-clipboard-data-text-style', [])
 				.forEach(({property, value}) => editor.onObjectsPropertyChanged(o, property, value, false));
 		},
-		visible:() => !!editor.settings.getItem('__EDITOR-clipboard-data-text-style', false),
+		visible: () => !!editor.settings.getItem('__EDITOR-clipboard-data-text-style', false),
 	},
 	{
 		name: 'style.fontSize',
 		type: Number,
-		min:1,
-		max:300,
+		min: 1,
+		max: 300,
 		default: 12,
 		important: true
 	},
@@ -495,7 +495,7 @@ __EDITOR_editableProps(Text, [
 	{
 		name: 'style.fill',
 		type: String,
-		default:'#ffffff'
+		default: '#ffffff'
 	},
 	{
 		name: 'style.fillGradientStops',
@@ -507,13 +507,13 @@ __EDITOR_editableProps(Text, [
 	{
 		name: 'style.strokeThickness',
 		type: Number,
-		min:0
+		min: 0
 	},
 	{
 		name: 'style.stroke',
 		type: String,
-		default:'#000000',
-		disabled:(node) => {
+		default: '#000000',
+		disabled: (node) => {
 			return node.style.strokeThickness < 1;
 		}
 	},
@@ -525,38 +525,38 @@ __EDITOR_editableProps(Text, [
 	{
 		name: 'style.drShColor',
 		type: String,
-		default:'#000000',
-		visible:(node) => node.style.dropShadow
+		default: '#000000',
+		visible: (node) => node.style.dropShadow
 	},
 	{
 		name: 'style.drShAlpha',
 		type: Number,
 		default: 1,
 		step: 0.01,
-		min:0,
-		visible:(node) => node.style.dropShadow
+		min: 0,
+		visible: (node) => node.style.dropShadow
 	},
 	{
 		name: 'style.drShAngle',
 		type: Number,
 		default: 0.524,
 		step: 0.001,
-		visible:(node) => node.style.dropShadow
+		visible: (node) => node.style.dropShadow
 	},
 	{
 		name: 'style.drShBlur',
 		type: Number,
 		default: 0,
 		step: 0.01,
-		min:0,
-		visible:(node) => node.style.dropShadow
+		min: 0,
+		visible: (node) => node.style.dropShadow
 	},
 	{
 		name: 'style.drShDistance',
 		type: Number,
 		default: 5,
-		min:0,
-		visible:(node) => node.style.dropShadow
+		min: 0,
+		visible: (node) => node.style.dropShadow
 	},
 	{
 		name: 'style.fontFamily',
@@ -567,7 +567,7 @@ __EDITOR_editableProps(Text, [
 		type: String,
 		select: () => {
 			let availableWeights = {};
-			let family = editor.selection[0].style.fontFamily.split(',')[0].replace(/['"]/gm,'').trim();
+			let family = editor.selection[0].style.fontFamily.split(',')[0].replace(/['"]/gm, '').trim();
 			for(let f of Array.from(document.fonts.values())) {
 				if(f.family === family) {
 					let w = parseInt(f.weight);
@@ -628,17 +628,17 @@ __EDITOR_editableProps(Text, [
 				}
 			} else {
 				switch(o.style.align) {
-				case CENTER:
-					x *= 0.5;
-					break;
-				case RIGHT:
-					x *= -1;
-					break;
+					case CENTER: // eslint-disable-line indent
+						x *= 0.5; // eslint-disable-line indent
+						break; // eslint-disable-line indent
+					case RIGHT: // eslint-disable-line indent
+						x *= -1; // eslint-disable-line indent
+						break; // eslint-disable-line indent
 				}
 				let tmpScale = o.scale.x;
 				o.scale.x = 1;
 				o.scale.y = 1;
-				editor.overlay.guideX(x , o);
+				editor.overlay.guideX(x, o);
 				o.scale.x = tmpScale;
 				o.scale.y = tmpScale;
 			}

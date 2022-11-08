@@ -75,7 +75,7 @@ export default class Mask extends Container {
 Mask.__EDITOR_group = 'Extended';
 Mask.__EDITOR_icon = 'tree/mask';
 
-__EDITOR_editableProps(Mask,  [
+__EDITOR_editableProps(Mask, [
 	window.makePreviewModeButton('Preview masked', 'components.Mask#preview-masked'),
 	{
 		name: 'enabled',

@@ -5,13 +5,13 @@
 import BASE_CLASS_NAME from "BASE_CLASS_PATH";
 
 export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
-	
+
 	init() {
 		//super.init();
 		// Add initialization code here
 
 	}
-	
+
 	update() {
 		// Add your update code here
 

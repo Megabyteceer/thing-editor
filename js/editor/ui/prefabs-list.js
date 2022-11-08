@@ -22,7 +22,7 @@ const prefabNameFilter = /[^a-z\-\/0-9_]/g;
 
 const classNameProps = {className: 'scene-node-class'};
 let prefabNameProps = {
-	className: "selectable-text", title: 'Ctrl+click to copy prefabs`s name', onMouseDown:window.copyTextByClick
+	className: "selectable-text", title: 'Ctrl+click to copy prefabs`s name', onMouseDown: window.copyTextByClick
 };
 /** @type PrefabsList */
 let instance;
@@ -30,7 +30,7 @@ let instance;
 let prefabsStack = [];
 
 export default class PrefabsList extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		let filter = editor.settings.getItem('prefabs-filter', '');
@@ -50,14 +50,14 @@ export default class PrefabsList extends React.Component {
 	}
 
 	onSearchChange(ev) {
-		let filter= ev.target.value.toLowerCase();
+		let filter = ev.target.value.toLowerCase();
 		editor.settings.setItem('prefabs-filter', filter);
 		this.setState({filter});
 	}
-	
+
 	onAddClick(ev) {
 		PrefabsList.exitPrefabEdit();
-		if (this.selectedItem) {
+		if(this.selectedItem) {
 			editor.addToScene(this._loadPrefab(this.selectedItem, ev.altKey));
 		}
 	}
@@ -72,10 +72,10 @@ export default class PrefabsList extends React.Component {
 			return ret;
 		}
 	}
-	
+
 	onAddChildClick(ev) {
 		PrefabsList.exitPrefabEdit();
-		if (this.selectedItem) {
+		if(this.selectedItem) {
 			this._addPrefabToChild(this.selectedItem, ev.altKey);
 		}
 	}
@@ -86,41 +86,41 @@ export default class PrefabsList extends React.Component {
 		}
 		editor.attachToSelected(this._loadPrefab(item, asReference));
 	}
-	
+
 	onSaveSelectedAsClick() {
-		if (editor.selection.length === 0) {
+		if(editor.selection.length === 0) {
 			editor.ui.modal.showInfo('Nothing is selected in scene.', undefined, 32035);
-		} else if (editor.selection.length > 1) {
+		} else if(editor.selection.length > 1) {
 			editor.ui.modal.showInfo('More that one object selected.', undefined, 32036);
-		} else if (editor.ClassesLoader.getClassType(editor.selection[0].constructor) === Scene) {
+		} else if(editor.ClassesLoader.getClassType(editor.selection[0].constructor) === Scene) {
 			editor.ui.modal.showInfo('You can not save Scene as prefab. Please select some object from scene first.', undefined, 32037);
 		} else {
-			
+
 			let defaultPrefabName = '';
-			if (this.selectedItem && this.selectedItem.p.name) {
+			if(this.selectedItem && this.selectedItem.p.name) {
 				defaultPrefabName = this.selectedItem.p.name.split('/');
 				defaultPrefabName.pop();
 				defaultPrefabName = defaultPrefabName.join('/');
-				if (defaultPrefabName) {
+				if(defaultPrefabName) {
 					defaultPrefabName += '/';
 				}
 			}
-			
+
 			editor.ui.modal.showPrompt(R.span(null, 'Enter name for new prefab: ', R.sceneNode(editor.selection[0])),
 				defaultPrefabName,
 				(val) => { // filter
 					return val.toLowerCase().replace(prefabNameFilter, '-');
 				},
 				(val) => { //accept
-					if (Lib.prefabs.hasOwnProperty(val)) {
+					if(Lib.prefabs.hasOwnProperty(val)) {
 						return "Prefab with such name already exists";
 					}
-					if (val.endsWith('/') || val.startsWith('/')) {
+					if(val.endsWith('/') || val.startsWith('/')) {
 						return 'name can not begin or end with "/"';
 					}
 				}
 			).then((enteredName) => {
-				if (enteredName) {
+				if(enteredName) {
 
 					const fin = (isConvertedToRef) => {
 						if(editor.overlay.isPreviewShowed && !isConvertedToRef) {
@@ -133,24 +133,24 @@ export default class PrefabsList extends React.Component {
 					Lib.__savePrefab(s, enteredName);
 					if(s !== game.currentContainer) {
 						editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
-							
+
 							let data = Lib.__serializeObject(s);
-							data = {c :"PrefabReference", p: data.p};
+							data = {c: "PrefabReference", p: data.p};
 							let ref = Lib._deserializeObject(data);
-							
+
 							ref.x = s.x; // for cases when save orientation trigger. its clear's x/y before serialization
 							ref.y = s.y;
 							ref.alpha = s.alpha;
 							ref.rotation = s.rotation;
 							ref.scale.x = s.scale.x;
 							ref.scale.y = s.scale.y;
-							
+
 							ref.prefabName = enteredName;
 							ref.inheritProps = !(s instanceof OrientationTrigger);
 
 							s.parent.addChildAt(ref, s.parent.getChildIndex(s));
 							s.remove();
-							
+
 							Lib.__invalidateSerializationCache(ref.parent);
 
 							editor.ui.sceneTree.selectInTree(ref);
@@ -162,7 +162,7 @@ export default class PrefabsList extends React.Component {
 					} else {
 						fin();
 					}
-					
+
 				}
 			});
 		}
@@ -179,7 +179,7 @@ export default class PrefabsList extends React.Component {
 	}
 
 	static editPrefab(name, stepInToStack = false) {
-		if (game.__EDITOR_mode) {
+		if(game.__EDITOR_mode) {
 			if(!Lib.hasPrefab(name)) {
 				editor.ui.modal.showError("No prefab with name " + name + " exists.");
 				return;
@@ -200,7 +200,7 @@ export default class PrefabsList extends React.Component {
 			instance.forceUpdate();
 		}
 	}
-	
+
 	onSelect(item, ev, currentItem) {
 		if(ev.altKey) {
 			while(editor.selection[0] instanceof PrefabReference) {
@@ -214,17 +214,17 @@ export default class PrefabsList extends React.Component {
 			this._addPrefabToChild(item, true);
 			return currentItem;
 		} else {
-			PrefabsList.editPrefab( Lib.__getNameByPrefab(item));
+			PrefabsList.editPrefab(Lib.__getNameByPrefab(item));
 		}
 	}
-	
+
 	onPrefabDeleteClick(prefabName) {
-		editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className:'danger'},
+		editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className: 'danger'},
 			'Are you sure you want to delete prefab: ', R.br(), R.br(), R.b(null, prefabName), ' ?',
 			R.br(),
 			R.br(),
 			'You cannot undo this action.'
-		),() => {
+		), () => {
 			Lib.__deletePrefab(prefabName).then(() => {
 				fs.refreshFiles().then(() => {
 					PrefabsList.readAllPrefabsList().then(() => {
@@ -250,30 +250,31 @@ export default class PrefabsList extends React.Component {
 				PrefabsList.editPrefab(prefabName);
 			});
 		}
-		return R.div({onDoubleClick:() => {
-			editor.editClassSource(cls);
-		}, key: prefabName, className:'prefab-list-item'},
-		R.listItem(R.span(null,
+		return R.div({
+			onDoubleClick: () => {
+				editor.editClassSource(cls);
+			}, key: prefabName, className: 'prefab-list-item'
+		}, R.listItem(R.span(null,
 			item.___libInfo ? item.___libInfo.icon : undefined,
 			R.classIcon(cls), R.b(prefabNameProps, prefabName), R.span(classNameProps, ' (' + cls.name + ')'),
 			R.btn(' ', () => {
 				this.onPrefabDeleteClick(prefabName);
 			}, 'Delete prefab...', 'delete-scene-btn')
-		
+
 		), item, prefabName, this)
 		);
 	}
-	
+
 	render() {
 		let scenePrefabs = Lib._getAllPrefabs();
-		
+
 		let panelClassName = this.selectedItem ? '' : 'unclickable';
-		
+
 		let prefabs = [];
 		let prefabsNames = Object.keys(scenePrefabs);
 		prefabsNames.sort();
 
-		for (let prefabName of prefabsNames) {
+		for(let prefabName of prefabsNames) {
 			let item = scenePrefabs[prefabName];
 			if(_searchByRegexpOrText(prefabName, this.state.filter) || (this.selectedItem === item)) {
 				prefabs.push(this.renderItem(prefabName, item));
@@ -316,7 +317,7 @@ export default class PrefabsList extends React.Component {
 			editor.regeneratePrefabsTypings();
 		}
 	}
-	
+
 	static exitPrefabEdit(oneStepOnly = false) {
 		if(editor.overlay) {
 			editor.overlay.exitIsolation();
@@ -342,16 +343,16 @@ export default class PrefabsList extends React.Component {
 			return ref.prefabName;
 		}
 	}
-	
+
 	static choosePrefab(title, noEasyClose) {
-		
+
 		let libsPrefabs = Lib._getAllPrefabs();
-		
+
 		let prefabs = [];
-		for (let name in libsPrefabs) {
+		for(let name in libsPrefabs) {
 			let sceneData = libsPrefabs[name];
 			let c = Lib.getClass(sceneData.c);
-			prefabs.push({name:name, __EDITOR_icon: c.__EDITOR_icon});
+			prefabs.push({name: name, __EDITOR_icon: c.__EDITOR_icon});
 		}
 		return editor.ui.modal.showListChoose(title || "Choose prefab", prefabs, noEasyClose).then((choosed) => {
 			if(choosed) {

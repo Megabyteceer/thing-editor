@@ -1,12 +1,12 @@
 const ColorEditor = (props) => {
 	let val = props.value || 0;
-	
+
 	return R.input({
-		onChange:(ev) => {
+		onChange: (ev) => {
 			props.onChange(ev);
 			editor.scheduleHistorySave();
 		},
-		disabled:props.disabled,
+		disabled: props.disabled,
 		className: 'clickable',
 		type: 'color',
 		value: '#' + val.toString(16).padStart(6, '0')

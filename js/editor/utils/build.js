@@ -51,7 +51,7 @@ export default class Build {
 		prefixToCutOff = (debug ? '___' : '__');
 		let scenes = filterObjectsData(Lib._getAllScenes());
 		let prefabs = filterObjectsData(Lib._getAllPrefabs());
-		
+
 		let images = Lib.__texturesList.filter(n => !Lib.getTexture(n.name).__noIncludeInToBuild).map((t) => {
 			return t.value;
 		});
@@ -64,15 +64,15 @@ export default class Build {
 				resources = [];
 			}
 			resources.push(r);
-			
-			if (Lib.resources[r].metadata) {
+
+			if(Lib.resources[r].metadata) {
 				resourcesMetadata[r] = Lib.resources[r].metadata;
 			}
 		}
 		if(resources) {
 			resources = resources.filter(isFileNameValidForBuild).sort();
 		}
-		
+
 		let sounds = filterObjectsData(Lib.__getSoundsData());
 
 		let projectDesc = editor.projectDesc;
@@ -90,13 +90,13 @@ export default class Build {
 		}
 
 		await editor.fs.saveFile('assets.js', assertCode + 'window._thingEngineAssets = ' +
-		JSON.stringify(assetsObj, fieldsFilter) + ';', false, true);
-		
+			JSON.stringify(assetsObj, fieldsFilter) + ';', false, true);
+
 		let classesSrc = editor.ClassesLoader.gameObjClasses.concat(editor.ClassesLoader.sceneClasses);
 		classesSrc.sort((a, b) => {
 			if(a.c.name > b.c.name) {
 				return 1;
-			} else if (a.c.name < b.c.name) {
+			} else if(a.c.name < b.c.name) {
 				return -1;
 			}
 			return 0;
@@ -148,11 +148,11 @@ let classes = {};`];
 			editor.ui.modal.showError(R.div({dangerouslySetInnerHTML: {__html: result.output}}), 30006);
 		} else if(!editor.buildProjectAndExit) {
 			let url = '/games/' + editor.currentProjectDir + (debug ? 'debug' : 'release');
-			
+
 			editor.openUrl(url);
-					
+
 			if(result.output) {
-				editor.ui.modal.showModal(R.div({style:{textAlign: 'left'}, dangerouslySetInnerHTML: {__html: result.output}}));
+				editor.ui.modal.showModal(R.div({style: {textAlign: 'left'}, dangerouslySetInnerHTML: {__html: result.output}}));
 			}
 		}
 	}
@@ -171,7 +171,7 @@ function findClassNameInPrefabData(name, data) {
 	if(data.c === name) {
 		return true;
 	}
-	if(data.hasOwnProperty(':')){
+	if(data.hasOwnProperty(':')) {
 		return data[':'].some((d) => {
 			return findClassNameInPrefabData(name, d);
 		});

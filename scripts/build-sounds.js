@@ -34,17 +34,17 @@ module.exports = async function (projectPath, options) {
 
 	let cache;
 	let cacheFn = path.join(projectPath, 'snd/snd-convert-cache.json');
-	if (fs.existsSync(cacheFn)) {
+	if(fs.existsSync(cacheFn)) {
 		cache = JSON.parse(fs.readFileSync(cacheFn));
 	} else {
 		cache = {};
 	}
 	let filesToConvert = [];
 
-	
+
 	let files = walkSync(soundsPath);
-	for (let fn of files) {
-		if (fn.endsWith('.wav') && (fn.indexOf('/~') < 0) && (fn.indexOf('\\~') < 0)) {
+	for(let fn of files) {
+		if(fn.endsWith('.wav') && (fn.indexOf('/~') < 0) && (fn.indexOf('\\~') < 0)) {
 			let s = fs.statSync(fn);
 
 			let shortName = fn.replace(/\\/g, '/');
@@ -67,7 +67,7 @@ module.exports = async function (projectPath, options) {
 				}
 			}
 
-			if (!allTargetFilesExists || (options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs) || (bitrate !== cache[shortName].bitrate)) {
+			if(!allTargetFilesExists || (options.noCacheSoundName === shortName) || !cache.hasOwnProperty(shortName) || (s.mtimeMs !== cache[shortName].mtimeMs) || (bitrate !== cache[shortName].bitrate)) {
 				filesToConvert.push(fn);
 				if(!hash) {
 					hash = await md5FileSafe(fn);
@@ -80,13 +80,13 @@ module.exports = async function (projectPath, options) {
 			}
 		}
 	}
-	if (filesToConvert.length < 1) {
+	if(filesToConvert.length < 1) {
 		resolve(result);
 		return retPromise;
 	}
 
 	function convertNextFile() {
-		if (filesToConvert.length < 1 || result.errors) {
+		if(filesToConvert.length < 1 || result.errors) {
 			if(!result.errors) {
 				fs.writeFileSync(cacheFn, JSON.stringify(cache));
 			}
@@ -96,7 +96,7 @@ module.exports = async function (projectPath, options) {
 
 			let f = options.formats.slice(0);
 			const conv = () => {
-				if (f.length < 1) {
+				if(f.length < 1) {
 					convertNextFile();
 				} else {
 					result.updated = true;
@@ -163,7 +163,7 @@ module.exports = async function (projectPath, options) {
 			}
 
 			exec(ffmpegPath + ' -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
-				if (err) {
+				if(err) {
 					errorArgs = [err, outError, out];
 					console.log(err, out);
 					console.error(outError);
@@ -182,11 +182,11 @@ function md5FileSafe(fn) {
 	return new Promise((resolve) => {
 		try {
 			resolve(md5File.sync(fn));
-		} catch (er) { // eslint-disable-line no-empty
+		} catch(er) { // eslint-disable-line no-empty
 			setInterval(() => {
 				try {
 					resolve(md5File.sync(fn));
-				} catch (er) {}// eslint-disable-line no-empty
+				} catch(er) { }// eslint-disable-line no-empty
 			}, 1000);
 		}
 	});
@@ -197,9 +197,9 @@ const walkSync = (dir, filelist = []) => {
 	fs.readdirSync(dir).forEach(file => {
 		let stats = fs.statSync(path.join(dir, file));
 
-		if (stats.isDirectory()) {
+		if(stats.isDirectory()) {
 			filelist = walkSync(path.join(dir, file), filelist);
-		} else if (stats.size > 0) {
+		} else if(stats.size > 0) {
 			filelist.push(path.join(dir, file));
 		}
 	});

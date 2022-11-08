@@ -3,9 +3,9 @@ import game from "../game.js";
 /// #if DEBUG
 window.assert = (expression, message, errorCode) => {
 	message = 'Assert: ' + message;
-	if (!expression) {
+	if(!expression) {
 		/// #if EDITOR
-		if (window.editor) {
+		if(window.editor) {
 			editor.ui.modal.showError(message, errorCode);
 
 			if(editor.game && editor.game.__EDITOR_mode) {
@@ -18,7 +18,7 @@ window.assert = (expression, message, errorCode) => {
 		/// #endif
 		alert(message);
 		//*/
-		debugger;
+		debugger; // eslint-disable-line no-debugger
 		throw message;
 	}
 };
@@ -27,9 +27,9 @@ if(document.cookie.indexOf('isThingEditor') >= 0) { //enable proxy if game launc
 	let originalFetch = window.fetch;
 
 	window.fetch = (url, options) => {
-		
+
 		url = canonicalize(url);
-		
+
 		if(!game.projectDesc || !game.projectDesc.__proxyFetchesViaNodeServer || url.startsWith(location.origin) || window.location.href.startsWith('file://')) {
 			return originalFetch(url, options);
 		} else {
@@ -69,26 +69,26 @@ const stepTo = (val, to, step) => {
 	assert(!isNaN(val), "stepTo val, valid number expected.");
 	assert(!isNaN(to), "stepTo to, valid number expected.");
 	assert(!isNaN(step), "stepTo step, valid number expected.");
-	if(Math.abs(val-to) <= step) return to;
+	if(Math.abs(val - to) <= step) return to;
 	if(val > to) {
 		return val - step;
 	}
 	return val + step;
 };
 
-const stepToR = (val, target, step) => {  
+const stepToR = (val, target, step) => {
 	assert(!isNaN(val), "stepToR val, valid number expected.");
 	assert(!isNaN(target), "stepToR to, valid number expected.");
 	assert(!isNaN(step), "stepToR step, valid number expected.");
-	if ((target - val) > Math.PI) {
+	if((target - val) > Math.PI) {
 		val += PI2;
-	} else if ((target - val) < -Math.PI) {
+	} else if((target - val) < -Math.PI) {
 		val -= PI2;
 	}
-	if (Math.abs(val - target) <= step) {
+	if(Math.abs(val - target) <= step) {
 		return target;
 	}
-	if (val < target) {
+	if(val < target) {
 		return val + step;
 	}
 	return val - step;

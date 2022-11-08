@@ -58,7 +58,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 	let atLeastOnePartFixed = false;
 
 	assert(pathes.length === oldRefs.length, "DataPathFixer refs count does not match.");
-	
+
 	let clones = [];
 	game.currentContainer.forAllChildren((o) => {
 		if(__getNodeExtendData(o).__isJustCloned) {
@@ -90,7 +90,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 		let repairNode;
 		let newPath = path;
 
-		
+
 		if(clones.length) { //is was clone or paste. try to rename cloned nodes to fix ref
 			for(let c of clones) {
 				let tmpName = c.name;
@@ -132,7 +132,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 				}
 
 				if(repairNode !== oldRef) { //try to insert "parent" somwhere in chain
-					for(let i = 0; i < pathParts.length;) { 
+					for(let i = 0; i < pathParts.length;) {
 						i++;
 						let a = pathParts.slice(0);
 						a.splice(i, 0, 'parent');
@@ -150,7 +150,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 					if(!changedName) {
 						changedName = 'new' + changedNode.constructor.name;
 						let i = 1;
-						while(changedNode.parent.getChildByName(changedName + i)){
+						while(changedNode.parent.getChildByName(changedName + i)) {
 							i++;
 						}
 						changedName += i;
@@ -161,7 +161,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 						}, 1);
 					}
 					changedName = '#' + changedName;
-					for(let i = 0; i < pathParts.length;) { 
+					for(let i = 0; i < pathParts.length;) {
 						i++;
 						let a = pathParts.slice(0);
 						a.splice(i, 0, changedName);
@@ -184,7 +184,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 	assert(atLeastOnePartFixed, "Path fixing error.");
 
 	//apply fixed path
-	
+
 	let finalPath = pathes.shift();
 	if(pathes.length > 0) {
 		finalPath += '`' + pathes.join(',');
@@ -207,7 +207,7 @@ const tryToFixDataPath = (node, fieldname, path_, oldRefs, currentRefs) => {
 			}
 		}
 	}
-	
+
 	if(keyframe) {
 		keyframe.a = finalPath;
 	} else {
@@ -263,7 +263,7 @@ const validateRefEntry = (m, o) => {
 			let path = item.path;
 			let oldRefs = item.targetNodes;
 			let currentRefs = getLatestSceneNodesByComplexPath(path, o);
-			
+
 			for(let i = 0; i < oldRefs.length; i++) {
 				if(oldRefs[i] !== currentRefs[i]) {
 					if(!tryToFixDataPath(o, fieldname, path, oldRefs, currentRefs)) {
@@ -288,10 +288,10 @@ const validateRefEntry = (m, o) => {
 						let splitter = '`';
 
 						editor.ui.status.warn(R.span(null, 'Path reference (', pathParts.map((pathPart, partNum) => {
-							let ret = ((oldRefs[partNum] !== currentRefs[partNum]) ? R.b : R.span)({key : partNum}, pathPart, partNum < (pathParts.length-1) ? splitter : undefined);
+							let ret = ((oldRefs[partNum] !== currentRefs[partNum]) ? R.b : R.span)({key: partNum}, pathPart, partNum < (pathParts.length - 1) ? splitter : undefined);
 							splitter = ',';
 							return ret;
-						}) ,') is affected: Was: ', was, ' Become: ', become), 32016, o, fieldname);
+						}), ') is affected: Was: ', was, ' Become: ', become), 32016, o, fieldname);
 					}
 				}
 			}

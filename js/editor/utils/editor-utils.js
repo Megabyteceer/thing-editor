@@ -15,7 +15,7 @@ for(let factoryType of ['div', 'span', 'img', 'button', 'input', 'label', 'b', '
 	};
 }
 
-R.fragment = function(...theArgs) {
+R.fragment = function (...theArgs) {
 	return React.createElement(React.Fragment, null, ...theArgs);
 };
 
@@ -44,17 +44,17 @@ let libNumCounter = 0;
 let libNumbers = {};
 let _libInfoCache = {};
 R.libInfo = (libName, fileName) => {
-	let cacheKey =  libName + '~' + fileName;
+	let cacheKey = libName + '~' + fileName;
 	if(!libNumbers[libName]) {
 		libNumbers[libName] = libNumCounter;
 		libNumCounter++;
 	}
 	let title = "LIBRARY: " + libName;
-	
+
 	if(fileName) {
 		title += '\n(right-click on lib icon to copy asset to the project)';
 	}
-				
+
 	if(!_libInfoCache.hasOwnProperty(cacheKey)) {
 		_libInfoCache[cacheKey] = {
 			name: libName,
@@ -67,7 +67,7 @@ R.libInfo = (libName, fileName) => {
 					if(ev.button === 2) {
 						editor.ui.modal.showEditorQuestion(
 							"Copy file?",
-							R.span(null, R.b(null, fileName),R.br(), R.br(), "FROM LIB (" + libName + ") => PROJECT"),
+							R.span(null, R.b(null, fileName), R.br(), R.br(), "FROM LIB (" + libName + ") => PROJECT"),
 							() => {
 								editor.fs.copyAssetToProject(fileName);
 							}
@@ -76,8 +76,8 @@ R.libInfo = (libName, fileName) => {
 					}
 				} : undefined),
 				title,
-				className: fileName ? 'lib-icon clickable' : 'lib-icon'},
-			R.icon('lib' + (libNumbers[libName] % 5))
+				className: fileName ? 'lib-icon clickable' : 'lib-icon'
+			}, R.icon('lib' + (libNumbers[libName] % 5))
 			)
 		};
 	}
@@ -92,8 +92,8 @@ R.multilineText = (txt) => {
 	if(typeof txt !== 'string') {
 		return txt;
 	}
-	return R.div(null, txt.split('\n').map((r, i) =>{
-		return R.div({key:i}, r);
+	return R.div(null, txt.split('\n').map((r, i) => {
+		return R.div({key: i}, r);
 	}));
 };
 
@@ -110,9 +110,9 @@ R.listItem = (view, item, key, parent, help) => {
 	if(parent.selectedItem === item) {
 		className += ' item-selected';
 	}
-	
+
 	return R.div({
-		'data-help' : help,
+		'data-help': help,
 		className: className, key: key, onMouseDown: (ev) => {
 			if(parent.selectedItem !== item || parent.reselectAllowed) {
 				let itemToSelect = parent.onSelect(item, ev, parent.selectedItem) || item;
@@ -149,7 +149,7 @@ window.sp = (ev) => {
 window.addEventListener('contextmenu', (ev) => {
 	if(window.isEventFocusOnInputElement(ev)) return;
 	sp(ev);
-	
+
 });
 
 window.addEventListener('keydown', (ev) => {
@@ -157,33 +157,33 @@ window.addEventListener('keydown', (ev) => {
 		/* sp(ev);
 		 editor.reloadAssetsAndClasses();*/
 	}
-	
+
 	if(!window.isEventFocusOnInputElement(ev)) {
 		switch(ev.key) {
-		case "ArrowUp":
-			editor.onSelectedPropsChange('y', ev.ctrlKey ? -10 : -1, true);
-			sp(ev);
-			break;
-		case "ArrowDown":
-			editor.onSelectedPropsChange('y', ev.ctrlKey ? 10 : 1, true);
-			sp(ev);
-			break;
-		case "ArrowLeft":
-			editor.onSelectedPropsChange('x', ev.ctrlKey ? -10 : -1, true);
-			sp(ev);
-			break;
-		case "ArrowRight":
-			editor.onSelectedPropsChange('x', ev.ctrlKey ? 10 : 1, true);
-			sp(ev);
-			break;
+			case "ArrowUp": // eslint-disable-line indent
+				editor.onSelectedPropsChange('y', ev.ctrlKey ? -10 : -1, true); // eslint-disable-line indent
+				sp(ev); // eslint-disable-line indent
+				break; // eslint-disable-line indent
+			case "ArrowDown": // eslint-disable-line indent
+				editor.onSelectedPropsChange('y', ev.ctrlKey ? 10 : 1, true); // eslint-disable-line indent
+				sp(ev); // eslint-disable-line indent
+				break; // eslint-disable-line indent
+			case "ArrowLeft": // eslint-disable-line indent
+				editor.onSelectedPropsChange('x', ev.ctrlKey ? -10 : -1, true); // eslint-disable-line indent
+				sp(ev); // eslint-disable-line indent
+				break; // eslint-disable-line indent
+			case "ArrowRight": // eslint-disable-line indent
+				editor.onSelectedPropsChange('x', ev.ctrlKey ? 10 : 1, true); // eslint-disable-line indent
+				sp(ev); // eslint-disable-line indent
+				break; // eslint-disable-line indent
 		}
 	}
-	
+
 });
 
-window.copyTextByClick = function(ev) {
+window.copyTextByClick = function (ev) {
 	if(ev.ctrlKey) {
-		editor.copyToClipboard(ev.target.hasAttribute('ctrlclickcopyvalue') ? 
+		editor.copyToClipboard(ev.target.hasAttribute('ctrlclickcopyvalue') ?
 			ev.target.getAttribute('ctrlclickcopyvalue') : ev.target.innerText);
 		sp(ev);
 	}
@@ -236,33 +236,33 @@ let _getValStore = (o) => {
 	return _valStore.get(o);
 };
 
-window.shakeDomElement = function(e) {
+window.shakeDomElement = function (e) {
 	e.classList.remove('shake');
 	e.offsetWidth;
 	e.classList.add('shake');
 };
 
 window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(constructor, propertyName) {
-	
+
 	if(!_definedProps.has(constructor)) {
 		_definedProps.set(constructor, {});
 	}
 	let o = _definedProps.get(constructor);
 	if(o.hasOwnProperty(propertyName)) return; //wrapped already
 	o[propertyName] = true;
-	
+
 	let originalSetter;
-	
+
 	let newSetter = function wrapPropertyWithNumberCheckerSetter(val) {
 		assert(typeof val === 'number' && !isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected.', 10001);
 		originalSetter.call(this, val);
 	};
-	
+
 
 	let d;
-	
+
 	let prot = constructor.prototype;
-	while (prot) {
+	while(prot) {
 		d = Object.getOwnPropertyDescriptor(prot, propertyName);
 		if(d) {
 			//console.log("Property " + propertyName + " wrapped.")
@@ -275,21 +275,21 @@ window.wrapPropertyWithNumberChecker = function wrapPropertyWithNumberChecker(co
 		}
 		prot = Object.getPrototypeOf(prot);
 	}
-	
+
 	if(!d) {
 		//console.log("Own property " + propertyName + " wrapped.")
 		let privValue = '__wrapper_store_' + propertyName;
-		
-		originalSetter = function(val) {
+
+		originalSetter = function (val) {
 			_getValStore(this)[privValue] = val;
 		};
 		d = {
-			set: newSetter, get: function() {
+			set: newSetter, get: function () {
 				return _getValStore(this)[privValue];
 			}
 		};
 	}
-	
+
 	try {
 		Object.defineProperty(constructor.prototype, propertyName, d);
 	} catch(er) {
@@ -302,7 +302,7 @@ window.isEventFocusOnInputElement = (ev) => {
 	return (((tag === 'INPUT') && (ev.target.type !== 'checkbox')) || tag === 'TEXTAREA' || tag === 'SELECT');
 };
 
-window.makePreviewSoundButton = function(propName) {
+window.makePreviewSoundButton = function (propName) {
 	return {
 		type: 'btn',
 		title: 'Preview ' + propName + ' sound',
@@ -332,7 +332,7 @@ const classNamePropertyDescriptor = {
 	}
 };
 
-window.makePreviewModeButton = function(title, helpUrl) {
+window.makePreviewModeButton = function (title, helpUrl) {
 	let previewBtnProperty = {
 		type: 'btn',
 		title,
@@ -348,12 +348,12 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmpty =
 	return () => {
 		let ret = [];
 		if(canBeEmpty) {
-			ret.push({name:' ', value:''});
+			ret.push({name: ' ', value: ''});
 		}
 		let a = editor.Lib._getAllPrefabs();
 		for(let name in a) {
 			if(!startsWith || name.startsWith(startsWith)) {
-				ret.push({name:name, value:name});
+				ret.push({name: name, value: name});
 			}
 		}
 		if(filter) {
@@ -363,7 +363,7 @@ window.makePrefabSelector = function makePrefabSelector(startsWith, canBeEmpty =
 	};
 };
 
-window.addEventListener('beforeunload', function() {
+window.addEventListener('beforeunload', function () {
 	editor.exitPrefabMode();
 	if(!editor.game || !editor.game.__EDITOR_mode) { //backup already exist
 		return;
@@ -378,7 +378,7 @@ window.makeSoundSelector = function makeSoundSelector(startsWith, canBeEmpty = t
 	return () => {
 		let ret = [];
 		if(canBeEmpty) {
-			ret.push({name:'EMPTY', value:''});
+			ret.push({name: 'EMPTY', value: ''});
 		}
 		let a = editor.Lib.__soundsList;
 		for(let i of a) {
@@ -396,7 +396,7 @@ window.makeResourceSelectEditablePropertyDescriptor = (name, canBeEmpty, importa
 		type: String,
 		default: '',
 		important: important,
-		select:  () => {
+		select: () => {
 			let a = editor.Lib.__resourcesList;
 			if(filter) {
 				a = a.filter(filter);
@@ -454,7 +454,7 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 			}))) {
 				let a = [];
 				for(let i of ret) {
-					if(i.value.indexOf(currentVal.replace(/\.(png|jpg)/,'')) >= 0 || currentVal.indexOf(i.value.replace(/\.(png|jpg)/,'')) >= 0) {
+					if(i.value.indexOf(currentVal.replace(/\.(png|jpg)/, '')) >= 0 || currentVal.indexOf(i.value.replace(/\.(png|jpg)/, '')) >= 0) {
 						a.unshift(i);
 					} else {
 						a.push(i);
@@ -484,10 +484,10 @@ export default {
 		o.remove = () => {
 			assert(false, "Attempt to remove system node" + debugName, 10002);
 		};
-		o.destroy  = () => {
+		o.destroy = () => {
 			assert(false, "Attempt to destroy system node " + debugName, 10003);
 		};
-		o.detachFromParent  = () => {
+		o.detachFromParent = () => {
 			assert(false, "Attempt to detachFromParent system node " + debugName, 10004);
 		};
 		o.___EDITOR_isHiddenForChooser = true;

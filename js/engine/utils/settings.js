@@ -9,29 +9,29 @@ class Settings {
 	constructor(storageId) {
 		this._storageId = storageId;
 		try {
-			if (typeof(Storage) !== "undefined") {
-				if (localStorage.hasOwnProperty(storageId)) {
+			if(typeof (Storage) !== "undefined") {
+				if(localStorage.hasOwnProperty(storageId)) {
 					this.data = JSON.parse(localStorage[storageId]);
 				}
 			}
 		} catch(er) {
 			this.data = {};
 		}
-		if (!this.hasOwnProperty('data')) {
+		if(!this.hasOwnProperty('data')) {
 			this.data = {};
 		}
 		this.flush = this.flush.bind(this);
 	}
-	
+
 	getItem(name, def) {
-		if (this.data.hasOwnProperty(name)) {
+		if(this.data.hasOwnProperty(name)) {
 			return this.data[name];
 		}
 		return def;
 	}
-	
+
 	setItem(name, val) {
-		if ((val !== this.data[name]) || (typeof(val) === 'object')) {
+		if((val !== this.data[name]) || (typeof (val) === 'object')) {
 			this.data[name] = val;
 			this.changed();
 			if(Settings.globalOnChanged) {
@@ -39,16 +39,16 @@ class Settings {
 			}
 		}
 	}
-	
+
 	removeItem(name) {
-		if (this.data.hasOwnProperty(name)) {
-			delete(this.data[name]);
+		if(this.data.hasOwnProperty(name)) {
+			delete (this.data[name]);
 			this.changed();
 		}
 	}
-	
+
 	changed() {
-		if (!this.hasOwnProperty('__flushInterval')) {
+		if(!this.hasOwnProperty('__flushInterval')) {
 			/// #if EDITOR
 			if(game.__EDITOR_mode) {
 				this.flush();
@@ -63,10 +63,10 @@ class Settings {
 		this.data = {};
 		this.changed();
 	}
-	
+
 	flush() {
-		if (typeof(Storage) !== "undefined") {
-			delete(this.__flushInterval);
+		if(typeof (Storage) !== "undefined") {
+			delete (this.__flushInterval);
 			try {
 				localStorage.setItem(this._storageId, JSON.stringify(this.data,
 					/// #if EDITOR

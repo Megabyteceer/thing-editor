@@ -11,14 +11,14 @@ import Lib from "../lib.js";
 let latestClickTime;
 
 export default class Button extends DSprite {
-	
+
 	init() {
 		super.init();
 
 		/// #if DEBUG
 		this.__initCalled = true;
 		/// #endif
-		
+
 		this.on('pointerdown', this.onDown);
 		this.on('pointerup', this.onUp);
 		this.on('pointerover', this.onOver);
@@ -32,12 +32,12 @@ export default class Button extends DSprite {
 		this.initialScale = this.scale.x;
 		this.initialImage = this.image;
 		if(this.interactive) {
-			this.enable();	
+			this.enable();
 		} else {
 			this.disable();
 		}
 	}
-	
+
 	onRemove() {
 		super.onRemove();
 		this.onOut();
@@ -64,10 +64,10 @@ export default class Button extends DSprite {
 		this.interactive = false;
 		this.buttonMode = false;
 		if(this.hasOwnProperty('callback')) {
-			delete(this.callback);
+			delete (this.callback);
 		}
 	}
-	
+
 	disable() {
 		if(this.initialImage) {
 			this.onUp();
@@ -80,7 +80,7 @@ export default class Button extends DSprite {
 		}
 		this.interactive = false;
 	}
-	
+
 	enable() {
 		if(this.initialImage) {
 			if(this.disabledImage) {
@@ -113,7 +113,7 @@ export default class Button extends DSprite {
 		}
 		/// #endif
 		assert(this.isCanBePressed, "_executeOnClick called for button which could not be pressed at the moment.");
-		
+
 		if(Button.globalOnClick) {
 			Button.globalOnClick(this, source);
 		}
@@ -133,13 +133,13 @@ export default class Button extends DSprite {
 			Sound.play(this.sndClick);
 		}
 	}
-	
+
 	onDown(ev, source = 'pointerdown') {
 		Sound._unlockSound();
 		if(game.time === latestClickTime
-		/// #if EDITOR
+			/// #if EDITOR
 			&& !game.__paused
-		/// #endif
+			/// #endif
 		) {
 			return;
 		}
@@ -155,23 +155,22 @@ export default class Button extends DSprite {
 				if(Button.downedButton) {
 					Button.downedButton.onUp();
 				}
-				if (this.pressImage) {
+				if(this.pressImage) {
 					this.image = this.pressImage;
 				} else {
 					this.scale.x =
-						this.scale.y = this.initialScale  * (this.isOvered ? 1 : 0.9);
+						this.scale.y = this.initialScale * (this.isOvered ? 1 : 0.9);
 				}
 				Button.downedButton = this;
 				this.curDelay = this.repeatDelay
-				/// #if EDITOR
-				* game.__speedMultiplier
+					/// #if EDITOR
+					* game.__speedMultiplier;
 				/// #endif
-				;
 				this._executeOnClick(source);
 			}
 		}
 	}
-	
+
 	update() {
 
 		/// #if EDITOR
@@ -180,7 +179,7 @@ export default class Button extends DSprite {
 				let f;
 				try {
 					f = getValueByPath(this.onClick, this, true);
-				} catch (er){} // eslint-disable-line no-empty
+				} catch(er) { } // eslint-disable-line no-empty
 				if(typeof f !== 'function') {
 					editor.ui.status.error('Wrong onClick handler: ' + this.onClick, 32054, this, 'onClick');
 				}
@@ -204,16 +203,16 @@ export default class Button extends DSprite {
 						this._executeOnClick('autorepeat');
 					}
 					this.curDelay = this.repeatInterval
-					/// #if EDITOR
-					* game.__speedMultiplier
+						/// #if EDITOR
+						* game.__speedMultiplier;
 					/// #endif
-					;
+
 				}
 			}
 		}
 		super.update();
 	}
-	
+
 	onUp() {
 		if(Button.downedButton === this) {
 			if(this.interactive) {
@@ -229,7 +228,7 @@ export default class Button extends DSprite {
 			Button.downedButton = null;
 		}
 	}
-	
+
 	onOver() {
 		if(game.isTouchscreen) return;
 		if(Button.overredButton !== this) {
@@ -241,7 +240,7 @@ export default class Button extends DSprite {
 				this.image = this.hoverImage;
 			} else {
 				this.scale.x =
-						this.scale.y = this.initialScale * 1.05;
+					this.scale.y = this.initialScale * 1.05;
 			}
 			if(this.sndOver) {
 				Sound.play(this.sndOver);
@@ -253,7 +252,7 @@ export default class Button extends DSprite {
 	_onDisableByTrigger() {
 		this.onOut();
 	}
-	
+
 	onOut() {
 		if(Button.overredButton === this) {
 			Button.overredButton = null;
@@ -283,13 +282,13 @@ export default class Button extends DSprite {
 
 	/// #if EDITOR
 	__EDITOR_onCreate() {
-		if(Lib.hasTexture('ui/button.png') ) {
+		if(Lib.hasTexture('ui/button.png')) {
 			this.image = 'ui/button.png';
 		}
-		if(Lib.hasSound('click') ) {
+		if(Lib.hasSound('click')) {
 			this.sndClick = 'click';
 		}
-		if(Lib.hasSound('over') ) {
+		if(Lib.hasSound('over')) {
 			this.sndOver = 'over';
 		}
 	}
@@ -358,20 +357,20 @@ __EDITOR_editableProps(Button, [
 	},
 	{
 		type: String,
-		select:window.makeSoundSelector(),
+		select: window.makeSoundSelector(),
 		name: 'sndClick',
-		filterName:'sndSelector'
+		filterName: 'sndSelector'
 	},
 	{
 		type: String,
-		select:window.makeSoundSelector(),
+		select: window.makeSoundSelector(),
 		name: 'sndOver',
-		filterName:'sndSelector'
+		filterName: 'sndSelector'
 	},
 	{
 		name: 'repeatDelay',
 		type: Number,
-		min:0
+		min: 0
 	},
 	{
 		name: 'repeatInterval',

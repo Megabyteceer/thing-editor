@@ -187,7 +187,6 @@ export default class Sound {
 		if(s.lastPlayStartFrame < game.time
 			/// #if EDITOR
 			|| game.__EDITOR_mode
-
 			/// #endif
 		) {
 			if(!multiInstanced && s.playing()) {

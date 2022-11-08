@@ -8,10 +8,10 @@ let fieldLabelTimelineProps = {className: 'objects-timeline-labels'};
 const buttonsGroupProps = {className: 'timeline-buttons-group'};
 
 export default class TimeMarker extends React.Component {
-	
+
 	constructor(params) {
 		super(params);
-		this.state = {time:0};
+		this.state = {time: 0};
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 
@@ -40,9 +40,9 @@ export default class TimeMarker extends React.Component {
 			}
 		}
 	}
-	
+
 	render() {
-		return R.div({className: 'time-marker-body', onMouseDown:this.onMouseDown},
+		return R.div({className: 'time-marker-body', onMouseDown: this.onMouseDown},
 			R.div(fieldLabelTimelineProps,
 				R.span(buttonsGroupProps,
 					'\u00A0↕',
@@ -59,10 +59,10 @@ export default class TimeMarker extends React.Component {
 					R.btn('paste', Timeline.pasteSelection, Timeline.isPasteAvailable + ' (Ctrl + V)', undefined, 1086, !Timeline.isPasteAvailable)
 				)
 			),
-			R.div({className: 'time-marker', style:{left: this.state.time * this.props.owner.state.widthZoom}},
+			R.div({className: 'time-marker', style: {left: this.state.time * this.props.owner.state.widthZoom}},
 				R.div(timeMarkerLineProps),
 				R.div(timeMarkerLabelProps,
-					R.b(null, this.state.time), R.span(smallTextProps, ' frames (' + (this.state.time/60).toFixed(2) + ' seconds)')
+					R.b(null, this.state.time), R.span(smallTextProps, ' frames (' + (this.state.time / 60).toFixed(2) + ' seconds)')
 				)
 			)
 		);

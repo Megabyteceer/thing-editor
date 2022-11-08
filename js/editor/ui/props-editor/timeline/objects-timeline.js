@@ -14,7 +14,7 @@ export default class ObjectsTimeline extends React.Component {
 	}
 
 	renderTimeLabel(labelName, labelsNamesList) {
-		return React.createElement(TimeLabel, {key:labelName, owner: this, label:this.props.node._timelineData.l[labelName], labelName, labelsNamesList});
+		return React.createElement(TimeLabel, {key: labelName, owner: this, label: this.props.node._timelineData.l[labelName], labelName, labelsNamesList});
 	}
 
 	onLabelChange(label) {
@@ -37,7 +37,7 @@ export default class ObjectsTimeline extends React.Component {
 			Timeline.unselectKeyframe(k);
 		}
 		assert(i >= 0, "Can't find field in timeline");
-		timelineData.f.splice(i,1);
+		timelineData.f.splice(i, 1);
 		this.props.node._disposePlayers();
 		Line.invalidateChartsRenderCache(timelineData);
 		MovieClip.invalidateSerializeCache(this.props.node);
@@ -52,8 +52,8 @@ export default class ObjectsTimeline extends React.Component {
 		let width = 0;
 		if(tl) {
 			for(let f of tl.f) {
-				if(f.t[f.t.length -1].t > width) {
-					width = f.t[f.t.length -1].t;
+				if(f.t[f.t.length - 1].t > width) {
+					width = f.t[f.t.length - 1].t;
 				}
 			}
 		}
@@ -62,13 +62,15 @@ export default class ObjectsTimeline extends React.Component {
 
 		let previewMarker;
 		if(this.props.node.__previewFrame) {
-			previewMarker = R.div({className: 'preview-frame-marker', style: {
-				left: this.props.node.__previewFrame * this.props.widthZoom
-			}}, 'Preview frame');
+			previewMarker = R.div({
+				className: 'preview-frame-marker', style: {
+					left: this.props.node.__previewFrame * this.props.widthZoom
+				}
+			}, 'Preview frame');
 		}
 
 		let labelsPanel = R.div({
-			onMouseDown:(ev) => { //create new label by right click
+			onMouseDown: (ev) => { //create new label by right click
 				if(tl && ev.buttons === 2) {
 					let time = Timeline.mouseEventToTime(ev);
 
@@ -81,24 +83,22 @@ export default class ObjectsTimeline extends React.Component {
 						}
 					});
 				} else if(ev.ctrlKey) {
-					editor.onObjectsPropertyChanged(this.props.node, '__previewFrame',  Timeline.mouseEventToTime(ev));
+					editor.onObjectsPropertyChanged(this.props.node, '__previewFrame', Timeline.mouseEventToTime(ev));
 				} else {
 					this.props.owner.setTime(Timeline.mouseEventToTime(ev));
 					this.props.owner.startTimeDragging();
 				}
 			},
-			style:{width},
-			title:tl && 'Right click to add time label\nCtrl + click to set preview frame',
-			className:'timeline-labels-panel'
-		},
-		previewMarker,
-		labelsNames
+			style: {width},
+			title: tl && 'Right click to add time label\nCtrl + click to set preview frame',
+			className: 'timeline-labels-panel'
+		}, previewMarker, labelsNames
 			.sort((l1, l2) => {
 				const t1 = this.props.node._timelineData.l[l1].t;
 				const t2 = this.props.node._timelineData.l[l2].t;
 				return t1 === t2 ? l2.length - l1.length : t2 - t1;
 			})
-			.map((labelName)=> {
+			.map((labelName) => {
 				return this.renderTimeLabel(labelName, labelsNames);
 			}));
 
@@ -106,7 +106,7 @@ export default class ObjectsTimeline extends React.Component {
 		return R.div(objectsTimelineProps,
 			labelsPanel,
 			tl && tl.f.map((field, i) => {
-				return React.createElement(FieldsTimeline, {field, fieldIndex:i, key:field.n, owner:this});
+				return React.createElement(FieldsTimeline, {field, fieldIndex: i, key: field.n, owner: this});
 			})
 		);
 	}

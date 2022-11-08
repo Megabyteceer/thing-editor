@@ -7,16 +7,16 @@ import {stepTo} from '../utils/utils.js';
 
 function formatMoney(num, c = 0) {
 	assert(typeof num === 'number', "Numeric value expected, but got '" + typeof num + "'", 10012);
-	
+
 	let neg = num < 0;
 	let ret;
 	if(neg) {
 		num = -num;
 	}
 
-	if (c > 0) {
+	if(c > 0) {
 		let str = num.toFixed(c).split('.');
-		if (str[0].length > 3) {
+		if(str[0].length > 3) {
 			str[0] = str[0].replace(/(.)(?=(.{3})+$)/g, '$1 ');
 		}
 		ret = str.join('.');
@@ -39,25 +39,25 @@ export default class Label extends Text {
 		this.processedVal = undefined;
 		this.lastUpdateTime = game.time;
 	}
-	
+
 	onLanguageChanged() {
 		if(this._translatableText) {
 			this.showedVal = undefined;
 			this.refreshNow();
-			
+
 			if(
-			/// #if EDITOR
+				/// #if EDITOR
 				game.__EDITOR_mode ||
 				/// #endif
 				game.__paused) super.onLanguageChanged();
-		
+
 		}
 	}
 
 	customizeVal(val) {
 		return val;
 	}
-	
+
 	update() {
 		if((game.time - this.lastUpdateTime) > 1) {
 			this.refreshNow();
@@ -65,7 +65,7 @@ export default class Label extends Text {
 		this.lastUpdateTime = game.time;
 
 		if(this.currentInterval <= 0 && this.dataPath) {
-			
+
 			let val = getValueByPath(this.dataPath, this);
 			val = this.customizeVal(val);
 			if(val || val === 0) {
@@ -75,7 +75,7 @@ export default class Label extends Text {
 					}
 					this.processedVal = val;
 				}
-				
+
 				if(val !== this.showedVal) {
 					this.visible = true;
 					this.applyValue(val);
@@ -85,7 +85,7 @@ export default class Label extends Text {
 				this.showedVal = undefined;
 				this.visible = false;
 			}
-		
+
 			this.currentInterval = this.refreshInterval;
 		} else {
 			this.currentInterval--;
@@ -96,14 +96,14 @@ export default class Label extends Text {
 	applyValue(val) {
 		if(this.isNumeric) {
 			if((this.counterSpeed < 1) && (this.showedVal !== undefined)) {
-				let step = Math.max(1 / Math.pow(10, this.decimalsCount) , Math.abs((val - (this.showedVal || 0)) * this.counterSpeed));
+				let step = Math.max(1 / Math.pow(10, this.decimalsCount), Math.abs((val - (this.showedVal || 0)) * this.counterSpeed));
 				this.showedVal = stepTo(this.showedVal || 0, val, step);
-				if (this.showedVal === val) {
+				if(this.showedVal === val) {
 					if(this.onCounterFinish) {
 						callByPath(this.onCounterFinish, this);
 					}
 				} else {
-					if (this.onCounter) {
+					if(this.onCounter) {
 						callByPath(this.onCounter, this);
 					}
 				}
@@ -115,11 +115,11 @@ export default class Label extends Text {
 			} else {
 				val = Label.formatMoney(this.showedVal, this.decimalsCount);
 			}
-						
+
 		} else {
 			this.showedVal = val;
 		}
-					
+
 		if(this.template) {
 			this.text = this.template.replace('%d', val);
 		} else if(this._translatableText) {
@@ -136,11 +136,11 @@ export default class Label extends Text {
 	unfreezeCounter() {
 		this.currentInterval = 0;
 	}
-	
+
 	refreshNow() {
 		this.currentInterval = 0;
 	}
-	
+
 	/// #if EDITOR
 	__beforeSerialization() {
 		super.__beforeSerialization();
@@ -148,7 +148,7 @@ export default class Label extends Text {
 			this.template = null;
 		}
 	}
-	
+
 	/// #endif
 }
 
@@ -186,7 +186,7 @@ Use '#' to access to child scene nodes by name: <b>game.currentScene.#myChildEle
 		type: String,
 		tip: `Label's text template with <b>%d</b> as marker of place where value will be inserted.
 As example label with template <b>Your money: %d coins</b> will appear on screen as "Your money: 1000 coins".`,
-		disabled:(node) => {
+		disabled: (node) => {
 			return node.translatableText;
 		}
 	},
@@ -197,20 +197,20 @@ As example label with template <b>Your money: %d coins</b> will appear on screen
 	{
 		name: 'plusMinus',
 		type: Boolean,
-		disabled:(node) => {
+		disabled: (node) => {
 			return !node.isNumeric;
 		}
 	},
 	{
 		name: 'counterSpeed',
 		type: Number,
-		min:0.001,
-		max:1,
+		min: 0.001,
+		max: 1,
 		step: 0.001,
 		default: 1,
 		tip: `When counterSpeed is <b>1</b> - label instantly takes and represent value.
 <b>When counterSpeed less that 1</b> - label shows value as counter in few steps`,
-		visible:(node) => {
+		visible: (node) => {
 			return node.isNumeric;
 		}
 	},
@@ -219,7 +219,7 @@ As example label with template <b>Your money: %d coins</b> will appear on screen
 		type: Number,
 		min: 0,
 		max: 20,
-		visible:(node) => {
+		visible: (node) => {
 			return node.isNumeric;
 		}
 	},

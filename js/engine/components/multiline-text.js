@@ -5,7 +5,7 @@ const CENTER = 'center';
 const BOTTOM = 'bottom';
 
 export default class MultilineText extends Text {
-	
+
 
 	init() {
 		super.init();
@@ -24,33 +24,33 @@ export default class MultilineText extends Text {
 		this.applyWorldWrapping();
 	}
 
-	get maxHeightLandscape () {
+	get maxHeightLandscape() {
 		return this._maxHeightLandscape;
 	}
-	
-	set maxHeightLandscape (val) {
+
+	set maxHeightLandscape(val) {
 		this._maxHeightLandscape = val;
 		if(!game.isPortrait && (val !== 0)) {
 			this._applyMaxHeight();
 		}
 	}
 
-	get maxHeightPortrait () {
+	get maxHeightPortrait() {
 		return this._maxHeightPortrait;
 	}
 
-	set maxHeightPortrait (val) {
+	set maxHeightPortrait(val) {
 		this._maxHeightPortrait = val;
 		if(game.isPortrait && (val !== 0)) {
 			this._applyMaxHeight();
 		}
 	}
 
-	get breakWords () {
+	get breakWords() {
 		return this.style.breakWords;
 	}
-	
-	set breakWords (val) {
+
+	set breakWords(val) {
 		this.style.breakWords = val;
 	}
 
@@ -115,8 +115,8 @@ __EDITOR_editableProps(MultilineText, [ //list of editable properties
 		visible: () => { }
 	},
 	{
-		name:'maxWidthLandscape',
-		type:Number,
+		name: 'maxWidthLandscape',
+		type: Number,
 		afterEdited: afterMaxWidthEdit,
 		default: 400,
 		min: 10,
@@ -125,8 +125,8 @@ __EDITOR_editableProps(MultilineText, [ //list of editable properties
 		}
 	},
 	{
-		name:'maxWidthPortrait',
-		type:Number,
+		name: 'maxWidthPortrait',
+		type: Number,
 		afterEdited: afterMaxWidthEdit,
 		default: 400,
 		min: 10,
@@ -169,17 +169,17 @@ function afterMaxHeightEdit() {
 		}
 	} else {
 		switch(o.verticalAlign) {
-		case CENTER:
-			y *= 0.5;
-			break;
-		case BOTTOM:
-			y *= -1;
-			break;
+			case CENTER: // eslint-disable-line indent
+				y *= 0.5; // eslint-disable-line indent
+				break; // eslint-disable-line indent
+			case BOTTOM: // eslint-disable-line indent
+				y *= -1; // eslint-disable-line indent
+				break; // eslint-disable-line indent
 		}
 		let tmpScale = o.scale.x;
 		o.scale.x = 1;
 		o.scale.y = 1;
-		editor.overlay.guideY(y , o);
+		editor.overlay.guideY(y, o);
 		o.scale.x = tmpScale;
 		o.scale.y = tmpScale;
 	}

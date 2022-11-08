@@ -6,7 +6,7 @@ var elem = document.documentElement;
 export default class FullScreen {
 
 	static get isFullscreen() {
-		if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement)
+		if(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement)
 			return true;
 		return false;
 	}
@@ -24,16 +24,16 @@ export default class FullScreen {
 			if(f) {
 				f.call(elem).then(() => {
 					if(game.projectDesc.screenOrientation === 'portrait' || game.projectDesc.screenOrientation === 'landscape') {
-						screen.orientation.lock(game.projectDesc.screenOrientation).catch(() => {});
+						screen.orientation.lock(game.projectDesc.screenOrientation).catch(() => { });
 					}
 				});
 			}
 			game._fireNextOnResizeImmediately();
-		} catch(err) {} // eslint-disable-line no-empty
+		} catch(err) { } // eslint-disable-line no-empty
 	}
 
 	static toggle() {
-		if (FullScreen.isFullscreen) {
+		if(FullScreen.isFullscreen) {
 			FullScreen.close();
 		} else {
 			FullScreen.open();
@@ -51,21 +51,21 @@ export default class FullScreen {
 
 	static _closeInner() {
 		game._fireNextOnResizeImmediately();
-		if (document.exitFullscreen) {
+		if(document.exitFullscreen) {
 			document.exitFullscreen();
-		} else if (document.mozCancelFullScreen) {
+		} else if(document.mozCancelFullScreen) {
 			document.mozCancelFullScreen();
-		} else if (document.webkitExitFullscreen) {
+		} else if(document.webkitExitFullscreen) {
 			document.webkitExitFullscreen();
-		} else if (document.msExitFullscreen) {
+		} else if(document.msExitFullscreen) {
 			document.msExitFullscreen();
 		}
 	}
 }
 
 FullScreen.isAvailable = (elem.requestFullscreen ||
-	elem.mozRequestFullScreen || 
-	elem.webkitRequestFullscreen || 
+	elem.mozRequestFullScreen ||
+	elem.webkitRequestFullscreen ||
 	elem.msRequestFullscreen) && !window.cordova;
 
 

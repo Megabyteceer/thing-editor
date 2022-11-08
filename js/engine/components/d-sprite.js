@@ -9,7 +9,7 @@ export default class DSprite extends Sprite {
 	angleBySpeed() {
 		this.rotation = Math.atan2(this.ySpeed, this.xSpeed);
 	}
-	
+
 	update() {
 		this.x += this.xSpeed;
 		this.y += this.ySpeed;

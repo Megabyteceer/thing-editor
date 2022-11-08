@@ -10,7 +10,7 @@ class SelectEditor extends React.Component {
 
 	constructor(props) {
 		super(props);
-		if (this.props.field) {
+		if(this.props.field) {
 			this.filterName = (this.props.field.filterName || this.props.field.name) + '-filter';
 		}
 		this.state = {};
@@ -69,13 +69,13 @@ class SelectEditor extends React.Component {
 	}
 
 	checkIfCanHide() {
-		if (this.isBlurred && this.mouseLeaved) {
+		if(this.isBlurred && this.mouseLeaved) {
 			this.hide();
 		}
 	}
 
 	hide() {
-		if (this.state.toggled) {
+		if(this.state.toggled) {
 			this.setState({
 				toggled: false
 			});
@@ -84,7 +84,7 @@ class SelectEditor extends React.Component {
 	}
 
 	onToggle() {
-		if (!this.state.toggled && !this.props.disabled) {
+		if(!this.state.toggled && !this.props.disabled) {
 			this.setState({
 				toggled: true,
 				filter: editor.settings.getItem(this.filterName, '')
@@ -122,7 +122,7 @@ class SelectEditor extends React.Component {
 	render() {
 
 		let list = this.props.select || this.props.field.select;
-		if (typeof list === "function") {
+		if(typeof list === "function") {
 			list = list();
 			if(list.length === 0) {
 				return R.span({className: 'danger'}, "empty values list");
@@ -131,12 +131,12 @@ class SelectEditor extends React.Component {
 		let filterInput;
 
 		let item;
-		if (this.props.value) {
+		if(this.props.value) {
 			item = list.find((i) => {
-				if (i.value === this.props.value) return i;
+				if(i.value === this.props.value) return i;
 			});
 			if(!item) {
-				item = R.span({className:'danger'}, this.props.value);
+				item = R.span({className: 'danger'}, this.props.value);
 				if(this.props.field && !this.props.field.isTranslatableKey) {
 					setTimeout(() => {
 						editor.ui.status.error('Invalid enum value: ' + this.props.value + ' ▾', 32002, editor.selection[0], this.props.field.name);
@@ -145,10 +145,10 @@ class SelectEditor extends React.Component {
 			}
 		}
 
-		if (this.state.toggled) {
+		if(this.state.toggled) {
 			let a = list;
-			if (this.props.field) {
-				if (this.state.filter) {
+			if(this.props.field) {
+				if(this.state.filter) {
 					let flt = this.state.filter.toLocaleLowerCase();
 					a = a.filter((i) => {
 						return i === this.selectedItem || _searchByRegexpOrText(i.name, flt) || (i.name === "EMPTY") || !i.value;
@@ -166,10 +166,10 @@ class SelectEditor extends React.Component {
 				placeholder: 'Filter',
 				onChange: this.onFilterChange,
 				defaultValue: this.state.filter,
-				style: this.props.field ? undefined : {width: 0, margin: 0, position:'fixed', padding: 0, height: 0}
+				style: this.props.field ? undefined : {width: 0, margin: 0, position: 'fixed', padding: 0, height: 0}
 			});
 
-			if (this.checkForNeedClearFilter && a.length < 1) {
+			if(this.checkForNeedClearFilter && a.length < 1) {
 				this.checkForNeedClearFilter = false;
 				setTimeout(() => {
 					this.setFilter('');
@@ -195,14 +195,14 @@ class SelectEditor extends React.Component {
 				}, 0);
 				openedList = this;
 
-				ReactDOM.render( R.div({
+				ReactDOM.render(R.div({
 					className: 'select-editor-list',
 					id: 'select-list-content',
 				}, filterInput, a.map(this.renderItem)), document.getElementById('select-lists-root'));
 			}, 0);
 		}
 
-		if (!item) {
+		if(!item) {
 			item = list[0];
 		}
 
@@ -212,16 +212,15 @@ class SelectEditor extends React.Component {
 			onMouseMove: this.onMouseMove,
 			onMouseLeave: this.onMouseLeave,
 			ref: 'body'
-		},
-		R.div({
+		}, R.div({
 			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
 		}, R.span({
 			ctrlclickcopyvalue: this.props.noCopyValue ? undefined : ((typeof item.value === 'undefined') ? item : item.value),
 			className: this.props.noCopyValue ? undefined : 'selectable-text',
 			title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
 			onClick: stopPropagationIfCtrl,
-			onMouseDown:window.copyTextByClick
-		}, item.name ? item.name : item),' ▾')
+			onMouseDown: window.copyTextByClick
+		}, item.name ? item.name : item), ' ▾')
 		);
 	}
 

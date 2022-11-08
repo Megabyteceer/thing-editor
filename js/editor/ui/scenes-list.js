@@ -27,10 +27,10 @@ function askNewSceneName(defaultSceneName = '') {
 			return val.toLowerCase().replace(sceneNameFilter, '');
 		},
 		(val) => { //accept
-			if (Lib.scenes.hasOwnProperty(val)) {
+			if(Lib.scenes.hasOwnProperty(val)) {
 				return "Scene with such name already exists";
 			}
-			if (val.endsWith('/') || val.startsWith('/')) {
+			if(val.endsWith('/') || val.startsWith('/')) {
 				return 'name can not begin or end with "/"';
 			}
 		}
@@ -39,7 +39,7 @@ function askNewSceneName(defaultSceneName = '') {
 
 
 export default class ScenesList extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {};
@@ -47,20 +47,20 @@ export default class ScenesList extends React.Component {
 		this.onSaveAsSceneClick = this.onSaveAsSceneClick.bind(this);
 		this.onNewSceneClick = this.onNewSceneClick.bind(this);
 	}
-	
+
 	onSaveSceneClick() {
 		editor.saveCurrentScene();
 	}
-	
+
 	onSaveAsSceneClick() {
 		let defaultSceneName = editor.currentSceneName.split('/');
 		defaultSceneName.pop();
 		defaultSceneName = defaultSceneName.join('/');
-		if (defaultSceneName) {
+		if(defaultSceneName) {
 			defaultSceneName += '/';
 		}
 		askNewSceneName(defaultSceneName).then((enteredName) => {
-			if (enteredName) {
+			if(enteredName) {
 				editor.saveCurrentScene(enteredName);
 				this.forceUpdate();
 			}
@@ -70,7 +70,7 @@ export default class ScenesList extends React.Component {
 	onNewSceneClick() {
 		editor.askSceneToSaveIfNeed().then(() => {
 			askNewSceneName().then((enteredName) => {
-				if (enteredName) {
+				if(enteredName) {
 					editor.ui.modal.showListChoose("Select type for new scene:", editor.ClassesLoader.sceneClasses.map(i => i.c)).then((selectedClass) => {
 						if(selectedClass) {
 							Lib.__saveScene(Pool.create(selectedClass), enteredName);
@@ -88,20 +88,20 @@ export default class ScenesList extends React.Component {
 	}
 
 	onSceneDeleteClick(sceneName, view) {
-		editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className:'danger'},
-			'Are you sure you want to delete scene: ',R.br(),R.br(), view, ' ?',
-			R.br(),R.br(),
+		editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className: 'danger'},
+			'Are you sure you want to delete scene: ', R.br(), R.br(), view, ' ?',
+			R.br(), R.br(),
 			'You cannot undo this action.'
-		),() => {
+		), () => {
 			Lib.__deleteScene(sceneName);
 			this.forceUpdate();
 		}, 'Delete');
 	}
-	
+
 	onSelect(item) {
 		return item; //virtual method
 	}
-	
+
 	renderItem(sceneName, item) {
 		let cls = Lib.__hasClass(item.c) ? Lib.getClass(item.c) : Scene;
 		let deleteBtn;
@@ -113,13 +113,13 @@ export default class ScenesList extends React.Component {
 				this.onSceneDeleteClick(sceneName, sceneView);
 			}, 'Delete scene...', 'delete-scene-btn');
 		}
-		
+
 		let sceneView = R.span(null,
 			R.classIcon(cls),
 			R.b(sceneNameProps, sceneName),
 			R.span(classNameProps, ' (' + cls.name + ')')
 		);
-		
+
 		return R.div({
 			onDoubleClick: () => {
 				if(editor.currentSceneName !== sceneName) {
@@ -135,21 +135,21 @@ export default class ScenesList extends React.Component {
 				deleteBtn
 			), item, sceneName, this));
 	}
-	
+
 	render() {
 		let libsScenes = Lib._getAllScenes();
 		let bottomPanelClassName = '';
-		if (!editor.currentSceneName) {
+		if(!editor.currentSceneName) {
 			bottomPanelClassName += ' disabled';
 		}
-		
+
 		let scenes = [];
-		for (let sceneName in libsScenes) {
+		for(let sceneName in libsScenes) {
 			scenes.push(this.renderItem(sceneName, libsScenes[sceneName]));
 		}
-		
+
 		scenes = Group.groupArray(scenes);
-		
+
 		return R.fragment(
 			R.div({className: bottomPanelClassName},
 				R.btn('Save', this.onSaveSceneClick, 'Save current Scene (Ctrl + S)', undefined, 1083),
@@ -159,17 +159,17 @@ export default class ScenesList extends React.Component {
 			R.div(bodyProps, scenes)
 		);
 	}
-	
+
 	static chooseScene(title, noEasyClose, filterCurrent = true) {
-		
+
 		let libsScenes = Lib._getAllScenes();
-		
+
 		let scenes = [];
-		for (let sceneName in libsScenes) {
+		for(let sceneName in libsScenes) {
 			if(!filterCurrent || sceneName !== game.currentScene.name) {
 				let sceneData = libsScenes[sceneName];
 				let c = Lib.getClass(sceneData.c);
-				scenes.push({name:sceneName, __EDITOR_icon: c.__EDITOR_icon});
+				scenes.push({name: sceneName, __EDITOR_icon: c.__EDITOR_icon});
 			}
 		}
 		return editor.ui.modal.showListChoose(title || "Choose scene", scenes, noEasyClose).then((choosed) => {
@@ -179,7 +179,7 @@ export default class ScenesList extends React.Component {
 			return null;
 		});
 	}
-	
+
 	static readAllScenesList() {
 		let scenes = {};
 		return Promise.all(
@@ -197,7 +197,7 @@ export default class ScenesList extends React.Component {
 			Lib._setScenes(scenes);
 		});
 	}
-	
+
 	static isSpecialSceneName(sceneName) {
 		return sceneName.indexOf(editor.editorFilesPrefix) === 0;
 	}

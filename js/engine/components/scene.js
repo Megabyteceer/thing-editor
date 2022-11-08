@@ -13,11 +13,11 @@ export default class Scene extends Container {
 	}
 
 	onShow() {
-		
+
 	}
-	
+
 	onHide() {
-		
+
 	}
 
 	onMouseDown(gameMouse, pixiEvent) { //eslint-disable-line no-unused-vars
@@ -25,13 +25,13 @@ export default class Scene extends Container {
 	}
 
 	onMouseMove(gameMouse, pixiEvent) { //eslint-disable-line no-unused-vars
-		
+
 	}
 
 	onMouseUp(gameMouse, pixiEvent) { //eslint-disable-line no-unused-vars
-		
+
 	}
-	
+
 	init() {
 		super.init();
 		this._refreshAllObjectRefs();
@@ -40,16 +40,16 @@ export default class Scene extends Container {
 	}
 
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
-		
+
 		/** @type {ThingSceneAllMap} */
 		this.all = {};
-			
+
 		/// #if EDITOR
 		addAllRefsValidator(this);
 		/// #endif
-		
+
 		allObjectToRefresh = this.all;
-		
+
 		this.forAllChildren(_refreshChildRef);
 		if(game.currentScene === this) {
 			game.all = this.all;
@@ -101,8 +101,8 @@ const ACCES_ASSERTING_Func = () => {
 	assert(false, 'Scene`s "all" object vas not initialized yet. You can not use "all" before call super.init().', 10017);
 };
 const ACCES__ALL_ASSERTING_PROXY = new Proxy({}, {
-	get:ACCES_ASSERTING_Func,
-	set:ACCES_ASSERTING_Func
+	get: ACCES_ASSERTING_Func,
+	set: ACCES_ASSERTING_Func
 });
 
 Scene.prototype.remove.___EDITOR_isHiddenForChooser = true;
@@ -111,14 +111,14 @@ function addAllRefsValidator(scene) {
 	let refsCounter = {};
 	Scene.__refsCounter = refsCounter;
 	let deletionValidator = validatorCounter++;
-	
+
 	scene.all = new Proxy(scene.all, {
-		get:(target, prop) => {
+		get: (target, prop) => {
 			if(prop === '___EDITOR_isGoodForChooser') {
 				return true;
 			} else if(prop === '___EDITOR_ChooserOrder') {
 				return 100000;
-			} 
+			}
 			let ret = target[prop];
 			if(!game.__EDITOR_mode && prop !== 'hasOwnProperty') {
 				let refsWithThanNameCount = refsCounter[prop];
@@ -128,7 +128,7 @@ function addAllRefsValidator(scene) {
 			}
 			return ret;
 		},
-		set:(target, prop, val) => {
+		set: (target, prop, val) => {
 			__getNodeExtendData(val).__allRefsDeletionValidator = deletionValidator;
 			let count = refsCounter[prop] || 0;
 			if(!count) {
@@ -175,7 +175,7 @@ Useful for "cut scenes" and "message scenes" which should be shown only once bef
 	{
 		name: 'faderType',
 		type: String,
-		select:window.makePrefabSelector('fader/', true)
+		select: window.makePrefabSelector('fader/', true)
 	}
 ]);
 

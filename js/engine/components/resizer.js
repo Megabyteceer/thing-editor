@@ -2,8 +2,8 @@ import Container from "./container.js";
 import game from "../game.js";
 import Lib from "../lib.js";
 
-const p0 = new PIXI.Point(0,0);
-const p1 = new PIXI.Point(1,1);
+const p0 = new PIXI.Point(0, 0);
+const p1 = new PIXI.Point(1, 1);
 const p = new PIXI.Point();
 const p2 = new PIXI.Point();
 
@@ -152,46 +152,46 @@ __EDITOR_editableProps(Resizer, [
 		name: 'resizer'
 	},
 	{
-		type:Boolean,
+		type: Boolean,
 		name: 'resizeX'
 	},
 	{
-		type:Boolean,
+		type: Boolean,
 		name: 'resizeY'
 	},
 	{
-		type:Boolean,
+		type: Boolean,
 		name: 'relativeX'
 	},
 	{
 		type: Number,
 		name: 'xPos',
-		min:-1,
-		max:1,
-		step:0.01,
-		visible:(o) => {
+		min: -1,
+		max: 1,
+		step: 0.01,
+		visible: (o) => {
 			return o.relativeX;
 		}
 
 	},
 	{
-		type:Boolean,
+		type: Boolean,
 		name: 'relativeY'
 	},
 	{
 		type: Number,
 		name: 'yPos',
-		min:-1,
-		max:1,
-		step:0.01,
-		visible:(o) => {
+		min: -1,
+		max: 1,
+		step: 0.01,
+		visible: (o) => {
 			return o.relativeY;
 		}
 
-	},{
-		type:Boolean, // 99999_
-		name:'fixed',
-		visible:(o) => {
+	}, {
+		type: Boolean, // 99999_
+		name: 'fixed',
+		visible: (o) => {
 			return o.resizeX || o.resizeY || o.relativeY || o.relativeX;
 		}
 	}

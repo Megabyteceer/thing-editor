@@ -81,16 +81,16 @@ export default class TextInput extends PIXI.Text {
 		return super.text;
 	}
 
-	get isEmpty () {
+	get isEmpty() {
 		return !this.text.trim();
 	}
-	
+
 	focus() {
 		game.addOnClickOnce((ev) => {
 			if(!this.htmlInput) {
 				this.htmlInput = document.createElement('input');
 				this.htmlInput.style.opacity = 0;
-				if (this.inputType === 'number') {
+				if(this.inputType === 'number') {
 					this.htmlInput.pattern = '\d*';
 				}
 				this.htmlInput.style.position = "absolute";
@@ -109,7 +109,7 @@ export default class TextInput extends PIXI.Text {
 		});
 	}
 
-	static prompt(title, message, defaultValue ='', maxLen=16, yesLabel, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/prompt') {
+	static prompt(title, message, defaultValue = '', maxLen = 16, yesLabel, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/prompt') {
 		assert(maxLen > 0, "maxLength should be > 0");
 		TextInput.latestPromptText = undefined;
 		if(Lib.hasPrefab(prefab)) {
@@ -136,7 +136,7 @@ export default class TextInput extends PIXI.Text {
 		} else {
 			let txt = window.prompt(title, defaultValue) || '';
 			txt = txt.trim();
-			
+
 			if(txt.length > maxLen) {
 				txt = txt.substr(0, maxLen);
 			}

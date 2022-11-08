@@ -4,7 +4,7 @@ import game from "../game.js";
 import getValueByPath from "../utils/get-value-by-path.js";
 
 export default class FlyText extends Text {
-	
+
 	init() {
 		super.init();
 		this.phase = 0;
@@ -13,54 +13,54 @@ export default class FlyText extends Text {
 	hide() {
 		this.phase = 0;
 	}
-	
+
 	update() {
 		super.update();
 		this.y -= 1.0;
 		this.phase--;
-		if (this.phase <= 0) {
+		if(this.phase <= 0) {
 			this.alpha -= 0.05;
-			if (this.alpha <= 0.0) {
+			if(this.alpha <= 0.0) {
 				this.remove();
 			}
 		} else {
-			if (this.alpha < 0.95) {
+			if(this.alpha < 0.95) {
 				this.alpha += 0.2;
 			}
 		}
 	}
-	
+
 	static flyText(text, X = null, Y = null, type = 'flytext', lengthAdd = 0, container) {
 		assert(!game.__EDITOR_mode, "Attempt to call FlyText.flyText() in editing mode.", 10010);
 		assert(game.currentContainer, "FlyText.flyText() can be invoked only after first scene has been shown", 10011);
 
 
-		if (typeof X !== 'number') {
+		if(typeof X !== 'number') {
 			X = game.W / 2;
 		}
-		if (typeof Y !== 'number') {
+		if(typeof Y !== 'number') {
 			Y = game.H / 2;
 		}
-		
+
 		let f = Lib.loadPrefab(type);
 		assert(f instanceof FlyText, "FlyText instance expected.", 10011);
 		f.text = text;
 		f.phase = text.length * 6 + lengthAdd;
-		
+
 		let fld = (f.width / 2) + 5.0;
-		
-		if (X < fld) {
+
+		if(X < fld) {
 			X = fld;
 		}
-		
-		if (X > (game.W - fld)) {
+
+		if(X > (game.W - fld)) {
 			X = (game.W - fld);
 		}
-		
+
 		f.alpha = 0.0;
 		f.x = X;
 		f.y = Y;
-		
+
 		if(container) {
 			if(typeof container === 'string') {
 				container = getValueByPath(container, game.currentContainer);

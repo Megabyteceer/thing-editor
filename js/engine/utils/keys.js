@@ -30,13 +30,13 @@ try {
 			keyUpsToApply.push(ev.keyCode);
 		});
 
-		if(w .parent !== w) {
+		if(w.parent !== w) {
 			w = w.parent;
 		} else {
 			break;
 		}
 	}
-} catch (e) {
+} catch(e) {
 	/// catch parent window acess for iframed on another websites
 }
 

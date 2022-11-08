@@ -1,13 +1,13 @@
 import Timeline from "./timeline.js";
 
 export default class TimelineLoopPoint extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.onLoopPointMouseDown = this.onLoopPointMouseDown.bind(this);
 		Timeline.registerDraggableComponent(this);
 	}
-	
+
 	componentDidMount() {
 		Timeline._justModifiedSelectable(this);
 		this.props.keyFrame.___loopPointView = this;
@@ -81,10 +81,12 @@ export default class TimelineLoopPoint extends React.Component {
 		if(keyFrame.j > keyFrame.t) {
 			l = l - w;
 		}
-		return R.div({className:className,
+		return R.div({
+			className: className,
 			title: 'Loop point',
 			onMouseDown: this.onLoopPointMouseDown,
-			style:{width: w, left:l}},
+			style: {width: w, left: l}
+		},
 		);
 	}
 }

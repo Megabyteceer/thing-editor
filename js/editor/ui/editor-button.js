@@ -29,23 +29,23 @@ function isHotkeyBlockedOnInput(btn) {
 }
 
 class EditorButton extends React.Component {
-	
+
 	onKeyDown(e) {
 		if(!this.props.hotkey) {
 			return;
 		}
 		let needCtrl = this.props.hotkey > 1000;
-		
-		if (
-			this.props.disabled || 
+
+		if(
+			this.props.disabled ||
 			((this.props.hotkey === 1067) && window.getSelection().toString()) ||
 			(window.isEventFocusOnInputElement(e) && (isHotkeyBlockedOnInput(this))) ||
 			((this.props.hotkey !== 112) && editor.ui.modal.isUIBlockedByModal(ReactDOM.findDOMNode(this))) // F1 - help hotkey works always
 		) {
 			return;
 		}
-		
-		if ((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
+
+		if((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
 			this.onMouseDown(e);
 			sp(e);
 			return true;
@@ -58,7 +58,7 @@ class EditorButton extends React.Component {
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
-	
+
 	UNSAFE_componentWillReceiveProps(props) {
 		if(this.props.hotkey !== props.hotkey) {
 			if(!props.hotkey && this.props.hotkey) {
@@ -87,23 +87,23 @@ class EditorButton extends React.Component {
 			}
 		}
 	}
-	
+
 	componentWillUnmount() {
 		this.unregisterHotkey();
 	}
-	
+
 	onMouseDown(ev) {
-		if (ev.button === 2) {
+		if(ev.button === 2) {
 			editor.ui.modal.showModal(this.props.onClick.name, "Button's Handler:");
 		} else {
-			if (this.props.disabled) return;
+			if(this.props.disabled) return;
 			DataPathFixer.onNameBlur();
 			this.props.onClick(ev);
 			ev.target.blur();
 		}
 		sp(ev);
 	}
-	
+
 	render() {
 		return R.button({
 			disabled: this.props.disabled,

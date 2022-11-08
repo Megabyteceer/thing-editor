@@ -40,7 +40,7 @@ function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%d' entr
 				}
 			});
 			if(owner) {
-				let tryToFixKey =  editor.projectDesc.__localesNewKeysPrefix + id.split('.').pop();
+				let tryToFixKey = editor.projectDesc.__localesNewKeysPrefix + id.split('.').pop();
 				if(L.has(tryToFixKey)) {
 					editor.onObjectsPropertyChanged(owner, fieldName, tryToFixKey);
 					editor.ui.modal.notify('key changed to: ' + tryToFixKey);
@@ -67,8 +67,8 @@ function L(id, val1 = undefined, val2 = undefined) { //val1 - replaces '%d' entr
 	let ret;
 	if(currentLanguageTable.hasOwnProperty(id)) {
 		ret = currentLanguageTable[id];
-		
-		if (L.messageProcessor) {
+
+		if(L.messageProcessor) {
 			ret = L.messageProcessor(ret, val1, val2);
 		}
 	} else {
@@ -103,15 +103,15 @@ function setCurrentLanguage(languageId) {
 		langIdToApplyAfterLoading = languageId;
 		return;
 	}
-	if (currentLanguageId !== languageId) {
-		if (languages.hasOwnProperty(languageId)) {
+	if(currentLanguageId !== languageId) {
+		if(languages.hasOwnProperty(languageId)) {
 			currentLanguageId = languageId;
 		} else {
 			currentLanguageId = game.projectDesc.defaultLanguage;
 			if(window.navigator && navigator.languages) {
 				for(let l of navigator.languages) {
 					l = l.split('-')[0];
-					if (languages.hasOwnProperty(l)) {
+					if(languages.hasOwnProperty(l)) {
 						currentLanguageId = l;
 						break;
 					}
@@ -121,10 +121,10 @@ function setCurrentLanguage(languageId) {
 		currentLanguageTable = languages[currentLanguageId];
 		L.fefreshAllTextEverywhere();
 	}
-	
+
 }
 
-L.loadLanguages = function(langId, path) {
+L.loadLanguages = function (langId, path) {
 	assert(path, "Path to i18n data folder expected");
 
 	if(!langId) {
@@ -134,14 +134,14 @@ L.loadLanguages = function(langId, path) {
 
 	return new Promise((resolve) => {
 
-		let fn = 
-		/// #if EDITOR	
-		path.endsWith('.json') ? path :
-		/// #endif
-			path + '/' + langId + '.json';
+		let fn =
+			/// #if EDITOR	
+			path.endsWith('.json') ? path :
+				/// #endif
+				path + '/' + langId + '.json';
 		return game.fetchResource(fn).then((data) => {
 			data = L._deserializeLanguage(data);
-			
+
 			/// #if EDITOR	
 			/*
 			/// #endif
@@ -151,13 +151,13 @@ L.loadLanguages = function(langId, path) {
 			resolve(data);
 		});
 	})
-	/// #if EDITOR	
+		/// #if EDITOR	
 		.then((d) => {
 			L.__validateTextData();
 			return d;
-		})
+		});
 	/// #endif
-	;
+
 };
 
 L.has = (id) => {
@@ -186,7 +186,7 @@ L.getLanguagesList = () => {
 
 L.setCurrentLanguage = setCurrentLanguage;
 
-L._deserializeLanguage = function(langSrc) {
+L._deserializeLanguage = function (langSrc) {
 	let ret = {};
 	deserializeEntry(langSrc, ret);
 	return ret;
@@ -196,7 +196,7 @@ function deserializeEntry(src, output, path) {
 	for(let key in src) {
 		if(src.hasOwnProperty(key)) {
 			let val = src[key];
-			if((typeof val) === 'string' ) {
+			if((typeof val) === 'string') {
 				if(path) {
 					output[path + key] = src[key];
 				} else {
@@ -230,7 +230,7 @@ L.__validateTextData = function () {
 					a.push(m);
 				});
 
-				a.sort((a,b) => {
+				a.sort((a, b) => {
 					if(a > b) return 1;
 					if(a < b) return -1;
 					return 0;

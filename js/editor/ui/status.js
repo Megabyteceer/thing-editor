@@ -10,7 +10,7 @@ const warnIcon = R.icon('warn-icon');
 
 const needAddInToList = (map, owner, fieldName, errorCode) => {
 	editor.waitForCondition(() => {
-		return game.projectDesc; 
+		return game.projectDesc;
 	});
 	if(game.projectDesc && game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode) >= 0)) {
 		return;
@@ -40,31 +40,31 @@ const needAddInToList = (map, owner, fieldName, errorCode) => {
 };
 
 export default class Status extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.errorsMap = new WeakMap();
 		this.warnsMap = new WeakMap();
-		
+
 		this.state = {};
 		this.errors = [];
 		this.warns = [];
-		
-		
+
+
 		this.warnsListRef = this.warnsListRef.bind(this);
 		this.errorsListRef = this.errorsListRef.bind(this);
 		this.clear = this.clear.bind(this);
 	}
-	
+
 	errorsListRef(ref) {
 		this.errorsList = ref;
 	}
-	
+
 	warnsListRef(ref) {
 		this.warnsList = ref;
 	}
-	
-	error (message, errorCode, owner, fieldName) {
+
+	error(message, errorCode, owner, fieldName) {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.error(errorCode + ': ' + message + getErrorDetailsUrl(errorCode));
 		let item = {owner, ownerId: owner && owner.___id, message, fieldName, errorCode};
@@ -81,8 +81,8 @@ export default class Status extends React.Component {
 			editor.pauseGame();
 		}
 	}
-	
-	warn (message, errorCode, owner, fieldName, doNoFilterRepeats = false) {
+
+	warn(message, errorCode, owner, fieldName, doNoFilterRepeats = false) {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message + getErrorDetailsUrl(errorCode));
 		if(doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
@@ -99,32 +99,32 @@ export default class Status extends React.Component {
 		}
 	}
 
-	clear () {
+	clear() {
 		this.errors.length = 0;
 		this.warns.length = 0;
-		
+
 		this.errorsMap = new WeakMap();
 		this.warnsMap = new WeakMap();
-		
+
 		this.hide();
 	}
-	
+
 	show() {
-		this.setState({toggled:true});
+		this.setState({toggled: true});
 	}
-	
+
 	hide() {
-		this.setState({toggled:false});
+		this.setState({toggled: false});
 	}
-	
+
 	render() {
 		if(this.state.toggled && ((this.errors.length > 0) || (this.warns.length > 0))) {
 			Window.bringWindowForward('#window-info');
 			return editor.ui.renderWindow('info', 'Notifications', 'Notifications', R.fragment(
 				R.btn('×', this.clear, 'Hide all', 'close-window-btn'),
-				R.div({className:"status-body"},
-					React.createElement(InfoList, {ref: this.errorsListRef, id:'errors-list', title:'Errors:', icon: errorIcon, className:'info-errors-list info-list', list:this.errors, itemsMap:this.errorsMap}),
-					React.createElement(InfoList, {ref: this.warnsListRef, id:'warns-list', title:'Warnings:', icon: warnIcon, className:'info-warns-list info-list', list:this.warns, itemsMap: this.warnsMap})
+				R.div({className: "status-body"},
+					React.createElement(InfoList, {ref: this.errorsListRef, id: 'errors-list', title: 'Errors:', icon: errorIcon, className: 'info-errors-list info-list', list: this.errors, itemsMap: this.errorsMap}),
+					React.createElement(InfoList, {ref: this.warnsListRef, id: 'warns-list', title: 'Warnings:', icon: warnIcon, className: 'info-warns-list info-list', list: this.warns, itemsMap: this.warnsMap})
 				)
 			), 586, 650, 400, 150, 1137, 407);
 		}
@@ -133,17 +133,17 @@ export default class Status extends React.Component {
 }
 
 function getErrorDetailsUrl(errorCode) {
-	if (errorCode && (errorCode < 90000)) {
+	if(errorCode && (errorCode < 90000)) {
 		return " DETAILS: " + Help.getUrlForError(errorCode);
 	}
 	return '';
 }
 
 
-const selectableSceneNodeProps = {className:"selectable-scene-node"};
+const selectableSceneNodeProps = {className: "selectable-scene-node"};
 
 class InfoList extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.renderItem = this.renderItem.bind(this);
@@ -159,53 +159,53 @@ class InfoList extends React.Component {
 		}
 		editor.ui.status.forceUpdate();
 	}
-	
+
 	renderItem(item, i) {
-		
+
 		let node;
 		if(item.owner && item.owner instanceof DisplayObject) {
 			node = R.div(selectableSceneNodeProps, R.sceneNode(item.owner));
 		}
-		return R.div({key:i, className:'info-item clickable', title: "Click line to go problem.", onClick:async (ev) => {
-			if(!item) {
-				return;
-			}
-			if(typeof item.owner === "function") {
-				if(await item.owner(ev)) {
-					this.clearItem(item);
+		return R.div({
+			key: i, className: 'info-item clickable', title: "Click line to go problem.", onClick: async (ev) => {
+				if(!item) {
+					return;
 				}
-			} else if(item.owner && (item.owner instanceof DisplayObject)) {
-				let extendData = __getNodeExtendData(item.owner);
-				if((item.owner.___id !== item.ownerId) || (extendData.statusWarnOwnerId !== item.ownerId)) {
-					let newOwnerFinded;
+				if(typeof item.owner === "function") {
+					if(await item.owner(ev)) {
+						this.clearItem(item);
+					}
+				} else if(item.owner && (item.owner instanceof DisplayObject)) {
+					let extendData = __getNodeExtendData(item.owner);
+					if((item.owner.___id !== item.ownerId) || (extendData.statusWarnOwnerId !== item.ownerId)) {
+						let newOwnerFinded;
 
-					game.forAllChildrenEverywhere((o) => {
-						if(o.constructor === item.owner.constructor && o.___id === item.ownerId) {
-							if(!newOwnerFinded) {
-								item.owner = o;
-								newOwnerFinded = true;
+						game.forAllChildrenEverywhere((o) => {
+							if(o.constructor === item.owner.constructor && o.___id === item.ownerId) {
+								if(!newOwnerFinded) {
+									item.owner = o;
+									newOwnerFinded = true;
+								}
 							}
-						}
-					});
+						});
 
-					if(!newOwnerFinded) {
-						editor.ui.modal.showInfo('Object already removed form stage, or problem was solved.', undefined, 32042);
-						return;
+						if(!newOwnerFinded) {
+							editor.ui.modal.showInfo('Object already removed form stage, or problem was solved.', undefined, 32042);
+							return;
+						}
+					}
+
+					editor.ui.sceneTree.selectInTree(item.owner);
+					if(item.fieldName) {
+						setTimeout(() => {
+							editor.ui.propsEditor.selectField(item.fieldName, true);
+						}, 1);
 					}
 				}
-
-				editor.ui.sceneTree.selectInTree(item.owner);
-				if(item.fieldName) {
-					setTimeout(() => {
-						editor.ui.propsEditor.selectField(item.fieldName, true);
-					}, 1);
-				}
 			}
-		}}, this.props.icon, item.message, node,
-		R.btn('?', () => {
+		}, this.props.icon, item.message, node, R.btn('?', () => {
 			Help.openErrorCodeHelp(item.errorCode);
-		}, 'Open docs for this notification (F1)', 'error-status-help-button', 112),
-		R.btn('×', () => {
+		}, 'Open docs for this notification (F1)', 'error-status-help-button', 112), R.btn('×', () => {
 			this.clearItem(item);
 			item = null;
 		}, "Hide notification", 'clear-item-btn danger-btn')
@@ -217,7 +217,7 @@ class InfoList extends React.Component {
 			return R.div();
 		}
 		return R.div(null,
-			R.div({className:'info-badge'}, this.props.list.length),
+			R.div({className: 'info-badge'}, this.props.list.length),
 			Group.renderGroup({key: this.props.id, content: this.props.list.map(this.renderItem), title: this.props.title})
 		);
 	}

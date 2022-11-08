@@ -2,7 +2,7 @@ import PropsFieldWrapper from './props-field-wrapper.js';
 import Group from '../group.js';
 import Window from '../window.js';
 import Scene from "thing-editor/js/engine/components/scene.js";
-import Lib from	"thing-editor/js/engine/lib.js";
+import Lib from "thing-editor/js/engine/lib.js";
 import game from "thing-editor/js/engine/game.js";
 
 let editorProps = {
@@ -16,18 +16,20 @@ const MIXED_ICON = {
 	__EDITOR_icon: 'tree/mixed-type'
 };
 
-const NOTHING_SELECTED = R.div({style: {
-	display: 'flex',
-	alignItems: 'center',
-	justifyContent: 'center',
-	height: '100%'
-}}, 'Nothing selected');
+const NOTHING_SELECTED = R.div({
+	style: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+		height: '100%'
+	}
+}, 'Nothing selected');
 
 class PropsEditor extends React.Component {
-	
+
 	static showSelectClass(isScene, title) {
 		let classesList;
-		
+
 		if(isScene) {
 			classesList = editor.ClassesLoader.sceneClasses;
 		} else {
@@ -51,7 +53,7 @@ class PropsEditor extends React.Component {
 			if(selectedClass && (editor.selection[0].constructor !== selectedClass)) {
 				let a = editor.selection.slice(0);
 				let selectionData = editor.selection.saveSelection();
-				
+
 				a.some((o) => {
 					if(o.constructor.__beforeChangeToThisType) {
 						o.constructor.__beforeChangeToThisType(o);
@@ -60,8 +62,8 @@ class PropsEditor extends React.Component {
 					Lib.__invalidateSerializationCache(o);
 				});
 
-				let newSceneData = Lib.__serializeObject( game.currentContainer);
-				
+				let newSceneData = Lib.__serializeObject(game.currentContainer);
+
 				a.some((o) => {
 					assert(o.hasOwnProperty('constructor'));
 					delete o.constructor;
@@ -72,7 +74,7 @@ class PropsEditor extends React.Component {
 			}
 		});
 	}
-	
+
 	selectField(fieldName, focus, selectAll) {
 		let a = fieldName.split(',');
 
@@ -86,13 +88,13 @@ class PropsEditor extends React.Component {
 			if(!fldInput) {
 				fldInput = document.querySelector(fieldName);
 			}
-			if (fldInput) {
+			if(fldInput) {
 
 				if(fn === fieldName) {
 					Window.bringWindowForward(fldInput.closest('.window-body'));
 					editor.ui.scrollInToViewAndShake(fldInput);
 				}
-				
+
 				if(focus || selectAll) {
 					let input = fldInput.querySelector('input');
 					if(input) {
@@ -106,20 +108,20 @@ class PropsEditor extends React.Component {
 		}, 1);
 	}
 
-	
+
 	render() {
-		if (editor.selection.length <= 0) {
+		if(editor.selection.length <= 0) {
 			return NOTHING_SELECTED;
 		}
-		
+
 		let header;
 		let firstClass = editor.selection[0].constructor;
-		if(editor.selection.some((o) =>{
+		if(editor.selection.some((o) => {
 			return o.constructor !== firstClass;
 		})) {
 			header = R.fragment(R.classIcon(MIXED_ICON), ' Mixed types selected', '...');
 		} else {
-			header = R.fragment(R.classIcon(firstClass), ' ', R.b( {
+			header = R.fragment(R.classIcon(firstClass), ' ', R.b({
 				className: 'selectable-text',
 				title: 'Ctrl+click to copy Class`s name',
 				onMouseDown: window.copyTextByClick
@@ -127,7 +129,7 @@ class PropsEditor extends React.Component {
 		}
 		let props = editor.enumObjectsProperties(editor.selection[0]);
 		let propsFilter = {};
-		
+
 		for(let o of editor.selection) {
 			let hidePropsEditor = __getNodeExtendData(o).hidePropsEditor;
 			if(hidePropsEditor && !hidePropsEditor.visibleFields) {
@@ -144,7 +146,7 @@ class PropsEditor extends React.Component {
 		props = props.filter((p) => {
 			return propsFilter[p.name] === editor.selection.length;
 		});
-		
+
 		let groups = [];
 		let curGroup, curGroupArray;
 		for(let p of props) {
@@ -163,10 +165,10 @@ class PropsEditor extends React.Component {
 					);
 					continue;
 				}
-			} 
+			}
 
-			if (p.type === 'splitter') {
-				if (curGroup) {
+			if(p.type === 'splitter') {
+				if(curGroup) {
 					groups.push(curGroup);
 				}
 				curGroupArray = [];

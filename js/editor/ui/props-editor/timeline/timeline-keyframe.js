@@ -64,7 +64,7 @@ export default class TimelineKeyframe extends React.Component {
 		const keyFrame = this.props.keyFrame;
 		if(keyFrame.t === 0) {//initial keyframe is locked for dragging
 			let t = this.props.owner.props.owner.props.field.t;
-			if(!t.find((k) => { return k.t === 0 && k !== keyFrame;})) { // but only if no cloned keyframe with 0 time
+			if(!t.find((k) => {return k.t === 0 && k !== keyFrame;})) { // but only if no cloned keyframe with 0 time
 				return;
 			}
 		}
@@ -106,7 +106,7 @@ export default class TimelineKeyframe extends React.Component {
 		cloneKeyframe.___react_id = MovieClip.__generateKeyframeId();
 		timeLineData.push(cloneKeyframe);
 	}
-	
+
 	onKeyframeMouseDown(ev) {
 		if(ev.buttons === 2) {
 			if(this.props.keyFrame.hasOwnProperty('a')) { /// 99999
@@ -140,14 +140,14 @@ export default class TimelineKeyframe extends React.Component {
 			if(keyFrame.j > keyFrame.t) {
 				className += ' loop-arrow-front';
 			}
-			loopArrow = R.svg({className, height:11, width:len},
-				R.polyline({points:'0,0 6,6 3,8 0,0 6,9 '+(len/2)+',10 '+(len-3)+',7 '+len+',0'})
+			loopArrow = R.svg({className, height: 11, width: len},
+				R.polyline({points: '0,0 6,6 3,8 0,0 6,9 ' + (len / 2) + ',10 ' + (len - 3) + ',7 ' + len + ',0'})
 			);
 		}
 		if(keyFrame.hasOwnProperty('r')) {
 			let len = Math.abs(keyFrame.r * width);
-			randomMeter = R.svg({className:(keyFrame.r > 0) ? "keyframe-random-meter" : "keyframe-random-meter keyframe-random-meter-neg", height:4, width:len},
-				R.polyline({points:'0,3 1,1 ' + (len-2) + ',1 ' + (len)+',3'})
+			randomMeter = R.svg({className: (keyFrame.r > 0) ? "keyframe-random-meter" : "keyframe-random-meter keyframe-random-meter-neg", height: 4, width: len},
+				R.polyline({points: '0,3 1,1 ' + (len - 2) + ',1 ' + (len) + ',3'})
 			);
 		}
 
@@ -160,20 +160,18 @@ export default class TimelineKeyframe extends React.Component {
 		if(isUnreachable) {
 			className += ' timeline-keyframe-unreachable';
 		}
-		
+
 		let mark;
 		if(keyFrame.hasOwnProperty('a')) {
 			mark = p.node.__EDITOR_getKeyframeIcon(keyFrame.a);
 		}
-		
-		return R.div({className:className,
+
+		return R.div({
+			className: className,
 			title: isUnreachable ? 'Keyframe is unreachable because of loop or "this.stop" action' : keyFrame.a,
 			onMouseDown: this.onKeyframeMouseDown,
-			style:{height, width: (width < 8) ? 8 : width, left:keyFrame.t * width}},
-		keyFrame.hasOwnProperty('s') ? SPEED_SET_MARK : undefined,
-		mark,
-		loopArrow,
-		randomMeter
+			style: {height, width: (width < 8) ? 8 : width, left: keyFrame.t * width}
+		}, keyFrame.hasOwnProperty('s') ? SPEED_SET_MARK : undefined, mark, loopArrow, randomMeter
 		);
 	}
 }

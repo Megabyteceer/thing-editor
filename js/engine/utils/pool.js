@@ -4,7 +4,7 @@ let __idCounter = 1;
 /// #endif
 
 export default class Pool {
-	
+
 	static clearAll() {
 		/// #if EDITOR
 		Pool.__resetIdCounter();
@@ -19,7 +19,7 @@ export default class Pool {
 	/// #endif
 
 	static create(constructor) {
-		if (!pools.has(constructor)) {
+		if(!pools.has(constructor)) {
 			const ret = new constructor();
 			/// #if EDITOR
 			ret.___id = __idCounter++;
@@ -27,7 +27,7 @@ export default class Pool {
 			return ret;
 		}
 		let a = pools.get(constructor);
-		if (a.length === 0) {
+		if(a.length === 0) {
 			const ret = new constructor();
 			/// #if EDITOR
 			ret.___id = __idCounter++;
@@ -45,18 +45,18 @@ export default class Pool {
 
 		return a.pop(); // eslint-disable-line no-unreachable
 	}
-	
+
 	static dispose(obj) {
 		/// #if EDITOR
 		obj.___id = null;
 		/// #endif
 		let key = obj.constructor;
-		if (!pools.has(key)) {
+		if(!pools.has(key)) {
 			pools.set(key, []);
 		}
 
 		assert(pools.get(key).indexOf(obj) === -1, 'Object already disposed');
-	
+
 		pools.get(key).push(obj);
 	}
 }

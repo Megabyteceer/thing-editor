@@ -15,7 +15,7 @@ export default class Shape extends PIXI.Graphics {
 		super();
 
 		this.__pointsUpdate = this.__pointsUpdate.bind(this);
-		
+
 	}
 
 	/// #endif
@@ -47,68 +47,68 @@ export default class Shape extends PIXI.Graphics {
 	drawThing() {
 		let points;
 		switch(this.shape) {
-		case SHAPE_ROUND_RECT:
-			this.drawRoundedRect(0,0,this.width, this.height, this.shapeRadius);
-			break;
-		case SHAPE_RECT:
-			this.drawRect (0,0,this.width, this.height);
-			break;
-		case SHAPE_CIRCLE:
-			this.drawCircle (0,0,this.shapeRadius);
-			break;
-		case SHAPE_ELLIPSE:
-			this.drawEllipse (0,0,this.width, this.height);
-			break;
-		case SHAPE_POLY:
-			/// #if EDITOR
-			if(!this._shapePoints) {
-				this._shapePoints = [];
-			}
-			while(this._shapePoints.length < DEFAULT_POINTS.length) {
-				let p = {
-					x: DEFAULT_POINTS[this._shapePoints.length][0],
-					y: DEFAULT_POINTS[this._shapePoints.length][1]
-				};
-				this._shapePoints.push(p);
-				Object.freeze(p);
-			}
-			/// #endif
-			if(this._shapePoints.length > 2) {
-				points = [];
-				for(let c of this._shapePoints) {
-					points.push(c.x, c.y);
+			case SHAPE_ROUND_RECT:
+				this.drawRoundedRect(0, 0, this.width, this.height, this.shapeRadius);
+				break;
+			case SHAPE_RECT:
+				this.drawRect(0, 0, this.width, this.height);
+				break;
+			case SHAPE_CIRCLE:
+				this.drawCircle(0, 0, this.shapeRadius);
+				break;
+			case SHAPE_ELLIPSE:
+				this.drawEllipse(0, 0, this.width, this.height);
+				break;
+			case SHAPE_POLY:
+				/// #if EDITOR
+				if(!this._shapePoints) {
+					this._shapePoints = [];
 				}
-				this.drawPolygon(points);
-			}
-			break;
+				while(this._shapePoints.length < DEFAULT_POINTS.length) {
+					let p = {
+						x: DEFAULT_POINTS[this._shapePoints.length][0],
+						y: DEFAULT_POINTS[this._shapePoints.length][1]
+					};
+					this._shapePoints.push(p);
+					Object.freeze(p);
+				}
+				/// #endif
+				if(this._shapePoints.length > 2) {
+					points = [];
+					for(let c of this._shapePoints) {
+						points.push(c.x, c.y);
+					}
+					this.drawPolygon(points);
+				}
+				break;
 		}
 	}
 
 	getHitareaShape() {
 		if(!this._hitAreaCache) {
 			switch(this.shape) {
-			case SHAPE_ROUND_RECT:
-				this._hitAreaCache = new PIXI.RoundedRectangle(this.x, this.y, this.width, this.height, this.shapeRadius);
-				break;
-			case SHAPE_RECT:
-				this._hitAreaCache = new PIXI.Rectangle(this.x, this.y, this.width, this.height);
-				break;
-			case SHAPE_CIRCLE:
-				this._hitAreaCache = new PIXI.Circle(this.x, this.y, this.shapeRadius);
-				break;
-			case SHAPE_ELLIPSE:
-				this._hitAreaCache = new PIXI.Ellipse(this.x, this.y, this.width, this.height);
-				break;
-	
-			case SHAPE_POLY:
-				if(this._shapePoints.length > 2) {
-					let points = [];
-					for(let c of this._shapePoints) {
-						points.push(c.x + this.x, c.y + this.y);
+				case SHAPE_ROUND_RECT:
+					this._hitAreaCache = new PIXI.RoundedRectangle(this.x, this.y, this.width, this.height, this.shapeRadius);
+					break;
+				case SHAPE_RECT:
+					this._hitAreaCache = new PIXI.Rectangle(this.x, this.y, this.width, this.height);
+					break;
+				case SHAPE_CIRCLE:
+					this._hitAreaCache = new PIXI.Circle(this.x, this.y, this.shapeRadius);
+					break;
+				case SHAPE_ELLIPSE:
+					this._hitAreaCache = new PIXI.Ellipse(this.x, this.y, this.width, this.height);
+					break;
+
+				case SHAPE_POLY:
+					if(this._shapePoints.length > 2) {
+						let points = [];
+						for(let c of this._shapePoints) {
+							points.push(c.x + this.x, c.y + this.y);
+						}
+						this._hitAreaCache = new PIXI.Polygon(points);
 					}
-					this._hitAreaCache = new PIXI.Polygon(points);
-				}
-				break;
+					break;
 			}
 		}
 		return this._hitAreaCache;
@@ -143,7 +143,7 @@ export default class Shape extends PIXI.Graphics {
 			/// #endif
 
 			this._drawThing();
-			
+
 			/// #if EDITOR
 			if(s === SHAPE_POLY) {
 				this.__startPointRefreshIfSelected();
@@ -177,7 +177,7 @@ export default class Shape extends PIXI.Graphics {
 	get height() {
 		return this._height;
 	}
-	
+
 	set shapeRadius(s) {
 		this._shapeRadius = s;
 		if(this.__deserialized) {
@@ -272,7 +272,7 @@ export default class Shape extends PIXI.Graphics {
 			// convert old data
 			if(!this._shapePoints) {
 				this._shapePoints = this.children.map((i) => {
-					return {x:i.x, y:i.y};
+					return {x: i.x, y: i.y};
 				});
 				while(this.children.length > 0) {
 					this.children[0].remove();
@@ -289,7 +289,7 @@ export default class Shape extends PIXI.Graphics {
 	}
 
 	__removePolyPoints() {
-		for(let i = this.children.length -1; i >= 0; i--) {
+		for(let i = this.children.length - 1; i >= 0; i--) {
 			let c = this.children[i];
 			if(c.name === '___point') {
 				c.remove();
@@ -376,7 +376,7 @@ export default class Shape extends PIXI.Graphics {
 	}
 
 	__newPointView(src) {
-		let p = Lib._deserializeObject({c:"Shape", p:{}});
+		let p = Lib._deserializeObject({c: "Shape", p: {}});
 		p.name = '___point';
 		p.shape = SHAPE_RECT;
 		p.width = 4;
@@ -390,7 +390,7 @@ export default class Shape extends PIXI.Graphics {
 		this.addChild(p);
 		let extData = __getNodeExtendData(p);
 		extData.rotatorLocked = true;
-		extData.hidePropsEditor = {title: "Polygon's vertex is selected", visibleFields: {x:true, y:true}};
+		extData.hidePropsEditor = {title: "Polygon's vertex is selected", visibleFields: {x: true, y: true}};
 		extData.noSerialize = true;
 		return p;
 	}
@@ -411,7 +411,7 @@ export default class Shape extends PIXI.Graphics {
 				this.__showPoints();
 				this.__pointsUpdateIntervalInitialized = setInterval(this.__pointsUpdate, 40);
 			}
-			
+
 		}
 	}
 	/// #endif
@@ -419,7 +419,7 @@ export default class Shape extends PIXI.Graphics {
 
 /// #if EDITOR
 
-const DEFAULT_POINTS = [[-30,-30], [30, -10], [-10, 30]];
+const DEFAULT_POINTS = [[-30, -30], [30, -10], [-10, 30]];
 
 const DEFAULT_WIDTH = 100;
 const DEFAULT_HEIGHT = 100;
@@ -439,48 +439,48 @@ __EDITOR_editableProps(Shape, [
 		name: 'shape',
 		type: Number,
 		select: [
-			{name:'Rect', value:SHAPE_RECT},
-			{name:'Round Rect', value:SHAPE_ROUND_RECT},
-			{name:'Circle', value:SHAPE_CIRCLE},
-			{name:'Ellipse', value:SHAPE_ELLIPSE},
-			{name:'Polygon', value:SHAPE_POLY}
+			{name: 'Rect', value: SHAPE_RECT},
+			{name: 'Round Rect', value: SHAPE_ROUND_RECT},
+			{name: 'Circle', value: SHAPE_CIRCLE},
+			{name: 'Ellipse', value: SHAPE_ELLIPSE},
+			{name: 'Polygon', value: SHAPE_POLY}
 		],
-		important:true
+		important: true
 	},
 	{
 		name: 'width',
 		type: Number,
-		default:DEFAULT_WIDTH,
-		visible:(o) => {
+		default: DEFAULT_WIDTH,
+		visible: (o) => {
 			return o.shape !== SHAPE_CIRCLE && o.shape !== SHAPE_POLY;
 		},
-		important:true
+		important: true
 	},
 	{
 		name: 'height',
 		type: Number,
-		default:DEFAULT_HEIGHT,
-		visible:(o) => {
+		default: DEFAULT_HEIGHT,
+		visible: (o) => {
 			return o.shape !== SHAPE_CIRCLE && o.shape !== SHAPE_POLY;
 		},
-		important:true
+		important: true
 	},
 	{
 		name: 'shapeRadius',
 		type: Number,
-		default:DEFAULT_RADIUS,
-		visible:(o) => {
+		default: DEFAULT_RADIUS,
+		visible: (o) => {
 			return o.shape === SHAPE_ROUND_RECT || o.shape === SHAPE_CIRCLE;
 		},
-		important:true
+		important: true
 	},
 	{
 		name: 'shapeFillAlpha',
 		type: Number,
-		min:0,
-		max:1,
-		step:0.01,
-		default:1
+		min: 0,
+		max: 1,
+		step: 0.01,
+		default: 1
 	},
 	{
 		name: 'shapeFillColor',
@@ -488,63 +488,63 @@ __EDITOR_editableProps(Shape, [
 		type: Number,
 		max: 0xFFFFFF,
 		min: 0,
-		visible:(o) => {
+		visible: (o) => {
 			return o.shapeFillAlpha > 0;
 		}
 	},
 	{
-		name:'isItHitArea',
+		name: 'isItHitArea',
 		type: Boolean
 	},
 	{
 		name: 'shapeLineWidth',
 		type: Number,
-		min:0
+		min: 0
 	},
 	{
 		name: 'shapeLineColor',
 		basis: 16,
 		type: Number,
 		default: 0xFFFFFF,
-		min:0,
-		max:0xFFFFFF,
-		visible:(o) => {
+		min: 0,
+		max: 0xFFFFFF,
+		visible: (o) => {
 			return o.shapeLineWidth > 0;
 		}
 	},
 	{
 		name: 'shapeLineAlpha',
 		type: Number,
-		min:0,
-		max:1,
-		step:0.01,
-		default:1,
-		visible:(o) => {
+		min: 0,
+		max: 1,
+		step: 0.01,
+		default: 1,
+		visible: (o) => {
 			return o.shapeLineWidth > 0;
 		}
 	},
 	{
 		name: 'shapeLineAlignment',
 		type: Number,
-		min:0,
-		max:1,
-		step:0.01,
-		default:1,
-		visible:(o) => {
+		min: 0,
+		max: 1,
+		step: 0.01,
+		default: 1,
+		visible: (o) => {
 			return o.shapeLineWidth > 0;
 		}
 	},
 	{
-		name:'_spriteRect',
-		type:'ref',
-		visible:() => {
+		name: '_spriteRect',
+		type: 'ref',
+		visible: () => {
 			return false;
 		}
 	},
 	{
-		name:'_shapePoints',
-		type:'ref',
-		visible:(o) => {
+		name: '_shapePoints',
+		type: 'ref',
+		visible: (o) => {
 			return o.shape === SHAPE_POLY;
 		}
 	}

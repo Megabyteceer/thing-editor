@@ -7,7 +7,7 @@ let PORT = 32024;
 let spinnerShown = 0;
 
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: PORT });
+const wss = new WebSocket.Server({port: PORT});
 let clientsConnected = 0;
 let clientSocket;
 
@@ -59,23 +59,23 @@ module.exports = {
 	notify: function notify(notifyText) {
 		send({notifyText});
 	},
-	filesChanged: function(filesChanged) {
+	filesChanged: function (filesChanged) {
 		send({filesChanged});
 	},
-	showSpinner: function(isReshow) {
+	showSpinner: function (isReshow) {
 		if(!isReshow) {
 			spinnerShown++;
 		}
 		send({showSpinner: true});
 	},
-	hideSpinner: function() {
+	hideSpinner: function () {
 		spinnerShown--;
 		send({hideSpinner: true});
 	},
-	call: function(callPath) {
+	call: function (callPath) {
 		send({call: callPath});
 	},
-	sameFiles: function(sameFiles) {
+	sameFiles: function (sameFiles) {
 		send({sameFiles});
 	}
 };

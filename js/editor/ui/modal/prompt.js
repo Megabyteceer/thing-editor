@@ -1,7 +1,7 @@
 let modalRejectProps = {className: 'modal-reject-text'};
 
 export default class Prompt extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {value: props.defaultText || ''};
@@ -9,7 +9,7 @@ export default class Prompt extends React.Component {
 		this.onAcceptClick = this.onAcceptClick.bind(this);
 		this.onKeyDown = this.onKeyDown.bind(this);
 	}
-	
+
 	componentDidMount() {
 		setTimeout(() => {
 			let input = document.querySelector('.modal-content input');
@@ -17,17 +17,17 @@ export default class Prompt extends React.Component {
 				try {
 					input.focus();
 					input.setSelectionRange(0, input.value.length);
-				} catch (er) {} // eslint-disable-line no-empty
+				} catch(er) { } // eslint-disable-line no-empty
 			}
 		}, 1);
 		this.checkAcceptance(this.state.value);
 	}
-	
+
 	onChange(ev) {
 		let val = this.props.filter ? this.props.filter(ev.target.value) : ev.target.value;
 		this.checkAcceptance(val);
 	}
-	
+
 	checkAcceptance(val) {
 		let reject = this.props.accept ? this.props.accept(val) : undefined;
 		this.setState({
@@ -36,24 +36,24 @@ export default class Prompt extends React.Component {
 			accepted: val && !reject
 		});
 	}
-	
+
 	onKeyDown(ev) {
-		if (ev.keyCode === 13 && !this.props.multiline) {
+		if(ev.keyCode === 13 && !this.props.multiline) {
 			this.onAcceptClick();
 		}
 	}
-	
+
 	onAcceptClick() {
-		if (this.state.accepted) {
+		if(this.state.accepted) {
 			editor.ui.modal.hideModal(this.state.value);
 		}
 	}
-	
+
 	render() {
 		let input = (this.props.multiline ? R.textarea : R.input);
 		return R.fragment(
 			R.div(modalRejectProps, this.state.rejectReason || ' '),
-			R.div({className:'prompt-dialogue'},
+			R.div({className: 'prompt-dialogue'},
 				input({value: this.state.value, onKeyDown: this.onKeyDown, onChange: this.onChange})
 			),
 			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', this.props.multiline ? undefined : 13)

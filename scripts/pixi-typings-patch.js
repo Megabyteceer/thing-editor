@@ -42,14 +42,14 @@ patch(
 	forAllChildren (callback: (o:Container)=>void):void;
 	
 	`);
-	
+
 patch(
 	'node_modules/@pixi/sprite/index.d.ts',
 	'export declare class Sprite extends Container {',
 	`
 	image: string;
 	`);
-	
+
 patch(
 	'node_modules/@pixi/text/index.d.ts',
 	'declare class Text_2 extends Sprite {',
@@ -95,7 +95,7 @@ function tryToPatch(folder) {
 	}
 }
 
-module.exports = function(projectRoot) {
+module.exports = function (projectRoot) {
 	projectRoot = path.join(__dirname, '../..', projectRoot);
 	tryToPatch(path.join(__dirname, '..'));
 	while(fs.existsSync(projectRoot)) {

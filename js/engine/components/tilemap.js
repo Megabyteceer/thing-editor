@@ -7,7 +7,7 @@ import Lib from "../lib.js";
 const tmpPoint = new PIXI.Point();
 
 export default class Tilemap extends Container {
-	
+
 	constructor() {
 		super();
 		this.tiles = new Map();
@@ -21,7 +21,7 @@ export default class Tilemap extends Container {
 		/// #endif
 		this.renewAllMap(); /*eslint-disable-line no-unreachable */
 	}
-	
+
 	set tilemap(v) {
 		this._tileMapData = v;
 	}
@@ -33,7 +33,7 @@ export default class Tilemap extends Container {
 		///#endif
 		return this.map; /*eslint-disable-line no-unreachable */
 	}
-	
+
 	set texture(t) {
 		if(this._texture !== t) {
 			this._texture = t;
@@ -51,18 +51,18 @@ export default class Tilemap extends Container {
 	get texture() {
 		return this._texture;
 	}
-	
+
 	getTile(X, Y) {
 		return this.map[X + Y * this.columns];
 	}
-	
+
 	setTile(X, Y, i) {
 		assert(X >= 0 && Y >= 0, "wrong tile coordinates", 90001);
 		/// #if EDITOR
 		if(i < 0) {
 			i = -1;
-		} else if(i > this.__maxTileIndex){
-			editor.ui.status.warn("Attempt to set imageId: " + i + " for tile (" + X +',' + Y + "). But texture contain only 0.." + this.__maxTileIndex, 32029, this);
+		} else if(i > this.__maxTileIndex) {
+			editor.ui.status.warn("Attempt to set imageId: " + i + " for tile (" + X + ',' + Y + "). But texture contain only 0.." + this.__maxTileIndex, 32029, this);
 			return;
 		}
 
@@ -70,23 +70,23 @@ export default class Tilemap extends Container {
 
 		let pos = X + Y * this.columns;
 		if(this.map[pos] !== i /*eslint-disable-line no-constant-condition */
-		/// #if EDITOR
+			/// #if EDITOR
 			|| true
-		///#endif
-		
+			///#endif
+
 		) {
 			this.map[pos] = i;
 			this.getTile8x8(X, Y).setTile(X % 8, Y % 8, i);
 		}
 	}
-	
+
 	getTile8x8(X, Y) {
 		X = X >> 3;
 		Y = Y >> 3;
-		
+
 		let key = Y + X * 32;
-		
-		if (!this.tiles.has(key)) {
+
+		if(!this.tiles.has(key)) {
 			let r = Pool.create(Tile8x8);
 			r.clearMap();
 			r.x = (X * 8 + 4) * this.tileW - this.wField;
@@ -116,15 +116,15 @@ export default class Tilemap extends Container {
 		let visibleAreaW = halfScreenW + 4 * this.tileW;
 		let visibleAreaH = halfScreenH + 4 * this.tileH;
 
-		let tx,ty;
+		let tx, ty;
 
 		for(let t8x8 of this.children) {
 			tx = X + t8x8.x;
 			ty = Y + t8x8.y;
 			t8x8.visible = tx < visibleAreaW &&
-				tx > -visibleAreaW && 
-				ty < visibleAreaH && 
-				ty > -visibleAreaH; 
+				tx > -visibleAreaW &&
+				ty < visibleAreaH &&
+				ty > -visibleAreaH;
 
 			/// #if EDITOR
 			t8x8.visible = true;
@@ -140,16 +140,16 @@ export default class Tilemap extends Container {
 		this.tiles.forEach(clear8x8tile);
 		this.tiles = new Map();
 	}
-	
+
 	onRemove() {
 		super.onRemove();
 		this.dispose8x8Tiles();
 		this.map = null;
 	}
 
-	clear()	{
-		for (let y = 0; y < this.rows; y++ ) {
-			for (let x = 0; x < this.columns; x++) {
+	clear() {
+		for(let y = 0; y < this.rows; y++) {
+			for(let x = 0; x < this.columns; x++) {
 				this.setTile(x, y, -1);
 			}
 		}
@@ -158,17 +158,17 @@ export default class Tilemap extends Container {
 	resizeMapIfNeed() {
 		let size = this.columns * this.rows;
 
-		if (!this.map || (size !== this.map.length)) {
-			
+		if(!this.map || (size !== this.map.length)) {
+
 			/// #if EDITOR
 			let oldMap = this.map;
 			/// #endif
 			this.map = [];
-			for (let i = 0; i < size; i++) {
+			for(let i = 0; i < size; i++) {
 				this.map.push(-1);
 			}
 			/// #if EDITOR
-			if (oldMap) {
+			if(oldMap) {
 				for(let t8x8 of this.children) {
 					t8x8.clearMap();
 				}
@@ -176,13 +176,13 @@ export default class Tilemap extends Container {
 				let W = Math.min(this.columns, this.__appliedColumns);
 				let H = Math.min(this.rows, this.__appliedRows);
 
-				for (let j = H - 1; j >= 0; j--) {
-					for (let i = W - 1; i >= 0; i--) {
-						this.setTile(i,j, oldMap[i+ j * this.__appliedColumns]);
+				for(let j = H - 1; j >= 0; j--) {
+					for(let i = W - 1; i >= 0; i--) {
+						this.setTile(i, j, oldMap[i + j * this.__appliedColumns]);
 					}
 				}
 			}
-			
+
 			this.__appliedColumns = this.columns;
 			this.__appliedRows = this.rows;
 			/// #endif
@@ -214,7 +214,7 @@ export default class Tilemap extends Container {
 		let data = this._tileMapData || this.map;
 		return data.map(imageToType);
 	}
-	
+
 	renewAllMap() {
 		if(!Lib.hasTexture(this.image)) {
 			return;
@@ -235,7 +235,7 @@ export default class Tilemap extends Container {
 		/// #endif
 		this.resizeMapIfNeed();
 		this.__maxTileIndex = this.tilesOnTextureH * this.tilesOnTextureW - 1;
-		
+
 		if(this._tileMapData) {
 			let pos = this.columns * this.rows - 1;
 			let d = this._tileMapData;
@@ -249,8 +249,8 @@ export default class Tilemap extends Container {
 		/// #if EDITOR		
 		else {
 			let pos = this.columns * this.rows - 1;
-			for (let y = this.rows - 1; y >= 0; y--) {
-				for (let x = this.columns - 1; x >= 0; x--) {
+			for(let y = this.rows - 1; y >= 0; y--) {
+				for(let x = this.columns - 1; x >= 0; x--) {
 					this.setTile(x, y, this.map[pos--]);
 				}
 			}
@@ -259,7 +259,7 @@ export default class Tilemap extends Container {
 		this._needRenewAll = false;
 		///#endif
 	}
-	
+
 	/// #if EDITOR
 	__afterDeserialization() {
 		this.map = null;
@@ -271,11 +271,11 @@ export default class Tilemap extends Container {
 		this.__rows = v;
 		this.refreshTilemapDelayed();
 	}
-	
+
 	get rows() {
 		return this.__rows;
 	}
-	
+
 	set columns(v) {
 		this.__columns = v;
 		this.refreshTilemapDelayed();
@@ -364,14 +364,14 @@ class Tile8x8 extends PIXI.SimpleMesh {
 		this.uvTileH = this.parent.uvTileH;
 		this.tilesOnTextureW = this.parent.tilesOnTextureW;
 	}
-	
+
 	setTile(X, Y, i) {
 		this.needRefresh = true;
 		this.map[X + (Y << 3)] = i;
 	}
-	
+
 	clearMap() {
-		for (let i = 0; i < 64; i++) {
+		for(let i = 0; i < 64; i++) {
 			this.map[i] = -1;
 		}
 		this.needRefresh = true;
@@ -387,7 +387,7 @@ class Tile8x8 extends PIXI.SimpleMesh {
 		}
 	}
 
-	rndX(x,y) {
+	rndX(x, y) {
 		if(!this.verticesRandomization) {
 			return 0;
 		}
@@ -396,7 +396,7 @@ class Tile8x8 extends PIXI.SimpleMesh {
 		return ((x * 12347 + y * 7323) ^ 123949) % this.verticesRandomizationMod - this.verticesRandomization;
 	}
 
-	rndY(x,y) {
+	rndY(x, y) {
 		if(!this.verticesRandomization) {
 			return 0;
 		}
@@ -414,30 +414,30 @@ class Tile8x8 extends PIXI.SimpleMesh {
 		let h = this.tileH;
 		let sW = this.srcTileW;
 		let sH = this.srcTileH;
-		
+
 		let uvW = this.uvTileW;
 		let uvH = this.uvTileH;
-		
+
 		let pos = 0;
 		let vert = 0;
 		let i;
-		for(let y=0; y<8; y++) {
-			for(let x=0; x<8; x++) {
+		for(let y = 0; y < 8; y++) {
+			for(let x = 0; x < 8; x++) {
 				i = this.map[pos++];
 				if(i >= 0) {
 
-					let px = x*w;
-					let py = y*h;
+					let px = x * w;
+					let py = y * h;
 					vertices.push(px + this.rndX(x, y), py + this.rndY(x, y));
 					px += sW;
-					vertices.push(px + this.rndX(x+1, y), py + this.rndY(x+1, y));
+					vertices.push(px + this.rndX(x + 1, y), py + this.rndY(x + 1, y));
 					py += sH;
-					vertices.push(px + this.rndX(x+1, y+1), py + this.rndY(x+1, y+1));
+					vertices.push(px + this.rndX(x + 1, y + 1), py + this.rndY(x + 1, y + 1));
 					px -= sW;
-					vertices.push(px + this.rndX(x, y+1), py + this.rndY(x, y+1));
+					vertices.push(px + this.rndX(x, y + 1), py + this.rndY(x, y + 1));
 
-					px = (i % this.tilesOnTextureW)* uvW;
-					py = Math.floor(i/this.tilesOnTextureW) * uvH;
+					px = (i % this.tilesOnTextureW) * uvW;
+					py = Math.floor(i / this.tilesOnTextureW) * uvH;
 					uvs.push(px, py);
 					px += uvW;
 					uvs.push(px, py);
@@ -446,8 +446,8 @@ class Tile8x8 extends PIXI.SimpleMesh {
 					px -= uvW;
 					uvs.push(px, py);
 
-					indices.push(vert, vert+1, vert+2);
-					indices.push(vert, vert+2, vert+3);
+					indices.push(vert, vert + 1, vert + 2);
+					indices.push(vert, vert + 2, vert + 3);
 					vert += 4;
 				}
 			}
@@ -482,50 +482,50 @@ __EDITOR_editableProps(Tilemap, [
 	{
 		name: 'rows',
 		type: Number,
-		min:8,
-		max:256,
+		min: 8,
+		max: 256,
 		default: 8
 	},
 	{
 		name: 'columns',
 		type: Number,
-		min:8,
-		max:256,
+		min: 8,
+		max: 256,
 		default: 8
 	},
 	{
 		name: 'tileW',
 		type: Number,
-		min:16,
-		max:256,
+		min: 16,
+		max: 256,
 		default: 64
 	},
 	{
 		name: 'tileH',
 		type: Number,
-		min:16,
-		max:256,
+		min: 16,
+		max: 256,
 		default: 64
 	},
 	{
 		name: 'wField',
 		type: Number,
-		min:0,
-		max:128,
+		min: 0,
+		max: 128,
 		default: 0
 	},
 	{
 		name: 'hField',
 		type: Number,
-		min:0,
-		max:128,
+		min: 0,
+		max: 128,
 		default: 0
 	},
 	{
 		name: 'verticesRandomization', // 99999
 		type: Number,
-		min:0,
-		max:128,
+		min: 0,
+		max: 128,
 		default: 0
 	}
 ]);

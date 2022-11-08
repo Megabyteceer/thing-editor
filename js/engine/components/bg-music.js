@@ -142,7 +142,7 @@ export default class BgMusic extends Container {
 		} else {
 			globalVolume = Sound.musicVol;
 		}
-		
+
 		return this._volume * this._externalVolume * globalVolume || 0;
 	}
 
@@ -155,7 +155,7 @@ export default class BgMusic extends Container {
 		this.customFade = fade;
 		this.isPlaying = false;
 	}
-	
+
 	_getFade(isFadeOut) {
 		return typeof this.customFade === 'number' ? this.customFade : (isFadeOut ? this.fadeOut : this.fadeIn);
 	}
@@ -202,7 +202,7 @@ export default class BgMusic extends Container {
 		return f || 0;
 	}
 	set ___currentPos(val) {
-		
+
 	}
 
 	__getVolume() {
@@ -227,7 +227,7 @@ const FADER_MUSIC_PRIORITY = 1000000;
 const CURRENT_CONTAINER_MUSIC_PRIORITY = 100000;
 
 function recalculateMusic() {
-	
+
 	musicRecalculationIsScheduled = false;
 
 	/// #if EDITOR
@@ -235,7 +235,7 @@ function recalculateMusic() {
 		return;
 	}
 	/// #endif
-	
+
 	if(game._isWaitingToHideFader) {
 		return;
 	}
@@ -271,9 +271,9 @@ function recalculateMusic() {
 
 	priorities.sort(sortReverted);
 	let muteAllNext = Sound.isSoundsLockedByBrowser || (game._loadingErrorIsDisplayed || ((!game.isFocused
-	/// #if EDITOR
+		/// #if EDITOR
 		&& false
-	/// #endif
+		/// #endif
 	) && game.projectDesc.muteOnFocusLost));
 
 	/// #if EDITOR
@@ -325,8 +325,8 @@ __EDITOR_editableProps(BgMusic, [
 	{
 		name: 'intro',
 		type: String,
-		select:window.makeSoundSelector(),
-		filterName:'musSelector'
+		select: window.makeSoundSelector(),
+		filterName: 'musSelector'
 	},
 	window.makePreviewSoundButton('intro'),
 	{
@@ -334,13 +334,13 @@ __EDITOR_editableProps(BgMusic, [
 		type: Boolean,
 		override: true,
 		default: false,
-		visible: () => {}
+		visible: () => { }
 	},
 	{
 		name: 'loop',
 		type: String,
-		select:window.makeSoundSelector(),
-		filterName:'musSelector'
+		select: window.makeSoundSelector(),
+		filterName: 'musSelector'
 	},
 	window.makePreviewSoundButton('loop'),
 	{
@@ -371,7 +371,7 @@ __EDITOR_editableProps(BgMusic, [
 		default: 0.2,
 		min: 0,
 		step: 0.01
-	},{
+	}, {
 		name: 'fadeOut',
 		type: Number,
 		default: 0.2,

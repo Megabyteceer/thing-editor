@@ -16,16 +16,16 @@ function getSpineInstance(name) {
 	let p = pool(name);
 	if(p.length === 0) {
 		let res = Lib.resources[name];
-		
-		if (!res.spineData) {
+
+		if(!res.spineData) {
 			res.spineData = generateSpineData(res.data, name);
 		}
-		
+
 		let ret = new PIXI.spine.Spine(res.spineData);
 		ret.autoUpdate = false;
 		assert(!ret._poolName, "Spine structure changed. Pooling needs refactoring (_poolName field renaming).");
 		ret._poolName = name;
-		
+
 		return ret;
 	}
 	return p.pop();
@@ -36,7 +36,7 @@ function generateSpineData(skeletonData, spineName) {
 	/// #if EDITOR
 	return spineJsonParser.readSkeletonData(spineAtlas, skeletonData);
 	/// #endif
-	spineJsonParser.attachmentLoader = new PIXI.spine.AtlasAttachmentLoader(spineAtlas);
+	spineJsonParser.attachmentLoader = new PIXI.spine.AtlasAttachmentLoader(spineAtlas); // eslint-disable-line no-unreachable
 	return spineJsonParser.readSkeletonData(skeletonData);
 }
 function createSpineTextureAtlas(skeletonData, spineName) {
@@ -59,9 +59,9 @@ function createSpineTextureAtlas(skeletonData, spineName) {
 	const basePath = spineName.substring(4, spineName.lastIndexOf('/')) + '/';
 	textureNamesSet.forEach(texturePath => {
 		let texture;
-		if (Lib.hasTexture(basePath + texturePath + '.png')) {
+		if(Lib.hasTexture(basePath + texturePath + '.png')) {
 			texture = Lib.getTexture(basePath + texturePath + '.png');
-		} else if (Lib.hasTexture(basePath + texturePath + '.jpg')) {
+		} else if(Lib.hasTexture(basePath + texturePath + '.jpg')) {
 			texture = Lib.getTexture(basePath + texturePath + '.jpg');
 		} else {
 			const textureFileName = texturePath.substring(texturePath.lastIndexOf('/'));
@@ -78,7 +78,7 @@ function createSpineTextureAtlas(skeletonData, spineName) {
 function disposeSpineInstance(o) {
 	o.visible = true;
 	o.tint = 0xffffff;
-	if (o.state.getCurrent(0)) {
+	if(o.state.getCurrent(0)) {
 		o.state.clearTrack(0);
 		o.skeleton.setToSetupPose();
 	}
@@ -123,7 +123,7 @@ export default class Spine extends Container {
 
 		/// #if EDITOR
 		if(game.__EDITOR_mode && !this.__isDeserialization) {
-			
+
 			if(this.spineContent) {
 				if(!this._currentAnimation) {
 					this._currentAnimation = this.spineContent.state.data.skeletonData.animations[0].name;
@@ -136,12 +136,12 @@ export default class Spine extends Container {
 				}
 
 				this.spineContent.skeleton.setSkin(null);
-				if (this.currentSkin) {
+				if(this.currentSkin) {
 					this.spineContent.skeleton.setSkinByName(this.currentSkin);
 				}
 
 				this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
-				
+
 				this._animationIsDirty = false;
 				this.spineContent.update(this.__previewFrame);
 			}
@@ -163,7 +163,7 @@ export default class Spine extends Container {
 		this._releaseSpine();
 	}
 
-	set __duration(v) {}
+	set __duration(v) { }
 
 	get __duration() {
 		return this.spineContent && Math.ceil(this.spineContent.state.data.skeletonData.animations.find((a) => {
@@ -189,7 +189,7 @@ export default class Spine extends Container {
 	get __previewFrame() {
 		return this.___previewFrame || 0;
 	}
-	
+
 	__exitPreviewMode() {
 		if(this.spineContent) {
 			this.spineContent.autoUpdate = false;
@@ -197,7 +197,7 @@ export default class Spine extends Container {
 			this.spineContent.update(this.__previewFrame);
 		}
 	}
-	
+
 	__beforeDeserialization() {
 		this.__isDeserialization = true;
 	}
@@ -211,7 +211,7 @@ export default class Spine extends Container {
 	/// #endif
 
 	gotoLabelRecursive(labelName) {
-		for (let c of this.children) {
+		for(let c of this.children) {
 			if(c !== this.spineContent) {
 				c.gotoLabelRecursive(labelName);
 			}
@@ -228,12 +228,12 @@ export default class Spine extends Container {
 		const isNeedSetInitialAnimation = !this._currentAnimation && this.spineContent;
 		this._currentAnimation = v;
 
-		if (isNeedSetInitialAnimation) {
+		if(isNeedSetInitialAnimation) {
 			this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
 			this.spineContent.update(
 				/// #if EDITOR
 				game.__EDITOR_mode ? this.__previewFrame :
-				/// #endif
+					/// #endif
 					0
 			);
 		} else {
@@ -257,7 +257,7 @@ export default class Spine extends Container {
 	}
 
 	get currentSkin() {
-		if (this._currentSkin && this.spineContent && this.spineContent.skeleton.data.findSkin(this._currentSkin)) {
+		if(this._currentSkin && this.spineContent && this.spineContent.skeleton.data.findSkin(this._currentSkin)) {
 			return this._currentSkin;
 		}
 
@@ -274,7 +274,7 @@ export default class Spine extends Container {
 			this._refreshAnimation();
 		}
 	}
-	
+
 	setLoop(v) {
 		this.loop = v;
 	}
@@ -310,12 +310,12 @@ export default class Spine extends Container {
 
 	set tint(v) {
 		this._tint = v;
-		if (this.spineContent) {
+		if(this.spineContent) {
 			this.spineContent.tint = this.tint;
 			this._refreshAnimation();
 		}
 	}
-	
+
 	get currentFrame() {
 		return this.spineContent.state.tracks[0].getAnimationTime();
 	}
@@ -333,7 +333,7 @@ export default class Spine extends Container {
 	}
 
 	onRemove() {
-		this._releaseSpine();		
+		this._releaseSpine();
 		super.onRemove();
 		this._spineData = null;
 		this._currentAnimation = null;
@@ -341,7 +341,7 @@ export default class Spine extends Container {
 	}
 
 	play(animationName, mixDuration = this.mixDuration) {
-		if (!this.spineContent) return;
+		if(!this.spineContent) return;
 
 		if(animationName) {
 			this.currentAnimation = animationName;
@@ -350,9 +350,9 @@ export default class Spine extends Container {
 		}
 		this.isPlaying = true;
 	}
-	
+
 	playFromFrame(frame, animationName = this._currentAnimation, mixDuration = this.mixDuration) {
-		if (!this.spineContent) return;
+		if(!this.spineContent) return;
 
 		if(animationName) {
 			this.currentAnimation = animationName;
@@ -368,35 +368,35 @@ export default class Spine extends Container {
 		const isSameAnimationPlayed = this.isPlaying && animationName === this.currentAnimation;
 		const isStoppedAndCantPlay = !this.isPlaying && !playIfStopped;
 
-		if (isSameAnimationPlayed || isStoppedAndCantPlay) return;
-		
+		if(isSameAnimationPlayed || isStoppedAndCantPlay) return;
+
 		this.play(animationName, mixDuration);
 	}
 
 	playIfNot(animationName, mixDuration, playIfStopped = true, animationNamesRegexp) {
 		try {
-			if (RegExp(animationNamesRegexp).test(this.currentAnimation)) return;
+			if(RegExp(animationNamesRegexp).test(this.currentAnimation)) return;
 		} catch(e) {
 			assert(true, 'Invalid regular expression for playIfNot function (Spine)');
 		}
-		
-		if (!this.isPlaying && !playIfStopped) return;
+
+		if(!this.isPlaying && !playIfStopped) return;
 
 		this.play(animationName, mixDuration);
 	}
 
 	stop(isNeedRefresh) {
-		if (!this.isPlaying) return;
+		if(!this.isPlaying) return;
 
 		this.isPlaying = false;
-		if (isNeedRefresh) {
+		if(isNeedRefresh) {
 			this._refreshAnimation(true);
 		}
 	}
 
 	stopByName(animationName, isNeedRefresh) {
-		if (!this.isPlaying) return;
-		if (animationName !== this.currentAnimation) return;
+		if(!this.isPlaying) return;
+		if(animationName !== this.currentAnimation) return;
 		this.stop(isNeedRefresh);
 	}
 
@@ -404,19 +404,19 @@ export default class Spine extends Container {
 		if(this.spineContent) {
 			let isNeedUpdate = false;
 
-			if (this.tint !== this.spineContent.tint) {
+			if(this.tint !== this.spineContent.tint) {
 				this.spineContent.tint = this.tint;
 				if(!this.isPlaying) {
 					isNeedUpdate = true;
 				}
 			}
-			
+
 			if(this._animationIsDirty && this._currentAnimation) {
 				this.spineContent.skeleton.setSkin(null);
-				if (this.currentSkin) {
+				if(this.currentSkin) {
 					this.spineContent.skeleton.setSkinByName(this.currentSkin);
 				}
-				
+
 				const trackEntry = this.spineContent.state.setAnimation(0, this._currentAnimation, this._loop);
 				trackEntry.mixDuration = this._setImmediately ? 0 : this.mixDuration;
 				this.updateTime = 0;
@@ -428,7 +428,7 @@ export default class Spine extends Container {
 			}
 			if(this.isPlaying) {
 				this.updateTime += 0.01666666666667;
-			} else if (isNeedUpdate) {
+			} else if(isNeedUpdate) {
 				this.spineContent.update(0);
 			}
 		}
@@ -438,7 +438,7 @@ export default class Spine extends Container {
 			this.updateTime = 0;
 		}
 
-		for (let c of this.children) {
+		for(let c of this.children) {
 			if(c !== this.spineContent) {
 				c.update();
 			}
@@ -446,16 +446,16 @@ export default class Spine extends Container {
 	}
 
 	hackTextureBySlotName(slotName, texture) {
-		if (!this.spineContent) return;
+		if(!this.spineContent) return;
 
 		Spine.currentHackingSpine = this;
-		if (typeof texture === 'string') {
+		if(typeof texture === 'string') {
 			texture = getValueByPath(texture, this);
 		}
-		
+
 		assert(texture !== PIXI.Texture.EMPTY, 'There is problems with setting EMPTY texture to slot (texture should have width and height');
-		
-		if (texture) {
+
+		if(texture) {
 			this.spineContent.hackTextureBySlotName(slotName, texture, texture.orig || texture.frame);
 		} else {
 			this.spineContent.hackTextureBySlotName(slotName, null);
@@ -534,26 +534,26 @@ const skinNamePropDesc = {
 };
 
 Object.defineProperty(Spine.prototype, 'tintR', {
-	get:function () {
+	get: function () {
 		return this.tint >> 16;
 	},
-	set:function (v) {
+	set: function (v) {
 		this.tint = (this.tint & 0xFFFF) | (v << 16);
 	}, configurable: true
 });
 Object.defineProperty(Spine.prototype, 'tintG', {
-	get:function () {
+	get: function () {
 		return (this.tint & 0xFF00) >> 8;
 	},
-	set:function (v) {
+	set: function (v) {
 		this.tint = (this.tint & 0xFF00FF) | (v << 8);
 	}, configurable: true
 });
 Object.defineProperty(Spine.prototype, 'tintB', {
-	get:function () {
+	get: function () {
 		return this.tint & 0xFF;
 	},
-	set:function (v) {
+	set: function (v) {
 		this.tint = (this.tint & 0xFFFF00) | v;
 	}, configurable: true
 });
@@ -564,32 +564,32 @@ __EDITOR_editableProps(Spine, [
 		title: 'Spine:',
 		name: 'spine'
 	},
-	window.makeResourceSelectEditablePropertyDescriptor('spineData', true, true,(r) => {
+	window.makeResourceSelectEditablePropertyDescriptor('spineData', true, true, (r) => {
 		let res = Lib.resources[r.name];
 		return res.data && res.data.hasOwnProperty('skeleton');
 	}),
 	animationNamePropDesc,
 	skinNamePropDesc,
 	{
-		name:'isPlaying',
-		type:Boolean,
-		default:true
+		name: 'isPlaying',
+		type: Boolean,
+		default: true
 	},
 	{
-		name:'loop',
-		type:Boolean,
-		default:true
+		name: 'loop',
+		type: Boolean,
+		default: true
 	},
 	{
-		name:'speed',
-		type:Number,
+		name: 'speed',
+		type: Number,
 		default: 1,
 		min: -1,
 		step: 0.01
 	},
 	{
-		name:'mixDuration',
-		type:Number,
+		name: 'mixDuration',
+		type: Number,
 		default: 0.25,
 		min: 0,
 		step: 0.01
@@ -602,7 +602,7 @@ __EDITOR_editableProps(Spine, [
 		max: 0xFFFFFF,
 		min: 0,
 		notAnimate: true,
-		disabled:(node) => node.useParentTint
+		disabled: (node) => node.useParentTint
 	},
 	{
 		name: 'tintR',
@@ -611,7 +611,7 @@ __EDITOR_editableProps(Spine, [
 		max: 255,
 		min: 0,
 		notSerializable: true,
-		disabled:(node) => node.useParentTint
+		disabled: (node) => node.useParentTint
 	},
 	{
 		name: 'tintG',
@@ -620,7 +620,7 @@ __EDITOR_editableProps(Spine, [
 		max: 255,
 		min: 0,
 		notSerializable: true,
-		disabled:(node) => node.useParentTint
+		disabled: (node) => node.useParentTint
 	},
 	{
 		name: 'tintB',
@@ -629,30 +629,30 @@ __EDITOR_editableProps(Spine, [
 		max: 255,
 		min: 0,
 		notSerializable: true,
-		disabled:(node) => node.useParentTint
+		disabled: (node) => node.useParentTint
 	},
 	{
-		name:'useParentTint',
-		type:Boolean,
+		name: 'useParentTint',
+		type: Boolean,
 		default: false
 	},
 	{
-		name:'spinesPooling',
-		type:Boolean,
+		name: 'spinesPooling',
+		type: Boolean,
 		default: true
 	},
 	{
-		name:'interactiveChildren',
-		type:Boolean,
+		name: 'interactiveChildren',
+		type: Boolean,
 		default: true
 	},
 	{
-		name:'__duration',
-		type:'ref'
+		name: '__duration',
+		type: 'ref'
 	},
 	{
-		name:'__previewFrame',
-		type:Number,
+		name: '__previewFrame',
+		type: Number,
 		min: 0,
 		step: 0.001
 	},
@@ -671,7 +671,7 @@ Spine.prototype.setCurrentAnimation.___EDITOR_callbackParameterChooserFunction =
 Spine.prototype.setCurrentSkin.___EDITOR_isGoodForCallbackChooser = true;
 Spine.prototype.setCurrentSkin.___EDITOR_callbackParameterChooserFunction = (context) => {
 	const spineContent = context.spineContent;
-	if (!context.spineContent || !context.spineContent.skeleton.data.skins) {
+	if(!context.spineContent || !context.spineContent.skeleton.data.skins) {
 		return Promise.resolve('enterSkinNameHere');
 	}
 

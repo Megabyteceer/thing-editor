@@ -20,7 +20,7 @@ let projectDesc = {};
 const descPath = path.join(projectPath, 'thing-project.json');
 if(fs.existsSync(descPath)) {
 	let pureProjectDesc = JSON.parse(fs.readFileSync(descPath));
-	
+
 	if(pureProjectDesc.libs) {
 		for(let libName of pureProjectDesc.libs) {
 			let libSettingsFilename = path.join(getLibRoot(libName), 'settings.json');
@@ -46,10 +46,10 @@ const projectConfig = require(confPath);
 const webpack = require("webpack");
 webpack(projectConfig, (err, stats) => {
 	const isErrors = err || stats.hasErrors();
-	if (isErrors) {
+	if(isErrors) {
 		console.error(`\n[1m[31mBUILD FAILED![0m\n\n${err ? err.message : stats.toString({warnings: false, assets: false, modules: false, colors: true})}`);
 	}
-	if (stats) {
+	if(stats) {
 		console.log(isErrors ? '[1m[31mBUILD FAILED![0m\n' : '[1m[32mBUILD SUCCESS![0m\n');
 		console.log(stats.toString({assets: false, modules: false, colors: true}));
 	}

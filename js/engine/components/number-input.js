@@ -13,7 +13,7 @@ export default class NumberInput extends Container {
 		super();
 		this.onWheel = this.onWheel.bind(this);
 	}
-	
+
 	onWheel(ev) {
 		if(!this.isCanBePressed) {
 			return;
@@ -47,7 +47,7 @@ export default class NumberInput extends Container {
 			}
 		}
 	}
-	
+
 
 	init() {
 		super.init();
@@ -76,11 +76,11 @@ export default class NumberInput extends Container {
 		this._currentTextField = null;
 		document.removeEventListener('wheel', this.onWheel, true);
 	}
-	
+
 	get canDecrease() {
 		return (this.value > this.min) || this.wrapValue;
 	}
-	
+
 	get canIncrease() {
 		return (this.value < this.max) || this.wrapValue;
 	}
@@ -88,21 +88,21 @@ export default class NumberInput extends Container {
 	get canDecreaseVisual() {
 		return ((this.value > this.min) || this.wrapValue) && this.isCanBePressed;
 	}
-	
+
 	get canIncreaseVisual() {
 		return ((this.value < this.max) || this.wrapValue) && this.isCanBePressed;
 	}
-	
+
 	setValuesList(valuesArray) {
 		this._values = valuesArray;
 		this.min = this._values[0];
-		this.max = this._values[this._values.length -1];
+		this.max = this._values[this._values.length - 1];
 	}
-	
+
 	formatValue(val) {
 		return Label.formatMoney(val, this.decimalsCount);
 	}
-	
+
 	update() {
 		if(this.currentInterval <= 0 && this.dataPath) {
 			let val = getValueByPath(this.dataPath, this);
@@ -117,19 +117,19 @@ export default class NumberInput extends Container {
 		} else {
 			this.currentInterval--;
 		}
-		
-		
+
+
 		if(this.value !== this.showedVal) {
 			//console.log('CHANGE TO: ' + this.value);
-			
+
 			if(this._prevTextField) {
 				//console.log('PREV EARLY REMOVED: ' + this._prevTextField.y);
 				this._prevTextField.remove();
 				this._currentTextField.y = 0;
-				
+
 			}
 			this._prevTextField = this._currentTextField;
-			
+
 			let textRef;
 			if(this.textView) {
 				this._currentTextField = Lib.loadPrefab(this.textView);
@@ -143,7 +143,7 @@ export default class NumberInput extends Container {
 				textRef = Lib._loadClassInstanceById('Text');
 				this._currentTextField = textRef;
 			}
-			
+
 			if(this._prevTextField) {
 				let isIncreasing;
 				if(this.wrapValue) {
@@ -161,21 +161,21 @@ export default class NumberInput extends Container {
 			} else {
 				this._currentTextField.y = 0;
 			}
-			
-			
+
+
 			this._currentTextField.x = 0;
-			
+
 			textRef.text = this.formatValue(this.value);
-			
+
 			this.addChild(this._currentTextField);
 			this.showedVal = this.value;
 		}
-		
+
 		if(this.dragging) {
 			if(!game.mouse.click) {
 				this.dragging = false;
 			} else {
-				let tfHeight = this._currentTextField.height  * 0.5;
+				let tfHeight = this._currentTextField.height * 0.5;
 
 				let dy = game.mouse.y - this.startDragY;
 				while(dy > tfHeight) {
@@ -205,16 +205,16 @@ export default class NumberInput extends Container {
 
 			}
 		}
-		
+
 		if(this._currentTextField) {
 			this.ySpeed += this._currentTextField.y * -0.15;
 			this.ySpeed *= 0.7;
-			
-			
+
+
 			this._currentTextField.y += this.ySpeed;
 			this._currentTextField.alpha = 1.0 - Math.abs(this._currentTextField.y / this._currentTextField.height);
 		}
-		
+
 		if(this._prevTextField) {
 			this._prevTextField.y += this.ySpeed;
 			this._prevTextField.alpha = 1.0 - this._currentTextField.alpha;
@@ -225,32 +225,32 @@ export default class NumberInput extends Container {
 			}
 		}
 		super.update();
-		
+
 	}
-	
+
 	onDown() {
 		this.dragging = true;
 		this.prevDragY = game.mouse.y;
 		this.startDragY = this.prevDragY;
 	}
-	
+
 	resetValue() {
 		this.setValue(this.defaultValue);
 	}
-	
+
 	increase(val) {
 		if(this._values) {
 			let a = this._values;
 			if(this.wrapValue) {
 				this.setValue(a[(a.indexOf(this.value) + 1) % a.length]);
 			} else {
-				this.setValue(a[Math.min(a.indexOf(this.value) + 1, a.length-1)]);
+				this.setValue(a[Math.min(a.indexOf(this.value) + 1, a.length - 1)]);
 			}
 		} else {
 			this.setValue(this.value + (val || this.step));
 		}
 	}
-	
+
 	decrease(val) {
 		if(this._values) {
 			let a = this._values;
@@ -263,9 +263,9 @@ export default class NumberInput extends Container {
 			this.setValue(this.value - (val || this.step));
 		}
 	}
-	
-	_modValue (x) {
-		let n = this.max - this.min + 1;	
+
+	_modValue(x) {
+		let n = this.max - this.min + 1;
 		return (((x - this.min) % n + n) % n) + this.min;
 	}
 
@@ -283,18 +283,18 @@ export default class NumberInput extends Container {
 				val = this.max;
 			}
 		}
-		
+
 		if(val !== this.value) {
 			if(this.dataPath) {
 				setValueByPath(this.dataPath, val, this);
 			}
 			this.value = val;
-			if (this.onChanged) {
+			if(this.onChanged) {
 				callByPath(this.onChanged, this);
 			}
 		}
 	}
-	
+
 	refreshNow() {
 		this.currentInterval = 0;
 	}
@@ -321,7 +321,7 @@ __EDITOR_editableProps(NumberInput, [
 	{
 		name: 'max',
 		type: Number,
-		default:100
+		default: 100
 	},
 	{
 		name: 'min',
@@ -340,7 +340,7 @@ __EDITOR_editableProps(NumberInput, [
 	{
 		name: 'textView',
 		type: String,
-		select:window.makePrefabSelector(undefined, true, (selectionItem) => {
+		select: window.makePrefabSelector(undefined, true, (selectionItem) => {
 			if(!selectionItem.value) return true;
 			return Lib.__dataHasClass(Lib._getAllPrefabs()[selectionItem.value], Text);
 		})

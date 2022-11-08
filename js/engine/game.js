@@ -67,7 +67,7 @@ class Game {
 	constructor() {
 		/** @type { GameDataModel } */
 		this.data = {};
-		
+
 		this.isMobile = PIXI.utils.isMobile;
 		/** @type { ThingSceneAllMap } */
 		this.all = null;
@@ -90,7 +90,7 @@ class Game {
 	 * @see https://github.com/Megabyteceer/thing-editor/wiki/Game#currentcontainer--displayobject
 	*/
 	get currentContainer() {
-		if (modals.length > 0) {
+		if(modals.length > 0) {
 			return modals[modals.length - 1]; //top modal is active
 		}
 		return this.currentScene; //current scene is active if no modals on screen
@@ -109,7 +109,7 @@ class Game {
 	onResize() {
 		let w, h;
 		if(!domElement) return;
-		if (domElement === document.body) {
+		if(domElement === document.body) {
 			w = window.innerWidth;
 			h = window.innerHeight;
 		} else {
@@ -132,8 +132,8 @@ class Game {
 			} else {
 				w = this.__fixedViewport.w;
 				h = this.__fixedViewport.h;
-				
-			}if(this.__enforcedOrientation === 'portrait') {
+
+			} if(this.__enforcedOrientation === 'portrait') {
 				let tmp = w;
 				w = h;
 				h = tmp;
@@ -149,50 +149,50 @@ class Game {
 
 
 
-		if ((this.projectDesc.screenOrientation === 'auto')) {
+		if((this.projectDesc.screenOrientation === 'auto')) {
 			orientation = this.__enforcedOrientation;
 		} else {
-		/// #endif
+			/// #endif
 			orientation = this.projectDesc.screenOrientation;
-		/// #if EDITOR
+			/// #if EDITOR
 		}
-		
-		if (dynamicStageSize) {
+
+		if(dynamicStageSize) {
 			if(orientation === 'portrait') {
-				if(w > h*0.8) {
-					w = Math.round(h*0.8);
+				if(w > h * 0.8) {
+					w = Math.round(h * 0.8);
 				}
 			} else {
-				if(h > w*0.8) {
-					h = Math.round(w*0.8);
+				if(h > w * 0.8) {
+					h = Math.round(w * 0.8);
 				}
 			}
 		}
 		/// #endif
 
-		if (orientation === 'auto') {
+		if(orientation === 'auto') {
 			orientation = (w < h) ? 'portrait' : 'landscape';
 		}
 
 		let rotateCanvas;
 
-		switch (orientation) {
-		case 'portrait':
-			rotateCanvas = w > h;
-			game.isPortrait = true;
-			break;
-		case 'auto':
-			game.isPortrait = w < h;
-			break;
-		default: //landscape
-			rotateCanvas = h > w;
-			game.isPortrait = false;
-			break;
+		switch(orientation) {
+			case 'portrait':
+				rotateCanvas = w > h;
+				game.isPortrait = true;
+				break;
+			case 'auto':
+				game.isPortrait = w < h;
+				break;
+			default: //landscape
+				rotateCanvas = h > w;
+				game.isPortrait = false;
+				break;
 		}
-	
+
 		if(!PIXI.utils.isMobile.any // eslint-disable-line no-constant-condition
 			/// #if EDITOR
-			&& false	
+			&& false
 			/// #endif
 		) { //rotate canvas for fixed orientation projects on mobile only
 			rotateCanvas = false;
@@ -208,12 +208,12 @@ class Game {
 			this.H = this.projectDesc.height || 720;
 		}
 
-		
+
 		if(!dynamicStageSize) {
 			if(game.projectDesc.preventUpscale // eslint-disable-line no-constant-condition
-			/// #if EDITOR
-			|| true
-			/// #endif
+				/// #if EDITOR
+				|| true
+				/// #endif
 			) {
 				if(rotateCanvas) {
 					w = Math.min(this.H, w);
@@ -233,8 +233,8 @@ class Game {
 		}
 
 		if(dynamicStageSize) {
-			if (game.projectDesc.preventUpscale) {
-				if (S < 1) {
+			if(game.projectDesc.preventUpscale) {
+				if(S < 1) {
 					w = w / S;
 					h = h / S;
 				}
@@ -248,7 +248,7 @@ class Game {
 		let s = 1;
 		if(this.isMobile.any // eslint-disable-line no-constant-condition
 			/// #if EDITOR
-			&& false	
+			&& false
 			/// #endif
 		) {
 			if(game.projectDesc.renderResolutionMobile) {
@@ -285,7 +285,7 @@ class Game {
 				}
 			}
 		}
-	
+
 		if(dynamicStageSize) {
 			if(rotateCanvas) {
 				this.H = w;
@@ -319,7 +319,7 @@ class Game {
 
 		//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
-		if (game.pixiApp) {
+		if(game.pixiApp) {
 
 
 			_rendererWidth = rendererWidth;
@@ -342,8 +342,8 @@ class Game {
 				stage.x = 0;
 				//*/
 			}
-			
-			if (needResizeRenderer) {
+
+			if(needResizeRenderer) {
 				/*
 				if(!game.__EDITOR_mode && Lib.hasPrefab('ui/sure-question')) {
 					game.showQuestion('', 'W: ' + _rendererWidth +
@@ -365,7 +365,7 @@ class Game {
 					PIXI.InteractionManager.resolution = scale;
 					renderer.plugins.interaction.resolution = scale;
 
-					if (renderer.rootRenderTarget) {
+					if(renderer.rootRenderTarget) {
 						renderer.rootRenderTarget.resolution = scale;
 					}
 
@@ -385,7 +385,7 @@ class Game {
 
 			assert(_rendererWidth, "Render's size was not calculated correctly.");
 			assert(_rendererHeight, "Render's size was not calculated correctly.");
-	
+
 		}
 	}
 
@@ -431,7 +431,7 @@ class Game {
 		this._FPS = 0;
 		this.FPS = 0;
 
-		if (false) { /*eslint-disable-line no-constant-condition */
+		if(false) { /*eslint-disable-line no-constant-condition */
 			/// #endif
 			assert(editor, '"assert" invoking was not removed from release build. Check if "assert-strip-loader.js" is not removed from webpack config.');
 			/// #if DEBUG
@@ -442,7 +442,7 @@ class Game {
 		assert(!initialized, "game already initialized.");
 		initialized = true;
 		this.keys = Keys;
-		if (!gameId) {
+		if(!gameId) {
 			gameId = window._thingEngineAssets.projectDesc.id;
 		}
 		this.settings = new Settings(gameId);
@@ -450,7 +450,7 @@ class Game {
 		this._updateGlobal = this._updateGlobal.bind(this);
 
 		/// #if EDITOR
-		if (!editor) {
+		if(!editor) {
 			throw "#if EDITOR was not cut-of by assert-strip-loader";
 		}
 		this.__mouse_EDITOR = {x: 0, y: 0};
@@ -481,7 +481,7 @@ class Game {
 
 		assets = window._thingEngineAssets; /*eslint-disable-line no-unreachable */
 		this.applyProjectDesc(assets.projectDesc);
-		if (PIXI.utils.isWebGLSupported()) {
+		if(PIXI.utils.isWebGLSupported()) {
 			this._initInner();
 		} else {
 			import('pixi.js-legacy').then(() => this._initInner());
@@ -501,7 +501,7 @@ class Game {
 		return s.hasOwnProperty(name) ? (s[name] & mask) : 0;
 	}
 	/// #if EDITOR
-	__setTextureSettingsBits(name, bits, mask = 0xffffffff ) {
+	__setTextureSettingsBits(name, bits, mask = 0xffffffff) {
 		let current = game._getTextureSettingsBits(name, 0xffffffff);
 		let n = (current & (mask ^ 0xffffffff)) | bits;
 		if(n !== current) {
@@ -519,7 +519,7 @@ class Game {
 				const w = PIXI.WRAP_MODES;
 				if(n & 16) {
 					baseTexture.wrapMode = w.MIRRORED_REPEAT;
-				} else if (n & 8) {
+				} else if(n & 8) {
 					baseTexture.wrapMode = w.REPEAT;
 				} else {
 					baseTexture.wrapMode = w.CLAMP;
@@ -555,7 +555,7 @@ class Game {
 			fontHolderText: 'ЯSфz',
 			muteOnFocusLost: true,
 			mipmap: false,
-			version:"0.0.1",
+			version: "0.0.1",
 			soundFormats: [
 				"ogg",
 				"aac"
@@ -567,8 +567,8 @@ class Game {
 			},
 			loadOnDemandTextures: {
 			},
-			__loadOnDemandTexturesFolders:{
-				
+			__loadOnDemandTexturesFolders: {
+
 			},
 			defaultMusVol: 1,
 			defaultSoundsVol: 1,
@@ -597,18 +597,18 @@ class Game {
 
 		let so = projectDescriptor.screenOrientation;
 		assert(so === 'auto' || so === 'landscape' || so === 'portrait', 'Wrong value for "screenOrientation". "auto", "landscape" or "portrait" expected', 30010);
-		
+
 		PIXI.settings.MIPMAP_TEXTURES = projectDescriptor.mipmap
 			? PIXI.MIPMAP_MODES.ON
 			: PIXI.MIPMAP_MODES.OFF;
 
 		PIXI.settings.GC_MODE = PIXI.GC_MODES.MANUAL;
-		
+
 		this.projectDesc = projectDescriptor;
 		this.onResize();
 		return isModified;
 	}
-	
+
 	/// #if EDITOR
 	/**
 	* @protected
@@ -623,13 +623,13 @@ class Game {
 
 		/// #if EDITOR
 		await
-		/// #endif
-		Promise.all([
-			loadFonts(),
-			loadLocalizations()
-		]).then(() => {
-			game.additionalLoadingsInProgress--;
-		});
+			/// #endif
+			Promise.all([
+				loadFonts(),
+				loadLocalizations()
+			]).then(() => {
+				game.additionalLoadingsInProgress--;
+			});
 
 		this.onResize();
 
@@ -648,12 +648,12 @@ class Game {
 		domElement.appendChild(app.view);
 
 		const clickHandler = (ev) => { // calls browsers functions which require to be fired in user context event
-			while (onClickOnceCallbacks.length > 0) {
+			while(onClickOnceCallbacks.length > 0) {
 				let f = onClickOnceCallbacks.shift();
 				f(ev);
 			}
 			/// #if EDITOR
-			return; 
+			return;
 			/// #endif
 
 			if(game.isMobile.any ? game.projectDesc.autoFullscreenMobile : game.projectDesc.autoFullscreenDesktop) {	// eslint-disable-line no-unreachable
@@ -679,7 +679,7 @@ class Game {
 		this.onResize();
 
 		app.stage.addChild(stage);
-		
+
 		app.ticker.add(this._updateGlobal);
 
 		Sound.init();
@@ -692,7 +692,7 @@ class Game {
 		/// #endif
 
 		this._startGame(); /*eslint-disable-line no-unreachable */
-		
+
 		window.addEventListener('resize', this._onContainerResize.bind(this));
 	}
 	/**
@@ -707,7 +707,7 @@ class Game {
 	 */
 
 	_onContainerResize() {
-		if (resizeOutJump) {
+		if(resizeOutJump) {
 			clearTimeout(resizeOutJump);
 		}
 		if(fireNextOnResizeImmediately) {
@@ -718,18 +718,18 @@ class Game {
 				resizeOutJump = false;
 				if(game.isMobile.any // eslint-disable-line no-constant-condition
 					/// #if EDITOR
-					&& false	
+					&& false
 					/// #endif
 				) {
-					for(let i of [20,40,80,200,500,1000,1500,2000,3000]) {
+					for(let i of [20, 40, 80, 200, 500, 1000, 1500, 2000, 3000]) {
 						setTimeout(this.onResize, i);
 					}
 				}
 				this.onResize();
 			}, game.isMobile.any // eslint-disable-line no-constant-condition
-			/// #if EDITOR
-			&& false	
-			/// #endif
+				/// #if EDITOR
+				&& false
+				/// #endif
 				? 1 : 200);
 		}
 	}
@@ -744,7 +744,7 @@ class Game {
 		Lib._setSounds(assets.sounds);
 		if(assets.resources) {
 			for(let r of assets.resources) {
-				if (assets.resourcesMetadata && assets.resourcesMetadata[r]) {
+				if(assets.resourcesMetadata && assets.resourcesMetadata[r]) {
 					Lib.addResource(r, {metadata: assets.resourcesMetadata[r]});
 				} else {
 					Lib.addResource(r);
@@ -755,7 +755,7 @@ class Game {
 		Lib.addTexture('WHITE', PIXI.Texture.WHITE);
 
 		let loader = new ResourceLoader();
-		
+
 		assets.images.some((tName) => {
 			if(!game._getTextureSettingsBits(tName, 3)) {
 				loader.add(textureNameToPath(tName));
@@ -837,7 +837,7 @@ class Game {
 		assert(!__getNodeExtendData(currentFader).isFaderShootCalledForThisFader, "game.faderShoot() already called for this fader.", 10034);
 		__getNodeExtendData(currentFader).isFaderShootCalledForThisFader = true;
 		/// #endif
-		while (hideTheseModalsUnderFader.length > 0) {
+		while(hideTheseModalsUnderFader.length > 0) {
 			let m = hideTheseModalsUnderFader.pop();
 			let i = modals.indexOf(m);
 			if(i >= 0) {
@@ -845,7 +845,7 @@ class Game {
 				Lib.destroyObjectAndChildren(m);
 			}
 		}
-		while (hidingModals.length > 0) {
+		while(hidingModals.length > 0) {
 			let m = hidingModals.pop();
 			Lib.destroyObjectAndChildren(m);
 		}
@@ -858,7 +858,7 @@ class Game {
 	_processScenesStack() {
 		assert(game.getLoadingCount() === 0, "Attempt to change stack during loading");
 		while(true) { // eslint-disable-line no-constant-condition
-			let topStackElement = showStack[showStack.length -1];
+			let topStackElement = showStack[showStack.length - 1];
 			if(topStackElement === game.currentScene) {
 				break;
 			}
@@ -868,8 +868,8 @@ class Game {
 				}
 				tryRemoveCurrentScene();
 			}
-			topStackElement = showStack[showStack.length -1];
-			showStack[showStack.length -1] = game._setCurrentSceneContent(topStackElement);
+			topStackElement = showStack[showStack.length - 1];
+			showStack[showStack.length - 1] = game._setCurrentSceneContent(topStackElement);
 		}
 	}
 
@@ -921,7 +921,7 @@ class Game {
 	 * @param {string} faderType - name of fader prefab
 	 */
 	closeAllScenes(faderType) {
-		while (showStack.length > 1) {
+		while(showStack.length > 1) {
 			game.closeCurrentScene(faderType);
 		}
 	}
@@ -1000,17 +1000,17 @@ class Game {
 	get currentScene() {
 		return __currentSceneValue;
 	}
-	
+
 	/**
 	* @protected
 	 */
 	__destroyCurrentScene() {
-		if (this.currentScene) {
+		if(this.currentScene) {
 			Lib.destroyObjectAndChildren(this.currentScene);
 			this._setCurrentScene(null);
 		}
 	}
-	
+
 	/**
 	* @protected
 	 */
@@ -1021,11 +1021,11 @@ class Game {
 	set __enforcedOrientation(v) {
 		assert(!v || v === 'landscape' || v === 'portrait', 'Wrong value for game.__enforcedOrientation. "landscape" or "portrait" expected');
 		this.___enforcedOrientation = v;
-		if (initialized) {
+		if(initialized) {
 			this.onResize();
 		}
 	}
-	
+
 	/**
 	* @protected
 	 */
@@ -1052,48 +1052,48 @@ class Game {
 			});
 		}
 	}
-	
+
 	/**
 	* @protected
 	 */
 	__setCurrentContainerContent(object) {
 		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
-		if (modals.length > 0) {
+		if(modals.length > 0) {
 			this.hideModal();
 			__getNodeExtendData(object).isPreviewObject = true;
 			this.showModal(object);
 		} else {
-			if (!object.name) {
+			if(!object.name) {
 				object.__libSceneName = game.currentScene.name;
 			}
 			this.showScene(object);
 		}
 	}
-	
+
 	/**
 	* @protected
 	 */
 	__clearStage() {
-		while (this.modalsCount > 0) {
+		while(this.modalsCount > 0) {
 			this.hideModal(undefined, true);
 		}
-		while (hidingModals.length > 0) {
+		while(hidingModals.length > 0) {
 			let m = hidingModals.pop();
 			Lib.destroyObjectAndChildren(m);
 		}
 
-		while (showStack.length > 0) {
+		while(showStack.length > 0) {
 			tryRemoveScene(showStack.pop());
 		}
 
 		tryRemoveCurrentScene();
 
-		if (currentFader) {
+		if(currentFader) {
 			Lib.destroyObjectAndChildren(currentFader);
 			currentFader = null;
 		}
 		game._isWaitingToHideFader = false;
-		while (hidingFaders.length > 0) {
+		while(hidingFaders.length > 0) {
 			Lib.destroyObjectAndChildren(hidingFaders.pop());
 		}
 		Lib.__clearStaticScenes();
@@ -1119,7 +1119,7 @@ class Game {
 	 * 
 	 * @return {Container}
 	 */
-	showQuestion(title, message, yesLabel=null, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/sure-question') {
+	showQuestion(title, message, yesLabel = null, onYes = null, noLabel = null, onNo = null, easyClose = true, prefab = 'ui/sure-question') {
 		let o = Lib.loadPrefab(prefab);
 		SureQuestion.init(o, title, message, yesLabel, onYes, noLabel, onNo, easyClose);
 		return game.showModal(o);
@@ -1133,12 +1133,12 @@ class Game {
 	 */
 	showModal(displayObject, callback) {
 		/// #if EDITOR
-		if (game.__EDITOR_mode && !__getNodeExtendData(displayObject).isPreviewObject) {
+		if(game.__EDITOR_mode && !__getNodeExtendData(displayObject).isPreviewObject) {
 			assert(false, 'Attempt to show modal in editor mode: ' + (displayObject.name || displayObject), 10047);
 			return;
 		}
 		/// #endif
-		if (typeof displayObject === "string") {
+		if(typeof displayObject === "string") {
 			displayObject = Lib.loadPrefab(displayObject);
 		}
 		assert(displayObject instanceof Container, "Attempt to show not DisplayObject as modal");
@@ -1159,20 +1159,20 @@ class Game {
 	 */
 	hideModal(displayObject = null, instantly = false) {
 		let modalToHide;
-		if (!displayObject) {
+		if(!displayObject) {
 			assert(modals.length > 0, 'Attempt to hide modal when modal list is empty.', 10038);
 			modalToHide = modals.pop();
 		} else {
 			let i = modals.indexOf(displayObject);
 			assert(i >= 0, 'Attempt to hide modal object which is not in modal list.', 10039);
-			if (i < 0) {
+			if(i < 0) {
 				return;
 			}
 			modalToHide = modals[i];
 			modals.splice(i, 1);
 		}
-		
-		if(modalToHide._onModalHide 
+
+		if(modalToHide._onModalHide
 			/// #if EDITOR
 			&& !game.__EDITOR_mode
 			/// #endif
@@ -1181,7 +1181,7 @@ class Game {
 			delete modalToHide._onModalHide;
 		}
 
-		if (instantly
+		if(instantly
 			/// #if EDITOR
 			||
 			game.__EDITOR_mode
@@ -1230,12 +1230,12 @@ class Game {
 		/// #if EDITOR
 		editor.ui.viewport.checkIfNeedRecovery();
 		editor.frameUpdateException = true;
-		if ((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
+		if((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
 			/// #endif
 
 
 			ScrollLayer.updateGlobal();
-		
+
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
 			/// #if EDITOR
 			dt = Math.min(dt, 1);
@@ -1243,7 +1243,7 @@ class Game {
 
 			frameCounterTime += dt;
 			frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * game.projectDesc.framesSkipLimit);
-			while (frameCounterTime > FRAME_PERIOD) {
+			while(frameCounterTime > FRAME_PERIOD) {
 
 				/// #if DEBUG
 				frameCounterTime -= FRAME_PERIOD / game.__speedMultiplier;
@@ -1256,7 +1256,7 @@ class Game {
 				this._updateFrame();
 
 				/// #if EDITOR
-				if (this.__doOneStep) {
+				if(this.__doOneStep) {
 					editor.refreshTreeViewAndPropertyEditor();
 					this.__doOneStep = false;
 					frameCounterTime = 0;
@@ -1268,26 +1268,26 @@ class Game {
 		/// #if EDITOR
 		editor.frameUpdateException = false;
 		/// #endif
-		if (this.currentScene) {
+		if(this.currentScene) {
 			app.renderer.backgroundColor = this.currentScene.backgroundColor;
 
 			this.currentScene.interactiveChildren = ((this.modalsCount === 0) && !currentFader);
 			let i = this.modalsCount - 1;
 			let isCurrent = !currentFader;
-			while (i >= 0) {
+			while(i >= 0) {
 				modals[i].interactiveChildren = isCurrent;
 				isCurrent = false;
 				i--;
 			}
 		}
-	
+
 	}
 
 	forAllChildrenEverywhereBack(callback) {
-		for (let s of showStack) {
-			if (typeof s !== 'string') {
+		for(let s of showStack) {
+			if(typeof s !== 'string') {
 				callback(s);
-				if (!s.parent) {
+				if(!s.parent) {
 					callback(s);
 					s.forAllChildren(callback);
 				}
@@ -1295,9 +1295,9 @@ class Game {
 		}
 
 		const staticScenes = Lib._getStaticScenes();
-		for (let n in staticScenes) {
+		for(let n in staticScenes) {
 			let s = staticScenes[n];
-			if (!s.parent) {
+			if(!s.parent) {
 				callback(s);
 				s.forAllChildren(callback);
 			}
@@ -1305,9 +1305,9 @@ class Game {
 	}
 
 	getLoadingCount(
-	/// #if EDITOR
+		/// #if EDITOR
 		ignoreInGamePromises = false
-	/// #endif
+		/// #endif
 	) {
 		let count = Lib.getSoundsLoadingCount();
 
@@ -1317,14 +1317,14 @@ class Game {
 		}
 		/// #if EDITOR
 		if(!ignoreInGamePromises) {
-		/// #endif
+			/// #endif
 			if(currentFader) {
 				count += currentFader.findChildrenByType(SceneLinkedPromise).length;
 			}
-		/// #if EDITOR
+			/// #if EDITOR
 		}
 		/// #endif
-		
+
 		return count;
 	}
 
@@ -1382,8 +1382,8 @@ class Game {
 				this.currentContainer.update();
 			}
 		}
-		
-		if (currentFader) {
+
+		if(currentFader) {
 			/// #if EDITOR
 			__isCurrentFaderUpdateInProgress = true;
 			/// #endif
@@ -1393,7 +1393,7 @@ class Game {
 			/// #endif
 		}
 		let fi = hidingFaders.length - 1;
-		while (fi >= 0) {
+		while(fi >= 0) {
 			let fader = hidingFaders[fi];
 			currentHidingFaderInUpdate = fader;
 			fader.update();
@@ -1401,10 +1401,10 @@ class Game {
 		}
 		if(!currentFader) {
 			let i = hidingModals.length - 1; //hide modals process
-			while (i >= 0) {
+			while(i >= 0) {
 				let m = hidingModals[i];
 				m.alpha -= 0.1;
-				if (m.alpha <= 0.01) {
+				if(m.alpha <= 0.01) {
 					Lib.destroyObjectAndChildren(m);
 					hidingModals.splice(i, 1);
 					/// #if EDITOR
@@ -1488,7 +1488,7 @@ class Game {
 		let style = document.createElement('style');
 
 		style.type = 'text/css';
-		if (style.styleSheet){
+		if(style.styleSheet) {
 			style.styleSheet.cssText = css;
 		} else {
 			style.appendChild(document.createTextNode(css));
@@ -1522,14 +1522,14 @@ class Game {
 let tmpPoint = new PIXI.Point();
 
 const processOnResize = (o) => {
-	if (o._onRenderResize) {
+	if(o._onRenderResize) {
 		o._onRenderResize();
 	}
 };
 
 const mouseHandlerGlobalDown = (ev) => {
 	if(!latestXY.hasOwnProperty(ev.data.pointerId)) {
-		let o = {x:ev.data.global.x, y:ev.data.global.y};
+		let o = {x: ev.data.global.x, y: ev.data.global.y};
 		latestXY[ev.data.pointerId] = o;
 		latestXYPriority.unshift(o);
 	}
@@ -1543,7 +1543,7 @@ const mouseHandlerGlobalDown = (ev) => {
 		!game.__EDITOR_mode &&
 		!game.__paused &&
 		/// #endif
-		
+
 		game.currentContainer && game.currentContainer.onMouseDown && game.currentContainer.interactiveChildren) {
 		Sound._unlockSound();
 		game.currentContainer.onMouseDown(game.mouse, ev);
@@ -1563,7 +1563,7 @@ const mouseHandlerGlobalUp = (ev) => {
 	} else {
 		game.mouse.click = false;
 	}
-	
+
 	mouseHandlerGlobal(ev);
 	ev.data.global.x = tmpX;
 	ev.data.global.y = tmpY;
@@ -1629,15 +1629,15 @@ const mouseHandlerGlobal = (ev) => {
 	mouse.__EDITOR_y = Math.round(ev.data.global.y);
 	/// #endif
 
-	if (x > game.W) {
+	if(x > game.W) {
 		x = game.W;
-	} else if (x < 0) {
+	} else if(x < 0) {
 		x = 0;
 	}
 
-	if (y > game.H) {
+	if(y > game.H) {
 		y = game.H;
-	} else if (y < 0) {
+	} else if(y < 0) {
 		y = 0;
 	}
 	mouse.x = x;
@@ -1655,14 +1655,14 @@ if(window.cordova) {
 		if(enforced) {
 			navigator.app.exitApp();
 		} else {
-			game.showQuestion(L('SUREEXIT_TITLE'), L('SUREEXIT_TEXT') , undefined, () => {
+			game.showQuestion(L('SUREEXIT_TITLE'), L('SUREEXIT_TEXT'), undefined, () => {
 				game.exitApp(true);
 			});
 		}
 	};
 }
 /// #if DEBUG
-if (PIXI.utils.isMobile.any) {
+if(PIXI.utils.isMobile.any) {
 	window.addEventListener('error', function (msg, url, line, col, error) {
 		let txt = JSON.stringify({msg, url, line, col, error});
 		game.__showDebugError(txt);
@@ -1671,7 +1671,7 @@ if (PIXI.utils.isMobile.any) {
 /// #endif
 
 function checkScene(scene) {
-	if (typeof scene === 'string') {
+	if(typeof scene === 'string') {
 		scene = Lib.loadScene(scene);
 	}
 	assert(scene instanceof Scene, 'Scene instance expected.');
@@ -1687,7 +1687,7 @@ function tryRemoveCurrentScene() {
 
 function tryRemoveScene(s) {
 	if((s instanceof Scene) && (s !== game.currentScene)) {
-		if (!s.isStatic && (showStack.indexOf(s) < 0)) {
+		if(!s.isStatic && (showStack.indexOf(s) < 0)) {
 			Lib.destroyObjectAndChildren(s);
 		} else {
 			s.detachFromParent();
@@ -1697,7 +1697,7 @@ function tryRemoveScene(s) {
 
 
 window.addEventListener('focus', () => {focusChangeHandler(true);});
-window.addEventListener('blur',  () => {focusChangeHandler(false);});
+window.addEventListener('blur', () => {focusChangeHandler(false);});
 document.addEventListener('visibilitychange', () => {
 	focusChangeHandler(document.visibilityState === 'visible');
 });
@@ -1729,26 +1729,26 @@ function maliDetect() {
 		canvas.setAttribute("width", "1");
 		canvas.setAttribute("height", "1");
 		document.body.appendChild(canvas);
-		var gl = canvas.getContext('webgl', { stencil: true });
+		var gl = canvas.getContext('webgl', {stencil: true});
 		canvas.parentNode.removeChild(canvas);
-		if (!gl) {
+		if(!gl) {
 			return false;
 		}
 		var dbgRenderInfo = gl.getExtension("WEBGL_debug_renderer_info");
 		var renderer;
-		if (dbgRenderInfo != null) {
+		if(dbgRenderInfo != null) {
 			renderer = gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
 		} else {
 			return false;
 		}
 
 		var n = renderer.search("Mali-400");
-		if (n != -1) {
+		if(n != -1) {
 			return true;
 		} else {
 			return false;
 		}
-	} catch (er) {} //eslint-disable-line no-empty
+	} catch(er) { } //eslint-disable-line no-empty
 }
 
 
@@ -1791,7 +1791,7 @@ function loadFonts() {
 									span.innerHTML = game.projectDesc.fontHolderText;
 									fontHolder.appendChild(span);
 								}
-								
+
 							}
 						}
 					}
@@ -1800,7 +1800,7 @@ function loadFonts() {
 				setTimeout(() => {
 					if(!window.WebFont) {
 						//webpack loading old modules hack
-						try {window.WebFont = require('webfontloader');} catch (er) {}//eslint-disable-line no-undef,no-empty
+						try {window.WebFont = require('webfontloader');} catch(er) { }//eslint-disable-line no-undef,no-empty
 					}
 					assert(window.WebFont, "WebFont was not imported correctly.");
 					let webFontOptions = game.projectDesc.webfontloader;
@@ -1867,16 +1867,16 @@ function loadDynamicTextures(
 	game.stage.forAllChildren((o) => {
 		if(o instanceof Sprite || o instanceof PIXI.Mesh || o instanceof Tilemap) {
 			let image = o.image;
-			if( image && (!Lib.hasTexture(image) && game._getTextureSettingsBits(image, 3))
+			if(image && (!Lib.hasTexture(image) && game._getTextureSettingsBits(image, 3))
 				/// #if EDITOR
 				&& (!onlyThisFiles || onlyThisFiles.has(image))
 				/// #endif
 			) {
-				o.texture = 
-				/// #if EDITOR
-				editor.__unloadedTexture ||
-				/// #endif
-				Lib.getTexture('EMPTY');
+				o.texture =
+					/// #if EDITOR
+					editor.__unloadedTexture ||
+					/// #endif
+					Lib.getTexture('EMPTY');
 
 				if(!loader) {
 					texturesInProgress = {};
@@ -1910,7 +1910,7 @@ function loadDynamicTextures(
 
 	for(let image in game.projectDesc.loadOnDemandTextures) {
 		let textureLoadingMode = game._getTextureSettingsBits(image, 3);
-		
+
 		if(textureLoadingMode) {
 			if(!texturesLocked.hasOwnProperty(image) && Lib.hasTexture(image)) {
 				Lib._unloadTexture(image);
@@ -1972,7 +1972,7 @@ function checkSceneName(scene) {
 	if(typeof scene === 'string') {
 		assert(Lib.hasScene(scene), "No scene with name '" + scene + "'", 10046);
 	} else {
-		assert(scene instanceof Scene, );
+		assert(scene instanceof Scene,);
 	}
 	return true;
 }

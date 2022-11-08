@@ -40,7 +40,7 @@ const getValueByPath = (valuePath, this_
 	}
 	/// #endif
 
-	while (i < path.length) {
+	while(i < path.length) {
 		let n = path[i];
 		fOwner = c;
 		if(typeof n === 'string') {
@@ -68,7 +68,7 @@ const getValueByPath = (valuePath, this_
 
 		i++;
 	}
-	
+
 	/// #if EDITOR
 	if(isLatestNodeGetting) {
 		return c;
@@ -85,9 +85,9 @@ const setValueByPath = (valuePath, val, this_) => {
 	assert(this_, "'this' object is not provided in to 'setValueByPath'", 10030);
 	/// #if EDITOR
 	if(!game.__EDITOR_mode) {
-	/// #endif
+		/// #endif
 		assert(valuePath, "Empty setValueByPath string.", 10031);
-	/// #if EDITOR
+		/// #if EDITOR
 	}
 	/// #endif
 
@@ -108,9 +108,9 @@ const setValueByPath = (valuePath, val, this_) => {
 		/// #endif
 		c = game[rootName];
 	}
-	
+
 	let i = 1;
-	while (i < path.length-1) {
+	while(i < path.length - 1) {
 		let n = path[i];
 		if(typeof n === 'string') {
 			c = c[n];
@@ -142,7 +142,7 @@ const getLatestSceneNodeBypath = (path, _this, suspendWarning = false) => {
 	editor.rememberTryTime();
 	try {
 		getValueByPath(path, _this, true);
-	} catch (er) {
+	} catch(er) {
 		editor.checkTryTime();
 		if(!suspendWarning) {
 			console.warn('path validation exception: (' + path + '): ' + _this.___info + ' ' + ((typeof er) === 'object' ? er.message : er));
@@ -189,7 +189,8 @@ setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
 
 
 export default getValueByPath;
-export {setValueByPath
+export {
+	setValueByPath
 	/// #if EDITOR
 	, getLatestSceneNodeBypath,
 	getLatestSceneNodesByComplexPath,

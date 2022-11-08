@@ -1,6 +1,6 @@
 import PropsFieldWrapper from './props-field-wrapper.js';
 
-const numberEditorProps = {className:'number-input'};
+const numberEditorProps = {className: 'number-input'};
 
 let draggingElement;
 let preventClickBecauseOfDragging;
@@ -20,10 +20,10 @@ function onMouseUp() {
 document.addEventListener('mouseup', onMouseUp);
 
 document.addEventListener('mousemove', (ev) => {
-	if (!draggingElement) return;
-	
+	if(!draggingElement) return;
+
 	let d = -ev.movementY;
-	if (d !== 0) {
+	if(d !== 0) {
 		preventClickBecauseOfDragging = true;
 		d = d * (draggingElement.step);
 		draggingElement.deltaValue(d, ev.ctrlKey);
@@ -31,7 +31,7 @@ document.addEventListener('mousemove', (ev) => {
 });
 
 class NumberEditor extends React.Component {
-	constructor (props){
+	constructor(props) {
 		super(props);
 		this.state = {};
 		this.onChange = this.onChange.bind(this);
@@ -40,8 +40,8 @@ class NumberEditor extends React.Component {
 		this.onUpClick = this.onUpClick.bind(this);
 		this.onDownClick = this.onDownClick.bind(this);
 		this.onBlur = this.onBlur.bind(this);
-		this.btnUp = R.span({className:'number-input-btn number-input-btn-up', onMouseUp:this.onUpClick, onMouseDown:this.onMouseDown}, '▲');
-		this.btnDown = R.span({className:'number-input-btn number-input-btn-down', onMouseUp:this.onDownClick, onMouseDown:this.onMouseDown}, '▼');
+		this.btnUp = R.span({className: 'number-input-btn number-input-btn-up', onMouseUp: this.onUpClick, onMouseDown: this.onMouseDown}, '▲');
+		this.btnDown = R.span({className: 'number-input-btn number-input-btn-down', onMouseUp: this.onDownClick, onMouseDown: this.onMouseDown}, '▼');
 	}
 
 	componentWillUnmount() {
@@ -81,15 +81,15 @@ class NumberEditor extends React.Component {
 			this.deltaValue(this.step, ev.ctrlKey);
 		}
 	}
-		
+
 	onDownClick(ev) {
 		if(!preventClickBecauseOfDragging && downedArrow === ev.target) {
 			this.deltaValue(-this.step, ev.ctrlKey);
 		}
 	}
-		
-	onChange (ev, forceFormat = false) {
-		forceFormat = (forceFormat===true);
+
+	onChange(ev, forceFormat = false) {
+		forceFormat = (forceFormat === true);
 		let props = this.props;
 		if(forceFormat) {
 			this.setState({tmpVal: undefined});
@@ -100,8 +100,8 @@ class NumberEditor extends React.Component {
 		let targetValue = ev.target.value;
 		try {
 			targetValue = eval(ev.target.value);
-		} catch (e) {} // eslint-disable-line no-empty
-		
+		} catch(e) { } // eslint-disable-line no-empty
+
 		let val = (props.field && props.field.basis) ? parseInt(ev.target.value, props.field.basis) : parseFloat(targetValue);
 		if(isNaN(val) && !forceFormat) {
 			return;
@@ -125,14 +125,14 @@ class NumberEditor extends React.Component {
 
 	onKeyDown(ev) {
 		switch(ev.keyCode) {
-		case 38:
-			this.deltaValue(this.step, ev.ctrlKey);
-			sp(ev);
-			break;
-		case 40:
-			this.deltaValue(-this.step, ev.ctrlKey);
-			sp(ev);
-			break;
+			case 38: // eslint-disable-line indent
+				this.deltaValue(this.step, ev.ctrlKey); // eslint-disable-line indent
+				sp(ev); // eslint-disable-line indent
+				break; // eslint-disable-line indent
+			case 40: // eslint-disable-line indent
+				this.deltaValue(-this.step, ev.ctrlKey); // eslint-disable-line indent
+				sp(ev); // eslint-disable-line indent
+				break; // eslint-disable-line indent
 		}
 	}
 
@@ -145,9 +145,9 @@ class NumberEditor extends React.Component {
 		let croppedVal = this.cropVal(val + d);
 		croppedVal = Math.round(croppedVal / step) * step;
 		d = croppedVal - val;
-		
+
 		let e = PropsFieldWrapper.surrogateChangeEvent(croppedVal);
-		this.setState({tmpVal:undefined, value: croppedVal});
+		this.setState({tmpVal: undefined, value: croppedVal});
 		this.props.onChange(e, true, d);
 	}
 
@@ -179,10 +179,10 @@ class NumberEditor extends React.Component {
 			R.input({
 				onBlur: this.onBlur,
 				onChange: this.onChange,
-				disabled:props.disabled,
+				disabled: props.disabled,
 				value: (props.field && props.field.basis) ? val.toString(props.field.basis) : val,
 				onDoubleClick: this.onDoubleClick,
-				onKeyDown:this.onKeyDown
+				onKeyDown: this.onKeyDown
 			}),
 			props.disabled ? undefined : this.btnUp,
 			props.disabled ? undefined : this.btnDown

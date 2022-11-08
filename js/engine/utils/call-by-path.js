@@ -25,7 +25,7 @@ const callByPath = (callbackPath, this_) => {
 	}
 	let i = 1;
 	let fOwner;
-	while (i < path.length) {
+	while(i < path.length) {
 		let n = path[i];
 		fOwner = c;
 		if(typeof n === 'string') {
@@ -39,9 +39,9 @@ const callByPath = (callbackPath, this_) => {
 				/// #endif
 			);
 		}
-		
+
 		assert(c, "Can't find " + ((typeof n === 'string') ? "property '" + n : "child '#" + n.s) + "' in callback`s path: " + callbackPath, 10025);
-		
+
 		i++;
 	}
 	if(data.hasOwnProperty('v')) {
@@ -61,7 +61,7 @@ const stringToCallData = (s) => {
 		return _callsCahce[s];
 	}
 	let data = {};
-	
+
 	let a = s.split('`');
 	data.p = a[0].split('.').map(pathPartsMapper);
 	if(a.length > 1) {
@@ -81,7 +81,7 @@ const turnInToNumberIfNumeric = (s) => {
 
 const pathPartsMapper = (s) => {
 	if(s.charCodeAt(0) === 35) {//'#'
-		return {s:s.substr(1)}; // - child name
+		return {s: s.substr(1)}; // - child name
 	}
 	return s;
 };

@@ -46,16 +46,16 @@ function createDragger(owner, constructor) {
 let viewportCanvasScale;
 
 export default class Overlay {
-	
+
 	constructor() {
 		game.pixiApp.ticker.add(refreshSelection);
-		
+
 		previewBlackout = createBlackout();
 		isolationBlackout = createBlackout();
 		isolationBlackout.anchor.x = 0.5;
 		isolationBlackout.anchor.y = 0.5;
 		let originalRender = isolationBlackout.render.bind(isolationBlackout);
-		isolationBlackout.render = function(renderer) {
+		isolationBlackout.render = function (renderer) {
 			originalRender(renderer);
 			for(let o of isolation) {
 				o.render(renderer);
@@ -65,7 +65,7 @@ export default class Overlay {
 		this.helpersIsVisible = true;
 		this.onEditorRenderResize();
 	}
-	
+
 	onEditorRenderResize() {
 		for(let b of blackouts) {
 			b.width = game.W * 2;
@@ -80,18 +80,18 @@ export default class Overlay {
 	getBGColor() {
 		return previewBlackout.tint;
 	}
-	
+
 	setBGColor(tint) {
 		if(tint === undefined) {
 			tint = 30;
 		} else if(isPreviewShowed) {
 			checkIfCurrentContainerIsShowedPrefab();
-			editor.settings.setItem('prefab-bg'+ game.currentContainer.name, tint);
+			editor.settings.setItem('prefab-bg' + game.currentContainer.name, tint);
 		}
-		
+
 		previewBlackout.tint = tint;
 	}
-	
+
 	disableSelectionByStageClick(disable) {
 		selectionDisabled = disable;
 	}
@@ -129,7 +129,7 @@ export default class Overlay {
 		if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
 			game.stage.addChild(cameraFrame); //move frame to front
 			__getNodeExtendData(cameraFrame).hidden = true;
-			
+
 			if(cameraFrame.__appliedW !== game.W ||
 				cameraFrame.__appliedH !== game.H) {
 
@@ -137,7 +137,7 @@ export default class Overlay {
 				cameraFrame.clear();
 				cameraFrame.lineStyle(W, 0x808080, 0.4);
 				cameraFrame.beginFill(0, 0);
-				cameraFrame.drawRect(W/-2, W/-2, game.W + W, game.H + W);
+				cameraFrame.drawRect(W / -2, W / -2, game.W + W, game.H + W);
 
 				cameraFrame.__appliedW = game.W;
 				cameraFrame.__appliedH = game.H;
@@ -166,7 +166,7 @@ export default class Overlay {
 		guideSprite.rotation = a;
 		guideSprite.scale.x = 100;
 		guideSprite.scale.y = 0.1;
-		from.toGlobal({x:0, y:0}, guideSprite);
+		from.toGlobal({x: 0, y: 0}, guideSprite);
 		showGuideSprite();
 	}
 
@@ -177,7 +177,7 @@ export default class Overlay {
 		guideSprite.rotation = from.getGlobalRotation();
 		guideSprite.scale.x = 0.1;
 		guideSprite.scale.y = 100;
-		from.toGlobal({x, y:0}, guideSprite);
+		from.toGlobal({x, y: 0}, guideSprite);
 		from.scale.x = tx;
 		from.scale.y = ty;
 		showGuideSprite();
@@ -190,12 +190,12 @@ export default class Overlay {
 		guideSprite.rotation = from.getGlobalRotation();
 		guideSprite.scale.x = 100;
 		guideSprite.scale.y = 0.1;
-		from.toGlobal({x:0, y}, guideSprite);
+		from.toGlobal({x: 0, y}, guideSprite);
 		from.scale.x = tx;
 		from.scale.y = ty;
 		showGuideSprite();
 	}
-	
+
 	showPreview(object) {
 		this.exitIsolation();
 		editor.ui.viewport.resetZoom();
@@ -220,19 +220,19 @@ export default class Overlay {
 		game.__loadDynamicTextures();
 	}
 
-	isDraggerOvered () {
+	isDraggerOvered() {
 		return overedDragger;
 	}
 
 	drawRect(props, owner, rect) {
-		props.field.color = props.field.color  || 0x00ff00;
+		props.field.color = props.field.color || 0x00ff00;
 
 		let info = __getNodeExtendData(owner);
 		if(!info.rects) {
 			info.rects = {};
 		}
 		let r;
-		if (!info.rects[props.field.name]) {
+		if(!info.rects[props.field.name]) {
 			r = createDragger(owner, Rect);
 			r._props = props;
 			r._rect = rect;
@@ -249,15 +249,15 @@ export default class Overlay {
 		helpersIsVisible = !hideHelpers;
 		this.helpersIsVisible = helpersIsVisible;
 	}
-	
+
 	hidePreview(refresh = true) {
 		this.exitIsolation();
 		editor.ui.viewport.resetZoom();
 		previewBlackout.detachFromParent();
-		if (isPreviewShowed) {
+		if(isPreviewShowed) {
 			checkIfCurrentContainerIsShowedPrefab();
 			let selectionData = editor.selection.saveSelection();
-			game.settings.setItem('prefab-selection' + game.currentContainer.name, selectionData);	
+			game.settings.setItem('prefab-selection' + game.currentContainer.name, selectionData);
 			game.hideModal(game.currentContainer);
 			isPreviewShowed = null;
 			if(refresh) {
@@ -293,12 +293,12 @@ let currentPointer = 'initial';
 function refreshSelection() {
 	overedDragger = null;
 	let i = draggers.length - 1;
-	
-	while (i >= 0) {
+
+	while(i >= 0) {
 		let d = draggers[i];
 		d.visible = helpersIsVisible && !document.fullscreenElement;
 		let info = __getNodeExtendData(d.owner);
-		if (!info.isSelected || d.info !== info) {
+		if(!info.isSelected || d.info !== info) {
 			d.detachFromParent();
 			Pool.dispose(d);
 			info.draggerPivot = null;
@@ -308,7 +308,7 @@ function refreshSelection() {
 		}
 		if(helpersIsVisible && !(d instanceof Rect)) {
 			let s = 6 * viewportCanvasScale;
-			if ((Math.abs(d.x - game.mouse.__EDITOR_x) < s) && (Math.abs(d.y - game.mouse.__EDITOR_y) < s)) {
+			if((Math.abs(d.x - game.mouse.__EDITOR_x) < s) && (Math.abs(d.y - game.mouse.__EDITOR_y) < s)) {
 				overedDragger = d;
 			}
 		}
@@ -319,13 +319,13 @@ function refreshSelection() {
 		game.pixiApp.view.style.cursor = newPointer;
 		currentPointer = newPointer;
 	}
-	
+
 	editor.selection.some(refreshDraggersForNode);
 }
 
 function refreshDraggersForNode(o) {
 	let info = __getNodeExtendData(o);
-	if (!info.draggerPivot) {
+	if(!info.draggerPivot) {
 		info.draggerPivot = createDragger(o, Dragger);
 		if(!info.rotatorLocked) {
 			info.draggerRotator = createDragger(o, Rotator);
@@ -370,10 +370,10 @@ window.addEventListener('mousedown', function onMouseDown(ev) {
 			scrollingX = game.mouse.__EDITOR_x;
 			scrollingY = game.mouse.__EDITOR_y;
 		} else {
-			if (overedDragger) {
+			if(overedDragger) {
 				if(overedDragger instanceof Rotator && ev.buttons === 2) {
 					editor.onSelectedPropsChange('rotation', 0);
-				} else if (ev.buttons === 1 || ev.buttons === 2) {
+				} else if(ev.buttons === 1 || ev.buttons === 2) {
 					draggingDragger = overedDragger;
 				}
 			} else if(!selectionDisabled && ev.buttons === 1) {
@@ -447,7 +447,7 @@ function selectByStageClick(ev) {
 					}
 					p = p.parent;
 				}
-				
+
 			}
 		}
 	};
@@ -465,7 +465,7 @@ function selectByStageClick(ev) {
 
 	allUnderMouse.sortSelectedNodes();
 	allUnderMouse.reverse();
-	
+
 	if(allUnderMouse.length > 0) {
 		if(!previousAllUnderMouse || previousAllUnderMouse.some((prevObj, i) => {
 			return prevObj !== allUnderMouse[i];
@@ -498,7 +498,7 @@ function getParentWhichHideChildren(child, closest = false) {
 
 	for(let i = 0; i < parents.length; i++) {
 		o = parents[i];
-		
+
 		let d = __getNodeExtendData(o);
 		if(d.hideAllChildren) {
 			if(o !== child) {
@@ -508,13 +508,13 @@ function getParentWhichHideChildren(child, closest = false) {
 		if(d.hidden) {
 			if(!closest) {
 				assert(i > 0, "Cannot get parent hides children.");
-				o = parents[i-1];
+				o = parents[i - 1];
 				if(o !== child) {
 					return o;
 				}
 			} else {
 				assert(i < (parents.length - 1), "Cannot get parent hides children.");
-				o = parents[i+1];
+				o = parents[i + 1];
 				if(o !== child) {
 					return o;
 				}
@@ -534,17 +534,17 @@ window.addEventListener('mousemove', function onMouseMove(ev) {
 			isScrolling = false;
 		} else {
 			let dX = game.mouse.__EDITOR_x - scrollingX;
-			let dY =  game.mouse.__EDITOR_y - scrollingY;
+			let dY = game.mouse.__EDITOR_y - scrollingY;
 			game.stage.x += dX;
 			game.stage.y += dY;
 
-			
-			scrollingX =  game.mouse.__EDITOR_x;
-			scrollingY =  game.mouse.__EDITOR_y;
+
+			scrollingX = game.mouse.__EDITOR_x;
+			scrollingY = game.mouse.__EDITOR_y;
 			editor.overlay.refreshCameraFrame();
 		}
 	}
-	if (draggingDragger && draggingDragger.owner.parent) {
+	if(draggingDragger && draggingDragger.owner.parent) {
 		draggingDragger.onDrag();
 	}
 });
@@ -560,7 +560,7 @@ window.addEventListener('wheel', function onWheel(ev) {
 
 
 		let zoom = game.stage.scale.x;
-		zoom *= 1 - ev.deltaY/1000;
+		zoom *= 1 - ev.deltaY / 1000;
 
 		if(Math.abs(zoom - 1.0) < 0.01) {
 			zoom = 1;
@@ -585,12 +585,12 @@ class Dragger extends DSprite {
 		super();
 		this.texture = PIXI.Texture.from('img/overlay/pivot.png');
 	}
-	
+
 	onDrag() {
 		let o = this.owner;
 		let info = __getNodeExtendData(o);
 		if(info.draggerPivot) {
-		
+
 			if(game.keys.shiftKey) {
 				let dX = game.mouse.__EDITOR_x + shiftX - startX;
 				let dY = game.mouse.__EDITOR_y + shiftY - startY;
@@ -600,7 +600,7 @@ class Dragger extends DSprite {
 				angle = Math.round(angle);
 				angle /= 4.0;
 				angle *= Math.PI;
-				
+
 				let len = Math.sqrt(dX * dX + dY * dY);
 				p.x = startX + Math.cos(angle) * len;
 				p.y = startY + Math.sin(angle) * len;
@@ -609,11 +609,11 @@ class Dragger extends DSprite {
 				p.x = game.mouse.__EDITOR_x + shiftX;
 				p.y = game.mouse.__EDITOR_y + shiftY;
 			}
-			
+
 			o.parent.toLocal(p, undefined, p, true);
 			if(isNaN(p.x)) {
 				let parent = o.parent;
-				while (parent) {
+				while(parent) {
 					if(parent.scale.x === 0) {
 						editor.ui.status.warn("Can not drag object because it`s parent has zero scale.x", undefined, parent, 'scale.x');
 						return;
@@ -629,7 +629,7 @@ class Dragger extends DSprite {
 			}
 			let dX = (Math.round(p.x) - o.x);
 			let dY = (Math.round(p.y) - o.y);
-			
+
 			if(game.keys.ctrlKey) {
 				for(let s of editor.selection) {
 					editor.moveContainerWithoutChildren(s, dX, dY);
@@ -647,13 +647,13 @@ class Rotator extends DSprite {
 		super();
 		this.texture = PIXI.Texture.from('img/overlay/rotator.png');
 	}
-	
+
 	onDrag() {
 		let o = this.owner;
 		let info = __getNodeExtendData(o);
 		if(info.draggerPivot) {
 			let r = Math.atan2(game.mouse.__EDITOR_y + shiftY - info.draggerPivot.y, game.mouse.__EDITOR_x + shiftX - info.draggerPivot.x);
-			if (game.keys.shiftKey) {
+			if(game.keys.shiftKey) {
 				r = Math.round(r / Math.PI * 8.0) / 8.0 * Math.PI;
 			} else {
 				r = Math.round(r * 1000.0) / 1000.0;
@@ -681,7 +681,7 @@ class Rect extends PIXI.Graphics {
 			this.clear();
 			this.lineStyle(2 * viewportCanvasScale, this._props.field.color, 0.6, 0);
 			this.beginFill(0, 0);
-			this.drawRect (r.x, r.y, r.w, r.h);
+			this.drawRect(r.x, r.y, r.w, r.h);
 			this.endFill();
 
 			this._drawedColor = this._props.field.color;

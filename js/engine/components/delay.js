@@ -35,14 +35,14 @@ export default class Delay extends Container {
 		assert(!game.__EDITOR_mode, "Attempt to create Delay.delay() in editing mode.", 10007);
 		assert(callback, "Delay.delay(). Function expected as first parameter, but " + (typeof callback) + ' received.', 10008);
 		assert(typeof delayFrames === 'number', "Delay.delay(). Number expected as second parameter, but " + (typeof delayFrames) + ' received.', 10009);
-		
+
 		if(delayFrames <= 0) {
 			callback();
 			/// #if DEBUG
 			return "call back was called immediately because time were: " + delayFrames;
 			/// #endif
 		} else {
-		
+
 			let d = Pool.create(Delay);
 			/// #if EDITOR
 			Lib._constructRecursive(d);
@@ -70,7 +70,7 @@ export default class Delay extends Container {
 		this.callback = null;
 	}
 	/// #endif
-	
+
 	constructor() {
 		super();
 		this.visible = false;

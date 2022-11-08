@@ -1,9 +1,9 @@
 import callByPath from "../../utils/call-by-path.js";
 
 export default class FieldPlayer {
-	
+
 	init(target, data, pow, damper) {
-		
+
 		this.target = target;
 		this.fieldName = data.n;
 		this.timeline = data.t;
@@ -11,7 +11,7 @@ export default class FieldPlayer {
 		this.damper = damper;
 		this.reset();
 	}
-	
+
 	reset(
 		/// #if EDITOR
 		ignoreRandom = false
@@ -32,7 +32,7 @@ export default class FieldPlayer {
 		this.val = this.currentFrame.v;
 		this.targetVal = this.val;
 		this.speed = 0;
-		
+
 		/// #if EDITOR
 		if(editor.game.__EDITOR_mode && this.target.__previewFrame) {
 			let kf = this.timeline.find((kf) => {
@@ -46,7 +46,7 @@ export default class FieldPlayer {
 		/// #endif
 		this.target[this.fieldName] = this.val;
 	}
-	
+
 	goto(time, nextKeyframe) {
 		this.time = time;
 		this.currentFrame = nextKeyframe;
@@ -57,13 +57,13 @@ export default class FieldPlayer {
 			} else {
 				this.speed = 0;
 			}
-		} else if (nextKeyframe.m === 2) {//DISCRETE
+		} else if(nextKeyframe.m === 2) {//DISCRETE
 			this.speed = 0;
 		}
-		
-		
+
+
 	}
-	
+
 	update(
 		/// #if EDITOR
 		ignoreRandom = false
@@ -73,19 +73,19 @@ export default class FieldPlayer {
 		this.__processedTime = this.time;
 		/// #endif
 		let currentFrame = this.currentFrame;
-		if (this.time === currentFrame.t) {
+		if(this.time === currentFrame.t) {
 			/// #if EDITOR
 			this.__lastFiredKeyframe = currentFrame;
 			/// #endif
 			let action;
-			if (currentFrame.hasOwnProperty('a')) {
+			if(currentFrame.hasOwnProperty('a')) {
 				action = currentFrame.a;
 			}
-			
-			if (currentFrame.m === 1 || currentFrame.m === 2) { //LINEAR and DISCRETE Mode fields apply exact value at the end
+
+			if(currentFrame.m === 1 || currentFrame.m === 2) { //LINEAR and DISCRETE Mode fields apply exact value at the end
 				this.val = currentFrame.v;
 			}
-			
+
 			this.time = currentFrame.j;
 			if(currentFrame.hasOwnProperty('r')
 				/// #if EDITOR
@@ -95,7 +95,7 @@ export default class FieldPlayer {
 				this.time += Math.round(Math.random() * currentFrame.r);
 			}
 
-			if (currentFrame.m === 0) { //- SMOOTH
+			if(currentFrame.m === 0) { //- SMOOTH
 				this.speed += (currentFrame.v - this.val) * this.pow;
 				this.val += this.speed;
 				this.speed *= this.damper;
@@ -104,7 +104,7 @@ export default class FieldPlayer {
 			if(currentFrame.hasOwnProperty('s')) {
 				this.speed = currentFrame.s;
 			}
-			
+
 			this.currentFrame = currentFrame = currentFrame.n;
 			if(currentFrame.m === 1) {// LINEAR Mode
 				let dist = currentFrame.t - this.time;
@@ -114,8 +114,8 @@ export default class FieldPlayer {
 					this.speed = 0;
 				}
 			}
-			
-			if (action) {
+
+			if(action) {
 				/// #if EDITOR
 				if(!this.__doNotCallActions) {
 					if(this.target.__logLevel > 1) {
@@ -136,8 +136,8 @@ export default class FieldPlayer {
 			/// #if EDITOR
 			this.__lastFiredKeyframe = null;
 			/// #endif
-		
-			if (currentFrame.m === 0) { //- SMOOTH
+
+			if(currentFrame.m === 0) { //- SMOOTH
 				this.speed += (currentFrame.v - this.val) * this.pow;
 				this.val += this.speed;
 				this.speed *= this.damper;
@@ -162,6 +162,6 @@ export default class FieldPlayer {
 		this.time++;
 		this.target[this.fieldName] = this.val;
 	}
-	
+
 
 }

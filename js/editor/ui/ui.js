@@ -36,13 +36,13 @@ function renderWindow(id, helpId, title, content, x, y, minW, minH, w, h, onResi
 }
 
 class UI extends React.Component {
-	
-	
+
+
 	constructor(props) {
 		super(props);
-		
+
 		this.renderWindow = renderWindow;
-		
+
 		this.statusRef = this.statusRef.bind(this);
 		this.sceneTreeRef = this.sceneTreeRef.bind(this);
 		this.propsEditorRef = this.propsEditorRef.bind(this);
@@ -54,7 +54,7 @@ class UI extends React.Component {
 
 		this.LanguageView = LanguageView;
 	}
-	
+
 	componentDidMount() {
 		this.props.onMounted(this);
 	}
@@ -98,11 +98,11 @@ class UI extends React.Component {
 	onBuildDebugClick() {
 		editor.build(true);
 	}
-	
+
 	onOpenProjectClick() {
 		ProjectsList.chooseProject();
 	}
-	
+
 	onOpenProjectFolderClick() {
 		editor.fs.editFile('/games/' + editor.currentProjectDir);
 	}
@@ -118,7 +118,7 @@ class UI extends React.Component {
 		element.scrollIntoView({block: "center", inline: "center"});
 		window.shakeDomElement(element);
 	}
-	
+
 	render() {
 
 		editor.fs.filesExt && editor.fs.filesExt.scripts.sort((a, b) => {
@@ -144,7 +144,7 @@ class UI extends React.Component {
 
 			renderWindow('sceneTree', 'SceneTree', 'Scene tree', React.createElement(TreeView, {ref: this.sceneTreeRef}), 0, 35, 250, 500, 250, 500),
 			renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', editor.projectDesc ? R.b(null, editor.currentSceneName) : undefined, React.createElement(StatusBar)), React.createElement(Viewport, {ref: this.viewportRef}),
-				558, 0, 470, 600, 1362, 742, ()=>{
+				558, 0, 470, 600, 1362, 742, () => {
 					if(game.projectDesc) {
 						game._onContainerResize();
 					}
@@ -157,7 +157,7 @@ class UI extends React.Component {
 			renderWindow('prefabsList', 'Prefabs', 'Prefabs', React.createElement(PrefabsList, {ref: this.prefabsRef}), 325, 550, 260, 150, 250, 470),
 			renderWindow('scenesList', 'Scenes', 'Scenes', React.createElement(ScenesList), 1560, 750, 200, 100, 360, 260),
 			renderWindow('soundsList', 'Sounds', 'Sounds', React.createElement(SoundsList, {ref: this.soundsListRef}), 1194, 750, 300, 100, 360, 260),
-			
+
 			React.createElement(Status, {ref: this.statusRef}),
 			React.createElement(Modal, {ref: this.modalRef})
 		);
@@ -167,7 +167,7 @@ class UI extends React.Component {
 export default UI;
 
 class StatusBar extends React.Component {
-	
+
 	componentDidMount() {
 		this.refreshStatus = () => {
 			this.forceUpdate();
@@ -186,12 +186,12 @@ class StatusBar extends React.Component {
 	render() {
 		if(game && game.stage) {
 			let txt = ' x: ' + game.mouse.__EDITOR_scene_x + ' y: ' + game.mouse.__EDITOR_scene_y;
-			
+
 			if(editor.selection.length > 0) {
 				let p = editor.selection[0].toLocal(game.__mouse_EDITOR);
 				txt += ' (x: ' + Math.round(p.x - editor.selection[0].pivot.x) + '; y: ' + Math.round(p.y - editor.selection[0].pivot.y) + ')';
 			}
-			
+
 			let resetZoomBtn;
 			if(game.stage) {
 				if(game.stage.scale.x !== 1) {

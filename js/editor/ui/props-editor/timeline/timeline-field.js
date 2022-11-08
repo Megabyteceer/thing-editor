@@ -36,7 +36,7 @@ export default class FieldsTimeline extends React.Component {
 
 	toggleKeyframe(time) {
 		let field = this.props.field;
-		let currentKeyframe = MovieClip._findNextKeyframe(field.t, time-1);
+		let currentKeyframe = MovieClip._findNextKeyframe(field.t, time - 1);
 		if(currentKeyframe.t !== time) {
 			this.props.owner.createKeyframeWithTimelineValue(field, time);
 			this.forceUpdateDebounced();
@@ -56,7 +56,7 @@ export default class FieldsTimeline extends React.Component {
 			this.forceUpdateDebounced();
 		}
 	}
-	
+
 	onRemoveFieldClick() {
 		editor.ui.modal.showEditorQuestion("Field animation delete", "Are you sure you want to delete animation track for field '" + this.props.field.n + "'?",
 			() => {
@@ -64,21 +64,21 @@ export default class FieldsTimeline extends React.Component {
 			}, 'Delete'
 		);
 	}
-	
+
 	gotoNextKeyframe(direction) {
 		let field = this.props.field;
 		let timeline = this.props.owner.props.owner;
 		let currentTime = timeline.getTime();
-		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime-1);
-		
+		let currentKeyframe = MovieClip._findNextKeyframe(field.t, currentTime - 1);
+
 		let i = field.t.indexOf(currentKeyframe);
-		
+
 		let moved = (currentKeyframe.t - currentTime);
-		
+
 		if(!(((direction > 0) === (moved > 0)) && ((direction < 0) === (moved < 0)))) {
 			i += direction;
 			if(i < 0) {
-				i = field.t.length -1;
+				i = field.t.length - 1;
 			}
 			else if(i >= field.t.length) {
 				i = 0;
@@ -86,11 +86,11 @@ export default class FieldsTimeline extends React.Component {
 		}
 		timeline.selectKeyframe(field.t[i]);
 	}
-	
+
 	onGoLeftClick() {
 		this.gotoNextKeyframe(-1);
 	}
-	
+
 	onGoRightClick() {
 		this.gotoNextKeyframe(1);
 	}
@@ -120,12 +120,10 @@ export default class FieldsTimeline extends React.Component {
 		return R.div({
 			className: 'field-timeline',
 			style: {
-				backgroundSize:  (60 * p.widthZoom)  + 'px ' + (height - 10) + 'px',
-				height 
+				backgroundSize: (60 * p.widthZoom) + 'px ' + (height - 10) + 'px',
+				height
 			}
-		},
-		React.createElement(TimelilneFieldControls, {owner: this}),
-		React.createElement(Line, {owner: this})
+		}, React.createElement(TimelilneFieldControls, {owner: this}), React.createElement(Line, {owner: this})
 		);
 	}
 }

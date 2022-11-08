@@ -15,26 +15,26 @@ function renderGroup(props) {
 }
 
 function groupArray(a, delimiter = '/', level = 0, noSort = false) {
-	
+
 	let groups = {};
 	let group;
 	let groupName = '';
 	let ret = [];
 	const orders = new Map();
 
-	for (let item of a) {
-		
+	for(let item of a) {
+
 		let name = item.key;
 		let np = name.split(delimiter);
 		let groupId = np.slice(0, level + 1).join('-_-');
-		if (np.length > (level + 1)) {
-			if (level > 0) {
+		if(np.length > (level + 1)) {
+			if(level > 0) {
 				np.splice(0, level);
 			}
-			
+
 			groupName = np.shift();
-			
-			if (!groups.hasOwnProperty(groupName)) {
+
+			if(!groups.hasOwnProperty(groupName)) {
 				group = [];
 				groups[groupName] = [];
 			}
@@ -43,16 +43,16 @@ function groupArray(a, delimiter = '/', level = 0, noSort = false) {
 			group = groups[groupName];
 			group.__groupId = groupId;
 			group.push(item);
-			
+
 			continue;
 		}
 		ret.push(item);
 	}
 
-	for (groupName in groups) {
+	for(groupName in groups) {
 		group = groups[groupName];
 		if(!noSort) {
-			group.sort((a,b) => {
+			group.sort((a, b) => {
 				a = orders.get(a);
 				b = orders.get(b);
 				if(typeof a === 'number') {
@@ -83,7 +83,7 @@ function toggleGroup(ev) {
 	let group = ev.target.closest('.props-group').querySelector('.props-group-body');
 	let isHidden = group.classList.contains('hidden');
 	editor.settings.setItem(groupId, !isHidden);
-	if (isHidden) {
+	if(isHidden) {
 		group.classList.remove('hidden');
 		group.style.transition = 'unset';
 		group.style.opacity = 0.001;
@@ -111,7 +111,7 @@ function toggleGroup(ev) {
 					}
 				}, 1);
 			}
-		},1);
+		}, 1);
 	} else {
 		group.style.transform = 'scaleY(1)';
 		group.style.transformOrigin = 'top left';

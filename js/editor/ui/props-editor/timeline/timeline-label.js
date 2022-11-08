@@ -13,14 +13,14 @@ const labelStartMarkerProps = {
 };
 
 export default class TimeLabel extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.onDoubleClick = this.onDoubleClick.bind(this);
 		this.onLabelMouseDown = this.onLabelMouseDown.bind(this);
 		Timeline.registerDraggableComponent(this);
 	}
-	
+
 	componentDidMount() {
 		Timeline._justModifiedSelectable(this);
 		this.props.label.___view = this;
@@ -87,14 +87,14 @@ export default class TimeLabel extends React.Component {
 		});
 		MovieClip.invalidateSerializeCache(movieClip);
 	}
-	
+
 	static renormalizeAllLabels(movieClip) {
 		for(let key in movieClip._timelineData.l) {
 			if(!movieClip._timelineData.l.hasOwnProperty(key)) continue;
 			TimeLabel.renormalizeLabel(movieClip._timelineData.l[key], movieClip);
 		}
 	}
-	
+
 	static askForLabelName(existingLabelsNames, title, defaultName = '', allowedDuplicateName = null) {
 		return editor.ui.modal.showPrompt(title, defaultName, undefined, (nameToCheck) => {
 			if(nameToCheck === allowedDuplicateName) {
@@ -106,7 +106,7 @@ export default class TimeLabel extends React.Component {
 		});
 	}
 
-	onDoubleClick  (ev) { //rename label by double click
+	onDoubleClick(ev) { //rename label by double click
 		let tl = this.props.owner.props.node._timelineData;
 		let label = this.props.label;
 		let name = this.props.labelName;
@@ -121,7 +121,7 @@ export default class TimeLabel extends React.Component {
 		sp(ev);
 	}
 
-	render () {
+	render() {
 
 		let className = 'timeline-label';
 		if(this.state && this.state.isSelected) {
@@ -130,13 +130,12 @@ export default class TimeLabel extends React.Component {
 
 		let label = this.props.label;
 		let name = this.props.labelName;
-		
-		return R.div({className, id:'timeline-label-' + name.replace('.', '-').replace('#', '-') , style:{left: label.t * this.props.owner.props.widthZoom},
+
+		return R.div({
+			className, id: 'timeline-label-' + name.replace('.', '-').replace('#', '-'), style: {left: label.t * this.props.owner.props.widthZoom},
 			onMouseDown: this.onLabelMouseDown,
 			onDoubleClick: this.onDoubleClick
-		},
-		R.div(labelStartMarkerProps),
-		R.span(labelNamesProps, name)
+		}, R.div(labelStartMarkerProps), R.span(labelNamesProps, name)
 		);
 	}
 }

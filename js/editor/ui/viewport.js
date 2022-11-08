@@ -24,7 +24,7 @@ let prefabLabelProps = {
 };
 
 const SPEED_SELECT = [0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
-	return { value, name : '×' + value};
+	return {value, name: '×' + value};
 });
 
 let stoppingExecutionTime;
@@ -41,14 +41,14 @@ let currentResolution;
 const resolutions = [
 	{name: "Responsive", value: false},
 	{name: "Project Fixed", value: true},
-	{name: "Pixel 2 XL", value: {w:823, h:411}},
-	{name: "iPhone 6/7/8", value: {w:667, h:375}},
-	{name: "iPhone X", value: {w:812, h:375}},
-	{name: "iPad", value: {w:1024, h:768}}
+	{name: "Pixel 2 XL", value: {w: 823, h: 411}},
+	{name: "iPhone 6/7/8", value: {w: 667, h: 375}},
+	{name: "iPhone X", value: {w: 812, h: 375}},
+	{name: "iPad", value: {w: 1024, h: 768}}
 ];
 
 export default class Viewport extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {};
@@ -81,7 +81,7 @@ export default class Viewport extends React.Component {
 		this.helpersHidden = !this.helpersHidden;
 		editor.overlay.hideHelpers(this.helpersHidden);
 	}
-	
+
 	stopExecution() {
 		if(!stoppingExecutionTime) {
 			editor.exitPrefabMode();
@@ -93,7 +93,7 @@ export default class Viewport extends React.Component {
 		}
 	}
 
-	
+
 	resetZoom() {
 		game.stage.scale.x = 1;
 		game.stage.scale.y = 1;
@@ -101,16 +101,16 @@ export default class Viewport extends React.Component {
 		game.stage.y = 0;
 		game.onResize();
 	}
-	
+
 	checkIfNeedRecovery() {
 		if(!recoveryCheckingTime) {
 			recoveryCheckingTime = true;
 			setTimeout(() => {
 				recoveryCheckingTime = false;
 				if(problemOnGameStart || problemOnGameStop || editor.frameUpdateException) {
-					
+
 					playTogglingTime = false;
-					
+
 					if(problemOnGameStop) {
 						problemOnGameStop = false;
 						editor.ui.modal.showFatalError('Exception on game stopping.', 20001);
@@ -130,14 +130,14 @@ export default class Viewport extends React.Component {
 			}
 		}
 	}
-	
+
 	onTogglePlay() {
 		if(!playTogglingTime && !editor.__FatalError) {
 			_stopTests();
 			Keys.resetAll();
 			this.checkIfNeedRecovery();
 			playTogglingTime = true;
-			
+
 			this.resetZoom();
 			game.__doOneStep = false;
 			game.__paused = false;
@@ -173,12 +173,12 @@ export default class Viewport extends React.Component {
 				problemOnGameStop = false;
 				game.stage.interactiveChildren = false;
 			}
-			
+
 			this.forceUpdate();
 			editor.history.updateUi();
-			
+
 			game.pixiApp.ticker._requestIfNeeded(); //restore broken ticker if necessary.
-			
+
 			playTogglingTime = false;
 			game.onResize();
 		}
@@ -194,31 +194,31 @@ export default class Viewport extends React.Component {
 			game.stage.y = game.H / 2 - p.y * game.stage.scale.y;
 		}
 	}
-	
+
 	onPauseResumeClick() {
 		game.__paused = !game.__paused;
 		this.forceUpdate();
 	}
-	
+
 	onOneStepClick() {
 		game.__doOneStep = true;
 		this.forceUpdate();
 	}
-	
+
 	setPrefabMode(enabled) {
 		this.setState({prefabMode: enabled});
 	}
-	
+
 	onReloadClassesClick() {
 		editor.ui.status.clear();
 		editor.reloadClasses();
 	}
-	
+
 	onToggleOrientationClick() {
 		game.__enforcedOrientation = (game.__enforcedOrientation === 'portrait') ? 'landscape' : 'portrait';
 		game.settings.setItem('__EDITOR_is-portrait-orientation', (game.__enforcedOrientation === 'portrait'));
 	}
-	
+
 	onReloadAssetsClick() {
 		editor.ui.status.clear();
 		editor.fs.refreshFiles().then(() => {
@@ -249,14 +249,14 @@ export default class Viewport extends React.Component {
 	}
 
 	onDragOver(ev) {
-		if (canBeDragAccepted(ev)) {
+		if(canBeDragAccepted(ev)) {
 			ev.dataTransfer.effectAllowed = "copy";
 			ev.dataTransfer.dropEffect = "copy";
 			ev.preventDefault();
 		}
 	}
 
-	onMobileToggle (ev) {
+	onMobileToggle(ev) {
 		game.isMobile.any = ev.target.checked;
 		editor.settings.setItem('mobileMode', game.isMobile.any);
 		this.resetZoom();
@@ -287,11 +287,11 @@ export default class Viewport extends React.Component {
 	}
 
 	render() {
-		
+
 		let className = 'editor-viewport-wrapper';
 		let statusHeader;
 		let panel;
-		
+
 		let toggleOrientationBtn;
 		if(editor.projectDesc && (editor.projectDesc.screenOrientation === 'auto')) {
 			toggleOrientationBtn = R.btn(R.icon('orientation-toggle'), this.onToggleOrientationClick, 'Switch screen orientation (Ctrl + O)', 'big-btn', 1079);
@@ -300,19 +300,21 @@ export default class Viewport extends React.Component {
 		let resolutionSelect;
 		if(editor.projectDesc && editor.projectDesc.dynamicStageSize) {
 			resolutionSelect = R.div({className: 'resolution-selector'},
-				React.createElement(SelectEditor, {onChange: (ev) => {
-					if(ev.target.value !== currentResolution) {
-						this.setCurrentResolution(ev.target.value);
-						editor.settings.setItem('viewportMode', currentResolution);
-						this.forceUpdate();
-					}
-				}, noCopyValue:true, value: currentResolution, select: resolutions}),
+				React.createElement(SelectEditor, {
+					onChange: (ev) => {
+						if(ev.target.value !== currentResolution) {
+							this.setCurrentResolution(ev.target.value);
+							editor.settings.setItem('viewportMode', currentResolution);
+							this.forceUpdate();
+						}
+					}, noCopyValue: true, value: currentResolution, select: resolutions
+				}),
 				R.div({className: 'resolution'}, game.W + '×' + game.H)
 			);
 		}
 
 		let reloadAssetsBtn = R.btn(R.icon('reload-assets'), this.onReloadAssetsClick, 'Reload game assets', 'big-btn');
-		
+
 		if(this.state.prefabMode) {
 			className += ' editor-viewport-wrapper-prefab-mode';
 
@@ -375,23 +377,25 @@ export default class Viewport extends React.Component {
 				}, 'Go fullscreen', 'big-btn'),
 				R.hr(),
 				'Speed:',
-				React.createElement(SelectEditor, {onChange:(ev) => {
-					game.__speedMultiplier = ev.target.value;
-					this.forceUpdate();
-				}, noCopyValue:true, value: game.__speedMultiplier, select: SPEED_SELECT})
+				React.createElement(SelectEditor, {
+					onChange: (ev) => {
+						game.__speedMultiplier = ev.target.value;
+						this.forceUpdate();
+					}, noCopyValue: true, value: game.__speedMultiplier, select: SPEED_SELECT
+				})
 			);
 		}
-		
+
 		let languagePanel = LanguageView.isOnlyOneLanguage ? undefined : React.createElement(LanguageSwitcher);
-		
+
 		return R.div({className},
 			R.div({className: 'editor-viewport-panel'},
 
 				R.btn("toggle helpers", () => {
 					document.querySelector('#helpers-checkbox').click();
 				}, undefined, "hidden", 1072),
-				R.input({id:"helpers-checkbox", className:'clickable', type:'checkbox', title: "Hide helpers (Ctrl + H)", onChange: this.onHelpersToggle, defaultChecked:this.helpersHidden}),
-				R.input({id:"is-mobile-checkbox", className:'clickable', type:'checkbox', title: "game.isMobile.any", onChange: this.onMobileToggle, defaultChecked:game.isMobile.any}),
+				R.input({id: "helpers-checkbox", className: 'clickable', type: 'checkbox', title: "Hide helpers (Ctrl + H)", onChange: this.onHelpersToggle, defaultChecked: this.helpersHidden}),
+				R.input({id: "is-mobile-checkbox", className: 'clickable', type: 'checkbox', title: "game.isMobile.any", onChange: this.onMobileToggle, defaultChecked: game.isMobile.any}),
 
 				languagePanel,
 				R.hr(),
@@ -410,7 +414,7 @@ export default class Viewport extends React.Component {
 
 function canBeDragAccepted(ev) {
 	for(let i of ev.dataTransfer.items) {
-		if(i.type ==="text/thing-editor-image-id") {
+		if(i.type === "text/thing-editor-image-id") {
 			return i;
 		}
 	}

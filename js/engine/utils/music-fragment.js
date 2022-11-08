@@ -147,7 +147,7 @@ export default class MusicFragment {
 				this._currentFragment = s;
 				assert(s._sounds.length === 1, "Music started in more that one instance.");
 				allActiveFragments[this.musicFragmentHash] = this;
-			} catch(er) {} // eslint-disable-line no-empty
+			} catch(er) { } // eslint-disable-line no-empty
 		}
 	}
 
@@ -160,7 +160,7 @@ export default class MusicFragment {
 				this.introPos = this._currentFragment.seek();
 			}
 			this._currentFragment.stop();
-		
+
 			this._currentFragment = null;
 			delete allActiveFragments[this.musicFragmentHash];
 		}
@@ -203,7 +203,7 @@ export default class MusicFragment {
 		for(let h in allActiveFragments) {
 			if(!hashesToPlay.hasOwnProperty(h)) {
 				allActiveFragments[h]._fadeToVol = 0;
-				if (allActiveFragments[h].owner) {
+				if(allActiveFragments[h].owner) {
 					clearFragmentsOwner(allActiveFragments[h]);
 				}
 			}

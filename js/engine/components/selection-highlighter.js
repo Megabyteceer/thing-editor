@@ -21,7 +21,7 @@ export default class SelectionHighlighter extends DSprite {
 			o = getValueByPath(o, this);
 		}
 		this.selectedObject = o;
-		if (o) {
+		if(o) {
 			this.gotoLabelRecursive('select');
 			this.refreshCorners();
 			this.selectionLockPow = 0;
@@ -43,8 +43,8 @@ export default class SelectionHighlighter extends DSprite {
 	}
 
 	update() {
-		if (this.selectedObject) {
-			if (this.alpha < 1.0) {
+		if(this.selectedObject) {
+			if(this.alpha < 1.0) {
 				this.alpha += 0.1;
 			}
 
@@ -59,9 +59,9 @@ export default class SelectionHighlighter extends DSprite {
 			this.ySpeed *= 0.8;
 			this.rSpeed *= 0.8;
 			this.selectionLockPow = stepTo(this.selectionLockPow, 1, 0.1);
-			
+
 		} else {
-			if (this.alpha > 0.0) {
+			if(this.alpha > 0.0) {
 				this.alpha -= 0.1;
 			}
 		}

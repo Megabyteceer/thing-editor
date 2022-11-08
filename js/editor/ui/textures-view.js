@@ -4,22 +4,22 @@ import Window from "./window.js";
 import SelectEditor from "./props-editor/select-editor.js";
 import game from "thing-editor/js/engine/game.js";
 
-const FILTER_ALL =      1000000000;
+const FILTER_ALL = 1000000000;
 const DEFAULT_LOADING = 0;
 
 let view;
 
 const LOADING_TYPES = [
 	{
-		name:'default',
-		value:DEFAULT_LOADING
+		name: 'default',
+		value: DEFAULT_LOADING
 	},
 	{
-		name:'On Demand',
+		name: 'On Demand',
 		value: 1
 	},
 	{
-		name:'Early Precache',
+		name: 'Early Precache',
 		value: 2
 	}
 ];
@@ -80,7 +80,7 @@ export default class TexturesView extends React.Component {
 	render() {
 		let btn = R.btn('Textures (Ctrl+U)', this.onToggleClick, undefined, this.state.toggled ? 'menu-btn toggled-button' : 'menu-btn', 1085);
 		let table;
-		if (this.state.toggled) {
+		if(this.state.toggled) {
 			table = editor.ui.renderWindow('texturesviewer', 'Textures', 'Textures Viewer', R.fragment(
 				R.btn('×', this.onToggleClick, 'Hide Textures Viewer', 'close-window-btn'),
 				React.createElement(TexturesViewerBody)), 200, 100, 620, 300, 900, 800);
@@ -115,29 +115,31 @@ class TexturesViewerBody extends React.Component {
 
 	renderItem(item) {
 		let name = item.value;
-		
+
 		let isOnDemandLoading = game._getTextureSettingsBits(name, 3);
 
 		let onDemandSwitcher;
-		
+
 		let folderProps = isParentFolderPropsDefined(name);
 		if(!folderProps) {
 			onDemandSwitcher = R.span({
 				className: 'texture-preload-checkbox',
 				title: 'Texture preloading mode'
-			},
-			React.createElement(SelectEditor, {onChange:(ev) => {
-				if(isOnDemandLoading !== ev.target.value) {
-					game.__setTextureSettingsBits(name, ev.target.value, 3);
-					if(ev.target.value !== DEFAULT_LOADING) {
-						game.__loadDynamicTextures();
-					} else {
-						game.__loadImagesIfUnloaded([name]);
-					}
-					this.setState({filter: FILTER_ALL});
-					this.forceUpdate();
-				}
-			}, noCopyValue:true, value:isOnDemandLoading, select: LOADING_TYPES}),
+			}, React.createElement(SelectEditor,
+				{
+					onChange: (ev) => {
+						if(isOnDemandLoading !== ev.target.value) {
+							game.__setTextureSettingsBits(name, ev.target.value, 3);
+							if(ev.target.value !== DEFAULT_LOADING) {
+								game.__loadDynamicTextures();
+							} else {
+								game.__loadImagesIfUnloaded([name]);
+							}
+							this.setState({filter: FILTER_ALL});
+							this.forceUpdate();
+						}
+					}, noCopyValue: true, value: isOnDemandLoading, select: LOADING_TYPES
+				}),
 			);
 		} else {
 			if(isOnDemandLoading != folderProps) {
@@ -160,40 +162,47 @@ class TexturesViewerBody extends React.Component {
 			size = '(unloaded)';
 		}
 		let path = this.getImagePath(name);
-		
-		return R.div({key:name, className:isOnDemandLoading ? 'textures-viewer-item red-frame' : 'textures-viewer-item'},
-			R.img({src: path, className:'textures-viewer-image', onDoubleClick:() => {
-				editor.fs.editFile(path.split('?')[0]);
-			},
-			onDragStart(ev) {
-				ev.dataTransfer.setData("text/thing-editor-image-id", name);
-			}
+
+		return R.div({key: name, className: isOnDemandLoading ? 'textures-viewer-item red-frame' : 'textures-viewer-item'},
+			R.img({
+				src: path, className: 'textures-viewer-image', onDoubleClick: () => {
+					editor.fs.editFile(path.split('?')[0]);
+				},
+				onDragStart(ev) {
+					ev.dataTransfer.setData("text/thing-editor-image-id", name);
+				}
 			}),
 			R.b(labelProps, item.visibleName || name),
 			R.br(),
 			size,
 			onDemandSwitcher,
-			game.projectDesc.mipmap ? undefined : R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "generate Mip-Maps",
+			game.projectDesc.mipmap ? undefined : R.input({
+				className: 'clickable texture-mipmap-check', type: 'checkbox', title: "generate Mip-Maps",
 				onChange: (ev) => {
 					let isMipMaps = ev.target.checked;
 					game.__setTextureSettingsBits(name, isMipMaps ? 4 : 0, 4);
 				},
-				defaultChecked: game._getTextureSettingsBits(name, 4)}
+				defaultChecked: game._getTextureSettingsBits(name, 4)
+			}
 			),
-			isPowOf2 ? R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "wrap texture",
+			isPowOf2 ? R.input({
+				className: 'clickable texture-mipmap-check', type: 'checkbox', title: "wrap texture",
 				onChange: (ev) => {
 					let isWrap = ev.target.checked;
 					game.__setTextureSettingsBits(name, isWrap ? 8 : 0, 24);
 				},
-				checked: game._getTextureSettingsBits(name, 8)}
+				checked: game._getTextureSettingsBits(name, 8)
+			}
 			) : undefined,
-			isPowOf2 ? R.input({className:'clickable texture-mipmap-check', type:'checkbox', title: "mirror-wrap texture",
+			isPowOf2 ? R.input({
+				className: 'clickable texture-mipmap-check', type: 'checkbox', title: "mirror-wrap texture",
 				onChange: (ev) => {
 					let isWrap = ev.target.checked;
 					game.__setTextureSettingsBits(name, isWrap ? 16 : 0, 24);
 				},
-				checked: game._getTextureSettingsBits(name, 16)}
-			): undefined
+				checked: game._getTextureSettingsBits(name, 16)
+			}
+			) : undefined
 		);
 	}
 
@@ -219,40 +228,42 @@ class TexturesViewerBody extends React.Component {
 		}
 		for(let folderName in folders) {
 			if(!isParentFolderPropsDefined(folderName)) {
-				list.unshift(R.div({className:'folder-loading-settings', title:"Folder preloading mode", key: folderName +'/ folder-props ::'},
-					React.createElement(SelectEditor, {onChange:(ev) => {
-						let opt = editor.projectDesc.__loadOnDemandTexturesFolders;
-						if(opt[folderName] !== ev.target.value) {
-							if(ev.target.value !== DEFAULT_LOADING) {
-								let a = Object.keys(opt);
-								for(let f of a) {
-									if(f.startsWith(folderName + '/')) {
-										delete opt[f];
+				list.unshift(R.div({className: 'folder-loading-settings', title: "Folder preloading mode", key: folderName + '/ folder-props ::'},
+					React.createElement(SelectEditor, {
+						onChange: (ev) => {
+							let opt = editor.projectDesc.__loadOnDemandTexturesFolders;
+							if(opt[folderName] !== ev.target.value) {
+								if(ev.target.value !== DEFAULT_LOADING) {
+									let a = Object.keys(opt);
+									for(let f of a) {
+										if(f.startsWith(folderName + '/')) {
+											delete opt[f];
+										}
+									}
+									opt[folderName] = ev.target.value;
+									editor.saveProjectDesc();
+								} else {
+									let imagesToLoad = [];
+									delete opt[folderName];
+									let optImg = editor.projectDesc.loadOnDemandTextures;
+									let a = Object.keys(optImg);
+									for(let f of a) {
+										if(f.startsWith(folderName + '/')) {
+											imagesToLoad.push(f);
+										}
+									}
+									if(imagesToLoad.length) {
+										game.__loadImagesIfUnloaded(imagesToLoad);
+										while(imagesToLoad.length) {
+											game.__setTextureSettingsBits(imagesToLoad.pop(), 0, 3);
+										}
 									}
 								}
-								opt[folderName] = ev.target.value;
-								editor.saveProjectDesc();
-							} else {
-								let imagesToLoad = [];
-								delete opt[folderName];
-								let optImg = editor.projectDesc.loadOnDemandTextures;
-								let a = Object.keys(optImg);
-								for(let f of a) {
-									if(f.startsWith(folderName + '/')) {
-										imagesToLoad.push(f);
-									}
-								}
-								if(imagesToLoad.length) {
-									game.__loadImagesIfUnloaded(imagesToLoad);
-									while(imagesToLoad.length) {
-										game.__setTextureSettingsBits(imagesToLoad.pop(), 0, 3);
-									}
-								}
+								this.setState({filter: FILTER_ALL});
+								this.forceUpdate();
 							}
-							this.setState({filter: FILTER_ALL});
-							this.forceUpdate();
-						}
-					}, noCopyValue:true, value:editor.projectDesc.__loadOnDemandTexturesFolders[folderName], select: LOADING_TYPES}),
+						}, noCopyValue: true, value: editor.projectDesc.__loadOnDemandTexturesFolders[folderName], select: LOADING_TYPES
+					}),
 
 				));
 			}
@@ -264,12 +275,14 @@ class TexturesViewerBody extends React.Component {
 				R.btn(R.icon('cleanup-assets'), this.checkForUnusedImages, 'Auto-clean. Check for images unused in prefabs and scenes. It is still can be used in code or in not standard fields', 'big-btn'),
 				R.span(null,
 					"\u00A0Filter by loading mode: ",
-					React.createElement(SelectEditor, {onChange:(ev) => {
-						this.setState({filter: ev.target.value});
-					}, noCopyValue:true, value:this.state.filter, select: FILTER_SELECT})
+					React.createElement(SelectEditor, {
+						onChange: (ev) => {
+							this.setState({filter: ev.target.value});
+						}, noCopyValue: true, value: this.state.filter, select: FILTER_SELECT
+					})
 				)
 			),
-			R.div({className:'list-view'},
+			R.div({className: 'list-view'},
 				group.groupArray(list)
 			)
 		);
@@ -282,7 +295,7 @@ class TexturesViewerBody extends React.Component {
 			editor.ui.status.clear();
 
 			let allTextures = new Set(Object.values(Lib.__texturesList).map(i => i.name));
-	
+
 			function checkValue(key, value) {
 				if(value && (typeof value === 'string')) {
 					if(allTextures.has(value)) {
@@ -291,14 +304,14 @@ class TexturesViewerBody extends React.Component {
 				}
 				return value;
 			}
-	
+
 			function checkDataForImages(data) {
 				JSON.stringify(data, checkValue);
 			}
-	
+
 			checkDataForImages(Lib.prefabs);
 			checkDataForImages(Lib.scenes);
-	
+
 			for(let imageName of allTextures) {
 				let texture = Lib.getTexture(imageName);
 				if(texture.__noIncludeInToBuild && (texture !== PIXI.Texture.EMPTY)) {
@@ -312,18 +325,18 @@ class TexturesViewerBody extends React.Component {
 				}
 				editor.ui.status.warn('No refs to: ' + imageName, 32043, () => {
 					let path = this.getImagePath(imageName);
-					let view = R.img({src: path, className:'textures-viewer-image'});
-					editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className:'danger'},
+					let view = R.img({src: path, className: 'textures-viewer-image'});
+					editor.ui.modal.showEditorQuestion('Are you sure?', R.span({className: 'danger'},
 						'Are you sure you want to delete image: ', R.b(null, imageName), ' ?',
 						R.br(),
 						'You cannot undo this action.',
 						R.br(),
 						view
-					),() => {
+					), () => {
 						Lib._unloadTexture(imageName);
 						editor.fs.deleteFile('img/' + imageName);
 					}, 'Delete');
-					
+
 				});
 			}
 		});

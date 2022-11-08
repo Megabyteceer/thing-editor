@@ -83,17 +83,17 @@ typeDescriptions.set('color', {
 
 typeDescriptions.set('timeline', {
 	renderer: TimelineEditor,
-	default:null
+	default: null
 });
 
 typeDescriptions.set('tilemap', {
 	renderer: TilemapEditor,
-	default:null
+	default: null
 });
 
 typeDescriptions.set('pow-damp-preset', {
 	renderer: PowDampPresetEditor,
-	default:null
+	default: null
 });
 
 
@@ -109,8 +109,8 @@ let labelEditorOnlyProps = {className: 'props-label props-label-editor-only sele
 let wrapperProps = {className: 'props-wrapper'};
 
 class PropsFieldWrapper extends React.Component {
-	
-	
+
+
 	constructor(props) {
 		super(props);
 		this.state = {};
@@ -123,19 +123,19 @@ class PropsFieldWrapper extends React.Component {
 			this.props.field.onBlur();
 		}
 	}
-	
+
 	onChange(ev, delta, deltaVal) {
 		assert((!delta) || (typeof delta === 'boolean'), "Delta expected to be bool");
 		let field = this.props.field;
 		let val = getTypeDescription(field).parser(ev.target);
-		if(field.hasOwnProperty('parser')){
+		if(field.hasOwnProperty('parser')) {
 			val = field.parser(val);
 		}
-		
-		if (field.hasOwnProperty('min')) {
+
+		if(field.hasOwnProperty('min')) {
 			val = Math.max(field.min, val);
 		}
-		if (field.hasOwnProperty('max')) {
+		if(field.hasOwnProperty('max')) {
 			val = Math.min(field.max, val);
 		}
 		if(delta) {
@@ -143,7 +143,7 @@ class PropsFieldWrapper extends React.Component {
 		} else {
 			this.props.onChange(field, val);
 		}
-		
+
 		this.setState({value: val});
 	}
 
@@ -152,23 +152,23 @@ class PropsFieldWrapper extends React.Component {
 			this.refs.fieldRef.onAutoSelect(selectPath);
 		}
 	}
-	
+
 	render() {
 		let field = this.props.field;
 		let node = editor.selection[0];
 		editor.ui.propsEditor.__isPropsRenderingAccessTime = true;
 		let value = node[field.name];
 		editor.ui.propsEditor.__isPropsRenderingAccessTime = false;
-		
+
 		let renderer;
-		if (field.hasOwnProperty('select')) {
+		if(field.hasOwnProperty('select')) {
 			renderer = SelectEditor;
 		} else {
 			renderer = getTypeDescription(field).renderer;
 		}
-		
+
 		let disabled = field.disabled && field.disabled(node);
-		
+
 		let className = field.important ? 'props-field props-field-important' : 'props-field';
 		let isInvalid;
 		if(field.hasOwnProperty('validate')) {
@@ -192,14 +192,12 @@ class PropsFieldWrapper extends React.Component {
 				);
 			}
 		}
-		
-		return R.div({className, id:'property-editor-' + field.name.replace('.', '_'),
+
+		return R.div({
+			className, id: 'property-editor-' + field.name.replace('.', '_'),
 			title: field.name,
 			'data-help': field.helpUrl
-		},
-		tip,
-		R.div(field.name.startsWith('__') ? labelEditorOnlyProps : (isInvalid ? labelInvalidProps : labelProps), field.name),
-		R.div(wrapperProps,
+		}, tip, R.div(field.name.startsWith('__') ? labelEditorOnlyProps : (isInvalid ? labelInvalidProps : labelProps), field.name), R.div(wrapperProps,
 			React.createElement(renderer, {
 				ref: (field.type === 'timeline') ? 'fieldRef' : undefined,
 				value,

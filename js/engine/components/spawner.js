@@ -39,7 +39,7 @@ export default class Spawner extends Container {
 		}
 		super.update();
 	}
-	
+
 	getNextInterval() {
 		if(this.intervalRandom > 0) {
 			return this.interval + Math.round(Math.random() * this.intervalRandom);
@@ -74,7 +74,7 @@ export default class Spawner extends Container {
 			return;
 		}
 		/// #endif
-		if (!this._container) {
+		if(!this._container) {
 			this.setTargetContainer(this.container);
 		}
 
@@ -90,7 +90,7 @@ export default class Spawner extends Container {
 		if(this.applyRotation) {
 			o.rotation = this.getGlobalRotation();
 		}
-		
+
 
 		this._container.addChild(o);
 		o.parent.toLocal(zeroPoint, this, o);
@@ -102,7 +102,7 @@ export default class Spawner extends Container {
 			o.xSpeed = spawnPointRet.x - o.x;
 			o.ySpeed = spawnPointRet.y - o.y;
 		}
-		
+
 	}
 }
 
@@ -127,45 +127,45 @@ __EDITOR_editableProps(Spawner, [
 	{
 		name: 'prefabToSpawn',
 		type: String,
-		select:window.makePrefabSelector(undefined, false),
-		important:true
+		select: window.makePrefabSelector(undefined, false),
+		important: true
 	},
 	{
-		name:'enabled',
-		type:Boolean,
-		default:true
+		name: 'enabled',
+		type: Boolean,
+		default: true
 	},
 	{
-		name:'delay',
-		type:Number,
-		min:0
+		name: 'delay',
+		type: Number,
+		min: 0
 	},
 	{
-		name:'interval',
-		type:Number,
-		min:0
+		name: 'interval',
+		type: Number,
+		min: 0
 	},
 	{
-		name:'intervalRandom',
-		type:Number,
-		min:0
+		name: 'intervalRandom',
+		type: Number,
+		min: 0
 	},
 	{
-		name:'speed',
-		type:Number,
+		name: 'speed',
+		type: Number,
 		default: 10
 	},
 	{
-		name:'speedRandom',
-		type:Number,
+		name: 'speedRandom',
+		type: Number,
 		default: 10
 	},
 	{
-		name:'applyRotation',
-		type:Boolean
+		name: 'applyRotation',
+		type: Boolean
 	},
 	{
-		name:'container',
+		name: 'container',
 		type: 'data-path',
 		isValueValid: (o) => {
 			return (o instanceof Container);

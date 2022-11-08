@@ -6,7 +6,7 @@ import DisplayObject from "./display-object.js";
 const Container = PIXI.Container;
 
 Container.prototype.update = function update() {
-	for (let c of this.children) {
+	for(let c of this.children) {
 		c.update();
 	}
 };
@@ -58,12 +58,12 @@ const _findByTypeInner = (o) => {
  * @param {string} name
  * @return {PIXI.Container}
  */
-Container.prototype.getChildByName = function(name, debugThis) {
+Container.prototype.getChildByName = function (name, debugThis) {
 	let ret;
 	for(let c of this.children) {
 		if(c.name === name) {
 			if(ret) {
-				let errorTxt = "getChildByName called, but more that one object with name '"+ name + "' present in container " + this.___info;
+				let errorTxt = "getChildByName called, but more that one object with name '" + name + "' present in container " + this.___info;
 				/// #if EDITOR
 				editor.ui.status.error(errorTxt, 10052, debugThis || ret);
 				/*
@@ -116,7 +116,7 @@ assert(!Container.prototype.forAllChildren, "forAllChildren method needs renamin
  * @param {(o:PIXI.Container)=>void} callback
  */
 Container.prototype.forAllChildren = function (callback) {
-	for (let o of this.children) {
+	for(let o of this.children) {
 		callback(o);
 		o.forAllChildren(callback);
 	}
@@ -124,15 +124,15 @@ Container.prototype.forAllChildren = function (callback) {
 
 
 Object.defineProperty(Container.prototype, 'isCanBePressed', {
-	get:function() {
-		if (!this.interactive || game.disableAllButtons) return false;
+	get: function () {
+		if(!this.interactive || game.disableAllButtons) return false;
 		let p = this.parent;
-		while (p !== game.stage && p.interactiveChildren && p.visible) {
+		while(p !== game.stage && p.interactiveChildren && p.visible) {
 			p = p.parent;
 		}
 		return p.interactiveChildren && p.visible;
 	},
-	enumerable:true
+	enumerable: true
 });
 
 export default Container;

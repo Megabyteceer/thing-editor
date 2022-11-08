@@ -7,12 +7,12 @@ let IGNORE_DIRECT_PROPS = false;
 /// #endif
 
 export default class OrientationTrigger extends Container {
-	
+
 	init() {
 		super.init();
 		this.applyOrientation();
 	}
-	
+
 	applyOrientation() {
 		this.__currentOrientationIsPortrait = game.isPortrait;
 		if(game.isPortrait) {
@@ -40,7 +40,7 @@ export default class OrientationTrigger extends Container {
 				/// #endif
 			);
 		}
-		
+
 		/// #if EDITOR
 		if(game.__EDITOR_mode) this.visible = true;
 		/// #endif
@@ -53,7 +53,7 @@ export default class OrientationTrigger extends Container {
 	) {
 
 		this.visible = (this.alpha > 0.015) && (Math.abs(this.scale.x) > 0.0015) && (Math.abs(this.scale.y) > 0.0015);
-		
+
 		/// #if EDITOR
 		if(handler) {
 			let h = handler.split('`')[0];
@@ -61,38 +61,38 @@ export default class OrientationTrigger extends Container {
 				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 10071, this, handlerName);
 				return;
 			}
-			else if (h === 'this.parent.update' && this.parent.children.indexOf(this) < (this.parent.children.length - 1)) {
+			else if(h === 'this.parent.update' && this.parent.children.indexOf(this) < (this.parent.children.length - 1)) {
 				editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.parent.update", but it is not last children of parent. Please move this OrientationTrigger to the end of the list.', 10072, this, handlerName);
 				return;
 			}
 		}
-	
+
 		/// #endif
 		if(handler
 			/// #if EDITOR
 			&& (!game.__EDITOR_mode || isHandlerIsSetValueByPath(handler) || this.__callInEditorMode)
-		/// #endif
+			/// #endif
 		) {
 			callByPath(handler, this);
 		}
 	}
-	
+
 	update() {
 		if(this.visible) {
 			super.update();
 		}
 	}
-	
+
 	_onRenderResize() {
 		/// #if EDITOR
 		this.__currentOrientationIsPortrait = 0; // enforce to applyOrientation
 		/// #endif
-		
+
 		if(this.__currentOrientationIsPortrait !== game.isPortrait) {
 			this.applyOrientation();
 		}
 	}
-	
+
 	/// #if EDITOR
 
 	__callIfValueByPathSetter(path) {
@@ -180,10 +180,10 @@ export default class OrientationTrigger extends Container {
 		if(game.isPortrait) {
 			return super.alpha = isNaN(this.portraitAlpha) ? 1 : this.portraitAlpha;
 		} else {
-			return super.alpha =isNaN(this.landscapeAlpha) ? 1 :  this.landscapeAlpha;
+			return super.alpha = isNaN(this.landscapeAlpha) ? 1 : this.landscapeAlpha;
 		}
 	}
-	
+
 	set x(v) {
 		super.x = v;
 		if(IGNORE_DIRECT_PROPS) return;
@@ -202,7 +202,7 @@ export default class OrientationTrigger extends Container {
 			return super.x = isNaN(this.landscapeX) ? 0 : this.landscapeX;
 		}
 	}
-	
+
 	set rotation(v) {
 		super.rotation = v;
 		if(IGNORE_DIRECT_PROPS) return;
@@ -221,7 +221,7 @@ export default class OrientationTrigger extends Container {
 			return super.rotation = isNaN(this.landscapeR) ? 0 : this.landscapeR;
 		}
 	}
-	
+
 	set y(v) {
 		super.y = v;
 		if(IGNORE_DIRECT_PROPS) return;
@@ -240,7 +240,7 @@ export default class OrientationTrigger extends Container {
 			return super.y = isNaN(this.landscapeY) ? 0 : this.landscapeY;
 		}
 	}
-	
+
 	set "scale.x"(v) {
 		super['scale.x'] = v;
 		if(IGNORE_DIRECT_PROPS) return;
@@ -259,7 +259,7 @@ export default class OrientationTrigger extends Container {
 			return super.scale.x = isNaN(this.landscapeScaleX) ? 0 : this.landscapeScaleX;
 		}
 	}
-	
+
 	set "scale.y"(v) {
 		super['scale.y'] = v;
 		if(IGNORE_DIRECT_PROPS) return;
@@ -273,12 +273,12 @@ export default class OrientationTrigger extends Container {
 	get "scale.y"() {
 		if(IGNORE_DIRECT_PROPS) return super['scale.y'];
 		if(game.isPortrait) {
-			return super.scale.y =  isNaN(this.portraitScaleY) ? 0 : this.portraitScaleY;
+			return super.scale.y = isNaN(this.portraitScaleY) ? 0 : this.portraitScaleY;
 		} else {
-			return super.scale.y =  isNaN(this.landscapeScaleY) ? 0 : this.landscapeScaleY;
+			return super.scale.y = isNaN(this.landscapeScaleY) ? 0 : this.landscapeScaleY;
 		}
 	}
-	
+
 	__beforeSerialization() {
 		IGNORE_DIRECT_PROPS = true;
 		if(!this.__itIsTypeChanging) {
@@ -291,16 +291,16 @@ export default class OrientationTrigger extends Container {
 		}
 		this.__itIsTypeChanging = false;
 	}
-	
+
 	__afterSerialization() {
 		IGNORE_DIRECT_PROPS = false;
 		this.applyOrientation();
 	}
-	
+
 	__beforeDeserialization() {
 		IGNORE_DIRECT_PROPS = true;
 	}
-	
+
 	__afterDeserialization() {
 		if(game.projectDesc.screenOrientation !== 'auto') {
 			editor.ui.status.warn("Orientation trigger is not useful if projects screenOrientation is not set to 'auto'", 32023, this);
@@ -366,8 +366,8 @@ __EDITOR_editableProps(OrientationTrigger, [
 		name: 'onLandscape'
 	},
 	{
-		type:Boolean,
-		name:'__callInEditorMode'
+		type: Boolean,
+		name: '__callInEditorMode'
 	},
 	{
 		type: 'btn',
@@ -378,68 +378,68 @@ __EDITOR_editableProps(OrientationTrigger, [
 	{
 		name: 'landscapeX',
 		type: Number,
-		disabled:propDisabler
+		disabled: propDisabler
 	},
 	{
 		name: 'landscapeY',
 		type: Number,
-		disabled:propDisabler
+		disabled: propDisabler
 	},
 	{
 		name: 'landscapeAlpha',
 		type: Number,
-		default:1,
-		disabled:propDisabler
+		default: 1,
+		disabled: propDisabler
 	},
 	{
 		name: 'landscapeScaleX',
 		type: Number,
-		default:1,
-		disabled:propDisabler
+		default: 1,
+		disabled: propDisabler
 	},
 	{
 		name: 'landscapeScaleY',
 		type: Number,
-		default:1,
-		disabled:propDisabler
+		default: 1,
+		disabled: propDisabler
 	},
 	{
 		name: 'landscapeR',
 		type: Number,
-		disabled:propDisabler
+		disabled: propDisabler
 	},
 	{
 		name: 'portraitX',
 		type: Number,
-		disabled:propDisabler
+		disabled: propDisabler
 	},
 	{
 		name: 'portraitY',
 		type: Number,
-		disabled:propDisabler
+		disabled: propDisabler
 	},
 	{
 		name: 'portraitAlpha',
 		type: Number,
-		default:1,
-		disabled:propDisabler
+		default: 1,
+		disabled: propDisabler
 	},
 	{
 		name: 'portraitScaleY',
 		type: Number,
-		default:1,
-		disabled:propDisabler
+		default: 1,
+		disabled: propDisabler
 	},
 	{
 		name: 'portraitScaleX',
 		type: Number,
-		default:1,
-		disabled:propDisabler
+		default: 1,
+		disabled: propDisabler
 	},
 	{
 		name: 'portraitR',
 		type: Number,
-		disabled:propDisabler
+		disabled: propDisabler
 	}
 ]);
 

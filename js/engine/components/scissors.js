@@ -37,7 +37,7 @@ export default class Scissors extends Container {
 			this.toGlobal(p1, p1);
 			this.toGlobal(p2, p2);
 
-		
+
 			this.hitArea.x = r.x;
 			this.hitArea.y = r.y;
 			this.hitArea.width = r.w;
@@ -48,9 +48,9 @@ export default class Scissors extends Container {
 	_renderCanvas(renderer) {
 		super._renderCanvas(renderer);
 		if(this._enabled
-		/// #if EDITOR
+			/// #if EDITOR
 			&& (!this.__disableInEditorMode || !game.__EDITOR_mode)
-		/// #endif
+			/// #endif
 		) {
 			if(!this.mask) {
 				this.mask = new PIXI.Graphics();
@@ -61,12 +61,12 @@ export default class Scissors extends Container {
 			}
 
 			if(this.appliedCanvasMaskX !== this.rect.x ||
-				this.appliedCanvasMaskY !== this.rect.y || 
-				this.appliedCanvasMaskW !== this.rect.w || 
+				this.appliedCanvasMaskY !== this.rect.y ||
+				this.appliedCanvasMaskW !== this.rect.w ||
 				this.appliedCanvasMaskH !== this.rect.h) {
-					
+
 				this.mask.clear();
-				this.mask.beginFill(0,1);
+				this.mask.beginFill(0, 1);
 				this.mask.drawRect(this.rect.x, this.rect.y, this.rect.w, this.rect.h);
 				this.mask.endFill();
 
@@ -75,7 +75,7 @@ export default class Scissors extends Container {
 				this.appliedCanvasMaskW = this.rect.w;
 				this.appliedCanvasMaskH = this.rect.h;
 			}
-			
+
 			this._applyScissorHitArea();
 		} else {
 			this._disposeMaskScissor();
@@ -87,9 +87,9 @@ export default class Scissors extends Container {
 		let isVasEnabled;
 		let prevScissors;
 		if(this._enabled
-		/// #if EDITOR
+			/// #if EDITOR
 			&& (!this.__disableInEditorMode || !game.__EDITOR_mode)
-		/// #endif
+			/// #endif
 		) {
 			gl = renderer.gl;
 			renderer.batch.flush();
@@ -103,7 +103,7 @@ export default class Scissors extends Container {
 
 			/// #if EDITOR
 			if(!this.rect) {
-				this.rect = {x:0, y:0, w:100, h:50};
+				this.rect = {x: 0, y: 0, w: 100, h: 50};
 			}
 
 			/// #endif
@@ -121,9 +121,9 @@ export default class Scissors extends Container {
 		super.render(renderer);
 		renderer.batch.flush();
 		if(this._enabled
-		/// #if EDITOR
+			/// #if EDITOR
 			&& (!this.__disableInEditorMode || !game.__EDITOR_mode)
-		/// #endif
+			/// #endif
 		) {
 			if(isVasEnabled) {
 				gl.scissor.apply(gl, prevScissors);

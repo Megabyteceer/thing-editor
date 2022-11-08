@@ -24,7 +24,7 @@ export default class SpawnerRing extends Container {
 			return;
 		}
 		/// #endif
-		if (!this._container) {
+		if(!this._container) {
 			if(this.container) {
 				this._container = getValueByPath(this.container, this);
 				/// #if EDITOR
@@ -82,36 +82,36 @@ __EDITOR_editableProps(SpawnerRing, [
 	{
 		name: 'prefabToSpawn',
 		type: String,
-		select:window.makePrefabSelector(undefined, false),
-		important:true
+		select: window.makePrefabSelector(undefined, false),
+		important: true
 	},
 	{
-		name:'speed',
-		type:Number,
+		name: 'speed',
+		type: Number,
 		default: 10
 	},
 	{
-		name:'speedRandom',
-		type:Number,
+		name: 'speedRandom',
+		type: Number,
 		default: 10
 	},
 	{
-		name:'count',
-		type:Number,
+		name: 'count',
+		type: Number,
 		default: 10
 	},
 	{
-		name:'countRandom',
-		type:Number,
+		name: 'countRandom',
+		type: Number,
 		default: 10
 	},
 	{
-		name:'radius',
-		type:Number,
+		name: 'radius',
+		type: Number,
 		default: 10
 	},
 	{
-		name:'container',
+		name: 'container',
 		type: 'data-path',
 		isValueValid: (o) => {
 			return (o instanceof Container);

@@ -20,7 +20,7 @@ function addAssetNameInToMap(name, map) {
 ws.onmessage = function incoming(data) {
 	data = JSON.parse(data.data);
 	if(data.hasOwnProperty('clientsConnected')) {
-		
+
 		if(data.clientsConnected !== 1) {
 			editor.ui.modal.showFatalError('Thing-editor already launched.', 20004);
 			ws.onclose = undefined;
@@ -89,7 +89,7 @@ ws.onmessage = function incoming(data) {
 				editor.ui.status.warn("File changed externally: " + file.name, 32045);
 			}
 		}
-		
+
 		if(imagesUpdated) {
 			AssetsLoader.reloadAssets(true, imagesUpdated);
 		}
@@ -109,21 +109,21 @@ ws.onmessage = function incoming(data) {
 			editor.ui.viewport.jsFilesChanged();
 		}
 	}
-	
+
 };
 
 let exitInProgress = false;
-ws.exitWithResult = function(success, error) {
+ws.exitWithResult = function (success, error) {
 	exitInProgress = true;
 	ws.send(JSON.stringify({
-		exitWithResult:{success, error}
+		exitWithResult: {success, error}
 	}));
 	setTimeout(() => {
 		window.close();
 	}, 1000);
 };
 
-ws.log = function(txt) {
+ws.log = function (txt) {
 	ws.send(JSON.stringify({log: txt}));
 };
 

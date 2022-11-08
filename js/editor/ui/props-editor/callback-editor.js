@@ -1,7 +1,7 @@
 import DataPathEditor from "./data-path-editor.js";
 
 export default class CallbackEditor extends DataPathEditor {
-	
+
 	constructor(props) {
 		super(props);
 		this.itIsCallbackEditor = true;
@@ -10,17 +10,17 @@ export default class CallbackEditor extends DataPathEditor {
 	prepareCurrentPath(path) {
 		return path ? path.split('`')[0] : null;
 	}
-	
+
 	isItTargetValue(val) {
 		assert(val, "empty value selected in callback chooser. Field filter need improvements: ");
-		
+
 		let type = typeof val;
 		return (type === 'function') && (!CallbackEditor.isFunctionIsClass(val));
 	}
-	
+
 	finalValueChoosed(path, val, parent) {
 		path = path.join('.');
-		
+
 		if(val.___EDITOR_callbackParameterChooserFunction) {
 			val.___EDITOR_callbackParameterChooserFunction(parent).then((params) => {
 				if(!params) {
@@ -45,20 +45,20 @@ export default class CallbackEditor extends DataPathEditor {
 				}
 			});
 		} else {
-			if((typeof(val) === 'function') && (val.length > 0)) {
+			if((typeof (val) === 'function') && (val.length > 0)) {
 				path += '`';
 				editor.ui.propsEditor.selectField(this.props.field ? this.props.field.name : '.keyframe-callback-editor', true);
 			}
 			this.applyFinalPath(path);
 		}
 	}
-	
-	
+
+
 	isFieldGoodForCallbackChoose(fieldName, object, val, isChild) {
 		if(!super.isFieldGoodForCallbackChoose(fieldName, object, val, isChild)) {
 			return false;
 		}
-		
+
 		if(typeof val === 'undefined') {
 			val = object[fieldName];
 		}

@@ -39,7 +39,7 @@ export default class RefFieldEditor extends React.Component {
 			} else {
 				title = '' + val;
 			}
-			if (!this.props.value) {
+			if(!this.props.value) {
 				return '' + this.props.value;
 			}
 			return R.btn(title, () => {
@@ -51,9 +51,9 @@ export default class RefFieldEditor extends React.Component {
 					} else {
 						try {
 							editor.ui.modal.showModal(JSON.stringify(this.props.value, undefined, '\n').split('\n').map((l, key) => {
-								return R.span({key},l, R.br());
+								return R.span({key}, l, R.br());
 							}));
-						} catch (er) {
+						} catch(er) {
 							editor.ui.modal.showInfo("Object has circular structures and can not be represented as text. Please check browser's console to see reference's value.", undefined, 32039);
 						}
 					}

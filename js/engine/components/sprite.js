@@ -6,27 +6,27 @@ const Mesh = PIXI.Mesh;
 export default Sprite;
 
 const imagePropertyDescriptor = {
-	get:function () {
+	get: function () {
 		return this._imageID;
 	},
-	set:function (v) {
+	set: function (v) {
 		assert(typeof v === 'string', "texture's String ID expected.", 10022);
 		if(this._imageID !== v) {
 			this._imageID = v;
 			this.texture = Lib.getTexture(v
-			/// #if EDITOR
+				/// #if EDITOR
 				, this
-			/// #endif
+				/// #endif
 			);
 			assert(this.texture && this.texture.baseTexture, "baseTexture is empty.");
 			/// #if EDITOR
 			if(this.texture.valid && (Lib.hasTexture(this._imageID))) {
 				if(this.anchor && ((((this.texture.height & 1) !== 0) && this.anchor.x === 0.5) || (((this.texture.width & 1) !== 0) && this.anchor.y === 0.5))) {
 					editor.ui.status.warn('Texture "' + v + '" has non even sized bounds ('
-						+ this.texture.width + 'x'+ this.texture.height + '). It is can cause unwanted blurring for objects with centralized pivot point.', 32028,
-					() => {
-						editor.fs.editFile(editor.game.resourcesPath + 'img/' + v);
-					});
+						+ this.texture.width + 'x' + this.texture.height + '). It is can cause unwanted blurring for objects with centralized pivot point.', 32028,
+						() => { // eslint-disable-line indent
+							editor.fs.editFile(editor.game.resourcesPath + 'img/' + v); // eslint-disable-line indent
+						}); // eslint-disable-line indent
 				}
 			}
 			/// #endif
@@ -40,10 +40,10 @@ Object.defineProperty(Mesh.prototype, 'image', imagePropertyDescriptor);
 Sprite.imagePropertyDescriptor = imagePropertyDescriptor;
 
 const tintRDesc = {
-	get:function () {
+	get: function () {
 		return this.tint >> 16;
 	},
-	set:function (v) {
+	set: function (v) {
 		assert(!isNaN(v), "invalid value for 'tintR'. Valid number value expected.", 10001);
 		this.tint = (this.tint & 0xFFFF) | (v << 16);
 	}, configurable: true
@@ -53,10 +53,10 @@ Object.defineProperty(Sprite.prototype, 'tintR', tintRDesc);
 Object.defineProperty(Mesh.prototype, 'tintR', tintRDesc);
 
 const tintGDesc = {
-	get:function () {
+	get: function () {
 		return (this.tint & 0xFF00) >> 8;
 	},
-	set:function (v) {
+	set: function (v) {
 		assert(!isNaN(v), "invalid value for 'tintG'. Valid number value expected.", 10001);
 		this.tint = (this.tint & 0xFF00FF) | (v << 8);
 	}, configurable: true
@@ -66,10 +66,10 @@ Object.defineProperty(Sprite.prototype, 'tintG', tintGDesc);
 Object.defineProperty(Mesh.prototype, 'tintG', tintGDesc);
 
 const tintBDesc = {
-	get:function () {
+	get: function () {
 		return this.tint & 0xFF;
 	},
-	set:function (v) {
+	set: function (v) {
 		assert(!isNaN(v), "invalid value for 'tintB'. Valid number value expected.", 10001);
 		this.tint = (this.tint & 0xFFFF00) | v;
 	}, configurable: true
@@ -81,7 +81,7 @@ Object.defineProperty(Mesh.prototype, 'tintB', tintBDesc);
 
 /// #if EDITOR
 
-Sprite.prototype.__beforeDestroy = function() {
+Sprite.prototype.__beforeDestroy = function () {
 	assert(this._width === 0, "width property was assigned but not cleared to zero on object disposing.", 10065);
 	assert(this._height === 0, "height property was assigned but not cleared to zero on object disposing.", 10066);
 };

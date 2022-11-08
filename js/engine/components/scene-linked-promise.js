@@ -35,7 +35,7 @@ export default class SceneLinkedPromise extends Container {
 	/** @return {SceneLinkedPromise} */
 	static promise(handler, container = game.currentContainer) {
 		assert(!game.__EDITOR_mode, "Attempt to create SceneLinkedPromise.promise() in editing mode.", 10057);
-		
+
 		let d = Pool.create(SceneLinkedPromise);
 		/// #if EDITOR
 		Lib._constructRecursive(d);
@@ -61,7 +61,7 @@ export default class SceneLinkedPromise extends Container {
 					assert(d._promiseErrorWaiting === EMPTY_RESULT_SYMBOL, "SceneLinkedPromise is rejected already.", 10059);
 					d._promiseResultWaiting = data;
 				}
-			},		
+			},
 			(error) => {
 				if(d._promiseId === promiseId) {
 					assert(d._promiseResultWaiting === EMPTY_RESULT_SYMBOL, "SceneLinkedPromise is resolved already.", 10058);
@@ -123,7 +123,7 @@ export default class SceneLinkedPromise extends Container {
 			this._promiseWaitForResult = false;
 			this._handleFinally();
 		}
-		
+
 		this._promiseId = -1;
 		this._rejectHandlers.length = 0;
 		this._resolveHandlers.length = 0;
@@ -150,7 +150,7 @@ export default class SceneLinkedPromise extends Container {
 		this._finallyHandlers.push(handler);
 		return this;
 	}
-	
+
 	constructor() {
 		super();
 		assert(arguments.length === 0, "Please use SceneLinkedPromise.promise((resolve, reject) => {}), instead of 'new SceneLinkedPromise'");
@@ -171,7 +171,7 @@ export default class SceneLinkedPromise extends Container {
 			}
 			game._reanimateTicker();
 		});
-		
+
 		/// #endif
 
 		while(this._finallyHandlers.length > 0) {
@@ -182,9 +182,9 @@ export default class SceneLinkedPromise extends Container {
 
 			try { // eslint-disable-line no-unreachable
 				(this._finallyHandlers.shift())();
-			} catch (err) { // eslint-disable-line no-empty
+			} catch(err) { // eslint-disable-line no-empty
 				setTimeout(() => {
-					throw(err);
+					throw (err);
 				}, 0);
 				this._turnPromiseRejected(err); // eslint-disable-line no-unreachable
 				return;
@@ -236,16 +236,16 @@ export default class SceneLinkedPromise extends Container {
 				}
 				continue;
 				/// #endif
-				
+
 				try { // eslint-disable-line no-unreachable
 					let currentResult = (this._resolveHandlers.shift())(r);
 					if(typeof currentResult !== 'undefined') {
 						r = currentResult;
 					}
-				} catch (err) { // eslint-disable-line no-empty
+				} catch(err) { // eslint-disable-line no-empty
 					if(this._rejectHandlers.length === 0) {
 						setTimeout(() => {
-							throw(err);
+							throw (err);
 						}, 0);
 					}
 
@@ -267,7 +267,7 @@ export default class SceneLinkedPromise extends Container {
 			/// #endif
 			while(this._rejectHandlers.length > 0) {
 				/// #if DEBUG
-				
+
 				let handler = this._rejectHandlers.shift();
 				let currentResult = handler(r);
 				this.__passedHandlersDebug.push({handler, currentResult});
@@ -282,10 +282,10 @@ export default class SceneLinkedPromise extends Container {
 					if(typeof currentResult !== 'undefined') {
 						r = currentResult;
 					}
-				} catch (err) { // eslint-disable-line no-empty
+				} catch(err) { // eslint-disable-line no-empty
 					if(this._rejectHandlers.length === 0) {
 						setTimeout(() => {
-							throw(err);
+							throw (err);
 						}, 0);
 					}
 				}

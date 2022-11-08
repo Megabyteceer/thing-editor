@@ -9,12 +9,12 @@ let IS_SELECTION_LOADING_TIME = false;
 
 
 class Selection extends Array {
-	
+
 	select(object, add) {
-		if (!add) {
+		if(!add) {
 			this.clearSelection();
 		}
-		if (__getNodeExtendData(object).isSelected) {
+		if(__getNodeExtendData(object).isSelected) {
 			this.remove(object);
 		} else {
 			this.add(object);
@@ -22,15 +22,15 @@ class Selection extends Array {
 		this.sortSelectedNodes();
 		editor.refreshTreeViewAndPropertyEditor();
 	}
-	
+
 	sortSelectedNodes() {
 		recalculateNodesDeepness();
 		this.sort(sortByDeepness);
 	}
-	
+
 	loadSelection(data) {
 		IS_SELECTION_LOADING_TIME = true;
-		if (!data || data.length === 0) {
+		if(!data || data.length === 0) {
 			editor.selection.clearSelection();
 		} else {
 			editor.selection.clearSelection();
@@ -40,21 +40,21 @@ class Selection extends Array {
 		editor.refreshTreeViewAndPropertyEditor();
 		IS_SELECTION_LOADING_TIME = false;
 	}
-	
+
 	saveSelection() {
 		return this.map(getPathOfNode);
 	}
-	
+
 	clearSelection(refresh) {
-		while (this.length > 0) {
+		while(this.length > 0) {
 			this.remove(this[this.length - 1]);
 		}
 		TreeNode.clearLastClicked();
-		if (refresh) {
+		if(refresh) {
 			editor.refreshTreeViewAndPropertyEditor();
 		}
 	}
-	
+
 	add(o) {
 		let nodePath = getPathOfNode(o);
 		let hidingParent = Overlay.getParentWhichHideChildren(o, true);
@@ -99,7 +99,7 @@ class Selection extends Array {
 			editor.history.scheduleSelectionSave();
 		}
 	}
-	
+
 	remove(o) {
 		assert(__getNodeExtendData(o).isSelected, "Node is not selected.");
 		let i = this.indexOf(o);
@@ -126,7 +126,7 @@ const selectionFilter = new PIXI.filters.OutlineFilter(2, 0xffff00);
 selectionFilter.padding = 2;
 
 setInterval(() => {
-	if (window.editor && editor.selection.length > 0) {
+	if(window.editor && editor.selection.length > 0) {
 		if(document.fullscreenElement) {
 			selectionFilter.enabled = 0;
 			return;
@@ -146,8 +146,8 @@ setInterval(() => {
 
 let getPathOfNode = (node) => {
 	let ret = [];
-	while (node !== game.stage) {
-		if(node.name && node.parent.children.filter((c)=>{return c.name === node.name;}).length === 1) {
+	while(node !== game.stage) {
+		if(node.name && node.parent.children.filter((c) => {return c.name === node.name;}).length === 1) {
 			ret.push(node.name);
 		} else {
 			let children = node.parent.children.filter(c => !__getNodeExtendData(c).hidden);
@@ -160,7 +160,7 @@ let getPathOfNode = (node) => {
 
 let selectNodeByPath = (path) => {
 	let ret = game.stage;
-	for (let i = path.length - 1; i >= 0 && ret; i--) {
+	for(let i = path.length - 1; i >= 0 && ret; i--) {
 		let p = path[i];
 		if(typeof p === 'number') {
 			let children = ret.children.filter(c => !__getNodeExtendData(c).hidden);
@@ -173,7 +173,7 @@ let selectNodeByPath = (path) => {
 			ret = ret.getChildByName(p);
 		}
 	}
-	
+
 	if(ret && ret !== game.stage) {
 		editor.selection.add(ret);
 	}
@@ -190,7 +190,7 @@ let recalculateNodesDeepness = () => {
 
 let recalculateNodesDeepnessRecursive = (n) => {
 	__getNodeExtendData(n).deepness = curDeepness++;
-	if (n.hasOwnProperty('children')) {
+	if(n.hasOwnProperty('children')) {
 		n.children.some(recalculateNodesDeepnessRecursive);
 	}
 };

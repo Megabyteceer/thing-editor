@@ -5,10 +5,10 @@ import L from "./l.js";
 export default class SureQuestion {
 
 	static init(clip, title, message, yesLabel, onYes, noLabel, onNo, easyClose) {
-		
+
 		const onYesHandler = () => {
 			game.hideModal(clip);
-			if (onYes) {
+			if(onYes) {
 				if(typeof onYes === 'string') {
 					callByPath(onYes, this);
 				} else {
@@ -18,7 +18,7 @@ export default class SureQuestion {
 		};
 		const onNoHandler = () => {
 			game.hideModal(clip);
-			if (onNo) {
+			if(onNo) {
 				if(typeof onNo === 'string') {
 					callByPath(onNo, this);
 				} else {
@@ -36,21 +36,21 @@ export default class SureQuestion {
 			}
 		}
 
-		if ((typeof title) === 'string') {
+		if((typeof title) === 'string') {
 			let tf = clip.findChildByName('title');
 			if(tf) {
 				tf.text = title;
 			}
 		}
-		if ((typeof message) === 'string') {
+		if((typeof message) === 'string') {
 			let tf = clip.findChildByName('message');
 			if(tf) {
 				tf.text = message;
 			}
 		}
-		
+
 		let okBtn = clip.findChildByName('okBtn');
-		if (okBtn) {
+		if(okBtn) {
 			if(yesLabel) {
 				let tf = okBtn.findChildByName('label');
 				if(tf) {
@@ -64,7 +64,7 @@ export default class SureQuestion {
 			}
 			okBtn.callback = onYesHandler;
 		}
-		
+
 		let noBtn = clip.findChildByName('noBtn');
 		if(noBtn) {
 			if(noLabel) {
@@ -78,7 +78,7 @@ export default class SureQuestion {
 					}
 				}
 			}
-			
+
 			if(noLabel || (onNo && !easyClose)) {
 				noBtn.callback = onNoHandler;
 			} else {

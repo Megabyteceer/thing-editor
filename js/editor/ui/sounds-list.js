@@ -10,7 +10,7 @@ let sounds = {};
 
 const bodyProps = {className: 'sounds-list list-view'};
 
-let labelProps = {className: 'selectable-text', title: 'Ctrl+click to copy sound`s name', onMouseDown:window.copyTextByClick};
+let labelProps = {className: 'selectable-text', title: 'Ctrl+click to copy sound`s name', onMouseDown: window.copyTextByClick};
 let soundPreloadingModes = [
 	{name: '-', value: undefined},
 	{name: 'on demand', value: 1},
@@ -22,9 +22,9 @@ let soundPreloadingModeDescriptions = {
 	2: "Sound will be pre-cached after game start"
 };
 
-let bitrates = [48, 64, 80, 96, 112, 128, 160, 192].map((b) => {return {name:b + 'Kb', value: b};});
+let bitrates = [48, 64, 80, 96, 112, 128, 160, 192].map((b) => {return {name: b + 'Kb', value: b};});
 let bitratesWitDefault = bitrates.slice();
-bitratesWitDefault.unshift({name:'..', value:undefined});
+bitratesWitDefault.unshift({name: '..', value: undefined});
 
 const soundNameCleaner = /^snd\//gm;
 const supportedSoundFormats = ['webm', 'ogg', 'mp3', 'weba', 'aac'];
@@ -45,7 +45,7 @@ export default class SoundsList extends React.Component {
 	}
 
 	onSearchChange(ev) {
-		let filter= ev.target.value.toLowerCase();
+		let filter = ev.target.value.toLowerCase();
 		editor.settings.setItem('sounds-filter', filter);
 		this.setState({filter});
 	}
@@ -62,9 +62,9 @@ export default class SoundsList extends React.Component {
 
 	static chooseSound(title, noEasyClose) {
 		let libSounds = Lib.__getSoundsData();
-		
+
 		let sounds = [];
-		for (let name in libSounds) {
+		for(let name in libSounds) {
 			sounds.push({name});
 		}
 		return editor.ui.modal.showListChoose(title || "Choose sound", sounds, noEasyClose).then((choosed) => {
@@ -95,26 +95,26 @@ export default class SoundsList extends React.Component {
 				this.rebuildSounds().then((result) => {
 					this.soundsReloadingInProgress = false;
 					if(result.errors) {
-						editor.ui.modal.showError(R.fragment(R.b(null, 'Make sure ffmpeg library is installed and it is aded to the PATH.'), result.errors.map((r, i) =>{
-							return R.div({key:i}, JSON.stringify(r));
+						editor.ui.modal.showError(R.fragment(R.b(null, 'Make sure ffmpeg library is installed and it is aded to the PATH.'), result.errors.map((r, i) => {
+							return R.div({key: i}, JSON.stringify(r));
 						})), 30007, "Sounds processing ffmpeg lib error.");
 						resolve();
 					} else {
 
 						const reloadSoundsInner = () => {
-							const soundFilter =  new RegExp("^snd\/.*\.(" + editor.projectDesc.soundFormats.join('|') + ")$", "gmi");
+							const soundFilter = new RegExp("^snd\/.*\.(" + editor.projectDesc.soundFormats.join('|') + ")$", "gmi");
 
 							sounds = {};
 							editor.fs.filesExt.snd.some((fileInfo) => {
 								let fileName = fileInfo.name;
 								if(fileName.match(soundFilter)) {
 
-									fileName = fileName.replace(soundNameCleaner, '');					
+									fileName = fileName.replace(soundNameCleaner, '');
 									let name = fileName.split('.');
 									name.pop();
 									name = name.join('.');
-									let wavName = name +'.wav';
-									let wavFullName = 'snd/' + name +'.wav';
+									let wavName = name + '.wav';
+									let wavFullName = 'snd/' + name + '.wav';
 									if(!editor.fs.filesExt.snd.find((s) => {
 										return s.name === wavFullName;
 									})) {
@@ -185,45 +185,48 @@ export default class SoundsList extends React.Component {
 		let mode = editor.projectDesc.loadOnDemandSounds[sndName] || 0;
 		let bitrate = editor.projectDesc.soundBitrates[sndName] || 0;
 
-		return R.listItem(R.span(null, item.___libInfo ? item.___libInfo.icon : undefined, R.icon('sound'), R.b(labelProps, sndName), 
-			R.span({className: 'sound-preload-ui', title: soundPreloadingModeDescriptions[mode],
-				onMouseDown: sp},
-			React.createElement(SelectEditor, {onChange:(ev) => {
-				mode = ev.target.value;
-				var opt = editor.projectDesc.loadOnDemandSounds;
-				if(!mode) {
-					delete opt[sndName];
-					Lib.preloadSound(sndName);
-				} else {
-					opt[sndName] = mode;
-				}
-				editor.saveProjectDesc();
-				this.forceUpdate();
-				
-			}, noCopyValue:true, value:mode, select: soundPreloadingModes}),
-			
-			React.createElement(SelectEditor, {onChange:(ev) => {
-				bitrate = ev.target.value;
-				var opt = editor.projectDesc.soundBitrates;
-				if(!bitrate) {
-					delete opt[sndName];
-				} else {
-					opt[sndName] = bitrate;
-				}
-				editor.saveProjectDesc();
-				this.forceUpdate();
-				this.rebuildSounds();
-			}, noCopyValue:true, value:bitrate, select: bitratesWitDefault})
-			
+		return R.listItem(R.span(null, item.___libInfo ? item.___libInfo.icon : undefined, R.icon('sound'), R.b(labelProps, sndName),
+			R.span({
+				className: 'sound-preload-ui', title: soundPreloadingModeDescriptions[mode],
+				onMouseDown: sp
+			}, React.createElement(SelectEditor, {
+				onChange: (ev) => {
+					mode = ev.target.value;
+					var opt = editor.projectDesc.loadOnDemandSounds;
+					if(!mode) {
+						delete opt[sndName];
+						Lib.preloadSound(sndName);
+					} else {
+						opt[sndName] = mode;
+					}
+					editor.saveProjectDesc();
+					this.forceUpdate();
+
+				}, noCopyValue: true, value: mode, select: soundPreloadingModes
+			}), React.createElement(SelectEditor, {
+				onChange: (ev) => {
+					bitrate = ev.target.value;
+					var opt = editor.projectDesc.soundBitrates;
+					if(!bitrate) {
+						delete opt[sndName];
+					} else {
+						opt[sndName] = bitrate;
+					}
+					editor.saveProjectDesc();
+					this.forceUpdate();
+					this.rebuildSounds();
+				}, noCopyValue: true, value: bitrate, select: bitratesWitDefault
+			})
+
 			)
-			
+
 		), item, sndName, this);
 	}
-	
+
 	render() {
 		let list = [];
 		this.selectedItem = null;
-		for (let sndName of Lib.__soundsList) {
+		for(let sndName of Lib.__soundsList) {
 			if(!this.state.filter || sndName.name.indexOf(this.state.filter) >= 0) {
 				list.push(this.renderItem(sndName.name, sndName));
 			}
@@ -237,12 +240,14 @@ export default class SoundsList extends React.Component {
 			R.div({className: 'sounds-list-header'},
 				R.btn('Stop all', this.onStopAllClick),
 				React.createElement(MusicProfiler),
-				editor.projectDesc ? R.span({title: "Default bitrate"}, React.createElement(SelectEditor, {title: 'Default bitrate', onChange:(ev) => {
-					editor.projectDesc.soundDefaultBitrate = ev.target.value;
-					editor.saveProjectDesc();
-					this.forceUpdate();
-					editor.ui.modal.showInfo('Bitrate changes will be applied on next assets loading.', undefined, 32041);
-				}, noCopyValue:true, value:editor.projectDesc.soundDefaultBitrate, select: bitrates})) : undefined,
+				editor.projectDesc ? R.span({title: "Default bitrate"}, React.createElement(SelectEditor, {
+					title: 'Default bitrate', onChange: (ev) => {
+						editor.projectDesc.soundDefaultBitrate = ev.target.value;
+						editor.saveProjectDesc();
+						this.forceUpdate();
+						editor.ui.modal.showInfo('Bitrate changes will be applied on next assets loading.', undefined, 32041);
+					}, noCopyValue: true, value: editor.projectDesc.soundDefaultBitrate, select: bitrates
+				})) : undefined,
 				R.input(this.searchInputProps)
 			),
 			R.div(bodyProps, list)
@@ -294,7 +299,7 @@ class MusicProfiler extends React.Component {
 		let playing;
 		if(m.__currentFragment) {
 			if(!m.__currentFragment.playing()) {
-				state = R.div({className:'danger'}, 'ref to not playing fragment');
+				state = R.div({className: 'danger'}, 'ref to not playing fragment');
 			} else {
 				playing = true;
 				state = R.div({className: 'sound-vol-bar-bg'},
@@ -302,27 +307,25 @@ class MusicProfiler extends React.Component {
 				);
 			}
 		}
-		return R.div({className:'clickable', key:i, onClick:() => {
-			if(m.getRootContainer() === game.currentContainer) {
-				editor.ui.sceneTree.selectInTree(m);
-			} else {
-				let root = m.getRootContainer();
-				if(!root) {
-					root = m;
-					while(root.parent) {
-						root = root.parent;
+		return R.div({
+			className: 'clickable', key: i, onClick: () => {
+				if(m.getRootContainer() === game.currentContainer) {
+					editor.ui.sceneTree.selectInTree(m);
+				} else {
+					let root = m.getRootContainer();
+					if(!root) {
+						root = m;
+						while(root.parent) {
+							root = root.parent;
+						}
 					}
+					editor.ui.modal.showEditorQuestion(
+						'Cant select music object',
+						R.div(null, "Container of this music :", R.sceneNode(root))
+					);
 				}
-				editor.ui.modal.showEditorQuestion(
-					'Cant select music object',
-					R.div(null, "Container of this music :", R.sceneNode(root))
-				);
 			}
-		}},
-		R.span((playing && !m.__isLoopPos) ? activeSoundProps : null, m.intro),
-		' : ',
-		R.span((playing && m.__isLoopPos) ? activeSoundProps : null, m.loop),
-		state
+		}, R.span((playing && !m.__isLoopPos) ? activeSoundProps : null, m.intro), ' : ', R.span((playing && m.__isLoopPos) ? activeSoundProps : null, m.loop), state
 		);
 	}
 
@@ -345,7 +348,7 @@ class MusicProfiler extends React.Component {
 				}
 			}
 		}
-		return R.span(profilerWrapperProps, 
+		return R.span(profilerWrapperProps,
 			R.btn('profiler', this.onToggle, undefined, className),
 			list
 		);

@@ -91,7 +91,7 @@ let soundsHowlers = {};
 let staticScenes = {};
 
 class RemoveHolder extends PIXI.Container {
-	constructor () {
+	constructor() {
 		super();
 		this.visible = false;
 	}
@@ -102,14 +102,14 @@ class RemoveHolder extends PIXI.Container {
 			removeHoldersToCleanup.splice(i, 1);
 		}
 	}
-	update() {}
+	update() { }
 }
 /** @type RemoveHolder[] */
 const removeHoldersToCleanup = [];
 
 let constructRecursive = (o) => {
 	assert(!game.__EDITOR_mode, "initialization attempt in editing mode.");
-	
+
 	if(o._thing_initialized) {
 		return;
 	}
@@ -121,9 +121,9 @@ let constructRecursive = (o) => {
 
 	editor._root_initCalled = false;
 	/// #endif
-	
+
 	o.init();
-	
+
 	///#if EDITOR
 	checkForOldReferences(o);
 	if(!editor._root_initCalled) {
@@ -133,7 +133,7 @@ let constructRecursive = (o) => {
 
 	extData.constructorCalled = true;
 	///#endif
-	
+
 	let a = o.children;
 	let arrayLength = a.length;
 	for(let i = 0; i < arrayLength; i++) {
@@ -149,10 +149,10 @@ import TLib from "../../../prefabs-typing.js";
 
 class LibClass
 /// #if EDITOR
-/*ts*/extends TLib /*/ts*/
+/*ts*/ extends TLib /*/ts*/
 /// #endif
 {
-/// #if EDITOR
+	/// #if EDITOR
 	/*ts*/
 	constructor() {
 		super();
@@ -226,19 +226,19 @@ class LibClass
 			}
 		}
 
-		
+
 		if(!isReloading || !Lib.__resourcesList.find(i => i.name === fileName)) {
-			Lib.__resourcesList.push({name:fileName, value: fileName});
+			Lib.__resourcesList.push({name: fileName, value: fileName});
 		}
 		/// #endif
 
 		let loader = new ResourceLoader();
-		
+
 		loader.add(fileName, game.resourcesPath + fileName, options);
-		
-		
+
+
 		loader.load((loader, resources) => {
-			
+
 			let res = resources[fileName];
 			/// #if EDITOR
 			if(isReloading && res.spineData) {
@@ -308,7 +308,7 @@ class LibClass
 			Lib.__texturesList.splice(2, 0, entry[0]);
 		}
 		/// #endif
-		
+
 		assert(texture || game._getTextureSettingsBits(name, 3), "Invalid texture name: " + name);
 		/// #if EDITOR
 		if(typeof texture === 'string') {
@@ -316,12 +316,11 @@ class LibClass
 				return;
 			}
 			textures[name] = PIXI.Texture.from(texture);
-		} else
-		{
-		/// #endif
+		} else {
+			/// #endif
 			assert(typeof texture !== 'string', "texture expected but string received.");
 			textures[name] = texture;
-		/// #if EDITOR
+			/// #if EDITOR
 		}
 		/// #endif
 		let baseTexture = textures[name].baseTexture;
@@ -336,15 +335,15 @@ class LibClass
 			baseTexture.wrapMode = PIXI.WRAP_MODES.MIRRORED_REPEAT;
 			break;
 		}
-		
-		if (game._getTextureSettingsBits(name, 4)) {
+
+		if(game._getTextureSettingsBits(name, 4)) {
 			baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
 		}
 
 		if(!game.isCanvasMode) {
 			game.pixiApp.renderer.texture.updateTexture(baseTexture);
 		}
-		
+
 	}
 	/**
 	 * @protected
@@ -453,15 +452,15 @@ class LibClass
 		Lib.__soundsList = [];
 
 		if(!updateSoundsNames)
-		/// #endif
+			/// #endif
 			soundsHowlers = {};
 
-		
+
 		for(let name in sounds) {
 
 			let files = sounds[name];
 			/// #if EDITOR
-			Lib.__soundsList.push({name, value:name, ___libInfo: files.___libInfo});
+			Lib.__soundsList.push({name, value: name, ___libInfo: files.___libInfo});
 
 			if(!updateSoundsNames || updateSoundsNames.hasOwnProperty(name)) {
 				/// #endif
@@ -573,47 +572,47 @@ class LibClass
 		Lib.__resourcesList = [];
 	}
 	/// #endif
-	
+
 	_loadClassInstanceById(id) {
 		let ret = Pool.create(classes[id]);
 		Object.assign(ret, defaults[id]
-		/// #if EDITOR
-		|| _oldDefaults[id]
-		/// #endif	
+			/// #if EDITOR
+			|| _oldDefaults[id]
+			/// #endif	
 		);
-		
+
 		/// #if EDITOR
 		if(ret instanceof Scene) {
 			ret.all = '"scene.all" is not initialized yet.';
 		}
 		if(!game.__EDITOR_mode) {
-		/// #endif
-			
+			/// #endif
+
 			constructRecursive(ret);
-			
-		/// #if EDITOR
+
+			/// #if EDITOR
 		}
-		
+
 		/// #endif
-		
+
 		return ret;
 	}
-	
+
 	hasTexture(name) {
 		return textures.hasOwnProperty(name);
 	}
-	
+
 	getTextureEndingWith(name) {
 		const textureName = Object.keys(textures).find((textureName) => textureName.endsWith(name));
 		return textureName && Lib.getTexture(textureName);
 	}
-	
+
 	getTexture(name
-	/// #if EDITOR
+		/// #if EDITOR
 		, owner
-	/// #endif
+		/// #endif
 	) {
-		
+
 		/// #if DEBUG
 		if(!textures.hasOwnProperty(name)) {
 
@@ -640,7 +639,7 @@ class LibClass
 			return PIXI.Texture.WHITE; // eslint-disable-line no-unreachable
 		}
 		/// #endif
-		
+
 		return textures[name];
 	}
 
@@ -724,15 +723,15 @@ class LibClass
 				let oldClassname = src.c;
 				src.c = replaceClassName;
 				setTimeout(() => { // wait for id assign
-					editor.ui.status.error( "Unknown class " + oldClassname + " was replaced with class " + replaceClassName + ".", 32012, ret);
+					editor.ui.status.error("Unknown class " + oldClassname + " was replaced with class " + replaceClassName + ".", 32012, ret);
 				}, 1);
 			}
 		}
 		assert(defaults.hasOwnProperty(src.c), 'Class ' + src.c + ' has no default values set');
 		/// #endif
-		
+
 		if( // PrefabReference processing
-		/// #if EDITOR
+			/// #if EDITOR
 			!game.__EDITOR_mode &&
 			/// #endif
 			src.c === "PrefabReference"
@@ -750,9 +749,9 @@ class LibClass
 			ret = Lib._deserializeObject(prefabs[prefabName]);
 			if(!src.p.hasOwnProperty('inheritProps')) {
 				Object.assign(ret, defaults[src.c]
-				/// #if EDITOR
-				|| _oldDefaults[src.c]
-				/// #endif
+					/// #if EDITOR
+					|| _oldDefaults[src.c]
+					/// #endif
 				, src.p);
 			}
 			/// #if EDITOR
@@ -791,14 +790,14 @@ class LibClass
 					isVisible = !childData.p.hasOwnProperty('name') || !childData.p.name.startsWith('____'); //99999
 				}
 				if(isVisible) {
-				/// #endif
+					/// #endif
 					ret.addChild(Lib._deserializeObject(childData));
-				/// #if EDITOR
+					/// #if EDITOR
 				}
 				/// #endif
 			}
 		}
-		
+
 		/// #if EDITOR
 
 		deserializationDeepness--;
@@ -816,14 +815,14 @@ class LibClass
 	 */
 	loadScene(name) {
 		if(
-		/// #if EDITOR
+			/// #if EDITOR
 			!game.__EDITOR_mode &&
 			/// #endif
 			staticScenes.hasOwnProperty(name)) {
 			return staticScenes[name];
 		}
 
-		
+
 		/// #if EDITOR
 		if(!game.__EDITOR_mode && game.__EDITOR_currentSceneData && (name === game.__EDITOR_currentSceneData.p.__libSceneName)) {
 			let scene = Lib._loadObjectFromData(game.__EDITOR_currentSceneData);
@@ -831,15 +830,15 @@ class LibClass
 				Lib._getStaticScenes()[scene.__libSceneName] = scene;
 			}
 			return scene;
-		} 
+		}
 		/// #endif
-		
+
 		let isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, "No scene with name '" + name + "'", 10046);
 		if(!isSceneExists) {
 			name = Object.keys(scenes)[0]; //get any scene
 		}
-		
+
 		let data = scenes[name];
 
 		/// #if EDITOR
@@ -879,7 +878,7 @@ class LibClass
 		while(removeHoldersToCleanup.length > 0) {
 			Lib.destroyObjectAndChildren(removeHoldersToCleanup.pop());
 		}
-	}	
+	}
 
 	hasPrefab(name) {
 		return prefabs.hasOwnProperty(name);
@@ -934,9 +933,9 @@ class LibClass
 	 * @protected
 	 */
 	__saveScene(scene, name) {
-		
+
 		assert(game.__EDITOR_mode, "attempt to save scene in running mode: " + name);
-		
+
 		assert(typeof name === 'string');
 		if(!scene) {
 			assert(name === editor.editorFilesPrefix + 'tmp', 'Only temporary scene can be null');
@@ -985,13 +984,13 @@ class LibClass
 
 			callback();
 			clearInterval(interval);
-		},20);
+		}, 20);
 	}
 	/**
 	 * @protected
 	 */
 	__savePrefab(object, name) {
-		
+
 		assert(game.__EDITOR_mode, "attempt to save prefab in running mode: " + name);
 		assert(typeof name === 'string');
 		assert(editor.ClassesLoader.getClassType(object.constructor) === DisplayObject, "attempt to save Scene or not DisplayObject as prefab.");
@@ -1123,7 +1122,7 @@ class LibClass
 				return f.lib;
 			}
 		} else {
-			let fileName = 'prefabs/' +o.name + '.prefab.json';
+			let fileName = 'prefabs/' + o.name + '.prefab.json';
 			let f = editor.fs.filesExt.prefabs.find((f) => {
 				return f.name === fileName;
 			});
@@ -1136,7 +1135,7 @@ class LibClass
 	 * @protected
 	 */
 	__serializeObject(o) {
-		
+
 		o.__EDITOR_inner_exitPreviewMode();
 		if(o.__beforeSerialization) {
 			o.__beforeSerialization();
@@ -1156,10 +1155,10 @@ class LibClass
 					if((val != p.default) && (typeof val !== 'undefined') && (val !== null)) {
 						if(p.type === 'rect') {
 							props[p.name] = {
-								x:val.x,
-								y:val.y,
-								w:val.w,
-								h:val.h
+								x: val.x,
+								y: val.y,
+								w: val.w,
+								h: val.h
 							};
 						} else {
 							props[p.name] = val;
@@ -1182,11 +1181,11 @@ class LibClass
 			}
 			__getNodeExtendData(o).serializationCache = ret;
 		}
-		
+
 		if(o.__afterSerialization) {
 			o.__afterSerialization(ret);
 		}
-		
+
 		return ret;
 	}
 	/// #endif
@@ -1197,11 +1196,11 @@ const Lib = new LibClass();
 
 function loadSound(opt) {
 	let s = new Howl(opt);
-	s.once('loaderror', (er)=> {
+	s.once('loaderror', (er) => {
 		s.loadedWithError = true;
 		assert(false, "Can't load sound file " + opt.src + '. Error: ' + er);
 	});
-	s.once('load', ()=> {
+	s.once('load', () => {
 		assert(opt.src.indexOf(s._src) >= 0, 'Howler _src property moved.');
 		if(s._src.endsWith('.mp3')) {
 			cutMp3Gaps(s);
@@ -1215,7 +1214,7 @@ function loadSound(opt) {
  */
 const _loadObjectFromData = (src) => {
 	let ret = Lib._deserializeObject(src);
-	
+
 	/// #if EDITOR
 	if(!game.__EDITOR_mode) {
 		/// #endif
@@ -1223,7 +1222,7 @@ const _loadObjectFromData = (src) => {
 		/// #if EDITOR
 	}
 	/// #endif
-	
+
 	return ret;
 };
 
@@ -1318,7 +1317,7 @@ function cutMp3Gaps(s) {
 		assert(a.length === 2, "Howler default sprite structure moved.");
 		a[0] = start;
 		a[1] = duration;
-	} catch (er) {
+	} catch(er) {
 		console.error(er);
 	}
 }

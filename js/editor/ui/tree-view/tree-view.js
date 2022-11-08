@@ -39,8 +39,8 @@ function onEmptyClick(ev) {
 }
 
 export default class TreeView extends React.Component {
-	
-	constructor (props) {
+
+	constructor(props) {
 		super(props);
 		this.selectInTree = this.selectInTree.bind(this);
 		this.onCopyClick = this.onCopyClick.bind(this);
@@ -57,18 +57,18 @@ export default class TreeView extends React.Component {
 		this.findNext = this.findNext.bind(this);
 		this.searchString = editor.settings.getItem('tree-search', '');
 	}
-	
+
 	selectInTree(node, add, fieldName) {
 		assert(node, "Attempt to select in tree empty node");
 		editor.selection.select(node, add);
 		setTimeout(() => {
-			
+
 			if(fieldName && !add) {
 				editor.ui.propsEditor.selectField(fieldName);
 			}
-			
+
 			let e = document.querySelector('.scene-tree-view .item-selected');
-			if (e) {
+			if(e) {
 				Window.bringWindowForward(e.closest('.window-body'));
 				e.scrollIntoView({block: "center", inline: "center"});
 				e.closest('.scene-tree-view').scrollLeft = 0;
@@ -82,9 +82,9 @@ export default class TreeView extends React.Component {
 
 	onDeleteClick() {
 		if((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
-			
+
 			DataPathFixer.rememberPathReferences();
-			
+
 			let p = editor.selection[0].parent;
 			let i = p.getChildIndex(editor.selection[0]);
 
@@ -93,7 +93,7 @@ export default class TreeView extends React.Component {
 				Lib.__invalidateSerializationCache(o);
 				o.remove();
 			}
-			
+
 			let isNextChildSelected = false;
 
 			while(i < p.children.length) {
@@ -116,7 +116,7 @@ export default class TreeView extends React.Component {
 				}
 			}
 
-			if (!isNextChildSelected && (p !== game.stage)) {
+			if(!isNextChildSelected && (p !== game.stage)) {
 				this.selectInTree(p);
 			}
 
@@ -191,35 +191,35 @@ export default class TreeView extends React.Component {
 				} else {
 					parent.addChildAt(c, i);
 				}
-				
+
 				c.rotation += o.rotation;
 				this.selectInTree(c, true);
 			}
 
-			
+
 			if(!isPrefab) {
 				Lib.__invalidateSerializationCache(o.parent);
 				o.remove();
 			}
-			
+
 			DataPathFixer.validatePathReferences();
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 		}
 	}
-	
+
 	onCopyClick() {
 		if(editor.selection.length > 0) {
 			editor.clipboardData = editor.selection.map(Lib.__serializeObject);
 			editor.refreshTreeViewAndPropertyEditor();
 		}
 	}
-	
+
 	onCutClick() {
 		this.onCopyClick();
 		this.onDeleteClick();
 	}
-	
+
 	onPasteWrapClick() {
 		editor.wrapSelected();
 	}
@@ -238,10 +238,10 @@ export default class TreeView extends React.Component {
 				editor.attachToSelected(o, true);
 			});
 			editor.selection.clearSelection();
-			
+
 			DataPathFixer.validatePathReferences();
 
-			while (added.length > 0) {
+			while(added.length > 0) {
 				let o = added.shift();
 				__getNodeExtendData(o).__isJustCloned = false;
 				editor.selection.add(o);
@@ -252,21 +252,21 @@ export default class TreeView extends React.Component {
 			return added;
 		}
 	}
-	
+
 	onBringUpClick() {
 		let i = 0;
 		while(this.onMoveUpClick(true) && i++ < 100000); //moves selected object up until its become top
 		editor.sceneModified(true);
 		editor.refreshTreeViewAndPropertyEditor();
 	}
-	
+
 	onMoveUpClick(doNotSaveHistoryState) {
 		let ret = false;
-		
+
 		editor.selection.some((o) => {
 			if(o.parent !== game.stage) {
 				let i = o.parent.getChildIndex(o);
-				if (i > 0) {
+				if(i > 0) {
 					let upper = o.parent.getChildAt(i - 1);
 					if(!__getNodeExtendData(upper).isSelected) {
 						o.parent.swapChildren(o, upper);
@@ -282,7 +282,7 @@ export default class TreeView extends React.Component {
 		}
 		return ret;
 	}
-	
+
 	onMoveDownClick(doNotSaveHistoryState) {
 		let ret = false;
 		let a = editor.selection.slice(0);
@@ -306,20 +306,20 @@ export default class TreeView extends React.Component {
 		}
 		return ret;
 	}
-	
+
 	onBringDownClick() {
 		let i = 0;
 		while(this.onMoveDownClick(true) && i++ < 100000); //move selected element down until its become bottom.
 		editor.sceneModified(true);
 		editor.refreshTreeViewAndPropertyEditor();
 	}
-	
+
 	onSearchKeyDown(ev) {
 		if(this.searchString && (ev.keyCode === 13) && !ev.repeat) {
 			this.fundNextBySearch();
 		}
 	}
-	
+
 	onSearchChange(ev) {
 		let val = ev.target.value.toLowerCase();
 		let needSearch = this.searchString.length < val.length;
@@ -329,9 +329,9 @@ export default class TreeView extends React.Component {
 			this.fundNextBySearch();
 		}
 	}
-	
+
 	fundNextBySearch() {
-	
+
 		this.findNext((o) => {
 			let ret;
 			if(Overlay.getParentWhichHideChildren(o)) {
@@ -339,7 +339,7 @@ export default class TreeView extends React.Component {
 			}
 
 			if(o.constructor.name.toLowerCase().indexOf(this.searchString) >= 0) return true;
-			
+
 			let props = editor.enumObjectsProperties(o);
 			for(let p of props) {
 				if(p.type === 'timeline') {
@@ -371,7 +371,7 @@ export default class TreeView extends React.Component {
 			return ret;
 		}, 1);
 	}
-	
+
 	findNext(condition, direction) {
 		searchEntries.clear();
 
@@ -387,7 +387,7 @@ export default class TreeView extends React.Component {
 				}
 			});
 		};
-		
+
 		if(editor.overlay.isolation) {
 			editor.overlay.isolation.forEach(searchIn);
 		} else if(game.__EDITOR_mode) {
@@ -399,14 +399,14 @@ export default class TreeView extends React.Component {
 				}
 			});
 		}
-		
-		if (a.length > 0) {
-			
+
+		if(a.length > 0) {
+
 			a.sortSelectedNodes();
-			
+
 			let field;
 			let i = a.indexOf(editor.selection[0]);
-			if (i >= 0) {
+			if(i >= 0) {
 				let o = editor.selection[0];
 				if(searchEntries.has(o)) {
 					let entries = searchEntries.get(o);
@@ -420,8 +420,8 @@ export default class TreeView extends React.Component {
 				}
 				if(!field) {
 					i += direction;
-					if (i < 0) i = a.length - 1;
-					if (i >= a.length) i = 0;
+					if(i < 0) i = a.length - 1;
+					if(i >= a.length) i = 0;
 				}
 			} else {
 				i = 0;
@@ -439,10 +439,10 @@ export default class TreeView extends React.Component {
 			editor.selection.clearSelection(true);
 		}
 	}
-	
+
 	render() {
-		if (!game.stage) return R.spinner();
-		
+		if(!game.stage) return R.spinner();
+
 		let isEmpty = editor.selection.length === 0;
 		let isRoot = editor.selection.some(isObjectRoot);
 
@@ -468,9 +468,9 @@ export default class TreeView extends React.Component {
 					R.btn(R.icon('isolate-selected'), this.onIsolateClick, 'Isolate selected (Ctrl + I)', "tool-btn", 1073, isEmpty)
 			),
 			R.div({className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick},
-				R.input({onKeyDown: this.onSearchKeyDown, onChange: this.onSearchChange, className:'tree-view-search', defaultValue: this.searchString, placeholder: 'Search'}),
-				
-				editor.overlay.isolation ? 
+				R.input({onKeyDown: this.onSearchKeyDown, onChange: this.onSearchChange, className: 'tree-view-search', defaultValue: this.searchString, placeholder: 'Search'}),
+
+				editor.overlay.isolation ?
 					R.div({className: 'scene-tree-view ', onMouseDown: onEmptyClick},
 						R.btn('Ctrl + I to exit isolation', this.onIsolateClick, undefined, 'danger clickable'),
 						editor.overlay.isolation.map(R.renderSceneNode)
@@ -495,15 +495,15 @@ const renderRoots = (node, i) => {
 	} else {
 		let style;
 		if(__getNodeExtendData(node).hidden) {
-			style = {display:'none'};
+			style = {display: 'none'};
 		}
-		return R.div({className:'inactive-scene-item', style, key:'na-' + i, title:'This scene node is blocked by modal object for now.'}, R.sceneNode(node));
+		return R.div({className: 'inactive-scene-item', style, key: 'na-' + i, title: 'This scene node is blocked by modal object for now.'}, R.sceneNode(node));
 	}
 };
 
 const renderSceneStackItem = (s, i, a) => {
 	let body;
-	if((s === game.currentScene) && (i === (a.length -1))) {
+	if((s === game.currentScene) && (i === (a.length - 1))) {
 		return undefined;
 	} else if(typeof s === "string") {
 		body = R.span(null, "waiting for instancing: " + s);
@@ -512,7 +512,7 @@ const renderSceneStackItem = (s, i, a) => {
 	}
 
 
-	return R.div({className:'stacked-scene-item', title: 'This scene currently in stack.', key: i},
+	return R.div({className: 'stacked-scene-item', title: 'This scene currently in stack.', key: i},
 		body
 	);
 };

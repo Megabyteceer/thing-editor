@@ -6,23 +6,23 @@ import NumberEditor from "thing-editor/js/editor/ui/props-editor/number-editor.j
 import game from "thing-editor/js/engine/game.js";
 
 export default class tilemapEditorRenderer extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
-		this.state = {toggled:true};
+		this.state = {toggled: true};
 		this.onToggleClick = this.onToggleClick.bind(this);
 	}
 
 	componentWillUnmount() {
 		ReactDOM.render(R.fragment(), document.getElementById('additional-windows-root'));
 	}
-	
+
 	onToggleClick() {
 		let t = !this.state.toggled;
 		this.setState({toggled: t});
 	}
-	
-	render () {
+
+	render() {
 		return R.btn(this.state.toggled ? 'Close TileEditor (Ctrl+L)' : 'Open TileEditor (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
 	}
 
@@ -36,7 +36,7 @@ export default class tilemapEditorRenderer extends React.Component {
 
 	_renderWindow() {
 		if(this.state.toggled) {
-			let tilemapEditor = editor.ui.renderWindow('tilemap', 'TileEditor', 'Tilemap Editor', React.createElement(TilemapEditor, {onCloseClick:this.onToggleClick}), 586, 650, 400, 150, 737, 307);
+			let tilemapEditor = editor.ui.renderWindow('tilemap', 'TileEditor', 'Tilemap Editor', React.createElement(TilemapEditor, {onCloseClick: this.onToggleClick}), 586, 650, 400, 150, 737, 307);
 			Window.bringWindowForward('#window-propsEditor');
 			Window.bringWindowForward('#window-tilemap', true);
 			ReactDOM.render(tilemapEditor, document.getElementById('additional-windows-root'));
@@ -69,7 +69,7 @@ function refreshTilemap() {
 }
 
 class TilemapEditor extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.onMouseDown = this.onMouseDown.bind(this);
@@ -79,7 +79,7 @@ class TilemapEditor extends React.Component {
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onTypeChange = this.onTypeChange.bind(this);
 		this.onSizeChange = this.onSizeChange.bind(this);
-		this.state= {
+		this.state = {
 			type: editor.settings.getItem('tilemap-type', 1),
 			size: editor.settings.getItem('tilemap-size', 1)
 		};
@@ -97,7 +97,7 @@ class TilemapEditor extends React.Component {
 		assert(getTilemap() instanceof Tilemap, "Tilemap expected");
 		refreshTilemap();
 	}
-	
+
 	componentWillUnmount() {
 		editor.overlay.disableSelectionByStageClick(false);
 		viewport.removeEventListener('mousedown', this.onMouseDown);
@@ -109,7 +109,7 @@ class TilemapEditor extends React.Component {
 	}
 
 	onKeyDown(ev) {
-		if (!window.isEventFocusOnInputElement(ev) && (ev.keyCode >= 48) && (ev.keyCode <= 57)) {
+		if(!window.isEventFocusOnInputElement(ev) && (ev.keyCode >= 48) && (ev.keyCode <= 57)) {
 			this.setType(Math.min(ev.keyCode - 48,
 				(Tilemap.tileMapProcessor && Tilemap.tileMapProcessor.types) ?
 					Tilemap.tileMapProcessor.types.length : getTilemap().__maxTileIndex));
@@ -119,7 +119,7 @@ class TilemapEditor extends React.Component {
 	onSizeChange(ev) {
 		this.setSize(ev.target.value);
 	}
-		
+
 	onTypeChange(ev) {
 		this.setType(ev.target.value);
 	}
@@ -144,7 +144,7 @@ class TilemapEditor extends React.Component {
 	}
 
 	onClearClick() {
-		editor.ui.modal.showEditorQuestion("Are you sure?", "Clear tilemap?", ()=>{
+		editor.ui.modal.showEditorQuestion("Are you sure?", "Clear tilemap?", () => {
 			getTilemap().clear();
 			Lib.__invalidateSerializationCache(getTilemap());
 			editor.sceneModified();
@@ -152,23 +152,23 @@ class TilemapEditor extends React.Component {
 	}
 
 	setTile(X, Y, type) {
-			
+
 		let size = this.state.size;
-		
+
 		X -= Math.floor(size / 2);
 		Y -= Math.floor(size / 2);
-		
+
 
 		let sceneWasModified = false;
-		
-		for (let i = 0; i < size; i++) {
-			
-			for (let j = 0; j < size; j++) {
-				
+
+		for(let i = 0; i < size; i++) {
+
+			for(let j = 0; j < size; j++) {
+
 				if(this.setOneTile(X, Y, type)) {
 					sceneWasModified = true;
 				}
-				
+
 				X++;
 			}
 			X -= size;
@@ -181,7 +181,7 @@ class TilemapEditor extends React.Component {
 			editor.sceneModified();
 		}
 	}
-	
+
 	setOneTile(X, Y, type) {
 
 		X = Math.floor(X);
@@ -196,7 +196,7 @@ class TilemapEditor extends React.Component {
 			if(pt >= 0) {
 				this.setState({type: pt});
 			}
-		} else if (pt !== type) {
+		} else if(pt !== type) {
 			Tilemap.tileMapProcessor.onTileEditCallback(getTilemap(), X, Y, type);
 			return true;
 		}
@@ -209,22 +209,22 @@ class TilemapEditor extends React.Component {
 	}
 
 	onMouseMove(ev) {
-		
+
 		let tilemap = getTilemap();
 
 		let p = tilemap.toLocal(game.__mouse_EDITOR);
-		
-		
+
+
 		var X = p.x / tilemap.tileW;
 		var Y = p.y / tilemap.tileH;
 		let size = this.state.size;
 
-		
+
 		if(X >= 0 && Y >= 0 && X < tilemap.columns && Y < tilemap.rows) {
 			hoverRect.x = Math.floor(X - Math.floor(size / 2)) * tilemap.tileW;
 			hoverRect.y = Math.floor(Y - Math.floor(size / 2)) * tilemap.tileH;
-			hoverRect.w = size  * tilemap.tileW;
-			hoverRect.h = size  * tilemap.tileH;
+			hoverRect.w = size * tilemap.tileW;
+			hoverRect.h = size * tilemap.tileH;
 			editor.overlay.drawRect(hoverRectPropsMock, tilemap, hoverRect);
 		} else {
 			editor.overlay.drawRect(hoverRectPropsMock, tilemap);
@@ -247,12 +247,12 @@ class TilemapEditor extends React.Component {
 	}
 
 	setType(t) {
-		this.setState({type:t});
+		this.setState({type: t});
 		editor.settings.setItem('tilemap-type', t);
 	}
-	
+
 	setSize(t) {
-		this.setState({size:t});
+		this.setState({size: t});
 		editor.settings.setItem('tilemap-size', t);
 	}
 
@@ -260,24 +260,24 @@ class TilemapEditor extends React.Component {
 
 		let typeSelector;
 		if(Tilemap.tileMapProcessor && Tilemap.tileMapProcessor.types) {
-			typeSelector = React.createElement(SelectEditor, {onChange:this.onTypeChange, value:this.state.type, select: Tilemap.tileMapProcessor.types});
+			typeSelector = React.createElement(SelectEditor, {onChange: this.onTypeChange, value: this.state.type, select: Tilemap.tileMapProcessor.types});
 		} else {
-			typeSelector = React.createElement(NumberEditor,{field:{min: 0, max: getTilemap().__maxTileIndex}, disabled:this.props.disabled, onChange: this.onTypeChange, value: this.state.type});
+			typeSelector = React.createElement(NumberEditor, {field: {min: 0, max: getTilemap().__maxTileIndex}, disabled: this.props.disabled, onChange: this.onTypeChange, value: this.state.type});
 		}
 
 		if(editor.selection.length !== 1) {
 			return R.div(null, "Please select only one tilemap component at once.");
 		} else {
 			return R.fragment(
-				R.span({style:{whiteSpace: 'nowrap'}},
+				R.span({style: {whiteSpace: 'nowrap'}},
 					'Tile type:',
-					R.b(null, 
+					R.b(null,
 						typeSelector
 					)
 				),
-				R.span({style:{whiteSpace: 'nowrap'}},
+				R.span({style: {whiteSpace: 'nowrap'}},
 					' Brush size: ',
-					React.createElement(NumberEditor, {onChange:this.onSizeChange, field:{name:'brush-size', min:1, max:10}, value:this.state.size})
+					React.createElement(NumberEditor, {onChange: this.onSizeChange, field: {name: 'brush-size', min: 1, max: 10}, value: this.state.size})
 				),
 				R.br(),
 				R.btn('Clear map', this.onClearClick, "Clear whole tilemap.", 'danger')

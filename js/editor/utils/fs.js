@@ -1,4 +1,3 @@
-import Lib from "../../engine/lib.js";
 import PrefabsList from "../ui/prefabs-list.js";
 import ScenesList from "../ui/scenes-list.js";
 import AssetsLoader from "./assets-loader.js";
@@ -20,13 +19,13 @@ let fs = {
 			libsByFileName = {};
 			for(let type in data) {
 				let files = data[type];
-				files.sort((a,b) => {
+				files.sort((a, b) => {
 					return b.mtime - a.mtime;
 				});
 
 				fs.filesExt[type] = files;
 				fs.files[type] = files.map(f => f.name).sort();
-				
+
 				for(let f of files) {
 					if(f.lib) {
 						libsByFileName[f.name] = f.lib;
@@ -38,7 +37,7 @@ let fs = {
 	deleteFile: (fileName, backup) => {
 		return fs.getJSON('/fs/delete?f=' + encodeURIComponent(editor.game.resourcesPath + fileName) + (backup ? '&backup=1' : ''), true, false).then((data) => {
 			if(data.error) {
-				editor.ui.modal.showError(data.error);	
+				editor.ui.modal.showError(data.error);
 			}
 		});
 	},
@@ -48,7 +47,7 @@ let fs = {
 		}
 		let now = Date.now();
 		let lastEdit = filesEditTimes[fileName];
-		if(lastEdit && lastEdit >  (now - 1000)) {
+		if(lastEdit && lastEdit > (now - 1000)) {
 			return;
 		}
 		filesEditTimes[fileName] = now;
@@ -62,8 +61,8 @@ let fs = {
 		}
 		fs.getJSON(url, true);
 	},
-	getJSON(url, silently=false, async = true, isJSON = true) { //eslint-disable-line no-unused-vars
-		if (!silently || !async) {
+	getJSON(url, silently = false, async = true, isJSON = true) { //eslint-disable-line no-unused-vars
+		if(!silently || !async) {
 			editor.ui.modal.showSpinner();
 		}
 		return new Promise((resolve) => {
@@ -72,11 +71,11 @@ let fs = {
 				headers: isJSON ? {'Content-Type': 'application/json'} : undefined
 			}, async, (returnedUrl, data) => {
 				assert(url === returnedUrl, 'Response is not match with request');
-				if (!silently || !async) {
+				if(!silently || !async) {
 					editor.ui.modal.hideSpinner();
 				}
-				if (data) {
-					if (isJSON && (typeof data === 'string')) {
+				if(data) {
+					if(isJSON && (typeof data === 'string')) {
 						data = JSON.parse(data);
 					}
 					resolve(data);
@@ -94,7 +93,7 @@ let fs = {
 	},
 	postJSON(url, data, silently = false, async = false, donNotJSON = false) {//eslint-disable-line no-unused-vars
 		return new Promise((resolve) => {
-			if (!silently || !async) {
+			if(!silently || !async) {
 				editor.ui.modal.showSpinner();
 			}
 			AJAX_ordered(url, {
@@ -103,8 +102,8 @@ let fs = {
 				headers: donNotJSON ? {'Content-Type': 'application/octet-stream'} : {'Content-Type': 'application/json'}
 			}, async, (returnedUrl, data) => {
 				assert(url === returnedUrl, 'Response is not match with request');
-				
-				if (!silently || !async) {
+
+				if(!silently || !async) {
 					editor.ui.modal.hideSpinner();
 				}
 				if(data) {
@@ -133,14 +132,14 @@ let fs = {
 
 		return fs.postJSON('/fs/savefile?filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName)), data, silently, async, true).then((data) => {
 			if(data.error) {
-				editor.ui.modal.showError(data.error);	
+				editor.ui.modal.showError(data.error);
 			}
 		});
 	},
 	copyAssetToProject(fileName) {
 		return fs.postJSON('/fs/copyAssetToProject?filename=' + encodeURIComponent(fileName.startsWith('/') ? fileName : (editor.game.resourcesPath + fileName))).then((data) => {
 			if(data.error) {
-				editor.ui.modal.showError(data.error);	
+				editor.ui.modal.showError(data.error);
 			} else {
 				fs.refreshFiles().then(() => {
 					if(fileName.startsWith('prefabs/')) {
@@ -159,7 +158,7 @@ let fs = {
 						ScenesList.readAllScenesList().then(() => {
 							editor.ui.forceUpdate();
 						});
-					} 
+					}
 				});
 			}
 		});

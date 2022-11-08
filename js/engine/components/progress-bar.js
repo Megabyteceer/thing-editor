@@ -1,4 +1,4 @@
-import getValueByPath, { setValueByPath } from '../utils/get-value-by-path.js';
+import getValueByPath, {setValueByPath} from '../utils/get-value-by-path.js';
 import callByPath from "../utils/call-by-path.js";
 import Container from "./container.js";
 import game from "../game.js";
@@ -55,7 +55,7 @@ export default class ProgressBar extends Container {
 		let h = this.getChildByName('bg');
 		if(h) {
 			setObjectHeight(h, this._height);
-		}	
+		}
 	}
 
 	onRemove() {
@@ -136,14 +136,14 @@ export default class ProgressBar extends Container {
 			setObjectHeight(this.bar, this._height * q);
 		}
 		if(this.cap) {
-			this.cap.y =  this.capMargin + (this._height - this.capMargin * 2) * q;
+			this.cap.y = this.capMargin + (this._height - this.capMargin * 2) * q;
 		}
 	}
-	
+
 	refreshNow() {
 		this.currentInterval = 0;
 	}
-	
+
 	/// #if EDITOR
 	__beforeDeserialization() {
 		delete this._height;
@@ -248,18 +248,18 @@ Use '#' to acess to child scene nodes by name: <b>game.currentScene.#myChildElem
 	{
 		name: 'min',
 		type: Number,
-		step:0.00001
+		step: 0.00001
 	},
 	{
 		name: 'max',
 		type: Number,
-		step:0.00001,
-		default:100
+		step: 0.00001,
+		default: 100
 	},
 	{
 		name: 'step',
 		type: Number,
-		step:0.00001,
+		step: 0.00001,
 		min: 0,
 		default: 1
 	},
@@ -271,7 +271,7 @@ Use '#' to acess to child scene nodes by name: <b>game.currentScene.#myChildElem
 		type: 'ref',
 		name: 'cap'
 	}
-	
+
 ]);
 
 

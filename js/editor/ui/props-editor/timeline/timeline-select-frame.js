@@ -42,7 +42,7 @@ export default class TimelineSelectFrame extends React.Component {
 	getRectAndFinishDragging() {
 		if(isDragging) {
 			isDragging = false;
-			
+
 			let a = document.querySelector('.timelilne-select-frame');
 			if(!a) {
 				return;
@@ -56,13 +56,15 @@ export default class TimelineSelectFrame extends React.Component {
 
 	render() {
 		if(isDragging) {
-			return R.div({className: 'timelilne-select-frame',
+			return R.div({
+				className: 'timelilne-select-frame',
 				style: {
 					left: (w >= 0) ? x : x + w,
 					top: (h >= 0) ? y : y + h,
 					width: Math.abs(w),
 					height: Math.abs(h)
-				}});
+				}
+			});
 		}
 		return R.span();
 	}

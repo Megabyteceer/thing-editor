@@ -1,4 +1,4 @@
-const doNotDisturbHelpIdProps = {'data-do_not_disturb_helpid' : true};
+const doNotDisturbHelpIdProps = {'data-do_not_disturb_helpid': true};
 const HELP_ROOT = 'https://github.com/Megabyteceer/thing-editor/wiki/';
 
 let latestClickedHelpURL = HELP_ROOT;
@@ -43,10 +43,7 @@ export default class Help extends React.Component {
 	render() {
 		return R.span(doNotDisturbHelpIdProps, R.btn('Help (F1)', () => {
 			editor.openUrl(latestClickedHelpURL);
-		},
-		'Click any element and then press (F1) to see its description.',
-		'menu-btn',
-		112
+		}, 'Click any element and then press (F1) to see its description.', 'menu-btn', 112
 		));
 	}
 }

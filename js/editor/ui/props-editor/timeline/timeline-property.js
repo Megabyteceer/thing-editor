@@ -8,10 +8,10 @@ function bringTimelineForward() {
 }
 
 export default class TimelineProperty extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
-		this.state = {toggled:editor.settings.getItem('timeline-showed', true)};
+		this.state = {toggled: editor.settings.getItem('timeline-showed', true)};
 		this.onToggleClick = this.onToggleClick.bind(this);
 	}
 
@@ -36,15 +36,15 @@ export default class TimelineProperty extends React.Component {
 	onAutoSelect(selectPath) {
 		if(!this.state.toggled) {
 			this.onToggleClick();
-			setTimeout(()=> {
+			setTimeout(() => {
 				Timeline.onAutoSelect(selectPath);
 			}, 1);
 		} else {
 			Timeline.onAutoSelect(selectPath);
 		}
 	}
-	
-	render () {
+
+	render() {
 		return R.btn(this.state.toggled ? 'Close Timeline (Ctrl+L)' : 'Open timeline (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
 	}
 
@@ -54,10 +54,10 @@ export default class TimelineProperty extends React.Component {
 
 	_renderWindow() {
 		if(this.state.toggled) {
-			
+
 			let timeline = editor.ui.renderWindow('timeline', 'Timeline', 'Timeline',
-				R.div({title:''},
-					React.createElement(Timeline, {onCloseClick:this.onToggleClick}),
+				R.div({title: ''},
+					React.createElement(Timeline, {onCloseClick: this.onToggleClick}),
 				), 586, 650, 1270, 150, 1270, 407);
 
 			ReactDOM.render(timeline, document.getElementById('additional-windows-root'));

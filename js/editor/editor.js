@@ -39,15 +39,15 @@ let serverAllowedWork;
 let uiMounted;
 
 export default class Editor {
-	
+
 	get editorFilesPrefix() {
 		return '.editor-tmp/';
 	}
-	
+
 	get backupSceneLibSaveSlotName() {
 		return this.editorFilesPrefix + 'backup';
 	}
-	
+
 	constructor() {
 		window.editor = this;
 		editor.editorArguments = {};
@@ -56,12 +56,12 @@ export default class Editor {
 				editor.editorArguments[arg] = true;
 			}
 		}
-		
+
 		// Block page leave by back navigation
 		const cloneStateInHistory = () => window.history.pushState(window.history.state, document.title);
 		cloneStateInHistory();
 		window.onpopstate = cloneStateInHistory;
-		
+
 		this.checkSceneHandlers = [];
 		this.Lib = Lib;
 		window.wrapPropertyWithNumberChecker(PIXI.ObservablePoint, 'x');
@@ -69,15 +69,15 @@ export default class Editor {
 
 		this.scheduleHistorySave = history.scheduleHistorySave;
 		this.saveHistoryNow = history.saveHistoryNow;
-		
+
 		this.fs = fs;
-		
+
 		this.DataPathFixer = DataPathFixer;
 		this.projectDesc = null;
 
 		this.settings = new Settings('editor');
 		this.selection = new Selection();
-		
+
 		this.ClassesLoader = ClassesLoader;
 		this.AssetsLoader = AssetsLoader;
 		this.TexturesView = TexturesView;
@@ -87,9 +87,9 @@ export default class Editor {
 		this.onUIMounted = this.onUIMounted.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
-		
+
 		this.history = history;
-		
+
 		this.beforePropertyChanged = new Signal();
 		this.afterPropertyChanged = new Signal();
 		Timeline.init();
@@ -105,15 +105,15 @@ export default class Editor {
 			}
 		}, 300);
 
-		
+
 		editor.__unloadedTexture = PIXI.Texture.from('img/loading-texture.png');
 		editor.__wrongTexture = PIXI.Texture.from('img/wrong-texture.png');
 	}
-	
+
 	deselectMovieClip(o) {
 		Timeline.deselectMovieClip(o);
 	}
-	
+
 	/**
 	 *
 	 * @param ui {UI}
@@ -140,15 +140,15 @@ export default class Editor {
 			this.openProject();
 		}
 	}
-	
+
 	openProjectDescToEdit() {
 		editor.fs.editFile(game.resourcesPath + 'thing-project.json');
 	}
-	
+
 	async openProject(dir) {
 		editor.ui.viewport.stopExecution();
 		await editor.askSceneToSaveIfNeed();
-		
+
 		if(location.search && location.search.indexOf('?buildProjectAndExit=') === 0) {
 			editor.buildProjectAndExit = JSON.parse(decodeURIComponent(location.search.replace('?buildProjectAndExit=', '')));
 			if(editor.buildProjectAndExit) {
@@ -198,7 +198,7 @@ export default class Editor {
 			}
 
 			editor.projectDesc = this.fs.libsSettings ? Object.assign(this.fs.libsSettings, data) : data;
-			
+
 			if(folderSettings) {
 				this.fs.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, editor.projectDesc.__loadOnDemandTexturesFolders);
 			}
@@ -214,12 +214,12 @@ export default class Editor {
 			Lib.__onProjectOpen();
 			Tilemap.tileMapProcessor = defaultTilemapProcessor;
 			game.stage.interactiveChildren = false;
-			
+
 			this.overlay = new Overlay();
 			await Promise.all([editor.reloadAssetsAndClasses(), ScenesList.readAllScenesList(), PrefabsList.readAllPrefabsList(), LanguageView.loadTextData()]);
-			
+
 			editor.settings.setItem('last-opened-project', dir);
-			
+
 			if(isProjectDescriptorModified) {
 				this.saveProjectDesc();
 			} else {
@@ -228,23 +228,23 @@ export default class Editor {
 
 			utils.protectAccessToSceneNode(game.stage, "game stage");
 			utils.protectAccessToSceneNode(game.stage.parent, "PIXI stage");
-			
+
 
 			if(editor.projectDesc.__lastSceneName && !Lib.hasScene(editor.projectDesc.__lastSceneName)) {
 				editor.projectDesc.__lastSceneName = false;
 			}
-			
+
 			if(!editor.buildProjectAndExit && Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 				//backup restoring
 				editor.ui.modal.showEditorQuestion("Scene's backup restoring (" + editor.projectDesc.title + ")",
 					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
 						R.div(null, "Do you want to restore scene from backup?")),
-					async() => {
+					async () => {
 						await this.openSceneSafe(editor.backupSceneLibSaveSlotName, editor.projectDesc.__lastSceneName || 'restored-from-backup');
 						editor.history.currentState.treeData._isModified = true;
-						
+
 					}, 'Restore backup',
-					async() => {
+					async () => {
 						await this.openSceneSafe(editor.projectDesc.__lastSceneName || 'main');
 						Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
 					}, 'Delete backup',
@@ -335,7 +335,7 @@ export default class Editor {
 			let cropBottom = 0;
 			while(cropBottom < canvas.height) {
 				let isEmptyLine = true;
-				let y = (canvas.height - 1 - cropBottom) * canvas.width * 4 + 3 ;
+				let y = (canvas.height - 1 - cropBottom) * canvas.width * 4 + 3;
 				for(let x = 0; x < canvas.width; x++) {
 					if(imageData[x * 4 + y] >= cropAlphaThreshold) {
 						isEmptyLine = false;
@@ -391,7 +391,7 @@ export default class Editor {
 			};
 
 			if(width > 0 && height > 0) {
-				
+
 				b2.x = 0;
 				b2.y = 0;
 				b2.width = width;
@@ -411,12 +411,12 @@ export default class Editor {
 				b2.height -= cropTop + cropBottom;
 				b2.x += cropLeft;
 				b2.width -= cropLeft + cropRight;
-				if(b2.x < 0 ) {
+				if(b2.x < 0) {
 					b2.x = Math.floor(b2.x);
 				} else {
 					b2.x = Math.ceil(b2.x);
 				}
-				if(b2.y < 0 ) {
+				if(b2.y < 0) {
 					b2.y = Math.floor(b2.y);
 				} else {
 					b2.y = Math.ceil(b2.y);
@@ -434,7 +434,7 @@ export default class Editor {
 			object.filters = f;
 			if(oldParent) {
 				oldParent.addChildAt(object, oldIndex);
-			}else {
+			} else {
 				object.detachFromParent();
 			}
 			editor.ui.modal.hideSpinner();
@@ -446,21 +446,21 @@ export default class Editor {
 		navigator.permissions.query({
 			name: 'clipboard-read'
 		}).then(() => {
-			navigator.clipboard.writeText(text).then(()=>{
+			navigator.clipboard.writeText(text).then(() => {
 				editor.ui.modal.notify(R.span(null, R.icon('copy'), '"' + text + '"'));
 			});
 		});
 	}
-	
+
 	set clipboardData(cd) {
 		editor.settings.setItem('__EDITOR-clipboard-data', cd);
 		editor.settings.removeItem('__EDITOR-clipboard-data-timeline-name');
 	}
-	
+
 	get clipboardData() {
 		return editor.settings.getItem('__EDITOR-clipboard-data');
 	}
-	
+
 	openSceneSafe(name) {
 		return editor.askSceneToSaveIfNeed(ScenesList.isSpecialSceneName(name)).then(() => {
 			this.loadScene(name);
@@ -474,7 +474,7 @@ export default class Editor {
 			this.ui.forceUpdate();
 		});
 	}
-	
+
 	openUrl(url) {
 		if(!window.open(url)) {
 			editor.ui.modal.showInfo(R.div(null,
@@ -518,7 +518,7 @@ export default class Editor {
 				cloneExData.noSerialize = exData.noSerialize;
 			}
 			cloneExData.__isJustCloned = true;
-			
+
 			increaseNameNumber(clone);
 
 			let i = o.parent.children.indexOf(o) + 1;
@@ -580,8 +580,8 @@ export default class Editor {
 			DataPathFixer.rememberPathReferences();
 			let isPrefab = o === game.currentContainer;
 			let prefabName = game.currentContainer.name;
-			
-			
+
+
 			editor.selection.clearSelection();
 			let w;
 			if(!isClipboardWrapping) {
@@ -643,7 +643,7 @@ export default class Editor {
 			editor.ui.viewport.forceUpdate();
 		}
 	}
-	
+
 	saveBackup(includeUnmodified = false) {
 		editor.__backupUID = (editor.__backupUID || 0) + 1;
 		if(!game.__EDITOR_mode) {
@@ -659,7 +659,7 @@ export default class Editor {
 		this.saveCurrentScenesSelectionGlobally();
 
 		savedBackupName = editor.backupSceneLibSaveSlotName;
-		if (!editor.isCurrentSceneModified) {
+		if(!editor.isCurrentSceneModified) {
 			if(!includeUnmodified) {
 				savedBackupName = null;
 				return;
@@ -669,13 +669,13 @@ export default class Editor {
 		editor.saveCurrentScene(savedBackupName);
 		savedBackupSelectionData = editor.selection.saveSelection();
 	}
-	
+
 	restoreBackup(includeUnmodified = false) {
 		if(!game.__EDITOR_mode) {
 			assert(!includeUnmodified, 'Attempt to restore important backup in running mode');
 			return;
 		}
-		
+
 		if(!savedBackupName) {
 			assert(!includeUnmodified, 'No backup scene was saved before restoring important backup.');
 			return;
@@ -684,40 +684,40 @@ export default class Editor {
 		savedBackupName = null;
 		editor.selection.loadSelection(savedBackupSelectionData);
 	}
-	
+
 	cleanupBackup() {
 		if(Lib.hasScene(editor.backupSceneLibSaveSlotName)) {
 			Lib.__deleteScene(editor.backupSceneLibSaveSlotName);
 		}
 	}
-	
+
 	get currentSceneName() {
 		return editor.projectDesc ? editor.projectDesc.__lastSceneName : null;
 	}
-	
+
 	refreshPropsEditor() {
 		this.ui.propsEditor.forceUpdate();
 	}
-	
+
 	refreshTreeViewAndPropertyEditor() {
 		if(refreshTreeViewAndPropertyEditorScheduled || document.fullscreenElement) return;
 		refreshTreeViewAndPropertyEditorScheduled = true;
-		setTimeout(()=> {
+		setTimeout(() => {
 			refreshTreeViewAndPropertyEditorScheduled = false;
 			this.ui.sceneTree.forceUpdate();
 			this.refreshPropsEditor();
 		}, 1);
 	}
-	
+
 	reloadClasses() {
 		let ftl = isFirstClassesLoading;
 		isFirstClassesLoading = false;
 		this.ui.viewport.stopExecution();
 		assert(game.__EDITOR_mode, 'tried to reload classes in running mode.');
 		editor.saveBackup(!ftl);
-		
+
 		return new Promise((resolve) => {
-			editor.fs.refreshFiles().then(()=>{
+			editor.fs.refreshFiles().then(() => {
 				ClassesLoader.reloadClasses().then(() => {
 					ClassesLoader.validateClasses();
 					editor.restoreBackup(!ftl);
@@ -727,7 +727,7 @@ export default class Editor {
 			});
 		});
 	}
-	
+
 	reloadAssets() {
 		return new Promise((resolve) => {
 			editor.ui.soundsList.reloadSounds().then(() => {
@@ -735,7 +735,7 @@ export default class Editor {
 			});
 		});
 	}
-	
+
 	reloadAssetsAndClasses() {
 		return new Promise((resolve) => {
 			this.reloadAssets().then(() => {
@@ -748,7 +748,7 @@ export default class Editor {
 			});
 		});
 	}
-	
+
 	attachToSelected(o, doNotSelect) {
 		if(this.selection.length > 0) {
 			addTo(this.selection[0], o, doNotSelect);
@@ -756,24 +756,24 @@ export default class Editor {
 			this.addToScene(o, doNotSelect);
 		}
 	}
-	
+
 	addToScene(o, doNotSelect) {
 		addTo(game.currentContainer, o, doNotSelect);
 	}
-	
+
 	/**
 	 * set property value received from property editor
 	 */
 	onSelectedPropsChange(field, val, delta) {
 		if(this.selection.length > 0) {
-			
+
 			if(typeof field === 'string') {
 				field = editor.getObjectField(this.selection[0], field);
 			}
 			if(field.beforeEdited) {
 				field.beforeEdited(val);
 			}
-			
+
 			for(let o of this.selection) {
 				this.onObjectsPropertyChanged(o, field, val, delta);
 			}
@@ -789,9 +789,9 @@ export default class Editor {
 		if(typeof field === 'string') {
 			field = editor.getObjectField(o, field);
 		}
-		
+
 		this.beforePropertyChanged.emit(o, field.name, field, val, delta);
-		
+
 		if(delta) {
 			assert(field.type === Number, "editable field descriptor type: Number expected");
 
@@ -813,9 +813,9 @@ export default class Editor {
 				changed = true;
 			}
 		}
-		
+
 		this.afterPropertyChanged.emit(o, field.name, field, val, delta);
-		
+
 		if(changed) {
 			Lib.__invalidateSerializationCache(o);
 			this.refreshTreeViewAndPropertyEditor();
@@ -824,7 +824,7 @@ export default class Editor {
 		}
 		return changed;
 	}
-	
+
 	/**
 	 * enumerate all editable properties of given DisplayObject.
 	 */
@@ -858,18 +858,20 @@ export default class Editor {
 			}
 			return {functionName, path: s};
 		});
-		editor.ui.modal.showModal(R.div(null, R.b(null, stack.title), ' was invoked at:', a.map((i,key) => {
-			return R.div({key, className: 'list-item stack-item', onMouseDown: () => {
-				let a = i.path.split(':');
-				editor.fs.editFile('/' + a[0], parseInt(a[1]), parseInt(a[2]));
-			}}, R.b(null, i.functionName), ' (', i.path, ')');
+		editor.ui.modal.showModal(R.div(null, R.b(null, stack.title), ' was invoked at:', a.map((i, key) => {
+			return R.div({
+				key, className: 'list-item stack-item', onMouseDown: () => {
+					let a = i.path.split(':');
+					editor.fs.editFile('/' + a[0], parseInt(a[1]), parseInt(a[2]));
+				}
+			}, R.b(null, i.functionName), ' (', i.path, ')');
 		})));
 	}
 
 	__getCurrentStack(title) {
 		return {title, stack: (new Error()).stack};
 	}
-	
+
 	getObjectField(o, name) {
 		return editor.enumObjectsProperties(o).find((f) => {
 			return f.name === name;
@@ -881,14 +883,14 @@ export default class Editor {
 			game.settings.setItem('__EDITOR_scene_selection' + editor.currentSceneName, this.selection.saveSelection());
 		}
 	}
-	
+
 	loadScene(name) {
 		Pool.__resetIdCounter();
 		assert(name, 'name should be defined');
 		this.saveCurrentScenesSelectionGlobally();
-		
+
 		game.showScene(name);
-		
+
 		__getNodeExtendData(game.currentContainer).childrenExpanded = true;
 
 		if(name.startsWith(editor.backupSceneLibSaveSlotName)) {
@@ -923,7 +925,7 @@ export default class Editor {
 					className = this.getClassNameOfPrefab(PrefabsList.getPrefabNameFromPrefabRef(game.all[n]));
 				}
 				json[n] = className;
-			} catch(er) {} // eslint-disable-line no-empty
+			} catch(er) { } // eslint-disable-line no-empty
 		}
 		let jsonString = JSON.stringify(json);
 		if(editor.__currentAllMap !== jsonString) {
@@ -932,12 +934,12 @@ export default class Editor {
 			let classesList = [];
 			let imports = [];
 			let declarations = [];
-			
+
 			for(let className in Lib.classes) {
 				imports.push(editor._getImportSrcForClass(className));
 				classesList.push(className + ': typeof ' + className + ';');
 			}
-			
+
 			for(let name of Object.keys(json)) {
 				let className = json[name];
 				if(Scene.__refsCounter[name] > 1) {
@@ -945,7 +947,7 @@ export default class Editor {
 					* @deprecated ${Scene.__refsCounter[name]} objects with that name exist on scene
 					*/`);
 				}
-				declarations.push('"' +name + '":' + ((className==='Container') ? 'PIXI.Container' : className) + ';');
+				declarations.push('"' + name + '":' + ((className === 'Container') ? 'PIXI.Container' : className) + ';');
 			}
 
 			let mapJS = `// thing-editor auto generated file.
@@ -954,22 +956,22 @@ import * as PIXI from ` + `"pixi.js"; // '+' - to prevent import path fixing
 
 export default null;
 `
-+ imports.join('\n') +
-`
+				+ imports.join('\n') +
+				`
 declare global {
 	type CurrentSceneType = ` + game.currentScene.constructor.name + `;
 
 	interface ThingProjectClassesList {
 		` +
-		classesList.join('\n')
-	+ `
+				classesList.join('\n')
+				+ `
 	}
 
 	interface ThingSceneAllMap {
 		[key: string]: PIXI.Container;
 `
-+ declarations.join('\n') +
-	`}
+				+ declarations.join('\n') +
+				`}
 }
 `;
 			fs.saveFile('/current-scene-typings.d.ts', mapJS, true, true);
@@ -998,7 +1000,7 @@ declare global {
 
 			let imports = [];
 			let declarations = [];
-			
+
 			for(let prefabName in json) {
 				declarations.push("loadPrefab(prefabName: '" + prefabName + "'):" + json[prefabName] + ";");
 			}
@@ -1008,11 +1010,11 @@ declare global {
 
 			let mapJS = `// thing-editor auto generated file.
 `
-+ imports.join('\n') +
-`
+				+ imports.join('\n') +
+				`
 export default class TLib {
 `
-+ declarations.join('\n') + `
+				+ declarations.join('\n') + `
 loadPrefab(prefabName:string):Container {
 	return null;
 }
@@ -1033,7 +1035,7 @@ loadPrefab(prefabName:string):Container {
 		}
 		return className;
 	}
-	
+
 	saveProjectDesc() {
 		window.debouncedCall(__saveProjectDescriptorInner);
 	}
@@ -1041,12 +1043,12 @@ loadPrefab(prefabName:string):Container {
 	refreshTexturesViewer() {
 		TexturesView.refresh();
 	}
-	
+
 	sceneModified(saveImmediately) {
 		editor.history._sceneModifiedInner(saveImmediately);
 	}
-	
-	centralizeObjectToContent (o) {
+
+	centralizeObjectToContent(o) {
 		if(!o.children.length) {
 			return;
 		}
@@ -1064,7 +1066,7 @@ loadPrefab(prefabName:string):Container {
 				midX += c.x;
 			}
 			midX /= o.children.length;
-		
+
 			let midY = 0;
 			for(let c of o.children) {
 				midY += c.y;
@@ -1077,7 +1079,7 @@ loadPrefab(prefabName:string):Container {
 		let pos = o.getGlobalPosition();
 		let p2 = new PIXI.Point();
 		o.parent.toLocal(pos, undefined, p2);
-		
+
 		this.moveContainerWithoutChildren(o, Math.round(p.x - p2.x), Math.round(p.y - p2.y));
 	}
 
@@ -1088,9 +1090,9 @@ loadPrefab(prefabName:string):Container {
 		return new Promise((resolve) => {
 			let i = setInterval(() => {
 				if(condition()
-				/// #if EDITOR
-				|| game.__EDITOR_mode
-				/// #endif
+					/// #if EDITOR
+					|| game.__EDITOR_mode
+					/// #endif
 				) {
 					resolve();
 					clearInterval(i);
@@ -1098,7 +1100,7 @@ loadPrefab(prefabName:string):Container {
 			}, 100);
 		});
 	}
-	
+
 	moveContainerWithoutChildren(o, dX, dY) {
 
 		for(let c of o.children) {
@@ -1116,27 +1118,27 @@ loadPrefab(prefabName:string):Container {
 			editor.shiftObject(c, Math.round(p.x - c.x), Math.round(p.y - c.y));
 		}
 	}
-	
+
 	shiftObject(o, dx, dy) {
 		if(dx !== 0 || dy !== 0) {
 			// Shift wrapped object to zero. If it is MovieClip its will shift all timeline.
-			
+
 			if(o.__shiftObject) {
 				o.__shiftObject(dx, dy);
 			} else {
 
 				Timeline.disableRecording();
-				if (dx !== 0) {
+				if(dx !== 0) {
 					editor.onObjectsPropertyChanged(o, 'x', dx, true);
 				}
-				if (dy !== 0) {
+				if(dy !== 0) {
 					editor.onObjectsPropertyChanged(o, 'y', dy, true);
 				}
 				Timeline.enableRecording();
 			}
 		}
 	}
-	
+
 	exitPrefabMode() {
 		if(editor.ui.prefabsList) {
 			PrefabsList.acceptPrefabEdition();
@@ -1152,7 +1154,7 @@ loadPrefab(prefabName:string):Container {
 		}
 		return this.isCurrentContainerModified;
 	}
-	
+
 	editClassSource(c) {
 		if(editor.editorArguments['no-vscode-integration']) {
 			return;
@@ -1167,7 +1169,7 @@ loadPrefab(prefabName:string):Container {
 		let filePath = editor.ClassesLoader.getClassPath(c.name);
 		editor.fs.editFile(filePath);
 	}
-	
+
 	saveCurrentScene(name) {
 		for(let f of editor.checkSceneHandlers) {
 			f();
@@ -1186,7 +1188,7 @@ loadPrefab(prefabName:string):Container {
 			}
 			let ret;
 			this._callInPortraitMode(() => {
-				ret =  Lib.__saveScene(game.currentScene, name);
+				ret = Lib.__saveScene(game.currentScene, name);
 			});
 			return ret;
 
@@ -1202,7 +1204,7 @@ loadPrefab(prefabName:string):Container {
 	}
 
 	_getProjectViewportSize(doNotFixOrientation) {
-		if (game.projectDesc.screenOrientation === 'auto') {
+		if(game.projectDesc.screenOrientation === 'auto') {
 			if(!doNotFixOrientation) {
 				game.___enforcedOrientation = 'landscape';
 			}
@@ -1210,7 +1212,7 @@ loadPrefab(prefabName:string):Container {
 				w: game.projectDesc.width,
 				h: game.projectDesc.height
 			};
-		} else if (game.projectDesc.screenOrientation === 'portrait') {
+		} else if(game.projectDesc.screenOrientation === 'portrait') {
 			return {
 				w: game.projectDesc.portraitWidth,
 				h: game.projectDesc.portraitHeight
@@ -1239,7 +1241,7 @@ loadPrefab(prefabName:string):Container {
 		game.isMobile.any = tmpIsMobile;
 		game.onResize();
 	}
-	
+
 	build(debug) {
 		return new Promise((resolve) => {
 			if(editor.buildProjectAndExit) {
@@ -1259,14 +1261,14 @@ loadPrefab(prefabName:string):Container {
 		editor.ui.viewport.stopExecution();
 		if(!skip && editor.isCurrentSceneModified) {
 			return new Promise((resolve) => {
-				
+
 				editor.ui.modal.showEditorQuestion('Scene was modified.', 'Do you want to save the changes in current scene?',
 					() => {
 						editor.saveCurrentScene().then(resolve);
 					}, 'Save',
 					() => {
 						resolve();
-						
+
 					}, "Don't save"
 				);
 			});
@@ -1352,7 +1354,7 @@ let __saveProjectDescriptorInner = (cleanOnly = false) => {
 	if(editor.buildProjectAndExit) {
 		return;
 	}
-	
+
 	let isCleanedUp = false;
 
 	//cleanup settings for deleted sounds

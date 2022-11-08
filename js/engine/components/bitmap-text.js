@@ -20,10 +20,10 @@ const EMPTY_FONT_NAME = 'EMPTY';
 
 assert(PIXI.BitmapFont.install instanceof Function, 'Thing editor needs refactoring of BitmapFont atlases error handling.');
 const origin_font_install = PIXI.BitmapFont.install;
-PIXI.BitmapFont.install = function(resource, textures) {
+PIXI.BitmapFont.install = function (resource, textures) {
 	try {
 		Object.values(textures instanceof PIXI.Texture ? [textures] : textures).forEach((texture) => {
-			if (!texture || texture === PIXI.Texture.EMPTY) return;
+			if(!texture || texture === PIXI.Texture.EMPTY) return;
 			texture.baseTexture.mipmap = PIXI.MIPMAP_MODES.ON;
 		});
 		origin_font_install.apply(this, arguments);
@@ -40,7 +40,7 @@ emptyFontData.common[0] = {lineHeight: 32};
 PIXI.BitmapFont.install(emptyFontData, PIXI.Texture.EMPTY);
 
 export default class BitmapText extends PIXI.BitmapText {
-	
+
 	constructor() {
 		super('', {fontName: EMPTY_FONT_NAME, fontSize: 32});
 	}
@@ -75,7 +75,7 @@ export default class BitmapText extends PIXI.BitmapText {
 		this.maxW = this._maxW || 0; // recalculate max width
 	}
 
-	get maxW () {
+	get maxW() {
 		return this._maxW;
 	}
 
@@ -127,14 +127,14 @@ export default class BitmapText extends PIXI.BitmapText {
 		}
 	}
 
-	set "font.name" (v) {
+	set "font.name"(v) {
 		/// #if EDITOR
 		let names = Object.keys(PIXI.BitmapFont.available);
 		if(!names.find((name) => name === v)) {
 			editor.ui.status.warn("It is no any bitmap font name '" + v + "' in '/img' subfolders.", 99999, this, "font.name");
 			return;
 		}
-		
+
 		/// #endif
 		this.fontName = v;
 		/// #if EDITOR
@@ -142,22 +142,22 @@ export default class BitmapText extends PIXI.BitmapText {
 		/// #endif
 	}
 
-	get "font.name" () {
+	get "font.name"() {
 		return this.fontName;
 	}
 
-	set "font.size" (v) {
+	set "font.size"(v) {
 		this.fontSize = v;
 		/// #if EDITOR
 		this.validate();
 		/// #endif
 	}
 
-	get "font.size" () {
+	get "font.size"() {
 		return this.fontSize;
 	}
 
-	set "font.align" (v) {
+	set "font.align"(v) {
 		this.align = v;
 		this.anchor.x = alignValues[v];
 		/// #if EDITOR
@@ -165,16 +165,16 @@ export default class BitmapText extends PIXI.BitmapText {
 		/// #endif
 	}
 
-	get "font.align" () {
+	get "font.align"() {
 		return this.align;
 	}
 
-	set verticalAlign (v) {
+	set verticalAlign(v) {
 		this._verticalAlign = v;
 		this.anchor.y = alignValues[v];
 	}
 
-	get verticalAlign () {
+	get verticalAlign() {
 		return this._verticalAlign;
 	}
 
@@ -186,11 +186,11 @@ export default class BitmapText extends PIXI.BitmapText {
 		}
 	}
 
-	get translatableText () {
+	get translatableText() {
 		return this._translatableText;
 	}
 
-	set translatableText (val) {
+	set translatableText(val) {
 		if(this._translatableText !== val) {
 			if(val) {
 				/// #if EDITOR
@@ -255,7 +255,7 @@ export default class BitmapText extends PIXI.BitmapText {
 /// #if EDITOR
 import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 
-BitmapText.__EDITOR_icon= "tree/bitmap-text";
+BitmapText.__EDITOR_icon = "tree/bitmap-text";
 BitmapText.__EDITOR_group = "Basic";
 BitmapText.__canNotHaveChildren = true;
 
@@ -267,10 +267,10 @@ __EDITOR_editableProps(BitmapText, [ //list of editable properties
 		name: 'BitmapText-props'
 	},
 	{
-		name:'text',
-		type:String,
-		default:'',
-		disabled:(node) => {
+		name: 'text',
+		type: String,
+		default: '',
+		disabled: (node) => {
 			return node.translatableText;
 		}
 	},
@@ -285,10 +285,10 @@ __EDITOR_editableProps(BitmapText, [ //list of editable properties
 		}
 	},
 	{
-		name:'font.name',
-		type:String,
-		default:EMPTY_FONT_NAME,
-		select:() => {
+		name: 'font.name',
+		type: String,
+		default: EMPTY_FONT_NAME,
+		select: () => {
 			let names = Object.keys(PIXI.BitmapFont.available);
 			if(!names.find((name) => name !== EMPTY_FONT_NAME)) {
 				setTimeout(() => {
@@ -296,13 +296,13 @@ __EDITOR_editableProps(BitmapText, [ //list of editable properties
 				}, 0);
 			}
 			return names.map((n) => {
-				return {name:n, value: n};
+				return {name: n, value: n};
 			});
 		}
 	},
 	{
-		name:'font.size',
-		type:Number
+		name: 'font.size',
+		type: Number
 	},
 	{
 		name: 'letterSpacing',
@@ -357,7 +357,7 @@ __EDITOR_editableProps(BitmapText, [ //list of editable properties
 ]);
 
 
-function afterEdited (overrideO, x) {
+function afterEdited(overrideO, x) {
 	let o = overrideO || editor.selection[0];
 	if(x === 0) {
 		for(let t of editor.selection) {
@@ -366,17 +366,17 @@ function afterEdited (overrideO, x) {
 		}
 	} else {
 		switch(o.font.align) {
-		case CENTER:
-			x *= 0.5;
-			break;
-		case RIGHT:
-			x *= -1;
-			break;
+			case CENTER: // eslint-disable-line indent
+				x *= 0.5; // eslint-disable-line indent
+				break; // eslint-disable-line indent
+			case RIGHT: // eslint-disable-line indent
+				x *= -1; // eslint-disable-line indent
+				break; // eslint-disable-line indent
 		}
 		let tmpScale = o.scale.x;
 		o.scale.x = 1;
 		o.scale.y = 1;
-		editor.overlay.guideX(x , o);
+		editor.overlay.guideX(x, o);
 		o.scale.x = tmpScale;
 		o.scale.y = tmpScale;
 	}

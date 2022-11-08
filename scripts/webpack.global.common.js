@@ -9,7 +9,7 @@ const isDebug = (process.argv.indexOf('debug') >= 0) || process.env.THING_ENGINE
 
 const glob = require('glob');
 
-const ignore = '*/.*|' + (isDebug ?'*/___*' : '*/__*');
+const ignore = '*/.*|' + (isDebug ? '*/___*' : '*/__*');
 
 let copyFilesList = [];
 
@@ -20,12 +20,12 @@ let hasSpinesVersion3 = false;
 let hasSpinesVersion4 = false;
 
 function addSoundsFolderToCopy(libName) {
-	let files = glob((libName || '.') + '/snd/**/*.@(webm|weba|ogg|aac|mp3)', {absolute: true, sync:true, ignore});
+	let files = glob((libName || '.') + '/snd/**/*.@(webm|weba|ogg|aac|mp3)', {absolute: true, sync: true, ignore});
 	for(let from of files) {
 		if(from.indexOf('/~') < 0) {
 			let a = from.split('/snd/');
 			a.shift();
-			let to =  './snd/' + a.join('/snd/');
+			let to = './snd/' + a.join('/snd/');
 			if(!addedFiles.has(to)) {
 				addedFiles.add(to);
 				copyFilesList.push({from, to});
@@ -36,22 +36,22 @@ function addSoundsFolderToCopy(libName) {
 }
 
 function addImagesFolderToCopy(libName) {
-	let files = glob((libName || '.') + '/img/**/*.@(png|jpg|atlas|json|xml)', {absolute: true, sync:true, ignore});
+	let files = glob((libName || '.') + '/img/**/*.@(png|jpg|atlas|json|xml)', {absolute: true, sync: true, ignore});
 	for(let from of files) {
 		if(from.indexOf('/~') < 0) {
 			let a = from.split('/img/');
 			a.shift();
-			let to =  './img/' + a.join('/img/');
-			
-			if (from.endsWith('.json')) {
+			let to = './img/' + a.join('/img/');
+
+			if(from.endsWith('.json')) {
 				const jsonContent = fs.readFileSync(from);
-				if (/"spine":"4\.[^"]*"/.test(jsonContent)) {
+				if(/"spine":"4\.[^"]*"/.test(jsonContent)) {
 					hasSpinesVersion4 = true;
 				} else if(/"spine":"3\.[^"]*"/.test(jsonContent)) {
 					hasSpinesVersion3 = true;
 				}
 			}
-			
+
 			if(!addedFiles.has(to)) {
 				addedFiles.add(to);
 				copyFilesList.push({from, to});
@@ -133,7 +133,7 @@ bundleEntries = bundleEntries.concat([
 const mode = isDebug ? 'development' : 'production';
 const buildPath = path.resolve(process.cwd(), isDebug ? 'debug' : 'release');
 
-(fs.rmSync || fs.rmdirSync)(buildPath, {force:true, recursive: true});
+(fs.rmSync || fs.rmdirSync)(buildPath, {force: true, recursive: true});
 
 const config = {
 	entry: {
@@ -195,12 +195,12 @@ const config = {
 							}]]
 					}
 				},
-				{ 
+				{
 					loader: "ifdef-loader",
 					options: {
 						EDITOR: false,
 						DEBUG: !!isDebug,
-					} 
+					}
 				},
 				path.resolve(__dirname, 'assert-strip-loader.js')
 			]
@@ -210,7 +210,7 @@ const config = {
 			include: [
 				path.resolve(__dirname, "../js/editor")
 			],
-			use:[
+			use: [
 				path.resolve(__dirname, 'editor-code-bundle-prevent.js')
 			]
 		}]
@@ -220,20 +220,20 @@ const config = {
 const providePluginOptions = {
 	PIXI: 'pixi.js',
 };
-if (hasSpinesVersion3 && hasSpinesVersion4) {
+if(hasSpinesVersion3 && hasSpinesVersion4) {
 	providePluginOptions['PIXI.spine'] = 'pixi-spine';
 	console.warn(`❗️ Both versions of Spine are used in project (3.8 and 4.0). So bundle size will be increased to support both versions`);
-} else if (hasSpinesVersion3) {
+} else if(hasSpinesVersion3) {
 	providePluginOptions['PIXI.spine'] = '@pixi-spine/all-3.8';
-} else if (hasSpinesVersion4) {
+} else if(hasSpinesVersion4) {
 	providePluginOptions['PIXI.spine'] = '@pixi-spine/all-4.0';
 }
 config.plugins.push(new webpack.ProvidePlugin(providePluginOptions));
 config.plugins.push(new webpack.DefinePlugin({'process.env.SPINE_VERSION': JSON.stringify(providePluginOptions['PIXI.spine'])}));
 
-if (!isDebug) {
+if(!isDebug) {
 	const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
-	
+
 	config.plugins.push(new ImageMinimizerPlugin({
 		loader: false,
 		severityError: 'warning',

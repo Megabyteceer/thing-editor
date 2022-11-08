@@ -73,10 +73,10 @@ export default class Fill extends PIXI.Mesh {
 		let textureW = this.texture.width;
 		leftSize /= textureW;
 		rightSize /= textureW;
-		if (leftSize < 0) {
+		if(leftSize < 0) {
 			leftSize = 0;
 		}
-		if (rightSize < 0) {
+		if(rightSize < 0) {
 			rightSize = 0;
 		}
 		this.scale.x = Math.min(1, 1 - leftSize - rightSize);
@@ -88,10 +88,10 @@ export default class Fill extends PIXI.Mesh {
 		let textureH = this.texture.height;
 		topSize /= textureH;
 		bottomSize /= textureH;
-		if (topSize < 0) {
+		if(topSize < 0) {
 			topSize = 0;
 		}
-		if (bottomSize < 0) {
+		if(bottomSize < 0) {
 			bottomSize = 0;
 		}
 		this.scale.y = Math.min(1, 1 - topSize - bottomSize);
@@ -100,41 +100,41 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	update() {
-		if (this.xShiftSpeed !== 0) {
+		if(this.xShiftSpeed !== 0) {
 			this.xShift += this.xShiftSpeed;
 			if(game.isCanvasMode) {
-				if (this._xShift > 2) {
+				if(this._xShift > 2) {
 					this._xShift -= 2;
-				} else if (this._xShift < -2) {
+				} else if(this._xShift < -2) {
 					this._xShift += 2;
 				}
 			}
 		}
-		if (this.yShiftSpeed !== 0) {
+		if(this.yShiftSpeed !== 0) {
 			this.yShift += this.yShiftSpeed;
 			if(game.isCanvasMode) {
-				if (this._yShift > 2) {
+				if(this._yShift > 2) {
 					this._yShift -= 2;
-				} else if (this._yShift < -2) {
+				} else if(this._yShift < -2) {
 					this._yShift += 2;
 				}
 			}
 		}
 
-		if (this.xWaveSpeed !== 0) {
+		if(this.xWaveSpeed !== 0) {
 			this.xWavePhase += this.xWaveSpeed;
-			if (this._xWavePhase > PI_2) {
+			if(this._xWavePhase > PI_2) {
 				this._xWavePhase -= PI_2;
-			} else if (this._xWavePhase < 0) {
+			} else if(this._xWavePhase < 0) {
 				this._xWavePhase += PI_2;
 			}
 		}
 
-		if (this.yWaveSpeed !== 0) {
+		if(this.yWaveSpeed !== 0) {
 			this.yWavePhase += this.yWaveSpeed;
-			if (this._yWavePhase > PI_2) {
+			if(this._yWavePhase > PI_2) {
 				this._yWavePhase -= PI_2;
-			} else if (this._yWavePhase < 0) {
+			} else if(this._yWavePhase < 0) {
 				this._yWavePhase += PI_2;
 			}
 		}
@@ -145,10 +145,10 @@ export default class Fill extends PIXI.Mesh {
 		if(v !== super.texture) {
 
 			this.meshResized = this.meshResized ||
-			/// #if EDITOR
-			!super.texture.valid ||
-			/// #endif
-			(super.texture.width !== v.width || super.texture.height !== v.height);
+				/// #if EDITOR
+				!super.texture.valid ||
+				/// #endif
+				(super.texture.width !== v.width || super.texture.height !== v.height);
 
 			super.texture = v;
 		}
@@ -173,7 +173,7 @@ export default class Fill extends PIXI.Mesh {
 			this.refreshSize();
 			this.meshResized = false;
 		}
-		if (this.fillUpdated) {
+		if(this.fillUpdated) {
 			this.updateFilling();
 			this.fillUpdated = false;
 		}
@@ -189,7 +189,7 @@ export default class Fill extends PIXI.Mesh {
 		}
 		super.calculateVertices();
 	}
-	
+
 	set transparentTop(v) {
 		if(this._transparentTop !== v) {
 			this._transparentTop = v;
@@ -291,7 +291,7 @@ export default class Fill extends PIXI.Mesh {
 		for(let i = 0; i < len; i++) {
 			a[i] = 1;
 		}
-		
+
 		if(this.transparentTop) {
 			for(let i = this.verticesX - 1; i >= 0; i--) {
 				a[i] = 0;
@@ -332,14 +332,14 @@ export default class Fill extends PIXI.Mesh {
 		let xWaveStep = this._xWaveStep / stepsX;
 		let yWaveStep = this._yWaveStep / stepsY;
 
-		if (this._xWaveAmp !== 0 || this._yWaveAmp !== 0) {
+		if(this._xWaveAmp !== 0 || this._yWaveAmp !== 0) {
 
 			let curYWavePhase = this._yWavePhase;
-			for (let y = 0; y <= stepsY; y++) {
+			for(let y = 0; y <= stepsY; y++) {
 
 				curxShift = this._xShift + Math.sin(curYWavePhase) * this._yWaveAmp;
 				let curXWavePhase = this._xWavePhase;
-				for (let x = 0; x <= stepsX; x++) {
+				for(let x = 0; x <= stepsX; x++) {
 
 					a[i++] = curxShift;
 					a[i++] = curyShift + Math.sin(curXWavePhase) * this._xWaveAmp;
@@ -350,9 +350,9 @@ export default class Fill extends PIXI.Mesh {
 				curyShift += yStep;
 			}
 		} else {
-			for (let y = 0; y <= stepsY; y++) {
+			for(let y = 0; y <= stepsY; y++) {
 				curxShift = this._xShift;
-				for (let x = 0; x <= stepsX; x++) {
+				for(let x = 0; x <= stepsX; x++) {
 					a[i++] = curxShift;
 					a[i++] = curyShift;
 					curxShift += xStep;
@@ -368,7 +368,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set xRepeat(v) {
-		if (this._xRepeat !== v) {
+		if(this._xRepeat !== v) {
 			this._xRepeat = v;
 			this.fillUpdated = true;
 		}
@@ -379,7 +379,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set xShift(v) {
-		if (this._xShift !== v) {
+		if(this._xShift !== v) {
 			this._xShift = v;
 			this.fillUpdated = true;
 		}
@@ -390,7 +390,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set xWaveAmp(v) {
-		if (this._xWaveAmp !== v) {
+		if(this._xWaveAmp !== v) {
 			this._xWaveAmp = v;
 			this.fillUpdated = true;
 		}
@@ -401,7 +401,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set xWaveStep(v) {
-		if (this._xWaveStep !== v) {
+		if(this._xWaveStep !== v) {
 			this._xWaveStep = v;
 			this.fillUpdated = true;
 		}
@@ -412,7 +412,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set xWavePhase(v) {
-		if (this._xWavePhase !== v) {
+		if(this._xWavePhase !== v) {
 			this._xWavePhase = v;
 			this.fillUpdated = true;
 		}
@@ -423,7 +423,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set yRepeat(v) {
-		if (this._yRepeat !== v) {
+		if(this._yRepeat !== v) {
 			this._yRepeat = v;
 			this.fillUpdated = true;
 		}
@@ -434,7 +434,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set yShift(v) {
-		if (this._yShift !== v) {
+		if(this._yShift !== v) {
 			this._yShift = v;
 			this.fillUpdated = true;
 		}
@@ -445,7 +445,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set yWaveAmp(v) {
-		if (this._yWaveAmp !== v) {
+		if(this._yWaveAmp !== v) {
 			this._yWaveAmp = v;
 			this.fillUpdated = true;
 		}
@@ -456,7 +456,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set yWaveStep(v) {
-		if (this._yWaveStep !== v) {
+		if(this._yWaveStep !== v) {
 			this._yWaveStep = v;
 			this.fillUpdated = true;
 		}
@@ -467,7 +467,7 @@ export default class Fill extends PIXI.Mesh {
 	}
 
 	set yWavePhase(v) {
-		if (this._yWavePhase !== v) {
+		if(this._yWavePhase !== v) {
 			this._yWavePhase = v;
 			this.fillUpdated = true;
 		}
@@ -489,7 +489,7 @@ export default class Fill extends PIXI.Mesh {
 	get TEXTURE_WRAP_MODE() {
 		return this.texture ? this.texture.baseTexture.wrapMode : PIXI.WRAP_MODES.CLAMP;
 	}
-	
+
 	/// #endif
 }
 
@@ -561,9 +561,9 @@ __EDITOR_editableProps(Fill, [{
 	name: 'TEXTURE_WRAP_MODE',
 	type: Number,
 	notSerializable: true,
-	tip:() => {
+	tip: () => {
 		if(isWrapDisabled(editor.selection[0])) {
-			return `WrapMode is disabled for textures with sizes not equal to <b>power of two (2, 4, 8, 16, 32, 64...)</b> <a target="_blank" href="https://github.com/Megabyteceer/thing-editor/wiki/editor.Textures#wrapping">Read mode...</a>`
+			return `WrapMode is disabled for textures with sizes not equal to <b>power of two (2, 4, 8, 16, 32, 64...)</b> <a target="_blank" href="https://github.com/Megabyteceer/thing-editor/wiki/editor.Textures#wrapping">Read mode...</a>`;
 		}
 	},
 	select: [
@@ -571,7 +571,7 @@ __EDITOR_editableProps(Fill, [{
 		{name: 'REPEAT', value: PIXI.WRAP_MODES.REPEAT},
 		{name: 'MIRRORED_REPEAT', value: PIXI.WRAP_MODES.MIRRORED_REPEAT}
 	],
-	disabled:isWrapDisabled
+	disabled: isWrapDisabled
 },
 {
 	type: 'splitter',

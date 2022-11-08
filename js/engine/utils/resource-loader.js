@@ -7,11 +7,11 @@ let loadingResources = [];
 
 assert(PIXI.Spritesheet.prototype.parse instanceof Function, 'Thing editor needs refactoring of atlases error handling.');
 const origin_parse = PIXI.Spritesheet.prototype.parse;
-PIXI.Spritesheet.prototype.parse = function() {
+PIXI.Spritesheet.prototype.parse = function () {
 	try {
 		origin_parse.apply(this, arguments);
 	} catch(er) {
-		game._onLoadingError('Spritesheet parsing error (' + this.data.meta.image +'): ' + er.message);
+		game._onLoadingError('Spritesheet parsing error (' + this.data.meta.image + '): ' + er.message);
 	}
 };
 
@@ -50,7 +50,7 @@ export default class ResourceLoader {
 		if(!isReattempt) {
 			loadingResources.push(this);
 		}
-		
+
 		this.loader.onLoad.add((loader, resource) => {
 			if(this.resources[resource.name]) {
 				this.count--;
@@ -95,7 +95,7 @@ export default class ResourceLoader {
 			} else {
 				this.resources = Object.assign(this.resources, this.loader.resources);
 				assert(this.count === 1, "Resources count error.");
-			
+
 				let i = loadingResources.indexOf(this);
 				assert(i >= 0, "Loader's registration corrupted.");
 				loadingResources.splice(i, 1);

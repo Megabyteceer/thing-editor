@@ -61,7 +61,7 @@ export default class MobileJoystick extends DSprite {
 		if(this.touchId === ev.data.pointerId) {
 
 			game.stage.toLocal(ev.data.global, game.pixiApp.stage, ev.data.global, true);
-			
+
 			let dx = ev.data.global.x - this.touchX;
 			let dy = ev.data.global.y - this.touchY;
 

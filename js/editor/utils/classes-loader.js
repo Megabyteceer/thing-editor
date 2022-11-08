@@ -60,12 +60,12 @@ ClassesLoader.initClassesLoader = function initClassesLoader() {
 		[Label, "thing-editor/js/engine/components/label.js"],
 		[ProgressBar, "thing-editor/js/engine/components/progress-bar.js"],
 		[NumberInput, "thing-editor/js/engine/components/number-input.js"],
-		[Trigger, "thing-editor/js/engine/components/trigger.js" ],
-		[Resizer, "thing-editor/js/engine/components/resizer.js" ],
-		[OrientationTrigger, "thing-editor/js/engine/components/orientation-trigger.js" ],
-		[ClickOutsideTrigger, "thing-editor/js/engine/components/click-outside-trigger.js" ],
-		[ScrollLayer, "thing-editor/js/engine/components/scroll-layer.js" ],
-		[SelectionHighlighter, "thing-editor/js/engine/components/selection-highlighter.js" ],
+		[Trigger, "thing-editor/js/engine/components/trigger.js"],
+		[Resizer, "thing-editor/js/engine/components/resizer.js"],
+		[OrientationTrigger, "thing-editor/js/engine/components/orientation-trigger.js"],
+		[ClickOutsideTrigger, "thing-editor/js/engine/components/click-outside-trigger.js"],
+		[ScrollLayer, "thing-editor/js/engine/components/scroll-layer.js"],
+		[SelectionHighlighter, "thing-editor/js/engine/components/selection-highlighter.js"],
 		[NineSlicePlane, "thing-editor/js/engine/components/nine-slice-plane.js"],
 		[PrefabReference, "thing-editor/js/engine/components/prefab-reference.js"],
 		[Scissors, "thing-editor/js/engine/components/scissors.js"],
@@ -104,56 +104,56 @@ let errorOccurred;
 let currentLoadingPromiseResolver;
 function showError(message, errorCode) {
 	errorOccurred = true;
-	
+
 	let r = currentLoadingPromiseResolver;
 	currentLoadingPromiseResolver = null;
 	editor.ui.modal.showError(R.div(null,
 		message,
 		R.btn('I have fixed code, try again', () => {
 			editor.ui.modal.hideModal();
-			
+
 			ClassesLoader.reloadClasses().then(() => {
 				if(r) {
 					r();
 				}
 			});
 		}, 'check DeveloperTools (F12) for additional error description', 'main-btn')),
-	errorCode,
-	'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce);
+		errorCode, // eslint-disable-line indent
+		'Game source-code loading error.', !classesLoadedSuccessfullyAtLeastOnce); // eslint-disable-line indent
 }
 
 function getClassType(c) {
 	assert(typeof c === 'function', 'Class expected');
-	while (c) {
-		if (c === Scene) return Scene;
-		if (c === DisplayObject) return DisplayObject;
+	while(c) {
+		if(c === Scene) return Scene;
+		if(c === DisplayObject) return DisplayObject;
 		c = c.__proto__;
 	}
 }
 
 function addClass(c, path) {
-	
+
 	let classType = getClassType(c);
-	if (!classType) return;
-	
+	if(!classType) return;
+
 	let name = c.name;
-	
-	
-	if (classPathById.hasOwnProperty(name)) {
+
+
+	if(classPathById.hasOwnProperty(name)) {
 		let anotherPath = classPathById[name];
-		if (anotherPath !== path) {
+		if(anotherPath !== path) {
 			if((editor.fs.files['src/game-objects'].indexOf(anotherPath) >= 0) || (editor.fs.files['src/scenes'].indexOf(anotherPath) >= 0)) {
 				showError(R.div(null, 'class ', R.b(null, name), '" (' + path + ') overrides existing class ', R.b(null, (classPathById[name] || 'System class ' + name)), '. Please change your class name.'), 30008);
 				return;
 			}
 		}
 	}
-	
+
 	classPathById[name] = (((typeof path) === 'string') ? path : false);
 	classesById[name] = c;
-	
+
 	let item = {c};
-	if (classType === DisplayObject) {
+	if(classType === DisplayObject) {
 		ClassesLoader.gameObjClasses.push(item);
 	} else {
 		ClassesLoader.sceneClasses.push(item);
@@ -166,7 +166,7 @@ function enumClassProperties(c) {
 	let props = [];
 	let defaults = {};
 	let i = 50;
-	
+
 	let path;
 	if(!loadedPath) {
 		path = embeddedClasses.find((a) => {
@@ -179,17 +179,17 @@ function enumClassProperties(c) {
 		path = loadedPath;
 	}
 
-	while (cc && (i-- > 0)) {
-		if (!cc.prototype) {
+	while(cc && (i-- > 0)) {
+		if(!cc.prototype) {
 			throw 'attempt to enum editable properties of not DisplayObject instance';
 		}
-		if (cc.hasOwnProperty('__EDITOR_editableProps')) {
+		if(cc.hasOwnProperty('__EDITOR_editableProps')) {
 			cc.__EDITOR_editableProps.some((p) => {
 				assert(p.name, 'Class ' + c.name + ' has property with no name defined', 40001);
 				assert(p.type, 'Class ' + c.name + ' has property "' + p.name + '" with no type defined.', 40002);
 				let ownerClassName = c.name + ' (' + path + ')';
 				p.owner = ownerClassName;
-				
+
 				props = props.filter((pp) => {
 					if(pp.name === p.name) {
 						if(!pp.override) {
@@ -204,10 +204,10 @@ function enumClassProperties(c) {
 					}
 				});
 
-				if (p.type === 'splitter' || p.type === 'btn') {
+				if(p.type === 'splitter' || p.type === 'btn') {
 					p.notSerializable = true;
 				} else {
-					if (!p.hasOwnProperty('default')) {
+					if(!p.hasOwnProperty('default')) {
 						p.default = PropsFieldWrapper.getTypeDescription(p).default;
 					}
 					if(p.type === 'ref') {
@@ -226,7 +226,7 @@ function enumClassProperties(c) {
 				props.unshift(p);
 			});
 		}
-		if (cc === DisplayObject) {
+		if(cc === DisplayObject) {
 			break;
 		}
 		cc = cc.__proto__;
@@ -267,7 +267,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				embeddedClassesMap.set(c, true);
 				addClass(c, a[1]);
 			});
-		
+
 			window.onerror = function loadingErrorHandler(message, source, lineno, colno) {
 
 				let fn = loadedPath || source.split('?').shift().split(':' + location.port).pop();
@@ -279,7 +279,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 				), 30009);
 				loadedPath = null;
 			};
-		
+
 			let scriptSource = '';
 			let classesList = editor.fs.filesExt['src/game-objects'].concat(editor.fs.filesExt['src/scenes']);
 			classesList.forEach((classInfo, i) => {
@@ -295,24 +295,24 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 					}
 				}
 			});
-		
+
 			let src = 'data:application/javascript,' + encodeURIComponent(scriptSource);
-		
+
 			let script = document.createElement('script');
 			editor.ui.modal.showSpinner();
-			script.onerror = function() {
+			script.onerror = function () {
 				showError("Can not load custom component; Please check Browser's console for error details, and fix problem to continue.", 31001);
 				script.onload();
 			};
-			script.onload = function() {
-			
+			script.onload = function () {
+
 				editor.ui.modal.hideSpinner();
 				head.removeChild(script);
-			
+
 				window.onerror = null;
 				if(!errorOccurred) {
 					Lib._setClasses(classesById, classesDefaultsById);
-				
+
 					classesLoadedSuccessfullyAtLeastOnce = true;
 
 					if(!editor.editorArguments['no-vscode-integration']) {
@@ -336,7 +336,7 @@ function reloadClasses() { //enums all js files in src folder, detect which of t
 			script.src = src;
 			head.appendChild(script);
 
-		},10);
+		}, 10);
 	});
 }
 let loadedPath;
@@ -352,7 +352,7 @@ function classLoaded(c, path, libName) {
 	if(libName) {
 		c.___libInfo = R.libInfo(libName);
 	}
-	
+
 	addClass(c, path);
 	loadedPath = null;
 }

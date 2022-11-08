@@ -51,7 +51,7 @@ function getHistoryName() {
 }
 
 class History {
-	
+
 	constructor() {
 		this.undo = this.undo.bind(this);
 		this.redo = this.redo.bind(this);
@@ -85,7 +85,7 @@ class History {
 			}, 1);
 		}
 	}
-	
+
 	scheduleSelectionSave() {
 		clearSelectionSaveTimer();
 		if(game.__EDITOR_mode) {
@@ -118,7 +118,7 @@ class History {
 	get _undos() {
 		let n = getHistoryName();
 		if(!n) {
-			return[];
+			return [];
 		}
 		if(!undosStack.hasOwnProperty(n)) {
 			undosStack[n] = [];
@@ -129,7 +129,7 @@ class History {
 	get _redos() {
 		let n = getHistoryName();
 		if(!n) {
-			return[];
+			return [];
 		}
 		if(!redosStack.hasOwnProperty(n)) {
 			redosStack[n] = [];
@@ -161,7 +161,7 @@ class History {
 		//reduce and limit history
 		if(this._undos.length > HISTORY_LEN) {
 			let i = HISTORY_LEN - 1;
-			while (i > STRICT_HISTORY_LEN) {
+			while(i > STRICT_HISTORY_LEN) {
 				i -= 2;
 				this._undos.splice(i, 1);
 			}
@@ -183,9 +183,9 @@ class History {
 		}
 		this._pushCurrentStateToUndoHistory(selectionData, selectionOnly);
 	}
-	
+
 	undo() {
-		if (this.isUndoAvailable()) {
+		if(this.isUndoAvailable()) {
 			editor.overlay.exitIsolation();
 			if(this.currentState.fieldName) {
 				editor.ui.propsEditor.selectField(this.currentState.fieldName);
@@ -194,9 +194,9 @@ class History {
 			applyState(this.currentState);
 		}
 	}
-	
+
 	redo() {
-		if (this.isRedoAvailable()) {
+		if(this.isRedoAvailable()) {
 			this._undos.push(this._redos.pop());
 			applyState(this.currentState);
 			if(this.currentState.fieldName) {
@@ -204,7 +204,7 @@ class History {
 			}
 		}
 	}
-	
+
 	get currentState() {
 		let undos = this._undos;
 		if(undos) {
@@ -212,16 +212,16 @@ class History {
 		}
 		return null;
 	}
-	
+
 	clearHistory() {
 		this.setCurrentStateUnmodified();
 		historyUi.forceUpdate();
 	}
-	
+
 	updateUi() {
 		historyUi.forceUpdate();
 	}
-	
+
 	setCurrentStateUnmodified() {
 		if(this._undos.length === 0 && this._redos.length === 0) {
 			this.addHistoryState();
@@ -231,11 +231,11 @@ class History {
 		});
 		delete this.currentState.treeData._isModified;
 	}
-	
+
 	get isStateModified() {
 		return this.currentState && this.currentState.treeData._isModified;
 	}
-	
+
 	buttonsRenderer() {
 		return React.createElement(HistoryUi);
 	}
@@ -251,7 +251,7 @@ class HistoryUi extends React.Component {
 		super(props);
 		historyUi = this;
 	}
-	
+
 	render() {
 		if(!instance._undos) {
 			return R.span();
@@ -286,7 +286,7 @@ function arraysEqual(a, b) {
 	if(a == null || b == null) return false;
 	if(a.length !== b.length) return false;
 
-	for (var i = 0; i < a.length; ++i) {
+	for(var i = 0; i < a.length; ++i) {
 		if(Array.isArray(a[i])) {
 			if(!arraysEqual(a[i], b[i])) return false;
 		} else {
