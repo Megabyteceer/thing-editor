@@ -9,7 +9,7 @@ let modal;
 let blackoutProps = {className: 'modal-blackout fadein-animation'};
 let blackoutPropsClosable = {
 	className: 'modal-blackout fadein-animation', style: {cursor: 'pointer'}, onMouseDown: (sp) => {
-		if (sp.target.className.indexOf('modal-blackout') === 0) {
+		if(sp.target.className.indexOf('modal-blackout') === 0) {
 			modal.hideModal();
 		}
 	}
@@ -30,11 +30,11 @@ let spinnerShowCounter = 0;
 
 let renderModal = (props, i) => {
 	let title;
-	
-	if (props.title) {
+
+	if(props.title) {
 		title = R.div(titleProps, props.title);
 	}
-	
+
 	return R.div({key: i},
 		R.div(props.noEasyClose ? blackoutProps : blackoutPropsClosable,
 			R.div(bodyProps,
@@ -54,7 +54,7 @@ let renderSpinner = () => {
 };
 
 class Modal extends React.Component {
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -68,19 +68,19 @@ class Modal extends React.Component {
 		}
 		if(this.state.modals.length > 0) {
 			let topModal = document.querySelectorAll('.modal-body');
-			topModal = topModal[topModal.length -1];
+			topModal = topModal[topModal.length - 1];
 			return !topModal.contains(element) && !element.classList.contains('modal-close-button');
 		}
 		return false;
 	}
-	
+
 	hideModal(val) {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
 		let closedModalItem = modal.state.modals.pop();
 		modal.forceUpdate();
 		closedModalItem.resolve(val);
 	}
-	
+
 	showModal(content, title, noEasyClose, toBottom = false) {
 		if(document.activeElement) {
 			document.activeElement.blur();
@@ -113,25 +113,25 @@ class Modal extends React.Component {
 		}
 		this.forceUpdate();
 	}
-	
+
 	componentDidMount() {
 		assert(!modal, 'Modal already mounted.');
 		modal = this;
 	}
-	
+
 	showSpinner() {
 		spinnerShowCounter++;
-		if (spinnerShowCounter === 1) {
+		if(spinnerShowCounter === 1) {
 			if(game.stage) {
 				game.stage.interactiveChildren = false;
 			}
 			modal.forceUpdate();
 		}
 	}
-	
+
 	hideSpinner() {
 		spinnerShowCounter--;
-		if (spinnerShowCounter === 0) {
+		if(spinnerShowCounter === 0) {
 			setTimeout(() => {
 				if(game.stage) {
 					game.stage.interactiveChildren = true;
@@ -140,24 +140,24 @@ class Modal extends React.Component {
 			}, 10);
 		}
 	}
-	
+
 	showEditorQuestion(title, message, onYes, yesLabel = 'Ok', onNo, noLabel = 'Cancel', noEasyClose) {
-		
+
 		let yesBtn = R.btn(yesLabel, () => {
 			modal.hideModal(true);
 			if(onYes) {
 				onYes();
 			}
 		}, undefined, 'main-btn', 13);
-		
+
 		let noBtn;
-		if (typeof onNo !== 'undefined') {
+		if(typeof onNo !== 'undefined') {
 			noBtn = R.btn(noLabel, () => {
 				modal.hideModal();
 				onNo();
 			});
 		}
-		
+
 		return this.showModal(R.div(null, message,
 			R.div(null,
 				yesBtn,
@@ -165,15 +165,15 @@ class Modal extends React.Component {
 			)
 		), title, noEasyClose);
 	}
-	
+
 	showPrompt(title, defaultText, filter, accept, noEasyClose, multiline) {
 		return this.showModal(React.createElement(Prompt, {defaultText, filter, accept, multiline}), title, noEasyClose);
 	}
-	
+
 	showListChoose(title, list, noEasyClose, noSearchField) {
 		return this.showModal(React.createElement(ChooseList, {list, noSearchField}), title, noEasyClose);
 	}
-	
+
 	showError(message, errorCode, title = 'Error!', noEasyClose, toBottom) {
 		if(editor.buildProjectAndExit) {
 			if(typeof message === 'object') {
@@ -181,12 +181,12 @@ class Modal extends React.Component {
 					let txt = [];
 					JSON.stringify(message, (key, value) => {
 						if(key !== 'type' && typeof value === 'string') {
-							txt.push(value);	
+							txt.push(value);
 						}
 						return value;
 					});
 					message = txt.join('\n');
-				} catch (er) {} // eslint-disable-line no-empty
+				} catch(er) { } // eslint-disable-line no-empty
 			}
 			ws.exitWithResult(undefined, (editor.buildProjectAndExit ? ('Build failed: ' + editor.buildProjectAndExit.projectName + '\n') : '') + message + '; Error code: ' + errorCode);
 		} else {
@@ -198,15 +198,15 @@ class Modal extends React.Component {
 			}, 'Open docs for this error (F1)', 'error-help-button', 112)), noEasyClose, toBottom);
 		}
 	}
-	
+
 	showFatalError(message, errorCode, additionalText = 'FatalError. Please check console output (F12) for exceptions messages, and restart application (Reload page) by press (F5) button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.') {
 		editor.__FatalError = true;
 		this.showError(R.div(null, R.div(null, R.b(null, message)), additionalText), errorCode, 'FatalError', true, true);
 	}
-	
+
 	render() {
 		let spinner;
-		if (spinnerShowCounter > 0) {
+		if(spinnerShowCounter > 0) {
 			spinner = renderSpinner();
 		}
 
@@ -217,9 +217,9 @@ class Modal extends React.Component {
 
 		let hotkeyButton;
 		if(this.state.modals.length > 0) {
-			hotkeyButton = R.btn('х', () => {
+			hotkeyButton = R.btn('x', () => {
 				let m = modal.state.modals[modal.state.modals.length - 1];
-				if (m && !m.noEasyClose) {
+				if(m && !m.noEasyClose) {
 					modal.hideModal();
 				}
 			}, undefined, "modal-close-button hidden", 27);

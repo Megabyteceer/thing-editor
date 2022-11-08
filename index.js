@@ -11,7 +11,7 @@ const express = require('express');
 const app = express();
 const open = require('open');
 const AnsiToHtml = require('ansi-to-html');
-const AnsiToHtmlConverter = new AnsiToHtml({bg: '#FFF',fg: '#000', newline: true});
+const AnsiToHtmlConverter = new AnsiToHtml({bg: '#FFF', fg: '#000', newline: true});
 const crypto = require('crypto');
 
 function requireUncached(m) {
@@ -35,8 +35,8 @@ let assetsMap = new Map();
 
 let PORT = 32023;
 let gamesRoot = 'games';
-let jsonParser = bodyParser.json({limit:1024*1024*200});
-let rawParser = bodyParser.raw({limit:1024*1024*200});
+let jsonParser = bodyParser.json({limit: 1024 * 1024 * 200});
+let rawParser = bodyParser.raw({limit: 1024 * 1024 * 200});
 
 //========= File System access commands ====================
 
@@ -61,7 +61,7 @@ app.get('/fs/openProject', function (req, res) {
 		if(!buildProjectAndExit) {
 			try {
 				initWatchers();
-			} catch (err) {
+			} catch(err) {
 				console.error('WATCHING ERROR:');
 				console.error(err);
 			}
@@ -105,7 +105,7 @@ app.get('/fs/delete', function (req, res) {
 						}
 					}
 				}
-				let historyName = path.join(dir, '~deleted(' + path.basename(fn) + ')'+ new Date().toUTCString().replace(/[\W]/gm, '_') + '.log');
+				let historyName = path.join(dir, '~deleted(' + path.basename(fn) + ')' + new Date().toUTCString().replace(/[\W]/gm, '_') + '.log');
 				fs.renameSync(fn, historyName);
 				backupsFilter[fn] = fileSize;
 				return;
@@ -124,7 +124,7 @@ app.get('/fs/edit', function (req, res) {
 		return;
 	}
 	if(!currentGame) throw 'No game opened';
-	
+
 	let fn = mapFileUrl(req.query.f);
 	let line = req.query.l;
 	let char = req.query.c;
@@ -140,7 +140,7 @@ app.get('/fs/edit', function (req, res) {
 				open('', {app: ['code', '-r', '-g', arg]});
 			}
 			res.end('{}');
-		} catch (err) {
+		} catch(err) {
 			res.end(JSON.stringify({error: 'Can not open file to edit: ' + fn}));
 		}
 	}, 1);
@@ -162,7 +162,7 @@ app.post('/fs/fetch', jsonParser, function (req, res) {
 			res.end(data);
 		}).catch((err) => {
 			console.error(err);
-			res.status(500).send("Thing-editor proxy fetch fails with result: " + JSON.stringify(err));	
+			res.status(500).send("Thing-editor proxy fetch fails with result: " + JSON.stringify(err));
 		});
 });
 
@@ -174,9 +174,9 @@ app.get('/fs/build', function (req, res) {
 	log('BUILD project' + (req.query.debug ? ' (debug)' : '') + ': ' + currentGameRoot + '; ' + (new Date()).toString());
 	wss.showSpinner();
 	let command = 'node "' +
-	path.join(__dirname, 'scripts/build.js') + '" "' +
-	currentGameRoot+'" ' + 
-	(req.query.debug ? 'debug' : '');
+		path.join(__dirname, 'scripts/build.js') + '" "' +
+		currentGameRoot + '" ' +
+		(req.query.debug ? 'debug' : '');
 	command = command.replace(pathSeparatorReplaceExp, '/');
 	exec(command,
 		{maxBuffer: 1024 * 5000},
@@ -229,7 +229,7 @@ app.post('/fs/build-sounds', jsonParser, function (req, res) {
 app.post('/fs/exec', jsonParser, function (req, res) {
 	let fileName = mapFileUrl('/' + gamesRoot + '/' + currentGame + '/' + req.body.filename);
 	let m = requireUncached(path.join(__dirname, '..', fileName));
-	m.main(function(err) {
+	m.main(function (err) {
 		if(err) {
 			throw err;
 		}
@@ -272,13 +272,13 @@ app.use('/', (req, res, next) => {
 	}
 });
 
-app.use('/games/',  (req, res) => {
+app.use('/games/', (req, res) => {
 	let fileName = path.join(fullRoot, mapAssetUrl(decodeURIComponent(req.path)));
 	if(fs.existsSync(fileName)) {
 		res.setHeader('Cache-Control', 'no-store');
 		attemptFSOperation(() => {
 			fs.accessSync(fileName, fs.constants.R_OK);
-			res.sendFile(fileName, {dotfiles:'allow'});
+			res.sendFile(fileName, {dotfiles: 'allow'});
 		}).catch(() => {
 			res.sendStatus(505);
 		});
@@ -292,7 +292,7 @@ function mapFileUrl(url) {
 		url = path.join(__dirname, '..', url);
 		return url;
 	}
-	let fileName =url.replace('/games', '');
+	let fileName = url.replace('/games', '');
 	if(assetsMap.has(fileName)) {
 		return assetsMap.get(fileName);
 	} else {
@@ -319,31 +319,31 @@ let params = process.argv.slice(2);
 while(params.length) {
 	let arg = params.shift();
 	switch(arg) {
-	case 'n':
-		openChrome = false;
-		break;
-	case 'build':
-		buildProjectAndExit = {
-			projectName: params.shift()
-		};
-		process.env.buildProjectAndExit = buildProjectAndExit;
-		break;
-	case 'node_modules_path':
-		var modulesPath = params.shift();
-		if(!path.isAbsolute(modulesPath)) {
-			modulesPath = path.join(__dirname, modulesPath);
-		}
-		if(fs.existsSync(modulesPath)) {
-			app.use('/node_modules/', express.static(modulesPath, {dotfiles:'allow'}));
-		} else {
-			console.warn('WARNING: node_modules_path points to not existing folder: ' + modulesPath);
-		}
+		case 'n':
+			openChrome = false;
+			break;
+		case 'build':
+			buildProjectAndExit = {
+				projectName: params.shift()
+			};
+			process.env.buildProjectAndExit = buildProjectAndExit;
+			break;
+		case 'node_modules_path':
+			var modulesPath = params.shift();
+			if(!path.isAbsolute(modulesPath)) {
+				modulesPath = path.join(__dirname, modulesPath);
+			}
+			if(fs.existsSync(modulesPath)) {
+				app.use('/node_modules/', express.static(modulesPath, {dotfiles: 'allow'}));
+			} else {
+				console.warn('WARNING: node_modules_path points to not existing folder: ' + modulesPath);
+			}
 	}
 	editorArgumentsArray.push(arg);
 	editorArguments[arg] = true;
 }
 
-app.use('/', express.static(path.join(__dirname, '../'), {dotfiles:'allow'}));
+app.use('/', express.static(path.join(__dirname, '../'), {dotfiles: 'allow'}));
 
 //========= start server ================================================================
 let server = app.listen(PORT, () => log('Thing-editor listening on: http://127.0.0.1:' + PORT + '/thing-editor')); // eslint-disable-line no-unused-vars
@@ -361,7 +361,7 @@ if(openChrome) {
 			console.error('ERROR: chrome connection timeout.');
 			process.exit(1);
 		}, 15000);
-	
+
 		buildSoundsTimeout = setTimeout(() => {
 			console.error('ERROR: chrome have not call build SOUNDS command.');
 			process.exit(1);
@@ -382,7 +382,7 @@ if(openChrome) {
 	] : ['--app=' + editorURL];
 
 	app.unshift((process.platform == 'darwin') && 'Google Chrome' ||
-	(process.platform == 'win32') && 'chrome' ||
+		(process.platform == 'win32') && 'chrome' ||
 		'google-chrome');
 
 	open(editorURL, {app});
@@ -428,7 +428,7 @@ function getDataFolders(existingOnly = true) {
 
 	ASSETS_FOLDERS_NAMES.forEach((type) => {
 		const typePath = path.join(currentGameRoot, type);
-		if (!existingOnly || fs.existsSync(typePath)) {
+		if(!existingOnly || fs.existsSync(typePath)) {
 			ret.push({type, path: typePath});
 		}
 	});
@@ -436,7 +436,16 @@ function getDataFolders(existingOnly = true) {
 	return ret;
 }
 
-const filesToEnumFilter = /\.(js|json|xml|atlas|png|jpg|wav|mp3|ogg|aac|weba)$/;
+function readJOSNSync(fileName) {
+	try {
+		return JSON.parse(fs.readFileSync(fileName));
+	} catch(er) {
+		console.error('JSON READING ERROR: ' + fileName);
+		console.error(er.stack);
+	}
+}
+
+const filesToEnumFilter = /\.(js|json|xml|atlas|png|jpg|webp|svg|wav|mp3|ogg|aac|weba)$/;
 
 let lastFilesEnum;
 
@@ -451,13 +460,13 @@ function enumFiles() {
 	let folders = getDataFolders(false);
 	folders.reverse();
 	var sameFiles;
-	for (let f of folders) {
+	for(let f of folders) {
 		let type = f.type;
 		if(!ret[type]) {
 			ret[type] = [];
 		}
 		let a = [];
-		
+
 		if(fs.existsSync(f.path)) {
 			walkSync(f.path, a);
 		}
@@ -502,7 +511,7 @@ function enumFiles() {
 					folderSettings = ret.libsSettings.__loadOnDemandTexturesFolders;
 					imagesSettings = ret.libsSettings.loadOnDemandTextures;
 				}
-				ret.libsSettings = Object.assign(ret.libsSettings || {}, JSON.parse(fs.readFileSync(libSettingsFilename)));
+				ret.libsSettings = Object.assign(ret.libsSettings || {}, readJOSNSync(libSettingsFilename));
 				if(folderSettings) {
 					ret.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, ret.libsSettings.__loadOnDemandTexturesFolders);
 				}
@@ -526,7 +535,7 @@ function attemptFSOperation(cb) {
 			try {
 				cb();
 				resolve();
-			} catch (er) {
+			} catch(er) {
 				if(timeout-- > 0) {
 					setTimeout(attempt, 1000);
 				} else {
@@ -562,11 +571,11 @@ const enumProjects = (ret = [], subDir = '') => {
 			if(fs.statSync(dirName).isDirectory()) {
 				let projDescFile = dirName + '/thing-project.json';
 				if(fs.existsSync(projDescFile)) {
-					let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
+					let desc = readJOSNSync(projDescFile);
 					desc.dir = subDir ? (subDir + '/' + file) : file;
 					ret.push(desc);
 				} else {
-					enumProjects(ret, subDir ? (subDir + '/' + file): file);
+					enumProjects(ret, subDir ? (subDir + '/' + file) : file);
 				}
 			}
 		}
@@ -582,7 +591,7 @@ const enumLibs = (ret = [], dir = '.') => {
 			if(fs.statSync(dirName).isDirectory()) {
 				let libDescFile = path.join(dirName, '/thing-lib.json');
 				if(fs.existsSync(libDescFile)) {
-					ret.push(dirName.replace(pathSeparatorReplaceExp, '/').replace('./',''));
+					ret.push(dirName.replace(pathSeparatorReplaceExp, '/').replace('./', ''));
 				}
 				let projDescFile = path.join(dirName, '/thing-project.json');
 				if(!fs.existsSync(projDescFile)) {
@@ -597,7 +606,7 @@ const enumLibs = (ret = [], dir = '.') => {
 //=============== create folder for file ==================
 function ensureDirectoryExistence(filePath) {
 	let dirname = path.dirname(filePath);
-	if (fs.existsSync(dirname)) {
+	if(fs.existsSync(dirname)) {
 		return true;
 	}
 	ensureDirectoryExistence(dirname);
@@ -626,9 +635,9 @@ function initWatchers() {
 
 	let watchFolders = new Set();
 	let foldersToWatch = getDataFolders();
-	
-	if (currentGameDesc.__externalTranslations) {
-		currentGameDesc.__externalTranslations.forEach((src) => foldersToWatch.push({type: 'i18n', isExternalTranslationFile: true, path: path.join(__dirname,`../${src}`)}));
+
+	if(currentGameDesc.__externalTranslations) {
+		currentGameDesc.__externalTranslations.forEach((src) => foldersToWatch.push({type: 'i18n', isExternalTranslationFile: true, path: path.join(__dirname, `../${src}`)}));
 	}
 
 	for(let w of watchers) {
@@ -637,9 +646,9 @@ function initWatchers() {
 
 	for(let assetsFolderData of foldersToWatch) {
 		let assetsFolder = assetsFolderData.type + '/';
-		
-		if(assetsFolderData.type === 'src/game-objects' || assetsFolderData.type ===  'src/scenes') {
-			assetsFolderData.path = assetsFolderData.path.replace(/src(\\|\/)(game-objects|scenes)$/ ,'src');
+
+		if(assetsFolderData.type === 'src/game-objects' || assetsFolderData.type === 'src/scenes') {
+			assetsFolderData.path = assetsFolderData.path.replace(/src(\\|\/)(game-objects|scenes)$/, 'src');
 			assetsFolder = 'src/';
 		}
 		if(!fs.existsSync(assetsFolderData.path) || watchFolders.has(assetsFolderData.path)) {
@@ -658,7 +667,7 @@ function initWatchers() {
 			continue;
 		}
 
-		let watcher = fs.watch(assetsFolderData.path, { recursive : true });
+		let watcher = fs.watch(assetsFolderData.path, {recursive: true});
 		watcher.path = assetsFolderData.path;
 		watchers.push(watcher);
 		watcher.on('error', () => {
@@ -666,7 +675,7 @@ function initWatchers() {
 		});
 		watcher.on('change', (eventType, filename) => {
 			if(filename && filterWatchFiles.test(filename)) {
-				
+
 				filename = filename.replace(pathSeparatorReplaceExp, '/');
 				// log('file changed event: ' + eventType + '; ' + filename);
 
@@ -689,7 +698,7 @@ function initWatchers() {
 				if(eventType === 'change' || eventType === 'rename') {
 					setTimeout(() => {
 						if(fs.existsSync(fullFileName)) {
-							try{
+							try {
 								let stats = fs.statSync(fullFileName);
 								if(stats.isFile() && stats.size > 0) {
 									let existingFileDesc;
@@ -714,7 +723,7 @@ function initWatchers() {
 										}
 									}
 								}
-							} catch (er) {
+							} catch(er) {
 								log("file change handler error: " + er); //for case if tmp file is not exist
 							}
 						} else {
@@ -762,14 +771,14 @@ function excludeAnotherProjectsFromCodeEditor() { // hides another projects from
 	if(editorArguments['no-vscode-integration']) {
 		return;
 	}
-	
+
 	let jsConfigFN = './jsconfig.json';
 	let vsSettingsFn = './.vscode/settings.json';
-	
+
 	let dirsToExclude = enumProjects().filter(g => g.dir !== currentGame).map(p => 'games/' + p.dir).concat(enumLibs([]).filter(isLibNotInProject));
 
 	if(fs.existsSync(jsConfigFN)) {
-		let jsConfig = JSON.parse(fs.readFileSync(jsConfigFN));
+		let jsConfig = readJOSNSync(jsConfigFN);
 		let oldJsExcludes = jsConfig.exclude;
 		let exclude = [];
 		jsConfig.exclude = exclude;
@@ -789,13 +798,13 @@ function excludeAnotherProjectsFromCodeEditor() { // hides another projects from
 	}
 
 	if(fs.existsSync(vsSettingsFn)) {
-		let config = JSON.parse(fs.readFileSync(vsSettingsFn));
+		let config = readJOSNSync(vsSettingsFn);
 		let oldExcludes = config['files.exclude'];
 		let exclude = {};
 		config['files.exclude'] = exclude;
 		if(oldExcludes) {
 			for(let k in oldExcludes) {
-				if(!isLibInProject(k.replace(/(^\*\*\/|\/\*\*$)/gm,''))) {
+				if(!isLibInProject(k.replace(/(^\*\*\/|\/\*\*$)/gm, ''))) {
 					exclude[k] = oldExcludes[k];
 				}
 			}
@@ -805,7 +814,7 @@ function excludeAnotherProjectsFromCodeEditor() { // hides another projects from
 		}
 		fs.writeFileSync(vsSettingsFn, JSON.stringify(config, undefined, '	'));
 	}
-	
+
 	jsConfigFN = '../' + jsConfigFN;
 	vsSettingsFn = '../' + vsSettingsFn;
 
@@ -820,7 +829,7 @@ function isLibInProject(libName) {
 		if(f.startsWith('.')) {
 			f = path.join('games', currentGame, f).replace(/\\/mg, '/');
 		}
-		return f.startsWith(libName);	
+		return f.startsWith(libName);
 	}) >= 0)) || (libName === ('games/' + currentGame));
 }
 
@@ -865,12 +874,12 @@ function absoluteImportsFixer(fileName, req, res, next) {
 	let needParse = req.path.endsWith('.js') && !req.path.endsWith('.min.js');
 	if(needParse) {
 		fs.readFile(fileName, function (err, content) {
-			if (err) {
+			if(err) {
 				console.error('JS PREPROCESSING ERROR: ' + err);
 				next(err);
 			} else {
 				res.set('Content-Type', 'application/javascript');
-				let resultJsContent = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2) => {					
+				let resultJsContent = content.toString().replace(moduleImportAbsFixer, (substr, m1, m2) => {
 					return m1 + "/" + m2;
 				});
 				resultJsContent = resultJsContent.replace(moduleEmptyImportAbsFixer, (substr, m1, m2) => {

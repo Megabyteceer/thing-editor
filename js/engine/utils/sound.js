@@ -108,7 +108,7 @@ export default class Sound {
 
 	static set soundEnabled(val) {
 		if(Sound.soundEnabled !== val) {
-			
+
 			if(val) {
 				Sound.soundsVol = normalizeVolForEnabling(game.settings.getItem('soundsVolEnabling'), game.projectDesc.defaultSoundsVol);
 			} else {
@@ -122,7 +122,7 @@ export default class Sound {
 	static toggleSounds() {
 		Sound.soundEnabled = !Sound.soundEnabled;
 	}
-	
+
 	static toggleFullSound() {
 		if(Sound.soundEnabled || Sound.musicEnabled) {
 			Sound.soundEnabled = false;
@@ -164,10 +164,10 @@ export default class Sound {
 		rate = rate * game.__speedMultiplier;
 		/// #endif
 		if(Sound.isSoundsLockedByBrowser || (!game.isFocused // eslint-disable-line no-constant-condition
-		/// #if EDITOR
+			/// #if EDITOR
 			&& false
-		/// #endif
-		&& game.projectDesc.muteOnFocusLost)) {
+			/// #endif
+			&& game.projectDesc.muteOnFocusLost)) {
 			return;
 		}
 		let s = Lib.getSound(soundId);
@@ -185,10 +185,10 @@ export default class Sound {
 		//*/
 
 		if(s.lastPlayStartFrame < game.time
-		/// #if EDITOR
-		|| game.__EDITOR_mode
-		
-		/// #endif
+			/// #if EDITOR
+			|| game.__EDITOR_mode
+
+			/// #endif
 		) {
 			if(!multiInstanced && s.playing()) {
 				s.stop();
@@ -212,7 +212,7 @@ export default class Sound {
 						s.soundIdSaved = s.play(s.soundIdSaved);
 					}
 					s.lastPlayStartFrame = game.time + 2;
-				} catch(er) {} // eslint-disable-line no-empty
+				} catch(er) { } // eslint-disable-line no-empty
 			}
 		}
 	}
@@ -221,7 +221,7 @@ export default class Sound {
 		let prevTime = pitchTimeouts[soundId];
 		let d = game.time - prevTime;
 		if(d < 2) {
-			return;	
+			return;
 		}
 
 		let pitch;
@@ -238,7 +238,7 @@ export default class Sound {
 	static checkSoundLockByBrowser() {
 		Sound.isSoundsLockedByBrowser = true;
 		game.additionalLoadingsInProgress++;
-		EMPTY_SOUND = new Howl({ src: 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV' });
+		EMPTY_SOUND = new Howl({src: 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV'});
 		const blockedHanlder = () => soundLockHandler(true);
 		const unblockedHanlder = () => soundLockHandler(false);
 		EMPTY_SOUND.once('playerror', blockedHanlder);
@@ -292,7 +292,7 @@ let pitches = {};
 let pitchTimeouts = {};
 
 let enablingSaveTimeout;
-function _rememberEnablings () {
+function _rememberEnablings() {
 	enablingSaveTimeout = null;
 	if(Sound.soundEnabled || Sound.musicEnabled) {
 		game.settings.setItem('soundEnabled', Sound.soundEnabled);
@@ -325,13 +325,13 @@ function hideSndDebugger() {
 }
 
 
-function openIndexedDB () {
-// This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
+function openIndexedDB() {
+	// This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
 	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
 
 	var openDB = indexedDB.open("MyDatabase", 1);
 
-	openDB.onupgradeneeded = function() {
+	openDB.onupgradeneeded = function () {
 		var db = {};
 		db.result = openDB.result;
 		db.store = db.result.createObjectStore("MyObjectStore", {keyPath: "id"});
@@ -340,7 +340,7 @@ function openIndexedDB () {
 	return openDB;
 }
 
-function getStoreIndexedDB (openDB) {
+function getStoreIndexedDB(openDB) {
 	var db = {};
 	db.result = openDB.result;
 	db.tx = db.result.transaction("MyObjectStore", "readwrite");
@@ -348,9 +348,9 @@ function getStoreIndexedDB (openDB) {
 	return db;
 }
 
-function saveIndexedDB (filename, filedata) {
+function saveIndexedDB(filename, filedata) {
 	var openDB = openIndexedDB();
-	openDB.onsuccess = function() {
+	openDB.onsuccess = function () {
 		var db = getStoreIndexedDB(openDB);
 
 		db.store.put({id: filename, data: filedata});
@@ -359,22 +359,22 @@ function saveIndexedDB (filename, filedata) {
 }
 
 
-function loadIndexedDB (filename, callback) {
+function loadIndexedDB(filename, callback) {
 	var openDB = openIndexedDB();
 
-	openDB.onsuccess = function() {
+	openDB.onsuccess = function () {
 		var db = getStoreIndexedDB(openDB);
 
 		var getData;
-		if (filename) {
+		if(filename) {
 			getData = db.store.get(filename);
-		
 
-			getData.onsuccess = function() {
+
+			getData.onsuccess = function () {
 				callback(getData.result && getData.result.data);
 			};
 
-			db.tx.oncomplete = function() {
+			db.tx.oncomplete = function () {
 				db.result.close();
 			};
 		}
@@ -392,11 +392,11 @@ function showSndDebugger() {
 
 	if(!sndDebugger) { // eslint-disable-line no-unreachable
 		sndDebugger = document.createElement('div');
-		sndDebugger.style.position="fixed";
-		sndDebugger.style.right="0";
-		sndDebugger.style.zIndex="10000";
-		sndDebugger.style.color="#ffffff";
-		sndDebugger.style.background="#000000";
+		sndDebugger.style.position = "fixed";
+		sndDebugger.style.right = "0";
+		sndDebugger.style.zIndex = "10000";
+		sndDebugger.style.color = "#ffffff";
+		sndDebugger.style.background = "#000000";
 		sndDebugger.style.padding = "5vh";
 		sndDebugger.style.margin = "5vh";
 		sndDebugger.style.maxHeight = "90vh";
@@ -414,10 +414,10 @@ function showSndDebugger() {
 			});
 		}
 	}
-	
+
 	sndDebuggerShowed = true; // eslint-disable-line no-unreachable
 	sndDebugger.style.display = 'block';
-	
+
 	let soundNames = {};
 
 	let txt = ['<table>'];
@@ -428,7 +428,7 @@ function showSndDebugger() {
 		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name">' + sndName + '</b></td><td><input value="Загрузить..." style="width:90px;" type="file" accept="audio/x-wav" class="snd-override"/></td><td>');
 		let overrideData = getOverrideData(sndName);
 		if(overrideData) {
-			txt.push(' ЗАГРУЖЕН (' + overrideData.name + ')</td><td><button class="snd-clear">х</button>');
+			txt.push(' ЗАГРУЖЕН (' + overrideData.name + ')</td><td><button class="snd-clear">x</button>');
 		} else {
 			txt.push('-</td><td>-');
 		}
@@ -447,21 +447,21 @@ function showSndDebugger() {
 			t = t.parentElement;
 		}
 	}
-	
+
 	for(let fileChooser of document.querySelectorAll('.snd-override')) {  // eslint-disable-line no-unreachable
 
-		fileChooser.addEventListener("change", function(ev) {
+		fileChooser.addEventListener("change", function (ev) {
 			var files = fileChooser.files;
 
 
 			var reader = new FileReader();
-			reader.readAsDataURL( files[0] );
-			reader.onloadend = function() {
+			reader.readAsDataURL(files[0]);
+			reader.onloadend = function () {
 				let sndName = sndNameByEvent(ev);
 				var a = new Audio(this.result);
 				a.play();
 				setTimeout(() => {
-					a.pause(); 
+					a.pause();
 				}, 2000);
 				Lib.__overrideSound(sndName, this.result);
 				setOverrideData(
