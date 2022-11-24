@@ -8,7 +8,7 @@ import DSprite from "./d-sprite.js";
 import Sound from "../utils/sound.js";
 import Lib from "../lib.js";
 
-let latestClickTime;
+let latestClickTime = 0;
 
 export default class Button extends DSprite {
 
@@ -132,6 +132,8 @@ export default class Button extends DSprite {
 		if(this.sndClick) {
 			Sound.play(this.sndClick);
 		}
+
+		latestClickTime = game.time;
 	}
 
 	onDown(ev, source = 'pointerdown') {
@@ -143,14 +145,13 @@ export default class Button extends DSprite {
 		) {
 			return;
 		}
-		latestClickTime = game.time;
 		if(ev) {
 			if(ev.data.buttons !== 1) {
 				return;
 			}
 			game._mouseHandlerGlobal(ev);
 		}
-		if(this.isCanBePressed) {
+		if(this.isCanBePressed && (Math.abs(latestClickTime - game.time) > 1)) {
 			if(Button.downedButton !== this) {
 				if(Button.downedButton) {
 					Button.downedButton.onUp();
@@ -199,7 +200,7 @@ export default class Button extends DSprite {
 			} else if(this.curDelay > 0) {
 				this.curDelay--;
 				if(this.curDelay === 0) {
-					if(this.isCanBePressed) {
+					if(this.isCanBePressed && (Math.abs(latestClickTime - game.time) > 1)) {
 						this._executeOnClick('autorepeat');
 					}
 					this.curDelay = this.repeatInterval
