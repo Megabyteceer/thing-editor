@@ -89,8 +89,18 @@ if(projectDesc.libs) {
 		}
 		if(fs.existsSync(libRootFolder)) {
 
-			alias[libName] = libRootFolder;
-			alias['/' + libName] = libRootFolder;
+			//alias 'aaa/bbb', 'aaa/bbb/ccc' libraries as 'aaa'
+			let libNameFolders = libName.split('/').filter(f => !f.startsWith('.'));
+			let cropFoldersCount = libNameFolders.length - 1;
+			let lr = libRootFolder;
+			let ln = libName;
+			while(cropFoldersCount > 0) {
+				lr = lr.replace(/[\/\|\\]\w+$/gm, '');
+				ln = ln.replace(/[\/\|\\]\w+$/gm, '');
+				cropFoldersCount--;
+			}
+			alias[ln] = lr;
+			alias['/' + ln] = lr;
 
 			if(fs.existsSync(path.join(libRootFolder, 'snd'))) {
 				addSoundsFolderToCopy(libRootFolder);
