@@ -678,6 +678,9 @@ function initWatchers() {
 
 				filename = filename.replace(pathSeparatorReplaceExp, '/');
 				// log('file changed event: ' + eventType + '; ' + filename);
+				if(filename.indexOf('/~') >= 0) {
+					return;
+				}
 
 				let fullFileName;
 				if(assetsFolderData.isExternalTranslationFile) {
