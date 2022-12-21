@@ -145,6 +145,18 @@ const buildPath = path.resolve(process.cwd(), isDebug ? 'debug' : 'release');
 
 (fs.rmSync || fs.rmdirSync)(buildPath, {force: true, recursive: true});
 
+let plugins = [
+	new webpack.DefinePlugin({
+		'process.env.NODE_ENV': JSON.stringify(mode)
+	})
+];
+
+if(copyFilesList.length) {
+	plugins.push(new CopyWebpackPlugin({
+		patterns: copyFilesList,
+	}));
+}
+
 const config = {
 	entry: {
 		bundle: bundleEntries
@@ -167,14 +179,7 @@ const config = {
 		maxAssetSize: 2000000,
 		maxEntrypointSize: 2000000
 	},
-	plugins: [
-		new webpack.DefinePlugin({
-			'process.env.NODE_ENV': JSON.stringify(mode)
-		}),
-		new CopyWebpackPlugin({
-			patterns: copyFilesList,
-		}),
-	],
+	plugins,
 	module: {
 		noParse: /webfontloader/,
 		rules: [{

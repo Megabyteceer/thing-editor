@@ -197,8 +197,8 @@ export default class Editor {
 				imagesSettings = this.fs.libsSettings.loadOnDemandTextures;
 			}
 
-			editor.projectDesc = this.fs.libsSettings ? Object.assign(this.fs.libsSettings, data) : data;
-
+			editor.projectDesc = this.fs.libsSettings ? Object.assign({}, this.fs.libsSettings, data) : data;
+			
 			if(folderSettings) {
 				this.fs.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, editor.projectDesc.__loadOnDemandTexturesFolders);
 			}
