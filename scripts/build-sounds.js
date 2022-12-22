@@ -80,34 +80,25 @@ module.exports = async function (projectPath, options) {
 			}
 		}
 	}
-	if(filesToConvert.length < 1) {
-		resolve(result);
-		return retPromise;
-	}
 
-	function convertNextFile() {
-		if(filesToConvert.length < 1 || result.errors) {
-			if(!result.errors) {
-				fs.writeFileSync(cacheFn, JSON.stringify(cache));
-			}
-			resolve(result);
-		} else {
-			let fn = filesToConvert.pop();
+	let promises = [];
 
-			let f = options.formats.slice(0);
-			const conv = () => {
-				if(f.length < 1) {
-					convertNextFile();
-				} else {
-					result.updated = true;
-					convertFile(fn, f.pop(), conv);
-				}
-			};
-			conv();
+	for(let fileName of filesToConvert) {
+		for(let format of options.formats) {
+			result.updated = true;
+			promises.push(new Promise((resolve) => {
+				convertFile(fileName, format, resolve);
+			}));
 		}
 	}
-
-	convertNextFile();
+	
+	Promise.all(promises).then(() => {
+		if(!result.errors && result.updated) {
+			fs.writeFileSync(cacheFn, JSON.stringify(cache));
+		}
+		resolve(result);
+		
+	});
 
 	function getBitrate(fn) {
 		let shortFilename = fn.replace(soundsPath, '');
