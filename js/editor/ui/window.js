@@ -249,7 +249,7 @@ class Window extends React.Component {
 
 		return R.div(
 			{
-				id: this.id, onMouseDown: this.onMouseDown, className: 'window-body', style: {
+				id: this.id, onMouseDownCapture: this.onMouseDown, className: 'window-body', style: {
 					left: this.state.x,
 					top: this.state.y,
 					width: this.state.w,
