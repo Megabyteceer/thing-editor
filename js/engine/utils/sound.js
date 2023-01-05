@@ -211,6 +211,12 @@ export default class Sound {
 						s.soundIdSaved = s.play(s.soundIdSaved);
 					}
 					s.lastPlayStartFrame = game.time + 2;
+					/// #if DEBUG
+					highlightPlayedSound(soundId);
+					/// #endif
+					/// #if EDITOR
+					editor.ui.soundsList.soundPlayProfile(soundId, volume, rate, seek, multiInstanced);
+					/// #endif
 				} catch(er) { } // eslint-disable-line no-empty
 			}
 		}
@@ -323,6 +329,15 @@ function hideSndDebugger() {
 	sndDebuggerShowed = false;
 }
 
+function highlightPlayedSound(soundId) {
+	if(sndDebuggerShowed) {
+		let soundTitle = document.querySelector('.sounds-debug-panel .snd-name-' + soundId);
+		soundTitle.classList.remove('animate-sound-play');
+		setTimeout(() => {
+			soundTitle.classList.add('animate-sound-play');
+		}, 5);
+	}
+}
 
 function openIndexedDB() {
 	// This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
@@ -389,6 +404,19 @@ function showSndDebugger() {
 	return;
 	/// #endif
 
+	// sounds playing animation
+	document.head.insertAdjacentHTML("beforeend", `<style>
+	.animate-sound-play {
+		animation: color-change 5s infinite;
+	  }
+	  
+	  @keyframes color-change {
+		0% { color: white; }
+		1% { color: green; }
+		100% { color: white; }
+	  }
+	   </style>`);
+
 	if(!sndDebugger) { // eslint-disable-line no-unreachable
 		sndDebugger = document.createElement('div');
 		sndDebugger.style.position = "fixed";
@@ -419,12 +447,12 @@ function showSndDebugger() {
 
 	let soundNames = {};
 
-	let txt = ['<table>'];
+	let txt = ['<table class="sounds-debug-panel">'];
 	let i = 0;
 	let libSounds = Lib.__getSoundsData();
 	for(let sndName in libSounds) {
 		soundNames[i] = sndName;
-		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name">' + sndName + '</b></td><td><input value="Загрузить..." style="width:90px;" type="file" accept="audio/x-wav" class="snd-override"/></td><td>');
+		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName + '</b></td><td><input value="Загрузить..." style="width:90px;" type="file" accept="audio/x-wav" class="snd-override"/></td><td>');
 		let overrideData = getOverrideData(sndName);
 		if(overrideData) {
 			txt.push(' ЗАГРУЖЕН (' + overrideData.name + ')</td><td><button class="snd-clear">x</button>');

@@ -172,12 +172,49 @@ export default class SoundsList extends React.Component {
 			Sound.__stop();
 		}
 		if(needPlay) {
+			ignoreSoundProfile++;
 			Sound.play(name, volume);
+			ignoreSoundProfile--;
 		}
 	}
 
 	onStopAllClick() {
 		Sound.__stop();
+	}
+
+	soundPlayProfile(soundId, volume) {
+		if(ignoreSoundProfile) {
+			return;
+		}
+		let sound = Lib.getSound(soundId);
+		let durationFrames = Math.round(sound.duration() * 60);
+
+		let colors = soundsProfilerColorsCache[soundId];
+		if(!colors) {
+			let hash = 0;
+			for(let i = 0; i < soundId.length; i++) {
+				hash += soundId.charCodeAt(i);
+			}
+			colors = PROFILER_COLORS[hash % PROFILER_COLORS.length];
+			soundsProfilerColorsCache[soundId] = colors;
+		}
+		
+		
+		soundsProfilerArray.push({
+			soundId,
+			stack: editor.__getCurrentStack(soundId),
+			title: soundId + ' Vol: ' + volume,
+			sound,
+			durationFrames,
+			startFrame: game.time,
+			y: soundsProfilerLane,
+			background: colors.background,
+			borderColor: colors.borderColor
+		});
+		soundsProfilerLane += 18;
+		if(soundsProfilerLane >= 61) {
+			soundsProfilerLane -= 60;
+		}
 	}
 
 	renderItem(sndName, item) {
@@ -270,7 +307,38 @@ const getSndPriority = (s) => {
 
 const profilerWrapperProps = {className: 'music-profiler-wrapper'};
 const profilerProps = {className: 'music-profiler'};
-const activeSoundProps = {style: {fontWeight: 'bold'}};
+const PROFILER_COLORS = [
+	{
+		background: '#ffeacf',
+		borderColor: '#ffbea2'
+	},
+	{
+		background: '#ffcfea',
+		borderColor: '#ffa2be'
+	},
+	{
+		background: '#cfffea',
+		borderColor: '#a2ffbe'
+	},
+	{
+		background: '#eacfff',
+		borderColor: '#bea2ff'
+	},
+	{
+		background: '#eaffcf',
+		borderColor: '#beffa2'
+	},
+	{
+		background: '#cfeaff',
+		borderColor: '#a2beff'
+	}
+];
+
+
+let soundsProfilerColorsCache = {};
+let soundsProfilerArray = [];
+let soundsProfilerLane = 0;
+let ignoreSoundProfile = 0;
 
 class MusicProfiler extends React.Component {
 
@@ -283,7 +351,7 @@ class MusicProfiler extends React.Component {
 	componentDidMount() {
 		this.interval = setInterval(() => {
 			this.forceUpdate();
-		}, 20);
+		}, 1000/60);
 	}
 
 	componentWillUnmount() {
@@ -296,19 +364,21 @@ class MusicProfiler extends React.Component {
 
 	renderMusicItem(m, i) {
 		let state;
-		let playing;
 		if(m.__currentFragment) {
 			if(!m.__currentFragment.playing()) {
 				state = R.div({className: 'danger'}, 'ref to not playing fragment');
 			} else {
-				playing = true;
 				state = R.div({className: 'sound-vol-bar-bg'},
-					R.div({className: 'sound-vol-bar', style: {width: m.__getVolume() * 100}})
+					R.div({className: 'sound-vol-bar', title: "Volume: " + m.__getVolume(), style: {width: m.__getVolume() * 100}})
 				);
 			}
+		} else {
+			state = state = R.div({className: 'sound-vol-bar-bg'},
+				"stopped"
+			);
 		}
 		return R.div({
-			className: 'clickable', key: i, onClick: () => {
+			className: 'clickable music-profiler-row', key: i, onClick: () => {
 				if(m.getRootContainer() === game.currentContainer) {
 					editor.ui.sceneTree.selectInTree(m);
 				} else {
@@ -325,20 +395,37 @@ class MusicProfiler extends React.Component {
 					);
 				}
 			}
-		}, R.span((playing && !m.__isLoopPos) ? activeSoundProps : null, m.intro), ' : ', R.span((playing && m.__isLoopPos) ? activeSoundProps : null, m.loop), state
+		}, R.span({className: 'music-profiler-row-text', title: "Intro sound: " + (m.intro || "NONE")}, m.intro), R.span({className: 'music-profiler-row-text', title: "Loop sound: " + (m.loop || "NONE")}, m.loop), state
 		);
 	}
 
 	render() {
-		let list;
+		
+		let soundsLanes = [];
+		soundsProfilerArray = soundsProfilerArray.filter(i => (i.startFrame + i.durationFrames) > (game.time - 200) && (i.startFrame <= game.time));
+
+		for(let soundEntry of soundsProfilerArray) {
+			soundsLanes.push(R.div({onClick: () => {
+				soundEntry.sound.lastPlayStartFrame = -1000;
+				ignoreSoundProfile++;
+				Sound.play(soundEntry.soundId);
+				ignoreSoundProfile--;
+				editor.showStack(soundEntry.stack);
+			}, className: 'sound-profiler-sound-entry clickable', title: soundEntry.title, style:{background: soundEntry.background, borderColor: soundEntry.borderColor, top: soundEntry.y, right: (game.time - soundEntry.startFrame - soundEntry.durationFrames) * 2 - 10, width: soundEntry.durationFrames * 2}}, soundEntry.soundId));
+		}
+		
+		
+		
+		let bgMusicsList;
+		let profilerBody;
 		let className;
 		if(this.state.toggled) {
 			if(game.__EDITOR_mode) {
-				list = 'Start game execution to profile music.';
+				bgMusicsList = 'Start game execution to profile sounds.';
 			} else {
-				list = BgMusic.__allActiveMusics.map(this.renderMusicItem);
+				bgMusicsList = BgMusic.__allActiveMusics.map(this.renderMusicItem);
 			}
-			list = R.div(profilerProps, list);
+			profilerBody = R.div(profilerProps, bgMusicsList, R.div({className: 'sound-profiler-lane'}, soundsLanes));
 		} else {
 			for(let m of BgMusic.__allActiveMusics) {
 				if(m.__currentFragment) {
@@ -350,7 +437,7 @@ class MusicProfiler extends React.Component {
 		}
 		return R.span(profilerWrapperProps,
 			R.btn('profiler', this.onToggle, undefined, className),
-			list
+			profilerBody
 		);
 	}
 
