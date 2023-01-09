@@ -102,22 +102,18 @@ export default class Fill extends PIXI.Mesh {
 	update() {
 		if(this.xShiftSpeed !== 0) {
 			this.xShift += this.xShiftSpeed;
-			if(game.isCanvasMode) {
-				if(this._xShift > 2) {
-					this._xShift -= 2;
-				} else if(this._xShift < -2) {
-					this._xShift += 2;
-				}
+			if(this._xShift > 2) {
+				this._xShift -= 2;
+			} else if(this._xShift < -2) {
+				this._xShift += 2;
 			}
 		}
 		if(this.yShiftSpeed !== 0) {
 			this.yShift += this.yShiftSpeed;
-			if(game.isCanvasMode) {
-				if(this._yShift > 2) {
-					this._yShift -= 2;
-				} else if(this._yShift < -2) {
-					this._yShift += 2;
-				}
+			if(this._yShift > 2) {
+				this._yShift -= 2;
+			} else if(this._yShift < -2) {
+				this._yShift += 2;
 			}
 		}
 
