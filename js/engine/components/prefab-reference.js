@@ -96,11 +96,43 @@ export default class PrefabReference extends Container {
 	__beforeDeserialization() {
 		this.__exitPreview();
 		this.__canApplyPreview = false;
+
+		//cleanup visible editable properties from target prefab
+		if(this.___appliedEditableFields) {
+			let fields = this.___appliedEditableFields;
+			for(let f of fields) {
+				if(f.showInPrefabReference) {
+					delete this[f.name];
+				}
+			}
+		}
 	}
 
 	__afterDeserialization() {
 		this.__canApplyPreview = true;
 		this.__refreshPreview();
+
+		//get visible editable properties from target prefab
+		let prefab = Lib.prefabs[this.prefabName];
+		if(prefab) {
+			let props = prefab.p;
+			let fields = this.__EDITOR_propsListCache;
+			this.___appliedEditableFields = fields;
+			for(let f of fields) {
+				if(f.showInPrefabReference && (typeof this[f.name] === 'undefined')) {
+					if(props.hasOwnProperty(f.name)) {
+						this[f.name] = props[f.name];
+					} else if(f.hasOwnProperty('default')) {
+						this[f.name] = f.default;
+					} else {
+						let defaults = editor.ClassesLoader.classesDefaultsById[prefab.c];
+						if(defaults.hasOwnProperty(f.name)) {
+							this[f.name] = defaults[f.name];
+						}
+					}
+				}
+			}
+		}
 	}
 
 	__EDITOR_onCreate() {
@@ -144,10 +176,57 @@ export default class PrefabReference extends Container {
 			r.__refreshPreview();
 		}
 	}
+
+	set __EDITOR_propsListCache(a) {
+		this.constructor.prototype.___EDITOR_propsListCachePrefabReferences = a;
+	}
+
+	get __EDITOR_propsListCache() {
+		let prefab = Lib.prefabs[this.prefabName];
+		if(prefab) {
+			let c = game.classes[prefab.c];
+			if(c) {
+				if(!c.prototype.___EDITOR_propsListCacheForPrefabReference) {
+					let a = this.constructor.prototype.___EDITOR_propsListCachePrefabReferences.slice();
+					let separator;
+					let classFields = c.prototype.__EDITOR_propsListCache;
+					for(let f of classFields) {
+						if(f.type === "splitter") {
+							separator = f;
+						} else if(f.showInPrefabReference) {
+							if(separator) {
+								a.push(separator);
+								separator = null;
+							}
+							a.push(f);
+						}
+					}
+					c.prototype.___EDITOR_propsListCacheForPrefabReference = a;
+				}
+				return c.prototype.___EDITOR_propsListCacheForPrefabReference;
+			}
+		}
+		return this.constructor.prototype.___EDITOR_propsListCachePrefabReferences;
+	}
+
+	__afterSerialization(data) {
+		//remove properties equal with target prefab
+		let prefab = Lib.prefabs[this.prefabName];
+		if(prefab) {
+			let props = prefab.p;
+			for(let n in props) {
+				if(props[n] === data[n]) {
+					delete data[n];
+				}
+			}
+		}
+	}
+
 	/// #endif
 }
 
 /// #if EDITOR
+
 PrefabReference.__EDITOR_group = 'Basic';
 __EDITOR_editableProps(PrefabReference, [
 	{

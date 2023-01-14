@@ -82,6 +82,8 @@ interface EditableFieldDescription{
 	maxY?: number,
 	/** 'rect' rotates with it owner object */
 	rotable?: boolean,
+	/** property is visible in prefab reference */
+	showInPrefabReference?: boolean,
 	/** 'rect' is not scales with it owner object */
 	notScalable?: boolean,
 	/** set this property to true if you want to override existing field with the same name. Otherwise field with the same name will be treated as an error.*/

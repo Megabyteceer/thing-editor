@@ -829,7 +829,7 @@ export default class Editor {
 	 * enumerate all editable properties of given DisplayObject.
 	 */
 	enumObjectsProperties(o) {
-		return o.constructor.__EDITOR_propsListCache;
+		return o.__EDITOR_propsListCache;
 	}
 
 	showStack(stack) {
