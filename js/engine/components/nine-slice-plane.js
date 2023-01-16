@@ -56,6 +56,15 @@ __EDITOR_editableProps(NineSlicePlane, [
 		type: Number,
 		noNullCheck: true,
 		default: 5
+	},
+	{
+		name: 'CENTRALIZE PIVOT',
+		override: true,
+		type: 'btn',
+		onClick: (o) => {
+			editor.onObjectsPropertyChanged(o, 'pivot.x', Math.round(o.width / 2));
+			editor.onObjectsPropertyChanged(o, 'pivot.y', Math.round(o.height / 2));
+		}
 	}
 ]);
 
