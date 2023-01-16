@@ -160,7 +160,7 @@ export default class Button extends DSprite {
 					this.image = this.pressImage;
 				} else {
 					this.scale.x =
-						this.scale.y = this.initialScale * (this.isOvered ? 1 : 0.9);
+						this.scale.y = this.initialScale * ((this.isOvered && !this.hoverImage) ? 1 : 0.9);
 				}
 				Button.downedButton = this;
 				this.curDelay = this.repeatDelay
@@ -223,7 +223,7 @@ export default class Button extends DSprite {
 					}
 				} else {
 					this.scale.x =
-						this.scale.y = this.initialScale * (this.isOvered ? 1.05 : 1);
+						this.scale.y = this.initialScale * ((this.isOvered && !this.hoverImage) ? 1.05 : 1);
 				}
 			}
 			Button.downedButton = null;
