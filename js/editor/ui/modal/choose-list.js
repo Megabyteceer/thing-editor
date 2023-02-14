@@ -30,7 +30,7 @@ export default class ChooseList extends React.Component {
 	}
 
 	onKeyDown(ev) {
-		if((ev.keyCode === 13) && (this.list.leading === 1)) {
+		if((ev.keyCode === 13) && (this.list.length >= 1)) {
 			editor.ui.modal.hideModal(this.list[0]);
 		}
 	}
