@@ -711,7 +711,7 @@ function initWatchers() {
 											i = lastFilesEnum[i];
 											if(Array.isArray(i)) {
 												existingFileDesc = i.find((a) => {
-													return normalizedName.endsWith(a.name);
+													return (assetsFolderData.lib === a.lib) && normalizedName.endsWith(a.name);
 												});
 												if(existingFileDesc) {
 													break;
