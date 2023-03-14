@@ -149,13 +149,11 @@ class SelectEditor extends React.Component {
 			let a = list;
 			if(this.props.field) {
 				if(this.state.filter) {
-					let flt = this.state.filter.toLocaleLowerCase();
 					a = a.filter((i) => {
-						return i === this.selectedItem || _searchByRegexpOrText(i.name, flt) || (i.name === "EMPTY") || !i.value;
+						return i === this.selectedItem || _searchByRegexpOrText(i.name, this.state.filter) || (i.name === "EMPTY") || !i.value;
 					});
 				}
 				a = a.slice(0, 20);
-
 			}
 
 			filterInput = R.input({

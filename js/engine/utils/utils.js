@@ -14,6 +14,7 @@ window.assert = (expression, message, errorCode) => {
 		} else {
 			alert(message);
 		}
+		debugger;
 		/*
 		/// #endif
 		alert(message);

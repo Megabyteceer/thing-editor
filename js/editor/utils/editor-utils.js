@@ -467,12 +467,23 @@ window.makeImageSelectEditablePropertyDescriptor = (name, canBeEmpty, important,
 	};
 };
 
+let lastSearchQuery;
+let lastSearchRegExp;
+
 function _searchByRegexpOrText(source, query) {
 	if(!query) return true;
 	try {
-		return source.search(query) >= 0;
+		let regExp;
+		if(lastSearchQuery === query) {
+			regExp = lastSearchRegExp;
+		} else {
+			regExp = new RegExp(query, 'i');
+			lastSearchQuery = query;
+			lastSearchRegExp = regExp;
+		}
+		return source.search(regExp) >= 0;
 	} catch(er) {
-		return source.indexOf(query) >= 0;
+		return source.toLowerCase().indexOf(query.toLowerCase()) >= 0;
 	}
 }
 
