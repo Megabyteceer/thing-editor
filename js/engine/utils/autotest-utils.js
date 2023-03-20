@@ -3,6 +3,7 @@ import Button from "../components/button.js";
 import ws from "thing-editor/js/editor/utils/socket.js";
 import game from "../game.js";
 import SceneLinkedPromise from "../components/scene-linked-promise.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let timeoutHandler;
 let testsStoppedByUser;

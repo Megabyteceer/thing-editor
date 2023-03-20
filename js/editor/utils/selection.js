@@ -4,6 +4,7 @@ import TreeNode from "../ui/tree-view/tree-node.js";
 import Overlay from "./overlay.js";
 import PrefabReference from "thing-editor/js/engine/components/prefab-reference.js";
 import PrefabsList from "../ui/prefabs-list.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let IS_SELECTION_LOADING_TIME = false;
 

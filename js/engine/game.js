@@ -9,6 +9,7 @@ import PrefabsList from 'thing-editor/js/editor/ui/prefabs-list.js';
 import ScenesList from 'thing-editor/js/editor/ui/scenes-list.js';
 /// #endif
 /// #if DEBUG
+import assert from "thing-editor/js/engine/utils/assert.js";
 import MusicFragment from './utils/music-fragment.js';
 /// #endif
 

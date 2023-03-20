@@ -3,6 +3,7 @@ import Lib from "thing-editor/js/engine/lib.js";
 import Sound from "thing-editor/js/engine/utils/sound.js";
 import BgMusic from "thing-editor/js/engine/components/bg-music.js";
 import TexturesView from "../ui/textures-view.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const AssetsLoader = {};
 

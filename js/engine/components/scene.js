@@ -1,6 +1,7 @@
 import DisplayObject from "./display-object.js";
 import Container from "./container.js";
 import game from "../game.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 export default class Scene extends Container {
 	constructor() {

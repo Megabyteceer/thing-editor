@@ -3,6 +3,7 @@ import Container from "./container.js";
 import Sprite from "./sprite.js";
 import game from "../game.js";
 import Lib from "../lib.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const tmpPoint = new PIXI.Point();
 

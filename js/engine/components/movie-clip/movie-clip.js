@@ -7,10 +7,9 @@ const ICON_SOUND = R.img({src: '/thing-editor/img/timeline/sound.png'});
 const ICON_REMOVE = R.img({src: '/thing-editor/img/timeline/remove.png'});
 const ICON_DEFAULT = R.img({src: '/thing-editor/img/timeline/default.png'});
 import Timeline from "/thing-editor/js/editor/ui/props-editor/timeline/timeline.js";
-
 /// #endif
 
-
+import assert from "thing-editor/js/engine/utils/assert.js";
 import DSprite from '../d-sprite.js';
 import Pool from "../../utils/pool.js";
 import FieldPlayer from "./field-player.js";

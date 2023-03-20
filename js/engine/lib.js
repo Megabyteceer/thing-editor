@@ -1,6 +1,6 @@
 /// <reference path="../../index.d.ts" />
 
-
+import assert from "thing-editor/js/engine/utils/assert.js";
 import Pool from "./utils/pool.js";
 import Scene from "./components/scene.js";
 import DisplayObject from "./components/display-object.js";

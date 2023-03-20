@@ -19,6 +19,7 @@
 	});
 
 */
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 import Container from "./container.js";
 import Pool from "../utils/pool.js";

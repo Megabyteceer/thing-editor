@@ -14,6 +14,8 @@ import SoundsList from './sounds-list.js';
 import TexturesView from './textures-view.js';
 import Help from '../utils/help.js';
 import ProjectsList from "./projects-list.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 
 /**
  *

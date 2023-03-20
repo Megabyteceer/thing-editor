@@ -1,6 +1,7 @@
 import L from "thing-editor/js/engine/utils/l.js";
 import game from "../game.js";
 import getValueByPath from "thing-editor/js/engine/utils/get-value-by-path.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const CENTER = 'center';
 const LEFT = 'left';

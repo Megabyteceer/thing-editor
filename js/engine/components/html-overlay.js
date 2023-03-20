@@ -1,6 +1,7 @@
 import ScrollLayer from "./scroll-layer.js";
 import {stepTo} from "../utils/utils.js";
 import game from "../game.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let _canvasBoundsCache = null;
 let canvasScale = 1;

@@ -2,6 +2,7 @@ import game from "../game.js";
 import Lib from "../lib.js";
 import BgMusic from "../components/bg-music.js";
 import MusicFragment from "./music-fragment.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const MIN_VOL_THRESHOLD = 0.005;
 const MIN_VOL_ENABLE = 0.05;

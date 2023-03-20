@@ -1,4 +1,6 @@
 import Group from "../group.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 let listProps = {className: 'list-view'};
 let listHeaderProps = {className: 'choose-list-header'};
 let bodyProps = {className: 'resizable-dialog left-align-text'};

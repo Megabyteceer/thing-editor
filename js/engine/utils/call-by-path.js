@@ -1,3 +1,5 @@
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 import {pathDebugging, setValueByPath} from "./get-value-by-path.js";
 import game from "../game.js";
 

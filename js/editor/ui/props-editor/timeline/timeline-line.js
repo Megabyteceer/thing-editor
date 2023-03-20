@@ -1,6 +1,7 @@
 import TimelineKeyframe from "./timeline-keyframe.js";
 import TimelineLoopPoint from "./timeline-loop-point.js";
 import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let _scale, _shift;
 const scale = (val) => {

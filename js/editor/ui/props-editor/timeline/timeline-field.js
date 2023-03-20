@@ -2,6 +2,7 @@ import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.j
 import Timeline from "./timeline.js";
 import Line from "./timeline-line.js";
 import TimelilneFieldControls from "./timeline-field-controls.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 export default class FieldsTimeline extends React.Component {
 

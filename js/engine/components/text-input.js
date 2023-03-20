@@ -1,6 +1,7 @@
 import Lib from "../lib.js";
 import game from "../game.js";
 import callByPath from "../utils/call-by-path.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 export default class TextInput extends PIXI.Text {
 

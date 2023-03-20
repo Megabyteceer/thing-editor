@@ -2,6 +2,7 @@ import Text from "./text.js";
 import Lib from "../lib.js";
 import game from "../game.js";
 import getValueByPath from "../utils/get-value-by-path.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 export default class FlyText extends Text {
 

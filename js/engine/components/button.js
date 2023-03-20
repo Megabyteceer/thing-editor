@@ -2,6 +2,7 @@
 import getValueByPath from "../utils/get-value-by-path.js";
 /// #endif
 
+import assert from "thing-editor/js/engine/utils/assert.js";
 import game from "../game.js";
 import callByPath from "../utils/call-by-path.js";
 import DSprite from "./d-sprite.js";

@@ -1,3 +1,5 @@
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 import Lib from "../lib.js";
 
 const Sprite = PIXI.Sprite;

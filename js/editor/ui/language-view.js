@@ -2,6 +2,7 @@ import Window from './window.js';
 import L from "thing-editor/js/engine/utils/l.js";
 import Group from './group.js';
 import SelectEditor from './props-editor/select-editor.js';
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let languagesMerged;
 let langsIdsList;

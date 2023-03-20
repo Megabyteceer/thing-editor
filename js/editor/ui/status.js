@@ -3,6 +3,7 @@ import game from "thing-editor/js/engine/game.js";
 import Group from "./group.js";
 import DisplayObject from "thing-editor/js/engine/components/display-object.js";
 import Help from "../utils/help.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');

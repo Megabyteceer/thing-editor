@@ -1,3 +1,5 @@
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 const GROUP_ID_CHECKER = /[^0-9a-zA-Z_\-]/gm;
 
 function renderGroup(props) {

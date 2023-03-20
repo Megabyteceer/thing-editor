@@ -7,6 +7,7 @@ import Scene from 'thing-editor/js/engine/components/scene.js';
 import DataPathFixer from 'thing-editor/js/editor/utils/data-path-fixer.js';
 import Overlay from 'thing-editor/js/editor/utils/overlay.js';
 import Timeline from "../props-editor/timeline/timeline.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let classViewProps = {className: 'vertical-layout'};
 let leftPanelProps = {className: 'left-panel'};

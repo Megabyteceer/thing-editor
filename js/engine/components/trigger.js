@@ -2,6 +2,7 @@ import Container from './container.js';
 import getValueByPath from "../utils/get-value-by-path.js";
 import callByPath from '../utils/call-by-path.js';
 import game from '../game.js';
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 export default class Trigger extends Container {
 
