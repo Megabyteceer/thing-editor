@@ -1,7 +1,7 @@
 import game from "../game.js";
 
 /// #if DEBUG
-window.assert = (expression, message, errorCode) => {
+const assert = (expression, message, errorCode) => {
 	message = 'Assert: ' + message;
 	if(!expression) {
 		/// #if EDITOR
@@ -23,6 +23,7 @@ window.assert = (expression, message, errorCode) => {
 		throw message;
 	}
 };
+window.assert = assert;
 
 if(document.cookie.indexOf('isThingEditor') >= 0) { //enable proxy if game launched on local editor host only
 	let originalFetch = window.fetch;
