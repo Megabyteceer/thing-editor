@@ -41,6 +41,7 @@ import MultilineText from 'thing-editor/js/engine/components/multiline-text.js';
 import StaticTrigger from 'thing-editor/js/engine/components/static-trigger.js';
 import BitmapText from 'thing-editor/js/engine/components/bitmap-text.js';
 import fs from "./fs.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let attachedScript;
 

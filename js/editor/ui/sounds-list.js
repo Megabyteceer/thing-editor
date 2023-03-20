@@ -5,6 +5,7 @@ import BgMusic from "thing-editor/js/engine/components/bg-music.js";
 import game from "thing-editor/js/engine/game.js";
 import SelectEditor from "./props-editor/select-editor.js";
 import MusicFragment from "thing-editor/js/engine/utils/music-fragment.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let sounds = {};
 

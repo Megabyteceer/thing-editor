@@ -4,6 +4,8 @@ import Window from '../window.js';
 import Scene from "thing-editor/js/engine/components/scene.js";
 import Lib from "thing-editor/js/engine/lib.js";
 import game from "thing-editor/js/engine/game.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 
 let editorProps = {
 	className: 'props-editor'

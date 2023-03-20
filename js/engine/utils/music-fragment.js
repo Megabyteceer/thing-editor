@@ -1,6 +1,7 @@
 import {stepTo} from "../utils/utils.js";
 import Lib from "../lib.js";
 import game from "../game.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01
 

@@ -11,7 +11,7 @@ import TilemapEditor from "./tilemap-editor.js";
 import RectangleEditor from './rect-editor.js';
 import RefFieldEditor from './ref-field-editor.js';
 import {PowDampPresetEditor} from './pow-damp-preset-selector.js';
-
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let typeDescriptions = new Map();
 

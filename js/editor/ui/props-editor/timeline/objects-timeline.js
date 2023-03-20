@@ -3,6 +3,7 @@ import Timeline from "./timeline.js";
 import TimeLabel from "./timeline-label.js";
 import Line from "./timeline-line.js";
 import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const objectsTimelineProps = {className: 'objects-timeline'};
 

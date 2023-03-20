@@ -21,7 +21,7 @@ Usage:
 	You can see all currently scheduled delays in scene's tree in editor. Аlso you can see it`s 'delay' editable property and edit it due debugging purposes.
 */
 
-
+import assert from "thing-editor/js/engine/utils/assert.js";
 import Container from "./container.js";
 import Pool from "../utils/pool.js";
 import game from "../game.js";

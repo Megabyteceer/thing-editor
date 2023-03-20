@@ -3,6 +3,8 @@ import game from "thing-editor/js/engine/game.js";
 import Scene from "thing-editor/js/engine/components/scene.js";
 import Signal from "./signal.js";
 import Pool from "../../engine/utils/pool.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 
 const HISTORY_LEN = 100;
 const STRICT_HISTORY_LEN = 20;

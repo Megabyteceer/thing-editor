@@ -4,6 +4,7 @@ import Lib from "thing-editor/js/engine/lib.js";
 import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
 import DisplayObject from "thing-editor/js/engine/components/display-object.js";
 import Timeline from "../ui/props-editor/timeline/timeline.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 export default class DataPathFixer {
 

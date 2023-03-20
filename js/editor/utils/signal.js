@@ -1,3 +1,5 @@
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 export default class Signal {
 	constructor() {
 		this._listeners = [];

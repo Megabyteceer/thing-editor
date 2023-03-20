@@ -1,3 +1,4 @@
+import assert from "thing-editor/js/engine/utils/assert.js";
 import MovieClip from "thing-editor/js/engine/components/movie-clip/movie-clip.js";
 import ObjectsTimeline from "./objects-timeline.js";
 import TimeMarker from "./time-marker.js";
@@ -10,7 +11,6 @@ import TimelineLoopPoint from "./timeline-loop-point.js";
 import TimelineSelectFrame from "./timeline-select-frame.js";
 import Lib from "thing-editor/js/engine/lib.js";
 import Window from "../../window.js";
-
 
 let widthZoom;
 let heightZoom;

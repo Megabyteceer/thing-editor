@@ -1,3 +1,5 @@
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 let pools = new Map();
 /// #if EDITOR
 let __idCounter = 1;

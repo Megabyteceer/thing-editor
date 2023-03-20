@@ -1,4 +1,5 @@
 import SceneLinkedPromise from "./scene-linked-promise.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 /// #if DEBUG
 const formats = [

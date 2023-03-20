@@ -6,6 +6,7 @@ import Text from './text.js';
 import Lib from "../lib.js";
 import game from "../game.js";
 import Container from './container.js';
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 export default class NumberInput extends Container {
 

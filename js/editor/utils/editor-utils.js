@@ -1,27 +1,10 @@
-/// #if EDITOR
 import Tip from "./tip.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
-const assert = (expression, message, errorCode) => {
-	message = 'Assert: ' + message;
-	if(!expression) {
-
-		if(window.editor) {
-			editor.ui.modal.showError(message, errorCode);
-
-			if(editor.game && editor.game.__EDITOR_mode) {
-				editor.saveBackup();
-			}
-		} else {
-			alert(message);
-		}
-		debugger;
-		throw message;
-	}
-};
-
+/// #if EDITOR
 /*
 /// #endif
-throw 'Editor time sources was accidentally imported in to final game build. Please wrap with "#if EDITOR" tags all thing-editor imports, which start not with "thing-editor/js/engine/". More: https://github.com/Megabyteceer/thing-editor/wiki/Custom-Components#tags';
+throw new Error('Editor time sources was accidentally imported in to final game build. Please wrap with "#if EDITOR" tags all thing-editor imports, which start not with "thing-editor/js/engine/". More: https://github.com/Megabyteceer/thing-editor/wiki/Custom-Components#tags');
 //*/
 
 let factories = {};

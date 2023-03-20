@@ -1,3 +1,5 @@
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 import game from "../game.js";
 import DisplayObject from "../components/display-object.js";
 import {stringToCallData} from "./call-by-path.js";

@@ -5,6 +5,7 @@ import Container from "./container.js";
 import callByPath from "../utils/call-by-path.js";
 import getValueByPath from "../utils/get-value-by-path.js";
 import MusicFragment from "../utils/music-fragment.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01
 

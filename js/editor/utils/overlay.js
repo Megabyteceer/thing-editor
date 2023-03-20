@@ -2,6 +2,8 @@ import Selection from "./selection.js";
 import Pool from "thing-editor/js/engine/utils/pool.js";
 import DSprite from "thing-editor/js/engine/components/d-sprite.js";
 import game from "thing-editor/js/engine/game.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 
 let blackouts = [];
 let previewBlackout;

@@ -4,6 +4,7 @@ import L from "../utils/l.js";
 import Text from "./text.js";
 import game from "../game.js";
 import {stepTo} from '../utils/utils.js';
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 function formatMoney(num, c = 0) {
 	assert(typeof num === 'number', "Numeric value expected, but got '" + typeof num + "'", 10012);

@@ -2,6 +2,7 @@ import "../../engine/lib.js";
 import PrefabsList from "../ui/prefabs-list.js";
 import ScenesList from "../ui/scenes-list.js";
 import AssetsLoader from "./assets-loader.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let libsByFileName = {};
 

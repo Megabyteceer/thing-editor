@@ -30,6 +30,7 @@ import OrientationTrigger from '../engine/components/orientation-trigger.js';
 import callByPath from '../engine/utils/call-by-path.js';
 import Pool from "../engine/utils/pool.js";
 import ProjectsList from "./ui/projects-list.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 let isFirstClassesLoading = true;
 

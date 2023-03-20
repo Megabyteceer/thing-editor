@@ -4,6 +4,7 @@ import Lib from "thing-editor/js/engine/lib.js";
 import SelectEditor from "thing-editor/js/editor/ui/props-editor/select-editor.js";
 import NumberEditor from "thing-editor/js/editor/ui/props-editor/number-editor.js";
 import game from "thing-editor/js/engine/game.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 export default class tilemapEditorRenderer extends React.Component {
 

@@ -3,6 +3,8 @@
 // usage  L('TEXT_ID', val); //val - will replace '%d' entry in result string. Useful fo localised templates.
 // usage  L('TEXT_ID', val, val2); //val - will replace '%d' entry in result string, val2 will replace '%s'. Useful fo localised templates.
 
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 /// #if EDITOR
 import LanguageView from "thing-editor/js/editor/ui/language-view.js";
 /// #endif

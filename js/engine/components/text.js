@@ -1,6 +1,7 @@
 import L from "../utils/l.js";
 import game from "../game.js";
 import getValueByPath from "thing-editor/js/engine/utils/get-value-by-path.js";
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 const Text = PIXI.Text;
 export default Text;

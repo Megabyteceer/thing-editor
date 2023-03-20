@@ -1,5 +1,7 @@
 /// <reference path="../../../index.d.ts" />
 
+import assert from "thing-editor/js/engine/utils/assert.js";
+
 import game from "../game.js";
 import DisplayObject from "./display-object.js";
 

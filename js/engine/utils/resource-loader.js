@@ -1,5 +1,6 @@
 // this resource loader repeats PIXI.Loader,
 // but additionally it is attempts to load resource 4 times
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 import game from "../game.js";
 

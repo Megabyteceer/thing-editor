@@ -1,6 +1,7 @@
 /*
 this class is not exported as editable component which you can add to stage in visual editor. Just adding basic functionality to be editable for all descendant classes of PIXI.DisplayObject.
  */
+import assert from "thing-editor/js/engine/utils/assert.js";
 
 import Lib from "../lib.js";
 import game from "../game.js";
