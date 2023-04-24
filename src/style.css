@@ -7,3 +7,7 @@ body {
 span {
   color: rgb(245, 126, 29);
 }
+
+.version-header {
+  color: blueviolet;
+}

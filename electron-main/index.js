@@ -42,6 +42,10 @@ const createWindow = () => {
 		console.log('command fs: ' + command + ': ' + fileName);
 		let fd;
 		switch (command) {
+			case 'fs/toggleDevTools':
+				mainWindow.webContents.toggleDevTools();
+				event.returnValue = true;
+				return;
 			case 'fs/saveFile':
 				fd = fs.openSync(fileName, 'w');
 				fs.writeSync(fd, content);

@@ -1,37 +1,22 @@
 
-import A from "./a.ts";
-import B from "./b.ts";
+import { h, render } from "preact";
+
+import Editor, { thingEditorServer } from "./editor.ts";
+
 import "./index.d.ts";
 
-const thingEditorServer:ThingEditorServer = window.thingEditorServer;
-
-let c: number = 0;
-const rnd = Math.random();
-console.log(rnd);
-
-let a:A = new A();
-let b:B = new B();
-a.init();
-b.init();
-
-for(let key in thingEditorServer.versions) {
-	let e = window.document.getElementById(key + '-version');
-	if(e) {
-		e.innerText = thingEditorServer.versions[key]();
-	}
-}
-
+/*
 thingEditorServer.fs('fs/saveFile', 'myFile.txt', 'content' + rnd);
 let result2 = thingEditorServer.fs('fs/readFile', 'myFile.txt');
-console.log(result2);
+let result2 = thingEditorServer.fs('fs/toggleDevTools');
+*/
 
-setInterval(() => {
-	console.log(c++);
-	document.body.innerHTML += c + '<br>';
-}, 1000);
+render(h(Editor), document.body);
 
 window.addEventListener('keydown', (ev) => {
 	if(ev.code === 'F5') {
 		window.location.reload();
+	} else if(ev.code === 'F12') {
+		thingEditorServer.fs('fs/toggleDevTools');
 	}
 });
