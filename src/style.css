@@ -1,3 +1,9 @@
 body {
   background: #000000;
+  color: aquamarine;
+  font-family: monospace;
+}
+
+span {
+  color: rgb(245, 126, 29);
 }
