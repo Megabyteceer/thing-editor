@@ -39,7 +39,7 @@ const createWindow = () => {
 	//mainWindow.webContents.openDevTools();
 
 	ipcMain.on('fs', (event, command, fileName, content) => {
-		console.log('command fs: ' + command + ': ' + fileName);
+		console.log('command fs: ' + command + ': ' + (fileName || ''));
 		let fd;
 		switch (command) {
 			case 'fs/toggleDevTools':
@@ -68,7 +68,7 @@ const createWindow = () => {
 	let debuggerDetector = require('./debugger-detection');
 	if(debuggerDetector) {
 		mainWindow.loadURL('http://127.0.0.1:5173/debugger-awaiter.html');
-		debuggerDetector.once('connection', () => { setTimeout(loadEditorIndexHTML, 20);});
+		debuggerDetector.once('debugger-ready',loadEditorIndexHTML);
 	} else {
 		loadEditorIndexHTML();
 	}
