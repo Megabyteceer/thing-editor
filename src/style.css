@@ -1,8 +1,13 @@
 body {
-  background: #000000;
-  color: aquamarine;
-  font-family: monospace;
-  padding: 4px;
+  background: #111111;
+  color: #595550;
+  line-height:normal;
+  font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+  padding: 0;
+  margin: 0;
+  user-select: none;
+  width:100%;
+	height:100%;
 }
 
 button {

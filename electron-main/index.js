@@ -1,8 +1,11 @@
 const {
 	app,
 	BrowserWindow,
-	ipcMain
+	ipcMain,
+	nativeTheme
 } = require('electron');
+
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 const path = require('path');
 const appConfig = require('electron-settings');
@@ -36,7 +39,8 @@ const createWindow = () => {
 	mainWindow.on("moved", saveWindowPos);
 	mainWindow.on("maximize", saveWindowPos);
 	mainWindow.on("resized", saveWindowPos);
-	//mainWindow.webContents.openDevTools();
+
+	nativeTheme.themeSource = 'dark'
 
 	ipcMain.on('fs', (event, command, fileName, content) => {
 		console.log('command fs: ' + command + ': ' + (fileName || ''));
@@ -58,6 +62,18 @@ const createWindow = () => {
 				fs.closeSync(fd, () => {});
 				event.returnValue = c;
 				return;
+			case 'fs/readDir':
+				let files = fs.readdirSync(fileName);
+				fileName += '/';
+				event.returnValue = files.map((f) => {
+					const name = fileName + f;
+					const stats = fs.statSync(name);
+					return { name, mTime:stats.mtimeMs}
+				});
+				return;
+			case 'fs/frontend-ready':
+				setTimeout(loadEditorIndexHTML, 300);
+				event.returnValue = true;
 		}
 	});
 
@@ -65,12 +81,11 @@ const createWindow = () => {
 		mainWindow.loadURL('http://127.0.0.1:5173/');
 		//mainWindow.loadFile('../index.html');
 	};
-	let debuggerDetector = require('./debugger-detection');
-	if(debuggerDetector) {
+
+	if(process.argv.indexOf('debugger-detection-await') >= 0) {
 		mainWindow.loadURL('http://127.0.0.1:5173/debugger-awaiter.html');
-		debuggerDetector.once('debugger-ready',loadEditorIndexHTML);
 	} else {
-		loadEditorIndexHTML();
+		debuggerDetector.once('debugger-ready',loadEditorIndexHTML);
 	}
 };
 
