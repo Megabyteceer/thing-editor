@@ -7,39 +7,30 @@ const {
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
+let devToolsWindow;
+
 const path = require('path');
-const appConfig = require('electron-settings');
+
 const fs = require('fs');
+const ThingEditorWindow = require("./thing-editor-window.js");
 
 const fsOptions = {
 	encoding: 'utf8'
 };
 
 const createWindow = () => {
-	let windowState;
-	if (appConfig.has("windowPosition")) {
-		windowState = appConfig.getSync("windowPosition");
-	} else {
-		windowState = {};
-	}
-	windowState.webPreferences = {
-		preload: path.join(__dirname, 'preload.js')
+	let windowState = {
+		webPreferences: {
+			preload: path.join(__dirname, 'preload.js')
+		}
 	};
 
-	const mainWindow = new BrowserWindow(windowState);
-	if (windowState.isMaximized) {
-		mainWindow.maximize();
-	}
-
-	const saveWindowPos = (ev) => {
-		let windowState = mainWindow.getBounds();
-		windowState.isMaximized = mainWindow.isMaximized();
-		appConfig.set("windowPosition", windowState);
-	};
-	mainWindow.on("moved", saveWindowPos);
-	mainWindow.on("maximize", saveWindowPos);
-	mainWindow.on("resized", saveWindowPos);
-
+	const mainWindow = new ThingEditorWindow(windowState, 'main');
+	mainWindow.on('close', () => {
+		if(devToolsWindow) {
+			devToolsWindow.close();
+		}
+	});
 	nativeTheme.themeSource = 'dark'
 
 	ipcMain.on('fs', (event, command, fileName, content) => {
@@ -47,7 +38,13 @@ const createWindow = () => {
 		let fd;
 		switch (command) {
 			case 'fs/toggleDevTools':
-				mainWindow.webContents.toggleDevTools();
+				if(devToolsWindow) {
+					if(devToolsWindow.isMaximized()) {
+						devToolsWindow.minimize();
+					} else {
+						devToolsWindow.maximize();
+					}
+				}
 				event.returnValue = true;
 				return;
 			case 'fs/saveFile':
@@ -68,7 +65,10 @@ const createWindow = () => {
 				event.returnValue = files.map((f) => {
 					const name = fileName + f;
 					const stats = fs.statSync(name);
-					return { name, mTime:stats.mtimeMs}
+					return {
+						name,
+						mTime: stats.mtimeMs
+					}
 				});
 				return;
 			case 'fs/frontend-ready':
@@ -82,8 +82,21 @@ const createWindow = () => {
 		//mainWindow.loadFile('../index.html');
 	};
 
-	if(process.argv.indexOf('debugger-detection-await') >= 0) {
+	if (process.argv.indexOf('debugger-detection-await') >= 0) {
 		mainWindow.loadURL('http://127.0.0.1:5173/debugger-awaiter.html');
+
+		devToolsWindow = new ThingEditorWindow({}, 'devtools');
+		mainWindow.webContents.setDevToolsWebContents(devToolsWindow.webContents);
+		mainWindow.webContents.openDevTools({
+			mode: "detach"
+		});
+		devToolsWindow.addListener('closed', () => {
+			devToolsWindow = null;
+		});
+		devToolsWindow.maximize();
+		devToolsWindow.minimize();
+		devToolsWindow.setTitle('Thing-Editor DevTools')
+
 	} else {
 		loadEditorIndexHTML();
 	}
