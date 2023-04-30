@@ -85,7 +85,7 @@ const createWindow = () => {
 	if(process.argv.indexOf('debugger-detection-await') >= 0) {
 		mainWindow.loadURL('http://127.0.0.1:5173/debugger-awaiter.html');
 	} else {
-		debuggerDetector.once('debugger-ready',loadEditorIndexHTML);
+		loadEditorIndexHTML();
 	}
 };
 
