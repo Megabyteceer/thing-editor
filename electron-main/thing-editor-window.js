@@ -1,7 +1,7 @@
 const { BrowserWindow } = require('electron');
 const appConfig = require('electron-settings');
 
-module.exports = class ThingEditorWindow extends BrowserWindow {
+module.exports = class WindowPositionRestoreWindow extends BrowserWindow {
 
 	constructor(windowState, id) {
 		const stateId = "windowPosition-" + id;

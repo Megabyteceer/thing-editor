@@ -3,9 +3,6 @@ import {
 } from 'vite';
 
 export default defineConfig({
-	optimizeDeps: {
-		disabled: true
-	},
 	server: {
 		hmr: false
 	},
