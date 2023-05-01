@@ -7,7 +7,7 @@ type FileDesc = {
 
 type FSCallback = Uint8Array | undefined | FileDesc[];
 
-type ThingEditorServer = {
+type ThingEditorServer = { // exposed from electron
 	fs: (comand: string, filename?: string, content?: string) => FSCallback,
 	versions: { [key: string]: string }
 }

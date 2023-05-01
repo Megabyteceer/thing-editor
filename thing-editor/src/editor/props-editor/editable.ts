@@ -1,6 +1,15 @@
-type EditablePropertyType = 'data-path' | 'splitter' | 'rect' | 'callback' | 'ref' | 'btn' | 'color' | 'bool' | 'string' | 'number';
+type EditablePropertyType = 'data-path' |
+	'splitter' |
+	'rect' |
+	'callback' |
+	'ref' |
+	'btn' |
+	'color' |
+	'bool' |
+	'string' |
+	'number';
 
-interface EditablePropertyDesc {
+interface EditablePropertyDescRaw {
 	default?: number,
 	min?: number,
 	max?: number,
@@ -10,7 +19,12 @@ interface EditablePropertyDesc {
 	isArray?: true
 }
 
-function editable(editablePropertyDesc?: EditablePropertyDesc) {
+interface EditablePropertyDesc extends EditablePropertyDescRaw {
+	name: string,
+	type: EditablePropertyType,
+}
+
+function editable(editablePropertyDesc?: EditablePropertyDescRaw) {
 	return function (target: any, name: string, _descriptor?: PropertyDescriptor) {
 		if(!target.__editableProps) {
 			target.__editableProps = [];
@@ -24,3 +38,5 @@ function editable(editablePropertyDesc?: EditablePropertyDesc) {
 }
 
 export default editable;
+
+export type { EditablePropertyDesc };

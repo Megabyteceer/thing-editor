@@ -9,6 +9,9 @@ const walkSync = (dir, fileList = []) => {
 			if(stats.isDirectory()) {
 				fileList = walkSync(fullPath, fileList);
 			} else if(stats.size > 0) {
+				if(path.sep !== '/') {
+					fullPath = fullPath.replaceAll(path.sep, '/');
+				}
 				fileList.push({name: fullPath, mtime: stats.mtimeMs});
 			}
 		}

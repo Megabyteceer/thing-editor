@@ -5,6 +5,8 @@ import R from "./preact-fabrics";
 
 import * as PIXI from "pixi.js";
 import fs from "./fs";
+import { EditablePropertyDesc } from "./editor/props-editor/editable";
+import assert from "./utils/assert";
 
 const thingEditorServer: ThingEditorServer = window.thingEditorServer;
 
@@ -60,14 +62,28 @@ export default class Editor extends Component<EditorProps, EditorState> {
 				className: 'clickable',
 				onClick: () => {
 					componentsVersion++;
-					let files = fs.readDir('src/engine/components');
-					Promise.all(files.map((file) => {
+					let files = fs.readDir('thing-editor/src/engine/components');
+					Promise.all(files.filter(file => file.name.endsWith('.c.ts') || file.name.endsWith('.s.ts')).map((file) => {
 						const moduleName = file.name.replace(/\.ts$/, '');
 						return import(/* @vite-ignore */`/${moduleName}.ts?v=${componentsVersion}`).then((module) => {
 							const Class = module.default;
 							let c = new Class();
 							c.init();
 							app.stage.addChild(c);
+							Class.__sourceFileName = file.name;
+							const editableProps: EditablePropertyDesc[] = c.__editableProps;
+							for(let prop of editableProps) {
+
+								if(!prop.hasOwnProperty('default')) {
+									prop.default = c[prop.name];
+								}
+								if(!prop.hasOwnProperty('type')) {
+									let type = typeof c[prop.name];
+									assert(type === 'string' || type === 'number', 'invalid type "' + type + '" for editable property ' + prop.name);
+									//@ts-ignore
+									prop.type = type;
+								}
+							}
 							return Class;
 						});
 					})).then((classes) => {

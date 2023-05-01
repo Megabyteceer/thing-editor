@@ -20,5 +20,5 @@
     "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true
   },
-  "include": ["src"]
+  "include": ["thing-editor/src"]
 }

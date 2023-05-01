@@ -1,10 +1,10 @@
 
 import { h, render } from "preact";
 
-import Editor from "./editor.ts";
+import Editor from "./editor";
 
 import "./index.d.ts";
-import fs from "./fs.ts";
+import fs from "./fs";
 
 render(h(Editor, null), document.body);
 

@@ -11,8 +11,6 @@ const IS_DEBUG = process.argv.indexOf('debugger-detection-await');
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 /** @type BrowserWindow */
-let devToolsWindow;
-/** @type BrowserWindow */
 let mainWindow;
 
 const path = require('path');
@@ -27,22 +25,6 @@ const fsOptions = {
 	encoding: 'utf8'
 };
 
-function openDevTools() {
-	if(!devToolsWindow && IS_DEBUG) {
-		devToolsWindow = new PositionRestoreWindow({}, 'devtools');
-		mainWindow.webContents.setDevToolsWebContents(devToolsWindow.webContents);
-		mainWindow.webContents.openDevTools({
-			mode: "detach"
-		});
-		devToolsWindow.addListener('closed', () => {
-			devToolsWindow = null;
-		});
-		devToolsWindow.setTitle('Thing-Editor DevTools');
-		devToolsWindow.setClosable(false);
-		devToolsWindow.setSkipTaskbar(true);
-	}
-}
-
 const createWindow = () => {
 	/** @type BrowserWindowConstructorOptions */
 	let windowState;
@@ -53,12 +35,7 @@ const createWindow = () => {
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
-	mainWindow.on('close', () => {
-		if(devToolsWindow) {
-			devToolsWindow.setClosable(true);
-			devToolsWindow.close();
-		}
-	});
+
 	nativeTheme.themeSource = 'dark'
 
 	ipcMain.on('fs', (event, command, fileName, content) => {
@@ -66,20 +43,7 @@ const createWindow = () => {
 		let fd;
 		switch(command) {
 			case 'fs/toggleDevTools':
-				if(IS_DEBUG) {
-					if(!devToolsWindow) {
-						openDevTools();
-						devToolsWindow.maximize();
-					} else {
-						if(devToolsWindow.isMaximized() && devToolsWindow.isVisible()) {
-							devToolsWindow.minimize();
-						} else {
-							devToolsWindow.maximize();
-						}
-					}
-				} else {
-					mainWindow.webContents.toggleDevTools();
-				}
+				mainWindow.webContents.toggleDevTools();
 				event.returnValue = true;
 				return;
 			case 'fs/delete':
@@ -119,21 +83,14 @@ const createWindow = () => {
 	});
 
 	const loadEditorIndexHTML = () => {
-		const VITE_SERVER_URL = 'http://127.0.0.1:5173/';
-		mainWindow.loadURL(VITE_SERVER_URL).catch(() => {
-			dialog.showErrorBox('Could not load ' + VITE_SERVER_URL + '.\nDoes vite.js server started?');
+		const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
+		mainWindow.loadURL(EDITOR_VITE_ROOT).catch(() => {
+			dialog.showErrorBox('Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 		});
-		//mainWindow.loadFile('../index.html');
 	};
 
 	if(IS_DEBUG) {
-		mainWindow.loadURL('http://127.0.0.1:5173/debugger-awaiter.html');
-
-		openDevTools();
-		devToolsWindow.maximize();
-		devToolsWindow.minimize();
-
-
+		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html');
 	} else {
 		loadEditorIndexHTML();
 	}
