@@ -5,6 +5,9 @@ export default class fs {
 		return thingEditorServer.fs('fs/saveFile', fileName, content);
 	}
 
+	static deleteFile(fileName: string) {
+		return thingEditorServer.fs('fs/delete', fileName);
+	}
 	static readFile(fileName: string) {
 		return thingEditorServer.fs('fs/readFile', fileName);
 	}
@@ -12,9 +15,9 @@ export default class fs {
 	static toggleDevTools() {
 		thingEditorServer.fs('fs/toggleDevTools')
 	}
-	
-	static readDir(dirname: string):FileDesc[] {
-		return  thingEditorServer.fs('fs/readDir', dirname) as FileDesc[];
+
+	static readDir(dirname: string): FileDesc[] {
+		return thingEditorServer.fs('fs/readDir', dirname) as FileDesc[];
 	}
 
 	static ready() {

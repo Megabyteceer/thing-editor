@@ -1,17 +1,17 @@
-const { BrowserWindow } = require('electron');
+const {BrowserWindow} = require('electron');
 const appConfig = require('electron-settings');
 
-module.exports = class WindowPositionRestoreWindow extends BrowserWindow {
+module.exports = class PositionRestoreWindow extends BrowserWindow {
 
 	constructor(windowState, id) {
 		const stateId = "windowPosition-" + id;
 
-		if (appConfig.has(stateId)) {
+		if(appConfig.has(stateId)) {
 			windowState = Object.assign({}, appConfig.getSync(stateId), windowState);
 		}
 
 		super(windowState);
-		if (windowState.isMaximized) {
+		if(windowState.isMaximized) {
 			this.maximize();
 		}
 		const saveWindowPos = (ev) => {

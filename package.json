@@ -12,6 +12,7 @@
     "electron": "^24.1.2",
     "electron-settings": "^4.0.2",
     "node-tcp-proxy": "^0.0.28",
+    "open": "^9.1.0",
     "preact": "^10.13.2",
     "typescript": "^5.0.2",
     "vite": "^4.3.0"

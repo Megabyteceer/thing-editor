@@ -20,9 +20,9 @@ interface EditorState {
 }
 
 let componentsVersion = Date.now();
-let app:PIXI.Application;
+let app: PIXI.Application;
 
-export default class Editor extends Component < EditorProps, EditorState > {
+export default class Editor extends Component<EditorProps, EditorState> {
 	componentDidMount() {
 		app = new PIXI.Application();
 		//@ts-ignore
@@ -57,23 +57,24 @@ export default class Editor extends Component < EditorProps, EditorState > {
 	render(_props: EditorProps, state: EditorState) {
 		return R.span(null, state.message, versionsInfo,
 			R.button({
-					className: 'clickable',
-					onClick: () => {
-						componentsVersion++;
-						let files = fs.readDir('src/components');
-						Promise.all(files.map((file) => {
-							const moduleName = file.name.replace(/\.ts$/, '');
-							return import(/* @vite-ignore */`/${moduleName}.ts?v=${componentsVersion}`).then((mod) => {
-								let c = new mod.default();
-								c.init();
-								app.stage.addChild(c);
-								return c;
-							});
-						})).then((classes) => {
-							
+				className: 'clickable',
+				onClick: () => {
+					componentsVersion++;
+					let files = fs.readDir('src/engine/components');
+					Promise.all(files.map((file) => {
+						const moduleName = file.name.replace(/\.ts$/, '');
+						return import(/* @vite-ignore */`/${moduleName}.ts?v=${componentsVersion}`).then((module) => {
+							const Class = module.default;
+							let c = new Class();
+							c.init();
+							app.stage.addChild(c);
+							return Class;
 						});
-					}
-				},
+					})).then((classes) => {
+
+					});
+				}
+			},
 				'ok')
 		)
 	}
