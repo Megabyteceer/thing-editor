@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import '../utils/assert';
+
 import editable from "thing-editor/src/editor/props-editor/editable";
 
 export default class Container extends PIXI.Sprite {

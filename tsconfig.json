@@ -22,8 +22,11 @@
     "paths": {
       "thing-editor": ["./thing-editor"]
     },
-    "baseUrl": "./."
+    "baseUrl": "./.",
+    
+    "typeRoots": ["thing-editor/src/editor/env.d.ts" ]
     
   },
+  "files":["thing-editor/src/editor/env.d.ts"],
   "include": ["thing-editor/src", "games"]
 }

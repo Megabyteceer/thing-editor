@@ -1,16 +1,21 @@
-import Editor from "../editor/editor";
+/// #if EDITOR
+import Editor from "thing-editor/src/editor/editor";
+/// #if EDITOR
 
 class Game {
 
-	editor?: Editor;
+	/// #if EDITOR
+	//@ts-ignore
+	editor: Editor;
+	/// #endif
 
 	init() {
-		alert('game.init 1');
+		alert('game.init 3');
 
 	}
 
 	alert() {
-		alert('game.alert: 1');
+		alert('game.alert: 3');
 	}
 }
 

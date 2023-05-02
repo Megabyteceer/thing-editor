@@ -1,20 +1,14 @@
+
 import {
 	Component
 } from "preact";
+
 import R from "./preact-fabrics";
 
 import * as PIXI from "pixi.js";
-import fs from "./fs";
-import { EditablePropertyDesc } from "./props-editor/editable";
-import assert from "../engine/utils/assert";
 import game, { Game } from "../engine/game";
-import { ThingEditorServer } from "../env";
 
-const thingEditorServer: ThingEditorServer = window.thingEditorServer;
-
-const versionsInfo = Object.entries(thingEditorServer.versions).map(e => R.div(null, R.span({
-	'className': 'version-header'
-}, e[0]), ': ', e[1]));
+import ClassesLoader from "./classes-loader";
 
 interface EditorProps {
 	recId: number;
@@ -23,29 +17,29 @@ interface EditorState {
 	message: string;
 }
 
-let componentsVersion = Date.now();
 let app: PIXI.Application;
 
 export default class Editor extends Component<EditorProps, EditorState> {
 
 	game: Game;
+	currentGame = '/games/game1/'
 
 	constructor() {
 		super();
-		window.editor = this;
 		this.game = game;
+		game.editor = this;
 		this.game.init();
-		this.game.editor = this;
 	}
 
 	componentDidMount() {
+		ClassesLoader.reloadClasses();
 		app = new PIXI.Application();
 		//@ts-ignore
 		document.body.appendChild(app.view);
 
 
 
-		PIXI.Assets.load('assets/bunny.png').then((texture) => {
+		PIXI.Assets.load(this.currentGame + 'assets/bunny.png').then((texture) => {
 
 			// This creates a texture from a 'bunny.png' image
 			const bunny = new PIXI.Sprite(texture);
@@ -72,47 +66,14 @@ export default class Editor extends Component<EditorProps, EditorState> {
 		});
 	}
 	render(_props: EditorProps, state: EditorState) {
-		return R.span(null, state.message, versionsInfo,
+		return R.span(null, state.message,
 			R.button({
 				className: 'clickable',
 				onClick: () => {
-					componentsVersion++;
-					let files = fs.readDir('thing-editor/src/engine/components');
-					Promise.all(files.filter(file => file.name.endsWith('.c.ts') || file.name.endsWith('.s.ts')).map((file) => {
-						const moduleName = file.name.replace(/\.ts$/, '');
-						return import(/* @vite-ignore */`/${moduleName}.ts?v=${componentsVersion}`).then((module) => {
-
-							game.alert();
-							const Class = module.default;
-							let c = new Class();
-							c.init();
-							app.stage.addChild(c);
-							Class.__sourceFileName = file.name;
-							const editableProps: EditablePropertyDesc[] = c.__editableProps;
-							for(let prop of editableProps) {
-
-								if(!prop.hasOwnProperty('default')) {
-									prop.default = c[prop.name];
-								}
-								if(!prop.hasOwnProperty('type')) {
-									let type = typeof c[prop.name];
-									assert(type === 'string' || type === 'number', 'invalid type "' + type + '" for editable property ' + prop.name);
-									//@ts-ignore
-									prop.type = type;
-								}
-							}
-							return Class;
-						});
-					})).then((_classes) => {
-
-					});
+					ClassesLoader.reloadClasses();
 				}
 			},
 				'ok')
 		)
 	}
 }
-
-export {
-	thingEditorServer
-};

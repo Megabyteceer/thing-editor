@@ -1,8 +1,7 @@
 import * as PIXI from "pixi.js";
-import '../../utils/assert';
 
-import editable from "../../../editor/props-editor/editable";
-import game from "../../game";
+import editable from "thing-editor/src/editor/props-editor/editable";
+import game from "thing-editor/src/engine/game";
 
 export default class Sprite extends PIXI.Sprite {
 

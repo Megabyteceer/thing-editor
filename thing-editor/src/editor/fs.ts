@@ -1,4 +1,8 @@
-import { thingEditorServer } from "./editor.ts";
+import { FileDesc } from "thing-editor/src/editor/env";
+
+import { ThingEditorServer } from "thing-editor/src/editor/env";
+const thingEditorServer: ThingEditorServer = window.thingEditorServer;
+
 export default class fs {
 
 	static saveFile(fileName: string, content: string) {

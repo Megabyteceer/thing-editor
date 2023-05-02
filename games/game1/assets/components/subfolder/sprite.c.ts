@@ -1,8 +1,7 @@
 import * as PIXI from "pixi.js";
-import '../../utils/assert';
+
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
-
 
 export default class Sprite extends PIXI.Sprite {
 
@@ -13,6 +12,8 @@ export default class Sprite extends PIXI.Sprite {
 	b = 0;
 
 	init() {
-		game.alert();
+
 	}
 }
+
+game.alert();
