@@ -18,7 +18,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "paths": {
+      "thing-editor": ["./thing-editor"]
+    },
+    "baseUrl": "./."
+    
   },
-  "include": ["thing-editor/src"]
+  "include": ["thing-editor/src", "games"]
 }

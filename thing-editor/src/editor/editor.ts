@@ -5,8 +5,10 @@ import R from "./preact-fabrics";
 
 import * as PIXI from "pixi.js";
 import fs from "./fs";
-import { EditablePropertyDesc } from "./editor/props-editor/editable";
-import assert from "./utils/assert";
+import { EditablePropertyDesc } from "./props-editor/editable";
+import assert from "../engine/utils/assert";
+import game, { Game } from "../engine/game";
+import { ThingEditorServer } from "../env";
 
 const thingEditorServer: ThingEditorServer = window.thingEditorServer;
 
@@ -25,10 +27,23 @@ let componentsVersion = Date.now();
 let app: PIXI.Application;
 
 export default class Editor extends Component<EditorProps, EditorState> {
+
+	game: Game;
+
+	constructor() {
+		super();
+		window.editor = this;
+		this.game = game;
+		this.game.init();
+		this.game.editor = this;
+	}
+
 	componentDidMount() {
 		app = new PIXI.Application();
 		//@ts-ignore
 		document.body.appendChild(app.view);
+
+
 
 		PIXI.Assets.load('assets/bunny.png').then((texture) => {
 
@@ -66,6 +81,8 @@ export default class Editor extends Component<EditorProps, EditorState> {
 					Promise.all(files.filter(file => file.name.endsWith('.c.ts') || file.name.endsWith('.s.ts')).map((file) => {
 						const moduleName = file.name.replace(/\.ts$/, '');
 						return import(/* @vite-ignore */`/${moduleName}.ts?v=${componentsVersion}`).then((module) => {
+
+							game.alert();
 							const Class = module.default;
 							let c = new Class();
 							c.init();
@@ -86,7 +103,7 @@ export default class Editor extends Component<EditorProps, EditorState> {
 							}
 							return Class;
 						});
-					})).then((classes) => {
+					})).then((_classes) => {
 
 					});
 				}

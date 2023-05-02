@@ -3,10 +3,8 @@ import { h, render } from "preact";
 
 import Editor from "./editor";
 
-import "./index.d.ts";
 import fs from "./fs";
 
-render(h(Editor, null), document.body);
 
 window.addEventListener('keydown', (ev) => {
 
@@ -16,3 +14,5 @@ window.addEventListener('keydown', (ev) => {
 		fs.toggleDevTools();
 	}
 });
+
+render(h(Editor, null), document.body);

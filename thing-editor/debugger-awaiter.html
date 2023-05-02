@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="./src/style.css">
-    <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    debugger await...
-    <script type="module" src="./src/debug-await.ts"></script>
-  </body>
+
+<head>
+	<link rel="stylesheet" href="./src/editor/style.css">
+	<meta charset="UTF-8">
+	<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+	<title>Hello World!</title>
+</head>
+
+<body>
+	debugger await...
+	<script type="module">
+		import fs from "./src/editor/fs";
+		fs.ready();
+
+	</script>
+</body>
+
 </html>
