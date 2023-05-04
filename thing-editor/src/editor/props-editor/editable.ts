@@ -7,21 +7,26 @@ type EditablePropertyType = 'data-path' |
 	'color' |
 	'bool' |
 	'string' |
+	'prefab' |
 	'number';
 
 interface EditablePropertyDescRaw {
-	default?: number,
 	min?: number,
 	max?: number,
 	step?: number,
 	type?: EditablePropertyType,
 	name?: string,
-	isArray?: true
+	isArray?: true,
+	select?: SelectComponentItem[] | (() => SelectComponentItem[])
+	noNullCheck?: true,
 }
 
 interface EditablePropertyDesc extends EditablePropertyDescRaw {
 	name: string,
 	type: EditablePropertyType,
+	default?: number,
+	__nullCheckingIsApplied?: true,
+	notSerializable?: true,
 }
 
 /** editable property decorator */

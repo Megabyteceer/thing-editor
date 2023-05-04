@@ -1,12 +1,18 @@
-import * as PIXI from "pixi.js";
-import editable from "../../editor/props-editor/editable";
 
-export default class Container extends PIXI.Sprite {
+import editable from "thing-editor/src/editor/props-editor/editable";
+import { PIXI } from "thing-editor/src/engine/game";
 
-	@editable({ min: 0 })
-	a = 0;
+const Container = PIXI.Container;
+type ContainerType = PIXI.Container;
 
-	init() {
+//@ts-ignore
+Container.prototype.init = function () {
 
-	}
+
 }
+
+editable()(Container, 'x');
+
+export default Container;
+
+export type { ContainerType };

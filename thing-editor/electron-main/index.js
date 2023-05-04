@@ -82,6 +82,8 @@ const createWindow = () => {
 		}
 	});
 
+	require('./pixi-typings-patch.js')();
+
 	const loadEditorIndexHTML = () => {
 		const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
 		mainWindow.loadURL(EDITOR_VITE_ROOT).catch(() => {

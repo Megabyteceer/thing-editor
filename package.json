@@ -9,11 +9,15 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@pixi/filter-outline": "^5.2.0",
+    "@types/events": "^3.0.0",
     "electron": "^24.1.2",
     "electron-settings": "^4.0.2",
+    "events": "^3.3.0",
     "node-tcp-proxy": "^0.0.28",
     "open": "^9.1.0",
     "preact": "^10.13.2",
+    "typed-emitter": "^2.1.0",
     "typescript": "^5.0.2",
     "vite": "^4.3.0"
   },

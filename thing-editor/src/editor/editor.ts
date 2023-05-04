@@ -3,12 +3,26 @@ import {
 	Component
 } from "preact";
 
+import EventEmitter from "events";
+import TypedEmitter from "typed-emitter"
+
 import R from "./preact-fabrics";
 
-import * as PIXI from "pixi.js";
-import game, { Game } from "../engine/game";
+import game from "../engine/game";
 
 import ClassesLoader from "./classes-loader";
+import { KeyedMap, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import fs from "thing-editor/src/editor/fs";
+import DisplayObject, { DisplayObjectType } from "thing-editor/src/engine/display-object";
+import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import Selection from "thing-editor/src/editor/utils/selection";
+import historyInstance from "thing-editor/src/editor/utils/history";
+import AssetsLoader from "thing-editor/src/editor/assets-loader";
+
+type EditorEvents = {
+	beforePropertyChanged: (o: DisplayObjectType, fieldName: string, field: EditablePropertyDesc, val: any, isDelta: boolean) => void,
+	afterPropertyChanged: (body: string, from: string) => void
+}
 
 interface EditorProps {
 	recId: number;
@@ -17,54 +31,103 @@ interface EditorState {
 	message: string;
 }
 
-let app: PIXI.Application;
-
 export default class Editor extends Component<EditorProps, EditorState> {
 
-	game: Game;
 	currentGame = '/games/game1/'
+	editorArguments: KeyedMap<true> = {};
+
+	selection = new Selection();
+
+	disableFieldsCache: boolean = false;
+
+	//@ts-ignore
+	events = new EventEmitter() as TypedEmitter<EditorEvents>;
+
+	history = historyInstance;
+
+	_lastChangedFiledName: string | null = null;
 
 	constructor() {
 		super();
-		this.game = game;
-		game.editor = this;
-		this.game.init();
+
+		for(let arg of thingEditorServer.argv) {
+			this.editorArguments[arg] = true;
+		}
 	}
 
 	componentDidMount() {
-		ClassesLoader.reloadClasses();
-		app = new PIXI.Application();
-		//@ts-ignore
-		document.body.appendChild(app.view);
+		game.editor = this;
+		game.init();
 
+		// load built in components
+		fs.refreshAssetsList(['./thing-editor/src/engine/components']);
+		ClassesLoader.reloadClasses(true).then(() => {
 
+		});
+	}
 
-		PIXI.Assets.load(this.currentGame + 'assets/bunny.png').then((texture) => {
+	async reloadAssetsAndClasses() {
+		await ClassesLoader.reloadClasses();
+		await AssetsLoader.reloadAssets();
+	}
 
-			// This creates a texture from a 'bunny.png' image
-			const bunny = new PIXI.Sprite(texture);
+	showError(message: string, _errorCode = 99999) {
+		alert(message); //TODO:
+	}
 
-			// Setup the position of the bunny
-			bunny.x = app.renderer.width / 2;
-			bunny.y = app.renderer.height / 2;
+	logError(message: string, _errorCode = 99999, _owner?: DisplayObjectType | (() => any), _fieldName?: string) {
+		alert(message); //TODO:
+	}
 
-			// Rotate around the center
-			bunny.anchor.x = 0.5;
-			bunny.anchor.y = 0.5;
+	warn(message: string, _errorCode = 99999, _owner?: DisplayObjectType | (() => any), _fieldName?: string) {
+		alert(message); //TODO:
+	}
 
-			// Add the bunny to the scene we are building
-			app.stage.addChild(bunny);
+	notify(message: string | preact.Component) {
+		alert(message); //TODO:
+	}
 
-			// Listen for frame updates
-			app.ticker.add(() => {
-				// each frame we spin the bunny around a bit
-				bunny.rotation += 0.01;
-			});
-			this.setState({
-				message: 'Thing-Editor 2.0 Hello!'
+	selectField(_fieldName: string) {
+		//TODO:
+	}
+
+	refreshTreeViewAndPropertyEditor() {
+		//TODO:
+	}
+
+	getFieldNameByValue(node: SourceMappedConstructor, fieldValue: any) {
+		if(node instanceof DisplayObject) {
+			for(let p of node.__editableProps) {
+				//@ts-ignore
+				if(node[p.name] === fieldValue) {
+					return p.name;
+				}
+			}
+		}
+	}
+
+	copyToClipboard(text: string) {
+		navigator.permissions.query({
+			//@ts-ignore
+			name: 'clipboard-read'
+		}).then(() => {
+			navigator.clipboard.writeText(text).then(() => {
+				this.notify(R.span(null, R.icon('copy'), '"' + text + '"'));
 			});
 		});
 	}
+
+	editClassSource(c: SourceMappedConstructor | DisplayObjectType) {
+		if(this.editorArguments['no-vscode-integration']) {
+			return;
+		}
+		if(c instanceof DisplayObject) {
+			c = c.constructor as SourceMappedConstructor;
+		}
+		let filePath = c.__sourceFileName as string;
+		fs.editFile(filePath);
+	}
+
 	render(_props: EditorProps, state: EditorState) {
 		return R.span(null, state.message,
 			R.button({

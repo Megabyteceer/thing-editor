@@ -1,10 +1,13 @@
 import { ComponentChildren, h } from 'preact';
+import { KeyedMap } from 'thing-editor/src/editor/env';
+import assert from 'thing-editor/src/engine/debug/assert';
 
 interface ComponentProps {
 	className?: string;
 	onClick?: Function;
 	[key: string]: any;
 }
+const _iconsCache: KeyedMap<preact.Component> = {};
 
 class R {
 	static div: (props: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
@@ -35,6 +38,21 @@ class R {
 	static h5: (props: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static script: (props: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static meta: (props: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
+
+	static icon(name: string) {
+		if(!_iconsCache.hasOwnProperty(name)) {
+			assert(name, "Icon's name expected.");
+			let src;
+			if(name.startsWith('/')) {
+				src = name;
+			} else {
+				src = '/thing-editor/img/' + name;
+			}
+			src += '.png';
+			_iconsCache[name] = R.img({ src });
+		}
+		return _iconsCache[name];
+	};
 }
 
 for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'input', 'label',
