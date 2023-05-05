@@ -32,12 +32,12 @@ const createWindow = () => {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js')
 		},
-		opacity:0
+		opacity: 0
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
 	//mainWindow.hide();
-	
+
 	nativeTheme.themeSource = 'dark'
 
 	ipcMain.on('fs', (event, command, fileName, content) => {
@@ -93,7 +93,8 @@ const createWindow = () => {
 				} else if(success) {
 					console.log(success);
 				}
-				process.exit(error ? 1 : 0);
+				dialog.showMessageBox('process.exit', error || success);
+				//process.exit(error ? 1 : 0);
 				return;
 		}
 	});
@@ -107,11 +108,13 @@ const createWindow = () => {
 		}).finally(() => {
 			mainWindow.setOpacity(1);
 		});
-		
+
 	};
 
 	if(IS_DEBUG) {
-		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html');
+		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html').catch((er) => {
+			mainWindow.setOpacity(1);
+		});
 	} else {
 		loadEditorIndexHTML();
 	}

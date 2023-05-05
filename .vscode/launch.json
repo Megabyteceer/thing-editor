@@ -1,0 +1,91 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+
+		{
+			"name": "Renderer",
+			"type": "chrome",
+			"request": "attach",
+			"port": 9223,
+			"webRoot": "${workspaceFolder}",
+			"timeout": 30000,
+			"enableContentValidation": false,
+			"presentation": {
+				"hidden": true
+			},
+			"skipFiles": [],
+			"sourceMaps": true,
+			"smartStep": true,
+			"resolveSourceMapLocations": [
+				"${workspaceFolder}/**",
+				"!**/node_modules/**"
+			],
+			"urlFilter": "http://127.0.0.1:5173/*"
+			
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "MainForBoth",
+			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"windows": {
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+			},
+			"args": [
+				"--remote-debugging-port=9223",
+				"./thing-editor/electron-main", "debugger-detection-await"
+			],
+			"presentation": {
+				"hidden": true
+			}
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Main",
+			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"windows": {
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+			},
+			"args": [
+				"--remote-debugging-port=9223",
+				"./thing-editor/electron-main"
+			],
+			"presentation": {
+				"hidden": true
+			}
+		},
+		{
+			"name": "Editor",
+			"type": "chrome",
+			"request": "attach",
+			"preLaunchTask": "Run electron",
+			"port": 9223,
+			"webRoot": "${workspaceFolder}",
+			"timeout": 3000,
+			"vueComponentPaths": [],
+			"outFiles": [],
+			"presentation": {
+				//"hidden": true
+			},
+			"sourceMaps": true,
+			"resolveSourceMapLocations": [
+				"${workspaceFolder}/**",
+				"!**/node_modules/**"
+			],
+			"urlFilter": "http://127.0.0.1:5173/*"
+			/*,
+			"trace": {
+				"logFile": "${workspaceRoot}/dbug.log"
+			},*/
+		}
+	],
+	"compounds": [{
+		"name": "Both",
+		"configurations": ["Renderer", "MainForBoth"],
+		"stopAll": true,
+		"presentation": {
+			//"hidden": true
+		}
+	}]
+}

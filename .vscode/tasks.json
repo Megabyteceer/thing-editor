@@ -1,0 +1,50 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [{
+			"label": "Run vite",
+			"type": "npm",
+			"isBackground": true,
+			"script": "dev",
+			"runOptions": {
+				"runOn": "folderOpen"
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "Run electron",
+			"type": "shell",
+			"problemMatcher": [{
+				"pattern": [{
+					"regexp": ".",
+					"file": 1,
+					"location": 2,
+					"message": 3
+				}],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".",
+					"endsPattern": ".",
+				}
+			}],
+			"isBackground": true,
+			"command": "${workspaceFolder}/node_modules/.bin/electron",
+			"windows": {
+				"command": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+			},
+			"args": [
+				"--remote-debugging-port=9223",
+				"./thing-editor/electron-main",
+				"debugger-detection-await"
+			]
+		}
+	]
+}
