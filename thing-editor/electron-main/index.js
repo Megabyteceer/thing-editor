@@ -82,7 +82,7 @@ const createWindow = () => {
 				event.returnValue = enumProjects();
 				return;
 			case 'fs/ready':
-				setTimeout(loadEditorIndexHTML, 300);
+				setTimeout(loadEditorIndexHTML, 400);
 				event.returnValue = true;
 				return;
 			case 'fs/exitWithResult':
@@ -103,9 +103,7 @@ const createWindow = () => {
 
 	const loadEditorIndexHTML = () => {
 		const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
-		mainWindow.loadURL(EDITOR_VITE_ROOT).catch(() => {
-			dialog.showErrorBox('Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
-		}).finally(() => {
+		mainWindow.loadURL(EDITOR_VITE_ROOT).finally(() => {
 			mainWindow.setOpacity(1);
 		});
 
@@ -114,6 +112,9 @@ const createWindow = () => {
 	if(IS_DEBUG) {
 		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
+			if(er.code === 'ERR_CONNECTION_REFUSED') {
+				dialog.showErrorBox('Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
+			}
 		});
 	} else {
 		loadEditorIndexHTML();

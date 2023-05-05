@@ -58,26 +58,38 @@
 		{
 			"name": "Editor",
 			"type": "chrome",
-			"request": "attach",
-			"preLaunchTask": "Run electron",
+			"request": "launch",
+			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"runtimeArgs": [
+				"--remote-debugging-port=9223",
+				"./thing-editor/electron-main",
+				"debugger-detection-await"
+			],
+			"windows": {
+				"outputCapture": "std",
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+				//"runtimeExecutable": "C:/Windows/System32/cmd.exe",
+				//"runtimeArgs": ["k/", "C:\\Dropbox\\electron-vite-preact\\1.bat"]
+			},
 			"port": 9223,
 			"webRoot": "${workspaceFolder}",
 			"timeout": 3000,
 			"vueComponentPaths": [],
+			"enableContentValidation": false,
 			"outFiles": [],
 			"presentation": {
 				//"hidden": true
 			},
 			"sourceMaps": true,
+			"smartStep": true,
 			"resolveSourceMapLocations": [
 				"${workspaceFolder}/**",
 				"!**/node_modules/**"
 			],
-			"urlFilter": "http://127.0.0.1:5173/*"
-			/*,
-			"trace": {
+			/*"trace": {
 				"logFile": "${workspaceRoot}/dbug.log"
-			},*/
+			}*/
+			//"urlFilter": "http://127.0.0.1:5173/*"
 		}
 	],
 	"compounds": [{
