@@ -31,11 +31,13 @@ const createWindow = () => {
 	windowState = {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js')
-		}
+		},
+		opacity:0
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
-
+	//mainWindow.hide();
+	
 	nativeTheme.themeSource = 'dark'
 
 	ipcMain.on('fs', (event, command, fileName, content) => {
@@ -76,9 +78,23 @@ const createWindow = () => {
 			case 'fs/readDir':
 				event.returnValue = walkSync(fileName, []);
 				return;
-			case 'fs/frontend-ready':
+			case 'fs/enumProjects':
+				event.returnValue = enumProjects();
+				return;
+			case 'fs/ready':
 				setTimeout(loadEditorIndexHTML, 300);
 				event.returnValue = true;
+				return;
+			case 'fs/exitWithResult':
+				let success = fileName;
+				let error = content
+				if(error) {
+					console.error(error);
+				} else if(success) {
+					console.log(success);
+				}
+				process.exit(error ? 1 : 0);
+				return;
 		}
 	});
 
@@ -87,8 +103,11 @@ const createWindow = () => {
 	const loadEditorIndexHTML = () => {
 		const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
 		mainWindow.loadURL(EDITOR_VITE_ROOT).catch(() => {
-			dialog.showErrorBox('Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
+			dialog.showErrorBox('Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
+		}).finally(() => {
+			mainWindow.setOpacity(1);
 		});
+		
 	};
 
 	if(IS_DEBUG) {
@@ -109,3 +128,25 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
 	if(process.platform !== 'darwin') app.quit()
 });
+
+const GAMES_ROOT = path.join(__dirname, '../../games');
+
+const enumProjects = (ret = [], subDir = '') => {
+	let dir = path.join(GAMES_ROOT, subDir);
+	fs.readdirSync(dir).forEach(file => {
+		if(file !== '.git' && file !== 'node_modules') {
+			let dirName = path.join(dir, file);
+			if(fs.statSync(dirName).isDirectory()) {
+				let projDescFile = dirName + '/thing-project.json';
+				if(fs.existsSync(projDescFile)) {
+					let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
+					desc.dir = subDir ? (subDir + '/' + file) : file;
+					ret.push(desc);
+				} else {
+					enumProjects(ret, subDir ? (subDir + '/' + file) : file);
+				}
+			}
+		}
+	});
+	return ret;
+};

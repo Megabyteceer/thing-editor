@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import Editor from "thing-editor/src/editor/editor";
 
 type FileDesc = {
@@ -25,7 +26,7 @@ interface EditorExtendData {
 
 	isPrefabReference?: true; //TODO:
 
-	constructorCalled: boolean;
+	constructorCalled?: boolean;
 
 	/** unknown constructor's name */
 	unknownConstructor?: string;
@@ -33,15 +34,15 @@ interface EditorExtendData {
 	unknownConstructorProps?: SerializedObjectProps;
 
 
-	component_in_previewMode: boolean;
+	component_in_previewMode?: boolean;
 
-	noSerialize: boolean;
+	noSerialize?: boolean;
 
 	serializationCache?: SerializedObject;
 
 }
 
-type FSCallback = Uint8Array | undefined | FileDesc[];
+type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[];
 
 type KeyedObject = { [key: string]: any };
 
@@ -86,6 +87,16 @@ type ThingEditorServer = { // exposed from electron
 	fs: (command: string, filename?: string, content?: string) => FSCallback;
 	versions: KeyedObject;
 	argv: string[]
+}
+
+/** signals for DataPathChooser and CallbackPathChooser */
+interface SelectableProperty {
+	___EDITOR_isHiddenForChooser?: true
+	___EDITOR_isHiddenForCallbackChooser?: true
+	___EDITOR_isHiddenForDataChooser?: true
+	___EDITOR_isGoodForChooser?: true
+	___EDITOR_isGoodForCallbackChooser?: true
+	___EDITOR_ChooserOrder?: true
 }
 
 declare global {

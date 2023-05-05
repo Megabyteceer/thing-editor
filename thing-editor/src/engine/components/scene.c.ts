@@ -13,7 +13,7 @@ export default class Scene extends Container {
 	@editable()
 	isStatic = false;
 
-	@editable({ select: makePrefabSelector('fader/', true) }) //TODO: prefab options startsWith, canBeEmpty = true, filter = null
+	@editable({ type: 'string', select: makePrefabSelector('fader/', true) }) //TODO: prefab options startsWith, canBeEmpty = true, filter = null
 	faderType: string | null = null
 
 	onShow() {

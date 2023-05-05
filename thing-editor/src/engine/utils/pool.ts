@@ -1,14 +1,13 @@
 import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
+import DisplayObject from "thing-editor/src/engine/display-object";
 
 let pools = new Map();
 /// #if EDITOR
 let __idCounter = 1;
 
 const onNew = (ret: any) => {
-	ret.___id = __idCounter++;
-	ret.__nodeExtendData = {};
 	const editableProps: EditablePropertyDesc[] = ret.__editableProps;
 	if(editableProps) {
 		for(let prop of editableProps) {
@@ -18,7 +17,14 @@ const onNew = (ret: any) => {
 			}
 		}
 	}
+	onTake(ret);
+}
 
+const onTake = (ret: any) => {
+	if(ret instanceof DisplayObject) {
+		ret.___id = __idCounter++;
+		ret.__nodeExtendData = {};
+	}
 }
 
 /// #endif
@@ -59,8 +65,7 @@ export default class Pool {
 		let ret = a[i];
 		a.splice(i, 1);
 		assert(!ret.hasOwnProperty('children') || ret.children.length === 0, "Pool contains " + constructor.name + " with non empty children.", 90001);
-		ret.___id = __idCounter++;
-		ret.__nodeExtendData = {};
+		onTake(ret);
 		return ret;
 		/// #endif
 

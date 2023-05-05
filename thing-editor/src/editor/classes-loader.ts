@@ -13,18 +13,18 @@ import DisplayObject from "thing-editor/src/engine/display-object";
 
 let componentsVersion = Date.now();
 
+
+
 export default class ClassesLoader {
 
 	static async reloadClasses(cached = false): Promise<Classes | undefined> {
 		componentsVersion++;
 		let files = fs.getFiles('.c.ts');
 		return Promise.all(files.map((file) => {
-			const moduleName = '../../../' + file.name.replace(/\.ts$/, '');
-			const versionQuery = cached ? '' : '?v=' + componentsVersion;
 
-			return import(/* @vite-ignore */`/${moduleName}.ts${versionQuery}`).then((module) => {
+			const onLoad = (module:{default: SourceMappedConstructor}) => {
 
-				const RawClass: SourceMappedConstructor = module.default;
+				const RawClass = module.default;
 				if(!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
 					if(!RawClass) {
 						game.editor.showError('file ' + file.name + ' exports empty statement: ' + RawClass);
@@ -40,7 +40,9 @@ export default class ClassesLoader {
 
 				Class.__sourceFileName = file.name;
 				Class.__defaultValues = {};
-
+				if(!Class.prototype.__editableProps) {
+					Class.prototype.__editableProps = [];
+				}
 				const editableProps: EditablePropertyDesc[] = Class.prototype.__editableProps;
 				for(let prop of editableProps) {
 
@@ -49,7 +51,7 @@ export default class ClassesLoader {
 
 					if(!prop.hasOwnProperty('type')) {
 						let type = typeof instance[prop.name];
-						assert(type === 'string' || type === 'number', 'invalid type "' + type + '" for editable property ' + prop.name);
+						assert(type === 'string' || type === 'number' || type === 'boolean', 'invalid type "' + type + '" for editable property ' + prop.name);
 						//@ts-ignore
 						prop.type = type || 'number';
 					}
@@ -61,7 +63,17 @@ export default class ClassesLoader {
 				}
 
 				return Class;
-			});
+			};
+
+			const moduleName = '../../../' + file.name.replace(/\.ts$/, '');
+
+			if(cached) {
+				return import(/* @vite-ignore */`/${moduleName}.ts`).then(onLoad);
+			} else {
+				const versionQuery = cached ? '' : '?v=' + componentsVersion;
+				return import(/* @vite-ignore */`/${moduleName}.ts${versionQuery}`).then(onLoad);
+			}
+			
 		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {
 			let classes: Classes = {};
 			for(let c of _classes) {

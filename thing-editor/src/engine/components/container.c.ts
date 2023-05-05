@@ -11,7 +11,7 @@ Container.prototype.init = function () {
 
 }
 
-editable()(Container, 'x');
+editable()(Container.prototype, 'x');
 
 export default Container;
 

@@ -309,6 +309,10 @@ export default class Lib {
 		}
 	}
 
+	static __deleteScene(_sceneName: string) {
+		//TODO:
+	}
+
 	/// #endif
 }
 

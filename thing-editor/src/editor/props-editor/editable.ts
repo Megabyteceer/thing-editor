@@ -32,6 +32,7 @@ interface EditablePropertyDesc extends EditablePropertyDescRaw {
 /** editable property decorator */
 function editable(editablePropertyDesc?: EditablePropertyDescRaw) {
 	return function (target: any, name: string, _descriptor?: PropertyDescriptor) {
+		
 		if(!target.__editableProps) {
 			target.__editableProps = [];
 		}
