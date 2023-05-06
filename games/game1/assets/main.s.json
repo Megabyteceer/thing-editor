@@ -1,0 +1,23 @@
+{
+	"c": "Scene",
+	"p": {
+		"backgroundColor": 0
+	},
+	":": [
+		{
+			"c": "Container",
+			"p": {
+				"x": 136,
+				"y": 94
+			}
+		},
+		{
+			"c": "Sprite",
+			"p": {
+				"x": 136,
+				"y": 194,
+				"image": "bunny.png"
+			}
+		}
+	]
+}

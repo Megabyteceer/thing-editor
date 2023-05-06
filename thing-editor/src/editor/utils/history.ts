@@ -4,7 +4,7 @@ import { KeyedMap, SerializedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import regenerateCurrentSceneMapTypings from "thing-editor/src/editor/utils/generate-editor-typings";
 import type { SelectionData } from "thing-editor/src/editor/utils/selection";
-import { ContainerType } from "thing-editor/src/engine/components/container.c";
+import { Container } from "pixi.js";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -35,7 +35,7 @@ function applyState(state: HistoryRecord) {
 		game.__setCurrentContainerContent(node);
 	}
 	game.editor.selection.loadSelection(state.selectionData);
-	const stage = game.stage as ContainerType;
+	const stage = game.stage as Container;
 	stage.x = state.selectionData._stageX as number;
 	stage.y = state.selectionData._stageY as number;
 	stage.scale.x = stage.scale.y = state.selectionData._stageS as number;
@@ -197,7 +197,7 @@ class History {
 				this._undoList.splice(i, 1);
 			}
 		}
-		historyUi.forceUpdate();
+		this.updateUi();
 	}
 
 	addSelectionHistoryState() {
@@ -207,7 +207,7 @@ class History {
 	addHistoryState(selectionOnly = false) {
 		let selectionData = game.editor.selection.saveSelection();
 
-		const stage = game.stage as ContainerType;
+		const stage = game.stage as Container;
 		selectionData._stageX = stage.x;
 		selectionData._stageY = stage.y;
 		selectionData._stageS = stage.scale.x;
@@ -246,13 +246,8 @@ class History {
 		return null;
 	}
 
-	clearHistory() {
-		this.setCurrentStateUnmodified();
-		historyUi.forceUpdate();
-	}
-
 	updateUi() {
-		historyUi.forceUpdate();
+		historyUi && historyUi.forceUpdate();
 	}
 
 	setCurrentStateUnmodified() {
@@ -263,6 +258,7 @@ class History {
 			s.treeData._isModified = true;
 		});
 		delete (this.currentState as HistoryRecord).treeData._isModified;
+		this.updateUi();
 	}
 
 	get isStateModified() {

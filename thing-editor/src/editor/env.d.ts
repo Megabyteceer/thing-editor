@@ -1,11 +1,13 @@
 /// <reference types="vite/client" />
+/// <reference path="../engine/components/container.c.ts" />
 
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import Editor from "thing-editor/src/editor/editor";
 
 type FileDesc = {
 	/** file name*/
-	name: string,
+	fileName: string,
+	assetName: string,
 	/** modification time*/
 	mTime: number
 };
@@ -21,6 +23,8 @@ type CallBackParsedData = {
 
 interface EditorExtendData {
 	hidden?: true;
+
+	childrenExpanded?: boolean;
 
 	isSelected?: boolean;
 
@@ -40,9 +44,11 @@ interface EditorExtendData {
 
 	serializationCache?: SerializedObject;
 
+	isFaderShootCalledForThisFader?: boolean;
+
 }
 
-type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[];
+type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;
 
 type KeyedObject = { [key: string]: any };
 
@@ -54,10 +60,15 @@ interface Constructor {
 	};
 }
 
+PIXI
+
 interface SourceMappedConstructor extends Constructor {
 	__sourceFileName?: string;
 	__defaultValues: KeyedObject;
 	__EDITOR_icon?: string;
+	__EDITOR_group?: string;
+	/** added because pixi exports classes with wrong names */
+	__className?: string;
 }
 
 type Classes = {
@@ -84,7 +95,7 @@ type Prefabs = {
 }
 
 type ThingEditorServer = { // exposed from electron
-	fs: (command: string, filename?: string, content?: string) => FSCallback;
+	fs: (command: string, filename?: string, content?: string, ...args?: any[]) => FSCallback;
 	versions: KeyedObject;
 	argv: string[]
 }

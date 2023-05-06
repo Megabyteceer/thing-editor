@@ -10,10 +10,7 @@ patch(
 import type { EditorExtendData } from 'thing-editor/src/editor/env';
 	
 `
-);
-
-patch(
-	'node_modules/@pixi/display/lib/DisplayObject.d.ts',
+	,
 	'export declare abstract class DisplayObject extends utils.EventEmitter<DisplayObjectEvents> {',
 	`
     /** returns object rotation relative to it's scene */
@@ -35,11 +32,11 @@ patch(
     removeFilter(filter: Filter): void;
     gotoLabelRecursive(labelName: string);
     isCanBePressed: boolean;
-    findParentByType<T extends Container>(classType: new () => T): T;
+    findParentByType<T extends Container>(classType: new () => T): T | null;
     findParentByName(name: string): Container;
 
     /** search child recursively by it's name */
-    findChildByName(name: string): Container;
+    findChildByName(name: string): Container | null;
     /** search all children of defined type recursively */
     findChildrenByType<T extends Container>(classType: new () => T): T[];
     /** search all children by name */
@@ -54,8 +51,13 @@ patch(
     __afterSerialization?(data: SerializedObject): void;
     __beforeDestroy?(): void;
 
+    __EDITOR_onCreate?(isWrapping?:boolean): void;
+
     __exitPreviewMode?(): void;
+    __onSelect?(): void;
     __onUnselect?(): void;
+    __onChildSelected?(): void;
+	__isAnyChildSelected?(): boolean;
 
     ___pathBreakpoint?: string;
 
@@ -75,6 +77,7 @@ patch(
 	'export declare class Sprite extends Container {',
 	`
 	image: string;
+	protected _imageID: string;
 	`);
 
 patch(
@@ -84,48 +87,56 @@ patch(
 	setAlign(align:string):void;
 	`);
 
-function patch(fileName, find, insert) {
+function patch(fileName, ...findInserts) {
 	patches.push({
 		fileName,
-		find,
-		insert: find + PATCH_BEGIN + insert + `
-	// thing-editor patch end
-`});
-}
+		findInserts
+	});
+};
+
 
 const path = require('path');
 const fs = require('fs');
 const {dialog} = require("electron");
 
-function tryToPatch(folder) {
+function tryToPatch(folder, mainWindow) {
 	for(let patch of patches) {
 		var fn = path.join(folder, patch.fileName);
 		if(fs.existsSync(fn)) {
 			patch.done = true;
 			let txt = fs.readFileSync(fn, 'utf8');
-			if(txt.indexOf(PATCH_BEGIN) > 0) {
+			if(txt.indexOf(PATCH_BEGIN) >= 0) {
 				continue;
 			}
 
-			let find = patch.find;
-			let insert = patch.insert;
-			if(txt.indexOf(find) > 0) {
-				txt = txt.replace(find, insert);
-				fs.writeFileSync(fn, txt);
-				console.log('PIXI typings patched: ' + fn);
-			} else {
-				console.error('PIXI typings patch "' + find + '" was not applied: ' + fn);
-				dialog.showErrorBox('PIXI typing patch error', 'PIXI typings patch "' + find + '" was not applied: ' + fn);
+			let findInserts = patch.findInserts;
+			while(findInserts.length > 0) {
+
+				let find = findInserts.shift();
+				let insert = findInserts.shift();
+
+				insert = find + PATCH_BEGIN + insert + `
+	// thing-editor patch end
+`
+
+				if(txt.indexOf(find) >= 0) {
+					txt = txt.replace(find, insert);
+					fs.writeFileSync(fn, txt);
+					console.log('PIXI typings patched: ' + fn);
+				} else {
+					console.error('PIXI typings patch "' + find + '" was not applied: ' + fn);
+					dialog.showMessageBoxSync(mainWindow, 'PIXI typing patch error', 'PIXI typings patch "' + find + '" was not applied: ' + fn);
+				}
 			}
 		}
 	}
 }
 
-module.exports = function () {
+module.exports = function (mainWindow) {
 	projectRoot = path.join(__dirname, '../..');
 	tryToPatch(path.join(__dirname, '..'));
 	while(fs.existsSync(projectRoot)) {
-		tryToPatch(projectRoot);
+		tryToPatch(projectRoot, mainWindow);
 		let parentPath = path.join(projectRoot, '..');
 		if(parentPath === projectRoot) {
 			break;
@@ -134,8 +145,9 @@ module.exports = function () {
 	}
 	for(let patch of patches) {
 		if(!patch.done) {
+			debugger;
 			console.error('PIXI typings was not found: ' + patch.fileName);
-			wss.notify('PIXI typings was not found: ' + patch.fileName);
+			dialog.showMessageBoxSync(mainWindow, 'PIXI typings was not found: ' + patch.fileName);
 		}
 	}
 };

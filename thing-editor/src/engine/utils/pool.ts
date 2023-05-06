@@ -1,7 +1,7 @@
 import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
-import DisplayObject from "thing-editor/src/engine/display-object";
+import { Container } from "pixi.js";
 
 let pools = new Map();
 /// #if EDITOR
@@ -21,7 +21,7 @@ const onNew = (ret: any) => {
 }
 
 const onTake = (ret: any) => {
-	if(ret instanceof DisplayObject) {
+	if(ret instanceof Container) {
 		ret.___id = __idCounter++;
 		ret.__nodeExtendData = {};
 	}

@@ -16,6 +16,10 @@ body {
 	height: 100%;
 }
 
+img {
+	vertical-align: middle;
+}
+
 button {
 	border-radius: 3px;
 	border: 1px solid #323334;
@@ -26,10 +30,6 @@ button {
 
 button:hover {
 	background-color: #38233f;
-}
-
-span {
-	color: rgb(245, 126, 29);
 }
 
 .clickable {
@@ -43,7 +43,6 @@ span {
 .version-header {
 	color: blueviolet;
 }
-
 
 .modal-blackout {
 	position: fixed;
@@ -76,6 +75,11 @@ span {
 	position: relative;
 }
 
+.modal-title img {
+	max-height:20px;
+	margin-right: 10px;
+}
+
 .modal-body {
 	margin:auto;
 	margin-top:100px;
@@ -91,6 +95,14 @@ span {
 	background:#fff;
 	max-height: 70vh;
 	overflow-y: auto;
+}
+
+.modal-content input {
+	font-size:130%;
+	width: 100%;
+	padding:5px;
+	border:1px solid #888;
+	margin-bottom: 20px;
 }
 
 .error {

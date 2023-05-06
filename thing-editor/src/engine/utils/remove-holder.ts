@@ -1,6 +1,6 @@
-import { PIXI } from "thing-editor/src/engine/game";
+import { Container } from "pixi.js";
 
-class RemoveHolder extends PIXI.Container {
+class RemoveHolder extends Container {
 	constructor() {
 		super();
 		this.visible = false;

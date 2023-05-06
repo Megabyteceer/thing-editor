@@ -9,7 +9,19 @@ let typedFiles: Map<string, FileDesc[]> = new Map();
 
 let allFiles: Map<string, FileDesc> = new Map();
 
+const execFs = (command: string, filename?: string, content?: string, ...args: any[]) => {
+	const ret = thingEditorServer.fs(command, filename, content, args);
+	if(ret instanceof Error) {
+		throw ret;
+	}
+	return ret;
+}
+
 export default class fs {
+
+	static get __allFiles() {
+		return allFiles;
+	}
 
 	static getFiles(extension: string | string[]): FileDesc[] {
 		let key;
@@ -47,14 +59,14 @@ export default class fs {
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fs.fieldsFilter, '	');
 		}
-		return thingEditorServer.fs('fs/saveFile', fileName, data as string);
+		return execFs('fs/saveFile', fileName, data as string);
 	}
 
 	static deleteFile(fileName: string) {
-		return thingEditorServer.fs('fs/delete', fileName);
+		return execFs('fs/delete', fileName);
 	}
 	static readFile(fileName: string) {
-		return thingEditorServer.fs('fs/readFile', fileName);
+		return JSON.parse(execFs('fs/readFile', fileName) as unknown as string);
 	}
 
 	static editFile(_fileName: string) {
@@ -62,29 +74,33 @@ export default class fs {
 	}
 
 	static toggleDevTools() {
-		thingEditorServer.fs('fs/toggleDevTools');
+		execFs('fs/toggleDevTools');
 	}
 
 	static enumProjects(): ProjectDesc[] {
-		return thingEditorServer.fs('fs/enumProjects') as ProjectDesc[];
+		return execFs('fs/enumProjects') as ProjectDesc[];
 	}
 
 	static refreshAssetsList(dirNames: string[]) {
 		allFiles.clear();
-		for(let dirname of dirNames) {
-			const files = thingEditorServer.fs('fs/readDir', dirname) as FileDesc[];
+		typedFiles.clear();
+		for(let dirName of dirNames) {
+			const files = execFs('fs/readDir', dirName) as FileDesc[];
+			let dirNameWithSlash = dirName + '/';
 			for(let file of files) {
-				let wrongSymbol = fs.getWrongSymbol(file.name);
+				let wrongSymbol = fs.getWrongSymbol(file.fileName);
 				if(wrongSymbol) {
-					game.editor.warn("File " + file.name + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
+					game.editor.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
 				}
-				allFiles.set(file.name, file);
+				file.assetName = file.fileName.replace(dirNameWithSlash, '');
+				file.fileName = '/' + file.fileName;
+				allFiles.set(file.fileName, file);
 			}
 		}
 	}
 
 	static ready() {
-		thingEditorServer.fs('fs/ready')
+		execFs('fs/ready')
 	}
 
 	static getWrongSymbol(fileName: string) {
@@ -101,7 +117,11 @@ export default class fs {
 	}
 
 	static exitWithResult(success: string | undefined, error?: string) {
-		thingEditorServer.fs('fs/exitWithResult', success, error)
+		execFs('fs/exitWithResult', success, error)
+	}
+
+	static showQueston(title: string, message: string, yes: string, no: string): number {
+		return execFs('fs/showQueston', title, message, yes, no) as number;
 	}
 }
 

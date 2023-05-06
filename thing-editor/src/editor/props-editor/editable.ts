@@ -1,3 +1,6 @@
+import { Container } from "pixi.js";
+import { SelectComponentItem } from "thing-editor/src/editor/ui/selectComponent";
+
 type EditablePropertyType = 'data-path' |
 	'splitter' |
 	'rect' |
@@ -16,7 +19,16 @@ interface EditablePropertyDescRaw {
 	step?: number,
 	type?: EditablePropertyType,
 	name?: string,
+	/** field changes pass vale through this function  */
+	parser?: (val: any) => any;
+	disabled?: (o: Container) => boolean;
+	beforeEdited?: (val: any) => void;
+	onBlur?: (val: any) => void;
+
+	/** splitter header */
+	title?: string,
 	isArray?: true,
+	notAnimate?: true,
 	select?: SelectComponentItem[] | (() => SelectComponentItem[])
 	noNullCheck?: true,
 }

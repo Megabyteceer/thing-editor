@@ -1,6 +1,7 @@
-import { DisplayObjectType } from "thing-editor/src/engine/display-object";
+import { Container } from "pixi.js";
 
-const resetNodeExtendData = (node: DisplayObjectType) => {
+
+const resetNodeExtendData = (node: Container) => {
 	if(node.__nodeExtendData) {
 
 		//@ts-ignore

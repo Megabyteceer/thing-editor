@@ -1,10 +1,10 @@
 import { pathDebugging, setValueByPath } from "./get-value-by-path";
 import game from "../game";
-import type { CallBackParsedData, CallBackPath, KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import type { CallBackParsedData, CallBackPath, KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
-import { DisplayObject } from "pixi.js";
+import { Container } from "pixi.js";
 
-const callByPath = (callbackPath: CallBackPath, this_: DisplayObject): any => {
+const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	assert(this_, "'this' argument is not provided in to 'callByPath'.", 10026);
 	assert(callbackPath, "Empty callByPath string.", 10027);
 
@@ -20,7 +20,7 @@ const callByPath = (callbackPath: CallBackPath, this_: DisplayObject): any => {
 	} else {
 		/// #if EDITOR
 		if(!(rootName in game)) {
-			game.editor.logError("Unknown root element name '" + rootName + "' in '" + callbackPath + "'.", 30025, this_, game.editor.getFieldNameByValue(this_ as any as SourceMappedConstructor, callbackPath));
+			game.editor.logError("Unknown root element name '" + rootName + "' in '" + callbackPath + "'.", 30025, this_, game.editor.getFieldNameByValue(this_, callbackPath));
 			return;
 		}
 		/// #endif

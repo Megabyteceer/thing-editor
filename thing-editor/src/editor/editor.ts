@@ -9,21 +9,25 @@ import game from "../engine/game";
 import ClassesLoader from "./classes-loader";
 import { KeyedMap, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
-import DisplayObject, { DisplayObjectType } from "thing-editor/src/engine/display-object";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
-import Selection from "thing-editor/src/editor/utils/selection";
+import Selection, { SelectionData } from "thing-editor/src/editor/utils/selection";
 import historyInstance from "thing-editor/src/editor/utils/history";
 import AssetsLoader from "thing-editor/src/editor/assets-loader";
 import Settings from "thing-editor/src/engine/utils/settings";
 import UI from "thing-editor/src/editor/ui/ui";
-import { h, render } from "preact";
+import { ComponentChild, h, render } from "preact";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import Lib from "thing-editor/src/engine/lib";
 import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-access-to-node";
 
+import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
+import Pool from "thing-editor/src/engine/utils/pool";
+import assert from "thing-editor/src/engine/debug/assert";
+import { Container, Texture } from "pixi.js";
+
 type EditorEvents = {
-	beforePropertyChanged: (o: DisplayObjectType, fieldName: string, field: EditablePropertyDesc, val: any, isDelta: boolean) => void,
+	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta: boolean) => void,
 	afterPropertyChanged: (body: string, from: string) => void
 }
 
@@ -39,6 +43,7 @@ export default class Editor {
 	settings: Settings = new Settings('editor');
 
 	disableFieldsCache: boolean = false;
+	isCurrentSceneModified: boolean = false;
 
 	buildProjectAndExit: any; //TODO:
 
@@ -49,20 +54,22 @@ export default class Editor {
 
 	_lastChangedFiledName: string | null = null;
 
+	savedBackupName?: string | null;
+	savedBackupSelectionData?: SelectionData;
+
 	ui!: UI;
 
 	/** true when editor blocked fatally with un-closable error */
 	__FatalError = false;
 
-	projectOpeningInProgress = false;
 	__projectReloading = false; //TODO:  rename to restartInProgress
 
-	fs: any;
-	overlay: any;
+	overlay: any; //TODO:
 
+	__wrongTexture = Texture.from('img/wrong-texture.png');
 
 	readonly editorFilesPrefix = '.editor-tmp/';
-	readonly backupSceneLibSaveSlotName = this.editorFilesPrefix + 'backup'; //TODO: rename to sceneBackupFileName
+	readonly backupSceneLibSaveSlotName = this.editorFilesPrefix + 'backup'; //TODO: implement it rename to sceneBackupFileName
 
 	constructor() {
 
@@ -74,91 +81,59 @@ export default class Editor {
 		render(h(UI, { onUIMounted: this.onUIMounted }), document.body);
 
 		game.editor = this;
+		game.__EDITOR_mode = true;
 
-		// load built in components
-		fs.refreshAssetsList(['./thing-editor/src/engine/components']);
-		ClassesLoader.reloadClasses(true).then(() => {
-
-		});
+		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 	}
 
 	onUIMounted(ui: UI) {
 		this.ui = ui;
-		game.__EDITOR_mode = true;
-		this.openProject();
+		// load built in components
+		fs.refreshAssetsList(['thing-editor/src/engine/components']);
+		ClassesLoader.reloadClasses(true).then(() => {
+			if(this.settings.getItem('last-opened-project')) {
+				this.openProject(this.settings.getItem('last-opened-project'));
+			} else {
+				this.chooseProject(true);
+			}
+		});
+	}
+
+	chooseProject(noClose = false) {
+		ProjectsList.chooseProject(noClose).then((dir) => {
+			this.settings.setItem('last-opened-project', dir);
+			window.document.location.reload();
+		});
 	}
 
 	async openProject(dir?: string) {
 		this.ui.viewport.stopExecution();
 		await this.askSceneToSaveIfNeed();
 
-		if(location.search && location.search.indexOf('?buildProjectAndExit=') === 0) {
-			this.buildProjectAndExit = JSON.parse(decodeURIComponent(location.search.replace('?buildProjectAndExit=', '')));
-			if(this.buildProjectAndExit) {
-				window.addEventListener('error', function (errEv) {
-					fs.exitWithResult(undefined, "UNCAUGHT ERROR: " + JSON.stringify(errEv, ["message", "filename", "lineno", "colno", "stack"]));
-				});
-				let errorOriginal = console.error;
-				console.error = (txt) => {
-					errorOriginal(txt);
-					fs.exitWithResult(undefined, "CONSOLE ERROR CAPTURED: " + txt);
-				};
-			}
-		}
-		let lastOpenedProject = this.buildProjectAndExit ? this.buildProjectAndExit.projectName : this.settings.getItem('last-opened-project');
-		if(!dir) {
-			dir = lastOpenedProject;
-		}
-		if(!dir) {
-			ProjectsList.chooseProject(true);
-		} else if((dir + '/') !== this.currentProjectDir) {
+		const newProjectDir = 'games/' + dir + '/';
+		if(newProjectDir !== this.currentProjectDir) {
+			this.currentProjectDir = newProjectDir;
 			this.ui.modal.showSpinner();
-			this.projectOpeningInProgress = true;
-			this.settings.setItem('last-opened-project', dir);
-			if(dir !== lastOpenedProject) {
-				this.projectOpeningInProgress = false;
-				this.__projectReloading = true;
-				location.reload();
-				return;
-			}
-			this.settings.setItem('last-opened-project', false);
-			let data = await fs.readFile('/fs/openProject?dir=' + dir);
-			if(!data) {
-				this.projectOpeningInProgress = false;
+			this.settings.removeItem('last-opened-project');
+			this.projectDesc = fs.readFile(this.currentProjectDir + 'thing-project.json');
+			if(!this.projectDesc) {
 				this.ui.modal.showError("Can't open project " + dir).then(() => { this.openProject(); });
 				return;
 			}
-			await this.fs.refreshFiles();
-			this.currentProjectDir = dir + '/';
 
-
-			let folderSettings;
-			let imagesSettings;
-
-			if(this.fs.libsSettings) {
-				folderSettings = this.fs.libsSettings.__loadOnDemandTexturesFolders;
-				imagesSettings = this.fs.libsSettings.loadOnDemandTextures;
-			}
-
-			this.projectDesc = this.fs.libsSettings ? Object.assign(this.fs.libsSettings, data) : data;
-
-			if(folderSettings) {
-				this.fs.libsSettings.__loadOnDemandTexturesFolders = Object.assign(folderSettings, this.projectDesc.__loadOnDemandTexturesFolders);
-			}
-			if(imagesSettings) {
-				this.fs.libsSettings.loadOnDemandTextures = Object.assign(imagesSettings, this.projectDesc.loadOnDemandTextures);
-			}
+			//TODO libs settings-merge to current
 
 			this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
-
 			let isProjectDescriptorModified = game.applyProjectDesc(this.projectDesc);
 
+
 			await game.init(window.document.getElementById('viewport-root'), 'editor.' + this.projectDesc.id, '/games/' + dir + '/');
-
 			game.stage.interactiveChildren = false;
+			protectAccessToSceneNode(game.stage, "game stage");
+			protectAccessToSceneNode(game.stage.parent, "PIXI stage");
 
-			//	this.overlay = new Overlay();
-			await Promise.all([this.reloadAssetsAndClasses()]);
+			//	this.overlay = new Overlay(); //TODO:
+			await Promise.all([this.reloadAssetsAndClasses(true)]);
 
 			this.settings.setItem('last-opened-project', dir);
 
@@ -168,46 +143,14 @@ export default class Editor {
 				this.__saveProjectDescriptorInner(true); // try to cleanup descriptor
 			}
 
-			protectAccessToSceneNode(game.stage, "game stage");
-			protectAccessToSceneNode(game.stage.parent, "PIXI stage");
-
-
 			if(this.projectDesc.__lastSceneName && !Lib.hasScene(this.projectDesc.__lastSceneName)) {
 				this.projectDesc.__lastSceneName = false;
 			}
 
-			if(!this.buildProjectAndExit && Lib.hasScene(this.backupSceneLibSaveSlotName)) {
-				//backup restoring
-				this.ui.modal.showEditorQuestion("Scene's backup restoring (" + this.projectDesc.title + ")",
-					R.fragment(R.div(null, "Looks like previous session was finished incorrectly."),
-						R.div(null, "Do you want to restore scene from backup?")),
-					async () => {
-						await this.openSceneSafe(this.backupSceneLibSaveSlotName);
-						this.history.currentState.treeData._isModified = true;
+			this.openScene(this.projectDesc.__lastSceneName || this.projectDesc.mainScene || 'main');
 
-					}, 'Restore backup',
-					async () => {
-						await this.openSceneSafe(this.projectDesc.__lastSceneName || 'main');
-						Lib.__deleteScene(this.backupSceneLibSaveSlotName);
-					}, 'Delete backup',
-					true
-				);
-			} else {//open last project's scene
-				await this.openSceneSafe(!this.buildProjectAndExit && this.projectDesc.__lastSceneName || this.projectDesc.mainScene || 'main');
-				if(this.buildProjectAndExit) {
-					this.testProject().then(() => {
-						this.build().then(() => {
-							this.build(true).then(() => {
-								fs.exitWithResult('build complete');
-							});
-						});
-					});
-				}
-			}
 			this.regeneratePrefabsTypings();
 			this.ui.modal.hideSpinner();
-
-			this.projectOpeningInProgress = false;
 		}
 	}
 
@@ -221,23 +164,62 @@ export default class Editor {
 	}
 
 	saveProjectDesc() {
-		//TODO:
-
+		debouncedCall(this.__saveProjectDescriptorInner);
 	}
 
-	async openSceneSafe(_sceneName: string) {
-		//TODO
+	openScene(name: string) {
+		this.askSceneToSaveIfNeed();
+
+		Pool.__resetIdCounter();
+		assert(name, 'name should be defined');
+		this.saveCurrentScenesSelectionGlobally();
+
+		game.showScene(name);
+
+		game.currentContainer.__nodeExtendData.childrenExpanded = true;
+
+		this.regeneratePrefabsTypings();
+
+		document.title = '(' + this.projectDesc.title + ') - - (' + name + ')';
+		this.saveCurrentSceneName(game.currentScene.name as string);
+		if(game.currentScene) {
+			this.selection.loadSelection(game.settings.getItem('__EDITOR_scene_selection' + this.currentSceneName));
+		}
+
+		this.history.setCurrentStateUnmodified();
+		this.ui.forceUpdate();
+	}
+
+	saveCurrentScenesSelectionGlobally() {
+		if(game.currentScene) {
+			game.settings.setItem('__EDITOR_scene_selection' + this.currentSceneName, this.selection.saveSelection());
+		}
 	}
 
 	askSceneToSaveIfNeed() {
-		//TODO:
+		this.ui.viewport.stopExecution();
+		if(this.isCurrentSceneModified) {
+			if(fs.showQueston("Unsaved changes.", "Do you want to save changes in current scene?", "Save", "Discard")) {
+				this.saveCurrentScene();
+			}
+		}
 	}
 
 	regeneratePrefabsTypings() {
 		//TODO:
 	}
 
+	loadScene(_name: string) {
+		//TODO
+	}
 
+	saveCurrentScene() {
+		//TODO
+	}
+
+	get currentSceneName() {
+		return this.projectDesc ? this.projectDesc.__lastSceneName : null;
+	}
 
 	openUrl(url: string) {
 		if(!window.open(url)) {
@@ -252,24 +234,34 @@ export default class Editor {
 
 	//TODO: set diagnosticLevel settings to informations to show spell typos and fix them after all
 
-	async reloadAssetsAndClasses() {
+	async reloadAssetsAndClasses(refreshAssetsList = false) {
+		if(refreshAssetsList) {
+			fs.refreshAssetsList([this.currentProjectDir + 'assets']);
+		}
 		await ClassesLoader.reloadClasses();
 		await AssetsLoader.reloadAssets();
 	}
 
-	showError(message: string, _errorCode = 99999) {
+	onObjectsPropertyChanged(_o: Container, _field: string, _val: any, _isDelta?: boolean) {
+		//TODO:
+	}
+
+	showError(message: ComponentChild, errorCode = 99999) {
+		this.ui.modal.showError(message, errorCode);
+	}
+
+	logError(message: string, _errorCode = 99999, _owner?: Container | (() => any), _fieldName?: string) {
+		debugger;
 		alert(message); //TODO:
 	}
 
-	logError(message: string, _errorCode = 99999, _owner?: DisplayObjectType | (() => any), _fieldName?: string) {
-		alert(message); //TODO:
-	}
-
-	warn(message: string, _errorCode = 99999, _owner?: DisplayObjectType | (() => any), _fieldName?: string) {
+	warn(message: string, _errorCode = 99999, _owner?: Container | (() => any), _fieldName?: string) {
+		debugger;
 		alert(message); //TODO:
 	}
 
 	notify(message: string | preact.Component) {
+		debugger;
 		alert(message); //TODO:
 	}
 
@@ -281,8 +273,8 @@ export default class Editor {
 		//TODO:
 	}
 
-	getFieldNameByValue(node: SourceMappedConstructor, fieldValue: any) {
-		if(node instanceof DisplayObject) {
+	getFieldNameByValue(node: Container, fieldValue: any) {
+		if(node instanceof Container) {
 			for(let p of node.__editableProps) {
 				//@ts-ignore
 				if(node[p.name] === fieldValue) {
@@ -303,22 +295,30 @@ export default class Editor {
 		});
 	}
 
-	editClassSource(c: SourceMappedConstructor | DisplayObjectType) {
+	editClassSource(c: SourceMappedConstructor | Container) {
 		if(this.editorArguments['no-vscode-integration']) {
 			return;
 		}
-		if(c instanceof DisplayObject) {
+		if(c instanceof Container) {
 			c = c.constructor as SourceMappedConstructor;
 		}
 		let filePath = c.__sourceFileName as string;
 		fs.editFile(filePath);
 	}
 
+	protected saveCurrentSceneName(name: string) {
+		if(this.projectDesc.__lastSceneName !== name) {
+			this.projectDesc.__lastSceneName = name;
+			this.saveProjectDesc();
+		}
+	}
+
 	protected __saveProjectDescriptorInner(_cleanupOnly = false) {
 		//TODO: cleanup take from 1.0
-		this.fs.saveFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
+		fs.saveFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
 	}
 }
+
 
 window.addEventListener('keydown', (ev) => {
 

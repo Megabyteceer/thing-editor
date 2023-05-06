@@ -12,7 +12,7 @@ const walkSync = (dir, fileList = []) => {
 				if(path.sep !== '/') {
 					fullPath = fullPath.replaceAll(path.sep, '/');
 				}
-				fileList.push({name: fullPath, mtime: stats.mtimeMs});
+				fileList.push({fileName: fullPath, mTime: stats.mtimeMs});
 			}
 		}
 	});

@@ -200,6 +200,7 @@ class Modal extends Component<ModalProps, ModalState> {
 		}*/
 
 	showError(message: ComponentChild, errorCode = 99999, title = 'Error!', noEasyClose = false, toBottom = false): Promise<any> {
+
 		if(game.editor.buildProjectAndExit) {
 			if(typeof message === 'object') {
 				try {

@@ -1,8 +1,8 @@
 import { SelectableProperty } from "thing-editor/src/editor/env";
-import { ContainerType } from "thing-editor/src/engine/components/container.c";
+import { Container } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 
-const protectAccessToSceneNode = (o: ContainerType, debugName: string) => {
+const protectAccessToSceneNode = (o: Container, debugName: string) => {
 	o.remove = () => {
 		assert(false, "Attempt to remove system node" + debugName, 10002);
 	};

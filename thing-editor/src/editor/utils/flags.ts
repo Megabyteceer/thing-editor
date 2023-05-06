@@ -5,9 +5,9 @@ let tryTime = 0;
 
 class EDITOR_FLAGS {
 	/* super.init() call validation flag*/
-	static _root_initCalled: false;
+	static _root_initCalled: boolean;
 	/* super.onRemove() call validation flag*/
-	static _root_onRemovedCalled: false;
+	static _root_onRemovedCalled: boolean;
 
 	static rememberTryTime() {
 		tryTime = Date.now();

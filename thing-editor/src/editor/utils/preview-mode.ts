@@ -1,7 +1,8 @@
-import { DisplayObjectType } from "thing-editor/src/engine/display-object";
+
+import { Container } from "pixi.js";
 import game from "thing-editor/src/engine/game";
 
-function __EDITOR_inner_exitPreviewMode(o: DisplayObjectType) {
+function __EDITOR_inner_exitPreviewMode(o: Container) {
 	if(o.__nodeExtendData.component_in_previewMode) {
 		if(o.__exitPreviewMode) {
 			game.editor.events.off('beforePropertyChanged', o.__exitPreviewMode);

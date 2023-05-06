@@ -1,6 +1,7 @@
+import { Container } from "pixi.js";
 import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
-import DisplayObject from "thing-editor/src/engine/display-object";
+
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
@@ -9,7 +10,7 @@ const objectsReferences: Map<KeyedObject, Map<SourceMappedConstructor, string>> 
 function markOldReferences(o: KeyedObject) {
 	objectsReferences.set(o, new Map());
 	for(let f of Object.getOwnPropertyNames(o)) {
-		if(((o as KeyedObject)[f] instanceof DisplayObject)) {
+		if(((o as KeyedObject)[f] instanceof Container)) {
 			if(f !== 'tempDisplayObjectParent') {
 				o[f] = accessDetectionProxy(o.constructor as SourceMappedConstructor, f);
 				o.___EDITOR_markedOldReferences.set(f, o[f]);

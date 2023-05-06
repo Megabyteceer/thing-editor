@@ -1,3 +1,4 @@
+import { SelectComponentItem } from "thing-editor/src/editor/ui/selectComponent";
 import Lib from "thing-editor/src/engine/lib";
 
 export default function makePrefabSelector(startsWith?: string, canBeEmpty = true, filter?: ((item: SelectComponentItem) => boolean)) {

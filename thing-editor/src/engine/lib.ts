@@ -1,44 +1,41 @@
 
 import type { Classes, KeyedMap, KeyedObject, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
+
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import { Container, Texture } from "pixi.js";
+import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import Pool from "thing-editor/src/engine/utils/pool";
-import Container, { ContainerType } from "thing-editor/src/engine/components/container.c";
-import { DisplayObjectType } from "thing-editor/src/engine/display-object";
+
 import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
 import resetNodeExtendData from "thing-editor/src/editor/utils/reset-node-extend-data";
-import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
+import type { SelectComponentItem } from "thing-editor/src/editor/ui/selectComponent";
+import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 
 let classes: Classes;
-let scenes: Scenes;
-let prefabs: Prefabs;
+let scenes: Scenes = {};
+let prefabs: Prefabs = {};
 let staticScenes: KeyedMap<Scene>;
+let textures: KeyedMap<Texture> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
 
 /// #if EDITOR
 
-class __UnknownClass extends Container {
-	static __defaultValues = {};
-}
-class __UnknownClassScene extends Scene {
-	static __defaultValues = {};
-}
+let __allTexturesNames: KeyedMap<boolean> = {};
 
-(__UnknownClass as unknown as SourceMappedConstructor).__EDITOR_icon = "tree/unknown-class";
-(__UnknownClassScene as unknown as SourceMappedConstructor).__EDITOR_icon = "tree/unknown-class";
 
 /// #endif
 
 export default class Lib {
 
-	static _loadScene(name: string): Scene {
+	static loadScene(name: string): Scene { //TODO: rename to _loadsScene
 		if(
 			/// #if EDITOR
 			!game.__EDITOR_mode &&
@@ -49,8 +46,8 @@ export default class Lib {
 		let isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, "No scene with name '" + name + "'", 10046);
 
-		let s: Scene = loadObjectFromData(scenes[name]) as Scene;
-
+		let s: Scene = _loadObjectFromData(scenes[name]) as Scene;
+		s.__libSceneName = name;
 		if(s.isStatic
 			/// #if EDITOR
 			&& !game.__EDITOR_mode
@@ -59,6 +56,16 @@ export default class Lib {
 			staticScenes[name] = s;
 		}
 		return s;
+	}
+
+	static loadPrefab(name: string): Container {
+		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
+		/// #if EDITOR
+		if(name.indexOf(game.editor.editorFilesPrefix) !== 0) {
+			prefabs[name].p.name = name;
+		}
+		/// #endif
+		return _loadObjectFromData(prefabs[name]); // eslint-disable-line no-unreachable
 	}
 
 	static _setClasses(_classes: Classes) {
@@ -80,21 +87,104 @@ export default class Lib {
 		return scenes.hasOwnProperty(name);
 	}
 
-	static _setScenes(_scenes: Scenes) {
-		Lib.scenes = _scenes;
-		scenes = _scenes;
+	static hasTexture(name: string) {
+		return textures.hasOwnProperty(name);
 	}
 
-	static _setPrefabs(_prefabs: Prefabs) {
-		Lib.prefabs = _prefabs;
-		prefabs = _prefabs;
+	static _unloadTexture(name: string
+		/// #if EDITOR
+		, ___removeFromEditorList = false
+		/// #endif
+	) {
+
+
+		//TODO:  текстуре переопределить ей базеТекстуру и рект на ивалид (EMPTY) не удалять из либы пусть будет инвалид невидимой
+
+		let t = textures[name];
+		if(!t) {
+			return;
+		}
+		Texture.removeFromCache(t);
+		t.destroy(true);
+		delete textures[name];
+		/// #if EDITOR
+		if(___removeFromEditorList) {
+			delete __allTexturesNames[name];
+			let i = Lib.__texturesList.findIndex(i => i.name === name);
+			assert(i >= 0, "cant find texture in  Lib.__texturesList", 90001);
+			Lib.__texturesList.splice(i, 1);
+		}
+		/// #endif
+	}
+
+	static addTexture(name: string, textureURL: string | Texture
+		/// #if EDITOR
+		, addToBeginning = false
+		/// #endif
+	) {
+
+		if(name !== 'EMPTY' && name !== 'WHITE') {
+			if(Lib.hasTexture(name)) {
+				Lib._unloadTexture(name);
+			}
+		}
+
+		/// TODO: если текстура существовала - переопределить ей базеТекстуру и рект. Она была EMPTY инвалид
+
+		/// #if EDITOR
+
+		if(!__allTexturesNames.hasOwnProperty(name)) {
+			if(addToBeginning) {
+				Lib.__texturesList.splice(2, 0, { name, value: name });
+			} else {
+				Lib.__texturesList.push({ name, value: name });
+			}
+			__allTexturesNames[name] = true;
+		} else if(addToBeginning) {
+			let curIndex = Lib.__texturesList.findIndex(i => i.name === name);
+			assert(curIndex > 0, "textures list is corrupted");
+			let entry = Lib.__texturesList.splice(curIndex, 1);
+			Lib.__texturesList.splice(2, 0, entry[0]);
+		}
+		/// #endif
+
+		if(typeof textureURL === 'string') {
+			textures[name] = Texture.from(textureURL);
+		} else {
+			textures[name] = textureURL;
+		}
+
+		// TODO применить сеттинги ассета к текстуре.
+
+	}
+
+	static getTexture(name: string
+		/// #if EDITOR
+		, owner: Container
+		/// #endif
+	) {
+
+		/// #if DEBUG
+		if(!textures.hasOwnProperty(name)) {
+
+			//TODO: load unloaded textures (load invalid (unloaded) texture. Потом тектуры будут выгружаться и инвалидиться не удалаясь из списка
+
+			return Texture.WHITE;
+		}
+		/// #endif
+
+		return textures[name];
+	}
+
+	static _getStaticScenes() {
+		return staticScenes;
 	}
 
 	static _deserializeObject(src: SerializedObject
 		/// #if EDITOR
 		, isScene = false
 		/// #endif
-	): Scene {
+	): Container {
 		let ret: Scene;
 		/// #if EDITOR
 		deserializationDeepness++;
@@ -170,7 +260,7 @@ export default class Lib {
 		return ret;
 	}
 
-	static destroyObjectAndChildren(o: ContainerType, itsRootRemoving?: boolean) {
+	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
 		/// #if EDITOR
 		let extData = o.__nodeExtendData;
 		__EDITOR_inner_exitPreviewMode(o);
@@ -185,7 +275,7 @@ export default class Lib {
 			if(!EDITOR_FLAGS._root_onRemovedCalled) {
 				game.editor.editClassSource(o);
 			}
-			assert(EDITOR_FLAGS._root_onRemovedCalled, "onRemove method without super.onRemove() detected in class '" + o.constructor.name + "'", 10045);
+			assert(EDITOR_FLAGS._root_onRemovedCalled, "onRemove method without super.onRemove() detected in class '" + (o.constructor as SourceMappedConstructor).name + "'", 10045);
 		}
 		if(o.__beforeDestroy) {
 			o.__beforeDestroy();
@@ -214,7 +304,7 @@ export default class Lib {
 			o.detachFromParent();
 		}
 		while(o.children.length > 0) {
-			Lib.destroyObjectAndChildren(o.getChildAt(o.children.length - 1) as ContainerType);
+			Lib.destroyObjectAndChildren(o.getChildAt(o.children.length - 1) as Container);
 		}
 
 		Pool.dispose(o);
@@ -240,9 +330,15 @@ export default class Lib {
 		}
 	}
 
+	static _cleanupRemoveHolders() {
+		while(removeHoldersToCleanup.length > 0) {
+			Lib.destroyObjectAndChildren(removeHoldersToCleanup.pop() as Container);
+		}
+	}
+
 	/// #if EDITOR
 
-	static __serializeObject(o: ContainerType) {
+	static __serializeObject(o: Container) {
 
 		__EDITOR_inner_exitPreviewMode(o);
 		if(o.__beforeSerialization) {
@@ -276,7 +372,7 @@ export default class Lib {
 			}
 
 			ret = {
-				c: o.constructor.name,
+				c: (o.constructor as SourceMappedConstructor).name as string,
 				p: props
 			};
 
@@ -286,7 +382,7 @@ export default class Lib {
 			}
 
 			if(o.children.length > 0) {
-				let children = o.children.filter(__isSerializableObject).map(Lib.__serializeObject as () => SerializedObject);
+				let children = (o.children as Container[]).filter(__isSerializableObject).map(Lib.__serializeObject as () => SerializedObject);
 				if(children.length > 0) {
 					ret[':'] = children;
 				}
@@ -301,7 +397,13 @@ export default class Lib {
 		return ret;
 	}
 
-	static __invalidateSerializationCache(o: ContainerType) {
+	static __clearAssetsLists() {
+		textures = {};
+		Lib.__texturesList = [];
+		__allTexturesNames = {};
+	}
+
+	static __invalidateSerializationCache(o: Container) {
 		let p = o;
 		while((p !== game.stage) && p) {
 			p.__nodeExtendData.serializationCache = undefined;
@@ -313,17 +415,18 @@ export default class Lib {
 		//TODO:
 	}
 
+	static __texturesList: SelectComponentItem[] = [];
 	/// #endif
 }
 
-const __isSerializableObject = (o: DisplayObjectType) => {
+const __isSerializableObject = (o: Container) => {
 	let exData = o.__nodeExtendData;
 	return !exData.hidden && !exData.noSerialize;
 };
 
 let deserializationDeepness = 0;
 
-const loadObjectFromData = (src: SerializedObject) => {
+const _loadObjectFromData = (src: SerializedObject): Container => {
 	let ret = Lib._deserializeObject(src);
 
 	/// #if EDITOR
@@ -337,7 +440,7 @@ const loadObjectFromData = (src: SerializedObject) => {
 	return ret;
 };
 
-let constructRecursive = (o: DisplayObjectType) => {
+let constructRecursive = (o: Container) => {
 	assert(!game.__EDITOR_mode, "initialization attempt in editing mode.");
 
 	if(o._thing_initialized) {
@@ -359,21 +462,24 @@ let constructRecursive = (o: DisplayObjectType) => {
 	checkForOldReferences(o);
 	if(!EDITOR_FLAGS._root_initCalled) {
 		game.editor.editClassSource(o);
-		assert(false, "Class " + o.constructor.name + " overrides init method without super.init() called.", 10042);
+		assert(false, "Class " + (o.constructor as SourceMappedConstructor).name + " overrides init method without super.init() called.", 10042);
 	}
 
 	extData.constructorCalled = true;
 	///#endif
 
-	let a: DisplayObjectType[] = o.children as DisplayObjectType[];
+	let a: Container[] = o.children as Container[];
 	let arrayLength = a.length;
 	for(let i = 0; i < arrayLength; i++) {
 		constructRecursive(a[i]);
 	}
 };
 
+Lib.scenes = scenes;
+Lib.prefabs = prefabs;
+
 /// #if DEBUG
-const processAfterDeserialization = (o: DisplayObjectType) => {
+const processAfterDeserialization = (o: Container) => {
 	if(o.__afterDeserialization) {
 		o.__afterDeserialization();
 	}

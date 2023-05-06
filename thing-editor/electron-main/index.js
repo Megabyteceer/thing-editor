@@ -25,6 +25,13 @@ const fsOptions = {
 	encoding: 'utf8'
 };
 
+const fn = (fileName) => {
+	if(fileName.indexOf('..') >= 0) {
+		throw new Error('Attempt to access files out of Thing-Editor root folder: ' + fileName);
+	}
+	return path.join(__dirname, '../..', fileName);
+}
+
 const createWindow = () => {
 	/** @type BrowserWindowConstructorOptions */
 	let windowState;
@@ -32,80 +39,95 @@ const createWindow = () => {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js')
 		},
-		opacity: 0
+		//opacity: 0
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
 	//mainWindow.hide();
 
+	mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+		console.log(message + " " + sourceId + " (" + line + ")");
+	});
+
 	nativeTheme.themeSource = 'dark'
 
-	ipcMain.on('fs', (event, command, fileName, content) => {
+	ipcMain.on('fs', (event, command, fileName, content, ...args) => {
 		console.log('command fs: ' + command + ': ' + (fileName || ''));
 		let fd;
-		switch(command) {
-			case 'fs/toggleDevTools':
-				mainWindow.webContents.toggleDevTools();
-				event.returnValue = true;
-				return;
-			case 'fs/delete':
-				fs.unlinkSync(fileName);
-				event.returnValue = true;
-				return;
-			case 'fs/saveFile':
-				fd = fs.openSync(fileName, 'w');
-				fs.writeSync(fd, content);
-				fs.closeSync(fd, () => { });
-				event.returnValue = true;
-				return;
-			case '/fs/editFile':
-				const open = require('open');
-				open(fn);
-				if(line && fs.lstatSync(fn).isFile()) {
-					let arg = fn + ':' + line + (char ? ':' + char : '');
-					open('', {
-						app: ['code', '-r', '-g', arg]
+		try {
+			switch(command) {
+				case 'fs/toggleDevTools':
+					mainWindow.webContents.toggleDevTools();
+					event.returnValue = true;
+					return;
+				case 'fs/delete':
+					fs.unlinkSync(fn(fileName));
+					event.returnValue = true;
+					return;
+				case 'fs/saveFile':
+					fd = fs.openSync(fn(fileName), 'w');
+					fs.writeSync(fd, content);
+					fs.closeSync(fd, () => { });
+					event.returnValue = true;
+					return;
+				case '/fs/editFile':
+					const open = require('open');
+					open(fn(fileName)); // TODO file opening with line num
+					/*if(line && fs.lstatSync(fn).isFile()) {
+						let arg = fn + ':' + line + (char ? ':' + char : '');
+						open('', {
+							app: ['code', '-r', '-g', arg]
+						});
+					}*/
+					event.returnValue = true;
+					return;
+				case 'fs/readFile':
+					fd = fs.openSync(fn(fileName), 'r');
+					let c = fs.readFileSync(fd, fsOptions);
+					fs.closeSync(fd, () => { });
+					event.returnValue = c;
+					return;
+				case 'fs/readDir':
+					event.returnValue = walkSync(fileName, []);
+					return;
+				case 'fs/enumProjects':
+					event.returnValue = enumProjects();
+					return;
+				case 'fs/ready':
+					setTimeout(loadEditorIndexHTML, 400);
+					event.returnValue = true;
+					return;
+				case 'fs/exitWithResult':
+					let success = fileName;
+					let error = content
+					if(error) {
+						console.error(error);
+					} else if(success) {
+						console.log(success);
+					}
+					dialog.showMessageBox(mainWindow, 'process.exit', error || success);
+					//process.exit(error ? 1 : 0);
+					return;
+				case 'fs/showQueston':
+					event.returnValue = dialog.showMessageBoxSync(mainWindow, {
+						title: fileName,
+						message: content,
+						buttons: Object.values(args),
+
 					});
-				}
-				event.returnValue = true;
-				return;
-			case 'fs/readFile':
-				fd = fs.openSync(fileName, 'r');
-				let c = fs.readFileSync(fd, fsOptions);
-				fs.closeSync(fd, () => { });
-				event.returnValue = c;
-				return;
-			case 'fs/readDir':
-				event.returnValue = walkSync(fileName, []);
-				return;
-			case 'fs/enumProjects':
-				event.returnValue = enumProjects();
-				return;
-			case 'fs/ready':
-				setTimeout(loadEditorIndexHTML, 400);
-				event.returnValue = true;
-				return;
-			case 'fs/exitWithResult':
-				let success = fileName;
-				let error = content
-				if(error) {
-					console.error(error);
-				} else if(success) {
-					console.log(success);
-				}
-				dialog.showMessageBox('process.exit', error || success);
-				//process.exit(error ? 1 : 0);
-				return;
+					return;
+			}
+		} catch(er) {
+			event.returnValue = er;
 		}
 	});
 
-	require('./pixi-typings-patch.js')();
+	require('./pixi-typings-patch.js')(mainWindow);
 
 	const loadEditorIndexHTML = () => {
 		const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
-		mainWindow.loadURL(EDITOR_VITE_ROOT).finally(() => {
-			mainWindow.setOpacity(1);
-		});
+		mainWindow.setOpacity(1);
+		mainWindow.loadURL(EDITOR_VITE_ROOT);
 
 	};
 
@@ -113,7 +135,7 @@ const createWindow = () => {
 		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
 			if(er.code === 'ERR_CONNECTION_REFUSED') {
-				dialog.showErrorBox('Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
+				dialog.showErrorBox(mainWindow, 'Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 			}
 		});
 	} else {

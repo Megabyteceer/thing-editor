@@ -1,9 +1,9 @@
 import assert from "thing-editor/src/engine/debug/assert";
-import { DisplayObjectType } from "thing-editor/src/engine/display-object";
+
 import { OutlineFilter } from '@pixi/filter-outline';
 import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
 import game from "thing-editor/src/engine/game";
-import { ContainerType } from "thing-editor/src/engine/components/container.c";
+import { Container } from "pixi.js";
 
 const selectionFilter = new OutlineFilter(2, 0xffff00);
 selectionFilter.padding = 2;
@@ -23,11 +23,11 @@ export default class Selection extends Array {
 
 	static IS_SELECTION_LOADING_TIME = false;
 
-	add(_o: DisplayObjectType) {
+	add(_o: Container) {
 		//TODO:
 	}
 
-	remove(o: DisplayObjectType) {
+	remove(o: Container) {
 		assert(o.__nodeExtendData.isSelected, "Node is not selected.");
 		let i = this.indexOf(o);
 		assert(i >= 0, "Node is not registered in selected list.");
@@ -69,7 +69,7 @@ export default class Selection extends Array {
 
 }
 
-let getPathOfNode = (node: DisplayObjectType): SelectionPath => {
+let getPathOfNode = (node: Container): SelectionPath => {
 	let ret = [];
 	while(node !== game.stage) {
 		if(node.name && node.parent.children.filter((c) => { return c.name === node.name; }).length === 1) {
@@ -83,17 +83,17 @@ let getPathOfNode = (node: DisplayObjectType): SelectionPath => {
 };
 
 const selectNodeByPath = (path: SelectionPath) => {
-	let ret = game.stage as ContainerType;
+	let ret = game.stage as Container;
 	for(let i = path.length - 1; i >= 0 && ret; i--) {
 		let p = path[i];
 		if(typeof p === 'number') {
 			if(p < ret.children.length) {
-				ret = ret.getChildAt(p) as ContainerType;
+				ret = ret.getChildAt(p) as Container;
 			} else {
 				return;
 			}
 		} else {
-			ret = ret.getChildByName(p) as ContainerType;
+			ret = ret.getChildByName(p) as Container;
 		}
 	}
 

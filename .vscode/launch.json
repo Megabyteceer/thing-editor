@@ -16,6 +16,9 @@
 			"skipFiles": [],
 			"sourceMaps": true,
 			"smartStep": true,
+
+			"targetSelection": "pick",
+			
 			"resolveSourceMapLocations": [
 				"${workspaceFolder}/**",
 				"!**/node_modules/**"
@@ -31,25 +34,10 @@
 			"windows": {
 				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
 			},
+			"env": {"ELECTRON_ENABLE_LOGGING":"true"},
 			"args": [
 				"--remote-debugging-port=9223",
 				"./thing-editor/electron-main", "debugger-detection-await"
-			],
-			"presentation": {
-				"hidden": true
-			}
-		},
-		{
-			"type": "node",
-			"request": "launch",
-			"name": "Main",
-			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-			"windows": {
-				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-			},
-			"args": [
-				"--remote-debugging-port=9223",
-				"./thing-editor/electron-main"
 			],
 			"presentation": {
 				"hidden": true
@@ -66,7 +54,6 @@
 				"debugger-detection-await"
 			],
 			"windows": {
-				"outputCapture": "std",
 				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
 				//"runtimeExecutable": "C:/Windows/System32/cmd.exe",
 				//"runtimeArgs": ["k/", "C:\\Dropbox\\electron-vite-preact\\1.bat"]

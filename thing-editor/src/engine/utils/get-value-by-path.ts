@@ -3,8 +3,8 @@ import game from "../game.js";
 
 import { stringToCallData } from "./call-by-path.js";
 import { KeyedMap, ValuePath } from "thing-editor/src/editor/env.js";
-import DisplayObject, { DisplayObjectType } from "thing-editor/src/engine/display-object.js";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
+import { Container } from "pixi.js";
 /// #if EDITOR
 let latestDetectedSceneNode;
 /// #endif
@@ -65,7 +65,7 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 			return c;
 		}
 		/// #if EDITOR
-		if(c instanceof DisplayObject) {
+		if(c instanceof Container) {
 			latestDetectedSceneNode = c;
 		}
 		/// #endif
@@ -148,7 +148,7 @@ const getLatestSceneNodeBypath = (path: string, _this: any, suspendWarning = fal
 	return latestDetectedSceneNode;
 };
 
-const getLatestSceneNodesByComplexPath = (path: string, o: DisplayObjectType) => {
+const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
 	let ret = [];
 	let pathsParts = path.split(/[,|`]/);
 	for(let p of pathsParts) {
@@ -161,8 +161,8 @@ const getLatestSceneNodesByComplexPath = (path: string, o: DisplayObjectType) =>
 	return ret;
 };
 
-const pathDebugging = (o: DisplayObjectType, path: string) => {
-	if(o instanceof DisplayObject) {
+const pathDebugging = (o: Container, path: string) => {
+	if(o instanceof Container) {
 		if(o.hasOwnProperty('___pathBreakpoint') && o.___pathBreakpoint === path) {
 			//data-path breakpoint activated
 			debugger; // eslint-disable-line no-debugger

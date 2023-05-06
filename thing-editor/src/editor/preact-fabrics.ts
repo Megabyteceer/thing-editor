@@ -71,6 +71,10 @@ class R {
 	static fragment(...children: ComponentChildren[]) {
 		return h(Fragment, null, ...children);
 	}
+
+	static libInfo(_libName: string, _fileName: string) {
+		return R.span(null, _libName);
+	}
 }
 
 for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'input', 'label',

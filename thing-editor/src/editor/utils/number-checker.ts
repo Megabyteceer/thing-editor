@@ -1,7 +1,7 @@
 
+import { ObservablePoint } from "pixi.js";
 import { Constructor, KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
-import { PIXI } from "thing-editor/src/engine/game";
 
 let _definedProps = new WeakMap();
 let _valStore = new WeakMap();
@@ -70,5 +70,5 @@ export default function wrapPropertyWithNumberChecker(constructor: Constructor, 
 	}
 };
 
-wrapPropertyWithNumberChecker(PIXI.ObservablePoint as any, 'x');
-wrapPropertyWithNumberChecker(PIXI.ObservablePoint as any, 'y');
+wrapPropertyWithNumberChecker(ObservablePoint as any, 'x');
+wrapPropertyWithNumberChecker(ObservablePoint as any, 'y');

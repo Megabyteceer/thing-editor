@@ -47,7 +47,7 @@ class Settings {
 	}
 
 	changed() {
-		if(!this.hasOwnProperty('__flushInterval')) {
+		if(!this.__flushInterval) {
 			/// #if EDITOR
 			if(game.__EDITOR_mode) {
 				this.flush();
@@ -65,7 +65,7 @@ class Settings {
 
 	flush() {
 		if(typeof (Storage) !== "undefined") {
-			delete (this.__flushInterval);
+			this.__flushInterval = undefined;
 			try {
 				localStorage.setItem(this._storageId, JSON.stringify(this.data,
 					/// #if EDITOR

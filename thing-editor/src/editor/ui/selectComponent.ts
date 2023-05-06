@@ -1,4 +1,4 @@
-type SelectComponentItem = {
-	name: string
-	value: any
-}
+export type SelectComponentItem = {
+	name: string;
+	value: any;
+};

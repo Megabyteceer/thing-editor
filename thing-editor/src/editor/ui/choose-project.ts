@@ -49,7 +49,7 @@ interface ProjectsListState {
 
 export default class ProjectsList extends Component<ProjectsListProps, ProjectsListState> {
 
-	static chooseProject(enforced: boolean = false) {
+	static chooseProject(noCloseable: boolean = false) {
 
 		game.editor.ui.viewport.stopExecution();
 		const projects = fs.enumProjects();
@@ -59,15 +59,9 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 		projects.sort((a, b) => {
 			return projectOrder(b) - projectOrder(a);
 		});
-		game.editor.ui.modal.showModal(h(ProjectsList, { projects }), R.span(null, R.icon('open'), 'Choose project to open:'), enforced)
-			.then((projDir) => {
-				if(projDir) {
-					game.editor.openProject(projDir as string);
-				}
-			});
-
-
+		return game.editor.ui.modal.showModal(h(ProjectsList, { projects }), R.span(null, R.icon('open'), 'Choose project to open:'), noCloseable);
 	}
+
 	constructor(props: ProjectsListProps) {
 		super(props);
 		let filter = game.editor.settings.getItem('projects-filter', '');
@@ -79,7 +73,7 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 						game.editor.ui.modal.hideModal(topItem.dir);
 					}
 				},
-				onChange: this.onSearchChange.bind(this),
+				onInput: this.onSearchChange.bind(this),
 				placeholder: 'Search',
 				defaultValue: filter,
 				autoFocus: true
