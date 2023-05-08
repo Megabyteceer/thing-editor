@@ -1,14 +1,15 @@
 {
 	"version": "0.2.0",
 	"configurations": [
-
 		{
-			"name": "Renderer",
+
+
+			"name": "Editor",
 			"type": "chrome",
-			"request": "attach",
+			"request": "launch",
 			"webRoot": "${workspaceFolder}",
 			"timeout": 30000,
-			"port": 9223,
+			"port": 9224,
 			"enableContentValidation": false,
 			"presentation": {
 				//"hidden": true
@@ -16,14 +17,41 @@
 			"skipFiles": [],
 			"sourceMaps": true,
 			"smartStep": true,
-
-			//"targetSelection": "pick",
-			
 			"resolveSourceMapLocations": [
 				"${workspaceFolder}/**",
 				"!**/node_modules/**"
 			],
-			//"urlFilter": "http://127.0.0.1:5173/*"
+			//"urlFilter": "http://127.0.0.1:5173/*",
+			"outFiles": [],
+			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"windows": {
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+			},
+			"runtimeArgs": [
+				"./thing-editor/electron-main",
+				"--remote-debugging-port=9223",
+				"debugger-detection-await"
+			]
+		},
+		{
+			"name": "Renderer",
+			"type": "chrome",
+			"request": "attach",
+			"webRoot": "${workspaceFolder}",
+			"timeout": 30000,
+			"port": 9224,
+			"enableContentValidation": false,
+			"presentation": {
+				//"hidden": true
+			},
+			"skipFiles": [],
+			"sourceMaps": true,
+			"smartStep": true,
+			"resolveSourceMapLocations": [
+				"${workspaceFolder}/**",
+				"!**/node_modules/**"
+			],
+			"urlFilter": "http://127.0.0.1:5173/*"
 		},
 		{
 			"type": "node",
@@ -44,40 +72,6 @@
 			"presentation": {
 				//"hidden": true
 			}
-		},
-		{
-			"name": "Editor",
-			"type": "chrome",
-			"request": "launch",
-			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-			"runtimeArgs": [
-				"./thing-editor/electron-main",
-				"debugger-detection-await"
-			],
-			"windows": {
-				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-				//"runtimeExecutable": "C:/Windows/System32/cmd.exe",
-				//"runtimeArgs": ["k/", "C:\\Dropbox\\electron-vite-preact\\1.bat"]
-			},
-			"port": 9223,
-			"webRoot": "${workspaceFolder}",
-			"timeout": 3000,
-			"vueComponentPaths": [],
-			"enableContentValidation": false,
-			"outFiles": [],
-			"presentation": {
-				//"hidden": true
-			},
-			"sourceMaps": true,
-			"smartStep": true,
-			"resolveSourceMapLocations": [
-				"${workspaceFolder}/**",
-				"!**/node_modules/**"
-			],
-			/*"trace": {
-				"logFile": "${workspaceRoot}/dbug.log"
-			}*/
-			"urlFilter": "http://127.0.0.1:5173/*"
 		}
 	],
 	"compounds": [{

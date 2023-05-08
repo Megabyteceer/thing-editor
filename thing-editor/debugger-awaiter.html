@@ -12,9 +12,10 @@
 <body>
 	debugger await...
 	<script type="module">
-		import fs from "./src/editor/fs";
-		fs.ready();
-
+		window.a = 0;
+		setInterval(() => {
+			window.a++; // do the work to debugger can attach to js engine
+		}, 10);
 	</script>
 </body>
 

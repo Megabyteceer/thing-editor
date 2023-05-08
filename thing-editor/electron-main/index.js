@@ -42,9 +42,7 @@ const createWindow = () => {
 	windowState = {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
-			additionalArguments: [
-				"--remote-debugging-port=9223"
-			],
+
 			webSecurity: false
 		},
 		//opacity: 0
@@ -102,10 +100,6 @@ const createWindow = () => {
 				case 'fs/enumProjects':
 					event.returnValue = enumProjects();
 					return;
-				case 'fs/ready':
-					setTimeout(loadEditorIndexHTML, 1000);
-					event.returnValue = true;
-					return;
 				case 'fs/exitWithResult':
 					let success = fileName;
 					let error = content
@@ -141,12 +135,15 @@ const createWindow = () => {
 	};
 
 	if(IS_DEBUG) {
+
+		let debuggerDetector = require('./debugger-detection');
 		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
 			if(er.code === 'ERR_CONNECTION_REFUSED') {
 				dialog.showErrorBox(mainWindow, 'Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 			}
 		});
+		debuggerDetector.once('debugger-ready', loadEditorIndexHTML);
 	} else {
 		loadEditorIndexHTML();
 	}

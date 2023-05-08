@@ -99,10 +99,6 @@ export default class fs {
 		}
 	}
 
-	static ready() {
-		execFs('fs/ready')
-	}
-
 	static getWrongSymbol(fileName: string) {
 		let wrongSymbolPos = fileName.search(/[^a-zA-Z_\-\.\d\/]/gm);
 		if(wrongSymbolPos >= 0) {
