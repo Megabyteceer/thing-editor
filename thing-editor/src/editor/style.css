@@ -40,9 +40,142 @@ button:hover {
 	outline: 1px solid #8400ff83;
 }
 
-.version-header {
-	color: blueviolet;
+.window-body {
+	box-shadow: 0 1px 3px rgba(23, 27, 43, 0.3);
+	position:fixed;
+	box-sizing: content-box;
+	background: var(--window-bg-color);
+	border-radius: 2px;
 }
+
+.window-header {
+	width:100%;
+	height:17px;
+	border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+	background:var(--window-header-color);
+	color:#9ab;
+	cursor:move;
+	font-size: 70%;
+	padding: 2px;
+	padding-left: 10px;
+	box-sizing: border-box;
+	position:relative;
+}
+
+.window-content {
+	position:absolute;
+	right:0;
+	left:0;
+	bottom:0;
+	top:17px;
+	padding: 2px;
+}
+
+
+.window-rb-corner {
+	position:absolute;
+	right:-2px;
+	bottom:-2px;
+	width:8px;
+	height:8px;
+	cursor: se-resize;
+}
+
+.window-lt-corner {
+	position:absolute;
+	left:-2px;
+	top:-2px;
+	width:8px;
+	height:8px;
+	cursor: se-resize;
+}
+
+.window-lb-corner {
+	position:absolute;
+	left:-2px;
+	bottom:-2px;
+	width:8px;
+	height:8px;
+	cursor: ne-resize;
+}
+.window-rt-corner {
+	position:absolute;
+	right:-2px;
+	top:-2px;
+	width:8px;
+	height:8px;
+	cursor: ne-resize;
+}
+
+.window-r-dragger{
+	position:absolute;
+	right:-2px;
+	top:0;
+	width:8px;
+	height:100%;
+	cursor: e-resize;
+}
+
+.window-l-dragger{
+	position:absolute;
+	left:-2px;
+	top:0;
+	width:8px;
+	height:100%;
+	cursor: e-resize;
+}
+
+.window-b-dragger{
+	position:absolute;
+	bottom:-2px;
+	left:0;
+	width:100%;
+	height:8px;
+	cursor: n-resize;
+}
+
+.window-t-dragger{
+	position:absolute;
+	top:-4px;
+	left:0;
+	width:100%;
+	height:8px;
+	cursor: n-resize;
+}
+
+.window-dragger {
+	position:absolute;
+	width:100%;
+	top:0;
+	height:100%;
+	cursor: move;
+}
+
+::-webkit-scrollbar {
+	width: 6px;
+	height: 15px;
+}
+
+::-webkit-scrollbar-track {
+	background: #cccfda;
+	border-radius: 2px;
+	box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-thumb {
+	background: #acb5be;
+	border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #9ea9b4;
+}
+
+
+
+
+
 
 .modal-blackout {
 	position: fixed;
@@ -149,6 +282,26 @@ button:hover {
 	padding: 3px;
 	background:#fff;
 }
+
+.editor-viewport {
+	display: flex;
+	align-items:center;
+	justify-content:center;
+	width:100%;
+	height: 100%;
+}
+
+.editor-viewport canvas {
+	max-height: 100%;
+	max-width: 100%;
+}
+
+
+
+
+
+
+
 
 
 

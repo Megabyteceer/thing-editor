@@ -4,7 +4,7 @@ import Editor from "thing-editor/src/editor/editor";
 
 
 import type { Classes, KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
-import { Container } from "pixi.js";
+import { BaseTexture, Container, TextureGCSystem } from "pixi.js";
 import Scene from "thing-editor/src/engine/components/scene.c";
 
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
@@ -12,7 +12,7 @@ import assert from "thing-editor/src/engine/debug/assert";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import Lib from "thing-editor/src/engine/lib";
 import Settings from "thing-editor/src/engine/utils/settings";
-import { Application, GC_MODES, MIPMAP_MODES, settings } from "pixi.js";
+import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
 
 let app: Application;
 let stage: Container;
@@ -68,10 +68,15 @@ class Game {
 		stage = new Container();
 		stage.name = 'stage';
 		this.stage = stage;
+		stage.__nodeExtendData = {} as any;
 
 		this.settings = new Settings(gameId);
 
 		app.stage.addChild(stage);
+	}
+
+	_onContainerResize() {
+		//TODO:
 	}
 
 	get disableAllButtons() {
@@ -93,11 +98,11 @@ class Game {
 		assert(so === 'auto' || so === 'landscape' || so === 'portrait', 'Wrong value for "screenOrientation". "auto", "landscape" or "portrait" expected', 30010);
 		/// #endif
 
-		settings.MIPMAP_TEXTURES = projectDescriptor.mipmap
+		BaseTexture.defaultOptions.mipmap = projectDescriptor.mipmap
 			? MIPMAP_MODES.ON
 			: MIPMAP_MODES.OFF;
 
-		settings.GC_MODE = GC_MODES.MANUAL;
+		TextureGCSystem.defaultMode = GC_MODES.MANUAL;
 
 		this.projectDesc = projectDescriptor;
 		this.onResize();
@@ -402,6 +407,10 @@ class Game {
 		return scene;
 	}
 
+	__getScenesStack() {
+		return showStack;
+	}
+
 	/// #endif
 
 }
@@ -446,8 +455,6 @@ let __currentSceneValue: Scene;
 
 const game = new Game();
 export default game;
-
-export { Game }
 
 (Game.prototype.applyProjectDesc as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 

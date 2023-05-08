@@ -6,41 +6,43 @@
 			"name": "Renderer",
 			"type": "chrome",
 			"request": "attach",
-			"port": 9223,
 			"webRoot": "${workspaceFolder}",
 			"timeout": 30000,
+			"port": 9223,
 			"enableContentValidation": false,
 			"presentation": {
-				"hidden": true
+				//"hidden": true
 			},
 			"skipFiles": [],
 			"sourceMaps": true,
 			"smartStep": true,
 
-			"targetSelection": "pick",
+			//"targetSelection": "pick",
 			
 			"resolveSourceMapLocations": [
 				"${workspaceFolder}/**",
 				"!**/node_modules/**"
 			],
-			"urlFilter": "http://127.0.0.1:5173/*"
-			
+			//"urlFilter": "http://127.0.0.1:5173/*"
 		},
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "MainForBoth",
+			"name": "Main",
+			"port": 9223,
 			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+			"autoAttachChildProcesses": true,
 			"windows": {
-				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+				"runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/electron.exe"
 			},
 			"env": {"ELECTRON_ENABLE_LOGGING":"true"},
 			"args": [
 				"--remote-debugging-port=9223",
-				"./thing-editor/electron-main", "debugger-detection-await"
+				"./thing-editor/electron-main",
+				"debugger-detection-await"
 			],
 			"presentation": {
-				"hidden": true
+				//"hidden": true
 			}
 		},
 		{
@@ -49,7 +51,6 @@
 			"request": "launch",
 			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
 			"runtimeArgs": [
-				"--remote-debugging-port=9223",
 				"./thing-editor/electron-main",
 				"debugger-detection-await"
 			],
@@ -76,12 +77,12 @@
 			/*"trace": {
 				"logFile": "${workspaceRoot}/dbug.log"
 			}*/
-			//"urlFilter": "http://127.0.0.1:5173/*"
+			"urlFilter": "http://127.0.0.1:5173/*"
 		}
 	],
 	"compounds": [{
 		"name": "Both",
-		"configurations": ["Renderer", "MainForBoth"],
+		"configurations": ["Renderer", "Main"],
 		"stopAll": true,
 		"presentation": {
 			//"hidden": true

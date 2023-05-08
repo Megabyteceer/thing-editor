@@ -11,8 +11,26 @@ export default class Viewport extends Component<ViewportProps> {
 		//TODO:
 	}
 
+	onDoubleClick() {
+		//TODO:
+	}
+
+	onDragOver() {
+		//TODO:
+	}
+
+	onDrop() {
+		//TODO:
+	}
+
 	render(): ComponentChild {
-		return R.div();
+		return R.div({
+			id: 'viewport-root',
+			className: 'editor-viewport',
+			onDoubleClick: this.onDoubleClick,
+			onDragOver: this.onDragOver,
+			onDrop: this.onDrop,
+		})
 	}
 
 }

@@ -1,13 +1,14 @@
 import assert from "thing-editor/src/engine/debug/assert";
 
-import { OutlineFilter } from '@pixi/filter-outline';
+//import { OutlineFilter } from '@pixi/filter-outline';
 import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
 import game from "thing-editor/src/engine/game";
 import { Container } from "pixi.js";
-
+import TreeNode from "thing-editor/src/editor/ui/tree-view/tree-node";
+/*
 const selectionFilter = new OutlineFilter(2, 0xffff00);
 selectionFilter.padding = 2;
-
+*/
 type SelectionPath = (string | number)[];
 
 type SelectionDataBase = SelectionPath[];
@@ -23,6 +24,25 @@ export default class Selection extends Array {
 
 	static IS_SELECTION_LOADING_TIME = false;
 
+
+	select(object: Container, add?: boolean) {
+		if(!add) {
+			this.clearSelection();
+		}
+		if(object.__nodeExtendData.isSelected) {
+			this.remove(object);
+		} else {
+			this.add(object);
+		}
+		this.sortSelectedNodes();
+		game.editor.refreshTreeViewAndPropertyEditor();
+	}
+
+	sortSelectedNodes() {
+		recalculateNodesDeepness();
+		this.sort(sortByDeepness);
+	}
+
 	add(_o: Container) {
 		//TODO:
 	}
@@ -32,7 +52,7 @@ export default class Selection extends Array {
 		let i = this.indexOf(o);
 		assert(i >= 0, "Node is not registered in selected list.");
 		o.__nodeExtendData.isSelected = false;
-		o.removeFilter(selectionFilter);
+		//o.removeFilter(selectionFilter);
 
 		this.splice(i, 1);
 		__EDITOR_inner_exitPreviewMode(o);
@@ -63,8 +83,14 @@ export default class Selection extends Array {
 		Selection.IS_SELECTION_LOADING_TIME = false;
 	}
 
-	clearSelection() {
-		//TODO:
+	clearSelection(refreshUI = false) {
+		while(this.length > 0) {
+			this.remove(this[this.length - 1]);
+		}
+		TreeNode.clearLastClicked();
+		if(refreshUI) {
+			game.editor.refreshTreeViewAndPropertyEditor();
+		}
 	}
 
 }
@@ -103,3 +129,23 @@ const selectNodeByPath = (path: SelectionPath) => {
 };
 
 export type { SelectionData }
+
+
+//-------- sorting selection --------------------------------
+let curDeepness = 0;
+
+let recalculateNodesDeepness = () => {
+	curDeepness = 0;
+	recalculateNodesDeepnessRecursive(game.stage);
+};
+
+let recalculateNodesDeepnessRecursive = (n: Container) => {
+	n.__nodeExtendData.deepness = curDeepness++;
+	if(n.hasOwnProperty('children')) {
+		n.children.some(recalculateNodesDeepnessRecursive as ((c: any, i: any, a: any) => void));
+	}
+};
+
+let sortByDeepness = (a: Container, b: Container): number => {
+	return a.__nodeExtendData.deepness - b.__nodeExtendData.deepness;
+};

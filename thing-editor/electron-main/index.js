@@ -25,6 +25,10 @@ const fsOptions = {
 	encoding: 'utf8'
 };
 
+
+app.commandLine.appendSwitch('remote-debugging-port', '9223');
+
+
 const fn = (fileName) => {
 	if(fileName.indexOf('..') >= 0) {
 		throw new Error('Attempt to access files out of Thing-Editor root folder: ' + fileName);
@@ -37,13 +41,18 @@ const createWindow = () => {
 	let windowState;
 	windowState = {
 		webPreferences: {
-			preload: path.join(__dirname, 'preload.js')
+			preload: path.join(__dirname, 'preload.js'),
+			additionalArguments: [
+				"--remote-debugging-port=9223"
+			],
+			webSecurity: false
 		},
 		//opacity: 0
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
 	//mainWindow.hide();
+
 
 	mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
 		console.log(message + " " + sourceId + " (" + line + ")");
@@ -94,7 +103,7 @@ const createWindow = () => {
 					event.returnValue = enumProjects();
 					return;
 				case 'fs/ready':
-					setTimeout(loadEditorIndexHTML, 400);
+					setTimeout(loadEditorIndexHTML, 1000);
 					event.returnValue = true;
 					return;
 				case 'fs/exitWithResult':

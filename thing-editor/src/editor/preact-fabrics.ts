@@ -1,5 +1,6 @@
+import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h } from 'preact';
-import { KeyedMap } from 'thing-editor/src/editor/env';
+import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import assert from 'thing-editor/src/engine/debug/assert';
 
@@ -75,7 +76,21 @@ class R {
 	static libInfo(_libName: string, _fileName: string) {
 		return R.span(null, _libName);
 	}
+
+	static classIcon = (constructor: SourceMappedConstructor) => {
+		return R.icon(constructor.__EDITOR_icon || 'tree/game');
+	};
+
+	static sceneNode(node: Container) {
+		return R.span(sceneNodeProps, R.classIcon(node.constructor as SourceMappedConstructor), R.span(nameProps, node.name), R.span(classProps, ' (' + (node.constructor as SourceMappedConstructor).__className + ') #' + node.___id));
+	}
+
+
 }
+
+let nameProps = { className: 'scene-node-name' };
+let classProps = { className: 'scene-node-class' };
+let sceneNodeProps = { className: 'scene-node-item' };
 
 for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'input', 'label',
 	'b', 'a', 'br', 'hr', 'svg', 'td', 'tr', 'th', 'tbody', 'thead', 'table', 'polyline',

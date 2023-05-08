@@ -72,16 +72,15 @@ export default class Editor {
 	readonly backupSceneLibSaveSlotName = this.editorFilesPrefix + 'backup'; //TODO: implement it rename to sceneBackupFileName
 
 	constructor() {
-
 		for(let arg of thingEditorServer.argv) {
 			this.editorArguments[arg] = true;
 		}
 
 		this.onUIMounted = this.onUIMounted.bind(this);
-		render(h(UI, { onUIMounted: this.onUIMounted }), document.body);
-
 		game.editor = this;
 		game.__EDITOR_mode = true;
+
+		render(h(UI, { onUIMounted: this.onUIMounted }), document.body);
 
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 	}

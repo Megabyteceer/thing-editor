@@ -1,5 +1,5 @@
-import { BLEND_MODES, Mesh, Sprite } from "pixi.js";
-import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { Mesh, Sprite } from "pixi.js";
+import { SelectableProperty } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";

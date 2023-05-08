@@ -26,6 +26,7 @@ interface EditorExtendData {
 
 	childrenExpanded?: boolean;
 
+	deepness: number;
 	isSelected?: boolean;
 
 	isPrefabReference?: true; //TODO:
@@ -46,6 +47,7 @@ interface EditorExtendData {
 
 	isFaderShootCalledForThisFader?: boolean;
 
+	hideAllChildren?: boolean;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;
@@ -60,15 +62,13 @@ interface Constructor {
 	};
 }
 
-PIXI
-
 interface SourceMappedConstructor extends Constructor {
 	__sourceFileName?: string;
 	__defaultValues: KeyedObject;
 	__EDITOR_icon?: string;
 	__EDITOR_group?: string;
 	/** added because pixi exports classes with wrong names */
-	__className?: string;
+	__className: string;
 }
 
 type Classes = {

@@ -160,7 +160,7 @@ export default class Lib {
 
 	static getTexture(name: string
 		/// #if EDITOR
-		, owner: Container
+		, _owner: Container
 		/// #endif
 	) {
 
@@ -191,7 +191,7 @@ export default class Lib {
 		let replaceClass: SourceMappedConstructor | undefined = undefined;
 		let replaceClassName: string | undefined;
 		if(!classes.hasOwnProperty(src.c)) {
-			replaceClass = ((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass;
+			replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass) as any as SourceMappedConstructor;
 			replaceClassName = replaceClass.name;
 			setTimeout(() => { // wait for id assign
 				game.editor.logError("Unknown class " + src.c + " was replaced with class " + replaceClassName + ".", 32012, ret);

@@ -23,7 +23,7 @@ const onNew = (ret: any) => {
 const onTake = (ret: any) => {
 	if(ret instanceof Container) {
 		ret.___id = __idCounter++;
-		ret.__nodeExtendData = {};
+		ret.__nodeExtendData = {} as any;
 	}
 }
 
