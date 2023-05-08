@@ -2,39 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-
-
 			"name": "Editor",
-			"type": "chrome",
-			"request": "launch",
-			"webRoot": "${workspaceFolder}",
-			"timeout": 30000,
-			"port": 9224,
-			"enableContentValidation": false,
-			"presentation": {
-				//"hidden": true
-			},
-			"skipFiles": [],
-			"sourceMaps": true,
-			"smartStep": true,
-			"resolveSourceMapLocations": [
-				"${workspaceFolder}/**",
-				"!**/node_modules/**"
-			],
-			//"urlFilter": "http://127.0.0.1:5173/*",
-			"outFiles": [],
-			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
-			"windows": {
-				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
-			},
-			"runtimeArgs": [
-				"./thing-editor/electron-main",
-				"--remote-debugging-port=9223",
-				"debugger-detection-await"
-			]
-		},
-		{
-			"name": "Renderer",
 			"type": "chrome",
 			"request": "attach",
 			"webRoot": "${workspaceFolder}",
@@ -51,7 +19,30 @@
 				"${workspaceFolder}/**",
 				"!**/node_modules/**"
 			],
-			"urlFilter": "http://127.0.0.1:5173/*"
+			"urlFilter": "http://127.0.0.1:5173/*",
+			"outFiles": [],
+			"preLaunchTask": "launch electron"
+		},
+		{
+			"name": "Render",
+			"type": "chrome",
+			"request": "attach",
+			"webRoot": "${workspaceFolder}",
+			"timeout": 30000,
+			"port": 9224,
+			"enableContentValidation": false,
+			"presentation": {
+				"hidden": true
+			},
+			"skipFiles": [],
+			"sourceMaps": true,
+			"smartStep": true,
+			"resolveSourceMapLocations": [
+				"${workspaceFolder}/**",
+				"!**/node_modules/**"
+			],
+			"urlFilter": "http://127.0.0.1:5173/*",
+			"outFiles": []
 		},
 		{
 			"type": "node",
@@ -70,13 +61,13 @@
 				"debugger-detection-await"
 			],
 			"presentation": {
-				//"hidden": true
+				"hidden": true
 			}
 		}
 	],
 	"compounds": [{
-		"name": "Both",
-		"configurations": ["Renderer", "Main"],
+		"name": "Main & Render",
+		"configurations": ["Render", "Main"],
 		"stopAll": true,
 		"presentation": {
 			//"hidden": true
