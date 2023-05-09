@@ -51,10 +51,10 @@ const createWindow = () => {
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
 	//mainWindow.hide();
 
-
-	mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
-		console.log(message + " " + sourceId + " (" + line + ")");
-	});
+	/*
+		mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+			console.log(message + " " + sourceId + " (" + line + ")");
+		});*/
 
 	nativeTheme.themeSource = 'dark'
 
@@ -158,6 +158,7 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
+	console.log('thing-editor exit');
 	if(process.platform !== 'darwin') app.quit()
 });
 

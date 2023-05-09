@@ -82,7 +82,7 @@ class R {
 	};
 
 	static sceneNode(node: Container) {
-		return R.span(sceneNodeProps, R.classIcon(node.constructor as SourceMappedConstructor), R.span(nameProps, node.name), R.span(classProps, ' (' + (node.constructor as SourceMappedConstructor).__className + ') #' + node.___id));
+		return R.span(sceneNodeProps, R.classIcon(node.constructor as SourceMappedConstructor), node.name ? R.span(nameProps, node.name) : undefined, R.span(classProps, '(' + (node.constructor as SourceMappedConstructor).__className + ') #' + node.___id));
 	}
 
 

@@ -6,7 +6,7 @@
 
 body {
 	background: var(--bg-color);
-	color: #595550;
+	color: #737988;
 	line-height: normal;
 	font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
 	padding: 0;
@@ -24,7 +24,7 @@ button {
 	border-radius: 3px;
 	border: 1px solid #323334;
 	background-color: #222324;
-	color: #ddffee;
+	color: #bdc3d3;
 	padding: 10px 20px;
 }
 
@@ -296,9 +296,27 @@ button:hover {
 	max-width: 100%;
 }
 
+.scene-node-item * {
+	margin-right: 4px;
+}
 
+.scene-node-name {
+	margin-left: 2px;
+	font-weight:bold;
+	color:#939cb8;
+}
 
+.scene-node-class {
+	font-size: 85%;
+}
 
+.tree-caret {
+    position: absolute;
+	right: 0;
+	font-size: 200%;
+	pointer-events:none;
+	line-height: 50%;
+}
 
 
 

@@ -12,7 +12,7 @@ if(debugPortArg) {
 	var servicePort = parseInt(debugPortArg.replace(DEBUG_PORT_ARG, ''));
 	var eventEmitter = new EventEmitter();
 
-	console.log('detector: ' + servicePort);
+	console.log('debugger detector waits: ' + servicePort);
 	proxy.createProxy(servicePort + 1, "127.0.0.1", servicePort, {
 		downstream: (context, data) => {
 			if(connections === 2) {

@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
 import { SelectComponentItem } from "thing-editor/src/editor/ui/selectComponent";
+import assert from "thing-editor/src/engine/debug/assert";
 
 type EditablePropertyType = 'data-path' |
 	'splitter' |
@@ -50,8 +51,9 @@ function editable(editablePropertyDesc?: EditablePropertyDescRaw) {
 
 function _editableEmbed(target: any, name: string, editablePropertyDesc?: EditablePropertyDescRaw) {
 
-	if(!target.__editableProps) {
+	if(!target.hasOwnProperty('__editableProps')) {
 		target.__editableProps = [];
+		assert(target.hasOwnProperty('__editableProps'), "Editable not own");
 	}
 	if(!editablePropertyDesc) {
 		editablePropertyDesc = {};

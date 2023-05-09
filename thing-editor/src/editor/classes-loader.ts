@@ -13,6 +13,7 @@ import Lib from "thing-editor/src/engine/lib";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { Container, DisplayObject, Sprite, Text } from "pixi.js";
 import { Constructor } from "thing-editor/src/editor/env";
+import imp from "thing-editor/src/editor/utils/imp";
 
 const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
@@ -81,12 +82,8 @@ export default class ClassesLoader {
 
 			const moduleName = '../../..' + file.fileName.replace(/\.ts$/, '');
 
-			if(isBuiltInClassesLoading) {
-				return import(/* @vite-ignore */`/${moduleName}.ts`).then(onLoad);
-			} else {
-				const versionQuery = '?v=' + componentsVersion;
-				return import(/* @vite-ignore */`/${moduleName}.ts${versionQuery}`).then(onLoad);
-			}
+			const versionQuery = isBuiltInClassesLoading ? undefined : ('?v=' + componentsVersion);
+			return imp(moduleName, versionQuery).then(onLoad);
 
 		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {
 			let classes: Classes = {};

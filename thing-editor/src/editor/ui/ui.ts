@@ -1,4 +1,5 @@
 import { Component, ComponentChild, h } from "preact";
+import ClassesLoader from "thing-editor/src/editor/classes-loader";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import Window from "thing-editor/src/editor/ui/editor-window";
@@ -59,7 +60,8 @@ export default class UI extends Component<UIProps> {
 				h(TreeView, { ref: this.sceneTreeRef }),
 				0, 35, 250, 500, 250, 500),
 
-			h(Modal, { ref: this.modalRef })
+			h(Modal, { ref: this.modalRef }),
+			R.btn('reload classes', () => { ClassesLoader.reloadClasses(); })
 		);
 	}
 
