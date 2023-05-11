@@ -2,7 +2,7 @@ import { Container } from "pixi.js";
 import { ClassAttributes, Component, ComponentChild, ComponentType, h } from "preact";
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDesc, EditablePropertyType } from "thing-editor/src/editor/props-editor/editable";
+import { EditablePropertyDesc, EditablePropertyType, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import group, { GroupableItem } from "thing-editor/src/editor/ui/group";
 import PropsFieldWrapper from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
@@ -46,7 +46,8 @@ interface PropsEditorProps extends ClassAttributes<PropsEditor> {
 
 type EditablePropsRenderer = ComponentType<Component>;
 
-const renderers: Map<string, EditablePropsRenderer> = new Map();
+const renderers: Map<EditablePropertyType, EditablePropsRenderer> = new Map();
+const typeDefaults: Map<EditablePropertyType, any> = new Map();
 
 class PropsEditor extends Component<PropsEditorProps> {
 
@@ -59,13 +60,19 @@ class PropsEditor extends Component<PropsEditorProps> {
 		return game.editor.ui.modal.showListChoose(title, classesList.map(i => i.__className));
 	}
 
-	static registerRenderer(type: EditablePropertyType, render: any) {
+	static registerRenderer(type: EditablePropertyType, render: any, def: any) {
 		renderers.set(type, render);
+		typeDefaults.set(type, def);
 	}
 
-	static getRenderer(type: EditablePropertyType): EditablePropsRenderer {
-		assert(renderers.has(type), "Unknown editable property type: " + type);
-		return renderers.get(type) as EditablePropsRenderer;
+	static getRenderer(prop: EditablePropertyDesc): EditablePropsRenderer {
+		propertyAssert(prop, renderers.has(prop.type), "Unknown editable property type: " + prop);
+		return renderers.get(prop.type) as EditablePropsRenderer;
+	}
+
+	static getDefaultForType(prop: EditablePropertyDesc): any {
+		propertyAssert(prop, typeDefaults.has(prop.type), "Unknown editable property type: " + prop);
+		return typeDefaults.get(prop.type);
 	}
 
 	onChangeClassClick() {
@@ -171,7 +178,7 @@ class PropsEditor extends Component<PropsEditorProps> {
 				}, firstClass.__className), '...');
 			}
 		}
-		let props = game.editor.selection[0].__editableProps;
+		let props = (game.editor.selection[0].constructor as SourceMappedConstructor).__editableProps;
 		let propsFilter: KeyedMap<number> = {};
 
 		for(let o of game.editor.selection) {
@@ -179,7 +186,7 @@ class PropsEditor extends Component<PropsEditorProps> {
 			if(hidePropsEditor && !hidePropsEditor.visibleFields) {
 				return hidePropsEditor.title || 'Not editable';
 			}
-			let props = o.__editableProps;
+			let props = (o.constructor as SourceMappedConstructor).__editableProps;
 			for(let p of props) {
 				let name = p.name;
 				if((!hidePropsEditor) || hidePropsEditor.visibleFields[name] || name === 'basic') {
@@ -235,9 +242,9 @@ class PropsEditor extends Component<PropsEditorProps> {
 
 export default PropsEditor;
 
-PropsEditor.registerRenderer('color', ColorEditor);
-PropsEditor.registerRenderer('number', NumberEditor);
-PropsEditor.registerRenderer('string', StringEditor);
-PropsEditor.registerRenderer('boolean', BooleanEditor);
-PropsEditor.registerRenderer('splitter', null);
+PropsEditor.registerRenderer('color', ColorEditor, 0);
+PropsEditor.registerRenderer('number', NumberEditor, 0);
+PropsEditor.registerRenderer('string', StringEditor, null);
+PropsEditor.registerRenderer('boolean', BooleanEditor, false);
+PropsEditor.registerRenderer('splitter', null, undefined);
 

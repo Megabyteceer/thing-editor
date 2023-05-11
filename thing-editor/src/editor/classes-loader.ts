@@ -6,7 +6,7 @@ import assert from "../engine/debug/assert";
 import game from "../engine/game";
 
 import fs from "./fs";
-import { EditablePropertyDesc, EditablePropertyType, _editableEmbed } from "./props-editor/editable";
+import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "./props-editor/editable";
 import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-checker";
 import Lib from "thing-editor/src/engine/lib";
 
@@ -16,6 +16,7 @@ import { Constructor } from "thing-editor/src/editor/env";
 import imp from "thing-editor/src/editor/utils/imp";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
+import { clearPropertyDifinitionCache } from "thing-editor/src/editor/ui/props-editor/property-definition-utl";
 
 const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
@@ -48,6 +49,7 @@ export default class ClassesLoader {
 
 				const RawClass = module.default;
 				if(!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
+					game.editor.editSource(file.fileName);
 					if(!RawClass) {
 						game.editor.showError('file ' + file.fileName + ' exports empty statement: ' + RawClass);
 					} else {
@@ -60,19 +62,21 @@ export default class ClassesLoader {
 
 				let instance: Container = new Class() as Container;
 
+				let className: string = (isBuiltInClassesLoading && EMBED_CLASSES_NAMES_FIXER.has(Class)) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
+				Class.__className = className;
 				Class.__sourceFileName = file.fileName;
 				Class.__defaultValues = {};
 				Class.__isScene = (instance instanceof Scene);
 
-				if(!Class.prototype.__editableProps) {
-					Class.prototype.__editableProps = [];
+				if(!Class.__editableProps) {
+					Class.__editableProps = [];
 				}
-				const editableProps: EditablePropertyDesc[] = Class.prototype.__editableProps;
+				const editableProps: EditablePropertyDesc[] = Class.__editableProps;
 				for(let prop of editableProps) {
 
 					if(!prop.hasOwnProperty('type') && !prop.notSerializable) {
 						let type = typeof (instance as KeyedObject)[prop.name];
-						assert(type === 'string' || type === 'number' || type === 'boolean', 'invalid type "' + type + '" for editable property ' + prop.name);
+						propertyAssert(prop, type === 'string' || type === 'number' || type === 'boolean', 'invalid type "' + type + '" for editable property ' + prop.name);
 						//@ts-ignore
 						prop.type = type || 'number';
 					}
@@ -82,30 +86,31 @@ export default class ClassesLoader {
 						prop.__nullCheckingIsApplied = true;
 					}
 
-					if(NOT_SERIALIZABLE_PROPS_TYPES.has(prop.type)) {
+					if(NOT_SERIALIZABLE_PROPS_TYPES.has(prop.type) || prop.name.startsWith('___')) {
 						prop.notSerializable = true;
 					}
 
-					if(!prop.notSerializable) {
+					if(!prop.notSerializable && !prop.hasOwnProperty('default')) {
 						prop.default = (instance as KeyedObject)[prop.name];
+						if(typeof prop.default === 'undefined') {
+							prop.default = PropsEditor.getDefaultForType(prop);
+						}
+						propertyAssert(prop, typeof prop.default !== 'undefined', "Editable property '" + prop.name + "' in class '" + Class.__className + "' has no default value.");
 						Class.__defaultValues[prop.name] = prop.default;
 					}
 					if(!prop.override) {
-						prop.renderer = PropsEditor.getRenderer(prop.type);
+						prop.renderer = PropsEditor.getRenderer(prop);
 					}
 				}
 
-
-				let className: string = (isBuiltInClassesLoading && EMBED_CLASSES_NAMES_FIXER.has(Class)) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
-				Class.__className = className;
-
-				if((instance.__editableProps.length < 1) || (instance.__editableProps[0].type !== 'splitter')) {
+				if((Class.__editableProps.length < 1) || (Class.__editableProps[0].type !== 'splitter')) {
 					_editableEmbed(Class, className + '-splitter', {
 						type: 'splitter',
 						name: className,
 						title: className,
 						notSerializable: true
 					});
+					Class.__editableProps.unshift(Class.__editableProps.pop() as EditablePropertyDesc);
 				};
 
 				return Class;
@@ -127,8 +132,10 @@ export default class ClassesLoader {
 					return;
 				}
 				const className = c.__className;
+				clearPropertyDifinitionCache(c.__sourceFileName as string);
 
 				if(classes[className]) {
+					game.editor.editClassSource(c);
 					game.editor.showError(R.div(null,
 						'class ',
 						R.b(null, className),
@@ -147,23 +154,26 @@ export default class ClassesLoader {
 			for(let c of _classes as SourceMappedConstructor[]) {
 				//@ts-ignore
 				let superClass = c.__proto__;
-				const editableProps: EditablePropertyDesc[] = c.prototype.__editableProps;
+				const editableProps: EditablePropertyDesc[] = c.__editableProps;
 				if(editableProps[0].name !== '__root-splitter') {
 					const superProps: EditablePropertyDesc[] = [];
-					while(superClass.prototype.__editableProps) {
-						superProps.unshift.apply(superProps, superClass.prototype.__editableProps);
+					while(superClass.__editableProps) {
+						superProps.unshift.apply(superProps, superClass.__editableProps);
 						Object.assign(c.__defaultValues, superClass.__defaultValues);
+						if(superProps[0].name === '__root-splitter') {
+							break;
+						}
 						superClass = superClass.__proto__;
 					}
-					c.prototype.__editableProps = editableProps.filter((thisProp: EditablePropertyDesc) => {
+					c.__editableProps = editableProps.filter((thisProp: EditablePropertyDesc) => {
 						let sameNamedPropIndex = superProps.findIndex((superProp: EditablePropertyDesc) => {
 							return superProp.name === thisProp.name;
 						});
 						if(sameNamedPropIndex >= 0) {
 							const superProp = superProps[sameNamedPropIndex];
 							if(!thisProp.override) {
+								game.editor.editSource(thisProp.__src);
 								game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + superProp, 40004);
-								game.editor.editClassSource(c as SourceMappedConstructor);
 							} else {
 								superProps[sameNamedPropIndex] = Object.assign({}, superProp, thisProp);
 								if(thisProp.notSerializable) {
@@ -175,7 +185,7 @@ export default class ClassesLoader {
 							return true;
 						}
 					});
-					c.prototype.__editableProps.unshift.apply(c.prototype.__editableProps, superProps);
+					c.__editableProps.unshift.apply(c.__editableProps, superProps);
 				}
 			}
 

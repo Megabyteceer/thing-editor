@@ -5,10 +5,11 @@
 	},
 	":": [
 		{
-			"c": "Container",
+			"c": "Bunny",
 			"p": {
 				"x": 136,
-				"y": 94
+				"y": 94,
+				"image": "bunny.png"
 			}
 		},
 		{

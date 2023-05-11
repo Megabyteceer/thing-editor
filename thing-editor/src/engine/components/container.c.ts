@@ -228,7 +228,7 @@ Container.prototype.__isAnyChildSelected = function __isAnyChildSelected(): bool
 /// #endif
 
 
-_editableEmbed(Container, '__root-splitter', { type: 'splitter', title: 'Basic props:' });
+_editableEmbed(Container, '__root-splitter', { type: 'splitter', title: 'Basic props' });
 _editableEmbed(Container, 'name', {
 	type: 'string',
 	parser: (name: string): string => {
@@ -257,7 +257,7 @@ _editableEmbed(Container, 'alpha', {
 _editableEmbed(Container, 'visible');
 _editableEmbed(Container, 'interactive');
 
-_editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers:' });
+_editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers' });
 
 _editableEmbed(Container, '__lockSelection', { type: 'boolean' });
 _editableEmbed(Container, '__description', { type: 'string', multiline: true });

@@ -1,7 +1,9 @@
 import { Container } from "pixi.js";
-import { Constructor } from "thing-editor/src/editor/env";
+import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/property-definition-utl";
 import { SelectComponentItem } from "thing-editor/src/editor/ui/selectComponent";
 import assert from "thing-editor/src/engine/debug/assert";
+import game from "thing-editor/src/engine/game";
 
 type EditablePropertyType = 'data-path' |
 	'splitter' |
@@ -23,6 +25,9 @@ interface EditablePropertyDescRaw {
 	type?: EditablePropertyType,
 	name?: string,
 	basis?: number,
+	default?: any,
+	visible?: (o: Container) => boolean,
+	helpUrl?: string,
 	/** field changes pass vale through this function  */
 	parser?: (val: any) => any;
 	disabled?: (o: Container) => boolean;
@@ -44,12 +49,11 @@ interface EditablePropertyDescRaw {
 }
 
 interface EditablePropertyDesc extends EditablePropertyDescRaw {
-	name: string,
 	type: EditablePropertyType,
-	default?: number,
+	default: any,
+	name: string,
+	__src: string,
 	__nullCheckingIsApplied?: true,
-	visible?: (o: Container) => boolean,
-	helpUrl?: string,
 	renderer?: any;
 }
 
@@ -66,19 +70,39 @@ function _editableEmbed(target: Constructor, propertyName: string, editablePrope
 
 function editableInner(target: Container, name: string, editablePropertyDesc?: EditablePropertyDescRaw) {
 
-	if(!target.hasOwnProperty('__editableProps')) {
-		target.__editableProps = [];
-		assert(target.hasOwnProperty('__editableProps'), "Editable not own");
+	if(!target.constructor.hasOwnProperty('__editableProps')) {
+		(target.constructor as SourceMappedConstructor).__editableProps = [];
+		assert(target.constructor.hasOwnProperty('__editableProps'), "Editable not own");
 	}
 	if(!editablePropertyDesc) {
 		editablePropertyDesc = {};
 	}
 	editablePropertyDesc.name = name;
+	let er = new Error("tmpError");
+	let stack = (er.stack as string).split('\n');
+	let lineIndex = stack.findIndex(line => line.indexOf('__decorateClass') > 0) + 1;
+	if(lineIndex === 0) {
+		lineIndex = stack.findIndex(line => line.indexOf('_editableEmbed') > 0) + 1;
+	}
 
-	target.__editableProps.push(editablePropertyDesc as EditablePropertyDesc);
+	let srcUrl = stack[lineIndex];
+
+	let url = srcUrl.split(location.origin)[1];
+	url = url.split(/[?:]/)[0];
+	url = getPropertyDefinitionUrl(url, name);
+	(editablePropertyDesc as EditablePropertyDesc).__src = url;
+
+	(target.constructor as SourceMappedConstructor).__editableProps.push(editablePropertyDesc as EditablePropertyDesc);
 };
 
 export default editable;
-export { _editableEmbed };
+export { _editableEmbed, propertyAssert };
 
 export type { EditablePropertyDesc, EditablePropertyType };
+
+const propertyAssert = (prop: EditablePropertyDesc, condition: any, message: string) => {
+	if(!condition) {
+		game.editor.editSource(prop.__src)
+		assert(condition, message);
+	}
+}

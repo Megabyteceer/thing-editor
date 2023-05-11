@@ -73,6 +73,7 @@ interface SourceMappedConstructor extends Constructor {
 	__defaultValues: KeyedObject;
 	__EDITOR_icon?: string;
 	__EDITOR_group?: string;
+	__editableProps: EditablePropertyDesc[];
 	__isScene: boolean;
 	__beforeChangeToThisType?: (o: Container) => void;
 	/** added because pixi exports classes with wrong names */

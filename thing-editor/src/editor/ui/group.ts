@@ -12,13 +12,13 @@ interface GroupProps {
 	content: ComponentChildren
 }
 
-function renderGroup(props: GroupProps):GroupableItem {
+function renderGroup(props: GroupProps): GroupableItem {
 	let gid = 'props-group-' + props.key;
 	assert(!props.key.match(GROUP_ID_CHECKER), 'Group name "' + props.key + '" contains wrong symbols', 90001);
 
 	return R.div({ key: gid, className: 'props-group ' + gid },
 		R.div({
-			className: 'props-group-header clickable clickable-neg',
+			className: 'props-group-header',
 			'data-groupid': gid,
 			onClick: toggleGroup
 		}, props.title),
@@ -146,4 +146,4 @@ function toggleGroup(ev: MouseEvent) {
 
 export default { renderGroup, groupArray };
 
-export type {GroupableItem}
+export type { GroupableItem }

@@ -6,7 +6,7 @@ const {
 	dialog
 } = require('electron');
 
-const IS_DEBUG = process.argv.indexOf('debugger-detection-await');
+const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -25,10 +25,6 @@ const fsOptions = {
 	encoding: 'utf8'
 };
 
-
-app.commandLine.appendSwitch('remote-debugging-port', '9223');
-
-
 const fn = (fileName) => {
 	if(fileName.indexOf('..') >= 0) {
 		throw new Error('Attempt to access files out of Thing-Editor root folder: ' + fileName);
@@ -42,13 +38,17 @@ const createWindow = () => {
 	windowState = {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
-
+			additionalArguments: [
+				"--remote-debugging-port=9223",
+				//"--wait-for-debugger"
+			],
 			webSecurity: false
 		},
 		//opacity: 0
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
+	//mainWindow.webContents.openDevTools();
 	//mainWindow.hide();
 
 	/*
@@ -59,7 +59,7 @@ const createWindow = () => {
 	nativeTheme.themeSource = 'dark'
 
 	ipcMain.on('fs', (event, command, fileName, content, ...args) => {
-		console.log('command fs: ' + command + ': ' + (fileName || ''));
+
 		let fd;
 		try {
 			switch(command) {
@@ -119,6 +119,9 @@ const createWindow = () => {
 
 					});
 					return;
+				default:
+					event.returnValue = new Error('unknown fs command: ' + command + ': ' + (fileName || ''));
+					return;
 			}
 		} catch(er) {
 			event.returnValue = er;
@@ -131,19 +134,18 @@ const createWindow = () => {
 		const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
 		mainWindow.setOpacity(1);
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
-
 	};
 
 	if(IS_DEBUG) {
 
-		let debuggerDetector = require('./debugger-detection');
+		//let debuggerDetector = require('./debugger-detection');
 		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
 			if(er.code === 'ERR_CONNECTION_REFUSED') {
 				dialog.showErrorBox(mainWindow, 'Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 			}
 		});
-		debuggerDetector.once('debugger-ready', loadEditorIndexHTML);
+		setTimeout(loadEditorIndexHTML, 600);
 	} else {
 		loadEditorIndexHTML();
 	}

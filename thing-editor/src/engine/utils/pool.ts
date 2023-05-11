@@ -1,5 +1,4 @@
 import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
 import { Container } from "pixi.js";
 
@@ -8,7 +7,7 @@ let pools = new Map();
 let __idCounter = 1;
 
 const onNew = (ret: any) => {
-	const editableProps: EditablePropertyDesc[] = ret.__editableProps;
+	const editableProps = (ret.constructor as SourceMappedConstructor).__editableProps;
 	if(editableProps) {
 		for(let prop of editableProps) {
 			if(prop.__nullCheckingIsApplied) {

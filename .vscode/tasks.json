@@ -26,8 +26,9 @@
 				"command": "${workspaceFolder}/node_modules/.bin/electron.cmd"
 			},
 			"args": [
-				"./thing-editor/electron-main",
 				"--remote-debugging-port=9223",
+				//"--wait-for-debugger",
+				"./thing-editor/electron-main",
 				"debugger-detection-await"
 			],
 			"isBackground": true,
@@ -41,15 +42,15 @@
 			},
 			"problemMatcher": [{
 				"pattern": [{
-					"regexp": ".",
+					"regexp": "iqdwiouqwdvuqwdvuqwdvy",
 					"file": 1,
 					"location": 2,
 					"message": 3
 				}],
 				"background": {
 					"activeOnStart": true,
-					"beginsPattern": "DevTools",
-					"endsPattern": "debugger detector waits", //[vite] connected.
+					"beginsPattern": ".",
+					"endsPattern": ".", //[vite] connected.
 				}
 			}]
 		}

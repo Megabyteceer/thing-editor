@@ -1,7 +1,8 @@
 
-import { ObservablePoint } from "pixi.js";
+import { Container, ObservablePoint } from "pixi.js";
 import { Constructor, KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
+import game from "thing-editor/src/engine/game";
 
 let _definedProps = new WeakMap();
 let _valStore = new WeakMap();
@@ -26,7 +27,16 @@ export default function wrapPropertyWithNumberChecker(constructor: Constructor, 
 	let originalSetter: ((val: any) => void) | undefined;
 
 	let newSetter = function wrapPropertyWithNumberCheckerSetter(this: KeyedObject, val: any) {
-		assert(typeof val === 'number' && !isNaN(val), 'invalid value for "' + propertyName + '". Valid number value expected. ' + val + ' received.', 10001);
+		const isNumberValid = typeof val === 'number' && !isNaN(val);
+		if(!isNumberValid) {
+			if(constructor.prototype instanceof Container) {
+				let propDesc = game.editor.getObjectField(constructor.prototype, propertyName);
+				if(propDesc) {
+					game.editor.editSource(propDesc.__src);
+				}
+			}
+			assert(false, 'invalid value for "' + propertyName + '". Valid number value expected. ' + val + ' received.', 10001);
+		}
 		//@ts-ignore
 		originalSetter.call(this, val);
 	};

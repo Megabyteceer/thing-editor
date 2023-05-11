@@ -12,7 +12,7 @@ export default class AssetsLoader {
 
 		let scenesFiles = fs.getFiles('s.json');
 		for(const file of scenesFiles) {
-			Lib.scenes[file.assetName.replace(/\.s\.json$/, '')] = fs.readFile(file.fileName);
+			Lib.scenes[file.assetName.replace(/\.s\.json$/, '')] = fs.readJSONFile(file.fileName);
 		}
 
 		let imagesFiles = fs.getFiles(['.png', '.jpg', '.svg', '.webp']);

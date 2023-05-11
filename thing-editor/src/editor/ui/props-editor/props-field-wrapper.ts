@@ -8,8 +8,6 @@ import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
-const labelProps = { className: 'props-label selectable-text', title: 'Ctrl+click to copy field`s name', onMouseDown: copyTextByClick };
-const labelEditorOnlyProps = { className: 'props-label props-label-editor-only selectable-text', title: 'Ctrl+click to copy field`s name', onMouseDown: copyTextByClick };
 const wrapperProps = { className: 'props-wrapper' };
 
 interface EditablePropertyEditorProps extends ClassAttributes<PropsFieldWrapper> {
@@ -116,7 +114,14 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 			'data-help': field.helpUrl
 		},
 			tip,
-			R.div(field.name.startsWith('__') ? labelEditorOnlyProps : labelProps, field.name),
+			R.div({
+				className: field.name.startsWith('__') ? 'props-label props-label-editor-only selectable-text' : 'props-label selectable-text',
+				title: 'Double click - go to definition, Ctrl+click to copy field`s name',
+				onMouseDown: copyTextByClick,
+				ondblclick: () => {
+					game.editor.editSource(field.__src);
+				}
+			}, field.name),
 			R.div(wrapperProps,
 				h(field.renderer, {
 					ref: this.editorRef,

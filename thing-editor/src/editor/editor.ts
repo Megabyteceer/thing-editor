@@ -26,6 +26,7 @@ import Pool from "thing-editor/src/engine/utils/pool";
 import assert from "thing-editor/src/engine/debug/assert";
 import { Container, Texture } from "pixi.js";
 
+
 type EditorEvents = {
 	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
 	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void
@@ -73,19 +74,14 @@ export default class Editor {
 	readonly backupSceneLibSaveSlotName = this.editorFilesPrefix + 'backup'; //TODO: implement it rename to sceneBackupFileName
 
 	constructor() {
-		if(window.thingEditorServer) {
-			for(let arg of window.thingEditorServer.argv) {
-				if(arg.startsWith('--') && arg.indexOf('=') > 0) {
-					const a = arg.split('=');
-					this.editorArguments[a[0].substring(2)] = a[1];
-				} else {
-					this.editorArguments[arg] = true;
-				}
+
+		for(let arg of window.thingEditorServer.argv) {
+			if(arg.startsWith('--') && arg.indexOf('=') > 0) {
+				const a = arg.split('=');
+				this.editorArguments[a[0].substring(2)] = a[1];
+			} else {
+				this.editorArguments[arg] = true;
 			}
-		} else {
-			window.thingEditorServer = {
-				fs: () => { }
-			};
 		}
 
 		this.onUIMounted = this.onUIMounted.bind(this);
@@ -132,7 +128,7 @@ export default class Editor {
 	}
 
 	getObjectField(o: Container, name: string): EditablePropertyDesc {
-		const ret = o.__editableProps.find((f) => {
+		const ret = (o.constructor as SourceMappedConstructor).__editableProps.find((f) => {
 			return f.name === name;
 		}) as EditablePropertyDesc;
 		assert(ret, "Unknown editable propery name: " + name);
@@ -155,7 +151,7 @@ export default class Editor {
 			this.currentProjectDir = newProjectDir;
 			this.ui.modal.showSpinner();
 			this.settings.removeItem('last-opened-project');
-			this.projectDesc = fs.readFile(this.currentProjectDir + 'thing-project.json');
+			this.projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
 			if(!this.projectDesc) {
 				this.ui.modal.showError("Can't open project " + dir).then(() => { this.openProject(); });
 				return;
@@ -386,24 +382,27 @@ export default class Editor {
 		});
 	}
 
-	editClassSource(c: SourceMappedConstructor | Container, line?: number, char?: number) {
+	editSource(fileName: string, line?: number, char?: number) {
 		if(this.editorArguments['no-vscode-integration']) {
 			return;
 		}
-		if(c instanceof Container) {
-			c = c.constructor as SourceMappedConstructor;
+		if(line !== undefined) {
+			fileName += ':' + line;
+			if(char !== undefined) {
+				fileName += ':' + char;
+			}
 		}
 		let rootPath: string = thingEditorServer.argv[0].split('node_modules')[0];
 		rootPath = rootPath.substring(0, rootPath.length - 1);
-		let url = '/__open-in-editor?file=' + rootPath + c.__sourceFileName;
-		if(line !== undefined) {
-			url += ':' + line;
-			if(char !== undefined) {
-				url += ':' + char;
-			}
-		}
-
+		let url = '/__open-in-editor?file=' + rootPath + fileName;
 		fetch(url);
+	}
+
+	editClassSource(c: SourceMappedConstructor | Container) {
+		if(c instanceof Container) {
+			c = c.constructor as SourceMappedConstructor;
+		}
+		this.editSource(c.__sourceFileName as string);
 	}
 
 	protected saveCurrentSceneName(name: string) {

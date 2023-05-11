@@ -351,7 +351,7 @@ export default class Lib {
 		}
 		if(!ret) {
 			let props: KeyedObject = {};
-			let propsList = o.__editableProps;
+			let propsList = (o.constructor as SourceMappedConstructor).__editableProps;
 
 			for(let p of propsList) {
 				if(!p.notSerializable) {

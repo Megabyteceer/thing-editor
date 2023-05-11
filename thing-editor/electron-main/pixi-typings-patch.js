@@ -62,7 +62,6 @@ import type { EditorExtendData } from 'thing-editor/src/editor/env';
     ___pathBreakpoint?: string;
 
     __nodeExtendData: EditorExtendData;
-    __editableProps: EditablePropertyDesc[];
 
     /** debug info about object (exists in editor only)*/
     ___info: string;

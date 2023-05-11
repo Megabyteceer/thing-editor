@@ -6,8 +6,8 @@
 			"type": "chrome",
 			"request": "attach",
 			"webRoot": "${workspaceFolder}",
-			"timeout": 30000,
-			"port": 9224,
+			"timeout": 3000,
+			"port": 9223,
 			"enableContentValidation": false,
 			"presentation": {
 				//"hidden": true
@@ -21,7 +21,10 @@
 			],
 			"urlFilter": "http://127.0.0.1:5173/*",
 			"outFiles": [],
-			"preLaunchTask": "launch electron"
+			"preLaunchTask": "launch electron"/*,
+			"trace": {
+				"logFile": "trace.txt"
+			}*/
 		},
 		{
 			"name": "Render",
@@ -29,7 +32,7 @@
 			"request": "attach",
 			"webRoot": "${workspaceFolder}",
 			"timeout": 30000,
-			"port": 9224,
+			"port": 9223,
 			"enableContentValidation": false,
 			"presentation": {
 				"hidden": true
@@ -54,9 +57,10 @@
 			"windows": {
 				"runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/electron.exe"
 			},
-			"env": {"ELECTRON_ENABLE_LOGGING":"true"},
+			"env": {"ELECTRON_ENABLE_LOGGING":"true", "ELECTRON_LOG_FILE": "C:\\Dropbox\\electron-vite-preact\\log.log"},
 			"args": [
 				"--remote-debugging-port=9223",
+				//	"--wait-for-debugger",
 				"./thing-editor/electron-main",
 				"debugger-detection-await"
 			],

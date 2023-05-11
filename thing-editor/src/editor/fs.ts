@@ -12,6 +12,7 @@ let allFiles: Map<string, FileDesc> = new Map();
 const execFs = (command: string, filename?: string, content?: string, ...args: any[]) => {
 	const ret = thingEditorServer.fs(command, filename, content, args);
 	if(ret instanceof Error) {
+		debugger;
 		throw ret;
 	}
 	return ret;
@@ -65,8 +66,13 @@ export default class fs {
 	static deleteFile(fileName: string) {
 		return execFs('fs/delete', fileName);
 	}
+
+	static readJSONFile(fileName: string): any {
+		return JSON.parse(fs.readFile(fileName));
+	}
+
 	static readFile(fileName: string) {
-		return JSON.parse(execFs('fs/readFile', fileName) as unknown as string);
+		return (execFs('fs/readFile', fileName) as any as string);
 	}
 
 	static editFile(_fileName: string) {

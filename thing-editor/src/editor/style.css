@@ -295,11 +295,16 @@ textarea:focus-visible {
 	overflow: hidden;
 }
 
-.props-group-helpers .props-group-header {
+.props-group:has(.props-group-header:hover) {
+	border-color: #444444;
+}
+
+.props-group-splitter-helpers .props-group-header {
 	font-size: xx-small;
 }
 
 .props-group-header {
+	cursor: pointer;
 	padding: 3px 15px;
 	background-color: var(--window-header-color);
 	color: #a3adb7;
