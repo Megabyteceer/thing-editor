@@ -7,7 +7,7 @@ import R from "./preact-fabrics";
 import game from "../engine/game";
 
 import ClassesLoader from "./classes-loader";
-import { KeyedMap, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import Selection, { SelectionData } from "thing-editor/src/editor/utils/selection";
@@ -15,7 +15,7 @@ import historyInstance from "thing-editor/src/editor/utils/history";
 import AssetsLoader from "thing-editor/src/editor/assets-loader";
 import Settings from "thing-editor/src/engine/utils/settings";
 import UI from "thing-editor/src/editor/ui/ui";
-import { ComponentChild, h, render } from "preact";
+import { Component, ComponentChild, h, render } from "preact";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import Lib from "thing-editor/src/engine/lib";
@@ -27,10 +27,11 @@ import assert from "thing-editor/src/engine/debug/assert";
 import { Container, Texture } from "pixi.js";
 
 type EditorEvents = {
-	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta: boolean) => void,
-	afterPropertyChanged: (body: string, from: string) => void
+	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
+	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void
 }
 
+let refreshTreeViewAndPropertyEditorScheduled = false;
 
 export default class Editor {
 
@@ -72,8 +73,14 @@ export default class Editor {
 	readonly backupSceneLibSaveSlotName = this.editorFilesPrefix + 'backup'; //TODO: implement it rename to sceneBackupFileName
 
 	constructor() {
-		for(let arg of thingEditorServer.argv) {
-			this.editorArguments[arg] = true;
+		if(window.thingEditorServer) {
+			for(let arg of window.thingEditorServer.argv) {
+				this.editorArguments[arg] = true;
+			}
+		} else {
+			window.thingEditorServer = {
+				fs: () => { }
+			};
 		}
 
 		this.onUIMounted = this.onUIMounted.bind(this);
@@ -83,6 +90,8 @@ export default class Editor {
 		render(h(UI, { onUIMounted: this.onUIMounted }), document.body);
 
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
+		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
+
 	}
 
 	onUIMounted(ui: UI) {
@@ -96,6 +105,33 @@ export default class Editor {
 				this.chooseProject(true);
 			}
 		});
+	}
+
+	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) {
+		if(this.selection.length > 0) {
+
+			if(typeof field === 'string') {
+				field = this.getObjectField(this.selection[0], field);
+			}
+			if(field.beforeEdited) {
+				field.beforeEdited(val);
+			}
+
+			for(let o of this.selection) {
+				this.onObjectsPropertyChanged(o, field, val, delta);
+			}
+			if(field.afterEdited) {
+				field.afterEdited();
+			}
+		}
+	}
+
+	getObjectField(o: Container, name: string): EditablePropertyDesc {
+		const ret = o.__editableProps.find((f) => {
+			return f.name === name;
+		}) as EditablePropertyDesc;
+		assert(ret, "Unknown editable propery name: " + name);
+		return ret;
 	}
 
 	chooseProject(noClose = false) {
@@ -231,6 +267,10 @@ export default class Editor {
 		}
 	}
 
+	sceneModified(saveImmediately: boolean = false) {
+		this.history._sceneModifiedInner(saveImmediately);
+	}
+
 	//TODO: set diagnosticLevel settings to informations to show spell typos and fix them after all
 
 	async reloadAssetsAndClasses(refreshAssetsList = false) {
@@ -241,8 +281,46 @@ export default class Editor {
 		await AssetsLoader.reloadAssets();
 	}
 
-	onObjectsPropertyChanged(_o: Container, _field: string, _val: any, _isDelta?: boolean) {
-		//TODO:
+	onObjectsPropertyChanged(o: Container, field: EditablePropertyDesc | string, val: any, isDelta?: boolean) {
+		assert((!isDelta) || (typeof isDelta === 'boolean'), "isDelta expected to be bool");
+		let changed = false;
+		if(typeof field === 'string') {
+			field = this.getObjectField(o, field);
+		}
+
+		this.events.emit('beforePropertyChanged', o, field.name, field, val, isDelta);
+
+		if(isDelta) {
+			assert(field.type === 'number', "editable field descriptor type: Number expected");
+
+			let v = (o as KeyedObject)[field.name];
+			let newVal = v + val;
+			if(field.hasOwnProperty('min')) {
+				newVal = Math.max(field.min as number, newVal);
+			}
+			if(field.hasOwnProperty('max')) {
+				newVal = Math.min(field.max as number, newVal);
+			}
+			if(v !== newVal) {
+				(o as KeyedObject)[field.name] = newVal;
+				changed = true;
+			}
+		} else {
+			if((o as KeyedObject)[field.name] !== val) {
+				(o as KeyedObject)[field.name] = val;
+				changed = true;
+			}
+		}
+
+		this.events.emit('afterPropertyChanged', o, field.name, field, val, isDelta);
+
+		if(changed) {
+			Lib.__invalidateSerializationCache(o);
+			this.refreshTreeViewAndPropertyEditor();
+			this._lastChangedFiledName = field.name;
+			this.sceneModified(false);
+		}
+		return changed;
 	}
 
 	showError(message: ComponentChild, errorCode = 99999) {
@@ -259,9 +337,8 @@ export default class Editor {
 		alert(message); //TODO:
 	}
 
-	notify(message: string | preact.Component) {
-		debugger;
-		alert(message); //TODO:
+	notify(message: string | Component) {
+		this.ui.modal.notify(message);
 	}
 
 	selectField(_fieldName: string) {
@@ -269,7 +346,17 @@ export default class Editor {
 	}
 
 	refreshTreeViewAndPropertyEditor() {
-		//TODO:
+		if(refreshTreeViewAndPropertyEditorScheduled || document.fullscreenElement) return;
+		refreshTreeViewAndPropertyEditorScheduled = true;
+		setTimeout(() => {
+			refreshTreeViewAndPropertyEditorScheduled = false;
+			this.ui.sceneTree.forceUpdate();
+			this.refreshPropsEditor();
+		}, 1);
+	}
+
+	refreshPropsEditor() {
+		this.ui.propsEditor.forceUpdate();
 	}
 
 	getFieldNameByValue(node: Container, fieldValue: any) {
@@ -294,15 +381,22 @@ export default class Editor {
 		});
 	}
 
-	editClassSource(c: SourceMappedConstructor | Container) {
+	editClassSource(c: SourceMappedConstructor | Container, line?: number, char?: number) {
 		if(this.editorArguments['no-vscode-integration']) {
 			return;
 		}
 		if(c instanceof Container) {
 			c = c.constructor as SourceMappedConstructor;
 		}
-		let filePath = c.__sourceFileName as string;
-		fs.editFile(filePath);
+		let url = '/__open-in-editor?file=' + '/Dropbox/electron-vite-preact' + c.__sourceFileName;
+		if(line !== undefined) {
+			url += ':' + line;
+			if(char !== undefined) {
+				url += ':' + char;
+			}
+		}
+
+		fetch(url);
 	}
 
 	protected saveCurrentSceneName(name: string) {

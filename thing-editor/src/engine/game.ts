@@ -25,6 +25,15 @@ let hideTheseModalsUnderFader: Container[];
 let currentFader: Container | null;
 let hidingFaders: Container[] = [];
 
+/// #if DEBUG
+let lastFPSTime = 0;
+let __speedMultiplier = 1;
+/// #endif
+
+const FRAME_PERIOD_LIMIT = 4.0;
+const FRAME_PERIOD = 1.0;
+let frameCounterTime = 0;
+
 class Game {
 
 	_loadingErrorIsDisplayed = false;
@@ -42,6 +51,9 @@ class Game {
 	isVisible = true; //TODO
 
 	_isWaitingToHideFader = false;
+
+	/** true if after current 'update' will be 'render'. */
+	isUpdateBeforeRender = false;
 
 	onGameReload?: () => void;
 
@@ -61,9 +73,11 @@ class Game {
 
 	init(element: HTMLElement | null, gameId: string, _resourcesPath = '') {
 		this.pixiApp = app = new Application();
-		//@ts-ignore
 
+		//@ts-ignore
 		(element || document.body).appendChild(app.view);
+
+		this._updateGlobal = this._updateGlobal.bind(this);
 
 		stage = new Container();
 		stage.name = 'stage';
@@ -73,6 +87,7 @@ class Game {
 		this.settings = new Settings(gameId);
 
 		app.stage.addChild(stage);
+		app.ticker.add(this._updateGlobal);
 	}
 
 	_onContainerResize() {
@@ -148,6 +163,70 @@ class Game {
 
 	get currentScene() {
 		return __currentSceneValue;
+	}
+
+	_updateGlobal(dt: number) {
+		/// #if DEBUG
+		this._FPS++;
+		let now = Date.now();
+		if((now - lastFPSTime) >= 1000) {
+			this.FPS = this._FPS;
+			this._FPS = 0;
+			lastFPSTime = now;
+		}
+		/// #endif
+
+		/// #if EDITOR
+
+		if((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
+			/// #endif
+
+
+			//TODO ScrollLayer.updateGlobal();
+
+			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
+			/// #if EDITOR
+			dt = Math.min(dt, 1);
+			/// #endif
+
+			frameCounterTime += dt;
+			frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * game.projectDesc.framesSkipLimit);
+			while(frameCounterTime > FRAME_PERIOD) {
+
+				/// #if DEBUG
+				frameCounterTime -= FRAME_PERIOD / game.__speedMultiplier;
+				/*
+				/// #endif
+				frameCounterTime -= FRAME_PERIOD;
+				//*/
+
+				game.isUpdateBeforeRender = !(frameCounterTime > FRAME_PERIOD);
+				this._updateFrame();
+
+				/// #if EDITOR
+				if(this.__doOneStep) {
+					this.editor.refreshTreeViewAndPropertyEditor();
+					this.__doOneStep = false;
+					frameCounterTime = 0;
+					break;
+				}
+			}
+			/// #endif
+		}
+
+		if(this.currentScene) {
+			app.renderer.background.backgroundColor.setValue(this.currentScene.backgroundColor);
+
+			this.currentScene.interactiveChildren = ((modals.length === 0) && !currentFader);
+			let i = modals.length - 1;
+			let isCurrent = !currentFader;
+			while(i >= 0) {
+				modals[i].interactiveChildren = isCurrent;
+				isCurrent = false;
+				i--;
+			}
+		}
+
 	}
 
 	_updateFrame() {
@@ -355,6 +434,23 @@ class Game {
 		game._loadingErrorIsDisplayed = true;
 		// TODO:
 	}
+
+	/// #if DEBUG
+	__doOneStep = false;
+	__paused = false;
+	protected _FPS = 0;
+	FPS = 0;
+
+	protected get __speedMultiplier() {
+		return __speedMultiplier;
+	}
+	protected set __speedMultiplier(v) {
+		if(v !== __speedMultiplier) {
+			__speedMultiplier = v;
+			//TODO MusicFragment.__applyGameSpeed(v);
+		}
+	}
+	/// #endif
 
 	/// #if EDITOR
 	__setCurrentContainerContent(_o: Container) {

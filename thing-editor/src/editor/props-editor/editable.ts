@@ -1,4 +1,5 @@
 import { Container } from "pixi.js";
+import { Constructor } from "thing-editor/src/editor/env";
 import { SelectComponentItem } from "thing-editor/src/editor/ui/selectComponent";
 import assert from "thing-editor/src/engine/debug/assert";
 
@@ -6,10 +7,11 @@ type EditablePropertyType = 'data-path' |
 	'splitter' |
 	'rect' |
 	'callback' |
+	'timeline' |
 	'ref' |
 	'btn' |
 	'color' |
-	'bool' |
+	'boolean' |
 	'string' |
 	'prefab' |
 	'number';
@@ -20,11 +22,12 @@ interface EditablePropertyDescRaw {
 	step?: number,
 	type?: EditablePropertyType,
 	name?: string,
+	basis?: number,
 	/** field changes pass vale through this function  */
 	parser?: (val: any) => any;
 	disabled?: (o: Container) => boolean;
 	beforeEdited?: (val: any) => void;
-	onBlur?: (val: any) => void;
+	onBlur?: () => void;
 
 	/** splitter header */
 	title?: string,
@@ -32,6 +35,12 @@ interface EditablePropertyDescRaw {
 	notAnimate?: true,
 	select?: SelectComponentItem[] | (() => SelectComponentItem[])
 	noNullCheck?: true,
+	important?: true;
+	tip?: string | (() => string);
+	afterEdited?: () => void;
+	multiline?: boolean;
+	notSerializable?: true;
+	override?: true;
 }
 
 interface EditablePropertyDesc extends EditablePropertyDescRaw {
@@ -39,17 +48,23 @@ interface EditablePropertyDesc extends EditablePropertyDescRaw {
 	type: EditablePropertyType,
 	default?: number,
 	__nullCheckingIsApplied?: true,
-	notSerializable?: true,
+	visible?: (o: Container) => boolean,
+	helpUrl?: string,
+	renderer?: any;
 }
 
 /** editable property decorator */
 function editable(editablePropertyDesc?: EditablePropertyDescRaw) {
-	return function (target: any, name: string, _descriptor?: PropertyDescriptor) {
-		_editableEmbed(target, name, editablePropertyDesc);
+	return function (target: any, propertyName: string, _descriptor?: PropertyDescriptor) {
+		editableInner(target, propertyName, editablePropertyDesc);
 	}
 }
 
-function _editableEmbed(target: any, name: string, editablePropertyDesc?: EditablePropertyDescRaw) {
+function _editableEmbed(target: Constructor, propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw) {
+	editableInner(target.prototype, propertyName, editablePropertyDesc);
+}
+
+function editableInner(target: Container, name: string, editablePropertyDesc?: EditablePropertyDescRaw) {
 
 	if(!target.hasOwnProperty('__editableProps')) {
 		target.__editableProps = [];
@@ -59,10 +74,11 @@ function _editableEmbed(target: any, name: string, editablePropertyDesc?: Editab
 		editablePropertyDesc = {};
 	}
 	editablePropertyDesc.name = name;
-	target.__editableProps.push(editablePropertyDesc);
+
+	target.__editableProps.push(editablePropertyDesc as EditablePropertyDesc);
 };
 
 export default editable;
 export { _editableEmbed };
 
-export type { EditablePropertyDesc };
+export type { EditablePropertyDesc, EditablePropertyType };

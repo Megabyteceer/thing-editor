@@ -12,22 +12,26 @@ if(debugPortArg) {
 	var servicePort = parseInt(debugPortArg.replace(DEBUG_PORT_ARG, ''));
 	var eventEmitter = new EventEmitter();
 
-	console.log('debugger detector waits: ' + servicePort);
+	console.log('debugger detector waits: ' + (servicePort + 1));
 	proxy.createProxy(servicePort + 1, "127.0.0.1", servicePort, {
 		downstream: (context, data) => {
-			if(connections === 2) {
+			if(connections >= 2) {
 				flags |= 1;
 				if(flags === 3) {
-					eventEmitter.emit('debugger-ready');
+					setTimeout(() => {
+						eventEmitter.emit('debugger-ready');
+					}, 100);
 				}
 			}
 			return data;
 		},
 		upstream: (context, data) => {
-			if(connections === 2) {
+			if(connections >= 2) {
 				flags |= 2;
 				if(flags === 3) {
-					eventEmitter.emit('debugger-ready');
+					setTimeout(() => {
+						eventEmitter.emit('debugger-ready');
+					}, 100);
 				}
 			}
 			return data;

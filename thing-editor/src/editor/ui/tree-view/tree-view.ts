@@ -8,8 +8,6 @@ import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
-let classViewProps = { className: 'vertical-layout' };
-
 function onEmptyClick(ev: PointerEvent) {
 	if(!isEventFocusOnInputElement(ev)) {
 		game.editor.selection.clearSelection(true);
@@ -47,17 +45,10 @@ export default class TreeView extends Component<TreeViewProps> {
 
 	render() {
 		if(!game.stage) return R.span();
-
-
-		return R.div(classViewProps,
-
-			R.div({ className: 'scene-tree-view-wrap', onMouseDown: onEmptyClick },
-				R.div({ className: 'scene-tree-view', onMouseDown: onEmptyClick },
-					game.__getScenesStack().map(renderSceneStackItem as any),
-					game.stage.children.map(renderRoots as any)
-				)
-			)
-		);
+		return R.div({ className: 'scene-tree-view', onMouseDown: onEmptyClick },
+			game.__getScenesStack().map(renderSceneStackItem as any),
+			game.stage.children.map(renderRoots as any)
+		)
 	}
 }
 

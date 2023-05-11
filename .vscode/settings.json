@@ -5,5 +5,5 @@
 	"typescript.tsserver.experimental.enableProjectDiagnostics": true,
 	"cSpell.diagnosticLevel": "Hint",
 	"editor.formatOnType": false,
-	"editor.formatOnPaste": true
+	"editor.formatOnPaste": false
 }

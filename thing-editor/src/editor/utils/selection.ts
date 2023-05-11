@@ -19,11 +19,9 @@ interface SelectionData extends SelectionDataBase {
 	_stageS?: number;
 }
 
-export default class Selection extends Array {
+let IS_SELECTION_LOADING_TIME = false;
 
-
-	static IS_SELECTION_LOADING_TIME = false;
-
+export default class Selection extends Array<Container> {
 
 	select(object: Container, add?: boolean) {
 		if(!add) {
@@ -43,8 +41,55 @@ export default class Selection extends Array {
 		this.sort(sortByDeepness);
 	}
 
-	add(_o: Container) {
-		//TODO:
+	add(o: Container) {
+
+		/* //TODO
+		let nodePath = getPathOfNode(o);
+
+		
+		let hidingParent = Overlay.getParentWhichHideChildren(o, true);
+		if(hidingParent && (hidingParent !== o)) {
+			if(hidingParent instanceof PrefabReference) {
+				let parentPath = getPathOfNode(hidingParent);
+				nodePath.length -= parentPath.length;
+
+				let prefabName = PrefabsList.getPrefabNameFromPrefabRef(hidingParent);
+
+				if(prefabName) {
+					game.editor.ui.modal.showEditorQuestion("Object is in inside prefab", "Do you want to go to prefab '" + prefabName + "', containing this object?", () => {
+						PrefabsList.editPrefab(prefabName);
+						game.editor.selection.loadSelection([nodePath]);
+					});
+				}
+			}
+			game.editor.ui.modal.showInfo('Can not select object, because it is hidden by parent ' + hidingParent.constructor.name + '; ' + o.___info, 'Can not select object', 30015);
+			return;
+		}*/
+		assert(!o.__nodeExtendData.isSelected, "Node is selected already.");
+		assert(this.indexOf(o) < 0, "Node is registered in selected list already.");
+		o.__nodeExtendData.isSelected = true;
+		let p = o.parent;
+		while(p && p !== game.stage) {
+			let data = p.__nodeExtendData;
+			if(!data.hidden) {
+				data.childrenExpanded = true;
+			}
+			p = p.parent;
+		}
+
+		/*if(!(o instanceof Tilemap)) { //TODO
+			o.addFilter(selectionFilter);
+			selectionFilter.enabled = 5;
+		}*/
+
+		this.push(o);
+		o.__onSelect();
+
+		/*game.editor.ui.viewport.scrollInToScreen(o); //TODO
+		game.editor.ui.classesList.refresh();*/
+		if(!IS_SELECTION_LOADING_TIME) {
+			game.editor.history.scheduleSelectionSave();
+		}
 	}
 
 	remove(o: Container) {
@@ -56,7 +101,7 @@ export default class Selection extends Array {
 
 		this.splice(i, 1);
 		__EDITOR_inner_exitPreviewMode(o);
-		if(!Selection.IS_SELECTION_LOADING_TIME) {
+		if(!IS_SELECTION_LOADING_TIME) {
 			game.editor.history.scheduleSelectionSave();
 		}
 		if(o.__onUnselect) {
@@ -71,7 +116,7 @@ export default class Selection extends Array {
 	}
 
 	loadSelection(data: SelectionData) {
-		Selection.IS_SELECTION_LOADING_TIME = true;
+		IS_SELECTION_LOADING_TIME = true;
 		if(!data || data.length === 0) {
 			game.editor.selection.clearSelection();
 		} else {
@@ -80,7 +125,7 @@ export default class Selection extends Array {
 		}
 		// TreeNode.clearLastClicked(); //TODO:
 		game.editor.refreshTreeViewAndPropertyEditor();
-		Selection.IS_SELECTION_LOADING_TIME = false;
+		IS_SELECTION_LOADING_TIME = false;
 	}
 
 	clearSelection(refreshUI = false) {

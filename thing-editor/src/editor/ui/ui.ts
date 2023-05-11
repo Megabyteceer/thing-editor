@@ -1,9 +1,9 @@
 import { Component, ComponentChild, h } from "preact";
-import ClassesLoader from "thing-editor/src/editor/classes-loader";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import Modal from "thing-editor/src/editor/ui/modal";
+import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import TreeView from "thing-editor/src/editor/ui/tree-view/tree-view";
 import Viewport from "thing-editor/src/editor/ui/viewport";
 import game from "thing-editor/src/engine/game";
@@ -17,6 +17,7 @@ export default class UI extends Component<UIProps> {
 	modal!: Modal;
 	viewport!: Viewport;
 	sceneTree!: TreeView;
+	propsEditor!: PropsEditor;
 
 	constructor() {
 		super();
@@ -24,6 +25,7 @@ export default class UI extends Component<UIProps> {
 		this.modalRef = this.modalRef.bind(this);
 		this.viewportRef = this.viewportRef.bind(this);
 		this.sceneTreeRef = this.sceneTreeRef.bind(this);
+		this.propsEditorRef = this.propsEditorRef.bind(this);
 	}
 
 	componentDidMount(): void {
@@ -40,6 +42,10 @@ export default class UI extends Component<UIProps> {
 
 	protected modalRef(ref: Modal | null) {
 		this.modal = ref as Modal;
+	}
+
+	protected propsEditorRef(ref: PropsEditor | null) {
+		this.propsEditor = ref as PropsEditor;
 	}
 
 	onOpenProjectClick() {
@@ -59,9 +65,17 @@ export default class UI extends Component<UIProps> {
 			renderWindow('sceneTree', 'SceneTree', 'Scene tree',
 				h(TreeView, { ref: this.sceneTreeRef }),
 				0, 35, 250, 500, 250, 500),
+			renderWindow('propsEditor', 'Properties', 'Properties',
+				h(PropsEditor, {
+					ref: this.propsEditorRef,
+					onChange: game.editor.onSelectedPropsChange
 
-			h(Modal, { ref: this.modalRef }),
-			R.btn('reload classes', () => { ClassesLoader.reloadClasses(); })
+				}),
+				0, 35, 250, 500, 250, 500),
+
+
+
+			h(Modal, { ref: this.modalRef })
 		);
 	}
 

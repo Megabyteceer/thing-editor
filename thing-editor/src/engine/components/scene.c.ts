@@ -30,7 +30,10 @@ export default class Scene extends Container {
 	onHide() {
 
 	}
-
 }
 
-_editableEmbed(Scene, 'y');
+_editableEmbed(Scene, 'name', {
+	name: 'name',
+	notSerializable: true,
+	override: true
+});

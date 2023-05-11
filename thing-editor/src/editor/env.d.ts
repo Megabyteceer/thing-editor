@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference path="../engine/components/container.c.ts" />
 
+import { Container } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import Editor from "thing-editor/src/editor/editor";
 
@@ -48,6 +49,11 @@ interface EditorExtendData {
 	isFaderShootCalledForThisFader?: boolean;
 
 	hideAllChildren?: boolean;
+
+	hidePropsEditor?: {
+		title: string,
+		visibleFields: KeyedMap<true>
+	};
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;
@@ -67,6 +73,8 @@ interface SourceMappedConstructor extends Constructor {
 	__defaultValues: KeyedObject;
 	__EDITOR_icon?: string;
 	__EDITOR_group?: string;
+	__isScene: boolean;
+	__beforeChangeToThisType?: (o: Container) => void;
 	/** added because pixi exports classes with wrong names */
 	__className: string;
 }

@@ -12,8 +12,10 @@ const onNew = (ret: any) => {
 	if(editableProps) {
 		for(let prop of editableProps) {
 			if(prop.__nullCheckingIsApplied) {
-				delete ret[prop.name];
-				ret[prop.name] = (ret.constructor as SourceMappedConstructor).__defaultValues[prop.name];
+				if(ret.hasOwnProperty(prop.name)) {
+					delete ret[prop.name];
+					ret[prop.name] = (ret.constructor as SourceMappedConstructor).__defaultValues[prop.name];
+				}
 			}
 		}
 	}

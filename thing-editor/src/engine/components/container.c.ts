@@ -228,7 +228,7 @@ Container.prototype.__isAnyChildSelected = function __isAnyChildSelected(): bool
 /// #endif
 
 
-_editableEmbed(Container, 'basic', { type: 'splitter', title: 'Basic props:', });
+_editableEmbed(Container, '__root-splitter', { type: 'splitter', title: 'Basic props:' });
 _editableEmbed(Container, 'name', {
 	type: 'string',
 	parser: (name: string): string => {
@@ -240,7 +240,7 @@ _editableEmbed(Container, 'name', {
 	beforeEdited: (_val: string) => {
 		//TODO: game.editor.DataPathFixer.beforeNameEdit(val);
 	},
-	onBlur: (_val: string) => {
+	onBlur: () => {
 		//TODO: game.editor.DataPathFixer.onNameBlur();
 	},
 	notAnimate: true
@@ -249,42 +249,31 @@ _editableEmbed(Container, 'name', {
 _editableEmbed(Container, 'x');
 _editableEmbed(Container, 'y');
 _editableEmbed(Container, 'rotation', { step: 0.001 });
+_editableEmbed(Container, 'alpha', {
+	step: 0.01,
+	min: 0,
+	max: 1
+});
+_editableEmbed(Container, 'visible');
+_editableEmbed(Container, 'interactive');
+
+_editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers:' });
+
+_editableEmbed(Container, '__lockSelection', { type: 'boolean' });
+_editableEmbed(Container, '__description', { type: 'string', multiline: true });
+_editableEmbed(Container, '__hideChildren', { type: 'boolean' });
+_editableEmbed(Container, '___id', {
+	type: 'number',
+	notSerializable: true,
+	noNullCheck: true,
+	disabled: () => {
+		return true;
+	}
+});
 
 
 /*
-	{
-		name: 'alpha',
-		type: Number,
-		step: 0.01,
-		min: 0,
-		max: 1,
-		default: 1
-	},
-	{
-		name: 'visible',
-		type: Boolean,
-		default: true
-	},
-	{
-		name: 'interactive',
-		type: Boolean,
-		default: false
-	},
-	{
-		type: 'splitter',
-		title: 'Helpers:',
-		name: 'helpers'
-	},
-	{
-		name: '__lockSelection',
-		type: Boolean,
-		default: false
-	},
-	{
-		name: '__description',
-		type: String,
-		multiline: true
-	},
+
 	{
 		name: '__hideChildren',
 		type: Boolean,

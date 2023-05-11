@@ -1,6 +1,7 @@
-import { ClassAttributes, Component, ComponentChild } from "preact";
+import { ClassAttributes, Component, ComponentChild, h } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics.js";
+import ChooseList from "thing-editor/src/editor/ui/choose-list";
 import Help from "thing-editor/src/editor/ui/help";
 import assert from "thing-editor/src/engine/debug/assert.js";
 import game from "thing-editor/src/engine/game";
@@ -31,7 +32,7 @@ let errorProps = { className: 'error' };
 let notifyProps = { className: 'modal-notification' };
 let notifyPropsDuringSpinner = { className: 'modal-notification modal-notification-centred' };
 
-let notifyText: string | null;
+let notifyText: string | Component | null;
 let notifyInterval: number | null;
 
 let spinnerShowCounter = 0;
@@ -117,7 +118,11 @@ class Modal extends Component<ModalProps, ModalState> {
 		);
 	}
 
-	notify(txt: string) {
+	showListChoose(title: string, list: any[], noEasyClose?: boolean, noSearchField: boolean = false) {
+		return this.showModal(h(ChooseList, { list, noSearchField }), title, noEasyClose);
+	}
+
+	notify(txt: string | Component) {
 		notifyText = txt;
 		if(notifyInterval) {
 			clearInterval(notifyInterval);

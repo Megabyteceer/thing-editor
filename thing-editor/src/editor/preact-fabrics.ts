@@ -2,6 +2,7 @@ import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h } from 'preact';
 import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
+import Tip from 'thing-editor/src/editor/ui/tip';
 import assert from 'thing-editor/src/engine/debug/assert';
 
 interface ComponentProps {
@@ -85,6 +86,9 @@ class R {
 		return R.span(sceneNodeProps, R.classIcon(node.constructor as SourceMappedConstructor), node.name ? R.span(nameProps, node.name) : undefined, R.span(classProps, '(' + (node.constructor as SourceMappedConstructor).__className + ') #' + node.___id));
 	}
 
+	static tip = (id: string, header: string, text: string) => {
+		return h(Tip, { id, header, text });
+	};
 
 }
 

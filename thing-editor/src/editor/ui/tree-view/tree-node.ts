@@ -116,7 +116,7 @@ class TreeNode extends Component<TreeNodeProps, TreeNodeState> {
 		}
 
 		return R.fragment(R.div({
-			onDoubleClick: (ev: PointerEvent) => {
+			onDblClick: (ev: PointerEvent) => {
 				if(!isClickedAtRightEdge(ev) && !ev.ctrlKey) {
 					game.editor.editClassSource(node);
 				}
