@@ -36,7 +36,7 @@ let refreshTreeViewAndPropertyEditorScheduled = false;
 export default class Editor {
 
 	currentProjectDir = '';
-	editorArguments: KeyedMap<true> = {};
+	editorArguments: KeyedMap<true | string> = {};
 	projectDesc!: ProjectDesc;
 
 	selection = new Selection();
@@ -75,7 +75,12 @@ export default class Editor {
 	constructor() {
 		if(window.thingEditorServer) {
 			for(let arg of window.thingEditorServer.argv) {
-				this.editorArguments[arg] = true;
+				if(arg.startsWith('--') && arg.indexOf('=') > 0) {
+					const a = arg.split('=');
+					this.editorArguments[a[0].substring(2)] = a[1];
+				} else {
+					this.editorArguments[arg] = true;
+				}
 			}
 		} else {
 			window.thingEditorServer = {
@@ -388,7 +393,9 @@ export default class Editor {
 		if(c instanceof Container) {
 			c = c.constructor as SourceMappedConstructor;
 		}
-		let url = '/__open-in-editor?file=' + '/Dropbox/electron-vite-preact' + c.__sourceFileName;
+		let rootPath: string = thingEditorServer.argv[0].split('node_modules')[0];
+		rootPath = rootPath.substring(0, rootPath.length - 1);
+		let url = '/__open-in-editor?file=' + rootPath + c.__sourceFileName;
 		if(line !== undefined) {
 			url += ':' + line;
 			if(char !== undefined) {

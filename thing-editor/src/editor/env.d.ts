@@ -105,7 +105,7 @@ type Prefabs = {
 type ThingEditorServer = { // exposed from electron
 	fs: (command: string, filename?: string, content?: string, ...args?: any[]) => FSCallback;
 	versions: KeyedObject;
-	argv: string[]
+	argv: string[];
 }
 
 /** signals for DataPathChooser and CallbackPathChooser */
