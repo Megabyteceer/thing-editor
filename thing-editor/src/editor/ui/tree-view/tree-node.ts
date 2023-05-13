@@ -100,13 +100,6 @@ class TreeNode extends Component<TreeNodeProps, TreeNodeState> {
 		}
 
 		let style;
-		if(game.__EDITOR_mode && node.children.length > 6) {
-			style = {
-				paddingTop: 9,
-				paddingBottom: 9
-			};
-		}
-
 		if(state.hidden) {
 			style = { display: 'none' };
 		}

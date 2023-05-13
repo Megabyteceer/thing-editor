@@ -189,7 +189,7 @@ class PropsEditor extends Component<PropsEditorProps> {
 			let props = (o.constructor as SourceMappedConstructor).__editableProps;
 			for(let p of props) {
 				let name = p.name;
-				if((!hidePropsEditor) || hidePropsEditor.visibleFields[name] || name === 'basic') {
+				if((!hidePropsEditor) || hidePropsEditor.visibleFields[name] || name === '__root-splitter') {
 					propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
 				}
 			}

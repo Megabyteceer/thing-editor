@@ -44,6 +44,7 @@ const createWindow = () => {
 			],
 			webSecurity: false
 		},
+		icon: './thing-editor/img/favicon.ico'
 		//opacity: 0
 	};
 
@@ -52,9 +53,9 @@ const createWindow = () => {
 	//mainWindow.hide();
 
 	/*
-		mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
-			console.log(message + " " + sourceId + " (" + line + ")");
-		});*/
+	mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+		console.log(message + " " + sourceId + " (" + line + ")");
+	});*/
 
 	nativeTheme.themeSource = 'dark'
 
