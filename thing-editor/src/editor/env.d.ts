@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference path="../engine/components/container.c.ts" />
 
-import { Container, DisplayObject } from "pixi.js";
+import { Container, DisplayObject, Point } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import Editor from "thing-editor/src/editor/editor";
 
@@ -27,7 +27,7 @@ interface EditorExtendData {
 
 	childrenExpanded?: boolean;
 
-	deepness: number;
+	deepness?: number;
 	isSelected?: boolean;
 
 	isPrefabReference?: true; //TODO:
@@ -56,6 +56,8 @@ interface EditorExtendData {
 		title: string,
 		visibleFields: KeyedMap<true>
 	};
+
+	globalPos?: Point;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;

@@ -1,14 +1,31 @@
 import assert from "thing-editor/src/engine/debug/assert";
 
-//import { OutlineFilter } from '@pixi/filter-outline';
+import { OutlineFilter } from '@pixi/filter-outline';
+
 import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
 import game from "thing-editor/src/engine/game";
 import { Container } from "pixi.js";
 import TreeNode from "thing-editor/src/editor/ui/tree-view/tree-node";
-/*
+
 const selectionFilter = new OutlineFilter(2, 0xffff00);
 selectionFilter.padding = 2;
-*/
+let filterPhase = false;
+
+setInterval(() => {
+	if(filterPhase) {
+		selectionFilter.alpha -= 0.02;
+		if(selectionFilter.alpha < 0.5) {
+			filterPhase = false;
+		}
+	} else {
+		selectionFilter.alpha += 0.02;
+		if(selectionFilter.alpha > 0.7) {
+			filterPhase = true;
+		}
+	}
+
+}, 30);
+
 type SelectionPath = (string | number)[];
 
 type SelectionDataBase = SelectionPath[];
@@ -76,12 +93,7 @@ export default class Selection extends Array<Container> {
 			}
 			p = p.parent;
 		}
-
-		/*if(!(o instanceof Tilemap)) { //TODO
-			o.addFilter(selectionFilter);
-			selectionFilter.enabled = 5;
-		}*/
-
+		o.addFilter(selectionFilter);
 		this.push(o);
 		o.__onSelect();
 
@@ -97,7 +109,7 @@ export default class Selection extends Array<Container> {
 		let i = this.indexOf(o);
 		assert(i >= 0, "Node is not registered in selected list.");
 		o.__nodeExtendData.isSelected = false;
-		//o.removeFilter(selectionFilter);
+		o.removeFilter(selectionFilter);
 
 		this.splice(i, 1);
 		__EDITOR_inner_exitPreviewMode(o);
@@ -192,5 +204,5 @@ let recalculateNodesDeepnessRecursive = (n: Container) => {
 };
 
 let sortByDeepness = (a: Container, b: Container): number => {
-	return a.__nodeExtendData.deepness - b.__nodeExtendData.deepness;
+	return (a.__nodeExtendData.deepness as number) - (b.__nodeExtendData.deepness as number);
 };

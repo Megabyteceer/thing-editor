@@ -4,7 +4,7 @@ import Editor from "thing-editor/src/editor/editor";
 
 
 import type { Classes, KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
-import { BaseTexture, Container, TextureGCSystem } from "pixi.js";
+import { BaseTexture, Container, Point, TextureGCSystem, utils } from "pixi.js";
 import Scene from "thing-editor/src/engine/components/scene.c";
 
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
@@ -14,6 +14,8 @@ import Lib from "thing-editor/src/engine/lib";
 import Settings from "thing-editor/src/engine/utils/settings";
 import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
+import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
+import FullScreen from "thing-editor/src/engine/utils/full-screen";
 
 let app: Application;
 let stage: Container;
@@ -35,7 +37,20 @@ const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
 
+
+interface Mouse {
+	click: boolean;
+	x: number,
+	y: number,
+}
+
+//@ts-ignore
+let fireNextOnResizeImmediately = false; //TODO
+
 class Game {
+
+	W = 600;
+	H = 800;
 
 	_loadingErrorIsDisplayed = false;
 
@@ -48,10 +63,21 @@ class Game {
 
 	settings!: Settings;
 
+	fullscreen = FullScreen;
+
 	isCanvasMode = false; //TODO
 	isVisible = true; //TODO
 
+	isMobile = utils.isMobile;
+
 	_isWaitingToHideFader = false;
+
+	mouse: Mouse = new Point() as any as Mouse;
+
+	/// #if EDITOR
+	__mouse_EDITOR: Mouse = new Point() as any as Mouse;
+	__mouse_uncropped: Mouse = new Point() as any as Mouse;
+	/// #endif
 
 	/** true if after current 'update' will be 'render'. */
 	isUpdateBeforeRender = false;
@@ -62,10 +88,15 @@ class Game {
 	editor!: Editor;
 	__EDITOR_mode = false;
 
+	isFocused: boolean = false;
+
 	__time = 0;
 	get time() {
 		return this.__time;
 	}
+
+	/** cordova build only */
+	exitApp: (() => void) | undefined
 
 	/*
 	/// #endif
@@ -83,9 +114,11 @@ class Game {
 		stage = new Container();
 		stage.name = 'stage';
 		this.stage = stage;
-		stage.__nodeExtendData = {} as any;
+		stage.__nodeExtendData = {};
 
 		this.settings = new Settings(gameId);
+
+		initGameInteraction();
 
 		app.stage.addChild(stage);
 		app.ticker.add(this._updateGlobal);
@@ -482,6 +515,10 @@ class Game {
 		//*/
 	}
 
+	_fireNextOnResizeImmediately() {
+		fireNextOnResizeImmediately = true;
+	}
+
 	_setCurrentSceneContent(scene: Scene) {
 		//DODO: cleanup
 		assert(!game.currentScene, "Attempt to set current scene content with previous scene exists.");
@@ -510,6 +547,15 @@ class Game {
 
 	/// #endif
 
+	/// #if DEBUG
+	__showDebugError(txt: string, errorCode = 90000) {
+		/// #if EDITOR
+		this.editor.ui.modal.showError(txt, errorCode);
+		return;
+		/// #endif
+		alert(txt); // eslint-disable-line no-unreachable
+	}
+	/// #endif
 }
 
 function tryRemoveCurrentScene() {

@@ -24,12 +24,13 @@ import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-acce
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import Pool from "thing-editor/src/engine/utils/pool";
 import assert from "thing-editor/src/engine/debug/assert";
-import { Container, Texture } from "pixi.js";
+import { Container, Point, Texture } from "pixi.js";
+import initializeOverlay from "thing-editor/src/editor/ui/editor-overlay";
 
 
 type EditorEvents = {
 	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
-	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void
+	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
 }
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
@@ -66,8 +67,6 @@ export default class Editor {
 
 	__projectReloading = false; //TODO:  rename to restartInProgress
 
-	overlay: any; //TODO:
-
 	__wrongTexture = Texture.from('img/wrong-texture.png');
 
 	readonly editorFilesPrefix = '.editor-tmp/';
@@ -87,12 +86,11 @@ export default class Editor {
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
 		game.__EDITOR_mode = true;
-
 		render(h(UI, { onUIMounted: this.onUIMounted }), document.getElementById('root') as HTMLElement);
 
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
-
+		initializeOverlay();
 	}
 
 	onUIMounted(ui: UI) {
@@ -223,7 +221,7 @@ export default class Editor {
 		}
 
 		this.history.setCurrentStateUnmodified();
-		this.ui.forceUpdate();
+		this.ui.refresh();
 	}
 
 	saveCurrentScenesSelectionGlobally() {
@@ -270,6 +268,43 @@ export default class Editor {
 
 	sceneModified(saveImmediately: boolean = false) {
 		this.history._sceneModifiedInner(saveImmediately);
+	}
+
+	moveContainerWithoutChildren(o: Container, dX: number, dY: number) {
+		for(let c of o.children) {
+			let p = c.getGlobalPosition();
+			c.__nodeExtendData.globalPos = p;
+			let p2 = o.toLocal(p);
+			if(isNaN(p2.x) || isNaN(p2.y)) {
+				this.warn("Object has zero scale and can not be moved without affecting children`s positions.", 30023, o);
+				return;
+			}
+		}
+		this.shiftObject(o, dX, dY);
+		for(let c of o.children) {
+			let p = o.toLocal(c.__nodeExtendData.globalPos as Point);
+			this.shiftObject(c as Container, Math.round(p.x - c.x), Math.round(p.y - c.y));
+		}
+	}
+
+	shiftObject(o: Container, dX: number, dY: number) {
+		if(dX !== 0 || dY !== 0) {
+			// Shift wrapped object to zero. If it is MovieClip its will shift all timeline.
+
+			/*if(o.__shiftObject) { //TODO  сдвиг ориентейшн тригера
+				o.__shiftObject(dX, dY);
+			} else {*/
+
+			//TODO Timeline.disableRecording();
+			if(dX !== 0) {
+				this.onObjectsPropertyChanged(o, 'x', dX, true);
+			}
+			if(dY !== 0) {
+				this.onObjectsPropertyChanged(o, 'y', dY, true);
+			}
+			//TODO Timeline.enableRecording();
+			//}
+		}
 	}
 
 	//TODO: set diagnosticLevel settings to informations to show spell typos and fix them after all

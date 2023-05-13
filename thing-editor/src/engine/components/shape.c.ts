@@ -444,7 +444,7 @@ const DEFAULT_RADIUS = 10;
 (Shape as any as SourceMappedConstructor).__EDITOR_group = 'Extended';
 (Shape as any as SourceMappedConstructor).__EDITOR_icon = 'tree/shape';
 
-/*
+/* TODO
 __EDITOR_editableProps(Shape, [
 ,
 	{

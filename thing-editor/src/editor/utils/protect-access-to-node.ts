@@ -3,6 +3,8 @@ import { Container } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 
 const protectAccessToSceneNode = (o: Container, debugName: string) => {
+	o.name = debugName;
+	o.__nodeExtendData = {};
 	o.remove = () => {
 		assert(false, "Attempt to remove system node" + debugName, 10002);
 	};

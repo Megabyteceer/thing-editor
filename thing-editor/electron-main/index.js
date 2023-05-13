@@ -49,6 +49,7 @@ const createWindow = () => {
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
+	mainWindow.setClosable(false);
 	//mainWindow.webContents.openDevTools();
 	//mainWindow.hide();
 

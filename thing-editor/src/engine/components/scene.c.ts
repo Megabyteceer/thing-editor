@@ -2,6 +2,7 @@ import type { KeyedMap } from "thing-editor/src/editor/env";
 import editable, { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
 import makePrefabSelector from "thing-editor/src/editor/utils/prefab-selector";
 import { Container } from "pixi.js";
+import game from "thing-editor/src/engine/game";
 
 export default class Scene extends Container {
 
@@ -24,6 +25,18 @@ export default class Scene extends Container {
 	}
 
 	onShow() {
+
+	}
+
+	onMouseDown(_mouse: typeof game.mouse, _ev: PointerEvent) {
+
+	}
+
+	onMouseUp(_mouse: typeof game.mouse, _ev: PointerEvent) {
+
+	}
+
+	onMouseMove(_mouse: typeof game.mouse, _ev: PointerEvent) {
 
 	}
 

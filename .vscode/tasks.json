@@ -28,8 +28,8 @@
 			"args": [
 				"--remote-debugging-port=9223",
 				//"--wait-for-debugger",
-				"./thing-editor/electron-main",
-				"debugger-detection-await"
+				"./thing-editor/electron-main"/*,
+				"debugger-detection-await"*/
 			],
 			"isBackground": true,
 			"presentation": {
