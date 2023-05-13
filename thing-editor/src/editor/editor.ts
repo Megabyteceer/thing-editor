@@ -88,7 +88,7 @@ export default class Editor {
 		game.editor = this;
 		game.__EDITOR_mode = true;
 
-		render(h(UI, { onUIMounted: this.onUIMounted }), document.body);
+		render(h(UI, { onUIMounted: this.onUIMounted }), document.getElementById('root') as HTMLElement);
 
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);

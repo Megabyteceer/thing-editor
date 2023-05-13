@@ -1,12 +1,14 @@
-import { Mesh, Sprite } from "pixi.js";
-import { SelectableProperty } from "thing-editor/src/editor/env";
+import { BLEND_MODES, Mesh, Sprite } from "pixi.js";
+import type { KeyedObject, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
+import makeImageSelectEditablePropertyDescriptor from "thing-editor/src/editor/ui/props-editor/make-image-property-desc";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
 export default Sprite;
 
-const imagePropertyDescriptor = {
+const imageJSPropertyDescriptor = {
 	get: function (this: Sprite) {
 		return this._imageID;
 	},
@@ -35,10 +37,10 @@ const imagePropertyDescriptor = {
 	}
 };
 
-Object.defineProperty(Sprite.prototype, 'image', imagePropertyDescriptor);
-Object.defineProperty(Mesh.prototype, 'image', imagePropertyDescriptor);
+Object.defineProperty(Sprite.prototype, 'image', imageJSPropertyDescriptor);
+Object.defineProperty(Mesh.prototype, 'image', imageJSPropertyDescriptor);
 
-export { imagePropertyDescriptor };
+export { imageJSPropertyDescriptor as imagePropertyDescriptor };
 
 const tintRDesc = {
 	get: function (this: Sprite) {
@@ -97,89 +99,46 @@ Sprite.prototype.__EDITOR_onCreate = function (isWrapping) {
 };
 Mesh.prototype.__EDITOR_onCreate = Sprite.prototype.__EDITOR_onCreate;
 
-
-/*
-
-//TODO editable props
 const blendModesSelect = Object.keys(BLEND_MODES).filter((k) => {
 	return isNaN(parseInt(k));
 }).map((k) => {
-	return { name: k, value: BLEND_MODES[k] };
+	return { name: k, value: (BLEND_MODES as KeyedObject)[k] };
 }).sort((a, b) => {
 	return a.value - b.value;
 });
 
-
-
-const SPRITE_EDITABLE_PROPS = [
-	{
-		type: 'splitter',
-		title: 'Sprite:',
-		name: 'sprite'
-	},
-	makeImageSelectEditablePropertyDescriptor('image', false, true),
-	{
-		name: 'tint',
-		basis: 16,
-		type: Number,
-		default: 0xFFFFFF,
-		max: 0xFFFFFF,
-		min: 0,
-		notAnimate: true
-	},
-	{
-		name: 'tintR',
-		type: Number,
-		default: 255,
-		max: 255,
-		min: 0,
-		notSerializable: true
-	},
-	{
-		name: 'tintG',
-		type: Number,
-		default: 255,
-		max: 255,
-		min: 0,
-		notSerializable: true
-	},
-	{
-		name: 'tintB',
-		type: Number,
-		default: 255,
-		max: 255,
-		min: 0,
-		notSerializable: true
-	},
-	{
-		name: 'blendMode',
-		type: Number,
-		select: blendModesSelect,
-		notAnimate: true
-	}
-];
-
 (Sprite as any as SourceMappedConstructor).__EDITOR_group = 'Basic';
+(Sprite as any as SourceMappedConstructor).__EDITOR_icon = 'tree/sprite';
 
-const MESH_EDITABLE_PROPS = SPRITE_EDITABLE_PROPS.slice();
-MESH_EDITABLE_PROPS.push(
-	{
-		type: 'splitter',
-		title: 'Mesh',
-		name: 'Mesh-props'
-	},
-	{
-		name: 'CENTRALIZE PIVOT',
-		type: 'btn',
-		onClick: (o) => {
-			game.editor.onObjectsPropertyChanged(o, 'pivot.x', Math.round(o.texture.width / 2));
-			game.editor.onObjectsPropertyChanged(o, 'pivot.y', Math.round(o.texture.height / 2));
-		}
-	});
-__EDITOR_editableProps(Sprite, SPRITE_EDITABLE_PROPS);
-__EDITOR_editableProps(Mesh, MESH_EDITABLE_PROPS);
-Sprite.__EDITOR_icon = 'tree/sprite';
+_editableEmbed([Sprite, Mesh as any], 'image', makeImageSelectEditablePropertyDescriptor('image', false, true));
+_editableEmbed([Sprite, Mesh as any], 'tint', {
+	basis: 16,
+	default: 0xFFFFFF,
+	max: 0xFFFFFF,
+	min: 0,
+	notAnimate: true
+});
+_editableEmbed([Sprite, Mesh as any], 'tintR', {
+	default: 255,
+	max: 255,
+	min: 0,
+	notSerializable: true
+});
+_editableEmbed([Sprite, Mesh as any], 'tintG', {
+	default: 255,
+	max: 255,
+	min: 0,
+	notSerializable: true
+});
+_editableEmbed([Sprite, Mesh as any], 'tintB', {
+	default: 255,
+	max: 255,
+	min: 0,
+	notSerializable: true
+});
+_editableEmbed([Sprite, Mesh as any], 'blendMode', {
+	select: blendModesSelect,
+	notAnimate: true
+});
 
 /// #endif
-
-*/

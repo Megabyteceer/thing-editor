@@ -16,7 +16,8 @@ export default defineConfig({
 
 		alias: {
 			'thing-editor': __dirname + '/thing-editor',
-			'pixi.js': __dirname + '/node_modules/pixi.js/dist/pixi.mjs'
+			'pixi.js': __dirname + '/node_modules/pixi.js/dist/pixi.mjs',
+			'preact': __dirname + '/node_modules/preact/'
 		}
 	}
 });

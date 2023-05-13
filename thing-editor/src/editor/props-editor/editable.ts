@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
 import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/property-definition-utl";
-import { SelectComponentItem } from "thing-editor/src/editor/ui/selectComponent";
+import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
+import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -38,14 +38,15 @@ interface EditablePropertyDescRaw {
 	title?: string,
 	isArray?: true,
 	notAnimate?: true,
-	select?: SelectComponentItem[] | (() => SelectComponentItem[])
+	select?: SelectEditorItem[] | (() => SelectEditorItem[])
 	noNullCheck?: true,
-	important?: true;
+	important?: boolean;
 	tip?: string | (() => string);
 	afterEdited?: () => void;
 	multiline?: boolean;
 	notSerializable?: true;
 	override?: true;
+	filterName?: string;
 }
 
 interface EditablePropertyDesc extends EditablePropertyDescRaw {
@@ -55,6 +56,10 @@ interface EditablePropertyDesc extends EditablePropertyDescRaw {
 	__src: string,
 	__nullCheckingIsApplied?: true,
 	renderer?: any;
+	isTranslatableKey?: boolean;
+
+	/** check if field is image select dropdown*/
+	__isImage?: boolean;
 }
 
 /** editable property decorator */
@@ -64,8 +69,15 @@ function editable(editablePropertyDesc?: EditablePropertyDescRaw) {
 	}
 }
 
-function _editableEmbed(target: Constructor, propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw) {
-	editableInner(target.prototype, propertyName, editablePropertyDesc);
+/* allows to define editable properties to the classes we has no access to source code */
+function _editableEmbed(target: Constructor | Constructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw) {
+	if(Array.isArray(target)) {
+		for(let t of target) {
+			editableInner(t.prototype, propertyName, editablePropertyDesc);
+		}
+	} else {
+		editableInner(target.prototype, propertyName, editablePropertyDesc);
+	}
 }
 
 function editableInner(target: Container, name: string, editablePropertyDesc?: EditablePropertyDescRaw) {
@@ -98,7 +110,7 @@ function editableInner(target: Container, name: string, editablePropertyDesc?: E
 export default editable;
 export { _editableEmbed, propertyAssert };
 
-export type { EditablePropertyDesc, EditablePropertyType };
+export type { EditablePropertyDesc, EditablePropertyDescRaw, EditablePropertyType };
 
 const propertyAssert = (prop: EditablePropertyDesc, condition: any, message: string) => {
 	if(!condition) {

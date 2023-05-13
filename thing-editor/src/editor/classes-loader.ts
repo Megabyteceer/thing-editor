@@ -16,7 +16,8 @@ import { Constructor } from "thing-editor/src/editor/env";
 import imp from "thing-editor/src/editor/utils/imp";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
-import { clearPropertyDifinitionCache } from "thing-editor/src/editor/ui/props-editor/property-definition-utl";
+import { clearPropertyDifinitionCache } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
+import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 
 const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
@@ -74,9 +75,9 @@ export default class ClassesLoader {
 				const editableProps: EditablePropertyDesc[] = Class.__editableProps;
 				for(let prop of editableProps) {
 
-					if(!prop.hasOwnProperty('type') && !prop.notSerializable) {
+					if(!prop.hasOwnProperty('type')) {
 						let type = typeof (instance as KeyedObject)[prop.name];
-						propertyAssert(prop, type === 'string' || type === 'number' || type === 'boolean', 'invalid type "' + type + '" for editable property ' + prop.name);
+						propertyAssert(prop, prop.override || type === 'string' || type === 'number' || type === 'boolean', 'can not detect type for editable property ' + prop.name);
 						//@ts-ignore
 						prop.type = type || 'number';
 					}
@@ -99,7 +100,11 @@ export default class ClassesLoader {
 						Class.__defaultValues[prop.name] = prop.default;
 					}
 					if(!prop.override) {
-						prop.renderer = PropsEditor.getRenderer(prop);
+						if(prop.hasOwnProperty('select')) {
+							prop.renderer = SelectEditor;
+						} else {
+							prop.renderer = PropsEditor.getRenderer(prop);
+						}
 					}
 				}
 

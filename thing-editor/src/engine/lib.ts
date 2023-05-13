@@ -14,8 +14,8 @@ import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/pr
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
 import resetNodeExtendData from "thing-editor/src/editor/utils/reset-node-extend-data";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import type { SelectComponentItem } from "thing-editor/src/editor/ui/selectComponent";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
+import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 
 let classes: Classes;
 let scenes: Scenes = {};
@@ -415,7 +415,7 @@ export default class Lib {
 		//TODO:
 	}
 
-	static __texturesList: SelectComponentItem[] = [];
+	static __texturesList: SelectEditorItem[] = [];
 	/// #endif
 }
 

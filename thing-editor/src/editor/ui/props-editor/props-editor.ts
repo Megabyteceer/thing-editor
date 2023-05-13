@@ -21,7 +21,7 @@ import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/
 import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
 
 let editorProps = {
-	className: 'props-game.editor'
+	className: 'props-editor'
 };
 let headerProps = {
 	className: 'props-header'

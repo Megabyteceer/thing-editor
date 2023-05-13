@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference path="../engine/components/container.c.ts" />
 
-import { Container } from "pixi.js";
+import { Container, DisplayObject } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import Editor from "thing-editor/src/editor/editor";
 
@@ -50,6 +50,8 @@ interface EditorExtendData {
 
 	hideAllChildren?: boolean;
 
+	rotatorLocked?: boolean;//TODO
+
 	hidePropsEditor?: {
 		title: string,
 		visibleFields: KeyedMap<true>
@@ -63,7 +65,7 @@ type KeyedObject = { [key: string]: any };
 type SerializedObjectProps = KeyedObject;
 
 interface Constructor {
-	new(): {
+	new(): DisplayObject | {
 		[key: string]: any;
 	};
 }

@@ -159,18 +159,16 @@ button:hover {
 }
 
 ::-webkit-scrollbar-track {
-	background: #cccfda;
-	border-radius: 2px;
-	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-	background: #acb5be;
-	border-radius: 2px;
+	background: #131313;
+	border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: #9ea9b4;
+	background: #000000;
 }
 
 textarea {
@@ -288,6 +286,12 @@ textarea:focus-visible {
 	width: 600px;
 }
 
+.props-editor {
+	position: relative;
+	overflow-y: auto;
+	height: 100%;
+}
+
 .props-group {
 	margin-bottom: 3px;
 	border-radius: 4px;
@@ -396,8 +400,8 @@ textarea:focus-visible {
 }
 
 .props-field-important {
-	background: #cfffd4;
-	color: #0e5a00;
+	background: #023407;
+    color: #68af3f;
 }
 
 .props-field-invalid {
@@ -455,6 +459,10 @@ textarea:focus-visible {
 	height: 11px;
 }
 
+.number-input input {
+	font-family: monospace;
+}
+
 .number-input-btn:hover {
 	color: #555555;
 }
@@ -479,8 +487,7 @@ textarea:focus-visible {
 input[type=checkbox] {
 	float: left;
 	background: #181818;
-	-webkit-appearance: none;
-	-moz-appearance: none;
+	appearance: none;
 	height: 21px;
 	background-image: url("/thing-editor/img/check-box.png");
 	background-repeat: no-repeat;
@@ -491,6 +498,31 @@ input[type=checkbox]:checked {
 	background-image: url("/thing-editor/img/check-box-check.png");
 }
 
+.select-editor-current {
+	padding: 0 10px;
+}
+
+.select-editor-list{
+	position: fixed;
+	z-index:30;
+	background: #0d0d0d;
+	padding:10px;
+	color: #a8a8a8;
+	border: 1px solid #2f2f2f;
+	font-family: monospace;
+}
+
+.selected-item{
+	background: #4e4e4e;
+}
+
+.danger {
+	color: #f00 !important;
+}
+
+
+
+
 
 
 .fadein-animation {
@@ -498,3 +530,4 @@ input[type=checkbox]:checked {
 	animation-iteration-count: 1;
 	animation-fill-mode: forwards;
 }
+

@@ -13,6 +13,7 @@ import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-de
 import Lib from "thing-editor/src/engine/lib";
 import Settings from "thing-editor/src/engine/utils/settings";
 import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
+import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
 let app: Application;
 let stage: Container;
@@ -554,6 +555,3 @@ export default game;
 
 (Game.prototype.applyProjectDesc as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 
-function loadDynamicTextures() {
-	//TODO:
-}

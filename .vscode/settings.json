@@ -5,5 +5,17 @@
 	"typescript.tsserver.experimental.enableProjectDiagnostics": true,
 	"cSpell.diagnosticLevel": "Hint",
 	"editor.formatOnType": false,
-	"editor.formatOnPaste": false
+	"editor.formatOnPaste": false,
+	"blockshighlighter.blocks": [
+		{
+		  "fileType": "\\.(js|ts)$",
+		  "begin": "^\\s*@editable\\(",
+		  "end": "^\\s*@editable\\(",
+		  "decorationRenderOptions": {
+			"isWholeLine": true,
+			"opacity": "0.5",
+			//"backgroundColor": "rgba(255,255,255,0.05)"
+		  }
+		}
+	]
 }

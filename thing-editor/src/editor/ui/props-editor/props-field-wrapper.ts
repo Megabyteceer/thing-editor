@@ -53,6 +53,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 	}
 
 	onChange(val: any, isDelta = false, deltaVal?: number) {
+		assert(!(val instanceof Event), "Pure value expected. Event received.");
 		assert((!isDelta) || (typeof isDelta === 'boolean'), "Delta expected to be boolean");
 		let field = this.props.field;
 

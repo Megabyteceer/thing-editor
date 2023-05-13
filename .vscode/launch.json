@@ -19,7 +19,7 @@
 				"${workspaceFolder}/**",
 				"!**/node_modules/**"
 			],
-			"urlFilter": "http://127.0.0.1:5173/*",
+			"urlFilter"spri: "http://127.0.0.1:5173/*",
 			"outFiles": [],
 			"preLaunchTask": "launch electron"/*,
 			"trace": {

@@ -208,141 +208,11 @@ Object.defineProperty(Container.prototype, 'isCanBePressed', {
 	enumerable: true
 });
 
-/// #if EDITOR
-
-Container.prototype.__isAnyChildSelected = function __isAnyChildSelected(): boolean {
-	for(let o of game.editor.selection) {
-		while(o) {
-			if(o === this) {
-				return true;
-			}
-			o = o.parent;
-		}
-	}
-	return false;
-};
-
-(Container.prototype.destroy as SelectableProperty).___EDITOR_isHiddenForChooser = true;
-(Container as any as SourceMappedConstructor).__EDITOR_icon = 'tree/container';
-(Container as any as SourceMappedConstructor).__EDITOR_group = 'Basic';
-/// #endif
 
 
-_editableEmbed(Container, '__root-splitter', { type: 'splitter', title: 'Basic props' });
-_editableEmbed(Container, 'name', {
-	type: 'string',
-	parser: (name: string): string => {
-		return name && name.replace('.', '_').replace('#', '_').replace('`', '_').replace(',', '_');
-	},
-	disabled: (node: Container) => {
-		return node.parent === game.stage;
-	},
-	beforeEdited: (_val: string) => {
-		//TODO: game.editor.DataPathFixer.beforeNameEdit(val);
-	},
-	onBlur: () => {
-		//TODO: game.editor.DataPathFixer.onNameBlur();
-	},
-	notAnimate: true
-
-});
-_editableEmbed(Container, 'x');
-_editableEmbed(Container, 'y');
-_editableEmbed(Container, 'rotation', { step: 0.001 });
-_editableEmbed(Container, 'alpha', {
-	step: 0.01,
-	min: 0,
-	max: 1
-});
-_editableEmbed(Container, 'visible');
-_editableEmbed(Container, 'interactive');
-
-_editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers' });
-
-_editableEmbed(Container, '__lockSelection', { type: 'boolean' });
-_editableEmbed(Container, '__description', { type: 'string', multiline: true });
-_editableEmbed(Container, '__hideChildren', { type: 'boolean' });
-_editableEmbed(Container, '___id', {
-	type: 'number',
-	notSerializable: true,
-	noNullCheck: true,
-	disabled: () => {
-		return true;
-	}
-});
-
-
-/*
-
-	{
-		name: '__hideChildren',
-		type: Boolean,
-		default: false
-	},
-	{
-		name: '___id',
-		type: Number,
-		notSerializable: true,
-		noNullCheck: true,
-		disabled: () => {
-			return true;
-		}
-	},
-	{
-		type: 'splitter',
-		title: 'Transform:',
-		name: 'transform'
-	},
-	{
-		name: 'scale.x',
-		type: Number,
-		step: 0.01,
-		default: 1
-	},
-	{
-		name: 'scale.y',
-		type: Number,
-		step: 0.01,
-		default: 1
-	},
-	{
-		name: 'skew.x',
-		type: Number,
-		step: 0.01
-	},
-	{
-		name: 'skew.y',
-		type: Number,
-		step: 0.01
-	},
-	{
-		name: 'pivot.x',
-		type: Number
-	},
-	{
-		name: 'pivot.y',
-		type: Number
-	}
-]);
-
-
-
-const getObjectName = (o: Container) => {
-	return (o.name || ('(' + (o.constructor as SourceMappedConstructor).__className + ')'));
-};
 
 Object.defineProperties(Container.prototype, {
-	'___info': {
-		get: function () {
-			let ret = getObjectName(this);
-			let p = this.parent;
-			while(p && (p !== game.stage)) {
-				ret += ' > ' + getObjectName(p);
-				p = p.parent;
-			}
-			return ret;
-		}
-	}, 'scale.x': {
+	'scale.x': {
 		get: function () {
 			return this.transform.scale.x;
 		},
@@ -388,7 +258,96 @@ Object.defineProperties(Container.prototype, {
 		}, configurable: true
 	}
 });
-*/
+
 
 export default Container;
 
+
+
+
+/// #if EDITOR
+
+Object.defineProperties(Container.prototype, {
+	'___info': {
+		get: function () {
+			let ret = getObjectInfo(this);
+			let p = this.parent;
+			while(p && (p !== game.stage)) {
+				ret += ' > ' + getObjectInfo(p);
+				p = p.parent;
+			}
+			return ret;
+		}
+	}
+});
+
+Container.prototype.__isAnyChildSelected = function __isAnyChildSelected(): boolean {
+	for(let o of game.editor.selection) {
+		while(o) {
+			if(o === this) {
+				return true;
+			}
+			o = o.parent;
+		}
+	}
+	return false;
+};
+
+(Container.prototype.destroy as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Container as any as SourceMappedConstructor).__EDITOR_icon = 'tree/container';
+(Container as any as SourceMappedConstructor).__EDITOR_group = 'Basic';
+
+const getObjectInfo = (o: Container) => {
+	return (o.name || ('(' + (o.constructor as SourceMappedConstructor).__className + ')'));
+};
+
+_editableEmbed(Container, '__root-splitter', { type: 'splitter', title: 'Basic props' });
+_editableEmbed(Container, 'name', {
+	type: 'string',
+	parser: (name: string): string => {
+		return name && name.replace('.', '_').replace('#', '_').replace('`', '_').replace(',', '_');
+	},
+	disabled: (node: Container) => {
+		return node.parent === game.stage;
+	},
+	beforeEdited: (_val: string) => {
+		//TODO: game.editor.DataPathFixer.beforeNameEdit(val);
+	},
+	onBlur: () => {
+		//TODO: game.editor.DataPathFixer.onNameBlur();
+	},
+	notAnimate: true
+
+});
+_editableEmbed(Container, 'x');
+_editableEmbed(Container, 'y');
+_editableEmbed(Container, 'rotation', { step: 0.001 });
+_editableEmbed(Container, 'alpha', {
+	step: 0.01,
+	min: 0,
+	max: 1
+});
+_editableEmbed(Container, 'visible');
+_editableEmbed(Container, 'interactive');
+
+_editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers' });
+
+_editableEmbed(Container, '__lockSelection', { type: 'boolean' });
+_editableEmbed(Container, '__description', { type: 'string', multiline: true });
+_editableEmbed(Container, '__hideChildren', { type: 'boolean' });
+_editableEmbed(Container, '___id', {
+	type: 'number',
+	notSerializable: true,
+	noNullCheck: true,
+	disabled: () => {
+		return true;
+	}
+});
+_editableEmbed(Container, 'splitter-transform', { type: 'splitter', title: 'Transform' });
+_editableEmbed(Container, 'scale.x', { step: 0.01, default: 1 });
+_editableEmbed(Container, 'scale.y', { step: 0.01, default: 1 });
+_editableEmbed(Container, 'skew.x', { step: 0.01 });
+_editableEmbed(Container, 'skew.y', { step: 0.01 });
+_editableEmbed(Container, 'pivot.x');
+_editableEmbed(Container, 'pivot.y');
+/// #endif
