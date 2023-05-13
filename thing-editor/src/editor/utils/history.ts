@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { Component, h } from "preact";
+import { h } from "preact";
 import { KeyedMap, SerializedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import regenerateCurrentSceneMapTypings from "thing-editor/src/editor/utils/generate-editor-typings";
@@ -11,6 +11,7 @@ import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import Pool from "thing-editor/src/engine/utils/pool";
 import TypedEmitter from "typed-emitter"
+import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 
 const HISTORY_LEN = 100;
 const STRICT_HISTORY_LEN = 20;
@@ -32,6 +33,7 @@ function applyState(state: HistoryRecord) {
 		instance.events.emit('beforeHistoryJump');
 		Pool.__resetIdCounter();
 		let node = Lib._deserializeObject(state.treeData);
+		console.log(new Error().stack);
 		game.__setCurrentContainerContent(node);
 	}
 	game.editor.selection.loadSelection(state.selectionData);
@@ -40,7 +42,7 @@ function applyState(state: HistoryRecord) {
 	stage.y = state.selectionData._stageY as number;
 	stage.scale.x = stage.scale.y = state.selectionData._stageS as number;
 	lastAppliedTreeData = state.treeData;
-	historyUi.forceUpdate();
+	historyUi.refresh();
 	if(stateChanged) {
 		instance.events.emit('afterHistoryJump');
 	}
@@ -96,7 +98,7 @@ class History {
 	}
 
 	_sceneModifiedInner(saveImmediately = false) {
-		clearSelectionSaveTimer();
+		clearSelectionSaveTimeout();
 		if(game.__EDITOR_mode) {
 			needHistorySave = true;
 			if(saveImmediately) {
@@ -116,7 +118,7 @@ class History {
 	}
 
 	scheduleSelectionSave() {
-		clearSelectionSaveTimer();
+		clearSelectionSaveTimeout();
 		if(game.__EDITOR_mode) {
 			needSaveSelectionInToHistory = setTimeout(saveSelectionState, 50);
 		}
@@ -124,7 +126,7 @@ class History {
 
 	saveHistoryNow() {
 		if(needHistorySave) {
-			clearSelectionSaveTimer();
+			clearSelectionSaveTimeout();
 			needHistorySave = false;
 			instance.addHistoryState();
 			if(historySaveScheduled) {
@@ -247,7 +249,7 @@ class History {
 	}
 
 	updateUi() {
-		historyUi && historyUi.forceUpdate();
+		historyUi && historyUi.refresh();
 	}
 
 	setCurrentStateUnmodified() {
@@ -275,7 +277,7 @@ class History {
 let historySaveScheduled: null | number;
 let needHistorySave = false;
 
-class HistoryUi extends Component {
+class HistoryUi extends ComponentDebounced {
 	constructor() {
 		super();
 		historyUi = this;
@@ -285,14 +287,17 @@ class HistoryUi extends Component {
 		if(!instance._undoList) {
 			return R.span(null);
 		}
-		//TODO: кнопки undo/redo в меню edit
-		return R.span(null, 'undo UI TODO');
+
+		return R.span(null,
+			R.btn('Undo', game.editor.history.undo, '(Ctrl + Z)', 'menu-btn', 1090, !instance.isUndoAvailable() || !game.__EDITOR_mode),
+			R.btn('Redo', game.editor.history.redo, '(Ctrl + Y)', 'menu-btn', 1089, !instance.isRedoAvailable() || !game.__EDITOR_mode),
+		);
 	}
 }
 
 let needSaveSelectionInToHistory: number | null = null;
 
-function clearSelectionSaveTimer() {
+function clearSelectionSaveTimeout() {
 	if(needSaveSelectionInToHistory) {
 		clearInterval(needSaveSelectionInToHistory);
 		needSaveSelectionInToHistory = null;

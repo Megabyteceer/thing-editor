@@ -19,6 +19,7 @@ import ColorEditor from "thing-editor/src/editor/ui/props-editor/props-editors/c
 import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
 import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
+import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 
 let editorProps = {
 	className: 'props-editor'
@@ -49,7 +50,7 @@ type EditablePropsRenderer = ComponentType<Component>;
 const renderers: Map<EditablePropertyType, EditablePropsRenderer> = new Map();
 const typeDefaults: Map<EditablePropertyType, any> = new Map();
 
-class PropsEditor extends Component<PropsEditorProps> {
+class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 
 	refs: Map<string, PropsFieldWrapper> = new Map();
 

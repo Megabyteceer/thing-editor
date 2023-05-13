@@ -52,6 +52,8 @@ interface EditorExtendData {
 
 	rotatorLocked?: boolean;//TODO
 
+	isPreviewObject?: boolean;//TODO
+
 	hidePropsEditor?: {
 		title: string,
 		visibleFields: KeyedMap<true>

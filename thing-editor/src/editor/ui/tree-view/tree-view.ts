@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
-import { ClassAttributes, Component } from "preact";
+import { ClassAttributes } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
+import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { renderSceneNode } from "thing-editor/src/editor/ui/tree-view/tree-node";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
@@ -18,7 +19,7 @@ interface TreeViewProps extends ClassAttributes<TreeView> {
 
 }
 
-export default class TreeView extends Component<TreeViewProps> {
+export default class TreeView extends ComponentDebounced<TreeViewProps> {
 
 	constructor() {
 		super();

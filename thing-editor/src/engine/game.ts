@@ -430,6 +430,14 @@ class Game {
 		}
 	}
 
+	hideModal() {
+		///TODO
+	}
+
+	showModal(o: Container) {
+		//TODO
+	}
+
 	faderShoot() {
 		/// #if EDITOR
 		assert(__isCurrentFaderUpdateInProgress, "game.faderShoot() called not by fader.", 10033);
@@ -487,8 +495,18 @@ class Game {
 	/// #endif
 
 	/// #if EDITOR
-	__setCurrentContainerContent(_o: Container) {
-		//TODO:
+	__setCurrentContainerContent(o: Container) {
+		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
+		if(modals.length > 0) {
+			this.hideModal();
+			o.__nodeExtendData.isPreviewObject = true;
+			this.showModal(o);
+		} else {
+			if(!o.name) {
+				(o as Scene).__libSceneName = game.currentScene.name;
+			}
+			this.showScene(o as Scene);
+		}
 	}
 
 	__destroyCurrentScene() {

@@ -55,29 +55,49 @@ export default class UI extends ComponentDebounced<UIProps> {
 	}
 
 	render(): ComponentChild {
-		return R.div(null,
-			renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, game.editor.currentSceneName) : undefined, h(StatusBar, null)),
-				//TODO: StatusBar
-				h(Viewport, { ref: this.viewportRef }),
-				558, 0, 470, 600, 1362, 742, () => {
-					if(game.projectDesc) {
-						game._onContainerResize();
-					}
-				}),
-			renderWindow('sceneTree', 'SceneTree', 'Scene tree',
-				h(TreeView, { ref: this.sceneTreeRef }),
-				0, 35, 250, 500, 250, 500),
-			renderWindow('propsEditor', 'Properties', 'Properties',
-				h(PropsEditor, {
-					ref: this.propsEditorRef,
-					onChange: game.editor.onSelectedPropsChange
+		return R.fragment(R.div({ "data-help": 'editor.MainMenu' },
+			R.btn('Open project...', this.onOpenProjectClick, undefined, 'menu-btn'),
+			//R.btn('Browse...', this.onOpenProjectFolderClick, "Reveal in File Explorer", 'menu-btn'),
+			//TODO   main menu tree  R.btn('Build', this.onBuildClick, "Build release version of game.", 'menu-btn'),
+			//R.btn('Build debug', this.onBuildDebugClick, "Build debug version of game.\nContains asserts.", 'menu-btn'),
+			//h(LanguageView),
+			//h(TexturesView),
+			//h(OptimizationView),
+			game.editor.history.buttonsRenderer(),
+			//R.btn('Project settings', game.editor.openProjectDescToEdit, undefined, 'menu-btn'),
+			//editor.__preBuildAutoTest && R.btn('Test', editor.testProject, "Launch auto-tests", 'menu-btn'),
+			//React.createElement(Help),
+			/*	editor.fs.filesExt && editor.fs.filesExt.scripts.map((s) => {
+					return R.span({ key: s.name }, R.btn(s.name.replace('scripts/', '').replace(/\.js$/, ''), () => {
+						editor.fs.exec(s.name);
+					}, undefined, 'menu-btn'));
+				})*/
+		),
 
-				}),
-				0, 35, 250, 500, 250, 500),
+			R.div(null,
+				renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, game.editor.currentSceneName) : undefined, h(StatusBar, null)),
+					//TODO: StatusBar
+					h(Viewport, { ref: this.viewportRef }),
+					558, 0, 470, 600, 1362, 742, () => {
+						if(game.projectDesc) {
+							game._onContainerResize();
+						}
+					}),
+				renderWindow('sceneTree', 'SceneTree', 'Scene tree',
+					h(TreeView, { ref: this.sceneTreeRef }),
+					0, 35, 250, 500, 250, 500),
+				renderWindow('propsEditor', 'Properties', 'Properties',
+					h(PropsEditor, {
+						ref: this.propsEditorRef,
+						onChange: game.editor.onSelectedPropsChange
+
+					}),
+					0, 35, 250, 500, 250, 500),
 
 
 
-			h(Modal, { ref: this.modalRef })
+				h(Modal, { ref: this.modalRef })
+			)
 		);
 	}
 

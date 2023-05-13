@@ -386,13 +386,13 @@ export default class Editor {
 		refreshTreeViewAndPropertyEditorScheduled = true;
 		setTimeout(() => {
 			refreshTreeViewAndPropertyEditorScheduled = false;
-			this.ui.sceneTree.forceUpdate();
+			this.ui.sceneTree.refresh();
 			this.refreshPropsEditor();
 		}, 1);
 	}
 
 	refreshPropsEditor() {
-		this.ui.propsEditor.forceUpdate();
+		this.ui.propsEditor.refresh();
 	}
 
 	getFieldNameByValue(node: Container, fieldValue: any) {
@@ -452,18 +452,5 @@ export default class Editor {
 		fs.saveFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
 	}
 }
-
-
-window.addEventListener('keydown', (ev) => {
-
-	if(ev.code === 'F5') {
-		window.location.reload();
-	} else if(ev.code === 'F12') {
-		fs.toggleDevTools();
-	}
-});
-
-
-
 
 new Editor();

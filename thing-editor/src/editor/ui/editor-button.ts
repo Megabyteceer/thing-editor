@@ -121,11 +121,9 @@ class EditorButton extends Component<EditorButtonProps> {
 	render() {
 		return R.button({
 			disabled: this.props.disabled,
-			//TODO: un clickable -> un-clickable renamed
-			className: (this.props.disabled ? 'un-clickable ' : 'clickable ') + this.props.className,
+			className: (this.props.disabled ? 'unclickable ' : 'clickable ') + this.props.className,
 			onMouseDown: this.onMouseDown,
-			title: this.props.title,
-			onClick: this.props.onClick
+			title: this.props.title
 		}, this.props.label);
 	}
 }

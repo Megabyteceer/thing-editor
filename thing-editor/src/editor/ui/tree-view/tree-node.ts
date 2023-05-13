@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
-import { ClassAttributes, Component, h } from "preact";
+import { ClassAttributes, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
+import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -20,7 +21,7 @@ interface TreeNodeState {
 
 }
 
-class TreeNode extends Component<TreeNodeProps, TreeNodeState> {
+class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 
 	constructor(props: TreeNodeProps) {
 		super(props);
@@ -40,7 +41,7 @@ class TreeNode extends Component<TreeNodeProps, TreeNodeState> {
 			} else if(ev.altKey) {
 				expandChildrenRecursively(this.props.node);
 			}
-			this.forceUpdate();
+			this.refresh();
 			sp(ev);
 			return;
 		}

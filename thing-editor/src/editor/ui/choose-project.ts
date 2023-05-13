@@ -27,7 +27,7 @@ function renderProjectItem(desc: ProjectDesc): ComponentChild {
 		isProjectWrong = 'Project is blocked because of wrong symbol "' + wrongSymbol + '" in its folder name.';
 	}
 	return R.div({
-		className: isProjectWrong ? 'project-item-select un-clickable' : 'project-item-select clickable', key, onClick: () => {
+		className: isProjectWrong ? 'project-item-select unclickable' : 'project-item-select clickable', key, onClick: () => {
 			game.editor.ui.modal.hideModal(desc.dir);
 		}
 	}, icon,

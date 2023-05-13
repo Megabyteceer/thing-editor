@@ -3,7 +3,8 @@ const {
 	BrowserWindow,
 	ipcMain,
 	nativeTheme,
-	dialog
+	dialog,
+	Menu
 } = require('electron');
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
@@ -44,12 +45,18 @@ const createWindow = () => {
 			],
 			webSecurity: false
 		},
-		icon: './thing-editor/img/favicon.ico'
+		icon: './thing-editor/img/favicon.ico',
 		//opacity: 0
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
-	mainWindow.setClosable(false);
+	//mainWindow.setMenu(null);
+	mainWindow.addListener('close', (e) => {
+		mainWindow.reload();
+		e.preventDefault();
+	});
+
+
 	//mainWindow.webContents.openDevTools();
 	//mainWindow.hide();
 
@@ -66,7 +73,7 @@ const createWindow = () => {
 		try {
 			switch(command) {
 				case 'fs/toggleDevTools':
-					mainWindow.webContents.toggleDevTools();
+					mainWindow.webContents.openDevTools();
 					event.returnValue = true;
 					return;
 				case 'fs/delete':

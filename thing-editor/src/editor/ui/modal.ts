@@ -2,6 +2,7 @@ import { ClassAttributes, Component, ComponentChild, h } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics.js";
 import ChooseList from "thing-editor/src/editor/ui/choose-list";
+import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Help from "thing-editor/src/editor/ui/help";
 import assert from "thing-editor/src/engine/debug/assert.js";
 import game from "thing-editor/src/engine/game";
@@ -70,7 +71,7 @@ interface ModalState {
 	modals: ModalEntry[]
 }
 
-class Modal extends Component<ModalProps, ModalState> {
+class Modal extends ComponentDebounced<ModalProps, ModalState> {
 
 	constructor() {
 		super();
@@ -95,7 +96,7 @@ class Modal extends Component<ModalProps, ModalState> {
 	hideModal(val?: any) {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
 		let closedModalItem = modal.state.modals.pop()!;
-		modal.forceUpdate();
+		modal.refresh();
 		closedModalItem.resolve(val);
 	}
 
@@ -105,7 +106,7 @@ class Modal extends Component<ModalProps, ModalState> {
 		}
 		return new Promise((resolve) => {
 			modal.state.modals[toBottom ? 'unshift' : 'push']({ content, title, noEasyClose, resolve });
-			modal.forceUpdate();
+			modal.refresh();
 		});
 	}
 
@@ -131,10 +132,10 @@ class Modal extends Component<ModalProps, ModalState> {
 		if(txt) {
 			notifyInterval = setInterval(() => {
 				notifyText = null;
-				this.forceUpdate();
+				this.refresh();
 			}, 1000);
 		}
-		this.forceUpdate();
+		this.refresh();
 	}
 
 	componentDidMount() {
@@ -148,7 +149,7 @@ class Modal extends Component<ModalProps, ModalState> {
 			if(game.stage) {
 				game.stage.interactiveChildren = false;
 			}
-			modal.forceUpdate();
+			modal.refresh();
 		}
 	}
 
@@ -159,7 +160,7 @@ class Modal extends Component<ModalProps, ModalState> {
 				if(game.stage) {
 					game.stage.interactiveChildren = true;
 				}
-				modal.forceUpdate();
+				modal.refresh();
 			}, 10);
 		}
 	}

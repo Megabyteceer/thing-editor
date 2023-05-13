@@ -40,6 +40,12 @@ button:hover {
 	outline: 1px solid #8400ff83;
 }
 
+.unclickable{
+	vertical-align:middle;
+	pointer-events:none;
+	opacity: 0.3;
+}
+
 .window-body {
 	box-shadow: 0 1px 3px rgba(23, 27, 43, 0.3);
 	position: fixed;
