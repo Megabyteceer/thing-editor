@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 import type { KeyedMap, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import editable, { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
+import editable from "thing-editor/src/editor/props-editor/editable";
 import makePrefabSelector from "thing-editor/src/editor/utils/prefab-selector";
 import game from "thing-editor/src/engine/game";
 
@@ -20,6 +20,7 @@ export default class Scene extends Container {
 
 	__libSceneName!: string;
 
+	@editable({ notSerializable: true, override: true })
 	get name() {
 		return this.__libSceneName;
 	}
@@ -46,10 +47,5 @@ export default class Scene extends Container {
 }
 
 /// #if EDITOR
-_editableEmbed(Scene, 'name', {
-	name: 'name',
-	notSerializable: true,
-	override: true
-});
 (Scene as any as SourceMappedConstructor).__EDITOR_icon = 'tree/scene';
 /// #endif
