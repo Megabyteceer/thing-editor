@@ -1,9 +1,11 @@
 import { KeyedMap } from "thing-editor/src/editor/env"
 
+type ProjectOrientation = "landscape" | "portrait" | "auto"
+
 declare interface ProjectDesc {
 
 	defaultFont: string;
-	screenOrientation: "landscape" | "portrait" | "auto";
+	screenOrientation: ProjectOrientation;
 	width: number;
 	height: number;
 	portraitWidth: number;

@@ -3,6 +3,7 @@ import { ComponentChild, ComponentChildren, Fragment, h } from 'preact';
 import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import assert from 'thing-editor/src/engine/debug/assert';
 
 interface ComponentProps {
@@ -83,7 +84,12 @@ class R {
 	};
 
 	static sceneNode(node: Container) {
-		return R.span(sceneNodeProps, R.classIcon(node.constructor as SourceMappedConstructor), node.name ? R.span(nameProps, node.name) : undefined, R.span(classProps, '(' + (node.constructor as SourceMappedConstructor).__className + ') #' + node.___id));
+
+		let desc;
+		if(node.__description) {
+			desc = R.div(descriptionProps, node.__description.split('\n')[0]);
+		}
+		return R.div(sceneNodeProps, R.classIcon(node.constructor as SourceMappedConstructor), node.name ? R.span(nameProps, node.name) : undefined, R.span(classProps, '(' + (node.constructor as SourceMappedConstructor).__className + ') #' + node.___id), desc);
 	}
 
 	static tip = (id: string, header: string, text: string) => {
@@ -92,7 +98,12 @@ class R {
 
 }
 
-let nameProps = { className: 'scene-node-name' };
+const descriptionProps = { className: 'tree-desc' };
+let nameProps = {
+	className: 'selectable-text scene-node-name',
+	title: 'Ctrl+click to copy object`s name',
+	onMouseDown: copyTextByClick
+};
 let classProps = { className: 'scene-node-class' };
 let sceneNodeProps = { className: 'scene-node-item' };
 

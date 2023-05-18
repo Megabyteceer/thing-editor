@@ -1,4 +1,4 @@
-import { Container, Point, Sprite } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import Selection from "thing-editor/src/editor/utils/selection";
 import game from "thing-editor/src/engine/game";
@@ -9,8 +9,6 @@ let scrollingX = 0;
 let scrollingY = 0;
 let isolation: Container[] = [];
 let isPreviewShowed = false;
-
-const p = new Point();
 
 let rightButtonDraggingStarted = false;
 

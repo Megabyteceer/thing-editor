@@ -42,7 +42,6 @@ interface NumberEditorProps extends EditablePropertyEditorProps {
 }
 
 interface NumberEditorState {
-	tmpVal?: number;
 	value?: number;
 	o?: Container;
 }
@@ -51,6 +50,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 
 	btnUp: ComponentChild;
 	btnDown: ComponentChild;
+	tmpVal?: number;
 
 	constructor(props: NumberEditorProps) {
 		super(props);
@@ -72,7 +72,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	onBlur() {
 		if(this.state) {
 			//@ts-ignore
-			delete this.state.tmpVal;
+			delete this.tmpVal;
 			this.forceUpdate();
 		}
 	}
@@ -114,11 +114,9 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		forceFormat = (forceFormat === true);
 		let props = this.props;
 		if(forceFormat) {
-			this.setState({ tmpVal: undefined });
+			this.tmpVal = undefined;
 		} else {
-			this.setState({
-				tmpVal: parseFloat((ev.target as HTMLInputElement).value)
-			});
+			this.tmpVal = parseFloat((ev.target as HTMLInputElement).value);
 		}
 
 		let targetValue = (ev.target as HTMLInputElement).value;
@@ -169,8 +167,8 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		let croppedVal = this.cropVal(val + d);
 		croppedVal = Math.round(croppedVal / step) * step;
 		d = croppedVal - val;
-
-		this.setState({ tmpVal: undefined, value: croppedVal });
+		this.tmpVal = undefined;
+		this.setState({ value: croppedVal });
 		this.props.onChange(croppedVal, true, d);
 	}
 
@@ -186,7 +184,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		}
 		state.value = props.value;
 		if(state.o !== game.editor.selection[0]) {
-			delete state.tmpVal;
+			this.tmpVal = undefined;
 		}
 		this.setState({ o: game.editor.selection[0], value: props.value });
 
@@ -194,7 +192,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 
 	render() {
 		let props = this.props;
-		let val: number = ((typeof this.state.tmpVal !== 'undefined') ? this.state.tmpVal : this.state.value) as number;
+		let val: number = ((typeof this.tmpVal !== 'undefined') ? this.tmpVal : this.state.value) as number;
 		if(props.field && props.field.notSerializable && (typeof val === 'undefined')) {
 			val = props.field.default as number;
 		}

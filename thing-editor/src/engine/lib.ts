@@ -1,5 +1,5 @@
 
-import type { Classes, KeyedMap, KeyedObject, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { Classes, KeyedMap, KeyedObject, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -16,6 +16,7 @@ import resetNodeExtendData from "thing-editor/src/editor/utils/reset-node-extend
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 
 let classes: Classes;
 let scenes: Scenes = {};
@@ -61,7 +62,7 @@ export default class Lib {
 	static loadPrefab(name: string): Container {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
 		/// #if EDITOR
-		if(name.indexOf(game.editor.editorFilesPrefix) !== 0) {
+		if(name.indexOf(game.editor.backupPrefix) !== 0) {
 			prefabs[name].p.name = name;
 		}
 		/// #endif
@@ -413,6 +414,21 @@ export default class Lib {
 
 	static __deleteScene(_sceneName: string) {
 		//TODO:
+	}
+
+	static __saveScene(scene: Scene, name: string) {
+
+		assert(game.__EDITOR_mode, "attempt to save scene in running mode: " + name);
+		assert(typeof name === 'string', "string expected");
+		assert(scene instanceof Scene, "attempt to save not Scene instance in to scenes list.");
+
+		game.editor.disableFieldsCache = true;
+		let sceneData = Lib.__serializeObject(scene);
+		game.editor.disableFieldsCache = false;
+		sceneData.p.__libSceneName = scene.name;
+		scene.__libSceneName = name;
+		scenes[name] = sceneData;
+		return fs.saveAsset(name, AssetType.SCENE, sceneData);
 	}
 
 	static __texturesList: SelectEditorItem[] = [];

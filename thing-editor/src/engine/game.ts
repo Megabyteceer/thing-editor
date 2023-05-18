@@ -3,19 +3,19 @@ import Editor from "thing-editor/src/editor/editor";
 /// #if EDITOR
 
 
-import type { Classes, KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
 import { BaseTexture, Container, Point, TextureGCSystem, utils } from "pixi.js";
+import type { Classes, KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/components/scene.c";
 
-import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
-import assert from "thing-editor/src/engine/debug/assert";
-import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
-import Lib from "thing-editor/src/engine/lib";
-import Settings from "thing-editor/src/engine/utils/settings";
 import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
-import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
-import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
+import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
+import assert from "thing-editor/src/engine/debug/assert";
+import Lib from "thing-editor/src/engine/lib";
+import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
+import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
+import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
+import Settings from "thing-editor/src/engine/utils/settings";
 
 let app: Application;
 let stage: Container;
@@ -51,6 +51,10 @@ class Game {
 
 	W = 600;
 	H = 800;
+
+	___enforcedOrientation: ProjectOrientation | null = null; //TODO
+	__enforcedW: number | undefined;
+	__enforcedH: number | undefined;
 
 	_loadingErrorIsDisplayed = false;
 
@@ -434,7 +438,7 @@ class Game {
 		///TODO
 	}
 
-	showModal(o: Container) {
+	showModal(_o: Container) {
 		//TODO
 	}
 

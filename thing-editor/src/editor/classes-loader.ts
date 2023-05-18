@@ -1,23 +1,18 @@
-
-
-
-import type { Classes, KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import assert from "../engine/debug/assert";
+import type { Classes, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import game from "../engine/game";
 
-import fs from "./fs";
-import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "./props-editor/editable";
 import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-checker";
 import Lib from "thing-editor/src/engine/lib";
+import fs, { AssetType, FileDescClass } from "./fs";
+import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "./props-editor/editable";
 
-import R from "thing-editor/src/editor/preact-fabrics";
 import { Container, DisplayObject, Sprite, Text } from "pixi.js";
 import { Constructor } from "thing-editor/src/editor/env";
-import imp from "thing-editor/src/editor/utils/imp";
-import Scene from "thing-editor/src/engine/components/scene.c";
-import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
+import R from "thing-editor/src/editor/preact-fabrics";
 import { clearPropertyDifinitionCache } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
+import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import Scene from "thing-editor/src/engine/components/scene.c";
 
 const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
@@ -29,8 +24,6 @@ EMBED_CLASSES_NAMES_FIXER.set(Text, 'Text');
 
 let componentsVersion = Date.now();
 
-let builtInClasses: KeyedMap<SourceMappedConstructor>;
-
 const NOT_SERIALIZABLE_PROPS_TYPES: Set<EditablePropertyType> = new Set();
 NOT_SERIALIZABLE_PROPS_TYPES.add('btn');
 NOT_SERIALIZABLE_PROPS_TYPES.add('ref');
@@ -38,12 +31,11 @@ NOT_SERIALIZABLE_PROPS_TYPES.add('splitter');
 
 export default class ClassesLoader {
 
-	static async reloadClasses(isBuiltInClassesLoading = false): Promise<Classes | undefined> {
+	static async reloadClasses(): Promise<Classes | undefined> {
 
-		if(!isBuiltInClassesLoading) {
-			componentsVersion++;
-		}
-		let files = fs.getFiles('.c.ts');
+		componentsVersion++;
+
+		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
 		return Promise.all(files.map((file) => {
 
 			const onLoad = (module: { default: SourceMappedConstructor }) => {
@@ -63,10 +55,12 @@ export default class ClassesLoader {
 
 				let instance: Container = new Class() as Container;
 
-				let className: string = (isBuiltInClassesLoading && EMBED_CLASSES_NAMES_FIXER.has(Class)) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
+				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
 				Class.__className = className;
+				file.asset = Class;
 				Class.__sourceFileName = file.fileName;
 				Class.__defaultValues = {};
+
 				Class.__isScene = (instance instanceof Scene);
 
 				if(!Class.__editableProps) {
@@ -122,16 +116,12 @@ export default class ClassesLoader {
 			}
 			const moduleName = '../../..' + file.fileName.replace(/\.ts$/, '');
 
-			const versionQuery = isBuiltInClassesLoading ? undefined : ('?v=' + componentsVersion);
+			const versionQuery = file.fileName.startsWith('/thing-editor/src/engine/components/') ? undefined : ('?v=' + componentsVersion);
 			return imp(moduleName, versionQuery).then(onLoad);
 
 		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {
 			let classes: Classes = {};
-			if(!isBuiltInClassesLoading) {
-				Object.assign(classes, builtInClasses);
-			} else {
-				assert(!builtInClasses, 'Built-in classes loaded already');
-			}
+
 			for(let c of _classes as SourceMappedConstructor[]) {
 				if(!c) {
 					return;
@@ -151,9 +141,7 @@ export default class ClassesLoader {
 				classes[className] = c;
 
 			}
-			if(isBuiltInClassesLoading) {
-				builtInClasses = Object.assign({}, classes);
-			}
+
 			Lib._setClasses(classes);
 
 			for(let c of _classes as SourceMappedConstructor[]) {
@@ -192,9 +180,22 @@ export default class ClassesLoader {
 					});
 					c.__editableProps.unshift.apply(c.__editableProps, superProps);
 				}
+
+				if(!c.hasOwnProperty('__EDITOR_icon')) {
+					c.__EDITOR_icon = 'tree/game'; // TODO custom MovieClip icon if has timeline property
+				}
 			}
 
 			return classes;
 		});
+	}
+}
+
+// vite dynamic imports broke sourcemaps lines; Thats why import moved to separate file.
+const imp = (moduleName: string, version: string | undefined) => {
+	if(!version) {
+		return import(/* @vite-ignore */ `/${moduleName}.ts`);
+	} else {
+		return import(/* @vite-ignore */ `/${moduleName}.ts${version}`)
 	}
 }

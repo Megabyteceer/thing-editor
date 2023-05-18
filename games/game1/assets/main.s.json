@@ -1,46 +1,148 @@
 {
 	"c": "Scene",
 	"p": {
-		"backgroundColor": 0
+		"__description": "",
+		"__libSceneName": "main"
 	},
 	":": [
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 136,
-				"y": 94,
+				"x": 509,
+				"y": 196,
 				"image": "bunny.png"
 			}
 		},
 		{
 			"c": "Sprite",
 			"p": {
-				"x": 136,
-				"y": 194,
+				"x": 273,
+				"y": 57,
+				"rotation": 0.773,
 				"image": "bunny.png"
-			}
+			},
+			":": [
+				{
+					"c": "Bunny",
+					"p": {
+						"x": 73,
+						"y": 139,
+						"image": "bunny.png"
+					}
+				},
+				{
+					"c": "Sprite",
+					"p": {
+						"x": 185,
+						"y": 366,
+						"rotation": 0.773,
+						"image": "bunny.png"
+					}
+				},
+				{
+					"c": "Shape",
+					"p": {
+						"x": 7,
+						"y": 5,
+						"__description": "awdawdawdawd"
+					}
+				},
+				{
+					"c": "Shape",
+					"p": {
+						"name": "gizmo",
+						"x": 122,
+						"y": 223,
+						"shape": 4,
+						"_shapePoints": [
+							{
+								"x": -1,
+								"y": -75
+							},
+							{
+								"x": -4,
+								"y": -76
+							},
+							{
+								"x": 0,
+								"y": -89
+							},
+							{
+								"x": 4,
+								"y": -76
+							},
+							{
+								"x": 1,
+								"y": -75
+							},
+							{
+								"x": 1,
+								"y": -1
+							},
+							{
+								"x": -1,
+								"y": -1
+							}
+						]
+					}
+				},
+				{
+					"c": "Shape",
+					"p": {
+						"name": "gizmo",
+						"x": 114,
+						"y": 290,
+						"rotation": 1.5707963267948966,
+						"shape": 4,
+						"_shapePoints": [
+							{
+								"x": -1,
+								"y": -75
+							},
+							{
+								"x": -4,
+								"y": -76
+							},
+							{
+								"x": 0,
+								"y": -89
+							},
+							{
+								"x": 4,
+								"y": -76
+							},
+							{
+								"x": 1,
+								"y": -75
+							},
+							{
+								"x": 1,
+								"y": -1
+							},
+							{
+								"x": -1,
+								"y": -1
+							}
+						]
+					}
+				}
+			]
 		},
 		{
 			"c": "Shape",
 			"p": {
-				"x": 123,
-				"y": 205,
-				"width": 17,
-				"height": 17,
-				"shapeFillAlpha": 0.2,
-				"shapeFillColor": 16744193,
-				"shapeLineWidth": 2,
-				"shapeLineColor": 16744193
+				"x": 267,
+				"y": 160,
+				"__description": "awdawdawdawd"
 			}
 		},
 		{
 			"c": "Shape",
 			"p": {
 				"name": "gizmo",
-				"x": 122,
-				"y": 223,
+				"x": 128,
+				"y": 202,
 				"shape": 4,
-				"shapeFillColor": 8308231,
 				"_shapePoints": [
 					{
 						"x": -1,
@@ -77,11 +179,10 @@
 			"c": "Shape",
 			"p": {
 				"name": "gizmo",
-				"x": 122,
-				"y": 223,
+				"x": 415,
+				"y": 206,
 				"rotation": 1.5707963267948966,
 				"shape": 4,
-				"shapeFillColor": 14758734,
 				"_shapePoints": [
 					{
 						"x": -1,

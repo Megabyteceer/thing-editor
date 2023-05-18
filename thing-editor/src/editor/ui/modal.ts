@@ -4,6 +4,7 @@ import R from "thing-editor/src/editor/preact-fabrics.js";
 import ChooseList from "thing-editor/src/editor/ui/choose-list";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Help from "thing-editor/src/editor/ui/help";
+import Prompt from "thing-editor/src/editor/ui/modal/prompt";
 import assert from "thing-editor/src/engine/debug/assert.js";
 import game from "thing-editor/src/engine/game";
 
@@ -117,6 +118,10 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 			}, 'Open docs for this message (F1)', 'error-help-button', 112))
 			: title
 		);
+	}
+
+	showPrompt(title: ComponentChild, defaultText?: string, filter?: (val: string) => string, accept?: (val: string) => string | undefined, noEasyClose?: boolean, multiline?: boolean) {
+		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
 	}
 
 	showListChoose(title: string, list: any[], noEasyClose?: boolean, noSearchField: boolean = false) {

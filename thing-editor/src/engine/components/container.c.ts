@@ -1,13 +1,13 @@
 /// <reference path="../../editor/env.d.ts" />
 
+import { Container, DisplayObject, Filter, Point } from "pixi.js";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable.js";
-import { Container, Filter, Point } from "pixi.js";
 
-import Lib from "../lib.js";
-import game from "../game.js";
+import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
 import assert from "thing-editor/src/engine/debug/assert.js";
-import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
+import game from "../game.js";
+import Lib from "../lib.js";
 
 
 /** returns object rotation relative to it`s scene */
@@ -163,7 +163,7 @@ Container.prototype.getChildByName = function (name, debugThis) {
 /// #endif
 
 Container.prototype.findChildrenByType = function <T extends Container>(classType: new () => T): T[] {
-	assert(classType.prototype instanceof Container, "Container inherited class expected.", 10053);
+	assert(classType.prototype instanceof DisplayObject, "Container inherited class expected.", 10053);
 	findByTypeClass = classType as unknown as SourceMappedConstructor;
 	findByTypeRet = [];
 	this.forAllChildren(_findByTypeInner);
@@ -295,7 +295,6 @@ Container.prototype.__isAnyChildSelected = function __isAnyChildSelected(): bool
 
 (Container.prototype.destroy as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 (Container as any as SourceMappedConstructor).__EDITOR_icon = 'tree/container';
-(Container as any as SourceMappedConstructor).__EDITOR_group = 'Basic';
 
 const getObjectInfo = (o: Container) => {
 	return (o.name || ('(' + (o.constructor as SourceMappedConstructor).__className + ')'));
@@ -332,7 +331,7 @@ _editableEmbed(Container, 'interactive');
 
 _editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers' });
 
-_editableEmbed(Container, '__lockSelection', { type: 'boolean' });
+_editableEmbed(Container, '__lockSelection', { type: 'boolean' });//TODO rename to __doNotSelectByClick
 _editableEmbed(Container, '__description', { type: 'string', multiline: true });
 _editableEmbed(Container, '__hideChildren', { type: 'boolean' });
 _editableEmbed(Container, '___id', {

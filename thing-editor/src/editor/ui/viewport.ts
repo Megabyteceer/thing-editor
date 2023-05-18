@@ -59,7 +59,9 @@ export default class Viewport extends Component<ViewportProps> {
 	}
 
 	render(): ComponentChild {
-		return R.div(null,
+		let className = 'editor-viewport-wrapper';
+
+		return R.div({ className },
 			R.btn('reload classes', () => { ClassesLoader.reloadClasses(); }),
 			R.div({
 				id: 'viewport-root',

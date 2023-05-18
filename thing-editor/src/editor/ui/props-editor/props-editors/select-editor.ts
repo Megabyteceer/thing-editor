@@ -2,7 +2,7 @@ import { Component, ComponentChild, render } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-ar-text";
+import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-or-text";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
 
@@ -31,9 +31,6 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 	filterName = '';
 	checkForNeedClearFilter = true;
-	hideTimeout: number | null = null;
-	mouseLeaved = false;
-	isBlurred = false;
 	selectedItem?: SelectEditorItem;
 
 	constructor(props: SelectEditorProps) {
@@ -48,17 +45,11 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 		this.hide = this.hide.bind(this);
 		this.onFilterChange = this.onFilterChange.bind(this);
 		this.renderItem = this.renderItem.bind(this);
-		this.onBlur = this.onBlur.bind(this);
 		this.onFocus = this.onFocus.bind(this);
 		this.onMouseLeave = this.onMouseLeave.bind(this);
-		this.onMouseMove = this.onMouseMove.bind(this);
 	}
 
 	componentWillUnmount() {
-		if(this.hideTimeout) {
-			clearTimeout(this.hideTimeout);
-			this.hideTimeout = null;
-		}
 		this._hideList();
 	}
 
@@ -69,35 +60,12 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 		}
 	}
 
-	onMouseMove() {
-		this.mouseLeaved = false;
-	}
-
-	onBlur() {
-		this.isBlurred = true;
-		if(this.hideTimeout) {
-			clearTimeout(this.hideTimeout);
-		}
-		this.hideTimeout = setTimeout(() => {
-			this.checkIfCanHide();
-			this.hideTimeout = null;
-		}, 5);
-	}
-
 	onFocus(event: PointerEvent) {
-		this.isBlurred = false;
 		(event.target as HTMLInputElement).select();
 	}
 
 	onMouseLeave() {
-		this.mouseLeaved = true;
-		this.checkIfCanHide();
-	}
-
-	checkIfCanHide() {
-		if(this.isBlurred && this.mouseLeaved) {
-			this.hide();
-		}
+		this.hide();
 	}
 
 	hide() {
@@ -187,7 +155,6 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 			filterInput = R.input({
 				autoFocus: true,
-				onBlur: this.onBlur,
 				onFocus: this.onFocus,
 				className: 'select-editor-filter',
 				placeholder: 'Filter',
@@ -225,6 +192,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 				render(R.div({
 					className: 'select-editor-list',
 					id: 'select-list-content',
+					onMouseLeave: this.onMouseLeave
 				}, filterInput, a.map(this.renderItem)), document.getElementById('select-lists-root') as HTMLElement);
 			}, 0);
 		}
@@ -235,9 +203,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 		return R.div({
 			className: 'select-editor',
-			onClick: this.onToggle,
-			onMouseMove: this.onMouseMove,
-			onMouseLeave: this.onMouseLeave
+			onClick: this.onToggle
 		},
 			R.div({
 				className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
@@ -261,4 +227,4 @@ const stopPropagationIfCtrl = (ev: KeyboardEvent) => {
 
 export default SelectEditor;
 
-export type { SelectEditorItem }
+export type { SelectEditorItem };

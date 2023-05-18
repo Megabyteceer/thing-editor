@@ -6,7 +6,7 @@
 			"type": "chrome",
 			"request": "attach",
 			"webRoot": "${workspaceFolder}",
-			"timeout": 3000,
+			"timeout": 5000,
 			"port": 9223,
 			"enableContentValidation": false,
 			"presentation": {

@@ -11,9 +11,16 @@ import game from "thing-editor/src/engine/game";
 
 function onEmptyClick(ev: PointerEvent) {
 	if(!isEventFocusOnInputElement(ev)) {
-		game.editor.selection.clearSelection(true);
+		setTimeout(() => {
+			game.editor.selection.clearSelection(true);
+		}, 1);
 	}
 }
+
+const treeViewProps = {
+	className: 'scene-tree-view window-scrollable-content',
+	onMouseDown: onEmptyClick
+};
 
 interface TreeViewProps extends ClassAttributes<TreeView> {
 
@@ -44,9 +51,13 @@ export default class TreeView extends ComponentDebounced<TreeViewProps> {
 		}, 1);
 	}
 
+	findNext(_condition: (o: Container) => boolean, _direction = 1) {
+		//TODO
+	}
+
 	render() {
 		if(!game.stage) return R.span();
-		return R.div({ className: 'scene-tree-view', onMouseDown: onEmptyClick },
+		return R.div(treeViewProps,
 			game.__getScenesStack().map(renderSceneStackItem as any),
 			game.stage.children.map(renderRoots as any)
 		)

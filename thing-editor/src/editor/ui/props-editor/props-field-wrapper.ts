@@ -91,7 +91,6 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 	render() {
 		let field = this.props.field;
 		let node: Container = game.editor.selection[0];
-
 		let value = (node as KeyedObject)[field.name];
 
 		let disabled = field.disabled && field.disabled(node);
@@ -119,7 +118,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 				className: field.name.startsWith('__') ? 'props-label props-label-editor-only selectable-text' : 'props-label selectable-text',
 				title: 'Double click - go to definition, Ctrl+click to copy field`s name',
 				onMouseDown: copyTextByClick,
-				ondblclick: () => {
+				onDblClick: () => {
 					game.editor.editSource(field.__src);
 				}
 			}, field.name),
@@ -136,4 +135,4 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 	}
 }
 
-export type { EditablePropertyEditorProps }
+export type { EditablePropertyEditorProps };

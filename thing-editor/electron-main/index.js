@@ -4,7 +4,8 @@ const {
 	ipcMain,
 	nativeTheme,
 	dialog,
-	Menu
+	Menu,
+	globalShortcut
 } = require('electron');
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
@@ -50,12 +51,11 @@ const createWindow = () => {
 	};
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
-	//mainWindow.setMenu(null);
+	mainWindow.setMenu(null);
 	mainWindow.addListener('close', (e) => {
 		mainWindow.reload();
 		e.preventDefault();
 	});
-
 
 	//mainWindow.webContents.openDevTools();
 	//mainWindow.hide();
@@ -66,6 +66,15 @@ const createWindow = () => {
 	});*/
 
 	nativeTheme.themeSource = 'dark'
+
+	const ensureDirectoryExistence = (filePath) => {
+		let dirname = path.dirname(filePath);
+		if(fs.existsSync(dirname)) {
+			return true;
+		}
+		ensureDirectoryExistence(dirname);
+		fs.mkdirSync(dirname);
+	}
 
 	ipcMain.on('fs', (event, command, fileName, content, ...args) => {
 
@@ -81,20 +90,10 @@ const createWindow = () => {
 					event.returnValue = true;
 					return;
 				case 'fs/saveFile':
+					ensureDirectoryExistence(fileName);
 					fd = fs.openSync(fn(fileName), 'w');
 					fs.writeSync(fd, content);
 					fs.closeSync(fd, () => { });
-					event.returnValue = true;
-					return;
-				case '/fs/editFile':
-					const open = require('open');
-					open(fn(fileName)); // TODO file opening with line num
-					/*if(line && fs.lstatSync(fn).isFile()) {
-						let arg = fn + ':' + line + (char ? ':' + char : '');
-						open('', {
-							app: ['code', '-r', '-g', arg]
-						});
-					}*/
 					event.returnValue = true;
 					return;
 				case 'fs/readFile':
@@ -121,10 +120,12 @@ const createWindow = () => {
 					//process.exit(error ? 1 : 0);
 					return;
 				case 'fs/showQueston':
+					const buttons = Object.values(args)
 					event.returnValue = dialog.showMessageBoxSync(mainWindow, {
 						title: fileName,
 						message: content,
-						buttons: Object.values(args),
+						buttons,
+						defaultId: buttons.length - 1,
 
 					});
 					return;

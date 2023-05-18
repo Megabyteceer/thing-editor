@@ -1,16 +1,13 @@
-import { ClassAttributes, Component } from "preact";
-import game from "thing-editor/src/engine/game";
-import { KeyedMap } from "thing-editor/src/editor/env";
+import { ClassAttributes, Component, ComponentChild, h } from "preact";
+import { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { h } from "preact";
-import { ComponentChild } from "preact";
+import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Help from "thing-editor/src/editor/ui/help";
+import game from "thing-editor/src/engine/game";
 
-function getResolutionPrefix() {
-	return '_' + Math.round(window.innerWidth / 20) + 'x' + Math.round(window.innerHeight / 20);
-}
+const MENU_HEIGHT = 24;
 
-interface WindowProps extends ClassAttributes<Window> {
+interface WindowProps extends ClassAttributes<Window<WindowProps, WindowState>> {
 	onResize?: () => void;
 	id: string;
 	x: number;
@@ -25,34 +22,47 @@ interface WindowProps extends ClassAttributes<Window> {
 }
 
 interface WindowState {
+	title: ComponentChild;
 	x: number;
 	y: number;
 	w: number;
 	h: number;
 }
 
-class Window extends Component<WindowProps, WindowState> {
-	id: string;
+class Window<P extends WindowProps, S extends WindowState> extends ComponentDebounced<P, S> {
+
 	renderedScale = 1;
 
 	get $(): HTMLElement {
 		return this.base as HTMLElement;
 	}
 
-	static all: KeyedMap<Window> = {};
+	static all: KeyedMap<Window<WindowProps, WindowState>> = {};
 
-	constructor(props: WindowProps) {
+	constructor(props: P) {
 		super(props);
-		const id = 'window-' + props.id;
-		this.id = id;
 
-		this.state = {
-			x: props.x,
-			y: props.y,
-			w: props.w,
-			h: props.h
-		};
-		this.onClientResize();
+		const state: WindowState = {} as WindowState;
+		for(let key in props) {
+			let val = props[key];
+			if(typeof val === 'number' || typeof val === 'string') {
+				(state as KeyedObject)[key] = val;
+			}
+		}
+		state.x += 0.05;
+		state.y += 0.05;
+		state.w = props.w - props.x - 0.1;
+		state.h = props.h - props.y - 0.1;
+
+
+		Object.assign(state, game.editor.settings.getItem('editor_window_state_' + props.id, {}));
+
+		//@ts-ignore
+		this.state = state;
+
+		this.setSize(state.w, state.h);
+		this.setPosition(state.x, state.y);
+
 		this.saveState = this.saveState.bind(this);
 		this.deltaPosition = this.deltaPosition.bind(this);
 		this.deltaLBCorner = this.deltaLBCorner.bind(this);
@@ -65,32 +75,39 @@ class Window extends Component<WindowProps, WindowState> {
 		this.deltaT = this.deltaT.bind(this);
 
 		this.onMouseDown = this.onMouseDown.bind(this);
-		this.onClientResize = this.onClientResize.bind(this);
 	}
 
 	componentDidMount() {
-		window.addEventListener('resize', this.onClientResize);
+		//@ts-ignore
 		Window.all[this.props.id] = this;
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener('resize', this.onClientResize);
+		if(this.saveStateTimeout) {
+			clearTimeout(this.saveStateTimeout);
+			this.saveStateTimeout = undefined;
+		}
 		delete Window.all[this.props.id];
 	}
 
-	onClientResize() {
-		let id = this.id + getResolutionPrefix();
-		this.setSize(game.editor.settings.getItem(id + '.w', this.props.w), game.editor.settings.getItem(id + '.h', this.props.h));
-		this.setPosition(game.editor.settings.getItem(id + '.x', this.props.x), game.editor.settings.getItem(id + '.y', this.props.y));
+	eraseSettings() {
+		game.editor.settings.removeItem('editor_window_state_' + this.props.id);
 	}
 
-	saveState() {
-		const settings = game.editor.settings;
-		let id = this.id + getResolutionPrefix();
-		settings.setItem(id + '.x', this.state.x);
-		settings.setItem(id + '.y', this.state.y);
-		settings.setItem(id + '.w', this.state.w);
-		settings.setItem(id + '.h', this.state.h);
+	saveStateTimeout: number | undefined;
+	setState<K extends keyof S>(state: ((prevState: Readonly<S>, props: Readonly<P>) => Pick<S, K> | Partial<S> | null) | Pick<S, K> | Partial<S> | null): void {
+		super.setState(state);
+		if(this.saveStateTimeout) {
+			clearTimeout(this.saveStateTimeout);
+		}
+		this.saveStateTimeout = setTimeout(() => {
+			this.saveState();
+			this.saveStateTimeout = undefined;
+		}, 10);
+	}
+
+	saveState(forAnotherWindowId?: string, state?: WindowState) {
+		game.editor.settings.setItem('editor_window_state_' + (forAnotherWindowId || this.props.id), state || this.state);
 	}
 
 	deltaPosition(x: number, y: number) {
@@ -171,23 +188,24 @@ class Window extends Component<WindowProps, WindowState> {
 	setPosition(x: number, y: number) {
 		x = Math.max(0, x);
 		y = Math.max(0, y);
-		x = Math.min(x, window.innerWidth - this.state.w);
-		y = Math.min(y, window.innerHeight - this.state.h);
+		x = Math.min(x, 100 - this.state.w);
+		y = Math.min(y, 100 - this.state.h);
 		//@ts-ignore
 		this.state.x = x;
 		//@ts-ignore
 		this.state.y = y;
 		if(this.$) {
-			this.$.style.left = x + 'px';
-			this.$.style.top = y + 'px';
+			this.$.style.left = x + '%';
+			this.$.style.top = y + '%';
 		}
+
 	}
 
 	setSize(w: number, h: number) {
-		w = Math.max(w, 100);
-		h = Math.max(h, 120);
-		w = Math.min(w, window.innerWidth);
-		h = Math.min(h, window.innerHeight);
+		w = Math.max(w, 5);
+		h = Math.max(h, 5);
+		w = Math.min(w, 100);
+		h = Math.min(h, 100);
 		if((this.state.w !== w) || (this.state.h !== h)) {
 			if(this.props.onResize) {
 				this.props.onResize();
@@ -198,17 +216,22 @@ class Window extends Component<WindowProps, WindowState> {
 		//@ts-ignore
 		this.state.h = h;
 		if(this.$) {
-			this.$.style.width = w + 'px';
-			this.$.style.height = h + 'px';
+			this.$.style.width = w + '%';
+			this.$.style.height = h + '%';
 			let s = (this.$.querySelector('.window-content') as HTMLElement).style;
 
-			if(this.state.w < this.props.minW || this.state.h < this.props.minH) {
-				let scale = Math.min(this.state.w / this.props.minW, this.state.h / this.props.minH);
+			const contentWpx = this.state.w * window.innerWidth / 100;
+			const contentHpx = this.state.h * (window.innerHeight - MENU_HEIGHT) / 100 - 17;
+			const minW = this.props.minW;
+			const minH = this.props.minH;
+
+			if(contentWpx < minW || contentHpx < minH) {
+				let scale = Math.min(contentWpx / minW, contentHpx / minH);
 				this.renderedScale = scale;
 				s.transform = 'scale(' + scale + ')';
 				s.transformOrigin = 'left top';
-				s.width = ((Math.max(this.state.w / scale, this.props.minW)) - 4 / scale) + 'px';
-				s.height = (Math.max(this.state.h / scale, this.props.minH) - 20 / scale) + 'px';
+				s.width = Math.max(contentWpx / scale, minW) + 'px';
+				s.height = Math.max(contentHpx / scale, minH) + 'px';
 			} else {
 				this.renderedScale = 1;
 				s.transform = '';
@@ -223,43 +246,52 @@ class Window extends Component<WindowProps, WindowState> {
 		Window.bringWindowForward(this.$);
 	}
 
+	renderWindowContent(): ComponentChild {
+		return this.props.content;
+	}
+
 	render() {
 
 		let contentProps: any = {
 			className: 'window-content'
 		};
-		if(this.state.w < this.props.minW || this.state.h < this.props.minH) {
-			let scale = Math.min(this.state.w / this.props.minW, this.state.h / this.props.minH);
-			this.renderedScale = scale;
+
+		const contentWpx = this.state.w * window.innerWidth / 100;
+		const contentHpx = this.state.h * (window.innerHeight - MENU_HEIGHT) / 100 - 17;
+		const minW = this.props.minW;
+		const minH = this.props.minH;
+
+		if(contentWpx < minW || contentHpx < minH) {
+			let scale = Math.min(contentWpx / minW, contentHpx / minH);
 			contentProps.style = {
 				transform: 'scale(' + scale + ')',
 				transformOrigin: 'left top',
-				width: ((Math.max(this.state.w / scale, this.props.minW)) - 4 / scale) + 'px',
-				height: (Math.max(this.state.h / scale, this.props.minH) - 20 / scale) + 'px'
+				width: Math.max(contentWpx / scale, minW) + 'px',
+				height: Math.max(contentHpx / scale, minH) + 'px'
 			};
 		} else {
 			this.renderedScale = 1;
 		}
 
 		return R.div({
-			id: this.id, onMouseDown: this.onMouseDown, className: 'window-body', style: {
-				left: this.state.x,
-				top: this.state.y,
-				width: this.state.w,
-				height: this.state.h
+			id: this.props.id, onMouseDown: this.onMouseDown, className: 'window-body', style: {
+				left: this.state.x + '%',
+				top: this.state.y + '%',
+				width: this.state.w + '%',
+				height: this.state.h + '%'
 			},
 			'data-help': 'game.editor.' + this.props.helpId
 		},
 			R.div({
 				className: 'window-header'
-			}, this.props.title,
+			}, this.state.title,
 				h(CornerDragger, {
 					className: 'window-dragger',
 					onDragEnd: this.saveState,
 					onDrag: this.deltaPosition
 				})
 			),
-			R.div(contentProps, this.props.content),
+			R.div(contentProps, this.renderWindowContent()),
 			h(CornerDragger, {
 				className: 'window-r-dragger',
 				onDragEnd: this.saveState,
@@ -323,7 +355,7 @@ class Window extends Component<WindowProps, WindowState> {
 
 export default Window;
 
-
+export type { WindowProps, WindowState };
 
 
 let emptyImage = new Image();
@@ -359,10 +391,10 @@ class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
 	dragHandler(ev: DragEvent) {
 		if(this.prevX !== ev.pageX || this.prevY !== ev.pageY) {
 			if(ev.pageX !== 0 || ev.pageY !== 0) {
-				let ret = this.props.onDrag(ev.pageX - this.prevX, ev.pageY - this.prevY);
+				let ret = this.props.onDrag((ev.pageX - this.prevX) / window.innerWidth * 100, (ev.pageY - this.prevY) / window.innerHeight * 100);
 				if(ret) {
-					this.prevX += ret.x;
-					this.prevY += ret.y;
+					this.prevX += Math.round(ret.x * window.innerWidth / 100);
+					this.prevY += Math.round(ret.y * window.innerHeight / 100);
 				} else {
 					this.prevX = ev.pageX;
 					this.prevY = ev.pageY;

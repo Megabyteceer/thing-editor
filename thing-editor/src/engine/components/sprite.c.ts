@@ -107,7 +107,6 @@ const blendModesSelect = Object.keys(BLEND_MODES).filter((k) => {
 	return a.value - b.value;
 });
 
-(Sprite as any as SourceMappedConstructor).__EDITOR_group = 'Basic';
 (Sprite as any as SourceMappedConstructor).__EDITOR_icon = 'tree/sprite';
 
 _editableEmbed([Sprite, Mesh as any], 'image', makeImageSelectEditablePropertyDescriptor('image', false, true));

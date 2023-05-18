@@ -11,8 +11,8 @@ contextBridge.exposeInMainWorld(
 			chrome: process.versions.chrome,
 			electron: process.versions.electron
 		},
-		fs: (command, fileName, content) => {
-			return ipcRenderer.sendSync('fs', command, fileName, content);
+		fs: (command, fileName, content, ...args) => {
+			return ipcRenderer.sendSync('fs', command, fileName, content, ...args);
 		},
 		argv: process.argv
 	}

@@ -64,6 +64,8 @@ const mouseHandlerGlobal = (ev: PointerEvent) => {
 	let y = Math.round(stagePoint.y);
 
 	/// #if EDITOR
+	game.editor.mouseX = ev.clientX;
+	game.editor.mouseY = ev.clientY;
 	game.__mouse_EDITOR.x = globalPoint.x;
 	game.__mouse_EDITOR.y = globalPoint.y;
 	game.__mouse_uncropped.x = x;

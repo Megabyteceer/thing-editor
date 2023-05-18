@@ -1,8 +1,8 @@
 import { Circle, Ellipse, Graphics, Point, Polygon, Rectangle, RoundedRectangle } from "pixi.js";
+import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
+import editable from "thing-editor/src/editor/props-editor/editable.js";
 import game from "../game.js";
 import Lib from "../lib.js";
-import editable from "thing-editor/src/editor/props-editor/editable.js";
-import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
 
 enum SHAPE_TYPE {
 	RECT = 0,
@@ -441,7 +441,6 @@ const DEFAULT_HEIGHT = 100;
 const DEFAULT_RADIUS = 10;
 
 
-(Shape as any as SourceMappedConstructor).__EDITOR_group = 'Extended';
 (Shape as any as SourceMappedConstructor).__EDITOR_icon = 'tree/shape';
 
 /* TODO

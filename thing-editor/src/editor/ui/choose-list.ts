@@ -61,14 +61,14 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		}
 	}
 
-	renderChoosingItem(i: ChooseListItem, key: string) {
-		assert((typeof i.name === 'string') || i.pureName, "pureName property expected for non plain text named items.");
+	renderChoosingItem(item: ChooseListItem, key: string) {
+		assert((typeof item.name === 'string') || item.pureName || item.__className, "pureName property expected for non plain text named items.");
 
 		let icon;
-		if(i.__EDITOR_icon) {
-			icon = R.classIcon(i as SourceMappedConstructor);
+		if(item.__EDITOR_icon) {
+			icon = R.classIcon(item as SourceMappedConstructor);
 		}
-		let name = i.name;
+		let name = item.name;
 
 		if(typeof name === 'string') {
 			key = name;
@@ -76,7 +76,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 
 		return R.div({
 			onClick: () => {
-				game.editor.ui.modal.hideModal(i);
+				game.editor.ui.modal.hideModal(item);
 			},
 			className: 'clickable choosing-item',
 			key: key
@@ -91,9 +91,9 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		return this.props.list;
 	}
 
-	searchFilter(i: ChooseListItem) {
+	searchFilter(item: ChooseListItem) {
 		let f = this.state.search.toLocaleLowerCase();
-		return i.noFilter || (i.pureName || i.name).toLocaleLowerCase().indexOf(f) >= 0;
+		return item.noFilter || (item.__className || item.pureName || item.name).toLocaleLowerCase().indexOf(f) >= 0;
 	}
 
 	render() {

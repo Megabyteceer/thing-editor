@@ -19,7 +19,7 @@ function renderGroup(props: GroupProps): GroupableItem {
 	return R.div({ key: gid, className: 'props-group ' + gid },
 		R.div({
 			className: 'props-group-header',
-			'data-groupid': gid,
+			'groupidproperty': gid,
 			onClick: toggleGroup
 		}, props.title),
 		R.div({ className: 'props-group-body' + (isGroupHidden(gid) ? ' hidden' : '') }, props.content)
@@ -30,7 +30,7 @@ interface GroupableItem {
 	key: string
 }
 
-function groupArray(a: ComponentChild[], delimiter = '/', level = 0, noSort = false) {
+function groupArray(a: ComponentChild[], delimiter = '/', level = 0, noSort = false, idPrefix = '') {
 
 	let groups: KeyedObject = {};
 	let group;
@@ -42,7 +42,7 @@ function groupArray(a: ComponentChild[], delimiter = '/', level = 0, noSort = fa
 
 		let name = item.key;
 		let np = name.split(delimiter);
-		let groupId = np.slice(0, level + 1).join('-_-');
+		let groupId = np.slice(0, level + 1).join('-_-') + idPrefix;
 		if(np.length > (level + 1)) {
 			if(level > 0) {
 				np.splice(0, level);
@@ -84,7 +84,7 @@ function groupArray(a: ComponentChild[], delimiter = '/', level = 0, noSort = fa
 		while(i < ret.length && ret[i].key.endsWith(' ::')) {
 			i++;
 		}
-		ret.splice(i, 0, renderGroup({ key: group.__groupId.replace(GROUP_ID_CHECKER, '__'), title: groupName, content: groupArray(group, delimiter, level + 1, noSort) }));
+		ret.splice(i, 0, renderGroup({ key: group.__groupId.replace(GROUP_ID_CHECKER, '__'), title: groupName, content: groupArray(group, delimiter, level + 1, noSort, idPrefix) }));
 	}
 
 	return ret;
@@ -95,7 +95,7 @@ function isGroupHidden(groupId: string) {
 }
 
 function toggleGroup(ev: MouseEvent) {
-	let groupId = (ev.target as any).dataset.groupid;
+	let groupId = (ev.target as any).groupidproperty as string;
 	let group = (ev.target as any).closest('.props-group').querySelector('.props-group-body');
 	let isHidden = group.classList.contains('hidden');
 	game.editor.settings.setItem(groupId, !isHidden);
@@ -146,4 +146,4 @@ function toggleGroup(ev: MouseEvent) {
 
 export default { renderGroup, groupArray };
 
-export type { GroupableItem }
+export type { GroupableItem };

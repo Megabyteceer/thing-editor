@@ -1,16 +1,69 @@
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
-import { FileDesc, KeyedObject } from "thing-editor/src/editor/env";
+import type { KeyedObject, SourceMappedConstructor, ThingEditorServer } from "thing-editor/src/editor/env";
 
-import { ThingEditorServer } from "thing-editor/src/editor/env";
+interface FileDesc {
+	/** file name*/
+	fileName: string,
+	assetName: string,
+	assetType: AssetType,
+	/** modification time*/
+	mTime: number
+
+};
+
+interface FileDescClass extends FileDesc {
+	asset: SourceMappedConstructor;
+
+}
+
+
+enum AssetType {
+	IMAGE = "IMAGE",
+	SOUND = "SOUND",
+	SCENE = "SCENE",
+	PREFAB = "PREFAB",
+	CLASS = "CLASS"
+}
+
+import assert from "thing-editor/src/engine/debug/assert";
+
 import game from "thing-editor/src/engine/game";
 const thingEditorServer: ThingEditorServer = window.thingEditorServer;
 
-let typedFiles: Map<string, FileDesc[]> = new Map();
+const AllAssetsTypes: AssetType[] = Object.values(AssetType);
 
-let allFiles: Map<string, FileDesc> = new Map();
+const assetsListsByType: Map<AssetType, FileDesc[]> = new Map();
+
+const allAssets: FileDesc[] = [];
+
+const allAssetsMaps: (Map<string, FileDesc>)[] = [];
+const assetsByTypeByName: Map<AssetType, Map<string, FileDesc>> = new Map();
+for(let assetType of AllAssetsTypes) {
+	let map = new Map();
+	allAssetsMaps.push(map);
+	assetsByTypeByName.set(assetType, map);
+	assetsListsByType.set(assetType, []);
+}
+
+const ASSETS_PARSERS = {
+	'.png': AssetType.IMAGE,
+	'.jpg': AssetType.IMAGE,
+	'.svg': AssetType.IMAGE,
+	'.webp': AssetType.IMAGE,
+	'.s.json': AssetType.SCENE,
+	'.p.json': AssetType.PREFAB,
+	'.wav': AssetType.SOUND,
+	'.c.ts': AssetType.CLASS
+};
+const ASSET_EXT_CROP_LENGHTS: Map<AssetType, number> = new Map();
+ASSET_EXT_CROP_LENGHTS.set(AssetType.IMAGE, 0);
+ASSET_EXT_CROP_LENGHTS.set(AssetType.SCENE, 7);
+ASSET_EXT_CROP_LENGHTS.set(AssetType.PREFAB, 7);
+ASSET_EXT_CROP_LENGHTS.set(AssetType.SOUND, 7);
+ASSET_EXT_CROP_LENGHTS.set(AssetType.CLASS, 5);
 
 const execFs = (command: string, filename?: string, content?: string, ...args: any[]) => {
-	const ret = thingEditorServer.fs(command, filename, content, args);
+	const ret = thingEditorServer.fs(command, filename, content, ...args);
 	if(ret instanceof Error) {
 		debugger;
 		throw ret;
@@ -20,47 +73,31 @@ const execFs = (command: string, filename?: string, content?: string, ...args: a
 
 export default class fs {
 
-	static get __allFiles() {
-		return allFiles;
+	static getAssetsList(assetType: AssetType | null = null): FileDesc[] {
+		if(assetType === null) {
+			return allAssets;
+		}
+		return assetsListsByType.get(assetType) as FileDesc[];
 	}
 
-	static getFiles(extension: string | string[]): FileDesc[] {
-		let key;
-		if(Array.isArray(extension)) {
-			key = extension.join(':');
-			if(!typedFiles.has(key)) {
-				let a: FileDesc[] = [];
-				const iterator1 = allFiles.keys();
-				for(const fileName of iterator1) {
-					for(let ext of extension) {
-						if(fileName.endsWith(ext)) {
-							a.push(allFiles.get(fileName) as FileDesc);
-						}
-					}
-				}
-				typedFiles.set(key, a);
-			}
-		} else {
-			key = extension;
-			if(!typedFiles.has(key)) {
-				let a: FileDesc[] = [];
-				const iterator1 = allFiles.keys();
-				for(const fileName of iterator1) {
-					if(fileName.endsWith(extension)) {
-						a.push(allFiles.get(fileName) as FileDesc);
-					}
-				}
-				typedFiles.set(key, a);
-			}
+	static assetNameToFileName(assetName: string, assetType: AssetType): string {
+		const asset = (assetsByTypeByName.get(assetType) as Map<string, FileDesc>).get(assetName);
+		if(asset) {
+			return asset.fileName;
 		}
-		return typedFiles.get(key) as FileDesc[];
+		return game.editor.currentProjectAssetsDir + assetName + (ASSETS_PARSERS as KeyedObject)[assetType];
 	}
 
 	static saveFile(fileName: string, data: string | Blob | KeyedObject) {
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fs.fieldsFilter, '	');
 		}
+
 		return execFs('fs/saveFile', fileName, data as string);
+	}
+
+	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject) {
+		return fs.saveFile(fs.assetNameToFileName(assetName, assetType), data);
 	}
 
 	static deleteFile(fileName: string) {
@@ -75,10 +112,6 @@ export default class fs {
 		return (execFs('fs/readFile', fileName) as any as string);
 	}
 
-	static editFile(_fileName: string) {
-		// TODO:
-	}
-
 	static toggleDevTools() {
 		execFs('fs/toggleDevTools');
 	}
@@ -88,19 +121,35 @@ export default class fs {
 	}
 
 	static refreshAssetsList(dirNames: string[]) {
-		allFiles.clear();
-		typedFiles.clear();
+		for(let map of allAssetsMaps) {
+			map.clear();
+		}
+		allAssets.length = 0;
+
 		for(let dirName of dirNames) {
+			assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName)
 			const files = execFs('fs/readDir', dirName) as FileDesc[];
-			let dirNameWithSlash = dirName + '/';
 			for(let file of files) {
 				let wrongSymbol = fs.getWrongSymbol(file.fileName);
 				if(wrongSymbol) {
 					game.editor.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
+					continue;
 				}
-				file.assetName = file.fileName.replace(dirNameWithSlash, '');
-				file.fileName = '/' + file.fileName;
-				allFiles.set(file.fileName, file);
+				let assetName = file.fileName.substring(dirName.length);
+				for(const ext in ASSETS_PARSERS) {
+					if(assetName.endsWith(ext)) {
+						const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
+
+						file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGHTS.get(assetType) as number));
+
+						(assetsByTypeByName.get((ASSETS_PARSERS as KeyedObject)[ext] as AssetType) as Map<string, FileDesc>).set(file.assetName, file);
+						file.fileName = '/' + file.fileName;
+						file.assetType = assetType;
+						(assetsListsByType.get(assetType) as FileDesc[]).push(file);
+						allAssets.push(file);
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -126,4 +175,7 @@ export default class fs {
 		return execFs('fs/showQueston', title, message, yes, no) as number;
 	}
 }
+
+export { AssetType, AllAssetsTypes };
+export type { FileDesc, FileDescClass };
 

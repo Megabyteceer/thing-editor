@@ -12,17 +12,17 @@ import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
-import "thing-editor/src/editor/ui/props-editor/props-editors/color-editor";
-import "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
-import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
-import ColorEditor from "thing-editor/src/editor/ui/props-editor/props-editors/color-editor";
-import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
-import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
-import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
+import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
+import "thing-editor/src/editor/ui/props-editor/props-editors/color-editor";
+import ColorEditor from "thing-editor/src/editor/ui/props-editor/props-editors/color-editor";
+import "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
+import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
+import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
+import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 
 let editorProps = {
-	className: 'props-editor'
+	className: 'props-editor window-scrollable-content'
 };
 let headerProps = {
 	className: 'props-header'
@@ -55,10 +55,10 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 	refs: Map<string, PropsFieldWrapper> = new Map();
 
 	static showSelectClass(isScene: boolean, title: string) {
-		let classesList = Object.values(game.classes).filter((c: SourceMappedConstructor) => {
+		let classesList = Object.values(game.classes).filter((c: SourceMappedConstructor) => {// TODO select via asset with class filter?
 			return c.__isScene === isScene;
 		});
-		return game.editor.ui.modal.showListChoose(title, classesList.map(i => i.__className));
+		return game.editor.ui.modal.showListChoose(title, classesList);
 	}
 
 	static registerRenderer(type: EditablePropertyType, render: any, def: any) {

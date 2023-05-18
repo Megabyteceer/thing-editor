@@ -8,7 +8,6 @@ import game from "thing-editor/src/engine/game";
 
 let caretClosed = R.span({ className: 'tree-caret' }, '▸');
 let caretOpened = R.span({ className: 'tree-caret' }, '▾');
-const descriptionProps = { className: 'tree-desc' };
 
 let lastClickedItem: TreeNode | null;
 
@@ -91,7 +90,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 				caret = caretClosed;
 			}
 		}
-		let className = 'list-item';
+		let className = 'tree-item';
 
 		if(state.isSelected) {
 			if(!lastClickedItem) {
@@ -104,10 +103,6 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 		if(state.hidden) {
 			style = { display: 'none' };
 		}
-		let desc;
-		if(node.__description) {
-			desc = R.div(descriptionProps, node.__description.split('\n')[0]);
-		}
 
 		return R.fragment(R.div({
 			onDblClick: (ev: PointerEvent) => {
@@ -118,7 +113,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 			className,
 			style,
 			onMouseDown: this.onMouseDown
-		}, R.sceneNode(node), caret, desc), children);
+		}, R.sceneNode(node), caret), children);
 	}
 }
 
@@ -155,4 +150,4 @@ const renderSceneNode = (node: Container) => {
 	return h(TreeNode, { node: node, key: node.___id });
 };
 
-export { renderSceneNode }
+export { renderSceneNode };

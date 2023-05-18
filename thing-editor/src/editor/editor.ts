@@ -1,32 +1,31 @@
 
 import EventEmitter from "events";
-import TypedEmitter from "typed-emitter"
+import TypedEmitter from "typed-emitter";
 
 import R from "./preact-fabrics";
 
 import game from "../engine/game";
 
-import ClassesLoader from "./classes-loader";
-import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import fs from "thing-editor/src/editor/fs";
-import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
-import Selection, { SelectionData } from "thing-editor/src/editor/utils/selection";
-import historyInstance from "thing-editor/src/editor/utils/history";
-import AssetsLoader from "thing-editor/src/editor/assets-loader";
-import Settings from "thing-editor/src/engine/utils/settings";
-import UI from "thing-editor/src/editor/ui/ui";
 import { Component, ComponentChild, h, render } from "preact";
-import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
-import Lib from "thing-editor/src/engine/lib";
+import AssetsLoader from "thing-editor/src/editor/assets-loader";
+import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
+import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import ProjectsList from "thing-editor/src/editor/ui/choose-project";
+import UI from "thing-editor/src/editor/ui/ui";
+import historyInstance from "thing-editor/src/editor/utils/history";
 import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-access-to-node";
+import Selection, { SelectionData } from "thing-editor/src/editor/utils/selection";
+import Lib from "thing-editor/src/engine/lib";
+import Settings from "thing-editor/src/engine/utils/settings";
+import ClassesLoader from "./classes-loader";
 
-import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
-import Pool from "thing-editor/src/engine/utils/pool";
-import assert from "thing-editor/src/engine/debug/assert";
 import { Container, Point, Texture } from "pixi.js";
 import initializeOverlay from "thing-editor/src/editor/ui/editor-overlay";
-
+import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
+import assert from "thing-editor/src/engine/debug/assert";
+import Pool from "thing-editor/src/engine/utils/pool";
 
 type EditorEvents = {
 	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
@@ -46,7 +45,6 @@ export default class Editor {
 	settings: Settings = new Settings('editor');
 
 	disableFieldsCache: boolean = false;
-	isCurrentSceneModified: boolean = false;
 
 	buildProjectAndExit: any; //TODO:
 
@@ -60,6 +58,11 @@ export default class Editor {
 	savedBackupName?: string | null;
 	savedBackupSelectionData?: SelectionData;
 
+	/** editor space mouse coord X */
+	mouseX: number = 0;
+	/** editor space mouse coord Y */
+	mouseY: number = 0;
+
 	ui!: UI;
 
 	/** true when editor blocked fatally with un-closable error */
@@ -69,8 +72,7 @@ export default class Editor {
 
 	__wrongTexture = Texture.from('img/wrong-texture.png');
 
-	readonly editorFilesPrefix = '.editor-tmp/';
-	readonly backupSceneLibSaveSlotName = this.editorFilesPrefix + 'backup'; //TODO: implement it rename to sceneBackupFileName
+	readonly backupPrefix = '.editor-backup/';
 
 	constructor() {
 
@@ -93,17 +95,53 @@ export default class Editor {
 		initializeOverlay();
 	}
 
+	get currentProjectAssetsDir() {
+		return this.currentProjectDir + 'assets/';
+	}
+
 	onUIMounted(ui: UI) {
 		this.ui = ui;
 		// load built in components
-		fs.refreshAssetsList(['thing-editor/src/engine/components']);
-		ClassesLoader.reloadClasses(true).then(() => {
-			if(this.settings.getItem('last-opened-project')) {
-				this.openProject(this.settings.getItem('last-opened-project'));
-			} else {
-				this.chooseProject(true);
+
+		if(this.settings.getItem('last-opened-project')) {
+			this.openProject(this.settings.getItem('last-opened-project'));
+		} else {
+			this.chooseProject(true);
+		}
+
+		window.addEventListener('beforeunload', () => {
+
+			//TODO this.exitPrefabMode();
+			if(!game.__EDITOR_mode) { //backup already exist
+				return;
+			}
+			if(!this.__projectReloading) {
+				this.askSceneToSaveIfNeed();
 			}
 		});
+	}
+
+	get isCurrentSceneModified() {
+		assert(game.__EDITOR_mode, "access to isCurrentSceneModified in running mode.");
+		if(game.currentScene !== game.currentContainer) {
+			this.showError("access to isCurrentSceneModified in prefab mode", 90001);
+		}
+		return this.isCurrentContainerModified;
+	}
+
+	get isCurrentContainerModified() {
+		return this.history.isStateModified;
+	}
+
+	assetNameToBackupName(assetName: string, assetType: AssetType): string {
+		return fs.assetNameToFileName(assetName, assetType).replace(assetName, this.backupPrefix + assetName);
+	}
+
+	saveBackup() {
+		if(!this.isCurrentSceneModified) {
+			return;
+		}
+		this.saveCurrentScene(this.assetNameToBackupName(this.currentSceneName, AssetType.SCENE));
 	}
 
 	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) {
@@ -136,6 +174,7 @@ export default class Editor {
 	chooseProject(noClose = false) {
 		ProjectsList.chooseProject(noClose).then((dir) => {
 			this.settings.setItem('last-opened-project', dir);
+			this.__projectReloading = true;
 			window.document.location.reload();
 		});
 	}
@@ -206,34 +245,27 @@ export default class Editor {
 
 		Pool.__resetIdCounter();
 		assert(name, 'name should be defined');
-		this.saveCurrentScenesSelectionGlobally();
 
 		game.showScene(name);
 
 		game.currentContainer.__nodeExtendData.childrenExpanded = true;
 
-		this.regeneratePrefabsTypings();
 
 		document.title = '(' + this.projectDesc.title + ') - - (' + name + ')';
 		this.saveCurrentSceneName(game.currentScene.name as string);
 		if(game.currentScene) {
 			this.selection.loadSelection(game.settings.getItem('__EDITOR_scene_selection' + this.currentSceneName));
 		}
-
 		this.history.setCurrentStateUnmodified();
+		this.regeneratePrefabsTypings();
 		this.ui.refresh();
-	}
-
-	saveCurrentScenesSelectionGlobally() {
-		if(game.currentScene) {
-			game.settings.setItem('__EDITOR_scene_selection' + this.currentSceneName, this.selection.saveSelection());
-		}
 	}
 
 	askSceneToSaveIfNeed() {
 		this.ui.viewport.stopExecution();
 		if(this.isCurrentSceneModified) {
-			if(fs.showQueston("Unsaved changes.", "Do you want to save changes in current scene?", "Save", "Discard")) {
+			let ansver = fs.showQueston("Unsaved changes.", "Do you want to save changes in '" + this.currentSceneName + "' scene?", "Discard", "Save");
+			if(ansver === 1) {
 				this.saveCurrentScene();
 			}
 		}
@@ -243,12 +275,63 @@ export default class Editor {
 		//TODO:
 	}
 
-	loadScene(_name: string) {
-		//TODO
+	_getProjectViewportSize(doNotFixOrientation = false) {
+		if(game.projectDesc.screenOrientation === 'auto') {
+			if(!doNotFixOrientation) {
+				game.___enforcedOrientation = 'landscape';
+			}
+			return {
+				w: game.projectDesc.width,
+				h: game.projectDesc.height
+			};
+		} else if(game.projectDesc.screenOrientation === 'portrait') {
+			return {
+				w: game.projectDesc.portraitWidth,
+				h: game.projectDesc.portraitHeight
+			};
+		} else {
+			return {
+				w: game.projectDesc.width,
+				h: game.projectDesc.height
+			};
+		}
 	}
 
-	saveCurrentScene() {
-		//TODO
+	_callInPortraitMode(callback: () => void) {
+		let tmpOrientation = game.___enforcedOrientation;
+		let tmpIsMobile = game.isMobile.any;
+		game.isMobile.any = false;
+		let size = this._getProjectViewportSize();
+		game.__enforcedW = size.w;
+		game.__enforcedH = size.h;
+
+		game.onResize();
+		callback();
+		game.___enforcedOrientation = tmpOrientation;
+		delete game.__enforcedW;
+		delete game.__enforcedH;
+		game.isMobile.any = tmpIsMobile;
+		game.onResize();
+	}
+
+	saveCurrentScene(name: string = this.currentSceneName) {
+		/*for(let f of editor.checkSceneHandlers) { //TODO
+			f();
+		}*/
+
+		this.ui.viewport.stopExecution();
+
+		assert(name, "Name can't be empty");
+		assert(game.__EDITOR_mode, "tried to save scene in running mode.");
+		if(this.isCurrentSceneModified || (this.currentSceneName !== name)) {
+
+			this.history.setCurrentStateUnmodified();
+			this.saveCurrentSceneName(name);
+			this._callInPortraitMode(() => {
+				Lib.__saveScene(game.currentScene, name);
+				game.settings.setItem('__EDITOR_scene_selection' + name, this.selection.saveSelection());
+			});
+		}
 	}
 
 	get currentSceneName() {
@@ -311,7 +394,7 @@ export default class Editor {
 
 	async reloadAssetsAndClasses(refreshAssetsList = false) {
 		if(refreshAssetsList) {
-			fs.refreshAssetsList([this.currentProjectDir + 'assets']);
+			fs.refreshAssetsList(['thing-editor/src/engine/components/', this.currentProjectAssetsDir]);
 		}
 		await ClassesLoader.reloadClasses();
 		await AssetsLoader.reloadAssets();
@@ -441,9 +524,11 @@ export default class Editor {
 	}
 
 	protected saveCurrentSceneName(name: string) {
-		if(this.projectDesc.__lastSceneName !== name) {
-			this.projectDesc.__lastSceneName = name;
-			this.saveProjectDesc();
+		if(name.indexOf(this.backupPrefix) < 0) {
+			if(this.projectDesc.__lastSceneName !== name) {
+				this.projectDesc.__lastSceneName = name;
+				this.saveProjectDesc();
+			}
 		}
 	}
 

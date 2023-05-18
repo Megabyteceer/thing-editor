@@ -1,5 +1,6 @@
 import { ComponentChild, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
+import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
@@ -12,6 +13,14 @@ import game from "thing-editor/src/engine/game";
 
 interface UIProps {
 	onUIMounted: (ui: UI) => void
+}
+
+const menyProps = {
+	className: 'main-menu',
+	"data-help": 'editor.MainMenu' //TODO chek help
+}
+const workingAreaProps = {
+	id: 'working-area'
 }
 
 export default class UI extends ComponentDebounced<UIProps> {
@@ -55,7 +64,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 	}
 
 	render(): ComponentChild {
-		return R.fragment(R.div({ "data-help": 'editor.MainMenu' },
+		return R.fragment(R.div(menyProps,
 			R.btn('Open project...', this.onOpenProjectClick, undefined, 'menu-btn'),
 			//R.btn('Browse...', this.onOpenProjectFolderClick, "Reveal in File Explorer", 'menu-btn'),
 			//TODO   main menu tree  R.btn('Build', this.onBuildClick, "Build release version of game.", 'menu-btn'),
@@ -74,27 +83,26 @@ export default class UI extends ComponentDebounced<UIProps> {
 				})*/
 		),
 
-			R.div(null,
-				renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, game.editor.currentSceneName) : undefined, h(StatusBar, null)),
-					//TODO: StatusBar
-					h(Viewport, { ref: this.viewportRef }),
-					558, 0, 470, 600, 1362, 742, () => {
-						if(game.projectDesc) {
-							game._onContainerResize();
-						}
-					}),
+			R.div(workingAreaProps,
+
 				renderWindow('sceneTree', 'SceneTree', 'Scene tree',
 					h(TreeView, { ref: this.sceneTreeRef }),
-					0, 35, 250, 500, 250, 500),
+					0, 0, 17, 70, 250, 200),
 				renderWindow('propsEditor', 'Properties', 'Properties',
 					h(PropsEditor, {
 						ref: this.propsEditorRef,
 						onChange: game.editor.onSelectedPropsChange
-
 					}),
-					0, 35, 250, 500, 250, 500),
-
-
+					17, 0, 34, 70, 250, 200),
+				renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, game.editor.currentSceneName) : undefined, h(StatusBar, null)),
+					//TODO: StatusBar
+					h(Viewport, { ref: this.viewportRef }),
+					34, 0, 100, 70, 64, 600, () => {
+						if(game.projectDesc) {
+							game._onContainerResize();
+						}
+					}),
+				AssetsView.renderAssetsViews(),
 
 				h(Modal, { ref: this.modalRef })
 			)
@@ -104,6 +112,8 @@ export default class UI extends ComponentDebounced<UIProps> {
 }
 
 function renderWindow(id: string, helpId: string, title: ComponentChild, content: ComponentChild,
-	x: number, y: number, minW: number, minH: number, w: number, _h: number, onResize?: () => void): ComponentChild {
+	x: number, y: number, w: number, _h: number, minW: number, minH: number, onResize?: () => void): ComponentChild {
 	return h(Window, { id, helpId, title, content, x, y, minW, minH, w, h: _h, onResize });
 }
+
+export { renderWindow };

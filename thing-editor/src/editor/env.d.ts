@@ -3,15 +3,6 @@
 
 import { Container, DisplayObject, Point } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
-import Editor from "thing-editor/src/editor/editor";
-
-type FileDesc = {
-	/** file name*/
-	fileName: string,
-	assetName: string,
-	/** modification time*/
-	mTime: number
-};
 
 type CallBackPath = string;
 type ValuePath = string;
@@ -78,7 +69,6 @@ interface SourceMappedConstructor extends Constructor {
 	__sourceFileName?: string;
 	__defaultValues: KeyedObject;
 	__EDITOR_icon?: string;
-	__EDITOR_group?: string;
 	__editableProps: EditablePropertyDesc[];
 	__isScene: boolean;
 	__beforeChangeToThisType?: (o: Container) => void;
