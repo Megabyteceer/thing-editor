@@ -1,3 +1,5 @@
+import shakeDomElement from "thing-editor/src/editor/utils/shake-element";
+
 const scrollInToViewAndShake = (element: HTMLElement) => {
 	let p = element;
 	while(p) {
@@ -9,3 +11,5 @@ const scrollInToViewAndShake = (element: HTMLElement) => {
 	element.scrollIntoView({ block: "center", inline: "center" });
 	shakeDomElement(element);
 }
+
+export default scrollInToViewAndShake;

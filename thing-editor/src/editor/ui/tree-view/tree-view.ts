@@ -1,10 +1,13 @@
 import { Container } from "pixi.js";
 import { ClassAttributes } from "preact";
+import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { renderSceneNode } from "thing-editor/src/editor/ui/tree-view/tree-node";
+import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
+import Selection from "thing-editor/src/editor/utils/selection";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -17,6 +20,20 @@ function onEmptyClick(ev: PointerEvent) {
 	}
 }
 
+type SearchEntry = string[];
+let searchEntries: Map<Container, SearchEntry> = new Map();
+let currentSearchedField: string | undefined;
+function addSearchEntry(o: Container, propertyName: string) {
+	let a: SearchEntry;
+	if(!searchEntries.has(o)) {
+		a = [];
+		searchEntries.set(o, a);
+	} else {
+		a = searchEntries.get(o) as SearchEntry;
+	}
+	a.push(propertyName);
+}
+
 const treeViewProps = {
 	className: 'scene-tree-view window-scrollable-content',
 	onMouseDown: onEmptyClick
@@ -26,11 +43,16 @@ interface TreeViewProps extends ClassAttributes<TreeView> {
 
 }
 
-export default class TreeView extends ComponentDebounced<TreeViewProps> {
+interface TreeViewState {
+	search: string
+}
+
+export default class TreeView extends ComponentDebounced<TreeViewProps, TreeViewState> {
 
 	constructor() {
 		super();
-		this.selectInTree = this.selectInTree.bind(this);
+		this.onSearchKeyDown = this.onSearchKeyDown.bind(this);
+		this.onSearchChange = this.onSearchChange.bind(this);
 	}
 
 	selectInTree(node: Container, add = false, fieldName?: string) {
@@ -39,7 +61,7 @@ export default class TreeView extends ComponentDebounced<TreeViewProps> {
 		setTimeout(() => {
 
 			if(fieldName && !add) {
-				//TODO game.editor.ui.propsEditor.selectField(fieldName);
+				game.editor.ui.propsEditor.selectField(fieldName);
 			}
 
 			let e = document.querySelector('.scene-tree-view .item-selected') as HTMLElement;
@@ -51,15 +73,141 @@ export default class TreeView extends ComponentDebounced<TreeViewProps> {
 		}, 1);
 	}
 
-	findNext(_condition: (o: Container) => boolean, _direction = 1) {
-		//TODO
+	onSearchKeyDown(ev: KeyboardEvent) {
+		if(this.state.search && (ev.code === "Enter") && !ev.repeat) {
+			this.fundNextBySearch();
+		}
+	}
+
+	onSearchChange(ev: InputEvent) {
+		let search = (ev.target as HTMLInputElement).value.toLowerCase();
+		let needSearch = !this.state.search || (this.state.search.length < search.length);
+		this.setState({ search });
+		if(needSearch) {
+			this.fundNextBySearch();
+		}
+	}
+
+	fundNextBySearch() {
+
+		this.findNext((o: Container) => {
+			let ret;
+			if(getParentWhichHideChildren(o)) {
+				return;
+			}
+
+			if(o.constructor.name.toLowerCase().indexOf(this.state.search) >= 0) return true;
+
+			let props = (o.constructor as SourceMappedConstructor).__editableProps;
+			for(let p of props) {
+				if(p.type === 'timeline') {
+					let timeline = (o as KeyedObject)[p.name];
+					/*if(timeline) { TODO timeline search
+						for(let field of timeline.f) {
+							for(let k of field.t) {
+								if(k.a && (k.a.toLowerCase().indexOf(this.state.search) >= 0)) {
+									addSearchEntry(o, Timeline.makePathForKeyframeAutoSelect(p, field, k));
+									ret = true;
+								}
+							}
+						}
+						for(let label in timeline.l) {
+							if(label.toLowerCase().indexOf(this.searchString) >= 0) {
+								addSearchEntry(o, p.name + ',,' + label);
+								ret = true;
+							}
+						}
+					}*/
+				} else if(p.type !== 'splitter') {
+					let val = '' + (o as KeyedObject)[p.name];
+					if(val.toLowerCase().indexOf(this.state.search) >= 0) {
+						addSearchEntry(o, p.name);
+						ret = true;
+					}
+				}
+			}
+			return ret;
+		}, 1);
+	}
+
+	findNext(condition: (o: Container) => boolean | undefined, direction: -1 | 1) {
+		searchEntries.clear();
+
+		let a = new Selection();
+
+		const searchIn = (o: Container) => {
+			if(condition(o)) {
+				a.push(o);
+			}
+			o.forAllChildren((o) => {
+				if(condition(o)) {
+					a.push(o);
+				}
+			});
+		};
+
+		/*if(game.editor.overlay.isolation) { //TODO isolation
+			game.editor.overlay.isolation.forEach(searchIn);
+		} else*/ if(game.__EDITOR_mode) {
+			searchIn(game.currentContainer);
+		} else {
+			game.stage.forAllChildren((o) => {
+				if(condition(o)) {
+					a.push(o);
+				}
+			});
+		}
+
+		if(a.length > 0) {
+
+			a.sortSelectedNodes();
+
+			let field: string | undefined;
+			let i = a.indexOf(game.editor.selection[0]);
+			if(i >= 0) {
+				let o = game.editor.selection[0];
+				if(searchEntries.has(o)) {
+					let entries = searchEntries.get(o) as SearchEntry;
+					let i = entries.findIndex(e => (e === currentSearchedField));
+					if(i >= 0) {
+						i++;
+						field = entries[i];
+					} else {
+						field = entries[0];
+					}
+				}
+				if(!field) {
+					i += direction;
+					if(i < 0) i = a.length - 1;
+					if(i >= a.length) i = 0;
+				}
+			} else {
+				i = 0;
+			}
+			if(!field) {
+				let o = a[i];
+				if(searchEntries.has(o)) {
+					field = (searchEntries.get(o) as SearchEntry)[0];
+				}
+			}
+
+			currentSearchedField = field;
+			this.selectInTree(a[i], false, field);
+		} else {
+			game.editor.selection.clearSelection(true);
+		}
 	}
 
 	render() {
 		if(!game.stage) return R.span();
-		return R.div(treeViewProps,
-			game.__getScenesStack().map(renderSceneStackItem as any),
-			game.stage.children.map(renderRoots as any)
+		return R.fragment(
+			R.input({ onKeyDown: this.onSearchKeyDown, onInput: this.onSearchChange, className: 'tree-view-search', defaultValue: this.state.search, placeholder: 'Search' }),
+
+			//TODO isolation
+			R.div(treeViewProps,
+				game.__getScenesStack().map(renderSceneStackItem as any),
+				game.stage.children.map(renderRoots as any)
+			)
 		)
 	}
 }

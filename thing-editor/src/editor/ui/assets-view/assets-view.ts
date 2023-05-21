@@ -140,7 +140,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 						y: 70.05,
 						w: 20 - 0.1,
 						h: 30 - 0.1,
-						filter: { [AssetType.SOUND]: true },
+						filter: { [AssetType.SCENE]: true },
 						filtersActive: true,
 						title: 'Scenes',
 						search: ''

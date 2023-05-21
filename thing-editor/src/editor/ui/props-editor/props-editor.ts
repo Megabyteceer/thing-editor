@@ -20,6 +20,7 @@ import "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
 import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
 import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
+import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
 
 let editorProps = {
 	className: 'props-editor window-scrollable-content'
@@ -128,7 +129,7 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 
 		setTimeout(() => {
 			//TODO:  выбор поля через __view.base    всем ред полям, нодам, кейфреймам ltkfnm ccskre __view:ComponentChild
-			let fldInput = document.querySelector(".props-game.editor #property-game.editor-" + fn.replace('.', '_')) as HTMLInputElement;
+			let fldInput = document.querySelector(".props-editor #property-editor-" + fn.replace('.', '_')) as HTMLInputElement;
 			if(!fldInput) {
 				fldInput = document.querySelector(fieldName) as HTMLInputElement;
 			}

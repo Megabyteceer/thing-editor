@@ -3,3 +3,5 @@ const shakeDomElement = (e: HTMLElement) => {
 	e.offsetWidth;
 	e.classList.add('shake');
 };
+
+export default shakeDomElement;

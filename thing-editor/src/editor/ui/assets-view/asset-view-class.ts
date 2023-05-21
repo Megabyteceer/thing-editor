@@ -88,7 +88,7 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		}, 'Find previous ' + file.asset.__className + '; Ctrl+click - find all.', 'tool-btn'));
 }
 
-function findNextOfThisType(c: SourceMappedConstructor, direction: number, findAll: boolean) {
+function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findAll: boolean) {
 	if(findAll) {
 		let a = game.currentContainer.findChildrenByType(c as any).filter((o) => {
 			return !getParentWhichHideChildren(o);

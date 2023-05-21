@@ -480,7 +480,7 @@ textarea:focus-visible {
 
 .item-selected {
 	cursor: default;
-	background: #2c3135;
+	background: #2c4145;
 }
 
 .tree-caret {
@@ -836,5 +836,26 @@ input[type=checkbox]:checked {
 	100% {
 		transform: scale(1);
 		transform-origin: 100% 0%;
+	}
+}
+
+.shake{
+	animation: shake-animation linear 0.3s;
+	animation-iteration-count: 2;
+	transform-origin: 50% 50%;
+}
+
+@keyframes shake-animation{
+	0% {
+		transform:  translate(0px,0px)  ;
+	}
+	25% {
+		transform:  translate(5px,0px)  ;
+	}
+	77% {
+		transform:  translate(-5px,0px)  ;
+	}
+	100% {
+		transform:  translate(0px,0px)  ;
 	}
 }
