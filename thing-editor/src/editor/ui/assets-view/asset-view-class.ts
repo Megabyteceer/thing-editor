@@ -1,7 +1,7 @@
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
-import { FileDescClass } from "thing-editor/src/editor/fs";
+import fs, { FileDescClass } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
-import showContextMenu from "thing-editor/src/editor/ui/show-context-menu";
+import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
@@ -17,15 +17,25 @@ const assetsItemNameProps = {
 const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 	showContextMenu([
 		{
-			name: "123123",
+			name: "Go to Source code >>>",
+			tip: "Double click on class to go to source code.",
 			onClick: () => {
-				alert(file.fileName);
+				game.editor.editClassSource(file.asset);
 			}
 		},
 		{
-			name: "123123 2323r23r23r 3f 34f34 f34 f34f ",
+			name: R.fragment(R.icon('delete'), " Delete..."),
 			onClick: () => {
-				alert(123123);
+				//TODO check class usage
+				game.editor.ui.modal.showEditorQuestion(
+					'Ase you sure?',
+					R.fragment(
+						R.div(null, 'You about to delete class'),
+						renderClass(file)
+					), () => {
+						fs.deleteFile(file.fileName);
+					}, R.fragment(R.icon('delete'), " Delete.")
+				);
 			}
 		},
 		null,
@@ -46,6 +56,14 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 	], ev);
 }
 
+const renderClass = (file: FileDescClass) => {
+	return R.fragment(
+		R.classIcon(file.asset),
+		R.b(assetsItemNameProps,
+			(file.asset).__className)
+	);
+}
+
 const assetItemRendererClass = (file: FileDescClass) => {
 	return R.div({
 		className: 'assets-item assets-item-class',
@@ -59,9 +77,7 @@ const assetItemRendererClass = (file: FileDescClass) => {
 			game.editor.editClassSource(file.asset as SourceMappedConstructor);
 		}
 	},
-		R.classIcon(file.asset),
-		R.b(assetsItemNameProps,
-			(file.asset).__className),
+		renderClass(file),
 		R.btn('>', (ev) => {
 			sp(ev);
 			findNextOfThisType(file.asset, 1, ev.ctrlKey);

@@ -94,7 +94,10 @@ export default class UI extends ComponentDebounced<UIProps> {
 						onChange: game.editor.onSelectedPropsChange
 					}),
 					17, 0, 34, 70, 250, 200),
-				renderWindow('viewport', 'Viewport', R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, game.editor.currentSceneName) : undefined, h(StatusBar, null)),
+				renderWindow(
+					'viewport',
+					'Viewport',
+					R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, game.editor.currentSceneName) : undefined, h(StatusBar, null)),
 					//TODO: StatusBar
 					h(Viewport, { ref: this.viewportRef }),
 					34, 0, 100, 70, 64, 600, () => {

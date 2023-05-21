@@ -1,16 +1,17 @@
-import { render } from "preact";
+import { ComponentChild, render } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 
 interface ContextMenuItem {
-	name: string,
+	name: ComponentChild,
 	onClick: () => void,
-	disabled?: true
+	disabled?: true,
+	tip?: string
 }
 
 const root = document.getElementById('context-menu-root') as HTMLElement;
 
 const hideMenu = () => {
-	//render(R.fragment(), root);
+	render(R.fragment(), root);
 }
 
 const showContextMenu = (menuTemplate: (ContextMenuItem | null)[], ev: PointerEvent) => {
@@ -30,7 +31,10 @@ export default showContextMenu;
 
 function renderMenuItem(item: ContextMenuItem | null) {
 	if(item) {
-		return R.btn(item.name, item.onClick, item.name);
+		return R.btn(item.name, () => {
+			item.onClick();
+			hideMenu();
+		}, item.tip);
 	} else {
 		return R.hr(null);
 	}

@@ -344,6 +344,10 @@ textarea:focus-visible {
 	margin-bottom: 20px;
 }
 
+.modal-footer {
+	margin-top: 20px;
+}
+
 .error {
 	color: #be0000;
 	text-align: left;
@@ -439,7 +443,7 @@ textarea:focus-visible {
 }
 
 .scene-node-item:hover {
-	background: #3a3c49;
+	background: #323334;
 }
 
 .tree-desc {
@@ -661,6 +665,10 @@ input[type=checkbox]:checked {
 	background: #3b3b3b;
 }
 
+.assets-item img {
+	margin: 3px;
+}
+
 .assets-item-image {
 	border: 1px solid #374627;
 	color: #5d9662;
@@ -696,10 +704,6 @@ input[type=checkbox]:checked {
 	color: #87b8cf;
 }
 
-.assets-item-class img {
-	margin: 3px;
-}
-
 .assets-item-class .class-name {
 	font-size: 120%;
 }
@@ -713,6 +717,13 @@ input[type=checkbox]:checked {
 	border-radius: 12px;
 	float: right;
 }
+
+.assets-item-current-scene {
+	background-color: #333633;
+	pointer-events: none;
+	cursor: default;
+}
+
 
 .close-btn {
 	background-color: #660000;

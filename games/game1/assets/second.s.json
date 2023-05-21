@@ -2,22 +2,22 @@
 	"c": "Scene",
 	"p": {
 		"__description": "",
-		"__libSceneName": "main"
+		"__libSceneName": "second"
 	},
 	":": [
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 165,
-				"y": 267,
+				"x": 338,
+				"y": 467,
 				"image": "bunny.png"
 			}
 		},
 		{
 			"c": "Sprite",
 			"p": {
-				"x": 175,
-				"y": 199,
+				"x": 162,
+				"y": 115,
 				"rotation": 0.773,
 				"image": "bunny.png"
 			},
@@ -25,16 +25,16 @@
 				{
 					"c": "Bunny",
 					"p": {
-						"x": 43,
-						"y": -32,
+						"x": 305,
+						"y": -11,
 						"image": "bunny.png"
 					}
 				},
 				{
 					"c": "Sprite",
 					"p": {
-						"x": 81,
-						"y": -12,
+						"x": 358,
+						"y": 137,
 						"rotation": 0.773,
 						"image": "bunny.png"
 					}
@@ -42,8 +42,8 @@
 				{
 					"c": "Shape",
 					"p": {
-						"x": -19,
-						"y": -166,
+						"x": -2,
+						"y": 5,
 						"__description": "awdawdawdawd",
 						"_shapePoints": [
 							{
@@ -81,8 +81,8 @@
 					"c": "Shape",
 					"p": {
 						"name": "gizmo",
-						"x": 96,
-						"y": 52,
+						"x": 122,
+						"y": 223,
 						"shape": 4,
 						"_shapePoints": [
 							{
@@ -120,8 +120,8 @@
 					"c": "Shape",
 					"p": {
 						"name": "gizmo",
-						"x": 88,
-						"y": 119,
+						"x": 114,
+						"y": 290,
 						"rotation": 1.5707963267948966,
 						"shape": 4,
 						"_shapePoints": [
@@ -200,8 +200,8 @@
 			"c": "Shape",
 			"p": {
 				"name": "gizmo",
-				"x": 128,
-				"y": 202,
+				"x": 450,
+				"y": 290,
 				"shape": 4,
 				"_shapePoints": [
 					{

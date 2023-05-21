@@ -171,8 +171,8 @@ export default class fs {
 		execFs('fs/exitWithResult', success, error)
 	}
 
-	static showQueston(title: string, message: string, yes: string, no: string): number {
-		return execFs('fs/showQueston', title, message, yes, no) as number;
+	static showQueston(title: string, message: string, yes: string, no: string, cancel?: string): number {
+		return execFs('fs/showQueston', title, message, yes, no, cancel) as number;
 	}
 }
 

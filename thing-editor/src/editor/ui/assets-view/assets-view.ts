@@ -4,6 +4,7 @@ import fs, { AllAssetsTypes, AssetType, FileDesc, FileDescClass } from "thing-ed
 import R from "thing-editor/src/editor/preact-fabrics";
 import assetItemRendererClass from "thing-editor/src/editor/ui/assets-view/asset-view-class";
 import assetItemRendererImage from "thing-editor/src/editor/ui/assets-view/asset-view-image";
+import assetItemRendererScene from "thing-editor/src/editor/ui/assets-view/asset-view-scene";
 import Window, { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
 import WindowMenu from "thing-editor/src/editor/ui/window-menu";
@@ -19,9 +20,7 @@ assetsItemsRenderers.set(AssetType.IMAGE, assetItemRendererImage);
 assetsItemsRenderers.set(AssetType.SOUND, (file: FileDesc) => {
 	return R.div({ className: 'assets-item assets-item-sound', key: file.assetName }, assetTypesIcons.get(AssetType.SOUND), file.assetName);
 });
-assetsItemsRenderers.set(AssetType.SCENE, (file: FileDesc) => {
-	return R.div({ className: 'assets-item assets-item-scene', key: file.assetName }, assetTypesIcons.get(AssetType.SCENE), file.assetName);
-});
+assetsItemsRenderers.set(AssetType.SCENE, assetItemRendererScene);
 assetsItemsRenderers.set(AssetType.PREFAB, (file: FileDesc) => {
 	return R.div({ className: 'assets-item assets-item-prefab', key: file.assetName }, assetTypesIcons.get(AssetType.PREFAB), file.assetName);
 });

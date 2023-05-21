@@ -57,6 +57,19 @@ const createWindow = () => {
 		e.preventDefault();
 	});
 
+	mainWindow.on('focus', () => {
+		globalShortcut.register('F5', () => {
+			mainWindow.reload();
+		});
+		globalShortcut.register('F12', () => { // On windows set HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug\UserDebuggerHotKey to '2f' value to make F12 it work
+			mainWindow.webContents.toggleDevTools();
+		});
+	});
+	mainWindow.on('blur', () => {
+		globalShortcut.unregisterAll();
+	});
+
+
 	//mainWindow.webContents.openDevTools();
 	//mainWindow.hide();
 
@@ -125,7 +138,8 @@ const createWindow = () => {
 						title: fileName,
 						message: content,
 						buttons,
-						defaultId: buttons.length - 1,
+						defaultId: 0,
+						cancelId: buttons.length - 1
 
 					});
 					return;

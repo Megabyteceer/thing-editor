@@ -87,6 +87,7 @@ export default class Editor {
 
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
+
 		game.__EDITOR_mode = true;
 		render(h(UI, { onUIMounted: this.onUIMounted }), document.getElementById('root') as HTMLElement);
 
@@ -109,16 +110,18 @@ export default class Editor {
 			this.chooseProject(true);
 		}
 
-		window.addEventListener('beforeunload', () => {
+		window.onbeforeunload = (e) => {
 
 			//TODO this.exitPrefabMode();
 			if(!game.__EDITOR_mode) { //backup already exist
 				return;
 			}
 			if(!this.__projectReloading) {
-				this.askSceneToSaveIfNeed();
+				if(this.askSceneToSaveIfNeed() === false) {
+					e.returnValue = false;
+				}
 			}
-		});
+		};
 	}
 
 	get isCurrentSceneModified() {
@@ -181,49 +184,50 @@ export default class Editor {
 
 	async openProject(dir?: string) {
 		this.ui.viewport.stopExecution();
-		await this.askSceneToSaveIfNeed();
+		if(this.askSceneToSaveIfNeed()) {
 
-		const newProjectDir = 'games/' + dir + '/';
-		if(newProjectDir !== this.currentProjectDir) {
-			this.currentProjectDir = newProjectDir;
-			this.ui.modal.showSpinner();
-			this.settings.removeItem('last-opened-project');
-			this.projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
-			if(!this.projectDesc) {
-				this.ui.modal.showError("Can't open project " + dir).then(() => { this.openProject(); });
-				return;
+			const newProjectDir = 'games/' + dir + '/';
+			if(newProjectDir !== this.currentProjectDir) {
+				this.currentProjectDir = newProjectDir;
+				this.ui.modal.showSpinner();
+				this.settings.removeItem('last-opened-project');
+				this.projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
+				if(!this.projectDesc) {
+					this.ui.modal.showError("Can't open project " + dir).then(() => { this.openProject(); });
+					return;
+				}
+
+				//TODO libs settings-merge to current
+
+				this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
+				let isProjectDescriptorModified = game.applyProjectDesc(this.projectDesc);
+
+
+				game.init(window.document.getElementById('viewport-root'), 'editor.' + this.projectDesc.id, '/games/' + dir + '/');
+				game.stage.interactiveChildren = false;
+				protectAccessToSceneNode(game.stage, "game stage");
+				protectAccessToSceneNode(game.stage.parent, "PIXI stage");
+
+				//	this.overlay = new Overlay(); //TODO:
+				await Promise.all([this.reloadAssetsAndClasses(true)]);
+
+				this.settings.setItem('last-opened-project', dir);
+
+				if(isProjectDescriptorModified) {
+					this.saveProjectDesc();
+				} else {
+					this.__saveProjectDescriptorInner(true); // try to cleanup descriptor
+				}
+
+				if(this.projectDesc.__lastSceneName && !Lib.hasScene(this.projectDesc.__lastSceneName)) {
+					this.projectDesc.__lastSceneName = false;
+				}
+
+				this.openScene(this.projectDesc.__lastSceneName || this.projectDesc.mainScene || 'main');
+
+				this.regeneratePrefabsTypings();
+				this.ui.modal.hideSpinner();
 			}
-
-			//TODO libs settings-merge to current
-
-			this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
-			let isProjectDescriptorModified = game.applyProjectDesc(this.projectDesc);
-
-
-			await game.init(window.document.getElementById('viewport-root'), 'editor.' + this.projectDesc.id, '/games/' + dir + '/');
-			game.stage.interactiveChildren = false;
-			protectAccessToSceneNode(game.stage, "game stage");
-			protectAccessToSceneNode(game.stage.parent, "PIXI stage");
-
-			//	this.overlay = new Overlay(); //TODO:
-			await Promise.all([this.reloadAssetsAndClasses(true)]);
-
-			this.settings.setItem('last-opened-project', dir);
-
-			if(isProjectDescriptorModified) {
-				this.saveProjectDesc();
-			} else {
-				this.__saveProjectDescriptorInner(true); // try to cleanup descriptor
-			}
-
-			if(this.projectDesc.__lastSceneName && !Lib.hasScene(this.projectDesc.__lastSceneName)) {
-				this.projectDesc.__lastSceneName = false;
-			}
-
-			this.openScene(this.projectDesc.__lastSceneName || this.projectDesc.mainScene || 'main');
-
-			this.regeneratePrefabsTypings();
-			this.ui.modal.hideSpinner();
 		}
 	}
 
@@ -241,34 +245,49 @@ export default class Editor {
 	}
 
 	openScene(name: string) {
-		this.askSceneToSaveIfNeed();
+		if(this.askSceneToSaveIfNeed()) {
 
-		Pool.__resetIdCounter();
-		assert(name, 'name should be defined');
+			Pool.__resetIdCounter();
+			assert(name, 'name should be defined');
 
-		game.showScene(name);
+			game.showScene(name);
 
-		game.currentContainer.__nodeExtendData.childrenExpanded = true;
+			game.currentContainer.__nodeExtendData.childrenExpanded = true;
 
 
-		document.title = '(' + this.projectDesc.title + ') - - (' + name + ')';
-		this.saveCurrentSceneName(game.currentScene.name as string);
-		if(game.currentScene) {
-			this.selection.loadSelection(game.settings.getItem('__EDITOR_scene_selection' + this.currentSceneName));
+			document.title = '(' + this.projectDesc.title + ') - - (' + name + ')';
+			this.saveCurrentSceneName(game.currentScene.name as string);
+			if(game.currentScene) {
+				this.selection.loadSelection(game.settings.getItem('__EDITOR_scene_selection' + this.currentSceneName));
+			}
+			this.history.setCurrentStateUnmodified();
+			this.regeneratePrefabsTypings();
+			this.ui.refresh();
 		}
-		this.history.setCurrentStateUnmodified();
-		this.regeneratePrefabsTypings();
-		this.ui.refresh();
 	}
 
-	askSceneToSaveIfNeed() {
+	/** false - cancel operation */
+	askSceneToSaveIfNeed(): boolean {
 		this.ui.viewport.stopExecution();
 		if(this.isCurrentSceneModified) {
-			let ansver = fs.showQueston("Unsaved changes.", "Do you want to save changes in '" + this.currentSceneName + "' scene?", "Discard", "Save");
-			if(ansver === 1) {
+			let ansver = fs.showQueston(
+				"Unsaved changes.",
+				"Do you want to save changes in '" + this.currentSceneName + "' scene?",
+				"Save",
+				"Discard",
+				"Cancel"
+			);
+			if(ansver === 0) {
 				this.saveCurrentScene();
+			} else if(ansver === 2) {
+				return false;
+			}
+		} else {
+			if(game.currentScene) {
+				game.settings.setItem('__EDITOR_scene_selection' + this.currentSceneName, this.selection.saveSelection());
 			}
 		}
+		return true;
 	}
 
 	regeneratePrefabsTypings() {

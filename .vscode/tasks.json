@@ -2,7 +2,8 @@
 	// See https://go.microsoft.com/fwlink/?LinkId=733558
 	// for the documentation about the tasks.json format
 	"version": "2.0.0",
-	"tasks": [{
+	"tasks": [
+		{
 			"label": "Run vite",
 			"type": "npm",
 			"isBackground": true,
@@ -27,9 +28,7 @@
 			},
 			"args": [
 				"--remote-debugging-port=9223",
-				//"--wait-for-debugger",
-				"./thing-editor/electron-main"/*,
-				"debugger-detection-await"*/
+				"./thing-editor/electron-main"
 			],
 			"isBackground": true,
 			"runOptions": {
@@ -42,7 +41,8 @@
 				"panel": "shared",
 				"showReuseMessage": true,
 				"clear": false
-			}
+			},
+			"problemMatcher": []
 		}
 	]
 }

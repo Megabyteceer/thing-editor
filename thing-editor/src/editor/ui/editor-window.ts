@@ -284,7 +284,7 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 		},
 			R.div({
 				className: 'window-header'
-			}, this.state.title,
+			}, this.state.title || this.props.title,
 				h(CornerDragger, {
 					className: 'window-dragger',
 					onDragEnd: this.saveState,

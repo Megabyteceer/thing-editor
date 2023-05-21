@@ -17,6 +17,8 @@ interface ModalEntry {
 	resolve: (res: unknown) => void
 }
 
+const questionFooterProps = { className: 'modal-footer' };
+
 let blackoutProps = { className: 'modal-blackout fadein-animation' };
 let blackoutPropsClosable = {
 	className: 'modal-blackout fadein-animation', style: { cursor: 'pointer' }, onMouseDown: (ev: PointerEvent) => {
@@ -170,7 +172,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		}
 	}
 
-	showEditorQuestion(title: ComponentChild, message: ComponentChild, onYes: () => void, yesLabel = 'Ok', onNo?: () => void, noLabel = 'Cancel', noEasyClose = false) {
+	showEditorQuestion(title: ComponentChild, message: ComponentChild, onYes: () => void, yesLabel: ComponentChild = 'Ok', onNo?: () => void, noLabel: ComponentChild = 'Cancel', noEasyClose = false) {
 
 		let yesBtn = R.btn(yesLabel, () => {
 			modal.hideModal(true);
@@ -188,7 +190,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		}
 
 		return this.showModal(R.div(null, message,
-			R.div(null,
+			R.div(questionFooterProps,
 				yesBtn,
 				noBtn
 			)
