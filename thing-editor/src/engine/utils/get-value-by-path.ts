@@ -1,10 +1,10 @@
 import assert from "thing-editor/src/engine/debug/assert.js";
 import game from "../game.js";
 
-import { stringToCallData } from "./call-by-path.js";
+import { Container } from "pixi.js";
 import { KeyedMap, ValuePath } from "thing-editor/src/editor/env.js";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
-import { Container } from "pixi.js";
+import { stringToCallData } from "./call-by-path.js";
 /// #if EDITOR
 let latestDetectedSceneNode;
 /// #endif
@@ -29,7 +29,7 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 	} else {
 		/// #if EDITOR
 		if(!isLatestNodeGetting && !(rootName in game)) {
-			game.editor.logError("Unknown root element name '" + rootName + "' in '" + valuePath + "'.", 30025, this_, game.editor.getFieldNameByValue(this_, valuePath));
+			game.editor.ui.status.error("Unknown root element name '" + rootName + "' in '" + valuePath + "'.", 30025, this_, game.editor.getFieldNameByValue(this_, valuePath));
 			return;
 		}
 		/// #endif
@@ -99,7 +99,7 @@ const setValueByPath = (valuePath: string, val: any, this_: any) => {
 	} else {
 		/// #if EDITOR
 		if(!(rootName in game)) {
-			game.editor.logError("Unknown root element name '" + rootName + "' in '" + valuePath + "'.", 32015, this_, game.editor.getFieldNameByValue(this_, valuePath));
+			game.editor.ui.status.error("Unknown root element name '" + rootName + "' in '" + valuePath + "'.", 32015, this_, game.editor.getFieldNameByValue(this_, valuePath));
 			return;
 		}
 		/// #endif
@@ -190,8 +190,13 @@ export default getValueByPath;
 export {
 	setValueByPath
 	/// #if EDITOR
-	, getLatestSceneNodeBypath,
+	,
+
+
+
+	getLatestSceneNodeBypath,
 	getLatestSceneNodesByComplexPath,
 	pathDebugging
 	/// #endif
 };
+

@@ -724,6 +724,53 @@ input[type=checkbox]:checked {
 	cursor: default;
 }
 
+.close-window-btn {
+	position: absolute;
+	padding: 0 3px;
+	right: 0;
+	top: -17px;
+	font-weight: bold;
+	background: #660000;
+	color: #ffcece;
+}
+
+.info-badge {
+	background: #660000;
+    color: #DD8888;
+    position: absolute;
+    top: 10px;
+    width: 20px;
+    text-align: center;
+    height: 20px;
+    right: 10px;
+    border-radius: 10px;
+}
+
+#window-info {
+	z-index: 20 !important;
+	border: 1px solid #995500;
+}
+
+.info-item {
+	padding: 9px;
+	position: relative;
+}
+
+.clear-item-btn {
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: #660000;
+	transform: scale(0.5);
+	opacity: 0.6;
+}
+
+.error-status-help-button {
+	transform: scale(.5);
+	top: 0;
+	right: 20px;
+	position: absolute;
+}
 
 .close-btn {
 	background-color: #660000;

@@ -27,7 +27,7 @@ window.addEventListener('mousedown', (ev) => {
 
 export default class Help extends Component {
 
-	static openErrorCodeHelp(errorCode: number) {
+	static openErrorCodeHelp(errorCode?: number) {
 		if(!errorCode) {
 			errorCode = 90001;
 		}

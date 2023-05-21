@@ -134,7 +134,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 				item = R.span({ className: 'danger' }, this.props.value);
 				if(this.props.field && !this.props.field.isTranslatableKey) {
 					setTimeout(() => {
-						game.editor.logError('Invalid enum value: ' + this.props.value + ' ▾', 32002, game.editor.selection[0], this.props.field.name);
+						game.editor.ui.status.error('Invalid enum value: ' + this.props.value + ' ▾', 32002, game.editor.selection[0], this.props.field.name);
 					}, 1);
 				}
 			}

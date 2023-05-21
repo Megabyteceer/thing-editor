@@ -182,6 +182,13 @@ export default class Editor {
 		});
 	}
 
+	pauseGame() {
+		if(!game.__paused && !game.__EDITOR_mode) {
+			game.__paused = true;
+			this.ui.viewport.refresh();
+		}
+	}
+
 	async openProject(dir?: string) {
 		this.ui.viewport.stopExecution();
 		if(this.askSceneToSaveIfNeed()) {
@@ -266,7 +273,7 @@ export default class Editor {
 		}
 	}
 
-	/** false - cancel operation */
+	/** if returns false - cancel operation */
 	askSceneToSaveIfNeed(): boolean {
 		this.ui.viewport.stopExecution();
 		if(this.isCurrentSceneModified) {
@@ -375,16 +382,16 @@ export default class Editor {
 	moveContainerWithoutChildren(o: Container, dX: number, dY: number) {
 		for(let c of o.children) {
 			let p = c.getGlobalPosition();
-			c.__nodeExtendData.globalPos = p;
+			c.__nodeExtendData.tmpGlobalPos = p;
 			let p2 = o.toLocal(p);
 			if(isNaN(p2.x) || isNaN(p2.y)) {
-				this.warn("Object has zero scale and can not be moved without affecting children`s positions.", 30023, o);
+				this.ui.status.warn("Object has zero scale and can not be moved without affecting children`s positions.", 30023, o);
 				return;
 			}
 		}
 		this.shiftObject(o, dX, dY);
 		for(let c of o.children) {
-			let p = o.toLocal(c.__nodeExtendData.globalPos as Point);
+			let p = o.toLocal(c.__nodeExtendData.tmpGlobalPos as Point);
 			this.shiftObject(c as Container, Math.round(p.x - c.x), Math.round(p.y - c.y));
 		}
 	}
@@ -463,16 +470,6 @@ export default class Editor {
 
 	showError(message: ComponentChild, errorCode = 99999) {
 		this.ui.modal.showError(message, errorCode);
-	}
-
-	logError(message: string, _errorCode = 99999, _owner?: Container | (() => any), _fieldName?: string) {
-		debugger;
-		alert(message); //TODO:
-	}
-
-	warn(message: string, _errorCode = 99999, _owner?: Container | (() => any), _fieldName?: string) {
-		debugger;
-		alert(message); //TODO:
 	}
 
 	notify(message: string | Component) {

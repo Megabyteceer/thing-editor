@@ -132,7 +132,7 @@ export default class fs {
 			for(let file of files) {
 				let wrongSymbol = fs.getWrongSymbol(file.fileName);
 				if(wrongSymbol) {
-					game.editor.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
+					game.editor.ui.status.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
 					continue;
 				}
 				let assetName = file.fileName.substring(dirName.length);

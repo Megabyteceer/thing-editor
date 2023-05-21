@@ -7,7 +7,7 @@ patch(
 	'node_modules/@pixi/display/lib/DisplayObject.d.ts',
 	'', /*to the beginning*/
 	`import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
-import type { EditorExtendData } from 'thing-editor/src/editor/env';
+import type { NodeExtendData } from 'thing-editor/src/editor/env';
 	
 `
 	,
@@ -61,7 +61,7 @@ import type { EditorExtendData } from 'thing-editor/src/editor/env';
 
     ___pathBreakpoint?: string;
 
-    __nodeExtendData: EditorExtendData;
+    __nodeExtendData: NodeExtendData;
 
     /** debug info about object (exists in editor only)*/
     ___info: string;

@@ -13,7 +13,7 @@ type CallBackParsedData = {
 	v?: any[]
 }
 
-interface EditorExtendData {
+interface NodeExtendData {
 	hidden?: true;
 
 	childrenExpanded?: boolean;
@@ -50,7 +50,9 @@ interface EditorExtendData {
 		visibleFields: KeyedMap<true>
 	};
 
-	globalPos?: Point;
+	tmpGlobalPos?: Point;
+
+	statusWarnOwnerId?: number;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;

@@ -1,22 +1,22 @@
 
 import { Classes, KeyedMap, KeyedObject, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
+import { Container, Texture } from "pixi.js";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import { Container, Texture } from "pixi.js";
 import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import Pool from "thing-editor/src/engine/utils/pool";
 
-import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
-import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
-import resetNodeExtendData from "thing-editor/src/editor/utils/reset-node-extend-data";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
-import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
+import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
+import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
+import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
+import resetNodeExtendData from "thing-editor/src/editor/utils/reset-node-extend-data";
+import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 
 let classes: Classes;
 let scenes: Scenes = {};
@@ -195,7 +195,7 @@ export default class Lib {
 			replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass) as any as SourceMappedConstructor;
 			replaceClassName = replaceClass.name;
 			setTimeout(() => { // wait for id assign
-				game.editor.logError("Unknown class " + src.c + " was replaced with class " + replaceClassName + ".", 32012, ret);
+				game.editor.ui.status.error("Unknown class " + src.c + " was replaced with class " + replaceClassName + ".", 32012, ret);
 			}, 1);
 		}
 		if(!replaceClass) {

@@ -16,7 +16,7 @@ class EDITOR_FLAGS {
 	static checkTryTime() {
 		if(!tryCatchWarned && ((Date.now() - tryTime) > 1000)) {
 			tryCatchWarned = true;
-			game.editor.warn("Looks like you stopped on caught exception, probably you need to disable 'stop on caught exception' option in your debugger.", 30014);
+			game.editor.ui.status.warn("Looks like you stopped on caught exception, probably you need to disable 'stop on caught exception' option in your debugger.", 30014);
 		}
 	}
 }

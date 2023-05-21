@@ -25,7 +25,7 @@ function checkForOldReferences(o: KeyedObject) {
 			if(o[f] === o.___EDITOR_markedOldReferences.get(f)) {
 				let c = o.constructor;
 
-				game.editor.logError(c.name + ' did not clean reference to display object in property "' + f + '". Please null this field in onRemove method, or add "@editable({type: "ref"})" decorator for this field (click to copy fix-js and open class source code.).', 10048, () => {
+				game.editor.ui.status.error(c.name + ' did not clean reference to display object in property "' + f + '". Please null this field in onRemove method, or add "@editable({type: "ref"})" decorator for this field (click to copy fix-js and open class source code.).', 10048, () => {
 					game.editor.copyToClipboard('@editable({type: "ref"})');
 					game.editor.editClassSource(c as SourceMappedConstructor);
 				});
@@ -73,4 +73,4 @@ const accessDetectionProxy = (class_: SourceMappedConstructor, fieldName: string
 	return accessDetectionProxiesCache.get(key);
 };
 
-export { markOldReferences, checkForOldReferences }
+export { markOldReferences, checkForOldReferences };

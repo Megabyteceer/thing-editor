@@ -1,6 +1,7 @@
-import { ClassAttributes, Component, ComponentChild } from "preact";
+import { ClassAttributes, ComponentChild } from "preact";
 import ClassesLoader from "thing-editor/src/editor/classes-loader";
 import R from "thing-editor/src/editor/preact-fabrics";
+import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import "thing-editor/src/editor/ui/editor-overlay";
 import game from "thing-editor/src/engine/game";
 
@@ -8,7 +9,7 @@ interface ViewportProps extends ClassAttributes<Viewport> {
 
 }
 
-export default class Viewport extends Component<ViewportProps> {
+export default class Viewport extends ComponentDebounced<ViewportProps> {
 
 	stopExecution() {
 		//TODO:

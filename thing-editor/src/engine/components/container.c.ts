@@ -147,7 +147,7 @@ Container.prototype.getChildByName = function (name, debugThis) {
 			if(ret) {
 				let errorTxt = "getChildByName called, but more that one object with name '" + name + "' present in container " + this.___info;
 				/// #if EDITOR
-				game.editor.logError(errorTxt, 10052, debugThis || ret);
+				game.editor.ui.status.error(errorTxt, 10052, debugThis || ret);
 				/*
 				/// #endif
 				alert(errorTxt);

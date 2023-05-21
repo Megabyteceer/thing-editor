@@ -20,7 +20,7 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	} else {
 		/// #if EDITOR
 		if(!(rootName in game)) {
-			game.editor.logError("Unknown root element name '" + rootName + "' in '" + callbackPath + "'.", 30025, this_, game.editor.getFieldNameByValue(this_, callbackPath));
+			game.editor.ui.status.error("Unknown root element name '" + rootName + "' in '" + callbackPath + "'.", 30025, this_, game.editor.getFieldNameByValue(this_, callbackPath));
 			return;
 		}
 		/// #endif

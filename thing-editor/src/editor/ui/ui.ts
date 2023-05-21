@@ -6,6 +6,7 @@ import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import Modal from "thing-editor/src/editor/ui/modal";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
+import Status from "thing-editor/src/editor/ui/status";
 import StatusBar from "thing-editor/src/editor/ui/status-bar";
 import TreeView from "thing-editor/src/editor/ui/tree-view/tree-view";
 import Viewport from "thing-editor/src/editor/ui/viewport";
@@ -29,6 +30,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 	viewport!: Viewport;
 	sceneTree!: TreeView;
 	propsEditor!: PropsEditor;
+	status!: Status;
 
 	constructor() {
 		super();
@@ -37,6 +39,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 		this.viewportRef = this.viewportRef.bind(this);
 		this.sceneTreeRef = this.sceneTreeRef.bind(this);
 		this.propsEditorRef = this.propsEditorRef.bind(this);
+		this.statusRef = this.statusRef.bind(this);
 	}
 
 	componentDidMount(): void {
@@ -57,6 +60,10 @@ export default class UI extends ComponentDebounced<UIProps> {
 
 	protected propsEditorRef(ref: PropsEditor | null) {
 		this.propsEditor = ref as PropsEditor;
+	}
+
+	protected statusRef(ref: Status | null) {
+		this.status = ref as Status;
 	}
 
 	onOpenProjectClick() {
@@ -107,6 +114,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 					}),
 				AssetsView.renderAssetsViews(),
 
+				h(Status, { ref: this.statusRef }),
 				h(Modal, { ref: this.modalRef })
 			)
 		);
