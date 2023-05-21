@@ -92,7 +92,65 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		if(allWindowsIds.length === 0) {
 			allWindowsIds = game.editor.settings.getItem(SETTINGS_KEY);
 			if(!allWindowsIds) {
-				allWindowsIds = [Date.now().toString()];
+				allWindowsIds = [];
+				let idCounter = 0;
+				for(let state of [
+					{
+						x: 0.05,
+						y: 70.05,
+						w: 20 - 0.1,
+						h: 30 - 0.1,
+						filter: { [AssetType.CLASS]: true },
+						filtersActive: true,
+						title: 'Classes',
+						search: ''
+					},
+					{
+						x: 20.05,
+						y: 70.05,
+						w: 20 - 0.1,
+						h: 30 - 0.1,
+						filter: { [AssetType.PREFAB]: true },
+						filtersActive: true,
+						title: 'Prefabs',
+						search: ''
+					},
+					{
+						x: 40.05,
+						y: 70.05,
+						w: 20 - 0.1,
+						h: 30 - 0.1,
+						filter: { [AssetType.IMAGE]: true },
+						filtersActive: true,
+						title: 'Images',
+						search: ''
+					},
+					{
+						x: 60.05,
+						y: 70.05,
+						w: 20 - 0.1,
+						h: 30 - 0.1,
+						filter: { [AssetType.SOUND]: true },
+						filtersActive: true,
+						title: 'Sounds',
+						search: ''
+					},
+					{
+						x: 80.05,
+						y: 70.05,
+						w: 20 - 0.1,
+						h: 30 - 0.1,
+						filter: { [AssetType.SOUND]: true },
+						filtersActive: true,
+						title: 'Scenes',
+						search: ''
+					}
+				] as AssetsViewState[]) {
+					const windowId = (Date.now() + idCounter++).toString();
+					allWindowsIds.push(windowId);
+					Window.saveWindowState(windowId, state);
+				}
+				__saveWindowsIds();
 			}
 		}
 
@@ -102,14 +160,14 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				x: 0,
 				y: 70,
 				w: 100,
-				h: 100,
+				h: 30,
 				minW: 150,
 				minH: 100,
 				content: undefined,
-				helpId: id,
 				title: 'Assets',
+				helpId: 'Assets',
 				key: id,
-				filter: {}
+				filter: { [AssetType.CLASS]: true }
 			};
 			return h(AssetsView, props);
 		});
@@ -141,7 +199,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			delete (cloneState as any).id;
 			cloneState.w = w - 0.05;
 			cloneState.x += w + 0.1;
-			this.saveState(cloneWindowId, cloneState);
+			Window.saveWindowState(cloneWindowId, cloneState);
 			allWindowsIds.push(cloneWindowId);
 			__saveWindowsIds();
 			this.setSize(w - 0.05, this.state.h);

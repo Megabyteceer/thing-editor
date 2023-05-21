@@ -94,13 +94,13 @@ export default class UI extends ComponentDebounced<UIProps> {
 
 				renderWindow('sceneTree', 'SceneTree', 'Scene tree',
 					h(TreeView, { ref: this.sceneTreeRef }),
-					0, 0, 17, 70, 250, 200),
+					0, 0, 17, 70, 150, 150),
 				renderWindow('propsEditor', 'Properties', 'Properties',
 					h(PropsEditor, {
 						ref: this.propsEditorRef,
 						onChange: game.editor.onSelectedPropsChange
 					}),
-					17, 0, 34, 70, 250, 200),
+					17, 0, 34, 70, 250, 150),
 				renderWindow(
 					'viewport',
 					'Viewport',

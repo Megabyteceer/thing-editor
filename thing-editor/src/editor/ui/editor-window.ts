@@ -106,8 +106,12 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 		}, 10);
 	}
 
-	saveState(forAnotherWindowId?: string, state?: WindowState) {
-		game.editor.settings.setItem('editor_window_state_' + (forAnotherWindowId || this.props.id), state || this.state);
+	saveState() {
+		Window.saveWindowState(this.props.id, this.state);
+	}
+
+	static saveWindowState(windowId: string, state: WindowState) {
+		game.editor.settings.setItem('editor_window_state_' + windowId, state);
 	}
 
 	deltaPosition(x: number, y: number) {
@@ -295,22 +299,26 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 			h(CornerDragger, {
 				className: 'window-r-dragger',
 				onDragEnd: this.saveState,
-				onDrag: this.deltaR
+				onDrag: this.deltaR,
+				type: 'v'
 			}),
 			h(CornerDragger, {
 				className: 'window-l-dragger',
 				onDragEnd: this.saveState,
-				onDrag: this.deltaL
+				onDrag: this.deltaL,
+				type: 'v'
 			}),
 			h(CornerDragger, {
 				className: 'window-b-dragger',
 				onDragEnd: this.saveState,
-				onDrag: this.deltaB
+				onDrag: this.deltaB,
+				type: 'h'
 			}),
 			h(CornerDragger, {
 				className: 'window-t-dragger',
 				onDragEnd: this.saveState,
-				onDrag: this.deltaT
+				onDrag: this.deltaT,
+				type: 'h'
 			}),
 			h(CornerDragger, {
 				className: 'window-rb-corner',
@@ -362,10 +370,14 @@ let emptyImage = new Image();
 
 
 interface CornerDraggerProps extends ClassAttributes<CornerDragger> {
-	onDrag: (deltaX: number, deltaY: number) => { x: number, y: number } | null;
+	onDrag: (deltaX: number, deltaY: number) => { x: number, y: number };
 	onDragEnd: () => void;
 	className: string;
+	type?: 'v' | 'h';
 }
+
+const allDraggers: CornerDragger[] = [];
+const activeDraggers: CornerDragger[] = [];
 
 interface CornerDraggerState {
 }
@@ -382,29 +394,65 @@ class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
 		this.dragHandler = this.dragHandler.bind(this);
 	}
 
+	componentDidMount(): void {
+		if(this.props.type) {
+			allDraggers.push(this);
+		}
+	}
+
+	componentWillUnmount(): void {
+		if(this.props.type) {
+			allDraggers.splice(allDraggers.indexOf(this), 1);
+		}
+	}
+
 	dragStartHandler(ev: DragEvent) {
 		this.prevX = ev.pageX;
 		this.prevY = ev.pageY;
 		(ev.dataTransfer as DataTransfer).setDragImage(emptyImage, 0, 0);
+		activeDraggers.length = 0;
+		let thisBounds = (this.base as HTMLDivElement).getBoundingClientRect();
+		for(let dragger of allDraggers) {
+			if((dragger !== this) && (dragger.props.type === this.props.type)) {
+				const b = (dragger.base as HTMLDivElement).getBoundingClientRect();
+
+				let isDraggersNeighbors = false;
+
+				isDraggersNeighbors =
+					((thisBounds.left - 3) < b.right) &&
+					((thisBounds.right + 3) > b.left) &&
+					((thisBounds.top - 3) < b.bottom) &&
+					((thisBounds.bottom + 3) > b.top);
+
+				if(isDraggersNeighbors) {
+					activeDraggers.push(dragger);
+					dragger.prevX = this.prevX;
+					dragger.prevY = this.prevY;
+				}
+			}
+		}
 	}
 
-	dragHandler(ev: DragEvent) {
+	dragHandler(ev: DragEvent, isAdditionalDraggersProcess?: boolean) {
 		if(this.prevX !== ev.pageX || this.prevY !== ev.pageY) {
+			if(!isAdditionalDraggersProcess) {
+				for(let dragger of activeDraggers) {
+					dragger.dragHandler(ev, true);
+				}
+			}
 			if(ev.pageX !== 0 || ev.pageY !== 0) {
 				let ret = this.props.onDrag((ev.pageX - this.prevX) / window.innerWidth * 100, (ev.pageY - this.prevY) / window.innerHeight * 100);
-				if(ret) {
-					this.prevX += Math.round(ret.x * window.innerWidth / 100);
-					this.prevY += Math.round(ret.y * window.innerHeight / 100);
-				} else {
-					this.prevX = ev.pageX;
-					this.prevY = ev.pageY;
-				}
+				this.prevX += Math.round(ret.x * window.innerWidth / 100);
+				this.prevY += Math.round(ret.y * window.innerHeight / 100);
 			}
 		}
 	}
 
 	dragEndHandler() {
 		this.props.onDragEnd();
+		for(let dragger of activeDraggers) {
+			dragger.props.onDragEnd();
+		}
 	}
 
 	render() {
