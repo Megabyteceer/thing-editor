@@ -96,50 +96,50 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				let idCounter = 0;
 				for(let state of [
 					{
-						x: 0.05,
-						y: 70.05,
-						w: 20 - 0.1,
-						h: 30 - 0.1,
+						x: 0,
+						y: 70,
+						w: 20,
+						h: 30,
 						filter: { [AssetType.CLASS]: true },
 						filtersActive: true,
 						title: 'Classes',
 						search: ''
 					},
 					{
-						x: 20.05,
-						y: 70.05,
-						w: 20 - 0.1,
-						h: 30 - 0.1,
+						x: 20,
+						y: 70,
+						w: 20,
+						h: 30,
 						filter: { [AssetType.PREFAB]: true },
 						filtersActive: true,
 						title: 'Prefabs',
 						search: ''
 					},
 					{
-						x: 40.05,
-						y: 70.05,
-						w: 20 - 0.1,
-						h: 30 - 0.1,
+						x: 40,
+						y: 70,
+						w: 20,
+						h: 30,
 						filter: { [AssetType.IMAGE]: true },
 						filtersActive: true,
 						title: 'Images',
 						search: ''
 					},
 					{
-						x: 60.05,
-						y: 70.05,
-						w: 20 - 0.1,
-						h: 30 - 0.1,
+						x: 60,
+						y: 70,
+						w: 20,
+						h: 30,
 						filter: { [AssetType.SOUND]: true },
 						filtersActive: true,
 						title: 'Sounds',
 						search: ''
 					},
 					{
-						x: 80.05,
-						y: 70.05,
-						w: 20 - 0.1,
-						h: 30 - 0.1,
+						x: 80,
+						y: 70,
+						w: 20,
+						h: 30,
 						filter: { [AssetType.SCENE]: true },
 						filtersActive: true,
 						title: 'Scenes',
@@ -197,12 +197,12 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			const w = this.state.w / 2;
 			let cloneState: AssetsViewState = JSON.parse(JSON.stringify(this.state));
 			delete (cloneState as any).id;
-			cloneState.w = w - 0.05;
-			cloneState.x += w + 0.1;
+			cloneState.w = w;
+			cloneState.x += w;
 			Window.saveWindowState(cloneWindowId, cloneState);
 			allWindowsIds.push(cloneWindowId);
 			__saveWindowsIds();
-			this.setSize(w - 0.05, this.state.h);
+			this.setSize(w, this.state.h);
 			this.saveState();
 			game.editor.ui.refresh();
 		}, 'Clone window')));

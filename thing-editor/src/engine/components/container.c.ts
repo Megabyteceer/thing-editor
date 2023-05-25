@@ -336,7 +336,6 @@ _editableEmbed(Container, '__description', { type: 'string', multiline: true });
 _editableEmbed(Container, '__hideChildren', { type: 'boolean' });
 _editableEmbed(Container, '___id', {
 	type: 'number',
-	notSerializable: true,
 	noNullCheck: true,
 	disabled: () => {
 		return true;

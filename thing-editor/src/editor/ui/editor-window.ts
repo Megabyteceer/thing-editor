@@ -49,10 +49,10 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 				(state as KeyedObject)[key] = val;
 			}
 		}
-		state.x += 0.05;
-		state.y += 0.05;
-		state.w = props.w - props.x - 0.1;
-		state.h = props.h - props.y - 0.1;
+		state.x;
+		state.y;
+		state.w = props.w - props.x;
+		state.h = props.h - props.y;
 
 
 		Object.assign(state, game.editor.settings.getItem('editor_window_state_' + props.id, {}));

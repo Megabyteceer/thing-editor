@@ -61,6 +61,10 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 			val = (field.parser as (val: any) => any)(val);
 		}
 
+		if(field.renderer.hasOwnProperty('parser')) {
+			val = (field.renderer.parser as (val: any) => any)(val);
+		}
+
 		if(field.hasOwnProperty('min')) {
 			val = Math.max(field.min as number, val);
 		}

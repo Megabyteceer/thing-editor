@@ -73,6 +73,10 @@ export default class TreeView extends ComponentDebounced<TreeViewProps, TreeView
 		}, 1);
 	}
 
+	shouldComponentUpdate() {
+		return false;
+	}
+
 	onSearchKeyDown(ev: KeyboardEvent) {
 		if(this.state.search && (ev.code === "Enter") && !ev.repeat) {
 			this.fundNextBySearch();
@@ -82,10 +86,11 @@ export default class TreeView extends ComponentDebounced<TreeViewProps, TreeView
 	onSearchChange(ev: InputEvent) {
 		let search = (ev.target as HTMLInputElement).value.toLowerCase();
 		let needSearch = !this.state.search || (this.state.search.length < search.length);
-		this.setState({ search });
-		if(needSearch) {
-			this.fundNextBySearch();
-		}
+		this.setState({ search }, () => {
+			if(needSearch) {
+				this.fundNextBySearch();
+			}
+		});
 	}
 
 	fundNextBySearch() {

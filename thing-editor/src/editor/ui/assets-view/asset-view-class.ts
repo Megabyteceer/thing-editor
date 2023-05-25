@@ -59,7 +59,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 const renderClass = (file: FileDescClass) => {
 	return R.fragment(
 		R.classIcon(file.asset),
-		R.b(assetsItemNameProps,
+		R.span(assetsItemNameProps,
 			(file.asset).__className)
 	);
 }

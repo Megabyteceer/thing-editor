@@ -13,4 +13,8 @@ const StringEditor = (props: EditablePropertyEditorProps) => {
 	return R.input(elementProps);
 };
 
+StringEditor.parser = (val: string) => {
+	return val || null;
+};
+
 export default StringEditor;

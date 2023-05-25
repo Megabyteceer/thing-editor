@@ -81,6 +81,8 @@ button:hover {
 }
 
 .window-body {
+	border: 1px solid var(--bg-color);
+	box-sizing: border-box;
 	position: absolute;
 	background: var(--window-bg-color);
 }
@@ -279,8 +281,9 @@ textarea:focus-visible {
 }
 
 .selectable-text {
-	font-family: monospace;
+	font-family: Consolas, "Courier New", monospace;
 	cursor: text;
+	pointer-events: all;
 }
 
 
@@ -332,7 +335,7 @@ textarea:focus-visible {
 .modal-content {
 	text-align: center;
 	padding: 20px;
-	background: #181818;
+	background: var(--window-bg-color);
 	max-height: 70vh;
 	overflow-y: overlay;
 }
@@ -542,13 +545,12 @@ textarea:focus-visible {
 .props-label {
 	padding: 3px;
 	padding-left: 10px;
-	font-family: monospace;
+	font-family: Consolas, "Courier New", monospace;
 	box-sizing: border-box;
 	width: 50%;
 	max-width: 200px;
 	color: #3a8cff;
 	overflow-x: hidden;
-	font-size: 120%;
 }
 
 .props-label-editor-only {
@@ -582,7 +584,7 @@ textarea:focus-visible {
 }
 
 .number-input input {
-	font-family: monospace;
+	font-family: Consolas, "Courier New", monospace;
 }
 
 .number-input-btn:hover {
@@ -631,7 +633,7 @@ input[type=checkbox]:checked {
 	padding: 10px;
 	color: #a8a8a8;
 	border: 1px solid #2f2f2f;
-	font-family: monospace;
+	font-family: Consolas, "Courier New", monospace;
 }
 
 .selected-item {
@@ -702,10 +704,6 @@ input[type=checkbox]:checked {
 	padding: 2px 10px;
 	border: 1px solid #125675;
 	color: #87b8cf;
-}
-
-.assets-item-class .class-name {
-	font-size: 120%;
 }
 
 .assets-item-class .tool-btn {
@@ -814,6 +812,33 @@ input[type=checkbox]:checked {
 	border: none;
 	border-top: 1px solid #555555;
 }
+
+.project-item-select {
+	padding: 10px;
+	margin: 5px;
+	border: 1px solid #41464b;
+	border-radius:10px;
+	color: #476582;
+	font-size: 120%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	white-space: nowrap;
+}
+
+.project-item-title {
+	text-align: right;
+	display: inline-block;
+}
+
+.project-item-select img {
+	max-height: 40px;
+	max-width: 50%;
+}
+
+
+
+
 
 
 

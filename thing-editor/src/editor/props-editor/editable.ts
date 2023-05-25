@@ -50,6 +50,7 @@ interface EditablePropertyDescRaw {
 }
 
 interface EditablePropertyDesc extends EditablePropertyDescRaw {
+	class: SourceMappedConstructor,
 	type: EditablePropertyType,
 	default: any,
 	name: string,
@@ -69,7 +70,8 @@ function editable(editablePropertyDesc?: EditablePropertyDescRaw) {
 	}
 }
 
-/* allows to define editable properties to the classes we has no access to source code */
+/* Allows to define editable properties to the classes we has no access to source code.
+To define editable properties for your own classes, please use '@editable()' decorator instead */
 function _editableEmbed(target: Constructor | Constructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw) {
 	if(Array.isArray(target)) {
 		for(let t of target) {
@@ -109,12 +111,13 @@ function editableInner(target: Container, name: string, editablePropertyDesc?: E
 
 export default editable;
 export { _editableEmbed, propertyAssert };
-
 export type { EditablePropertyDesc, EditablePropertyDescRaw, EditablePropertyType };
+
 
 const propertyAssert = (prop: EditablePropertyDesc, condition: any, message: string) => {
 	if(!condition) {
 		game.editor.editSource(prop.__src)
+		message = 'Editable property "' + prop.name + '" of class "' + prop.class.__className + '" validation error: \n' + message
 		assert(condition, message);
 	}
 }

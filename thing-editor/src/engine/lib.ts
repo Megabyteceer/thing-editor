@@ -425,7 +425,6 @@ export default class Lib {
 		game.editor.disableFieldsCache = true;
 		let sceneData = Lib.__serializeObject(scene);
 		game.editor.disableFieldsCache = false;
-		sceneData.p.__libSceneName = scene.name;
 		scene.__libSceneName = name;
 		scenes[name] = sceneData;
 		return fs.saveAsset(name, AssetType.SCENE, sceneData);

@@ -68,12 +68,29 @@ export default class ClassesLoader {
 				}
 				const editableProps: EditablePropertyDesc[] = Class.__editableProps;
 				for(let prop of editableProps) {
-
+					prop.class = Class;
 					if(!prop.hasOwnProperty('type')) {
 						let type = typeof (instance as KeyedObject)[prop.name];
 						propertyAssert(prop, prop.override || type === 'string' || type === 'number' || type === 'boolean', 'can not detect type for editable property ' + prop.name);
 						//@ts-ignore
 						prop.type = type || 'number';
+					}
+
+					if(prop.name.startsWith('___')) {
+						prop.notSerializable = true;
+					}
+
+					if(prop.hasOwnProperty('min')) {
+						propertyAssert(prop, prop.type === 'number', "'min' attribute possible for properties with 'number' type only.");
+						propertyAssert(prop, typeof prop.min === 'number', "'min' attribute should have number value.");
+					}
+					if(prop.hasOwnProperty('max')) {
+						propertyAssert(prop, prop.type === 'number', "'max' attribute possible for properties with 'number' type only.");
+						propertyAssert(prop, typeof prop.max === 'number', "'max' attribute should have number value.");
+					}
+					if(prop.hasOwnProperty('step')) {
+						propertyAssert(prop, prop.type === 'number', "'step' attribute possible for properties with 'number' type only.");
+						propertyAssert(prop, typeof prop.step === 'number', "'step' attribute should have number value.");
 					}
 
 					if(!prop.noNullCheck && (prop.type === 'number' || prop.type === 'color')) {
@@ -87,7 +104,7 @@ export default class ClassesLoader {
 
 					if(!prop.notSerializable && !prop.hasOwnProperty('default')) {
 						prop.default = (instance as KeyedObject)[prop.name];
-						if(typeof prop.default === 'undefined') {
+						if(!prop.default) {
 							prop.default = PropsEditor.getDefaultForType(prop);
 						}
 						propertyAssert(prop, typeof prop.default !== 'undefined', "Editable property '" + prop.name + "' in class '" + Class.__className + "' has no default value.");

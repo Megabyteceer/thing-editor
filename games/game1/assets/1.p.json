@@ -1,20 +1,22 @@
 {
-	"c": "Scene",
-	"p": {},
+	"c": "Container",
+	"p": {
+		"__description": ""
+	},
 	":": [
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 338,
-				"y": 467,
+				"x": 165,
+				"y": 267,
 				"image": "bunny.png"
 			}
 		},
 		{
 			"c": "Sprite",
 			"p": {
-				"x": 162,
-				"y": 115,
+				"x": 175,
+				"y": 199,
 				"rotation": 0.773,
 				"image": "bunny.png"
 			},
@@ -22,16 +24,16 @@
 				{
 					"c": "Bunny",
 					"p": {
-						"x": 305,
-						"y": -11,
+						"x": 43,
+						"y": -32,
 						"image": "bunny.png"
 					}
 				},
 				{
 					"c": "Sprite",
 					"p": {
-						"x": 358,
-						"y": 137,
+						"x": 81,
+						"y": -12,
 						"rotation": 0.773,
 						"image": "bunny.png"
 					}
@@ -39,8 +41,9 @@
 				{
 					"c": "Shape",
 					"p": {
-						"x": -2,
-						"y": 5,
+						"x": -19,
+						"y": -166,
+						"__description": "awdawdawdawd",
 						"_shapePoints": [
 							{
 								"x": -1,
@@ -76,8 +79,9 @@
 				{
 					"c": "Shape",
 					"p": {
-						"x": 122,
-						"y": 223,
+						"name": "gizmo",
+						"x": 96,
+						"y": 52,
 						"shape": 4,
 						"_shapePoints": [
 							{
@@ -114,8 +118,9 @@
 				{
 					"c": "Shape",
 					"p": {
-						"x": 114,
-						"y": 290,
+						"name": "gizmo",
+						"x": 88,
+						"y": 119,
 						"rotation": 1.5707963267948966,
 						"shape": 4,
 						"_shapePoints": [
@@ -157,6 +162,7 @@
 			"p": {
 				"x": 267,
 				"y": 160,
+				"__description": "awdawdawdawd",
 				"_shapePoints": [
 					{
 						"x": -1,
@@ -192,8 +198,9 @@
 		{
 			"c": "Shape",
 			"p": {
-				"x": 450,
-				"y": 290,
+				"name": "gizmo",
+				"x": 128,
+				"y": 202,
 				"shape": 4,
 				"_shapePoints": [
 					{
@@ -230,6 +237,7 @@
 		{
 			"c": "Shape",
 			"p": {
+				"name": "gizmo",
 				"x": 415,
 				"y": 206,
 				"rotation": 1.5707963267948966,
