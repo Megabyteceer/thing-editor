@@ -246,7 +246,7 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 			}
 		}, this.props.icon, item.message, node, R.btn('?', () => {
 			Help.openErrorCodeHelp(item.errorCode);
-		}, 'Open docs for this notification (F1)', 'error-status-help-button', 112), R.btn('×', () => {
+		}, 'Open description for this notification (F1)', 'error-status-help-button', 112), R.btn('×', () => {
 			this.clearItem(item);
 		}, "Hide notification", 'clear-item-btn danger-btn')
 		);

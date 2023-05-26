@@ -2,25 +2,21 @@ import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import game from "thing-editor/src/engine/game";
 
+const transparentProps = { className: 'transparent' };
+
 export default class StatusBar extends Component {
 
-	refreshStatus!: (ev: PointerEvent) => void;
+	interval!: number;
 
 	componentDidMount(): void {
-		this.refreshStatus = () => {
+		this.interval = setInterval(() => {
 			this.forceUpdate();
-		};
-		window.addEventListener('mousedown', this.refreshStatus as any);
-		window.addEventListener('mousemove', this.refreshStatus as any);
-		window.addEventListener('wheel', this.refreshStatus as any);
+		}, 50);
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener('mousedown', this.refreshStatus as any);
-		window.removeEventListener('mousemove', this.refreshStatus as any);
-		window.removeEventListener('wheel', this.refreshStatus as any);
+		clearInterval(this.interval);
 	}
-
 
 	render() {
 		if(game && game.stage) {
@@ -41,7 +37,7 @@ export default class StatusBar extends Component {
 				}
 			}
 			game.editor.ui.viewport.refreshCameraFrame();
-			return R.span(null, resetZoomBtn, txt);
+			return R.span(null, resetZoomBtn, R.span(game.editor.isCurrentContainerModified ? null : transparentProps, '●'), txt);
 		}
 		return R.span();
 	}

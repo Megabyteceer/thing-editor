@@ -86,6 +86,17 @@ patch(
 	setAlign(align:string):void;
 	`);
 
+patch(
+	'node_modules/@pixi/display/lib/Container.d.ts',
+	'replace',
+	'readonly children: T[];',
+	'    readonly children: Container[];',
+	'getChildAt(index: number): T;',
+	'    getChildAt(index: number): Container;',
+	'removeChildAt(index: number): T;',
+	'    removeChildAt(index: number): Container;',
+);
+
 function patch(fileName, ...findInserts) {
 	patches.push({
 		fileName,
@@ -100,6 +111,7 @@ const {dialog} = require("electron");
 
 function tryToPatch(folder, mainWindow) {
 	for(let patch of patches) {
+		let isReplace = false;
 		var fn = path.join(folder, patch.fileName);
 		if(fs.existsSync(fn)) {
 			patch.done = true;
@@ -112,11 +124,15 @@ function tryToPatch(folder, mainWindow) {
 			while(findInserts.length > 0) {
 
 				let find = findInserts.shift();
+				if(find === 'replace') {
+					isReplace = true;
+					find = findInserts.shift();
+				}
 				let insert = findInserts.shift();
 
-				insert = find + PATCH_BEGIN + insert + `
+				insert = (isReplace ? '' : find) + PATCH_BEGIN + insert + `
 	// thing-editor patch end
-`
+`;
 
 				if(txt.indexOf(find) >= 0) {
 					txt = txt.replace(find, insert);

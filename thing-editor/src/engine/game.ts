@@ -1,5 +1,5 @@
 /// #if EDITOR
-import Editor from "thing-editor/src/editor/editor";
+import type { __EditorType } from "thing-editor/src/editor/editor";
 /// #if EDITOR
 
 
@@ -89,7 +89,7 @@ class Game {
 	onGameReload?: () => void;
 
 	/// #if EDITOR
-	editor!: Editor;
+	editor!: __EditorType;
 	__EDITOR_mode = false;
 
 	isFocused: boolean = false;
@@ -434,12 +434,66 @@ class Game {
 		}
 	}
 
-	hideModal() {
-		///TODO
+	showModal(container: Container, callback?: () => void
+		/// #if EDITOR
+		, __noAssertEditorMode = false
+		/// #endif
+	) {
+		/// #if EDITOR
+		if(game.__EDITOR_mode) {
+			assert(__noAssertEditorMode, 'Attempt to show modal in editor mode: ' + (container.name || container), 10047);
+		}
+		/// #endif
+		if(typeof container === "string") {
+			container = Lib.loadPrefab(container);
+		}
+		assert(container instanceof Container, "Attempt to show not DisplayObject as modal");
+		assert(!(container instanceof Scene), 'Scene can not be used as modal', 10037);
+		modals.push(container);
+
+		if(callback) {
+			// SceneLinkedPromise with specialname. later find it and resolve
+		}
+
+		container.interactiveChildren = false;
+		game.stage.addChild(container);
+		//TODO BgMusic._recalculateMusic();
+		/// #if EDITOR
+		this.editor.refreshTreeViewAndPropertyEditor();
+		/// #endif
+		return container;
 	}
 
-	showModal(_o: Container) {
-		//TODO
+	hideModal(container?: Container, instantly = false) {
+		let modalToHide: Container;
+		if(!container) {
+			assert(modals.length > 0, 'Attempt to hide modal when modal list is empty.', 10038);
+			modalToHide = modals.pop()!;
+		} else {
+			let i = modals.indexOf(container);
+			assert(i >= 0, 'Attempt to hide modal object which is not in modal list.', 10039);
+			modalToHide = container;
+			modals.splice(i, 1);
+		}
+
+		// TODO search SceneLinkedPromise with callback
+
+		if(instantly
+			/// #if EDITOR
+			||
+			game.__EDITOR_mode
+			/// #endif
+		) {
+			Lib.destroyObjectAndChildren(modalToHide);
+		} else {
+			modalToHide.interactiveChildren = false;
+			hidingModals.push(modalToHide);
+		}
+		//TODO BgMusic._recalculateMusic();
+
+		/// #if EDITOR
+		game.editor.refreshTreeViewAndPropertyEditor();
+		/// #endif
 	}
 
 	faderShoot() {
@@ -503,11 +557,10 @@ class Game {
 		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
 		if(modals.length > 0) {
 			this.hideModal();
-			o.__nodeExtendData.isPreviewObject = true;
-			this.showModal(o);
+			this.showModal(o, undefined, true);
 		} else {
 			if(!o.name) {
-				(o as Scene).__libSceneName = game.currentScene.name;
+				(o as Scene).name = game.currentScene.name;
 			}
 			this.showScene(o as Scene);
 		}

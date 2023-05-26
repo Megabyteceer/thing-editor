@@ -6,6 +6,7 @@ import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
+import loadSafeInstanceByClassName from "thing-editor/src/engine/utils/load-safe-instance-by-class-name";
 
 
 const assetsItemNameProps = {
@@ -14,11 +15,27 @@ const assetsItemNameProps = {
 	onMouseDown: copyTextByClick
 };
 
+
 const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 	showContextMenu([
 		{
+			name: "Add as child",
+			tip: "Add as child to currently selected.",
+			onClick: () => {
+				game.editor.attachToSelected(loadSafeInstanceByClassName(file.asset.__className));
+			},
+			disabled: !game.editor.isCanBeAddedAsChild(file.asset)
+		},
+		{
+			name: "Add",
+			tip: "Add to scene`s root.",
+			onClick: () => {
+				game.editor.addToScene(loadSafeInstanceByClassName(file.asset.__className));
+			}
+		},
+		{
 			name: "Go to Source code >>>",
-			tip: "Double click on class to go to source code.",
+			tip: "Double click on class to go to it`s source code.",
 			onClick: () => {
 				game.editor.editClassSource(file.asset);
 			}
@@ -38,21 +55,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 				);
 			}
 		},
-		null,
-		{
-			name: "123123",
-			onClick: () => {
-				alert(123123);
-			}
-		},
-		{
-			name: "123123",
-			onClick: () => {
-				alert(123123);
-			}
-		}
-
-
+		null
 	], ev);
 }
 
@@ -62,6 +65,11 @@ const renderClass = (file: FileDescClass) => {
 		R.span(assetsItemNameProps,
 			(file.asset).__className)
 	);
+}
+
+const toolButtonsProps = {
+	className: 'asset-item-tool-buttons',
+	onDblClick: sp
 }
 
 const assetItemRendererClass = (file: FileDescClass) => {
@@ -78,14 +86,16 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		}
 	},
 		renderClass(file),
-		R.btn('>', (ev) => {
-			sp(ev);
-			findNextOfThisType(file.asset, 1, ev.ctrlKey);
-		}, 'Find next ' + file.asset.__className + '; Ctrl+click - find all.', 'tool-btn'),
-		R.btn('<', (ev) => {
-			sp(ev);
-			findNextOfThisType(file.asset, -1, ev.ctrlKey);
-		}, 'Find previous ' + file.asset.__className + '; Ctrl+click - find all.', 'tool-btn'));
+		R.span(toolButtonsProps,
+			R.btn('>', (ev) => {
+				sp(ev);
+				findNextOfThisType(file.asset, 1, ev.ctrlKey);
+			}, 'Find next ' + file.asset.__className + '; Ctrl+click - find all.'),
+			R.btn('<', (ev) => {
+				sp(ev);
+				findNextOfThisType(file.asset, -1, ev.ctrlKey);
+			}, 'Find previous ' + file.asset.__className + '; Ctrl+click - find all.'))
+	);
 }
 
 function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findAll: boolean) {

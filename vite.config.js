@@ -6,7 +6,6 @@ export default defineConfig({
 	server: {
 		hmr: false
 	},
-
 	resolve: {
 		dedupe: [
 			'thing-editor'

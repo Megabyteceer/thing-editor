@@ -53,6 +53,10 @@ button:hover {
 	height: 100%;
 }
 
+.transparent {
+	opacity: 0;
+}
+
 .hidden {
 	display: none;
 }
@@ -286,6 +290,12 @@ textarea:focus-visible {
 	pointer-events: all;
 }
 
+.error-help-button {
+	margin: 0;
+	padding: 3px 10px;
+	position: absolute;
+	right: 10px;
+}
 
 .modal-blackout {
 	position: fixed;
@@ -660,6 +670,7 @@ input[type=checkbox]:checked {
 	position: relative;
 	white-space: nowrap;
 	padding: 2px;
+	margin: 3px 0;
 	cursor: pointer;
 }
 
@@ -706,21 +717,32 @@ input[type=checkbox]:checked {
 	color: #87b8cf;
 }
 
-.assets-item-class .tool-btn {
+.asset-item-tool-buttons button {
 	padding: 0;
 	margin: 0 2px;
 	width: 22px;
 	height: 22px;
 	color: #555555;
 	border-radius: 12px;
-	float: right;
 }
 
-.assets-item-current-scene {
+.asset-item-tool-buttons {
+	position: absolute;
+	right: 5px;
+}
+
+.assets-item-current {
 	background-color: #333633;
 	pointer-events: none;
 	cursor: default;
 }
+
+.assets-item-prefab {
+	border: 1px solid #676d12;
+	border-left: 5px dotted #676d12;
+	padding: 0;
+}
+
 
 .close-window-btn {
 	position: absolute;
@@ -752,6 +774,11 @@ input[type=checkbox]:checked {
 .info-item {
 	padding: 9px;
 	position: relative;
+}
+
+.info-item .selectable-scene-node {
+	display: inline-block;
+	margin-left: 10px;
 }
 
 .clear-item-btn {

@@ -58,6 +58,7 @@ export default class ClassesLoader {
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
 				Class.__className = className;
 				file.asset = Class;
+
 				Class.__sourceFileName = file.fileName;
 				Class.__defaultValues = {};
 

@@ -32,7 +32,7 @@
 			],
 			"isBackground": true,
 			"runOptions": {
-				"runOn": "folderOpen"
+			//	"runOn": "folderOpen"
 			},
 			"presentation": {
 				"echo": true,
@@ -43,6 +43,28 @@
 				"clear": false
 			},
 			"problemMatcher": []
+		}, {
+			"label": "launchElectronIfStopped",
+			"command": "node",
+			"args": ["./thing-editor/electron-main/launch-if-stopped.js"],
+			"isBackground": true,
+			"problemMatcher": [
+				{
+				  "pattern": [
+					{
+					  "regexp": ".",
+					  "file": 1,
+					  "location": 2,
+					  "message": 3
+					}
+				  ],
+				  "background": {
+					"activeOnStart": true,
+					"beginsPattern": ".",
+					"endsPattern": "launched",
+				  }
+				}
+			  ]
 		}
 	]
 }

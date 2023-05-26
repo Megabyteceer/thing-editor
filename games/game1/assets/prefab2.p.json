@@ -1,22 +1,25 @@
 {
 	"c": "Container",
 	"p": {
+		"name": "prefab2",
+		"x": 87,
+		"y": -113,
 		"__description": ""
 	},
 	":": [
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 165,
-				"y": 267,
+				"x": 172,
+				"y": -96,
 				"image": "bunny.png"
 			}
 		},
 		{
 			"c": "Sprite",
 			"p": {
-				"x": 175,
-				"y": 199,
+				"x": -160,
+				"y": -188,
 				"rotation": 0.773,
 				"image": "bunny.png"
 			},
@@ -160,8 +163,8 @@
 		{
 			"c": "Shape",
 			"p": {
-				"x": 267,
-				"y": 160,
+				"x": -68,
+				"y": -227,
 				"__description": "awdawdawdawd",
 				"_shapePoints": [
 					{
@@ -199,8 +202,8 @@
 			"c": "Shape",
 			"p": {
 				"name": "gizmo",
-				"x": 128,
-				"y": 202,
+				"x": -207,
+				"y": -185,
 				"shape": 4,
 				"_shapePoints": [
 					{
@@ -238,8 +241,8 @@
 			"c": "Shape",
 			"p": {
 				"name": "gizmo",
-				"x": 415,
-				"y": 206,
+				"x": 80,
+				"y": -181,
 				"rotation": 1.5707963267948966,
 				"shape": 4,
 				"_shapePoints": [

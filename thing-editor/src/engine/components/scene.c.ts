@@ -16,14 +16,8 @@ export default class Scene extends Container {
 	faderType: string | null = null
 
 	all!: KeyedMap<Container>;
+
 	_onShowCalled: boolean = false;
-
-	__libSceneName!: string;
-
-	@editable({ notSerializable: true, override: true })
-	get name() {
-		return this.__libSceneName;
-	}
 
 	onShow() {
 

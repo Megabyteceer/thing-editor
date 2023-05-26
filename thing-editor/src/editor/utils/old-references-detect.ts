@@ -38,7 +38,7 @@ function checkForOldReferences(o: KeyedObject) {
 function accessToOldReferenceDetector(obj: OutdatedProxy, prop: any): any {
 	if(!Lib.__outdatedReferencesDetectionDisabled) {
 		game.editor.editClassSource(obj.class_);
-		assert(prop === 'thisIsOutdatedReference', "Access to outdated reference \"" + obj.fieldName + "\" in class \"" + obj.class_.name + "\" detected. Please clear reference in onRemove method.", 10041);
+		assert(prop === 'thisIsOutdatedReference', "Access to outdated reference \"" + obj.fieldName + "\" in class \"" + obj.class_.__className + "\" detected. Please clear reference in onRemove method.", 10041);
 	}
 }
 
@@ -50,7 +50,7 @@ interface OutdatedProxy {
 
 const accessDetectionProxiesCache = new Map();
 const accessDetectionProxy = (class_: SourceMappedConstructor, fieldName: string) => {
-	let key = class_.name + ':' + fieldName;
+	let key = class_.__className + ':' + fieldName;
 	if(!accessDetectionProxiesCache.has(key)) {
 		let procObject: OutdatedProxy = {
 			thisIsOutdatedReference: "thisIsOutdatedReference",

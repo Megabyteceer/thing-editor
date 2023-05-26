@@ -20,6 +20,13 @@
 			"//@ts-ignore"
 		],
 		"description": "//@ts-ignore."
+	},"editor": {
+		"scope": "typescript",
+		"prefix": "editor",
+		"body": [
+			"game.editor"
+		],
+		"description": "game.editor"
 	}
 }
 

@@ -9,14 +9,34 @@
 	"cSpell.diagnosticLevel": "Hint",
 	"editor.formatOnType": false,
 	"editor.formatOnPaste": false,
-	"blockshighlighter.blocks": [{
+	"blockshighlighter.blocks": [
+		{
+			"fileType": "\\.(js|ts)$",
+			"begin": "^\\s*///\\s*#if EDITOR\\s*$",
+			"end": "^\\s*///\\s*#endif\\s*$",
+			"decorationRenderOptions": {
+			  "isWholeLine": true,
+			  "backgroundColor": "rgba(100,100,255,0.05)"
+			}
+		  },
+		  {
+			"fileType": "\\.(js|ts)$",
+			"begin": "^\\s*///\\s*#if DEBUG\\s*$",
+			"end": "^\\s*///\\s*#endif\\s*$",
+			"decorationRenderOptions": {
+			  "isWholeLine": true,
+			  "backgroundColor": "rgba(100,255,100,0.05)"
+			}
+		  },
+		{
 		"fileType": "\\.(js|ts)$",
 		"begin": "^\\s*@editable\\(",
 		"end": "^\\s*@editable\\(",
 		"decorationRenderOptions": {
 			"isWholeLine": true,
-			"opacity": "0.5",
-			//"backgroundColor": "rgba(255,255,255,0.05)"
+			"opacity": "0.5"
 		}
-	}]
+	}
+],
+"bookmarks.keepBookmarksOnLineDelete": false
 }

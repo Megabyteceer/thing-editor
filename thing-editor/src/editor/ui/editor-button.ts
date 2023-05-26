@@ -107,7 +107,9 @@ class EditorButton extends Component<EditorButtonProps> {
 
 	onMouseDown(ev: PointerEvent) {
 		if(ev.button === 2) {
-			game.editor.ui.modal.showModal(this.props.onClick.name, "Button's Handler:");
+			//             ↓
+			this.props.onClick; // hover "onClick" and Ctrl+Click [FunctionLocation] to go to handler declaration
+			debugger; //   ↑
 		} else {
 			if(this.props.disabled) return;
 			//TODO:

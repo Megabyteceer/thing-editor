@@ -1,5 +1,6 @@
+import { Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
-import type { KeyedObject, SourceMappedConstructor, ThingEditorServer } from "thing-editor/src/editor/env";
+import type { KeyedObject, SerializedObject, SourceMappedConstructor, ThingEditorServer } from "thing-editor/src/editor/env";
 
 interface FileDesc {
 	/** file name*/
@@ -7,15 +8,21 @@ interface FileDesc {
 	assetName: string,
 	assetType: AssetType,
 	/** modification time*/
-	mTime: number
+	mTime: number,
+
+	asset: SourceMappedConstructor | SerializedObject | Texture
 
 };
 
 interface FileDescClass extends FileDesc {
 	asset: SourceMappedConstructor;
-
 }
-
+interface FileDescPrefab extends FileDesc {
+	asset: SerializedObject;
+}
+interface FileDescScene extends FileDesc {
+	asset: SerializedObject;
+}
 
 enum AssetType {
 	IMAGE = "IMAGE",
@@ -177,5 +184,5 @@ export default class fs {
 }
 
 export { AssetType, AllAssetsTypes };
-export type { FileDesc, FileDescClass };
+export type { FileDesc, FileDescClass, FileDescPrefab, FileDescScene };
 

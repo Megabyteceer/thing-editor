@@ -117,7 +117,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		this.showModal(message, errorCode ?
 			R.span(null, R.icon('info'), errorCode, ' ', title, R.btn('?', () => {
 				Help.openErrorCodeHelp(errorCode);
-			}, 'Open docs for this message (F1)', 'error-help-button', 112))
+			}, 'Open description for this message (F1)', 'error-help-button', 112))
 			: title
 		);
 	}
@@ -213,7 +213,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		}*/
 
 	showError(message: ComponentChild, errorCode = 99999, title = 'Error!', noEasyClose = false, toBottom = false): Promise<any> {
-
+		debugger;
 		if(game.editor.buildProjectAndExit) {
 			if(typeof message === 'object') {
 				try {
@@ -235,7 +235,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 			}
 			return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), errorCode, ' ', title, R.btn('?', () => {
 				Help.openErrorCodeHelp(errorCode);
-			}, 'Open docs for this error (F1)', 'error-help-button', 112)), noEasyClose, toBottom);
+			}, 'Open description for this error (F1)', 'error-help-button', 112)), noEasyClose, toBottom);
 		}
 	}
 

@@ -46,9 +46,13 @@ export default class Lib {
 		}
 		let isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, "No scene with name '" + name + "'", 10046);
-
+		/// #if EDITOR
+		if(name.indexOf(game.editor.backupPrefix) !== 0) {
+			scenes[name].p.name = name;
+		}
+		/// #endif
 		let s: Scene = _loadObjectFromData(scenes[name]) as Scene;
-		s.__libSceneName = name;
+
 		if(s.isStatic
 			/// #if EDITOR
 			&& !game.__EDITOR_mode
@@ -193,9 +197,9 @@ export default class Lib {
 		let replaceClassName: string | undefined;
 		if(!classes.hasOwnProperty(src.c)) {
 			replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass) as any as SourceMappedConstructor;
-			replaceClassName = replaceClass.name;
+			replaceClassName = replaceClass.__className;
 			setTimeout(() => { // wait for id assign
-				game.editor.ui.status.error("Unknown class " + src.c + " was replaced with class " + replaceClassName + ".", 32012, ret);
+				game.editor.ui.status.error("Unknown class " + src.c + " was temporary replaced with class " + replaceClassName + ".", 32012, ret);
 			}, 1);
 		}
 		if(!replaceClass) {
@@ -204,7 +208,7 @@ export default class Lib {
 		/// #endif
 
 
-		//TODO: prefabs references via src.p:
+		//TODO: prefabs references via "p" field in SerializedObject
 
 		const constrictor: SourceMappedConstructor =
 			/// #if EDITOR
@@ -291,7 +295,7 @@ export default class Lib {
 			&& !game.__EDITOR_mode
 			/// #endif
 		) {
-			let r = Pool.create(RemoveHolder);
+			let r = Pool.create(RemoveHolder as any as SourceMappedConstructor);
 			/// #if EDITOR
 			constructRecursive(r);
 			/// #endif
@@ -337,6 +341,25 @@ export default class Lib {
 		}
 	}
 
+	static _loadClassInstanceById(id: string) {
+		const Class = classes[id];
+		let ret = Pool.create(Class);
+		Object.assign(ret, Class.__defaultValues);
+
+		/// #if EDITOR
+		if(ret instanceof Scene) {
+			//@ts-ignore
+			ret.all = '"scene.all" is not initialized yet.';
+		}
+		if(!game.__EDITOR_mode) {
+			/// #endif
+			constructRecursive(ret);
+			/// #if EDITOR
+		}
+		/// #endif
+		return ret;
+	}
+
 	/// #if EDITOR
 
 	static __serializeObject(o: Container) {
@@ -373,7 +396,7 @@ export default class Lib {
 			}
 
 			ret = {
-				c: (o.constructor as SourceMappedConstructor).name as string,
+				c: (o.constructor as SourceMappedConstructor).__className as string,
 				p: props
 			};
 
@@ -425,9 +448,32 @@ export default class Lib {
 		game.editor.disableFieldsCache = true;
 		let sceneData = Lib.__serializeObject(scene);
 		game.editor.disableFieldsCache = false;
-		scene.__libSceneName = name;
+		scene.name = name;
 		scenes[name] = sceneData;
 		return fs.saveAsset(name, AssetType.SCENE, sceneData);
+	}
+
+	static __savePrefab(object: Container, name: string) {
+
+		assert(game.__EDITOR_mode, "attempt to save prefab in running mode: " + name);
+		assert(typeof name === 'string', "Prefab name expected.");
+		assert(!(object instanceof Scene), "attempt to save Scene or not DisplayObject as prefab.");
+		let tmpName = object.name;
+		if(name.indexOf(game.editor.backupPrefix) < 0) {
+			object.name = name;
+		}
+		game.editor.disableFieldsCache = true;
+		let prefabData = Lib.__serializeObject(object);
+		game.editor.disableFieldsCache = false;
+		prefabs[name] = prefabData;
+		fs.saveAsset(name, AssetType.PREFAB, prefabData);
+		object.name = tmpName;
+	}
+
+	static __callInitIfGameRuns(node: Container) {
+		if(!game.__EDITOR_mode) {
+			__callInitIfNotCalled(node);
+		}
 	}
 
 	static __texturesList: SelectEditorItem[] = [];
@@ -494,6 +540,13 @@ Lib.scenes = scenes;
 Lib.prefabs = prefabs;
 
 /// #if DEBUG
+function __callInitIfNotCalled(node: Container) {
+	assert(!game.__EDITOR_mode, "Attempt to init object in editor mode.");
+	if(!node._thing_initialized) {
+		constructRecursive(node);
+	}
+}
+
 const processAfterDeserialization = (o: Container) => {
 	if(o.__afterDeserialization) {
 		o.__afterDeserialization();

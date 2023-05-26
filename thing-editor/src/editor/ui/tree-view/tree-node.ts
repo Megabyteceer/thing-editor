@@ -2,6 +2,8 @@ import { Container } from "pixi.js";
 import { ClassAttributes, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
+import showContextMenu from "thing-editor/src/editor/ui/context-menu";
+import { editorUtils } from "thing-editor/src/editor/utils/delete.selected";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -29,10 +31,13 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 	}
 
 	onMouseDown(ev: PointerEvent) { // == select nodes
-		if(!this.props.node.parent) {
+		sp(ev);
+
+		let state = this.props.node.__nodeExtendData;
+		if(ev.buttons !== 1 && state.isSelected) {
 			return;
 		}
-		let state = this.props.node.__nodeExtendData;
+
 		if((isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
 			state.childrenExpanded = !state.childrenExpanded;
 			if(!state.childrenExpanded) {
@@ -41,7 +46,6 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 				expandChildrenRecursively(this.props.node);
 			}
 			this.refresh();
-			sp(ev);
 			return;
 		}
 
@@ -68,7 +72,6 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 		if(document.activeElement) {
 			(document.activeElement as HTMLElement).blur();
 		}
-		sp(ev);
 	}
 
 	static clearLastClicked() {
@@ -110,12 +113,30 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 					game.editor.editClassSource(node);
 				}
 			},
+			onContextMenu: (ev: PointerEvent) => {
+				onContextMenu(node, ev);
+			},
 			className,
 			style,
 			onMouseDown: this.onMouseDown
 		}, R.sceneNode(node), caret), children);
 	}
 }
+
+
+const onContextMenu = (node: Container, ev: PointerEvent) => {
+	if(node.__nodeExtendData.isSelected) {
+		sp(ev);
+	}
+
+	showContextMenu([
+		{
+			name: "Delete selected",
+			onClick: editorUtils.deleteSelected,
+			disabled: (game.editor.selection.length === 1) && (game.editor.selection[0] === game.currentContainer)
+		}
+	], ev)
+};
 
 function nodeHasChildren(node: Container) {
 	return node.children.length > 0 && !node.__hideChildren;

@@ -43,8 +43,6 @@ interface NodeExtendData {
 
 	rotatorLocked?: boolean;//TODO
 
-	isPreviewObject?: boolean;//TODO
-
 	hidePropsEditor?: {
 		title: string,
 		visibleFields: KeyedMap<true>
@@ -68,12 +66,18 @@ interface Constructor {
 }
 
 interface SourceMappedConstructor extends Constructor {
+	/**
+	 * @deprecated name can be wrong for PIXI objects use __className instead
+	 */
+	name: string
 	__sourceFileName?: string;
 	__defaultValues: KeyedObject;
 	__EDITOR_icon?: string;
 	__editableProps: EditablePropertyDesc[];
 	__isScene: boolean;
+	__canAcceptChild: (Class: SourceMappedConstructor) => boolean; //TODO
 	__beforeChangeToThisType?: (o: Container) => void;
+
 	/** added because pixi exports classes with wrong names */
 	__className: string;
 }

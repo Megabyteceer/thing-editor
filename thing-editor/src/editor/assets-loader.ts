@@ -1,5 +1,5 @@
 import { Texture } from "pixi.js";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDescPrefab, FileDescScene } from "thing-editor/src/editor/fs";
 import Lib from "thing-editor/src/engine/lib";
 
 export default class AssetsLoader {
@@ -10,9 +10,17 @@ export default class AssetsLoader {
 		Lib.addTexture('EMPTY', Texture.EMPTY);
 		Lib.addTexture('WHITE', Texture.WHITE);
 
-		let scenesFiles = fs.getAssetsList(AssetType.SCENE);
+		let scenesFiles = fs.getAssetsList(AssetType.SCENE) as FileDescScene[];
 		for(const file of scenesFiles) {
-			Lib.scenes[file.assetName.replace(/\.s\.json$/, '')] = fs.readJSONFile(file.fileName);
+			file.asset = fs.readJSONFile(file.fileName)
+			Lib.scenes[file.assetName] = file.asset;
+
+		}
+
+		let prefabsFiles = fs.getAssetsList(AssetType.PREFAB) as FileDescPrefab[];
+		for(const file of prefabsFiles) {
+			(file).asset = fs.readJSONFile(file.fileName)
+			Lib.prefabs[file.assetName] = file.asset;
 		}
 
 		let imagesFiles = fs.getAssetsList(AssetType.IMAGE);

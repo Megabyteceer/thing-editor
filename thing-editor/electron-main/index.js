@@ -52,11 +52,11 @@ const createWindow = () => {
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
 	mainWindow.setMenu(null);
-	mainWindow.addListener('close', (e) => {
+	/*mainWindow.addListener('close', (e) => {
 		mainWindow.reload();
 		e.preventDefault();
 	});
-
+*/
 	mainWindow.on('focus', () => {
 		globalShortcut.register('F5', () => {
 			mainWindow.reload();

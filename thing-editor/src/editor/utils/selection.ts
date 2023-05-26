@@ -2,10 +2,10 @@ import assert from "thing-editor/src/engine/debug/assert";
 
 import { OutlineFilter } from '@pixi/filter-outline';
 
-import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
-import game from "thing-editor/src/engine/game";
 import { Container } from "pixi.js";
 import TreeNode from "thing-editor/src/editor/ui/tree-view/tree-node";
+import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
+import game from "thing-editor/src/engine/game";
 
 const selectionFilter = new OutlineFilter(2, 0xffff00);
 selectionFilter.padding = 2;
@@ -79,7 +79,7 @@ export default class Selection extends Array<Container> {
 					});
 				}
 			}
-			game.editor.ui.modal.showInfo('Can not select object, because it is hidden by parent ' + hidingParent.constructor.name + '; ' + o.___info, 'Can not select object', 30015);
+			game.editor.ui.modal.showInfo('Can not select object, because it is hidden by parent ' + hidingParent.constructor.__className + '; ' + o.___info, 'Can not select object', 30015);
 			return;
 		}*/
 		assert(!o.__nodeExtendData.isSelected, "Node is selected already.");
@@ -185,7 +185,7 @@ const selectNodeByPath = (path: SelectionPath) => {
 	}
 };
 
-export type { SelectionData }
+export type { SelectionData };
 
 
 //-------- sorting selection --------------------------------

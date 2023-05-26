@@ -19,8 +19,12 @@
     "pixi.js": "^7.2.4",
     "pixi.js-legacy": "^7.2.4",
     "preact": "^10.13.2",
+    "ps-list": "^8.1.1",
     "typed-emitter": "^2.1.0",
     "typescript": "^5.0.2",
     "vite": "^4.3.0"
+  },
+  "dependencies": {
+    "node-hide-console-window": "^2.1.1"
   }
 }

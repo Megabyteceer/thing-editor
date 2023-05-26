@@ -11,6 +11,10 @@ interface ViewportProps extends ClassAttributes<Viewport> {
 
 export default class Viewport extends ComponentDebounced<ViewportProps> {
 
+	setPrefabMode(_name: string | null = null) {
+		//TODO
+	}
+
 	stopExecution() {
 		//TODO:
 	}
@@ -64,7 +68,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps> {
 
 		return R.div({ className },
 			R.div(null,
-				R.btn('reload classes', () => { ClassesLoader.reloadClasses(); })
+				R.btn('reload classes', ClassesLoader.reloadClasses)
 			),
 			R.div({
 				id: 'viewport-root',

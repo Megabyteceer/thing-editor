@@ -139,8 +139,8 @@ const _findByTypeInner = (o: Container) => {
 };
 
 /// #if DEBUG
-
-Container.prototype.getChildByName = function (name, debugThis) {
+//@ts-ignore
+Container.prototype.getChildByName = function (name: string, debugThis: Container) {
 	let ret;
 	for(let c of this.children) {
 		if(c.name === name) {
@@ -152,7 +152,7 @@ Container.prototype.getChildByName = function (name, debugThis) {
 				/// #endif
 				alert(errorTxt);
 				//*/
-				return undefined;
+				return null;
 			}
 			ret = c;
 		}

@@ -5,6 +5,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import assetItemRendererClass from "thing-editor/src/editor/ui/assets-view/asset-view-class";
 import assetItemRendererImage from "thing-editor/src/editor/ui/assets-view/asset-view-image";
 import assetItemRendererScene from "thing-editor/src/editor/ui/assets-view/asset-view-scene";
+import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
 import Window, { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
 import WindowMenu from "thing-editor/src/editor/ui/window-menu";
@@ -20,10 +21,8 @@ assetsItemsRenderers.set(AssetType.IMAGE, assetItemRendererImage);
 assetsItemsRenderers.set(AssetType.SOUND, (file: FileDesc) => {
 	return R.div({ className: 'assets-item assets-item-sound', key: file.assetName }, assetTypesIcons.get(AssetType.SOUND), file.assetName);
 });
-assetsItemsRenderers.set(AssetType.SCENE, assetItemRendererScene);
-assetsItemsRenderers.set(AssetType.PREFAB, (file: FileDesc) => {
-	return R.div({ className: 'assets-item assets-item-prefab', key: file.assetName }, assetTypesIcons.get(AssetType.PREFAB), file.assetName);
-});
+assetsItemsRenderers.set(AssetType.SCENE, assetItemRendererScene as (file: FileDesc) => ComponentChild);
+assetsItemsRenderers.set(AssetType.PREFAB, assetItemRendererPrefab as (file: FileDesc) => ComponentChild);
 (assetsItemsRenderers as Map<AssetType, (file: FileDescClass) => ComponentChild>).set(AssetType.CLASS, assetItemRendererClass);
 
 const assetTypesIcons: Map<AssetType, ComponentChild> = new Map();

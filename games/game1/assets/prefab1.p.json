@@ -1,0 +1,9 @@
+{
+	"c": "Bunny",
+	"p": {
+		"name": "prefab1",
+		"x": 703,
+		"y": 119,
+		"image": "bunny.png"
+	}
+}

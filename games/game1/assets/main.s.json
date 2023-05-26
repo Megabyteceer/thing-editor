@@ -1,6 +1,7 @@
 {
 	"c": "Scene",
 	"p": {
+		"name": "main",
 		"__description": ""
 	},
 	":": [
@@ -272,6 +273,14 @@
 						"y": -1
 					}
 				]
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 588,
+				"y": 164,
+				"image": "bunny.png"
 			}
 		}
 	]

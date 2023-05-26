@@ -93,8 +93,8 @@ Sprite.prototype.__beforeDestroy = function () {
 (Mesh.prototype.destroy as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 
 Sprite.prototype.__EDITOR_onCreate = function (isWrapping) {
-	if(!isWrapping && game.editor.projectDesc.icon.startsWith('img/')) {
-		this.image = game.editor.projectDesc.icon.replace('img/', '');
+	if(!isWrapping && game.editor.projectDesc.icon.startsWith('assets/')) {
+		this.image = game.editor.projectDesc.icon.replace('assets/', '');
 	}
 };
 Mesh.prototype.__EDITOR_onCreate = Sprite.prototype.__EDITOR_onCreate;

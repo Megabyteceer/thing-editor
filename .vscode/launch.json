@@ -21,7 +21,7 @@
 			],
 			"urlFilter": "http://127.0.0.1:5173/*",
 			"outFiles": [],
-			//"preLaunchTask": "launch electron",
+			"preLaunchTask": "launchElectronIfStopped",
 			/*"trace": {
 				"logFile": "trace.txt"
 			}*/
@@ -67,6 +67,15 @@
 			"presentation": {
 				"hidden": true
 			}
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "runner",
+			"port": 9229,
+			"cwd": "${workspaceFolder}",
+			"args": ["./thing-editor/electron-main/launch-if-stopped.js"]
+			
 		}
 	],
 	"compounds": [{

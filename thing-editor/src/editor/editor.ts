@@ -24,8 +24,20 @@ import ClassesLoader from "./classes-loader";
 import { Container, Point, Texture } from "pixi.js";
 import initializeOverlay from "thing-editor/src/editor/ui/editor-overlay";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
+import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
 import Pool from "thing-editor/src/engine/utils/pool";
+
+function addTo(parent: Container, child: Container, doNotSelect = false) {
+	parent.addChild(child);
+	Lib.__invalidateSerializationCache(child);
+	if(!doNotSelect) {
+		editor.ui.sceneTree.selectInTree(child);
+		editor.sceneModified(true);
+	}
+	Lib.__callInitIfGameRuns(child);
+}
+
 
 type EditorEvents = {
 	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
@@ -34,7 +46,7 @@ type EditorEvents = {
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
-export default class Editor {
+class Editor {
 
 	currentProjectDir = '';
 	editorArguments: KeyedMap<true | string> = {};
@@ -175,7 +187,7 @@ export default class Editor {
 	}
 
 	chooseProject(noClose = false) {
-		ProjectsList.chooseProject(noClose).then((dir) => {
+		ProjectsList.chooseProject(noClose).then((dir: string) => {
 			this.settings.setItem('last-opened-project', dir);
 			this.__projectReloading = true;
 			window.document.location.reload();
@@ -293,6 +305,29 @@ export default class Editor {
 			if(game.currentScene) {
 				game.settings.setItem('__EDITOR_scene_selection' + this.currentSceneName, this.selection.saveSelection());
 			}
+		}
+		return true;
+	}
+
+	attachToSelected(o: Container, doNotSelect = false) {
+		if(this.selection.length > 0) {
+			addTo(this.selection[0], o, doNotSelect);
+		} else {
+			this.addToScene(o, doNotSelect);
+		}
+	}
+
+	addToScene(o: Container, doNotSelect = false) {
+		addTo(game.currentContainer, o, doNotSelect);
+	}
+
+	isCanBeAddedAsChild(Class: SourceMappedConstructor): boolean {
+		if(editor.selection.length !== 1) {
+			return false;
+		}
+		let o = editor.selection[0];
+		if((o.constructor as SourceMappedConstructor).__canAcceptChild) {
+			return (o.constructor as SourceMappedConstructor).__canAcceptChild(Class);
 		}
 		return true;
 	}
@@ -532,10 +567,15 @@ export default class Editor {
 		fetch(url);
 	}
 
-	editClassSource(c: SourceMappedConstructor | Container) {
+	editClassSource(c: SourceMappedConstructor | Container, className: string = '') {
 		if(c instanceof Container) {
 			c = c.constructor as SourceMappedConstructor;
 		}
+		if(!c || (c as any) === __UnknownClass || (c as any) === __UnknownClassScene) {
+			game.editor.ui.modal.showError("Object has unknown type '" + className + "', and has no source code. Probably source code was removed.")
+			return;
+		}
+
 		this.editSource(c.__sourceFileName as string);
 	}
 
@@ -554,4 +594,8 @@ export default class Editor {
 	}
 }
 
-new Editor();
+const editor = new Editor();
+
+type __EditorType = typeof editor;
+
+export type { __EditorType }; // hide Editor from intellisense

@@ -101,13 +101,13 @@ export default class TreeView extends ComponentDebounced<TreeViewProps, TreeView
 				return;
 			}
 
-			if(o.constructor.name.toLowerCase().indexOf(this.state.search) >= 0) return true;
+			if((o.constructor as SourceMappedConstructor).__className.toLowerCase().indexOf(this.state.search) >= 0) return true;
 
 			let props = (o.constructor as SourceMappedConstructor).__editableProps;
 			for(let p of props) {
 				if(p.type === 'timeline') {
-					let timeline = (o as KeyedObject)[p.name];
-					/*if(timeline) { TODO timeline search
+					/*let timeline = (o as KeyedObject)[p.name]; //TODO
+					if(timeline) { TODO timeline search
 						for(let field of timeline.f) {
 							for(let k of field.t) {
 								if(k.a && (k.a.toLowerCase().indexOf(this.state.search) >= 0)) {
