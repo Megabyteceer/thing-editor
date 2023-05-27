@@ -18,7 +18,7 @@ type EditablePropertyType = 'data-path' |
 	'prefab' |
 	'number';
 
-interface EditablePropertyDescRaw {
+interface EditablePropertyDescRaw<T extends Container> {
 	min?: number,
 	max?: number,
 	step?: number,
@@ -26,11 +26,11 @@ interface EditablePropertyDescRaw {
 	name?: string,
 	basis?: number,
 	default?: any,
-	visible?: (o: Container) => boolean,
+	visible?: (o: T) => boolean,
 	helpUrl?: string,
 	/** field changes pass vale through this function  */
 	parser?: (val: any) => any;
-	disabled?: (o: Container) => boolean;
+	disabled?: (o: T) => boolean;
 	beforeEdited?: (val: any) => void;
 	onBlur?: () => void;
 
@@ -49,7 +49,7 @@ interface EditablePropertyDescRaw {
 	filterName?: string;
 }
 
-interface EditablePropertyDesc extends EditablePropertyDescRaw {
+interface EditablePropertyDesc<T extends Container = Container> extends EditablePropertyDescRaw<T> {
 	class: SourceMappedConstructor,
 	type: EditablePropertyType,
 	default: any,
@@ -64,15 +64,15 @@ interface EditablePropertyDesc extends EditablePropertyDescRaw {
 }
 
 /** editable property decorator */
-function editable(editablePropertyDesc?: EditablePropertyDescRaw) {
-	return function (target: any, propertyName: string, _descriptor?: PropertyDescriptor) {
+function editable<T extends Container>(editablePropertyDesc?: EditablePropertyDescRaw<T>) {
+	return function (target: T, propertyName: string, _descriptor?: PropertyDescriptor<T>) {
 		editableInner(target, propertyName, editablePropertyDesc);
 	}
 }
 
 /* Allows to define editable properties to the classes we has no access to source code.
 To define editable properties for your own classes, please use '@editable()' decorator instead */
-function _editableEmbed(target: Constructor | Constructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw) {
+function _editableEmbed<T extends Container>(target: Constructor | Constructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 	if(Array.isArray(target)) {
 		for(let t of target) {
 			editableInner(t.prototype, propertyName, editablePropertyDesc);
@@ -82,7 +82,7 @@ function _editableEmbed(target: Constructor | Constructor[], propertyName: strin
 	}
 }
 
-function editableInner(target: Container, name: string, editablePropertyDesc?: EditablePropertyDescRaw) {
+function editableInner<T extends Container>(target: T, name: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 
 	if(!target.constructor.hasOwnProperty('__editableProps')) {
 		(target.constructor as SourceMappedConstructor).__editableProps = [];
