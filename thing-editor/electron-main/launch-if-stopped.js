@@ -9,14 +9,32 @@ import('ps-list').then(async (psList) => {
 	const ps = await psList.default();
 
 	if(!ps.some(p => p.name === processName)) {
-		let command = './node_modules/.bin/electron';
+
+		let command = path.join(process.cwd(), './node_modules/.bin/electron');
 		if(isWin) {
-			command += '.cmd';
+			command = path.join(process.cwd(), './node_modules/electron/dist/electron.exe');
 		}
-		child_process.exec(path.join(process.cwd(), command) + " --remote-debugging-port=9223 ./thing-editor/electron-main",
+
+		let c = child_process.spawn(command,
+			[
+				"--remote-debugging-port=9223",
+				"./thing-editor/electron-main"
+			],
 			{
+				detached: true,
+				windowsHide: false,
 				cwd: process.cwd()
-			});
+			}
+		);
+
+		c.on('error', (er) => {
+			debugger;
+		});
+
+		setInterval(() => {
+			process.exit(0);
+		}, 100);
 	}
-	console.log('electron launched.');
+	console.log('electron\nlaunched');
+	process.exit(0);
 });

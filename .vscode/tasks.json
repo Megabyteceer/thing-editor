@@ -48,6 +48,7 @@
 			"command": "node",
 			"args": ["./thing-editor/electron-main/launch-if-stopped.js"],
 			"isBackground": true,
+			"type": "process",
 			"problemMatcher": [
 				{
 				  "pattern": [
@@ -60,7 +61,7 @@
 				  ],
 				  "background": {
 					"activeOnStart": true,
-					"beginsPattern": ".",
+					"beginsPattern": "electron",
 					"endsPattern": "launched",
 				  }
 				}
