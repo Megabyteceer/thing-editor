@@ -216,14 +216,14 @@ Object.defineProperties(Container.prototype, {
 		get: function () {
 			return this.transform.scale.x;
 		},
-		set: function (val) {
+		set: function (val: number) {
 			this.transform.scale.x = val;
 		}, configurable: true
 	}, 'scale.y': {
 		get: function () {
 			return this.transform.scale.y;
 		},
-		set: function (val) {
+		set: function (val: number) {
 			this.transform.scale.y = val;
 		}, configurable: true
 	},
@@ -231,14 +231,14 @@ Object.defineProperties(Container.prototype, {
 		get: function () {
 			return this.transform.skew.x;
 		},
-		set: function (val) {
+		set: function (val: number) {
 			this.transform.skew.x = val;
 		}, configurable: true
 	}, 'skew.y': {
 		get: function () {
 			return this.transform.skew.y;
 		},
-		set: function (val) {
+		set: function (val: number) {
 			this.transform.skew.y = val;
 		}, configurable: true
 	},
@@ -246,14 +246,14 @@ Object.defineProperties(Container.prototype, {
 		get: function () {
 			return this.transform.pivot.x;
 		},
-		set: function (val) {
+		set: function (val: number) {
 			this.transform.pivot.x = val;
 		}, configurable: true
 	}, 'pivot.y': {
 		get: function () {
 			return this.transform.pivot.y;
 		},
-		set: function (val) {
+		set: function (val: number) {
 			this.transform.pivot.y = val;
 		}, configurable: true
 	}

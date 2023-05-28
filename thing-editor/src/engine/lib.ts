@@ -1,5 +1,5 @@
 
-import { Classes, KeyedMap, KeyedObject, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { Classes, KeyedMap, KeyedObject, NodeExtendData, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
 import { Container, Texture } from "pixi.js";
 import Scene from "thing-editor/src/engine/components/scene.c";
@@ -15,7 +15,6 @@ import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
 import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
-import resetNodeExtendData from "thing-editor/src/editor/utils/reset-node-extend-data";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 
 let classes: Classes;
@@ -316,8 +315,8 @@ export default class Lib {
 		o.interactiveChildren = true;
 
 		/// #if EDITOR
-		delete o.___pathBreakpoint;
-		resetNodeExtendData(o);
+		delete o.___pathBreakpoint; //TODO move to __nodeExtendData
+		o.__nodeExtendData = EMPTY_NODE_EXTEND_DATA;
 		if(needRefreshSelection) {
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
@@ -361,6 +360,17 @@ export default class Lib {
 	}
 
 	/// #if EDITOR
+
+	static __clearStaticScenes() {
+		for(let sceneName in staticScenes) {
+			let s = staticScenes[sceneName];
+			let scenesStack = game.__getScenesStack();
+			if(!s.parent && scenesStack.indexOf(s) < 0 && scenesStack.indexOf(s.name as string) < 0) {
+				Lib.destroyObjectAndChildren(s);
+			}
+		}
+		staticScenes = {};
+	}
 
 	static __serializeObject(o: Container) {
 
@@ -523,7 +533,7 @@ let constructRecursive = (o: Container) => {
 	checkForOldReferences(o);
 	if(!EDITOR_FLAGS._root_initCalled) {
 		game.editor.editClassSource(o);
-		assert(false, "Class " + (o.constructor as SourceMappedConstructor).name + " overrides init method without super.init() called.", 10042);
+		assert(false, "Class " + (o.constructor as SourceMappedConstructor).__className + " overrides init method without super.init() called.", 10042);
 	}
 
 	extData.constructorCalled = true;
@@ -538,6 +548,11 @@ let constructRecursive = (o: Container) => {
 
 Lib.scenes = scenes;
 Lib.prefabs = prefabs;
+
+/// #if EDITOR
+const EMPTY_NODE_EXTEND_DATA: NodeExtendData = { objectDeleted: "Container was deleted and it`s extend data replaced with temporary object." };
+Object.freeze(EMPTY_NODE_EXTEND_DATA);
+/// #endif
 
 /// #if DEBUG
 function __callInitIfNotCalled(node: Container) {

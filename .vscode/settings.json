@@ -15,28 +15,30 @@
 			"begin": "^\\s*///\\s*#if EDITOR\\s*$",
 			"end": "^\\s*///\\s*#endif\\s*$",
 			"decorationRenderOptions": {
-			  "isWholeLine": true,
-			  "backgroundColor": "rgba(100,100,255,0.05)"
+				"isWholeLine": true,
+				"backgroundColor": "rgba(100,100,255,0.1)"
 			}
-		  },
-		  {
+		},
+		{
 			"fileType": "\\.(js|ts)$",
 			"begin": "^\\s*///\\s*#if DEBUG\\s*$",
 			"end": "^\\s*///\\s*#endif\\s*$",
 			"decorationRenderOptions": {
-			  "isWholeLine": true,
-			  "backgroundColor": "rgba(100,255,100,0.05)"
+				"isWholeLine": true,
+				"backgroundColor": "rgba(100,255,100,0.1)"
 			}
-		  },
+		},
 		{
-		"fileType": "\\.(js|ts)$",
-		"begin": "^\\s*@editable\\(",
-		"end": "^\\s*@editable\\(",
-		"decorationRenderOptions": {
-			"isWholeLine": true,
-			"opacity": "0.5"
+			"fileType": "\\.(js|ts)$",
+			"begin": "^\\s*@editable\\(",
+			"end": "^\\s*@editable\\(",
+			"decorationRenderOptions": {
+				"isWholeLine": true,
+				"opacity": "0.5"
+			}
 		}
-	}
-],
-"bookmarks.keepBookmarksOnLineDelete": false
+	],
+	"bookmarks.keepBookmarksOnLineDelete": false,
+	"javascript.preferences.importModuleSpecifierEnding": "index",
+	"typescript.preferences.importModuleSpecifierEnding": "index"
 }

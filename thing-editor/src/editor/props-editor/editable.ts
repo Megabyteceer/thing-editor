@@ -58,6 +58,7 @@ interface EditablePropertyDesc<T extends Container = Container> extends Editable
 	__nullCheckingIsApplied?: true,
 	renderer?: any;
 	isTranslatableKey?: boolean;
+	onClick?: (ev: any) => void;
 
 	/** check if field is image select dropdown*/
 	__isImage?: boolean;

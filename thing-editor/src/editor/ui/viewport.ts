@@ -1,26 +1,126 @@
-import { ClassAttributes, ComponentChild } from "preact";
+import { ClassAttributes, ComponentChild, h } from "preact";
 import ClassesLoader from "thing-editor/src/editor/classes-loader";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import "thing-editor/src/editor/ui/editor-overlay";
+import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
+import Keys from "thing-editor/src/engine/utils/keys";
+import Pool from "thing-editor/src/engine/utils/pool";
+
+const PLAY_ICON = R.icon('play');
+const STOP_ICON = R.icon('stop');
+const PAUSE_ICON = R.icon('pause');
+
+let playTogglingTime = false;;
+
+let prefabTitleProps = { className: 'prefabs-mode-title' };
+let prefabLabelProps = {
+	className: 'selectable-text',
+	title: 'Ctrl+click to copy prefab`s name',
+	onMouseDown: copyTextByClick
+};
+
+const SPEED_SELECT = [0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
+	return { value, name: '×' + value };
+});
+
+const onBgColorChange = (ev: InputEvent) => {
+	PrefabEditor.BGColor = parseInt((ev.target as HTMLInputElement).value.replace('#', ''), 16);
+}
 
 interface ViewportProps extends ClassAttributes<Viewport> {
 
 }
 
-export default class Viewport extends ComponentDebounced<ViewportProps> {
+interface ViewportStats {
+	prefabMode: string | null;
+}
 
-	setPrefabMode(_name: string | null = null) {
-		//TODO
+export default class Viewport extends ComponentDebounced<ViewportProps, ViewportStats> {
+
+	constructor(props: ViewportProps) {
+		super(props);
+		this.onTogglePlay = this.onTogglePlay.bind(this);
+		this.onPauseResumeClick = this.onPauseResumeClick.bind(this);
+		this.stopExecution = this.stopExecution.bind(this);
+		this.onOneStepClick = this.onOneStepClick.bind(this);
+	}
+
+	onTogglePlay() {
+		if(!playTogglingTime && !game.editor.__FatalError) {
+			// TODO _stopTests();
+			Keys.resetAll();
+
+			playTogglingTime = true;
+
+			this.resetZoom();
+			game.__doOneStep = false;
+			game.__paused = false;
+			let play = game.__EDITOR_mode;
+			game.__time = 0;
+
+			Pool.__resetIdCounter();
+			if(play) { // launch game
+				game.data = {};
+				//TODO game.editor.overlay.exitIsolation();
+				game.editor.ui.status.clear();
+				game.editor.history.saveHistoryNow();
+				game.editor.saveBackup();
+				game.__clearStage();
+				// TODO Spine.clearPool();
+				//TODO Sound.__resetSounds();
+				game.__EDITOR_mode = false;
+				game._setCurrentScene(null);
+				game.showScene(game.editor.currentSceneName);
+				game.stage.interactiveChildren = true;
+			} else { //stop game
+				game.__EDITOR_mode = true;
+				game.__clearStage();
+				// TODO Sound.__resetSounds();
+				game.editor.restoreBackup();
+
+				game.stage.interactiveChildren = false;
+			}
+
+			this.forceUpdate();
+			game.editor.history.updateUi();
+
+			//TODO возможно что и так все ок будет. game.pixiApp.ticker._requestIfNeeded(); //restore broken ticker if necessary.
+
+			playTogglingTime = false;
+			game.onResize();
+		}
+	}
+
+	onPauseResumeClick() {
+		game.__paused = !game.__paused;
+		this.forceUpdate();
+	}
+
+	onOneStepClick() {
+		game.__doOneStep = true;
+		this.forceUpdate();
+	}
+
+	setPrefabMode(enabled: string | null = null) {
+		this.setState({ prefabMode: enabled });
 	}
 
 	stopExecution() {
-		//TODO:
+		PrefabEditor.acceptPrefabEdition();
+		if(!game.__EDITOR_mode) {
+			this.onTogglePlay();
+		}
 	}
 
-	onDoubleClick() {
-		//TODO:
+	onDoubleClick(ev: PointerEvent) {
+		if(ev.ctrlKey) {
+			this.resetZoom();
+		}
 	}
 
 	onDragOver() {
@@ -66,10 +166,88 @@ export default class Viewport extends ComponentDebounced<ViewportProps> {
 	render(): ComponentChild {
 		let className = 'editor-viewport-wrapper';
 
+		let panel: ComponentChild;
+		let statusHeader: ComponentChild;
+
+		const reloadClassesBtn = R.btn(R.icon('recompile'), ClassesLoader.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'source code modified externally. Click to load changes.' : 'Reload code', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
+
+		if(this.state.prefabMode) {
+			className += ' editor-viewport-wrapper-prefab-mode';
+
+			let prefabFile = fs.getFileByAssetName(this.state.prefabMode, AssetType.PREFAB);
+			let fileLibraryName = prefabFile.lib;
+			if(fileLibraryName) {
+				className += ' editor-viewport-wrapper-prefab-mode-lib';
+			}
+
+			panel = R.span(null,
+				reloadClassesBtn,
+				R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
+				//TODO fileLibraryName ? R.libInfo(fileLibraryName, prefabFile.fileName).icon : undefined,
+				R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes (Enter)', 'main-btn', 13),
+				R.btn(R.icon('reject'), () => {
+					if(game.editor.isCurrentContainerModified) {
+						game.editor.ui.modal.showEditorQuestion(
+							"Are you sure?",
+							"Are you really wanted to discard all changes made in prefab?",
+							() => { PrefabEditor.exitPrefabEdit(true); },
+							"Discard changes."
+						);
+					} else {
+						PrefabEditor.exitPrefabEdit(true);
+					}
+				}, 'Reject prefab changes (Esc)', undefined, 27),
+				R.hr(),
+				'BG color:',
+				R.input({
+					onInput: onBgColorChange,
+					className: 'clickable',
+					type: 'color',
+					defaultValue: '#' + PrefabEditor.BGColor.toString(16).padStart(6, '0')
+				}),
+				R.hr()
+			);
+		} else {
+			let pauseResumeBtn, oneStepBtn;
+			if(game && !game.__EDITOR_mode) {
+				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume (Ctrl + P)", 'big-btn', 1080);
+				if(game.__paused) {
+					statusHeader = R.span({ className: "red-blink" }, 'paused');
+					oneStepBtn = R.btn('One step', this.onOneStepClick, "(Ctrl + [)", 'big-btn', 1219);
+				} else {
+					statusHeader = 'running';
+				}
+			}
+
+			panel = R.span(undefined,
+				reloadClassesBtn,
+				R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
+				R.hr(),
+				R.hr(),
+				statusHeader,
+				pauseResumeBtn,
+				oneStepBtn,
+				(statusHeader) && R.hr(),
+				R.btn('⛶', () => {
+					(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen();
+				}, 'Go fullscreen', 'big-btn'),
+				R.hr(),
+				'Speed:',
+				h(SelectEditor, {
+					onChange: (ev) => {
+						game.__speedMultiplier = parseInt(ev.target.value);
+						this.forceUpdate();
+					},
+					noCopyValue: true,
+					value: game.__speedMultiplier,
+					select: SPEED_SELECT
+				})
+			);
+		}
+
+
 		return R.div({ className },
-			R.div(null,
-				R.btn('reload classes', ClassesLoader.reloadClasses)
-			),
+			panel,
 			R.div({
 				id: 'viewport-root',
 				className: 'editor-viewport',
@@ -81,3 +259,4 @@ export default class Viewport extends ComponentDebounced<ViewportProps> {
 	}
 
 }
+

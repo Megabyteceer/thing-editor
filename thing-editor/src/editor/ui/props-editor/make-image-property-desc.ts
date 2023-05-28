@@ -1,10 +1,11 @@
+import { Container } from "pixi.js";
 import { KeyedObject } from "thing-editor/src/editor/env";
 import { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
-const makeImageSelectEditablePropertyDescriptor = (name: string, canBeEmpty?: boolean, important: boolean = false, filterName = 'image'): EditablePropertyDescRaw => {
+const makeImageSelectEditablePropertyDescriptor = (name: string, canBeEmpty?: boolean, important: boolean = false, filterName = 'image'): EditablePropertyDescRaw<Container> => {
 	return {
 		name: name,
 		type: 'string',

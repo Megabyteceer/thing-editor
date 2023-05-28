@@ -4,7 +4,7 @@ import type { __EditorType } from "thing-editor/src/editor/editor";
 
 
 import { BaseTexture, Container, Point, TextureGCSystem, utils } from "pixi.js";
-import type { Classes, KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
+import type { Classes, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/components/scene.c";
 
 import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
@@ -14,6 +14,7 @@ import Lib from "thing-editor/src/engine/lib";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
+import Keys from "thing-editor/src/engine/utils/keys";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 import Settings from "thing-editor/src/engine/utils/settings";
 
@@ -49,8 +50,11 @@ let fireNextOnResizeImmediately = false; //TODO
 
 class Game {
 
-	W = 600;
-	H = 800;
+	W = 800;
+	H = 600;
+
+	/** use in your game as storage for any variables accessible in data-path selectors */
+	data: KeyedObject = {};
 
 	___enforcedOrientation: ProjectOrientation | null = null; //TODO
 	__enforcedW: number | undefined;
@@ -93,6 +97,8 @@ class Game {
 	__EDITOR_mode = false;
 
 	isFocused: boolean = false;
+
+	keys = Keys;
 
 	__time = 0;
 	get time() {
@@ -498,8 +504,8 @@ class Game {
 
 	faderShoot() {
 		/// #if EDITOR
-		assert(__isCurrentFaderUpdateInProgress, "game.faderShoot() called not by fader.", 10033);
-		assert(!(currentFader as Container).__nodeExtendData.isFaderShootCalledForThisFader, "game.faderShoot() already called for this fader.", 10034);
+		assert(__isCurrentFaderUpdateInProgress, "faderShoot() called not by fader.", 10033);
+		assert(!(currentFader as Container).__nodeExtendData.isFaderShootCalledForThisFader, "faderShoot() already called for this fader.", 10034);
 		(currentFader as Container).__nodeExtendData.isFaderShootCalledForThisFader = true;
 		/// #endif
 		while(hideTheseModalsUnderFader.length > 0) {
@@ -525,7 +531,7 @@ class Game {
 			Lib.destroyObjectAndChildren(currentHidingFaderInUpdate);
 			currentHidingFaderInUpdate = null;
 			/// #if EDITOR
-			this.editor.refreshTreeViewAndPropertyEditor();
+			game.editor.refreshTreeViewAndPropertyEditor();
 			/// #endif
 		}
 	}
@@ -541,10 +547,10 @@ class Game {
 	protected _FPS = 0;
 	FPS = 0;
 
-	protected get __speedMultiplier() {
+	get __speedMultiplier() {
 		return __speedMultiplier;
 	}
-	protected set __speedMultiplier(v) {
+	set __speedMultiplier(v) {
 		if(v !== __speedMultiplier) {
 			__speedMultiplier = v;
 			//TODO MusicFragment.__applyGameSpeed(v);
@@ -598,12 +604,21 @@ class Game {
 		//DODO: cleanup
 		assert(!game.currentScene, "Attempt to set current scene content with previous scene exists.");
 		scene = checkScene(scene);
+
+		/// #if EDITOR
+		const isFirstSceneShow = !__currentSceneValue;
+		/// #endif
+
 		this._setCurrentScene(scene);
 		scene.interactiveChildren = false;
 		stage.addChildAt(scene, 0);
 		/// #if EDITOR
 		if(game.__EDITOR_mode) {
 			loadDynamicTextures();
+		} else {
+			if(isFirstSceneShow) {
+				this.editor.selection.loadCurrentSelection();
+			}
 		}
 		game.currentScene.__nodeExtendData.childrenExpanded = true;
 		this.editor.refreshTreeViewAndPropertyEditor();
@@ -618,6 +633,37 @@ class Game {
 
 	__getScenesStack() {
 		return showStack;
+	}
+
+	get __modalsCount() {
+		return modals.length;
+	}
+
+	__clearStage() {
+		while(this.__modalsCount > 0) {
+			this.hideModal(undefined, true);
+		}
+		while(hidingModals.length > 0) {
+			let m = hidingModals.pop();
+			Lib.destroyObjectAndChildren(m as Container);
+		}
+
+		while(showStack.length > 0) {
+			tryRemoveScene(showStack.pop() as Scene);
+		}
+
+		tryRemoveCurrentScene();
+
+		if(currentFader) {
+			Lib.destroyObjectAndChildren(currentFader);
+			currentFader = null;
+		}
+		game._isWaitingToHideFader = false;
+		while(hidingFaders.length > 0) {
+			Lib.destroyObjectAndChildren(hidingFaders.pop() as Container);
+		}
+		Lib.__clearStaticScenes();
+		//TODO BgMusic._recalculateMusic();
 	}
 
 	/// #endif

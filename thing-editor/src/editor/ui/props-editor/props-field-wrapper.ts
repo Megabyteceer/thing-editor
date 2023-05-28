@@ -12,7 +12,7 @@ const wrapperProps = { className: 'props-wrapper' };
 
 interface EditablePropertyEditorProps extends ClassAttributes<PropsFieldWrapper> {
 	field: EditablePropertyDesc;
-	value: number;
+	value: any;
 	disabled?: boolean;
 	onBlur?: () => void;
 	onChange: (val: any, isDelta?: boolean, deltaVal?: number) => void;

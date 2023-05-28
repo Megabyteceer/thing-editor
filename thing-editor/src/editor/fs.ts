@@ -1,6 +1,9 @@
-import { Texture } from "pixi.js";
+import { Container, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import type { KeyedObject, SerializedObject, SourceMappedConstructor, ThingEditorServer } from "thing-editor/src/editor/env";
+import Scene from "thing-editor/src/engine/components/scene.c";
+import assert from "thing-editor/src/engine/debug/assert";
+import game from "thing-editor/src/engine/game";
 
 interface FileDesc {
 	/** file name*/
@@ -9,6 +12,8 @@ interface FileDesc {
 	assetType: AssetType,
 	/** modification time*/
 	mTime: number,
+
+	lib: string | null; //TODO
 
 	asset: SourceMappedConstructor | SerializedObject | Texture
 
@@ -32,9 +37,7 @@ enum AssetType {
 	CLASS = "CLASS"
 }
 
-import assert from "thing-editor/src/engine/debug/assert";
 
-import game from "thing-editor/src/engine/game";
 const thingEditorServer: ThingEditorServer = window.thingEditorServer;
 
 const AllAssetsTypes: AssetType[] = Object.values(AssetType);
@@ -45,6 +48,7 @@ const allAssets: FileDesc[] = [];
 
 const allAssetsMaps: (Map<string, FileDesc>)[] = [];
 const assetsByTypeByName: Map<AssetType, Map<string, FileDesc>> = new Map();
+
 for(let assetType of AllAssetsTypes) {
 	let map = new Map();
 	allAssetsMaps.push(map);
@@ -85,6 +89,25 @@ export default class fs {
 			return allAssets;
 		}
 		return assetsListsByType.get(assetType) as FileDesc[];
+	}
+
+	static getFileOfRoot(object: Container): FileDescPrefab | FileDescScene {
+		const root = object.getRootContainer() || game.currentContainer;
+		const rootName = root.name as string;
+		if(root instanceof Scene) {
+			return this.getFileByAssetName(rootName, AssetType.SCENE);
+		} else {
+			return this.getFileByAssetName(rootName, AssetType.PREFAB);
+		}
+	}
+
+	static getFileByAssetName(assetName: string, assetType: AssetType.IMAGE): FileDesc;
+	static getFileByAssetName(assetName: string, assetType: AssetType.SCENE): FileDescScene;
+	static getFileByAssetName(assetName: string, assetType: AssetType.PREFAB): FileDescPrefab;
+	static getFileByAssetName(assetName: string, assetType: AssetType.SOUND): FileDesc;
+	static getFileByAssetName(assetName: string, assetType: AssetType.CLASS): FileDescClass;
+	static getFileByAssetName(assetName: string, assetType: AssetType): FileDesc {
+		return assetsByTypeByName.get(assetType)!.get(assetName) as FileDesc;
 	}
 
 	static assetNameToFileName(assetName: string, assetType: AssetType): string {

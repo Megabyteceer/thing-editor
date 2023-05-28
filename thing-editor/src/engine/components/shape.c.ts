@@ -12,6 +12,19 @@ enum SHAPE_TYPE {
 	POLY = 4,
 }
 
+const isShapeHasWidthHeight = (o: Shape) => {
+	return o.shape === SHAPE_TYPE.RECT ||
+		o.shape === SHAPE_TYPE.ROUND_RECT ||
+		o.shape === SHAPE_TYPE.ELLIPSE;
+}
+
+const isShapeHasRedius = (o: Shape) => {
+	return o.shape === SHAPE_TYPE.ROUND_RECT ||
+		o.shape === SHAPE_TYPE.CIRCLE
+}
+
+const DEFAULT_POINTS = [[-30, -30], [30, -10], [-10, 30]];
+
 const shapeTypeSelect = [
 	{ name: 'Rect', value: SHAPE_TYPE.RECT },
 	{ name: 'Round Rect', value: SHAPE_TYPE.ROUND_RECT },
@@ -25,12 +38,11 @@ export default class Shape extends Graphics {
 	/// #if EDITOR
 	constructor() {
 		super();
+		this._width = 100;
+		this._height = 100;
 		this.__pointsUpdate = this.__pointsUpdate.bind(this);
 	}
 	/// #endif
-
-	@editable()
-	isItHitArea = false;
 
 	protected _hitAreaCache: Rectangle | Ellipse | Circle | RoundedRectangle | Polygon | null = null;
 
@@ -48,6 +60,7 @@ export default class Shape extends Graphics {
 
 	protected __pointsUpdateIntervalInitialized: number | null = null;
 
+	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY; } })
 	protected __shapePoints: Point[] | null = null;
 
 	init() {
@@ -182,10 +195,14 @@ export default class Shape extends Graphics {
 		}
 	}
 
+	@editable()
+	isItHitArea = false;
+
 	get shape() {
 		return this._shape;
 	}
 
+	@editable({ visible: isShapeHasWidthHeight, important: true })
 	set width(s) {
 		this._width = s;
 		if(this.__deserialized) {
@@ -197,6 +214,7 @@ export default class Shape extends Graphics {
 		return this._width;
 	}
 
+	@editable({ visible: isShapeHasWidthHeight, important: true })
 	set height(s) {
 		this._height = s;
 		if(this.__deserialized) {
@@ -208,6 +226,7 @@ export default class Shape extends Graphics {
 		return this._height;
 	}
 
+	@editable({ visible: isShapeHasRedius, important: true })
 	set shapeRadius(s) {
 		this._shapeRadius = s;
 		if(this.__deserialized) {
@@ -219,28 +238,7 @@ export default class Shape extends Graphics {
 		return this._shapeRadius;
 	}
 
-	set shapeLineColor(s) {
-		this._lineColor = s;
-		if(this.__deserialized) {
-			this._drawThing();
-		}
-	}
-
-	get shapeLineColor() {
-		return this._lineColor;
-	}
-
-	set shapeFillColor(s) {
-		this._fillColor = s;
-		if(this.__deserialized) {
-			this._drawThing();
-		}
-	}
-
-	get shapeFillColor() {
-		return this._fillColor;
-	}
-
+	@editable({ min: 0, max: 1, step: 0.01, default: 1 })
 	set shapeFillAlpha(s) {
 		this._fillAlpha = s;
 		if(this.__deserialized) {
@@ -252,17 +250,19 @@ export default class Shape extends Graphics {
 		return this._fillAlpha;
 	}
 
-	set shapeLineAlpha(s) {
-		this._llineAlpha = s;
+	@editable({ type: 'color', visible: (o) => { return o.shapeFillAlpha > 0; } })
+	set shapeFillColor(s) {
+		this._fillColor = s;
 		if(this.__deserialized) {
 			this._drawThing();
 		}
 	}
 
-	get shapeLineAlpha() {
-		return this._llineAlpha;
+	get shapeFillColor() {
+		return this._fillColor;
 	}
 
+	@editable({ min: 0 })
 	set shapeLineWidth(s) {
 		this._lineWidth = s;
 		if(this.__deserialized) {
@@ -274,6 +274,31 @@ export default class Shape extends Graphics {
 		return this._lineWidth;
 	}
 
+	@editable({ type: 'color', visible: (o) => { return o.shapeLineWidth > 0; } })
+	set shapeLineColor(s) {
+		this._lineColor = s;
+		if(this.__deserialized) {
+			this._drawThing();
+		}
+	}
+
+	get shapeLineColor() {
+		return this._lineColor;
+	}
+
+	@editable({ min: 0, max: 1, step: 0.01, visible: (o) => { return o.shapeLineWidth > 0; } })
+	set shapeLineAlpha(s) {
+		this._llineAlpha = s;
+		if(this.__deserialized) {
+			this._drawThing();
+		}
+	}
+
+	get shapeLineAlpha() {
+		return this._llineAlpha;
+	}
+
+	@editable({ min: 0, max: 1, step: 0.01, visible: (o) => { return o.shapeLineWidth > 0; } })
 	set shapeLineAlignment(s) {
 		this._lineAlignment = s;
 		if(this.__deserialized) {
@@ -431,123 +456,5 @@ export default class Shape extends Graphics {
 }
 
 /// #if EDITOR
-
-
-
-const DEFAULT_POINTS = [[-30, -30], [30, -10], [-10, 30]];
-
-const DEFAULT_WIDTH = 100;
-const DEFAULT_HEIGHT = 100;
-const DEFAULT_RADIUS = 10;
-
-
 (Shape as any as SourceMappedConstructor).__EDITOR_icon = 'tree/shape';
-
-/* TODO
-__EDITOR_editableProps(Shape, [
-,
-	{
-		name: 'width',
-		type: Number,
-		default: DEFAULT_WIDTH,
-		visible: (o) => {
-			return o.shape !== SHAPE_TYPE.CIRCLE && o.shape !== SHAPE_TYPE.POLY;
-		},
-		important: true
-	},
-	{
-		name: 'height',
-		type: Number,
-		default: DEFAULT_HEIGHT,
-		visible: (o) => {
-			return o.shape !== SHAPE_TYPE.CIRCLE && o.shape !== SHAPE_TYPE.POLY;
-		},
-		important: true
-	},
-	{
-		name: 'shapeRadius',
-		type: Number,
-		default: DEFAULT_RADIUS,
-		visible: (o) => {
-			return o.shape === SHAPE_TYPE.ROUND_RECT || o.shape === SHAPE_TYPE.CIRCLE;
-		},
-		important: true
-	},
-	{
-		name: 'shapeFillAlpha',
-		type: Number,
-		min: 0,
-		max: 1,
-		step: 0.01,
-		default: 1
-	},
-	{
-		name: 'shapeFillColor',
-		basis: 16,
-		type: Number,
-		max: 0xFFFFFF,
-		min: 0,
-		visible: (o) => {
-			return o.shapeFillAlpha > 0;
-		}
-	},
-	{
-		name: 'isItHitArea',
-		type: Boolean
-	},
-	{
-		name: 'shapeLineWidth',
-		type: Number,
-		min: 0
-	},
-	{
-		name: 'shapeLineColor',
-		basis: 16,
-		type: Number,
-		default: 0xFFFFFF,
-		min: 0,
-		max: 0xFFFFFF,
-		visible: (o) => {
-			return o.shapeLineWidth > 0;
-		}
-	},
-	{
-		name: 'shapeLineAlpha',
-		type: Number,
-		min: 0,
-		max: 1,
-		step: 0.01,
-		default: 1,
-		visible: (o) => {
-			return o.shapeLineWidth > 0;
-		}
-	},
-	{
-		name: 'shapeLineAlignment',
-		type: Number,
-		min: 0,
-		max: 1,
-		step: 0.01,
-		default: 1,
-		visible: (o) => {
-			return o.shapeLineWidth > 0;
-		}
-	},
-	{
-		name: '_spriteRect',
-		type: 'ref',
-		visible: () => {
-			return false;
-		}
-	},
-	{
-		name: '_shapePoints',
-		type: 'ref',
-		visible: (o) => {
-			return o.shape === SHAPE_TYPE.POLY;
-		}
-	}
-]);
-*/
-
 /// #endif

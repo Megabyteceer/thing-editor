@@ -89,7 +89,14 @@ class R {
 		if(node.__description) {
 			desc = R.div(descriptionProps, node.__description.split('\n')[0]);
 		}
-		return R.div(sceneNodeProps, R.classIcon(node.constructor as SourceMappedConstructor), node.name ? R.span(nameProps, node.name) : undefined, R.span(classProps, '(' + (node.constructor as SourceMappedConstructor).__className + ') #' + node.___id), desc);
+		return R.div(sceneNodeProps,
+			R.classIcon(node.constructor as SourceMappedConstructor),
+			node.name ? R.span(nameProps, node.name) : undefined,
+			R.span(classProps,
+				'(' + (node.__nodeExtendData.unknownConstructor ||
+					(node.constructor as SourceMappedConstructor).__className) + ') #' + node.___id
+			),
+			desc);
 	}
 
 	static tip = (id: string, header: string, text: string) => {

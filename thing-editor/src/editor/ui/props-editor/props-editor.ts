@@ -18,13 +18,19 @@ import "thing-editor/src/editor/ui/props-editor/props-editors/color-editor";
 import ColorEditor from "thing-editor/src/editor/ui/props-editor/props-editors/color-editor";
 import "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
 import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
+import RefFieldEditor from "thing-editor/src/editor/ui/props-editor/props-editors/refs-editor";
 import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
+import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-editor";
 import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
 
 let editorProps = {
-	className: 'props-editor window-scrollable-content'
+	className: 'props-editor window-scrollable-content',
+	onscroll: (ev: Event) => {
+		game.editor.settings.setItem('props-editor-scroll-y', (ev.target as HTMLDivElement).scrollTop);
+	}
 };
+
 let headerProps = {
 	className: 'props-header'
 };
@@ -68,13 +74,32 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 	}
 
 	static getRenderer(prop: EditablePropertyDesc): EditablePropsRenderer {
-		propertyAssert(prop, renderers.has(prop.type), "Unknown editable property type: " + prop);
+		propertyAssert(prop, renderers.has(prop.type), "Property with type '" + prop.type + "' has no renderer.");
 		return renderers.get(prop.type) as EditablePropsRenderer;
 	}
 
 	static getDefaultForType(prop: EditablePropertyDesc): any {
-		propertyAssert(prop, typeDefaults.has(prop.type), "Unknown editable property type: " + prop);
+		propertyAssert(prop, typeDefaults.has(prop.type), "Property with type '" + prop.type + "' has no default value.");
 		return typeDefaults.get(prop.type);
+	}
+
+	restoreScrollPosInterval: number = 0;
+
+	componentDidMount(): void {
+		this.restoreScrollPosInterval = setInterval(() => {
+			const div = (this.base as HTMLDivElement);
+			if(div.querySelector('.props-group-__root-splitter')) {
+				div.scrollTop = game.editor.settings.getItem('props-editor-scroll-y', 0);
+				clearInterval(this.restoreScrollPosInterval);
+				this.restoreScrollPosInterval = 0;
+			}
+		}, 10);
+	}
+
+	componentWillUnmount(): void {
+		if(this.restoreScrollPosInterval) {
+			clearInterval(this.restoreScrollPosInterval);
+		}
 	}
 
 	onChangeClassClick() {
@@ -249,4 +274,6 @@ PropsEditor.registerRenderer('number', NumberEditor, 0);
 PropsEditor.registerRenderer('string', StringEditor, null);
 PropsEditor.registerRenderer('boolean', BooleanEditor, false);
 PropsEditor.registerRenderer('splitter', null, undefined);
+PropsEditor.registerRenderer('ref', RefFieldEditor, undefined);
+PropsEditor.registerRenderer('timeline', TimelineEditor, null);
 

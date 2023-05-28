@@ -31,14 +31,17 @@ NOT_SERIALIZABLE_PROPS_TYPES.add('splitter');
 
 export default class ClassesLoader {
 
+	static isClassesWaitsReloading: boolean;
+
 	static async reloadClasses(): Promise<Classes | undefined> {
 
 		componentsVersion++;
 
 		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
+		this.isClassesWaitsReloading = false;
 		return Promise.all(files.map((file) => {
 
-			const onLoad = (module: { default: SourceMappedConstructor }) => {
+			const onClassLoaded = (module: { default: SourceMappedConstructor }) => {
 
 				const RawClass = module.default;
 				if(!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
@@ -103,12 +106,14 @@ export default class ClassesLoader {
 						prop.notSerializable = true;
 					}
 
-					if(!prop.notSerializable && !prop.hasOwnProperty('default')) {
-						prop.default = (instance as KeyedObject)[prop.name];
-						if(!prop.default) {
-							prop.default = PropsEditor.getDefaultForType(prop);
+					if(!prop.notSerializable) {
+						if(!prop.hasOwnProperty('default')) {
+							prop.default = (instance as KeyedObject)[prop.name];
+							if(!prop.default) {
+								prop.default = PropsEditor.getDefaultForType(prop);
+							}
+							propertyAssert(prop, typeof prop.default !== 'undefined', "Editable property '" + prop.name + "' in class '" + Class.__className + "' has no default value.");
 						}
-						propertyAssert(prop, typeof prop.default !== 'undefined', "Editable property '" + prop.name + "' in class '" + Class.__className + "' has no default value.");
 						Class.__defaultValues[prop.name] = prop.default;
 					}
 					if(!prop.override) {
@@ -135,7 +140,7 @@ export default class ClassesLoader {
 			const moduleName = '../../..' + file.fileName.replace(/\.ts$/, '');
 
 			const versionQuery = file.fileName.startsWith('/thing-editor/src/engine/components/') ? undefined : ('?v=' + componentsVersion);
-			return imp(moduleName, versionQuery).then(onLoad);
+			return imp(moduleName, versionQuery).then(onClassLoaded);
 
 		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {
 			let classes: Classes = {};
@@ -206,6 +211,10 @@ export default class ClassesLoader {
 
 			return classes;
 		});
+	}
+
+	static validateClasses() {
+		//TODO
 	}
 }
 

@@ -9,6 +9,11 @@ html {
 	overflow: hidden;
 }
 
+::selection {
+	color: rgb(197, 197, 197);
+	background: rgb(68, 86, 146);
+}
+
 body {
 	background: var(--bg-color);
 	color: #737988;
@@ -756,14 +761,14 @@ input[type=checkbox]:checked {
 
 .info-badge {
 	background: #660000;
-    color: #DD8888;
-    position: absolute;
-    top: 10px;
-    width: 20px;
-    text-align: center;
-    height: 20px;
-    right: 10px;
-    border-radius: 10px;
+	color: #DD8888;
+	position: absolute;
+	top: 10px;
+	width: 20px;
+	text-align: center;
+	height: 20px;
+	right: 10px;
+	border-radius: 10px;
 }
 
 #window-info {
@@ -826,7 +831,7 @@ input[type=checkbox]:checked {
 	background: transparent;
 	border: none;
 	display: block;
-    text-align: left;
+	text-align: left;
 	padding: 5px 20px;
 }
 
@@ -844,7 +849,7 @@ input[type=checkbox]:checked {
 	padding: 10px;
 	margin: 5px;
 	border: 1px solid #41464b;
-	border-radius:10px;
+	border-radius: 10px;
 	color: #476582;
 	font-size: 120%;
 	display: flex;
@@ -891,23 +896,26 @@ input[type=checkbox]:checked {
 	}
 }
 
-.shake{
+.shake {
 	animation: shake-animation linear 0.3s;
 	animation-iteration-count: 2;
 	transform-origin: 50% 50%;
 }
 
-@keyframes shake-animation{
+@keyframes shake-animation {
 	0% {
-		transform:  translate(0px,0px)  ;
+		transform: translate(0px, 0px);
 	}
+
 	25% {
-		transform:  translate(5px,0px)  ;
+		transform: translate(5px, 0px);
 	}
+
 	77% {
-		transform:  translate(-5px,0px)  ;
+		transform: translate(-5px, 0px);
 	}
+
 	100% {
-		transform:  translate(0px,0px)  ;
+		transform: translate(0px, 0px);
 	}
 }

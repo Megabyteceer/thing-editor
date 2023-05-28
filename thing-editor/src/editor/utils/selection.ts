@@ -150,6 +150,13 @@ export default class Selection extends Array<Container> {
 		}
 	}
 
+	saveCurrentSelection() {
+		game.settings.setItem('__EDITOR_scene_selection' + game.editor.currentSceneName, game.editor.selection.saveSelection());
+	}
+
+	loadCurrentSelection() {
+		this.loadSelection(game.settings.getItem('__EDITOR_scene_selection' + game.editor.currentSceneName));
+	}
 }
 
 let getPathOfNode = (node: Container): SelectionPath => {

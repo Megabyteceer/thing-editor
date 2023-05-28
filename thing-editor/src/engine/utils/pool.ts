@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 
 let pools = new Map();
@@ -45,7 +45,7 @@ export default class Pool {
 	}
 	/// #endif
 
-	static create(constructor: SourceMappedConstructor): any {
+	static create(constructor: Constructor): any {
 		if(!pools.has(constructor)) {
 			const ret = new constructor();
 			/// #if EDITOR
@@ -65,7 +65,7 @@ export default class Pool {
 		let i = Math.floor(Math.random() * a.length);
 		let ret = a[i];
 		a.splice(i, 1);
-		assert(!ret.hasOwnProperty('children') || ret.children.length === 0, "Pool contains " + constructor.__className + " with non empty children.", 90001);
+		assert(!(ret instanceof Container) || ret.children.length === 0, "Pool contains " + (constructor as SourceMappedConstructor).__className + " with non empty children.", 90001);
 		onTake(ret);
 		return ret;
 		/// #endif
@@ -76,7 +76,6 @@ export default class Pool {
 	static dispose(obj: any) {
 		/// #if EDITOR
 		obj.___id = null;
-		delete obj.__nodeExtendData;
 		/// #endif
 		let key = obj.constructor;
 		if(!pools.has(key)) {

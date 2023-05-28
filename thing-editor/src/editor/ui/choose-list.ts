@@ -68,7 +68,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		if(item.__EDITOR_icon) {
 			icon = R.classIcon(item as SourceMappedConstructor);
 		}
-		let name = item.name;
+		let name = item.__className || item.name;
 
 		if(typeof name === 'string') {
 			key = name;
@@ -78,7 +78,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 			onClick: () => {
 				game.editor.ui.modal.hideModal(item);
 			},
-			className: 'clickable choosing-item',
+			className: 'clickable choosing-item', //TODO select items style css
 			key: key
 		}, icon, name);
 	}

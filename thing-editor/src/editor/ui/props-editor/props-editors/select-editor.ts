@@ -1,5 +1,6 @@
 import { Component, ComponentChild, render } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
+import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-or-text";
@@ -17,7 +18,9 @@ interface SelectEditorItem {
 	visibleName?: ComponentChild;
 }
 
+//@ts-ignore //make "field" property optional
 interface SelectEditorProps extends EditablePropertyEditorProps {
+	field?: EditablePropertyDesc;
 	noCopyValue?: boolean;
 	select: (SelectEditorItem[]) | (() => SelectEditorItem[]);
 }
@@ -115,7 +118,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 	render() {
 
-		let list = this.props.select || this.props.field.select;
+		let list = this.props.select || this.props.field!.select;
 		if(typeof list === "function") {
 			list = list();
 			if(list.length === 0) {
@@ -134,7 +137,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 				item = R.span({ className: 'danger' }, this.props.value);
 				if(this.props.field && !this.props.field.isTranslatableKey) {
 					setTimeout(() => {
-						game.editor.ui.status.error('Invalid enum value: ' + this.props.value + ' ▾', 32002, game.editor.selection[0], this.props.field.name);
+						game.editor.ui.status.error('Invalid enum value: ' + this.props.value + ' ▾', 32002, game.editor.selection[0], this.props.field!.name);
 					}, 1);
 				}
 			}

@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, ComponentChild, h } from "preact";
-import { KeyedMap, KeyedObject, NodeExtendData } from "thing-editor/src/editor/env";
+import { KeyedMap, KeyedObject, NodeExtendData, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics.js";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import group from "thing-editor/src/editor/ui/group";
@@ -14,9 +14,9 @@ const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
 
 type StatusItemsOwnersMap = WeakMap<NodeExtendData, Container | KeyedMap<true>>
-type StatusListItemOwner = Container | ((ev?: PointerEvent) => boolean | void);
+type StatusListItemOwner = Container | ((ev?: PointerEvent) => boolean | void) | SourceMappedConstructor;
 interface StatusListItem {
-	message: string;
+	message: string | ComponentChild;
 	owner?: StatusListItemOwner;
 	ownerId?: number;
 	fieldName?: string;
@@ -115,7 +115,7 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 		}
 	}
 
-	warn(message: string, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false) {
+	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false) {
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message + getErrorDetailsUrl(errorCode));
 		if(doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
@@ -132,7 +132,7 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 		}
 	}
 
-	private clear() {
+	clear() {
 		this.errors.length = 0;
 		this.warns.length = 0;
 
@@ -213,7 +213,7 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 					return;
 				}
 				if(typeof item.owner === "function") {
-					if(await item.owner(ev)) {
+					if(await (item.owner as (ev: PointerEvent) => boolean)(ev)) {
 						this.clearItem(item);
 					}
 				} else if(item.owner && (item.owner instanceof Container)) {

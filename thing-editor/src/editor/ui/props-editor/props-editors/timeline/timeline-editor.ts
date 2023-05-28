@@ -1,0 +1,92 @@
+import { ClassAttributes, Component, render } from "preact";
+import R from "thing-editor/src/editor/preact-fabrics";
+import Window from "thing-editor/src/editor/ui/editor-window";
+import { renderWindow } from "thing-editor/src/editor/ui/ui";
+import MovieClipP from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
+import game from "thing-editor/src/engine/game";
+
+function bringTimelineForward() {
+	Window.bringWindowForward('#window-propsEditor');
+	Window.bringWindowForward('#window-timeline', true);
+}
+
+interface TimelineEditorProps extends ClassAttributes<TimelineEditor> {
+
+}
+
+interface TimelineEditorState {
+	toggled: boolean;
+}
+
+
+export default class TimelineEditor extends Component<TimelineEditorProps, TimelineEditorState> {
+
+	constructor(props: TimelineEditorProps) {
+		super(props);
+		this.state = { toggled: game.editor.settings.getItem('timeline-showed', true) };
+		this.onToggleClick = this.onToggleClick.bind(this);
+	}
+
+	componentDidMount() {
+		bringTimelineForward();
+		this._renderWindow();
+	}
+
+	componentWillUnmount() {
+		this._hideWindow();
+	}
+
+	onToggleClick() { //show/hide timeline window
+		let t = !this.state.toggled;
+		this.setState({ toggled: t });
+		game.editor.settings.setItem('timeline-showed', t);
+		if(t) {
+			bringTimelineForward();
+		}
+	}
+
+	onAutoSelect(_selectPath: string) {
+		/* TODO
+		if(!this.state.toggled) {
+			this.onToggleClick();
+			setTimeout(() => {
+				Timeline.onAutoSelect(selectPath);
+			}, 1);
+		} else {
+			Timeline.onAutoSelect(selectPath);
+		}*/
+	}
+
+	render() {
+		return R.btn(this.state.toggled ? 'Close Timeline (Ctrl+L)' : 'Open timeline (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
+	}
+
+	componentDidUpdate() {
+		this._renderWindow();
+	}
+
+	_renderWindow() {
+		if(this.state.toggled) {
+
+			let timeline = renderWindow('timeline', 'Timeline', 'Timeline',
+				R.div({ title: '' },
+					R.span()
+					//React.createElement(Timeline, { onCloseClick: this.onToggleClick }),
+				), 586, 650, 1270, 150, 1270, 407);
+
+			render(timeline, document.getElementById('additional-windows-root') as HTMLDivElement);
+		} else {
+			this._hideWindow();
+		}
+	}
+
+	_hideWindow() {
+		render(R.fragment(), document.getElementById('additional-windows-root') as HTMLDivElement);
+		if(game.currentContainer && game.__EDITOR_mode) {
+			for(let m of game.currentContainer.findChildrenByType(MovieClipP)) {
+				m.resetTimeline();
+			}
+		}
+	}
+}
+

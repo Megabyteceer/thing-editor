@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 /// <reference path="../engine/components/container.c.ts" />
 
-import { Container, DisplayObject, Point } from "pixi.js";
+import { Container, Point } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 
 type CallBackPath = string;
@@ -51,6 +51,8 @@ interface NodeExtendData {
 	tmpGlobalPos?: Point;
 
 	statusWarnOwnerId?: number;
+
+	objectDeleted?: string;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;
@@ -60,7 +62,7 @@ type KeyedObject = { [key: string]: any };
 type SerializedObjectProps = KeyedObject;
 
 interface Constructor {
-	new(): DisplayObject | {
+	new(): Container | {
 		[key: string]: any;
 	};
 }
@@ -74,6 +76,7 @@ interface SourceMappedConstructor extends Constructor {
 	__defaultValues: KeyedObject;
 	__EDITOR_icon?: string;
 	__editableProps: EditablePropertyDesc[];
+	__EDITOR_tip?: string; //TODO
 	__isScene: boolean;
 	__canAcceptChild: (Class: SourceMappedConstructor) => boolean; //TODO
 	__beforeChangeToThisType?: (o: Container) => void;
@@ -111,14 +114,17 @@ type ThingEditorServer = { // exposed from electron
 	argv: string[];
 }
 
+type AnyType = any;
+
 /** signals for DataPathChooser and CallbackPathChooser */
-interface SelectableProperty {
+interface SelectableProperty extends AnyType {
 	___EDITOR_isHiddenForChooser?: true
 	___EDITOR_isHiddenForCallbackChooser?: true
 	___EDITOR_isHiddenForDataChooser?: true
 	___EDITOR_isGoodForChooser?: true
 	___EDITOR_isGoodForCallbackChooser?: true
 	___EDITOR_ChooserOrder?: true
+	___EDITOR_callbackParameterChooserFunction?: (owner: any) => Promise<any[] | any>
 }
 
 declare global {

@@ -173,6 +173,9 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	renderWindowContent(): ComponentChild {
+		if(!game.currentScene) {
+			return R.span();
+		}
 		let files = fs.getAssetsList();
 
 		const menu = AllAssetsTypes.map((assetType) => {

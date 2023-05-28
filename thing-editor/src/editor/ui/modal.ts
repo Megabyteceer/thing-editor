@@ -103,7 +103,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		closedModalItem.resolve(val);
 	}
 
-	showModal(content: ComponentChild, title: ComponentChild, noEasyClose = false, toBottom = false): Promise<any> {
+	showModal(content: ComponentChild, title: ComponentChild = '', noEasyClose = false, toBottom = false): Promise<any> {
 		if(document.activeElement) {
 			(document.activeElement as HTMLElement).blur();
 		}

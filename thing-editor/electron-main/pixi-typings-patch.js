@@ -77,6 +77,9 @@ patch(
 	`
 	image: string;
 	protected _imageID: string;
+
+	__EDITOR_onCreate(isWrapping?: boolean): void;
+
 	`);
 
 patch(

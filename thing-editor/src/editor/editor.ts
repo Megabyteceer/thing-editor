@@ -24,6 +24,7 @@ import ClassesLoader from "./classes-loader";
 import { Container, Point, Texture } from "pixi.js";
 import initializeOverlay from "thing-editor/src/editor/ui/editor-overlay";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
 import Pool from "thing-editor/src/engine/utils/pool";
@@ -124,7 +125,7 @@ class Editor {
 
 		window.onbeforeunload = (e) => {
 
-			//TODO this.exitPrefabMode();
+			PrefabEditor.acceptPrefabEdition();
 			if(!game.__EDITOR_mode) { //backup already exist
 				return;
 			}
@@ -134,6 +135,12 @@ class Editor {
 				}
 			}
 		};
+
+		setInterval(() => { //keep props editor and tree actual during scene is launched
+			if(!game.__EDITOR_mode && !game.__paused) {
+				this.refreshTreeViewAndPropertyEditor();
+			}
+		}, 300);
 	}
 
 	get isCurrentSceneModified() {
@@ -152,11 +159,38 @@ class Editor {
 		return fs.assetNameToFileName(assetName, assetType).replace(assetName, this.backupPrefix + assetName);
 	}
 
+	reloadClasses() {
+
+		this.ui.viewport.stopExecution();
+
+		let needRestoring = game.currentScene;
+		if(needRestoring) {
+			this.saveBackup();
+		}
+
+		return ClassesLoader.reloadClasses().then(() => {
+			ClassesLoader.validateClasses();
+			if(needRestoring) {
+				editor.restoreBackup();
+			}
+		});
+	}
+
 	saveBackup() {
 		if(!this.isCurrentSceneModified) {
 			return;
 		}
 		this.saveCurrentScene(this.assetNameToBackupName(this.currentSceneName, AssetType.SCENE));
+	}
+
+	restoreBackup() {
+		const backupName = this.assetNameToBackupName(this.currentSceneName, AssetType.SCENE);
+		if(Lib.hasScene(backupName)) {
+			editor.openScene(backupName);
+			editor.sceneModified();
+		} else {
+			editor.openScene(this.currentSceneName);
+		}
 	}
 
 	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) {
@@ -241,8 +275,8 @@ class Editor {
 				if(this.projectDesc.__lastSceneName && !Lib.hasScene(this.projectDesc.__lastSceneName)) {
 					this.projectDesc.__lastSceneName = false;
 				}
-
-				this.openScene(this.projectDesc.__lastSceneName || this.projectDesc.mainScene || 'main');
+				this.projectDesc.__lastSceneName = this.projectDesc.__lastSceneName || this.projectDesc.mainScene || 'main';
+				this.restoreBackup();
 
 				this.regeneratePrefabsTypings();
 				this.ui.modal.hideSpinner();
@@ -267,6 +301,7 @@ class Editor {
 		if(this.askSceneToSaveIfNeed()) {
 
 			Pool.__resetIdCounter();
+
 			assert(name, 'name should be defined');
 
 			game.showScene(name);
@@ -277,7 +312,7 @@ class Editor {
 			document.title = '(' + this.projectDesc.title + ') - - (' + name + ')';
 			this.saveCurrentSceneName(game.currentScene.name as string);
 			if(game.currentScene) {
-				this.selection.loadSelection(game.settings.getItem('__EDITOR_scene_selection' + this.currentSceneName));
+				this.selection.loadCurrentSelection();
 			}
 			this.history.setCurrentStateUnmodified();
 			this.regeneratePrefabsTypings();
@@ -303,7 +338,7 @@ class Editor {
 			}
 		} else {
 			if(game.currentScene) {
-				game.settings.setItem('__EDITOR_scene_selection' + this.currentSceneName, this.selection.saveSelection());
+				this.selection.saveCurrentSelection();
 			}
 		}
 		return true;
@@ -390,10 +425,12 @@ class Editor {
 			this.saveCurrentSceneName(name);
 			this._callInPortraitMode(() => {
 				Lib.__saveScene(game.currentScene, name);
-				game.settings.setItem('__EDITOR_scene_selection' + name, this.selection.saveSelection());
+				this.selection.saveCurrentSelection();
 			});
 		}
 	}
+
+
 
 	get currentSceneName() {
 		return this.projectDesc ? this.projectDesc.__lastSceneName : null;
@@ -457,7 +494,7 @@ class Editor {
 		if(refreshAssetsList) {
 			fs.refreshAssetsList(['thing-editor/src/engine/components/', this.currentProjectAssetsDir]);
 		}
-		await ClassesLoader.reloadClasses();
+		await this.reloadClasses();
 		await AssetsLoader.reloadAssets();
 	}
 

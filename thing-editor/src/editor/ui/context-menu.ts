@@ -17,7 +17,7 @@ const hideMenu = () => {
 
 let menuShown = false;
 
-window.addEventListener('pointerdown', (ev: PointerEvent) => {
+window.addEventListener('pointerdown', () => {
 	if(menuShown) {
 		setTimeout(hideMenu, 10);
 	}
