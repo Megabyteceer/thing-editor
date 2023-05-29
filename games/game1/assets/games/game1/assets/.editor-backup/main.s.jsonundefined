@@ -1,9 +1,8 @@
 {
 	"c": "Scene",
 	"p": {
-		"name": "/games/game1/assets/.editor-backup/main.s.json",
-		"__description": "",
-		"backgroundColor": 1310720
+		"name": "main",
+		"__description": ""
 	},
 	":": [
 		{
@@ -272,9 +271,10 @@
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 493,
-				"y": 244,
-				"image": "bunny.png"
+				"x": 636,
+				"y": 325,
+				"image": "bunny.png",
+				"gravity": 1
 			}
 		},
 		{

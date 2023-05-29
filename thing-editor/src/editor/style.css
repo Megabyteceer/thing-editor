@@ -38,6 +38,11 @@ button {
 	padding: 10px 20px;
 }
 
+hr {
+	border: none;
+	border-top: 1px solid #555555;
+}
+
 .toggled-button {
 	border: 2px solid #777777;
 }
@@ -436,6 +441,24 @@ textarea:focus-visible {
 .editor-viewport canvas {
 	max-height: 100%;
 	max-width: 100%;
+}
+
+.viewport-panel-wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.viewport-panel {
+	max-width: 75px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.viewport-bottom-panel {
+	justify-content: flex-end;
 }
 
 .tree-item {
@@ -840,11 +863,6 @@ input[type=checkbox]:checked {
 	background-color: #ffffff22;
 }
 
-.context-menu hr {
-	border: none;
-	border-top: 1px solid #555555;
-}
-
 .project-item-select {
 	padding: 10px;
 	margin: 5px;
@@ -917,5 +935,34 @@ input[type=checkbox]:checked {
 
 	100% {
 		transform: translate(0px, 0px);
+	}
+}
+
+.red-blink {
+	animation: red-blink-frames linear 1s;
+	animation-iteration-count: infinite;
+	transform-origin: 50% 50%;
+	color: #ff0000;
+}
+
+@keyframes red-blink-frames {
+	0% {
+		opacity: 1;
+	}
+
+	48% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
+	}
+
+	98% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
 	}
 }

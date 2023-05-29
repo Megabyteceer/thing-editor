@@ -10,7 +10,7 @@ import { Component, ComponentChild, h, render } from "preact";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsLoader from "thing-editor/src/editor/assets-loader";
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
+import fs from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import UI from "thing-editor/src/editor/ui/ui";
@@ -24,7 +24,6 @@ import ClassesLoader from "./classes-loader";
 import { Container, Point, Texture } from "pixi.js";
 import initializeOverlay from "thing-editor/src/editor/ui/editor-overlay";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
-import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
 import Pool from "thing-editor/src/engine/utils/pool";
@@ -85,7 +84,9 @@ class Editor {
 
 	__wrongTexture = Texture.from('img/wrong-texture.png');
 
-	readonly backupPrefix = '.editor-backup/';
+	readonly backupPrefix = '___editor_backup_';
+
+	isProjectOpen = false;
 
 	constructor() {
 
@@ -124,12 +125,7 @@ class Editor {
 		}
 
 		window.onbeforeunload = (e) => {
-
-			PrefabEditor.acceptPrefabEdition();
-			if(!game.__EDITOR_mode) { //backup already exist
-				return;
-			}
-			if(!this.__projectReloading) {
+			if(!this.__projectReloading && !this.__FatalError) {
 				if(this.askSceneToSaveIfNeed() === false) {
 					e.returnValue = false;
 				}
@@ -155,10 +151,6 @@ class Editor {
 		return this.history.isStateModified;
 	}
 
-	assetNameToBackupName(assetName: string, assetType: AssetType): string {
-		return fs.assetNameToFileName(assetName, assetType).replace(assetName, this.backupPrefix + assetName);
-	}
-
 	reloadClasses() {
 
 		this.ui.viewport.stopExecution();
@@ -180,14 +172,15 @@ class Editor {
 		if(!this.isCurrentSceneModified) {
 			return;
 		}
-		this.saveCurrentScene(this.assetNameToBackupName(this.currentSceneName, AssetType.SCENE));
+		this.saveCurrentScene(this.currentSceneBackupName);
 	}
 
 	restoreBackup() {
-		const backupName = this.assetNameToBackupName(this.currentSceneName, AssetType.SCENE);
+		const backupName = this.currentSceneBackupName;
 		if(Lib.hasScene(backupName)) {
 			editor.openScene(backupName);
-			editor.sceneModified();
+			Lib.__deleteScene(backupName);
+			editor.history.setCurrentStateModified();
 		} else {
 			editor.openScene(this.currentSceneName);
 		}
@@ -280,6 +273,7 @@ class Editor {
 
 				this.regeneratePrefabsTypings();
 				this.ui.modal.hideSpinner();
+				this.isProjectOpen = true;
 			}
 		}
 	}
@@ -309,8 +303,8 @@ class Editor {
 			game.currentContainer.__nodeExtendData.childrenExpanded = true;
 
 
-			document.title = '(' + this.projectDesc.title + ') - - (' + name + ')';
-			this.saveCurrentSceneName(game.currentScene.name as string);
+			document.title = '(' + this.projectDesc.title + ') - - (' + game.currentScene.name + ')';
+			this.saveLastSceneOpenName(game.currentScene.name as string);
 			if(game.currentScene) {
 				this.selection.loadCurrentSelection();
 			}
@@ -422,7 +416,7 @@ class Editor {
 		if(this.isCurrentSceneModified || (this.currentSceneName !== name)) {
 
 			this.history.setCurrentStateUnmodified();
-			this.saveCurrentSceneName(name);
+			this.saveLastSceneOpenName(name);
 			this._callInPortraitMode(() => {
 				Lib.__saveScene(game.currentScene, name);
 				this.selection.saveCurrentSelection();
@@ -434,6 +428,10 @@ class Editor {
 
 	get currentSceneName() {
 		return this.projectDesc ? this.projectDesc.__lastSceneName : null;
+	}
+
+	get currentSceneBackupName() {
+		return this.backupPrefix + this.projectDesc.__lastSceneName;
 	}
 
 	openUrl(url: string) {
@@ -616,8 +614,8 @@ class Editor {
 		this.editSource(c.__sourceFileName as string);
 	}
 
-	protected saveCurrentSceneName(name: string) {
-		if(name.indexOf(this.backupPrefix) < 0) {
+	protected saveLastSceneOpenName(name: string) {
+		if(!name.startsWith(game.editor.backupPrefix)) {
 			if(this.projectDesc.__lastSceneName !== name) {
 				this.projectDesc.__lastSceneName = name;
 				this.saveProjectDesc();

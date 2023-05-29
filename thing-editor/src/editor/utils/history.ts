@@ -252,6 +252,10 @@ class History {
 		historyUi && historyUi.refresh();
 	}
 
+	setCurrentStateModified() {
+		this.currentState.treeData._isModified = true;
+	}
+
 	setCurrentStateUnmodified() {
 		if(this._undoList.length === 0 && this._redoList.length === 0) {
 			this.addHistoryState();

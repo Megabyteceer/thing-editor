@@ -66,6 +66,13 @@ const ASSETS_PARSERS = {
 	'.wav': AssetType.SOUND,
 	'.c.ts': AssetType.CLASS
 };
+
+const ASSET_TYPE_TO_EXT = {
+	[AssetType.SCENE]: '.s.json',
+	[AssetType.PREFAB]: '.p.json',
+	[AssetType.CLASS]: '.c.ts'
+};
+
 const ASSET_EXT_CROP_LENGHTS: Map<AssetType, number> = new Map();
 ASSET_EXT_CROP_LENGHTS.set(AssetType.IMAGE, 0);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.SCENE, 7);
@@ -115,7 +122,7 @@ export default class fs {
 		if(asset) {
 			return asset.fileName;
 		}
-		return game.editor.currentProjectAssetsDir + assetName + (ASSETS_PARSERS as KeyedObject)[assetType];
+		return game.editor.currentProjectAssetsDir + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
 	}
 
 	static saveFile(fileName: string, data: string | Blob | KeyedObject) {
@@ -132,6 +139,10 @@ export default class fs {
 
 	static deleteFile(fileName: string) {
 		return execFs('fs/delete', fileName);
+	}
+
+	static deleteAsset(assetName: string, assetType: AssetType) {
+		return fs.deleteFile(fs.assetNameToFileName(assetName, assetType));
 	}
 
 	static readJSONFile(fileName: string): any {

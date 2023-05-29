@@ -114,7 +114,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 					'Viewport',
 					R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, game.editor.currentSceneName) : undefined, h(StatusBar, null)),
 					h(Viewport, { ref: this.viewportRef }),
-					34, 0, 100, 70, 64, 600, () => {
+					34, 0, 100, 70, 64, 400, () => {
 						if(game.projectDesc) {
 							game._onContainerResize();
 						}

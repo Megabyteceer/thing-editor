@@ -8,6 +8,7 @@ import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 import Keys from "thing-editor/src/engine/utils/keys";
 import Pool from "thing-editor/src/engine/utils/pool";
 
@@ -75,7 +76,9 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 				//TODO Sound.__resetSounds();
 				game.__EDITOR_mode = false;
 				game._setCurrentScene(null);
-				game.showScene(game.editor.currentSceneName);
+				const backupName = game.editor.currentSceneBackupName;
+
+				game.showScene(Lib.hasScene(backupName) ? backupName : game.editor.currentSceneName);
 				game.stage.interactiveChildren = true;
 			} else { //stop game
 				game.__EDITOR_mode = true;
@@ -169,7 +172,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 		let panel: ComponentChild;
 		let statusHeader: ComponentChild;
 
-		const reloadClassesBtn = R.btn(R.icon('recompile'), ClassesLoader.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'source code modified externally. Click to load changes.' : 'Reload code', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
+		const reloadClassesBtn = R.btn(R.icon('recompile'), ClassesLoader.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
 
 		if(this.state.prefabMode) {
 			className += ' editor-viewport-wrapper-prefab-mode';
@@ -212,36 +215,43 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 			if(game && !game.__EDITOR_mode) {
 				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume (Ctrl + P)", 'big-btn', 1080);
 				if(game.__paused) {
-					statusHeader = R.span({ className: "red-blink" }, 'paused');
+					statusHeader = R.div({ className: "red-blink" }, 'paused');
 					oneStepBtn = R.btn('One step', this.onOneStepClick, "(Ctrl + [)", 'big-btn', 1219);
 				} else {
-					statusHeader = 'running';
+					statusHeader = R.div(null, 'running');
 				}
 			}
 
-			panel = R.span(undefined,
-				reloadClassesBtn,
-				R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
-				R.hr(),
-				R.hr(),
-				statusHeader,
-				pauseResumeBtn,
-				oneStepBtn,
-				(statusHeader) && R.hr(),
-				R.btn('⛶', () => {
-					(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen();
-				}, 'Go fullscreen', 'big-btn'),
-				R.hr(),
-				'Speed:',
-				h(SelectEditor, {
-					onChange: (ev) => {
-						game.__speedMultiplier = parseInt(ev.target.value);
-						this.forceUpdate();
-					},
-					noCopyValue: true,
-					value: game.__speedMultiplier,
-					select: SPEED_SELECT
-				})
+			panel = R.span(panelWrapperProps,
+				R.span(panelProps,
+					reloadClassesBtn,
+					R.hr(),
+					R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
+					R.br(),
+					statusHeader,
+					pauseResumeBtn,
+					oneStepBtn,
+					(statusHeader) && R.hr()
+
+				),
+				R.span(panelBottomProps,
+
+					R.btn('⛶', () => {
+						(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen();
+					}, 'Go fullscreen', 'big-btn'),
+					R.hr(),
+					'Speed:',
+					h(SelectEditor, {
+						onChange: (val) => {
+							game.__speedMultiplier = val;
+							this.forceUpdate();
+						},
+						noCopyValue: true,
+						value: game.__speedMultiplier,
+						select: SPEED_SELECT
+					}),
+					R.hr()
+				)
 			);
 		}
 
@@ -260,3 +270,14 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 
 }
 
+const panelWrapperProps = {
+	className: "viewport-panel-wrapper"
+}
+
+const panelProps = {
+	className: "viewport-panel"
+}
+
+const panelBottomProps = {
+	className: "viewport-panel viewport-bottom-panel"
+}

@@ -6,6 +6,9 @@ export default defineConfig({
 	server: {
 		hmr: false
 	},
+	esbuild: {
+		keepNames: true
+	},
 	resolve: {
 		dedupe: [
 			'thing-editor'

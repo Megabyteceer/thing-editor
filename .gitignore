@@ -12,6 +12,6 @@ dist
 dist-ssr
 debug
 release
-
+___editor_backup_*
 
 *.config.js.timestamp-*.mjs

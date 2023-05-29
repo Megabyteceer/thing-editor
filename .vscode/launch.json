@@ -76,6 +76,15 @@
 			"cwd": "${workspaceFolder}",
 			"args": ["./thing-editor/electron-main/launch-if-stopped.js"]
 			
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "vite build",
+			"port": 9232,
+			"cwd": "${workspaceFolder}",
+			"args": ["./vite-build.js"]
+			
 		}
 	],
 	"compounds": [{

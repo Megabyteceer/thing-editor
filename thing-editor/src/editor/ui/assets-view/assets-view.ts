@@ -173,7 +173,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	renderWindowContent(): ComponentChild {
-		if(!game.currentScene) {
+		if(!game.editor.isProjectOpen) {
 			return R.span();
 		}
 		let files = fs.getAssetsList();
@@ -220,11 +220,16 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			}, 'Close window', 'close-btn')));
 		}
 
-		if(this.state.filtersActive) {
-			files = files.filter(
-				asset => this.state.filter[asset.assetType]
-			)
-		}
+		files = files.filter((asset) => {
+			if(asset.assetName.startsWith(game.editor.backupPrefix)) {
+				return false;
+			}
+			if(!this.state.filtersActive) {
+				return true;
+			}
+			return this.state.filter[asset.assetType];
+		});
+
 		let clearSearchBtn;
 		if(this.state.search) {
 			files = files.filter(asset => searchByRegexpOrText(asset.assetName, this.state.search));

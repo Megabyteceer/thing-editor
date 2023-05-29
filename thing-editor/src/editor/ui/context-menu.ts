@@ -41,6 +41,6 @@ function renderMenuItem(item: ContextMenuItem | null) {
 	if(item) {
 		return R.btn(item.name, item.onClick, item.tip, undefined, undefined, item.disabled);
 	} else {
-		return R.hr(null);
+		return R.hr();
 	}
 }

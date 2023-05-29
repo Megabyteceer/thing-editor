@@ -623,8 +623,7 @@ class Game {
 		game.currentScene.__nodeExtendData.childrenExpanded = true;
 		this.editor.refreshTreeViewAndPropertyEditor();
 
-		//TODO restore selection
-		// this.ui.viewport.resetZoom(); TODO
+		this.editor.ui.viewport.resetZoom();
 
 		/// #endif
 		scene._onShowCalled = false;

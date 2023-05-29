@@ -46,7 +46,7 @@ export default class Lib {
 		let isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, "No scene with name '" + name + "'", 10046);
 		/// #if EDITOR
-		if(name.indexOf(game.editor.backupPrefix) !== 0) {
+		if(!name.startsWith(game.editor.backupPrefix)) {
 			scenes[name].p.name = name;
 		}
 		/// #endif
@@ -65,7 +65,7 @@ export default class Lib {
 	static loadPrefab(name: string): Container {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
 		/// #if EDITOR
-		if(name.indexOf(game.editor.backupPrefix) !== 0) {
+		if(!name.startsWith(game.editor.backupPrefix)) {
 			prefabs[name].p.name = name;
 		}
 		/// #endif
@@ -446,7 +446,9 @@ export default class Lib {
 	}
 
 	static __deleteScene(_sceneName: string) {
-		//TODO:
+		assert(scenes.hasOwnProperty(_sceneName), "attempt to delete not existing scene: " + _sceneName);
+		delete scenes[_sceneName];
+		return fs.deleteAsset(_sceneName, AssetType.SCENE);
 	}
 
 	static __saveScene(scene: Scene, name: string) {
@@ -458,7 +460,9 @@ export default class Lib {
 		game.editor.disableFieldsCache = true;
 		let sceneData = Lib.__serializeObject(scene);
 		game.editor.disableFieldsCache = false;
-		scene.name = name;
+		if(!name.startsWith(game.editor.backupPrefix)) {
+			scene.name = name;
+		}
 		scenes[name] = sceneData;
 		return fs.saveAsset(name, AssetType.SCENE, sceneData);
 	}
@@ -469,7 +473,7 @@ export default class Lib {
 		assert(typeof name === 'string', "Prefab name expected.");
 		assert(!(object instanceof Scene), "attempt to save Scene or not DisplayObject as prefab.");
 		let tmpName = object.name;
-		if(name.indexOf(game.editor.backupPrefix) < 0) {
+		if(!name.startsWith(game.editor.backupPrefix)) {
 			object.name = name;
 		}
 		game.editor.disableFieldsCache = true;
