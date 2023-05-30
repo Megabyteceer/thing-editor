@@ -126,7 +126,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
 	}
 
-	showListChoose(title: string, list: any[], noEasyClose?: boolean, noSearchField: boolean = false) {
+	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField: boolean = false) {
 		return this.showModal(h(ChooseList, { list, noSearchField }), title, noEasyClose);
 	}
 
@@ -198,12 +198,12 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 	}
 
 	/*showPrompt(title: ComponentChild, defaultText:string, filter, accept, noEasyClose, multiline) {
-		//return this.showModal(React.createElement(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
+		//return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
 		//TODO:
 	}*/
 
 	/*showListFilter(title: ComponentChild, list) {
-		//return this.showModal(React.createElement(FilterList, { list }), title, true);
+		//return this.showModal(h(FilterList, { list }), title, true);
 		//TODO:
 	}*/
 

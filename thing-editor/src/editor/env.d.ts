@@ -21,7 +21,7 @@ interface NodeExtendData {
 	deepness?: number;
 	isSelected?: boolean;
 
-	isPrefabReference?: true; //TODO:
+	isPrefabReference?: true; //TODO: prefabs without PrefabReference object
 
 	constructorCalled?: boolean;
 
@@ -53,6 +53,8 @@ interface NodeExtendData {
 	statusWarnOwnerId?: number;
 
 	objectDeleted?: string;
+
+	__allRefsDeletionValidator?: number;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;

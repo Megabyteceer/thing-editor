@@ -46,6 +46,9 @@ type EditorEvents = {
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
+let tryCatchWarned = false;
+let tryTime = 0;
+
 class Editor {
 
 	currentProjectDir = '';
@@ -626,6 +629,17 @@ class Editor {
 	protected __saveProjectDescriptorInner(_cleanupOnly = false) {
 		//TODO: cleanup take from 1.0
 		fs.saveFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
+	}
+
+	rememberTryTime() {
+		tryTime = Date.now();
+	}
+
+	checkTryTime() {
+		if(!tryCatchWarned && ((Date.now() - tryTime) > 1000)) {
+			tryCatchWarned = true;
+			editor.ui.status.warn("Looks like you stopped on caught exception, probably you need to disable 'stop on caught exception' option in your debugger.", 30014);
+		}
 	}
 }
 

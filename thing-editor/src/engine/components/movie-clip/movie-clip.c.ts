@@ -1,6 +1,6 @@
 /// #if EDITOR
 import DSprite from 'thing-editor/src/engine/components/d-sprite.c';
-import type { TimelineFrameValuesCache } from 'thing-editor/src/engine/components/movie-clip/field-player';
+import { TimelineFrameValuesCache, TimelineKeyFrameType } from 'thing-editor/src/engine/components/movie-clip/field-player';
 import game from '../../game';
 import Lib from '../../lib';
 
@@ -40,7 +40,7 @@ export default class MovieClip extends DSprite {
 	@editable({ notAnimate: true })
 	isPlaying = true;
 
-	@editable({ type: 'timeline' })
+	@editable({ type: 'timeline', important: true })
 	set timeline(data) {
 		this._goToLabelNextFrame = false;
 		this._disposePlayers();
@@ -137,7 +137,7 @@ export default class MovieClip extends DSprite {
 					ret.j = ret.t;
 				}
 				if(!ret.hasOwnProperty('m')) {
-					ret.m = 0; //- SMOOTH
+					ret.m = TimelineKeyFrameType.SMOOTH;
 				}
 				return ret;
 			});
@@ -331,7 +331,7 @@ export default class MovieClip extends DSprite {
 					t: f.t.map((k): TimelineSerializedKeyFrame => {
 						let ret: TimelineSerializedKeyFrame = Object.assign({}, k);
 						let tmpJ = ret.j as number;
-						if(ret.j === ret.t /*&& !k.___keepLoopPoint*/) { //TODO
+						if(ret.j === ret.t && !k.___keepLoopPoint) {
 							delete (ret.j);
 						}
 
@@ -466,10 +466,10 @@ export default class MovieClip extends DSprite {
 		}
 	}
 
-	static __getValueAtTime(field: TimelineFieldData, time: number) {
+	static __getValueAtTime(field: TimelineFieldData, time: number): number | boolean | string {
 		if(!field.___cacheTimeline) {
 			let fieldPlayer = Pool.create(FieldPlayer);
-			let c: TimelineFrameValuesCache = [];
+			let c: TimelineFrameValuesCache = [] as any;
 			field.___cacheTimeline = c;
 			let wholeTimelineData = field.___timelineData;
 			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
@@ -497,7 +497,7 @@ export default class MovieClip extends DSprite {
 			if(field.___cacheTimeline.hasOwnProperty(time)) {
 				return field.___cacheTimeline[time];
 			}
-			return prevKeyframe.v;
+			return prevKeyframe.v as number;
 		}
 	}
 

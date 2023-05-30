@@ -368,16 +368,42 @@ export type { WindowProps, WindowState };
 
 let emptyImage = new Image();
 
+type DraggerType = 'v' | 'h';
 
 interface CornerDraggerProps extends ClassAttributes<CornerDragger> {
 	onDrag: (deltaX: number, deltaY: number) => { x: number, y: number };
 	onDragEnd: () => void;
 	className: string;
-	type?: 'v' | 'h';
+	type?: DraggerType;
 }
 
 const allDraggers: CornerDragger[] = [];
 const activeDraggers: CornerDragger[] = [];
+
+const addNeighborDraggersAsActive = (thisBounds: DOMRect, ev: DragEvent, draggerType?: DraggerType) => {
+	for(let dragger of allDraggers) {
+		if((dragger !== this) && (dragger.props.type === draggerType)) {
+			if(activeDraggers.indexOf(dragger) < 0) {
+				const b = (dragger.base as HTMLDivElement).getBoundingClientRect();
+
+				let isDraggersNeighbors = false;
+
+				isDraggersNeighbors =
+					((thisBounds.left) <= b.right) &&
+					((thisBounds.right) >= b.left) &&
+					((thisBounds.top) <= b.bottom) &&
+					((thisBounds.bottom) >= b.top);
+
+				if(isDraggersNeighbors) {
+					activeDraggers.push(dragger);
+					dragger.prevX = ev.pageX;
+					dragger.prevY = ev.pageY;
+					addNeighborDraggersAsActive(b, ev, draggerType);
+				}
+			}
+		}
+	}
+}
 
 interface CornerDraggerState {
 }
@@ -411,26 +437,9 @@ class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
 		this.prevY = ev.pageY;
 		(ev.dataTransfer as DataTransfer).setDragImage(emptyImage, 0, 0);
 		activeDraggers.length = 0;
+		activeDraggers.push(this);
 		let thisBounds = (this.base as HTMLDivElement).getBoundingClientRect();
-		for(let dragger of allDraggers) {
-			if((dragger !== this) && (dragger.props.type === this.props.type)) {
-				const b = (dragger.base as HTMLDivElement).getBoundingClientRect();
-
-				let isDraggersNeighbors = false;
-
-				isDraggersNeighbors =
-					((thisBounds.left - 3) < b.right) &&
-					((thisBounds.right + 3) > b.left) &&
-					((thisBounds.top - 3) < b.bottom) &&
-					((thisBounds.bottom + 3) > b.top);
-
-				if(isDraggersNeighbors) {
-					activeDraggers.push(dragger);
-					dragger.prevX = this.prevX;
-					dragger.prevY = this.prevY;
-				}
-			}
-		}
+		addNeighborDraggersAsActive(thisBounds, ev, this.props.type);
 	}
 
 	dragHandler(ev: DragEvent, isAdditionalDraggersProcess?: boolean) {
@@ -439,17 +448,17 @@ class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
 				for(let dragger of activeDraggers) {
 					dragger.dragHandler(ev, true);
 				}
-			}
-			if(ev.pageX !== 0 || ev.pageY !== 0) {
-				let ret = this.props.onDrag((ev.pageX - this.prevX) / window.innerWidth * 100, (ev.pageY - this.prevY) / window.innerHeight * 100);
-				this.prevX += Math.round(ret.x * window.innerWidth / 100);
-				this.prevY += Math.round(ret.y * window.innerHeight / 100);
+			} else {
+				if(ev.pageX !== 0 || ev.pageY !== 0) {
+					let ret = this.props.onDrag((ev.pageX - this.prevX) / window.innerWidth * 100, (ev.pageY - this.prevY) / window.innerHeight * 100);
+					this.prevX += Math.round(ret.x * window.innerWidth / 100);
+					this.prevY += Math.round(ret.y * window.innerHeight / 100);
+				}
 			}
 		}
 	}
 
 	dragEndHandler() {
-		this.props.onDragEnd();
 		for(let dragger of activeDraggers) {
 			dragger.props.onDragEnd();
 		}

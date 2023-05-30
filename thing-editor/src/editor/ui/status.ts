@@ -5,7 +5,7 @@ import R from "thing-editor/src/editor/preact-fabrics.js";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import group from "thing-editor/src/editor/ui/group";
 import Help from "thing-editor/src/editor/ui/help";
-import { renderWindow } from "thing-editor/src/editor/ui/ui";
+import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
 import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -152,13 +152,15 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 
 	render() {
 		if(this.state.toggled && ((this.errors.length > 0) || (this.warns.length > 0))) {
-			return renderWindow('window-info', 'Notifications', 'Notifications', R.fragment(
+			showAdditionalWindow('window-info', 'Notifications', 'Notifications', R.fragment(
 				R.btn('×', this.clear, 'Hide all', 'close-window-btn'),
 				R.div({ className: "status-body" },
 					h(InfoList, { ref: this.errorsListRef, id: 'errors-list', title: 'Errors:', icon: errorIcon, className: 'info-errors-list info-list', list: this.errors, itemsMap: this.errorsMap }),
 					h(InfoList, { ref: this.warnsListRef, id: 'warns-list', title: 'Warnings:', icon: warnIcon, className: 'info-warns-list info-list', list: this.warns, itemsMap: this.warnsMap })
 				)
 			), 40, 70, 100, 100, 400, 100);
+		} else {
+			hideAdditionalWindow('window-info');
 		}
 		return R.span();
 	}

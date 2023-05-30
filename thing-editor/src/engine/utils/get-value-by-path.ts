@@ -6,7 +6,7 @@ import { KeyedMap, ValuePath } from "thing-editor/src/editor/env.js";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
 import { stringToCallData } from "./call-by-path.js";
 /// #if EDITOR
-let latestDetectedSceneNode;
+let latestDetectedSceneNode: Container | null;
 /// #endif
 const getValueByPath = (valuePath: ValuePath, this_: any
 	/// #if EDITOR
@@ -134,7 +134,7 @@ const setValueByPath = (valuePath: string, val: any, this_: any) => {
 /// #if EDITOR
 setValueByPath.___EDITOR_isGoodForCallbackChooser = true;
 
-const getLatestSceneNodeBypath = (path: string, _this: any, suspendWarning = false) => {
+const getLatestSceneNodeBypath = (path: string, _this: any, suspendWarning = false): Container | null => {
 	latestDetectedSceneNode = null;
 	EDITOR_FLAGS.rememberTryTime();
 	try {
@@ -191,6 +191,12 @@ export {
 	setValueByPath
 	/// #if EDITOR
 	,
+
+
+
+
+
+
 
 
 

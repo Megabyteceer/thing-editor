@@ -1,4 +1,4 @@
-import { ComponentChild, h } from "preact";
+import { ComponentChild, h, render } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
@@ -90,7 +90,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 			game.editor.history.buttonsRenderer(),
 			//R.btn('Project settings', game.editor.openProjectDescToEdit, undefined, 'menu-btn'),
 			//editor.__preBuildAutoTest && R.btn('Test', editor.testProject, "Launch auto-tests", 'menu-btn'),
-			//React.createElement(Help),
+			//h(Help),
 			/*	editor.fs.filesExt && editor.fs.filesExt.scripts.map((s) => {
 					return R.span({ key: s.name }, R.btn(s.name.replace('scripts/', '').replace(/\.js$/, ''), () => {
 						editor.fs.exec(s.name);
@@ -129,9 +129,30 @@ export default class UI extends ComponentDebounced<UIProps> {
 
 }
 
+const additionalWindowsContainers: Map<string, HTMLDivElement> = new Map();
+
+
+function showAdditionalWindow(id: string, helpId: string, title: ComponentChild, content: ComponentChild,
+	x: number, y: number, w: number, _h: number, minW: number, minH: number, onResize?: () => void) {
+	if(!additionalWindowsContainers.has(id)) {
+		let c = window.document.createElement('div');
+		c.classList.add('additional-window-layer');
+		window.document.querySelector('#working-area')?.appendChild(c);
+		additionalWindowsContainers.set(id, c);
+	}
+	render(renderWindow(id, helpId, title, content, x, y, w, _h, minW, minH, onResize), additionalWindowsContainers.get(id) as HTMLDivElement);
+}
+
+function hideAdditionalWindow(id: string) {
+	if(additionalWindowsContainers.has(id)) {
+		render(R.fragment(), additionalWindowsContainers.get(id) as HTMLDivElement);
+	}
+}
+
 function renderWindow(id: string, helpId: string, title: ComponentChild, content: ComponentChild,
 	x: number, y: number, w: number, _h: number, minW: number, minH: number, onResize?: () => void): ComponentChild {
 	return h(Window, { id, helpId, title, content, x, y, minW, minH, w, h: _h, onResize });
 }
 
-export { renderWindow };
+export { showAdditionalWindow, hideAdditionalWindow };
+

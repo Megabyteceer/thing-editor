@@ -12,9 +12,9 @@ const CLASS_NAME_DISABLED = 'select-editor-current disabled';
 
 let openedList: ComponentChild | null;
 
-interface SelectEditorItem {
+interface SelectEditorItem<T = any> {
 	name: string;
-	value: any;
+	value: T;
 	visibleName?: ComponentChild;
 }
 

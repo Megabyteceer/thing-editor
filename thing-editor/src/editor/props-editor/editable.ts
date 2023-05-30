@@ -16,6 +16,7 @@ type EditablePropertyType = 'data-path' |
 	'boolean' |
 	'string' |
 	'prefab' |
+	'pow-damp-preset' |
 	'number';
 
 interface EditablePropertyDescRaw<T extends Container> {
@@ -59,6 +60,9 @@ interface EditablePropertyDesc<T extends Container = Container> extends Editable
 	renderer?: any;
 	isTranslatableKey?: boolean;
 	onClick?: (ev: any) => void;
+
+	/** call-back and data-path properties validator */
+	isValueValid?: (val: any) => boolean;
 
 	/** check if field is image select dropdown*/
 	__isImage?: boolean;

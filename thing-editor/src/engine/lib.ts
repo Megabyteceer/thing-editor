@@ -81,7 +81,7 @@ export default class Lib {
 	static prefabs: Prefabs;
 
 	private static __isPrefabPreviewLoading = 0;
-	static __outdatedReferencesDetectionDisabled = 0;
+	static __outdatedReferencesDetectionDisabled = false;
 
 	static hasPrefab(name: string) {
 		return prefabs.hasOwnProperty(name);

@@ -1,6 +1,7 @@
 import { Container } from 'pixi.js';
 import { Component, ComponentChild } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
+import { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
@@ -35,7 +36,8 @@ document.addEventListener('mousemove', (ev) => {
 	}
 });
 
-interface NumberEditorProps extends EditablePropertyEditorProps {
+interface NumberEditorProps extends Omit<EditablePropertyEditorProps, 'field'> {
+	field?: EditablePropertyDesc;
 	step?: number;
 	max?: number;
 	min?: number;

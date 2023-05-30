@@ -1,8 +1,9 @@
-import { ClassAttributes, Component, render } from "preact";
+import { ClassAttributes, Component, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import Window from "thing-editor/src/editor/ui/editor-window";
-import { renderWindow } from "thing-editor/src/editor/ui/ui";
-import MovieClipP from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
+import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
+import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
+import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
 import game from "thing-editor/src/engine/game";
 
 function bringTimelineForward() {
@@ -58,7 +59,7 @@ export default class TimelineEditor extends Component<TimelineEditorProps, Timel
 	}
 
 	render() {
-		return R.btn(this.state.toggled ? 'Close Timeline (Ctrl+L)' : 'Open timeline (Ctrl+L)', this.onToggleClick, undefined, undefined, 1076);
+		return R.btn(this.state.toggled ? 'Close Timeline' : 'Open Timeline', this.onToggleClick, '(Ctrl+L)', undefined, 1076);
 	}
 
 	componentDidUpdate() {
@@ -67,23 +68,19 @@ export default class TimelineEditor extends Component<TimelineEditorProps, Timel
 
 	_renderWindow() {
 		if(this.state.toggled) {
-
-			let timeline = renderWindow('timeline', 'Timeline', 'Timeline',
+			showAdditionalWindow('timeline', 'Timeline', 'Timeline',
 				R.div({ title: '' },
-					R.span()
-					//React.createElement(Timeline, { onCloseClick: this.onToggleClick }),
-				), 586, 650, 1270, 150, 1270, 407);
-
-			render(timeline, document.getElementById('additional-windows-root') as HTMLDivElement);
+					h(Timeline, { onCloseClick: this.onToggleClick }),
+				), 0, 70, 100, 100, 1270, 407);
 		} else {
 			this._hideWindow();
 		}
 	}
 
 	_hideWindow() {
-		render(R.fragment(), document.getElementById('additional-windows-root') as HTMLDivElement);
+		hideAdditionalWindow('timeline');
 		if(game.currentContainer && game.__EDITOR_mode) {
-			for(let m of game.currentContainer.findChildrenByType(MovieClipP)) {
+			for(let m of game.currentContainer.findChildrenByType(MovieClip)) {
 				m.resetTimeline();
 			}
 		}
