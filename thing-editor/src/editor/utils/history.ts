@@ -33,7 +33,6 @@ function applyState(state: HistoryRecord) {
 		instance.events.emit('beforeHistoryJump');
 		Pool.__resetIdCounter();
 		let node = Lib._deserializeObject(state.treeData);
-		console.log(new Error().stack);
 		game.__setCurrentContainerContent(node);
 	}
 	game.editor.selection.loadSelection(state.selectionData);

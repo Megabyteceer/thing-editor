@@ -9,7 +9,6 @@ let listProps = { className: 'list-view' };
 let listHeaderProps = { className: 'choose-list-header' };
 let bodyProps = { className: 'resizable-dialog left-align-text' };
 
-
 interface ChooseListProps extends ClassAttributes<ChooseList> {
 	list: ChooseListItem[];
 	noSearchField: boolean;
@@ -26,6 +25,7 @@ interface ChooseListItem {
 	pureName?: string;
 	name: string;
 	noFilter?: boolean;
+	refusedBecause?: string;
 }
 
 export default class ChooseList extends Component<ChooseListProps, ChooseListState> {
@@ -37,7 +37,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		this.state = { search: '' };
 		this.searchInputProps = {
 			autoFocus: true,
-			onChange: this.onSearchChange.bind(this),
+			onInput: this.onSearchChange.bind(this),
 			onKeyDown: this.onKeyDown.bind(this),
 			placeholder: 'Search'
 		};
@@ -72,13 +72,18 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 
 		if(typeof name === 'string') {
 			key = name;
+		} else if(typeof key !== 'string') {
+			key = '' + key;
 		}
 
 		return R.div({
 			onClick: () => {
-				game.editor.ui.modal.hideModal(item);
+				if(!item.refusedBecause) {
+					game.editor.ui.modal.hideModal(item);
+				}
 			},
-			className: 'clickable choosing-item', //TODO select items style css
+			title: item.refusedBecause,
+			className: item.refusedBecause ? 'refused-item choosing-item' : 'clickable choosing-item',
 			key: key
 		}, icon, name);
 	}
@@ -100,7 +105,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		return R.div(bodyProps,
 			this.props.noSearchField ? undefined : R.div(listHeaderProps,
 				R.input(this.searchInputProps),
-				R.btn(R.icon('clear'), this.onSearchClearClick, 'Clear search')
+				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search')
 			),
 			R.div(listProps,
 				group.groupArray(this.list.map(this.renderChoosingItem as any))

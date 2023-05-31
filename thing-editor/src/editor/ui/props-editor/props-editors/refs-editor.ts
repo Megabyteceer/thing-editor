@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
 import { Component, isValidElement } from "preact";
+import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import highlightObject from "thing-editor/src/editor/utils/highlight-object";
@@ -66,9 +67,10 @@ export default class RefFieldEditor extends Component<RefFieldEditorProps, RefFi
 						this.props.field.onClick(this.props.value);
 					} else {
 						try {
-							game.editor.ui.modal.showModal(JSON.stringify(this.props.value, undefined, '\n').split('\n').map((l, key) => {
-								return R.span({ key }, l, R.br());
-							}));
+							game.editor.ui.modal.showModal(R.fragment(
+								R.b({ className: '' }, (game.editor.selection[0].constructor as SourceMappedConstructor).__className + '.' + this.props.field.name + ' content:'),
+								R.textarea({ readonly: true, value: JSON.stringify(this.props.value, undefined, ' ') })
+							));
 						} catch(er) {
 							game.editor.ui.modal.showInfo("Object has circular structures and can not be represented as text. Please check browser's console to see reference's value.", undefined, 32039);
 						}

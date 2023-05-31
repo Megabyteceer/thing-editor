@@ -75,8 +75,7 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 				},
 				onInput: this.onSearchChange.bind(this),
 				placeholder: 'Search',
-				defaultValue: filter,
-				autoFocus: true
+				value: filter
 			}
 		};
 	}
@@ -84,6 +83,7 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 	onSearchChange(ev: Event) {
 		let filter = (ev.target as any).value.toLowerCase();
 		game.editor.settings.setItem('projects-filter', filter);
+		this.state.searchInputProps.value = filter;
 		this.setState({ filter });
 	}
 
@@ -107,7 +107,9 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 		}
 
 		return R.div({ className: 'project-open-chooser' },
-			R.input(this.state.searchInputProps),
+			R.div(null,
+				R.input(this.state.searchInputProps)
+			),
 			R.div({ className: 'projects-list' },
 				items
 			)

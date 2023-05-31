@@ -172,7 +172,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 		let panel: ComponentChild;
 		let statusHeader: ComponentChild;
 
-		const reloadClassesBtn = R.btn(R.icon('recompile'), ClassesLoader.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
+		const reloadClassesBtn = R.btn(R.icon('recompile'), game.editor.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
 
 		if(this.state.prefabMode) {
 			className += ' editor-viewport-wrapper-prefab-mode';
@@ -183,32 +183,35 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 				className += ' editor-viewport-wrapper-prefab-mode-lib';
 			}
 
-			panel = R.span(null,
-				reloadClassesBtn,
-				R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
-				//TODO fileLibraryName ? R.libInfo(fileLibraryName, prefabFile.fileName).icon : undefined,
-				R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes (Enter)', 'main-btn', 13),
-				R.btn(R.icon('reject'), () => {
-					if(game.editor.isCurrentContainerModified) {
-						game.editor.ui.modal.showEditorQuestion(
-							"Are you sure?",
-							"Are you really wanted to discard all changes made in prefab?",
-							() => { PrefabEditor.exitPrefabEdit(true); },
-							"Discard changes."
-						);
-					} else {
-						PrefabEditor.exitPrefabEdit(true);
-					}
-				}, 'Reject prefab changes (Esc)', undefined, 27),
-				R.hr(),
-				'BG color:',
-				R.input({
-					onInput: onBgColorChange,
-					className: 'clickable',
-					type: 'color',
-					defaultValue: '#' + PrefabEditor.BGColor.toString(16).padStart(6, '0')
-				}),
-				R.hr()
+			panel = R.span(panelWrapperProps,
+				R.span(panelProps,
+					reloadClassesBtn,
+					R.hr(),
+					R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
+					R.hr(),
+					//TODO fileLibraryName ? R.libInfo(fileLibraryName, prefabFile.fileName).icon : undefined,
+					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes (Enter)', 'main-btn', 13),
+					R.btn(R.icon('reject'), () => {
+						if(game.editor.isCurrentContainerModified) {
+							game.editor.ui.modal.showEditorQuestion(
+								"Are you sure?",
+								"Are you really wanted to discard all changes made in prefab?",
+								() => { PrefabEditor.exitPrefabEdit(true); },
+								"Discard changes."
+							);
+						} else {
+							PrefabEditor.exitPrefabEdit(true);
+						}
+					}, 'Reject prefab changes (Esc)', undefined, 27),
+					R.hr(),
+					R.input({
+						onInput: onBgColorChange,
+						className: 'clickable',
+						type: 'color',
+						value: '#' + PrefabEditor.BGColor.toString(16).padStart(6, '0'),
+						title: "Background color"
+					}),
+				)
 			);
 		} else {
 			let pauseResumeBtn, oneStepBtn;

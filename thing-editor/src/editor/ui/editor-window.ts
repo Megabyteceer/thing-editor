@@ -267,6 +267,7 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 
 		if(contentWpx < minW || contentHpx < minH) {
 			let scale = Math.min(contentWpx / minW, contentHpx / minH);
+			this.renderedScale = scale;
 			contentProps.style = {
 				transform: 'scale(' + scale + ')',
 				transformOrigin: 'left top',

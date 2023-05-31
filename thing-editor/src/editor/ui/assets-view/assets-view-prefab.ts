@@ -14,7 +14,7 @@ const assetsItemNameProps = {
 const assetItemRendererPrefab = (file: FileDescPrefab) => {
 	return R.div(
 		{
-			className: (file.assetName === game.editor.currentSceneName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
+			className: (file.assetName === PrefabEditor.currentPrefabName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
 			key: file.assetName,
 			onPointerDown: (ev: PointerEvent) => {
 				if(ev.buttons === 1) {

@@ -16,12 +16,15 @@ const SELECT_LOG_LEVEL = [
 	{ name: 'break on callbacks', value: 3 }
 ];
 
+import R from 'thing-editor/src/editor/preact-fabrics';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 /// #endif
 
 import { Container } from 'pixi.js';
 import { KeyedMap, KeyedObject, SelectableProperty, SerializedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
-import R from 'thing-editor/src/editor/preact-fabrics';
+
 import editable from 'thing-editor/src/editor/props-editor/editable';
+
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import FieldPlayer, { TimelineData, TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/components/movie-clip/field-player';
@@ -385,7 +388,7 @@ export default class MovieClip extends DSprite {
 	}
 
 	__onUnselect() {
-		//TODO Timeline.deselectMovieClip(o);
+		Timeline.deselectMovieClip(this);
 	}
 
 

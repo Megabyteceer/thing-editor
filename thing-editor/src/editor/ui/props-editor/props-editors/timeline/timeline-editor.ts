@@ -71,7 +71,7 @@ export default class TimelineEditor extends Component<TimelineEditorProps, Timel
 			showAdditionalWindow('timeline', 'Timeline', 'Timeline',
 				R.div({ title: '' },
 					h(Timeline, { onCloseClick: this.onToggleClick }),
-				), 0, 70, 100, 100, 1270, 407);
+				), 0, 70, 100, 100, 1120, 200);
 		} else {
 			this._hideWindow();
 		}

@@ -3,3 +3,4 @@ function toggleDevTools() {
 }
 
 window.addEventListener('error', toggleDevTools);
+

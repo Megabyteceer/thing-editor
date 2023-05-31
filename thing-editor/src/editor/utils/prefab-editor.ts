@@ -1,4 +1,6 @@
 import { Container, Sprite, Texture } from "pixi.js";
+import { ComponentChild } from "preact";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -142,6 +144,23 @@ export default class PrefabEditor {
 				prefabsStack.length = 0;
 			}
 		}
+	}
+
+	static choosePrefab(title: ComponentChild, noEasyClose = false) {
+
+		let prefabsFiles = fs.getAssetsList(AssetType.PREFAB);
+
+		let prefabsSelect = prefabsFiles.map((prefabFile) => {
+			let c = game.classes[prefabFile.asset.c];
+			return { name: prefabFile.assetName, __EDITOR_icon: c.__EDITOR_icon };
+		});
+
+		return game.editor.ui.modal.showListChoose(title || "Choose prefab", prefabsSelect, noEasyClose).then((choosed) => {
+			if(choosed) {
+				return choosed.name;
+			}
+			return null;
+		});
 	}
 
 }

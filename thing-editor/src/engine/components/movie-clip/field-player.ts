@@ -11,15 +11,6 @@ import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-edi
 import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c.js";
 import callByPath from "../../utils/call-by-path.js";
 
-enum TimelineKeyFrameType {
-	SMOOTH = 0,
-	LINEAR = 1,
-	DISCRETE = 2,
-	BOUNCE_BOTTOM = 3,
-	BOUNCE_TOP = 4,
-}
-
-
 interface TimelineKeyFrame {
 
 	m: TimelineKeyFrameType;
@@ -91,6 +82,7 @@ interface TimelineFieldData {
 	/// #endif
 
 }
+
 
 interface TimelineSerializedFieldData {
 	/** name of property to animate */
@@ -340,3 +332,10 @@ export type {
 };
 
 
+enum TimelineKeyFrameType {
+	SMOOTH = 0,
+	LINEAR = 1,
+	DISCRETE = 2,
+	BOUNCE_BOTTOM = 3,
+	BOUNCE_TOP = 4,
+}

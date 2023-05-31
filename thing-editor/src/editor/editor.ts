@@ -118,6 +118,7 @@ class Editor {
 	}
 
 	onUIMounted(ui: UI) {
+
 		this.ui = ui;
 		// load built in components
 
@@ -159,7 +160,7 @@ class Editor {
 		this.ui.viewport.stopExecution();
 
 		let needRestoring = game.currentScene;
-		if(needRestoring) {
+		if(needRestoring) { // TODO save prefab and restore prefab if it is prefab edition
 			this.saveBackup();
 		}
 
@@ -648,3 +649,4 @@ const editor = new Editor();
 type __EditorType = typeof editor;
 
 export type { __EditorType }; // hide Editor from intellisense
+

@@ -181,10 +181,10 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 					if(b) {
 						const bounds = b.getBoundingClientRect();
 						let l = document.getElementById('select-list-content') as HTMLElement;
-						if(bounds.top > window.innerHeight * 0.6) {
-							bounds.y -= l.clientHeight;
-						}
 						if(l) {
+							if(bounds.top > window.innerHeight * 0.6) {
+								bounds.y -= l.clientHeight;
+							}
 							l.style.left = bounds.left + 'px';
 							l.style.top = bounds.top + 'px';
 						}

@@ -5,5 +5,36 @@
 		"x": 703,
 		"y": 119,
 		"image": "bunny.png"
-	}
+	},
+	":": [
+		{
+			"c": "MovieClip",
+			"p": {
+				"image": "bunny.png",
+				"timeline": {
+					"l": {},
+					"p": 0.02,
+					"d": 0.85,
+					"f": [
+						{
+							"n": "visible",
+							"t": [
+								{
+									"v": true,
+									"t": 0,
+									"m": 2
+								},
+								{
+									"v": true,
+									"t": 77,
+									"m": 2,
+									"a": "hideModal`"
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	]
 }

@@ -9,6 +9,7 @@ import Scene from "thing-editor/src/engine/components/scene.c";
 
 import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
 import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import assert from "thing-editor/src/engine/debug/assert";
 import Lib from "thing-editor/src/engine/lib";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
@@ -465,7 +466,7 @@ class Game {
 		game.stage.addChild(container);
 		//TODO BgMusic._recalculateMusic();
 		/// #if EDITOR
-		this.editor.refreshTreeViewAndPropertyEditor();
+		game.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
 		return container;
 	}
@@ -719,5 +720,12 @@ let __currentSceneValue: Scene;
 const game = new Game();
 export default game;
 
+/// #if EDITOR
 (Game.prototype.applyProjectDesc as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Game.prototype.showModal as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
+	return PrefabEditor.choosePrefab("Choose prefab to show as modal:");
+}; //TODO  add all helpers
+
+/// #endif
+
 

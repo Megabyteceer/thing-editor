@@ -25,9 +25,6 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 	constructor(props: FieldsTimelineViewProps) {
 		super(props);
 		this.onRemoveFieldClick = this.onRemoveFieldClick.bind(this);
-		this.onGoLeftClick = this.onGoLeftClick.bind(this);
-		this.onGoRightClick = this.onGoRightClick.bind(this);
-		this.onToggleKeyframeClick = this.onToggleKeyframeClick.bind(this);
 		this.toggleKeyframe = this.toggleKeyframe.bind(this);
 		props.field.___view = this;
 	}
@@ -45,10 +42,6 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 		if(this.props.field.___view === this) {
 			this.props.field.___view = null;
 		}
-	}
-
-	onToggleKeyframeClick() {
-		this.toggleKeyframe(this.props.owner.props.owner.getTime());
 	}
 
 	toggleKeyframe(time: number) {
@@ -102,14 +95,6 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 			}
 		}
 		timeline.selectKeyframe(field.t[i]);
-	}
-
-	onGoLeftClick() {
-		this.gotoNextKeyframe(-1);
-	}
-
-	onGoRightClick() {
-		this.gotoNextKeyframe(1);
 	}
 
 	onChanged() {

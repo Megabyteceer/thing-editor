@@ -42,6 +42,9 @@ class R {
 	static h5: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static script: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static meta: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
+	static space: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
+	static smallSpace: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
+
 
 	static btn(label: ComponentChild, onClick: (ev: PointerEvent) => void, title?: string, className?: string, hotkey?: number, disabled = false) {
 		assert(typeof onClick === 'function', "Function as onClick handler expected.");
@@ -116,7 +119,7 @@ let sceneNodeProps = { className: 'scene-node-item' };
 
 for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'input', 'label',
 	'b', 'a', 'br', 'hr', 'svg', 'td', 'tr', 'th', 'tbody', 'thead', 'table', 'polyline',
-	'textarea', 'iframe', 'h2', 'h3', 'h4', 'h5', 'script', 'meta']) {
+	'textarea', 'iframe', 'h2', 'h3', 'h4', 'h5', 'script', 'meta', 'space', 'smallSpace']) {
 	//@ts-ignore
 	R[factoryType] = (...theArgs: any[]) => {
 		//@ts-ignore

@@ -14,6 +14,7 @@ type CallBackParsedData = {
 }
 
 interface NodeExtendData {
+
 	hidden?: true;
 
 	childrenExpanded?: boolean;
@@ -120,7 +121,7 @@ type AnyType = any;
 
 /** signals for DataPathChooser and CallbackPathChooser */
 interface SelectableProperty extends AnyType {
-	___EDITOR_isHiddenForChooser?: true
+	___EDITOR_isHiddenForChooser?: true | string
 	___EDITOR_isHiddenForCallbackChooser?: true
 	___EDITOR_isHiddenForDataChooser?: true
 	___EDITOR_isGoodForChooser?: true

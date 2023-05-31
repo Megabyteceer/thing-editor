@@ -114,10 +114,12 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		this.onKeyframeChanged();
 	}
 
-	onActionChange(ev: InputEvent) {
-		let val = (ev.target as HTMLInputElement).value;
+	onActionChange(val: string | InputEvent) {
+		if(val && (val as InputEvent).target) {
+			val = ((val as InputEvent).target as HTMLInputElement).value;
+		}
 		for(let k of this.keyframes) {
-			k.props.keyFrame!.a = val;
+			k.props.keyFrame!.a = val as string;
 		}
 		this.onKeyframeChanged();
 	}
@@ -260,15 +262,18 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 
 		let extendEditor;
 		if(kf.m > 2) { //BOUNCE ⬆, BOUNCE ⬇
-			extendEditor = R.span(null,
-				'Gravity:', h(NumberEditor, { value: kf.g as number, step: 0.0001, min: 0.0001, max: 10, onChange: this.onGravityChange }),
-				'Bouncing:', h(NumberEditor, { value: -(kf.b as number), step: 0.01, min: 0.01, max: 10, onChange: this.onBouncingChange })
+			extendEditor = R.fragment(
+				'Gravity', h(NumberEditor, { value: kf.g as number, step: 0.0001, min: 0.0001, max: 10, onChange: this.onGravityChange }),
+				R.smallSpace(),
+				'Bouncing', h(NumberEditor, { value: -(kf.b as number), step: 0.01, min: 0.01, max: 10, onChange: this.onBouncingChange })
 			);
 		} else if(kf.m === TimelineKeyFrameType.SMOOTH) {
 
-			extendEditor = R.span(null,
-				'Power:', h(NumberEditor, { value: selectedObjectsTimeline.p, step: 0.001, min: 0.00001, max: 1, onChange: this.onPowChanged }),
-				'Damp:', h(NumberEditor, { value: selectedObjectsTimeline.d, step: 0.01, min: 0.00, max: 1, onChange: this.onDampChanged }),
+			extendEditor = R.fragment(
+				'Power', h(NumberEditor, { value: selectedObjectsTimeline.p, step: 0.001, min: 0.00001, max: 1, onChange: this.onPowChanged }),
+				R.smallSpace(),
+				'Damp', h(NumberEditor, { value: selectedObjectsTimeline.d, step: 0.01, min: 0.00, max: 1, onChange: this.onDampChanged }),
+				R.smallSpace(),
 				'Preset', h(PowDampPresetSelector, {
 					pow: selectedObjectsTimeline.p,
 					damp: selectedObjectsTimeline.d,
@@ -277,23 +282,29 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 			);
 		}
 
-		let hasSpeed = kf.hasOwnProperty('s');
+
 		let speedEditor;
-		if(hasSpeed && speedSetPossible) {
+		if(speedSetPossible) {
+			let hasSpeed = kf.hasOwnProperty('s');
 			let edField = game.editor.getObjectField(game.editor.selection[0], kf.___view!.props.owner.props.owner.props.field.n);
-			speedEditor = R.span(null, h(NumberEditor, { value: speedVal, step: (edField.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged }));
+			speedEditor = R.fragment(
+				R.label({ htmlFor: 'speed-set-checkbox' }, 'Set speed'),
+				R.input({ className: 'clickable', id: 'speed-set-checkbox', type: 'checkbox', onChange: this.onSetSpeedExistsChanged, checked: hasSpeed }), //TODO replace all checkboxes to BooleanEditor
+				hasSpeed ? h(NumberEditor, { value: speedVal, step: (edField.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged }) : undefined,
+				R.space()
+			)
 		}
 		let hasRandom = kf.hasOwnProperty('r');
 		let randomEditor;
 		if(hasRandom) {
-			randomEditor = R.span(null, h(NumberEditor, { value: kf.r, step: 1, min: -1000, onChange: this.onRandomChanged }));
+			randomEditor = h(NumberEditor, { value: kf.r, step: 1, min: -1000, onChange: this.onRandomChanged });
 		}
 
 		let jumpReset;
 		if(kf.j !== kf.t) {
 			jumpReset = R.btn('x', this.resetJumpTime, "Remove loop point");
 		}
-		let jumpEditor = R.span(null, h(NumberEditor, { value: kf.j, step: 1, min: -99999999, max: 99999999, onChange: this.onJumpChanged }));
+		let jumpEditor = h(NumberEditor, { value: kf.j, step: 1, min: -99999999, max: 99999999, onChange: this.onJumpChanged });
 
 		if(document.activeElement && document.activeElement.className === 'props-editor-callback') {
 			setTimeout(() => {
@@ -302,7 +313,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		}
 
 		body = R.fragment(
-			'Action:',
+			'Action',
 			R.span({ className: 'keyframe-callback-editor' },
 				h(CallbackEditor, {
 					value: kf.a || null,
@@ -310,16 +321,18 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 					title: 'Callback for keyframe ' + kf.t
 				})
 			),
+			R.space(),
 			R.span({ title: 'Keyframe type' }, h(SelectEditor, { onChange: this.onTypeSelect, noCopyValue: true, value: kf.m, select: selectableKeyframeTypes })),
-			speedSetPossible ? R.label({ htmlFor: 'speed-set-checkbox' }, 'Set speed:') : undefined,
-			speedSetPossible ? R.input({ className: 'clickable', id: 'speed-set-checkbox', type: 'checkbox', onChange: this.onSetSpeedExistsChanged, checked: hasSpeed }) : undefined, //TODO replace all checkboxes to BooleanEditor
+			R.space(),
 			speedEditor,
-			R.label({ htmlFor: 'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster' }, 'Time random:'),
+			R.label({ htmlFor: 'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster' }, 'Time random'),
 			R.input({ className: 'clickable', id: 'random-set-checkbox', type: 'checkbox', onChange: this.onSetRandomExistsChanged, checked: hasRandom }), //TODO replace all checkboxes to BooleanEditor
 			randomEditor,
-			R.label({ htmlFor: 'jump-time-checkbox' }, 'Loop:'),
+			R.space(),
+			R.label({ htmlFor: 'jump-time-checkbox' }, 'Loop'),
 			jumpEditor,
 			jumpReset,
+			R.space(),
 			extendEditor
 		);
 

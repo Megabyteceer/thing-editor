@@ -31,7 +31,20 @@ let blackoutPropsClosable = {
 let spinnerProps = { className: 'modal-spinner' };
 let bodyProps = { className: 'modal-body' };
 let titleProps = { className: 'modal-title' };
-let contentProps = { className: 'modal-content' };
+let contentProps = {
+	className: 'modal-content',
+	ref: (content: HTMLDivElement | null) => {
+		if(content) {
+			const searchInput = (content as HTMLDivElement).querySelectorAll('input')[0] as HTMLInputElement;
+
+			if(searchInput) {
+				setTimeout(() => {
+					searchInput.select();
+				}, 10);
+			}
+		}
+	}
+};
 let errorProps = { className: 'error' };
 let notifyProps = { className: 'modal-notification' };
 let notifyPropsDuringSpinner = { className: 'modal-notification modal-notification-centred' };
@@ -100,7 +113,9 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
 		let closedModalItem = modal.state.modals.pop()!;
 		modal.refresh();
-		closedModalItem.resolve(val);
+		setTimeout(() => {
+			closedModalItem.resolve(val);
+		}, 1);
 	}
 
 	showModal(content: ComponentChild, title: ComponentChild = '', noEasyClose = false, toBottom = false): Promise<any> {
@@ -197,20 +212,10 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		), title, noEasyClose);
 	}
 
-	/*showPrompt(title: ComponentChild, defaultText:string, filter, accept, noEasyClose, multiline) {
-		//return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
-		//TODO:
-	}*/
-
 	/*showListFilter(title: ComponentChild, list) {
 		//return this.showModal(h(FilterList, { list }), title, true);
 		//TODO:
 	}*/
-
-	/*	showListChoose(title: ComponentChild, list, noEasyClose, noSearchField) {
-			//return this.showModal(h(ChooseList, { list, noSearchField }), title, noEasyClose); 
-			//TODO:
-		}*/
 
 	showError(message: ComponentChild, errorCode = 99999, title = 'Error!', noEasyClose = false, toBottom = false): Promise<any> {
 		debugger;

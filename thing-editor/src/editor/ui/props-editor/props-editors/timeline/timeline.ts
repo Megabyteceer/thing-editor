@@ -121,7 +121,11 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		this._afterHistoryJump = this._afterHistoryJump.bind(this);
 		this.horizontalZoomIn = this.horizontalZoomIn.bind(this);
 		this.horizontalZoomOut = this.horizontalZoomOut.bind(this);
-		this._afterHistoryJump = this._afterHistoryJump.bind(this);
+
+		game.editor.events.off('beforePropertyChanged', Timeline.onBeforePropertyChanged);
+		game.editor.events.off('afterPropertyChanged', Timeline.onAfterPropertyChanged);
+		game.editor.events.on('beforePropertyChanged', Timeline.onBeforePropertyChanged);
+		game.editor.events.on('afterPropertyChanged', Timeline.onAfterPropertyChanged);
 	}
 
 	static get isElementsSelected() {
@@ -273,11 +277,6 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				}
 			}
 		}
-	}
-
-	static init() {
-		game.editor.events.on('beforePropertyChanged', Timeline.onBeforePropertyChanged);
-		game.editor.events.on('afterPropertyChanged', Timeline.onAfterPropertyChanged);
 	}
 
 	componentWillReceiveProps() {
@@ -686,7 +685,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 					this.setTime(v[0].getTime(), true);
 				}
 			}
-		}, 0);
+		}, 2);
 	}
 
 	static onBeforePropertyChanged(o: Container, fieldName: string, _field: EditablePropertyDesc, _val: any, _isDelta?: boolean) {

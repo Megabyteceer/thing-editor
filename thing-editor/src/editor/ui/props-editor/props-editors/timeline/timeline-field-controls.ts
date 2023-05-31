@@ -16,13 +16,11 @@ export default class TimelilneFieldControls extends Component<TimelilneFieldCont
 	render() {
 		let fieldTimeline = this.props.owner;
 		return R.div({ className: 'objects-timeline-labels', onMouseDown: sp, style: { height: this.props.owner.props.owner.props.heightZoom } },
-			fieldTimeline.props.field.n,
-			R.br(),
 			R.span({ className: 'timeline-buttons-group' },
-				R.btn('×', fieldTimeline.onRemoveFieldClick, 'Remove field animation...', 'danger-btn'),
-				R.btn('<', fieldTimeline.onGoLeftClick, 'Previous Keyframe'),
-				R.btn('●', fieldTimeline.onToggleKeyframeClick, 'add/remove Keyframe'),
-				R.btn('>', fieldTimeline.onGoRightClick, 'Next Keyframe')
+				R.span({ className: 'props-label selectable-text' },
+					fieldTimeline.props.field.n
+				),
+				R.btn('×', fieldTimeline.onRemoveFieldClick, 'Remove field animation', 'danger-btn')
 			)
 		);
 	}

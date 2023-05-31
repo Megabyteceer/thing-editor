@@ -1,8 +1,8 @@
-import { pathDebugging, setValueByPath } from "./get-value-by-path";
-import game from "../game";
+import { Container } from "pixi.js";
 import type { CallBackParsedData, CallBackPath, KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
-import { Container } from "pixi.js";
+import game from "../game";
+import { pathDebugging, setValueByPath } from "./get-value-by-path";
 
 const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	assert(this_, "'this' argument is not provided in to 'callByPath'.", 10026);

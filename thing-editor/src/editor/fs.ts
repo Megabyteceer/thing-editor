@@ -91,6 +91,10 @@ const execFs = (command: string, filename?: string, content?: string, ...args: a
 
 export default class fs {
 
+	static getAssetsList(assetType?: AssetType.IMAGE): FileDesc[]; //TODO IMAge
+	static getAssetsList(assetType?: AssetType.CLASS): FileDescClass[];
+	static getAssetsList(assetType?: AssetType.SCENE): FileDescScene[];
+	static getAssetsList(assetType?: AssetType.PREFAB): FileDescPrefab[];
 	static getAssetsList(assetType: AssetType | null = null): FileDesc[] {
 		if(assetType === null) {
 			return allAssets;

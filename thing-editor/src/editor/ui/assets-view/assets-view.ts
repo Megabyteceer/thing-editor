@@ -9,6 +9,7 @@ import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/asse
 import Window, { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
 import WindowMenu from "thing-editor/src/editor/ui/window-menu";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-or-text";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -232,7 +233,20 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 
 		let clearSearchBtn;
 		if(this.state.search) {
-			files = files.filter(asset => searchByRegexpOrText(asset.assetName, this.state.search));
+			files = files.filter((asset) => {
+				if(asset.assetType === AssetType.SCENE) {
+					if(asset.assetName === game.editor.currentSceneName) {
+						return true;
+					}
+				} else if(asset.assetType === AssetType.PREFAB) {
+					if(asset.assetName === PrefabEditor.currentPrefabName) {
+						return true;
+					}
+				}
+
+				return searchByRegexpOrText(asset.assetName, this.state.search);
+			});
+
 			clearSearchBtn = R.btn('×', () => {
 				this.setState({ search: '' });
 				((this.base as HTMLElement).querySelector('.search-input') as HTMLInputElement).value = '';

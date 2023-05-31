@@ -119,7 +119,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 		},
 			tip,
 			R.div({
-				className: field.name.startsWith('__') ? 'props-label props-label-editor-only selectable-text' : 'props-label selectable-text',
+				className: field.name.startsWith('__') ? 'props-label props-label-helper selectable-text' : 'props-label selectable-text',
 				title: 'Double click - go to definition, Ctrl+click to copy field`s name',
 				onMouseDown: copyTextByClick,
 				onDblClick: () => {

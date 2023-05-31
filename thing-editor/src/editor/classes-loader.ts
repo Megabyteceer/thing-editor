@@ -211,7 +211,6 @@ export default class ClassesLoader {
 					c.__EDITOR_icon = 'tree/game'; // TODO custom MovieClip icon if has timeline property
 				}
 			}
-
 			return classes;
 		});
 	}

@@ -1,5 +1,4 @@
-import { KeyedObject } from "thing-editor/src/editor/env";
-import R from "thing-editor/src/editor/preact-fabrics";
+import { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import DataPathEditor, { DataPathEditorProps } from "thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -57,8 +56,11 @@ export default class CallbackEditor extends DataPathEditor {
 		}
 	}
 
+	get chooseButtonTip() {
+		return 'Choose call-back function';
+	}
 
-	isFieldGoodForCallbackChoose(fieldName: string, object: KeyedObject, val: any, isChild = false) {
+	isFieldGoodForCallbackChoose(fieldName: string, object: KeyedObject, val: SelectableProperty, isChild = false) {
 		if(!super.isFieldGoodForCallbackChoose(fieldName, object, val, isChild)) {
 			return false;
 		}
@@ -73,7 +75,4 @@ export default class CallbackEditor extends DataPathEditor {
 		return (type === 'object' || type === 'function') && !val.___EDITOR_isHiddenForCallbackChooser;
 	}
 
-	render() {
-		return R.div(null, "tmp overriden")
-	}
 }

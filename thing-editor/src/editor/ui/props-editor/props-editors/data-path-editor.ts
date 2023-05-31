@@ -1,11 +1,12 @@
 import { Container, DisplayObject, Sprite } from "pixi.js";
 import { Component, ComponentChild } from "preact";
-import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { KeyedObject, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import CallbackEditor from "thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor";
 import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
+import { getAllObjectRefsCount } from "thing-editor/src/editor/utils/scene-all-validator";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
@@ -33,8 +34,8 @@ interface DataPathSelectItem {
 	noFilter?: boolean;
 	name: ComponentChild;
 	pureName?: string;
-	nameOfChild?: string; // TODO rename to isNamedChild
-
+	nameOfChild?: string;
+	refusedBecause?: string;
 }
 
 export default class DataPathEditor extends Component<DataPathEditorProps, DataPathEditorState> {
@@ -165,7 +166,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		game.editor.history.scheduleHistorySave();
 	}
 
-	isFieldGoodForCallbackChoose(fieldName: string, object: KeyedObject, val?: any, isChild = false) {
+	isFieldGoodForCallbackChoose(fieldName: string, object: KeyedObject, val?: SelectableProperty, isChild = false) {
 		game.editor.rememberTryTime();
 		try {
 			if(fieldName.charCodeAt(0) === 95) {
@@ -180,16 +181,22 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			let type = typeof val;
 			if(type === 'object' || (type === 'function')) {
 
-				if(isChild && val instanceof DisplayObject && val.__nodeExtendData.hidden) return false;
+				if(isChild && val instanceof DisplayObject && val.__nodeExtendData.hidden) {
+					return false;
+				}
 
-				return !val.hasOwnProperty('___EDITOR_isHiddenForChooser') &&
-					(this.itIsCallbackEditor || !val.hasOwnProperty('___EDITOR_isHiddenForDataChooser'));
+				return !(val as SelectableProperty).___EDITOR_isHiddenForChooser &&
+					(this.itIsCallbackEditor || !(val as SelectableProperty).___EDITOR_isHiddenForDataChooser);
 			}
 
 			return true;
 		} catch(er) {
 			game.editor.checkTryTime();
 		}
+	}
+
+	get chooseButtonTip() {
+		return 'Choose data source';
 	}
 
 	render() {
@@ -202,7 +209,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		}
 		let chooseBtn;
 		if(game.__EDITOR_mode) {
-			chooseBtn = R.btn('...', this.onEditClicked, 'Start data source choosing', 'tool-btn');
+			chooseBtn = R.btn('...', this.onEditClicked, this.chooseButtonTip, 'tool-btn');
 		}
 
 		let gotoButton;
@@ -267,6 +274,14 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 				} else {
 					item.pureName = pureName;
 				}
+
+				if(parent === game.currentScene.all) {
+					let refuse = getAllObjectRefsCount((o as Container).name!);
+					if(refuse) {
+						item.refusedBecause = refuse;
+					}
+				}
+
 				items.push(item);
 				addedNames.add(pureName);
 				return true;
@@ -311,7 +326,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		}
 
 		const addIfGood = (name: string) => {
-			if(!addedNames.hasOwnProperty(name)) {
+			if(!addedNames.has(name)) {
 				Lib.__outdatedReferencesDetectionDisabled = true;
 				if(this.isFieldGoodForCallbackChoose(name, parent)) {
 					if(!addSceneNodeIfValid(parent[name], name)) {
