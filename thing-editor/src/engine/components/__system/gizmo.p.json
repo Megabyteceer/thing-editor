@@ -1,0 +1,117 @@
+{
+	"c": "__Gizmo",
+	"p": {
+		"name": "__system/gizmo",
+		"x": -22,
+		"y": 6,
+		"__lockSelection": true
+	},
+	":": [
+		{
+			"c": "Shape",
+			"p": {
+				"name": "xy-axis",
+				"y": -16,
+				"interactive": true,
+				"width": 16,
+				"height": 16,
+				"shapeFillAlpha": 0.2,
+				"shapeFillColor": 16744193,
+				"shapeLineWidth": 2,
+				"shapeLineColor": 16744193,
+				"shapeLineAlignment": 0
+			}
+		},
+		{
+			"c": "Shape",
+			"p": {
+				"name": "y-axis",
+				"interactive": true,
+				"shape": 4,
+				"shapeFillColor": 8308231,
+				"_shapePoints": [
+					{
+						"x": -1,
+						"y": -75
+					},
+					{
+						"x": -4,
+						"y": -76
+					},
+					{
+						"x": 0,
+						"y": -89
+					},
+					{
+						"x": 4,
+						"y": -76
+					},
+					{
+						"x": 1,
+						"y": -75
+					},
+					{
+						"x": 1,
+						"y": -1
+					},
+					{
+						"x": -1,
+						"y": -1
+					}
+				]
+			},
+			":": [
+				{
+					"c": "Shape",
+					"p": {
+						"x": -3,
+						"y": -89,
+						"isItHitArea": true,
+						"width": 6,
+						"height": 73
+					}
+				}
+			]
+		},
+		{
+			"c": "Shape",
+			"p": {
+				"name": "x-axis",
+				"rotation": 1.5707963267948966,
+				"interactive": true,
+				"shape": 4,
+				"shapeFillColor": 14758734,
+				"_shapePoints": [
+					{
+						"x": -1,
+						"y": -75
+					},
+					{
+						"x": -4,
+						"y": -76
+					},
+					{
+						"x": 0,
+						"y": -89
+					},
+					{
+						"x": 4,
+						"y": -76
+					},
+					{
+						"x": 1,
+						"y": -75
+					},
+					{
+						"x": 1,
+						"y": -1
+					},
+					{
+						"x": -1,
+						"y": -1
+					}
+				]
+			}
+		}
+	]
+}
