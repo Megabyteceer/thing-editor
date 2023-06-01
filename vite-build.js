@@ -2,19 +2,31 @@ import path from 'path';
 import {fileURLToPath} from 'url';
 import {build} from 'vite';
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+(async () => {
+	await build({
+		root: path.resolve(__dirname, './thing-editor'),
+		esbuild: {
+			target: "ES2015"
 
-	; (async () => {
-		await build({
-			root: path.resolve(__dirname, './thing-editor/index.html'),
-			base: '/thing-editor/',
-			esbuild: {
-				keepNames: true
+		},
+		build: {
+			rollupOptions: {
+				input: ""
 			},
-			build: {
-				rollupOptions: {
-					input: ""
-				},
-			},
-		})
-	})()
+		},
+		resolve: {
+			dedupe: [
+				'thing-editor'
+			],
+
+
+
+			alias: {
+				'thing-editor': __dirname + '/thing-editor',
+				'pixi.js': __dirname + '/node_modules/pixi.js/dist/pixi.mjs',
+				'preact': __dirname + '/node_modules/preact/dist/preact.module.js'
+			}
+		}
+	})
+})()

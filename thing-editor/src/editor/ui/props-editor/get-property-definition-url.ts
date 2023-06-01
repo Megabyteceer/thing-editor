@@ -1,12 +1,13 @@
+import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 
-const SOURCES_CACHE: Map<string, string> = new Map();
 
-const getPropertyDefinitionUrl = (fileName: string, fieldName: string): string => {
-	if(!SOURCES_CACHE.has(fileName)) {
-		SOURCES_CACHE.set(fileName, fs.readFile(fileName));
+const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: SourceMappedConstructor): string => {
+	if(!Class.__sourceCode) {
+		Class.__sourceCode = fs.readFile(fileName).split('\n');
 	}
-	const src = (SOURCES_CACHE.get(fileName) as string).split('\n');
+
+	const src = Class.__sourceCode;
 
 	let fieldRegExp1 = new RegExp('\\s*((set|get)\\s+)*' + fieldName + '[\\s=;:\\(]');
 	let fieldRegExp2 = new RegExp('_editableEmbed\\(\\S+,\\s*[\'"`]' + fieldName + '[\'"`]');
@@ -28,8 +29,8 @@ const getPropertyDefinitionUrl = (fileName: string, fieldName: string): string =
 	return fileName;
 }
 
-const clearPropertyDifinitionCache = (fileName: string) => {
-	SOURCES_CACHE.delete(fileName);
+const clearPropertyDifinitionCache = (Class: SourceMappedConstructor) => {
+	Class.__sourceCode = undefined;
 }
 
-export { getPropertyDefinitionUrl, clearPropertyDifinitionCache }
+export { getPropertyDefinitionUrl, clearPropertyDifinitionCache };

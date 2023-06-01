@@ -108,7 +108,7 @@ function editableInner<T extends Container>(target: T, name: string, editablePro
 
 	let url = srcUrl.split(location.origin)[1];
 	url = url.split(/[?:]/)[0];
-	url = getPropertyDefinitionUrl(url, name);
+	url = getPropertyDefinitionUrl(url, name, target as any);
 	(editablePropertyDesc as EditablePropertyDesc).__src = url;
 
 	(target.constructor as SourceMappedConstructor).__editableProps.push(editablePropertyDesc as EditablePropertyDesc);

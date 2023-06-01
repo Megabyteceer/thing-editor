@@ -59,6 +59,11 @@ export default class ClassesLoader {
 				let instance: Container = new Class() as Container;
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
+
+				if(className.startsWith('_')) {
+					className = className.substring(1);
+				}
+
 				Class.__className = className;
 				if(className === "_MovieClip") {
 					console.error("_MovieClip");
@@ -153,7 +158,7 @@ export default class ClassesLoader {
 					return;
 				}
 				const className = c.__className;
-				clearPropertyDifinitionCache(c.__sourceFileName as string);
+				clearPropertyDifinitionCache(c);
 
 				if(classes[className]) {
 					game.editor.editClassSource(c);

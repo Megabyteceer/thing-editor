@@ -81,6 +81,7 @@ interface SourceMappedConstructor extends Constructor {
 	__editableProps: EditablePropertyDesc[];
 	__EDITOR_tip?: string; //TODO
 	__isScene: boolean;
+	__sourceCode?: string[];
 	__canAcceptChild: (Class: SourceMappedConstructor) => boolean; //TODO
 	__beforeChangeToThisType?: (o: Container) => void;
 
