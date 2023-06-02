@@ -8,7 +8,7 @@ import Lib from "thing-editor/src/engine/lib";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
 let prefabsStack: string[] = [];
-let previewBlackout: Shape;
+let backDrop: Shape;
 
 function getCurrentPrefabName() {
 	return prefabsStack[prefabsStack.length - 1];
@@ -38,31 +38,32 @@ export default class PrefabEditor {
 	}
 
 	static get BGColor() {
-		return previewBlackout.shapeFillColor;
+		return backDrop.shapeFillColor;
 	}
 
 	static set BGColor(val: number) {
 		game.editor.settings.setItem('prefab-bg' + this.currentPrefabName, val);
-		previewBlackout.shapeFillColor = val;
+		backDrop.shapeFillColor = val;
 	}
 
 	static showPreview(object: Container) {
-		if(!previewBlackout) {
-			previewBlackout = Lib.loadPrefab('__system/backdrop') as Shape;
-			previewBlackout.__nodeExtendData.hidden = true;
+		if(!backDrop) {
+			backDrop = Lib.loadPrefab('__system/backdrop') as Shape;
+			backDrop.name = null; // prevent get by name error;
+			backDrop.__nodeExtendData.hidden = true;
 		}
 		//TODO this.exitIsolation();
 		game.editor.ui.viewport.resetZoom();
 		PrefabEditor.BGColor = game.editor.settings.getItem('prefab-bg' + object.name, 120);
 		PrefabEditor.hidePreview();
-		game.stage.addChild(previewBlackout);
+		game.stage.addChild(backDrop);
 		game.showModal(object, undefined, true);
 		this.currentPrefabName = object.name;
 		object.__nodeExtendData.childrenExpanded = true;
 		game.stage.x = -object.x + game.W / 2;
 		game.stage.y = -object.y + game.H / 2;
-		previewBlackout.x = -game.stage.x;
-		previewBlackout.y = -game.stage.y;
+		backDrop.x = -game.stage.x;
+		backDrop.y = -game.stage.y;
 		setTimeout(() => {
 			let selectionData = game.settings.getItem('prefab-selection' + game.currentContainer.name);
 			if(selectionData) {
@@ -78,7 +79,7 @@ export default class PrefabEditor {
 	static hidePreview() {
 		//TODO this.exitIsolation();
 		game.editor.ui.viewport.resetZoom();
-		previewBlackout.detachFromParent();
+		backDrop.detachFromParent();
 		if(this.currentPrefabName) {
 			let selectionData = game.editor.selection.saveSelection();
 			game.settings.setItem('prefab-selection' + game.currentContainer.name, selectionData);

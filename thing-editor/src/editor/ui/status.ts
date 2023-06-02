@@ -98,6 +98,7 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 	}
 
 	error(message: string, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string) {
+		debugger;
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.error(errorCode + ': ' + message + getErrorDetailsUrl(errorCode));
 		let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode };

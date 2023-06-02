@@ -2,10 +2,9 @@
 	"c": "__BackDrop",
 	"p": {
 		"name": "__system/backdrop",
-		"x": -1600,
-		"y": -1200,
+		"x": -2000,
+		"y": -1500,
 		"width": 800,
-		"height": 600,
-		"shapeFillAlpha": 0.8
+		"height": 600
 	}
 }
