@@ -3,7 +3,6 @@ import { ComponentChild, ComponentChildren, Fragment, h } from 'preact';
 import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
-import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import assert from 'thing-editor/src/engine/debug/assert';
 
 interface ComponentProps {
@@ -105,14 +104,11 @@ class R {
 	static tip = (id: string, header: string, text: string) => {
 		return h(Tip, { id, header, text });
 	};
-
 }
 
 const descriptionProps = { className: 'tree-desc' };
 let nameProps = {
-	className: 'selectable-text scene-node-name',
-	title: 'Ctrl+click to copy object`s name',
-	onMouseDown: copyTextByClick
+	className: 'scene-node-name',
 };
 let classProps = { className: 'scene-node-class' };
 let sceneNodeProps = { className: 'scene-node-item' };

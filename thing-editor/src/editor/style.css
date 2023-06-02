@@ -391,6 +391,9 @@ textarea:focus-visible {
 .choosing-item b{
 	color: #aaaaaa;
 }
+.choosing-item img{
+	margin-right: 10px;
+}
 
 .choose-list-header button {
 	padding: 3px;
@@ -427,8 +430,6 @@ input {
 
 .modal-notification {
 	position: fixed;
-	right: 10px;
-	bottom: 10px;
 	padding: 20px;
 	border-radius: 5px;
 	background: #4b4e4e;
@@ -920,6 +921,10 @@ input[type=checkbox]:checked {
 .context-menu button:hover {
 	outline: none;
 	background-color: #ffffff22;
+}
+
+.context-menu img {
+	margin-right: 10px;
 }
 
 .project-item-select {

@@ -5,6 +5,7 @@ import game from "thing-editor/src/engine/game";
 
 
 export default class CallbackEditor extends DataPathEditor {
+
 	constructor(props: DataPathEditorProps) {
 		super(props);
 		this.itIsCallbackEditor = true;

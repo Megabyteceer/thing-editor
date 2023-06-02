@@ -1,6 +1,4 @@
 
-import EventEmitter from "events";
-import TypedEmitter from "typed-emitter";
 
 import R from "./preact-fabrics";
 
@@ -22,8 +20,8 @@ import Settings from "thing-editor/src/engine/utils/settings";
 import ClassesLoader from "./classes-loader";
 
 import { Container, Point, Texture } from "pixi.js";
-import initializeOverlay from "thing-editor/src/editor/ui/editor-overlay";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
+import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
 import Pool from "thing-editor/src/engine/utils/pool";
@@ -36,12 +34,6 @@ function addTo(parent: Container, child: Container, doNotSelect = false) {
 		editor.sceneModified(true);
 	}
 	Lib.__callInitIfGameRuns(child);
-}
-
-
-type EditorEvents = {
-	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
-	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
 }
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
@@ -63,8 +55,6 @@ class Editor {
 
 	buildProjectAndExit: any; //TODO:
 
-	//@ts-ignore
-	events = new EventEmitter() as TypedEmitter<EditorEvents>;
 
 	history = historyInstance;
 
@@ -91,6 +81,8 @@ class Editor {
 
 	isProjectOpen = false;
 
+	currentPathChoosingField?: EditablePropertyDesc;
+
 	constructor() {
 
 		for(let arg of window.thingEditorServer.argv) {
@@ -110,7 +102,6 @@ class Editor {
 
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
-		initializeOverlay();
 	}
 
 	get currentProjectAssetsDir() {
@@ -258,15 +249,16 @@ class Editor {
 				protectAccessToSceneNode(game.stage, "game stage");
 				protectAccessToSceneNode(game.stage.parent, "PIXI stage");
 
-				//	this.overlay = new Overlay(); //TODO:
 				await Promise.all([this.reloadAssetsAndClasses(true)]);
+
+				editorEvents.emit('didProjectOpen')
 
 				this.settings.setItem('last-opened-project', dir);
 
 				if(isProjectDescriptorModified) {
 					this.saveProjectDesc();
 				} else {
-					this.__saveProjectDescriptorInner(true); // try to cleanup descriptor
+					this.__saveProjectDescriptorInner(true);
 				}
 
 				if(this.projectDesc.__lastSceneName && !Lib.hasScene(this.projectDesc.__lastSceneName)) {
@@ -507,7 +499,7 @@ class Editor {
 			field = this.getObjectField(o, field);
 		}
 
-		this.events.emit('beforePropertyChanged', o, field.name, field, val, isDelta);
+		editorEvents.emit('beforePropertyChanged', o, field.name, field, val, isDelta);
 
 		if(isDelta) {
 			assert(field.type === 'number', "editable field descriptor type: Number expected");
@@ -531,7 +523,7 @@ class Editor {
 			}
 		}
 
-		this.events.emit('afterPropertyChanged', o, field.name, field, val, isDelta);
+		editorEvents.emit('afterPropertyChanged', o, field.name, field, val, isDelta);
 
 		if(changed) {
 			Lib.__invalidateSerializationCache(o);

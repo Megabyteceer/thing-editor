@@ -556,6 +556,8 @@ Lib.prefabs = prefabs;
 /// #if EDITOR
 const EMPTY_NODE_EXTEND_DATA: NodeExtendData = { objectDeleted: "Container was deleted and it`s extend data replaced with temporary object." };
 Object.freeze(EMPTY_NODE_EXTEND_DATA);
+
+export { constructRecursive };
 /// #endif
 
 /// #if DEBUG

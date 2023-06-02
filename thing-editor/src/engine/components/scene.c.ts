@@ -43,9 +43,8 @@ export default class Scene extends Container {
 	}
 
 	init() {
-		super.init();
 		this._refreshAllObjectRefs();
-		game._setCurrentScene(this);
+		super.init();
 	}
 
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy

@@ -3,32 +3,36 @@
 	"p": {
 		"name": "__system/gizmo",
 		"x": -22,
-		"y": 6,
-		"__lockSelection": true
+		"y": 6
 	},
 	":": [
 		{
-			"c": "Shape",
+			"c": "___GizmoArrow",
 			"p": {
 				"name": "xy-axis",
-				"y": -16,
+				"x": -1,
+				"y": -23,
 				"interactive": true,
-				"width": 16,
-				"height": 16,
+				"width": 24,
+				"height": 24,
 				"shapeFillAlpha": 0.2,
 				"shapeFillColor": 16744193,
 				"shapeLineWidth": 2,
 				"shapeLineColor": 16744193,
-				"shapeLineAlignment": 0
+				"shapeLineAlignment": 0,
+				"dragX": true,
+				"dragY": true
 			}
 		},
 		{
-			"c": "Shape",
+			"c": "___GizmoArrow",
 			"p": {
 				"name": "y-axis",
 				"interactive": true,
 				"shape": 4,
 				"shapeFillColor": 8308231,
+				"dragY": true,
+				"cursor": "ns-resize",
 				"_shapePoints": [
 					{
 						"x": -1,
@@ -53,6 +57,61 @@
 					{
 						"x": 1,
 						"y": -1
+					},
+					{
+						"x": -1,
+						"y": 1
+					}
+				]
+			},
+			":": [
+				{
+					"c": "Shape",
+					"p": {
+						"x": -3,
+						"y": -89,
+						"visible": false,
+						"isItHitArea": true,
+						"width": 6,
+						"height": 73
+					}
+				}
+			]
+		},
+		{
+			"c": "___GizmoArrow",
+			"p": {
+				"name": "x-axis",
+				"rotation": 1.5707963267948966,
+				"interactive": true,
+				"shape": 4,
+				"shapeFillColor": 14758734,
+				"dragX": true,
+				"cursor": "ew-resize",
+				"_shapePoints": [
+					{
+						"x": -1,
+						"y": -75
+					},
+					{
+						"x": -4,
+						"y": -76
+					},
+					{
+						"x": 0,
+						"y": -89
+					},
+					{
+						"x": 4,
+						"y": -76
+					},
+					{
+						"x": 1,
+						"y": -75
+					},
+					{
+						"x": 1,
+						"y": 1
 					},
 					{
 						"x": -1,
@@ -66,52 +125,13 @@
 					"p": {
 						"x": -3,
 						"y": -89,
+						"visible": false,
 						"isItHitArea": true,
 						"width": 6,
 						"height": 73
 					}
 				}
 			]
-		},
-		{
-			"c": "Shape",
-			"p": {
-				"name": "x-axis",
-				"rotation": 1.5707963267948966,
-				"interactive": true,
-				"shape": 4,
-				"shapeFillColor": 14758734,
-				"_shapePoints": [
-					{
-						"x": -1,
-						"y": -75
-					},
-					{
-						"x": -4,
-						"y": -76
-					},
-					{
-						"x": 0,
-						"y": -89
-					},
-					{
-						"x": 4,
-						"y": -76
-					},
-					{
-						"x": 1,
-						"y": -75
-					},
-					{
-						"x": 1,
-						"y": -1
-					},
-					{
-						"x": -1,
-						"y": -1
-					}
-				]
-			}
 		}
 	]
 }

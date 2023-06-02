@@ -56,6 +56,8 @@ interface NodeExtendData {
 	objectDeleted?: string;
 
 	__allRefsDeletionValidator?: number;
+
+	__isJustCloned?: boolean;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;
@@ -81,7 +83,7 @@ interface SourceMappedConstructor extends Constructor {
 	__editableProps: EditablePropertyDesc[];
 	__EDITOR_tip?: string; //TODO
 	__isScene: boolean;
-	__sourceCode?: string[];
+	__sourceCode: string[];
 	__canAcceptChild: (Class: SourceMappedConstructor) => boolean; //TODO
 	__beforeChangeToThisType?: (o: Container) => void;
 

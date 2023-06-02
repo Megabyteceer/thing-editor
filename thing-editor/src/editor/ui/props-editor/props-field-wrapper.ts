@@ -1,10 +1,12 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, Component, ComponentChild, h } from "preact";
-import { KeyedObject } from "thing-editor/src/editor/env";
+import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import { EditablePropertyDesc, EditablePropertyType } from "thing-editor/src/editor/props-editor/editable";
+import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -28,6 +30,58 @@ interface PropsFieldWrapperState {
 
 }
 
+const CAN_COPY_VALUES_OF_TYPE: EditablePropertyType[] = [
+	'data-path',
+	'callback',
+	'color',
+	'string',
+	'prefab',
+	'number'
+]
+
+const onContextMenu = (field: EditablePropertyDesc, value: any, ev: PointerEvent) => {
+	const defaultValue = (game.editor.selection[0].constructor as SourceMappedConstructor).__defaultValues[field.name];
+
+	showContextMenu([
+		{
+			name: R.fragment(R.icon('copy'), "Copy value"),
+			onClick: () => { game.editor.copyToClipboard(value) },
+			disabled: CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
+		},
+		{
+			name: R.fragment(R.icon('paste'), "Paste value"),
+			onClick: () => {
+				navigator.clipboard.readText().then(text => {
+					let val: any;
+					if(field.type === 'color' || field.type === 'number') {
+						val = parseFloat(text) || 0;
+					} else {
+						val = text;
+					}
+					game.editor.onSelectedPropsChange(field, val);
+				});
+			},
+			disabled: CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
+		}, {
+			name: R.fragment(R.icon('copy'), "Copy property name"),
+			onClick: () => { game.editor.copyToClipboard(field.name) }
+		},
+		null,
+		{
+			name: "Go to definition >>",
+			onClick: () => {
+				game.editor.editSource(field.__src);
+			}
+		},
+		null,
+		{
+			name: R.fragment(R.icon('reject'), 'Reset "' + field.name + '" value to default ' + defaultValue),
+			onClick: () => { editorUtils.resetValueOfField(field) },
+			disabled: defaultValue === undefined || value === defaultValue
+		},
+
+	], ev)
+};
 
 export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps, PropsFieldWrapperState> {
 
@@ -115,7 +169,10 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 		return R.div({
 			className, id: 'property-editor-' + field.name.replace('.', '_'),
 			title: field.name,
-			'data-help': field.helpUrl
+			'data-help': field.helpUrl,
+			onContextMenu: (ev: PointerEvent) => {
+				onContextMenu(field, value, ev);
+			}
 		},
 			tip,
 			R.div({

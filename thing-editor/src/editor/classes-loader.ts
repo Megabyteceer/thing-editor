@@ -9,7 +9,6 @@ import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAss
 import { Container, DisplayObject, Sprite, Text } from "pixi.js";
 import { Constructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { clearPropertyDifinitionCache } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import Scene from "thing-editor/src/engine/components/scene.c";
@@ -60,7 +59,7 @@ export default class ClassesLoader {
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
 
-				if(className.startsWith('_')) {
+				if(className.startsWith('_') && !className.startsWith('__')) {
 					className = className.substring(1);
 				}
 
@@ -158,7 +157,6 @@ export default class ClassesLoader {
 					return;
 				}
 				const className = c.__className;
-				clearPropertyDifinitionCache(c);
 
 				if(classes[className]) {
 					game.editor.editClassSource(c);

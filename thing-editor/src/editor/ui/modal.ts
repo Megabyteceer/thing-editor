@@ -46,11 +46,11 @@ let contentProps = {
 	}
 };
 let errorProps = { className: 'error' };
-let notifyProps = { className: 'modal-notification' };
+let notifyProps = { className: 'modal-notification', style: { left: '0px', top: '0px' } };
 let notifyPropsDuringSpinner = { className: 'modal-notification modal-notification-centred' };
 
 let notifyText: string | Component | null;
-let notifyInterval: number | null;
+let notifyHideTimeout: number | null;
 
 let spinnerShowCounter = 0;
 
@@ -147,12 +147,14 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 
 	notify(txt: string | Component) {
 		notifyText = txt;
-		if(notifyInterval) {
-			clearInterval(notifyInterval);
-			notifyInterval = null;
+		notifyProps.style.left = game.editor.mouseX + "px";
+		notifyProps.style.top = game.editor.mouseY + "px";
+		if(notifyHideTimeout) {
+			clearTimeout(notifyHideTimeout);
+			notifyHideTimeout = null;
 		}
 		if(txt) {
-			notifyInterval = setInterval(() => {
+			notifyHideTimeout = setTimeout(() => {
 				notifyText = null;
 				this.refresh();
 			}, 1000);

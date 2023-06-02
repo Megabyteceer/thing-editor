@@ -99,15 +99,19 @@ const createWindow = () => {
 					event.returnValue = true;
 					return;
 				case 'fs/delete':
-					fs.unlinkSync(fn(fileName));
-					event.returnValue = true;
+					attemptFSOperation(() => {
+						fs.unlinkSync(fn(fileName));
+						return true;
+					}, event);
 					return;
 				case 'fs/saveFile':
-					ensureDirectoryExistence(fileName);
-					fd = fs.openSync(fn(fileName), 'w');
-					fs.writeSync(fd, content);
-					fs.closeSync(fd, () => { });
-					event.returnValue = true;
+					attemptFSOperation(() => {
+						ensureDirectoryExistence(fileName);
+						fd = fs.openSync(fn(fileName), 'w');
+						fs.writeSync(fd, content);
+						fs.closeSync(fd, () => { });
+						return fs.statSync(fn(fileName)).mtimeMs;
+					}, event);
 					return;
 				case 'fs/readFile':
 					fd = fs.openSync(fn(fileName), 'r');
@@ -174,6 +178,25 @@ const createWindow = () => {
 		loadEditorIndexHTML();
 	}
 };
+
+/** @param ev {Electron.IpcMainEvent} */
+function attemptFSOperation(cb, ev) {
+	let timeout = 20;
+
+	const attempt = () => {
+		try {
+			let res = cb();
+			ev.returnValue = res;
+		} catch(er) {
+			if(timeout-- > 0) {
+				setTimeout(attempt, 1000);
+			} else {
+				ev.returnValue = ev;
+			}
+		}
+	};
+	attempt();
+}
 
 app.whenReady().then(() => {
 	createWindow()

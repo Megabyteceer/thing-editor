@@ -1,6 +1,7 @@
 import { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env.js";
-import game from "../game.js";
 import { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction.js";
+import game from "../game.js";
+
 
 var elem = document.documentElement;
 
@@ -57,8 +58,21 @@ export default class FullScreen {
 
 
 /// #if EDITOR
+
+
 (FullScreen as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (FullScreen.open as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (FullScreen.close as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (FullScreen.toggle as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+
+const ButtonOnlyPropertyDesc = {
+	get: () => {
+		return !game.editor.currentPathChoosingField || game.editor.currentPathChoosingField.name.toLocaleLowerCase().indexOf('click') < 0; // TODO check if button can choose it
+	}
+}
+
+Object.defineProperty(FullScreen.toggle, '___EDITOR_isHiddenForChooser', ButtonOnlyPropertyDesc);
+Object.defineProperty(FullScreen.open, '___EDITOR_isHiddenForChooser', ButtonOnlyPropertyDesc);
+Object.defineProperty(FullScreen.close, '___EDITOR_isHiddenForChooser', ButtonOnlyPropertyDesc);
+
 /// #endif

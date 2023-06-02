@@ -5,66 +5,58 @@
 	},
 	":": [
 		{
-			"c": "Container",
+			"c": "MovieClip",
 			"p": {
-				"name": "fader"
-			},
-			":": [
-				{
-					"c": "MovieClip",
-					"p": {
-						"x": 640,
-						"y": 360,
-						"scale.x": 80,
-						"scale.y": 45,
-						"image": "WHITE",
-						"tint": 0,
-						"timeline": {
-							"l": {
-								"hide fader": 120
-							},
-							"p": 0.02,
-							"d": 0.85,
-							"f": [
+				"x": 640.0000000000001,
+				"y": 360.00000000000006,
+				"scale.x": 80,
+				"scale.y": 45,
+				"image": "WHITE",
+				"tint": 0,
+				"timeline": {
+					"l": {
+						"hide fader": 120
+					},
+					"p": 0.02,
+					"d": 0.85,
+					"f": [
+						{
+							"n": "alpha",
+							"t": [
 								{
-									"n": "alpha",
-									"t": [
-										{
-											"v": 0,
-											"t": 0,
-											"m": 1
-										},
-										{
-											"v": 1,
-											"t": 11,
-											"m": 1,
-											"a": "faderShoot"
-										},
-										{
-											"v": 1,
-											"t": 69,
-											"m": 1,
-											"a": "this.stop"
-										},
-										{
-											"v": 1,
-											"t": 122,
-											"m": 1
-										},
-										{
-											"v": 0,
-											"t": 131,
-											"m": 1,
-											"a": "faderEnd"
-										}
-									]
+									"v": 0,
+									"t": 0,
+									"m": 1
+								},
+								{
+									"v": 1,
+									"t": 11,
+									"m": 1,
+									"a": "faderShoot"
+								},
+								{
+									"v": 1,
+									"t": 69,
+									"m": 1,
+									"a": "this.stop"
+								},
+								{
+									"v": 1,
+									"t": 122,
+									"m": 1
+								},
+								{
+									"v": 0,
+									"t": 131,
+									"m": 1,
+									"a": "faderEnd"
 								}
 							]
-						},
-						"__previewFrame": 8
-					}
-				}
-			]
+						}
+					]
+				},
+				"__previewFrame": 8
+			}
 		}
 	]
 }

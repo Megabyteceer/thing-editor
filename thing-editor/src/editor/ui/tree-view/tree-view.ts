@@ -3,8 +3,10 @@ import { ClassAttributes } from "preact";
 import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
+import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { renderSceneNode } from "thing-editor/src/editor/ui/tree-view/tree-node";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
 import Selection from "thing-editor/src/editor/utils/selection";
@@ -34,9 +36,20 @@ function addSearchEntry(o: Container, propertyName: string) {
 	a.push(propertyName);
 }
 
+const onContextMenu = (ev: PointerEvent) => {
+	showContextMenu([
+		{
+			name: R.fragment(R.icon('paste'), "Paste"),
+			onClick: editorUtils.onPasteClick,
+			disabled: !editorUtils.canPaste()
+		}
+	], ev);
+};
+
 const treeViewProps = {
 	className: 'scene-tree-view window-scrollable-content',
-	onMouseDown: onEmptyClick
+	onMouseDown: onEmptyClick,
+	onContextMenu
 };
 
 interface TreeViewProps extends ClassAttributes<TreeView> {

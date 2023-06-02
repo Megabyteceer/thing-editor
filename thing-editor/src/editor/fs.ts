@@ -16,7 +16,6 @@ interface FileDesc {
 	lib: string | null; //TODO
 
 	asset: SourceMappedConstructor | SerializedObject | Texture
-
 };
 
 interface FileDescClass extends FileDesc {
@@ -89,12 +88,15 @@ const execFs = (command: string, filename?: string, content?: string, ...args: a
 	return ret;
 }
 
+let lastAssetsDirs: string[];
+
 export default class fs {
 
 	static getAssetsList(assetType?: AssetType.IMAGE): FileDesc[]; //TODO IMAge
 	static getAssetsList(assetType?: AssetType.CLASS): FileDescClass[];
 	static getAssetsList(assetType?: AssetType.SCENE): FileDescScene[];
 	static getAssetsList(assetType?: AssetType.PREFAB): FileDescPrefab[];
+	static getAssetsList(assetType?: AssetType): FileDesc[];
 	static getAssetsList(assetType: AssetType | null = null): FileDesc[] {
 		if(assetType === null) {
 			return allAssets;
@@ -117,6 +119,7 @@ export default class fs {
 	static getFileByAssetName(assetName: string, assetType: AssetType.PREFAB): FileDescPrefab;
 	static getFileByAssetName(assetName: string, assetType: AssetType.SOUND): FileDesc;
 	static getFileByAssetName(assetName: string, assetType: AssetType.CLASS): FileDescClass;
+	static getFileByAssetName(assetName: string, assetType: AssetType): FileDesc;
 	static getFileByAssetName(assetName: string, assetType: AssetType): FileDesc {
 		return assetsByTypeByName.get(assetType)!.get(assetName) as FileDesc;
 	}
@@ -129,16 +132,34 @@ export default class fs {
 		return game.editor.currentProjectAssetsDir + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
 	}
 
-	static saveFile(fileName: string, data: string | Blob | KeyedObject) {
+	/** returns new mTime */
+	static saveFile(fileName: string, data: string | Blob | KeyedObject): number {
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fs.fieldsFilter, '	');
 		}
-
-		return execFs('fs/saveFile', fileName, data as string);
+		return execFs('fs/saveFile', fileName, data as string) as number;
 	}
 
 	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject) {
-		return fs.saveFile(fs.assetNameToFileName(assetName, assetType), data);
+		const fileName = fs.assetNameToFileName(assetName, assetType);
+		const mTime = fs.saveFile(fileName, data);
+		const file = fs.getFileByAssetName(assetName, assetType);
+		if(file) {
+			file.mTime = mTime;
+			file.asset = data as SerializedObject;
+		} else {
+			const newFile = {
+				asset: data as SerializedObject,
+				assetType,
+				assetName,
+				lib: null,
+				mTime,
+				fileName
+			}
+			fs.getAssetsList(assetType).push(newFile);
+			allAssets.push(newFile);
+		}
+		return mTime;
 	}
 
 	static deleteFile(fileName: string) {
@@ -146,6 +167,9 @@ export default class fs {
 	}
 
 	static deleteAsset(assetName: string, assetType: AssetType) {
+		allAssets.splice(allAssets.findIndex(f => f.assetName === assetName), 1);
+		let list = fs.getAssetsList(assetType);
+		list.splice(list.findIndex(f => f.assetName === assetName), 1);
 		return fs.deleteFile(fs.assetNameToFileName(assetName, assetType));
 	}
 
@@ -165,7 +189,8 @@ export default class fs {
 		return execFs('fs/enumProjects') as ProjectDesc[];
 	}
 
-	static refreshAssetsList(dirNames: string[]) {
+	static refreshAssetsList(dirNames: string[] = lastAssetsDirs) {
+		lastAssetsDirs = dirNames;
 		for(let map of allAssetsMaps) {
 			map.clear();
 		}

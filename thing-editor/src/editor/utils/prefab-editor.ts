@@ -1,25 +1,14 @@
-import { Container, Sprite, Texture } from "pixi.js";
+import { Container } from "pixi.js";
 import { ComponentChild } from "preact";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
+import Shape from "thing-editor/src/engine/components/shape.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
 let prefabsStack: string[] = [];
-let previewBlackout: Sprite;
-
-const blackouts: Sprite[] = [];
-
-function createBlackout() {
-	let b = Lib._loadClassInstanceById('Sprite');
-	b.texture = Texture.WHITE;
-	b.tint = 30;
-	b.alpha = 0.9;
-	b.__nodeExtendData.hidden = true;
-	blackouts.push(b); //TODO resize blackout to cover viewport always without any seams
-	return b;
-}
+let previewBlackout: Shape;
 
 function getCurrentPrefabName() {
 	return prefabsStack[prefabsStack.length - 1];
@@ -49,22 +38,18 @@ export default class PrefabEditor {
 	}
 
 	static get BGColor() {
-		return previewBlackout.tint;
+		return previewBlackout.shapeFillColor;
 	}
 
-	static set BGColor(tint: number) {
-		if(tint === undefined) {
-			tint = 30;
-		} else if(this.currentPrefabName) {
-			game.editor.settings.setItem('prefab-bg' + this.currentPrefabName, tint);
-		}
-
-		previewBlackout.tint = tint;
+	static set BGColor(val: number) {
+		game.editor.settings.setItem('prefab-bg' + this.currentPrefabName, val);
+		previewBlackout.shapeFillColor = val;
 	}
 
 	static showPreview(object: Container) {
 		if(!previewBlackout) {
-			previewBlackout = createBlackout();
+			previewBlackout = Lib.loadPrefab('__system/backdrop') as Shape;
+			previewBlackout.__nodeExtendData.hidden = true;
 		}
 		//TODO this.exitIsolation();
 		game.editor.ui.viewport.resetZoom();

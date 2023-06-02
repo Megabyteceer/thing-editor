@@ -1,18 +1,38 @@
 import { Container, Sprite } from "pixi.js";
+import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
+
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
+import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-access-to-node";
 import Selection from "thing-editor/src/editor/utils/selection";
+import __GizmoArrow from "thing-editor/src/engine/components/__system/gizmo-arrow.c";
 import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 
 let selectionDisabled = false;
 let isViewPortScrolling = false;
 let scrollingX = 0;
 let scrollingY = 0;
 let isolation: Container[] = [];
-let isPreviewShowed = false;
 
 let rightButtonDraggingStarted = false;
 
-const initializeOverlay = () => {
+const overlayLayer = new Container();
+
+function initializeGizmo() {
+	protectAccessToSceneNode(overlayLayer, 'gizmoLayer');
+	game.stage.parent.addChild(overlayLayer);
+	game.__EDITOR_mode = false;
+	const gizmo = Lib.loadPrefab('__system/gizmo');
+	game.__EDITOR_mode = true;
+	overlayLayer.addChild(gizmo);
+
+	game.pixiApp.ticker.add(() => {
+		overlayLayer.update();
+	});
+}
+
+editorEvents.once('didProjectOpen', () => {
 
 	window.addEventListener('mousedown', function onMouseDown(ev: MouseEvent) {
 		if(game.pixiApp && (ev.target === game.pixiApp.view)) {
@@ -24,7 +44,7 @@ const initializeOverlay = () => {
 				moveSelectionTo(ev);
 				rightButtonDraggingStarted = true;
 			} else {
-				if(!selectionDisabled && ev.buttons === 1) {
+				if(!selectionDisabled && ev.buttons === 1 && !__GizmoArrow.overedArrow) {
 					selectByStageClick(ev);
 				}
 			}
@@ -84,8 +104,10 @@ const initializeOverlay = () => {
 			game.editor.ui.viewport.refreshCameraFrame();
 		}
 	});
-};
 
+	initializeGizmo();
+
+});
 
 function moveSelectionTo(ev: MouseEvent) {
 	if(game.editor.selection.length > 0) {
@@ -146,7 +168,7 @@ function selectByStageClick(ev: MouseEvent) {
 	if(isolation.length > 0) {
 		a = isolation;
 	} else {
-		a = [isPreviewShowed ? game.currentContainer : game.stage];
+		a = [PrefabEditor.currentPrefabName ? game.currentContainer : game.stage];
 	}
 	for(let c of a) {
 		checkNodeToSelect(c);
@@ -172,4 +194,4 @@ function selectByStageClick(ev: MouseEvent) {
 	previousAllUnderMouse = allUnderMouse;
 }
 
-export default initializeOverlay;
+export default overlayLayer;

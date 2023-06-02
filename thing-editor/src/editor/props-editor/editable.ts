@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import { Container, DisplayObject } from "pixi.js";
 import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
@@ -19,7 +19,7 @@ type EditablePropertyType = 'data-path' |
 	'pow-damp-preset' |
 	'number';
 
-interface EditablePropertyDescRaw<T extends Container> {
+interface EditablePropertyDescRaw<T extends DisplayObject> {
 	min?: number,
 	max?: number,
 	step?: number,
@@ -69,7 +69,7 @@ interface EditablePropertyDesc<T extends Container = Container> extends Editable
 }
 
 /** editable property decorator */
-function editable<T extends Container>(editablePropertyDesc?: EditablePropertyDescRaw<T>) {
+function editable<T extends DisplayObject>(editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 	return function (target: T, propertyName: string, _descriptor?: PropertyDescriptor<T>) {
 		editableInner(target, propertyName, editablePropertyDesc);
 	}
@@ -77,7 +77,7 @@ function editable<T extends Container>(editablePropertyDesc?: EditablePropertyDe
 
 /* Allows to define editable properties to the classes we has no access to source code.
 To define editable properties for your own classes, please use '@editable()' decorator instead */
-function _editableEmbed<T extends Container>(target: Constructor | Constructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
+function _editableEmbed<T extends DisplayObject>(target: Constructor | Constructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 	if(Array.isArray(target)) {
 		for(let t of target) {
 			editableInner(t.prototype, propertyName, editablePropertyDesc);
@@ -87,7 +87,7 @@ function _editableEmbed<T extends Container>(target: Constructor | Constructor[]
 	}
 }
 
-function editableInner<T extends Container>(target: T, name: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
+function editableInner<T extends DisplayObject>(target: T, name: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 
 	if(!target.constructor.hasOwnProperty('__editableProps')) {
 		(target.constructor as SourceMappedConstructor).__editableProps = [];

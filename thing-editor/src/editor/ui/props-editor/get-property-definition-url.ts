@@ -3,7 +3,7 @@ import fs from "thing-editor/src/editor/fs";
 
 
 const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: SourceMappedConstructor): string => {
-	if(!Class.__sourceCode) {
+	if(!Class.hasOwnProperty('__sourceCode')) {
 		Class.__sourceCode = fs.readFile(fileName).split('\n');
 	}
 
@@ -11,6 +11,8 @@ const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: So
 
 	let fieldRegExp1 = new RegExp('\\s*((set|get)\\s+)*' + fieldName + '[\\s=;:\\(]');
 	let fieldRegExp2 = new RegExp('_editableEmbed\\(\\S+,\\s*[\'"`]' + fieldName + '[\'"`]');
+	let fieldRegExp3 = new RegExp('\\.prototype, [\'"`]' + fieldName + '[\'"`]');
+
 	src.some((line, i) => {
 		var match = fieldRegExp1.exec(line);
 		if(match) {
@@ -24,13 +26,14 @@ const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: So
 			fileName += ':' + (i + 1) + ':' + (match.index + 1);
 			return true;
 		}
+		match = fieldRegExp3.exec(line);
+		if(match) {
+			fileName += ':' + (i + 1) + ':' + (match.index + 1);
+			return true;
+		}
 	});
 
 	return fileName;
 }
 
-const clearPropertyDifinitionCache = (Class: SourceMappedConstructor) => {
-	Class.__sourceCode = undefined;
-}
-
-export { getPropertyDefinitionUrl, clearPropertyDifinitionCache };
+export { getPropertyDefinitionUrl };

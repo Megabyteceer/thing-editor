@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, h } from "preact";
+
 import { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
@@ -15,6 +16,8 @@ import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-edit
 import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
 import TimelineSelectFrame from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-select-frame";
 import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
+import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
+import increaseNumberInName from "thing-editor/src/editor/utils/increase-number-in-name";
 import shakeDomElement from "thing-editor/src/editor/utils/shake-element";
 import { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from "thing-editor/src/engine/components/movie-clip/field-player";
 import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
@@ -121,11 +124,6 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		this._afterHistoryJump = this._afterHistoryJump.bind(this);
 		this.horizontalZoomIn = this.horizontalZoomIn.bind(this);
 		this.horizontalZoomOut = this.horizontalZoomOut.bind(this);
-
-		game.editor.events.off('beforePropertyChanged', Timeline.onBeforePropertyChanged);
-		game.editor.events.off('afterPropertyChanged', Timeline.onAfterPropertyChanged);
-		game.editor.events.on('beforePropertyChanged', Timeline.onBeforePropertyChanged);
-		game.editor.events.on('afterPropertyChanged', Timeline.onAfterPropertyChanged);
 	}
 
 	static get isElementsSelected() {
@@ -983,12 +981,12 @@ function createKeyframe(o: MovieClip, name: string, time: number, field: Timelin
 		let nameStep = increaseNumberInName(prevField.v as string, 1) === o.image ? 1 : -1;
 		let nextName = increaseNumberInName(prevField.v as string, nameStep);
 		if((nextName !== prevField.v) && (nextName === o.image)) {
-			if(Lib.hasTexture(increaseNumberInName(o.image, nameStep))) {
+			if(Lib.hasTexture(increaseNumberInName(o.image, nameStep)!)) {
 				game.editor.ui.modal.showEditorQuestion("Animation generator", "Do you want to create keyframes for all same images?",
 					() => {
 						let image = o.image;
 						while(true) {// eslint-disable-line no-constant-condition
-							image = increaseNumberInName(image, nameStep);
+							image = increaseNumberInName(image, nameStep)!;
 							if(Lib.hasTexture(image)) {
 								time += step;
 								o[name] = image;
@@ -1006,22 +1004,6 @@ function createKeyframe(o: MovieClip, name: string, time: number, field: Timelin
 	field.t.push(keyFrame);
 	Timeline.fieldDataChanged(field, o);
 	return keyFrame;
-}
-
-function increaseNumberInName(name: string, step = 1) {
-	let regex = /(\d+)(?!.*\d)/gm;
-	let a = regex.exec(name);
-	if(a) {
-		let oldNum = a.pop()!;
-		let newNum = (parseInt(oldNum) + step).toString();
-		while(newNum.length < oldNum.length) {
-			newNum = '0' + newNum;
-		}
-		a.shift();
-		let n = name.lastIndexOf(oldNum);
-		return name.substr(0, n) + newNum + name.substr(n + oldNum.length);
-	}
-	return name;
 }
 
 let draggingComponent: TimelineSelectable | null;
@@ -1124,3 +1106,6 @@ function selectElementsInRectangle(rect: DOMRect, shiftKey = false) {
 	timelineInstance.onMouseUp({} as any);
 	timelineInstance.refresh();
 }
+
+editorEvents.on('beforePropertyChanged', Timeline.onBeforePropertyChanged);
+editorEvents.on('afterPropertyChanged', Timeline.onAfterPropertyChanged);

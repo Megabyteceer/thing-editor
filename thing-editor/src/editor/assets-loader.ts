@@ -14,7 +14,6 @@ export default class AssetsLoader {
 		for(const file of scenesFiles) {
 			file.asset = fs.readJSONFile(file.fileName)
 			Lib.scenes[file.assetName] = file.asset;
-
 		}
 
 		let prefabsFiles = fs.getAssetsList(AssetType.PREFAB) as FileDescPrefab[];

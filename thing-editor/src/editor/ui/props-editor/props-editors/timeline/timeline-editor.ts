@@ -19,7 +19,6 @@ interface TimelineEditorState {
 	toggled: boolean;
 }
 
-
 export default class TimelineEditor extends Component<TimelineEditorProps, TimelineEditorState> {
 
 	constructor(props: TimelineEditorProps) {

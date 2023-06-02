@@ -5,6 +5,7 @@ interface ContextMenuItem {
 	name: ComponentChild,
 	onClick: () => void,
 	disabled?: boolean,
+	hidden?: boolean,
 	tip?: string
 }
 
@@ -16,14 +17,19 @@ const hideMenu = () => {
 }
 
 let menuShown = false;
+let hideMenuTimeout: number;
 
 window.addEventListener('pointerdown', () => {
 	if(menuShown) {
-		setTimeout(hideMenu, 10);
+		hideMenuTimeout = setTimeout(hideMenu, 10);
 	}
 });
 
 const showContextMenu = (menuTemplate: (ContextMenuItem | null)[], ev: PointerEvent) => {
+	if(hideMenuTimeout) {
+		clearTimeout(hideMenuTimeout);
+		hideMenuTimeout = 0;
+	}
 	render(R.div({
 		className: 'context-menu',
 		onMouseLeave: hideMenu,
@@ -38,8 +44,13 @@ const showContextMenu = (menuTemplate: (ContextMenuItem | null)[], ev: PointerEv
 export default showContextMenu;
 
 function renderMenuItem(item: ContextMenuItem | null) {
+
 	if(item) {
-		return R.btn(item.name, item.onClick, item.tip, undefined, undefined, item.disabled);
+		if(item.disabled) {
+			return R.fragment();
+		} else {
+			return R.btn(item.name, item.onClick, item.tip);
+		}
 	} else {
 		return R.hr();
 	}

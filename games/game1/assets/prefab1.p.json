@@ -2,14 +2,16 @@
 	"c": "Bunny",
 	"p": {
 		"name": "prefab1",
-		"x": 703,
-		"y": 119,
+		"x": 670,
+		"y": 60,
 		"image": "bunny.png"
 	},
 	":": [
 		{
 			"c": "MovieClip",
 			"p": {
+				"x": 27,
+				"y": 25,
 				"image": "bunny.png",
 				"timeline": {
 					"l": {},

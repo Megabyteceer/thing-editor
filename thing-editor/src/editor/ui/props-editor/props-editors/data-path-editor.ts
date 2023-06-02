@@ -108,6 +108,8 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	startChoosing() {
+		game.editor.currentPathChoosingField = this.props.field!;
+
 		let path: string[];
 		let parent: KeyedObject = game;
 		_rootParent = parent;
@@ -270,6 +272,11 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 				};
 
 				if(isChild) {
+					items.forEach(i => {
+						if(i.nameOfChild === pureName) {
+							item.refusedBecause = i.refusedBecause = "Refused because more that one object with that name present in container";
+						}
+					});
 					item.nameOfChild = pureName;
 				} else {
 					item.pureName = pureName;

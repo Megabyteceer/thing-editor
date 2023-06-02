@@ -3,6 +3,7 @@ import fs, { FileDescClass } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
@@ -34,12 +35,27 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 			}
 		},
 		{
+			name: "Wrap",
+			tip: "Wraps selected content with a '" + file.assetName + "'",
+			onClick: () => {
+				editorUtils.wrapSelected(file.asset);
+			}
+		},
+		null,
+		{
+			name: R.fragment(R.icon('copy'), "Copy class name"),
+			onClick: () => {
+				game.editor.copyToClipboard(file.asset.__className);
+			}
+		},
+		{
 			name: "Go to Source code >>>",
 			tip: "Double click on class to go to it`s source code.",
 			onClick: () => {
 				game.editor.editClassSource(file.asset);
 			}
 		},
+		null,
 		{
 			name: R.fragment(R.icon('delete'), " Delete..."),
 			onClick: () => {
@@ -50,12 +66,11 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 						R.div(null, 'You about to delete class'),
 						renderClass(file)
 					), () => {
-						fs.deleteFile(file.fileName);
+						fs.deleteAsset(file.assetName, file.assetType);
 					}, R.fragment(R.icon('delete'), " Delete.")
 				);
 			}
-		},
-		null
+		}
 	], ev);
 }
 

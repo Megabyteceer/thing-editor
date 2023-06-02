@@ -2,7 +2,8 @@
 	"c": "Scene",
 	"p": {
 		"name": "main",
-		"__description": ""
+		"__description": "",
+		"backgroundColor": 1638400
 	},
 	":": [
 		{
@@ -21,24 +22,24 @@
 							"n": "y",
 							"t": [
 								{
-									"v": 301,
+									"v": 27,
 									"t": 0,
 									"r": -52
 								},
 								{
-									"v": 572,
+									"v": 298,
 									"t": 42,
 									"r": -52,
 									"a": "showModal`prefab1",
 									"j": 7
 								},
 								{
-									"v": 572,
+									"v": 298,
 									"t": 52,
 									"a": "showModal`prefab1"
 								},
 								{
-									"v": 569.6659171008175,
+									"v": 295.6659171008175,
 									"t": 88,
 									"m": 2
 								}
@@ -48,12 +49,12 @@
 							"n": "x",
 							"t": [
 								{
-									"v": 464,
+									"v": 68,
 									"t": 0,
 									"r": -52
 								},
 								{
-									"v": 761,
+									"v": 365,
 									"t": 74,
 									"j": 25
 								}
@@ -66,19 +67,34 @@
 			}
 		},
 		{
-			"c": "Bunny",
+			"c": "Container",
 			"p": {
-				"x": 165,
-				"y": 267,
-				"image": "bunny.png"
-			}
+				"name": "obj1"
+			},
+			":": [
+				{
+					"c": "Bunny",
+					"p": {
+						"name": "obj2",
+						"x": 355,
+						"y": 426,
+						"image": "bunny.png"
+					}
+				},
+				{
+					"c": "Bunny",
+					"p": {
+						"name": "obj2",
+						"x": 355,
+						"y": 426,
+						"image": "bunny.png"
+					}
+				}
+			]
 		},
 		{
 			"c": "Sprite",
 			"p": {
-				"x": 175,
-				"y": 199,
-				"rotation": 0.773,
 				"image": "bunny.png"
 			},
 			":": [
@@ -94,88 +110,9 @@
 				{
 					"c": "Shape",
 					"p": {
-						"x": -19,
-						"y": -166,
+						"x": -1,
+						"y": 201,
 						"__description": "awdawdawdawd",
-						"_shapePoints": [
-							{
-								"x": -1,
-								"y": -75
-							},
-							{
-								"x": -4,
-								"y": -76
-							},
-							{
-								"x": 0,
-								"y": -89
-							},
-							{
-								"x": 4,
-								"y": -76
-							},
-							{
-								"x": 1,
-								"y": -75
-							},
-							{
-								"x": 1,
-								"y": -1
-							},
-							{
-								"x": -1,
-								"y": -1
-							}
-						]
-					}
-				},
-				{
-					"c": "Shape",
-					"p": {
-						"name": "gizmo",
-						"x": 96,
-						"y": 52,
-						"shape": 4,
-						"_shapePoints": [
-							{
-								"x": -1,
-								"y": -75
-							},
-							{
-								"x": -4,
-								"y": -76
-							},
-							{
-								"x": 0,
-								"y": -89
-							},
-							{
-								"x": 4,
-								"y": -76
-							},
-							{
-								"x": 1,
-								"y": -75
-							},
-							{
-								"x": 1,
-								"y": -1
-							},
-							{
-								"x": -1,
-								"y": -1
-							}
-						]
-					}
-				},
-				{
-					"c": "Shape",
-					"p": {
-						"name": "gizmo",
-						"x": 88,
-						"y": 119,
-						"rotation": 1.5707963267948966,
-						"shape": 4,
 						"_shapePoints": [
 							{
 								"x": -1,
@@ -209,6 +146,15 @@
 					}
 				}
 			]
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 69,
+				"y": 358,
+				"image": "bunny.png",
+				"gravity": 1
+			}
 		},
 		{
 			"c": "Shape",
@@ -252,10 +198,8 @@
 		{
 			"c": "Shape",
 			"p": {
-				"name": "gizmo",
-				"x": 128,
-				"y": 202,
-				"shape": 4,
+				"__description": "awdawdawdawd",
+				"shapeFillAlpha": 0.3,
 				"_shapePoints": [
 					{
 						"x": -1,
@@ -291,12 +235,10 @@
 		{
 			"c": "Shape",
 			"p": {
-				"name": "gizmo",
-				"x": 415,
-				"y": 206,
-				"rotation": 1.5707963267948966,
-				"shape": 4,
-				"shapeFillColor": 3446741,
+				"x": 267,
+				"y": 160,
+				"__description": "awdawdawdawd",
+				"shapeFillAlpha": 0.3,
 				"_shapePoints": [
 					{
 						"x": -1,
@@ -330,21 +272,12 @@
 			}
 		},
 		{
-			"c": "Bunny",
-			"p": {
-				"x": 133,
-				"y": 430,
-				"image": "bunny.png",
-				"gravity": 1
-			}
-		},
-		{
 			"c": "Shape",
 			"p": {
-				"x": 213,
-				"y": 192,
+				"x": 391,
+				"y": 153,
 				"shape": 3,
-				"width": 62,
+				"height": 56,
 				"shapeFillAlpha": 0.39,
 				"shapeFillColor": 2245577,
 				"shapeLineWidth": 8,
@@ -382,10 +315,6 @@
 			}
 		},
 		{
-			"c": "Container",
-			"p": {}
-		},
-		{
 			"c": "MovieClip",
 			"p": {
 				"image": "bunny.png",
@@ -398,11 +327,11 @@
 							"n": "x",
 							"t": [
 								{
-									"v": 334,
+									"v": 244,
 									"t": 0
 								},
 								{
-									"v": 465,
+									"v": 375,
 									"t": 29,
 									"j": -21
 								}
@@ -412,11 +341,11 @@
 							"n": "y",
 							"t": [
 								{
-									"v": 355,
+									"v": 357,
 									"t": 0
 								},
 								{
-									"v": 459,
+									"v": 461,
 									"t": 17,
 									"j": -21
 								}
@@ -425,6 +354,10 @@
 					]
 				}
 			}
+		},
+		{
+			"c": "Shape",
+			"p": {}
 		}
 	]
 }
