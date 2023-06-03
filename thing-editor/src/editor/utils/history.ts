@@ -292,8 +292,8 @@ class HistoryUi extends ComponentDebounced {
 		}
 
 		return R.span(null,
-			R.btn('Undo', game.editor.history.undo, '(Ctrl + Z)', 'menu-btn', 1090, !instance.isUndoAvailable() || !game.__EDITOR_mode),
-			R.btn('Redo', game.editor.history.redo, '(Ctrl + Y)', 'menu-btn', 1089, !instance.isRedoAvailable() || !game.__EDITOR_mode),
+			R.btn('Undo', game.editor.history.undo, undefined, 'menu-btn', { key: 'z', ctrlKey: true }, !instance.isUndoAvailable() || !game.__EDITOR_mode),
+			R.btn('Redo', game.editor.history.redo, undefined, 'menu-btn', { key: 'y', ctrlKey: true }, !instance.isRedoAvailable() || !game.__EDITOR_mode),
 		);
 	}
 }

@@ -1,4 +1,5 @@
-import { Component, ComponentChild } from "preact";
+import { ClassAttributes, Component, ComponentChild } from "preact";
+import { Hotkey, KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
@@ -13,61 +14,86 @@ window.addEventListener("keydown", (ev) => {
 	}
 });
 
-const hotkeysBlockedWhenInputFocused = {
-	8: true,
-	13: true,
-	37: true,
-	38: true,
-	39: true,
-	40: true,
-	46: true,
-	90: true,
-	188: true,
-	190: true,
-	1067: true,
-	1088: true,
-	1086: true
+const hotkeysBlockedWhenInputFocused: KeyedObject = {
+	'Backspace': null,
+	'Enter': null,
+	'ArrowLeft': null,
+	'ArrowRight': null,
+	'ArrowUp': null,
+	'ArrowDown': null,
+	'Delete': null,
+	',': null,
+	'.': null,
+	'z': true,
+	'x': true,
+	'c': true,
+	'v': true,
 };
+
 function isHotkeyBlockedOnInput(btn: EditorButton) {
-	return btn.props.hotkey && hotkeysBlockedWhenInputFocused.hasOwnProperty(btn.props.hotkey);
+	const isCtrlRequired = hotkeysBlockedWhenInputFocused[btn.props.hotkey!.key];
+	if(isCtrlRequired === undefined || isCtrlRequired === null) {
+		return false;
+	}
+	return isCtrlRequired === btn.props.hotkey!.ctrlKey;
 }
 
-interface EditorButtonProps {
+interface EditorButtonProps extends ClassAttributes<EditorButton> {
 	label: ComponentChild
 	onClick: (ev: PointerEvent) => void
 	className?: string
 	title?: string
-	hotkey?: number
+	hotkey?: Hotkey
 	disabled?: boolean
 }
 
-class EditorButton extends Component<EditorButtonProps> {
+interface EditorButtonStats {
+	title?: string;
+}
+
+class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 
 	onKeyDown(e: KeyboardEvent) {
-		if(!this.props.hotkey) {
+		const hotkey = this.props.hotkey;
+		if(!hotkey) {
 			return;
 		}
-		let needCtrl = this.props.hotkey > 1000;
 
 		if(
 			this.props.disabled ||
-			((this.props.hotkey === 1067) && (window.getSelection() || '').toString()) ||
+			((hotkey.ctrlKey && hotkey.key === 'c') && (window.getSelection() || '').toString()) ||
 			(isEventFocusOnInputElement(e) && (isHotkeyBlockedOnInput(this))) ||
-			((this.props.hotkey !== 112) && game.editor.ui.modal.isUIBlockedByModal(this.base as HTMLElement)) // F1 - help hotkey works always
+			((hotkey.key !== 'F1') && game.editor.ui.modal.isUIBlockedByModal(this.base as HTMLElement)) // F1 - help hotkey works always
 		) {
 			return;
 		}
 
-		if((e.keyCode === (this.props.hotkey % 1000)) && (needCtrl === e.ctrlKey)) {
+		if((e.key === hotkey.key) && (e.ctrlKey === (hotkey.ctrlKey === true))) {
 			this.onMouseDown(e as unknown as PointerEvent);
 			sp(e);
 			return true;
 		}
 	}
 
-	constructor() {
+	constructor(props: EditorButtonProps) {
 		super();
-		this.state = {};
+		var title = props.title;
+		let hotkey = props.hotkey;
+		if(hotkey) {
+			let help = [];
+			if(hotkey.ctrlKey) {
+				help.push('Ctrl');
+			}
+			if(hotkey.altKey) {
+				help.push('Alt');
+			}
+			if(hotkey.shiftKey) {
+				help.push('Shift');
+			}
+			help.push('"' + hotkey.key.toUpperCase() + '"');
+			title = (title || '') + ' (' + help.join(' + ') + ')';
+		}
+		this.state = { title };
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
@@ -125,7 +151,7 @@ class EditorButton extends Component<EditorButtonProps> {
 			disabled: this.props.disabled,
 			className: (this.props.disabled ? 'unclickable ' : 'clickable ') + this.props.className,
 			onMouseDown: this.onMouseDown,
-			title: this.props.title
+			title: this.state.title
 		}, this.props.label);
 	}
 }

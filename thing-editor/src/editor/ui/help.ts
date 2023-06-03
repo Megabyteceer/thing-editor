@@ -51,7 +51,7 @@ export default class Help extends Component {
 		},
 			'Click any element and then press (F1) to see its description.',
 			'menu-btn',
-			112
+			{ key: 'F1' }
 		));
 	}
 }

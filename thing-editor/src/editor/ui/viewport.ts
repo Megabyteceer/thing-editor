@@ -190,7 +190,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 					R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 					R.hr(),
 					//TODO fileLibraryName ? R.libInfo(fileLibraryName, prefabFile.fileName).icon : undefined,
-					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes (Enter)', 'main-btn', 13),
+					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes (Enter)', 'main-btn', { key: 'Enter' }),
 					R.btn(R.icon('reject'), () => {
 						if(game.editor.isCurrentContainerModified) {
 							game.editor.ui.modal.showEditorQuestion(
@@ -202,7 +202,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 						} else {
 							PrefabEditor.exitPrefabEdit(true);
 						}
-					}, 'Reject prefab changes (Esc)', undefined, 27),
+					}, 'Reject prefab changes (Esc)', undefined, { key: 'Escape' }),
 					R.hr(),
 					R.input({
 						onInput: onBgColorChange,
@@ -216,10 +216,10 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 		} else {
 			let pauseResumeBtn, oneStepBtn;
 			if(game && !game.__EDITOR_mode) {
-				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume (Ctrl + P)", 'big-btn', 1080);
+				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume", 'big-btn', { key: 'p', ctrlKey: true });
 				if(game.__paused) {
 					statusHeader = R.div({ className: "red-blink" }, 'paused');
-					oneStepBtn = R.btn('One step', this.onOneStepClick, "(Ctrl + [)", 'big-btn', 1219);
+					oneStepBtn = R.btn('One step', this.onOneStepClick, undefined, 'big-btn', { key: '[', ctrlKey: true });
 				} else {
 					statusHeader = R.div(null, 'running');
 				}
@@ -229,7 +229,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 				R.span(panelProps,
 					reloadClassesBtn,
 					R.hr(),
-					R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop (Ctrl + Space)', 'big-btn', 1032),
+					R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop', 'big-btn', { key: ' ', ctrlKey: true }),
 					R.br(),
 					statusHeader,
 					pauseResumeBtn,

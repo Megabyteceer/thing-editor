@@ -1,6 +1,6 @@
 import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h } from 'preact';
-import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
+import { Hotkey, KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
 import assert from 'thing-editor/src/engine/debug/assert';
@@ -45,7 +45,7 @@ class R {
 	static smallSpace: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 
 
-	static btn(label: ComponentChild, onClick: (ev: PointerEvent) => void, title?: string, className?: string, hotkey?: number, disabled = false) {
+	static btn(label: ComponentChild, onClick: (ev: PointerEvent) => void, title?: string, className?: string, hotkey?: Hotkey, disabled = false) {
 		assert(typeof onClick === 'function', "Function as onClick handler expected.");
 		className = className || '';
 		return h(EditorButton, { label, onClick, className, title, hotkey, disabled });

@@ -80,7 +80,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 				} else {
 					game.editor.saveCurrentScene();
 				}
-			}, 'Save current Scene (Ctrl + S)', undefined, 1083),
+			}, 'Save current Scene', undefined, { key: 's', ctrlKey: true }),
 			//R.btn('Browse...', this.onOpenProjectFolderClick, "Reveal in File Explorer", 'menu-btn'),
 			//TODO   main menu tree  R.btn('Build', this.onBuildClick, "Build release version of game.", 'menu-btn'),
 			//R.btn('Build debug', this.onBuildDebugClick, "Build debug version of game.\nContains asserts.", 'menu-btn'),

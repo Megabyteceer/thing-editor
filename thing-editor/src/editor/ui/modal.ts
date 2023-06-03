@@ -132,7 +132,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		this.showModal(message, errorCode ?
 			R.span(null, R.icon('info'), errorCode, ' ', title, R.btn('?', () => {
 				Help.openErrorCodeHelp(errorCode);
-			}, 'Open description for this message (F1)', 'error-help-button', 112))
+			}, 'Open description for this message (F1)', 'error-help-button', { key: 'F1' }))
 			: title
 		);
 	}
@@ -196,7 +196,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 			if(onYes) {
 				onYes();
 			}
-		}, undefined, 'main-btn', 13);
+		}, undefined, 'main-btn', { key: 'Enter' });
 
 		let noBtn;
 		if(typeof onNo !== 'undefined') {
@@ -242,7 +242,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 			}
 			return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), errorCode, ' ', title, R.btn('?', () => {
 				Help.openErrorCodeHelp(errorCode);
-			}, 'Open description for this error (F1)', 'error-help-button', 112)), noEasyClose, toBottom);
+			}, 'Open description for this error (F1)', 'error-help-button', { key: 'F1' })), noEasyClose, toBottom);
 		}
 	}
 
@@ -269,7 +269,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 				if(m && !m.noEasyClose) {
 					modal.hideModal();
 				}
-			}, undefined, "modal-close-button hidden", 27);
+			}, undefined, "modal-close-button hidden", { key: 'Escape' });
 		}
 		return R.fragment(this.state.modals.map(renderModal), spinner, notify, hotkeyButton);
 	}

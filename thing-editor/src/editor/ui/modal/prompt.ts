@@ -76,7 +76,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 			R.div({ className: 'prompt-dialogue' },
 				input({ value: this.state.value, onKeyDown: this.onKeyDown, onInput: this.onChange })
 			),
-			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', this.props.multiline ? undefined : 13)
+			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', this.props.multiline ? undefined : { key: 'Enter' })
 		);
 	}
 }

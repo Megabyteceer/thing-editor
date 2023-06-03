@@ -508,7 +508,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	render() {
 		return R.fragment(
-			(selectedComponents.length > 0) ? R.btn('', this.deleteSelectedKeyframes, undefined, 'hidden', 46) : undefined,
+			(selectedComponents.length > 0) ? R.btn('', this.deleteSelectedKeyframes, undefined, 'hidden', { key: 'Delete' }) : undefined,
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
 			R.div(
 				{
@@ -535,13 +535,12 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 						display: 'none'
 					}
 				},
-				R.btn('<', this.prevFrame, undefined, undefined, 188),
-				R.btn('>', this.nextFrame, undefined, undefined, 190),
-				R.btn('<<', this.prevKeyFrame, undefined, undefined, 1188),
-				R.btn('>>', this.nextKeyFrame, undefined, undefined, 1190)
+				R.btn('<', this.prevFrame, undefined, undefined, { key: ',' }),
+				R.btn('>', this.nextFrame, undefined, undefined, { key: '.' }),
+				R.btn('<<', this.prevKeyFrame, undefined, undefined, { key: ',', ctrlKey: true }),
+				R.btn('>>', this.nextKeyFrame, undefined, undefined, { key: '.', ctrlKey: true })
 			)
 		);
-
 	}
 
 	onMouseUp(ev: MouseEvent) {

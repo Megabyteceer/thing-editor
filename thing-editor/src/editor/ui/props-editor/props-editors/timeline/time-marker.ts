@@ -60,12 +60,12 @@ export default class TimeMarker extends Component<TimeMarkerProps, TimeMarkerSta
 				),
 				R.span(buttonsGroupProps,
 					' ↔',
-					R.btn('-', this.props.owner.horizontalZoomOut, 'Horizontal Zoom Out (Ctrl + "+")', undefined, 1189),
-					R.btn('+', this.props.owner.horizontalZoomIn, 'Horizontal Zoom In (Ctrl + "-")', undefined, 1187)
+					R.btn('-', this.props.owner.horizontalZoomOut, 'Horizontal Zoom Out', undefined, { key: '-', ctrlKey: true }),
+					R.btn('+', this.props.owner.horizontalZoomIn, 'Horizontal Zoom In', undefined, { key: '=', ctrlKey: true })
 				),
 				R.span(buttonsGroupProps,
-					R.btn('copy', Timeline.copySelection, "Copy selected keyframes and labels. (Ctrl + C)", undefined, 1067, !Timeline.isElementsSelected),
-					R.btn('paste', Timeline.pasteSelection, Timeline.isPasteAvailable + ' (Ctrl + V)', undefined, 1086, !Timeline.isPasteAvailable)
+					R.btn('copy', Timeline.copySelection, "Copy selected keyframes and labels", undefined, { key: 'c', ctrlKey: true }, !Timeline.isElementsSelected),
+					R.btn('paste', Timeline.pasteSelection, Timeline.isPasteAvailable + '', undefined, { key: 'v', ctrlKey: true }, !Timeline.isPasteAvailable)
 				)
 			),
 			R.div({ className: 'time-marker', style: { left: this.state.time * this.props.owner.state.widthZoom } },

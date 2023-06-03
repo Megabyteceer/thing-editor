@@ -13,6 +13,13 @@ type CallBackParsedData = {
 	v?: any[]
 }
 
+interface Hotkey {
+	key: string;
+	ctrlKey?: true;
+	altKey?: true;
+	shiftKey?: true;
+}
+
 interface NodeExtendData {
 
 	hidden?: true;

@@ -58,7 +58,7 @@ export default class TimelineEditor extends Component<TimelineEditorProps, Timel
 	}
 
 	render() {
-		return R.btn(this.state.toggled ? 'Close Timeline' : 'Open Timeline', this.onToggleClick, '(Ctrl+L)', undefined, 1076);
+		return R.btn(this.state.toggled ? 'Close Timeline' : 'Open Timeline', this.onToggleClick, undefined, undefined, { key: 'l', ctrlKey: true });
 	}
 
 	componentDidUpdate() {
