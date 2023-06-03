@@ -1,42 +1,35 @@
 import { ClassAttributes, Component, ComponentChild } from "preact";
-import { Hotkey, KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
-import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
+import Window from "thing-editor/src/editor/ui/editor-window";
+import isHotkeyHit, { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
-import game from "thing-editor/src/engine/game";
 
 const allHotkeyButtons: EditorButton[] = [];
 window.addEventListener("keydown", (ev) => {
+
+	for(let w of Window.allOrdered) {
+		if(w.props.hotkeysHandlers) {
+			for(let menuGroup of w.props.hotkeysHandlers) {
+				for(let menuItem of menuGroup) {
+					if(menuItem) {
+						if(typeof menuItem.disabled !== 'function' || !menuItem.disabled()) {
+							if(isHotkeyHit(ev, w.base as HTMLElement, menuItem.hotkey)) {
+								menuItem.onClick();
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	for(let b of allHotkeyButtons) {
 		if(b.onKeyDown(ev)) { //call only first button with this hotkey
 			return;
 		}
 	}
 });
-
-const hotkeysBlockedWhenInputFocused: KeyedObject = {
-	'Backspace': null,
-	'Enter': null,
-	'ArrowLeft': null,
-	'ArrowRight': null,
-	'ArrowUp': null,
-	'ArrowDown': null,
-	'Delete': null,
-	',': null,
-	'.': null,
-	'z': true,
-	'x': true,
-	'c': true,
-	'v': true,
-};
-
-function isHotkeyBlockedOnInput(btn: EditorButton) {
-	const isCtrlRequired = hotkeysBlockedWhenInputFocused[btn.props.hotkey!.key];
-	if(isCtrlRequired === undefined || isCtrlRequired === null) {
-		return false;
-	}
-	return isCtrlRequired === btn.props.hotkey!.ctrlKey;
-}
 
 interface EditorButtonProps extends ClassAttributes<EditorButton> {
 	label: ComponentChild
@@ -53,30 +46,35 @@ interface EditorButtonStats {
 
 class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 
-	onKeyDown(e: KeyboardEvent) {
-		const hotkey = this.props.hotkey;
-		if(!hotkey) {
-			return;
-		}
-
-		if(
-			this.props.disabled ||
-			((hotkey.ctrlKey && hotkey.key === 'c') && (window.getSelection() || '').toString()) ||
-			(isEventFocusOnInputElement(e) && (isHotkeyBlockedOnInput(this))) ||
-			((hotkey.key !== 'F1') && game.editor.ui.modal.isUIBlockedByModal(this.base as HTMLElement)) // F1 - help hotkey works always
-		) {
-			return;
-		}
-
-		if((e.key === hotkey.key) && (e.ctrlKey === (hotkey.ctrlKey === true))) {
-			this.onMouseDown(e as unknown as PointerEvent);
-			sp(e);
+	onKeyDown(ev: KeyboardEvent) {
+		if(!this.props.disabled && isHotkeyHit(ev, this.base as HTMLElement, this.props.hotkey)) {
+			this.onMouseDown(ev as unknown as PointerEvent);
+			sp(ev);
 			return true;
 		}
 	}
 
 	constructor(props: EditorButtonProps) {
-		super();
+		super(props);
+		this.onMouseDown = this.onMouseDown.bind(this);
+	}
+
+	componentWillReceiveProps(props: EditorButtonProps) {
+		if(this.props.hotkey !== props.hotkey) {
+			this.unregisterHotkey();
+			this.registerHotkey(props);
+		}
+	}
+
+	componentDidMount() {
+		this.registerHotkey(this.props);
+	}
+
+	registerHotkey(props: EditorButtonProps) {
+		if(this.props.hotkey) {
+			allHotkeyButtons.unshift(this);
+		}
+
 		var title = props.title;
 		let hotkey = props.hotkey;
 		if(hotkey) {
@@ -90,32 +88,10 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 			if(hotkey.shiftKey) {
 				help.push('Shift');
 			}
-			help.push('"' + hotkey.key.toUpperCase() + '"');
+			help.push('"' + ((hotkey.key.length > 1) ? hotkey.key : hotkey.key.toUpperCase()) + '"');
 			title = (title || '') + ' (' + help.join(' + ') + ')';
 		}
-		this.state = { title };
-		this.onKeyDown = this.onKeyDown.bind(this);
-		this.onMouseDown = this.onMouseDown.bind(this);
-	}
-
-	componentWillReceiveProps(props: EditorButtonProps) {
-		if(this.props.hotkey !== props.hotkey) {
-			if(!props.hotkey && this.props.hotkey) {
-				this.unregisterHotkey();
-			} else if(props.hotkey && !this.props.hotkey) {
-				this.registerHotkey();
-			}
-		}
-	}
-
-	componentDidMount() {
-		if(this.props.hotkey) {
-			this.registerHotkey();
-		}
-	}
-
-	registerHotkey() {
-		allHotkeyButtons.unshift(this);
+		this.setState({ title });
 	}
 
 	unregisterHotkey() {

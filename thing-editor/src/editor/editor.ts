@@ -22,6 +22,7 @@ import ClassesLoader from "./classes-loader";
 import { Container, Point, Texture } from "pixi.js";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
 import Pool from "thing-editor/src/engine/utils/pool";
@@ -37,9 +38,6 @@ function addTo(parent: Container, child: Container, doNotSelect = false) {
 }
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
-
-let tryCatchWarned = false;
-let tryTime = 0;
 
 class Editor {
 
@@ -313,6 +311,7 @@ class Editor {
 	/** if returns false - cancel operation */
 	askSceneToSaveIfNeed(): boolean {
 		this.ui.viewport.stopExecution();
+		PrefabEditor.acceptPrefabEdition();
 		if(this.isCurrentSceneModified) {
 			let ansver = fs.showQueston(
 				"Unsaved changes.",
@@ -502,6 +501,9 @@ class Editor {
 		editorEvents.emit('beforePropertyChanged', o, field.name, field, val, isDelta);
 
 		if(isDelta) {
+			if(val === 0) {
+				return;
+			}
 			assert(field.type === 'number', "editable field descriptor type: Number expected");
 
 			let v = (o as KeyedObject)[field.name];
@@ -562,7 +564,7 @@ class Editor {
 
 	getFieldNameByValue(node: Container, fieldValue: any) {
 		if(node instanceof Container) {
-			for(let p of node.__editableProps) {
+			for(let p of(node.constructor as SourceMappedConstructor).__editableProps) {
 				//@ts-ignore
 				if(node[p.name] === fieldValue) {
 					return p.name;
@@ -622,17 +624,6 @@ class Editor {
 	protected __saveProjectDescriptorInner(_cleanupOnly = false) {
 		//TODO: cleanup take from 1.0
 		fs.saveFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
-	}
-
-	rememberTryTime() {
-		tryTime = Date.now();
-	}
-
-	checkTryTime() {
-		if(!tryCatchWarned && ((Date.now() - tryTime) > 1000)) {
-			tryCatchWarned = true;
-			editor.ui.status.warn("Looks like you stopped on caught exception, probably you need to disable 'stop on caught exception' option in your debugger.", 30014);
-		}
 	}
 }
 

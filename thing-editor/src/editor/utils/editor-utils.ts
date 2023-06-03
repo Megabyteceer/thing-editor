@@ -1,7 +1,8 @@
-import { Container } from "pixi.js";
+import { Container, Point } from "pixi.js";
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import { EditablePropertyDesc, EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
+import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import exportAsPng from "thing-editor/src/editor/utils/export-as-png";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import increaseNumberInName from "thing-editor/src/editor/utils/increase-number-in-name";
@@ -14,11 +15,43 @@ import loadSafeInstanceByClassName from "thing-editor/src/engine/utils/load-safe
 
 const prefabNameFilter = /[^a-z\-\/0-9_]/g;
 
+
+const onPreviewButtonClick = (o: Container) => {
+	if(o.__nodeExtendData.__isPreviewMode) {
+		editorUtils.exitPreviewMode(o);
+	} else {
+		editorUtils.goToPreviewMode(o);
+	}
+	game.editor.refreshPropsEditor();
+};
+
+const classNamePropertyDescriptor = {
+	get: () => {
+		let o = game.editor.selection[0];
+		return (o.__nodeExtendData.__isPreviewMode) ? 'danger-btn' : undefined;
+	}
+};
+
+
+
 export namespace editorUtils {
 
+	export const exitPreviewMode = (o: Container) => {
+		if(!o.__nodeExtendData.__isPreviewMode) return;
+		editorEvents.off('beforePropertyChanged', o.__exitPreviewMode!);
+		o.__exitPreviewMode!();
+		o.__nodeExtendData.__isPreviewMode = false;
+	};
+
+	export const goToPreviewMode = (o: Container) => {
+		if(o.__nodeExtendData.__isPreviewMode) return;
+		editorEvents.on('beforePropertyChanged', o.__exitPreviewMode!);
+		o.__goToPreviewMode!();
+		o.__nodeExtendData.__isPreviewMode = true;
+	};
+
 	export const canDelete = () => {
-		return (game.editor.selection.length > 1) || //selected many or selected one and it is not root element
-			(game.editor.selection[0] && (game.editor.selection[0] !== game.currentContainer))
+		return (game.editor.selection.length > 0) && (game.editor.selection.indexOf(game.currentContainer) < 0)
 	}
 
 	export const deleteSelected = () => {
@@ -71,14 +104,60 @@ export namespace editorUtils {
 		}
 	}
 
+	export const centralizeObjectToContent = (o: Container) => {
+		if(!o.children.length) {
+			return;
+		}
+		let b = o.getBounds();
+		let p;
+		if(b.width > 0 || b.height > 0) {
+			let b = o.getBounds();
+			let midX = b.x + b.width / 2;
+			let midY = b.y + b.height / 2;
+			p = new Point(midX, midY);
+			o.parent.toLocal(p, undefined, p);
+		} else {
+			let midX = 0;
+			for(let c of o.children) {
+				midX += c.x;
+			}
+			midX /= o.children.length;
 
-	export const clone = (dragObject?: Container) => {
+			let midY = 0;
+			for(let c of o.children) {
+				midY += c.y;
+			}
+			midY /= o.children.length;
+			p = new Point(midX, midY);
+			o.parent.toLocal(p, o, p);
+		}
+
+		let pos = o.getGlobalPosition();
+		let p2 = new Point();
+		o.parent.toLocal(pos, undefined, p2);
+
+		game.editor.moveContainerWithoutChildren(o, Math.round(p.x - p2.x), Math.round(p.y - p2.y));
+	}
+
+	export const makePreviewModeButton = (title: string, helpUrl: string): EditablePropertyDescRaw => {
+		let previewBtnProperty: EditablePropertyDescRaw = {
+			type: 'btn',
+			title,
+			helpUrl,
+			name: title,
+			onClick: onPreviewButtonClick
+		};
+		Object.defineProperty(previewBtnProperty, 'className', classNamePropertyDescriptor);
+		return previewBtnProperty;
+	}
+
+
+	export const clone = () => {
 		if(game.editor.selection.some((o) => o.parent === game.stage)) {
 			game.editor.ui.modal.showInfo('Can not clone root object', '', 30017);
 			return;
 		}
 
-		let ret;
 		//TODO DataPathFixer.rememberPathReferences();
 
 		game.editor.disableFieldsCache = true;
@@ -87,11 +166,7 @@ export namespace editorUtils {
 		game.editor.selection.some((o) => {
 			let clone: Container = Lib._deserializeObject(Lib.__serializeObject(o));
 			allCloned.push(clone);
-			if(dragObject) {
-				if(o === dragObject) {
-					ret = clone;
-				}
-			}
+
 			let cloneExData = clone.__nodeExtendData;
 			let exData = o.__nodeExtendData;
 			if(exData.hidePropsEditor) {
@@ -134,7 +209,6 @@ export namespace editorUtils {
 		}
 		game.editor.refreshTreeViewAndPropertyEditor();
 		game.editor.sceneModified();
-		return ret;
 	}
 
 	export const onDeleteClick = () => {

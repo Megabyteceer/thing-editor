@@ -156,6 +156,7 @@ export default class fs {
 				mTime,
 				fileName
 			}
+			assetsByTypeByName.get(assetType)!.set(assetName, newFile);
 			fs.getAssetsList(assetType).push(newFile);
 			allAssets.push(newFile);
 		}

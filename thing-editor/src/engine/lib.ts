@@ -12,9 +12,9 @@ import Pool from "thing-editor/src/engine/utils/pool";
 
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
-import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 
 let classes: Classes;
@@ -267,7 +267,7 @@ export default class Lib {
 	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
 		/// #if EDITOR
 		let extData = o.__nodeExtendData;
-		__EDITOR_inner_exitPreviewMode(o);
+		editorUtils.exitPreviewMode(o);
 		if(extData.constructorCalled) {
 
 			EDITOR_FLAGS._root_onRemovedCalled = false;
@@ -315,7 +315,6 @@ export default class Lib {
 		o.interactiveChildren = true;
 
 		/// #if EDITOR
-		delete o.___pathBreakpoint; //TODO move to __nodeExtendData
 		o.__nodeExtendData = EMPTY_NODE_EXTEND_DATA;
 		if(needRefreshSelection) {
 			game.editor.refreshTreeViewAndPropertyEditor();
@@ -374,7 +373,7 @@ export default class Lib {
 
 	static __serializeObject(o: Container) {
 
-		__EDITOR_inner_exitPreviewMode(o);
+		editorUtils.exitPreviewMode(o);
 		if(o.__beforeSerialization) {
 			o.__beforeSerialization();
 		}

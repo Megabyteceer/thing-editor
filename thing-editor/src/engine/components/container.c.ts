@@ -113,7 +113,7 @@ Container.prototype.update = function update() {
 };
 
 let _findChildName = '';
-let _findChildRet: Container | null;
+let _findChildRet: Container | undefined;
 const _findChildInner = (o: Container) => {
 	if(o.name === _findChildName) {
 		assert(!_findChildRet, 'More that one element with name "' + _findChildName + '" exists.', 10006);
@@ -121,10 +121,10 @@ const _findChildInner = (o: Container) => {
 	}
 };
 
-Container.prototype.findChildByName = function findChildByName(name: string): Container | null {
+Container.prototype.findChildByName = function findChildByName(name: string): Container | undefined {
 	assert(name, 'Empty name received.', 10005);
 	_findChildName = name;
-	_findChildRet = null;
+	_findChildRet = undefined;
 	this.forAllChildren(_findChildInner);
 	return _findChildRet;
 };

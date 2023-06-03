@@ -7,6 +7,77 @@
 	},
 	":": [
 		{
+			"c": "Shape",
+			"p": {
+				"x": 267,
+				"y": 160,
+				"__description": "awdawdawdawd",
+				"shapeFillAlpha": 0.3,
+				"_shapePoints": [
+					{
+						"x": -35,
+						"y": -6
+					},
+					{
+						"x": 30,
+						"y": -10
+					},
+					{
+						"x": -10,
+						"y": 30
+					}
+				]
+			}
+		},
+		{
+			"c": "Shape",
+			"p": {
+				"__description": "awdawdawdawd",
+				"shapeFillAlpha": 0.3,
+				"_shapePoints": [
+					{
+						"x": -35,
+						"y": -6
+					},
+					{
+						"x": 30,
+						"y": -10
+					},
+					{
+						"x": -10,
+						"y": 30
+					}
+				]
+			}
+		},
+		{
+			"c": "Shape",
+			"p": {
+				"x": 391,
+				"y": 153,
+				"shape": 3,
+				"height": 56,
+				"shapeFillAlpha": 0.39,
+				"shapeFillColor": 2245577,
+				"shapeLineWidth": 8,
+				"shapeLineColor": 13309205,
+				"_shapePoints": [
+					{
+						"x": -35,
+						"y": -6
+					},
+					{
+						"x": 30,
+						"y": -10
+					},
+					{
+						"x": -10,
+						"y": 30
+					}
+				]
+			}
+		},
+		{
 			"c": "MovieClip",
 			"p": {
 				"name": "rabbit-mc",
@@ -69,7 +140,9 @@
 		{
 			"c": "Container",
 			"p": {
-				"name": "obj1"
+				"name": "obj1",
+				"x": 199,
+				"y": 134
 			},
 			":": [
 				{
@@ -85,8 +158,9 @@
 					"c": "Bunny",
 					"p": {
 						"name": "obj2",
-						"x": 355,
-						"y": 426,
+						"x": 179,
+						"y": 221,
+						"rotation": -1.9634954084936207,
 						"image": "bunny.png"
 					}
 				}
@@ -95,52 +169,38 @@
 		{
 			"c": "Sprite",
 			"p": {
+				"x": 258,
+				"y": 225,
 				"image": "bunny.png"
 			},
 			":": [
 				{
 					"c": "Sprite",
 					"p": {
-						"x": 81,
-						"y": -12,
-						"rotation": 0.773,
+						"x": 336,
+						"y": 146,
 						"image": "bunny.png"
 					}
 				},
 				{
 					"c": "Shape",
 					"p": {
-						"x": -1,
-						"y": 201,
+						"x": 130,
+						"y": 205,
+						"rotation": -15.125398163397449,
 						"__description": "awdawdawdawd",
 						"_shapePoints": [
 							{
-								"x": -1,
-								"y": -75
+								"x": -35,
+								"y": -6
 							},
 							{
-								"x": -4,
-								"y": -76
+								"x": 30,
+								"y": -10
 							},
 							{
-								"x": 0,
-								"y": -89
-							},
-							{
-								"x": 4,
-								"y": -76
-							},
-							{
-								"x": 1,
-								"y": -75
-							},
-							{
-								"x": 1,
-								"y": -1
-							},
-							{
-								"x": -1,
-								"y": -1
+								"x": -10,
+								"y": 30
 							}
 						]
 					}
@@ -148,170 +208,200 @@
 			]
 		},
 		{
+			"c": "Shape",
+			"p": {
+				"x": 359,
+				"y": 272,
+				"shape": 4,
+				"shapeFillColor": 1638400,
+				"_shapePoints": [
+					{
+						"x": -35,
+						"y": -6
+					},
+					{
+						"x": 30,
+						"y": -10
+					},
+					{
+						"x": -10,
+						"y": 30
+					}
+				]
+			}
+		},
+		{
 			"c": "Bunny",
 			"p": {
-				"x": 69,
-				"y": 358,
+				"x": 94.6222559506379,
+				"y": 383.6222559506379,
 				"image": "bunny.png",
 				"gravity": 1
 			}
 		},
 		{
-			"c": "Shape",
+			"c": "Bunny",
 			"p": {
-				"x": 267,
-				"y": 160,
-				"__description": "awdawdawdawd",
-				"shapeFillAlpha": 0.3,
-				"_shapePoints": [
-					{
-						"x": -1,
-						"y": -75
-					},
-					{
-						"x": -4,
-						"y": -76
-					},
-					{
-						"x": 0,
-						"y": -89
-					},
-					{
-						"x": 4,
-						"y": -76
-					},
-					{
-						"x": 1,
-						"y": -75
-					},
-					{
-						"x": 1,
-						"y": -1
-					},
-					{
-						"x": -1,
-						"y": -1
-					}
-				]
+				"x": 126,
+				"y": 285,
+				"image": "bunny.png",
+				"gravity": 1
 			}
 		},
 		{
-			"c": "Shape",
+			"c": "Bunny",
 			"p": {
-				"__description": "awdawdawdawd",
-				"shapeFillAlpha": 0.3,
-				"_shapePoints": [
-					{
-						"x": -1,
-						"y": -75
-					},
-					{
-						"x": -4,
-						"y": -76
-					},
-					{
-						"x": 0,
-						"y": -89
-					},
-					{
-						"x": 4,
-						"y": -76
-					},
-					{
-						"x": 1,
-						"y": -75
-					},
-					{
-						"x": 1,
-						"y": -1
-					},
-					{
-						"x": -1,
-						"y": -1
-					}
-				]
+				"x": 69,
+				"y": 273,
+				"image": "bunny.png",
+				"gravity": 1
 			}
 		},
 		{
-			"c": "Shape",
+			"c": "Bunny",
 			"p": {
-				"x": 267,
-				"y": 160,
-				"__description": "awdawdawdawd",
-				"shapeFillAlpha": 0.3,
-				"_shapePoints": [
-					{
-						"x": -1,
-						"y": -75
-					},
-					{
-						"x": -4,
-						"y": -76
-					},
-					{
-						"x": 0,
-						"y": -89
-					},
-					{
-						"x": 4,
-						"y": -76
-					},
-					{
-						"x": 1,
-						"y": -75
-					},
-					{
-						"x": 1,
-						"y": -1
-					},
-					{
-						"x": -1,
-						"y": -1
-					}
-				]
+				"x": 171,
+				"y": 218,
+				"image": "bunny.png",
+				"gravity": 1
 			}
 		},
 		{
-			"c": "Shape",
+			"c": "Bunny",
 			"p": {
-				"x": 391,
-				"y": 153,
-				"shape": 3,
-				"height": 56,
-				"shapeFillAlpha": 0.39,
-				"shapeFillColor": 2245577,
-				"shapeLineWidth": 8,
-				"shapeLineColor": 13309205,
-				"_shapePoints": [
-					{
-						"x": -1,
-						"y": -75
-					},
-					{
-						"x": -4,
-						"y": -76
-					},
-					{
-						"x": 0,
-						"y": -89
-					},
-					{
-						"x": 4,
-						"y": -76
-					},
-					{
-						"x": 1,
-						"y": -75
-					},
-					{
-						"x": 1,
-						"y": -1
-					},
-					{
-						"x": -1,
-						"y": -1
-					}
-				]
+				"x": 187,
+				"y": 372,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 580,
+				"y": 250,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 486,
+				"y": 432,
+				"rotation": -0.9400000000000003,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 446,
+				"y": 510,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 497,
+				"y": 510,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 567,
+				"y": 510,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 640,
+				"y": 485,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 494,
+				"y": 275,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 494,
+				"y": 275,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 531,
+				"y": 355,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": -167,
+				"y": 770,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 342,
+				"y": 474,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 158,
+				"y": 468,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 270,
+				"y": 472,
+				"rotation": 0.07999999999999989,
+				"image": "bunny.png",
+				"gravity": 1
+			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 204,
+				"y": 503,
+				"rotation": 0.07999999999999989,
+				"image": "bunny.png",
+				"gravity": 1
 			}
 		},
 		{
@@ -327,11 +417,11 @@
 							"n": "x",
 							"t": [
 								{
-									"v": 196,
+									"v": 108,
 									"t": 0
 								},
 								{
-									"v": 375,
+									"v": 458.0000000000007,
 									"t": 29,
 									"j": -21
 								}
@@ -341,11 +431,11 @@
 							"n": "y",
 							"t": [
 								{
-									"v": 234,
+									"v": 129,
 									"t": 0
 								},
 								{
-									"v": 461,
+									"v": 560.0000000000002,
 									"t": 17,
 									"j": -21
 								}
@@ -356,8 +446,19 @@
 			}
 		},
 		{
-			"c": "Shape",
-			"p": {}
+			"c": "Trigger",
+			"p": {
+				"x": 184,
+				"y": 86
+			},
+			":": [
+				{
+					"c": "DSprite",
+					"p": {
+						"image": "bunny.png"
+					}
+				}
+			]
 		}
 	]
 }

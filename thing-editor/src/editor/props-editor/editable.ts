@@ -2,6 +2,7 @@ import { Container, DisplayObject } from "pixi.js";
 import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -19,7 +20,7 @@ type EditablePropertyType = 'data-path' |
 	'pow-damp-preset' |
 	'number';
 
-interface EditablePropertyDescRaw<T extends DisplayObject> {
+interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	min?: number,
 	max?: number,
 	step?: number,
@@ -34,6 +35,9 @@ interface EditablePropertyDescRaw<T extends DisplayObject> {
 	disabled?: (o: T) => boolean;
 	beforeEdited?: (val: any) => void;
 	onBlur?: () => void;
+	onClick?: (ev: any) => void;
+	className?: string;
+	hotkey?: Hotkey;
 
 	/** splitter header */
 	title?: string,
@@ -59,7 +63,7 @@ interface EditablePropertyDesc<T extends Container = Container> extends Editable
 	__nullCheckingIsApplied?: true,
 	renderer?: any;
 	isTranslatableKey?: boolean;
-	onClick?: (ev: any) => void;
+
 
 	/** call-back and data-path properties validator */
 	isValueValid?: (val: any) => boolean;
@@ -96,7 +100,17 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 	if(!editablePropertyDesc) {
 		editablePropertyDesc = {};
 	}
+
+	if(editablePropertyDesc.hasOwnProperty('name')) {
+		name = editablePropertyDesc.name!;
+	}
+
+	if(editablePropertyDesc.type === 'btn') {
+		editablePropertyDesc.notSerializable = true;
+		propertyAssert(editablePropertyDesc as EditablePropertyDesc, editablePropertyDesc.name, "property with type 'btn' should have 'name'.");
+	}
 	editablePropertyDesc.name = name;
+
 	let er = new Error("tmpError");
 	let stack = (er.stack as string).split('\n');
 	let lineIndex = stack.findIndex(line => line.indexOf('__decorateClass') > 0) + 1;

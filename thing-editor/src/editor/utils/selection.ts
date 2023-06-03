@@ -4,7 +4,7 @@ import { OutlineFilter } from '@pixi/filter-outline';
 
 import { Container } from "pixi.js";
 import TreeNode from "thing-editor/src/editor/ui/tree-view/tree-node";
-import { __EDITOR_inner_exitPreviewMode } from "thing-editor/src/editor/utils/preview-mode";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
 
 const selectionFilter = new OutlineFilter(2, 0xffff00);
@@ -112,7 +112,7 @@ export default class Selection extends Array<Container> {
 		o.removeFilter(selectionFilter);
 
 		this.splice(i, 1);
-		__EDITOR_inner_exitPreviewMode(o);
+		editorUtils.exitPreviewMode(o);
 		if(!IS_SELECTION_LOADING_TIME) {
 			game.editor.history.scheduleSelectionSave();
 		}

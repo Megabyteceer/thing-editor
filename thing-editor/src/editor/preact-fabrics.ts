@@ -1,8 +1,9 @@
 import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h } from 'preact';
-import { Hotkey, KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
+import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
+import { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 import assert from 'thing-editor/src/engine/debug/assert';
 
 interface ComponentProps {
@@ -19,7 +20,6 @@ class R {
 	static p: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static img: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static button: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
-	static input: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static label: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static b: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static a: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
@@ -104,6 +104,15 @@ class R {
 	static tip = (id: string, header: string, text: string) => {
 		return h(Tip, { id, header, text });
 	};
+
+	static input(props: ComponentProps): preact.Component {
+		if(props.hasOwnProperty('onChange') && !props.suspendOnChangeWarning && props.type !== 'checkbox') {
+			debugger;
+			//'onChage handler detected for "input" element. Use onInput instead', 99999, () => {
+		}
+		//@ts-ignore
+		return h('input', props);
+	}
 }
 
 const descriptionProps = { className: 'tree-desc' };
@@ -113,7 +122,7 @@ let nameProps = {
 let classProps = { className: 'scene-node-class' };
 let sceneNodeProps = { className: 'scene-node-item' };
 
-for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'input', 'label',
+for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'label',
 	'b', 'a', 'br', 'hr', 'svg', 'td', 'tr', 'th', 'tbody', 'thead', 'table', 'polyline',
 	'textarea', 'iframe', 'h2', 'h3', 'h4', 'h5', 'script', 'meta', 'space', 'smallSpace']) {
 	//@ts-ignore

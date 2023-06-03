@@ -6,6 +6,7 @@ import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import group from "thing-editor/src/editor/ui/group";
 import Help from "thing-editor/src/editor/ui/help";
 import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -98,6 +99,9 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 	}
 
 	error(message: string, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string) {
+		if(EDITOR_FLAGS.isTryTime) {
+			return Promise.resolve();
+		}
 		debugger;
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.error(errorCode + ': ' + message + getErrorDetailsUrl(errorCode));
@@ -117,6 +121,9 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 	}
 
 	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false) {
+		if(EDITOR_FLAGS.isTryTime) {
+			return Promise.resolve();
+		}
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message + getErrorDetailsUrl(errorCode));
 		if(doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {

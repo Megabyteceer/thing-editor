@@ -13,12 +13,6 @@ type CallBackParsedData = {
 	v?: any[]
 }
 
-interface Hotkey {
-	key: string;
-	ctrlKey?: true;
-	altKey?: true;
-	shiftKey?: true;
-}
 
 interface NodeExtendData {
 
@@ -65,6 +59,10 @@ interface NodeExtendData {
 	__allRefsDeletionValidator?: number;
 
 	__isJustCloned?: boolean;
+
+	__isPreviewMode?: boolean;
+
+	__pathBreakpoint?: any;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;

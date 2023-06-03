@@ -25,10 +25,11 @@ export default class Tip extends Component<TipProps> {
 	onDiscardClick() {
 		game.editor.settings.setItem('tip-discard-' + this.props.id, true);
 		game.editor.ui.modal.hideModal();
+		game.editor.ui.refresh();
 	}
 
 	onMouseDown() {
-		game.editor.ui.modal.showModal(R.span(tipProps, R.btn('×', this.onDiscardClick, 'Discard this tooltip permanently', 'tip-discard-btn'),
+		game.editor.ui.modal.showModal(R.span(tipProps, R.btn('×discard', this.onDiscardClick, 'Discard this tooltip permanently', 'tip-discard-btn'),
 			this.props.text.split('\n').map(renderTextBlock)
 		), this.props.header);
 	}

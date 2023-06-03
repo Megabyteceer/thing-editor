@@ -25,21 +25,23 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 			onClick: () => {
 				game.editor.attachToSelected(loadSafeInstanceByClassName(file.asset.__className));
 			},
-			disabled: !game.editor.isCanBeAddedAsChild(file.asset)
+			disabled: () => { return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset) }
 		},
 		{
 			name: "Add",
 			tip: "Add to scene`s root.",
 			onClick: () => {
 				game.editor.addToScene(loadSafeInstanceByClassName(file.asset.__className));
-			}
+			},
+			disabled: () => { return file.asset.__isScene; }
 		},
 		{
 			name: "Wrap",
 			tip: "Wraps selected content with a '" + file.assetName + "'",
 			onClick: () => {
 				editorUtils.wrapSelected(file.asset);
-			}
+			},
+			disabled: () => { return file.asset.__isScene; }
 		},
 		null,
 		{

@@ -1,15 +1,14 @@
 import { Container } from "pixi.js";
-import Shape from "thing-editor/src/engine/components/shape.c";
 import game from "thing-editor/src/engine/game";
 
 export default class __Gizmo extends Container {
 
-	xAxis!: Shape;
-	yAxis!: Shape;
-	xyAxis!: Shape;
+	anglePointer!: Container;
 
 	init() {
 		super.init();
+		this.anglePointer = this.findChildByName('angle-pointer') as Container;
+
 	}
 
 	moveXY(dX: number, dY: number) {
@@ -25,6 +24,7 @@ export default class __Gizmo extends Container {
 			this.visible = true;
 			this.parent.toLocal(selected, selected.parent, this);
 			this.rotation = selected.parent.getGlobalRotation();
+			this.anglePointer.rotation = selected.rotation;
 		} else {
 			this.visible = false;
 		}

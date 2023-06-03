@@ -77,7 +77,7 @@ const onContextMenu = (field: EditablePropertyDesc, value: any, ev: PointerEvent
 		{
 			name: R.fragment(R.icon('reject'), 'Reset "' + field.name + '" value to default ' + defaultValue),
 			onClick: () => { editorUtils.resetValueOfField(field) },
-			disabled: defaultValue === undefined || value === defaultValue
+			disabled: defaultValue === undefined || value === defaultValue || game.editor.selection.indexOf(game.currentContainer) >= 0
 		},
 
 	], ev)
@@ -107,6 +107,9 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 	}
 
 	onChange(val: any, isDelta = false, deltaVal?: number) {
+		if(val && val.target) {
+			val = val.target.value;
+		}
 		assert(!(val instanceof Event), "Pure value expected. Event received.");
 		assert((!isDelta) || (typeof isDelta === 'boolean'), "Delta expected to be boolean");
 		let field = this.props.field;
@@ -149,11 +152,14 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 	render() {
 		let field = this.props.field;
 		let node: Container = game.editor.selection[0];
+		if(!node) {
+			return R.fragment();
+		}
 		let value = (node as KeyedObject)[field.name];
 
 		let disabled = field.disabled && field.disabled(node);
 
-		let className = field.important ? 'props-field props-field-important' : 'props-field';
+		let className = field.important ? 'props-field props-field-important props-field-' + field.type : 'props-field props-field-' + field.type;
 
 		let tip;
 		if(field.hasOwnProperty('tip')) {
@@ -171,7 +177,9 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 			title: field.name,
 			'data-help': field.helpUrl,
 			onContextMenu: (ev: PointerEvent) => {
-				onContextMenu(field, value, ev);
+				if((ev.target as HTMLElement).tagName !== 'button') {
+					onContextMenu(field, value, ev);
+				}
 			}
 		},
 			tip,

@@ -14,10 +14,14 @@ import Lib from "thing-editor/src/engine/lib";
 
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
+import BtnProperty from "thing-editor/src/editor/ui/props-editor/props-editors/btn-editor";
+import CallbackEditor from "thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor";
 import "thing-editor/src/editor/ui/props-editor/props-editors/color-editor";
 import ColorEditor from "thing-editor/src/editor/ui/props-editor/props-editors/color-editor";
+import DataPathEditor from "thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor";
 import "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
 import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
+import { PowDampPresetEditor } from "thing-editor/src/editor/ui/props-editor/props-editors/pow-damp-preset-selector";
 import RefFieldEditor from "thing-editor/src/editor/ui/props-editor/props-editors/refs-editor";
 import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
@@ -69,6 +73,7 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 	}
 
 	static registerRenderer(type: EditablePropertyType, render: any, def: any) {
+		assert(!renderers.has(type), "Renderer for type '" + type + "' already defined.");
 		renderers.set(type, render);
 		typeDefaults.set(type, def);
 	}
@@ -178,6 +183,7 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 		}, 1);
 	}
 
+	editableProps: KeyedMap<boolean> = {};
 
 	render() {
 		if(game.editor.selection.length <= 0) {
@@ -205,8 +211,10 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 				}, firstClass.__className), '...');
 			}
 		}
-		let props = (game.editor.selection[0].constructor as SourceMappedConstructor).__editableProps;
-		let propsFilter: KeyedMap<number> = {};
+		let props: EditablePropertyDesc[] = (game.editor.selection[0].constructor as SourceMappedConstructor).__editableProps;
+
+		const visibleProps: KeyedMap<number> = {};
+		this.editableProps = visibleProps as any as KeyedMap<boolean>;
 
 		for(let o of game.editor.selection) {
 			let hidePropsEditor = o.__nodeExtendData.hidePropsEditor;
@@ -217,12 +225,17 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 			for(let p of props) {
 				let name = p.name;
 				if((!hidePropsEditor) || hidePropsEditor.visibleFields[name] || name === '__root-splitter') {
-					propsFilter[name] = propsFilter.hasOwnProperty(name) ? (propsFilter[name] + 1) : 1;
+					visibleProps[name] = visibleProps.hasOwnProperty(name) ? (visibleProps[name] + 1) : 1;
 				}
 			}
 		}
 		props = props.filter((p) => {
-			return propsFilter[p.name] === game.editor.selection.length;
+			if(visibleProps[p.name] === game.editor.selection.length) {
+				this.editableProps[p.name] = !p.disabled || !p.disabled(game.editor.selection[0]);
+				return true;
+			} else {
+				this.editableProps[p.name] = false;
+			}
 		});
 
 		let groups: GroupableItem[] = [];
@@ -273,7 +286,11 @@ PropsEditor.registerRenderer('color', ColorEditor, 0);
 PropsEditor.registerRenderer('number', NumberEditor, 0);
 PropsEditor.registerRenderer('string', StringEditor, null);
 PropsEditor.registerRenderer('boolean', BooleanEditor, false);
+PropsEditor.registerRenderer('btn', BtnProperty, undefined);
 PropsEditor.registerRenderer('splitter', null, undefined);
 PropsEditor.registerRenderer('ref', RefFieldEditor, undefined);
+PropsEditor.registerRenderer('data-path', DataPathEditor, null);
+PropsEditor.registerRenderer('callback', CallbackEditor, null);
 PropsEditor.registerRenderer('timeline', TimelineEditor, null);
+PropsEditor.registerRenderer('pow-damp-preset', PowDampPresetEditor, null);
 

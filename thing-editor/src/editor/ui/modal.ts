@@ -5,6 +5,7 @@ import ChooseList from "thing-editor/src/editor/ui/choose-list";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Help from "thing-editor/src/editor/ui/help";
 import Prompt from "thing-editor/src/editor/ui/modal/prompt";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import assert from "thing-editor/src/engine/debug/assert.js";
 import game from "thing-editor/src/engine/game";
 
@@ -146,6 +147,9 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 	}
 
 	notify(txt: string | Component) {
+		if(EDITOR_FLAGS.isTryTime) {
+			return Promise.resolve();
+		}
 		notifyText = txt;
 		notifyProps.style.left = game.editor.mouseX + "px";
 		notifyProps.style.top = game.editor.mouseY + "px";
@@ -220,6 +224,9 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 	}*/
 
 	showError(message: ComponentChild, errorCode = 99999, title = 'Error!', noEasyClose = false, toBottom = false): Promise<any> {
+		if(EDITOR_FLAGS.isTryTime) {
+			return Promise.resolve();
+		}
 		debugger;
 		if(game.editor.buildProjectAndExit) {
 			if(typeof message === 'object') {
@@ -247,6 +254,9 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 	}
 
 	showFatalError(message: ComponentChild, errorCode: number, additionalText = 'FatalError. Please check console output (F12) for exceptions messages, and restart application (Reload page) by press (F5) button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.') {
+		if(EDITOR_FLAGS.isTryTime) {
+			return Promise.resolve();
+		}
 		game.editor.__FatalError = true;
 		this.showError(R.div(null, R.div(null, R.b(null, message)), additionalText), errorCode, 'FatalError', true, true);
 	}

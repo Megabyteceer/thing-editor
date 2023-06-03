@@ -1,13 +1,19 @@
+import { Container } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import __Gizmo from "thing-editor/src/engine/components/__system/gizmo.c";
 import Shape from "thing-editor/src/engine/components/shape.c";
 import game from "thing-editor/src/engine/game";
 
-let dragLasX = 0;
-let dragLasY = 0;
+let lastX = 0;
+let lastY = 0;
 
-let dragStartX = 0;
-let dragStartY = 0;
+let startX = 0;
+let startY = 0;
+let startXPos = 0;
+let startYPos = 0;
+let startRotation = 0;
+
 
 const mouseHandlerGlobalUp = () => {
 	if(__GizmoArrow.draggedArrow) {
@@ -15,26 +21,58 @@ const mouseHandlerGlobalUp = () => {
 	}
 }
 
-const mouseHandlerGlobalMove = () => {
+const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 	if(__GizmoArrow.draggedArrow && !game.mouse.click) {
 		__GizmoArrow.draggedArrow.stopDragging();
 	}
 	if(__GizmoArrow.draggedArrow) {
 
 		let dX = 0;
-		let dY = 0; game.__mouse_uncropped.y - dragLasY;
+		let dY = 0;
 
-		if(__GizmoArrow.draggedArrow.dragX) {
-			dX = game.__mouse_uncropped.x - dragLasX;
+
+		const gizmo = __GizmoArrow.draggedArrow.findParentByType(__Gizmo);
+
+		if(__GizmoArrow.draggedArrow.dragX && __GizmoArrow.draggedArrow.dragY && ev.shiftKey) {
+
+			dX = game.__mouse_uncropped.x - startXPos;
+			dY = game.__mouse_uncropped.y - startYPos;
+
+			const len = Math.sqrt(dX * dX + dY * dY);
+			let angle = Math.atan2(dY, dX);
+			angle = Math.round(angle / Math.PI * 4 - startRotation) * Math.PI / 4;
+			dX = startXPos + Math.cos(angle) * len - game.editor.selection[0].x;
+			dY = startYPos + Math.sin(angle) * len - game.editor.selection[0].y;
+			__GizmoArrow.draggedArrow.snapGuide!.visible = true;
+			__GizmoArrow.draggedArrow.snapGuide!.rotation = angle;
+		} else {
+			if(__GizmoArrow.draggedArrow.dragX) {
+				dX = game.__mouse_uncropped.x - lastX;
+			}
+			if(__GizmoArrow.draggedArrow.dragY) {
+				dY = game.__mouse_uncropped.y - lastY;
+			}
 		}
-		if(__GizmoArrow.draggedArrow.dragY) {
-			dY = game.__mouse_uncropped.y - dragLasY;
+
+		gizmo?.moveXY(dX, dY);
+
+		if(__GizmoArrow.draggedArrow.dragR) {
+			if(ev.shiftKey) {
+				dY = (game.__mouse_uncropped.y - startY) / -50;
+				dY = Math.round(dY / Math.PI * 8 - startRotation) * Math.PI / 8;
+				for(let o of game.editor.selection) {
+					game.editor.onObjectsPropertyChanged(o, 'rotation', dY);
+				}
+			} else {
+				dY = (game.__mouse_uncropped.y - lastY) / -50;
+				for(let o of game.editor.selection) {
+					game.editor.onObjectsPropertyChanged(o, 'rotation', dY, true);
+				}
+			}
 		}
 
-		__GizmoArrow.draggedArrow.findParentByType(__Gizmo)?.moveXY(dX, dY);
-
-		dragLasX = game.__mouse_uncropped.x;
-		dragLasY = game.__mouse_uncropped.y;
+		lastX = game.__mouse_uncropped.x;
+		lastY = game.__mouse_uncropped.y;
 	}
 };
 
@@ -53,9 +91,17 @@ export default class __GizmoArrow extends Shape {
 	dragY = false
 
 	@editable()
+	dragR = false
+
+	@editable()
 	cursor = 'move'
 
+	isDowned = false;
+
 	baseColor = 0;
+
+	snapGuide?: Container;
+
 
 	init() {
 		super.init();
@@ -63,12 +109,22 @@ export default class __GizmoArrow extends Shape {
 		this.on('pointerleave', this.onPointerOut);
 		this.on('pointerdown', this.onPointerDown);
 		this.baseColor = this.shapeFillColor;
+		this.snapGuide = this.findChildByName('snap-xy-guide');
 	}
 
 	onPointerOver() {
-		__GizmoArrow.overedArrow = this;
-		this.shapeFillColor = 0xffff00;
-		this.shapeLineColor = 0xffff00;
+		if(!__GizmoArrow.draggedArrow) {
+			__GizmoArrow.overedArrow = this;
+			this.shapeFillColor = 0xffff00;
+			this.shapeLineColor = 0xffff00;
+		}
+	}
+
+	update(): void {
+		super.update();
+		if(__GizmoArrow.overedArrow === this && this.worldAlpha < 0.8) {
+			this.onPointerOut();
+		}
 	}
 
 	onPointerOut() {
@@ -76,16 +132,38 @@ export default class __GizmoArrow extends Shape {
 		this._refreshColor();
 	}
 
-	onPointerDown() {
+	onPointerDown(ev: PointerEvent) {
+
+		lastX = game.__mouse_uncropped.x;
+		lastY = game.__mouse_uncropped.y;
+
+		startX = game.__mouse_uncropped.x;
+		startY = game.__mouse_uncropped.y;
+
+		startXPos = game.editor.selection[0].x;
+		startYPos = game.editor.selection[0].y;
+		startRotation = game.editor.selection[0].rotation;
+
+		if(ev.altKey) {
+			editorUtils.clone();
+		}
+
 		__GizmoArrow.draggedArrow = this;
-		dragLasX = game.__mouse_uncropped.x;
-		dragLasY = game.__mouse_uncropped.y;
-		dragStartX = game.__mouse_uncropped.x;
-		dragStartY = game.__mouse_uncropped.y;
+		this.isDowned = true;
+
+		if(ev.buttons === 2 && this.dragR) {
+			for(let o of game.editor.selection) {
+				game.editor.onObjectsPropertyChanged(o, 'rotation', 0);
+			}
+		}
 	}
 
 	stopDragging() {
 		__GizmoArrow.draggedArrow = undefined;
+		if(this.snapGuide) {
+			this.snapGuide.visible = false;
+		}
+		this.isDowned = false;
 		this._refreshColor();
 	}
 

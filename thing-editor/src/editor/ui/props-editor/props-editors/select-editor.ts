@@ -161,7 +161,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 				onFocus: this.onFocus,
 				className: 'select-editor-filter',
 				placeholder: 'Filter',
-				onChange: this.onFilterChange,
+				onInput: this.onFilterChange,
 				value: this.state.filter,
 				style: this.props.field ? undefined : { width: 0, margin: 0, position: 'fixed', padding: 0, height: 0 }
 			});

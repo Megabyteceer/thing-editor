@@ -7,129 +7,545 @@
 	},
 	":": [
 		{
-			"c": "___GizmoArrow",
+			"c": "Trigger",
 			"p": {
-				"name": "xy-axis",
-				"x": -1,
-				"y": -23,
-				"interactive": true,
-				"width": 24,
-				"height": 24,
-				"shapeFillAlpha": 0.2,
-				"shapeFillColor": 16744193,
-				"shapeLineWidth": 2,
-				"shapeLineColor": 16744193,
-				"shapeLineAlignment": 0,
-				"dragX": true,
-				"dragY": true
-			}
-		},
-		{
-			"c": "___GizmoArrow",
-			"p": {
-				"name": "y-axis",
-				"interactive": true,
-				"shape": 4,
-				"shapeFillColor": 8308231,
-				"dragY": true,
-				"cursor": "ns-resize",
-				"_shapePoints": [
-					{
-						"x": -1,
-						"y": -75
-					},
-					{
-						"x": -4,
-						"y": -76
-					},
-					{
-						"x": 0,
-						"y": -89
-					},
-					{
-						"x": 4,
-						"y": -76
-					},
-					{
-						"x": 1,
-						"y": -75
-					},
-					{
-						"x": 1,
-						"y": -1
-					},
-					{
-						"x": -1,
-						"y": 1
-					}
-				]
+				"dataPath": "keys.ctrlKey",
+				"invert": true,
+				"pow": 0.16,
+				"damp": 0.55
 			},
 			":": [
 				{
-					"c": "Shape",
+					"c": "___GizmoArrow",
 					"p": {
-						"x": -3,
-						"y": -89,
-						"visible": false,
-						"isItHitArea": true,
-						"width": 6,
-						"height": 73
-					}
-				}
-			]
-		},
-		{
-			"c": "___GizmoArrow",
-			"p": {
-				"name": "x-axis",
-				"rotation": 1.5707963267948966,
-				"interactive": true,
-				"shape": 4,
-				"shapeFillColor": 14758734,
-				"dragX": true,
-				"cursor": "ew-resize",
-				"_shapePoints": [
-					{
+						"name": "xy-axis",
 						"x": -1,
-						"y": -75
+						"y": -23,
+						"interactive": true,
+						"width": 24,
+						"height": 24,
+						"shapeFillAlpha": 0.2,
+						"shapeFillColor": 16744193,
+						"shapeLineWidth": 2,
+						"shapeLineColor": 16744193,
+						"shapeLineAlignment": 0,
+						"dragX": true,
+						"dragY": true
 					},
-					{
-						"x": -4,
-						"y": -76
-					},
-					{
-						"x": 0,
-						"y": -89
-					},
-					{
-						"x": 4,
-						"y": -76
-					},
-					{
-						"x": 1,
-						"y": -75
-					},
-					{
-						"x": 1,
-						"y": 1
-					},
-					{
-						"x": -1,
-						"y": -1
-					}
-				]
-			},
-			":": [
+					":": [
+						{
+							"c": "Shape",
+							"p": {
+								"name": "snap-xy-guide",
+								"y": 22.999999999999993,
+								"visible": false,
+								"pivot.x": 400,
+								"pivot.y": 1,
+								"width": 800,
+								"height": 2,
+								"shapeFillAlpha": 0.75,
+								"shapeFillColor": 16777215
+							}
+						}
+					]
+				},
 				{
-					"c": "Shape",
+					"c": "___GizmoArrow",
 					"p": {
-						"x": -3,
-						"y": -89,
-						"visible": false,
-						"isItHitArea": true,
-						"width": 6,
-						"height": 73
-					}
+						"name": "y-axis",
+						"interactive": true,
+						"shape": 4,
+						"shapeFillColor": 8308231,
+						"dragY": true,
+						"cursor": "ns-resize",
+						"_shapePoints": [
+							{
+								"x": -1,
+								"y": -75
+							},
+							{
+								"x": -4,
+								"y": -76
+							},
+							{
+								"x": 0,
+								"y": -89
+							},
+							{
+								"x": 4,
+								"y": -76
+							},
+							{
+								"x": 1,
+								"y": -75
+							},
+							{
+								"x": 1,
+								"y": -1
+							},
+							{
+								"x": -1,
+								"y": 1
+							}
+						]
+					},
+					":": [
+						{
+							"c": "Shape",
+							"p": {
+								"x": -3,
+								"y": -89,
+								"visible": false,
+								"isItHitArea": true,
+								"width": 6,
+								"height": 73,
+								"_shapePoints": [
+									{
+										"x": -1,
+										"y": -75
+									},
+									{
+										"x": -4,
+										"y": -76
+									},
+									{
+										"x": 0,
+										"y": -89
+									},
+									{
+										"x": 4,
+										"y": -76
+									},
+									{
+										"x": 1,
+										"y": -75
+									},
+									{
+										"x": 1,
+										"y": -1
+									},
+									{
+										"x": -1,
+										"y": -1
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"c": "___GizmoArrow",
+					"p": {
+						"name": "x-axis",
+						"rotation": 1.5707963267948966,
+						"interactive": true,
+						"shape": 4,
+						"shapeFillColor": 14758734,
+						"dragX": true,
+						"cursor": "ew-resize",
+						"_shapePoints": [
+							{
+								"x": -1,
+								"y": -75
+							},
+							{
+								"x": -4,
+								"y": -76
+							},
+							{
+								"x": 0,
+								"y": -89
+							},
+							{
+								"x": 4,
+								"y": -76
+							},
+							{
+								"x": 1,
+								"y": -75
+							},
+							{
+								"x": 1,
+								"y": 1
+							},
+							{
+								"x": -1,
+								"y": -1
+							}
+						]
+					},
+					":": [
+						{
+							"c": "Shape",
+							"p": {
+								"x": -3,
+								"y": -89,
+								"visible": false,
+								"isItHitArea": true,
+								"width": 6,
+								"height": 73,
+								"_shapePoints": [
+									{
+										"x": -1,
+										"y": -75
+									},
+									{
+										"x": -4,
+										"y": -76
+									},
+									{
+										"x": 0,
+										"y": -89
+									},
+									{
+										"x": 4,
+										"y": -76
+									},
+									{
+										"x": 1,
+										"y": -75
+									},
+									{
+										"x": 1,
+										"y": -1
+									},
+									{
+										"x": -1,
+										"y": -1
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"c": "Trigger",
+					"p": {
+						"dataPath": "editor.ui.propsEditor.editableProps.rotation",
+						"pow": 1,
+						"damp": 0
+					},
+					":": [
+						{
+							"c": "___GizmoArrow",
+							"p": {
+								"name": "rotation-gizmo",
+								"interactive": true,
+								"shape": 2,
+								"shapeRadius": 34,
+								"shapeFillAlpha": 0.05,
+								"shapeFillColor": 11161363,
+								"shapeLineWidth": 2,
+								"shapeLineColor": 11161363,
+								"dragR": true,
+								"cursor": "ns-resize",
+								"_shapePoints": [
+									{
+										"x": -1,
+										"y": -75
+									},
+									{
+										"x": -4,
+										"y": -76
+									},
+									{
+										"x": 0,
+										"y": -89
+									},
+									{
+										"x": 4,
+										"y": -76
+									},
+									{
+										"x": 1,
+										"y": -75
+									},
+									{
+										"x": 1,
+										"y": -1
+									},
+									{
+										"x": -1,
+										"y": 1
+									}
+								]
+							},
+							":": [
+								{
+									"c": "Shape",
+									"p": {
+										"shape": 4,
+										"isItHitArea": true,
+										"shapeFillAlpha": 0.65,
+										"_shapePoints": [
+											{
+												"x": -2,
+												"y": -36
+											},
+											{
+												"x": 11,
+												"y": -35
+											},
+											{
+												"x": 24,
+												"y": -27
+											},
+											{
+												"x": 32,
+												"y": -17
+											},
+											{
+												"x": 36,
+												"y": -2
+											},
+											{
+												"x": 32,
+												"y": -2
+											},
+											{
+												"x": 29,
+												"y": -17
+											},
+											{
+												"x": 20,
+												"y": -26
+											},
+											{
+												"x": 9,
+												"y": -31
+											},
+											{
+												"x": -2,
+												"y": -32
+											},
+											{
+												"x": -14,
+												"y": -30
+											},
+											{
+												"x": -25,
+												"y": -21
+											},
+											{
+												"x": -31,
+												"y": -9
+											},
+											{
+												"x": -32,
+												"y": 4
+											},
+											{
+												"x": -25,
+												"y": 22
+											},
+											{
+												"x": -12,
+												"y": 30
+											},
+											{
+												"x": 5,
+												"y": 33
+											},
+											{
+												"x": 20,
+												"y": 26
+											},
+											{
+												"x": 29,
+												"y": 16
+											},
+											{
+												"x": 32,
+												"y": 2
+											},
+											{
+												"x": 36,
+												"y": 2
+											},
+											{
+												"x": 34,
+												"y": 16
+											},
+											{
+												"x": 22,
+												"y": 30
+											},
+											{
+												"x": 5,
+												"y": 37
+											},
+											{
+												"x": -14,
+												"y": 34
+											},
+											{
+												"x": -28,
+												"y": 25
+											},
+											{
+												"x": -36,
+												"y": 8
+											},
+											{
+												"x": -35,
+												"y": -11
+											},
+											{
+												"x": -27,
+												"y": -25
+											},
+											{
+												"x": -15,
+												"y": -34
+											}
+										]
+									}
+								},
+								{
+									"c": "Trigger",
+									"p": {
+										"dataPath": "this.parent.isDowned"
+									},
+									":": [
+										{
+											"c": "Shape",
+											"p": {
+												"name": "angle-pointer",
+												"pivot.x": 400,
+												"pivot.y": 1,
+												"width": 800,
+												"height": 2,
+												"shapeFillAlpha": 0.75,
+												"shapeFillColor": 16777215,
+												"_shapePoints": [
+													{
+														"x": -2,
+														"y": -36
+													},
+													{
+														"x": 11,
+														"y": -35
+													},
+													{
+														"x": 24,
+														"y": -27
+													},
+													{
+														"x": 32,
+														"y": -17
+													},
+													{
+														"x": 36,
+														"y": -2
+													},
+													{
+														"x": 32,
+														"y": -2
+													},
+													{
+														"x": 29,
+														"y": -17
+													},
+													{
+														"x": 20,
+														"y": -26
+													},
+													{
+														"x": 9,
+														"y": -31
+													},
+													{
+														"x": -2,
+														"y": -32
+													},
+													{
+														"x": -14,
+														"y": -30
+													},
+													{
+														"x": -25,
+														"y": -21
+													},
+													{
+														"x": -31,
+														"y": -9
+													},
+													{
+														"x": -32,
+														"y": 4
+													},
+													{
+														"x": -25,
+														"y": 22
+													},
+													{
+														"x": -12,
+														"y": 30
+													},
+													{
+														"x": 5,
+														"y": 33
+													},
+													{
+														"x": 20,
+														"y": 26
+													},
+													{
+														"x": 29,
+														"y": 16
+													},
+													{
+														"x": 32,
+														"y": 2
+													},
+													{
+														"x": 36,
+														"y": 2
+													},
+													{
+														"x": 34,
+														"y": 16
+													},
+													{
+														"x": 22,
+														"y": 30
+													},
+													{
+														"x": 5,
+														"y": 37
+													},
+													{
+														"x": -14,
+														"y": 34
+													},
+													{
+														"x": -28,
+														"y": 25
+													},
+													{
+														"x": -36,
+														"y": 8
+													},
+													{
+														"x": -35,
+														"y": -11
+													},
+													{
+														"x": -27,
+														"y": -25
+													},
+													{
+														"x": -15,
+														"y": -34
+													}
+												]
+											}
+										}
+									]
+								}
+							]
+						}
+					]
 				}
 			]
 		}

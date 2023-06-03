@@ -1,42 +1,84 @@
 {
-	"c": "Bunny",
+	"c": "Container",
 	"p": {
-		"name": "prefab1",
-		"x": 670,
-		"y": 60,
-		"image": "bunny.png"
+		"name": "prefab1"
 	},
 	":": [
 		{
 			"c": "MovieClip",
 			"p": {
-				"x": 27,
-				"y": 25,
-				"image": "bunny.png",
+				"scale.x": 50,
+				"scale.y": 38,
+				"pivot.x": -8,
+				"pivot.y": -8,
+				"image": "WHITE",
+				"tint": 0,
 				"timeline": {
 					"l": {},
 					"p": 0.02,
 					"d": 0.85,
 					"f": [
 						{
-							"n": "visible",
+							"n": "alpha",
 							"t": [
 								{
-									"v": true,
+									"v": 0,
 									"t": 0,
-									"m": 2
+									"m": 1
 								},
 								{
-									"v": true,
-									"t": 77,
-									"m": 2,
-									"a": "hideModal`"
+									"v": 0.8,
+									"t": 6,
+									"m": 1
 								}
 							]
 						}
 					]
-				}
+				},
+				"__previewFrame": 3
 			}
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"name": "prefab1",
+				"x": 670,
+				"y": 60,
+				"image": "bunny.png"
+			},
+			":": [
+				{
+					"c": "MovieClip",
+					"p": {
+						"x": 27,
+						"y": 25,
+						"image": "bunny.png",
+						"timeline": {
+							"l": {},
+							"p": 0.02,
+							"d": 0.85,
+							"f": [
+								{
+									"n": "visible",
+									"t": [
+										{
+											"v": true,
+											"t": 0,
+											"m": 2
+										},
+										{
+											"v": true,
+											"t": 77,
+											"m": 2,
+											"a": "hideModal`"
+										}
+									]
+								}
+							]
+						}
+					}
+				}
+			]
 		}
 	]
 }

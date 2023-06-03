@@ -5,6 +5,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import CallbackEditor from "thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor";
 import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { getAllObjectRefsCount } from "thing-editor/src/editor/utils/scene-all-validator";
 import game from "thing-editor/src/engine/game";
@@ -92,7 +93,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 	onBreakpointClick() {
 		let node = game.editor.selection[0];
-		node.___pathBreakpoint = this.props.value || (node as KeyedObject)[this.props.field!.name];
+		node.__nodeExtendData.__pathBreakpoint = this.props.value || (node as KeyedObject)[this.props.field!.name];
 	}
 
 	onEditClicked() {
@@ -169,7 +170,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	isFieldGoodForCallbackChoose(fieldName: string, object: KeyedObject, val?: SelectableProperty, isChild = false) {
-		game.editor.rememberTryTime();
+		EDITOR_FLAGS.rememberTryTime();
 		try {
 			if(fieldName.charCodeAt(0) === 95) {
 				return false;
@@ -193,7 +194,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 			return true;
 		} catch(er) {
-			game.editor.checkTryTime();
+			EDITOR_FLAGS.checkTryTime();
 		}
 	}
 
@@ -240,7 +241,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		return R.div(fieldEditorWrapperProps,
 			R.input({
 				className: 'props-editor-callback',
-				onChange: this.props.onChange,
+				onInput: this.props.onChange,
 				disabled: this.props.disabled,
 				title: val,
 				value: val || '',
@@ -339,7 +340,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 					if(!addSceneNodeIfValid(parent[name], name)) {
 						let order = 0;
 						let isBold;
-						game.editor.rememberTryTime();
+						EDITOR_FLAGS.rememberTryTime();
 						try {
 							let val = parent[name];
 							order = val.___EDITOR_ChooserOrder || 0;
@@ -348,7 +349,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 								isBold = true;
 							}
 						} catch(er) {// eslin t-disable-line no-empty
-							game.editor.checkTryTime();
+							EDITOR_FLAGS.checkTryTime();
 						}
 						if(!isBold) {
 							items.push({ name });
@@ -476,13 +477,13 @@ const enumSub = (o: KeyedObject) => {
 	let op = Object.getOwnPropertyNames(o);
 	for(let name of op) {
 		if(!name.startsWith('_')) {
-			game.editor.rememberTryTime();
+			EDITOR_FLAGS.rememberTryTime();
 			try {
 				if(hiddenProps.has(o[name])) {
 					continue;
 				}
 			} catch(er) { // eslint-disable-line
-				game.editor.checkTryTime();
+				EDITOR_FLAGS.checkTryTime();
 			}
 
 			if(enumeratedProps.indexOf(name) === -1) {

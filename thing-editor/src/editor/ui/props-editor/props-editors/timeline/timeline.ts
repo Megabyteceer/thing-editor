@@ -833,7 +833,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 						}
 					}
 				} else { //select timeline property. Shake whole timeline window.
-					shakeDomElement(window.document.querySelector('#window-timeline') as HTMLDivElement);
+					shakeDomElement(window.document.querySelector('#timeline') as HTMLDivElement);
 				}
 			}
 		}
@@ -877,7 +877,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 function getTimelineWindow(childSelector: string): Promise<HTMLDivElement> {
 	return new Promise((resolve) => {
 		let interval = setInterval(() => {
-			let w = document.querySelector('#window-timeline') as HTMLDivElement;
+			let w = document.querySelector('#timeline') as HTMLDivElement;
 			if(w) {
 				if(childSelector) {
 					w = w.querySelector(childSelector) as HTMLDivElement;

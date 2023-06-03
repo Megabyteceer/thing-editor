@@ -7,8 +7,8 @@ import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.
 import game from "thing-editor/src/engine/game";
 
 function bringTimelineForward() {
-	Window.bringWindowForward('#window-propsEditor');
-	Window.bringWindowForward('#window-timeline', true);
+	Window.bringWindowForward('#propsEditor');
+	Window.bringWindowForward('#timeline', true);
 }
 
 interface TimelineEditorProps extends ClassAttributes<TimelineEditor> {

@@ -8,6 +8,7 @@ import Modal from "thing-editor/src/editor/ui/modal";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import Status from "thing-editor/src/editor/ui/status";
 import StatusBar from "thing-editor/src/editor/ui/status-bar";
+import { TREE_NODE_CONTEXT_ARRANGE_MENU, TREE_NODE_CONTEXT_MENU } from "thing-editor/src/editor/ui/tree-view/tree-node-context-menu";
 import TreeView from "thing-editor/src/editor/ui/tree-view/tree-view";
 import Viewport from "thing-editor/src/editor/ui/viewport";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -99,26 +100,49 @@ export default class UI extends ComponentDebounced<UIProps> {
 		),
 
 			R.div(workingAreaProps,
+				h(Window, {
+					id: 'sceneTree',
+					helpId: 'SceneTree',
+					title: 'Scene tree',
+					content: h(TreeView, { ref: this.sceneTreeRef }),
+					x: 0, y: 0, w: 17, h: 70, minW: 150, minH: 150,
+					hotkeysHandlers: [TREE_NODE_CONTEXT_MENU, TREE_NODE_CONTEXT_ARRANGE_MENU]
+				}),
 
-				renderWindow('sceneTree', 'SceneTree', 'Scene tree',
-					h(TreeView, { ref: this.sceneTreeRef }),
-					0, 0, 17, 70, 150, 150),
-				renderWindow('propsEditor', 'Properties', 'Properties',
-					h(PropsEditor, {
+				h(Window, {
+					id: 'propsEditor',
+					helpId: 'Properties',
+					title: 'Properties',
+					content: h(PropsEditor, {
 						ref: this.propsEditorRef,
 						onChange: game.editor.onSelectedPropsChange
 					}),
-					17, 0, 34, 70, 250, 150),
-				renderWindow(
-					'viewport',
-					'Viewport',
-					R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, PrefabEditor.currentPrefabName || game.editor.currentSceneName) : undefined, h(StatusBar, null)),
-					h(Viewport, { ref: this.viewportRef }),
-					34, 0, 100, 70, 64, 400, () => {
+					x: 17,
+					y: 0,
+					w: 34,
+					h: 70,
+					minW: 250,
+					minH: 150
+				}),
+
+				h(Window, {
+					id: 'viewport',
+					helpId: 'Viewport',
+					title: R.span(null, 'Viewport: ', game.editor.projectDesc ? R.b(null, PrefabEditor.currentPrefabName || game.editor.currentSceneName) : undefined, h(StatusBar, null)),
+					content: h(Viewport, { ref: this.viewportRef }),
+					x: 34,
+					y: 0,
+					w: 100,
+					h: 70,
+					minW: 64,
+					minH: 400,
+					onResize: () => {
 						if(game.projectDesc) {
 							game._onContainerResize();
 						}
-					}),
+					}
+				}),
+
 				AssetsView.renderAssetsViews(),
 
 				h(Status, { ref: this.statusRef }),
@@ -140,18 +164,14 @@ function showAdditionalWindow(id: string, helpId: string, title: ComponentChild,
 		window.document.querySelector('#working-area')?.appendChild(c);
 		additionalWindowsContainers.set(id, c);
 	}
-	render(renderWindow(id, helpId, title, content, x, y, w, _h, minW, minH, onResize), additionalWindowsContainers.get(id) as HTMLDivElement);
+
+	render(h(Window, { id, helpId, title, content, x, y, w, h: _h, minW, minH, onResize }), additionalWindowsContainers.get(id) as HTMLDivElement);
 }
 
 function hideAdditionalWindow(id: string) {
 	if(additionalWindowsContainers.has(id)) {
 		render(R.fragment(), additionalWindowsContainers.get(id) as HTMLDivElement);
 	}
-}
-
-function renderWindow(id: string, helpId: string, title: ComponentChild, content: ComponentChild,
-	x: number, y: number, w: number, _h: number, minW: number, minH: number, onResize?: () => void): ComponentChild {
-	return h(Window, { id, helpId, title, content, x, y, minW, minH, w, h: _h, onResize });
 }
 
 export { showAdditionalWindow, hideAdditionalWindow };

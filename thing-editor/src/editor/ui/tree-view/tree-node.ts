@@ -1,12 +1,10 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, h } from "preact";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
+import { TREE_NODE_CONTEXT_MENU } from "thing-editor/src/editor/ui/tree-view/tree-node-context-menu";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
-import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -131,155 +129,7 @@ const onContextMenu = (node: Container, ev: PointerEvent) => {
 		sp(ev);
 	}
 
-	showContextMenu([
-		{
-			name: R.fragment(R.icon('copy'), "Copy"),
-			onClick: editorUtils.onCopyClick,
-			disabled: !game.editor.selection.length
-		},
-		{
-			name: R.fragment(R.icon('cut'), "Cut"),
-			onClick: editorUtils.onCutClick,
-			disabled: !editorUtils.canDelete()
-		},
-		{
-			name: R.fragment(R.icon('paste'), "Paste"),
-			onClick: editorUtils.onPasteClick,
-			disabled: !editorUtils.canPaste()
-		},
-		{
-			name: R.fragment(R.icon('paste-wrap'), "Paste wrap"),
-			tip: "Wrap selected content with clipboard container.",
-			onClick: editorUtils.onPasteWrapClick
-		},
-		null,
-		{
-			name: R.fragment(R.icon('clone'), "Clone"),
-			onClick: editorUtils.clone
-		},
-		{
-			name: R.fragment(R.icon('export-selected'), "Export as PNG"),
-			onClick: editorUtils.onExportAsPngClick
-		},
-		{
-			name: R.fragment(R.icon('move-up'), "Arrange"),
-			onClick: () => {
-				showContextMenu([
-					{
-						name: R.fragment(R.icon('bring-up'), "Bring top"),
-						onClick: editorUtils.onBringUpClick
-					},
-					{
-						name: R.fragment(R.icon('move-up'), "Move top"),
-						onClick: editorUtils.onMoveUpClick
-					},
-					{
-						name: R.fragment(R.icon('move-down'), "Move bottom"),
-						onClick: editorUtils.onMoveDownClick
-					},
-					{
-						name: R.fragment(R.icon('bring-down'), "Bring bottom"),
-						onClick: editorUtils.onBringDownClick
-					},
-					null,
-					{
-						name: "shift left 1 px",
-						onClick: () => {
-							game.editor.onSelectedPropsChange('x', -1, true);
-						}
-					},
-					{
-						name: "shift right 1 px",
-						onClick: () => {
-							game.editor.onSelectedPropsChange('x', 1, true);
-						}
-					},
-					{
-						name: "shift up 1 px",
-						onClick: () => {
-							game.editor.onSelectedPropsChange('y', -1, true);
-						}
-					},
-					{
-						name: "shift down 1 px",
-						onClick: () => {
-							game.editor.onSelectedPropsChange('y', 1, true);
-						}
-					},
-					{
-						name: "shift left 10 px",
-						onClick: () => {
-							game.editor.onSelectedPropsChange('x', -10, true);
-						}
-					},
-					{
-						name: "shift right 10 px",
-						onClick: () => {
-							game.editor.onSelectedPropsChange('x', 10, true);
-						}
-					},
-					{
-						name: "shift up 10 px",
-						onClick: () => {
-							game.editor.onSelectedPropsChange('y', -10, true);
-						}
-					},
-					{
-						name: "shift down 10 px",
-						onClick: () => {
-							game.editor.onSelectedPropsChange('y', 10, true);
-						}
-					}
-				], ev);
-			}
-		},
-		null,
-		{
-			name: R.fragment(R.icon('copy'), "Copy name"),
-			onClick: () => {
-				if(game.editor.selection[0]?.name) {
-					game.editor.copyToClipboard(game.editor.selection[0].name as string);
-				}
-			},
-			disabled: !game.editor.selection[0]?.name
-		},
-		{
-			name: "Change type...",
-			onClick: game.editor.ui.propsEditor.onChangeClassClick,
-		},
-		{
-			name: "Go to Source code >>>",
-			tip: "Double click on tree node to go to it`s source code.",
-			onClick: () => {
-				const Class = game.editor.selection[0].constructor as SourceMappedConstructor;
-				game.editor.editClassSource(Class, Class.__className);
-			}
-		},
-		{
-			name: R.fragment(R.icon('asset-prefab'), "Create prefab..."),
-			onClick: () => {
-				editorUtils.savePrefab(node);
-			},
-			disabled: node instanceof Scene
-		},
-		null,
-		{
-			name: R.fragment(R.icon('isolate-selected'), "Isolate"),
-			tip: "Temporary hides other content to focus on current selection.",
-			onClick: editorUtils.onIsolateClick
-		},
-		{
-			name: R.fragment(R.icon('delete'), "Delete"),
-			onClick: editorUtils.deleteSelected,
-			disabled: !editorUtils.canDelete()
-		},
-		{
-			name: R.fragment(R.icon('unwrap'), "Unwrap"),
-			tip: "Remove selected contaner but keeps children.",
-			onClick: editorUtils.onUnwrapClick,
-			disabled: !editorUtils.isCanBeUnwrapped()
-		}
-	], ev)
+	showContextMenu(TREE_NODE_CONTEXT_MENU, ev)
 };
 
 function nodeHasChildren(node: Container) {

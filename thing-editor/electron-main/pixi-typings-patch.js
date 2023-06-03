@@ -13,21 +13,22 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
 	,
 	'export declare abstract class DisplayObject extends utils.EventEmitter<DisplayObjectEvents> {',
 	`
+    
     /** returns object rotation relative to it's scene */
     getGlobalRotation(): number;
     getScenePosition(resultPoint: Point, skipUpdate: boolean): Point;
     getRootContainer(): Container;
     detachFromParent(): void;
     /** call in only in your own init methods as super.init(); */
-    protected init(): void;
+    init(): void;
     /** call in only in your own update methods as super.update(); */
-    protected update(): void;
+    update(): void;
     /** remove object from scene */
     remove(): void;
     /** remove object from scene without placing empty object in place of it */
     removeWithoutHolder(): void;
     /** destructor */
-    protected onRemove(): void;
+    onRemove(): void;
     addFilter(filter: Filter): void;
     removeFilter(filter: Filter): void;
     gotoLabelRecursive(labelName: string);
@@ -43,6 +44,9 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     findChildrenByName(name: string): Container[];
     forAllChildren(callback: (o: Container) => void): void;
 
+    /** will be called when parent Trigger going to disabled state */
+    _onDisableByTrigger?(): void;
+
     _thing_initialized: boolean;
 
     __beforeDeserialization?(): void;
@@ -51,23 +55,40 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     __afterSerialization?(data: SerializedObject): void;
     __beforeDestroy?(): void;
 
-    __EDITOR_onCreate?(isWrapping?:boolean): void;
+    __EDITOR_onCreate?(isWrapping?: boolean): void;
 
+    __goToPreviewMode?(): void;
     __exitPreviewMode?(): void;
-    __onSelect?(): void;
+    __onSelect(): void;
     __onUnselect?(): void;
     __onChildSelected?(): void;
-	__isAnyChildSelected?(): boolean;
+    __isAnyChildSelected(): boolean;
 
-    ___pathBreakpoint?: string;
+    "scale.x": number;
+    "scale.y": number;
+    "skew.x": number;
+    "skew.y": number;
+    "pivot.x": number;
+    "pivot.y": number;
+
 
     __nodeExtendData: NodeExtendData;
+
+    /** prevent object to be selected by viewport click. Editor only filed. */
+    __lockSelection: boolean;
+
+    /**hide children in editor TreeView window */
+    __hideChildren?: boolean;
+
+    /** node description editable in PropertyEditor window */
+    __description?: string;
 
     /** debug info about object (exists in editor only)*/
     ___info: string;
 
     /** debug unic id of object  (exists in editor only)*/
     ___id: number;
+
 
 	`);
 

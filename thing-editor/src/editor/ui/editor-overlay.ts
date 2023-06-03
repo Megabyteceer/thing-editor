@@ -1,4 +1,4 @@
-import { Container, Sprite } from "pixi.js";
+import { Container, Point, Sprite } from "pixi.js";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
@@ -41,8 +41,10 @@ editorEvents.once('didProjectOpen', () => {
 				scrollingX = game.__mouse_EDITOR.x;
 				scrollingY = game.__mouse_EDITOR.y;
 			} else if(ev.buttons === 2) {
-				moveSelectionTo(ev);
-				rightButtonDraggingStarted = true;
+				if(!__GizmoArrow.overedArrow) {
+					moveSelectionTo(ev);
+					rightButtonDraggingStarted = true;
+				}
 			} else {
 				if(!selectionDisabled && ev.buttons === 1 && !__GizmoArrow.overedArrow) {
 					selectByStageClick(ev);
@@ -67,7 +69,7 @@ editorEvents.once('didProjectOpen', () => {
 					scrollingY = game.__mouse_EDITOR.y;
 					game.editor.ui.viewport.refreshCameraFrame();
 				}
-			} else if(ev.buttons === 2 && (rightButtonDraggingStarted || (ev.target === game.pixiApp.view))) {
+			} else if(ev.buttons === 2 && (rightButtonDraggingStarted || (ev.target === game.pixiApp.view)) && !__GizmoArrow.draggedArrow) {
 				moveSelectionTo(ev);
 				rightButtonDraggingStarted = true;
 			}
@@ -109,10 +111,14 @@ editorEvents.once('didProjectOpen', () => {
 
 });
 
+
+const p = new Point();
+
 function moveSelectionTo(ev: MouseEvent) {
 	if(game.editor.selection.length > 0) {
-		let dX = game.__mouse_uncropped.x - game.editor.selection[0].x;
-		let dY = game.__mouse_uncropped.y - game.editor.selection[0].y;
+		game.editor.selection[0].parent.toLocal(game.__mouse_uncropped, undefined, p);
+		let dX = p.x - game.editor.selection[0].x;
+		let dY = p.y - game.editor.selection[0].y;
 
 		if(ev.ctrlKey) {
 			for(let s of game.editor.selection) {

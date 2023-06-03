@@ -1,13 +1,18 @@
 import { ComponentChild, render } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
 
-interface ContextMenuItem {
+import R from "thing-editor/src/editor/preact-fabrics";
+import { Hotkey } from "thing-editor/src/editor/utils/hotkey";
+
+interface ContextMenuItemData {
 	name: ComponentChild,
-	onClick: () => void,
-	disabled?: boolean,
+	onClick: ((ev?: PointerEvent) => void) | (() => void),
+	disabled?: (() => boolean) | boolean,
 	hidden?: boolean,
-	tip?: string
+	tip?: string,
+	hotkey?: Hotkey
 }
+
+type ContextMenuItem = ContextMenuItemData | null;
 
 const root = document.getElementById('context-menu-root') as HTMLElement;
 
@@ -25,16 +30,33 @@ window.addEventListener('pointerdown', () => {
 	}
 });
 
-const showContextMenu = (menuTemplate: (ContextMenuItem | null)[], ev: PointerEvent) => {
+const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	if(hideMenuTimeout) {
 		clearTimeout(hideMenuTimeout);
 		hideMenuTimeout = 0;
 	}
+
+	menuTemplate = menuTemplate.filter((item: ContextMenuItem) => {
+		if(item) {
+			if((typeof item.disabled === "function") ? item.disabled() : item.disabled) {
+				return false
+			}
+		}
+		return true;
+	});
+
+	while(menuTemplate[0] === null) {
+		menuTemplate.shift();
+	}
+	while(menuTemplate[menuTemplate.length - 1] === null) {
+		menuTemplate.pop();
+	}
+
 	render(R.div({
 		className: 'context-menu',
 		onMouseLeave: hideMenu,
 		style: {
-			left: Math.max(0, ev.clientX - 64),
+			left: Math.max(0, ev.clientX + 3),
 			top: Math.max(0, ev.clientY - menuTemplate.length * 20)
 		}
 	}, menuTemplate.map(renderMenuItem)), root);
@@ -43,15 +65,13 @@ const showContextMenu = (menuTemplate: (ContextMenuItem | null)[], ev: PointerEv
 
 export default showContextMenu;
 
-function renderMenuItem(item: ContextMenuItem | null) {
+function renderMenuItem(item: ContextMenuItem) {
 
 	if(item) {
-		if(item.disabled) {
-			return R.fragment();
-		} else {
-			return R.btn(item.name, item.onClick, item.tip);
-		}
+		return R.btn(item.name, item.onClick, item.tip, undefined, item.hotkey);
 	} else {
 		return R.hr();
 	}
 }
+
+export type { ContextMenuItem };

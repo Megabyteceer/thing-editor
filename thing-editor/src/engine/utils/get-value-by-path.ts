@@ -163,10 +163,10 @@ const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
 
 const pathDebugging = (o: Container, path: string) => {
 	if(o instanceof Container) {
-		if(o.hasOwnProperty('___pathBreakpoint') && o.___pathBreakpoint === path) {
+		if(o.__nodeExtendData.hasOwnProperty('___pathBreakpoint') && o.__nodeExtendData.__pathBreakpoint === path) {
 			//data-path breakpoint activated
 			debugger; // eslint-disable-line no-debugger
-			delete o.___pathBreakpoint;
+			delete o.__nodeExtendData.__pathBreakpoint;
 		}
 	}
 };
@@ -191,6 +191,10 @@ export {
 	setValueByPath
 	/// #if EDITOR
 	,
+
+
+
+
 
 
 

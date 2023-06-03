@@ -2,6 +2,7 @@ import { ClassAttributes, Component, ComponentChild, h } from "preact";
 import { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
+import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Help from "thing-editor/src/editor/ui/help";
 import game from "thing-editor/src/engine/game";
 
@@ -19,6 +20,7 @@ interface WindowProps extends ClassAttributes<Window<WindowProps, WindowState>> 
 	content: ComponentChild;
 	helpId: string;
 	title: ComponentChild;
+	hotkeysHandlers?: ContextMenuItem[][]
 }
 
 interface WindowState {
@@ -29,7 +31,7 @@ interface WindowState {
 	h: number;
 }
 
-class Window<P extends WindowProps, S extends WindowState> extends ComponentDebounced<P, S> {
+class Window<P extends WindowProps = WindowProps, S extends WindowState = WindowState> extends ComponentDebounced<P, S> {
 
 	renderedScale = 1;
 
@@ -38,6 +40,7 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 	}
 
 	static all: KeyedMap<Window<WindowProps, WindowState>> = {};
+	static allOrdered: Window[] = [];
 
 	constructor(props: P) {
 		super(props);
@@ -78,8 +81,8 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 	}
 
 	componentDidMount() {
-		//@ts-ignore
-		Window.all[this.props.id] = this;
+		Window.all[this.props.id] = this as Window;
+		Window.allOrdered.push(this as Window);
 	}
 
 	componentWillUnmount() {
@@ -88,6 +91,7 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 			this.saveStateTimeout = undefined;
 		}
 		delete Window.all[this.props.id];
+		Window.allOrdered.splice(Window.allOrdered.indexOf(this as Window), 1);
 	}
 
 	eraseSettings() {
@@ -349,14 +353,19 @@ class Window<P extends WindowProps, S extends WindowState> extends ComponentDebo
 			if(typeof windowBody === 'string') {
 				windowBody = document.querySelector(windowBody) as HTMLElement;
 			}
-			if(setCurrentHelp && windowBody) {
-				Help.setCurrentHelp((windowBody as HTMLElement).dataset.help as string);
+			if(windowBody) {
+				if(setCurrentHelp) {
+					Help.setCurrentHelp((windowBody as HTMLElement).dataset.help as string);
+				}
+
+				let w = Window.allOrdered.find(w => w.base === windowBody) as Window;
+				Window.allOrdered.splice(Window.allOrdered.indexOf(w), 1);
+				Window.allOrdered.unshift(w);
+
+				Window.allOrdered.forEach((w, i) => {
+					(w.base as HTMLElement).style.zIndex = (Window.allOrdered.length - i).toString();
+				});
 			}
-			(Array.from(document.getElementsByClassName('window-body')) as HTMLHtmlElement[]).sort((a, b) => {
-				return parseInt(a.style.zIndex) - parseInt(b.style.zIndex);
-			}).forEach((w, i, a) => {
-				(w as HTMLElement).style.zIndex = String((w === windowBody) ? a.length + 2 : i);
-			});
 		}, 1);
 	};
 }
