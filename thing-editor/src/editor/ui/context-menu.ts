@@ -8,6 +8,7 @@ interface ContextMenuItemData {
 	onClick: ((ev?: PointerEvent) => void) | (() => void),
 	disabled?: (() => boolean) | boolean,
 	hidden?: boolean,
+	stayAfterClick?: boolean,
 	tip?: string,
 	hotkey?: Hotkey
 }
@@ -24,8 +25,8 @@ const hideMenu = () => {
 let menuShown = false;
 let hideMenuTimeout: number;
 
-window.addEventListener('pointerdown', () => {
-	if(menuShown) {
+window.addEventListener('pointerdown', (ev: PointerEvent) => {
+	if(menuShown && !(ev.target as HTMLDivElement).closest('.stay-after-click-menu-item')) {
 		hideMenuTimeout = setTimeout(hideMenu, 10);
 	}
 });
@@ -56,7 +57,7 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 		className: 'context-menu',
 		onMouseLeave: hideMenu,
 		style: {
-			left: Math.max(0, ev.clientX + 3),
+			left: Math.max(0, ev.clientX - 3),
 			top: Math.max(0, ev.clientY - menuTemplate.length * 20)
 		}
 	}, menuTemplate.map(renderMenuItem)), root);
@@ -68,7 +69,7 @@ export default showContextMenu;
 function renderMenuItem(item: ContextMenuItem) {
 
 	if(item) {
-		return R.btn(item.name, item.onClick, item.tip, undefined, item.hotkey);
+		return R.btn(item.name, item.onClick, item.tip, item.stayAfterClick ? 'stay-after-click-menu-item' : undefined, item.hotkey);
 	} else {
 		return R.hr();
 	}

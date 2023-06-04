@@ -100,6 +100,7 @@ class Editor {
 
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
+		this.reloadClasses = this.reloadClasses.bind(this);
 	}
 
 	get currentProjectAssetsDir() {

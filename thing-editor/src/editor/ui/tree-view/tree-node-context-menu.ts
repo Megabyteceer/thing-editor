@@ -49,7 +49,7 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 		hotkey: { key: 'd', ctrlKey: true }
 	},
 	{
-		name: R.fragment(R.icon('export-selected'), "Export as PNG"),
+		name: R.fragment(R.icon('export-selected'), "Export as PNG..."),
 		onClick: editorUtils.onExportAsPngClick
 	},
 	{
@@ -105,24 +105,28 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		name: R.fragment(R.icon('bring-up'), "Bring top"),
 		onClick: editorUtils.onBringUpClick,
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowUp', altKey: true, ctrlKey: true }
 	},
 	{
 		name: R.fragment(R.icon('move-up'), "Move top"),
 		onClick: editorUtils.onMoveUpClick,
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowUp', altKey: true }
 	},
 	{
 		name: R.fragment(R.icon('move-down'), "Move bottom"),
 		onClick: editorUtils.onMoveDownClick,
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowDown', altKey: true }
 	},
 	{
 		name: R.fragment(R.icon('bring-down'), "Bring bottom"),
 		onClick: editorUtils.onBringDownClick,
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowDown', altKey: true, ctrlKey: true }
 	},
 	null,
@@ -132,6 +136,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 			game.editor.onSelectedPropsChange('x', -1, true);
 		},
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowLeft' }
 	},
 	{
@@ -140,6 +145,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 			game.editor.onSelectedPropsChange('x', 1, true);
 		},
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowRight' }
 	},
 	{
@@ -148,6 +154,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 			game.editor.onSelectedPropsChange('y', -1, true);
 		},
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowUp' }
 	},
 	{
@@ -156,6 +163,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 			game.editor.onSelectedPropsChange('y', 1, true);
 		},
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowDown' }
 	},
 	{
@@ -164,6 +172,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 			game.editor.onSelectedPropsChange('x', -10, true);
 		},
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowLeft', ctrlKey: true }
 	},
 	{
@@ -172,6 +181,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 			game.editor.onSelectedPropsChange('x', 10, true);
 		},
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowRight', ctrlKey: true }
 	},
 	{
@@ -180,6 +190,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 			game.editor.onSelectedPropsChange('y', -10, true);
 		},
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowUp', ctrlKey: true }
 	},
 	{
@@ -188,6 +199,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 			game.editor.onSelectedPropsChange('y', 10, true);
 		},
 		disabled: () => game.editor.selection.length < 1,
+		stayAfterClick: true,
 		hotkey: { key: 'ArrowDown', ctrlKey: true }
 	}
 ]

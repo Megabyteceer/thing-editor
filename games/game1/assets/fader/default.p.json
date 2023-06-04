@@ -7,10 +7,10 @@
 		{
 			"c": "MovieClip",
 			"p": {
-				"x": 640.0000000000001,
-				"y": 360.00000000000006,
-				"scale.x": 80,
-				"scale.y": 45,
+				"x": 400,
+				"y": 300,
+				"scale.x": 50,
+				"scale.y": 37.5,
 				"image": "WHITE",
 				"tint": 0,
 				"timeline": {

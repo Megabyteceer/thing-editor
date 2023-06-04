@@ -87,7 +87,7 @@ editorEvents.once('didProjectOpen', () => {
 
 
 			let zoom = game.stage.scale.x;
-			zoom *= 1 - ev.deltaY / 1000;
+			zoom *= 1 - ev.deltaY / 500;
 
 			if(Math.abs(zoom - 1.0) < 0.01) {
 				zoom = 1;
@@ -116,7 +116,7 @@ const p = new Point();
 
 function moveSelectionTo(ev: MouseEvent) {
 	if(game.editor.selection.length > 0) {
-		game.editor.selection[0].parent.toLocal(game.__mouse_uncropped, undefined, p);
+		game.editor.selection[0].parent.toLocal(game.__mouse_uncropped, game.stage, p);
 		let dX = p.x - game.editor.selection[0].x;
 		let dY = p.y - game.editor.selection[0].y;
 
