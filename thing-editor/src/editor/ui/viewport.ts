@@ -63,13 +63,13 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 			game.__paused = false;
 			let play = game.__EDITOR_mode;
 			game.__time = 0;
+			PrefabEditor.acceptPrefabEdition();
 
 			Pool.__resetIdCounter();
 			if(play) { // launch game
 				game.data = {};
 				//TODO game.editor.overlay.exitIsolation();
 				game.editor.ui.status.clear();
-				game.editor.history.saveHistoryNow();
 				game.editor.saveBackup();
 				game.__clearStage();
 				// TODO Spine.clearPool();
@@ -190,7 +190,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 					R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 					R.hr(),
 					//TODO fileLibraryName ? R.libInfo(fileLibraryName, prefabFile.fileName).icon : undefined,
-					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes (Enter)', 'main-btn', { key: 'Enter' }),
+					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes', 'main-btn', { key: 'Enter' }),
 					R.btn(R.icon('reject'), () => {
 						if(game.editor.isCurrentContainerModified) {
 							game.editor.ui.modal.showEditorQuestion(
@@ -202,7 +202,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 						} else {
 							PrefabEditor.exitPrefabEdit(true);
 						}
-					}, 'Reject prefab changes (Esc)', undefined, { key: 'Escape' }),
+					}, 'Reject prefab changes', undefined, { key: 'Escape' }),
 					R.hr(),
 					R.input({
 						onInput: onBgColorChange,

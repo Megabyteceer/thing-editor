@@ -101,13 +101,11 @@
 									"v": 361,
 									"t": 42,
 									"r": -52,
-									"a": "showModal`prefab1",
 									"j": 7
 								},
 								{
 									"v": 361,
-									"t": 52,
-									"a": "showModal`prefab1"
+									"t": 52
 								},
 								{
 									"v": 358.6659171008175,
@@ -331,6 +329,7 @@
 				"x": 187,
 				"y": 372,
 				"image": "bunny.png",
+				"xSpeed": 3,
 				"gravity": 1
 			}
 		},
@@ -346,8 +345,8 @@
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 567,
-				"y": 123,
+				"x": 353,
+				"y": 318,
 				"rotation": -0.9400000000000003,
 				"image": "bunny.png",
 				"gravity": 1
@@ -392,8 +391,8 @@
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 494,
-				"y": 275,
+				"x": 386,
+				"y": 370,
 				"image": "bunny.png",
 				"gravity": 1
 			}

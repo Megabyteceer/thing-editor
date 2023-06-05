@@ -98,6 +98,7 @@ export default class PrefabEditor {
 		if(document.activeElement && document.activeElement.tagName === "INPUT") {
 			(document.activeElement as HTMLInputElement).blur();
 		}
+		game.editor.history.saveHistoryNow();
 		let name = getCurrentPrefabName();
 		let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
 		if(isChanged) {

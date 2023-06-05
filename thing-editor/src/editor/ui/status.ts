@@ -102,7 +102,7 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
-		debugger;
+
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.error(errorCode + ': ' + message + getErrorDetailsUrl(errorCode));
 		let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode };
@@ -110,6 +110,7 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 			item.val = (owner as KeyedObject)[fieldName];
 		}
 		if(needAddInToList(this.errorsMap, owner, fieldName, errorCode)) {
+			debugger;
 			this.errors.push(item);
 			if(this.errorsList) {
 				this.errorsList.refresh();

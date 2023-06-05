@@ -89,14 +89,13 @@ module.exports = (mainWindow) => {
 					//process.exit(error ? 1 : 0);
 					return;
 				case 'fs/showQuestion':
-					const buttons = Object.values(args)
+					const buttons = Object.values(args).filter(b => b);
 					event.returnValue = dialog.showMessageBoxSync(mainWindow, {
 						title: fileName,
 						message: content,
 						buttons,
 						defaultId: 0,
 						cancelId: buttons.length - 1
-
 					});
 					return;
 				default:

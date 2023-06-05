@@ -46,12 +46,10 @@ const assetsListsByType: Map<AssetType, FileDesc[]> = new Map();
 
 let allAssets: FileDesc[] = [];
 
-const allAssetsMaps: (Map<string, FileDesc>)[] = [];
 const assetsByTypeByName: Map<AssetType, Map<string, FileDesc>> = new Map();
 
 for(let assetType of AllAssetsTypes) {
 	let map = new Map();
-	allAssetsMaps.push(map);
 	assetsByTypeByName.set(assetType, map);
 	assetsListsByType.set(assetType, []);
 }
@@ -173,6 +171,7 @@ export default class fs {
 
 	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject) {
 		const fileName = fs.assetNameToFileName(assetName, assetType);
+		ignoreWatch(fileName);
 		const mTime = fs.writeFile(fileName, data);
 		const file = fs.getFileByAssetName(assetName, assetType);
 		if(file) {
@@ -231,10 +230,12 @@ export default class fs {
 
 		console.log('refresh assets list');
 		lastAssetsDirs = dirNames;
-		for(let map of allAssetsMaps) {
-			map.clear();
-		}
+
 		allAssets = [];
+		for(let assetType of AllAssetsTypes) {
+			assetsListsByType.set(assetType, []);
+			assetsByTypeByName.get(assetType)?.clear();
+		}
 
 		for(let dirName of dirNames) {
 			assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName)

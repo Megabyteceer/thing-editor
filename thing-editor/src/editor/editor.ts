@@ -315,6 +315,11 @@ class Editor {
 		}
 	}
 
+	classesUpdatedExternally() {
+		ClassesLoader.isClassesWaitsReloading = true;
+		game.editor.ui.viewport.refresh();
+	}
+
 	/** if returns false - cancel operation */
 	askSceneToSaveIfNeed(): boolean {
 		this.ui.viewport.stopExecution();

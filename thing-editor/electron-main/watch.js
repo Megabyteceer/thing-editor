@@ -21,7 +21,7 @@ function watchFolders(dirs, onEvent) {
 		if(!currentWatchers[dir]) {
 			const watcher = chokidar.watch(dir, {
 				ignoreInitial: true,
-				awaitWriteFinish: true,
+				//	awaitWriteFinish: true,
 				ignored: /.*___editor_backup_.*|.*(\/|^)~.*/ // ignore backups and ~ started files
 			});
 

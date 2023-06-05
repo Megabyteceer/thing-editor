@@ -10,11 +10,12 @@ import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import Pool from "thing-editor/src/engine/utils/pool";
 
-import fs, { AssetType, FileDesc } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc, FileDescPrefab } from "thing-editor/src/editor/fs";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 
 let classes: Classes;
@@ -191,15 +192,19 @@ export default class Lib {
 	): Container {
 		let ret: Scene;
 		/// #if EDITOR
+
 		deserializationDeepness++;
 		let replaceClass: SourceMappedConstructor | undefined = undefined;
 		let replaceClassName: string | undefined;
 		if(!classes.hasOwnProperty(src.c)) {
 			replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass) as any as SourceMappedConstructor;
 			replaceClassName = replaceClass.__className;
-			setTimeout(() => { // wait for id assign
-				game.editor.ui.status.error("Unknown class " + src.c + " was temporary replaced with class " + replaceClassName + ".", 32012, ret);
-			}, 1);
+			if(!showedReplacings[src.c]) {
+				showedReplacings[src.c] = true;
+				setTimeout(() => { // wait for id assign
+					game.editor.ui.status.error("Unknown class " + src.c + " was temporary replaced with class " + replaceClassName + ".", 32012, ret);
+				}, 1);
+			}
 		}
 		if(!replaceClass) {
 			assert(classes[src.c].__defaultValues, 'Class ' + (replaceClassName || src.c) + ' has no default values set');
@@ -501,6 +506,11 @@ const __isSerializableObject = (o: Container) => {
 let deserializationDeepness = 0;
 
 const _loadObjectFromData = (src: SerializedObject): Container => {
+
+	/// #if EDITOR
+	showedReplacings = {};
+	/// #endif
+
 	let ret = Lib._deserializeObject(src);
 
 	/// #if EDITOR
@@ -567,12 +577,53 @@ const __onAssetAdded = (file: FileDesc) => {
 			file.asset = Lib.prefabs[file.assetName] || fs.readJSONFile(file.fileName);
 			game.editor.ui.refresh();
 			break;
+		case AssetType.CLASS:
+			game.editor.classesUpdatedExternally();
+			break;
+		//TODO images, sounds, scenes
 	}
 }
 
 const __onAssetUpdated = (file: FileDesc) => {
 	console.log('updated: ' + file.fileName);
+	switch(file.assetType) {
+		case AssetType.PREFAB:
+			let isAcceptChanges = false;
+			if(PrefabEditor.currentPrefabName !== file.assetName) {
+				isAcceptChanges = true;
+			} else {
+				if(!game.editor.isCurrentContainerModified) {
+					isAcceptChanges = true;
+				} else {
+					const answer = fs.showQuestion(
+						'Do you want to load external changes?',
+						'prefab "' + file.assetName + '" was changed externally.',
+						'Keep editing',
+						'Discard your changes and load external changes'/*,
+						'Ignore external changes'*/);
+					isAcceptChanges = answer === 1;
+				}
+			}
+			if(isAcceptChanges) {
+				file.asset = fs.readJSONFile(file.fileName);
+				Lib.prefabs[file.assetName] = (file as FileDescPrefab).asset;
+				if(PrefabEditor.currentPrefabName === file.assetName) {
+					PrefabEditor.exitPrefabEdit();
+					PrefabEditor.editPrefab(file.assetName);
+				}
+				game.editor.ui.refresh();
+			}
 
+			break;
+		case AssetType.SCENE:
+			//TODO
+			break;
+		case AssetType.CLASS:
+			game.editor.classesUpdatedExternally();
+			break;
+
+		//TODO images, sounds,
+	}
 }
 
 const __onAssetDeleted = (file: FileDesc) => {
@@ -586,8 +637,17 @@ const __onAssetDeleted = (file: FileDesc) => {
 			delete Lib.scenes[file.assetName];
 			game.editor.ui.refresh();
 			break;
+		case AssetType.CLASS:
+			game.editor.classesUpdatedExternally();
+			break;
+		//TODO images, sounds,
 	}
 }
+
+/// #if EDITOR
+let showedReplacings: KeyedMap<true>;
+
+/// #endif
 
 
 /// #endif

@@ -488,6 +488,11 @@ input {
 	height: 100%;
 }
 
+.red-frame {
+	outline: 1px solid #aa0000;
+	outline-offset: -2px;
+}
+
 .editor-viewport-wrapper {
 	display: flex;
 	position: absolute;
