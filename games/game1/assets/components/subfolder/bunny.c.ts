@@ -11,7 +11,11 @@ export default class Bunny extends DSprite {
 	@editable()
 	gravity = 2;
 
-	_a = 0;
+	init() {
+		super.init();
+		this.xSpeed = (Math.random() - 0.5) * 40;
+		this.ySpeed = (Math.random() - 0.5) * 40;
+	}
 
 	update() {
 		if(this.y >= FLOOR_Y) {

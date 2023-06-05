@@ -77,7 +77,7 @@ const onContextMenu = (field: EditablePropertyDesc, value: any, ev: PointerEvent
 		{
 			name: R.fragment(R.icon('reject'), 'Reset "' + field.name + '" value to default ' + defaultValue),
 			onClick: () => { editorUtils.resetValueOfField(field) },
-			disabled: defaultValue === undefined || value === defaultValue || game.editor.selection.indexOf(game.currentContainer) >= 0
+			disabled: defaultValue === undefined || value === defaultValue || !game.editor.ui.propsEditor.editableProps[field.name]
 		},
 
 	], ev)
