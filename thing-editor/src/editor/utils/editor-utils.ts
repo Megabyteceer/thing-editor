@@ -289,44 +289,15 @@ export namespace editorUtils {
 			).then((enteredName) => {
 				if(enteredName) {
 					const fin = (isConvertedToRef = false) => {
+						Lib.__savePrefab(container, enteredName);
 						if(PrefabEditor.currentPrefabName && !isConvertedToRef) {
 							PrefabEditor.editPrefab(enteredName);
-						} else {
-							game.editor.ui.refresh();
 						}
 					};
 
-					Lib.__savePrefab(container, enteredName);
 					if(container !== game.currentContainer) {
 						game.editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
 
-							/*
-							let data = Lib.__serializeObject(s);
-							data = { c: "PrefabReference", p: data.p };
-							let ref = Lib._deserializeObject(data);
-
-							ref.x = s.x; // for cases when save orientation trigger. its clear's x/y before serialization
-							ref.y = s.y;
-							ref.alpha = s.alpha;
-							ref.rotation = s.rotation;
-							ref.scale.x = s.scale.x;
-							ref.scale.y = s.scale.y;
-
-							ref.prefabName = enteredName;
-							ref.inheritProps = !(s instanceof OrientationTrigger);
-
-							s.parent.addChildAt(ref, s.parent.getChildIndex(s));
-							s.remove();
-
-							Lib.__invalidateSerializationCache(ref.parent);
-
-							game.editor.ui.sceneTree.selectInTree(ref);
-
-							game.editor.refreshTreeViewAndPropertyEditor();
-							game.editor.sceneModified(true);
-							
-							fin(true);
-							*/
 							fin(); //TODO new prefab reference mechanism
 						}, 'Convert to PrefabReference', fin, 'Keep original', true);
 					} else {

@@ -10,7 +10,7 @@ import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import Pool from "thing-editor/src/engine/utils/pool";
 
-import fs, { AssetType } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc } from "thing-editor/src/editor/fs";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
@@ -557,6 +557,39 @@ const EMPTY_NODE_EXTEND_DATA: NodeExtendData = { objectDeleted: "Container was d
 Object.freeze(EMPTY_NODE_EXTEND_DATA);
 
 export { constructRecursive };
+export { __onAssetAdded, __onAssetUpdated, __onAssetDeleted };
+
+const __onAssetAdded = (file: FileDesc) => {
+	console.log('added: ' + file.fileName);
+	switch(file.assetType) {
+		case AssetType.PREFAB:
+			assert(!file.asset, 'asset reference of added file should be empty.');
+			file.asset = Lib.prefabs[file.assetName] || fs.readJSONFile(file.fileName);
+			game.editor.ui.refresh();
+			break;
+	}
+}
+
+const __onAssetUpdated = (file: FileDesc) => {
+	console.log('updated: ' + file.fileName);
+
+}
+
+const __onAssetDeleted = (file: FileDesc) => {
+	console.log('deleted: ' + file.fileName);
+	switch(file.assetType) {
+		case AssetType.PREFAB:
+			delete Lib.prefabs[file.assetName];
+			game.editor.ui.refresh();
+			break;
+		case AssetType.SCENE:
+			delete Lib.scenes[file.assetName];
+			game.editor.ui.refresh();
+			break;
+	}
+}
+
+
 /// #endif
 
 /// #if DEBUG
@@ -572,5 +605,4 @@ const processAfterDeserialization = (o: Container) => {
 		o.__afterDeserialization();
 	}
 };
-
 /// #endif

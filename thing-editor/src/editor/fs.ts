@@ -4,6 +4,7 @@ import type { KeyedObject, SerializedObject, SourceMappedConstructor, ThingEdito
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor/src/engine/lib";
 
 interface FileDesc {
 	/** file name*/
@@ -43,7 +44,7 @@ const AllAssetsTypes: AssetType[] = Object.values(AssetType);
 
 const assetsListsByType: Map<AssetType, FileDesc[]> = new Map();
 
-const allAssets: FileDesc[] = [];
+let allAssets: FileDesc[] = [];
 
 const allAssetsMaps: (Map<string, FileDesc>)[] = [];
 const assetsByTypeByName: Map<AssetType, Map<string, FileDesc>> = new Map();
@@ -79,7 +80,7 @@ ASSET_EXT_CROP_LENGHTS.set(AssetType.PREFAB, 7);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.SOUND, 7);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.CLASS, 5);
 
-const execFs = (command: string, filename?: string, content?: string, ...args: any[]) => {
+const execFs = (command: string, filename?: string | string[], content?: string, ...args: any[]) => {
 	const ret = thingEditorServer.fs(command, filename, content, ...args);
 	if(ret instanceof Error) {
 		debugger;
@@ -89,6 +90,35 @@ const execFs = (command: string, filename?: string, content?: string, ...args: a
 }
 
 let lastAssetsDirs: string[];
+
+let fileChangeDebounceTimeout = 0;
+const fileChangeHandler = () => {
+	fileChangeDebounceTimeout = 0;
+	fs.refreshAssetsList();
+};
+
+thingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
+	if(!game.editor.isProjectOpen) {
+		return;
+	}
+	if(event === 'fs/change') {
+		path = '/' + path.replace(/\\/g, '/');
+		if(!ignoreFiles.has(path)) {
+			if(fileChangeDebounceTimeout) {
+				clearTimeout(fileChangeDebounceTimeout);
+			}
+			fileChangeDebounceTimeout = setTimeout(fileChangeHandler, 330);
+		}
+	}
+});
+
+const ignoreFiles = new Set();
+function ignoreWatch(fileName: string) {
+	ignoreFiles.add(fileName);
+	setTimeout(() => {
+		ignoreFiles.delete(fileName);
+	}, 500);
+}
 
 export default class fs {
 
@@ -104,6 +134,7 @@ export default class fs {
 		return assetsListsByType.get(assetType) as FileDesc[];
 	}
 
+	/** retunrs FileDesc of scene or prefab of given container */
 	static getFileOfRoot(object: Container): FileDescPrefab | FileDescScene {
 		const root = object.getRootContainer() || game.currentContainer;
 		const rootName = root.name as string;
@@ -129,11 +160,11 @@ export default class fs {
 		if(asset) {
 			return asset.fileName;
 		}
-		return game.editor.currentProjectAssetsDir + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
+		return game.editor.currentProjectAssetsDirRooted + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
 	}
 
 	/** returns new mTime */
-	static saveFile(fileName: string, data: string | Blob | KeyedObject): number {
+	static writeFile(fileName: string, data: string | Blob | KeyedObject): number {
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fs.fieldsFilter, '	');
 		}
@@ -142,36 +173,26 @@ export default class fs {
 
 	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject) {
 		const fileName = fs.assetNameToFileName(assetName, assetType);
-		const mTime = fs.saveFile(fileName, data);
+		const mTime = fs.writeFile(fileName, data);
 		const file = fs.getFileByAssetName(assetName, assetType);
 		if(file) {
 			file.mTime = mTime;
 			file.asset = data as SerializedObject;
-		} else {
-			const newFile = {
-				asset: data as SerializedObject,
-				assetType,
-				assetName,
-				lib: null,
-				mTime,
-				fileName
-			}
-			assetsByTypeByName.get(assetType)!.set(assetName, newFile);
-			fs.getAssetsList(assetType).push(newFile);
-			allAssets.push(newFile);
+			game.editor.ui.refresh();
+		} else if(!assetName.startsWith(game.editor.backupPrefix)) {
+			fs.refreshAssetsList();
 		}
-		return mTime;
 	}
 
-	static deleteFile(fileName: string) {
+	private static deleteFile(fileName: string) {
 		return execFs('fs/delete', fileName);
 	}
 
 	static deleteAsset(assetName: string, assetType: AssetType) {
-		allAssets.splice(allAssets.findIndex(f => f.assetName === assetName), 1);
-		let list = fs.getAssetsList(assetType);
-		list.splice(list.findIndex(f => f.assetName === assetName), 1);
-		return fs.deleteFile(fs.assetNameToFileName(assetName, assetType));
+		const fileName = fs.assetNameToFileName(assetName, assetType);
+		ignoreWatch(fileName);
+		fs.deleteFile(fileName);
+		fs.refreshAssetsList();
 	}
 
 	static readJSONFile(fileName: string): any {
@@ -190,12 +211,30 @@ export default class fs {
 		return execFs('fs/enumProjects') as ProjectDesc[];
 	}
 
-	static refreshAssetsList(dirNames: string[] = lastAssetsDirs) {
+	static watchDirs(dirs: string[]) {
+		execFs('fs/watchDirs', dirs);
+	}
+
+	static refreshAssetsList(dirNames?: string[]) {
+
+		let prevAllAssets: FileDesc[] | undefined;
+		let prevAllAssetsMap: Map<string, FileDesc>;
+
+		if(!dirNames) {
+			dirNames = lastAssetsDirs;
+			prevAllAssets = allAssets;
+			prevAllAssetsMap = new Map();
+			for(let f of prevAllAssets) {
+				prevAllAssetsMap.set(f.fileName, f);
+			}
+		}
+
+		console.log('refresh assets list');
 		lastAssetsDirs = dirNames;
 		for(let map of allAssetsMaps) {
 			map.clear();
 		}
-		allAssets.length = 0;
+		allAssets = [];
 
 		for(let dirName of dirNames) {
 			assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName)
@@ -218,8 +257,29 @@ export default class fs {
 						file.assetType = assetType;
 						(assetsListsByType.get(assetType) as FileDesc[]).push(file);
 						allAssets.push(file);
+
+						if(prevAllAssets !== undefined && !file.assetName.startsWith(game.editor.backupPrefix)) {
+							let oldAsset = prevAllAssetsMap!.get(file.fileName);
+							if(!oldAsset) {
+								__onAssetAdded(file);
+							} else {
+								file.asset = oldAsset.asset;
+
+								if(oldAsset.mTime !== file.mTime) {
+									__onAssetUpdated(file);
+								}
+							}
+						}
 						break;
 					}
+				}
+			}
+		}
+
+		if(prevAllAssets) {
+			for(let f of prevAllAssets) {
+				if(!f.assetName.startsWith(game.editor.backupPrefix) && !fs.getFileByAssetName(f.assetName, f.assetType)) {
+					__onAssetDeleted(f);
 				}
 			}
 		}
@@ -242,8 +302,8 @@ export default class fs {
 		execFs('fs/exitWithResult', success, error)
 	}
 
-	static showQueston(title: string, message: string, yes: string, no: string, cancel?: string): number {
-		return execFs('fs/showQueston', title, message, yes, no, cancel) as number;
+	static showQuestion(title: string, message: string, yes: string, no: string, cancel?: string): number {
+		return execFs('fs/showQuestion', title, message, yes, no, cancel) as number;
 	}
 }
 

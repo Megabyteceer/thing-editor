@@ -8,8 +8,8 @@ import game from "thing-editor/src/engine/game";
 let lastX = 0;
 let lastY = 0;
 
-let startX = 0;
 let startY = 0;
+
 let startXPos = 0;
 let startYPos = 0;
 let startRotation = 0;
@@ -137,7 +137,6 @@ export default class __GizmoArrow extends Shape {
 		lastX = game.__mouse_uncropped.x;
 		lastY = game.__mouse_uncropped.y;
 
-		startX = game.__mouse_uncropped.x;
 		startY = game.__mouse_uncropped.y;
 
 		startXPos = game.editor.selection[0].x;

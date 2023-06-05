@@ -14,6 +14,9 @@ contextBridge.exposeInMainWorld(
 		fs: (command, fileName, content, ...args) => {
 			return ipcRenderer.sendSync('fs', command, fileName, content, ...args);
 		},
+		onServerMessage: (onServerMessage) => {
+			ipcRenderer.on('serverMessage', onServerMessage);
+		},
 		argv: process.argv
 	}
 )

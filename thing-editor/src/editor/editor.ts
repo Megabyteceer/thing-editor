@@ -42,6 +42,9 @@ let refreshTreeViewAndPropertyEditorScheduled = false;
 class Editor {
 
 	currentProjectDir = '';
+	currentProjectAssetsDir = '';
+	currentProjectAssetsDirRooted = '';
+
 	editorArguments: KeyedMap<true | string> = {};
 	projectDesc!: ProjectDesc;
 
@@ -101,10 +104,6 @@ class Editor {
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
-	}
-
-	get currentProjectAssetsDir() {
-		return this.currentProjectDir + 'assets/';
 	}
 
 	onUIMounted(ui: UI) {
@@ -222,6 +221,7 @@ class Editor {
 		}
 	}
 
+
 	async openProject(dir?: string) {
 		this.ui.viewport.stopExecution();
 		if(this.askSceneToSaveIfNeed()) {
@@ -229,6 +229,9 @@ class Editor {
 			const newProjectDir = 'games/' + dir + '/';
 			if(newProjectDir !== this.currentProjectDir) {
 				this.currentProjectDir = newProjectDir;
+				this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
+				this.currentProjectAssetsDirRooted = '/' + this.currentProjectAssetsDir;
+
 				this.ui.modal.showSpinner();
 				this.settings.removeItem('last-opened-project');
 				this.projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
@@ -267,6 +270,9 @@ class Editor {
 				this.restoreBackup();
 
 				this.regeneratePrefabsTypings();
+
+				fs.watchDirs(this.getProjectFolders());
+
 				this.ui.modal.hideSpinner();
 				this.isProjectOpen = true;
 			}
@@ -314,7 +320,7 @@ class Editor {
 		this.ui.viewport.stopExecution();
 		PrefabEditor.acceptPrefabEdition();
 		if(this.isCurrentSceneModified) {
-			let ansver = fs.showQueston(
+			let ansver = fs.showQuestion(
 				"Unsaved changes.",
 				"Do you want to save changes in '" + this.currentSceneName + "' scene?",
 				"Save",
@@ -484,9 +490,14 @@ class Editor {
 
 	//TODO: set diagnosticLevel settings to informations to show spell typos and fix them after all
 
-	async reloadAssetsAndClasses(refreshAssetsList = false) {
-		if(refreshAssetsList) {
-			fs.refreshAssetsList(['thing-editor/src/engine/components/', this.currentProjectAssetsDir]);
+	getProjectFolders(): string[] {
+		return ['thing-editor/src/engine/components/', this.currentProjectAssetsDir];
+	}
+
+
+	async reloadAssetsAndClasses(refresh = false) {
+		if(refresh) {
+			fs.refreshAssetsList(this.getProjectFolders());
 		}
 		await this.reloadClasses();
 		await AssetsLoader.reloadAssets();
@@ -622,9 +633,12 @@ class Editor {
 		}
 	}
 
-	protected __saveProjectDescriptorInner(_cleanupOnly = false) {
+	protected __saveProjectDescriptorInner(cleanupOnly = false) {
+		let isCleanedUp = false;
 		//TODO: cleanup take from 1.0
-		fs.saveFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
+		if(!cleanupOnly || isCleanedUp) {
+			fs.writeFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
+		}
 	}
 }
 

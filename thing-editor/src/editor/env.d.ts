@@ -120,8 +120,9 @@ type Prefabs = {
 }
 
 type ThingEditorServer = { // exposed from electron
-	fs: (command: string, filename?: string, content?: string, ...args?: any[]) => FSCallback;
+	fs: (command: string, filename?: string | string[], content?: string, ...args?: any[]) => FSCallback;
 	versions: KeyedObject;
+	onServerMessage: (onServerMessage: (event: string, ...args: any[]) => void) => void;
 	argv: string[];
 }
 
