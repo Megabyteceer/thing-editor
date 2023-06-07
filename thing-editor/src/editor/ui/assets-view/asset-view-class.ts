@@ -20,18 +20,25 @@ const assetsItemNameProps = {
 const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 	showContextMenu([
 		{
-			name: "Add as child",
-			tip: "Add as child to currently selected.",
+			name: "Place as child",
+			tip: "Place as child to each selected object.",
 			onClick: () => {
-				game.editor.attachToSelected(loadSafeInstanceByClassName(file.asset.__className));
+				let insertTo = game.editor.selection.slice();
+				game.editor.selection.clearSelection();
+				for(let o of insertTo) {
+					game.editor.addTo(o, loadSafeInstanceByClassName(file.asset.__className));
+				}
 			},
-			disabled: () => { return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset) }
+			disabled: () => {
+				return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset);
+			}
 		},
 		{
-			name: "Add",
-			tip: "Add to scene`s root.",
+			name: "Place",
+			tip: "Place to scene`s root.",
 			onClick: () => {
-				game.editor.addToScene(loadSafeInstanceByClassName(file.asset.__className));
+				game.editor.selection.clearSelection();
+				game.editor.addTo(game.currentContainer, loadSafeInstanceByClassName(file.asset.__className));
 			},
 			disabled: () => { return file.asset.__isScene; }
 		},

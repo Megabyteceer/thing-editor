@@ -7,6 +7,7 @@ import sp from "thing-editor/src/editor/utils/stop-propagation";
 import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -17,18 +18,23 @@ const assetsItemNameProps = {
 const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 	showContextMenu([
 		{
-			name: "Add as child",
-			tip: "Add as child to currently selected.",
+			name: "Place as child",
+			tip: "Place as child to each selected object.",
 			onClick: () => {
-				//TODO
+				let insertTo = game.editor.selection.slice();
+				game.editor.selection.clearSelection();
+				for(let o of insertTo) {
+					game.editor.addTo(o, Lib.__loadPrefabReference(file.assetName));
+				}
 			},
 			disabled: !game.editor.selection.length
 		},
 		{
-			name: "Add",
-			tip: "Add to scene`s root.",
+			name: "Place",
+			tip: "Place to scene`s root.",
 			onClick: () => {
-				//TODO
+				game.editor.selection.clearSelection();
+				game.editor.addTo(game.currentContainer, Lib.__loadPrefabReference(file.assetName));
 			}
 		},
 		null,

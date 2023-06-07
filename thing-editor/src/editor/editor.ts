@@ -27,15 +27,6 @@ import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/uti
 import assert from "thing-editor/src/engine/debug/assert";
 import Pool from "thing-editor/src/engine/utils/pool";
 
-function addTo(parent: Container, child: Container, doNotSelect = false) {
-	parent.addChild(child);
-	Lib.__invalidateSerializationCache(child);
-	if(!doNotSelect) {
-		editor.ui.sceneTree.selectInTree(child);
-		editor.sceneModified(true);
-	}
-	Lib.__callInitIfGameRuns(child);
-}
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
@@ -348,25 +339,24 @@ class Editor {
 		return true;
 	}
 
-	attachToSelected(o: Container, doNotSelect = false) {
-		if(this.selection.length > 0) {
-			addTo(this.selection[0], o, doNotSelect);
-		} else {
-			this.addToScene(o, doNotSelect);
-		}
-	}
-
-	addToScene(o: Container, doNotSelect = false) {
-		addTo(game.currentContainer, o, doNotSelect);
+	addTo(parent: Container, child: Container) {
+		parent.addChild(child);
+		Lib.__invalidateSerializationCache(child);
+		editor.sceneModified();
+		Lib.__callInitIfGameRuns(child);
+		this.selection.select(child, true);
 	}
 
 	isCanBeAddedAsChild(Class: SourceMappedConstructor): boolean {
-		if(editor.selection.length !== 1) {
+		if(editor.selection.length < 1) {
 			return false;
 		}
-		let o = editor.selection[0];
-		if((o.constructor as SourceMappedConstructor).__canAcceptChild) {
-			return (o.constructor as SourceMappedConstructor).__canAcceptChild(Class);
+		for(let o of editor.selection) {
+			if((o.constructor as SourceMappedConstructor).__canAcceptChild) {
+				if(!(o.constructor as SourceMappedConstructor).__canAcceptChild(Class)) {
+					return false;
+				}
+			}
 		}
 		return true;
 	}

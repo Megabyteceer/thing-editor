@@ -494,22 +494,23 @@ export namespace editorUtils {
 
 			game.editor.disableFieldsCache = true;
 			let added: Container[] = [];
-			clipboard.data.data.some((data) => {
-				let o = Lib._deserializeObject(data);
-				added.push(o);
-				o.__nodeExtendData.__isJustCloned = true;
-				game.editor.attachToSelected(o, true);
-			});
-			game.editor.selection.clearSelection();
 
+			let insertTo = game.editor.selection.slice();
+			game.editor.selection.clearSelection();
+			for(let selected of insertTo) {
+				clipboard.data.data.some((data) => {
+					let o = Lib._deserializeObject(data);
+					added.push(o);
+					o.__nodeExtendData.__isJustCloned = true;
+					game.editor.addTo(selected, o);
+				});
+			}
 			//TODO DataPathFixer.validatePathReferences();
 
 			while(added.length > 0) {
 				let o = added.shift() as Container;
 				o.__nodeExtendData.__isJustCloned = false;
-				game.editor.selection.add(o);
 			}
-			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(true);
 			game.editor.disableFieldsCache = false;
 			return added;

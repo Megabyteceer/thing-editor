@@ -106,6 +106,9 @@ export default class __GizmoArrow extends Shape {
 		this.on('pointerdown', this.onPointerDown);
 		this.baseColor = this.shapeFillColor;
 		this.snapGuide = this.findChildByName('snap-xy-guide');
+		if(this.snapGuide) {
+			this.snapGuide.visible = false;
+		}
 	}
 
 	onPointerOver() {

@@ -400,7 +400,7 @@
 										{
 											"c": "Shape",
 											"p": {
-												"name": "angle-guide",
+												"name": "rotation-guide",
 												"pivot.x": 400,
 												"pivot.y": 1,
 												"width": 800,

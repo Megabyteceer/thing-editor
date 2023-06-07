@@ -4,11 +4,11 @@ import game from "thing-editor/src/engine/game";
 
 export default class __Gizmo extends Container {
 
-	anglePointer!: Container;
+	rotationGuide!: Container;
 
 	init() {
 		super.init();
-		this.anglePointer = this.findChildByName('angle-guide') as Container;
+		this.rotationGuide = this.findChildByName('rotation-guide') as Container;
 
 	}
 
@@ -23,7 +23,7 @@ export default class __Gizmo extends Container {
 			this.visible = true;
 			this.parent.toLocal(selected, selected.parent, this);
 			this.rotation = selected.parent.getGlobalRotation();
-			this.anglePointer.rotation = selected.rotation;
+			this.rotationGuide.rotation = selected.rotation;
 		} else {
 			this.visible = false;
 		}

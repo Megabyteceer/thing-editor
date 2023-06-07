@@ -222,13 +222,7 @@ export default class Lib {
 				ret.__nodeExtendData.unknownPrefab = replacedPrefabName;
 				ret.__nodeExtendData.unknownPrefabProps = src.p;
 			}
-
-			if(game.__EDITOR_mode) {
-				ret.__nodeExtendData.isPrefabReference = src.r;
-				for(const c of ret.children) {
-					c.__nodeExtendData.hidden = true;
-				}
-			}
+			__preparePrefabReference(ret, src.r!);
 			/// #endif
 
 		} else { // not a prefab reference
@@ -537,6 +531,12 @@ export default class Lib {
 		object.name = tmpName;
 	}
 
+	static __loadPrefabReference(prefabName: string) {
+		let ret = Lib.loadPrefab(prefabName);
+		__preparePrefabReference(ret, prefabName);
+		return ret;
+	}
+
 	static __callInitIfGameRuns(node: Container) {
 		if(!game.__EDITOR_mode) {
 			__callInitIfNotCalled(node);
@@ -696,6 +696,15 @@ const __onAssetDeleted = (file: FileDesc) => {
 
 let showedReplacings: KeyedMap<true>;
 
+
+const __preparePrefabReference = (o: Container, prefabName: string) => {
+	if(game.__EDITOR_mode) {
+		o.__nodeExtendData.isPrefabReference = prefabName;
+		for(const c of o.children) {
+			c.__nodeExtendData.hidden = true;
+		}
+	}
+}
 
 /// #endif
 
