@@ -30,9 +30,11 @@ interface NodeExtendData {
 
 	/** unknown constructor's name */
 	unknownConstructor?: string;
-
 	unknownConstructorProps?: SerializedObjectProps;
 
+	/** unknown prefabs's name */
+	unknownPrefab?: string;
+	unknownPrefabProps?: SerializedObjectProps;
 
 	component_in_previewMode?: boolean;
 

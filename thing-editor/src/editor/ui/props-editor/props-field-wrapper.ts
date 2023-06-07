@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, Component, ComponentChild, h } from "preact";
-import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc, EditablePropertyType } from "thing-editor/src/editor/props-editor/editable";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
@@ -9,6 +9,7 @@ import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
+const wrapperProps = { className: 'props-wrapper' };
 const defaultValueProps = {
 	className: 'default-value selectable-text',
 	title: 'Ctrl+click to copy default value',
@@ -43,7 +44,7 @@ const CAN_COPY_VALUES_OF_TYPE: EditablePropertyType[] = [
 	'number'
 ]
 
-const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEvent, whyDisabled: string | undefined) => {
+const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEvent) => {
 	const field: EditablePropertyDesc = fieldEditor.props.field;
 	const defaultValue: any = fieldEditor.props.defaultValue;
 
@@ -74,8 +75,8 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		},
 		{
 			name: "Why disabled?..",
-			onClick: () => { game.editor.ui.modal.showInfo(R.fragment(R.b(null, field.name), R.br(), whyDisabled), "Property is disabled.") },
-			disabled: !whyDisabled
+			onClick: () => { game.editor.ui.modal.showInfo(R.fragment(R.b(null, field.name), R.br(), game.editor.ui.propsEditor.disableReasons[field.name]), "Property is disabled.") },
+			disabled: !game.editor.ui.propsEditor.disableReasons[field.name]
 		},
 		null,
 		{
@@ -172,14 +173,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 		}
 		let value = (node as KeyedObject)[field.name];
 
-		let disabled = field.disabled && field.disabled(node) ||
-			((node.constructor as SourceMappedConstructor).__isPropertyDisabled &&
-				(node.constructor as SourceMappedConstructor).__isPropertyDisabled!(field));
-		let disableReason: string | undefined;
-		if(typeof disabled === 'string') {
-			disableReason = disabled;
-			disabled = true;
-		}
+		let disabled = !this.props.propsEditor.editableProps[field.name];
 
 		let className = field.important ? 'props-field props-field-important props-field-' + field.type : 'props-field props-field-' + field.type;
 
@@ -210,7 +204,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 			'data-help': field.helpUrl,
 			onContextMenu: (ev: PointerEvent) => {
 				if((ev.target as HTMLElement).tagName !== 'button') {
-					onContextMenu(this, value, ev, disableReason);
+					onContextMenu(this, value, ev);
 				}
 			}
 		},
@@ -223,7 +217,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 					game.editor.editSource(field.__src);
 				}
 			}, field.name),
-			R.div({ className: 'props-wrapper', title: disableReason },
+			R.div(wrapperProps,
 				h(field.renderer, {
 					ref: this.editorRef,
 					value,

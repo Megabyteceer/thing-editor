@@ -103,7 +103,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 		}
 
 		if(extendData.isPrefabReference) {
-			className += ' item-prefab-reference';
+			className += (extendData.unknownPrefab ? ' item-prefab-reference-unknown' : ' item-prefab-reference');
 		}
 
 		let style;

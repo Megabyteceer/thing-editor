@@ -199,13 +199,32 @@ export default class Lib {
 		/// #endif
 
 		if(src.hasOwnProperty('r')) { // prefab reference
+			/// #if EDITOR
+			let replacedPrefabName: string | undefined;
+			if(!Lib.hasPrefab(src.r!)) {
+				replacedPrefabName = src.r;
+				src.r = '__system/unknown-prefab';
+				if(!showedReplacings[src.r!]) {
+					showedReplacings[src.r!] = true;
+					setTimeout(() => { // wait for id assign
+						game.editor.ui.status.error("Unknown prefab " + src.r + " was temporary replaced with empty Container.", 99999, ret);
+					}, 1);
+				}
+			}
+			/// #endif
+
 			ret = Lib.loadPrefab(src.r!);
 			Object.assign(ret, src.p);
 			/// #if EDITOR
 
+			if(replacedPrefabName) {
+				ret.name = replacedPrefabName;
+				ret.__nodeExtendData.unknownPrefab = replacedPrefabName;
+				ret.__nodeExtendData.unknownPrefabProps = src.p;
+			}
+
 			if(game.__EDITOR_mode) {
 				ret.__nodeExtendData.isPrefabReference = src.r;
-
 				for(const c of ret.children) {
 					c.__nodeExtendData.hidden = true;
 				}
@@ -439,17 +458,19 @@ export default class Lib {
 					r: o.__nodeExtendData.isPrefabReference,
 					p: props
 				};
-
+				if(o.__nodeExtendData.unknownPrefab) {
+					ret.r = o.__nodeExtendData.unknownPrefab;
+					ret.p = o.__nodeExtendData.unknownPrefabProps!;
+				}
 			} else {
 				ret = {
 					c: (o.constructor as SourceMappedConstructor).__className as string,
 					p: props
 				};
-			}
-
-			if(o.__nodeExtendData.unknownConstructor) {
-				ret.c = o.__nodeExtendData.unknownConstructor;
-				ret.p = Object.assign(o.__nodeExtendData.unknownConstructorProps as SerializedObjectProps, ret.p);
+				if(o.__nodeExtendData.unknownConstructor) {
+					ret.c = o.__nodeExtendData.unknownConstructor;
+					ret.p = Object.assign(o.__nodeExtendData.unknownConstructorProps as SerializedObjectProps, ret.p);
+				}
 			}
 
 			if(o.children.length > 0) {

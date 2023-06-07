@@ -543,6 +543,10 @@ input {
 	border-right: 3px dotted #676d12;
 }
 
+.item-prefab-reference-unknown {
+	border-right: 3px dotted #ff0000;
+}
+
 .tree-children .tree-item {
 	padding-left: 10px;
 	background-position: left top;

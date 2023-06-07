@@ -6,21 +6,24 @@ const __prefabsDefaults: Map<string, KeyedObject> = new Map();
 
 const getPrefabDefaults = (prefabName: string): KeyedObject => {
 	if(!__prefabsDefaults.has(prefabName)) {
-
 		const ret: KeyedObject = {};
-		const dataChain: SerializedObjectProps[] = [];
-		let prefabData = Lib.prefabs[prefabName] || ret;
-		while(true) {
-			dataChain.unshift(prefabData.p);
-			if(prefabData.r) {
-				prefabData = Lib.prefabs[prefabData.r];
-			} else {
-				break;
+		if(Lib.hasPrefab(prefabName)) {
+			const dataChain: SerializedObjectProps[] = [];
+			let prefabData = Lib.prefabs[prefabName] || ret;
+			while(true) {
+				dataChain.unshift(prefabData.p);
+				if(prefabData.r) {
+					prefabData = Lib.prefabs[prefabData.r];
+				} else {
+					break;
+				}
 			}
+			if(game.classes[prefabData.c!]) {
+				dataChain.unshift(game.classes[prefabData.c!].__defaultValues);
+			}
+			dataChain.unshift(ret);
+			Object.assign.apply(ret, dataChain as any);
 		}
-		dataChain.unshift(game.classes[prefabData.c!].__defaultValues);
-		dataChain.unshift(ret);
-		Object.assign.apply(ret, dataChain as any);
 		__prefabsDefaults.set(prefabName, ret);
 
 	}

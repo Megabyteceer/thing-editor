@@ -71,6 +71,7 @@ const typeDefaults: Map<EditablePropertyType, any> = new Map();
 class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 
 	editableProps: KeyedMap<boolean> = {};
+	disableReasons: KeyedMap<string | undefined> = {};
 
 	refs: Map<string, PropsFieldWrapper> = new Map();
 
@@ -262,11 +263,26 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 			}
 		}
 		props = props.filter((p) => {
+
 			if(visibleProps[p.name] === game.editor.selection.length) {
-				this.editableProps[p.name] = (!p.disabled || !p.disabled(node)) &&
-					(!Constructor.__isPropertyDisabled || !Constructor.__isPropertyDisabled!(p));
+
+				let propDisabled;
+				if(node.__nodeExtendData.unknownConstructor) {
+					propDisabled = "Can not edit unknown typed object. Fix type problem first.";
+				} else if(node.__nodeExtendData.unknownPrefab) {
+					propDisabled = "Can not edit reference to unknown prefab. Fix prefab problem first.";
+				}
+
+				if(!propDisabled) {
+					propDisabled = (p.disabled && p.disabled(node)) ||
+						(Constructor.__isPropertyDisabled && Constructor.__isPropertyDisabled!(p));
+				}
+
+				this.editableProps[p.name] = !propDisabled;
+				this.disableReasons[p.name] = (typeof propDisabled === 'string') ? propDisabled : undefined;
 				return true;
 			} else {
+				this.disableReasons[p.name] = "Not all selected objects have that property.";
 				this.editableProps[p.name] = false;
 			}
 		});
@@ -338,16 +354,23 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 			}
 			header = R.btn(classButtonContent, this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode)
 		} else {
-			const prefabName = game.editor.selection[0].__nodeExtendData.isPrefabReference!;
-			header = R.fragment(
-				R.btn(R.fragment(
-					assetItemRendererPrefab(fs.getFileByAssetName(prefabName, AssetType.PREFAB)),
+			if(node.__nodeExtendData.unknownPrefab) {
+				header = R.btn(R.fragment(
+					node.__nodeExtendData.unknownPrefab,
 					prefabSelectCaret
-				), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button', undefined, !game.__EDITOR_mode),
-				R.btn('Edit prefab', () => {
-					PrefabEditor.editPrefab(prefabName, true);
-				}, undefined, undefined, { key: 'e', ctrlKey: true }, !game.__EDITOR_mode)
-			)
+				), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button danger', undefined, !game.__EDITOR_mode);
+			} else {
+				const prefabName = node.__nodeExtendData.isPrefabReference!;
+				header = R.fragment(
+					R.btn(R.fragment(
+						assetItemRendererPrefab(fs.getFileByAssetName(prefabName, AssetType.PREFAB)),
+						prefabSelectCaret
+					), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button', undefined, !game.__EDITOR_mode),
+					R.btn('Edit prefab', () => {
+						PrefabEditor.editPrefab(prefabName, true);
+					}, undefined, undefined, { key: 'e', ctrlKey: true }, !game.__EDITOR_mode)
+				)
+			}
 		}
 
 		groups.push(curGroup as GroupableItem);
