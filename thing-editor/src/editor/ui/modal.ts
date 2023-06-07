@@ -47,11 +47,11 @@ let contentProps = {
 	}
 };
 let errorProps = { className: 'error' };
-let notifyProps = { className: 'modal-notification', style: { left: '0px', top: '0px' } };
+let notifyProps = { className: 'modal-notification' };
+let notifyWrapperProps = { className: 'modal-notification-wrapper', style: { left: '0px', top: '0px' } };
 let notifyPropsDuringSpinner = { className: 'modal-notification modal-notification-centred' };
 
-let notifyText: string | Component | null;
-let notifyHideTimeout: number | null;
+let notifyTexts: Set<string | Component> = new Set();
 
 let spinnerShowCounter = 0;
 
@@ -142,27 +142,20 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
 	}
 
-	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField: boolean = false) {
-		return this.showModal(h(ChooseList, { list, noSearchField }), title, noEasyClose);
+	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField: boolean = false, activeValue?: string) {
+		return this.showModal(h(ChooseList, { list, noSearchField, activeValue }), title, noEasyClose);
 	}
 
 	notify(txt: string | Component) {
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
-		notifyText = txt;
-		notifyProps.style.left = game.editor.mouseX + "px";
-		notifyProps.style.top = game.editor.mouseY + "px";
-		if(notifyHideTimeout) {
-			clearTimeout(notifyHideTimeout);
-			notifyHideTimeout = null;
-		}
-		if(txt) {
-			notifyHideTimeout = setTimeout(() => {
-				notifyText = null;
-				this.refresh();
-			}, 1000);
-		}
+		notifyTexts.add(txt);
+
+		setTimeout(() => {
+			notifyTexts.delete(txt);
+			this.refresh();
+		}, 1000);
 		this.refresh();
 	}
 
@@ -262,14 +255,20 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 	}
 
 	render(): ComponentChild {
-		let spinner;
+		let spinner: ComponentChild;
 		if(spinnerShowCounter > 0) {
 			spinner = renderSpinner();
 		}
 
-		let notify;
-		if(notifyText) {
-			notify = R.div(spinner ? notifyPropsDuringSpinner : notifyProps, notifyText);
+		let notify: ComponentChild;
+		let notifies: ComponentChild[] = [];
+		notifyWrapperProps.style.left = game.editor.mouseX + "px";
+		notifyWrapperProps.style.top = (game.editor.mouseY) + "px";
+		notifyTexts.forEach((notifyText) => {
+			notifies.push(R.div(notifyProps, notifyText));
+		});
+		if(notifies.length > 0) {
+			notify = R.div(spinner ? notifyPropsDuringSpinner : notifyWrapperProps, notifies);
 		}
 
 		let hotkeyButton;

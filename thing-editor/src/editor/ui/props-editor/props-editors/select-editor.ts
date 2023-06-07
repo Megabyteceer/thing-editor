@@ -219,7 +219,6 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 			}, (item as SelectEditorItem).name ? (item as SelectEditorItem).name : item, ' ▾'))
 		);
 	}
-
 }
 
 const stopPropagationIfCtrl = (ev: KeyboardEvent) => {

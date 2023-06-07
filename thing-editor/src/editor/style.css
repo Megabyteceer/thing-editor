@@ -69,6 +69,7 @@ button:hover {
 
 .clickable:hover {
 	outline: 1px solid #8400ff83;
+	outline-offset: -1px;
 }
 
 #root {
@@ -429,12 +430,8 @@ input {
 	user-select: text;
 }
 
-.modal-notification {
+.modal-notification-wrapper {
 	position: fixed;
-	padding: 20px;
-	border-radius: 5px;
-	background: #4b4e4e;
-	color: #dddddd;
 	z-index: 1100;
 }
 
@@ -443,6 +440,13 @@ input {
 	bottom: unset;
 	top: 20%;
 	width: 600px;
+}
+
+.modal-notification {
+	padding: 10px 20px;
+	border-radius: 5px;
+	background: #4b4e4e;
+	color: #dddddd;
 }
 
 .props-editor {
@@ -533,6 +537,10 @@ input {
 
 .tree-item {
 	position: relative;
+}
+
+.item-prefab-reference {
+	border-right: 3px dotted #676d12;
 }
 
 .tree-children .tree-item {
@@ -680,6 +688,15 @@ input {
 	box-sizing: border-box;
 }
 
+.default-value {
+	color: #0eca75;
+	font-size: 130%;
+}
+
+.props-wrapper-default-value .props-label {
+	opacity: 0.5;
+}
+
 .number-input {
 	display: block;
 	position: relative;
@@ -739,6 +756,11 @@ input[type=checkbox] {
 input[type=checkbox]:checked {
 	background-image: url("/thing-editor/img/check-box-check.png");
 }
+
+input[disabled] {
+	opacity: 0.5;
+}
+
 
 .disabled {
 	opacity: 0.5;
@@ -853,8 +875,40 @@ input[type=checkbox]:checked {
 
 .assets-item-prefab {
 	border: 1px solid #676d12;
-	border-left: 5px dotted #676d12;
+	border-left: 3px dotted #676d12;
 	padding: 0;
+}
+
+.props-header {
+	display: flex;
+	height: 33px;
+}
+
+.props-header .assets-item-prefab{
+	margin: 0;
+	flex-grow: 3;
+}
+
+.change-prefab-button * {
+	pointer-events: none;
+}
+
+.props-header button {
+	overflow: hidden;
+	padding: 5px 15px;
+	margin: 0 7px 7px 0;
+	width: 50%;
+}
+
+.change-prefab-button {
+	padding: 0 10px !important;
+	display: flex;
+}
+
+.prefab-change-caret {
+	font-size: 130%;
+	margin-left: 7px;
+	line-height: 25px;
 }
 
 .close-window-btn {
@@ -879,7 +933,7 @@ input[type=checkbox]:checked {
 	border-radius: 10px;
 }
 
-#info {
+#window-info {
 	z-index: 20 !important;
 	border: 1px solid #995500;
 }

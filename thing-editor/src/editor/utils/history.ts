@@ -221,7 +221,7 @@ class History {
 	undo() {
 		if(this.isUndoAvailable()) {
 			if(this.currentState.fieldName) {
-				game.editor.selectField(this.currentState.fieldName);
+				game.editor.ui.propsEditor.selectField(this.currentState.fieldName);
 			}
 			this._redoList.push(this._undoList.pop() as HistoryRecord);
 			applyState(this.currentState);
@@ -233,7 +233,7 @@ class History {
 			this._undoList.push(this._redoList.pop() as HistoryRecord);
 			applyState(this.currentState);
 			if(this.currentState.fieldName) {
-				game.editor.selectField(this.currentState.fieldName);
+				game.editor.ui.propsEditor.selectField(this.currentState.fieldName);
 			}
 		}
 	}

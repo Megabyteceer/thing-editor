@@ -22,7 +22,7 @@ export default class Bunny extends DSprite {
 			this.y = FLOOR_Y;
 			this.ySpeed *= -0.8;
 			this.ySpeed = stepTo(this.ySpeed, 0, 1);
-			this.xSpeed *= 0.6;
+			this.xSpeed *= 0.8;
 		} else if(this.y < 0) {
 			this.y = 0;
 			this.ySpeed *= -Math.abs(this.ySpeed);

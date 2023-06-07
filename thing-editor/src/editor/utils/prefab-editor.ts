@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
 import { ComponentChild } from "preact";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
+import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import Shape from "thing-editor/src/engine/components/shape.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -46,7 +47,7 @@ export default class PrefabEditor {
 		backDrop.shapeFillColor = val;
 	}
 
-	static showPreview(object: Container) {
+	private static showPreview(object: Container) {
 		if(!backDrop) {
 			backDrop = Lib.loadPrefab('__system/backdrop') as Shape;
 			backDrop.name = null; // prevent get by name error;
@@ -110,7 +111,7 @@ export default class PrefabEditor {
 		PrefabEditor.exitPrefabEdit(oneStepOnly);
 		game.editor.ui.refresh();
 		if(isChanged) {
-			// TODO PrefabReference.__refreshPrefabRefs(name);
+			__refreshPrefabRefs();
 			game.editor.regeneratePrefabsTypings();
 		}
 	}
@@ -133,16 +134,16 @@ export default class PrefabEditor {
 		}
 	}
 
-	static choosePrefab(title: ComponentChild, noEasyClose = false) {
+	static choosePrefab(title: ComponentChild, noEasyClose = false, activePrefab?: string): Promise<string | null> {
 
 		let prefabsFiles = fs.getAssetsList(AssetType.PREFAB);
 
 		let prefabsSelect = prefabsFiles.map((prefabFile) => {
-			let c = game.classes[prefabFile.asset.c];
+			let c = game.classes[prefabFile.asset.c!];
 			return { name: prefabFile.assetName, __EDITOR_icon: c.__EDITOR_icon };
 		});
 
-		return game.editor.ui.modal.showListChoose(title || "Choose prefab", prefabsSelect, noEasyClose).then((choosed) => {
+		return game.editor.ui.modal.showListChoose(title || "Choose prefab", prefabsSelect, noEasyClose, false, activePrefab).then((choosed) => {
 			if(choosed) {
 				return choosed.name;
 			}

@@ -318,7 +318,9 @@ _editableEmbed(Container, 'name', {
 		return name && name.replace('.', '_').replace('#', '_').replace('`', '_').replace(',', '_');
 	},
 	disabled: (node: Container) => {
-		return node.parent === game.stage;
+		if(node.parent === game.stage) {
+			return "root object`s name can not be edited because it is always equal to scene`s or prefab`s name."
+		}
 	},
 	beforeEdited: (_val: string) => {
 		//TODO: game.editor.DataPathFixer.beforeNameEdit(val);

@@ -3,6 +3,7 @@
 
 import { Container, Point } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
+import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 
 type CallBackPath = string;
 type ValuePath = string;
@@ -23,7 +24,7 @@ interface NodeExtendData {
 	deepness?: number;
 	isSelected?: boolean;
 
-	isPrefabReference?: true; //TODO: prefabs without PrefabReference object
+	isPrefabReference?: string;
 
 	constructorCalled?: boolean;
 
@@ -86,6 +87,8 @@ interface SourceMappedConstructor extends Constructor {
 	__defaultValues: KeyedObject;
 	__EDITOR_icon?: string;
 	__editableProps: EditablePropertyDesc[];
+	/** additional way to disable editable properties */
+	__isPropertyDisabled?: (p: EditablePropertyDesc) => string | undefined;
 	__EDITOR_tip?: string; //TODO
 	__isScene: boolean;
 	__sourceCode: string[];
@@ -106,7 +109,11 @@ type KeyedMap<T> = {
 
 type SerializedObject = {
 	/** constructor class name */
-	c: string,
+	c?: string,
+
+	/** prefab reference name */
+	r?: string,
+
 	p: SerializedObjectProps,
 	':'?: SerializedObject[] | undefined,
 }

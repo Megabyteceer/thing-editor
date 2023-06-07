@@ -3,8 +3,11 @@ import assert from "thing-editor/src/engine/debug/assert";
 import { OutlineFilter } from '@pixi/filter-outline';
 
 import { Container } from "pixi.js";
+import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import TreeNode from "thing-editor/src/editor/ui/tree-view/tree-node";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
+import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
 
 const selectionFilter = new OutlineFilter(2, 0xffff00);
@@ -60,28 +63,28 @@ export default class Selection extends Array<Container> {
 
 	add(o: Container) {
 
-		/* //TODO
-		let nodePath = getPathOfNode(o);
 
-		
-		let hidingParent = Overlay.getParentWhichHideChildren(o, true);
+		let nodePath = getPathOfNode(o);
+		let hidingParent = getParentWhichHideChildren(o, true);
 		if(hidingParent && (hidingParent !== o)) {
-			if(hidingParent instanceof PrefabReference) {
+			//TODO проверить как выделяет чилда внутри префаба.
+			if(hidingParent.__nodeExtendData.isPrefabReference) {
 				let parentPath = getPathOfNode(hidingParent);
 				nodePath.length -= parentPath.length;
 
-				let prefabName = PrefabsList.getPrefabNameFromPrefabRef(hidingParent);
+				let prefabName = hidingParent.__nodeExtendData.isPrefabReference;
 
 				if(prefabName) {
 					game.editor.ui.modal.showEditorQuestion("Object is in inside prefab", "Do you want to go to prefab '" + prefabName + "', containing this object?", () => {
-						PrefabsList.editPrefab(prefabName);
+						PrefabEditor.editPrefab(prefabName);
 						game.editor.selection.loadSelection([nodePath]);
 					});
 				}
 			}
-			game.editor.ui.modal.showInfo('Can not select object, because it is hidden by parent ' + hidingParent.constructor.__className + '; ' + o.___info, 'Can not select object', 30015);
+			game.editor.ui.modal.showInfo('Can not select object, because it is hidden by parent ' + (hidingParent.constructor as SourceMappedConstructor).__className + '; ' + o.___info, 'Can not select object', 30015);
 			return;
-		}*/
+		}
+
 		assert(!o.__nodeExtendData.isSelected, "Node is selected already.");
 		assert(this.indexOf(o) < 0, "Node is registered in selected list already.");
 		o.__nodeExtendData.isSelected = true;

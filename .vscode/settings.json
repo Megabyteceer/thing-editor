@@ -18,13 +18,14 @@
 	"editor.formatOnType": false,
 	"editor.formatOnPaste": false,
 	"blockshighlighter.blocks": [
+
 		{
 			"fileType": "\\.(js|ts)$",
 			"begin": "^\\s*///\\s*#if EDITOR\\s*$",
 			"end": "^\\s*///\\s*#endif\\s*$",
 			"decorationRenderOptions": {
 				"isWholeLine": true,
-				"backgroundColor": "rgba(100,100,255,0.1)"
+				"backgroundColor": "rgba(100,100,255,0.06)"
 			}
 		},
 		{
@@ -33,7 +34,7 @@
 			"end": "^\\s*///\\s*#endif\\s*$",
 			"decorationRenderOptions": {
 				"isWholeLine": true,
-				"backgroundColor": "rgba(100,255,100,0.1)"
+				"backgroundColor": "rgba(100,255,100,0.06)"
 			}
 		},
 		{

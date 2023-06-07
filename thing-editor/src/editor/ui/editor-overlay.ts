@@ -125,12 +125,21 @@ function moveSelectionTo(ev: MouseEvent) {
 				game.editor.moveContainerWithoutChildren(s, dX, dY);
 			}
 		} else {
-			game.editor.onSelectedPropsChange('x', dX, true);
-			game.editor.onSelectedPropsChange('y', dY, true);
+			if(game.editor.ui.propsEditor.editableProps.x) {
+				game.editor.onSelectedPropsChange('x', dX, true);
+			} else {
+				game.editor.ui.propsEditor.selectField('x');
+				game.editor.ui.modal.notify('x property locked');
+			}
+			if(game.editor.ui.propsEditor.editableProps.y) {
+				game.editor.onSelectedPropsChange('y', dY, true);
+			} else {
+				game.editor.ui.propsEditor.selectField('y')
+				game.editor.ui.modal.notify('y property locked');
+			}
 		}
 	}
 }
-
 
 function isObjectUnderMouse(o: Container) {
 	return ((o as Sprite).containsPoint && (!o.__lockSelection) && o.worldVisible && (o as Sprite).containsPoint(game.__mouse_EDITOR));

@@ -12,6 +12,8 @@ import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
+import fs, { AssetType } from "thing-editor/src/editor/fs";
+import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
 import BtnProperty from "thing-editor/src/editor/ui/props-editor/props-editors/btn-editor";
@@ -26,7 +28,10 @@ import RefFieldEditor from "thing-editor/src/editor/ui/props-editor/props-editor
 import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-editor";
+import getPrefabDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
+import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
 
 let editorProps = {
 	className: 'props-editor window-scrollable-content',
@@ -35,7 +40,9 @@ let editorProps = {
 	}
 };
 
-let headerProps = {
+const prefabSelectCaret = R.span({ className: 'prefab-change-caret' }, '▾');
+
+const headerProps = {
 	className: 'props-header'
 };
 
@@ -62,6 +69,8 @@ const renderers: Map<EditablePropertyType, EditablePropsRenderer> = new Map();
 const typeDefaults: Map<EditablePropertyType, any> = new Map();
 
 class PropsEditor extends ComponentDebounced<PropsEditorProps> {
+
+	editableProps: KeyedMap<boolean> = {};
 
 	refs: Map<string, PropsFieldWrapper> = new Map();
 
@@ -105,6 +114,42 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 		if(this.restoreScrollPosInterval) {
 			clearInterval(this.restoreScrollPosInterval);
 		}
+	}
+
+	onChangePrefabClick() {
+		PrefabEditor.choosePrefab('Select prefab', false, game.editor.selection[0].__nodeExtendData.isPrefabReference).then((selectedPrefabName) => {
+			if(selectedPrefabName) {
+				let newObjects = [];
+				for(let o of game.editor.selection) {
+					const objectData = Lib.__serializeObject(o);
+					objectData.r = selectedPrefabName!;
+
+					let newObject = Lib._deserializeObject(objectData);
+
+					if((newObject instanceof MovieClip) && newObject._timelineData) {
+						for(let animatonField of newObject._timelineData.f) {
+							const animationValue = animatonField.t[0].v;
+							if((newObject as KeyedObject)[animatonField.n] !== animationValue) {
+								(newObject as KeyedObject)[animatonField.n] = animationValue;
+								game.editor.ui.status.warn('Value of property "' + animatonField + '" was changed to ' + animationValue + ' because its refers to MovieClip where property is animated.', 30018, newObject, animatonField.n);
+								game.editor.sceneModified();
+							}
+						}
+					}
+
+					Lib.__invalidateSerializationCache(o.parent);
+					o.parent.addChildAt(newObject, o.parent.children.indexOf(o));
+					o.remove();
+					newObjects.push(newObject);
+				}
+				game.editor.selection.clearSelection();
+				for(let o of newObjects) {
+					game.editor.selection.add(o);
+				}
+				game.editor.refreshTreeViewAndPropertyEditor();
+				game.editor.sceneModified(true);
+			}
+		});
 	}
 
 	onChangeClassClick() {
@@ -183,40 +228,27 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 		}, 1);
 	}
 
-	editableProps: KeyedMap<boolean> = {};
-
 	render() {
 		if(game.editor.selection.length <= 0) {
 			return NOTHING_SELECTED;
 		}
+		const node = game.editor.selection[0];
+		const Constructor = (node.constructor as SourceMappedConstructor);
 
-		let header;
-		if(game.editor.selection[0].__nodeExtendData.unknownConstructor) {
-			header = R.fragment(R.classIcon(game.editor.selection[0].constructor as SourceMappedConstructor), ' ', R.b({
-				className: 'danger selectable-text',
-				title: 'Ctrl+click to copy Class`s name',
-				onMouseDown: copyTextByClick
-			}, game.editor.selection[0].__nodeExtendData.unknownConstructor));
-		} else {
-			let firstClass = game.editor.selection[0].constructor as SourceMappedConstructor;
-			if(game.editor.selection.some((o) => {
-				return o.constructor !== firstClass;
-			})) {
-				header = R.fragment(R.classIcon(MIXED_ICON as SourceMappedConstructor), ' Mixed types selected', '...');
-			} else {
-				header = R.fragment(R.classIcon(firstClass), ' ', R.b({
-					className: 'selectable-text',
-					title: 'Ctrl+click to copy Class`s name',
-					onMouseDown: copyTextByClick
-				}, firstClass.__className), '...');
-			}
-		}
-		let props: EditablePropertyDesc[] = (game.editor.selection[0].constructor as SourceMappedConstructor).__editableProps;
+		let props: EditablePropertyDesc[] = Constructor.__editableProps;
 
 		const visibleProps: KeyedMap<number> = {};
 		this.editableProps = visibleProps as any as KeyedMap<boolean>;
 
+		let prefabReferencesPresent = false;
+		let nonPrefabsPresent = false;
+
 		for(let o of game.editor.selection) {
+			if(o.__nodeExtendData.isPrefabReference) {
+				prefabReferencesPresent = true;
+			} else {
+				nonPrefabsPresent = true;
+			}
 			let hidePropsEditor = o.__nodeExtendData.hidePropsEditor;
 			if(hidePropsEditor && !hidePropsEditor.visibleFields) {
 				return hidePropsEditor.title || 'Not editable';
@@ -231,7 +263,8 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 		}
 		props = props.filter((p) => {
 			if(visibleProps[p.name] === game.editor.selection.length) {
-				this.editableProps[p.name] = !p.disabled || !p.disabled(game.editor.selection[0]);
+				this.editableProps[p.name] = (!p.disabled || !p.disabled(node)) &&
+					(!Constructor.__isPropertyDisabled || !Constructor.__isPropertyDisabled!(p));
 				return true;
 			} else {
 				this.editableProps[p.name] = false;
@@ -242,11 +275,15 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 		let curGroup: GroupableItem | undefined;
 		let curGroupArray: ComponentChild[] = [];
 
+		const defaultValues: KeyedObject = node.__nodeExtendData.isPrefabReference ?
+			getPrefabDefaults(node.__nodeExtendData.isPrefabReference) :
+			Constructor.__defaultValues;
+
 		for(let p of props) {
 			if(p.visible) {
 				let invisible;
 				for(let o of game.editor.selection) {
-					if(!p.visible(o)) {
+					if(!p.visible(o)) { //TODO reset values at serialization only.
 						(o as KeyedObject)[p.name] = (o.constructor as SourceMappedConstructor).__defaultValues[p.name];
 						invisible = true;
 					}
@@ -268,15 +305,53 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 				curGroup = group.renderGroup({ key: p.name, content: curGroupArray, title: p.title as string });
 			} else {
 				curGroupArray.push(
-					h(PropsFieldWrapper, { key: p.name, propsEditor: this, field: p, onChange: this.props.onChange })
+					h(PropsFieldWrapper, { key: p.name, defaultValue: defaultValues[p.name], propsEditor: this, field: p, onChange: this.props.onChange })
 				);
 			}
 		}
 		assert(curGroup, "Properties list started not with splitter.");
+
+		let header: ComponentChild;
+		if(prefabReferencesPresent === nonPrefabsPresent) {
+			header = "References and non references are selected."
+		} else if(nonPrefabsPresent) {
+			let classButtonContent;
+			if(node.__nodeExtendData.unknownConstructor) {
+				classButtonContent = R.fragment(R.classIcon(node.constructor as SourceMappedConstructor), ' ', R.b({
+					className: 'danger selectable-text',
+					title: 'Ctrl+click to copy Class`s name',
+					onMouseDown: copyTextByClick
+				}, node.__nodeExtendData.unknownConstructor));
+			} else {
+				let firstClass = node.constructor as SourceMappedConstructor;
+				if(game.editor.selection.some((o) => {
+					return o.constructor !== firstClass;
+				})) {
+					classButtonContent = R.fragment(R.classIcon(MIXED_ICON as SourceMappedConstructor), ' Mixed types selected', '...');
+				} else {
+					classButtonContent = R.fragment(R.classIcon(firstClass), ' ', R.b({
+						className: 'selectable-text',
+						title: 'Ctrl+click to copy Class`s name',
+						onMouseDown: copyTextByClick
+					}, firstClass.__className), '...');
+				}
+			}
+			header = R.btn(classButtonContent, this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode)
+		} else {
+			const prefabName = game.editor.selection[0].__nodeExtendData.isPrefabReference!;
+			header = R.fragment(
+				R.btn(R.fragment(
+					assetItemRendererPrefab(fs.getFileByAssetName(prefabName, AssetType.PREFAB)),
+					prefabSelectCaret
+				), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button', undefined, !game.__EDITOR_mode),
+				R.btn('Edit prefab', () => {
+					PrefabEditor.editPrefab(prefabName, true);
+				}, undefined, undefined, { key: 'e', ctrlKey: true }, !game.__EDITOR_mode)
+			)
+		}
+
 		groups.push(curGroup as GroupableItem);
-		return R.div(editorProps, R.div(headerProps,
-			R.btn(header, this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode)
-		), groups);
+		return R.div(editorProps, R.div(headerProps, header), groups);
 	}
 }
 

@@ -71,6 +71,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 				//TODO game.editor.overlay.exitIsolation();
 				game.editor.ui.status.clear();
 				game.editor.saveBackup();
+				game.editor.selection.saveCurrentSelection();
 				game.__clearStage();
 				// TODO Spine.clearPool();
 				//TODO Sound.__resetSounds();

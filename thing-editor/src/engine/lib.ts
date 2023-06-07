@@ -14,8 +14,10 @@ import fs, { AssetType, FileDesc, FileDescPrefab } from "thing-editor/src/editor
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
+import getPrefabDefaults, { invalidatePrefabDefaults } from "thing-editor/src/editor/utils/get-prefab-defaults";
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
+import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 
 let classes: Classes;
@@ -190,48 +192,64 @@ export default class Lib {
 		, isScene = false
 		/// #endif
 	): Container {
-		let ret: Scene;
-		/// #if EDITOR
+		let ret: Container;
 
+		/// #if EDITOR
 		deserializationDeepness++;
-		let replaceClass: SourceMappedConstructor | undefined = undefined;
-		let replaceClassName: string | undefined;
-		if(!classes.hasOwnProperty(src.c)) {
-			replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass) as any as SourceMappedConstructor;
-			replaceClassName = replaceClass.__className;
-			if(!showedReplacings[src.c]) {
-				showedReplacings[src.c] = true;
-				setTimeout(() => { // wait for id assign
-					game.editor.ui.status.error("Unknown class " + src.c + " was temporary replaced with class " + replaceClassName + ".", 32012, ret);
-				}, 1);
-			}
-		}
-		if(!replaceClass) {
-			assert(classes[src.c].__defaultValues, 'Class ' + (replaceClassName || src.c) + ' has no default values set');
-		}
 		/// #endif
 
-
-		//TODO: prefabs references via "p" field in SerializedObject
-
-		const constrictor: SourceMappedConstructor =
+		if(src.hasOwnProperty('r')) { // prefab reference
+			ret = Lib.loadPrefab(src.r!);
+			Object.assign(ret, src.p);
 			/// #if EDITOR
-			replaceClass ||
+
+			if(game.__EDITOR_mode) {
+				ret.__nodeExtendData.isPrefabReference = src.r;
+
+				for(const c of ret.children) {
+					c.__nodeExtendData.hidden = true;
+				}
+			}
 			/// #endif
-			classes[src.c] as SourceMappedConstructor;
 
-		ret = Pool.create(constrictor);
-		/// #if EDITOR
-		if(ret.__beforeDeserialization) {
-			ret.__beforeDeserialization();
-		}
-		if(replaceClassName) {
-			ret.__nodeExtendData.unknownConstructor = src.c;
-			ret.__nodeExtendData.unknownConstructorProps = src.p;
-		}
-		/// #endif
-		Object.assign(ret, constrictor.__defaultValues, src.p);
+		} else { // not a prefab reference
 
+			/// #if EDITOR
+			let replaceClass: SourceMappedConstructor | undefined = undefined;
+			let replaceClassName: string | undefined;
+			if(!classes.hasOwnProperty(src.c!)) {
+				replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass) as any as SourceMappedConstructor;
+				replaceClassName = replaceClass.__className;
+				if(!showedReplacings[src.c!]) {
+					showedReplacings[src.c!] = true;
+					setTimeout(() => { // wait for id assign
+						game.editor.ui.status.error("Unknown class " + src.c + " was temporary replaced with class " + replaceClassName + ".", 32012, ret);
+					}, 1);
+				}
+			}
+			if(!replaceClass) {
+				assert(classes[src.c!].__defaultValues, 'Class ' + (replaceClassName || src.c) + ' has no default values set');
+			}
+			/// #endif
+
+			const constrictor =
+				/// #if EDITOR
+				replaceClass ||
+				/// #endif
+				classes[src.c!] as SourceMappedConstructor;
+
+			ret = Pool.create(constrictor);
+			/// #if EDITOR
+			if(ret.__beforeDeserialization) {
+				ret.__beforeDeserialization();
+			}
+			if(replaceClassName) {
+				ret.__nodeExtendData.unknownConstructor = src.c;
+				ret.__nodeExtendData.unknownConstructorProps = src.p;
+			}
+			/// #endif
+			Object.assign(ret, constrictor.__defaultValues, src.p);
+		}
 
 		if(src.hasOwnProperty(':')) {
 			let childrenData: SerializedObject[] = src[':'] as SerializedObject[];
@@ -376,7 +394,7 @@ export default class Lib {
 		staticScenes = {};
 	}
 
-	static __serializeObject(o: Container) {
+	static __serializeObject(o: Container): SerializedObject {
 
 		editorUtils.exitPreviewMode(o);
 		if(o.__beforeSerialization) {
@@ -391,10 +409,17 @@ export default class Lib {
 			let props: KeyedObject = {};
 			let propsList = (o.constructor as SourceMappedConstructor).__editableProps;
 
+			let defaults: KeyedObject;
+			if(o.__nodeExtendData.isPrefabReference) {
+				defaults = getPrefabDefaults(o.__nodeExtendData.isPrefabReference);
+			} else {
+				defaults = (o.constructor as SourceMappedConstructor).__defaultValues;
+			}
+
 			for(let p of propsList) {
 				if(!p.notSerializable) {
 					let val = (o as KeyedObject)[p.name];
-					if((val != p.default) && (typeof val !== 'undefined') && (val !== null)) {
+					if((val != defaults[p.name]) && (typeof val !== 'undefined') && (val !== null)) {
 						if(p.type === 'rect') {
 							props[p.name] = {
 								x: val.x,
@@ -409,10 +434,18 @@ export default class Lib {
 				}
 			}
 
-			ret = {
-				c: (o.constructor as SourceMappedConstructor).__className as string,
-				p: props
-			};
+			if(o.__nodeExtendData.isPrefabReference) {
+				ret = {
+					r: o.__nodeExtendData.isPrefabReference,
+					p: props
+				};
+
+			} else {
+				ret = {
+					c: (o.constructor as SourceMappedConstructor).__className as string,
+					p: props
+				};
+			}
 
 			if(o.__nodeExtendData.unknownConstructor) {
 				ret.c = o.__nodeExtendData.unknownConstructor;
@@ -422,7 +455,7 @@ export default class Lib {
 			if(o.children.length > 0) {
 				let children = (o.children as Container[]).filter(__isSerializableObject).map(Lib.__serializeObject as () => SerializedObject);
 				if(children.length > 0) {
-					ret[':'] = children;
+					ret![':'] = children;
 				}
 			}
 			o.__nodeExtendData.serializationCache = ret;
@@ -472,7 +505,7 @@ export default class Lib {
 	}
 
 	static __savePrefab(object: Container, name: string) {
-
+		invalidatePrefabDefaults();
 		assert(game.__EDITOR_mode, "attempt to save prefab in running mode: " + name);
 		assert(typeof name === 'string', "Prefab name expected.");
 		assert(!(object instanceof Scene), "attempt to save Scene or not DisplayObject as prefab.");
@@ -607,6 +640,7 @@ const __onAssetUpdated = (file: FileDesc) => {
 			if(isAcceptChanges) {
 				file.asset = fs.readJSONFile(file.fileName);
 				Lib.prefabs[file.assetName] = (file as FileDescPrefab).asset;
+				__refreshPrefabRefs();
 				if(PrefabEditor.currentPrefabName === file.assetName) {
 					PrefabEditor.exitPrefabEdit();
 					PrefabEditor.editPrefab(file.assetName);
@@ -644,10 +678,7 @@ const __onAssetDeleted = (file: FileDesc) => {
 	}
 }
 
-/// #if EDITOR
 let showedReplacings: KeyedMap<true>;
-
-/// #endif
 
 
 /// #endif

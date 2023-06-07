@@ -32,7 +32,7 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	helpUrl?: string,
 	/** field changes pass vale through this function  */
 	parser?: (val: any) => any;
-	disabled?: (o: T) => boolean;
+	disabled?: (o: T) => string | undefined | boolean;
 	beforeEdited?: (val: any) => void;
 	onBlur?: () => void;
 	onClick?: (ev: any) => void;

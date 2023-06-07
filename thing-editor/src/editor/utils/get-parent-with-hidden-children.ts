@@ -16,13 +16,13 @@ export default function getParentWhichHideChildren(child: Container, closest = f
 	for(let i = 0; i < parents.length; i++) {
 		o = parents[i];
 
-		let d = o.__nodeExtendData;
-		if(d.hideAllChildren) {
+		let extendData = o.__nodeExtendData;
+		if(extendData.hideAllChildren) {
 			if(o !== child) {
 				return o;
 			}
 		}
-		if(d.hidden) {
+		if(extendData.hidden) {
 			if(!closest) {
 				assert(i > 0, "Cannot get parent hides children.");
 				o = parents[i - 1];

@@ -33,14 +33,14 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 	onMouseDown(ev: PointerEvent) { // == select nodes
 		sp(ev);
 
-		let state = this.props.node.__nodeExtendData;
-		if(ev.buttons !== 1 && state.isSelected) {
+		let extendData = this.props.node.__nodeExtendData;
+		if(ev.buttons !== 1 && extendData.isSelected) {
 			return;
 		}
 
 		if((isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
-			state.childrenExpanded = !state.childrenExpanded;
-			if(!state.childrenExpanded) {
+			extendData.childrenExpanded = !extendData.childrenExpanded;
+			if(!extendData.childrenExpanded) {
 				collapseChildrenRecursively(this.props.node);
 			} else if(ev.altKey) {
 				expandChildrenRecursively(this.props.node);
@@ -66,7 +66,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 			game.editor.selection.select(this.props.node, ev.ctrlKey);
 		}
 
-		if(state.isSelected) {
+		if(extendData.isSelected) {
 			lastClickedItem = this;
 		}
 		if(document.activeElement) {
@@ -80,11 +80,11 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 
 	render() {
 		let node = this.props.node;
-		let state = node.__nodeExtendData;
+		let extendData = node.__nodeExtendData;
 		let children;
 		let caret;
-		if(nodeHasChildren(node) && !state.hideAllChildren) {
-			if(state.childrenExpanded) {
+		if(nodeHasChildren(node) && !extendData.hideAllChildren) {
+			if(extendData.childrenExpanded) {
 				caret = caretOpened;
 				children = R.div({ className: 'tree-children' },
 					node.children.map(renderSceneNode as any)
@@ -95,15 +95,19 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 		}
 		let className = 'tree-item';
 
-		if(state.isSelected) {
+		if(extendData.isSelected) {
 			if(!lastClickedItem) {
 				lastClickedItem = this;
 			}
 			className += ' item-selected';
 		}
 
+		if(extendData.isPrefabReference) {
+			className += ' item-prefab-reference';
+		}
+
 		let style;
-		if(state.hidden) {
+		if(extendData.hidden) {
 			style = { display: 'none' };
 		}
 
@@ -166,3 +170,4 @@ const renderSceneNode = (node: Container) => {
 };
 
 export { renderSceneNode };
+

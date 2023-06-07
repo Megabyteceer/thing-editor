@@ -179,12 +179,15 @@ class Editor {
 		}
 	}
 
-	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) {
+	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) { //TODO rename changeProperty
 		if(this.selection.length > 0) {
 
 			if(typeof field === 'string') {
 				field = this.getObjectField(this.selection[0], field);
 			}
+
+			assert(this.ui.propsEditor.editableProps[field.name], "Property is disabled.");
+
 			if(field.beforeEdited) {
 				field.beforeEdited(val);
 			}
@@ -508,7 +511,7 @@ class Editor {
 		await AssetsLoader.reloadAssets();
 	}
 
-	onObjectsPropertyChanged(o: Container, field: EditablePropertyDesc | string, val: any, isDelta?: boolean) {
+	onObjectsPropertyChanged(o: Container, field: EditablePropertyDesc | string, val: any, isDelta?: boolean) { // TODO два похожих метода. Сделать один для выделения и объекта
 		assert((!isDelta) || (typeof isDelta === 'boolean'), "isDelta expected to be bool");
 		let changed = false;
 		if(typeof field === 'string') {
@@ -559,10 +562,6 @@ class Editor {
 
 	notify(message: string | Component) {
 		this.ui.modal.notify(message);
-	}
-
-	selectField(_fieldName: string) {
-		//TODO:
 	}
 
 	refreshTreeViewAndPropertyEditor() {

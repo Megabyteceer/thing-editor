@@ -5,6 +5,7 @@ import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
+import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
 const assetsItemNameProps = {
@@ -13,7 +14,7 @@ const assetsItemNameProps = {
 	onMouseDown: copyTextByClick
 };
 
-const showClassContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
+const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 	showContextMenu([
 		{
 			name: "Add as child",
@@ -41,7 +42,7 @@ const showClassContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 			name: "Go to Source code >>>",
 			tip: "Double click on class to go to it`s source code.",
 			onClick: () => {
-				game.editor.editClassSource(game.classes[file.asset.c]);
+				game.editor.editClassSource(game.classes[file.asset.c!]);
 			}
 		},
 		null,
@@ -65,6 +66,7 @@ const showClassContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 }
 
 const assetItemRendererPrefab = (file: FileDescPrefab) => {
+	assert(file.asset.c, "rendering of prefab referenced to prefab not supported. TODO");
 	return R.div(
 		{
 			className: (file.assetName === PrefabEditor.currentPrefabName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
@@ -82,15 +84,15 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 			},
 			onContextMenu: (ev: PointerEvent) => {
 				sp(ev);
-				showClassContextMenu(file, ev);
+				showPrefabContextMenu(file, ev);
 			},
 			onDblClick: () => {
-				let Class = game.classes[file.asset.c];
-				game.editor.editClassSource(Class, file.asset.c);
+				let Class = game.classes[file.asset.c!];
+				game.editor.editClassSource(Class, file.asset.c!);
 			},
 			title: "click to edit prefab."
 		},
-		R.classIcon(game.classes[file.asset.c] || __UnknownClass),
+		R.classIcon(game.classes[file.asset.c!] || __UnknownClass),
 		R.span(assetsItemNameProps, file.assetName));
 }
 

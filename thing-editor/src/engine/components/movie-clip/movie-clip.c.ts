@@ -1,6 +1,6 @@
 /// #if EDITOR
 import DSprite from 'thing-editor/src/engine/components/d-sprite.c';
-import { TimelineFrameValuesCache, TimelineKeyFrameType } from 'thing-editor/src/engine/components/movie-clip/field-player';
+import { TimelineData, TimelineFrameValuesCache, TimelineKeyFrameType } from 'thing-editor/src/engine/components/movie-clip/field-player';
 import game from '../../game';
 import Lib from '../../lib';
 
@@ -23,11 +23,12 @@ import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/time
 import { Container } from 'pixi.js';
 import { KeyedMap, KeyedObject, SelectableProperty, SerializedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 
-import editable from 'thing-editor/src/editor/props-editor/editable';
+import editable, { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 
+import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
-import FieldPlayer, { TimelineData, TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/components/movie-clip/field-player';
+import FieldPlayer, { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/components/movie-clip/field-player';
 import assert from 'thing-editor/src/engine/debug/assert';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
@@ -40,10 +41,10 @@ export default class MovieClip extends DSprite {
 
 	_goToLabelNextFrame: string | false = false;
 
-	@editable({ notAnimate: true })
+	@editable({ notAnimate: true, disabled: () => true })
 	isPlaying = true;
 
-	@editable({ type: 'timeline', important: true })
+	@editable({ type: 'timeline', important: true, visible: () => { return !game.editor.selection.some(o => o.__nodeExtendData.isPrefabReference) } })
 	set timeline(data) {
 		this._goToLabelNextFrame = false;
 		this._disposePlayers();
@@ -521,6 +522,17 @@ export default class MovieClip extends DSprite {
 	@editable({ select: SELECT_LOG_LEVEL })
 	__logLevel = 0;
 
+
+	static __isPropertyDisabled(field: EditablePropertyDesc) { //prevent editing of properties animated inside prefab reference
+		for(let o of game.editor.selection) {
+			if(o.__nodeExtendData.isPrefabReference) {
+				let timeline = getPrefabDefaults(o.__nodeExtendData.isPrefabReference).timeline as TimelineSerializedData;
+				if(timeline && timeline.f.find(f => f.n === field.name)) {
+					return "The property is disabled, because it is animated inside prefab.";
+				}
+			}
+		}
+	}
 	/// #endif
 }
 
@@ -617,11 +629,6 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 			}
 			return null;
 		});
-
-
-
-
-
 	});
 };
 

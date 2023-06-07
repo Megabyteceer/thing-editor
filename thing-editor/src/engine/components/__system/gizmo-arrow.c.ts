@@ -22,7 +22,7 @@ const mouseHandlerGlobalUp = () => {
 }
 
 const mouseHandlerGlobalMove = (ev: PointerEvent) => {
-	if(__GizmoArrow.draggedArrow && !game.mouse.click) {
+	if(__GizmoArrow.draggedArrow && (!game.mouse.click || !game.editor.selection.length)) {
 		__GizmoArrow.draggedArrow.stopDragging();
 	}
 	if(__GizmoArrow.draggedArrow) {

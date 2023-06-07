@@ -12,6 +12,7 @@ let bodyProps = { className: 'resizable-dialog left-align-text' };
 interface ChooseListProps extends ClassAttributes<ChooseList> {
 	list: ChooseListItem[];
 	noSearchField: boolean;
+	activeValue?: string;
 }
 
 
@@ -76,6 +77,12 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 			key = '' + key;
 		}
 
+		let className = item.refusedBecause ? 'refused-item choosing-item' : 'clickable choosing-item';
+
+		if(this.props.activeValue === name) {
+			className += ' assets-item-current';
+		}
+
 		return R.div({
 			onClick: () => {
 				if(!item.refusedBecause) {
@@ -83,7 +90,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 				}
 			},
 			title: item.refusedBecause,
-			className: item.refusedBecause ? 'refused-item choosing-item' : 'clickable choosing-item',
+			className,
 			key: key
 		}, icon, name);
 	}

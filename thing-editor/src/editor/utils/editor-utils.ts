@@ -1,7 +1,7 @@
 import { Container, Point } from "pixi.js";
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDesc, EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
+import { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import exportAsPng from "thing-editor/src/editor/utils/export-as-png";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
@@ -67,7 +67,7 @@ export namespace editorUtils {
 
 			while(editor.selection.length > 0) {
 				let o = editor.selection[0];
-				Lib.__invalidateSerializationCache(o);
+				Lib.__invalidateSerializationCache(o.parent);
 				o.remove();
 			}
 
@@ -222,7 +222,7 @@ export namespace editorUtils {
 
 			while(game.editor.selection.length > 0) {
 				let o = game.editor.selection[0];
-				Lib.__invalidateSerializationCache(o);
+				Lib.__invalidateSerializationCache(o.parent);
 				o.remove();
 			}
 
@@ -299,7 +299,7 @@ export namespace editorUtils {
 						game.editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
 
 							fin(); //TODO new prefab reference mechanism
-						}, 'Convert to PrefabReference', fin, 'Keep original', true);
+						}, 'Convert to prefab reference', fin, 'Keep original', true);
 					} else {
 						fin();
 					}
@@ -579,12 +579,6 @@ export namespace editorUtils {
 		game.editor.sceneModified(true);
 		game.editor.refreshTreeViewAndPropertyEditor();
 	}
-	export const resetValueOfField = (field: EditablePropertyDesc) => {
-		for(let o of game.editor.selection) {
-			game.editor.onObjectsPropertyChanged(o, field, (o.constructor as SourceMappedConstructor).__defaultValues[field.name])
-		}
-	}
-
 }
 
 interface ClipboardData {
