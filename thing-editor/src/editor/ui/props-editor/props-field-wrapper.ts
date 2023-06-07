@@ -89,9 +89,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		{
 			name: R.fragment(R.icon('reject'), 'Reset "' + field.name + '" value to default: ', R.span(defaultValueProps, defaultValue)),
 			onClick: () => {
-				for(let o of game.editor.selection) {
-					game.editor.onObjectsPropertyChanged(o, field, defaultValue);
-				}
+				game.editor.onSelectedPropsChange(field, defaultValue);
 			},
 			disabled: defaultValue === undefined || value === defaultValue || !game.editor.ui.propsEditor.editableProps[field.name]
 		},

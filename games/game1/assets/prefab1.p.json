@@ -4,6 +4,7 @@
 		"name": "prefab1",
 		"scale.x": 5.51,
 		"scale.y": 2,
+		"skew.x": -0.71,
 		"image": "WHITE",
 		"timeline": {
 			"l": {},
@@ -53,11 +54,11 @@
 					"n": "x",
 					"t": [
 						{
-							"v": 49,
+							"v": 55,
 							"t": 0
 						},
 						{
-							"v": 113,
+							"v": 119,
 							"t": 15,
 							"j": -51
 						}
@@ -67,11 +68,11 @@
 					"n": "y",
 					"t": [
 						{
-							"v": 74,
+							"v": 73,
 							"t": 0
 						},
 						{
-							"v": 147,
+							"v": 146,
 							"t": 14,
 							"j": -51
 						}
@@ -80,5 +81,37 @@
 			]
 		},
 		"__previewFrame": 3
-	}
+	},
+	":": [
+		{
+			"c": "DSprite",
+			"p": {
+				"x": -4,
+				"y": -34,
+				"scale.x": 0.2,
+				"scale.y": 0.4,
+				"image": "bunny.png"
+			}
+		},
+		{
+			"c": "DSprite",
+			"p": {
+				"x": -15,
+				"y": -37,
+				"scale.x": 0.2,
+				"scale.y": 0.4,
+				"image": "bunny.png"
+			}
+		},
+		{
+			"c": "DSprite",
+			"p": {
+				"x": 6,
+				"y": -33,
+				"scale.x": 0.2,
+				"scale.y": 0.4,
+				"image": "bunny.png"
+			}
+		}
+	]
 }

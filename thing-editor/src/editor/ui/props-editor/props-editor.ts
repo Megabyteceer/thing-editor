@@ -28,7 +28,7 @@ import RefFieldEditor from "thing-editor/src/editor/ui/props-editor/props-editor
 import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-editor";
-import getPrefabDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
+import getObjectDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
 import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
@@ -60,7 +60,7 @@ const NOTHING_SELECTED = R.div({
 }, 'Nothing selected');
 
 interface PropsEditorProps extends ClassAttributes<PropsEditor> {
-	onChange: (field: string | EditablePropertyDesc, val: any, isDelta?: boolean) => void;
+
 }
 
 type EditablePropsRenderer = ComponentType<Component>;
@@ -128,11 +128,11 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 					let newObject = Lib._deserializeObject(objectData);
 
 					if((newObject instanceof MovieClip) && newObject._timelineData) {
-						for(let animatonField of newObject._timelineData.f) {
-							const animationValue = animatonField.t[0].v;
-							if((newObject as KeyedObject)[animatonField.n] !== animationValue) {
-								(newObject as KeyedObject)[animatonField.n] = animationValue;
-								game.editor.ui.status.warn('Value of property "' + animatonField + '" was changed to ' + animationValue + ' because its refers to MovieClip where property is animated.', 30018, newObject, animatonField.n);
+						for(let animationField of newObject._timelineData.f) {
+							const animationValue = animationField.t[0].v;
+							if((newObject as KeyedObject)[animationField.n] !== animationValue) {
+								(newObject as KeyedObject)[animationField.n] = animationValue;
+								game.editor.ui.status.warn('Value of property "' + animationField.n + '" was changed to ' + animationValue + ' because its refers to MovieClip where property is animated.', 30018, newObject, animationField.n);
 								game.editor.sceneModified();
 							}
 						}
@@ -230,6 +230,10 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 	}
 
 	render() {
+
+		const visibleProps: KeyedMap<number> = {};
+		this.editableProps = visibleProps as any as KeyedMap<boolean>;
+
 		if(game.editor.selection.length <= 0) {
 			return NOTHING_SELECTED;
 		}
@@ -238,8 +242,6 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 
 		let props: EditablePropertyDesc[] = Constructor.__editableProps;
 
-		const visibleProps: KeyedMap<number> = {};
-		this.editableProps = visibleProps as any as KeyedMap<boolean>;
 
 		let prefabReferencesPresent = false;
 		let nonPrefabsPresent = false;
@@ -291,16 +293,16 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 		let curGroup: GroupableItem | undefined;
 		let curGroupArray: ComponentChild[] = [];
 
-		const defaultValues: KeyedObject = node.__nodeExtendData.isPrefabReference ?
-			getPrefabDefaults(node.__nodeExtendData.isPrefabReference) :
-			Constructor.__defaultValues;
+		const defaultValues = getObjectDefaults(node);
 
 		for(let p of props) {
 			if(p.visible) {
 				let invisible;
 				for(let o of game.editor.selection) {
 					if(!p.visible(o)) { //TODO reset values at serialization only.
-						(o as KeyedObject)[p.name] = (o.constructor as SourceMappedConstructor).__defaultValues[p.name];
+
+						const defaults = getObjectDefaults(o);
+						(o as KeyedObject)[p.name] = defaults[p.name];
 						invisible = true;
 					}
 				}
@@ -321,7 +323,7 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 				curGroup = group.renderGroup({ key: p.name, content: curGroupArray, title: p.title as string });
 			} else {
 				curGroupArray.push(
-					h(PropsFieldWrapper, { key: p.name, defaultValue: defaultValues[p.name], propsEditor: this, field: p, onChange: this.props.onChange })
+					h(PropsFieldWrapper, { key: p.name, defaultValue: defaultValues[p.name], propsEditor: this, field: p, onChange: game.editor.onSelectedPropsChange })
 				);
 			}
 		}

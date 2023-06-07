@@ -1,4 +1,5 @@
 import { Container } from "pixi.js";
+import { moveSelectionToPoint } from "thing-editor/src/editor/ui/editor-overlay";
 import game from "thing-editor/src/engine/game";
 
 export default class __Gizmo extends Container {
@@ -7,14 +8,12 @@ export default class __Gizmo extends Container {
 
 	init() {
 		super.init();
-		this.anglePointer = this.findChildByName('angle-pointer') as Container;
+		this.anglePointer = this.findChildByName('angle-guide') as Container;
 
 	}
 
 	moveXY(dX: number, dY: number) {
-		for(let o of game.editor.selection) {
-			game.editor.shiftObject(o, dX, dY);
-		}
+		moveSelectionToPoint(dX, dY);
 	}
 
 	update(): void {

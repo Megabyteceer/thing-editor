@@ -60,14 +60,10 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 			if(ev.shiftKey) {
 				dY = (game.__mouse_uncropped.y - startY) / -50;
 				dY = Math.round(dY / Math.PI * 8 - startRotation) * Math.PI / 8;
-				for(let o of game.editor.selection) {
-					game.editor.onObjectsPropertyChanged(o, 'rotation', dY);
-				}
+				game.editor.onSelectedPropsChange('rotation', dY);
 			} else {
 				dY = (game.__mouse_uncropped.y - lastY) / -50;
-				for(let o of game.editor.selection) {
-					game.editor.onObjectsPropertyChanged(o, 'rotation', dY, true);
-				}
+				game.editor.onSelectedPropsChange('rotation', dY, true);
 			}
 		}
 
@@ -151,9 +147,7 @@ export default class __GizmoArrow extends Shape {
 		this.isDowned = true;
 
 		if(ev.buttons === 2 && this.dragR) {
-			for(let o of game.editor.selection) {
-				game.editor.onObjectsPropertyChanged(o, 'rotation', 0);
-			}
+			game.editor.onSelectedPropsChange('rotation', 0);
 		}
 	}
 

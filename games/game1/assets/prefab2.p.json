@@ -2,8 +2,8 @@
 	"c": "Bunny",
 	"p": {
 		"name": "prefab2",
-		"x": 70,
-		"y": 223,
+		"x": 82,
+		"y": 216,
 		"__description": "",
 		"image": "bunny.png"
 	}

@@ -403,6 +403,9 @@ export default class MovieClip extends DSprite {
 				delete data.p[f.n];
 			}
 		}
+		if(this.__nodeExtendData.isPrefabReference) {
+			delete data.p.timeline;
+		}
 	}
 
 	__checkVisibilityForEditor() {
@@ -526,7 +529,7 @@ export default class MovieClip extends DSprite {
 	static __isPropertyDisabled(field: EditablePropertyDesc) { //prevent editing of properties animated inside prefab reference
 		for(let o of game.editor.selection) {
 			if(o.__nodeExtendData.isPrefabReference) {
-				let timeline = getPrefabDefaults(o.__nodeExtendData.isPrefabReference).timeline as TimelineSerializedData;
+				let timeline = getPrefabDefaults(o).timeline as TimelineSerializedData;
 				if(timeline && timeline.f.find(f => f.n === field.name)) {
 					return "The property is disabled, because it is animated inside prefab.";
 				}

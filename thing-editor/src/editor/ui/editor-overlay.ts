@@ -42,7 +42,7 @@ editorEvents.once('didProjectOpen', () => {
 				scrollingY = game.__mouse_EDITOR.y;
 			} else if(ev.buttons === 2) {
 				if(!__GizmoArrow.overedArrow) {
-					moveSelectionTo(ev);
+					moveSelectionToMouse(ev);
 					rightButtonDraggingStarted = true;
 				}
 			} else {
@@ -70,7 +70,7 @@ editorEvents.once('didProjectOpen', () => {
 					game.editor.ui.viewport.refreshCameraFrame();
 				}
 			} else if(ev.buttons === 2 && (rightButtonDraggingStarted || (ev.target === game.pixiApp.view)) && !__GizmoArrow.draggedArrow) {
-				moveSelectionTo(ev);
+				moveSelectionToMouse(ev);
 				rightButtonDraggingStarted = true;
 			}
 		}
@@ -114,13 +114,23 @@ editorEvents.once('didProjectOpen', () => {
 
 const p = new Point();
 
-function moveSelectionTo(ev: MouseEvent) {
+function moveSelectionToMouse(ev: MouseEvent) {
 	if(game.editor.selection.length > 0) {
 		game.editor.selection[0].parent.toLocal(game.__mouse_uncropped, game.stage, p);
-		let dX = p.x - game.editor.selection[0].x;
-		let dY = p.y - game.editor.selection[0].y;
+		moveSelectionToPoint(p.x - game.editor.selection[0].x, p.y - game.editor.selection[0].y, ev.ctrlKey);
+	}
+}
 
-		if(ev.ctrlKey) {
+function moveSelectionToPoint(dX: number, dY: number, withoutChildren = false) {
+	if(game.editor.selection.length > 0) {
+
+		dX = Math.round(dX);
+		dY = Math.round(dY);
+
+		dX -= game.editor.selection[0].x % 1;
+		dY -= game.editor.selection[0].y % 1;
+
+		if(withoutChildren) {
 			for(let s of game.editor.selection) {
 				game.editor.moveContainerWithoutChildren(s, dX, dY);
 			}
@@ -210,3 +220,5 @@ function selectByStageClick(ev: MouseEvent) {
 }
 
 export default overlayLayer;
+
+export { moveSelectionToPoint };

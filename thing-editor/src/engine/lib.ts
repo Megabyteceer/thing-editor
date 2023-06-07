@@ -428,12 +428,7 @@ export default class Lib {
 			let props: KeyedObject = {};
 			let propsList = (o.constructor as SourceMappedConstructor).__editableProps;
 
-			let defaults: KeyedObject;
-			if(o.__nodeExtendData.isPrefabReference) {
-				defaults = getPrefabDefaults(o.__nodeExtendData.isPrefabReference);
-			} else {
-				defaults = (o.constructor as SourceMappedConstructor).__defaultValues;
-			}
+			let defaults: KeyedObject = getPrefabDefaults(o);
 
 			for(let p of propsList) {
 				if(!p.notSerializable) {

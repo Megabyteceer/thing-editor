@@ -135,7 +135,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			game.editor.onSelectedPropsChange('x', -1, true);
 		},
-		disabled: () => game.editor.selection.length < 1,
+		disabled: () => !game.editor.ui.propsEditor.editableProps.x,
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowLeft' }
 	},
@@ -144,7 +144,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			game.editor.onSelectedPropsChange('x', 1, true);
 		},
-		disabled: () => game.editor.selection.length < 1,
+		disabled: () => !game.editor.ui.propsEditor.editableProps.x,
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowRight' }
 	},
@@ -153,7 +153,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			game.editor.onSelectedPropsChange('y', -1, true);
 		},
-		disabled: () => game.editor.selection.length < 1,
+		disabled: () => !game.editor.ui.propsEditor.editableProps.y,
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowUp' }
 	},
@@ -162,7 +162,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			game.editor.onSelectedPropsChange('y', 1, true);
 		},
-		disabled: () => game.editor.selection.length < 1,
+		disabled: () => !game.editor.ui.propsEditor.editableProps.y,
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowDown' }
 	},
@@ -171,7 +171,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			game.editor.onSelectedPropsChange('x', -10, true);
 		},
-		disabled: () => game.editor.selection.length < 1,
+		disabled: () => !game.editor.ui.propsEditor.editableProps.x,
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowLeft', ctrlKey: true }
 	},
@@ -180,7 +180,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			game.editor.onSelectedPropsChange('x', 10, true);
 		},
-		disabled: () => game.editor.selection.length < 1,
+		disabled: () => !game.editor.ui.propsEditor.editableProps.x,
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowRight', ctrlKey: true }
 	},
@@ -189,7 +189,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			game.editor.onSelectedPropsChange('y', -10, true);
 		},
-		disabled: () => game.editor.selection.length < 1,
+		disabled: () => !game.editor.ui.propsEditor.editableProps.y,
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowUp', ctrlKey: true }
 	},
@@ -198,7 +198,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			game.editor.onSelectedPropsChange('y', 10, true);
 		},
-		disabled: () => game.editor.selection.length < 1,
+		disabled: () => !game.editor.ui.propsEditor.editableProps.y,
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowDown', ctrlKey: true }
 	}

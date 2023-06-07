@@ -114,8 +114,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 					helpId: 'Properties',
 					title: 'Properties',
 					content: h(PropsEditor, {
-						ref: this.propsEditorRef,
-						onChange: game.editor.onSelectedPropsChange
+						ref: this.propsEditorRef
 					}),
 					x: 17,
 					y: 0,
