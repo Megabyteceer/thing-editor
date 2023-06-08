@@ -1,6 +1,7 @@
 import { Circle, Ellipse, Graphics, Point, Polygon, Rectangle, RoundedRectangle } from "pixi.js";
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
 import editable from "thing-editor/src/editor/props-editor/editable.js";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "../game.js";
 import Lib from "../lib.js";
 
@@ -60,7 +61,7 @@ export default class Shape extends Graphics {
 
 	protected __pointsUpdateIntervalInitialized: number | null = null;
 
-	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY; } })
+	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !editorUtils.isPrefabReferenceSelected() } })
 	protected __shapePoints: Point[] | null = null;
 
 	init() {
@@ -169,7 +170,7 @@ export default class Shape extends Graphics {
 		}
 	}
 
-	@editable({ select: shapeTypeSelect, important: true })
+	@editable({ select: shapeTypeSelect, important: true, visible: () => !editorUtils.isPrefabReferenceSelected() })
 	set shape(s: SHAPE_TYPE) {
 		this._shape = s;
 		if(this.__deserialized) {
@@ -336,7 +337,7 @@ export default class Shape extends Graphics {
 	}
 
 	__afterSerialization(data: SerializedObject) {
-		if(this._shapePoints) {
+		if(this._shapePoints && !this.__nodeExtendData.isPrefabReference) {
 			data.p._shapePoints = this._shapePoints;
 		}
 	}
@@ -434,7 +435,7 @@ export default class Shape extends Graphics {
 	}
 
 	__startPointRefreshIfSelected() {
-		if(game.__EDITOR_mode && (this.shape === SHAPE_TYPE.POLY) && (!this.__pointsUpdateIntervalInitialized)) {
+		if(game.__EDITOR_mode && !this.__nodeExtendData.isPrefabReference && (this.shape === SHAPE_TYPE.POLY) && (!this.__pointsUpdateIntervalInitialized)) {
 			let isAnySelected = this.__nodeExtendData.isSelected;
 			if(!isAnySelected) {
 				for(let o of this.children) {

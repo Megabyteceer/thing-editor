@@ -528,6 +528,10 @@ export namespace editorUtils {
 		game.editor.refreshTreeViewAndPropertyEditor();
 	}
 
+	export const isPrefabReferenceSelected = () => {
+		return game.editor.selection.some(o => o.__nodeExtendData.isPrefabReference);
+	}
+
 	export const onMoveUpClick = (doNotSaveHistoryState = false) => {
 		let ret = false;
 
