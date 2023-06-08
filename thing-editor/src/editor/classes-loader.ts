@@ -198,9 +198,10 @@ export default class ClassesLoader {
 								game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + superProp, 40004);
 							} else {
 								superProps[sameNamedPropIndex] = Object.assign({}, superProp, thisProp);
-								/*if(thisProp.notSerializable) {
-									delete c.__defaultValues[thisProp.name];
-								}*/
+
+								if(thisProp.hasOwnProperty('default')) {
+									c.__defaultValues[thisProp.name] = thisProp.default;
+								}
 							}
 							return false;
 						} else {
