@@ -35,10 +35,6 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 	renderedScale = 1;
 
-	get $(): HTMLElement {
-		return this.base as HTMLElement;
-	}
-
 	static all: KeyedMap<Window<WindowProps, WindowState>> = {};
 	static allOrdered: Window[] = [];
 
@@ -207,9 +203,9 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		this.state.x = x;
 		//@ts-ignore
 		this.state.y = y;
-		if(this.$) {
-			this.$.style.left = x + '%';
-			this.$.style.top = y + '%';
+		if(this.base) {
+			(this.base as HTMLDivElement).style.left = x + '%';
+			(this.base as HTMLDivElement).style.top = y + '%';
 		}
 
 	}
@@ -228,10 +224,10 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		this.state.w = w;
 		//@ts-ignore
 		this.state.h = h;
-		if(this.$) {
-			this.$.style.width = w + '%';
-			this.$.style.height = h + '%';
-			let s = (this.$.querySelector('.window-content') as HTMLElement).style;
+		if(this.base) {
+			(this.base as HTMLDivElement).style.width = w + '%';
+			(this.base as HTMLDivElement).style.height = h + '%';
+			let s = ((this.base as HTMLDivElement).querySelector('.window-content') as HTMLElement).style;
 
 			const contentWpx = this.state.w * window.innerWidth / 100;
 			const contentHpx = this.state.h * (window.innerHeight - MENU_HEIGHT) / 100 - 17;
@@ -261,7 +257,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 	onMouseDown() {
 		if(!this.isModal()) {
-			Window.bringWindowForward(this.$);
+			Window.bringWindowForward((this.base as HTMLDivElement));
 		}
 	}
 
@@ -369,7 +365,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 					Help.setCurrentHelp((windowBody as HTMLElement).dataset.help as string);
 				}
 
-				let w = Window.allOrdered.find(w => w.base === windowBody) as Window;
+				let w = Window.allOrdered.find(wnd => wnd.base === windowBody) as Window;
 				Window.allOrdered.splice(Window.allOrdered.indexOf(w), 1);
 				Window.allOrdered.unshift(w);
 

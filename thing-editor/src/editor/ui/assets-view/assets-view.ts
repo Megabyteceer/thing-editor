@@ -35,7 +35,7 @@ assetTypesIcons.set(AssetType.IMAGE, R.img({
 
 assetTypesIcons.set(AssetType.SOUND, R.img({
 	src: './img/asset-sound.png',
-	title: 'Show Sounds'
+	title: 'fs.getFileByAssetName(props.value, AssetType.IMAGE)'
 }));
 assetTypesIcons.set(AssetType.SCENE, R.img({
 	src: './img/asset-scene.png',
@@ -95,9 +95,10 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	componentDidMount(): void {
+		super.componentDidMount();
 		if(this.props.onItemSelect) {
 			const input = (this.base as HTMLDivElement).querySelector('.search-input') as HTMLInputElement;
-			input.value = this.state.search;
+			input.value = this.state.search || '';
 			input.select();
 		}
 	}

@@ -1,27 +1,37 @@
+import { ComponentChild } from "preact";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
+import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import game from "thing-editor/src/engine/game";
 
-const ImageEditor = (props: EditablePropertyEditorProps) => {
-	return R.fragment();
+const soundEditorProps = { className: 'asset-editor' };
 
-
-	/*
-
-
-
-
-sound select type
-
-крестик очистки.
-
-кнопка плей текущего звука.
-
-приклике по полю - выбор звука на замену.
-
-в choose - опцию фильтрНейм для сохранения восстановления текста фильтра.
-для звуков и префабов восстанавливать фильтр если задан фильтрНейм
-
-	*/
+const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
+	return R.div(soundEditorProps,
+		R.btn(props.value || '. . .', () => {
+			game.editor.chooseImage('Select "' + props.field.name + '" image', props.value).then((selectedImage) => {
+				if(selectedImage) {
+					props.onChange(selectedImage);
+				}
+			});
+		}, props.value, 'choose-asset-button'),
+		props.value ? R.textreIcon(fs.getFileByAssetName(props.value, AssetType.IMAGE).fileName) : undefined,
+		props.value ? R.btn(R.icon('reject'), (ev: PointerEvent) => {
+			showContextMenu([
+				{
+					name: R.fragment(R.icon('reject'), "Clear '" + props.field.name + "'"),
+					onClick: () => {
+						props.onChange(null);
+					}
+				},
+				{
+					name: "Cancel",
+					onClick: () => { }
+				}
+			], ev);
+		}, 'Clear', 'tool-button') : undefined
+	);
 };
 
 ImageEditor.parser = (val: string) => {

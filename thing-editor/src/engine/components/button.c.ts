@@ -1,6 +1,5 @@
 import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
-import makeImageSelectEditablePropertyDescriptor from "thing-editor/src/editor/ui/props-editor/make-image-property-desc";
 
 
 import DSprite from "thing-editor/src/engine/components/d-sprite.c";
@@ -21,12 +20,12 @@ export default class Button extends DSprite {
 
 	@editable({ name: 'interactive', default: true, override: true })
 
-	@editable(makeImageSelectEditablePropertyDescriptor('hoverImage', true))
-	hoverImage = '';
-	@editable(makeImageSelectEditablePropertyDescriptor('pressImage', true))
-	pressImage = '';
-	@editable(makeImageSelectEditablePropertyDescriptor('disabledImage', true))
-	disabledImage = '';
+	@editable({ type: 'image' })
+	hoverImage = null;
+	@editable({ type: 'image' })
+	pressImage = null;
+	@editable({ type: 'image' })
+	disabledImage = null;
 
 	@editable({ visible: (o) => { return !o.disabledImage; }, min: 0, max: 1, step: 0.01, default: 0.76 })
 	disabledAlpha = 0;

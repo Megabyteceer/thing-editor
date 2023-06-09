@@ -1,5 +1,5 @@
 import { Texture } from "pixi.js";
-import fs, { AssetType, FileDescPrefab, FileDescScene } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDescImage, FileDescPrefab, FileDescScene } from "thing-editor/src/editor/fs";
 import Lib from "thing-editor/src/engine/lib";
 
 export default class AssetsLoader {
@@ -27,10 +27,10 @@ export default class AssetsLoader {
 			Lib.addSound(file.assetName, file.fileName);
 		})
 
-		let imagesFiles = fs.getAssetsList(AssetType.IMAGE);
+		let imagesFiles = fs.getAssetsList(AssetType.IMAGE) as FileDescImage[];
 
 		return Promise.all(imagesFiles.map((file) => {
-			Lib.addTexture(file.assetName, file.fileName);
+			Lib.addTexture(file.assetName, file.asset || file.fileName); //file.asset - WHITE EMPTY textures go directly instead of URL
 		}));
 	}
 }

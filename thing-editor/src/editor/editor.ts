@@ -504,6 +504,10 @@ class Editor {
 		}
 	}
 
+	async chooseImage(title: ComponentChild = "Choose image", activeImage?: string): Promise<string | null> {
+		return this.chooseAsset(AssetType.IMAGE, title, activeImage);
+	}
+
 	async chooseSound(title: ComponentChild = "Choose sound", activeSound?: string): Promise<string | null> {
 		return this.chooseAsset(AssetType.SOUND, title, activeSound, editor.previewSound);
 	}
@@ -522,7 +526,7 @@ class Editor {
 			content: undefined,
 			helpId: 'ChooseId',
 			x: 0,
-			minW: 500,
+			minW: 400,
 			minH: 200,
 			y: 0,
 			w: 50,

@@ -86,9 +86,12 @@
 		{
 			"c": "Button",
 			"p": {
-				"x": 176,
-				"y": 185,
+				"x": 111,
+				"y": 334,
 				"image": "bunny.png",
+				"hoverImage": "bunny.png",
+				"pressImage": "bunny.png",
+				"disabledImage": "bunny.png",
 				"onClick": "all.mc.gotoLabelRecursive`shake",
 				"afterClick": "",
 				"sndClick": "click",

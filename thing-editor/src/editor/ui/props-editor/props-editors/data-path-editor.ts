@@ -19,7 +19,6 @@ const functionTipProps = { className: "path-editor-function-tip" };
 
 let initialized = false;
 
-const dataPathTipContainer = window.document.createElement('div');
 
 let tipSyncInterval = 0;
 const syncTip = () => {
@@ -43,6 +42,7 @@ const startTipSync = (enabled: any = false) => {
 	}
 }
 
+const dataPathTipContainer = window.document.createElement('div');
 dataPathTipContainer.id = 'data-path-tip-container';
 window.document.body.appendChild(dataPathTipContainer);
 

@@ -14,7 +14,7 @@ interface FileDesc {
 	/** modification time*/
 	mTime: number,
 
-	lib: string | null; //TODO
+	lib?: string | null; //TODO
 
 	asset: SourceMappedConstructor | SerializedObject | Texture
 };
@@ -27,6 +27,10 @@ interface FileDescPrefab extends FileDesc {
 }
 interface FileDescScene extends FileDesc {
 	asset: SerializedObject;
+}
+
+interface FileDescImage extends FileDesc {
+	asset: Texture;
 }
 
 enum AssetType {
@@ -77,6 +81,22 @@ ASSET_EXT_CROP_LENGHTS.set(AssetType.SCENE, 7);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.PREFAB, 7);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.SOUND, 4);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.CLASS, 5);
+
+const EMPTY: FileDescImage = {
+	assetName: 'EMPTY',
+	fileName: '/thing-editor/img/EMPTY.png',
+	asset: Texture.EMPTY,
+	assetType: AssetType.IMAGE,
+	mTime: Number.MAX_SAFE_INTEGER
+};
+
+const WHITE: FileDescImage = {
+	assetName: 'WHITE',
+	fileName: '/thing-editor/img/WHITE.jpg',
+	asset: Texture.WHITE,
+	assetType: AssetType.IMAGE,
+	mTime: Number.MAX_SAFE_INTEGER
+};
 
 const execFs = (command: string, filename?: string | string[], content?: string, ...args: any[]) => {
 	const ret = thingEditorServer.fs(command, filename, content, ...args);
@@ -216,10 +236,13 @@ export default class fs {
 
 	static refreshAssetsList(dirNames?: string[]) {
 
+		const isInitialization = dirNames;
+
 		let prevAllAssets: FileDesc[] | undefined;
 		let prevAllAssetsMap: Map<string, FileDesc>;
 
-		if(!dirNames) {
+
+		if(!isInitialization) {
 			dirNames = lastAssetsDirs;
 			prevAllAssets = allAssets;
 			prevAllAssetsMap = new Map();
@@ -229,15 +252,21 @@ export default class fs {
 		}
 
 		console.log('refresh assets list');
-		lastAssetsDirs = dirNames;
+		lastAssetsDirs = dirNames!;
 
 		allAssets = [];
+
 		for(let assetType of AllAssetsTypes) {
 			assetsListsByType.set(assetType, []);
 			assetsByTypeByName.get(assetType)?.clear();
 		}
 
-		for(let dirName of dirNames) {
+		(assetsListsByType.get(AssetType.IMAGE) as FileDesc[]).push(EMPTY, WHITE);
+		allAssets.push(EMPTY, WHITE);
+		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('EMPTY', EMPTY);
+		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
+
+		for(let dirName of dirNames!) {
 			assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName)
 			const files = execFs('fs/readDir', dirName) as FileDesc[];
 			for(let file of files) {
@@ -309,5 +338,5 @@ export default class fs {
 }
 
 export { AssetType, AllAssetsTypes };
-export type { FileDesc, FileDescClass, FileDescPrefab, FileDescScene };
+export type { FileDesc, FileDescClass, FileDescPrefab, FileDescScene, FileDescImage };
 

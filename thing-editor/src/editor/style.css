@@ -828,25 +828,46 @@ input[disabled] {
 	border-radius: 3px;
 }
 
+.tool-button img {
+	width: 12px;
+}
+
 .assets-item-image img {
+	cursor: pointer;
+	pointer-events: all;
 	max-width: 30px;
 	max-height: 30px;
 	margin: 0 10px;
 }
 
+.asset-editor img {
+	cursor: pointer;
+	pointer-events: all;
+	max-width: 25px;
+	max-height: 23px;
+	margin: 0 10px;
+	margin-top: 3px;
+}
+
 .image-preview-tooltip {
+	text-align: center;
 	pointer-events: none;
 	width: 128px;
-	height: 128px;
+	height: 148px;
 	background: #444444;
 	border-radius: 10px;
-	z-index: 20;
+	z-index: 1020;
 	border: 10px solid #444444;
+	transform: translateY(-128px);
+	position: fixed;
+}
+
+.image-preview-img {
+	width: 128px;
+	height: 128px;
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
-	transform: translateY(-128px);
-	position: fixed;
 }
 
 .assets-item-class {
@@ -1078,7 +1099,6 @@ input[disabled] {
 .modal-body .window-rt-dragger,
 .modal-body .window-lt-dragger {
 	display: none;
-
 }
 
 

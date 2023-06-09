@@ -1,5 +1,5 @@
 import { Container } from 'pixi.js';
-import { ComponentChild, ComponentChildren, Fragment, h } from 'preact';
+import { ComponentChild, ComponentChildren, Fragment, h, render } from 'preact';
 import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
@@ -81,6 +81,14 @@ class R {
 		return R.span(null, _libName);
 	}
 
+	static textreIcon(fileName: string) {
+		return R.img({
+			src: fileName,
+			onMouseEnter: onImageAssetEnter,
+			onMouseLeave: onImageAssetLeave
+		});
+	}
+
 	static classIcon = (constructor: SourceMappedConstructor) => {
 		return R.icon(constructor.__EDITOR_icon || 'tree/game');
 	};
@@ -131,6 +139,57 @@ for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'label',
 		return h.call(this, factoryType, ...theArgs);
 	};
 }
+
+
+
+let previewShown = false;
+let assetPreviewTimeout = 0;
+
+const imagePreviewContainer = window.document.createElement('div');
+imagePreviewContainer.id = 'image-preview-container';
+window.document.body.appendChild(imagePreviewContainer);
+
+const hidePreview = () => {
+	if(previewShown) {
+		render(R.fragment(), imagePreviewContainer);
+		previewShown = false;
+	}
+	if(assetPreviewTimeout) {
+		clearTimeout(assetPreviewTimeout);
+		assetPreviewTimeout = 0;
+	}
+}
+
+const onImageAssetEnter = (ev: MouseEvent) => {
+	hidePreview();
+	let img: HTMLImageElement = (ev.target as HTMLImageElement);
+	assetPreviewTimeout = setTimeout(() => {
+		previewShown = true;
+		render(R.div({
+			onMouseLeave: onImageAssetLeave,
+			style: {
+				left: Math.max(0, ev.clientX - 128) + 'px',
+				top: Math.max(128, ev.clientY) + 'px'
+			},
+			className: 'image-preview-tooltip fadein-animation'
+		},
+			R.div({
+				className: 'image-preview-img',
+				style: {
+					backgroundImage: 'url("' + img.src + '")'
+				}
+			}),
+			'(' + img.naturalWidth + ' × ' + img.naturalHeight + ')'
+		), imagePreviewContainer);
+	}, 100);
+}
+
+const onImageAssetLeave = () => {
+	hidePreview();
+};
+
+
+
 
 export type { ComponentProps };
 export default R;
