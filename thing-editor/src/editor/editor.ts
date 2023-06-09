@@ -8,7 +8,7 @@ import { Component, ComponentChild, h, render } from "preact";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsLoader from "thing-editor/src/editor/assets-loader";
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import fs from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import UI from "thing-editor/src/editor/ui/ui";
@@ -20,12 +20,14 @@ import Settings from "thing-editor/src/engine/utils/settings";
 import ClassesLoader from "./classes-loader";
 
 import { Container, Point, Texture } from "pixi.js";
+import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
 import Pool from "thing-editor/src/engine/utils/pool";
+import Sound from "thing-editor/src/engine/utils/sound";
 
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
@@ -492,6 +494,51 @@ class Editor {
 		return ['thing-editor/src/engine/components/', this.currentProjectAssetsDir];
 	}
 
+
+
+	previewSound(soundName: string) {
+		if(Lib.getSound(soundName).playing()) {
+			Lib.getSound(soundName).stop();
+		} else {
+			Sound.play(soundName);
+		}
+	}
+
+	async chooseSound(title: ComponentChild = "Choose sound", activeSound?: string): Promise<string | null> {
+		return this.chooseAsset(AssetType.SOUND, title, activeSound, editor.previewSound);
+	}
+
+	async choosePrefab(title: ComponentChild = "Choose prefab", currentPrefab?: string): Promise<string | null> {
+		return this.chooseAsset(AssetType.PREFAB, title, currentPrefab);
+	}
+
+	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void): Promise<string | null> {
+		const id = type + '_choose_asset_list';
+		const chosen: string = await game.editor.ui.modal.showModal(h(AssetsView, {
+			onItemSelect: (assetName: string) => {
+				game.editor.ui.modal.hideModal(assetName);
+			},
+			id,
+			content: undefined,
+			helpId: 'ChooseId',
+			x: 0,
+			minW: 500,
+			minH: 200,
+			y: 0,
+			w: 50,
+			h: 50,
+			key: id,
+			title,
+			currentValue,
+			onItemPreview,
+			hideMenu: true,
+			filter: { [type]: true }
+		}));
+		if(chosen) {
+			return chosen;
+		}
+		return null;
+	}
 
 	async reloadAssetsAndClasses(refresh = false) {
 		if(refresh) {

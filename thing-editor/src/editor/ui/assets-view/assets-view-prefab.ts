@@ -1,5 +1,6 @@
 import fs, { FileDescPrefab } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
+import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -75,7 +76,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 	assert(file.asset.c, "rendering of prefab referenced to prefab not supported. TODO");
 	return R.div(
 		{
-			className: (file.assetName === PrefabEditor.currentPrefabName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
+			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
 			key: file.assetName,
 			onPointerDown: (ev: PointerEvent) => {
 				if(ev.buttons === 1) {

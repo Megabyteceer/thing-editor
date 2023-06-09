@@ -9,7 +9,7 @@ import Scene from "thing-editor/src/engine/components/scene.c";
 
 import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
 import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
-import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
+
 import assert from "thing-editor/src/engine/debug/assert";
 import Lib from "thing-editor/src/engine/lib";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
@@ -18,6 +18,7 @@ import initGameInteraction from "thing-editor/src/engine/utils/game-interaction"
 import Keys from "thing-editor/src/engine/utils/keys";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 import Settings from "thing-editor/src/engine/utils/settings";
+import Sound from "thing-editor/src/engine/utils/sound";
 
 let app: Application;
 let stage: Container;
@@ -57,6 +58,8 @@ class Game {
 	/** use in your game as storage for any variables accessible in data-path selectors */
 	data: KeyedObject = {};
 
+	Sound = Sound;
+
 	___enforcedOrientation: ProjectOrientation | null = null; //TODO
 	__enforcedW: number | undefined;
 	__enforcedH: number | undefined;
@@ -92,6 +95,8 @@ class Game {
 	isUpdateBeforeRender = false;
 
 	onGameReload?: () => void;
+
+	additionalLoadingsInProgress = 0; //TODO
 
 	/// #if EDITOR
 	editor!: __EditorType;
@@ -133,6 +138,8 @@ class Game {
 
 		app.stage.addChild(stage);
 		app.ticker.add(this._updateGlobal);
+		Sound.init();
+
 	}
 
 	_onContainerResize() {
@@ -723,7 +730,7 @@ export default game;
 /// #if EDITOR
 (Game.prototype.applyProjectDesc as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 (Game.prototype.showModal as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
-	return PrefabEditor.choosePrefab("Choose prefab to show as modal:");
+	return game.editor.choosePrefab("Choose prefab to show as modal:");
 }; //TODO  add all helpers
 
 /// #endif

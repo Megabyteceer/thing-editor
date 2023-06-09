@@ -48,7 +48,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		const state: WindowState = {} as WindowState;
 		for(let key in props) {
 			let val = props[key];
-			if(typeof val === 'number' || typeof val === 'string') {
+			if(typeof val === 'number' || typeof val === 'string' || typeof val === 'boolean') {
 				(state as KeyedObject)[key] = val;
 			}
 		}
@@ -81,24 +81,29 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	componentDidMount() {
-		Window.all[this.props.id] = this as Window;
-		Window.allOrdered.push(this as Window);
+		if(!this.isModal()) {
+			Window.all[this.props.id] = this as Window;
+			Window.allOrdered.push(this as Window);
+		}
 	}
 
 	componentWillUnmount() {
 		if(this.saveStateTimeout) {
 			clearTimeout(this.saveStateTimeout);
-			this.saveStateTimeout = undefined;
+			this.saveStateTimeout = 0;
 		}
-		delete Window.all[this.props.id];
-		Window.allOrdered.splice(Window.allOrdered.indexOf(this as Window), 1);
+		if(!this.isModal()) {
+			delete Window.all[this.props.id];
+			Window.allOrdered.splice(Window.allOrdered.indexOf(this as Window), 1);
+		}
 	}
 
 	eraseSettings() {
 		game.editor.settings.removeItem('editor_window_state_' + this.props.id);
 	}
 
-	saveStateTimeout: number | undefined;
+	saveStateTimeout = 0;
+
 	setState<K extends keyof S>(state: ((prevState: Readonly<S>, props: Readonly<P>) => Pick<S, K> | Partial<S> | null) | Pick<S, K> | Partial<S> | null): void {
 		super.setState(state);
 		if(this.saveStateTimeout) {
@@ -106,7 +111,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		}
 		this.saveStateTimeout = setTimeout(() => {
 			this.saveState();
-			this.saveStateTimeout = undefined;
+			this.saveStateTimeout = 0;
 		}, 10);
 	}
 
@@ -250,8 +255,14 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		}
 	}
 
+	isModal() {
+		return (this.base as HTMLDivElement).closest('.modal-body') as any as boolean;
+	}
+
 	onMouseDown() {
-		Window.bringWindowForward(this.$);
+		if(!this.isModal()) {
+			Window.bringWindowForward(this.$);
+		}
 	}
 
 	renderWindowContent(): ComponentChild {

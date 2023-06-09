@@ -28,6 +28,9 @@ import RefFieldEditor from "thing-editor/src/editor/ui/props-editor/props-editor
 import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-editor";
+
+import ImageEditor from "thing-editor/src/editor/ui/props-editor/props-editors/image-editor";
+import SoundEditor from "thing-editor/src/editor/ui/props-editor/props-editors/sound-editor";
 import getObjectDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
@@ -118,7 +121,7 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 	}
 
 	onChangePrefabClick() {
-		PrefabEditor.choosePrefab('Select prefab', false, game.editor.selection[0].__nodeExtendData.isPrefabReference).then((selectedPrefabName) => {
+		game.editor.choosePrefab('Select prefab', game.editor.selection[0].__nodeExtendData.isPrefabReference).then((selectedPrefabName) => {
 			if(selectedPrefabName) {
 				let newObjects = [];
 				for(let o of game.editor.selection) {
@@ -385,6 +388,8 @@ export default PropsEditor;
 PropsEditor.registerRenderer('color', ColorEditor, 0);
 PropsEditor.registerRenderer('number', NumberEditor, 0);
 PropsEditor.registerRenderer('string', StringEditor, null);
+PropsEditor.registerRenderer('image', ImageEditor, null);
+PropsEditor.registerRenderer('sound', SoundEditor, null);
 PropsEditor.registerRenderer('boolean', BooleanEditor, false);
 PropsEditor.registerRenderer('btn', BtnProperty, undefined);
 PropsEditor.registerRenderer('splitter', null, undefined);

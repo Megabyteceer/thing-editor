@@ -23,11 +23,21 @@ const hideMenu = () => {
 }
 
 let menuShown = false;
-let hideMenuTimeout: number;
+let hideMenuTimeout = 0;
 
 window.addEventListener('pointerdown', (ev: PointerEvent) => {
 	if(menuShown && !(ev.target as HTMLDivElement).closest('.stay-after-click-menu-item')) {
 		hideMenuTimeout = setTimeout(hideMenu, 10);
+	}
+});
+
+window.addEventListener('mousemove', (ev: MouseEvent) => {
+	if(menuShown) {
+		let menuBounds = document.querySelector('.context-menu')!.getBoundingClientRect();
+		if(menuBounds.x > ev.clientX || menuBounds.right < ev.clientX ||
+			menuBounds.y > ev.clientY || menuBounds.bottom < ev.clientY) {
+			hideMenu();
+		}
 	}
 });
 
@@ -55,10 +65,9 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 
 	render(R.div({
 		className: 'context-menu',
-		onMouseLeave: hideMenu,
 		style: {
 			left: Math.max(0, ev.clientX - 3),
-			top: Math.max(0, ev.clientY - menuTemplate.length * 20)
+			top: Math.max(0, ev.clientY - menuTemplate.length * 20 - 10)
 		}
 	}, menuTemplate.map(renderMenuItem)), root);
 	menuShown = true;

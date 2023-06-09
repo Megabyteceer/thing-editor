@@ -18,7 +18,9 @@ type EditablePropertyType = 'data-path' |
 	'string' |
 	'prefab' |
 	'pow-damp-preset' |
-	'number';
+	'number' |
+	'image' |
+	'sound';
 
 interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	min?: number,

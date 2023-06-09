@@ -5,6 +5,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import assetItemRendererClass from "thing-editor/src/editor/ui/assets-view/asset-view-class";
 import assetItemRendererImage from "thing-editor/src/editor/ui/assets-view/asset-view-image";
 import assetItemRendererScene from "thing-editor/src/editor/ui/assets-view/asset-view-scene";
+import assetItemRendererSound from "thing-editor/src/editor/ui/assets-view/asset-view-sound";
 import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
 import Window, { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
@@ -19,9 +20,8 @@ const SETTINGS_KEY = '__EDITOR_assetsView_list';
 const assetsItemsRenderers: Map<AssetType, (file: FileDesc) => ComponentChild> = new Map();
 assetsItemsRenderers.set(AssetType.IMAGE, assetItemRendererImage);
 
-assetsItemsRenderers.set(AssetType.SOUND, (file: FileDesc) => {
-	return R.div({ className: 'assets-item assets-item-sound', key: file.assetName }, assetTypesIcons.get(AssetType.SOUND), file.assetName);
-});
+assetsItemsRenderers.set(AssetType.SOUND, assetItemRendererSound);
+
 assetsItemsRenderers.set(AssetType.SCENE, assetItemRendererScene as (file: FileDesc) => ComponentChild);
 assetsItemsRenderers.set(AssetType.PREFAB, assetItemRendererPrefab as (file: FileDesc) => ComponentChild);
 (assetsItemsRenderers as Map<AssetType, (file: FileDescClass) => ComponentChild>).set(AssetType.CLASS, assetItemRendererClass);
@@ -58,6 +58,10 @@ function __saveWindowsIds() {
 
 interface AssetsViewProps extends WindowProps {
 	filter: KeyedMap<boolean>,
+	hideMenu?: boolean,
+	currentValue?: string,
+	onItemSelect?: (assetName: string) => void
+	onItemPreview?: (assetName: string) => void
 }
 
 interface AssetsViewState extends WindowState {
@@ -68,19 +72,34 @@ interface AssetsViewState extends WindowState {
 
 export default class AssetsView extends Window<AssetsViewProps, AssetsViewState> {
 
+	static currentItemName?: string = undefined;
+
 	searchInputProps: KeyedObject;
 
 	constructor(props: AssetsViewProps) {
 		super(props);
+
 		if(!this.state.filter) {
 			this.setState({ filter: {} });
 		}
+
+		if(this.props.hideMenu) {
+			this.setState({ filter: props.filter, filtersActive: true });
+		}
+
 		this.searchInputProps = {
 			className: 'search-input',
 			onInput: this.onSearchChange.bind(this),
-			placeholder: 'Search',
-			defaultValue: this.state.search
+			placeholder: 'Search'
 		};
+	}
+
+	componentDidMount(): void {
+		if(this.props.onItemSelect) {
+			const input = (this.base as HTMLDivElement).querySelector('.search-input') as HTMLInputElement;
+			input.value = this.state.search;
+			input.select();
+		}
 	}
 
 	onSearchChange(ev: InputEvent) {
@@ -179,46 +198,53 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		}
 		let files = fs.getAssetsList();
 
-		const menu = AllAssetsTypes.map((assetType) => {
-			return R.span({ key: 'Filters/' + assetType }, R.btn(assetTypesIcons.get(assetType), () => {
-				this.state.filter[assetType] = !this.state.filter[assetType];
-				this.setState({ filtersActive: Object.values(this.state.filter).some(v => v) });
-			}, undefined, this.state.filter[assetType] ? 'toggled-button' : undefined)
-			);
-		});
 
-		menu.push(R.span({ key: 'Settings/rename' }, R.btn('...', () => {
-			enterNameForAssetsWindow(this.state.title as string).then((title) => {
-				if(title) {
-					this.setState({ title });
-				}
+		let menu;
+
+		if(!this.props.hideMenu) {
+			menu = AllAssetsTypes.map((assetType) => {
+				return R.span({ key: 'Filters/' + assetType }, R.btn(assetTypesIcons.get(assetType), () => {
+					this.state.filter[assetType] = !this.state.filter[assetType];
+					this.setState({ filtersActive: Object.values(this.state.filter).some(v => v) });
+				}, undefined, this.state.filter[assetType] ? 'toggled-button' : undefined)
+				);
 			});
-		}, 'Rename window')));
 
-		menu.push(R.span({ key: 'Settings/clone' }, R.btn('+', () => {
-			const cloneWindowId = Date.now().toString();
-			const w = this.state.w / 2;
-			let cloneState: AssetsViewState = JSON.parse(JSON.stringify(this.state));
-			delete (cloneState as any).id;
-			cloneState.w = w;
-			cloneState.x += w;
-			Window.saveWindowState(cloneWindowId, cloneState);
-			allWindowsIds.push(cloneWindowId);
-			__saveWindowsIds();
-			this.setSize(w, this.state.h);
-			this.saveState();
-			game.editor.ui.refresh();
-		}, 'Clone window')));
-
-		if(allWindowsIds.length > 1) {
-			menu.push(R.span({ key: 'Settings/close' }, R.btn('×', () => {
-				game.editor.ui.modal.showEditorQuestion('Are you sure?', 'You about to close "' + this.state.title + '" window.', () => {
-					this.eraseSettings();
-					allWindowsIds.splice(allWindowsIds.indexOf(this.props.id), 1);
-					__saveWindowsIds();
-					game.editor.ui.forceUpdate();
+			menu.push(R.span({ key: 'Settings/rename' }, R.btn('...', () => {
+				enterNameForAssetsWindow(this.state.title as string).then((title) => {
+					if(title) {
+						this.setState({ title });
+					}
 				});
-			}, 'Close window', 'close-btn')));
+			}, 'Rename window')));
+
+			menu.push(R.span({ key: 'Settings/clone' }, R.btn('+', () => {
+				const cloneWindowId = Date.now().toString();
+				const w = this.state.w / 2;
+				let cloneState: AssetsViewState = JSON.parse(JSON.stringify(this.state));
+				delete (cloneState as any).id;
+				cloneState.w = w;
+				cloneState.x += w;
+				Window.saveWindowState(cloneWindowId, cloneState);
+				allWindowsIds.push(cloneWindowId);
+				__saveWindowsIds();
+				this.setSize(w, this.state.h);
+				this.saveState();
+				game.editor.ui.refresh();
+			}, 'Clone window')));
+
+			if(allWindowsIds.length > 1) {
+				menu.push(R.span({ key: 'Settings/close' }, R.btn('×', () => {
+					game.editor.ui.modal.showEditorQuestion('Are you sure?', 'You about to close "' + this.state.title + '" window.', () => {
+						this.eraseSettings();
+						allWindowsIds.splice(allWindowsIds.indexOf(this.props.id), 1);
+						__saveWindowsIds();
+						game.editor.ui.forceUpdate();
+					});
+				}, 'Close window', 'close-btn')));
+			}
+
+			menu = h(WindowMenu, { menu: group.groupArray(menu, undefined, undefined, true, this.props.id) });
 		}
 
 		files = files.filter((asset) => {
@@ -252,6 +278,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				((this.base as HTMLElement).querySelector('.search-input') as HTMLInputElement).value = '';
 			}, 'Discard search filter', 'close-btn clear-search-btn');
 		}
+		AssetsView.currentItemName = this.props.currentValue;
 
 		let items = files.map(file => (assetsItemsRenderers.get(file.assetType) as (file: FileDesc) => ComponentChild)(file));
 
@@ -259,11 +286,26 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			items = group.groupArray(items, undefined, undefined, undefined, this.props.id);
 		}
 
-
-		return R.fragment(h(WindowMenu, { menu: group.groupArray(menu, undefined, undefined, true, this.props.id) }),
+		return R.fragment(menu,
 			R.input(this.searchInputProps),
 			clearSearchBtn,
-			R.div({ className: 'assets-view window-scrollable-content' },
+			R.div({
+				title: this.props.onItemPreview ? 'Click to choose. Ctrl + Click to preview.' : undefined,
+				className: 'assets-view window-scrollable-content',
+				onClick: this.props.onItemSelect ? (ev: MouseEvent) => {
+					let itemElement = (ev.target as HTMLDivElement).closest('.assets-item') as HTMLDivElement;
+					if(itemElement) {
+						let chosen = itemElement.innerText;
+						if(ev.ctrlKey && this.props.onItemPreview) {
+							this.props.onItemPreview!(chosen);
+						} else {
+							if(this.props.currentValue !== chosen) {
+								this.props.onItemSelect!(chosen);
+							}
+						}
+					}
+				} : undefined,
+			},
 				items
 			));
 	}
@@ -284,3 +326,5 @@ function enterNameForAssetsWindow(defaultTitle?: string) {
 	)
 
 }
+
+export { assetTypesIcons };

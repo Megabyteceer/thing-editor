@@ -14,8 +14,6 @@ export default defineConfig({
 			'thing-editor'
 		],
 
-
-
 		alias: {
 			'thing-editor': __dirname + '/thing-editor',
 			'pixi.js': __dirname + '/node_modules/pixi.js/dist/pixi.mjs',

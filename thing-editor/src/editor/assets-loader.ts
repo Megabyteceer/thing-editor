@@ -22,7 +22,13 @@ export default class AssetsLoader {
 			Lib.prefabs[file.assetName] = file.asset;
 		}
 
+		let soundFiles = fs.getAssetsList(AssetType.SOUND);
+		soundFiles.map((file) => {
+			Lib.addSound(file.assetName, file.fileName);
+		})
+
 		let imagesFiles = fs.getAssetsList(AssetType.IMAGE);
+
 		return Promise.all(imagesFiles.map((file) => {
 			Lib.addTexture(file.assetName, file.fileName);
 		}));

@@ -1,6 +1,7 @@
 
 import { Classes, KeyedMap, KeyedObject, NodeExtendData, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
+
 import { Container, Texture } from "pixi.js";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -19,12 +20,14 @@ import { checkForOldReferences, markOldReferences } from "thing-editor/src/edito
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
+import HowlSound, { HowlSoundOptions } from "thing-editor/src/engine/HowlSound";
 
 let classes: Classes;
 let scenes: Scenes = {};
 let prefabs: Prefabs = {};
 let staticScenes: KeyedMap<Scene>;
 let textures: KeyedMap<Texture> = {};
+let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
@@ -185,6 +188,55 @@ export default class Lib {
 
 	static _getStaticScenes() {
 		return staticScenes;
+	}
+
+	static hasSound(soundId: string) {
+		return soundsHowlers.hasOwnProperty(soundId);
+	}
+
+	static getSound(soundId: string, __dynamicPreloading = false) {
+		assert(soundsHowlers.hasOwnProperty(soundId), "No sound with id '" + soundId + "' found.");
+		let s = soundsHowlers[soundId];
+		/// #if EDITOR
+		if(!game.__EDITOR_mode) {
+			if(s.state() === "unloaded") {
+				game.editor.ui.status.error('Sound "' + soundId + '" is not preloaded. Please check-on preloading mode for this sound, or use Lib.preloadSound("' + soundId + '") in scene\`s onShow() method before using this sound.', 32008);
+			} else if(!__dynamicPreloading && (s.state() === "loading")) {
+				game.editor.ui.status.warn('Sound "' + soundId + '" preloading is not finished. Please preload sounds inside onShow method of scene, to automatic insurance of complete sounds preloading.', 32009);
+			}
+			Lib.preloadSound(soundId);
+		}
+		/// #endif
+		return s;
+	}
+
+	static addSound(name: string, fileName: string) {
+
+		//TODO duration
+		//TODO preload
+		let s = loadSound({ src: fileName });
+		soundsHowlers[name] = s;
+
+	}
+
+	static preloadSound(soundId: string
+		/// #if EDITOR
+		//TODO , owner: BGMusic
+		/// #endif
+	) {
+		if(soundId) {
+			/// #if EDITOR
+			if(!soundsHowlers.hasOwnProperty(soundId)) {
+				game.editor.ui.status.error("No sound with id '" + soundId + "' found.", 10043/*, owner TODO*/);
+				return;
+			}
+			/// #endif
+			let s = soundsHowlers[soundId];
+			if(s.state() === "unloaded") {
+				s.load();
+				return true;
+			}
+		}
 	}
 
 	static _deserializeObject(src: SerializedObject
@@ -544,6 +596,39 @@ export default class Lib {
 	}
 
 	static __texturesList: SelectEditorItem[] = [];
+
+	/// #endif
+
+	/// #if DEBUG
+
+	static get __soundsList() {
+		return soundsHowlers;
+	}
+
+	/**
+	 * @protected
+	 */
+	static __overrideSound(name: string, src: string[] | string) {
+		let opt = { src };
+		let s = loadSound(opt);
+		s.lastPlayStartFrame = 0;
+		soundsHowlers[name] = s;
+		/** TODO
+		if(game.classes.BgMusic) {
+			for(let bgm of game.currentContainer.findChildrenByType(game.classes.BgMusic)) {
+				if(bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
+					bgm.stop();
+					bgm.resetPosition();
+					setTimeout(() => {
+						if((bgm.intro === name || bgm.loop === name)) {
+							bgm.play();
+						}
+					}, 3000);
+				}
+			}
+		}*/
+	}
+
 	/// #endif
 }
 
@@ -704,6 +789,23 @@ const __preparePrefabReference = (o: Container, prefabName: string) => {
 			c.__nodeExtendData.hidden = true;
 		}
 	}
+}
+
+function loadSound(opt: HowlSoundOptions, duration?: number): HowlSound {
+	let s = new HowlSound(opt);
+
+	s.once('loaderror', (er) => {
+		//TODO s.loadedWithError = true;  сделать s.state('error')?
+		assert(false, "Can't load sound file " + opt.src + '. Error: ' + er);
+	});
+	s.once('load', () => {
+		//@ts-ignore
+		assert(opt.src.indexOf(s._src) >= 0, 'Howler _src property was moved. Refactoring of HowlSound class is required.');
+		if(duration) {
+			s.hackDuration(duration);
+		}
+	});
+	return s;
 }
 
 /// #endif

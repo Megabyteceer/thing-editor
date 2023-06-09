@@ -11,10 +11,12 @@
   "devDependencies": {
     "@pixi/filter-outline": "^5.2.0",
     "@types/events": "^3.0.0",
+    "@types/howler": "^2.2.7",
     "chokidar": "^3.5.3",
     "electron": "^24.1.2",
     "electron-settings": "^4.0.2",
     "events": "^3.3.0",
+    "howler": "^2.2.3",
     "node-tcp-proxy": "^0.0.28",
     "open": "^9.1.0",
     "pixi.js": "^7.2.4",

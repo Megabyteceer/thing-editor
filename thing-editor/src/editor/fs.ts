@@ -75,7 +75,7 @@ const ASSET_EXT_CROP_LENGHTS: Map<AssetType, number> = new Map();
 ASSET_EXT_CROP_LENGHTS.set(AssetType.IMAGE, 0);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.SCENE, 7);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.PREFAB, 7);
-ASSET_EXT_CROP_LENGHTS.set(AssetType.SOUND, 7);
+ASSET_EXT_CROP_LENGHTS.set(AssetType.SOUND, 4);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.CLASS, 5);
 
 const execFs = (command: string, filename?: string | string[], content?: string, ...args: any[]) => {

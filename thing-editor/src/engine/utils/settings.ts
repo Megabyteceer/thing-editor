@@ -5,7 +5,7 @@ import game from "thing-editor/src/engine/game";
 class Settings {
 	_storageId: string;
 	data: KeyedObject;
-	__flushInterval?: number;
+	__flushInterval = 0;
 
 	static globalOnChanged?: (name: string, val: any) => void;
 
@@ -65,7 +65,7 @@ class Settings {
 
 	flush() {
 		if(typeof (Storage) !== "undefined") {
-			this.__flushInterval = undefined;
+			this.__flushInterval = 0;
 			try {
 				localStorage.setItem(this._storageId, JSON.stringify(this.data,
 					/// #if EDITOR

@@ -1,5 +1,5 @@
 import { Container, DisplayObject, Sprite } from "pixi.js";
-import { Component, ComponentChild } from "preact";
+import { Component, ComponentChild, render } from "preact";
 import { KeyedObject, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
@@ -16,9 +16,35 @@ import getValueByPath, { getLatestSceneNodeBypath } from "thing-editor/src/engin
 const fieldEditorWrapperProps = { className: "field-editor-wrapper" };
 const selectableSceneNodeProps = { className: "selectable-scene-node" };
 const functionTipProps = { className: "path-editor-function-tip" };
-const functionTipWrapperProps = { className: "path-editor-function-tip-wrapper" };
 
 let initialized = false;
+
+const dataPathTipContainer = window.document.createElement('div');
+
+let tipSyncInterval = 0;
+const syncTip = () => {
+	if(document.activeElement) {
+		let bounds = document.activeElement.getBoundingClientRect();
+		dataPathTipContainer.style.left = (bounds.x - 2) + 'px';
+		dataPathTipContainer.style.top = (bounds.y - 27) + 'px';
+	}
+}
+
+const startTipSync = (enabled: any = false) => {
+	if(enabled) {
+		if(!tipSyncInterval) {
+			tipSyncInterval = setInterval(syncTip, 50);
+		}
+	} else {
+		if(tipSyncInterval) {
+			clearInterval(tipSyncInterval);
+			tipSyncInterval = 0;
+		}
+	}
+}
+
+dataPathTipContainer.id = 'data-path-tip-container';
+window.document.body.appendChild(dataPathTipContainer);
 
 interface DataPathEditorProps extends Omit<EditablePropertyEditorProps, "field"> {
 	field?: EditablePropertyDesc;
@@ -61,7 +87,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	onBlur() {
-		this.setState({ focus: false });
+		//this.setState({ focus: false });
 	}
 
 	static isFunctionIsClass(f: () => any) {
@@ -234,9 +260,12 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 				if(!params) {
 					params = 'no parameters';
 				}
-				functionTip = R.span(functionTipWrapperProps, R.span(functionTipProps, params));
+				functionTip = R.span(functionTipProps, params);
 			}
 		}
+
+		render(functionTip, dataPathTipContainer);
+		startTipSync(functionTip as any);
 
 		return R.div(fieldEditorWrapperProps,
 			R.input({
@@ -250,8 +279,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			}),
 			breakpointBtn,
 			chooseBtn,
-			gotoButton,
-			functionTip
+			gotoButton
 		);
 	}
 

@@ -82,8 +82,8 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 				game.showScene(Lib.hasScene(backupName) ? backupName : game.editor.currentSceneName);
 				game.stage.interactiveChildren = true;
 			} else { //stop game
-				game.__EDITOR_mode = true;
 				game.__clearStage();
+				game.__EDITOR_mode = true;
 				// TODO Sound.__resetSounds();
 				game.editor.restoreBackup();
 

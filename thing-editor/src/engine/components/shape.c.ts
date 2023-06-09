@@ -59,7 +59,7 @@ export default class Shape extends Graphics {
 	protected _lineWidth = 0;
 	protected _lineAlignment = 1;
 
-	protected __pointsUpdateIntervalInitialized: number | null = null;
+	protected __pointsUpdateIntervalInitialized = 0;
 
 	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !editorUtils.isPrefabReferenceSelected() } })
 	protected __shapePoints: Point[] | null = null;
@@ -371,7 +371,7 @@ export default class Shape extends Graphics {
 			this.__removePolyPoints();
 			game.editor.refreshTreeViewAndPropertyEditor();
 			clearInterval(this.__pointsUpdateIntervalInitialized);
-			this.__pointsUpdateIntervalInitialized = null;
+			this.__pointsUpdateIntervalInitialized = 0;
 		}
 	}
 

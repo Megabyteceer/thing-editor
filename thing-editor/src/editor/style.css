@@ -554,6 +554,7 @@ input {
 	background-image: url("/thing-editor/img/child.jpg");
 }
 
+
 .tree-children .tree-item:last-child {
 	background-image: url("/thing-editor/img/child-last.jpg");
 }
@@ -1034,15 +1035,51 @@ input[disabled] {
 }
 
 
+.path-editor-function-tip {
+	white-space: nowrap;
+    padding: 3px 20px;
+    border: 1px solid #464646;
+    color: #afafaf;
+    background: #3b3b3b;
+}
 
+#data-path-tip-container{
+	position: fixed;
+	z-index: 20;
+}
 
+.asset-editor {
+	display: flex;
+}
 
+.tool-button {
+	padding: 0;
+}
 
+.choose-asset-button {
+	flex-grow: 1;
+	padding: 5px;
+}
 
+.modal-body .window-body {
+	position: relative;
+    min-height: 50vh;
+    min-width: 50vw;
 
+}
 
+.modal-body .window-dragger,
+.modal-body .window-r-dragger,
+.modal-body .window-l-dragger,
+.modal-body .window-b-dragger,
+.modal-body .window-t-dragger,
+.modal-body .window-rb-dragger,
+.modal-body .window-lb-dragger,
+.modal-body .window-rt-dragger,
+.modal-body .window-lt-dragger {
+	display: none;
 
-
+}
 
 
 

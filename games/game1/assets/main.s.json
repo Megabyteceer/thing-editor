@@ -8,7 +8,10 @@
 	":": [
 		{
 			"r": "prefab2",
-			"p": {}
+			"p": {
+				"x": 123,
+				"y": 157
+			}
 		},
 		{
 			"c": "Bunny",
@@ -21,9 +24,12 @@
 		{
 			"c": "MovieClip",
 			"p": {
+				"name": "mc",
 				"image": "bunny.png",
 				"timeline": {
-					"l": {},
+					"l": {
+						"shake": 106
+					},
 					"p": 0.02,
 					"d": 0.85,
 					"f": [
@@ -42,6 +48,11 @@
 									"v": 140,
 									"t": 91,
 									"j": 0
+								},
+								{
+									"v": 141,
+									"t": 106,
+									"s": 13.600000000000001
 								}
 							]
 						},
@@ -60,11 +71,28 @@
 									"v": 315,
 									"t": 68,
 									"j": 10
+								},
+								{
+									"v": 320,
+									"t": 106,
+									"s": 13.600000000000001
 								}
 							]
 						}
 					]
 				}
+			}
+		},
+		{
+			"c": "Button",
+			"p": {
+				"x": 176,
+				"y": 185,
+				"image": "bunny.png",
+				"onClick": "all.mc.gotoLabelRecursive`shake",
+				"afterClick": "",
+				"sndClick": "click",
+				"sndOver": "over"
 			}
 		}
 	]

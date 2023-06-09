@@ -109,7 +109,7 @@ class History {
 	scheduleHistorySave() {
 		if(!historySaveScheduled) {
 			historySaveScheduled = setTimeout(() => {
-				historySaveScheduled = null;
+				historySaveScheduled = 0;
 				instance.saveHistoryNow();
 				regenerateCurrentSceneMapTypings();
 			}, 1);
@@ -130,7 +130,7 @@ class History {
 			instance.addHistoryState();
 			if(historySaveScheduled) {
 				clearInterval(historySaveScheduled);
-				historySaveScheduled = null;
+				historySaveScheduled = 0;
 			}
 		}
 	}
@@ -277,7 +277,7 @@ class History {
 
 
 
-let historySaveScheduled: null | number;
+let historySaveScheduled = 0;
 let needHistorySave = false;
 
 class HistoryUi extends ComponentDebounced {
@@ -298,12 +298,12 @@ class HistoryUi extends ComponentDebounced {
 	}
 }
 
-let needSaveSelectionInToHistory: number | null = null;
+let needSaveSelectionInToHistory = 0;
 
 function clearSelectionSaveTimeout() {
 	if(needSaveSelectionInToHistory) {
 		clearInterval(needSaveSelectionInToHistory);
-		needSaveSelectionInToHistory = null;
+		needSaveSelectionInToHistory = 0;
 	}
 }
 
@@ -311,7 +311,7 @@ function saveSelectionState() {
 	if(game.__EDITOR_mode) {
 		game.editor.history.addSelectionHistoryState();
 	}
-	needSaveSelectionInToHistory = null;
+	needSaveSelectionInToHistory = 0;
 }
 
 function arraysEqual(a: any[], b: any[]) {

@@ -5,7 +5,7 @@ import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
-const makeImageSelectEditablePropertyDescriptor = (name: string, canBeEmpty?: boolean, important: boolean = false, filterName = 'image'): EditablePropertyDescRaw<Container> => {
+const makeImageSelectEditablePropertyDescriptor = (name: string, canBeEmpty?: boolean, important: boolean = false, filterName = 'image'): EditablePropertyDescRaw<Container> => { //TODO ? decarator @editableImage
 	return {
 		name: name,
 		type: 'string',

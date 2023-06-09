@@ -1,10 +1,11 @@
 import { FileDesc } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
+import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import game from "thing-editor/src/engine/game";
 
 let assetPreviewImage: HTMLDivElement | null = null;
-let assetPreviewTimeout: number | null = null;
+let assetPreviewTimeout = 0;
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -19,14 +20,14 @@ const hidePreview = () => {
 	}
 	if(assetPreviewTimeout) {
 		clearTimeout(assetPreviewTimeout);
-		assetPreviewTimeout = null;
+		assetPreviewTimeout = 0;
 	}
 }
 
 const assetItemRendererImage = (file: FileDesc) => {
 	return R.div(
 		{
-			className: 'assets-item assets-item-image',
+			className: (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-current assets-item-image' : 'assets-item assets-item-image',
 			key: file.assetName
 		},
 		R.img({
@@ -40,7 +41,7 @@ const assetItemRendererImage = (file: FileDesc) => {
 const onImageAssetEnter = (ev: MouseEvent) => {
 	hidePreview();
 	assetPreviewTimeout = setTimeout(() => {
-		assetPreviewTimeout = null;
+		assetPreviewTimeout = 0;
 		assetPreviewImage = document.createElement('div');
 		assetPreviewImage.style.backgroundImage = 'url("' + (ev.target as HTMLImageElement).src + '")';
 		assetPreviewImage.className = 'image-preview-tooltip fadein-animation';

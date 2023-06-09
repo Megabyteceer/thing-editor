@@ -1,18 +1,18 @@
 import { Attributes, Component, ComponentChild, ComponentChildren, Ref } from "preact";
 
 export default class ComponentDebounced<P = {}, S = {}> extends Component<P, S> {
-	private _refreshTimeout: number | null = null;
+	private _refreshTimeout = 0;
 	refresh() {
-		if(this._refreshTimeout === null) {
+		if(!this._refreshTimeout) {
 			this._refreshTimeout = setTimeout(() => {
-				this._refreshTimeout = null;
+				this._refreshTimeout = 0;
 				this.forceUpdate();
 			}, 0);
 		}
 	}
 
 	componentWillUnmount(): void {
-		if(this._refreshTimeout !== null) {
+		if(this._refreshTimeout) {
 			clearInterval(this._refreshTimeout);
 		}
 	}
