@@ -25,9 +25,12 @@ let instance: History;
 
 let lastAppliedTreeData: HistorySerializedData;
 
+let currentSelectionNavigation = 0;
+
 function applyState(state: HistoryRecord) {
 	assert(state, 'Empty history record.');
 	assert(game.__EDITOR_mode, "Attempt to save undo history in runtime mode.");
+	currentSelectionNavigation = 0;
 	let stateChanged = state.treeData !== lastAppliedTreeData;
 	if(stateChanged) {
 		instance.events.emit('beforeHistoryJump');
@@ -273,6 +276,29 @@ class History {
 	buttonsRenderer() {
 		return h(HistoryUi, null);
 	}
+
+	navigateSelection(direction = -1) {
+		while(true) {
+			currentSelectionNavigation += direction;
+
+			let targetHistoryState;
+			if(currentSelectionNavigation <= 0) {
+				targetHistoryState = this._undoList[this._undoList.length - 1 + currentSelectionNavigation];
+				currentSelectionNavigation = Math.max(-(this._undoList.length - 1), currentSelectionNavigation);
+			} else {
+				targetHistoryState = this._redoList[currentSelectionNavigation - 1];
+				currentSelectionNavigation = Math.min(this._redoList.length, currentSelectionNavigation);
+			}
+			if(targetHistoryState) {
+				if(JSON.stringify(targetHistoryState.selectionData) !== JSON.stringify(game.editor.selection.saveCurrentSelection())) {
+					game.editor.selection.loadSelection(targetHistoryState.selectionData);
+					break;
+				}
+			} else {
+				break;
+			}
+		}
+	}
 }
 
 
@@ -294,6 +320,9 @@ class HistoryUi extends ComponentDebounced {
 		return R.span(null,
 			R.btn('Undo', game.editor.history.undo, undefined, 'menu-btn', { key: 'z', ctrlKey: true }, !instance.isUndoAvailable() || !game.__EDITOR_mode),
 			R.btn('Redo', game.editor.history.redo, undefined, 'menu-btn', { key: 'y', ctrlKey: true }, !instance.isRedoAvailable() || !game.__EDITOR_mode),
+			R.btn('<<', () => game.editor.history.navigateSelection(-1), undefined, 'menu-btn', { key: 'ArrowLeft', ctrlKey: true, altKey: true }, !game.__EDITOR_mode),
+			R.btn('>>', () => game.editor.history.navigateSelection(1), undefined, 'menu-btn', { key: 'ArrowRight', ctrlKey: true, altKey: true }, !game.__EDITOR_mode),
+
 		);
 	}
 }

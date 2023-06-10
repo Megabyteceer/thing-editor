@@ -271,7 +271,6 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 			})
 		)
 	}
-
 }
 
 const panelWrapperProps = {
