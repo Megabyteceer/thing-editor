@@ -328,7 +328,7 @@ export default class MovieClip extends DSprite {
 		if(!serializeCache.has(this._timelineData) ||
 			game.editor.disableFieldsCache
 		) {
-			console.warn("MovieClip serialization invoked >>>");
+			//console.warn("MovieClip serialization invoked >>>");
 			let tl = this._timelineData;
 			let fields = tl.f.map((f) => {
 				return {

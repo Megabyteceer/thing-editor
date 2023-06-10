@@ -1,7 +1,6 @@
 import { BLEND_MODES, Mesh, Sprite } from "pixi.js";
 import type { KeyedObject, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
-import makeImageSelectEditablePropertyDescriptor from "thing-editor/src/editor/ui/props-editor/make-image-property-desc";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -109,7 +108,7 @@ const blendModesSelect = Object.keys(BLEND_MODES).filter((k) => {
 
 (Sprite as any as SourceMappedConstructor).__EDITOR_icon = 'tree/sprite';
 
-_editableEmbed([Sprite, Mesh as any], 'image', makeImageSelectEditablePropertyDescriptor('image', false, true));
+_editableEmbed([Sprite, Mesh as any], 'image', { type: 'image', default: 'EMPTY' });
 _editableEmbed([Sprite, Mesh as any], 'tint', {
 	basis: 16,
 	default: 0xFFFFFF,

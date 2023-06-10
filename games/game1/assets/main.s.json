@@ -86,8 +86,8 @@
 		{
 			"c": "Button",
 			"p": {
-				"x": 111,
-				"y": 334,
+				"x": 78,
+				"y": 243,
 				"image": "bunny.png",
 				"hoverImage": "bunny.png",
 				"pressImage": "bunny.png",

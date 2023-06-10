@@ -1,7 +1,8 @@
-import fs, { FileDescImage } from "thing-editor/src/editor/fs";
+import { SourceMappedConstructor } from "thing-editor/src/editor/env";
+import fs, { FileDesc, FileDescImage } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
-import showContextMenu from "thing-editor/src/editor/ui/context-menu";
+import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
@@ -13,8 +14,8 @@ const assetsItemNameProps = {
 };
 
 const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
-	showContextMenu([
 
+	const menu: ContextMenuItem[] = [
 		null,
 		{
 			name: R.fragment(R.icon('copy'), "Copy image`s name"),
@@ -39,16 +40,35 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 				);
 			}
 		}
-	], ev);
+	];
+
+	if(game.editor.selection.length) {
+		const props = (game.editor.selection[0].constructor as SourceMappedConstructor).__editableProps;
+		for(let i = props.length - 1; i >= 0; i--) {
+			const prop = props[i];
+			if(game.editor.ui.propsEditor.editableProps[prop.name]) {
+				if(prop.type === 'image') {
+					menu.unshift({
+						name: 'Assign to "' + prop.name + '" >>',
+						onClick: () => {
+							game.editor.onSelectedPropsChange(prop, file.assetName);
+						}
+					});
+				}
+			}
+		}
+	}
+
+	showContextMenu(menu, ev);
 }
 
 
-const assetItemRendererImage = (file: FileDescImage) => {
+const assetItemRendererImage = (file: FileDesc) => {
 	return R.div(
 		{
 			onContextMenu: (ev: PointerEvent) => {
 				sp(ev);
-				showImageContextMenu(file, ev);
+				showImageContextMenu(file as FileDescImage, ev);
 			},
 			className: (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-current assets-item-image' : 'assets-item assets-item-image',
 			key: file.assetName
