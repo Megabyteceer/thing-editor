@@ -34,7 +34,7 @@ function initializeGizmo() {
 
 editorEvents.once('didProjectOpen', () => {
 
-	window.addEventListener('mousedown', function onMouseDown(ev: MouseEvent) {
+	(document.querySelector('#viewport-root') as HTMLDivElement).addEventListener('mousedown', function onMouseDown(ev: MouseEvent) {
 		if(game.pixiApp && (ev.target === game.pixiApp.view)) {
 			if(ev.buttons === 4) {
 				isViewPortScrolling = true;
@@ -50,6 +50,8 @@ editorEvents.once('didProjectOpen', () => {
 					selectByStageClick(ev);
 				}
 			}
+		} else {
+			game.editor.selection.clearSelection();
 		}
 	});
 

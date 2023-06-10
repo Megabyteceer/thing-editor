@@ -160,6 +160,8 @@ const hidePreview = () => {
 	}
 }
 
+window.addEventListener('mousedown', hidePreview);
+
 const onImageAssetEnter = (ev: MouseEvent) => {
 	hidePreview();
 	let img: HTMLImageElement = (ev.target as HTMLImageElement);
