@@ -1,7 +1,6 @@
 
 import { Classes, KeyedMap, KeyedObject, NodeExtendData, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
-
 import { Container, Texture } from "pixi.js";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -11,7 +10,7 @@ import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import Pool from "thing-editor/src/engine/utils/pool";
 
-import fs, { AssetType, FileDesc, FileDescPrefab } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc, FileDescImage, FileDescPrefab } from "thing-editor/src/editor/fs";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
@@ -31,15 +30,15 @@ let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
-
 /// #if EDITOR
 
 let __allTexturesNames: KeyedMap<boolean> = {};
 
-
 /// #endif
 
 export default class Lib {
+
+	static REMOVED_TEXTURE: Texture;
 
 	static loadScene(name: string): Scene { //TODO: rename to _loadsScene
 		if(
@@ -116,7 +115,9 @@ export default class Lib {
 		}
 		Texture.removeFromCache(t);
 		t.destroy(true);
-		delete textures[name];
+
+		Object.assign(t, textures.EMPTY);
+
 		/// #if EDITOR
 		if(___removeFromEditorList) {
 			delete __allTexturesNames[name];
@@ -132,14 +133,6 @@ export default class Lib {
 		, addToBeginning = false
 		/// #endif
 	) {
-
-		if(name !== 'EMPTY' && name !== 'WHITE') {
-			if(Lib.hasTexture(name)) {
-				Lib._unloadTexture(name);
-			}
-		}
-
-		/// TODO: если текстура существовала - переопределить ей базеТекстуру и рект. Она была EMPTY инвалид
 
 		/// #if EDITOR
 
@@ -159,7 +152,30 @@ export default class Lib {
 		/// #endif
 
 		if(typeof textureURL === 'string') {
-			textures[name] = Texture.from(textureURL);
+
+			/// #if EDITOR
+			game.additionalLoadingsInProgress++;
+			if(textures[name] && textures[name].baseTexture !== Lib.REMOVED_TEXTURE.baseTexture && textures[name].baseTexture !== textures.EMPTY.baseTexture) {
+				//TODO check if updated texture unloads old instance;
+				Lib._unloadTexture(name);
+			}
+
+			const asset = fs.getFileByAssetName(name, AssetType.IMAGE) as FileDescImage;
+
+			Texture.fromURL((asset && asset.v) ? (textureURL + '?v=' + asset.v) : textureURL).then((t) => {
+				if(textures[name]) {
+
+					Object.assign(textures[name], t);
+				} else {
+					textures[name] = t;
+				}
+				game.additionalLoadingsInProgress--;
+			});
+			/*
+			/// #endif
+			textures[name] = Texture.from(textureURL);;
+			//*/
+
 		} else {
 			textures[name] = textureURL;
 		}
@@ -174,11 +190,9 @@ export default class Lib {
 		/// #endif
 	) {
 
-		/// #if DEBUG
+		/// #if EDITOR
 		if(!textures.hasOwnProperty(name)) {
-
-			//TODO: load unloaded textures (load invalid (unloaded) texture. Потом тектуры будут выгружаться и инвалидиться не удалаясь из списка
-
+			textures[name] = Lib.REMOVED_TEXTURE.clone();
 			return Texture.WHITE;
 		}
 		/// #endif
@@ -597,6 +611,13 @@ export default class Lib {
 
 	static __texturesList: SelectEditorItem[] = [];
 
+	static __deleteTexture(textureName: string) {
+		if(textures[textureName]) {
+			Object.assign(textures[textureName], Lib.REMOVED_TEXTURE);
+		}
+
+	}
+
 	/// #endif
 
 	/// #if DEBUG
@@ -714,12 +735,23 @@ const __onAssetAdded = (file: FileDesc) => {
 		case AssetType.CLASS:
 			game.editor.classesUpdatedExternally();
 			break;
+
+		case AssetType.IMAGE:
+			Lib.addTexture(file.assetName, file.fileName);
+			game.editor.ui.refresh();
+			break;
+
+
+
 		//TODO images, sounds, scenes
 	}
 }
 
 const __onAssetUpdated = (file: FileDesc) => {
 	console.log('updated: ' + file.fileName);
+
+	file.v = (file.v || 0) + 1;
+
 	switch(file.assetType) {
 		case AssetType.PREFAB:
 			let isAcceptChanges = false;
@@ -756,7 +788,10 @@ const __onAssetUpdated = (file: FileDesc) => {
 		case AssetType.CLASS:
 			game.editor.classesUpdatedExternally();
 			break;
-
+		case AssetType.IMAGE:
+			Lib.addTexture(file.assetName, file.fileName);
+			game.editor.ui.refresh();
+			break;
 		//TODO images, sounds,
 	}
 }
@@ -775,6 +810,12 @@ const __onAssetDeleted = (file: FileDesc) => {
 		case AssetType.CLASS:
 			game.editor.classesUpdatedExternally();
 			break;
+		case AssetType.IMAGE:
+			Lib.__deleteTexture(file.assetName);
+			game.editor.ui.refresh();
+			break;
+
+
 		//TODO images, sounds,
 	}
 }

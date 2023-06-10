@@ -15,7 +15,7 @@ interface FileDesc {
 	mTime: number,
 
 	lib?: string | null; //TODO
-
+	v?: number;
 	asset: SourceMappedConstructor | SerializedObject | Texture
 };
 
@@ -294,6 +294,8 @@ export default class fs {
 								__onAssetAdded(file);
 							} else {
 								file.asset = oldAsset.asset;
+
+								file.v = oldAsset.v;
 
 								if(oldAsset.mTime !== file.mTime) {
 									__onAssetUpdated(file);

@@ -1,5 +1,7 @@
 import { Texture } from "pixi.js";
 import fs, { AssetType, FileDescImage, FileDescPrefab, FileDescScene } from "thing-editor/src/editor/fs";
+import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
+import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
 export default class AssetsLoader {
@@ -29,8 +31,13 @@ export default class AssetsLoader {
 
 		let imagesFiles = fs.getAssetsList(AssetType.IMAGE) as FileDescImage[];
 
-		return Promise.all(imagesFiles.map((file) => {
+		for(let file of imagesFiles) {
 			Lib.addTexture(file.assetName, file.asset || file.fileName); //file.asset - WHITE EMPTY textures go directly instead of URL
-		}));
+		}
+
+		return waitForCondition(() => {
+			return game.additionalLoadingsInProgress === 0;
+		});
+
 	}
 }

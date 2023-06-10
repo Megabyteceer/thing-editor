@@ -1,6 +1,7 @@
 import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h, render } from 'preact';
 import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
+import { FileDesc, FileDescImage } from 'thing-editor/src/editor/fs';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
 import { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
@@ -81,12 +82,20 @@ class R {
 		return R.span(null, _libName);
 	}
 
-	static imageIcon(fileName: string) {
-		return R.img({
-			src: fileName,
-			onMouseEnter: onImageAssetEnter,
-			onMouseLeave: onImageAssetLeave
-		});
+	static imageIcon(file: FileDesc) {
+		if(file) {
+			return R.img({
+				src: (file as FileDescImage).v ? (file.fileName + '?v=' + (file as FileDescImage).v) : file.fileName,
+				onMouseEnter: onImageAssetEnter,
+				onMouseLeave: onImageAssetLeave
+			});
+		} else {
+			return R.img({
+				src: '/thing-editor/img/wrong-texture.png',
+				onMouseEnter: onImageAssetEnter,
+				onMouseLeave: onImageAssetLeave
+			});
+		}
 	}
 
 	static classIcon = (constructor: SourceMappedConstructor) => {

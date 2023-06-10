@@ -1,5 +1,3 @@
-
-
 import R from "./preact-fabrics";
 
 import game from "../engine/game";
@@ -28,7 +26,6 @@ import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/uti
 import assert from "thing-editor/src/engine/debug/assert";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
-
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
@@ -247,7 +244,9 @@ class Editor {
 				protectAccessToSceneNode(game.stage, "game stage");
 				protectAccessToSceneNode(game.stage.parent, "PIXI stage");
 
-				await Promise.all([this.reloadAssetsAndClasses(true)]);
+				await Promise.all([this.reloadAssetsAndClasses(true), Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
+					Lib.REMOVED_TEXTURE = t;
+				})]);
 
 				editorEvents.emit('didProjectOpen')
 

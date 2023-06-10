@@ -32,7 +32,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 					'Ase you sure?',
 					R.fragment(
 						R.div(null, 'You about to delete image'),
-						R.imageIcon(file.fileName)
+						R.imageIcon(file)
 					), () => {
 						fs.deleteAsset(file.assetName, file.assetType);
 						game.editor.ui.refresh();
@@ -73,7 +73,7 @@ const assetItemRendererImage = (file: FileDesc) => {
 			className: (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-current assets-item-image' : 'assets-item assets-item-image',
 			key: file.assetName
 		},
-		R.imageIcon(file.fileName),
+		R.imageIcon(file),
 		R.span(assetsItemNameProps, file.assetName));
 }
 

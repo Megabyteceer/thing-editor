@@ -12,7 +12,7 @@ const imageJSPropertyDescriptor = {
 		return this._imageID;
 	},
 	set: function (this: Sprite, v: string) {
-		assert(typeof v === 'string', "texture's String ID expected.", 10022);
+		assert(typeof v === 'string', "texture's name expected.", 10022);
 		if(this._imageID !== v) {
 			this._imageID = v;
 			this.texture = Lib.getTexture(v
