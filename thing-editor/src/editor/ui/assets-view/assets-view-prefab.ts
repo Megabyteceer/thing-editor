@@ -16,18 +16,21 @@ const assetsItemNameProps = {
 	onMouseDown: copyTextByClick
 };
 
+const placeAsChild = (file: FileDescPrefab) => {
+
+	let insertTo = game.editor.selection.slice();
+	game.editor.selection.clearSelection();
+	for(let o of insertTo) {
+		game.editor.addTo(o, Lib.__loadPrefabReference(file.assetName));
+	}
+}
+
 const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 	showContextMenu([
 		{
 			name: "Place as child",
-			tip: "Place as child to each selected object.",
-			onClick: () => {
-				let insertTo = game.editor.selection.slice();
-				game.editor.selection.clearSelection();
-				for(let o of insertTo) {
-					game.editor.addTo(o, Lib.__loadPrefabReference(file.assetName));
-				}
-			},
+			tip: "Place as child to each selected object. (Alt + Click)",
+			onClick: () => placeAsChild(file),
 			disabled: !game.editor.selection.length
 		},
 		{
@@ -81,12 +84,20 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 			onPointerDown: (ev: PointerEvent) => {
 				if(ev.buttons === 1) {
 					if(ev.altKey) {
-						//TODO add as child
+						if(game.editor.selection.length) {
+							while(game.editor.selection[0].__nodeExtendData.isPrefabReference) {
+								let p = game.editor.selection[0].parent;
+								if(p === game.stage) {
+									break;
+								}
+								game.editor.selection.clearSelection();
+								game.editor.selection.add(p);
+							}
+							placeAsChild(file);
+						}
 					} else {
 						PrefabEditor.editPrefab(file.assetName);
 					}
-				} else {
-					//TODO prefab context meny
 				}
 			},
 			onContextMenu: (ev: PointerEvent) => {
@@ -97,7 +108,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 				let Class = game.classes[file.asset.c!];
 				game.editor.editClassSource(Class, file.asset.c!);
 			},
-			title: "click to edit prefab."
+			title: "Click to edit prefab. Alt + Click - place as child"
 		},
 		R.classIcon(game.classes[file.asset.c!] || __UnknownClass),
 		R.span(assetsItemNameProps, file.assetName));

@@ -261,7 +261,9 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		let clearSearchBtn;
 		if(this.state.search) {
 			files = files.filter((asset) => {
-				if(asset.assetType === AssetType.SCENE) {
+				if(asset.assetName === AssetsView.currentItemName) {
+					return true
+				} else if(asset.assetType === AssetType.SCENE) {
 					if(asset.assetName === game.editor.currentSceneName) {
 						return true;
 					}

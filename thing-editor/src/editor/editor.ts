@@ -343,10 +343,10 @@ class Editor {
 
 	addTo(parent: Container, child: Container) {
 		parent.addChild(child);
-		Lib.__invalidateSerializationCache(child);
-		editor.sceneModified();
 		Lib.__callInitIfGameRuns(child);
 		this.selection.select(child, true);
+		Lib.__invalidateSerializationCache(child);
+		editor.sceneModified();
 	}
 
 	isCanBeAddedAsChild(Class: SourceMappedConstructor): boolean {
