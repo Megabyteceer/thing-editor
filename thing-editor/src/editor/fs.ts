@@ -295,7 +295,7 @@ export default class fs {
 							} else {
 								file.asset = oldAsset.asset;
 
-								file.v = oldAsset.v;
+								file.v = (oldAsset.v || 0) + 1;
 
 								if(oldAsset.mTime !== file.mTime) {
 									__onAssetUpdated(file);
