@@ -81,7 +81,7 @@ class R {
 		return R.span(null, _libName);
 	}
 
-	static textreIcon(fileName: string) {
+	static imageIcon(fileName: string) {
 		return R.img({
 			src: fileName,
 			onMouseEnter: onImageAssetEnter,

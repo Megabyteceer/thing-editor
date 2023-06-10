@@ -16,7 +16,7 @@ const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 				}
 			});
 		}, props.value, 'choose-asset-button'),
-		props.value ? R.textreIcon(fs.getFileByAssetName(props.value, AssetType.IMAGE).fileName) : undefined,
+		props.value ? R.imageIcon(fs.getFileByAssetName(props.value, AssetType.IMAGE).fileName) : undefined,
 		props.value ? R.btn(R.icon('reject'), (ev: PointerEvent) => {
 			showContextMenu([
 				{

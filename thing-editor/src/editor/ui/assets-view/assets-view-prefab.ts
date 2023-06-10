@@ -3,6 +3,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
@@ -82,21 +83,23 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
 			key: file.assetName,
 			onPointerDown: (ev: PointerEvent) => {
-				if(ev.buttons === 1) {
-					if(ev.altKey) {
-						if(game.editor.selection.length) {
-							while(game.editor.selection[0].__nodeExtendData.isPrefabReference) {
-								let p = game.editor.selection[0].parent;
-								if(p === game.stage) {
-									break;
+				if(PrefabEditor.currentPrefabName !== file.assetName && !editorUtils.isInModal(ev.target)) {
+					if(ev.buttons === 1) {
+						if(ev.altKey) {
+							if(game.editor.selection.length) {
+								while(game.editor.selection[0].__nodeExtendData.isPrefabReference) {
+									let p = game.editor.selection[0].parent;
+									if(p === game.stage) {
+										break;
+									}
+									game.editor.selection.clearSelection();
+									game.editor.selection.add(p);
 								}
-								game.editor.selection.clearSelection();
-								game.editor.selection.add(p);
+								placeAsChild(file);
 							}
-							placeAsChild(file);
+						} else {
+							PrefabEditor.editPrefab(file.assetName);
 						}
-					} else {
-						PrefabEditor.editPrefab(file.assetName);
 					}
 				}
 			},

@@ -36,6 +36,12 @@ const classNamePropertyDescriptor = {
 
 export namespace editorUtils {
 
+	export const isInModal = (o: EventTarget | HTMLElement | null) => {
+		if(o) {
+			return (o as HTMLElement).closest('.modal-body');
+		}
+	};
+
 	export const exitPreviewMode = (o: Container) => {
 		if(!o.__nodeExtendData.__isPreviewMode) return;
 		editorEvents.off('beforePropertyChanged', o.__exitPreviewMode!);

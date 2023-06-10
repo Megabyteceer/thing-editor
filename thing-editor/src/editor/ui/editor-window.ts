@@ -4,6 +4,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Help from "thing-editor/src/editor/ui/help";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
 
 const MENU_HEIGHT = 24;
@@ -252,7 +253,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	isModal() {
-		return (this.base as HTMLDivElement).closest('.modal-body') as any as boolean;
+		return editorUtils.isInModal(this.base as any);
 	}
 
 	onMouseDown() {
