@@ -320,8 +320,8 @@ class HistoryUi extends ComponentDebounced {
 		return R.span(null,
 			R.btn('Undo', game.editor.history.undo, undefined, 'menu-btn', { key: 'z', ctrlKey: true }, !instance.isUndoAvailable() || !game.__EDITOR_mode),
 			R.btn('Redo', game.editor.history.redo, undefined, 'menu-btn', { key: 'y', ctrlKey: true }, !instance.isRedoAvailable() || !game.__EDITOR_mode),
-			R.btn('<<', () => game.editor.history.navigateSelection(-1), undefined, 'menu-btn', { key: 'ArrowLeft', ctrlKey: true, altKey: true }, !game.__EDITOR_mode),
-			R.btn('>>', () => game.editor.history.navigateSelection(1), undefined, 'menu-btn', { key: 'ArrowRight', ctrlKey: true, altKey: true }, !game.__EDITOR_mode),
+			R.btn('<<', () => game.editor.history.navigateSelection(-1), 'Selection history back', 'menu-btn', { key: 'ArrowLeft', ctrlKey: true, altKey: true }, !game.__EDITOR_mode),
+			R.btn('>>', () => game.editor.history.navigateSelection(1), '', 'Selection history forward', { key: 'ArrowRight', ctrlKey: true, altKey: true }, !game.__EDITOR_mode),
 
 		);
 	}
