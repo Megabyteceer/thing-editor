@@ -77,6 +77,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		}
 		this.onEditClicked = this.onEditClicked.bind(this);
 		this.onBreakpointClick = this.onBreakpointClick.bind(this);
+		this.refreshTip = this.refreshTip.bind(this);
 		this.onGotoTargetClick = this.onGotoTargetClick.bind(this);
 		this.onFocus = this.onFocus.bind(this);
 		this.onBlur = this.onBlur.bind(this);
@@ -87,7 +88,8 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	onBlur() {
-		//this.setState({ focus: false });
+		this.setState({ focus: false });
+		this.hideParamsTip();
 	}
 
 	static isFunctionIsClass(f: () => any) {
@@ -228,6 +230,77 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		return 'Choose data source';
 	}
 
+	interval = 0;
+
+	componentDidMount(): void {
+		this.interval = setInterval(this.refreshTip, 50);
+	}
+
+	componentWillUnmount(): void {
+		this.hideParamsTip()
+		clearInterval(this.interval);
+	}
+
+	refreshTip() {
+		if(!this.state || !this.state.focus) {
+			return;
+		}
+		let val = this.props.value;
+		if(val) {
+			game.currentScene._refreshAllObjectRefs();
+			let f;
+			try {
+				f = getValueByPath(val, game.editor.selection[0], true);
+			} catch(er) { }// eslint-disable-line no-empty
+
+			if(typeof f === 'function') {
+				let paramsView: ComponentChild;
+				let firstLine = f.toString().split('\n').shift();
+				let params: string[] = firstLine.split('(').pop().split(')').shift().split(', ');
+				if(!params) {
+					paramsView = 'no parameters';
+				} else {
+					let paramsW: Array<ComponentChild> = [];
+
+					let cursorPos = ((this.base as HTMLDivElement).querySelector('input') as HTMLInputElement).selectionStart || 0;
+					let selectedParamIndex = -1;
+					let paramsStartVal = val.indexOf('`');
+					if(paramsStartVal > 0 && cursorPos > paramsStartVal) {
+						selectedParamIndex = 0;
+						let leftPart = val.substr(0, cursorPos);
+						let paramsPart = leftPart.split('`')[1];
+						if(paramsPart) {
+							selectedParamIndex = paramsPart.split(',').length - 1;
+						}
+					}
+
+					let paramIndex = 0;
+					for(let param of params) {
+						if(paramsW.length) {
+							paramsW.push(', ');
+						}
+						if(paramIndex === selectedParamIndex) {
+							paramsW.push(R.b(null, param));
+						} else {
+							paramsW.push(param);
+						}
+						paramIndex++;
+					}
+					paramsView = paramsW;
+				}
+				render(R.span(functionTipProps, paramsView), dataPathTipContainer);
+				startTipSync(true);
+				return;
+			}
+			this.hideParamsTip();
+		}
+	}
+
+	hideParamsTip() {
+		render(undefined, dataPathTipContainer);
+		startTipSync();
+	}
+
 	render() {
 
 		let val = this.props.value;
@@ -245,27 +318,6 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		if(val) {
 			gotoButton = R.btn('➥', this.onGotoTargetClick, 'Find target object', 'tool-btn');
 		}
-
-		let functionTip;
-		if(val && this.state && this.state.focus) {
-			game.currentScene._refreshAllObjectRefs();
-			let f;
-			try {
-				f = getValueByPath(val, game.editor.selection[0], true);
-			} catch(er) { }// eslint-disable-line no-empty
-
-			if(typeof f === 'function') {
-				let firstLine = f.toString().split('\n').shift();
-				let params = firstLine.split('(').pop().split(')').shift();
-				if(!params) {
-					params = 'no parameters';
-				}
-				functionTip = R.span(functionTipProps, params);
-			}
-		}
-
-		render(functionTip, dataPathTipContainer);
-		startTipSync(functionTip as any);
 
 		return R.div(fieldEditorWrapperProps,
 			R.input({
