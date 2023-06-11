@@ -109,14 +109,14 @@ export default class Lib {
 
 		//TODO:  текстуре переопределить ей базеТекстуру и рект на ивалид (EMPTY) не удалять из либы пусть будет инвалид невидимой
 
-		let t = textures[name];
-		if(!t) {
+		let texture = textures[name];
+		if(!texture) {
 			return;
 		}
-		Texture.removeFromCache(t);
-		t.destroy(true);
+		Texture.removeFromCache(texture);
+		texture.destroy(true);
 
-		Object.assign(t, textures.EMPTY);
+		Object.assign(texture, textures.EMPTY);
 
 		/// #if EDITOR
 		if(___removeFromEditorList) {
@@ -162,12 +162,14 @@ export default class Lib {
 
 			const asset = fs.getFileByAssetName(name, AssetType.IMAGE) as FileDescImage;
 
-			Texture.fromURL((asset && asset.v) ? (textureURL + '?v=' + asset.v) : textureURL).then((t) => {
+			Texture.fromURL(getVersionedFileName(asset) || textureURL).then((newTexture) => {
 				if(textures[name]) {
-
-					Object.assign(textures[name], t);
+					const oldTexture = textures[name];
+					Object.assign(oldTexture, newTexture);
+					oldTexture.onBaseTextureUpdated(newTexture.baseTexture)
+					oldTexture._updateID = Date.now();
 				} else {
-					textures[name] = t;
+					textures[name] = newTexture;
 				}
 				game.additionalLoadingsInProgress--;
 			});
@@ -193,7 +195,6 @@ export default class Lib {
 		/// #if EDITOR
 		if(!textures.hasOwnProperty(name)) {
 			textures[name] = Lib.REMOVED_TEXTURE.clone();
-			return Texture.WHITE;
 		}
 		/// #endif
 
@@ -611,11 +612,15 @@ export default class Lib {
 
 	static __texturesList: SelectEditorItem[] = [];
 
-	static __deleteTexture(textureName: string) {
-		if(textures[textureName]) {
-			Object.assign(textures[textureName], Lib.REMOVED_TEXTURE);
+	static __deleteTexture(file: FileDescImage) {
+		if(textures[file.assetName]) {
+			const texture = textures[file.assetName];
+			let tmp = texture._updateID;
+			Texture.removeFromCache(texture);
+			Object.assign(texture, Lib.REMOVED_TEXTURE);
+			texture._updateID = tmp;
+			texture.onBaseTextureUpdated(texture.baseTexture)
 		}
-
 	}
 
 	/// #endif
@@ -718,6 +723,16 @@ Lib.scenes = scenes;
 Lib.prefabs = prefabs;
 
 /// #if EDITOR
+
+const getVersionedFileName = (file: FileDesc) => {
+	if(file) {
+		if(file.v) {
+			return file.fileName + '?v=' + file.v;
+		}
+		return file.fileName;
+	}
+}
+
 const EMPTY_NODE_EXTEND_DATA: NodeExtendData = { objectDeleted: "Container was deleted and it`s extend data replaced with temporary object." };
 Object.freeze(EMPTY_NODE_EXTEND_DATA);
 
@@ -811,7 +826,7 @@ const __onAssetDeleted = (file: FileDesc) => {
 			game.editor.classesUpdatedExternally();
 			break;
 		case AssetType.IMAGE:
-			Lib.__deleteTexture(file.assetName);
+			Lib.__deleteTexture(file as FileDescImage);
 			game.editor.ui.refresh();
 			break;
 

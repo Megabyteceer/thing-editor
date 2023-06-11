@@ -60,5 +60,8 @@
 	"pngQuality": [
 		0.95,
 		1
+	],
+	"libs": [
+		"lib1"
 	]
 }

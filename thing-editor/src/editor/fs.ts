@@ -261,8 +261,6 @@ export default class fs {
 			assetsByTypeByName.get(assetType)?.clear();
 		}
 
-		(assetsListsByType.get(AssetType.IMAGE) as FileDesc[]).push(EMPTY, WHITE);
-		allAssets.push(EMPTY, WHITE);
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('EMPTY', EMPTY);
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
 
@@ -281,28 +279,33 @@ export default class fs {
 						const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
 
 						file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGHTS.get(assetType) as number));
-
-						(assetsByTypeByName.get((ASSETS_PARSERS as KeyedObject)[ext] as AssetType) as Map<string, FileDesc>).set(file.assetName, file);
 						file.fileName = '/' + file.fileName;
 						file.assetType = assetType;
-						(assetsListsByType.get(assetType) as FileDesc[]).push(file);
-						allAssets.push(file);
 
-						if(prevAllAssets !== undefined && !file.assetName.startsWith(game.editor.backupPrefix)) {
-							let oldAsset = prevAllAssetsMap!.get(file.fileName);
-							if(!oldAsset) {
-								__onAssetAdded(file);
-							} else {
-								file.asset = oldAsset.asset;
-
-								file.v = (oldAsset.v || 0) + 1;
-
-								if(oldAsset.mTime !== file.mTime) {
-									__onAssetUpdated(file);
-								}
-							}
-						}
+						(assetsByTypeByName.get((ASSETS_PARSERS as KeyedObject)[ext] as AssetType) as Map<string, FileDesc>).set(file.assetName, file);
 						break;
+					}
+				}
+			}
+		}
+
+		for(const assetsMap of assetsByTypeByName.values()) {
+			for(const file of assetsMap.values()) {
+				(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
+				allAssets.push(file);
+
+				if(prevAllAssets !== undefined && !file.assetName.startsWith(game.editor.backupPrefix)) {
+					let oldAsset = prevAllAssetsMap!.get(file.fileName);
+					if(!oldAsset) {
+						__onAssetAdded(file);
+					} else {
+						file.asset = oldAsset.asset;
+
+						file.v = (oldAsset.v || 0) + 1;
+
+						if(oldAsset.mTime !== file.mTime) {
+							__onAssetUpdated(file);
+						}
 					}
 				}
 			}

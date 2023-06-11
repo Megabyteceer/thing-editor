@@ -16,9 +16,10 @@
 		{
 			"c": "Bunny",
 			"p": {
-				"x": 214,
-				"y": 312,
-				"image": "bunny.png"
+				"x": 216,
+				"y": 231,
+				"rotation": 0.39999999999999997,
+				"image": "flag.png"
 			}
 		},
 		{

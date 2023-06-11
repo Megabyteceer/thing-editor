@@ -34,6 +34,8 @@ class Editor {
 	currentProjectDir = '';
 	currentProjectAssetsDir = '';
 	currentProjectAssetsDirRooted = '';
+	assetsFolders!: string[];
+	libsDescs: KeyedMap<KeyedObject> = {};
 
 	editorArguments: KeyedMap<true | string> = {};
 	projectDesc!: ProjectDesc;
@@ -233,6 +235,16 @@ class Editor {
 					return;
 				}
 
+				this.assetsFolders = ['thing-editor/src/engine/components/'];
+
+				if(this.projectDesc.libs) {
+					for(let lib of this.projectDesc.libs as string[]) {
+						this.assetsFolders.push('libs/' + lib + '/assets/');
+						this.libsDescs[lib] = fs.readJSONFile('libs/' + lib + '/thing-lib.json');
+					}
+				}
+				this.assetsFolders.push(this.currentProjectAssetsDir);
+
 				//TODO libs settings-merge to current
 
 				this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
@@ -248,7 +260,7 @@ class Editor {
 					Lib.REMOVED_TEXTURE = t;
 				})]);
 
-				editorEvents.emit('didProjectOpen')
+				editorEvents.emit('didProjectOpen');
 
 				this.settings.setItem('last-opened-project', dir);
 
@@ -266,7 +278,7 @@ class Editor {
 
 				this.regeneratePrefabsTypings();
 
-				fs.watchDirs(this.getProjectFolders());
+				fs.watchDirs(this.assetsFolders);
 
 				this.ui.modal.hideSpinner();
 				this.isProjectOpen = true;
@@ -489,12 +501,6 @@ class Editor {
 
 	//TODO: set diagnosticLevel settings to informations to show spell typos and fix them after all
 
-	getProjectFolders(): string[] {
-		return ['thing-editor/src/engine/components/', this.currentProjectAssetsDir];
-	}
-
-
-
 	previewSound(soundName: string) {
 		if(Lib.getSound(soundName).playing()) {
 			Lib.getSound(soundName).stop();
@@ -553,7 +559,7 @@ class Editor {
 
 	async reloadAssetsAndClasses(refresh = false) {
 		if(refresh) {
-			fs.refreshAssetsList(this.getProjectFolders());
+			fs.refreshAssetsList(this.assetsFolders);
 		}
 		await this.reloadClasses();
 		await AssetsLoader.reloadAssets();
