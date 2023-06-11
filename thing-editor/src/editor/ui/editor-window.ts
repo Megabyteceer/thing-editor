@@ -8,8 +8,17 @@ import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
 
 const MENU_HEIGHT = 24;
+const CLAMP_POW = 5;
 
-interface WindowProps extends ClassAttributes<Window<WindowProps, WindowState>> {
+interface CornerDraggerProps extends ClassAttributes<CornerDragger> {
+	onDrag: (deltaX: number, deltaY: number) => { x: number, y: number };
+	onDragEnd: () => void;
+	className: string;
+	type?: DraggerType;
+	owner: Window;
+}
+
+interface WindowProps extends ClassAttributes<Window> {
 	onResize?: () => void;
 	id: string;
 	x: number;
@@ -36,7 +45,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 	renderedScale = 1;
 
-	static all: KeyedMap<Window<WindowProps, WindowState>> = {};
+	static all: KeyedMap<Window> = {};
 	static allOrdered: Window[] = [];
 
 	constructor(props: P) {
@@ -208,7 +217,6 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 			(this.base as HTMLDivElement).style.left = x + '%';
 			(this.base as HTMLDivElement).style.top = y + '%';
 		}
-
 	}
 
 	setSize(w: number, h: number) {
@@ -252,6 +260,48 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		}
 	}
 
+	clamp() {
+
+		const div = this.base as HTMLDivElement;
+		if(div) {
+			div.getClientRects();
+			let bounds = div.getBoundingClientRect();
+
+
+			const W = window.innerWidth / 100;
+			const H = (window.innerHeight - MENU_HEIGHT) / 100;
+			let clamped = false;
+			for(let w of noDragWindows) {
+				const otherBounds = (w.base as HTMLDivElement).getBoundingClientRect();
+				let d = bounds.left - otherBounds.right;
+				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
+					this.setPosition(otherBounds.right / W, this.state.y);
+					this.setSize(this.state.w + d / W, this.state.h);
+					clamped = true;
+				}
+				d = bounds.right - otherBounds.left;
+				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
+					this.setSize(this.state.w - d / W, this.state.h);
+					clamped = true;
+				}
+				d = bounds.top - otherBounds.bottom;
+				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
+					this.setPosition(this.state.x, (otherBounds.bottom - MENU_HEIGHT) / H);
+					this.setSize(this.state.w, this.state.h - d / H);
+					clamped = true;
+				}
+				d = bounds.bottom - otherBounds.top;
+				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
+					this.setSize(this.state.w, this.state.h - d / H);
+					clamped = true;
+				}
+				if(clamped) {
+					return;
+				}
+			}
+		}
+	}
+
 	isModal() {
 		return editorUtils.isInModal(this.base as any);
 	}
@@ -266,7 +316,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		return this.props.content;
 	}
 
-	render() {
+	render(): ComponentChild {
 
 		let contentProps: any = {
 			className: 'window-content'
@@ -291,7 +341,10 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		}
 
 		return R.div({
-			id: this.props.id, onMouseDown: this.onMouseDown, className: 'window-body', style: {
+			id: this.props.id,
+			onMouseDown: this.onMouseDown,
+			className: 'window-body',
+			style: {
 				left: this.state.x + '%',
 				top: this.state.y + '%',
 				width: this.state.w + '%',
@@ -305,7 +358,8 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 				h(CornerDragger, {
 					className: 'window-dragger',
 					onDragEnd: this.saveState,
-					onDrag: this.deltaPosition
+					onDrag: this.deltaPosition,
+					owner: this as Window
 				})
 			),
 			R.div(contentProps, this.renderWindowContent()),
@@ -313,45 +367,53 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 				className: 'window-r-dragger',
 				onDragEnd: this.saveState,
 				onDrag: this.deltaR,
-				type: 'v'
+				type: 'v',
+				owner: this as Window
 			}),
 			h(CornerDragger, {
 				className: 'window-l-dragger',
 				onDragEnd: this.saveState,
 				onDrag: this.deltaL,
-				type: 'v'
+				type: 'v',
+				owner: this as Window
 			}),
 			h(CornerDragger, {
 				className: 'window-b-dragger',
 				onDragEnd: this.saveState,
 				onDrag: this.deltaB,
-				type: 'h'
+				type: 'h',
+				owner: this as Window
 			}),
 			h(CornerDragger, {
 				className: 'window-t-dragger',
 				onDragEnd: this.saveState,
 				onDrag: this.deltaT,
-				type: 'h'
+				type: 'h',
+				owner: this as Window
 			}),
 			h(CornerDragger, {
 				className: 'window-rb-corner',
 				onDragEnd: this.saveState,
-				onDrag: this.deltaRBCorner
+				onDrag: this.deltaRBCorner,
+				owner: this as Window
 			}),
 			h(CornerDragger, {
 				className: 'window-lb-corner',
 				onDragEnd: this.saveState,
-				onDrag: this.deltaLBCorner
+				onDrag: this.deltaLBCorner,
+				owner: this as Window
 			}),
 			h(CornerDragger, {
 				className: 'window-rt-corner',
 				onDragEnd: this.saveState,
-				onDrag: this.deltaRTCorner
+				onDrag: this.deltaRTCorner,
+				owner: this as Window
 			}),
 			h(CornerDragger, {
 				className: 'window-lt-corner',
 				onDragEnd: this.saveState,
-				onDrag: this.deltaLTCorner
+				onDrag: this.deltaLTCorner,
+				owner: this as Window
 			})
 		);
 	}
@@ -388,19 +450,16 @@ let emptyImage = new Image();
 
 type DraggerType = 'v' | 'h';
 
-interface CornerDraggerProps extends ClassAttributes<CornerDragger> {
-	onDrag: (deltaX: number, deltaY: number) => { x: number, y: number };
-	onDragEnd: () => void;
-	className: string;
-	type?: DraggerType;
-}
+
 
 const allDraggers: CornerDragger[] = [];
 const activeDraggers: CornerDragger[] = [];
+let noDragWindows: Window[] = [];
+
 
 const addNeighborDraggersAsActive = (thisBounds: DOMRect, ev: DragEvent, draggerType?: DraggerType) => {
 	for(let dragger of allDraggers) {
-		if((dragger !== this) && (dragger.props.type === draggerType)) {
+		if(dragger.props.type === draggerType) {
 			if(activeDraggers.indexOf(dragger) < 0) {
 				const b = (dragger.base as HTMLDivElement).getBoundingClientRect();
 
@@ -416,7 +475,8 @@ const addNeighborDraggersAsActive = (thisBounds: DOMRect, ev: DragEvent, dragger
 					activeDraggers.push(dragger);
 					dragger.prevX = ev.pageX;
 					dragger.prevY = ev.pageY;
-					addNeighborDraggersAsActive(b, ev, draggerType);
+					addNeighborDraggersAsActive(b, ev, draggerType,);
+					continue;
 				}
 			}
 		}
@@ -458,21 +518,27 @@ class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
 		activeDraggers.push(this);
 		let thisBounds = (this.base as HTMLDivElement).getBoundingClientRect();
 		addNeighborDraggersAsActive(thisBounds, ev, this.props.type);
+		noDragWindows = Window.allOrdered.filter((w) => {
+			return !activeDraggers.some(d => d.props.owner === w);
+		});
 	}
 
-	dragHandler(ev: DragEvent, isAdditionalDraggersProcess?: boolean) {
+	drag(ev: DragEvent) {
 		if(this.prevX !== ev.pageX || this.prevY !== ev.pageY) {
-			if(!isAdditionalDraggersProcess) {
-				for(let dragger of activeDraggers) {
-					dragger.dragHandler(ev, true);
-				}
-			} else {
-				if(ev.pageX !== 0 || ev.pageY !== 0) {
-					let ret = this.props.onDrag((ev.pageX - this.prevX) / window.innerWidth * 100, (ev.pageY - this.prevY) / window.innerHeight * 100);
-					this.prevX += Math.round(ret.x * window.innerWidth / 100);
-					this.prevY += Math.round(ret.y * window.innerHeight / 100);
-				}
+			if(ev.pageX !== 0 || ev.pageY !== 0) {
+				let ret = this.props.onDrag((ev.pageX - this.prevX) / window.innerWidth * 100, (ev.pageY - this.prevY) / window.innerHeight * 100);
+				this.prevX += Math.round(ret.x * window.innerWidth / 100);
+				this.prevY += Math.round(ret.y * window.innerHeight / 100);
 			}
+		}
+	}
+
+	dragHandler(ev: DragEvent) {
+		for(let dragger of activeDraggers) {
+			dragger.drag(ev);
+		}
+		for(let dragger of activeDraggers) {
+			dragger.props.owner.clamp();
 		}
 	}
 
