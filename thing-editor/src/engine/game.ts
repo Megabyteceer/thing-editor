@@ -26,7 +26,7 @@ let modals: Container[] = [];
 let hidingModals: Container[] = [];
 let currentHidingFaderInUpdate: Container | null;
 
-let showStack: (Scene | string)[] = [];
+let scenesStack: (Scene | string)[] = [];
 let hideTheseModalsUnderFader: Container[];
 let currentFader: Container | null;
 let hidingFaders: Container[] = [];
@@ -186,7 +186,7 @@ class Game {
 	}
 
 	forAllChildrenEverywhereBack(callback: (o: Container) => void) {
-		for(let s of showStack) {
+		for(let s of scenesStack) {
 			if(typeof s !== 'string') {
 				callback(s);
 				if(!s.parent) {
@@ -373,7 +373,7 @@ class Game {
 	_processScenesStack() {
 		assert(game.getLoadingCount() === 0, "Attempt to change stack during loading");
 		while(true) { // eslint-disable-line no-constant-condition
-			let topStackElement = showStack[showStack.length - 1] as Scene;
+			let topStackElement = scenesStack[scenesStack.length - 1] as Scene;
 			if(topStackElement === game.currentScene) {
 				break;
 			}
@@ -381,10 +381,10 @@ class Game {
 				if(game.currentScene._onShowCalled) {
 					game.currentScene.onHide();
 				}
-				tryRemoveCurrentScene(); //TODO cleanup
+				tryToRemoveCurrentScene(); //TODO cleanup
 			}
-			topStackElement = showStack[showStack.length - 1] as Scene;
-			showStack[showStack.length - 1] = game._setCurrentSceneContent(topStackElement);
+			topStackElement = scenesStack[scenesStack.length - 1] as Scene;
+			scenesStack[scenesStack.length - 1] = game._setCurrentSceneContent(topStackElement);
 		}
 	}
 
@@ -408,23 +408,36 @@ class Game {
 		/// #if EDITOR
 		checkSceneName(scene);
 		/// #endif
-		showStack.push(scene);
+		scenesStack.push(scene);
 		/// #if EDITOR
 		if(game.__EDITOR_mode) {
-			showStack = [scene];
+			scenesStack = [scene];
 		}
 		/// #endif
 		game._startFaderIfNeed(faderType);
 	}
 
+	replaceScene(scene: Scene | string, faderType?: string) {
+		/// #if DEBUG
+		checkSceneName(scene);
+		/// #endif
+
+
+		assert(scenesStack.length > 0, "Can not replace scene. No scene to replace is present.");
+
+		tryToRemoveScene(scenesStack.pop() as Scene);
+		scenesStack.push(scene);
+		game._startFaderIfNeed(faderType);
+	}
+
 	_startFaderIfNeed(faderType?: string) {
-		if(showStack[showStack.length - 1] !== game.currentScene) {
+		if(scenesStack[scenesStack.length - 1] !== game.currentScene) {
 			/// #if EDITOR
 			if(game.__EDITOR_mode) {
-				let i = showStack.length - 1;
+				let i = scenesStack.length - 1;
 				this.__destroyCurrentScene();
-				let s = this._setCurrentSceneContent(showStack[i] as Scene);
-				showStack[i] = s;
+				let s = this._setCurrentSceneContent(scenesStack[i] as Scene);
+				scenesStack[i] = s;
 				return;
 			}
 			/// #endif
@@ -445,6 +458,24 @@ class Game {
 			/// #if EDITOR
 			this.editor.refreshTreeViewAndPropertyEditor();
 			/// #endif
+		}
+	}
+
+	closeCurrentScene(faderType?: string) {
+		/// #if EDITOR
+		if(scenesStack.length <= 1) {
+			this.editor.ui.modal.notify("It is no other scene in stack to close current scene.");
+			return;
+		}
+		/// #endif
+		assert(scenesStack.length > 1, "Can't close latest scene", 10035);
+		tryToRemoveScene(scenesStack.pop() as Scene);
+		game._startFaderIfNeed(faderType);
+	}
+
+	closeAllScenes(faderType?: string) {
+		while(scenesStack.length > 1) {
+			game.closeCurrentScene(faderType);
 		}
 	}
 
@@ -639,7 +670,7 @@ class Game {
 	}
 
 	__getScenesStack() {
-		return showStack;
+		return scenesStack;
 	}
 
 	get __modalsCount() {
@@ -655,11 +686,11 @@ class Game {
 			Lib.destroyObjectAndChildren(m as Container);
 		}
 
-		while(showStack.length > 0) {
-			tryRemoveScene(showStack.pop() as Scene);
+		while(scenesStack.length > 0) {
+			tryToRemoveScene(scenesStack.pop() as Scene);
 		}
 
-		tryRemoveCurrentScene();
+		tryToRemoveCurrentScene();
 
 		if(currentFader) {
 			Lib.destroyObjectAndChildren(currentFader);
@@ -686,15 +717,15 @@ class Game {
 	/// #endif
 }
 
-function tryRemoveCurrentScene() {
+function tryToRemoveCurrentScene() {
 	let s = game.currentScene;
 	game._setCurrentScene(null);
-	tryRemoveScene(s);
+	tryToRemoveScene(s);
 }
 
-function tryRemoveScene(s: Scene) {
+function tryToRemoveScene(s: Scene) {
 	if((s instanceof Scene) && (s !== game.currentScene)) {
-		if(!s.isStatic && (showStack.indexOf(s) < 0)) {
+		if(!s.isStatic && (scenesStack.indexOf(s) < 0)) {
 			Lib.destroyObjectAndChildren(s);
 		} else {
 			s.detachFromParent();
