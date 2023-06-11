@@ -78,13 +78,6 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 
 	refs: Map<string, PropsFieldWrapper> = new Map();
 
-	static showSelectClass(isScene: boolean, title: string) {
-		let classesList = Object.values(game.classes).filter((c: SourceMappedConstructor) => {// TODO select via asset with class filter?
-			return c.__isScene === isScene;
-		});
-		return game.editor.ui.modal.showListChoose(title, classesList);
-	}
-
 	static registerRenderer(type: EditablePropertyType, render: any, def: any) {
 		assert(!renderers.has(type), "Renderer for type '" + type + "' already defined.");
 		renderers.set(type, render);
@@ -167,8 +160,10 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 				title += 's';
 			}
 		}
-		PropsEditor.showSelectClass(isScene, title).then((selectedClass) => {
-			if(selectedClass && (game.editor.selection[0].constructor !== selectedClass)) {
+		game.editor.chooseClass(isScene, title, (game.editor.selection[0].constructor as SourceMappedConstructor).__className).then((selectedClassName) => {
+			if(selectedClassName) {
+				const selectedClass = game.classes[selectedClassName];
+				assert(selectedClass, "Class selection return wrong class name.");
 				let a = game.editor.selection.slice(0);
 				let selectionData = game.editor.selection.saveSelection();
 

@@ -6,7 +6,7 @@ import { Component, ComponentChild, h, render } from "preact";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsLoader from "thing-editor/src/editor/assets-loader";
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc, FileDescClass } from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import UI from "thing-editor/src/editor/ui/ui";
@@ -515,7 +515,14 @@ class Editor {
 		return this.chooseAsset(AssetType.PREFAB, title, currentPrefab);
 	}
 
-	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void): Promise<string | null> {
+	async chooseClass(isScene: boolean, title: ComponentChild = "Choose class", currentClass?: string): Promise<string | null> {
+		return this.chooseAsset(AssetType.CLASS, title, currentClass, undefined, (file: FileDesc) => {
+			return (file as FileDescClass).asset.__isScene === isScene;
+		});
+	}
+
+
+	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void, filterCallback?: (f: FileDesc) => boolean): Promise<string | null> {
 		const id = type + '_choose_asset_list';
 		const chosen: string = await game.editor.ui.modal.showModal(h(AssetsView, {
 			onItemSelect: (assetName: string) => {
@@ -535,7 +542,8 @@ class Editor {
 			currentValue,
 			onItemPreview,
 			hideMenu: true,
-			filter: { [type]: true }
+			filter: { [type]: true },
+			filterCallback
 		}));
 		if(chosen) {
 			return chosen;

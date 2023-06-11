@@ -28,7 +28,7 @@ let refsCounter: KeyedMap<number> = {};
 
 function addAllRefsValidator(scene: Scene) {
 	refsCounter = {};
-	Scene.__refsCounter = refsCounter;
+
 	let deletionValidator = validatorCounter++;
 
 	scene.all = new Proxy(scene.all, {

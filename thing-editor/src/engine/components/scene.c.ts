@@ -18,7 +18,6 @@ export default class Scene extends Container {
 	faderType: string | null = null
 
 	all!: KeyedMap<Container>;
-	static __refsCounter: KeyedMap<number>; //TODO rename allRefsCounter
 
 	_onShowCalled: boolean = false;
 

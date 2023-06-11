@@ -62,6 +62,7 @@ interface AssetsViewProps extends WindowProps {
 	currentValue?: string,
 	onItemSelect?: (assetName: string) => void
 	onItemPreview?: (assetName: string) => void
+	filterCallback?: (f: FileDesc) => boolean
 }
 
 interface AssetsViewState extends WindowState {
@@ -283,6 +284,10 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		}
 		AssetsView.currentItemName = this.props.currentValue;
 
+		if(this.props.filterCallback) {
+			files = files.filter(this.props.filterCallback);
+		}
+
 		let items = files.map(file => (assetsItemsRenderers.get(file.assetType) as (file: FileDesc) => ComponentChild)(file));
 
 		if(!this.state.search) {
@@ -298,7 +303,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				onClick: this.props.onItemSelect ? (ev: MouseEvent) => {
 					let itemElement = (ev.target as HTMLDivElement).closest('.assets-item') as HTMLDivElement;
 					if(itemElement) {
-						let chosen = itemElement.innerText;
+						let chosen = (itemElement.querySelector('.selectable-text') as HTMLSpanElement).innerText;
 						if(ev.ctrlKey && this.props.onItemPreview) {
 							this.props.onItemPreview!(chosen);
 						} else {
@@ -307,7 +312,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 							}
 						}
 					}
-				} : undefined,
+				} : undefined
 			},
 				items
 			));
