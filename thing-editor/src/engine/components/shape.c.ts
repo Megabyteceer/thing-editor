@@ -62,6 +62,19 @@ export default class Shape extends Graphics {
 	protected __pointsUpdateIntervalInitialized = 0;
 
 	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !editorUtils.isPrefabReferenceSelected() } })
+	protected set _shapePoints(v: Point[] | null) {
+		this.__shapePoints = v;
+		if(v) {
+			for(let o of v) {
+				Object.freeze(o);
+			}
+		}
+	}
+
+	protected get _shapePoints(): Point[] | null {
+		return this.__shapePoints;
+	}
+
 	protected __shapePoints: Point[] | null = null;
 
 	init() {
@@ -399,19 +412,6 @@ export default class Shape extends Graphics {
 		if(this.shape !== SHAPE_TYPE.POLY || !isAnyPointSelected && !this.__nodeExtendData.isSelected) {
 			this.__stopPointsRefreshInterval();
 		}
-	}
-
-	protected set _shapePoints(v: Point[] | null) {
-		this.__shapePoints = v;
-		if(v) {
-			for(let o of v) {
-				Object.freeze(o);
-			}
-		}
-	}
-
-	protected get _shapePoints(): Point[] | null {
-		return this.__shapePoints;
 	}
 
 	__newPointView(src: Point) {
