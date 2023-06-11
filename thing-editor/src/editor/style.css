@@ -464,7 +464,7 @@ input {
 	border-color: #444444;
 }
 
-.props-group:not(:has(.props-field)) {
+.props-editor .props-group:not(:has(.props-field)) {
 	display: none;
 }
 
