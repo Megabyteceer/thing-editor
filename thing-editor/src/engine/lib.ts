@@ -172,6 +172,8 @@ export default class Lib {
 					textures[name] = newTexture;
 				}
 				game.additionalLoadingsInProgress--;
+			}).catch(() => {
+				game.editor.showError('Texture loading error ' + textureURL);
 			});
 			/*
 			/// #endif

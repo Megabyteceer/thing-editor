@@ -5,6 +5,7 @@ import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
+import libInfo from "thing-editor/src/editor/utils/lib-info";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
 import loadSafeInstanceByClassName from "thing-editor/src/engine/utils/load-safe-instance-by-class-name";
@@ -109,6 +110,7 @@ const assetItemRendererClass = (file: FileDescClass) => {
 			game.editor.editClassSource(file.asset as SourceMappedConstructor);
 		}
 	},
+		libInfo(file),
 		renderClass(file),
 		R.span(toolButtonsProps,
 			R.btn('>', (ev) => {

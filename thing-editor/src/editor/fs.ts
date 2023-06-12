@@ -6,6 +6,11 @@ import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor/src/engine/lib";
 
+interface LibInfo {
+	name: string,
+	dir: string,
+}
+
 interface FileDesc {
 	/** file name*/
 	fileName: string,
@@ -13,8 +18,7 @@ interface FileDesc {
 	assetType: AssetType,
 	/** modification time*/
 	mTime: number,
-
-	lib?: string | null; //TODO
+	lib: LibInfo | null,
 	v?: number;
 	asset: SourceMappedConstructor | SerializedObject | Texture
 };
@@ -87,7 +91,8 @@ const EMPTY: FileDescImage = {
 	fileName: '/thing-editor/img/EMPTY.png',
 	asset: Texture.EMPTY,
 	assetType: AssetType.IMAGE,
-	mTime: Number.MAX_SAFE_INTEGER
+	mTime: Number.MAX_SAFE_INTEGER,
+	lib: null
 };
 
 const WHITE: FileDescImage = {
@@ -95,7 +100,8 @@ const WHITE: FileDescImage = {
 	fileName: '/thing-editor/img/WHITE.jpg',
 	asset: Texture.WHITE,
 	assetType: AssetType.IMAGE,
-	mTime: Number.MAX_SAFE_INTEGER
+	mTime: Number.MAX_SAFE_INTEGER,
+	lib: null
 };
 
 const execFs = (command: string, filename?: string | string[], content?: string, ...args: any[]) => {
@@ -189,6 +195,16 @@ export default class fs {
 		return execFs('fs/saveFile', fileName, data as string) as number;
 	}
 
+	static copyFile(from: string, to: string) {
+		return execFs('fs/copyFile', from, to);
+	}
+
+	static copyAssetToProject(file: FileDesc) {
+		fs.copyFile(file.fileName, file.fileName.replace(file.lib!.dir, game.editor.currentProjectAssetsDir));
+		file.lib = null;
+		game.editor.ui.refresh();
+	}
+
 	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject) {
 		const fileName = fs.assetNameToFileName(assetName, assetType);
 		ignoreWatch(fileName);
@@ -265,7 +281,13 @@ export default class fs {
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
 
 		for(let dirName of dirNames!) {
-			assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName)
+			assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName);
+
+			const lib = dirName.startsWith('libs/') ? {
+				name: dirName.substring(5, dirName.length - 8),
+				dir: dirName
+			} : null;
+
 			const files = execFs('fs/readDir', dirName) as FileDesc[];
 			for(let file of files) {
 				let wrongSymbol = fs.getWrongSymbol(file.fileName);
@@ -281,6 +303,7 @@ export default class fs {
 						file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGHTS.get(assetType) as number));
 						file.fileName = '/' + file.fileName;
 						file.assetType = assetType;
+						file.lib = lib;
 
 						(assetsByTypeByName.get((ASSETS_PARSERS as KeyedObject)[ext] as AssetType) as Map<string, FileDesc>).set(file.assetName, file);
 						break;
@@ -343,5 +366,5 @@ export default class fs {
 }
 
 export { AssetType, AllAssetsTypes };
-export type { FileDesc, FileDescClass, FileDescPrefab, FileDescScene, FileDescImage };
+export type { FileDesc, FileDescClass, FileDescPrefab, FileDescScene, FileDescImage, LibInfo };
 

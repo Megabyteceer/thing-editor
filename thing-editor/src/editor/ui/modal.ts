@@ -280,7 +280,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 				}
 			}, undefined, "modal-close-button hidden", { key: 'Escape' });
 		}
-		return R.fragment(this.state.modals.map(renderModal), spinner, notify, hotkeyButton);
+		return R.fragment(spinner, this.state.modals.map(renderModal), notify, hotkeyButton);
 	}
 }
 

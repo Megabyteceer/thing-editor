@@ -810,6 +810,10 @@ input[disabled] {
 	padding-left: 15px;
 }
 
+.lib-info:hover{
+	outline: 1px solid #0eca75;
+}
+
 .assets-item {
 	position: relative;
 	white-space: nowrap;

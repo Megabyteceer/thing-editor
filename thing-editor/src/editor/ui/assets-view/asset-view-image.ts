@@ -4,6 +4,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
+import libInfo from "thing-editor/src/editor/utils/lib-info";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
 
@@ -73,6 +74,7 @@ const assetItemRendererImage = (file: FileDesc) => {
 			className: (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-current assets-item-image' : 'assets-item assets-item-image',
 			key: file.assetName
 		},
+		libInfo(file),
 		R.imageIcon(file),
 		R.span(assetsItemNameProps, file.assetName));
 }

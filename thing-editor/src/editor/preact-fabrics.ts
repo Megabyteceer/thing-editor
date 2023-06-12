@@ -78,10 +78,6 @@ class R {
 		return h(Fragment, null, ...children);
 	}
 
-	static libInfo(_libName: string, _fileName: string) {
-		return R.span(null, _libName);
-	}
-
 	static imageIcon(file: FileDesc) {
 		if(file) {
 			return R.img({

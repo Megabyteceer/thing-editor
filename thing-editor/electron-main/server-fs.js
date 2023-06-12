@@ -62,6 +62,15 @@ module.exports = (mainWindow) => {
 						return fs.statSync(fileNameParsed).mtimeMs;
 					}, event);
 					return;
+				case 'fs/copyFile':
+					attemptFSOperation(() => {
+						const from = fn(fileName);
+						const to = fn(content);
+						ensureDirectoryExistence(content);
+						fs.copyFileSync(from, to);
+						return true;
+					}, event);
+					return;
 				case 'fs/readFile':
 					fd = fs.openSync(fn(fileName), 'r');
 					let c = fs.readFileSync(fd, fsOptions);
