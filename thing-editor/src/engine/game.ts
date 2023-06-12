@@ -12,7 +12,7 @@ import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/Project
 
 import assert from "thing-editor/src/engine/debug/assert";
 import Lib from "thing-editor/src/engine/lib";
-import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
+
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
 import Keys from "thing-editor/src/engine/utils/keys";
@@ -151,15 +151,6 @@ class Game {
 	}
 
 	applyProjectDesc(projectDescriptor: ProjectDesc) {
-
-		let isModified = false;
-		for(let name in defaultProjectDesc) {
-			if(!projectDescriptor.hasOwnProperty(name)) {
-				projectDescriptor[name] = defaultProjectDesc[name];
-				isModified = true;
-			}
-		}
-
 		/// #if DEBUG
 		let so = projectDescriptor.screenOrientation;
 		assert(so === 'auto' || so === 'landscape' || so === 'portrait', 'Wrong value for "screenOrientation". "auto", "landscape" or "portrait" expected', 30010);
@@ -173,7 +164,6 @@ class Game {
 
 		this.projectDesc = projectDescriptor;
 		this.onResize();
-		return isModified;
 	}
 
 	onResize() {

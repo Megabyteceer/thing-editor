@@ -211,11 +211,6 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		), title, noEasyClose);
 	}
 
-	/*showListFilter(title: ComponentChild, list) {
-		//return this.showModal(h(FilterList, { list }), title, true);
-		//TODO:
-	}*/
-
 	showError(message: ComponentChild, errorCode = 99999, title = 'Error!', noEasyClose = false, toBottom = false): Promise<any> {
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();

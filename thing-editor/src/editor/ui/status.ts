@@ -29,7 +29,7 @@ const needAddInToList = (map: StatusItemsOwnersMap, owner?: StatusListItemOwner,
 	waitForCondition(() => {
 		return game.projectDesc;
 	});
-	if(game.projectDesc && game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode) >= 0)) {
+	if(game.projectDesc && game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode!) >= 0)) {
 		return;
 	}
 	if(!(owner instanceof Container)) {

@@ -3,7 +3,6 @@ import R from "./preact-fabrics";
 import game from "../engine/game";
 
 import { Component, ComponentChild, h, render } from "preact";
-import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsLoader from "thing-editor/src/editor/assets-loader";
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescClass } from "thing-editor/src/editor/fs";
@@ -18,12 +17,15 @@ import Settings from "thing-editor/src/engine/utils/settings";
 import ClassesLoader from "./classes-loader";
 
 import { Container, Point, Texture } from "pixi.js";
+import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
+import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
+import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
 
@@ -35,7 +37,8 @@ class Editor {
 	currentProjectAssetsDir = '';
 	currentProjectAssetsDirRooted = '';
 	assetsFolders!: string[];
-	libsDescs: KeyedMap<KeyedObject> = {};
+	libsDescs: KeyedMap<ProjectDesc> = {};
+	libsProjectDescMerged!: ProjectDesc;
 
 	editorArguments: KeyedMap<true | string> = {};
 	projectDesc!: ProjectDesc;
@@ -229,27 +232,33 @@ class Editor {
 
 				this.ui.modal.showSpinner();
 				this.settings.removeItem('last-opened-project');
-				this.projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
-				if(!this.projectDesc) {
+				const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
+				if(!projectDesc) {
 					this.ui.modal.showError("Can't open project " + dir).then(() => { this.openProject(); });
 					return;
 				}
 
 				this.assetsFolders = ['thing-editor/src/engine/components/'];
+				this.libsProjectDescMerged = {} as ProjectDesc;
+				mergeProjectDesc(this.libsProjectDescMerged, defaultProjectDesc);
 
-				if(this.projectDesc.libs) {
-					for(let lib of this.projectDesc.libs as string[]) {
-						this.assetsFolders.push('libs/' + lib + '/assets/');
-						this.libsDescs[lib] = fs.readJSONFile('libs/' + lib + '/thing-lib.json');
-					}
+				for(let lib of projectDesc.libs as string[]) {
+					this.assetsFolders.push('libs/' + lib + '/assets/');
+					this.libsDescs[lib] = fs.readJSONFile('libs/' + lib + '/thing-lib.json');
+					mergeProjectDesc(this.libsProjectDescMerged, this.libsDescs[lib]);
 				}
+
 				this.assetsFolders.push(this.currentProjectAssetsDir);
 
 				//TODO libs settings-merge to current
 
 				this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
-				let isProjectDescriptorModified = game.applyProjectDesc(this.projectDesc);
 
+				this.projectDesc = {} as ProjectDesc;
+				mergeProjectDesc(this.projectDesc, this.libsProjectDescMerged);
+				mergeProjectDesc(this.projectDesc, projectDesc);
+
+				game.applyProjectDesc(this.projectDesc);
 
 				game.init(window.document.getElementById('viewport-root'), 'editor.' + this.projectDesc.id, '/games/' + dir + '/');
 				game.stage.interactiveChildren = false;
@@ -264,14 +273,10 @@ class Editor {
 
 				this.settings.setItem('last-opened-project', dir);
 
-				if(isProjectDescriptorModified) {
-					this.saveProjectDesc();
-				} else {
-					this.__saveProjectDescriptorInner(true);
-				}
+
 
 				if(this.projectDesc.__lastSceneName && !Lib.hasScene(this.projectDesc.__lastSceneName)) {
-					this.projectDesc.__lastSceneName = false;
+					this.projectDesc.__lastSceneName = '';
 				}
 				this.projectDesc.__lastSceneName = this.projectDesc.__lastSceneName || this.projectDesc.mainScene || 'main';
 				this.restoreBackup();
@@ -439,8 +444,8 @@ class Editor {
 
 
 
-	get currentSceneName() {
-		return this.projectDesc ? this.projectDesc.__lastSceneName : null;
+	get currentSceneName(): string {
+		return this.projectDesc && this.projectDesc.__lastSceneName || '';
 	}
 
 	get currentSceneBackupName() {
@@ -693,7 +698,8 @@ class Editor {
 
 	protected __saveProjectDescriptorInner(cleanupOnly = false) {
 		let isCleanedUp = false;
-		//TODO: cleanup take from 1.0
+		//TODO: cleanup values which match with this.libsProjectDescMerged;
+
 		if(!cleanupOnly || isCleanedUp) {
 			fs.writeFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
 		}

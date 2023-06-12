@@ -1,6 +1,11 @@
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 
 const defaultProjectDesc: ProjectDesc = {
+	id: '',
+	title: '',
+	icon: '',
+	mainScene: 'main',
+	dir: '',
 	defaultFont: 'Arial',
 	screenOrientation: "landscape",
 	width: 1280,
@@ -12,7 +17,12 @@ const defaultProjectDesc: ProjectDesc = {
 	framesSkipLimit: 4,
 	dynamicStageSize: false,
 	preventUpscale: false,
-	webfontloader: null,
+	webfontloader: {
+		google: {
+			families: []
+		},
+		timeout: 6000
+	},
 	fontHolderText: 'ЯSфz',
 	mipmap: false,
 	version: "0.0.1",
@@ -43,8 +53,8 @@ const defaultProjectDesc: ProjectDesc = {
 		debug: 'config/webpack.debug.js',
 		production: 'config/webpack.prod.js'
 	},
-	jpgQuality: 95,
-	pngQuality: [0.95, 1]
+	__suspendWarnings: [],
+	libs: []
 };
 
 export default defaultProjectDesc;
