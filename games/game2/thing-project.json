@@ -1,0 +1,67 @@
+{
+	"title": "thing-project-example 2",
+	"id": "thing-project-example2.pixel-cave.com",
+	"icon": "assets/bunny.png",
+	"__group": "thing-editor-demos",
+	"__lastSceneName": "main",
+	"screenOrientation": "auto",
+	"width": 1280,
+	"height": 720,
+	"portraitWidth": 408,
+	"portraitHeight": 720,
+	"dynamicStageSize": false,
+	"preventUpscale": false,
+	"defaultFont": "Roboto, Arial",
+	"soundFormats": [
+		"ogg",
+		"aac"
+	],
+	"renderResolution": 1,
+	"webfontloader": null,
+	"fontHolderText": "ЯSфz",
+	"loadOnDemandSounds": {
+		"mus/gs3_title": 2
+	},
+	"muteOnFocusLost": true,
+	"version": "0.0.9",
+	"framesSkipLimit": 4,
+	"embedLocales": true,
+	"loadOnDemandTextures": {
+		"ondemand/1.png": 2,
+		"ondemand/2.png": 6,
+		"map/map1.png": 4,
+		"map/floor.png": 4,
+		"blink-wave.png": 8,
+		"perlin.jpg": 8
+	},
+	"__loadOnDemandTexturesFolders": {
+		"ondemand": 2
+	},
+	"autoFullscreenDesktop": false,
+	"autoFullscreenMobile": false,
+	"soundDefaultBitrate": 48,
+	"soundBitrates": {},
+	"__proxyFetchesViaNodeServer": false,
+	"renderResolutionMobile": 1,
+	"__localesNewKeysPrefix": "",
+	"__externalLocalesSource": "",
+	"defaultLanguage": "en",
+	"__allowUpperCaseFiles": true,
+	"__webpack": {
+		"debug": "config/webpack.debug.js",
+		"production": "config/webpack.prod.js"
+	},
+	"mipmap": false,
+	"defaultMusVol": 1,
+	"defaultSoundsVol": 1,
+	"keepSoundWhilePageUpdate": false,
+	"__externalTranslations": [],
+	"jpgQuality": 95,
+	"pngQuality": [
+		0.95,
+		1
+	],
+	"libs": [
+		"lib1"
+	]
+}

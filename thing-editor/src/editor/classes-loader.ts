@@ -50,6 +50,7 @@ export default class ClassesLoader {
 					} else {
 						game.editor.showError('file ' + file.fileName + ' exports class which does not extend PIXI.Container: ' + RawClass.name);
 					}
+					game.editor.editSource(file.fileName);
 					return;
 				}
 

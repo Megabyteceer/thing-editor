@@ -1,7 +1,6 @@
 import { ComponentChild, h, render } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
-import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import Modal from "thing-editor/src/editor/ui/modal";
@@ -69,7 +68,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 	}
 
 	onOpenProjectClick() {
-		ProjectsList.chooseProject();
+		game.editor.chooseProject();
 	}
 
 	render(): ComponentChild {

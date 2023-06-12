@@ -1,0 +1,44 @@
+{
+	"c": "Scene",
+	"p": {
+		"name": "second"
+	},
+	":": [
+		{
+			"c": "Container",
+			"p": {}
+		},
+		{
+			"c": "Container",
+			"p": {},
+			":": [
+				{
+					"c": "Bunny",
+					"p": {
+						"x": 176,
+						"y": 158,
+						"image": "bunny.png"
+					},
+					":": [
+						{
+							"c": "Shape",
+							"p": {}
+						},
+						{
+							"c": "Shape",
+							"p": {}
+						}
+					]
+				},
+				{
+					"c": "Sprite",
+					"p": {
+						"x": 42,
+						"y": 179,
+						"image": "bunny.png"
+					}
+				}
+			]
+		}
+	]
+}

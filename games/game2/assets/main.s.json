@@ -1,0 +1,114 @@
+{
+	"c": "Scene",
+	"p": {
+		"name": "main",
+		"__description": "",
+		"backgroundColor": 1638400
+	},
+	":": [
+		{
+			"r": "prefab2",
+			"p": {
+				"x": 123,
+				"y": 157
+			}
+		},
+		{
+			"c": "Bunny2",
+			"p": {
+				"x": 216,
+				"y": 231,
+				"rotation": 0.39999999999999997,
+				"image": "flag.png"
+			}
+		},
+		{
+			"c": "MovieClip",
+			"p": {
+				"name": "mc",
+				"image": "bunny.png",
+				"timeline": {
+					"l": {
+						"shake": 106
+					},
+					"p": 0.02,
+					"d": 0.85,
+					"f": [
+						{
+							"n": "x",
+							"t": [
+								{
+									"v": 338,
+									"t": 0
+								},
+								{
+									"v": 213,
+									"t": 42
+								},
+								{
+									"v": 140,
+									"t": 91,
+									"j": 0
+								},
+								{
+									"v": 141,
+									"t": 106,
+									"s": 13.600000000000001
+								}
+							]
+						},
+						{
+							"n": "y",
+							"t": [
+								{
+									"v": 186,
+									"t": 0
+								},
+								{
+									"v": 154,
+									"t": 30
+								},
+								{
+									"v": 315,
+									"t": 68,
+									"j": 10
+								},
+								{
+									"v": 320,
+									"t": 106,
+									"s": 13.600000000000001
+								}
+							]
+						}
+					]
+				}
+			}
+		},
+		{
+			"c": "Button",
+			"p": {
+				"x": 78,
+				"y": 243,
+				"image": "bunny.png",
+				"hoverImage": "bunny.png",
+				"pressImage": "bunny.png",
+				"disabledImage": "bunny.png",
+				"onClick": "all.mc.gotoLabelRecursive`shake",
+				"afterClick": "",
+				"sndClick": "click",
+				"sndOver": "over"
+			}
+		},
+		{
+			"c": "LibComponent",
+			"p": {
+				"x": 175,
+				"y": 420,
+				"scale.x": 3,
+				"scale.y": 3,
+				"image": "bunny.png",
+				"big": true
+			}
+		}
+	]
+}

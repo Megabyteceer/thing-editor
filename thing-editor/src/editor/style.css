@@ -780,6 +780,10 @@ input[disabled] {
 	background-color: #181818;
 }
 
+.projects-search-input {
+	margin-bottom: 20px;
+}
+
 .select-editor-list {
 	position: fixed;
 	z-index: 30;

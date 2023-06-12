@@ -206,9 +206,11 @@ class Editor {
 
 	chooseProject(noClose = false) {
 		ProjectsList.chooseProject(noClose).then((dir: string) => {
-			this.settings.setItem('last-opened-project', dir);
-			this.__projectReloading = true;
-			window.document.location.reload();
+			if(dir) {
+				this.settings.setItem('last-opened-project', dir);
+				this.__projectReloading = true;
+				window.document.location.reload();
+			}
 		});
 	}
 
@@ -224,7 +226,12 @@ class Editor {
 		this.ui.viewport.stopExecution();
 		if(this.askSceneToSaveIfNeed()) {
 
+			if(!dir) {
+				this.chooseProject(true);
+				return;
+			}
 			const newProjectDir = 'games/' + dir + '/';
+
 			if(newProjectDir !== this.currentProjectDir) {
 				this.currentProjectDir = newProjectDir;
 				this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
@@ -234,7 +241,7 @@ class Editor {
 				this.settings.removeItem('last-opened-project');
 				const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
 				if(!projectDesc) {
-					this.ui.modal.showError("Can't open project " + dir).then(() => { this.openProject(); });
+					this.ui.modal.showError("Can't open project " + dir).then(() => { this.chooseProject(true); });
 					return;
 				}
 
@@ -249,8 +256,6 @@ class Editor {
 				}
 
 				this.assetsFolders.push(this.currentProjectAssetsDir);
-
-				//TODO libs settings-merge to current
 
 				this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
 
@@ -273,8 +278,6 @@ class Editor {
 
 				this.settings.setItem('last-opened-project', dir);
 
-
-
 				if(this.projectDesc.__lastSceneName && !Lib.hasScene(this.projectDesc.__lastSceneName)) {
 					this.projectDesc.__lastSceneName = '';
 				}
@@ -287,9 +290,13 @@ class Editor {
 
 				this.ui.modal.hideSpinner();
 				this.isProjectOpen = true;
+
+				excludeOtherProjects();
 			}
 		}
 	}
+
+
 
 	async testProject() {
 		//TODO:
@@ -712,3 +719,41 @@ type __EditorType = typeof editor;
 
 export type { __EditorType }; // hide Editor from intellisense
 
+const WORKSPACE_FILE_NAME = 'electron-vite-preact.code-workspace';
+
+function excludeOtherProjects() {
+	try {
+
+		const workspaceConfigSrc = fs.readFile(WORKSPACE_FILE_NAME);
+
+		const foldersDataRegExt = /"folders"\s*:\s*\[[^\]]*\]/gm;
+		let foldersData = foldersDataRegExt.exec(workspaceConfigSrc);
+
+		let foldersDataString = '{' + foldersData!.pop()!.replace(/\/\/.*$/gm, '').replace(/\/\*.*\*\//gm, '') + '}';
+
+		const workspaceConfig = JSON.parse(foldersDataString);
+
+		const folders = (workspaceConfig.folders as { path: string, name: string }[]).filter((folderData) => {
+			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
+		});
+		folders.push({
+			path: '.' + editor.currentProjectAssetsDirRooted,
+			name: editor.currentProjectAssetsDirRooted
+		});
+		for(let lib of editor.projectDesc.libs) {
+			folders.push({
+				path: './libs/' + lib,
+				name: './libs/' + lib
+			});
+		}
+		workspaceConfig.folders = folders;
+		const newWorkspaceConfigSrc = JSON.stringify(workspaceConfig);
+		if(newWorkspaceConfigSrc !== workspaceConfigSrc) {
+			fs.writeFile(WORKSPACE_FILE_NAME, newWorkspaceConfigSrc);
+		}
+	} catch(er) {
+		debugger;
+		console.error('JSON parsing error: ' + WORKSPACE_FILE_NAME);
+		console.error(er);
+	}
+}

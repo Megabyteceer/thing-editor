@@ -1,0 +1,237 @@
+{
+	"folders": [{
+			"path": "."
+		},
+		{
+			"path": "./games/game1/",
+			"name": "/games/game1/"
+		},
+		{
+			"path": "./libs/lib1/",
+			"name": "/libs/lib1/"
+		}
+	],
+	"settings": {
+
+		"files.exclude": {
+			//"**/___editor_backup_*": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"vite.config.js.timestamp-*": true,
+			"games": true,
+			"libs": true
+		},
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": true
+		},
+		"javascript.preferences.importModuleSpecifier": "non-relative",
+		"typescript.preferences.importModuleSpecifier": "non-relative",
+		"typescript.tsserver.experimental.enableProjectDiagnostics": true,
+		"cSpell.diagnosticLevel": "Hint",
+		"editor.formatOnType": false,
+		"editor.formatOnPaste": false,
+		"blockshighlighter.blocks": [
+
+			{
+				"fileType": "\\.(js|ts)$",
+				"begin": "^\\s*///\\s*#if EDITOR\\s*$",
+				"end": "^\\s*///\\s*#endif\\s*$",
+				"decorationRenderOptions": {
+					"isWholeLine": true,
+					"backgroundColor": "rgba(100,100,255,0.06)"
+				}
+			},
+			{
+				"fileType": "\\.(js|ts)$",
+				"begin": "^\\s*///\\s*#if DEBUG\\s*$",
+				"end": "^\\s*///\\s*#endif\\s*$",
+				"decorationRenderOptions": {
+					"isWholeLine": true,
+					"backgroundColor": "rgba(100,255,100,0.06)"
+				}
+			},
+			{
+				"fileType": "\\.(js|ts)$",
+				"begin": "^\\s*@editable\\(",
+				"end": "^\\s*@editable\\(",
+				"decorationRenderOptions": {
+					"isWholeLine": true,
+					"opacity": "0.5"
+				}
+			}
+		],
+		"bookmarks.keepBookmarksOnLineDelete": false,
+		"javascript.preferences.importModuleSpecifierEnding": "index",
+		"typescript.preferences.importModuleSpecifierEnding": "index"
+	},
+
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [{
+				"label": "Run vite",
+				"type": "npm",
+				"isBackground": true,
+				"script": "dev",
+				"runOptions": {
+					"runOn": "folderOpen"
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": false,
+					"panel": "shared",
+					"showReuseMessage": true,
+					"clear": false
+				}
+			},
+			{
+				"label": "launch electron",
+				"command": "${workspaceFolder}/node_modules/.bin/electron",
+				"windows": {
+					"command": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+				},
+				"args": [
+					"--remote-debugging-port=9223",
+					"./thing-editor/electron-main"
+				],
+				"isBackground": true,
+				"runOptions": {
+					//	"runOn": "folderOpen"
+				},
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"focus": false,
+					"panel": "shared",
+					"showReuseMessage": true,
+					"clear": false
+				},
+				"problemMatcher": []
+			}, {
+				"label": "launchElectronIfStopped",
+				"command": "node",
+				"args": ["./thing-editor/electron-main/launch-if-stopped.js"],
+				"isBackground": true,
+				"type": "process",
+				"problemMatcher": [{
+					"pattern": [{
+						"regexp": ".",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}],
+					"background": {
+						"activeOnStart": true,
+						"beginsPattern": "electron",
+						"endsPattern": "launched",
+					}
+				}]
+			}
+		]
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [{
+				"name": "Editor",
+				"type": "chrome",
+				"request": "attach",
+				"webRoot": "${workspaceFolder}",
+				"timeout": 5000,
+				"port": 9223,
+				"enableContentValidation": false,
+				"presentation": {
+					//"hidden": true
+				},
+				"skipFiles": [],
+				"sourceMaps": true,
+				"smartStep": true,
+				"resolveSourceMapLocations": [
+					"${workspaceFolder}/**",
+					"!**/node_modules/**"
+				],
+				"urlFilter": "http://127.0.0.1:5173/*",
+				"outFiles": [],
+				"preLaunchTask": "launchElectronIfStopped",
+				/*"trace": {
+					"logFile": "trace.txt"
+				}*/
+			},
+			{
+				"name": "Render",
+				"type": "chrome",
+				"request": "attach",
+				"webRoot": "${workspaceFolder}",
+				"timeout": 30000,
+				"port": 9223,
+				"enableContentValidation": false,
+				"presentation": {
+					"hidden": true
+				},
+				"skipFiles": [],
+				"sourceMaps": true,
+				"smartStep": true,
+				"resolveSourceMapLocations": [
+					"${workspaceFolder}/**",
+					"!**/node_modules/**"
+				],
+				"urlFilter": "http://127.0.0.1:5173/*",
+				"outFiles": []
+			},
+			{
+				"type": "node",
+				"request": "launch",
+				"name": "Main",
+				"port": 9223,
+				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+				"autoAttachChildProcesses": true,
+				"windows": {
+					"runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/electron.exe"
+				},
+				"env": {
+					"ELECTRON_ENABLE_LOGGING": "true",
+					"ELECTRON_LOG_FILE": "C:\\Dropbox\\electron-vite-preact\\log.log"
+				},
+				"args": [
+					"--remote-debugging-port=9223",
+					//	"--wait-for-debugger",
+					"./thing-editor/electron-main",
+					"debugger-detection-await"
+				],
+				"presentation": {
+					"hidden": true
+				}
+			},
+			{
+				"type": "node",
+				"request": "launch",
+				"name": "runner",
+				"port": 9229,
+				"cwd": "${workspaceFolder}",
+				"args": ["./thing-editor/electron-main/launch-if-stopped.js"]
+
+			},
+			{
+				"type": "node",
+				"request": "launch",
+				"name": "vite build",
+				"port": 9232,
+				"cwd": "${workspaceFolder}",
+				"args": ["./vite-build.js"]
+
+			}
+		],
+		"compounds": [{
+			"name": "Main & Render",
+			"configurations": ["Render", "Main"],
+			"stopAll": true,
+			"presentation": {
+				//"hidden": true
+			}
+		}]
+	}
+
+}

@@ -15,6 +15,7 @@
     "chokidar": "^3.5.3",
     "electron": "^24.1.2",
     "electron-settings": "^4.0.2",
+    "eslint": "^8.42.0",
     "events": "^3.3.0",
     "howler": "^2.2.3",
     "node-tcp-proxy": "^0.0.28",
