@@ -720,19 +720,21 @@ type __EditorType = typeof editor;
 export type { __EditorType }; // hide Editor from intellisense
 
 const WORKSPACE_FILE_NAME = 'electron-vite-preact.code-workspace';
+const TS_CONFIG_FILE_NAME = 'tsconfig.json';
+
+function sanitizeJSON(input: string) {
+	return input.replace(/\/\/.*$/gm, '').replace(/\/\*.*\*\//gm, '');
+}
 
 function excludeOtherProjects() {
-	try {
+	try { // vscode workspace
 
 		const workspaceConfigSrc = fs.readFile(WORKSPACE_FILE_NAME);
-
 		const foldersDataRegExt = /"folders"\s*:\s*\[[^\]]*\]/gm;
 		let foldersData = foldersDataRegExt.exec(workspaceConfigSrc);
 
-		const foldersDataString = foldersData!.pop()!.replace(/\/\/.*$/gm, '').replace(/\/\*.*\*\//gm, '');
-
+		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
 		const workspaceConfig = JSON.parse('{' + foldersDataString + '}');
-
 		const folders = (workspaceConfig.folders as { path: string, name: string }[]).filter((folderData) => {
 			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
 		});
@@ -757,4 +759,33 @@ function excludeOtherProjects() {
 		console.error('JSON parsing error: ' + WORKSPACE_FILE_NAME);
 		console.error(er);
 	}
+
+	try { // tsconfig
+
+		const workspaceConfigSrc = fs.readFile(TS_CONFIG_FILE_NAME);
+		const foldersDataRegExt = /"include"\s*:\s*\[[^\]]*\]/gm;
+		let foldersData = foldersDataRegExt.exec(workspaceConfigSrc);
+
+		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
+		const tsConfig = JSON.parse('{' + foldersDataString + '}');
+		const include = (tsConfig.include as string[]).filter((folder) => {
+			return !folder.startsWith('./games/') && !folder.startsWith('./libs/');
+		});
+		include.push('./' + editor.currentProjectDir);
+		for(let lib of editor.projectDesc.libs) {
+			include.push('./libs/' + lib);
+		}
+
+		let newFoldersSrc = JSON.stringify({ include });
+		newFoldersSrc = newFoldersSrc.substring(1, newFoldersSrc.length - 1);
+		if(newFoldersSrc !== foldersDataString) {
+			fs.writeFile(TS_CONFIG_FILE_NAME, workspaceConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
+		}
+	} catch(er) {
+		debugger;
+		console.error('JSON parsing error: ' + TS_CONFIG_FILE_NAME);
+		console.error(er);
+	}
+
+
 }
