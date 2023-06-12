@@ -287,12 +287,12 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 				d = bounds.top - otherBounds.bottom;
 				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
 					this.setPosition(this.state.x, (otherBounds.bottom - MENU_HEIGHT) / H);
-					this.setSize(this.state.w, this.state.h - d / H);
+					this.setSize(this.state.w, this.state.h - d / window.innerHeight * 100);
 					clamped = true;
 				}
 				d = bounds.bottom - otherBounds.top;
 				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
-					this.setSize(this.state.w, this.state.h - d / H);
+					this.setSize(this.state.w, this.state.h - d / window.innerHeight * 100);
 					clamped = true;
 				}
 				if(clamped) {
