@@ -729,27 +729,28 @@ function excludeOtherProjects() {
 		const foldersDataRegExt = /"folders"\s*:\s*\[[^\]]*\]/gm;
 		let foldersData = foldersDataRegExt.exec(workspaceConfigSrc);
 
-		let foldersDataString = '{' + foldersData!.pop()!.replace(/\/\/.*$/gm, '').replace(/\/\*.*\*\//gm, '') + '}';
+		const foldersDataString = foldersData!.pop()!.replace(/\/\/.*$/gm, '').replace(/\/\*.*\*\//gm, '');
 
-		const workspaceConfig = JSON.parse(foldersDataString);
+		const workspaceConfig = JSON.parse('{' + foldersDataString + '}');
 
 		const folders = (workspaceConfig.folders as { path: string, name: string }[]).filter((folderData) => {
 			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
 		});
 		folders.push({
-			path: '.' + editor.currentProjectAssetsDirRooted,
-			name: editor.currentProjectAssetsDirRooted
+			path: './' + editor.currentProjectDir,
+			name: editor.currentProjectDir
 		});
 		for(let lib of editor.projectDesc.libs) {
 			folders.push({
 				path: './libs/' + lib,
-				name: './libs/' + lib
+				name: 'libs/' + lib
 			});
 		}
-		workspaceConfig.folders = folders;
-		const newWorkspaceConfigSrc = JSON.stringify(workspaceConfig);
-		if(newWorkspaceConfigSrc !== workspaceConfigSrc) {
-			fs.writeFile(WORKSPACE_FILE_NAME, newWorkspaceConfigSrc);
+
+		let newFoldersSrc = JSON.stringify({ folders }, undefined, '\t');
+		newFoldersSrc = newFoldersSrc.substring(3, newFoldersSrc.length - 2);
+		if(newFoldersSrc !== foldersDataString) {
+			fs.writeFile(WORKSPACE_FILE_NAME, workspaceConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
 		}
 	} catch(er) {
 		debugger;

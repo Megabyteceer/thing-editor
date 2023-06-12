@@ -1,14 +1,15 @@
 {
-	"folders": [{
+	"folders": [
+		{
 			"path": "."
 		},
 		{
 			"path": "./games/game1/",
-			"name": "/games/game1/"
+			"name": "games/game1/"
 		},
 		{
-			"path": "./libs/lib1/",
-			"name": "/libs/lib1/"
+			"path": "./libs/lib1",
+			"name": "libs/lib1"
 		}
 	],
 	"settings": {
