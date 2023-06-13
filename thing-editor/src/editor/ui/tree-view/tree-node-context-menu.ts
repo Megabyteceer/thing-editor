@@ -1,7 +1,9 @@
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import { toggleIsolation } from "thing-editor/src/editor/ui/isolation";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import game from "thing-editor/src/engine/game";
 
@@ -82,8 +84,16 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 	{
 		name: R.fragment(R.icon('isolate-selected'), "Isolate"),
 		tip: "Temporary hides other content to focus on current selection.",
-		onClick: editorUtils.onIsolateClick,
-		disabled: () => game.editor.selection.indexOf(game.currentContainer) >= 0
+		onClick: toggleIsolation,
+		disabled: () => EDITOR_FLAGS.isolationEnabled || game.editor.selection.indexOf(game.currentContainer) >= 0,
+		hotkey: { key: 'i', ctrlKey: true }
+	},
+	{
+		name: R.fragment(R.icon('exit-isolation'), "Exit isolation"),
+		tip: "Unhide temporary hidden objects.",
+		onClick: toggleIsolation,
+		disabled: () => !EDITOR_FLAGS.isolationEnabled,
+		hotkey: { key: 'i', ctrlKey: true }
 	},
 	{
 		name: R.fragment(R.icon('delete'), "Delete"),

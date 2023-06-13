@@ -40,6 +40,9 @@ interface NodeExtendData {
 
 	noSerialize?: boolean;
 
+	/** hide this object because of isolation mode */
+	isolate?: boolean;
+
 	serializationCache?: SerializedObject;
 
 	isFaderShootCalledForThisFader?: boolean;

@@ -4,6 +4,8 @@ import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import "thing-editor/src/editor/ui/editor-overlay";
+import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
+
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -41,6 +43,10 @@ interface ViewportStats {
 	prefabMode: string | null;
 }
 
+document.addEventListener('fullscreenchange', () => {
+	game.onResize();
+});
+
 export default class Viewport extends ComponentDebounced<ViewportProps, ViewportStats> {
 
 	constructor(props: ViewportProps) {
@@ -68,7 +74,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 			Pool.__resetIdCounter();
 			if(play) { // launch game
 				game.data = {};
-				//TODO game.editor.overlay.exitIsolation();
+				exitIsolation();
 				game.editor.ui.status.clear();
 				game.editor.saveBackup();
 				game.editor.selection.saveCurrentSelection();
@@ -142,36 +148,16 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 		game.stage.y = 0;
 	}
 
-
-	refreshCameraFrame() {
-		//TODO
-		/*
-		if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
-			game.stage.addChild(cameraFrame); //move frame to front
-			__getNodeExtendData(cameraFrame).hidden = true;
-
-			if(cameraFrame.__appliedW !== game.W ||
-				cameraFrame.__appliedH !== game.H) {
-
-				const W = 40;
-				cameraFrame.clear();
-				cameraFrame.lineStyle(W, 0x808080, 0.4);
-				cameraFrame.beginFill(0, 0);
-				cameraFrame.drawRect(W / -2, W / -2, game.W + W, game.H + W);
-
-				cameraFrame.__appliedW = game.W;
-				cameraFrame.__appliedH = game.H;
-			}
-		} else {
-			cameraFrame.detachFromParent();
-		}*/
-	}
-
 	render(): ComponentChild {
 		let className = 'editor-viewport-wrapper';
 
 		let panel: ComponentChild;
 		let statusHeader: ComponentChild;
+
+		let resolutionSelect;
+		if(game.editor.projectDesc && game.editor.projectDesc.dynamicStageSize) {
+			resolutionSelect = R.div({ className: 'resolution' }, game.W + '×' + game.H)
+		}
 
 		const reloadClassesBtn = R.btn(R.icon('recompile'), game.editor.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
 
@@ -212,6 +198,9 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 						value: '#' + PrefabEditor.BGColor.toString(16).padStart(6, '0'),
 						title: "Background color"
 					}),
+				),
+				R.span(panelBottomProps,
+					resolutionSelect
 				)
 			);
 		} else {
@@ -239,7 +228,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 
 				),
 				R.span(panelBottomProps,
-
+					resolutionSelect,
 					R.btn('⛶', () => {
 						(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen();
 					}, 'Go fullscreen', 'big-btn'),

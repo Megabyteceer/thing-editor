@@ -28,5 +28,5 @@
     
   },
   "files":["thing-editor/src/editor/env.d.ts"],
-  "include":["thing-editor/src","./games/game1/","./libs/lib1"]
+  "include":["thing-editor/src","./games/game2/","./libs/lib1"]
 }

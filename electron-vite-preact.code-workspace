@@ -4,8 +4,8 @@
 			"path": "."
 		},
 		{
-			"path": "./games/game1/",
-			"name": "games/game1/"
+			"path": "./games/game2/",
+			"name": "games/game2/"
 		},
 		{
 			"path": "./libs/lib1",
@@ -74,9 +74,9 @@
 		"version": "2.0.0",
 		"tasks": [{
 				"label": "Run vite",
-				"type": "npm",
 				"isBackground": true,
-				"script": "dev",
+				"command": "node",
+				"args": ["${workspaceFolder}/node_modules/vite/bin/vite.js"],
 				"runOptions": {
 					"runOn": "folderOpen"
 				},
@@ -210,7 +210,7 @@
 				"type": "node",
 				"request": "launch",
 				"name": "runner",
-				"port": 9229,
+				"port": 9223,
 				"cwd": "${workspaceFolder}",
 				"args": ["./thing-editor/electron-main/launch-if-stopped.js"]
 
@@ -219,7 +219,7 @@
 				"type": "node",
 				"request": "launch",
 				"name": "vite build",
-				"port": 9232,
+				"port": 9223,
 				"cwd": "${workspaceFolder}",
 				"args": ["./vite-build.js"]
 

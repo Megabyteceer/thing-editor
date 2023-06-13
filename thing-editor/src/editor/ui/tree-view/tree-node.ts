@@ -107,7 +107,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 		}
 
 		let style;
-		if(extendData.hidden) {
+		if(extendData.hidden || extendData.isolate) {
 			style = { display: 'none' };
 		}
 

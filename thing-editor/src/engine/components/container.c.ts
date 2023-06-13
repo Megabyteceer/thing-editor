@@ -267,8 +267,8 @@ export default Container;
 
 Object.defineProperties(Container.prototype, {
 	'worldAlpha': {
-		get: function (): number {
-			return (this.__hideInEditor && game.__EDITOR_mode) ? 0 : this._worldAlpha;
+		get: function (this: Container): number {
+			return ((this.__hideInEditor || this.__nodeExtendData.isolate) && game.__EDITOR_mode) ? 0 : (this as any)._worldAlpha;
 		},
 		set: function (v: number) {
 			this._worldAlpha = v;

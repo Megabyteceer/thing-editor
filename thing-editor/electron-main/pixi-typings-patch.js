@@ -35,6 +35,8 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     isCanBePressed: boolean;
     findParentByType<T extends Container>(classType: new () => T): T | null;
     findParentByName(name: string): Container;
+	
+    _onRenderResize?();
 
     /** search child recursively by it's name */
     findChildByName(name: string): Container | null;

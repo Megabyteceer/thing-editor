@@ -31,15 +31,23 @@ let hideTheseModalsUnderFader: Container[];
 let currentFader: Container | null;
 let hidingFaders: Container[] = [];
 
+let _rendererWidth = 0;
+let _rendererHeight = 0;
+let scale = 1;
+
 /// #if DEBUG
 let lastFPSTime = 0;
 let __speedMultiplier = 1;
+type FixedViewportSize = { w: number, h: number } | boolean;
+
 /// #endif
 
 const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
 
+let resizeOutJump = 0;
+let fireNextOnResizeImmediately = false;
 
 interface Mouse {
 	click: boolean;
@@ -47,8 +55,11 @@ interface Mouse {
 	y: number,
 }
 
-//@ts-ignore
-let fireNextOnResizeImmediately = false; //TODO
+const processOnResize = (o: Container) => {
+	if(o._onRenderResize) {
+		o._onRenderResize();
+	}
+};
 
 class Game {
 
@@ -81,6 +92,8 @@ class Game {
 	isVisible = true; //TODO
 
 	isMobile = utils.isMobile;
+	isPortrait = false;
+	_isCanvasRotated = false;
 
 	_isWaitingToHideFader = false;
 
@@ -126,6 +139,11 @@ class Game {
 		(element || document.body).appendChild(app.view);
 
 		this._updateGlobal = this._updateGlobal.bind(this);
+		this.onResize = this.onResize.bind(this);
+		/// #if EDITOR
+		(this.onResize as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+		/// #endif
+
 
 		stage = new Container();
 		stage.name = 'stage';
@@ -139,11 +157,34 @@ class Game {
 		app.stage.addChild(stage);
 		app.ticker.add(this._updateGlobal);
 		Sound.init();
-
 	}
 
 	_onContainerResize() {
-		//TODO:
+		if(resizeOutJump) {
+			clearTimeout(resizeOutJump);
+		}
+		if(fireNextOnResizeImmediately) {
+			fireNextOnResizeImmediately = false;
+			this.onResize();
+		} else {
+			resizeOutJump = setTimeout(() => {
+				resizeOutJump = 0;
+				if(game.isMobile.any
+					/// #if EDITOR
+					&& false
+					/// #endif
+				) {
+					for(let i of [20, 40, 80, 200, 500, 1000, 1500, 2000, 3000]) {
+						setTimeout(this.onResize, i);
+					}
+				}
+				this.onResize();
+			}, game.isMobile.any
+				/// #if EDITOR
+				&& false
+				/// #endif
+				? 1 : 200);
+		}
 	}
 
 	get disableAllButtons() {
@@ -163,12 +204,295 @@ class Game {
 		TextureGCSystem.defaultMode = GC_MODES.MANUAL;
 
 		this.projectDesc = projectDescriptor;
-		this.onResize();
 	}
 
 	onResize() {
-		//TODO:
+		if(!this.pixiApp) {
+			return;
+		}
+		let w, h;
+		if(this.pixiApp.view.parentNode === document.body) {
+			w = window.innerWidth;
+			h = window.innerHeight;
+		} else {
+			w = (this.pixiApp.view.parentNode as HTMLDivElement).clientWidth;
+			h = (this.pixiApp.view.parentNode as HTMLDivElement).clientHeight;
+		}
+
+		//let debugInfo = 'w: ' + w + '; h: ' + h;
+
+		let dynamicStageSize = game.projectDesc.dynamicStageSize;
+
+		let orientation;
+		/// #if EDITOR
+
+		if(this.__fixedViewport) {
+			if(this.__fixedViewport === true) {
+				let size = this.editor._getProjectViewportSize(true);
+				w = size.w;
+				h = size.h;
+			} else {
+				w = this.__fixedViewport.w;
+				h = this.__fixedViewport.h;
+
+			} if(this.__enforcedOrientation === 'portrait') {
+				let tmp = w;
+				w = h;
+				h = tmp;
+			}
+		}
+
+		if(this.__enforcedW) {
+			w = this.__enforcedW;
+		}
+		if(this.__enforcedH) {
+			h = this.__enforcedH;
+		}
+
+
+
+		if((this.projectDesc.screenOrientation === 'auto')) {
+			orientation = this.__enforcedOrientation;
+		} else {
+			/// #endif
+			orientation = this.projectDesc.screenOrientation;
+			/// #if EDITOR
+		}
+
+		if(dynamicStageSize) {
+			if(orientation === 'portrait') {
+				if(w > h * 0.8) {
+					w = Math.round(h * 0.8);
+				}
+			} else {
+				if(h > w * 0.8) {
+					h = Math.round(w * 0.8);
+				}
+			}
+		}
+		/// #endif
+
+		if(orientation === 'auto') {
+			orientation = (w < h) ? 'portrait' : 'landscape';
+		}
+
+		let rotateCanvas = false;
+
+		switch(orientation) {
+			case 'portrait':
+				rotateCanvas = w > h;
+				game.isPortrait = true;
+				break;
+			case 'auto':
+				game.isPortrait = w < h;
+				break;
+			default: //landscape
+				rotateCanvas = h > w;
+				game.isPortrait = false;
+				break;
+		}
+
+		if(!this.isMobile.any // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false
+			/// #endif
+		) { //rotate canvas for fixed orientation projects on mobile only
+			rotateCanvas = false;
+		}
+
+		if(game.isPortrait) {
+			/** game screen current width */
+			this.W = this.projectDesc.portraitWidth || 408;
+			/** game screen current height */
+			this.H = this.projectDesc.portraitHeight || 720;
+		} else {
+			this.W = this.projectDesc.width || 1280;
+			this.H = this.projectDesc.height || 720;
+		}
+
+
+		if(!dynamicStageSize) {
+			if(game.projectDesc.preventUpscale // eslint-disable-line no-constant-condition
+				/// #if EDITOR
+				|| true
+				/// #endif
+			) {
+				if(rotateCanvas) {
+					w = Math.min(this.H, w);
+					h = Math.min(this.W, h);
+				} else {
+					w = Math.min(this.W, w);
+					h = Math.min(this.H, h);
+				}
+			}
+		}
+
+		let S;
+		if(rotateCanvas) {
+			S = Math.min(h / this.W, w / this.H);
+		} else {
+			S = Math.min(w / this.W, h / this.H);
+		}
+
+		if(dynamicStageSize) {
+			if(game.projectDesc.preventUpscale) {
+				if(S < 1) {
+					w = w / S;
+					h = h / S;
+				}
+				S = 1;
+			} else {
+				w = w / S;
+				h = h / S;
+			}
+		}
+
+		let s = 1;
+		if(this.isMobile.any // eslint-disable-line no-constant-condition
+			/// #if EDITOR
+			&& false
+			/// #endif
+		) {
+			if(game.projectDesc.renderResolutionMobile) {
+				s = game.projectDesc.renderResolutionMobile;
+			}
+		} else {
+			if(game.projectDesc.renderResolution) {
+				s = game.projectDesc.renderResolution;
+			}
+		}
+		s = Math.max(window.devicePixelRatio || 1, s);
+		S *= s;
+		S = Math.min(3, S);
+		/// #if EDITOR
+		if(!document.fullscreenElement) {
+			S = 1;
+		}
+		/// #endif
+
+		if(this.pixiApp && this.pixiApp.renderer) {
+			game.isCanvasMode = !(this.pixiApp.renderer as any).gl;
+			if(!game.isCanvasMode) {
+				let gl = (this.pixiApp.renderer as any).gl as WebGL2RenderingContext;
+				let maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+				if(maxTextureSize < 3000) {
+					S = Math.min(1, S);
+				}
+
+				if(w * S > maxTextureSize) {
+					S = maxTextureSize / w;
+				}
+				if(h * S > maxTextureSize) {
+					S = maxTextureSize / h;
+				}
+			}
+		}
+
+		if(dynamicStageSize) {
+			if(rotateCanvas) {
+				this.H = w;
+				this.W = h;
+			} else {
+				this.W = w;
+				this.H = h;
+			}
+		}
+
+		let rendererWidth, rendererHeight;
+		if(rotateCanvas) {
+			rendererWidth = this.H;
+			rendererHeight = this.W;
+		} else {
+			rendererWidth = this.W;
+			rendererHeight = this.H;
+		}
+
+		this.W = Math.round(this.W);
+		this.H = Math.round(this.H);
+
+		if(this.W & 1) { //make even game logical size only. Keep canvas fit to client
+			this.W++;
+		}
+		if(this.H & 1) {
+			this.H++;
+		}
+
+		let needResizeRenderer = (_rendererWidth !== rendererWidth) || (_rendererHeight !== rendererHeight) || (scale !== S);
+
+		//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
+		_rendererWidth = rendererWidth;
+		_rendererHeight = rendererHeight;
+		scale = S;
+
+
+		let stage = game.stage;
+
+		game._isCanvasRotated = rotateCanvas;
+
+		if(rotateCanvas) {
+			stage.rotation = Math.PI / 2.0;
+			stage.x = this.H;
+		} else {
+			stage.rotation = 0;
+			/// #if EDITOR
+			/*
+			/// #endif
+			stage.x = 0;
+			//*/
+		}
+
+		if(needResizeRenderer) {
+			/*
+			if(!game.__EDITOR_mode && Lib.hasPrefab('ui/sure-question')) {
+				game.showQuestion('', 'W: ' + _rendererWidth +
+					';   H: ' + _rendererHeight +
+					';\nS: ' + S +
+					'\n\nw: ' + domElement.clientWidth +
+					';   h: ' + domElement.clientHeight +
+					';\nration: ' + window.devicePixelRatio
+				);
+			}//*/
+
+			/// #if EDITOR
+			if(!this.__enforcedW) {
+				/// #endif
+				let renderer = game.pixiApp.renderer;
+
+				renderer.resolution = scale;
+
+				/*PIXI.InteractionManager.resolution = scale;
+				renderer.plugins.interaction.resolution = scale;
+
+				if(renderer.rootRenderTarget) {
+					renderer.rootRenderTarget.resolution = scale;
+				}*/
+
+				renderer.resize(_rendererWidth + 0.0001, _rendererHeight + 0.0001); //prevent canvas size decreasing by pixel because of Math.ceil
+				/// #if EDITOR
+			}
+			/// #endif
+
+			this.forAllChildrenEverywhere(processOnResize);
+			/// #if EDITOR
+			if(!this.__enforcedW) {
+				this.editor.onEditorRenderResize();
+			}
+			/// #endif
+		}
+
+		assert(_rendererWidth, "Render's size was not calculated correctly.");
+		assert(_rendererHeight, "Render's size was not calculated correctly.");
 	}
+
+	/// #if EDITOR
+	__enforcedOrientation?: ProjectOrientation;
+	__fixedViewport?: FixedViewportSize;
+	__setFixedViewport(fixedViewport: FixedViewportSize) {
+		this.__fixedViewport = fixedViewport;
+		this.onResize();
+	}
+	/// #endif
 
 	forAllChildrenEverywhere(callback: (o: Container) => void) {
 		game.stage.forAllChildren(callback);
@@ -747,6 +1071,8 @@ let __currentSceneValue: Scene;
 
 const game = new Game();
 export default game;
+
+export type { FixedViewportSize };
 
 /// #if EDITOR
 (Game.prototype.applyProjectDesc as SelectableProperty).___EDITOR_isHiddenForChooser = true;

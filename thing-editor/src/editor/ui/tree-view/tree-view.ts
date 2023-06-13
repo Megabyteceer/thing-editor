@@ -5,8 +5,10 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import Window from "thing-editor/src/editor/ui/editor-window";
+import { toggleIsolation } from "thing-editor/src/editor/ui/isolation";
 import { renderSceneNode } from "thing-editor/src/editor/ui/tree-view/tree-node";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
 import Selection from "thing-editor/src/editor/utils/selection";
@@ -221,7 +223,7 @@ export default class TreeView extends ComponentDebounced<TreeViewProps, TreeView
 		return R.fragment(
 			R.input({ onKeyDown: this.onSearchKeyDown, onInput: this.onSearchChange, className: 'tree-view-search', defaultValue: this.state.search, placeholder: 'Search' }),
 
-			//TODO isolation
+			EDITOR_FLAGS.isolationEnabled ? R.btn('exit isolation', toggleIsolation, undefined, 'clickable isolation-warning', { key: 'i', ctrlKey: true }) : undefined,
 			R.div(treeViewProps,
 				game.__getScenesStack().map(renderSceneStackItem as any),
 				game.stage.children.map(renderRoots as any)

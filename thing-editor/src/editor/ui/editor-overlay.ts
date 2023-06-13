@@ -13,7 +13,6 @@ let selectionDisabled = false;
 let isViewPortScrolling = false;
 let scrollingX = 0;
 let scrollingY = 0;
-let isolation: Container[] = [];
 
 let rightButtonDraggingStarted = false;
 
@@ -69,7 +68,6 @@ editorEvents.once('didProjectOpen', () => {
 
 					scrollingX = game.__mouse_EDITOR.x;
 					scrollingY = game.__mouse_EDITOR.y;
-					game.editor.ui.viewport.refreshCameraFrame();
 				}
 			} else if(ev.buttons === 2 && (rightButtonDraggingStarted || (ev.target === game.pixiApp.view)) && !__GizmoArrow.draggedArrow) {
 				moveSelectionToMouse(ev);
@@ -105,7 +103,6 @@ editorEvents.once('didProjectOpen', () => {
 
 			game.stage.scale.x = zoom;
 			game.stage.scale.y = zoom;
-			game.editor.ui.viewport.refreshCameraFrame();
 		}
 	});
 
@@ -154,7 +151,7 @@ function moveSelectionToPoint(dX: number, dY: number, withoutChildren = false) {
 }
 
 function isObjectUnderMouse(o: Container) {
-	return ((o as Sprite).containsPoint && (!o.__lockSelection) && o.worldVisible && (o as Sprite).containsPoint(game.__mouse_EDITOR));
+	return ((o as Sprite).containsPoint && (!o.__lockSelection) && o.worldVisible && o.worldAlpha && (o as Sprite).containsPoint(game.__mouse_EDITOR));
 }
 
 let previousAllUnderMouse: Container[];
@@ -191,12 +188,8 @@ function selectByStageClick(ev: MouseEvent) {
 		}
 	};
 
-	let a;
-	if(isolation.length > 0) {
-		a = isolation;
-	} else {
-		a = [PrefabEditor.currentPrefabName ? game.currentContainer : game.stage];
-	}
+	let a = [PrefabEditor.currentPrefabName ? game.currentContainer : game.stage];
+
 	for(let c of a) {
 		checkNodeToSelect(c);
 		c.forAllChildren(checkNodeToSelect);

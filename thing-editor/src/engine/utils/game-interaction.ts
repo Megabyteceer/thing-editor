@@ -55,8 +55,10 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 const mouseHandlerGlobal = (ev: PointerEvent) => {
 	const canvasBounds = (game.pixiApp.view as HTMLCanvasElement).getBoundingClientRect();
 
-	globalPoint.x = ev.clientX - canvasBounds.x;
-	globalPoint.y = ev.clientY - canvasBounds.y;
+
+	const canvasScale = game.W / canvasBounds.width;
+	globalPoint.x = (ev.clientX - canvasBounds.x) * canvasScale;
+	globalPoint.y = (ev.clientY - canvasBounds.y) * canvasScale;
 
 	game.stage.toLocal(globalPoint, game.pixiApp.stage, stagePoint, true);
 

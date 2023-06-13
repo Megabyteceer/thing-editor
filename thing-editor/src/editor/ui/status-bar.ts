@@ -36,7 +36,6 @@ export default class StatusBar extends Component {
 					resetZoomBtn = R.btn('x', game.editor.ui.viewport.resetZoom, 'Reset zoom and viewport position (Ctrl + double-click on viewport)', 'reset-zoom-btn');
 				}
 			}
-			game.editor.ui.viewport.refreshCameraFrame();
 			return R.span(null, resetZoomBtn, R.span(game.editor.isCurrentContainerModified ? null : transparentProps, '●'), txt);
 		}
 		return R.span();

@@ -9,7 +9,7 @@
 	"height": 720,
 	"portraitWidth": 408,
 	"portraitHeight": 720,
-	"dynamicStageSize": false,
+	"dynamicStageSize": true,
 	"preventUpscale": false,
 	"defaultFont": "Roboto, Arial",
 	"soundFormats": [

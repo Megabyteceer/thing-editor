@@ -9,6 +9,8 @@ class EDITOR_FLAGS {
 	/* super.onRemove() call validation flag*/
 	static _root_onRemovedCalled: boolean;
 
+	static isolationEnabled = false;
+
 	static isTryTime = 0;
 
 	static rememberTryTime() {

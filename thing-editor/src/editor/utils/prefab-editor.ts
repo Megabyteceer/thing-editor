@@ -1,4 +1,6 @@
 import { Container } from "pixi.js";
+import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
+
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import Shape from "thing-editor/src/engine/components/shape.c";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -51,7 +53,7 @@ export default class PrefabEditor {
 			backDrop.name = null; // prevent get by name error;
 			backDrop.__nodeExtendData.hidden = true;
 		}
-		//TODO this.exitIsolation();
+		exitIsolation();
 		game.editor.ui.viewport.resetZoom();
 		PrefabEditor.BGColor = game.editor.settings.getItem('prefab-bg' + object.name, 120);
 		PrefabEditor.hidePreview();
@@ -61,8 +63,6 @@ export default class PrefabEditor {
 		object.__nodeExtendData.childrenExpanded = true;
 		game.stage.x = -object.x + game.W / 2;
 		game.stage.y = -object.y + game.H / 2;
-		backDrop.x = -game.stage.x;
-		backDrop.y = -game.stage.y;
 		setTimeout(() => {
 			let selectionData = game.settings.getItem('prefab-selection' + game.currentContainer.name);
 			if(selectionData) {
@@ -76,7 +76,7 @@ export default class PrefabEditor {
 	static currentPrefabName: string | null;
 
 	static hidePreview() {
-		//TODO this.exitIsolation();
+		exitIsolation();
 		game.editor.ui.viewport.resetZoom();
 		backDrop.detachFromParent();
 		if(this.currentPrefabName) {
@@ -115,9 +115,7 @@ export default class PrefabEditor {
 	}
 
 	static exitPrefabEdit(oneStepOnly = false) {
-		/*if(game.editor.overlay) {
-			//TODO editor.overlay.exitIsolation();
-		}*/
+		exitIsolation();
 		if(prefabsStack.length) {
 			game.editor.ui.viewport.setPrefabMode();
 			PrefabEditor.hidePreview();

@@ -156,6 +156,11 @@ class Editor {
 		});
 	}
 
+	onEditorRenderResize() {
+		editor.refreshTreeViewAndPropertyEditor();
+		editor.ui.viewport.forceUpdate();
+	}
+
 	saveBackup() {
 		if(!this.isCurrentSceneModified) {
 			return;
@@ -290,6 +295,8 @@ class Editor {
 
 				this.ui.modal.hideSpinner();
 				this.isProjectOpen = true;
+
+				game.onResize();
 
 				excludeOtherProjects();
 			}
