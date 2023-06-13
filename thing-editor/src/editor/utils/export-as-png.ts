@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
 import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 
 export default async function exportAsPng(object: Container, width = 0, height = 0, cropAlphaThreshold = 1) {
 
@@ -12,8 +13,8 @@ export default async function exportAsPng(object: Container, width = 0, height =
 			oldIndex = oldParent.children.indexOf(object);
 		}
 		let f = object.filters;
-		let c = new Container();
-		let c2 = new Container();
+		let c = Lib._loadClassInstanceById('Container');
+		let c2 = Lib._loadClassInstanceById('Container');
 		c.addChild(object);
 		c2.addChild(c);
 
