@@ -10,6 +10,7 @@ import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor
 interface LibInfo {
 	name: string,
 	dir: string,
+	assetsDir: string,
 }
 
 interface FileDesc {
@@ -284,10 +285,7 @@ export default class fs {
 		for(let dirName of dirNames!) {
 			assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName);
 
-			const lib = dirName.startsWith('libs/') ? {
-				name: dirName.substring(5, dirName.length - 8),
-				dir: dirName
-			} : null;
+			const lib: LibInfo | null = game.editor.currentProjectLibs.find(l => l.assetsDir === dirName) || null;
 
 			const files = execFs('fs/readDir', dirName) as FileDesc[];
 			for(let file of files) {

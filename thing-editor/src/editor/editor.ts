@@ -5,7 +5,7 @@ import game from "../engine/game";
 import { Component, ComponentChild, h, render } from "preact";
 import AssetsLoader from "thing-editor/src/editor/assets-loader";
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import fs, { AssetType, FileDesc, FileDescClass } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc, FileDescClass, LibInfo } from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import UI from "thing-editor/src/editor/ui/ui";
@@ -33,6 +33,20 @@ import Sound from "thing-editor/src/engine/utils/sound";
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
+
+const parseLibName = (name: string): LibInfo => {
+	let dir;
+	if(name.startsWith('.')) {
+		dir = new URL(name, window.location.origin + '/' + game.editor.currentProjectDir).pathname.substring(1);
+	} else {
+		dir = 'libs/' + name;
+	}
+	return {
+		name,
+		dir,
+		assetsDir: dir + '/assets/'
+	};
+}
 
 class Editor {
 
@@ -80,6 +94,8 @@ class Editor {
 
 	currentPathChoosingField?: EditablePropertyDesc;
 
+	currentProjectLibs!: LibInfo[];
+
 	constructor() {
 
 		for(let arg of window.thingEditorServer.argv) {
@@ -114,6 +130,11 @@ class Editor {
 		}
 
 		window.onbeforeunload = (e) => {
+			if((new Error()).stack!?.indexOf('handleMessage') > 0) {
+				//prevent vite to reload editor.
+				e.returnValue = false;
+				return;
+			}
 			if(!this.__projectReloading && !this.__FatalError) {
 				if(this.askSceneToSaveIfNeed() === false) {
 					e.returnValue = false;
@@ -255,10 +276,12 @@ class Editor {
 				this.libsProjectDescMerged = {} as ProjectDesc;
 				mergeProjectDesc(this.libsProjectDescMerged, defaultProjectDesc);
 
-				for(let lib of projectDesc.libs as string[]) {
-					this.assetsFolders.push('libs/' + lib + '/assets/');
-					this.libsDescs[lib] = fs.readJSONFile('libs/' + lib + '/thing-lib.json');
-					mergeProjectDesc(this.libsProjectDescMerged, this.libsDescs[lib]);
+				this.currentProjectLibs = projectDesc.libs.map(parseLibName);
+
+				for(let lib of this.currentProjectLibs) {
+					this.assetsFolders.push(lib.assetsDir);
+					this.libsDescs[lib.name] = fs.readJSONFile(lib.dir + '/thing-lib.json');
+					mergeProjectDesc(this.libsProjectDescMerged, this.libsDescs[lib.name]);
 				}
 
 				this.assetsFolders.push(this.currentProjectAssetsDir);
@@ -747,10 +770,10 @@ function excludeOtherProjects() {
 			path: './' + editor.currentProjectDir,
 			name: editor.currentProjectDir
 		});
-		for(let lib of editor.projectDesc.libs) {
+		for(let lib of editor.currentProjectLibs) {
 			folders.push({
-				path: './libs/' + lib,
-				name: 'libs/' + lib
+				path: './' + lib.dir,
+				name: lib.dir
 			});
 		}
 
@@ -777,8 +800,8 @@ function excludeOtherProjects() {
 			return !folder.startsWith('./games/') && !folder.startsWith('./libs/');
 		});
 		include.push('./' + editor.currentProjectDir);
-		for(let lib of editor.projectDesc.libs) {
-			include.push('./libs/' + lib);
+		for(let lib of editor.currentProjectLibs) {
+			include.push('./' + lib.dir);
 		}
 
 		let newFoldersSrc = JSON.stringify({ include });

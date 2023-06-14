@@ -4,7 +4,7 @@ import {
 
 export default defineConfig({
 	server: {
-		hmr: false
+		hmr: false,
 	},
 	esbuild: {
 		keepNames: true

@@ -4,16 +4,19 @@
 			"path": "."
 		},
 		{
-			"path": "./games/game2/",
-			"name": "games/game2/"
+			"path": "./games/games_group/game2/",
+			"name": "games/games_group/game2/"
 		},
 		{
 			"path": "./libs/lib1",
 			"name": "libs/lib1"
+		},
+		{
+			"path": "./games/games_group/lib_relative",
+			"name": "games/games_group/lib_relative"
 		}
 	],
 	"settings": {
-
 		"files.exclude": {
 			//"**/___editor_backup_*": true,
 			"**/.svn": true,
@@ -115,7 +118,7 @@
 			}, {
 				"label": "launchElectronIfStopped",
 				"command": "node",
-				"args": ["./thing-editor/electron-main/launch-if-stopped.js"],
+				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"],
 				"isBackground": true,
 				"type": "process",
 				"problemMatcher": [{
@@ -212,7 +215,7 @@
 				"name": "runner",
 				"port": 9223,
 				"cwd": "${workspaceFolder}",
-				"args": ["./thing-editor/electron-main/launch-if-stopped.js"]
+				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"]
 
 			},
 			{
