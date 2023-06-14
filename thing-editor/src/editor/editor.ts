@@ -119,34 +119,39 @@ class Editor {
 	}
 
 	onUIMounted(ui: UI) {
+		setTimeout(() => {
 
-		this.ui = ui;
-		// load built in components
+			this.ui = ui;
+			// load built in components
 
-		if(this.settings.getItem('last-opened-project')) {
-			this.openProject(this.settings.getItem('last-opened-project'));
-		} else {
-			this.chooseProject(true);
-		}
-
-		window.onbeforeunload = (e) => {
-			if((new Error()).stack!?.indexOf('handleMessage') > 0) {
-				//prevent vite to reload editor.
-				e.returnValue = false;
-				return;
+			if(this.settings.getItem('last-opened-project')) {
+				this.openProject(this.settings.getItem('last-opened-project'));
+			} else {
+				this.chooseProject(true);
 			}
-			if(!this.__projectReloading && !this.__FatalError) {
-				if(this.askSceneToSaveIfNeed() === false) {
-					e.returnValue = false;
+
+			window.onbeforeunload = (e) => {
+				if(!this.__projectReloading && !this.__FatalError) {
+					if(this.askSceneToSaveIfNeed() === false) {
+						e.returnValue = false;
+					}
 				}
-			}
-		};
+			};
 
-		setInterval(() => { //keep props editor and tree actual during scene is launched
-			if(!game.__EDITOR_mode && !game.__paused) {
-				this.refreshTreeViewAndPropertyEditor();
-			}
-		}, 300);
+			window.onbeforeunload = (e) => {
+				if(!this.__projectReloading && !this.__FatalError) {
+					if(this.askSceneToSaveIfNeed() === false) {
+						e.returnValue = false;
+					}
+				}
+			};
+
+			setInterval(() => { //keep props editor and tree actual during scene is launched
+				if(!game.__EDITOR_mode && !game.__paused) {
+					this.refreshTreeViewAndPropertyEditor();
+				}
+			}, 300);
+		}, 0);
 	}
 
 	get isCurrentSceneModified() {
@@ -173,14 +178,14 @@ class Editor {
 		return ClassesLoader.reloadClasses().then(() => {
 			ClassesLoader.validateClasses();
 			if(needRestoring) {
-				editor.restoreBackup();
+				this.restoreBackup();
 			}
 		});
 	}
 
 	onEditorRenderResize() {
-		editor.refreshTreeViewAndPropertyEditor();
-		editor.ui.viewport.forceUpdate();
+		this.refreshTreeViewAndPropertyEditor();
+		this.ui.viewport.forceUpdate();
 	}
 
 	saveBackup() {
@@ -193,11 +198,11 @@ class Editor {
 	restoreBackup() {
 		const backupName = this.currentSceneBackupName;
 		if(Lib.hasScene(backupName)) {
-			editor.openScene(backupName);
+			this.openScene(backupName);
 			Lib.__deleteScene(backupName);
-			editor.history.setCurrentStateModified();
+			this.history.setCurrentStateModified();
 		} else {
-			editor.openScene(this.currentSceneName);
+			this.openScene(this.currentSceneName);
 		}
 	}
 
@@ -322,7 +327,7 @@ class Editor {
 
 				game.onResize();
 
-				excludeOtherProjects();
+
 			}
 		}
 	}
@@ -367,7 +372,7 @@ class Editor {
 
 	classesUpdatedExternally() {
 		ClassesLoader.isClassesWaitsReloading = true;
-		game.editor.ui.viewport.refresh();
+		this.ui.viewport.refresh();
 	}
 
 	/** if returns false - cancel operation */
@@ -400,14 +405,14 @@ class Editor {
 		Lib.__callInitIfGameRuns(child);
 		this.selection.select(child, true);
 		Lib.__invalidateSerializationCache(child);
-		editor.sceneModified();
+		this.sceneModified();
 	}
 
 	isCanBeAddedAsChild(Class: SourceMappedConstructor): boolean {
-		if(editor.selection.length < 1) {
+		if(this.selection.length < 1) {
 			return false;
 		}
-		for(let o of editor.selection) {
+		for(let o of this.selection) {
 			if((o.constructor as SourceMappedConstructor).__canAcceptChild) {
 				if(!(o.constructor as SourceMappedConstructor).__canAcceptChild(Class)) {
 					return false;
@@ -461,7 +466,7 @@ class Editor {
 	}
 
 	saveCurrentScene(name: string = this.currentSceneName) {
-		/*for(let f of editor.checkSceneHandlers) { //TODO
+		/*for(let f of this.checkSceneHandlers) { //TODO
 			f();
 		}*/
 
@@ -557,7 +562,7 @@ class Editor {
 	}
 
 	async chooseSound(title: ComponentChild = "Choose sound", activeSound?: string): Promise<string | null> {
-		return this.chooseAsset(AssetType.SOUND, title, activeSound, editor.previewSound);
+		return this.chooseAsset(AssetType.SOUND, title, activeSound, this.previewSound);
 	}
 
 	async choosePrefab(title: ComponentChild = "Choose prefab", currentPrefab?: string): Promise<string | null> {
@@ -573,9 +578,9 @@ class Editor {
 
 	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void, filterCallback?: (f: FileDesc) => boolean): Promise<string | null> {
 		const id = type + '_choose_asset_list';
-		const chosen: string = await game.editor.ui.modal.showModal(h(AssetsView, {
+		const chosen: string = await this.ui.modal.showModal(h(AssetsView, {
 			onItemSelect: (assetName: string) => {
-				game.editor.ui.modal.hideModal(assetName);
+				this.ui.modal.hideModal(assetName);
 			},
 			id,
 			content: undefined,
@@ -718,7 +723,7 @@ class Editor {
 			c = c.constructor as SourceMappedConstructor;
 		}
 		if(!c || (c as any) === __UnknownClass || (c as any) === __UnknownClassScene) {
-			game.editor.ui.modal.showError("Object has unknown type '" + className + "', and has no source code. Probably source code was removed.")
+			this.ui.modal.showError("Object has unknown type '" + className + "', and has no source code. Probably source code was removed.")
 			return;
 		}
 
@@ -740,12 +745,6 @@ class Editor {
 		}
 	}
 }
-
-const editor = new Editor();
-
-type __EditorType = typeof editor;
-
-export type { __EditorType }; // hide Editor from intellisense
 
 const WORKSPACE_FILE_NAME = 'electron-vite-preact.code-workspace';
 const TS_CONFIG_FILE_NAME = 'tsconfig.json';
@@ -808,6 +807,7 @@ function excludeOtherProjects() {
 		newFoldersSrc = newFoldersSrc.substring(1, newFoldersSrc.length - 1);
 		if(newFoldersSrc !== foldersDataString) {
 			fs.writeFile(TS_CONFIG_FILE_NAME, workspaceConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
+			return true;
 		}
 	} catch(er) {
 		debugger;
@@ -817,3 +817,10 @@ function excludeOtherProjects() {
 
 
 }
+
+
+const editor = new Editor();
+
+type __EditorType = typeof editor;
+
+export type { __EditorType }; // hide Editor from intellisense

@@ -122,7 +122,7 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 
 	let srcUrl = stack[lineIndex];
 
-	let url = srcUrl.split(location.origin)[1];
+	let url = srcUrl.split(window.location.origin)[1];
 	url = url.split(/[?:]/)[0];
 	url = getPropertyDefinitionUrl(url, name, target as any);
 	(editablePropertyDesc as EditablePropertyDesc).__src = url;
