@@ -332,7 +332,17 @@ class Editor {
 		}
 	}
 
-
+	warnEqualFiles(file: FileDesc, existingFile: FileDesc) {
+		this.ui.status.warn("File overlaps the same file in library. " + file.fileName + ' => ' + existingFile.fileName, 99999, (ev?: PointerEvent) => {
+			let preview = AssetsView.rendeAssetItem(file);
+			if(ev && ev.ctrlKey) {
+				fs.deleteAsset(file.assetName, file.assetType);
+			}
+			editor.ui.modal.showEditorQuestion('A you sure you want to remove duplicate file?', preview, () => {
+				fs.deleteAsset(file.assetName, file.assetType);
+			}, R.span({ className: 'danger' }, R.img({ src: 'img/delete.png' }), "Delete duplicate file"));
+		});
+	}
 
 	async testProject() {
 		//TODO:

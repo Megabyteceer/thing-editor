@@ -252,6 +252,10 @@ export default class fs {
 		execFs('fs/watchDirs', dirs);
 	}
 
+	static isFilesEqual(fileName1: string, fileName2: string): boolean {
+		return execFs('fs/isFilesEqual', fileName1, fileName2) as boolean;
+	}
+
 	static refreshAssetsList(dirNames?: string[]) {
 
 		const isInitialization = dirNames;
@@ -304,7 +308,16 @@ export default class fs {
 						file.assetType = assetType;
 						file.lib = lib;
 
-						(assetsByTypeByName.get((ASSETS_PARSERS as KeyedObject)[ext] as AssetType) as Map<string, FileDesc>).set(file.assetName, file);
+						const map = assetsByTypeByName.get((ASSETS_PARSERS as KeyedObject)[ext] as AssetType) as Map<string, FileDesc>;
+						if(assetType !== AssetType.CLASS && map.has(file.assetName)) {
+							const existingFile = map.get(file.assetName)!;
+							setTimeout(() => {
+								if(fs.isFilesEqual(file.fileName, existingFile.fileName)) {
+									game.editor.warnEqualFiles(file, existingFile);
+								}
+							}, 0);
+						}
+						map.set(file.assetName, file);
 						break;
 					}
 				}

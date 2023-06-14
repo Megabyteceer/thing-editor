@@ -289,7 +289,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			files = files.filter(this.props.filterCallback);
 		}
 
-		let items = files.map(file => (assetsItemsRenderers.get(file.assetType) as (file: FileDesc) => ComponentChild)(file));
+		let items = files.map(AssetsView.rendeAssetItem);
 
 		if(!this.state.search) {
 			items = group.groupArray(items, undefined, undefined, undefined, this.props.id);
@@ -317,6 +317,10 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			},
 				items
 			));
+	}
+
+	static rendeAssetItem(file: FileDesc) {
+		return assetsItemsRenderers.get(file.assetType)!(file);
 	}
 }
 

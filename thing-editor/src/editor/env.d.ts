@@ -71,7 +71,7 @@ interface NodeExtendData {
 	__pathBreakpoint?: any;
 }
 
-type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number;
+type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number | boolean;
 
 type KeyedObject = { [key: string]: any };
 

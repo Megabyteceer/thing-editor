@@ -83,6 +83,9 @@ module.exports = (mainWindow) => {
 				case 'fs/watchDirs':
 					event.returnValue = watchFolders(fileName, onFileChange);
 					return;
+				case 'fs/isFilesEqual':
+					event.returnValue = isFilesEqual(fn(fileName), fn(content));
+					return;
 				case 'fs/enumProjects':
 					event.returnValue = enumProjects();
 					return;
@@ -159,3 +162,12 @@ const enumProjects = (ret = [], subDir = '') => {
 	});
 	return ret;
 };
+
+function isFilesEqual(a, b) {
+	if(fs.statSync(a).size !== fs.statSync(b).size) {
+		return false;
+	}
+	a = fs.readFileSync(a);
+	b = fs.readFileSync(b);
+	return Buffer.compare(a, b) === 0;
+}
