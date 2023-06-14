@@ -97,7 +97,6 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 			}
 
 			this.forceUpdate();
-			game.editor.history.updateUi();
 
 			//TODO возможно что и так все ок будет. game.pixiApp.ticker._requestIfNeeded(); //restore broken ticker if necessary.
 

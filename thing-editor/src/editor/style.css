@@ -784,6 +784,10 @@ input[disabled] {
 	margin-bottom: 20px;
 }
 
+.projects-list .props-group {
+	padding: 5px;
+}
+
 .select-editor-list {
 	position: fixed;
 	z-index: 30;

@@ -69,7 +69,7 @@ export default class PrefabEditor {
 				game.editor.selection.loadSelection(selectionData);
 			}
 		}, 1);
-		game.editor.history.updateUi();
+
 		loadDynamicTextures();
 	}
 

@@ -53,7 +53,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		{
 			name: R.fragment(R.icon('copy'), "Copy value"),
 			onClick: () => { game.editor.copyToClipboard(value) },
-			disabled: CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
+			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
 			name: R.fragment(R.icon('paste'), "Paste value"),
@@ -68,7 +68,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 					game.editor.onSelectedPropsChange(field, val);
 				});
 			},
-			disabled: CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
+			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
 			name: R.fragment(R.icon('copy'), "Copy property name"),
@@ -77,7 +77,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		{
 			name: "Why disabled?..",
 			onClick: () => { game.editor.ui.modal.showInfo(R.fragment(R.b(null, field.name), R.br(), game.editor.ui.propsEditor.disableReasons[field.name]), "Property is disabled.") },
-			disabled: !game.editor.ui.propsEditor.disableReasons[field.name]
+			disabled: () => !game.editor.ui.propsEditor.disableReasons[field.name]
 		},
 		null,
 		{
@@ -92,7 +92,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			onClick: () => {
 				game.editor.onSelectedPropsChange(field, defaultValue);
 			},
-			disabled: defaultValue === undefined || value === defaultValue || !game.editor.ui.propsEditor.editableProps[field.name]
+			disabled: () => defaultValue === undefined || value === defaultValue || !game.editor.ui.propsEditor.editableProps[field.name]
 		},
 
 	], ev)

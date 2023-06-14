@@ -32,7 +32,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 			name: "Place as child",
 			tip: "Place as child to each selected object. (Alt + Click)",
 			onClick: () => placeAsChild(file),
-			disabled: !game.editor.selection.length
+			disabled: () => !game.editor.selection.length
 		},
 		{
 			name: "Place",

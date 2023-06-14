@@ -43,7 +43,7 @@ const onContextMenu = (ev: PointerEvent) => {
 		{
 			name: R.fragment(R.icon('paste'), "Paste"),
 			onClick: editorUtils.onPasteClick,
-			disabled: !editorUtils.canPaste()
+			disabled: () => !editorUtils.canPaste()
 		}
 	], ev);
 };

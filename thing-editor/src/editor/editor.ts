@@ -236,8 +236,8 @@ class Editor {
 		return ret;
 	}
 
-	chooseProject(noClose = false) {
-		ProjectsList.__chooseProject(noClose).then((dir: string) => {
+	chooseProject(notSkipable = false) {
+		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
 			if(dir && dir != this.settings.getItem('last-opened-project')) {
 				this.settings.setItem('last-opened-project', dir);
 				this.__projectReloading = true;

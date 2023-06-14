@@ -1,9 +1,7 @@
 import { EventEmitter } from "events";
 import { Container } from "pixi.js";
-import { h } from "preact";
 import { KeyedMap, SerializedObject } from "thing-editor/src/editor/env";
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
+import MainMenu from "thing-editor/src/editor/ui/main-menu";
 import regenerateCurrentSceneMapTypings from "thing-editor/src/editor/utils/generate-editor-typings";
 import type { SelectionData } from "thing-editor/src/editor/utils/selection";
 import Scene from "thing-editor/src/engine/components/scene.c";
@@ -18,7 +16,6 @@ const STRICT_HISTORY_LEN = 20;
 
 let undoStack: KeyedMap<HistoryRecord[]> = {}; //separated undo/redo array for scene and each modal objects
 let redosStack: KeyedMap<HistoryRecord[]> = {};
-let historyUi: HistoryUi;
 
 let instance: History;
 
@@ -44,7 +41,7 @@ function applyState(state: HistoryRecord) {
 	stage.y = state.selectionData._stageY as number;
 	stage.scale.x = stage.scale.y = state.selectionData._stageS as number;
 	lastAppliedTreeData = state.treeData;
-	historyUi.refresh();
+
 	if(stateChanged) {
 		instance.events.emit('afterHistoryJump');
 	}
@@ -201,7 +198,6 @@ class History {
 				this._undoList.splice(i, 1);
 			}
 		}
-		this.updateUi();
 	}
 
 	addSelectionHistoryState() {
@@ -250,9 +246,6 @@ class History {
 		return null;
 	}
 
-	updateUi() {
-		historyUi && historyUi.refresh();
-	}
 
 	setCurrentStateModified() {
 		this.currentState.treeData._isModified = true;
@@ -266,15 +259,10 @@ class History {
 			s.treeData._isModified = true;
 		});
 		delete (this.currentState as HistoryRecord).treeData._isModified;
-		this.updateUi();
 	}
 
 	get isStateModified() {
 		return this.currentState && this.currentState.treeData._isModified;
-	}
-
-	buttonsRenderer() {
-		return h(HistoryUi, null);
 	}
 
 	navigateSelection(direction = -1) {
@@ -290,7 +278,7 @@ class History {
 				currentSelectionNavigation = Math.min(this._redoList.length, currentSelectionNavigation);
 			}
 			if(targetHistoryState) {
-				if(JSON.stringify(targetHistoryState.selectionData) !== JSON.stringify(game.editor.selection.saveCurrentSelection())) {
+				if(JSON.stringify(targetHistoryState.selectionData.slice()) !== JSON.stringify(game.editor.selection.saveSelection())) {
 					game.editor.selection.loadSelection(targetHistoryState.selectionData);
 					break;
 				}
@@ -305,27 +293,6 @@ class History {
 
 let historySaveScheduled = 0;
 let needHistorySave = false;
-
-class HistoryUi extends ComponentDebounced {
-	constructor() {
-		super();
-		historyUi = this;
-	}
-
-	render() {
-		if(!instance._undoList) {
-			return R.span(null);
-		}
-
-		return R.span(null,
-			R.btn('Undo', game.editor.history.undo, undefined, 'menu-btn', { key: 'z', ctrlKey: true }, !instance.isUndoAvailable() || !game.__EDITOR_mode),
-			R.btn('Redo', game.editor.history.redo, undefined, 'menu-btn', { key: 'y', ctrlKey: true }, !instance.isRedoAvailable() || !game.__EDITOR_mode),
-			R.btn('<<', () => game.editor.history.navigateSelection(-1), 'Selection history back', 'menu-btn', { key: 'ArrowLeft', ctrlKey: true, altKey: true }, !game.__EDITOR_mode),
-			R.btn('>>', () => game.editor.history.navigateSelection(1), '', 'Selection history forward', { key: 'ArrowRight', ctrlKey: true, altKey: true }, !game.__EDITOR_mode),
-
-		);
-	}
-}
 
 let needSaveSelectionInToHistory = 0;
 
@@ -362,3 +329,32 @@ function arraysEqual(a: any[], b: any[]) {
 let historyInstance = new History();
 
 export default historyInstance;
+
+MainMenu.injectMenu('edit', [
+
+	null,
+	{
+		name: 'Undo',
+		onClick: () => game.editor.history.undo(),
+		hotkey: { key: 'z', ctrlKey: true },
+		disabled: () => !instance.isUndoAvailable() || !game.__EDITOR_mode
+	},
+	{
+		name: 'Redo',
+		onClick: () => game.editor.history.redo(),
+		hotkey: { key: 'y', ctrlKey: true },
+		disabled: () => !instance.isRedoAvailable() || !game.__EDITOR_mode
+	},
+	{
+		name: 'Selection history back',
+		onClick: () => game.editor.history.navigateSelection(-1),
+		hotkey: { key: 'ArrowLeft', ctrlKey: true, altKey: true },
+		disabled: () => !game.__EDITOR_mode
+	},
+	{
+		name: 'Selection history forward',
+		onClick: () => game.editor.history.navigateSelection(1),
+		hotkey: { key: 'ArrowRight', ctrlKey: true, altKey: true },
+		disabled: () => !game.__EDITOR_mode
+	}
+]);

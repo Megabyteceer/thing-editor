@@ -3,6 +3,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
+import MainMenu from "thing-editor/src/editor/ui/main-menu";
 import Modal from "thing-editor/src/editor/ui/modal";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import Status from "thing-editor/src/editor/ui/status";
@@ -17,10 +18,6 @@ interface UIProps {
 	onUIMounted: (ui: UI) => void
 }
 
-const menyProps = {
-	className: 'main-menu',
-	"data-help": 'editor.MainMenu' //TODO chek help
-}
 const workingAreaProps = {
 	id: 'working-area'
 }
@@ -67,37 +64,9 @@ export default class UI extends ComponentDebounced<UIProps> {
 		this.status = ref as Status;
 	}
 
-	onOpenProjectClick() {
-		game.editor.chooseProject();
-	}
-
 	render(): ComponentChild {
-		return R.fragment(R.div(menyProps,
-			R.btn('Open project...', this.onOpenProjectClick, undefined, 'menu-btn'),
-			R.btn('Save', () => {
-				if(PrefabEditor.currentPrefabName) {
-					PrefabEditor.acceptPrefabEdition();
-				} else {
-					game.editor.saveCurrentScene();
-				}
-			}, 'Save current Scene', undefined, { key: 's', ctrlKey: true }),
-			//R.btn('Browse...', this.onOpenProjectFolderClick, "Reveal in File Explorer", 'menu-btn'),
-			//TODO   main menu tree  R.btn('Build', this.onBuildClick, "Build release version of game.", 'menu-btn'),
-			//R.btn('Build debug', this.onBuildDebugClick, "Build debug version of game.\nContains asserts.", 'menu-btn'),
-			//h(LanguageView),
-			//h(TexturesView),
-			//h(OptimizationView),
-			game.editor.history.buttonsRenderer(),
-			//R.btn('Project settings', game.editor.openProjectDescToEdit, undefined, 'menu-btn'),
-			//editor.__preBuildAutoTest && R.btn('Test', editor.testProject, "Launch auto-tests", 'menu-btn'),
-			//h(Help),
-			/*	editor.fs.filesExt && editor.fs.filesExt.scripts.map((s) => {
-					return R.span({ key: s.name }, R.btn(s.name.replace('scripts/', '').replace(/\.js$/, ''), () => {
-						editor.fs.exec(s.name);
-					}, undefined, 'menu-btn'));
-				})*/
-		),
-
+		return R.fragment(
+			h(MainMenu, null),
 			R.div(workingAreaProps,
 				h(Window, {
 					id: 'sceneTree',

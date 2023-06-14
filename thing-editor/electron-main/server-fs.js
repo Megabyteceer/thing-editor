@@ -97,8 +97,8 @@ module.exports = (mainWindow) => {
 					} else if(success) {
 						console.log(success);
 					}
-					dialog.showMessageBox(mainWindow, 'process.exit', error || success);
-					//process.exit(error ? 1 : 0);
+					//dialog.showMessageBox(mainWindow, 'process.exit', error || success);
+					process.exit(error ? 1 : 0);
 					return;
 				case 'fs/showQuestion':
 					const buttons = Object.values(args).filter(b => b);

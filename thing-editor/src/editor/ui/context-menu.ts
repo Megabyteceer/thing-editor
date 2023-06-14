@@ -6,7 +6,7 @@ import { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 interface ContextMenuItemData {
 	name: ComponentChild,
 	onClick: ((ev?: PointerEvent) => void) | (() => void),
-	disabled?: (() => boolean) | boolean,
+	disabled?: (() => boolean),
 	hidden?: boolean,
 	stayAfterClick?: boolean,
 	tip?: string,

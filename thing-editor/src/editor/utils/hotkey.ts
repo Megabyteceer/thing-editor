@@ -39,7 +39,7 @@ function isHotkeyBlockedOnInput(hotkey: Hotkey) {
 
 const isHotkeyHit = (ev: KeyboardEvent, element: HTMLElement, hotkey?: Hotkey) => {
 
-	if(!hotkey || !element) {
+	if(!hotkey) {
 		return;
 	}
 

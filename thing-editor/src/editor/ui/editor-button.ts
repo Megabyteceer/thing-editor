@@ -1,26 +1,42 @@
 import { ClassAttributes, Component, ComponentChild } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
+import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Window from "thing-editor/src/editor/ui/editor-window";
+import { MAIN_MENU } from "thing-editor/src/editor/ui/main-menu";
 import isHotkeyHit, { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 
 const allHotkeyButtons: EditorButton[] = [];
-window.addEventListener("keydown", (ev) => {
 
-	for(let w of Window.allOrdered) {
-		if(w.props.hotkeysHandlers) {
-			for(let menuGroup of w.props.hotkeysHandlers) {
-				for(let menuItem of menuGroup) {
-					if(menuItem) {
-						if(typeof menuItem.disabled !== 'function' || !menuItem.disabled()) {
-							if(isHotkeyHit(ev, w.base as HTMLElement, menuItem.hotkey)) {
-								menuItem.onClick();
-								return;
-							}
+
+const handleHotkeys = (ev: KeyboardEvent, handlers?: ContextMenuItem[][], windowBody?: HTMLDivElement) => {
+	if(handlers) {
+		for(let menuGroup of handlers) {
+			for(let menuItem of menuGroup) {
+				if(menuItem) {
+					if(typeof menuItem.disabled !== 'function' || !menuItem.disabled()) {
+						if(isHotkeyHit(ev, windowBody as HTMLElement, menuItem.hotkey)) {
+							menuItem.onClick();
+							return true;
 						}
 					}
 				}
 			}
+		}
+	}
+}
+
+window.addEventListener("keydown", (ev) => {
+
+	for(let w of Window.allOrdered) {
+		if(handleHotkeys(ev, w.props.hotkeysHandlers, w.base as HTMLDivElement)) {
+			return;
+		}
+	}
+
+	for(let item of MAIN_MENU) {
+		if(handleHotkeys(ev, [item.items])) {
+			return;
 		}
 	}
 

@@ -97,7 +97,10 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		};
 	}
 
-	isUIBlockedByModal(element: HTMLElement) {
+	isUIBlockedByModal(element?: HTMLElement) {
+		if(!element) {
+			return false;
+		}
 		if(spinnerShowCounter > 0) {
 			return true;
 		}
