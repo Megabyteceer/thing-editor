@@ -56,7 +56,7 @@ interface ProjectsListState {
 
 export default class ProjectsList extends Component<ProjectsListProps, ProjectsListState> {
 
-	static chooseProject(noCloseable: boolean = false) {
+	static __chooseProject(noCloseable: boolean = false) {
 
 		game.editor.ui.viewport.stopExecution();
 		const projects = fs.enumProjects();

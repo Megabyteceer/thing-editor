@@ -1,4 +1,4 @@
-import { Container, DisplayObject, Sprite } from "pixi.js";
+import { Container, DisplayObject } from "pixi.js";
 import { Component, ComponentChild, render } from "preact";
 import { KeyedObject, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
@@ -525,7 +525,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 }
 
 function initSelectableProps() {
-	let tmpSprite = new Sprite() as KeyedObject;
+	let tmpSprite = Lib._loadClassInstanceById('Sprite') as KeyedObject;
 	let spriteProps = enumProps(tmpSprite);
 	for(let p of spriteProps) {
 		if(!p.startsWith('_')) {

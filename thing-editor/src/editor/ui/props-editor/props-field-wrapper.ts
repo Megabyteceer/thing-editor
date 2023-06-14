@@ -5,6 +5,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc, EditablePropertyType } from "thing-editor/src/editor/props-editor/editable";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
+import ArrayEditableProperty from "thing-editor/src/editor/ui/props-editor/props-editors/array-editable-property";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -216,14 +217,23 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 				}
 			}, field.name),
 			R.div(wrapperProps,
-				h(field.renderer, {
-					ref: this.editorRef,
-					value,
-					onChange: this.onChange as any,
-					onBlur: this._onBlur,
-					field,
-					disabled
-				})
+				field.arrayProperty ?
+					h(ArrayEditableProperty, {
+						ref: this.editorRef,
+						value,
+						onChange: this.onChange as any,
+						onBlur: this._onBlur,
+						field,
+						disabled
+					}) :
+					h(field.renderer, {
+						ref: this.editorRef,
+						value,
+						onChange: this.onChange as any,
+						onBlur: this._onBlur,
+						field,
+						disabled
+					})
 			));
 	}
 }

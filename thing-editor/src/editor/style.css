@@ -1129,7 +1129,18 @@ input[disabled] {
 	border-color: #880000;
 }
 
+.array-prop {
+	text-align: right;
+}
 
+.array-prop-item {
+	display: flex;
+}
+
+.array-prop-item-remove-btn {
+    padding: 1px 11px;
+    color: #ff0000;
+}
 
 
 

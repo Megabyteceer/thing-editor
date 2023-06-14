@@ -105,7 +105,7 @@ export default class ClassesLoader {
 						propertyAssert(prop, typeof prop.step === 'number', "'step' attribute should have number value.");
 					}
 
-					if(!prop.noNullCheck && (prop.type === 'number' || prop.type === 'color')) {
+					if(!prop.noNullCheck && !prop.arrayProperty && (prop.type === 'number' || prop.type === 'color')) {
 						wrapPropertyWithNumberChecker(Class, prop.name);
 						prop.__nullCheckingIsApplied = true;
 					}

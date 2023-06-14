@@ -118,7 +118,6 @@ module.exports = (mainWindow) => {
 			event.returnValue = er;
 		}
 	});
-
 }
 
 

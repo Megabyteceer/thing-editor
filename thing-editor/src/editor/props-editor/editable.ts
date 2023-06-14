@@ -43,7 +43,6 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 
 	/** splitter header */
 	title?: string,
-	isArray?: true,
 	notAnimate?: true,
 	select?: SelectEditorItem[] | (() => SelectEditorItem[])
 	noNullCheck?: true,
@@ -54,6 +53,8 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	notSerializable?: true;
 	override?: true;
 	filterName?: string;
+	arrayProperty?: true;
+	defaultArrayItemValue?: any;
 }
 
 interface EditablePropertyDesc<T extends Container = Container> extends EditablePropertyDescRaw<T> {

@@ -11,6 +11,9 @@ export default class Bunny extends DSprite {
 	@editable()
 	gravity = 2;
 
+	@editable({ arrayProperty: true, type: 'callback' })
+	arrayField = [];
+
 	init() {
 		super.init();
 		this.xSpeed = (Math.random() - 0.5) * 40;

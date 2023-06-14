@@ -237,11 +237,11 @@ class Editor {
 	}
 
 	chooseProject(noClose = false) {
-		ProjectsList.chooseProject(noClose).then((dir: string) => {
-			if(dir) {
+		ProjectsList.__chooseProject(noClose).then((dir: string) => {
+			if(dir && dir != this.settings.getItem('last-opened-project')) {
 				this.settings.setItem('last-opened-project', dir);
 				this.__projectReloading = true;
-				window.document.location.reload();
+				this.openProject(dir);
 			}
 		});
 	}
@@ -297,9 +297,21 @@ class Editor {
 				mergeProjectDesc(this.projectDesc, this.libsProjectDescMerged);
 				mergeProjectDesc(this.projectDesc, projectDesc);
 
+				if(excludeOtherProjects()) {
+					this.__projectOpenWasFine(dir);
+					this.__projectReloading = true;
+					return; // window will be reloaded by vite.js because of tsconfig change.
+				} else {
+					if(game.pixiApp) { // another project is currently open.
+						location.reload();
+						return;
+					}
+				}
+
 				game.applyProjectDesc(this.projectDesc);
 
 				game.init(window.document.getElementById('viewport-root'), 'editor.' + this.projectDesc.id, '/games/' + dir + '/');
+
 				game.stage.interactiveChildren = false;
 				protectAccessToSceneNode(game.stage, "game stage");
 				protectAccessToSceneNode(game.stage.parent, "PIXI stage");
@@ -310,12 +322,15 @@ class Editor {
 
 				editorEvents.emit('didProjectOpen');
 
-				this.settings.setItem('last-opened-project', dir);
+
 
 				if(game.settings.getItem(LAST_SCENE_NAME) && !Lib.hasScene(game.settings.getItem(LAST_SCENE_NAME))) {
 					this.saveLastSceneOpenName('');
 				}
 				game.settings.setItem(LAST_SCENE_NAME, game.settings.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
+
+				this.__projectOpenWasFine(dir);
+
 				this.restoreBackup();
 
 				this.regeneratePrefabsTypings();
@@ -330,6 +345,11 @@ class Editor {
 
 			}
 		}
+	}
+
+	__projectOpenWasFine(dir: string) {
+		this.settings.setItem('last-opened-project', dir);
+
 	}
 
 	warnEqualFiles(file: FileDesc, existingFile: FileDesc) {
@@ -494,8 +514,6 @@ class Editor {
 			});
 		}
 	}
-
-
 
 	get currentSceneName(): string {
 		return game.settings.getItem(LAST_SCENE_NAME, '');
@@ -763,7 +781,8 @@ function sanitizeJSON(input: string) {
 	return input.replace(/\/\/.*$/gm, '').replace(/\/\*.*\*\//gm, '');
 }
 
-function excludeOtherProjects() {
+/** returns true if tsconfig.json changed */
+function excludeOtherProjects(): boolean | undefined {
 	try { // vscode workspace
 
 		const workspaceConfigSrc = fs.readFile(WORKSPACE_FILE_NAME);
@@ -824,8 +843,6 @@ function excludeOtherProjects() {
 		console.error('JSON parsing error: ' + TS_CONFIG_FILE_NAME);
 		console.error(er);
 	}
-
-
 }
 
 

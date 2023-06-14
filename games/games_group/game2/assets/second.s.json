@@ -17,7 +17,11 @@
 					"p": {
 						"x": 289,
 						"y": 271,
-						"image": "bunny.png"
+						"image": "bunny.png",
+						"arrayField": [
+							"Sound.play`click",
+							"Sound.play`over"
+						]
 					}
 				},
 				{
