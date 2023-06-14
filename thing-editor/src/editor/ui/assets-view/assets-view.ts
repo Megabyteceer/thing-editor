@@ -10,6 +10,7 @@ import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/asse
 import Window, { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
 import WindowMenu from "thing-editor/src/editor/ui/window-menu";
+import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-or-text";
 import game from "thing-editor/src/engine/game";
@@ -250,7 +251,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		}
 
 		files = files.filter((asset) => {
-			if(asset.assetName.startsWith(game.editor.backupPrefix)) {
+			if(asset.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 				return false;
 			}
 			if(!this.state.filtersActive) {

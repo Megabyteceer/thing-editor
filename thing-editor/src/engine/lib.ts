@@ -13,7 +13,7 @@ import Pool from "thing-editor/src/engine/utils/pool";
 import fs, { AssetType, FileDesc, FileDescImage, FileDescPrefab } from "thing-editor/src/editor/fs";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
+import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import getPrefabDefaults, { invalidatePrefabDefaults } from "thing-editor/src/editor/utils/get-prefab-defaults";
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -51,7 +51,7 @@ export default class Lib {
 		let isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, "No scene with name '" + name + "'", 10046);
 		/// #if EDITOR
-		if(!name.startsWith(game.editor.backupPrefix)) {
+		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
 			scenes[name].p.name = name;
 		}
 		/// #endif
@@ -70,7 +70,7 @@ export default class Lib {
 	static loadPrefab(name: string): Container {
 		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
 		/// #if EDITOR
-		if(!name.startsWith(game.editor.backupPrefix)) {
+		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
 			prefabs[name].p.name = name;
 		}
 		/// #endif
@@ -305,7 +305,7 @@ export default class Lib {
 				if(!showedReplacings[src.c!]) {
 					showedReplacings[src.c!] = true;
 					setTimeout(() => { // wait for id assign
-						game.editor.ui.status.error("Unknown class " + src.c + " was temporary replaced with class " + replaceClassName + ".", 32012, ret);
+						game.editor.ui.status.error("Unknown class " + src.c, 32012, ret);
 					}, 1);
 				}
 			}
@@ -576,7 +576,7 @@ export default class Lib {
 		game.editor.disableFieldsCache = true;
 		let sceneData = Lib.__serializeObject(scene);
 		game.editor.disableFieldsCache = false;
-		if(!name.startsWith(game.editor.backupPrefix)) {
+		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
 			scene.name = name;
 		}
 		scenes[name] = sceneData;
@@ -589,7 +589,7 @@ export default class Lib {
 		assert(typeof name === 'string', "Prefab name expected.");
 		assert(!(object instanceof Scene), "attempt to save Scene or not DisplayObject as prefab.");
 		let tmpName = object.name;
-		if(!name.startsWith(game.editor.backupPrefix)) {
+		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
 			object.name = name;
 		}
 		game.editor.disableFieldsCache = true;

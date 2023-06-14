@@ -1,6 +1,7 @@
 import { Container, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import type { KeyedObject, SerializedObject, SourceMappedConstructor, ThingEditorServer } from "thing-editor/src/editor/env";
+import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -214,7 +215,7 @@ export default class fs {
 			file.mTime = mTime;
 			file.asset = data as SerializedObject;
 			game.editor.ui.refresh();
-		} else if(!assetName.startsWith(game.editor.backupPrefix)) {
+		} else if(!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 			fs.refreshAssetsList();
 		}
 	}
@@ -317,7 +318,7 @@ export default class fs {
 				(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
 				allAssets.push(file);
 
-				if(prevAllAssets !== undefined && !file.assetName.startsWith(game.editor.backupPrefix)) {
+				if(prevAllAssets !== undefined && !file.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 					let oldAsset = prevAllAssetsMap!.get(file.fileName);
 					if(!oldAsset) {
 						__onAssetAdded(file);
@@ -336,7 +337,7 @@ export default class fs {
 
 		if(prevAllAssets) {
 			for(let f of prevAllAssets) {
-				if(!f.assetName.startsWith(game.editor.backupPrefix) && !fs.getFileByAssetName(f.assetName, f.assetType)) {
+				if(!f.assetName.startsWith(EDITOR_BACKUP_PREFIX) && !fs.getFileByAssetName(f.assetName, f.assetType)) {
 					__onAssetDeleted(f);
 				}
 			}

@@ -50,7 +50,6 @@ declare interface ProjectDesc {
 	__externalTranslations: string[],
 	autoFullscreenDesktop: false,
 	autoFullscreenMobile: false,
-	__lastSceneName?: string,
 	__proxyFetchesViaNodeServer: false,
 	__group: string,
 	__webpack: {

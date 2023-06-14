@@ -6,7 +6,7 @@ import { stepTo } from "thing-editor/src/engine/utils/utils";
 
 const FLOOR_Y = game.H - 25;
 
-export default class Bunny2 extends DSprite {
+export default class Bunny extends DSprite {
 
 	@editable()
 	gravity = 2;

@@ -21,6 +21,7 @@ import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
+import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
@@ -30,6 +31,8 @@ import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
+
+const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
 
 class Editor {
 
@@ -72,8 +75,6 @@ class Editor {
 	__projectReloading = false; //TODO:  rename to restartInProgress
 
 	__wrongTexture = Texture.from('img/wrong-texture.png');
-
-	readonly backupPrefix = '___editor_backup_';
 
 	isProjectOpen = false;
 
@@ -283,10 +284,10 @@ class Editor {
 
 				this.settings.setItem('last-opened-project', dir);
 
-				if(this.projectDesc.__lastSceneName && !Lib.hasScene(this.projectDesc.__lastSceneName)) {
-					this.projectDesc.__lastSceneName = '';
+				if(game.settings.getItem(LAST_SCENE_NAME) && !Lib.hasScene(game.settings.getItem(LAST_SCENE_NAME))) {
+					this.saveLastSceneOpenName('');
 				}
-				this.projectDesc.__lastSceneName = this.projectDesc.__lastSceneName || this.projectDesc.mainScene || 'main';
+				game.settings.setItem(LAST_SCENE_NAME, game.settings.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
 				this.restoreBackup();
 
 				this.regeneratePrefabsTypings();
@@ -459,11 +460,11 @@ class Editor {
 
 
 	get currentSceneName(): string {
-		return this.projectDesc && this.projectDesc.__lastSceneName || '';
+		return game.settings.getItem(LAST_SCENE_NAME, '');
 	}
 
 	get currentSceneBackupName() {
-		return this.backupPrefix + this.projectDesc.__lastSceneName;
+		return EDITOR_BACKUP_PREFIX + game.settings.getItem(LAST_SCENE_NAME);
 	}
 
 	openUrl(url: string) {
@@ -702,11 +703,8 @@ class Editor {
 	}
 
 	protected saveLastSceneOpenName(name: string) {
-		if(!name.startsWith(game.editor.backupPrefix)) {
-			if(this.projectDesc.__lastSceneName !== name) {
-				this.projectDesc.__lastSceneName = name;
-				this.saveProjectDesc();
-			}
+		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
+			game.settings.setItem('__EDITOR_last_scene_name', name);
 		}
 	}
 

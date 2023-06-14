@@ -3,6 +3,8 @@ import game from "thing-editor/src/engine/game";
 let tryCatchWarned = false;
 let tryTime = 0;
 
+const EDITOR_BACKUP_PREFIX = '___editor_backup_';
+
 class EDITOR_FLAGS {
 	/* super.init() call validation flag*/
 	static _root_initCalled: boolean;
@@ -28,4 +30,6 @@ class EDITOR_FLAGS {
 }
 
 export default EDITOR_FLAGS;
+
+export { EDITOR_BACKUP_PREFIX };
 

@@ -3,7 +3,6 @@
 	"id": "thing-project-example2.pixel-cave.com",
 	"icon": "assets/bunny.png",
 	"__group": "thing-editor-demos",
-	"__lastSceneName": "main",
 	"screenOrientation": "auto",
 	"width": 1280,
 	"height": 720,
