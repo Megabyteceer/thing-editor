@@ -106,7 +106,7 @@ const WHITE: FileDescImage = {
 	lib: null
 };
 
-const execFs = (command: string, filename?: string | string[], content?: string, ...args: any[]) => {
+const execFs = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => {
 	const ret = thingEditorServer.fs(command, filename, content, ...args);
 	if(ret instanceof Error) {
 		debugger;
@@ -197,6 +197,10 @@ export default class fs {
 		return execFs('fs/saveFile', fileName, data as string) as number;
 	}
 
+	static exists(fileName: string) {
+		return execFs('fs/exists', fileName);
+	}
+
 	static copyFile(from: string, to: string) {
 		return execFs('fs/copyFile', from, to);
 	}
@@ -246,6 +250,14 @@ export default class fs {
 
 	static enumProjects(): ProjectDesc[] {
 		return execFs('fs/enumProjects') as ProjectDesc[];
+	}
+
+	static browseDir(path: string): ProjectDesc[] {
+		return execFs('fs/browseDir', path) as ProjectDesc[];
+	}
+
+	static build(projectDir: string, debug: boolean): ProjectDesc[] {
+		return execFs('fs/build', projectDir, debug) as ProjectDesc[];
 	}
 
 	static watchDirs(dirs: string[]) {
@@ -377,6 +389,6 @@ export default class fs {
 	}
 }
 
-export { AssetType, AllAssetsTypes };
-export type { FileDesc, FileDescClass, FileDescPrefab, FileDescScene, FileDescImage, LibInfo };
+export { AllAssetsTypes, AssetType };
+export type { FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, LibInfo };
 

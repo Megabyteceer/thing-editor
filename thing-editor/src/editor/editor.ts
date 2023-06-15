@@ -310,7 +310,7 @@ class Editor {
 
 				game.applyProjectDesc(this.projectDesc);
 
-				game.init(window.document.getElementById('viewport-root'), 'editor.' + this.projectDesc.id, '/games/' + dir + '/');
+				game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id, '/games/' + dir + '/');
 
 				game.stage.interactiveChildren = false;
 				protectAccessToSceneNode(game.stage, "game stage");
@@ -741,7 +741,9 @@ class Editor {
 			}
 		}
 		let rootPath: string = thingEditorServer.argv[0].split('node_modules')[0];
-		rootPath = rootPath.substring(0, rootPath.length - 1);
+		if(fileName.startsWith('\\') || fileName.startsWith('/')) {
+			rootPath = rootPath.substring(0, rootPath.length - 1);
+		}
 		let url = '/__open-in-editor?file=' + rootPath + fileName;
 		fetch(url);
 	}

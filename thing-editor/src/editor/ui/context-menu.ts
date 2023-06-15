@@ -31,16 +31,6 @@ window.addEventListener('pointerdown', (ev: PointerEvent) => {
 	}
 });
 
-window.addEventListener('mousemove', (ev: MouseEvent) => {
-	if(menuShown) {
-		let menuBounds = document.querySelector('.context-menu')!.getBoundingClientRect();
-		if(menuBounds.x > ev.clientX || menuBounds.right < ev.clientX ||
-			menuBounds.y > ev.clientY || menuBounds.bottom < ev.clientY) {
-			hideMenu();
-		}
-	}
-});
-
 const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	if(hideMenuTimeout) {
 		clearTimeout(hideMenuTimeout);
@@ -63,12 +53,20 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 		menuTemplate.pop();
 	}
 
+	const style = {
+		left: Math.max(0, ev.clientX - 3),
+		top: Math.max(0, ev.clientY - menuTemplate.length * 20 - 10)
+	}
+	if((ev.target as HTMLDivElement).closest('.main-menu')) {
+		const mainMenuButton = ((ev.target as HTMLDivElement).closest('button') || ev.target) as HTMLButtonElement;
+		const bounds = mainMenuButton.getBoundingClientRect();
+		style.left = bounds.left;
+		style.top = bounds.bottom;
+	}
+
 	render(R.div({
 		className: 'context-menu',
-		style: {
-			left: Math.max(0, ev.clientX - 3),
-			top: Math.max(0, ev.clientY - menuTemplate.length * 20 - 10)
-		}
+		style,
 	}, menuTemplate.map(renderMenuItem)), root);
 	menuShown = true;
 }

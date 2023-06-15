@@ -3,7 +3,7 @@ import type { __EditorType } from "thing-editor/src/editor/editor";
 /// #if EDITOR
 
 
-import { BaseTexture, Container, Point, TextureGCSystem, utils } from "pixi.js";
+import { BaseTexture, Container, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import type { Classes, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/components/scene.c";
 
@@ -132,7 +132,7 @@ class Game {
 	time = 0;
 	*/
 
-	init(element: HTMLElement | null, gameId: string, _resourcesPath = '') {
+	init(element?: HTMLElement, gameId?: string, _resourcesPath = '') {
 		this.pixiApp = app = new Application();
 
 		//@ts-ignore
@@ -150,13 +150,35 @@ class Game {
 		this.stage = stage;
 		stage.__nodeExtendData = {};
 
-		this.settings = new Settings(gameId);
+		this.settings = new Settings(gameId || (window as any)._thingEngineAssets.projectDesc.id);
 
 		initGameInteraction();
 
 		app.stage.addChild(stage);
 		app.ticker.add(this._updateGlobal);
 		Sound.init();
+
+
+		/// #if EDITOR
+
+		/*
+		/// #endif
+		this._initBuild();
+		//*/
+	}
+
+	_initBuild() {
+		const assets = (window as any)._thingEngineAssets;
+
+		// workaround for issue: https://jira.bgaming.com/browse/BGG-6807, see for more details: https://github.com/pixijs/pixijs/issues/8315
+		(Texture.WHITE.baseTexture.resource.source as any).getContext("2d").fillRect(0, 0, 1, 1);
+
+		Lib.addTexture('EMPTY', Texture.EMPTY);
+		Lib.addTexture('WHITE', Texture.WHITE);
+
+
+		this.pixiApp.view.addEventListener!('wheel', (ev) => ev.preventDefault());
+		window.addEventListener('resize', this._onContainerResize.bind(this));
 	}
 
 	_onContainerResize() {

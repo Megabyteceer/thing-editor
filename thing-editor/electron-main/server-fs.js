@@ -71,6 +71,9 @@ module.exports = (mainWindow) => {
 						return true;
 					}, event);
 					return;
+				case 'fs/exists':
+					event.returnValue = fs.existsSync(fn(fileName));
+					return;
 				case 'fs/readFile':
 					fd = fs.openSync(fn(fileName), 'r');
 					let c = fs.readFileSync(fd, fsOptions);
@@ -108,6 +111,21 @@ module.exports = (mainWindow) => {
 						buttons,
 						defaultId: 0,
 						cancelId: buttons.length - 1
+					});
+					return;
+				case 'fs/browseDir':
+					let explorer;
+					switch(require('os').platform()) {
+						case "win32": explorer = "explorer"; break;
+						case "linux": explorer = "xdg-open"; break;
+						case "darwin": explorer = "open"; break;
+					}
+					require('child_process').spawn(explorer, [fn(fileName)], {detached: true}).unref();
+					event.returnValue = true;
+					return;
+				case 'fs/debug':
+					require('./build.js').build(fileName, content).then((res) => {
+						event.returnValue = res;
 					});
 					return;
 				default:

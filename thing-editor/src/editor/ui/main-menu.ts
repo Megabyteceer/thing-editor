@@ -2,6 +2,7 @@ import { Component } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import Build from "thing-editor/src/editor/utils/build";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
 
@@ -24,6 +25,18 @@ const savePrefabClick = (_ev?: PointerEvent) => {
 
 const exitClick = (_ev?: PointerEvent) => {
 	fs.exitWithResult('exit menu click');
+}
+
+const browseClick = (_ev?: PointerEvent) => {
+	fs.browseDir(game.editor.currentProjectAssetsDir);
+}
+
+const projectPropsClick = (_ev?: PointerEvent) => {
+	game.editor.editSource(game.editor.currentProjectDir + 'thing-project.json');
+}
+
+const buildClick = (_ev?: PointerEvent) => {
+	Build.build(false);
 }
 
 interface MainMenuItem {
@@ -65,14 +78,32 @@ const MAIN_MENU: MainMenuItem[] = [
 	{
 		name: 'Edit',
 		id: 'edit',
+		items: []
+	},
+	{
+		name: 'Project',
+		id: 'edit',
 		items: [
-
-
+			{
+				name: 'Browse...',
+				tip: 'Reveal project folder in Explorer',
+				onClick: browseClick,
+				hotkey: { key: 'b', ctrlKey: true }
+			},
+			null,
+			{
+				name: 'Project Properties...',
+				tip: 'Edit thing-project.json file',
+				onClick: projectPropsClick
+			},
+			null,
+			{
+				name: 'Build release...',
+				onClick: buildClick
+			}
 		]
-
 	}
 ];
-
 
 export default class MainMenu extends Component {
 

@@ -218,9 +218,8 @@
 				"type": "node",
 				"request": "launch",
 				"name": "vite build",
-				"port": 9223,
 				"cwd": "${workspaceFolder}",
-				"args": ["./vite-build.js"]
+				"args": ["./thing-editor/electron-main/build.js"]
 
 			}
 		],
