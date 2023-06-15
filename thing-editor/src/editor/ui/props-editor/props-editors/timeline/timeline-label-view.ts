@@ -106,7 +106,7 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		label.n = movieClip._timelineData.f.map((fieldTimeline) => {
 			return MovieClip._findNextKeyframe(fieldTimeline.t, label.t - 1);
 		});
-		MovieClip.invalidateSerializeCache(movieClip);
+		movieClip.__invalidateSerializeCache();
 	}
 
 	static renormalizeAllLabels(movieClip: MovieClip) {

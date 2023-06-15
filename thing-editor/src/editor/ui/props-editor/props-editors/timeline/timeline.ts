@@ -657,7 +657,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	static _invalidateNodeCache(node: MovieClip) {
-		MovieClip.invalidateSerializeCache(node);
+		node.__invalidateSerializeCache();
 		TimelineLabelView.renormalizeAllLabels(node);
 		game.editor.sceneModified();
 	}
@@ -790,10 +790,6 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 		let x = ev.clientX - 110 * s - b.x - draggingXShift;
 		return Math.max(0, Math.round((x + tl.scrollLeft * s) / widthZoom / s));
-	}
-
-	static makePathForKeyframeAutoSelect(property: string | EditablePropertyDesc, field: TimelineFieldData, keyframe: TimelineKeyFrame) {
-		return ((property as EditablePropertyDesc).name || property) + ',' + field.n + ',' + keyframe.t;
 	}
 
 	static onAutoSelect(selectPath: string[]) {

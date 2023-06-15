@@ -77,7 +77,7 @@ interface EditablePropertyDesc<T extends Container = Container> extends Editable
 
 /** editable property decorator */
 function editable<T extends DisplayObject>(editablePropertyDesc?: EditablePropertyDescRaw<T>) {
-	return function (target: T, propertyName: string, _descriptor?: PropertyDescriptor<T>) {
+	return function (target: T, propertyName: string, _descriptor?: PropertyDescriptor) {
 		editableInner(target, propertyName, editablePropertyDesc);
 	}
 }

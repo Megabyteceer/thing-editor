@@ -377,10 +377,9 @@ export default class MovieClip extends DSprite {
 		return serializeCache.get(this._timelineData);
 	}
 
-	static invalidateSerializeCache(o: MovieClip) {
-		assert(o instanceof MovieClip, "MovieClip expected");
-		let timelineData = o._timelineData;
-		Lib.__invalidateSerializationCache(o);
+	__invalidateSerializeCache() { //TODO move all timeline cache to __nodeExtendData.serializationCache and remove this method invoke from data-path-fixer
+		let timelineData = this._timelineData;
+		Lib.__invalidateSerializationCache(this);
 		deserializeCache.delete(serializeCache.get(timelineData));
 		serializeCache.delete(timelineData);
 		timelineData.f.forEach((f, i) => {

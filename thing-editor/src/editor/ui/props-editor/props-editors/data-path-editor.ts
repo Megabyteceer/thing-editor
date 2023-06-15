@@ -221,9 +221,8 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			}
 
 			return true;
-		} catch(er) {
-			EDITOR_FLAGS.checkTryTime();
-		}
+		} catch(_er) {}
+		EDITOR_FLAGS.checkTryTime();
 	}
 
 	get chooseButtonTip() {
@@ -428,9 +427,8 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 								order += 100;
 								isBold = true;
 							}
-						} catch(er) {// eslin t-disable-line no-empty
-							EDITOR_FLAGS.checkTryTime();
-						}
+						} catch(_er) {}
+						EDITOR_FLAGS.checkTryTime();
 						if(!isBold) {
 							items.push({ name });
 						} else {
@@ -562,10 +560,8 @@ const enumSub = (o: KeyedObject) => {
 				if(hiddenProps.has(o[name])) {
 					continue;
 				}
-			} catch(er) { // eslint-disable-line
-				EDITOR_FLAGS.checkTryTime();
-			}
-
+			} catch(_er) { }
+			EDITOR_FLAGS.checkTryTime();
 			if(enumeratedProps.indexOf(name) === -1) {
 				enumeratedProps.push(name);
 			}

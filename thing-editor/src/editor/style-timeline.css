@@ -332,18 +332,14 @@
 
 .tip-icon{
 	font-family:sans-serif;
-	font-size: 60%;
 	font-weight:bold;
 	display:inline-block;
-	position: absolute;
-	width: 12px;
-	height: 12px;
-	left: 0;
 	border-radius:50%;
 	background:#b97852;
 	color: #ffe564;
 	text-align: center;
 	cursor: pointer;
+	padding: 0 4px;
 }
 
 .tip-icon:hover{

@@ -64,7 +64,7 @@ export default class ObjectsTimelineView extends Component<ObjectsTimelineViewPr
 		timelineData.f.splice(i, 1);
 		this.props.node._disposePlayers();
 		TimelineLineView.invalidateChartsRenderCache(fieldData);
-		MovieClip.invalidateSerializeCache(this.props.node);
+		this.props.node.__invalidateSerializeCache();
 		game.editor.sceneModified();
 		this.forceUpdate();
 	}

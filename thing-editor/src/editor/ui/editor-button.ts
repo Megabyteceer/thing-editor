@@ -3,6 +3,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { MAIN_MENU } from "thing-editor/src/editor/ui/main-menu";
+import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
 import isHotkeyHit, { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 
@@ -130,8 +131,7 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 			debugger; //   ↑
 		} else {
 			if(this.props.disabled) return;
-			//TODO:
-			//DataPathFixer.onNameBlur();
+			DataPathFixer.onNameBlur();
 			this.props.onClick(ev);
 			(ev.target as HTMLElement).blur();
 		}

@@ -574,6 +574,10 @@ input {
 	background: #323334;
 }
 
+#window-info .scene-node-item {
+	display: inline-block;
+}
+
 .tree-desc {
 	margin-bottom: 4px;
 	margin-left: 18px;

@@ -2,6 +2,7 @@ import { Container, Point } from "pixi.js";
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
+import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import exportAsPng from "thing-editor/src/editor/utils/export-as-png";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
@@ -66,7 +67,7 @@ export namespace editorUtils {
 
 		if((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
 
-			//TODO DataPathFixer.rememberPathReferences();
+			DataPathFixer.rememberPathReferences();
 
 			let p = editor.selection[0].parent;
 			let i = p.getChildIndex(editor.selection[0]);
@@ -103,7 +104,7 @@ export namespace editorUtils {
 				editor.ui.sceneTree.selectInTree(p);
 			}
 
-			//TODO DataPathFixer.validatePathReferences();
+			DataPathFixer.validatePathReferences();
 
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
@@ -164,7 +165,7 @@ export namespace editorUtils {
 			return;
 		}
 
-		//TODO DataPathFixer.rememberPathReferences();
+		DataPathFixer.rememberPathReferences();
 
 		game.editor.disableFieldsCache = true;
 		let allCloned: Container[] = [];
@@ -208,7 +209,7 @@ export namespace editorUtils {
 
 		game.editor.disableFieldsCache = false;
 
-		//TODO DataPathFixer.validatePathReferences();
+		DataPathFixer.validatePathReferences();
 		for(let c of allCloned) {
 			let cloneExData = c.__nodeExtendData;
 			cloneExData.__isJustCloned = false;
@@ -221,7 +222,7 @@ export namespace editorUtils {
 
 		if((game.editor.selection.length > 0) && (game.editor.selection[0] !== game.currentContainer)) {
 
-			//TODO DataPathFixer.rememberPathReferences();
+			DataPathFixer.rememberPathReferences();
 
 			let p = game.editor.selection[0].parent;
 			let i = p.getChildIndex(game.editor.selection[0]);
@@ -258,7 +259,7 @@ export namespace editorUtils {
 				game.editor.ui.sceneTree.selectInTree(p);
 			}
 
-			//TODO DataPathFixer.validatePathReferences();
+			DataPathFixer.validatePathReferences();
 
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(true);
@@ -346,7 +347,7 @@ export namespace editorUtils {
 	export const onUnwrapClick = () => {
 		if(isCanBeUnwrapped()) {
 
-			//TODO DataPathFixer.rememberPathReferences();
+			DataPathFixer.rememberPathReferences();
 
 			let o = game.editor.selection[0];
 			let parent = o.parent;
@@ -385,7 +386,7 @@ export namespace editorUtils {
 				o.remove();
 			}
 
-			//TODO DataPathFixer.validatePathReferences();
+			DataPathFixer.validatePathReferences();
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(true);
 		}
@@ -434,7 +435,7 @@ export namespace editorUtils {
 				game.editor.ui.modal.showInfo("Scene can not be wrapped, you can change scene's type instead.", 'Can not wrap', 30013);
 				return;
 			}
-			//TODO DataPathFixer.rememberPathReferences();
+			DataPathFixer.rememberPathReferences();
 			let isPrefab = o === game.currentContainer;
 			let prefabName = game.currentContainer.name;
 
@@ -471,7 +472,7 @@ export namespace editorUtils {
 			game.editor.selection.clearSelection();
 			game.editor.ui.sceneTree.selectInTree(w);
 			w.__nodeExtendData.childrenExpanded = true;
-			//TODO DataPathFixer.validatePathReferences();
+			DataPathFixer.validatePathReferences();
 			game.editor.sceneModified(true);
 			Lib.__callInitIfGameRuns(w);
 		}
@@ -491,7 +492,7 @@ export namespace editorUtils {
 
 			// TODO copy related assets
 
-			//TODO DataPathFixer.rememberPathReferences();
+			DataPathFixer.rememberPathReferences();
 
 			game.editor.disableFieldsCache = true;
 			let added: Container[] = [];
@@ -506,7 +507,7 @@ export namespace editorUtils {
 					game.editor.addTo(selected, o);
 				});
 			}
-			//TODO DataPathFixer.validatePathReferences();
+			DataPathFixer.validatePathReferences();
 
 			while(added.length > 0) {
 				let o = added.shift() as Container;

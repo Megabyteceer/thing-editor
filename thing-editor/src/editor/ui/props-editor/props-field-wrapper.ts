@@ -207,7 +207,6 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 				}
 			}
 		},
-			tip,
 			R.div({
 				className: field.name.startsWith('__') ? 'props-label props-label-helper selectable-text' : 'props-label selectable-text',
 				title: 'Double click - go to definition, Ctrl+click to copy field`s name',
@@ -215,7 +214,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 				onDblClick: () => {
 					game.editor.editSource(field.__src);
 				}
-			}, field.name),
+			}, tip, field.name),
 			R.div(wrapperProps,
 				field.arrayProperty ?
 					h(ArrayEditableProperty, {

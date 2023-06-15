@@ -1,8 +1,8 @@
+import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import { TimelineFieldData, TimelineKeyFrame } from "thing-editor/src/engine/components/movie-clip/field-player";
 
-const makePathForKeyframeAutoSelect = (propertyName: string, field: TimelineFieldData, keyframe: TimelineKeyFrame) => {
-	return propertyName + ',' + field.n + ',' + keyframe.t;
-} //TODO
-
+const makePathForKeyframeAutoSelect = (property: string | EditablePropertyDesc, field: TimelineFieldData, keyframe: TimelineKeyFrame) => {
+	return ((property as EditablePropertyDesc).name || property) + ',' + field.n + ',' + keyframe.t;
+}
 
 export default makePathForKeyframeAutoSelect;

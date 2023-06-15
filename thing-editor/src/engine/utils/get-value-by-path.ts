@@ -140,11 +140,11 @@ const getLatestSceneNodeBypath = (path: string, _this: any, suspendWarning = fal
 	try {
 		getValueByPath(path, _this, true);
 	} catch(er) {
-		EDITOR_FLAGS.checkTryTime();
 		if(!suspendWarning) {
 			console.warn('path validation exception: (' + path + '): ' + _this.___info + ' ' + ((typeof er) === 'object' ? (er as any).message : er));
 		}
 	}
+	EDITOR_FLAGS.checkTryTime();
 	return latestDetectedSceneNode;
 };
 
@@ -188,9 +188,6 @@ setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
 
 export default getValueByPath;
 export {
-	setValueByPath
-	/// #if EDITOR
-	,
 
 
 
@@ -208,5 +205,7 @@ export {
 	getLatestSceneNodesByComplexPath,
 	pathDebugging
 	/// #endif
+	, setValueByPath
+	/// #if EDITOR
 };
 

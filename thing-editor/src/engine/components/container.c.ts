@@ -4,6 +4,7 @@ import { Container, DisplayObject, Filter, Point } from "pixi.js";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable.js";
 
 import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
+import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
 import assert from "thing-editor/src/engine/debug/assert.js";
 import game from "../game.js";
@@ -322,11 +323,11 @@ _editableEmbed(Container, 'name', {
 			return "root object`s name can not be edited because it is always equal to scene`s or prefab`s name."
 		}
 	},
-	beforeEdited: (_val: string) => {
-		//TODO: game.editor.DataPathFixer.beforeNameEdit(val);
+	beforeEdited: (val: string) => {
+		DataPathFixer.beforeNameEdit(val);
 	},
 	onBlur: () => {
-		//TODO: game.editor.DataPathFixer.onNameBlur();
+		DataPathFixer.onNameBlur();
 	},
 	notAnimate: true
 
