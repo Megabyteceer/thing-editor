@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-/// <reference path="../engine/components/container.c.ts" />
+/// <reference path="../engine/lib/container.c.ts" />
 
 import { Container, Point } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";

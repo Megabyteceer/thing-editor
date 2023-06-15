@@ -12,9 +12,9 @@ import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
 import Selection from "thing-editor/src/editor/utils/selection";
-import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 
 function onEmptyClick(ev: PointerEvent) {
 	if(!isEventFocusOnInputElement(ev)) {

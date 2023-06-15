@@ -2,10 +2,10 @@ import { Container, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import type { KeyedObject, SerializedObject, SourceMappedConstructor, ThingEditorServer } from "thing-editor/src/editor/env";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
-import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor/src/engine/lib";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 
 interface LibInfo {
 	name: string,

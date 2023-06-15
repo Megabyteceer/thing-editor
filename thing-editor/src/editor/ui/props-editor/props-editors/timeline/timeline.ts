@@ -19,11 +19,11 @@ import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import increaseNumberInName from "thing-editor/src/editor/utils/increase-number-in-name";
 import shakeDomElement from "thing-editor/src/editor/utils/shake-element";
-import { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from "thing-editor/src/engine/components/movie-clip/field-player";
-import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from "thing-editor/src/engine/lib/movie-clip/field-player";
+import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
 
 
 

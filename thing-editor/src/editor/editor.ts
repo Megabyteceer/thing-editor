@@ -277,7 +277,7 @@ class Editor {
 					return;
 				}
 
-				this.assetsFolders = ['thing-editor/src/engine/components/'];
+				this.assetsFolders = ['thing-editor/src/engine/lib/'];
 				this.libsProjectDescMerged = {} as ProjectDesc;
 				mergeProjectDesc(this.libsProjectDescMerged, defaultProjectDesc);
 
@@ -853,3 +853,4 @@ const editor = new Editor();
 type __EditorType = typeof editor;
 
 export type { __EditorType }; // hide Editor from intellisense
+

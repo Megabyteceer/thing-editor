@@ -7,10 +7,10 @@ import Window from "thing-editor/src/editor/ui/editor-window";
 import group, { GroupableItem } from "thing-editor/src/editor/ui/group";
 import PropsFieldWrapper from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
@@ -34,7 +34,7 @@ import SoundEditor from "thing-editor/src/editor/ui/props-editor/props-editors/s
 import getObjectDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
-import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
+import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
 
 let editorProps = {
 	className: 'props-editor window-scrollable-content',

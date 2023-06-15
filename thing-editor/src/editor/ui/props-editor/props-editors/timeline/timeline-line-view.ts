@@ -4,9 +4,9 @@ import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/time
 import FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
 import TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
 import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
-import FieldPlayer, { TimelineFieldData, TimelineKeyFrame, TimelineKeyFrameType } from "thing-editor/src/engine/components/movie-clip/field-player";
-import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
 import assert from "thing-editor/src/engine/debug/assert";
+import FieldPlayer, { TimelineFieldData, TimelineKeyFrame, TimelineKeyFrameType } from "thing-editor/src/engine/lib/movie-clip/field-player";
+import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
 
 let _scale = 1;
 let _shift = 0;

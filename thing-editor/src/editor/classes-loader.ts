@@ -11,7 +11,7 @@ import { Constructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import Scene from "thing-editor/src/engine/components/scene.c";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 
 const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
@@ -147,7 +147,7 @@ export default class ClassesLoader {
 			}
 			const moduleName = '../../..' + file.fileName.replace(/\.ts$/, '');
 
-			const versionQuery = file.fileName.startsWith('/thing-editor/src/engine/components/') ? undefined : ('?v=' + componentsVersion);
+			const versionQuery = file.fileName.startsWith('/thing-editor/src/engine/lib/') ? undefined : ('?v=' + componentsVersion);
 			return imp(moduleName, versionQuery).then(onClassLoaded);
 
 		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {

@@ -1,7 +1,7 @@
 
 import editable from "thing-editor/src/editor/props-editor/editable";
-import DSprite from "thing-editor/src/engine/components/d-sprite.c";
 import game from "thing-editor/src/engine/game";
+import DSprite from "thing-editor/src/engine/lib/d-sprite.c";
 import { stepTo } from "thing-editor/src/engine/utils/utils";
 
 const FLOOR_Y = game.H - 25;

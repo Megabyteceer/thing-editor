@@ -8,7 +8,7 @@ import game from "thing-editor/src/engine/game.js";
 import type { KeyedMap, KeyedObject } from "thing-editor/src/editor/env.js";
 import TimelineLabelView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view";
 import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
-import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c.js";
+import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c.js";
 import callByPath from "../../utils/call-by-path.js";
 
 interface TimelineKeyFrame {
@@ -326,9 +326,9 @@ export default class FieldPlayer {
 
 export { TimelineKeyFrameType };
 export type {
-	TimelineFrameValuesCache,
+	TimelineData,
 	/// #endif
-	TimelineFieldData, TimelineSerializedLabelsData, TimelineKeyFrame, TimelineSeriallizedData as TimelineSerializedData, TimelineSerializedKeyFrame, TimelineLabelData, TimelineData
+	TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineLabelData, TimelineSeriallizedData as TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData
 };
 
 

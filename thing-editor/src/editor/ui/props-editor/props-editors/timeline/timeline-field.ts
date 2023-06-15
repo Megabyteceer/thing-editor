@@ -5,10 +5,10 @@ import ObjectsTimelineView from "thing-editor/src/editor/ui/props-editor/props-e
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
 import TimelilneFieldControls from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field-controls";
 import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
-import { TimelineFieldData, TimelineKeyFrame } from "thing-editor/src/engine/components/movie-clip/field-player";
-import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import { TimelineFieldData, TimelineKeyFrame } from "thing-editor/src/engine/lib/movie-clip/field-player";
+import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
 
 
 interface FieldsTimelineViewProps extends ClassAttributes<FieldsTimelineView> {

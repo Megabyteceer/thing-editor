@@ -3,8 +3,8 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
 import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
-import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
 import game from "thing-editor/src/engine/game";
+import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
 
 function bringTimelineForward() {
 	Window.bringWindowForward('#propsEditor');

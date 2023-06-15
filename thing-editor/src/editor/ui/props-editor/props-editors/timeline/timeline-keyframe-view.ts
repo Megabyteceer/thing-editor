@@ -6,9 +6,9 @@ import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/time
 import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
 import { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
-import { TimelineKeyFrame, TimelineKeyFrameType } from "thing-editor/src/engine/components/movie-clip/field-player";
-import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
 import assert from "thing-editor/src/engine/debug/assert";
+import { TimelineKeyFrame, TimelineKeyFrameType } from "thing-editor/src/engine/lib/movie-clip/field-player";
+import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
 
 const keyframesClasses = [
 	'timeline-keyframe-smooth',

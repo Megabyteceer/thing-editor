@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
-import { TimelineKeyFrameType } from "thing-editor/src/engine/components/movie-clip/field-player";
-import MovieClip from "thing-editor/src/engine/components/movie-clip/movie-clip.c";
 import game from "thing-editor/src/engine/game";
+import { TimelineKeyFrameType } from "thing-editor/src/engine/lib/movie-clip/field-player";
+import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
 
 function getDefaultKeyframeTypeForField(o: MovieClip, propertyName: string): TimelineKeyFrameType {
 	switch(propertyName) {
@@ -45,3 +45,4 @@ function getKeyframeTypesForField(objects: Container[], propertyName: string): T
 }
 
 export { getDefaultKeyframeTypeForField, getKeyframeTypesForField };
+

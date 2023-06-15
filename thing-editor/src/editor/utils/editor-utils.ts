@@ -8,10 +8,10 @@ import exportAsPng from "thing-editor/src/editor/utils/export-as-png";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import increaseNumberInName from "thing-editor/src/editor/utils/increase-number-in-name";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib, { constructRecursive } from "thing-editor/src/engine/lib";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 import loadSafeInstanceByClassName from "thing-editor/src/engine/utils/load-safe-instance-by-class-name";
 
 const prefabNameFilter = /[^a-z\-\/0-9_]/g;

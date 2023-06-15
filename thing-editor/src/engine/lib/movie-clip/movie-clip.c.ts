@@ -1,6 +1,6 @@
 /// #if EDITOR
-import DSprite from 'thing-editor/src/engine/components/d-sprite.c';
-import { TimelineData, TimelineFrameValuesCache, TimelineKeyFrameType } from 'thing-editor/src/engine/components/movie-clip/field-player';
+import DSprite from 'thing-editor/src/engine/lib/d-sprite.c';
+import { TimelineData, TimelineFrameValuesCache, TimelineKeyFrameType } from 'thing-editor/src/engine/lib/movie-clip/field-player';
 import game from '../../game';
 import Lib from '../../lib';
 
@@ -29,8 +29,8 @@ import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
-import FieldPlayer, { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/components/movie-clip/field-player';
 import assert from 'thing-editor/src/engine/debug/assert';
+import FieldPlayer, { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/movie-clip/field-player';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
 

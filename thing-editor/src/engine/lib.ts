@@ -2,9 +2,9 @@
 import { Classes, KeyedMap, KeyedObject, NodeExtendData, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
 import { Container, Texture } from "pixi.js";
-import Scene from "thing-editor/src/engine/components/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
@@ -738,8 +738,7 @@ const getVersionedFileName = (file: FileDesc) => {
 const EMPTY_NODE_EXTEND_DATA: NodeExtendData = { objectDeleted: "Container was deleted and it`s extend data replaced with temporary object." };
 Object.freeze(EMPTY_NODE_EXTEND_DATA);
 
-export { constructRecursive };
-export { __onAssetAdded, __onAssetUpdated, __onAssetDeleted };
+export { __onAssetAdded, __onAssetDeleted, __onAssetUpdated, constructRecursive };
 
 const __onAssetAdded = (file: FileDesc) => {
 	console.log('added: ' + file.fileName);

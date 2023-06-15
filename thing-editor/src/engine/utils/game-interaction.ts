@@ -1,7 +1,7 @@
 import { Point, isMobile } from "pixi.js";
 import { KeyedObject } from "thing-editor/src/editor/env";
-import Scene from "thing-editor/src/engine/components/scene.c";
 import game from "thing-editor/src/engine/game";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 
 const globalPoint = new Point();
 const stagePoint = new Point();
@@ -159,3 +159,4 @@ export default function initGameInteraction() {
 }
 
 export { addOnClickOnce, mouseHandlerGlobal };
+

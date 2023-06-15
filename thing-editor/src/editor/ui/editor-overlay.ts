@@ -5,9 +5,9 @@ import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-access-to-node";
 import Selection from "thing-editor/src/editor/utils/selection";
-import __GizmoArrow from "thing-editor/src/engine/components/__system/gizmo-arrow.c";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import __GizmoArrow from "thing-editor/src/engine/lib/__system/gizmo-arrow.c";
 
 let selectionDisabled = false;
 let isViewPortScrolling = false;
@@ -217,3 +217,4 @@ function selectByStageClick(ev: MouseEvent) {
 export default overlayLayer;
 
 export { moveSelectionToPoint };
+

@@ -4,8 +4,8 @@ import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/con
 import { toggleIsolation } from "thing-editor/src/editor/ui/isolation";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import Scene from "thing-editor/src/engine/components/scene.c";
 import game from "thing-editor/src/engine/game";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 
 
 const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
@@ -214,5 +214,5 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	}
 ]
 
-export { TREE_NODE_CONTEXT_MENU, TREE_NODE_CONTEXT_ARRANGE_MENU };
+export { TREE_NODE_CONTEXT_ARRANGE_MENU, TREE_NODE_CONTEXT_MENU };
 

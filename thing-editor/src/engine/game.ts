@@ -5,7 +5,7 @@ import type { __EditorType } from "thing-editor/src/editor/editor";
 
 import { BaseTexture, Container, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import type { Classes, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
-import Scene from "thing-editor/src/engine/components/scene.c";
+import Scene from "thing-editor/src/engine/lib/scene.c";
 
 import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
 import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";

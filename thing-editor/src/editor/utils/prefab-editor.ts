@@ -2,10 +2,10 @@ import { Container } from "pixi.js";
 import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
 
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
-import Shape from "thing-editor/src/engine/components/shape.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import Shape from "thing-editor/src/engine/lib/shape.c";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
 let prefabsStack: string[] = [];
