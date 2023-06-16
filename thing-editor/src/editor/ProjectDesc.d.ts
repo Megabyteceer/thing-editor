@@ -47,7 +47,7 @@ declare interface ProjectDesc {
 	embedLocales: true,
 	__localesNewKeysPrefix: string,
 	__suspendWarnings: number[],
-	__externalTranslations: string[],
+	defaultLanguage: string,
 	autoFullscreenDesktop: false,
 	autoFullscreenMobile: false,
 	__proxyFetchesViaNodeServer: false,

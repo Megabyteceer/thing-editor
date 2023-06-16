@@ -15,3 +15,11 @@ release
 ___editor_backup_*
 
 *.config.js.timestamp-*.mjs
+
+games/**/assets-preloader.ts
+games/**/assets.ts
+games/**/classes.ts
+games/**/index.html
+games/**/release
+games/**/debug
+

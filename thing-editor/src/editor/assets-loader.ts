@@ -33,6 +33,7 @@ export default class AssetsLoader {
 
 		for(let file of imagesFiles) {
 			Lib.addTexture(file.assetName, file.asset || file.fileName); //file.asset - WHITE EMPTY textures go directly instead of URL
+			file.asset = Lib.getTexture(file.assetName);
 		}
 
 		return waitForCondition(() => {

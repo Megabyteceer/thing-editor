@@ -1,9 +1,22 @@
-/// #if EDITOR
+
+import { Container } from 'pixi.js';
+import { KeyedMap, KeyedObject, SelectableProperty, SerializedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import editable, { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
+import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
+import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
+import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
+import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
+import assert from 'thing-editor/src/engine/debug/assert';
 import DSprite from 'thing-editor/src/engine/lib/d-sprite.c';
-import { TimelineData, TimelineFrameValuesCache, TimelineKeyFrameType } from 'thing-editor/src/engine/lib/movie-clip/field-player';
+import FieldPlayer, { TimelineData, TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineKeyFrameType, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/movie-clip/field-player';
+import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
+import Pool from 'thing-editor/src/engine/utils/pool';
 import game from '../../game';
 import Lib from '../../lib';
 
+/// #if EDITOR
 const ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 const ICON_SOUND = R.img({ src: '/thing-editor/img/timeline/sound.png' });
 const ICON_REMOVE = R.img({ src: '/thing-editor/img/timeline/remove.png' });
@@ -15,24 +28,7 @@ const SELECT_LOG_LEVEL = [
 	{ name: 'level 2', value: 2 },
 	{ name: 'break on callbacks', value: 3 }
 ];
-
-import R from 'thing-editor/src/editor/preact-fabrics';
-import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 /// #endif
-
-import { Container } from 'pixi.js';
-import { KeyedMap, KeyedObject, SelectableProperty, SerializedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
-
-import editable, { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
-
-import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
-import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
-import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
-import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
-import assert from 'thing-editor/src/engine/debug/assert';
-import FieldPlayer, { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/movie-clip/field-player';
-import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
-import Pool from 'thing-editor/src/engine/utils/pool';
 
 let idCounter = 1;
 
@@ -669,3 +665,5 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 let serializeCache = new WeakMap();
 
 (MovieClip as any as SourceMappedConstructor).__EDITOR_icon = 'tree/movie';
+
+/// #endif

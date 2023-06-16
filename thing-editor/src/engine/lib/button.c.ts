@@ -387,6 +387,9 @@ window.addEventListener('keyup', (ev) => {
 	}
 });
 
+
+/// #if EDITOR
+
 (Button as any as SourceMappedConstructor).__EDITOR_icon = 'tree/button';
 
 (Button.prototype.enable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;

@@ -40,11 +40,11 @@ const defaultProjectDesc: ProjectDesc = {
 	__loadOnDemandTexturesFolders: {
 
 	},
+	defaultLanguage: 'en',
 	defaultMusVol: 1,
 	defaultSoundsVol: 1,
 	embedLocales: true,
 	__localesNewKeysPrefix: '',
-	__externalTranslations: [],
 	autoFullscreenDesktop: false,
 	autoFullscreenMobile: false,
 	__proxyFetchesViaNodeServer: false,

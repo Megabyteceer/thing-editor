@@ -48,6 +48,10 @@ const parseLibName = (name: string): LibInfo => {
 	};
 }
 
+import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr full reload
+	ev.path = 'vite please, do not reload anything.html';
+});
+
 class Editor {
 
 	currentProjectDir = '';
@@ -129,14 +133,6 @@ class Editor {
 			} else {
 				this.chooseProject(true);
 			}
-
-			window.onbeforeunload = (e) => {
-				if(!this.__projectReloading && !this.__FatalError) {
-					if(this.askSceneToSaveIfNeed() === false) {
-						e.returnValue = false;
-					}
-				}
-			};
 
 			window.onbeforeunload = (e) => {
 				if(!this.__projectReloading && !this.__FatalError) {
@@ -238,10 +234,10 @@ class Editor {
 
 	chooseProject(notSkipable = false) {
 		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
-			if(dir && dir != this.settings.getItem('last-opened-project')) {
+			if(dir) {
 				this.settings.setItem('last-opened-project', dir);
 				this.__projectReloading = true;
-				this.openProject(dir);
+				window.document.location.reload();
 			}
 		});
 	}
@@ -297,16 +293,7 @@ class Editor {
 				mergeProjectDesc(this.projectDesc, this.libsProjectDescMerged);
 				mergeProjectDesc(this.projectDesc, projectDesc);
 
-				if(excludeOtherProjects()) {
-					this.__projectOpenWasFine(dir);
-					this.__projectReloading = true;
-					return; // window will be reloaded by vite.js because of tsconfig change.
-				} else {
-					if(game.pixiApp) { // another project is currently open.
-						location.reload();
-						return;
-					}
-				}
+				excludeOtherProjects();
 
 				game.applyProjectDesc(this.projectDesc);
 
@@ -322,14 +309,10 @@ class Editor {
 
 				editorEvents.emit('didProjectOpen');
 
-
-
 				if(game.settings.getItem(LAST_SCENE_NAME) && !Lib.hasScene(game.settings.getItem(LAST_SCENE_NAME))) {
 					this.saveLastSceneOpenName('');
 				}
 				game.settings.setItem(LAST_SCENE_NAME, game.settings.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
-
-				this.__projectOpenWasFine(dir);
 
 				this.restoreBackup();
 
@@ -342,14 +325,9 @@ class Editor {
 
 				game.onResize();
 
-
+				this.settings.setItem('last-opened-project', dir);
 			}
 		}
-	}
-
-	__projectOpenWasFine(dir: string) {
-		this.settings.setItem('last-opened-project', dir);
-
 	}
 
 	warnEqualFiles(file: FileDesc, existingFile: FileDesc) {
@@ -524,14 +502,7 @@ class Editor {
 	}
 
 	openUrl(url: string) {
-		if(!window.open(url)) {
-			this.ui.modal.showInfo(R.div(null,
-				"click to open: ",
-				R.a({ href: url, target: '_blank' }, url),
-				R.br(),
-				"Check browser's status bar to allow automatic opening after build."
-			), "building finished.", 30011);
-		}
+		window.open(url);
 	}
 
 	sceneModified(saveImmediately: boolean = false) {

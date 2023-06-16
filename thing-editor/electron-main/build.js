@@ -1,32 +1,41 @@
+const path = require('path');
 
 module.exports = {
 	build: (projectDir, debug) => {
+
+		const ifDefPlugin = require('./vite-plugin-ifdef/if-def-loader.js');
+
+		const root = path.resolve(__dirname, '../..', projectDir);
+
 		return require('vite').build({
-			root: __dirname + '/../../thing-editor',
+			root,
+			base: './',
 			esbuild: {
 				target: "ES2015"
-
 			},
+			plugins: [ifDefPlugin(debug)],
 			build: {
-				outDir: __dirname + "/release",
+				minify: !debug,
+				outDir: root + (debug ? "/debug" : "/release"),
 				rollupOptions: {
 					input: ""
 				},
 			},
 			resolve: {
-				dedupe: [
-					'thing-editor'
-				],
 				alias: {
-					'thing-editor': __dirname + '/../thing-editor',
-					'pixi.js': __dirname + '/../node_modules/pixi.js/dist/pixi.mjs',
-					'preact': __dirname + '/../node_modules/preact/dist/preact.module.js'
+					'game-root': root,
+					'games': path.resolve(__dirname, '../../games'),
+					'thing-editor': path.resolve(__dirname, '../../thing-editor'),
+					'pixi.js': path.resolve(__dirname, '../../node_modules/pixi.js-legacy/dist/pixi-legacy.min.mjs')
 				}
 			}
-		}).then((res) => {
+		}).catch((er) => {
 			debugger;
+		}).then((res) => {
+			console.log('BUILD COMPLETE: ' + 'http://127.0.0.1:5173/' + projectDir);
+			return res;
 		});
 	}
 }
 
-module.exports.build();
+module.exports.build('games/game1/', true);

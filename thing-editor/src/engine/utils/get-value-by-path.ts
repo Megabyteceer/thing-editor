@@ -185,27 +185,10 @@ setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
 };*/
 /// #endif
 
-
 export default getValueByPath;
 export {
-
-
-
-
-
-
-
-
-
-
-
-
-
 	getLatestSceneNodeBypath,
 	getLatestSceneNodesByComplexPath,
-	pathDebugging
-	/// #endif
-	, setValueByPath
-	/// #if EDITOR
+	pathDebugging, setValueByPath
 };
 

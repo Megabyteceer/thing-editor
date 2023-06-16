@@ -24,7 +24,7 @@ import HowlSound, { HowlSoundOptions } from "thing-editor/src/engine/HowlSound";
 let classes: Classes;
 let scenes: Scenes = {};
 let prefabs: Prefabs = {};
-let staticScenes: KeyedMap<Scene>;
+let staticScenes: KeyedMap<Scene> = {};
 let textures: KeyedMap<Texture> = {};
 let soundsHowlers: KeyedMap<HowlSound> = {};
 
@@ -35,6 +35,7 @@ const removeHoldersToCleanup: RemoveHolder[] = [];
 let __allTexturesNames: KeyedMap<boolean> = {};
 
 /// #endif
+
 
 export default class Lib {
 
@@ -74,7 +75,7 @@ export default class Lib {
 			prefabs[name].p.name = name;
 		}
 		/// #endif
-		return _loadObjectFromData(prefabs[name]); // eslint-disable-line no-unreachable
+		return _loadObjectFromData(prefabs[name]);
 	}
 
 	static _setClasses(_classes: Classes) {
@@ -153,46 +154,52 @@ export default class Lib {
 
 		if(typeof textureURL === 'string') {
 
-			/// #if EDITOR
 			game.additionalLoadingsInProgress++;
-			if(textures[name] && textures[name].baseTexture !== Lib.REMOVED_TEXTURE.baseTexture && textures[name].baseTexture !== textures.EMPTY.baseTexture) {
+
+			/// #if EDITOR
+			if(textures[name] && !Lib.__isSystemTexture(textures[name])) {
 				//TODO check if updated texture unloads old instance;
 				Lib._unloadTexture(name);
 			}
-
 			const asset = fs.getFileByAssetName(name, AssetType.IMAGE) as FileDescImage;
-
-			Texture.fromURL(getVersionedFileName(asset) || textureURL).then((newTexture) => {
-				if(textures[name]) {
-					const oldTexture = textures[name];
-					Object.assign(oldTexture, newTexture);
-					oldTexture.onBaseTextureUpdated(newTexture.baseTexture)
-					oldTexture._updateID = Date.now();
-				} else {
-					textures[name] = newTexture;
-				}
-				game.additionalLoadingsInProgress--;
-			}).catch(() => {
-				game.editor.showError('Texture loading error ' + textureURL);
-			});
-			/*
 			/// #endif
-			textures[name] = Texture.from(textureURL);;
-			//*/
-
+			Texture.fromURL(
+				/// #if EDITOR				
+				getVersionedFileName(asset) ||
+				/// #endif
+				textureURL).then((newTexture) => {
+					/// #if EDITOR
+					if(textures[name]) {
+						const oldTexture = textures[name];
+						Object.assign(oldTexture, newTexture);
+						oldTexture.onBaseTextureUpdated(newTexture.baseTexture)
+						oldTexture._updateID = Date.now();
+					} else {
+						/// #endif
+						textures[name] = newTexture;
+						/// #if EDITOR
+					}
+					/// #endif
+					game.additionalLoadingsInProgress--;
+				}).catch(() => {
+					game._onLoadingError(textureURL);
+				});
 		} else {
 			textures[name] = textureURL;
 		}
-
 		// TODO применить сеттинги ассета к текстуре.
-
 	}
 
-	static getTexture(name: string
-		/// #if EDITOR
-		, _owner: Container
-		/// #endif
-	) {
+	/// #if EDITOR
+	static __isSystemTexture(texture: Texture) {
+		return texture.baseTexture === Lib.REMOVED_TEXTURE.baseTexture ||
+			texture.baseTexture === textures.EMPTY.baseTexture ||
+			texture.baseTexture === textures.WHITE.baseTexture;
+	}
+
+	/// #endif
+
+	static getTexture(name: string) {
 
 		/// #if EDITOR
 		if(!textures.hasOwnProperty(name)) {
@@ -704,15 +711,14 @@ let constructRecursive = (o: Container) => {
 	//@ts-ignore
 	o.init();
 
-	///#if EDITOR
+	/// #if EDITOR
 	checkForOldReferences(o);
 	if(!EDITOR_FLAGS._root_initCalled) {
 		game.editor.editClassSource(o);
 		assert(false, "Class " + (o.constructor as SourceMappedConstructor).__className + " overrides init method without super.init() called.", 10042);
 	}
-
 	extData.constructorCalled = true;
-	///#endif
+	/// #endif
 
 	let a: Container[] = o.children as Container[];
 	let arrayLength = a.length;
@@ -881,3 +887,4 @@ const processAfterDeserialization = (o: Container) => {
 	}
 };
 /// #endif
+

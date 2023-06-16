@@ -35,8 +35,8 @@ const projectPropsClick = (_ev?: PointerEvent) => {
 	game.editor.editSource(game.editor.currentProjectDir + 'thing-project.json');
 }
 
-const buildClick = (_ev?: PointerEvent) => {
-	Build.build(false);
+const buildDebugClick = (_ev?: PointerEvent) => {
+	Build.build(true);
 }
 
 interface MainMenuItem {
@@ -99,7 +99,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			null,
 			{
 				name: 'Build release...',
-				onClick: buildClick
+				onClick: buildDebugClick
 			}
 		]
 	}

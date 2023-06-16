@@ -123,10 +123,18 @@ module.exports = (mainWindow) => {
 					require('child_process').spawn(explorer, [fn(fileName)], {detached: true}).unref();
 					event.returnValue = true;
 					return;
-				case 'fs/debug':
-					require('./build.js').build(fileName, content).then((res) => {
-						event.returnValue = res;
+				case 'fs/build':
+					const isDebug = content;
+					require('./build.js').build(fileName, isDebug).then((res) => {
+						let ret = true;
+						try {
+							ret = JSON.stringify(res || true);
+						} catch(_er) {
+							console.error(_er);
+						};
+						mainWindow.webContents.send('serverMessage', 'fs/buildResult', ret);
 					});
+					event.returnValue = true;
 					return;
 				default:
 					event.returnValue = new Error('unknown fs command: ' + command + ': ' + (fileName || ''));

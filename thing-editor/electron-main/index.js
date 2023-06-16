@@ -3,7 +3,8 @@ const {
 	BrowserWindow,
 	nativeTheme,
 	dialog,
-	globalShortcut
+	globalShortcut,
+	shell
 } = require('electron');
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
@@ -36,11 +37,11 @@ const createWindow = () => {
 
 	mainWindow = new PositionRestoreWindow(windowState, 'main');
 	mainWindow.setMenu(null);
-	/*mainWindow.addListener('close', (e) => {
-		mainWindow.reload();
-		e.preventDefault();
+	mainWindow.webContents.setWindowOpenHandler((event) => {
+		shell.openExternal(event.url);
+		return {action: "deny"};
 	});
-*/
+
 	mainWindow.on('focus', () => {
 		globalShortcut.register('F5', () => {
 			mainWindow.reload();

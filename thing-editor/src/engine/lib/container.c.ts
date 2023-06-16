@@ -106,6 +106,8 @@ Container.prototype.__onSelect = function __onSelect() {
 	}
 };
 
+/// #endif
+
 
 Container.prototype.update = function update() {
 	for(let c of this.children) {

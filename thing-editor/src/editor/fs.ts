@@ -2,6 +2,7 @@ import { Container, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import type { KeyedObject, SerializedObject, SourceMappedConstructor, ThingEditorServer } from "thing-editor/src/editor/env";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
+import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor/src/engine/lib";
@@ -22,7 +23,7 @@ interface FileDesc {
 	mTime: number,
 	lib: LibInfo | null,
 	v?: number;
-	asset: SourceMappedConstructor | SerializedObject | Texture
+	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound
 };
 
 interface FileDescClass extends FileDesc {
@@ -35,9 +36,13 @@ interface FileDescScene extends FileDesc {
 	asset: SerializedObject;
 }
 
+interface FileDescSound extends FileDesc {
+	asset: HowlSound;
+}
 interface FileDescImage extends FileDesc {
 	asset: Texture;
 }
+
 
 enum AssetType {
 	IMAGE = "IMAGE",
@@ -113,6 +118,10 @@ const execFs = (command: string, filename?: string | string[], content?: string 
 		throw ret;
 	}
 	return ret;
+}
+
+const execFsAsync = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => {
+	thingEditorServer.fsAsync(command, filename, content, ...args);
 }
 
 let lastAssetsDirs: string[];
@@ -256,8 +265,8 @@ export default class fs {
 		return execFs('fs/browseDir', path) as ProjectDesc[];
 	}
 
-	static build(projectDir: string, debug: boolean): ProjectDesc[] {
-		return execFs('fs/build', projectDir, debug) as ProjectDesc[];
+	static build(projectDir: string, debug: boolean) {
+		return execFsAsync('fs/build', projectDir, debug);
 	}
 
 	static watchDirs(dirs: string[]) {
@@ -390,5 +399,5 @@ export default class fs {
 }
 
 export { AllAssetsTypes, AssetType };
-export type { FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, LibInfo };
+export type { FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound, LibInfo };
 

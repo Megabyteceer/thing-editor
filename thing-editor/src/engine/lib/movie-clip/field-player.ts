@@ -327,7 +327,6 @@ export default class FieldPlayer {
 export { TimelineKeyFrameType };
 export type {
 	TimelineData,
-	/// #endif
 	TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineLabelData, TimelineSeriallizedData as TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData
 };
 

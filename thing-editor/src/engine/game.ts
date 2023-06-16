@@ -1,10 +1,6 @@
-/// #if EDITOR
-import type { __EditorType } from "thing-editor/src/editor/editor";
-/// #if EDITOR
-
-
 import { BaseTexture, Container, Point, Texture, TextureGCSystem, utils } from "pixi.js";
-import type { Classes, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
+import type { __EditorType } from "thing-editor/src/editor/editor";
+import type { AssetsDescriptor, Classes, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/lib/scene.c";
 
 import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
@@ -130,7 +126,7 @@ class Game {
 	/*
 	/// #endif
 	time = 0;
-	*/
+	//*/
 
 	init(element?: HTMLElement, gameId?: string, _resourcesPath = '') {
 		this.pixiApp = app = new Application();
@@ -150,25 +146,16 @@ class Game {
 		this.stage = stage;
 		stage.__nodeExtendData = {};
 
-		this.settings = new Settings(gameId || (window as any)._thingEngineAssets.projectDesc.id);
+		this.settings = new Settings(gameId || this.projectDesc.id);
 
 		initGameInteraction();
 
 		app.stage.addChild(stage);
 		app.ticker.add(this._updateGlobal);
 		Sound.init();
-
-
-		/// #if EDITOR
-
-		/*
-		/// #endif
-		this._initBuild();
-		//*/
 	}
 
-	_initBuild() {
-		const assets = (window as any)._thingEngineAssets;
+	_startGame() {
 
 		// workaround for issue: https://jira.bgaming.com/browse/BGG-6807, see for more details: https://github.com/pixijs/pixijs/issues/8315
 		(Texture.WHITE.baseTexture.resource.source as any).getContext("2d").fillRect(0, 0, 1, 1);
@@ -179,6 +166,8 @@ class Game {
 
 		this.pixiApp.view.addEventListener!('wheel', (ev) => ev.preventDefault());
 		window.addEventListener('resize', this._onContainerResize.bind(this));
+
+		this.showScene(this.projectDesc.mainScene);
 	}
 
 	_onContainerResize() {
@@ -211,6 +200,32 @@ class Game {
 
 	get disableAllButtons() {
 		return !!currentFader;
+	}
+
+	addAssets(data: AssetsDescriptor) {
+		/// #if EDITOR
+		assert(false, 'game.addAssets method for runtime only, but called in editor.');
+		/// #endif
+
+		if(data.projectDesc) {
+			game.applyProjectDesc(data.projectDesc);
+		}
+
+		for(const prefabName in data.prefabs) {
+			if(!Lib.prefabs[prefabName]) {
+				Lib.prefabs[prefabName] = data.prefabs[prefabName];
+			}
+		}
+
+		for(const prefabName in data.scenes) {
+			if(!Lib.scenes[prefabName]) {
+				Lib.scenes[prefabName] = data.scenes[prefabName];
+			}
+		}
+		for(const textureName of data.images) {
+			Lib.addTexture(textureName, '../assets/' + textureName);
+		}
+
 	}
 
 	applyProjectDesc(projectDescriptor: ProjectDesc) {
@@ -549,9 +564,11 @@ class Game {
 		return this.currentScene; //current scene is active if no modals on screen
 	}
 
+	/// #if EDITOR
 	get currentScene() {
 		return __currentSceneValue;
 	}
+	/// #endif
 
 	_updateGlobal(dt: number) {
 		/// #if DEBUG
@@ -911,48 +928,52 @@ class Game {
 		}
 	}
 
-	_onLoadingError(_url: string) {
+	_onLoadingError(url: string) {
+		if(game._loadingErrorIsDisplayed) {
+			return;
+		}
+		//TODO ResourceLoader.destroyAllLoaders();
 		game._loadingErrorIsDisplayed = true;
-		// TODO:
-	}
+		//TODO BgMusic._recalculateMusic();
+		/// #if EDITOR
+		this.editor.ui.modal.showError('Could not load file: ' + url);
+		return;
+		/// #endif
 
-	/// #if DEBUG
-	__doOneStep = false;
-	__paused = false;
-	protected _FPS = 0;
-	FPS = 0;
+		let e = document.createElement('div');// eslint-disable-line no-unreachable
+		e.innerHTML = `
+	
+	<div class="loading-error-wrapper" style="
+				position:absolute;
+				z-index: 2;
+				width:100%;
+				height:100%;
+				left:0;
+				top:0;
+				background:rgba(0,0,0,0.7)">
+		<div class="loading-error-body" style="
+				padding: 5vh;
+				box-sizing: border-box;
+				margin: 20vh 0;
+				width: 100%;
+				background: #000000;
+				text-align: center;
+				color: #ffffff;
+				font-family: ` + game.projectDesc.defaultFont + `;">
+			<div class="loading-error-game-title">` + game.projectDesc.title + `</div>
+			<div class="loading-error-title" style="
+				margin: 2vh;
+				font-size:200%;">
+				LOADING ERROR</div>
+			<div class="loading-error-message">(click to reload)</div>
+		</div>
+	</div>`;
+		document.body.appendChild(e);
+		document.addEventListener('click', () => {
+			game._reloadGame();
+		});
 
-	get __speedMultiplier() {
-		return __speedMultiplier;
-	}
-	set __speedMultiplier(v) {
-		if(v !== __speedMultiplier) {
-			__speedMultiplier = v;
-			//TODO MusicFragment.__applyGameSpeed(v);
-		}
-	}
-	/// #endif
 
-	/// #if EDITOR
-	__setCurrentContainerContent(o: Container) {
-		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
-		if(modals.length > 0) {
-			this.hideModal();
-			this.showModal(o, undefined, true);
-		} else {
-			if(!o.name) {
-				(o as Scene).name = game.currentScene.name;
-			}
-			this.showScene(o as Scene);
-		}
-	}
-
-	__destroyCurrentScene() {
-		//DODO: cleanup
-		if(this.currentScene) {
-			Lib.destroyObjectAndChildren(this.currentScene);
-			this._setCurrentScene(null);
-		}
 	}
 
 	_setCurrentScene(scene: Scene | null) {
@@ -1003,6 +1024,45 @@ class Game {
 		/// #endif
 		scene._onShowCalled = false;
 		return scene;
+	}
+
+	/// #if DEBUG
+	__doOneStep = false;
+	__paused = false;
+	protected _FPS = 0;
+	FPS = 0;
+
+	get __speedMultiplier() {
+		return __speedMultiplier;
+	}
+	set __speedMultiplier(v) {
+		if(v !== __speedMultiplier) {
+			__speedMultiplier = v;
+			//TODO MusicFragment.__applyGameSpeed(v);
+		}
+	}
+	/// #endif
+
+	/// #if EDITOR
+	__setCurrentContainerContent(o: Container) {
+		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
+		if(modals.length > 0) {
+			this.hideModal();
+			this.showModal(o, undefined, true);
+		} else {
+			if(!o.name) {
+				(o as Scene).name = game.currentScene.name;
+			}
+			this.showScene(o as Scene);
+		}
+	}
+
+	__destroyCurrentScene() {
+		//DODO: cleanup
+		if(this.currentScene) {
+			Lib.destroyObjectAndChildren(this.currentScene);
+			this._setCurrentScene(null);
+		}
 	}
 
 	__getScenesStack() {
@@ -1102,6 +1162,12 @@ export type { FixedViewportSize };
 	return game.editor.choosePrefab("Choose prefab to show as modal:");
 }; //TODO  add all helpers
 
+/*
 /// #endif
+import preloaderAssets from 'game-root/assets-preloader';
+game.addAssets(preloaderAssets);
+import('game-root/classes').then(() => {
+	game._startGame();
+});
 
-
+//*/

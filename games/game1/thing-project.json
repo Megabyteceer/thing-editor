@@ -3,7 +3,6 @@
 	"id": "thing-project-example.pixel-cave.com",
 	"icon": "assets/bunny.png",
 	"__group": "thing-editor-demos",
-	"__lastSceneName": "main",
 	"screenOrientation": "auto",
 	"width": 1280,
 	"height": 720,
@@ -22,7 +21,6 @@
 	"loadOnDemandSounds": {
 		"mus/gs3_title": 2
 	},
-	"muteOnFocusLost": true,
 	"version": "0.0.9",
 	"framesSkipLimit": 4,
 	"embedLocales": true,
@@ -44,9 +42,7 @@
 	"__proxyFetchesViaNodeServer": false,
 	"renderResolutionMobile": 1,
 	"__localesNewKeysPrefix": "",
-	"__externalLocalesSource": "",
 	"defaultLanguage": "en",
-	"__allowUpperCaseFiles": true,
 	"__webpack": {
 		"debug": "config/webpack.debug.js",
 		"production": "config/webpack.prod.js"
@@ -54,13 +50,6 @@
 	"mipmap": false,
 	"defaultMusVol": 1,
 	"defaultSoundsVol": 1,
-	"keepSoundWhilePageUpdate": false,
-	"__externalTranslations": [],
-	"jpgQuality": 95,
-	"pngQuality": [
-		0.95,
-		1
-	],
 	"libs": [
 		"lib1"
 	]

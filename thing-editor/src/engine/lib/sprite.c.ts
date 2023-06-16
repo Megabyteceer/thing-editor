@@ -15,11 +15,7 @@ const imageJSPropertyDescriptor = {
 		assert(typeof v === 'string', "texture's name expected.", 10022);
 		if(this._imageID !== v) {
 			this._imageID = v;
-			this.texture = Lib.getTexture(v
-				/// #if EDITOR
-				, this
-				/// #endif
-			);
+			this.texture = Lib.getTexture(v);
 			assert(this.texture && this.texture.baseTexture, "baseTexture is empty.");
 			/// #if EDITOR
 			if(this.texture.valid && (Lib.hasTexture(this._imageID))) {

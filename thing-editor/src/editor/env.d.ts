@@ -133,6 +133,7 @@ type Prefabs = {
 
 type ThingEditorServer = { // exposed from electron
 	fs: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => FSCallback;
+	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => void;
 	versions: KeyedObject;
 	onServerMessage: (onServerMessage: (event: string, ...args: any[]) => void) => void;
 	argv: string[];
@@ -153,6 +154,16 @@ interface SelectableProperty extends AnyType {
 
 declare global {
 	var thingEditorServer: ThingEditorServer // exposed from electron
+}
+
+
+interface AssetsDescriptor {
+	scenes: KeyedMap<SerializedObject>;
+	prefabs: KeyedMap<SerializedObject>;
+	images: string[];
+	resources: {};
+	sounds: string[];
+	projectDesc: ProjectDesc;
 }
 
 throw new Error('env.d.ts should not be imported.');
