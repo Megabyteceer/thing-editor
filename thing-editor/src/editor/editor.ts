@@ -570,8 +570,8 @@ class Editor {
 		return this.chooseAsset(AssetType.SOUND, title, activeSound, this.previewSound);
 	}
 
-	async choosePrefab(title: ComponentChild = "Choose prefab", currentPrefab?: string): Promise<string | null> {
-		return this.chooseAsset(AssetType.PREFAB, title, currentPrefab);
+	async choosePrefab(title: ComponentChild = "Choose prefab", currentPrefab?: string, filterCallback?: (f: FileDesc) => boolean): Promise<string | null> {
+		return this.chooseAsset(AssetType.PREFAB, title, currentPrefab, undefined, filterCallback);
 	}
 
 	async chooseClass(isScene: boolean, title: ComponentChild = "Choose class", currentClass?: string): Promise<string | null> {

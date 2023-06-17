@@ -18,7 +18,7 @@ const libInfo = (file: FileDesc): ComponentChildren => {
 						sp(ev);
 						showContextMenu([
 							{
-								name: 'copy file to project',
+								name: 'copy asset to the project',
 								onClick: () => {
 									fs.copyAssetToProject(file)
 								}

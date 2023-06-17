@@ -90,7 +90,6 @@
 				"x": 160,
 				"y": 337,
 				"image": "bunny.png",
-				"hoverImage": "bunny.png",
 				"pressImage": "bunny.png",
 				"disabledImage": "bunny.png",
 				"onClick": "all.mc.gotoLabelRecursive`shake",

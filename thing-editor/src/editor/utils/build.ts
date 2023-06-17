@@ -1,7 +1,10 @@
+import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import { AssetsDescriptor, KeyedMap, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
-import game from "thing-editor/src/engine/game";
+import enumAssetsPropsRecursive from "thing-editor/src/editor/utils/enum-assets-recursive";
+import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+
 
 let prefixToCutOff: '___' | '__';
 
@@ -53,11 +56,13 @@ function getAssetsForBuild(type: AssetType) {
 
 let currentBuildIsDebug = false;
 
+let assetsToCopy: { from: string, to: string }[] = [];
+
 export default class Build {
 	static build(debug: boolean) {
 		currentBuildIsDebug = debug;
 
-		const assetsToCopy: { from: string, to: string }[] = [];
+		assetsToCopy = [];
 
 		if(game.editor.askSceneToSaveIfNeed() === false) {
 			return;
@@ -67,68 +72,29 @@ export default class Build {
 		//TODO game.editor.validateResources();
 
 		prefixToCutOff = (debug ? '___' : '__');
+
+
+		const preloaderAssets: Set<FileDesc> = new Set();
+		preloaderAssets.add(fs.getFileByAssetName(PRELOADER_SCENE_NAME, AssetType.SCENE));
+		preloaderAssets.add(fs.getFileByAssetName(DEFAULT_FADER_NAME, AssetType.PREFAB));
+		enumAssetsPropsRecursive(Lib.scenes[PRELOADER_SCENE_NAME], preloaderAssets);
+
+		saveAssetsDescriptor(preloaderAssets, 'assets-preloader.ts', game.projectDesc);
+
+		const mainAssets: Set<FileDesc> = new Set();
+		const allAssets = fs.getAssetsList();
+		for(let asset of allAssets) {
+			if(!preloaderAssets.has(asset)) {
+				mainAssets.add(asset);
+			}
+		}
+
+		saveAssetsDescriptor(mainAssets, 'assets-main.ts');
+
 		let scenesFiles = getAssetsForBuild(AssetType.SCENE);
 		let prefabsFiles = getAssetsForBuild(AssetType.PREFAB);
-
-		let images = getAssetsForBuild(AssetType.IMAGE).filter(f => !Lib.__isSystemTexture(f.asset)).map((imageFile) => {
-			assetsToCopy.push({
-				from: imageFile.fileName,
-				to: imageFile.assetName
-			});
-			return imageFile.assetName;
-		});
-
-		let resources = {};
-		/* TODO for(let name in Lib.resources) {
-			if(isFileNameValidForBuild(name)) {
-				resources[name] = {};
-			}
-		} */
-
-		let projectDesc = game.editor.projectDesc;
-
-		let sounds = getAssetsForBuild(AssetType.SOUND).map(f => f.assetName);
-		/*TODO let sounds = {};
-		for(let sndName in soundsSrc) {
-			let sndData = soundsSrc[sndName];
-			sndData = sndData.filter((sndSrc) => {
-				return projectDesc.soundFormats.some(ext => sndSrc.endsWith(ext));
-			});
-			if(typeof (editor.ui.soundsList.soundsDurations[sndName]) === 'number') {
-				sndData.push(editor.ui.soundsList.soundsDurations[sndName]);
-			}
-			sounds[sndName] = sndData;
-		}*/
-
-		const scenes: KeyedMap<SerializedObject> = {};
-		const prefabs: KeyedMap<SerializedObject> = {};
-
-		for(const file of scenesFiles) {
-			scenes[file.assetName] = file.asset;
-		}
-		for(const file of prefabsFiles) {
-			prefabs[file.assetName] = file.asset;
-		}
-
-		let assetsObj: AssetsDescriptor = {
-			scenes,
-			prefabs,
-			images,
-			resources,
-			sounds,
-			projectDesc
-		};
-		/* TODO
-		if(game.editor.projectDesc.embedLocales) {
-			assetsObj.text = L.__getTextAssets();
-		}*/
-
-		fs.writeFile(
-			game.editor.currentProjectDir + '.tmp/assets-preloader.ts',
-			'export default ' +
-			JSON.stringify(assetsObj, fieldsFilter) + ';');
-
 		let classesFiles = getAssetsForBuild(AssetType.CLASS) as FileDescClass[];
+
 		classesFiles.sort((a, b) => {
 			if(a.assetName > b.assetName) {
 				return 1;
@@ -224,4 +190,54 @@ function findClassNameInPrefabData(name: string, data: SerializedObject): boolea
 		});
 	}
 	return false;
+}
+
+function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDesc?: ProjectDesc) {
+
+	let images: string[] = [];
+	let resources = {};
+	/* TODO */
+
+	let sounds: string[] = [];
+	/* TODO */
+
+	const scenes: KeyedMap<SerializedObject> = {};
+	const prefabs: KeyedMap<SerializedObject> = {};
+
+	assets.forEach((file) => {
+		if(isFileNameValidForBuild(file.assetName)) {
+			if(file.assetType === AssetType.IMAGE) {
+				if(!Lib.__isSystemTexture((file as FileDescImage).asset)) {
+					assetsToCopy.push({
+						from: file.fileName,
+						to: file.assetName
+					});
+					images.push(file.assetName);
+				}
+			} else if(file.assetType === AssetType.SCENE) {
+				scenes[file.assetName] = file.asset as SerializedObject;
+			} else if(file.assetType === AssetType.PREFAB) {
+				prefabs[file.assetName] = file.asset as SerializedObject;
+			}
+
+			/* TODO
+			if(game.editor.projectDesc.embedLocales) {
+				assetsObj.text = L.__getTextAssets();
+			}*/
+		}
+	});
+	let assetsObj: AssetsDescriptor = {
+		scenes,
+		prefabs,
+		images,
+		resources,
+		sounds,
+		projectDesc
+	};
+
+	fs.writeFile(
+		game.editor.currentProjectDir + '.tmp/' + fileName,
+		'export default ' +
+		JSON.stringify(assetsObj, fieldsFilter) + ';');
+
 }

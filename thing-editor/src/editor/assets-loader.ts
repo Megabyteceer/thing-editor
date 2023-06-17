@@ -37,7 +37,7 @@ export default class AssetsLoader {
 		}
 
 		return waitForCondition(() => {
-			return game.additionalLoadingsInProgress === 0;
+			return game.loadingProgress === 100;
 		});
 
 	}

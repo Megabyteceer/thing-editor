@@ -38,6 +38,9 @@ type FixedViewportSize = { w: number, h: number } | boolean;
 
 /// #endif
 
+
+const DEFAULT_FADER_NAME = 'fader/default';
+const PRELOADER_SCENE_NAME = 'preloader';
 const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
@@ -105,7 +108,9 @@ class Game {
 
 	onGameReload?: () => void;
 
-	additionalLoadingsInProgress = 0; //TODO
+	private loadingsInProgressTotal = 0;
+	private loadingsInProgress = 0;
+	loadingProgress = 0;
 
 	/// #if EDITOR
 	editor!: __EditorType;
@@ -178,7 +183,16 @@ class Game {
 		this.pixiApp.view.addEventListener!('wheel', (ev) => ev.preventDefault());
 		window.addEventListener('resize', this._onContainerResize.bind(this));
 
-		this.showScene(this.projectDesc.mainScene);
+		//@ts-ignore
+		/// #if EDITOR
+
+		/*
+		/// #endif
+		import('game-root/.tmp/assets-main').then((mainAssets: AssetsDescriptor) => {
+			game.addAssets(mainAssets.default);
+		});
+		//*/
+		this.showScene(PRELOADER_SCENE_NAME);
 	}
 
 	_onContainerResize() {
@@ -213,7 +227,7 @@ class Game {
 		return !!currentFader;
 	}
 
-	addAssets(data: AssetsDescriptor) {
+	addAssets(data: AssetsDescriptor, assetsRoot: string = './assets/') {
 		/// #if EDITOR
 		assert(false, 'game.addAssets method for runtime only, but called in editor.');
 		/// #endif
@@ -234,7 +248,7 @@ class Game {
 			}
 		}
 		for(const textureName of data.images) {
-			Lib.addTexture(textureName, './assets/' + textureName);
+			Lib.addTexture(textureName, assetsRoot + textureName);
 		}
 
 	}
@@ -769,6 +783,9 @@ class Game {
 	}
 
 	showScene(scene: Scene | string, faderType?: string) {
+		if(!scene) {
+			scene = this.projectDesc.mainScene;
+		}
 		/// #if EDITOR
 		checkSceneName(scene);
 		/// #endif
@@ -779,6 +796,24 @@ class Game {
 		}
 		/// #endif
 		game._startFaderIfNeed(faderType);
+	}
+
+	loadingAdd() {
+		if(this.loadingsInProgress === this.loadingsInProgressTotal) {
+			this.loadingsInProgressTotal = 0;
+		}
+		this.loadingsInProgressTotal++;
+
+		this._refreshLoadingProgress();
+	}
+
+	private _refreshLoadingProgress() {
+		this.loadingProgress = Math.floor(this.loadingsInProgressTotal / this.loadingsInProgress * 100);
+	}
+
+	loadingRemove() {
+		this.loadingsInProgress++;
+		this._refreshLoadingProgress();
 	}
 
 	replaceScene(scene: Scene | string, faderType?: string) {
@@ -812,7 +847,7 @@ class Game {
 					if(this.currentScene && this.currentScene.faderType) {
 						faderType = this.currentScene.faderType;
 					} else {
-						faderType = 'fader/default';
+						faderType = DEFAULT_FADER_NAME;
 					}
 				}
 				currentFader = Lib.loadPrefab(faderType);
@@ -1164,7 +1199,7 @@ let __currentSceneValue: Scene;
 
 const game = new Game();
 export default game;
-
+export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME };
 export type { FixedViewportSize };
 
 /// #if EDITOR

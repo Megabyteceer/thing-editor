@@ -11,7 +11,10 @@ export default defineConfig({
 	},
 	resolve: {
 		dedupe: [
-			'thing-editor'
+
+			'games/**/debug/',
+			'games/**/release/',
+			'thing-editor/'
 		],
 
 		alias: {

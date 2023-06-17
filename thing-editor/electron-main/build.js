@@ -7,22 +7,26 @@ module.exports = {
 		const ifDefPlugin = require('./vite-plugin-ifdef/if-def-loader.js');
 		const {ViteImageOptimizer} = require('vite-plugin-image-optimizer');
 
+
 		const editorRoot = path.resolve(__dirname, '../..');
 		const root = path.resolve(editorRoot, projectDir);
 		const outDir = root + (debug ? "/debug" : "/release");
-		const tmpDir = root + "/.tmp/";
-		const publicDir = tmpDir + "public/";
-		const publicAssetsDir = publicDir + "assets/";
-		if(!fs.existsSync(tmpDir)) {
-			fs.mkdirSync(tmpDir);
-		}
+		const tmpDir = root + "/.tmp";
+		const publicDir = tmpDir + "/public";
+		const publicAssetsDir = publicDir + "/assets/";
+		/* TODO clear old assets. Or include only existing assets
+				if(fs.existsSync(publicDir)) {
+					const oldTmpDir = publicDir + '_old';
+					fs.renameSync(publicDir, oldTmpDir);
+					fs.rm(publicDir, {recursive: true});
+				}*/
+
 		if(!fs.existsSync(publicDir)) {
 			fs.mkdirSync(publicDir);
 		}
 		if(!fs.existsSync(publicAssetsDir)) {
 			fs.mkdirSync(publicAssetsDir);
 		}
-
 		return Promise.all(assetsToCopy.map((asset) => {
 			return new Promise((resolve, reject) => {
 				fs.copyFile(editorRoot + asset.from, publicAssetsDir + asset.to, (er) => {

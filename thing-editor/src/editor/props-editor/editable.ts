@@ -1,5 +1,6 @@
 import { Container, DisplayObject } from "pixi.js";
 import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { FileDesc } from "thing-editor/src/editor/fs";
 import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { Hotkey } from "thing-editor/src/editor/utils/hotkey";
@@ -40,6 +41,9 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	onClick?: (ev: any) => void;
 	className?: string;
 	hotkey?: Hotkey;
+
+	/** filter assets for selector */
+	filterAssets?: (file: FileDesc) => boolean;
 
 	/** splitter header */
 	title?: string,

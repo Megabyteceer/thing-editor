@@ -1,9 +1,8 @@
 import { Container } from "pixi.js";
-import ClassesLoader from "thing-editor/src/editor/classes-loader";
 import type { KeyedMap, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { FileDesc } from "thing-editor/src/editor/fs";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import makePrefabSelector from "thing-editor/src/editor/utils/prefab-selector";
 import { ACCES__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -16,7 +15,7 @@ export default class Scene extends Container {
 	@editable()
 	isStatic = false;
 
-	@editable({ type: 'string', select: makePrefabSelector('fader/', true) }) //TODO: prefab options startsWith, canBeEmpty = true, filter = null
+	@editable({ type: 'prefab', filterAssets: (f: FileDesc) => f.assetName.startsWith('fader/') })
 	faderType: string | null = null
 
 	all!: KeyedMap<Container>;

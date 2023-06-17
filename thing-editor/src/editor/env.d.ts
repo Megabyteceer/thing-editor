@@ -163,7 +163,7 @@ interface AssetsDescriptor {
 	images: string[];
 	resources: {};
 	sounds: string[];
-	projectDesc: ProjectDesc;
+	projectDesc?: ProjectDesc;
 }
 
 throw new Error('env.d.ts should not be imported.');

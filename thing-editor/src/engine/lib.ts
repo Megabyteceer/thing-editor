@@ -154,7 +154,7 @@ export default class Lib {
 
 		if(typeof textureURL === 'string') {
 
-			game.additionalLoadingsInProgress++;
+			game.loadingAdd();
 
 			/// #if EDITOR
 			if(textures[name] && !Lib.__isSystemTexture(textures[name])) {
@@ -180,7 +180,7 @@ export default class Lib {
 						/// #if EDITOR
 					}
 					/// #endif
-					game.additionalLoadingsInProgress--;
+					game.loadingRemove();
 				}).catch(() => {
 					game._onLoadingError(textureURL);
 				});

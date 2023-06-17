@@ -30,6 +30,7 @@ import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/
 import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-editor";
 
 import ImageEditor from "thing-editor/src/editor/ui/props-editor/props-editors/image-editor";
+import PrefabPropertyEditor from "thing-editor/src/editor/ui/props-editor/props-editors/prefab-property-editor";
 import SoundEditor from "thing-editor/src/editor/ui/props-editor/props-editors/sound-editor";
 import getObjectDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -384,6 +385,7 @@ PropsEditor.registerRenderer('color', ColorEditor, 0);
 PropsEditor.registerRenderer('number', NumberEditor, 0);
 PropsEditor.registerRenderer('string', StringEditor, null);
 PropsEditor.registerRenderer('image', ImageEditor, null);
+PropsEditor.registerRenderer('prefab', PrefabPropertyEditor, null);
 PropsEditor.registerRenderer('sound', SoundEditor, null);
 PropsEditor.registerRenderer('boolean', BooleanEditor, false);
 PropsEditor.registerRenderer('btn', BtnProperty, undefined);

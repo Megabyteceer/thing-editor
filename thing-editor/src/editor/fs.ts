@@ -181,7 +181,7 @@ export default class fs {
 		}
 	}
 
-	static getFileByAssetName(assetName: string, assetType: AssetType.IMAGE): FileDesc;
+	static getFileByAssetName(assetName: string, assetType: AssetType.IMAGE): FileDescImage;
 	static getFileByAssetName(assetName: string, assetType: AssetType.SCENE): FileDescScene;
 	static getFileByAssetName(assetName: string, assetType: AssetType.PREFAB): FileDescPrefab;
 	static getFileByAssetName(assetName: string, assetType: AssetType.SOUND): FileDesc;

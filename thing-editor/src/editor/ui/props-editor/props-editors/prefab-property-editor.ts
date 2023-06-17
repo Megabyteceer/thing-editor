@@ -5,18 +5,17 @@ import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import game from "thing-editor/src/engine/game";
 
-const imageEditorProps = { className: 'asset-editor' };
+const prefabEditorProps = { className: 'asset-editor' };
 
-const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
-	return R.div(imageEditorProps,
+const PrefabPropertyEditor = (props: EditablePropertyEditorProps): ComponentChild => {
+	return R.div(prefabEditorProps,
 		R.btn(props.value || '. . .', () => {
-			game.editor.chooseImage('Select "' + props.field.name + '" image', props.value).then((selectedImage) => {
+			game.editor.choosePrefab('Select "' + props.field.name + '" prefab', props.value, props.field.filterAssets).then((selectedImage) => {
 				if(selectedImage) {
 					props.onChange(selectedImage);
 				}
 			});
-		}, props.value, (!props.value || fs.getFileByAssetName(props.value, AssetType.IMAGE)) ? 'choose-asset-button' : 'choose-asset-button danger'),
-		props.value ? R.imageIcon(fs.getFileByAssetName(props.value, AssetType.IMAGE)) : undefined,
+		}, props.value, (!props.value || fs.getFileByAssetName(props.value, AssetType.PREFAB)) ? 'choose-asset-button' : 'choose-asset-button danger'),
 		props.value ? R.btn(R.icon('reject'), (ev: PointerEvent) => {
 			showContextMenu([
 				{
@@ -34,8 +33,8 @@ const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 	);
 };
 
-ImageEditor.parser = (val: string) => {
+PrefabPropertyEditor.parser = (val: string) => {
 	return val || null;
 };
 
-export default ImageEditor;
+export default PrefabPropertyEditor;
