@@ -534,6 +534,9 @@ class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
 	}
 
 	dragHandler(ev: DragEvent) {
+		if(ev.x === 0 && ev.y === 0) {
+			return; // drag finish generates zero positioned event bug.
+		}
 		for(let dragger of activeDraggers) {
 			dragger.drag(ev);
 		}

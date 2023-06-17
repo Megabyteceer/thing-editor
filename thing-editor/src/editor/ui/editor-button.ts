@@ -28,22 +28,23 @@ const handleHotkeys = (ev: KeyboardEvent, handlers?: ContextMenuItem[][], window
 }
 
 window.addEventListener("keydown", (ev) => {
-
-	for(let w of Window.allOrdered) {
-		if(handleHotkeys(ev, w.props.hotkeysHandlers, w.base as HTMLDivElement)) {
-			return;
+	if(ev.key !== 'Control' && ev.key !== 'Alt' && ev.key !== 'Shift') {
+		for(let w of Window.allOrdered) {
+			if(handleHotkeys(ev, w.props.hotkeysHandlers, w.base as HTMLDivElement)) {
+				return;
+			}
 		}
-	}
 
-	for(let item of MAIN_MENU) {
-		if(handleHotkeys(ev, [item.items])) {
-			return;
+		for(let item of MAIN_MENU) {
+			if(handleHotkeys(ev, [item.items])) {
+				return;
+			}
 		}
-	}
 
-	for(let b of allHotkeyButtons) {
-		if(b.onKeyDown(ev)) { //call only first button with this hotkey
-			return;
+		for(let b of allHotkeyButtons) {
+			if(b.onKeyDown(ev)) { //call only first button with this hotkey
+				return;
+			}
 		}
 	}
 });
