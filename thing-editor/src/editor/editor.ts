@@ -273,12 +273,18 @@ class Editor {
 					return;
 				}
 
-				this.assetsFolders = ['thing-editor/src/engine/lib/'];
+
 				this.libsProjectDescMerged = {} as ProjectDesc;
 				mergeProjectDesc(this.libsProjectDescMerged, defaultProjectDesc);
 
 				this.currentProjectLibs = projectDesc.libs.map(parseLibName);
-
+				this.currentProjectLibs.unshift({
+					name: 'thing-editor-embed',
+					dir: 'thing-editor/src/engine/lib',
+					assetsDir: 'thing-editor/src/engine/lib/',
+					isEmbed: true
+				});
+				this.assetsFolders = [];
 				for(let lib of this.currentProjectLibs) {
 					this.assetsFolders.push(lib.assetsDir);
 					this.libsDescs[lib.name] = fs.readJSONFile(lib.dir + '/thing-lib.json');
@@ -772,10 +778,12 @@ function excludeOtherProjects(): boolean | undefined {
 			name: editor.currentProjectDir
 		});
 		for(let lib of editor.currentProjectLibs) {
-			folders.push({
-				path: './' + lib.dir,
-				name: lib.dir
-			});
+			if(!lib.isEmbed) {
+				folders.push({
+					path: './' + lib.dir,
+					name: lib.dir
+				});
+			}
 		}
 
 		let newFoldersSrc = JSON.stringify({ folders }, undefined, '\t');
@@ -802,7 +810,9 @@ function excludeOtherProjects(): boolean | undefined {
 		});
 		include.push('./' + editor.currentProjectDir);
 		for(let lib of editor.currentProjectLibs) {
-			include.push('./' + lib.dir);
+			if(!lib.isEmbed) {
+				include.push('./' + lib.dir);
+			}
 		}
 
 		let newFoldersSrc = JSON.stringify({ include });

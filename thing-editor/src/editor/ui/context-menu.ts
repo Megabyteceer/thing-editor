@@ -64,11 +64,13 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 		style.top = bounds.bottom;
 	}
 
-	render(R.div({
-		className: 'context-menu',
-		style,
-	}, menuTemplate.map(renderMenuItem)), root);
-	menuShown = true;
+	if(menuTemplate.length > 0) {
+		render(R.div({
+			className: 'context-menu',
+			style,
+		}, menuTemplate.map(renderMenuItem)), root);
+		menuShown = true;
+	}
 }
 
 export default showContextMenu;

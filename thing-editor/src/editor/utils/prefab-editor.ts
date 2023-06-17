@@ -49,7 +49,7 @@ export default class PrefabEditor {
 
 	private static showPreview(object: Container) {
 		if(!backDrop) {
-			backDrop = Lib.loadPrefab('__system/backdrop') as Shape;
+			backDrop = Lib.loadPrefab('___system/backdrop') as Shape;
 			backDrop.name = null; // prevent get by name error;
 			backDrop.__nodeExtendData.hidden = true;
 		}

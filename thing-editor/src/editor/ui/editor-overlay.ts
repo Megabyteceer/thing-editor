@@ -7,7 +7,7 @@ import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-acce
 import Selection from "thing-editor/src/editor/utils/selection";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import __GizmoArrow from "thing-editor/src/engine/lib/__system/gizmo-arrow.c";
+import __GizmoArrow from "thing-editor/src/engine/lib/___system/gizmo-arrow.c";
 
 let selectionDisabled = false;
 let isViewPortScrolling = false;
@@ -22,7 +22,7 @@ function initializeGizmo() {
 	protectAccessToSceneNode(overlayLayer, 'gizmoLayer');
 	game.stage.parent.addChild(overlayLayer);
 	game.__EDITOR_mode = false;
-	const gizmo = Lib.loadPrefab('__system/gizmo');
+	const gizmo = Lib.loadPrefab('___system/gizmo');
 	game.__EDITOR_mode = true;
 	overlayLayer.addChild(gizmo);
 

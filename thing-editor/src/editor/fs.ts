@@ -12,6 +12,7 @@ interface LibInfo {
 	name: string,
 	dir: string,
 	assetsDir: string,
+	isEmbed?: boolean
 }
 
 interface FileDesc {
@@ -215,6 +216,11 @@ export default class fs {
 	}
 
 	static copyAssetToProject(file: FileDesc) {
+		if(file.assetType === AssetType.CLASS) {
+			//TODO show new class wizard with predefined parent class
+			game.editor.ui.modal.showInfo('Class can not be copied to the project. Create a new class inherited from ' + (file as FileDescClass).asset.__className + ' instead.', 'Can not copy class.');
+			return;
+		}
 		fs.copyFile(file.fileName, file.fileName.replace(file.lib!.dir, game.editor.currentProjectAssetsDir));
 		file.lib = null;
 		game.editor.ui.refresh();
@@ -265,8 +271,8 @@ export default class fs {
 		return execFs('fs/browseDir', path) as ProjectDesc[];
 	}
 
-	static build(projectDir: string, debug: boolean) {
-		return execFsAsync('fs/build', projectDir, debug);
+	static build(projectDir: string, debug: boolean, copyAssets: { from: string, to: string }[]) {
+		return execFsAsync('fs/build', projectDir, debug, copyAssets);
 	}
 
 	static watchDirs(dirs: string[]) {

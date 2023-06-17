@@ -1,7 +1,7 @@
 {
 	"c": "__BackDrop",
 	"p": {
-		"name": "__system/backdrop",
+		"name": "___system/backdrop",
 		"x": -2000,
 		"y": -1500,
 		"width": 800,

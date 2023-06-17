@@ -1,6 +1,8 @@
 import { Container } from "pixi.js";
+import ClassesLoader from "thing-editor/src/editor/classes-loader";
 import type { KeyedMap, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import makePrefabSelector from "thing-editor/src/editor/utils/prefab-selector";
 import { ACCES__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -98,5 +100,8 @@ const _refreshChildRef = (o: Container) => {
 /// #if EDITOR
 (Scene as any as SourceMappedConstructor).__EDITOR_icon = 'tree/scene';
 (Scene.prototype.remove as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+
+assert(!EDITOR_FLAGS.__sceneClassRef || EDITOR_FLAGS.__sceneClassRef === Scene, "Vite.js has duplicated embed classes.");
+EDITOR_FLAGS.__sceneClassRef = Scene;
 
 /// #endif

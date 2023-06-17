@@ -56,6 +56,9 @@ let currentBuildIsDebug = false;
 export default class Build {
 	static build(debug: boolean) {
 		currentBuildIsDebug = debug;
+
+		const assetsToCopy: { from: string, to: string }[] = [];
+
 		if(game.editor.askSceneToSaveIfNeed() === false) {
 			return;
 		}
@@ -67,7 +70,13 @@ export default class Build {
 		let scenesFiles = getAssetsForBuild(AssetType.SCENE);
 		let prefabsFiles = getAssetsForBuild(AssetType.PREFAB);
 
-		let images = getAssetsForBuild(AssetType.IMAGE).filter(f => !Lib.__isSystemTexture(f.asset)).map(f => f.assetName);
+		let images = getAssetsForBuild(AssetType.IMAGE).filter(f => !Lib.__isSystemTexture(f.asset)).map((imageFile) => {
+			assetsToCopy.push({
+				from: imageFile.fileName,
+				to: imageFile.assetName
+			});
+			return imageFile.assetName;
+		});
 
 		let resources = {};
 		/* TODO for(let name in Lib.resources) {
@@ -115,7 +124,7 @@ export default class Build {
 		}*/
 
 		fs.writeFile(
-			game.editor.currentProjectDir + 'assets-preloader.ts',
+			game.editor.currentProjectDir + '.tmp/assets-preloader.ts',
 			'export default ' +
 			JSON.stringify(assetsObj, fieldsFilter) + ';');
 
@@ -163,18 +172,19 @@ export default class Build {
 		}
 
 		src.push('Lib._setClasses(classes);');
-		fs.writeFile(game.editor.currentProjectDir + 'classes.ts', src.join('\n'));
+		fs.writeFile(game.editor.currentProjectDir + '.tmp/classes.ts', src.join('\n'));
 
 		const reversedDirsList = game.editor.assetsFolders.slice().reverse();
 
 		for(let dir of reversedDirsList) {
 			const htmlName = dir + 'index.html';
 			if(fs.exists(htmlName)) {
-				fs.copyFile(htmlName, game.editor.currentProjectDir + 'index.html');
+				fs.copyFile(htmlName, game.editor.currentProjectDir + '.tmp/index.html');
 				break;
 			}
 		}
-		fs.build(game.editor.currentProjectDir, debug);
+
+		fs.build(game.editor.currentProjectDir, debug, assetsToCopy);
 	}
 
 	static showResult(result: any) {

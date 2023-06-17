@@ -153,9 +153,20 @@ class Game {
 		app.stage.addChild(stage);
 		app.ticker.add(this._updateGlobal);
 		Sound.init();
+
+		/// #if EDITOR
+		/*
+		/// #endif
+		import('game-root/.tmp/classes').then(() => {
+			game._startGame();
+		});
+		//*/
 	}
 
 	_startGame() {
+		/// #if EDITOR
+		assert(false, "_startGame should not be called in editor.");
+		/// #endif
 
 		// workaround for issue: https://jira.bgaming.com/browse/BGG-6807, see for more details: https://github.com/pixijs/pixijs/issues/8315
 		(Texture.WHITE.baseTexture.resource.source as any).getContext("2d").fillRect(0, 0, 1, 1);
@@ -223,7 +234,7 @@ class Game {
 			}
 		}
 		for(const textureName of data.images) {
-			Lib.addTexture(textureName, '../assets/' + textureName);
+			Lib.addTexture(textureName, './assets/' + textureName);
 		}
 
 	}
@@ -1161,13 +1172,8 @@ export type { FixedViewportSize };
 (Game.prototype.showModal as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
 	return game.editor.choosePrefab("Choose prefab to show as modal:");
 }; //TODO  add all helpers
-
 /*
 /// #endif
-import preloaderAssets from 'game-root/assets-preloader';
-game.addAssets(preloaderAssets);
-import('game-root/classes').then(() => {
-	game._startGame();
-});
-
+	import preloaderAssets from 'game-root/.tmp/assets-preloader';
+	game.addAssets(preloaderAssets);
 //*/

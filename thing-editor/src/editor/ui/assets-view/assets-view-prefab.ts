@@ -4,6 +4,7 @@ import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
+import libInfo from "thing-editor/src/editor/utils/lib-info";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
@@ -113,6 +114,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 			},
 			title: "Click to edit prefab. Alt + Click - place as child"
 		},
+		libInfo(file),
 		R.classIcon(game.classes[file.asset.c!] || __UnknownClass),
 		R.span(assetsItemNameProps, file.assetName));
 }

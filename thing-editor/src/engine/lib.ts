@@ -279,7 +279,7 @@ export default class Lib {
 			let replacedPrefabName: string | undefined;
 			if(!Lib.hasPrefab(src.r!)) {
 				replacedPrefabName = src.r;
-				src.r = '__system/unknown-prefab';
+				src.r = '___system/unknown-prefab';
 				if(!showedReplacings[src.r!]) {
 					showedReplacings[src.r!] = true;
 					setTimeout(() => { // wait for id assign

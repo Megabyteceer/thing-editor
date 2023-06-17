@@ -1,41 +1,83 @@
 const path = require('path');
+const fs = require('fs');
 
 module.exports = {
-	build: (projectDir, debug) => {
+	build: (projectDir, debug, assetsToCopy) => {
 
 		const ifDefPlugin = require('./vite-plugin-ifdef/if-def-loader.js');
+		const {ViteImageOptimizer} = require('vite-plugin-image-optimizer');
 
-		const root = path.resolve(__dirname, '../..', projectDir);
+		const editorRoot = path.resolve(__dirname, '../..');
+		const root = path.resolve(editorRoot, projectDir);
+		const outDir = root + (debug ? "/debug" : "/release");
+		const tmpDir = root + "/.tmp/";
+		const publicDir = tmpDir + "public/";
+		const publicAssetsDir = publicDir + "assets/";
+		if(!fs.existsSync(tmpDir)) {
+			fs.mkdirSync(tmpDir);
+		}
+		if(!fs.existsSync(publicDir)) {
+			fs.mkdirSync(publicDir);
+		}
+		if(!fs.existsSync(publicAssetsDir)) {
+			fs.mkdirSync(publicAssetsDir);
+		}
 
-		return require('vite').build({
-			root,
-			base: './',
-			esbuild: {
-				target: "ES2015"
-			},
-			plugins: [ifDefPlugin(debug)],
-			build: {
-				minify: !debug,
-				outDir: root + (debug ? "/debug" : "/release"),
-				rollupOptions: {
-					input: ""
+		return Promise.all(assetsToCopy.map((asset) => {
+			return new Promise((resolve, reject) => {
+				fs.copyFile(editorRoot + asset.from, publicAssetsDir + asset.to, (er) => {
+					if(er) {
+						debugger;
+						reject(er);
+					} else {
+						resolve();
+					}
+				});
+			});
+		})).then(() => {
+			return require('vite').build({
+				root: root + '/.tmp',
+				publicDir,
+				base: './',
+				esbuild: {
+					target: "ES2015"
 				},
-			},
-			resolve: {
-				alias: {
-					'game-root': root,
-					'games': path.resolve(__dirname, '../../games'),
-					'thing-editor': path.resolve(__dirname, '../../thing-editor'),
-					'pixi.js': path.resolve(__dirname, '../../node_modules/pixi.js-legacy/dist/pixi-legacy.min.mjs')
+				plugins: [
+					ifDefPlugin(debug),
+					ViteImageOptimizer({})
+				],
+				build: {
+					minify: !debug,
+					outDir,
+					rollupOptions: {
+						input: ""
+					},
+				},
+				resolve: {
+					alias: {
+						'game-root': root,
+						'games': path.resolve(__dirname, '../../games'),
+						'thing-editor': path.resolve(__dirname, '../../thing-editor'),
+						'pixi.js': path.resolve(__dirname, '../../node_modules/pixi.js-legacy/dist/pixi-legacy.min.mjs')
+					}
 				}
-			}
+			}).then((res) => {
+				console.log('BUILD COMPLETE: ' + 'http://127.0.0.1:5173/' + projectDir);
+				return res;
+			});
 		}).catch((er) => {
 			debugger;
-		}).then((res) => {
-			console.log('BUILD COMPLETE: ' + 'http://127.0.0.1:5173/' + projectDir);
-			return res;
 		});
 	}
 }
 
-module.exports.build('games/game1/', true);
+module.exports.build('games/game1/', true, [
+	{
+		from: "/libs/lib1/assets/flag.png",
+		to: "flag.png",
+	},
+	{
+		from: "/games/game1/assets/bunny.png",
+		to: "bunny.png",
+	},
+]);

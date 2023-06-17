@@ -125,7 +125,7 @@ module.exports = (mainWindow) => {
 					return;
 				case 'fs/build':
 					const isDebug = content;
-					require('./build.js').build(fileName, isDebug).then((res) => {
+					require('./build.js').build(fileName, isDebug, args[0]).then((res) => {
 						let ret = true;
 						try {
 							ret = JSON.stringify(res || true);
