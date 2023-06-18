@@ -289,7 +289,7 @@ export default class Lib {
 			}
 			/// #endif
 
-			ret = Lib.loadPrefab(src.r!);
+			ret = Lib._deserializeObject(prefabs[src.r!]);
 			Object.assign(ret, src.p);
 			/// #if EDITOR
 
