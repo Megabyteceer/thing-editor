@@ -29,7 +29,12 @@ module.exports = {
 		}
 		return Promise.all(assetsToCopy.map((asset) => {
 			return new Promise((resolve, reject) => {
-				fs.copyFile(editorRoot + asset.from, publicAssetsDir + asset.to, (er) => {
+				const to = publicAssetsDir + asset.to;
+				const dirName = path.dirname(to);
+				if(!fs.existsSync(dirName)) {
+					fs.mkdirSync(dirName, {recursive: true});
+				}
+				fs.copyFile(editorRoot + asset.from, to, (er) => {
 					if(er) {
 						debugger;
 						reject(er);

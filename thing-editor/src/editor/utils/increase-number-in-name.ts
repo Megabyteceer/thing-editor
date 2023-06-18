@@ -1,4 +1,4 @@
-const regex = /(\d+)(?!.*\d)/gm;
+const regex = /(\d+)(?!.*\d)/;
 
 export default function increaseNumberInName(name: string | null, step = 1) {
 	if(name) {

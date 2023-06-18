@@ -11,7 +11,6 @@ import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import Pool from "thing-editor/src/engine/utils/pool";
 
 import fs, { AssetType, FileDesc, FileDescImage, FileDescPrefab } from "thing-editor/src/editor/fs";
-import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import getPrefabDefaults, { invalidatePrefabDefaults } from "thing-editor/src/editor/utils/get-prefab-defaults";
@@ -29,13 +28,6 @@ let textures: KeyedMap<Texture> = {};
 let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
-
-/// #if EDITOR
-
-let __allTexturesNames: KeyedMap<boolean> = {};
-
-/// #endif
-
 
 export default class Lib {
 
@@ -101,56 +93,17 @@ export default class Lib {
 		return textures.hasOwnProperty(name);
 	}
 
-	static _unloadTexture(name: string
-		/// #if EDITOR
-		, ___removeFromEditorList = false
-		/// #endif
-	) {
-
-
-		//TODO:  текстуре переопределить ей базеТекстуру и рект на ивалид (EMPTY) не удалять из либы пусть будет инвалид невидимой
-
+	static _unloadTexture(name: string) {
 		let texture = textures[name];
 		if(!texture) {
 			return;
 		}
 		Texture.removeFromCache(texture);
 		texture.destroy(true);
-
 		Object.assign(texture, textures.EMPTY);
-
-		/// #if EDITOR
-		if(___removeFromEditorList) {
-			delete __allTexturesNames[name];
-			let i = Lib.__texturesList.findIndex(i => i.name === name);
-			assert(i >= 0, "cant find texture in  Lib.__texturesList", 90001);
-			Lib.__texturesList.splice(i, 1);
-		}
-		/// #endif
 	}
 
-	static addTexture(name: string, textureURL: string | Texture
-		/// #if EDITOR
-		, addToBeginning = false
-		/// #endif
-	) {
-
-		/// #if EDITOR
-
-		if(!__allTexturesNames.hasOwnProperty(name)) {
-			if(addToBeginning) {
-				Lib.__texturesList.splice(2, 0, { name, value: name });
-			} else {
-				Lib.__texturesList.push({ name, value: name });
-			}
-			__allTexturesNames[name] = true;
-		} else if(addToBeginning) {
-			let curIndex = Lib.__texturesList.findIndex(i => i.name === name);
-			assert(curIndex > 0, "textures list is corrupted");
-			let entry = Lib.__texturesList.splice(curIndex, 1);
-			Lib.__texturesList.splice(2, 0, entry[0]);
-		}
-		/// #endif
+	static addTexture(name: string, textureURL: string | Texture, attempt = 0) {
 
 		if(typeof textureURL === 'string') {
 
@@ -182,7 +135,15 @@ export default class Lib {
 					/// #endif
 					game.loadingRemove();
 				}).catch(() => {
-					game._onLoadingError(textureURL);
+					if(attempt < 3 && !game._loadingErrorIsDisplayed) {
+						attempt++;
+						setTimeout(() => {
+							Lib.addTexture(name, textureURL + ((attempt === 1) ? '?a' : 'a'), attempt);
+							game.loadingRemove();
+						}, attempt * 1000);
+					} else {
+						game._onLoadingError(textureURL);
+					}
 				});
 		} else {
 			textures[name] = textureURL;
@@ -196,7 +157,6 @@ export default class Lib {
 			texture.baseTexture === textures.EMPTY.baseTexture ||
 			texture.baseTexture === textures.WHITE.baseTexture;
 	}
-
 	/// #endif
 
 	static getTexture(name: string) {
@@ -556,8 +516,6 @@ export default class Lib {
 
 	static __clearAssetsLists() {
 		textures = {};
-		Lib.__texturesList = [];
-		__allTexturesNames = {};
 	}
 
 	static __invalidateSerializationCache(o: Container) {
@@ -618,8 +576,6 @@ export default class Lib {
 			__callInitIfNotCalled(node);
 		}
 	}
-
-	static __texturesList: SelectEditorItem[] = [];
 
 	static __deleteTexture(file: FileDescImage) {
 		if(textures[file.assetName]) {

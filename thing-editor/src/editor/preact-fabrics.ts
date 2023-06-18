@@ -81,12 +81,14 @@ class R {
 	static imageIcon(file: FileDesc) {
 		if(file) {
 			return R.img({
+				className: 'preview-img',
 				src: (file as FileDescImage).v ? (file.fileName + '?v=' + (file as FileDescImage).v) : file.fileName,
 				onMouseEnter: onImageAssetEnter,
 				onMouseLeave: onImageAssetLeave
 			});
 		} else {
 			return R.img({
+				className: 'preview-img',
 				src: '/thing-editor/img/wrong-texture.png',
 				onMouseEnter: onImageAssetEnter,
 				onMouseLeave: onImageAssetLeave

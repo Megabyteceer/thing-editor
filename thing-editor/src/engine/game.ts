@@ -183,12 +183,14 @@ class Game {
 		this.pixiApp.view.addEventListener!('wheel', (ev) => ev.preventDefault());
 		window.addEventListener('resize', this._onContainerResize.bind(this));
 
+
 		//@ts-ignore
 		/// #if EDITOR
-
 		/*
 		/// #endif
+		this.loadingAdd();
 		import('game-root/.tmp/assets-main').then((mainAssets: AssetsDescriptor) => {
+			this.loadingRemove();
 			game.addAssets(mainAssets.default);
 		});
 		//*/
@@ -799,6 +801,7 @@ class Game {
 	loadingAdd() {
 		if(this.loadingsInProgress === this.loadingsInProgressTotal) {
 			this.loadingsInProgressTotal = 0;
+			this.loadingsInProgress = 0;
 		}
 		this.loadingsInProgressTotal++;
 
@@ -806,7 +809,7 @@ class Game {
 	}
 
 	private _refreshLoadingProgress() {
-		this.loadingProgress = Math.floor(this.loadingsInProgressTotal / this.loadingsInProgress * 100);
+		this.loadingProgress = this.loadingsInProgressTotal ? Math.floor(this.loadingsInProgress / this.loadingsInProgressTotal * 100) : 0;
 	}
 
 	loadingRemove() {
@@ -981,7 +984,6 @@ class Game {
 		if(game._loadingErrorIsDisplayed) {
 			return;
 		}
-		//TODO ResourceLoader.destroyAllLoaders();
 		game._loadingErrorIsDisplayed = true;
 		//TODO BgMusic._recalculateMusic();
 		/// #if EDITOR

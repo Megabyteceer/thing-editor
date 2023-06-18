@@ -852,7 +852,7 @@ input[disabled] {
 	width: 12px;
 }
 
-.assets-item-image img {
+.assets-item-image .preview-img {
 	cursor: pointer;
 	pointer-events: all;
 	max-width: 30px;
@@ -1158,7 +1158,11 @@ input[disabled] {
 	width: 56%;
 }
 
-
+.empty-lib-holder {
+	display: inline-block;
+	width: 22px;
+	height: 19px;
+}
 
 
 

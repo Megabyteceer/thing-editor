@@ -785,7 +785,8 @@
 						"height": 300,
 						"capMargin": 0,
 						"refreshInterval": 0,
-						"onChanged": "replaceScene"
+						"onFinish": "replaceScene",
+						"onChanged": ""
 					},
 					":": [
 						{

@@ -7,6 +7,8 @@ import sp from "thing-editor/src/editor/utils/stop-propagation";
 let libInfoCounter = 0;
 const libInfoCache: Map<LibInfo, ComponentChild> = new Map();
 
+const LIB_HOLDER = R.span({ className: 'empty-lib-holder' });
+
 const libInfo = (file: FileDesc): ComponentChildren => {
 	if(file.lib) {
 		const libInfo = file.lib;
@@ -32,6 +34,8 @@ const libInfo = (file: FileDesc): ComponentChildren => {
 			)
 		}
 		return libInfoCache.get(libInfo);
+	} else {
+		return LIB_HOLDER;
 	}
 }
 
