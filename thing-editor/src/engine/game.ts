@@ -192,6 +192,7 @@ class Game {
 			game.addAssets(mainAssets.default);
 		});
 		//*/
+		this.onResize();
 		this.showScene(PRELOADER_SCENE_NAME);
 	}
 
