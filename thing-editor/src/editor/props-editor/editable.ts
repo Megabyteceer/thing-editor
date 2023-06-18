@@ -31,6 +31,7 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	name?: string,
 	basis?: number,
 	default?: any,
+	canBeEmpty?: false,
 	visible?: (o: T) => boolean,
 	helpUrl?: string,
 	/** field changes pass vale through this function  */

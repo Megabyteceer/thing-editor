@@ -516,8 +516,12 @@ class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
 		(ev.dataTransfer as DataTransfer).setDragImage(emptyImage, 0, 0);
 		activeDraggers.length = 0;
 		activeDraggers.push(this);
-		let thisBounds = (this.base as HTMLDivElement).getBoundingClientRect();
-		addNeighborDraggersAsActive(thisBounds, ev, this.props.type);
+
+		if(!ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
+			let thisBounds = (this.base as HTMLDivElement).getBoundingClientRect();
+			addNeighborDraggersAsActive(thisBounds, ev, this.props.type);
+		}
+
 		noDragWindows = Window.allOrdered.filter((w) => {
 			return !activeDraggers.some(d => d.props.owner === w);
 		});
@@ -540,8 +544,10 @@ class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
 		for(let dragger of activeDraggers) {
 			dragger.drag(ev);
 		}
-		for(let dragger of activeDraggers) {
-			dragger.props.owner.clamp();
+		if(!ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
+			for(let dragger of activeDraggers) {
+				dragger.props.owner.clamp();
+			}
 		}
 	}
 

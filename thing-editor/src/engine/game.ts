@@ -784,9 +784,6 @@ class Game {
 	}
 
 	showScene(scene: Scene | string, faderType?: string) {
-		if(!scene) {
-			scene = this.projectDesc.mainScene;
-		}
 		/// #if EDITOR
 		checkSceneName(scene);
 		/// #endif
@@ -818,6 +815,11 @@ class Game {
 	}
 
 	replaceScene(scene: Scene | string, faderType?: string) {
+
+		if(!scene) {
+			scene = this.projectDesc.mainScene;
+		}
+
 		/// #if DEBUG
 		checkSceneName(scene);
 		/// #endif

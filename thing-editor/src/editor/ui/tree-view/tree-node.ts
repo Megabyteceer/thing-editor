@@ -69,9 +69,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
 		if(extendData.isSelected) {
 			lastClickedItem = this;
 		}
-		if(document.activeElement) {
-			(document.activeElement as HTMLElement).blur();
-		}
+		game.editor.blurInputs();
 	}
 
 	static clearLastClicked() {

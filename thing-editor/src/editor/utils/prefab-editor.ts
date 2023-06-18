@@ -94,9 +94,8 @@ export default class PrefabEditor {
 	static acceptPrefabEdition(oneStepOnly = false) {
 		//TODO call validators (add static __validate method for SourceMapedClass)
 
-		if(document.activeElement && document.activeElement.tagName === "INPUT") {
-			(document.activeElement as HTMLInputElement).blur();
-		}
+		game.editor.blurInputs();
+
 		game.editor.history.saveHistoryNow();
 		let name = getCurrentPrefabName();
 		let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;

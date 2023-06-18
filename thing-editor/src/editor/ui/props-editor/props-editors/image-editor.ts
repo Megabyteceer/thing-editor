@@ -22,7 +22,7 @@ const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 				{
 					name: R.fragment(R.icon('reject'), "Clear '" + props.field.name + "'"),
 					onClick: () => {
-						props.onChange(null);
+						props.onChange(props.field.canBeEmpty === false ? props.field.default : null);
 					}
 				},
 				{

@@ -104,7 +104,7 @@ const blendModesSelect = Object.keys(BLEND_MODES).filter((k) => {
 
 (Sprite as any as SourceMappedConstructor).__EDITOR_icon = 'tree/sprite';
 
-_editableEmbed([Sprite, Mesh as any], 'image', { type: 'image', default: 'EMPTY' });
+_editableEmbed([Sprite, Mesh as any], 'image', { type: 'image', default: 'EMPTY', canBeEmpty: false });
 _editableEmbed([Sprite, Mesh as any], 'tint', {
 	basis: 16,
 	default: 0xFFFFFF,

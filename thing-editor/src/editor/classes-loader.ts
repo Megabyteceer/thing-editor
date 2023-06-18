@@ -177,8 +177,8 @@ export default class ClassesLoader {
 			for(let c of _classes as SourceMappedConstructor[]) {
 				//@ts-ignore
 				let superClass = c.__proto__;
-				const editableProps: EditablePropertyDesc[] = c.__editableProps;
-				if(editableProps[0].name !== '__root-splitter') {
+				const editableProps: EditablePropertyDesc[] = c.hasOwnProperty('__editableProps') ? c.__editableProps : [];
+				if(!editableProps.length || editableProps[0].name !== '__root-splitter') {
 					const superProps: EditablePropertyDesc[] = [];
 					while(superClass.__editableProps) {
 						superProps.unshift.apply(superProps, superClass.__editableProps);

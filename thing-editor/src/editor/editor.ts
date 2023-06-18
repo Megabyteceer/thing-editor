@@ -562,6 +562,12 @@ class Editor {
 		}
 	}
 
+	blurInputs() {
+		if(document.activeElement) {
+			(document.activeElement as HTMLElement).blur();
+		}
+	}
+
 	async chooseImage(title: ComponentChild = "Choose image", activeImage?: string): Promise<string | null> {
 		return this.chooseAsset(AssetType.IMAGE, title, activeImage);
 	}

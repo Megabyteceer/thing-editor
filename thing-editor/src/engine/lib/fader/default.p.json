@@ -7,11 +7,6 @@
 		{
 			"c": "MovieClip",
 			"p": {
-				"x": 400,
-				"y": 300,
-				"scale.x": 50,
-				"scale.y": 37.5,
-				"image": "WHITE",
 				"tint": 0,
 				"timeline": {
 					"l": {
@@ -56,7 +51,16 @@
 					]
 				},
 				"__previewFrame": 8
-			}
+			},
+			":": [
+				{
+					"c": "BackDrop",
+					"p": {
+						"width": 1280,
+						"height": 720
+					}
+				}
+			]
 		}
 	]
 }
