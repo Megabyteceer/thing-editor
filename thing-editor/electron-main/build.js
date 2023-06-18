@@ -51,6 +51,7 @@ module.exports = {
 					ViteImageOptimizer({})
 				],
 				build: {
+					emptyOutDir: true,
 					minify: !debug,
 					outDir,
 					rollupOptions: {

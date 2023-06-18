@@ -52,6 +52,9 @@ module.exports = function vitePluginIfDef(isDebug) {
 					if(trimmedLine === '/// #if DEBUG') {
 						cuttingStack.push(trimmedLine);
 						cuttingStack.push(i);
+						if(!isDebug) {
+							cuttingLevel++;
+						}
 					}
 
 					if(trimmedLine === '/// #endif') {
@@ -60,7 +63,7 @@ module.exports = function vitePluginIfDef(isDebug) {
 							throw new Error('/// #endif without /// #if EDITOR in file ' + id + ':' + (i + 1));
 						}
 						cuttingStack.pop();
-						if(cuttingStack.pop() === '/// #if EDITOR') {
+						if(cuttingStack.pop() === '/// #if EDITOR' || !isDebug) {
 							cuttingLevel--;
 						}
 					}
