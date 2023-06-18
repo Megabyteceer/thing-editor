@@ -5,13 +5,22 @@ import {
 export default defineConfig({
 	server: {
 		hmr: false,
+		watch: {
+			ignored: [
+				'games/**/debug/**',
+				'games/**/release/**'
+			]
+		}
 	},
 	esbuild: {
-		keepNames: true
+		keepNames: true,
+		exclude: [
+			'games/**/debug/',
+			'games/**/release/'
+		]
 	},
 	resolve: {
 		dedupe: [
-
 			'games/**/debug/',
 			'games/**/release/',
 			'thing-editor/'
