@@ -6,6 +6,13 @@ import BASE_CLASS_NAME from "BASE_CLASS_PATH";
 
 export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 	
+	/* //editable property example
+	
+	@editable({ min: 0, max: 100, step: 0.1 })
+	myProperty = 0;
+
+	//*/
+	
 	init() {
 		//super.init();
 		// Add initialization code here
@@ -90,21 +97,8 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 
 /// #if EDITOR
 
-//NEW_CLASS_NAME.__EDITOR_group = "Custom/MyComponentsSubGroup"; //group in Classes List Window for more comfort
 //NEW_CLASS_NAME.__EDITOR_icon= "CURRENT_PROJECT_DIR/tree-icons/icon";
 //NEW_CLASS_NAME.__canNotHaveChildren = true; //uncomment this line if your component should have no children
 
-__EDITOR_editableProps(NEW_CLASS_NAME, [ //list of editable properties
-	{
-		type: 'splitter',
-		title: 'NEW_CLASS_NAME',
-		name: 'NEW_CLASS_NAME-props'
-	}/*,
-	{
-		name:'myProperty',
-		type:Number,
-		default: 1,
-		step: 0.01
-	}*/
-]);
+
 /// #endif

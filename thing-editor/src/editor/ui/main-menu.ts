@@ -70,7 +70,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			null,
 			{
-				name: 'New Component',
+				name: 'New Component...',
 				onClick: newComponentWizard
 			},
 			null,

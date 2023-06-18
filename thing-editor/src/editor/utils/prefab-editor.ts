@@ -93,7 +93,7 @@ export default class PrefabEditor {
 
 	static acceptPrefabEdition(oneStepOnly = false) {
 		//TODO call validators (add static __validate method for SourceMapedClass)
-
+		exitIsolation();
 		game.editor.blurInputs();
 
 		game.editor.history.saveHistoryNow();
@@ -106,11 +106,7 @@ export default class PrefabEditor {
 			});
 		}
 		PrefabEditor.exitPrefabEdit(oneStepOnly);
-		game.editor.ui.refresh();
-		if(isChanged) {
-			__refreshPrefabRefs();
-			game.editor.regeneratePrefabsTypings();
-		}
+
 	}
 
 	static exitPrefabEdit(oneStepOnly = false) {
@@ -125,6 +121,12 @@ export default class PrefabEditor {
 				}
 			} else {
 				prefabsStack.length = 0;
+			}
+			game.editor.ui.refresh();
+			let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
+			if(isChanged) {
+				__refreshPrefabRefs();
+				game.editor.regeneratePrefabsTypings();
 			}
 		}
 	}

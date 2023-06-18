@@ -817,10 +817,10 @@ class Game {
 	replaceScene(scene: Scene | string, faderType?: string) {
 
 		if(!scene) {
-			scene = this.projectDesc.mainScene;
+			scene = game.projectDesc.mainScene;
 		}
 
-		/// #if DEBUG
+		/// #if EDITOR
 		checkSceneName(scene);
 		/// #endif
 

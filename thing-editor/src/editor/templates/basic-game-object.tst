@@ -31,9 +31,3 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 		//super.onRemove();
 	}
 }
-
-/// #if EDITOR
-
-//NEW_CLASS_NAME.__EDITOR_group = "Custom/MyComponentsSubGroup"; //group in Classes List Window for more comfort
-
-/// #endif

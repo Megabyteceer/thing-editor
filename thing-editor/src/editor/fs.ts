@@ -246,7 +246,6 @@ export default class fs {
 
 	static deleteAsset(assetName: string, assetType: AssetType) {
 		const fileName = fs.assetNameToFileName(assetName, assetType);
-		ignoreWatch(fileName);
 		fs.deleteFile(fileName);
 		fs.refreshAssetsList();
 	}

@@ -38,20 +38,20 @@
 							"n": "x",
 							"t": [
 								{
-									"v": 839,
+									"v": 771,
 									"t": 0
 								},
 								{
-									"v": 413.6566708299897,
+									"v": 345.6566708299897,
 									"t": 42
 								},
 								{
-									"v": 641,
+									"v": 573,
 									"t": 91,
 									"j": 0
 								},
 								{
-									"v": 642,
+									"v": 574,
 									"t": 106,
 									"s": 13.600000000000001
 								}
@@ -61,20 +61,20 @@
 							"n": "y",
 							"t": [
 								{
-									"v": 150,
+									"v": 264,
 									"t": 0
 								},
 								{
-									"v": 118,
+									"v": 232,
 									"t": 30
 								},
 								{
-									"v": 279,
+									"v": 393,
 									"t": 68,
 									"j": 10
 								},
 								{
-									"v": 284,
+									"v": 398,
 									"t": 106,
 									"s": 13.600000000000001
 								}
@@ -97,6 +97,52 @@
 				"sndClick": "click",
 				"sndOver": "over"
 			}
+		},
+		{
+			"c": "ProgressBar",
+			"p": {
+				"x": 230,
+				"y": 96,
+				"interactive": true,
+				"dataPath": "all.mc.x",
+				"refreshInterval": 0,
+				"max": 800
+			},
+			":": [
+				{
+					"c": "Sprite",
+					"p": {
+						"name": "bg",
+						"alpha": 0.5,
+						"interactive": true,
+						"scale.y": 12.5,
+						"image": "WHITE"
+					}
+				},
+				{
+					"c": "Sprite",
+					"p": {
+						"name": "bar",
+						"interactive": true,
+						"scale.y": 13.666666666666666,
+						"image": "WHITE",
+						"tint": 65280
+					}
+				},
+				{
+					"c": "Sprite",
+					"p": {
+						"name": "cap",
+						"x": 5,
+						"interactive": true,
+						"scale.x": 2,
+						"scale.y": 2,
+						"pivot.x": 5,
+						"pivot.y": 5,
+						"image": "WHITE"
+					}
+				}
+			]
 		}
 	]
 }

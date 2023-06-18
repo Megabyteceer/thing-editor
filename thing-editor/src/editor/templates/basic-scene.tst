@@ -6,6 +6,13 @@ import BASE_CLASS_NAME from "BASE_CLASS_PATH";
 
 export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 	
+	/* //editable property example
+	
+	@editable({ min: 0, max: 100, step: 0.1 })
+	myProperty = 0;
+
+	//*/
+	
 	init() {
 		//super.init();
 		// Add initialization code here
@@ -36,20 +43,3 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 		//super.onRemove();
 	}
 }
-
-/// #if EDITOR
-
-__EDITOR_editableProps(NEW_CLASS_NAME, [ //list of editable properties
-	{
-		type: 'splitter',
-		title: 'NEW_CLASS_NAME',
-		name: 'NEW_CLASS_NAME-props'
-	}/*,
-	{
-		name:'mySceneProperty',
-		type:Number,
-		default: 1,
-		step: 0.01
-	}*/
-]);
-/// #endif

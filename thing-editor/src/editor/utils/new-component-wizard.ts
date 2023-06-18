@@ -77,12 +77,12 @@ const newComponentWizard = () => {
 							if(classFoldername) {
 								classFoldername += '/';
 							}
-							let templateSrc = fs.readFile('thing-editor/js/editor/templates/' + selectedTemplate.path);
+							let templateSrc = fs.readFile('thing-editor/src/editor/templates/' + selectedTemplate.path);
 
 							//add or remove super method call if its exists
 							let baseClassInstance = new selectedBaseClass();
 							const regex = /(\/\/)(super\.)([a-zA-Z_]+)(\(\);)/gm;
-							templateSrc = templateSrc.replace(regex, (substr, m1, m2, m3, m4) => {
+							templateSrc = templateSrc.replace(regex, (_substr, _m1, m2, m3, m4) => {
 								let isSuperClassHasThisMethod = (baseClassInstance as KeyedObject)[m3];
 								if(isSuperClassHasThisMethod) {
 									return m2 + m3 + m4;
@@ -90,20 +90,20 @@ const newComponentWizard = () => {
 									return '';
 								}
 							});
-							let targetFolderName = (selectedTemplate.isScene ? 'src/scenes/' : 'src/game-objects/');
 
-							let baseClassPath = selectedBaseClass.__sourceFileName!;
+							let baseClassPath = selectedBaseClass.__sourceFileName!.replace(/^\//, '');
 
 							templateSrc = templateSrc.replace(/CURRENT_PROJECT_DIR/gm, '/games/' + (game.editor.currentProjectDir.replace(/\/$/, '')));
 							templateSrc = templateSrc.replace(/NEW_CLASS_NAME/gm, enteredClassName);
-							templateSrc = templateSrc.replace(/BASE_CLASS_NAME/gm, selectedBaseClass.name);
+							templateSrc = templateSrc.replace(/BASE_CLASS_NAME/gm, selectedBaseClass.__className);
 							templateSrc = templateSrc.replace(/BASE_CLASS_PATH/gm, baseClassPath);
 
 							let fileName = enteredClassName.replace(/[A-Z]/gm, (substr, offset) => {
 								return ((offset === 0) ? '' : '-') + substr.toLowerCase();
 							});
-							fileName = targetFolderName + classFoldername + fileName + '.c.ts';
+							fileName = game.editor.currentProjectAssetsDir + 'src/' + classFoldername + fileName + '.c.ts';
 							fs.writeFile(fileName, templateSrc)
+							fs.refreshAssetsList();
 							game.editor.reloadClasses().then(() => {
 								game.editor.editClassSource(game.classes[enteredClassName]);
 							});
