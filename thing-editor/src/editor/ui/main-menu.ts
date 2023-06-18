@@ -3,6 +3,7 @@ import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Build from "thing-editor/src/editor/utils/build";
+import newComponentWizard from "thing-editor/src/editor/utils/new-component-wizard";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
 
@@ -66,6 +67,11 @@ const MAIN_MENU: MainMenuItem[] = [
 				onClick: savePrefabClick,
 				hotkey: { key: 's', ctrlKey: true },
 				disabled: () => !game.editor.isCurrentContainerModified || !PrefabEditor.currentPrefabName as any as boolean
+			},
+			null,
+			{
+				name: 'New Component',
+				onClick: newComponentWizard
 			},
 			null,
 			{

@@ -1,4 +1,4 @@
-import { ClassAttributes, Component } from "preact";
+import { ClassAttributes, Component, ComponentChild } from "preact";
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import group from "thing-editor/src/editor/ui/group";
@@ -24,10 +24,12 @@ interface ChooseListItem {
 	__EDITOR_icon?: string;
 	__className?: string;
 	pureName?: string;
-	name: string;
+	name: ComponentChild;
 	noFilter?: boolean;
 	refusedBecause?: string;
 }
+
+export type { ChooseListItem };
 
 export default class ChooseList extends Component<ChooseListProps, ChooseListState> {
 
@@ -105,7 +107,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 
 	searchFilter(item: ChooseListItem) {
 		let f = this.state.search.toLocaleLowerCase();
-		return item.noFilter || (item.__className || item.pureName || item.name).toLocaleLowerCase().indexOf(f) >= 0;
+		return item.noFilter || ((item.__className || item.pureName || item.name) as string).toLocaleLowerCase().indexOf(f) >= 0;
 	}
 
 	render() {

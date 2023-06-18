@@ -1150,7 +1150,13 @@ input[disabled] {
     color: #ff0000;
 }
 
-
+.template-desc {
+	white-space: initial;
+	font-size: small;
+	color: #777;
+	margin-left: 20px;
+	width: 56%;
+}
 
 
 
