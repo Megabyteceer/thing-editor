@@ -313,7 +313,7 @@ export default class fs {
 			assert(!lastAssetsDirs, 'dirNames already defined.');
 			lastAssetsDirs = dirNames;
 		} else {
-			assert(!lastAssetsDirs, 'dirNames is not defined.');
+			assert(lastAssetsDirs, 'dirNames is not defined.');
 			dirNames = lastAssetsDirs;
 		}
 

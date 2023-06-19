@@ -1,10 +1,12 @@
 import { Component } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
+
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Build from "thing-editor/src/editor/utils/build";
 import newComponentWizard from "thing-editor/src/editor/utils/new-component-wizard";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
+import { onNewSceneClick, onSaveAsSceneClick } from "thing-editor/src/editor/utils/scene-utils";
 import game from "thing-editor/src/engine/game";
 
 const menuProps = {
@@ -56,11 +58,6 @@ const MAIN_MENU: MainMenuItem[] = [
 		id: 'file',
 		items: [
 			{
-				name: 'Open project...',
-				onClick: chooseProjectClick,
-				hotkey: { key: 'o', ctrlKey: true }
-			},
-			{
 				name: 'Save scene',
 				onClick: saveSceneClick,
 				hotkey: { key: 's', ctrlKey: true },
@@ -76,6 +73,17 @@ const MAIN_MENU: MainMenuItem[] = [
 			{
 				name: 'New Component...',
 				onClick: newComponentWizard
+			},
+			null,
+			{
+				name: "New scene...",
+				onClick: onNewSceneClick,
+				hotkey: { key: 'n', ctrlKey: true }
+			},
+			{
+				name: "Save scene as...",
+				onClick: onSaveAsSceneClick,
+				hotkey: { key: 's', ctrlKey: true, shiftKey: true }
 			},
 			null,
 			{
@@ -95,7 +103,12 @@ const MAIN_MENU: MainMenuItem[] = [
 		id: 'edit',
 		items: [
 			{
-				name: 'Browse...',
+				name: 'Open project...',
+				onClick: chooseProjectClick,
+				hotkey: { key: 'o', ctrlKey: true }
+			},
+			{
+				name: 'Browse project folder...',
 				tip: 'Reveal project folder in Explorer',
 				onClick: browseClick,
 				hotkey: { key: 'b', ctrlKey: true }

@@ -27,7 +27,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 		},
 		null,
 		{
-			name: R.fragment(R.icon('delete'), " Delete..."),
+			name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' image..."),
 			onClick: () => {
 				//TODO check image usage
 				game.editor.ui.modal.showEditorQuestion(

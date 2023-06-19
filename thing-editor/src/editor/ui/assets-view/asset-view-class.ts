@@ -67,7 +67,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 		},
 		null,
 		{
-			name: R.fragment(R.icon('delete'), " Delete..."),
+			name: R.fragment(R.icon('delete'), " Delete '" + file.asset.__className + "' class..."),
 			onClick: () => {
 				//TODO check class usage
 				game.editor.ui.modal.showEditorQuestion(

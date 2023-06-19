@@ -75,7 +75,7 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 		}
 	},
 	{
-		name: R.fragment(R.icon('asset-prefab'), "Create prefab..."),
+		name: R.fragment(R.icon('asset-prefab'), "Save as prefab..."),
 		onClick: () => {
 			editorUtils.savePrefab(game.editor.selection[0]);
 		},

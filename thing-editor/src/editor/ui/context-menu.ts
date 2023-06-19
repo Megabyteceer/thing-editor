@@ -53,9 +53,12 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 		menuTemplate.pop();
 	}
 
+	const menuHeight = menuTemplate.length * 40;
+
+
 	const style = {
-		left: Math.max(0, ev.clientX - 3),
-		top: Math.max(0, ev.clientY - menuTemplate.length * 20 - 10)
+		left: Math.max(0, Math.min(window.innerWidth - 200, ev.clientX - 3)),
+		top: Math.max(0, Math.min(window.innerHeight - menuHeight, ev.clientY - menuHeight / 2 - 10))
 	}
 	if((ev.target as HTMLDivElement).closest('.main-menu')) {
 		const mainMenuButton = ((ev.target as HTMLDivElement).closest('button') || ev.target) as HTMLButtonElement;

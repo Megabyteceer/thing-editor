@@ -9,7 +9,7 @@ import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
 import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import game, { DEFAULT_FADER_NAME } from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
 const assetsItemNameProps = {
@@ -59,7 +59,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 		},
 		null,
 		{
-			name: R.fragment(R.icon('delete'), " Delete..."),
+			name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' prefab..."),
 			onClick: () => {
 				//TODO check class usage
 				game.editor.ui.modal.showEditorQuestion(
@@ -72,7 +72,8 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 						game.editor.ui.refresh();
 					}, R.fragment(R.icon('delete'), " Delete.")
 				);
-			}
+			},
+			disabled: () => file.assetName === DEFAULT_FADER_NAME
 		}
 	], ev);
 }

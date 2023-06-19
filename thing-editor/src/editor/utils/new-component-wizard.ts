@@ -58,7 +58,7 @@ const newComponentWizard = () => {
 				}
 			).then((enteredClassName: string) => {
 				if(enteredClassName) {
-					game.editor.chooseClass(selectedTemplate.isScene, 'Choose base Component').then((selectedBaseClassName: string | null) => {
+					game.editor.chooseClass(selectedTemplate.isScene, '_baseClass', 'Choose base Component').then((selectedBaseClassName: string | null) => {
 						if(selectedBaseClassName) {
 							const selectedBaseClass = game.classes[selectedBaseClassName];
 							let enteredClassNameParts = enteredClassName.split('/').filter(i => i);

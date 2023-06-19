@@ -203,7 +203,9 @@ class Editor {
 	}
 
 	removeBackup() {
-		Lib.__deleteScene(this.currentSceneBackupName);
+		if(Lib.hasScene(this.currentSceneBackupName)) {
+			Lib.__deleteScene(this.currentSceneBackupName);
+		}
 	}
 
 	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) { //TODO rename changeProperty
@@ -585,15 +587,15 @@ class Editor {
 		return this.chooseAsset(AssetType.PREFAB, title, currentPrefab, undefined, filterCallback);
 	}
 
-	async chooseClass(isScene: boolean, title: ComponentChild = "Choose class", currentClass?: string): Promise<string | null> {
+	async chooseClass(isScene: boolean, id: string, title: ComponentChild = "Choose class", currentClass?: string): Promise<string | null> {
 		return this.chooseAsset(AssetType.CLASS, title, currentClass, undefined, (file: FileDesc) => {
 			return (file as FileDescClass).asset.__isScene === isScene;
-		});
+		}, id);
 	}
 
 
-	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void, filterCallback?: (f: FileDesc) => boolean): Promise<string | null> {
-		const id = type + '_choose_asset_list';
+	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void, filterCallback?: (f: FileDesc) => boolean, idSuffix = ''): Promise<string | null> {
+		const id = type + '_choose_asset_list' + idSuffix;
 		const chosen: string = await this.ui.modal.showModal(h(AssetsView, {
 			onItemSelect: (assetName: string) => {
 				this.ui.modal.hideModal(assetName);

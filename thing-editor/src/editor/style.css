@@ -914,7 +914,6 @@ input[disabled] {
 
 .assets-item-current {
 	background-color: #333633;
-	pointer-events: none;
 	cursor: default;
 	color: #bbbbbb;
 }

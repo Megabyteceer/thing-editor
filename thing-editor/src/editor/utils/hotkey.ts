@@ -51,7 +51,7 @@ const isHotkeyHit = (ev: KeyboardEvent, element: HTMLElement, hotkey?: Hotkey) =
 		return;
 	}
 
-	if((ev.key === hotkey.key) &&
+	if((ev.key.toLocaleLowerCase() === hotkey.key.toLocaleLowerCase()) &&
 		(ev.ctrlKey === (hotkey.ctrlKey === true)) &&
 		(ev.altKey === (hotkey.altKey === true)) &&
 		(ev.shiftKey === (hotkey.shiftKey === true))

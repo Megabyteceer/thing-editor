@@ -589,11 +589,14 @@ export default class Lib {
 		assert(scene instanceof Scene, "attempt to save not Scene instance in to scenes list.");
 
 		game.editor.disableFieldsCache = true;
-		let sceneData = Lib.__serializeObject(scene);
-		game.editor.disableFieldsCache = false;
 		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
+			if(scene.name !== name) {
+				game.editor.ui.sceneTree.refresh();
+			}
 			scene.name = name;
 		}
+		let sceneData = Lib.__serializeObject(scene);
+		game.editor.disableFieldsCache = false;
 		scenes[name] = sceneData;
 		return fs.saveAsset(name, AssetType.SCENE, sceneData);
 	}
@@ -605,6 +608,9 @@ export default class Lib {
 		assert(!(object instanceof Scene), "attempt to save Scene or not DisplayObject as prefab.");
 		let tmpName = object.name;
 		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
+			if(object.name !== name) {
+				game.editor.ui.sceneTree.refresh();
+			}
 			object.name = name;
 		}
 		game.editor.disableFieldsCache = true;
