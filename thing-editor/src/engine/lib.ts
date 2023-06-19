@@ -48,7 +48,20 @@ export default class Lib {
 			scenes[name].p.name = name;
 		}
 		/// #endif
-		let s: Scene = _loadObjectFromData(scenes[name]) as Scene;
+
+		/// #if EDITOR
+		showedReplacings = {};
+		/// #endif
+
+		const s: Scene = Lib._deserializeObject(scenes[name]) as Scene;
+
+		/// #if EDITOR
+		if(!game.__EDITOR_mode) {
+			/// #endif
+			constructRecursive(s);
+			/// #if EDITOR
+		}
+		/// #endif
 
 		if(s.isStatic
 			/// #if EDITOR
@@ -66,8 +79,17 @@ export default class Lib {
 		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
 			prefabs[name].p.name = name;
 		}
+		showedReplacings = {};
 		/// #endif
-		return _loadObjectFromData(prefabs[name]);
+		const ret: Container = Lib._deserializeObject(prefabs[name]);
+		/// #if EDITOR
+		if(!game.__EDITOR_mode) {
+			/// #endif
+			constructRecursive(ret);
+			/// #if EDITOR
+		}
+		/// #endif
+		return ret;
 	}
 
 	static _setClasses(_classes: Classes) {
@@ -629,25 +651,6 @@ const __isSerializableObject = (o: Container) => {
 };
 
 let deserializationDeepness = 0;
-
-const _loadObjectFromData = (src: SerializedObject): Container => {
-
-	/// #if EDITOR
-	showedReplacings = {};
-	/// #endif
-
-	let ret = Lib._deserializeObject(src);
-
-	/// #if EDITOR
-	if(!game.__EDITOR_mode) {
-		/// #endif
-		constructRecursive(ret);
-		/// #if EDITOR
-	}
-	/// #endif
-
-	return ret;
-};
 
 let constructRecursive = (o: Container) => {
 	assert(!game.__EDITOR_mode, "initialization attempt in editing mode.");
