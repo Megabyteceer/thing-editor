@@ -10,7 +10,7 @@ import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
 import { getLatestSceneNodeBypath, getLatestSceneNodesByComplexPath } from "thing-editor/src/engine/utils/get-value-by-path";
 
 /** data about objects, all not empty data-path properties reference to */
-let refs: Map<Container, KeyedMap<ReferencesData>>;
+let rememberedRefs: Map<Container, KeyedMap<ReferencesData>>;
 
 export default class DataPathFixer {
 
@@ -23,7 +23,7 @@ export default class DataPathFixer {
 		if(game.currentScene) {
 			game.currentScene._refreshAllObjectRefs();
 		}
-		refs = new Map();
+		rememberedRefs = new Map();
 		_rememberPathReference(game.currentContainer);
 		game.currentContainer.forAllChildren(_rememberPathReference);
 	}
@@ -34,7 +34,7 @@ export default class DataPathFixer {
 		if(game.currentScene) {
 			game.currentScene._refreshAllObjectRefs();
 		}
-		refs.forEach(validateRefEntry);
+		rememberedRefs.forEach(validateRefEntry);
 	}
 
 	static beforeNameEdit(newName: string) {
@@ -53,13 +53,15 @@ export default class DataPathFixer {
 	}
 }
 
+const ARRAY_ITEM_SPLITTER = ':array-index:';
+
 let nameEditNewName: string;
 let beforeNameEditOldValues: (string | null)[] | undefined;
 
 let _validateRefEntryOldNames: (string | null)[] | undefined;
 let _validateRefEntryNewName: string | undefined;
 
-const tryToFixDataPath = (node: Container, fieldname: string, path_: string, oldRefs: ReferencesOfDataPath, currentRefs: ReferencesOfDataPath) => {
+const tryToFixDataPath = (node: Container, fieldName: string, path_: string, oldRefs: ReferencesOfDataPath, currentRefs: ReferencesOfDataPath) => {
 
 	let pathes = path_.split(/[,|`]/);
 	let atLeastOnePartFixed = false;
@@ -197,7 +199,7 @@ const tryToFixDataPath = (node: Container, fieldname: string, path_: string, old
 		finalPath += '`' + pathes.join(',');
 	}
 
-	let fn = fieldname.split(',');
+	let fn = fieldName.split(',');
 	let keyframe;
 	if(fn.length > 1) {
 		//it is keyframe action
@@ -219,7 +221,12 @@ const tryToFixDataPath = (node: Container, fieldname: string, path_: string, old
 	if(keyframe) {
 		keyframe.a = finalPath;
 	} else {
-		(node as KeyedObject)[fieldname] = finalPath;
+		if(fieldName.indexOf(ARRAY_ITEM_SPLITTER) > 0) {
+			const a = fieldName.split(ARRAY_ITEM_SPLITTER); // EditablePropertyDescRaw.arrayProperty
+			(node as KeyedObject)[a[0]][a[1]] = finalPath;
+		} else {
+			(node as KeyedObject)[fieldName] = finalPath;
+		}
 	}
 	Lib.__invalidateSerializationCache(node);
 	if((node as KeyedObject).__invalidateSerializeCache) {
@@ -238,23 +245,30 @@ interface ReferencesData {
 
 function _rememberPathReference(o: Container) {
 	let props = (o.constructor as SourceMappedConstructor).__editableProps;
-	let m: KeyedMap<ReferencesData> | null = null;
+	let objectsFieldsRefs: KeyedMap<ReferencesData> | null = null;
 
 	const rememberRef = (path: string, name: string) => {
 		if(path) {
 			let targetNodes = getLatestSceneNodesByComplexPath(path, o);
 
-			if(!m) {
-				m = {};
-				refs.set(o, m);
+			if(!objectsFieldsRefs) {
+				objectsFieldsRefs = {};
+				rememberedRefs.set(o, objectsFieldsRefs);
 			}
-			m[name] = { targetNodes, path };
+			objectsFieldsRefs[name] = { targetNodes, path };
 		}
 	};
 
 	for(let p of props) {
 		if(p.type === 'data-path' || p.type === 'callback') {
-			rememberRef((o as KeyedObject)[p.name], p.name);
+			if(p.arrayProperty) {
+				let a = (o as KeyedObject)[p.name] as string[];
+				a.forEach((path, i) => {
+					rememberRef(path, p.name + ARRAY_ITEM_SPLITTER + i);
+				});
+			} else {
+				rememberRef((o as KeyedObject)[p.name], p.name);
+			}
 		} else if(p.type === 'timeline') {
 			let timeline = (o as KeyedObject)[p.name] as TimelineData;
 			if(timeline) {
