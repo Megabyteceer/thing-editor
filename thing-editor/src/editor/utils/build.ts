@@ -79,7 +79,7 @@ export default class Build {
 		preloaderAssets.add(fs.getFileByAssetName(DEFAULT_FADER_NAME, AssetType.PREFAB));
 		enumAssetsPropsRecursive(Lib.scenes[PRELOADER_SCENE_NAME], preloaderAssets);
 
-		saveAssetsDescriptor(preloaderAssets, 'assets-preloader.ts', game.projectDesc);
+		saveAssetsDescriptor(preloaderAssets, 'assets-preloader.json', game.projectDesc);
 
 		const mainAssets: Set<FileDesc> = new Set();
 		const allAssets = fs.getAssetsList();
@@ -89,7 +89,7 @@ export default class Build {
 			}
 		}
 
-		saveAssetsDescriptor(mainAssets, 'assets-main.ts');
+		saveAssetsDescriptor(mainAssets, 'assets-main.json');
 
 		let scenesFiles = getAssetsForBuild(AssetType.SCENE);
 		let prefabsFiles = getAssetsForBuild(AssetType.PREFAB);
@@ -237,7 +237,6 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 
 	fs.writeFile(
 		game.editor.currentProjectDir + '.tmp/' + fileName,
-		'export default ' +
-		JSON.stringify(assetsObj, fieldsFilter) + ';');
-
+		JSON.stringify(assetsObj, fieldsFilter)
+	);
 }

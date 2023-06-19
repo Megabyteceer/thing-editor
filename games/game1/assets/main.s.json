@@ -7,14 +7,6 @@
 	},
 	":": [
 		{
-			"r": "prefab2",
-			"p": {
-				"x": 317,
-				"y": 442,
-				"shapeFillColor": 9133
-			}
-		},
-		{
 			"c": "Bunny",
 			"p": {
 				"x": 560,
@@ -308,6 +300,40 @@
 						}
 					]
 				}
+			}
+		},
+		{
+			"r": "prefab2",
+			"p": {
+				"x": 113,
+				"y": 444,
+				"shapeFillColor": 12106284
+			}
+		},
+		{
+			"r": "prefab2",
+			"p": {
+				"name": "prefab3",
+				"x": 114,
+				"y": 597,
+				"shapeFillColor": 933391
+			}
+		},
+		{
+			"r": "prefab2",
+			"p": {
+				"name": "prefab3",
+				"x": 105,
+				"y": 309,
+				"shapeFillColor": 16777215
+			}
+		},
+		{
+			"r": "prefab2",
+			"p": {
+				"name": "prefab4",
+				"x": 252,
+				"y": 475
 			}
 		}
 	]

@@ -4,16 +4,12 @@
 			"path": "."
 		},
 		{
-			"path": "./games/games_group/game2/",
-			"name": "games/games_group/game2/"
+			"path": "./games/game1/",
+			"name": "games/game1/"
 		},
 		{
 			"path": "./libs/lib1",
 			"name": "libs/lib1"
-		},
-		{
-			"path": "./games/games_group/lib_relative",
-			"name": "games/games_group/lib_relative"
 		}
 	],
 	"settings": {

@@ -318,7 +318,7 @@ class Editor {
 					return Promise.all([this.reloadAssetsAndClasses(true)]);
 				});
 
-				editorEvents.emit('didProjectOpen');
+				editorEvents.emit('projectDidOpen');
 
 				if(game.settings.getItem(LAST_SCENE_NAME) && !Lib.hasScene(game.settings.getItem(LAST_SCENE_NAME))) {
 					this.saveLastSceneOpenName('');

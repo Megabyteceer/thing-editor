@@ -185,7 +185,7 @@ class Game {
 		/*
 		/// #endif
 		this.loadingAdd();
-		import('game-root/.tmp/assets-main').then((mainAssets: AssetsDescriptor) => {
+		import('game-root/.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
 			this.loadingRemove();
 			game.addAssets(mainAssets.default);
 		});
@@ -235,26 +235,13 @@ class Game {
 			game.applyProjectDesc(data.projectDesc);
 		}
 
-		for(const prefabName in data.prefabs) {
-			if(!Lib.prefabs[prefabName]) {
-				Lib.prefabs[prefabName] = data.prefabs[prefabName];
-			}
-		}
-
-		for(const prefabName in data.scenes) {
-			if(!Lib.scenes[prefabName]) {
-				Lib.scenes[prefabName] = data.scenes[prefabName];
-			}
-		}
-		for(const textureName of data.images) {
-			Lib.addTexture(textureName, assetsRoot + textureName);
-		}
-
-		//TODO sounds
-
+		Lib.addAssets(data, assetsRoot);
 	}
 
 	applyProjectDesc(projectDescriptor: ProjectDesc) {
+
+		assert(!this.projectDesc, "game.projectDesc already defined");
+
 		/// #if DEBUG
 		let so = projectDescriptor.screenOrientation;
 		assert(so === 'auto' || so === 'landscape' || so === 'portrait', 'Wrong value for "screenOrientation". "auto", "landscape" or "portrait" expected', 30010);
@@ -1212,6 +1199,6 @@ export type { FixedViewportSize };
 }; //TODO  add all helpers
 /*
 /// #endif
-	import preloaderAssets from 'game-root/.tmp/assets-preloader';
+	import preloaderAssets from 'game-root/.tmp/assets-preloader' assert { type: 'json' };
 	game.addAssets(preloaderAssets);
 //*/

@@ -4,7 +4,7 @@ import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/edita
 import TypedEventEmitter from "typed-emitter";
 
 type EditorEvents = {
-	didProjectOpen: () => void,
+	projectDidOpen: () => void,
 	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
 	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
 }

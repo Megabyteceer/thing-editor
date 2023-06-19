@@ -31,7 +31,7 @@ function initializeGizmo() {
 	});
 }
 
-editorEvents.once('didProjectOpen', () => {
+editorEvents.once('projectDidOpen', () => {
 
 	(document.querySelector('#viewport-root') as HTMLDivElement).addEventListener('mousedown', function onMouseDown(ev: MouseEvent) {
 		if(game.pixiApp && (ev.target === game.pixiApp.view)) {

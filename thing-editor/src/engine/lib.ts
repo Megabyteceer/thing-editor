@@ -1,5 +1,5 @@
 
-import { Classes, KeyedMap, KeyedObject, NodeExtendData, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { AssetsDescriptor, Classes, KeyedMap, KeyedObject, NodeExtendData, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
 import { Container, Texture } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -95,6 +95,11 @@ export default class Lib {
 	static _setClasses(_classes: Classes) {
 		classes = _classes;
 		game.classes = _classes;
+		/// #if EDITOR
+		/*
+		/// #endif
+		normalizeSerializedData();
+		//*/
 	}
 
 	static scenes: Scenes;
@@ -250,14 +255,16 @@ export default class Lib {
 		, isScene = false
 		/// #endif
 	): Container {
-		let ret: Container;
 
 		/// #if EDITOR
+		let ret: Container;
+
+
 		deserializationDeepness++;
-		/// #endif
+
 
 		if(src.hasOwnProperty('r')) { // prefab reference
-			/// #if EDITOR
+
 			let replacedPrefabName: string | undefined;
 			if(!Lib.hasPrefab(src.r!)) {
 				replacedPrefabName = src.r;
@@ -269,11 +276,9 @@ export default class Lib {
 					}, 1);
 				}
 			}
-			/// #endif
 
 			ret = Lib._deserializeObject(prefabs[src.r!]);
 			Object.assign(ret, src.p);
-			/// #if EDITOR
 
 			if(replacedPrefabName) {
 				ret.name = replacedPrefabName;
@@ -281,11 +286,10 @@ export default class Lib {
 				ret.__nodeExtendData.unknownPrefabProps = src.p;
 			}
 			__preparePrefabReference(ret, src.r!);
-			/// #endif
 
 		} else { // not a prefab reference
 
-			/// #if EDITOR
+
 			let replaceClass: SourceMappedConstructor | undefined = undefined;
 			let replaceClassName: string | undefined;
 			if(!classes.hasOwnProperty(src.c!)) {
@@ -301,16 +305,12 @@ export default class Lib {
 			if(!replaceClass) {
 				assert(classes[src.c!].__defaultValues, 'Class ' + (replaceClassName || src.c) + ' has no default values set');
 			}
-			/// #endif
 
-			const constrictor =
-				/// #if EDITOR
-				replaceClass ||
-				/// #endif
-				classes[src.c!] as SourceMappedConstructor;
+
+			const constrictor = replaceClass || classes[src.c!] as SourceMappedConstructor;
 
 			ret = Pool.create(constrictor);
-			/// #if EDITOR
+
 			if(ret.__beforeDeserialization) {
 				ret.__beforeDeserialization();
 			}
@@ -318,9 +318,16 @@ export default class Lib {
 				ret.__nodeExtendData.unknownConstructor = src.c;
 				ret.__nodeExtendData.unknownConstructorProps = src.p;
 			}
-			/// #endif
+
 			Object.assign(ret, constrictor.__defaultValues, src.p);
 		}
+
+		/*
+		/// #endif
+		// production deserialization
+		const ret = Pool.create(src.c as any as Constructor);
+		Object.assign(ret, src.p);
+		//*/
 
 		if(src.hasOwnProperty(':')) {
 			let childrenData: SerializedObject[] = src[':'] as SerializedObject[];
@@ -347,7 +354,6 @@ export default class Lib {
 		}
 
 		/// #if EDITOR
-
 		deserializationDeepness--;
 		if(deserializationDeepness === 0) {
 			processAfterDeserialization(ret);
@@ -356,6 +362,32 @@ export default class Lib {
 		/// #endif
 
 		return ret;
+	}
+
+	static addAssets(data: AssetsDescriptor, assetsRoot: string) {
+
+		for(const prefabName in data.prefabs) {
+			if(!prefabs[prefabName]) {
+				prefabs[prefabName] = data.prefabs[prefabName];
+			}
+		}
+
+		for(const prefabName in data.scenes) {
+			if(!scenes[prefabName]) {
+				scenes[prefabName] = data.scenes[prefabName];
+			}
+		}
+
+		if(game.classes) {
+			normalizeSerializedData();
+		}
+
+		for(const textureName of data.images) {
+			Lib.addTexture(textureName, assetsRoot + textureName);
+		}
+
+		//TODO sounds
+
 	}
 
 	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
@@ -688,6 +720,54 @@ Lib.prefabs = prefabs;
 Lib.addTexture('EMPTY', Texture.EMPTY);
 Lib.addTexture('WHITE', Texture.WHITE);
 
+const normalizeSerializedDataRecursive = (data: SerializedObject) => {
+	if(data.c) {
+		if(typeof data.c === 'string') {
+			//@ts-ignore
+			data.c = game.classes[data.c];
+			data.p = Object.assign({}, (data.c as any as SourceMappedConstructor).__defaultValues, data.p);
+			if(data[':']) {
+				for(const c of data[':']) {
+					normalizeSerializedDataRecursive(c);
+				}
+			}
+		}
+	} else {
+		const prefab = prefabs[data.r!];
+		normalizeSerializedDataRecursive(prefab);
+
+		delete data.r;
+		data.c = prefab.c;
+		data.p = Object.assign({}, prefab.p, data.p);
+
+		if(prefab[':']) {
+			if(data[':']) {
+				data[':'] = prefab[':'].concat(data[':']);
+			} else {
+				data[':'] = prefab[':']
+			}
+		}
+
+		if(data[':']) {
+			for(const c of data[':']) {
+				normalizeSerializedDataRecursive(c);
+			}
+		}
+	}
+}
+
+const normalizeSerializedData = () => {
+	/// #if EDITOR
+	assert(false, "runtime feature only.");
+	/// #endif
+	for(const name in prefabs) {
+		normalizeSerializedDataRecursive(prefabs[name]);
+	}
+	for(const name in scenes) {
+		normalizeSerializedDataRecursive(scenes[name]);
+	}
+}
+
 /// #if EDITOR
 
 const getVersionedFileName = (file: FileDesc) => {
@@ -722,11 +802,13 @@ const __onAssetAdded = (file: FileDesc) => {
 
 		case AssetType.IMAGE:
 			Lib.addTexture(file.assetName, (file as FileDescImage).asset || file.fileName);
+			file.asset = Lib.getTexture(file.assetName);
 			game.editor.ui.refresh();
 			break;
 
 		case AssetType.SOUND:
 			Lib.addSound(file.assetName, file.fileName);
+			file.asset = Lib.getSound(file.assetName);
 			game.editor.ui.refresh();
 			break;
 	}

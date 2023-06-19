@@ -7,6 +7,7 @@ import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import libInfo from "thing-editor/src/editor/utils/lib-info";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -39,7 +40,8 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 						game.editor.ui.refresh();
 					}, R.fragment(R.icon('delete'), " Delete.")
 				);
-			}
+			},
+			disabled: () => Lib.__isSystemTexture(file.asset)
 		}
 	];
 
