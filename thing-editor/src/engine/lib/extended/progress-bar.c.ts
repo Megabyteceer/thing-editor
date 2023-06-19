@@ -2,7 +2,6 @@
 import { DisplayObject, NineSlicePlane, Point, Sprite } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
 import Container from "thing-editor/src/engine/lib/container.c.ts";
 import Shape from "thing-editor/src/engine/lib/shape.c";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
@@ -209,49 +208,6 @@ export default class ProgressBar extends Container {
 
 	__afterDeserialization() {
 		this._applyBgHeight();
-	}
-
-	__EDITOR_onCreate() {
-		this.interactive = true;
-		for(let childData of [
-			{
-				"c": "Sprite",
-				"p": {
-					"name": "bg",
-					"alpha": 0.5,
-					"interactive": true,
-					"scale.y": 20.8,
-					"image": "WHITE"
-				}
-			},
-			{
-				"c": "Sprite",
-				"p": {
-					"name": "bar",
-					"interactive": true,
-					"scale.y": 13.666666666666666,
-					"image": "WHITE",
-					"tint": 65280
-				}
-			},
-			{
-				"c": "Sprite",
-				"p": {
-					"name": "cap",
-					"x": 5,
-					"interactive": true,
-					"scale.x": 2,
-					"scale.y": 2,
-					"pivot.x": 5,
-					"pivot.y": 5,
-					"image": "WHITE"
-				}
-			}]
-		) {
-			let c = Lib._loadClassInstanceById(childData.c);
-			Object.assign(c, childData.p);
-			this.addChild(c);
-		}
 	}
 	/// #endif
 }

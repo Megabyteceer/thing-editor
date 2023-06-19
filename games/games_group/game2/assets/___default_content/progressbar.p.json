@@ -1,0 +1,39 @@
+{
+	"c": "ProgressBar",
+	"p": {
+		"name": "___default_content/progressbar",
+		"x": 93,
+		"y": 128,
+		"interactive": true
+	},
+	":": [
+		{
+			"c": "Sprite",
+			"p": {
+				"name": "bg",
+				"alpha": 0.5,
+				"scale.y": 12.5,
+				"image": "WHITE"
+			}
+		},
+		{
+			"c": "Sprite",
+			"p": {
+				"name": "bar",
+				"scale.y": 13.666666666666666,
+				"image": "WHITE",
+				"tint": 65280
+			}
+		},
+		{
+			"c": "DSprite",
+			"p": {
+				"name": "cap",
+				"x": 8,
+				"scale.x": 1.5,
+				"scale.y": 1.5,
+				"image": "WHITE"
+			}
+		}
+	]
+}

@@ -195,11 +195,15 @@ class Editor {
 		const backupName = this.currentSceneBackupName;
 		if(Lib.hasScene(backupName)) {
 			this.openScene(backupName);
-			Lib.__deleteScene(backupName);
+			this.removeBackup();
 			this.history.setCurrentStateModified();
 		} else {
 			this.openScene(this.currentSceneName);
 		}
+	}
+
+	removeBackup() {
+		Lib.__deleteScene(this.currentSceneBackupName);
 	}
 
 	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) { //TODO rename changeProperty

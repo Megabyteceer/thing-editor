@@ -19,17 +19,80 @@
 						"y": 271,
 						"image": "bunny.png",
 						"arrayField": [
-							"Sound.play`click",
-							"Sound.play`over"
+							"all.spr.remove",
+							"all.spr.children.sort`"
 						]
 					}
 				},
 				{
 					"c": "Sprite",
 					"p": {
+						"name": "spr",
 						"x": 161,
 						"y": 228,
 						"image": "bunny.png"
+					}
+				}
+			]
+		},
+		{
+			"c": "Button",
+			"p": {
+				"x": 407,
+				"y": 144
+			},
+			":": [
+				{
+					"c": "DSprite",
+					"p": {
+						"image": "bunny.png"
+					}
+				}
+			]
+		},
+		{
+			"c": "Bunny",
+			"p": {
+				"x": 236,
+				"y": 499,
+				"image": "bunny.png"
+			}
+		},
+		{
+			"c": "ProgressBar",
+			"p": {
+				"name": "",
+				"x": 459,
+				"y": 337,
+				"interactive": true
+			},
+			":": [
+				{
+					"c": "Sprite",
+					"p": {
+						"name": "bg",
+						"alpha": 0.5,
+						"scale.y": 12.5,
+						"image": "WHITE"
+					}
+				},
+				{
+					"c": "Sprite",
+					"p": {
+						"name": "bar",
+						"scale.y": 13.666666666666666,
+						"image": "WHITE",
+						"tint": 65280
+					}
+				},
+				{
+					"c": "DSprite",
+					"p": {
+						"name": "cap",
+						"x": 8,
+						"scale.x": 1.5,
+						"scale.y": 1.5,
+						"image": "WHITE"
 					}
 				}
 			]

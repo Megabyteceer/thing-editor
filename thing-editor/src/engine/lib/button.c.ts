@@ -39,10 +39,10 @@ export default class Button extends DSprite {
 	hotkey: number = 0;
 
 	@editable({ type: 'sound' })
-	sndClick = null;
+	sndClick: string | null = null;
 
 	@editable({ type: 'sound' })
-	sndOver = null;
+	sndOver: string | null = null;
 
 	@editable()
 	scrollable = false;
@@ -350,12 +350,12 @@ export default class Button extends DSprite {
 		if(Lib.hasTexture('ui/button.png')) {
 			this.image = 'ui/button.png';
 		}
-		/*if(Lib.hasSound('click')) { //TODO
+		if(Lib.hasSound('click')) {
 			this.sndClick = 'click';
 		}
 		if(Lib.hasSound('over')) {
 			this.sndOver = 'over';
-		}*/
+		}
 	}
 
 
