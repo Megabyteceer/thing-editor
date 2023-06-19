@@ -176,10 +176,6 @@ class Game {
 		// workaround for issue: https://jira.bgaming.com/browse/BGG-6807, see for more details: https://github.com/pixijs/pixijs/issues/8315
 		(Texture.WHITE.baseTexture.resource.source as any).getContext("2d").fillRect(0, 0, 1, 1);
 
-		Lib.addTexture('EMPTY', Texture.EMPTY);
-		Lib.addTexture('WHITE', Texture.WHITE);
-
-
 		this.pixiApp.view.addEventListener!('wheel', (ev) => ev.preventDefault());
 		window.addEventListener('resize', this._onContainerResize.bind(this));
 
@@ -253,6 +249,8 @@ class Game {
 		for(const textureName of data.images) {
 			Lib.addTexture(textureName, assetsRoot + textureName);
 		}
+
+		//TODO sounds
 
 	}
 

@@ -219,7 +219,7 @@ export default class Lib {
 	static addSound(name: string, fileName: string) {
 
 		//TODO duration
-		//TODO preload
+		//TODO preload game.loadingAdd();  3 attempts.
 		let s = loadSound({ src: fileName });
 		soundsHowlers[name] = s;
 
@@ -536,10 +536,6 @@ export default class Lib {
 		return ret;
 	}
 
-	static __clearAssetsLists() {
-		textures = {};
-	}
-
 	static __invalidateSerializationCache(o: Container) {
 		let p = o;
 		while((p !== game.stage) && p) {
@@ -689,6 +685,9 @@ let constructRecursive = (o: Container) => {
 Lib.scenes = scenes;
 Lib.prefabs = prefabs;
 
+Lib.addTexture('EMPTY', Texture.EMPTY);
+Lib.addTexture('WHITE', Texture.WHITE);
+
 /// #if EDITOR
 
 const getVersionedFileName = (file: FileDesc) => {
@@ -706,11 +705,15 @@ Object.freeze(EMPTY_NODE_EXTEND_DATA);
 export { __onAssetAdded, __onAssetDeleted, __onAssetUpdated, constructRecursive };
 
 const __onAssetAdded = (file: FileDesc) => {
-	console.log('added: ' + file.fileName);
 	switch(file.assetType) {
 		case AssetType.PREFAB:
 			assert(!file.asset, 'asset reference of added file should be empty.');
-			file.asset = Lib.prefabs[file.assetName] || fs.readJSONFile(file.fileName);
+			file.asset = Lib.prefabs[file.assetName] = fs.readJSONFile(file.fileName);
+			game.editor.ui.refresh();
+			break;
+		case AssetType.SCENE:
+			assert(!file.asset, 'asset reference of added file should be empty.');
+			file.asset = Lib.scenes[file.assetName] = fs.readJSONFile(file.fileName);
 			game.editor.ui.refresh();
 			break;
 		case AssetType.CLASS:
@@ -718,13 +721,14 @@ const __onAssetAdded = (file: FileDesc) => {
 			break;
 
 		case AssetType.IMAGE:
-			Lib.addTexture(file.assetName, file.fileName);
+			Lib.addTexture(file.assetName, (file as FileDescImage).asset || file.fileName);
 			game.editor.ui.refresh();
 			break;
 
-
-
-		//TODO images, sounds, scenes
+		case AssetType.SOUND:
+			Lib.addSound(file.assetName, file.fileName);
+			game.editor.ui.refresh();
+			break;
 	}
 }
 

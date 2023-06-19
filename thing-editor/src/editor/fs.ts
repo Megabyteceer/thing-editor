@@ -309,25 +309,22 @@ export default class fs {
 
 	static refreshAssetsList(dirNames?: string[]) {
 
-		const isInitialization = dirNames;
-
-		let prevAllAssets: FileDesc[] | undefined;
-		let prevAllAssetsMap: Map<string, FileDesc>;
-
-
-		if(!isInitialization) {
+		if(dirNames) {
+			assert(!lastAssetsDirs, 'dirNames already defined.');
+			lastAssetsDirs = dirNames;
+		} else {
+			assert(!lastAssetsDirs, 'dirNames is not defined.');
 			dirNames = lastAssetsDirs;
-			prevAllAssets = allAssets;
-			prevAllAssetsMap = new Map();
-			for(let f of prevAllAssets) {
-				prevAllAssetsMap.set(f.fileName, f);
-			}
 		}
 
-		console.log('refresh assets list');
-		lastAssetsDirs = dirNames!;
-
+		const prevAllAssets = allAssets;
+		const prevAllAssetsMap = new Map();
+		for(let f of prevAllAssets) {
+			prevAllAssetsMap.set(f.fileName, f);
+		}
 		allAssets = [];
+
+		console.log('refresh assets list');
 
 		for(let assetType of AllAssetsTypes) {
 			assetsListsByType.set(assetType, []);

@@ -3,7 +3,6 @@ import R from "./preact-fabrics";
 import game from "../engine/game";
 
 import { Component, ComponentChild, h, render } from "preact";
-import AssetsLoader from "thing-editor/src/editor/assets-loader";
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescClass, LibInfo } from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
@@ -25,6 +24,7 @@ import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
+import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
 import assert from "thing-editor/src/engine/debug/assert";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import Pool from "thing-editor/src/engine/utils/pool";
@@ -313,9 +313,10 @@ class Editor {
 				protectAccessToSceneNode(game.stage, "game stage");
 				protectAccessToSceneNode(game.stage.parent, "PIXI stage");
 
-				await Promise.all([this.reloadAssetsAndClasses(true), Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
+				await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
 					Lib.REMOVED_TEXTURE = t;
-				})]);
+					return Promise.all([this.reloadAssetsAndClasses(true)]);
+				});
 
 				editorEvents.emit('didProjectOpen');
 
@@ -625,7 +626,9 @@ class Editor {
 			fs.refreshAssetsList(this.assetsFolders);
 		}
 		await this.reloadClasses();
-		await AssetsLoader.reloadAssets();
+		await waitForCondition(() => {
+			return game.loadingProgress === 100;
+		});
 	}
 
 	onObjectsPropertyChanged(o: Container, field: EditablePropertyDesc | string, val: any, isDelta?: boolean) { // TODO два похожих метода. Сделать один для выделения и объекта
