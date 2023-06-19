@@ -98,10 +98,12 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 
 	componentDidMount(): void {
 		super.componentDidMount();
-		if(this.props.onItemSelect) {
-			const input = (this.base as HTMLDivElement).querySelector('.search-input') as HTMLInputElement;
+		const input = (this.base as HTMLDivElement).querySelector('.search-input') as HTMLInputElement;
+		if(input) {
 			input.value = this.state.search || '';
-			input.select();
+			if(this.props.onItemSelect) {
+				input.select();
+			}
 		}
 	}
 
@@ -111,6 +113,9 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	static renderAssetsViews(): ComponentChild {
+		if(!game.editor.isProjectOpen) {
+			return R.span();
+		}
 		if(allWindowsIds.length === 0) {
 			allWindowsIds = game.editor.settings.getItem(SETTINGS_KEY);
 			if(!allWindowsIds) {
@@ -196,12 +201,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	renderWindowContent(): ComponentChild {
-		if(!game.editor.isProjectOpen) {
-			return R.span();
-		}
 		let files = fs.getAssetsList();
-
-
 		let menu;
 
 		if(!this.props.hideMenu) {
