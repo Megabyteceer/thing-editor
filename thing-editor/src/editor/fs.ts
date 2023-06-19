@@ -282,6 +282,31 @@ export default class fs {
 		return execFs('fs/isFilesEqual', fileName1, fileName2) as boolean;
 	}
 
+	static getFolderAssets(dirName: string): FileDesc[] {
+		assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName);
+
+		const lib: LibInfo | null = game.editor.currentProjectLibs.find(l => l.assetsDir === dirName) || null;
+		const files = execFs('fs/readDir', dirName) as FileDesc[];
+		return files.filter((file) => {
+			let wrongSymbol = fs.getWrongSymbol(file.fileName);
+			if(wrongSymbol) {
+				game.editor.ui.status.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
+				return;
+			}
+			let assetName = file.fileName.substring(dirName.length);
+			for(const ext in ASSETS_PARSERS) {
+				if(assetName.endsWith(ext)) {
+					const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
+					file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGHTS.get(assetType) as number));
+					file.fileName = '/' + file.fileName;
+					file.assetType = assetType;
+					file.lib = lib;
+					return true;
+				}
+			}
+		});
+	}
+
 	static refreshAssetsList(dirNames?: string[]) {
 
 		const isInitialization = dirNames;
@@ -313,40 +338,18 @@ export default class fs {
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
 
 		for(let dirName of dirNames!) {
-			assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName);
-
-			const lib: LibInfo | null = game.editor.currentProjectLibs.find(l => l.assetsDir === dirName) || null;
-
-			const files = execFs('fs/readDir', dirName) as FileDesc[];
+			const files = fs.getFolderAssets(dirName);
 			for(let file of files) {
-				let wrongSymbol = fs.getWrongSymbol(file.fileName);
-				if(wrongSymbol) {
-					game.editor.ui.status.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
-					continue;
-				}
-				let assetName = file.fileName.substring(dirName.length);
-				for(const ext in ASSETS_PARSERS) {
-					if(assetName.endsWith(ext)) {
-						const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
-
-						file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGHTS.get(assetType) as number));
-						file.fileName = '/' + file.fileName;
-						file.assetType = assetType;
-						file.lib = lib;
-
-						const map = assetsByTypeByName.get((ASSETS_PARSERS as KeyedObject)[ext] as AssetType) as Map<string, FileDesc>;
-						if(assetType !== AssetType.CLASS && map.has(file.assetName)) {
-							const existingFile = map.get(file.assetName)!;
-							setTimeout(() => {
-								if(fs.isFilesEqual(file.fileName, existingFile.fileName)) {
-									game.editor.warnEqualFiles(file, existingFile);
-								}
-							}, 0);
+				const map = assetsByTypeByName.get(file.assetType as AssetType) as Map<string, FileDesc>;
+				if(file.assetType !== AssetType.CLASS && map.has(file.assetName)) {
+					const existingFile = map.get(file.assetName)!;
+					setTimeout(() => {
+						if(fs.isFilesEqual(file.fileName, existingFile.fileName)) {
+							game.editor.warnEqualFiles(file, existingFile);
 						}
-						map.set(file.assetName, file);
-						break;
-					}
+					}, 0);
 				}
+				map.set(file.assetName, file);
 			}
 		}
 

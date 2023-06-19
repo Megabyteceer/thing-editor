@@ -29,7 +29,7 @@ const exitClick = (_ev?: PointerEvent) => {
 }
 
 const browseClick = (_ev?: PointerEvent) => {
-	fs.browseDir(game.editor.currentProjectAssetsDir);
+	fs.browseDir(game.editor.currentProjectDir);
 }
 
 const projectPropsClick = (_ev?: PointerEvent) => {

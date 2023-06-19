@@ -100,7 +100,7 @@
 			}
 		},
 		{
-			"c": "LibComponent",
+			"c": "LibComponentRelative",
 			"p": {
 				"name": "libCOmponent",
 				"x": 163,

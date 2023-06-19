@@ -48,7 +48,8 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 	{
 		name: R.fragment(R.icon('clone'), "Clone"),
 		onClick: editorUtils.clone,
-		hotkey: { key: 'd', ctrlKey: true }
+		hotkey: { key: 'd', ctrlKey: true },
+		//	disabled: () => !game.editor.selection.length
 	},
 	{
 		name: R.fragment(R.icon('export-selected'), "Export as PNG..."),
