@@ -1,6 +1,10 @@
 
+/// #if EDITOR
 import { Howl, HowlOptions } from 'howler';
-
+/*
+/// #endif
+import 'howler.js';
+//*/
 interface HowlSoundOptions extends HowlOptions {
 
 }

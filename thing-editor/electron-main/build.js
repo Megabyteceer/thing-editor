@@ -68,7 +68,9 @@ module.exports = {
 						'game-root': root,
 						'games': path.resolve(__dirname, '../../games'),
 						'thing-editor': path.resolve(__dirname, '../../thing-editor'),
-						'pixi.js': path.resolve(__dirname, '../../node_modules/pixi.js-legacy/dist/pixi-legacy.min.mjs')
+						'howler.js': 'https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js',
+						'pixi.js': 'https://cdn.jsdelivr.net/npm/pixi.js-legacy@7.2.4/dist/pixi-legacy.min.mjs',
+						//'pixi.js': path.resolve(__dirname, '../../node_modules/pixi.js-legacy/dist/pixi-legacy.min.mjs')
 					}
 				}
 			}).then((res) => {
