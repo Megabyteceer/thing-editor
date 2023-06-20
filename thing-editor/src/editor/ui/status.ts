@@ -7,6 +7,7 @@ import group from "thing-editor/src/editor/ui/group";
 import Help from "thing-editor/src/editor/ui/help";
 import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
+import shakeDomElement from "thing-editor/src/editor/utils/shake-element";
 import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -119,6 +120,7 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 			}
 			game.editor.pauseGame();
 		}
+		shakeDomElement(document.querySelector('#window-info') as HTMLElement);
 	}
 
 	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false) {
@@ -246,13 +248,8 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 							return;
 						}
 					}
-
-					game.editor.ui.sceneTree.selectInTree(item.owner);
-					if(item.fieldName) {
-						setTimeout(() => {
-							game.editor.ui.propsEditor.selectField(item.fieldName as string, true);
-						}, 1);
-					}
+					game.editor.ui.sceneTree.selectInTree(item.owner, false, item.fieldName);
+					shakeDomElement(document.querySelector('#sceneTree .item-selected') as HTMLElement);
 				}
 			}
 		}, this.props.icon, item.message, node, R.btn('?', () => {

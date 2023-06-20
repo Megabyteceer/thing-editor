@@ -1,6 +1,6 @@
 import { ClassAttributes, Component, ComponentChild } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import { ContextMenuItem, refreshContextMenu } from "thing-editor/src/editor/ui/context-menu";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { MAIN_MENU } from "thing-editor/src/editor/ui/main-menu";
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
@@ -18,6 +18,7 @@ const handleHotkeys = (ev: KeyboardEvent, handlers?: ContextMenuItem[][], window
 					if(typeof menuItem.disabled !== 'function' || !menuItem.disabled()) {
 						if(isHotkeyHit(ev, windowBody as HTMLElement, menuItem.hotkey)) {
 							menuItem.onClick();
+							refreshContextMenu();
 							return true;
 						}
 					}

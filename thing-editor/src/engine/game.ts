@@ -70,10 +70,6 @@ class Game {
 
 	Sound = Sound;
 
-	___enforcedOrientation: ProjectOrientation | null = null; //TODO
-	__enforcedW: number | undefined;
-	__enforcedH: number | undefined;
-
 	_loadingErrorIsDisplayed = false;
 
 	projectDesc!: ProjectDesc;
@@ -153,6 +149,8 @@ class Game {
 
 		this.settings = new Settings(gameId || this.projectDesc.id);
 
+		this.___enforcedOrientation = this.settings.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
+
 		initGameInteraction();
 
 		app.stage.addChild(stage);
@@ -172,6 +170,8 @@ class Game {
 		/// #if EDITOR
 		assert(false, "_startGame should not be called in editor.");
 		/// #endif
+
+		assert(this.classes, "game.classes is not initialized. Has Vite duped index.js?");
 
 		// workaround for issue: https://jira.bgaming.com/browse/BGG-6807, see for more details: https://github.com/pixijs/pixijs/issues/8315
 		(Texture.WHITE.baseTexture.resource.source as any).getContext("2d").fillRect(0, 0, 1, 1);
@@ -224,6 +224,17 @@ class Game {
 
 	get disableAllButtons() {
 		return !!currentFader;
+	}
+
+	get __enforcedOrientation() {
+		return this.___enforcedOrientation;
+	}
+
+	set __enforcedOrientation(v) {
+		assert(!v || v === 'landscape' || v === 'portrait', 'Wrong value for game.__enforcedOrientation. "landscape" or "portrait" expected');
+		this.___enforcedOrientation = v;
+		game.settings.setItem('__EDITOR_is-portrait-orientation', v === 'portrait');
+		this.onResize();
 	}
 
 	addAssets(data: AssetsDescriptor, assetsRoot: string = './assets/') {
@@ -536,7 +547,11 @@ class Game {
 	}
 
 	/// #if EDITOR
-	__enforcedOrientation?: ProjectOrientation;
+	___enforcedOrientation: ProjectOrientation | undefined;
+
+	__enforcedW: number | undefined;
+	__enforcedH: number | undefined;
+
 	__fixedViewport?: FixedViewportSize;
 	__setFixedViewport(fixedViewport: FixedViewportSize) {
 		this.__fixedViewport = fixedViewport;

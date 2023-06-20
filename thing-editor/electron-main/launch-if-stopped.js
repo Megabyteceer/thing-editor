@@ -21,6 +21,7 @@ import('ps-list').then(async (psList) => {
 				"./thing-editor/electron-main"
 			],
 			{
+				stdio: ['ignore', 'ignore', 'ignore'],
 				detached: true,
 				windowsHide: false,
 				cwd: process.cwd()
@@ -31,7 +32,7 @@ import('ps-list').then(async (psList) => {
 			debugger;
 		});
 
-		setInterval(() => {
+		setTimeout(() => {
 			process.exit(0);
 		}, 100);
 	}

@@ -88,18 +88,20 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 				if(PrefabEditor.currentPrefabName !== file.assetName && !editorUtils.isInModal(ev.target)) {
 					if(ev.buttons === 1) {
 						if(ev.altKey) {
-							if(game.editor.selection.length) {
-								while(game.editor.selection[0].__nodeExtendData.isPrefabReference) {
-									let p = game.editor.selection[0].parent;
-									if(p === game.stage) {
-										break;
-									}
-									game.editor.selection.clearSelection();
-									game.editor.selection.add(p);
-								}
-								placeAsChild(file);
+							if(!game.editor.selection.length) {
+								game.editor.selection.add(game.currentContainer);
 							}
-						} else {
+							while(game.editor.selection[0].__nodeExtendData.isPrefabReference) {
+								let p = game.editor.selection[0].parent;
+								if(p === game.stage) {
+									break;
+								}
+								game.editor.selection.clearSelection();
+								game.editor.selection.add(p);
+							}
+							placeAsChild(file);
+						}
+						else {
 							PrefabEditor.editPrefab(file.assetName);
 						}
 					}

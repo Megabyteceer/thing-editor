@@ -7,6 +7,16 @@ const {
 	shell
 } = require('electron');
 
+const originalLog = console.log.bind(console);
+
+console.log = (txt) => {
+	try {
+		originalLog(txt);
+	} catch(er) {
+
+	}
+}
+
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';

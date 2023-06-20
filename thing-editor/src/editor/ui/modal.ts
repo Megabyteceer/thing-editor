@@ -233,7 +233,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 			fs.exitWithResult(undefined, (game.editor.buildProjectAndExit ? ('Build failed: ' + game.editor.buildProjectAndExit.projectName + '\n') : '') + message + '; Error code: ' + errorCode);
 			return Promise.resolve();
 		} else {
-			if(game.stage) {
+			if(game.stage && !game.__EDITOR_mode) {
 				setTimeout(game.editor.ui.viewport.stopExecution, 0);
 			}
 			return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), errorCode, ' ', title, R.btn('?', () => {

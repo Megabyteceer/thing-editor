@@ -1,4 +1,4 @@
-import { Component } from "preact";
+import { Component, ComponentChild, h } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 
@@ -8,6 +8,25 @@ import newComponentWizard from "thing-editor/src/editor/utils/new-component-wiza
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { onNewSceneClick, onSaveAsSceneClick } from "thing-editor/src/editor/utils/scene-utils";
 import game from "thing-editor/src/engine/game";
+
+const CHECKED = h('span', { className: '.menu-icon' }, '☑');
+const UNCHECKED = h('span', { className: '.menu-icon' }, '☐');
+
+let unmutedIconsCache: ComponentChild;
+const UNMUTED_ICON = (): ComponentChild => {
+	if(!unmutedIconsCache) {
+		unmutedIconsCache = R.icon('asset-sound');
+	}
+	return unmutedIconsCache;
+}
+
+let mutedIconsCache: ComponentChild;
+const MUTED_ICON = (): ComponentChild => {
+	if(!mutedIconsCache) {
+		mutedIconsCache = R.icon('sound-mute');
+	}
+	return mutedIconsCache;
+}
 
 const menuProps = {
 	className: 'main-menu',
@@ -52,6 +71,17 @@ interface MainMenuItem {
 	items: ContextMenuItem[]
 }
 
+const MUTE_SOUND_MENU_ITEM: ContextMenuItem = {
+	name: () => {
+		return R.fragment(game.editor.settings.getItem('sound-muted') ? MUTED_ICON() : UNMUTED_ICON(), ' Mute game sounds');
+	},
+	onClick: () => {
+		game.editor.toggleSoundMute();
+	},
+	stayAfterClick: true,
+	hotkey: { key: 'm', ctrlKey: true }
+}
+
 const MAIN_MENU: MainMenuItem[] = [
 	{
 		name: 'File',
@@ -93,14 +123,14 @@ const MAIN_MENU: MainMenuItem[] = [
 			}
 		]
 	},
-	{
+	/*{
 		name: 'Edit',
 		id: 'edit',
 		items: []
-	},
+	},*/
 	{
 		name: 'Project',
-		id: 'edit',
+		id: 'project',
 		items: [
 			{
 				name: 'Open project...',
@@ -115,18 +145,65 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			null,
 			{
-				name: 'Project Properties...',
-				tip: 'Edit thing-project.json file',
-				onClick: projectPropsClick
-			},
-			null,
-			{
 				name: 'Build release...',
 				onClick: buildReleaseClick
 			},
 			{
 				name: 'Build debug...',
 				onClick: buildDebugClick
+			},
+			null,
+			{
+				name: 'Project Properties...',
+				tip: 'Edit thing-project.json file',
+				onClick: projectPropsClick
+			}
+		]
+	},
+	{
+		name: 'Settings',
+		id: 'settings',
+		items: [
+			MUTE_SOUND_MENU_ITEM,
+			{
+				name: () => {
+					return R.fragment(game.isMobile.any ? CHECKED : UNCHECKED, ' isMobile.any');
+				},
+				onClick: () => {
+					game.editor.toggleIsMobileAny();
+				},
+				stayAfterClick: true
+			},
+			{
+				name: () => {
+					return R.fragment(game.editor.settings.getItem('hide-helpers') ? CHECKED : UNCHECKED, ' Hide helpers');
+				},
+				tip: 'Hides gizmo and selection outline.',
+				onClick: () => {
+					game.editor.toggleHideHelpers();
+				},
+				stayAfterClick: true,
+				hotkey: { key: 'h', ctrlKey: true }
+			},
+			null,
+			{
+				name: () => {
+					return R.fragment(game.editor.settings.getItem('show-system-assets') ? CHECKED : UNCHECKED, ' Show editor`s system assets');
+				},
+				onClick: () => {
+					game.editor.toggleShowSystemAssets();
+				},
+				stayAfterClick: true
+			},
+			{
+				name: () => {
+					return R.fragment(game.editor.settings.getItem('vs-code-excluding') ? UNCHECKED : CHECKED, ' VScode excluding');
+				},
+				tip: 'Does VSCode should exclude other projects from workspace.',
+				onClick: () => {
+					game.editor.toggleVSCodeExcluding();
+				},
+				stayAfterClick: true
 			}
 		]
 	}
@@ -156,27 +233,9 @@ export default class MainMenu extends Component {
 					showContextMenu(menuItem.items, ev);
 				});
 			}));
-		/*
-		R.btn('File',
-	
-			R.btn('Browse...', this.onOpenProjectFolderClick, "Reveal in File Explorer", 'menu-btn'),
-			R.btn('Build', this.onBuildClick, "Build release version of game.", 'menu-btn'),
-			R.btn('Build debug', this.onBuildDebugClick, "Build debug version of game.\nContains asserts.", 'menu-btn'),
-			h(LanguageView),
-			h(TexturesView),
-			game.editor.history.buttonsRenderer(),
-			R.btn('Project settings', game.editor.openProjectDescToEdit, undefined, 'menu-btn'),
-			editor.__preBuildAutoTest && R.btn('Test', editor.testProject, "Launch auto-tests", 'menu-btn'),
-			editor.fs.filesExt && editor.fs.filesExt.scripts.map((s) => {
-				return R.span({ key: s.name }, R.btn(s.name.replace('scripts/', '').replace(/\.js$/, ''), () => {
-					editor.fs.exec(s.name);
-				}, undefined, 'menu-btn'));
-			})
-		);*/
-
 	}
 
 }
 
-export { MAIN_MENU };
+export { MAIN_MENU, MUTE_SOUND_MENU_ITEM };
 

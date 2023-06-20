@@ -15,10 +15,12 @@ selectionFilter.padding = 2;
 let filterPhase = false;
 
 setInterval(() => {
-	if(filterPhase) {
-		selectionFilter.alpha -= 0.02;
-		if(selectionFilter.alpha < 0.5) {
-			filterPhase = false;
+	if(filterPhase || game.editor.isHelpersHidden) {
+		if(selectionFilter.alpha > 0) {
+			selectionFilter.alpha -= 0.02;
+			if(selectionFilter.alpha < 0.5) {
+				filterPhase = false;
+			}
 		}
 	} else {
 		selectionFilter.alpha += 0.02;

@@ -250,6 +250,8 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			menu = h(WindowMenu, { menu: group.groupArray(menu, undefined, undefined, true, this.props.id) });
 		}
 
+		const showSystemAssets = game.editor.settings.getItem('show-system-assets', false);
+
 		files = files.filter((asset) => {
 			if(asset.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 				return false;
@@ -257,6 +259,13 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			if(!this.state.filtersActive) {
 				return true;
 			}
+
+			if(!showSystemAssets) {
+				if(asset.assetName.startsWith('___')) {
+					return false;
+				}
+			}
+
 			return this.state.filter[asset.assetType];
 		});
 

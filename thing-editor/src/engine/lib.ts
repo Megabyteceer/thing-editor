@@ -205,7 +205,7 @@ export default class Lib {
 		return soundsHowlers.hasOwnProperty(soundId);
 	}
 
-	static getSound(soundId: string, __dynamicPreloading = false) {
+	static getSound(soundId: string, __dynamicPreloading = false): HowlSound {
 		assert(soundsHowlers.hasOwnProperty(soundId), "No sound with id '" + soundId + "' found.");
 		let s = soundsHowlers[soundId];
 		/// #if EDITOR

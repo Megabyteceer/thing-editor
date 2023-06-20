@@ -1,4 +1,5 @@
 import { Container } from "pixi.js";
+import { SerializedObject } from "thing-editor/src/editor/env";
 import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
 
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
@@ -92,21 +93,40 @@ export default class PrefabEditor {
 	}
 
 	static acceptPrefabEdition(oneStepOnly = false) {
-		//TODO call validators (add static __validate method for SourceMapedClass)
-		exitIsolation();
-		game.editor.blurInputs();
+		if(prefabsStack.length) {
 
-		game.editor.history.saveHistoryNow();
-		let name = getCurrentPrefabName();
-		let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
-		if(isChanged) {
-			game.editor.history.setCurrentStateUnmodified();
-			game.editor._callInPortraitMode(() => {
-				Lib.__savePrefab(game.currentContainer, name);
-			});
+			//TODO call validators (add static __validate method for SourceMapedClass)
+			exitIsolation();
+			game.editor.blurInputs();
+			game.editor.history.saveHistoryNow();
+			let name = getCurrentPrefabName();
+
+			let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
+			if(isChanged) {
+				if(PrefabEditor.checkPrefabReferenceForLoops(game.currentContainer, name)) {
+					return;
+				}
+				game.editor.history.setCurrentStateUnmodified();
+				game.editor._callInPortraitMode(() => {
+					Lib.__savePrefab(game.currentContainer, name);
+				});
+			}
+			PrefabEditor.exitPrefabEdit(oneStepOnly);
 		}
-		PrefabEditor.exitPrefabEdit(oneStepOnly);
+	}
 
+	static checkPrefabReferenceForLoops(o: Container, prefabName: string): boolean {
+		let ret = false;
+		o.forAllChildren((o) => {
+			if(o.__nodeExtendData.isPrefabReference) {
+				if(checkPrefabDataForLoop(Lib.prefabs[o.__nodeExtendData.isPrefabReference], prefabName)) {
+					game.editor.ui.status.error("Could not save prefab changes. Loop in prefab references detected", 99999, o);
+					game.editor.selection.select(o);
+					ret = true;
+				}
+			}
+		});
+		return ret;
 	}
 
 	static exitPrefabEdit(oneStepOnly = false) {
@@ -130,4 +150,16 @@ export default class PrefabEditor {
 			}
 		}
 	}
+}
+
+function checkPrefabDataForLoop(data: SerializedObject, loopName: string): boolean {
+	if(data.r === loopName) {
+		return true;
+	}
+	if(data[':']) {
+		return Object.values(data[':']).some((d) => {
+			return checkPrefabDataForLoop(d, loopName);
+		});
+	}
+	return false;
 }

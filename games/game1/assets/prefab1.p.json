@@ -84,34 +84,8 @@
 	},
 	":": [
 		{
-			"c": "DSprite",
-			"p": {
-				"x": -4,
-				"y": -34,
-				"scale.x": 0.2,
-				"scale.y": 0.4,
-				"image": "bunny.png"
-			}
-		},
-		{
-			"c": "DSprite",
-			"p": {
-				"x": -15,
-				"y": -37,
-				"scale.x": 0.2,
-				"scale.y": 0.4,
-				"image": "bunny.png"
-			}
-		},
-		{
-			"c": "DSprite",
-			"p": {
-				"x": 6,
-				"y": -33,
-				"scale.x": 0.2,
-				"scale.y": 0.4,
-				"image": "bunny.png"
-			}
+			"r": "prefab2",
+			"p": {}
 		}
 	]
 }

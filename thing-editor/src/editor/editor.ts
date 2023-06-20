@@ -68,6 +68,8 @@ class Editor {
 
 	settings: Settings = new Settings('editor');
 
+	isHelpersHidden: boolean = this.settings.getItem('hide-helpers', false)
+
 	disableFieldsCache: boolean = false;
 
 	buildProjectAndExit: any; //TODO:
@@ -111,8 +113,11 @@ class Editor {
 			}
 		}
 
+
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
+
+		game.isMobile.any = game.editor.settings.getItem('isMobile.any', false);
 
 		game.__EDITOR_mode = true;
 		render(h(UI, { onUIMounted: this.onUIMounted }), document.getElementById('root') as HTMLElement);
@@ -152,9 +157,6 @@ class Editor {
 
 	get isCurrentSceneModified() {
 		assert(game.__EDITOR_mode, "access to isCurrentSceneModified in running mode.");
-		if(game.currentScene !== game.currentContainer) {
-			this.showError("access to isCurrentSceneModified in prefab mode", 90001);
-		}
 		return this.isCurrentContainerModified;
 	}
 
@@ -341,6 +343,39 @@ class Editor {
 				this.settings.setItem('last-opened-project', dir);
 			}
 		}
+	}
+
+	toggleScreenOrientation() {
+		game.__enforcedOrientation = (game.__enforcedOrientation === 'portrait') ? 'landscape' : 'portrait';
+	}
+
+	toggleIsMobileAny() {
+		game.isMobile.any = !game.isMobile.any;
+		game.editor.settings.setItem('isMobile.any', game.isMobile.any);
+		if(game.__EDITOR_mode) {
+			this.ui.viewport.onTogglePlay();
+			this.ui.viewport.onTogglePlay();
+		}
+	}
+
+	toggleHideHelpers() {
+		game.editor.settings.setItem('hide-helpers', !game.editor.settings.getItem('hide-helpers'));
+		this.isHelpersHidden = game.editor.settings.getItem('hide-helpers')
+	}
+
+	toggleSoundMute() {
+		game.editor.settings.setItem('sound-muted', !game.editor.settings.getItem('sound-muted'));
+		Sound.__resetSounds();
+	}
+
+	toggleVSCodeExcluding() {
+		game.editor.settings.setItem('vs-code-excluding', !game.editor.settings.getItem('vs-code-excluding'));
+		excludeOtherProjects();
+	}
+
+	toggleShowSystemAssets() {
+		game.editor.settings.setItem('show-system-assets', !game.editor.settings.getItem('show-system-assets'));
+		this.ui.refresh();
 	}
 
 	warnEqualFiles(file: FileDesc, existingFile: FileDesc) {
@@ -788,16 +823,27 @@ function excludeOtherProjects(): boolean | undefined {
 		const folders = (workspaceConfig.folders as { path: string, name: string }[]).filter((folderData) => {
 			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
 		});
-		folders.push({
-			path: './' + editor.currentProjectDir,
-			name: editor.currentProjectDir
-		});
-		for(let lib of editor.currentProjectLibs) {
-			if(!lib.isEmbed) {
-				folders.push({
-					path: './' + lib.dir,
-					name: lib.dir
-				});
+		if(game.editor.settings.getItem('vs-code-excluding')) {
+			folders.push({
+				path: './games/',
+				name: 'games'
+			});
+			folders.push({
+				path: './libs/',
+				name: 'libs'
+			});
+		} else {
+			folders.push({
+				path: './' + editor.currentProjectDir,
+				name: editor.currentProjectDir
+			});
+			for(let lib of editor.currentProjectLibs) {
+				if(!lib.isEmbed) {
+					folders.push({
+						path: './' + lib.dir,
+						name: lib.dir
+					});
+				}
 			}
 		}
 
@@ -823,10 +869,16 @@ function excludeOtherProjects(): boolean | undefined {
 		const include = (tsConfig.include as string[]).filter((folder) => {
 			return !folder.startsWith('./games/') && !folder.startsWith('./libs/');
 		});
-		include.push('./' + editor.currentProjectDir);
-		for(let lib of editor.currentProjectLibs) {
-			if(!lib.isEmbed) {
-				include.push('./' + lib.dir);
+
+		if(game.editor.settings.getItem('vs-code-excluding')) {
+			include.push('./games/');
+			include.push('./libs/');
+		} else {
+			include.push('./' + editor.currentProjectDir);
+			for(let lib of editor.currentProjectLibs) {
+				if(!lib.isEmbed) {
+					include.push('./' + lib.dir);
+				}
 			}
 		}
 

@@ -155,7 +155,7 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		return R.div({
 			className, id: 'timeline-label-' + name.replace('.', '-').replace('#', '-'), style: { left: label.t * this.props.owner.props.widthZoom },
 			onMouseDown: this.onLabelMouseDown,
-			onDoubleClick: this.onDoubleClick
+			onDblClick: this.onDoubleClick
 		}, R.div(labelStartMarkerProps), R.span(labelNamesProps, name)
 		);
 	}

@@ -3,16 +3,19 @@ import ClassesLoader from "thing-editor/src/editor/classes-loader";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
+import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import "thing-editor/src/editor/ui/editor-overlay";
 import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
 
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
+import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import game from "thing-editor/src/engine/game";
+import game, { FixedViewportSize } from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import Keys from "thing-editor/src/engine/utils/keys";
 import Pool from "thing-editor/src/engine/utils/pool";
+import Sound from "thing-editor/src/engine/utils/sound";
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -26,6 +29,8 @@ let prefabLabelProps = {
 	title: 'Ctrl+click to copy prefab`s name',
 	onMouseDown: copyTextByClick
 };
+
+const ORIENTATION_ICON = R.icon('orientation-toggle');
 
 const SPEED_SELECT = [0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
 	return { value, name: '×' + value };
@@ -47,14 +52,58 @@ document.addEventListener('fullscreenchange', () => {
 	game.onResize();
 });
 
+interface ViewportSizeItem {
+	name: string
+	value: FixedViewportSize
+}
+
+const resolutions: ViewportSizeItem[] = [
+	{ name: "Responsive", value: false },
+	{ name: "Fixed", value: true },
+	{ name: "Pixel 2 XL", value: { w: 823, h: 411 } },
+	{ name: "iPhone 8", value: { w: 667, h: 375 } },
+	{ name: "iPhone X", value: { w: 812, h: 375 } },
+	{ name: "iPad", value: { w: 1024, h: 768 } }
+];
+
 export default class Viewport extends ComponentDebounced<ViewportProps, ViewportStats> {
 
 	constructor(props: ViewportProps) {
 		super(props);
 		this.onTogglePlay = this.onTogglePlay.bind(this);
 		this.onPauseResumeClick = this.onPauseResumeClick.bind(this);
+		this.onDoubleClick = this.onDoubleClick.bind(this);
 		this.stopExecution = this.stopExecution.bind(this);
 		this.onOneStepClick = this.onOneStepClick.bind(this);
+		this.showResolutionSelectMenu = this.showResolutionSelectMenu.bind(this);
+		editorEvents.once('projectDidOpen', () => {
+			this.restoreResolution();
+
+		});
+	}
+
+	restoreResolution() {
+		let currentResolutionSettings = JSON.stringify(game.editor.settings.getItem('viewportMode', null));
+		let currentItem = resolutions.find((i) => {
+			return currentResolutionSettings === JSON.stringify(i.value);
+		});
+		if(currentItem) {
+			this.setCurrentResolution(currentItem);
+		}
+	}
+
+	showResolutionSelectMenu(ev: PointerEvent) {
+		showContextMenu(
+			resolutions.map((resolutionItem) => {
+				return {
+					name: R.span({ className: (resolutionItem === this.currentResolution) ? 'current-menu-item' : undefined },
+						resolutionItem.name, ((typeof resolutionItem.value === 'boolean') ? undefined : R.span({ className: 'resolution' }, ' (' + resolutionItem.value.w + ' х ' + resolutionItem.value.h + ')'))),
+					onClick: () => {
+						game.editor.settings.setItem('viewportMode', resolutionItem.value);
+						this.setCurrentResolution(resolutionItem);
+					}
+				};
+			}), ev);
 	}
 
 	onTogglePlay() {
@@ -70,7 +119,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 			let play = game.__EDITOR_mode;
 			game.__time = 0;
 			PrefabEditor.acceptPrefabEdition();
-
+			Sound.__resetSounds();
 			Pool.__resetIdCounter();
 			if(play) { // launch game
 				game.data = {};
@@ -80,7 +129,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 				game.editor.selection.saveCurrentSelection();
 				game.__clearStage();
 				// TODO Spine.clearPool();
-				//TODO Sound.__resetSounds();
+
 				game.__EDITOR_mode = false;
 				game._setCurrentScene(null);
 				const backupName = game.editor.currentSceneBackupName;
@@ -90,7 +139,6 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 			} else { //stop game
 				game.__clearStage();
 				game.__EDITOR_mode = true;
-				// TODO Sound.__resetSounds();
 				game.editor.restoreBackup();
 
 				game.stage.interactiveChildren = false;
@@ -147,6 +195,16 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 		game.stage.y = 0;
 	}
 
+	currentResolution!: ViewportSizeItem;
+
+	setCurrentResolution(resolution: ViewportSizeItem) {
+		if(!game.projectDesc.dynamicStageSize) {
+			return;
+		}
+		this.currentResolution = resolution;
+		game.__setFixedViewport(resolution.value);
+	}
+
 	render(): ComponentChild {
 		let className = 'editor-viewport-wrapper';
 
@@ -154,8 +212,22 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 		let statusHeader: ComponentChild;
 
 		let resolutionSelect;
-		if(game.editor.projectDesc && game.editor.projectDesc.dynamicStageSize) {
-			resolutionSelect = R.div({ className: 'resolution' }, game.W + '×' + game.H)
+		if(game.editor.projectDesc) {
+			resolutionSelect = game.projectDesc.dynamicStageSize ?
+				R.fragment(
+					R.div({
+						className: 'resolution clickable',
+						onMouseDown: this.showResolutionSelectMenu
+					},
+						R.div(null, this.currentResolution.name),
+						R.div(null, game.W + '×' + game.H),
+					),
+					R.hr()
+				) :
+				R.fragment(
+					R.div(null, game.W + '×' + game.H),
+					R.hr()
+				)
 		}
 
 		const reloadClassesBtn = R.btn(R.icon('recompile'), game.editor.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
@@ -227,9 +299,13 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 
 				),
 				R.span(panelBottomProps,
+					R.btn(ORIENTATION_ICON, game.editor.toggleScreenOrientation, 'Portrait/Landscape switch', undefined, { key: 'l', ctrlKey: true }),
+					R.hr(),
 					resolutionSelect,
 					R.btn('⛶', () => {
-						(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen();
+						(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen().then(() => {
+							game.onResize();
+						});
 					}, 'Go fullscreen', 'big-btn'),
 					R.hr(),
 					'Speed:',
@@ -253,7 +329,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 			R.div({
 				id: 'viewport-root',
 				className: 'editor-viewport',
-				onDoubleClick: this.onDoubleClick,
+				onDblClick: this.onDoubleClick,
 				onDragOver: this.onDragOver,
 				onDrop: this.onDrop,
 			})

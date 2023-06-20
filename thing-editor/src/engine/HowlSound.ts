@@ -1,6 +1,7 @@
 
 /// #if EDITOR
 import { Howl, HowlOptions } from 'howler';
+import game from 'thing-editor/src/engine/game';
 /*
 /// #endif
 import 'howler.js';
@@ -10,6 +11,14 @@ interface HowlSoundOptions extends HowlOptions {
 }
 
 export default class HowlSound extends Howl {
+
+	play(spriteOrId?: string | number): number {
+		if(!game.editor.settings.getItem('sound-muted') || game.__EDITOR_mode) {
+			return super.play(spriteOrId);
+		}
+		//@ts-ignore
+		return undefined;
+	}
 
 	loadedWithError = false;
 	lastPlayStartFrame = 0;

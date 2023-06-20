@@ -4,7 +4,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 
 interface ContextMenuItemData {
-	name: ComponentChild,
+	name: ComponentChild | (() => ComponentChild),
 	onClick: ((ev?: PointerEvent) => void) | (() => void),
 	disabled?: (() => boolean),
 	hidden?: boolean,
@@ -26,16 +26,28 @@ let menuShown = false;
 let hideMenuTimeout = 0;
 
 window.addEventListener('pointerdown', (ev: PointerEvent) => {
-	if(menuShown && !(ev.target as HTMLDivElement).closest('.stay-after-click-menu-item')) {
-		hideMenuTimeout = setTimeout(hideMenu, 10);
+	if(menuShown) {
+		hideMenuTimeout = setTimeout(() => {
+			if((ev.target as HTMLDivElement).closest('.stay-after-click-menu-item')) {
+				refreshContextMenu();
+			} else {
+				hideMenu();
+			}
+		}, 10);
 	}
 });
+
+let shownMenuTemplate: ContextMenuItem[];
+let shownMenuEvent: PointerEvent;
 
 const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	if(hideMenuTimeout) {
 		clearTimeout(hideMenuTimeout);
 		hideMenuTimeout = 0;
 	}
+
+	shownMenuTemplate = menuTemplate;
+	shownMenuEvent = ev;
 
 	menuTemplate = menuTemplate.filter((item: ContextMenuItem) => {
 		if(item) {
@@ -76,15 +88,25 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	}
 }
 
+const refreshContextMenu = () => {
+	if(menuShown) {
+		showContextMenu(shownMenuTemplate, shownMenuEvent);
+	}
+}
+
+
 export default showContextMenu;
 
 function renderMenuItem(item: ContextMenuItem) {
 
 	if(item) {
-		return R.btn(item.name, item.onClick, item.tip, item.stayAfterClick ? 'stay-after-click-menu-item' : undefined, item.hotkey);
+		return R.btn((typeof item.name === 'function') ? item.name() : item.name, item.onClick, item.tip, item.stayAfterClick ? 'stay-after-click-menu-item' : undefined, item.hotkey);
 	} else {
 		return R.hr();
 	}
 }
 
 export type { ContextMenuItem };
+
+export { refreshContextMenu };
+

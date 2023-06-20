@@ -165,9 +165,9 @@ export default class Build {
 	}
 }
 
-thingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
+thingEditorServer.onServerMessage((_ev: any, event: string, buildResult: any) => {
 	if(event === 'fs/buildResult') {
-		Build.showResult(path as any);
+		Build.showResult(buildResult);
 	}
 });
 

@@ -133,6 +133,8 @@ module.exports = (mainWindow) => {
 							console.error(_er);
 						};
 						mainWindow.webContents.send('serverMessage', 'fs/buildResult', ret);
+					}).catch((er) => {
+						mainWindow.webContents.send('serverMessage', 'fs/buildResult', er);
 					});
 					event.returnValue = true;
 					return;

@@ -136,9 +136,6 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		props.onChange(this.cropVal(val));
 	}
 
-	onDoubleClick(ev: PointerEvent) {
-		(ev.target as HTMLInputElement).select();
-	}
 
 	onMouseDown(ev: PointerEvent) {
 		(ev.target as HTMLInputElement).requestPointerLock();
@@ -206,7 +203,6 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 				disabled: props.disabled,
 				type: 'text',
 				value: (props.field && props.field.basis) ? val.toString(props.field.basis) : val,
-				onDoubleClick: this.onDoubleClick,
 				onKeyDown: this.onKeyDown
 			}),
 			props.disabled ? undefined : this.btnUp,

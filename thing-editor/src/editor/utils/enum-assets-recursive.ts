@@ -26,7 +26,10 @@ const addPrefabToAssetsList = (prefabName: string, ret: Set<FileDesc>) => {
 	if(prefabName) {
 		const file = fs.getFileByAssetName(prefabName, AssetType.PREFAB);
 		assert(file, "Wrong prefab name.");
-		ret.add(file);
+		if(!ret.has(file)) {
+			ret.add(file);
+			enumAssetsPropsRecursive(Lib.prefabs[prefabName], ret);
+		}
 	}
 }
 
@@ -60,7 +63,6 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 				let prefabName = o.p[field.name];
 				if(Lib.hasPrefab(prefabName)) {
 					addPrefabToAssetsList(prefabName, ret);
-					enumAssetsPropsRecursive(Lib.prefabs[prefabName], ret);
 				}
 			} else if(field.type === 'sound') {
 				let soundName = o.p[field.name];
@@ -97,7 +99,6 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 		}
 	} else {
 		addPrefabToAssetsList(o.r!, ret);
-		enumAssetsPropsRecursive(Lib.prefabs[o.r!], ret);
 	}
 	if(o[':']) {
 		for(let c of o[':']) {

@@ -529,6 +529,10 @@ input {
 	align-items: center;
 }
 
+.viewport-panel-wrapper button {
+	width: 100%;
+}
+
 .prefabs-mode-title {
 	overflow: hidden;
 	max-width: 64px;
@@ -1042,6 +1046,15 @@ input[disabled] {
 	padding: 5px 20px;
 }
 
+.context-menu button:has(.current-menu-item) {
+	box-sizing: border-box;
+	background: #282828;
+	border: 1px solid #444;
+	pointer-events: none;
+	cursor: unset;
+}
+
+
 .context-menu button:hover {
 	outline: none;
 	background-color: #ffffff22;
@@ -1120,12 +1133,11 @@ input[disabled] {
 	display: none;
 }
 
-#viewport .resolution {
+.resolution {
 	font-size: 80%;
 	text-align: center;
-	margin-bottom: 20px;
+	color: #999;
 }
-
 
 .isolation-warning {
 	padding: 3px;
@@ -1163,6 +1175,9 @@ input[disabled] {
 	height: 19px;
 }
 
+.menu-icon {
+	font-size: 150%;
+}
 
 
 
