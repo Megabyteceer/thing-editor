@@ -18,7 +18,7 @@ import { checkForOldReferences, markOldReferences } from "thing-editor/src/edito
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
-import HowlSound, { HowlSoundOptions } from "thing-editor/src/engine/HowlSound";
+import HowlSound from "thing-editor/src/engine/HowlSound";
 
 let classes: Classes;
 let scenes: Scenes = {};
@@ -134,7 +134,7 @@ export default class Lib {
 
 		if(typeof textureURL === 'string') {
 
-			game.loadingAdd();
+			game.loadingAdd(textureURL);
 
 			/// #if EDITOR
 			if(textures[name] && !Lib.__isSystemTexture(textures[name])) {
@@ -160,13 +160,13 @@ export default class Lib {
 						/// #if EDITOR
 					}
 					/// #endif
-					game.loadingRemove();
+					game.loadingRemove(textureURL);
 				}).catch(() => {
 					if(attempt < 3 && !game._loadingErrorIsDisplayed) {
 						attempt++;
 						setTimeout(() => {
 							Lib.addTexture(name, textureURL + ((attempt === 1) ? '?a' : 'a'), attempt);
-							game.loadingRemove();
+							game.loadingRemove(textureURL);
 						}, attempt * 1000);
 					} else {
 						game._onLoadingError(textureURL);
@@ -222,12 +222,12 @@ export default class Lib {
 	}
 
 	static addSound(name: string, fileName: string) {
+		/// #if EDITOR
+		fileName = fileName.replace(/wav$/, 'ogg');
 
-		//TODO duration
-		//TODO preload game.loadingAdd();  3 attempts.
-		let s = loadSound({ src: fileName });
+		/// #endif
+		let s = new HowlSound({ src: fileName });
 		soundsHowlers[name] = s;
-
 	}
 
 	static preloadSound(soundId: string
@@ -666,7 +666,7 @@ export default class Lib {
 	 */
 	static __overrideSound(name: string, src: string[] | string) {
 		let opt = { src };
-		let s = loadSound(opt);
+		let s = new HowlSound(opt);
 		s.lastPlayStartFrame = 0;
 		soundsHowlers[name] = s;
 		/** TODO
@@ -913,24 +913,8 @@ const __preparePrefabReference = (o: Container, prefabName: string) => {
 		}
 	}
 }
-
-function loadSound(opt: HowlSoundOptions, duration?: number): HowlSound {
-	let s = new HowlSound(opt);
-
-	s.once('loaderror', (er) => {
-		//TODO s.loadedWithError = true;  сделать s.state('error')?
-		assert(false, "Can't load sound file " + opt.src + '. Error: ' + er);
-	});
-	s.once('load', () => {
-		assert(opt.src.indexOf((s as any)._src) >= 0, 'Howler _src property was moved. Refactoring of HowlSound class is required.');
-		if(duration) {
-			s.hackDuration(duration);
-		}
-	});
-	return s;
-}
-
 /// #endif
+
 
 /// #if DEBUG
 function __callInitIfNotCalled(node: Container) {

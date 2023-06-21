@@ -24,10 +24,6 @@ const fn = (fileName) => {
 
 module.exports = (mainWindow) => {
 
-	const notify = (message) => {
-		mainWindow.webContents.send('serverMessage', 'fs/notify', message);
-	}
-
 	const ensureDirectoryExistence = (filePath) => {
 		let dirname = path.dirname(filePath);
 		if(fs.existsSync(fn(dirname))) {
@@ -149,8 +145,8 @@ module.exports = (mainWindow) => {
 					event.returnValue = true;
 					return;
 				case 'fs/sounds-build':
-					require('./build-sounds.js')(fileName, notify).then((res) => {
-						event.returnValue = JSON.stringify(res);
+					require('./build-sounds.js')(fileName).then((res) => {
+						event.returnValue = res;
 					});
 					return;
 				default:

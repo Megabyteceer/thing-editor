@@ -38,7 +38,7 @@
 	"autoFullscreenDesktop": false,
 	"autoFullscreenMobile": false,
 	"soundDefaultBitrate": 48,
-	"soundBitrates": {},
+	"soundBitRates": {},
 	"__proxyFetchesViaNodeServer": false,
 	"renderResolutionMobile": 1,
 	"__localesNewKeysPrefix": "",

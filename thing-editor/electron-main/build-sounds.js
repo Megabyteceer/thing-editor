@@ -3,8 +3,9 @@ const fs = require('fs');
 const md5File = require('md5-file');
 
 const {exec} = require('child_process');
+const {walkSync} = require("./editor-server-utils");
 
-module.exports = async function (options, notify) {
+module.exports = async function (options) {
 
 	const soundsPath = options.dir;
 
@@ -14,7 +15,7 @@ module.exports = async function (options, notify) {
 	});
 	let result = {};
 
-	notify("Sounds processing...");
+
 	function outputError(err, outError, out) {
 		if(!result.errors) {
 			result.errors = [];
@@ -38,10 +39,10 @@ module.exports = async function (options, notify) {
 	}
 
 	let files = walkSync(soundsPath);
-	for(let fn of files) {
-		if(fn.endsWith('.wav') && (fn.indexOf('/~') < 0) && (fn.indexOf('\\~') < 0)) {
-			let s = fs.statSync(fn);
-
+	for(let fileEntry of files) {
+		const fn = fileEntry.fileName;
+		const mTime = fileEntry.mTime;
+		if(fn.endsWith('.wav') && (fn.indexOf('/~') < 0)) {
 			let bitrate = getBitrate(fn);
 
 			let fileNameWithoutExt = fn.replace(/wav$/gmi, '');
@@ -50,19 +51,19 @@ module.exports = async function (options, notify) {
 			});
 
 			let hash;
-			if(cache.hasOwnProperty(fn) && (s.mtimeMs !== cache[fn].mtimeMs)) {
+			if(cache.hasOwnProperty(fn) && (mTime !== cache[fn].mTime)) {
 				hash = await md5FileSafe(fn);
 				if(cache[fn].hash === hash) {
-					cache[fn].mtimeMs = s.mtimeMs;
+					cache[fn].mTime = mTime;
 				}
 			}
 
-			if(!allTargetFilesExists || (options.noCacheSoundName === fn) || !cache.hasOwnProperty(fn) || (s.mtimeMs !== cache[fn].mtimeMs) || (bitrate !== cache[fn].bitrate) || !cache[fn].duration) {
+			if(!allTargetFilesExists || (options.noCacheSoundName === fn) || !cache.hasOwnProperty(fn) || (mTime !== cache[fn].mTime) || (bitrate !== cache[fn].bitrate) || !cache[fn].duration) {
 				if(!hash) {
 					hash = await md5FileSafe(fn);
 				}
 				cache[fn] = {
-					mtimeMs: s.mtimeMs,
+					mTime,
 					bitrate,
 					hash
 				};
@@ -86,15 +87,15 @@ module.exports = async function (options, notify) {
 		if(!result.errors && result.updated) {
 			fs.writeFileSync(cacheFn, JSON.stringify(cache));
 		}
+		result.soundInfo = cache;
 		resolve(result);
-
 	});
 
 	function getBitrate(fn) {
 		let shortFilename = fn.replace(soundsPath, '');
 		shortFilename = shortFilename.replace(/\.wav$/gmi, '');
 		shortFilename = shortFilename.replace('\\', '/');
-		return options.bitrates[shortFilename] || options.defaultBitrate || 96;
+		return options.bitRates[shortFilename] || options.defaultBitrate || 96;
 	}
 
 	function convertFile(fileData, ext, cb) {
@@ -103,7 +104,6 @@ module.exports = async function (options, notify) {
 
 		let logTxt = 'convert sound:' + fn + ' -> ' + ext + ' ' + bitrate + 'Kb';
 		console.log(logTxt);
-		notify(logTxt);
 		let fileParts = path.parse(fn);
 		let resultName = fileParts.dir + '/' + fileParts.name + '.' + ext;
 
@@ -184,17 +184,3 @@ function md5FileSafe(fn) {
 		}
 	});
 }
-
-//=========== enum files ================================
-const walkSync = (dir, filelist = []) => {
-	fs.readdirSync(dir).forEach(file => {
-		let stats = fs.statSync(path.join(dir, file));
-
-		if(stats.isDirectory()) {
-			filelist = walkSync(path.join(dir, file), filelist);
-		} else if(stats.size > 0) {
-			filelist.push(path.join(dir, file));
-		}
-	});
-	return filelist;
-};

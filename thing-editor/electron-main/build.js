@@ -73,7 +73,7 @@ module.exports = {
 					}
 				}
 			}).then((res) => {
-				console.log('BUILD COMPLETE: ' + 'http://127.0.0.1:5173/' + projectDir);
+				console.log('BUILD COMPLETE: ' + 'http://localhost:5173/' + projectDir);
 				return res;
 			});
 		}).catch((er) => {// eslint-disable-line @typescript-eslint/no-unused-vars

@@ -36,6 +36,7 @@ let lastFPSTime = 0;
 let __speedMultiplier = 1;
 type FixedViewportSize = { w: number, h: number } | boolean;
 
+const loadingsInProgressOwners: Set<any> = new Set();
 /// #endif
 
 
@@ -786,7 +787,12 @@ class Game {
 		game._startFaderIfNeed(faderType);
 	}
 
-	loadingAdd() {
+	loadingAdd(owner: any) {
+		/// #if DEBUG
+		assert(owner, "game.loadingAdd: wrong loading owner.");
+		loadingsInProgressOwners.add(owner);
+		/// #endif
+
 		if(this.loadingsFinished === this.loadingsInProgress) {
 			this.loadingsInProgress = 0;
 			this.loadingsFinished = 0;
@@ -798,9 +804,16 @@ class Game {
 
 	private _refreshLoadingProgress() {
 		this.loadingProgress = this.loadingsInProgress ? Math.floor(this.loadingsFinished / this.loadingsInProgress * 100) : 0;
+		assert(this.loadingProgress >= 0 && this.loadingProgress <= 100, 'game.loadingProgress out of range 0-100.');
 	}
 
-	loadingRemove() {
+	loadingRemove(owner: any) {
+
+		/// #if DEBUG
+		assert(loadingsInProgressOwners.has(owner), "game.loadingRemove: wrong loading owner.");
+		loadingsInProgressOwners.delete(owner);
+		/// #endif
+
 		this.loadingsFinished++;
 		this._refreshLoadingProgress();
 	}

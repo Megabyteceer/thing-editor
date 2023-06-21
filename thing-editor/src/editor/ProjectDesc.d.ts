@@ -34,7 +34,7 @@ declare interface ProjectDesc {
 	version: string,
 	soundFormats: string[],
 	soundDefaultBitrate: number,
-	soundBitrates: KeyedObject<number>,
+	soundBitRates: KeyedObject<number>,
 	loadOnDemandSounds: KeyedObject<number>,
 	loadOnDemandTextures: KeyedObject<number>,
 	__loadOnDemandTexturesFolders: KeyedObject<number>,
@@ -56,3 +56,4 @@ declare interface ProjectDesc {
 }
 
 export type { ProjectDesc, ProjectOrientation };
+

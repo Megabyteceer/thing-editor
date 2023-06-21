@@ -1,4 +1,4 @@
-function assert(condition: any, message: string, errorCode: number = 99999): void {
+function assert(condition: any, message: string, errorCode = 99999): void {
 	if(!condition) {
 		message = message + '; errorCode: ' + errorCode;
 		console.error(message);

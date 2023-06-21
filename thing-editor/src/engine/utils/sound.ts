@@ -240,7 +240,7 @@ export default class Sound {
 
 	static checkSoundLockByBrowser() {
 		Sound.isSoundsLockedByBrowser = true;
-		game.loadingAdd();
+		game.loadingAdd(LOADING_OWNER_NAME);
 		EMPTY_SOUND = new HowlSound({ src: 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV' });
 		const blockedHanlder = () => soundLockHandler(true);
 		const unblockedHanlder = () => soundLockHandler(false);
@@ -275,9 +275,11 @@ let EMPTY_SOUND: HowlSound;
 let soundLockTimeoutId = 0;
 let isHandlerShootAlready = false;
 
+const LOADING_OWNER_NAME = 'checkSoundLock';
+
 const soundLockHandler = (isLocked = false) => {
 	if(!isHandlerShootAlready) {
-		game.loadingRemove();
+		game.loadingRemove(LOADING_OWNER_NAME);
 		isHandlerShootAlready = true;
 		if(soundLockTimeoutId) {
 			clearTimeout(soundLockTimeoutId);

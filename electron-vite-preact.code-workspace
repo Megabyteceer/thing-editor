@@ -165,7 +165,7 @@
 					"${workspaceFolder}/**",
 					"!**/node_modules/**"
 				],
-				"urlFilter": "http://127.0.0.1:5173/*",
+				"urlFilter": "http://localhost:5173/*",
 				"outFiles": [],
 				"preLaunchTask": "launchElectronIfStopped",
 				/*"trace": {
@@ -190,7 +190,7 @@
 					"${workspaceFolder}/**",
 					"!**/node_modules/**"
 				],
-				"urlFilter": "http://127.0.0.1:5173/*",
+				"urlFilter": "http://localhost:5173/*",
 				"outFiles": []
 			},
 			{

@@ -141,8 +141,6 @@ thingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
 			}
 			fileChangeDebounceTimeout = setTimeout(fileChangeHandler, 330);
 		}
-	} else if(event === 'fs/notify') {
-		game.editor.ui.modal.notify(path);
 	}
 });
 
@@ -164,7 +162,8 @@ const assetNameToFileName = (assetName: string, assetType: AssetType): string =>
 
 export default class fs {
 
-	static getAssetsList(assetType?: AssetType.IMAGE): FileDesc[]; //TODO IMAge
+	static getAssetsList(assetType?: AssetType.SOUND): FileDescSound[];
+	static getAssetsList(assetType?: AssetType.IMAGE): FileDescImage[];
 	static getAssetsList(assetType?: AssetType.CLASS): FileDescClass[];
 	static getAssetsList(assetType?: AssetType.SCENE): FileDescScene[];
 	static getAssetsList(assetType?: AssetType.PREFAB): FileDescPrefab[];
@@ -280,14 +279,20 @@ export default class fs {
 		return execFs('fs/isFilesEqual', fileName1, fileName2) as boolean;
 	}
 
-	static rebuildSounds(dir: string) {
+	static rebuildSoundsIfNeed(file: FileDesc) {
+		if(file.assetType === AssetType.SOUND) {
+			scheduledSoundsRebuilds.add(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir);
+		}
+	}
+
+	static rebuildSounds(dir: string): object { //TODO type after server move to ts.
 		const options = {
 			dir,
 			formats: game.editor.projectDesc.soundFormats,
-			bitrates: game.editor.projectDesc.soundBitrates,
+			bitRates: game.editor.projectDesc.soundBitRates,
 			defaultBitrate: game.editor.projectDesc.soundDefaultBitrate
-		};
-		return execFs('/fs/sounds-build', options as any);
+		}
+		return execFs('fs/sounds-build', options as any) as any;
 	}
 
 	static getFolderAssets(dirName: string): FileDesc[] {
@@ -366,6 +371,7 @@ export default class fs {
 				if(prevAllAssets !== undefined && !file.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 					const oldAsset = prevAllAssetsMap!.get(file.fileName);
 					if(!oldAsset) {
+						fs.rebuildSoundsIfNeed(file);
 						__onAssetAdded(file);
 					} else {
 						file.asset = oldAsset.asset;
@@ -373,6 +379,7 @@ export default class fs {
 						file.v = (oldAsset.v || 0) + 1;
 
 						if(oldAsset.mTime !== file.mTime) {
+							fs.rebuildSoundsIfNeed(file);
 							__onAssetUpdated(file);
 						}
 					}
@@ -381,11 +388,25 @@ export default class fs {
 		}
 
 		if(prevAllAssets) {
-			for(const f of prevAllAssets) {
-				if(!f.assetName.startsWith(EDITOR_BACKUP_PREFIX) && !fs.getFileByAssetName(f.assetName, f.assetType)) {
-					__onAssetDeleted(f);
+			for(const file of prevAllAssets) {
+				if(!file.assetName.startsWith(EDITOR_BACKUP_PREFIX) && !fs.getFileByAssetName(file.assetName, file.assetType)) {
+					fs.rebuildSoundsIfNeed(file);
+					__onAssetDeleted(file);
 				}
 			}
+		}
+
+		let dirsToRebuildSounds = scheduledSoundsRebuilds.values();
+		let soundsData: Map<string, KeyedObject> = new Map();
+		for(let dir of dirsToRebuildSounds) {
+			soundsData.set(dir, fs.rebuildSounds(dir));
+		}
+		scheduledSoundsRebuilds.clear();
+
+		const sounds = this.getAssetsList(AssetType.SOUND);
+		for(const file of sounds) {
+			const sndData = soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
+			file.asset.preciseDuration = sndData.soundInfo[file.fileName.substring(1)].duration;
 		}
 	}
 
@@ -410,6 +431,8 @@ export default class fs {
 		return execFs('fs/showQuestion', title, message, yes, no, cancel) as number;
 	}
 }
+
+const scheduledSoundsRebuilds: Set<string> = new Set();
 
 export { AllAssetsTypes, AssetType };
 export type { FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound, LibInfo };

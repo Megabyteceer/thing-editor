@@ -31,7 +31,7 @@ const defaultProjectDesc: ProjectDesc = {
 		"aac"
 	],
 	soundDefaultBitrate: 96,
-	soundBitrates: {
+	soundBitRates: {
 	},
 	loadOnDemandSounds: {
 	},

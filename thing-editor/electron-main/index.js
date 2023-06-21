@@ -78,7 +78,7 @@ const createWindow = () => {
 
 	require('./server-fs.js')(mainWindow);
 
-	const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
+	const EDITOR_VITE_ROOT = 'http://localhost:5173/thing-editor/';
 	const loadEditorIndexHTML = () => {
 		mainWindow.setOpacity(1);
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
@@ -87,7 +87,7 @@ const createWindow = () => {
 	if(IS_DEBUG) {
 
 		//let debuggerDetector = require('./debugger-detection');
-		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html').catch((er) => {
+		mainWindow.loadURL('http://localhost:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
 			if(er.code === 'ERR_CONNECTION_REFUSED') {
 				dialog.showErrorBox(mainWindow, 'Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
