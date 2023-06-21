@@ -121,6 +121,9 @@ export default class ClassesLoader {
 							if(!prop.default) {
 								prop.default = PropsEditor.getDefaultForType(prop);
 							}
+							if(Array.isArray(prop.default)) {
+								prop.arrayProperty = true;
+							}
 							propertyAssert(prop, typeof prop.default !== 'undefined', "Editable property '" + prop.name + "' in class '" + Class.__className + "' has no default value.");
 						}
 						Class.__defaultValues[prop.name] = prop.default;

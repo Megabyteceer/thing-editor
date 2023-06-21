@@ -84,8 +84,9 @@
 				"image": "bunny.png",
 				"pressImage": "bunny.png",
 				"disabledImage": "bunny.png",
-				"onClick": "all.mc.gotoLabelRecursive`shake",
-				"afterClick": "",
+				"onClick": [
+					"all.mc.gotoLabelRecursive`shake"
+				],
 				"sndClick": "click",
 				"sndOver": "over"
 			}

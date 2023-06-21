@@ -20,30 +20,37 @@ export default class ArrayEditableProperty extends Component<ArrayEditableProper
 
 	render(): ComponentChild {
 		const field = this.props.field;
+		let arrayValue = this.props.value;
+		if(arrayValue && !Array.isArray(arrayValue)) {
+			arrayValue = [arrayValue];
+		}
 		return R.div(
 			arrayProps,
-			this.props.value.map((value: any, i: number) => {
+			arrayValue.map((value: any, i: number) => {
 				return R.div(arrayItemProps, h(field.renderer, {
 					value,
-					onChange: (newValue) => {
-						const newArray = this.props.value.slice();
-						newArray[i] = newValue;
+					onChange: (itemValue: any) => {
+						if(itemValue && itemValue.target) {
+							itemValue = itemValue.target.value;
+						}
+						const newArray = arrayValue.slice();
+						newArray[i] = itemValue;
 						this.props.onChange(newArray);
 					},
 					onBlur: this.props.onBlur,
 					field,
 					disabled: this.props.disabled
 				}), R.btn('×', () => {
-					const newArray = this.props.value.slice();
+					const newArray = arrayValue.slice();
 					newArray.splice(i, 1);
 					this.props.onChange(newArray);
 				}, 'remove item', 'array-prop-item-remove-btn'));
 			}),
-			R.btn('add item +', () => {
-				const newArray = this.props.value.slice();
+			R.btn('+', () => {
+				const newArray = arrayValue.slice();
 				newArray.push(field.defaultArrayItemValue || PropsEditor.getDefaultForType(field));
 				this.props.onChange(newArray);
-			})
+			}, 'Add item', 'add-item-button')
 		);
 	}
 }

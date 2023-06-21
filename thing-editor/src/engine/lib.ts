@@ -517,6 +517,9 @@ export default class Lib {
 			for(let p of propsList) {
 				if(!p.notSerializable) {
 					let val = (o as KeyedObject)[p.name];
+					if(p.arrayProperty) {
+						val = val.filter((i: any) => i);
+					}
 					if((val != defaults[p.name]) && (typeof val !== 'undefined') && (val !== null)) {
 						if(p.type === 'rect') {
 							props[p.name] = {

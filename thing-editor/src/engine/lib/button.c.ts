@@ -31,9 +31,7 @@ export default class Button extends DSprite {
 	disabledAlpha = 0;
 
 	@editable({ type: 'callback', important: true })
-	onClick = null;
-	@editable({ type: 'callback' })
-	afterClick = null;
+	onClick: string[] = [];
 
 	@editable()
 	hotkey: number = 0;
@@ -174,12 +172,11 @@ export default class Button extends DSprite {
 		if(this.callback) {
 			this.callback();
 		}
-		if(this.onClick) {
-			callByPath(this.onClick, this);
+
+		for(const action of this.onClick) {
+			callByPath(action, this);
 		}
-		if(this.afterClick) {
-			callByPath(this.afterClick, this);
-		}
+
 		Button.clickedButton = null;
 
 		if(this.sndClick) {
@@ -235,22 +232,16 @@ export default class Button extends DSprite {
 
 		/// #if EDITOR
 		if(this.isCanBePressed) {
-			if(this.onClick) {
+			this.onClick.forEach((action, i) => {
 				let f;
 				try {
-					f = getValueByPath(this.onClick, this, true);
+					f = getValueByPath(action, this, true);
 				} catch(er) { } // eslint-disable-line no-empty
 				if(typeof f !== 'function') {
-					game.editor.ui.status.error('Wrong onClick handler: ' + this.onClick, 32054, this, 'onClick');
+					game.editor.ui.status.error('Wrong onClick handler: ' + action, 32054, this, 'onClick>' + i); //TODO > array item selector
 				}
-			}
-			if(this.afterClick) {
-				if(typeof getValueByPath(this.afterClick, this, true) !== 'function') {
-					game.editor.ui.status.error('Wrong afterClick handler: ' + this.afterClick, 32055, this, 'afterClick');
-				}
-			}
+			});
 		}
-
 		/// #endif
 
 		if(this.isDowned) {

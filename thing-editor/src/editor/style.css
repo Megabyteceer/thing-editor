@@ -1161,6 +1161,10 @@ input[disabled] {
     color: #ff0000;
 }
 
+.add-item-button {
+	padding: 1px 11px;
+}
+
 .template-desc {
 	white-space: initial;
 	font-size: small;
