@@ -355,7 +355,7 @@ class Game {
 
 		if(!this.isMobile.any // eslint-disable-line no-constant-condition
 			/// #if EDITOR
-			&& false
+			|| true
 			/// #endif
 		) { //rotate canvas for fixed orientation projects on mobile only
 			rotateCanvas = false;
