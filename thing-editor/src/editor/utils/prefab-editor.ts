@@ -104,7 +104,7 @@ export default class PrefabEditor {
 			let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
 			if(isChanged) {
 				if(PrefabEditor.checkPrefabReferenceForLoops(game.currentContainer, name)) {
-					return;
+					return false;
 				}
 				game.editor.history.setCurrentStateUnmodified();
 				game.editor._callInPortraitMode(() => {

@@ -434,7 +434,9 @@ class Editor {
 	/** if returns false - cancel operation */
 	askSceneToSaveIfNeed(): boolean {
 		this.ui.viewport.stopExecution();
-		PrefabEditor.acceptPrefabEdition();
+		if(PrefabEditor.acceptPrefabEdition() === false) {
+			return false;
+		}
 		if(this.isCurrentSceneModified) {
 			let ansver = fs.showQuestion(
 				"Unsaved changes.",
