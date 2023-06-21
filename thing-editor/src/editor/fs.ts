@@ -25,7 +25,7 @@ interface FileDesc {
 	lib: LibInfo | null,
 	v?: number;
 	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound
-};
+}
 
 interface FileDescClass extends FileDesc {
 	asset: SourceMappedConstructor;
@@ -145,6 +145,8 @@ thingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
 			}
 			fileChangeDebounceTimeout = setTimeout(fileChangeHandler, 330);
 		}
+	} else if(event === 'fs/notify') {
+		game.editor.ui.modal.notify(path);
 	}
 });
 
@@ -154,6 +156,14 @@ function ignoreWatch(fileName: string) {
 	setTimeout(() => {
 		ignoreFiles.delete(fileName);
 	}, 500);
+}
+
+const assetNameToFileName = (assetName: string, assetType: AssetType): string => {
+	const asset = (assetsByTypeByName.get(assetType) as Map<string, FileDesc>).get(assetName);
+	if(asset) {
+		return asset.fileName;
+	}
+	return game.editor.currentProjectAssetsDirRooted + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
 }
 
 export default class fs {
@@ -191,14 +201,6 @@ export default class fs {
 		return assetsByTypeByName.get(assetType)!.get(assetName) as FileDesc;
 	}
 
-	static assetNameToFileName(assetName: string, assetType: AssetType): string {
-		const asset = (assetsByTypeByName.get(assetType) as Map<string, FileDesc>).get(assetName);
-		if(asset) {
-			return asset.fileName;
-		}
-		return game.editor.currentProjectAssetsDirRooted + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
-	}
-
 	/** returns new mTime */
 	static writeFile(fileName: string, data: string | Blob | KeyedObject): number {
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
@@ -227,7 +229,7 @@ export default class fs {
 	}
 
 	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject) {
-		const fileName = fs.assetNameToFileName(assetName, assetType);
+		const fileName = assetNameToFileName(assetName, assetType);
 		ignoreWatch(fileName);
 		const mTime = fs.writeFile(fileName, data);
 		const file = fs.getFileByAssetName(assetName, assetType);
@@ -245,7 +247,7 @@ export default class fs {
 	}
 
 	static deleteAsset(assetName: string, assetType: AssetType) {
-		const fileName = fs.assetNameToFileName(assetName, assetType);
+		const fileName = assetNameToFileName(assetName, assetType);
 		fs.deleteFile(fileName);
 		fs.refreshAssetsList();
 	}
@@ -280,6 +282,16 @@ export default class fs {
 
 	static isFilesEqual(fileName1: string, fileName2: string): boolean {
 		return execFs('fs/isFilesEqual', fileName1, fileName2) as boolean;
+	}
+
+	static rebuildSounds(dir: string) {
+		let options = {
+			dir,
+			formats: game.editor.projectDesc.soundFormats,
+			bitrates: game.editor.projectDesc.soundBitrates,
+			defaultBitrate: game.editor.projectDesc.soundDefaultBitrate
+		};
+		return execFs('/fs/sounds-build', options as any);
 	}
 
 	static getFolderAssets(dirName: string): FileDesc[] {

@@ -88,6 +88,12 @@ const MAIN_MENU: MainMenuItem[] = [
 		id: 'file',
 		items: [
 			{
+				name: 'Open project...',
+				onClick: chooseProjectClick,
+				hotkey: { key: 'o', ctrlKey: true }
+			},
+			null,
+			{
 				name: 'Save scene',
 				onClick: saveSceneClick,
 				hotkey: { key: 's', ctrlKey: true },
@@ -132,11 +138,6 @@ const MAIN_MENU: MainMenuItem[] = [
 		name: 'Project',
 		id: 'project',
 		items: [
-			{
-				name: 'Open project...',
-				onClick: chooseProjectClick,
-				hotkey: { key: 'o', ctrlKey: true }
-			},
 			{
 				name: 'Browse project folder...',
 				tip: 'Reveal project folder in Explorer',

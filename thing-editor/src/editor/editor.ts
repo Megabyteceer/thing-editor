@@ -812,8 +812,11 @@ function sanitizeJSON(input: string) {
 	return input.replace(/\/\/.*$/gm, '').replace(/\/\*.*\*\//gm, '');
 }
 
-/** returns true if tsconfig.json changed */
-function excludeOtherProjects(): boolean | undefined {
+
+
+function excludeOtherProjects() {
+	rememberPathsToInclude();
+	const paths = editor.settings.getItem('paths-to-include', []) as PathToInclude[];
 	try { // vscode workspace
 
 		const workspaceConfigSrc = fs.readFile(WORKSPACE_FILE_NAME);
@@ -835,20 +838,24 @@ function excludeOtherProjects(): boolean | undefined {
 				name: 'libs'
 			});
 		} else {
-			folders.push({
-				path: './' + editor.currentProjectDir,
-				name: editor.currentProjectDir
-			});
-			for(let lib of editor.currentProjectLibs) {
-				if(!lib.isEmbed) {
-					folders.push({
-						path: './' + lib.dir,
-						name: lib.dir
-					});
+			for(const path of paths) {
+				folders.push({
+					path: './' + path.project,
+					name: path.project
+				});
+				const addedLibs: Set<string> = new Set();
+				for(let lib of path.libs) {
+					if(!lib.isEmbed && !addedLibs.has(lib.dir)) {
+						folders.push({
+							path: './' + lib.dir,
+							name: lib.dir
+						});
+						addedLibs.add(lib.dir);
+					}
 				}
 			}
 		}
-
+		folders.sort();
 		let newFoldersSrc = JSON.stringify({ folders }, undefined, '\t');
 		newFoldersSrc = newFoldersSrc.substring(3, newFoldersSrc.length - 2);
 		if(newFoldersSrc !== foldersDataString) {
@@ -876,19 +883,22 @@ function excludeOtherProjects(): boolean | undefined {
 			include.push('./games/');
 			include.push('./libs/');
 		} else {
-			include.push('./' + editor.currentProjectDir);
-			for(let lib of editor.currentProjectLibs) {
-				if(!lib.isEmbed) {
-					include.push('./' + lib.dir);
+			const addedLibs: Set<string> = new Set();
+			for(const path of paths) {
+				include.push('./' + path.project);
+				for(let lib of path.libs) {
+					if(!lib.isEmbed && !addedLibs.has(lib.dir)) {
+						include.push('./' + lib.dir);
+						addedLibs.add(lib.dir);
+					}
 				}
 			}
 		}
-
+		include.sort();
 		let newFoldersSrc = JSON.stringify({ include });
 		newFoldersSrc = newFoldersSrc.substring(1, newFoldersSrc.length - 1);
 		if(newFoldersSrc !== foldersDataString) {
 			fs.writeFile(TS_CONFIG_FILE_NAME, workspaceConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
-			return true;
 		}
 	} catch(er) {
 		debugger;
@@ -897,6 +907,25 @@ function excludeOtherProjects(): boolean | undefined {
 	}
 }
 
+interface PathToInclude {
+	project: string,
+	libs: LibInfo[]
+}
+
+function rememberPathsToInclude() {
+	const paths = editor.settings.getItem('paths-to-include', []) as PathToInclude[];
+	if(!paths.some(path => path.project === editor.currentProjectDir)) {
+		paths.unshift({
+			project: editor.currentProjectDir,
+			libs: editor.currentProjectLibs
+
+		});
+		if(paths.length > 2) {
+			paths.length = 2;
+		}
+		editor.settings.setItem('paths-to-include', paths);
+	}
+}
 
 const editor = new Editor();
 

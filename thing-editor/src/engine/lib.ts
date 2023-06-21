@@ -518,7 +518,13 @@ export default class Lib {
 				if(!p.notSerializable) {
 					let val = (o as KeyedObject)[p.name];
 					if(p.arrayProperty) {
-						val = val.filter((i: any) => i);
+						if(!val) {
+							val = [];
+						} else if(!Array.isArray(val)) {
+							val = [val];
+						} else {
+							val = val.filter((i: any) => i);
+						}
 					}
 					if((val != defaults[p.name]) && (typeof val !== 'undefined') && (val !== null)) {
 						if(p.type === 'rect') {

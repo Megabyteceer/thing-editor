@@ -58,11 +58,17 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 		return true;
 	});
 
-	while(menuTemplate[0] === null) {
+	while(menuTemplate[0] === null) { //trim splitters
 		menuTemplate.shift();
 	}
 	while(menuTemplate[menuTemplate.length - 1] === null) {
 		menuTemplate.pop();
+	}
+
+	for(let i = menuTemplate.length - 3; i >= 0; i--) { // cut double splitters
+		if(menuTemplate[i] === null && menuTemplate[i - 1] === null) {
+			menuTemplate.splice(i, 1);
+		}
 	}
 
 	const menuHeight = menuTemplate.length * 40;

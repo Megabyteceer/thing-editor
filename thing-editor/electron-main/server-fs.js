@@ -24,6 +24,10 @@ const fn = (fileName) => {
 
 module.exports = (mainWindow) => {
 
+	const notify = (message) => {
+		mainWindow.webContents.send('serverMessage', 'fs/notify', message);
+	}
+
 	const ensureDirectoryExistence = (filePath) => {
 		let dirname = path.dirname(filePath);
 		if(fs.existsSync(fn(dirname))) {
@@ -137,6 +141,11 @@ module.exports = (mainWindow) => {
 						mainWindow.webContents.send('serverMessage', 'fs/buildResult', er);
 					});
 					event.returnValue = true;
+					return;
+				case 'fs/sounds-build':
+					require('./build-sounds.js')(fileName, notify).then((res) => {
+						event.returnValue = JSON.stringify(res);
+					});
 					return;
 				default:
 					event.returnValue = new Error('unknown fs command: ' + command + ': ' + (fileName || ''));

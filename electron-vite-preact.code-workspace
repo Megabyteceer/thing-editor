@@ -4,6 +4,18 @@
 			"path": "."
 		},
 		{
+			"path": "./games/games_group/game2/",
+			"name": "games/games_group/game2/"
+		},
+		{
+			"path": "./libs/lib1",
+			"name": "libs/lib1"
+		},
+		{
+			"path": "./games/games_group/lib_relative",
+			"name": "games/games_group/lib_relative"
+		},
+		{
 			"path": "./games/game1/",
 			"name": "games/game1/"
 		},
@@ -68,7 +80,6 @@
 		"javascript.preferences.importModuleSpecifierEnding": "index",
 		"typescript.preferences.importModuleSpecifierEnding": "index"
 	},
-
 	"tasks": {
 		"version": "2.0.0",
 		"tasks": [{

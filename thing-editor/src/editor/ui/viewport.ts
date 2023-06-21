@@ -195,7 +195,7 @@ export default class Viewport extends ComponentDebounced<ViewportProps, Viewport
 		game.stage.y = 0;
 	}
 
-	currentResolution!: ViewportSizeItem;
+	currentResolution = resolutions[0];
 
 	setCurrentResolution(resolution: ViewportSizeItem) {
 		if(!game.projectDesc.dynamicStageSize) {
