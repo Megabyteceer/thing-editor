@@ -65,8 +65,7 @@ type NumericArray = number[];
 interface TimelineFrameValuesCache extends NumericArray {
 	min: number;
 	max: number;
-};
-
+}
 
 interface TimelineFieldData {
 	/** name of property to animate */

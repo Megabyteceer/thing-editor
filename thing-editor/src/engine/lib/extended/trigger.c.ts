@@ -226,7 +226,9 @@ export default class Trigger extends Container {
 		this.lastUpdateTime = game.time;
 	}
 	/// #if EDITOR
-	//@ts-ignore
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	//@ts-ignore 
 	set "scale.x"(v) {
 		super['scale.x'] = v;
 		super['scale.y'] = v;
@@ -235,7 +237,9 @@ export default class Trigger extends Container {
 	get "scale.x"() {
 		return super['scale.x'];
 	}
-	//@ts-ignore
+	
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	//@ts-ignore 
 	set "scale.y"(v) {
 		super['scale.x'] = v;
 		super['scale.y'] = v;
@@ -310,8 +314,10 @@ export default class Trigger extends Container {
 	}
 
 	_visible = true;
-	//@ts-ignore
-	get visible(): boolean {
+	
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	//@ts-ignore 
+	get visible(): boolean   {
 		return this.__visibleInEditor || this._visible || (this.__keepVisibleInEditor && game.__EDITOR_mode);
 	}
 

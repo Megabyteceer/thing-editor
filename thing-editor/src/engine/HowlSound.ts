@@ -1,14 +1,14 @@
 
 /// #if EDITOR
 import { Howl, HowlOptions } from 'howler';
+import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 /*
 /// #endif
 import 'howler.js';
 //*/
-interface HowlSoundOptions extends HowlOptions {
 
-}
+type HowlSoundOptions = HowlOptions
 
 export default class HowlSound extends Howl {
 
@@ -16,8 +16,7 @@ export default class HowlSound extends Howl {
 		if(!game.editor.settings.getItem('sound-muted') || game.__EDITOR_mode) {
 			return super.play(spriteOrId);
 		}
-		//@ts-ignore
-		return undefined;
+		return undefined!;
 	}
 
 	loadedWithError = false;
@@ -27,14 +26,14 @@ export default class HowlSound extends Howl {
 
 	hackDuration(duration: number) {
 		// hack percise duration
-		//@ts-ignore
-		assert(typeof this._duration === 'number', 'Howler _duration property moved.');
-		//@ts-ignore
-		assert(Math.abs(this._duration - duration) < 0.1, "Sound duration detection error. Sounds are too different: " + s._src);
-		//@ts-ignore
-		this._duration = duration;
-		//@ts-ignore
-		this._sprite.__default[1] = duration * 1000;
+
+		assert(typeof (this as any)._duration === 'number', 'Howler _duration property moved.');
+
+		assert(Math.abs((this as any)._duration - duration) < 0.1, "Sound duration detection error. Sounds are too different: " + (this as any)._src);
+
+		(this as any)._duration = duration;
+
+		(this as any)._sprite.__default[1] = duration * 1000;
 
 	}
 }

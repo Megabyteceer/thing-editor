@@ -2,7 +2,7 @@ import { Container } from "pixi.js";
 import type { KeyedMap, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { FileDesc } from "thing-editor/src/editor/fs";
 import editable from "thing-editor/src/editor/props-editor/editable";
-import { ACCES__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";
+import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -19,26 +19,26 @@ export default class Scene extends Container {
 
 	all!: KeyedMap<Container>;
 
-	_onShowCalled: boolean = false;
+	_onShowCalled = false;
 
 	onShow() {
-
+		/* virtual */
 	}
 
-	onMouseDown(_mouse: typeof game.mouse, _ev: PointerEvent) {
-
+	onMouseDown(_mouse: typeof game.mouse, _ev: PointerEvent) { // eslint-disable-line @typescript-eslint/no-unused-vars
+		/* virtual */
 	}
 
-	onMouseUp(_mouse: typeof game.mouse, _ev: PointerEvent) {
-
+	onMouseUp(_mouse: typeof game.mouse, _ev: PointerEvent) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+		/* virtual */
 	}
 
-	onMouseMove(_mouse: typeof game.mouse, _ev: PointerEvent) {
-
+	onMouseMove(_mouse: typeof game.mouse, _ev: PointerEvent) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+		/* virtual */
 	}
 
 	onHide() {
-
+		/* virtual */
 	}
 
 	init() {
@@ -65,12 +65,7 @@ export default class Scene extends Container {
 	/// #if EDITOR
 
 	__afterDeserialization() {
-		if(!game.__EDITOR_mode) {
-			this.all = ACCES__ALL_ASSERTING_PROXY;
-		} else {
-			//@ts-ignore
-			this.all = undefined;
-		}
+		this.all = ACCESS__ALL_ASSERTING_PROXY;
 		if(game.currentScene === this) {
 			game.all = this.all;
 		}
@@ -101,8 +96,8 @@ const _refreshChildRef = (o: Container) => {
 /// #endif
 
 /// #if DEBUG
-//@ts-ignore
-assert(!window.__sceneClassRef || window.__sceneClassRef === Scene, "Vite.js has duplicated embed classes. Problem of Vite.js dev server.");
-//@ts-ignore
-window.__sceneClassRef = Scene;
+
+assert(!(window as any).__sceneClassRef || (window as any).__sceneClassRef === Scene, "Vite.js has duplicated embed classes. Problem of Vite.js dev server.");
+
+(window as any).__sceneClassRef = Scene;
 /// #endif

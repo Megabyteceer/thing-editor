@@ -76,7 +76,7 @@ editorEvents.once('projectDidOpen', () => {
 		}
 	});
 
-	window.addEventListener('mouseup', function onMouseMove(_ev: MouseEvent) {
+	window.addEventListener('mouseup', function onMouseMove() {
 		rightButtonDraggingStarted = false;
 	});
 

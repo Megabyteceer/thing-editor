@@ -80,15 +80,12 @@ let renderSpinner = () => {
 	);
 };
 
-interface ModalProps extends ClassAttributes<Modal> {
-
-}
 
 interface ModalState {
 	modals: ModalEntry[]
 }
 
-class Modal extends ComponentDebounced<ModalProps, ModalState> {
+class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 	constructor() {
 		super();
@@ -143,7 +140,7 @@ class Modal extends ComponentDebounced<ModalProps, ModalState> {
 		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
 	}
 
-	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField: boolean = false, activeValue?: string) {
+	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField = false, activeValue?: string) {
 		return this.showModal(h(ChooseList, { list, noSearchField, activeValue }), title, noEasyClose);
 	}
 

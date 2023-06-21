@@ -20,11 +20,7 @@ interface ObjectsTimelineViewProps extends ClassAttributes<ObjectsTimelineView> 
 	heightZoom: number;
 }
 
-interface ObjectsTimelineViewState {
-
-}
-
-export default class ObjectsTimelineView extends Component<ObjectsTimelineViewProps, ObjectsTimelineViewState> {
+export default class ObjectsTimelineView extends Component<ObjectsTimelineViewProps> {
 
 
 	componentDidMount() {

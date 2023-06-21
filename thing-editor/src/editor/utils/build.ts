@@ -1,6 +1,7 @@
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import { AssetsDescriptor, KeyedMap, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
+import R from "thing-editor/src/editor/preact-fabrics";
 import enumAssetsPropsRecursive from "thing-editor/src/editor/utils/enum-assets-recursive";
 import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -155,12 +156,12 @@ export default class Build {
 
 	static showResult(result: any) {
 		game.editor.ui.modal.hideSpinner();
-		result = JSON.parse(result);
+		//result = JSON.parse(result);
 		if(!game.editor.buildProjectAndExit) {
 			let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');
 			game.editor.openUrl('/' + url);
 			//TODO errors parsing
-			//	game.editor.ui.modal.showModal(R.multilineText(result));
+			game.editor.ui.modal.showModal(R.multilineText(result));
 		}
 	}
 }

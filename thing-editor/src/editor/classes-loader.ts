@@ -85,8 +85,8 @@ export default class ClassesLoader {
 					if(!prop.hasOwnProperty('type')) {
 						let type = typeof (instance as KeyedObject)[prop.name];
 						propertyAssert(prop, prop.override || type === 'string' || type === 'number' || type === 'boolean', 'can not detect type for editable property ' + prop.name);
-						//@ts-ignore
-						prop.type = type || 'number';
+
+						prop.type = (type || 'number') as EditablePropertyType;
 					}
 
 					if(prop.name.startsWith('___')) {
@@ -145,7 +145,7 @@ export default class ClassesLoader {
 						notSerializable: true
 					});
 					Class.__editableProps.unshift(Class.__editableProps.pop() as EditablePropertyDesc);
-				};
+				}
 
 				return Class;
 			}
@@ -179,13 +179,13 @@ export default class ClassesLoader {
 			Lib._setClasses(classes);
 
 			for(let c of _classes as SourceMappedConstructor[]) {
-				//@ts-ignore
-				let superClass = c.__proto__;
+
+				let superClass = (c as any).__proto__;
 				const editableProps: EditablePropertyDesc[] = c.hasOwnProperty('__editableProps') ? c.__editableProps : [];
 				if(!editableProps.length || editableProps[0].name !== '__root-splitter') {
 					const superProps: EditablePropertyDesc[] = [];
 					while(superClass.__editableProps) {
-						superProps.unshift.apply(superProps, superClass.__editableProps);
+						superProps!.unshift.apply(superProps, superClass.__editableProps);
 						Object.assign(c.__defaultValues, superClass.__defaultValues);
 						if(superProps[0].name === '__root-splitter') {
 							break;
@@ -213,7 +213,7 @@ export default class ClassesLoader {
 							return true;
 						}
 					});
-					c.__editableProps.unshift.apply(c.__editableProps, superProps);
+					c.__editableProps!.unshift.apply(c.__editableProps, superProps);
 				}
 
 				if(!c.hasOwnProperty('__EDITOR_icon')) {

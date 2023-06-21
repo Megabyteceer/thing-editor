@@ -11,17 +11,13 @@ function bringTimelineForward() {
 	Window.bringWindowForward('#timeline', true);
 }
 
-interface TimelineEditorProps extends ClassAttributes<TimelineEditor> {
-
-}
-
 interface TimelineEditorState {
 	toggled: boolean;
 }
 
-export default class TimelineEditor extends Component<TimelineEditorProps, TimelineEditorState> {
+export default class TimelineEditor extends Component<ClassAttributes<TimelineEditor>, TimelineEditorState> {
 
-	constructor(props: TimelineEditorProps) {
+	constructor(props: ClassAttributes<TimelineEditor>) {
 		super(props);
 		this.state = { toggled: game.editor.settings.getItem('timeline-showed', true) };
 		this.onToggleClick = this.onToggleClick.bind(this);
@@ -45,7 +41,7 @@ export default class TimelineEditor extends Component<TimelineEditorProps, Timel
 		}
 	}
 
-	onAutoSelect(_selectPath: string) {
+	onAutoSelect(_selectPath: string) { // eslint-disable-line @typescript-eslint/no-unused-vars
 		/* TODO
 		if(!this.state.toggled) {
 			this.onToggleClick();

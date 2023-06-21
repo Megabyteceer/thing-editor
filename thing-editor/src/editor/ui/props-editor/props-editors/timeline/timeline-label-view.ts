@@ -33,7 +33,7 @@ interface TimelineLabelViewState {
 export default class TimelineLabelView extends Component<TimelineLabelViewProps, TimelineLabelViewState> implements TimelineSelectable {
 
 	onDraggableMouseDown: (ev: PointerEvent) => void;
-	isSelected: boolean = false;
+	isSelected = false;
 
 	constructor(props: TimelineLabelViewProps) {
 		super(props);

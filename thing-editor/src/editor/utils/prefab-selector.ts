@@ -20,4 +20,4 @@ export default function makePrefabSelector(startsWith?: string, canBeEmpty = tru
 	};
 
 	return ret;
-};
+}

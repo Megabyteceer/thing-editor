@@ -2,13 +2,11 @@ import { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env.js"
 import { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction.js";
 import game from "../game.js";
 
-
-var elem = document.documentElement;
-
+const docElement = document.documentElement;
 
 export default class FullScreen {
 
-	static isAvailable = (elem.requestFullscreen as any as boolean) && !(window as KeyedObject).cordova;
+	static isAvailable = (docElement.requestFullscreen as any as boolean) && !(window as KeyedObject).cordova;
 
 	static get isFullscreen() {
 		if(document.fullscreenElement)
@@ -22,8 +20,8 @@ export default class FullScreen {
 
 	static _openInner() {
 		try {
-			if(elem.requestFullscreen) {
-				elem.requestFullscreen();
+			if(docElement.requestFullscreen) {
+				docElement.requestFullscreen();
 			}
 			game._fireNextOnResizeImmediately();
 

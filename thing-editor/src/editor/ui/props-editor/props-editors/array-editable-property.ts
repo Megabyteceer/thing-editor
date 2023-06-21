@@ -6,17 +6,12 @@ import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-ed
 const arrayProps = { className: 'array-prop' };
 const arrayItemProps = { className: 'array-prop-item' };
 
-interface ArrayEditablePropertyProps extends EditablePropertyEditorProps {
-
-
-}
-
 interface ArrayEditablePropertyState {
 	toggled?: boolean;
 	filter?: string;
 }
 
-export default class ArrayEditableProperty extends Component<ArrayEditablePropertyProps, ArrayEditablePropertyState> {
+export default class ArrayEditableProperty extends Component<EditablePropertyEditorProps, ArrayEditablePropertyState> {
 
 	render(): ComponentChild {
 		const field = this.props.field;

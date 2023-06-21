@@ -63,16 +63,12 @@ const NOTHING_SELECTED = R.div({
 	}
 }, 'Nothing selected');
 
-interface PropsEditorProps extends ClassAttributes<PropsEditor> {
-
-}
-
 type EditablePropsRenderer = ComponentType<Component>;
 
 const renderers: Map<EditablePropertyType, EditablePropsRenderer> = new Map();
 const typeDefaults: Map<EditablePropertyType, any> = new Map();
 
-class PropsEditor extends ComponentDebounced<PropsEditorProps> {
+class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 
 	editableProps: KeyedMap<boolean> = {};
 	disableReasons: KeyedMap<string | undefined> = {};
@@ -95,7 +91,7 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 		return typeDefaults.get(prop.type);
 	}
 
-	restoreScrollPosInterval: number = 0;
+	restoreScrollPosInterval = 0;
 
 	componentDidMount(): void {
 		this.restoreScrollPosInterval = setInterval(() => {
@@ -183,8 +179,7 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 
 				a.some((o) => {
 					assert(o.hasOwnProperty('constructor'), "");
-					//@ts-ignore remove temporary fake constructor
-					delete o.constructor;
+					delete (o as any).constructor;
 				});
 				game.__setCurrentContainerContent(Lib._deserializeObject(newSceneData, isDataOfScene));
 				game.editor.selection.loadSelection(selectionData);
@@ -193,7 +188,7 @@ class PropsEditor extends ComponentDebounced<PropsEditorProps> {
 		});
 	}
 
-	selectField(fieldName: string, focus: boolean = false, selectAll: boolean = false) {
+	selectField(fieldName: string, focus = false, selectAll = false) {
 		let a = fieldName.split(',');
 
 		let fn = a[0];

@@ -4,12 +4,12 @@ import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Scene from "thing-editor/src/engine/lib/scene.c";
 
-const ACCES_ASSERTING_Func = () => {
+const ACCESS_ASSERTING_Func = () => {
 	assert(false, 'Scene`s "all" object vas not initialized yet. You can not use "all" before call super.init().', 10017);
 };
-const ACCES__ALL_ASSERTING_PROXY = new Proxy({}, {
-	get: ACCES_ASSERTING_Func,
-	set: ACCES_ASSERTING_Func as any
+const ACCESS__ALL_ASSERTING_PROXY = new Proxy({}, {
+	get: ACCESS_ASSERTING_Func,
+	set: ACCESS_ASSERTING_Func as any
 });
 
 
@@ -68,5 +68,5 @@ const getAllObjectRefsCount = (name: string): string | undefined => {
 }
 
 
-export { ACCES__ALL_ASSERTING_PROXY, addAllRefsValidator, getAllObjectRefsCount };
+export { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator, getAllObjectRefsCount };
 

@@ -13,7 +13,7 @@ const getPrefabDefaults = (o: Container): KeyedObject => {
 			if(Lib.hasPrefab(prefabName)) {
 				const dataChain: SerializedObjectProps[] = [];
 				let prefabData = Lib.prefabs[prefabName] || ret;
-				while(true) {
+				while(true) { // eslint-disable-line no-constant-condition
 					dataChain.unshift(prefabData.p);
 					if(prefabData.r) {
 						prefabData = Lib.prefabs[prefabData.r];

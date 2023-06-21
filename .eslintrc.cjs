@@ -28,7 +28,15 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
+        "no-debugger": 0,
+        "prefer-const": 0,
+        "@typescript-eslint/no-this-alias": 0,
+        "@typescript-eslint/no-non-null-assertion": 0,
+        "@typescript-eslint/no-explicit-any": 0,
         "@typescript-eslint/no-var-requires": 0,
-        "no-prototype-builtins": 0
+        "@typescript-eslint/no-namespace": 0,
+        "no-useless-catch": 0,
+        "no-prototype-builtins": 0,
+        "no-useless-escape": 0
     }
 }

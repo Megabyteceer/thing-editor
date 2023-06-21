@@ -66,8 +66,8 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 		Object.assign(state, game.editor.settings.getItem('editor_window_state_' + props.id, {}));
 
-		//@ts-ignore
-		this.state = state;
+
+		(this as any).state = state;
 
 		this.setSize(state.w, state.h);
 		this.setPosition(state.x, state.y);
@@ -137,7 +137,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		return ret;
 	}
 
-	deltaL(x: number, _y: number) { // eslint-disable-line no-unused-vars
+	deltaL(x: number, _y: number) { // eslint-disable-line @typescript-eslint/no-unused-vars
 		let ret = { x: this.state.w, y: this.state.h };
 		this.setSize(this.state.w - x, this.state.h);
 		ret.x = -(this.state.w - ret.x);
@@ -146,7 +146,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		return ret;
 	}
 
-	deltaR(x: number, _y: number) { // eslint-disable-line no-unused-vars
+	deltaR(x: number, _y: number) { // eslint-disable-line @typescript-eslint/no-unused-vars
 		let ret = { x: this.state.w, y: this.state.h };
 		this.setSize(this.state.w + x, this.state.h);
 		ret.x = this.state.w - ret.x;
@@ -209,10 +209,9 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		y = Math.max(0, y);
 		x = Math.min(x, 100 - this.state.w);
 		y = Math.min(y, 100 - this.state.h);
-		//@ts-ignore
-		this.state.x = x;
-		//@ts-ignore
-		this.state.y = y;
+		
+		(this.state as any).x = x;
+		(this.state as any).y = y;
 		if(this.base) {
 			(this.base as HTMLDivElement).style.left = x + '%';
 			(this.base as HTMLDivElement).style.top = y + '%';
@@ -229,10 +228,8 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 				this.props.onResize();
 			}
 		}
-		//@ts-ignore
-		this.state.w = w;
-		//@ts-ignore
-		this.state.h = h;
+		(this.state as any).w = w;
+		(this.state as any).h = h;
 		if(this.base) {
 			(this.base as HTMLDivElement).style.width = w + '%';
 			(this.base as HTMLDivElement).style.height = h + '%';
@@ -437,7 +434,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 				});
 			}
 		}, 1);
-	};
+	}
 }
 
 
@@ -483,10 +480,8 @@ const addNeighborDraggersAsActive = (thisBounds: DOMRect, ev: DragEvent, dragger
 	}
 }
 
-interface CornerDraggerState {
-}
 
-class CornerDragger extends Component<CornerDraggerProps, CornerDraggerState> {
+class CornerDragger extends Component<CornerDraggerProps> {
 
 	prevX = 0;
 	prevY = 0;

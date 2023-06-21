@@ -82,7 +82,7 @@ interface EditablePropertyDesc<T extends Container = Container> extends Editable
 
 /** editable property decorator */
 function editable<T extends DisplayObject>(editablePropertyDesc?: EditablePropertyDescRaw<T>) {
-	return function (target: T, propertyName: string, _descriptor?: PropertyDescriptor) {
+	return function (target: T, propertyName: string) {
 		editableInner(target, propertyName, editablePropertyDesc);
 	}
 }
@@ -134,7 +134,7 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 	(editablePropertyDesc as EditablePropertyDesc).__src = url;
 
 	(target.constructor as SourceMappedConstructor).__editableProps.push(editablePropertyDesc as EditablePropertyDesc);
-};
+}
 
 export default editable;
 export { _editableEmbed, propertyAssert };

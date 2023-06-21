@@ -7,11 +7,8 @@ interface TimelilneFieldControlsProps extends ClassAttributes<TimelilneFieldCont
 	owner: FieldsTimelineView;
 }
 
-interface TimelilneFieldControlsState {
 
-}
-
-export default class TimelilneFieldControls extends Component<TimelilneFieldControlsProps, TimelilneFieldControlsState> {
+export default class TimelilneFieldControls extends Component<TimelilneFieldControlsProps> {
 
 	render() {
 		let fieldTimeline = this.props.owner;

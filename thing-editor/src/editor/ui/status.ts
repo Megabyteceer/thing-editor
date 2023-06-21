@@ -57,15 +57,12 @@ const needAddInToList = (map: StatusItemsOwnersMap, owner?: StatusListItemOwner,
 	}
 };
 
-interface StatusProps extends ClassAttributes<Status> {
-
-}
 
 interface StatusState {
 	toggled?: boolean;
 }
 
-export default class Status extends ComponentDebounced<StatusProps, StatusState> {
+export default class Status extends ComponentDebounced<ClassAttributes<Status>, StatusState> {
 
 	private errorsMap: StatusItemsOwnersMap;
 	private warnsMap: StatusItemsOwnersMap;
@@ -76,7 +73,7 @@ export default class Status extends ComponentDebounced<StatusProps, StatusState>
 	private warnsList!: InfoList;
 
 
-	constructor(props: StatusProps) {
+	constructor(props: ClassAttributes<Status>) {
 		super(props);
 		this.errorsMap = new WeakMap();
 		this.warnsMap = new WeakMap();

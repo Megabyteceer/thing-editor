@@ -209,12 +209,12 @@ export default class Shape extends Graphics {
 		}
 	}
 
-	@editable()
-	isItHitArea = false;
-
 	get shape() {
 		return this._shape;
 	}
+
+	@editable()
+	isItHitArea = false;
 
 	@editable({ visible: isShapeHasWidthHeight, important: true })
 	set width(s) {

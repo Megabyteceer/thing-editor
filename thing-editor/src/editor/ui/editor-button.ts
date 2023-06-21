@@ -94,7 +94,7 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 			allHotkeyButtons.unshift(this);
 		}
 
-		var title = props.title;
+		let title = props.title;
 		let hotkey = props.hotkey;
 		if(hotkey) {
 			let help = [];

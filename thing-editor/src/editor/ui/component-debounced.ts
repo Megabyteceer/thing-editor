@@ -1,6 +1,6 @@
-import { Attributes, Component, ComponentChild, ComponentChildren, Ref } from "preact";
+import { Component, ComponentChild } from "preact";
 
-export default class ComponentDebounced<P = {}, S = {}> extends Component<P, S> {
+export default class ComponentDebounced<P = object, S = object> extends Component<P, S> {
 	private _refreshTimeout = 0;
 	refresh() {
 		if(!this._refreshTimeout) {
@@ -17,7 +17,7 @@ export default class ComponentDebounced<P = {}, S = {}> extends Component<P, S> 
 		}
 	}
 
-	render(_props?: Readonly<Attributes & { children?: ComponentChildren; ref?: Ref<any> | undefined; }> | undefined): ComponentChild {
+	render(): ComponentChild {
 		return undefined;
 	}
 }

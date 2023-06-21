@@ -47,8 +47,7 @@ export default class MovieClip extends DSprite {
 		this._disposePlayers();
 
 		if(data === null) {
-			//@ts-ignore
-			this._timelineData = null;
+			this._timelineData = null as any;
 			return;
 		}
 
@@ -85,6 +84,66 @@ export default class MovieClip extends DSprite {
 			this.fieldPlayers.push(p);
 		}
 	}
+
+	/// #if EDITOR
+	//timeline reading has sense in editor mode only
+	get timeline() { // -eslint-disable-line @typescript-eslint/adjacent-overload-signatures
+		if(!this._timelineData) {
+			return null;
+		}
+		if(!serializeCache.has(this._timelineData) ||
+			game.editor.disableFieldsCache
+		) {
+			//console.warn("MovieClip serialization invoked >>>");
+			let tl = this._timelineData;
+			let fields = tl.f.map((f) => {
+				return {
+					n: f.n,
+					t: f.t.map((k): TimelineSerializedKeyFrame => {
+						let ret: TimelineSerializedKeyFrame = Object.assign({}, k);
+						let tmpJ = ret.j as number;
+						if(ret.j === ret.t && !k.___keepLoopPoint) {
+							delete (ret.j);
+						}
+
+						if((typeof (this as KeyedObject)[f.n]) !== 'number') {
+							delete ret.s;
+						}
+
+						if(ret.m === 0) {
+							delete ret.m;
+						}
+						if(ret.r === 0) {
+							delete ret.r;
+						} else if((ret.r as number) > 0) {
+							ret.r = Math.min(ret.r as number, (ret.n as TimelineKeyFrame).t as number - tmpJ - 1);
+						}
+						delete ret.n;
+						return ret;
+					})
+				};
+			});
+
+			let labels: TimelineSerializedLabelsData = {};
+			for(let key in tl.l) {
+				let label = tl.l[key];
+				labels[key] = label.t;
+			}
+			let c = {
+				l: labels,
+				p: tl.p,
+				d: tl.d,
+				f: fields
+			};
+			if(game.editor.disableFieldsCache) {
+				return c;
+			}
+			serializeCache.set(this._timelineData, c);
+		}
+		return serializeCache.get(this._timelineData);
+	}
+
+	/// #endif
 
 	@editable({ notAnimate: true, min: 0 })
 	delay = 0;
@@ -223,7 +282,7 @@ export default class MovieClip extends DSprite {
 	gotoRandomLabel() {
 		assert(arguments.length > 1, "Two or more arguments expected for method gotoRandomLabel.", 10056);
 
-		const labelName = arguments[Math.floor(Math.random() * arguments.length)];
+		const labelName = arguments[Math.floor(Math.random() * arguments.length)]; // eslint-disable-line prefer-rest-params
 
 		if(labelName) {
 			this.gotoLabel(labelName);
@@ -316,63 +375,6 @@ export default class MovieClip extends DSprite {
 		}
 	}
 
-	//timeline reading has sense in editor mode only
-	get timeline() { //serialize timeline to save in Lib as json. Replace keyframes references to indexes
-		if(!this._timelineData) {
-			return null;
-		}
-		if(!serializeCache.has(this._timelineData) ||
-			game.editor.disableFieldsCache
-		) {
-			//console.warn("MovieClip serialization invoked >>>");
-			let tl = this._timelineData;
-			let fields = tl.f.map((f) => {
-				return {
-					n: f.n,
-					t: f.t.map((k): TimelineSerializedKeyFrame => {
-						let ret: TimelineSerializedKeyFrame = Object.assign({}, k);
-						let tmpJ = ret.j as number;
-						if(ret.j === ret.t && !k.___keepLoopPoint) {
-							delete (ret.j);
-						}
-
-						if((typeof (this as KeyedObject)[f.n]) !== 'number') {
-							delete ret.s;
-						}
-
-						if(ret.m === 0) {
-							delete ret.m;
-						}
-						if(ret.r === 0) {
-							delete ret.r;
-						} else if((ret.r as number) > 0) {
-							ret.r = Math.min(ret.r as number, (ret.n as TimelineKeyFrame).t as number - tmpJ - 1);
-						}
-						delete ret.n;
-						return ret;
-					})
-				};
-			});
-
-			let labels: TimelineSerializedLabelsData = {};
-			for(let key in tl.l) {
-				let label = tl.l[key];
-				labels[key] = label.t;
-			}
-			let c = {
-				l: labels,
-				p: tl.p,
-				d: tl.d,
-				f: fields
-			};
-			if(game.editor.disableFieldsCache) {
-				return c;
-			}
-			serializeCache.set(this._timelineData, c);
-		}
-		return serializeCache.get(this._timelineData);
-	}
-
 	__invalidateSerializeCache() { //TODO move all timeline cache to __nodeExtendData.serializationCache and remove this method invoke from data-path-fixer
 		let timelineData = this._timelineData;
 		Lib.__invalidateSerializationCache(this);
@@ -443,7 +445,7 @@ export default class MovieClip extends DSprite {
 		this.__checkVisibilityForEditor();
 	}
 
-	___previewFrame: number = 0
+	___previewFrame = 0
 
 	@editable({ min: 0 })
 	set __previewFrame(v) {

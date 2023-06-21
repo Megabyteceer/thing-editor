@@ -14,7 +14,7 @@ module.exports = class PositionRestoreWindow extends BrowserWindow {
 		if(windowState.isMaximized) {
 			this.maximize();
 		}
-		const saveWindowPos = (ev) => {
+		const saveWindowPos = () => {
 			let windowState = this.getBounds();
 			windowState.isMaximized = this.isMaximized();
 			appConfig.set(stateId, windowState);

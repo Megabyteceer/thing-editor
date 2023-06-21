@@ -27,11 +27,9 @@ interface TimelineLineViewProps extends ClassAttributes<TimelineLineView> {
 
 }
 
-interface TimelineLineViewState {
 
-}
 
-export default class TimelineLineView extends Component<TimelineLineViewProps, TimelineLineViewState> {
+export default class TimelineLineView extends Component<TimelineLineViewProps> {
 	constructor(props: TimelineLineViewProps) {
 		super(props);
 		this.onMouseDown = this.onMouseDown.bind(this);
@@ -149,17 +147,11 @@ export default class TimelineLineView extends Component<TimelineLineViewProps, T
 	}
 }
 
-
-
-interface PlayingDisplayState {
-
-}
-
-class PlayingDisplay extends Component<TimelineLineViewProps, PlayingDisplayState> {
+class PlayingDisplay extends Component<TimelineLineViewProps> {
 
 	interval!: number;
 	fieldPlayer!: FieldPlayer;
-	renderedTime: number = -1;
+	renderedTime = -1;
 
 	componentDidMount() {
 		this.interval = setInterval(this.update.bind(this), 35);

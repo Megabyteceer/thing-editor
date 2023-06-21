@@ -18,7 +18,7 @@ class Settings {
 					this.data = JSON.parse(localStorage[storageId]);
 				}
 			}
-		} catch(er) { }
+		} catch(er) { /* empty */ }
 		this.flush = this.flush.bind(this);
 	}
 

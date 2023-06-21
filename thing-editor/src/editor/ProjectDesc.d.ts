@@ -1,3 +1,4 @@
+import { KeyedObject } from "thing-editor/src/editor/env";
 
 type ProjectOrientation = "landscape" | "portrait" | "auto"
 
@@ -33,15 +34,10 @@ declare interface ProjectDesc {
 	version: string,
 	soundFormats: string[],
 	soundDefaultBitrate: number,
-	soundBitrates: {
-	},
-	loadOnDemandSounds: {
-	},
-	loadOnDemandTextures: {
-	},
-	__loadOnDemandTexturesFolders: {
-
-	},
+	soundBitrates: KeyedObject<number>,
+	loadOnDemandSounds: KeyedObject<number>,
+	loadOnDemandTextures: KeyedObject<number>,
+	__loadOnDemandTexturesFolders: KeyedObject<number>,
 	defaultMusVol: number,
 	defaultSoundsVol: number,
 	embedLocales: true,

@@ -33,8 +33,6 @@ const classNamePropertyDescriptor = {
 	}
 };
 
-
-
 export namespace editorUtils {
 
 	export const isInModal = (o: EventTarget | HTMLElement | null) => {
@@ -333,7 +331,7 @@ export namespace editorUtils {
 		let o = game.editor.selection[0];
 		let blob = await exportAsPng(o);
 		if(blob) {
-			var a = document.createElement('a');
+			let a = document.createElement('a');
 			document.body.append(a);
 			a.download = (o.name || 'image') + '.png';
 			a.href = URL.createObjectURL(blob);
@@ -461,7 +459,7 @@ export namespace editorUtils {
 			if(isPrefab) {
 				w.name = prefabName;
 				o.name = null;
-				var data = Lib.__serializeObject(w);
+				let data = Lib.__serializeObject(w);
 				w = Lib._deserializeObject(data);
 				game.__setCurrentContainerContent(w);
 			} else {

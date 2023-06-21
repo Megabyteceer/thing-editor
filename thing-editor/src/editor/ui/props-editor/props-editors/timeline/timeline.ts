@@ -685,7 +685,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		}, 2);
 	}
 
-	static onBeforePropertyChanged(o: Container, fieldName: string, _field: EditablePropertyDesc, _val: any, _isDelta?: boolean) {
+	static onBeforePropertyChanged(o: Container, fieldName: string, _field: EditablePropertyDesc, _val: any, _isDelta?: boolean) { // eslint-disable-line @typescript-eslint/no-unused-vars
 		if((!Timeline.timelineDOMElement) || recordingIsDisabled) {
 			beforeChangeValueRemember = new WeakMap();
 		}

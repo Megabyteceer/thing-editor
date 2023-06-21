@@ -27,7 +27,7 @@ const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 				},
 				{
 					name: "Cancel",
-					onClick: () => { }
+					onClick: () => { } // eslint-disable-line @typescript-eslint/no-empty-function
 				}
 			], ev);
 		}, 'Clear', 'tool-button') : undefined

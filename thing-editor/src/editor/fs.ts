@@ -1,6 +1,6 @@
 import { Container, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
-import type { KeyedObject, SerializedObject, SourceMappedConstructor, ThingEditorServer } from "thing-editor/src/editor/env";
+import type { KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -44,7 +44,6 @@ interface FileDescImage extends FileDesc {
 	asset: Texture;
 }
 
-
 enum AssetType {
 	IMAGE = "IMAGE",
 	SOUND = "SOUND",
@@ -52,9 +51,6 @@ enum AssetType {
 	PREFAB = "PREFAB",
 	CLASS = "CLASS"
 }
-
-
-const thingEditorServer: ThingEditorServer = window.thingEditorServer;
 
 const AllAssetsTypes: AssetType[] = Object.values(AssetType);
 
@@ -64,8 +60,8 @@ let allAssets: FileDesc[] = [];
 
 const assetsByTypeByName: Map<AssetType, Map<string, FileDesc>> = new Map();
 
-for(let assetType of AllAssetsTypes) {
-	let map = new Map();
+for(const assetType of AllAssetsTypes) {
+	const map = new Map();
 	assetsByTypeByName.set(assetType, map);
 	assetsListsByType.set(assetType, []);
 }
@@ -285,7 +281,7 @@ export default class fs {
 	}
 
 	static rebuildSounds(dir: string) {
-		let options = {
+		const options = {
 			dir,
 			formats: game.editor.projectDesc.soundFormats,
 			bitrates: game.editor.projectDesc.soundBitrates,
@@ -300,12 +296,12 @@ export default class fs {
 		const lib: LibInfo | null = game.editor.currentProjectLibs.find(l => l.assetsDir === dirName) || null;
 		const files = execFs('fs/readDir', dirName) as FileDesc[];
 		return files.filter((file) => {
-			let wrongSymbol = fs.getWrongSymbol(file.fileName);
+			const wrongSymbol = fs.getWrongSymbol(file.fileName);
 			if(wrongSymbol) {
 				game.editor.ui.status.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
 				return;
 			}
-			let assetName = file.fileName.substring(dirName.length);
+			const assetName = file.fileName.substring(dirName.length);
 			for(const ext in ASSETS_PARSERS) {
 				if(assetName.endsWith(ext)) {
 					const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
@@ -331,14 +327,14 @@ export default class fs {
 
 		const prevAllAssets = allAssets;
 		const prevAllAssetsMap = new Map();
-		for(let f of prevAllAssets) {
+		for(const f of prevAllAssets) {
 			prevAllAssetsMap.set(f.fileName, f);
 		}
 		allAssets = [];
 
 		console.log('refresh assets list');
 
-		for(let assetType of AllAssetsTypes) {
+		for(const assetType of AllAssetsTypes) {
 			assetsListsByType.set(assetType, []);
 			assetsByTypeByName.get(assetType)?.clear();
 		}
@@ -346,9 +342,9 @@ export default class fs {
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('EMPTY', EMPTY);
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
 
-		for(let dirName of dirNames!) {
+		for(const dirName of dirNames!) {
 			const files = fs.getFolderAssets(dirName);
-			for(let file of files) {
+			for(const file of files) {
 				const map = assetsByTypeByName.get(file.assetType as AssetType) as Map<string, FileDesc>;
 				if(file.assetType !== AssetType.CLASS && map.has(file.assetName)) {
 					const existingFile = map.get(file.assetName)!;
@@ -368,7 +364,7 @@ export default class fs {
 				allAssets.push(file);
 
 				if(prevAllAssets !== undefined && !file.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
-					let oldAsset = prevAllAssetsMap!.get(file.fileName);
+					const oldAsset = prevAllAssetsMap!.get(file.fileName);
 					if(!oldAsset) {
 						__onAssetAdded(file);
 					} else {
@@ -385,7 +381,7 @@ export default class fs {
 		}
 
 		if(prevAllAssets) {
-			for(let f of prevAllAssets) {
+			for(const f of prevAllAssets) {
 				if(!f.assetName.startsWith(EDITOR_BACKUP_PREFIX) && !fs.getFileByAssetName(f.assetName, f.assetType)) {
 					__onAssetDeleted(f);
 				}
@@ -394,7 +390,7 @@ export default class fs {
 	}
 
 	static getWrongSymbol(fileName: string) {
-		let wrongSymbolPos = fileName.search(/[^a-zA-Z_\-\.\d\/]/gm);
+		const wrongSymbolPos = fileName.search(/[^a-zA-Z_\-\.\d\/]/gm);
 		if(wrongSymbolPos >= 0) {
 			return fileName[wrongSymbolPos];
 		}

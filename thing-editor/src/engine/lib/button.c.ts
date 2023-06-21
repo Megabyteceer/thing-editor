@@ -34,7 +34,7 @@ export default class Button extends DSprite {
 	onClick: string[] = [];
 
 	@editable()
-	hotkey: number = 0;
+	hotkey = 0;
 
 	@editable({ type: 'sound' })
 	sndClick: string | null = null;

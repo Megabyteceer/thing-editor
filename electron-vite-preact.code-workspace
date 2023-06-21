@@ -78,7 +78,8 @@
 		],
 		"bookmarks.keepBookmarksOnLineDelete": false,
 		"javascript.preferences.importModuleSpecifierEnding": "index",
-		"typescript.preferences.importModuleSpecifierEnding": "index"
+		"typescript.preferences.importModuleSpecifierEnding": "index",
+		"eslint.format.enable": true
 	},
 	"tasks": {
 		"version": "2.0.0",

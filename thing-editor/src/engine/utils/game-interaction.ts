@@ -96,8 +96,7 @@ if((window as KeyedObject).cordova) {
 	}, false);
 	game.exitApp = (enforced = false) => {
 		if(enforced) {
-			//@ts-ignore
-			navigator.app.exitApp();
+			(navigator as any).app.exitApp();
 		} else {
 			//TODO
 			/*game.showQuestion(L('SUREEXIT_TITLE'), L('SUREEXIT_TEXT'), undefined, () => {

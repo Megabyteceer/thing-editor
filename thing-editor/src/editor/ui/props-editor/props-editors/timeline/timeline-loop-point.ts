@@ -20,7 +20,7 @@ interface TimelineLoopPointState {
 export default class TimelineLoopPoint extends Component<TimelineLoopPointProps, TimelineLoopPointState> implements TimelineSelectable {
 
 	onDraggableMouseDown: (ev: PointerEvent) => void;
-	isSelected: boolean = false;
+	isSelected = false;
 
 	constructor(props: TimelineLoopPointProps) {
 		super(props);

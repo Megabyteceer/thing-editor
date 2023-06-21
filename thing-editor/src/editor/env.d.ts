@@ -1,5 +1,4 @@
 /// <reference types="vite/client" />
-/// <reference path="../engine/lib/container.c.ts" />
 
 import { Container, Point } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
@@ -153,7 +152,7 @@ interface SelectableProperty extends AnyType {
 }
 
 declare global {
-	var thingEditorServer: ThingEditorServer // exposed from electron
+	let thingEditorServer: ThingEditorServer // exposed from electron
 }
 
 
@@ -161,7 +160,7 @@ interface AssetsDescriptor {
 	scenes: KeyedMap<SerializedObject>;
 	prefabs: KeyedMap<SerializedObject>;
 	images: string[];
-	resources: {};
+	resources: KeyedObject
 	sounds: string[];
 	projectDesc?: ProjectDesc;
 }

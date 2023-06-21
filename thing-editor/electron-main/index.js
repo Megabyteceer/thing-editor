@@ -12,9 +12,7 @@ const originalLog = console.log.bind(console);
 console.log = (txt) => {
 	try {
 		originalLog(txt);
-	} catch(er) {
-
-	}
+	} catch(er) { } // eslint-disable-line no-empty
 }
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
@@ -80,8 +78,8 @@ const createWindow = () => {
 
 	require('./server-fs.js')(mainWindow);
 
+	const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
 	const loadEditorIndexHTML = () => {
-		const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
 		mainWindow.setOpacity(1);
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
 	};

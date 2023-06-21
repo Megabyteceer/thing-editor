@@ -54,15 +54,11 @@ const treeViewProps = {
 	onContextMenu
 };
 
-interface TreeViewProps extends ClassAttributes<TreeView> {
-
-}
-
 interface TreeViewState {
 	search: string
 }
 
-export default class TreeView extends ComponentDebounced<TreeViewProps, TreeViewState> {
+export default class TreeView extends ComponentDebounced<ClassAttributes<TreeView>, TreeViewState> {
 
 	constructor() {
 		super();

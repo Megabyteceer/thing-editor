@@ -16,11 +16,8 @@ interface PowDampPresetSelectorProps extends ClassAttributes<PowDampPresetSelect
 	damp: number;
 }
 
-interface PowDampPresetSelectorState {
 
-}
-
-export default class PowDampPresetSelector extends Component<PowDampPresetSelectorProps, PowDampPresetSelectorState> {
+export default class PowDampPresetSelector extends Component<PowDampPresetSelectorProps> {
 	constructor(props: PowDampPresetSelectorProps) {
 		super(props);
 

@@ -21,7 +21,7 @@ const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
 const PAUSE_ICON = R.icon('pause');
 
-let playTogglingTime = false;;
+let playTogglingTime = false;
 
 let prefabTitleProps = { className: 'prefabs-mode-title' };
 let prefabLabelProps = {
@@ -38,10 +38,6 @@ const SPEED_SELECT = [0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
 
 const onBgColorChange = (ev: InputEvent) => {
 	PrefabEditor.BGColor = parseInt((ev.target as HTMLInputElement).value.replace('#', ''), 16);
-}
-
-interface ViewportProps extends ClassAttributes<Viewport> {
-
 }
 
 interface ViewportStats {
@@ -66,9 +62,9 @@ const resolutions: ViewportSizeItem[] = [
 	{ name: "iPad", value: { w: 1024, h: 768 } }
 ];
 
-export default class Viewport extends ComponentDebounced<ViewportProps, ViewportStats> {
+export default class Viewport extends ComponentDebounced<ClassAttributes<Viewport>, ViewportStats> {
 
-	constructor(props: ViewportProps) {
+	constructor(props: ClassAttributes<Viewport>) {
 		super(props);
 		this.onTogglePlay = this.onTogglePlay.bind(this);
 		this.onPauseResumeClick = this.onPauseResumeClick.bind(this);

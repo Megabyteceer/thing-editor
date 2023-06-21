@@ -131,7 +131,7 @@ function patch(fileName, ...findInserts) {
 		fileName,
 		findInserts
 	});
-};
+}
 
 
 const path = require('path');
@@ -177,7 +177,7 @@ function tryToPatch(folder, mainWindow) {
 }
 
 module.exports = function (mainWindow) {
-	projectRoot = path.join(__dirname, '../..');
+	let projectRoot = path.join(__dirname, '../..');
 	tryToPatch(path.join(__dirname, '..'));
 	while(fs.existsSync(projectRoot)) {
 		tryToPatch(projectRoot, mainWindow);

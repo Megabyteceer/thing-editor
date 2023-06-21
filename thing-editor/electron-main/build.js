@@ -69,15 +69,14 @@ module.exports = {
 						'games': path.resolve(__dirname, '../../games'),
 						'thing-editor': path.resolve(__dirname, '../../thing-editor'),
 						'howler.js': 'https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js',
-						'pixi.js': 'https://cdn.jsdelivr.net/npm/pixi.js-legacy@7.2.4/dist/pixi-legacy.min.mjs',
-						//'pixi.js': path.resolve(__dirname, '../../node_modules/pixi.js-legacy/dist/pixi-legacy.min.mjs')
+						'pixi.js': 'https://cdn.jsdelivr.net/npm/pixi.js-legacy@7.2.4/dist/pixi-legacy.min.mjs'
 					}
 				}
 			}).then((res) => {
 				console.log('BUILD COMPLETE: ' + 'http://127.0.0.1:5173/' + projectDir);
 				return res;
 			});
-		}).catch((er) => {
+		}).catch((er) => {// eslint-disable-line @typescript-eslint/no-unused-vars
 			debugger;
 		});
 	}

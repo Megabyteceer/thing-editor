@@ -12,15 +12,7 @@ let y = 0;
 let w = 0;
 let h = 0;
 
-interface TimelineSelectFrameProps extends ClassAttributes<TimelineSelectFrame> {
-
-}
-
-interface TimelineSelectFrameState {
-
-}
-
-export default class TimelineSelectFrame extends Component<TimelineSelectFrameProps, TimelineSelectFrameState> {
+export default class TimelineSelectFrame extends Component<ClassAttributes<TimelineSelectFrame>> {
 
 	onMouseDown(ev: MouseEvent) {
 		timelineRect = Timeline.timelineDOMElement!.getBoundingClientRect();

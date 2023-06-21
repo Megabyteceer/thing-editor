@@ -73,7 +73,6 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 
 	onBlur() {
 		if(this.state) {
-			//@ts-ignore
 			delete this.tmpVal;
 			this.forceUpdate();
 		}

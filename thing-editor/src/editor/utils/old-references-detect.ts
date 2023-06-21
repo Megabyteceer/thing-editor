@@ -63,8 +63,8 @@ const accessDetectionProxy = (class_: SourceMappedConstructor, fieldName: string
 			set: accessToOldReferenceDetector,
 			has: accessToOldReferenceDetector,
 			deleteProperty: accessToOldReferenceDetector,
-			//@ts-ignore
-			ownKeys: accessToOldReferenceDetector,
+
+			ownKeys: (accessToOldReferenceDetector as any),
 			apply: accessToOldReferenceDetector
 		});
 		accessDetectionProxiesCache.set(key, p);
@@ -73,4 +73,5 @@ const accessDetectionProxy = (class_: SourceMappedConstructor, fieldName: string
 	return accessDetectionProxiesCache.get(key);
 };
 
-export { markOldReferences, checkForOldReferences };
+export { checkForOldReferences, markOldReferences };
+

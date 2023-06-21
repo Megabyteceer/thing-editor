@@ -82,7 +82,6 @@ interface HistoryRecord {
 
 class History {
 
-	//@ts-ignore
 	events = new EventEmitter() as TypedEmitter<HistoryEvents>;
 
 	constructor() {
@@ -242,8 +241,8 @@ class History {
 		if(undo) {
 			return undo[undo.length - 1];
 		}
-		//@ts-ignore
-		return null;
+
+		return null!;
 	}
 
 
@@ -266,7 +265,7 @@ class History {
 	}
 
 	navigateSelection(direction = -1) {
-		while(true) {
+		while(true) { // eslint-disable-line no-constant-condition
 			currentSelectionNavigation += direction;
 
 			let targetHistoryState;
@@ -315,7 +314,7 @@ function arraysEqual(a: any[], b: any[]) {
 	if(a == null || b == null) return false;
 	if(a.length !== b.length) return false;
 
-	for(var i = 0; i < a.length; ++i) {
+	for(let i = 0; i < a.length; ++i) {
 		if(Array.isArray(a[i])) {
 			if(!arraysEqual(a[i], b[i])) return false;
 		} else {

@@ -104,15 +104,15 @@ class Game {
 
 	onGameReload?: () => void;
 
-	private loadingsInProgressTotal = 0;
 	private loadingsInProgress = 0;
+	private loadingsFinished = 0;
 	loadingProgress = 0;
 
 	/// #if EDITOR
 	editor!: __EditorType;
 	__EDITOR_mode = false;
 
-	isFocused: boolean = false;
+	isFocused = false;
 
 	keys = Keys;
 
@@ -129,11 +129,10 @@ class Game {
 	time = 0;
 	//*/
 
-	init(element?: HTMLElement, gameId?: string, _resourcesPath = '') {
+	init(element?: HTMLElement, gameId?: string) {
 		this.pixiApp = app = new Application();
 
-		//@ts-ignore
-		(element || document.body).appendChild(app.view);
+		(element || document.body).appendChild(app.view as HTMLCanvasElement);
 
 		this._updateGlobal = this._updateGlobal.bind(this);
 		this.onResize = this.onResize.bind(this);
@@ -179,8 +178,6 @@ class Game {
 		this.pixiApp.view.addEventListener!('wheel', (ev) => ev.preventDefault());
 		window.addEventListener('resize', this._onContainerResize.bind(this));
 
-
-		//@ts-ignore
 		/// #if EDITOR
 		/*
 		/// #endif
@@ -204,7 +201,7 @@ class Game {
 		} else {
 			resizeOutJump = setTimeout(() => {
 				resizeOutJump = 0;
-				if(game.isMobile.any
+				if(game.isMobile.any // eslint-disable-line no-constant-condition
 					/// #if EDITOR
 					&& false
 					/// #endif
@@ -214,7 +211,7 @@ class Game {
 					}
 				}
 				this.onResize();
-			}, game.isMobile.any
+			}, game.isMobile.any // eslint-disable-line no-constant-condition
 				/// #if EDITOR
 				&& false
 				/// #endif
@@ -237,7 +234,7 @@ class Game {
 		this.onResize();
 	}
 
-	addAssets(data: AssetsDescriptor, assetsRoot: string = './assets/') {
+	addAssets(data: AssetsDescriptor, assetsRoot = './assets/') {
 		/// #if EDITOR
 		assert(false, 'game.addAssets method for runtime only, but called in editor.');
 		/// #endif
@@ -682,7 +679,7 @@ class Game {
 		}
 
 		if(game._isWaitingToHideFader) {
-			if(game.getLoadingCount() === 0) {
+			if(game.loadingsFinished === game.loadingsInProgress) {
 				game._processScenesStack();
 				if(!game.currentScene._onShowCalled) {
 					game.currentScene._onShowCalled = true;
@@ -752,7 +749,7 @@ class Game {
 	}
 
 	_processScenesStack() {
-		assert(game.getLoadingCount() === 0, "Attempt to change stack during loading");
+		assert(game.loadingsFinished === game.loadingsInProgress, "Attempt to change stack during loading");
 		while(true) { // eslint-disable-line no-constant-condition
 			let topStackElement = scenesStack[scenesStack.length - 1] as Scene;
 			if(topStackElement === game.currentScene) {
@@ -767,15 +764,6 @@ class Game {
 			topStackElement = scenesStack[scenesStack.length - 1] as Scene;
 			scenesStack[scenesStack.length - 1] = game._setCurrentSceneContent(topStackElement);
 		}
-	}
-
-	getLoadingCount(
-		/// #if EDITOR
-		_ignoreInGamePromises = false
-		/// #endif
-	) {
-		//TODO:
-		return 0;
 	}
 
 	_reloadGame() {
@@ -799,21 +787,21 @@ class Game {
 	}
 
 	loadingAdd() {
-		if(this.loadingsInProgress === this.loadingsInProgressTotal) {
-			this.loadingsInProgressTotal = 0;
+		if(this.loadingsFinished === this.loadingsInProgress) {
 			this.loadingsInProgress = 0;
+			this.loadingsFinished = 0;
 		}
-		this.loadingsInProgressTotal++;
+		this.loadingsInProgress++;
 
 		this._refreshLoadingProgress();
 	}
 
 	private _refreshLoadingProgress() {
-		this.loadingProgress = this.loadingsInProgressTotal ? Math.floor(this.loadingsInProgress / this.loadingsInProgressTotal * 100) : 0;
+		this.loadingProgress = this.loadingsInProgress ? Math.floor(this.loadingsFinished / this.loadingsInProgress * 100) : 0;
 	}
 
 	loadingRemove() {
-		this.loadingsInProgress++;
+		this.loadingsFinished++;
 		this._refreshLoadingProgress();
 	}
 

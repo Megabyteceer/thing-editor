@@ -33,7 +33,7 @@ interface TimelineKeyframeViewState {
 export default class TimelineKeyframeView extends Component<TimelineKeyframeViewProps, TimelineKeyframeViewState> implements TimelineSelectable {
 
 	onDraggableMouseDown: (ev: PointerEvent) => void;
-	isSelected: boolean = false;
+	isSelected = false;
 
 	constructor(props: TimelineKeyframeViewProps) {
 		super(props);

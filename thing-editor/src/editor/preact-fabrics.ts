@@ -1,6 +1,6 @@
 import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h, render } from 'preact';
-import { KeyedMap, SourceMappedConstructor } from 'thing-editor/src/editor/env';
+import { KeyedMap, KeyedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import { FileDesc, FileDescImage } from 'thing-editor/src/editor/fs';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
@@ -9,7 +9,7 @@ import assert from 'thing-editor/src/engine/debug/assert';
 
 interface ComponentProps {
 	className?: string;
-	onClick?: Function;
+	onClick?: ((ev: PointerEvent) => void) | (() => void);
 	[key: string]: any;
 }
 const _iconsCache: KeyedMap<preact.Component> = {};
@@ -50,7 +50,7 @@ class R {
 		assert(typeof onClick === 'function', "Function as onClick handler expected.");
 		className = className || '';
 		return h(EditorButton, { label, onClick, className, title, hotkey, disabled });
-	};
+	}
 	static icon(name: string) {
 		if(!_iconsCache.hasOwnProperty(name)) {
 			assert(name, "Icon's name expected.");
@@ -64,7 +64,7 @@ class R {
 			_iconsCache[name] = R.img({ src });
 		}
 		return _iconsCache[name];
-	};
+	}
 	static multilineText = (txt: ComponentChild) => {
 		if(typeof txt !== 'string') {
 			return txt;
@@ -120,13 +120,13 @@ class R {
 		return h(Tip, { id, header, text });
 	};
 
-	static input(props: ComponentProps): preact.Component {
+	static input(props: ComponentProps): ComponentChild {
 		if(props.hasOwnProperty('onChange') && !props.suspendOnChangeWarning && props.type !== 'checkbox') {
 			debugger;
 			//'onChage handler detected for "input" element. Use onInput instead', 99999, () => {
 		}
-		//@ts-ignore
-		return h('input', props);
+
+		return h('input' as any, props);
 	}
 }
 
@@ -140,10 +140,9 @@ let sceneNodeProps = { className: 'scene-node-item' };
 for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'label',
 	'b', 'a', 'br', 'hr', 'svg', 'td', 'tr', 'th', 'tbody', 'thead', 'table', 'polyline',
 	'textarea', 'iframe', 'h2', 'h3', 'h4', 'h5', 'script', 'meta', 'space', 'smallSpace']) {
-	//@ts-ignore
-	R[factoryType] = (...theArgs: any[]) => {
-		//@ts-ignore
-		return h.call(this, factoryType, ...theArgs);
+
+	(R as KeyedObject)[factoryType] = (...theArgs: any[]) => {
+		return h(factoryType, ...theArgs as [any]);
 	};
 }
 

@@ -6,7 +6,7 @@ const {
 const {
 	walkSync
 } = require("./editor-server-utils.js");
-const {watchFolders, ignoreWatch} = require("./watch");
+const {watchFolders} = require("./watch");
 const fsOptions = {
 	encoding: 'utf8'
 };
@@ -44,6 +44,12 @@ module.exports = (mainWindow) => {
 	ipcMain.on('fs', (event, command, fileName, content, ...args) => {
 
 		let fd;
+		let c;
+		let success;
+		let error;
+		let buttons;
+		let explorer;
+		let isDebug;
 		try {
 			switch(command) {
 				case 'fs/toggleDevTools':
@@ -62,7 +68,7 @@ module.exports = (mainWindow) => {
 						const fileNameParsed = fn(fileName);
 						fd = fs.openSync(fileNameParsed, 'w');
 						fs.writeSync(fd, content);
-						fs.closeSync(fd, () => { });
+						fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
 						return fs.statSync(fileNameParsed).mtimeMs;
 					}, event);
 					return;
@@ -80,8 +86,8 @@ module.exports = (mainWindow) => {
 					return;
 				case 'fs/readFile':
 					fd = fs.openSync(fn(fileName), 'r');
-					let c = fs.readFileSync(fd, fsOptions);
-					fs.closeSync(fd, () => { });
+					c = fs.readFileSync(fd, fsOptions);
+					fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
 					event.returnValue = c;
 					return;
 				case 'fs/readDir':
@@ -97,8 +103,8 @@ module.exports = (mainWindow) => {
 					event.returnValue = enumProjects();
 					return;
 				case 'fs/exitWithResult':
-					let success = fileName;
-					let error = content
+					success = fileName;
+					error = content
 					if(error) {
 						console.error(error);
 					} else if(success) {
@@ -108,7 +114,7 @@ module.exports = (mainWindow) => {
 					process.exit(error ? 1 : 0);
 					return;
 				case 'fs/showQuestion':
-					const buttons = Object.values(args).filter(b => b);
+					buttons = Object.values(args).filter(b => b);
 					event.returnValue = dialog.showMessageBoxSync(mainWindow, {
 						title: fileName,
 						message: content,
@@ -118,7 +124,7 @@ module.exports = (mainWindow) => {
 					});
 					return;
 				case 'fs/browseDir':
-					let explorer;
+					explorer;
 					switch(require('os').platform()) {
 						case "win32": explorer = "explorer"; break;
 						case "linux": explorer = "xdg-open"; break;
@@ -128,14 +134,14 @@ module.exports = (mainWindow) => {
 					event.returnValue = true;
 					return;
 				case 'fs/build':
-					const isDebug = content;
+					isDebug = content;
 					require('./build.js').build(fileName, isDebug, args[0]).then((res) => {
 						let ret = true;
 						try {
 							ret = JSON.stringify(res || true);
 						} catch(_er) {
 							console.error(_er);
-						};
+						}
 						mainWindow.webContents.send('serverMessage', 'fs/buildResult', ret);
 					}).catch((er) => {
 						mainWindow.webContents.send('serverMessage', 'fs/buildResult', er);

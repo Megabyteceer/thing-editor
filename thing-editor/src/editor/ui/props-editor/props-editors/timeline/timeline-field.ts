@@ -17,11 +17,8 @@ interface FieldsTimelineViewProps extends ClassAttributes<FieldsTimelineView> {
 	fieldIndex: number;
 }
 
-interface FieldsTimelineViewState {
 
-}
-
-export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelineViewProps, FieldsTimelineViewState> {
+export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelineViewProps> {
 	constructor(props: FieldsTimelineViewProps) {
 		super(props);
 		this.onRemoveFieldClick = this.onRemoveFieldClick.bind(this);

@@ -24,10 +24,6 @@ export default class Sound {
 		return soundsVol;
 	}
 
-	static setSoundsVol(v: number) {
-		Sound.soundsVol = v;
-	}
-
 	static set soundsVol(v) {
 		assert(!isNaN(v), "invalid value for 'soundsVol'. Valid number value expected.", 10001);
 		v = Math.max(0, Math.min(1, v));
@@ -35,12 +31,16 @@ export default class Sound {
 		game.settings.setItem('soundsVol', soundsVol);
 	}
 
-	static get musicVol() {
-		return musicVol;
+	static setSoundsVol(v: number) {
+		Sound.soundsVol = v;
 	}
 
 	static setMusicVol(v: number) {
 		Sound.musicVol = v;
+	}
+
+	static get musicVol() {
+		return musicVol;
 	}
 
 	static set musicVol(v) {
@@ -358,11 +358,13 @@ function highlightPlayedSound(soundId: string) {
 }
 
 function openIndexedDB(): IDBOpenDBRequest {
-	// This works on all devices/browsers, and uses IndexedDBShim as a final fallback 
-	//@ts-ignore
-	var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB as IDBFactory;
+	// This works on all devices/browsers, and uses IndexedDBShim as a final fallback
 
-	var openDB = indexedDB.open("MyDatabase", 1);
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	//@ts-ignore 
+	let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB as IDBFactory;
+
+	let openDB = indexedDB.open("MyDatabase", 1);
 	return openDB;
 }
 
@@ -374,9 +376,9 @@ function getStoreIndexedDB(openDB: IDBOpenDBRequest) {
 }
 
 function saveIndexedDB(filename: string, filedata?: SoundData) {
-	var openDB = openIndexedDB();
+	let openDB = openIndexedDB();
 	openDB.onsuccess = function () {
-		var db = getStoreIndexedDB(openDB);
+		let db = getStoreIndexedDB(openDB);
 
 		db.store.put({ id: filename, data: filedata });
 	};
@@ -482,14 +484,13 @@ function showSndDebugger() {
 	for(let fileChooser of document.querySelectorAll('.snd-override') as any as HTMLInputElement[]) {  // eslint-disable-line no-unreachable
 
 		fileChooser.addEventListener("change", function (ev: any) {
-			var files = fileChooser.files!;
+			let files = fileChooser.files!;
 
-
-			var reader = new FileReader();
+			let reader = new FileReader();
 			reader.readAsDataURL(files[0]);
 			reader.onloadend = function () {
 				let sndName = sndNameByEvent(ev);
-				var a = new Audio(this.result as string);
+				let a = new Audio(this.result as string);
 				a.play();
 				setTimeout(() => {
 					a.pause();

@@ -33,35 +33,35 @@ const menuProps = {
 	"data-help": 'editor.MainMenu' //TODO check help
 }
 
-const chooseProjectClick = (_ev?: PointerEvent) => {
+const chooseProjectClick = () => {
 	game.editor.chooseProject();
 }
 
-const saveSceneClick = (_ev?: PointerEvent) => {
+const saveSceneClick = () => {
 	game.editor.saveCurrentScene();
 }
 
-const savePrefabClick = (_ev?: PointerEvent) => {
+const savePrefabClick = () => {
 	PrefabEditor.acceptPrefabEdition();
 }
 
-const exitClick = (_ev?: PointerEvent) => {
+const exitClick = () => {
 	fs.exitWithResult('exit menu click');
 }
 
-const browseClick = (_ev?: PointerEvent) => {
+const browseClick = () => {
 	fs.browseDir(game.editor.currentProjectDir);
 }
 
-const projectPropsClick = (_ev?: PointerEvent) => {
+const projectPropsClick = () => {
 	game.editor.editSource(game.editor.currentProjectDir + 'thing-project.json');
 }
 
-const buildReleaseClick = (_ev?: PointerEvent) => {
+const buildReleaseClick = () => {
 	Build.build(false);
 }
 
-const buildDebugClick = (_ev?: PointerEvent) => {
+const buildDebugClick = () => {
 	Build.build(true);
 }
 

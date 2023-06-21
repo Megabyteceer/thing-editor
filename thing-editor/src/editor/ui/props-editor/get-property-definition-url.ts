@@ -14,7 +14,7 @@ const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: So
 	let fieldRegExp3 = new RegExp('\\.prototype, [\'"`]' + fieldName + '[\'"`]');
 
 	src.some((line, i) => {
-		var match = fieldRegExp1.exec(line);
+		let match = fieldRegExp1.exec(line);
 		if(match) {
 			if(i > 0 && src[i - 1].indexOf('@editable(') >= 0) {
 				fileName += ':' + (i + 1) + ':' + (match.index + 1);

@@ -1,4 +1,3 @@
-/// <reference path="../../editor/env.d.ts" />
 
 import { Container, DisplayObject, Filter, Point } from "pixi.js";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable.js";
@@ -142,8 +141,8 @@ const _findByTypeInner = (o: Container) => {
 };
 
 /// #if DEBUG
-//@ts-ignore
-Container.prototype.getChildByName = function (name: string, debugThis: Container) {
+
+Container.prototype.getChildByName = function (this: Container, name: string, debugThis: Container) {
 	let ret;
 	for(let c of this.children) {
 		if(c.name === name) {
@@ -161,7 +160,7 @@ Container.prototype.getChildByName = function (name: string, debugThis: Containe
 		}
 	}
 	return ret;
-};
+} as any;
 
 /// #endif
 

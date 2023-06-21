@@ -143,7 +143,6 @@ export default async function exportAsPng(object: Container, width = 0, height =
 		});
 		object.visible = tmpVisible;
 
-		//@ts-ignore
 		delete c2.getLocalBounds;
 		object.filters = f;
 		if(oldParent) {

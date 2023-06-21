@@ -37,8 +37,8 @@ export default function wrapPropertyWithNumberChecker(constructor: Constructor, 
 			}
 			assert(false, 'invalid value for "' + propertyName + '". Valid number value expected. ' + val + ' received.', 10001);
 		}
-		//@ts-ignore
-		originalSetter.call(this, val);
+
+		(originalSetter as any).call(this, val);
 	};
 
 	let d;
@@ -49,8 +49,8 @@ export default function wrapPropertyWithNumberChecker(constructor: Constructor, 
 		if(d) {
 			//console.log("Property " + propertyName + " wrapped.")
 			originalSetter = d.set;
-			//@ts-ignore
-			if(originalSetter.name === 'wrapPropertyWithNumberCheckerSetter') {
+
+			if((originalSetter as any).name === 'wrapPropertyWithNumberCheckerSetter') {
 				return;
 			}
 			d.set = newSetter;
@@ -78,7 +78,7 @@ export default function wrapPropertyWithNumberChecker(constructor: Constructor, 
 	} catch(er) {
 		assert(false, "Can not add NaN checking for property '" + propertyName + "'. Please make this property configurable or add noNullCheck flag in it`s descriptor.", 40903);
 	}
-};
+}
 
 wrapPropertyWithNumberChecker(ObservablePoint as any, 'x');
 wrapPropertyWithNumberChecker(ObservablePoint as any, 'y');

@@ -6,9 +6,7 @@ import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-ed
 import highlightObject from "thing-editor/src/editor/utils/highlight-object";
 import game from "thing-editor/src/engine/game";
 
-interface RefFieldEditorProps extends EditablePropertyEditorProps {
 
-}
 
 interface RefFieldEditorState {
 	toggled?: boolean;
@@ -16,13 +14,9 @@ interface RefFieldEditorState {
 }
 
 
-export default class RefFieldEditor extends Component<RefFieldEditorProps, RefFieldEditorState> {
+export default class RefFieldEditor extends Component<EditablePropertyEditorProps, RefFieldEditorState> {
 
 	RENDER_PROPS = { onMouseEnter: this.onMouseEnter.bind(this) };
-
-	constructor(props: RefFieldEditorProps) {
-		super(props);
-	}
 
 	onMouseEnter() {
 		if(this.props.value instanceof Container) {

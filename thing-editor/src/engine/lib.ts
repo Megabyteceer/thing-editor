@@ -398,7 +398,7 @@ export default class Lib {
 
 			EDITOR_FLAGS._root_onRemovedCalled = false;
 			/// #endif
-			//@ts-ignore
+
 			o.onRemove();
 			o._thing_initialized = false;
 			/// #if EDITOR
@@ -428,8 +428,8 @@ export default class Lib {
 			c[c.indexOf(o)] = r;
 			r.parent = o.parent;
 			removeHoldersToCleanup.push(r);
-			//@ts-ignore
-			o.parent = null;
+
+			o.parent = null as any;
 		} else {
 			o.detachFromParent();
 		}
@@ -472,8 +472,8 @@ export default class Lib {
 
 		/// #if EDITOR
 		if(ret instanceof Scene) {
-			//@ts-ignore
-			ret.all = '"scene.all" is not initialized yet.';
+
+			ret.all = '"scene.all" is not initialized yet.' as any;
 		}
 		if(!game.__EDITOR_mode) {
 			/// #endif
@@ -710,7 +710,6 @@ let constructRecursive = (o: Container) => {
 	EDITOR_FLAGS._root_initCalled = false;
 	/// #endif
 
-	//@ts-ignore
 	o.init();
 
 	/// #if EDITOR
@@ -738,8 +737,8 @@ Lib.addTexture('WHITE', Texture.WHITE);
 const normalizeSerializedDataRecursive = (data: SerializedObject) => {
 	if(data.c) {
 		if(typeof data.c === 'string') {
-			//@ts-ignore
-			data.c = game.classes[data.c];
+
+			data.c = game.classes[data.c] as any; // in runtime mode ".c" contains Class directly
 			data.p = Object.assign({}, (data.c as any as SourceMappedConstructor).__defaultValues, data.p);
 			if(data[':']) {
 				for(const c of data[':']) {
@@ -833,10 +832,11 @@ const __onAssetUpdated = (file: FileDesc) => {
 	console.log('updated: ' + file.fileName);
 
 	file.v = (file.v || 0) + 1;
+	let isAcceptChanges;
 
 	switch(file.assetType) {
 		case AssetType.PREFAB:
-			let isAcceptChanges = false;
+			isAcceptChanges = false;
 			if(PrefabEditor.currentPrefabName !== file.assetName) {
 				isAcceptChanges = true;
 			} else {
@@ -922,8 +922,7 @@ function loadSound(opt: HowlSoundOptions, duration?: number): HowlSound {
 		assert(false, "Can't load sound file " + opt.src + '. Error: ' + er);
 	});
 	s.once('load', () => {
-		//@ts-ignore
-		assert(opt.src.indexOf(s._src) >= 0, 'Howler _src property was moved. Refactoring of HowlSound class is required.');
+		assert(opt.src.indexOf((s as any)._src) >= 0, 'Howler _src property was moved. Refactoring of HowlSound class is required.');
 		if(duration) {
 			s.hackDuration(duration);
 		}

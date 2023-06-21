@@ -18,6 +18,7 @@ interface SelectEditorItem<T = any> {
 	visibleName?: ComponentChild;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore //make "field" property optional
 interface SelectEditorProps extends EditablePropertyEditorProps {
 	field?: EditablePropertyDesc;
@@ -221,7 +222,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 	}
 }
 
-const stopPropagationIfCtrl = (ev: KeyboardEvent) => {
+const stopPropagationIfCtrl = (ev: MouseEvent) => {
 	if(ev.ctrlKey) {
 		sp(ev);
 	}

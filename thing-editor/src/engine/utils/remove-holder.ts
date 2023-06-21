@@ -12,7 +12,7 @@ class RemoveHolder extends Container {
 			removeHoldersToCleanup.splice(i, 1);
 		}
 	}
-	update() { }
+	update() { /* empty */ }
 }
 
 const removeHoldersToCleanup: RemoveHolder[] = [];

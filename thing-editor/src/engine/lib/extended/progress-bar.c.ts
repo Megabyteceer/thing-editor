@@ -86,7 +86,7 @@ export default class ProgressBar extends Container {
 		this._applyBgHeight();
 	}
 
-	_progress_bar_height: number = 200;
+	_progress_bar_height = 200;
 
 	get height() {
 		return this._progress_bar_height;
@@ -109,7 +109,6 @@ export default class ProgressBar extends Container {
 
 	onRemove() {
 		super.onRemove();
-		//@ts-ignore
 		this._progress_bar_height = 0;
 		this.bar = undefined;
 		this.cap = undefined;
@@ -202,7 +201,6 @@ export default class ProgressBar extends Container {
 
 	/// #if EDITOR
 	__beforeDeserialization() {
-		//@ts-ignore
 		this._progress_bar_height = 0;
 	}
 

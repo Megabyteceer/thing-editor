@@ -9,7 +9,6 @@ type EditorEvents = {
 	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void,
 }
 
-//@ts-ignore
 const editorEvents = new EventEmitter() as TypedEventEmitter<EditorEvents>;
 
 export { editorEvents };

@@ -70,7 +70,7 @@ class Editor {
 
 	isHelpersHidden: boolean = this.settings.getItem('hide-helpers', false)
 
-	disableFieldsCache: boolean = false;
+	disableFieldsCache = false;
 
 	buildProjectAndExit: any; //TODO:
 
@@ -83,9 +83,9 @@ class Editor {
 	savedBackupSelectionData?: SelectionData;
 
 	/** editor space mouse coord X */
-	mouseX: number = 0;
+	mouseX = 0;
 	/** editor space mouse coord Y */
-	mouseY: number = 0;
+	mouseY = 0;
 
 	ui!: UI;
 
@@ -104,7 +104,7 @@ class Editor {
 
 	constructor() {
 
-		for(let arg of window.thingEditorServer.argv) {
+		for(let arg of thingEditorServer.argv) {
 			if(arg.startsWith('--') && arg.indexOf('=') > 0) {
 				const a = arg.split('=');
 				this.editorArguments[a[0].substring(2)] = a[1];
@@ -311,7 +311,7 @@ class Editor {
 
 				game.applyProjectDesc(this.projectDesc);
 
-				game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id, '/games/' + dir + '/');
+				game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id);
 
 				game.stage.interactiveChildren = false;
 				protectAccessToSceneNode(game.stage, "game stage");
@@ -395,7 +395,7 @@ class Editor {
 
 	}
 
-	async build(_isDebugBuild = false) {
+	async build(_isDebugBuild = false) { // eslint-disable-line @typescript-eslint/no-unused-vars
 		//TODO:
 	}
 
@@ -555,7 +555,7 @@ class Editor {
 		window.open(url);
 	}
 
-	sceneModified(saveImmediately: boolean = false) {
+	sceneModified(saveImmediately = false) {
 		this.history._sceneModifiedInner(saveImmediately);
 	}
 
@@ -740,8 +740,8 @@ class Editor {
 	getFieldNameByValue(node: Container, fieldValue: any) {
 		if(node instanceof Container) {
 			for(let p of(node.constructor as SourceMappedConstructor).__editableProps) {
-				//@ts-ignore
-				if(node[p.name] === fieldValue) {
+
+				if((node as KeyedObject)[p.name] === fieldValue) {
 					return p.name;
 				}
 			}
@@ -750,9 +750,8 @@ class Editor {
 
 	copyToClipboard(text: string) {
 		navigator.permissions.query({
-			//@ts-ignore
 			name: 'clipboard-read'
-		}).then(() => {
+		} as any).then(() => {
 			navigator.clipboard.writeText(text).then(() => {
 				this.notify(R.span(null, R.icon('copy'), '"' + text + '"'));
 			});
@@ -777,7 +776,7 @@ class Editor {
 		fetch(url);
 	}
 
-	editClassSource(c: SourceMappedConstructor | Container, className: string = '') {
+	editClassSource(c: SourceMappedConstructor | Container, className = '') {
 		if(c instanceof Container) {
 			c = c.constructor as SourceMappedConstructor;
 		}

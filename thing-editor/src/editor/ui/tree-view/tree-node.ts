@@ -18,11 +18,7 @@ interface TreeNodeProps extends ClassAttributes<TreeNode> {
 
 }
 
-interface TreeNodeState {
-
-}
-
-class TreeNode extends ComponentDebounced<TreeNodeProps, TreeNodeState> {
+class TreeNode extends ComponentDebounced<TreeNodeProps> {
 
 	constructor(props: TreeNodeProps) {
 		super(props);

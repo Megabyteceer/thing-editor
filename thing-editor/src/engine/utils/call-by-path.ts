@@ -48,8 +48,7 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	}
 	if(data.hasOwnProperty('v')) {
 		if(c === setValueByPath) {
-			//@ts-ignore
-			return setValueByPath(data.v[0], data.v[1], this_);
+			return setValueByPath(data.v![0], data.v![1], this_);
 		}
 		return c.apply(fOwner, data.v);
 	} else {

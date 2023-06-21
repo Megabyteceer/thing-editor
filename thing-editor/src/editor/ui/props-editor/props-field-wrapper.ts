@@ -32,10 +32,6 @@ interface PropsFieldWrapperProps extends ClassAttributes<PropsFieldWrapper> {
 	defaultValue: any;
 }
 
-interface PropsFieldWrapperState {
-
-}
-
 const CAN_COPY_VALUES_OF_TYPE: EditablePropertyType[] = [
 	'data-path',
 	'callback',
@@ -98,7 +94,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 	], ev)
 };
 
-export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps, PropsFieldWrapperState> {
+export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps> {
 
 	propertyEditor: ComponentChild;
 
@@ -152,7 +148,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps,
 		this.setState({ value: val });
 	}
 
-	onAutoSelect(_selectPath: string) {
+	onAutoSelect(_selectPath: string) { // eslint-disable-line @typescript-eslint/no-unused-vars
 		//TODO select by __view property
 		/*
 		if(this.refs.fieldRef && this.refs.fieldRef.onAutoSelect) {

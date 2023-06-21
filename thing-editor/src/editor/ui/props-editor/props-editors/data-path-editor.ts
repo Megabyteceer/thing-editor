@@ -188,7 +188,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		return ((type !== 'object') && (type !== 'function' || !CallbackEditor.isFunctionIsClass(val)));
 	}
 
-	finalValueChoosed(path: string[], _val: any, _parent: any) {
+	finalValueChoosed(path: string[], _val: any, _parent: any) { // eslint-disable-line @typescript-eslint/no-unused-vars
 		this.applyFinalPath(path.join('.'));
 	}
 
@@ -221,7 +221,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			}
 
 			return true;
-		} catch(_er) {}
+		} catch(_er) { /* empty */ }
 		EDITOR_FLAGS.checkTryTime();
 	}
 
@@ -427,7 +427,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 								order += 100;
 								isBold = true;
 							}
-						} catch(_er) {}
+						} catch(_er) { /* empty */ }
 						EDITOR_FLAGS.checkTryTime();
 						if(!isBold) {
 							items.push({ name });
@@ -560,7 +560,7 @@ const enumSub = (o: KeyedObject) => {
 				if(hiddenProps.has(o[name])) {
 					continue;
 				}
-			} catch(_er) { }
+			} catch(_er) { /* empty */ }
 			EDITOR_FLAGS.checkTryTime();
 			if(enumeratedProps.indexOf(name) === -1) {
 				enumeratedProps.push(name);
@@ -577,8 +577,8 @@ function enumProps(o: KeyedObject) {
 	enumSub(o);
 	let cc = o.constructor;
 	for(; cc && (cc !== Function) && (cc !== Object);
-		//@ts-ignore
-		(cc = cc.__proto__)) {
+		
+		(cc = (cc as any).__proto__)) {
 
 		let p = cc.prototype;
 		if(p) {
