@@ -16,7 +16,7 @@
 		"aac"
 	],
 	"renderResolution": 1,
-	"webfontloader": null,
+	"webfontloader": {},
 	"fontHolderText": "ЯSфz",
 	"loadOnDemandSounds": {
 		"mus/gs3_title": 2
