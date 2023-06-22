@@ -5,7 +5,7 @@ const md5File = require('md5-file');
 const {exec} = require('child_process');
 const {walkSync} = require("./editor-server-utils");
 
-module.exports = async function (options) {
+module.exports = async function (options, notify) {
 
 	const soundsPath = options.dir;
 
@@ -15,7 +15,7 @@ module.exports = async function (options) {
 	});
 	let result = {};
 
-
+	notify("Sounds processing...");
 	function outputError(err, outError, out) {
 		if(!result.errors) {
 			result.errors = [];
@@ -104,6 +104,7 @@ module.exports = async function (options) {
 
 		let logTxt = 'convert sound:' + fn + ' -> ' + ext + ' ' + bitrate + 'Kb';
 		console.log(logTxt);
+		notify(logTxt);
 		let fileParts = path.parse(fn);
 		let resultName = fileParts.dir + '/' + fileParts.name + '.' + ext;
 

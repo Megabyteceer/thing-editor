@@ -1,5 +1,6 @@
 const {
 	ipcMain,
+	BrowserWindow,
 	dialog
 } = require('electron');
 
@@ -22,7 +23,12 @@ const fn = (fileName) => {
 	return path.join(__dirname, '../..', fileName);
 }
 
+/** @param mainWindow {BrowserWindow} */
 module.exports = (mainWindow) => {
+
+	const notify = (message) => {
+		mainWindow.setTitle(message);
+	}
 
 	const ensureDirectoryExistence = (filePath) => {
 		let dirname = path.dirname(filePath);
@@ -145,7 +151,7 @@ module.exports = (mainWindow) => {
 					event.returnValue = true;
 					return;
 				case 'fs/sounds-build':
-					require('./build-sounds.js')(fileName).then((res) => {
+					require('./build-sounds.js')(fileName, notify).then((res) => {
 						event.returnValue = res;
 					});
 					return;
