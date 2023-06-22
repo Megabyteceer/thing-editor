@@ -44,10 +44,11 @@ export default class Scene extends Container {
 	init() {
 		this._refreshAllObjectRefs();
 		super.init();
+		game._setCurrentScene(this);
 	}
 
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
-
+		console.log('refresh');
 		/** @type {ThingSceneAllMap} */
 		this.all = {};
 
@@ -66,6 +67,7 @@ export default class Scene extends Container {
 
 	__afterDeserialization() {
 		this.all = ACCESS__ALL_ASSERTING_PROXY;
+
 		if(game.currentScene === this) {
 			game.all = this.all;
 		}
@@ -95,9 +97,7 @@ const _refreshChildRef = (o: Container) => {
 (Scene.prototype.remove as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 /// #endif
 
-/// #if DEBUG
-
-assert(!(window as any).__sceneClassRef || (window as any).__sceneClassRef === Scene, "Vite.js has duplicated embed classes. Problem of Vite.js dev server.");
-
-(window as any).__sceneClassRef = Scene;
-/// #endif
+if((window as any).__sceneClassRef) {
+	game._onLoadingError("vite.js server has duped the code.");
+}
+(window as any).__sceneClassRef = true;

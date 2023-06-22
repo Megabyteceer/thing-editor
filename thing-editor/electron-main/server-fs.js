@@ -1,6 +1,5 @@
 const {
 	ipcMain,
-	BrowserWindow,
 	dialog
 } = require('electron');
 
@@ -35,8 +34,9 @@ module.exports = (mainWindow) => {
 		if(fs.existsSync(fn(dirname))) {
 			return true;
 		}
-		ensureDirectoryExistence(dirname);
-		fs.mkdirSync(fn(dirname));
+		fs.mkdirSync(fn(dirname), {
+			recursive: true
+		});
 	}
 
 	const onFileChange = (path) => {

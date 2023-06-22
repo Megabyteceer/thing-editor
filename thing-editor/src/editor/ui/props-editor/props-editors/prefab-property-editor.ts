@@ -13,6 +13,7 @@ const PrefabPropertyEditor = (props: EditablePropertyEditorProps): ComponentChil
 			game.editor.choosePrefab('Select "' + props.field.name + '" prefab', props.value, props.field.filterAssets).then((selectedImage) => {
 				if(selectedImage) {
 					props.onChange(selectedImage);
+					game.editor.history.scheduleHistorySave();
 				}
 			});
 		}, props.value, (!props.value || fs.getFileByAssetName(props.value, AssetType.PREFAB)) ? 'choose-asset-button' : 'choose-asset-button danger'),

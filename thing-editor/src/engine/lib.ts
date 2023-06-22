@@ -221,12 +221,19 @@ export default class Lib {
 		return s;
 	}
 
-	static addSound(name: string, fileName: string) {
-		/// #if EDITOR
+	/// #if EDITOR
+	static __addSoundEditor(name: string, fileName: string) {
 		fileName = fileName.replace(/wav$/, 'ogg');
+		soundsHowlers[name] = new HowlSound({ src: fileName });
+	}
+	/// #endif
 
+	static addSound(name: string, url: string, duration: number) {
+		/// #if EDITOR
+		assert(false, 'for editor mode use Lib.__addSoundEditor instead.');
 		/// #endif
-		let s = new HowlSound({ src: fileName });
+		const s = new HowlSound({ src: game.projectDesc.soundFormats.map(ext => url + '.' + ext) });
+		s.preciseDuration = duration;
 		soundsHowlers[name] = s;
 	}
 
@@ -386,8 +393,9 @@ export default class Lib {
 			Lib.addTexture(textureName, assetsRoot + textureName);
 		}
 
-		//TODO sounds
-
+		for(const soundEntry of data.sounds) {
+			Lib.addSound(soundEntry[0], assetsRoot + soundEntry[0], soundEntry[1]);
+		}
 	}
 
 	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
@@ -821,7 +829,7 @@ const __onAssetAdded = (file: FileDesc) => {
 			break;
 
 		case AssetType.SOUND:
-			Lib.addSound(file.assetName, file.fileName);
+			Lib.__addSoundEditor(file.assetName, file.fileName);
 			file.asset = Lib.getSound(file.assetName);
 			game.editor.ui.refresh();
 			break;

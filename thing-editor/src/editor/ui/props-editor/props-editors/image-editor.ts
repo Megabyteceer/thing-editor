@@ -13,6 +13,7 @@ const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 			game.editor.chooseImage('Select "' + props.field.name + '" image', props.value).then((selectedImage) => {
 				if(selectedImage) {
 					props.onChange(selectedImage);
+					game.editor.history.scheduleHistorySave();
 				}
 			});
 		}, props.value, (!props.value || fs.getFileByAssetName(props.value, AssetType.IMAGE)) ? 'choose-asset-button' : 'choose-asset-button danger'),

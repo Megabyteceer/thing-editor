@@ -1,5 +1,5 @@
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
-import { AssetsDescriptor, KeyedMap, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { AssetsDescriptor, KeyedMap, SerializedObject, SoundAssetEntry, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import enumAssetsPropsRecursive from "thing-editor/src/editor/utils/enum-assets-recursive";
@@ -74,12 +74,14 @@ export default class Build {
 
 		prefixToCutOff = (debug ? '___' : '__');
 
-
 		const preloaderAssets: Set<FileDesc> = new Set();
 		preloaderAssets.add(fs.getFileByAssetName(PRELOADER_SCENE_NAME, AssetType.SCENE));
 		preloaderAssets.add(fs.getFileByAssetName(DEFAULT_FADER_NAME, AssetType.PREFAB));
 		enumAssetsPropsRecursive(Lib.scenes[PRELOADER_SCENE_NAME], preloaderAssets);
 
+		///////////////////////////////////////////////////////////
+		/// assets-preloader.json ////////////////////////////////
+		/////////////////////////////////////////////////////////
 		saveAssetsDescriptor(preloaderAssets, 'assets-preloader.json', game.projectDesc);
 
 		const mainAssets: Set<FileDesc> = new Set();
@@ -90,6 +92,9 @@ export default class Build {
 			}
 		}
 
+		///////////////////////////////////////////////////////////
+		/// assets-main.json /////////////////////////////////////
+		/////////////////////////////////////////////////////////
 		saveAssetsDescriptor(mainAssets, 'assets-main.json');
 
 		let scenesFiles = getAssetsForBuild(AssetType.SCENE);
@@ -199,7 +204,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 	let resources = {};
 	/* TODO */
 
-	let sounds: string[] = [];
+	let sounds: SoundAssetEntry[] = [];
 	/* TODO */
 
 	const scenes: KeyedMap<SerializedObject> = {};
@@ -219,6 +224,15 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 				scenes[file.assetName] = file.asset as SerializedObject;
 			} else if(file.assetType === AssetType.PREFAB) {
 				prefabs[file.assetName] = file.asset as SerializedObject;
+			} else if(file.assetType === AssetType.SOUND) {
+				for(let ext of game.projectDesc.soundFormats) {
+					assetsToCopy.push({
+						from: file.fileName.replace(/\wav$/, ext),
+						to: file.assetName + '.' + ext
+					});
+				}
+
+				sounds.push([file.assetName, (file as FileDescSound).asset.preciseDuration]);
 			}
 
 			/* TODO

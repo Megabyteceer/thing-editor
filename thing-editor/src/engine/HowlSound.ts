@@ -1,12 +1,13 @@
 
 /// #if EDITOR
 import { Howl, HowlOptions } from 'howler';
-import assert from 'thing-editor/src/engine/debug/assert';
-import game from 'thing-editor/src/engine/game';
 /*
 /// #endif
 import 'howler.js';
 //*/
+
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 type HowlSoundOptions = HowlOptions
 

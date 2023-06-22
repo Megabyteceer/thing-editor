@@ -244,7 +244,9 @@ export default class fs {
 	static deleteAsset(assetName: string, assetType: AssetType) {
 		const fileName = assetNameToFileName(assetName, assetType);
 		fs.deleteFile(fileName);
-		fs.refreshAssetsList();
+		if(!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
+			fs.refreshAssetsList();
+		}
 	}
 
 	static readJSONFile(fileName: string): any {
@@ -405,8 +407,13 @@ export default class fs {
 
 		const sounds = this.getAssetsList(AssetType.SOUND);
 		for(const file of sounds) {
-			const sndData = soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
-			file.asset.preciseDuration = sndData.soundInfo[file.fileName.substring(1)].duration;
+			const soundsDirData = soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
+			if(soundsDirData) {
+				const sndData = soundsDirData.soundInfo[file.fileName.substring(1)];
+				if(sndData) {
+					file.asset.preciseDuration = sndData.duration;
+				}
+			}
 		}
 	}
 

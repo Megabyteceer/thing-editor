@@ -10,7 +10,8 @@ export default defineConfig({
 				'games/**/debug/**',
 				'games/**/release/**'
 			]
-		}
+		},
+		strictPort: 5173
 	},
 	esbuild: {
 		keepNames: true,

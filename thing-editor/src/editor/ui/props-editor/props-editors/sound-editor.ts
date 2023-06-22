@@ -12,6 +12,7 @@ const SoundEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 			game.editor.chooseSound('Select "' + props.field.name + '" sound', props.value).then((selectedSound) => {
 				if(selectedSound) {
 					props.onChange(selectedSound);
+					game.editor.history.scheduleHistorySave();
 				}
 			});
 		}, props.value, 'choose-asset-button'),

@@ -622,204 +622,288 @@
 					]
 				},
 				{
-					"c": "MovieClip",
+					"c": "Trigger",
 					"p": {
-						"x": -77,
-						"y": 128,
-						"image": "WHITE",
-						"timeline": {
-							"l": {},
-							"p": 0.02,
-							"d": 0.85,
-							"f": [
-								{
-									"n": "scale.x",
-									"t": [
-										{
-											"v": 2,
-											"t": 0
-										},
-										{
-											"v": 0.5,
-											"t": 15
-										},
-										{
-											"v": 2,
-											"t": 30,
-											"j": 0
-										}
-									]
-								},
-								{
-									"n": "scale.y",
-									"t": [
-										{
-											"v": 2,
-											"t": 0
-										},
-										{
-											"v": 0.5,
-											"t": 15
-										},
-										{
-											"v": 2,
-											"t": 30,
-											"j": 0
-										}
-									]
-								}
-							]
-						}
-					}
-				},
-				{
-					"c": "MovieClip",
-					"p": {
-						"y": 128,
-						"image": "WHITE",
-						"timeline": {
-							"l": {},
-							"p": 0.02,
-							"d": 0.85,
-							"f": [
-								{
-									"n": "scale.x",
-									"t": [
-										{
-											"v": 2,
-											"t": 0
-										},
-										{
-											"v": 0.5,
-											"t": 15
-										},
-										{
-											"v": 2,
-											"t": 30,
-											"j": 0
-										}
-									]
-								},
-								{
-									"n": "scale.y",
-									"t": [
-										{
-											"v": 2,
-											"t": 0
-										},
-										{
-											"v": 0.5,
-											"t": 15
-										},
-										{
-											"v": 2,
-											"t": 30,
-											"j": 0
-										}
-									]
-								}
-							]
-						},
-						"delay": 5
-					}
-				},
-				{
-					"c": "MovieClip",
-					"p": {
-						"x": 77,
-						"y": 128,
-						"image": "WHITE",
-						"timeline": {
-							"l": {},
-							"p": 0.02,
-							"d": 0.85,
-							"f": [
-								{
-									"n": "scale.x",
-									"t": [
-										{
-											"v": 2,
-											"t": 0
-										},
-										{
-											"v": 0.5,
-											"t": 15
-										},
-										{
-											"v": 2,
-											"t": 30,
-											"j": 0
-										}
-									]
-								},
-								{
-									"n": "scale.y",
-									"t": [
-										{
-											"v": 2,
-											"t": 0
-										},
-										{
-											"v": 0.5,
-											"t": 15
-										},
-										{
-											"v": 2,
-											"t": 30,
-											"j": 0
-										}
-									]
-								}
-							]
-						},
-						"delay": 10
-					}
-				},
-				{
-					"c": "ProgressBar",
-					"p": {
-						"x": -150,
-						"y": 208,
-						"rotation": -1.5707963267948966,
-						"dataPath": "loadingProgress",
-						"height": 300,
-						"capMargin": 0,
-						"refreshInterval": 0,
-						"onFinish": "replaceScene",
-						"onChanged": ""
+						"name": "loaderShow",
+						"x": 1,
+						"y": 169,
+						"state": true
 					},
 					":": [
 						{
-							"c": "Sprite",
+							"c": "ProgressBar",
 							"p": {
-								"name": "bg",
-								"alpha": 0.5,
-								"interactive": true,
-								"scale.y": 18.75,
-								"image": "WHITE"
-							}
+								"x": -151,
+								"y": 39,
+								"rotation": -1.5707963267948966,
+								"dataPath": "loadingProgress",
+								"height": 300,
+								"capMargin": 0,
+								"refreshInterval": 0,
+								"onFinish": "replaceScene",
+								"onChanged": ""
+							},
+							":": [
+								{
+									"c": "Sprite",
+									"p": {
+										"name": "bg",
+										"alpha": 0.5,
+										"interactive": true,
+										"scale.y": 18.75,
+										"image": "WHITE"
+									}
+								},
+								{
+									"c": "Sprite",
+									"p": {
+										"name": "bar",
+										"interactive": true,
+										"scale.y": 7.5600000000000005,
+										"image": "WHITE",
+										"tint": 65280
+									}
+								},
+								{
+									"c": "Container",
+									"p": {
+										"name": "cap",
+										"x": 5,
+										"interactive": true,
+										"scale.x": 2,
+										"scale.y": 2,
+										"pivot.x": 5,
+										"pivot.y": 5
+									}
+								}
+							]
 						},
 						{
-							"c": "Sprite",
+							"c": "MovieClip",
 							"p": {
-								"name": "bar",
-								"interactive": true,
-								"scale.y": 7.5600000000000005,
+								"x": -77,
+								"y": -43,
 								"image": "WHITE",
-								"tint": 65280
+								"timeline": {
+									"l": {},
+									"p": 0.02,
+									"d": 0.85,
+									"f": [
+										{
+											"n": "scale.x",
+											"t": [
+												{
+													"v": 2,
+													"t": 0
+												},
+												{
+													"v": 0.5,
+													"t": 15
+												},
+												{
+													"v": 2,
+													"t": 30,
+													"j": 0
+												}
+											]
+										},
+										{
+											"n": "scale.y",
+											"t": [
+												{
+													"v": 2,
+													"t": 0
+												},
+												{
+													"v": 0.5,
+													"t": 15
+												},
+												{
+													"v": 2,
+													"t": 30,
+													"j": 0
+												}
+											]
+										}
+									]
+								}
 							}
 						},
 						{
-							"c": "Container",
+							"c": "MovieClip",
 							"p": {
-								"name": "cap",
-								"x": 5,
-								"interactive": true,
-								"scale.x": 2,
-								"scale.y": 2,
-								"pivot.x": 5,
-								"pivot.y": 5
+								"y": -43,
+								"image": "WHITE",
+								"timeline": {
+									"l": {},
+									"p": 0.02,
+									"d": 0.85,
+									"f": [
+										{
+											"n": "scale.x",
+											"t": [
+												{
+													"v": 2,
+													"t": 0
+												},
+												{
+													"v": 0.5,
+													"t": 15
+												},
+												{
+													"v": 2,
+													"t": 30,
+													"j": 0
+												}
+											]
+										},
+										{
+											"n": "scale.y",
+											"t": [
+												{
+													"v": 2,
+													"t": 0
+												},
+												{
+													"v": 0.5,
+													"t": 15
+												},
+												{
+													"v": 2,
+													"t": 30,
+													"j": 0
+												}
+											]
+										}
+									]
+								},
+								"delay": 5
 							}
+						},
+						{
+							"c": "MovieClip",
+							"p": {
+								"x": 77,
+								"y": -43,
+								"image": "WHITE",
+								"timeline": {
+									"l": {},
+									"p": 0.02,
+									"d": 0.85,
+									"f": [
+										{
+											"n": "scale.x",
+											"t": [
+												{
+													"v": 2,
+													"t": 0
+												},
+												{
+													"v": 0.5,
+													"t": 15
+												},
+												{
+													"v": 2,
+													"t": 30,
+													"j": 0
+												}
+											]
+										},
+										{
+											"n": "scale.y",
+											"t": [
+												{
+													"v": 2,
+													"t": 0
+												},
+												{
+													"v": 0.5,
+													"t": 15
+												},
+												{
+													"v": 2,
+													"t": 30,
+													"j": 0
+												}
+											]
+										}
+									]
+								},
+								"delay": 10
+							}
+						}
+					]
+				},
+				{
+					"c": "Trigger",
+					"p": {
+						"dataPath": "all.loaderShow.state",
+						"invert": true
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"y": 155,
+								"onClick": [
+									"replaceScene"
+								],
+								"sndClick": "click"
+							},
+							":": [
+								{
+									"c": "Shape",
+									"p": {
+										"y": -1,
+										"shape": 2,
+										"shapeRadius": 46,
+										"shapeFillColor": 12065049,
+										"_shapePoints": [
+											{
+												"x": -30,
+												"y": -30
+											},
+											{
+												"x": 30,
+												"y": -10
+											},
+											{
+												"x": 35,
+												"y": 91
+											},
+											{
+												"x": -36,
+												"y": 22
+											}
+										]
+									},
+									":": [
+										{
+											"c": "Shape",
+											"p": {
+												"x": -2,
+												"y": -1,
+												"shape": 4,
+												"shapeFillColor": 16777215,
+												"_shapePoints": [
+													{
+														"x": -10,
+														"y": -26
+													},
+													{
+														"x": 30,
+														"y": 0
+													},
+													{
+														"x": -10,
+														"y": 30
+													}
+												]
+											}
+										}
+									]
+								}
+							]
 						}
 					]
 				}
