@@ -83,6 +83,7 @@ export default class Shape extends Graphics {
 		if(this.isItHitArea && this.parent) {
 			this.applyHitAreaToParent();
 		}
+		this.__deserialized = true;
 	}
 
 	protected _drawThing() {
@@ -181,6 +182,7 @@ export default class Shape extends Graphics {
 		if(this.isItHitArea && this.parent) {
 			this.parent.hitArea = null;
 		}
+		this.__deserialized = false;
 	}
 
 	@editable({ select: shapeTypeSelect, important: true, visible: () => !editorUtils.isPrefabReferenceSelected() })
@@ -212,9 +214,6 @@ export default class Shape extends Graphics {
 	get shape() {
 		return this._shape;
 	}
-
-	@editable()
-	isItHitArea = false;
 
 	@editable({ visible: isShapeHasWidthHeight, important: true })
 	set width(s) {
@@ -323,6 +322,9 @@ export default class Shape extends Graphics {
 	get shapeLineAlignment() {
 		return this._lineAlignment;
 	}
+
+	@editable()
+	isItHitArea = false;
 
 	/// #if EDITOR
 
