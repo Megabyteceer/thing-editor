@@ -295,7 +295,13 @@ class Editor {
 				this.assetsFolders = [];
 				for(let lib of this.currentProjectLibs) {
 					this.assetsFolders.push(lib.assetsDir);
-					this.libsDescs[lib.name] = fs.readJSONFile(lib.dir + '/thing-lib.json');
+					const libFileName = lib.dir + '/thing-lib.json';
+					try {
+						this.libsDescs[lib.name] = fs.readJSONFile(libFileName);
+					} catch(er: any) {
+						editor.ui.modal.showFatalError('Library loading error. Is "libs" option in "thing-projects.json" correct?', 99999, er.message);
+						return;
+					}
 					mergeProjectDesc(this.libsProjectDescMerged, this.libsDescs[lib.name]);
 				}
 

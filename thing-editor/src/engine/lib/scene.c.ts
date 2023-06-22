@@ -98,6 +98,6 @@ const _refreshChildRef = (o: Container) => {
 /// #endif
 
 if((window as any).__sceneClassRef) {
-	game._onLoadingError("vite.js server has duped the code.");
+	alert("vite.js server has duped the code.");
 }
 (window as any).__sceneClassRef = true;

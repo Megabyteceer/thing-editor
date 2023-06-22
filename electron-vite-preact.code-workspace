@@ -25,8 +25,15 @@
 		}
 	],
 	"settings": {
+		"json.schemas": [{
+			"fileMatch": [
+				"thing-project.json",
+				"thing-lib.json"
+			],
+			"url": "./schema-thing-project.json"
+		}],
 		"files.exclude": {
-			//"**/___editor_backup_*": true,
+			"**/___editor_backup_*": true,
 			"**/.svn": true,
 			"**/.hg": true,
 			"**/CVS": true,
@@ -197,7 +204,6 @@
 				"type": "node",
 				"request": "launch",
 				"name": "Main",
-				"port": 9223,
 				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
 				"autoAttachChildProcesses": true,
 				"windows": {
@@ -221,7 +227,6 @@
 				"type": "node",
 				"request": "launch",
 				"name": "runner",
-				"port": 9223,
 				"cwd": "${workspaceFolder}",
 				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"]
 
