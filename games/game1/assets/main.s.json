@@ -350,7 +350,8 @@
 				"name": "label",
 				"x": 252,
 				"y": 493,
-				"text": "New Text 1"
+				"text": "New Text 1",
+				"maxWidth": 359
 			}
 		}
 	]

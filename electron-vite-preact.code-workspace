@@ -209,10 +209,6 @@
 				"windows": {
 					"runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/electron.exe"
 				},
-				"env": {
-					"ELECTRON_ENABLE_LOGGING": "true",
-					"ELECTRON_LOG_FILE": "C:\\Dropbox\\electron-vite-preact\\log.log"
-				},
 				"args": [
 					"--remote-debugging-port=9223",
 					//	"--wait-for-debugger",

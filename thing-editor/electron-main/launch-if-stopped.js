@@ -18,7 +18,8 @@ import('ps-list').then(async (psList) => {
 		let c = child_process.spawn(command,
 			[
 				"--remote-debugging-port=9223",
-				"./thing-editor/electron-main"
+				"./thing-editor/electron-main",
+				"debugger-detection-await"
 			],
 			{
 				stdio: ['ignore', 'ignore', 'ignore'],

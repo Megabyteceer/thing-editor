@@ -1,3 +1,4 @@
+
 import { Text, TextStyleAlign } from "pixi.js";
 
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
@@ -5,6 +6,7 @@ import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import ___Guide from "thing-editor/src/engine/lib/___system/guide.c";
 import L from "thing-editor/src/engine/utils/l";
 
 export default Text;
@@ -632,29 +634,35 @@ _editableEmbed(Text, 'style.letterSpacing', {
 
 _editableEmbed(Text, 'maxWidth', {
 	type: 'number',
+	min: 0,
 	afterEdited: (overrideO?: Text) => {
-		let o = overrideO || game.editor.selection[0] as Text;
-		let x = o.maxWidth;
-		if(x === 0) {
+		let left = overrideO || game.editor.selection[0] as Text;
+		let rirht = left.maxWidth;
+		let y = 0;
+		if(rirht === 0) {
 			for(let t of game.editor.selection) {
 				t.scale.x = 1;
 				t.scale.y = 1;
 			}
+			___Guide.hide('maxWidthRight');
+			___Guide.hide('maxWidthLeft');
 		} else {
-			switch(o.style.align) {
+			switch(left.style.align) {
 				case CENTER:
-					x *= 0.5;
+					rirht *= 0.5;
+					y = -rirht;
 					break;
 				case RIGHT:
-					x *= -1;
+					rirht *= -1;
 					break;
 			}
-			let tmpScale = o.scale.x;
-			o.scale.x = 1;
-			o.scale.y = 1;
-			game.editor.overlay.guideX(x, o);
-			o.scale.x = tmpScale;
-			o.scale.y = tmpScale;
+			let tmpScale = left.scale.x;
+			left.scale.x = 1;
+			left.scale.y = 1;
+			___Guide.show(rirht, 0, Math.PI / 2, 'maxWidthRight', left);
+			___Guide.show(y, 0, Math.PI / 2, 'maxWidthLeft', left);
+			left.scale.x = tmpScale;
+			left.scale.y = tmpScale;
 		}
 	}
 });

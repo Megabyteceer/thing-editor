@@ -99,7 +99,7 @@ const newComponentWizard = () => {
 							templateSrc = templateSrc.replace(/BASE_CLASS_PATH/gm, baseClassPath);
 
 							let fileName = enteredClassName.replace(/[A-Z]/gm, (substr, offset) => {
-								return ((offset === 0) ? '' : '-') + substr.toLowerCase();
+								return ((offset === 0 || enteredClassName[offset - 1] === '_') ? '' : '-') + substr.toLowerCase();
 							});
 							fileName = game.editor.currentProjectAssetsDir + 'src/' + classFoldername + fileName + '.c.ts';
 							fs.writeFile(fileName, templateSrc)

@@ -22,7 +22,7 @@ const assetItemRendererSound = (file: FileDesc) => {
 					MUTE_SOUND_MENU_ITEM
 				], ev);
 			},
-			onPointerDown: (ev: PointerEvent) => {
+			onMouseDown: (ev: PointerEvent) => {
 				if(ev.buttons === 1) {
 					game.editor.previewSound(file.assetName);
 				}
