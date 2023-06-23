@@ -591,7 +591,7 @@ class Game {
 	}
 
 	/// #if EDITOR
-	get currentScene() {
+	get currentScene(): CurrentSceneType {
 		return __currentSceneValue;
 	}
 	/// #endif
@@ -857,7 +857,7 @@ class Game {
 						faderType = DEFAULT_FADER_NAME;
 					}
 				}
-				currentFader = Lib.loadPrefab(faderType);
+				currentFader = Lib.loadPrefab(faderType!);
 				this.stage.addChild(currentFader);
 				//TODO BgMusic._recalculateMusic();
 			}

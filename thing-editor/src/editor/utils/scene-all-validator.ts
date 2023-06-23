@@ -57,7 +57,7 @@ function addAllRefsValidator(scene: Scene) {
 			refsCounter[containerName] = count;
 			return true;
 		}
-	});
+	}) as ThingSceneAllMap;
 }
 
 const getAllObjectRefsCount = (name: string): string | undefined => {

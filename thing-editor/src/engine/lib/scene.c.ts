@@ -17,7 +17,7 @@ export default class Scene extends Container {
 	@editable({ type: 'prefab', filterAssets: (f: FileDesc) => f.assetName.startsWith('fader/') })
 	faderType: string | null = null
 
-	all!: KeyedMap<Container>;
+	all!: ThingSceneAllMap;
 
 	_onShowCalled = false;
 
@@ -49,8 +49,8 @@ export default class Scene extends Container {
 
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
 		console.log('refresh');
-		/** @type {ThingSceneAllMap} */
-		this.all = {};
+
+		this.all = {} as ThingSceneAllMap;
 
 		/// #if EDITOR
 		addAllRefsValidator(this);
@@ -66,7 +66,7 @@ export default class Scene extends Container {
 	/// #if EDITOR
 
 	__afterDeserialization() {
-		this.all = ACCESS__ALL_ASSERTING_PROXY;
+		this.all = ACCESS__ALL_ASSERTING_PROXY as ThingSceneAllMap;
 
 		if(game.currentScene === this) {
 			game.all = this.all;

@@ -347,9 +347,9 @@
 		{
 			"c": "Text",
 			"p": {
-				"name": "label",
-				"x": 252,
-				"y": 493,
+				"name": "txt",
+				"x": 276,
+				"y": 404,
 				"text": "New Text 1",
 				"maxWidth": 359
 			}
