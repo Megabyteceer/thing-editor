@@ -1,5 +1,6 @@
 
-import { AssetsDescriptor, Classes, KeyedMap, KeyedObject, NodeExtendData, Prefabs, Scenes, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { AssetsDescriptor, Classes, KeyedMap, KeyedObject, NodeExtendData, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import TLib from "thing-editor/src/editor/prefabs-typing";
 
 import { Container, Texture } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -21,15 +22,15 @@ import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/uti
 import HowlSound from "thing-editor/src/engine/HowlSound";
 
 let classes: Classes;
-let scenes: Scenes = {};
-let prefabs: Prefabs = {};
+let scenes: KeyedMap<SerializedObject> = {};
+let prefabs: KeyedMap<SerializedObject> = {};
 let staticScenes: KeyedMap<Scene> = {};
 let textures: KeyedMap<Texture> = {};
 let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
-export default class Lib {
+export default class Lib extends TLib {
 
 	static REMOVED_TEXTURE: Texture;
 
@@ -73,25 +74,6 @@ export default class Lib {
 		return s;
 	}
 
-	static loadPrefab(name: string): Container {
-		assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
-		/// #if EDITOR
-		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
-			prefabs[name].p.name = name;
-		}
-		showedReplacings = {};
-		/// #endif
-		const ret: Container = Lib._deserializeObject(prefabs[name]);
-		/// #if EDITOR
-		if(!game.__EDITOR_mode) {
-			/// #endif
-			constructRecursive(ret);
-			/// #if EDITOR
-		}
-		/// #endif
-		return ret;
-	}
-
 	static _setClasses(_classes: Classes) {
 		classes = _classes;
 		game.classes = _classes;
@@ -102,8 +84,8 @@ export default class Lib {
 		//*/
 	}
 
-	static scenes: Scenes;
-	static prefabs: Prefabs;
+	static scenes: KeyedMap<SerializedObject>;
+	static prefabs: KeyedMap<SerializedObject>;
 
 	private static __isPrefabPreviewLoading = 0;
 	static __outdatedReferencesDetectionDisabled = false;
@@ -939,3 +921,21 @@ const processAfterDeserialization = (o: Container) => {
 };
 /// #endif
 
+(Lib as any).loadPrefab = (name: string): Container => {
+	assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
+	/// #if EDITOR
+	if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
+		prefabs[name].p.name = name;
+	}
+	showedReplacings = {};
+	/// #endif
+	const ret: Container = Lib._deserializeObject(prefabs[name]);
+	/// #if EDITOR
+	if(!game.__EDITOR_mode) {
+		/// #endif
+		constructRecursive(ret);
+		/// #if EDITOR
+	}
+	/// #endif
+	return ret;
+};

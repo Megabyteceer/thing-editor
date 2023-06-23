@@ -122,14 +122,6 @@ type SerializedObject = {
 	':'?: SerializedObject[] | undefined,
 }
 
-type Scenes = {
-	[key: string]: SerializedObject;
-}
-
-type Prefabs = {
-	[key: string]: SerializedObject;
-}
-
 type ThingEditorServer = { // exposed from electron
 	fs: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => FSCallback;
 	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => void;

@@ -21,6 +21,7 @@ import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
+import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
@@ -337,7 +338,7 @@ class Editor {
 
 				this.restoreBackup();
 
-				this.regeneratePrefabsTypings();
+				regeneratePrefabsTypings();
 
 				fs.watchDirs(this.assetsFolders);
 
@@ -427,7 +428,7 @@ class Editor {
 				this.selection.loadCurrentSelection();
 			}
 			this.history.setCurrentStateUnmodified();
-			this.regeneratePrefabsTypings();
+			regeneratePrefabsTypings();
 			this.ui.refresh();
 		}
 	}
@@ -484,10 +485,6 @@ class Editor {
 			}
 		}
 		return true;
-	}
-
-	regeneratePrefabsTypings() {
-		//TODO:
 	}
 
 	_getProjectViewportSize(doNotFixOrientation = false) {

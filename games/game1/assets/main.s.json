@@ -348,8 +348,8 @@
 			"c": "Text",
 			"p": {
 				"name": "txt",
-				"x": 276,
-				"y": 404,
+				"x": 192,
+				"y": 358,
 				"text": "New Text 1",
 				"maxWidth": 359
 			}

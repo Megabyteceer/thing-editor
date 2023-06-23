@@ -1,9 +1,15 @@
-import { KeyedMap, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { KeyedMap, KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import { getAllObjectRefsCount } from "thing-editor/src/editor/utils/scene-all-validator";
 import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 
 let __currentAllMap: string;
+
+const getImportSrcForClass = (className: string) => {
+	const path = game.classes[className].__sourceFileName!;
+	return 'import ' + className + ' from "' + path.substring(1, path?.length - 3) + '";';
+}
 
 const regenerateCurrentSceneMapTypings = () => {
 	if(game.editor.editorArguments['no-vscode-integration']) {
@@ -33,8 +39,7 @@ const regenerateCurrentSceneMapTypings = () => {
 		let declarations = [];
 
 		for(let className of classes.values()) {
-			const path = game.classes[className].__sourceFileName!;
-			imports.push('import ' + className + ' from "' + path.substring(1, path?.length - 3) + '";');
+			imports.push(getImportSrcForClass(className));
 		}
 
 		for(let name of Object.keys(json)) {
@@ -63,8 +68,67 @@ interface ThingSceneAllMap {
 }
 }
 `;
-		fs.writeFile('/thing-editor/src/current-scene-typings.d.ts', mapJS);
+		fs.writeFile('/thing-editor/src/editor/current-scene-typings.d.ts', mapJS);
 	}
 }
 
+let __currentPrefabsMap: string;
+
+const regeneratePrefabsTypings = () => {
+
+	if(game.editor.editorArguments['no-vscode-integration']) {
+		return;
+	}
+	if(!game.currentScene || !game.__EDITOR_mode) {
+		return;
+	}
+	let json: KeyedObject = {};
+	let classes: Set<string> = new Set();
+
+	for(let prefabName in Lib.prefabs) {
+		let className = getSerializedObjectClass(Lib.prefabs[prefabName]).__className;
+		json[prefabName] = className;
+		classes.add(className);
+	}
+	let jsonString = JSON.stringify(json);
+	if(__currentPrefabsMap !== jsonString) {
+		__currentPrefabsMap = jsonString;
+
+		let imports = [];
+		let declarations = [];
+
+		for(let prefabName in json) {
+			declarations.push("	static loadPrefab(prefabName: '" + prefabName + "'):" + json[prefabName] + ";");
+		}
+
+		for(let className of classes.values()) {
+			imports.push(getImportSrcForClass(className));
+		}
+
+		let mapJS = `// thing-editor auto generated file.
+`
+			+ imports.join('\n') +
+			`
+export default class TLib {
+`
+			+ declarations.join('\n') + `
+	static loadPrefab(prefabName: string): Container;
+	static loadPrefab(prefabName: string): Container {
+		return prefabName as any;
+	}
+}`;
+
+		fs.writeFile('/thing-editor/src/editor/prefabs-typing.ts', mapJS);
+	}
+}
+
+const getSerializedObjectClass = (data: SerializedObject): SourceMappedConstructor => {
+	if(data.r) {
+		return getSerializedObjectClass(Lib.prefabs[data.r]);
+	}
+	return game.classes[data.c!];
+}
+
 export default regenerateCurrentSceneMapTypings;
+
+export { getSerializedObjectClass, regeneratePrefabsTypings };

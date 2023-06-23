@@ -2,8 +2,8 @@
 	"c": "Shape",
 	"p": {
 		"name": "prefab2",
-		"x": 99,
-		"y": 171,
+		"x": 50,
+		"y": 82,
 		"__description": "",
 		"shape": 4,
 		"shapeFillColor": 4731699,

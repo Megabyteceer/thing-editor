@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
 import { SerializedObject } from "thing-editor/src/editor/env";
 import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
+import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -50,7 +51,7 @@ export default class PrefabEditor {
 
 	private static showPreview(object: Container) {
 		if(!backDrop) {
-			backDrop = Lib.loadPrefab('___system/backdrop') as Shape;
+			backDrop = Lib.loadPrefab('___system/backdrop');
 			backDrop.name = null; // prevent get by name error;
 			backDrop.__nodeExtendData.hidden = true;
 		}
@@ -146,7 +147,7 @@ export default class PrefabEditor {
 			let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
 			if(isChanged) {
 				__refreshPrefabRefs();
-				game.editor.regeneratePrefabsTypings();
+				regeneratePrefabsTypings();
 			}
 		}
 	}

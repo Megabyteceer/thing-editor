@@ -4,6 +4,7 @@ import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
+import { getSerializedObjectClass } from "thing-editor/src/editor/utils/generate-editor-typings";
 import libInfo from "thing-editor/src/editor/utils/lib-info";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
@@ -54,7 +55,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 			name: "Go to Source code >>>",
 			tip: "Double click on class to go to it`s source code.",
 			onClick: () => {
-				game.editor.editClassSource(game.classes[file.asset.c!]);
+				game.editor.editClassSource(getSerializedObjectClass(file.asset));
 			}
 		},
 		null,
