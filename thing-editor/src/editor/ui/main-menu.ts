@@ -220,6 +220,7 @@ export default class MainMenu extends Component {
 				name: targetMenuId,
 				items: []
 			}
+			MAIN_MENU.push(menu);
 		}
 		menu.items = menu.items.concat(items);
 	}
