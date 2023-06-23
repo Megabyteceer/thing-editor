@@ -496,6 +496,9 @@ export namespace editorUtils {
 			let added: Container[] = [];
 
 			let insertTo = game.editor.selection.slice();
+			if(insertTo.length === 0) {
+				insertTo.push(game.currentContainer);
+			}
 			game.editor.selection.clearSelection();
 			for(let selected of insertTo) {
 				clipboard.data.data.some((data) => {

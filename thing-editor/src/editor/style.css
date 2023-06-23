@@ -453,6 +453,10 @@ input {
 	position: relative;
 }
 
+.props-field, .props-field input {
+	font-family: Consolas, "Courier New", monospace;
+}
+
 .props-group {
 	margin-bottom: 3px;
 	border-radius: 4px;
@@ -734,9 +738,6 @@ input {
 	height: 11px;
 }
 
-.number-input input {
-	font-family: Consolas, "Courier New", monospace;
-}
 
 .number-input-btn:hover {
 	color: #555555;

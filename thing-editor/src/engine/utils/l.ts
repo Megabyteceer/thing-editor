@@ -2,4 +2,6 @@ export default function L(txt: string): string {
 	return txt;
 }
 
-//TODO
+L.has = (key: string) => {
+	return key.length > 0;
+}

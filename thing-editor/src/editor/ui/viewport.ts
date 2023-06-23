@@ -295,7 +295,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 
 				),
 				R.span(panelBottomProps,
-					R.btn(ORIENTATION_ICON, game.editor.toggleScreenOrientation, 'Portrait/Landscape switch', undefined, { key: 'l', ctrlKey: true }),
+					(game.editor.projectDesc && game.editor.projectDesc.screenOrientation === 'auto') ? R.btn(ORIENTATION_ICON, game.editor.toggleScreenOrientation, 'Portrait/Landscape switch', undefined, { key: 'l', ctrlKey: true }) : undefined,
 					R.hr(),
 					resolutionSelect,
 					R.btn('⛶', () => {

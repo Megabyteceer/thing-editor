@@ -35,6 +35,7 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": 0,
         "@typescript-eslint/no-var-requires": 0,
         "@typescript-eslint/no-namespace": 0,
+        "@typescript-eslint/no-unused-vars": 0, /*ts check it already */
         "no-useless-catch": 0,
         "no-prototype-builtins": 0,
         "no-useless-escape": 0

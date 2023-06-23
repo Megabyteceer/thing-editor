@@ -90,6 +90,12 @@ function editable<T extends DisplayObject>(editablePropertyDesc?: EditableProper
 /* Allows to define editable properties to the classes we has no access to source code.
 To define editable properties for your own classes, please use '@editable()' decorator instead */
 function _editableEmbed<T extends DisplayObject>(target: Constructor | Constructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
+
+
+	if(editablePropertyDesc && !editablePropertyDesc.name) {
+		editablePropertyDesc.name = propertyName;
+	}
+
 	if(Array.isArray(target)) {
 		for(let t of target) {
 			editableInner(t.prototype, propertyName, editablePropertyDesc);
@@ -115,7 +121,7 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 
 	if(editablePropertyDesc.type === 'btn') {
 		editablePropertyDesc.notSerializable = true;
-		propertyAssert(editablePropertyDesc as EditablePropertyDesc, editablePropertyDesc.name, "property with type 'btn' should have 'name'.");
+		assert(editablePropertyDesc.name, "property with type 'btn' should have 'name'. ");
 	}
 	editablePropertyDesc.name = name;
 
@@ -143,7 +149,9 @@ export type { EditablePropertyDesc, EditablePropertyDescRaw, EditablePropertyTyp
 
 const propertyAssert = (prop: EditablePropertyDesc, condition: any, message: string) => {
 	if(!condition) {
-		game.editor.editSource(prop.__src)
+		if(prop.__src) {
+			game.editor.editSource(prop.__src);
+		}
 		message = 'Editable property "' + prop.name + '" of class "' + prop.class.__className + '" validation error: \n' + message
 		assert(condition, message);
 	}

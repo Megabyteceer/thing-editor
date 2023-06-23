@@ -112,7 +112,12 @@ patch(
 	'node_modules/@pixi/text/lib/Text.d.ts',
 	'export declare class Text extends Sprite {',
 	`
-	setAlign(align:string):void;
+	setAlign(align:TextStyleAlign):void;
+	translatableText: string | null;
+	textTransform: number;
+	maxWidth: number;
+
+
 	`);
 
 patch(

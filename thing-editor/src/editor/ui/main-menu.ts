@@ -129,11 +129,11 @@ const MAIN_MENU: MainMenuItem[] = [
 			}
 		]
 	},
-	/*{
+	{
 		name: 'Edit',
 		id: 'edit',
 		items: []
-	},*/
+	},
 	{
 		name: 'Project',
 		id: 'project',
