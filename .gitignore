@@ -21,3 +21,5 @@ ___editor_backup_*
 
 games/**/.tmp
 
+thing-editor/src/editor/current-scene-typings.d.ts
+thing-editor/src/editor/prefabs-typing.ts
