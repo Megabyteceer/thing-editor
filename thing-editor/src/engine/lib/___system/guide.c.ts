@@ -31,7 +31,7 @@ export default class ___Guide extends MovieClip {
 	static show(x: number, y: number, rotation: number, id: string, owner: Container) {
 		let guide: ___Guide;
 		if(!all.has(id)) {
-			guide = Lib.loadPrefab('___system/guide');
+			guide = Lib.loadPrefab('___system/guide') as ___Guide;
 			guide.id = id;
 			all.set(id, guide);
 			overlayLayer.addChild(guide);

@@ -25,11 +25,13 @@ const regenerateCurrentSceneMapTypings = () => {
 
 	game.currentScene._refreshAllObjectRefs();
 	for(let n of Object.keys(game.currentScene.all)) {
-		try {
-			let className = (game.all[n].constructor as SourceMappedConstructor).__className;
-			classes.add(className);
-			json[n] = className;
-		} catch(er) { } // eslint-disable-line no-empty
+		if(!n.startsWith('___')) {
+			try {
+				let className = (game.all[n].constructor as SourceMappedConstructor).__className;
+				classes.add(className);
+				json[n] = className;
+			} catch(er) { } // eslint-disable-line no-empty
+		}
 	}
 	let jsonString = JSON.stringify(json);
 	if(__currentAllMap !== jsonString) {
@@ -86,10 +88,13 @@ const regeneratePrefabsTypings = () => {
 	let classes: Set<string> = new Set();
 
 	for(let prefabName in Lib.prefabs) {
-		let className = getSerializedObjectClass(Lib.prefabs[prefabName]).__className;
-		json[prefabName] = className;
-		classes.add(className);
+		if(!prefabName.startsWith('___')) {
+			let className = getSerializedObjectClass(Lib.prefabs[prefabName]).__className;
+			json[prefabName] = className;
+			classes.add(className);
+		}
 	}
+
 	let jsonString = JSON.stringify(json);
 	if(__currentPrefabsMap !== jsonString) {
 		__currentPrefabsMap = jsonString;

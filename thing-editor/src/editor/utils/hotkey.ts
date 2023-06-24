@@ -37,7 +37,7 @@ function isHotkeyBlockedOnInput(hotkey: Hotkey) {
 	return isCtrlRequired === hotkey.ctrlKey;
 }
 
-const isHotkeyHit = (ev: KeyboardEvent, element: HTMLElement, hotkey?: Hotkey) => {
+const isHotkeyHit = (ev: Hotkey, element: HTMLElement, hotkey?: Hotkey) => {
 
 	if(!hotkey) {
 		return;
@@ -45,16 +45,16 @@ const isHotkeyHit = (ev: KeyboardEvent, element: HTMLElement, hotkey?: Hotkey) =
 
 	if(
 		((hotkey.ctrlKey && hotkey.key === 'c') && (window.getSelection() || '').toString()) ||
-		(isEventFocusOnInputElement(ev) && (isHotkeyBlockedOnInput(hotkey))) ||
+		(isEventFocusOnInputElement(ev as any as PointerEvent) && (isHotkeyBlockedOnInput(hotkey))) ||
 		((hotkey.key !== 'F1') && game.editor.ui.modal.isUIBlockedByModal(element)) // F1 - help hotkey works always
 	) {
 		return;
 	}
 
 	if((ev.key.toLocaleLowerCase() === hotkey.key.toLocaleLowerCase()) &&
-		(ev.ctrlKey === (hotkey.ctrlKey === true)) &&
-		(ev.altKey === (hotkey.altKey === true)) &&
-		(ev.shiftKey === (hotkey.shiftKey === true))
+		((ev.ctrlKey || false) === (hotkey.ctrlKey === true)) &&
+		((ev.altKey || false) === (hotkey.altKey === true)) &&
+		((ev.shiftKey || false) === (hotkey.shiftKey === true))
 	) {
 		return true;
 	}

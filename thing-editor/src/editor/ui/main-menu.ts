@@ -2,7 +2,8 @@ import { Component, ComponentChild, h } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 
-import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import { ContextMenuItem, toggleContextMenu } from "thing-editor/src/editor/ui/context-menu";
+import { findMenuItemForHotkey } from "thing-editor/src/editor/ui/editor-button";
 import Build from "thing-editor/src/editor/utils/build";
 import newComponentWizard from "thing-editor/src/editor/utils/new-component-wizard";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -82,6 +83,62 @@ const MUTE_SOUND_MENU_ITEM: ContextMenuItem = {
 	hotkey: { key: 'm', ctrlKey: true }
 }
 
+const proxyMenuItemName = (targetItem: ContextMenuItem) => {
+	const item = findMenuItemForHotkey(targetItem!.hotkey!);
+	if(item) {
+		return item.name;
+	}
+}
+
+const proxyMenuItemClick = (targetItem: ContextMenuItem) => {
+	const item = findMenuItemForHotkey(targetItem!.hotkey!);
+	if(item) {
+		item.onClick();
+	}
+}
+
+let isProxySearch = false;
+
+const proxyMenuItemDisabled = (targetItem: ContextMenuItem) => {
+	if(!isProxySearch) {
+		isProxySearch = true;
+		const item = findMenuItemForHotkey(targetItem!.hotkey!);
+		isProxySearch = false;
+		if(item) {
+			return item.disabled ? item.disabled() : false;
+		}
+	}
+	return true;
+}
+
+const COPY_PROXY_MENU_ITEM: ContextMenuItem = {
+	name: () => proxyMenuItemName(COPY_PROXY_MENU_ITEM),
+	onClick: () => proxyMenuItemClick(COPY_PROXY_MENU_ITEM),
+	disabled: () => proxyMenuItemDisabled(COPY_PROXY_MENU_ITEM) as any,
+	hotkey: { key: "c", ctrlKey: true },
+}
+
+const PASTE_PROXY_MENU_ITEM: ContextMenuItem = {
+	name: () => proxyMenuItemName(PASTE_PROXY_MENU_ITEM),
+	onClick: () => proxyMenuItemClick(PASTE_PROXY_MENU_ITEM),
+	disabled: () => proxyMenuItemDisabled(PASTE_PROXY_MENU_ITEM) as any,
+	hotkey: { key: "v", ctrlKey: true },
+}
+
+const CUT_PROXY_MENU_ITEM: ContextMenuItem = {
+	name: () => proxyMenuItemName(CUT_PROXY_MENU_ITEM),
+	onClick: () => proxyMenuItemClick(CUT_PROXY_MENU_ITEM),
+	disabled: () => proxyMenuItemDisabled(CUT_PROXY_MENU_ITEM) as any,
+	hotkey: { key: "x", ctrlKey: true },
+}
+
+const CLONE_PROXY_MENU_ITEM: ContextMenuItem = {
+	name: () => proxyMenuItemName(CLONE_PROXY_MENU_ITEM),
+	onClick: () => proxyMenuItemClick(CLONE_PROXY_MENU_ITEM),
+	disabled: () => proxyMenuItemDisabled(CLONE_PROXY_MENU_ITEM) as any,
+	hotkey: { key: "d", ctrlKey: true },
+}
+
 const MAIN_MENU: MainMenuItem[] = [
 	{
 		name: 'File',
@@ -132,7 +189,13 @@ const MAIN_MENU: MainMenuItem[] = [
 	{
 		name: 'Edit',
 		id: 'edit',
-		items: []
+		items: [
+			COPY_PROXY_MENU_ITEM,
+			CUT_PROXY_MENU_ITEM,
+			PASTE_PROXY_MENU_ITEM,
+			null,
+			CLONE_PROXY_MENU_ITEM
+		]
 	},
 	{
 		name: 'Project',
@@ -232,7 +295,7 @@ export default class MainMenu extends Component {
 		return R.div(menuProps,
 			MAIN_MENU.map((menuItem: MainMenuItem) => {
 				return R.btn(menuItem.name, (ev: PointerEvent) => {
-					showContextMenu(menuItem.items, ev);
+					toggleContextMenu(menuItem.items, ev);
 				});
 			}));
 	}

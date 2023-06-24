@@ -129,7 +129,8 @@
 				"soundDefaultBitrate": {
 					"description": "sounds default bitrate for auto generated ogg and aac files.",
 					"type":"number",
-					"default": 48
+					"default": 48,
+					"enum": [8, 16, 24, 32, 40, 48,56,64,80,96,112,128,144,160,192,224,256]
 				},
 				"fontHolderText":  {
 					"description": "invisible peace of text added to the web page for each loaded font, to keep web fonts from unloading. Add a few characters of your language if fonts in game look wrong.",

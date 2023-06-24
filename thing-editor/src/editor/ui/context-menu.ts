@@ -40,6 +40,14 @@ window.addEventListener('pointerdown', (ev: PointerEvent) => {
 let shownMenuTemplate: ContextMenuItem[];
 let shownMenuEvent: PointerEvent;
 
+const toggleContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
+	if(menuShown) {
+		hideMenu();
+	} else {
+		showContextMenu(menuTemplate, ev);
+	}
+}
+
 const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	if(hideMenuTimeout) {
 		clearTimeout(hideMenuTimeout);
@@ -101,6 +109,7 @@ const refreshContextMenu = () => {
 }
 
 
+
 export default showContextMenu;
 
 function renderMenuItem(item: ContextMenuItem) {
@@ -114,5 +123,5 @@ function renderMenuItem(item: ContextMenuItem) {
 
 export type { ContextMenuItem };
 
-export { refreshContextMenu };
+export { refreshContextMenu, toggleContextMenu };
 

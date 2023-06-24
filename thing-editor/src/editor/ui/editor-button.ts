@@ -10,16 +10,14 @@ import sp from "thing-editor/src/editor/utils/stop-propagation";
 const allHotkeyButtons: EditorButton[] = [];
 
 
-const handleHotkeys = (ev: KeyboardEvent, handlers?: ContextMenuItem[][], windowBody?: HTMLDivElement) => {
+const findItemForHotkey = (ev: Hotkey, handlers?: ContextMenuItem[][], windowBody?: HTMLDivElement): ContextMenuItem | undefined => {
 	if(handlers) {
 		for(let menuGroup of handlers) {
 			for(let menuItem of menuGroup) {
 				if(menuItem) {
 					if(typeof menuItem.disabled !== 'function' || !menuItem.disabled()) {
 						if(isHotkeyHit(ev, windowBody as HTMLElement, menuItem.hotkey)) {
-							menuItem.onClick();
-							refreshContextMenu();
-							return true;
+							return menuItem;
 						}
 					}
 				}
@@ -28,18 +26,29 @@ const handleHotkeys = (ev: KeyboardEvent, handlers?: ContextMenuItem[][], window
 	}
 }
 
+const findMenuItemForHotkey = (hotkey: Hotkey): ContextMenuItem | undefined => {
+	for(let w of Window.allOrdered) {
+		let ret = findItemForHotkey(hotkey, w.props.hotkeysHandlers, w.base as HTMLDivElement)
+		if(ret) {
+			return ret;
+		}
+	}
+
+	for(let item of MAIN_MENU) {
+		let ret = findItemForHotkey(hotkey, [item.items]);
+		if(ret) {
+			return ret;
+		}
+	}
+}
+
 window.addEventListener("keydown", (ev) => {
 	if(ev.key !== 'Control' && ev.key !== 'Alt' && ev.key !== 'Shift') {
-		for(let w of Window.allOrdered) {
-			if(handleHotkeys(ev, w.props.hotkeysHandlers, w.base as HTMLDivElement)) {
-				return;
-			}
-		}
-
-		for(let item of MAIN_MENU) {
-			if(handleHotkeys(ev, [item.items])) {
-				return;
-			}
+		const item = findMenuItemForHotkey(ev as Hotkey);
+		if(item) {
+			item.onClick();
+			refreshContextMenu();
+			return;
 		}
 
 		for(let b of allHotkeyButtons) {
@@ -66,7 +75,7 @@ interface EditorButtonStats {
 class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 
 	onKeyDown(ev: KeyboardEvent) {
-		if(!this.props.disabled && isHotkeyHit(ev, this.base as HTMLElement, this.props.hotkey)) {
+		if(!this.props.disabled && isHotkeyHit(ev as any as Hotkey, this.base as HTMLElement, this.props.hotkey)) {
 			this.onMouseDown(ev as unknown as PointerEvent);
 			sp(ev);
 			return true;
@@ -151,3 +160,5 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 }
 
 export default EditorButton;
+
+export { findMenuItemForHotkey };
