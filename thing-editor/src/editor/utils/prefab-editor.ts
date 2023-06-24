@@ -7,9 +7,9 @@ import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import __BackDrop from "thing-editor/src/engine/lib/___system/backdrop.c";
-import Shape from "thing-editor/src/engine/lib/shape.c";
+import Shape from "thing-editor/src/engine/lib/assets/shape.c";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
+import __BackDrop from "thing-editor/src/engine/lib/assets/___system/backdrop.c";
 
 let prefabsStack: string[] = [];
 let backDrop: Shape;

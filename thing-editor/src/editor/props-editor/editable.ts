@@ -11,6 +11,7 @@ type EditablePropertyType = 'data-path' |
 	'splitter' |
 	'rect' |
 	'callback' |
+	'l18n' |
 	'timeline' |
 	'ref' |
 	'btn' |
@@ -36,7 +37,7 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	helpUrl?: string,
 	/** field changes pass vale through this function  */
 	parser?: (val: any) => any;
-	disabled?: (o: T) => string | undefined | boolean;
+	disabled?: (o: T) => string | undefined | boolean | null;
 	beforeEdited?: (val: any) => void;
 	onBlur?: () => void;
 	onClick?: (ev: any) => void;

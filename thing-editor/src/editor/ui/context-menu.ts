@@ -41,7 +41,7 @@ let shownMenuTemplate: ContextMenuItem[];
 let shownMenuEvent: PointerEvent;
 
 const toggleContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
-	if(menuShown) {
+	if(menuShown && shownMenuTemplate === menuTemplate) {
 		hideMenu();
 	} else {
 		showContextMenu(menuTemplate, ev);

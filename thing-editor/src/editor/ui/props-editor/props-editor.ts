@@ -10,7 +10,7 @@ import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/scene.c";
 
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
@@ -30,12 +30,13 @@ import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/
 import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-editor";
 
 import ImageEditor from "thing-editor/src/editor/ui/props-editor/props-editors/image-editor";
+import L18nEditor from "thing-editor/src/editor/ui/props-editor/props-editors/l18n-editor";
 import PrefabPropertyEditor from "thing-editor/src/editor/ui/props-editor/props-editors/prefab-property-editor";
 import SoundEditor from "thing-editor/src/editor/ui/props-editor/props-editors/sound-editor";
 import getObjectDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
-import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
+import MovieClip from "thing-editor/src/engine/lib/assets/movie-clip/movie-clip.c";
 
 let editorProps = {
 	className: 'props-editor window-scrollable-content',
@@ -379,6 +380,7 @@ export default PropsEditor;
 PropsEditor.registerRenderer('color', ColorEditor, 0);
 PropsEditor.registerRenderer('number', NumberEditor, 0);
 PropsEditor.registerRenderer('string', StringEditor, null);
+PropsEditor.registerRenderer('l18n', L18nEditor, null);
 PropsEditor.registerRenderer('image', ImageEditor, null);
 PropsEditor.registerRenderer('prefab', PrefabPropertyEditor, null);
 PropsEditor.registerRenderer('sound', SoundEditor, null);

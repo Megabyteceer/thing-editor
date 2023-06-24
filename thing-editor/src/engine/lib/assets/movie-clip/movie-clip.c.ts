@@ -9,12 +9,12 @@ import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from 'thing-editor/src/engine/debug/assert';
-import DSprite from 'thing-editor/src/engine/lib/d-sprite.c';
-import FieldPlayer, { TimelineData, TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineKeyFrameType, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/movie-clip/field-player';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import DSprite from 'thing-editor/src/engine/lib/assets/d-sprite.c';
+import FieldPlayer, { TimelineData, TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineKeyFrameType, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/assets/movie-clip/field-player';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
-import game from '../../game';
-import Lib from '../../lib';
 
 /// #if EDITOR
 const ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });

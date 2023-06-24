@@ -2,8 +2,8 @@ import { Circle, Ellipse, Graphics, Point, Polygon, Rectangle, RoundedRectangle 
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
 import editable from "thing-editor/src/editor/props-editor/editable.js";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
-import game from "../game.js";
-import Lib from "../lib.js";
+import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 
 enum SHAPE_TYPE {
 	RECT = 0,

@@ -5,13 +5,14 @@ import TLib from "thing-editor/src/editor/prefabs-typing";
 import { Container, Texture } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/scene.c";
 import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import Pool from "thing-editor/src/engine/utils/pool";
 
-import fs, { AssetType, FileDesc, FileDescImage, FileDescPrefab } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc, FileDescImage, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
+
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import getPrefabDefaults, { invalidatePrefabDefaults } from "thing-editor/src/editor/utils/get-prefab-defaults";
@@ -204,9 +205,11 @@ export default class Lib extends TLib {
 	}
 
 	/// #if EDITOR
-	static __addSoundEditor(name: string, fileName: string) {
-		fileName = fileName.replace(/wav$/, 'ogg');
-		soundsHowlers[name] = new HowlSound({ src: fileName });
+	static __addSoundEditor(file: FileDescSound) {
+		const fileName = file.fileName.replace(/wav$/, 'ogg');
+		soundsHowlers[file.assetName] = new HowlSound({ src: fileName });
+		file.asset = Lib.getSound(file.assetName);
+		game.editor.ui.refresh();
 	}
 	/// #endif
 
@@ -632,6 +635,11 @@ export default class Lib extends TLib {
 		}
 	}
 
+	static __deleteSound(file: FileDescSound) {
+		file.asset.unload();
+		delete soundsHowlers[file.assetName];
+	}
+
 	static __deleteTexture(file: FileDescImage) {
 		if(textures[file.assetName]) {
 			const texture = textures[file.assetName];
@@ -811,9 +819,11 @@ const __onAssetAdded = (file: FileDesc) => {
 			break;
 
 		case AssetType.SOUND:
-			Lib.__addSoundEditor(file.assetName, file.fileName);
-			file.asset = Lib.getSound(file.assetName);
-			game.editor.ui.refresh();
+			Lib.__addSoundEditor(file as FileDescSound);
+			break;
+		case AssetType.RESOURCE:
+			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
+			game.editor.LanguageView.addAssets(file);
 			break;
 	}
 }
@@ -864,7 +874,14 @@ const __onAssetUpdated = (file: FileDesc) => {
 			Lib.addTexture(file.assetName, file.fileName);
 			game.editor.ui.refresh();
 			break;
-		//TODO images, sounds,
+		case AssetType.SOUND:
+			Lib.__addSoundEditor(file as FileDescSound);
+			break;
+		case AssetType.RESOURCE:
+			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
+			game.editor.LanguageView.addAssets(file);
+			break;
+		//TODO sounds,
 	}
 }
 
@@ -886,9 +903,14 @@ const __onAssetDeleted = (file: FileDesc) => {
 			Lib.__deleteTexture(file as FileDescImage);
 			game.editor.ui.refresh();
 			break;
+		case AssetType.RESOURCE:
+			game.editor.LanguageView.removeAsset(file);
+			break;
+		case AssetType.SOUND:
+			Lib.__deleteSound(file as FileDescSound);
+			break;
 
-
-		//TODO images, sounds,
+		//TODO sounds,
 	}
 }
 

@@ -48,7 +48,6 @@ export default class Scene extends Container {
 	}
 
 	_refreshAllObjectRefs() { //shortcut to access to scene's children by name without iterate through hierarchy
-		console.log('refresh');
 
 		this.all = {} as ThingSceneAllMap;
 

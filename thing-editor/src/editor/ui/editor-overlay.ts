@@ -7,7 +7,7 @@ import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-acce
 import Selection from "thing-editor/src/editor/utils/selection";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import __GizmoArrow from "thing-editor/src/engine/lib/___system/gizmo-arrow.c";
+import __GizmoArrow from "thing-editor/src/engine/lib/assets/___system/gizmo-arrow.c";
 
 let selectionDisabled = false;
 let isViewPortScrolling = false;

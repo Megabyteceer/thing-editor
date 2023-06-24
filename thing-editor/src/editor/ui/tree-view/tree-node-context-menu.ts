@@ -5,7 +5,7 @@ import { toggleIsolation } from "thing-editor/src/editor/ui/isolation";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/scene.c";
 
 
 const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [

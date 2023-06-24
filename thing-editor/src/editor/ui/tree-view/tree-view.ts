@@ -14,7 +14,7 @@ import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-f
 import Selection from "thing-editor/src/editor/utils/selection";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/scene.c";
 
 function onEmptyClick(ev: PointerEvent) {
 	if(!isEventFocusOnInputElement(ev)) {

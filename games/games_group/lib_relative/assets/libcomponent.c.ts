@@ -1,5 +1,5 @@
 import editable from "thing-editor/src/editor/props-editor/editable";
-import DSprite from "thing-editor/src/engine/lib/d-sprite.c";
+import DSprite from "thing-editor/src/engine/lib/assets/d-sprite.c";
 
 export default class LibComponentRelative extends DSprite {
 

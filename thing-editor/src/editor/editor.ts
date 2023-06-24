@@ -15,6 +15,8 @@ import Lib from "thing-editor/src/engine/lib";
 import Settings from "thing-editor/src/engine/utils/settings";
 import ClassesLoader from "./classes-loader";
 
+import LanguageView from "thing-editor/src/editor/ui/language-view";
+
 import { Container, Point, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
@@ -54,6 +56,8 @@ import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr f
 });
 
 class Editor {
+
+	LanguageView = LanguageView;
 
 	currentProjectDir = '';
 	currentProjectAssetsDir = '';
@@ -290,7 +294,7 @@ class Editor {
 				this.currentProjectLibs.unshift({
 					name: 'thing-editor-embed',
 					dir: 'thing-editor/src/engine/lib',
-					assetsDir: 'thing-editor/src/engine/lib/',
+					assetsDir: 'thing-editor/src/engine/lib/assets/',
 					isEmbed: true
 				});
 				this.assetsFolders = [];
@@ -329,13 +333,12 @@ class Editor {
 					return Promise.all([this.reloadAssetsAndClasses(true)]);
 				});
 
-				editorEvents.emit('projectDidOpen');
 
 				if(game.settings.getItem(LAST_SCENE_NAME) && !Lib.hasScene(game.settings.getItem(LAST_SCENE_NAME))) {
 					this.saveLastSceneOpenName('');
 				}
 				game.settings.setItem(LAST_SCENE_NAME, game.settings.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
-
+				editorEvents.emit('firstSceneWillOpen');
 				this.restoreBackup();
 
 				regeneratePrefabsTypings();
@@ -348,6 +351,9 @@ class Editor {
 				game.onResize();
 
 				this.settings.setItem('last-opened-project', dir);
+
+				editorEvents.emit('projectDidOpen');
+
 			}
 		}
 	}

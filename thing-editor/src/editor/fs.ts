@@ -1,12 +1,13 @@
 import { Container, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import type { KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/scene.c";
 
 interface LibInfo {
 	name: string,
@@ -24,7 +25,7 @@ interface FileDesc {
 	mTime: number,
 	lib: LibInfo | null,
 	v?: number;
-	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound
+	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound | KeyedObject
 }
 
 interface FileDescClass extends FileDesc {
@@ -43,13 +44,17 @@ interface FileDescSound extends FileDesc {
 interface FileDescImage extends FileDesc {
 	asset: Texture;
 }
+interface FileDescL18n extends FileDesc {
+	asset: KeyedObject;
+}
 
 enum AssetType {
 	IMAGE = "IMAGE",
 	SOUND = "SOUND",
 	SCENE = "SCENE",
 	PREFAB = "PREFAB",
-	CLASS = "CLASS"
+	CLASS = "CLASS",
+	RESOURCE = "RESOURCE"
 }
 
 const AllAssetsTypes: AssetType[] = Object.values(AssetType);
@@ -73,6 +78,7 @@ const ASSETS_PARSERS = {
 	'.webp': AssetType.IMAGE,
 	'.s.json': AssetType.SCENE,
 	'.p.json': AssetType.PREFAB,
+	'.json': AssetType.RESOURCE,
 	'.wav': AssetType.SOUND,
 	'.c.ts': AssetType.CLASS
 };
@@ -89,6 +95,7 @@ ASSET_EXT_CROP_LENGHTS.set(AssetType.SCENE, 7);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.PREFAB, 7);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.SOUND, 4);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.CLASS, 5);
+ASSET_EXT_CROP_LENGHTS.set(AssetType.RESOURCE, 5);
 
 const EMPTY: FileDescImage = {
 	assetName: 'EMPTY',
@@ -415,6 +422,7 @@ export default class fs {
 				}
 			}
 		}
+		editorEvents.emit('assetsRefreshed');
 	}
 
 	static getWrongSymbol(fileName: string) {
@@ -442,5 +450,5 @@ export default class fs {
 const scheduledSoundsRebuilds: Set<string> = new Set();
 
 export { AllAssetsTypes, AssetType };
-export type { FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound, LibInfo };
+export type { FileDesc, FileDescClass, FileDescImage, FileDescL18n, FileDescPrefab, FileDescScene, FileDescSound, LibInfo };
 

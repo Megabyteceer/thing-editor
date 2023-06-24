@@ -6,9 +6,8 @@ import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/ed
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
 import assert from "thing-editor/src/engine/debug/assert.js";
-import game from "../game.js";
-import Lib from "../lib.js";
-
+import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 
 /** returns object rotation relative to it`s scene */
 Container.prototype.getGlobalRotation = function getGlobalRotation() {

@@ -3,10 +3,11 @@ import { Text, TextStyleAlign } from "pixi.js";
 
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
+import LanguageView from "thing-editor/src/editor/ui/language-view";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import ___Guide from "thing-editor/src/engine/lib/___system/guide.c";
+import ___Guide from "thing-editor/src/engine/lib/assets/___system/guide.c";
 import L from "thing-editor/src/engine/utils/l";
 
 export default Text;
@@ -438,7 +439,7 @@ _editableEmbed(Text, 'text', {
 	important: true,
 	multiline: true,
 	disabled: (node: Text) => {
-		return node.translatableText!;
+		return node.translatableText && "Disabled because 'translatableText' property has non empty value.";
 	}
 });
 
@@ -446,11 +447,13 @@ _editableEmbed(Text, 'Edit text', {
 	type: 'btn',
 	helpUrl: 'components.Text#edit-text',
 	title: 'Edit or create new translatable key.',
-	onClick: (_o: Text) => {
-		//TODO LanguageView.editKey(o.translatableText);
+	onClick: (o: Text) => {
+		LanguageView.editKey(o.translatableText);
 	}
 });
-// TODO window.makeTranslatableSelectEditablePropertyDecriptor('translatableText'),
+
+_editableEmbed(Text, 'translatableText', { type: 'l18n' });
+
 _editableEmbed(Text, 'text-style', {
 	type: 'splitter',
 	title: 'Style:'

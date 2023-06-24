@@ -7,7 +7,7 @@ import type { SelectionData } from "thing-editor/src/editor/utils/selection";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/scene.c";
 import Pool from "thing-editor/src/engine/utils/pool";
 import TypedEmitter from "typed-emitter";
 

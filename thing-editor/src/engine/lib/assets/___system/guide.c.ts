@@ -1,7 +1,7 @@
 import { Container, Point } from "pixi.js";
 import overlayLayer from "thing-editor/src/editor/ui/editor-overlay";
 import Lib from "thing-editor/src/engine/lib";
-import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c.ts";
+import MovieClip from "thing-editor/src/engine/lib/assets/movie-clip/movie-clip.c.ts";
 
 const all: Map<string, ___Guide> = new Map();
 

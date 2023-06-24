@@ -5,7 +5,7 @@ import editable from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import DSprite from "thing-editor/src/engine/lib/d-sprite.c";
+import DSprite from "thing-editor/src/engine/lib/assets/d-sprite.c";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import { mouseHandlerGlobal } from "thing-editor/src/engine/utils/game-interaction";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";

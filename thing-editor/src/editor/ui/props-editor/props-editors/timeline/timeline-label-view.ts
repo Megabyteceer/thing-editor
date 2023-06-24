@@ -6,8 +6,8 @@ import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
-import { TimelineLabelData } from "thing-editor/src/engine/lib/movie-clip/field-player";
-import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
+import { TimelineLabelData } from "thing-editor/src/engine/lib/assets/movie-clip/field-player";
+import MovieClip from "thing-editor/src/engine/lib/assets/movie-clip/movie-clip.c";
 
 let labelNamesProps = {
 	className: 'selectable-text',

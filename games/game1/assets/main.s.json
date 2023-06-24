@@ -142,7 +142,8 @@
 			"p": {
 				"x": 521,
 				"y": 146,
-				"text": "M A I N    S C E N E"
+				"text": "",
+				"translatableText": "menu2"
 			}
 		}
 	]

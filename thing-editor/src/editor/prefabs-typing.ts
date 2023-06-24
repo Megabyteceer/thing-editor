@@ -1,7 +1,7 @@
 // thing-editor auto generated file.
-import Container from "thing-editor/src/engine/lib/container.c";
-import MovieClip from "thing-editor/src/engine/lib/movie-clip/movie-clip.c";
-import Shape from "thing-editor/src/engine/lib/shape.c";
+import Container from "thing-editor/src/engine/lib/assets/container.c";
+import MovieClip from "thing-editor/src/engine/lib/assets/movie-clip/movie-clip.c";
+import Shape from "thing-editor/src/engine/lib/assets/shape.c";
 export default class TLib {
 	static loadPrefab(prefabName: 'fader/default'):Container;
 	static loadPrefab(prefabName: 'prefab1'):MovieClip;

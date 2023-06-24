@@ -1,17 +1,17 @@
 import type { Classes, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import game from "../engine/game";
 
 import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-checker";
 import Lib from "thing-editor/src/engine/lib";
-import fs, { AssetType, FileDescClass } from "./fs";
-import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "./props-editor/editable";
 
 import { Container, DisplayObject, Sprite, Text } from "pixi.js";
 import { Constructor } from "thing-editor/src/editor/env";
+import fs, { AssetType, FileDescClass } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
+import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import Scene from "thing-editor/src/engine/lib/scene.c";
+import game from "thing-editor/src/engine/game";
+import Scene from "thing-editor/src/engine/lib/assets/scene.c";
 
 const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');

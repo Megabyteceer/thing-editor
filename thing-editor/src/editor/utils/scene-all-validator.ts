@@ -2,7 +2,7 @@ import { Container, DisplayObject } from "pixi.js";
 import { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/scene.c";
 
 const ACCESS_ASSERTING_Func = () => {
 	assert(false, 'Scene`s "all" object vas not initialized yet. You can not use "all" before call super.init().', 10017);
