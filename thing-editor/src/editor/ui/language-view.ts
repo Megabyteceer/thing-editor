@@ -255,7 +255,7 @@ const parseAssets = () => {
 		name: '- - -'
 	});
 
-	assetsFiles.forEach((folderFiles: Map<string, FileDescL18n>, folderName: string) => {
+	assetsFiles.forEach((folderFiles: Map<string, FileDescL18n>) => {
 		if(!folderFiles.has(L.getCurrentLanguageId())) {
 			createFilesForLanguage(L.getCurrentLanguageId());
 		}

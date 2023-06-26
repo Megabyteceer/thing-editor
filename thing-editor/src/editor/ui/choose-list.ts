@@ -13,6 +13,7 @@ interface ChooseListProps extends ClassAttributes<ChooseList> {
 	list: ChooseListItem[];
 	noSearchField: boolean;
 	activeValue?: string;
+	doNotGroup?: boolean;
 }
 
 
@@ -111,14 +112,18 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 	}
 
 	render() {
+
+		let list: any = this.list.map(this.renderChoosingItem as any);
+		if(!this.props.doNotGroup) {
+			list = group.groupArray(list);
+		}
+
 		return R.div(bodyProps,
 			this.props.noSearchField ? undefined : R.div(listHeaderProps,
 				R.input(this.searchInputProps),
 				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search')
 			),
-			R.div(listProps,
-				group.groupArray(this.list.map(this.renderChoosingItem as any))
-			)
+			R.div(listProps, list)
 		);
 	}
 }

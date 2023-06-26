@@ -11,8 +11,30 @@ interface ChooseTempletItem extends ChooseListItem {
 	isScene: boolean;
 }
 
-const newComponentWizard = () => {
-	game.editor.ui.modal.showListChoose("Choose template for new Custom Component", ([
+const newComponentWizard = async () => {
+
+	let chosenFolder: string;
+
+	if(game.editor.assetsFolders.length === 1) {
+		chosenFolder = game.editor.assetsFolders[0];
+	} else {
+		let folders: ChooseListItem[] = game.editor.assetsFolders.filter(i => (!i.startsWith('thing-editor') || game.editor.settings.getItem('show-system-assets'))).map((folder: string, i: number): ChooseListItem => {
+			return { name: folder };
+		});
+		folders.reverse();
+		folders[0].pureName = folders[0].name as string;
+		folders[0].name = R.b(null, folders[0].name);
+		const chosenItem = await game.editor.ui.modal.showListChoose("Where to create component?", folders, false, true, undefined, true);
+		if(chosenItem) {
+			chosenFolder = chosenItem.pureName;
+		}
+	}
+
+	if(!chosenFolder!) {
+		return;
+	}
+
+	let selectedTemplate = await game.editor.ui.modal.showListChoose("Choose template for new Custom Component", ([
 		{
 			title: "Basic Game Object",
 			desc: "Creates simple game object. Then you can program this object's logic with javascript. This type of object will contain only basic methods of game object 'init', 'update', 'onRemove', but you can add any method you want manually.",
@@ -44,74 +66,81 @@ const newComponentWizard = () => {
 			R.div({ className: 'template-desc' }, tmp.desc)
 		);
 		return tmp;
-	}), false, true).then((selectedTemplate) => {
-		if(selectedTemplate) {
-			game.editor.ui.modal.showPrompt('Enter Component Name',
-				selectedTemplate.isScene ? 'MyNewScene' : 'MyNewComponent',
-				(val) => { //filter
-					return val.replace(/[^a-zA-Z0-9\/]/gm, '_');
-				},
-				(val) => { //accept
-					if(game.classes[val]) {
-						return "Component with name '" + val + "' already exists";
-					}
-				}
-			).then((enteredClassName: string) => {
-				if(enteredClassName) {
-					game.editor.chooseClass(selectedTemplate.isScene, '_baseClass', 'Choose base Component').then((selectedBaseClassName: string | null) => {
-						if(selectedBaseClassName) {
-							const selectedBaseClass = game.classes[selectedBaseClassName];
-							let enteredClassNameParts = enteredClassName.split('/').filter(i => i);
-							enteredClassName = enteredClassNameParts.pop()!;
-							if(!enteredClassName) {
-								game.editor.ui.modal.showError('Wrong component name provided.', 30001);
-								return;
-							}
-							if(enteredClassName.match('/^[\d_]/m')) {
-								game.editor.ui.modal.showError('Class name can not start with digit or "_".', 30002);
-								return;
-							}
-							enteredClassName = enteredClassName.substr(0, 1).toUpperCase() + enteredClassName.substr(1);
+	}), false, true);
 
-							let classFoldername = enteredClassNameParts.join('/');
-							if(classFoldername) {
-								classFoldername += '/';
-							}
-							let templateSrc = fs.readFile('thing-editor/src/editor/templates/' + selectedTemplate.path);
 
-							//add or remove super method call if its exists
-							let baseClassInstance = new selectedBaseClass();
-							const regex = /(\/\/)(super\.)([a-zA-Z_]+)(\(\);)/gm;
-							templateSrc = templateSrc.replace(regex, (_substr, _m1, m2, m3, m4) => {
-								let isSuperClassHasThisMethod = (baseClassInstance as KeyedObject)[m3];
-								if(isSuperClassHasThisMethod) {
-									return m2 + m3 + m4;
-								} else {
-									return '';
-								}
-							});
+	if(!selectedTemplate) {
+		return;
+	}
 
-							let baseClassPath = selectedBaseClass.__sourceFileName!.replace(/^\//, '');
-
-							templateSrc = templateSrc.replace(/CURRENT_PROJECT_DIR/gm, '/games/' + (game.editor.currentProjectDir.replace(/\/$/, '')));
-							templateSrc = templateSrc.replace(/NEW_CLASS_NAME/gm, enteredClassName);
-							templateSrc = templateSrc.replace(/BASE_CLASS_NAME/gm, selectedBaseClass.__className);
-							templateSrc = templateSrc.replace(/BASE_CLASS_PATH/gm, baseClassPath);
-
-							let fileName = enteredClassName.replace(/[A-Z]/gm, (substr, offset) => {
-								return ((offset === 0 || enteredClassName[offset - 1] === '_') ? '' : '-') + substr.toLowerCase();
-							});
-							fileName = game.editor.currentProjectAssetsDir + 'src/' + classFoldername + fileName + '.c.ts';
-							fs.writeFile(fileName, templateSrc)
-							fs.refreshAssetsList();
-							game.editor.reloadClasses().then(() => {
-								game.editor.editClassSource(game.classes[enteredClassName]);
-							});
-						}
-					});
-				}
-			});
+	let enteredClassName = await game.editor.ui.modal.showPrompt('Enter Component Name',
+		selectedTemplate.isScene ? 'MyNewScene' : 'MyNewComponent',
+		(val) => { //filter
+			return val.replace(/[^a-zA-Z0-9\/]/gm, '_');
+		},
+		(val) => { //accept
+			if(game.classes[val]) {
+				return "Component with name '" + val + "' already exists";
+			}
 		}
+	);
+
+	if(!enteredClassName) {
+		return;
+	}
+
+	let selectedBaseClassName = await game.editor.chooseClass(selectedTemplate.isScene, '_baseClass', 'Choose base Component');
+
+	if(!selectedBaseClassName) {
+		return;
+	}
+
+	const selectedBaseClass = game.classes[selectedBaseClassName];
+	let enteredClassNameParts = enteredClassName.split('/').filter((i: string) => i);
+	enteredClassName = enteredClassNameParts.pop()!;
+	if(!enteredClassName) {
+		game.editor.ui.modal.showError('Wrong component name provided.', 30001);
+		return;
+	}
+	if(enteredClassName.match('/^[\d_]/m')) {
+		game.editor.ui.modal.showError('Class name can not start with digit or "_".', 30002);
+		return;
+	}
+	enteredClassName = enteredClassName.substr(0, 1).toUpperCase() + enteredClassName.substr(1);
+
+	let classFoldername = enteredClassNameParts.join('/');
+	if(classFoldername) {
+		classFoldername += '/';
+	}
+	let templateSrc = fs.readFile('thing-editor/src/editor/templates/' + selectedTemplate.path);
+
+	//add or remove super method call if its exists
+	let baseClassInstance = new selectedBaseClass();
+	const regex = /(\/\/)(super\.)([a-zA-Z_]+)(\(\);)/gm;
+	templateSrc = templateSrc.replace(regex, (_substr, _m1, m2, m3, m4) => {
+		let isSuperClassHasThisMethod = (baseClassInstance as KeyedObject)[m3];
+		if(isSuperClassHasThisMethod) {
+			return m2 + m3 + m4;
+		} else {
+			return '';
+		}
+	});
+
+	let baseClassPath = selectedBaseClass.__sourceFileName!.replace(/^\//, '');
+
+	templateSrc = templateSrc.replace(/CURRENT_PROJECT_DIR/gm, '/games/' + (game.editor.currentProjectDir.replace(/\/$/, '')));
+	templateSrc = templateSrc.replace(/NEW_CLASS_NAME/gm, enteredClassName);
+	templateSrc = templateSrc.replace(/BASE_CLASS_NAME/gm, selectedBaseClass.__className);
+	templateSrc = templateSrc.replace(/BASE_CLASS_PATH/gm, baseClassPath);
+
+	let fileName = enteredClassName.replace(/[A-Z]/gm, (substr: string, offset: number) => {
+		return ((offset === 0 || enteredClassName[offset - 1] === '_') ? '' : '-') + substr.toLowerCase();
+	});
+	fileName = chosenFolder + 'src/' + classFoldername + fileName + '.c.ts';
+	fs.writeFile(fileName, templateSrc)
+	fs.refreshAssetsList();
+	game.editor.reloadClasses().then(() => {
+		game.editor.editClassSource(game.classes[enteredClassName]);
 	});
 }
 
