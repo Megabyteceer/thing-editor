@@ -209,7 +209,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		y = Math.max(0, y);
 		x = Math.min(x, 100 - this.state.w);
 		y = Math.min(y, 100 - this.state.h);
-		
+
 		(this.state as any).x = x;
 		(this.state as any).y = y;
 		if(this.base) {

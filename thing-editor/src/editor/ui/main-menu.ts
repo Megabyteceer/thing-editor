@@ -218,6 +218,12 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			null,
 			{
+				name: 'Text data...',
+				tip: 'Edit localization text data',
+				onClick: () => game.editor.LanguageView.toggle(),
+				hotkey: { key: 'e', ctrlKey: true }
+			},
+			{
 				name: 'Project Properties...',
 				tip: 'Edit thing-project.json file',
 				onClick: projectPropsClick

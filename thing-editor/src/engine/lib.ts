@@ -11,7 +11,7 @@ import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import Pool from "thing-editor/src/engine/utils/pool";
 
-import fs, { AssetType, FileDesc, FileDescImage, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc, FileDescImage, FileDescL18n, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
 
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
@@ -823,7 +823,7 @@ const __onAssetAdded = (file: FileDesc) => {
 			break;
 		case AssetType.RESOURCE:
 			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
-			game.editor.LanguageView.addAssets(file);
+			game.editor.LanguageView.addAssets(file as FileDescL18n);
 			break;
 	}
 }
@@ -879,7 +879,7 @@ const __onAssetUpdated = (file: FileDesc) => {
 			break;
 		case AssetType.RESOURCE:
 			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
-			game.editor.LanguageView.addAssets(file);
+			game.editor.LanguageView.addAssets(file as FileDescL18n);
 			break;
 		//TODO sounds,
 	}
@@ -904,7 +904,7 @@ const __onAssetDeleted = (file: FileDesc) => {
 			game.editor.ui.refresh();
 			break;
 		case AssetType.RESOURCE:
-			game.editor.LanguageView.removeAsset(file);
+			game.editor.LanguageView.removeAsset(file as FileDescL18n);
 			break;
 		case AssetType.SOUND:
 			Lib.__deleteSound(file as FileDescSound);

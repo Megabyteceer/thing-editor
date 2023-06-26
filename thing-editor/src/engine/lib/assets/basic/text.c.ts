@@ -439,7 +439,7 @@ _editableEmbed(Text, 'text', {
 	important: true,
 	multiline: true,
 	disabled: (node: Text) => {
-		return node.translatableText && "Disabled because 'translatableText' property has non empty value.";
+		return node.translatableText && "Disabled because 'translatableText' property is set.";
 	}
 });
 

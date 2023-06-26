@@ -46,6 +46,8 @@ interface FileDescImage extends FileDesc {
 }
 interface FileDescL18n extends FileDesc {
 	asset: KeyedObject;
+	dir: string;
+	lang: string;
 }
 
 enum AssetType {
