@@ -21,7 +21,10 @@ import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import HowlSound from "thing-editor/src/engine/HowlSound";
+/// #if DEBUG
 import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
+/// #endif
+
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import L from "thing-editor/src/engine/utils/l";
 
@@ -42,7 +45,7 @@ export default class Lib
 
 	static REMOVED_TEXTURE: Texture;
 
-	static loadScene(name: string): Scene { //TODO: rename to _loadsScene
+	static loadScene(name: string): Scene {
 		if(
 			/// #if EDITOR
 			!game.__EDITOR_mode &&
@@ -128,7 +131,6 @@ export default class Lib
 
 			/// #if EDITOR
 			if(textures[name] && !Lib.__isSystemTexture(textures[name])) {
-				//TODO check if updated texture unloads old instance;
 				Lib._unloadTexture(name);
 			}
 			const asset = fs.getFileByAssetName(name, AssetType.IMAGE) as FileDescImage;
@@ -682,20 +684,17 @@ export default class Lib
 		let s = new HowlSound(opt);
 		s.lastPlayStartFrame = 0;
 		soundsHowlers[name] = s;
-		/** TODO
-		if(game.classes.BgMusic) {
-			for(let bgm of game.currentContainer.findChildrenByType(game.classes.BgMusic)) {
-				if(bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
-					bgm.stop();
-					bgm.resetPosition();
-					setTimeout(() => {
-						if((bgm.intro === name || bgm.loop === name)) {
-							bgm.play();
-						}
-					}, 3000);
-				}
+		for(let bgm of game.currentContainer.findChildrenByType(BgMusic) as BgMusic[]) {
+			if(bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
+				bgm.stop();
+				bgm.resetPosition();
+				setTimeout(() => {
+					if((bgm.intro === name || bgm.loop === name)) {
+						bgm.play();
+					}
+				}, 3000);
 			}
-		}*/
+		}
 	}
 
 	/// #endif
@@ -896,7 +895,6 @@ const __onAssetUpdated = (file: FileDesc) => {
 			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
 			game.editor.LanguageView.addAssets(file as FileDescL18n);
 			break;
-		//TODO sounds,
 	}
 }
 
@@ -924,8 +922,6 @@ const __onAssetDeleted = (file: FileDesc) => {
 		case AssetType.SOUND:
 			Lib.__deleteSound(file as FileDescSound);
 			break;
-
-		//TODO sounds,
 	}
 }
 

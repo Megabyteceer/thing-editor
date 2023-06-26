@@ -19,8 +19,6 @@ EMBED_CLASSES_NAMES_FIXER.set(Sprite, 'Sprite');
 EMBED_CLASSES_NAMES_FIXER.set(Text, 'Text');
 //TODO: Mesh, BitmapText
 
-//TODO
-
 let componentsVersion = Date.now();
 
 const NOT_SERIALIZABLE_PROPS_TYPES: Set<EditablePropertyType> = new Set();

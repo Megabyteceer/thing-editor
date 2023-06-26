@@ -178,9 +178,6 @@ export namespace editorUtils {
 			if(exData.hidePropsEditor) {
 				cloneExData.hidePropsEditor = exData.hidePropsEditor;
 			}
-			if(exData.rotatorLocked) {
-				cloneExData.rotatorLocked = exData.rotatorLocked;
-			}
 			if(exData.noSerialize) {
 				cloneExData.noSerialize = exData.noSerialize;
 			}

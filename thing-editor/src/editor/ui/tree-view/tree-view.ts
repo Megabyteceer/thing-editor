@@ -152,19 +152,19 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 		let a = new Selection();
 
 		const searchIn = (o: Container) => {
-			if(condition(o)) {
-				a.push(o);
-			}
-			o.forAllChildren((o) => {
+			if(!o.__nodeExtendData.isolate) {
 				if(condition(o)) {
 					a.push(o);
 				}
-			});
+				o.forAllChildren((o) => {
+					if(condition(o)) {
+						a.push(o);
+					}
+				});
+			}
 		};
 
-		/*if(game.editor.overlay.isolation) { //TODO isolation
-			game.editor.overlay.isolation.forEach(searchIn);
-		} else*/ if(game.__EDITOR_mode) {
+		if(game.__EDITOR_mode) {
 			searchIn(game.currentContainer);
 		} else {
 			game.stage.forAllChildren((o) => {

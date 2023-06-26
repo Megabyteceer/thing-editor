@@ -48,8 +48,6 @@ interface NodeExtendData {
 
 	hideAllChildren?: boolean;
 
-	rotatorLocked?: boolean;//TODO
-
 	hidePropsEditor?: {
 		title: string,
 		visibleFields: KeyedMap<true>

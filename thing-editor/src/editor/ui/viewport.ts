@@ -10,6 +10,7 @@ import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
+import libInfo from "thing-editor/src/editor/utils/lib-info";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game, { FixedViewportSize } from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -142,8 +143,6 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 
 			this.forceUpdate();
 
-			//TODO возможно что и так все ок будет. game.pixiApp.ticker._requestIfNeeded(); //restore broken ticker if necessary.
-
 			playTogglingTime = false;
 			game.onResize();
 		}
@@ -243,7 +242,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					R.hr(),
 					R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 					R.hr(),
-					//TODO fileLibraryName ? R.libInfo(fileLibraryName, prefabFile.fileName).icon : undefined,
+					fileLibraryName ? libInfo(prefabFile) : undefined,
 					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes', 'main-btn', { key: 'Enter' }),
 					R.btn(R.icon('reject'), () => {
 						if(game.editor.isCurrentContainerModified) {

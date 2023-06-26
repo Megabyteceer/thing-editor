@@ -108,7 +108,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		let val = parseFloat((ev.target as HTMLInputElement).value);
 		for(let k of this.keyframes) {
 			if(k.props.keyFrame.m > TimelineKeyFrameType.DISCRETE) {
-				k.props.keyFrame.b = -val; //TODO negative
+				k.props.keyFrame.b = -val;
 			}
 		}
 		this.onKeyframeChanged();

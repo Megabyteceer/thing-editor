@@ -5,6 +5,7 @@ import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
+import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 
 const MIN_VOL_THRESHOLD = 0.005;
 const MIN_VOL_ENABLE = 0.05;
@@ -143,7 +144,7 @@ export default class Sound {
 
 	/// #if EDITOR
 	static __resetSounds() {
-		//TODO MusicFragment.__stopAll();
+		MusicFragment.__stopAll();
 		for(let soundName in Lib.__soundsList) {
 
 			let snd = Lib.getSound(soundName);

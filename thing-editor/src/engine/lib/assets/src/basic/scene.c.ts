@@ -82,11 +82,6 @@ export default class Scene extends Container {
 let allObjectToRefresh: KeyedMap<Container>;
 const _refreshChildRef = (o: Container) => {
 	if(o.name) {
-		/// #if EDITOR
-		/*if(game.__EDITOR_mode && (o.parent instanceof PrefabReference) && (o.parent.__previewNode === o)) { //TODO prefabReference??
-			return;
-		}*/
-		/// #endif
 		allObjectToRefresh[o.name] = o;
 	}
 };

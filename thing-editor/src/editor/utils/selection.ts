@@ -139,7 +139,7 @@ export default class Selection extends Array<Container> {
 			this.clearSelection();
 			data.some(selectNodeByPath);
 		}
-		// TreeNode.clearLastClicked(); //TODO:
+		TreeNode.clearLastClicked();
 		game.editor.refreshTreeViewAndPropertyEditor();
 		IS_SELECTION_LOADING_TIME = false;
 	}

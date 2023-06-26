@@ -33,7 +33,7 @@ module.exports = async function (options, notify) {
 	}
 	let filesToConvert = [];
 
-	let probePath = path.join(__dirname, './ffmpeg/bin/ffprobe.exe'); //TODO add ffmpeg in to build
+	let probePath = path.join(__dirname, './ffmpeg/bin/ffprobe.exe');
 	if(!fs.existsSync(probePath)) {
 		probePath = 'ffprobe';
 	}

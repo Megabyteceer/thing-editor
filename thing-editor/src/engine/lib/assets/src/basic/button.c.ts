@@ -238,7 +238,7 @@ export default class Button extends DSprite {
 					f = getValueByPath(action, this, true);
 				} catch(er) { } // eslint-disable-line no-empty
 				if(typeof f !== 'function') {
-					game.editor.ui.status.error('Wrong onClick handler: ' + action, 32054, this, 'onClick>' + i); //TODO > array item selector
+					game.editor.ui.status.error('Wrong onClick handler: ' + action, 32054, this, 'onClick>' + i);
 				}
 			});
 		}

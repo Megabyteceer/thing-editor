@@ -1,5 +1,6 @@
 import { BLEND_MODES, Mesh, Sprite } from "pixi.js";
 import type { KeyedObject, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -23,7 +24,7 @@ const imageJSPropertyDescriptor = {
 					game.editor.ui.status.warn('Texture "' + v + '" has non even sized bounds ('
 						+ this.texture.width + 'x' + this.texture.height + '). It is can cause unwanted blurring for objects with centralized pivot point.', 32028,
 						() => {
-							// fs.editFile(game.resourcesPath + 'img/' + v); TODO: keep file desc in texture and get fill path there
+							game.editor.editSource(fs.getFileByAssetName(v, AssetType.IMAGE).fileName);
 						});
 				}
 			}

@@ -1,7 +1,9 @@
 import { Point, isMobile } from "pixi.js";
 import { KeyedObject } from "thing-editor/src/editor/env";
 import game from "thing-editor/src/engine/game";
+import Button from "thing-editor/src/engine/lib/assets/src/basic/button.c";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import Sound from "thing-editor/src/engine/utils/sound";
 
 const globalPoint = new Point();
 const stagePoint = new Point();
@@ -19,7 +21,7 @@ const mouseHandlerGlobalDown = (ev: PointerEvent) => {
 		/// #endif
 
 		game.currentContainer && (game.currentContainer as Scene).onMouseDown && game.currentContainer.interactiveChildren) {
-		//TODO Sound._unlockSound();
+		Sound._unlockSound();
 		(game.currentContainer as Scene).onMouseDown(game.mouse, ev);
 	}
 };
@@ -92,7 +94,7 @@ const mouseHandlerGlobal = (ev: PointerEvent) => {
 
 if((window as KeyedObject).cordova) {
 	document.addEventListener('backbutton', function () {
-		// TODO Button._tryToClickByKeycode(27);
+		Button._tryToClickByKeycode(27);
 	}, false);
 	game.exitApp = (enforced = false) => {
 		if(enforced) {
@@ -119,7 +121,7 @@ const focusChangeHandler = (activated: boolean) => {
 		game.isFocused = activated;
 
 		if(game.pixiApp) {
-			// TODO setTimeout(() => game.keys.resetAll(), 10);
+			setTimeout(() => game.keys.resetAll(), 10);
 		}
 	}
 };

@@ -9,6 +9,7 @@ import Lib from "thing-editor/src/engine/lib";
 
 
 import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
+import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
 import Keys from "thing-editor/src/engine/utils/keys";
@@ -730,7 +731,7 @@ class Game {
 				i--;
 			}
 		}
-		// TODO this.keys.update();
+		this.keys.update();
 		Lib._cleanupRemoveHolders();
 		/// #if EDITOR
 		this.__time++;
@@ -745,7 +746,6 @@ class Game {
 	}
 
 	_hideCurrentFaderAndStartScene() {
-		//TODO cleanup
 		(currentFader as Container).gotoLabelRecursive('hide fader');
 		hidingFaders.unshift(currentFader as Container);
 		/// #if EDITOR
@@ -766,7 +766,7 @@ class Game {
 				if(game.currentScene._onShowCalled) {
 					game.currentScene.onHide();
 				}
-				tryToRemoveCurrentScene(); //TODO cleanup
+				tryToRemoveCurrentScene();
 			}
 			topStackElement = scenesStack[scenesStack.length - 1] as Scene;
 			scenesStack[scenesStack.length - 1] = game._setCurrentSceneContent(topStackElement);
@@ -1096,7 +1096,7 @@ class Game {
 	set __speedMultiplier(v) {
 		if(v !== __speedMultiplier) {
 			__speedMultiplier = v;
-			//TODO MusicFragment.__applyGameSpeed(v);
+			MusicFragment.__applyGameSpeed(v);
 		}
 	}
 	/// #endif
@@ -1218,7 +1218,7 @@ export type { FixedViewportSize };
 (Game.prototype.applyProjectDesc as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 (Game.prototype.showModal as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
 	return game.editor.choosePrefab("Choose prefab to show as modal:");
-}; //TODO  add all helpers
+}; //TODO  add all data path selector helpers
 /*
 /// #endif
 	import preloaderAssets from 'game-root/.tmp/assets-preloader' assert { type: 'json' };

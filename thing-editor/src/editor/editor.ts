@@ -412,10 +412,6 @@ class Editor {
 
 	}
 
-	async build(_isDebugBuild = false) { // eslint-disable-line @typescript-eslint/no-unused-vars
-		//TODO:
-	}
-
 	saveProjectDesc() {
 		debouncedCall(this.__saveProjectDescriptorInner);
 	}
@@ -609,8 +605,6 @@ class Editor {
 		}
 	}
 
-	//TODO: set diagnosticLevel settings to informations to show spell typos and fix them after all
-
 	previewSound(soundName: string) {
 
 		if(Lib.getSound(soundName).playing()) {
@@ -688,7 +682,7 @@ class Editor {
 		});
 	}
 
-	onObjectsPropertyChanged(o: Container, field: EditablePropertyDesc | string, val: any, isDelta?: boolean) { // TODO два похожих метода. Сделать один для выделения и объекта
+	onObjectsPropertyChanged(o: Container, field: EditablePropertyDesc | string, val: any, isDelta?: boolean) {
 		assert((!isDelta) || (typeof isDelta === 'boolean'), "isDelta expected to be bool");
 		let changed = false;
 		if(typeof field === 'string') {

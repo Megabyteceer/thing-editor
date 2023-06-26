@@ -63,7 +63,7 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 }
 
 const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
-	assert(file.asset.c, "rendering of prefab referenced to prefab not supported. TODO");
+	assert(file.asset.c, "scene can not be prefab reference");
 
 	const isCurrent = (file.assetName === game.editor.currentSceneName) || (AssetsView.currentItemName === game.editor.currentSceneName);
 

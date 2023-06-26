@@ -171,18 +171,18 @@ const pathDebugging = (o: Container, path: string) => {
 	}
 };
 
-/* TODO: 
+
 setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
 	return new Promise((resolve) => {
-		editor.ui.modal.showPrompt('Enter data path', '').then((enteredText1) => {
+		game.editor.ui.modal.showPrompt('Enter data path', '').then((enteredText1) => {
 			if(enteredText1) {
-				editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
+				game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
 					resolve([enteredText1, enteredText2]);
 				});
 			}
 		});
 	});
-};*/
+};
 /// #endif
 
 export default getValueByPath;
