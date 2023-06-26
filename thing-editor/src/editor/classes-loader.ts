@@ -1,4 +1,4 @@
-import type { Classes, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import type { GameClasses, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
 import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-checker";
 import Lib from "thing-editor/src/engine/lib";
@@ -32,7 +32,7 @@ export default class ClassesLoader {
 
 	static isClassesWaitsReloading: boolean;
 
-	static async reloadClasses(): Promise<Classes | undefined> {
+	static async reloadClasses(): Promise<GameClasses | undefined> {
 
 		componentsVersion++;
 
@@ -155,7 +155,7 @@ export default class ClassesLoader {
 			return imp(moduleName, versionQuery).then(onClassLoaded);
 
 		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {
-			let classes: Classes = {};
+			let classes: GameClasses = {};
 
 			for(let c of _classes as SourceMappedConstructor[]) {
 				if(!c) {

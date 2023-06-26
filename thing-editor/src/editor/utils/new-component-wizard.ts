@@ -15,7 +15,7 @@ const newComponentWizard = async () => {
 
 	let chosenFolder: string | undefined = await game.editor.chooseAssetsFolder("Where to create component?");
 
-	if(!chosenFolder!) {
+	if(!chosenFolder) {
 		return;
 	}
 

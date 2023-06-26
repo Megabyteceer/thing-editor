@@ -310,7 +310,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			R.div({
 				title: this.props.onItemPreview ? 'Click to choose. Ctrl + Click to preview.' : undefined,
 				className: 'assets-view window-scrollable-content',
-				onClick: this.props.onItemSelect ? (ev: MouseEvent) => {
+				onMouseDown: this.props.onItemSelect ? (ev: MouseEvent) => {
 					let itemElement = (ev.target as HTMLDivElement).closest('.assets-item') as HTMLDivElement;
 					if(itemElement) {
 						let chosen = (itemElement.querySelector('.selectable-text') as HTMLSpanElement).innerText;

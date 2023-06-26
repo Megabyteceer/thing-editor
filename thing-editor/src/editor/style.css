@@ -830,6 +830,10 @@ input[disabled] {
 	padding-left: 15px;
 }
 
+.assets-view {
+	text-align: left;
+}
+
 .lib-info:hover {
 	outline: 1px solid #0eca75;
 }

@@ -23,7 +23,7 @@ const assetItemRendererSound = (file: FileDesc) => {
 				], ev);
 			},
 			onMouseDown: (ev: PointerEvent) => {
-				if(ev.buttons === 1) {
+				if(ev.buttons === 1 && !(ev.target as HTMLDivElement).closest('.modal-content')) {
 					game.editor.previewSound(file.assetName);
 				}
 			}

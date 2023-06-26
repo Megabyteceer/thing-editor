@@ -1,13 +1,14 @@
 import { Application, BaseTexture, Container, GC_MODES, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
 import type { __EditorType } from "thing-editor/src/editor/editor";
-import type { AssetsDescriptor, Classes, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
+import type { AssetsDescriptor, GameClasses, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import assert from "thing-editor/src/engine/debug/assert";
 import Lib from "thing-editor/src/engine/lib";
 
 
+import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
 import Keys from "thing-editor/src/engine/utils/keys";
@@ -76,7 +77,7 @@ class Game {
 	projectDesc!: ProjectDesc;
 	all!: KeyedMap<Container>;
 
-	classes!: Classes;
+	classes!: GameClasses;
 	pixiApp!: Application;
 	stage!: Container;
 
@@ -739,6 +740,10 @@ class Game {
 		//*/
 	}
 
+	get currentFader() {
+		return currentFader;
+	}
+
 	_hideCurrentFaderAndStartScene() {
 		//TODO cleanup
 		(currentFader as Container).gotoLabelRecursive('hide fader');
@@ -747,7 +752,7 @@ class Game {
 		this.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
 		currentFader = null;
-		//TODO BgMusic._recalculateMusic();
+		BgMusic._recalculateMusic();
 	}
 
 	_processScenesStack() {
@@ -860,7 +865,7 @@ class Game {
 				}
 				currentFader = Lib.loadPrefab(faderType!);
 				this.stage.addChild(currentFader);
-				//TODO BgMusic._recalculateMusic();
+				BgMusic._recalculateMusic();
 			}
 			/// #if EDITOR
 			this.editor.refreshTreeViewAndPropertyEditor();
@@ -909,7 +914,7 @@ class Game {
 
 		container.interactiveChildren = false;
 		game.stage.addChild(container);
-		//TODO BgMusic._recalculateMusic();
+		BgMusic._recalculateMusic();
 		/// #if EDITOR
 		game.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
@@ -941,7 +946,7 @@ class Game {
 			modalToHide.interactiveChildren = false;
 			hidingModals.push(modalToHide);
 		}
-		//TODO BgMusic._recalculateMusic();
+		BgMusic._recalculateMusic();
 
 		/// #if EDITOR
 		game.editor.refreshTreeViewAndPropertyEditor();
@@ -987,7 +992,7 @@ class Game {
 			return;
 		}
 		game._loadingErrorIsDisplayed = true;
-		//TODO BgMusic._recalculateMusic();
+		BgMusic._recalculateMusic();
 		/// #if EDITOR
 		this.editor.ui.modal.showError('Could not load file: ' + url);
 		return;
@@ -1150,7 +1155,7 @@ class Game {
 			Lib.destroyObjectAndChildren(hidingFaders.pop() as Container);
 		}
 		Lib.__clearStaticScenes();
-		//TODO BgMusic._recalculateMusic();
+		BgMusic._recalculateMusic();
 	}
 
 	/// #endif

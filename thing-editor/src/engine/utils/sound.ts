@@ -4,6 +4,7 @@ import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 
 const MIN_VOL_THRESHOLD = 0.005;
 const MIN_VOL_ENABLE = 0.05;
@@ -47,11 +48,11 @@ export default class Sound {
 		assert(!isNaN(v), "invalid value for 'musicVol'. Valid number value expected.", 10001);
 		v = Math.max(0, Math.min(1, v));
 		if(musicVol !== v) {
-			//TODO BgMusic._clearCustomFades(0.2);
+			BgMusic._clearCustomFades(0.2);
 		}
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
-		//TODO BgMusic._recalculateMusic();
+		BgMusic._recalculateMusic();
 	}
 
 	static get fullVol() {
@@ -82,7 +83,7 @@ export default class Sound {
 
 	static set musicEnabled(val) {
 		if(Sound.musicEnabled !== val) {
-			//TODO BgMusic._clearCustomFades(0.2);
+			BgMusic._clearCustomFades(0.2);
 
 			if(val) {
 				Sound.musicVol = normalizeVolForEnabling(game.settings.getItem('musicVolEnabling'), game.projectDesc.defaultMusVol);
@@ -290,9 +291,9 @@ const soundLockHandler = (isLocked = false) => {
 		EMPTY_SOUND.off('play');
 		EMPTY_SOUND.unload();
 		Sound.isSoundsLockedByBrowser = false;
-		/* TODO if(game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}*/
+		if(game.classes.BgMusic) {
+			(game.classes.BgMusic as any)._recalculateMusic();
+		}
 	}
 };
 

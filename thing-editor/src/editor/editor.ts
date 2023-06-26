@@ -29,6 +29,7 @@ import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
+import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import Pool from "thing-editor/src/engine/utils/pool";
@@ -55,6 +56,8 @@ const parseLibName = (name: string): LibInfo => {
 import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr full reload
 	ev.path = 'vite please, do not reload anything.html';
 });
+
+let previewedSound: HowlSound;
 
 class Editor {
 
@@ -609,10 +612,15 @@ class Editor {
 	//TODO: set diagnosticLevel settings to informations to show spell typos and fix them after all
 
 	previewSound(soundName: string) {
+
 		if(Lib.getSound(soundName).playing()) {
 			Lib.getSound(soundName).stop();
 		} else {
+			if(previewedSound && previewedSound.playing()) {
+				previewedSound.stop();
+			}
 			Sound.play(soundName);
+			previewedSound = Lib.getSound(soundName);
 		}
 	}
 
@@ -811,7 +819,7 @@ class Editor {
 			folders[0].name = R.b(null, folders[0].name);
 			const chosenItem = await game.editor.ui.modal.showListChoose(title, folders, false, true, undefined, true);
 			if(chosenItem) {
-				return chosenItem.pureName;
+				return chosenItem.pureName || chosenItem.name;
 			}
 		}
 	}

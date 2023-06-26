@@ -153,7 +153,7 @@
 					"default":"0.0.1"
 				},
 				"defaultMusVol":  {
-					"description": "default global volume level for all BGMusic",
+					"description": "default global volume level for all BgMusic",
 					"type": "number",
 					"default":1
 				},

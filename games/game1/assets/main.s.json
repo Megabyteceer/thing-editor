@@ -154,6 +154,14 @@
 				"text": "",
 				"translatableText": "awdawdawd"
 			}
+		},
+		{
+			"c": "BgMusic",
+			"p": {
+				"intro": "bg_music_i",
+				"loop": "bg_music",
+				"isPlaying": false
+			}
 		}
 	]
 }

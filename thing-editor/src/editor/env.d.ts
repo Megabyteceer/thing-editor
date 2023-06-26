@@ -68,6 +68,8 @@ interface NodeExtendData {
 	__isPreviewMode?: boolean;
 
 	__pathBreakpoint?: any;
+
+	__fragmentOwnerId?: number;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number | boolean;
@@ -103,7 +105,7 @@ interface SourceMappedConstructor extends Constructor {
 	__className: string;
 }
 
-type Classes = {
+interface GameClasses {
 	[key: string]: SourceMappedConstructor;
 }
 

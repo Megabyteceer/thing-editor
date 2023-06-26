@@ -1,5 +1,5 @@
 
-import { AssetsDescriptor, Classes, KeyedMap, KeyedObject, NodeExtendData, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { AssetsDescriptor, GameClasses, KeyedMap, KeyedObject, NodeExtendData, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import TLib from "thing-editor/src/editor/prefabs-typing";
 
 import { Container, Texture } from "pixi.js";
@@ -21,10 +21,11 @@ import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import HowlSound from "thing-editor/src/engine/HowlSound";
+import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import L from "thing-editor/src/engine/utils/l";
 
-let classes: Classes;
+let classes: GameClasses;
 let scenes: KeyedMap<SerializedObject> = {};
 let prefabs: KeyedMap<SerializedObject> = {};
 let staticScenes: KeyedMap<Scene> = {};
@@ -81,7 +82,7 @@ export default class Lib
 		return s;
 	}
 
-	static _setClasses(_classes: Classes) {
+	static _setClasses(_classes: GameClasses) {
 		classes = _classes;
 		game.classes = _classes;
 		/// #if EDITOR
@@ -228,15 +229,15 @@ export default class Lib
 		soundsHowlers[name] = s;
 	}
 
-	static preloadSound(soundId: string
+	static preloadSound(soundId: string | null
 		/// #if EDITOR
-		//TODO , owner: BGMusic
+		, owner?: BgMusic
 		/// #endif
 	) {
 		if(soundId) {
 			/// #if EDITOR
 			if(!soundsHowlers.hasOwnProperty(soundId)) {
-				game.editor.ui.status.error("No sound with id '" + soundId + "' found.", 10043/*, owner TODO*/);
+				game.editor.ui.status.error("No sound with id '" + soundId + "' found.", 10043, owner);
 				return;
 			}
 			/// #endif
