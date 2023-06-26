@@ -20,6 +20,7 @@ import LanguageView from "thing-editor/src/editor/ui/language-view";
 import { Container, Point, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
+import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
@@ -795,6 +796,24 @@ class Editor {
 		}
 
 		this.editSource(c.__sourceFileName as string);
+	}
+
+	async chooseAssetsFolder(title: string): Promise<string | void> {
+
+		if(game.editor.assetsFolders.length === 1) {
+			return game.editor.assetsFolders[0];
+		} else {
+			let folders: ChooseListItem[] = game.editor.assetsFolders.filter(i => (!i.startsWith('thing-editor') || game.editor.settings.getItem('show-system-assets'))).map((folder: string, i: number): ChooseListItem => {
+				return { name: folder };
+			});
+			folders.reverse();
+			folders[0].pureName = folders[0].name as string;
+			folders[0].name = R.b(null, folders[0].name);
+			const chosenItem = await game.editor.ui.modal.showListChoose(title, folders, false, true, undefined, true);
+			if(chosenItem) {
+				return chosenItem.pureName;
+			}
+		}
 	}
 
 	protected saveLastSceneOpenName(name: string) {

@@ -632,6 +632,10 @@ export default class Lib
 		object.name = tmpName;
 	}
 
+	static __preparePrefabReference(o: Container, prefabName: string) {
+		__preparePrefabReference(o, prefabName);
+	}
+
 	static __loadPrefabReference(prefabName: string) {
 		let ret = Lib.loadPrefab(prefabName);
 		__preparePrefabReference(ret, prefabName);

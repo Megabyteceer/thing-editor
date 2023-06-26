@@ -268,47 +268,57 @@ export namespace editorUtils {
 		if(container instanceof Scene) {
 			game.editor.ui.modal.showInfo('You can not save Scene as prefab. Please select some object from scene first.', undefined, 32037);
 		} else {
-			let defaultPrefabName = '';
-			if(PrefabEditor.currentPrefabName) {
-				let a = PrefabEditor.currentPrefabName.split('/');
-				a.pop();
-				defaultPrefabName = a.join('/');
-				if(defaultPrefabName) {
-					defaultPrefabName += '/';
-				}
-			}
 
-			game.editor.ui.modal.showPrompt(R.span(null, 'Enter name for new prefab: ', R.sceneNode(game.editor.selection[0])),
-				defaultPrefabName,
-				(val) => { // filter
-					return val.toLowerCase().replace(prefabNameFilter, '-');
-				},
-				(val) => { //accept
-					if(Lib.prefabs.hasOwnProperty(val)) {
-						return "Prefab with such name already exists";
-					}
-					if(val.endsWith('/') || val.startsWith('/')) {
-						return 'name can not begin or end with "/"';
+			game.editor.chooseAssetsFolder("Where to save prefab?").then((chosenFolder) => {
+
+				if(!chosenFolder!) {
+					return;
+				}
+
+				let defaultPrefabName = '';
+				if(PrefabEditor.currentPrefabName) {
+					let a = PrefabEditor.currentPrefabName.split('/');
+					a.pop();
+					defaultPrefabName = a.join('/');
+					if(defaultPrefabName) {
+						defaultPrefabName += '/';
 					}
 				}
-			).then((enteredName) => {
-				if(enteredName) {
-					const fin = (isConvertedToRef = false) => {
-						Lib.__savePrefab(container, enteredName);
-						if(PrefabEditor.currentPrefabName && !isConvertedToRef) {
-							PrefabEditor.editPrefab(enteredName);
+
+				game.editor.ui.modal.showPrompt(R.span(null, 'Enter name for new prefab: ', R.sceneNode(container)),
+					defaultPrefabName,
+					(val) => { // filter
+						return val.toLowerCase().replace(prefabNameFilter, '-');
+					},
+					(val) => { //accept
+						if(Lib.prefabs.hasOwnProperty(val)) {
+							return "Prefab with such name already exists";
 						}
-					};
-
-					if(container !== game.currentContainer) {
-						game.editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
-
-							fin(); //TODO new prefab reference mechanism
-						}, 'Convert to prefab reference', fin, 'Keep original', true);
-					} else {
-						fin();
+						if(val.endsWith('/') || val.startsWith('/')) {
+							return 'name can not begin or end with "/"';
+						}
 					}
-				}
+				).then((enteredName) => {
+					if(enteredName) {
+						const fin = (isConvertedToRef = false) => {
+							Lib.__savePrefab(container, enteredName);
+							if(PrefabEditor.currentPrefabName && !isConvertedToRef) {
+								PrefabEditor.editPrefab(enteredName);
+							}
+						};
+
+						if(container !== game.currentContainer) {
+							game.editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
+								fin(true);
+								Lib.__preparePrefabReference(container, enteredName);
+								Lib.__invalidateSerializationCache(container);
+								game.editor.sceneModified();
+							}, 'Convert to prefab reference', fin, 'Keep original', true);
+						} else {
+							fin();
+						}
+					}
+				});
 			});
 		}
 	}

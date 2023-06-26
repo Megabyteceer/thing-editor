@@ -13,22 +13,7 @@ interface ChooseTempletItem extends ChooseListItem {
 
 const newComponentWizard = async () => {
 
-	let chosenFolder: string;
-
-	if(game.editor.assetsFolders.length === 1) {
-		chosenFolder = game.editor.assetsFolders[0];
-	} else {
-		let folders: ChooseListItem[] = game.editor.assetsFolders.filter(i => (!i.startsWith('thing-editor') || game.editor.settings.getItem('show-system-assets'))).map((folder: string, i: number): ChooseListItem => {
-			return { name: folder };
-		});
-		folders.reverse();
-		folders[0].pureName = folders[0].name as string;
-		folders[0].name = R.b(null, folders[0].name);
-		const chosenItem = await game.editor.ui.modal.showListChoose("Where to create component?", folders, false, true, undefined, true);
-		if(chosenItem) {
-			chosenFolder = chosenItem.pureName;
-		}
-	}
+	let chosenFolder: string = await game.editor.chooseAssetsFolder("Where to create component?");
 
 	if(!chosenFolder!) {
 		return;
