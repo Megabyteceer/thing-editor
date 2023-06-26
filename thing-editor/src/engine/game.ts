@@ -12,6 +12,7 @@ import Lib from "thing-editor/src/engine/lib";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
 import Keys from "thing-editor/src/engine/utils/keys";
+import L from "thing-editor/src/engine/utils/l";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 import Settings from "thing-editor/src/engine/utils/settings";
 import Sound from "thing-editor/src/engine/utils/sound";
@@ -117,6 +118,8 @@ class Game {
 
 	keys = Keys;
 
+	L!: typeof L;
+
 	__time = 0;
 	get time() {
 		return this.__time;
@@ -140,7 +143,6 @@ class Game {
 		/// #if EDITOR
 		(this.onResize as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 		/// #endif
-
 
 		stage = new Container();
 		stage.name = 'stage';

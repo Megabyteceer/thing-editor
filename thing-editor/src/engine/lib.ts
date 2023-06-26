@@ -21,6 +21,7 @@ import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import HowlSound from "thing-editor/src/engine/HowlSound";
+import L from "thing-editor/src/engine/utils/l";
 
 let classes: Classes;
 let scenes: KeyedMap<SerializedObject> = {};
@@ -31,7 +32,11 @@ let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
-export default class Lib extends TLib {
+export default class Lib
+	/// #if EDITOR
+	extends TLib
+/// #endif
+{
 
 	static REMOVED_TEXTURE: Texture;
 
@@ -372,6 +377,10 @@ export default class Lib extends TLib {
 
 		if(game.classes) {
 			normalizeSerializedData();
+		}
+
+		if(data.text) {
+			L.setLanguagesAssets(data.text);
 		}
 
 		for(const textureName of data.images) {

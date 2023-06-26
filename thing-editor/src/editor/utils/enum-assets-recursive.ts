@@ -28,6 +28,7 @@ const addPrefabToAssetsList = (prefabName: string, ret: Set<FileDesc>) => {
 		assert(file, "Wrong prefab name.");
 		if(!ret.has(file)) {
 			ret.add(file);
+
 			enumAssetsPropsRecursive(Lib.prefabs[prefabName], ret);
 		}
 	}
@@ -48,7 +49,7 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 				if(resourceName && Lib.resources[resourceName]) {
 					addResourceToAssetsList(Lib.resources[resourceName], ret);
 				}
-			} else if(field.isTranslatableKey) {
+			} else if(field.type === 'l18n') {
 				let key = o.p[field.name];
 				if(key && L.has(key)) {
 					let array = [key, L(key)];
@@ -56,10 +57,10 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 					if(prefix && key.startsWith(prefix)) {
 						array.push(key.replace(prefix, LOCALES_PREFIX_HOLDER));
 					}
-					ret.add(array.join(LOCALES_SPLITTER));
+					ret.add(array.join(LOCALES_SPLITTER) as any);
 				}
-			} */
-			else if(field.type === 'prefab') {
+			}
+			else */ if(field.type === 'prefab') {
 				let prefabName = o.p[field.name];
 				if(Lib.hasPrefab(prefabName)) {
 					addPrefabToAssetsList(prefabName, ret);

@@ -1,7 +1,6 @@
 import { Container } from "pixi.js";
 import type { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
-import LanguageView from "thing-editor/src/editor/ui/language-view";
 
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -57,7 +56,7 @@ const L: TL = ((id: string, values?: KeyedObject): string => {
 			} else {
 				let txt = R.span(null, 'Do you want to create translatable key ', R.b(null, '"' + id + '"'), '?');
 				game.editor.ui.modal.showEditorQuestion(txt, txt, () => {
-					LanguageView.editKey(id);
+					game.editor.LanguageView.editKey(id);
 				}, 'Create');
 			}
 		};
@@ -122,7 +121,9 @@ L.setCurrentLanguage = (languageId?: string) => {
 
 L.setLanguagesAssets = (_languages: KeyedMap<KeyedMap<string>>) => {
 	isLangDataLoaded = true;
-	languages = _languages;
+	for(let langId in _languages) {
+		languages[langId] = Object.assign(languages[langId] || {}, _languages[langId]);
+	}
 	L.setCurrentLanguage();
 };
 

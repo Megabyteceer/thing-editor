@@ -1,5 +1,5 @@
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
-import { AssetsDescriptor, KeyedMap, SerializedObject, SoundAssetEntry, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { AssetsDescriptor, KeyedMap, KeyedObject, SerializedObject, SoundAssetEntry, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import enumAssetsPropsRecursive from "thing-editor/src/editor/utils/enum-assets-recursive";
@@ -79,10 +79,15 @@ export default class Build {
 		preloaderAssets.add(fs.getFileByAssetName(DEFAULT_FADER_NAME, AssetType.PREFAB));
 		enumAssetsPropsRecursive(Lib.scenes[PRELOADER_SCENE_NAME], preloaderAssets);
 
+		const text = game.editor.projectDesc.embedLocales ?
+			game.editor.LanguageView.__getTextAssets()
+			:
+			undefined;
+
 		///////////////////////////////////////////////////////////
 		/// assets-preloader.json ////////////////////////////////
 		/////////////////////////////////////////////////////////
-		saveAssetsDescriptor(preloaderAssets, 'assets-preloader.json', game.projectDesc);
+		saveAssetsDescriptor(preloaderAssets, 'assets-preloader.json', game.projectDesc, text);
 
 		const mainAssets: Set<FileDesc> = new Set();
 		const allAssets = fs.getAssetsList();
@@ -198,14 +203,13 @@ function findClassNameInPrefabData(name: string, data: SerializedObject): boolea
 	return false;
 }
 
-function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDesc?: ProjectDesc) {
+function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDesc?: ProjectDesc, text?: KeyedObject) {
 
 	let images: string[] = [];
-	let resources = {};
+	//let resources = {};
 	/* TODO */
 
 	let sounds: SoundAssetEntry[] = [];
-	/* TODO */
 
 	const scenes: KeyedMap<SerializedObject> = {};
 	const prefabs: KeyedMap<SerializedObject> = {};
@@ -235,19 +239,17 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 				sounds.push([file.assetName, (file as FileDescSound).asset.preciseDuration]);
 			}
 
-			/* TODO
-			if(game.editor.projectDesc.embedLocales) {
-				assetsObj.text = L.__getTextAssets();
-			}*/
+
 		}
 	});
 	let assetsObj: AssetsDescriptor = {
 		scenes,
 		prefabs,
 		images,
-		resources,
+		//resources,
 		sounds,
-		projectDesc
+		projectDesc,
+		text
 	};
 
 	fs.writeFile(

@@ -176,7 +176,7 @@
 				"outFiles": [],
 				"preLaunchTask": "launchElectronIfStopped",
 				/*"trace": {
-					"logFile": "trace.txt"
+					"logFile": "C:\\tmp\\trace.txt"
 				}*/
 			},
 			{

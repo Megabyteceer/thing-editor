@@ -147,6 +147,8 @@ declare global {
 	let thingEditorServer: ThingEditorServer // exposed from electron
 }
 
+
+
 /** sound name, duration */
 type SoundAssetEntry = [soundName: string, duration: number];
 
@@ -154,8 +156,8 @@ interface AssetsDescriptor {
 	scenes: KeyedMap<SerializedObject>;
 	prefabs: KeyedMap<SerializedObject>;
 	images: string[];
-	resources: KeyedObject
 	sounds: SoundAssetEntry[];
+	text?: KeyedObject;
 	projectDesc?: ProjectDesc;
 }
 

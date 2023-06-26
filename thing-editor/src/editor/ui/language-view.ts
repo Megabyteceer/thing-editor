@@ -15,11 +15,10 @@ import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
 import L from "thing-editor/src/engine/utils/l";
 
-type L18NData = KeyedMap<string>;
-
 /** dir_name >> language >> FileDescL18n */
 const assetsFiles: Map<string, Map<string, FileDescL18n>> = new Map();
 
+type L18NData = KeyedMap<string>;
 
 let currentLanguageData: L18NData;
 
@@ -36,6 +35,7 @@ let instance: LanguageView | null;
 
 let assetsFilesIsDirty = false;
 
+let ignoreEdit = false;
 
 export default class LanguageView extends ComponentDebounced<ClassAttributes<LanguageView>> {
 
@@ -73,8 +73,11 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 	}
 
 	static removeAsset(file: FileDescL18n) {
-		assetsFiles.get(file.dir)!.delete(file.lang);
-		assetsFilesIsDirty = true;
+		const dirAssets = assetsFiles.get(file.dir);
+		if(dirAssets) {
+			dirAssets.delete(file.lang);
+			assetsFilesIsDirty = true;
+		}
 	}
 
 	static toggle() {
@@ -86,8 +89,20 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 		}
 	}
 
-	static editKey(id: string | null, language: string = L.getCurrentLanguageId()) {
-		LanguageView.toggle();
+	static editKey(key: string | null, langId: string = L.getCurrentLanguageId()) {
+		if(!ignoreEdit) {
+			ignoreEdit = true;
+			setTimeout(() => {
+				ignoreEdit = false;
+			}, 10);
+			showTextTable().then(() => {
+				if(key) {
+					view!.createKeyOrEdit(key, langId);
+				} else {
+					view!.onAddNewKeyClick();
+				}
+			});
+		}
 	}
 
 	static __validateTextData() {
@@ -127,6 +142,10 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 			}
 		});
 	}
+
+	static __getTextAssets() {
+		return languages;
+	}
 }
 
 const assetsUpdateHandler = (enforced = false) => {
@@ -147,7 +166,7 @@ const init = () => {
 
 
 
-const __serializeLanguage = (langData: KeyedObject) => {
+const __serializeLanguage = (langData: KeyedObject, empty = false) => {
 	let ret: KeyedObject = {};
 	for(let srcId in langData) {
 		if(langData.hasOwnProperty(srcId)) {
@@ -160,7 +179,7 @@ const __serializeLanguage = (langData: KeyedObject) => {
 				}
 				r = r[pathPart];
 			}
-			r[a[0]] = langData[srcId];
+			r[a[0]] = empty ? '' : langData[srcId];
 		}
 	}
 	return ret;
@@ -176,15 +195,14 @@ const parseAssets = () => {
 	langsIdsList.length = 0;
 	idsList.length = 0;
 
-	let lastDir: string;
-
 	languages = {};
+
+	let lastDir: string;
 
 	for(let folder of game.editor.assetsFolders) {
 		assetsFiles.forEach((folderFiles: Map<string, FileDescL18n>) => {
 
-			const firstFile = folderFiles.get(L.getCurrentLanguageId())!;
-			lastDir = firstFile.dir;
+			const firstFile = folderFiles.values().next().value;
 			if(folder === (firstFile.lib ? firstFile.lib.assetsDir : game.editor.currentProjectAssetsDir)) {
 				assetsDirs.push(firstFile.dir);
 
@@ -201,7 +219,7 @@ const parseAssets = () => {
 					}
 					Object.assign(langData, file.asset);
 
-
+					lastDir = file.dir;
 				});
 			}
 		});
@@ -213,7 +231,7 @@ const parseAssets = () => {
 
 	currentDirAssets = assetsFiles.get(currentDir)!;
 
-	const firstFile = currentDirAssets.get(L.getCurrentLanguageId())!;
+	const firstFile = currentDirAssets.values().next().value;
 	for(let key in firstFile.asset) {
 		idsList.push(key);
 	}
@@ -236,6 +254,12 @@ const parseAssets = () => {
 		value: null,
 		name: '- - -'
 	});
+
+	assetsFiles.forEach((folderFiles: Map<string, FileDescL18n>, folderName: string) => {
+		if(!folderFiles.has(L.getCurrentLanguageId())) {
+			createFilesForLanguage(L.getCurrentLanguageId());
+		}
+	});
 }
 
 const sortTextList = (a: SelectEditorItem, b: SelectEditorItem) => {
@@ -245,8 +269,6 @@ const sortTextList = (a: SelectEditorItem, b: SelectEditorItem) => {
 		return -1;
 	}
 }
-
-
 
 //////////////////////////////////////////////////////////
 ////// TABLE ////////////////////////////////////////////
@@ -315,24 +337,15 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			}
 		).then((langId) => {
 			if(langId) {
-				let langData: L18NData = {};
-
-				for(let langId of idsList) {
-					langData[langId] = '';
-				}
-				for(let dir of assetsDirs) {
-					let newAsset = Object.assign({}, currentDirAssets.get(langsIdsList[0]));
-					newAsset.lang = langId;
-					newAsset.asset = langData;
-					newAsset.assetName = dir + langId;
-					newAsset.fileName = dir + langId + '.json';
-					newAsset.dir = dir;
-					assetsFiles.get(dir)!.set(langId, newAsset);
-					fs.saveAsset(newAsset.assetName, AssetType.RESOURCE, JSON.stringify(langData));
-				}
+				createFilesForLanguage(langId);
 				this.forceUpdate();
 			}
 		});
+	}
+
+	onAddNewFolderClick() {
+		alert("TODO");
+		//choose library of project where assets will be created; if all libraries and project has localization data - do not show "create folder" button'
 	}
 
 	onAddNewKeyClick() {
@@ -485,6 +498,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 					}
 				}, id),
 				langsIdsList.map((langId) => {
+
 					let text = currentDirAssets.get(langId)!.asset[id];
 
 					let areaId = textAreaID(langId, id);
@@ -510,6 +524,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
 			R.btn('+ Add language...', this.onAddNewLanguageClick),
+			R.btn('+ Add l18n folder...', this.onAddNewFolderClick),
 			R.input(this.searchInputProps),
 			(assetsDirs.length > 1) ? R.div(null, 'Localization data source: ',
 				h(SelectEditor, {
@@ -522,7 +537,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 
 					}, noCopyValue: true, value: currentDir, select
 				})
-			) : undefined,
+			) : R.div(null, currentDir),
 			R.div(langsEditorWrapperProps,
 				header,
 				R.div(tableBodyProps,
@@ -570,4 +585,22 @@ function onModified(modifiedLangId?: string) {
 		debounceTimeOut = 0;
 	}, 600);
 	parseAssets();
+}
+
+function createFilesForLanguage(langId: string) {
+	let langData: KeyedObject = __serializeLanguage((currentDirAssets.values().next().value as FileDescL18n).asset, true);
+	let created = false;
+
+	assetsFiles.forEach((dirAssets: Map<string, FileDescL18n>, dir: string) => {
+		if(!dirAssets.has(langId)) {
+			const fileName = dir + '/' + langId + '.json';
+			fs.writeFile(fileName, langData);
+			game.editor.ui.status.warn("Localization file " + fileName + ' created.');
+
+			created = true;
+		}
+		if(created) {
+			fs.refreshAssetsList();
+		}
+	});
 }

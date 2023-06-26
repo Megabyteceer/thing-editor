@@ -145,6 +145,15 @@
 				"text": "",
 				"translatableText": "menu"
 			}
+		},
+		{
+			"c": "Text",
+			"p": {
+				"x": 238,
+				"y": 468,
+				"text": "",
+				"translatableText": "awdawdawd"
+			}
 		}
 	]
 }
