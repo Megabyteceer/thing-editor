@@ -5,7 +5,7 @@ import TLib from "thing-editor/src/editor/prefabs-typing";
 import { Container, Texture } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/assets/scene.c";
+
 import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
@@ -21,6 +21,7 @@ import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import HowlSound from "thing-editor/src/engine/HowlSound";
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import L from "thing-editor/src/engine/utils/l";
 
 let classes: Classes;

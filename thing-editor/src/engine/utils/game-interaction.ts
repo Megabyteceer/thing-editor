@@ -1,7 +1,7 @@
 import { Point, isMobile } from "pixi.js";
 import { KeyedObject } from "thing-editor/src/editor/env";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/assets/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 const globalPoint = new Point();
 const stagePoint = new Point();

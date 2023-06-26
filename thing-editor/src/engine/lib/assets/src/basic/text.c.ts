@@ -7,7 +7,8 @@ import LanguageView from "thing-editor/src/editor/ui/language-view";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import ___Guide from "thing-editor/src/engine/lib/assets/___system/guide.c";
+import ___Guide from "thing-editor/src/engine/lib/assets/src/___system/guide.c";
+
 import L from "thing-editor/src/engine/utils/l";
 
 export default Text;

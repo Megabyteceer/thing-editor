@@ -749,8 +749,8 @@ class Editor {
 
 	getFieldNameByValue(node: Container, fieldValue: any) {
 		if(node instanceof Container) {
-			for(let p of(node.constructor as SourceMappedConstructor).__editableProps) {
-
+			const props = (node.constructor as SourceMappedConstructor).__editableProps;
+			for(let p of props) {
 				if((node as KeyedObject)[p.name] === fieldValue) {
 					return p.name;
 				}
@@ -765,7 +765,7 @@ class Editor {
 			navigator.clipboard.writeText(text).then(() => {
 				this.notify(R.span(null, R.icon('copy'), '"' + text + '"'));
 			});
-		});
+		})
 	}
 
 	editSource(fileName: string, line?: number, char?: number) {
@@ -798,12 +798,12 @@ class Editor {
 		this.editSource(c.__sourceFileName as string);
 	}
 
-	async chooseAssetsFolder(title: string): Promise<string | void> {
+	async chooseAssetsFolder(title: string): Promise<string | undefined> {
 
 		if(game.editor.assetsFolders.length === 1) {
 			return game.editor.assetsFolders[0];
 		} else {
-			let folders: ChooseListItem[] = game.editor.assetsFolders.filter(i => (!i.startsWith('thing-editor') || game.editor.settings.getItem('show-system-assets'))).map((folder: string, i: number): ChooseListItem => {
+			let folders: ChooseListItem[] = game.editor.assetsFolders.filter(i => (!i.startsWith('thing-editor') || game.editor.settings.getItem('show-system-assets'))).map((folder: string): ChooseListItem => {
 				return { name: folder };
 			});
 			folders.reverse();

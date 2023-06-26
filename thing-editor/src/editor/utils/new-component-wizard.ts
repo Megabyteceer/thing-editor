@@ -13,7 +13,7 @@ interface ChooseTempletItem extends ChooseListItem {
 
 const newComponentWizard = async () => {
 
-	let chosenFolder: string = await game.editor.chooseAssetsFolder("Where to create component?");
+	let chosenFolder: string | undefined = await game.editor.chooseAssetsFolder("Where to create component?");
 
 	if(!chosenFolder!) {
 		return;
@@ -59,7 +59,7 @@ const newComponentWizard = async () => {
 	}
 
 	let enteredClassName = await game.editor.ui.modal.showPrompt('Enter Component Name',
-		selectedTemplate.isScene ? 'src/MyNewScene' : 'src/MyNewComponent',
+		selectedTemplate.isScene ? 'custom/MyNewScene' : 'custom/MyNewComponent',
 		(val) => { //filter
 			return val.replace(/[^a-zA-Z0-9\/]/gm, '_');
 		},
@@ -121,7 +121,7 @@ const newComponentWizard = async () => {
 	let fileName = enteredClassName.replace(/[A-Z]/gm, (substr: string, offset: number) => {
 		return ((offset === 0 || enteredClassName[offset - 1] === '_') ? '' : '-') + substr.toLowerCase();
 	});
-	fileName = chosenFolder + classFoldername + fileName + '.c.ts';
+	fileName = chosenFolder + 'src/' + classFoldername + fileName + '.c.ts';
 	fs.writeFile(fileName, templateSrc)
 	fs.refreshAssetsList();
 	game.editor.reloadClasses().then(() => {

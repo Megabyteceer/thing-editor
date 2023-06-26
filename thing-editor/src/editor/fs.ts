@@ -7,7 +7,7 @@ import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/assets/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 interface LibInfo {
 	name: string,

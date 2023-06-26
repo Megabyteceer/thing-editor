@@ -261,7 +261,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			}
 
 			if(!showSystemAssets) {
-				if(asset.assetName.startsWith('___')) {
+				if(asset.assetName.startsWith('___') || asset.assetName.indexOf('/___') > 0) {
 					return false;
 				}
 			}

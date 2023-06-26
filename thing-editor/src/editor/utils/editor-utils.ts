@@ -11,7 +11,8 @@ import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib, { constructRecursive } from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/assets/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+
 import loadSafeInstanceByClassName from "thing-editor/src/engine/utils/load-safe-instance-by-class-name";
 
 const prefabNameFilter = /[^a-z\-\/0-9_]/g;

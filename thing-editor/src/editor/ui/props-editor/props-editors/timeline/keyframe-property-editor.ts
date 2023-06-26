@@ -11,7 +11,7 @@ import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/time
 import TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
 import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
 import game from "thing-editor/src/engine/game";
-import { TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/movie-clip/field-player";
+import { TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 const DEFAULT_GRAVITY = 1; //BOUNCE ⬆, BOUNCE ⬇ default gravity and bouncing
 const DEFAULT_BOUNCING = -0.4;

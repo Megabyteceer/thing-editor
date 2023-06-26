@@ -1,7 +1,7 @@
 import { Point, Renderer } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
-import Shape from "thing-editor/src/engine/lib/assets/shape.c";
+import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 
 const zeroPoint = new Point();
 

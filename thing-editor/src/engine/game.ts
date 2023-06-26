@@ -1,13 +1,12 @@
-import { BaseTexture, Container, Point, Texture, TextureGCSystem, utils } from "pixi.js";
+import { Application, BaseTexture, Container, GC_MODES, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
+import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
 import type { __EditorType } from "thing-editor/src/editor/editor";
 import type { AssetsDescriptor, Classes, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
-import Scene from "thing-editor/src/engine/lib/assets/scene.c";
-
-import { Application, GC_MODES, MIPMAP_MODES } from "pixi.js";
-import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import assert from "thing-editor/src/engine/debug/assert";
 import Lib from "thing-editor/src/engine/lib";
+
 
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";

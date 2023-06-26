@@ -5,8 +5,9 @@ import makePathForKeyframeAutoSelect from "thing-editor/src/editor/utils/movie-c
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import type { TimelineData } from "thing-editor/src/engine/lib/assets/movie-clip/field-player";
-import MovieClip from "thing-editor/src/engine/lib/assets/movie-clip/movie-clip.c";
+import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
+import { TimelineData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+
 import { getLatestSceneNodeBypath, getLatestSceneNodesByComplexPath } from "thing-editor/src/engine/utils/get-value-by-path";
 
 /** data about objects, all not empty data-path properties reference to */

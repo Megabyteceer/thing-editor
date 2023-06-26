@@ -1,9 +1,9 @@
 
-import { DisplayObject, NineSlicePlane, Point, Sprite } from "pixi.js";
+import { Container, DisplayObject, NineSlicePlane, Point, Sprite } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
-import Container from "thing-editor/src/engine/lib/assets/container.c.ts";
-import Shape from "thing-editor/src/engine/lib/assets/shape.c";
+import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
+
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import getValueByPath, { setValueByPath } from "thing-editor/src/engine/utils/get-value-by-path";
 

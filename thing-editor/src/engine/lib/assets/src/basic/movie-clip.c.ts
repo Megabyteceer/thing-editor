@@ -11,8 +11,8 @@ import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
-import DSprite from 'thing-editor/src/engine/lib/assets/d-sprite.c';
-import FieldPlayer, { TimelineData, TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineKeyFrameType, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/assets/movie-clip/field-player';
+import DSprite from 'thing-editor/src/engine/lib/assets/src/basic/d-sprite.c';
+import FieldPlayer, { TimelineData, TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineKeyFrameType, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
 

@@ -2,8 +2,8 @@ import { Container } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
-import Shape from "thing-editor/src/engine/lib/assets/shape.c";
-import __Gizmo from "thing-editor/src/engine/lib/assets/___system/gizmo.c";
+import __Gizmo from "thing-editor/src/engine/lib/assets/src/___system/gizmo.c";
+import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 
 let lastX = 0;
 let lastY = 0;

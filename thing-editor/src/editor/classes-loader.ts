@@ -11,7 +11,7 @@ import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAss
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/assets/scene.c";
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');

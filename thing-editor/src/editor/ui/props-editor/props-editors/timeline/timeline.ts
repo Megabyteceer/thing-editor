@@ -22,10 +22,8 @@ import shakeDomElement from "thing-editor/src/editor/utils/shake-element";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from "thing-editor/src/engine/lib/assets/movie-clip/field-player";
-import MovieClip from "thing-editor/src/engine/lib/assets/movie-clip/movie-clip.c";
-
-
+import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
+import { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 interface TimelineCopyPasteData {
 	fields: KeyedMap<TimelineSerializedKeyFrame[]>,

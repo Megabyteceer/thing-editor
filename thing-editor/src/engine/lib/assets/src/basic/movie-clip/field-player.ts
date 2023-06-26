@@ -8,7 +8,8 @@ import game from "thing-editor/src/engine/game.js";
 import type { KeyedMap, KeyedObject } from "thing-editor/src/editor/env.js";
 import TimelineLabelView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view";
 import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
-import MovieClip from "thing-editor/src/engine/lib/assets/movie-clip/movie-clip.c.js";
+
+import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 
 interface TimelineKeyFrame {

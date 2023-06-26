@@ -174,7 +174,7 @@
 				],
 				"urlFilter": "http://localhost:5173/*",
 				"outFiles": [],
-				//"preLaunchTask": "launchElectronIfStopped",
+				"preLaunchTask": "launchElectronIfStopped",
 				/*"trace": {
 					"logFile": "C:\\tmp\\trace.txt"
 				}*/
