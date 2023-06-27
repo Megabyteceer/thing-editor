@@ -111,7 +111,7 @@ const newComponentWizard = async () => {
 		}
 	});
 
-	let baseClassPath = selectedBaseClass.__sourceFileName!.replace(/^\//, '');
+	let baseClassPath = selectedBaseClass.__sourceFileName!.replace(/^\//, '').replace(/\.ts$/, '');
 
 	templateSrc = templateSrc.replace(/CURRENT_PROJECT_DIR/gm, '/games/' + (game.editor.currentProjectDir.replace(/\/$/, '')));
 	templateSrc = templateSrc.replace(/NEW_CLASS_NAME/gm, enteredClassName);

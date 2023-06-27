@@ -98,7 +98,8 @@
 						"pressImage": "bunny.png",
 						"disabledImage": "bunny.png",
 						"onClick": [
-							"this.#trigger.toggle"
+							"this.#trigger.toggle",
+							"all.spawner-ring.spawn"
 						],
 						"sndClick": "click",
 						"sndOver": "over"
@@ -217,6 +218,15 @@
 					}
 				}
 			]
+		},
+		{
+			"c": "SpawnerRing",
+			"p": {
+				"name": "spawner-ring",
+				"x": 988,
+				"y": 292,
+				"prefabToSpawn": "prefab1"
+			}
 		}
 	]
 }

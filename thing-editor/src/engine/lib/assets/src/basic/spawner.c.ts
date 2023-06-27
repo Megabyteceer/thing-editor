@@ -3,7 +3,7 @@ import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/ed
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import DSprite from "thing-editor/src/engine/lib/assets/src/basic/d-sprite.c";
+import type DSprite from "thing-editor/src/engine/lib/assets/src/basic/d-sprite.c";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 
 const zeroPoint = new Point();
