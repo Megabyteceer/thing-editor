@@ -2,7 +2,7 @@ import { Container } from "pixi.js";
 import { moveSelectionToPoint } from "thing-editor/src/editor/ui/editor-overlay";
 import game from "thing-editor/src/engine/game";
 
-export default class __Gizmo extends Container {
+export default class ___Gizmo extends Container {
 
 	rotationGuide!: Container;
 

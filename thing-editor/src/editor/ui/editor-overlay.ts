@@ -7,7 +7,7 @@ import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-acce
 import Selection from "thing-editor/src/editor/utils/selection";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import __GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c";
+import ___GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c";
 
 let selectionDisabled = false;
 let isViewPortScrolling = false;
@@ -40,12 +40,12 @@ editorEvents.once('projectDidOpen', () => {
 				scrollingX = game.__mouse_EDITOR.x;
 				scrollingY = game.__mouse_EDITOR.y;
 			} else if(ev.buttons === 2) {
-				if(!__GizmoArrow.overedArrow) {
+				if(!___GizmoArrow.overedArrow) {
 					moveSelectionToMouse(ev);
 					rightButtonDraggingStarted = true;
 				}
 			} else {
-				if(!selectionDisabled && ev.buttons === 1 && !__GizmoArrow.overedArrow) {
+				if(!selectionDisabled && ev.buttons === 1 && !___GizmoArrow.overedArrow) {
 					selectByStageClick(ev);
 				}
 			}
@@ -69,7 +69,7 @@ editorEvents.once('projectDidOpen', () => {
 					scrollingX = game.__mouse_EDITOR.x;
 					scrollingY = game.__mouse_EDITOR.y;
 				}
-			} else if(ev.buttons === 2 && (rightButtonDraggingStarted || (ev.target === game.pixiApp.view)) && !__GizmoArrow.draggedArrow) {
+			} else if(ev.buttons === 2 && (rightButtonDraggingStarted || (ev.target === game.pixiApp.view)) && !___GizmoArrow.draggedArrow) {
 				moveSelectionToMouse(ev);
 				rightButtonDraggingStarted = true;
 			}

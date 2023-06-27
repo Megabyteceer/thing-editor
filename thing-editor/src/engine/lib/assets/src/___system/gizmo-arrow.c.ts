@@ -2,7 +2,7 @@ import { Container } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
-import __Gizmo from "thing-editor/src/engine/lib/assets/src/___system/gizmo.c";
+import ___Gizmo from "thing-editor/src/engine/lib/assets/src/___system/gizmo.c";
 import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 
 let lastX = 0;
@@ -16,24 +16,24 @@ let startRotation = 0;
 
 
 const mouseHandlerGlobalUp = () => {
-	if(__GizmoArrow.draggedArrow) {
-		__GizmoArrow.draggedArrow.stopDragging();
+	if(___GizmoArrow.draggedArrow) {
+		___GizmoArrow.draggedArrow.stopDragging();
 	}
 }
 
 const mouseHandlerGlobalMove = (ev: PointerEvent) => {
-	if(__GizmoArrow.draggedArrow && (!game.mouse.click || !game.editor.selection.length)) {
-		__GizmoArrow.draggedArrow.stopDragging();
+	if(___GizmoArrow.draggedArrow && (!game.mouse.click || !game.editor.selection.length)) {
+		___GizmoArrow.draggedArrow.stopDragging();
 	}
-	if(__GizmoArrow.draggedArrow) {
+	if(___GizmoArrow.draggedArrow) {
 
 		let dX = 0;
 		let dY = 0;
 
 
-		const gizmo = __GizmoArrow.draggedArrow.findParentByType(__Gizmo);
+		const gizmo = ___GizmoArrow.draggedArrow.findParentByType(___Gizmo);
 
-		if(__GizmoArrow.draggedArrow.dragX && __GizmoArrow.draggedArrow.dragY && ev.shiftKey) {
+		if(___GizmoArrow.draggedArrow.dragX && ___GizmoArrow.draggedArrow.dragY && ev.shiftKey) {
 
 			dX = game.__mouse_uncropped.x - startXPos;
 			dY = game.__mouse_uncropped.y - startYPos;
@@ -43,20 +43,20 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 			angle = Math.round(angle / Math.PI * 4 - startRotation) * Math.PI / 4;
 			dX = startXPos + Math.cos(angle) * len - game.editor.selection[0].x;
 			dY = startYPos + Math.sin(angle) * len - game.editor.selection[0].y;
-			__GizmoArrow.draggedArrow.snapGuide!.visible = true;
-			__GizmoArrow.draggedArrow.snapGuide!.rotation = angle;
+			___GizmoArrow.draggedArrow.snapGuide!.visible = true;
+			___GizmoArrow.draggedArrow.snapGuide!.rotation = angle;
 		} else {
-			if(__GizmoArrow.draggedArrow.dragX) {
+			if(___GizmoArrow.draggedArrow.dragX) {
 				dX = game.__mouse_uncropped.x - lastX;
 			}
-			if(__GizmoArrow.draggedArrow.dragY) {
+			if(___GizmoArrow.draggedArrow.dragY) {
 				dY = game.__mouse_uncropped.y - lastY;
 			}
 		}
 
 		gizmo?.moveXY(dX, dY);
 
-		if(__GizmoArrow.draggedArrow.dragR) {
+		if(___GizmoArrow.draggedArrow.dragR) {
 			if(ev.shiftKey) {
 				dY = (game.__mouse_uncropped.y - startY) / -50;
 				dY = Math.round(dY / Math.PI * 8 - startRotation) * Math.PI / 8;
@@ -75,10 +75,10 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 window.addEventListener('pointermove', mouseHandlerGlobalMove);
 window.addEventListener('pointerup', mouseHandlerGlobalUp);
 
-export default class __GizmoArrow extends Shape {
+export default class ___GizmoArrow extends Shape {
 
-	static overedArrow?: __GizmoArrow;
-	static draggedArrow?: __GizmoArrow;
+	static overedArrow?: ___GizmoArrow;
+	static draggedArrow?: ___GizmoArrow;
 
 	@editable()
 	dragX = false
@@ -112,8 +112,8 @@ export default class __GizmoArrow extends Shape {
 	}
 
 	onPointerOver() {
-		if(!__GizmoArrow.draggedArrow) {
-			__GizmoArrow.overedArrow = this;
+		if(!___GizmoArrow.draggedArrow) {
+			___GizmoArrow.overedArrow = this;
 			this.shapeFillColor = 0xffff00;
 			this.shapeLineColor = 0xffff00;
 		}
@@ -121,13 +121,13 @@ export default class __GizmoArrow extends Shape {
 
 	update(): void {
 		super.update();
-		if(__GizmoArrow.overedArrow === this && this.worldAlpha < 0.8) {
+		if(___GizmoArrow.overedArrow === this && this.worldAlpha < 0.8) {
 			this.onPointerOut();
 		}
 	}
 
 	onPointerOut() {
-		__GizmoArrow.overedArrow = undefined;
+		___GizmoArrow.overedArrow = undefined;
 		this._refreshColor();
 	}
 
@@ -146,7 +146,7 @@ export default class __GizmoArrow extends Shape {
 			editorUtils.clone();
 		}
 
-		__GizmoArrow.draggedArrow = this;
+		___GizmoArrow.draggedArrow = this;
 		this.isDowned = true;
 
 		if(ev.buttons === 2 && this.dragR) {
@@ -155,7 +155,7 @@ export default class __GizmoArrow extends Shape {
 	}
 
 	stopDragging() {
-		__GizmoArrow.draggedArrow = undefined;
+		___GizmoArrow.draggedArrow = undefined;
 		if(this.snapGuide) {
 			this.snapGuide.visible = false;
 		}
@@ -164,7 +164,7 @@ export default class __GizmoArrow extends Shape {
 	}
 
 	_refreshColor() {
-		if(__GizmoArrow.overedArrow !== this && __GizmoArrow.draggedArrow !== this) {
+		if(___GizmoArrow.overedArrow !== this && ___GizmoArrow.draggedArrow !== this) {
 			this.shapeFillColor = this.baseColor;
 			this.shapeLineColor = this.baseColor;
 		}
