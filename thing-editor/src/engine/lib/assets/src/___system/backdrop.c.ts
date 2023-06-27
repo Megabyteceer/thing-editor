@@ -10,6 +10,11 @@ export default class __BackDrop extends Shape {
 	@editable()
 	isStageFrame = false;
 
+	@editable({ name: 'x', notSerializable: true, override: true })
+	@editable({ name: 'y', notSerializable: true, override: true })
+	@editable({ name: 'width', notSerializable: true, override: true })
+	@editable({ name: 'height', notSerializable: true, override: true })
+
 	render(renderer: Renderer): void {
 
 		if(this.isStageFrame) {
