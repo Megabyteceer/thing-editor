@@ -8,8 +8,6 @@
 			"c": "__BackDrop",
 			"p": {
 				"name": "camera-frame",
-				"width": 1280,
-				"height": 720,
 				"shapeFillAlpha": 0,
 				"shapeLineWidth": 30,
 				"shapeLineAlpha": 0.4,
@@ -143,9 +141,9 @@
 											"p": {
 												"x": -5,
 												"y": -89,
-												"isItHitArea": true,
 												"width": 10,
-												"height": 73
+												"height": 73,
+												"isItHitArea": true
 											}
 										}
 									]
@@ -208,9 +206,9 @@
 											"p": {
 												"x": -5,
 												"y": -89,
-												"isItHitArea": true,
 												"width": 10,
-												"height": 73
+												"height": 73,
+												"isItHitArea": true
 											}
 										}
 									]
@@ -238,45 +236,15 @@
 										"shapeLineWidth": 2,
 										"shapeLineColor": 11161363,
 										"dragR": true,
-										"cursor": "ns-resize",
-										"_shapePoints": [
-											{
-												"x": -1,
-												"y": -75
-											},
-											{
-												"x": -4,
-												"y": -76
-											},
-											{
-												"x": 0,
-												"y": -89
-											},
-											{
-												"x": 4,
-												"y": -76
-											},
-											{
-												"x": 1,
-												"y": -75
-											},
-											{
-												"x": 1,
-												"y": -1
-											},
-											{
-												"x": -1,
-												"y": 1
-											}
-										]
+										"cursor": "ns-resize"
 									},
 									":": [
 										{
 											"c": "Shape",
 											"p": {
 												"shape": 4,
-												"isItHitArea": true,
 												"shapeFillAlpha": 0.65,
+												"isItHitArea": true,
 												"_shapePoints": [
 													{
 														"x": -2,

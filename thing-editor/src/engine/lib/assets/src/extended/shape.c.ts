@@ -352,7 +352,7 @@ export default class Shape extends Graphics {
 	}
 
 	__afterSerialization(data: SerializedObject) {
-		if(this._shapePoints && !this.__nodeExtendData.isPrefabReference) {
+		if(this._shapePoints && !this.__nodeExtendData.isPrefabReference && this.shape === SHAPE_TYPE.POLY) {
 			data.p._shapePoints = this._shapePoints;
 		}
 	}
