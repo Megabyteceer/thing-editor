@@ -61,6 +61,7 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	filterName?: string;
 	arrayProperty?: true;
 	defaultArrayItemValue?: any;
+	separator?: true;
 }
 
 interface EditablePropertyDesc<T extends Container = Container> extends EditablePropertyDescRaw<T> {

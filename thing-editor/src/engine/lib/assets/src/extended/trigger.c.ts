@@ -56,18 +56,19 @@ export default class Trigger extends Container {
 
 	@editable(editorUtils.makePreviewModeButton('Preview switched', 'components.Trigger#preview-switched'))
 
+
 	@editable()
 	invert = false;
 
 	@editable({ step: 0.001, min: 0.001, max: 1, tip: 'Speed of switching animation. Set it to <b>1.0</b> for instant switching.' })
+	@editable({ name: 'Animation preset', type: 'pow-damp-preset', notSerializable: true, separator: true })
 	pow = 0.02;
 
-	@editable({ name: 'Animation preset', type: 'pow-damp-preset', notSerializable: true })
 
 	@editable({ step: 0.001, min: 0.001, max: 0.999, tip: 'Resistance for switching animation.' })
 	damp = 0.85;
 
-	@editable({ step: 0.01, min: -1, max: 0 })
+	@editable({ step: 0.01, min: -1, max: 0, separator: true })
 	alphaShift = -1;
 
 	@editable({ step: 0.01, min: -1 })
@@ -82,7 +83,7 @@ export default class Trigger extends Container {
 	@editable()
 	isApplyInteractivity = true;
 
-	@editable({ type: 'callback' })
+	@editable({ type: 'callback', separator: true })
 	onEnable: string | null = null;
 
 	@editable({ type: 'callback' })
@@ -237,7 +238,7 @@ export default class Trigger extends Container {
 	get "scale.x"() {
 		return super['scale.x'];
 	}
-	
+
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore 
 	set "scale.y"(v) {
@@ -314,10 +315,10 @@ export default class Trigger extends Container {
 	}
 
 	_visible = true;
-	
+
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore 
-	get visible(): boolean   {
+	get visible(): boolean {
 		return this.__visibleInEditor || this._visible || (this.__keepVisibleInEditor && game.__EDITOR_mode);
 	}
 

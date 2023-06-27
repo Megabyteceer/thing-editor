@@ -1270,6 +1270,13 @@ border-bottom: 1px solid #111111;
 	outline-offset: -1px
 }
 
+.props-wrapper-separator {
+    border-top: 4px solid var(--window-header-color);
+}
+
+
+
+
 
 
 

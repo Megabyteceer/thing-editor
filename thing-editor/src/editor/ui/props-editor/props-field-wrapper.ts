@@ -182,6 +182,10 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 			}
 		}
 
+		if(field.separator) {
+			className += ' props-wrapper-separator';
+		}
+
 		let tip;
 		if(field.hasOwnProperty('tip')) {
 			tip = ((typeof field.tip === 'function') ? field.tip() : field.tip);

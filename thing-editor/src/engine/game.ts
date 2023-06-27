@@ -668,6 +668,13 @@ class Game {
 			return;
 		}
 
+		/// #if EDITOR
+		this.__time++;
+		/*
+		/// #endif
+		this.time++;
+		//*/
+
 		if(!game.isCanvasMode) {
 			//TODO context losing handling
 			/*if(game.pixiApp.renderer.gl.isContextLost()) {
@@ -733,12 +740,6 @@ class Game {
 		}
 		this.keys.update();
 		Lib._cleanupRemoveHolders();
-		/// #if EDITOR
-		this.__time++;
-		/*
-		/// #endif
-		this.time++;
-		//*/
 	}
 
 	get currentFader() {

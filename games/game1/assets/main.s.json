@@ -77,23 +77,59 @@
 			}
 		},
 		{
-			"c": "Button",
+			"c": "ClickOutsideTrigger",
 			"p": {
-				"x": 360,
-				"y": 337,
-				"image": "bunny.png",
-				"pressImage": "bunny.png",
-				"disabledImage": "bunny.png",
-				"onClick": [
-					"all.mc.gotoLabelRecursive`shake"
-				],
-				"sndClick": "click",
-				"sndOver": "over"
-			}
+				"x": 357,
+				"y": 341,
+				"interactive": true,
+				"onClickOutside": "this.#button.#trigger.hide",
+				"additionalContainers": [
+					"all.progress-bar"
+				]
+			},
+			":": [
+				{
+					"c": "Button",
+					"p": {
+						"name": "button",
+						"x": 3,
+						"y": -4,
+						"image": "bunny.png",
+						"pressImage": "bunny.png",
+						"disabledImage": "bunny.png",
+						"onClick": [
+							"this.#trigger.toggle"
+						],
+						"sndClick": "click",
+						"sndOver": "over"
+					},
+					":": [
+						{
+							"c": "Trigger",
+							"p": {
+								"name": "trigger",
+								"pow": 0.25,
+								"damp": 0.55,
+								"scaleShift": -1
+							},
+							":": [
+								{
+									"c": "Text",
+									"p": {
+										"x": 91,
+										"text": "New Text 1"
+									}
+								}
+							]
+						}
+					]
+				}
+			]
 		},
 		{
 			"c": "ProgressBar",
 			"p": {
+				"name": "progress-bar",
 				"x": 230,
 				"y": 96,
 				"interactive": true,
@@ -153,13 +189,6 @@
 				"y": 468,
 				"text": "",
 				"translatableText": "awdawdawd"
-			}
-		},
-		{
-			"c": "BgMusic",
-			"p": {
-				"intro": "bg_music_i",
-				"loop": "bg_music"
 			}
 		}
 	]
