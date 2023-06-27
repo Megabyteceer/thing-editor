@@ -54,9 +54,6 @@ export default class Trigger extends Container {
 	@editable({ type: 'data-path', important: true })
 	dataPath = null
 
-	@editable(editorUtils.makePreviewModeButton('Preview switched', 'components.Trigger#preview-switched'))
-
-
 	@editable()
 	invert = false;
 
@@ -84,6 +81,7 @@ export default class Trigger extends Container {
 	isApplyInteractivity = true;
 
 	@editable({ type: 'callback', separator: true })
+	@editable(editorUtils.makePreviewModeButton('Preview switched', 'components.Trigger#preview-switched'))
 	onEnable: string | null = null;
 
 	@editable({ type: 'callback' })

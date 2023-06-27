@@ -46,7 +46,7 @@ const fragmentSrc = `
 
 /// #if EDITOR
 const isWrapDisabled = (o: Fill) => {
-	return !(o as any).image || Lib.__isSystemTexture(o.texture) || !o.texture.baseTexture.isPowerOfTwo;
+	return o.image || Lib.__isSystemTexture(o.texture) || !o.texture.baseTexture.isPowerOfTwo;
 };
 
 const TEXTURE_WRAP_MODE_DESC: EditablePropertyDescRaw = {

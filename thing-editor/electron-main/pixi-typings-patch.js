@@ -109,6 +109,19 @@ patch(
 	`);
 
 patch(
+	'node_modules/@pixi/mesh/lib/Mesh.d.ts',
+	'export declare class Mesh<T extends Shader = MeshMaterial> extends Container {',
+	`
+	image: string;
+	protected _imageID: string;
+
+	tintR: number;
+	tintG: number;
+	tintB: number;
+
+	`);
+
+patch(
 	'node_modules/@pixi/text/lib/Text.d.ts',
 	'export declare class Text extends Sprite {',
 	`

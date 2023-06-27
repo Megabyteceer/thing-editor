@@ -183,10 +183,12 @@ export default class ClassesLoader {
 				if(!editableProps.length || editableProps[0].name !== '__root-splitter') {
 					const superProps: EditablePropertyDesc[] = [];
 					while(superClass.__editableProps) {
-						superProps!.unshift.apply(superProps, superClass.__editableProps);
-						Object.assign(c.__defaultValues, superClass.__defaultValues);
-						if(superProps[0].name === '__root-splitter') {
-							break;
+						if(superClass.hasOwnProperty('__editableProps')) {
+							superProps!.unshift.apply(superProps, superClass.__editableProps);
+							Object.assign(c.__defaultValues, superClass.__defaultValues);
+							if(superProps[0].name === '__root-splitter') {
+								break;
+							}
 						}
 						superClass = superClass.__proto__;
 					}

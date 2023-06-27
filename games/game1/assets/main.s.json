@@ -108,6 +108,7 @@
 							"c": "Trigger",
 							"p": {
 								"name": "trigger",
+								"x": 91,
 								"pow": 0.25,
 								"damp": 0.55,
 								"scaleShift": -1
@@ -116,7 +117,6 @@
 								{
 									"c": "Text",
 									"p": {
-										"x": 91,
 										"text": "New Text 1"
 									}
 								}
@@ -199,6 +199,20 @@
 				"image": "symbols/fuel0006.png",
 				"tint": 16777215,
 				"blendMode": 0
+			}
+		},
+		{
+			"c": "NineSlicePlane",
+			"p": {
+				"image": "bunny.png",
+				"tint": 16777215,
+				"blendMode": 0,
+				"width": 40,
+				"height": 64,
+				"leftWidth": 15,
+				"rightWidth": 15,
+				"topHeight": 16,
+				"bottomHeight": 16
 			}
 		}
 	]
