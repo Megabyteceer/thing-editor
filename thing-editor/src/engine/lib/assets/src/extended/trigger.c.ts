@@ -228,7 +228,6 @@ export default class Trigger extends Container {
 	}
 	/// #if EDITOR
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore 
 	set "scale.x"(v) {
 		super['scale.x'] = v;
@@ -239,7 +238,6 @@ export default class Trigger extends Container {
 		return super['scale.x'];
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore 
 	set "scale.y"(v) {
 		super['scale.x'] = v;
@@ -316,7 +314,6 @@ export default class Trigger extends Container {
 
 	_visible = true;
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore 
 	get visible(): boolean {
 		return this.__visibleInEditor || this._visible || (this.__keepVisibleInEditor && game.__EDITOR_mode);

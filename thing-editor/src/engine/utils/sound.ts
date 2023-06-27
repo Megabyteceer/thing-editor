@@ -367,9 +367,6 @@ function highlightPlayedSound(soundId: string) {
 }
 
 function openIndexedDB(): IDBOpenDBRequest {
-	// This works on all devices/browsers, and uses IndexedDBShim as a final fallback
-
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore 
 	let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB as IDBFactory;
 

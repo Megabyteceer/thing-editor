@@ -190,6 +190,16 @@
 				"text": "",
 				"translatableText": "awdawdawd"
 			}
+		},
+		{
+			"c": "Fill",
+			"p": {
+				"x": 47,
+				"y": 55,
+				"image": "symbols/fuel0006.png",
+				"tint": 16777215,
+				"blendMode": 0
+			}
 		}
 	]
 }

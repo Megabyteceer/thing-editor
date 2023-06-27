@@ -53,7 +53,7 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	select?: SelectEditorItem[] | (() => SelectEditorItem[])
 	noNullCheck?: true,
 	important?: boolean;
-	tip?: string | (() => string);
+	tip?: string | (() => string | undefined);
 	afterEdited?: () => void;
 	multiline?: boolean;
 	notSerializable?: true;

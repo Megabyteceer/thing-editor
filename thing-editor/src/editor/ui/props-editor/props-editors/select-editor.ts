@@ -18,7 +18,6 @@ interface SelectEditorItem<T = any> {
 	visibleName?: ComponentChild;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore //make "field" property optional
 interface SelectEditorProps extends EditablePropertyEditorProps {
 	field?: EditablePropertyDesc;
