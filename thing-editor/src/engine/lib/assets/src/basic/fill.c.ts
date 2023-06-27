@@ -154,7 +154,7 @@ export default class Fill extends Mesh {
 
 	/// #if EDITOR
 	@editable(TEXTURE_WRAP_MODE_DESC)
-	set TEXTURE_WRAP_MODE(v) {
+	set TEXTURE_WRAP_MODE(_v) {
 		if(this.texture) {
 			/*let bits = 0;
 			if(v === WRAP_MODES.REPEAT) {
@@ -437,7 +437,7 @@ export default class Fill extends Mesh {
 	_renderCanvas(renderer: any) {
 		this.validateFill();
 		//@ts-ignore
-		super._renderCanvas as (renderer);
+		super._renderCanvas(renderer);
 	}
 
 	validateFill() {

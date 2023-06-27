@@ -333,7 +333,7 @@ export default class Lib
 
 			/// #if EDITOR
 			if(!game.__EDITOR_mode) {
-				childrenData = childrenData.filter(Lib._filterStaticTriggers);
+				childrenData = childrenData.filter(_filterStaticTriggers);
 			}
 			/// #endif
 			for(let childData of childrenData) {
@@ -451,16 +451,6 @@ export default class Lib
 		}
 		markOldReferences(o);
 		/// #endif
-	}
-
-	static _filterStaticTriggers(childData: SerializedObject) {
-		if(childData.c === 'StaticTrigger') {
-			return childData.p.invert !== !getValueByPath(childData.p.dataPath || game.classes.StaticTrigger.__defaultValues.dataPath, game);
-		} else {
-			return !childData[':'] || !childData[':'].some((cd) => {
-				return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || game.classes.StaticTrigger.__defaultValues.dataPath, game));
-			});
-		}
 	}
 
 	static _cleanupRemoveHolders() {
@@ -776,6 +766,10 @@ const normalizeSerializedData = () => {
 	/// #if EDITOR
 	assert(false, "runtime feature only.");
 	/// #endif
+
+	Object.values(prefabs).forEach(_filterStaticTriggersRecursive);
+	Object.values(scenes).forEach(_filterStaticTriggersRecursive);
+
 	for(const name in prefabs) {
 		normalizeSerializedDataRecursive(prefabs[name]);
 	}
@@ -962,3 +956,17 @@ const processAfterDeserialization = (o: Container) => {
 	/// #endif
 	return ret;
 };
+
+const _filterStaticTriggers = (childData: SerializedObject) => {
+	return !childData[':'] || !childData[':'].some((cd) => {
+		return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || game.classes.StaticTrigger.__defaultValues.dataPath, game));
+	});
+}
+
+const _filterStaticTriggersRecursive = (data: SerializedObject) => {
+	if(data[':']) {
+		let a = data[':'].filter(_filterStaticTriggers);
+		data[':'] = a;
+		a.forEach(_filterStaticTriggersRecursive);
+	}
+}

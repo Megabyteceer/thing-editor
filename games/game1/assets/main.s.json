@@ -98,8 +98,7 @@
 						"pressImage": "bunny.png",
 						"disabledImage": "bunny.png",
 						"onClick": [
-							"this.#trigger.toggle",
-							"all.spawner-ring.spawn"
+							"this.#trigger.toggle"
 						],
 						"sndClick": "click",
 						"sndOver": "over"
@@ -195,38 +194,18 @@
 		{
 			"c": "Fill",
 			"p": {
-				"x": 47,
-				"y": 55,
+				"x": 941,
+				"y": 418,
 				"image": "symbols/fuel0006.png",
 				"tint": 16777215,
 				"blendMode": 0
-			}
-		},
-		{
-			"c": "DSprite",
-			"p": {
-				"x": 378,
-				"y": 393,
-				"rSpeed": 0.122
 			},
 			":": [
 				{
-					"c": "Spawner",
-					"p": {
-						"prefabToSpawn": "prefab1",
-						"applyRotation": true
-					}
+					"c": "StaticTrigger",
+					"p": {}
 				}
 			]
-		},
-		{
-			"c": "SpawnerRing",
-			"p": {
-				"name": "spawner-ring",
-				"x": 988,
-				"y": 292,
-				"prefabToSpawn": "prefab1"
-			}
 		}
 	]
 }

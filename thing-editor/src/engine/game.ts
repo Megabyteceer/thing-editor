@@ -114,6 +114,7 @@ class Game {
 	/// #if EDITOR
 	editor!: __EditorType;
 	__EDITOR_mode = false;
+	/// #endif
 
 	isFocused = false;
 
@@ -121,14 +122,16 @@ class Game {
 
 	L!: typeof L;
 
-	__time = 0;
-	get time() {
-		return this.__time;
-	}
+
 
 	/** cordova build only */
 	exitApp: (() => void) | undefined
 
+	/// #if EDITOR
+	__time = 0;
+	get time() {
+		return this.__time;
+	}
 	/*
 	/// #endif
 	time = 0;

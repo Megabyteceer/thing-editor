@@ -93,10 +93,10 @@ interface SourceMappedConstructor extends Constructor {
 	__editableProps: EditablePropertyDesc[];
 	/** additional way to disable editable properties */
 	__isPropertyDisabled?: (p: EditablePropertyDesc) => string | undefined;
-	__EDITOR_tip?: string; //TODO
+	__EDITOR_tip?: string;
 	__isScene: boolean;
 	__sourceCode: string[];
-	__canAcceptChild: (Class: SourceMappedConstructor) => boolean; //TODO
+	__canAcceptChild: (Class: SourceMappedConstructor) => boolean;
 	__beforeChangeToThisType?: (o: Container) => void;
 
 	/** added because pixi exports classes with wrong names */

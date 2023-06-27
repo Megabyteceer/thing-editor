@@ -99,6 +99,14 @@ const toolButtonsProps = {
 }
 
 const assetItemRendererClass = (file: FileDescClass) => {
+	let tip;
+	if(file.asset.__EDITOR_tip) {
+		tip = R.tip('class-' + file.asset.__className,
+			'Component "' + file.asset.__className + '" description:',
+			file.asset.__EDITOR_tip
+		);
+	}
+
 	return R.div({
 		className: 'assets-item assets-item-class',
 		key: file.assetName,
@@ -113,6 +121,7 @@ const assetItemRendererClass = (file: FileDescClass) => {
 	},
 		libInfo(file),
 		renderClass(file),
+		tip,
 		R.span(toolButtonsProps,
 			R.btn('>', (ev) => {
 				sp(ev);
