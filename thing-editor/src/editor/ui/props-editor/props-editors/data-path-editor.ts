@@ -491,18 +491,18 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 				acceptNowBtn
 			),
 			items)
-			.then((selected) => {
+			.then((selected: DataPathSelectItem) => {
 				if(selected) {
 					let val;
 					if(selected === BACK_ITEM) {
 						path.pop();
 						val = parentsPath.pop();
-					} else if(selected.child) {
-						path.push('#' + selected.child);
+					} else if(selected.nameOfChild) {
+						path.push('#' + selected.nameOfChild);
 						parentsPath.push(parent);
-						val = parent.getChildByName(selected.child);
+						val = parent.getChildByName(selected.nameOfChild);
 					} else {
-						let name = selected.pureName || selected.name;
+						let name = (selected.pureName || selected.name) as string;
 						path.push(name);
 						parentsPath.push(parent);
 						if(name === 'this') {
@@ -577,7 +577,7 @@ function enumProps(o: KeyedObject) {
 	enumSub(o);
 	let cc = o.constructor;
 	for(; cc && (cc !== Function) && (cc !== Object);
-		
+
 		(cc = (cc as any).__proto__)) {
 
 		let p = cc.prototype;

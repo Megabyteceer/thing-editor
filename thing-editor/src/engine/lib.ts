@@ -683,7 +683,7 @@ export default class Lib
 		s.lastPlayStartFrame = 0;
 		soundsHowlers[name] = s;
 		if(game.classes.BgMusic) {
-			game.classes.BgMusic.__onSoundOverride(name);
+			(game.classes.BgMusic as any).__onSoundOverride(name);
 		}
 	}
 
