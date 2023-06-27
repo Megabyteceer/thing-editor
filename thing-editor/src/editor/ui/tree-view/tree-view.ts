@@ -217,7 +217,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 	render() {
 		if(!game.stage) return R.span();
 		return R.fragment(
-			R.input({ onKeyDown: this.onSearchKeyDown, onInput: this.onSearchChange, className: 'tree-view-search', defaultValue: this.state.search, placeholder: 'Search' }),
+			R.input({ onKeyDown: this.onSearchKeyDown, onInput: this.onSearchChange, className: 'tree-view-search', value: this.state.search, placeholder: 'Search' }),
 
 			EDITOR_FLAGS.isolationEnabled ? R.btn('exit isolation', toggleIsolation, undefined, 'clickable isolation-warning', { key: 'i', ctrlKey: true }) : undefined,
 			R.div(treeViewProps,

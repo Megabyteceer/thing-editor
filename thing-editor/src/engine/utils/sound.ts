@@ -1,12 +1,12 @@
-import { KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
+import type { KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
+/// #if EDITOR
+import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
+/// #endif
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
-import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
-
 const MIN_VOL_THRESHOLD = 0.005;
 const MIN_VOL_ENABLE = 0.05;
 
@@ -49,11 +49,15 @@ export default class Sound {
 		assert(!isNaN(v), "invalid value for 'musicVol'. Valid number value expected.", 10001);
 		v = Math.max(0, Math.min(1, v));
 		if(musicVol !== v) {
-			BgMusic._clearCustomFades(0.2);
+			if(game.classes.BgMusic) {
+				(game.classes.BgMusic as any)._clearCustomFades(0.2);
+			}
 		}
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
-		BgMusic._recalculateMusic();
+		if(game.classes.BgMusic) {
+			(game.classes.BgMusic as any)._recalculateMusic();
+		}
 	}
 
 	static get fullVol() {
@@ -84,8 +88,9 @@ export default class Sound {
 
 	static set musicEnabled(val) {
 		if(Sound.musicEnabled !== val) {
-			BgMusic._clearCustomFades(0.2);
-
+			if(game.classes.BgMusic) {
+				(game.classes.BgMusic as any)._clearCustomFades(0.2);
+			}
 			if(val) {
 				Sound.musicVol = normalizeVolForEnabling(game.settings.getItem('musicVolEnabling'), game.projectDesc.defaultMusVol);
 			} else {

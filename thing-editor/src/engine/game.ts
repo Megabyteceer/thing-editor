@@ -7,9 +7,9 @@ import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import Lib from "thing-editor/src/engine/lib";
 
-
-import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
+/// #if DEBUG
 import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
+/// #endif
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
 import Keys from "thing-editor/src/engine/utils/keys";
@@ -752,7 +752,9 @@ class Game {
 		this.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
 		currentFader = null;
-		BgMusic._recalculateMusic();
+		if(game.classes.BgMusic) {
+			(game.classes.BgMusic as any)._recalculateMusic();
+		}
 	}
 
 	_processScenesStack() {
@@ -865,7 +867,9 @@ class Game {
 				}
 				currentFader = Lib.loadPrefab(faderType!);
 				this.stage.addChild(currentFader);
-				BgMusic._recalculateMusic();
+				if(game.classes.BgMusic) {
+					(game.classes.BgMusic as any)._recalculateMusic();
+				}
 			}
 			/// #if EDITOR
 			this.editor.refreshTreeViewAndPropertyEditor();
@@ -914,7 +918,9 @@ class Game {
 
 		container.interactiveChildren = false;
 		game.stage.addChild(container);
-		BgMusic._recalculateMusic();
+		if(game.classes.BgMusic) {
+			(game.classes.BgMusic as any)._recalculateMusic();
+		}
 		/// #if EDITOR
 		game.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
@@ -946,7 +952,9 @@ class Game {
 			modalToHide.interactiveChildren = false;
 			hidingModals.push(modalToHide);
 		}
-		BgMusic._recalculateMusic();
+		if(game.classes.BgMusic) {
+			(game.classes.BgMusic as any)._recalculateMusic();
+		}
 
 		/// #if EDITOR
 		game.editor.refreshTreeViewAndPropertyEditor();
@@ -992,7 +1000,9 @@ class Game {
 			return;
 		}
 		game._loadingErrorIsDisplayed = true;
-		BgMusic._recalculateMusic();
+		if(game.classes.BgMusic) {
+			(game.classes.BgMusic as any)._recalculateMusic();
+		}
 		/// #if EDITOR
 		this.editor.ui.modal.showError('Could not load file: ' + url);
 		return;
@@ -1155,7 +1165,9 @@ class Game {
 			Lib.destroyObjectAndChildren(hidingFaders.pop() as Container);
 		}
 		Lib.__clearStaticScenes();
-		BgMusic._recalculateMusic();
+		if(game.classes.BgMusic) {
+			(game.classes.BgMusic as any)._recalculateMusic();
+		}
 	}
 
 	/// #endif

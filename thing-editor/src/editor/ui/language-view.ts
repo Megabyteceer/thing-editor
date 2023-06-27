@@ -301,7 +301,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		className: 'language-search-input',
 		onInput: this.onSearchChange.bind(this),
 		placeholder: 'Search',
-		defaultValue: ''
+		value: ''
 	}
 
 	constructor(props: ClassAttributes<LanguageTableEditor>) {

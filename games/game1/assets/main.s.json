@@ -159,8 +159,7 @@
 			"c": "BgMusic",
 			"p": {
 				"intro": "bg_music_i",
-				"loop": "bg_music",
-				"isPlaying": false
+				"loop": "bg_music"
 			}
 		}
 	]

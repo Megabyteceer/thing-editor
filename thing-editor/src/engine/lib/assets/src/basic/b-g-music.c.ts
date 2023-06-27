@@ -227,10 +227,24 @@ export default class BgMusic extends Container {
 	set fade(val: number) { // transition from fade to fadeIn fadeOut
 		this.fadeIn = val;
 		this.fadeOut = val;
-		/// #if EDITOR
-		Lib.__invalidateSerializationCache(this);
-		/// #endif
 	}
+
+	/// #if DEBUG
+	static __onSoundOverride(name: string) {
+		for(let bgm of game.currentContainer.findChildrenByType(BgMusic) as any[]) {
+			if(bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
+				bgm.stop();
+				bgm.resetPosition();
+				setTimeout(() => {
+					if((bgm.intro === name || bgm.loop === name)) {
+						bgm.play();
+					}
+				}, 30);
+			}
+		}
+	}
+
+	/// #endif
 
 	/// #if EDITOR
 	static get __allActiveMusics() {

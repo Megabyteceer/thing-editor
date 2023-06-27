@@ -21,9 +21,7 @@ import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import HowlSound from "thing-editor/src/engine/HowlSound";
-/// #if DEBUG
-import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
-/// #endif
+
 
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import L from "thing-editor/src/engine/utils/l";
@@ -233,7 +231,7 @@ export default class Lib
 
 	static preloadSound(soundId: string | null
 		/// #if EDITOR
-		, owner?: BgMusic
+		, owner?: any// BgMusic
 		/// #endif
 	) {
 		if(soundId) {
@@ -684,16 +682,8 @@ export default class Lib
 		let s = new HowlSound(opt);
 		s.lastPlayStartFrame = 0;
 		soundsHowlers[name] = s;
-		for(let bgm of game.currentContainer.findChildrenByType(BgMusic) as BgMusic[]) {
-			if(bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
-				bgm.stop();
-				bgm.resetPosition();
-				setTimeout(() => {
-					if((bgm.intro === name || bgm.loop === name)) {
-						bgm.play();
-					}
-				}, 3000);
-			}
+		if(game.classes.BgMusic) {
+			game.classes.BgMusic.__onSoundOverride(name);
 		}
 	}
 
