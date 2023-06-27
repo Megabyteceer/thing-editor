@@ -62,6 +62,10 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	arrayProperty?: true;
 	defaultArrayItemValue?: any;
 	separator?: true;
+
+	/** call-back and data-path properties validator */
+	isValueValid?: (val: any) => boolean;
+
 }
 
 interface EditablePropertyDesc<T extends Container = Container> extends EditablePropertyDescRaw<T> {
@@ -73,13 +77,6 @@ interface EditablePropertyDesc<T extends Container = Container> extends Editable
 	__nullCheckingIsApplied?: true,
 	renderer?: any;
 	isTranslatableKey?: boolean;
-
-
-	/** call-back and data-path properties validator */
-	isValueValid?: (val: any) => boolean;
-
-	/** check if field is image select dropdown*/
-	__isImage?: boolean;
 }
 
 /** editable property decorator */

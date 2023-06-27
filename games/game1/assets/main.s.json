@@ -202,18 +202,21 @@
 			}
 		},
 		{
-			"c": "NineSlicePlane",
+			"c": "DSprite",
 			"p": {
-				"image": "bunny.png",
-				"tint": 16777215,
-				"blendMode": 0,
-				"width": 40,
-				"height": 64,
-				"leftWidth": 15,
-				"rightWidth": 15,
-				"topHeight": 16,
-				"bottomHeight": 16
-			}
+				"x": 378,
+				"y": 393,
+				"rSpeed": 0.122
+			},
+			":": [
+				{
+					"c": "Spawner",
+					"p": {
+						"prefabToSpawn": "prefab1",
+						"applyRotation": true
+					}
+				}
+			]
 		}
 	]
 }

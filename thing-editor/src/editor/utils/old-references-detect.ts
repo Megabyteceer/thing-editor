@@ -5,31 +5,32 @@ import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
-const objectsReferences: Map<KeyedObject, Map<SourceMappedConstructor, string>> = new Map;
+const objectsReferences: Map<KeyedObject, Map<string, any>> = new Map;
 
 function markOldReferences(o: KeyedObject) {
-	objectsReferences.set(o, new Map());
+	const refsMap = new Map();
+	objectsReferences.set(o, refsMap);
 	for(let f of Object.getOwnPropertyNames(o)) {
 		if(((o as KeyedObject)[f] instanceof Container)) {
 			if(f !== 'tempDisplayObjectParent') {
 				o[f] = accessDetectionProxy(o.constructor as SourceMappedConstructor, f);
-				o.___EDITOR_markedOldReferences.set(f, o[f]);
+				refsMap.set(f, o[f]);
 			}
 		}
 	}
 }
 
 function checkForOldReferences(o: KeyedObject) {
-	if(o.___EDITOR_markedOldReferences && !Lib.__outdatedReferencesDetectionDisabled) {
-		for(let f of o.___EDITOR_markedOldReferences.keys()) {
-			if(o[f] === o.___EDITOR_markedOldReferences.get(f)) {
+	if(objectsReferences.has(o) && !Lib.__outdatedReferencesDetectionDisabled) {
+		const refsMap = objectsReferences.get(o)!;
+		const keys = refsMap.keys()
+		for(let f of keys) {
+			if(o[f] === refsMap.get(f)) {
 				let c = o.constructor;
-
 				game.editor.ui.status.error(c.name + ' did not clean reference to display object in property "' + f + '". Please null this field in onRemove method, or add "@editable({type: "ref"})" decorator for this field (click to copy fix-js and open class source code.).', 10048, () => {
 					game.editor.copyToClipboard('@editable({type: "ref"})');
 					game.editor.editClassSource(c as SourceMappedConstructor);
 				});
-
 			}
 		}
 	}

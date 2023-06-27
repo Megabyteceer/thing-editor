@@ -95,13 +95,13 @@ export default class PrefabEditor {
 	}
 
 	static acceptPrefabEdition(oneStepOnly = false) {
-		if(prefabsStack.length) {
 
-			//TODO call validators (add static __validate method for SourceMapedClass)
-			exitIsolation();
-			game.editor.blurInputs();
-			game.editor.history.saveHistoryNow();
-			let name = getCurrentPrefabName();
+		//TODO call validators (add static __validate method for SourceMapedClass)
+		exitIsolation();
+		game.editor.blurInputs();
+		game.editor.history.saveHistoryNow();
+		let name = getCurrentPrefabName();
+		if(prefabsStack.length) {
 
 			let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
 			if(isChanged) {
