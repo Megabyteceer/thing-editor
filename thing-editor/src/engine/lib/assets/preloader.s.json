@@ -246,6 +246,7 @@
 						{
 							"c": "Button",
 							"p": {
+								"name": "play-button",
 								"y": 155,
 								"onClick": [
 									"replaceScene"

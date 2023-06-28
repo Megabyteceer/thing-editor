@@ -145,7 +145,7 @@ export default class SceneLinkedPromise extends Container {
 	onRemove() {
 		super.onRemove();
 		/// #if EDITOR
-		if(!game.__EDITOR_mode && game.__time) {
+		if(!game.__EDITOR_mode && game.__time) { // game stopping - time = 0;
 			if(this._promiseWaitForResult) {
 				game.editor.ui.status.warn('SceneLinkedPromise was removed before its resolved or rejected.', 10061, this);
 			}
