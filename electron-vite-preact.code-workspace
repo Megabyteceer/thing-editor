@@ -145,8 +145,8 @@
 					}],
 					"background": {
 						"activeOnStart": true,
-						"beginsPattern": "electron",
-						"endsPattern": "launched",
+						"beginsPattern": ".",
+						"endsPattern": "."
 					}
 				}]
 			}
