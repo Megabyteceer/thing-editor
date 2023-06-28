@@ -1,5 +1,6 @@
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import loadSafeInstanceByClassName from "thing-editor/src/engine/utils/load-safe-instance-by-class-name";
 
 function onNewSceneClick() {
@@ -10,7 +11,7 @@ function onNewSceneClick() {
 			game.editor.chooseClass(true, '_newScene', "Select type for new scene:").then((selectedClass) => {
 				if(selectedClass) {
 					const scene = loadSafeInstanceByClassName(selectedClass);
-					Lib.__saveScene(scene, enteredName);
+					Lib.__saveScene(scene as Scene, enteredName);
 					Lib.destroyObjectAndChildren(scene);
 					game.editor.openScene(enteredName);
 				}

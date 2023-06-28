@@ -42,7 +42,7 @@
 								"height": 300,
 								"capMargin": 0,
 								"refreshInterval": 0,
-								"onFinish": "replaceScene",
+								"onFinish": "this.parent.toggle",
 								"onChanged": ""
 							},
 							":": [
@@ -260,21 +260,7 @@
 										"y": -1,
 										"shape": 2,
 										"shapeRadius": 46,
-										"shapeFillColor": 12065049,
-										"_shapePoints": [
-											{
-												"x": -10,
-												"y": -26
-											},
-											{
-												"x": 30,
-												"y": 0
-											},
-											{
-												"x": -10,
-												"y": 30
-											}
-										]
+										"shapeFillColor": 12065049
 									},
 									":": [
 										{

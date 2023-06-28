@@ -306,9 +306,9 @@ export default class Lib
 			}
 
 
-			const constrictor = replaceClass || classes[src.c!] as SourceMappedConstructor;
+			const constrictor = (replaceClass || classes[src.c!]) as SourceMappedConstructor;
 
-			ret = Pool.create(constrictor);
+			ret = Pool.create(constrictor as any);
 
 			if(ret.__beforeDeserialization) {
 				ret.__beforeDeserialization();
@@ -424,7 +424,7 @@ export default class Lib
 			&& !game.__EDITOR_mode
 			/// #endif
 		) {
-			let r = Pool.create(RemoveHolder as any as SourceMappedConstructor);
+			let r = Pool.create(RemoveHolder);
 			/// #if EDITOR
 			constructRecursive(r);
 			/// #endif
@@ -459,9 +459,9 @@ export default class Lib
 		}
 	}
 
-	static _loadClassInstanceById(id: string) {
+	static _loadClassInstanceById(id: string): Container {
 		const Class = classes[id];
-		let ret = Pool.create(Class);
+		let ret = Pool.create(Class) as Container;
 		Object.assign(ret, Class.__defaultValues);
 
 		/// #if EDITOR

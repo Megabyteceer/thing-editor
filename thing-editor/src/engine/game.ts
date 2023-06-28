@@ -26,7 +26,7 @@ let currentHidingFaderInUpdate: Container | null;
 
 let scenesStack: (Scene | string)[] = [];
 let hideTheseModalsUnderFader: Container[];
-let currentFader: Container | null;
+let currentFader: Container | undefined;
 let hidingFaders: Container[] = [];
 
 let _rendererWidth = 0;
@@ -184,16 +184,6 @@ class Game {
 
 		this.pixiApp.view.addEventListener!('wheel', (ev) => ev.preventDefault());
 		window.addEventListener('resize', this._onContainerResize.bind(this));
-
-		/// #if EDITOR
-		/*
-		/// #endif
-		this.loadingAdd();
-		import('game-root/.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
-			this.loadingRemove();
-			game.addAssets(mainAssets.default);
-		});
-		//*/
 		this.onResize();
 		this.showScene(PRELOADER_SCENE_NAME);
 	}
@@ -699,9 +689,20 @@ class Game {
 					game.currentScene._onShowCalled = true;
 					game.currentScene.onShow();
 					loadDynamicTextures();
+					if(game.currentScene.name === PRELOADER_SCENE_NAME) {
+						game._hideCurrentFaderAndStartScene();
+						/// #if EDITOR
+						/*
+						/// #endif
+						this.loadingAdd();
+						import('game-root/.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
+							this.loadingRemove();
+							game.addAssets(mainAssets.default);
+						});
+						//*/
+					}
 				} else {
 					game._hideCurrentFaderAndStartScene();
-					game._isWaitingToHideFader = false;
 				}
 			}
 		} else if(this.currentContainer) {
@@ -755,10 +756,11 @@ class Game {
 		/// #if EDITOR
 		this.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
-		currentFader = null;
+		currentFader = undefined;
 		if(game.classes.BgMusic) {
 			(game.classes.BgMusic as any)._recalculateMusic();
 		}
+		game._isWaitingToHideFader = false;
 	}
 
 	_processScenesStack() {
@@ -965,6 +967,7 @@ class Game {
 		/// #endif
 	}
 
+	/** call when fader covered the stage */
 	faderShoot() {
 		/// #if EDITOR
 		assert(__isCurrentFaderUpdateInProgress, "faderShoot() called not by fader.", 10033);
@@ -1162,7 +1165,7 @@ class Game {
 
 		if(currentFader) {
 			Lib.destroyObjectAndChildren(currentFader);
-			currentFader = null;
+			currentFader = undefined;
 		}
 		game._isWaitingToHideFader = false;
 		while(hidingFaders.length > 0) {
@@ -1177,6 +1180,10 @@ class Game {
 	/// #endif
 
 	/// #if DEBUG
+	_reanimateTicker() {
+		requestAnimationFrame((game.pixiApp.ticker as any)._tick);
+	}
+
 	__showDebugError(txt: string, errorCode = 90000) {
 		/// #if EDITOR
 		this.editor.ui.modal.showError(txt, errorCode);

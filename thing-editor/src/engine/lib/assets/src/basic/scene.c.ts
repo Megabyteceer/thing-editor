@@ -5,6 +5,7 @@ import editable from "thing-editor/src/editor/props-editor/editable";
 import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import SceneLinkedPromise from "thing-editor/src/engine/utils/scene-linked-promise";
 
 export default class Scene extends Container {
 

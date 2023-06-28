@@ -112,6 +112,9 @@ export default class Trigger extends Container {
 		this.qSpeed = 0;
 		this.triggering = false;
 		this._processedState = undefined;
+		if(!this.dataPath) {
+			this.invert = this.state;
+		}
 		this.applyInstantly();
 		this.lastUpdateTime = game.time;
 	}

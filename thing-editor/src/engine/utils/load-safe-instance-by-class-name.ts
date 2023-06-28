@@ -1,10 +1,11 @@
+import { Container } from "pixi.js";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
-const loadSafeInstanceByClassName = (className: string, isForWrapping = false) => {
+const loadSafeInstanceByClassName = (className: string, isForWrapping = false): Container => {
 	game.editor.saveBackup();
 
-	let ret;
+	let ret: Container;
 
 	const PREFAB_NAME = '___default_content/' + className.toLocaleLowerCase();
 

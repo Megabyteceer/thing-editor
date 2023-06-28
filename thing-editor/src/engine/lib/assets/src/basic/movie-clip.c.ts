@@ -477,7 +477,7 @@ export default class MovieClip extends DSprite {
 			let c: TimelineFrameValuesCache = [] as any;
 			field.___cacheTimeline = c;
 			let wholeTimelineData = field.___timelineData;
-			fieldPlayer.init({}, field, wholeTimelineData.p, wholeTimelineData.d);
+			fieldPlayer.init({} as any, field, wholeTimelineData.p, wholeTimelineData.d);
 			fieldPlayer.reset(true);
 			calculateCacheSegmentForField(fieldPlayer, c);
 			const fieldIndex = field.___fieldIndex;

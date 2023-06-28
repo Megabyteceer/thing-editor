@@ -69,14 +69,13 @@ export default class ProgressBar extends Container {
 
 	showedVal: any = undefined;
 
-	isProgressFinished = false;
+	isProgressFinished = true;
 
 	init() {
 		super.init();
 		this.scrolling = false;
 		this.currentInterval = 0;
 		this.showedVal = undefined;
-		this.isProgressFinished = false;
 		this.bar = this.findChildByName('bar');
 		this.cap = this.findChildByName('cap');
 
@@ -84,6 +83,7 @@ export default class ProgressBar extends Container {
 		this.cursor = this.interactive ? 'pointer' : '';
 		this.on('pointerdown', this.onDown);
 		this._applyBgHeight();
+		this.isProgressFinished = false;
 	}
 
 	_progress_bar_height = 200;
@@ -113,6 +113,7 @@ export default class ProgressBar extends Container {
 		this.bar = undefined;
 		this.cap = undefined;
 		this.removeListener('pointerdown', this.onDown);
+		this.isProgressFinished = true;
 	}
 
 	onDown() {
