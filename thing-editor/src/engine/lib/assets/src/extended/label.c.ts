@@ -1,5 +1,5 @@
 import { Text } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -7,7 +7,6 @@ import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import L from "thing-editor/src/engine/utils/l";
 import { stepTo } from "thing-editor/src/engine/utils/utils";
-
 
 export default class Label extends Text {
 
@@ -19,6 +18,10 @@ export default class Label extends Text {
 
 	@editable({ type: 'string', multiline: true, tip: "template example: <b>Your have %d coins</b>", disabled: (node: Label) => { return node.translatableText; } })
 	template: string | null = null;
+
+	/** replace pattern for translatableText */
+	@editable({ disabled: o => !o.translatableText })
+	paramName = '%d';
 
 	@editable()
 	isNumeric = false;
@@ -46,6 +49,8 @@ export default class Label extends Text {
 	processedVal: any;
 	lastUpdateTime = 0;
 
+	localizationParams!: KeyedObject;
+
 	init() {
 		super.init();
 		this.currentInterval = 0;
@@ -53,6 +58,15 @@ export default class Label extends Text {
 		this.showedVal = undefined;
 		this.processedVal = undefined;
 		this.lastUpdateTime = game.time;
+		this.localizationParams = {};
+
+		/// #if DEBUG
+		if(this.translatableText) {
+			if(L(this.translatableText).indexOf(this.paramName) < 0) {
+				game.editor.ui.status.warn('Localized text contain no parameter ' + this.paramName, 99999, this, 'paramName');
+			}
+		}
+		/// #endif
 	}
 
 	onLanguageChanged() {
@@ -140,7 +154,8 @@ export default class Label extends Text {
 		if(this.template) {
 			this.text = this.template.replace('%d', val);
 		} else if((this as any)._translatableText) {
-			this.text = L((this as any)._translatableText, val);
+			this.localizationParams[this.paramName] = val;
+			this.text = L((this as any)._translatableText, this.localizationParams);
 		} else {
 			this.text = val;
 		}

@@ -255,7 +255,7 @@
 			"p": {
 				"x": 244,
 				"y": 61,
-				"text": "New Text 1",
+				"text": "LIb CLICK",
 				"style.fontFamily": "monospace",
 				"dataPath": "all.progress-bar.showedVal",
 				"isNumeric": true,

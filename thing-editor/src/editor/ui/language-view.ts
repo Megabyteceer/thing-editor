@@ -396,16 +396,15 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 
 			if(!enforceCreateInCurrentSource) {
 				if(!idsList.hasOwnProperty(key)) { // find key in another source
-					for(let dir in assetsFiles) {
-						const dirAssets = assetsFiles.get(dir);
+					assetsFiles.forEach((dirAssets) => {
 						dirAssets!.forEach((file) => {
 							if(file.asset.hasOwnProperty(key)) {
 								currentDir = file.dir;
 								parseAssets();
 								this.refresh();
 							}
-						})
-					}
+						});
+					});
 				}
 			}
 
