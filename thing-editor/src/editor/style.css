@@ -855,7 +855,6 @@ input[disabled] {
 }
 
 .assets-item-image {
-	border: 1px solid #374627;
 	color: #5d9662;
 	border-radius: 3px;
 }
@@ -906,7 +905,6 @@ input[disabled] {
 	border-radius: 20px;
 	margin: 3px 0;
 	padding: 2px 10px;
-	border: 1px solid #125675;
 	color: #87b8cf;
 }
 
@@ -931,7 +929,6 @@ input[disabled] {
 }
 
 .assets-item-prefab {
-	border: 1px solid #676d12;
 	border-left: 3px dotted #676d12;
 	padding: 0;
 }

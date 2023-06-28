@@ -96,12 +96,12 @@ export default class Trigger extends Container {
 	q = 0;
 	qSpeed = 0;
 
+	/// #if EDITOR
 	constructor() {
 		super();
-		/// #if EDITOR
 		this.__exitPreviewMode = this.__exitPreviewMode.bind(this);
-		/// #endif
 	}
+	/// #endif
 
 	init() {
 		super.init();
