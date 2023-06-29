@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 
+const {walkSync} = require("./editor-server-utils");
+
 module.exports = {
 	build: (projectDir, debug, assetsToCopy) => {
 
@@ -14,12 +16,19 @@ module.exports = {
 		const tmpDir = root + "/.tmp";
 		const publicDir = tmpDir + "/public";
 		const publicAssetsDir = publicDir + "/assets/";
-		/* TODO clear old assets. Or include only existing assets
-				if(fs.existsSync(publicDir)) {
-					const oldTmpDir = publicDir + '_old';
-					fs.renameSync(publicDir, oldTmpDir);
-					fs.rm(publicDir, {recursive: true});
-				}*/
+
+		if(fs.existsSync(publicDir)) {
+			let files = walkSync(publicDir);
+			for(let fileEntry of files) {
+				fs.unlinkSync(fileEntry.fileName);
+			}
+		}
+		if(fs.existsSync(outDir)) {
+			let files = walkSync(outDir);
+			for(let fileEntry of files) {
+				fs.unlinkSync(fileEntry.fileName);
+			}
+		}
 
 		if(!fs.existsSync(publicDir)) {
 			fs.mkdirSync(publicDir);
@@ -73,7 +82,8 @@ module.exports = {
 					}
 				}
 			}).then((res) => {
-				console.log('BUILD COMPLETE: ' + 'http://localhost:5173/' + projectDir);
+				require('./static-server.js');
+				console.log('BUILD COMPLETE: ' + 'http://localhost:5174/' + projectDir);
 				return res;
 			});
 		}).catch((er) => {// eslint-disable-line @typescript-eslint/no-unused-vars
@@ -81,14 +91,3 @@ module.exports = {
 		});
 	}
 }
-
-module.exports.build('games/game1/', true, [
-	{
-		from: "/libs/lib1/assets/flag.png",
-		to: "flag.png",
-	},
-	{
-		from: "/games/game1/assets/bunny.png",
-		to: "bunny.png",
-	},
-]);

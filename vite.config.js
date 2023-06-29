@@ -7,6 +7,7 @@ export default defineConfig({
 		hmr: false,
 		watch: {
 			ignored: [
+				'games/**/.tmp/**',
 				'games/**/debug/**',
 				'games/**/release/**'
 			]
@@ -16,6 +17,7 @@ export default defineConfig({
 	esbuild: {
 		keepNames: true,
 		exclude: [
+			'games/**/.tmp/',
 			'games/**/debug/',
 			'games/**/release/'
 		]

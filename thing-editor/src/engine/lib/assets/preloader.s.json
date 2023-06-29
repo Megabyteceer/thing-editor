@@ -43,7 +43,8 @@
 								"capMargin": 0,
 								"refreshInterval": 0,
 								"onFinish": "this.parent.toggle",
-								"onChanged": ""
+								"onChanged": "",
+								"smooth": true
 							},
 							":": [
 								{

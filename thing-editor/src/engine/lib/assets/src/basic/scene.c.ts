@@ -90,8 +90,3 @@ const _refreshChildRef = (o: Container) => {
 (Scene as any as SourceMappedConstructor).__EDITOR_icon = 'tree/scene';
 (Scene.prototype.remove as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 /// #endif
-
-if((window as any).__sceneClassRef) {
-	alert("vite.js server has duped the code.");
-}
-(window as any).__sceneClassRef = true;

@@ -169,7 +169,7 @@ export default class Build {
 		//result = JSON.parse(result);
 		if(!game.editor.buildProjectAndExit) {
 			let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');
-			game.editor.openUrl('/' + url);
+			game.editor.openUrl('http://localhost:5174/' + url);
 			//TODO errors parsing
 			game.editor.ui.modal.showModal(R.multilineText(result));
 		}
