@@ -1,17 +1,15 @@
 import { Point, isMobile } from "pixi.js";
-import { KeyedObject } from "thing-editor/src/editor/env";
+import { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import game from "thing-editor/src/engine/game";
 import Button from "thing-editor/src/engine/lib/assets/src/basic/button.c";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import L from "thing-editor/src/engine/utils/l";
 import Sound from "thing-editor/src/engine/utils/sound";
 
 const globalPoint = new Point();
 const stagePoint = new Point();
 
 const mouseHandlerGlobalDown = (ev: PointerEvent) => {
-	if(!game.isFocused) {
-		focusChangeHandler(true);
-	}
 	game.mouse.click = true;
 	mouseHandlerGlobal(ev);
 	if(
@@ -100,10 +98,10 @@ if((window as KeyedObject).cordova) {
 		if(enforced) {
 			(navigator as any).app.exitApp();
 		} else {
-			//TODO
-			/*game.showQuestion(L('SUREEXIT_TITLE'), L('SUREEXIT_TEXT'), undefined, () => {
-				game.exitApp(true);
-			});*/
+
+			game.showQuestion(L('SUREEXIT_TITLE'), L('SUREEXIT_TEXT'), undefined, () => {
+				(game as any).exitApp(true);
+			});
 		}
 	};
 }
@@ -116,21 +114,14 @@ if(isMobile.any) {
 }
 /// #endif
 
-const focusChangeHandler = (activated: boolean) => {
-	if(game.isFocused !== activated) {
-		game.isFocused = activated;
-
-		if(game.pixiApp) {
-			setTimeout(() => game.keys.resetAll(), 10);
-		}
-	}
-};
-
 let onClickOnceCallbacks: ((ev: PointerEvent) => void)[] = [];
 
 function addOnClickOnce(callback: (ev: PointerEvent) => void) {
 	onClickOnceCallbacks.push(callback);
 }
+/// #if EDITOR
+(addOnClickOnce as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+/// #endif
 
 export default function initGameInteraction() {
 	const clickHandler = (ev: PointerEvent) => { // calls browsers functions which require to be fired in user context event

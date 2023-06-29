@@ -375,7 +375,7 @@ export default class MovieClip extends DSprite {
 		}
 	}
 
-	__invalidateSerializeCache() { //TODO move all timeline cache to __nodeExtendData.serializationCache and remove this method invoke from data-path-fixer
+	__invalidateSerializeCache() {
 		let timelineData = this._timelineData;
 		Lib.__invalidateSerializationCache(this);
 		deserializeCache.delete(serializeCache.get(timelineData));

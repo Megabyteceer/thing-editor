@@ -1,5 +1,7 @@
+import { Container, Point } from "pixi.js";
 import { ClassAttributes, ComponentChild, h } from "preact";
 import ClassesLoader from "thing-editor/src/editor/classes-loader";
+import { SelectableProperty } from "thing-editor/src/editor/env";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
@@ -120,6 +122,9 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			Pool.__resetIdCounter();
 			if(play) { // launch game
 				game.data = {};
+				(game.data as SelectableProperty).___EDITOR_isGoodForChooser = true;
+				(game.data as SelectableProperty).___EDITOR_isHiddenForCallbackChooser = true;
+
 				exitIsolation();
 				game.editor.ui.status.clear();
 				game.editor.saveBackup();
@@ -189,6 +194,25 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 		}
 		this.currentResolution = resolution;
 		game.__setFixedViewport(resolution.value);
+	}
+
+	scrollInToScreen(node: Container) {
+		let b = node.getBounds();
+		if(b.width === 0 && b.height === 0) {
+			node.getGlobalPosition(b as any as Point);
+		}
+
+		if(b.left < 0) {
+			game.stage.x -= b.left;
+		} else if(b.right > game.W) {
+			game.stage.x -= b.right - game.W;
+		}
+
+		if(b.top < 0) {
+			game.stage.y -= b.top;
+		} else if(b.bottom > game.H) {
+			game.stage.y -= b.bottom - game.H;
+		}
 	}
 
 	render(): ComponentChild {

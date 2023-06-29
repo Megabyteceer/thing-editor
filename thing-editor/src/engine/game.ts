@@ -10,13 +10,16 @@ import Lib from "thing-editor/src/engine/lib";
 /// #if DEBUG
 import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 /// #endif
+import { ButtonOnlyPropertyDesc } from "thing-editor/src/editor/utils/button-only-selectable-property";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
-import initGameInteraction from "thing-editor/src/engine/utils/game-interaction";
+import initGameInteraction, { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction";
 import Keys from "thing-editor/src/engine/utils/keys";
 import L from "thing-editor/src/engine/utils/l";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
+import SceneLinkedPromise from "thing-editor/src/engine/utils/scene-linked-promise";
 import Settings from "thing-editor/src/engine/utils/settings";
 import Sound from "thing-editor/src/engine/utils/sound";
+import sureQuestionInit from "thing-editor/src/engine/utils/sure-question";
 
 let app: Application;
 let stage: Container;
@@ -41,6 +44,7 @@ type FixedViewportSize = { w: number, h: number } | boolean;
 const loadingsInProgressOwners: Set<any> = new Set();
 /// #endif
 
+let contextLoseTime = 0;
 
 const DEFAULT_FADER_NAME = 'fader/default';
 const PRELOADER_SCENE_NAME = 'preloader';
@@ -86,8 +90,9 @@ class Game {
 
 	fullscreen = FullScreen;
 
-	isCanvasMode = false; //TODO
-	isVisible = true; //TODO
+	isCanvasMode = false;
+	/** browser tab visibility */
+	isVisible = true;
 
 	isMobile = utils.isMobile;
 	isPortrait = false;
@@ -115,8 +120,6 @@ class Game {
 	editor!: __EditorType;
 	__EDITOR_mode = false;
 	/// #endif
-
-	isFocused = false;
 
 	keys = Keys;
 
@@ -669,8 +672,7 @@ class Game {
 		//*/
 
 		if(!game.isCanvasMode) {
-			//TODO context losing handling
-			/*if(game.pixiApp.renderer.gl.isContextLost()) {
+			if((this.pixiApp.renderer as any).gl.isContextLost()) {
 				if(game.isVisible) {
 					contextLoseTime++;
 					if(contextLoseTime === 60) {
@@ -679,7 +681,7 @@ class Game {
 				}
 				return;
 			}
-			contextLoseTime = 0;*/
+			contextLoseTime = 0;
 		}
 
 		if(game._isWaitingToHideFader) {
@@ -901,6 +903,12 @@ class Game {
 		}
 	}
 
+	showQuestion(title: string, message: string, yesLabel?: string, onYes?: () => void, noLabel?: string, onNo?: () => void, easyClose = true, prefab = 'ui/sure-question') {
+		let o = Lib.loadPrefab(prefab);
+		sureQuestionInit(o, title, message, yesLabel, onYes, noLabel, onNo, easyClose);
+		return game.showModal(o);
+	}
+
 	showModal(container: Container, callback?: () => void
 		/// #if EDITOR
 		, __noAssertEditorMode = false
@@ -919,7 +927,9 @@ class Game {
 		modals.push(container);
 
 		if(callback) {
-			// SceneLinkedPromise with specialname. later find it and resolve
+			const promise = SceneLinkedPromise.promise(() => {/*empty*/ }, container);
+			promise.name = 'modal-promise-awaiter';
+			promise.then(callback);
 		}
 
 		container.interactiveChildren = false;
@@ -945,7 +955,11 @@ class Game {
 			modals.splice(i, 1);
 		}
 
-		// TODO search SceneLinkedPromise with callback
+		const promise = modalToHide.getChildByName('modal-promise-awaiter') as SceneLinkedPromise;
+		if(promise) {
+			promise.resolve(modalToHide);
+			promise.update();
+		}
 
 		if(instantly
 			/// #if EDITOR
@@ -1000,6 +1014,12 @@ class Game {
 			game.editor.refreshTreeViewAndPropertyEditor();
 			/// #endif
 		}
+	}
+
+	openUrl(url: string, target = '_blank') {
+		addOnClickOnce(() => {
+			window.open(url, target);
+		});
 	}
 
 	_onLoadingError(url: string) {
@@ -1238,12 +1258,80 @@ export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME };
 export type { FixedViewportSize };
 
 /// #if EDITOR
+
+(Game.prototype.forAllChildrenEverywhereBack as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Game.prototype.forAllChildrenEverywhere as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Game.prototype.init as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 (Game.prototype.applyProjectDesc as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+
+(Game.prototype.closeAllScenes as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.closeCurrentScene as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.faderEnd as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.faderShoot as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(FullScreen as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.hideModal as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(game.isMobile as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Keys as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.openUrl as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.replaceScene as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.showModal as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.showQuestion as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.showScene as SelectableProperty).___EDITOR_isGoodForChooser = true;
+Object.defineProperty(game.openUrl, '___EDITOR_isHiddenForChooser', ButtonOnlyPropertyDesc);
+
 (Game.prototype.showModal as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
 	return game.editor.choosePrefab("Choose prefab to show as modal:");
-}; //TODO  add all data path selector helpers
+}
+(Game.prototype.showScene as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
+	return game.editor.chooseScene("Choose scene to open:");
+};
+(Game.prototype.replaceScene as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
+	return game.editor.chooseScene("Choose scene which will replace current scene:");
+};
+
+(Game.prototype.showQuestion as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
+	return new Promise((resolve) => {
+		game.editor.ui.modal.showPrompt('Enter title to show', 'Question Title', undefined, game.editor.validateCallbackParameter).then((enteredTitle) => {
+			if(enteredTitle) {
+				game.editor.ui.modal.showPrompt('Enter message to show', 'Question text', undefined, game.editor.validateCallbackParameter, undefined, true).then((enteredText) => {
+					if(enteredText) {
+						resolve([enteredTitle, enteredText]);
+					}
+				});
+			}
+		});
+	});
+};
+
+
+
+
+
 /*
 /// #endif
 	import preloaderAssets from 'game-root/.tmp/assets-preloader' assert { type: 'json' };
 	game.addAssets(preloaderAssets);
 //*/
+
+document.addEventListener('visibilitychange', () => visibilityChangeHandler());
+
+const visibilityChangeHandler = () => {
+	const isVisible = document.visibilityState === 'visible';
+
+	if(game.isVisible !== isVisible) {
+		game.isVisible = isVisible;
+
+		if(game.pixiApp) {
+			setTimeout(() => {
+				if(game.classes.BgMusic) {
+					/// #if EDITOR
+					/*
+					/// #endif
+					(game.classes.BgMusic as any)._clearCustomFades(0.2);
+					(game.classes.BgMusic as any)._recalculateMusic();
+					//*/
+				}
+			}, 10);
+		}
+	}
+};

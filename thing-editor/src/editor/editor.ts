@@ -642,12 +642,24 @@ class Editor {
 		return this.chooseAsset(AssetType.PREFAB, title, currentPrefab, undefined, filterCallback);
 	}
 
+	async chooseScene(title: ComponentChild = "Choose scenbe", currentScene?: string, filterCallback?: (f: FileDesc) => boolean): Promise<string | null> {
+		return this.chooseAsset(AssetType.SCENE, title, currentScene, undefined, filterCallback);
+	}
+
 	async chooseClass(isScene: boolean, id: string, title: ComponentChild = "Choose class", currentClass?: string): Promise<string | null> {
 		return this.chooseAsset(AssetType.CLASS, title, currentClass, undefined, (file: FileDesc) => {
 			return (file as FileDescClass).asset.__isScene === isScene;
 		}, id);
 	}
 
+	validateCallbackParameter(txt: string) {
+		if(txt.indexOf(',') >= 0) {
+			return "Parameter can not contain commas. Use your own javascript function instead.";
+		}
+		if(txt.indexOf('`') >= 0) {
+			return "Parameter can not contain apostrophes. Use your own javascript function instead.";
+		}
+	}
 
 	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void, filterCallback?: (f: FileDesc) => boolean, idSuffix = ''): Promise<string | null> {
 		const id = type + '_choose_asset_list' + idSuffix;

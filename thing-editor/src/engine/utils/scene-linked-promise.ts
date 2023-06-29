@@ -65,9 +65,7 @@ export default class SceneLinkedPromise extends Container {
 		handler(
 			(data) => {
 				if(promise._promiseId === promiseId) {
-					assert(promise._promiseResultWaiting === EMPTY_RESULT_SYMBOL, "SceneLinkedPromise is resolved already.", 10058);
-					assert(promise._promiseErrorWaiting === EMPTY_RESULT_SYMBOL, "SceneLinkedPromise is rejected already.", 10059);
-					promise._promiseResultWaiting = data;
+					promise.resolve(data);
 				}
 			},
 			(error) => {
@@ -165,6 +163,11 @@ export default class SceneLinkedPromise extends Container {
 		this._promiseErrorWaiting = EMPTY_RESULT_SYMBOL;
 	}
 
+	resolve(data: any) {
+		assert(this._promiseResultWaiting === EMPTY_RESULT_SYMBOL, "SceneLinkedPromise is resolved already.", 10058);
+		assert(this._promiseErrorWaiting === EMPTY_RESULT_SYMBOL, "SceneLinkedPromise is rejected already.", 10059);
+		this._promiseResultWaiting = data;
+	}
 
 	then(handler: (result: any) => any) {
 		assert(this._promiseWaitForResult, "Promise is already finished.", 10073);

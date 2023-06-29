@@ -103,8 +103,8 @@ export default class Selection extends Array<Container> {
 		this.push(o);
 		o.__onSelect();
 
-		/*game.editor.ui.viewport.scrollInToScreen(o); //TODO
-		game.editor.ui.classesList.refresh();*/
+		game.editor.ui.viewport.scrollInToScreen(o);
+
 		if(!IS_SELECTION_LOADING_TIME) {
 			game.editor.history.scheduleSelectionSave();
 		}
@@ -126,8 +126,6 @@ export default class Selection extends Array<Container> {
 		if(o.__onUnselect) {
 			o.__onUnselect();
 		}
-		//TODO:
-		//game.editor.ui.classesList.refresh();
 	}
 
 	saveSelection(): SelectionData {

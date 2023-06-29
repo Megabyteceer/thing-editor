@@ -219,9 +219,6 @@ export default class Sound {
 					/// #if DEBUG
 					highlightPlayedSound(soundId);
 					/// #endif
-					/// #if EDITOR
-					//TODO game.editor.ui.soundsList.soundPlayProfile(soundId, volume, rate, seek, multiInstanced);
-					/// #endif
 				} catch(er) { } // eslint-disable-line no-empty
 			}
 		}

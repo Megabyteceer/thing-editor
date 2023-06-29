@@ -47,9 +47,9 @@ interface TimelineKeyFrame {
 
 	___view: TimelineKeyframeView | null;
 
-	___react_id?: number; //TODO rename to ___viewId;
+	___react_id?: number;
 
-	___keepLoopPoint?: boolean; //TODO ?
+	___keepLoopPoint?: boolean;
 
 	___loopPointView?: TimelineLoopPoint;
 

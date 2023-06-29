@@ -16,9 +16,9 @@ function setObjectHeight(node: DisplayObject, height: number) {
 		node.height = height;
 	} else if((node as Sprite).texture) {
 		node.scale.y = height / (node as Sprite).texture.height;
-		/* TODO if(node instanceof Fill) {
-			node.yRepeat = node.scale.y;
-		} */
+		if(game.classes.Fill && (node instanceof game.classes.Fill)) {
+			(node as any).yRepeat = node.scale.y;
+		}
 	}
 }
 

@@ -346,7 +346,7 @@ _editableEmbed(Container, 'interactive');
 _editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers' });
 
 _editableEmbed(Container, '__hideInEditor', { type: 'boolean', tip: 'hide object in viewport during editor mode' });
-_editableEmbed(Container, '__lockSelection', { type: 'boolean', tip: 'prevent object to be selected by viewport click' }); //TODO rename to __doNotSelectByClick
+_editableEmbed(Container, '__lockSelection', { type: 'boolean', tip: 'prevent object to be selected by viewport click' });
 _editableEmbed(Container, '__description', { type: 'string', multiline: true });
 _editableEmbed(Container, '__hideChildren', { type: 'boolean', tip: 'hide children in tree' });
 _editableEmbed(Container, '___id', {
