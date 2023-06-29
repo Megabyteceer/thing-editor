@@ -7,8 +7,13 @@ const files = walkSync(__dirname + '/../src');
 const ifdef = ifDefLoader(true);
 
 for(let fn of files) {
-	if(fn.fileName.endsWith('.ts') && fn.fileName.indexOf('thing-editor/src/editor') < 0) {
-		const txt = ifdef.load(fn.fileName);
+	if(fn.fileName.endsWith('.ts')) {
+		let txt;
+		if(fn.fileName.indexOf('thing-editor/src/editor') < 0) {
+			txt = ifdef.load(fn.fileName);
+		} else {
+			txt = ' ';
+		}
 		if(txt) {
 			fs.writeFileSync(fn.fileName, txt);
 		}
