@@ -12,8 +12,8 @@ export default class ___Gizmo extends Container {
 
 	}
 
-	moveXY(dX: number, dY: number) {
-		moveSelectionToPoint(dX, dY);
+	moveXY(dX: number, dY: number, withoutChildren = false) {
+		moveSelectionToPoint(dX, dY, withoutChildren);
 	}
 
 	update(): void {

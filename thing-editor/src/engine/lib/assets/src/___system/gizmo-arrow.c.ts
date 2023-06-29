@@ -54,7 +54,7 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 			}
 		}
 
-		gizmo?.moveXY(dX, dY);
+		gizmo?.moveXY(dX, dY, ev.ctrlKey);
 
 		if(___GizmoArrow.draggedArrow.dragR) {
 			if(ev.shiftKey) {
