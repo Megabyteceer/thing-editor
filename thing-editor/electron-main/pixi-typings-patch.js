@@ -6,9 +6,8 @@ const PATCH_BEGIN = ` // thing-editor patch begin
 patch(
 	'node_modules/@pixi/display/lib/DisplayObject.d.ts',
 	'', /*to the beginning*/
-	`import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+	`
 import type { NodeExtendData } from 'thing-editor/src/editor/env';
-	
 `
 	,
 	'export declare abstract class DisplayObject extends utils.EventEmitter<DisplayObjectEvents> {',
@@ -35,11 +34,11 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     isCanBePressed: boolean;
     findParentByType<T extends Container>(classType: new () => T): T | null;
     findParentByName(name: string): Container;
-	
+
     _onRenderResize?();
 
     /** search child recursively by it's name */
-    findChildByName(name: string): Container | null;
+    findChildByName(name: string): Container | undefined;
     /** search all children of defined type recursively */
     findChildrenByType<T extends Container>(classType: new () => T): T[];
     /** search all children by name */
@@ -76,14 +75,14 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
 
     __nodeExtendData: NodeExtendData;
 
-    /** prevent object to be selected by viewport click */
+    /** prevent object to be selected by viewport click. Editor only filed. */
     __lockSelection: boolean;
 
-    /** hide children in tree */
+    /**hide children in editor TreeView window */
     __hideChildren?: boolean;
 
- 	/** hide object in viewport during editor mode */
-	__hideInEditor?: boolean;
+    /** hide object in viewport during editor mode */
+    __hideInEditor?: boolean;
 
     /** node description editable in PropertyEditor window */
     __description?: string;
@@ -91,7 +90,7 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     /** debug info about object (exists in editor only)*/
     ___info: string;
 
-    /** debug unic id of object  (exists in editor only)*/
+    /** debug uniq id of object  (exists in editor only)*/
     ___id: number;
 
 
@@ -129,7 +128,6 @@ patch(
 	translatableText: string | null;
 	textTransform: number;
 	maxWidth: number;
-
 
 	`);
 
