@@ -124,6 +124,7 @@ export default class BgMusic extends Container {
 	dynamicPreloading = false;
 
 	@editable({ type: 'ref' })
+	/// #if EDITOR
 	get ___currentPos() {
 		return (MusicFragment.___currentPos(this.musicFragmentHash) || 0).toFixed(3);
 	}
@@ -131,6 +132,7 @@ export default class BgMusic extends Container {
 	set ___currentPos(_val: string) {
 		/* empty */
 	}
+	/// #endif
 
 	musicFragmentHash!: string;
 	customFade?: number;

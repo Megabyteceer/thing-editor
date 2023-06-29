@@ -60,7 +60,7 @@ export default class Label extends Text {
 		this.lastUpdateTime = game.time;
 		this.localizationParams = {};
 
-		/// #if DEBUG
+		/// #if EDITOR
 		if(this.translatableText) {
 			if(L(this.translatableText).indexOf(this.paramName) < 0) {
 				game.editor.ui.status.warn('Localized text contain no parameter ' + this.paramName, 99999, this, 'paramName');

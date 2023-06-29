@@ -158,7 +158,9 @@ class Game {
 
 		this.settings = new Settings(gameId || this.projectDesc.id);
 
+		/// #if EDITOR
 		this.___enforcedOrientation = this.settings.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
+		/// #endif
 
 		initGameInteraction();
 
@@ -595,7 +597,10 @@ class Game {
 	get currentScene(): CurrentSceneType {
 		return __currentSceneValue;
 	}
+	/*
 	/// #endif
+	currentScene!:Scene;
+	//*/
 
 	_updateGlobal(dt: number) {
 		/// #if DEBUG

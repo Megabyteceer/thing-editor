@@ -183,12 +183,13 @@ setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
 		});
 	});
 };
-/// #endif
 
-export default getValueByPath;
 export {
 	getLatestSceneNodeBypath,
 	getLatestSceneNodesByComplexPath,
 	pathDebugging, setValueByPath
 };
 
+/// #endif
+
+export default getValueByPath;
