@@ -229,13 +229,9 @@ export default class ClassesLoader {
 			return classes;
 		});
 	}
-
-	static validateClasses() {
-		//TODO
-	}
 }
 
-// vite dynamic imports broke sourcemaps lines; Thats why import moved to separate file.
+// vite dynamic imports broke sourcemaps lines; Thats why import moved to the bottom of the file.
 const imp = (moduleName: string, version: string | undefined) => {
 	if(!version) {
 		return import(/* @vite-ignore */ `/${moduleName}.ts`);

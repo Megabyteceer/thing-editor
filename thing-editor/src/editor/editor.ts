@@ -81,8 +81,7 @@ class Editor {
 
 	disableFieldsCache = false;
 
-	buildProjectAndExit: any; //TODO:
-
+	buildProjectAndExit: any;
 
 	history = historyInstance;
 
@@ -101,7 +100,7 @@ class Editor {
 	/** true when editor blocked fatally with un-closable error */
 	__FatalError = false;
 
-	__projectReloading = false; //TODO:  rename to restartInProgress
+	restartInProgress = false;
 
 	__wrongTexture = Texture.from('img/wrong-texture.png');
 
@@ -149,7 +148,7 @@ class Editor {
 			}
 
 			window.onbeforeunload = (e) => {
-				if(!this.__projectReloading && !this.__FatalError) {
+				if(!this.restartInProgress && !this.__FatalError) {
 					if(this.askSceneToSaveIfNeed() === false) {
 						e.returnValue = false;
 					}
@@ -173,22 +172,23 @@ class Editor {
 		return this.history.isStateModified;
 	}
 
-	reloadClasses() {
+	async reloadClasses() {
+		let restorePrefabName = PrefabEditor.currentPrefabName;
+		let needRestoring = !restorePrefabName && game.__EDITOR_mode && game.editor.isCurrentContainerModified;
 
-		this.ui.viewport.stopExecution();
-
-		let needRestoring = game.currentScene;
-		if(needRestoring) { // TODO save prefab and restore prefab if it is prefab edition
+		if(needRestoring) {
 			this.saveBackup();
 		}
 
-		return ClassesLoader.reloadClasses().then(() => {
-			ClassesLoader.validateClasses();
-			if(needRestoring) {
-				this.restoreBackup();
-			}
-		});
+		this.ui.viewport.stopExecution();
+		await ClassesLoader.reloadClasses();
+		if(restorePrefabName) {
+			PrefabEditor.editPrefab(restorePrefabName);
+		} if(needRestoring) {
+			this.restoreBackup();
+		}
 	}
+
 
 	onEditorRenderResize() {
 		this.refreshTreeViewAndPropertyEditor();
@@ -219,7 +219,7 @@ class Editor {
 		}
 	}
 
-	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) { //TODO rename changeProperty
+	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) {
 		if(this.selection.length > 0) {
 
 			if(typeof field === 'string') {
@@ -253,7 +253,7 @@ class Editor {
 		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
 			if(dir) {
 				this.settings.setItem('last-opened-project', dir);
-				this.__projectReloading = true;
+				this.restartInProgress = true;
 				window.document.location.reload();
 			}
 		});
