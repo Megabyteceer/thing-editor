@@ -223,7 +223,6 @@ export default class fs {
 
 	static copyAssetToProject(file: FileDesc) {
 		if(file.assetType === AssetType.CLASS) {
-			//TODO show new class wizard with predefined parent class
 			game.editor.ui.modal.showInfo('Class can not be copied to the project. Create a new class inherited from ' + (file as FileDescClass).asset.__className + ' instead.', 'Can not copy class.');
 			return;
 		}

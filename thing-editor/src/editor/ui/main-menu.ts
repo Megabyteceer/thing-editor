@@ -31,7 +31,7 @@ const MUTED_ICON = (): ComponentChild => {
 
 const menuProps = {
 	className: 'main-menu',
-	"data-help": 'editor.MainMenu' //TODO check help
+	"data-help": 'editor.MainMenu'
 }
 
 const chooseProjectClick = () => {

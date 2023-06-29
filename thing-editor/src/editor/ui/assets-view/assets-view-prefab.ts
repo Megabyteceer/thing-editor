@@ -8,8 +8,6 @@ import { getSerializedObjectClass } from "thing-editor/src/editor/utils/generate
 import libInfo from "thing-editor/src/editor/utils/lib-info";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
-import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
-import assert from "thing-editor/src/engine/debug/assert";
 import game, { DEFAULT_FADER_NAME } from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
@@ -62,7 +60,6 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 		{
 			name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' prefab..."),
 			onClick: () => {
-				//TODO check class usage
 				game.editor.ui.modal.showEditorQuestion(
 					'Ase you sure?',
 					R.fragment(
@@ -80,7 +77,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 }
 
 const assetItemRendererPrefab = (file: FileDescPrefab) => {
-	assert(file.asset.c, "rendering of prefab referenced to prefab not supported. TODO");
+	const Class = Lib.__getPrefabsClass(file.asset);
 	return R.div(
 		{
 			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
@@ -113,13 +110,12 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 				showPrefabContextMenu(file, ev);
 			},
 			onDblClick: () => {
-				let Class = game.classes[file.asset.c!];
-				game.editor.editClassSource(Class, file.asset.c!);
+				game.editor.editClassSource(Class, file.asset.c);
 			},
 			title: "Click to edit prefab. Alt + Click - place as child"
 		},
 		libInfo(file),
-		R.classIcon(game.classes[file.asset.c!] || __UnknownClass),
+		R.classIcon(Class),
 		R.span(assetsItemNameProps, file.assetName));
 }
 

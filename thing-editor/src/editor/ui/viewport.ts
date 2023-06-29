@@ -175,14 +175,6 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 		}
 	}
 
-	onDragOver() {
-		//TODO:
-	}
-
-	onDrop() {
-		//TODO:
-	}
-
 	resetZoom() {
 		game.stage.scale.x = 1;
 		game.stage.scale.y = 1;
@@ -324,9 +316,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			R.div({
 				id: 'viewport-root',
 				className: 'editor-viewport',
-				onDblClick: this.onDoubleClick,
-				onDragOver: this.onDragOver,
-				onDrop: this.onDrop,
+				onDblClick: this.onDoubleClick
 			})
 		)
 	}

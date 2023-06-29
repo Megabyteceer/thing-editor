@@ -10,7 +10,6 @@ let latestClickedHelpURL = HELP_ROOT;
 window.addEventListener('mousedown', (ev) => {
 	let t = ev.target as HTMLElement;
 	while(t) {
-		//TODO: check if help works
 		if(t.dataset) {
 			if(t.dataset.do_not_disturb_helpID) {
 				return;

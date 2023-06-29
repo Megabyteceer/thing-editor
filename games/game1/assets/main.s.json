@@ -261,6 +261,12 @@
 				"isNumeric": true,
 				"decimalsCount": 2
 			}
+		},
+		{
+			"r": "7777",
+			"p": {
+				"name": "prefab1"
+			}
 		}
 	]
 }

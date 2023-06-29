@@ -656,6 +656,14 @@ export default class Lib
 		}
 	}
 
+	static __getPrefabsClass(prefabData: SerializedObject): SourceMappedConstructor {
+		if(prefabData.c) {
+			return game.classes[prefabData.c] || __UnknownClass;
+		} else {
+			return Lib.__getPrefabsClass(prefabs[prefabData.r!]);
+		}
+	}
+
 	/// #endif
 
 	/// #if DEBUG
