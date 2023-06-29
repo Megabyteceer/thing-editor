@@ -12,6 +12,7 @@ import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import game from "thing-editor/src/engine/game";
 import ___GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c";
+import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
@@ -218,7 +219,11 @@ export default class ClassesLoader {
 				}
 
 				if(!c.hasOwnProperty('__EDITOR_icon')) {
-					c.__EDITOR_icon = 'tree/game'; // TODO custom MovieClip icon if has timeline property
+					if(c.prototype instanceof MovieClip) {
+						c.__EDITOR_icon = 'tree/movie-custom';
+					} else {
+						c.__EDITOR_icon = 'tree/game';
+					}
 				}
 			}
 			return classes;
