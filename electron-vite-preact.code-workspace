@@ -230,9 +230,9 @@
 			{
 				"type": "node",
 				"request": "launch",
-				"name": "vite build",
+				"name": "process all DANGER!!!",
 				"cwd": "${workspaceFolder}",
-				"args": ["./thing-editor/electron-main/build.js"]
+				"args": ["./thing-editor/electron-main/__if-def-all.js"]
 
 			}
 		],

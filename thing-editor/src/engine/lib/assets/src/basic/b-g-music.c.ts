@@ -361,3 +361,5 @@ const sortReverted = (a: number, b: number) => {
 
 (BgMusic.prototype.play as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (BgMusic.prototype.stop as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+
+/// #endif
