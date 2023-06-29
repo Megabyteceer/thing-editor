@@ -11,6 +11,7 @@ import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
+import makePathForKeyframeAutoSelect from "thing-editor/src/editor/utils/movie-clip-keyframe-select-path";
 import Selection from "thing-editor/src/editor/utils/selection";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -117,23 +118,23 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			let props = (o.constructor as SourceMappedConstructor).__editableProps;
 			for(let p of props) {
 				if(p.type === 'timeline') {
-					/*let timeline = (o as KeyedObject)[p.name]; //TODO
-					if(timeline) { TODO timeline search
+					let timeline = (o as KeyedObject)[p.name]; //TODO
+					if(timeline) {
 						for(let field of timeline.f) {
 							for(let k of field.t) {
 								if(k.a && (k.a.toLowerCase().indexOf(this.state.search) >= 0)) {
-									addSearchEntry(o, Timeline.makePathForKeyframeAutoSelect(p, field, k));
+									addSearchEntry(o, makePathForKeyframeAutoSelect(p, field, k));
 									ret = true;
 								}
 							}
 						}
 						for(let label in timeline.l) {
-							if(label.toLowerCase().indexOf(this.searchString) >= 0) {
+							if(label.toLowerCase().indexOf(this.state.search) >= 0) {
 								addSearchEntry(o, p.name + ',,' + label);
 								ret = true;
 							}
 						}
-					}*/
+					}
 				} else if(p.type !== 'splitter') {
 					let val = '' + (o as KeyedObject)[p.name];
 					if(val.toLowerCase().indexOf(this.state.search) >= 0) {

@@ -45,7 +45,6 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 		{
 			name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' scene..."),
 			onClick: () => {
-				//TODO check class usage
 				game.editor.ui.modal.showEditorQuestion(
 					'Ase you sure?',
 					R.fragment(

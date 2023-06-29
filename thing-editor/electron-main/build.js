@@ -86,7 +86,7 @@ module.exports = {
 				console.log('BUILD COMPLETE: ' + 'http://localhost:5174/' + projectDir);
 				return res;
 			});
-		}).catch((er) => {// eslint-disable-line @typescript-eslint/no-unused-vars
+		}).catch((er) => {
 			debugger;
 		});
 	}

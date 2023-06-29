@@ -624,8 +624,8 @@ class Editor {
 		}
 	}
 
-	blurInputs() {
-		if(document.activeElement) {
+	blurPropsInputs() {
+		if(document.activeElement && document.activeElement.closest('#propsEditor')) {
 			(document.activeElement as HTMLElement).blur();
 		}
 	}

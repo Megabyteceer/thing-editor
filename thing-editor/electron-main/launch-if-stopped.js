@@ -29,7 +29,7 @@ import('ps-list').then(async (psList) => {
 			}
 		);
 
-		c.on('error', (er) => {// eslint-disable-line @typescript-eslint/no-unused-vars
+		c.on('error', (er) => {
 			debugger;
 		});
 

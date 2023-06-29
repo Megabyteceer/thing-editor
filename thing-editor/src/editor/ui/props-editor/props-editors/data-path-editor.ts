@@ -188,7 +188,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		return ((type !== 'object') && (type !== 'function' || !CallbackEditor.isFunctionIsClass(val)));
 	}
 
-	finalValueChoosed(path: string[], _val: any, _parent: any) { // eslint-disable-line @typescript-eslint/no-unused-vars
+	finalValueChoosed(path: string[], _val: any, _parent: any) {
 		this.applyFinalPath(path.join('.'));
 	}
 

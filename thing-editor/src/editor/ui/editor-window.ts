@@ -137,7 +137,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		return ret;
 	}
 
-	deltaL(x: number, _y: number) { // eslint-disable-line @typescript-eslint/no-unused-vars
+	deltaL(x: number, _y: number) {
 		let ret = { x: this.state.w, y: this.state.h };
 		this.setSize(this.state.w - x, this.state.h);
 		ret.x = -(this.state.w - ret.x);
@@ -146,7 +146,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		return ret;
 	}
 
-	deltaR(x: number, _y: number) { // eslint-disable-line @typescript-eslint/no-unused-vars
+	deltaR(x: number, _y: number) {
 		let ret = { x: this.state.w, y: this.state.h };
 		this.setSize(this.state.w + x, this.state.h);
 		ret.x = this.state.w - ret.x;
@@ -154,7 +154,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		return ret;
 	}
 
-	deltaB(_x: number, y: number) { // eslint-disable-line no-unused-vars
+	deltaB(_x: number, y: number) {
 		let ret = { x: this.state.w, y: this.state.h };
 		this.setSize(this.state.w, this.state.h + y);
 		ret.x = this.state.w - ret.x;
@@ -162,7 +162,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		return ret;
 	}
 
-	deltaT(_x: number, y: number) { // eslint-disable-line no-unused-vars
+	deltaT(_x: number, y: number) {
 		if(this.state.y + y < 0) {
 			y -= (this.state.y + y);
 		}

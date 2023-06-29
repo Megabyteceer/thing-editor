@@ -120,7 +120,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 
 	showModal(content: ComponentChild, title: ComponentChild = '', noEasyClose = false, toBottom = false): Promise<any> {
-		game.editor.blurInputs();
+		game.editor.blurPropsInputs();
 		return new Promise((resolve) => {
 			modal.state.modals[toBottom ? 'unshift' : 'push']({ content, title, noEasyClose, resolve });
 			modal.refresh();

@@ -148,12 +148,10 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 		this.setState({ value: val });
 	}
 
-	onAutoSelect(_selectPath: string) { // eslint-disable-line @typescript-eslint/no-unused-vars
-		//TODO select by __view property
-		/*
-		if(this.refs.fieldRef && this.refs.fieldRef.onAutoSelect) {
-			this.refs.fieldRef.onAutoSelect(selectPath);
-		}*/
+	onAutoSelect(selectPath: string[]) {
+		if(this.propertyEditor && (this.propertyEditor as any).onAutoSelect) {
+			(this.propertyEditor as any).onAutoSelect(selectPath);
+		}
 	}
 
 	editorRef(ref: ComponentChild | null) {

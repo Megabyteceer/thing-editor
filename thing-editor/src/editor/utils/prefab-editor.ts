@@ -96,7 +96,7 @@ export default class PrefabEditor {
 
 	static acceptPrefabEdition(oneStepOnly = false) {
 		exitIsolation();
-		game.editor.blurInputs();
+		game.editor.blurPropsInputs();
 		game.editor.history.saveHistoryNow();
 		let name = getCurrentPrefabName();
 		if(prefabsStack.length) {

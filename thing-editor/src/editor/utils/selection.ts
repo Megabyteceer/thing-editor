@@ -108,7 +108,7 @@ export default class Selection extends Array<Container> {
 	}
 
 	remove(o: Container) {
-		game.editor.blurInputs();
+		game.editor.blurPropsInputs();
 		assert(o.__nodeExtendData.isSelected, "Node is not selected.");
 		let i = this.indexOf(o);
 		assert(i >= 0, "Node is not registered in selected list.");

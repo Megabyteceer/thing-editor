@@ -25,15 +25,15 @@ export default class Scene extends Container {
 		/* virtual */
 	}
 
-	onMouseDown(_mouse: typeof game.mouse, _ev: PointerEvent) { // eslint-disable-line @typescript-eslint/no-unused-vars
+	onMouseDown(_mouse: typeof game.mouse, _ev: PointerEvent) {
 		/* virtual */
 	}
 
-	onMouseUp(_mouse: typeof game.mouse, _ev: PointerEvent) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+	onMouseUp(_mouse: typeof game.mouse, _ev: PointerEvent) {
 		/* virtual */
 	}
 
-	onMouseMove(_mouse: typeof game.mouse, _ev: PointerEvent) {  // eslint-disable-line @typescript-eslint/no-unused-vars
+	onMouseMove(_mouse: typeof game.mouse, _ev: PointerEvent) {
 		/* virtual */
 	}
 

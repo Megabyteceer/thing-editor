@@ -41,8 +41,7 @@ export default class TimelineEditor extends Component<ClassAttributes<TimelineEd
 		}
 	}
 
-	onAutoSelect(_selectPath: string) { // eslint-disable-line @typescript-eslint/no-unused-vars
-		/* TODO
+	onAutoSelect(selectPath: string[]) {
 		if(!this.state.toggled) {
 			this.onToggleClick();
 			setTimeout(() => {
@@ -50,7 +49,7 @@ export default class TimelineEditor extends Component<ClassAttributes<TimelineEd
 			}, 1);
 		} else {
 			Timeline.onAutoSelect(selectPath);
-		}*/
+		}
 	}
 
 	render() {
