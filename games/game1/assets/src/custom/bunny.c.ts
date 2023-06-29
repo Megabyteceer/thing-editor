@@ -43,4 +43,10 @@ export default class Bunny extends DSprite {
 		super.update();
 	}
 
+
+	__afterDeserialization(): void {
+		if(this.name === '777') {
+			game.editor.ui.status.warn('777', 9999, this, 'name');
+		}
+	}
 }

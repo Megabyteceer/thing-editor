@@ -137,7 +137,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		let labels: TimelineSerializedLabelsData = {};
 		let fields: KeyedMap<TimelineSerializedKeyFrame[]> = {};
 		let fieldsByName: KeyedMap<KeyedMap<TimelineSerializedKeyFrame>[]> = {};
-		let addedFramesCheck: KeyedMap<true> = {};
+
 		selectedComponents.forEach((c) => {
 			if(c instanceof TimelineKeyframeView) {
 				let k: KeyedObject = {};
@@ -147,14 +147,10 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 					}
 				}
 				keyframesCount++;
-				let fieledName = c.props.owner.props.owner.props.field.n;
-				fieldsByName[fieledName] = fieldsByName[fieledName] || [];
+				let fieldName = c.props.owner.props.owner.props.field.n;
+				fieldsByName[fieldName] = fieldsByName[fieldName] || [];
 
-				let hash = k.t + '_' + fieledName; // TODO  remove checking
-				assert(!addedFramesCheck[hash], "");
-				addedFramesCheck[hash] = true;
-
-				fieldsByName[fieledName].push(k);
+				fieldsByName[fieldName].push(k);
 			} else if(c instanceof TimelineLabelView) {
 				labels[c.props.labelName] = c.props.label.t;
 			}

@@ -295,7 +295,7 @@ export default class fs {
 		}
 	}
 
-	static rebuildSounds(dir: string): object { //TODO type after server move to ts.
+	static rebuildSounds(dir: string): object {
 		const options = {
 			dir,
 			formats: game.editor.projectDesc.soundFormats,

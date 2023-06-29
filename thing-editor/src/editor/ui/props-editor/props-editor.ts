@@ -196,12 +196,10 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 		setTimeout(() => {
 
 			let fn = a[0];
-			// TODO выбор через __view поле
 			this.refs.forEach((field) => {
 				field.onAutoSelect(a);
 			})
 
-			//TODO:  выбор поля через __view.base    всем ред полям, нодам, кейфреймам ltkfnm ccskre __view:ComponentChild
 			let fldInput = document.querySelector(".props-editor #property-editor-" + fn.replace('.', '_')) as HTMLInputElement;
 			if(!fldInput) {
 				fldInput = document.querySelector(fieldName) as HTMLInputElement;
@@ -297,7 +295,6 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				let invisible;
 				for(let o of game.editor.selection) {
 					if(!p.visible(o)) { //TODO reset values at serialization only.
-
 						const defaults = getObjectDefaults(o);
 						(o as KeyedObject)[p.name] = defaults[p.name];
 						invisible = true;

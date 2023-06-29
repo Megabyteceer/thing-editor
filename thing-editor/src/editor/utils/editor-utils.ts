@@ -403,9 +403,7 @@ export namespace editorUtils {
 		if(game.editor.selection.length > 0) {
 			const data = game.editor.selection.map(Lib.__serializeObject);
 			let assets = new Set<string>();
-			/*for(let o of data) {
-				//TODO enumAssetsPropsRecursive(o, assets);
-			}*/
+
 			clipboard.data = {
 				data,
 				assets: Array.from(assets),
@@ -455,10 +453,7 @@ export namespace editorUtils {
 				w = Lib._deserializeObject({ c: clipboard.data.data[0].c, p: clipboard.data.data[0].p });
 				game.editor.disableFieldsCache = false;
 			}
-			/*if(!(w instanceof OrientationTrigger)) { // TODO add static method or something like that
-				w.x = 0;
-				w.y = 0;
-			}*/
+
 			let indexToAdd = parent.getChildIndex(o);
 
 			for(let c of a) {
@@ -495,8 +490,6 @@ export namespace editorUtils {
 
 	export const onPasteClick = async () => {
 		if(canPaste()) {
-
-			// TODO copy related assets
 
 			DataPathFixer.rememberPathReferences();
 

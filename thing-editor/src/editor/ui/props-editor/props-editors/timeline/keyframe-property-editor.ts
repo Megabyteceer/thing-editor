@@ -289,7 +289,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 			let edField = game.editor.getObjectField(game.editor.selection[0], kf.___view!.props.owner.props.owner.props.field.n);
 			speedEditor = R.fragment(
 				R.label({ htmlFor: 'speed-set-checkbox' }, 'Set speed'),
-				R.input({ className: 'clickable', id: 'speed-set-checkbox', type: 'checkbox', onChange: this.onSetSpeedExistsChanged, checked: hasSpeed }), //TODO replace all checkboxes to BooleanEditor
+				R.input({ className: 'clickable', id: 'speed-set-checkbox', type: 'checkbox', onChange: this.onSetSpeedExistsChanged, checked: hasSpeed }),
 				hasSpeed ? h(NumberEditor, { value: speedVal, step: (edField.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged }) : undefined,
 				R.space()
 			)
@@ -326,7 +326,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 			R.space(),
 			speedEditor,
 			R.label({ htmlFor: 'random-set-checkbox', title: 'Next frame will be reached for random time longer or faster' }, 'Time random'),
-			R.input({ className: 'clickable', id: 'random-set-checkbox', type: 'checkbox', onChange: this.onSetRandomExistsChanged, checked: hasRandom }), //TODO replace all checkboxes to BooleanEditor
+			R.input({ className: 'clickable', id: 'random-set-checkbox', type: 'checkbox', onChange: this.onSetRandomExistsChanged, checked: hasRandom }),
 			randomEditor,
 			R.space(),
 			R.label({ htmlFor: 'jump-time-checkbox' }, 'Loop'),

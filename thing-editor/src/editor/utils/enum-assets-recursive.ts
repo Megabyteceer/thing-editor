@@ -44,23 +44,7 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 			if(field.type === 'image') {
 				imageFields[field.name] = true;
 				addImageToAssetsList(o.p[field.name], ret);
-			}/* TODO else if(field.__isResourceSelector) {
-				let resourceName = o.p[field.name];
-				if(resourceName && Lib.resources[resourceName]) {
-					addResourceToAssetsList(Lib.resources[resourceName], ret);
-				}
-			} else if(field.type === 'l18n') {
-				let key = o.p[field.name];
-				if(key && L.has(key)) {
-					let array = [key, L(key)];
-					let prefix = game.projectDesc.__localesNewKeysPrefix;
-					if(prefix && key.startsWith(prefix)) {
-						array.push(key.replace(prefix, LOCALES_PREFIX_HOLDER));
-					}
-					ret.add(array.join(LOCALES_SPLITTER) as any);
-				}
-			}
-			else */ if(field.type === 'prefab') {
+			} else if(field.type === 'prefab') {
 				let prefabName = o.p[field.name];
 				if(Lib.hasPrefab(prefabName)) {
 					addPrefabToAssetsList(prefabName, ret);

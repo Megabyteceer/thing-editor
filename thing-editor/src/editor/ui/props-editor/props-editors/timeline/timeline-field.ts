@@ -99,9 +99,7 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 		let field = this.props.field;
 		Timeline.fieldDataChanged(field, node);
 		this.refresh();
-		setTimeout(() => { //TODO  remove timeout?
-			node.__applyValueToMovieClip(field, this.props.owner.props.owner.getTime());
-		}, 1);
+		node.__applyValueToMovieClip(field, this.props.owner.props.owner.getTime());
 	}
 
 	render() {

@@ -73,8 +73,6 @@ export default class Build {
 		}
 		game.editor.ui.modal.showSpinner();
 
-		//TODO game.editor.validateResources();
-
 		prefixToCutOff = (debug ? '___' : '__');
 
 		const preloaderAssets: Set<FileDesc> = new Set();
@@ -169,11 +167,9 @@ export default class Build {
 
 	static showResult(result: any) {
 		game.editor.ui.modal.hideSpinner();
-		//result = JSON.parse(result);
 		if(!game.editor.buildProjectAndExit) {
 			let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');
 			game.editor.openUrl('http://localhost:5174/' + url);
-			//TODO errors parsing
 			game.editor.ui.modal.showModal(R.multilineText(result));
 		}
 	}
@@ -209,8 +205,6 @@ function findClassNameInPrefabData(name: string, data: SerializedObject): boolea
 function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDesc?: ProjectDesc, text?: KeyedObject) {
 
 	let images: string[] = [];
-	//let resources = {};
-	/* TODO */
 
 	let sounds: SoundAssetEntry[] = [];
 
@@ -249,7 +243,6 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 		scenes,
 		prefabs,
 		images,
-		//resources,
 		sounds,
 		projectDesc,
 		text

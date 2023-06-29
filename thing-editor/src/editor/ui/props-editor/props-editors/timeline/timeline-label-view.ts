@@ -21,7 +21,7 @@ const labelStartMarkerProps = {
 
 interface TimelineLabelViewProps extends ClassAttributes<TimelineLabelView> {
 	label: TimelineLabelData;
-	labelName: string //TODO remove??
+	labelName: string;
 	owner: ObjectsTimelineView;
 	labelsNamesList: string[];
 }

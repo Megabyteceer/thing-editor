@@ -105,7 +105,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 
 	onTogglePlay() {
 		if(!playTogglingTime && !game.editor.__FatalError) {
-			// TODO _stopTests();
+
 			Keys.resetAll();
 
 			playTogglingTime = true;
@@ -125,7 +125,6 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				game.editor.saveBackup();
 				game.editor.selection.saveCurrentSelection();
 				game.__clearStage();
-				// TODO Spine.clearPool();
 
 				game.__EDITOR_mode = false;
 				game._setCurrentScene(null);

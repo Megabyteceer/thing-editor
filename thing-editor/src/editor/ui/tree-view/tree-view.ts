@@ -118,7 +118,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			let props = (o.constructor as SourceMappedConstructor).__editableProps;
 			for(let p of props) {
 				if(p.type === 'timeline') {
-					let timeline = (o as KeyedObject)[p.name]; //TODO
+					let timeline = (o as KeyedObject)[p.name];
 					if(timeline) {
 						for(let field of timeline.f) {
 							for(let k of field.t) {
@@ -256,5 +256,3 @@ const renderSceneStackItem = (s: Scene, i: number, a: Scene[]) => {
 		body
 	);
 };
-
-//TODO enumAssetsPropsRecursive; //COpy from project toproject
