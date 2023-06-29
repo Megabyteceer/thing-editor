@@ -802,7 +802,11 @@ class Editor {
 		if(fileName.startsWith('\\') || fileName.startsWith('/')) {
 			rootPath = rootPath.substring(0, rootPath.length - 1);
 		}
-		let url = '/__open-in-editor?file=' + rootPath + fileName;
+		this.editFile(rootPath + fileName);
+	}
+
+	editFile(fileName: string) {
+		let url = '/__open-in-editor?file=' + encodeURIComponent(fileName);
 		fetch(url);
 	}
 

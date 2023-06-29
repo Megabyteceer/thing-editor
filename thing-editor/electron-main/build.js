@@ -86,8 +86,19 @@ module.exports = {
 				console.log('BUILD COMPLETE: ' + 'http://localhost:5174/' + projectDir);
 				return res;
 			});
-		}).catch((er) => {
-			debugger;
 		});
 	}
+}
+
+if(require.main === module) {
+	module.exports.build('games/game1/', true, [
+		{
+			from: "/libs/lib1/assets/flag.png",
+			to: "flag.png",
+		},
+		{
+			from: "/games/game1/assets/bunny.png",
+			to: "bunny.png",
+		},
+	]);
 }

@@ -75,7 +75,6 @@ module.exports = function vitePluginIfDef(isDebug) {
 				});
 				if(cuttingStack.length > 0) {
 					const lineNum = cuttingStack.pop() + 1;
-					debugger;
 					throw new Error(cuttingStack.pop() + ' without /// #endif in file ' + id + ':' + lineNum);
 				}
 

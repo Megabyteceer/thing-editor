@@ -168,9 +168,13 @@ export default class Build {
 	static showResult(result: any) {
 		game.editor.ui.modal.hideSpinner();
 		if(!game.editor.buildProjectAndExit) {
-			let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');
-			game.editor.openUrl('http://localhost:5174/' + url);
-			game.editor.ui.modal.showModal(R.multilineText(result));
+			if(result instanceof Error) {
+				game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
+			} else {
+				let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');
+				game.editor.openUrl('http://localhost:5174/' + url);
+				game.editor.ui.modal.showModal("Builded successfully.");
+			}
 		}
 	}
 }
@@ -252,4 +256,17 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 		game.editor.currentProjectDir + '.tmp/' + fileName,
 		JSON.stringify(assetsObj, fieldsFilter)
 	);
+}
+
+function renderTextWithFilesLinks(txt: string) {
+	if(txt.indexOf(' in file ') > 0) {
+		const a = txt.split(' in file ');
+		return R.span(null, a[0], ' in file ', R.a({
+			href: '#',
+			onClick: () => {
+				game.editor.editFile(a[1]);
+			}
+		}, a[1]));
+	}
+	return txt;
 }

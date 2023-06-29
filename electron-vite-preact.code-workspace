@@ -234,6 +234,14 @@
 				"cwd": "${workspaceFolder}",
 				"args": ["./thing-editor/electron-main/__if-def-all.js"]
 
+			},
+			{
+				"type": "node",
+				"request": "launch",
+				"name": "vite build",
+				"cwd": "${workspaceFolder}",
+				"args": ["./thing-editor/electron-main/build.js"]
+
 			}
 		],
 		"compounds": [{
