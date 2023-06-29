@@ -223,6 +223,7 @@ class Game {
 		return !!currentFader;
 	}
 
+	/// #if EDITOR
 	get __enforcedOrientation() {
 		return this.___enforcedOrientation;
 	}
@@ -233,6 +234,7 @@ class Game {
 		game.settings.setItem('__EDITOR_is-portrait-orientation', v === 'portrait');
 		this.onResize();
 	}
+	/// #endif
 
 	addAssets(data: AssetsDescriptor, assetsRoot = './assets/') {
 		/// #if EDITOR
