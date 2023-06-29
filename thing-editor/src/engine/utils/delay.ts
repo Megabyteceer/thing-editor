@@ -105,3 +105,4 @@ export default class Delay extends Container {
 
 /// #if EDITOR
 (Delay as any as SourceMappedConstructor).__EDITOR_icon = 'tree/timer';
+/// #endif
