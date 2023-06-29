@@ -946,7 +946,7 @@ const processAfterDeserialization = (o: Container) => {
 };
 /// #endif
 
-(Lib as any).loadPrefab = (name: string): Container => {
+(Lib as any).loadPrefab = (name: string): Container => { //moved here to keep auto typing generation (TLib) work
 	assert(prefabs.hasOwnProperty(name), "No prefab with name '" + name + "' registered in Lib", 10044);
 	/// #if EDITOR
 	if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
