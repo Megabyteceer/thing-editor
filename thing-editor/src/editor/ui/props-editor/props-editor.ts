@@ -318,7 +318,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				curGroup = group.renderGroup({ key: p.name, content: curGroupArray, title: p.title as string });
 			} else {
 				curGroupArray.push(
-					h(PropsFieldWrapper, { key: p.name, defaultValue: defaultValues[p.name], propsEditor: this, field: p, onChange: game.editor.onSelectedPropsChange })
+					h(PropsFieldWrapper, { key: p.name, defaultValue: defaultValues[p.name], propsEditor: this, field: p, onChange: game.editor.editProperty })
 				);
 			}
 		}

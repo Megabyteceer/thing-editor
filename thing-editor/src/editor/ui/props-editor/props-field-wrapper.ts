@@ -61,7 +61,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 					} else {
 						val = text;
 					}
-					game.editor.onSelectedPropsChange(field, val);
+					game.editor.editProperty(field, val);
 				});
 			},
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
@@ -86,7 +86,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		{
 			name: R.fragment(R.icon('reject'), 'Reset "' + field.name + '" value to default: ', R.span(defaultValueProps, defaultValue)),
 			onClick: () => {
-				game.editor.onSelectedPropsChange(field, defaultValue);
+				game.editor.editProperty(field, defaultValue);
 			},
 			disabled: () => defaultValue === undefined || value === defaultValue || !game.editor.ui.propsEditor.editableProps[field.name]
 		},
@@ -238,3 +238,4 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 }
 
 export type { EditablePropertyEditorProps };
+

@@ -145,8 +145,8 @@ export class PowDampPresetEditor extends PowDampPresetSelector {
 
 	onSelect(selected: PowDampPreset) {
 		if(selected.p) {
-			game.editor.onSelectedPropsChange('pow', selected.p);
-			game.editor.onSelectedPropsChange('damp', selected.d);
+			game.editor.editProperty('pow', selected.p);
+			game.editor.editProperty('damp', selected.d);
 		}
 	}
 }

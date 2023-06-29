@@ -54,7 +54,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 					menu.unshift({
 						name: 'Assign to "' + prop.name + '" >>',
 						onClick: () => {
-							game.editor.onSelectedPropsChange(prop, file.assetName);
+							game.editor.editProperty(prop, file.assetName);
 						}
 					});
 				}

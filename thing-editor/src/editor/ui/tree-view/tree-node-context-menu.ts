@@ -144,7 +144,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	{
 		name: "← shift left",
 		onClick: () => {
-			game.editor.onSelectedPropsChange('x', -1, true);
+			game.editor.editProperty('x', -1, true);
 		},
 		disabled: () => !game.editor.ui.propsEditor.editableProps.x,
 		stayAfterClick: true,
@@ -153,7 +153,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	{
 		name: "→ shift right",
 		onClick: () => {
-			game.editor.onSelectedPropsChange('x', 1, true);
+			game.editor.editProperty('x', 1, true);
 		},
 		disabled: () => !game.editor.ui.propsEditor.editableProps.x,
 		stayAfterClick: true,
@@ -162,7 +162,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	{
 		name: "↑ shift up",
 		onClick: () => {
-			game.editor.onSelectedPropsChange('y', -1, true);
+			game.editor.editProperty('y', -1, true);
 		},
 		disabled: () => !game.editor.ui.propsEditor.editableProps.y,
 		stayAfterClick: true,
@@ -171,7 +171,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	{
 		name: "↓ shift down",
 		onClick: () => {
-			game.editor.onSelectedPropsChange('y', 1, true);
+			game.editor.editProperty('y', 1, true);
 		},
 		disabled: () => !game.editor.ui.propsEditor.editableProps.y,
 		stayAfterClick: true,
@@ -180,7 +180,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	{
 		name: "⬅ shift left x10",
 		onClick: () => {
-			game.editor.onSelectedPropsChange('x', -10, true);
+			game.editor.editProperty('x', -10, true);
 		},
 		disabled: () => !game.editor.ui.propsEditor.editableProps.x,
 		stayAfterClick: true,
@@ -189,7 +189,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	{
 		name: "⮕ shift right x10",
 		onClick: () => {
-			game.editor.onSelectedPropsChange('x', 10, true);
+			game.editor.editProperty('x', 10, true);
 		},
 		disabled: () => !game.editor.ui.propsEditor.editableProps.x,
 		stayAfterClick: true,
@@ -198,7 +198,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	{
 		name: "⬆ shift up x10",
 		onClick: () => {
-			game.editor.onSelectedPropsChange('y', -10, true);
+			game.editor.editProperty('y', -10, true);
 		},
 		disabled: () => !game.editor.ui.propsEditor.editableProps.y,
 		stayAfterClick: true,
@@ -207,7 +207,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 	{
 		name: "⬇ shift down x10",
 		onClick: () => {
-			game.editor.onSelectedPropsChange('y', 10, true);
+			game.editor.editProperty('y', 10, true);
 		},
 		disabled: () => !game.editor.ui.propsEditor.editableProps.y,
 		stayAfterClick: true,

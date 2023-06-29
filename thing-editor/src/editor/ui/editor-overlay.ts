@@ -135,13 +135,13 @@ function moveSelectionToPoint(dX: number, dY: number, withoutChildren = false) {
 			}
 		} else {
 			if(game.editor.ui.propsEditor.editableProps.x) {
-				game.editor.onSelectedPropsChange('x', dX, true);
+				game.editor.editProperty('x', dX, true);
 			} else {
 				game.editor.ui.propsEditor.selectField('x');
 				game.editor.ui.modal.notify('x property locked');
 			}
 			if(game.editor.ui.propsEditor.editableProps.y) {
-				game.editor.onSelectedPropsChange('y', dY, true);
+				game.editor.editProperty('y', dY, true);
 			} else {
 				game.editor.ui.propsEditor.selectField('y')
 				game.editor.ui.modal.notify('y property locked');

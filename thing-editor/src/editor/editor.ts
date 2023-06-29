@@ -131,7 +131,7 @@ class Editor {
 		render(h(UI, { onUIMounted: this.onUIMounted }), document.getElementById('root') as HTMLElement);
 
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
-		this.onSelectedPropsChange = this.onSelectedPropsChange.bind(this);
+		this.editProperty = this.editProperty.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
 	}
 
@@ -219,7 +219,7 @@ class Editor {
 		}
 	}
 
-	onSelectedPropsChange(field: EditablePropertyDesc | string, val: any, delta?: boolean) {
+	editProperty(field: EditablePropertyDesc | string, val: any, delta?: boolean) {
 		if(this.selection.length > 0) {
 
 			if(typeof field === 'string') {
@@ -405,11 +405,6 @@ class Editor {
 				fs.deleteAsset(file.assetName, file.assetType);
 			}, R.span({ className: 'danger' }, R.img({ src: 'img/delete.png' }), "Delete duplicate file"));
 		});
-	}
-
-	async testProject() {
-		//TODO:
-
 	}
 
 	saveProjectDesc() {
