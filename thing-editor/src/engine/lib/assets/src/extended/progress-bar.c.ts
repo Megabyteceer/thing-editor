@@ -6,6 +6,7 @@ import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import getValueByPath, { setValueByPath } from "thing-editor/src/engine/utils/get-value-by-path";
+import { stepTo } from "thing-editor/src/engine/utils/utils";
 
 const tmpPoint = new Point();
 
@@ -57,6 +58,9 @@ export default class ProgressBar extends Container {
 	@editable({ step: 0.00001, min: 0 })
 	step = 1
 
+	@editable()
+	smooth = false
+
 	@editable({ type: 'ref' })
 	bar?: Container;
 
@@ -70,6 +74,9 @@ export default class ProgressBar extends Container {
 	showedVal: any = undefined;
 
 	isProgressFinished = true;
+
+	private currentQ = 0;
+	private targetQ = 0;
 
 	init() {
 		super.init();
@@ -167,6 +174,10 @@ export default class ProgressBar extends Container {
 		} else {
 			this.currentInterval--;
 		}
+		if(this.smooth) {
+			this.currentQ = stepTo(this.currentQ, this.targetQ, 0.01);
+			this.applyQ();
+		}
 		super.update();
 	}
 
@@ -180,19 +191,29 @@ export default class ProgressBar extends Container {
 				callByPath(this.onChanged, this);
 			}
 		}
+		let q = (val - this.min) / (this.max - this.min);
+		this.targetQ = q;
+		if(typeof this.showedVal === 'undefined') {
+			this.currentQ = q;
+		}
 		this.showedVal = val;
 
 		if(this.onFinish && !this.isProgressFinished && val === this.max) {
 			this.isProgressFinished = true;
+			this.currentQ = q;
 			callByPath(this.onFinish, this);
 		}
+		if(!this.smooth) {
+			this.applyQ();
+		}
+	}
 
-		let q = (val - this.min) / (this.max - this.min);
+	applyQ() {
 		if(this.bar) {
-			setObjectHeight(this.bar, this._progress_bar_height * q);
+			setObjectHeight(this.bar, this._progress_bar_height * this.currentQ);
 		}
 		if(this.cap) {
-			this.cap.y = this.capMargin + (this._progress_bar_height - this.capMargin * 2) * q;
+			this.cap.y = this.capMargin + (this._progress_bar_height - this.capMargin * 2) * this.currentQ;
 		}
 	}
 
