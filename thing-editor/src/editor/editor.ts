@@ -21,6 +21,7 @@ import { Container, Point, Texture } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
+import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
@@ -594,19 +595,19 @@ class Editor {
 		if(dX !== 0 || dY !== 0) {
 			// Shift wrapped object to zero. If it is MovieClip its will shift all timeline.
 
-			/*if(o.__shiftObject) { //TODO  сдвиг ориентейшн тригера
+			if(o.__shiftObject) {
 				o.__shiftObject(dX, dY);
-			} else {*/
+			} else {
 
-			//TODO Timeline.disableRecording();
-			if(dX !== 0) {
-				this.onObjectsPropertyChanged(o, 'x', dX, true);
+				Timeline.disableRecording();
+				if(dX !== 0) {
+					this.onObjectsPropertyChanged(o, 'x', dX, true);
+				}
+				if(dY !== 0) {
+					this.onObjectsPropertyChanged(o, 'y', dY, true);
+				}
+				Timeline.enableRecording();
 			}
-			if(dY !== 0) {
-				this.onObjectsPropertyChanged(o, 'y', dY, true);
-			}
-			//TODO Timeline.enableRecording();
-			//}
 		}
 	}
 
@@ -829,13 +830,17 @@ class Editor {
 		}
 	}
 
-	protected __saveProjectDescriptorInner(cleanupOnly = false) {
-		let isCleanedUp = false;
-		//TODO: cleanup values which match with this.libsProjectDescMerged;
+	protected __saveProjectDescriptorInner() {
+		let descToSave = Object.assign({}, editor.projectDesc) as KeyedObject;
 
-		if(!cleanupOnly || isCleanedUp) {
-			fs.writeFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
+		for(let key in this.libsProjectDescMerged) {
+			if(descToSave.hasOwnProperty(key)) {
+				if(JSON.stringify(descToSave[key]) === JSON.stringify((this.libsProjectDescMerged as KeyedObject)[key])) {
+					delete descToSave[key];
+				}
+			}
 		}
+		fs.writeFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
 	}
 }
 
