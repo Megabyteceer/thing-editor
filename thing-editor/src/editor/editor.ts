@@ -347,7 +347,7 @@ class Editor {
 
 				regeneratePrefabsTypings();
 
-				fs.watchDirs(this.assetsFolders);
+				fs.watchDirs(this.assetsFolders.slice(1)); //slice - exclude watching embed library.
 
 				this.ui.modal.hideSpinner();
 				this.isProjectOpen = true;

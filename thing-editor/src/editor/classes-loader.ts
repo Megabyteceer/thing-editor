@@ -19,7 +19,6 @@ EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
 EMBED_CLASSES_NAMES_FIXER.set(Sprite, 'Sprite');
 EMBED_CLASSES_NAMES_FIXER.set(Text, 'Text');
 EMBED_CLASSES_NAMES_FIXER.set(___GizmoArrow, '___GizmoArrow');
-//TODO: Mesh, BitmapText
 
 let componentsVersion = Date.now();
 
