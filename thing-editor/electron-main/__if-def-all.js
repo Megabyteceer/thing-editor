@@ -3,7 +3,7 @@ const ifDefLoader = require("./vite-plugin-ifdef/if-def-loader");
 const fs = require("fs");
 
 
-throw new Error("'if def all' is disabled. Too danger.");
+throw new Error("'if def all' is disabled. Too danger. Commit any changes before use it.");
 /*
 const files = walkSync(__dirname + '/../src').concat(walkSync(__dirname + '/../../games'));
 
