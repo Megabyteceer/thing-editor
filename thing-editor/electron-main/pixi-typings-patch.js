@@ -93,7 +93,6 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     /** debug uniq id of object  (exists in editor only)*/
     ___id: number;
 
-
 	`);
 
 patch(

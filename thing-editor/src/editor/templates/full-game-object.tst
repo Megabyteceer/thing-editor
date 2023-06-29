@@ -92,6 +92,10 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 		//super.__onChildSelected();
 		
 	}
+
+	static __validateObjectData(data:KeyedObject):SerializedDataValidationError {
+
+	}
 	/// #endif
 }
 

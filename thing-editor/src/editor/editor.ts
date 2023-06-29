@@ -28,6 +28,7 @@ import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate
 import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
+import validateObjectDataRecursive from "thing-editor/src/editor/utils/validate-serialized-data";
 import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -356,6 +357,8 @@ class Editor {
 
 				this.settings.setItem('last-opened-project', dir);
 
+				this.validateResources();
+
 				editorEvents.emit('projectDidOpen');
 
 			}
@@ -527,10 +530,16 @@ class Editor {
 		game.onResize();
 	}
 
+	validateResources() {
+		for(let data of [Lib.prefabs, Lib.scenes]) {
+			for(let name in data) {
+				let objectData = data[name];
+				validateObjectDataRecursive(objectData, name);
+			}
+		}
+	}
+
 	saveCurrentScene(name: string = this.currentSceneName) {
-		/*for(let f of this.checkSceneHandlers) { //TODO
-			f();
-		}*/
 
 		this.ui.viewport.stopExecution();
 
@@ -545,6 +554,7 @@ class Editor {
 				this.selection.saveCurrentSelection();
 			});
 		}
+		this.validateResources();
 	}
 
 	get currentSceneName(): string {

@@ -61,6 +61,9 @@ let assetsToCopy: { from: string, to: string }[] = [];
 
 export default class Build {
 	static build(debug: boolean) {
+
+		game.editor.validateResources();
+
 		currentBuildIsDebug = debug;
 
 		assetsToCopy = [];

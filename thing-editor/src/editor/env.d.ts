@@ -74,6 +74,13 @@ type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number |
 
 type KeyedObject = { [key: string]: any };
 
+type SerializedDataValidationError = undefined | {
+	message: string,
+	findObjectCallback: ((o: Container) => boolean),
+	fieldName?: string,
+	errorCode?: number
+};
+
 type SerializedObjectProps = KeyedObject;
 
 interface Constructor {
@@ -98,6 +105,8 @@ interface SourceMappedConstructor extends Constructor {
 	__sourceCode: string[];
 	__canAcceptChild: (Class: SourceMappedConstructor) => boolean;
 	__beforeChangeToThisType?: (o: Container) => void;
+
+	__validateObjectData?: (data: KeyedObject) => SerializedDataValidationError;
 
 	/** added because pixi exports classes with wrong names */
 	__className: string;

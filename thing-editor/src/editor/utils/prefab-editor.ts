@@ -95,14 +95,11 @@ export default class PrefabEditor {
 	}
 
 	static acceptPrefabEdition(oneStepOnly = false) {
-
-		//TODO call validators (add static __validate method for SourceMapedClass)
 		exitIsolation();
 		game.editor.blurInputs();
 		game.editor.history.saveHistoryNow();
 		let name = getCurrentPrefabName();
 		if(prefabsStack.length) {
-
 			let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
 			if(isChanged) {
 				if(PrefabEditor.checkPrefabReferenceForLoops(game.currentContainer, name)) {
@@ -112,6 +109,7 @@ export default class PrefabEditor {
 				game.editor._callInPortraitMode(() => {
 					Lib.__savePrefab(game.currentContainer, name);
 				});
+				game.editor.validateResources();
 			}
 			PrefabEditor.exitPrefabEdit(oneStepOnly);
 		}
