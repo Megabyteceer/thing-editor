@@ -48,6 +48,15 @@ const toggleContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) =>
 	}
 }
 
+const isItemActive = (item: ContextMenuItem) => {
+	if(item) {
+		if((typeof item.disabled === "function") ? item.disabled() : item.disabled) {
+			return false
+		}
+	}
+	return true;
+}
+
 const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	if(hideMenuTimeout) {
 		clearTimeout(hideMenuTimeout);
@@ -57,14 +66,7 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	shownMenuTemplate = menuTemplate;
 	shownMenuEvent = ev;
 
-	menuTemplate = menuTemplate.filter((item: ContextMenuItem) => {
-		if(item) {
-			if((typeof item.disabled === "function") ? item.disabled() : item.disabled) {
-				return false
-			}
-		}
-		return true;
-	});
+	//menuTemplate = menuTemplate.filter(isItemDisabled);
 
 	while(menuTemplate[0] === null) { //trim splitters
 		menuTemplate.shift();
@@ -115,7 +117,7 @@ export default showContextMenu;
 function renderMenuItem(item: ContextMenuItem) {
 
 	if(item) {
-		return R.btn((typeof item.name === 'function') ? item.name() : item.name, item.onClick, item.tip, item.stayAfterClick ? 'stay-after-click-menu-item' : undefined, item.hotkey);
+		return R.btn((typeof item.name === 'function') ? item.name() : item.name, item.onClick, item.tip, item.stayAfterClick ? 'stay-after-click-menu-item' : undefined, item.hotkey, !isItemActive(item));
 	} else {
 		return R.hr();
 	}
