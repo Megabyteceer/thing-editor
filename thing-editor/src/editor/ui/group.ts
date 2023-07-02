@@ -95,7 +95,7 @@ function isGroupHidden(groupId: string) {
 }
 
 function toggleGroup(ev: MouseEvent) {
-	let groupId = (ev.target as any).groupidproperty as string;
+	let groupId = (ev.target as HTMLDivElement).attributes.getNamedItem('groupidproperty')!.value as string;
 	let group = (ev.target as any).closest('.props-group').querySelector('.props-group-body');
 	let isHidden = group.classList.contains('hidden');
 	game.editor.settings.setItem(groupId, !isHidden);

@@ -21,7 +21,7 @@ const assetsItemNameProps = {
 const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 	showContextMenu([
 		{
-			name: "Place as child",
+			name: "Child",
 			tip: "Place as child to each selected object.",
 			onClick: () => {
 				let insertTo = game.editor.selection.slice();
