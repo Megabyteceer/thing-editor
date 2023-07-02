@@ -836,7 +836,7 @@ class Editor {
 			folders.reverse();
 			folders[0].pureName = folders[0].name as string;
 			folders[0].name = R.b(null, folders[0].name);
-			const chosenItem = await game.editor.ui.modal.showListChoose(title, folders, false, true, undefined, true);
+			const chosenItem = (folders.length === 1) ? folders[0] : await game.editor.ui.modal.showListChoose(title, folders, false, true, undefined, true);
 			if(chosenItem) {
 				return chosenItem.pureName || chosenItem.name;
 			}
