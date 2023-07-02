@@ -153,7 +153,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		setTimeout(() => {
 			notifyTexts.delete(txt);
 			this.refresh();
-		}, 1000);
+		}, 1200);
 		this.refresh();
 	}
 

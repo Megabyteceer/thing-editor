@@ -1319,6 +1319,7 @@ border-bottom: 1px solid #111111;
 	}
 }
 
+.modal-notification,
 .scale-up-animation {
 	animation: scale-up-tr linear .1s;
 	animation-iteration-count: 1;
