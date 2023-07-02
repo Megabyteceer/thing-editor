@@ -292,6 +292,9 @@ class Editor {
 					return;
 				}
 
+				if(!projectDesc.libs) {
+					projectDesc.libs = [];
+				}
 
 				this.libsProjectDescMerged = {} as ProjectDesc;
 				mergeProjectDesc(this.libsProjectDescMerged, defaultProjectDesc);

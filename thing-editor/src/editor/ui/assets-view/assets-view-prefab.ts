@@ -71,13 +71,13 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 					}, R.fragment(R.icon('delete'), " Delete.")
 				);
 			},
-			disabled: () => file.assetName === DEFAULT_FADER_NAME
+			disabled: () => file.assetName === DEFAULT_FADER_NAME || file.assetName === PrefabEditor.currentPrefabName
 		}
 	], ev);
 }
 
 const assetItemRendererPrefab = (file: FileDescPrefab) => {
-	const Class = Lib.__getPrefabsClass(file.asset);
+	const Class = getSerializedObjectClass(file.asset);
 	return R.div(
 		{
 			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',

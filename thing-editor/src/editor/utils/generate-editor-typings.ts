@@ -1,6 +1,7 @@
 import { KeyedMap, KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import { getAllObjectRefsCount } from "thing-editor/src/editor/utils/scene-all-validator";
+import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
@@ -128,6 +129,9 @@ export default class TLib {
 }
 
 const getSerializedObjectClass = (data: SerializedObject): SourceMappedConstructor => {
+	if(!data) {
+		return __UnknownClass as any as SourceMappedConstructor;
+	}
 	if(data.r) {
 		return getSerializedObjectClass(Lib.prefabs[data.r]);
 	}
