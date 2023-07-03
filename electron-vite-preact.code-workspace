@@ -235,9 +235,9 @@
 			{
 				"type": "node",
 				"request": "launch",
-				"name": "vite build",
+				"name": "vite dev",
 				"cwd": "${workspaceFolder}",
-				"args": ["./thing-editor/electron-main/build.js"]
+				"args": ["${workspaceFolder}/node_modules/vite/bin/vite.js"]
 
 			}
 		],
