@@ -81,8 +81,6 @@ module.exports = function vitePluginIfDef(isDebug) {
 				processedFiles.push(a);
 
 				return a.join('\n');
-
-				return src;
 			}
 			return null;
 		}
