@@ -180,6 +180,7 @@
 				"type": "chrome",
 				"request": "attach",
 				"webRoot": "${workspaceFolder}",
+				"pauseForSourceMap": true,
 				"timeout": 30000,
 				"port": 9223,
 				"enableContentValidation": false,

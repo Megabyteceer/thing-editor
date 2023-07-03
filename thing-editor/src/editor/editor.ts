@@ -189,6 +189,7 @@ class Editor {
 		} if(needRestoring) {
 			this.restoreBackup();
 		}
+		editor.ui.refresh();
 	}
 
 

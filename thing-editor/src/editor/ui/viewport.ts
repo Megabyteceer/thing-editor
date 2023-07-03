@@ -138,8 +138,8 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				game.showScene(Lib.hasScene(backupName) ? backupName : game.editor.currentSceneName);
 				game.stage.interactiveChildren = true;
 			} else { //stop game
-				game.__clearStage();
 				game.__EDITOR_mode = true;
+				game.__clearStage();
 				game.editor.restoreBackup();
 
 				game.stage.interactiveChildren = false;
