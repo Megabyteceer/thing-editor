@@ -1101,11 +1101,12 @@ class Game {
 	_setCurrentSceneContent(scene: Scene) {
 		//DODO: cleanup
 		assert(!game.currentScene, "Attempt to set current scene content with previous scene exists.");
-		scene = checkScene(scene);
 
 		/// #if EDITOR
 		const isFirstSceneShow = !__currentSceneValue;
 		/// #endif
+
+		scene = checkScene(scene);
 
 		this._setCurrentScene(scene);
 		scene.interactiveChildren = false;
