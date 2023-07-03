@@ -321,6 +321,9 @@ export default class fs {
 				if(assetName.endsWith(ext)) {
 					const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
 					file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGHTS.get(assetType) as number));
+					if(assetType === AssetType.CLASS) {
+						file.assetName = file.assetName.replace(/-/g, '');
+					}
 					file.fileName = '/' + file.fileName;
 					file.assetType = assetType;
 					file.lib = lib;

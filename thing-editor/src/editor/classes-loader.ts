@@ -68,8 +68,8 @@ export default class ClassesLoader {
 				if(className === "_MovieClip") {
 					console.error("_MovieClip");
 				}
+
 				file.asset = Class;
-				file.assetName = file.assetName.replace(/-/g, '');
 
 				Class.__sourceFileName = file.fileName;
 				Class.__defaultValues = {};
