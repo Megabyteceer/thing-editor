@@ -12,6 +12,7 @@ import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import libInfo from "thing-editor/src/editor/utils/lib-info";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game, { FixedViewportSize } from "thing-editor/src/engine/game";
@@ -138,10 +139,11 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				game.showScene(Lib.hasScene(backupName) ? backupName : game.editor.currentSceneName);
 				game.stage.interactiveChildren = true;
 			} else { //stop game
+				EDITOR_FLAGS.isStoppingTime = true;
 				game.__EDITOR_mode = true;
 				game.__clearStage();
 				game.editor.restoreBackup();
-
+				EDITOR_FLAGS.isStoppingTime = false;
 				game.stage.interactiveChildren = false;
 			}
 

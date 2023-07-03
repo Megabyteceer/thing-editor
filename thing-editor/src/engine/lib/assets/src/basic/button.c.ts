@@ -97,8 +97,6 @@ export default class Button extends DSprite {
 		this.removeListener('pointerover', this.onOver);
 		this.removeListener('pointerout', this.onOut);
 
-		assert(!game.__EDITOR_mode, "'destroy()' called in edition mode");
-
 		allActiveButtons.delete(this);
 
 		if(downedByKeycodeButton === this) {

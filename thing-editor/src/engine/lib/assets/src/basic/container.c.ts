@@ -47,6 +47,7 @@ Container.prototype.init = () => {
 Container.prototype.onRemove = () => {
 	/// #if EDITOR
 	EDITOR_FLAGS._root_onRemovedCalled = true;
+	assert(!game.__EDITOR_mode || EDITOR_FLAGS.isStoppingTime, "'onRemove()' called in edition mode");
 	/// #endif
 };
 

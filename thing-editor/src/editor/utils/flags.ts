@@ -15,6 +15,8 @@ class EDITOR_FLAGS {
 
 	static isTryTime = 0;
 
+	static isStoppingTime = false;
+
 	static rememberTryTime() {
 		tryTime = Date.now();
 		EDITOR_FLAGS.isTryTime++;
