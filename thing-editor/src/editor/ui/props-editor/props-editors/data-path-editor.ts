@@ -89,7 +89,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	static isFunctionIsClass(f: () => any) {
-		return f.name && (f.name[0] !== f.name.toLowerCase()[0]);
+		return (f as any as SourceMappedConstructor).__className;
 	}
 
 	onGotoTargetClick() {
