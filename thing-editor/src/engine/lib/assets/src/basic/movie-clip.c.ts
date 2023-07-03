@@ -38,7 +38,7 @@ export default class MovieClip extends DSprite {
 
 	_goToLabelNextFrame: string | false = false;
 
-	@editable({ notAnimate: true, disabled: () => true })
+	@editable()
 	isPlaying = true;
 
 	@editable({ type: 'timeline', important: true, visible: () => !editorUtils.isPrefabReferenceSelected() })
@@ -145,7 +145,7 @@ export default class MovieClip extends DSprite {
 
 	/// #endif
 
-	@editable({ notAnimate: true, min: 0 })
+	@editable({ min: 0 })
 	delay = 0;
 
 	_timelineData!: TimelineData;
@@ -580,7 +580,7 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 
 		labels.push(CUSTOM_LABEL_ITEM);
 
-		return game.editor.ui.modal.showListChoose("Choose label to go recursive", labels).then((choosed) => {
+		return game.editor.ui.modal.showListChoose("Choose label to go recursive for event " + game.editor.currentPathChoosingField!.name, labels).then((choosed) => {
 			if(choosed) {
 				if(choosed === CUSTOM_LABEL_ITEM) {
 					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {

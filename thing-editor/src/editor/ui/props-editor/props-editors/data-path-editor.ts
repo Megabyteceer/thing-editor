@@ -71,10 +71,6 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 	constructor(props: DataPathEditorProps) {
 		super(props);
-
-		if(this.props.field) {
-			this.props.field.notAnimate = true;
-		}
 		this.onEditClicked = this.onEditClicked.bind(this);
 		this.onBreakpointClick = this.onBreakpointClick.bind(this);
 		this.refreshTip = this.refreshTip.bind(this);

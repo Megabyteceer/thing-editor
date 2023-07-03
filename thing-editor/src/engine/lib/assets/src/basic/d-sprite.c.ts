@@ -8,13 +8,13 @@ export default class DSprite extends Sprite {
 		this.anchor.set(0.5);
 	}
 
-	@editable({ step: 0.001 })
+	@editable({ step: 0.001, animate: true })
 	xSpeed = 0;
 
-	@editable({ step: 0.001 })
+	@editable({ step: 0.001, animate: true })
 	ySpeed = 0;
 
-	@editable({ step: 0.001 })
+	@editable({ step: 0.001, animate: true })
 	rSpeed = 0;
 
 	angleBySpeed() {

@@ -328,19 +328,18 @@ _editableEmbed(Container, 'name', {
 	},
 	onBlur: () => {
 		DataPathFixer.onNameBlur();
-	},
-	notAnimate: true
-
+	}
 });
-_editableEmbed(Container, 'x');
-_editableEmbed(Container, 'y');
-_editableEmbed(Container, 'rotation', { step: 0.001 });
+_editableEmbed(Container, 'x', { animate: true });
+_editableEmbed(Container, 'y', { animate: true });
+_editableEmbed(Container, 'rotation', { step: 0.001, animate: true });
 _editableEmbed(Container, 'alpha', {
+	animate: true,
 	step: 0.01,
 	min: 0,
 	max: 1
 });
-_editableEmbed(Container, 'visible');
+_editableEmbed(Container, 'visible', { animate: true });
 _editableEmbed(Container, 'interactive');
 
 _editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers' });
@@ -357,10 +356,10 @@ _editableEmbed(Container, '___id', {
 	}
 });
 _editableEmbed(Container, 'splitter-transform', { type: 'splitter', title: 'Transform' });
-_editableEmbed(Container, 'scale.x', { step: 0.01, default: 1 });
-_editableEmbed(Container, 'scale.y', { step: 0.01, default: 1 });
-_editableEmbed(Container, 'skew.x', { step: 0.01 });
-_editableEmbed(Container, 'skew.y', { step: 0.01 });
-_editableEmbed(Container, 'pivot.x');
-_editableEmbed(Container, 'pivot.y');
+_editableEmbed(Container, 'scale.x', { step: 0.01, default: 1, animate: true });
+_editableEmbed(Container, 'scale.y', { step: 0.01, default: 1, animate: true });
+_editableEmbed(Container, 'skew.x', { step: 0.01, animate: true });
+_editableEmbed(Container, 'skew.y', { step: 0.01, animate: true });
+_editableEmbed(Container, 'pivot.x', { animate: true });
+_editableEmbed(Container, 'pivot.y', { animate: true });
 /// #endif

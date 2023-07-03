@@ -5,6 +5,7 @@
 }
 
 html {
+	image-rendering: pixelated;
 	height: 100%;
 	overflow: hidden;
 }

@@ -105,35 +105,36 @@ const blendModesSelect = Object.keys(BLEND_MODES).filter((k) => {
 
 (Sprite as any as SourceMappedConstructor).__EDITOR_icon = 'tree/sprite';
 
-_editableEmbed([Sprite, Mesh as any], 'image', { type: 'image', default: 'EMPTY', canBeEmpty: false });
+_editableEmbed([Sprite, Mesh as any], 'image', { type: 'image', default: 'EMPTY', canBeEmpty: false, animate: true });
 _editableEmbed([Sprite, Mesh as any], 'tint', {
 	basis: 16,
 	default: 0xFFFFFF,
 	max: 0xFFFFFF,
-	min: 0,
-	notAnimate: true
+	min: 0
 });
 _editableEmbed([Sprite, Mesh as any], 'tintR', {
 	default: 255,
 	max: 255,
 	min: 0,
-	notSerializable: true
+	notSerializable: true,
+	animate: true
 });
 _editableEmbed([Sprite, Mesh as any], 'tintG', {
 	default: 255,
 	max: 255,
 	min: 0,
-	notSerializable: true
+	notSerializable: true,
+	animate: true
 });
 _editableEmbed([Sprite, Mesh as any], 'tintB', {
 	default: 255,
 	max: 255,
 	min: 0,
-	notSerializable: true
+	notSerializable: true,
+	animate: true
 });
 _editableEmbed([Sprite, Mesh as any], 'blendMode', {
-	select: blendModesSelect,
-	notAnimate: true
+	select: blendModesSelect
 });
 
 /// #endif

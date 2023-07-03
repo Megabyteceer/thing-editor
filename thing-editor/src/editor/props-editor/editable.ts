@@ -49,7 +49,7 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 
 	/** splitter header */
 	title?: string,
-	notAnimate?: true,
+	animate?: true,
 	select?: SelectEditorItem[] | (() => SelectEditorItem[])
 	noNullCheck?: true,
 	important?: boolean;

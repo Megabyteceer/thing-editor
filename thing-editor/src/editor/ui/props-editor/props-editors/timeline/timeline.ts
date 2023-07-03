@@ -743,10 +743,8 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	isNeedAnimateProperty(o: MovieClip, fieldName: string) {
-		return (this.getTime() > 0 &&
-
-			!game.editor.getObjectField(o, fieldName).notAnimate &&
-			!fieldName.startsWith('__')) || getFieldByName(o, fieldName);
+		return (this.getTime() > 0 && game.editor.getObjectField(o, fieldName).animate) ||
+			getFieldByName(o, fieldName);
 	}
 
 	static disableRecording() {
