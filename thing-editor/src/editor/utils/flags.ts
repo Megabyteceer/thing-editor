@@ -1,3 +1,4 @@
+import { Container } from "pixi.js";
 import game from "thing-editor/src/engine/game";
 
 let tryCatchWarned = false;
@@ -7,9 +8,9 @@ const EDITOR_BACKUP_PREFIX = '___editor_backup_';
 
 class EDITOR_FLAGS {
 	/* super.init() call validation flag*/
-	static _root_initCalled: boolean;
+	static _root_initCalled: Set<Container> = new Set();
 	/* super.onRemove() call validation flag*/
-	static _root_onRemovedCalled: boolean;
+	static _root_onRemovedCalled: Set<Container> = new Set();
 
 	static isolationEnabled = false;
 

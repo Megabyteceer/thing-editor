@@ -400,16 +400,18 @@ export default class Lib
 		editorUtils.exitPreviewMode(o);
 		if(extData.constructorCalled) {
 
-			EDITOR_FLAGS._root_onRemovedCalled = false;
+			EDITOR_FLAGS._root_onRemovedCalled.add(o);
 			/// #endif
 
 			o.onRemove();
 			o._thing_initialized = false;
 			/// #if EDITOR
-			if(!EDITOR_FLAGS._root_onRemovedCalled) {
+			if(EDITOR_FLAGS._root_onRemovedCalled.has(o)) {
 				game.editor.editClassSource(o);
+				assert(false, "onRemove method without super.onRemove() detected in class '" + (o.constructor as SourceMappedConstructor).name + "'", 10045);
+				EDITOR_FLAGS._root_onRemovedCalled.delete(o);
 			}
-			assert(EDITOR_FLAGS._root_onRemovedCalled, "onRemove method without super.onRemove() detected in class '" + (o.constructor as SourceMappedConstructor).name + "'", 10045);
+
 		}
 		if(o.__beforeDestroy) {
 			o.__beforeDestroy();
@@ -699,16 +701,17 @@ let constructRecursive = (o: Container) => {
 	let extData = o.__nodeExtendData;
 	assert(!extData.constructorCalled, "init() method was already called for object " + o.___info, 90001);
 
-	EDITOR_FLAGS._root_initCalled = false;
+	EDITOR_FLAGS._root_initCalled.add(o);
 	/// #endif
 
 	o.init();
 
 	/// #if EDITOR
 	checkForOldReferences(o);
-	if(!EDITOR_FLAGS._root_initCalled) {
+	if(EDITOR_FLAGS._root_initCalled.has(o)) {
 		game.editor.editClassSource(o);
 		assert(false, "Class " + (o.constructor as SourceMappedConstructor).__className + " overrides init method without super.init() called.", 10042);
+		EDITOR_FLAGS._root_initCalled.delete(o);
 	}
 	extData.constructorCalled = true;
 	/// #endif

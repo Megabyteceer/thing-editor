@@ -322,7 +322,7 @@ let _original_onTextureUpdate = (Text.prototype as any)._onTextureUpdate;
 
 Text.prototype.onRemove = function () {
 	/// #if EDITOR
-	EDITOR_FLAGS._root_onRemovedCalled = true;
+	EDITOR_FLAGS._root_onRemovedCalled.delete(this);
 	/// #endif
 	(this as any)._maxWidth = 0;
 };

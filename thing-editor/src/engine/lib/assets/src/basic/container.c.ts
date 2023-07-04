@@ -38,15 +38,15 @@ Container.prototype.detachFromParent = function detachFromParent() {
 	}
 };
 
-Container.prototype.init = () => {
+Container.prototype.init = function init() {
 	/// #if EDITOR
-	EDITOR_FLAGS._root_initCalled = true;
+	EDITOR_FLAGS._root_initCalled.delete(this);
 	/// #endif
 };
 
-Container.prototype.onRemove = () => {
+Container.prototype.onRemove = function onRemove() {
 	/// #if EDITOR
-	EDITOR_FLAGS._root_onRemovedCalled = true;
+	EDITOR_FLAGS._root_onRemovedCalled.delete(this);
 	assert(!game.__EDITOR_mode || EDITOR_FLAGS.isStoppingTime, "'onRemove()' called in edition mode");
 	/// #endif
 };
