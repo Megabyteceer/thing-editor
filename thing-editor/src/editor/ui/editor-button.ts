@@ -44,6 +44,13 @@ const findMenuItemForHotkey = (hotkey: Hotkey): ContextMenuItem | undefined => {
 
 window.addEventListener("keydown", (ev) => {
 	if(ev.key !== 'Control' && ev.key !== 'Alt' && ev.key !== 'Shift') {
+
+		for(let b of allHotkeyButtons) {
+			if(b.onKeyDown(ev)) { //call only first button with this hotkey
+				return;
+			}
+		}
+
 		const item = findMenuItemForHotkey(ev as Hotkey);
 		if(item) {
 			item.onClick();
@@ -51,11 +58,7 @@ window.addEventListener("keydown", (ev) => {
 			return;
 		}
 
-		for(let b of allHotkeyButtons) {
-			if(b.onKeyDown(ev)) { //call only first button with this hotkey
-				return;
-			}
-		}
+
 	}
 });
 
