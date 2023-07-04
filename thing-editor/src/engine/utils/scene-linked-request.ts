@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
-import SceneLinkedPromise from "./scene-linked-promise";
+import SceneLinkedPromise from "../lib/assets/___system/scene-linked-promise.c";
 
 
 

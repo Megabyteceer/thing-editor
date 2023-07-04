@@ -11,12 +11,12 @@ import Lib from "thing-editor/src/engine/lib";
 import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 /// #endif
 import { ButtonOnlyPropertyDesc } from "thing-editor/src/editor/utils/button-only-selectable-property";
+import SceneLinkedPromise from "thing-editor/src/engine/lib/assets/___system/scene-linked-promise.c";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction, { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction";
 import Keys from "thing-editor/src/engine/utils/keys";
 import L from "thing-editor/src/engine/utils/l";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
-import SceneLinkedPromise from "thing-editor/src/engine/utils/scene-linked-promise";
 import Settings from "thing-editor/src/engine/utils/settings";
 import Sound from "thing-editor/src/engine/utils/sound";
 import sureQuestionInit from "thing-editor/src/engine/utils/sure-question";

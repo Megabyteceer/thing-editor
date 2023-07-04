@@ -72,6 +72,7 @@ export default class SceneLinkedPromise extends Container {
 				if(promise._promiseId === promiseId) {
 					assert(promise._promiseResultWaiting === EMPTY_RESULT_SYMBOL, "SceneLinkedPromise is resolved already.", 10058);
 					assert(promise._promiseErrorWaiting === EMPTY_RESULT_SYMBOL, "SceneLinkedPromise is rejected already.", 10059);
+					assert(promise._rejectHandlers.length, "Unhandled SceneLinkedPromise rejection.", 99999);
 					promise._promiseErrorWaiting = error;
 				}
 			}, promise);
