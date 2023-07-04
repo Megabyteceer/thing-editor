@@ -93,6 +93,7 @@ class Game {
 	isCanvasMode = false;
 	/** browser tab visibility */
 	isVisible = true;
+	isFocused = false;
 
 	isMobile = utils.isMobile;
 	isPortrait = false;
@@ -1322,6 +1323,20 @@ Object.defineProperty(game.openUrl, '___EDITOR_isHiddenForChooser', ButtonOnlyPr
 //*/
 
 document.addEventListener('visibilitychange', () => visibilityChangeHandler());
+window.addEventListener('focus', () => focusChangeHandler(true));
+window.addEventListener('blur', () => focusChangeHandler(false));
+
+const focusChangeHandler = (focused: boolean) => {
+	if(game.isFocused !== focused) {
+		game.isFocused = focused;
+
+		if(game.pixiApp) {
+			setTimeout(() => {
+				game.keys.resetAll();
+			}, 10);
+		}
+	}
+};
 
 const visibilityChangeHandler = () => {
 	const isVisible = document.visibilityState === 'visible';
@@ -1341,5 +1356,8 @@ const visibilityChangeHandler = () => {
 				}
 			}, 10);
 		}
+		focusChangeHandler(isVisible);
 	}
 };
+focusChangeHandler(true);
+visibilityChangeHandler();

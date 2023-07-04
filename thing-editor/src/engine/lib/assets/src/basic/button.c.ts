@@ -243,7 +243,7 @@ export default class Button extends DSprite {
 		/// #endif
 
 		if(this.isDowned) {
-			if(!game.mouse.click && (downedByKeycodeButton !== this)) {
+			if((!game.mouse.click && (downedByKeycodeButton !== this)) || !game.isFocused) {
 				this.onUp();
 			} else if(this.curDelay > 0) {
 				this.curDelay--;
