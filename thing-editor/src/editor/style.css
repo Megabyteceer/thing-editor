@@ -1158,6 +1158,7 @@ input[disabled] {
 
 .array-prop {
 	text-align: right;
+	min-height: 25px;
 }
 
 .array-prop-item {
@@ -1171,6 +1172,7 @@ input[disabled] {
 
 .add-item-button {
 	padding: 1px 11px;
+	margin: 3px 0;
 }
 
 .template-desc {

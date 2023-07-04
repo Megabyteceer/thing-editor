@@ -827,7 +827,6 @@ const __onAssetAdded = (file: FileDesc) => {
 }
 
 const __onAssetUpdated = (file: FileDesc) => {
-	console.log('updated: ' + file.fileName);
 
 	file.v = (file.v || 0) + 1;
 	let isAcceptChanges;

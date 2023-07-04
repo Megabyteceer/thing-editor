@@ -90,7 +90,7 @@
 }
 
 .timeline-keyframe-selected {
-	outline: 2px solid #8d8d8d;
+	outline: 2px solid #eb8000;
 }
 
 .keyframe-callback-editor .props-editor-callback:focus {
