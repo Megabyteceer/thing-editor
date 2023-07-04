@@ -792,7 +792,7 @@ class Editor {
 		})
 	}
 
-	editSource(fileName: string, line?: number, char?: number) {
+	editSource(fileName: string, line?: string, char?: string) {
 		if(this.editorArguments['no-vscode-integration']) {
 			return;
 		}

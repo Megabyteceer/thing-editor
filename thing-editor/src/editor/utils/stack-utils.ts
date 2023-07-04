@@ -29,7 +29,7 @@ const showStack = (stack: DebugStack) => {
 		let functionName;
 		if(s.indexOf(' (') > 0) {
 			functionName = s.split(' (');
-			s = functionName[1];
+			s = functionName[1].split(')').shift()!;
 			functionName = functionName[0];
 		} else {
 			functionName = '';
@@ -51,8 +51,7 @@ const showStack = (stack: DebugStack) => {
 	game.editor.ui.modal.showModal(R.div(null, R.b(null, stack.title), ' was invoked at:', items.map((i, key) => {
 		return R.div({
 			key, className: 'list-item stack-item', onMouseDown: () => {
-				let a = i.path.split(':');
-				game.editor.editSource('/' + a[0], parseInt(a[1]), parseInt(a[2]));
+				game.editor.editSource('/' + i.path);
 			}
 		}, R.b(null, i.functionName), ' (', i.path, ')');
 	})));
