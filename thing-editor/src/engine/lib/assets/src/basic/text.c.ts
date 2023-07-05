@@ -640,10 +640,10 @@ _editableEmbed(Text, 'maxWidth', {
 	type: 'number',
 	min: 0,
 	afterEdited: (overrideO?: Text) => {
-		let left = overrideO || game.editor.selection[0] as Text;
-		let rirht = left.maxWidth;
+		let textObject = overrideO || game.editor.selection[0] as Text;
+		let right = textObject.maxWidth;
 		let y = 0;
-		if(rirht === 0) {
+		if(right === 0) {
 			for(let t of game.editor.selection) {
 				t.scale.x = 1;
 				t.scale.y = 1;
@@ -651,22 +651,22 @@ _editableEmbed(Text, 'maxWidth', {
 			___Guide.hide('maxWidthRight');
 			___Guide.hide('maxWidthLeft');
 		} else {
-			switch(left.style.align) {
+			switch(textObject.style.align) {
 				case CENTER:
-					rirht *= 0.5;
-					y = -rirht;
+					right *= 0.5;
+					y = -right;
 					break;
 				case RIGHT:
-					rirht *= -1;
+					right *= -1;
 					break;
 			}
-			let tmpScale = left.scale.x;
-			left.scale.x = 1;
-			left.scale.y = 1;
-			___Guide.show(rirht, 0, Math.PI / 2, 'maxWidthRight', left);
-			___Guide.show(y, 0, Math.PI / 2, 'maxWidthLeft', left);
-			left.scale.x = tmpScale;
-			left.scale.y = tmpScale;
+			let tmpScale = textObject.scale.x;
+			textObject.scale.x = 1;
+			textObject.scale.y = 1;
+			___Guide.show(right, 0, Math.PI / 2, 'maxWidthRight', textObject);
+			___Guide.show(y, 0, Math.PI / 2, 'maxWidthLeft', textObject);
+			textObject.scale.x = tmpScale;
+			textObject.scale.y = tmpScale;
 		}
 	}
 });
