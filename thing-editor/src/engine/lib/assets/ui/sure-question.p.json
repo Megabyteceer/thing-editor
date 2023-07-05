@@ -1,0 +1,253 @@
+{
+	"c": "Resizer",
+	"p": {
+		"name": "ui/sure-question",
+		"relativeX": true,
+		"xPos": 0.5,
+		"relativeY": true,
+		"yPos": 0.5
+	},
+	":": [
+		{
+			"c": "Resizer",
+			"p": {
+				"resizeX": true,
+				"resizeY": true
+			},
+			":": [
+				{
+					"c": "MovieClip",
+					"p": {
+						"name": "backdrop",
+						"scale.x": 192,
+						"scale.y": 108,
+						"timeline": {
+							"l": {},
+							"p": 0.02,
+							"d": 0.85,
+							"f": [
+								{
+									"n": "alpha",
+									"t": [
+										{
+											"v": 0,
+											"t": 0,
+											"m": 1
+										},
+										{
+											"v": 1,
+											"t": 7,
+											"m": 1
+										}
+									]
+								}
+							]
+						}
+					},
+					":": [
+						{
+							"c": "Button",
+							"p": {
+								"name": "easyCloseBtn",
+								"alpha": 0.7000000000000001,
+								"interactive": false,
+								"scale.x": 0.625,
+								"scale.y": 0.625,
+								"image": "WHITE",
+								"tint": 40,
+								"hoverImage": "WHITE",
+								"pressImage": "WHITE",
+								"disabledImage": "WHITE",
+								"onClick": [],
+								"hotkey": 27,
+								"sndClick": "click",
+								"sndOver": "over"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"c": "MovieClip",
+			"p": {
+				"name": "main",
+				"tint": 0,
+				"timeline": {
+					"l": {},
+					"p": 0.06,
+					"d": 0.73,
+					"f": [
+						{
+							"n": "scale.x",
+							"t": [
+								{
+									"v": 0,
+									"t": 0
+								},
+								{
+									"v": 1,
+									"t": 12
+								},
+								{
+									"v": 1,
+									"t": 16,
+									"m": 1
+								}
+							]
+						},
+						{
+							"n": "scale.y",
+							"t": [
+								{
+									"v": 0,
+									"t": 0
+								},
+								{
+									"v": 1,
+									"t": 12
+								},
+								{
+									"v": 1,
+									"t": 16,
+									"m": 1
+								}
+							]
+						}
+					]
+				},
+				"__previewFrame": 7
+			},
+			":": [
+				{
+					"c": "Trigger",
+					"p": {
+						"dataPath": "isMobile.any",
+						"invert": true,
+						"pow": 1,
+						"alphaShift": 0,
+						"scaleShift": 0.7,
+						"isApplyInteractivity": false
+					},
+					":": [
+						{
+							"c": "Shape",
+							"p": {
+								"x": -200,
+								"y": -168,
+								"shape": 1,
+								"width": 400,
+								"height": 257,
+								"shapeFillColor": 986932,
+								"shapeLineWidth": 4,
+								"shapeLineAlpha": 0.7
+							}
+						},
+						{
+							"c": "Text",
+							"p": {
+								"name": "title",
+								"y": -138,
+								"alpha": 0.8,
+								"text": "TITLE",
+								"style.fontSize": 26,
+								"style.fontWeight": "lighter",
+								"maxWidth": 250
+							}
+						},
+						{
+							"c": "MultilineText",
+							"p": {
+								"name": "message",
+								"y": -57,
+								"alpha": 0.7,
+								"text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+								"style.fontSize": 22,
+								"style.fontWeight": "lighter",
+								"maxWidthLandscape": 345,
+								"maxWidthPortrait": 340,
+								"maxHeightLandscape": 118,
+								"maxHeightPortrait": 130
+							}
+						},
+						{
+							"c": "Button",
+							"p": {
+								"name": "okBtn",
+								"x": 100,
+								"y": 40,
+								"scale.x": 0.666666,
+								"scale.y": 0.666666,
+								"onClick": [],
+								"sndClick": "click",
+								"sndOver": "over"
+							},
+							":": [
+								{
+									"c": "Shape",
+									"p": {
+										"x": -100,
+										"y": -25,
+										"shape": 1,
+										"width": 200,
+										"height": 50,
+										"shapeLineWidth": 5,
+										"shapeLineAlpha": 0.7
+									}
+								},
+								{
+									"c": "Text",
+									"p": {
+										"name": "label",
+										"text": "",
+										"translatableText": "buttons.ok",
+										"style.fontSize": 45,
+										"style.fontWeight": "lighter",
+										"maxWidth": 245
+									}
+								}
+							]
+						},
+						{
+							"c": "Button",
+							"p": {
+								"name": "noBtn",
+								"x": -100,
+								"y": 40,
+								"scale.x": 0.666666,
+								"scale.y": 0.666666,
+								"onClick": [],
+								"sndClick": "click",
+								"sndOver": "over"
+							},
+							":": [
+								{
+									"c": "Shape",
+									"p": {
+										"x": -100,
+										"y": -25,
+										"shape": 1,
+										"width": 200,
+										"height": 50,
+										"shapeLineWidth": 5,
+										"shapeLineAlpha": 0.7
+									}
+								},
+								{
+									"c": "Text",
+									"p": {
+										"name": "label",
+										"text": "--",
+										"style.fontSize": 45,
+										"style.fontWeight": "lighter",
+										"maxWidth": 175
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
