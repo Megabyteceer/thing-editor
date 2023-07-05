@@ -1,4 +1,5 @@
 import { ComponentChild } from "preact";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
@@ -7,6 +8,7 @@ import game from "thing-editor/src/engine/game";
 const soundEditorProps = { className: 'asset-editor' };
 
 const SoundEditor = (props: EditablePropertyEditorProps): ComponentChild => {
+	const file = props.value && fs.getFileByAssetName(props.value, AssetType.SOUND);
 	return R.div(soundEditorProps,
 		R.btn(props.value || '. . .', () => {
 			game.editor.chooseSound('Select "' + props.field.name + '" sound', props.value).then((selectedSound) => {
@@ -15,7 +17,7 @@ const SoundEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 					game.editor.history.scheduleHistorySave();
 				}
 			});
-		}, props.value, 'choose-asset-button'),
+		}, props.value, (!props.value || file) ? 'choose-asset-button' : 'choose-asset-button danger'),
 		props.value ? R.btn(R.icon('asset-sound'), () => {
 			game.editor.previewSound(props.value);
 		}, 'Play', 'tool-button') : undefined,

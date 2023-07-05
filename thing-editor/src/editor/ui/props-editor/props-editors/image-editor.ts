@@ -8,6 +8,7 @@ import game from "thing-editor/src/engine/game";
 const imageEditorProps = { className: 'asset-editor' };
 
 const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
+	const file = fs.getFileByAssetName(props.value, AssetType.IMAGE);
 	return R.div(imageEditorProps,
 		R.btn(props.value || '. . .', () => {
 			game.editor.chooseImage('Select "' + props.field.name + '" image', props.value).then((selectedImage) => {
@@ -16,8 +17,8 @@ const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 					game.editor.history.scheduleHistorySave();
 				}
 			});
-		}, props.value, (!props.value || fs.getFileByAssetName(props.value, AssetType.IMAGE)) ? 'choose-asset-button' : 'choose-asset-button danger'),
-		props.value ? R.imageIcon(fs.getFileByAssetName(props.value, AssetType.IMAGE)) : undefined,
+		}, props.value, (!props.value || file) ? 'choose-asset-button' : 'choose-asset-button danger'),
+		props.value ? R.imageIcon(file) : undefined,
 		props.value ? R.btn(R.icon('reject'), (ev: PointerEvent) => {
 			showContextMenu([
 				{
