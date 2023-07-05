@@ -2,16 +2,30 @@ import { Container } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 import SceneLinkedPromise from "../lib/assets/___system/scene-linked-promise.c";
 
-
-
 export default class SceneLinkedRequest {
 
-	static fetch(owner: Container, url: string, resultFormat: ('json' | 'text' | 'blob' | 'arrayBuffer') = "json", options?: RequestInit) {
+	static fetch(owner: Container, url: string, resultFormat: ('json' | 'text' | 'blob' | 'arrayBuffer') = "json", options?: RequestInit, attempts = 1) {
 		assert(owner, "Request's owner display object should be provided.", 10062);
 		assert(url, "Request's URL should be provided.", 10063);
-		let ret = SceneLinkedPromise.promise((resolve, reject) => {
-			fetch(url, options)
-				.then((response) => (response as any)[resultFormat]()).then(resolve).catch(reject);
+		let ret = SceneLinkedPromise.promise(async (resolve, reject) => {
+			let delay = 1000;
+			while(attempts > 0) {
+				await fetch(url, options)
+					.then((response) => (response as any)[resultFormat]())
+					.then((res) => {
+						attempts = 0;
+						resolve(res);
+					}).catch((er) => {
+						attempts--;
+						if(attempts === 0) {
+							if(reject) {
+								reject(er);
+							}
+						}
+					});
+				await new Promise((resolve) => { setTimeout(resolve, delay); });
+				delay += 1000;
+			}
 		}, owner);
 		ret.name = "Request: " + url;
 		return ret;
