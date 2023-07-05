@@ -175,6 +175,7 @@ class Editor {
 	}
 
 	async reloadClasses() {
+		this.ui.modal.showSpinner();
 		let restorePrefabName = PrefabEditor.currentPrefabName;
 		let needRestoring = !restorePrefabName && game.__EDITOR_mode && game.editor.isCurrentContainerModified;
 
@@ -190,6 +191,7 @@ class Editor {
 			this.restoreBackup();
 		}
 		editor.ui.refresh();
+		this.ui.modal.hideSpinner();
 	}
 
 
