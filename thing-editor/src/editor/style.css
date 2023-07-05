@@ -521,6 +521,7 @@ input {
 .editor-viewport canvas {
 	max-height: 100%;
 	max-width: 100%;
+	image-rendering: initial;
 }
 
 .viewport-panel-wrapper {
