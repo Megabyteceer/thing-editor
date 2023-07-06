@@ -439,7 +439,6 @@ class Editor {
 				this.selection.loadCurrentSelection();
 			}
 			this.history.setCurrentStateUnmodified();
-			regeneratePrefabsTypings();
 			this.ui.refresh();
 		}
 	}

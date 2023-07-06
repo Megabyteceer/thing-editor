@@ -6,6 +6,7 @@ import Reel from "games/slot-client/assets/src/custom/reel.c";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
 import SlotSymbol from "games/slot-client/assets/src/custom/slot-symbol.c";
 import Fill from "thing-editor/src/engine/lib/assets/src/basic/fill.c";
+import Text from "thing-editor/src/engine/lib/assets/src/basic/text.c";
 			
 declare global {
 type CurrentSceneType = Scene;
@@ -23,5 +24,6 @@ interface ThingSceneAllMap {
 "container":MovieClip;
 /** @deprecated Refused because 5 objects with that name present on the scene. */
 "spin-blur-fill":Fill;
+"label":Text;
 }
 }

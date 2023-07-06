@@ -99,8 +99,9 @@ export default class PrefabEditor {
 		game.editor.blurPropsInputs();
 		game.editor.history.saveHistoryNow();
 		let name = getCurrentPrefabName();
+		let isChanged;
 		if(prefabsStack.length) {
-			let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
+			isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
 			if(isChanged) {
 				if(PrefabEditor.checkPrefabReferenceForLoops(game.currentContainer, name)) {
 					return false;
@@ -112,6 +113,10 @@ export default class PrefabEditor {
 				game.editor.validateResources();
 			}
 			PrefabEditor.exitPrefabEdit(oneStepOnly);
+		}
+		if(isChanged) {
+			__refreshPrefabRefs();
+			regeneratePrefabsTypings();
 		}
 	}
 
@@ -132,6 +137,7 @@ export default class PrefabEditor {
 	static exitPrefabEdit(oneStepOnly = false) {
 		exitIsolation();
 		if(prefabsStack.length) {
+
 			game.editor.ui.viewport.setPrefabMode();
 			PrefabEditor.hidePreview();
 			if(oneStepOnly) {
@@ -143,11 +149,6 @@ export default class PrefabEditor {
 				prefabsStack.length = 0;
 			}
 			game.editor.ui.refresh();
-			let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
-			if(isChanged) {
-				__refreshPrefabRefs();
-				regeneratePrefabsTypings();
-			}
 		}
 	}
 }
