@@ -1,7 +1,7 @@
 import { Application, BaseTexture, Container, GC_MODES, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
 import type { __EditorType } from "thing-editor/src/editor/editor";
-import type { AssetsDescriptor, GameClasses, KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
+import type { AssetsDescriptor, GameClasses, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import assert from "thing-editor/src/engine/debug/assert";
@@ -81,7 +81,7 @@ class Game {
 	_loadingErrorIsDisplayed = false;
 
 	projectDesc!: ProjectDesc;
-	all!: KeyedMap<Container>;
+	all!: ThingSceneAllMap;
 
 	classes!: GameClasses;
 	pixiApp!: Application;
