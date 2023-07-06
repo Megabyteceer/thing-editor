@@ -183,12 +183,12 @@
 					"type": "string",
 					"default": "en"
 				},
-				"autoFullscreenDesktop": {
+				"autoFullScreenDesktop": {
 					"description": "go to full-screen mode on desktop, after first user click.",
 					"type": "boolean",
 					"default": false
 				},
-				"autoFullscreenMobile": {
+				"autoFullScreenMobile": {
 					"description": "go to full-screen mode on mobile, after first user click.",
 					"type": "boolean",
 					"default": true

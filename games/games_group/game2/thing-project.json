@@ -36,8 +36,8 @@
 	"__loadOnDemandTexturesFolders": {
 		"ondemand": 2
 	},
-	"autoFullscreenDesktop": false,
-	"autoFullscreenMobile": false,
+	"autoFullScreenDesktop": false,
+	"autoFullScreenMobile": false,
 	"soundDefaultBitrate": 48,
 	"soundBitRates": {},
 	"__proxyFetchesViaNodeServer": false,
