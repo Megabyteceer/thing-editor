@@ -1,6 +1,6 @@
 const fileRegex = /\.(ts)$/
 
-const editorImportRegex = /^import.*thing-editor\/src\/editor\//;
+const editorImportRegex = /^import.*((thing-editor\/src\/editor\/)|(from "preact"))/;
 
 module.exports = function vitePluginIfDef(isDebug) {
 
