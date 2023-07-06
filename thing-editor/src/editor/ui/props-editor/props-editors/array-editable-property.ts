@@ -13,6 +13,10 @@ interface ArrayEditablePropertyState {
 
 export default class ArrayEditableProperty extends Component<EditablePropertyEditorProps, ArrayEditablePropertyState> {
 
+	onChange(newArray: any[]) {
+		this.props.onChange(newArray);
+	}
+
 	render(): ComponentChild {
 		const field = this.props.field;
 		let arrayValue = this.props.value;
@@ -30,7 +34,7 @@ export default class ArrayEditableProperty extends Component<EditablePropertyEdi
 						}
 						const newArray = arrayValue.slice();
 						newArray[i] = itemValue;
-						this.props.onChange(newArray);
+						this.onChange(newArray);
 					},
 					onBlur: this.props.onBlur,
 					field,
@@ -38,13 +42,13 @@ export default class ArrayEditableProperty extends Component<EditablePropertyEdi
 				}), R.btn('×', () => {
 					const newArray = arrayValue.slice();
 					newArray.splice(i, 1);
-					this.props.onChange(newArray);
+					this.onChange(newArray);
 				}, 'remove item', 'array-prop-item-remove-btn'));
 			}),
 			R.btn('+', () => {
 				const newArray = arrayValue.slice();
 				newArray.push(field.defaultArrayItemValue || PropsEditor.getDefaultForType(field));
-				this.props.onChange(newArray);
+				this.onChange(newArray);
 			}, 'Add item', 'add-item-button')
 		);
 	}
