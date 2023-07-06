@@ -5,7 +5,7 @@ module.exports = {
 		if(id.indexOf('.c.ts?v=') > 0) {
 			const query = '?import&v=' + id.split('.ts?v=')[1];
 			src = src.replace(moduleImportFixer, (_substr, m1, m2) => {
-				if(m1.indexOf('thing-editor/') >= 0) {
+				if(m1.indexOf('from "games/') < 0 && m1.indexOf('from "libs/') < 0) {
 					return m1 + m2;
 				}
 				return m1 + query + m2;
