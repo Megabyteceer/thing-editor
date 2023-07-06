@@ -87,7 +87,8 @@
 		"typescript.preferences.importModuleSpecifierEnding": "index",
 		"eslint.format.enable": true,
 		"cSpell.words": [
-			"Schedulable"
+			"Schedulable",
+			"Skipable"
 		]
 	},
 	"tasks": {

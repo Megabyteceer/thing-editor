@@ -19,8 +19,7 @@
 				"x": 283,
 				"y": 313,
 				"rotation": 0.39999999999999997,
-				"image": "flag.png",
-				"arrayField": []
+				"image": "flag.png"
 			}
 		},
 		{
@@ -99,15 +98,6 @@
 				],
 				"sndClick": "click",
 				"sndOver": "over"
-			}
-		},
-		{
-			"c": "LibComponentRelative",
-			"p": {
-				"name": "libCOmponent",
-				"x": 163,
-				"y": 446,
-				"image": "bunny.png"
 			}
 		}
 	]
