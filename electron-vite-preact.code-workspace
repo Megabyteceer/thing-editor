@@ -4,6 +4,9 @@
 			"path": "."
 		},
 		{
+			"path": "../thing-games-server/env"
+		},
+		{
 			"path": "./games/slot-client/",
 			"name": "games/slot-client/"
 		},
