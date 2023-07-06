@@ -13,7 +13,7 @@ import game from "thing-editor/src/engine/game";
 import Lib, { constructRecursive } from "thing-editor/src/engine/lib";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
-import loadSafeInstanceByClassName from "thing-editor/src/engine/utils/load-safe-instance-by-class-name";
+import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 
 const prefabNameFilter = /[^a-z\-\/0-9_]/g;
 
