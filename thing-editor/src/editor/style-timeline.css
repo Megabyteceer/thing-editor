@@ -271,6 +271,10 @@
 	max-width: 92px;
 }
 
+.bottom-panel .breakpoint-btn {
+	pointer-events: all;
+}
+
 .select-item,
 .select-editor-current {
 	padding: 3px;
