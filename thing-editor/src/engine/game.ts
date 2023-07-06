@@ -14,6 +14,7 @@ import { ButtonOnlyPropertyDesc } from "thing-editor/src/editor/utils/button-onl
 import SceneLinkedPromise from "thing-editor/src/engine/lib/assets/___system/scene-linked-promise.c";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction, { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction";
+import { setValueByPath } from "thing-editor/src/engine/utils/get-value-by-path";
 import Keys from "thing-editor/src/engine/utils/keys";
 import L from "thing-editor/src/engine/utils/l";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
@@ -140,6 +141,8 @@ class Game {
 	/// #endif
 	time = 0;
 	//*/
+
+	setValueByPath = setValueByPath;
 
 	init(element?: HTMLElement, gameId?: string) {
 		this.pixiApp = app = new Application();
