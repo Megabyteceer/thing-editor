@@ -554,8 +554,12 @@ export default class Lib
 							val = [];
 						} else if(!Array.isArray(val)) {
 							val = [val];
-						} else {
-							val = val.filter((i: any) => i);
+						}
+						val = val.filter((i: any) => i);
+						if((val.length === defaults[p.name].length &&
+							defaults[p.name].every((v: any, i: number) => v === val[i])
+						)) {
+							val = defaults[p.name];
 						}
 					}
 					if((val != defaults[p.name]) && (typeof val !== 'undefined') && (val !== null)) {
