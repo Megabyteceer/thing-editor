@@ -476,6 +476,7 @@ export namespace editorUtils {
 			DataPathFixer.validatePathReferences();
 			game.editor.sceneModified(true);
 			Lib.__callInitIfGameRuns(w);
+			game.editor.ui.propsEditor.selectField('name', true, true);
 		}
 	}
 
