@@ -149,10 +149,13 @@ export default class ClassesLoader {
 
 				return Class;
 			}
-			const moduleName = '../../..' + file.fileName.replace(/\.ts$/, '');
+			let moduleName = '../../..' + file.fileName.replace(/\.ts$/, '');
 
 			const versionQuery = file.fileName.startsWith('/thing-editor/src/engine/lib/') ? undefined : ('?v=' + componentsVersion);
-			return imp(moduleName, versionQuery).then(onClassLoaded);
+			if(versionQuery) {
+				moduleName += '.ts' + versionQuery;
+			}
+			return imp(moduleName).then(onClassLoaded);
 
 		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {
 			let classes: GameClasses = {};
@@ -232,10 +235,6 @@ export default class ClassesLoader {
 }
 
 // vite dynamic imports broke sourcemaps lines; Thats why import moved to the bottom of the file.
-const imp = (moduleName: string, version: string | undefined) => {
-	if(!version) {
-		return import(/* @vite-ignore */ `/${moduleName}.ts`);
-	} else {
-		return import(/* @vite-ignore */ `/${moduleName}.ts${version}`)
-	}
+const imp = (moduleName: string) => {
+	return import(/* @vite-ignore */ `/${moduleName}.ts`);
 }
