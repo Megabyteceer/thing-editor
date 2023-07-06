@@ -1,6 +1,7 @@
 import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from "pixi.js";
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable, { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
@@ -46,16 +47,21 @@ const fragmentSrc = `
 
 /// #if EDITOR
 const isWrapDisabled = (o: Fill) => {
-	return o.image || Lib.__isSystemTexture(o.texture) || !o.texture.baseTexture.isPowerOfTwo;
+	if(!o.image) {
+		return 'image property is not set.';
+	}
+
+	if(Lib.__isSystemTexture(o.texture)) {
+		return 'System image ' + o.image + ' can not has wrapping mode.';
+	}
+
+	if(!o.texture.baseTexture.isPowerOfTwo) {
+		return 'Texture should have size power of two (32, 64, 128, 256...) to be wrapped.';
+	}
 };
 
 const TEXTURE_WRAP_MODE_DESC: EditablePropertyDescRaw = {
 	notSerializable: true,
-	tip: () => {
-		if(isWrapDisabled(game.editor.selection[0] as Fill)) {
-			return `WrapMode is disabled for textures with sizes not equal to <b>power of two (2, 4, 8, 16, 32, 64...)</b> <a target="_blank" href="https://github.com/Megabyteceer/thing-editor/wiki/editor.Textures#wrapping">Read mode...</a>`;
-		}
-	},
 	select: [
 		{ name: 'CLAMP', value: WRAP_MODES.CLAMP },
 		{ name: 'REPEAT', value: WRAP_MODES.REPEAT },
@@ -154,15 +160,15 @@ export default class Fill extends Mesh {
 
 	/// #if EDITOR
 	@editable(TEXTURE_WRAP_MODE_DESC)
-	set TEXTURE_WRAP_MODE(_v) {
+	set TEXTURE_WRAP_MODE(v: number) {
 		if(this.texture) {
-			/*let bits = 0;
+			let bits = 0;
 			if(v === WRAP_MODES.REPEAT) {
 				bits = 8;
 			} else if(v === WRAP_MODES.MIRRORED_REPEAT) {
 				bits = 16;
-			}*/
-			// TODO game.__setTextureSettingsBits(this.image, bits, 24);
+			}
+			editorUtils.__setTextureSettingsBits(this.image, bits, 24);
 		}
 	}
 

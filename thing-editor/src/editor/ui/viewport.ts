@@ -122,7 +122,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			Sound.__resetSounds();
 			Pool.__resetIdCounter();
 			if(play) { // launch game
-				game.data = {};
+				game.data = {} as any;
 				(game.data as SelectableProperty).___EDITOR_isGoodForChooser = true;
 				(game.data as SelectableProperty).___EDITOR_isHiddenForCallbackChooser = true;
 

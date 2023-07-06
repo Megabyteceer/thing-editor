@@ -132,7 +132,7 @@ export default function initGameInteraction() {
 		/// #if EDITOR
 		return;
 		/// #endif
-		if(game.isMobile.any ? game.projectDesc.autoFullscreenMobile : game.projectDesc.autoFullscreenDesktop) {	// eslint-disable-line no-unreachable
+		if(game.isMobile.any ? game.projectDesc.autoFullScreenMobile : game.projectDesc.autoFullScreenDesktop) {	// eslint-disable-line no-unreachable
 			if(game.fullscreen.isAvailable && !game.fullscreen.isFullscreen) {
 				game.fullscreen._openInner();
 			}

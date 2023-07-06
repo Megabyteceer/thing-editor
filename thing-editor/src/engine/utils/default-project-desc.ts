@@ -45,8 +45,8 @@ const defaultProjectDesc: ProjectDesc = {
 	defaultSoundsVol: 1,
 	embedLocales: true,
 	__localesNewKeysPrefix: '',
-	autoFullscreenDesktop: false,
-	autoFullscreenMobile: false,
+	autoFullScreenDesktop: false,
+	autoFullScreenMobile: false,
 	__proxyFetchesViaNodeServer: false,
 	__group: '',
 	__webpack: {

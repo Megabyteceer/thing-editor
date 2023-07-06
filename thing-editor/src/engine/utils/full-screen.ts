@@ -42,7 +42,7 @@ export default class FullScreen {
 		/// #if EDITOR
 		/*
 		/// #endif
-		game.projectDesc.autoFullscreenMobile = game.projectDesc.autoFullscreenDesktop = false;
+		game.projectDesc.autoFullScreenMobile = game.projectDesc.autoFullScreenDesktop = false;
 		//*/
 	}
 

@@ -1,4 +1,4 @@
-import { Container, Point } from "pixi.js";
+import { Container, MIPMAP_MODES, Point, WRAP_MODES } from "pixi.js";
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
@@ -588,6 +588,36 @@ export namespace editorUtils {
 		game.editor.sceneModified(true);
 		game.editor.refreshTreeViewAndPropertyEditor();
 	}
+
+	/// #if EDITOR
+	export const __setTextureSettingsBits = (name: string, bits: number, mask = 0xffffffff) => {
+		let current = Lib._getTextureSettingsBits(name, 0xffffffff);
+		let n = (current & (mask ^ 0xffffffff)) | bits;
+		if(n !== current) {
+			if(n === 0) {
+				delete game.projectDesc.loadOnDemandTextures[name];
+			} else {
+				game.projectDesc.loadOnDemandTextures[name] = n;
+			}
+			game.editor.saveProjectDesc();
+
+			const TEXTURE_BITS = 4 | 8 | 16;
+			if(Lib.hasTexture(name) && ((current & TEXTURE_BITS) !== (n & TEXTURE_BITS))) {
+				let baseTexture = Lib.getTexture(name).baseTexture;
+				baseTexture.mipmap = (n & 4) ? MIPMAP_MODES.ON : MIPMAP_MODES.OFF;
+				if(n & 16) {
+					baseTexture.wrapMode = WRAP_MODES.MIRRORED_REPEAT;
+				} else if(n & 8) {
+					baseTexture.wrapMode = WRAP_MODES.REPEAT;
+				} else {
+					baseTexture.wrapMode = WRAP_MODES.CLAMP;
+				}
+				baseTexture.update();
+				game.editor.ui.refresh();
+			}
+		}
+	}
+	/// #endif
 }
 
 interface ClipboardData {

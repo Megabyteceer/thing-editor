@@ -1,7 +1,7 @@
 import { Application, BaseTexture, Container, GC_MODES, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
 import type { __EditorType } from "thing-editor/src/editor/editor";
-import type { AssetsDescriptor, GameClasses, KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
+import type { AssetsDescriptor, GameClasses, KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import assert from "thing-editor/src/engine/debug/assert";
@@ -74,7 +74,7 @@ class Game {
 	H = 600;
 
 	/** use in your game as storage for any variables accessible in data-path selectors */
-	data: KeyedObject = {};
+	data: GameData = {} as any;
 
 	Sound = Sound;
 
@@ -145,6 +145,10 @@ class Game {
 	setValueByPath = setValueByPath;
 
 	init(element?: HTMLElement, gameId?: string) {
+
+		Lib.addTexture('EMPTY', Texture.EMPTY);
+		Lib.addTexture('WHITE', Texture.WHITE);
+
 		this.pixiApp = app = new Application();
 
 		(element || document.body).appendChild(app.view as HTMLCanvasElement);

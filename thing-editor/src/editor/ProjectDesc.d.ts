@@ -44,8 +44,8 @@ declare interface ProjectDesc {
 	__localesNewKeysPrefix: string,
 	__suspendWarnings: number[],
 	defaultLanguage: string,
-	autoFullscreenDesktop: false,
-	autoFullscreenMobile: false,
+	autoFullScreenDesktop: false,
+	autoFullScreenMobile: false,
 	__proxyFetchesViaNodeServer: false,
 	__group: string,
 	__webpack: {

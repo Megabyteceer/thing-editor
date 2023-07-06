@@ -2,7 +2,7 @@
 import { AssetsDescriptor, GameClasses, KeyedMap, KeyedObject, NodeExtendData, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import TLib from "thing-editor/src/editor/prefabs-typing";
 
-import { Container, Texture } from "pixi.js";
+import { Container, MIPMAP_MODES, Texture, WRAP_MODES } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -150,6 +150,7 @@ export default class Lib
 						/// #if EDITOR
 					}
 					/// #endif
+					Lib._applyTextureSettings(name);
 					game.loadingRemove(textureURL);
 				}).catch(() => {
 					if(attempt < 3 && !game._loadingErrorIsDisplayed) {
@@ -164,8 +165,43 @@ export default class Lib
 				});
 		} else {
 			textures[name] = textureURL;
+			Lib._applyTextureSettings(name);
 		}
-		// TODO применить сеттинги ассета к текстуре.
+	}
+
+	/* texture settings bits
+	1 - load on demand
+	2 - load on demand with early preCache
+	4 - generate mip-maps
+	8 - wrap mode repeat
+	16 - wrap mode repeat mirror
+	*/
+	static _getTextureSettingsBits(name: string, mask: number) {
+		let s = game.projectDesc.loadOnDemandTextures;
+		return s.hasOwnProperty(name) ? (s[name] & mask) : 0;
+	}
+
+	static _applyTextureSettings(name: string) {
+		let baseTexture = textures[name].baseTexture;
+		switch(Lib._getTextureSettingsBits(name, 24)) {
+			case 0:
+				baseTexture.wrapMode = WRAP_MODES.CLAMP;
+				break;
+			case 8:
+				baseTexture.wrapMode = WRAP_MODES.REPEAT;
+				break;
+			default:
+				baseTexture.wrapMode = WRAP_MODES.MIRRORED_REPEAT;
+				break;
+		}
+
+		if(Lib._getTextureSettingsBits(name, 4)) {
+			baseTexture.mipmap = MIPMAP_MODES.ON;
+		}
+
+		if(!game.isCanvasMode) {
+			baseTexture.update();
+		}
 	}
 
 	/// #if EDITOR
@@ -725,9 +761,6 @@ let constructRecursive = (o: Container) => {
 
 Lib.scenes = scenes;
 Lib.prefabs = prefabs;
-
-Lib.addTexture('EMPTY', Texture.EMPTY);
-Lib.addTexture('WHITE', Texture.WHITE);
 
 const normalizeSerializedDataRecursive = (data: SerializedObject) => {
 	if(data.c) {

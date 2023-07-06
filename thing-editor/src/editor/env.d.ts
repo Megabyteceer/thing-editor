@@ -13,6 +13,9 @@ type CallBackParsedData = {
 	v?: any[]
 }
 
+interface GameData { // eslint-disable-line @typescript-eslint/no-empty-interface
+
+}
 
 interface NodeExtendData {
 
