@@ -7,6 +7,7 @@ import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-edit
 import { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import assert from "thing-editor/src/engine/debug/assert";
+import game from "thing-editor/src/engine/game";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
 import { TimelineKeyFrame, TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
@@ -17,6 +18,9 @@ const keyframesClasses = [
 	'timeline-keyframe-jump-floor',
 	'timeline-keyframe-jump-roof'
 ];
+
+const DEFAULT_GRAVITY = 1; //BOUNCE ⬆, BOUNCE ⬇ default gravity and bouncing
+const DEFAULT_BOUNCING = -0.4;
 
 const SPEED_SET_MARK = R.img({ className: 'timeline-speed-set-marker', src: '/thing-editor/img/timeline/speed-set.png' });
 
@@ -107,6 +111,21 @@ export default class TimelineKeyframeView extends Component<TimelineKeyframeView
 
 		if(keyFrame.m !== type) {
 			keyFrame.m = type;
+			if(keyFrame.m < 3) {
+				delete keyFrame.b; //BOUNCE ⬆, BOUNCE ⬇  gravity and bouncing delete
+				delete keyFrame.g;
+			} else {
+				if(!keyFrame.hasOwnProperty('b')) {
+					let fieldView = keyFrame.___view!.props.owner.props.owner;
+					let fieldName = fieldView.props.field.n;
+					let node = fieldView.props.owner.props.node;
+					let fieldDesc = game.editor.getObjectField(node, fieldName);
+					let step = fieldDesc.step || 1;
+
+					keyFrame.b = DEFAULT_BOUNCING;
+					keyFrame.g = DEFAULT_GRAVITY * step;
+				}
+			}
 			this.onChanged();
 		}
 	}

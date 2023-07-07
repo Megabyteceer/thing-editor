@@ -13,9 +13,6 @@ import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor
 import game from "thing-editor/src/engine/game";
 import { TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
-const DEFAULT_GRAVITY = 1; //BOUNCE ⬆, BOUNCE ⬇ default gravity and bouncing
-const DEFAULT_BOUNCING = -0.4;
-
 const READABLE_KEYFRAME_TYPES = ['SMOOTH', 'LINEAR', 'DISCRETE', 'BOUNCE ⬇', 'BOUNCE ⬆'];
 
 let instance: KeyframePropertyEditor;
@@ -58,23 +55,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 
 	onKeyframeChanged() {
 		for(let k of this.keyframes) {
-
 			let kf = k.props.keyFrame;
-			if(kf.m < 3) {
-				delete kf.b; //BOUNCE ⬆, BOUNCE ⬇  gravity and bouncing delete
-				delete kf.g;
-			} else {
-				if(!kf.hasOwnProperty('b')) {
-					let fieldView = kf.___view!.props.owner.props.owner;
-					let fieldName = fieldView.props.field.n;
-					let node = fieldView.props.owner.props.node;
-					let fieldDesc = game.editor.getObjectField(node, fieldName);
-					let step = fieldDesc.step || 1;
-
-					kf.b = DEFAULT_BOUNCING;
-					kf.g = DEFAULT_GRAVITY * step;
-				}
-			}
 			if(kf.hasOwnProperty('a')) {
 				if(!kf.a) {
 					delete kf.a;
@@ -82,7 +63,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 			}
 			kf.___view!.onChanged();
 		}
-		this.forceUpdate();
+		this.refresh();
 	}
 
 	onObjectChanged() {
