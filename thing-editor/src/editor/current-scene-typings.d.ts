@@ -1,14 +1,15 @@
 // thing-editor auto generated file.
 
 import { Container } from "pixi.js";
-import Slot from "games/slot-client/assets/src/custom/slot.c";
-import Reel from "games/slot-client/assets/src/custom/reel.c";
+import Slot from "games/slot-client/assets/src/slot/slot.c";
+import Reel from "games/slot-client/assets/src/slot/reel.c";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import SlotSymbol from "games/slot-client/assets/src/custom/slot-symbol.c";
+import SlotSymbol from "games/slot-client/assets/src/slot/slot-symbol.c";
 import Fill from "thing-editor/src/engine/lib/assets/src/basic/fill.c";
+import Button from "thing-editor/src/engine/lib/assets/src/basic/button.c";
 import Container from "thing-editor/src/engine/lib/assets/src/basic/container.c";
 import MoneyLabel from "games/slot-client/assets/src/custom/money-label.c";
-import BuyFeature from "games/slot-client/assets/src/slot/buy-feature.c";
+import BuyFeature from "games/slot-client/assets/src/custom/buy-feature.c";
 import Label from "thing-editor/src/engine/lib/assets/src/extended/label.c";
 import Trigger from "thing-editor/src/engine/lib/assets/src/extended/trigger.c";
 			
@@ -28,6 +29,8 @@ interface ThingSceneAllMap {
 "container":MovieClip;
 /** @deprecated Refused because 5 objects with that name present on the scene. */
 "spin-blur-fill":Fill;
+"spin-button":Button;
+"__reset-user-button":Button;
 "info-line":Container;
 "balance-label":MoneyLabel;
 "win-label":MoneyLabel;

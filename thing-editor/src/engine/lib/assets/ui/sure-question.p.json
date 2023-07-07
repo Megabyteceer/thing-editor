@@ -58,7 +58,6 @@
 								"hoverImage": "WHITE",
 								"pressImage": "WHITE",
 								"disabledImage": "WHITE",
-								"onClick": [],
 								"hotkey": 27,
 								"sndClick": "click",
 								"sndOver": "over"
@@ -75,8 +74,8 @@
 				"tint": 0,
 				"timeline": {
 					"l": {},
-					"p": 0.06,
-					"d": 0.73,
+					"p": 0.157,
+					"d": 0.44,
 					"f": [
 						{
 							"n": "scale.x",
@@ -178,7 +177,6 @@
 								"y": 40,
 								"scale.x": 0.666666,
 								"scale.y": 0.666666,
-								"onClick": [],
 								"sndClick": "click",
 								"sndOver": "over"
 							},
@@ -216,7 +214,6 @@
 								"y": 40,
 								"scale.x": 0.666666,
 								"scale.y": 0.666666,
-								"onClick": [],
 								"sndClick": "click",
 								"sndOver": "over"
 							},

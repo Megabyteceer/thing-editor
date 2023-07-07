@@ -211,11 +211,7 @@ export default class Button extends DSprite {
 						this.scale.y = this.initialScale * (this.isOvered ? 1 : 0.9);
 				}
 				Button.downedButton = this;
-				this.curDelay = this.repeatDelay
-					/// #if EDITOR
-					* game.__speedMultiplier
-					/// #endif
-					;
+				this.curDelay = this.repeatDelay;
 
 				if(this.scrollable) {
 					this.pointerStartPos = { x: game.mouse.x, y: game.mouse.y };
@@ -251,11 +247,7 @@ export default class Button extends DSprite {
 					if(this.isCanBePressed && (Math.abs(latestClickTime - game.time) > 1)) {
 						this._executeOnClick('autorepeat');
 					}
-					this.curDelay = this.repeatInterval
-						/// #if EDITOR
-						* game.__speedMultiplier
-						/// #endif
-						;
+					this.curDelay = this.repeatInterval;
 				}
 			}
 		}

@@ -2,10 +2,10 @@
 import Container from "thing-editor/src/engine/lib/assets/src/basic/container.c";
 import Resizer from "thing-editor/src/engine/lib/assets/src/extended/resizer.c";
 import Flow from "games/slot-client/assets/src/custom/flow.c";
-import BuyFeatureButton from "games/slot-client/assets/src/slot/buy-feature-button.c";
+import BuyFeatureButton from "games/slot-client/assets/src/custom/buy-feature-button.c";
 import WinPopup from "games/slot-client/assets/src/custom/win-popup.c";
-import Reel from "games/slot-client/assets/src/custom/reel.c";
-import SlotSymbol from "games/slot-client/assets/src/custom/slot-symbol.c";
+import Reel from "games/slot-client/assets/src/slot/reel.c";
+import SlotSymbol from "games/slot-client/assets/src/slot/slot-symbol.c";
 import DSprite from "thing-editor/src/engine/lib/assets/src/basic/d-sprite.c";
 export default class TLib {
 	static loadPrefab(prefabName: 'fader/default'):Container;
@@ -14,6 +14,7 @@ export default class TLib {
 	static loadPrefab(prefabName: 'slot/buy/buy-button'):BuyFeatureButton;
 	static loadPrefab(prefabName: 'slot/popups/win-popup'):WinPopup;
 	static loadPrefab(prefabName: 'slot/reel'):Reel;
+	static loadPrefab(prefabName: 'slot/stick-animation'):Flow;
 	static loadPrefab(prefabName: 'slot/symbol'):SlotSymbol;
 	static loadPrefab(prefabName: 'slot/symbols/1'):DSprite;
 	static loadPrefab(prefabName: 'slot/symbols/2'):DSprite;
