@@ -148,7 +148,11 @@ thingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
 			if(fileChangeDebounceTimeout) {
 				clearTimeout(fileChangeDebounceTimeout);
 			}
-			fileChangeDebounceTimeout = setTimeout(fileChangeHandler, 330);
+			if(path.endsWith('.ts')) {
+				game.editor.classesUpdatedExternally();
+			} else {
+				fileChangeDebounceTimeout = setTimeout(fileChangeHandler, 330);
+			}
 		}
 	}
 });

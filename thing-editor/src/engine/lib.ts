@@ -846,10 +846,6 @@ const __onAssetAdded = (file: FileDesc) => {
 			file.asset = Lib.scenes[file.assetName] = fs.readJSONFile(file.fileName);
 			game.editor.ui.refresh();
 			break;
-		case AssetType.CLASS:
-			game.editor.classesUpdatedExternally();
-			break;
-
 		case AssetType.IMAGE:
 			Lib.addTexture(file.assetName, (file as FileDescImage).asset || file.fileName);
 			file.asset = Lib.getTexture(file.assetName);
@@ -904,9 +900,6 @@ const __onAssetUpdated = (file: FileDesc) => {
 		case AssetType.SCENE:
 			//TODO
 			break;
-		case AssetType.CLASS:
-			game.editor.classesUpdatedExternally();
-			break;
 		case AssetType.IMAGE:
 			Lib.addTexture(file.assetName, file.fileName);
 			game.editor.ui.refresh();
@@ -931,9 +924,6 @@ const __onAssetDeleted = (file: FileDesc) => {
 		case AssetType.SCENE:
 			delete Lib.scenes[file.assetName];
 			game.editor.ui.refresh();
-			break;
-		case AssetType.CLASS:
-			game.editor.classesUpdatedExternally();
 			break;
 		case AssetType.IMAGE:
 			Lib.__deleteTexture(file as FileDescImage);
