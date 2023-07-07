@@ -219,8 +219,6 @@ export default class FieldPlayer {
 		} else if(nextKeyframe.m === TimelineKeyFrameType.DISCRETE) {
 			this.speed = 0;
 		}
-
-
 	}
 
 	update(

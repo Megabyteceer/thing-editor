@@ -10,6 +10,7 @@ import Container from "thing-editor/src/engine/lib/assets/src/basic/container.c"
 import MoneyLabel from "games/slot-client/assets/src/custom/money-label.c";
 import BuyFeature from "games/slot-client/assets/src/slot/buy-feature.c";
 import Label from "thing-editor/src/engine/lib/assets/src/extended/label.c";
+import Trigger from "thing-editor/src/engine/lib/assets/src/extended/trigger.c";
 			
 declare global {
 type CurrentSceneType = Scene;
@@ -32,6 +33,9 @@ interface ThingSceneAllMap {
 "win-label":MoneyLabel;
 "bet-label":MoneyLabel;
 "buy-features":BuyFeature;
+/** @deprecated Refused because 2 objects with that name present on the scene. */
 "label":Label;
+"disabled-overlay":Trigger;
+"active-overlay":MovieClip;
 }
 }
