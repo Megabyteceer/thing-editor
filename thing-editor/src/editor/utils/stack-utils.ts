@@ -59,3 +59,4 @@ const showStack = (stack: DebugStack) => {
 
 export { getCurrentStack, showStack };
 
+export type { DebugStack };
