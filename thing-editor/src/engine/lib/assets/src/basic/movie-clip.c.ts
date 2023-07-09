@@ -474,17 +474,26 @@ export default class MovieClip extends DSprite {
 	static __getValueAtTime(field: TimelineFieldData, time: number): number | boolean | string {
 		if(!field.___cacheTimeline) {
 			let fieldPlayer = Pool.create(FieldPlayer);
+			let discretePositions: true[] = [];
 			let c: TimelineFrameValuesCache = [] as any;
 			field.___cacheTimeline = c;
+			field.___discretePositionsCache = discretePositions;
 			let wholeTimelineData = field.___timelineData;
 			fieldPlayer.init({} as any, field, wholeTimelineData.p, wholeTimelineData.d);
 			fieldPlayer.reset(true);
 			calculateCacheSegmentForField(fieldPlayer, c);
-			const fieldIndex = field.___fieldIndex;
+			for(let keyFrame of field.t) {
+				if(keyFrame.m === TimelineKeyFrameType.DISCRETE) {
+					discretePositions[keyFrame.t] = true;
+				}
+			}
 			for(let labelName in wholeTimelineData.l) {
 				const label = wholeTimelineData.l[labelName];
 				if(!c.hasOwnProperty(label.t)) { //time at this label is not calculated yet
-					fieldPlayer.goto(label.t, label.n[fieldIndex]);
+					const prevKeyframe = MovieClip.__findPreviousKeyframe(field.t, label.t);
+					fieldPlayer.val = prevKeyframe.v;
+					fieldPlayer.speed = 0;
+					fieldPlayer.goto(label.t, label.n[field.___fieldIndex]);
 					calculateCacheSegmentForField(fieldPlayer, c);
 				}
 			}

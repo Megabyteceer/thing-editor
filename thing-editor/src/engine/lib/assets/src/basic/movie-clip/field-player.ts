@@ -78,6 +78,7 @@ interface TimelineFieldData {
 	___timelineData: TimelineData;
 	___fieldIndex: number;
 	___cacheTimeline?: TimelineFrameValuesCache;
+	___discretePositionsCache?: true[];
 	___view?: FieldsTimelineView | null;
 	/// #endif
 

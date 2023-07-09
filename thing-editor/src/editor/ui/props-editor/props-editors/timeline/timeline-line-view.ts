@@ -6,7 +6,7 @@ import TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-
 import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
 import assert from "thing-editor/src/engine/debug/assert";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import FieldPlayer, { TimelineFieldData, TimelineKeyFrame, TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import FieldPlayer, { TimelineFieldData, TimelineKeyFrame } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 let _scale = 1;
 let _shift = 0;
@@ -34,40 +34,6 @@ export default class TimelineLineView extends Component<TimelineLineViewProps> {
 		super(props);
 		this.onMouseDown = this.onMouseDown.bind(this);
 		this.renderKeyframe = this.renderKeyframe.bind(this);
-		this.renderKeyframeChart = this.renderKeyframeChart.bind(this);
-	}
-
-	renderKeyframeChart(keyFrame: TimelineKeyFrame) {
-		let field = this.props.owner.props.field;
-
-		if(keyFrame.n && (keyFrame.t < keyFrame.n.t)) {
-			let ret = [];
-			if(keyFrame.n.m === TimelineKeyFrameType.DISCRETE) {
-				let startTime = ((keyFrame.t) * widthZoom);
-				let endTime = ((keyFrame.n.t) * widthZoom);
-				let startValue = scale(MovieClip.__getValueAtTime(field, (keyFrame.t)) as number);
-				if(!isNaN(startValue)) {
-					let endValue = scale(MovieClip.__getValueAtTime(field, (keyFrame.n.t)) as number);
-					if(!isNaN(endValue)) {
-						ret.push(startTime + ',' + startValue);
-						ret.push(endTime + ',' + startValue);
-						ret.push(endTime + ',' + endValue);
-					}
-				}
-
-			} else {
-				let n = keyFrame.n;
-				for(let i = keyFrame.t + ((keyFrame.t > 0) ? 1 : 0); i <= n.t; i++) {
-					let v = scale(MovieClip.__getValueAtTime(field, i) as number);
-					if(isNaN(v)) {
-						break;
-					}
-					ret.push((i * widthZoom) + ',' + v);
-				}
-			}
-			return ret.join(' ');
-		}
-		return '';
 	}
 
 	renderKeyframe(keyFrame: TimelineKeyFrame) {
@@ -114,11 +80,27 @@ export default class TimelineLineView extends Component<TimelineLineViewProps> {
 			if(isNaN(field.___cacheTimeline!.max)) {
 				chartsCache.set(field, R.span());
 			} else {
+				let currentPoints: number[] = [];
+				const lines = [currentPoints];
+				const values = field.___cacheTimeline!;
+				for(let i = 0; i < values!.length; i++) {
+					if(isNaN(values[i])) {
+						if(currentPoints.length) {
+							currentPoints = [];
+							lines.push(currentPoints);
+						}
+					} else {
+						if(field.___discretePositionsCache![i] && i > 0) {
+							currentPoints.push(i * widthZoom, scale(values[i - 1]));
+						}
+						currentPoints.push(i * widthZoom, scale(values[i]));
+					}
+				}
 				chartsCache.set(field,
 					R.svg({ className: 'timeline-chart', height, width },
-						R.polyline({ points: field.t.map(this.renderKeyframeChart, field).join(' ') })
+						lines.map(points => R.polyline({ points: points.join(' ') }))
 					)
-				);
+				)
 			}
 		}
 
