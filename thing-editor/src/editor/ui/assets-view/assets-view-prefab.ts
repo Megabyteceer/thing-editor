@@ -4,7 +4,7 @@ import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
-import { getSerializedObjectClass } from "thing-editor/src/editor/utils/generate-editor-typings";
+import { getSerializedObjectClass, regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 import libInfo from "thing-editor/src/editor/utils/lib-info";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
@@ -68,6 +68,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 					), () => {
 						fs.deleteAsset(file.assetName, file.assetType);
 						game.editor.ui.refresh();
+						regeneratePrefabsTypings();
 					}, R.fragment(R.icon('delete'), " Delete.")
 				);
 			},

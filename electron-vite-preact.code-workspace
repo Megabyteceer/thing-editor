@@ -5,32 +5,18 @@
 		},
 		{
 			"path": "../thing-games-server/env"
-		},
-		{
-			"path": "./games/slot-client/",
-			"name": "games/slot-client/"
-		},
-		{
-			"path": "./games/games_group/game2/",
-			"name": "games/games_group/game2/"
-		},
-		{
-			"path": "./libs/lib1",
-			"name": "libs/lib1"
-		},
-		{
-			"path": "./games/games_group/lib_relative",
-			"name": "games/games_group/lib_relative"
 		}
 	],
 	"settings": {
-		"json.schemas": [{
-			"fileMatch": [
-				"thing-project.json",
-				"thing-lib.json"
-			],
-			"url": "./schema-thing-project.json"
-		}],
+		"json.schemas": [
+			{
+				"fileMatch": [
+					"thing-project.json",
+					"thing-lib.json"
+				],
+				"url": "./schema-thing-project.json"
+			}
+		],
 		"files.exclude": {
 			"**/___editor_backup_*": true,
 			"**/.svn": true,
@@ -53,7 +39,6 @@
 		"editor.formatOnType": false,
 		"editor.formatOnPaste": false,
 		"blockshighlighter.blocks": [
-
 			{
 				"fileType": "\\.(js|ts)$",
 				"begin": "^\\s*///\\s*#if EDITOR\\s*$",
@@ -93,11 +78,14 @@
 	},
 	"tasks": {
 		"version": "2.0.0",
-		"tasks": [{
+		"tasks": [
+			{
 				"label": "Run vite",
 				"isBackground": true,
 				"command": "node",
-				"args": ["${workspaceFolder}/node_modules/vite/bin/vite.js"],
+				"args": [
+					"${workspaceFolder}/node_modules/vite/bin/vite.js"
+				],
 				"runOptions": {
 					"runOn": "folderOpen"
 				},
@@ -133,31 +121,39 @@
 					"clear": false
 				},
 				"problemMatcher": []
-			}, {
+			},
+			{
 				"label": "launchElectronIfStopped",
 				"command": "node",
-				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"],
+				"args": [
+					"${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"
+				],
 				"isBackground": true,
 				"type": "process",
-				"problemMatcher": [{
-					"pattern": [{
-						"regexp": ".",
-						"file": 1,
-						"location": 2,
-						"message": 3
-					}],
-					"background": {
-						"activeOnStart": true,
-						"beginsPattern": ".",
-						"endsPattern": "."
+				"problemMatcher": [
+					{
+						"pattern": [
+							{
+								"regexp": ".",
+								"file": 1,
+								"location": 2,
+								"message": 3
+							}
+						],
+						"background": {
+							"activeOnStart": true,
+							"beginsPattern": ".",
+							"endsPattern": "."
+						}
 					}
-				}]
+				]
 			}
 		]
 	},
 	"launch": {
 		"version": "0.2.0",
-		"configurations": [{
+		"configurations": [
+			{
 				"name": "Editor",
 				"type": "chrome",
 				"request": "attach",
@@ -228,34 +224,41 @@
 				"request": "launch",
 				"name": "runner",
 				"cwd": "${workspaceFolder}",
-				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"]
-
+				"args": [
+					"${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"
+				]
 			},
 			{
 				"type": "node",
 				"request": "launch",
 				"name": "process all DANGER!!!",
 				"cwd": "${workspaceFolder}",
-				"args": ["./thing-editor/electron-main/__if-def-all.js"]
-
+				"args": [
+					"./thing-editor/electron-main/__if-def-all.js"
+				]
 			},
 			{
 				"type": "node",
 				"request": "launch",
 				"name": "vite dev",
 				"cwd": "${workspaceFolder}",
-				"args": ["${workspaceFolder}/node_modules/vite/bin/vite.js"]
-
+				"args": [
+					"${workspaceFolder}/node_modules/vite/bin/vite.js"
+				]
 			}
 		],
-		"compounds": [{
-			"name": "Main & Render",
-			"configurations": ["Render", "Main"],
-			"stopAll": true,
-			"presentation": {
-				//"hidden": true
+		"compounds": [
+			{
+				"name": "Main & Render",
+				"configurations": [
+					"Render",
+					"Main"
+				],
+				"stopAll": true,
+				"presentation": {
+					//"hidden": true
+				}
 			}
-		}]
+		]
 	}
-
 }

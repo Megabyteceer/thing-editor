@@ -3,9 +3,12 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "skipLibCheck": true,
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -20,13 +23,20 @@
     "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true,
     "paths": {
-      "thing-editor": ["./thing-editor"]
+      "thing-editor": [
+        "./thing-editor"
+      ]
     },
     "baseUrl": "./.",
-    
-    "typeRoots": ["thing-editor/src/editor/env.d.ts" ]
-    
+    "typeRoots": [
+      "thing-editor/src/editor/env.d.ts"
+    ]
   },
-  "files":["thing-editor/src/editor/env.d.ts"],
-  "include":["../thing-games-server/env","./games/games_group/game2/","./games/games_group/lib_relative","./games/slot-client/","./libs/lib1","thing-editor/src"]
+  "files": [
+    "thing-editor/src/editor/env.d.ts"
+  ],
+  "include": [
+    "../thing-games-server/env",
+    "thing-editor/src"
+  ]
 }
