@@ -25,6 +25,7 @@ let mainWindow;
 const path = require('path');
 
 const PositionRestoreWindow = require("./thing-editor-window.js");
+const {ChildProcess, exec} = require("child_process");
 
 
 const createWindow = () => {
@@ -111,3 +112,5 @@ app.on('window-all-closed', () => {
 	console.log('thing-editor exit');
 	if(process.platform !== 'darwin') app.quit()
 });
+
+exec("git update-index --assume-unchanged electron-vite-preact.code-workspace tsconfig.json thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts", {cwd: __dirname + '/../..'});
