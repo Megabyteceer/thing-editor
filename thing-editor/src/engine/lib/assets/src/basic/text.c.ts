@@ -630,7 +630,7 @@ _editableEmbed(Text, 'style.letterSpacing', {
 	type: 'number'
 });
 
-_editableEmbed(Text, 'style.letterSpacing', {
+_editableEmbed(Text, 'textTransform', {
 	type: 'number',
 	select: Object.entries(TEXT_TRANSFORM).map(([name, value]) => ({ name, value })),
 	default: TEXT_TRANSFORM.none
