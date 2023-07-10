@@ -5,7 +5,7 @@
 	},
 	":": [
 		{
-			"c": "__BackDrop",
+			"c": "__SystemBackDrop",
 			"p": {
 				"name": "camera-frame",
 				"shapeFillAlpha": 0,

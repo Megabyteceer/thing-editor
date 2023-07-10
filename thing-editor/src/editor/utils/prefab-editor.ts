@@ -7,7 +7,7 @@ import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import __BackDrop from "thing-editor/src/engine/lib/assets/src/___system/backdrop.c";
+import __SystemBackDrop from "thing-editor/src/engine/lib/assets/src/___system/backdrop.c";
 import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
@@ -52,7 +52,7 @@ export default class PrefabEditor {
 
 	private static showPreview(object: Container) {
 		if(!backDrop) {
-			backDrop = Lib.loadPrefab('___system/backdrop') as __BackDrop;
+			backDrop = Lib.loadPrefab('___system/backdrop') as __SystemBackDrop;
 			backDrop.name = null; // prevent get by name error;
 			backDrop.__nodeExtendData.hidden = true;
 		}

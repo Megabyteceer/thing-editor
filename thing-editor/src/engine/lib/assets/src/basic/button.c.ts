@@ -72,8 +72,8 @@ export default class Button extends DSprite {
 		this.on('pointerout', this.onOut);
 
 		assert(!game.__EDITOR_mode, "'init()' called in edition mode");
-		assert(!allActiveButtons.has(this), "Button already in active list.");
-		allActiveButtons.add(this);
+		assert(allActiveButtons.indexOf(this) < 0, "Button already in active list.");
+		allActiveButtons.unshift(this);
 
 		this.initialScale = this.scale.x;
 		this.initialImage = this.image;
@@ -97,7 +97,15 @@ export default class Button extends DSprite {
 		this.removeListener('pointerover', this.onOver);
 		this.removeListener('pointerout', this.onOut);
 
-		allActiveButtons.delete(this);
+		let i = allActiveButtons.indexOf(this);
+		/// #if DEBUG
+		assert((!this._thing_initialized) || (i >= 0), "Button is not in active list.");
+		this._thing_initialized = false;
+		/// #endif
+
+		if(i >= 0) { // could be removed before initialization in parent init method
+			allActiveButtons.splice(i, 1);
+		}
 
 		if(downedByKeycodeButton === this) {
 			downedByKeycodeButton = undefined;
@@ -346,7 +354,7 @@ export default class Button extends DSprite {
 
 let downedByKeycodeButton: Button | undefined;
 
-let allActiveButtons: Set<Button> = new Set();
+let allActiveButtons: Button[] = [];
 
 window.addEventListener('keydown', (ev) => {
 	if(ev.repeat) {

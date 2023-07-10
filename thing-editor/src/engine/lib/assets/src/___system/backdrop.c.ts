@@ -5,7 +5,7 @@ import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 
 const zeroPoint = new Point();
 
-export default class __BackDrop extends Shape {
+export default class __SystemBackDrop extends Shape {
 
 	@editable()
 	isStageFrame = false;

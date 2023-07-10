@@ -9,58 +9,56 @@
 	},
 	":": [
 		{
-			"c": "Resizer",
+			"c": "MovieClip",
 			"p": {
-				"resizeX": true,
-				"resizeY": true
-			},
-			":": [
-				{
-					"c": "MovieClip",
-					"p": {
-						"name": "backdrop",
-						"scale.x": 192,
-						"scale.y": 108,
-						"timeline": {
-							"l": {},
-							"p": 0.02,
-							"d": 0.85,
-							"f": [
+				"name": "backdrop",
+				"scale.x": 192,
+				"scale.y": 108,
+				"timeline": {
+					"l": {},
+					"p": 0.02,
+					"d": 0.85,
+					"f": [
+						{
+							"n": "alpha",
+							"t": [
 								{
-									"n": "alpha",
-									"t": [
-										{
-											"v": 0,
-											"t": 0,
-											"m": 1
-										},
-										{
-											"v": 1,
-											"t": 7,
-											"m": 1
-										}
-									]
+									"v": 0,
+									"t": 0,
+									"m": 1
+								},
+								{
+									"v": 1,
+									"t": 7,
+									"m": 1
 								}
 							]
 						}
+					]
+				},
+				"__previewFrame": 4
+			},
+			":": [
+				{
+					"c": "Button",
+					"p": {
+						"name": "easyCloseBtn",
+						"alpha": 0.7000000000000001,
+						"tint": 40,
+						"disabledAlpha": 1,
+						"hotkey": 27,
+						"sndClick": "click",
+						"sndOver": "over"
 					},
 					":": [
 						{
-							"c": "Button",
+							"c": "BackDrop",
 							"p": {
-								"name": "easyCloseBtn",
-								"alpha": 0.7000000000000001,
-								"interactive": false,
-								"scale.x": 0.625,
-								"scale.y": 0.625,
-								"image": "WHITE",
-								"tint": 40,
-								"hoverImage": "WHITE",
-								"pressImage": "WHITE",
-								"disabledImage": "WHITE",
-								"hotkey": 27,
-								"sndClick": "click",
-								"sndOver": "over"
+								"x": -5.067708333333333,
+								"y": -5,
+								"alpha": 0.8,
+								"width": 10.135416666666666,
+								"height": 10
 							}
 						}
 					]
