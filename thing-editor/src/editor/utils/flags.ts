@@ -12,6 +12,8 @@ class EDITOR_FLAGS {
 	/* super.onRemove() call validation flag*/
 	static _root_onRemovedCalled: Set<Container> = new Set();
 
+	static updateInProgress = false;
+
 	static isolationEnabled = false;
 
 	static isTryTime = 0;

@@ -11,6 +11,7 @@ import Lib from "thing-editor/src/engine/lib";
 import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 /// #endif
 import { ButtonOnlyPropertyDesc } from "thing-editor/src/editor/utils/button-only-selectable-property";
+import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import SceneLinkedPromise from "thing-editor/src/engine/lib/assets/___system/scene-linked-promise.c";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction, { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction";
@@ -622,6 +623,7 @@ class Game {
 		/// #endif
 
 		/// #if EDITOR
+		EDITOR_FLAGS.updateInProgress = true;
 
 		if((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
 			/// #endif
@@ -671,6 +673,10 @@ class Game {
 				i--;
 			}
 		}
+
+		/// #if EDITOR
+		EDITOR_FLAGS.updateInProgress = false;
+		/// #endif
 
 	}
 

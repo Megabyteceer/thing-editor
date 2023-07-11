@@ -213,6 +213,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
+		document.exitFullscreen();
 		debugger;
 		if(game.editor.buildProjectAndExit) {
 			if(typeof message === 'object') {
@@ -239,12 +240,12 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		}
 	}
 
-	showFatalError(message: ComponentChild, errorCode: number, additionalText = 'FatalError. Please check console output (F12) for exceptions messages, and restart application (Reload page) by press (F5) button. If any unsaved changes in current scene, it will ask you to restore automatic created backup.') {
+	showFatalError(message: ComponentChild, errorCode: number, additionalText = 'Please check console output for exceptions messages, and restart application (Reload page) by press (F5) button. You will receive question about saving any unsaved changes.') {
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		game.editor.__FatalError = true;
-		this.showError(R.div(null, R.div(null, R.b(null, message)), additionalText), errorCode, 'FatalError', true, true);
+		this.showError(R.div(null, R.div(null, R.b(null, message)), additionalText), errorCode, 'Fatal Error', true, true);
 	}
 
 	render(): ComponentChild {

@@ -24,7 +24,7 @@ import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
+import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -158,6 +158,12 @@ class Editor {
 			};
 
 			setInterval(() => { //keep props editor and tree actual during scene is launched
+				if(EDITOR_FLAGS.updateInProgress) {
+					EDITOR_FLAGS.updateInProgress = false;
+					editor.ui.modal.showFatalError(R.fragment('Exception during update().', R.br(), R.btn('reload page', () => {
+						location.reload();
+					})), 99999);
+				}
 				if(!game.__EDITOR_mode && !game.__paused) {
 					this.refreshTreeViewAndPropertyEditor();
 				}
