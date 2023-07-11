@@ -53,11 +53,13 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	btnUp: ComponentChild;
 	btnDown: ComponentChild;
 	tmpVal?: number;
+	rawVal?: string;
 
 	constructor(props: NumberEditorProps) {
 		super(props);
 		this.state = { value: props.value };
 		this.onChange = this.onChange.bind(this);
+		this.onInput = this.onInput.bind(this);
 		this.onMouseDown = this.onMouseDown.bind(this);
 		this.onKeyDown = this.onKeyDown.bind(this);
 		this.onUpClick = this.onUpClick.bind(this);
@@ -74,6 +76,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	onBlur() {
 		if(this.state) {
 			delete this.tmpVal;
+			delete this.rawVal;
 			this.forceUpdate();
 		}
 	}
@@ -109,6 +112,13 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		if(!preventClickBecauseOfDragging && downedArrow === ev.target) {
 			this.deltaValue(-this.step, ev.ctrlKey);
 		}
+	}
+
+	onInput(ev: InputEvent) {
+		const rawValue = (ev.target as HTMLInputElement).value;
+		this.onChange(ev, true);
+		this.rawVal = rawValue;
+
 	}
 
 	onChange(ev: InputEvent, forceFormat = false) {
@@ -199,9 +209,10 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 				suspendOnChangeWarning: true,
 				onBlur: this.onBlur,
 				onChange: this.onChange,
+				onInput: this.onInput,
 				disabled: props.disabled,
 				type: 'text',
-				value: (props.field && props.field.basis) ? val.toString(props.field.basis) : val,
+				value: this.rawVal || ((props.field && props.field.basis) ? val.toString(props.field.basis) : val),
 				onKeyDown: this.onKeyDown
 			}),
 			props.disabled ? undefined : this.btnUp,
