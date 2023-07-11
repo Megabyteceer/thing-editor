@@ -75,11 +75,10 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		this.forceUpdate();
 	}
 
-	onGravityChange(ev: InputEvent) {
-		let val = parseFloat((ev.target as HTMLInputElement).value);
+	onGravityChange(value: number) {
 		for(let k of this.keyframes) {
 			if(k.props.keyFrame.m > TimelineKeyFrameType.DISCRETE) {
-				k.props.keyFrame.g = val;
+				k.props.keyFrame.g = value;
 			}
 		}
 		this.onKeyframeChanged();
