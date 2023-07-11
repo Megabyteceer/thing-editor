@@ -244,10 +244,14 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 
 		const reloadClassesBtn = R.btn(R.icon('recompile'), game.editor.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
 
-		if(this.state.prefabMode) {
+		let prefabFile = this.state.prefabMode && fs.getFileByAssetName(this.state.prefabMode, AssetType.PREFAB);
+		if(!prefabFile && this.state.prefabMode) {
+			PrefabEditor.exitPrefabEdit(true); // prefab removed
+		}
+		if(prefabFile) {
 			className += ' editor-viewport-wrapper-prefab-mode';
 
-			let prefabFile = fs.getFileByAssetName(this.state.prefabMode, AssetType.PREFAB);
+
 			let fileLibraryName = prefabFile.lib;
 			if(fileLibraryName) {
 				className += ' editor-viewport-wrapper-prefab-mode-lib';
