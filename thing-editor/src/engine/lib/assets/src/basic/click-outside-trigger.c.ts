@@ -7,6 +7,9 @@ import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 
 export default class ClickOutsideTrigger extends Container {
 
+
+	@editable({ name: 'interactive', override: true, default: true })
+
 	@editable({ type: 'callback', important: true })
 	onClickOutside: string | null = null;
 
