@@ -50,14 +50,15 @@
 						}
 					]
 				},
-				"__previewFrame": 8
+				"__previewFrame": 8,
+				"alpha": 0
 			},
 			":": [
 				{
 					"c": "BackDrop",
 					"p": {
-						"width": 1280,
-						"height": 720
+						"width": 1942,
+						"height": 1080
 					}
 				}
 			]

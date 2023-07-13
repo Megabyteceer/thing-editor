@@ -938,8 +938,8 @@ function createKeyframe(o: MovieClip, name: string, time: number, field: Timelin
 		if(!doNotModifyEarlyKeyframes) {
 			if(prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
 				let labelBetweenKeyframes = null;
-				for(let lName in o.timeline.l) {
-					let lTime = o.timeline.l[lName];
+				for(let lName in o.timeline!.l) {
+					let lTime = o.timeline!.l[lName];
 					if(lTime >= prevField.t && lTime <= time) {
 						labelBetweenKeyframes = true;
 						break;

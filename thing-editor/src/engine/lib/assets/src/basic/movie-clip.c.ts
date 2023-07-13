@@ -41,24 +41,6 @@ export default class MovieClip extends DSprite {
 	@editable()
 	isPlaying = true;
 
-	/// #if EDITOR
-	_resetPlayers() {
-		/*
-		/// #endif
-		init() { //rename _resetPlayers() to init() in runtime
-			super.init();
-		//*/
-		const data = this._timelineData;
-		let pow = data.p;
-		let damper = data.d;
-		let fieldsData = data.f;
-		for(let i = 0; i < fieldsData.length; i++) {
-			let p = Pool.create(FieldPlayer);
-			p.init(this, fieldsData[i], pow, damper);
-			this.fieldPlayers.push(p);
-		}
-	}
-
 	@editable({ type: 'timeline', important: true, visible: () => !editorUtils.isPrefabReferenceSelected() })
 	set timeline(data: TimelineSerializedData) {
 		this._goToLabelNextFrame = false;
@@ -76,25 +58,30 @@ export default class MovieClip extends DSprite {
 			|| game.editor.disableFieldsCache
 			/// #endif
 		) {
-			this._timelineData = MovieClip._deserializeTimelineData(data);
+			desData = MovieClip._deserializeTimelineData(data);
 			/// #if EDITOR
 			if(!game.editor.disableFieldsCache) {
 				/// #endif
-				deserializeCache.set(data, this._timelineData);
+				deserializeCache.set(data, desData);
 				/// #if EDITOR
-				serializeCache.set(this._timelineData, data);
+				serializeCache.set(desData, data);
 			}
 			/// #endif
 		} else {
-			this._timelineData = deserializeCache.get(data);
+			desData = deserializeCache.get(data);
 		}
 
 		assert(Array.isArray(data.f), "Wrong timeline data?");
+		this._timelineData = desData;
 
-		/// #if EDITOR
-		this._resetPlayers();
-		/// #endif
-
+		let pow = desData.p;
+		let damper = desData.d;
+		let fieldsData = desData.f;
+		for(let i = 0; i < fieldsData.length; i++) {
+			let p = Pool.create(FieldPlayer);
+			p.init(this, fieldsData[i], pow, damper);
+			this.fieldPlayers.push(p);
+		}
 	}
 
 	/// #if EDITOR
@@ -408,9 +395,14 @@ export default class MovieClip extends DSprite {
 	}
 
 	__afterSerialization(data: SerializedObject) {
+		const def = getPrefabDefaults(this);
 		if(data.p.timeline) { // remove animated props from object props
 			for(let f of data.p.timeline.f) {
-				delete data.p[f.n];
+				if(def[f.n] !== f.t[0].v) {
+					data.p[f.n] = f.t[0].v;
+				} else {
+					delete data.p[f.n];
+				}
 			}
 		}
 		if(this.__nodeExtendData.isPrefabReference) {
