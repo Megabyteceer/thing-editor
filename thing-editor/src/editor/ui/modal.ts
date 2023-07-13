@@ -213,7 +213,10 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
-		document.exitFullscreen();
+		try {
+			document.fullscreenElement && document.exitFullscreen();
+		} catch(_er) {/**/ }
+
 		debugger;
 		if(game.editor.buildProjectAndExit) {
 			if(typeof message === 'object') {

@@ -70,6 +70,7 @@ export default class ClassesLoader {
 				}
 
 				file.asset = Class;
+				Class.__classAsset = file;
 
 				Class.__sourceFileName = file.fileName;
 				Class.__defaultValues = {};

@@ -7,98 +7,98 @@
 	},
 	":": [
 		{
-			"r": "prefab2",
+			"c": "DSprite",
 			"p": {
-				"x": 123,
-				"y": 157
-			}
-		},
-		{
-			"c": "Bunny",
-			"p": {
-				"x": 283,
-				"y": 313,
-				"rotation": 0.39999999999999997,
-				"image": "flag.png"
-			}
-		},
-		{
-			"c": "MovieClip",
-			"p": {
-				"name": "mc",
-				"image": "bunny.png",
-				"timeline": {
-					"l": {
-						"shake": 106
-					},
-					"p": 0.02,
-					"d": 0.85,
-					"f": [
-						{
-							"n": "x",
-							"t": [
+				"name": "slot/symbols/S",
+				"x": 111,
+				"y": 187,
+				"image": "bunny.png"
+			},
+			":": [
+				{
+					"c": "MovieClip",
+					"p": {
+						"image": "bunny.png",
+						"blendMode": 1,
+						"isPlaying": false,
+						"timeline": {
+							"l": {
+								"stop-reel-symbol": 0
+							},
+							"p": 0.02,
+							"d": 0.85,
+							"f": [
 								{
-									"v": 531,
-									"t": 0
+									"n": "scale.x",
+									"t": [
+										{
+											"v": 1,
+											"t": 0,
+											"m": 1
+										},
+										{
+											"v": 1.4,
+											"t": 15,
+											"m": 1
+										}
+									]
 								},
 								{
-									"v": 406,
-									"t": 42
+									"n": "scale.y",
+									"t": [
+										{
+											"v": 1,
+											"t": 0,
+											"m": 1
+										},
+										{
+											"v": 1.4,
+											"t": 15,
+											"m": 1
+										}
+									]
 								},
 								{
-									"v": 333,
-									"t": 91,
-									"j": 0
+									"n": "visible",
+									"t": [
+										{
+											"v": true,
+											"t": 0,
+											"m": 2
+										},
+										{
+											"v": false,
+											"t": 15,
+											"m": 2,
+											"a": "this.stop"
+										}
+									]
 								},
 								{
-									"v": 334,
-									"t": 106,
-									"s": 13.600000000000001
-								}
-							]
-						},
-						{
-							"n": "y",
-							"t": [
-								{
-									"v": 377,
-									"t": 0
-								},
-								{
-									"v": 345,
-									"t": 30
-								},
-								{
-									"v": 506,
-									"t": 68,
-									"j": 10
-								},
-								{
-									"v": 511,
-									"t": 106,
-									"s": 13.600000000000001
+									"n": "alpha",
+									"t": [
+										{
+											"v": 0,
+											"t": 0,
+											"m": 1
+										},
+										{
+											"v": 1,
+											"t": 4,
+											"m": 1
+										},
+										{
+											"v": 0,
+											"t": 15,
+											"m": 1
+										}
+									]
 								}
 							]
 						}
-					]
+					}
 				}
-			}
-		},
-		{
-			"c": "Button",
-			"p": {
-				"x": 36,
-				"y": 46,
-				"image": "bunny.png",
-				"hoverImage": "bunny.png",
-				"pressImage": "bunny.png",
-				"disabledImage": "bunny.png",
-				"onClick": [
-					"all.mc.gotoLabelRecursive`shake"
-				],
-				"sndClick": "click",
-				"sndOver": "over"
-			}
+			]
 		}
 	]
 }

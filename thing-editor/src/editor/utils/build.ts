@@ -133,6 +133,22 @@ export default class Build {
 			});
 		};
 
+		classesFiles = classesFiles.filter(f => findRef(f.asset));
+
+		for(const classFile of classesFiles) {
+			if(classFile.asset.__requiredComponents) {
+				for(const requiredClass of classFile.asset.__requiredComponents as any as SourceMappedConstructor[]) {
+					if(!requiredClass.__classAsset) {
+						game.editor.ui.status.warn(classFile.asset.__className + '.__requiredComponents contains wrong component: ' + (requiredClass.name || requiredClass));
+					} else {
+						if(classesFiles.indexOf(requiredClass.__classAsset) < 0) {
+							classesFiles.push(requiredClass.__classAsset);
+						}
+					}
+				}
+			}
+		}
+
 		for(let classFile of classesFiles) {
 			let name = classFile.asset.__className;
 			let path = classFile.fileName;
@@ -140,13 +156,9 @@ export default class Build {
 			if(path.startsWith('/')) {
 				path = path.substr(1);
 			}
-
-			let isReferred = findRef(classFile.asset);
-			if(isReferred) { //only referenced classes go in to build
-				src.push('import ' + name + ' from "' + path + '";');
-				src.push('classes["' + name + '"] = ' + name + ';');
-				src.push('(' + name + ' as any as SourceMappedConstructor).__defaultValues = ' + JSON.stringify(classFile.asset.__defaultValues, fieldsFilter) + ';');
-			}
+			src.push('import ' + name + ' from "' + path + '";');
+			src.push('classes["' + name + '"] = ' + name + ';');
+			src.push('(' + name + ' as any as SourceMappedConstructor).__defaultValues = ' + JSON.stringify(classFile.asset.__defaultValues, fieldsFilter) + ';');
 		}
 
 		src.push('Lib._setClasses(classes);');

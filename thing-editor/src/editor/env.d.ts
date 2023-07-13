@@ -2,6 +2,7 @@
 
 import { Container, Point } from "pixi.js";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
+import { FileDescClass } from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 
 type CallBackPath = string;
@@ -99,7 +100,9 @@ interface SourceMappedConstructor extends Constructor {
 	name: string
 	__sourceFileName?: string;
 	__defaultValues: KeyedObject;
+	__requiredComponents?: Constructor[];
 	__EDITOR_icon?: string;
+	__classAsset: FileDescClass;
 	__editableProps: EditablePropertyDesc[];
 	/** additional way to disable editable properties */
 	__isPropertyDisabled?: (p: EditablePropertyDesc) => string | undefined;
