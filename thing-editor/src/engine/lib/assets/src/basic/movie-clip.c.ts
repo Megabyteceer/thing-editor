@@ -41,42 +41,16 @@ export default class MovieClip extends DSprite {
 	@editable()
 	isPlaying = true;
 
-	@editable({ type: 'timeline', important: true, visible: () => !editorUtils.isPrefabReferenceSelected() })
-	set timeline(data) {
-		this._goToLabelNextFrame = false;
-		this._disposePlayers();
-
-		if(data === null) {
-			this._timelineData = null as any;
-			return;
-		}
-
-		if(!deserializeCache.has(data)
-			/// #if EDITOR
-			|| game.editor.disableFieldsCache
-			/// #endif
-		) {
-			let desData = MovieClip._deserializeTimelineData(data);
-			/// #if EDITOR
-			if(!game.editor.disableFieldsCache) {
-				/// #endif
-				deserializeCache.set(data, desData);
-				/// #if EDITOR
-				serializeCache.set(desData, data);
-			}
-			/// #endif
-			data = desData;
-		} else {
-			data = deserializeCache.get(data);
-		}
-
-		assert(Array.isArray(data.f), "Wrong timeline data?");
-		this._timelineData = data;
-
-		let pow = data.p; //smooth fields dynamic parameters
+	/// #if EDITOR
+	_resetPlayers() {
+		/*
+		/// #endif
+		init() { //rename _resetPlayers() to init() in runtime
+			super.init();
+		//*/
+		const data = this._timelineData;
+		let pow = data.p;
 		let damper = data.d;
-
-
 		let fieldsData = data.f;
 		for(let i = 0; i < fieldsData.length; i++) {
 			let p = Pool.create(FieldPlayer);
@@ -85,9 +59,47 @@ export default class MovieClip extends DSprite {
 		}
 	}
 
+	@editable({ type: 'timeline', important: true, visible: () => !editorUtils.isPrefabReferenceSelected() })
+	set timeline(data: TimelineSerializedData) {
+		this._goToLabelNextFrame = false;
+		this._disposePlayers();
+
+		if(data === null) {
+			this._timelineData = null as any;
+			return;
+		}
+
+		let desData!: TimelineData;
+
+		if(!deserializeCache.has(data)
+			/// #if EDITOR
+			|| game.editor.disableFieldsCache
+			/// #endif
+		) {
+			this._timelineData = MovieClip._deserializeTimelineData(data);
+			/// #if EDITOR
+			if(!game.editor.disableFieldsCache) {
+				/// #endif
+				deserializeCache.set(data, this._timelineData);
+				/// #if EDITOR
+				serializeCache.set(this._timelineData, data);
+			}
+			/// #endif
+		} else {
+			this._timelineData = deserializeCache.get(data);
+		}
+
+		assert(Array.isArray(data.f), "Wrong timeline data?");
+
+		/// #if EDITOR
+		this._resetPlayers();
+		/// #endif
+
+	}
+
 	/// #if EDITOR
 	//timeline reading has sense in editor mode only
-	get timeline() { // -eslint-disable-line @typescript-eslint/adjacent-overload-signatures
+	get timeline(): TimelineSerializedData | null { // -eslint-disable-line @typescript-eslint/adjacent-overload-signatures
 		if(!this._timelineData) {
 			return null;
 		}
@@ -129,7 +141,7 @@ export default class MovieClip extends DSprite {
 				let label = tl.l[key];
 				labels[key] = label.t;
 			}
-			let c = {
+			let c: TimelineSerializedData = {
 				l: labels,
 				p: tl.p,
 				d: tl.d,
