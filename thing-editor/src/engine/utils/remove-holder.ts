@@ -1,10 +1,17 @@
 import { Container } from "pixi.js";
+import { DebugStack } from "thing-editor/src/editor/utils/stack-utils";
+import { removeHoldersToCleanup } from "thing-editor/src/engine/lib";
 
 class RemoveHolder extends Container {
 	constructor() {
 		super();
 		this.visible = false;
 	}
+
+	/// #if EDITOR
+	stack!: DebugStack;
+	/// #endif
+
 	onRemove() {
 		super.onRemove();
 		let i = removeHoldersToCleanup.indexOf(this);
@@ -14,7 +21,5 @@ class RemoveHolder extends Container {
 	}
 	update() { /* empty */ }
 }
-
-const removeHoldersToCleanup: RemoveHolder[] = [];
 
 export default RemoveHolder;

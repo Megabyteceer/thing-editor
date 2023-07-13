@@ -1060,6 +1060,9 @@ function selectViewIfInRect(rect: DOMRect, view: TimelineSelectable) {
 		return;
 	}
 	let domElement = (view as TimelineKeyframeView).base as HTMLDivElement;
+	if(!domElement) {
+		return;
+	}
 	let r = domElement.getBoundingClientRect();
 	if(r.right > rect.left && r.left < rect.right) {
 		if(r.bottom > rect.top && r.top < rect.bottom) {

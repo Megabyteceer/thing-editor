@@ -203,10 +203,20 @@ Object.defineProperties(Text.prototype, {
 	},
 	'style.stroke': {
 		get: function (this: Text) {
-			return this.style.stroke;
+			return (this as any).__tmpStrokeColor || this.style.stroke;
 		},
 		set: function (this: Text, val) {
+			/// #if EDITOR
+			try {
+				this.style.stroke = val;
+			} catch(er) {
+				this.style.stroke = "#000000";
+			}
+			(this as any).__tmpStrokeColor = val;
+			/*
+			/// #endif
 			this.style.stroke = val;
+			//*/
 		}, configurable: true
 	},
 	'style.strokeThickness': {

@@ -23,6 +23,7 @@ import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/uti
 import HowlSound from "thing-editor/src/engine/HowlSound";
 
 
+import { getCurrentStack } from "thing-editor/src/editor/utils/stack-utils";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import L from "thing-editor/src/engine/utils/l";
 
@@ -464,11 +465,13 @@ export default class Lib
 		) {
 			let r = Pool.create(RemoveHolder);
 			/// #if EDITOR
+			r.stack = getCurrentStack('removing with holder at ' + game.time + '; ' + o.name);
 			constructRecursive(r);
 			/// #endif
 			let c = o.parent.children;
 			c[c.indexOf(o)] = r;
 			r.parent = o.parent;
+
 			removeHoldersToCleanup.push(r);
 
 			o.parent = null as any;
@@ -480,6 +483,7 @@ export default class Lib
 		}
 
 		Pool.dispose(o);
+
 		o.interactiveChildren = true;
 
 		/// #if EDITOR
@@ -493,7 +497,7 @@ export default class Lib
 
 	static _cleanupRemoveHolders() {
 		while(removeHoldersToCleanup.length > 0) {
-			Lib.destroyObjectAndChildren(removeHoldersToCleanup.pop() as Container);
+			Lib.destroyObjectAndChildren(removeHoldersToCleanup[0]);
 		}
 	}
 
@@ -999,3 +1003,5 @@ const _filterStaticTriggersRecursive = (data: SerializedObject) => {
 		a.forEach(_filterStaticTriggersRecursive);
 	}
 }
+
+export { removeHoldersToCleanup };

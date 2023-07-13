@@ -1281,6 +1281,8 @@ export type { FixedViewportSize };
 
 /// #if EDITOR
 
+(window as any).game = game;
+
 (Game.prototype.forAllChildrenEverywhereBack as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 (Game.prototype.forAllChildrenEverywhere as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 (Game.prototype.init as SelectableProperty).___EDITOR_isHiddenForChooser = true;
