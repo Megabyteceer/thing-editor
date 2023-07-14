@@ -476,6 +476,7 @@ input {
 }
 
 .field-editor-wrapper {
+	flex-grow: 2;
 	display: flex;
 }
 
