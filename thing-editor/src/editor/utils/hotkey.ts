@@ -27,11 +27,14 @@ const hotkeysBlockedWhenInputFocused: KeyedObject = {
 };
 
 function isHotkeyBlockedOnInput(hotkey: Hotkey) {
+	if(hotkey.altKey) {
+		return false;
+	}
 	const isCtrlRequired = hotkeysBlockedWhenInputFocused[hotkey.key];
 	if(isCtrlRequired === undefined) {
 		return false;
 	}
-	if(isCtrlRequired === null) {
+	if(isCtrlRequired === true) {
 		return true;
 	}
 	return isCtrlRequired === hotkey.ctrlKey;
