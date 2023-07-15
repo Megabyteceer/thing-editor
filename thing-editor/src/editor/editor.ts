@@ -817,7 +817,17 @@ class Editor {
 		this.editFile(rootPath + fileName);
 	}
 
-	editFile(fileName: string) {
+	editFile(fileName: string, findText?: string) {
+		if(findText) {
+			let src = fs.readFile(fileName);
+			let a = src.split('\n');
+			let char = 0;
+			let lineNum = a.findIndex((l) => {
+				char = l.indexOf(findText);
+				return char >= 0;
+			}) + 1;
+			fileName += ':' + lineNum + ':' + char;
+		}
 		let url = '/__open-in-editor?file=' + encodeURIComponent(fileName);
 		fetch(url);
 	}

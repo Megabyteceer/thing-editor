@@ -122,14 +122,15 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		renderClass(file),
 		tip,
 		R.span(toolButtonsProps,
-			R.btn('>', (ev) => {
-				sp(ev);
-				findNextOfThisType(file.asset, 1, ev.ctrlKey);
-			}, 'Find next ' + file.asset.__className + '; Ctrl+click - find all.'),
 			R.btn('<', (ev) => {
 				sp(ev);
 				findNextOfThisType(file.asset, -1, ev.ctrlKey);
-			}, 'Find previous ' + file.asset.__className + '; Ctrl+click - find all.'))
+			}, 'Find previous ' + file.asset.__className + '; Ctrl+click - find all.'),
+			R.btn('>', (ev) => {
+				sp(ev);
+				findNextOfThisType(file.asset, 1, ev.ctrlKey);
+			}, 'Find next ' + file.asset.__className + '; Ctrl+click - find all.')
+		)
 	);
 }
 
