@@ -37,7 +37,7 @@ function isHotkeyBlockedOnInput(hotkey: Hotkey) {
 	if(isCtrlRequired === true) {
 		return true;
 	}
-	return isCtrlRequired === hotkey.ctrlKey;
+	return isCtrlRequired === (hotkey.ctrlKey || null);
 }
 
 const isHotkeyHit = (ev: Hotkey, element: HTMLElement, hotkey?: Hotkey) => {
