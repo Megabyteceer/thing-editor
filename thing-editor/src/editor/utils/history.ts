@@ -357,4 +357,4 @@ MainMenu.injectMenu('edit', [
 		hotkey: { key: 'ArrowRight', ctrlKey: true, altKey: true },
 		disabled: () => !game.__EDITOR_mode
 	}
-]);
+], 'history-navigation-built-in');

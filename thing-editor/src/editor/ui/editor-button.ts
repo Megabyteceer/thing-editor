@@ -55,10 +55,9 @@ window.addEventListener("keydown", (ev) => {
 		if(item) {
 			item.onClick();
 			refreshContextMenu();
+			sp(ev);
 			return;
 		}
-
-
 	}
 });
 

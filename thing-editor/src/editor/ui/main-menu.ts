@@ -279,9 +279,15 @@ const MAIN_MENU: MainMenuItem[] = [
 	}
 ];
 
+const injectedNames: Set<string> = new Set();
+
 export default class MainMenu extends Component {
 
-	static injectMenu(targetMenuId: string, items: ContextMenuItem[]) {
+	static injectMenu(targetMenuId: string, items: ContextMenuItem[], injectionName: string) {
+		if(injectedNames.has(injectionName)) {
+			return;
+		}
+		injectedNames.add(injectionName);
 		let menu: MainMenuItem | undefined = MAIN_MENU.find(i => i.id === targetMenuId);
 		if(!menu) {
 			menu = {

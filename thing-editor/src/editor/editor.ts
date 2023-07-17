@@ -33,6 +33,7 @@ import validateObjectDataRecursive from "thing-editor/src/editor/utils/validate-
 import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
+import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
@@ -399,6 +400,7 @@ class Editor {
 	toggleSoundMute() {
 		game.editor.settings.setItem('sound-muted', !game.editor.settings.getItem('sound-muted'));
 		Sound.__resetSounds();
+		BgMusic._recalculateMusic();
 	}
 
 	toggleVSCodeExcluding() {
