@@ -36,7 +36,8 @@
 						}
 					]
 				},
-				"__previewFrame": 4
+				"__previewFrame": 4,
+				"alpha": 0
 			},
 			":": [
 				{
@@ -54,10 +55,10 @@
 						{
 							"c": "BackDrop",
 							"p": {
-								"x": -5.067708333333333,
+								"x": -5.619791666666666,
 								"y": -5,
 								"alpha": 0.8,
-								"width": 10.135416666666666,
+								"width": 11.239583333333332,
 								"height": 10
 							}
 						}
@@ -113,7 +114,9 @@
 						}
 					]
 				},
-				"__previewFrame": 7
+				"__previewFrame": 7,
+				"scale.x": 0,
+				"scale.y": 0
 			},
 			":": [
 				{
@@ -130,11 +133,11 @@
 						{
 							"c": "Shape",
 							"p": {
-								"x": -200,
-								"y": -168,
+								"x": -280,
+								"y": -208,
 								"shape": 1,
-								"width": 400,
-								"height": 257,
+								"width": 560,
+								"height": 317,
 								"shapeFillColor": 986932,
 								"shapeLineWidth": 4,
 								"shapeLineAlpha": 0.7
@@ -144,27 +147,26 @@
 							"c": "Text",
 							"p": {
 								"name": "title",
-								"y": -138,
+								"y": -168,
 								"alpha": 0.8,
 								"text": "TITLE",
-								"style.fontSize": 26,
-								"style.fontWeight": "lighter",
-								"maxWidth": 250
+								"style.fontSize": 34,
+								"style.fontWeight": "bold",
+								"maxWidth": 507
 							}
 						},
 						{
 							"c": "MultilineText",
 							"p": {
 								"name": "message",
-								"y": -57,
+								"y": -67,
 								"alpha": 0.7,
 								"text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-								"style.fontSize": 22,
-								"style.fontWeight": "lighter",
-								"maxWidthLandscape": 345,
-								"maxWidthPortrait": 340,
-								"maxHeightLandscape": 118,
-								"maxHeightPortrait": 130
+								"style.fontSize": 28,
+								"maxWidthLandscape": 508,
+								"maxWidthPortrait": 508,
+								"maxHeightLandscape": 168,
+								"maxHeightPortrait": 168
 							}
 						},
 						{
@@ -172,7 +174,7 @@
 							"p": {
 								"name": "okBtn",
 								"x": 100,
-								"y": 40,
+								"y": 60,
 								"scale.x": 0.666666,
 								"scale.y": 0.666666,
 								"sndClick": "click",
@@ -198,7 +200,6 @@
 										"text": "",
 										"translatableText": "buttons.ok",
 										"style.fontSize": 45,
-										"style.fontWeight": "lighter",
 										"maxWidth": 245
 									}
 								}
@@ -209,7 +210,7 @@
 							"p": {
 								"name": "noBtn",
 								"x": -100,
-								"y": 40,
+								"y": 60,
 								"scale.x": 0.666666,
 								"scale.y": 0.666666,
 								"sndClick": "click",
@@ -234,7 +235,6 @@
 										"name": "label",
 										"text": "--",
 										"style.fontSize": 45,
-										"style.fontWeight": "lighter",
 										"maxWidth": 175
 									}
 								}
