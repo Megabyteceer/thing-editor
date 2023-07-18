@@ -2,7 +2,7 @@ import { Component, ComponentChild, h } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 
-import { ContextMenuItem, toggleContextMenu } from "thing-editor/src/editor/ui/context-menu";
+import showContextMenu, { ContextMenuItem, toggleContextMenu } from "thing-editor/src/editor/ui/context-menu";
 import { findMenuItemForHotkey } from "thing-editor/src/editor/ui/editor-button";
 import Build from "thing-editor/src/editor/utils/build";
 import newComponentWizard from "thing-editor/src/editor/utils/new-component-wizard";
@@ -306,9 +306,16 @@ export default class MainMenu extends Component {
 		}
 		return R.div(menuProps,
 			MAIN_MENU.map((menuItem: MainMenuItem) => {
-				return R.btn(menuItem.name, (ev: PointerEvent) => {
-					toggleContextMenu(menuItem.items, ev);
-				});
+				return R.span({
+					onPointerOver: (ev: PointerEvent) => {
+						if(document.querySelector('.context-menu')) {
+							showContextMenu(menuItem.items, ev);
+						}
+					}
+				},
+					R.btn(menuItem.name, (ev: PointerEvent) => {
+						toggleContextMenu(menuItem.items, ev);
+					}));
 			}));
 	}
 
