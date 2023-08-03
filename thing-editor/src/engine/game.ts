@@ -808,6 +808,7 @@ class Game {
 		if(game.onGameReload) {
 			game.onGameReload();
 		}
+		game.showModal('final-fader');
 		window.location.reload();
 	}
 
@@ -930,14 +931,14 @@ class Game {
 		return game.showModal(o);
 	}
 
-	showModal(container: Container, callback?: () => void
+	showModal(container: Container | string, callback?: () => void
 		/// #if EDITOR
 		, __noAssertEditorMode = false
 		/// #endif
 	) {
 		/// #if EDITOR
 		if(game.__EDITOR_mode) {
-			assert(__noAssertEditorMode, 'Attempt to show modal in editor mode: ' + (container.name || container), 10047);
+			assert(__noAssertEditorMode, 'Attempt to show modal in editor mode: ' + ((container as any).name || container), 10047);
 		}
 		/// #endif
 		if(typeof container === "string") {
