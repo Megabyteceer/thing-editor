@@ -385,7 +385,7 @@ export default class fs {
 				(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
 				allAssets.push(file);
 
-				if(prevAllAssets !== undefined && !file.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
+				if(prevAllAssets !== undefined) {
 					const oldAsset = prevAllAssetsMap!.get(file.fileName);
 					if(!oldAsset) {
 						fs.rebuildSoundsIfNeed(file);
