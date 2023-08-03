@@ -306,7 +306,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				R.span(panelProps,
 					reloadClassesBtn,
 					R.hr(),
-					R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop', 'big-btn', { key: ' ', ctrlKey: true }),
+					R.btn((!game || game.__EDITOR_mode) ? PLAY_ICON : STOP_ICON, this.onTogglePlay, 'Play/Stop', 'big-btn', { key: 'Space', ctrlKey: true }),
 					R.br(),
 					statusHeader,
 					pauseResumeBtn,

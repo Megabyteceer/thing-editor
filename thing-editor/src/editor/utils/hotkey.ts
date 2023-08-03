@@ -40,7 +40,7 @@ function isHotkeyBlockedOnInput(hotkey: Hotkey) {
 	return isCtrlRequired === (hotkey.ctrlKey || null);
 }
 
-const isHotkeyHit = (ev: Hotkey, element: HTMLElement, hotkey?: Hotkey) => {
+const isHotkeyHit = (ev: KeyboardEvent | Hotkey, element: HTMLElement, hotkey?: Hotkey) => {
 
 	if(!hotkey) {
 		return;
@@ -54,7 +54,7 @@ const isHotkeyHit = (ev: Hotkey, element: HTMLElement, hotkey?: Hotkey) => {
 		return;
 	}
 
-	if((ev.key.toLocaleLowerCase() === hotkey.key.toLocaleLowerCase()) &&
+	if(((ev instanceof KeyboardEvent ? ev.code.replace(/^Key/, '').toLocaleLowerCase() : ev.key.toLocaleLowerCase()) === hotkey.key.toLocaleLowerCase()) &&
 		((ev.ctrlKey || false) === (hotkey.ctrlKey === true)) &&
 		((ev.altKey || false) === (hotkey.altKey === true)) &&
 		((ev.shiftKey || false) === (hotkey.shiftKey === true))
