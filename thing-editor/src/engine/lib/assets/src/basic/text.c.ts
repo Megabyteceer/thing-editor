@@ -330,6 +330,15 @@ let _original_onTextureUpdate = (Text.prototype as any)._onTextureUpdate;
 	recalculateTextSize(this); // recalculate max width
 };
 
+Text.prototype.init = function () {
+	/// #if EDITOR
+	EDITOR_FLAGS._root_initCalled.delete(this);
+	/// #endif
+	if(this.translatableText) {
+		this.text = L(this.translatableText);
+	}
+};
+
 Text.prototype.onRemove = function () {
 	/// #if EDITOR
 	EDITOR_FLAGS._root_onRemovedCalled.delete(this);

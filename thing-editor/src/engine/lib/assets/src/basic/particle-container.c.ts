@@ -6,6 +6,11 @@ import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 
 export default class ParticleContainer extends Container {
 
+	constructor() {
+		super();
+		this.eventMode = 'none';
+	}
+
 	forAllChildren(callback: (o: Container) => void) {
 		/// #if EDITOR
 		if(game.__EDITOR_mode) {

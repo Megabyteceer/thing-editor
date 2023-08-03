@@ -2,7 +2,6 @@ import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from 
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable, { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
-import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
 const PI_2 = Math.PI * 2;
@@ -379,22 +378,18 @@ export default class Fill extends Mesh {
 	update() {
 		if(this.xShiftSpeed !== 0) {
 			this.xShift += this.xShiftSpeed;
-			if(game.isCanvasMode) {
-				if(this._xShift > 2) {
-					this._xShift -= 2;
-				} else if(this._xShift < -2) {
-					this._xShift += 2;
-				}
+			if(this._xShift > 2) {
+				this._xShift -= 2;
+			} else if(this._xShift < -2) {
+				this._xShift += 2;
 			}
 		}
 		if(this.yShiftSpeed !== 0) {
 			this.yShift += this.yShiftSpeed;
-			if(game.isCanvasMode) {
-				if(this._yShift > 2) {
-					this._yShift -= 2;
-				} else if(this._yShift < -2) {
-					this._yShift += 2;
-				}
+			if(this._yShift > 2) {
+				this._yShift -= 2;
+			} else if(this._yShift < -2) {
+				this._yShift += 2;
 			}
 		}
 

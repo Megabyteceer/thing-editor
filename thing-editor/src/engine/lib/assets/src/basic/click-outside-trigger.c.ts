@@ -20,6 +20,7 @@ export default class ClickOutsideTrigger extends Container {
 
 	gameTime = 0;
 	thisDownTime = 0;
+	clickTimeOut = 0;
 
 	constructor() {
 		super();
@@ -63,6 +64,10 @@ export default class ClickOutsideTrigger extends Container {
 		}
 		(game.pixiApp.view as HTMLCanvasElement).removeEventListener('pointerdown', this.onStageDown);
 		super.onRemove();
+		if(this.clickTimeOut) {
+			clearTimeout(this.clickTimeOut);
+			this.clickTimeOut = 0;
+		}
 	}
 
 	onThisDown() {
@@ -70,9 +75,12 @@ export default class ClickOutsideTrigger extends Container {
 	}
 
 	onStageDown() {
-		if(this.thisDownTime !== game.time && game.time === this.gameTime) {
-			this.fire();
-		}
+		this.clickTimeOut = setTimeout(() => {
+			this.clickTimeOut = 0;
+			if(this.thisDownTime !== game.time && game.time === this.gameTime) {
+				this.fire();
+			}
+		}, 0);
 	}
 
 	fire() {

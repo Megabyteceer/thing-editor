@@ -71,13 +71,23 @@
 									"c": "Container",
 									"p": {
 										"name": "cap",
-										"x": 5,
+										"x": 8,
 										"interactive": true,
 										"scale.x": 2,
-										"scale.y": 2,
-										"pivot.x": 5,
-										"pivot.y": 5
-									}
+										"scale.y": 2
+									},
+									":": [
+										{
+											"c": "Spawner",
+											"p": {
+												"x": -2,
+												"prefabToSpawn": "particle-green",
+												"speed": 0,
+												"speedRandom": 1,
+												"container": ""
+											}
+										}
+									]
 								}
 							]
 						},
@@ -85,7 +95,9 @@
 							"c": "MovieClip",
 							"p": {
 								"x": -77,
-								"y": -43,
+								"y": -83,
+								"scale.x": 2,
+								"scale.y": 2,
 								"image": "WHITE",
 								"timeline": {
 									"l": {},
@@ -135,7 +147,9 @@
 						{
 							"c": "MovieClip",
 							"p": {
-								"y": -43,
+								"y": -83,
+								"scale.x": 2,
+								"scale.y": 2,
 								"image": "WHITE",
 								"timeline": {
 									"l": {},
@@ -187,7 +201,9 @@
 							"c": "MovieClip",
 							"p": {
 								"x": 77,
-								"y": -43,
+								"y": -83,
+								"scale.x": 2,
+								"scale.y": 2,
 								"image": "WHITE",
 								"timeline": {
 									"l": {},
