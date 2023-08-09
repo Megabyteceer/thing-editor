@@ -215,13 +215,13 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 					let input = fldInput.querySelector('input');
 					if(input) {
 						input.focus();
-						if(selectAll) {
+						if(selectAll && input.value) {
 							input.select();
 						}
 					}
 				}
 			}
-		}, 1);
+		}, 10);
 	}
 
 	render() {
