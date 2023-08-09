@@ -7,8 +7,6 @@ import ___Guide from "thing-editor/src/engine/lib/assets/src/___system/guide.c";
 const CENTER = 'center';
 const BOTTOM = 'bottom';
 
-let isApplyingOfMaxHeight = false;
-
 export default class MultilineText extends Text {
 
 	@editable({ name: 'maxWidth', type: 'number', override: true, visible: (_o: MultilineText) => { return false; } })
@@ -77,25 +75,17 @@ export default class MultilineText extends Text {
 	}
 
 	_applyMaxHeight() {
-		if(isApplyingOfMaxHeight) {
-			return;
-		}
-		isApplyingOfMaxHeight = true;
 		if(this.style) {
 			this.maxWidth = this.style.wordWrapWidth;
 		}
 		let h = game.isPortrait ? this._maxHeightPortrait : this._maxHeightLandscape;
-		if((h > 0) && ((this.scale.y * this._texture.height) > h)) {
+		if((h > 0) && (this._texture.height > h)) {
 			let q = h / this._texture.height;
 			if(this.scale.x !== q || this.scale.y !== q) {
 				this.scale.x = q;
 				this.scale.y = q;
-				if(this.parent) {
-					this.updateTransform();
-				}
 			}
 		}
-		isApplyingOfMaxHeight = false;
 	}
 
 	/// #if EDITOR
