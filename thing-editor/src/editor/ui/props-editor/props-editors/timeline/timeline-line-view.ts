@@ -12,6 +12,7 @@ let _scale = 1;
 let _shift = 0;
 
 const scale = (val: number) => {
+	//assert(!isNaN(val), 'nan');
 	return (_shift - val) * _scale;
 };
 
@@ -91,7 +92,9 @@ export default class TimelineLineView extends Component<TimelineLineViewProps> {
 						}
 					} else {
 						if(field.___discretePositionsCache![i] && i > 0) {
-							currentPoints.push(i * widthZoom, scale(values[i - 1]));
+							if((i - 1) in values) {
+								currentPoints.push(i * widthZoom, scale(values[i - 1]));
+							}
 						}
 						currentPoints.push(i * widthZoom, scale(values[i]));
 					}

@@ -296,7 +296,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume", 'big-btn', { key: 'p', ctrlKey: true });
 				if(game.__paused) {
 					statusHeader = R.div({ className: "red-blink" }, 'paused');
-					oneStepBtn = R.btn('One step', this.onOneStepClick, undefined, 'big-btn', { key: '[', ctrlKey: true });
+					oneStepBtn = R.btn('One step', this.onOneStepClick, undefined, 'big-btn', { key: 'BracketLeft', ctrlKey: true });
 				} else {
 					statusHeader = R.div(null, 'running');
 				}

@@ -20,6 +20,11 @@ class Settings {
 			}
 		} catch(er) { /* empty */ }
 		this.flush = this.flush.bind(this);
+		window.addEventListener('unload', () => {
+			if(this.__flushInterval) {
+				this.flush();
+			}
+		});
 	}
 
 	getItem(name: string, def?: any): any {

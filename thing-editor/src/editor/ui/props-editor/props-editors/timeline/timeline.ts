@@ -529,10 +529,10 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 						display: 'none'
 					}
 				},
-				R.btn('<', this.prevFrame, undefined, undefined, { key: ',' }),
-				R.btn('>', this.nextFrame, undefined, undefined, { key: '.' }),
-				R.btn('<<', this.prevKeyFrame, undefined, undefined, { key: ',', ctrlKey: true }),
-				R.btn('>>', this.nextKeyFrame, undefined, undefined, { key: '.', ctrlKey: true })
+				R.btn('<', this.prevFrame, undefined, undefined, { key: 'Comma' }),
+				R.btn('>', this.nextFrame, undefined, undefined, { key: 'Period' }),
+				R.btn('<<', this.prevKeyFrame, undefined, undefined, { key: 'Comma', ctrlKey: true }),
+				R.btn('>>', this.nextKeyFrame, undefined, undefined, { key: 'Period', ctrlKey: true })
 			)
 		);
 	}

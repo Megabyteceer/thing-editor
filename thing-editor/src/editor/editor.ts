@@ -264,9 +264,11 @@ class Editor {
 	chooseProject(notSkipable = false) {
 		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
 			if(dir) {
-				this.settings.setItem('last-opened-project', dir);
-				this.restartInProgress = true;
-				window.document.location.reload();
+				if(this.askSceneToSaveIfNeed()) {
+					this.settings.setItem('last-opened-project', dir);
+					this.restartInProgress = true;
+					window.document.location.reload();
+				}
 			}
 		});
 	}
@@ -281,101 +283,98 @@ class Editor {
 
 	async openProject(dir?: string) {
 		this.ui.viewport.stopExecution();
-		if(this.askSceneToSaveIfNeed()) {
 
-			if(!dir) {
-				this.chooseProject(true);
+		if(!dir) {
+			this.chooseProject(true);
+			return;
+		}
+		const newProjectDir = 'games/' + dir + '/';
+
+		if(newProjectDir !== this.currentProjectDir) {
+			this.currentProjectDir = newProjectDir;
+			this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
+			this.currentProjectAssetsDirRooted = '/' + this.currentProjectAssetsDir;
+
+			this.ui.modal.showSpinner();
+			this.settings.removeItem('last-opened-project');
+			const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
+			if(!projectDesc) {
+				this.ui.modal.showError("Can't open project " + dir).then(() => { this.chooseProject(true); });
 				return;
 			}
-			const newProjectDir = 'games/' + dir + '/';
 
-			if(newProjectDir !== this.currentProjectDir) {
-				this.currentProjectDir = newProjectDir;
-				this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
-				this.currentProjectAssetsDirRooted = '/' + this.currentProjectAssetsDir;
+			if(!projectDesc.libs) {
+				projectDesc.libs = [];
+			}
 
-				this.ui.modal.showSpinner();
-				this.settings.removeItem('last-opened-project');
-				const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
-				if(!projectDesc) {
-					this.ui.modal.showError("Can't open project " + dir).then(() => { this.chooseProject(true); });
+			this.libsProjectDescMerged = {} as ProjectDesc;
+			mergeProjectDesc(this.libsProjectDescMerged, defaultProjectDesc);
+
+			this.currentProjectLibs = projectDesc.libs.map(parseLibName);
+			this.currentProjectLibs.unshift({
+				name: 'thing-editor-embed',
+				dir: 'thing-editor/src/engine/lib',
+				assetsDir: 'thing-editor/src/engine/lib/assets/',
+				isEmbed: true
+			});
+			this.assetsFolders = [];
+			for(let lib of this.currentProjectLibs) {
+				this.assetsFolders.push(lib.assetsDir);
+				const libFileName = lib.dir + '/thing-lib.json';
+				try {
+					this.libsDescs[lib.name] = fs.readJSONFile(libFileName);
+				} catch(er: any) {
+					editor.ui.modal.showFatalError('Library loading error. Is "libs" option in "thing-projects.json" correct?', 99999, er.message);
 					return;
 				}
-
-				if(!projectDesc.libs) {
-					projectDesc.libs = [];
-				}
-
-				this.libsProjectDescMerged = {} as ProjectDesc;
-				mergeProjectDesc(this.libsProjectDescMerged, defaultProjectDesc);
-
-				this.currentProjectLibs = projectDesc.libs.map(parseLibName);
-				this.currentProjectLibs.unshift({
-					name: 'thing-editor-embed',
-					dir: 'thing-editor/src/engine/lib',
-					assetsDir: 'thing-editor/src/engine/lib/assets/',
-					isEmbed: true
-				});
-				this.assetsFolders = [];
-				for(let lib of this.currentProjectLibs) {
-					this.assetsFolders.push(lib.assetsDir);
-					const libFileName = lib.dir + '/thing-lib.json';
-					try {
-						this.libsDescs[lib.name] = fs.readJSONFile(libFileName);
-					} catch(er: any) {
-						editor.ui.modal.showFatalError('Library loading error. Is "libs" option in "thing-projects.json" correct?', 99999, er.message);
-						return;
-					}
-					mergeProjectDesc(this.libsProjectDescMerged, this.libsDescs[lib.name]);
-				}
-
-				this.assetsFolders.push(this.currentProjectAssetsDir);
-
-				this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
-
-				this.projectDesc = {} as ProjectDesc;
-				mergeProjectDesc(this.projectDesc, this.libsProjectDescMerged);
-				mergeProjectDesc(this.projectDesc, projectDesc);
-
-				excludeOtherProjects();
-
-				game.applyProjectDesc(this.projectDesc);
-
-				game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id);
-
-				game.stage.interactiveChildren = false;
-				protectAccessToSceneNode(game.stage, "game stage");
-				protectAccessToSceneNode(game.stage.parent, "PIXI stage");
-
-				await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
-					Lib.REMOVED_TEXTURE = t;
-					return Promise.all([this.reloadAssetsAndClasses(true)]);
-				});
-
-
-				if(game.settings.getItem(LAST_SCENE_NAME) && !Lib.hasScene(game.settings.getItem(LAST_SCENE_NAME))) {
-					this.saveLastSceneOpenName('');
-				}
-				game.settings.setItem(LAST_SCENE_NAME, game.settings.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
-				editorEvents.emit('firstSceneWillOpen');
-				this.restoreBackup();
-
-				regeneratePrefabsTypings();
-
-				fs.watchDirs(this.assetsFolders.slice(1)); //slice - exclude watching embed library.
-
-				this.ui.modal.hideSpinner();
-				this.isProjectOpen = true;
-
-				game.onResize();
-
-				this.settings.setItem('last-opened-project', dir);
-
-				this.validateResources();
-
-				editorEvents.emit('projectDidOpen');
-
+				mergeProjectDesc(this.libsProjectDescMerged, this.libsDescs[lib.name]);
 			}
+
+			this.assetsFolders.push(this.currentProjectAssetsDir);
+
+			this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
+
+			this.projectDesc = {} as ProjectDesc;
+			mergeProjectDesc(this.projectDesc, this.libsProjectDescMerged);
+			mergeProjectDesc(this.projectDesc, projectDesc);
+
+			excludeOtherProjects();
+
+			game.applyProjectDesc(this.projectDesc);
+
+			game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id);
+
+			game.stage.interactiveChildren = false;
+			protectAccessToSceneNode(game.stage, "game stage");
+			protectAccessToSceneNode(game.stage.parent, "PIXI stage");
+
+			await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
+				Lib.REMOVED_TEXTURE = t;
+				return Promise.all([this.reloadAssetsAndClasses(true)]);
+			});
+
+
+			if(game.settings.getItem(LAST_SCENE_NAME) && !Lib.hasScene(game.settings.getItem(LAST_SCENE_NAME))) {
+				this.saveLastSceneOpenName('');
+			}
+			game.settings.setItem(LAST_SCENE_NAME, game.settings.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
+			editorEvents.emit('firstSceneWillOpen');
+			this.restoreBackup();
+
+			regeneratePrefabsTypings();
+
+			fs.watchDirs(this.assetsFolders.slice(1)); //slice - exclude watching embed library.
+
+			this.ui.modal.hideSpinner();
+			this.isProjectOpen = true;
+
+			game.onResize();
+
+			this.settings.setItem('last-opened-project', dir);
+
+			this.validateResources();
+
+			editorEvents.emit('projectDidOpen');
 		}
 	}
 
