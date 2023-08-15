@@ -46,8 +46,18 @@ export default class PrefabEditor {
 	}
 
 	static set BGColor(val: number) {
-		game.editor.settings.setItem('prefab-bg' + this.currentPrefabName, val);
 		backDrop.shapeFillColor = val;
+	}
+
+	private static savePrefabSettings() {
+		if(this.currentPrefabName) {
+			game.editor.settings.setItem('prefab-settings' + this.currentPrefabName, {
+				bg: backDrop.shapeFillColor,
+				x: game.stage.x,
+				y: game.stage.y,
+				s: game.stage.scale.x
+			});
+		}
 	}
 
 	private static showPreview(object: Container) {
@@ -57,15 +67,17 @@ export default class PrefabEditor {
 			backDrop.__nodeExtendData.hidden = true;
 		}
 		exitIsolation();
-		game.editor.ui.viewport.resetZoom();
-		PrefabEditor.BGColor = game.editor.settings.getItem('prefab-bg' + object.name, 120);
 		PrefabEditor.hidePreview();
+		const prefabSettings = game.editor.settings.getItem('prefab-settings' + object.name, { bg: 120 });
+		PrefabEditor.BGColor = prefabSettings.bg;
+		game.stage.scale.x = game.stage.scale.y = prefabSettings.s || 1;
+		game.stage.x = prefabSettings.x || (-object.x + game.W / 2);
+		game.stage.y = prefabSettings.y || (-object.y + game.H / 2);
+
 		game.stage.addChild(backDrop);
 		game.showModal(object, undefined, true);
 		this.currentPrefabName = object.name;
 		object.__nodeExtendData.childrenExpanded = true;
-		game.stage.x = -object.x + game.W / 2;
-		game.stage.y = -object.y + game.H / 2;
 		setTimeout(() => {
 			let selectionData = game.settings.getItem('__prefab-selection' + game.currentContainer.name);
 			if(selectionData) {
@@ -96,6 +108,7 @@ export default class PrefabEditor {
 
 	static acceptPrefabEdition(oneStepOnly = false) {
 		exitIsolation();
+		this.savePrefabSettings();
 		game.editor.blurPropsInputs();
 		game.editor.history.saveHistoryNow();
 		let name = getCurrentPrefabName();
