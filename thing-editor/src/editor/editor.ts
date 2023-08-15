@@ -113,6 +113,10 @@ class Editor {
 
 	currentProjectLibs!: LibInfo[];
 
+	get makeVisibleAll() {/// 99999
+		return game.keys.altKey;
+	}
+
 	constructor() {
 
 		for(let arg of thingEditorServer.argv) {
@@ -123,7 +127,6 @@ class Editor {
 				this.editorArguments[arg] = true;
 			}
 		}
-
 
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;

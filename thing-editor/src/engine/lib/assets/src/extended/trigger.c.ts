@@ -315,9 +315,9 @@ export default class Trigger extends Container {
 
 	_visible = true;
 
-	//@ts-ignore 
+	//@ts-ignore
 	get visible(): boolean {
-		return this.__visibleInEditor || this._visible || (this.__keepVisibleInEditor && game.__EDITOR_mode);
+		return this._visible || (!game.editor.disableFieldsCache && (this.__visibleInEditor || ((this.__keepVisibleInEditor || game.editor.makeVisibleAll) && game.__EDITOR_mode)));
 	}
 
 	set visible(v: boolean) {
