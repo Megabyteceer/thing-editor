@@ -17,6 +17,7 @@ import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe
 
 const prefabNameFilter = /[^a-z\-\/0-9_]/g;
 
+const cachedImages = new Set();
 
 const onPreviewButtonClick = (o: Container) => {
 	if(o.__nodeExtendData.__isPreviewMode) {
@@ -558,6 +559,20 @@ export namespace editorUtils {
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
 		return ret;
+	}
+
+	export const preCacheImages = (preactContent?: any) => {
+		if(preactContent && (preactContent as any).props) {
+			if(preactContent.type === 'img') {
+				if(!cachedImages.has(preactContent.props.src)) {
+					cachedImages.add(preactContent.props.src);
+					new Image().src = preactContent.props.src;
+				}
+			}
+			if(preactContent.props.children) {
+				preactContent.props.children.forEach(preCacheImages);
+			}
+		}
 	}
 
 	export const onMoveDownClick = (doNotSaveHistoryState = false) => {

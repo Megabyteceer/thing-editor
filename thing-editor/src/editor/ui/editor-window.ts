@@ -84,6 +84,17 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		this.deltaT = this.deltaT.bind(this);
 
 		this.onMouseDown = this.onMouseDown.bind(this);
+
+		if(props.hotkeysHandlers) {
+			for(let handlers of props.hotkeysHandlers) {
+				for(let item of handlers) {
+					if(item) {
+						editorUtils.preCacheImages(item.name);
+					}
+				}
+			}
+		}
+
 	}
 
 	componentDidMount() {
