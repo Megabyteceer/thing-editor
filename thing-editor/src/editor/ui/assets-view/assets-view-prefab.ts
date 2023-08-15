@@ -44,6 +44,19 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 		},
 		null,
 		{
+			name: R.fragment(R.icon('asset-prefab'), "Create inherited prefab"),
+			onClick: () => {
+				editorUtils.enterPrefabName(file.assetName, "Enter name for inherited prefab: " + file.assetName).then((enteredName) => {
+					if(enteredName) {
+						const o = Lib._loadClassInstanceById('Container');
+						o.__nodeExtendData.isPrefabReference = file.assetName;
+						Lib.__savePrefab(o, enteredName);
+						PrefabEditor.editPrefab(enteredName);
+					}
+				});
+			}
+		},
+		{
 			name: R.fragment(R.icon('copy'), "Copy prefab`s name"),
 			onClick: () => {
 				game.editor.copyToClipboard(file.assetName);

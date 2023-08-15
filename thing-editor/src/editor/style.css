@@ -417,6 +417,10 @@ input {
 	padding: 5px;
 }
 
+.modal-reject-text {
+	color: #ff0000;
+}
+
 .modal-content textarea {
 	width: 50vw;
 	height: 50vh;

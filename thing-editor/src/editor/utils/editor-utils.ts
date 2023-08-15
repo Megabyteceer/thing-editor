@@ -13,6 +13,7 @@ import game from "thing-editor/src/engine/game";
 import Lib, { constructRecursive } from "thing-editor/src/engine/lib";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
+import { ComponentChild } from "preact";
 import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 
 const prefabNameFilter = /[^a-z\-\/0-9_]/g;
@@ -263,6 +264,23 @@ export namespace editorUtils {
 		}
 	}
 
+	export const enterPrefabName = (defaultPrefabName: string, title: ComponentChild) => {
+		return game.editor.ui.modal.showPrompt(title,
+			defaultPrefabName,
+			(val) => { // filter
+				return val.toLowerCase().replace(prefabNameFilter, '-');
+			},
+			(val) => { //accept
+				if(Lib.prefabs.hasOwnProperty(val)) {
+					return "Prefab with such name already exists";
+				}
+				if(val.endsWith('/') || val.startsWith('/')) {
+					return 'name can not begin or end with "/"';
+				}
+			}
+		);
+	}
+
 	export const savePrefab = (container: Container) => {
 		if(container instanceof Scene) {
 			game.editor.ui.modal.showInfo('You can not save Scene as prefab. Please select some object from scene first.', undefined, 32037);
@@ -284,20 +302,7 @@ export namespace editorUtils {
 					}
 				}
 
-				game.editor.ui.modal.showPrompt(R.span(null, 'Enter name for new prefab: ', R.sceneNode(container)),
-					defaultPrefabName,
-					(val) => { // filter
-						return val.toLowerCase().replace(prefabNameFilter, '-');
-					},
-					(val) => { //accept
-						if(Lib.prefabs.hasOwnProperty(val)) {
-							return "Prefab with such name already exists";
-						}
-						if(val.endsWith('/') || val.startsWith('/')) {
-							return 'name can not begin or end with "/"';
-						}
-					}
-				).then((enteredName) => {
+				enterPrefabName(defaultPrefabName, R.span(null, 'Enter name for new prefab: ', R.sceneNode(container))).then((enteredName) => {
 					if(enteredName) {
 						const fin = (isConvertedToRef = false) => {
 							Lib.__savePrefab(container, enteredName);
