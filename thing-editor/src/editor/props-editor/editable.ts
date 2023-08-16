@@ -106,9 +106,9 @@ function _editableEmbed<T extends DisplayObject>(target: Constructor | Construct
 
 function editableInner<T extends DisplayObject>(target: T, name: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 
-	if(!target.constructor.hasOwnProperty('__editableProps')) {
-		(target.constructor as SourceMappedConstructor).__editableProps = [];
-		assert(target.constructor.hasOwnProperty('__editableProps'), "Editable not own");
+	if(!target.constructor.hasOwnProperty('__editablePropsRaw')) {
+		(target.constructor as SourceMappedConstructor).__editablePropsRaw = [];
+		assert(target.constructor.hasOwnProperty('__editablePropsRaw'), "Editable not own");
 	}
 	if(!editablePropertyDesc) {
 		editablePropertyDesc = {};
@@ -138,7 +138,7 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 	url = getPropertyDefinitionUrl(url, name, target as any);
 	(editablePropertyDesc as EditablePropertyDesc).__src = url;
 
-	(target.constructor as SourceMappedConstructor).__editableProps.push(editablePropertyDesc as EditablePropertyDesc);
+	(target.constructor as SourceMappedConstructor).__editablePropsRaw.push(editablePropertyDesc as EditablePropertyDesc);
 }
 
 export default editable;

@@ -10,6 +10,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import ___GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
@@ -77,10 +78,11 @@ export default class ClassesLoader {
 
 				Class.__isScene = (instance instanceof Scene);
 
-				if(!Class.__editableProps) {
-					Class.__editableProps = [];
+				if(!Class.hasOwnProperty('__editablePropsRaw')) {
+					Class.__editablePropsRaw = [];
+					assert(Class.hasOwnProperty('__editablePropsRaw'), "Editable not own");
 				}
-				const editableProps: EditablePropertyDesc[] = Class.__editableProps;
+				const editableProps: EditablePropertyDesc[] = Class.__editablePropsRaw;
 				for(let prop of editableProps) {
 					prop.class = Class;
 					if(!prop.hasOwnProperty('type')) {
@@ -138,14 +140,14 @@ export default class ClassesLoader {
 					}
 				}
 
-				if((Class.__editableProps.length < 1) || (Class.__editableProps[0].type !== 'splitter')) {
+				if((Class.__editablePropsRaw.length < 1) || (Class.__editablePropsRaw[0].type !== 'splitter')) {
 					_editableEmbed(Class, className + '-splitter', {
 						type: 'splitter',
 						name: className,
 						title: className,
 						notSerializable: true
 					});
-					Class.__editableProps.unshift(Class.__editableProps.pop() as EditablePropertyDesc);
+					Class.__editablePropsRaw.unshift(Class.__editablePropsRaw.pop() as EditablePropertyDesc);
 				}
 
 				return Class;
@@ -184,43 +186,44 @@ export default class ClassesLoader {
 
 			for(let c of _classes as SourceMappedConstructor[]) {
 
-				let superClass = (c as any).__proto__;
-				const editableProps: EditablePropertyDesc[] = c.hasOwnProperty('__editableProps') ? c.__editableProps : [];
-				if(!editableProps.length || editableProps[0].name !== '__root-splitter') {
-					const superProps: EditablePropertyDesc[] = [];
-					while(superClass.__editableProps) {
-						if(superClass.hasOwnProperty('__editableProps')) {
-							superProps!.unshift.apply(superProps, superClass.__editableProps);
-							Object.assign(c.__defaultValues, superClass.__defaultValues);
-							if(superProps[0].name === '__root-splitter') {
-								break;
-							}
-						}
-						superClass = superClass.__proto__;
-					}
-					c.__editableProps = editableProps.filter((thisProp: EditablePropertyDesc) => {
-						let sameNamedPropIndex = superProps.findIndex((superProp: EditablePropertyDesc) => {
-							return superProp.name === thisProp.name;
-						});
-						if(sameNamedPropIndex >= 0) {
-							const superProp = superProps[sameNamedPropIndex];
-							if(!thisProp.override) {
-								game.editor.editSource(thisProp.__src);
-								game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + superProp, 40004);
-							} else {
-								superProps[sameNamedPropIndex] = Object.assign({}, superProp, thisProp);
+				let superClass = c;
 
-								if(thisProp.hasOwnProperty('default')) {
-									c.__defaultValues[thisProp.name] = thisProp.default;
-								}
-							}
-							return false;
-						} else {
-							return true;
+				const allProps: EditablePropertyDesc[] = [];
+				while(superClass.__editablePropsRaw) {
+					if(superClass.hasOwnProperty('__editablePropsRaw')) {
+						allProps!.unshift.apply(allProps, superClass.__editablePropsRaw);
+						Object.assign(c.__defaultValues, superClass.__defaultValues);
+						if(allProps[0].name === '__root-splitter') {
+							break;
 						}
-					});
-					c.__editableProps!.unshift.apply(c.__editableProps, superProps);
+					}
+					superClass = (superClass as any).__proto__;
 				}
+
+				const editableProps: EditablePropertyDesc[] = [];
+				const existingProps: Set<string> = new Set();
+
+				for(const thisProp of allProps) {
+					if(existingProps.has(thisProp.name)) {
+						const sameNamedPropIndex = editableProps.findIndex(p => p.name === thisProp.name);
+						const existingProp = editableProps[sameNamedPropIndex];
+						if(!thisProp.override) {
+							game.editor.editSource(thisProp.__src);
+							game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + existingProp, 40004);
+						} else {
+
+							editableProps[sameNamedPropIndex] = Object.assign({}, existingProp, thisProp);
+							if(thisProp.hasOwnProperty('default')) {
+								c.__defaultValues[thisProp.name] = thisProp.default;
+							}
+						}
+					} else {
+						editableProps.push(thisProp);
+						existingProps.add(thisProp.name);
+					}
+				}
+
+				c.__editableProps = editableProps;
 
 				if(!c.hasOwnProperty('__EDITOR_icon')) {
 					if(c.prototype instanceof MovieClip) {

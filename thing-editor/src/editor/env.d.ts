@@ -104,6 +104,7 @@ interface SourceMappedConstructor extends Constructor {
 	__EDITOR_icon?: string;
 	__classAsset: FileDescClass;
 	__editableProps: EditablePropertyDesc[];
+	__editablePropsRaw: EditablePropertyDescRaw[];
 	/** additional way to disable editable properties */
 	__isPropertyDisabled?: (p: EditablePropertyDesc) => string | undefined;
 	__EDITOR_tip?: string;
