@@ -12,6 +12,7 @@ import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
 import makePathForKeyframeAutoSelect from "thing-editor/src/editor/utils/movie-clip-keyframe-select-path";
+import { scrollInToView } from "thing-editor/src/editor/utils/scroll-in-view";
 import Selection from "thing-editor/src/editor/utils/selection";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -79,7 +80,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			let e = document.querySelector('.scene-tree-view .item-selected') as HTMLElement;
 			if(e) {
 				Window.bringWindowForward(e.closest('.window-body') as HTMLElement);
-				e.scrollIntoView({ block: "center", inline: "center" });
+				scrollInToView(e);
 				(e.closest('.scene-tree-view') as HTMLElement).scrollLeft = 0;
 			}
 		}, 1);

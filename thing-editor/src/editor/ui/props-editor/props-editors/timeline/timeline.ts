@@ -18,6 +18,7 @@ import TimelineSelectFrame from "thing-editor/src/editor/ui/props-editor/props-e
 import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import increaseNumberInName from "thing-editor/src/editor/utils/increase-number-in-name";
+import { scrollInToView } from "thing-editor/src/editor/utils/scroll-in-view";
 import shakeDomElement from "thing-editor/src/editor/utils/shake-element";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -803,7 +804,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 											select(kf.___view!);
 											let kfNode = kf.___view!.base as HTMLDivElement;
 											if(kfNode) {
-												kfNode.scrollIntoView({ block: "center", inline: "center" });
+												scrollInToView(kfNode);
 												shakeDomElement(kfNode);
 											}
 											timelineInstance.refresh();

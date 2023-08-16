@@ -29,6 +29,7 @@ smallSpace {
 
 body {
 	background: var(--bg-color);
+	overflow: hidden;
 	color: #737988;
 	line-height: normal;
 	font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;

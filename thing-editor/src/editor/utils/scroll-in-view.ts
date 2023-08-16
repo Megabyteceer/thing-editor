@@ -8,8 +8,16 @@ const scrollInToViewAndShake = (element: HTMLElement) => {
 		}
 		p = p.parentElement as HTMLElement;
 	}
-	element.scrollIntoView({ block: "center", inline: "center" });
+	scrollInToView(element);
 	shakeDomElement(element);
 }
 
+const scrollInToView = (element: HTMLElement) => {
+	element.scrollIntoView({ block: "center", inline: "center" });
+	document.body.scrollTop = 0;
+	document.body.scrollLeft = 0;
+}
+
 export default scrollInToViewAndShake;
+
+export { scrollInToView };
