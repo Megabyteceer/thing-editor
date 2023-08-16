@@ -173,6 +173,18 @@ const assetNameToFileName = (assetName: string, assetType: AssetType): string =>
 	return game.editor.currentProjectAssetsDirRooted + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
 }
 
+const sortByMTime = (a: FileDesc, b: FileDesc) => {
+	return b.mTime - a.mTime;
+}
+
+const sortAssets = () => {
+	assetsListsByType.forEach((list) => {
+		list.sort(sortByMTime);
+	});
+
+	allAssets.sort(sortByMTime);
+}
+
 export default class fs {
 
 	static getAssetsList(assetType?: AssetType.SOUND): FileDescSound[];
@@ -243,10 +255,12 @@ export default class fs {
 		if(file) {
 			file.mTime = mTime;
 			file.asset = data as SerializedObject;
+			sortAssets();
 			game.editor.ui.refresh();
 		} else if(!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 			fs.refreshAssetsList();
 		}
+		game.editor.scrollAssetInToView(assetName);
 	}
 
 	private static deleteFile(fileName: string) {
@@ -412,6 +426,8 @@ export default class fs {
 				}
 			}
 		}
+
+		sortAssets();
 
 		let dirsToRebuildSounds = scheduledSoundsRebuilds.values();
 		let soundsData: Map<string, KeyedObject> = new Map();

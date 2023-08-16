@@ -415,9 +415,13 @@ class Editor {
 		this.ui.refresh();
 	}
 
+	scrollAssetInToView(assetName: string) {
+		AssetsView.scrollAssetInToView(assetName);
+	}
+
 	warnEqualFiles(file: FileDesc, existingFile: FileDesc) {
 		this.ui.status.warn("File overlaps the same file in library. " + file.fileName + ' => ' + existingFile.fileName, 99999, (ev?: PointerEvent) => {
-			let preview = AssetsView.rendeAssetItem(file);
+			let preview = AssetsView.renderAssetItem(file);
 			if(ev && ev.ctrlKey) {
 				fs.deleteAsset(file.assetName, file.assetType);
 			}

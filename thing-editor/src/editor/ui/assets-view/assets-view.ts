@@ -12,6 +12,7 @@ import group from "thing-editor/src/editor/ui/group";
 import WindowMenu from "thing-editor/src/editor/ui/window-menu";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
+import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
 import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-or-text";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -110,6 +111,21 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	onSearchChange(ev: InputEvent) {
 		let search = (ev.target as HTMLInputElement).value.toLowerCase();
 		this.setState({ search });
+	}
+
+	static scrollAssetInToView(assetName: string) {
+		for(let windowId of allWindowsIds) {
+			const window = document.getElementById(windowId);
+			let items = (window as HTMLDivElement).querySelectorAll('.assets-item') as any as HTMLElement[];
+			for(let item of items) {
+				if(item.textContent === assetName) {
+					setTimeout(() => {
+						scrollInToViewAndShake(item);
+					}, 10);
+					break;
+				}
+			}
+		}
 	}
 
 	static renderAssetsViews(): ComponentChild {
@@ -298,10 +314,10 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			files = files.filter(this.props.filterCallback);
 		}
 
-		let items = files.map(AssetsView.rendeAssetItem);
+		let items = files.map(AssetsView.renderAssetItem);
 
 		if(!this.state.search) {
-			items = group.groupArray(items, undefined, undefined, undefined, this.props.id);
+			items = group.groupArray(items, undefined, undefined, true, this.props.id);
 		}
 
 		return R.fragment(menu,
@@ -328,7 +344,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			));
 	}
 
-	static rendeAssetItem(file: FileDesc) {
+	static renderAssetItem(file: FileDesc) {
 		return assetsItemsRenderers.get(file.assetType)!(file);
 	}
 }
