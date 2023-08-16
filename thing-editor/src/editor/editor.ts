@@ -424,9 +424,11 @@ class Editor {
 			let preview = AssetsView.renderAssetItem(file);
 			if(ev && ev.ctrlKey) {
 				fs.deleteAsset(file.assetName, file.assetType);
+				game.editor.ui.status.clearLastClickedItem();
 			}
 			editor.ui.modal.showEditorQuestion('A you sure you want to remove duplicate file?', preview, () => {
 				fs.deleteAsset(file.assetName, file.assetType);
+				game.editor.ui.status.clearLastClickedItem();
 			}, R.span({ className: 'danger' }, R.img({ src: 'img/delete.png' }), "Delete duplicate file"));
 		});
 	}

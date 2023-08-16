@@ -16,7 +16,7 @@ const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
 
 type StatusItemsOwnersMap = WeakMap<NodeExtendData, Container | KeyedMap<true>>
-type StatusListItemOwner = Container | ((ev?: PointerEvent) => boolean | void) | SourceMappedConstructor;
+type StatusListItemOwner = Container | ((ev?: PointerEvent) => void) | SourceMappedConstructor;
 interface StatusListItem {
 	message: string | ComponentChild;
 	owner?: StatusListItemOwner;
@@ -25,6 +25,9 @@ interface StatusListItem {
 	errorCode?: number;
 	val?: any;
 }
+
+let lastClickedItem: StatusListItem | undefined;
+let lastClickedList: InfoList | undefined;
 
 const needAddInToList = (map: StatusItemsOwnersMap, owner?: StatusListItemOwner, fieldName?: string, errorCode?: number) => {
 	waitForCondition(() => {
@@ -140,6 +143,12 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 		}
 	}
 
+	clearLastClickedItem() {
+		assert(lastClickedItem, 'lastClickedItem already cleared.');
+		lastClickedList!.clearItem(lastClickedItem!);
+		lastClickedItem = undefined;
+	}
+
 	clear() {
 		this.errors.length = 0;
 		this.warns.length = 0;
@@ -219,13 +228,11 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 		}
 		return R.div({
 			key: i, className: 'info-item clickable', title: "Click line to go problem.", onClick: async (ev: PointerEvent) => {
-				if(!item) {
-					return;
-				}
+				lastClickedItem = item;
+				lastClickedList = this;
+
 				if(typeof item.owner === "function") {
-					if(await (item.owner as (ev: PointerEvent) => boolean)(ev)) {
-						this.clearItem(item);
-					}
+					(item.owner as (ev: PointerEvent) => void)(ev)
 				} else if(item.owner && (item.owner instanceof Container)) {
 					let extendData = item.owner.__nodeExtendData;
 					if((item.owner.___id !== item.ownerId) || (extendData.statusWarnOwnerId !== item.ownerId)) {

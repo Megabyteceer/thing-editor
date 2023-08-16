@@ -1,4 +1,5 @@
 import { Container, Texture } from "pixi.js";
+import { ComponentChildren } from "preact";
 import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import type { KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
@@ -24,6 +25,7 @@ interface FileDesc {
 	/** modification time*/
 	mTime: number,
 	lib: LibInfo | null,
+	libInfoCache?: ComponentChildren,
 	v?: number;
 	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound | KeyedObject
 }
@@ -242,7 +244,7 @@ export default class fs {
 			game.editor.ui.modal.showInfo('Class can not be copied to the project. Create a new class inherited from ' + (file as FileDescClass).asset.__className + ' instead.', 'Can not copy class.');
 			return;
 		}
-		fs.copyFile(file.fileName, file.fileName.replace(file.lib!.dir, game.editor.currentProjectAssetsDir));
+		fs.copyFile(file.fileName, file.fileName.replace(file.lib!.assetsDir, game.editor.currentProjectAssetsDir));
 		file.lib = null;
 		game.editor.ui.refresh();
 	}

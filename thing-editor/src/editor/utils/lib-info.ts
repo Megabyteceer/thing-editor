@@ -5,35 +5,38 @@ import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 
 let libInfoCounter = 0;
-const libInfoCache: Map<LibInfo, ComponentChild> = new Map();
+const libIconCache: Map<LibInfo, ComponentChild> = new Map();
 
 const LIB_HOLDER = R.span({ className: 'empty-lib-holder' });
 
 const libInfo = (file: FileDesc): ComponentChildren => {
 	if(file.lib) {
-		const libInfo = file.lib;
-		if(!libInfoCache.has(libInfo)) {
-			libInfoCache.set(libInfo,
-				R.span({
-					className: 'lib-info',
-					onContextMenu: (ev: PointerEvent) => {
-						sp(ev);
-						showContextMenu([
-							{
-								name: 'copy asset to the project',
-								onClick: () => {
-									fs.copyAssetToProject(file)
-								}
+		if(!file.libInfoCache) {
+			const libInfo = file.lib;
+
+			if(!libIconCache.has(libInfo)) {
+				libIconCache.set(libInfo, R.icon('lib' + (libInfoCounter++ % 5)));
+			}
+			const icon = libIconCache.get(libInfo);
+			file.libInfoCache = R.span({
+				className: 'lib-info',
+				onContextMenu: (ev: PointerEvent) => {
+					sp(ev);
+					showContextMenu([
+						{
+							name: 'copy asset to the project',
+							onClick: () => {
+								fs.copyAssetToProject(file)
 							}
-						], ev)
-					},
-					title: "LIBRARY: " + libInfo.name
+						}
+					], ev)
 				},
-					R.icon('lib' + (libInfoCounter++ % 5))
-				)
-			)
+				title: "LIBRARY: " + libInfo.name
+			},
+				icon
+			);
 		}
-		return libInfoCache.get(libInfo);
+		return file.libInfoCache;
 	} else {
 		return LIB_HOLDER;
 	}
