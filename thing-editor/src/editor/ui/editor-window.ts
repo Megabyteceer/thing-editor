@@ -269,12 +269,10 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	clamp() {
-
 		const div = this.base as HTMLDivElement;
 		if(div) {
 			div.getClientRects();
 			let bounds = div.getBoundingClientRect();
-
 
 			const W = window.innerWidth / 100;
 			const H = (window.innerHeight - MENU_HEIGHT) / 100;
@@ -295,7 +293,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 				d = bounds.top - otherBounds.bottom;
 				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
 					this.setPosition(this.state.x, (otherBounds.bottom - MENU_HEIGHT) / H);
-					this.setSize(this.state.w, this.state.h - d / window.innerHeight * 100);
+					this.setSize(this.state.w, this.state.h + d / window.innerHeight * 100);
 					clamped = true;
 				}
 				d = bounds.bottom - otherBounds.top;
