@@ -18,7 +18,7 @@ import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/util
 import getPrefabDefaults, { invalidatePrefabDefaults } from "thing-editor/src/editor/utils/get-prefab-defaults";
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
+import __refreshPrefabRefs, { __refreshPrefabRefsPrepare } from "thing-editor/src/editor/utils/refresh-prefabs";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 
@@ -890,6 +890,7 @@ const __onAssetUpdated = (file: FileDesc) => {
 				}
 			}
 			if(isAcceptChanges) {
+				__refreshPrefabRefsPrepare();
 				file.asset = fs.readJSONFile(file.fileName);
 				Lib.prefabs[file.assetName] = (file as FileDescPrefab).asset;
 				__refreshPrefabRefs();
