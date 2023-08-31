@@ -3,7 +3,7 @@ import { SerializedObject } from "thing-editor/src/editor/env";
 import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
 import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 
-import __refreshPrefabRefs from "thing-editor/src/editor/utils/refresh-prefabs";
+import __refreshPrefabRefs, { __refreshPrefabRefsPrepare } from "thing-editor/src/editor/utils/refresh-prefabs";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -112,10 +112,10 @@ export default class PrefabEditor {
 		game.editor.blurPropsInputs();
 		game.editor.history.saveHistoryNow();
 		let name = getCurrentPrefabName();
-		let isChanged;
-		if(prefabsStack.length) {
-			isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
-			if(isChanged) {
+		let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
+		if(isChanged) {
+			__refreshPrefabRefsPrepare();
+			if(prefabsStack.length) {
 				if(PrefabEditor.checkPrefabReferenceForLoops(game.currentContainer, name)) {
 					return false;
 				}
@@ -125,8 +125,9 @@ export default class PrefabEditor {
 				});
 				game.editor.validateResources();
 			}
-			PrefabEditor.exitPrefabEdit(oneStepOnly);
 		}
+
+		PrefabEditor.exitPrefabEdit(oneStepOnly);
 		if(isChanged) {
 			__refreshPrefabRefs();
 			regeneratePrefabsTypings();
