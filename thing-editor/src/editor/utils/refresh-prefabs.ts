@@ -2,6 +2,7 @@ import { SerializedObject } from "thing-editor/src/editor/env";
 import { SelectionData } from "thing-editor/src/editor/utils/selection";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 let selectionData: SelectionData | undefined;
 let newSceneData: SerializedObject | undefined;
@@ -15,7 +16,7 @@ const __refreshPrefabRefsPrepare = () => {
 
 const __refreshPrefabRefs = () => {
 	if(game.__EDITOR_mode) {
-		game.__setCurrentContainerContent(Lib._deserializeObject(newSceneData!, true));
+		game.showScene(Lib._deserializeObject(newSceneData!, true) as Scene);
 		game.editor.selection.loadSelection(selectionData!);
 		newSceneData = undefined;
 		selectionData = undefined;
