@@ -16,7 +16,7 @@ import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import { ComponentChild } from "preact";
 import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 
-const prefabNameFilter = /[^a-z\-\/0-9_]/g;
+const prefabNameFilter = /[^a-zA-Z\-\/0-9_]/g;
 
 const cachedImages = new Set();
 
@@ -268,7 +268,7 @@ export namespace editorUtils {
 		return game.editor.ui.modal.showPrompt(title,
 			defaultPrefabName,
 			(val) => { // filter
-				return val.toLowerCase().replace(prefabNameFilter, '-');
+				return val.replace(prefabNameFilter, '-');
 			},
 			(val) => { //accept
 				if(Lib.prefabs.hasOwnProperty(val)) {
