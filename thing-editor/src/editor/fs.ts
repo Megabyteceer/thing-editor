@@ -285,10 +285,6 @@ export default class fs {
 		return (execFs('fs/readFile', fileName) as any as string);
 	}
 
-	static toggleDevTools() {
-		execFs('fs/toggleDevTools');
-	}
-
 	static enumProjects(): ProjectDesc[] {
 		return execFs('fs/enumProjects') as ProjectDesc[];
 	}

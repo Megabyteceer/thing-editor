@@ -54,10 +54,6 @@ module.exports = (mainWindow) => {
 		let isDebug;
 		try {
 			switch(command) {
-				case 'fs/toggleDevTools':
-					mainWindow.webContents.openDevTools();
-					event.returnValue = true;
-					return;
 				case 'fs/delete':
 					attemptFSOperation(() => {
 						fs.unlinkSync(fn(fileName));
