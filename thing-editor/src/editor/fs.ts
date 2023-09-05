@@ -239,6 +239,10 @@ export default class fs {
 		return execFs('fs/copyFile', from, to);
 	}
 
+	static run(script: string, ...args: any[]) {
+		return execFs('fs/run', script, undefined, args);
+	}
+
 	static copyAssetToProject(file: FileDesc) {
 		if(file.assetType === AssetType.CLASS) {
 			game.editor.ui.modal.showInfo('Class can not be copied to the project. Create a new class inherited from ' + (file as FileDescClass).asset.__className + ' instead.', 'Can not copy class.');

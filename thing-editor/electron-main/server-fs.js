@@ -82,6 +82,9 @@ module.exports = (mainWindow) => {
 				case 'fs/exists':
 					event.returnValue = fs.existsSync(fn(fileName));
 					return;
+				case 'fs/run':
+					event.returnValue = require(path.join('../..', fileName)).apply(null, args[0]);
+					return;
 				case 'fs/readFile':
 					fd = fs.openSync(fn(fileName), 'r');
 					c = fs.readFileSync(fd, fsOptions);
