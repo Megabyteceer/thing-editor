@@ -1,8 +1,10 @@
 import { Container } from "pixi.js";
-import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import L from "thing-editor/src/engine/utils/l";
 
 function validateObjectDataRecursive(objectData: SerializedObject, rootName: string) {
 	if(objectData.c) {
@@ -11,10 +13,51 @@ function validateObjectDataRecursive(objectData: SerializedObject, rootName: str
 			validationError("Unknown component " + objectData.c + " detected.", rootName, (o: Container) => {
 				return o.__nodeExtendData.unknownConstructor === objectData.c;
 			}, undefined, 99999);
-		} else if(objectsConstructor.__validateObjectData) {
-			let result = objectsConstructor.__validateObjectData(objectData.p);
-			if(result) {
-				validationError(result.message, rootName, result.findObjectCallback, result.fieldName, result.errorCode, objectsConstructor);
+		} else {
+			if(objectsConstructor.__validateObjectData) {
+				let result = objectsConstructor.__validateObjectData(objectData.p);
+				if(result) {
+					validationError(result.message, rootName, result.findObjectCallback, result.fieldName, result.errorCode, objectsConstructor);
+				}
+
+			} for(const field of objectsConstructor.__editableProps) {
+				if(field.type === 'image') {
+					if(objectData.p.hasOwnProperty(field.name)) {
+						const imageName = objectData.p[field.name];
+						if(!fs.getFileByAssetName(imageName, AssetType.IMAGE)) {
+							validationError("Invalid image '" + imageName + "'", rootName, (o: Container) => {
+								return (o as KeyedObject)[field.name] === imageName;
+							}, field.name, 99999, objectsConstructor);
+						}
+					}
+				} else if(field.type === 'sound') {
+					if(objectData.p.hasOwnProperty(field.name)) {
+						const soundName = objectData.p[field.name];
+						if(!fs.getFileByAssetName(soundName, AssetType.SOUND)) {
+							validationError("Invalid sound '" + soundName + "'", rootName, (o: Container) => {
+								return (o as KeyedObject)[field.name] === soundName;
+							}, field.name, 99999, objectsConstructor);
+						}
+					}
+				} else if(field.type === 'l18n') {
+					if(objectData.p.hasOwnProperty(field.name)) {
+						const localizationKey = objectData.p[field.name];
+						if(!L.has(localizationKey)) {
+							validationError("Invalid localization key '" + localizationKey + "'", rootName, (o: Container) => {
+								return (o as KeyedObject)[field.name] === localizationKey;
+							}, field.name, 99999, objectsConstructor);
+						}
+					}
+				} else if(field.type === 'prefab') {
+					if(objectData.p.hasOwnProperty(field.name)) {
+						const prefabName = objectData.p[field.name];
+						if(!fs.getFileByAssetName(prefabName, AssetType.PREFAB)) {
+							validationError("Invalid prefab '" + prefabName + "'", rootName, (o: Container) => {
+								return (o as KeyedObject)[field.name] === prefabName;
+							}, field.name, 99999, objectsConstructor);
+						}
+					}
+				}
 			}
 		}
 
