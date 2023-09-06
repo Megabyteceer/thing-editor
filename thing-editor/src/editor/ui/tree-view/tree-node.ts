@@ -26,10 +26,20 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 
+	componentDidMount(): void {
+		this.props.node.__nodeExtendData.treeNodeView = this;
+	}
+
 	onMouseDown(ev: PointerEvent) { // == select nodes
 		sp(ev);
 
 		let extendData = this.props.node.__nodeExtendData;
+
+
+		if(extendData.treeNodeView !== this) { // object was removed but tree is outdated yet
+			return;
+		}
+
 		if(ev.buttons !== 1 && extendData.isSelected) {
 			return;
 		}

@@ -27,6 +27,8 @@ interface NodeExtendData {
 	deepness?: number;
 	isSelected?: boolean;
 
+	treeNodeView?: TreeNode;
+
 	isPrefabReference?: string;
 
 	constructorCalled?: boolean;
