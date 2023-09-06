@@ -2,5 +2,24 @@
 	"c": "Container",
 	"p": {
 		"name": "___system/unknown-prefab"
-	}
+	},
+	":": [
+		{
+			"c": "Shape",
+			"p": {
+				"x": -60,
+				"y": -40,
+				"width": 120,
+				"height": 80,
+				"shapeFillColor": 11537420,
+				"shapeLineWidth": 2
+			}
+		},
+		{
+			"c": "Text",
+			"p": {
+				"text": "Unknown\nprefab\nreference"
+			}
+		}
+	]
 }
