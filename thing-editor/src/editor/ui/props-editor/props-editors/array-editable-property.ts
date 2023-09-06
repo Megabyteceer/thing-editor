@@ -23,6 +23,9 @@ export default class ArrayEditableProperty extends Component<EditablePropertyEdi
 		if(arrayValue && !Array.isArray(arrayValue)) {
 			arrayValue = [arrayValue];
 		}
+		if(arrayValue.length === 0) {
+			arrayValue = [field.defaultArrayItemValue || PropsEditor.getDefaultForType(field)];
+		}
 		return R.div(
 			arrayProps,
 			arrayValue.map((value: any, i: number) => {
