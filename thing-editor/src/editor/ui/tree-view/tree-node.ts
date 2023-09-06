@@ -26,10 +26,6 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 		this.onMouseDown = this.onMouseDown.bind(this);
 	}
 
-	componentDidMount(): void {
-		this.props.node.__nodeExtendData.treeNodeView = this;
-	}
-
 	onMouseDown(ev: PointerEvent) { // == select nodes
 		sp(ev);
 
@@ -85,6 +81,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 	render() {
 		let node = this.props.node;
 		let extendData = node.__nodeExtendData;
+		extendData.treeNodeView = this;
 		let children;
 		let caret;
 		if(nodeHasChildren(node) && !extendData.hideAllChildren) {
