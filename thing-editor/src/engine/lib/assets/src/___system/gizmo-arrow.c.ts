@@ -132,24 +132,23 @@ export default class ___GizmoArrow extends Shape {
 	}
 
 	onPointerDown(ev: PointerEvent) {
+		if(ev.buttons === 1) {
+			lastX = game.__mouse_uncropped.x;
+			lastY = game.__mouse_uncropped.y;
 
-		lastX = game.__mouse_uncropped.x;
-		lastY = game.__mouse_uncropped.y;
+			startY = game.__mouse_uncropped.y;
 
-		startY = game.__mouse_uncropped.y;
+			startXPos = game.editor.selection[0].x;
+			startYPos = game.editor.selection[0].y;
+			startRotation = game.editor.selection[0].rotation;
 
-		startXPos = game.editor.selection[0].x;
-		startYPos = game.editor.selection[0].y;
-		startRotation = game.editor.selection[0].rotation;
+			if(ev.altKey) {
+				editorUtils.clone();
+			}
 
-		if(ev.altKey) {
-			editorUtils.clone();
-		}
-
-		___GizmoArrow.draggedArrow = this;
-		this.isDowned = true;
-
-		if(ev.buttons === 2 && this.dragR) {
+			___GizmoArrow.draggedArrow = this;
+			this.isDowned = true;
+		} else if(ev.buttons === 2 && this.dragR) {
 			game.editor.editProperty('rotation', 0);
 		}
 	}
