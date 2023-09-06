@@ -55,11 +55,7 @@
 						{
 							"c": "BackDrop",
 							"p": {
-								"x": -5.817708333333333,
-								"y": -5,
-								"alpha": 0.8,
-								"width": 11.635416666666666,
-								"height": 10
+								"alpha": 0.8
 							}
 						}
 					]
@@ -198,8 +194,7 @@
 									"c": "Text",
 									"p": {
 										"name": "label",
-										"text": "",
-										"translatableText": "buttons.ok",
+										"text": "Ok",
 										"style.fontSize": 45,
 										"maxWidth": 245
 									}
