@@ -184,8 +184,13 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 	resetZoom() {
 		game.stage.scale.x = 1;
 		game.stage.scale.y = 1;
-		game.stage.x = 0;
-		game.stage.y = 0;
+		if(PrefabEditor.currentPrefabName) {
+			game.stage.x = game.W / 2;
+			game.stage.y = game.H / 2;
+		} else {
+			game.stage.x = 0;
+			game.stage.y = 0;
+		}
 	}
 
 	currentResolution = resolutions[0];

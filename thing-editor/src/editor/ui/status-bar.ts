@@ -1,5 +1,6 @@
 import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
+import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
 
 const transparentProps = { className: 'transparent' };
@@ -32,7 +33,11 @@ export default class StatusBar extends Component {
 				if(game.stage.scale.x !== 1) {
 					txt += ' zoom: ' + game.stage.scale.x;
 				}
-				if(game.stage.scale.x !== 1 || game.stage.x !== 0 || game.stage.y !== 0) {
+
+				const defaultCameraX = PrefabEditor.currentPrefabName ? game.W / 2 : 0;
+				const defaultCameraY = PrefabEditor.currentPrefabName ? game.H / 2 : 0;
+
+				if(game.stage.scale.x !== 1 || game.stage.x !== defaultCameraX || game.stage.y !== defaultCameraY) {
 					resetZoomBtn = R.btn('x', game.editor.ui.viewport.resetZoom, 'Reset zoom and viewport position (Ctrl + double-click on viewport)', 'reset-zoom-btn');
 				}
 			}
