@@ -1,7 +1,6 @@
 import { Circle, Ellipse, Graphics, Point, Polygon, Rectangle, RoundedRectangle } from "pixi.js";
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
 import editable from "thing-editor/src/editor/props-editor/editable.js";
-import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
@@ -59,7 +58,7 @@ export default class Shape extends Graphics {
 
 	protected __pointsUpdateIntervalInitialized = 0;
 
-	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !editorUtils.isPrefabReferenceSelected() } })
+	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !o.__nodeExtendData.isPrefabReference } })
 	protected set _shapePoints(v: Point[] | null) {
 		this.__shapePoints = v;
 		if(v) {
@@ -181,7 +180,7 @@ export default class Shape extends Graphics {
 		this.__deserialized = false;
 	}
 
-	@editable({ select: shapeTypeSelect, important: true, visible: () => !editorUtils.isPrefabReferenceSelected() })
+	@editable({ select: shapeTypeSelect, important: true, visible: (o) => !o.__nodeExtendData.isPrefabReference })
 	set shape(s: SHAPE_TYPE) {
 		this._shape = s;
 		if(this.__deserialized) {

@@ -552,6 +552,9 @@ export default class Lib
 
 			for(let p of propsList) {
 				if(!p.notSerializable) {
+					if(p.visible && !p.visible(o)) {
+						continue;
+					}
 					let val = (o as KeyedObject)[p.name];
 					if(p.arrayProperty) {
 						if(!val) {

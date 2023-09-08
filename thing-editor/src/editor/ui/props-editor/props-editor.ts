@@ -294,15 +294,14 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 			if(p.visible) {
 				let invisible;
 				for(let o of game.editor.selection) {
-					if(!p.visible(o)) { //TODO reset values at serialization only.
-						const defaults = getObjectDefaults(o);
-						(o as KeyedObject)[p.name] = defaults[p.name];
+					if(!p.visible(o)) {
 						invisible = true;
+						break;
 					}
 				}
 
 				if(invisible) {
-					curGroupArray.push(
+					curGroupArray.push( // invisible property place holder
 						R.div({ key: p.name })
 					);
 					continue;

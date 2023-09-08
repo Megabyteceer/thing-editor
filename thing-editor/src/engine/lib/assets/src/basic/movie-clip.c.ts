@@ -4,7 +4,6 @@ import { KeyedMap, KeyedObject, SelectableProperty, SerializedObject, SourceMapp
 import R from 'thing-editor/src/editor/preact-fabrics';
 import editable, { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
-import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
@@ -41,7 +40,7 @@ export default class MovieClip extends DSprite {
 	@editable()
 	isPlaying = true;
 
-	@editable({ type: 'timeline', important: true, visible: () => !editorUtils.isPrefabReferenceSelected() })
+	@editable({ type: 'timeline', important: true, visible: (o) => !o.__nodeExtendData.isPrefabReference })
 	set timeline(data: TimelineSerializedData) {
 		this._goToLabelNextFrame = false;
 		this._disposePlayers();
