@@ -493,6 +493,11 @@ class Editor {
 
 	addTo(parent: Container, child: Container) {
 		parent.addChild(child);
+		let p = parent;
+		while(p) {
+			p.__hideChildren = false;
+			p = p.parent;
+		}
 		Lib.__callInitIfGameRuns(child);
 		this.selection.select(child, true);
 		Lib.__invalidateSerializationCache(child);
