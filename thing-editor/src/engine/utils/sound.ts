@@ -197,7 +197,7 @@ export default class Sound {
 			if(!multiInstanced && s.playing()) {
 				s.stop();
 			}
-			volume = volume * Sound.soundsVol;
+			volume = volume * Sound.soundsVol * Sound.soundsVol;
 			if(volume > 0.01) {
 				try {
 					if(multiInstanced) {

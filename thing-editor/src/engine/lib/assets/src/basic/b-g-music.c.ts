@@ -185,7 +185,7 @@ export default class BgMusic extends Container {
 			globalVolume = Sound.musicVol;
 		}
 
-		return this._volume * this._externalVolume * globalVolume || 0;
+		return this._volume * this._externalVolume * globalVolume * globalVolume || 0;
 	}
 
 	play(fade?: number) {
