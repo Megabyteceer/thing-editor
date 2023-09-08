@@ -70,17 +70,21 @@ export default class ClickOutsideTrigger extends Container {
 		}
 	}
 
-	onThisDown() {
-		this.thisDownTime = game.time;
+	onThisDown(ev: PointerEvent) {
+		if(ev.buttons !== 4) {
+			this.thisDownTime = game.time;
+		}
 	}
 
-	onStageDown() {
-		this.clickTimeOut = setTimeout(() => {
-			this.clickTimeOut = 0;
-			if(this.thisDownTime !== game.time && game.time === this.gameTime) {
-				this.fire();
-			}
-		}, 0);
+	onStageDown(ev: PointerEvent) {
+		if(ev.buttons !== 4) {
+			this.clickTimeOut = setTimeout(() => {
+				this.clickTimeOut = 0;
+				if(this.thisDownTime !== game.time && game.time === this.gameTime) {
+					this.fire();
+				}
+			}, 0);
+		}
 	}
 
 	fire() {
