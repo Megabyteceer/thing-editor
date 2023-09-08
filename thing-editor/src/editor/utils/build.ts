@@ -174,28 +174,20 @@ export default class Build {
 			}
 		}
 
-		fs.build(game.editor.currentProjectDir, debug, assetsToCopy);
-	}
-
-	static showResult(result: any) {
-		game.editor.ui.modal.hideSpinner();
-		if(!game.editor.buildProjectAndExit) {
-			if(result instanceof Error) {
-				game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
-			} else {
-				let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');
-				game.editor.openUrl('http://localhost:5174/' + url);
-				game.editor.ui.modal.showModal("Builded successfully.");
+		fs.build(game.editor.currentProjectDir, debug, assetsToCopy).then((result: any) => {
+			game.editor.ui.modal.hideSpinner();
+			if(!game.editor.buildProjectAndExit) {
+				if(result instanceof Error) {
+					game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
+				} else {
+					let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');
+					game.editor.openUrl('http://localhost:5174/' + url);
+					game.editor.ui.modal.showModal("Builded successfully.");
+				}
 			}
-		}
+		});
 	}
 }
-
-thingEditorServer.onServerMessage((_ev: any, event: string, buildResult: any) => {
-	if(event === 'fs/buildResult') {
-		Build.showResult(buildResult);
-	}
-});
 
 function findClassNameInAssetFiles(className: string, assets: FileDesc[]) {
 	for(let prefab of assets) {

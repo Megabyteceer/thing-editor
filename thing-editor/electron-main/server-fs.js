@@ -45,10 +45,14 @@ module.exports = (mainWindow) => {
 	}
 
 	ipcMain.handle('fs', async (event, command, fileName, content, ...args) => {
+		let isDebug;
 		switch(command) {
 			case 'fs/run':
 				args[0].unshift(notify);
 				return await require(path.join('../..', fileName)).apply(null, args[0]);
+			case 'fs/build':
+				isDebug = content;
+				return require('./build.js').build(fileName, isDebug, args[0]);
 		}
 	});
 
@@ -59,7 +63,6 @@ module.exports = (mainWindow) => {
 		let error;
 		let buttons;
 		let explorer;
-		let isDebug;
 		try {
 			switch(command) {
 				case 'fs/delete':
@@ -137,21 +140,6 @@ module.exports = (mainWindow) => {
 						case "darwin": explorer = "open"; break;
 					}
 					require('child_process').spawn(explorer, [fn(fileName)], {detached: true}).unref();
-					event.returnValue = true;
-					return;
-				case 'fs/build':
-					isDebug = content;
-					require('./build.js').build(fileName, isDebug, args[0]).then((res) => {
-						let ret = true;
-						try {
-							ret = JSON.stringify(res || true);
-						} catch(_er) {
-							console.error(_er);
-						}
-						mainWindow.webContents.send('serverMessage', 'fs/buildResult', ret);
-					}).catch((er) => {
-						mainWindow.webContents.send('serverMessage', 'fs/buildResult', er);
-					});
 					event.returnValue = true;
 					return;
 				case 'fs/sounds-build':
