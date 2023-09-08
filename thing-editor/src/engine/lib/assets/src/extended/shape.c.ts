@@ -45,8 +45,6 @@ export default class Shape extends Graphics {
 	}
 	/// #endif
 
-	protected _hitAreaCache: Rectangle | Ellipse | Circle | RoundedRectangle | Polygon | null = null;
-
 	protected _shape: SHAPE_TYPE = SHAPE_TYPE.RECT;
 
 	protected __deserialized = false;
@@ -142,33 +140,31 @@ export default class Shape extends Graphics {
 	}
 
 	getHitareaShape() {
-		if(!this._hitAreaCache) {
-			switch(this.shape) {
-				case SHAPE_TYPE.ROUND_RECT:
-					this._hitAreaCache = new RoundedRectangle(this.x, this.y, this.width, this.height, this.shapeRadius);
-					break;
-				case SHAPE_TYPE.RECT:
-					this._hitAreaCache = new Rectangle(this.x, this.y, this.width, this.height);
-					break;
-				case SHAPE_TYPE.CIRCLE:
-					this._hitAreaCache = new Circle(this.x, this.y, this.shapeRadius);
-					break;
-				case SHAPE_TYPE.ELLIPSE:
-					this._hitAreaCache = new Ellipse(this.x, this.y, this.width, this.height);
-					break;
+		switch(this.shape) {
+			case SHAPE_TYPE.ROUND_RECT:
+				return new RoundedRectangle(this.x, this.y, this.width, this.height, this.shapeRadius);
+				break;
+			case SHAPE_TYPE.RECT:
+				return new Rectangle(this.x, this.y, this.width, this.height);
+				break;
+			case SHAPE_TYPE.CIRCLE:
+				return new Circle(this.x, this.y, this.shapeRadius);
+				break;
+			case SHAPE_TYPE.ELLIPSE:
+				return new Ellipse(this.x, this.y, this.width, this.height);
+				break;
 
-				case SHAPE_TYPE.POLY:
-					if((this._shapePoints as Point[]).length > 2) {
-						let points = [];
-						for(let c of this._shapePoints as Point[]) {
-							points.push(c.x + this.x, c.y + this.y);
-						}
-						this._hitAreaCache = new Polygon(points);
+			case SHAPE_TYPE.POLY:
+				if((this._shapePoints as Point[]).length > 2) {
+					let points = [];
+					for(let c of this._shapePoints as Point[]) {
+						points.push(c.x + this.x, c.y + this.y);
 					}
-					break;
-			}
+					return new Polygon(points);
+				}
+				break;
 		}
-		return this._hitAreaCache;
+		return null;
 	}
 
 	applyHitAreaToParent() {
