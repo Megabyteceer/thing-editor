@@ -15,10 +15,10 @@ contextBridge.exposeInMainWorld(
 			return ipcRenderer.sendSync('fs', command, fileName, content, ...args);
 		},
 		fsAsync: (command, fileName, content, ...args) => {
-			ipcRenderer.send('fs', command, fileName, content, ...args);
+			return ipcRenderer.invoke('fs', command, fileName, content, ...args);
 		},
-		onServerMessage: (onServerMessage) => {
-			ipcRenderer.on('serverMessage', onServerMessage);
+		onServerMessage: (_onServerMessage) => {
+			ipcRenderer.on('serverMessage', _onServerMessage);
 		},
 		argv: process.argv
 	}

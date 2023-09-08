@@ -128,8 +128,8 @@ const execFs = (command: string, filename?: string | string[], content?: string 
 	return ret;
 }
 
-const execFsAsync = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => {
-	thingEditorServer.fsAsync(command, filename, content, ...args);
+const execFsAsync = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]): Promise<any> => {
+	return thingEditorServer.fsAsync(command, filename, content, ...args);
 }
 
 let lastAssetsDirs: string[];
@@ -156,6 +156,8 @@ thingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
 				fileChangeDebounceTimeout = setTimeout(fileChangeHandler, 330);
 			}
 		}
+	} else if(event === 'fs/notify') {
+		game.editor.ui.modal.notify(path);
 	}
 });
 
@@ -240,7 +242,11 @@ export default class fs {
 	}
 
 	static run(script: string, ...args: any[]) {
-		return execFs('fs/run', script, undefined, args);
+		game.editor.ui.modal.showSpinner();
+		return execFsAsync('fs/run', script, undefined, args).then((res) => {
+			game.editor.ui.modal.hideSpinner();
+			return res;
+		});
 	}
 
 	static copyAssetToProject(file: FileDesc) {

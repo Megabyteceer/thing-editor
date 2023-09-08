@@ -25,10 +25,6 @@ const fn = (fileName) => {
 /** @param mainWindow {BrowserWindow} */
 module.exports = (mainWindow) => {
 
-	const notify = (message) => {
-		mainWindow.setTitle(message);
-	}
-
 	const ensureDirectoryExistence = (filePath) => {
 		let dirname = path.dirname(filePath);
 		if(fs.existsSync(fn(dirname))) {
@@ -43,8 +39,20 @@ module.exports = (mainWindow) => {
 		mainWindow.webContents.send('serverMessage', 'fs/change', path);
 	}
 
-	ipcMain.on('fs', (event, command, fileName, content, ...args) => {
+	const notify = (text) => {
+		console.log(text);
+		mainWindow.webContents.send('serverMessage', 'fs/notify', text);
+	}
 
+	ipcMain.handle('fs', async (event, command, fileName, content, ...args) => {
+		switch(command) {
+			case 'fs/run':
+				args[0].unshift(notify);
+				return await require(path.join('../..', fileName)).apply(null, args[0]);
+		}
+	});
+
+	ipcMain.on('fs', (event, command, fileName, content, ...args) => {
 		let fd;
 		let c;
 		let success;
@@ -81,9 +89,6 @@ module.exports = (mainWindow) => {
 					return;
 				case 'fs/exists':
 					event.returnValue = fs.existsSync(fn(fileName));
-					return;
-				case 'fs/run':
-					event.returnValue = require(path.join('../..', fileName)).apply(null, args[0]);
 					return;
 				case 'fs/readFile':
 					fd = fs.openSync(fn(fileName), 'r');
