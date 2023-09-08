@@ -204,6 +204,7 @@ export default class ProgressBar extends Container {
 			callByPath(this.onFinish, this);
 		}
 		if(!this.smooth) {
+			this.currentQ = q;
 			this.applyQ();
 		}
 	}
