@@ -61,6 +61,9 @@ export default class ProgressBar extends Container {
 	@editable()
 	smooth = false
 
+	@editable({ min: 0.000000001, step: 0.001, visible: o => o.smooth })
+	smoothStep = 0.01
+
 	@editable({ type: 'ref' })
 	bar?: Container;
 
@@ -175,7 +178,7 @@ export default class ProgressBar extends Container {
 			this.currentInterval--;
 		}
 		if(this.smooth) {
-			this.currentQ = stepTo(this.currentQ, this.targetQ, 0.01);
+			this.currentQ = stepTo(this.currentQ, this.targetQ, this.smoothStep);
 			this.applyQ();
 		}
 		super.update();
