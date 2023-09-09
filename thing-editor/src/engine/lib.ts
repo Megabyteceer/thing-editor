@@ -355,7 +355,7 @@ export default class Lib
 				ret.__nodeExtendData.unknownConstructorProps = src.p;
 			}
 
-			Object.assign(ret, constrictor.__defaultValues, src.p);
+			Object.assign(ret, Object.assign({}, constrictor.__defaultValues, src.p));
 		}
 
 		/*
