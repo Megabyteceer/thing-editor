@@ -381,6 +381,11 @@ textarea:focus-visible {
 	margin-bottom: 20px;
 }
 
+.list-view {
+	overflow-y: overlay;
+	max-height: 60vh;
+}
+
 .choosing-item {
 	padding: 4px;
 	border-bottom: 1px solid #636363;
