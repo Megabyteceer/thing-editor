@@ -95,6 +95,7 @@ export default class ___GizmoArrow extends Shape {
 	isDowned = false;
 
 	baseColor = 0;
+	baseLineColor = 0;
 
 	snapGuide?: Container;
 
@@ -105,6 +106,7 @@ export default class ___GizmoArrow extends Shape {
 		this.on('pointerleave', this.onPointerOut);
 		this.on('pointerdown', this.onPointerDown);
 		this.baseColor = this.shapeFillColor;
+		this.baseLineColor = this.shapeLineColor;
 		this.snapGuide = this.findChildByName('snap-xy-guide');
 		if(this.snapGuide) {
 			this.snapGuide.visible = false;
@@ -165,7 +167,7 @@ export default class ___GizmoArrow extends Shape {
 	_refreshColor() {
 		if(___GizmoArrow.overedArrow !== this && ___GizmoArrow.draggedArrow !== this) {
 			this.shapeFillColor = this.baseColor;
-			this.shapeLineColor = this.baseColor;
+			this.shapeLineColor = this.baseLineColor;
 		}
 	}
 }

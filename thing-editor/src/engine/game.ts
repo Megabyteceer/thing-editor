@@ -554,6 +554,10 @@ class Game {
 
 		assert(_rendererWidth, "Render's size was not calculated correctly.");
 		assert(_rendererHeight, "Render's size was not calculated correctly.");
+
+		/// #if EDITOR
+		game.editor.ui.viewport.viewportScale = game.pixiApp.view.width / (game.pixiApp.view as HTMLCanvasElement).clientWidth;
+		/// #endif
 	}
 
 	/// #if EDITOR

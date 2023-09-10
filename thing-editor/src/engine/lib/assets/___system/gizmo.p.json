@@ -60,7 +60,7 @@
 												"height": 24,
 												"shapeFillAlpha": 0.2,
 												"shapeFillColor": 16744193,
-												"shapeLineWidth": 2,
+												"shapeLineWidth": 1,
 												"shapeLineColor": 16744193,
 												"shapeLineAlignment": 0,
 												"dragX": true,
@@ -102,6 +102,8 @@
 										"interactive": true,
 										"shape": 4,
 										"shapeFillColor": 8308231,
+										"shapeLineWidth": 1,
+										"shapeLineColor": 292,
 										"dragY": true,
 										"cursor": "ns-resize",
 										"_shapePoints": [
@@ -167,6 +169,8 @@
 										"interactive": true,
 										"shape": 4,
 										"shapeFillColor": 14758734,
+										"shapeLineWidth": 1,
+										"shapeLineColor": 292,
 										"dragX": true,
 										"cursor": "ew-resize",
 										"_shapePoints": [
@@ -385,7 +389,10 @@
 														"width": 800,
 														"height": 2,
 														"shapeFillAlpha": 0.75,
-														"shapeFillColor": 16777215
+														"shapeFillColor": 16777215,
+														"shapeLineWidth": 1,
+														"shapeLineColor": 0,
+														"shapeLineAlpha": 0.5
 													}
 												}
 											]

@@ -24,7 +24,7 @@ export default class ___Gizmo extends Container {
 			this.parent.toLocal(selected, selected.parent, this);
 			this.rotation = selected.parent.getGlobalRotation();
 			this.rotationGuide.rotation = selected.rotation;
-			this.scale.x = this.scale.y = game.pixiApp.view.width / (game.pixiApp.view as HTMLCanvasElement).clientWidth;
+			this.scale.x = this.scale.y = game.editor.ui.viewport.viewportScale;
 		} else {
 			this.visible = false;
 		}

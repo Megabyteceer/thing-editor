@@ -10,8 +10,8 @@ import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
 
-const selectionFilter = new OutlineFilter(2, 0xffff00);
-selectionFilter.padding = 2;
+const selectionFilter = new OutlineFilter(3, 0xffff00);
+selectionFilter.padding = 3;
 let filterPhase = false;
 
 setInterval(() => {
@@ -28,6 +28,8 @@ setInterval(() => {
 			filterPhase = true;
 		}
 	}
+
+	selectionFilter.thickness = 3 * game.editor.ui.viewport.viewportScale;
 
 }, 30);
 

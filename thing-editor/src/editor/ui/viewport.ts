@@ -68,6 +68,8 @@ const resolutions: ViewportSizeItem[] = [
 
 export default class Viewport extends ComponentDebounced<ClassAttributes<Viewport>, ViewportStats> {
 
+	viewportScale = 1;
+
 	constructor(props: ClassAttributes<Viewport>) {
 		super(props);
 		this.onTogglePlay = this.onTogglePlay.bind(this);
