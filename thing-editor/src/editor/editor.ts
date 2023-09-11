@@ -388,10 +388,11 @@ class Editor {
 	toggleIsMobileAny() {
 		game.isMobile.any = !game.isMobile.any;
 		game.editor.settings.setItem('isMobile.any', game.isMobile.any);
-		if(game.__EDITOR_mode) {
-			this.ui.viewport.onTogglePlay();
-			this.ui.viewport.onTogglePlay();
-		}
+		game.forAllChildrenEverywhere((o: any) => {
+			if(o.__onIsMobileChange) {
+				o.__onIsMobileChange();
+			}
+		});
 	}
 
 	toggleHideHelpers() {
