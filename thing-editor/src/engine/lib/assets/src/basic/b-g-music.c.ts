@@ -148,6 +148,8 @@ export default class BgMusic extends Container {
 		BgMusic._recalculateMusic();
 		MusicFragment.onMusicRemove(this);
 		this.musicFragmentHash = undefined as any;
+		this._loop = null;
+		this._intro = null;
 		this._externalVolume = 0;
 		this.customFade = undefined;
 		this.onIntroFinish = null;
