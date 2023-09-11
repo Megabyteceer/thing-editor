@@ -4,6 +4,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import libInfo from "thing-editor/src/editor/utils/lib-info";
 import { onNewSceneClick, onSaveAsSceneClick } from "thing-editor/src/editor/utils/scene-utils";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
@@ -75,7 +76,7 @@ const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
 				showPrefabContextMenu(file, ev);
 			},
 			onMouseDown: (ev: PointerEvent) => {
-				if(!isCurrent && ev.buttons === 1) {
+				if(!isCurrent && ev.buttons === 1 && !editorUtils.isInModal(ev.target)) {
 					game.editor.openScene(file.assetName);
 				}
 			},
