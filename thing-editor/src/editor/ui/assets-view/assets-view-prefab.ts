@@ -84,6 +84,17 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 		},
 		null,
 		{
+			name: R.fragment("Move " + file.assetName + "' prefab to library..."),
+			onClick: async () => {
+				let chosenFolder: string | undefined = await game.editor.chooseAssetsFolder("Where to move prefab '" + file.assetName + "'?", file.lib ? file.lib.assetsDir : game.editor.currentProjectAssetsDir);
+				if(!chosenFolder) {
+					return;
+				}
+				fs.moveAssetToFolder(file, game.editor.currentProjectLibs.find(l => l.assetsDir === chosenFolder)!);
+			},
+			disabled: () => game.editor.assetsFolders.length < 2
+		},
+		{
 			name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' prefab..."),
 			onClick: () => {
 				game.editor.ui.modal.showEditorQuestion(

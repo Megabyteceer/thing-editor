@@ -67,6 +67,18 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 		},
 		null,
 		{
+			name: R.fragment("Move " + file.asset.__className + "' class to library..."),
+			onClick: async () => {
+				let chosenFolder: string | undefined = await game.editor.chooseAssetsFolder("Where to move class '" + file.asset.__className + "'?", file.lib ? file.lib.assetsDir : game.editor.currentProjectAssetsDir);
+				if(!chosenFolder) {
+					return;
+				}
+				fs.moveAssetToFolder(file, game.editor.currentProjectLibs.find(l => l.assetsDir === chosenFolder)!);
+				game.editor.reloadClasses();
+			},
+			disabled: () => game.editor.assetsFolders.length < 2
+		},
+		{
 			name: R.fragment(R.icon('delete'), " Delete '" + file.asset.__className + "' class..."),
 			onClick: () => {
 				game.editor.ui.modal.showEditorQuestion(
@@ -99,6 +111,9 @@ const toolButtonsProps = {
 
 const assetItemRendererClass = (file: FileDescClass) => {
 	let tip;
+	if(!file.asset) {
+		return R.fragment();
+	}
 	if(file.asset.__EDITOR_tip) {
 		tip = R.tip('class-' + file.asset.__className,
 			'Component "' + file.asset.__className + '" description:',

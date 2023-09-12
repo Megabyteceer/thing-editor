@@ -259,6 +259,12 @@ export default class fs {
 		game.editor.ui.refresh();
 	}
 
+	static moveAssetToFolder(file: FileDesc, lib: null | LibInfo) {
+		fs.copyFile(file.fileName, file.fileName.replace(file.lib ? file.lib.assetsDir : game.editor.currentProjectAssetsDir, lib ? lib.assetsDir : game.editor.currentProjectAssetsDir));
+		fs.deleteAsset(file.assetName, file.assetType);
+		game.editor.ui.refresh();
+	}
+
 	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject) {
 		const fileName = assetNameToFileName(assetName, assetType);
 		ignoreWatch(fileName);

@@ -82,12 +82,15 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 
 		let className = item.refusedBecause ? 'refused-item choosing-item' : 'clickable choosing-item';
 
-		if(this.props.activeValue === name) {
+
+		const isCurrentItem = this.props.activeValue === (item.pureName || item.name);
+
+		if(isCurrentItem) {
 			className += ' assets-item-current';
 		}
 
 		return R.div({
-			onClick: () => {
+			onClick: isCurrentItem ? undefined : () => {
 				if(!item.refusedBecause) {
 					game.editor.ui.modal.hideModal(item);
 				}
