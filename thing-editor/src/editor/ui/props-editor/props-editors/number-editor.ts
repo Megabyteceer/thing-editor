@@ -206,6 +206,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		}
 		return R.span(numberEditorProps,
 			R.input({
+				className: "number-input",
 				suspendOnChangeWarning: true,
 				onBlur: this.onBlur,
 				onChange: this.onChange,

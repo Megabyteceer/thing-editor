@@ -830,6 +830,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	static onDraggableMouseDown(this: TimelineSelectable, ev: PointerEvent) {
 		draggingStartX = ev.clientX;
+		game.editor.blurPropsInputs();
 		if(!(this as TimelineKeyframeView).state || !(this as TimelineKeyframeView).state.isSelected) {
 			if(!ev.ctrlKey && !ev.shiftKey) {
 				clearSelection();

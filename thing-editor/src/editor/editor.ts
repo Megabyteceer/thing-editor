@@ -653,7 +653,7 @@ class Editor {
 	}
 
 	blurPropsInputs() {
-		if(document.activeElement && document.activeElement.closest('#propsEditor')) {
+		if(document.activeElement && (document.activeElement.classList.contains('number-input'))) {
 			(document.activeElement as HTMLElement).blur();
 		}
 	}
@@ -860,7 +860,7 @@ class Editor {
 		this.editSource(c.__sourceFileName as string);
 	}
 
-	async chooseAssetsFolder(title: string): Promise<string | undefined> {
+	async chooseAssetsFolder(title: string, activeFolderName?: string): Promise<string | undefined> {
 
 		if(game.editor.assetsFolders.length === 1) {
 			return game.editor.assetsFolders[0];
@@ -871,7 +871,7 @@ class Editor {
 			folders.reverse();
 			folders[0].pureName = folders[0].name as string;
 			folders[0].name = R.b(null, folders[0].name);
-			const chosenItem = (folders.length === 1) ? folders[0] : await game.editor.ui.modal.showListChoose(title, folders, false, true, undefined, true);
+			const chosenItem = (folders.length === 1) ? folders[0] : await game.editor.ui.modal.showListChoose(title, folders, false, true, activeFolderName, true);
 			if(chosenItem) {
 				return chosenItem.pureName || chosenItem.name;
 			}
