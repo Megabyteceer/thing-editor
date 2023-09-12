@@ -1,0 +1,8 @@
+{
+	"c": "ParticleShort",
+	"p": {
+		"name": "particle-green",
+		"image": "WHITE",
+		"tint": 65280
+	}
+}
