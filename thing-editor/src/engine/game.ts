@@ -40,7 +40,6 @@ let scale = 1;
 
 /// #if DEBUG
 let lastFPSTime = 0;
-let __speedMultiplier = 1;
 type FixedViewportSize = { w: number, h: number } | boolean;
 
 const loadingsInProgressOwners: Set<any> = new Set();
@@ -645,7 +644,7 @@ class Game {
 			while(frameCounterTime > FRAME_PERIOD) {
 
 				/// #if DEBUG
-				frameCounterTime -= FRAME_PERIOD / game.__speedMultiplier;
+				frameCounterTime -= FRAME_PERIOD / game.pixiApp.ticker.speed;
 				/*
 				/// #endif
 				frameCounterTime -= FRAME_PERIOD;
@@ -1153,16 +1152,6 @@ class Game {
 	__paused = false;
 	protected _FPS = 0;
 	FPS = 0;
-
-	get __speedMultiplier() {
-		return __speedMultiplier;
-	}
-	set __speedMultiplier(v) {
-		if(v !== __speedMultiplier) {
-			__speedMultiplier = v;
-			MusicFragment.__applyGameSpeed(v);
-		}
-	}
 	/// #endif
 
 	/// #if EDITOR

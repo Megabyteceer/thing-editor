@@ -166,7 +166,7 @@ export default class Sound {
 
 	static play(soundId: string, volume = 1.0, rate = 1.0, seek = 0.0, multiInstanced = false) {
 		/// #if DEBUG
-		rate = rate * game.__speedMultiplier;
+		rate = rate * game.pixiApp.ticker.speed;
 		/// #endif
 		if(Sound.isSoundsLockedByBrowser || (!game.isVisible // eslint-disable-line no-constant-condition
 			/// #if EDITOR

@@ -17,6 +17,7 @@ import libInfo from "thing-editor/src/editor/utils/lib-info";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game, { FixedViewportSize } from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 import Keys from "thing-editor/src/engine/utils/keys";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
@@ -335,11 +336,12 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					'Speed:',
 					h(SelectEditor, {
 						onChange: (val) => {
-							game.__speedMultiplier = val;
+							game.pixiApp.ticker.speed = val;
+							MusicFragment.__applyGameSpeed(val);
 							this.forceUpdate();
 						},
 						noCopyValue: true,
-						value: game.__speedMultiplier,
+						value: game.pixiApp ? game.pixiApp.ticker.speed : 1,
 						select: SPEED_SELECT
 					}),
 					R.hr()
