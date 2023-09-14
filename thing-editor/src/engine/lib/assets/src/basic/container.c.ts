@@ -40,7 +40,6 @@ Container.prototype.detachFromParent = function detachFromParent() {
 
 Container.prototype.init = function init() {
 	/// #if EDITOR
-	assert(!(this as any)._eventsCount, "Container has unsubscribed events");
 	EDITOR_FLAGS._root_initCalled.delete(this);
 	/// #endif
 };

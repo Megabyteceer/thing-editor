@@ -342,7 +342,6 @@ export default class Lib
 				assert(classes[src.c!].__defaultValues, 'Class ' + (replaceClassName || src.c) + ' has no default values set');
 			}
 
-
 			const constrictor = (replaceClass || classes[src.c!]) as SourceMappedConstructor;
 
 			ret = Pool.create(constrictor as any);

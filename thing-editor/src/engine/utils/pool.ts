@@ -23,6 +23,7 @@ const onNew = (ret: any) => {
 
 const onTake = (ret: any) => {
 	if(ret instanceof Container) {
+		assert(!(ret as any)._eventsCount, "Object has unsubscribed events");
 		ret.___id = __idCounter++;
 		ret.__nodeExtendData = {};
 	}
