@@ -1,4 +1,4 @@
-import { Application, BaseTexture, Container, GC_MODES, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
+import { Application, BaseTexture, Container, GC_MODES, IApplicationOptions, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import { ProjectDesc, ProjectOrientation } from "thing-editor/src/editor/ProjectDesc";
 import type { __EditorType } from "thing-editor/src/editor/editor";
 import type { AssetsDescriptor, GameClasses, SelectableProperty } from "thing-editor/src/editor/env";
@@ -141,12 +141,12 @@ class Game {
 
 	setValueByPath = setValueByPath;
 
-	init(element?: HTMLElement, gameId?: string) {
+	init(element?: HTMLElement, gameId?: string, pixiOptions?: Partial<IApplicationOptions>) {
 
 		Lib.addTexture('EMPTY', Texture.EMPTY);
 		Lib.addTexture('WHITE', Texture.WHITE);
 
-		this.pixiApp = app = new Application();
+		this.pixiApp = app = new Application(pixiOptions);
 
 		(element || document.body).appendChild(app.view as HTMLCanvasElement);
 
