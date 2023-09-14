@@ -112,6 +112,7 @@ interface SourceMappedConstructor extends Constructor {
 	__EDITOR_tip?: string;
 	__isScene: boolean;
 	__sourceCode: string[];
+	__canAcceptParent: (o: Container) => boolean;
 	__canAcceptChild: (Class: SourceMappedConstructor) => boolean;
 	__beforeChangeToThisType?: (o: Container) => void;
 

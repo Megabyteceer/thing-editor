@@ -1283,6 +1283,19 @@ input[disabled] {
 	border-top: 2px solid var(--window-header-color);
 }
 
+.drag-target-bottom {
+	border-bottom: 1px solid #dd1a1a;
+	border-left: 1px solid #dd1a1a;
+}
+
+.drag-target-top {
+	border-top: 1px solid #dd1a1a;
+	border-left: 1px solid #dd1a1a;
+}
+
+.drag-target-mid {
+	border: 1px solid #dd1a1a;
+}
 
 
 

@@ -10,20 +10,17 @@ import { renderSceneNode } from "thing-editor/src/editor/ui/tree-view/tree-node"
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
-import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
+import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 import makePathForKeyframeAutoSelect from "thing-editor/src/editor/utils/movie-clip-keyframe-select-path";
 import { scrollInToView } from "thing-editor/src/editor/utils/scroll-in-view";
 import Selection from "thing-editor/src/editor/utils/selection";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import { mouseHandlerGlobal } from "thing-editor/src/engine/utils/game-interaction";
 
-function onEmptyClick(ev: PointerEvent) {
-	if(!isEventFocusOnInputElement(ev)) {
-		setTimeout(() => {
-			game.editor.selection.clearSelection(true);
-		}, 1);
-	}
+function onEmptyClick() {
+	game.editor.selection.clearSelection(true);
 }
 
 type SearchEntry = string[];
@@ -50,11 +47,51 @@ const onContextMenu = (ev: PointerEvent) => {
 	], ev);
 };
 
-const treeViewProps = {
-	className: 'scene-tree-view window-scrollable-content',
-	onMouseDown: onEmptyClick,
-	onContextMenu
-};
+let highlightedDragItem: HTMLDivElement | null = null;
+let pointerToItemRelationY = 0;
+let dragTargetNode: Container;
+let dragTargetExpandTimeOut = 0;
+let dragTargetExpandTimeOutTarget: null | Container = null;
+
+function hideDragTarget() {
+	if(highlightedDragItem) {
+		highlightedDragItem.classList.remove('drag-target-top');
+		highlightedDragItem.classList.remove('drag-target-bottom');
+		highlightedDragItem.classList.remove('drag-target-mid');
+		highlightedDragItem = null;
+	}
+}
+
+function canBeDragAccepted(ev: DragEvent) {
+	for(let i of ev.dataTransfer!.items) {
+		if(i.type === "text/thing-editor-class-id") {
+			return i;
+		}
+	}
+}
+
+function clearDragExpandTimeOut() {
+	if(dragTargetExpandTimeOut) {
+		clearTimeout(dragTargetExpandTimeOut);
+		dragTargetExpandTimeOut = 0;
+		dragTargetExpandTimeOutTarget = null;
+	}
+}
+
+function addToParentSafe(ClassId: string, parent: Container, at?: number) {
+	const Class = game.classes[ClassId];
+	if(game.editor.isCanBeAddedAsChild(Class, parent)) {
+		const node = loadSafeInstanceByClassName(ClassId, false);
+		game.editor.selection.clearSelection();
+		game.editor.addTo(parent, node);
+		if(typeof at !== 'undefined') {
+			parent.addChildAt(node, at);
+		}
+		return node;
+	} else {
+		game.editor.ui.modal.notify('cant drop this object here.');
+	}
+}
 
 interface TreeViewState {
 	search: string
@@ -62,10 +99,119 @@ interface TreeViewState {
 
 export default class TreeView extends ComponentDebounced<ClassAttributes<TreeView>, TreeViewState> {
 
+	treeViewProps: any;
+
 	constructor() {
 		super();
 		this.onSearchKeyDown = this.onSearchKeyDown.bind(this);
 		this.onSearchChange = this.onSearchChange.bind(this);
+
+
+		this.treeViewProps = {
+			className: 'scene-tree-view window-scrollable-content',
+			onMouseDown: onEmptyClick,
+			onContextMenu,
+			onDragOver: this.onDragOver.bind(this),
+			onDragLeave: this.onDragLeave.bind(this),
+			onDrop: this.onDrop.bind(this)
+		};
+	}
+
+	onDragOver(ev: DragEvent) {
+		if(canBeDragAccepted(ev)) {
+			let treeItem = this.getClosestTreeItem(ev);
+			if(treeItem) {
+				hideDragTarget();
+				highlightedDragItem = treeItem;
+
+				if(Math.abs(pointerToItemRelationY) < 4) {
+					if(!dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length) { // can expand tree item
+						if(dragTargetExpandTimeOutTarget !== dragTargetNode) {
+							clearDragExpandTimeOut();
+							dragTargetExpandTimeOutTarget = dragTargetNode;
+							dragTargetExpandTimeOut = setTimeout(() => {
+								dragTargetNode.__nodeExtendData.childrenExpanded = true;
+								this.refresh();
+								dragTargetExpandTimeOut = 0;
+								dragTargetExpandTimeOutTarget = null;
+							}, 600);
+						}
+					} else {
+						clearDragExpandTimeOut();
+					}
+					treeItem.classList.add('drag-target-mid');
+				} else {
+					clearDragExpandTimeOut();
+				}
+
+
+				if(pointerToItemRelationY < 0) {
+					treeItem.classList.add('drag-target-top');
+				} else {
+					treeItem.classList.add('drag-target-bottom');
+				}
+			} else {
+				hideDragTarget();
+			}
+			ev.dataTransfer!.effectAllowed = "copy";
+			ev.dataTransfer!.dropEffect = "copy";
+			ev.preventDefault();
+		}
+	}
+
+	onDragLeave() {
+		clearDragExpandTimeOut();
+		hideDragTarget();
+	}
+
+	onDrop(ev: DragEvent) {
+		mouseHandlerGlobal(ev as any);
+		if(highlightedDragItem) {
+			const ClassId = ev.dataTransfer!.getData('text/thing-editor-class-id');
+
+			if(highlightedDragItem!.classList.contains('drag-target-mid')) {
+				addToParentSafe(ClassId, dragTargetNode); // drop as children
+			} else if(highlightedDragItem!.classList.contains('drag-target-bottom')) {
+				if(dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length) {
+					addToParentSafe(ClassId, dragTargetNode, 0); //drop to top of children list
+				} else {
+					addToParentSafe(ClassId, dragTargetNode.parent, dragTargetNode.parent.children.indexOf(dragTargetNode) + 1); //drop after
+				}
+			} else {
+				addToParentSafe(ClassId, dragTargetNode.parent, dragTargetNode.parent.children.indexOf(dragTargetNode)); //drop before
+			}
+
+			clearDragExpandTimeOut();
+			hideDragTarget();
+		}
+	}
+
+	getClosestTreeItem(ev: DragEvent) {
+		let treeItem = (ev.target as HTMLDivElement).closest('.scene-node-item') as HTMLDivElement;
+		if(!treeItem) {
+			const allItems = (this.base as HTMLDivElement).closest('.window-content')!.querySelectorAll('.scene-node-item') as any as HTMLDivElement[];
+			let closestDist = Number.MAX_VALUE;
+			for(let item of allItems) {
+				const itemBox = item.getBoundingClientRect();
+				const dist = Math.abs(ev.clientY - (itemBox.y + itemBox.height / 2));
+				if(dist < closestDist) {
+					closestDist = dist;
+					treeItem = item;
+
+				}
+			}
+		}
+		if(treeItem) {
+			const itemBox = treeItem.getBoundingClientRect();
+			pointerToItemRelationY = ev.clientY - (itemBox.y + itemBox.height / 2);
+			dragTargetNode = game.currentContainer;
+			game.currentContainer.forAllChildren((c: Container) => {
+				if(treeItem.innerText.endsWith('#' + c.___id)) {
+					dragTargetNode = c;
+				}
+			});
+		}
+		return treeItem;
 	}
 
 	selectInTree(node: Container, add = false, fieldName?: string) {
@@ -222,7 +368,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			R.input({ onKeyDown: this.onSearchKeyDown, onInput: this.onSearchChange, className: 'tree-view-search', value: this.state.search, placeholder: 'Search' }),
 
 			EDITOR_FLAGS.isolationEnabled ? R.btn('exit isolation', toggleIsolation, undefined, 'clickable isolation-warning', { key: 'i', ctrlKey: true }) : undefined,
-			R.div(treeViewProps,
+			R.div(this.treeViewProps,
 				game.__getScenesStack().map(renderSceneStackItem as any),
 				game.stage.children.map(renderRoots as any)
 			)

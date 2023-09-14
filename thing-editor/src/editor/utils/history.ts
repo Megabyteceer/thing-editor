@@ -94,6 +94,7 @@ class History {
 
 		window.addEventListener('mouseup', this.scheduleHistorySave);
 		window.addEventListener('keyup', this.scheduleHistorySave);
+		window.addEventListener('drop', this.scheduleHistorySave);
 	}
 
 	_sceneModifiedInner(saveImmediately = false) {

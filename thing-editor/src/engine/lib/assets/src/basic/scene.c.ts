@@ -76,6 +76,10 @@ export default class Scene extends Container {
 		assert(false, "Scenes remove() method should not be called. Use game.closeCurrentScene() method instead.", 10074);
 	}
 
+	static __canAcceptParent() {
+		return false;
+	}
+
 	/// #endif
 }
 

@@ -120,27 +120,27 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		{
 			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
 			key: file.assetName,
-			onMouseDown: (ev: PointerEvent) => {
+			onClick: (ev: PointerEvent) => {
 				if(PrefabEditor.currentPrefabName !== file.assetName && !editorUtils.isInModal(ev.target)) {
-					if(ev.buttons === 1) {
-						if(ev.altKey) {
-							if(!game.editor.selection.length) {
-								game.editor.selection.add(game.currentContainer);
-							}
-							while(game.editor.selection[0].__nodeExtendData.isPrefabReference) {
-								let p = game.editor.selection[0].parent;
-								if(p === game.stage) {
-									break;
-								}
-								game.editor.selection.clearSelection();
-								game.editor.selection.add(p);
-							}
-							placeAsChild(file);
+
+					if(ev.altKey) {
+						if(!game.editor.selection.length) {
+							game.editor.selection.add(game.currentContainer);
 						}
-						else {
-							PrefabEditor.editPrefab(file.assetName);
+						while(game.editor.selection[0].__nodeExtendData.isPrefabReference) {
+							let p = game.editor.selection[0].parent;
+							if(p === game.stage) {
+								break;
+							}
+							game.editor.selection.clearSelection();
+							game.editor.selection.add(p);
 						}
+						placeAsChild(file);
 					}
+					else {
+						PrefabEditor.editPrefab(file.assetName);
+					}
+
 				}
 			},
 			onContextMenu: (ev: PointerEvent) => {

@@ -31,7 +31,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 				}
 			},
 			disabled: () => {
-				return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset);
+				return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset) || !game.editor.isCanBeAddedAsChild(file.asset, game.currentContainer);
 			}
 		},
 		{
@@ -41,7 +41,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 				game.editor.selection.clearSelection();
 				game.editor.addTo(game.currentContainer, loadSafeInstanceByClassName(file.asset.__className));
 			},
-			disabled: () => { return file.asset.__isScene; }
+			disabled: () => { return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset, game.currentContainer); }
 		},
 		{
 			name: "Wrap",
@@ -131,7 +131,11 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		},
 		onDblClick: () => {
 			game.editor.editClassSource(file.asset as SourceMappedConstructor);
-		}
+		},
+		onDragStart(ev: DragEvent) {
+			ev.dataTransfer!.setData("text/thing-editor-class-id", file.asset.__className);
+		},
+		draggable: true
 	},
 		libInfo(file),
 		renderClass(file),

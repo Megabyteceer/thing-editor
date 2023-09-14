@@ -75,8 +75,8 @@ const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
 				sp(ev);
 				showPrefabContextMenu(file, ev);
 			},
-			onMouseDown: (ev: PointerEvent) => {
-				if(!isCurrent && ev.buttons === 1 && !editorUtils.isInModal(ev.target)) {
+			onClick: (ev: PointerEvent) => {
+				if(!isCurrent && !editorUtils.isInModal(ev.target)) {
 					game.editor.openScene(file.assetName);
 				}
 			},

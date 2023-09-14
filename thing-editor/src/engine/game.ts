@@ -7,9 +7,6 @@ import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import assert from "thing-editor/src/engine/debug/assert";
 import Lib from "thing-editor/src/engine/lib";
 
-/// #if DEBUG
-import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
-/// #endif
 import { ButtonOnlyPropertyDesc } from "thing-editor/src/editor/utils/button-only-selectable-property";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import SceneLinkedPromise from "thing-editor/src/engine/lib/assets/___system/scene-linked-promise.c";

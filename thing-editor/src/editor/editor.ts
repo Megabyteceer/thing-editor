@@ -506,11 +506,19 @@ class Editor {
 		editor.ui.propsEditor.selectField('name', true, true);
 	}
 
-	isCanBeAddedAsChild(Class: SourceMappedConstructor): boolean {
-		if(this.selection.length < 1) {
+	isCanBeAddedAsChild(Class: SourceMappedConstructor, parent?: Container): boolean {
+		const parents = parent ? [parent] : this.selection;
+		if(parents.length < 1) {
 			return false;
 		}
-		for(let o of this.selection) {
+		for(let o of parents) {
+
+			if(Class.__canAcceptParent) {
+				if(!Class.__canAcceptParent(o)) {
+					return false;
+				}
+			}
+
 			if((o.constructor as SourceMappedConstructor).__canAcceptChild) {
 				if(!(o.constructor as SourceMappedConstructor).__canAcceptChild(Class)) {
 					return false;
