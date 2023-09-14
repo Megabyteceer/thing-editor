@@ -14,6 +14,7 @@ import Lib, { constructRecursive } from "thing-editor/src/engine/lib";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import { ComponentChild } from "preact";
+import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 
 const prefabNameFilter = /[^a-zA-Z\-\/0-9_]/g;
@@ -306,6 +307,7 @@ export namespace editorUtils {
 					if(enteredName) {
 						const fin = (isConvertedToRef = false) => {
 							Lib.__savePrefab(container, enteredName);
+							regeneratePrefabsTypings();
 							if(PrefabEditor.currentPrefabName && !isConvertedToRef) {
 								PrefabEditor.editPrefab(enteredName);
 							}
