@@ -10,7 +10,7 @@ const isEventFocusOnInputElement = (ev: Event): Promise<boolean> => {
 			setTimeout(() => {
 				resolve(currentVal !== (ev.target as HTMLInputElement).value);
 
-			}, 1);
+			}, 0);
 
 		} else {
 			resolve(false);
