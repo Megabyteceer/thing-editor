@@ -218,7 +218,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			null,
 			{
-				name: 'Text data...',
+				name: 'Text data editor...',
 				tip: 'Edit localization text data',
 				onClick: () => game.editor.LanguageView.toggle(),
 				hotkey: { key: 'e', ctrlKey: true }
