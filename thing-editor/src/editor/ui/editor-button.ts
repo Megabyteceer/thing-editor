@@ -5,6 +5,7 @@ import Window from "thing-editor/src/editor/ui/editor-window";
 import { MAIN_MENU } from "thing-editor/src/editor/ui/main-menu";
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
 import isHotkeyHit, { Hotkey } from "thing-editor/src/editor/utils/hotkey";
+import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 
 const allHotkeyButtons: EditorButton[] = [];
@@ -53,10 +54,14 @@ window.addEventListener("keydown", (ev) => {
 
 		const item = findMenuItemForHotkey(ev as Hotkey);
 		if(item) {
-			item.onClick();
-			refreshContextMenu();
-			sp(ev);
-			return;
+			isEventFocusOnInputElement(ev).then((isHotkeyCapturedByInputElement) => {
+				if(!isHotkeyCapturedByInputElement) {
+					item.onClick();
+					refreshContextMenu();
+					sp(ev);
+					return;
+				}
+			});
 		}
 	}
 });
@@ -78,8 +83,12 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 
 	onKeyDown(ev: KeyboardEvent) {
 		if(!this.props.disabled && isHotkeyHit(ev as any as Hotkey, this.base as HTMLElement, this.props.hotkey)) {
-			this.onMouseDown(ev as unknown as PointerEvent);
-			sp(ev);
+			isEventFocusOnInputElement(ev).then((isHotkeyCapturedByInputElement) => {
+				if(!isHotkeyCapturedByInputElement) {
+					this.onMouseDown(ev as unknown as PointerEvent);
+					sp(ev);
+				}
+			});
 			return true;
 		}
 	}
