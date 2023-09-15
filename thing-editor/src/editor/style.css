@@ -1297,8 +1297,10 @@ input[disabled] {
 	border: 1px solid #dd1a1a;
 }
 
-
-
+.rect-editor-group {
+    display: flex;
+    align-items: center;
+}
 
 
 

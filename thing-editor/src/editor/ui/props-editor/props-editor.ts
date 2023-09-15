@@ -31,6 +31,7 @@ import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editor
 import ImageEditor from "thing-editor/src/editor/ui/props-editor/props-editors/image-editor";
 import L18nEditor from "thing-editor/src/editor/ui/props-editor/props-editors/l18n-editor";
 import PrefabPropertyEditor from "thing-editor/src/editor/ui/props-editor/props-editors/prefab-property-editor";
+import RectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/rect-editor";
 import SoundEditor from "thing-editor/src/editor/ui/props-editor/props-editors/sound-editor";
 import getObjectDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -390,4 +391,5 @@ PropsEditor.registerRenderer('data-path', DataPathEditor, null);
 PropsEditor.registerRenderer('callback', CallbackEditor, null);
 PropsEditor.registerRenderer('timeline', TimelineEditor, null);
 PropsEditor.registerRenderer('pow-damp-preset', PowDampPresetEditor, null);
+PropsEditor.registerRenderer('rect', RectEditor, null);
 

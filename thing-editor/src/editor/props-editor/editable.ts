@@ -7,6 +7,13 @@ import { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
+interface EditableRect {
+	x: number;
+	y: number;
+	w: number;
+	h: number;
+}
+
 type EditablePropertyType = 'data-path' |
 	'splitter' |
 	'rect' |
@@ -62,6 +69,17 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	arrayProperty?: true;
 	defaultArrayItemValue?: any;
 	separator?: true;
+
+	guideColor?: number;
+
+	rect_minX?: number;
+	rect_maxX?: number;
+	rect_minY?: number;
+	rect_maxY?: number;
+	rect_minW?: number;
+	rect_maxW?: number;
+	rect_minH?: number;
+	rect_maxH?: number;
 
 	/** call-back and data-path properties validator */
 	isValueValid?: (val: any) => boolean;
@@ -143,7 +161,7 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 
 export default editable;
 export { _editableEmbed, propertyAssert };
-export type { EditablePropertyDesc, EditablePropertyDescRaw, EditablePropertyType };
+export type { EditablePropertyDesc, EditablePropertyDescRaw, EditablePropertyType, EditableRect };
 
 
 const propertyAssert = (prop: EditablePropertyDesc, condition: any, message: string) => {

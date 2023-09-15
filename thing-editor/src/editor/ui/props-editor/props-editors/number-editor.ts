@@ -223,3 +223,5 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 }
 
 export default NumberEditor;
+
+export type { NumberEditorProps };
