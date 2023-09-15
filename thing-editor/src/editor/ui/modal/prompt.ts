@@ -1,5 +1,6 @@
 import { ClassAttributes, Component, ComponentChild } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
+import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
 
 let modalRejectProps = { className: 'modal-reject-text' };
@@ -60,6 +61,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 	onKeyDown(ev: KeyboardEvent) {
 		if(ev.keyCode === 13 && !this.props.multiline) {
 			this.onAcceptClick();
+			sp(ev);
 		}
 	}
 

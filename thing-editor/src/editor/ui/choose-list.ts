@@ -2,6 +2,7 @@ import { ClassAttributes, Component, ComponentChild } from "preact";
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import group from "thing-editor/src/editor/ui/group";
+import sp from "thing-editor/src/editor/utils/stop-propagation";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -62,6 +63,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 	onKeyDown(ev: KeyboardEvent) {
 		if((ev.keyCode === 13) && (this.list.length === 1)) {
 			game.editor.ui.modal.hideModal(this.list[0]);
+			sp(ev);
 		}
 	}
 
