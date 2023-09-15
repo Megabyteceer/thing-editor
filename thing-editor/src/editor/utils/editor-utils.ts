@@ -569,7 +569,10 @@ export namespace editorUtils {
 			if(preactContent.type === 'img') {
 				if(!cachedImages.has(preactContent.props.src)) {
 					cachedImages.add(preactContent.props.src);
-					new Image().src = preactContent.props.src;
+					const img = new Image();
+					img.src = preactContent.props.src;
+					document.body.appendChild(img);
+					img.style.display = 'none';
 				}
 			}
 			if(preactContent.props.children) {
