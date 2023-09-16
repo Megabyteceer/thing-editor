@@ -393,7 +393,59 @@
 														"shapeLineWidth": 1,
 														"shapeLineColor": 0,
 														"shapeLineAlpha": 0.5
-													}
+													},
+													":": [
+														{
+															"c": "Shape",
+															"p": {
+																"name": "",
+																"x": 468,
+																"pivot.y": 1,
+																"shape": 4,
+																"shapeFillAlpha": 0.75,
+																"shapeFillColor": 16777215,
+																"_shapePoints": [
+																	{
+																		"x": 2,
+																		"y": 3
+																	},
+																	{
+																		"x": 21,
+																		"y": 3
+																	},
+																	{
+																		"x": -10,
+																		"y": 9
+																	}
+																]
+															}
+														},
+														{
+															"c": "Shape",
+															"p": {
+																"name": "",
+																"x": 468,
+																"pivot.y": 1,
+																"shape": 4,
+																"shapeFillAlpha": 0.75,
+																"shapeFillColor": 16777215,
+																"_shapePoints": [
+																	{
+																		"x": 2,
+																		"y": 1
+																	},
+																	{
+																		"x": 21,
+																		"y": 1
+																	},
+																	{
+																		"x": -10,
+																		"y": -5
+																	}
+																]
+															}
+														}
+													]
 												}
 											]
 										}
