@@ -97,19 +97,29 @@
 					"properties": {
 						"google": {
 							"description": "list of fonts should be loaded from https://fonts.google.com/",
-							"type": "array",
-							"items": {
-								"type": "string"
-							},
-							"default": ["Fira Sans:300,400,700:cyrillic"]
+							"type": "object",
+							"properties": {
+								"families": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									},
+									"default": ["Fira Sans:300,400,700:cyrillic"]
+								}
+							}
 						},
 						"custom": {
 							"description": "list of fonts should be loaded from project assets.",
-							"type": "array",
-							"items": {
-								"type": "string"
-							},
-							"default": ["Soup Of Justice"]
+							"type": "object",
+							"properties": {
+								"families": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									},
+									"default": ["Soup Of Justice"]
+								}
+							}
 						}
 					}
 				},
