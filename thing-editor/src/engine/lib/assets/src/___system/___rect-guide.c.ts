@@ -10,6 +10,7 @@ import Container from "thing-editor/src/engine/lib/assets/src/basic/container.c"
 import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 
 const p = new Point();
+const p2 = new Point();
 
 export default class ___RectGuide extends Shape {
 
@@ -23,12 +24,18 @@ export default class ___RectGuide extends Shape {
 			super.render(renderer);
 			return;
 		} else if(!this.isShouldBeRemoved()) {
+
+			this.rotation = this.owner.parent.getGlobalRotation();
 			this.shapeLineColor = this.field.guideColor || 53546;
-			p.x = this.owner.pivot.x + this.rect.x;
-			p.y = this.owner.pivot.y + this.rect.y;
-			this.parent.toLocal(p, this.owner, this);
-			this.width = this.rect.w;
-			this.height = this.rect.h;
+			p.x = this.owner.x + this.rect.x;
+			p.y = this.owner.y + this.rect.y;
+			this.parent.toLocal(p, this.owner.parent, this);
+
+			p.x += this.rect.w;
+			p.y += this.rect.h;
+			this.toLocal(p, this.owner.parent, p2);
+			this.width = p2.x;
+			this.height = p2.y;
 			this.shapeLineWidth = Math.ceil(game.editor.ui.viewport.viewportScale);
 			this.updateTransform();
 			super.render(renderer);

@@ -8,6 +8,7 @@ import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
 import assert from "thing-editor/src/engine/debug/assert.js";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import ___Guide from "thing-editor/src/engine/lib/assets/src/___system/guide.c";
 
 /** returns object rotation relative to it`s scene */
 Container.prototype.getGlobalRotation = function getGlobalRotation() {
@@ -333,7 +334,20 @@ _editableEmbed(Container, 'name', {
 });
 _editableEmbed(Container, 'x', { animate: true });
 _editableEmbed(Container, 'y', { animate: true });
-_editableEmbed(Container, 'rotation', { step: 0.001, animate: true });
+_editableEmbed(Container, 'rotation', {
+	step: 0.001, animate: true,
+	afterEdited: () => {
+		game.editor.selection.forEach((c, i) => {
+			if(game.keys.shiftKey) {
+				const prevRotation = c.rotation;
+				const eatenRotation = (c.__nodeExtendData.eatenRotation || 0);
+				c.rotation = Math.round((c.rotation + eatenRotation) / Math.PI * 8) * Math.PI / 8;
+				c.__nodeExtendData.eatenRotation = eatenRotation + prevRotation - c.rotation;
+			}
+			___Guide.show(0, 0, 0, 'rotation' + i, c);
+		});
+	}
+});
 _editableEmbed(Container, 'alpha', {
 	animate: true,
 	step: 0.01,

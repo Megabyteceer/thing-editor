@@ -74,6 +74,8 @@ interface NodeExtendData {
 	__pathBreakpoint?: any;
 
 	__fragmentOwnerId?: number;
+
+	eatenRotation?: number;
 }
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number | boolean;
