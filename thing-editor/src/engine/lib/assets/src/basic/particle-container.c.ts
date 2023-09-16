@@ -3,13 +3,17 @@ import game from "thing-editor/src/engine/game";
 /// #endif
 import { Container } from "pixi.js";
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
+import editable from "thing-editor/src/editor/props-editor/editable";
 
 export default class ParticleContainer extends Container {
 
 	constructor() {
 		super();
+		this.interactiveChildren = false;
 		this.eventMode = 'none';
 	}
+
+	@editable({ name: 'interactive', visible: () => false, override: true })
 
 	forAllChildren(callback: (o: Container) => void) {
 		/// #if EDITOR
