@@ -322,26 +322,36 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 
 		return R.fragment(menu,
 			R.input(this.searchInputProps),
+			this.props.onItemSelect ?
+				R.btn('auto accept', (ev) => {
+					let itemElement = (ev.target as HTMLDivElement).closest('.window-content')?.querySelector('.assets-item') as HTMLDivElement;
+					this.selectItem(itemElement, ev);
+				}, undefined, 'hidden', { key: 'Enter' })
+				: undefined,
 			clearSearchBtn,
 			R.div({
 				title: this.props.onItemPreview ? 'Click to choose. Ctrl + Click to preview.' : undefined,
 				className: 'assets-view window-scrollable-content',
 				onMouseDown: this.props.onItemSelect ? (ev: MouseEvent) => {
 					let itemElement = (ev.target as HTMLDivElement).closest('.assets-item') as HTMLDivElement;
-					if(itemElement) {
-						let chosen = (itemElement.querySelector('.selectable-text') as HTMLSpanElement).innerText;
-						if(ev.ctrlKey && this.props.onItemPreview) {
-							this.props.onItemPreview!(chosen);
-						} else {
-							if(this.props.currentValue !== chosen) {
-								this.props.onItemSelect!(chosen);
-							}
-						}
-					}
+					this.selectItem(itemElement, ev);
 				} : undefined
 			},
 				items
 			));
+	}
+
+	selectItem(itemElement: HTMLDivElement, ev: MouseEvent) {
+		if(itemElement) {
+			let chosen = (itemElement.querySelector('.selectable-text') as HTMLSpanElement).innerText;
+			if(ev.ctrlKey && this.props.onItemPreview) {
+				this.props.onItemPreview!(chosen);
+			} else {
+				if(this.props.currentValue !== chosen) {
+					this.props.onItemSelect!(chosen);
+				}
+			}
+		}
 	}
 
 	static renderAssetItem(file: FileDesc) {

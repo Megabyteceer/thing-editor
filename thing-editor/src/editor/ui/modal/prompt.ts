@@ -28,7 +28,6 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 		this.state = { value: props.defaultText || '' };
 		this.onChange = this.onChange.bind(this);
 		this.onAcceptClick = this.onAcceptClick.bind(this);
-		this.onKeyDown = this.onKeyDown.bind(this);
 	}
 
 	componentDidMount() {
@@ -58,13 +57,6 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 		});
 	}
 
-	onKeyDown(ev: KeyboardEvent) {
-		if(ev.keyCode === 13 && !this.props.multiline) {
-			this.onAcceptClick();
-			sp(ev);
-		}
-	}
-
 	onAcceptClick() {
 		if(this.state.accepted) {
 			game.editor.ui.modal.hideModal(this.state.value);
@@ -75,8 +67,14 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 		let input = (this.props.multiline ? R.textarea : R.input);
 		return R.fragment(
 			R.div(modalRejectProps, this.state.rejectReason || ' '),
+			R.btn('auto accept', (ev) => {
+				if(!this.props.multiline) {
+					this.onAcceptClick();
+					sp(ev);
+				}
+			}, undefined, 'hidden', { key: 'Enter' }),
 			R.div({ className: 'prompt-dialogue' },
-				input({ value: this.state.value, onKeyDown: this.onKeyDown, onInput: this.onChange })
+				input({ value: this.state.value, onInput: this.onChange })
 			),
 			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', this.props.multiline ? undefined : { key: 'Enter' })
 		);

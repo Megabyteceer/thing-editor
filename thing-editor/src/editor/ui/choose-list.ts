@@ -43,7 +43,6 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		this.searchInputProps = {
 			autoFocus: true,
 			onInput: this.onSearchChange.bind(this),
-			onKeyDown: this.onKeyDown.bind(this),
 			placeholder: 'Search'
 		};
 		this.onSearchClearClick = this.onSearchClearClick.bind(this);
@@ -58,13 +57,6 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 
 	onSearchClearClick() {
 		this.setState({ search: '' });
-	}
-
-	onKeyDown(ev: KeyboardEvent) {
-		if((ev.keyCode === 13) && (this.list.length === 1)) {
-			game.editor.ui.modal.hideModal(this.list[0]);
-			sp(ev);
-		}
 	}
 
 	renderChoosingItem(item: ChooseListItem, key: string) {
@@ -126,7 +118,21 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		return R.div(bodyProps,
 			this.props.noSearchField ? undefined : R.div(listHeaderProps,
 				R.input(this.searchInputProps),
-				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search')
+				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search'),
+				R.btn('auto accept', (ev) => {
+					if((this.list[0] as any).noAutoSelect) {
+						if(this.list.length >= 2) {
+							game.editor.ui.modal.hideModal(this.list[1]);
+							sp(ev);
+						}
+					} else {
+						if(this.list.length >= 1) {
+							game.editor.ui.modal.hideModal(this.list[0]);
+							sp(ev);
+						}
+					}
+				}, undefined, 'hidden', { key: 'Enter' }
+				)
 			),
 			R.div(listProps, list)
 		);

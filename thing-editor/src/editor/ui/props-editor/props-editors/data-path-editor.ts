@@ -533,7 +533,7 @@ function initSelectableProps() {
 	unhidePropertyFromEnumerationForChooser(tmpSprite.gotoLabelRecursive);
 }
 
-const BACK_ITEM = { name: '↰', noFilter: true, order: 10000000 };
+const BACK_ITEM = { name: '↰', noFilter: true, noAutoSelect: true, order: 10000000 };
 let parentsPath: KeyedObject[];
 
 const hiddenProps = new WeakMap();
