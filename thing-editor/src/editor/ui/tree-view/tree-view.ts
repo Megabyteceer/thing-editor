@@ -229,7 +229,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 				scrollInToView(e);
 				(e.closest('.scene-tree-view') as HTMLElement).scrollLeft = 0;
 			}
-		}, 1);
+		}, 2);
 	}
 
 	shouldComponentUpdate() {
