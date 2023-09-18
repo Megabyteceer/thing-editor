@@ -1,6 +1,5 @@
 import { Container, Texture } from "pixi.js";
 import { ComponentChildren } from "preact";
-import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import type { KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
@@ -297,6 +296,15 @@ export default class fs {
 		return JSON.parse(fs.readFile(fileName));
 	}
 
+	static readJSONFileIfExists(fileName: string) {
+		const src = this.readFileIfExists(fileName);
+		return src && JSON.parse(src);
+	}
+
+	static readFileIfExists(fileName: string) {
+		return (execFs('fs/readFileIfExists', fileName) as any as string | null);
+	}
+
 	static readFile(fileName: string) {
 		return (execFs('fs/readFile', fileName) as any as string);
 	}
@@ -305,8 +313,8 @@ export default class fs {
 		return execFs('fs/enumProjects') as ProjectDesc[];
 	}
 
-	static browseDir(path: string): ProjectDesc[] {
-		return execFs('fs/browseDir', path) as ProjectDesc[];
+	static browseDir(path: string) {
+		return execFs('fs/browseDir', path);
 	}
 
 	static build(projectDir: string, debug: boolean, copyAssets: { from: string, to: string }[]) {
@@ -341,7 +349,7 @@ export default class fs {
 		assert(dirName.endsWith('/'), 'dirName should end with slash "/". Got ' + dirName);
 
 		const lib: LibInfo | null = game.editor.currentProjectLibs.find(l => l.assetsDir === dirName) || null;
-		const files = execFs('fs/readDir', dirName) as FileDesc[];
+		const files = execFs('fs/readDir', dirName, game.editor.projectDesc as any) as FileDesc[];
 		return files.filter((file) => {
 			const wrongSymbol = fs.getWrongSymbol(file.fileName);
 			if(wrongSymbol) {

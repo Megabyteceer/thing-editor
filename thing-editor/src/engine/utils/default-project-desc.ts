@@ -1,4 +1,4 @@
-import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
+
 
 const defaultProjectDesc: ProjectDesc = {
 	id: '',

@@ -1,8 +1,7 @@
-import { KeyedObject } from "thing-editor/src/editor/env";
 
 type ProjectOrientation = "landscape" | "portrait" | "auto"
 
-declare interface ProjectDesc {
+interface ProjectDesc {
 	id: string;
 	title: string;
 	icon: string;
@@ -55,5 +54,4 @@ declare interface ProjectDesc {
 	libs: string[],
 }
 
-export type { ProjectDesc, ProjectOrientation };
 

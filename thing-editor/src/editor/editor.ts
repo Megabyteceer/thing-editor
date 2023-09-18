@@ -18,7 +18,7 @@ import ClassesLoader from "./classes-loader";
 import LanguageView from "thing-editor/src/editor/ui/language-view";
 
 import { Container, Point, Texture } from "pixi.js";
-import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
+
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
@@ -300,12 +300,14 @@ class Editor {
 
 			this.ui.modal.showSpinner();
 			this.settings.removeItem('last-opened-project');
+
 			const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
+
 			if(!projectDesc) {
 				this.ui.modal.showError("Can't open project " + dir).then(() => { this.chooseProject(true); });
 				return;
 			}
-
+			projectDesc.dir = this.currentProjectDir;
 			if(!projectDesc.libs) {
 				projectDesc.libs = [];
 			}
@@ -321,6 +323,10 @@ class Editor {
 				isEmbed: true
 			});
 			this.assetsFolders = [];
+
+			const schemas: any[] = [];
+
+
 			for(let lib of this.currentProjectLibs) {
 				this.assetsFolders.push(lib.assetsDir);
 				const libFileName = lib.dir + '/thing-lib.json';
@@ -331,7 +337,24 @@ class Editor {
 					return;
 				}
 				mergeProjectDesc(this.libsProjectDescMerged, this.libsDescs[lib.name]);
+				const libSchema = fs.readJSONFileIfExists(lib.dir + '/schema-thing-project.json');
+				if(libSchema) {
+					schemas.push(libSchema);
+				}
 			}
+
+			const libSchema = fs.readJSONFileIfExists(this.currentProjectDir + '/schema-thing-project.json');
+			if(libSchema) {
+				schemas.push(libSchema);
+			}
+
+			const mergedSchema = schemas[0];
+			for(const schema of schemas) {
+				if(schema !== mergedSchema) {
+					Object.assign(mergedSchema.properties, schema.properties);
+				}
+			}
+			fs.writeFile('thing-editor/src/editor/schema-thing-project.json', mergedSchema);
 
 			this.assetsFolders.push(this.currentProjectAssetsDir);
 

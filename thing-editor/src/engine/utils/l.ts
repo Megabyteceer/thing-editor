@@ -14,7 +14,7 @@ let languages: KeyedMap<KeyedMap<string>> = {};
 let currentLanguageId = (window.navigator && navigator.language) ? navigator.language.split('-')[0] : 'en';
 let isLangDataLoaded = false;
 
-interface TL {
+interface TL extends LocalizationKeys {
 	(id: string, values?: KeyedObject): string;
 	setLanguagesAssets: (src: KeyedObject) => void;
 	messageProcessor: (id: string, values?: KeyedObject) => string;

@@ -61,7 +61,9 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 		}
 		file.asset = L._deserializeLanguage(file.asset);
 		const a = file.fileName.split('/');
-		file.lang = (a.pop()!).replace(/\.json$/, '');
+		if(!file.lang) {
+			file.lang = (a.pop()!).replace(/\.json$/, '');
+		}
 		file.dir = a.join('/');
 
 		if(!assetsFiles.has(file.dir)) {
@@ -260,7 +262,17 @@ const parseAssets = () => {
 			createFilesForLanguage(L.getCurrentLanguageId());
 		}
 	});
+	generateLocalizationTypings();
 }
+
+const generateLocalizationTypings = () => {
+	const src = ['interface LocalizationKeys {'];
+	for(const key in currentLanguageData) {
+		src.push('(id: "' + key + '", values?: KeyedObject): string;');
+	}
+	src.push('}');
+	fs.writeFile('/thing-editor/src/editor/localization-typings.d.ts', src.join('\n'));
+};
 
 const sortTextList = (a: SelectEditorItem, b: SelectEditorItem) => {
 	if(a.value > b.value) {

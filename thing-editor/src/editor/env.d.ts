@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 
 import { Container, Point } from "pixi.js";
-import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import { FileDescClass } from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 

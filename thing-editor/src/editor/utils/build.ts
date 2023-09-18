@@ -1,4 +1,3 @@
-import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import { AssetsDescriptor, KeyedMap, KeyedObject, SerializedObject, SoundAssetEntry, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";

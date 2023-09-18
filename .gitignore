@@ -21,3 +21,6 @@ ___editor_backup_*
 
 games/**/.tmp
 
+/libs/translations
+/thing-editor/src/editor/localization-typings.d.ts
+/thing-editor/src/editor/schema-thing-project.json

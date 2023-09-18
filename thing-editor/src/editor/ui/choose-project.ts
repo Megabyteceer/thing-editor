@@ -1,5 +1,4 @@
 import { Component, ComponentChild, h } from "preact";
-import type { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
 import { KeyedObject } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";

@@ -63,6 +63,10 @@ module.exports = (mainWindow) => {
 		let error;
 		let buttons;
 		let explorer;
+
+		let ret;
+		let assetsLoaderPath;
+
 		try {
 			switch(command) {
 				case 'fs/delete':
@@ -93,6 +97,16 @@ module.exports = (mainWindow) => {
 				case 'fs/exists':
 					event.returnValue = fs.existsSync(fn(fileName));
 					return;
+				case 'fs/readFileIfExists':
+					if(fs.existsSync(fn(fileName))) {
+						fd = fs.openSync(fn(fileName), 'r');
+						c = fs.readFileSync(fd, fsOptions);
+						fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
+						event.returnValue = c;
+					} else {
+						event.returnValue = null;
+					}
+					return;
 				case 'fs/readFile':
 					fd = fs.openSync(fn(fileName), 'r');
 					c = fs.readFileSync(fd, fsOptions);
@@ -100,7 +114,12 @@ module.exports = (mainWindow) => {
 					event.returnValue = c;
 					return;
 				case 'fs/readDir':
-					event.returnValue = walkSync(fileName, []);
+					ret = walkSync(fileName, []);
+					assetsLoaderPath = process.cwd() + '/' + fileName + 'assets-loader.cjs';
+					if(fs.existsSync(assetsLoaderPath)) {
+						require(assetsLoaderPath)(ret, content /* ProjectDesc */);
+					}
+					event.returnValue = ret;
 					return;
 				case 'fs/watchDirs':
 					event.returnValue = watchFolders(fileName, onFileChange);

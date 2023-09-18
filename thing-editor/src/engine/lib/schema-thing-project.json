@@ -1,0 +1,196 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"type": "object",
+	"properties": {
+		"title": {
+			"description": "title visible in project list",
+			"type": "string",
+			"default": "my-project"
+		},
+		"id": {
+			"description": "unique project id used to store local settings",
+			"type": "string",
+			"default": "my-project.my-website.com"
+		},
+		"icon": {
+			"description": "path to the image file - which will be displayed as an project`s icon in projects list.",
+			"type": "string",
+			"default": "assets/bunny.png"
+		},
+		"__group": {
+			"description": "groups projects in the projects list",
+			"type": "string",
+			"default": "my-projects/cool-projects"
+		},
+		"screenOrientation": {
+			"description": "projects screen orientation",
+			"type": "string",
+			"enum": ["landscape", "portrait", "auto"],
+			"default": "landscape"
+		},
+		"width": {
+			"description": "landscape width of project screen",
+			"type": "number",
+			"default": 1280
+		},
+		"height": {
+			"description": "landscape height of project screen",
+			"type": "number",
+			"default": 720
+		},
+		"portraitWidth": {
+			"description": "landscape width of project in portrait mode",
+			"type": "number",
+			"default": 720
+		},
+		"portraitHeight": {
+			"description": "landscape height of project in portrait mode",
+			"type": "number",
+			"default": 1280
+		},
+		"renderResolution": {
+			"description": "increases quality of render on desktop in cost of performance.",
+			"type": "number",
+			"default": 1
+		},
+		"renderResolutionMobile": {
+			"description": "increases quality of render on mobile devices in cost of performance.",
+			"type": "number",
+			"default": 1
+		},
+		"framesSkipLimit": {
+			"description": "on low performance devices allows to update game logic more that once per each frame.",
+			"type": "number",
+			"default": 4
+		},
+		"dynamicStageSize": {
+			"description": "enables stage resizing regarding of allowed screen space. false - keeps projects screen proportions always fixed.",
+			"type": "boolean",
+			"default": false
+		},
+		"preventUpscale": {
+			"description": "makes project screen size be equal to all allowed screen area, but not less that defined in 'width' and 'height'",
+			"type": "boolean",
+			"default": false
+		},
+		"webfontloader": {
+			"description": "allows to preload fonts form google.fonts or from project`s assets folder",
+			"type": "object",
+			"properties": {
+				"google": {
+					"description": "list of fonts should be loaded from https://fonts.google.com/",
+					"type": "object",
+					"properties": {
+						"families": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							},
+							"default": ["Fira Sans:300,400,700:cyrillic"]
+						}
+					}
+				},
+				"custom": {
+					"description": "list of fonts should be loaded from project assets.",
+					"type": "object",
+					"properties": {
+						"families": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							},
+							"default": ["Soup Of Justice"]
+						}
+					}
+				}
+			}
+		},
+		"defaultFont": {
+			"description": "font used for render Text objects with no fontFamily property defined",
+			"type": "string",
+			"default": "Fira Sans, Arial"
+		},
+		"soundFormats": {
+			"description": "List of sounds formats which will be generated for project. Required because there is no format all the browsers support. Usually ogg + aac covers all the browsers you need.",
+			"type":"array",
+			"items": {
+				"type": "string"
+			},
+			"default": ["ogg", "aac"]
+		},
+		"soundDefaultBitrate": {
+			"description": "sounds default bitrate for auto generated ogg and aac files.",
+			"type":"number",
+			"default": 48,
+			"enum": [8, 16, 24, 32, 40, 48,56,64,80,96,112,128,144,160,192,224,256]
+		},
+		"fontHolderText":  {
+			"description": "invisible peace of text added to the web page for each loaded font, to keep web fonts from unloading. Add a few characters of your language if fonts in game look wrong.",
+			"type": "string",
+			"default": "ЯSфz"
+		},
+		"loadOnDemandSounds":  {
+			"description": "info about way assets loading in to project. Usually this data generated automatically.",
+			"type": "object",
+			"default": {}
+		},
+		"mipmap":  {
+			"description": "enables mipmap generation for all textures. prevent aliasing effect on small size sprites.",
+			"type": "boolean",
+			"default": false
+		},
+		"version":  {
+			"description": "your project`s version",
+			"type": "string",
+			"default":"0.0.1"
+		},
+		"defaultMusVol":  {
+			"description": "default global volume level for all BgMusic",
+			"type": "number",
+			"default":1
+		},
+		"defaultSoundsVol":  {
+			"description": "default global volume level for all sounds",
+			"type": "number",
+			"default":1
+		},
+		"embedLocales":  {
+			"description": "built in all localization data in to projects`s assets.",
+			"type": "boolean",
+			"default":true
+		},
+		"__localesNewKeysPrefix":  {
+			"description": "all new created localization keys will start with this prefix.",
+			"type": "string",
+			"default":""
+		},
+		"__suspendWarnings":  {
+			"description": "suspends all warnings with listed codes.",
+			"type": "array",
+			"items": {"type": "number"},
+			"default":[]
+		},
+		"defaultLanguage": {
+			"description": "language will be used if no users language present in localization data",
+			"type": "string",
+			"default": "en"
+		},
+		"autoFullScreenDesktop": {
+			"description": "go to full-screen mode on desktop, after first user click.",
+			"type": "boolean",
+			"default": false
+		},
+		"autoFullScreenMobile": {
+			"description": "go to full-screen mode on mobile, after first user click.",
+			"type": "boolean",
+			"default": true
+		},
+		"libs": {
+			"description": "list libraries assets of will be included in to the projects.",
+			"type":"array",
+			"items": {"type":"string"},
+			"default": ["my-library"]
+		}
+	},
+	"title": "JSON schema for thing-editor configuration files"
+}

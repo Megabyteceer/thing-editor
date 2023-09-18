@@ -1,4 +1,4 @@
-import { ProjectDesc } from "thing-editor/src/editor/ProjectDesc";
+
 import { KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
