@@ -128,7 +128,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 
 	showInfo(message: ComponentChild, title: ComponentChild, errorCode = 99999) {
-		this.showModal(message, errorCode ?
+		return this.showModal(message, errorCode ?
 			R.span(null, R.icon('info'), errorCode, ' ', title, R.btn('?', () => {
 				Help.openErrorCodeHelp(errorCode);
 			}, 'Open description for this message (F1)', 'error-help-button', { key: 'F1' }))
