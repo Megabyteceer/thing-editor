@@ -6,6 +6,9 @@ const isEventFocusOnInputElement = (ev: Event): Promise<boolean> => {
 			tag === 'TEXTAREA' ||
 			tag === 'SELECT') {
 
+			if((ev.target as HTMLInputElement).classList.contains('tree-view-search')) {
+				resolve(true);
+			}
 			const currentVal = (ev.target as HTMLInputElement).value;
 			setTimeout(() => {
 				resolve(currentVal !== (ev.target as HTMLInputElement).value);
