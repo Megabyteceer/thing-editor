@@ -6,6 +6,7 @@ import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
 let __currentAllMap: string;
+let __currentClassesMap: string;
 
 const getImportSrcForClass = (className: string) => {
 	const path = game.classes[className].__sourceFileName!;
@@ -75,6 +76,49 @@ interface ThingSceneAllMap {
 	}
 }
 
+
+const regenerateClassesTypings = () => {
+	if(game.editor.editorArguments['no-vscode-integration']) {
+		return;
+	}
+
+	const classesNames: string[] = Object.keys(game.classes).filter(n => !n.startsWith('___'));
+
+	let jsonString = classesNames.join(',');
+	if(__currentClassesMap !== jsonString) {
+		__currentClassesMap = jsonString;
+
+		let imports = [];
+		let declarations = [];
+
+		for(let className of classesNames) {
+			imports.push(getImportSrcForClass(className));
+		}
+
+		for(let className of classesNames) {
+			declarations.push('"' + className + '": (typeof ' + className + ') | SourceMappedConstructor;');
+		}
+
+		let mapJS = `// thing-editor auto generated file.
+
+import { SourceMappedConstructor } from "thing-editor/src/editor/env";
+`
+			+ imports.join('\n') +
+			`
+			
+declare global {
+
+interface GameClasses {
+	[key: string]: SourceMappedConstructor;
+`
+			+ declarations.join('\n') + `
+}
+}
+`;
+		fs.writeFile('/thing-editor/src/editor/current-classes-typings.d.ts', mapJS);
+	}
+}
+
 let __currentPrefabsMap: string;
 
 const regeneratePrefabsTypings = () => {
@@ -140,4 +184,5 @@ const getSerializedObjectClass = (data: SerializedObject): SourceMappedConstruct
 
 export default regenerateCurrentSceneMapTypings;
 
-export { getSerializedObjectClass, regeneratePrefabsTypings };
+export { getSerializedObjectClass, regenerateClassesTypings, regeneratePrefabsTypings };
+

@@ -1,4 +1,4 @@
-import type { GameClasses, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import type { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 
 import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-checker";
 import Lib from "thing-editor/src/engine/lib";
@@ -10,6 +10,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import { regenerateClassesTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import ___GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c";
@@ -161,7 +162,7 @@ export default class ClassesLoader {
 			return imp(moduleName).then(onClassLoaded);
 
 		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {
-			let classes: GameClasses = {};
+			let classes: GameClasses = {} as any;
 
 			for(let c of _classes as SourceMappedConstructor[]) {
 				if(!c) {
@@ -233,6 +234,7 @@ export default class ClassesLoader {
 					}
 				}
 			}
+			regenerateClassesTypings();
 			return classes;
 		});
 	}

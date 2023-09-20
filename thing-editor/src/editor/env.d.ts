@@ -123,10 +123,6 @@ interface SourceMappedConstructor extends Constructor {
 	__className: string;
 }
 
-interface GameClasses {
-	[key: string]: SourceMappedConstructor;
-}
-
 type KeyedMap<T> = {
 	[key: string]: T;
 }

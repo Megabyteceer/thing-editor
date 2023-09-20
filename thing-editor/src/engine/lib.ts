@@ -1,5 +1,5 @@
 
-import { AssetsDescriptor, GameClasses, KeyedMap, KeyedObject, NodeExtendData, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { AssetsDescriptor, KeyedMap, KeyedObject, NodeExtendData, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import TLib from "thing-editor/src/editor/prefabs-typing";
 
 import { Container, MIPMAP_MODES, Texture, WRAP_MODES } from "pixi.js";
@@ -995,7 +995,7 @@ const processAfterDeserialization = (o: Container) => {
 
 const _filterStaticTriggers = (childData: SerializedObject) => {
 	return !childData[':'] || !childData[':'].some((cd) => {
-		return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || game.classes.StaticTrigger.__defaultValues.dataPath, game));
+		return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || (game.classes.StaticTrigger as SourceMappedConstructor).__defaultValues.dataPath, game));
 	});
 }
 

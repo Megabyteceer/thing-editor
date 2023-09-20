@@ -1,6 +1,6 @@
 import { Application, BaseTexture, Container, GC_MODES, IApplicationOptions, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import type { __EditorType } from "thing-editor/src/editor/editor";
-import type { AssetsDescriptor, GameClasses, SelectableProperty } from "thing-editor/src/editor/env";
+import type { AssetsDescriptor, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import assert from "thing-editor/src/engine/debug/assert";
