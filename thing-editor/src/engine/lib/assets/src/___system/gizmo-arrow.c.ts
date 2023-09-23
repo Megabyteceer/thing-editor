@@ -14,6 +14,7 @@ let startXPos = 0;
 let startYPos = 0;
 let startRotation = 0;
 
+let invertedY = false;
 
 const mouseHandlerGlobalUp = () => {
 	if(___GizmoArrow.draggedArrow) {
@@ -60,10 +61,10 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 			if(ev.shiftKey) {
 				dY = (game.__mouse_uncropped.y - startY) / -50;
 				dY = Math.round(dY / Math.PI * 8 - startRotation) * Math.PI / 8;
-				game.editor.editProperty('rotation', dY);
+				game.editor.editProperty('rotation', invertedY ? -dY : dY);
 			} else {
 				dY = (game.__mouse_uncropped.y - lastY) / -50;
-				game.editor.editProperty('rotation', dY, true);
+				game.editor.editProperty('rotation', invertedY ? -dY : dY, true);
 			}
 		}
 
@@ -113,6 +114,10 @@ export default class ___GizmoArrow extends Shape {
 		}
 	}
 
+	get isShowAngle() {
+		return game.editor.selection.length && game.editor.selection[0].rotation !== 0;
+	}
+
 	onPointerOver() {
 		if(!___GizmoArrow.draggedArrow) {
 			___GizmoArrow.overedArrow = this;
@@ -135,6 +140,9 @@ export default class ___GizmoArrow extends Shape {
 
 	onPointerDown(ev: PointerEvent) {
 		if(ev.buttons === 1) {
+
+			invertedY = this.dragR && game.__mouse_uncropped.x > game.editor.selection[0].worldTransform.tx;
+
 			lastX = game.__mouse_uncropped.x;
 			lastY = game.__mouse_uncropped.y;
 

@@ -4,11 +4,11 @@ import game from "thing-editor/src/engine/game";
 
 export default class ___Gizmo extends Container {
 
-	rotationGuide!: Container;
+	rotationGuides!: Container[];
 
 	init() {
 		super.init();
-		this.rotationGuide = this.findChildByName('rotation-guide') as Container;
+		this.rotationGuides = this.findChildrenByName('rotation-guide') as Container[];
 
 	}
 
@@ -23,7 +23,9 @@ export default class ___Gizmo extends Container {
 			this.visible = true;
 			this.parent.toLocal(selected, selected.parent, this);
 			this.rotation = selected.parent.getGlobalRotation();
-			this.rotationGuide.rotation = selected.rotation;
+			for(const guide of this.rotationGuides) {
+				guide.rotation = selected.rotation;
+			}
 			this.scale.x = this.scale.y = game.editor.ui.viewport.viewportScale;
 		} else {
 			this.visible = false;
