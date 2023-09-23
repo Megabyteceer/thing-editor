@@ -177,6 +177,16 @@ export default class Build {
 			game.editor.ui.modal.hideSpinner();
 			if(!game.editor.buildProjectAndExit) {
 				if(result instanceof Error) {
+					const a = result.message.split('\n');
+					const b = (a[1] as string).split(':');
+					const i = b.findIndex(t => t.indexOf('ERROR') >= 0);
+					const lineNum = b[i - 2];
+					const charNum = b[i - 1];
+					b.length = i - 2;
+					const fileName = b.join(':');
+
+					game.editor.editSource(fileName, lineNum, charNum, true);
+
 					game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
 				} else {
 					let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');

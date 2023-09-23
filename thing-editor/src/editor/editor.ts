@@ -845,7 +845,7 @@ class Editor {
 		})
 	}
 
-	editSource(fileName: string, line?: string, char?: string) {
+	editSource(fileName: string, line?: string, char?: string, absolutePath = false) {
 		if(this.editorArguments['no-vscode-integration']) {
 			return;
 		}
@@ -855,11 +855,16 @@ class Editor {
 				fileName += ':' + char;
 			}
 		}
-		let rootPath: string = thingEditorServer.argv[0].split('node_modules')[0];
-		if(fileName.startsWith('\\') || fileName.startsWith('/')) {
-			rootPath = rootPath.substring(0, rootPath.length - 1);
+		if(!absolutePath) {
+			let rootPath: string = thingEditorServer.argv[0].split('node_modules')[0];
+			if(fileName.startsWith('\\') || fileName.startsWith('/')) {
+				rootPath = rootPath.substring(0, rootPath.length - 1);
+			}
+			this.editFile(rootPath + fileName);
+		} else {
+			this.editFile(fileName);
 		}
-		this.editFile(rootPath + fileName);
+
 	}
 
 	editFile(fileName: string, findText?: string) {

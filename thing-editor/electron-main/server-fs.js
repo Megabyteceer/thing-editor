@@ -46,13 +46,19 @@ module.exports = (mainWindow) => {
 
 	ipcMain.handle('fs', async (event, command, fileName, content, ...args) => {
 		let isDebug;
-		switch(command) {
-			case 'fs/run':
-				args[0].unshift(notify);
-				return await require(path.join('../..', fileName)).apply(null, args[0]);
-			case 'fs/build':
-				isDebug = content;
-				return require('./build.js').build(fileName, isDebug, args[0]);
+		try {
+			switch(command) {
+				case 'fs/run':
+					args[0].unshift(notify);
+					return await require(path.join('../..', fileName)).apply(null, args[0]);
+				case 'fs/build':
+					isDebug = content;
+					return await require('./build.js').build(fileName, isDebug, args[0]);
+			}
+		} catch(er) {
+			console.error(er);
+			er.message = er.stack;
+			return er;
 		}
 	});
 
