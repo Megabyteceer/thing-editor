@@ -1,5 +1,5 @@
-import { Container } from "pixi.js";
-import { moveSelectionToPoint } from "thing-editor/src/editor/ui/editor-overlay";
+import { Container, Point } from "pixi.js";
+import { moveSelectionToGlobalPoint } from "thing-editor/src/editor/ui/editor-overlay";
 import game from "thing-editor/src/engine/game";
 
 export default class ___Gizmo extends Container {
@@ -12,8 +12,8 @@ export default class ___Gizmo extends Container {
 
 	}
 
-	moveXY(dX: number, dY: number, withoutChildren = false) {
-		moveSelectionToPoint(dX, dY, withoutChildren);
+	moveXY(p: Point, withoutChildren = false) {
+		moveSelectionToGlobalPoint(p, withoutChildren);
 	}
 
 	update(): void {

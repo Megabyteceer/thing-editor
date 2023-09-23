@@ -115,8 +115,14 @@ const p = new Point();
 
 function moveSelectionToMouse(ev: MouseEvent) {
 	if(game.editor.selection.length > 0) {
-		game.editor.selection[0].parent.toLocal(game.__mouse_uncropped, game.stage, p);
-		moveSelectionToPoint(p.x - game.editor.selection[0].x, p.y - game.editor.selection[0].y, ev.ctrlKey);
+		moveSelectionToGlobalPoint(game.__mouse_uncropped as any as Point, ev.ctrlKey);
+	}
+}
+
+function moveSelectionToGlobalPoint(point: Point, withoutChildren = false) {
+	if(game.editor.selection.length > 0) {
+		game.editor.selection[0].parent.toLocal(point, game.stage, p);
+		moveSelectionToPoint(p.x - game.editor.selection[0].x, p.y - game.editor.selection[0].y, withoutChildren);
 	}
 }
 
@@ -216,5 +222,5 @@ function selectByStageClick(ev: MouseEvent) {
 
 export default overlayLayer;
 
-export { moveSelectionToPoint };
+export { moveSelectionToGlobalPoint, moveSelectionToPoint };
 

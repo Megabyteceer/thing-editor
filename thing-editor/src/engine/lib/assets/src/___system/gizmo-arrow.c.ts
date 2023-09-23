@@ -1,18 +1,17 @@
-import { Container } from "pixi.js";
+import { Container, Point } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
 import ___Gizmo from "thing-editor/src/engine/lib/assets/src/___system/gizmo.c";
 import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 
-let lastX = 0;
-let lastY = 0;
+let startObjectXShift = 0;
+let startObjectYShift = 0;
 
-let startY = 0;
+let startMouseX = 0;
+let startMouseY = 0;
 
-let startXPos = 0;
-let startYPos = 0;
-let startRotation = 0;
+let startObjectRotation = 0;
 
 let invertedY = false;
 
@@ -22,54 +21,58 @@ const mouseHandlerGlobalUp = () => {
 	}
 }
 
+const p = new Point();
+
 const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 	if(___GizmoArrow.draggedArrow && (!game.mouse.click || !game.editor.selection.length)) {
 		___GizmoArrow.draggedArrow.stopDragging();
 	}
 	if(___GizmoArrow.draggedArrow) {
 
-		let dX = 0;
-		let dY = 0;
-
-
-		const gizmo = ___GizmoArrow.draggedArrow.findParentByType(___Gizmo);
+		const gizmo = ___GizmoArrow.draggedArrow.findParentByType(___Gizmo)!;
 
 		if(___GizmoArrow.draggedArrow.dragX && ___GizmoArrow.draggedArrow.dragY && ev.shiftKey) {
-
-			dX = game.__mouse_uncropped.x - startXPos;
-			dY = game.__mouse_uncropped.y - startYPos;
-
-			const len = Math.sqrt(dX * dX + dY * dY);
-			let angle = Math.atan2(dY, dX);
-			angle = Math.round(angle / Math.PI * 4 - startRotation) * Math.PI / 4;
-			dX = startXPos + Math.cos(angle) * len - game.editor.selection[0].x;
-			dY = startYPos + Math.sin(angle) * len - game.editor.selection[0].y;
+			const dx = game.__mouse_uncropped.x - startMouseX;
+			const dy = game.__mouse_uncropped.y - startMouseY;
+			let angle = Math.atan2(dy, dx);
+			let len = Math.sqrt(dx * dx + dy * dy);
+			angle = Math.round((angle - gizmo.rotation) / (Math.PI / 4)) * (Math.PI / 4) + gizmo.rotation;
+			p.x = startMouseX + Math.cos(angle) * len + startObjectXShift;
+			p.y = startMouseY + Math.sin(angle) * len + startObjectYShift;
 			___GizmoArrow.draggedArrow.snapGuide!.visible = true;
-			___GizmoArrow.draggedArrow.snapGuide!.rotation = angle;
-		} else {
-			if(___GizmoArrow.draggedArrow.dragX) {
-				dX = game.__mouse_uncropped.x - lastX;
+			___GizmoArrow.draggedArrow.snapGuide!.rotation = angle - gizmo.rotation;
+
+		} else if(___GizmoArrow.draggedArrow.dragX || ___GizmoArrow.draggedArrow.dragY) {
+			const dx = game.__mouse_uncropped.x - startMouseX;
+			const dy = game.__mouse_uncropped.y - startMouseY;
+			let angle = Math.atan2(dy, dx);
+			let len = Math.sqrt(dx * dx + dy * dy);
+			if(!___GizmoArrow.draggedArrow.dragY) {
+				len *= Math.abs(Math.cos(angle - gizmo.rotation));
+				angle = Math.round((angle - gizmo.rotation) / Math.PI) * Math.PI + gizmo.rotation;
+			} else if(!___GizmoArrow.draggedArrow.dragX) {
+				len *= Math.abs(Math.sin(angle - gizmo.rotation));
+				angle = Math.round((angle - gizmo.rotation - Math.PI / 2) / Math.PI) * Math.PI + gizmo.rotation + Math.PI / 2;
 			}
-			if(___GizmoArrow.draggedArrow.dragY) {
-				dY = game.__mouse_uncropped.y - lastY;
-			}
+			p.x = startMouseX + Math.cos(angle) * len + startObjectXShift;
+			p.y = startMouseY + Math.sin(angle) * len + startObjectYShift;
 		}
 
-		gizmo?.moveXY(dX, dY, ev.ctrlKey);
+
+		gizmo?.moveXY(p, ev.ctrlKey);
 
 		if(___GizmoArrow.draggedArrow.dragR) {
-			if(ev.shiftKey) {
-				dY = (game.__mouse_uncropped.y - startY) / -50;
-				dY = Math.round(dY / Math.PI * 8 - startRotation) * Math.PI / 8;
-				game.editor.editProperty('rotation', invertedY ? -dY : dY);
-			} else {
-				dY = (game.__mouse_uncropped.y - lastY) / -50;
-				game.editor.editProperty('rotation', invertedY ? -dY : dY, true);
+			let targetFullShift = (game.__mouse_uncropped.y - startMouseY) / -50;
+			if(invertedY) {
+				targetFullShift *= -1;
 			}
+			targetFullShift += startObjectRotation;
+			if(ev.shiftKey) {
+				targetFullShift = Math.round(targetFullShift / Math.PI * 8) * Math.PI / 8;
+			}
+			const dY = targetFullShift - game.editor.selection[0].rotation;
+			game.editor.editProperty('rotation', dY, true);
 		}
-
-		lastX = game.__mouse_uncropped.x;
-		lastY = game.__mouse_uncropped.y;
 	}
 };
 
@@ -143,14 +146,15 @@ export default class ___GizmoArrow extends Shape {
 
 			invertedY = this.dragR && game.__mouse_uncropped.x > game.editor.selection[0].worldTransform.tx;
 
-			lastX = game.__mouse_uncropped.x;
-			lastY = game.__mouse_uncropped.y;
+			startMouseX = game.__mouse_uncropped.x;
+			startMouseY = game.__mouse_uncropped.y;
 
-			startY = game.__mouse_uncropped.y;
+			game.stage.toLocal(game.editor.selection[0], game.editor.selection[0].parent, p);
 
-			startXPos = game.editor.selection[0].x;
-			startYPos = game.editor.selection[0].y;
-			startRotation = game.editor.selection[0].rotation;
+			startObjectXShift = p.x - game.__mouse_uncropped.x;
+			startObjectYShift = p.y - game.__mouse_uncropped.y;
+
+			startObjectRotation = game.editor.selection[0].rotation;
 
 			if(ev.altKey) {
 				editorUtils.clone();
