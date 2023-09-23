@@ -105,8 +105,6 @@ class Editor {
 
 	restartInProgress = false;
 
-	__wrongTexture = Texture.from('img/wrong-texture.png');
-
 	isProjectOpen = false;
 
 	currentPathChoosingField?: EditablePropertyDesc;

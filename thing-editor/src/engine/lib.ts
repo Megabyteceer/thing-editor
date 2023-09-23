@@ -1,31 +1,24 @@
 
+import { Assets, Cache, Container, MIPMAP_MODES, Spritesheet, Texture, WRAP_MODES } from "pixi.js";
 import { AssetsDescriptor, KeyedMap, KeyedObject, NodeExtendData, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import TLib from "thing-editor/src/editor/prefabs-typing";
-
-import { Container, MIPMAP_MODES, Texture, WRAP_MODES } from "pixi.js";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-
-import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
-
-import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
-import Pool from "thing-editor/src/engine/utils/pool";
-
 import fs, { AssetType, FileDesc, FileDescImage, FileDescL18n, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
-
+import TLib from "thing-editor/src/editor/prefabs-typing";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import getPrefabDefaults, { invalidatePrefabDefaults } from "thing-editor/src/editor/utils/get-prefab-defaults";
 import { checkForOldReferences, markOldReferences } from "thing-editor/src/editor/utils/old-references-detect";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs, { __refreshPrefabRefsPrepare } from "thing-editor/src/editor/utils/refresh-prefabs";
+import { getCurrentStack } from "thing-editor/src/editor/utils/stack-utils";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
 import HowlSound from "thing-editor/src/engine/HowlSound";
-
-
-import { getCurrentStack } from "thing-editor/src/editor/utils/stack-utils";
+import assert from "thing-editor/src/engine/debug/assert";
+import game from "thing-editor/src/engine/game";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import L from "thing-editor/src/engine/utils/l";
+import Pool from "thing-editor/src/engine/utils/pool";
+import RemoveHolder from "thing-editor/src/engine/utils/remove-holder";
 
 let classes: GameClasses;
 let scenes: KeyedMap<SerializedObject> = {};
@@ -41,6 +34,8 @@ export default class Lib
 	extends TLib
 /// #endif
 {
+
+	static resources: KeyedObject = {};
 
 	static REMOVED_TEXTURE: Texture;
 
@@ -120,6 +115,69 @@ export default class Lib
 		Texture.removeFromCache(texture);
 		texture.destroy(true);
 		Object.assign(texture, textures.EMPTY);
+	}
+
+
+	/// #if EDITOR
+	static removeAtlas(file: FileDesc) {
+		Cache.remove(file.fileName);
+		for(const textureName in(file.asset as KeyedObject).frames) {
+			fs.removeSubAsset(textureName, AssetType.IMAGE);
+			Lib.__deleteTexture(textureName);
+		}
+	}
+	/// #endif
+
+	static addAtlas(name: string, url: string, attempt = 0
+		/// #if EDITOR
+		, parentAsset?: FileDesc
+		/// #endif
+	) {
+		game.loadingAdd(url);
+		Assets.load(
+			/// #if EDITOR
+			getVersionedFileName(parentAsset!) ||
+			/// #endif
+			url).then((atlas: Spritesheet) => {
+				for(const textureName in atlas.textures) {
+					const texture = atlas.textures[textureName];
+					textures[textureName] = texture;
+
+					/// #if EDITOR
+					const existingAsset = fs.getFileByAssetName(textureName, AssetType.IMAGE);
+					if(existingAsset) {
+						existingAsset.asset = texture;
+						existingAsset.parentAsset = parentAsset;
+					} else {
+						const cloneAsset = Object.assign({}, parentAsset);
+						cloneAsset.asset = texture;
+						cloneAsset.assetName = textureName;
+						cloneAsset.parentAsset = parentAsset;
+						cloneAsset.assetType = AssetType.IMAGE;
+						fs.addSubAsset(cloneAsset);
+					}
+					/// #endif
+				}
+				Lib.resources[name] = atlas;
+				game.loadingRemove(url);
+				/// #if EDITOR
+				game.editor.ui.refresh();
+				/// #endif
+			}).catch((_er) => {
+				if(attempt < 3 && !game._loadingErrorIsDisplayed) {
+					attempt++;
+					setTimeout(() => {
+						Lib.addAtlas(name, url + ((attempt === 1) ? '?a' : 'a'), attempt
+							/// #if EDITOR
+							, parentAsset
+							/// #endif
+						);
+						game.loadingRemove(url);
+					}, attempt * 1000);
+				} else {
+					game._onLoadingError(url);
+				}
+			});
 	}
 
 	static addTexture(name: string, textureURL: string | Texture, attempt = 0) {
@@ -428,6 +486,11 @@ export default class Lib
 		for(const soundEntry of data.sounds) {
 			Lib.addSound(soundEntry[0], assetsRoot + soundEntry[0], soundEntry[1]);
 		}
+		if(data.resources) {
+			for(const atlasName of data.resources) {
+				Lib.addAtlas(atlasName, assetsRoot + atlasName + '.json');
+			}
+		}
 	}
 
 	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
@@ -693,9 +756,9 @@ export default class Lib
 		delete soundsHowlers[file.assetName];
 	}
 
-	static __deleteTexture(file: FileDescImage) {
-		if(textures[file.assetName]) {
-			const texture = textures[file.assetName];
+	static __deleteTexture(textureName: string) {
+		if(textures[textureName]) {
+			const texture = textures[textureName];
 			let tmp = texture._updateID;
 			Texture.removeFromCache(texture);
 			Object.assign(texture, Lib.REMOVED_TEXTURE);
@@ -840,6 +903,10 @@ Object.freeze(EMPTY_NODE_EXTEND_DATA);
 
 export { __onAssetAdded, __onAssetDeleted, __onAssetUpdated, constructRecursive };
 
+const isAtlasAsset = (asset: any) => {
+	return (asset as KeyedObject).meta && (asset as KeyedObject).meta.scale
+}
+
 const __onAssetAdded = (file: FileDesc) => {
 	switch(file.assetType) {
 		case AssetType.PREFAB:
@@ -863,7 +930,11 @@ const __onAssetAdded = (file: FileDesc) => {
 			break;
 		case AssetType.RESOURCE:
 			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
-			game.editor.LanguageView.addAssets(file as FileDescL18n);
+			if(isAtlasAsset(file.asset)) {
+				Lib.addAtlas(file.assetName, file.fileName, 0, file);
+			} else {
+				game.editor.LanguageView.addAssets(file as FileDescL18n);
+			}
 			break;
 	}
 }
@@ -915,8 +986,14 @@ const __onAssetUpdated = (file: FileDesc) => {
 			Lib.__addSoundEditor(file as FileDescSound);
 			break;
 		case AssetType.RESOURCE:
-			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
-			game.editor.LanguageView.addAssets(file as FileDescL18n);
+			if(isAtlasAsset(file.asset)) {
+				Lib.removeAtlas(file);
+				file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
+				Lib.addAtlas(file.assetName, file.fileName, 0, file);
+			} else {
+				file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
+				game.editor.LanguageView.addAssets(file as FileDescL18n);
+			}
 			break;
 	}
 }
@@ -933,11 +1010,16 @@ const __onAssetDeleted = (file: FileDesc) => {
 			game.editor.ui.refresh();
 			break;
 		case AssetType.IMAGE:
-			Lib.__deleteTexture(file as FileDescImage);
+			Lib.__deleteTexture(file.assetName);
 			game.editor.ui.refresh();
 			break;
 		case AssetType.RESOURCE:
-			game.editor.LanguageView.removeAsset(file as FileDescL18n);
+			if(isAtlasAsset(file.asset)) {
+				Lib.removeAtlas(file);
+				game.editor.ui.refresh();
+			} else {
+				game.editor.LanguageView.removeAsset(file as FileDescL18n);
+			}
 			break;
 		case AssetType.SOUND:
 			Lib.__deleteSound(file as FileDescSound);
@@ -1007,4 +1089,5 @@ const _filterStaticTriggersRecursive = (data: SerializedObject) => {
 	}
 }
 
-export { removeHoldersToCleanup };
+export { isAtlasAsset, removeHoldersToCleanup };
+

@@ -1,5 +1,5 @@
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
-import fs, { FileDesc, FileDescImage } from "thing-editor/src/editor/fs";
+import fs, { FileDescImage } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
@@ -65,7 +65,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 }
 
 
-const assetItemRendererImage = (file: FileDesc) => {
+const assetItemRendererImage = (file: FileDescImage) => {
 	return R.div(
 		{
 			onContextMenu: (ev: PointerEvent) => {

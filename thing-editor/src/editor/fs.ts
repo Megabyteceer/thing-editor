@@ -26,6 +26,9 @@ interface FileDesc {
 	lib: LibInfo | null,
 	libInfoCache?: ComponentChildren,
 	v?: number;
+
+	parentAsset?: FileDesc;
+
 	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound | KeyedObject
 }
 
@@ -66,13 +69,18 @@ const assetsListsByType: Map<AssetType, FileDesc[]> = new Map();
 
 let allAssets: FileDesc[] = [];
 
-const assetsByTypeByName: Map<AssetType, Map<string, FileDesc>> = new Map();
+let prevAssetsByTypeByName: Map<AssetType, Map<string, FileDesc>>;
+let assetsByTypeByName: Map<AssetType, Map<string, FileDesc>>;
 
-for(const assetType of AllAssetsTypes) {
-	const map = new Map();
-	assetsByTypeByName.set(assetType, map);
-	assetsListsByType.set(assetType, []);
+const resetAssetsMap = () => {
+	assetsByTypeByName = new Map();
+
+	for(const assetType of AllAssetsTypes) {
+		assetsByTypeByName.set(assetType, new Map());
+		assetsListsByType.set(assetType, []);
+	}
 }
+resetAssetsMap();
 
 const ASSETS_PARSERS = {
 	'.png': AssetType.IMAGE,
@@ -224,6 +232,28 @@ export default class fs {
 		return assetsByTypeByName.get(assetType)!.get(assetName) as FileDesc;
 	}
 
+	static removeSubAsset(assetName: string, type: AssetType) {
+		const file = this.getFileByAssetName(assetName, type);
+		if(file) {
+			const list = (assetsListsByType.get(file.assetType) as FileDesc[]);
+			list.splice(list.indexOf(file), 1);
+			allAssets.splice(allAssets.indexOf(file), 1);
+			assetsByTypeByName.get(file.assetType)!.delete(file.assetName);
+		}
+		if(prevAssetsByTypeByName) {
+			const file = prevAssetsByTypeByName.get(type)!.get(assetName) as FileDesc;
+			if(file) {
+				prevAssetsByTypeByName.get(file.assetType as AssetType)!.delete(assetName);
+			}
+		}
+	}
+
+	static addSubAsset(file: FileDesc) {
+		(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
+		allAssets.push(file);
+		(assetsByTypeByName.get(file.assetType as AssetType) as Map<string, FileDesc>).set(file.assetName, file);
+	}
+
 	/** returns new mTime */
 	static writeFile(fileName: string, data: string | Blob | KeyedObject): number {
 		if(typeof data !== 'string' && !(data instanceof Blob)) {
@@ -356,7 +386,7 @@ export default class fs {
 				game.editor.ui.status.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
 				return;
 			}
-			const assetName = file.fileName.substring(dirName.length);
+			const assetName = file.assetName || file.fileName.substring(dirName.length);
 			for(const ext in ASSETS_PARSERS) {
 				if(assetName.endsWith(ext)) {
 					const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
@@ -383,19 +413,11 @@ export default class fs {
 			dirNames = lastAssetsDirs;
 		}
 
-		const prevAllAssets = allAssets;
-		const prevAllAssetsMap = new Map();
-		for(const f of prevAllAssets) {
-			prevAllAssetsMap.set(f.fileName, f);
-		}
+		prevAssetsByTypeByName = assetsByTypeByName;
+		resetAssetsMap();
 		allAssets = [];
 
 		console.log('refresh assets list');
-
-		for(const assetType of AllAssetsTypes) {
-			assetsListsByType.set(assetType, []);
-			assetsByTypeByName.get(assetType)?.clear();
-		}
 
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('EMPTY', EMPTY);
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
@@ -421,33 +443,37 @@ export default class fs {
 				(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
 				allAssets.push(file);
 
-				if(prevAllAssets !== undefined) {
-					const oldAsset = prevAllAssetsMap!.get(file.fileName);
-					if(!oldAsset) {
+				const oldAsset = prevAssetsByTypeByName.get(file.assetType)!.get(file.assetName);
+				if(!oldAsset) {
+					fs.rebuildSoundsIfNeed(file);
+					__onAssetAdded(file);
+				} else {
+					file.asset = oldAsset.asset;
+
+					file.v = (oldAsset.v || 0) + 1;
+
+					if(oldAsset.mTime !== file.mTime) {
 						fs.rebuildSoundsIfNeed(file);
-						__onAssetAdded(file);
-					} else {
-						file.asset = oldAsset.asset;
-
-						file.v = (oldAsset.v || 0) + 1;
-
-						if(oldAsset.mTime !== file.mTime) {
-							fs.rebuildSoundsIfNeed(file);
-							__onAssetUpdated(file);
-						}
+						__onAssetUpdated(file);
 					}
 				}
 			}
 		}
 
-		if(prevAllAssets) {
-			for(const file of prevAllAssets) {
+		prevAssetsByTypeByName.forEach((prevAllAssets) => {
+			prevAllAssets.forEach((file) => {
 				if(!file.assetName.startsWith(EDITOR_BACKUP_PREFIX) && !fs.getFileByAssetName(file.assetName, file.assetType)) {
-					fs.rebuildSoundsIfNeed(file);
-					__onAssetDeleted(file);
+					if(file.parentAsset) {
+						const newParentAsset = this.getFileByAssetName(file.parentAsset.assetName, file.parentAsset.assetType);
+						file.parentAsset = newParentAsset;
+						this.addSubAsset(file);
+					} else {
+						fs.rebuildSoundsIfNeed(file);
+						__onAssetDeleted(file);
+					}
 				}
-			}
-		}
+			});
+		});
 
 		sortAssets();
 

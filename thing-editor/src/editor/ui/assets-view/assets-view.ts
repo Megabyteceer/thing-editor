@@ -20,7 +20,7 @@ import Lib from "thing-editor/src/engine/lib";
 const SETTINGS_KEY = '__EDITOR_assetsView_list';
 
 const assetsItemsRenderers: Map<AssetType, (file: FileDesc) => ComponentChild> = new Map();
-assetsItemsRenderers.set(AssetType.IMAGE, assetItemRendererImage);
+assetsItemsRenderers.set(AssetType.IMAGE, assetItemRendererImage as any);
 
 assetsItemsRenderers.set(AssetType.SOUND, assetItemRendererSound);
 

@@ -1,7 +1,7 @@
 import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h, render } from 'preact';
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
-import { FileDesc, FileDescImage } from 'thing-editor/src/editor/fs';
+import { FileDescImage } from 'thing-editor/src/editor/fs';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
 import { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
@@ -78,14 +78,35 @@ class R {
 		return h(Fragment, null, ...children);
 	}
 
-	static imageIcon(file: FileDesc) {
+	static imageIcon(file: FileDescImage) {
 		if(file) {
-			return R.img({
-				className: 'preview-img',
-				src: (file as FileDescImage).v ? (file.fileName + '?v=' + (file as FileDescImage).v) : file.fileName,
-				onMouseEnter: onImageAssetEnter,
-				onMouseLeave: onImageAssetLeave
-			});
+			if(file.parentAsset) {
+				const frame = (file.parentAsset.asset as any).frames[file.assetName].frame;
+				const textureUrl = file.asset.baseTexture.resource.src;
+				const scale = Math.min(30 / frame.w, 30 / frame.h);
+				const width = frame.w * scale;
+				return R.div({
+					style: {
+						verticalAlign: 'middle',
+						display: 'inline-block',
+						backgroundImage: 'url(' + ((file as FileDescImage).v ? (textureUrl + '?v=' + (file as FileDescImage).v) : textureUrl) + ')',
+						objectFit: 'none',
+						backgroundPosition: (-frame.x * scale) + 'px -' + (frame.y * scale) + 'px',
+						marginLeft: (30 - width) / 2 + 'px',
+						marginRight: (50 - width) / 2 + 'px',
+						width: width + 'px',
+						height: '30px',
+						backgroundSize: (scale * file.asset.baseTexture.width) + 'px'
+					}
+				});
+			} else {
+				return R.img({
+					className: 'preview-img',
+					src: (file as FileDescImage).v ? (file.fileName + '?v=' + (file as FileDescImage).v) : file.fileName,
+					onMouseEnter: onImageAssetEnter,
+					onMouseLeave: onImageAssetLeave
+				});
+			}
 		} else {
 			return R.img({
 				className: 'preview-img',
