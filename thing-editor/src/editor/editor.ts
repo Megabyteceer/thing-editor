@@ -22,6 +22,7 @@ import { Container, Point, Texture } from "pixi.js";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
+import "thing-editor/src/editor/ui/sound-profiler";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";

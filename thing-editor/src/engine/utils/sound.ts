@@ -2,14 +2,14 @@ import type { KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src
 /// #if EDITOR
 import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 /// #endif
-import fs, { AssetType } from "thing-editor/src/editor/fs";
+
+import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 const MIN_VOL_THRESHOLD = 0.005;
 const MIN_VOL_ENABLE = 0.05;
-
 
 function normalizeVolForEnabling(vol: number, defaultVol: number) {
 	return (vol > MIN_VOL_ENABLE) ? vol : defaultVol;
@@ -219,6 +219,10 @@ export default class Sound {
 					/// #if DEBUG
 					highlightPlayedSound(soundId);
 					/// #endif
+					/// #if EDITOR
+					editorEvents.emit('soundPlay', soundId, volume);
+
+					/// #endif
 				} catch(er) { } // eslint-disable-line no-empty
 			}
 		}
@@ -366,9 +370,7 @@ function highlightPlayedSound(soundId: string) {
 function openIndexedDB(): IDBOpenDBRequest {
 	//@ts-ignore 
 	let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB as IDBFactory;
-
-	let openDB = indexedDB.open("MyDatabase", 1);
-	return openDB;
+	return indexedDB.open("MyDatabase", 1);
 }
 
 function getStoreIndexedDB(openDB: IDBOpenDBRequest) {
@@ -382,12 +384,10 @@ function saveIndexedDB(filename: string, filedata?: SoundData) {
 	let openDB = openIndexedDB();
 	openDB.onsuccess = function () {
 		let db = getStoreIndexedDB(openDB);
-
 		db.store.put({ id: filename, data: filedata });
 	};
 	return true;
 }
-
 
 function loadIndexedDB(filename: string, callback: (res: SoundData) => void) {
 	const openDB = openIndexedDB();
@@ -410,7 +410,7 @@ function loadIndexedDB(filename: string, callback: (res: SoundData) => void) {
 function showSndDebugger() {
 
 	/// #if EDITOR
-	//return;
+	return;
 	/// #endif
 
 	// sounds playing animation
@@ -439,12 +439,12 @@ function showSndDebugger() {
 		sndDebugger.style.overflowY = "auto";
 		document.body.appendChild(sndDebugger);
 
-		let libSounds = fs.getAssetsList(AssetType.SOUND);
-		for(let sndName of libSounds) {
-			loadIndexedDB(sndName.assetName, (data) => {
+		let libSounds = Lib.sounds;
+		for(let sndName in libSounds) {
+			loadIndexedDB(sndName, (data) => {
 				if(data) {
-					dataStore[sndName.assetName] = data;
-					Lib.__overrideSound(sndName.assetName, data.data);
+					dataStore[sndName] = data;
+					Lib.__overrideSound(sndName, data.data);
 					showSndDebugger();
 				}
 			});

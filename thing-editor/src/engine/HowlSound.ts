@@ -19,10 +19,12 @@ export default class HowlSound extends Howl {
 		this.once('load', () => {
 			game.loadingRemove(this);
 			// hack precise duration
-			assert(typeof (this as any)._duration === 'number', 'Howler _duration property moved.');
-			assert(Math.abs((this as any)._duration - this.preciseDuration) < 0.1, "Sound duration detection error. Sounds are too different: " + (this as any)._src);
-			(this as any)._duration = this.preciseDuration;
-			(this as any)._sprite.__default[1] = this.preciseDuration * 1000;
+			if(this.preciseDuration) {
+				assert(typeof (this as any)._duration === 'number', 'Howler _duration property moved.');
+				assert(Math.abs((this as any)._duration - this.preciseDuration) < 0.1, "Sound duration detection error. Sounds are too different: " + (this as any)._src);
+				(this as any)._duration = this.preciseDuration;
+				(this as any)._sprite.__default[1] = this.preciseDuration * 1000;
+			}
 		});
 
 		let attempt = 0;

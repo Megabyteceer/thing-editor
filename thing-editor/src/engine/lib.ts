@@ -35,6 +35,8 @@ export default class Lib
 /// #endif
 {
 
+	static sounds: KeyedMap<HowlSound>;
+
 	static resources: KeyedObject = {};
 
 	static REMOVED_TEXTURE: Texture;
@@ -1091,3 +1093,4 @@ const _filterStaticTriggersRecursive = (data: SerializedObject) => {
 
 export { isAtlasAsset, removeHoldersToCleanup };
 
+Lib.sounds = soundsHowlers;

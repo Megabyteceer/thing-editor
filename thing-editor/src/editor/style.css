@@ -1303,6 +1303,78 @@ input[disabled] {
 }
 
 
+.music-profiler-row {
+	border: #ddd solid 1px;
+    border-radius: 12px;
+    padding: 0 4px;
+	height: 24px;
+	display: grid;
+	margin: 2px 0;
+	align-content: center;
+	grid-template-columns: 100px 100px 100px;
+}
+
+.music-profiler-row-text {
+	padding: 0 8px;
+	overflow:hidden;
+	white-space: nowrap;
+	text-overflow:ellipsis;
+	height: 20px;
+}
+
+.sound-vol-bar-bg {
+	border-radius: 9px;
+	border: #489648 solid 1px;
+	height: 18px;
+	width: 100px;
+	background: rgb(62, 88, 62);
+	position: relative;
+	overflow: hidden;
+	text-align: center;
+    color: #7e998e;
+    font-size: 84%;
+}
+.sound-vol-bar {
+	height: 18px;
+	background: rgb(35, 185, 35);
+	display: inline-block;
+	position: absolute;
+}
+
+#sound-profiler {
+	z-index: 20 !important;
+}
+
+.sound-profiler-lane {
+	border-bottom: #e9d5cb solid 1px;
+	border-top: #e9d5cb solid 1px;
+	margin-bottom: -1px;
+	overflow: hidden;
+	position: relative;
+	height: 80px;
+}
+.sound-profiler-sound-entry {
+	opacity: 0.6;
+	padding: 0 5px;
+    font-size: 90%;
+	border-radius: 3px;
+	border: #ffffff solid 1px;
+	position: absolute;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	height: 20px;
+}
+
+.sound-profiler-sound-entry:hover {
+	opacity: 1;
+	z-index: 1;
+	background: #ffeacf;
+	border-color: #ffbea2;
+}
+
+
+
+
 
 
 
