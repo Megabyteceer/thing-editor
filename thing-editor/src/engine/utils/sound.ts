@@ -464,7 +464,7 @@ function showSndDebugger() {
 		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName + '</b></td><td><input value="Загрузить..." style="width:90px;" type="file" accept="audio/x-wav" class="snd-override"/></td><td>');
 		let overrideData = getOverrideData(sndName);
 		if(overrideData) {
-			txt.push(' ЗАГРУЖЕН (' + overrideData.name + ')</td><td><button class="snd-clear">x</button>');
+			txt.push(' ЗАГРУЖЕН (' + overrideData!.name + ')</td><td><button class="snd-clear">x</button>');
 		} else {
 			txt.push('-</td><td>-');
 		}
@@ -551,6 +551,6 @@ function setOverrideData(sndName: string, data?: SoundData) {
 }
 
 function getOverrideData(sndName: string) {
-	return dataStore[sndName];
+	return dataStore[sndName]!;
 }
 /// #endif

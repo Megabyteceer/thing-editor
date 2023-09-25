@@ -25,8 +25,14 @@ let mainWindow;
 const path = require('path');
 
 const PositionRestoreWindow = require("./thing-editor-window.js");
-const {ChildProcess, exec} = require("child_process");
+const {exec} = require("child_process");
 
+process.on('unhandledRejection', function (err) {
+	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
+})
+process.on('uncaughtException', function (err) {
+	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
+});
 
 const createWindow = () => {
 	/** @type BrowserWindowConstructorOptions */
@@ -91,7 +97,7 @@ const createWindow = () => {
 		mainWindow.loadURL('http://localhost:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
 			if(er.code === 'ERR_CONNECTION_REFUSED') {
-				dialog.showErrorBox(mainWindow, 'Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
+				dialog.showErrorBox('Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 			}
 		});
 		setTimeout(loadEditorIndexHTML, 600);
