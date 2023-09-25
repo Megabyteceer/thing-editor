@@ -1018,7 +1018,9 @@ const sortFieldsByTime = (a: TimelineKeyFrame, b: TimelineKeyFrame) => {
 
 function onTimelineScroll(ev: Event) {
 	selectionFrame.cancelSelection();
-	(document.querySelector('.objects-timeline-labels') as HTMLDivElement).style.left = (ev.target as HTMLDivElement).scrollLeft + 'px';
+	for(const element of(document.querySelectorAll('.objects-timeline-labels') as any as HTMLDivElement[])) {
+		element.style.left = (ev.target as HTMLDivElement).scrollLeft + 'px';
+	}
 	(document.querySelector('.time-marker-body') as HTMLDivElement).style.top = (ev.target as HTMLDivElement).scrollTop + 'px';
 }
 
