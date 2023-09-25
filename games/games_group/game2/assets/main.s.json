@@ -410,6 +410,413 @@
 					}
 				}
 			]
+		},
+		{
+			"c": "Shape",
+			"p": {
+				"name": "scroll-mouse-handler",
+				"interactive": true
+			}
+		},
+		{
+			"c": "ScrollLayer",
+			"p": {
+				"visibleArea": {
+					"x": 0,
+					"y": 0,
+					"w": 92,
+					"h": 50
+				},
+				"fullArea": {
+					"x": 0,
+					"y": 0,
+					"w": 331,
+					"h": 410
+				},
+				"mouseHandler": "all.scroll-mouse-handler"
+			},
+			":": [
+				{
+					"c": "DSprite",
+					"p": {
+						"name": "slot/symbols/S",
+						"x": 44,
+						"y": 48,
+						"image": "bunny.png"
+					},
+					":": [
+						{
+							"c": "MovieClip",
+							"p": {
+								"alpha": 0,
+								"image": "bunny.png",
+								"blendMode": 1,
+								"isPlaying": false,
+								"timeline": {
+									"l": {
+										"stop-reel-symbol": 0
+									},
+									"p": 0.02,
+									"d": 0.85,
+									"f": [
+										{
+											"n": "scale.x",
+											"t": [
+												{
+													"v": 1,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1.4,
+													"t": 15,
+													"m": 1
+												}
+											]
+										},
+										{
+											"n": "scale.y",
+											"t": [
+												{
+													"v": 1,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1.4,
+													"t": 15,
+													"m": 1
+												}
+											]
+										},
+										{
+											"n": "visible",
+											"t": [
+												{
+													"v": true,
+													"t": 0,
+													"m": 2
+												},
+												{
+													"v": false,
+													"t": 15,
+													"m": 2,
+													"a": "this.stop"
+												}
+											]
+										},
+										{
+											"n": "alpha",
+											"t": [
+												{
+													"v": 0,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1,
+													"t": 4,
+													"m": 1
+												},
+												{
+													"v": 0,
+													"t": 15,
+													"m": 1
+												}
+											]
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"c": "DSprite",
+					"p": {
+						"name": "slot/symbols/S",
+						"x": 44,
+						"y": 151,
+						"image": "bunny.png"
+					},
+					":": [
+						{
+							"c": "MovieClip",
+							"p": {
+								"alpha": 0,
+								"image": "bunny.png",
+								"blendMode": 1,
+								"isPlaying": false,
+								"timeline": {
+									"l": {
+										"stop-reel-symbol": 0
+									},
+									"p": 0.02,
+									"d": 0.85,
+									"f": [
+										{
+											"n": "scale.x",
+											"t": [
+												{
+													"v": 1,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1.4,
+													"t": 15,
+													"m": 1
+												}
+											]
+										},
+										{
+											"n": "scale.y",
+											"t": [
+												{
+													"v": 1,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1.4,
+													"t": 15,
+													"m": 1
+												}
+											]
+										},
+										{
+											"n": "visible",
+											"t": [
+												{
+													"v": true,
+													"t": 0,
+													"m": 2
+												},
+												{
+													"v": false,
+													"t": 15,
+													"m": 2,
+													"a": "this.stop"
+												}
+											]
+										},
+										{
+											"n": "alpha",
+											"t": [
+												{
+													"v": 0,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1,
+													"t": 4,
+													"m": 1
+												},
+												{
+													"v": 0,
+													"t": 15,
+													"m": 1
+												}
+											]
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"c": "DSprite",
+					"p": {
+						"name": "slot/symbols/S",
+						"x": 44,
+						"y": 264,
+						"image": "bunny.png"
+					},
+					":": [
+						{
+							"c": "MovieClip",
+							"p": {
+								"alpha": 0,
+								"image": "bunny.png",
+								"blendMode": 1,
+								"isPlaying": false,
+								"timeline": {
+									"l": {
+										"stop-reel-symbol": 0
+									},
+									"p": 0.02,
+									"d": 0.85,
+									"f": [
+										{
+											"n": "scale.x",
+											"t": [
+												{
+													"v": 1,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1.4,
+													"t": 15,
+													"m": 1
+												}
+											]
+										},
+										{
+											"n": "scale.y",
+											"t": [
+												{
+													"v": 1,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1.4,
+													"t": 15,
+													"m": 1
+												}
+											]
+										},
+										{
+											"n": "visible",
+											"t": [
+												{
+													"v": true,
+													"t": 0,
+													"m": 2
+												},
+												{
+													"v": false,
+													"t": 15,
+													"m": 2,
+													"a": "this.stop"
+												}
+											]
+										},
+										{
+											"n": "alpha",
+											"t": [
+												{
+													"v": 0,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1,
+													"t": 4,
+													"m": 1
+												},
+												{
+													"v": 0,
+													"t": 15,
+													"m": 1
+												}
+											]
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"c": "DSprite",
+					"p": {
+						"name": "slot/symbols/S",
+						"x": 44,
+						"y": 366,
+						"image": "bunny.png"
+					},
+					":": [
+						{
+							"c": "MovieClip",
+							"p": {
+								"alpha": 0,
+								"image": "bunny.png",
+								"blendMode": 1,
+								"isPlaying": false,
+								"timeline": {
+									"l": {
+										"stop-reel-symbol": 0
+									},
+									"p": 0.02,
+									"d": 0.85,
+									"f": [
+										{
+											"n": "scale.x",
+											"t": [
+												{
+													"v": 1,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1.4,
+													"t": 15,
+													"m": 1
+												}
+											]
+										},
+										{
+											"n": "scale.y",
+											"t": [
+												{
+													"v": 1,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1.4,
+													"t": 15,
+													"m": 1
+												}
+											]
+										},
+										{
+											"n": "visible",
+											"t": [
+												{
+													"v": true,
+													"t": 0,
+													"m": 2
+												},
+												{
+													"v": false,
+													"t": 15,
+													"m": 2,
+													"a": "this.stop"
+												}
+											]
+										},
+										{
+											"n": "alpha",
+											"t": [
+												{
+													"v": 0,
+													"t": 0,
+													"m": 1
+												},
+												{
+													"v": 1,
+													"t": 4,
+													"m": 1
+												},
+												{
+													"v": 0,
+													"t": 15,
+													"m": 1
+												}
+											]
+										}
+									]
+								}
+							}
+						}
+					]
+				}
+			]
 		}
 	]
 }

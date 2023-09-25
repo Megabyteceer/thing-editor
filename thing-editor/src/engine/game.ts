@@ -627,8 +627,9 @@ class Game {
 		if((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
 			/// #endif
 
-
-			//TODO ScrollLayer.updateGlobal();
+			if(game.classes.ScrollLayer) {
+				game.classes.ScrollLayer.updateGlobal();
+			}
 
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
 			/// #if EDITOR
