@@ -12,7 +12,7 @@ export default class TimelilneFieldControls extends Component<TimelilneFieldCont
 
 	render() {
 		let fieldTimeline = this.props.owner;
-		return R.div({ className: 'objects-timeline-labels', onMouseDown: sp, style: { height: this.props.owner.props.owner.props.heightZoom } },
+		return R.div({ className: 'objects-timeline-labels timeline-fixed-block', onMouseDown: sp, style: { height: this.props.owner.props.owner.props.heightZoom } },
 			R.span({ className: 'timeline-buttons-group' },
 				R.span({ className: 'props-label selectable-text' },
 					fieldTimeline.props.field.n

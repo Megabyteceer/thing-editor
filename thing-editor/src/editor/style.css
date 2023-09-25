@@ -285,6 +285,10 @@ button:hover {
 	background: #000000;
 }
 
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
 textarea {
 	min-height: 25px;
 }
@@ -999,8 +1003,11 @@ input[disabled] {
 
 #window-info,
 #language-view {
-	z-index: 20 !important;
 	border: 1px solid #995500;
+}
+
+.additional-window-layer .window-body {
+	z-index: 20 !important;
 }
 
 .info-item {
@@ -1339,10 +1346,6 @@ input[disabled] {
 	background: rgb(35, 185, 35);
 	display: inline-block;
 	position: absolute;
-}
-
-#sound-profiler {
-	z-index: 20 !important;
 }
 
 .sound-profiler-lane {

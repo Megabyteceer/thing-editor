@@ -47,6 +47,11 @@ function selectionFrameRef(ref: TimelineSelectFrame | null) {
 	selectionFrame = ref!;
 }
 
+let fieldLabelTimelineProps = { className: 'timeline-settings objects-timeline-labels timeline-fixed-block' };
+
+const buttonsGroupProps = { className: 'timeline-buttons-group' };
+
+
 let beforeChangeValueRemember: WeakMap<MovieClip, number>;
 
 let isTimeDragging = false;
@@ -103,7 +108,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		super(props);
 
 
-		heightZoom = game.editor.settings.getItem('timeline-height-zoom', 40);
+		heightZoom = game.editor.settings.getItem('timeline-height-zoom', 41);
 		widthZoom = game.editor.settings.getItem('timeline-width-zoom', 3);
 		this.state = {
 			heightZoom,
@@ -319,14 +324,14 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		let tmp = heightZoom;
 
 		heightZoom *= delta;
-		if(heightZoom < 20) {
-			heightZoom = 20;
+		if(heightZoom < 18) {
+			heightZoom = 18;
 		} else if(heightZoom > 135) {
 			heightZoom = 135;
 		}
 		if(tmp !== heightZoom) {
+			heightZoom = Math.round(heightZoom);
 			game.editor.settings.setItem('timeline-height-zoom', heightZoom);
-			heightZoom = Math.floor(heightZoom);
 			TimelineLineView.invalidateChartsRenderCache();
 			this.setState({ heightZoom });
 			this.centralizeSelection();
@@ -511,11 +516,28 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 					onMouseDown: this.onMouseDown,
 					className: 'timeline'
 				},
+				R.div(fieldLabelTimelineProps,
+					R.span(buttonsGroupProps,
+						'\u00A0↕',
+						R.btn('-', this.verticalZoomOut, 'Vertical Zoom Out'),
+						R.btn('+', this.verticalZoomIn, 'Vertical Zoom In')
+					),
+					R.span(buttonsGroupProps,
+						' ↔',
+						R.btn('-', this.horizontalZoomOut, 'Horizontal Zoom Out', undefined, { key: 'Minus', ctrlKey: true }),
+						R.btn('+', this.horizontalZoomIn, 'Horizontal Zoom In', undefined, { key: 'Equal', ctrlKey: true })
+					),
+					R.span(buttonsGroupProps,
+						R.btn('copy', Timeline.copySelection, "Copy selected keyframes and labels", undefined, { key: 'c', ctrlKey: true }, !Timeline.isElementsSelected),
+						R.btn('paste', Timeline.pasteSelection, Timeline.isPasteAvailable + '', undefined, { key: 'v', ctrlKey: true }, !Timeline.isPasteAvailable)
+					)
+				),
 				h(TimeMarker, {
 					owner: this,
 					ref: timeMarkerRef
 				}),
-				(game.editor.selection as any as MovieClip[]).map(this.renderObjectsTimeline)
+				(game.editor.selection as any as MovieClip[]).map(this.renderObjectsTimeline),
+				R.div({ className: 'timeline-fixed-block timeline-labels-background' })
 			),
 			h(KeyframePropertyEditor, {
 				owner: this,
@@ -1018,9 +1040,10 @@ const sortFieldsByTime = (a: TimelineKeyFrame, b: TimelineKeyFrame) => {
 
 function onTimelineScroll(ev: Event) {
 	selectionFrame.cancelSelection();
-	for(const element of(document.querySelectorAll('.objects-timeline-labels') as any as HTMLDivElement[])) {
+	for(const element of(document.querySelectorAll('.timeline-fixed-block') as any as HTMLDivElement[])) {
 		element.style.left = (ev.target as HTMLDivElement).scrollLeft + 'px';
 	}
+	(document.querySelector('.timeline-labels-background') as HTMLDivElement).style.top = (ev.target as HTMLDivElement).scrollTop + 'px';
 	(document.querySelector('.time-marker-body') as HTMLDivElement).style.top = (ev.target as HTMLDivElement).scrollTop + 'px';
 }
 

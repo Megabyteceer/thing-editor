@@ -5,9 +5,6 @@ import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/time
 const timeMarkerLineProps = { className: 'time-marker-v-line' };
 const timeMarkerLabelProps = { className: 'time-marker-label' };
 const smallTextProps = { className: 'small-text' };
-let fieldLabelTimelineProps = { className: 'objects-timeline-labels' };
-
-const buttonsGroupProps = { className: 'timeline-buttons-group' };
 
 interface TimeMarkerProps extends ClassAttributes<TimeMarker> {
 	owner: Timeline;
@@ -52,22 +49,6 @@ export default class TimeMarker extends Component<TimeMarkerProps, TimeMarkerSta
 
 	render() {
 		return R.div({ className: 'time-marker-body', onMouseDown: this.onMouseDown },
-			R.div(fieldLabelTimelineProps,
-				R.span(buttonsGroupProps,
-					'\u00A0↕',
-					R.btn('-', this.props.owner.verticalZoomOut, 'Vertical Zoom Out'),
-					R.btn('+', this.props.owner.verticalZoomIn, 'Vertical Zoom In')
-				),
-				R.span(buttonsGroupProps,
-					' ↔',
-					R.btn('-', this.props.owner.horizontalZoomOut, 'Horizontal Zoom Out', undefined, { key: '-', ctrlKey: true }),
-					R.btn('+', this.props.owner.horizontalZoomIn, 'Horizontal Zoom In', undefined, { key: '=', ctrlKey: true })
-				),
-				R.span(buttonsGroupProps,
-					R.btn('copy', Timeline.copySelection, "Copy selected keyframes and labels", undefined, { key: 'c', ctrlKey: true }, !Timeline.isElementsSelected),
-					R.btn('paste', Timeline.pasteSelection, Timeline.isPasteAvailable + '', undefined, { key: 'v', ctrlKey: true }, !Timeline.isPasteAvailable)
-				)
-			),
 			R.div({ className: 'time-marker', style: { left: this.state.time * this.props.owner.state.widthZoom } },
 				R.div(timeMarkerLineProps),
 				R.div(timeMarkerLabelProps,

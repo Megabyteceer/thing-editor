@@ -5,6 +5,7 @@
 }
 
 .timeline {
+	padding-top: 30px;
 	position: absolute;
 	cursor: pointer;
 	bottom: 40px;
@@ -16,24 +17,34 @@
 	background: #292929;
 }
 
+.timeline-labels-background {
+	top: 0;
+	height: 100%;
+	background: #353535;
+	z-index: 1;
+}
+
+.timeline-fixed-block {
+	cursor: default;
+	left: 0;
+	top: 0;
+	width: 110px;
+	position: absolute;
+}
+
+
 .objects-timeline {
 	position: relative;
 	margin-top: 40px;
 }
 
 .objects-timeline-labels {
-	cursor: default;
-	width: 110px;
-	height: 40px;
 	text-align: right;
-	position: absolute;
 	padding-right: 6px;
 	font-weight: bold;
 	box-sizing: border-box;
-	backface-visibility: hidden;
 	margin-left: -110px;
-	background: #353535;
-	z-index: 1;
+	z-index: 2;
 }
 
 .preview-frame-marker {
@@ -207,8 +218,13 @@
 	pointer-events: none;
 }
 
+.timeline-settings {
+	margin-left: 0;
+}
+
 .time-marker-body {
-	position: relative;
+	top: 0;
+	position: absolute;
 	width: 100%;
 	height: 21px;
 	z-index: 1;
