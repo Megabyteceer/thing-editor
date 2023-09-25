@@ -76,7 +76,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 				fs.moveAssetToFolder(file, game.editor.currentProjectLibs.find(l => l.assetsDir === chosenFolder)!);
 				game.editor.reloadClasses();
 			},
-			disabled: () => game.editor.assetsFolders.length < 2
+			disabled: () => game.editor.getUserVisibleFolders().length < 2
 		},
 		{
 			name: R.fragment(R.icon('delete'), " Delete '" + file.asset.__className + "' class..."),

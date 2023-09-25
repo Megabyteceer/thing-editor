@@ -44,6 +44,13 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 		},
 		null,
 		{
+			name: R.fragment("Move " + file.assetName + "' scene to library..."),
+			onClick: async () => {
+				game.editor.moveAssetToLibrary("Where to move scene '" + file.assetName + "'?", file);
+			},
+			disabled: () => game.editor.getUserVisibleFolders().length < 2
+		},
+		{
 			name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' scene..."),
 			onClick: () => {
 				game.editor.ui.modal.showEditorQuestion(

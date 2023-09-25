@@ -895,12 +895,25 @@ class Editor {
 		this.editSource(c.__sourceFileName as string);
 	}
 
-	async chooseAssetsFolder(title: string, activeFolderName?: string): Promise<string | undefined> {
+	async moveAssetToLibrary(title: string, file: FileDesc) {
+		let chosenFolder: string | undefined = await this.chooseAssetsFolder(title, file.lib ? file.lib.assetsDir : game.editor.currentProjectAssetsDir);
+		if(!chosenFolder) {
+			return;
+		}
+		fs.moveAssetToFolder(file, game.editor.currentProjectLibs.find(l => l.assetsDir === chosenFolder)!);
+	}
 
-		if(game.editor.assetsFolders.length === 1) {
-			return game.editor.assetsFolders[0];
+	getUserVisibleFolders() {
+		return game.editor.assetsFolders.filter(i => (!i.startsWith('thing-editor') || game.editor.settings.getItem('show-system-assets')));
+	}
+
+
+	async chooseAssetsFolder(title: string, activeFolderName?: string): Promise<string | undefined> {
+		const dirs = this.getUserVisibleFolders();
+		if(dirs.length === 1) {
+			return dirs[0];
 		} else {
-			let folders: ChooseListItem[] = game.editor.assetsFolders.filter(i => (!i.startsWith('thing-editor') || game.editor.settings.getItem('show-system-assets'))).map((folder: string): ChooseListItem => {
+			let folders: ChooseListItem[] = dirs.map((folder: string): ChooseListItem => {
 				return { name: folder };
 			});
 			folders.reverse();

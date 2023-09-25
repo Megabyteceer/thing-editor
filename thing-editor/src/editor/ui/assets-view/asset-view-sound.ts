@@ -4,6 +4,7 @@ import AssetsView, { assetTypesIcons } from "thing-editor/src/editor/ui/assets-v
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import { MUTE_SOUND_MENU_ITEM } from "thing-editor/src/editor/ui/main-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
+import libInfo from "thing-editor/src/editor/utils/lib-info";
 import game from "thing-editor/src/engine/game";
 
 const assetsItemNameProps = {
@@ -19,7 +20,14 @@ const assetItemRendererSound = (file: FileDesc) => {
 			key: file.assetName,
 			onContextMenu: (ev: PointerEvent) => {
 				showContextMenu([
-					MUTE_SOUND_MENU_ITEM
+					MUTE_SOUND_MENU_ITEM,
+					{
+						name: R.fragment("Move " + file.assetName + "' sound to library..."),
+						onClick: async () => {
+							game.editor.moveAssetToLibrary("Where to move sound '" + file.assetName + "'?", file);
+						},
+						disabled: () => game.editor.getUserVisibleFolders().length < 2
+					}
 				], ev);
 			},
 			onMouseDown: (ev: PointerEvent) => {
@@ -28,6 +36,7 @@ const assetItemRendererSound = (file: FileDesc) => {
 				}
 			}
 		},
+		libInfo(file),
 		assetTypesIcons.get(AssetType.SOUND),
 		R.span(assetsItemNameProps, file.assetName));
 }
