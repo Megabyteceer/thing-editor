@@ -203,7 +203,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 	static show() {
 		showAdditionalWindow('sound-profiler', 'SoundProfiler', 'SoundProfiler',
 			R.div({ title: '' },
-				h(SoundProfiler, { onCloseClick: SoundProfiler.hide }),
+				h(SoundProfiler, { onCloseClick: SoundProfiler.toggle }),
 			), 50, 50, 30, 30, 300, 200);
 		Window.bringWindowForward('#sound-profiler');
 	}
