@@ -3,14 +3,21 @@ import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import game from "thing-editor/src/engine/game";
 
 const imageEditorProps = { className: 'asset-editor' };
 
+let assetNameProps = {
+	className: 'selectable-text',
+	title: 'Ctrl+click to copy image`s name',
+	onMouseDown: copyTextByClick
+};
+
 const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 	const file = fs.getFileByAssetName(props.value, AssetType.IMAGE);
 	return R.div(imageEditorProps,
-		R.btn(props.value || '. . .', () => {
+		R.btn(props.value ? R.span(assetNameProps, props.value) : '. . .', () => {
 			game.editor.chooseImage('Select "' + props.field.name + '" image', props.value).then((selectedImage) => {
 				if(selectedImage) {
 					props.onChange(selectedImage);
