@@ -1,6 +1,6 @@
 import { Container, MIPMAP_MODES, Point, WRAP_MODES } from "pixi.js";
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-import R from "thing-editor/src/editor/preact-fabrics";
+import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
@@ -14,6 +14,8 @@ import Lib, { constructRecursive } from "thing-editor/src/engine/lib";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import { ComponentChild } from "preact";
+import { FileDescClass } from "thing-editor/src/editor/fs";
+
 import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 
@@ -282,7 +284,10 @@ export namespace editorUtils {
 		);
 	}
 
-	export const savePrefab = (container: Container) => {
+	export const savePrefab = (container: Container | FileDescClass) => {
+
+		const isContainer = container instanceof Container;
+
 		if(container instanceof Scene) {
 			game.editor.ui.modal.showInfo('You can not save Scene as prefab. Please select some object from scene first.', undefined, 32037);
 		} else {
@@ -303,19 +308,23 @@ export namespace editorUtils {
 					}
 				}
 
-				enterPrefabName(defaultPrefabName, R.span(null, 'Enter name for new prefab: ', R.sceneNode(container))).then((enteredName) => {
+				enterPrefabName(defaultPrefabName, R.span(null, 'Enter name for new prefab: ', isContainer ? R.sceneNode(container) : renderClass(container))).then((enteredName) => {
 					if(enteredName) {
-						const fin = (isConvertedToRef = false) => {
-							Lib.__savePrefab(container, enteredName);
-							regeneratePrefabsTypings();
-							if(PrefabEditor.currentPrefabName && !isConvertedToRef) {
-								PrefabEditor.editPrefab(enteredName);
+						const fin = () => {
+							if(isContainer) {
+								Lib.__savePrefab(container, enteredName);
+							} else {
+								const instance = loadSafeInstanceByClassName(container.asset.__className);
+								Lib.__savePrefab(instance, enteredName);
+								Lib.destroyObjectAndChildren(instance);
 							}
+							regeneratePrefabsTypings();
+							PrefabEditor.editPrefab(enteredName);
 						};
 
-						if(container !== game.currentContainer) {
+						if(container !== game.currentContainer && isContainer) {
 							game.editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
-								fin(true);
+								fin();
 								Lib.__preparePrefabReference(container, enteredName);
 								Lib.__invalidateSerializationCache(container);
 								game.editor.sceneModified();

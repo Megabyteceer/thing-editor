@@ -1,9 +1,10 @@
 import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h, render } from 'preact';
 import { KeyedMap, KeyedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
-import { FileDescImage } from 'thing-editor/src/editor/fs';
+import type { FileDescClass, FileDescImage } from 'thing-editor/src/editor/fs';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 import assert from 'thing-editor/src/engine/debug/assert';
 
@@ -13,6 +14,20 @@ interface ComponentProps {
 	[key: string]: any;
 }
 const _iconsCache: KeyedMap<preact.Component> = {};
+
+const assetsItemNameProps = {
+	className: 'selectable-text class-name',
+	title: 'Ctrl+click to copy class`s name',
+	onMouseDown: copyTextByClick
+};
+
+const renderClass = (file: FileDescClass) => {
+	return R.fragment(
+		R.classIcon(file.asset),
+		R.span(assetsItemNameProps,
+			(file.asset).__className)
+	);
+}
 
 class R {
 	static div: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
@@ -222,3 +237,5 @@ const onImageAssetLeave = () => {
 
 export type { ComponentProps };
 export default R;
+
+export { renderClass };

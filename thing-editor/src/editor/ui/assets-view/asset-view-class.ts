@@ -1,22 +1,13 @@
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { FileDescClass } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
+import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import libInfo from "thing-editor/src/editor/utils/lib-info";
 import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
-
-
-const assetsItemNameProps = {
-	className: 'selectable-text class-name',
-	title: 'Ctrl+click to copy class`s name',
-	onMouseDown: copyTextByClick
-};
-
 
 const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 	showContextMenu([
@@ -67,6 +58,13 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 		},
 		null,
 		{
+			name: R.fragment(R.icon('asset-prefab'), "Create new prefab..."),
+			onClick: () => {
+				editorUtils.savePrefab(file);
+			},
+			disabled: () => file.asset.__isScene
+		},
+		{
 			name: R.fragment("Move " + file.asset.__className + "' class to library..."),
 			onClick: async () => {
 				let chosenFolder: string | undefined = await game.editor.chooseAssetsFolder("Where to move class '" + file.asset.__className + "'?", file.lib ? file.lib.assetsDir : game.editor.currentProjectAssetsDir);
@@ -94,14 +92,6 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 			}
 		}
 	], ev);
-}
-
-const renderClass = (file: FileDescClass) => {
-	return R.fragment(
-		R.classIcon(file.asset),
-		R.span(assetsItemNameProps,
-			(file.asset).__className)
-	);
 }
 
 const toolButtonsProps = {
@@ -175,4 +165,3 @@ function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findA
 
 
 export default assetItemRendererClass;
-
