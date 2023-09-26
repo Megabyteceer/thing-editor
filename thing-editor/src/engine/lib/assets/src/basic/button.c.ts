@@ -16,7 +16,7 @@ const SCROLL_THRESHOLD = 30;
 
 export default class Button extends DSprite {
 
-	callback?: () => void;
+	onClickCallback?: () => void;
 
 	@editable({ name: 'interactive', default: true, override: true })
 
@@ -114,7 +114,7 @@ export default class Button extends DSprite {
 		this.interactive = false;
 
 		if(this.hasOwnProperty('callback')) {
-			delete (this.callback);
+			delete (this.onClickCallback);
 		}
 	}
 
@@ -154,7 +154,7 @@ export default class Button extends DSprite {
 		return this === Button.downedButton;
 	}
 
-	callClick() {
+	click() {
 		if(this.isCanBePressed) {
 			this._executeOnClick('invoke');
 		}
@@ -175,8 +175,8 @@ export default class Button extends DSprite {
 		}
 
 		Button.clickedButton = this;
-		if(this.callback) {
-			this.callback();
+		if(this.onClickCallback) {
+			this.onClickCallback();
 		}
 
 		for(const action of this.onClick) {
@@ -384,6 +384,6 @@ window.addEventListener('keyup', (ev) => {
 
 (Button.prototype.enable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Button.prototype.disable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
-(Button.prototype.callClick as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(Button.prototype.click as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
 /// #endif

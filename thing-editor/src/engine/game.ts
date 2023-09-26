@@ -9,6 +9,7 @@ import Lib from "thing-editor/src/engine/lib";
 import { ButtonOnlyPropertyDesc } from "thing-editor/src/editor/utils/button-only-selectable-property";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import SceneLinkedPromise from "thing-editor/src/engine/lib/assets/___system/scene-linked-promise.c";
+import type ScrollLayer from "thing-editor/src/engine/lib/assets/src/extended/scroll-layer.c";
 import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction, { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction";
 import { setValueByPath } from "thing-editor/src/engine/utils/get-value-by-path";
@@ -628,7 +629,7 @@ class Game {
 			/// #endif
 
 			if(game.classes.ScrollLayer) {
-				game.classes.ScrollLayer.updateGlobal();
+				(game.classes.ScrollLayer as unknown as ScrollLayer).updateGlobal();
 			}
 
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);

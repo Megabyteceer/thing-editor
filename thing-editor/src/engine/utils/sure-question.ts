@@ -33,7 +33,7 @@ const sureQuestionInit = (container: Container, title: string, message: string, 
 		if(!easyClose) {
 			btn.disable();
 		} else {
-			btn.callback = onNoHandler;
+			btn.onClickCallback = onNoHandler;
 		}
 	}
 
@@ -63,7 +63,7 @@ const sureQuestionInit = (container: Container, title: string, message: string, 
 				}
 			}
 		}
-		okBtn.callback = onYesHandler;
+		okBtn.onClickCallback = onYesHandler;
 	}
 
 	let noBtn = container.findChildByName('noBtn') as Button;
@@ -81,7 +81,7 @@ const sureQuestionInit = (container: Container, title: string, message: string, 
 		}
 
 		if(noLabel || (onNo && !easyClose)) {
-			noBtn.callback = onNoHandler;
+			noBtn.onClickCallback = onNoHandler;
 		} else {
 			noBtn.visible = false;
 			okBtn.x = (okBtn.x + noBtn.x) / 2; //Centralize ok button

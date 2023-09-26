@@ -96,7 +96,7 @@ const regenerateClassesTypings = () => {
 		}
 
 		for(let className of classesNames) {
-			declarations.push('"' + className + '": (typeof ' + className + ') | SourceMappedConstructor;');
+			declarations.push('"' + className + '": typeof ' + className + ';');
 		}
 
 		let mapJS = `// thing-editor auto generated file.
