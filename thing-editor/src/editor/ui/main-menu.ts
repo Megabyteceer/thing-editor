@@ -237,11 +237,12 @@ const MAIN_MENU: MainMenuItem[] = [
 			MUTE_SOUND_MENU_ITEM,
 			{
 				name: () => {
-					return R.fragment(game.isMobile.any ? CHECKED : UNCHECKED, ' isMobile.any');
+					return R.fragment(game.isMobile.any ? CHECKED : UNCHECKED, ' isMobile.any',);
 				},
 				onClick: () => {
 					game.editor.toggleIsMobileAny();
 				},
+				hotkey: { key: 'm', ctrlKey: true, shiftKey: true },
 				stayAfterClick: true
 			},
 			{

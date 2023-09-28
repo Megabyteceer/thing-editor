@@ -30,6 +30,9 @@ interface NodeExtendData {
 
 	isPrefabReference?: string;
 
+	/** tree will display objects of this children */
+	childrenContainer?: Container;
+
 	constructorCalled?: boolean;
 
 	/** unknown constructor's name */

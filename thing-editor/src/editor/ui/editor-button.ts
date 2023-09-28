@@ -7,6 +7,7 @@ import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
 import isHotkeyHit, { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
+import game from "thing-editor/src/engine/game";
 
 const allHotkeyButtons: EditorButton[] = [];
 
@@ -57,6 +58,7 @@ window.addEventListener("keydown", (ev) => {
 				if(!isHotkeyCapturedByInputElement) {
 					item.onClick();
 					refreshContextMenu();
+					game.editor.ui.modal.notify((typeof item.name === 'function') ? item.name() : item.name)
 					sp(ev);
 					return;
 				}

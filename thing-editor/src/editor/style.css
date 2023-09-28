@@ -448,7 +448,7 @@ input {
 
 .modal-notification-wrapper {
 	position: fixed;
-	z-index: 1100;
+	z-index: 1100000;
 }
 
 .modal-notification-centred {

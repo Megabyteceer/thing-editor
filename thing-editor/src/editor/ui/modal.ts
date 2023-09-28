@@ -49,7 +49,7 @@ let contentProps = {
 let errorProps = { className: 'error' };
 let notifyProps = { className: 'modal-notification' };
 let notifyWrapperProps = { className: 'modal-notification-wrapper', style: { left: '0px', top: '0px' } };
-let notifyPropsDuringSpinner = { className: 'modal-notification modal-notification-centred' };
+let notifyPropsDuringSpinner = { className: 'modal-notification modal-notification-centred modal-notification-wrapper' };
 
 let notifyTexts: Set<string | Component> = new Set();
 
