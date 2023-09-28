@@ -8,6 +8,8 @@ const ColorEditor = (props: EditablePropertyEditorProps) => {
 	return R.input({
 		onInput: (ev: InputEvent) => {
 			props.onChange(parseInt((ev.target as HTMLInputElement).value.replace('#', ''), 16));
+		},
+		onChange: () => {
 			game.editor.history.scheduleHistorySave();
 		},
 		disabled: props.disabled,

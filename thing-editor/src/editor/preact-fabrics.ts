@@ -157,7 +157,7 @@ class R {
 	};
 
 	static input(props: ComponentProps): ComponentChild {
-		if(props.hasOwnProperty('onChange') && !props.suspendOnChangeWarning && props.type !== 'checkbox') {
+		if(props.hasOwnProperty('onChange') && !props.suspendOnChangeWarning && props.type !== 'checkbox' && props.type !== 'color') {
 			debugger;
 			//'onChage handler detected for "input" element. Use onInput instead', 99999, () => {
 		}
