@@ -56,7 +56,7 @@ const regenerateCurrentSceneMapTypings = () => {
 		}
 
 		let mapJS = `// thing-editor auto generated file.
-
+import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import { Container } from "pixi.js";
 `
 			+ imports.join('\n') +

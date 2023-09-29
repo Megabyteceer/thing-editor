@@ -112,7 +112,6 @@ class History {
 			historySaveScheduled = setTimeout(() => {
 				historySaveScheduled = 0;
 				instance.saveHistoryNow();
-				regenerateCurrentSceneMapTypings();
 			}, 1);
 		}
 	}
@@ -133,6 +132,7 @@ class History {
 				clearInterval(historySaveScheduled);
 				historySaveScheduled = 0;
 			}
+			regenerateCurrentSceneMapTypings();
 		}
 	}
 
