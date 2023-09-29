@@ -401,6 +401,7 @@ class Editor {
 			this.validateResources();
 
 			editorEvents.emit('projectDidOpen');
+			game.editor.saveProjectDesc();
 		}
 	}
 
@@ -948,7 +949,8 @@ class Editor {
 				}
 			}
 		}
-		fs.writeFile(this.currentProjectDir + 'thing-project.json', this.projectDesc);
+		delete descToSave.dir;
+		fs.writeFile(this.currentProjectDir + 'thing-project.json', descToSave);
 	}
 }
 
