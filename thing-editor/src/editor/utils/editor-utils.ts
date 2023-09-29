@@ -310,7 +310,7 @@ export namespace editorUtils {
 
 				enterPrefabName(defaultPrefabName, R.span(null, 'Enter name for new prefab: ', isContainer ? R.sceneNode(container) : renderClass(container))).then((enteredName) => {
 					if(enteredName) {
-						const fin = () => {
+						const fin = (doNotOpenToEdit = false) => {
 							if(isContainer) {
 								Lib.__savePrefab(container, enteredName);
 							} else {
@@ -319,15 +319,17 @@ export namespace editorUtils {
 								Lib.destroyObjectAndChildren(instance);
 							}
 							regeneratePrefabsTypings();
-							PrefabEditor.editPrefab(enteredName);
+							if(!doNotOpenToEdit) {
+								PrefabEditor.editPrefab(enteredName);
+							}
 						};
 
 						if(container !== game.currentContainer && isContainer) {
 							game.editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
-								fin();
+								fin(true);
 								Lib.__preparePrefabReference(container, enteredName);
 								Lib.__invalidateSerializationCache(container);
-								game.editor.sceneModified();
+								game.editor.sceneModified(true);
 							}, 'Convert to prefab reference', fin, 'Keep original', true);
 						} else {
 							fin();
