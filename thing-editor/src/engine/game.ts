@@ -150,7 +150,6 @@ class Game {
 
 		(element || document.body).appendChild(app.view as HTMLCanvasElement);
 
-		this._updateGlobal = this._updateGlobal.bind(this);
 		this.onResize = this.onResize.bind(this);
 		/// #if EDITOR
 		(this.onResize as SelectableProperty).___EDITOR_isHiddenForChooser = true;
@@ -170,8 +169,6 @@ class Game {
 		initGameInteraction();
 
 		app.stage.addChild(stage);
-		app.ticker.add(this._updateGlobal);
-		Sound.init();
 
 		/// #if EDITOR
 		/*
@@ -180,6 +177,15 @@ class Game {
 			game._startGame();
 		});
 		//*/
+	}
+
+	_setClasses(_classes: GameClasses) {
+		if(!this.classes) {
+			this._updateGlobal = this._updateGlobal.bind(this);
+			app.ticker.add(this._updateGlobal);
+			Sound.init();
+		}
+		this.classes = _classes;
 	}
 
 	_startGame() {

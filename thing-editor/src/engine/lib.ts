@@ -82,8 +82,8 @@ export default class Lib
 	}
 
 	static _setClasses(_classes: GameClasses) {
+		game._setClasses(_classes);
 		classes = _classes;
-		game.classes = _classes;
 		/// #if EDITOR
 		/*
 		/// #endif
@@ -1079,7 +1079,7 @@ const processAfterDeserialization = (o: Container) => {
 
 const _filterStaticTriggers = (childData: SerializedObject) => {
 	return !childData[':'] || !childData[':'].some((cd) => {
-		return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || (game.classes.StaticTrigger as SourceMappedConstructor).__defaultValues.dataPath, game));
+		return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || (game.classes.StaticTrigger as any as SourceMappedConstructor).__defaultValues.dataPath, game));
 	});
 }
 
