@@ -7,6 +7,7 @@ import assetItemRendererImage from "thing-editor/src/editor/ui/assets-view/asset
 import assetItemRendererScene from "thing-editor/src/editor/ui/assets-view/asset-view-scene";
 import assetItemRendererSound from "thing-editor/src/editor/ui/assets-view/asset-view-sound";
 import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
+import assetItemRendererResource from "thing-editor/src/editor/ui/assets-view/assets-view-resource";
 import Window, { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
 import WindowMenu from "thing-editor/src/editor/ui/window-menu";
@@ -26,6 +27,10 @@ assetsItemsRenderers.set(AssetType.SOUND, assetItemRendererSound);
 
 assetsItemsRenderers.set(AssetType.SCENE, assetItemRendererScene as (file: FileDesc) => ComponentChild);
 assetsItemsRenderers.set(AssetType.PREFAB, assetItemRendererPrefab as (file: FileDesc) => ComponentChild);
+
+assetsItemsRenderers.set(AssetType.RESOURCE, assetItemRendererResource as (file: FileDesc) => ComponentChild);
+
+
 (assetsItemsRenderers as Map<AssetType, (file: FileDescClass) => ComponentChild>).set(AssetType.CLASS, assetItemRendererClass);
 
 const assetTypesIcons: Map<AssetType, ComponentChild> = new Map();
@@ -37,7 +42,7 @@ assetTypesIcons.set(AssetType.IMAGE, R.img({
 
 assetTypesIcons.set(AssetType.SOUND, R.img({
 	src: './img/asset-sound.png',
-	title: 'fs.getFileByAssetName(props.value, AssetType.IMAGE)'
+	title: 'Show Sounds'
 }));
 assetTypesIcons.set(AssetType.SCENE, R.img({
 	src: './img/asset-scene.png',
@@ -50,6 +55,10 @@ assetTypesIcons.set(AssetType.PREFAB, R.img({
 assetTypesIcons.set(AssetType.CLASS, R.img({
 	src: './img/asset-class.png',
 	title: 'Show Components'
+}));
+assetTypesIcons.set(AssetType.RESOURCE, R.img({
+	src: './img/asset-resource.png',
+	title: 'Show Resources'
 }));
 
 let allWindowsIds: string[] = [];

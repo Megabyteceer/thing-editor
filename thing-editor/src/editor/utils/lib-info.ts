@@ -9,15 +9,18 @@ const libIconCache: Map<LibInfo, ComponentChild> = new Map();
 
 const LIB_HOLDER = R.span({ className: 'empty-lib-holder' });
 
+const libIcon = (libInfo: LibInfo): ComponentChildren => {
+	if(!libIconCache.has(libInfo)) {
+		libIconCache.set(libInfo, R.icon('lib' + (libInfoCounter++ % 5)));
+	}
+	return libIconCache.get(libInfo);
+}
+
 const libInfo = (file: FileDesc): ComponentChildren => {
 	if(file.lib) {
 		if(!file.libInfoCache) {
 			const libInfo = file.lib;
-
-			if(!libIconCache.has(libInfo)) {
-				libIconCache.set(libInfo, R.icon('lib' + (libInfoCounter++ % 5)));
-			}
-			const icon = libIconCache.get(libInfo);
+			const icon = libIcon(libInfo);
 			file.libInfoCache = R.span({
 				className: 'lib-info',
 				onContextMenu: (ev: PointerEvent) => {
@@ -43,3 +46,4 @@ const libInfo = (file: FileDesc): ComponentChildren => {
 }
 
 export default libInfo;
+export { libIcon };

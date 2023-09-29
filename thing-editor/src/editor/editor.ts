@@ -27,6 +27,7 @@ import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import regenerateCurrentSceneMapTypings, { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
+import { libIcon } from "thing-editor/src/editor/utils/lib-info";
 import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
@@ -915,7 +916,11 @@ class Editor {
 			return dirs[0];
 		} else {
 			let folders: ChooseListItem[] = dirs.map((folder: string): ChooseListItem => {
-				return { name: folder };
+				const libInfo = this.currentProjectLibs.find(l => l.assetsDir === folder);
+				return {
+					pureName: folder,
+					name: R.fragment(libInfo ? libIcon(libInfo) : R.space(), folder)
+				};
 			});
 			folders.reverse();
 			folders[0].pureName = folders[0].name as string;
