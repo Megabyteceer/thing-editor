@@ -42,8 +42,16 @@ export default class Button extends DSprite {
 	@editable({ type: 'sound' })
 	sndOver: string | null = null;
 
-	@editable()
-	scrollable = false;
+	get scrollable() {
+		if(game.classes.ScrollLayer) {
+			const parentScrollLayer = this.findParentByType(game.classes.ScrollLayer);
+			return parentScrollLayer &&
+				((parentScrollLayer.fullArea.w > parentScrollLayer.visibleArea.w) ||
+					(parentScrollLayer.fullArea.h > parentScrollLayer.visibleArea.h)
+				)
+		}
+		return false;
+	}
 
 	initialScale!: number;
 	initialImage!: string | null;
@@ -113,7 +121,7 @@ export default class Button extends DSprite {
 		this.initialImage = null;
 		this.interactive = false;
 
-		if(this.hasOwnProperty('callback')) {
+		if(this.hasOwnProperty('onClickCallback')) {
 			delete (this.onClickCallback);
 		}
 	}
@@ -263,7 +271,7 @@ export default class Button extends DSprite {
 		super.update();
 	}
 
-	onUp() {
+	onUp(ev?: PointerEvent | KeyboardEvent) {
 		if(Button.downedButton === this) {
 			if(this.interactive) {
 				if(this.pressImage) {
@@ -277,7 +285,7 @@ export default class Button extends DSprite {
 			}
 			Button.downedButton = null;
 
-			if(this.scrollable && Math.hypot(game.mouse.x - this.pointerStartPos!.x, game.mouse.y - this.pointerStartPos!.y) <= SCROLL_THRESHOLD) {
+			if(ev && this.scrollable && Math.hypot(game.mouse.x - this.pointerStartPos!.x, game.mouse.y - this.pointerStartPos!.y) <= SCROLL_THRESHOLD) {
 				this._executeOnClick('pointerup');
 			}
 		}
@@ -372,7 +380,7 @@ window.addEventListener('keydown', (ev) => {
 
 window.addEventListener('keyup', (ev) => {
 	if(downedByKeycodeButton && downedByKeycodeButton.hotkey === ev.keyCode) {
-		downedByKeycodeButton.onUp();
+		downedByKeycodeButton.onUp(ev);
 		downedByKeycodeButton = undefined;
 	}
 });

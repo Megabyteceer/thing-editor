@@ -86,14 +86,17 @@ export default class ProgressBar extends Container {
 		this.scrolling = false;
 		this.currentInterval = 0;
 		this.showedVal = undefined;
-		this.bar = this.findChildByName('bar');
-		this.cap = this.findChildByName('cap');
-
+		this._initChildren();
 
 		this.cursor = this.interactive ? 'pointer' : '';
 		this.on('pointerdown', this.onDown);
 		this._applyBgHeight();
 		this.isProgressFinished = false;
+	}
+
+	_initChildren() {
+		this.bar = this.findChildByName('bar');
+		this.cap = this.findChildByName('cap');
 	}
 
 	_progress_bar_height = 200;
@@ -120,6 +123,8 @@ export default class ProgressBar extends Container {
 	onRemove() {
 		super.onRemove();
 		this._progress_bar_height = 0;
+		this.currentQ = 0;
+		this.showedVal = undefined;
 		this.bar = undefined;
 		this.cap = undefined;
 		this.removeListener('pointerdown', this.onDown);
@@ -166,12 +171,10 @@ export default class ProgressBar extends Container {
 					val = this.min;
 				}
 				if(val !== this.showedVal) {
-					this.visible = true;
 					this.applyValue(val);
 				}
 			} else {
 				this.showedVal = undefined;
-				this.visible = false;
 			}
 			this.currentInterval = this.refreshInterval;
 		} else {
@@ -213,12 +216,23 @@ export default class ProgressBar extends Container {
 	}
 
 	applyQ() {
+		/// #if EDITOR
+		if(game.__EDITOR_mode) {
+			this._initChildren();
+		}
+		/// #endif
 		if(this.bar) {
 			setObjectHeight(this.bar, this._progress_bar_height * this.currentQ);
 		}
 		if(this.cap) {
 			this.cap.y = this.capMargin + (this._progress_bar_height - this.capMargin * 2) * this.currentQ;
 		}
+		/// #if EDITOR
+		if(game.__EDITOR_mode) {
+			this.bar = undefined;
+			this.cap = undefined;
+		}
+		/// #endif
 	}
 
 	refreshNow() {
