@@ -299,6 +299,7 @@ export default class OrientationTrigger extends Container {
 	}
 	//@ts-ignore
 	set "scale.x"(v) {
+		//@ts-ignore
 		super['scale.x'] = v;
 		if(IGNORE_DIRECT_PROPS) return;
 		if(this.getTriggerConditionState()) {
@@ -309,6 +310,7 @@ export default class OrientationTrigger extends Container {
 	}
 
 	get "scale.x"() {
+		//@ts-ignore
 		if(IGNORE_DIRECT_PROPS) return super['scale.x'];
 		if(this.getTriggerConditionState()) {
 			return super.scale.x = isNaN(this.portraitScaleX) ? 0 : this.portraitScaleX;
@@ -318,6 +320,7 @@ export default class OrientationTrigger extends Container {
 	}
 	//@ts-ignore
 	set "scale.y"(v) {
+		//@ts-ignore
 		super['scale.y'] = v;
 		if(IGNORE_DIRECT_PROPS) return;
 		if(this.getTriggerConditionState()) {
@@ -328,6 +331,7 @@ export default class OrientationTrigger extends Container {
 	}
 
 	get "scale.y"() {
+		//@ts-ignore
 		if(IGNORE_DIRECT_PROPS) return super['scale.y'];
 		if(this.getTriggerConditionState()) {
 			return super.scale.y = isNaN(this.portraitScaleY) ? 0 : this.portraitScaleY;
