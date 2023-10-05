@@ -231,21 +231,27 @@ export default class Trigger extends Container {
 
 	//@ts-ignore 
 	set "scale.x"(v) {
+		//@ts-ignore
 		super['scale.x'] = v;
+		//@ts-ignore
 		super['scale.y'] = v;
 	}
 
 	get "scale.x"() {
+		//@ts-ignore
 		return super['scale.x'];
 	}
 
 	//@ts-ignore 
 	set "scale.y"(v) {
+		//@ts-ignore
 		super['scale.x'] = v;
+		//@ts-ignore
 		super['scale.y'] = v;
 	}
 
 	get "scale.y"() {
+		//@ts-ignore
 		return super['scale.x'];
 	}
 

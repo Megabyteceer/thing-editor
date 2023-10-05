@@ -65,14 +65,6 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     __onChildSelected?(): void;
     __isAnyChildSelected(): boolean;
 
-    "scale.x": number;
-    "scale.y": number;
-    "skew.x": number;
-    "skew.y": number;
-    "pivot.x": number;
-    "pivot.y": number;
-
-
     __nodeExtendData: NodeExtendData;
 
     /** prevent object to be selected by viewport click. Editor only filed. */
