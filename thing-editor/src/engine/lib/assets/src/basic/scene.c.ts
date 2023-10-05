@@ -8,6 +8,8 @@ import game from "thing-editor/src/engine/game";
 
 export default class Scene extends Container {
 
+	declare name: string;
+
 	@editable({ type: 'color' })
 	backgroundColor = 0;
 
