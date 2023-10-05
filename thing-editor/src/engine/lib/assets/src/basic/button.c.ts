@@ -58,10 +58,10 @@ export default class Button extends DSprite {
 
 	curDelay = 0;
 
-	@editable({ min: 0, visible: (o) => { return !o.scrollable; } })
+	@editable({ min: 0 })
 	repeatDelay = 0;
 
-	@editable({ min: 0, visible: (o) => { return !o.scrollable; } })
+	@editable({ min: 0 })
 	repeatInterval = 0;
 
 	pointerStartPos?: { x: number, y: number };
@@ -91,9 +91,7 @@ export default class Button extends DSprite {
 			this.disable();
 		}
 
-		if(this.scrollable) {
-			this.pointerStartPos = undefined;
-		}
+		this.pointerStartPos = undefined;
 	}
 
 	onRemove() {
@@ -151,11 +149,11 @@ export default class Button extends DSprite {
 	}
 
 	static clickedButton: Button | null = null;
-	static overredButton: Button | null = null;
+	static overedButton: Button | null = null;
 	static downedButton: Button | null = null;
 
 	get isOvered() {
-		return this === Button.overredButton;
+		return this === Button.overedButton;
 	}
 
 	get isDowned() {
@@ -273,15 +271,13 @@ export default class Button extends DSprite {
 
 	onUp(ev?: PointerEvent | KeyboardEvent) {
 		if(Button.downedButton === this) {
-			if(this.interactive) {
-				if(this.pressImage) {
-					if(this.initialImage) {
-						this.image = this.initialImage;
-					}
-				} else {
-					this.scale.x =
-						this.scale.y = this.initialScale * (this.isOvered ? 1.05 : 1);
+			if(this.pressImage) {
+				if(this.initialImage) {
+					this.image = this.initialImage;
 				}
+			} else {
+				this.scale.x =
+					this.scale.y = this.initialScale * ((this.isOvered && !this.hoverImage) ? 1.05 : 1);
 			}
 			Button.downedButton = null;
 
@@ -293,11 +289,11 @@ export default class Button extends DSprite {
 
 	onOver() {
 
-		if(Button.overredButton !== this) {
-			if(Button.overredButton) {
-				Button.overredButton.onOut();
+		if(Button.overedButton !== this) {
+			if(Button.overedButton) {
+				Button.overedButton.onOut();
 			}
-			Button.overredButton = this;
+			Button.overedButton = this;
 			if(this.hoverImage) {
 				this.image = this.hoverImage;
 			} else {
@@ -317,18 +313,18 @@ export default class Button extends DSprite {
 	}
 
 	onOut() {
-		if(Button.overredButton === this) {
-			Button.overredButton = null;
-			if(this.interactive) {
-				if(this.hoverImage) {
-					if(this.initialImage) {
-						this.image = this.initialImage;
-					}
-				} else {
-					this.scale.x =
-						this.scale.y = this.initialScale;
+		if(Button.overedButton === this) {
+			Button.overedButton = null;
+
+			if(this.hoverImage) {
+				if(this.initialImage) {
+					this.image = this.initialImage;
 				}
+			} else {
+				this.scale.x =
+					this.scale.y = this.initialScale;
 			}
+
 			this.onUp();
 			this.gotoLabelRecursive('btn-out');
 		}
