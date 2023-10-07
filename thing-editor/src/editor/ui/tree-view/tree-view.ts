@@ -58,14 +58,15 @@ function hideDragTarget() {
 		highlightedDragItem.classList.remove('drag-target-top');
 		highlightedDragItem.classList.remove('drag-target-bottom');
 		highlightedDragItem.classList.remove('drag-target-mid');
+		highlightedDragItem.classList.remove('drag-target-wrap');
 		highlightedDragItem = null;
 	}
 }
 
 function canBeDragAccepted(ev: DragEvent) {
 	for(let i of ev.dataTransfer!.items) {
-		if(i.type === "text/thing-editor-class-id") {
-			return i;
+		if(i.type === "text/drag-thing-editor-class-id") {
+			return true;
 		}
 	}
 }
@@ -119,12 +120,12 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 
 	onDragOver(ev: DragEvent) {
 		if(canBeDragAccepted(ev)) {
+			const isWrap = ev.ctrlKey; /// 99999
 			let treeItem = this.getClosestTreeItem(ev);
 			if(treeItem) {
 				hideDragTarget();
 				highlightedDragItem = treeItem;
-
-				if(Math.abs(pointerToItemRelationY) < 4) {
+				if(Math.abs(pointerToItemRelationY) < 4 || isWrap) {
 					if(!dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length) { // can expand tree item
 						if(dragTargetExpandTimeOutTarget !== dragTargetNode) {
 							clearDragExpandTimeOut();
@@ -139,7 +140,11 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 					} else {
 						clearDragExpandTimeOut();
 					}
-					treeItem.classList.add('drag-target-mid');
+					if(isWrap) {
+						treeItem.classList.add('drag-target-wrap');
+					} else {
+						treeItem.classList.add('drag-target-mid');
+					}
 				} else {
 					clearDragExpandTimeOut();
 				}
@@ -153,8 +158,8 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			} else {
 				hideDragTarget();
 			}
-			ev.dataTransfer!.effectAllowed = "copy";
-			ev.dataTransfer!.dropEffect = "copy";
+			ev.dataTransfer!.effectAllowed = isWrap ? "move" : "copy";
+			ev.dataTransfer!.dropEffect = isWrap ? "move" : "copy";
 			ev.preventDefault();
 		}
 	}
@@ -167,12 +172,14 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 	onDrop(ev: DragEvent) {
 		mouseHandlerGlobal(ev as any);
 		if(highlightedDragItem) {
-			const ClassId = ev.dataTransfer!.getData('text/thing-editor-class-id');
+			const ClassId = ev.dataTransfer!.getData('text/drag-thing-editor-class-id');
 
-			if(highlightedDragItem!.classList.contains('drag-target-mid')) {
+			if(highlightedDragItem!.classList.contains('drag-target-wrap')) {
+				editorUtils.wrap([dragTargetNode], loadSafeInstanceByClassName(ClassId));
+			} else if(highlightedDragItem!.classList.contains('drag-target-mid')) {
 				addToParentSafe(ClassId, dragTargetNode); // drop as children
 			} else if(highlightedDragItem!.classList.contains('drag-target-bottom')) {
-				if(dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length) {
+				if((dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length) || (dragTargetNode.parent === game.stage)) {
 					addToParentSafe(ClassId, dragTargetNode, 0); //drop to top of children list
 				} else {
 					addToParentSafe(ClassId, dragTargetNode.parent, dragTargetNode.parent.children.indexOf(dragTargetNode) + 1); //drop after

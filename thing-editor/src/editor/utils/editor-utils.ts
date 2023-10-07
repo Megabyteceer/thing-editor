@@ -434,6 +434,50 @@ export namespace editorUtils {
 		}
 	}
 
+	export const wrap = (nodes: Container[], wrapper: Container) => {
+		const o = nodes[0];
+		let parent = o.parent;
+		for(let c of nodes) {
+			if(c.parent !== parent) {
+				game.editor.ui.modal.showInfo('Selected object should have same parent to be wrapped.', 'Can not wrap', 30012);
+				return;
+			}
+		}
+
+		if(o instanceof Scene) {
+			game.editor.ui.modal.showInfo("Scene can not be wrapped, you can change scene's type instead.", 'Can not wrap', 30013);
+			return;
+		}
+		DataPathFixer.rememberPathReferences();
+		let isPrefab = o === game.currentContainer;
+		let prefabName = game.currentContainer.name;
+		game.editor.selection.clearSelection();
+
+		let indexToAdd = parent.getChildIndex(o);
+
+		for(let c of nodes) {
+			wrapper.addChild(c);
+		}
+		if(isPrefab) {
+			wrapper.name = prefabName;
+			o.name = null;
+			let data = Lib.__serializeObject(wrapper);
+			wrapper = Lib._deserializeObject(data);
+			game.__setCurrentContainerContent(wrapper);
+		} else {
+			parent.addChildAt(wrapper, indexToAdd);
+		}
+		Lib.__invalidateSerializationCache(wrapper);
+
+		game.editor.selection.clearSelection();
+		game.editor.ui.sceneTree.selectInTree(wrapper);
+		wrapper.__nodeExtendData.childrenExpanded = true;
+		DataPathFixer.validatePathReferences();
+		game.editor.sceneModified(true);
+		Lib.__callInitIfGameRuns(wrapper);
+		game.editor.ui.propsEditor.selectField('name', true, true);
+	}
+
 	export const wrapSelected = (Class?: SourceMappedConstructor) => {
 		assert(game.__EDITOR_mode, "Can not wrap in running mode.");
 
@@ -443,59 +487,16 @@ export namespace editorUtils {
 			game.editor.ui.status.error('Exactly one container should be copied in to clipBoard to wrap selection with it.');
 		} else {
 			let a = game.editor.selection.slice(0);
-
-			let o = a[0];
-			let parent = o.parent;
-			for(let c of a) {
-				if(c.parent !== parent) {
-					game.editor.ui.modal.showInfo('Selected object should have same parent to be wrapped.', 'Can not wrap', 30012);
-					return;
-				}
-			}
-
-
-			if(o instanceof Scene) {
-				game.editor.ui.modal.showInfo("Scene can not be wrapped, you can change scene's type instead.", 'Can not wrap', 30013);
-				return;
-			}
-			DataPathFixer.rememberPathReferences();
-			let isPrefab = o === game.currentContainer;
-			let prefabName = game.currentContainer.name;
-
-
-			game.editor.selection.clearSelection();
 			let w;
 			if(Class) {
 				w = loadSafeInstanceByClassName(Class.__className, true);
+				wrap(a, w);
 			} else {
 				game.editor.disableFieldsCache = true;
 				w = Lib._deserializeObject({ c: clipboard.data.data[0].c, p: clipboard.data.data[0].p });
 				game.editor.disableFieldsCache = false;
+				wrap(a, w)
 			}
-
-			let indexToAdd = parent.getChildIndex(o);
-
-			for(let c of a) {
-				w.addChild(c);
-			}
-			if(isPrefab) {
-				w.name = prefabName;
-				o.name = null;
-				let data = Lib.__serializeObject(w);
-				w = Lib._deserializeObject(data);
-				game.__setCurrentContainerContent(w);
-			} else {
-				parent.addChildAt(w, indexToAdd);
-			}
-			Lib.__invalidateSerializationCache(w);
-
-			game.editor.selection.clearSelection();
-			game.editor.ui.sceneTree.selectInTree(w);
-			w.__nodeExtendData.childrenExpanded = true;
-			DataPathFixer.validatePathReferences();
-			game.editor.sceneModified(true);
-			Lib.__callInitIfGameRuns(w);
-			game.editor.ui.propsEditor.selectField('name', true, true);
 		}
 	}
 

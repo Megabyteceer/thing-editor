@@ -123,7 +123,7 @@ const assetItemRendererClass = (file: FileDescClass) => {
 			game.editor.editClassSource(file.asset as SourceMappedConstructor);
 		},
 		onDragStart(ev: DragEvent) {
-			ev.dataTransfer!.setData("text/thing-editor-class-id", file.asset.__className);
+			ev.dataTransfer!.setData("text/drag-thing-editor-class-id", file.asset.__className);
 		},
 		draggable: true
 	},
