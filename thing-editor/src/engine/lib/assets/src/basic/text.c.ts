@@ -129,18 +129,33 @@ Object.defineProperties(Text.prototype, {
 			(this as any)._styleFill = val;
 		}, configurable: true
 	},
+	'___fill': {
+		get: function (this: Text) {
+			return ((this as any)['style.fill'] as string).split(',').map(v => parseInt(v.replace('#', ''), 16));
+		},
+		set: function (this: Text, val: number[]) {
+			(this as any)['style.fill'] = val.map(v => '#' + v.toString(16).padStart(6, '0')).join(',');
+		}, configurable: true
+	},
 	'style.fillGradientStops': {
 		get: function (this: Text) {
-			return (this as any)._styleFillGradientStops;
+			return this.style.fillGradientStops || [];
 		},
 		set: function (this: Text, val) {
-			if(val) {
-				val = val.replace(/\s/g, '');
-				this.style.fillGradientStops = val.split(',').map((i: string) => i ? parseFloat(i) : 1);
-			} else {
-				this.style.fillGradientStops.length = 0;
+			/// #if EDITOR
+			if(typeof val === 'string') {
+				val = val.split(',').map((i: string) => i ? parseFloat(i) : 1);
 			}
-			(this as any)._styleFillGradientStops = val;
+			let min = 0;
+			val.forEach((v: number, i: number) => {
+				if(v < min) {
+					v = min;
+					val[i] = min;
+				}
+				min = v;
+			});
+			/// #endif
+			this.style.fillGradientStops = val;
 		}, configurable: true
 	},
 	'style.fontFamily': {
@@ -203,20 +218,10 @@ Object.defineProperties(Text.prototype, {
 	},
 	'style.stroke': {
 		get: function (this: Text) {
-			return (this as any).__tmpStrokeColor || this.style.stroke;
+			return typeof this.style.stroke === 'string' ? parseInt((this.style.stroke as string).replace('#', ''), 16) : this.style.stroke;
 		},
 		set: function (this: Text, val) {
-			/// #if EDITOR
-			try {
-				this.style.stroke = val;
-			} catch(er) {
-				this.style.stroke = "#000000";
-			}
-			(this as any).__tmpStrokeColor = val;
-			/*
-			/// #endif
 			this.style.stroke = val;
-			//*/
 		}, configurable: true
 	},
 	'style.strokeThickness': {
@@ -536,8 +541,19 @@ _editableEmbed(Text, 'style.fill', {
 	default: '#ffffff'
 });
 
+_editableEmbed(Text, '___fill', {
+	type: 'color',
+	arrayProperty: true,
+	notSerializable: true,
+	default: [0xffffff]
+});
+
 _editableEmbed(Text, 'style.fillGradientStops', {
-	type: 'string',
+	type: 'number',
+	arrayProperty: true,
+	min: 0,
+	max: 1,   
+	step: 0.001,
 	visible: (node: Text) => {
 		return (node as any)._styleFill && (node as any)._styleFill.indexOf(',') >= 0;
 	}
@@ -549,8 +565,9 @@ _editableEmbed(Text, 'style.strokeThickness', {
 });
 
 _editableEmbed(Text, 'style.stroke', {
-	type: "string",
-	default: '#000000',
+	type: "color",
+	noNullCheck: true,
+	default: 0,
 	disabled: (node: Text) => {
 		return node.style.strokeThickness < 1;
 	}

@@ -134,10 +134,18 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 		}
 
 		if(field.hasOwnProperty('min')) {
-			val = Math.max(field.min as number, val);
+			if(Array.isArray(val)) {
+				val = val.map(v => Math.max(field.min!, v));
+			} else {
+				val = Math.max(field.min!, val);
+			}
 		}
 		if(field.hasOwnProperty('max')) {
-			val = Math.min(field.max as number, val);
+			if(Array.isArray(val)) {
+				val = val.map(v => Math.min(field.max!, v));
+			} else {
+				val = Math.min(field.max!, val);
+			}
 		}
 		if(isDelta) {
 			this.props.onChange(field, deltaVal, true);
