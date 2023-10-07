@@ -1,5 +1,6 @@
 import { Container, Point, Sprite } from "pixi.js";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
+import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -41,6 +42,9 @@ editorEvents.once('projectDidOpen', () => {
 				scrollingY = game.__mouse_EDITOR.y;
 			} else if(ev.buttons === 2) {
 				if(!___GizmoArrow.overedArrow) {
+					if(ev.altKey) {
+						editorUtils.clone();
+					}
 					moveSelectionToMouse(ev);
 					rightButtonDraggingStarted = true;
 				}
