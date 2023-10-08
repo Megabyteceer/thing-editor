@@ -519,6 +519,11 @@ input {
 	height: 100%;
 }
 
+.status-entry {
+	margin-left: 10px;
+	color: #686868;
+}
+
 .red-frame {
 	outline: 1px solid #aa0000;
 	outline-offset: -2px;

@@ -3,6 +3,7 @@ import { Component, ComponentChild } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
+import StatusBar from 'thing-editor/src/editor/ui/status-bar';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 
@@ -28,6 +29,8 @@ document.addEventListener('mouseup', onMouseUp);
 document.addEventListener('mousemove', (ev) => {
 	if(!draggingElement) return;
 
+	StatusBar.addStatus('Hold Ctrl - to fast scroll.', 'number-editor');
+
 	let d = -ev.movementY;
 	if(d !== 0) {
 		preventClickBecauseOfDragging = true;
@@ -48,6 +51,14 @@ interface NumberEditorState {
 	o?: Container;
 }
 
+const onArrowOver = () => {
+	StatusBar.addStatus('drag arrow up and down - to delta value', 'number-editor');
+
+}
+const onArrowOut = () => {
+	StatusBar.removeStatus('number-editor');
+}
+
 class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 
 	btnUp: ComponentChild;
@@ -65,8 +76,8 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		this.onUpClick = this.onUpClick.bind(this);
 		this.onDownClick = this.onDownClick.bind(this);
 		this.onBlur = this.onBlur.bind(this);
-		this.btnUp = R.span({ className: 'number-input-btn number-input-btn-up', onMouseUp: this.onUpClick, onMouseDown: this.onMouseDown }, '▲');
-		this.btnDown = R.span({ className: 'number-input-btn number-input-btn-down', onMouseUp: this.onDownClick, onMouseDown: this.onMouseDown }, '▼');
+		this.btnUp = R.span({ className: 'number-input-btn number-input-btn-up', onMouseUp: this.onUpClick, onMouseDown: this.onMouseDown, onMouseOver: onArrowOver, onMouseOut: onArrowOut }, '▲');
+		this.btnDown = R.span({ className: 'number-input-btn number-input-btn-down', onMouseUp: this.onDownClick, onMouseDown: this.onMouseDown, onMouseOver: onArrowOver, onMouseOut: onArrowOut }, '▼');
 	}
 
 	componentWillUnmount() {

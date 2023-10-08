@@ -6,6 +6,7 @@ import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { toggleIsolation } from "thing-editor/src/editor/ui/isolation";
+import StatusBar from "thing-editor/src/editor/ui/status-bar";
 import { renderSceneNode } from "thing-editor/src/editor/ui/tree-view/tree-node";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
@@ -59,6 +60,7 @@ function hideDragTarget() {
 		highlightedDragItem.classList.remove('drag-target-bottom');
 		highlightedDragItem.classList.remove('drag-target-mid');
 		highlightedDragItem.classList.remove('drag-target-wrap');
+		StatusBar.removeStatus('drag-tree-wrap');
 		highlightedDragItem = null;
 	}
 }
@@ -155,6 +157,8 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 				} else {
 					treeItem.classList.add('drag-target-bottom');
 				}
+				StatusBar.addStatus('Ctrl - to "wrap" mode', 'drag-tree-wrap');
+
 			} else {
 				hideDragTarget();
 			}

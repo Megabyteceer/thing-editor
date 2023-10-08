@@ -1,5 +1,6 @@
 import { Container, Point } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
+import StatusBar from "thing-editor/src/editor/ui/status-bar";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
 import ___Gizmo from "thing-editor/src/engine/lib/assets/src/___system/gizmo.c";
@@ -123,6 +124,7 @@ export default class ___GizmoArrow extends Shape {
 
 	onPointerOver() {
 		if(!___GizmoArrow.draggedArrow) {
+			StatusBar.addStatus('Alt + drag to clone object', 'gizmo-alt');
 			___GizmoArrow.overedArrow = this;
 			this.shapeFillColor = 0xffff00;
 			this.shapeLineColor = 0xffff00;
@@ -139,6 +141,7 @@ export default class ___GizmoArrow extends Shape {
 	onPointerOut() {
 		___GizmoArrow.overedArrow = undefined;
 		this._refreshColor();
+		StatusBar.removeStatus('gizmo-alt');
 	}
 
 	onPointerDown(ev: PointerEvent) {
@@ -160,6 +163,12 @@ export default class ___GizmoArrow extends Shape {
 				editorUtils.clone();
 			}
 
+			if(this.dragX && this.dragY) {
+				StatusBar.addStatus('Shift - to snap direction', 'gizmo', 1);
+			} else if(this.dragR) {
+				StatusBar.addStatus('Shift - to snap angle', 'gizmo', 1);
+			}
+
 			___GizmoArrow.draggedArrow = this;
 			this.isDowned = true;
 		} else if(ev.buttons === 2 && this.dragR) {
@@ -172,6 +181,9 @@ export default class ___GizmoArrow extends Shape {
 		if(this.snapGuide) {
 			this.snapGuide.visible = false;
 		}
+
+		StatusBar.removeStatus('gizmo');
+
 		this.isDowned = false;
 		this._refreshColor();
 	}
