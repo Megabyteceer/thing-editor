@@ -56,7 +56,7 @@ const mouseHandlerGlobal = (ev: PointerEvent) => {
 	const canvasBounds = (game.pixiApp.view as HTMLCanvasElement).getBoundingClientRect();
 
 
-	const canvasScale = game.W / canvasBounds.width;
+	const canvasScale = (game._isCanvasRotated ? game.H : game.W) / canvasBounds.width;
 	globalPoint.x = (ev.clientX - canvasBounds.x) * canvasScale;
 	globalPoint.y = (ev.clientY - canvasBounds.y) * canvasScale;
 
