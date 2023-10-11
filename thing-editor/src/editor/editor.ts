@@ -417,6 +417,7 @@ class Editor {
 				o.__onIsMobileChange();
 			}
 		});
+		this.ui.propsEditor.refresh();
 	}
 
 	toggleHideHelpers() {
