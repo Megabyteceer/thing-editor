@@ -80,9 +80,7 @@ editorEvents.once('projectDidOpen', () => {
 		}
 	});
 
-	window.addEventListener('mouseup', function onMouseMove() {
-		rightButtonDraggingStarted = false;
-	});
+	window.addEventListener('mouseup', stopRightButtonMoving);
 
 	window.addEventListener('wheel', function onWheel(ev) {
 		if(game.pixiApp && (ev.target === game.pixiApp.view)) {
@@ -126,7 +124,9 @@ function moveSelectionToMouse(ev: MouseEvent) {
 function moveSelectionToGlobalPoint(point: Point, withoutChildren = false) {
 	if(game.editor.selection.length > 0) {
 		game.editor.selection[0].parent.toLocal(point, game.stage, p);
-		moveSelectionToPoint(p.x - game.editor.selection[0].x, p.y - game.editor.selection[0].y, withoutChildren);
+		if(!isNaN(p.x)) {
+			moveSelectionToPoint(p.x - game.editor.selection[0].x, p.y - game.editor.selection[0].y, withoutChildren);
+		}
 	}
 }
 
@@ -224,7 +224,11 @@ function selectByStageClick(ev: MouseEvent) {
 	previousAllUnderMouse = allUnderMouse;
 }
 
+function stopRightButtonMoving() {
+	rightButtonDraggingStarted = false;
+}
+
 export default overlayLayer;
 
-export { moveSelectionToGlobalPoint, moveSelectionToPoint };
+export { moveSelectionToGlobalPoint, moveSelectionToPoint, stopRightButtonMoving };
 

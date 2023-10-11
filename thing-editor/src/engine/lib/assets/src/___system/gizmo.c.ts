@@ -1,6 +1,9 @@
 import { Container, Point } from "pixi.js";
 import { moveSelectionToGlobalPoint } from "thing-editor/src/editor/ui/editor-overlay";
 import game from "thing-editor/src/engine/game";
+import ___GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c";
+
+let lastSelected: Container | null;
 
 export default class ___Gizmo extends Container {
 
@@ -19,6 +22,12 @@ export default class ___Gizmo extends Container {
 	update(): void {
 		super.update();
 		let selected = game.editor.selection[0];
+		if(selected !== lastSelected) {
+			const a = this.findChildrenByType(___GizmoArrow);
+			for(const g of a) {
+				g.onSelectionChange();
+			}
+		}
 		if(selected) {
 			this.visible = true;
 			this.parent.toLocal(selected, selected.parent, this);
@@ -30,5 +39,6 @@ export default class ___Gizmo extends Container {
 		} else {
 			this.visible = false;
 		}
+		lastSelected = selected;
 	}
 }

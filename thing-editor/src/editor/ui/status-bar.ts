@@ -50,7 +50,13 @@ export default class StatusBar extends Component {
 			StatusBar.removeStatus('right-click-to-move');
 		}
 
-		const status = statusEntries.length ? R.span(statusProps, '(' + statusEntries[0].text + ')') : undefined;
+		const status = statusEntries.length ?
+			statusEntries.map((statusEntry) => {
+				if(statusEntry.priority < 0 && statusEntries.some(e => e.priority >= 0)) {
+					return undefined;
+				}
+				return R.span(statusProps, '(' + statusEntry.text + ')')
+			}) : undefined;
 
 		if(game && game.stage) {
 			let txt = ' x: ' + game.__mouse_uncropped.x + ' y: ' + game.__mouse_uncropped.y;

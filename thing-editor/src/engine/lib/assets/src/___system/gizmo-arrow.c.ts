@@ -1,5 +1,6 @@
 import { Container, Point } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
+import { stopRightButtonMoving } from "thing-editor/src/editor/ui/editor-overlay";
 import StatusBar from "thing-editor/src/editor/ui/status-bar";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
@@ -125,14 +126,29 @@ export default class ___GizmoArrow extends Shape {
 	onPointerOver() {
 		if(!___GizmoArrow.draggedArrow) {
 			StatusBar.addStatus('Alt + drag to clone object', 'gizmo-alt');
+			if(this.dragR && this.isShowAngle) {
+				StatusBar.addStatus('Right click to reset rotation', 'gizmo-right-click');
+			}
 			___GizmoArrow.overedArrow = this;
 			this.shapeFillColor = 0xffff00;
 			this.shapeLineColor = 0xffff00;
 		}
 	}
 
+	onSelectionChange() {
+		if(!game.__EDITOR_mode) {
+			this.interactive = false; // pass first click to the game object.
+			if(___GizmoArrow.overedArrow === this) {
+				this.onPointerOut();
+			}
+		}
+	}
+
 	update(): void {
 		super.update();
+		if(!this.interactive) {
+			this.interactive = !game.mouse.click;
+		}
 		if(___GizmoArrow.overedArrow === this && this.worldAlpha < 0.8) {
 			this.onPointerOut();
 		}
@@ -142,6 +158,9 @@ export default class ___GizmoArrow extends Shape {
 		___GizmoArrow.overedArrow = undefined;
 		this._refreshColor();
 		StatusBar.removeStatus('gizmo-alt');
+		if(this.dragR) {
+			StatusBar.removeStatus('gizmo-right-click');
+		}
 	}
 
 	onPointerDown(ev: PointerEvent) {
@@ -173,6 +192,7 @@ export default class ___GizmoArrow extends Shape {
 			this.isDowned = true;
 		} else if(ev.buttons === 2 && this.dragR) {
 			game.editor.editProperty('rotation', 0);
+			stopRightButtonMoving();
 		}
 	}
 
