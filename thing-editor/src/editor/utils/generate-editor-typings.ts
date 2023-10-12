@@ -179,7 +179,7 @@ const getSerializedObjectClass = (data: SerializedObject): SourceMappedConstruct
 	if(data.r) {
 		return getSerializedObjectClass(Lib.prefabs[data.r]);
 	}
-	return game.classes[data.c!];
+	return game.classes[data.c!] || __UnknownClass as any as SourceMappedConstructor;
 }
 
 export default regenerateCurrentSceneMapTypings;
