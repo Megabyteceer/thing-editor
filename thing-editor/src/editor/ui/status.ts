@@ -111,7 +111,6 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 			item.val = (owner as KeyedObject)[fieldName];
 		}
 		if(needAddInToList(this.errorsMap, owner, fieldName, errorCode)) {
-			debugger;
 			this.errors.push(item);
 			if(this.errorsList) {
 				this.errorsList.refresh();

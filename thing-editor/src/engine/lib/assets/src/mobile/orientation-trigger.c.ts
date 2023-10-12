@@ -17,8 +17,6 @@ export default class OrientationTrigger extends Container {
 
 	/// #if EDITOR
 
-	__itIsTypeChanging = false;
-
 	__onPortrait: string | null = null;
 	__onLandscape: string | null = null;
 
@@ -342,7 +340,7 @@ export default class OrientationTrigger extends Container {
 
 	__beforeSerialization() {
 		IGNORE_DIRECT_PROPS = true;
-		if(!this.__itIsTypeChanging) {
+		if(!this.__nodeExtendData.isTypeChanging) {
 			this.x = 0;
 			this.y = 0;
 			this.rotation = 0;
@@ -350,7 +348,6 @@ export default class OrientationTrigger extends Container {
 			this.scale.x = 1;
 			this.scale.y = 1;
 		}
-		this.__itIsTypeChanging = false;
 	}
 
 	__afterSerialization() {
@@ -386,13 +383,16 @@ export default class OrientationTrigger extends Container {
 	}
 
 	static __beforeChangeToThisType(o: OrientationTrigger) {
-		o.__itIsTypeChanging = true;
-		o.landscapeX = o.portraitX = o.x;
-		o.landscapeY = o.portraitY = o.y;
-		o.landscapeScaleX = o.portraitScaleX = o['scale.x'];
-		o.landscapeScaleY = o.portraitScaleY = o['scale.y'];
-		o.landscapeAlpha = o.portraitAlpha = o.alpha;
-		o.landscapeR = o.portraitR = o.rotation;
+		if(isNaN(o.landscapeX) || isNaN(o.landscapeY) ||
+			isNaN(o.landscapeScaleX) || isNaN(o.landscapeScaleY) ||
+			isNaN(o.landscapeAlpha) || isNaN(o.landscapeR)) {
+			o.landscapeX = o.portraitX = o.x;
+			o.landscapeY = o.portraitY = o.y;
+			o.landscapeScaleX = o.portraitScaleX = o['scale.x'];
+			o.landscapeScaleY = o.portraitScaleY = o['scale.y'];
+			o.landscapeAlpha = o.portraitAlpha = o.alpha;
+			o.landscapeR = o.portraitR = o.rotation;
+		}
 	}
 
 	/// #endif

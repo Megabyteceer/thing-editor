@@ -167,13 +167,16 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				let selectionData = game.editor.selection.saveSelection();
 
 				a.some((o) => {
-					if((o.constructor as SourceMappedConstructor).__beforeChangeToThisType) {
-						((o.constructor as SourceMappedConstructor).__beforeChangeToThisType as (o: Container) => void)(o);
+					o.__nodeExtendData.isTypeChanging = true;
+					if((selectedClass as SourceMappedConstructor).__beforeChangeToThisType) {
+
+						((selectedClass as SourceMappedConstructor).__beforeChangeToThisType as (o: Container) => void)(o);
 					}
 					o.constructor = selectedClass; // assign temporary fake constructor
 					delete o.__nodeExtendData.unknownConstructor;
 					delete o.__nodeExtendData.unknownConstructorProps;
 					Lib.__invalidateSerializationCache(o);
+
 				});
 
 				let isDataOfScene = game.currentContainer instanceof Scene;
@@ -182,6 +185,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				a.some((o) => {
 					assert(o.hasOwnProperty('constructor'), "");
 					delete (o as any).constructor;
+					o.__nodeExtendData.isTypeChanging = false;
 				});
 				game.__setCurrentContainerContent(Lib._deserializeObject(newSceneData, isDataOfScene));
 				game.editor.selection.loadSelection(selectionData);

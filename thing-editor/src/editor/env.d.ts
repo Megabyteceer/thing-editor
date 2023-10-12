@@ -75,6 +75,8 @@ interface NodeExtendData {
 
 	__pathBreakpoint?: any;
 
+	isTypeChanging?: boolean;
+
 	__fragmentOwnerId?: number;
 
 	eatenRotation?: number;
