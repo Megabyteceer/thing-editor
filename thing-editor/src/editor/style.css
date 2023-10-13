@@ -962,7 +962,7 @@ input[disabled] {
 	flex-grow: 3;
 }
 
-.change-prefab-button * {
+.prevent-child-pinter-events * {
 	pointer-events: none;
 }
 
@@ -979,6 +979,7 @@ input[disabled] {
 }
 
 .prefab-change-caret {
+	vertical-align: text-top;
 	font-size: 130%;
 	margin-left: 7px;
 	line-height: 25px;

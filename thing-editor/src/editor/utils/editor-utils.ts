@@ -475,7 +475,6 @@ export namespace editorUtils {
 		DataPathFixer.validatePathReferences();
 		game.editor.sceneModified(true);
 		Lib.__callInitIfGameRuns(wrapper);
-		game.editor.ui.propsEditor.selectField('name', true, true);
 	}
 
 	export const wrapSelected = (Class?: SourceMappedConstructor) => {

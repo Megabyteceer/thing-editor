@@ -58,7 +58,7 @@ export default class Lib
 		/// #endif
 
 		/// #if EDITOR
-		showedReplacings = {};
+		showedReplaces = {};
 		/// #endif
 
 		const s: Scene = Lib._deserializeObject(scenes[name]) as Scene;
@@ -363,22 +363,21 @@ export default class Lib
 
 			let replacedPrefabName: string | undefined;
 			if(!Lib.hasPrefab(src.r!)) {
-				replacedPrefabName = src.r;
-				src.r = '___system/unknown-prefab';
-				if(!showedReplacings[src.r!]) {
-					showedReplacings[src.r!] = true;
+				replacedPrefabName = '___system/unknown-prefab';
+				if(!showedReplaces[src.r!]) {
+					showedReplaces[src.r!] = true;
 					setTimeout(() => { // wait for id assign
-						game.editor.ui.status.error("Unknown prefab " + src.r + " was temporary replaced with empty Container.", 99999, ret);
+						game.editor.ui.status.error("Reference to unknown prefab: '" + src.r + "'", 99999, ret);
 					}, 1);
 				}
 			}
 
-			ret = Lib._deserializeObject(prefabs[src.r!]);
+			ret = Lib._deserializeObject(prefabs[replacedPrefabName || src.r!]);
 			Object.assign(ret, src.p);
 
 			if(replacedPrefabName) {
-				ret.name = replacedPrefabName;
-				ret.__nodeExtendData.unknownPrefab = replacedPrefabName;
+				ret.name = src.r!;
+				ret.__nodeExtendData.unknownPrefab = src.r;
 				ret.__nodeExtendData.unknownPrefabProps = src.p;
 			}
 			__preparePrefabReference(ret, src.r!);
@@ -391,8 +390,8 @@ export default class Lib
 			if(!classes.hasOwnProperty(src.c!)) {
 				replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass) as any as SourceMappedConstructor;
 				replaceClassName = replaceClass.__className;
-				if(!showedReplacings[src.c!]) {
-					showedReplacings[src.c!] = true;
+				if(!showedReplaces[src.c!]) {
+					showedReplaces[src.c!] = true;
 					setTimeout(() => { // wait for id assign
 						game.editor.ui.status.error("Unknown class " + src.c, 32012, ret);
 					}, 1);
@@ -1029,7 +1028,7 @@ const __onAssetDeleted = (file: FileDesc) => {
 	}
 }
 
-let showedReplacings: KeyedMap<true>;
+let showedReplaces: KeyedMap<true>;
 
 
 const __preparePrefabReference = (o: Container, prefabName: string) => {
@@ -1064,7 +1063,7 @@ const processAfterDeserialization = (o: Container) => {
 	if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
 		prefabs[name].p.name = name;
 	}
-	showedReplacings = {};
+	showedReplaces = {};
 	/// #endif
 	const ret: Container = Lib._deserializeObject(prefabs[name]);
 	/// #if EDITOR

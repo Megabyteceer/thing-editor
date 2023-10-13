@@ -166,9 +166,6 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 						changedName += i;
 						changedNode.name = changedName;
 						Lib.__invalidateSerializationCache(changedNode);
-						setTimeout(() => {
-							game.editor.ui.propsEditor.selectField('name', true, true);
-						}, 1);
 					}
 					changedName = '#' + changedName;
 					for(let i = 0; i < pathParts.length;) {

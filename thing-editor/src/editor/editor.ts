@@ -529,7 +529,6 @@ class Editor {
 		this.selection.select(child, true);
 		Lib.__invalidateSerializationCache(child);
 		this.sceneModified();
-		editor.ui.propsEditor.selectField('name', true, true);
 	}
 
 	isCanBeAddedAsChild(Class: SourceMappedConstructor, parent?: Container): boolean {

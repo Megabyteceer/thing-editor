@@ -356,16 +356,20 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 		} else {
 			if(node.__nodeExtendData.unknownPrefab) {
 				header = R.btn(R.fragment(
-					node.__nodeExtendData.unknownPrefab,
+					R.b({
+						className: 'danger selectable-text',
+						title: 'Ctrl+click to copy prefab`s name',
+						onMouseDown: copyTextByClick
+					}, node.__nodeExtendData.unknownPrefab),
 					prefabSelectCaret
-				), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button danger', undefined, !game.__EDITOR_mode);
+				), this.onChangePrefabClick, 'Change prefab referenced to', 'danger', undefined, !game.__EDITOR_mode);
 			} else {
 				const prefabName = node.__nodeExtendData.isPrefabReference!;
 				header = R.fragment(
 					R.btn(R.fragment(
 						assetItemRendererPrefab(fs.getFileByAssetName(prefabName, AssetType.PREFAB)),
 						prefabSelectCaret
-					), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button', undefined, !game.__EDITOR_mode),
+					), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button prevent-child-pinter-events', undefined, !game.__EDITOR_mode),
 					R.btn('Edit prefab', () => {
 						PrefabEditor.editPrefab(prefabName, true);
 					}, undefined, undefined, { key: 'e', ctrlKey: true }, !game.__EDITOR_mode)
