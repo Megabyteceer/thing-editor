@@ -344,11 +344,18 @@ Text.prototype.init = function () {
 	}
 };
 
+/// #if EDITOR
+Text.prototype.__beforeDestroy = function () {
+	(this as any).textTransform = 0;
+}
+/// #endif
+
 Text.prototype.onRemove = function () {
 	/// #if EDITOR
 	EDITOR_FLAGS._root_onRemovedCalled.delete(this);
 	/// #endif
 	(this as any)._maxWidth = 0;
+	(this as any).textTransform = 0;
 };
 
 Text.prototype.setAlign = function (align: TextStyleAlign) {
@@ -552,7 +559,7 @@ _editableEmbed(Text, 'style.fillGradientStops', {
 	type: 'number',
 	arrayProperty: true,
 	min: 0,
-	max: 1,   
+	max: 1,
 	step: 0.001,
 	visible: (node: Text) => {
 		return (node as any)._styleFill && (node as any)._styleFill.indexOf(',') >= 0;
