@@ -5,9 +5,9 @@ import game from "thing-editor/src/engine/game";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 
+const globalPointerDownEvents = game.pixiApp.renderer.plugins.interaction.rootBoundary.mappingTable.pointerdown;
+
 export default class ClickOutsideTrigger extends Container {
-
-
 	@editable({ name: 'interactive', override: true, default: true })
 
 	@editable({ type: 'callback', important: true })
@@ -20,11 +20,11 @@ export default class ClickOutsideTrigger extends Container {
 
 	gameTime = 0;
 	thisDownTime = 0;
-	clickTimeOut = 0;
+
+	pointerDownListener = { fn: this.onStageDown.bind(this), priority: 10000 };
 
 	constructor() {
 		super();
-		this.onStageDown = this.onStageDown.bind(this);
 		this.onThisDown = this.onThisDown.bind(this);
 	}
 
@@ -52,7 +52,7 @@ export default class ClickOutsideTrigger extends Container {
 				this._insideContainers.push(c);
 			}
 		}
-		(game.pixiApp.view as HTMLCanvasElement).addEventListener('pointerdown', this.onStageDown);
+		globalPointerDownEvents.push(this.pointerDownListener);
 		for(let o of this._insideContainers) {
 			o.on('pointerdown', this.onThisDown);
 		}
@@ -62,12 +62,8 @@ export default class ClickOutsideTrigger extends Container {
 		for(let o of this._insideContainers) {
 			o.off('pointerdown', this.onThisDown);
 		}
-		(game.pixiApp.view as HTMLCanvasElement).removeEventListener('pointerdown', this.onStageDown);
+		globalPointerDownEvents.splice(globalPointerDownEvents.indexOf(this.pointerDownListener), 1);
 		super.onRemove();
-		if(this.clickTimeOut) {
-			clearTimeout(this.clickTimeOut);
-			this.clickTimeOut = 0;
-		}
 	}
 
 	onThisDown(ev: PointerEvent) {
@@ -78,12 +74,9 @@ export default class ClickOutsideTrigger extends Container {
 
 	onStageDown(ev: PointerEvent) {
 		if(ev.buttons !== 4) {
-			this.clickTimeOut = setTimeout(() => {
-				this.clickTimeOut = 0;
-				if(this.thisDownTime !== game.time && game.time === this.gameTime) {
-					this.fire();
-				}
-			}, 0);
+			if(this.thisDownTime !== game.time && game.time === this.gameTime) {
+				this.fire();
+			}
 		}
 	}
 
