@@ -1,4 +1,4 @@
-import { Point, isMobile } from "pixi.js";
+import { Point } from "pixi.js";
 import { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import game from "thing-editor/src/engine/game";
 import Button from "thing-editor/src/engine/lib/assets/src/basic/button.c";
@@ -105,13 +105,15 @@ if((window as KeyedObject).cordova) {
 		}
 	};
 }
+
 /// #if DEBUG
-if(isMobile.any) {
-	window.addEventListener('error', function (er: ErrorEvent) {
-		let txt = JSON.stringify(er.error);
-		game.__showDebugError(txt);
-	});
-}
+/// #if EDITOR
+/*
+/// #endif
+window.addEventListener('error', function (er: ErrorEvent) {
+	let txt = er.error.stack || er.error.message;
+	game.__showDebugError(txt);
+});//*/
 /// #endif
 
 let onClickOnceCallbacks: ((ev: PointerEvent) => void)[] = [];
