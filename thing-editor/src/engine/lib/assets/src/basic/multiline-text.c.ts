@@ -14,7 +14,7 @@ export default class MultilineText extends Text {
 	@editable({ afterEdited: afterMaxWidthEdit, min: 10, disabled: () => { return game.isPortrait; } })
 	maxWidthLandscape = 400;
 	@editable({ afterEdited: afterMaxWidthEdit, min: 10, disabled: () => { return !game.isPortrait; } })
-	maxWidthPortrait = 0;
+	maxWidthPortrait = 400;
 
 	_maxHeightLandscape = 0;
 	_maxHeightPortrait = 0;

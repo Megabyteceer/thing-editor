@@ -36,28 +36,11 @@
 			]
 		},
 		{
-			"c": "Button",
-			"p": {
-				"x": 407,
-				"y": 144,
-				"onClick": []
-			},
-			":": [
-				{
-					"c": "DSprite",
-					"p": {
-						"image": "bunny.png"
-					}
-				}
-			]
-		},
-		{
 			"c": "Bunny",
 			"p": {
 				"x": 236,
 				"y": 499,
-				"image": "bunny.png",
-				"arrayField": []
+				"image": "bunny.png"
 			}
 		},
 		{
@@ -102,6 +85,53 @@
 		{
 			"c": "BgMusic",
 			"p": {}
+		},
+		{
+			"c": "ClickOutsideTrigger",
+			"p": {
+				"x": 126,
+				"y": 132,
+				"onClickOutside": "this.#t.hide",
+				"additionalContainers": [
+					"all.show-btn"
+				]
+			},
+			":": [
+				{
+					"c": "Trigger",
+					"p": {
+						"name": "t",
+						"state": true
+					},
+					":": [
+						{
+							"c": "DSprite",
+							"p": {
+								"image": "bunny.png"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"c": "Button",
+			"p": {
+				"name": "show-btn",
+				"x": 131,
+				"y": 53,
+				"onClick": [
+					"all.t.toggle"
+				]
+			},
+			":": [
+				{
+					"c": "DSprite",
+					"p": {
+						"image": "bunny.png"
+					}
+				}
+			]
 		}
 	]
 }
