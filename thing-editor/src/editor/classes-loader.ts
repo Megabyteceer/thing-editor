@@ -97,19 +97,6 @@ export default class ClassesLoader {
 						prop.notSerializable = true;
 					}
 
-					if(prop.hasOwnProperty('min')) {
-						propertyAssert(prop, prop.type === 'number', "'min' attribute possible for properties with 'number' type only.");
-						propertyAssert(prop, typeof prop.min === 'number', "'min' attribute should have number value.");
-					}
-					if(prop.hasOwnProperty('max')) {
-						propertyAssert(prop, prop.type === 'number', "'max' attribute possible for properties with 'number' type only.");
-						propertyAssert(prop, typeof prop.max === 'number', "'max' attribute should have number value.");
-					}
-					if(prop.hasOwnProperty('step')) {
-						propertyAssert(prop, prop.type === 'number', "'step' attribute possible for properties with 'number' type only.");
-						propertyAssert(prop, typeof prop.step === 'number', "'step' attribute should have number value.");
-					}
-
 					if(!prop.noNullCheck && !prop.arrayProperty && (prop.type === 'number' || prop.type === 'color')) {
 						wrapPropertyWithNumberChecker(Class, prop.name);
 						prop.__nullCheckingIsApplied = true;
@@ -132,6 +119,22 @@ export default class ClassesLoader {
 						}
 						Class.__defaultValues[prop.name] = prop.default;
 					}
+
+					if(prop.hasOwnProperty('min')) {
+						propertyAssert(prop, prop.type === 'number', "'min' attribute possible for properties with 'number' type only.");
+						propertyAssert(prop, typeof prop.min === 'number', "'min' attribute should have number value.");
+						propertyAssert(prop, prop.default >= prop.min!, "default value " + prop.default + " is less that 'min' attribute " + prop.min);
+					}
+					if(prop.hasOwnProperty('max')) {
+						propertyAssert(prop, prop.type === 'number', "'max' attribute possible for properties with 'number' type only.");
+						propertyAssert(prop, typeof prop.max === 'number', "'max' attribute should have number value.");
+						propertyAssert(prop, prop.default <= prop.max!, "default value " + prop.default + " is bigger that 'max' attribute " + prop.max);
+					}
+					if(prop.hasOwnProperty('step')) {
+						propertyAssert(prop, prop.type === 'number', "'step' attribute possible for properties with 'number' type only.");
+						propertyAssert(prop, typeof prop.step === 'number', "'step' attribute should have number value.");
+					}
+
 					if(!prop.override) {
 						if(prop.hasOwnProperty('select')) {
 							prop.renderer = SelectEditor;
