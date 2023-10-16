@@ -237,7 +237,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	refreshTip() {
-		if(!this.state || !this.state.focus) {
+		if(!this.state || !this.state.focus || !game.editor.selection.length) {
 			return;
 		}
 		let val = this.props.value;
