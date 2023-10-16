@@ -109,6 +109,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 		this.onSearchKeyDown = this.onSearchKeyDown.bind(this);
 		this.onSearchChange = this.onSearchChange.bind(this);
 
+		this.state = { search: game.editor.settings.getItem('tree-view-search', '') };
 
 		this.treeViewProps = {
 			className: 'scene-tree-view window-scrollable-content',
@@ -254,13 +255,15 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 	}
 
 	onSearchChange(ev: InputEvent) {
-		let search = (ev.target as HTMLInputElement).value.toLowerCase();
-		let needSearch = !this.state.search || (this.state.search.length < search.length);
+		const val = (ev.target as HTMLInputElement).value;
+		const search = val.toLowerCase();
+		const needSearch = !this.state.search || (this.state.search.length < search.length);
 		this.setState({ search }, () => {
 			if(needSearch) {
 				this.fundNextBySearch();
 			}
 		});
+		game.editor.settings.setItem('tree-view-search', val)
 	}
 
 	fundNextBySearch() {
