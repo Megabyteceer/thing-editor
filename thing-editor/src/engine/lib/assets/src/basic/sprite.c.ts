@@ -51,6 +51,18 @@ const tintRDesc = {
 Object.defineProperty(Sprite.prototype, 'tintR', tintRDesc);
 Object.defineProperty(Mesh.prototype, 'tintR', tintRDesc);
 
+const tintPickerDesc = {
+	get: function (this: Sprite) {
+		return this.tint;
+	},
+	set: function (this: Sprite, v: number) {
+		this.tint = v;
+	}, configurable: true
+};
+
+Object.defineProperty(Sprite.prototype, 'tintPicker', tintPickerDesc);
+Object.defineProperty(Mesh.prototype, 'tintPicker', tintPickerDesc);
+
 const tintGDesc = {
 	get: function (this: Sprite) {
 		return (this.tint & 0xFF00) >> 8;
@@ -111,6 +123,11 @@ _editableEmbed([Sprite, Mesh as any], 'tint', {
 	default: 0xFFFFFF,
 	max: 0xFFFFFF,
 	min: 0
+});
+_editableEmbed([Sprite, Mesh as any], 'tintPicker', {
+	default: 0xffffff,
+	notSerializable: true,
+	type: 'color'
 });
 _editableEmbed([Sprite, Mesh as any], 'tintR', {
 	default: 255,
