@@ -23,20 +23,15 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 	constructor(props: TreeNodeProps) {
 		super(props);
 
-		this.onMouseDown = this.onMouseDown.bind(this);
+		this.onClick = this.onClick.bind(this);
 	}
 
-	onMouseDown(ev: PointerEvent) { // == select nodes
+	onClick(ev: PointerEvent) { // == select nodes
 		sp(ev);
 
 		let extendData = this.props.node.__nodeExtendData;
 
-
 		if(extendData.treeNodeView !== this) { // object was removed but tree is outdated yet
-			return;
-		}
-
-		if(ev.buttons !== 1 && extendData.isSelected) {
 			return;
 		}
 
@@ -123,17 +118,28 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 			},
 			className,
 			style,
-			onMouseDown: this.onMouseDown
+			onClick: this.onClick,
+			onDragStart(ev: DragEvent) {
+				selectIfNotSelected(node);
+				ev.dataTransfer!.setData("text/drag-thing-editor-tree-selection", '');
+			},
+			draggable: node.parent !== game.stage
 		}, R.sceneNode(node), caret), children);
 	}
 }
 
 
-const onContextMenu = (node: Container, ev: PointerEvent) => {
-	if(node.__nodeExtendData.isSelected) {
-		sp(ev);
+const selectIfNotSelected = (node: Container) => {
+	if(game.editor.selection.indexOf(node) < 0) {
+		game.editor.selection.select(node);
 	}
+}
 
+const onContextMenu = (node: Container, ev: PointerEvent) => {
+
+	selectIfNotSelected(node);
+
+	sp(ev);
 	showContextMenu(TREE_NODE_CONTEXT_MENU, ev)
 };
 

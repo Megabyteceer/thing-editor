@@ -10,6 +10,7 @@ import StatusBar from "thing-editor/src/editor/ui/status-bar";
 import { renderSceneNode } from "thing-editor/src/editor/ui/tree-view/tree-node";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
+import { getSerializedObjectClass } from "thing-editor/src/editor/utils/generate-editor-typings";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
 import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 import makePathForKeyframeAutoSelect from "thing-editor/src/editor/utils/movie-clip-keyframe-select-path";
@@ -17,6 +18,7 @@ import { scrollInToView } from "thing-editor/src/editor/utils/scroll-in-view";
 import Selection from "thing-editor/src/editor/utils/selection";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
+import Lib from "thing-editor/src/engine/lib";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import { mouseHandlerGlobal } from "thing-editor/src/engine/utils/game-interaction";
 
@@ -61,14 +63,17 @@ function hideDragTarget() {
 		highlightedDragItem.classList.remove('drag-target-mid');
 		highlightedDragItem.classList.remove('drag-target-wrap');
 		StatusBar.removeStatus('drag-tree-wrap');
+		StatusBar.removeStatus('drag-alt');
 		highlightedDragItem = null;
 	}
 }
 
 function canBeDragAccepted(ev: DragEvent) {
 	for(let i of ev.dataTransfer!.items) {
-		if(i.type === "text/drag-thing-editor-class-id") {
-			return true;
+		if(i.type === "text/drag-thing-editor-class-id" ||
+			i.type === 'text/drag-thing-editor-prefab-name' ||
+			i.type === 'text/drag-thing-editor-tree-selection') {
+			return i.type;
 		}
 	}
 }
@@ -81,16 +86,40 @@ function clearDragExpandTimeOut() {
 	}
 }
 
-function addToParentSafe(ClassId: string, parent: Container, at?: number) {
-	const Class = game.classes[ClassId];
-	if(game.editor.isCanBeAddedAsChild(Class, parent)) {
-		const node = loadSafeInstanceByClassName(ClassId, false);
-		game.editor.selection.clearSelection();
-		game.editor.addTo(parent, node);
-		if(typeof at !== 'undefined') {
-			parent.addChildAt(node, at);
+function addToParentSafe(ClassId: string, prefabName: string, parent: Container, isClone?: boolean, nodeAt?: Container, atShift?: number) {
+	let Classes!: SourceMappedConstructor[];
+	if(prefabName) {
+		Classes = [getSerializedObjectClass(Lib.prefabs[prefabName])];
+	} else if(ClassId) {
+		Classes = [game.classes[ClassId]];
+	} else {
+		Classes = game.editor.selection.map(c => c.constructor as SourceMappedConstructor);
+	}
+
+	if(Classes.every(Class => game.editor.isCanBeAddedAsChild(Class, parent))) {
+		let nodes!: Container[];
+		if(ClassId) {
+			nodes = [loadSafeInstanceByClassName(ClassId, false)];
+		} else if(prefabName) {
+			nodes = [Lib.loadPrefab(prefabName)];
+		} else {
+			if(isClone) {
+				editorUtils.clone();
+			}
+			nodes = game.editor.selection.slice();
+
 		}
-		return node;
+		game.editor.selection.clearSelection();
+
+		if(nodeAt) {
+			nodes.reverse();
+		}
+		for(const node of nodes) {
+			game.editor.addTo(parent, node);
+			if(nodeAt) {
+				parent.addChildAt(node, parent.children.indexOf(nodeAt) + (atShift || 0));
+			}
+		}
 	} else {
 		game.editor.ui.modal.notify('cant drop this object here.');
 	}
@@ -113,7 +142,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 
 		this.treeViewProps = {
 			className: 'scene-tree-view window-scrollable-content',
-			onMouseDown: onEmptyClick,
+			onClick: onEmptyClick,
 			onContextMenu,
 			onDragOver: this.onDragOver.bind(this),
 			onDragLeave: this.onDragLeave.bind(this),
@@ -163,8 +192,15 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			} else {
 				hideDragTarget();
 			}
-			ev.dataTransfer!.effectAllowed = isWrap ? "move" : "copy";
-			ev.dataTransfer!.dropEffect = isWrap ? "move" : "copy";
+
+			if(canBeDragAccepted(ev) === 'text/drag-thing-editor-tree-selection') {
+				StatusBar.addStatus('Alt - to clone object', 'drag-alt');
+				ev.dataTransfer!.effectAllowed = ev.altKey ? "copy" : "move";
+				ev.dataTransfer!.dropEffect = ev.altKey ? "copy" : "move";
+			} else {
+				ev.dataTransfer!.effectAllowed = isWrap ? "move" : "copy";
+				ev.dataTransfer!.dropEffect = isWrap ? "move" : "copy";
+			}
 			ev.preventDefault();
 		}
 	}
@@ -178,19 +214,34 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 		mouseHandlerGlobal(ev as any);
 		if(highlightedDragItem) {
 			const ClassId = ev.dataTransfer!.getData('text/drag-thing-editor-class-id');
+			const prefabName = ev.dataTransfer!.getData('text/drag-thing-editor-prefab-name');
 
 			if(highlightedDragItem!.classList.contains('drag-target-wrap')) {
-				editorUtils.wrap([dragTargetNode], loadSafeInstanceByClassName(ClassId));
+				if(ClassId) {
+					editorUtils.wrap([dragTargetNode], loadSafeInstanceByClassName(ClassId));
+				} else if(prefabName) {
+					editorUtils.wrap([dragTargetNode], Lib.loadPrefab(prefabName));
+				} else {
+					let c = game.editor.selection[0];
+					while(c) {
+						if(c === dragTargetNode) {
+							game.editor.ui.modal.notify('Can not drop inside it self');
+							return;
+						}
+						c = c.parent;
+					}
+					editorUtils.wrap([dragTargetNode], game.editor.selection[0]);
+				}
 			} else if(highlightedDragItem!.classList.contains('drag-target-mid')) {
-				addToParentSafe(ClassId, dragTargetNode); // drop as children
+				addToParentSafe(ClassId, prefabName, dragTargetNode, ev.altKey); // drop as children
 			} else if(highlightedDragItem!.classList.contains('drag-target-bottom')) {
 				if((dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length) || (dragTargetNode.parent === game.stage)) {
-					addToParentSafe(ClassId, dragTargetNode, 0); //drop to top of children list
+					addToParentSafe(ClassId, prefabName, dragTargetNode, ev.altKey, dragTargetNode.children[0],); //drop to top of children list
 				} else {
-					addToParentSafe(ClassId, dragTargetNode.parent, dragTargetNode.parent.children.indexOf(dragTargetNode) + 1); //drop after
+					addToParentSafe(ClassId, prefabName, dragTargetNode.parent, ev.altKey, dragTargetNode, 1); //drop after
 				}
 			} else {
-				addToParentSafe(ClassId, dragTargetNode.parent, dragTargetNode.parent.children.indexOf(dragTargetNode)); //drop before
+				addToParentSafe(ClassId, prefabName, dragTargetNode.parent, ev.altKey, dragTargetNode); //drop before
 			}
 
 			clearDragExpandTimeOut();

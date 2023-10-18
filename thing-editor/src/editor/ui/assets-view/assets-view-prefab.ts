@@ -146,7 +146,11 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 			onDblClick: () => {
 				game.editor.editClassSource(Class, file.asset.c);
 			},
-			title: "Click to edit prefab. Alt + Click - place as child"
+			title: "Click to edit prefab. Alt + Click - place as child",
+			onDragStart(ev: DragEvent) {
+				ev.dataTransfer!.setData("text/drag-thing-editor-prefab-name", file.assetName);
+			},
+			draggable: true
 		},
 		libInfo(file),
 		R.classIcon(Class),
