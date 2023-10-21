@@ -203,11 +203,15 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 			let fn = a[0];
 			this.refs.forEach((field) => {
 				field.onAutoSelect(a);
-			})
+			});
 
 			let fldInput = document.querySelector(".props-editor #property-editor-" + fn.replace('.', '_')) as HTMLInputElement;
 			if(!fldInput) {
-				fldInput = document.querySelector(fieldName) as HTMLInputElement;
+				try {
+					fldInput = document.querySelector(fieldName) as HTMLInputElement;
+				} catch(_er) {
+					//
+				}
 			}
 			if(fldInput) {
 
@@ -329,7 +333,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 
 		let header: ComponentChild;
 		if(prefabReferencesPresent === nonPrefabsPresent) {
-			header = "References and non references are selected."
+			header = "References and non references are selected.";
 		} else if(nonPrefabsPresent) {
 			let classButtonContent;
 			if(node.__nodeExtendData.unknownConstructor) {
@@ -352,7 +356,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 					}, firstClass.__className), '...');
 				}
 			}
-			header = R.btn(classButtonContent, this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode)
+			header = R.btn(classButtonContent, this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode);
 		} else {
 			if(node.__nodeExtendData.unknownPrefab) {
 				header = R.btn(R.fragment(
@@ -373,7 +377,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 					R.btn('Edit prefab', () => {
 						PrefabEditor.editPrefab(prefabName, true);
 					}, undefined, undefined, { key: 'e', ctrlKey: true }, !game.__EDITOR_mode)
-				)
+				);
 			}
 		}
 
