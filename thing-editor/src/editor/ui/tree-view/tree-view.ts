@@ -126,7 +126,7 @@ function addToParentSafe(ClassId: string, prefabName: string, parent: Container,
 }
 
 interface TreeViewState {
-	search: string
+	search: string;
 }
 
 export default class TreeView extends ComponentDebounced<ClassAttributes<TreeView>, TreeViewState> {
@@ -314,7 +314,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 				this.fundNextBySearch();
 			}
 		});
-		game.editor.settings.setItem('tree-view-search', val)
+		game.editor.settings.setItem('tree-view-search', val);
 	}
 
 	fundNextBySearch() {
@@ -431,13 +431,13 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 		if(!game.stage) return R.span();
 		return R.fragment(
 			R.input({ onKeyDown: this.onSearchKeyDown, onInput: this.onSearchChange, className: 'tree-view-search', value: this.state.search, placeholder: 'Search' }),
-
+			this.state.search ? R.btn('search', () => this.fundNextBySearch(), undefined, 'hidden', { key: 'F3' }) : undefined,
 			EDITOR_FLAGS.isolationEnabled ? R.btn('exit isolation', toggleIsolation, undefined, 'clickable isolation-warning', { key: 'i', ctrlKey: true }) : undefined,
 			R.div(this.treeViewProps,
 				game.__getScenesStack().map(renderSceneStackItem as any),
 				game.stage.children.map(renderRoots as any)
 			)
-		)
+		);
 	}
 }
 
