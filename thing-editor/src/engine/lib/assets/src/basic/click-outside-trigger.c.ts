@@ -7,6 +7,8 @@ import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 
 const globalPointerDownEvents = game.pixiApp.renderer.plugins.interaction.rootBoundary.mappingTable.pointerdown;
 
+const all: ClickOutsideTrigger[] = [];
+
 export default class ClickOutsideTrigger extends Container {
 	@editable({ name: 'interactive', override: true, default: true })
 
@@ -37,6 +39,7 @@ export default class ClickOutsideTrigger extends Container {
 
 		super.init();
 
+		all.push(this);
 
 		this._insideContainers = [this];
 		if(this.additionalContainers) {
@@ -62,6 +65,7 @@ export default class ClickOutsideTrigger extends Container {
 		for(let o of this._insideContainers) {
 			o.off('pointerdown', this.onThisDown);
 		}
+		all.splice(all.indexOf(this), 1);
 		globalPointerDownEvents.splice(globalPointerDownEvents.indexOf(this.pointerDownListener), 1);
 		super.onRemove();
 	}
@@ -89,6 +93,23 @@ export default class ClickOutsideTrigger extends Container {
 	update() {
 		this.gameTime = game.time;
 		super.update();
+	}
+
+	static shootAll(exceptContainer?: Container) {
+		loop1: for(const o of all) {
+			if(o.getRootContainer() === game.currentContainer) {
+				if(exceptContainer) {
+					let p = exceptContainer;
+					while(p) {
+						if(o._insideContainers.indexOf(p) >= 0) {
+							continue loop1;
+						}
+						p = p.parent;
+					}
+				}
+				o.fire();
+			}
+		}
 	}
 }
 

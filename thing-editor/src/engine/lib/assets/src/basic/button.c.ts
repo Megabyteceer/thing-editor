@@ -48,7 +48,7 @@ export default class Button extends DSprite {
 			return parentScrollLayer &&
 				((parentScrollLayer.fullArea.w > parentScrollLayer.visibleArea.w) ||
 					(parentScrollLayer.fullArea.h > parentScrollLayer.visibleArea.h)
-				)
+				);
 		}
 		return false;
 	}
@@ -64,7 +64,7 @@ export default class Button extends DSprite {
 	@editable({ min: 0 })
 	repeatInterval = 0;
 
-	pointerStartPos?: { x: number, y: number };
+	pointerStartPos?: { x: number, y: number; };
 
 	constructor() {
 		super();
@@ -334,6 +334,9 @@ export default class Button extends DSprite {
 		for(let b of allActiveButtons) {
 			if((b.hotkey === keyCode) && b.isCanBePressed) {
 				b.onDown(null, 'hotkey');
+				if(game.classes.ClickOutsideTrigger) {
+					game.classes.ClickOutsideTrigger.shootAll(b);
+				}
 				return b;
 			}
 		}
