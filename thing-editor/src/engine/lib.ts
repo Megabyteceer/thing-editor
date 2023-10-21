@@ -203,7 +203,7 @@ export default class Lib
 					if(textures[name]) {
 						const oldTexture = textures[name];
 						Object.assign(oldTexture, newTexture);
-						oldTexture.onBaseTextureUpdated(newTexture.baseTexture)
+						oldTexture.onBaseTextureUpdated(newTexture.baseTexture);
 						oldTexture._updateID = Date.now();
 					} else {
 						/// #endif
@@ -583,17 +583,22 @@ export default class Lib
 		return ret;
 	}
 
+	static _clearStaticScene(sceneName: string) {
+		let s = staticScenes[sceneName];
+		let scenesStack = game.__getScenesStack();
+		if(!s.parent && scenesStack.indexOf(s) < 0 && scenesStack.indexOf(s.name as string) < 0) {
+			Lib.destroyObjectAndChildren(s);
+		}
+		delete staticScenes[sceneName];
+	}
+
 	/// #if EDITOR
 
 	static __clearStaticScenes() {
-		for(let sceneName in staticScenes) {
-			let s = staticScenes[sceneName];
-			let scenesStack = game.__getScenesStack();
-			if(!s.parent && scenesStack.indexOf(s) < 0 && scenesStack.indexOf(s.name as string) < 0) {
-				Lib.destroyObjectAndChildren(s);
-			}
+		const scenes = Object.assign({}, staticScenes);
+		for(let sceneName in scenes) {
+			this._clearStaticScene(sceneName);
 		}
-		staticScenes = {};
 	}
 
 	static __serializeObject(o: Container): SerializedObject {
@@ -764,7 +769,7 @@ export default class Lib
 			Texture.removeFromCache(texture);
 			Object.assign(texture, Lib.REMOVED_TEXTURE);
 			texture._updateID = tmp;
-			texture.onBaseTextureUpdated(texture.baseTexture)
+			texture.onBaseTextureUpdated(texture.baseTexture);
 		}
 	}
 
@@ -860,7 +865,7 @@ const normalizeSerializedDataRecursive = (data: SerializedObject) => {
 			if(data[':']) {
 				data[':'] = prefab[':'].concat(data[':']);
 			} else {
-				data[':'] = prefab[':']
+				data[':'] = prefab[':'];
 			}
 		}
 
@@ -870,7 +875,7 @@ const normalizeSerializedDataRecursive = (data: SerializedObject) => {
 			}
 		}
 	}
-}
+};
 
 const normalizeSerializedData = () => {
 	/// #if EDITOR
@@ -886,7 +891,7 @@ const normalizeSerializedData = () => {
 	for(const name in scenes) {
 		normalizeSerializedDataRecursive(scenes[name]);
 	}
-}
+};
 
 /// #if EDITOR
 
@@ -897,7 +902,7 @@ const getVersionedFileName = (file: FileDesc) => {
 		}
 		return file.fileName;
 	}
-}
+};
 
 const EMPTY_NODE_EXTEND_DATA: NodeExtendData = { objectDeleted: "Container was deleted and it`s extend data replaced with temporary object." };
 Object.freeze(EMPTY_NODE_EXTEND_DATA);
@@ -905,8 +910,8 @@ Object.freeze(EMPTY_NODE_EXTEND_DATA);
 export { __onAssetAdded, __onAssetDeleted, __onAssetUpdated, constructRecursive };
 
 const isAtlasAsset = (asset: any) => {
-	return (asset as KeyedObject).meta && (asset as KeyedObject).meta.scale
-}
+	return (asset as KeyedObject).meta && (asset as KeyedObject).meta.scale;
+};
 
 const __onAssetAdded = (file: FileDesc) => {
 	switch(file.assetType) {
@@ -938,7 +943,7 @@ const __onAssetAdded = (file: FileDesc) => {
 			}
 			break;
 	}
-}
+};
 
 const __onAssetUpdated = (file: FileDesc) => {
 
@@ -997,7 +1002,7 @@ const __onAssetUpdated = (file: FileDesc) => {
 			}
 			break;
 	}
-}
+};
 
 const __onAssetDeleted = (file: FileDesc) => {
 	console.log('deleted: ' + file.fileName);
@@ -1026,7 +1031,7 @@ const __onAssetDeleted = (file: FileDesc) => {
 			Lib.__deleteSound(file as FileDescSound);
 			break;
 	}
-}
+};
 
 let showedReplaces: KeyedMap<true>;
 
@@ -1038,7 +1043,7 @@ const __preparePrefabReference = (o: Container, prefabName: string) => {
 			c.__nodeExtendData.hidden = true;
 		}
 	}
-}
+};
 /// #endif
 
 
@@ -1080,7 +1085,7 @@ const _filterStaticTriggers = (childData: SerializedObject) => {
 	return !childData[':'] || !childData[':'].some((cd) => {
 		return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || (game.classes.StaticTrigger as any as SourceMappedConstructor).__defaultValues.dataPath, game));
 	});
-}
+};
 
 const _filterStaticTriggersRecursive = (data: SerializedObject) => {
 	if(data[':']) {
@@ -1088,7 +1093,7 @@ const _filterStaticTriggersRecursive = (data: SerializedObject) => {
 		data[':'] = a;
 		a.forEach(_filterStaticTriggersRecursive);
 	}
-}
+};
 
 export { isAtlasAsset, removeHoldersToCleanup };
 
