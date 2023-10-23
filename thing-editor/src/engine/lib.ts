@@ -585,11 +585,13 @@ export default class Lib
 
 	static _clearStaticScene(sceneName: string) {
 		let s = staticScenes[sceneName];
-		let scenesStack = game.__getScenesStack();
-		if(!s.parent && scenesStack.indexOf(s) < 0 && scenesStack.indexOf(s.name as string) < 0) {
-			Lib.destroyObjectAndChildren(s);
+		if(s) {
+			let scenesStack = game.__getScenesStack();
+			if(!s.parent && scenesStack.indexOf(s) < 0 && scenesStack.indexOf(s.name as string) < 0) {
+				Lib.destroyObjectAndChildren(s);
+			}
+			delete staticScenes[sceneName];
 		}
-		delete staticScenes[sceneName];
 	}
 
 	/// #if EDITOR
