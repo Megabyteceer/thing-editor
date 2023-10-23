@@ -191,7 +191,7 @@ export default class ScrollLayer extends Container {
 	update() {
 		if(this.visible) {
 
-			if(!game.mouse.click) {
+			if(draggingLayer !== this) {
 
 				this._virtualScrollX += this.xSpeed;
 				this._virtualScrollY += this.ySpeed;

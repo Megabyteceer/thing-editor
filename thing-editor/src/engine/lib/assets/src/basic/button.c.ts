@@ -189,6 +189,12 @@ export default class Button extends DSprite {
 			callByPath(action, this);
 		}
 
+		if(source === 'hotkey') {
+			if(game.classes.ClickOutsideTrigger) {
+				game.classes.ClickOutsideTrigger.shootAll(this);
+			}
+		}
+
 		Button.clickedButton = null;
 
 		if(this.sndClick) {
@@ -269,7 +275,7 @@ export default class Button extends DSprite {
 		super.update();
 	}
 
-	onUp(ev?: PointerEvent | KeyboardEvent) {
+	onUp(ev?: PointerEvent | KeyboardEvent, src = 'pointerup') {
 		if(Button.downedButton === this) {
 			if(this.pressImage) {
 				if(this.initialImage) {
@@ -282,7 +288,7 @@ export default class Button extends DSprite {
 			Button.downedButton = null;
 
 			if(ev && this.scrollable && Math.hypot(game.mouse.x - this.pointerStartPos!.x, game.mouse.y - this.pointerStartPos!.y) <= SCROLL_THRESHOLD) {
-				this._executeOnClick('pointerup');
+				this._executeOnClick(src);
 			}
 		}
 	}
@@ -334,9 +340,6 @@ export default class Button extends DSprite {
 		for(let b of allActiveButtons) {
 			if((b.hotkey === keyCode) && b.isCanBePressed) {
 				b.onDown(null, 'hotkey');
-				if(game.classes.ClickOutsideTrigger) {
-					game.classes.ClickOutsideTrigger.shootAll(b);
-				}
 				return b;
 			}
 		}
@@ -379,7 +382,7 @@ window.addEventListener('keydown', (ev) => {
 
 window.addEventListener('keyup', (ev) => {
 	if(downedByKeycodeButton && downedByKeycodeButton.hotkey === ev.keyCode) {
-		downedByKeycodeButton.onUp(ev);
+		downedByKeycodeButton.onUp(ev, 'hotkey');
 		downedByKeycodeButton = undefined;
 	}
 });
