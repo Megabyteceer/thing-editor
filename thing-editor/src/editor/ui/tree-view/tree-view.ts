@@ -114,6 +114,17 @@ function addToParentSafe(ClassId: string, prefabName: string, parent: Container,
 		if(nodeAt) {
 			nodes.reverse();
 		}
+
+		let p = parent;
+		while(p) {
+			if(nodes.indexOf(p) >= 0) {
+				game.editor.ui.modal.notify('can not drop inside it self.');
+				return;
+			}
+			p = p.parent;
+		}
+
+
 		for(const node of nodes) {
 			game.editor.addTo(parent, node);
 			if(nodeAt) {
@@ -121,7 +132,7 @@ function addToParentSafe(ClassId: string, prefabName: string, parent: Container,
 			}
 		}
 	} else {
-		game.editor.ui.modal.notify('cant drop this object here.');
+		game.editor.ui.modal.notify('can not drop this object here.');
 	}
 }
 
