@@ -1,6 +1,5 @@
 
 import { NineSlicePlane as PIXI_NineSlicePlane } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
 import Lib from "thing-editor/src/engine/lib";
 
@@ -18,7 +17,7 @@ export default class NineSlicePlane extends PIXI_NineSlicePlane {
 
 /// #if EDITOR
 
-(NineSlicePlane as any as SourceMappedConstructor).__EDITOR_icon = 'tree/slice9';
+NineSlicePlane.__EDITOR_icon = 'tree/slice9';
 _editableEmbed(NineSlicePlane, 'width', {
 	noNullCheck: true,
 	default: 200

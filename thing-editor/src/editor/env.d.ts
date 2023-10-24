@@ -1,17 +1,15 @@
 /// <reference types="vite/client" />
 
-import { Container, Point } from "pixi.js";
-import { FileDescClass } from "thing-editor/src/editor/fs";
-import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import { Container, DisplayObject, Point } from "pixi.js";
 
 type CallBackPath = string;
 type ValuePath = string;
 type CallBackParsedData = {
 	/** callback path names*/
-	p: (string | { s: string })[];
+	p: (string | { s: string; })[];
 	/** callback parameter */
-	v?: any[]
-}
+	v?: any[];
+};
 
 interface GameData { // eslint-disable-line @typescript-eslint/no-empty-interface
 
@@ -58,7 +56,7 @@ interface NodeExtendData {
 
 	hidePropsEditor?: {
 		title: string,
-		visibleFields: KeyedMap<true>
+		visibleFields: KeyedMap<true>;
 	};
 
 	tmpGlobalPos?: Point;
@@ -84,53 +82,22 @@ interface NodeExtendData {
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number | boolean;
 
-type KeyedObject = { [key: string]: any };
+type KeyedObject = { [key: string]: any; };
 
 type SerializedDataValidationError = undefined | {
 	message: string,
 	findObjectCallback: ((o: Container) => boolean),
 	fieldName?: string,
-	errorCode?: number
+	errorCode?: number;
 };
 
 type SerializedObjectProps = KeyedObject;
 
-interface Constructor {
-	new(): Container | {
-		[key: string]: any;
-	};
-}
-
-interface SourceMappedConstructor extends Constructor {
-	/**
-	 * @deprecated name can be wrong for PIXI objects use __className instead
-	 */
-	name: string
-	__sourceFileName?: string;
-	__defaultValues: KeyedObject;
-	__requiredComponents?: Constructor[];
-	__EDITOR_icon?: string;
-	__classAsset: FileDescClass;
-	__editableProps: EditablePropertyDesc[];
-	__editablePropsRaw: EditablePropertyDescRaw[];
-	/** additional way to disable editable properties */
-	__isPropertyDisabled?: (p: EditablePropertyDesc) => string | undefined;
-	__EDITOR_tip?: string;
-	__isScene: boolean;
-	__sourceCode: string[];
-	__canAcceptParent: (o: Container) => boolean;
-	__canAcceptChild: (Class: SourceMappedConstructor) => boolean;
-	__beforeChangeToThisType?: (o: Container) => void;
-
-	__validateObjectData?: (data: KeyedObject) => SerializedDataValidationError;
-
-	/** added because pixi exports classes with wrong names */
-	__className: string;
-}
+type SourceMappedConstructor = typeof DisplayObject;
 
 type KeyedMap<T> = {
 	[key: string]: T;
-}
+};
 
 type SerializedObject = {
 	/** constructor class name */
@@ -141,7 +108,7 @@ type SerializedObject = {
 
 	p: SerializedObjectProps,
 	':'?: SerializedObject[] | undefined,
-}
+};
 
 type ThingEditorServer = { // exposed from electron
 	fs: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => FSCallback;
@@ -149,23 +116,23 @@ type ThingEditorServer = { // exposed from electron
 	versions: KeyedObject;
 	onServerMessage: (_onServerMessage: (event: string, ...args: any[]) => void) => void;
 	argv: string[];
-}
+};
 
 type AnyType = any;
 
 /** signals for DataPathChooser and CallbackPathChooser */
 interface SelectableProperty extends AnyType {
-	___EDITOR_isHiddenForChooser?: true | string
-	___EDITOR_isHiddenForCallbackChooser?: true
-	___EDITOR_isHiddenForDataChooser?: true
-	___EDITOR_isGoodForChooser?: true
-	___EDITOR_isGoodForCallbackChooser?: true
-	___EDITOR_ChooserOrder?: true
-	___EDITOR_callbackParameterChooserFunction?: (owner: any) => Promise<any[] | any>
+	___EDITOR_isHiddenForChooser?: true | string;
+	___EDITOR_isHiddenForCallbackChooser?: true;
+	___EDITOR_isHiddenForDataChooser?: true;
+	___EDITOR_isGoodForChooser?: true;
+	___EDITOR_isGoodForCallbackChooser?: true;
+	___EDITOR_ChooserOrder?: true;
+	___EDITOR_callbackParameterChooserFunction?: (owner: any) => Promise<any[] | any>;
 }
 
 declare global {
-	let thingEditorServer: ThingEditorServer // exposed from electron
+	let thingEditorServer: ThingEditorServer; // exposed from electron
 }
 
 

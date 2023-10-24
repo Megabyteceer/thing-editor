@@ -1,5 +1,5 @@
 import { Circle, Ellipse, Graphics, Point, Polygon, Rectangle, RoundedRectangle } from "pixi.js";
-import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env.js";
+import { SerializedObject } from "thing-editor/src/editor/env.js";
 import editable from "thing-editor/src/editor/props-editor/editable.js";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -16,12 +16,12 @@ const isShapeHasWidthHeight = (o: Shape) => {
 	return o.shape === SHAPE_TYPE.RECT ||
 		o.shape === SHAPE_TYPE.ROUND_RECT ||
 		o.shape === SHAPE_TYPE.ELLIPSE;
-}
+};
 
 const isShapeHasRedius = (o: Shape) => {
 	return o.shape === SHAPE_TYPE.ROUND_RECT ||
-		o.shape === SHAPE_TYPE.CIRCLE
-}
+		o.shape === SHAPE_TYPE.CIRCLE;
+};
 
 const DEFAULT_POINTS = [[-30, -30], [30, -10], [-10, 30]];
 
@@ -58,7 +58,7 @@ export default class Shape extends Graphics {
 
 	protected __pointsUpdateIntervalInitialized = 0;
 
-	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !o.__nodeExtendData.isPrefabReference } })
+	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !o.__nodeExtendData.isPrefabReference; } })
 	protected set _shapePoints(v: Point[] | null) {
 		this.__shapePoints = v;
 		if(v) {
@@ -453,5 +453,5 @@ export default class Shape extends Graphics {
 }
 
 /// #if EDITOR
-(Shape as any as SourceMappedConstructor).__EDITOR_icon = 'tree/shape';
+Shape.__EDITOR_icon = 'tree/shape';
 /// #endif

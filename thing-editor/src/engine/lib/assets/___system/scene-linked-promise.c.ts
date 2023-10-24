@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from "thing-editor/src/engine/debug/assert";
@@ -40,7 +39,7 @@ export default class SceneLinkedPromise extends Container {
 	static promise(handler: (resolve: (result: any) => void, reject?: (result: any) => void, promise?: SceneLinkedPromise) => void, container?: Container) {
 		assert(!game.__EDITOR_mode, "Attempt to create SceneLinkedPromise.promise() in editing mode.", 10057);
 		if(!container) {
-			container = game.currentContainer || game.currentFader
+			container = game.currentContainer || game.currentFader;
 		}
 		let promise = Pool.create(SceneLinkedPromise);
 		/// #if EDITOR
@@ -138,7 +137,7 @@ export default class SceneLinkedPromise extends Container {
 
 	/// #if DEBUG
 	___stack: any;
-	__passedHandlersDebug: { handler: ((result?: any) => any), currentResult: any }[] = [];
+	__passedHandlersDebug: { handler: ((result?: any) => any), currentResult: any; }[] = [];
 	/// #endif
 
 	onRemove() {
@@ -340,5 +339,5 @@ export default class SceneLinkedPromise extends Container {
 }
 
 /// #if EDITOR
-(SceneLinkedPromise as any as SourceMappedConstructor).__EDITOR_icon = 'tree/promise';
+SceneLinkedPromise.__EDITOR_icon = 'tree/promise';
 /// #endif

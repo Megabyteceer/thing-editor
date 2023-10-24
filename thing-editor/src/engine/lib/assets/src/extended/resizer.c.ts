@@ -1,5 +1,5 @@
 import { Container, Point } from "pixi.js";
-import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SerializedObject } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
@@ -103,9 +103,9 @@ export default class Resizer extends Container {
 	/// #endif
 
 	@editable()
-	relativeX = false
+	relativeX = false;
 
-	_xPos = 0
+	_xPos = 0;
 
 	@editable({ min: -1, max: 1, step: 0.01, visible: (o) => { return o.relativeX; } })
 	set xPos(v) {
@@ -120,7 +120,7 @@ export default class Resizer extends Container {
 	}
 
 	@editable()
-	relativeY = false
+	relativeY = false;
 
 	_yPos = 0;
 
@@ -164,15 +164,15 @@ export default class Resizer extends Container {
 	/// #endif
 
 	@editable({ visible: (o) => { return o.resizeX || o.resizeY || o.relativeY || o.relativeX; } })
-	fixed = false
+	fixed = false;
 
 }
 
 
 /// #if EDITOR
 
-(Resizer as any as SourceMappedConstructor).__EDITOR_icon = 'tree/resizer';
+Resizer.__EDITOR_icon = 'tree/resizer';
 
-(Resizer as any as SourceMappedConstructor).__EDITOR_tip = `<b>Resizer</b> - component has sense only for project with <b>dynamicStageSize</b>`;
+Resizer.__EDITOR_tip = `<b>Resizer</b> - component has sense only for project with <b>dynamicStageSize</b>`;
 
 /// #endif

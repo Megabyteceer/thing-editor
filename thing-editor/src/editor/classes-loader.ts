@@ -4,7 +4,6 @@ import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-
 import Lib from "thing-editor/src/engine/lib";
 
 import { Container, DisplayObject, Sprite, Text } from "pixi.js";
-import { Constructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDescClass } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
@@ -17,7 +16,7 @@ import ___GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizm
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
-const EMBED_CLASSES_NAMES_FIXER: Map<Constructor, string> = new Map();
+const EMBED_CLASSES_NAMES_FIXER: Map<any, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
 EMBED_CLASSES_NAMES_FIXER.set(Sprite, 'Sprite');
 EMBED_CLASSES_NAMES_FIXER.set(Text, 'Text');
@@ -40,9 +39,9 @@ export default class ClassesLoader {
 
 		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
 		this.isClassesWaitsReloading = false;
-		return Promise.all(files.map((file) => {
+		return Promise.all(files.map((file): SourceMappedConstructor => {
 
-			const onClassLoaded = (module: { default: SourceMappedConstructor }) => {
+			const onClassLoaded = (module: { default: SourceMappedConstructor; }): SourceMappedConstructor => {
 
 				const RawClass = module.default;
 				if(!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
@@ -53,12 +52,12 @@ export default class ClassesLoader {
 						game.editor.showError('file ' + file.fileName + ' exports class which does not extend PIXI.Container: ' + RawClass.name);
 					}
 					game.editor.editSource(file.fileName);
-					return;
+					return null as any;
 				}
 
 				const Class: SourceMappedConstructor = RawClass;
 
-				let instance: Container = new Class() as Container;
+				let instance: Container = new (Class as any)() as Container;
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
 
@@ -155,19 +154,19 @@ export default class ClassesLoader {
 				}
 
 				return Class;
-			}
+			};
 			let moduleName = '../../..' + file.fileName.replace(/\.ts$/, '');
 
 			const versionQuery = file.fileName.startsWith('/thing-editor/src/engine/lib/') ? undefined : ('?v=' + componentsVersion);
 			if(versionQuery) {
 				moduleName += '.ts' + versionQuery;
 			}
-			return imp(moduleName).then(onClassLoaded);
+			return imp(moduleName).then(onClassLoaded) as any;
 
-		})).then((_classes: (SourceMappedConstructor | undefined)[]) => {
+		})).then((_classes: SourceMappedConstructor[]) => {
 			let classes: GameClasses = {} as any;
 
-			for(let c of _classes as SourceMappedConstructor[]) {
+			for(let c of _classes) {
 				if(!c) {
 					return;
 				}
@@ -188,7 +187,7 @@ export default class ClassesLoader {
 
 			Lib._setClasses(classes);
 
-			for(let c of _classes as SourceMappedConstructor[]) {
+			for(let c of _classes) {
 
 				let superClass = c;
 
@@ -246,4 +245,4 @@ export default class ClassesLoader {
 // vite dynamic imports broke sourcemaps lines; Thats why import moved to the bottom of the file.
 const imp = (moduleName: string) => {
 	return import(/* @vite-ignore */ `/${moduleName}.ts`);
-}
+};

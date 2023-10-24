@@ -2,7 +2,6 @@
 import game from "thing-editor/src/engine/game";
 /// #endif
 import { Container } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 
 export default class ParticleContainer extends Container {
@@ -25,5 +24,5 @@ export default class ParticleContainer extends Container {
 }
 
 /// #if EDITOR
-(ParticleContainer as any as SourceMappedConstructor).__EDITOR_icon = 'tree/particle-container';
+ParticleContainer.__EDITOR_icon = 'tree/particle-container';
 /// #endif

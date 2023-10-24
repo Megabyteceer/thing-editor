@@ -168,9 +168,8 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 
 				a.some((o) => {
 					o.__nodeExtendData.isTypeChanging = true;
-					if((selectedClass as SourceMappedConstructor).__beforeChangeToThisType) {
-
-						((selectedClass as SourceMappedConstructor).__beforeChangeToThisType as (o: Container) => void)(o);
+					if(selectedClass.__beforeChangeToThisType) {
+						(selectedClass.__beforeChangeToThisType as (o: Container) => void)(o);
 					}
 					o.constructor = selectedClass; // assign temporary fake constructor
 					delete o.__nodeExtendData.unknownConstructor;

@@ -1,5 +1,4 @@
 
-import type { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable, { EditableRect } from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import Container from "thing-editor/src/engine/lib/assets/src/basic/container.c";
@@ -378,7 +377,7 @@ export default class ScrollLayer extends Container {
 }
 
 /// #if EDITOR
-(ScrollLayer as any as SourceMappedConstructor).__EDITOR_icon = 'tree/scroll';
+ScrollLayer.__EDITOR_icon = 'tree/scroll';
 
 function validateAreas() {
 	for(const o of game.editor.selection as any as ScrollLayer[]) {

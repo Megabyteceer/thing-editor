@@ -1,6 +1,6 @@
 
 import { Container } from 'pixi.js';
-import { KeyedMap, KeyedObject, SelectableProperty, SerializedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
+import { KeyedMap, KeyedObject, SelectableProperty, SerializedObject } from 'thing-editor/src/editor/env';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import editable, { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
@@ -448,7 +448,7 @@ export default class MovieClip extends DSprite {
 		this.__checkVisibilityForEditor();
 	}
 
-	___previewFrame = 0
+	___previewFrame = 0;
 
 	@editable({ min: 0 })
 	set __previewFrame(v) {
@@ -678,6 +678,6 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 
 let serializeCache = new WeakMap();
 
-(MovieClip as any as SourceMappedConstructor).__EDITOR_icon = 'tree/movie';
+MovieClip.__EDITOR_icon = 'tree/movie';
 
 /// #endif

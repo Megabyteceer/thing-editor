@@ -23,13 +23,13 @@ function markOldReferences(o: KeyedObject) {
 function checkForOldReferences(o: KeyedObject) {
 	if(objectsReferences.has(o) && !Lib.__outdatedReferencesDetectionDisabled) {
 		const refsMap = objectsReferences.get(o)!;
-		const keys = refsMap.keys()
+		const keys = refsMap.keys();
 		for(let f of keys) {
 			if(o[f] === refsMap.get(f)) {
-				let c = o.constructor;
+				let c = o.constructor as SourceMappedConstructor;
 				game.editor.ui.status.error(c.name + ' did not clean reference to display object in property "' + f + '". Please null this field in onRemove method, or add "@editable({type: "ref"})" decorator for this field (click to copy fix-js and open class source code.).', 10048, () => {
 					game.editor.copyToClipboard('@editable({type: "ref"})');
-					game.editor.editClassSource(c as SourceMappedConstructor);
+					game.editor.editClassSource(c);
 				});
 			}
 		}
@@ -46,7 +46,7 @@ function accessToOldReferenceDetector(obj: OutdatedProxy, prop: any): any {
 interface OutdatedProxy {
 	thisIsOutdatedReference: "thisIsOutdatedReference",
 	class_: SourceMappedConstructor,
-	fieldName: string
+	fieldName: string;
 }
 
 const accessDetectionProxiesCache = new Map();

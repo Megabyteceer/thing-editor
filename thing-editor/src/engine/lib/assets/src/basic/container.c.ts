@@ -308,7 +308,7 @@ Container.prototype.__isAnyChildSelected = function __isAnyChildSelected(): bool
 };
 
 (Container.prototype.destroy as SelectableProperty).___EDITOR_isHiddenForChooser = true;
-(Container as any as SourceMappedConstructor).__EDITOR_icon = 'tree/container';
+Container.__EDITOR_icon = 'tree/container';
 
 const getObjectInfo = (o: Container) => {
 	return (o.name || ('(' + (o.constructor as SourceMappedConstructor).__className + ')'));
@@ -322,7 +322,7 @@ _editableEmbed(Container, 'name', {
 	},
 	disabled: (node: Container) => {
 		if(node.parent === game.stage) {
-			return "root object`s name can not be edited because it is always equal to scene`s or prefab`s name."
+			return "root object`s name can not be edited because it is always equal to scene`s or prefab`s name.";
 		}
 	},
 	beforeEdited: (val: string) => {

@@ -1,6 +1,6 @@
 
 import { Container, ObservablePoint } from "pixi.js";
-import { Constructor, KeyedObject } from "thing-editor/src/editor/env";
+import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -15,7 +15,7 @@ let _getValStore = (o: KeyedObject) => {
 };
 
 
-export default function wrapPropertyWithNumberChecker(constructor: Constructor, propertyName: string) {
+export default function wrapPropertyWithNumberChecker(constructor: SourceMappedConstructor, propertyName: string) {
 
 	if(!_definedProps.has(constructor)) {
 		_definedProps.set(constructor, {});

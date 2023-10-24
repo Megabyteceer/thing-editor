@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SelectableProperty } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -361,7 +361,7 @@ const sortReverted = (a: number, b: number) => {
 
 /// #if EDITOR
 
-(BgMusic as any as SourceMappedConstructor).__EDITOR_icon = 'tree/music';
+BgMusic.__EDITOR_icon = 'tree/music';
 
 (BgMusic.prototype.play as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (BgMusic.prototype.stop as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;

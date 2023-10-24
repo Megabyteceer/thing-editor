@@ -347,7 +347,7 @@ Text.prototype.init = function () {
 /// #if EDITOR
 Text.prototype.__beforeDestroy = function () {
 	(this as any).textTransform = 0;
-}
+};
 /// #endif
 
 Text.prototype.onRemove = function () {
@@ -449,7 +449,7 @@ Text.prototype.__afterSerialization = function __afterSerialization() {
 	}
 };
 
-(Text as any as SourceMappedConstructor).__EDITOR_icon = 'tree/text';
+Text.__EDITOR_icon = 'tree/text';
 
 _editableEmbed(Text, 'image', {
 	type: 'string',
@@ -457,7 +457,7 @@ _editableEmbed(Text, 'image', {
 	visible: () => {
 		return false;
 	}
-})
+});
 
 _editableEmbed(Text, 'text-props-splitter', {
 	type: 'splitter',
@@ -510,7 +510,7 @@ _editableEmbed(Text, 'Paste style', {
 	title: 'Paste text style.',
 	onClick: (o: Text) => {
 		game.editor.ui.modal.notify("Text style pasted");
-		(game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', []) as { property: string, value: any }[])
+		(game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', []) as { property: string, value: any; }[])
 			.forEach(({ property, value }) => game.editor.onObjectsPropertyChanged(o, property, value, false));
 	},
 	visible: () => !!game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', false),

@@ -1,5 +1,4 @@
 import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable, { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import Lib from "thing-editor/src/engine/lib";
@@ -67,7 +66,7 @@ const TEXTURE_WRAP_MODE_DESC: EditablePropertyDescRaw = {
 		{ name: 'MIRRORED_REPEAT', value: WRAP_MODES.MIRRORED_REPEAT }
 	],
 	disabled: isWrapDisabled as any
-}
+};
 
 /// #endif
 
@@ -550,5 +549,5 @@ export default class Fill extends Mesh {
 }
 
 /// #if EDITOR
-(Fill as any as SourceMappedConstructor).__EDITOR_icon = 'tree/fill';
+Fill.__EDITOR_icon = 'tree/fill';
 /// #endif

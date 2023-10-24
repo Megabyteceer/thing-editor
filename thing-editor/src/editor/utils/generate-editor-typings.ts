@@ -11,7 +11,7 @@ let __currentClassesMap: string;
 const getImportSrcForClass = (className: string) => {
 	const path = game.classes[className].__sourceFileName!;
 	return 'import ' + className + ' from "' + path.substring(1, path?.length - 3) + '";';
-}
+};
 
 const regenerateCurrentSceneMapTypings = () => {
 	if(game.editor.editorArguments['no-vscode-integration']) {
@@ -74,7 +74,7 @@ interface ThingSceneAllMap {
 `;
 		fs.writeFile('/thing-editor/src/editor/current-scene-typings.d.ts', mapJS);
 	}
-}
+};
 
 
 const regenerateClassesTypings = () => {
@@ -117,7 +117,7 @@ interface GameClasses {
 `;
 		fs.writeFile('/thing-editor/src/editor/current-classes-typings.d.ts', mapJS);
 	}
-}
+};
 
 let __currentPrefabsMap: string;
 
@@ -170,17 +170,17 @@ export default class TLib {
 
 		fs.writeFile('/thing-editor/src/editor/prefabs-typing.ts', mapJS);
 	}
-}
+};
 
 const getSerializedObjectClass = (data: SerializedObject): SourceMappedConstructor => {
 	if(!data) {
-		return __UnknownClass as any as SourceMappedConstructor;
+		return __UnknownClass as SourceMappedConstructor;
 	}
 	if(data.r) {
 		return getSerializedObjectClass(Lib.prefabs[data.r]);
 	}
-	return game.classes[data.c!] || __UnknownClass as any as SourceMappedConstructor;
-}
+	return game.classes[data.c!] || __UnknownClass;
+};
 
 export default regenerateCurrentSceneMapTypings;
 

@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
@@ -114,5 +113,5 @@ export default class ClickOutsideTrigger extends Container {
 }
 
 /// #if EDITOR
-(ClickOutsideTrigger as any as SourceMappedConstructor).__EDITOR_icon = 'tree/click-outside';
+ClickOutsideTrigger.__EDITOR_icon = 'tree/click-outside';
 /// #endif

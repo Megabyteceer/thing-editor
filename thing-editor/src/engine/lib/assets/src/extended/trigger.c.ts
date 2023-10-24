@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { SelectableProperty, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SelectableProperty, SerializedObject } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -52,7 +52,7 @@ export default class Trigger extends Container {
 	}
 
 	@editable({ type: 'data-path', important: true })
-	dataPath = null
+	dataPath = null;
 
 	@editable()
 	invert = false;
@@ -350,9 +350,9 @@ const processOnDisable = (o: Container) => {
 (Trigger.prototype.hide as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Trigger.prototype.toggle as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
-(Trigger as any as SourceMappedConstructor).__EDITOR_icon = 'tree/trigger';
+Trigger.__EDITOR_icon = 'tree/trigger';
 
-(Trigger as any as SourceMappedConstructor).__EDITOR_tip = `<b>Trigger</b> - is component which smoothly or instantly <b>switches</b> it's <b>visibility</b> or/and <b>position</b> accordingly of value of specified javaScript variable.
+Trigger.__EDITOR_tip = `<b>Trigger</b> - is component which smoothly or instantly <b>switches</b> it's <b>visibility</b> or/and <b>position</b> accordingly of value of specified javaScript variable.
 If trigger become invisible because of alpha=0 or scale.x=0 or scale.y=0 it <b>stops</b> to <b>update</b> its children.`;
 
 

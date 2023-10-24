@@ -22,7 +22,6 @@ Usage:
 */
 
 import { Container } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { getCurrentStack, showStack } from "thing-editor/src/editor/utils/stack-utils";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -104,5 +103,5 @@ export default class Delay extends Container {
 }
 
 /// #if EDITOR
-(Delay as any as SourceMappedConstructor).__EDITOR_icon = 'tree/timer';
+Delay.__EDITOR_icon = 'tree/timer';
 /// #endif

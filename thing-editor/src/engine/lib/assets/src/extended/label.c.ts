@@ -1,5 +1,5 @@
 import { Text } from "pixi.js";
-import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { KeyedObject } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -11,7 +11,7 @@ import { stepTo } from "thing-editor/src/engine/utils/utils";
 export default class Label extends Text {
 
 	@editable({ type: 'data-path', important: true })
-	dataPath = null
+	dataPath = null;
 
 	@editable({ min: 0 })
 	refreshInterval = 10;
@@ -208,6 +208,6 @@ export default class Label extends Text {
 }
 
 /// #if EDITOR
-(Label as any as SourceMappedConstructor).__EDITOR_icon = 'tree/label';
-(Label as any as SourceMappedConstructor).__EDITOR_tip = `<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.`;
+Label.__EDITOR_icon = 'tree/label';
+Label.__EDITOR_tip = `<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.`;
 /// #endif

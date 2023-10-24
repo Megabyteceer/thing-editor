@@ -1,5 +1,5 @@
 import { Container, Text } from "pixi.js";
-import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SelectableProperty } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -83,7 +83,7 @@ export default class FlyText extends Text {
 
 /// #if EDITOR
 
-(FlyText as any as SourceMappedConstructor).__EDITOR_icon = 'tree/fly-text';
+FlyText.__EDITOR_icon = 'tree/fly-text';
 
 (FlyText as SelectableProperty).flyText.___EDITOR_isGoodForCallbackChooser = true;
 (FlyText as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;

@@ -1,5 +1,5 @@
 import { Container, DisplayObject } from "pixi.js";
-import { Constructor, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { FileDesc } from "thing-editor/src/editor/fs";
 import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
@@ -57,7 +57,7 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	/** splitter header */
 	title?: string,
 	animate?: true,
-	select?: SelectEditorItem[] | (() => SelectEditorItem[])
+	select?: SelectEditorItem[] | (() => SelectEditorItem[]);
 	noNullCheck?: true,
 	important?: boolean;
 	tip?: string | (() => string | undefined);
@@ -101,12 +101,12 @@ interface EditablePropertyDesc<T extends Container = Container> extends Editable
 function editable<T extends DisplayObject>(editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 	return function (target: T, propertyName: string) {
 		editableInner(target, propertyName, editablePropertyDesc);
-	}
+	};
 }
 
 /* Allows to define editable properties to the classes we has no access to source code.
 To define editable properties for your own classes, please use '@editable()' decorator instead */
-function _editableEmbed<T extends DisplayObject>(target: Constructor | Constructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
+function _editableEmbed<T extends DisplayObject>(target: SourceMappedConstructor | SourceMappedConstructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 
 
 	if(editablePropertyDesc && !editablePropertyDesc.name) {
@@ -115,10 +115,10 @@ function _editableEmbed<T extends DisplayObject>(target: Constructor | Construct
 
 	if(Array.isArray(target)) {
 		for(let t of target) {
-			editableInner(t.prototype, propertyName, editablePropertyDesc);
+			editableInner(t.prototype as any, propertyName, editablePropertyDesc);
 		}
 	} else {
-		editableInner(target.prototype, propertyName, editablePropertyDesc);
+		editableInner(target.prototype as any, propertyName, editablePropertyDesc);
 	}
 }
 
@@ -169,7 +169,7 @@ const propertyAssert = (prop: EditablePropertyDesc, condition: any, message: str
 		if(prop.__src) {
 			game.editor.editSource(prop.__src);
 		}
-		message = 'Editable property "' + prop.name + '" of class "' + prop.class.__className + '" validation error: \n' + message
+		message = 'Editable property "' + prop.name + '" of class "' + prop.class.__className + '" validation error: \n' + message;
 		assert(condition, message);
 	}
-}
+};

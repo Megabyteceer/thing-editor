@@ -1,4 +1,4 @@
-import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SelectableProperty } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 
 
@@ -390,7 +390,7 @@ window.addEventListener('keyup', (ev) => {
 
 /// #if EDITOR
 
-(Button as any as SourceMappedConstructor).__EDITOR_icon = 'tree/button';
+Button.__EDITOR_icon = 'tree/button';
 
 (Button.prototype.enable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Button.prototype.disable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;

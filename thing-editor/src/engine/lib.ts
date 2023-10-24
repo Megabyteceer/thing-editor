@@ -10,11 +10,12 @@ import { checkForOldReferences, markOldReferences } from "thing-editor/src/edito
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import __refreshPrefabRefs, { __refreshPrefabRefsPrepare } from "thing-editor/src/editor/utils/refresh-prefabs";
 import { getCurrentStack } from "thing-editor/src/editor/utils/stack-utils";
-import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
+import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
+
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import Scene, { __UnknownClassScene } from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 import L from "thing-editor/src/engine/utils/l";
 import Pool from "thing-editor/src/engine/utils/pool";
@@ -388,7 +389,7 @@ export default class Lib
 			let replaceClass: SourceMappedConstructor | undefined = undefined;
 			let replaceClassName: string | undefined;
 			if(!classes.hasOwnProperty(src.c!)) {
-				replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass) as any as SourceMappedConstructor;
+				replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass);
 				replaceClassName = replaceClass.__className;
 				if(!showedReplaces[src.c!]) {
 					showedReplaces[src.c!] = true;
@@ -401,7 +402,7 @@ export default class Lib
 				assert(classes[src.c!].__defaultValues, 'Class ' + (replaceClassName || src.c) + ' has no default values set');
 			}
 
-			const constrictor = (replaceClass || classes[src.c!]) as SourceMappedConstructor;
+			const constrictor = (replaceClass || classes[src.c!]);
 
 			ret = Pool.create(constrictor as any);
 
@@ -566,7 +567,7 @@ export default class Lib
 
 	static _loadClassInstanceById(id: string): Container {
 		const Class = classes[id];
-		let ret = Pool.create(Class) as Container;
+		let ret = Pool.create(Class as any) as Container;
 		Object.assign(ret, Class.__defaultValues);
 
 		/// #if EDITOR
@@ -1085,7 +1086,7 @@ const processAfterDeserialization = (o: Container) => {
 
 const _filterStaticTriggers = (childData: SerializedObject) => {
 	return !childData[':'] || !childData[':'].some((cd) => {
-		return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || (game.classes.StaticTrigger as any as SourceMappedConstructor).__defaultValues.dataPath, game));
+		return (cd.c === 'StaticTrigger') && (!!cd.p.invert !== !getValueByPath(cd.p.dataPath || game.classes.StaticTrigger.__defaultValues.dataPath, game));
 	});
 };
 

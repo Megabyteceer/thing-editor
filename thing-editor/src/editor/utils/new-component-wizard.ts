@@ -100,7 +100,7 @@ const newComponentWizard = async () => {
 	let templateSrc = fs.readFile('thing-editor/src/editor/templates/' + selectedTemplate.path);
 
 	//add or remove super method call if its exists
-	let baseClassInstance = new selectedBaseClass();
+	let baseClassInstance = new (selectedBaseClass as any)();
 	const regex = /(\/\/)(super\.)([a-zA-Z_]+)(\(\);)/gm;
 	templateSrc = templateSrc.replace(regex, (_substr, _m1, m2, m3, m4) => {
 		let isSuperClassHasThisMethod = (baseClassInstance as KeyedObject)[m3];
@@ -122,11 +122,11 @@ const newComponentWizard = async () => {
 		return ((offset === 0 || enteredClassName[offset - 1] === '_') ? '' : '-') + substr.toLowerCase();
 	});
 	fileName = chosenFolder + 'src/' + classFoldername + fileName + '.c.ts';
-	fs.writeFile(fileName, templateSrc)
+	fs.writeFile(fileName, templateSrc);
 	fs.refreshAssetsList();
 	game.editor.reloadClasses().then(() => {
 		game.editor.editClassSource(game.classes[enteredClassName]);
 	});
-}
+};
 
 export default newComponentWizard;

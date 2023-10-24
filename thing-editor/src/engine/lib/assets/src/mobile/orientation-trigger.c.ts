@@ -1,4 +1,3 @@
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
@@ -382,7 +381,8 @@ export default class OrientationTrigger extends Container {
 		this.portraitY += dy;
 	}
 
-	static __beforeChangeToThisType(o: OrientationTrigger) {
+	static __beforeChangeToThisType(_o: Container) {
+		const o = _o as OrientationTrigger;
 		if(isNaN(o.landscapeX) || isNaN(o.landscapeY) ||
 			isNaN(o.landscapeScaleX) || isNaN(o.landscapeScaleY) ||
 			isNaN(o.landscapeAlpha) || isNaN(o.landscapeR)) {
@@ -400,7 +400,7 @@ export default class OrientationTrigger extends Container {
 }
 
 /// #if EDITOR
-(OrientationTrigger as any as SourceMappedConstructor).__EDITOR_icon = 'tree/orientation-trigger';
+OrientationTrigger.__EDITOR_icon = 'tree/orientation-trigger';
 
 /// #endif
 

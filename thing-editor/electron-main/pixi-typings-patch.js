@@ -86,7 +86,31 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     ___id: number;
 
 	__shiftObject?(dX, dY);
+	
+    /** added because pixi exports classes with wrong names */
+    static __className: string;
 
+    /**
+     * @deprecated name can be wrong for PIXI objects use __className instead
+     */
+    static name: string;
+    static __sourceFileName?: string;
+    static __defaultValues: KeyedObject;
+    static __requiredComponents?: Constructor[];
+    static __EDITOR_icon?: string;
+    static __classAsset: FileDescClass;
+    static __editableProps: EditablePropertyDesc[];
+    static __editablePropsRaw: EditablePropertyDescRaw[];
+
+    /** additional way to disable editable properties */
+    static __isPropertyDisabled?: (p: EditablePropertyDesc) => string | undefined;
+    static __EDITOR_tip?: string;
+    static __isScene: boolean;
+    static __sourceCode: string[];
+    static __canAcceptParent?: (o: Container) => boolean;
+    static __canAcceptChild?: (Class: SourceMappedConstructor) => boolean;
+    static __beforeChangeToThisType?: (o: Container) => void;
+    static __validateObjectData?: (data: KeyedObject) => SerializedDataValidationError;
 	`);
 
 patch(

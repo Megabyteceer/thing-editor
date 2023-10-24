@@ -56,7 +56,7 @@ function getAssetsForBuild(type: AssetType) {
 
 let currentBuildIsDebug = false;
 
-let assetsToCopy: { from: string, to: string }[] = [];
+let assetsToCopy: { from: string, to: string; }[] = [];
 
 export default class Build {
 	static build(debug: boolean) {
@@ -136,7 +136,7 @@ export default class Build {
 
 		for(const classFile of classesFiles) {
 			if(classFile.asset.__requiredComponents) {
-				for(const requiredClass of classFile.asset.__requiredComponents as any as SourceMappedConstructor[]) {
+				for(const requiredClass of classFile.asset.__requiredComponents) {
 					if(!requiredClass.__classAsset) {
 						game.editor.ui.status.warn(classFile.asset.__className + '.__requiredComponents contains wrong component: ' + (requiredClass.name || requiredClass));
 					} else {
@@ -157,7 +157,7 @@ export default class Build {
 			}
 			src.push('import ' + name + ' from "' + path + '";');
 			src.push('classes["' + name + '"] = ' + name + ';');
-			src.push('(' + name + ' as any as SourceMappedConstructor).__defaultValues = ' + JSON.stringify(classFile.asset.__defaultValues, fieldsFilter) + ';');
+			src.push(name + '.__defaultValues = ' + JSON.stringify(classFile.asset.__defaultValues, fieldsFilter) + ';');
 		}
 
 		src.push('Lib._setClasses(classes);');

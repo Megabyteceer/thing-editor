@@ -1,6 +1,5 @@
 
 import { Container } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
 import Lib from "thing-editor/src/engine/lib";
@@ -78,6 +77,6 @@ export default class LayeredContainer extends Container {
 	}
 }
 /// #if EDITOR
-(LayeredContainer as any as SourceMappedConstructor).__requiredComponents = [LayeredContainerPortal];
+LayeredContainer.__requiredComponents = [LayeredContainerPortal];
 
 /// #endif

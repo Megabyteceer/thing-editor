@@ -111,7 +111,7 @@ export default class MultilineText extends Text {
 
 /// #if EDITOR
 
-(MultilineText as any as SourceMappedConstructor).__EDITOR_icon = 'tree/multiline-text';
+MultilineText.__EDITOR_icon = 'tree/multiline-text';
 
 function afterMaxHeightEdit() {
 	let o = game.editor.selection[0] as MultilineText;

@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SelectableProperty } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import game from "thing-editor/src/engine/game";
@@ -85,7 +85,7 @@ export default class Mask extends Container {
 }
 
 /// #if EDITOR
-(Mask as any as SourceMappedConstructor).__EDITOR_icon = 'tree/mask';
+Mask.__EDITOR_icon = 'tree/mask';
 
 (Mask.prototype.enableMask as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Mask.prototype.disableMask as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;

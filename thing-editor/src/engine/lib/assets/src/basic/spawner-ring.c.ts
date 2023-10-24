@@ -1,5 +1,5 @@
 import { Container, Point } from "pixi.js";
-import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SelectableProperty } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -103,6 +103,6 @@ const spawnPoint = new Point();
 
 (SpawnerRing.prototype.spawn as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
-(SpawnerRing as any as SourceMappedConstructor).__EDITOR_icon = 'tree/spawner-ring';
+SpawnerRing.__EDITOR_icon = 'tree/spawner-ring';
 
 /// #endif

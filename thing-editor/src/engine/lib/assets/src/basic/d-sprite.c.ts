@@ -1,5 +1,4 @@
 import { Sprite } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 
 export default class DSprite extends Sprite {
@@ -30,5 +29,5 @@ export default class DSprite extends Sprite {
 }
 
 /// #if EDITOR
-(DSprite as any as SourceMappedConstructor).__EDITOR_icon = 'tree/dsprite';
+DSprite.__EDITOR_icon = 'tree/dsprite';
 /// #endif

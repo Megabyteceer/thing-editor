@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import type { KeyedMap, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import type { KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
 import { FileDesc } from "thing-editor/src/editor/fs";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";
@@ -17,7 +17,7 @@ export default class Scene extends Container {
 	isStatic = false;
 
 	@editable({ type: 'prefab', filterAssets: (f: FileDesc) => f.assetName.startsWith('fader/') })
-	faderType: string | null = null
+	faderType: string | null = null;
 
 	all!: ThingSceneAllMap;
 
@@ -93,6 +93,14 @@ const _refreshChildRef = (o: Container) => {
 };
 
 /// #if EDITOR
-(Scene as any as SourceMappedConstructor).__EDITOR_icon = 'tree/scene';
+Scene.__EDITOR_icon = 'tree/scene';
 (Scene.prototype.remove as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+
+class __UnknownClassScene extends Scene {
+	static __defaultValues = {};
+}
+
+__UnknownClassScene.__EDITOR_icon = "tree/unknown-class";
+
+export { __UnknownClassScene };
 /// #endif

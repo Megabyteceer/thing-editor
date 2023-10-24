@@ -38,7 +38,7 @@ export default class StaticTrigger extends Container {
 }
 /// #if EDITOR
 
-(StaticTrigger as any as SourceMappedConstructor).__EDITOR_icon = 'tree/static-trigger';
-(StaticTrigger as any as SourceMappedConstructor).__EDITOR_tip = `<b>StaticTrigger</b> - is component which permanently removes parent if condition pointed in <b>dataPath</b> is not <b>true</b>.`;
+StaticTrigger.__EDITOR_icon = 'tree/static-trigger';
+StaticTrigger.__EDITOR_tip = `<b>StaticTrigger</b> - is component which permanently removes parent if condition pointed in <b>dataPath</b> is not <b>true</b>.`;
 
 /// #endif

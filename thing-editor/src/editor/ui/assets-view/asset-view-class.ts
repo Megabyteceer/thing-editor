@@ -92,12 +92,12 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 			}
 		}
 	], ev);
-}
+};
 
 const toolButtonsProps = {
 	className: 'asset-item-tool-buttons',
 	onDblClick: sp
-}
+};
 
 const assetItemRendererClass = (file: FileDescClass) => {
 	let tip;
@@ -120,7 +120,7 @@ const assetItemRendererClass = (file: FileDescClass) => {
 			showClassContextMenu(file, ev);
 		},
 		onDblClick: () => {
-			game.editor.editClassSource(file.asset as SourceMappedConstructor);
+			game.editor.editClassSource(file.asset);
 		},
 		onDragStart(ev: DragEvent) {
 			ev.dataTransfer!.setData("text/drag-thing-editor-class-id", file.asset.__className);
@@ -141,7 +141,7 @@ const assetItemRendererClass = (file: FileDescClass) => {
 			}, 'Find next ' + file.asset.__className + '; Ctrl+click - find all.')
 		)
 	);
-}
+};
 
 function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findAll: boolean) {
 	if(findAll) {

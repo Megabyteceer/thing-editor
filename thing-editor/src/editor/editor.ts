@@ -30,7 +30,7 @@ import regenerateCurrentSceneMapTypings, { regeneratePrefabsTypings } from "thin
 import { libIcon } from "thing-editor/src/editor/utils/lib-info";
 import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import { __UnknownClass, __UnknownClassScene } from "thing-editor/src/editor/utils/unknown-class";
+import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
 import validateObjectDataRecursive from "thing-editor/src/editor/utils/validate-serialized-data";
 import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
 import HowlSound from "thing-editor/src/engine/HowlSound";
@@ -39,6 +39,7 @@ import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
+import { __UnknownClassScene } from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
@@ -56,7 +57,7 @@ const parseLibName = (name: string): LibInfo => {
 		dir,
 		assetsDir: dir + '/assets/'
 	};
-}
+};
 
 import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr full reload
 	ev.path = 'vite please, do not reload anything.html';
@@ -82,7 +83,7 @@ class Editor {
 
 	settings: Settings = new Settings('editor');
 
-	isHelpersHidden: boolean = this.settings.getItem('hide-helpers', false)
+	isHelpersHidden: boolean = this.settings.getItem('hide-helpers', false);
 
 	disableFieldsCache = false;
 
@@ -422,7 +423,7 @@ class Editor {
 
 	toggleHideHelpers() {
 		game.editor.settings.setItem('hide-helpers', !game.editor.settings.getItem('hide-helpers'));
-		this.isHelpersHidden = game.editor.settings.getItem('hide-helpers')
+		this.isHelpersHidden = game.editor.settings.getItem('hide-helpers');
 	}
 
 	toggleSoundMute() {
@@ -545,7 +546,7 @@ class Editor {
 			}
 
 			if((o.constructor as SourceMappedConstructor).__canAcceptChild) {
-				if(!(o.constructor as SourceMappedConstructor).__canAcceptChild(Class)) {
+				if(!(o.constructor as SourceMappedConstructor).__canAcceptChild!(Class)) {
 					return false;
 				}
 			}
@@ -846,7 +847,7 @@ class Editor {
 			navigator.clipboard.writeText(text).then(() => {
 				this.notify(R.span(null, R.icon('copy'), '"' + text + '"'));
 			});
-		})
+		});
 	}
 
 	editSource(fileName: string, line?: string, char?: string, absolutePath = false) {
@@ -891,7 +892,7 @@ class Editor {
 			c = c.constructor as SourceMappedConstructor;
 		}
 		if(!c || (c as any) === __UnknownClass || (c as any) === __UnknownClassScene) {
-			this.ui.modal.showError("Object has unknown type '" + className + "', and has no source code. Probably source code was removed.")
+			this.ui.modal.showError("Object has unknown type '" + className + "', and has no source code. Probably source code was removed.");
 			return;
 		}
 
@@ -973,7 +974,7 @@ function excludeOtherProjects() {
 
 		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
 		const workspaceConfig = JSON.parse('{' + foldersDataString + '}');
-		const folders = (workspaceConfig.folders as { path: string, name: string }[]).filter((folderData) => {
+		const folders = (workspaceConfig.folders as { path: string, name: string; }[]).filter((folderData) => {
 			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
 		});
 		if(game.editor.settings.getItem('vs-code-excluding')) {
@@ -1057,7 +1058,7 @@ function excludeOtherProjects() {
 
 interface PathToInclude {
 	project: string,
-	libs: LibInfo[]
+	libs: LibInfo[];
 }
 
 function rememberPathsToInclude() {

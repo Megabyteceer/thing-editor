@@ -1,5 +1,5 @@
 import { Container, Point } from "pixi.js";
-import { SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
+import { SelectableProperty } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -156,6 +156,6 @@ const spawnPointRet = new Point();
 (Spawner.prototype.spawn as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Spawner.prototype.setSpeed as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
-(Spawner as any as SourceMappedConstructor).__EDITOR_icon = 'tree/spawner';
+Spawner.__EDITOR_icon = 'tree/spawner';
 
 /// #endif
