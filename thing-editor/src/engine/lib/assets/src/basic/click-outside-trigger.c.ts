@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
+import overlayLayer from "thing-editor/src/editor/ui/editor-overlay";
 import game from "thing-editor/src/engine/game";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
@@ -40,7 +41,11 @@ export default class ClickOutsideTrigger extends Container {
 
 		all.push(this);
 
-		this._insideContainers = [this];
+		this._insideContainers = [this
+			/// #if EDITOR
+			, overlayLayer
+			/// #endif
+		];
 		if(this.additionalContainers) {
 			for(let path of this.additionalContainers) {
 				let c = getValueByPath(path, this);

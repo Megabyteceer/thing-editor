@@ -21,6 +21,7 @@ const overlayLayer = new Container();
 
 function initializeGizmo() {
 	protectAccessToSceneNode(overlayLayer, 'gizmoLayer');
+	overlayLayer.interactive = true;
 	game.stage.parent.addChild(overlayLayer);
 	game.__EDITOR_mode = false;
 	const gizmo = Lib.loadPrefab('___system/gizmo');
@@ -153,7 +154,7 @@ function moveSelectionToPoint(dX: number, dY: number, withoutChildren = false) {
 			if(game.editor.ui.propsEditor.editableProps.y) {
 				game.editor.editProperty('y', dY, true);
 			} else {
-				game.editor.ui.propsEditor.selectField('y')
+				game.editor.ui.propsEditor.selectField('y');
 				game.editor.ui.modal.notify('y property locked');
 			}
 		}
