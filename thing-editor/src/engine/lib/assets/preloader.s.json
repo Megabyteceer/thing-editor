@@ -1,7 +1,8 @@
 {
 	"c": "Scene",
 	"p": {
-		"name": "preloader"
+		"name": "preloader",
+		"backgroundColor": 1052690
 	},
 	":": [
 		{
