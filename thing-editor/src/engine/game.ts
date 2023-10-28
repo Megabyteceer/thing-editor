@@ -37,7 +37,7 @@ let scale = 1;
 
 /// #if DEBUG
 let lastFPSTime = 0;
-type FixedViewportSize = { w: number, h: number } | boolean;
+type FixedViewportSize = { w: number, h: number; } | boolean;
 
 const loadingsInProgressOwners: Set<any> = new Set();
 /// #endif
@@ -127,7 +127,7 @@ class Game {
 
 
 	/** cordova build only */
-	exitApp: (() => void) | undefined
+	exitApp: (() => void) | undefined;
 
 	/// #if EDITOR
 	__time = 0;
@@ -1241,6 +1241,13 @@ function tryToRemoveCurrentScene() {
 }
 
 function tryToRemoveScene(s: Scene) {
+	/// #if EDITOR
+	if(s.__nodeExtendData.isSelected) {
+		game.editor.selection.remove(s);
+		game.editor.refreshTreeViewAndPropertyEditor();
+	}
+	/// #endif
+
 	if((s instanceof Scene) && (s !== game.currentScene)) {
 		if(!s.isStatic && (scenesStack.indexOf(s) < 0)) {
 			Lib.destroyObjectAndChildren(s);
@@ -1303,7 +1310,7 @@ Object.defineProperty(game.openUrl, '___EDITOR_isHiddenForChooser', ButtonOnlyPr
 
 (Game.prototype.showModal as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
 	return game.editor.choosePrefab("Choose prefab to show as modal:");
-}
+};
 (Game.prototype.showScene as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
 	return game.editor.chooseScene("Choose scene to open:");
 };
