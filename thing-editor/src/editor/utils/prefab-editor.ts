@@ -12,7 +12,8 @@ import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
 let prefabsStack: string[] = [];
-let backDrop: Shape;
+let backDrop: Container;
+let backDropBG: Shape;
 
 function getCurrentPrefabName() {
 	return prefabsStack[prefabsStack.length - 1];
@@ -42,17 +43,17 @@ export default class PrefabEditor {
 	}
 
 	static get BGColor() {
-		return backDrop.shapeFillColor;
+		return backDropBG.shapeFillColor;
 	}
 
 	static set BGColor(val: number) {
-		backDrop.shapeFillColor = val;
+		backDropBG.shapeFillColor = val;
 	}
 
 	private static savePrefabSettings() {
 		if(this.currentPrefabName) {
 			game.editor.settings.setItem('prefab-settings' + this.currentPrefabName, {
-				bg: backDrop.shapeFillColor,
+				bg: backDropBG.shapeFillColor,
 				x: game.stage.x,
 				y: game.stage.y,
 				s: game.stage.scale.x
@@ -65,6 +66,7 @@ export default class PrefabEditor {
 			backDrop = Lib.loadPrefab('___system/backdrop') as __SystemBackDrop;
 			backDrop.name = null; // prevent get by name error;
 			backDrop.__nodeExtendData.hidden = true;
+			backDropBG = backDrop.findChildByName('backdrop') as Shape;
 		}
 		exitIsolation();
 		PrefabEditor.hidePreview();
