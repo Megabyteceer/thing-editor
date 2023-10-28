@@ -129,14 +129,21 @@ Object.defineProperties(Text.prototype, {
 			(this as any)._styleFill = val;
 		}, configurable: true
 	},
+
+	/// #if EDITOR
 	'___fill': {
 		get: function (this: Text) {
 			return ((this as any)['style.fill'] as string).split(',').map(v => parseInt(v.replace('#', ''), 16));
 		},
 		set: function (this: Text, val: number[]) {
-			(this as any)['style.fill'] = val.map(v => '#' + v.toString(16).padStart(6, '0')).join(',');
+			if(Array.isArray(val)) {
+				(this as any)['style.fill'] = val.map(v => '#' + v.toString(16).padStart(6, '0')).join(',');
+			} else {
+				(this as any)['style.fill'] = '#' + (val as number).toString(16).padStart(6, '0');
+			}
 		}, configurable: true
 	},
+	/// #endif
 	'style.fillGradientStops': {
 		get: function (this: Text) {
 			return this.style.fillGradientStops || [];
