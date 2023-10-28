@@ -10,17 +10,17 @@ interface ContextMenuItemData {
 	hidden?: boolean,
 	stayAfterClick?: boolean,
 	tip?: string,
-	hotkey?: Hotkey
+	hotkey?: Hotkey;
 }
 
 type ContextMenuItem = ContextMenuItemData | null;
 
 const root = document.getElementById('context-menu-root') as HTMLElement;
 
-const hideMenu = () => {
+const hideContextMenu = () => {
 	render(R.fragment(), root);
 	menuShown = false;
-}
+};
 
 let menuShown = false;
 let hideMenuTimeout = 0;
@@ -31,7 +31,7 @@ window.addEventListener('pointerdown', (ev: PointerEvent) => {
 			if((ev.target as HTMLDivElement).closest('.stay-after-click-menu-item')) {
 				refreshContextMenu();
 			} else {
-				hideMenu();
+				hideContextMenu();
 			}
 		}, 10);
 	}
@@ -42,20 +42,20 @@ let shownMenuEvent: PointerEvent;
 
 const toggleContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	if(menuShown && shownMenuTemplate === menuTemplate) {
-		hideMenu();
+		hideContextMenu();
 	} else {
 		showContextMenu(menuTemplate, ev);
 	}
-}
+};
 
 const isItemActive = (item: ContextMenuItem) => {
 	if(item) {
 		if((typeof item.disabled === "function") ? item.disabled() : item.disabled) {
-			return false
+			return false;
 		}
 	}
 	return true;
-}
+};
 
 const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	if(hideMenuTimeout) {
@@ -87,7 +87,7 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 	const style = {
 		left: Math.max(0, Math.min(window.innerWidth - 200, ev.clientX - 3)),
 		top: Math.max(0, Math.min(window.innerHeight - menuHeight, ev.clientY - menuHeight / 2 - 10))
-	}
+	};
 	if((ev.target as HTMLDivElement).closest('.main-menu')) {
 		const mainMenuButton = ((ev.target as HTMLDivElement).closest('button') || ev.target) as HTMLButtonElement;
 		const bounds = mainMenuButton.getBoundingClientRect();
@@ -102,13 +102,13 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 		}, menuTemplate.map(renderMenuItem)), root);
 		menuShown = true;
 	}
-}
+};
 
 const refreshContextMenu = () => {
 	if(menuShown) {
 		showContextMenu(shownMenuTemplate, shownMenuEvent);
 	}
-}
+};
 
 
 
@@ -125,5 +125,5 @@ function renderMenuItem(item: ContextMenuItem) {
 
 export type { ContextMenuItem };
 
-export { refreshContextMenu, toggleContextMenu };
+export { hideContextMenu, refreshContextMenu, toggleContextMenu };
 

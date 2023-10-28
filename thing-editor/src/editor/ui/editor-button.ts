@@ -1,6 +1,6 @@
 import { ClassAttributes, Component, ComponentChild } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { ContextMenuItem, refreshContextMenu } from "thing-editor/src/editor/ui/context-menu";
+import { ContextMenuItem, hideContextMenu, refreshContextMenu } from "thing-editor/src/editor/ui/context-menu";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { MAIN_MENU } from "thing-editor/src/editor/ui/main-menu";
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
@@ -26,11 +26,11 @@ const findItemForHotkey = (ev: Hotkey, handlers?: ContextMenuItem[][], windowBod
 			}
 		}
 	}
-}
+};
 
 const findMenuItemForHotkey = (hotkey: Hotkey): ContextMenuItem | undefined => {
 	for(let w of Window.allOrdered) {
-		let ret = findItemForHotkey(hotkey, w.props.hotkeysHandlers, w.base as HTMLDivElement)
+		let ret = findItemForHotkey(hotkey, w.props.hotkeysHandlers, w.base as HTMLDivElement);
 		if(ret) {
 			return ret;
 		}
@@ -42,12 +42,13 @@ const findMenuItemForHotkey = (hotkey: Hotkey): ContextMenuItem | undefined => {
 			return ret;
 		}
 	}
-}
+};
 
 window.addEventListener("keydown", (ev) => {
 	if(ev.key !== 'Control' && ev.key !== 'Alt' && ev.key !== 'Shift') {
 		for(let b of allHotkeyButtons) {
 			if(b.onKeyDown(ev)) { //call only first button with this hotkey
+				hideContextMenu();
 				return;
 			}
 		}
@@ -58,7 +59,7 @@ window.addEventListener("keydown", (ev) => {
 				if(!isHotkeyCapturedByInputElement) {
 					item.onClick();
 					refreshContextMenu();
-					game.editor.ui.modal.notify((typeof item.name === 'function') ? item.name() : item.name)
+					game.editor.ui.modal.notify((typeof item.name === 'function') ? item.name() : item.name);
 					sp(ev);
 					return;
 				}
@@ -68,12 +69,12 @@ window.addEventListener("keydown", (ev) => {
 });
 
 interface EditorButtonProps extends ClassAttributes<EditorButton> {
-	label: ComponentChild
-	onClick: (ev: PointerEvent) => void
-	className?: string
-	title?: string
-	hotkey?: Hotkey
-	disabled?: boolean
+	label: ComponentChild;
+	onClick: (ev: PointerEvent) => void;
+	className?: string;
+	title?: string;
+	hotkey?: Hotkey;
+	disabled?: boolean;
 }
 
 interface EditorButtonStats {
