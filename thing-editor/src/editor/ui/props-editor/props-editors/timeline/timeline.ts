@@ -204,7 +204,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				let tl = o._timelineData;
 
 				for(let labelName in data.labels) {
-					let labelTime = data.labels[labelName]
+					let labelTime = data.labels[labelName];
 					if(!tl.l[labelName]) {
 						let l = { t: labelTime } as TimelineLabelData;
 						tl.l[labelName] = l;
@@ -1083,7 +1083,7 @@ function selectIfInRect(rect: DOMRect, obj: TimelineKeyFrame) {
 }
 
 function selectViewIfInRect(rect: DOMRect, view: TimelineSelectable) {
-	if(view.isSelected) {
+	if(selectedComponents.indexOf(view) >= 0) {
 		return;
 	}
 	let domElement = (view as TimelineKeyframeView).base as HTMLDivElement;
@@ -1091,6 +1091,7 @@ function selectViewIfInRect(rect: DOMRect, view: TimelineSelectable) {
 		return;
 	}
 	let r = domElement.getBoundingClientRect();
+
 	if(r.right > rect.left && r.left < rect.right) {
 		if(r.bottom > rect.top && r.top < rect.bottom) {
 			select(view);

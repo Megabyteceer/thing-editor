@@ -1,6 +1,5 @@
 
 interface TimelineSelectable {
-	isSelected: boolean;
 	onDraggableMouseDown: (ev: PointerEvent) => void;
 	getTime(): number;
 	setTime(time: number): void;
