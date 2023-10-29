@@ -694,6 +694,11 @@ class Game {
 
 		/// #if EDITOR
 		this.__time++;
+
+		if(!game.__EDITOR_mode && this.currentScene && this.currentScene.name === 'preloader') {
+			this.loadingProgress = Math.round(Math.min(100, game.time / 3));
+		}
+
 		/*
 		/// #endif
 		this.time++;
