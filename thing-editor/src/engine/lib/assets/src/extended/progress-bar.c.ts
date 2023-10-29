@@ -32,13 +32,13 @@ export default class ProgressBar extends Container {
 	@editable({ name: 'height', type: 'number', min: 0, default: 200 })
 
 	@editable({ type: 'data-path', important: true, tip: TIP })
-	dataPath = null
+	dataPath = null;
 
 	@editable({ min: 0 })
-	capMargin = 5
+	capMargin = 5;
 
 	@editable({ min: 0 })
-	refreshInterval = 10
+	refreshInterval = 10;
 
 	@editable({ type: 'callback' })
 	onFinish = null;
@@ -50,19 +50,24 @@ export default class ProgressBar extends Container {
 	afterSlide = null;
 
 	@editable({ step: 0.00001 })
-	min = 0
+	min = 0;
 
 	@editable({ step: 0.00001 })
-	max = 100
+	max = 100;
 
 	@editable({ step: 0.00001, min: 0 })
-	step = 1
+	step = 1;
 
 	@editable()
-	smooth = false
+	smooth = false;
 
 	@editable({ min: 0.000000001, step: 0.001, visible: o => o.smooth })
-	smoothStep = 0.01
+	smoothStep = 0.01;
+
+	@editable({ min: 0, tip: 'progress bar launches animations "progress-item-1", "progress-item-2", ... during the progress' })
+	itemsCount = 6;
+
+	calledItem = 0;
 
 	@editable({ type: 'ref' })
 	bar?: Container;
@@ -87,6 +92,8 @@ export default class ProgressBar extends Container {
 		this.currentInterval = 0;
 		this.showedVal = undefined;
 		this._initChildren();
+
+		this.calledItem = 0;
 
 		this.cursor = this.interactive ? 'pointer' : '';
 		this.on('pointerdown', this.onDown);
@@ -204,11 +211,6 @@ export default class ProgressBar extends Container {
 		}
 		this.showedVal = val;
 
-		if(this.onFinish && !this.isProgressFinished && val === this.max) {
-			this.isProgressFinished = true;
-			this.currentQ = q;
-			callByPath(this.onFinish, this);
-		}
 		if(!this.smooth) {
 			this.currentQ = q;
 			this.applyQ();
@@ -216,6 +218,16 @@ export default class ProgressBar extends Container {
 	}
 
 	applyQ() {
+		if(this.onFinish && !this.isProgressFinished && this.currentQ === 1) {
+			this.isProgressFinished = true;
+			callByPath(this.onFinish, this);
+		}
+		const reachedItem = Math.floor(this.currentQ * this.itemsCount);
+		while(reachedItem > this.calledItem) {
+			this.calledItem++;
+			this.gotoLabelRecursive('progress-item-' + this.calledItem);
+		}
+
 		/// #if EDITOR
 		if(game.__EDITOR_mode) {
 			this._initChildren();
