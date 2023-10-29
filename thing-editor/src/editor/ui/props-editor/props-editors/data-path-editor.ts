@@ -27,7 +27,7 @@ const syncTip = () => {
 		dataPathTipContainer.style.left = (bounds.x - 2) + 'px';
 		dataPathTipContainer.style.top = (bounds.y - 27) + 'px';
 	}
-}
+};
 
 const startTipSync = (enabled: any = false) => {
 	if(enabled) {
@@ -40,7 +40,7 @@ const startTipSync = (enabled: any = false) => {
 			tipSyncInterval = 0;
 		}
 	}
-}
+};
 
 const dataPathTipContainer = window.document.createElement('div');
 dataPathTipContainer.id = 'data-path-tip-container';
@@ -232,7 +232,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	componentWillUnmount(): void {
-		this.hideParamsTip()
+		this.hideParamsTip();
 		clearInterval(this.interval);
 	}
 
@@ -251,8 +251,8 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			if(typeof f === 'function') {
 				let paramsView: ComponentChild;
 				let firstLine = f.toString().split('\n').shift();
-				let params: string[] = firstLine.split('(').pop().split(')').shift().split(', ');
-				if(!params) {
+				let params: string[] = firstLine.split('(').pop().split(')').shift().split(', ').filter((p: string) => p);
+				if(!params.length) {
 					paramsView = 'no parameters';
 				} else {
 					let paramsW: Array<ComponentChild> = [];
@@ -271,15 +271,17 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 					let paramIndex = 0;
 					for(let param of params) {
-						if(paramsW.length) {
-							paramsW.push(', ');
+						if(param) {
+							if(paramsW.length) {
+								paramsW.push(', ');
+							}
+							if(paramIndex === selectedParamIndex) {
+								paramsW.push(R.b(null, param));
+							} else {
+								paramsW.push(param);
+							}
+							paramIndex++;
 						}
-						if(paramIndex === selectedParamIndex) {
-							paramsW.push(R.b(null, param));
-						} else {
-							paramsW.push(param);
-						}
-						paramIndex++;
 					}
 					paramsView = paramsW;
 				}
