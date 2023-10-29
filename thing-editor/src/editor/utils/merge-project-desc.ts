@@ -6,8 +6,10 @@ import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-de
 const mergeProjectDesc = (target: ProjectDesc, src: ProjectDesc) => {
 	for(const key in src) {
 		const targetVal = (target as KeyedObject)[key];
-		const srcVal = (src as KeyedObject)[key]
-		if(key === 'webfontloader') {
+		const srcVal = (src as KeyedObject)[key];
+		if(key === 'loadOnDemandTextures' || key === 'loadOnDemandSounds') {
+			(target as KeyedObject)[key] = Object.assign({}, srcVal, targetVal);
+		} else if(key === 'webfontloader') {
 			let newVal;
 			if(targetVal && typeof targetVal !== 'object') {
 				assert(false, 'invalid "webfontloader" property: ' + JSON.stringify(targetVal));
@@ -49,9 +51,9 @@ const mergeProjectDesc = (target: ProjectDesc, src: ProjectDesc) => {
 			(target as KeyedObject)[key] = srcVal;
 		}
 	}
-}
+};
 
 
 export default mergeProjectDesc;
 
-defaultProjectDesc
+defaultProjectDesc;
