@@ -370,6 +370,26 @@ _editableEmbed(Container, '___id', {
 		return true;
 	}
 });
+
+const alignX = () => { ///99999
+	let firstObject = game.editor.selection[0];
+	let p = firstObject.getRootContainer().toLocal(firstObject, firstObject.parent);
+	for(let i = 1; i < game.editor.selection.length; i++) {
+		let o = game.editor.selection[i];
+		game.editor.onObjectsPropertyChanged(o, 'x', o.parent.toLocal(p, firstObject.getRootContainer()).x);
+	}
+};
+_editableEmbed(Container, 'splitter-transform', { type: 'btn', name: 'Align X ↔', onClick: alignX });
+const alignY = () => { ///99999
+	let firstObject = game.editor.selection[0];
+	let p = firstObject.getRootContainer().toLocal(firstObject, firstObject.parent);
+	for(let i = 1; i < game.editor.selection.length; i++) {
+		let o = game.editor.selection[i];
+		game.editor.onObjectsPropertyChanged(o, 'y', o.parent.toLocal(p, firstObject.getRootContainer()).y);
+	}
+};
+_editableEmbed(Container, 'splitter-transform', { type: 'btn', name: 'Align Y ↕', onClick: alignY });
+
 _editableEmbed(Container, 'splitter-transform', { type: 'splitter', title: 'Transform' });
 _editableEmbed(Container, 'scale.x', { step: 0.01, default: 1, animate: true });
 _editableEmbed(Container, 'scale.y', { step: 0.01, default: 1, animate: true });

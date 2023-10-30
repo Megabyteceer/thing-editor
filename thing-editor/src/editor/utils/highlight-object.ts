@@ -16,6 +16,6 @@ const highlightObject = (o: Container) => {
 			o.removeFilter(highlightFilter);
 		}, 300);
 	}
-}
+};
 
 export default highlightObject;
