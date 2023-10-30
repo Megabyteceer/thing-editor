@@ -1163,6 +1163,10 @@ class Game {
 	FPS = 0;
 	/// #endif
 
+	_getScenesStack() {
+		return scenesStack;
+	}
+
 	/// #if EDITOR
 	__setCurrentContainerContent(o: Container) {
 		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
@@ -1183,10 +1187,6 @@ class Game {
 			Lib.destroyObjectAndChildren(this.currentScene);
 			this._setCurrentScene(null);
 		}
-	}
-
-	__getScenesStack() {
-		return scenesStack;
 	}
 
 	get __modalsCount() {

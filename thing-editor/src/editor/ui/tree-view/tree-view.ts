@@ -445,7 +445,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			this.state.search ? R.btn('search', () => this.fundNextBySearch(), undefined, 'hidden', { key: 'F3' }) : undefined,
 			EDITOR_FLAGS.isolationEnabled ? R.btn('exit isolation', toggleIsolation, undefined, 'clickable isolation-warning', { key: 'i', ctrlKey: true }) : undefined,
 			R.div(this.treeViewProps,
-				game.__getScenesStack().map(renderSceneStackItem as any),
+				game._getScenesStack().map(renderSceneStackItem as any),
 				game.stage.children.map(renderRoots as any)
 			)
 		);
