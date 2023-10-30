@@ -1246,14 +1246,16 @@ function tryToRemoveCurrentScene() {
 }
 
 function tryToRemoveScene(s: Scene) {
-	/// #if EDITOR
-	if(s.__nodeExtendData.isSelected) {
-		game.editor.selection.remove(s);
-		game.editor.refreshTreeViewAndPropertyEditor();
-	}
-	/// #endif
+
 
 	if((s instanceof Scene) && (s !== game.currentScene)) {
+		/// #if EDITOR
+		if(s.__nodeExtendData.isSelected) {
+			game.editor.selection.remove(s);
+			game.editor.refreshTreeViewAndPropertyEditor();
+		}
+		/// #endif
+
 		if(!s.isStatic && (scenesStack.indexOf(s) < 0)) {
 			Lib.destroyObjectAndChildren(s);
 		} else {
