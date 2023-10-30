@@ -349,6 +349,7 @@ Text.prototype.init = function () {
 	if(this.translatableText) {
 		this.text = L(this.translatableText);
 	}
+	recalculateTextSize(this);
 };
 
 /// #if EDITOR
