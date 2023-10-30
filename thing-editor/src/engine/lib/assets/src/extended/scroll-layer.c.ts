@@ -152,9 +152,7 @@ export default class ScrollLayer extends Container {
 
 	static updateGlobal() {
 		if(draggingLayer) {
-			if(!draggingLayer.autoScrolling) {
-				draggingLayer.updateGlobal();
-			}
+			draggingLayer.updateGlobal();
 		}
 	}
 
@@ -174,9 +172,7 @@ export default class ScrollLayer extends Container {
 	}
 
 	onRemove() {
-		if(draggingLayer === this) {
-			draggingLayer = null;
-		}
+		this.stopDragThisLayer();
 		document.removeEventListener('wheel', this.onWheel, WHEEL_EVENT_OPTIONS);
 
 		if(this._mouseHandlerContainer) {
@@ -275,19 +271,27 @@ export default class ScrollLayer extends Container {
 		}
 
 		if(!this.visible || !game.mouse.click) {
-			if(draggingLayer === this) {
-				draggingLayer = null;
-			}
+			this.stopDragThisLayer();
 		}
 		super.update();
 	}
 
 	scrollRight(pow = 16) {
+		this.stopDragThisLayer();
 		this.xSpeed = -pow;
 	}
 
 	scrollDown(pow = 16) {
+		this.stopDragThisLayer();
 		this.ySpeed = -pow;
+	}
+
+	get canScrollUp() {
+		return this.y < 0;
+	}
+
+	get canScrollDown() {
+		return (-this.y + this.visibleArea.h) < this.fullArea.h;
 	}
 
 	get relativeScrollY() {
@@ -349,6 +353,12 @@ export default class ScrollLayer extends Container {
 		}
 	}
 
+	stopDragThisLayer() {
+		if(draggingLayer === this) {
+			draggingLayer = null;
+		}
+	}
+
 	scrollTo(o: Container, callback?: () => void, instantly = false) {
 		if(!o) {
 			this.autoScrolling = false;
@@ -361,7 +371,7 @@ export default class ScrollLayer extends Container {
 			o = this.getChildByName(o)!;
 		}
 
-
+		this.stopDragThisLayer();
 		this.autoScrolling = true;
 		this.scrollToX = this.visibleArea.w / 2 - o.x;
 		this.scrollToY = this.visibleArea.h / 2 - o.y;
