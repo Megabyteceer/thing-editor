@@ -125,6 +125,10 @@ export default class ProgressBar extends Container {
 		if(h) {
 			setObjectHeight(h, this._progress_bar_height!);
 		}
+		const hitArea = this.findChildByName('hit-area');
+		if(hitArea) {
+			setObjectHeight(hitArea, this._progress_bar_height! + hitArea.y * -2);
+		}
 	}
 
 	onRemove() {
