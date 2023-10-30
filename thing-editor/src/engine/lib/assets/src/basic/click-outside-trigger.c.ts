@@ -5,7 +5,7 @@ import game from "thing-editor/src/engine/game";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
 
-const globalPointerDownEvents = game.pixiApp.renderer.plugins.interaction.rootBoundary.mappingTable.pointerdown;
+const globalPointerDownEvents = (game.pixiApp.renderer.events.rootBoundary as any).mappingTable.pointerdown;
 
 const all: ClickOutsideTrigger[] = [];
 
