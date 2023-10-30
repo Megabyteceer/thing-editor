@@ -22,10 +22,16 @@ export default class FullScreen {
 	static _openInner() {
 		try {
 			if(docElement.requestFullscreen) {
-				docElement.requestFullscreen();
+				docElement.requestFullscreen().finally(() => {
+					if(game.projectDesc.screenOrientation !== 'auto') {
+						(screen.orientation as any).lock(game.projectDesc.screenOrientation);
+					}
+				});
 			}
 			game._fireNextOnResizeImmediately();
-
+			if(game.projectDesc.screenOrientation !== 'auto') {
+				(screen.orientation as any).lock(game.projectDesc.screenOrientation);
+			}
 		} catch(err) { } // eslint-disable-line no-empty
 	}
 
