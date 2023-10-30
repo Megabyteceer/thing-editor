@@ -443,8 +443,8 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		if(parent.constructor && !this.itIsCallbackEditor) {
 			let props = (parent.constructor as SourceMappedConstructor).__editableProps;
 			if(props && Array.isArray(props)) {
-				for(let p of props) {
-					if(p.type !== 'splitter') {
+				for(let p of props as EditablePropertyDesc[]) {
+					if(!p.notSerializable) {
 						let name = p.name;
 						items.push({ pureName: name, name: R.b(null, name), order: 10000 });
 						addedNames.add(name);
@@ -568,6 +568,7 @@ const enumSub = (o: KeyedObject) => {
 };
 
 let _rootParent: KeyedObject;
+const referenceContainer = new Container() as KeyedObject;
 
 function enumProps(o: KeyedObject) {
 	Lib.__outdatedReferencesDetectionDisabled = true;
@@ -584,6 +585,15 @@ function enumProps(o: KeyedObject) {
 		}
 	}
 	Lib.__outdatedReferencesDetectionDisabled = false;
+
+	if(o instanceof Container) {
+		enumeratedProps = enumeratedProps.filter((prop) => {
+			if(referenceContainer[prop] !== null) {
+				return true;
+			}
+		});
+
+	}
 	return enumeratedProps;
 }
 

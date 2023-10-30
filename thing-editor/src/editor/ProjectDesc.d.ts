@@ -1,5 +1,5 @@
 
-type ProjectOrientation = "landscape" | "portrait" | "auto"
+type ProjectOrientation = "landscape" | "portrait" | "auto";
 
 interface ProjectDesc {
 	id: string;
@@ -21,12 +21,12 @@ interface ProjectDesc {
 	preventUpscale: boolean;
 	webfontloader: {
 		custom?: {
-			families: string[]
+			families: string[];
 		};
 		google?: {
-			families: string[]
+			families: string[];
 		};
-		timeout: number
+		timeout: number;
 	} | null,
 	fontHolderText: string,
 	mipmap: false,
@@ -49,7 +49,7 @@ interface ProjectDesc {
 	__group: string,
 	__webpack: {
 		debug: string,
-		production: string
+		production: string;
 	},
 	libs: string[],
 }
