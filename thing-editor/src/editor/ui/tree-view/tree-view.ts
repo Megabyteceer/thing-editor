@@ -101,7 +101,7 @@ function addToParentSafe(ClassId: string, prefabName: string, parent: Container,
 		if(ClassId) {
 			nodes = [loadSafeInstanceByClassName(ClassId, false)];
 		} else if(prefabName) {
-			nodes = [Lib.loadPrefab(prefabName)];
+			nodes = [Lib.__loadPrefabReference(prefabName)];
 		} else {
 			if(isClone) {
 				editorUtils.clone();
@@ -123,7 +123,6 @@ function addToParentSafe(ClassId: string, prefabName: string, parent: Container,
 			}
 			p = p.parent;
 		}
-
 
 		for(const node of nodes) {
 			game.editor.addTo(parent, node);
@@ -231,7 +230,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 				if(ClassId) {
 					editorUtils.wrap([dragTargetNode], loadSafeInstanceByClassName(ClassId));
 				} else if(prefabName) {
-					editorUtils.wrap([dragTargetNode], Lib.loadPrefab(prefabName));
+					editorUtils.wrap([dragTargetNode], Lib.__loadPrefabReference(prefabName));
 				} else {
 					let c = game.editor.selection[0];
 					while(c) {
