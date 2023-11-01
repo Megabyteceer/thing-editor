@@ -42,6 +42,12 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 				game.editor.editClassSource(game.classes[file.asset.c!]);
 			}
 		},
+		{
+			name: "Reveal in Explorer",
+			onClick: () => {
+				fs.showFile(file.fileName);
+			}
+		},
 		null,
 		{
 			name: R.fragment("Move " + file.assetName + "' scene to library..."),
@@ -67,7 +73,7 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 			disabled: () => game.projectDesc.mainScene === file.assetName || file.assetName === PRELOADER_SCENE_NAME
 		}
 	], ev);
-}
+};
 
 const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
 	assert(file.asset.c, "scene can not be prefab reference");
@@ -92,7 +98,7 @@ const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
 		libInfo(file),
 		R.classIcon(game.classes[file.asset.c!] || __UnknownClass),
 		R.span(assetsItemNameProps, file.assetName));
-}
+};
 
 
 export default assetItemRendererScene;

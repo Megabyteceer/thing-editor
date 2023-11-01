@@ -24,7 +24,7 @@ const placeAsChild = (file: FileDescPrefab) => {
 	for(let o of insertTo) {
 		game.editor.addTo(o, Lib.__loadPrefabReference(file.assetName));
 	}
-}
+};
 
 const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 	showContextMenu([
@@ -82,6 +82,12 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 				game.editor.editClassSource(getSerializedObjectClass(file.asset));
 			}
 		},
+		{
+			name: "Reveal in Explorer",
+			onClick: () => {
+				fs.showFile(file.fileName);
+			}
+		},
 		null,
 		{
 			name: R.fragment("Move " + file.assetName + "' prefab to library..."),
@@ -108,7 +114,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 			disabled: () => file.assetName === DEFAULT_FADER_NAME || file.assetName === PrefabEditor.currentPrefabName
 		}
 	], ev);
-}
+};
 
 const assetItemRendererPrefab = (file: FileDescPrefab) => {
 	const Class = getSerializedObjectClass(file.asset);
@@ -155,7 +161,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		libInfo(file),
 		R.classIcon(Class),
 		R.span(assetsItemNameProps, file.assetName));
-}
+};
 
 
 export default assetItemRendererPrefab;

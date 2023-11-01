@@ -13,7 +13,7 @@ interface LibInfo {
 	name: string,
 	dir: string,
 	assetsDir: string,
-	isEmbed?: boolean
+	isEmbed?: boolean;
 }
 
 interface FileDesc {
@@ -29,7 +29,7 @@ interface FileDesc {
 
 	parentAsset?: FileDesc;
 
-	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound | KeyedObject
+	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound | KeyedObject;
 }
 
 interface FileDescClass extends FileDesc {
@@ -79,7 +79,7 @@ const resetAssetsMap = () => {
 		assetsByTypeByName.set(assetType, new Map());
 		assetsListsByType.set(assetType, []);
 	}
-}
+};
 resetAssetsMap();
 
 const ASSETS_PARSERS = {
@@ -133,11 +133,11 @@ const execFs = (command: string, filename?: string | string[], content?: string 
 		throw ret;
 	}
 	return ret;
-}
+};
 
 const execFsAsync = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]): Promise<any> => {
 	return thingEditorServer.fsAsync(command, filename, content, ...args);
-}
+};
 
 let lastAssetsDirs: string[];
 
@@ -182,11 +182,11 @@ const assetNameToFileName = (assetName: string, assetType: AssetType): string =>
 		return asset.fileName;
 	}
 	return game.editor.currentProjectAssetsDirRooted + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
-}
+};
 
 const sortByMTime = (a: FileDesc, b: FileDesc) => {
 	return b.mTime - a.mTime;
-}
+};
 
 const sortAssets = () => {
 	assetsListsByType.forEach((list) => {
@@ -194,7 +194,7 @@ const sortAssets = () => {
 	});
 
 	allAssets.sort(sortByMTime);
-}
+};
 
 export default class fs {
 
@@ -347,7 +347,11 @@ export default class fs {
 		return execFs('fs/browseDir', path);
 	}
 
-	static build(projectDir: string, debug: boolean, copyAssets: { from: string, to: string }[]) {
+	static showFile(fileName: string) {
+		return execFs('fs/showFile', fileName);
+	}
+
+	static build(projectDir: string, debug: boolean, copyAssets: { from: string, to: string; }[]) {
 		return execFsAsync('fs/build', projectDir, debug, copyAssets);
 	}
 
@@ -371,7 +375,7 @@ export default class fs {
 			formats: game.editor.projectDesc.soundFormats,
 			bitRates: game.editor.projectDesc.soundBitRates,
 			defaultBitrate: game.editor.projectDesc.soundDefaultBitrate
-		}
+		};
 		return execFs('fs/sounds-build', options as any) as any;
 	}
 
@@ -508,10 +512,10 @@ export default class fs {
 		if(!key.startsWith('___')) {
 			return value;
 		}
-	}
+	};
 
 	static exitWithResult(success: string | undefined, error?: string) {
-		execFs('fs/exitWithResult', success, error)
+		execFs('fs/exitWithResult', success, error);
 	}
 
 	static showQuestion(title: string, message: string, yes: string, no: string, cancel?: string): number {

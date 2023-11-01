@@ -1,4 +1,4 @@
-import { AssetType, FileDesc } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView, { assetTypesIcons } from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
@@ -22,6 +22,12 @@ const assetItemRendererSound = (file: FileDesc) => {
 				showContextMenu([
 					MUTE_SOUND_MENU_ITEM,
 					{
+						name: "Reveal in Explorer",
+						onClick: () => {
+							fs.showFile(file.fileName);
+						}
+					},
+					{
 						name: R.fragment("Move " + file.assetName + "' sound to library..."),
 						onClick: async () => {
 							game.editor.moveAssetToLibrary("Where to move sound '" + file.assetName + "'?", file);
@@ -39,6 +45,6 @@ const assetItemRendererSound = (file: FileDesc) => {
 		libInfo(file),
 		assetTypesIcons.get(AssetType.SOUND),
 		R.span(assetsItemNameProps, file.assetName));
-}
+};
 
 export default assetItemRendererSound;

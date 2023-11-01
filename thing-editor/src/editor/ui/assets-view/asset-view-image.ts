@@ -25,6 +25,12 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 				game.editor.copyToClipboard(file.assetName);
 			}
 		},
+		{
+			name: "Reveal in Explorer",
+			onClick: () => {
+				fs.showFile(file.fileName);
+			}
+		},
 		null,
 		{
 			name: R.fragment("Move " + file.assetName + "' image to library..."),
@@ -69,7 +75,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 	}
 
 	showContextMenu(menu, ev);
-}
+};
 
 
 const assetItemRendererImage = (file: FileDescImage) => {
@@ -85,6 +91,6 @@ const assetItemRendererImage = (file: FileDescImage) => {
 		libInfo(file),
 		R.imageIcon(file),
 		R.span(assetsItemNameProps, file.assetName));
-}
+};
 
 export default assetItemRendererImage;

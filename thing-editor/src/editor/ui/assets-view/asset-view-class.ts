@@ -56,6 +56,12 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 				game.editor.editClassSource(file.asset);
 			}
 		},
+		{
+			name: "Reveal in Explorer",
+			onClick: () => {
+				fs.showFile(file.fileName);
+			}
+		},
 		null,
 		{
 			name: R.fragment(R.icon('asset-prefab'), "Create new prefab..."),

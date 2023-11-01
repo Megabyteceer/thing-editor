@@ -1,6 +1,7 @@
 const {
 	ipcMain,
-	dialog
+	dialog,
+	shell
 } = require('electron');
 
 const {
@@ -20,7 +21,7 @@ const fn = (fileName) => {
 		throw new Error('Attempt to access files out of Thing-Editor root folder: ' + fileName);
 	}
 	return path.join(__dirname, '../..', fileName);
-}
+};
 
 /** @param mainWindow {BrowserWindow} */
 module.exports = (mainWindow) => {
@@ -33,16 +34,16 @@ module.exports = (mainWindow) => {
 		fs.mkdirSync(fn(dirname), {
 			recursive: true
 		});
-	}
+	};
 
 	const onFileChange = (path) => {
 		mainWindow.webContents.send('serverMessage', 'fs/change', path);
-	}
+	};
 
 	const notify = (text) => {
 		console.log(text);
 		mainWindow.webContents.send('serverMessage', 'fs/notify', text);
-	}
+	};
 
 	ipcMain.handle('fs', async (event, command, fileName, content, ...args) => {
 		let isDebug;
@@ -138,7 +139,7 @@ module.exports = (mainWindow) => {
 					return;
 				case 'fs/exitWithResult':
 					success = fileName;
-					error = content
+					error = content;
 					if(error) {
 						console.error(error);
 					} else if(success) {
@@ -167,6 +168,10 @@ module.exports = (mainWindow) => {
 					require('child_process').spawn(explorer, [fn(fileName)], {detached: true}).unref();
 					event.returnValue = true;
 					return;
+				case 'fs/showFile':
+					shell.showItemInFolder(fn(fileName));
+					event.returnValue = true;
+					return;
 				case 'fs/sounds-build':
 					require('./build-sounds.js')(fileName, notify).then((res) => {
 						event.returnValue = res;
@@ -180,7 +185,7 @@ module.exports = (mainWindow) => {
 			event.returnValue = er;
 		}
 	});
-}
+};
 
 
 /** @param ev {Electron.IpcMainEvent} */
