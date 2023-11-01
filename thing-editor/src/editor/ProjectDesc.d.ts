@@ -27,7 +27,7 @@ interface ProjectDesc {
 			families: string[];
 		};
 		timeout: number;
-	} | null,
+	} | null | WebFont.Config,
 	fontHolderText: string,
 	mipmap: false,
 	version: string,

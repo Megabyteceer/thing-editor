@@ -12,6 +12,7 @@
     "@pixi/filter-outline": "^5.2.0",
     "@types/events": "^3.0.0",
     "@types/howler": "^2.2.7",
+    "@types/webfontloader": "^1.6.36",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "@typescript-eslint/parser": "^5.60.0",
     "chokidar": "^3.5.3",
@@ -33,6 +34,7 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.0",
     "vite-plugin-image-optimizer": "^1.1.6",
+    "webfontloader": "^1.6.28",
     "zip-dir": "^2.0.0"
   }
 }

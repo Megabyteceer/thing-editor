@@ -1,6 +1,6 @@
 import { Application, BaseTexture, Container, GC_MODES, IApplicationOptions, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import type { __EditorType } from "thing-editor/src/editor/editor";
-import type { AssetsDescriptor, SelectableProperty } from "thing-editor/src/editor/env";
+import type { AssetsDescriptor, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import assert from "thing-editor/src/engine/debug/assert";
@@ -19,6 +19,7 @@ import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-text
 import Settings from "thing-editor/src/engine/utils/settings";
 import Sound from "thing-editor/src/engine/utils/sound";
 import sureQuestionInit from "thing-editor/src/engine/utils/sure-question";
+import WebFont from "webfontloader";
 
 let app: Application;
 let stage: Container;
@@ -167,6 +168,8 @@ class Game {
 		/// #endif
 
 		initGameInteraction();
+
+		loadFonts();
 
 		app.stage.addChild(stage);
 
@@ -1167,6 +1170,13 @@ class Game {
 		return scenesStack;
 	}
 
+	applyCSS(css: string) {
+		let head = document.head || document.getElementsByTagName('head')[0];
+		let style = document.createElement('style');
+		style.appendChild(document.createTextNode(css));
+		head.appendChild(style);
+	}
+
 	/// #if EDITOR
 	__setCurrentContainerContent(o: Container) {
 		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
@@ -1237,6 +1247,67 @@ class Game {
 		alert(txt); // eslint-disable-line no-unreachable
 	}
 	/// #endif
+}
+
+
+function loadFonts() {
+	if(game.projectDesc.webfontloader) {
+		game.loadingAdd('FontsLoading');
+		if(game.projectDesc.fontHolderText) {
+			let fontHolder = document.createElement('span');
+			fontHolder.style.opacity = '0';
+			fontHolder.style.color = 'rgba(0,0,0,0.01)';
+			fontHolder.style.position = 'absolute';
+			fontHolder.style.zIndex = '-1';
+
+			for(let fontsProviderName in game.projectDesc.webfontloader) {
+				let families = (game.projectDesc.webfontloader as KeyedObject)[fontsProviderName].families;
+				if(families) {
+					for(let family of families) {
+						if(fontsProviderName === 'custom') {
+							let fontPath = '/assets/fonts/' + family.replace(/ /g, '');
+							game.applyCSS(`
+										@font-face {
+											font-family: '` + family + `';
+											src: url('` + fontPath + `.woff2') format('woff2'),
+											url('` + fontPath + `.woff') format('woff');
+										}
+									`);
+						}
+
+						let a = family.split(':');
+						let fontName = a[0];
+						let weights = a[1] ? a[1].split(',') : ['normal'];
+
+						for(let w of weights) {
+							let span = document.createElement('span');
+							span.style.fontFamily = `"${fontName}"`;
+							span.style.fontWeight = w;
+							span.innerHTML = game.projectDesc.fontHolderText;
+							fontHolder.appendChild(span);
+						}
+
+					}
+				}
+			}
+			document.body.appendChild(fontHolder);
+		}
+
+		import("webfontloader").then((webfontloader) => {
+			let webFontOptions: WebFont.Config = game.projectDesc.webfontloader!;
+			webFontOptions.timeout = webFontOptions.timeout || 6000;
+			let resolved = false;
+			webFontOptions.inactive = webFontOptions.active = () => {
+				if(resolved) {
+					return;
+				}
+				resolved = true;
+				game.loadingRemove('FontsLoading');
+			};
+			webfontloader.load(webFontOptions);
+		});
+
+	}
 }
 
 function tryToRemoveCurrentScene() {
