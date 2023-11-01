@@ -1294,7 +1294,7 @@ function loadFonts() {
 		}
 
 		import("webfontloader").then((webfontloader) => {
-			let webFontOptions: WebFont.Config = game.projectDesc.webfontloader!;
+			let webFontOptions: WebFont.Config = JSON.parse(JSON.stringify(game.projectDesc.webfontloader!));
 			webFontOptions.timeout = webFontOptions.timeout || 6000;
 			let resolved = false;
 			webFontOptions.inactive = webFontOptions.active = () => {
