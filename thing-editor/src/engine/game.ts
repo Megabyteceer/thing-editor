@@ -823,7 +823,9 @@ class Game {
 		if(game.onGameReload) {
 			game.onGameReload();
 		}
-		game.showModal('final-fader');
+		if(Lib.hasPrefab('final-fader')) {
+			game.showModal('final-fader');
+		}
 		window.location.reload();
 	}
 
