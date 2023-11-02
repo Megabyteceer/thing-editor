@@ -30,6 +30,24 @@ let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
+//@ts-ignore
+const initParsers = () => {
+	const spriteSheetLoader = Assets.loader.parsers.find(p => p.name === 'spritesheetLoader');
+	const originalParser = spriteSheetLoader!.parse!;
+	spriteSheetLoader!.parse = (asset: any, options, ...args) => {
+		const n = options!.src.lastIndexOf('/') + 1;
+		let url = options!.src.substring(0, n) + asset.meta.image;
+		asset.meta.image = unHashedFileToHashed.get(url)!.split('/').pop();
+		return originalParser(asset, options, ...args);
+	};
+};
+
+/// #if EDITOR
+/*
+/// #endif
+initParsers();
+//*/
+
 export default class Lib
 	/// #if EDITOR
 	extends TLib
@@ -482,15 +500,15 @@ export default class Lib
 		}
 
 		for(const textureName of data.images) {
-			Lib.addTexture(textureName, assetsRoot + textureName);
+			Lib.addTexture(unHashFileName(textureName, assetsRoot), assetsRoot + textureName);
 		}
 
 		for(const soundEntry of data.sounds) {
-			Lib.addSound(soundEntry[0], assetsRoot + soundEntry[0], soundEntry[1]);
+			Lib.addSound(unHashFileName(soundEntry[0], assetsRoot), assetsRoot + soundEntry[0], soundEntry[1]);
 		}
 		if(data.resources) {
 			for(const atlasName of data.resources) {
-				Lib.addAtlas(atlasName, assetsRoot + atlasName + '.json');
+				Lib.addAtlas(unHashFileName(atlasName, assetsRoot), assetsRoot + atlasName + '.json');
 			}
 		}
 	}
@@ -949,10 +967,7 @@ const __onAssetAdded = (file: FileDesc) => {
 };
 
 const __onAssetUpdated = (file: FileDesc) => {
-
-	file.v = (file.v || 0) + 1;
 	let isAcceptChanges;
-
 	switch(file.assetType) {
 		case AssetType.PREFAB:
 			isAcceptChanges = false;
@@ -1049,6 +1064,18 @@ const __preparePrefabReference = (o: Container, prefabName: string) => {
 };
 /// #endif
 
+const unHashedFileToHashed: Map<string, string> = new Map();
+
+const unHashFileName = (fileName: string, assetsRoot: string): string => {
+	const n = fileName.lastIndexOf('.');
+	if(n > 0) {
+		const ret = fileName.substring(0, n - 9) + fileName.substring(n);
+		unHashedFileToHashed.set(assetsRoot + ret, fileName);
+		return ret;
+	}
+	return fileName.slice(0, -9);
+
+};
 
 /// #if DEBUG
 function __callInitIfNotCalled(node: Container) {

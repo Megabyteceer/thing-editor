@@ -137,6 +137,9 @@ module.exports = (mainWindow) => {
 				case 'fs/enumProjects':
 					event.returnValue = enumProjects();
 					return;
+				case 'fs/getFileHash':
+					event.returnValue = getFileHash(fn(fileName));
+					return;
 				case 'fs/exitWithResult':
 					success = fileName;
 					error = content;
@@ -227,6 +230,19 @@ const enumProjects = (ret = [], subDir = '') => {
 		}
 	});
 	return ret;
+};
+
+let crypto;
+
+const getFileHash = (fileName) => {
+	if(!crypto) {
+		crypto = require('crypto');
+	}
+	const hashSum = crypto.createHash('md5');
+	const fileBuffer = fs.readFileSync(fileName);
+	hashSum.update(fileBuffer);
+	const ret = '' + hashSum.digest('base64');
+	return ret.substring(0, 8);
 };
 
 function isFilesEqual(a, b) {

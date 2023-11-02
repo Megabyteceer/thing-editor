@@ -26,6 +26,7 @@ interface FileDesc {
 	lib: LibInfo | null,
 	libInfoCache?: ComponentChildren,
 	v?: number;
+	_hashedAssetName?: string;
 
 	parentAsset?: FileDesc;
 
@@ -453,12 +454,13 @@ export default class fs {
 					__onAssetAdded(file);
 				} else {
 					file.asset = oldAsset.asset;
-
-					file.v = (oldAsset.v || 0) + 1;
-
 					if(oldAsset.mTime !== file.mTime) {
+						file.v = (oldAsset.v || 0) + 1;
 						fs.rebuildSoundsIfNeed(file);
 						__onAssetUpdated(file);
+					} else {
+						file.v = oldAsset.v;
+						file._hashedAssetName = oldAsset._hashedAssetName;
 					}
 				}
 			}
@@ -499,6 +501,10 @@ export default class fs {
 			}
 		}
 		editorEvents.emit('assetsRefreshed');
+	}
+
+	static getFileHash(fileName: string): string {
+		return execFs('fs/getFileHash', fileName) as any as string;
 	}
 
 	static getWrongSymbol(fileName: string) {

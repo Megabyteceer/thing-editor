@@ -2,6 +2,7 @@ import { AssetsDescriptor, KeyedMap, KeyedObject, SerializedObject, SoundAssetEn
 import fs, { AssetType, FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import enumAssetsPropsRecursive from "thing-editor/src/editor/utils/enum-assets-recursive";
+import getHashedAssetName from "thing-editor/src/editor/utils/get-hashed-asset-name";
 import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from "thing-editor/src/engine/game";
 import Lib, { isAtlasAsset } from "thing-editor/src/engine/lib";
 
@@ -237,9 +238,9 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 					if(!file.parentAsset) {
 						assetsToCopy.push({
 							from: file.fileName,
-							to: file.assetName
+							to: getHashedAssetName(file)
 						});
-						images.push(file.assetName);
+						images.push(getHashedAssetName(file));
 					}
 				}
 			} else if(file.assetType === AssetType.SCENE) {
@@ -250,20 +251,20 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 				for(let ext of game.projectDesc.soundFormats) {
 					assetsToCopy.push({
 						from: file.fileName.replace(/\wav$/, ext),
-						to: file.assetName + '.' + ext
+						to: getHashedAssetName(file) + '.' + ext
 					});
 				}
 
-				sounds.push([file.assetName, (file as FileDescSound).asset.preciseDuration]);
+				sounds.push([getHashedAssetName(file), (file as FileDescSound).asset.preciseDuration]);
 			} else if(file.assetType === AssetType.RESOURCE) {
 				if(isAtlasAsset(file.asset)) {
 					if(!resources) {
 						resources = [];
 					}
-					resources.push(file.assetName);
+					resources.push(getHashedAssetName(file));
 					assetsToCopy.push({
 						from: file.fileName,
-						to: file.assetName + '.json'
+						to: getHashedAssetName(file) + '.json'
 					});
 				}
 			}
