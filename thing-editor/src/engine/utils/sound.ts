@@ -8,7 +8,6 @@ import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-const MIN_VOL_THRESHOLD = 0.005;
 const MIN_VOL_ENABLE = 0.05;
 
 function normalizeVolForEnabling(vol: number, defaultVol: number) {
@@ -83,7 +82,7 @@ export default class Sound {
 	}
 
 	static get musicEnabled() {
-		return musicVol >= MIN_VOL_THRESHOLD;
+		return musicVol >= MIN_VOL_ENABLE;
 	}
 
 	static set musicEnabled(val) {
@@ -112,12 +111,11 @@ export default class Sound {
 	}
 
 	static get soundEnabled() {
-		return soundsVol >= MIN_VOL_THRESHOLD;
+		return soundsVol >= MIN_VOL_ENABLE;
 	}
 
 	static set soundEnabled(val) {
 		if(Sound.soundEnabled !== val) {
-
 			if(val) {
 				Sound.soundsVol = normalizeVolForEnabling(game.settings.getItem('soundsVolEnabling'), game.projectDesc.defaultSoundsVol);
 			} else {
@@ -347,7 +345,7 @@ interface SoundData {
 	// visible file name which was selected to override sound
 	name: string,
 	// url encodes sound data.
-	data: string
+	data: string;
 }
 
 let sndDebugger: HTMLDivElement;
