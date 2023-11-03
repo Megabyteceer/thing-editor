@@ -24,3 +24,8 @@ export default class IsMobileTrigger extends OrientationTrigger {
 
 	/// #endif
 }
+
+/// #if EDITOR
+IsMobileTrigger.__EDITOR_icon = 'tree/is-mobile';
+
+/// #endif
