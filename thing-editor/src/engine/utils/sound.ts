@@ -140,6 +140,10 @@ export default class Sound {
 		}
 	}
 
+	static get isFullSoundEnabled() {
+		return Sound.soundEnabled || Sound.musicEnabled;
+	}
+
 	static init() {
 		soundsVol = game.settings.getItem('soundsVol', game.projectDesc.defaultSoundsVol);
 		musicVol = game.settings.getItem('musicVol', game.projectDesc.defaultMusVol);
