@@ -55,7 +55,8 @@
 						{
 							"c": "BackDrop",
 							"p": {
-								"alpha": 0.8
+								"alpha": 0.8,
+								"shapeFillColor": 2
 							}
 						}
 					]
@@ -110,20 +111,21 @@
 						}
 					]
 				},
-				"__previewFrame": 7,
+				"__previewFrame": 8,
 				"scale.x": 0,
 				"scale.y": 0
 			},
 			":": [
 				{
-					"c": "Trigger",
+					"c": "IsMobileTrigger",
 					"p": {
-						"dataPath": "isMobile.any",
-						"invert": true,
-						"pow": 1,
-						"alphaShift": 0,
-						"scaleShift": 0.7,
-						"isApplyInteractivity": false
+						"name": "popup-body",
+						"landscapeScaleX": 1,
+						"landscapeScaleY": 1,
+						"landscapeAlpha": 1,
+						"portraitScaleX": 1.7,
+						"portraitScaleY": 1.7,
+						"portraitAlpha": 1
 					},
 					":": [
 						{
@@ -135,7 +137,7 @@
 								"shape": 1,
 								"width": 560,
 								"height": 317,
-								"shapeFillColor": 986932,
+								"shapeFillColor": 2,
 								"shapeLineWidth": 4,
 								"shapeLineAlpha": 0.7
 							}
@@ -181,11 +183,12 @@
 								{
 									"c": "Shape",
 									"p": {
-										"x": -100,
-										"y": -25,
+										"x": -120,
+										"y": -33,
 										"shape": 1,
-										"width": 200,
-										"height": 50,
+										"width": 240,
+										"height": 66,
+										"shapeRadius": 2533,
 										"shapeLineWidth": 5,
 										"shapeLineAlpha": 0.7
 									}
@@ -216,11 +219,12 @@
 								{
 									"c": "Shape",
 									"p": {
-										"x": -100,
-										"y": -25,
+										"x": -120,
+										"y": -33,
 										"shape": 1,
-										"width": 200,
-										"height": 50,
+										"width": 240,
+										"height": 66,
+										"shapeRadius": 2533,
 										"shapeLineWidth": 5,
 										"shapeLineAlpha": 0.7
 									}
