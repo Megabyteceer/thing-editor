@@ -1253,7 +1253,7 @@ class Game {
 
 
 function loadFonts() {
-	if(game.projectDesc.webfontloader) {
+	if(game.projectDesc.webfontloader?.custom?.families?.length || game.projectDesc.webfontloader?.google?.families?.length) {
 		game.loadingAdd('FontsLoading');
 		if(game.projectDesc.fontHolderText) {
 			let fontHolder = document.createElement('span');
