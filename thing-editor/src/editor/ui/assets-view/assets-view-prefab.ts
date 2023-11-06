@@ -1,6 +1,6 @@
 import fs, { FileDescPrefab } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
-import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
+import AssetsView, { addSharedAssetContextMenu } from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
@@ -27,7 +27,7 @@ const placeAsChild = (file: FileDescPrefab) => {
 };
 
 const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
-	showContextMenu([
+	showContextMenu(addSharedAssetContextMenu(file, [
 		{
 			name: "Child",
 			tip: "Place as child to each selected object. (Alt + Click)",
@@ -82,12 +82,6 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 				game.editor.editClassSource(getSerializedObjectClass(file.asset));
 			}
 		},
-		{
-			name: "Reveal in Explorer",
-			onClick: () => {
-				fs.showFile(file.fileName);
-			}
-		},
 		null,
 		{
 			name: R.fragment("Move " + file.assetName + "' prefab to library..."),
@@ -113,7 +107,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 			},
 			disabled: () => file.assetName === DEFAULT_FADER_NAME || file.assetName === PrefabEditor.currentPrefabName
 		}
-	], ev);
+	]), ev);
 };
 
 const assetItemRendererPrefab = (file: FileDescPrefab) => {

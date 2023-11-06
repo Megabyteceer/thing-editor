@@ -1,6 +1,7 @@
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { FileDescClass } from "thing-editor/src/editor/fs";
 import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
+import { addSharedAssetContextMenu } from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
@@ -10,7 +11,7 @@ import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
 
 const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
-	showContextMenu([
+	showContextMenu(addSharedAssetContextMenu(file, [
 		{
 			name: "Child",
 			tip: "Place as child to each selected object.",
@@ -56,12 +57,6 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 				game.editor.editClassSource(file.asset);
 			}
 		},
-		{
-			name: "Reveal in Explorer",
-			onClick: () => {
-				fs.showFile(file.fileName);
-			}
-		},
 		null,
 		{
 			name: R.fragment(R.icon('asset-prefab'), "Create new prefab..."),
@@ -97,7 +92,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 				);
 			}
 		}
-	], ev);
+	]), ev);
 };
 
 const toolButtonsProps = {

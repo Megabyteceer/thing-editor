@@ -8,6 +8,7 @@ import assetItemRendererScene from "thing-editor/src/editor/ui/assets-view/asset
 import assetItemRendererSound from "thing-editor/src/editor/ui/assets-view/asset-view-sound";
 import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
 import assetItemRendererResource from "thing-editor/src/editor/ui/assets-view/assets-view-resource";
+import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Window, { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
 import WindowMenu from "thing-editor/src/editor/ui/window-menu";
@@ -71,16 +72,35 @@ interface AssetsViewProps extends WindowProps {
 	filter: KeyedMap<boolean>,
 	hideMenu?: boolean,
 	currentValue?: string,
-	onItemSelect?: (assetName: string) => void
-	onItemPreview?: (assetName: string) => void
-	filterCallback?: (f: FileDesc) => boolean
+	onItemSelect?: (assetName: string) => void;
+	onItemPreview?: (assetName: string) => void;
+	filterCallback?: (f: FileDesc) => boolean;
 }
 
 interface AssetsViewState extends WindowState {
 	filter: KeyedMap<boolean>,
 	filtersActive?: boolean,
-	search: string
+	search: string;
 }
+
+const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
+	const i = menu.lastIndexOf(null);
+	if(file.lib) {
+		menu.splice(i + 1, 0, {
+			name: 'copy asset to the project',
+			onClick: () => {
+				fs.copyAssetToProject(file);
+			}
+		});
+	}
+	menu.splice(i + 1, 0, {
+		name: "Reveal in Explorer",
+		onClick: () => {
+			fs.showFile(file.fileName);
+		}
+	});
+	return menu;
+};
 
 export default class AssetsView extends Window<AssetsViewProps, AssetsViewState> {
 
@@ -298,7 +318,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		if(this.state.search) {
 			files = files.filter((asset) => {
 				if(asset.assetName === AssetsView.currentItemName) {
-					return true
+					return true;
 				} else if(asset.assetType === AssetType.SCENE) {
 					if(asset.assetName === game.editor.currentSceneName) {
 						return true;
@@ -380,8 +400,9 @@ function enterNameForAssetsWindow(defaultTitle?: string) {
 				return 'name can not begin or end with "/"';
 			}
 		}
-	)
+	);
 
 }
 
-export { assetTypesIcons };
+export { addSharedAssetContextMenu, assetTypesIcons };
+

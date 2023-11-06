@@ -1,6 +1,6 @@
-import fs, { AssetType, FileDesc } from "thing-editor/src/editor/fs";
+import { AssetType, FileDesc } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
-import AssetsView, { assetTypesIcons } from "thing-editor/src/editor/ui/assets-view/assets-view";
+import AssetsView, { addSharedAssetContextMenu, assetTypesIcons } from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import { MUTE_SOUND_MENU_ITEM } from "thing-editor/src/editor/ui/main-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
@@ -19,14 +19,8 @@ const assetItemRendererSound = (file: FileDesc) => {
 			className: (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-current assets-item-sound' : 'assets-item assets-item-sound',
 			key: file.assetName,
 			onContextMenu: (ev: PointerEvent) => {
-				showContextMenu([
+				showContextMenu(addSharedAssetContextMenu(file, [
 					MUTE_SOUND_MENU_ITEM,
-					{
-						name: "Reveal in Explorer",
-						onClick: () => {
-							fs.showFile(file.fileName);
-						}
-					},
 					{
 						name: R.fragment("Move " + file.assetName + "' sound to library..."),
 						onClick: async () => {
@@ -34,7 +28,7 @@ const assetItemRendererSound = (file: FileDesc) => {
 						},
 						disabled: () => game.editor.getUserVisibleFolders().length < 2
 					}
-				], ev);
+				]), ev);
 			},
 			onMouseDown: (ev: PointerEvent) => {
 				if(ev.buttons === 1 && !(ev.target as HTMLDivElement).closest('.modal-content')) {

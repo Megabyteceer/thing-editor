@@ -1,7 +1,7 @@
 import { ComponentChild } from "preact";
 import fs, { FileDescScene } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
-import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
+import AssetsView, { addSharedAssetContextMenu } from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
@@ -19,7 +19,7 @@ const assetsItemNameProps = {
 };
 
 const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
-	showContextMenu([
+	showContextMenu(addSharedAssetContextMenu(file, [
 		{
 			name: "Edit scene",
 			onClick: () => game.editor.openScene(file.assetName),
@@ -40,12 +40,6 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 			tip: "Double click on class to go to it`s source code.",
 			onClick: () => {
 				game.editor.editClassSource(game.classes[file.asset.c!]);
-			}
-		},
-		{
-			name: "Reveal in Explorer",
-			onClick: () => {
-				fs.showFile(file.fileName);
 			}
 		},
 		null,
@@ -72,7 +66,7 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 			},
 			disabled: () => game.projectDesc.mainScene === file.assetName || file.assetName === PRELOADER_SCENE_NAME
 		}
-	], ev);
+	]), ev);
 };
 
 const assetItemRendererScene = (file: FileDescScene): ComponentChild => {

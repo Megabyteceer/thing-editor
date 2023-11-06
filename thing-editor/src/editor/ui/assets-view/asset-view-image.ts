@@ -1,7 +1,7 @@
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { FileDescImage } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
-import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
+import AssetsView, { addSharedAssetContextMenu } from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import libInfo from "thing-editor/src/editor/utils/lib-info";
@@ -23,12 +23,6 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 			name: R.fragment(R.icon('copy'), "Copy image`s name"),
 			onClick: () => {
 				game.editor.copyToClipboard(file.assetName);
-			}
-		},
-		{
-			name: "Reveal in Explorer",
-			onClick: () => {
-				fs.showFile(file.fileName);
 			}
 		},
 		null,
@@ -74,6 +68,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 		}
 	}
 
+	addSharedAssetContextMenu(file, menu);
 	showContextMenu(menu, ev);
 };
 
