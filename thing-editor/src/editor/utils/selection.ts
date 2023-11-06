@@ -33,7 +33,11 @@ setInterval(() => {
 
 }, 30);
 
-type SelectionPath = (string | number)[];
+interface SelectionPathEntry {
+	n: string | null;
+	i: number;
+}
+type SelectionPath = SelectionPathEntry[];
 
 type SelectionDataBase = SelectionPath[];
 
@@ -167,13 +171,10 @@ export default class Selection extends Array<Container> {
 }
 
 let getPathOfNode = (node: Container): SelectionPath => {
-	let ret = [];
+	let ret: SelectionPath = [];
 	while(node !== game.stage) {
-		if(node.name && node.parent.children.filter((c) => { return c.name === node.name; }).length === 1) {
-			ret.push(node.name);
-		} else {
-			ret.push(node.parent.getChildIndex(node));
-		}
+		const a = node.parent.children.filter((c) => { return c.name === node.name; });
+		ret.push({ n: node.name, i: a.indexOf(node) });
 		node = node.parent;
 	}
 	return ret;
@@ -183,14 +184,11 @@ const selectNodeByPath = (path: SelectionPath) => {
 	let ret = game.stage as Container;
 	for(let i = path.length - 1; i >= 0 && ret; i--) {
 		let p = path[i];
-		if(typeof p === 'number') {
-			if(p < ret.children.length) {
-				ret = ret.getChildAt(p) as Container;
-			} else {
-				return;
-			}
+		const a = ret.children.filter((c) => { return c.name === p.n; });
+		if(p.i < a.length) {
+			ret = a[p.i] as Container;
 		} else {
-			ret = ret.getChildByName(p) as Container;
+			return;
 		}
 	}
 
