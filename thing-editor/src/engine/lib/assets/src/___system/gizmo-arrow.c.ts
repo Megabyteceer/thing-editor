@@ -21,7 +21,7 @@ const mouseHandlerGlobalUp = () => {
 	if(___GizmoArrow.draggedArrow) {
 		___GizmoArrow.draggedArrow.stopDragging();
 	}
-}
+};
 
 const p = new Point();
 
@@ -60,8 +60,9 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 			p.y = startMouseY + Math.sin(angle) * len + startObjectYShift;
 		}
 
-
-		gizmo?.moveXY(p, ev.ctrlKey);
+		if(___GizmoArrow.draggedArrow.dragX || ___GizmoArrow.draggedArrow.dragY) {
+			gizmo?.moveXY(p, ev.ctrlKey);
+		}
 
 		if(___GizmoArrow.draggedArrow.dragR) {
 			let targetFullShift = (game.__mouse_uncropped.y - startMouseY) / -50;
@@ -87,16 +88,16 @@ export default class ___GizmoArrow extends Shape {
 	static draggedArrow?: ___GizmoArrow;
 
 	@editable()
-	dragX = false
+	dragX = false;
 
 	@editable()
-	dragY = false
+	dragY = false;
 
 	@editable()
-	dragR = false
+	dragR = false;
 
 	@editable()
-	cursor = 'move'
+	cursor = 'move';
 
 	isDowned = false;
 

@@ -145,17 +145,21 @@ function moveSelectionToPoint(dX: number, dY: number, withoutChildren = false) {
 				game.editor.moveContainerWithoutChildren(s, dX, dY);
 			}
 		} else {
-			if(game.editor.ui.propsEditor.editableProps.x) {
-				game.editor.editProperty('x', dX, true);
-			} else {
-				game.editor.ui.propsEditor.selectField('x');
-				game.editor.ui.modal.notify('x property locked');
+			if(dX) {
+				if(game.editor.ui.propsEditor.editableProps.x) {
+					game.editor.editProperty('x', dX, true);
+				} else {
+					game.editor.ui.propsEditor.selectField('x');
+					game.editor.ui.modal.notify('x property locked');
+				}
 			}
-			if(game.editor.ui.propsEditor.editableProps.y) {
-				game.editor.editProperty('y', dY, true);
-			} else {
-				game.editor.ui.propsEditor.selectField('y');
-				game.editor.ui.modal.notify('y property locked');
+			if(dY) {
+				if(game.editor.ui.propsEditor.editableProps.y) {
+					game.editor.editProperty('y', dY, true);
+				} else {
+					game.editor.ui.propsEditor.selectField('y');
+					game.editor.ui.modal.notify('y property locked');
+				}
 			}
 		}
 	}
