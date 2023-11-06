@@ -1,13 +1,17 @@
 
 import { KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
-import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
+
+const isProjectDescValueKeyedMap = (key: string) => {
+	return key === 'loadOnDemandTextures' || key === 'loadOnDemandSounds' ||
+		key === '__loadOnDemandTexturesFolders' || key === 'soundBitRates';
+};
 
 const mergeProjectDesc = (target: ProjectDesc, src: ProjectDesc) => {
 	for(const key in src) {
 		const targetVal = (target as KeyedObject)[key];
 		const srcVal = (src as KeyedObject)[key];
-		if(key === 'loadOnDemandTextures' || key === 'loadOnDemandSounds') {
+		if(isProjectDescValueKeyedMap(key)) {
 			(target as KeyedObject)[key] = Object.assign({}, srcVal, targetVal);
 		} else if(key === 'webfontloader') {
 			let newVal;
@@ -56,4 +60,4 @@ const mergeProjectDesc = (target: ProjectDesc, src: ProjectDesc) => {
 
 export default mergeProjectDesc;
 
-defaultProjectDesc;
+export { isProjectDescValueKeyedMap };

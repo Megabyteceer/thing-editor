@@ -28,7 +28,7 @@ import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import regenerateCurrentSceneMapTypings, { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 import { libIcon } from "thing-editor/src/editor/utils/lib-info";
-import mergeProjectDesc from "thing-editor/src/editor/utils/merge-project-desc";
+import mergeProjectDesc, { isProjectDescValueKeyedMap } from "thing-editor/src/editor/utils/merge-project-desc";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
 import validateObjectDataRecursive from "thing-editor/src/editor/utils/validate-serialized-data";
@@ -36,10 +36,10 @@ import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
+import { __UnknownClassScene } from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
-import { __UnknownClassScene } from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
@@ -944,8 +944,25 @@ class Editor {
 
 		for(let key in this.libsProjectDescMerged) {
 			if(descToSave.hasOwnProperty(key)) {
-				if(JSON.stringify(descToSave[key]) === JSON.stringify((this.libsProjectDescMerged as KeyedObject)[key])) {
+
+				let projectValue = descToSave[key];
+				let libsValue = (this.libsProjectDescMerged as KeyedObject)[key];
+				if(JSON.stringify(projectValue) === JSON.stringify(libsValue)) {
 					delete descToSave[key];
+				} else if(isProjectDescValueKeyedMap(key)) {
+					for(let key in libsValue) {
+						if(projectValue[key] === libsValue[key]) {
+							delete projectValue[key];
+						}
+					}
+					if(key === 'soundBitRates') {
+						const keys = Object.keys(projectValue);
+						for(const key of keys) {
+							if(projectValue[key] === this.projectDesc.soundDefaultBitrate) {
+								delete projectValue[key];
+							}
+						}
+					}
 				}
 			}
 		}
