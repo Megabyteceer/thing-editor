@@ -19,7 +19,9 @@ export default class BackDrop extends Shape {
 	/// #endif
 
 	render(renderer: Renderer): void {
-		this.parent.toLocal(zeroPoint, game.stage, this, false);
+		try {
+			this.parent.toLocal(zeroPoint, game.stage, this, false);
+		} catch(_er) { /* empty */ }
 		sizePoint.x = game.W;
 		sizePoint.y = game.H;
 		this.toLocal(sizePoint, game.stage, sizePoint, false);

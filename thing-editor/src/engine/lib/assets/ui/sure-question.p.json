@@ -12,8 +12,6 @@
 			"c": "MovieClip",
 			"p": {
 				"name": "backdrop",
-				"scale.x": 192,
-				"scale.y": 108,
 				"timeline": {
 					"l": {},
 					"p": 0.02,
