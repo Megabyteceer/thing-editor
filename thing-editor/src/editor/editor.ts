@@ -368,7 +368,7 @@ class Editor {
 			excludeOtherProjects();
 
 			game.applyProjectDesc(this.projectDesc);
-
+			editorEvents.emit('gameWillBeInitialized');
 			game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id);
 
 			game.stage.interactiveChildren = false;

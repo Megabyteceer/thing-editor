@@ -33,9 +33,9 @@ function initializeGizmo() {
 	});
 }
 
-editorEvents.once('projectDidOpen', () => {
+editorEvents.once('gameWillBeInitialized', () => {
 
-	(document.querySelector('#viewport-root') as HTMLDivElement).addEventListener('mousedown', function onMouseDown(ev: MouseEvent) {
+	(document.querySelector('#viewport-root') as HTMLDivElement).addEventListener('pointerdown', function onMouseDown(ev: MouseEvent) {
 		if(game.pixiApp && (ev.target === game.pixiApp.view)) {
 			if(ev.buttons === 4) {
 				isViewPortScrolling = true;
@@ -57,7 +57,7 @@ editorEvents.once('projectDidOpen', () => {
 		} else {
 			game.editor.selection.clearSelection();
 		}
-	});
+	}, true);
 
 	window.addEventListener('mousemove', function onMouseMove(ev: MouseEvent) {
 		if(game.pixiApp) {
@@ -109,10 +109,9 @@ editorEvents.once('projectDidOpen', () => {
 		}
 	});
 
-	initializeGizmo();
-
 });
 
+editorEvents.once('projectDidOpen', initializeGizmo);
 
 const p = new Point();
 
