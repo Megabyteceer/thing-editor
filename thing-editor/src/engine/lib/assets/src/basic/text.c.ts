@@ -583,8 +583,8 @@ _editableEmbed(Text, 'style.stroke', {
 	type: "color",
 	noNullCheck: true,
 	default: 0,
-	disabled: (node: Text) => {
-		return node.style.strokeThickness < 1;
+	visible: (node: Text) => {
+		return node.style.strokeThickness > 0;
 	}
 });
 

@@ -27,7 +27,7 @@ interface EditablePropertyEditorProps extends ClassAttributes<PropsFieldWrapper>
 
 interface PropsFieldWrapperProps extends ClassAttributes<PropsFieldWrapper> {
 	field: EditablePropertyDesc;
-	onChange: (field: EditablePropertyDesc, val: any, isDelta?: boolean) => void
+	onChange: (field: EditablePropertyDesc, val: any, isDelta?: boolean) => void;
 	propsEditor: PropsEditor;
 	defaultValue: any;
 }
@@ -39,7 +39,7 @@ const CAN_COPY_VALUES_OF_TYPE: EditablePropertyType[] = [
 	'string',
 	'prefab',
 	'number'
-]
+];
 
 const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEvent) => {
 	const field: EditablePropertyDesc = fieldEditor.props.field;
@@ -48,7 +48,18 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 	showContextMenu([
 		{
 			name: R.fragment(R.icon('copy'), "Copy value"),
-			onClick: () => { game.editor.copyToClipboard(value) },
+			onClick: () => {
+				if(field.arrayProperty) {
+					const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
+
+					let i = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
+					if(i >= 0) {
+						game.editor.copyToClipboard(value[i]);
+						return;
+					}
+				}
+				game.editor.copyToClipboard(value);
+			},
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
@@ -56,10 +67,22 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			onClick: () => {
 				navigator.clipboard.readText().then(text => {
 					let val: any;
+
+					let a = text.split(',');
 					if(field.type === 'color' || field.type === 'number') {
-						val = parseFloat(text) || 0;
+						a = a.map(v => parseFloat(v) || 0) as any;
+					}
+					if(field.arrayProperty) {
+						const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
+						let i = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
+						if(i < 0) {
+							val = a;
+						} else {
+							val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
+							val[i] = a[0];
+						}
 					} else {
-						val = text;
+						val = a[0];
 					}
 					game.editor.editProperty(field, val);
 				});
@@ -68,11 +91,11 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		},
 		{
 			name: R.fragment(R.icon('copy'), "Copy property name"),
-			onClick: () => { game.editor.copyToClipboard(field.name) }
+			onClick: () => { game.editor.copyToClipboard(field.name); }
 		},
 		{
 			name: "Why disabled?..",
-			onClick: () => { game.editor.ui.modal.showInfo(R.fragment(R.b(null, field.name), R.br(), game.editor.ui.propsEditor.disableReasons[field.name]), "Property is disabled.") },
+			onClick: () => { game.editor.ui.modal.showInfo(R.fragment(R.b(null, field.name), R.br(), game.editor.ui.propsEditor.disableReasons[field.name]), "Property is disabled."); },
 			disabled: () => !game.editor.ui.propsEditor.disableReasons[field.name]
 		},
 		null,
@@ -91,7 +114,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			disabled: () => defaultValue === undefined || value === defaultValue || !game.editor.ui.propsEditor.editableProps[field.name]
 		},
 
-	], ev)
+	], ev);
 };
 
 export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps> {
