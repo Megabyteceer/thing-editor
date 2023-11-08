@@ -95,10 +95,9 @@ const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 	}
 	if(file.assetType !== AssetType.CLASS) {
 		menu.splice(i + 1, 0, {
-			name: 'rename',
+			name: 'Rename...',
 			onClick: () => {
-				fs.copyFile(file.fileName, file.fileName + '2');
-				fs.deleteAsset(file.assetName, file.assetType);
+				fs.renameAsset(file);
 			}
 		});
 	}

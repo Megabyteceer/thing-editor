@@ -16,6 +16,8 @@ interface LibInfo {
 	isEmbed?: boolean;
 }
 
+const prefabNameFilter = /[^a-zA-Z\-\/0-9_]/g;
+
 interface FileDesc {
 	/** file name*/
 	fileName: string,
@@ -277,6 +279,39 @@ export default class fs {
 			game.editor.ui.modal.hideSpinner();
 			return res;
 		});
+	}
+
+	static renameAsset(file: FileDesc) {
+		let ext = '';
+		if(file.assetType === AssetType.IMAGE) {
+			ext = file.assetName.substring(file.assetName.lastIndexOf('.'));
+		}
+		game.editor.ui.modal.showPrompt('Rename asset ' + ext, file.assetName.substring(0, file.assetName.length - ext.length),
+			(val) => { // filter
+				return val.replace(prefabNameFilter, '-');
+			},
+			(val) => { //accept
+				const newAssetName = val + ext;
+				let newFile = fs.getFileByAssetName(newAssetName, file.assetType);
+				if(file === newFile) {
+					return;
+				}
+				if(newFile) {
+					return "Already exists";
+				}
+				if(val.endsWith('/') || val.startsWith('/')) {
+					return 'name can not begin or end with "/"';
+				}
+			}).then((newName: string) => {
+				if(newName) {
+					newName += ext;
+					if(newName !== file.assetName) {
+						const i = file.fileName.lastIndexOf(file.assetName);
+						fs.copyFile(file.fileName, file.fileName.substring(0, i) + newName + file.fileName.substring(i + file.assetName.length));
+						fs.deleteFile(file.fileName);
+					}
+				}
+			});
 	}
 
 	static copyAssetToProject(file: FileDesc) {
