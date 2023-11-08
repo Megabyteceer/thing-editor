@@ -940,7 +940,7 @@ class Editor {
 	}
 
 	protected __saveProjectDescriptorInner() {
-		let descToSave = Object.assign({}, editor.projectDesc) as KeyedObject;
+		let descToSave = JSON.parse(JSON.stringify(editor.projectDesc)) as KeyedObject;
 
 		for(let key in this.libsProjectDescMerged) {
 			if(descToSave.hasOwnProperty(key)) {
