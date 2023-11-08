@@ -1,3 +1,4 @@
+import { Sprite } from "pixi.js";
 import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
@@ -7,6 +8,28 @@ import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import game from "thing-editor/src/engine/game";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
+
+const selectInvisibleParent = () => {
+	let o = editorUtils.findInvisibleParent(game.editor.selection[0]);
+	if(o) {
+		game.editor.selection.select(o);
+		if(!o.visible) {
+			game.editor.ui.propsEditor.selectField('visible', true);
+		} else if(o.alpha < 0.01) {
+			game.editor.ui.propsEditor.selectField('alpha', true);
+		} else if(o.scale.x < 0.001) {
+			game.editor.ui.propsEditor.selectField('scale.x', true);
+		} else if(o.scale.y < 0.001) {
+			game.editor.ui.propsEditor.selectField('scale.y', true);
+		} else if(o.__hideInEditor) {
+			game.editor.ui.propsEditor.selectField('__hideInEditor', true);
+		} else if(o instanceof Sprite && o.image === 'EMPTY') {
+			game.editor.ui.propsEditor.selectField('image', true);
+		} else {
+			selectInvisibleParent();
+		}
+	}
+};
 
 const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 	{
@@ -64,7 +87,7 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 	null,
 	{
 		name: "Change type...",
-		onClick: () => { game.editor.ui.propsEditor.onChangeClassClick() },
+		onClick: () => { game.editor.ui.propsEditor.onChangeClassClick(); },
 	},
 	{
 		name: "Go to Source code >>>",
@@ -72,6 +95,13 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 		onClick: () => {
 			const Class = game.editor.selection[0].constructor as SourceMappedConstructor;
 			game.editor.editClassSource(Class, Class.__className);
+		}
+	},
+	{
+		name: "Why invisible? >>>",
+		onClick: selectInvisibleParent,
+		disabled: () => {
+			return !editorUtils.findInvisibleParent(game.editor.selection[0]);
 		}
 	},
 	{
@@ -213,7 +243,7 @@ const TREE_NODE_CONTEXT_ARRANGE_MENU: ContextMenuItem[] = [
 		stayAfterClick: true,
 		hotkey: { key: 'ArrowDown', ctrlKey: true }
 	}
-]
+];
 
 export { TREE_NODE_CONTEXT_ARRANGE_MENU, TREE_NODE_CONTEXT_MENU };
 

@@ -201,7 +201,9 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 
 			let fn = a[0];
 			this.refs.forEach((field) => {
-				field.onAutoSelect(a);
+				if(field.props.field.name === fieldName) {
+					field.onAutoSelect(a);
+				}
 			});
 
 			let fldInput = document.querySelector(".props-editor #property-editor-" + fn.replace('.', '_')) as HTMLInputElement;

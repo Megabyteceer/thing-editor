@@ -28,7 +28,7 @@ let hideMenuTimeout = 0;
 window.addEventListener('pointerdown', (ev: PointerEvent) => {
 	if(menuShown) {
 		hideMenuTimeout = setTimeout(() => {
-			if((ev.target as HTMLDivElement).closest('.stay-after-click-menu-item')) {
+			if((ev.target as HTMLDivElement).closest('.stay-after-click-menu-item') || (ev.target as HTMLDivElement).classList.contains('context-menu')) {
 				refreshContextMenu();
 			} else {
 				hideContextMenu();

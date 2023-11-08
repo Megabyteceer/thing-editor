@@ -1,4 +1,4 @@
-import { Container, MIPMAP_MODES, Point, WRAP_MODES } from "pixi.js";
+import { Container, MIPMAP_MODES, Point, Sprite, WRAP_MODES } from "pixi.js";
 import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
@@ -41,6 +41,16 @@ const classNamePropertyDescriptor = {
 
 export namespace editorUtils {
 
+	export const findInvisibleParent = (o: Container): Container | undefined => {
+		if(!o.visible || o.alpha < 0.01 || o.scale.x < 0.001 || o.scale.y < 0.001 || (game.__EDITOR_mode && o.__hideInEditor) || (o instanceof Sprite && o.image === 'EMPTY')) {
+			return o;
+		}
+		if(o.parent === game.stage) {
+			return;
+		}
+		return findInvisibleParent(o.parent);
+	};
+
 	export const isInModal = (o: EventTarget | HTMLElement | null) => {
 		if(o) {
 			return (o as HTMLElement).closest('.modal-body');
@@ -62,8 +72,8 @@ export namespace editorUtils {
 	};
 
 	export const canDelete = () => {
-		return (game.editor.selection.length > 0) && (game.editor.selection.indexOf(game.currentContainer) < 0)
-	}
+		return (game.editor.selection.length > 0) && (game.editor.selection.indexOf(game.currentContainer) < 0);
+	};
 
 	export const deleteSelected = () => {
 
@@ -113,7 +123,7 @@ export namespace editorUtils {
 			editor.refreshTreeViewAndPropertyEditor();
 			editor.sceneModified(true);
 		}
-	}
+	};
 
 	export const centralizeObjectToContent = (o: Container) => {
 		if(!o.children.length) {
@@ -148,7 +158,7 @@ export namespace editorUtils {
 		o.parent.toLocal(pos, undefined, p2);
 
 		game.editor.moveContainerWithoutChildren(o, Math.round(p.x - p2.x), Math.round(p.y - p2.y));
-	}
+	};
 
 	export const makePreviewModeButton = (title: string, helpUrl: string): EditablePropertyDescRaw => {
 		let previewBtnProperty: EditablePropertyDescRaw = {
@@ -160,7 +170,7 @@ export namespace editorUtils {
 		};
 		Object.defineProperty(previewBtnProperty, 'className', classNamePropertyDescriptor);
 		return previewBtnProperty;
-	}
+	};
 
 
 	export const clone = () => {
@@ -217,7 +227,7 @@ export namespace editorUtils {
 		}
 		game.editor.refreshTreeViewAndPropertyEditor();
 		game.editor.sceneModified();
-	}
+	};
 
 	export const onDeleteClick = () => {
 
@@ -265,7 +275,7 @@ export namespace editorUtils {
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(true);
 		}
-	}
+	};
 
 	export const enterPrefabName = (defaultPrefabName: string, title: ComponentChild) => {
 		return game.editor.ui.modal.showPrompt(title,
@@ -282,7 +292,7 @@ export namespace editorUtils {
 				}
 			}
 		);
-	}
+	};
 
 	export const savePrefab = (container: Container | FileDescClass) => {
 
@@ -338,7 +348,7 @@ export namespace editorUtils {
 				});
 			});
 		}
-	}
+	};
 
 	export const isCanBeUnwrapped = () => {
 		if(game.editor.selection.length !== 1) {
@@ -352,7 +362,7 @@ export namespace editorUtils {
 			return !(o instanceof Scene) && (o.children.length === 1);
 		}
 		return o.children.length > 0;
-	}
+	};
 
 	export const onExportAsPngClick = async () => {
 		let o = game.editor.selection[0];
@@ -367,7 +377,7 @@ export namespace editorUtils {
 		} else {
 			game.editor.ui.modal.showModal("Nothing visible selected to export.");
 		}
-	}
+	};
 
 	export const onUnwrapClick = () => {
 		if(isCanBeUnwrapped()) {
@@ -415,7 +425,7 @@ export namespace editorUtils {
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(true);
 		}
-	}
+	};
 
 	export const onCopyClick = () => {
 
@@ -432,7 +442,7 @@ export namespace editorUtils {
 
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
-	}
+	};
 
 	export const wrap = (nodes: Container[], wrapper: Container) => {
 		const o = nodes[0];
@@ -475,7 +485,7 @@ export namespace editorUtils {
 		DataPathFixer.validatePathReferences();
 		game.editor.sceneModified(true);
 		Lib.__callInitIfGameRuns(wrapper);
-	}
+	};
 
 	export const wrapSelected = (Class?: SourceMappedConstructor) => {
 		assert(game.__EDITOR_mode, "Can not wrap in running mode.");
@@ -494,19 +504,19 @@ export namespace editorUtils {
 				game.editor.disableFieldsCache = true;
 				w = Lib._deserializeObject({ c: clipboard.data.data[0].c, p: clipboard.data.data[0].p });
 				game.editor.disableFieldsCache = false;
-				wrap(a, w)
+				wrap(a, w);
 			}
 		}
-	}
+	};
 
 	export const onCutClick = () => {
 		onCopyClick();
 		onDeleteClick();
-	}
+	};
 
 	export const onPasteWrapClick = () => {
 		wrapSelected();
-	}
+	};
 
 	export const onPasteClick = async () => {
 		if(canPaste()) {
@@ -539,18 +549,18 @@ export namespace editorUtils {
 			game.editor.disableFieldsCache = false;
 			return added;
 		}
-	}
+	};
 
 	export const canPaste = () => {
 		return clipboard.data && clipboard.data.data.length > 0;
-	}
+	};
 
 	export const onBringUpClick = () => {
 		let i = 0;
 		while(onMoveUpClick(true) && i++ < 100000); //moves selected object up until its become top
 		game.editor.sceneModified(true);
 		game.editor.refreshTreeViewAndPropertyEditor();
-	}
+	};
 
 	export const onMoveUpClick = (doNotSaveHistoryState = false) => {
 		let ret = false;
@@ -573,7 +583,7 @@ export namespace editorUtils {
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
 		return ret;
-	}
+	};
 
 	export const preCacheImages = (preactContent?: any) => {
 		if(preactContent && (preactContent as any).props) {
@@ -590,7 +600,7 @@ export namespace editorUtils {
 				preactContent.props.children.forEach(preCacheImages);
 			}
 		}
-	}
+	};
 
 	export const onMoveDownClick = (doNotSaveHistoryState = false) => {
 		let ret = false;
@@ -614,13 +624,13 @@ export namespace editorUtils {
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
 		return ret;
-	}
+	};
 	export const onBringDownClick = () => {
 		let i = 0;
 		while(onMoveDownClick(true) && i++ < 100000); //move selected element down until its become bottom.
 		game.editor.sceneModified(true);
 		game.editor.refreshTreeViewAndPropertyEditor();
-	}
+	};
 
 	/// #if EDITOR
 	export const __setTextureSettingsBits = (name: string, bits: number, mask = 0xffffffff) => {
@@ -649,7 +659,7 @@ export namespace editorUtils {
 				game.editor.ui.refresh();
 			}
 		}
-	}
+	};
 	/// #endif
 }
 
@@ -657,7 +667,7 @@ interface ClipboardData {
 	data: SerializedObject[],
 	assets: string[],
 	project: string,
-	libs: string[]
+	libs: string[];
 
 }
 
