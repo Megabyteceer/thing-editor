@@ -104,10 +104,12 @@ export default class Lib
 		game._setClasses(_classes);
 		classes = _classes;
 		/// #if EDITOR
-		/*
+		return;
 		/// #endif
 		normalizeSerializedData();
-		//*/
+		/// #if DEBUG
+		__checkClassesForEditorOnlyMethods(_classes);
+		/// #endif
 	}
 
 	static scenes: KeyedMap<SerializedObject>;
@@ -1088,6 +1090,49 @@ function __callInitIfNotCalled(node: Container) {
 const processAfterDeserialization = (o: Container) => {
 	if(o.__afterDeserialization) {
 		o.__afterDeserialization();
+	}
+};
+
+const EDITOR_ONLY_METHODS = [
+	'__beforeDeserialization',
+	'__beforeSerialization',
+	'__afterDeserialization',
+	'__afterSerialization',
+	'__beforeDestroy',
+	'__EDITOR_onCreate',
+	'__goToPreviewMode',
+	'__exitPreviewMode',
+	'__onSelect',
+	'__onUnselect',
+	'__onChildSelected',
+	'__isAnyChildSelected',
+	'__shiftObject'
+];
+
+const EDITOR_ONLY_STATIC_METHODS = [
+	'__isPropertyDisabled',
+	'__EDITOR_tip',
+	'__isScene',
+	'__sourceCode',
+	'__canAcceptParent',
+	'__canAcceptChild',
+	'__beforeChangeToThisType',
+	'__validateObjectData'
+];
+
+const __checkClassesForEditorOnlyMethods = (classes: GameClasses) => {
+	for(let key in classes) {
+		const Class = classes[key];
+		for(const propName of EDITOR_ONLY_METHODS) {
+			if(Class.prototype.hasOwnProperty(propName)) {
+				game.__showDebugError('Class ' + key + ' contains "' + propName + '" method, which has sense in editor only, and should be wrapped with "/// #if EDITOR", "/// #endif" tags', 99999);
+			}
+		}
+		for(const propName of EDITOR_ONLY_STATIC_METHODS) {
+			if(Class.hasOwnProperty(propName)) {
+				game.__showDebugError('Class ' + key + ' contains "' + propName + '" static method, which has sense in editor only, and should be wrapped with "/// #if EDITOR", "/// #endif" tags', 99999);
+			}
+		}
 	}
 };
 /// #endif
