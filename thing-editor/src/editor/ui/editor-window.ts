@@ -5,13 +5,14 @@ import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Help from "thing-editor/src/editor/ui/help";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
+import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
 const MENU_HEIGHT = 24;
 const CLAMP_POW = 5;
 
 interface CornerDraggerProps extends ClassAttributes<CornerDragger> {
-	onDrag: (deltaX: number, deltaY: number) => { x: number, y: number };
+	onDrag: (deltaX: number, deltaY: number) => { x: number, y: number; };
 	onDragEnd: () => void;
 	className: string;
 	type?: DraggerType;
@@ -30,7 +31,7 @@ interface WindowProps extends ClassAttributes<Window> {
 	content: ComponentChild;
 	helpId: string;
 	title: ComponentChild;
-	hotkeysHandlers?: ContextMenuItem[][]
+	hotkeysHandlers?: ContextMenuItem[][];
 }
 
 interface WindowState {
@@ -435,6 +436,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 				}
 
 				let w = Window.allOrdered.find(wnd => wnd.base === windowBody) as Window;
+				assert(w, "Wrong window to bring forward.");
 				Window.allOrdered.splice(Window.allOrdered.indexOf(w), 1);
 				Window.allOrdered.unshift(w);
 
@@ -487,7 +489,7 @@ const addNeighborDraggersAsActive = (thisBounds: DOMRect, ev: DragEvent, dragger
 			}
 		}
 	}
-}
+};
 
 
 class CornerDragger extends Component<CornerDraggerProps> {

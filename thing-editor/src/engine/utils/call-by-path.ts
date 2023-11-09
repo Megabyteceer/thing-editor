@@ -74,10 +74,20 @@ const stringToCallData = (s: string): CallBackParsedData => {
 	return data;
 };
 
-const numChecker = /^\-?[\.0-9]+$/;
 const turnInToNumberIfNumeric = (s: string) => {
-	if(s.match(numChecker)) {
-		return parseFloat(s);
+	let ret = parseFloat(s);
+	if(!isNaN(ret)) {
+		return ret;
+	}
+
+	ret = parseInt(s);
+	if(!isNaN(ret)) {
+		return ret;
+	}
+	if(s === 'true') {
+		return true;
+	} else if(s === 'false') {
+		return false;
 	}
 	return s;
 };
