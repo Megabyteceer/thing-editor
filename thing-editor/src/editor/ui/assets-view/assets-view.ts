@@ -87,7 +87,7 @@ const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 	const i = menu.lastIndexOf(null);
 	if(file.lib) {
 		menu.splice(i + 1, 0, {
-			name: 'copy asset to the project',
+			name: 'Override asset in project',
 			onClick: () => {
 				fs.copyAssetToProject(file);
 			}
