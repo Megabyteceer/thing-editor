@@ -70,7 +70,7 @@ export default class PrefabEditor {
 		}
 		exitIsolation();
 		PrefabEditor.hidePreview();
-		const prefabSettings = game.editor.settings.getItem('prefab-settings' + object.name, { bg: 120 });
+		const prefabSettings = game.editor.settings.getItem('prefab-settings' + object.name, { bg: 0 });
 		PrefabEditor.BGColor = prefabSettings.bg;
 		game.stage.scale.x = game.stage.scale.y = prefabSettings.s || 1;
 		game.stage.x = prefabSettings.x || (-object.x + game.W / 2);
