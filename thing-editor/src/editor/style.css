@@ -285,6 +285,8 @@ hr {
 }
 
 textarea {
+	padding: 2px 10px;
+	border-radius: 10px;
 	min-height: 25px;
 }
 
@@ -409,6 +411,8 @@ textarea:focus-visible {
 }
 
 input {
+	padding: 3px 10px;
+	border-radius: 15px;
 	box-sizing: border-box;
 }
 
@@ -467,6 +471,10 @@ input {
 .props-field,
 .props-field input {
 	font-family: Consolas, "Courier New", monospace;
+}
+
+.props-group .props-group {
+	margin-left: 12px;
 }
 
 .props-group {
@@ -751,7 +759,7 @@ input {
 	display: inline-block;
 	line-height: 0.7;
 	height: 11px;
-	right: -6px;
+	right: 0;
 	cursor: pointer;
 	font-size: 90%;
 	color: #444444;
@@ -806,6 +814,7 @@ input[disabled] {
 }
 
 .select-editor {
+	border-radius: 15px;
 	background-color: #181818;
 }
 
@@ -844,7 +853,6 @@ input[disabled] {
 
 .assets-view .props-group-body {
 	padding-top: 4px;
-	padding-left: 15px;
 }
 
 .assets-view {
@@ -856,9 +864,11 @@ input[disabled] {
 }
 
 .assets-item {
+	border-radius: 30px;
 	position: relative;
 	white-space: nowrap;
 	padding: 4px 2px;
+	padding-left: 15px;
 	cursor: pointer;
 }
 
@@ -932,8 +942,13 @@ input[disabled] {
 }
 
 .asset-item-tool-buttons {
+	display: none;
 	position: absolute;
 	right: 5px;
+}
+
+.assets-item:hover .asset-item-tool-buttons {
+	display: inline-block;
 }
 
 .assets-item-current {
@@ -944,7 +959,6 @@ input[disabled] {
 
 .assets-item-prefab {
 	border-left: 3px dotted #676d12;
-	padding: 0;
 }
 
 .props-header {
@@ -1347,6 +1361,7 @@ input[disabled] {
     font-size: 84%;
 }
 .sound-vol-bar {
+	left: 0;
 	height: 18px;
 	background: rgb(35, 185, 35);
 	display: inline-block;

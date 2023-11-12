@@ -149,7 +149,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 		return R.fragment(
 			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
 			profilerBody
-		)
+		);
 	}
 
 
