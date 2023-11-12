@@ -4,6 +4,7 @@ import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/time
 import FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
 import TimelineLabelView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view";
 import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
+import StatusBar from "thing-editor/src/editor/ui/status-bar";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
@@ -110,6 +111,12 @@ export default class ObjectsTimelineView extends Component<ObjectsTimelineViewPr
 				}
 			},
 			style: { width },
+			onMouseOver: () => {
+				StatusBar.addStatus('Right click to add time label. Ctrl + click to set preview frame', 'timeline-header', 1);
+			},
+			onMOuseOut: () => {
+				StatusBar.removeStatus('timeline-header');
+			},
 			title: tl && 'Right click to add time label\nCtrl + click to set preview frame',
 			className: 'timeline-labels-panel'
 		}, previewMarker, labelsNames

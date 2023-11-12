@@ -752,6 +752,16 @@ class Editor {
 		return null;
 	}
 
+	/** @deprecated use 'editorEvents.on' global object instead.*/
+	on() {
+		assert(false, "use 'editorEvents.on' global object instead");
+	}
+
+	/** @deprecated use 'editorEvents.on' global object instead.*/
+	addEventListener() {
+		assert(false, "use 'editorEvents.on' global object instead");
+	}
+
 	async reloadAssetsAndClasses(refresh = false) {
 		if(refresh) {
 			fs.refreshAssetsList(this.assetsFolders);
