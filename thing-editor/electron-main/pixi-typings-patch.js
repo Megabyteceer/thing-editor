@@ -107,7 +107,7 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     static __EDITOR_tip?: string;
     static __isScene: boolean;
     static __sourceCode: string[];
-    static __canAcceptParent?: (o: Container) => boolean;
+    static __canAcceptParent?: (parent: Container) => boolean;
     static __canAcceptChild?: (Class: SourceMappedConstructor) => boolean;
     static __beforeChangeToThisType?: (o: Container) => void;
     static __validateObjectData?: (data: KeyedObject) => SerializedDataValidationError;
