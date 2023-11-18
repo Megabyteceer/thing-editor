@@ -45,6 +45,13 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 	const field: EditablePropertyDesc = fieldEditor.props.field;
 	const defaultValue: any = fieldEditor.props.defaultValue;
 
+	let clickedArrayItemIndex = -1;
+
+	if(field.arrayProperty) {
+		const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
+		clickedArrayItemIndex = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
+	}
+
 	showContextMenu([
 		{
 			name: R.fragment(R.icon('copy'), "Copy value"),
@@ -73,13 +80,11 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 						a = a.map(v => parseFloat(v) || 0) as any;
 					}
 					if(field.arrayProperty) {
-						const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
-						let i = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
-						if(i < 0) {
+						if(clickedArrayItemIndex < 0) {
 							val = a;
 						} else {
 							val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
-							val[i] = a[0];
+							val[clickedArrayItemIndex] = a[0];
 						}
 					} else {
 						val = a[0];
@@ -98,6 +103,48 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			onClick: () => { game.editor.ui.modal.showInfo(R.fragment(R.b(null, field.name), R.br(), game.editor.ui.propsEditor.disableReasons[field.name]), "Property is disabled."); },
 			disabled: () => !game.editor.ui.propsEditor.disableReasons[field.name]
 		},
+		(clickedArrayItemIndex >= 0) ? {
+			name: "➦ Insert item upper",
+			onClick: () => {
+				const val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
+				val.splice(clickedArrayItemIndex, 0, field.defaultArrayItemValue || PropsEditor.getDefaultForType(field));
+				game.editor.editProperty(field, val);
+			}
+
+		} : null,
+		(clickedArrayItemIndex >= 0) ? {
+			name: "➥ Insert item lower",
+			onClick: () => {
+				const val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
+				val.splice(clickedArrayItemIndex + 1, 0, field.defaultArrayItemValue || PropsEditor.getDefaultForType(field));
+				game.editor.editProperty(field, val);
+			}
+
+		} : null,
+		(clickedArrayItemIndex > 0) ? {
+			name: "↑ Move item up",
+			onClick: () => {
+				const val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
+				let item = val[clickedArrayItemIndex];
+				val.splice(clickedArrayItemIndex, 1);
+				val.splice(clickedArrayItemIndex - 1, 0, item);
+				game.editor.editProperty(field, val);
+			}
+
+		} : null,
+		(clickedArrayItemIndex >= 0) ? {
+			name: "↓ Move item down",
+			onClick: () => {
+				const val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
+				if(clickedArrayItemIndex < (val.length - 1)) {
+					let item = val[clickedArrayItemIndex];
+					val.splice(clickedArrayItemIndex, 1);
+					val.splice(clickedArrayItemIndex + 1, 0, item);
+					game.editor.editProperty(field, val);
+				}
+			}
+
+		} : null,
 		null,
 		{
 			name: "Go to definition >>",
