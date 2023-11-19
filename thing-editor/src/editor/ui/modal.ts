@@ -12,10 +12,10 @@ import game from "thing-editor/src/engine/game";
 let modal: Modal;
 
 interface ModalEntry {
-	content: ComponentChild
-	title: ComponentChild
-	noEasyClose: boolean
-	resolve: (res: unknown) => void
+	content: ComponentChild;
+	title: ComponentChild;
+	noEasyClose: boolean;
+	resolve: (res: unknown) => void;
 }
 
 const questionFooterProps = { className: 'modal-footer' };
@@ -82,7 +82,7 @@ let renderSpinner = () => {
 
 
 interface ModalState {
-	modals: ModalEntry[]
+	modals: ModalEntry[];
 }
 
 class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
