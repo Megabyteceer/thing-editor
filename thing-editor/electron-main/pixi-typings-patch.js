@@ -68,7 +68,7 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     __nodeExtendData: NodeExtendData;
 
     /** prevent object to be selected by viewport click. Editor only filed. */
-    __lockSelection: boolean;
+    __doNotSelectByClick: boolean;
 
     /**hide children in editor TreeView window */
     __hideChildren?: boolean;

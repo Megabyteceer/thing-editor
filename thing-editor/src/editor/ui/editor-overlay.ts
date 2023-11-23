@@ -165,7 +165,7 @@ function moveSelectionToPoint(dX: number, dY: number, withoutChildren = false) {
 }
 
 function isObjectUnderMouse(o: Container) {
-	return ((o as Sprite).containsPoint && (!o.__lockSelection) && o.worldVisible && o.worldAlpha && (o as Sprite).containsPoint(game.__mouse_EDITOR));
+	return ((o as Sprite).containsPoint && (!o.__doNotSelectByClick) && o.worldVisible && o.worldAlpha && (o as Sprite).containsPoint(game.__mouse_EDITOR));
 }
 
 let previousAllUnderMouse: Container[];
@@ -192,7 +192,7 @@ function selectByStageClick(ev: MouseEvent) {
 						allUnderMouse.push(o);
 						break;
 					}
-					if(p.__lockSelection) {
+					if(p.__doNotSelectByClick) {
 						break;
 					}
 					p = p.parent;

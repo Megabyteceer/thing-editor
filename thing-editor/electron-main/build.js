@@ -89,7 +89,7 @@ module.exports = {
 			});
 		});
 	}
-}
+};
 
 if(require.main === module) {
 	module.exports.build('games/game1/', true, [

@@ -150,7 +150,7 @@ export default class ___GizmoArrow extends Shape {
 		if(!this.interactive) {
 			this.interactive = !game.mouse.click;
 		}
-		if(___GizmoArrow.overedArrow === this && this.worldAlpha < 0.8) {
+		if(___GizmoArrow.overedArrow === this && ((this.worldAlpha < 0.8) || !this.worldVisible)) {
 			this.onPointerOut();
 		}
 	}
