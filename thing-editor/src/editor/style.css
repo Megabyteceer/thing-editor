@@ -987,6 +987,10 @@ input[disabled] {
 	display: flex;
 }
 
+.change-prefab-button .empty-lib-holder {
+	display: none;
+}
+
 .prefab-change-caret {
 	vertical-align: text-top;
 	font-size: 130%;
@@ -1149,6 +1153,7 @@ input[disabled] {
 }
 
 .choose-asset-button {
+	overflow: hidden;
 	flex-grow: 1;
 	padding: 5px;
 }
