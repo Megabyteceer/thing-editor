@@ -280,6 +280,13 @@ class Game {
 		TextureGCSystem.defaultMode = GC_MODES.MANUAL;
 
 		this.projectDesc = projectDescriptor;
+		/// #if EDITOR
+		/*
+		/// #endif
+		if(game.projectDesc.defaultFont) {
+			document.body.style.fontFamily = game.projectDesc.defaultFont;
+		}
+		//*/
 	}
 
 	onResize() {
@@ -1091,9 +1098,7 @@ class Game {
 				margin: 20vh 0;
 				width: 100%;
 				background: #000000;
-				text-align: center;
-				color: #ffffff;
-				font-family: ` + game.projectDesc.defaultFont + `;">
+				text-align: center;">
 			<div class="loading-error-game-title">` + game.projectDesc.title + `</div>
 			<div class="loading-error-title" style="
 				margin: 2vh;

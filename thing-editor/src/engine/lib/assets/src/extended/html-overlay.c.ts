@@ -52,7 +52,7 @@ export default class HTMLOverlay extends ScrollLayer {
 	className = '';
 
 	@editable({ min: 0.0001, max: 1, step: 0.0001 })
-	fadeSpeed = 0.1;
+	fadeSpeed = 0.2;
 
 	@editable({ name: 'bouncingBounds', override: true, type: 'boolean', default: false, visible: () => false })
 
@@ -205,8 +205,7 @@ export default class HTMLOverlay extends ScrollLayer {
 
 	_applyClassName() {
 		if(this._htmlDiv) {
-			this._htmlDiv.className = this.className + (game.isPortrait ? " portrait-" : " landscape-") + this.className;
+			this._htmlDiv.className = this._htmlDiv.className ? (this.className + (game.isPortrait ? " portrait-" : " landscape-") + this.className) : '';
 		}
 	}
-
 }
