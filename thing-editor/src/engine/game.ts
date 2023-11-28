@@ -21,6 +21,8 @@ import Sound from "thing-editor/src/engine/utils/sound";
 import sureQuestionInit from "thing-editor/src/engine/utils/sure-question";
 import WebFont from "webfontloader";
 
+import ERROR_HTML from './utils/html-error.html?raw';
+
 let app: Application;
 let stage: Container;
 let modals: Container[] = [];
@@ -1082,31 +1084,8 @@ class Game {
 		/// #endif
 
 		let e = document.createElement('div');// eslint-disable-line no-unreachable
-		e.innerHTML = `
-	
-	<div class="loading-error-wrapper" style="
-				position:absolute;
-				z-index: 2;
-				width:100%;
-				height:100%;
-				left:0;
-				top:0;
-				background:rgba(0,0,0,0.7)">
-		<div class="loading-error-body" style="
-				padding: 5vh;
-				box-sizing: border-box;
-				margin: 20vh 0;
-				width: 100%;
-				background: #000000;
-				text-align: center;">
-			<div class="loading-error-game-title">` + game.projectDesc.title + `</div>
-			<div class="loading-error-title" style="
-				margin: 2vh;
-				font-size:200%;">
-				LOADING ERROR</div>
-			<div class="loading-error-message">(click to reload)</div>
-		</div>
-	</div>`;
+
+		e.innerHTML = ERROR_HTML.replace('$TITLE$', game.projectDesc.title);
 		document.body.appendChild(e);
 		document.addEventListener('click', () => {
 			game._reloadGame();

@@ -25,7 +25,7 @@ function setObjectHeight(node: DisplayObject, height: number) {
 const TIP = `Contains string path to javascript variable to get value from.
 As example path can be: <b>game.stage.height</b> or <b>this.parent.name</b>.
 Supports <b>game</b>, <b>this</b> or Component's class name as root object.
-Use '#' to acess to child scene nodes by name: <b>game.currentScene.#myChildElementsName.x</b>.`;
+Use '#' to access to child scene nodes by name: <b>game.currentScene.#myChildElementsName.x</b>.`;
 
 export default class ProgressBar extends Container {
 
