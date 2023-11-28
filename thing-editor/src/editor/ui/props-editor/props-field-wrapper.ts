@@ -217,13 +217,15 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 				val = Math.min(field.max!, val);
 			}
 		}
-		if(isDelta) {
-			this.props.onChange(field, deltaVal, true);
-		} else {
-			this.props.onChange(field, val);
-		}
+		if((this.state as any).value !== val) {
+			if(isDelta) {
+				this.props.onChange(field, deltaVal, true);
+			} else {
+				this.props.onChange(field, val);
+			}
 
-		this.setState({ value: val });
+			this.setState({ value: val });
+		}
 	}
 
 	onAutoSelect(selectPath: string[]) {
