@@ -388,6 +388,7 @@ textarea:focus-visible {
 }
 
 .choosing-item {
+	white-space: nowrap;
 	padding: 4px;
 	border-bottom: 1px solid #636363;
 	position: relative;
