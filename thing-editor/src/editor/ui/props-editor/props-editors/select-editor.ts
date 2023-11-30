@@ -36,6 +36,8 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 	checkForNeedClearFilter = true;
 	selectedItem?: SelectEditorItem;
 
+	focusFilter = false;
+
 	constructor(props: SelectEditorProps) {
 		super(props);
 		if(this.props.field) {
@@ -82,6 +84,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 	onToggle() {
 		if(!this.state.toggled && !this.props.disabled) {
+			this.focusFilter = true;
 			this.setState({
 				toggled: true,
 				filter: game.editor.settings.getItem(this.filterName, '')
@@ -144,6 +147,17 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 		}
 
 		if(this.state.toggled) {
+			if(this.focusFilter) {
+				setTimeout(() => {
+					let input = document.querySelector('#select-lists-root .select-editor-filter') as HTMLInputElement;
+					if(input) {
+						try {
+							input.focus();
+							input.setSelectionRange(0, input.value.length);
+						} catch(er) { } // eslint-disable-line no-empty
+					}
+				}, 10);
+			}
 			let a = list;
 			if(this.props.field) {
 				if(this.state.filter) {
@@ -199,6 +213,8 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 				}, filterInput, a.map(this.renderItem)), document.getElementById('select-lists-root') as HTMLElement);
 			}, 0);
 		}
+
+		this.focusFilter = false;
 
 		if(!item) {
 			item = list[0];
