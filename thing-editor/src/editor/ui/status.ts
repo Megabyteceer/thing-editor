@@ -22,6 +22,7 @@ interface StatusListItem {
 	owner?: StatusListItemOwner;
 	ownerId?: number;
 	fieldName?: string;
+	fieldArrayItemNumber: number;
 	errorCode?: number;
 	val?: any;
 }
@@ -99,17 +100,18 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 		this.warnsList = ref as InfoList;
 	}
 
-	error(message: string, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string) {
+	error(message: string, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, fieldArrayItemNumber = -1) {
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.error(errorCode + ': ' + message + getErrorDetailsUrl(errorCode));
-		let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode };
+		let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode, fieldArrayItemNumber };
 		if(owner && fieldName) {
 			item.val = (owner as KeyedObject)[fieldName];
 		}
+
 		if(needAddInToList(this.errorsMap, owner, fieldName, errorCode)) {
 			this.errors.push(item);
 			if(this.errorsList) {
@@ -122,17 +124,18 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 		shakeDomElement(document.querySelector('#window-info') as HTMLElement);
 	}
 
-	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false) {
+	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false, fieldArrayItemNumber = -1) {
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message + getErrorDetailsUrl(errorCode));
 		if(doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
-			let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode };
+			let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode, fieldArrayItemNumber };
 			if(owner && fieldName) {
 				item.val = (owner as KeyedObject)[fieldName];
 			}
+
 			this.warns.push(item);
 			if(this.errorsList) {
 				this.warnsList.forceUpdate();
@@ -251,7 +254,7 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 							return;
 						}
 					}
-					game.editor.ui.sceneTree.selectInTree(item.owner, false, item.fieldName);
+					game.editor.ui.sceneTree.selectInTree(item.owner, false, item.fieldName, item.fieldArrayItemNumber);
 					shakeDomElement(document.querySelector('#sceneTree .item-selected') as HTMLElement);
 				}
 			}

@@ -193,7 +193,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 		});
 	}
 
-	selectField(fieldName: string, focus = false, selectAll = false) {
+	selectField(fieldName: string, focus = false, selectAll = false, fieldArrayItemNumber = -1) {
 		let a = fieldName.split(',');
 
 
@@ -206,7 +206,11 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				}
 			});
 
-			let fldInput = document.querySelector(".props-editor #property-editor-" + fn.replace('.', '_')) as HTMLInputElement;
+			let fldInput: HTMLInputElement = document.querySelector(".props-editor #property-editor-" + fn.replace('.', '_')) as HTMLInputElement;
+			if(fieldArrayItemNumber >= 0) {
+				fldInput = fldInput.querySelectorAll('.array-prop-item')[fieldArrayItemNumber] as HTMLInputElement;
+			}
+
 			if(!fldInput) {
 				try {
 					fldInput = document.querySelector(fieldName) as HTMLInputElement;

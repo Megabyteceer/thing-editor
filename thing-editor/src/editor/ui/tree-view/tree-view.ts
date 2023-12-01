@@ -287,13 +287,13 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 		return treeItem;
 	}
 
-	selectInTree(node: Container, add = false, fieldName?: string) {
+	selectInTree(node: Container, add = false, fieldName?: string, fieldArrayItemNumber = -1) {
 		assert(node, "Attempt to select in tree empty node");
 		game.editor.selection.select(node, add);
 		setTimeout(() => {
 
 			if(fieldName && !add) {
-				game.editor.ui.propsEditor.selectField(fieldName);
+				game.editor.ui.propsEditor.selectField(fieldName, false, false, fieldArrayItemNumber);
 			}
 
 			let e = document.querySelector('.scene-tree-view .item-selected') as HTMLElement;

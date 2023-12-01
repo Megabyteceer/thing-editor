@@ -284,16 +284,16 @@ function _rememberPathReference(o: Container) {
 
 const validateRefEntry = (m: KeyedMap<ReferencesData>, o: Container) => {
 	if(o.parent) {
-		for(let fieldname in m) {
+		for(let fieldName in m) {
 
-			let item = m[fieldname];
+			let item = m[fieldName];
 			let path = item.path;
 			let oldRefs = item.targetNodes;
 			let currentRefs = getLatestSceneNodesByComplexPath(path, o);
 
 			for(let i = 0; i < oldRefs.length; i++) {
 				if(oldRefs[i] !== currentRefs[i]) {
-					if(!tryToFixDataPath(o, fieldname, path, oldRefs, currentRefs)) {
+					if(!tryToFixDataPath(o, fieldName, path, oldRefs, currentRefs)) {
 
 						let oldRef = oldRefs[i];
 						let currentRef = currentRefs[i];
@@ -314,11 +314,18 @@ const validateRefEntry = (m: KeyedMap<ReferencesData>, o: Container) => {
 						let pathParts = path.split(/[,|`]/);
 						let splitter = '`';
 
+						let itemIndex = -1;
+						if(fieldName.includes(ARRAY_ITEM_SPLITTER)) {
+							const a = fieldName.split(ARRAY_ITEM_SPLITTER);
+							fieldName = a[0];
+							itemIndex = parseInt(a[1]);
+						}
+
 						game.editor.ui.status.warn(R.span(null, 'Path reference (', pathParts.map((pathPart: string, partNum: number) => {
 							let ret = ((oldRefs[partNum] !== currentRefs[partNum]) ? R.b : R.span)({ key: partNum }, pathPart, partNum < (pathParts.length - 1) ? splitter : undefined);
 							splitter = ',';
 							return ret;
-						}), ') is affected:', R.br(), ' Was: ', was, R.br(), ' Become: ', become), 32016, o, fieldname);
+						}), ') is affected:', R.br(), ' Was: ', was, R.br(), ' Become: ', become), 32016, o, fieldName, false, itemIndex);
 					}
 				}
 			}
