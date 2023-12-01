@@ -53,6 +53,7 @@ const parseLibName = (name: string): LibInfo => {
 		dir = 'libs/' + name;
 	}
 	return {
+		libNum: 0,
 		name,
 		dir,
 		assetsDir: dir + '/assets/'
@@ -319,6 +320,7 @@ class Editor {
 			this.currentProjectLibs = projectDesc.libs.map(parseLibName);
 			this.currentProjectLibs.unshift({
 				name: 'thing-editor-embed',
+				libNum: 0,
 				dir: 'thing-editor/src/engine/lib',
 				assetsDir: 'thing-editor/src/engine/lib/assets/',
 				isEmbed: true
@@ -327,8 +329,9 @@ class Editor {
 
 			const schemas: any[] = [];
 
-
+			let libNum = 0;
 			for(let lib of this.currentProjectLibs) {
+				lib.libNum = libNum++;
 				this.assetsFolders.push(lib.assetsDir);
 				const libFileName = lib.dir + '/thing-lib.json';
 				try {

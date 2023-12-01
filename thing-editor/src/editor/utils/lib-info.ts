@@ -2,14 +2,13 @@ import { ComponentChild, ComponentChildren } from "preact";
 import { FileDesc, LibInfo } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 
-let libInfoCounter = 0;
 const libIconCache: Map<LibInfo, ComponentChild> = new Map();
 
 const LIB_HOLDER = R.span({ className: 'empty-lib-holder' });
 
 const libIcon = (libInfo: LibInfo): ComponentChildren => {
 	if(!libIconCache.has(libInfo)) {
-		libIconCache.set(libInfo, R.icon('lib' + (libInfoCounter++ % 5)));
+		libIconCache.set(libInfo, R.icon('lib' + (libInfo.libNum % 5)));
 	}
 	return libIconCache.get(libInfo);
 };

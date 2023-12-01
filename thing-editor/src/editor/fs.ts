@@ -12,6 +12,7 @@ import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 interface LibInfo {
 	name: string,
 	dir: string,
+	libNum: number,
 	assetsDir: string,
 	isEmbed?: boolean;
 }
