@@ -21,8 +21,12 @@ export default class ___Gizmo extends Container {
 
 	update(): void {
 		super.update();
+		if(!game.mouse.click) {
+			this.interactiveChildren = true;
+		}
 		let selected = game.editor.selection[0];
 		if(selected !== lastSelected) {
+			this.interactiveChildren = false;
 			const a = this.findChildrenByType(___GizmoArrow);
 			for(const g of a) {
 				g.onSelectionChange();
