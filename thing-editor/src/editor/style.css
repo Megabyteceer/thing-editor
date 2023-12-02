@@ -1343,7 +1343,7 @@ input[disabled] {
 	display: grid;
 	margin: 2px 0;
 	align-content: center;
-	grid-template-columns: 100px 100px 100px;
+	grid-template-columns: 30% 30% 40%;
 }
 
 .music-profiler-row-text {
