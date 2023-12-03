@@ -1325,31 +1325,27 @@ input[disabled] {
 }
 
 .drag-target-bottom {
-	background:
-		linear-gradient(90deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
-		linear-gradient(0deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px);
+	background: linear-gradient(0deg, rgba(221, 26, 26, 1) 1px, rgba(221, 26, 26, 0.4) 1px, rgba(221, 26, 26, 0) 10px);
 }
 
 .drag-target-top {
-	background:
-		linear-gradient(90deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
-		linear-gradient(180deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px);
+	background: linear-gradient(180deg, rgba(221, 26, 26, 1) 1px, rgba(221, 26, 26, 0.4) 1px, rgba(221, 26, 26, 0) 20px);
 }
 
 .drag-target-mid {
 	background:
-		linear-gradient(90deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
-		linear-gradient(180deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
-		linear-gradient(270deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
-		linear-gradient(0deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px);
+		linear-gradient(90deg, rgba(221, 26, 26, 1) 1px, rgba(221, 26, 26, 0.4) 1px, rgba(221, 26, 26, 0) 10px),
+		linear-gradient(180deg, rgba(221, 26, 26, 1) 1px, rgba(221, 26, 26, 0.4) 1px, rgba(221, 26, 26, 0) 10px),
+		linear-gradient(270deg, rgba(221, 26, 26, 1) 1px, rgba(221, 26, 26, 0.4) 1px, rgba(221, 26, 26, 0) 10px),
+		linear-gradient(0deg, rgba(221, 26, 26, 1) 1px, rgba(221, 26, 26, 0.4) 1px, rgba(221, 26, 26, 0) 10px);
 }
 
 .drag-target-wrap {
 	background:
-		linear-gradient(90deg, #17d430 1px, rgba(0, 0, 0, 0) 1px),
-		linear-gradient(180deg, #17d430 1px, rgba(0, 0, 0, 0) 1px),
-		linear-gradient(270deg, #17d430 1px, rgba(0, 0, 0, 0) 1px),
-		linear-gradient(0deg, #17d430 1px, rgba(0, 0, 0, 0) 1px);
+		linear-gradient(90deg, rgba(23, 211, 48, 1) 1px, rgba(23, 211, 48, 0.4) 1px, rgba(23, 211, 48, 0) 10px),
+		linear-gradient(180deg, rgba(23, 211, 48, 1) 1px, rgba(23, 211, 48, 0.4) 1px, rgba(23, 211, 48, 0) 10px),
+		linear-gradient(270deg, rgba(23, 211, 48, 1) 1px, rgba(23, 211, 48, 0.4) 1px, rgba(23, 211, 48, 0) 10px),
+		linear-gradient(0deg, rgba(23, 211, 48, 1) 1px, rgba(23, 211, 48, 0.4) 1px, rgba(23, 211, 48, 0) 10px);
 }
 
 .rect-editor-group {
