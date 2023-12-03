@@ -293,7 +293,7 @@
 
 .select-item,
 .select-editor-current {
-	padding: 3px;
+	padding: 3px 10px;
 	line-height: 19px;
 }
 

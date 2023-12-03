@@ -838,7 +838,14 @@ input[disabled] {
 }
 
 .selected-item {
+	pointer-events: none;
+	border-radius: 20px;
 	background: #4e4e4e;
+}
+
+.select-item:hover {
+	border-radius: 20px;
+	background: #333333;
 }
 
 .danger {
