@@ -177,7 +177,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 								this.refresh();
 								dragTargetExpandTimeOut = 0;
 								dragTargetExpandTimeOutTarget = null;
-							}, 600);
+							}, 400);
 						}
 					} else {
 						clearDragExpandTimeOut();

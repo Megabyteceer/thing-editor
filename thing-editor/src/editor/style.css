@@ -46,8 +46,8 @@ img {
 
 button {
 	border-radius: 300px;
-    border: none;
-    background-color: #1d1e1f;
+	border: none;
+	background-color: #1d1e1f;
 	color: #bdc3d3;
 	padding: 10px 20px;
 }
@@ -281,7 +281,7 @@ hr {
 }
 
 ::-webkit-scrollbar-corner {
-    background: transparent;
+	background: transparent;
 }
 
 textarea {
@@ -1319,33 +1319,43 @@ input[disabled] {
 }
 
 .drag-target-bottom {
-	border-bottom: 1px solid #dd1a1a;
-	border-left: 1px solid #dd1a1a;
+	background:
+		linear-gradient(90deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
+		linear-gradient(0deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px);
 }
 
 .drag-target-top {
-	border-top: 1px solid #dd1a1a;
-	border-left: 1px solid #dd1a1a;
+	background:
+		linear-gradient(90deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
+		linear-gradient(180deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px);
 }
 
 .drag-target-mid {
-	border: 1px solid #dd1a1a;
+	background:
+		linear-gradient(90deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
+		linear-gradient(180deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
+		linear-gradient(270deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px),
+		linear-gradient(0deg, #dd1a1a 1px, rgba(0, 0, 0, 0) 1px);
 }
 
 .drag-target-wrap {
-	border: 1px solid #17d430;
+	background:
+		linear-gradient(90deg, #17d430 1px, rgba(0, 0, 0, 0) 1px),
+		linear-gradient(180deg, #17d430 1px, rgba(0, 0, 0, 0) 1px),
+		linear-gradient(270deg, #17d430 1px, rgba(0, 0, 0, 0) 1px),
+		linear-gradient(0deg, #17d430 1px, rgba(0, 0, 0, 0) 1px);
 }
 
 .rect-editor-group {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 
 .music-profiler-row {
 	border: #ddd solid 1px;
-    border-radius: 12px;
-    padding: 0 4px;
+	border-radius: 12px;
+	padding: 0 4px;
 	height: 24px;
 	display: grid;
 	margin: 2px 0;
@@ -1355,9 +1365,9 @@ input[disabled] {
 
 .music-profiler-row-text {
 	padding: 0 8px;
-	overflow:hidden;
+	overflow: hidden;
 	white-space: nowrap;
-	text-overflow:ellipsis;
+	text-overflow: ellipsis;
 	height: 20px;
 }
 
@@ -1370,9 +1380,10 @@ input[disabled] {
 	position: relative;
 	overflow: hidden;
 	text-align: center;
-    color: #7e998e;
-    font-size: 84%;
+	color: #7e998e;
+	font-size: 84%;
 }
+
 .sound-vol-bar {
 	left: 0;
 	height: 18px;
@@ -1389,15 +1400,16 @@ input[disabled] {
 	position: relative;
 	height: 80px;
 }
+
 .sound-profiler-sound-entry {
 	opacity: 0.6;
 	padding: 0 5px;
-    font-size: 90%;
+	font-size: 90%;
 	border-radius: 3px;
 	border: #ffffff solid 1px;
 	position: absolute;
-	overflow:hidden;
-	text-overflow:ellipsis;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	height: 20px;
 }
 
