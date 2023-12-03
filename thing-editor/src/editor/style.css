@@ -424,7 +424,7 @@ input {
 .modal-content input {
 	font-size: 130%;
 	width: 100%;
-	padding: 5px;
+	padding: 5px 13px;
 }
 
 .modal-reject-text {
@@ -475,12 +475,12 @@ input {
 }
 
 .props-group .props-group {
-	margin-left: 12px;
+	margin: 2px;
 }
 
 .props-group {
 	margin-bottom: 3px;
-	border-radius: 4px;
+	border-radius: 13.5px;
 	border: 1px solid var(--window-header-color);
 	overflow: hidden;
 }
@@ -823,10 +823,6 @@ input[disabled] {
 	margin-bottom: 20px;
 }
 
-.projects-list .props-group {
-	padding: 5px;
-}
-
 .select-editor-list {
 	position: fixed;
 	z-index: 30;
@@ -860,7 +856,7 @@ input[disabled] {
 }
 
 .assets-view .props-group-body {
-	padding-top: 4px;
+	padding-top: 2px;
 }
 
 .assets-view {
@@ -869,6 +865,7 @@ input[disabled] {
 
 .lib-info:hover {
 	outline: 1px solid #0eca75;
+	border-radius: 10px;
 }
 
 .assets-item {
@@ -1115,17 +1112,25 @@ input[disabled] {
 	margin-right: 10px;
 }
 
+.small-text {
+	font-size: 70%;
+}
+
 .project-item-select {
-	padding: 10px;
+	padding: 10px 20px;
 	margin: 5px;
-	border: 1px solid #41464b;
-	border-radius: 10px;
-	color: #476582;
+	border-radius: 100px;
+	background: #1a1a1a;
+	color: #85909b;
 	font-size: 120%;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	white-space: nowrap;
+}
+
+.project-item-select:hover {
+	background: #151515;
 }
 
 .project-item-title {
@@ -1134,6 +1139,7 @@ input[disabled] {
 }
 
 .project-item-select img {
+	height: 40px;
 	max-height: 40px;
 	max-width: 50%;
 }
