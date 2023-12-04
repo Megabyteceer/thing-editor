@@ -15,6 +15,9 @@ const allActiveMusics: BgMusic[] = [];
 
 let musicRecalculationIsScheduled = false;
 
+let sideChainLevel = 1;
+let sideChainTimeOut = 0;
+
 export default class BgMusic extends Container {
 
 	_externalVolume = 0;
@@ -42,6 +45,26 @@ export default class BgMusic extends Container {
 		BgMusic._recalculateMusic();
 	}
 
+	static sideChainMusic(time = 500, level = 0.5) {
+		if(Sound.soundEnabled) {
+			if(sideChainTimeOut) {
+				clearTimeout(sideChainTimeOut);
+			} else {
+				sideChainLevel = -1;
+			}
+			if(sideChainLevel !== level) {
+				sideChainLevel = level;
+				this._clearCustomFades(0.5);
+				BgMusic._recalculateMusic();
+			}
+			setTimeout(() => {
+				sideChainLevel = 1;
+				sideChainTimeOut = 0;
+				this._clearCustomFades(1);
+				BgMusic._recalculateMusic();
+			}, time);
+		}
+	}
 
 	_intro: string | null = null;
 
@@ -83,7 +106,6 @@ export default class BgMusic extends Container {
 	set isPlaying(v) {
 		if(this._isPlaying !== v) {
 			this._isPlaying = v;
-			this.applyResetPosition();
 			BgMusic._recalculateMusic();
 		}
 	}
@@ -192,7 +214,10 @@ export default class BgMusic extends Container {
 
 	play(fade?: number) {
 		this.customFade = fade;
-		this.isPlaying = true;
+		if(!this.isPlaying) {
+			this.isPlaying = true;
+			this.applyResetPosition();
+		}
 	}
 
 	stop(fade?: number) {
@@ -290,7 +315,7 @@ function recalculateMusic() {
 		return;
 	}
 	let priorities = [];
-	let musicsMap = new Map();
+	let musicsMap: Map<number, BgMusic[]> = new Map();
 
 	let currentFader = game.currentFader;
 
@@ -316,7 +341,7 @@ function recalculateMusic() {
 			priorities.push(priority);
 			musicsMap.set(priority, []);
 		}
-		musicsMap.get(priority).push(m);
+		musicsMap.get(priority)!.push(m);
 	}
 
 	priorities.sort(sortReverted);
@@ -330,14 +355,14 @@ function recalculateMusic() {
 	muteAllNext = muteAllNext || game.__EDITOR_mode;
 	/// #endif
 	for(let priority of priorities) {
-		let a = musicsMap.get(priority);
+		let a = musicsMap.get(priority)!;
 		for(let m of a) {
 			if(muteAllNext) {
 				m._externalVolume = 0;
 			} else if(priority < CURRENT_CONTAINER_MUSIC_PRIORITY) {
-				m._externalVolume = m.volumeUnderModals;
+				m._externalVolume = m.globalVolumePath ? m.volumeUnderModals : (m.volumeUnderModals * sideChainLevel);
 			} else {
-				m._externalVolume = 1;
+				m._externalVolume = m.globalVolumePath ? 1 : sideChainLevel;
 			}
 		}
 		muteAllNext = true;

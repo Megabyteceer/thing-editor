@@ -49,7 +49,7 @@ export default class Sound {
 		v = Math.max(0, Math.min(1, v));
 		if(musicVol !== v) {
 			if(game.classes.BgMusic) {
-				(game.classes.BgMusic as any)._clearCustomFades(0.2);
+				game.classes.BgMusic._clearCustomFades(0.2);
 			}
 		}
 		musicVol = v;
