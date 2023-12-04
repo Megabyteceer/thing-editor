@@ -55,7 +55,7 @@ export default class Sound {
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
 		if(game.classes.BgMusic) {
-			(game.classes.BgMusic as any)._recalculateMusic();
+			game.classes.BgMusic._recalculateMusic();
 		}
 	}
 
@@ -88,7 +88,7 @@ export default class Sound {
 	static set musicEnabled(val) {
 		if(Sound.musicEnabled !== val) {
 			if(game.classes.BgMusic) {
-				(game.classes.BgMusic as any)._clearCustomFades(0.2);
+				game.classes.BgMusic._clearCustomFades(0.2);
 			}
 			if(val) {
 				Sound.musicVol = normalizeVolForEnabling(game.settings.getItem('musicVolEnabling'), game.projectDesc.defaultMusVol);
