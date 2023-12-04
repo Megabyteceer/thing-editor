@@ -15,9 +15,6 @@ const allActiveMusics: BgMusic[] = [];
 
 let musicRecalculationIsScheduled = false;
 
-let sideChainLevel = 1;
-let sideChainTimeOut = 0;
-
 export default class BgMusic extends Container {
 
 	_externalVolume = 0;
@@ -43,27 +40,6 @@ export default class BgMusic extends Container {
 		}
 		this.applyResetPosition();
 		BgMusic._recalculateMusic();
-	}
-
-	static sideChainMusic(time = 500, level = 0.5) {
-		if(Sound.soundEnabled) {
-			if(sideChainTimeOut) {
-				clearTimeout(sideChainTimeOut);
-			} else {
-				sideChainLevel = -1;
-			}
-			if(sideChainLevel !== level) {
-				sideChainLevel = level;
-				this._clearCustomFades(0.5);
-				BgMusic._recalculateMusic();
-			}
-			setTimeout(() => {
-				sideChainLevel = 1;
-				sideChainTimeOut = 0;
-				this._clearCustomFades(1);
-				BgMusic._recalculateMusic();
-			}, time);
-		}
 	}
 
 	_intro: string | null = null;
@@ -360,9 +336,9 @@ function recalculateMusic() {
 			if(muteAllNext) {
 				m._externalVolume = 0;
 			} else if(priority < CURRENT_CONTAINER_MUSIC_PRIORITY) {
-				m._externalVolume = m.globalVolumePath ? m.volumeUnderModals : (m.volumeUnderModals * sideChainLevel);
+				m._externalVolume = m.volumeUnderModals;
 			} else {
-				m._externalVolume = m.globalVolumePath ? 1 : sideChainLevel;
+				m._externalVolume = 1;
 			}
 		}
 		muteAllNext = true;
