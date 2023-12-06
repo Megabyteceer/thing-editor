@@ -14,7 +14,7 @@
 					"thing-project.json",
 					"thing-lib.json"
 				],
-				"url": "./schema-thing-project.json"
+				"url": "./thing-editor/src/editor/schema-thing-project.json"
 			}
 		],
 		"files.exclude": {
@@ -128,7 +128,7 @@
 				"args": [
 					"${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"
 				],
-				"isBackground": true,
+				"isBackground": false,
 				"type": "process",
 				"problemMatcher": [
 					{
