@@ -63,6 +63,7 @@ import type { NodeExtendData } from 'thing-editor/src/editor/env';
     __onSelect(): void;
     __onUnselect?(): void;
     __onChildSelected?(): void;
+    __onIsMobileChange?(): void;
     __isAnyChildSelected(): boolean;
 
     __nodeExtendData: NodeExtendData;
