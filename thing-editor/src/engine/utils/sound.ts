@@ -345,6 +345,17 @@ let musicVol: number;
 // ===== SOUND DEBUG PANEL ======================
 // ==============================================
 
+const defaultSoundsUrls: KeyedMap<string> = {};
+
+function overrideSound(name: string, src?: string) {
+
+	if(!defaultSoundsUrls[name]) {
+		defaultSoundsUrls[name] = (Lib.getSound(name) as any)._src;
+		assert(defaultSoundsUrls[name], "Howler is changed");
+	}
+	Lib.__overrideSound(name, src || defaultSoundsUrls[name]);
+}
+
 interface SoundData {
 	// visible file name which was selected to override sound
 	name: string,
@@ -372,7 +383,13 @@ function highlightPlayedSound(soundId: string) {
 function openIndexedDB(): IDBOpenDBRequest {
 	//@ts-ignore 
 	let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB as IDBFactory;
-	return indexedDB.open("MyDatabase", 1);
+	const openDB = indexedDB.open("DB" + game.projectDesc.id, 1);
+
+	openDB.onupgradeneeded = function () {
+		openDB.result.createObjectStore("MyObjectStore", { keyPath: "id" });
+	};
+
+	return openDB;
 }
 
 function getStoreIndexedDB(openDB: IDBOpenDBRequest) {
@@ -432,6 +449,7 @@ function showSndDebugger() {
 		sndDebugger = document.createElement('div');
 		sndDebugger.style.position = "fixed";
 		sndDebugger.style.right = "0";
+		sndDebugger.style.top = "0";
 		sndDebugger.style.zIndex = "10000";
 		sndDebugger.style.color = "#ffffff";
 		sndDebugger.style.background = "#000000";
@@ -446,7 +464,7 @@ function showSndDebugger() {
 			loadIndexedDB(sndName, (data) => {
 				if(data) {
 					dataStore[sndName] = data;
-					Lib.__overrideSound(sndName, data.data);
+					overrideSound(sndName, data.data);
 					showSndDebugger();
 				}
 			});
@@ -458,7 +476,30 @@ function showSndDebugger() {
 
 	let soundNames: KeyedObject = {};
 
-	let txt = ['<table class="sounds-debug-panel">'];
+	let txt = [`<style>
+	.sounds-debug-panel button,
+	.sounds-debug-panel input[type=file]::file-selector-button,
+	.sounds-debug-panel input
+	{
+		cursor: pointer;
+		padding: 2px 10px;
+		border-radius: 10px;
+		border: none;
+		background: #333333;
+		color: #ffffff;
+	}
+	.sounds-debug-panel tr:hover {
+		background: #111111;
+	}
+
+	.sounds-debug-panel td {
+		padding: 2px 10px;
+	}
+
+	.sounds-debug-panel .snd-clear {
+		background: #990000;
+	}
+	</style><table border="0" cellspacing="0" cellpadding="0" class="sounds-debug-panel">`];
 	let i = 0;
 	let libSounds = Lib.__soundsList;
 	for(let sndName in libSounds) {
@@ -500,7 +541,7 @@ function showSndDebugger() {
 				setTimeout(() => {
 					a.pause();
 				}, 2000);
-				Lib.__overrideSound(sndName, this.result as string);
+				overrideSound(sndName, this.result as string);
 				setOverrideData(
 					sndName,
 					{ name: ev.target.value, data: this.result as string }
@@ -526,8 +567,10 @@ function showSndDebugger() {
 
 	for(let clearBtn of document.querySelectorAll('.snd-clear')) {  // eslint-disable-line no-unreachable
 		clearBtn.addEventListener('click', (ev) => {
-			setOverrideData(sndNameByEvent(ev as InputEvent));
+			const soundName = sndNameByEvent(ev as InputEvent)
+			setOverrideData(soundName);
 			showSndDebugger();
+			overrideSound(soundName);
 		});
 	}
 }
