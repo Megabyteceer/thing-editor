@@ -1195,6 +1195,16 @@ input[disabled] {
 	font-size: 80%;
 	text-align: center;
 	color: #999;
+
+}
+
+.viewport-panel-wrapper .resolution {
+	padding: 5px 0;
+	background-color: #1d1e1f;
+}
+
+.viewport-panel-wrapper .resolution:hover {
+	background-color: #252627;
 }
 
 .isolation-warning {
