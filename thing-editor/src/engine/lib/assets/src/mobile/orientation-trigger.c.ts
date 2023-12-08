@@ -16,6 +16,8 @@ export default class OrientationTrigger extends Container {
 
 	/// #if EDITOR
 
+	_alpha = 1;
+
 	__onPortrait: string | null = null;
 	__onLandscape: string | null = null;
 
@@ -113,7 +115,7 @@ export default class OrientationTrigger extends Container {
 			this.y = this.portraitY;
 			this['scale.x'] = this.portraitScaleX;
 			this['scale.y'] = this.portraitScaleY;
-			super.alpha = this.portraitAlpha;
+			this.alpha = this.portraitAlpha;
 			this.rotation = this.portraitR;
 			this._callHandler(this.onPortrait
 				/// #if EDITOR
@@ -220,7 +222,7 @@ export default class OrientationTrigger extends Container {
 
 	//@ts-ignore
 	set alpha(v) {
-		super.alpha = v;
+		this._alpha = v;
 		if(IGNORE_DIRECT_PROPS) return;
 		if(this.getTriggerConditionState()) {
 			this.portraitAlpha = v;
@@ -230,11 +232,11 @@ export default class OrientationTrigger extends Container {
 	}
 
 	get alpha() {
-		if(IGNORE_DIRECT_PROPS) return super.alpha;
+		if(IGNORE_DIRECT_PROPS) return this._alpha;
 		if(this.getTriggerConditionState()) {
-			return super.alpha = isNaN(this.portraitAlpha) ? 1 : this.portraitAlpha;
+			return this._alpha = isNaN(this.portraitAlpha) ? 1 : this.portraitAlpha;
 		} else {
-			return super.alpha = isNaN(this.landscapeAlpha) ? 1 : this.landscapeAlpha;
+			return this._alpha = isNaN(this.landscapeAlpha) ? 1 : this.landscapeAlpha;
 		}
 	}
 
