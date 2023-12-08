@@ -365,7 +365,6 @@ textarea:focus-visible {
 	cursor: initial;
 	width: min-content;
 	min-width: 500px;
-	user-select: text;
 }
 
 .modal-content {

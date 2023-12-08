@@ -53,8 +53,8 @@
 						{
 							"c": "BackDrop",
 							"p": {
-								"alpha": 0.8,
-								"shapeFillColor": 2
+								"alpha": 0.65,
+								"shapeFillColor": 131597
 							}
 						}
 					]
@@ -129,15 +129,14 @@
 						{
 							"c": "Shape",
 							"p": {
-								"x": -280,
+								"x": -330,
 								"y": -208,
 								"interactive": true,
 								"shape": 1,
-								"width": 560,
+								"width": 660,
 								"height": 317,
-								"shapeFillColor": 2,
-								"shapeLineWidth": 4,
-								"shapeLineAlpha": 0.7
+								"shapeRadius": 282,
+								"shapeFillColor": 2
 							}
 						},
 						{
@@ -174,6 +173,8 @@
 								"y": 60,
 								"scale.x": 0.666666,
 								"scale.y": 0.666666,
+								"hoverImage": "EMPTY",
+								"pressImage": "EMPTY",
 								"sndClick": "click",
 								"sndOver": "over"
 							},
@@ -187,9 +188,36 @@
 										"width": 240,
 										"height": 66,
 										"shapeRadius": 2533,
-										"shapeLineWidth": 5,
-										"shapeLineAlpha": 0.7
+										"shapeFillColor": 2039583
 									}
+								},
+								{
+									"c": "Trigger",
+									"p": {
+										"name": "hover",
+										"dataPath": "this.parent.isOvered",
+										"pow": 1,
+										"damp": 0,
+										"isApplyInteractivity": false,
+										"onEnable": "",
+										"onDisable": ""
+									},
+									":": [
+										{
+											"c": "Shape",
+											"p": {
+												"name": "hover",
+												"x": -120,
+												"y": -33,
+												"alpha": 0.1,
+												"shape": 1,
+												"width": 240,
+												"height": 66,
+												"shapeRadius": 2533,
+												"shapeFillColor": 16776960
+											}
+										}
+									]
 								},
 								{
 									"c": "Text",
@@ -210,6 +238,8 @@
 								"y": 60,
 								"scale.x": 0.666666,
 								"scale.y": 0.666666,
+								"hoverImage": "EMPTY",
+								"pressImage": "EMPTY",
 								"sndClick": "click",
 								"sndOver": "over"
 							},
@@ -223,9 +253,36 @@
 										"width": 240,
 										"height": 66,
 										"shapeRadius": 2533,
-										"shapeLineWidth": 5,
-										"shapeLineAlpha": 0.7
+										"shapeFillColor": 2039583
 									}
+								},
+								{
+									"c": "Trigger",
+									"p": {
+										"name": "hover",
+										"dataPath": "this.parent.isOvered",
+										"pow": 1,
+										"damp": 0,
+										"isApplyInteractivity": false,
+										"onEnable": "",
+										"onDisable": ""
+									},
+									":": [
+										{
+											"c": "Shape",
+											"p": {
+												"name": "hover",
+												"x": -120,
+												"y": -33,
+												"alpha": 0.1,
+												"shape": 1,
+												"width": 240,
+												"height": 66,
+												"shapeRadius": 2533,
+												"shapeFillColor": 16776960
+											}
+										}
+									]
 								},
 								{
 									"c": "Text",
