@@ -74,8 +74,7 @@ class Editor {
 	currentProjectAssetsDir = '';
 	currentProjectAssetsDirRooted = '';
 	assetsFolders!: string[];
-	libsDescs: KeyedMap<ProjectDesc> = {};
-	libsProjectDescMerged!: ProjectDesc;
+	libsDescriptors: KeyedMap<ProjectDesc> = {};
 
 	editorArguments: KeyedMap<true | string> = {};
 	projectDesc!: ProjectDesc;
@@ -314,8 +313,8 @@ class Editor {
 				projectDesc.libs = [];
 			}
 
-			this.libsProjectDescMerged = {} as ProjectDesc;
-			mergeProjectDesc(this.libsProjectDescMerged, defaultProjectDesc);
+			const libsProjectDescMerged = {} as ProjectDesc;
+			mergeProjectDesc(libsProjectDescMerged, defaultProjectDesc);
 
 			this.currentProjectLibs = projectDesc.libs.map(parseLibName);
 			this.currentProjectLibs.unshift({
@@ -335,12 +334,12 @@ class Editor {
 				this.assetsFolders.push(lib.assetsDir);
 				const libFileName = lib.dir + '/thing-lib.json';
 				try {
-					this.libsDescs[lib.name] = fs.readJSONFile(libFileName);
+					this.libsDescriptors[lib.name] = fs.readJSONFile(libFileName);
 				} catch(er: any) {
 					editor.ui.modal.showFatalError('Library loading error. Is "libs" option in "thing-projects.json" correct?', 99999, er.message);
 					return;
 				}
-				mergeProjectDesc(this.libsProjectDescMerged, this.libsDescs[lib.name]);
+				mergeProjectDesc(libsProjectDescMerged, this.libsDescriptors[lib.name]);
 				const libSchema = fs.readJSONFileIfExists(lib.dir + '/schema-thing-project.json');
 				if(libSchema) {
 					schemas.push(libSchema);
@@ -365,7 +364,7 @@ class Editor {
 			this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
 
 			this.projectDesc = {} as ProjectDesc;
-			mergeProjectDesc(this.projectDesc, this.libsProjectDescMerged);
+			mergeProjectDesc(this.projectDesc, libsProjectDescMerged);
 			mergeProjectDesc(this.projectDesc, projectDesc);
 
 			excludeOtherProjects();
@@ -953,34 +952,56 @@ class Editor {
 	}
 
 	protected __saveProjectDescriptorInner() {
-		let descToSave = JSON.parse(JSON.stringify(editor.projectDesc)) as KeyedObject;
 
-		for(let key in this.libsProjectDescMerged) {
-			if(descToSave.hasOwnProperty(key)) {
+		const descriptorsStack = this.currentProjectLibs.filter(lib => !lib.isEmbed).map((lib) => {
+			return {
+				fileName: lib.dir + '/thing-lib.json',
+				desc: this.libsDescriptors[lib.name]
+			}
+		});
+		descriptorsStack.push({
+			fileName: this.currentProjectDir + 'thing-project.json',
+			desc: this.projectDesc
+		});
 
-				let projectValue = descToSave[key];
-				let libsValue = (this.libsProjectDescMerged as KeyedObject)[key];
-				if(JSON.stringify(projectValue) === JSON.stringify(libsValue)) {
-					delete descToSave[key];
-				} else if(isProjectDescValueKeyedMap(key)) {
-					for(let key in libsValue) {
-						if(projectValue[key] === libsValue[key]) {
-							delete projectValue[key];
-						}
-					}
-					if(key === 'soundBitRates') {
-						const keys = Object.keys(projectValue);
-						for(const key of keys) {
-							if(projectValue[key] === this.projectDesc.soundDefaultBitrate) {
+		while(descriptorsStack.length) {
+
+			const descData = descriptorsStack.pop()!;
+
+			let descToSave = JSON.parse(JSON.stringify(descData?.desc)) as KeyedObject;
+
+			const libsProjectDescMerged = {} as ProjectDesc;
+			descriptorsStack.forEach((desc) => {
+				mergeProjectDesc(libsProjectDescMerged, desc.desc);
+			})
+
+			for(let key in libsProjectDescMerged) {
+				if(descToSave.hasOwnProperty(key)) {
+
+					let projectValue = descToSave[key];
+					let libsValue = (libsProjectDescMerged as KeyedObject)[key];
+					if(JSON.stringify(projectValue) === JSON.stringify(libsValue)) {
+						delete descToSave[key];
+					} else if(isProjectDescValueKeyedMap(key)) {
+						for(let key in libsValue) {
+							if(projectValue[key] === libsValue[key]) {
 								delete projectValue[key];
+							}
+						}
+						if(key === 'soundBitRates') {
+							const keys = Object.keys(projectValue);
+							for(const key of keys) {
+								if(projectValue[key] === this.projectDesc.soundDefaultBitrate || !Lib.hasSound(key)) {
+									delete projectValue[key];
+								}
 							}
 						}
 					}
 				}
 			}
+			delete descToSave.dir;
+			fs.writeFile(descData.fileName, descToSave);
 		}
-		delete descToSave.dir;
-		fs.writeFile(this.currentProjectDir + 'thing-project.json', descToSave);
 	}
 }
 

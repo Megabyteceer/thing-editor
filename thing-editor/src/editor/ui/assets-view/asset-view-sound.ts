@@ -49,9 +49,15 @@ const assetItemRendererSound = (file: FileDesc) => {
 									name: bitrate + 'kbps' + (isDefaultBitrate ? " (default)" : ""),
 									disabled: () => currentBitrate === bitrate,
 									onClick: () => {
+										const desc = file.lib ? game.editor.libsDescriptors[file.lib.name] : game.editor.projectDesc;
+										if(!desc.soundBitRates) {
+											desc.soundBitRates = {};
+										}
 										if(isDefaultBitrate) {
+											delete desc.soundBitRates[file.assetName];
 											delete game.editor.projectDesc.soundBitRates[file.assetName];
 										} else {
+											desc.soundBitRates[file.assetName] = bitrate;
 											game.editor.projectDesc.soundBitRates[file.assetName] = bitrate;
 										}
 										game.editor.saveProjectDesc();
