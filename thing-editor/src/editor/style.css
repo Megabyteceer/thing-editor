@@ -747,6 +747,10 @@ input {
 	opacity: 0.5;
 }
 
+.semi-transparent {
+	opacity: 0.5;
+}
+
 .number-input {
 	display: block;
 	position: relative;
