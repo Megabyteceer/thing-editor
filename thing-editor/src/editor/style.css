@@ -831,6 +831,7 @@ input[disabled] {
 	color: #a8a8a8;
 	border: 1px solid #2f2f2f;
 	font-family: Consolas, "Courier New", monospace;
+	overflow-y: auto;
 }
 
 .selected-item {

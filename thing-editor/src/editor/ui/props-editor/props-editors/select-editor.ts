@@ -177,7 +177,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 				placeholder: 'Filter',
 				onInput: this.onFilterChange,
 				value: this.state.filter,
-				style: this.props.field ? undefined : { width: 0, margin: 0, position: 'fixed', padding: 0, height: 0 }
+				style: this.props.field ? undefined : { display: 'none' }
 			});
 
 			if(this.checkForNeedClearFilter && a.length < 1) {
@@ -196,11 +196,13 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 						const bounds = b.getBoundingClientRect();
 						let l = document.getElementById('select-list-content') as HTMLElement;
 						if(l) {
-							if(bounds.top > window.innerHeight * 0.6) {
-								bounds.y -= l.clientHeight;
+							const height = Math.min(Math.round((window.innerHeight * 0.4)), l.clientHeight);
+							if(bounds.top > window.innerHeight * 0.55) {
+								bounds.y -= height - 25;
 							}
 							l.style.left = bounds.left + 'px';
 							l.style.top = bounds.top + 'px';
+							l.style.maxHeight = height + 'px';
 						}
 					}
 				}, 0);
