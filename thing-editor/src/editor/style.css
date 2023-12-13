@@ -445,6 +445,14 @@ input {
 	user-select: text;
 }
 
+.error .clickable {
+	text-decoration: underline;
+}
+
+.error .clickable:hover {
+	color: #ffffff;
+}
+
 .modal-notification-wrapper {
 	position: fixed;
 	z-index: 1100000;

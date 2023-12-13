@@ -7,6 +7,7 @@ import Tip from 'thing-editor/src/editor/ui/tip';
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 interface ComponentProps {
 	className?: string;
@@ -84,8 +85,19 @@ class R {
 		if(typeof txt !== 'string') {
 			return txt;
 		}
-		return R.div(null, txt.split('\n').map((r, i) => {
-			return R.div({ key: i }, r);
+		return R.div(null, txt.split('\n').map((line, i) => {
+			const lineProps = { key: i };
+			const words = line.split(/[ :;,\(\)]/gm);
+			words.some((word) => {
+				if(/\.(ts|js|json)$/gm.test(word)) {
+					(lineProps as any).onClick = () => {
+						game.editor.editFile(word);
+					};
+					(lineProps as any).className = 'clickable';
+					return true;
+				}
+			});
+			return R.div(lineProps, line);
 		}));
 	};
 

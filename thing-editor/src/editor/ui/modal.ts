@@ -248,7 +248,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 			return Promise.resolve();
 		}
 		game.editor.__FatalError = true;
-		this.showError(R.div(null, R.div(null, R.b(null, message)), additionalText), errorCode, 'Fatal Error', true, true);
+		this.showError(R.div(null, R.div(null, R.b(null, R.multilineText(message))), R.multilineText(additionalText)), errorCode, 'Fatal Error', true, true);
 	}
 
 	render(): ComponentChild {

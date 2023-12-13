@@ -133,7 +133,7 @@ const WHITE: FileDescImage = {
 const execFs = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => {
 	const ret = thingEditorServer.fs(command, filename, content, ...args);
 	if(ret instanceof Error) {
-		debugger;
+		game.editor.ui.modal.showFatalError("Main process error.", 99999, ret.message);
 		throw ret;
 	}
 	return ret;
@@ -359,13 +359,21 @@ export default class fs {
 		}
 	}
 
+	static parseJSON(src: string, fileName: string) {
+		try {
+			return JSON.parse(src);
+		} catch(er) {
+			game.editor.ui.modal.showFatalError("JSON parse error.", 99999, "Error in file: " + fileName + '\n' + (er as Error).message);
+		}
+	}
+
 	static readJSONFile(fileName: string): any {
-		return JSON.parse(fs.readFile(fileName));
+		return this.parseJSON(fs.readFile(fileName), fileName);
 	}
 
 	static readJSONFileIfExists(fileName: string) {
 		const src = this.readFileIfExists(fileName);
-		return src && JSON.parse(src);
+		return src && this.parseJSON(src, fileName);
 	}
 
 	static readFileIfExists(fileName: string) {

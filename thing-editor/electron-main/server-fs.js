@@ -220,7 +220,12 @@ const enumProjects = (ret = [], subDir = '') => {
 			if(fs.statSync(dirName).isDirectory()) {
 				let projDescFile = dirName + '/thing-project.json';
 				if(fs.existsSync(projDescFile)) {
-					let desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
+					let desc;
+					try {
+						desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
+					} catch(er) {
+						throw (new Error("Error in file: " + projDescFile + '\n' + er.message));
+					}
 					desc.dir = subDir ? (subDir + '/' + file) : file;
 					ret.push(desc);
 				} else {
