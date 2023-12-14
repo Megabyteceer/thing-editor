@@ -352,13 +352,13 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				if(game.editor.selection.some((o) => {
 					return o.constructor !== firstClass;
 				})) {
-					classButtonContent = R.fragment(R.classIcon(MIXED_ICON as SourceMappedConstructor), ' Mixed types selected', '...');
+					classButtonContent = R.fragment(R.classIcon(MIXED_ICON as SourceMappedConstructor), ' Mixed types selected');
 				} else {
 					classButtonContent = R.fragment(R.classIcon(firstClass), ' ', R.b({
 						className: 'selectable-text',
 						title: 'Ctrl+click to copy Class`s name',
 						onMouseDown: copyTextByClick
-					}, firstClass.__className), '...');
+					}, firstClass.__className));
 				}
 			}
 			header = R.btn(classButtonContent, this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode);

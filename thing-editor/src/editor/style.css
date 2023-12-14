@@ -314,6 +314,9 @@ textarea:focus-visible {
 	font-family: Consolas, "Courier New", monospace;
 	cursor: text;
 	pointer-events: all;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	flex-shrink: 11;
 }
 
 .error-help-button {
@@ -993,9 +996,11 @@ input[disabled] {
 }
 
 .props-header button {
+	white-space: nowrap;
 	overflow: hidden;
 	padding: 5px 15px;
 	margin: 0 7px 7px 0;
+	display: flex;
 	width: 50%;
 }
 
