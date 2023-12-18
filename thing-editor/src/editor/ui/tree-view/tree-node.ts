@@ -35,7 +35,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 			return;
 		}
 
-		if((isClickedAtRightEdge(ev)) && nodeHasChildren(this.props.node)) {
+		if((isClickedAtRightEdge(ev)) && nodeHasExpandableChildren(this.props.node)) {
 			extendData.childrenExpanded = !extendData.childrenExpanded;
 			if(!extendData.childrenExpanded) {
 				collapseChildrenRecursively(this.props.node);
@@ -79,7 +79,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 		extendData.treeNodeView = this;
 		let children;
 		let caret;
-		if(nodeHasChildren(node) && !extendData.hideAllChildren) {
+		if(nodeHasExpandableChildren(node)) {
 			if(extendData.childrenExpanded) {
 				caret = caretOpened;
 				children = R.div({ className: 'tree-children' },
@@ -143,8 +143,12 @@ const onContextMenu = (node: Container, ev: PointerEvent) => {
 	showContextMenu(TREE_NODE_CONTEXT_MENU, ev)
 };
 
-function nodeHasChildren(node: Container) {
-	return node.children.length > 0 && !node.__hideChildren;
+const isNodeVisibleInTree = (node: Container) => {
+	return !node.__nodeExtendData.hidden;
+}
+
+function nodeHasExpandableChildren(node: Container) {
+	return node.children.some(isNodeVisibleInTree) && !node.__hideChildren;
 }
 
 function isClickedAtRightEdge(ev: PointerEvent) {

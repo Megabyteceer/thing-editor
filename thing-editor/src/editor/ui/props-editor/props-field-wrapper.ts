@@ -147,7 +147,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		} : null,
 		null,
 		{
-			name: "Go to definition >>",
+			name: "Go to property definition >>",
 			onClick: () => {
 				game.editor.editSource(field.__src);
 			}

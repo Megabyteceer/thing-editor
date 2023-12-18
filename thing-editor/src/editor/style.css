@@ -306,7 +306,7 @@ textarea:disabled {
 
 input:focus-visible,
 textarea:focus-visible {
-	outline-offset: -0;
+	outline-offset: 0;
 	outline: 1px solid #3a8cff;
 }
 
@@ -1095,6 +1095,7 @@ input[disabled] {
 .context-menu {
 	position: fixed;
 	background-color: #1b1b1b;
+	min-width: 220px;
 	border-radius: 4px;
 	padding: 10px 0;
 	z-index: 10000;

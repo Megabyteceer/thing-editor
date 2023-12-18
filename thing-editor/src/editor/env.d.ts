@@ -52,8 +52,6 @@ interface NodeExtendData {
 
 	isFaderShootCalledForThisFader?: boolean;
 
-	hideAllChildren?: boolean;
-
 	hidePropsEditor?: {
 		title: string,
 		visibleFields: KeyedMap<true>;
