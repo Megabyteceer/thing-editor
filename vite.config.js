@@ -28,6 +28,9 @@ export default defineConfig({
 		],
 
 		alias: {
+			'fs': __dirname + '/thing-editor/electron-main/empty-module.js',
+			'path': __dirname + '/thing-editor/electron-main/empty-module.js',
+			'os': __dirname + '/thing-editor/electron-main/empty-module.js',
 			'libs': __dirname + '/libs',
 			'games': __dirname + '/games',
 			'thing-editor': __dirname + '/thing-editor',

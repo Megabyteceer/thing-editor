@@ -20,7 +20,7 @@ const libInfo = (file: FileDesc): ComponentChildren => {
 			const icon = libIcon(libInfo);
 			file.libInfoCache = R.span({
 				className: 'lib-info',
-				title: "LIBRARY: " + libInfo.name
+				title: libInfo.name
 			},
 				icon
 			);

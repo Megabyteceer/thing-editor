@@ -66,7 +66,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 			disabled: () => file.asset.__isScene
 		},
 		{
-			name: R.fragment("Move " + file.asset.__className + "' class to library..."),
+			name: R.fragment("Move to library..."),
 			onClick: async () => {
 				let chosenFolder: string | undefined = await game.editor.chooseAssetsFolder("Where to move class '" + file.asset.__className + "'?", file.lib ? file.lib.assetsDir : game.editor.currentProjectAssetsDir);
 				if(!chosenFolder) {

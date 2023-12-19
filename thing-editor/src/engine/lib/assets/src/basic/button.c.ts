@@ -378,6 +378,10 @@ window.addEventListener('keydown', (ev) => {
 	/// #endif
 
 	downedByKeycodeButton = Button._tryToClickByKeycode(ev.keyCode);
+	if(downedByKeycodeButton) {
+		ev.preventDefault();
+		ev.stopPropagation();
+	}
 });
 
 window.addEventListener('keyup', (ev) => {

@@ -1,3 +1,4 @@
+import { KeyedObject } from 'thing-editor/src/editor/env';
 import game from 'thing-editor/src/engine/game';
 
 interface IndexedDBRecord {
@@ -36,7 +37,7 @@ export default class IndexedDBUtils {
 		return { result, tx, store };
 	}
 
-	static save(name: string, type: string, data?: IndexedDBRecord) {
+	static save(name: string, type: string, data?: IndexedDBRecord | KeyedObject) {
 		let openDB = this.openIndexedDB();
 		const id = name + '::' + type;
 		dataStore[id] = data;
@@ -47,37 +48,38 @@ export default class IndexedDBUtils {
 		return true;
 	}
 
-	static load(name: string, type: string): Promise<IndexedDBRecord> {
+	static load(name: string, type: string): Promise<IndexedDBRecord | KeyedObject> {
+
 		return new Promise((resolve) => {
-			const openDB = this.openIndexedDB();
 
-			openDB.onsuccess = () => {
-				if(name) {
-					const id = name + '::' + type;
+			const id = name + '::' + type;
 
-					if(dataStore[id]) {
-						setTimeout(() => {
-							resolve(dataStore[id]!);
-						}, 1);
-					} else {
-						const db = this.getStoreIndexedDB(openDB);
-						const getData = db.store.get(id);
-						getData.onsuccess = function () {
-							const data = getData.result?.data;
-							if(data) {
-								dataStore[id] = data;
-							}
-							resolve!(getData.result && getData.result.data);
-						};
-						db.tx.oncomplete = function () {
-							db.result.close();
-						};
-					}
-				}
-			};
+			if(dataStore.hasOwnProperty(id)) {
+				setTimeout(() => {
+					resolve(dataStore[id]!);
+				}, 0);
+			} else {
+				const openDB = this.openIndexedDB();
+
+				openDB.onsuccess = () => {
+
+					const db = this.getStoreIndexedDB(openDB);
+					const getData = db.store.get(id);
+					getData.onsuccess = function () {
+						const data = getData.result?.data;
+						dataStore[id] = data;
+						resolve!(getData.result && getData.result.data);
+					};
+					db.tx.oncomplete = function () {
+						db.result.close();
+					};
+
+				};
+			}
 		});
 	}
-	static async openFile(key: string, type = 'sound', accept = "audio/x-wav"): Promise<string> {
+
+	static async openFile(key: string, type = 'sound', accept = "audio/x-wav"): Promise<IndexedDBRecord> {
 		return new Promise((resolve) => {
 			const readFile = (ev: InputEvent) => {
 				const file = (ev.target as HTMLInputElement).files![0];
@@ -87,11 +89,17 @@ export default class IndexedDBUtils {
 				const reader = new FileReader();
 				reader.onload = function (e) {
 					const contents = e.target!.result as string;
-					resolve(contents as string);
+
+					const data: IndexedDBRecord = {
+						fileName: (ev.target as HTMLInputElement).value,
+						data: contents
+					}
+
+					resolve(data);
 					IndexedDBUtils.save(
 						key,
 						type,
-						{ fileName: (ev.target as HTMLInputElement).value, data: contents }
+						data
 					);
 				}
 				reader.readAsDataURL(file)
@@ -111,7 +119,8 @@ export default class IndexedDBUtils {
 	}
 }
 
+export type { IndexedDBRecord };
 
-let dataStore: KeyedMap<IndexedDBRecord | undefined> = {};
+let dataStore: KeyedMap<IndexedDBRecord | KeyedObject | undefined> = {};
 
 

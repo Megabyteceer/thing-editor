@@ -1,5 +1,5 @@
 import { ClassAttributes, Component, ComponentChild, h } from "preact";
-import { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
+import type { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";

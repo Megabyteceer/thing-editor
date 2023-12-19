@@ -28,7 +28,7 @@ const assetItemRendererSound = (file: FileDesc) => {
 				showContextMenu(addSharedAssetContextMenu(file, [
 					MUTE_SOUND_MENU_ITEM,
 					{
-						name: R.fragment("Move " + file.assetName + "' sound to library..."),
+						name: R.fragment("Move to library..."),
 						onClick: () => {
 							game.editor.moveAssetToLibrary("Where to move sound '" + file.assetName + "'?", file);
 						},

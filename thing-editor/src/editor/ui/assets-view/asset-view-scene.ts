@@ -44,7 +44,7 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 		},
 		null,
 		{
-			name: R.fragment("Move " + file.assetName + "' scene to library..."),
+			name: R.fragment("Move  to library..."),
 			onClick: async () => {
 				game.editor.moveAssetToLibrary("Where to move scene '" + file.assetName + "'?", file);
 			},

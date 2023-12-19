@@ -39,6 +39,9 @@ export default class ClassesLoader {
 
 		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
 		this.isClassesWaitsReloading = false;
+
+		let oneClassNameFixed = false;
+
 		return Promise.all(files.map((file): SourceMappedConstructor => {
 
 			const onClassLoaded = (module: { default: SourceMappedConstructor; }): SourceMappedConstructor => {
@@ -61,14 +64,19 @@ export default class ClassesLoader {
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
 
-				if(className.startsWith('_') && !className.startsWith('__')) {
-					className = className.substring(1);
+				if(className.startsWith('_')) {
+					if(
+						(className.startsWith('_') && !file.fileName.includes('/_')) ||
+						(className.startsWith('___') && !file.fileName.includes('/___')) ||
+						(className.startsWith('__') && !file.fileName.includes('/__')) ||
+						(className.startsWith('____') && !file.fileName.includes('/____'))
+					) {
+						oneClassNameFixed = true;
+						className = className.substring(1);
+					}
 				}
 
 				Class.__className = className;
-				if(className === "_MovieClip") {
-					console.error("_MovieClip");
-				}
 
 				file.asset = Class;
 				Class.__classAsset = file;
@@ -237,6 +245,9 @@ export default class ClassesLoader {
 				}
 			}
 			regenerateClassesTypings();
+			if(!oneClassNameFixed) {
+				game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
+			}
 			return classes;
 		});
 	}

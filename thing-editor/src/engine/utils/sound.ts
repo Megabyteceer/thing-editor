@@ -480,12 +480,12 @@ async function showSndDebugger() {
 
 			let sndName = sndNameByEvent(ev);
 			const sndData = await IndexedDBUtils.openFile(sndName);
-			let a = new Audio(sndData as string);
+			let a = new Audio(sndData.data);
 			a.play();
 			setTimeout(() => {
 				a.pause();
 			}, 2000);
-			overrideSound(sndName, sndData as string);
+			overrideSound(sndName, sndData.data);
 			showSndDebugger();
 		});
 	}

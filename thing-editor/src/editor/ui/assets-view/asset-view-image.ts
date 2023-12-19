@@ -27,7 +27,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 		},
 		null,
 		{
-			name: R.fragment("Move " + file.assetName + "' image to library..."),
+			name: R.fragment("Move to library..."),
 			onClick: async () => {
 				game.editor.moveAssetToLibrary("Where to move image '" + file.assetName + "'?", file);
 			},
