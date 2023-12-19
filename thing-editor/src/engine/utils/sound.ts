@@ -8,6 +8,7 @@ import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
+import IndexedDBUtils from 'thing-editor/src/engine/utils/indexed-db-utils';
 const MIN_VOL_ENABLE = 0.05;
 
 function normalizeVolForEnabling(vol: number, defaultVol: number) {
@@ -356,12 +357,6 @@ function overrideSound(name: string, src?: string) {
 	Lib.__overrideSound(name, src || defaultSoundsUrls[name]);
 }
 
-interface SoundData {
-	// visible file name which was selected to override sound
-	name: string,
-	// url encodes sound data.
-	data: string;
-}
 
 let sndDebugger: HTMLDivElement;
 let sndDebuggerShowed = false;
@@ -380,56 +375,10 @@ function highlightPlayedSound(soundId: string) {
 	}
 }
 
-function openIndexedDB(): IDBOpenDBRequest {
-	//@ts-ignore 
-	let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB as IDBFactory;
-	const openDB = indexedDB.open("DB" + game.projectDesc.id, 1);
-
-	openDB.onupgradeneeded = function () {
-		openDB.result.createObjectStore("MyObjectStore", { keyPath: "id" });
-	};
-
-	return openDB;
-}
-
-function getStoreIndexedDB(openDB: IDBOpenDBRequest) {
-	const result = openDB.result;
-	const tx = result.transaction("MyObjectStore", "readwrite");
-	const store = tx.objectStore("MyObjectStore");
-	return { result, tx, store };
-}
-
-function saveIndexedDB(filename: string, filedata?: SoundData) {
-	let openDB = openIndexedDB();
-	openDB.onsuccess = function () {
-		let db = getStoreIndexedDB(openDB);
-		db.store.put({ id: filename, data: filedata });
-	};
-	return true;
-}
-
-function loadIndexedDB(filename: string, callback: (res: SoundData) => void) {
-	const openDB = openIndexedDB();
-
-	openDB.onsuccess = function () {
-		if(filename) {
-			const db = getStoreIndexedDB(openDB);
-			const getData = db.store.get(filename);
-			getData.onsuccess = function () {
-				callback(getData.result && getData.result.data);
-			};
-			db.tx.oncomplete = function () {
-				db.result.close();
-			};
-		}
-	};
-	return true;
-}
-
-function showSndDebugger() {
+async function showSndDebugger() {
 
 	/// #if EDITOR
-	return;
+	//return;
 	/// #endif
 
 	// sounds playing animation
@@ -461,13 +410,11 @@ function showSndDebugger() {
 
 		let libSounds = Lib.sounds;
 		for(let sndName in libSounds) {
-			loadIndexedDB(sndName, (data) => {
-				if(data) {
-					dataStore[sndName] = data;
-					overrideSound(sndName, data.data);
-					showSndDebugger();
-				}
-			});
+			const data = await IndexedDBUtils.load(sndName, 'sound');
+			if(data) {
+				overrideSound(sndName, data.data);
+				showSndDebugger();
+			}
 		}
 	}
 
@@ -504,10 +451,10 @@ function showSndDebugger() {
 	let libSounds = Lib.__soundsList;
 	for(let sndName in libSounds) {
 		soundNames[i] = sndName;
-		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName + '</b></td><td><input value="Загрузить..." style="width:90px;" type="file" accept="audio/x-wav" class="snd-override"/></td><td>');
-		let overrideData = getOverrideData(sndName);
+		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName + '</b></td><td><button value="Загрузить..." class="snd-override"/></td><td>');
+		const overrideData = await IndexedDBUtils.load(sndName, 'sound')!;
 		if(overrideData) {
-			txt.push(' ЗАГРУЖЕН (' + overrideData!.name + ')</td><td><button class="snd-clear">x</button>');
+			txt.push(' ЗАГРУЖЕН (' + overrideData!.fileName + ')</td><td><button class="snd-clear">x</button>');
 		} else {
 			txt.push('-</td><td>-');
 		}
@@ -529,25 +476,17 @@ function showSndDebugger() {
 
 	for(let fileChooser of document.querySelectorAll('.snd-override') as any as HTMLInputElement[]) {  // eslint-disable-line no-unreachable
 
-		fileChooser.addEventListener("change", function (ev: any) {
-			let files = fileChooser.files!;
+		fileChooser.addEventListener("click", async function (ev: any) {
 
-			let reader = new FileReader();
-			reader.readAsDataURL(files[0]);
-			reader.onloadend = function () {
-				let sndName = sndNameByEvent(ev);
-				let a = new Audio(this.result as string);
-				a.play();
-				setTimeout(() => {
-					a.pause();
-				}, 2000);
-				overrideSound(sndName, this.result as string);
-				setOverrideData(
-					sndName,
-					{ name: ev.target.value, data: this.result as string }
-				);
-				showSndDebugger();
-			};
+			let sndName = sndNameByEvent(ev);
+			const sndData = await IndexedDBUtils.openFile(sndName);
+			let a = new Audio(sndData as string);
+			a.play();
+			setTimeout(() => {
+				a.pause();
+			}, 2000);
+			overrideSound(sndName, sndData as string);
+			showSndDebugger();
 		});
 	}
 
@@ -568,7 +507,7 @@ function showSndDebugger() {
 	for(let clearBtn of document.querySelectorAll('.snd-clear')) {  // eslint-disable-line no-unreachable
 		clearBtn.addEventListener('click', (ev) => {
 			const soundName = sndNameByEvent(ev as InputEvent)
-			setOverrideData(soundName);
+			IndexedDBUtils.save(soundName, 'sound');
 			showSndDebugger();
 			overrideSound(soundName);
 		});
@@ -588,14 +527,4 @@ window.addEventListener('keydown', (ev) => {
 });
 
 
-let dataStore: KeyedMap<SoundData | undefined> = {};
-
-function setOverrideData(sndName: string, data?: SoundData) {
-	dataStore[sndName] = data;
-	saveIndexedDB(sndName, data);
-}
-
-function getOverrideData(sndName: string) {
-	return dataStore[sndName]!;
-}
 /// #endif
