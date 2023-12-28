@@ -375,7 +375,7 @@ function highlightPlayedSound(soundId: string) {
 	}
 }
 
-async function showSndDebugger() {
+function showSndDebugger() {
 
 	/// #if EDITOR
 	//return;
@@ -410,7 +410,7 @@ async function showSndDebugger() {
 
 		let libSounds = Lib.sounds;
 		for(let sndName in libSounds) {
-			const data = await IndexedDBUtils.load(sndName, 'sound');
+			const data = IndexedDBUtils.load(sndName, 'sound');
 			if(data) {
 				overrideSound(sndName, data.data);
 				showSndDebugger();
@@ -424,21 +424,23 @@ async function showSndDebugger() {
 	let soundNames: KeyedObject = {};
 
 	let txt = [`<style>
-	.sounds-debug-panel button,
-	.sounds-debug-panel input[type=file]::file-selector-button,
-	.sounds-debug-panel input
-	{
+	.sounds-debug-panel button {
 		cursor: pointer;
-		padding: 2px 10px;
-		border-radius: 10px;
+		border-radius: 20px;
 		border: none;
 		background: #333333;
 		color: #ffffff;
 	}
-	.sounds-debug-panel tr:hover {
-		background: #111111;
+
+	.sounds-debug-panel table {
+		margin-bottom: 10px;
 	}
 
+	.sounds-debug-panel tr:hover {
+		background: #141414;
+	}
+	
+	.sounds-debug-panel td button,
 	.sounds-debug-panel td {
 		padding: 2px 10px;
 	}
@@ -446,13 +448,14 @@ async function showSndDebugger() {
 	.sounds-debug-panel .snd-clear {
 		background: #990000;
 	}
-	</style><table border="0" cellspacing="0" cellpadding="0" class="sounds-debug-panel">`];
+	</style><div class="sounds-debug-panel"><table border="0" cellspacing="0" cellpadding="0">`];
 	let i = 0;
 	let libSounds = Lib.__soundsList;
 	for(let sndName in libSounds) {
 		soundNames[i] = sndName;
-		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName + '</b></td><td><button value="Загрузить..." class="snd-override"/></td><td>');
-		const overrideData = await IndexedDBUtils.load(sndName, 'sound')!;
+		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName +
+			'</b></td><td><button class="snd-override">Choose...</button></td><td>');
+		const overrideData = IndexedDBUtils.load(sndName, 'sound')!;
 		if(overrideData) {
 			txt.push(' ЗАГРУЖЕН (' + overrideData!.fileName + ')</td><td><button class="snd-clear">x</button>');
 		} else {
@@ -462,6 +465,9 @@ async function showSndDebugger() {
 		i++;
 	}
 	txt.push('</table>');
+	txt.push('<button id="export-skin-button">Export pack...</button>');
+	txt.push('<button id="import-skin-button">Import pack...</button>');
+	txt.push('</div>');
 	sndDebugger.innerHTML = txt.join('');
 
 	function sndNameByEvent(ev: InputEvent) {
@@ -489,6 +495,14 @@ async function showSndDebugger() {
 			showSndDebugger();
 		});
 	}
+
+	document.querySelector('#export-skin-button')?.addEventListener('click', () => {
+		IndexedDBUtils.export();
+	});
+
+	document.querySelector('#import-skin-button')?.addEventListener('click', () => {
+		IndexedDBUtils.import();
+	});
 
 	for(let a of document.querySelectorAll('.snd-name')) {  // eslint-disable-line no-unreachable
 		a.addEventListener('click', (ev: any) => {
