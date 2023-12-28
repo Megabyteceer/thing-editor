@@ -146,6 +146,8 @@ class Game {
 
 	init(element?: HTMLElement, gameId?: string, pixiOptions?: Partial<IApplicationOptions>) {
 
+		window.dispatchEvent(new CustomEvent("game-will-init"));
+
 		Lib.addTexture('EMPTY', Texture.EMPTY);
 		Lib.addTexture('WHITE', Texture.WHITE);
 
