@@ -109,7 +109,7 @@ import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 declare global {
 
 interface GameClasses {
-	[key: string]: SourceMappedConstructor;
+[key: string]: typeof Constructor;
 `
 			+ declarations.join('\n') + `
 }
