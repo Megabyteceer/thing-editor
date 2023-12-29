@@ -182,10 +182,10 @@
 								{
 									"c": "Shape",
 									"p": {
-										"x": -120,
+										"x": -140,
 										"y": -33,
 										"shape": 1,
-										"width": 240,
+										"width": 280,
 										"height": 66,
 										"shapeRadius": 2533,
 										"shapeFillColor": 2039583
@@ -207,11 +207,11 @@
 											"c": "Shape",
 											"p": {
 												"name": "hover",
-												"x": -120,
+												"x": -140,
 												"y": -33,
 												"alpha": 0.1,
 												"shape": 1,
-												"width": 240,
+												"width": 280,
 												"height": 66,
 												"shapeRadius": 2533,
 												"shapeFillColor": 16776960
@@ -225,7 +225,7 @@
 										"name": "label",
 										"text": "Ok",
 										"style.fontSize": 45,
-										"maxWidth": 245
+										"maxWidth": 233
 									}
 								}
 							]
@@ -247,10 +247,10 @@
 								{
 									"c": "Shape",
 									"p": {
-										"x": -120,
+										"x": -140,
 										"y": -33,
 										"shape": 1,
-										"width": 240,
+										"width": 280,
 										"height": 66,
 										"shapeRadius": 2533,
 										"shapeFillColor": 2039583
@@ -272,11 +272,11 @@
 											"c": "Shape",
 											"p": {
 												"name": "hover",
-												"x": -120,
+												"x": -140,
 												"y": -33,
 												"alpha": 0.1,
 												"shape": 1,
-												"width": 240,
+												"width": 280,
 												"height": 66,
 												"shapeRadius": 2533,
 												"shapeFillColor": 16776960
@@ -290,7 +290,7 @@
 										"name": "label",
 										"text": "--",
 										"style.fontSize": 45,
-										"maxWidth": 175
+										"maxWidth": 163
 									}
 								}
 							]
