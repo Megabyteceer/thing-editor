@@ -1,6 +1,8 @@
 import { KeyedObject } from 'thing-editor/src/editor/env';
 import game from 'thing-editor/src/engine/game';
 
+const IS_SKIN_MODIFIED = '__is-skin-modified';
+
 interface IndexedDBRecord {
 
 	// visible file name which was selected to override sound
@@ -9,6 +11,11 @@ interface IndexedDBRecord {
 	data: string;
 }
 
+interface PackageData {
+	data: KeyedObject,
+	settings: KeyedObject,
+	type: 'indexed-db-utils-dump'
+}
 
 let fileInput: HTMLInputElement;
 let func: () => void;
@@ -30,7 +37,7 @@ export default class IndexedDBUtils {
 				dataStore[id] = data;
 				getTransaction().then(db => db.put({ id, data }));
 			}
-
+			game.settings.setItem(IS_SKIN_MODIFIED, true);
 		}
 	}
 
@@ -39,8 +46,22 @@ export default class IndexedDBUtils {
 		return dataStore[id];
 	}
 
-	static clear() {
-		getTransaction().then(db => db.clear());
+	private static clear() {
+		Object.keys(game.settings.data).forEach((key) => {
+			if(key.startsWith('IDB_')) {
+				game.settings.removeItem(key);
+			}
+		});
+
+		game.settings.removeItem(IS_SKIN_MODIFIED);
+
+		return new Promise<void>((resolve) => {
+			getTransaction().then((db) => {
+				db.clear().onsuccess = () => {
+					resolve();
+				};
+			});
+		});
 	}
 
 	static export() {
@@ -48,40 +69,74 @@ export default class IndexedDBUtils {
 			alert('no data to export');
 			return;
 		}
+		const settings = {} as KeyedObject;
+		Object.keys(game.settings.data).forEach((key) => {
+			if(key.startsWith('IDB_')) {
+				settings[key] = game.settings.getItem(key);
+			}
+		});
 		const a = document.createElement("a");
 		const content = JSON.stringify({
 			data: dataStore,
+			settings,
 			type: 'indexed-db-utils-dump'
-		});
+		} as PackageData);
 		const file = new Blob([content], { type: 'text/plain' });
 		a.href = URL.createObjectURL(file) + "#_Export_skin";
-		a.download = game.projectDesc.id + '.skin.json';
+		a.download = game.settings.getItem('IDB_skin-name', 'New-skin.json');
 		a.click();
+		game.settings.removeItem(IS_SKIN_MODIFIED);
 	}
 
 	static async import() {
+		await this.askAboutUnsavedChanges('Load Anyway');
+
 		const data = await chooseFile('application/json');
 		try {
 			game.showModal('final-fader');
-			const content = JSON.parse(data.data);
+			const content = JSON.parse(data.data) as PackageData;
 			if(content.type !== 'indexed-db-utils-dump') {
 				alert('Wrong file format.');
 				return;
 			}
-			await this.clear();
-			dataStore = content.data;
-			for(const id in dataStore) {
-				getTransaction().then(db => db.put({ id, data: dataStore[id] }));
-			}
-			getTransaction().then(() => {
-				setTimeout(() => {
-					window.location.reload();
-				}, 1000);
-			});
+			content.settings['IDB_skin-name'] = data.fileName;
+			await this.setFullData(content);
 		} catch(er: any) {
 			game.hideModal();
 			alert('import error: ' + er.message);
 		}
+	}
+
+	private static async setFullData(data: PackageData) {
+		await this.clear();
+		dataStore = data.data;
+		await Promise.all(Object.keys(dataStore).map((id) => {
+			return new Promise<void>((resolve) => {
+				getTransaction().then(db => db.put({ id, data: dataStore[id] }).onsuccess = () => {
+					resolve();
+				});
+			});
+		}));
+		for(const key in data.settings) {
+			game.settings.setItem(key, data.settings[key]);
+		}
+		window.location.reload();
+	}
+
+	private static async askAboutUnsavedChanges(okMessage: string) {
+		return new Promise<void>((resolve) => {
+			if(game.settings.getItem(IS_SKIN_MODIFIED)) {
+				game.showQuestion('Are you sure?', 'Current skin has unsaved changes.', okMessage, resolve);
+			} else {
+				resolve();
+			}
+		});
+	}
+
+	static async reset() {
+		await this.askAboutUnsavedChanges('Reset skin anyway');
+		game.settings.removeItem('IDB_skin-name');
+		await this.setFullData({ settings: {}, data: {}, type: 'indexed-db-utils-dump' });
 	}
 
 	static async openFile(key: string, type = 'sound', accept = "audio/x-wav"): Promise<IndexedDBRecord> {
@@ -94,7 +149,6 @@ export default class IndexedDBUtils {
 				type,
 				contents
 			);
-
 		}
 		return contents;
 	}
