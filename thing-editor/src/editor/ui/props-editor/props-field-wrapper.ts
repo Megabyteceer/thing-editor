@@ -187,6 +187,10 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 		this.props.propsEditor.refs.delete(this.props.field.name);
 	}
 
+	componentWillReceiveProps() {
+		this.setState({ value: undefined });
+	}
+
 	onChange(val: any, isDelta = false, deltaVal?: number) {
 		if(val && val.target) {
 			val = val.target.value;
