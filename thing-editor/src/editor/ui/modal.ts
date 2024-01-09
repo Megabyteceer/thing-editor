@@ -52,6 +52,7 @@ let notifyWrapperProps = { className: 'modal-notification-wrapper', style: { lef
 let notifyPropsDuringSpinner = { className: 'modal-notification modal-notification-centred modal-notification-wrapper' };
 
 let notifyTexts: Set<string | Component> = new Set();
+const notifyHides: Map<string, string | Component> = new Map();
 
 let spinnerShowCounter = 0;
 
@@ -144,11 +145,17 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		return this.showModal(h(ChooseList, { list, noSearchField, activeValue, doNotGroup }), title, noEasyClose);
 	}
 
-	notify(txt: string | Component) {
+	notify(txt: string | Component, hideId?: string) {
 		if(EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		notifyTexts.add(txt);
+		if(hideId) {
+			if(notifyHides.has(hideId)) {
+				notifyTexts.delete(notifyHides.get(hideId)!);
+			}
+			notifyHides.set(hideId, txt);
+		}
 
 		setTimeout(() => {
 			notifyTexts.delete(txt);

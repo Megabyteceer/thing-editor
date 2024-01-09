@@ -59,7 +59,7 @@ window.addEventListener("keydown", (ev) => {
 				if(!isHotkeyCapturedByInputElement) {
 					item.onClick();
 					refreshContextMenu();
-					game.editor.ui.modal.notify((typeof item.name === 'function') ? item.name() : item.name);
+					game.editor.ui.modal.notify((typeof item.name === 'function') ? item.name() : item.name, 'hotkey');
 					sp(ev);
 					return;
 				}
