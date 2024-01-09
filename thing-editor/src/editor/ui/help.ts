@@ -1,5 +1,6 @@
 import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from "thing-editor/src/engine/game";
 
 const doNotDisturbHelpIdProps = { 'data-do_not_disturb_helpID': true };
@@ -8,6 +9,9 @@ const HELP_ROOT = 'https://github.com/Megabyteceer/thing-editor/wiki/';
 let latestClickedHelpURL = HELP_ROOT;
 
 window.addEventListener('mousedown', (ev) => {
+	if(ev.buttons === 4) {
+		sp(ev);
+	}
 	let t = ev.target as HTMLElement;
 	while(t) {
 		if(t.dataset) {
