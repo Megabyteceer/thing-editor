@@ -252,6 +252,20 @@ class Game {
 		assert(!v || v === 'landscape' || v === 'portrait', 'Wrong value for game.__enforcedOrientation. "landscape" or "portrait" expected');
 		this.___enforcedOrientation = v;
 		game.settings.setItem('__EDITOR_is-portrait-orientation', v === 'portrait');
+
+		if(v === 'portrait') {
+			if(!game.isMobile.any) {
+				game.isMobile.any = true;
+				game.editor._processIsMobileHandlers();
+			}
+		} else {
+			const isMobileRestore = game.editor.settings.getItem('isMobile.any', game.isMobile.any);
+			if(game.isMobile.any != isMobileRestore) {
+				game.isMobile.any = isMobileRestore;
+				game.editor._processIsMobileHandlers();
+			}
+		}
+
 		this.onResize();
 	}
 	/// #endif

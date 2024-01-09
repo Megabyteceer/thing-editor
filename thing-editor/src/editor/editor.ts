@@ -132,7 +132,7 @@ class Editor {
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
 
-		game.isMobile.any = game.editor.settings.getItem('isMobile.any', false);
+		this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 
 		game.__EDITOR_mode = true;
 		render(h(UI, { onUIMounted: this.onUIMounted }), document.getElementById('root') as HTMLElement);
@@ -405,6 +405,8 @@ class Editor {
 
 			editorEvents.emit('projectDidOpen');
 			game.editor.saveProjectDesc();
+			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
+
 		}
 	}
 
@@ -413,14 +415,31 @@ class Editor {
 	}
 
 	toggleIsMobileAny() {
-		game.isMobile.any = !game.isMobile.any;
-		game.editor.settings.setItem('isMobile.any', game.isMobile.any);
-		game.forAllChildrenEverywhere((o: any) => {
-			if(o.__onIsMobileChange) {
-				o.__onIsMobileChange();
+		this.setIsMobileAny(!game.isMobile.any);
+	}
+
+	setIsMobileAny(val: boolean) {
+		const isMobileAny = game.___enforcedOrientation === 'portrait' || val;
+		if(isMobileAny != game.isMobile.any) {
+			game.isMobile.any = isMobileAny;
+			game.editor.settings.setItem('isMobile.any', val);
+			this._processIsMobileHandlers();
+		} else {
+			if(game.editor.ui) {
+				game.editor.ui.modal.notify('Can not change "isMobile" in portrait mode.');
 			}
-		});
-		this.ui.propsEditor.refresh();
+		}
+	}
+
+	_processIsMobileHandlers() {
+		if(game.stage) {
+			game.forAllChildrenEverywhere((o: any) => {
+				if(o.__onIsMobileChange) {
+					o.__onIsMobileChange();
+				}
+			});
+			this.ui.propsEditor.refresh();
+		}
 	}
 
 	toggleHideHelpers() {
