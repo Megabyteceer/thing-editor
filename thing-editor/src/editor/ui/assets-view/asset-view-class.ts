@@ -112,6 +112,8 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		);
 	}
 
+	const clickTip = '; Ctrl+click - find all. Alt+click - strict type';
+
 	return R.div({
 		className: 'assets-item assets-item-class',
 		key: file.assetName,
@@ -134,17 +136,17 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		R.span(toolButtonsProps,
 			R.btn('<', (ev) => {
 				sp(ev);
-				findNextOfThisType(file.asset, -1, ev.ctrlKey);
-			}, 'Find previous ' + file.asset.__className + '; Ctrl+click - find all.'),
+				findNextOfThisType(file.asset, -1, ev.ctrlKey, ev.altKey);
+			}, 'Find previous ' + file.asset.__className, clickTip),
 			R.btn('>', (ev) => {
 				sp(ev);
-				findNextOfThisType(file.asset, 1, ev.ctrlKey);
-			}, 'Find next ' + file.asset.__className + '; Ctrl+click - find all.')
+				findNextOfThisType(file.asset, 1, ev.ctrlKey, ev.altKey);
+			}, 'Find next ' + file.asset.__className, clickTip)
 		)
 	);
 };
 
-function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findAll: boolean) {
+function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findAll: boolean, strictType: boolean) {
 	if(findAll) {
 		let a = game.currentContainer.findChildrenByType(c as any).filter((o) => {
 			return !getParentWhichHideChildren(o);
@@ -153,13 +155,19 @@ function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findA
 			a.push(game.currentContainer);
 		}
 		game.editor.selection.clearSelection();
+		if(strictType) {
+			a = a.filter(o => o.constructor === c);
+		}
 		for(let w of a) {
 			game.editor.ui.sceneTree.selectInTree(w, true);
 		}
 	} else {
 		game.editor.ui.sceneTree.findNext((o) => {
-			return (o instanceof c) && !getParentWhichHideChildren(o);
-
+			if(strictType) {
+				return (o instanceof c) && !getParentWhichHideChildren(o);
+			} else {
+				return (o.constructor === c) && !getParentWhichHideChildren(o);
+			}
 		}, direction);
 	}
 }
