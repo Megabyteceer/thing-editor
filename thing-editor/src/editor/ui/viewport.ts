@@ -251,7 +251,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 		}
 
 		const reloadClassesBtn = R.btn(R.icon('recompile'), game.editor.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
-
+		const orientationButton = (game.editor.projectDesc && game.editor.projectDesc.screenOrientation === 'auto') ? R.btn(ORIENTATION_ICON, game.editor.toggleScreenOrientation, 'Portrait/Landscape switch', undefined, { key: 'r', ctrlKey: true }) : undefined;
 		let prefabFile = this.state.prefabMode && fs.getFileByAssetName(this.state.prefabMode, AssetType.PREFAB);
 		if(!prefabFile && this.state.prefabMode) {
 			PrefabEditor.exitPrefabEdit(true); // prefab removed
@@ -295,6 +295,8 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					}),
 				),
 				R.span(panelBottomProps,
+					orientationButton,
+					R.hr(),
 					resolutionSelect
 				)
 			);
@@ -323,7 +325,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 
 				),
 				R.span(panelBottomProps,
-					(game.editor.projectDesc && game.editor.projectDesc.screenOrientation === 'auto') ? R.btn(ORIENTATION_ICON, game.editor.toggleScreenOrientation, 'Portrait/Landscape switch', undefined, { key: 'r', ctrlKey: true }) : undefined,
+					orientationButton,
 					R.hr(),
 					resolutionSelect,
 					R.btn('⛶', () => {
