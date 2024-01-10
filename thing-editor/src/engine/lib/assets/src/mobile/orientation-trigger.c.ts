@@ -151,7 +151,7 @@ export default class OrientationTrigger extends Container {
 
 		/// #if EDITOR
 		if(handler) {
-			let h = handler.split('`')[0];
+			let h = handler.split(',')[0];
 			if(h === 'this.update') {
 				game.editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 10071, this, handlerName);
 				return;
@@ -201,6 +201,7 @@ export default class OrientationTrigger extends Container {
 	}
 
 	__EDITOR_onCreate() {
+		this.__checkWarnings();
 		setTimeout(() => {
 			if(this.getTriggerConditionState()) {
 				this.landscapeX = this.portraitX;
@@ -367,7 +368,6 @@ export default class OrientationTrigger extends Container {
 	}
 
 	__afterDeserialization() {
-		this.__checkWarnings();
 		IGNORE_DIRECT_PROPS = false;
 		if(game.__EDITOR_mode) {
 			this.applyOrientation();

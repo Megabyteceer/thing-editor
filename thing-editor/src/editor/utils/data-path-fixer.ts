@@ -194,7 +194,7 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 
 	let finalPath = pathes.shift();
 	if(pathes.length > 0) {
-		finalPath += '`' + pathes.join(',');
+		finalPath += ',' + pathes.join(',');
 	}
 
 	let fn = fieldName.split(',');
@@ -312,7 +312,7 @@ const validateRefEntry = (m: KeyedMap<ReferencesData>, o: Container) => {
 						}
 
 						let pathParts = path.split(/[,|`]/);
-						let splitter = '`';
+						let splitter = ',';
 
 						let itemIndex = -1;
 						if(fieldName.includes(ARRAY_ITEM_SPLITTER)) {

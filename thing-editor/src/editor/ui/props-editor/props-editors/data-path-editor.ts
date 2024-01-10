@@ -259,13 +259,13 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 					let cursorPos = ((this.base as HTMLDivElement).querySelector('input') as HTMLInputElement).selectionStart || 0;
 					let selectedParamIndex = -1;
-					let paramsStartVal = val.indexOf('`');
+					let paramsStartVal = val.indexOf(',');
 					if(paramsStartVal > 0 && cursorPos > paramsStartVal) {
 						selectedParamIndex = 0;
 						let leftPart = val.substr(0, cursorPos);
-						let paramsPart = leftPart.split('`')[1];
-						if(paramsPart) {
-							selectedParamIndex = paramsPart.split(',').length - 1;
+						let a = leftPart.split(',');
+						if(a.length > 1) {
+							selectedParamIndex = a.length - 2;
 						}
 					}
 

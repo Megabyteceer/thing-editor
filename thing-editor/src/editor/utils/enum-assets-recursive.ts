@@ -56,8 +56,10 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 				}
 			} else if(field.type === 'callback') {
 				let action = o.p[field.name];
-				if(action && action.indexOf('`') > 0) {
-					let params = action.split('`')[1].split(',');
+				if(action && action.indexOf(',') > 0) {
+
+					let params = action.split(',');
+					params.shift();
 					for(let p of params) {
 						if(p.endsWith('.png') || p.endsWith('.jpg')) {
 							addImageToAssetsList(p, ret);
@@ -74,7 +76,7 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 					}
 					let a = keyframe.a;
 					if(a && (a.indexOf('Sound.play`') >= 0 || a.indexOf('Sound.playPitched`') >= 0)) {
-						let sndName = a.split('`')[1].split(',')[0];
+						let sndName = a.split(',')[1];
 						if(Lib.hasSound(sndName)) {
 							addSoundToAssetsList(sndName, ret);
 						}

@@ -746,9 +746,6 @@ class Editor {
 		if(txt.indexOf(',') >= 0) {
 			return "Parameter can not contain commas. Use your own javascript function instead.";
 		}
-		if(txt.indexOf('`') >= 0) {
-			return "Parameter can not contain apostrophes. Use your own javascript function instead.";
-		}
 	}
 
 	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void, filterCallback?: (f: FileDesc) => boolean, idSuffix = ''): Promise<string | null> {

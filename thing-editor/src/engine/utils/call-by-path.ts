@@ -32,7 +32,7 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 		let n = path[i];
 		fOwner = c;
 		if(typeof n === 'string') {
-			assert(n.indexOf(',') < 0, "Comma ',' character detected in field name in callback`s path: " + callbackPath + '". Use "`" character to separate callback\s parameter block.', 10025);
+			//assert(n.indexOf(',') < 0, "Comma ',' character detected in field name in callback`s path: " + callbackPath + '". Use "`" character to separate callback\s parameter block.', 10025); /// 99999 remove error docs 10025
 			c = c[n];
 		} else {
 			c = c.getChildByName(n.s
@@ -62,13 +62,13 @@ const stringToCallData = (s: string): CallBackParsedData => {
 	if(_callsCache.hasOwnProperty(s)) {
 		return _callsCache[s];
 	}
-	let a = s.split('`');
+	let a = s.split(',');
 	let data: CallBackParsedData = {
-		p: a[0].split('.').map(pathPartsMapper),
+		p: a.shift()!.split('.').map(pathPartsMapper),
 	};
 
-	if(a.length > 1) {
-		data.v = a[1].split(',').map(turnInToNumberIfNumeric);
+	if(a.length) {
+		data.v = a.map(turnInToNumberIfNumeric);
 	}
 	_callsCache[s] = data;
 	return data;

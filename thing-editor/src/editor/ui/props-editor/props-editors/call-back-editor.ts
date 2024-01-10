@@ -12,7 +12,7 @@ export default class CallbackEditor extends DataPathEditor {
 	}
 
 	cleanupPath(path: string): string {
-		return path ? path.split('`')[0] : '';
+		return path ? path.split(',')[0] : '';
 	}
 
 	isItTargetValue(val: any) {
@@ -41,16 +41,16 @@ export default class CallbackEditor extends DataPathEditor {
 				});
 
 				for(let p of params) {
-					assert((p.indexOf(',') < 0) && (p.indexOf('`') < 0), "parameter chooser returned parameter containing wrong symbol (, or `)");
+					assert((p.indexOf(',') < 0), "parameter chooser returned parameter containing wrong symbol (, or `)");
 				}
 				params = params.join(',');
 				if(params) {
-					this.applyFinalPath(path + '`' + params);
+					this.applyFinalPath(path + ',' + params);
 				}
 			});
 		} else {
 			if((typeof (val) === 'function') && (val.length > 0)) {
-				path += '`';
+				path += ',';
 				game.editor.ui.propsEditor.selectField(this.props.field ? this.props.field.name : '.keyframe-callback-editor', true);
 			}
 			this.applyFinalPath(path);

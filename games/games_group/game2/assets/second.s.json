@@ -20,7 +20,7 @@
 						"image": "bunny.png",
 						"arrayField": [
 							"all.spr.remove",
-							"all.spr.children.sort`"
+							"all.spr.children.sort"
 						]
 					}
 				},
