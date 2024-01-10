@@ -168,6 +168,8 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 
 	propertyEditor: ComponentChild;
 
+	ownerContainer: Container;
+
 	constructor(props: PropsFieldWrapperProps) {
 		super(props);
 		this.state = {};
@@ -188,7 +190,10 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 	}
 
 	componentWillReceiveProps() {
-		this.setState({ value: undefined });
+		if(this.ownerContainer !== game.editor.selection[0]) {
+			this.ownerContainer = game.editor.selection[0];
+			this.setState({ value: undefined });
+		}
 	}
 
 	onChange(val: any, isDelta = false, deltaVal?: number) {
