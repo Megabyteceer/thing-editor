@@ -168,7 +168,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 
 	propertyEditor: ComponentChild;
 
-	ownerContainer: Container;
+	ownerContainer!: Container;
 
 	constructor(props: PropsFieldWrapperProps) {
 		super(props);
