@@ -26,12 +26,13 @@ class EDITOR_FLAGS {
 		tryTime = Date.now();
 		EDITOR_FLAGS.isTryTime++;
 
-		const stack = new Error();
+		const stack = new Error('Try time error.');
 		if(this.tryTimeTimeout) {
 			clearTimeout(this.tryTimeTimeout);
 		}
 		this.tryTimeTimeout = setTimeout(() => {
-			game.editor.ui.modal.showError(stack.stack, 0, 'Try time error.');
+			debugger;
+			alert(stack.stack);
 			stack.name; //TODO remove after problem found. 
 		}, 1);
 	}
