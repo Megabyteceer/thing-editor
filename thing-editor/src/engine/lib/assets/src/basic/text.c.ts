@@ -250,7 +250,7 @@ Object.defineProperties(Text.prototype, {
 	},
 	'style.drShColor': {
 		get: function (this: Text) {
-			return this.style.dropShadowColor;
+			return typeof this.style.dropShadowColor === 'string' ? parseInt((this.style.dropShadowColor as string).replace('#', ''), 16) : this.style.dropShadowColor;
 		},
 		set: function (this: Text, val) {
 			this.style.dropShadowColor = val;
@@ -594,8 +594,9 @@ _editableEmbed(Text, 'style.dropShadow', {
 });
 
 _editableEmbed(Text, 'style.drShColor', {
-	type: 'string',
-	default: '#000000',
+	type: "color",
+	noNullCheck: true,
+	default: 0,
 	visible: (node: Text) => node.style.dropShadow
 });
 
