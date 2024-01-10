@@ -17,6 +17,27 @@
 		{
 			"c": "Trigger",
 			"p": {
+				"dataPath": "editor.isFixedFrameHidden",
+				"invert": true,
+				"pow": 0.2,
+				"damp": 0.7
+			},
+			":": [
+				{
+					"c": "__SystemBackDrop",
+					"p": {
+						"name": "camera-fixed-frame",
+						"shapeFillAlpha": 0,
+						"shapeLineWidth": 12,
+						"shapeLineAlpha": 0.1,
+						"isFixedStageFrame": true
+					}
+				}
+			]
+		},
+		{
+			"c": "Trigger",
+			"p": {
 				"dataPath": "editor.isHelpersHidden",
 				"invert": true,
 				"pow": 0.2,

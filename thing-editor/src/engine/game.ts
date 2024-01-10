@@ -362,12 +362,12 @@ class Game {
 
 		if(dynamicStageSize) {
 			if(orientation === 'portrait') {
-				if(w > h * 0.8) {
-					w = Math.round(h * 0.8);
+				if(w > h * 0.9) {
+					w = Math.round(h * 0.9);
 				}
 			} else {
-				if(h > w * 0.8) {
-					h = Math.round(w * 0.8);
+				if(h > w * 0.9) {
+					h = Math.round(w * 0.9);
 				}
 			}
 		}

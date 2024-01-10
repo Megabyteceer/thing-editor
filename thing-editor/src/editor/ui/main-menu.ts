@@ -256,6 +256,17 @@ const MAIN_MENU: MainMenuItem[] = [
 				stayAfterClick: true,
 				hotkey: { key: 'h', ctrlKey: true }
 			},
+			{
+				name: () => {
+					return R.fragment(game.editor.settings.getItem('hide-fixed-frame') ? CHECKED : UNCHECKED, ' Hide fixed frame');
+				},
+				tip: 'Hides project`s fixed sized frame.',
+				onClick: () => {
+					game.editor.toggleFixedSizeFrame();
+				},
+				stayAfterClick: true,
+				hotkey: { key: 'f', ctrlKey: true }
+			},
 			null,
 			{
 				name: () => {

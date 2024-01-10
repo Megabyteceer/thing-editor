@@ -85,6 +85,8 @@ class Editor {
 
 	isHelpersHidden: boolean = this.settings.getItem('hide-helpers', false);
 
+	isFixedFrameHidden = false;
+
 	disableFieldsCache = false;
 
 	buildProjectAndExit: any;
@@ -406,7 +408,7 @@ class Editor {
 			editorEvents.emit('projectDidOpen');
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
-
+			this.isFixedFrameHidden = game.editor.settings.getItem('hide-fixed-frame') && game.projectDesc.dynamicStageSize;
 		}
 	}
 
@@ -440,6 +442,11 @@ class Editor {
 			});
 			this.ui.propsEditor.refresh();
 		}
+	}
+
+	toggleFixedSizeFrame() {
+		game.editor.settings.setItem('hide-fixed-frame', !game.editor.settings.getItem('hide-fixed-frame'));
+		this.isFixedFrameHidden = game.editor.settings.getItem('hide-fixed-frame') || !game.projectDesc.dynamicStageSize;
 	}
 
 	toggleHideHelpers() {
