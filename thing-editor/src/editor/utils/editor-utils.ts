@@ -325,10 +325,10 @@ export namespace editorUtils {
 					if(enteredName) {
 						const fin = (doNotOpenToEdit = false) => {
 							if(isContainer) {
-								Lib.__savePrefab(container, enteredName);
+								Lib.__savePrefab(container, enteredName, chosenFolder);
 							} else {
 								const instance = loadSafeInstanceByClassName(container.asset.__className);
-								Lib.__savePrefab(instance, enteredName);
+								Lib.__savePrefab(instance, enteredName, chosenFolder);
 								Lib.destroyObjectAndChildren(instance);
 							}
 							regeneratePrefabsTypings();

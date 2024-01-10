@@ -180,12 +180,12 @@ function ignoreWatch(fileName: string) {
 	}, 500);
 }
 
-const assetNameToFileName = (assetName: string, assetType: AssetType): string => {
+const assetNameToFileName = (assetName: string, assetType: AssetType, libName = game.editor.currentProjectAssetsDirRooted): string => {
 	const asset = (assetsByTypeByName.get(assetType) as Map<string, FileDesc>).get(assetName);
 	if(asset) {
 		return asset.fileName;
 	}
-	return game.editor.currentProjectAssetsDirRooted + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
+	return libName + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
 };
 
 const sortByMTime = (a: FileDesc, b: FileDesc) => {
@@ -331,8 +331,8 @@ export default class fs {
 		game.editor.ui.refresh();
 	}
 
-	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject) {
-		const fileName = assetNameToFileName(assetName, assetType);
+	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject, libName?: string) {
+		const fileName = assetNameToFileName(assetName, assetType, libName);
 		ignoreWatch(fileName);
 		const mTime = fs.writeFile(fileName, data);
 		const file = fs.getFileByAssetName(assetName, assetType);
