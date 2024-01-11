@@ -1,1 +1,47 @@
-{}
+{
+	"mainScene": "main",
+	"defaultFont": "Arial",
+	"screenOrientation": "landscape",
+	"width": 1920,
+	"height": 1080,
+	"portraitWidth": 1080,
+	"portraitHeight": 1920,
+	"renderResolution": 1,
+	"renderResolutionMobile": 1,
+	"framesSkipLimit": 4,
+	"dynamicStageSize": true,
+	"preventUpscale": false,
+	"webfontloader": {
+		"google": {
+			"families": []
+		},
+		"timeout": 6000
+	},
+	"fontHolderText": "ЯSфz",
+	"mipmap": false,
+	"version": "0.0.1",
+	"soundFormats": [
+		"ogg",
+		"aac"
+	],
+	"soundDefaultBitrate": 48,
+	"soundBitRates": {},
+	"__loadOnDemandTexturesFolders": {},
+	"loadOnDemandTextures": {
+		"common/ui/spin-icon-blur.png": 8,
+		"preloader/spin.png": 8
+	},
+	"defaultLanguage": "en",
+	"defaultMusVol": 1,
+	"defaultSoundsVol": 1,
+	"embedLocales": true,
+	"autoFullScreenDesktop": false,
+	"autoFullScreenMobile": true,
+	"__proxyFetchesViaNodeServer": false,
+	"__group": "slots",
+	"__webpack": {
+		"debug": "config/webpack.debug.js",
+		"production": "config/webpack.prod.js"
+	},
+	"__suspendWarnings": []
+}

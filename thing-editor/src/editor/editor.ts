@@ -37,7 +37,6 @@ import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 import { __UnknownClassScene } from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
-import defaultProjectDesc from "thing-editor/src/engine/utils/default-project-desc";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
 
@@ -85,7 +84,7 @@ class Editor {
 
 	isHelpersHidden: boolean = this.settings.getItem('hide-helpers', false);
 
-	isFixedFrameHidden = false;
+	isSafeAreaHidden = false;
 
 	disableFieldsCache = false;
 
@@ -316,7 +315,6 @@ class Editor {
 			}
 
 			const libsProjectDescMerged = {} as ProjectDesc;
-			mergeProjectDesc(libsProjectDescMerged, defaultProjectDesc);
 
 			this.currentProjectLibs = projectDesc.libs.map(parseLibName);
 			this.currentProjectLibs.unshift({
@@ -408,7 +406,7 @@ class Editor {
 			editorEvents.emit('projectDidOpen');
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
-			this.isFixedFrameHidden = game.editor.settings.getItem('hide-fixed-frame') && game.projectDesc.dynamicStageSize;
+			this.isSafeAreaHidden = game.editor.settings.getItem('hide-safe-area-frame') && game.projectDesc.dynamicStageSize;
 		}
 	}
 
@@ -444,9 +442,9 @@ class Editor {
 		}
 	}
 
-	toggleFixedSizeFrame() {
-		game.editor.settings.setItem('hide-fixed-frame', !game.editor.settings.getItem('hide-fixed-frame'));
-		this.isFixedFrameHidden = game.editor.settings.getItem('hide-fixed-frame') || !game.projectDesc.dynamicStageSize;
+	toggleSafeAreaFrame() {
+		game.editor.settings.setItem('hide-safe-area-frame', !game.editor.settings.getItem('hide-safe-area-frame'));
+		this.isSafeAreaHidden = game.editor.settings.getItem('hide-safe-area-frame') || !game.projectDesc.dynamicStageSize;
 	}
 
 	toggleHideHelpers() {

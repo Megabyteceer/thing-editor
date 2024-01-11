@@ -258,11 +258,11 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('hide-fixed-frame') ? CHECKED : UNCHECKED, ' Hide fixed frame');
+					return R.fragment(game.editor.settings.getItem('hide-safe-area-frame') ? CHECKED : UNCHECKED, ' Hide safe area');
 				},
-				tip: 'Hides project`s fixed sized frame.',
+				tip: 'Hides project`s safe area frame.',
 				onClick: () => {
-					game.editor.toggleFixedSizeFrame();
+					game.editor.toggleSafeAreaFrame();
 				},
 				stayAfterClick: true,
 				hotkey: { key: 'f', ctrlKey: true }

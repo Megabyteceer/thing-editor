@@ -165,8 +165,8 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			fields[name] = fieldsByName[name];
 		}
 
-
-		if((labels.length > 0) || (keyframesCount > 0)) {
+		const labelsList = Object.keys(labels);
+		if((labelsList.length > 0) || (keyframesCount > 0)) {
 			let bufferData: TimelineCopyPasteData = {
 				fields,
 				labels,
@@ -178,14 +178,14 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			if(keyframesCount) {
 				name += "Keyframes: " + keyframesCount;
 			}
-			if(labels.length) {
+			if(labelsList.length) {
 				if(name) {
 					name += '\n';
 				}
-				name += "Labels: " + labels.length;
+				name += "Labels: " + labelsList.length;
 			}
 			game.editor.settings.removeItem('__EDITOR-clipboard-data');
-			game.editor.settings.setItem('__EDITOR-clipboard-data-timeline-name', 'Paste: \n' + name);
+			game.editor.settings.setItem('__EDITOR-clipboard-data-timeline-name', 'Paste: \n' + name + '\n');
 			game.editor.ui.modal.notify("Copied: " + name);
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
@@ -194,7 +194,6 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	static pasteSelection() {
 		let data: TimelineCopyPasteData = game.editor.settings.getItem('__EDITOR-clipboard-data-timeline');
 		if(data) {
-
 			let allKeyframesToSelect: TimelineKeyFrame[] = [];
 			for(let o of game.editor.selection as any as MovieClip[]) {
 
@@ -208,6 +207,8 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 					if(!tl.l[labelName]) {
 						let l = { t: labelTime } as TimelineLabelData;
 						tl.l[labelName] = l;
+					} else {
+						game.editor.ui.status.warn('Could not paste label "' + labelName + '". Already exists.', 99999, o, 'timeline');
 					}
 					allKeyframesToSelect.push(tl.l[labelName] as any as TimelineKeyFrame);
 				}
