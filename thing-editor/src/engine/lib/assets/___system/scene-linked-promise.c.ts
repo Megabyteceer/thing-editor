@@ -256,6 +256,12 @@ export default class SceneLinkedPromise extends Container {
 			this.__passedHandlersDebug = [];
 
 			/// #endif
+			if(this._rejectHandlers.length === 0) {
+				setTimeout(() => {
+					console.error('SceneLinkedPromise unhandled rejection.');
+					throw r;
+				}, 0);
+			}
 			while(this._rejectHandlers.length > 0) {
 				/// #if DEBUG
 
