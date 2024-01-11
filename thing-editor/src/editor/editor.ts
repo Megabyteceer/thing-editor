@@ -974,7 +974,7 @@ class Editor {
 
 	protected __saveProjectDescriptorInner() {
 
-		const descriptorsStack = this.currentProjectLibs.filter(lib => !lib.isEmbed).map((lib) => {
+		const descriptorsStack = this.currentProjectLibs.map((lib) => {
 			return {
 				fileName: lib.dir + '/thing-lib.json',
 				desc: this.libsDescriptors[lib.name]
@@ -1021,7 +1021,9 @@ class Editor {
 				}
 			}
 			delete descToSave.dir;
-			fs.writeFile(descData.fileName, descToSave);
+			if(!descData.fileName.startsWith('thing-editor/')) {
+				fs.writeFile(descData.fileName, descToSave);
+			}
 		}
 	}
 }
