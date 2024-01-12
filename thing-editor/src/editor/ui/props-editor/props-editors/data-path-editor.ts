@@ -197,25 +197,28 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		EDITOR_FLAGS.rememberTryTime();
 		try {
 			if(fieldName.charCodeAt(0) === 95) {
+				EDITOR_FLAGS.checkTryTime();
 				return false;
 			}
 			if(typeof val === 'undefined') {
 				val = object[fieldName];
 			}
 			if(!val) {
+				EDITOR_FLAGS.checkTryTime();
 				return true;
 			}
 			let type = typeof val;
 			if(type === 'object' || (type === 'function')) {
 
 				if(isChild && val instanceof DisplayObject && val.__nodeExtendData.hidden) {
+					EDITOR_FLAGS.checkTryTime();
 					return false;
 				}
-
+				EDITOR_FLAGS.checkTryTime();
 				return !(val as SelectableProperty).___EDITOR_isHiddenForChooser &&
 					(this.itIsCallbackEditor || !(val as SelectableProperty).___EDITOR_isHiddenForDataChooser);
 			}
-
+			EDITOR_FLAGS.checkTryTime();
 			return true;
 		} catch(_er) { /* empty */ }
 		EDITOR_FLAGS.checkTryTime();
