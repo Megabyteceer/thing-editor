@@ -1,8 +1,16 @@
 import { KeyedObject } from 'thing-editor/src/editor/env';
 import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 
 const IS_SKIN_MODIFIED = '__is-skin-modified';
 
+function message(msg: string) {
+	if(game.classes.FlyText) {
+		game.classes.FlyText.flyText(msg, game.mouse.x, game.mouse.y);
+	} else {
+		alert(msg);
+	}
+}
 interface IndexedDBRecord {
 
 	// visible file name which was selected to override sound
@@ -65,8 +73,21 @@ export default class IndexedDBUtils {
 	}
 
 	static export() {
+
+		const a = document.createElement("a");
+		const content = this.getRawData();
+		if(content) {
+			const file = new Blob([content], { type: 'text/plain' });
+			a.href = URL.createObjectURL(file) + "#_Export_skin";
+			a.download = game.settings.getItem('IDB_skin-name', 'New-skin.json');
+			a.click();
+			game.settings.removeItem(IS_SKIN_MODIFIED);
+		}
+	}
+
+	static getRawData() {
 		if(!Object.keys(dataStore).length) {
-			alert('no data to export');
+			message('no data to export');
 			return;
 		}
 		const settings = {} as KeyedObject;
@@ -75,35 +96,38 @@ export default class IndexedDBUtils {
 				settings[key] = game.settings.getItem(key);
 			}
 		});
-		const a = document.createElement("a");
-		const content = JSON.stringify({
+		return JSON.stringify({
 			data: dataStore,
 			settings,
 			type: 'indexed-db-utils-dump'
 		} as PackageData);
-		const file = new Blob([content], { type: 'text/plain' });
-		a.href = URL.createObjectURL(file) + "#_Export_skin";
-		a.download = game.settings.getItem('IDB_skin-name', 'New-skin.json');
-		a.click();
-		game.settings.removeItem(IS_SKIN_MODIFIED);
 	}
 
 	static async import() {
 		await this.askAboutUnsavedChanges('Load Anyway');
 
 		const data = await chooseFile('application/json');
+		this.importRawData(data.data, data.fileName);
+
+	}
+
+	static async importRawData(data: string, fileName?: string) {
 		try {
-			game.showModal('final-fader');
-			const content = JSON.parse(data.data) as PackageData;
+			if(Lib.hasPrefab('final-fader')) {
+				game.showModal('final-fader');
+			}
+			const content = JSON.parse(data) as PackageData;
 			if(content.type !== 'indexed-db-utils-dump') {
-				alert('Wrong file format.');
+				message('Wrong file format.');
 				return;
 			}
-			content.settings['IDB_skin-name'] = data.fileName;
+			if(fileName) {
+				content.settings['IDB_skin-name'] = fileName;
+			}
 			await this.setFullData(content);
 		} catch(er: any) {
 			game.hideModal();
-			alert('import error: ' + er.message);
+			message('import error: ' + er.message);
 		}
 	}
 
