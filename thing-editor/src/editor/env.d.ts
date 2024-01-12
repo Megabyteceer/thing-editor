@@ -108,7 +108,7 @@ type SerializedObject = {
 	':'?: SerializedObject[] | undefined,
 };
 
-type ThingEditorServer = { // exposed from electron
+type electron_ThingEditorServer = { // exposed from electron
 	fs: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => FSCallback;
 	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => Promise<any>;
 	versions: KeyedObject;
@@ -130,7 +130,7 @@ interface SelectableProperty extends AnyType {
 }
 
 declare global {
-	let thingEditorServer: ThingEditorServer; // exposed from electron
+	let electron_ThingEditorServer: electron_ThingEditorServer; // exposed from electron
 }
 
 

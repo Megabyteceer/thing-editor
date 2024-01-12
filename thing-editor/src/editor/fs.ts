@@ -131,7 +131,7 @@ const WHITE: FileDescImage = {
 };
 
 const execFs = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => {
-	const ret = thingEditorServer.fs(command, filename, content, ...args);
+	const ret = electron_ThingEditorServer.fs(command, filename, content, ...args);
 	if(ret instanceof Error) {
 		game.editor.ui.modal.showFatalError("Main process error.", 99999, ret.message);
 		throw ret;
@@ -140,7 +140,7 @@ const execFs = (command: string, filename?: string | string[], content?: string 
 };
 
 const execFsAsync = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]): Promise<any> => {
-	return thingEditorServer.fsAsync(command, filename, content, ...args);
+	return electron_ThingEditorServer.fsAsync(command, filename, content, ...args);
 };
 
 let lastAssetsDirs: string[];
@@ -151,7 +151,7 @@ const fileChangeHandler = () => {
 	fs.refreshAssetsList();
 };
 
-thingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
+electron_ThingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
 	if(!game.editor.isProjectOpen) {
 		return;
 	}

@@ -4,7 +4,7 @@ const {
 } = require('electron')
 
 contextBridge.exposeInMainWorld(
-	'thingEditorServer',
+	'electron_ThingEditorServer',
 	{
 		'versions': {
 			node: process.versions.node,

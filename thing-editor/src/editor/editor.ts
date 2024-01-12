@@ -121,7 +121,7 @@ class Editor {
 
 	constructor() {
 
-		for(let arg of thingEditorServer.argv) {
+		for(let arg of electron_ThingEditorServer.argv) {
 			if(arg.startsWith('--') && arg.indexOf('=') > 0) {
 				const a = arg.split('=');
 				this.editorArguments[a[0].substring(2)] = a[1];
@@ -894,7 +894,7 @@ class Editor {
 			}
 		}
 		if(!absolutePath) {
-			let rootPath: string = thingEditorServer.argv[0].split('node_modules')[0];
+			let rootPath: string = electron_ThingEditorServer.argv[0].split('node_modules')[0];
 			if(fileName.startsWith('\\') || fileName.startsWith('/')) {
 				rootPath = rootPath.substring(0, rootPath.length - 1);
 			}
