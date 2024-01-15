@@ -122,7 +122,10 @@ patch(
 	protected _imageID: string;
 
 	__EDITOR_onCreate(isWrapping?: boolean): void;
-
+	
+	tintR: number;
+	tintG: number;
+	tintB: number;
 	`);
 
 patch(
