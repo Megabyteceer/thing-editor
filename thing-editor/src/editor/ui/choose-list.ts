@@ -121,15 +121,17 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search')
 			),
 			R.btn('auto accept', (ev) => {
-				if((this.list[0] as any).noAutoSelect) {
-					if(this.list.length >= 2) {
-						game.editor.ui.modal.hideModal(this.list[1]);
-						sp(ev);
-					}
-				} else {
-					if(this.list.length >= 1) {
+				if(this.list.length >= 1) {
+					if((this.list[0] as any).noAutoSelect) {
+						if(this.list.length >= 2) {
+							game.editor.ui.modal.hideModal(this.list[1]);
+							sp(ev);
+						}
+					} else {
+
 						game.editor.ui.modal.hideModal(this.list[0]);
 						sp(ev);
+
 					}
 				}
 			}, undefined, 'hidden', { key: 'Enter' }),
