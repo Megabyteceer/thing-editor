@@ -82,9 +82,9 @@ class Editor {
 
 	settings: Settings = new Settings('editor');
 
-	isHelpersHidden: boolean = this.settings.getItem('hide-helpers', false);
+	showGizmo: boolean = this.settings.getItem('show-gizmo', true);
 
-	isSafeAreaHidden = false;
+	isSafeAreaVisible = true;
 
 	disableFieldsCache = false;
 
@@ -406,7 +406,7 @@ class Editor {
 			editorEvents.emit('projectDidOpen');
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
-			this.isSafeAreaHidden = game.editor.settings.getItem('hide-safe-area-frame') && game.projectDesc.dynamicStageSize;
+			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
 		}
 	}
 
@@ -443,13 +443,13 @@ class Editor {
 	}
 
 	toggleSafeAreaFrame() {
-		game.editor.settings.setItem('hide-safe-area-frame', !game.editor.settings.getItem('hide-safe-area-frame'));
-		this.isSafeAreaHidden = game.editor.settings.getItem('hide-safe-area-frame') || !game.projectDesc.dynamicStageSize;
+		game.editor.settings.setItem('safe-area-frame', !game.editor.settings.getItem('safe-area-frame'));
+		this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
 	}
 
 	toggleHideHelpers() {
-		game.editor.settings.setItem('hide-helpers', !game.editor.settings.getItem('hide-helpers'));
-		this.isHelpersHidden = game.editor.settings.getItem('hide-helpers');
+		game.editor.settings.setItem('show-gizmo', !game.editor.settings.getItem('show-gizmo'));
+		this.showGizmo = game.editor.settings.getItem('show-gizmo');
 	}
 
 	toggleSoundMute() {

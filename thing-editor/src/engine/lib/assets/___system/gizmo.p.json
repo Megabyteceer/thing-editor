@@ -17,8 +17,7 @@
 		{
 			"c": "Trigger",
 			"p": {
-				"dataPath": "editor.isFixedFrameHidden",
-				"invert": true,
+				"dataPath": "editor.isSafeAreaVisible",
 				"pow": 0.2,
 				"damp": 0.7
 			},
@@ -38,8 +37,7 @@
 		{
 			"c": "Trigger",
 			"p": {
-				"dataPath": "editor.isHelpersHidden",
-				"invert": true,
+				"dataPath": "editor.showGizmo",
 				"pow": 0.2,
 				"damp": 0.7,
 				"scaleShift": -1
