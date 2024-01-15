@@ -271,6 +271,12 @@ export default class Sound {
 		}
 	}
 
+	/// #if DEBUG
+	static __loadSoundOverrides() {
+		__loadSoundOverrides();
+	}
+	/// #endif
+
 	/// #if EDITOR
 	static __stop() {
 		if(game.__EDITOR_mode) {
@@ -375,6 +381,19 @@ function highlightPlayedSound(soundId: string) {
 	}
 }
 
+let libSounds: KeyedMap<HowlSound>;
+function __loadSoundOverrides() {
+	if(!libSounds) {
+		libSounds = Lib.sounds;
+		for(let sndName in libSounds) {
+			const data = IndexedDBUtils.load(sndName, 'sound');
+			if(data) {
+				overrideSound(sndName, data.data);
+			}
+		}
+	}
+}
+
 function showSndDebugger() {
 
 	/// #if EDITOR
@@ -407,15 +426,7 @@ function showSndDebugger() {
 		sndDebugger.style.maxHeight = "90vh";
 		sndDebugger.style.overflowY = "auto";
 		document.body.appendChild(sndDebugger);
-
-		let libSounds = Lib.sounds;
-		for(let sndName in libSounds) {
-			const data = IndexedDBUtils.load(sndName, 'sound');
-			if(data) {
-				overrideSound(sndName, data.data);
-				showSndDebugger();
-			}
-		}
+		__loadSoundOverrides();
 	}
 
 	sndDebuggerShowed = true; // eslint-disable-line no-unreachable

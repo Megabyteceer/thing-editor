@@ -61,7 +61,7 @@ export default class IndexedDBUtils {
 			}
 		});
 
-		game.settings.removeItem(IS_SKIN_MODIFIED);
+		this.resetIsSkinModified();
 
 		return new Promise<void>((resolve) => {
 			getTransaction().then((db) => {
@@ -81,7 +81,7 @@ export default class IndexedDBUtils {
 			a.href = URL.createObjectURL(file) + "#_Export_skin";
 			a.download = game.settings.getItem('IDB_skin-name', 'New-skin.json');
 			a.click();
-			game.settings.removeItem(IS_SKIN_MODIFIED);
+			this.resetIsSkinModified();
 		}
 	}
 
@@ -149,12 +149,20 @@ export default class IndexedDBUtils {
 
 	private static async askAboutUnsavedChanges(okMessage: string) {
 		return new Promise<void>((resolve) => {
-			if(game.settings.getItem(IS_SKIN_MODIFIED)) {
+			if(this.isSkinModified()) {
 				game.showQuestion('Are you sure?', 'Current skin has unsaved changes.', okMessage, resolve);
 			} else {
 				resolve();
 			}
 		});
+	}
+
+	static isSkinModified() {
+		return game.settings.getItem(IS_SKIN_MODIFIED);
+	}
+
+	static resetIsSkinModified() {
+		return game.settings.removeItem(IS_SKIN_MODIFIED);
 	}
 
 	static async reset() {

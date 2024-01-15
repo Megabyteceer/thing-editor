@@ -236,15 +236,15 @@ export default class BgMusic extends Container {
 
 	/// #if DEBUG
 	static __onSoundOverride(name: string) {
-		for(let bgm of game.currentContainer.findChildrenByType(BgMusic) as any[]) {
+		for(let bgm of game.currentContainer.findChildrenByType(BgMusic)) {
 			if(bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
-				bgm.stop();
-				bgm.resetPosition();
+				bgm.stop(0);
+				MusicFragment.__stopAll();
 				setTimeout(() => {
 					if((bgm.intro === name || bgm.loop === name)) {
 						bgm.play();
 					}
-				}, 30);
+				}, 60);
 			}
 		}
 	}

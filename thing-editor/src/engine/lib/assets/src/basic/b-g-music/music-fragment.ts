@@ -254,14 +254,16 @@ export default class MusicFragment {
 			return allActiveFragments[musicFragmentHash]._currentFragment;
 		}
 	}
+	/// #endif
 
+	/// #if DEBUG
 	static __stopAll() {
 		for(let h in allActiveFragments) {
 			MusicFragment.resetPosition(h);
 			allActiveFragments[h]._releaseCurrentFragment();
 		}
 	}
-	/// #endif
+	/// #endif	
 
 }
 
