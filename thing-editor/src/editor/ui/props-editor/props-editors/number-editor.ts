@@ -187,6 +187,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		croppedVal = Math.round(croppedVal / step) * step;
 		d = croppedVal - val;
 		this.tmpVal = undefined;
+		this.rawVal = undefined;
 		this.setState({ value: croppedVal });
 		this.props.onChange(croppedVal, true, d);
 	}
