@@ -127,7 +127,12 @@ _editableEmbed([Sprite, Mesh as any], 'tint', {
 _editableEmbed([Sprite, Mesh as any], 'tintPicker', {
 	default: 0xffffff,
 	notSerializable: true,
-	type: 'color'
+	type: 'color',
+	afterEdited: () => {
+		game.editor.editProperty('tintR', (game.editor.selection[0] as Sprite).tintR);
+		game.editor.editProperty('tintG', (game.editor.selection[0] as Sprite).tintG);
+		game.editor.editProperty('tintB', (game.editor.selection[0] as Sprite).tintB);
+	}
 });
 _editableEmbed([Sprite, Mesh as any], 'tintR', {
 	default: 255,
