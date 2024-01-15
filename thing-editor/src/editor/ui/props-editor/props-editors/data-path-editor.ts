@@ -107,12 +107,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		if(node.getRootContainer() !== game.currentContainer) {
 			PrefabEditor.exitPrefabEdit();
 		}
-
-		if(node.getRootContainer() !== game.currentContainer) {
-			game.editor.ui.modal.notify('Target object is not in current container to be selected.');
-		} else {
-			game.editor.ui.sceneTree.selectInTree(node);
-		}
+		game.editor.ui.sceneTree.selectInTree(node);
 	}
 
 	onBreakpointClick() {
