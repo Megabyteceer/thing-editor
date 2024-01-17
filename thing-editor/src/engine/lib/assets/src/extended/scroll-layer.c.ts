@@ -110,14 +110,18 @@ export default class ScrollLayer extends Container {
 				if(this._mouseHandlerContainer.getBounds().contains(p.x, p.y)) {
 					d = ev.deltaY;
 					ev.stopPropagation();
-					ev.preventDefault();
+					if(ev.cancelable) {
+						ev.preventDefault();
+					}
 				}
 			}
 		} else {
 			if(this.isCanBePressed) {
 				d = ev.deltaY;
 				ev.stopPropagation();
-				ev.preventDefault();
+				if(ev.cancelable) {
+					ev.preventDefault();
+				}
 			}
 		}
 		if(d) {
