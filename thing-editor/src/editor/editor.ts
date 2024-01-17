@@ -954,7 +954,7 @@ class Editor {
 				const libInfo = this.currentProjectLibs.find(l => l.assetsDir === folder);
 				return {
 					pureName: folder,
-					name: R.fragment(libInfo ? libIcon(libInfo) : R.space(), folder)
+					name: R.fragment(libInfo ? libIcon(libInfo) : R.space(), folder.replace(/\/assets\/$/g, "").replace(/^libs\//g, ""))
 				};
 			});
 			folders.reverse();
