@@ -19,6 +19,14 @@ const functionTipProps = { className: "path-editor-function-tip" };
 
 let initialized = false;
 
+const filteredNamesInDisplayObject = new Set([
+	'_tempDisplayObjectParent',
+	'__sourceCode',
+	'_bounds',
+	'_events',
+	'_onDisableByTrigger',
+	'_tintColor',
+]);
 
 let tipSyncInterval = 0;
 const syncTip = () => {
@@ -191,7 +199,11 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	isFieldGoodForCallbackChoose(fieldName: string, object: KeyedObject, val?: SelectableProperty, isChild = false) {
 		EDITOR_FLAGS.rememberTryTime();
 		try {
-			if(fieldName.charCodeAt(0) === 95) {
+			if(filteredNamesInDisplayObject.has(fieldName) && object instanceof Container) {
+				EDITOR_FLAGS.checkTryTime();
+				return false;
+			}
+			if(fieldName.startsWith('_') && object[fieldName.replace(/^_+/, '')]) {
 				EDITOR_FLAGS.checkTryTime();
 				return false;
 			}
@@ -459,6 +471,24 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			if(parent !== _rootParent) {
 				props.sort();
 			}
+			let a = props.slice();
+			props = [];
+			a = a.filter((p) => {
+				if(!p.startsWith('_')) {
+					props.push(p);
+					return false;
+				}
+				return true;
+			});
+			a = a.filter((p) => {
+				if(!p.startsWith('__')) {
+					props.push(p);
+					return false;
+				}
+				return true;
+			});
+			props = props.concat(a);
+
 			for(let name of props) {
 				if(type === 'function') {
 					if(name === 'length' || name === 'name') {
@@ -522,11 +552,9 @@ function initSelectableProps() {
 	let tmpSprite = Lib._loadClassInstanceById('Sprite') as KeyedObject;
 	let spriteProps = enumProps(tmpSprite);
 	for(let p of spriteProps) {
-		if(!p.startsWith('_')) {
-			let v = tmpSprite[p];
-			if((typeof v) === 'function') {
-				hidePropertyFromEnumerationForChooser(v);
-			}
+		let v = tmpSprite[p];
+		if((typeof v) === 'function') {
+			hidePropertyFromEnumerationForChooser(v);
 		}
 	}
 	unhidePropertyFromEnumerationForChooser(tmpSprite.remove);
@@ -550,17 +578,15 @@ let enumeratedProps: string[];
 const enumSub = (o: KeyedObject) => {
 	let op = Object.getOwnPropertyNames(o);
 	for(let name of op) {
-		if(!name.startsWith('_')) {
-			EDITOR_FLAGS.rememberTryTime();
-			try {
-				if(hiddenProps.has(o[name])) {
-					continue;
-				}
-			} catch(_er) { /* empty */ }
-			EDITOR_FLAGS.checkTryTime();
-			if(enumeratedProps.indexOf(name) === -1) {
-				enumeratedProps.push(name);
+		EDITOR_FLAGS.rememberTryTime();
+		try {
+			if(hiddenProps.has(o[name])) {
+				continue;
 			}
+		} catch(_er) { /* empty */ }
+		EDITOR_FLAGS.checkTryTime();
+		if(enumeratedProps.indexOf(name) === -1) {
+			enumeratedProps.push(name);
 		}
 	}
 };
