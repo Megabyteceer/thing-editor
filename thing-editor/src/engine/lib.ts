@@ -660,7 +660,7 @@ export default class Lib
 							val = defaults[p.name];
 						}
 					}
-					if((val != defaults[p.name]) && (typeof val !== 'undefined') && (val !== null)) {
+					if((val != defaults[p.name]) && (typeof val !== 'undefined')) {
 						if(p.type === 'rect') {
 							props[p.name] = {
 								x: val.x,
