@@ -81,7 +81,7 @@ export default class PrefabEditor {
 		this.currentPrefabName = object.name;
 		object.__nodeExtendData.childrenExpanded = true;
 		setTimeout(() => {
-			let selectionData = game.settings.getItem('__prefab-selection' + game.currentContainer.name);
+			let selectionData = game.editor.settingsLocal.getItem('__prefab-selection' + game.currentContainer.name);
 			if(selectionData) {
 				game.editor.selection.loadSelection(selectionData);
 			}
@@ -98,7 +98,7 @@ export default class PrefabEditor {
 		backDrop.detachFromParent();
 		if(this.currentPrefabName) {
 			let selectionData = game.editor.selection.saveSelection();
-			game.settings.setItem('__prefab-selection' + game.currentContainer.name, selectionData);
+			game.editor.settingsLocal.setItem('__prefab-selection' + game.currentContainer.name, selectionData);
 			assert(game.currentContainer.name === this.currentPrefabName, "Wrong edition prefab name");
 			game.hideModal();
 			this.currentPrefabName = null;

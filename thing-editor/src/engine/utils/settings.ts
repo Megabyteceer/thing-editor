@@ -71,6 +71,12 @@ class Settings {
 	flush() {
 		if(typeof (Storage) !== "undefined") {
 			this.__flushInterval = 0;
+
+			/// #if EDITOR
+			game.editor.LocalStoreView.refresh();
+
+			/// #endif
+
 			try {
 				localStorage.setItem(this._storageId, JSON.stringify(this.data,
 					/// #if EDITOR

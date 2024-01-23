@@ -324,6 +324,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 	}
 
 	onSearchChange(ev: InputEvent) {
+		this.searchInputProps.value = (ev.target as any).value;
 		this.setState({ filter: (ev.target as any).value.toLowerCase() });
 	}
 

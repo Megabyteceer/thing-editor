@@ -34,12 +34,17 @@ export default class ___Gizmo extends Container {
 		}
 		if(selected) {
 			this.visible = true;
-			this.parent.toLocal(selected, selected.parent, this);
-			this.rotation = selected.parent.getGlobalRotation();
-			for(const guide of this.rotationGuides) {
-				guide.rotation = selected.rotation;
+			try {
+				this.parent.toLocal(selected, selected.parent, this);
+
+				this.rotation = selected.parent.getGlobalRotation();
+				for(const guide of this.rotationGuides) {
+					guide.rotation = selected.rotation;
+				}
+				this.scale.x = this.scale.y = game.editor.ui.viewport.viewportScale;
+			} catch(_er) {
+				this.visible = false;
 			}
-			this.scale.x = this.scale.y = game.editor.ui.viewport.viewportScale;
 		} else {
 			this.visible = false;
 		}

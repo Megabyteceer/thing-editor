@@ -227,6 +227,11 @@ const MAIN_MENU: MainMenuItem[] = [
 				name: 'Project Properties...',
 				tip: 'Edit thing-project.json file',
 				onClick: projectPropsClick
+			}, {
+				name: 'Local store view...',
+				tip: "View 'game.settings' saved data content.",
+				onClick: () => game.editor.LocalStoreView.toggle(),
+				hotkey: { key: 'e', ctrlKey: true }
 			}
 		]
 	},

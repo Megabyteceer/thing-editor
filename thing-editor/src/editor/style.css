@@ -1450,8 +1450,28 @@ input[disabled] {
 	border-color: #ffbea2;
 }
 
+.local-store-row:hover {
+	background-color: #131313;
+}
 
+.local-store-row {
+	display: flex;
+}
 
+.local-store-column-header {
+	margin-right: 20px;
+	text-align: right;
+}
+
+.local-store-column {
+	display: inline-block;
+	width: 50%;
+}
+
+.local-store-view button {
+	padding: 0 5px;
+	background-color: #300c0c;
+}
 
 
 

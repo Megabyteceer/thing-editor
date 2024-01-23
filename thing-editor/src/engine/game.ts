@@ -168,7 +168,7 @@ class Game {
 		this.settings = new Settings(gameId || this.projectDesc.id);
 
 		/// #if EDITOR
-		this.___enforcedOrientation = this.settings.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
+		this.___enforcedOrientation = game.editor.settingsLocal.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
 		/// #endif
 
 		initGameInteraction();
@@ -251,7 +251,7 @@ class Game {
 	set __enforcedOrientation(v) {
 		assert(!v || v === 'landscape' || v === 'portrait', 'Wrong value for game.__enforcedOrientation. "landscape" or "portrait" expected');
 		this.___enforcedOrientation = v;
-		game.settings.setItem('__EDITOR_is-portrait-orientation', v === 'portrait');
+		game.editor.settingsLocal.setItem('__EDITOR_is-portrait-orientation', v === 'portrait');
 
 		if(v === 'portrait') {
 			if(!game.isMobile.any) {

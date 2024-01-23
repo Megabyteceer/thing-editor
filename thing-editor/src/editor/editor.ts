@@ -21,6 +21,7 @@ import { Container, Point, Texture } from "pixi.js";
 
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
+import LocalStoreView from 'thing-editor/src/editor/ui/local-store-view';
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
 import "thing-editor/src/editor/ui/sound-profiler";
 import debouncedCall from "thing-editor/src/editor/utils/debounced-call";
@@ -68,6 +69,7 @@ let previewedSound: HowlSound;
 class Editor {
 
 	LanguageView = LanguageView;
+	LocalStoreView = LocalStoreView;
 
 	currentProjectDir = '';
 	currentProjectAssetsDir = '';
@@ -81,6 +83,7 @@ class Editor {
 	selection = new Selection();
 
 	settings: Settings = new Settings('editor');
+	settingsLocal!: Settings;
 
 	showGizmo: boolean = this.settings.getItem('show-gizmo', true);
 
@@ -303,7 +306,7 @@ class Editor {
 			this.ui.modal.showSpinner();
 			this.settings.removeItem('last-opened-project');
 
-			const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json');
+			const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json') as ProjectDesc;
 
 			if(!projectDesc) {
 				this.ui.modal.showError("Can't open project " + dir).then(() => { this.chooseProject(true); });
@@ -313,6 +316,8 @@ class Editor {
 			if(!projectDesc.libs) {
 				projectDesc.libs = [];
 			}
+
+			this.settingsLocal = new Settings('__EDITOR_project_' + projectDesc.id);
 
 			const libsProjectDescMerged = {} as ProjectDesc;
 
@@ -383,10 +388,10 @@ class Editor {
 			});
 
 
-			if(game.settings.getItem(LAST_SCENE_NAME) && !Lib.hasScene(game.settings.getItem(LAST_SCENE_NAME))) {
+			if(this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {
 				this.saveLastSceneOpenName('');
 			}
-			game.settings.setItem(LAST_SCENE_NAME, game.settings.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
+			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
 			editorEvents.emit('firstSceneWillOpen');
 			this.restoreBackup();
 
@@ -647,11 +652,11 @@ class Editor {
 	}
 
 	get currentSceneName(): string {
-		return game.settings.getItem(LAST_SCENE_NAME, '');
+		return this.settingsLocal.getItem(LAST_SCENE_NAME, '');
 	}
 
 	get currentSceneBackupName() {
-		return EDITOR_BACKUP_PREFIX + game.settings.getItem(LAST_SCENE_NAME);
+		return EDITOR_BACKUP_PREFIX + this.settingsLocal.getItem(LAST_SCENE_NAME);
 	}
 
 	openUrl(url: string) {
@@ -968,7 +973,7 @@ class Editor {
 
 	protected saveLastSceneOpenName(name: string) {
 		if(!name.startsWith(EDITOR_BACKUP_PREFIX)) {
-			game.settings.setItem('__EDITOR_last_scene_name', name);
+			this.settingsLocal.setItem(LAST_SCENE_NAME, name);
 		}
 	}
 

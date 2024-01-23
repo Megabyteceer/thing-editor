@@ -15,7 +15,7 @@ selectionFilter.padding = 3;
 let filterPhase = false;
 
 setInterval(() => {
-	if(filterPhase && game.editor.showGizmo) {
+	if(filterPhase || !game.editor.showGizmo) {
 		if(selectionFilter.alpha > 0) {
 			selectionFilter.alpha -= 0.02;
 			if(selectionFilter.alpha < 0.5) {
@@ -60,6 +60,7 @@ export default class Selection extends Array<Container> {
 		} else {
 			this.add(object);
 		}
+		filterPhase = false;
 		this.sortSelectedNodes();
 		game.editor.refreshTreeViewAndPropertyEditor();
 	}
@@ -162,11 +163,11 @@ export default class Selection extends Array<Container> {
 	}
 
 	saveCurrentSelection() {
-		game.settings.setItem('__EDITOR_scene_selection' + game.editor.currentSceneName, game.editor.selection.saveSelection());
+		game.editor.settingsLocal.setItem('__EDITOR_scene_selection' + game.editor.currentSceneName, game.editor.selection.saveSelection());
 	}
 
 	loadCurrentSelection() {
-		this.loadSelection(game.settings.getItem('__EDITOR_scene_selection' + game.editor.currentSceneName));
+		this.loadSelection(game.editor.settingsLocal.getItem('__EDITOR_scene_selection' + game.editor.currentSceneName));
 	}
 }
 
