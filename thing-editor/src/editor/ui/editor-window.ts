@@ -40,6 +40,7 @@ interface WindowState {
 	y: number;
 	w: number;
 	h: number;
+	doNotSaveState?: boolean;
 }
 
 class Window<P extends WindowProps = WindowProps, S extends WindowState = WindowState> extends ComponentDebounced<P, S> {
@@ -134,7 +135,9 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	saveState() {
-		Window.saveWindowState(this.props.id, this.state);
+		if(!this.state.doNotSaveState) {
+			Window.saveWindowState(this.props.id, this.state);
+		}
 	}
 
 	static saveWindowState(windowId: string, state: WindowState) {

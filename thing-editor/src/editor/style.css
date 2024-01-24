@@ -991,10 +991,6 @@ input[disabled] {
 	flex-grow: 3;
 }
 
-.prevent-child-pinter-events * {
-	pointer-events: none;
-}
-
 .props-header button {
 	white-space: nowrap;
 	overflow: hidden;
@@ -1009,8 +1005,10 @@ input[disabled] {
 	display: flex;
 }
 
-.change-prefab-button .empty-lib-holder {
-	display: none;
+
+.change-prefab-button span {
+	line-height: 25px;
+	vertical-align: text-top;
 }
 
 .prefab-change-caret {

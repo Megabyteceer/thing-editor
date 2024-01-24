@@ -752,7 +752,7 @@ class Editor {
 	}
 
 	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void, filterCallback?: (f: FileDesc) => boolean, idSuffix = ''): Promise<string | null> {
-		const id = type + '_choose_asset_list' + idSuffix;
+		const id = type + '_choose_asset_list_popup' + idSuffix;
 		const chosen: string = await this.ui.modal.showModal(h(AssetsView, {
 			onItemSelect: (assetName: string) => {
 				this.ui.modal.hideModal(assetName);

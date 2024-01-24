@@ -11,8 +11,6 @@ import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 
-import fs, { AssetType } from "thing-editor/src/editor/fs";
-import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
 import BtnProperty from "thing-editor/src/editor/ui/props-editor/props-editors/btn-editor";
@@ -28,11 +26,13 @@ import "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import StringEditor from "thing-editor/src/editor/ui/props-editor/props-editors/string-editor";
 import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-editor";
 
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import ImageEditor from "thing-editor/src/editor/ui/props-editor/props-editors/image-editor";
 import L18nEditor from "thing-editor/src/editor/ui/props-editor/props-editors/l18n-editor";
 import PrefabPropertyEditor from "thing-editor/src/editor/ui/props-editor/props-editors/prefab-property-editor";
 import RectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/rect-editor";
 import SoundEditor from "thing-editor/src/editor/ui/props-editor/props-editors/sound-editor";
+import { getSerializedObjectClass } from 'thing-editor/src/editor/utils/generate-editor-typings';
 import getObjectDefaults from "thing-editor/src/editor/utils/get-prefab-defaults";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
@@ -374,11 +374,22 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				), this.onChangePrefabClick, 'Change prefab referenced to', 'danger', undefined, !game.__EDITOR_mode);
 			} else {
 				const prefabName = node.__nodeExtendData.isPrefabReference!;
+
+
+				const file = fs.getFileByAssetName(prefabName, AssetType.PREFAB);
+
+
 				header = R.fragment(
-					R.btn(R.fragment(
-						assetItemRendererPrefab(fs.getFileByAssetName(prefabName, AssetType.PREFAB)),
+
+					R.btn(R.b({
+						ctrlclickcopyvalue: prefabName,
+						className: 'selectable-text',
+						title: 'Ctrl+click to copy prefab`s name',
+						onMouseDown: copyTextByClick
+					},
+						R.span(null, R.classIcon(getSerializedObjectClass(file.asset)), prefabName),
 						prefabSelectCaret
-					), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button prevent-child-pinter-events', undefined, !game.__EDITOR_mode),
+					), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button', undefined, !game.__EDITOR_mode),
 					R.btn('Edit prefab', () => {
 						PrefabEditor.editPrefab(prefabName, true);
 					}, undefined, undefined, { key: 'e', ctrlKey: true }, !game.__EDITOR_mode)
