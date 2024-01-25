@@ -495,7 +495,7 @@ export namespace editorUtils {
 
 		if(game.editor.selection.length < 1) {
 			assert(false, 'Nothing selected to be wrapped.');
-		} else if(!Class && (!clipboard.data || clipboard.data.data.length !== 1)) {
+		} else if((!Class && !prefabName) && (!clipboard.data || clipboard.data.data.length !== 1)) {
 			game.editor.ui.status.error('Exactly one container should be copied in to clipBoard to wrap selection with it.');
 		} else {
 			let a = game.editor.selection.slice(0);
@@ -506,7 +506,7 @@ export namespace editorUtils {
 			} else {
 
 				if(prefabName) {
-					w = Lib.loadPrefab(prefabName);
+					w = Lib.__loadPrefabReference(prefabName);
 				} else {
 					game.editor.disableFieldsCache = true;
 					w = Lib._deserializeObject({ c: clipboard.data.data[0].c, p: clipboard.data.data[0].p });
