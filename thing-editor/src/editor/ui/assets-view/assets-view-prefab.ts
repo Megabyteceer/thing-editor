@@ -42,6 +42,13 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 				game.editor.addTo(game.currentContainer, Lib.__loadPrefabReference(file.assetName));
 			}
 		},
+		{
+			name: "Wrap",
+			tip: "Wraps selected content with a '" + file.assetName + "'",
+			onClick: () => {
+				editorUtils.wrapSelected(undefined, file.assetName);
+			}
+		},
 		null,
 		{
 			name: R.fragment(R.icon('asset-prefab'), "Duplicate prefab"),

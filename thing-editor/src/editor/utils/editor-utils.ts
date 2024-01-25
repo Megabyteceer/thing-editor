@@ -490,7 +490,7 @@ export namespace editorUtils {
 		Lib.__callInitIfGameRuns(wrapper);
 	};
 
-	export const wrapSelected = (Class?: SourceMappedConstructor) => {
+	export const wrapSelected = (Class?: SourceMappedConstructor, prefabName?: string) => {
 		assert(game.__EDITOR_mode, "Can not wrap in running mode.");
 
 		if(game.editor.selection.length < 1) {
@@ -504,9 +504,14 @@ export namespace editorUtils {
 				w = loadSafeInstanceByClassName(Class.__className, true);
 				wrap(a, w);
 			} else {
-				game.editor.disableFieldsCache = true;
-				w = Lib._deserializeObject({ c: clipboard.data.data[0].c, p: clipboard.data.data[0].p });
-				game.editor.disableFieldsCache = false;
+
+				if(prefabName) {
+					w = Lib.loadPrefab(prefabName);
+				} else {
+					game.editor.disableFieldsCache = true;
+					w = Lib._deserializeObject({ c: clipboard.data.data[0].c, p: clipboard.data.data[0].p });
+					game.editor.disableFieldsCache = false;
+				}
 				wrap(a, w);
 			}
 		}

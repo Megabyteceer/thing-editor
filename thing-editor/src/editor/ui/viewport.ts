@@ -127,7 +127,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			if(play) { // launch game
 				game.data = {} as any;
 				(game.data as SelectableProperty).___EDITOR_isGoodForChooser = true;
-				(game.data as SelectableProperty).___EDITOR_isHiddenForCallbackChooser = true;
+				(game.data as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
 				exitIsolation();
 				game.editor.ui.status.clear();
