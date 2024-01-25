@@ -1,13 +1,8 @@
 {
-	"id": "thing-project-example.pixel-cave.com",
-	"title": "thing-project-example",
-	"icon": "assets/bunny.png",
 	"defaultFont": "Roboto, Arial",
-	"dynamicStageSize": true,
 	"version": "0.0.9",
-	"soundDefaultBitrate": 48,
-	"loadOnDemandSounds": {
-		"mus/gs3_title": 2
+	"__loadOnDemandTexturesFolders": {
+		"ondemand": 2
 	},
 	"loadOnDemandTextures": {
 		"ondemand/1.png": 2,
@@ -17,10 +12,13 @@
 		"blink-wave.png": 8,
 		"perlin.jpg": 8
 	},
-	"__loadOnDemandTexturesFolders": {
-		"ondemand": 2
-	},
 	"__group": "thing-editor-demos",
+	"id": "thing-project-example.pixel-cave.com",
+	"title": "thing-project-example",
+	"icon": "assets/bunny.png",
+	"loadOnDemandSounds": {
+		"mus/gs3_title": 2
+	},
 	"libs": [
 		"lib1"
 	],

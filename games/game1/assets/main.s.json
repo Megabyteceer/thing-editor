@@ -3,6 +3,221 @@
 	"p": {
 		"name": "main",
 		"__description": "",
-		"backgroundColor": 1638400
-	}
+		"backgroundColor": 276
+	},
+	":": [
+		{
+			"c": "Text",
+			"p": {
+				"x": 30,
+				"y": 98,
+				"text": "THING-EDITOR\nexample project",
+				"style.align": "left",
+				"verticalAlign": "top",
+				"style.fill": "#9fafc1"
+			}
+		},
+		{
+			"c": "MovieClip",
+			"p": {
+				"x": 442,
+				"y": 577,
+				"image": "symbols/fuel0000.png",
+				"timeline": {
+					"l": {},
+					"p": 0.02,
+					"d": 0.85,
+					"f": [
+						{
+							"n": "image",
+							"t": [
+								{
+									"v": "symbols/fuel0000.png",
+									"t": 0,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0001.png",
+									"t": 1,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0002.png",
+									"t": 2,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0003.png",
+									"t": 3,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0004.png",
+									"t": 4,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0005.png",
+									"t": 5,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0006.png",
+									"t": 6,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0007.png",
+									"t": 7,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0008.png",
+									"t": 8,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0009.png",
+									"t": 9,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0010.png",
+									"t": 10,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0011.png",
+									"t": 11,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0012.png",
+									"t": 12,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0013.png",
+									"t": 13,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0014.png",
+									"t": 14,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0013.png",
+									"t": 15,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0012.png",
+									"t": 16,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0011.png",
+									"t": 17,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0010.png",
+									"t": 18,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0009.png",
+									"t": 19,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0008.png",
+									"t": 20,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0007.png",
+									"t": 21,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0006.png",
+									"t": 22,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0005.png",
+									"t": 23,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0004.png",
+									"t": 24,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0003.png",
+									"t": 25,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0002.png",
+									"t": 26,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0001.png",
+									"t": 27,
+									"m": 2
+								},
+								{
+									"v": "symbols/fuel0000.png",
+									"t": 28,
+									"m": 2,
+									"j": 0
+								}
+							]
+						},
+						{
+							"n": "x",
+							"t": [
+								{
+									"v": 442,
+									"t": 0
+								},
+								{
+									"v": 714,
+									"t": 179
+								},
+								{
+									"v": 1273,
+									"t": 293,
+									"j": 0
+								}
+							]
+						},
+						{
+							"n": "y",
+							"t": [
+								{
+									"v": 577,
+									"t": 0
+								},
+								{
+									"v": 359,
+									"t": 105
+								},
+								{
+									"v": 807,
+									"t": 221,
+									"j": 0
+								}
+							]
+						}
+					]
+				}
+			}
+		}
+	]
 }
