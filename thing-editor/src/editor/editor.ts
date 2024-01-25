@@ -424,14 +424,16 @@ class Editor {
 	}
 
 	setIsMobileAny(val: boolean) {
-		const isMobileAny = game.___enforcedOrientation === 'portrait' || val;
-		if(isMobileAny != game.isMobile.any) {
-			game.isMobile.any = isMobileAny;
-			game.editor.settings.setItem('isMobile.any', val);
-			this._processIsMobileHandlers();
-		} else {
-			if(game.editor.ui) {
-				game.editor.ui.modal.notify('Can not change "isMobile" in portrait mode.');
+		if(val !== game.isMobile.any) {
+			const isMobileAny = game.___enforcedOrientation === 'portrait' || val;
+			if(isMobileAny != game.isMobile.any) {
+				game.isMobile.any = isMobileAny;
+				game.editor.settings.setItem('isMobile.any', val);
+				this._processIsMobileHandlers();
+			} else {
+				if(game.editor.ui) {
+					game.editor.ui.modal.notify('Can not change "isMobile" in portrait mode.');
+				}
 			}
 		}
 	}

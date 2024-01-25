@@ -458,6 +458,7 @@ input {
 
 .modal-notification-wrapper {
 	position: fixed;
+	pointer-events: none;
 	z-index: 1100000;
 }
 
