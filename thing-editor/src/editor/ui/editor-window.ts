@@ -134,7 +134,11 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	saveState() {
-		if(!this.state.doNotSaveState) {
+		if(this.state.doNotSaveState) {
+			const state = Object.assign({}, this.state) as any;
+			delete state.title;
+			Window.saveWindowState(this.props.id, state);
+		} else {
 			Window.saveWindowState(this.props.id, this.state);
 		}
 	}
