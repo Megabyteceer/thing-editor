@@ -24,7 +24,6 @@ export default class Bunny extends DSprite {
 
 	update() {
 		if(this.y >= FLOOR_Y) {
-			this.y = FLOOR_Y;
 			this.ySpeed *= -1;
 		} else {
 			this.ySpeed += Math.min(this.gravity, FLOOR_Y - this.y);
