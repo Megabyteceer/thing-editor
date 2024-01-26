@@ -4,23 +4,12 @@
 			"path": "."
 		},
 		{
-			"path": "../thing-games-server/env"
-		},
-		{
 			"path": "./games/game1/",
 			"name": "games/game1/"
 		},
 		{
 			"path": "./libs/lib1",
 			"name": "libs/lib1"
-		},
-		{
-			"path": "./games/robots/",
-			"name": "games/robots/"
-		},
-		{
-			"path": "./libs/game-utils/common",
-			"name": "libs/game-utils/common"
 		}
 	],
 	"settings": {

@@ -27,16 +27,7 @@
         "./thing-editor"
       ]
     },
-    "baseUrl": "./.",
-    "typeRoots": [
-      "thing-editor/src/editor/env.d.ts"
-    ]
+    "baseUrl": "./."
   },
-  "files": [
-    "thing-editor/src/editor/env.d.ts"
-  ],
-  "include": [
-    "../thing-games-server/env",
-    "thing-editor/src"
-  ]
+  "include":["./games/game1/","./libs/lib1","thing-editor/src"]
 }
