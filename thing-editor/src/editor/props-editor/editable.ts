@@ -13,22 +13,7 @@ interface EditableRect {
 	h: number;
 }
 
-type EditablePropertyType = 'data-path' |
-	'splitter' |
-	'rect' |
-	'callback' |
-	'l18n' |
-	'timeline' |
-	'ref' |
-	'btn' |
-	'color' |
-	'boolean' |
-	'string' |
-	'prefab' |
-	'pow-damp-preset' |
-	'number' |
-	'image' |
-	'sound';
+type EditablePropertyType = keyof IEditablePropertyType;
 
 interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	min?: number,

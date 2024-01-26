@@ -114,6 +114,25 @@ type Electron_ThingEditorServer = { // exposed from electron
 	argv: string[];
 };
 
+interface IEditablePropertyType {
+	'data-path': true;
+	'splitter': true;
+	'rect': true;
+	'callback': true;
+	'l18n': true;
+	'timeline': true;
+	'ref': true;
+	'btn': true;
+	'color': true;
+	'boolean': true;
+	'string': true;
+	'prefab': true;
+	'pow-damp-preset': true;
+	'number': true;
+	'image': true;
+	'sound': true;
+}
+
 declare const electron_ThingEditorServer: Electron_ThingEditorServer;
 
 type AnyType = any;
