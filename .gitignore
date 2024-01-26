@@ -1,27 +1,13 @@
-# Logs
-logs
-*.log
 *.ogg
 *.aac
-~snd-convert-cache.json
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
 node_modules
-dist
-dist-ssr
-debug
-release
-___editor_backup_*
 
 *.config.js.timestamp-*.mjs
 
-games/**/.tmp
+/games
+/libs
 
-/libs/translations
 /thing-editor/src/editor/localization-typings.d.ts
 /thing-editor/src/editor/schema-thing-project.json
 /thing-editor/src/editor/current-classes-typings.d.ts

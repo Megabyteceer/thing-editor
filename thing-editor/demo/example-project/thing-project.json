@@ -20,7 +20,7 @@
 		"mus/gs3_title": 2
 	},
 	"libs": [
-		"lib1"
+		"example-lib"
 	],
 	"autoFullscreenDesktop": false,
 	"autoFullscreenMobile": false

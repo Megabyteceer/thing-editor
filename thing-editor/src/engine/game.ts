@@ -69,8 +69,8 @@ const processOnResize = (o: Container) => {
 
 class Game {
 
-	W = 800;
-	H = 600;
+	W = 0;
+	H = 0;
 
 	/** use in your game as storage for any variables accessible in data-path selectors */
 	data: GameData = {} as any;
