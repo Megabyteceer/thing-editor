@@ -1,6 +1,5 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, ComponentChild, h } from "preact";
-import { KeyedMap, KeyedObject, NodeExtendData, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics.js";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import group from "thing-editor/src/editor/ui/group";

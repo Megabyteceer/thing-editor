@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import { KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";
@@ -78,7 +77,7 @@ function validationError(message: string, rootName: string, findObjectCallback: 
 	};
 
 	const findObject = () => {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			if((!constructor || (game.currentContainer instanceof constructor)) && findObjectCallback(game.currentContainer)) {
 				selectObject(game.currentContainer);
 			}

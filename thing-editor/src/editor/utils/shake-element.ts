@@ -3,7 +3,7 @@ const shakeDomElement = (e?: HTMLElement | null) => {
 		e.classList.remove('shake');
 		e.offsetWidth;
 		e.classList.add('shake');
-		setTimeout(() => {
+		window.setTimeout(() => {
 			e.classList.remove('shake');
 		}, 600);
 	}

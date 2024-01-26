@@ -1,5 +1,3 @@
-import type { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
-
 import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-checker";
 import Lib from "thing-editor/src/engine/lib";
 

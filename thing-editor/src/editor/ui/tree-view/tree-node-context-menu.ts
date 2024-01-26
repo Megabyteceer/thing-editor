@@ -1,5 +1,4 @@
 import { Container, Sprite } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import { toggleIsolation } from "thing-editor/src/editor/ui/isolation";

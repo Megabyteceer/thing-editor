@@ -5,7 +5,7 @@ const debouncedCall = (f: () => void, timeMs = 0) => {
 		clearTimeout(debounces.get(f));
 		debounces.delete(f);
 	}
-	debounces.set(f, setTimeout(() => {
+	debounces.set(f, window.setTimeout(() => {
 		debounces.delete(f);
 		f();
 	}, timeMs));

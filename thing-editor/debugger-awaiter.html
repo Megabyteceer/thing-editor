@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="./src/editor/style.css" />
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <title>Thing-Editor 2.0</title>
+  </head>
 
-<head>
-	<link rel="stylesheet" href="./src/editor/style.css">
-	<meta charset="UTF-8">
-	<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-	<title>Thing-Editor 2.0</title>
-</head>
-
-<body>
-	debugger await...
-	<script type="module">
-		window.a = 0;
-		setInterval(() => {
-			window.a++; // do the work to debugger can attach to js engine
-		}, 10);
-	</script>
-</body>
-
+  <body>
+    debugger await...
+    <script type="module">
+      window.a = 0;
+      window.setInterval(() => {
+        window.a++; // do the work to debugger can attach to js engine
+      }, 10);
+    </script>
+  </body>
 </html>

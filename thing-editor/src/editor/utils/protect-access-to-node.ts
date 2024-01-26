@@ -1,4 +1,3 @@
-import { SelectableProperty } from "thing-editor/src/editor/env";
 import { Container } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 

@@ -1,4 +1,3 @@
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 
 

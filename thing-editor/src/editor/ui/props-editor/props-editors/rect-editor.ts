@@ -1,6 +1,5 @@
 import { Container } from "pixi.js";
 import { Component, h } from "preact";
-import { KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditableRect } from "thing-editor/src/editor/props-editor/editable";
 import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
@@ -45,7 +44,7 @@ export default class RectEditor extends Component<EditablePropertyEditorProps, R
 
 	UNSAFE_componentWillReceiveProps() {
 		if(!this.timeout) {
-			this.timeout = setTimeout(() => {
+			this.timeout = window.setTimeout(() => {
 				this.checkNullability();
 				clearTimeout(this.timeout);
 				this.timeout = 0;

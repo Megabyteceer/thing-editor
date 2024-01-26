@@ -44,7 +44,7 @@ export default class TimelineEditor extends Component<ClassAttributes<TimelineEd
 	onAutoSelect(selectPath: string[]) {
 		if(!this.state.toggled) {
 			this.onToggleClick();
-			setTimeout(() => {
+			window.setTimeout(() => {
 				Timeline.onAutoSelect(selectPath);
 			}, 1);
 		} else {

@@ -3,7 +3,6 @@ import R from "./preact-fabrics";
 import game from "../engine/game";
 
 import { Component, ComponentChild, h, render } from "preact";
-import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescClass, LibInfo } from "thing-editor/src/editor/fs";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
@@ -147,7 +146,7 @@ class Editor {
 	}
 
 	onUIMounted(ui: UI) {
-		setTimeout(() => {
+		window.setTimeout(() => {
 
 			this.ui = ui;
 			// load built in components
@@ -166,7 +165,7 @@ class Editor {
 				}
 			};
 
-			setInterval(() => { //keep props editor and tree actual during scene is launched
+			window.setInterval(() => { //keep props editor and tree actual during scene is launched
 				if(EDITOR_FLAGS.updateInProgress) {
 					EDITOR_FLAGS.updateInProgress = false;
 					editor.ui.modal.showFatalError(R.fragment('Exception during update().', R.br(), R.btn('reload page', () => {
@@ -858,7 +857,7 @@ class Editor {
 	refreshTreeViewAndPropertyEditor() {
 		if(refreshTreeViewAndPropertyEditorScheduled || document.fullscreenElement) return;
 		refreshTreeViewAndPropertyEditorScheduled = true;
-		setTimeout(() => {
+		window.setTimeout(() => {
 			refreshTreeViewAndPropertyEditorScheduled = false;
 			this.ui.sceneTree.refresh();
 			this.refreshPropsEditor();
@@ -1035,7 +1034,7 @@ class Editor {
 	}
 }
 
-const WORKSPACE_FILE_NAME = 'electron-vite-preact.code-workspace';
+const WORKSPACE_FILE_NAME = 'thing-editor.code-workspace';
 const TS_CONFIG_FILE_NAME = 'tsconfig.json';
 
 function sanitizeJSON(input: string) {

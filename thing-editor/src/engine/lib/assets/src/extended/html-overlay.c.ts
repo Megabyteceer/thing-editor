@@ -172,7 +172,7 @@ export default class HTMLOverlay extends ScrollLayer {
 					document.body.appendChild(this._scripts[i]);
 				}
 				this._isHtmlContentInvalidated = false;
-				this._overlayInterval = setInterval(this._overlayIntervalUpdate, 1000 / 60);
+				this._overlayInterval = window.setInterval(this._overlayIntervalUpdate, 1000 / 60);
 			}
 			this._htmlDiv.style.opacity = this.currentHtmlOpacity.toString();
 			_canvasBoundsCache = null;

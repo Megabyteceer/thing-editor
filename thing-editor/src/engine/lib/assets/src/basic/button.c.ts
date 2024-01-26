@@ -1,6 +1,4 @@
-import { SelectableProperty } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
-
 
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";

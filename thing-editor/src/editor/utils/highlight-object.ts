@@ -6,13 +6,13 @@ const highlightFilter = new OutlineFilter(3, 0xff0000);
 const highlightObject = (o: Container) => {
 	if(!o.filters || o.filters.indexOf(highlightFilter) < 0) {
 		o.addFilter(highlightFilter);
-		setTimeout(() => {
+		window.setTimeout(() => {
 			o.removeFilter(highlightFilter);
 		}, 100);
-		setTimeout(() => {
+		window.setTimeout(() => {
 			o.addFilter(highlightFilter);
 		}, 200);
-		setTimeout(() => {
+		window.setTimeout(() => {
 			o.removeFilter(highlightFilter);
 		}, 300);
 	}

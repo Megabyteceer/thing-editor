@@ -1,5 +1,4 @@
 import { Container, MIPMAP_MODES, Point, Sprite, WRAP_MODES } from "pixi.js";
-import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";

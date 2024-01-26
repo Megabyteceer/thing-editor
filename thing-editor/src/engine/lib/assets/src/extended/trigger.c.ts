@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import { SelectableProperty, SerializedObject } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import assert from "thing-editor/src/engine/debug/assert";
@@ -261,7 +260,7 @@ export default class Trigger extends Container {
 		}
 	}
 
-	__visibleInEditorSave?= false;
+	__visibleInEditorSave? = false;
 
 	__beforeSerialization() {
 		if(this.__visibleInEditor) {
@@ -357,7 +356,7 @@ If trigger become invisible because of alpha=0 or scale.x=0 or scale.y=0 it <b>s
 
 
 let visibleEnabledTriggers: Trigger[] = [];
-setInterval(() => {
+window.setInterval(() => {
 	for(let i = visibleEnabledTriggers.length - 1; i >= 0; i--) {
 		let t = visibleEnabledTriggers[i];
 		if(!t.__isAnyChildSelected()) {

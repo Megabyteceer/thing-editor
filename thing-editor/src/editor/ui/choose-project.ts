@@ -1,5 +1,4 @@
 import { Component, ComponentChild, h } from "preact";
-import { KeyedObject } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import group from "thing-editor/src/editor/ui/group";

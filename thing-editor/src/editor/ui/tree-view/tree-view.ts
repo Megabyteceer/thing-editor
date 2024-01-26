@@ -1,6 +1,5 @@
 import { Container } from "pixi.js";
 import { ClassAttributes } from "preact";
-import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
@@ -172,7 +171,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 						if(dragTargetExpandTimeOutTarget !== dragTargetNode) {
 							clearDragExpandTimeOut();
 							dragTargetExpandTimeOutTarget = dragTargetNode;
-							dragTargetExpandTimeOut = setTimeout(() => {
+							dragTargetExpandTimeOut = window.setTimeout(() => {
 								dragTargetNode.__nodeExtendData.childrenExpanded = true;
 								this.refresh();
 								dragTargetExpandTimeOut = 0;
@@ -290,7 +289,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 	selectInTree(node: Container, add = false, fieldName?: string, fieldArrayItemNumber = -1) {
 		assert(node, "Attempt to select in tree empty node");
 		game.editor.selection.select(node, add);
-		setTimeout(() => {
+		window.setTimeout(() => {
 
 			if(fieldName && !add) {
 				game.editor.ui.propsEditor.selectField(fieldName, false, false, fieldArrayItemNumber);

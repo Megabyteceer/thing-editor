@@ -1,4 +1,3 @@
-import { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env.js";
 import { ButtonOnlyPropertyDesc } from "thing-editor/src/editor/utils/button-only-selectable-property";
 import { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction.js";
 import game from "../game.js";

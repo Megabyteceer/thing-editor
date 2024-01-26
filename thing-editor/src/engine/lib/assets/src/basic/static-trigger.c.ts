@@ -1,5 +1,4 @@
 /// #if EDITOR
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 /// #endif

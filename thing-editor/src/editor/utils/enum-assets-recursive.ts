@@ -1,4 +1,3 @@
-import { KeyedMap, SerializedObject } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc } from "thing-editor/src/editor/fs";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";

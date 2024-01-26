@@ -28,7 +28,7 @@ export default class OrientationTrigger extends Container {
 			this.__callIfValueByPathSetter(this.__onPortrait);
 			if(!this.getTriggerConditionState()) {
 				const extendData = this.__nodeExtendData;
-				setTimeout(() => {
+				window.setTimeout(() => {
 					if(extendData === this.__nodeExtendData) {
 						this.__callIfValueByPathSetter(this.__onLandscape);
 					}
@@ -47,7 +47,7 @@ export default class OrientationTrigger extends Container {
 			this.__callIfValueByPathSetter(this.__onLandscape);
 			if(this.getTriggerConditionState()) {
 				const extendData = this.__nodeExtendData;
-				setTimeout(() => {
+				window.setTimeout(() => {
 					if(extendData === this.__nodeExtendData) {
 						this.__callIfValueByPathSetter(this.__onPortrait);
 					}
@@ -202,7 +202,7 @@ export default class OrientationTrigger extends Container {
 
 	__EDITOR_onCreate() {
 		this.__checkWarnings();
-		setTimeout(() => {
+		window.setTimeout(() => {
 			if(this.getTriggerConditionState()) {
 				this.landscapeX = this.portraitX;
 				this.landscapeY = this.portraitY;

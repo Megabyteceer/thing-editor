@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, Component, ComponentChild, h } from "preact";
-import { KeyedObject } from "thing-editor/src/editor/env";
+
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc, EditablePropertyType } from "thing-editor/src/editor/props-editor/editable";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";

@@ -1,4 +1,3 @@
-import { KeyedMap, KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import { getAllObjectRefsCount } from "thing-editor/src/editor/utils/scene-all-validator";
 import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
@@ -101,7 +100,6 @@ const regenerateClassesTypings = () => {
 
 		let mapJS = `// thing-editor auto generated file.
 
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 `
 			+ imports.join('\n') +
 			`

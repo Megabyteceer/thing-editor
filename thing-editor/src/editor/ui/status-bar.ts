@@ -13,7 +13,7 @@ export default class StatusBar extends Component {
 	interval!: number;
 
 	componentDidMount(): void {
-		this.interval = setInterval(() => {
+		this.interval = window.setInterval(() => {
 			this.forceUpdate();
 		}, 50);
 	}

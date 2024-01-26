@@ -1,6 +1,5 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, Component, ComponentChild, ComponentType, h } from "preact";
-import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc, EditablePropertyType, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
 import Window from "thing-editor/src/editor/ui/editor-window";
@@ -96,7 +95,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 	restoreScrollPosInterval = 0;
 
 	componentDidMount(): void {
-		this.restoreScrollPosInterval = setInterval(() => {
+		this.restoreScrollPosInterval = window.setInterval(() => {
 			const div = (this.base as HTMLDivElement);
 			if(div.querySelector('.props-group-__root-splitter')) {
 				div.scrollTop = game.editor.settings.getItem('props-editor-scroll-y', 0);
@@ -197,7 +196,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 		let a = fieldName.split(',');
 
 
-		setTimeout(() => {
+		window.setTimeout(() => {
 
 			let fn = a[0];
 			this.refs.forEach((field) => {

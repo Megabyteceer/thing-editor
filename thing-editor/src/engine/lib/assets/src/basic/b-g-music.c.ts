@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { SelectableProperty } from "thing-editor/src/editor/env";
+
 import editable from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -217,7 +217,7 @@ export default class BgMusic extends Container {
 
 	static _recalculateMusic() {
 		if(!musicRecalculationIsScheduled) {
-			setTimeout(recalculateMusic, 1);
+			window.setTimeout(recalculateMusic, 1);
 			musicRecalculationIsScheduled = true;
 		}
 	}
@@ -240,7 +240,7 @@ export default class BgMusic extends Container {
 			if(bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
 				bgm.stop(0);
 				MusicFragment.__stopAll();
-				setTimeout(() => {
+				window.setTimeout(() => {
 					if((bgm.intro === name || bgm.loop === name)) {
 						bgm.play();
 					}

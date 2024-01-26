@@ -1,5 +1,4 @@
 import { Container, Point } from "pixi.js";
-import { SelectableProperty } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";

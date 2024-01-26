@@ -32,7 +32,7 @@ function getKeyframeTypesForField(objects: Container[], propertyName: string): T
 	for(let o of objects) {
 		let fieldDesc = game.editor.getObjectField(o, propertyName);
 		if(!fieldDesc) {
-			setTimeout(() => {
+			window.setTimeout(() => {
 				game.editor.ui.status.warn("Property '" + propertyName + "' is not exists anymore, but movieClip have animation for it.", 32040, o);
 			}, 0);
 			return [];

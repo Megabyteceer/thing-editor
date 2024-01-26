@@ -2,7 +2,6 @@ import assert from "thing-editor/src/engine/debug/assert.js";
 import game from "../game.js";
 
 import { Container } from "pixi.js";
-import { KeyedMap, ValuePath } from "thing-editor/src/editor/env.js";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
 import { stringToCallData } from "./call-by-path.js";
 /// #if EDITOR

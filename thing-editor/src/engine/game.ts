@@ -1,6 +1,5 @@
 import { Application, BaseTexture, Container, GC_MODES, IApplicationOptions, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import type { __EditorType } from "thing-editor/src/editor/editor";
-import type { AssetsDescriptor, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import assert from "thing-editor/src/engine/debug/assert";
@@ -219,7 +218,7 @@ class Game {
 			fireNextOnResizeImmediately = false;
 			this.onResize();
 		} else {
-			resizeOutJump = setTimeout(() => {
+			resizeOutJump = window.setTimeout(() => {
 				resizeOutJump = 0;
 				if(game.isMobile.any // eslint-disable-line no-constant-condition
 					/// #if EDITOR
@@ -227,7 +226,7 @@ class Game {
 					/// #endif
 				) {
 					for(let i of [20, 40, 80, 200, 500, 1000, 1500, 2000, 3000]) {
-						setTimeout(this.onResize, i);
+						window.setTimeout(this.onResize, i);
 					}
 				}
 				this.onResize();
@@ -1431,7 +1430,7 @@ const focusChangeHandler = (focused: boolean) => {
 		game.isFocused = focused;
 
 		if(game.pixiApp) {
-			setTimeout(() => {
+			window.setTimeout(() => {
 				game.keys.resetAll();
 			}, 10);
 		}
@@ -1445,7 +1444,7 @@ const visibilityChangeHandler = () => {
 		game.isVisible = isVisible;
 
 		if(game.pixiApp) {
-			setTimeout(() => {
+			window.setTimeout(() => {
 				if(game.classes.BgMusic) {
 					/// #if EDITOR
 					/*

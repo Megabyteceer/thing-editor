@@ -1,4 +1,3 @@
-import { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import DataPathEditor, { DataPathEditorProps } from "thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";

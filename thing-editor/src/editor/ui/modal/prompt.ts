@@ -31,7 +31,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 	}
 
 	componentDidMount() {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			let input = document.querySelector('.modal-content input') as HTMLInputElement;
 			if(input) {
 				try {

@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import { SerializedObject } from "thing-editor/src/editor/env";
 import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
 import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 
@@ -80,7 +79,7 @@ export default class PrefabEditor {
 		game.showModal(object, undefined, true);
 		this.currentPrefabName = object.name;
 		object.__nodeExtendData.childrenExpanded = true;
-		setTimeout(() => {
+		window.setTimeout(() => {
 			let selectionData = game.editor.settingsLocal.getItem('__prefab-selection' + game.currentContainer.name);
 			if(selectionData) {
 				game.editor.selection.loadSelection(selectionData);

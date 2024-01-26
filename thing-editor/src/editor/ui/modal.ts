@@ -39,7 +39,7 @@ let contentProps = {
 			const searchInput = (content as HTMLDivElement).querySelectorAll('input')[0] as HTMLInputElement;
 
 			if(searchInput) {
-				setTimeout(() => {
+				window.setTimeout(() => {
 					searchInput.select();
 				}, 10);
 			}
@@ -115,7 +115,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
 		let closedModalItem = modal.state.modals.pop()!;
 		modal.refresh();
-		setTimeout(() => {
+		window.setTimeout(() => {
 			closedModalItem.resolve(val);
 		}, 1);
 	}
@@ -157,7 +157,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 			notifyHides.set(hideId, txt);
 		}
 
-		setTimeout(() => {
+		window.setTimeout(() => {
 			notifyTexts.delete(txt);
 			this.refresh();
 		}, 1200);
@@ -182,7 +182,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	hideSpinner() {
 		spinnerShowCounter--;
 		if(spinnerShowCounter === 0) {
-			setTimeout(() => {
+			window.setTimeout(() => {
 				if(game.stage) {
 					game.stage.interactiveChildren = true;
 				}
@@ -242,7 +242,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 			return Promise.resolve();
 		} else {
 			if(game.stage && !game.__EDITOR_mode) {
-				setTimeout(game.editor.ui.viewport.stopExecution, 0);
+				window.setTimeout(game.editor.ui.viewport.stopExecution, 0);
 			}
 			return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), errorCode, ' ', title, R.btn('?', () => {
 				Help.openErrorCodeHelp(errorCode);

@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import type { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 
 import assert from "thing-editor/src/engine/debug/assert";
@@ -63,7 +62,7 @@ const L: TL = ((id: string, values?: KeyedObject): string => {
 		if(!warnedIds.hasOwnProperty(id)) {
 			warnedIds[id] = true;
 			game.editor.ui.status.warn("Translatable text key '" + id + "' is not exists.", 32031, tryToFindOwner);
-			setTimeout(() => {
+			window.setTimeout(() => {
 				warnedIds = {};
 			}, 1000);
 		}

@@ -139,7 +139,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 			if(!item) {
 				item = R.span({ className: 'danger' }, this.props.value);
 				if(this.props.field && !this.props.field.isTranslatableKey) {
-					setTimeout(() => {
+					window.setTimeout(() => {
 						game.editor.ui.status.error('Invalid enum value: ' + this.props.value + ' ▾', 32002, game.editor.selection[0], this.props.field!.name);
 					}, 1);
 				}
@@ -148,7 +148,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 		if(this.state.toggled) {
 			if(this.focusFilter) {
-				setTimeout(() => {
+				window.setTimeout(() => {
 					let input = document.querySelector('#select-lists-root .select-editor-filter') as HTMLInputElement;
 					if(input) {
 						try {
@@ -182,15 +182,15 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 			if(this.checkForNeedClearFilter && a.length < 1) {
 				this.checkForNeedClearFilter = false;
-				setTimeout(() => {
+				window.setTimeout(() => {
 					this.setFilter('');
 				}, 1);
 			}
 
 			this.selectedItem = item as SelectEditorItem;
 
-			setTimeout(() => {
-				setTimeout(() => {
+			window.setTimeout(() => {
+				window.setTimeout(() => {
 					let b = this.base as HTMLElement;
 					if(b) {
 						const bounds = b.getBoundingClientRect();
@@ -248,3 +248,4 @@ const stopPropagationIfCtrl = (ev: MouseEvent) => {
 export default SelectEditor;
 
 export type { SelectEditorItem };
+

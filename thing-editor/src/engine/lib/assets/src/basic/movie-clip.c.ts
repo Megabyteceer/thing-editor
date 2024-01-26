@@ -1,6 +1,5 @@
 
 import { Container } from 'pixi.js';
-import { KeyedMap, KeyedObject, SelectableProperty, SerializedObject } from 'thing-editor/src/editor/env';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import editable, { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';

@@ -1,7 +1,5 @@
 /// <reference types="vite/client" />
 
-import { Container, DisplayObject, Point } from "pixi.js";
-
 type CallBackPath = string;
 type ValuePath = string;
 type CallBackParsedData = {
@@ -29,7 +27,7 @@ interface NodeExtendData {
 	isPrefabReference?: string;
 
 	/** tree will display objects of this children */
-	childrenContainer?: Container;
+	childrenContainer?: import('pixi.js').Container;
 
 	constructorCalled?: boolean;
 
@@ -57,7 +55,7 @@ interface NodeExtendData {
 		visibleFields: KeyedMap<true>;
 	};
 
-	tmpGlobalPos?: Point;
+	tmpGlobalPos?: import('pixi.js').Point;
 
 	statusWarnOwnerId?: number;
 
@@ -84,14 +82,14 @@ type KeyedObject = { [key: string]: any; };
 
 type SerializedDataValidationError = undefined | {
 	message: string,
-	findObjectCallback: ((o: Container) => boolean),
+	findObjectCallback: ((o: import('pixi.js').Container) => boolean),
 	fieldName?: string,
 	errorCode?: number;
 };
 
 type SerializedObjectProps = KeyedObject;
 
-type SourceMappedConstructor = typeof DisplayObject;
+type SourceMappedConstructor = typeof import('pixi.js').DisplayObject;
 
 type KeyedMap<T> = {
 	[key: string]: T;
@@ -108,13 +106,15 @@ type SerializedObject = {
 	':'?: SerializedObject[] | undefined,
 };
 
-type electron_ThingEditorServer = { // exposed from electron
+type Electron_ThingEditorServer = { // exposed from electron
 	fs: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => FSCallback;
 	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => Promise<any>;
 	versions: KeyedObject;
 	onServerMessage: (_onServerMessage: (event: string, ...args: any[]) => void) => void;
 	argv: string[];
 };
+
+declare const electron_ThingEditorServer: Electron_ThingEditorServer;
 
 type AnyType = any;
 

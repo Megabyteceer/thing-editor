@@ -1,4 +1,3 @@
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { FileDescClass } from "thing-editor/src/editor/fs";
 import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
 import { addSharedAssetContextMenu } from "thing-editor/src/editor/ui/assets-view/assets-view";

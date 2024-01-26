@@ -1,4 +1,3 @@
-import { KeyedMap } from "thing-editor/src/editor/env";
 import HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -20,7 +19,7 @@ let __ownersValidationId = 0;
 /// #endif
 
 
-setInterval(() => {
+window.setInterval(() => {
 	for(let h in allActiveFragments) {
 		allActiveFragments[h]._updateFading();
 	}

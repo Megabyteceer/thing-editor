@@ -1,6 +1,5 @@
 import { Container, DisplayObject } from "pixi.js";
 import { Component, ComponentChild, render } from "preact";
-import { KeyedObject, SelectableProperty, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import CallbackEditor from "thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor";
@@ -40,7 +39,7 @@ const syncTip = () => {
 const startTipSync = (enabled: any = false) => {
 	if(enabled) {
 		if(!tipSyncInterval) {
-			tipSyncInterval = setInterval(syncTip, 50);
+			tipSyncInterval = window.setInterval(syncTip, 50);
 		}
 	} else {
 		if(tipSyncInterval) {
@@ -238,7 +237,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	interval = 0;
 
 	componentDidMount(): void {
-		this.interval = setInterval(this.refreshTip, 50);
+		this.interval = window.setInterval(this.refreshTip, 50);
 	}
 
 	componentWillUnmount(): void {

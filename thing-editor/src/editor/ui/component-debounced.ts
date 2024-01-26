@@ -4,7 +4,7 @@ export default class ComponentDebounced<P = object, S = object> extends Componen
 	private _refreshTimeout = 0;
 	refresh() {
 		if(!this._refreshTimeout) {
-			this._refreshTimeout = setTimeout(() => {
+			this._refreshTimeout = window.setTimeout(() => {
 				this._refreshTimeout = 0;
 				this.forceUpdate();
 			}, 0);

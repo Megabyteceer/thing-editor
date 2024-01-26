@@ -1,6 +1,5 @@
 import { Text } from "pixi.js";
 import { ClassAttributes, ComponentChild, h } from "preact";
-import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDescL18n } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
@@ -94,7 +93,7 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 	static editKey(key: string | null, langId: string = L.getCurrentLanguageId()) {
 		if(!ignoreEdit) {
 			ignoreEdit = true;
-			setTimeout(() => {
+			window.setTimeout(() => {
 				ignoreEdit = false;
 			}, 10);
 			showTextTable().then(() => {
@@ -294,7 +293,7 @@ function showTextTable(): Promise<void> {
 	return new Promise((resolve) => {
 		if(!view) {
 			LanguageView.toggle();
-			setTimeout(resolve, 1);
+			window.setTimeout(resolve, 1);
 		} else {
 			resolve();
 		}
@@ -438,7 +437,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 					}
 				}
 			}
-			setTimeout(() => {
+			window.setTimeout(() => {
 				let area = document.querySelector('.langs-editor-table #' + textAreaID(langId, key)) as HTMLTextAreaElement;
 				scrollInToViewAndShake(area);
 				area.focus();
@@ -584,7 +583,7 @@ function onModified(modifiedLangId?: string) {
 		clearTimeout(debounceTimeOut);
 	}
 
-	debounceTimeOut = setTimeout(() => {
+	debounceTimeOut = window.setTimeout(() => {
 		L.refreshAllTextEverywhere();
 
 		currentDirAssets.forEach((file, langId) => {

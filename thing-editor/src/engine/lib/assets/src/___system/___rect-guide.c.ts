@@ -1,7 +1,6 @@
 
 
 import { Point, Renderer } from "pixi.js";
-import { KeyedObject } from "thing-editor/src/editor/env";
 import { EditablePropertyDesc, EditableRect } from "thing-editor/src/editor/props-editor/editable";
 import overlayLayer from "thing-editor/src/editor/ui/editor-overlay";
 import game from "thing-editor/src/engine/game";

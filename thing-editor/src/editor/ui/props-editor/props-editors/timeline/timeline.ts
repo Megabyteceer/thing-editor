@@ -1,7 +1,6 @@
 import { Container } from "pixi.js";
 import { ClassAttributes, h } from "preact";
 
-import { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
@@ -225,7 +224,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				Timeline.allFieldDataChanged(o);
 			}
 			timelineInstance.refresh();
-			setTimeout(() => {
+			window.setTimeout(() => {
 				clearSelection();
 				allKeyframesToSelect.forEach((kf) => {
 					select(kf.___view!);
@@ -370,7 +369,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	centralizeSelection() {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			if(selectedComponents.length > 0) {
 				timeMarker.scrollInToView(selectedComponents[0].getTime());
 			}
@@ -689,7 +688,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	_afterHistoryJump() {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			let v = Array.from(justModifiedKeyframes.values());
 			if(v.length > 0) {
 				clearSelection();
@@ -889,7 +888,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 function getTimelineWindow(childSelector: string): Promise<HTMLDivElement> {
 	return new Promise((resolve) => {
-		let interval = setInterval(() => {
+		let interval = window.setInterval(() => {
 			let w = document.querySelector('#timeline') as HTMLDivElement;
 			if(w) {
 				if(childSelector) {

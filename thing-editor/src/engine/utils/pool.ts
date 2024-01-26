@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 
 let pools = new Map();

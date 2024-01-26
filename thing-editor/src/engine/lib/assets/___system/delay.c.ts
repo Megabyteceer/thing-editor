@@ -10,7 +10,7 @@ Usage:
 	d.remove(); // to cancel delay.
 
 	
-	Why should you use this delay instead of standard JS setTimeout?
+	Why should you use this delay instead of standard JS window.setTimeout?
 	This delay will be linked to current scene,
 	and if user will close scene and return to main menu,
 	or modal popup will appear,

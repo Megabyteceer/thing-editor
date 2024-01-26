@@ -72,7 +72,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 	interval = 0;
 
 	componentDidMount() {
-		this.interval = setInterval(() => {
+		this.interval = window.setInterval(() => {
 			this.refresh();
 		}, 1000 / 60);
 	}
@@ -213,7 +213,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 	}
 }
 
-setTimeout(SoundProfiler.renderWindow, 100,);
+window.setTimeout(SoundProfiler.renderWindow, 100,);
 
 editorEvents.on('soundPlay', SoundProfiler.onSoundPlay);
 

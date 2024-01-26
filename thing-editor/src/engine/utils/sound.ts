@@ -1,4 +1,3 @@
-import type { KeyedMap, KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 /// #if EDITOR
 import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 /// #endif
@@ -103,7 +102,7 @@ export default class Sound {
 
 	static rememberEnablings() {
 		if(!enablingSaveTimeout) {
-			enablingSaveTimeout = setTimeout(_rememberEnablings, 10);
+			enablingSaveTimeout = window.setTimeout(_rememberEnablings, 10);
 		}
 	}
 
@@ -185,7 +184,7 @@ export default class Sound {
 		/// #endif
 		if(!s) {
 			let er = new Error('Attempt to play unknown sound "' + soundId + '"');
-			setTimeout(() => {
+			window.setTimeout(() => {
 				throw er;
 			});
 			return;
@@ -257,7 +256,7 @@ export default class Sound {
 		const unblockedHanlder = () => soundLockHandler(false);
 		EMPTY_SOUND.once('playerror', blockedHanlder);
 		EMPTY_SOUND.once('end', unblockedHanlder);
-		soundLockTimeoutId = setTimeout(blockedHanlder, 500);
+		soundLockTimeoutId = window.setTimeout(blockedHanlder, 500);
 		try {
 			EMPTY_SOUND.play();
 		} catch(er) {
@@ -375,7 +374,7 @@ function highlightPlayedSound(soundId: string) {
 	if(sndDebuggerShowed) {
 		let soundTitle: HTMLDivElement = document.querySelector('.sounds-debug-panel .snd-name-' + soundId)!;
 		soundTitle.classList.remove('animate-sound-play');
-		setTimeout(() => {
+		window.setTimeout(() => {
 			soundTitle.classList.add('animate-sound-play');
 		}, 5);
 	}
@@ -499,7 +498,7 @@ function showSndDebugger() {
 			const sndData = await IndexedDBUtils.openFile(sndName);
 			let a = new Audio(sndData.data);
 			a.play();
-			setTimeout(() => {
+			window.setTimeout(() => {
 				a.pause();
 			}, 2000);
 			overrideSound(sndName, sndData.data);
@@ -523,7 +522,7 @@ function showSndDebugger() {
 				clearTimeout(timeouts[sndName]);
 				delete timeouts[sndName];
 			}
-			timeouts[sndName] = setTimeout(() => {
+			timeouts[sndName] = window.setTimeout(() => {
 				Lib.getSound(sndName).stop();
 			}, 2000);
 		});

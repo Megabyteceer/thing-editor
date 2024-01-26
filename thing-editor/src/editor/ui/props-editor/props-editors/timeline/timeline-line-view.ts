@@ -139,7 +139,7 @@ class PlayingDisplay extends Component<TimelineLineViewProps> {
 	renderedTime = -1;
 
 	componentDidMount() {
-		this.interval = setInterval(this.update.bind(this), 35);
+		this.interval = window.setInterval(this.update.bind(this), 35);
 	}
 
 	componentWillUnmount() {

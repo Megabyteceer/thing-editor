@@ -1,5 +1,4 @@
 import { Container, DisplayObject } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { FileDesc } from "thing-editor/src/editor/fs";
 import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
 import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";

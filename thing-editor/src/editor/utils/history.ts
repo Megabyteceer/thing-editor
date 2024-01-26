@@ -1,6 +1,5 @@
 import { EventEmitter } from "events";
 import { Container } from "pixi.js";
-import { KeyedMap, SerializedObject } from "thing-editor/src/editor/env";
 import MainMenu from "thing-editor/src/editor/ui/main-menu";
 import regenerateCurrentSceneMapTypings from "thing-editor/src/editor/utils/generate-editor-typings";
 import type { SelectionData } from "thing-editor/src/editor/utils/selection";
@@ -109,7 +108,7 @@ class History {
 
 	scheduleHistorySave() {
 		if(!historySaveScheduled) {
-			historySaveScheduled = setTimeout(() => {
+			historySaveScheduled = window.setTimeout(() => {
 				historySaveScheduled = 0;
 				instance.saveHistoryNow();
 			}, 1);
@@ -119,7 +118,7 @@ class History {
 	scheduleSelectionSave() {
 		clearSelectionSaveTimeout();
 		if(game.__EDITOR_mode) {
-			needSaveSelectionInToHistory = setTimeout(saveSelectionState, 50);
+			needSaveSelectionInToHistory = window.setTimeout(saveSelectionState, 50);
 		}
 	}
 

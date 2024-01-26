@@ -3,7 +3,7 @@ const waitForCondition = (condition: () => any) => {
 		return Promise.resolve();
 	}
 	return new Promise((resolve) => {
-		let i = setInterval(() => {
+		let i = window.setInterval(() => {
 			if(condition()) {
 				resolve(undefined);
 				clearInterval(i);

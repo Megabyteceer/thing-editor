@@ -1,5 +1,4 @@
 import { Container, DisplayObject } from "pixi.js";
-import { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";

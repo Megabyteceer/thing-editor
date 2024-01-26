@@ -1,5 +1,4 @@
 import { Container, Point } from "pixi.js";
-import { SerializedObject } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";

@@ -1,5 +1,4 @@
 import { ClassAttributes, Component, ComponentChild } from "preact";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import group from "thing-editor/src/editor/ui/group";
 import sp from "thing-editor/src/editor/utils/stop-propagation";

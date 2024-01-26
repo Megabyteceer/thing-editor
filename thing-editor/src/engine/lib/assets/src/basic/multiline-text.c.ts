@@ -1,5 +1,4 @@
 import { Text } from "pixi.js";
-import { SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import ___Guide from "thing-editor/src/engine/lib/assets/src/___system/guide.c";

@@ -33,7 +33,7 @@ export default class HowlSound extends Howl {
 			if(attempt < 3 && !game._loadingErrorIsDisplayed) {
 				console.log(attempt);
 				attempt++;
-				setTimeout(() => {
+				window.setTimeout(() => {
 					this.load();
 				}, attempt * 1000);
 			} else {
@@ -59,3 +59,4 @@ export default class HowlSound extends Howl {
 }
 
 export type { HowlSoundOptions };
+

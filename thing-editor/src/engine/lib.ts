@@ -1,6 +1,5 @@
 
 import { Assets, Cache, Container, MIPMAP_MODES, Spritesheet, Texture, WRAP_MODES } from "pixi.js";
-import { AssetsDescriptor, KeyedMap, KeyedObject, NodeExtendData, SerializedObject, SerializedObjectProps, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import fs, { AssetType, FileDesc, FileDescImage, FileDescL18n, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
 import TLib from "thing-editor/src/editor/prefabs-typing";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
@@ -189,7 +188,7 @@ export default class Lib
 			}).catch((_er) => {
 				if(attempt < 3 && !game._loadingErrorIsDisplayed) {
 					attempt++;
-					setTimeout(() => {
+					window.setTimeout(() => {
 						Lib.addAtlas(name, url + ((attempt === 1) ? '?a' : 'a'), attempt
 							/// #if EDITOR
 							, parentAsset
@@ -237,7 +236,7 @@ export default class Lib
 				}).catch(() => {
 					if(attempt < 3 && !game._loadingErrorIsDisplayed) {
 						attempt++;
-						setTimeout(() => {
+						window.setTimeout(() => {
 							Lib.addTexture(name, textureURL + ((attempt === 1) ? '?a' : 'a'), attempt);
 							game.loadingRemove(textureURL);
 						}, attempt * 1000);
@@ -387,7 +386,7 @@ export default class Lib
 				replacedPrefabName = '___system/unknown-prefab';
 				if(!showedReplaces[src.r!]) {
 					showedReplaces[src.r!] = true;
-					setTimeout(() => { // wait for id assign
+					window.setTimeout(() => { // wait for id assign
 						game.editor.ui.status.error("Reference to unknown prefab: '" + src.r + "'", 99999, ret);
 					}, 1);
 				}
@@ -413,7 +412,7 @@ export default class Lib
 				replaceClassName = replaceClass.__className;
 				if(!showedReplaces[src.c!]) {
 					showedReplaces[src.c!] = true;
-					setTimeout(() => { // wait for id assign
+					window.setTimeout(() => { // wait for id assign
 						game.editor.ui.status.error("Unknown class " + src.c, 32012, ret);
 					}, 1);
 				}

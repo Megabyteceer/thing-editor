@@ -7,7 +7,7 @@ function reApplyTextures(name: string) {
 	if(texturesRefreshSchedulledTimeout) {
 		clearTimeout(texturesRefreshSchedulledTimeout);
 	}
-	texturesRefreshSchedulledTimeout = setTimeout(refreshAllTextures, 10);
+	texturesRefreshSchedulledTimeout = window.setTimeout(refreshAllTextures, 10);
 	texturesRefreshSchedulledNames.add(name);
 }
 

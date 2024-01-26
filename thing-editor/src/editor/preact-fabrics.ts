@@ -1,6 +1,5 @@
 import { Container } from 'pixi.js';
 import { ComponentChild, ComponentChildren, Fragment, h, render } from 'preact';
-import { KeyedMap, KeyedObject, SourceMappedConstructor } from 'thing-editor/src/editor/env';
 import type { FileDescClass, FileDescImage } from 'thing-editor/src/editor/fs';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
@@ -219,7 +218,7 @@ window.addEventListener('mousedown', hidePreview);
 const onImageAssetEnter = (ev: MouseEvent) => {
 	hidePreview();
 	let img: HTMLImageElement = (ev.target as HTMLImageElement);
-	assetPreviewTimeout = setTimeout(() => {
+	assetPreviewTimeout = window.setTimeout(() => {
 		previewShown = true;
 		render(R.div({
 			onMouseLeave: onImageAssetLeave,

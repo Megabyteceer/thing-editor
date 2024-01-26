@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import { KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 
 import game from "thing-editor/src/engine/game";

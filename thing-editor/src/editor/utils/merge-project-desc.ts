@@ -1,5 +1,3 @@
-
-import { KeyedObject } from "thing-editor/src/editor/env";
 import assert from "thing-editor/src/engine/debug/assert";
 
 const isProjectDescValueKeyedMap = (key: string) => {

@@ -5,11 +5,7 @@ const PATCH_BEGIN = ` // thing-editor patch begin
 
 patch(
 	'node_modules/@pixi/display/lib/DisplayObject.d.ts',
-	'', /*to the beginning*/
-	`
-import type { NodeExtendData } from 'thing-editor/src/editor/env';
-`
-	,
+
 	'export declare abstract class DisplayObject extends utils.EventEmitter<DisplayObjectEvents> {',
 	`
     

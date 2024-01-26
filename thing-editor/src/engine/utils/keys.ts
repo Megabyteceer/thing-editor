@@ -1,4 +1,3 @@
-import { SelectableProperty } from "thing-editor/src/editor/env.js";
 import game from "../game.js";
 
 let downedKeys: Set<number> = new Set();

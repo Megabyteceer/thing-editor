@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import type { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import makePathForKeyframeAutoSelect from "thing-editor/src/editor/utils/movie-clip-keyframe-select-path";
 import assert from "thing-editor/src/engine/debug/assert";

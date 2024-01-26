@@ -5,7 +5,6 @@ import game from "thing-editor/src/engine/game.js";
 
 /// #endif
 
-import type { KeyedMap, KeyedObject } from "thing-editor/src/editor/env.js";
 import TimelineLabelView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view";
 import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
 

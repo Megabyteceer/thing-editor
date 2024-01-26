@@ -195,7 +195,7 @@ export default class SceneLinkedPromise extends Container {
 	_handleFinally() {
 		/// #if DEBUG
 		let id = this._promiseId;
-		let errorTimeout = setTimeout(() => {
+		let errorTimeout = window.setTimeout(() => {
 			if(id === this._promiseId) {
 				this._turnPromiseRejected('Exception in SceneLinkedPromise finally handler.');
 			}
@@ -212,7 +212,7 @@ export default class SceneLinkedPromise extends Container {
 			try { // eslint-disable-line no-unreachable
 				(this._finallyHandlers.shift()!)();
 			} catch(err) { // eslint-disable-line no-empty
-				setTimeout(() => {
+				window.setTimeout(() => {
 					throw (err);
 				}, 0);
 				this._turnPromiseRejected(err); // eslint-disable-line no-unreachable
@@ -257,7 +257,7 @@ export default class SceneLinkedPromise extends Container {
 
 			/// #endif
 			if(this._rejectHandlers.length === 0) {
-				setTimeout(() => {
+				window.setTimeout(() => {
 					console.error('SceneLinkedPromise unhandled rejection.');
 					throw r;
 				}, 0);
@@ -281,7 +281,7 @@ export default class SceneLinkedPromise extends Container {
 					}
 				} catch(err) { // eslint-disable-line no-empty
 					if(this._rejectHandlers.length === 0) {
-						setTimeout(() => {
+						window.setTimeout(() => {
 							throw (err);
 						}, 0);
 					}
@@ -295,7 +295,7 @@ export default class SceneLinkedPromise extends Container {
 			this.__passedHandlersDebug = [];
 
 			let id = this._promiseId;
-			let errorTimeout = setTimeout(() => {
+			let errorTimeout = window.setTimeout(() => {
 				if(id === this._promiseId) {
 					this._turnPromiseRejected('Exception in SceneLinkedPromise handler.');
 				}
@@ -321,7 +321,7 @@ export default class SceneLinkedPromise extends Container {
 					}
 				} catch(err) { // eslint-disable-line no-empty
 					if(this._rejectHandlers.length === 0) {
-						setTimeout(() => {
+						window.setTimeout(() => {
 							throw (err);
 						}, 0);
 					}

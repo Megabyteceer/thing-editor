@@ -12,7 +12,7 @@ const isEventFocusOnInputElement = (ev: KeyboardEvent): Promise<boolean> => {
 				resolve(true);
 			} else {
 				const currentVal = (ev.target as HTMLInputElement).value;
-				setTimeout(() => {
+				window.setTimeout(() => {
 					resolve(currentVal !== (ev.target as HTMLInputElement).value);
 
 				}, 0);

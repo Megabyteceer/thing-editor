@@ -21,7 +21,7 @@ function onMouseUp() {
 		document.exitPointerLock();
 		draggingElement = undefined;
 	}
-	setTimeout(clearDownedArrayRef, 1);
+	window.setTimeout(clearDownedArrayRef, 1);
 }
 
 document.addEventListener('mouseup', onMouseUp);
@@ -237,3 +237,4 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 export default NumberEditor;
 
 export type { NumberEditorProps };
+

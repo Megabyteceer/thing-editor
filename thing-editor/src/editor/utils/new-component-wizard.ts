@@ -1,4 +1,3 @@
-import { KeyedObject } from "thing-editor/src/editor/env";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";

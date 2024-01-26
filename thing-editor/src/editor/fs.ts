@@ -1,6 +1,5 @@
 import { Container, Texture } from "pixi.js";
 import { ComponentChildren } from "preact";
-import type { KeyedObject, SerializedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
 import HowlSound from "thing-editor/src/engine/HowlSound";
@@ -164,7 +163,7 @@ electron_ThingEditorServer.onServerMessage((_ev: any, event: string, path: strin
 			if(path.endsWith('.ts')) {
 				game.editor.classesUpdatedExternally();
 			} else {
-				fileChangeDebounceTimeout = setTimeout(fileChangeHandler, 330);
+				fileChangeDebounceTimeout = window.setTimeout(fileChangeHandler, 330);
 			}
 		}
 	} else if(event === 'fs/notify') {
@@ -175,7 +174,7 @@ electron_ThingEditorServer.onServerMessage((_ev: any, event: string, path: strin
 const ignoreFiles = new Set();
 function ignoreWatch(fileName: string) {
 	ignoreFiles.add(fileName);
-	setTimeout(() => {
+	window.setTimeout(() => {
 		ignoreFiles.delete(fileName);
 	}, 500);
 }
@@ -477,7 +476,7 @@ export default class fs {
 				const map = assetsByTypeByName.get(file.assetType as AssetType) as Map<string, FileDesc>;
 				if(file.assetType !== AssetType.CLASS && map.has(file.assetName)) {
 					const existingFile = map.get(file.assetName)!;
-					setTimeout(() => {
+					window.setTimeout(() => {
 						if(fs.isFilesEqual(file.fileName, existingFile.fileName)) {
 							game.editor.warnEqualFiles(file, existingFile);
 						}

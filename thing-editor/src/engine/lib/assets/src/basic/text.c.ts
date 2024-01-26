@@ -1,7 +1,6 @@
 
 import { Text, TextStyleAlign } from "pixi.js";
 
-import { KeyedMap, KeyedObject, SourceMappedConstructor } from "thing-editor/src/editor/env";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
 import LanguageView from "thing-editor/src/editor/ui/language-view";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";

@@ -1,5 +1,4 @@
 import { ClassAttributes, Component, ComponentChild, h } from "preact";
-import type { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
@@ -128,7 +127,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		if(this.saveStateTimeout) {
 			clearTimeout(this.saveStateTimeout);
 		}
-		this.saveStateTimeout = setTimeout(() => {
+		this.saveStateTimeout = window.setTimeout(() => {
 			this.saveState();
 			this.saveStateTimeout = 0;
 		}, 10);
@@ -429,7 +428,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	static bringWindowForward(windowBody: HTMLElement | string, setCurrentHelp?: boolean) {
-		setTimeout(() => {
+		window.setTimeout(() => {
 			if(typeof windowBody === 'string') {
 				windowBody = document.querySelector(windowBody) as HTMLElement;
 			}

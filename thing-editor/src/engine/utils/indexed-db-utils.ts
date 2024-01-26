@@ -1,4 +1,3 @@
-import { KeyedObject } from 'thing-editor/src/editor/env';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 

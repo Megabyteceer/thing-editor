@@ -1,5 +1,4 @@
 import { Circle, Ellipse, Graphics, Point, Polygon, Rectangle, RoundedRectangle } from "pixi.js";
-import { SerializedObject } from "thing-editor/src/editor/env.js";
 import editable from "thing-editor/src/editor/props-editor/editable.js";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -444,7 +443,7 @@ export default class Shape extends Graphics {
 
 			if(isAnySelected) {
 				this.__showPoints();
-				this.__pointsUpdateIntervalInitialized = setInterval(this.__pointsUpdate, 40);
+				this.__pointsUpdateIntervalInitialized = window.setInterval(this.__pointsUpdate, 40);
 			}
 
 		}

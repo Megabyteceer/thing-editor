@@ -1,7 +1,6 @@
 import { Container, Point } from "pixi.js";
 import { ClassAttributes, ComponentChild, h } from "preact";
 import ClassesLoader from "thing-editor/src/editor/classes-loader";
-import { SelectableProperty } from "thing-editor/src/editor/env";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";

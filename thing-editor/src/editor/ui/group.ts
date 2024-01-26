@@ -1,5 +1,4 @@
 import { ComponentChild, ComponentChildren } from "preact";
-import { KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
@@ -108,7 +107,7 @@ function toggleGroup(ev: MouseEvent) {
 		group.style.transform = 'scaleY(0)';
 		group.style.transformOrigin = 'top left';
 		let height: number;
-		let timer = setInterval(() => {
+		let timer = window.setInterval(() => {
 			height = group.clientHeight;
 			if(height > 0) {
 				clearInterval(timer);
@@ -116,12 +115,12 @@ function toggleGroup(ev: MouseEvent) {
 				group.style.position = 'unset';
 				group.style.opacity = 1;
 				group.style.transition = 'all 0.1s';
-				timer = setInterval(() => {
+				timer = window.setInterval(() => {
 					if(group.clientHeight <= 6) {
 						clearInterval(timer);
 						group.style.transform = 'scaleY(1)';
 						group.style.maxHeight = height + 'px';
-						setTimeout(() => {
+						window.setTimeout(() => {
 							group.style.maxHeight = 'unset';
 						}, 114);
 					}
@@ -134,11 +133,11 @@ function toggleGroup(ev: MouseEvent) {
 		group.style.transition = 'unset';
 		group.style.maxHeight = group.clientHeight + 'px';
 		group.style.transition = 'all 0.1s';
-		setTimeout(() => {
+		window.setTimeout(() => {
 			group.style.transform = 'scaleY(0)';
 			group.style.maxHeight = '0px';
 		}, 1);
-		setTimeout(() => {
+		window.setTimeout(() => {
 			group.classList.add('hidden');
 		}, 114);
 	}

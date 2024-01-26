@@ -1,4 +1,3 @@
-import type { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env.js";
 import fs from "thing-editor/src/editor/fs";
 import game from "thing-editor/src/engine/game";
 
@@ -59,7 +58,7 @@ class Settings {
 				return;
 			}
 			/// #endif
-			this.__flushInterval = setTimeout(this.flush, 10, this);
+			this.__flushInterval = window.setTimeout(this.flush, 10, this);
 		}
 	}
 

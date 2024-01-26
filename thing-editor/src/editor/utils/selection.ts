@@ -3,7 +3,6 @@ import assert from "thing-editor/src/engine/debug/assert";
 import { OutlineFilter } from '@pixi/filter-outline';
 
 import { Container } from "pixi.js";
-import { SourceMappedConstructor } from "thing-editor/src/editor/env";
 import TreeNode from "thing-editor/src/editor/ui/tree-view/tree-node";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
@@ -14,7 +13,7 @@ const selectionFilter = new OutlineFilter(3, 0xffff00);
 selectionFilter.padding = 3;
 let filterPhase = false;
 
-setInterval(() => {
+window.setInterval(() => {
 	if(filterPhase || !game.editor.showGizmo) {
 		if(selectionFilter.alpha > 0) {
 			selectionFilter.alpha -= 0.02;

@@ -1,5 +1,4 @@
 import { ClassAttributes, h } from "preact";
-import { KeyedObject } from "thing-editor/src/editor/env";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import CallbackEditor from "thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor";
@@ -287,7 +286,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		let jumpEditor = h(NumberEditor, { value: kf.j, step: 1, min: -99999999, max: 99999999, onChange: this.onJumpChanged });
 
 		if(document.activeElement && document.activeElement.className === 'props-editor-callback') {
-			setTimeout(() => {
+			window.setTimeout(() => {
 				(document.querySelector('.keyframe-callback-editor .props-editor-callback') as HTMLInputElement).focus();
 			});
 		}

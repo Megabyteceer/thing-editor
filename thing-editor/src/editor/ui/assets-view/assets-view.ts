@@ -1,5 +1,4 @@
 import { ComponentChild, h } from "preact";
-import { KeyedMap, KeyedObject } from "thing-editor/src/editor/env";
 import fs, { AllAssetsTypes, AssetType, FileDesc, FileDescClass } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import assetItemRendererClass from "thing-editor/src/editor/ui/assets-view/asset-view-class";
@@ -153,11 +152,11 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 
 	static scrollAssetInToView(assetName: string) {
 		for(let windowId of allWindowsIds) {
-			const window = document.getElementById(windowId);
-			let items = (window as HTMLDivElement).querySelectorAll('.assets-item') as any as HTMLElement[];
+			const windowElement = document.getElementById(windowId) as HTMLDivElement;
+			let items = windowElement.querySelectorAll('.assets-item') as any as HTMLElement[];
 			for(let item of items) {
 				if(item.textContent === assetName) {
-					setTimeout(() => {
+					window.setTimeout(() => {
 						scrollInToViewAndShake(item);
 					}, 10);
 					break;

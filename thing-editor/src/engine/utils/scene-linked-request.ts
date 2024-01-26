@@ -24,7 +24,7 @@ export default class SceneLinkedRequest {
 							}
 						}
 					});
-				await new Promise((resolve) => { setTimeout(resolve, delay); });
+				await new Promise((resolve) => { window.setTimeout(resolve, delay); });
 				delay += 1000;
 			}
 		}, owner);

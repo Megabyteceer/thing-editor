@@ -1,5 +1,4 @@
 import { BLEND_MODES, Mesh, Sprite } from "pixi.js";
-import type { KeyedObject, SelectableProperty } from "thing-editor/src/editor/env";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
 import assert from "thing-editor/src/engine/debug/assert";

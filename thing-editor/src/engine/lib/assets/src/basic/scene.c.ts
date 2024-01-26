@@ -1,5 +1,4 @@
 import { Container } from "pixi.js";
-import type { KeyedMap, SelectableProperty } from "thing-editor/src/editor/env";
 import { FileDesc } from "thing-editor/src/editor/fs";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";

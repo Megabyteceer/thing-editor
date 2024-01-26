@@ -1,4 +1,3 @@
-import { SerializedObject } from "thing-editor/src/editor/env";
 import { SelectionData } from "thing-editor/src/editor/utils/selection";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
