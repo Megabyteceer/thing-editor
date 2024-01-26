@@ -1472,7 +1472,9 @@ input[disabled] {
 	background-color: #300c0c;
 }
 
-
+.project-language-tip {
+	color: #008f5f;
+}
 
 
 

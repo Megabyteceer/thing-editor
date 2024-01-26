@@ -9,6 +9,7 @@ import newComponentWizard from "thing-editor/src/editor/utils/new-component-wiza
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { onNewSceneClick, onSaveAsSceneClick } from "thing-editor/src/editor/utils/scene-utils";
 import game from "thing-editor/src/engine/game";
+import L from 'thing-editor/src/engine/utils/l';
 
 const CHECKED = h('span', { className: '.menu-icon' }, '☑');
 const UNCHECKED = h('span', { className: '.menu-icon' }, '☐');
@@ -98,6 +99,15 @@ const proxyMenuItemClick = (targetItem: ContextMenuItem) => {
 }
 
 let isProxySearch = false;
+
+function switchLanguage(direction: number) {
+	let a = L.getLanguagesList();
+	let i = a.indexOf(L.getCurrentLanguageId());
+	i += direction;
+	if(i < 0) i = a.length - 1;
+	if(i >= a.length) i = 0;
+	L.setCurrentLanguage(a[i]);
+}
 
 const proxyMenuItemDisabled = (targetItem: ContextMenuItem) => {
 	if(!isProxySearch) {
@@ -217,6 +227,19 @@ const MAIN_MENU: MainMenuItem[] = [
 				onClick: buildDebugClick
 			},
 			null,
+			{
+				name: () => {
+					return R.fragment('Switch project language [', R.b({ className: 'project-language-tip' }, L.getCurrentLanguageId()), ']');
+				},
+				onClick: () => {
+					switchLanguage(1);
+				},
+				disabled: () => {
+					return L.getLanguagesList().length < 2;
+				},
+				stayAfterClick: true,
+				hotkey: { key: 'l', ctrlKey: true, altKey: true }
+			},
 			{
 				name: 'Text data editor...',
 				tip: 'Edit localization text data',
