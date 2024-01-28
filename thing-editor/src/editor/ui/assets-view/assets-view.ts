@@ -80,7 +80,6 @@ interface AssetsViewState extends WindowState {
 	filter: KeyedMap<boolean>,
 	filtersActive?: boolean,
 	search: string;
-	doNotSaveState?: boolean;
 }
 
 const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
@@ -124,7 +123,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		}
 
 		if(this.props.hideMenu) {
-			this.setState({ filter: props.filter, filtersActive: true, doNotSaveState: true });
+			this.setState({ filter: props.filter, filtersActive: true });
 		}
 
 		this.searchInputProps = {

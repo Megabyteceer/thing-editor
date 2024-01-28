@@ -39,7 +39,6 @@ interface WindowState {
 	y: number;
 	w: number;
 	h: number;
-	doNotSaveState?: boolean;
 }
 
 class Window<P extends WindowProps = WindowProps, S extends WindowState = WindowState> extends ComponentDebounced<P, S> {
@@ -55,7 +54,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		const state: WindowState = {} as WindowState;
 		for(let key in props) {
 			let val = props[key];
-			if(typeof val === 'number' || typeof val === 'string' || typeof val === 'boolean') {
+			if(typeof val === 'number' || typeof val === 'boolean') {
 				(state as KeyedObject)[key] = val;
 			}
 		}
@@ -134,13 +133,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	saveState() {
-		if(this.state.doNotSaveState) {
-			const state = Object.assign({}, this.state) as any;
-			delete state.title;
-			Window.saveWindowState(this.props.id, state);
-		} else {
-			Window.saveWindowState(this.props.id, this.state);
-		}
+		Window.saveWindowState(this.props.id, this.state);
 	}
 
 	static saveWindowState(windowId: string, state: WindowState) {

@@ -112,7 +112,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 	}
 
 	onChangePrefabClick() {
-		game.editor.choosePrefab('Select prefab', game.editor.selection[0].__nodeExtendData.isPrefabReference).then((selectedPrefabName) => {
+		game.editor.choosePrefab('Select prefab to reference to', game.editor.selection[0].__nodeExtendData.isPrefabReference).then((selectedPrefabName) => {
 			if(selectedPrefabName) {
 				let newObjects = [];
 				for(let o of game.editor.selection) {
