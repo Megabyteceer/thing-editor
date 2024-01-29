@@ -116,6 +116,8 @@ const blendModesSelect = Object.keys(BLEND_MODES).filter((k) => {
 
 Sprite.__EDITOR_icon = 'tree/sprite';
 
+_editableEmbed(Mesh as any, 'Sprite', { type: 'splitter', title: 'Sprite' });
+
 _editableEmbed([Sprite, Mesh as any], 'image', { type: 'image', default: 'EMPTY', canBeEmpty: false, animate: true });
 _editableEmbed([Sprite, Mesh as any], 'tint', {
 	basis: 16,
