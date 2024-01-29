@@ -221,6 +221,7 @@ async function chooseFile(accept = "audio/x-wav"): Promise<IndexedDBRecord> {
 	});
 }
 
+export { chooseFile };
 export type { IndexedDBRecord };
 
 let dataStore: KeyedMap<IndexedDBRecord | KeyedObject | undefined> = {};
