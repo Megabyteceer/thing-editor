@@ -213,6 +213,7 @@ async function chooseFile(accept = "audio/x-wav"): Promise<IndexedDBRecord> {
 			document.body.appendChild(fileInput)
 			fileInput.style.display = 'none'
 		}
+		fileInput.value = '';
 		fileInput.removeEventListener('change', func);
 		func = readFile as any;
 		fileInput.addEventListener('change', func);
