@@ -241,6 +241,12 @@ const MAIN_MENU: MainMenuItem[] = [
 				hotkey: { key: 'l', ctrlKey: true, altKey: true }
 			},
 			{
+				name: 'Local store view...',
+				tip: "View 'game.settings' saved data content.",
+				onClick: () => game.editor.LocalStoreView.toggle(),
+				hotkey: { key: 'e', ctrlKey: true }
+			},
+			{
 				name: 'Text data editor...',
 				tip: 'Edit localization text data',
 				onClick: () => game.editor.LanguageView.toggle(),
@@ -250,11 +256,6 @@ const MAIN_MENU: MainMenuItem[] = [
 				name: 'Project Properties...',
 				tip: 'Edit thing-project.json file',
 				onClick: projectPropsClick
-			}, {
-				name: 'Local store view...',
-				tip: "View 'game.settings' saved data content.",
-				onClick: () => game.editor.LocalStoreView.toggle(),
-				hotkey: { key: 'e', ctrlKey: true }
 			}
 		]
 	},
