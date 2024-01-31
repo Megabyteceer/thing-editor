@@ -396,7 +396,6 @@ export default class Lib
 			Object.assign(ret, src.p);
 
 			if(replacedPrefabName) {
-				ret.name = src.r!;
 				ret.__nodeExtendData.unknownPrefab = src.r;
 				ret.__nodeExtendData.unknownPrefabProps = src.p;
 			}
