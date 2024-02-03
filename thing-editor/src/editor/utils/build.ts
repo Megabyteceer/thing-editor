@@ -20,7 +20,7 @@ const filterChildrenByName = (childData: SerializedObject) => {
 	if(!childData.hasOwnProperty('p')) {
 		return true;
 	}
-	if(childData.p.hasOwnProperty('name') &&
+	if(childData.p.hasOwnProperty('name') && childData.p.name &&
 		childData.p.name.startsWith(prefixToCutOff)) {
 		return false;
 	}

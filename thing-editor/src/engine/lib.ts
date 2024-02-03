@@ -453,9 +453,9 @@ export default class Lib
 			for(let childData of childrenData) {
 				/// #if EDITOR
 
-				let isVisible = game.__EDITOR_mode || !childData.p.hasOwnProperty('name') || !childData.p.name.startsWith('___');
+				let isVisible = game.__EDITOR_mode || !childData.p.hasOwnProperty('name') || !childData.p.name || !childData.p.name.startsWith('___');
 				if(isVisible && Lib.__isPrefabPreviewLoading) {
-					isVisible = !childData.p.hasOwnProperty('name') || !childData.p.name.startsWith('____'); //99999
+					isVisible = !childData.p.hasOwnProperty('name') || !childData.p.name || !childData.p.name.startsWith('____'); //99999
 				}
 				if(isVisible) {
 					/// #endif
