@@ -284,6 +284,8 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 			}
 		}
 
+		(this.state as any).value = value;
+
 		return R.div({
 			className, id: 'property-editor-' + field.name.replace('.', '_'),
 			title: field.name,
