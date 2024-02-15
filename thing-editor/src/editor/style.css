@@ -504,6 +504,10 @@ input {
 	display: none;
 }
 
+#property-editor-angle .props-label:before {
+	content: "\00b0"
+}
+
 .field-editor-wrapper {
 	flex-grow: 2;
 	display: flex;

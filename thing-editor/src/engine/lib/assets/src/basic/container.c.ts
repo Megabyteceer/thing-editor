@@ -358,6 +358,16 @@ _editableEmbed(Container, 'interactive');
 
 _editableEmbed(Container, 'splitter-helpers', { type: 'splitter', title: 'Helpers' });
 
+_editableEmbed(Container, 'angle', {
+	notSerializable: true,
+	afterEdited: () => {
+		for(const o of game.editor.selection) {
+			game.editor.onObjectsPropertyChanged(o, 'rotation', o.rotation);
+
+		}
+	}
+});
+
 _editableEmbed(Container, '__hideInEditor', { type: 'boolean', tip: 'hide object in viewport during editor mode' });
 _editableEmbed(Container, '__doNotSelectByClick', { type: 'boolean', tip: 'prevent object to be selected by viewport click' });
 _editableEmbed(Container, '__description', { type: 'string', multiline: true });
