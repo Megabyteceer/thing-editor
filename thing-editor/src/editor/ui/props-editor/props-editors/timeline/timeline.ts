@@ -263,7 +263,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		window.addEventListener('mouseup', this.onMouseUp);
 		game.editor.history.events.on('beforeHistoryJump', this._beforeHistoryJump);
 		game.editor.history.events.on('afterHistoryJump', this._afterHistoryJump);
-		this._syncOtherMovieclips(this.getTime());
+		this._syncOtherMovieClips(this.getTime());
 	}
 
 	static deselectMovieClip(o: MovieClip) {
@@ -278,7 +278,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	componentWillReceiveProps() {
-		this._syncOtherMovieclips(this.getTime());
+		this._syncOtherMovieClips(this.getTime());
 	}
 
 	static timelineDOMElement: HTMLDivElement | null = null;
@@ -447,25 +447,25 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	setTime(time: number, scrollInToView = false) {
 		timeMarker.setTime(time, scrollInToView);
-		this._syncOtherMovieclips(time);
+		this._syncOtherMovieClips(time);
 		game.editor.refreshPropsEditor();
 	}
 
-	_syncOtherMovieclips(time: number) {
-		let movieclips: MovieClip[] = game.editor.selection as any as MovieClip[];
+	_syncOtherMovieClips(time: number) {
+		let movieClips: MovieClip[] = game.editor.selection as any as MovieClip[];
 
-		if(!game.__EDITOR_mode || !(movieclips[0])._timelineData) {
+		if(!game.__EDITOR_mode || !(movieClips[0])._timelineData) {
 			return;
 		}
 
-		this.applyCurrentTimeValuesToFields(movieclips, time);
+		this.applyCurrentTimeValuesToFields(movieClips, time);
 
 		// apply same animation state to all movieClips around
 		let nextLeftLabel;
 		let nextLeftLabelName;
 
-		for(let labelName in movieclips[0]._timelineData.l) {
-			let label = movieclips[0]._timelineData.l[labelName];
+		for(let labelName in movieClips[0]._timelineData.l) {
+			let label = movieClips[0]._timelineData.l[labelName];
 			if((label.t <= time) && (!nextLeftLabel || nextLeftLabel.t < label.t)) {
 				nextLeftLabel = label;
 				nextLeftLabelName = labelName;
