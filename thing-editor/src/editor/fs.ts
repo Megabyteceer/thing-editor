@@ -273,12 +273,16 @@ export default class fs {
 		return execFs('fs/copyFile', from, to);
 	}
 
-	static run(script: string, ...args: any[]) {
+	static async run(script: string, ...args: any[]) {
 		game.editor.ui.modal.showSpinner();
-		return execFsAsync('fs/run', script, undefined, args).then((res) => {
-			game.editor.ui.modal.hideSpinner();
-			return res;
-		});
+		const res = await execFsAsync('fs/run', script, undefined, args);
+
+		game.editor.ui.modal.hideSpinner();
+		if(res instanceof Error) {
+			game.editor.ui.modal.showError(res.stack, undefined, 'Deploy error');
+			return null;
+		}
+		return res;
 	}
 
 	static renameAsset(file: FileDesc) {

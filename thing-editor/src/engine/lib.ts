@@ -53,6 +53,8 @@ export default class Lib
 /// #endif
 {
 
+	static ASSETS_ROOT = './assets/';
+
 	static sounds: KeyedMap<HowlSound>;
 
 	static resources: KeyedObject = {};
@@ -477,7 +479,7 @@ export default class Lib
 		return ret;
 	}
 
-	static addAssets(data: AssetsDescriptor, assetsRoot: string) {
+	static addAssets(data: AssetsDescriptor, assetsRoot = Lib.ASSETS_ROOT) {
 
 		for(const prefabName in data.prefabs) {
 			if(!prefabs[prefabName]) {

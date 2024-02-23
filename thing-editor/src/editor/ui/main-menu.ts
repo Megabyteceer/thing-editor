@@ -324,7 +324,7 @@ const injectedNames: Set<string> = new Set();
 
 export default class MainMenu extends Component {
 
-	static injectMenu(targetMenuId: string, items: ContextMenuItem[], injectionName: string) {
+	static injectMenu(targetMenuId: string, items: ContextMenuItem[], injectionName: string, pos?: number) {
 		if(injectedNames.has(injectionName)) {
 			return;
 		}
@@ -338,7 +338,11 @@ export default class MainMenu extends Component {
 			}
 			MAIN_MENU.push(menu);
 		}
-		menu.items = menu.items.concat(items);
+		if(typeof pos === 'number') {
+			menu.items.splice(pos, 0, ...items);
+		} else {
+			menu.items = menu.items.concat(items);
+		}
 	}
 
 	render() {

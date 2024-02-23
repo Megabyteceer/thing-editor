@@ -22,6 +22,12 @@ import WebFont from "webfontloader";
 
 import ERROR_HTML from './utils/html-error.html?raw';
 
+/// #if EDITOR
+/*
+/// #endif
+	import preloaderAssets from 'game-root/.tmp/assets-preloader' assert { type: 'json' };
+//*/
+
 let app: Application;
 let stage: Container;
 let modals: Container[] = [];
@@ -144,6 +150,12 @@ class Game {
 	setValueByPath = setValueByPath;
 
 	init(element?: HTMLElement, gameId?: string, pixiOptions?: Partial<IApplicationOptions>) {
+		/// #if EDITOR
+		/*
+		/// #endif
+		game.addAssets(preloaderAssets);
+		//*/
+
 
 		window.dispatchEvent(new CustomEvent("game-will-init"));
 
@@ -269,7 +281,7 @@ class Game {
 	}
 	/// #endif
 
-	addAssets(data: AssetsDescriptor, assetsRoot = './assets/') {
+	addAssets(data: AssetsDescriptor) {
 		/// #if EDITOR
 		assert(false, 'game.addAssets method for runtime only, but called in editor.');
 		/// #endif
@@ -278,7 +290,7 @@ class Game {
 			game.applyProjectDesc(data.projectDesc);
 		}
 
-		Lib.addAssets(data, assetsRoot);
+		Lib.addAssets(data);
 	}
 
 	applyProjectDesc(projectDescriptor: ProjectDesc) {
@@ -1412,14 +1424,7 @@ Object.defineProperty(game.openUrl, '___EDITOR_isHiddenForChooser', ButtonOnlyPr
 };
 
 
-
-
-
-/*
 /// #endif
-	import preloaderAssets from 'game-root/.tmp/assets-preloader' assert { type: 'json' };
-	game.addAssets(preloaderAssets);
-//*/
 
 document.addEventListener('visibilitychange', () => visibilityChangeHandler());
 window.addEventListener('focus', () => focusChangeHandler(true));

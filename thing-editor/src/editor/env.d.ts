@@ -152,8 +152,6 @@ declare global {
 	let electron_ThingEditorServer: electron_ThingEditorServer; // exposed from electron
 }
 
-
-
 /** sound name, duration */
 type SoundAssetEntry = [soundName: string, duration: number];
 

@@ -5,6 +5,15 @@ import getHashedAssetName from "thing-editor/src/editor/utils/get-hashed-asset-n
 import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from "thing-editor/src/engine/game";
 import Lib, { isAtlasAsset } from "thing-editor/src/engine/lib";
 
+const addedCallbacks: Set<string> = new Set();
+const postBuildCallbacks: ((path: string) => void)[] = [];
+
+function addPostBuildScript(callback: (outPath: string) => void, id: string) {
+	if(!addedCallbacks.has(id)) {
+		addedCallbacks.add(id);
+		postBuildCallbacks.push(callback);
+	}
+}
 
 let prefixToCutOff: '___' | '__';
 
@@ -54,16 +63,12 @@ function getAssetsForBuild(type: AssetType) {
 	return fs.getAssetsList(type).filter(filterAssets);
 }
 
-let currentBuildIsDebug = false;
-
 let assetsToCopy: { from: string, to: string; }[] = [];
 
 export default class Build {
 	static build(debug: boolean) {
 
 		game.editor.validateResources();
-
-		currentBuildIsDebug = debug;
 
 		assetsToCopy = [];
 
@@ -172,7 +177,7 @@ export default class Build {
 			}
 		}
 
-		fs.build(game.editor.currentProjectDir, debug, assetsToCopy).then((result: any) => {
+		fs.build(game.editor.currentProjectDir, debug, assetsToCopy).then(async (result: any) => {
 			game.editor.ui.modal.hideSpinner();
 			if(!game.editor.buildProjectAndExit) {
 				if(result instanceof Error) {
@@ -189,8 +194,11 @@ export default class Build {
 					}
 					game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
 				} else {
-					let url = game.editor.currentProjectDir + (currentBuildIsDebug ? 'debug/' : 'release/');
-					game.editor.openUrl('http://localhost:5174/' + url);
+					const path = game.editor.currentProjectDir + (debug ? 'debug/' : 'release/');
+					for(const f of postBuildCallbacks) {
+						await f(path);
+					}
+					game.editor.openUrl('http://localhost:5174/' + path);
 					game.editor.ui.modal.showModal("Builded successfully.");
 				}
 			}
@@ -297,3 +305,5 @@ function renderTextWithFilesLinks(txt: string) {
 	}
 	return txt;
 }
+
+export { addPostBuildScript };
