@@ -198,8 +198,9 @@ export default class Build {
 					for(const f of postBuildCallbacks) {
 						await f(path);
 					}
-					game.editor.openUrl('http://localhost:5174/' + path);
-					game.editor.ui.modal.showModal("Builded successfully.");
+					game.editor.ui.modal.showEditorQuestion("Build", "Builded successfully.", () => {
+						game.editor.openUrl('http://localhost:5174/' + path);
+					}, 'Open');
 				}
 			}
 		});
