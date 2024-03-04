@@ -1278,7 +1278,12 @@ function loadFonts() {
 				if(families) {
 					for(let family of families) {
 						if(fontsProviderName === 'custom') {
-							let fontPath = '/assets/fonts/' + family.replace(/ /g, '');
+							let fontPath = 'assets/fonts/' + family.replace(/ /g, '');
+
+							/// #if EDITOR
+							fontPath = game.editor.currentProjectAssetsDirRooted + 'fonts/' + family.replace(/ /g, '');
+							/// #endif
+
 							game.applyCSS(`
 										@font-face {
 											font-family: '` + family + `';

@@ -11,12 +11,6 @@
 	"framesSkipLimit": 4,
 	"dynamicStageSize": true,
 	"preventUpscale": false,
-	"webfontloader": {
-		"google": {
-			"families": []
-		},
-		"timeout": 6000
-	},
 	"fontHolderText": "ЯSфz",
 	"mipmap": false,
 	"version": "0.0.1",
