@@ -328,11 +328,15 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					R.hr(),
 					resolutionSelect,
 					R.btn('⛶', () => {
-						(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen().then(() => {
-							game.onResize();
-							game.editor.selection.clearSelection();
-						});
-					}, 'Go fullscreen', 'big-btn'),
+						if(document.fullscreenElement) {
+							document.exitFullscreen();
+						} else {
+							(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen().then(() => {
+								game.onResize();
+								game.editor.selection.clearSelection();
+							});
+						}
+					}, 'Go fullscreen', 'big-btn', { key: 'ENTER', altKey: true }),
 					R.hr(),
 					'Speed:',
 					h(SelectEditor, {
