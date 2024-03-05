@@ -1,5 +1,5 @@
 
-import { Text, TextStyleAlign } from "pixi.js";
+import { Text, TextStyleAlign, TextStyleFontWeight } from "pixi.js";
 
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
 import LanguageView from "thing-editor/src/editor/ui/language-view";
@@ -630,41 +630,52 @@ _editableEmbed(Text, 'style.drShDistance', {
 });
 
 _editableEmbed(Text, 'style.fontFamily', {
-	type: 'string'
+	type: 'string',
+	beforeEdited(val) {
+		const text = game.editor.selection[0] as Text;
+		const currentWeight = text.style.fontWeight;
+		const weights = getFontWeights(val);
+		if(!weights.find(w => w.name === currentWeight)) {
+			text.style.fontWeight = weights[Math.floor(weights.length / 2)].value;
+		}
+	}
 });
 
+function getFontWeights(family: string) {
+	let availableWeights: KeyedObject = {};
+	for(let f of Array.from(document.fonts.values())) {
+		if(f.family === family) {
+			let w = parseInt(f.weight);
+			if(w < 301) {
+				availableWeights.lighter = true;
+			} else if(w > 801) {
+				availableWeights.bolder = true;
+			} else if(w > 501) {
+				availableWeights.bold = true;
+			} else {
+				availableWeights.normal = true;
+			}
+		}
+	}
+	let a = Object.keys(availableWeights);
+	if(a.length > 0) {
+		return a.map((k) => {
+			return { name: k, value: k as TextStyleFontWeight };
+		});
+	}
+	return [
+		{ name: 'normal', value: 'normal' },
+		{ name: 'bold', value: 'bold' },
+		{ name: 'bolder', value: 'bolder' },
+		{ name: 'lighter', value: 'lighter' }
+	] as { name: string, value: TextStyleFontWeight }[];
+}
 
 _editableEmbed(Text, 'style.fontWeight', {
 	type: 'string',
 	select: () => {
-		let availableWeights: KeyedObject = {};
-		let family = ((game.editor.selection[0] as Text).style.fontFamily as string).split(',')[0].replace(/['"]/gm, '').trim();
-		for(let f of Array.from(document.fonts.values())) {
-			if(f.family === family) {
-				let w = parseInt(f.weight);
-				if(w < 301) {
-					availableWeights.lighter = true;
-				} else if(w > 801) {
-					availableWeights.bolder = true;
-				} else if(w > 501) {
-					availableWeights.bold = true;
-				} else {
-					availableWeights.normal = true;
-				}
-			}
-		}
-		let a = Object.keys(availableWeights);
-		if(a.length > 0) {
-			return a.map((k) => {
-				return { name: k, value: k };
-			});
-		}
-		return [
-			{ name: 'normal', value: 'normal' },
-			{ name: 'bold', value: 'bold' },
-			{ name: 'bolder', value: 'bolder' },
-			{ name: 'lighter', value: 'lighter' }
-		];
+		const family = ((game.editor.selection[0] as Text).style.fontFamily as string).split(',')[0].replace(/['"]/gm, '').trim();
+		return getFontWeights(family);
 	},
 	default: 'normal'
 });
