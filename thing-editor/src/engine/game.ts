@@ -285,11 +285,9 @@ class Game {
 		/// #if EDITOR
 		assert(false, 'game.addAssets method for runtime only, but called in editor.');
 		/// #endif
-
 		if(data.projectDesc) {
 			game.applyProjectDesc(data.projectDesc);
 		}
-
 		Lib.addAssets(data);
 	}
 
@@ -1262,47 +1260,64 @@ class Game {
 	/// #endif
 }
 
-
+const loadedFonts = new Set() as Set<string>;
+let fontHolder: HTMLSpanElement;
 function loadFonts() {
 	if(game.projectDesc.webfontloader?.custom?.families?.length || game.projectDesc.webfontloader?.google?.families?.length) {
 		game.loadingAdd('FontsLoading');
 		if(game.projectDesc.fontHolderText) {
-			let fontHolder = document.createElement('span');
-			fontHolder.style.opacity = '0';
-			fontHolder.style.color = 'rgba(0,0,0,0.01)';
-			fontHolder.style.position = 'absolute';
-			fontHolder.style.zIndex = '-1';
+			if(!fontHolder) {
+				fontHolder = document.createElement('span');
+				fontHolder.style.opacity = '0';
+				fontHolder.style.color = 'rgba(0,0,0,0.01)';
+				fontHolder.style.position = 'absolute';
+				fontHolder.style.zIndex = '-1';
+			}
 
 			for(let fontsProviderName in game.projectDesc.webfontloader) {
 				let families = (game.projectDesc.webfontloader as KeyedObject)[fontsProviderName].families;
 				if(families) {
 					for(let family of families) {
-						if(fontsProviderName === 'custom') {
-							let fontPath = 'assets/fonts/' + family.replace(/ /g, '');
+						if(!loadedFonts.has(family)) {
+							loadedFonts.add(family);
+							if(fontsProviderName === 'custom') {
 
-							/// #if EDITOR
-							fontPath = game.editor.currentProjectAssetsDirRooted + 'fonts/' + family.replace(/ /g, '');
-							/// #endif
+								family = family.replace(/ /g, '');
+								let fontPath = family + '.woff';
 
-							game.applyCSS(`
-										@font-face {
-											font-family: '` + family + `';
-											src: url('` + fontPath + `.woff2') format('woff2'),
-											url('` + fontPath + `.woff') format('woff');
-										}
+								/// #if EDITOR
+								fontPath = game.editor.currentProjectAssetsDirRooted + 'fonts/' + family.replace(/ /g, '') + '.woff';
+								/// #endif
+
+								let fontPath2 = fontPath + '2';
+
+								/// #if EDITOR
+								/*
+								/// #endif
+								debugger;
+								fontPath = Lib.fonts['fonts/' + family + '.woff'];
+								fontPath2 = Lib.fonts['fonts/' + family + '.woff2'];
+								//*/
+								game.applyCSS(`
+@font-face {
+	font-family: '` + family + `';
+	src: url('` + fontPath2 + `') format('woff2'),
+	url('` + fontPath + `') format('woff');
+}
 									`);
-						}
+							}
 
-						let a = family.split(':');
-						let fontName = a[0];
-						let weights = a[1] ? a[1].split(',') : ['normal'];
+							let a = family.split(':');
+							let fontName = a[0];
+							let weights = a[1] ? a[1].split(',') : ['normal'];
 
-						for(let w of weights) {
-							let span = document.createElement('span');
-							span.style.fontFamily = `"${fontName}"`;
-							span.style.fontWeight = w;
-							span.innerHTML = game.projectDesc.fontHolderText;
-							fontHolder.appendChild(span);
+							for(let w of weights) {
+								let span = document.createElement('span');
+								span.style.fontFamily = `"${fontName}"`;
+								span.style.fontWeight = w;
+								span.innerHTML = game.projectDesc.fontHolderText;
+								fontHolder.appendChild(span);
+							}
 						}
 
 					}
@@ -1324,7 +1339,6 @@ function loadFonts() {
 			};
 			webfontloader.load(webFontOptions);
 		});
-
 	}
 }
 

@@ -54,6 +54,7 @@ const fieldsFilter = (key: string, value: any) => {
 	}
 };
 
+function getAssetsForBuild(type: AssetType.FONT): FileDesc[];
 function getAssetsForBuild(type: AssetType.CLASS): FileDescClass[];
 function getAssetsForBuild(type: AssetType.SOUND): FileDescSound[];
 function getAssetsForBuild(type: AssetType.IMAGE): FileDescImage[];
@@ -82,6 +83,10 @@ export default class Build {
 		const preloaderAssets: Set<FileDesc> = new Set();
 		preloaderAssets.add(fs.getFileByAssetName(PRELOADER_SCENE_NAME, AssetType.SCENE));
 		preloaderAssets.add(fs.getFileByAssetName(DEFAULT_FADER_NAME, AssetType.PREFAB));
+		const fonts = fs.getAssetsList(AssetType.FONT);
+		for(const font of fonts) {
+			preloaderAssets.add(font);
+		}
 		enumAssetsPropsRecursive(Lib.scenes[PRELOADER_SCENE_NAME], preloaderAssets);
 
 		const text = game.editor.projectDesc.embedLocales ?
@@ -238,6 +243,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 	const prefabs: KeyedMap<SerializedObject> = {};
 
 	let resources: string[] | undefined;
+	let fonts: string[] | undefined;
 
 	assets.forEach((file) => {
 		if(isFileNameValidForBuild(file.assetName)) {
@@ -262,7 +268,6 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 						to: getHashedAssetName(file) + '.' + ext
 					});
 				}
-
 				sounds.push([getHashedAssetName(file), (file as FileDescSound).asset.preciseDuration]);
 			} else if(file.assetType === AssetType.RESOURCE) {
 				if(isAtlasAsset(file.asset)) {
@@ -275,6 +280,16 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 						to: getHashedAssetName(file) + '.json'
 					});
 				}
+			} else if(file.assetType === AssetType.FONT) {
+				if(!fonts) {
+					fonts = [];
+				}
+				const hashedFontName = getHashedAssetName(file);
+				fonts.push(hashedFontName);
+				assetsToCopy.push({
+					from: file.fileName,
+					to: hashedFontName
+				});
 			}
 		}
 	});
@@ -282,6 +297,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 		scenes,
 		prefabs,
 		resources,
+		fonts,
 		images,
 		sounds,
 		projectDesc,

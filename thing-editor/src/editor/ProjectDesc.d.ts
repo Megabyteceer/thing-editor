@@ -36,7 +36,6 @@ interface ProjectDesc {
 	soundBitRates: KeyedObject<number>,
 	loadOnDemandSounds: KeyedObject<number>,
 	loadOnDemandTextures: KeyedObject<number>,
-	__loadOnDemandTexturesFolders: KeyedObject<number>,
 	defaultMusVol: number,
 	defaultSoundsVol: number,
 	embedLocales: true,

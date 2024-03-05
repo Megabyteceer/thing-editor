@@ -39,6 +39,7 @@ import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 import { __UnknownClassScene } from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
+import WebFont from 'webfontloader';
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
@@ -1015,11 +1016,37 @@ class Editor {
 								delete projectValue[key];
 							}
 						}
-						if(key === 'soundBitRates') {
-							const keys = Object.keys(projectValue);
-							for(const key of keys) {
-								if(projectValue[key] === this.projectDesc.soundDefaultBitrate || !Lib.hasSound(key)) {
-									delete projectValue[key];
+						const assetNames = Object.keys(projectValue);
+						for(const assetName of assetNames) {
+							if(key === 'soundBitRates') {
+								if(projectValue[assetName] === this.projectDesc.soundDefaultBitrate || !Lib.hasSound(assetName)) {
+									delete projectValue[assetName];
+								}
+							} else if(key === 'loadOnDemandTextures') {
+								if(!Lib.hasTexture(assetName)) {
+									delete projectValue[assetName];
+								}
+							} else if(key === 'loadOnDemandSounds') {
+								if(!Lib.hasSound(assetName)) {
+									delete projectValue[assetName];
+								}
+							}
+						}
+
+					} else if(key === 'webfontloader') {
+						for(const groupName in libsValue as WebFont.Config) {
+							const group = libsValue[groupName] as WebFont.Google;
+							if(group && group.families) {
+								const projectFontGroup = (projectValue[groupName] as WebFont.Google).families;
+								for(const family of group.families) {
+									const stringedValue = JSON.stringify(family);
+									const i = projectFontGroup.findIndex(f => JSON.stringify(f) === stringedValue);
+									if(i >= 0) {
+										projectFontGroup.splice(i, 1);
+									}
+								}
+								if(projectFontGroup.length === 0) {
+									delete projectValue[groupName];
 								}
 							}
 						}

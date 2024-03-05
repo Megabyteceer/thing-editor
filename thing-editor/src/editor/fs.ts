@@ -63,7 +63,8 @@ enum AssetType {
 	SCENE = "SCENE",
 	PREFAB = "PREFAB",
 	CLASS = "CLASS",
-	RESOURCE = "RESOURCE"
+	RESOURCE = "RESOURCE",
+	FONT = "FONT",
 }
 
 const AllAssetsTypes: AssetType[] = Object.values(AssetType);
@@ -93,6 +94,8 @@ const ASSETS_PARSERS = {
 	'.s.json': AssetType.SCENE,
 	'.p.json': AssetType.PREFAB,
 	'.json': AssetType.RESOURCE,
+	'.woff': AssetType.FONT,
+	'.woff2': AssetType.FONT,
 	'.wav': AssetType.SOUND,
 	'.c.ts': AssetType.CLASS
 };
@@ -104,6 +107,7 @@ const ASSET_TYPE_TO_EXT = {
 };
 
 const ASSET_EXT_CROP_LENGHTS: Map<AssetType, number> = new Map();
+ASSET_EXT_CROP_LENGHTS.set(AssetType.FONT, 0);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.IMAGE, 0);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.SCENE, 7);
 ASSET_EXT_CROP_LENGHTS.set(AssetType.PREFAB, 7);

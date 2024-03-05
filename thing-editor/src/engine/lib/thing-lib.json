@@ -20,7 +20,6 @@
 	],
 	"soundDefaultBitrate": 48,
 	"soundBitRates": {},
-	"__loadOnDemandTexturesFolders": {},
 	"loadOnDemandTextures": {
 		"common/ui/spin-icon-blur.png": 8,
 		"preloader/spin.png": 8

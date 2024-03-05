@@ -14,10 +14,6 @@ let prefabsStack: string[] = [];
 let backDrop: Container;
 let backDropBG: Shape;
 
-function getCurrentPrefabName() {
-	return prefabsStack[prefabsStack.length - 1];
-}
-
 export default class PrefabEditor {
 
 	static editPrefab(name: string, isItStepInToStack = false) {
@@ -107,12 +103,16 @@ export default class PrefabEditor {
 		}
 	}
 
+	static getCurrentPrefabName() {
+		return prefabsStack[prefabsStack.length - 1];
+	}
+
 	static acceptPrefabEdition(oneStepOnly = false) {
 		exitIsolation();
 		this.savePrefabSettings();
 		game.editor.blurPropsInputs();
 		game.editor.history.saveHistoryNow();
-		let name = getCurrentPrefabName();
+		let name = this.getCurrentPrefabName();
 		let isChanged = prefabsStack.length && game.editor.isCurrentContainerModified;
 		if(isChanged) {
 			__refreshPrefabRefsPrepare();

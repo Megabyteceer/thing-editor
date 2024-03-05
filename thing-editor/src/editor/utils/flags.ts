@@ -1,4 +1,5 @@
 import { Container } from "pixi.js";
+import { getCurrentStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 
@@ -21,12 +22,20 @@ class EDITOR_FLAGS {
 
 	static isStoppingTime = false;
 
+	static checkTimeOut = 0;
+
 	static rememberTryTime() {
 		tryTime = Date.now();
+		const stack = getCurrentStack('check time not finished');
 		EDITOR_FLAGS.isTryTime++;
+		this.checkTimeOut = setTimeout(() => {
+			console.error(stack);
+			debugger;
+		}, 1) as any as number;
 	}
 
 	static checkTryTime() {
+		clearTimeout(this.checkTimeOut);
 		EDITOR_FLAGS.isTryTime--;
 		assert(EDITOR_FLAGS.isTryTime >= 0, "checkTryTime() without rememberTryTime() detected.");
 		if(!tryCatchWarned && ((Date.now() - tryTime) > 1000)) {

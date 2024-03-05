@@ -2,7 +2,7 @@ import assert from "thing-editor/src/engine/debug/assert";
 
 const isProjectDescValueKeyedMap = (key: string) => {
 	return key === 'loadOnDemandTextures' || key === 'loadOnDemandSounds' ||
-		key === '__loadOnDemandTexturesFolders' || key === 'soundBitRates';
+		key === 'soundBitRates';
 };
 
 const mergeProjectDesc = (target: ProjectDesc, src: ProjectDesc) => {

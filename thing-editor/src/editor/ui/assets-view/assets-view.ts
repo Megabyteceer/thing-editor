@@ -5,6 +5,7 @@ import assetItemRendererClass from "thing-editor/src/editor/ui/assets-view/asset
 import assetItemRendererImage from "thing-editor/src/editor/ui/assets-view/asset-view-image";
 import assetItemRendererScene from "thing-editor/src/editor/ui/assets-view/asset-view-scene";
 import assetItemRendererSound from "thing-editor/src/editor/ui/assets-view/asset-view-sound";
+import assetItemRendererFont from 'thing-editor/src/editor/ui/assets-view/assets-view-font';
 import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
 import assetItemRendererResource from "thing-editor/src/editor/ui/assets-view/assets-view-resource";
 import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
@@ -29,6 +30,7 @@ assetsItemsRenderers.set(AssetType.SCENE, assetItemRendererScene as (file: FileD
 assetsItemsRenderers.set(AssetType.PREFAB, assetItemRendererPrefab as (file: FileDesc) => ComponentChild);
 
 assetsItemsRenderers.set(AssetType.RESOURCE, assetItemRendererResource as (file: FileDesc) => ComponentChild);
+assetsItemsRenderers.set(AssetType.FONT, assetItemRendererFont as (file: FileDesc) => ComponentChild);
 
 
 (assetsItemsRenderers as Map<AssetType, (file: FileDescClass) => ComponentChild>).set(AssetType.CLASS, assetItemRendererClass);

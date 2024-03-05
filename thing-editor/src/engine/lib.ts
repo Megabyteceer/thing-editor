@@ -59,6 +59,8 @@ export default class Lib
 
 	static resources: KeyedObject = {};
 
+	static fonts: KeyedObject = {};
+
 	static REMOVED_TEXTURE: Texture;
 
 	static loadScene(name: string): Scene {
@@ -511,6 +513,11 @@ export default class Lib
 		if(data.resources) {
 			for(const atlasName of data.resources) {
 				Lib.addAtlas(unHashFileName(atlasName, assetsRoot), assetsRoot + atlasName + '.json');
+			}
+		}
+		if(data.fonts) {
+			for(const fontName of data.fonts) {
+				Lib.fonts[unHashFileName(fontName, assetsRoot)] = assetsRoot + fontName;
 			}
 		}
 	}
