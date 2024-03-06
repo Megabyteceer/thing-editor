@@ -1294,7 +1294,6 @@ function loadFonts() {
 								/// #if EDITOR
 								/*
 								/// #endif
-								debugger;
 								fontPath = Lib.fonts['fonts/' + family + '.woff'];
 								fontPath2 = Lib.fonts['fonts/' + family + '.woff2'];
 								//*/

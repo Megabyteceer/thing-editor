@@ -65,6 +65,7 @@ module.exports = {
 					ViteImageOptimizer({})
 				],
 				build: {
+					target: 'ES2015',
 					emptyOutDir: true,
 					minify: !debug,
 					outDir,
