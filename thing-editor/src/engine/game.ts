@@ -762,9 +762,9 @@ class Game {
 						/// #if EDITOR
 						/*
 						/// #endif
-						this.loadingAdd();
+						this.loadingAdd('assets-main load');
 						import('game-root/.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
-							this.loadingRemove();
+							this.loadingRemove('assets-main load');
 							game.addAssets(mainAssets.default);
 						});
 						//*/
