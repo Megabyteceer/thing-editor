@@ -379,6 +379,10 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			));
 	}
 
+	resetLayout() {
+		game.editor.settings.removeItem(SETTINGS_KEY);
+	}
+
 	selectItem(itemElement: HTMLDivElement, ev: MouseEvent) {
 		if(itemElement) {
 			let chosen = (itemElement.querySelector('.selectable-text') as HTMLSpanElement).innerText;

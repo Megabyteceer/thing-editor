@@ -4,6 +4,7 @@ import R from "thing-editor/src/editor/preact-fabrics";
 
 import showContextMenu, { ContextMenuItem, toggleContextMenu } from "thing-editor/src/editor/ui/context-menu";
 import { findMenuItemForHotkey } from "thing-editor/src/editor/ui/editor-button";
+import Window from 'thing-editor/src/editor/ui/editor-window';
 import Build from "thing-editor/src/editor/utils/build";
 import newComponentWizard from "thing-editor/src/editor/utils/new-component-wizard";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
@@ -315,7 +316,18 @@ const MAIN_MENU: MainMenuItem[] = [
 					game.editor.toggleVSCodeExcluding();
 				},
 				stayAfterClick: true
-			}
+			},
+			{
+				name: "Reset windows layout",
+				onClick: () => {
+					for(const w of Window.allOrdered) {
+						w.eraseSettings();
+						w.resetLayout();
+					}
+					location.reload();
+				}
+			},
+
 		]
 	}
 ];

@@ -63,9 +63,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		state.w = props.w - props.x;
 		state.h = props.h - props.y;
 
-
 		Object.assign(state, game.editor.settings.getItem('editor_window_state_' + props.id, {}));
-
 
 		(this as any).state = state;
 
@@ -94,7 +92,6 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 				}
 			}
 		}
-
 	}
 
 	componentDidMount() {
@@ -117,6 +114,10 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 	eraseSettings() {
 		game.editor.settings.removeItem('editor_window_state_' + this.props.id);
+	}
+
+	resetLayout() {
+		this.refresh();
 	}
 
 	saveStateTimeout = 0;
