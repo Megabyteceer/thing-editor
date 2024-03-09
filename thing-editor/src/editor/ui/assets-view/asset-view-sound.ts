@@ -67,6 +67,23 @@ const assetItemRendererSound = (file: FileDesc) => {
 								}
 							}), ev!);
 						},
+					},
+					null,
+					{
+						name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' sound..."),
+						onClick: () => {
+							game.editor.ui.modal.showEditorQuestion(
+								'Ase you sure?',
+								R.fragment(
+									R.div(null, 'You about to delete sound'),
+									file.assetName
+								), () => {
+									fs.deleteAsset(file.assetName, file.assetType);
+									game.editor.ui.refresh();
+								}, R.fragment(R.icon('delete'), " Delete.")
+							);
+						},
+						disabled: () => !!(file.lib && file.lib.isEmbed)
 					}
 				]), ev);
 			},
