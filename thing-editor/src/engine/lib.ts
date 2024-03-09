@@ -140,7 +140,6 @@ export default class Lib
 		}
 		Texture.removeFromCache(texture);
 		texture.destroy(true);
-		Object.assign(texture, textures.EMPTY);
 	}
 
 
@@ -213,9 +212,6 @@ export default class Lib
 			game.loadingAdd(textureURL);
 
 			/// #if EDITOR
-			if(textures[name] && !Lib.__isSystemTexture(textures[name])) {
-				Lib._unloadTexture(name);
-			}
 			const asset = fs.getFileByAssetName(name, AssetType.IMAGE) as FileDescImage;
 			/// #endif
 			Texture.fromURL(
@@ -225,6 +221,9 @@ export default class Lib
 				textureURL).then((newTexture) => {
 					/// #if EDITOR
 					if(textures[name]) {
+						if(textures[name] && !Lib.__isSystemTexture(textures[name])) {
+							Lib._unloadTexture(name);
+						}
 						const oldTexture = textures[name];
 						Object.assign(oldTexture, newTexture);
 						oldTexture.onBaseTextureUpdated(newTexture.baseTexture);
