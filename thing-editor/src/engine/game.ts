@@ -338,17 +338,13 @@ class Game {
 
 		if(this.__fixedViewport) {
 			if(this.__fixedViewport === true) {
-				let size = this.editor._getProjectViewportSize(true);
+				let size = this.editor._getProjectViewportSize(false);
 				w = size.w;
 				h = size.h;
 			} else {
 				w = this.__fixedViewport.w;
 				h = this.__fixedViewport.h;
 
-			} if(this.__enforcedOrientation === 'portrait') {
-				let tmp = w;
-				w = h;
-				h = tmp;
 			}
 		}
 

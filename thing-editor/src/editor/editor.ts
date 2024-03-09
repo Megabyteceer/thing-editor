@@ -417,6 +417,7 @@ class Editor {
 
 	toggleScreenOrientation() {
 		game.__enforcedOrientation = (game.__enforcedOrientation === 'portrait') ? 'landscape' : 'portrait';
+		game.onResize();
 	}
 
 	toggleIsMobileAny() {
@@ -587,15 +588,22 @@ class Editor {
 		return true;
 	}
 
-	_getProjectViewportSize(doNotFixOrientation = false) {
+	_getProjectViewportSize(forceLandscape = true) {
 		if(game.projectDesc.screenOrientation === 'auto') {
-			if(!doNotFixOrientation) {
+			if(forceLandscape) {
 				game.___enforcedOrientation = 'landscape';
 			}
-			return {
-				w: game.projectDesc.width,
-				h: game.projectDesc.height
-			};
+			if(forceLandscape || !game.isPortrait) {
+				return {
+					w: game.projectDesc.width,
+					h: game.projectDesc.height
+				};
+			} else {
+				return {
+					w: game.projectDesc.portraitWidth,
+					h: game.projectDesc.portraitHeight
+				};
+			}
 		} else if(game.projectDesc.screenOrientation === 'portrait') {
 			return {
 				w: game.projectDesc.portraitWidth,
