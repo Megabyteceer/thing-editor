@@ -190,9 +190,10 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 					clearDragExpandTimeOut();
 				}
 
-
 				if(pointerToItemRelationY < 0) {
-					treeItem.classList.add('drag-target-top');
+					if(dragTargetNode.parent !== game.stage) {
+						treeItem.classList.add('drag-target-top');
+					}
 				} else {
 					treeItem.classList.add('drag-target-bottom');
 				}
