@@ -22,7 +22,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 				}
 			},
 			disabled: () => {
-				return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset) || !game.editor.isCanBeAddedAsChild(file.asset, game.currentContainer);
+				return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset);
 			}
 		},
 		{
