@@ -218,6 +218,7 @@ export default class OrientationTrigger extends Container {
 				this.portraitAlpha = this.landscapeAlpha;
 				this.portraitR = this.landscapeR;
 			}
+			editorUtils.centralizeObjectToContent(this);
 		}, 0);
 	}
 
