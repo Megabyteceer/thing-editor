@@ -580,6 +580,7 @@ const enumSub = (o: KeyedObject) => {
 		EDITOR_FLAGS.rememberTryTime();
 		try {
 			if(hiddenProps.has(o[name])) {
+				EDITOR_FLAGS.checkTryTime();
 				continue;
 			}
 		} catch(_er) { /* empty */ }
