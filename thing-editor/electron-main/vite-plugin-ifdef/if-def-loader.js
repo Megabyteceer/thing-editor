@@ -39,7 +39,11 @@ module.exports = function vitePluginIfDef(isDebug) {
 				a = a.map((line, i) => {
 					var trimmedLine = line.trim();
 
-					if(trimmedLine.startsWith('assert(') || trimmedLine.startsWith('@editable(') || (editorImportRegex.test(trimmedLine) && !trimmedLine.startsWith('import type'))) {
+					if(trimmedLine.startsWith('@editable(') || (editorImportRegex.test(trimmedLine) && !trimmedLine.startsWith('import type'))) {
+						return '///' + line;
+					}
+
+					if(trimmedLine.startsWith('assert(') && !isDebug) {
 						return '///' + line;
 					}
 
