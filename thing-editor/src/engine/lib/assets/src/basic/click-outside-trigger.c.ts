@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import overlayLayer from "thing-editor/src/editor/ui/editor-overlay";
+import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import game from "thing-editor/src/engine/game";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
@@ -115,6 +116,14 @@ export default class ClickOutsideTrigger extends Container {
 			}
 		}
 	}
+
+	/// #if EDITOR
+	__EDITOR_onCreate() {
+		window.setTimeout(() => {
+			editorUtils.centralizeObjectToContent(this);
+		}, 0);
+	}
+	/// #endif
 }
 
 /// #if EDITOR

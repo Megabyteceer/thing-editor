@@ -228,6 +228,12 @@ export default class Trigger extends Container {
 	}
 	/// #if EDITOR
 
+	__EDITOR_onCreate() {
+		window.setTimeout(() => {
+			editorUtils.centralizeObjectToContent(this);
+		}, 0);
+	}
+
 	//@ts-ignore 
 	set "scale.x"(v) {
 		//@ts-ignore

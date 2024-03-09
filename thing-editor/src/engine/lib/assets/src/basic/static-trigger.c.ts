@@ -1,5 +1,6 @@
 /// #if EDITOR
 import editable from "thing-editor/src/editor/props-editor/editable";
+import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import game from "thing-editor/src/engine/game";
 /// #endif
 
@@ -14,6 +15,13 @@ export default class StaticTrigger extends Container {
 	invert = false;
 
 	/// #if EDITOR
+
+	__EDITOR_onCreate() {
+		window.setTimeout(() => {
+			editorUtils.centralizeObjectToContent(this);
+		}, 0);
+	}
+
 	__afterDeserialization() {
 		this.__validateStaticTrigger();
 	}
@@ -28,6 +36,13 @@ export default class StaticTrigger extends Container {
 		if(this.dataPath && (this.dataPath.startsWith('this.') || this.dataPath.startsWith('all.'))) {
 			game.editor.ui.status.error("StaticTrigger`s dataPath can refer to global variables only. Like isMobile.any", 32050, this, 'dataPath');
 		}
+	}
+
+	static __canAcceptParent(o: Container) {
+		if(o.parent === game.stage) {
+			return false;
+		}
+		return true;
 	}
 
 	__canAcceptChild(_Class: SourceMappedConstructor) {
