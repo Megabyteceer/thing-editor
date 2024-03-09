@@ -460,6 +460,10 @@ class Editor {
 		this.showGizmo = game.editor.settings.getItem('show-gizmo');
 	}
 
+	get isGizmoVisible() {
+		return this.showGizmo && !document.fullscreenElement;
+	}
+
 	toggleSoundMute() {
 		game.editor.settings.setItem('sound-muted', !game.editor.settings.getItem('sound-muted'));
 		Sound.__resetSounds();

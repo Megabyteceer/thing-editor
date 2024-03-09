@@ -14,7 +14,7 @@ selectionFilter.padding = 3;
 let filterPhase = false;
 
 window.setInterval(() => {
-	if(filterPhase || !game.editor.showGizmo) {
+	if(filterPhase || !game.editor.isGizmoVisible) {
 		if(selectionFilter.alpha > 0) {
 			selectionFilter.alpha -= 0.02;
 			if(selectionFilter.alpha < 0.5) {

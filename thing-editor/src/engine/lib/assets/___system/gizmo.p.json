@@ -37,7 +37,7 @@
 		{
 			"c": "Trigger",
 			"p": {
-				"dataPath": "editor.showGizmo",
+				"dataPath": "editor.isGizmoVisible",
 				"pow": 0.2,
 				"damp": 0.7,
 				"scaleShift": -1
