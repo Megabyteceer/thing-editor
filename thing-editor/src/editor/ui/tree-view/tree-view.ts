@@ -337,7 +337,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 
 			if((o.constructor as SourceMappedConstructor).__className.toLowerCase().indexOf(this.state.search) >= 0) return true;
 
-			if(o.__nodeExtendData.isPrefabReference && o.__nodeExtendData.isPrefabReference === this.state.search) return true;
+			if(o.__nodeExtendData.isPrefabReference && o.__nodeExtendData.isPrefabReference.toLocaleLowerCase().includes(this.state.search)) return true;
 
 			let props = (o.constructor as SourceMappedConstructor).__editableProps;
 			for(let p of props) {
