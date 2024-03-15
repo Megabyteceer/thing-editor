@@ -135,10 +135,6 @@ export default class OrientationTrigger extends Container {
 				/// #endif
 			);
 		}
-
-		/// #if EDITOR
-		if(game.__EDITOR_mode) this.visible = true;
-		/// #endif
 	}
 
 	_callHandler(handler: string | null
