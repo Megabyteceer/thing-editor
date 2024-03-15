@@ -491,7 +491,7 @@ _editableEmbed(Text, 'Edit text', {
 	}
 });
 
-_editableEmbed(Text, 'translatableText', { type: 'l18n' });
+_editableEmbed(Text, 'translatableText', { type: 'l10n' });
 
 _editableEmbed(Text, 'text-style', {
 	type: 'splitter',

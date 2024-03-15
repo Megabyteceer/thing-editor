@@ -1,6 +1,6 @@
 
 import { Assets, Cache, Container, MIPMAP_MODES, Spritesheet, Texture, WRAP_MODES } from "pixi.js";
-import fs, { AssetType, FileDesc, FileDescImage, FileDescL18n, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDesc, FileDescImage, FileDescL10n, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
 import TLib from "thing-editor/src/editor/prefabs-typing";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
@@ -968,7 +968,7 @@ const __onAssetAdded = (file: FileDesc) => {
 			if(isAtlasAsset(file.asset)) {
 				Lib.addAtlas(file.assetName, file.fileName, 0, file);
 			} else {
-				game.editor.LanguageView.addAssets(file as FileDescL18n);
+				game.editor.LanguageView.addAssets(file as FileDescL10n);
 			}
 			break;
 	}
@@ -1024,7 +1024,7 @@ const __onAssetUpdated = (file: FileDesc) => {
 				Lib.addAtlas(file.assetName, file.fileName, 0, file);
 			} else {
 				file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
-				game.editor.LanguageView.addAssets(file as FileDescL18n);
+				game.editor.LanguageView.addAssets(file as FileDescL10n);
 			}
 			break;
 	}
@@ -1050,7 +1050,7 @@ const __onAssetDeleted = (file: FileDesc) => {
 				Lib.removeAtlas(file);
 				game.editor.ui.refresh();
 			} else {
-				game.editor.LanguageView.removeAsset(file as FileDescL18n);
+				game.editor.LanguageView.removeAsset(file as FileDescL10n);
 			}
 			break;
 		case AssetType.SOUND:

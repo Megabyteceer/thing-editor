@@ -1,6 +1,6 @@
 import { Text } from "pixi.js";
 import { ClassAttributes, ComponentChild, h } from "preact";
-import fs, { AssetType, FileDescL18n } from "thing-editor/src/editor/fs";
+import fs, { AssetType, FileDescL10n } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
@@ -14,19 +14,19 @@ import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
 import L from "thing-editor/src/engine/utils/l";
 
-/** dir_name >> language >> FileDescL18n */
-const assetsFiles: Map<string, Map<string, FileDescL18n>> = new Map();
+/** dir_name >> language >> FileDescL10n */
+const assetsFiles: Map<string, Map<string, FileDescL10n>> = new Map();
 
-type L18NData = KeyedMap<string>;
+type L10NData = KeyedMap<string>;
 
-let currentLanguageData: L18NData;
+let currentLanguageData: L10NData;
 
 const assetsDirs: string[] = [];
 
 let langsIdsList: string[] = [];
-let currentDirAssets: Map<string, FileDescL18n>;
+let currentDirAssets: Map<string, FileDescL10n>;
 let currentDir: string;
-let languages: KeyedMap<L18NData> = {};
+let languages: KeyedMap<L10NData> = {};
 
 let idsList: string[] = [];
 
@@ -54,7 +54,7 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 
 	static selectableList: SelectEditorItem[] = [];
 
-	static addAssets(file: FileDescL18n) {
+	static addAssets(file: FileDescL10n) {
 		if(!initialized) {
 			init();
 		}
@@ -73,7 +73,7 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 		assetsFilesIsDirty = true;
 	}
 
-	static removeAsset(file: FileDescL18n) {
+	static removeAsset(file: FileDescL10n) {
 		const dirAssets = assetsFiles.get(file.dir);
 		if(dirAssets) {
 			dirAssets.delete(file.lang);
@@ -201,16 +201,16 @@ const parseAssets = () => {
 	let lastDir: string;
 
 	for(let folder of game.editor.assetsFolders) {
-		assetsFiles.forEach((folderFiles: Map<string, FileDescL18n>) => {
+		assetsFiles.forEach((folderFiles: Map<string, FileDescL10n>) => {
 
 			const firstFile = folderFiles.values().next().value;
 			if(folder === (firstFile.lib ? firstFile.lib.assetsDir : game.editor.currentProjectAssetsDir)) {
 				assetsDirs.push(firstFile.dir);
 
-				folderFiles.forEach((file: FileDescL18n) => {
+				folderFiles.forEach((file: FileDescL10n) => {
 
 					const langId = file.lang;
-					let langData: L18NData;
+					let langData: L10NData;
 					if(!languages[file.lang]) {
 						langsIdsList.push(langId);
 						langData = {};
@@ -256,7 +256,7 @@ const parseAssets = () => {
 		name: '- - -'
 	});
 
-	assetsFiles.forEach((folderFiles: Map<string, FileDescL18n>) => {
+	assetsFiles.forEach((folderFiles: Map<string, FileDescL10n>) => {
 		if(!folderFiles.has(L.getCurrentLanguageId())) {
 			createFilesForLanguage(L.getCurrentLanguageId());
 		}
@@ -535,7 +535,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
 			R.btn('+ Add language...', this.onAddNewLanguageClick),
-			R.btn('+ Add l18n folder...', this.onAddNewFolderClick),
+			R.btn('+ Add l10n folder...', this.onAddNewFolderClick),
 			R.input(this.searchInputProps),
 			(assetsDirs.length > 1) ? R.div(null, 'Localization data source: ',
 				h(SelectEditor, {
@@ -599,10 +599,10 @@ function onModified(modifiedLangId?: string) {
 }
 
 function createFilesForLanguage(langId: string) {
-	let langData: KeyedObject = __serializeLanguage((currentDirAssets.values().next().value as FileDescL18n).asset, true);
+	let langData: KeyedObject = __serializeLanguage((currentDirAssets.values().next().value as FileDescL10n).asset, true);
 	let created = false;
 
-	assetsFiles.forEach((dirAssets: Map<string, FileDescL18n>, dir: string) => {
+	assetsFiles.forEach((dirAssets: Map<string, FileDescL10n>, dir: string) => {
 		if(!dirAssets.has(langId)) {
 			const fileName = dir + '/' + langId + '.json';
 			fs.writeFile(fileName, langData);

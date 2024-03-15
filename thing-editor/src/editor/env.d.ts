@@ -119,7 +119,7 @@ interface IEditablePropertyType {
 	'splitter': true;
 	'rect': true;
 	'callback': true;
-	'l18n': true;
+	'l10n': true;
 	'timeline': true;
 	'ref': true;
 	'btn': true;

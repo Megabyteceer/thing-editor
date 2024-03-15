@@ -27,7 +27,7 @@ import TimelineEditor from "thing-editor/src/editor/ui/props-editor/props-editor
 
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import ImageEditor from "thing-editor/src/editor/ui/props-editor/props-editors/image-editor";
-import L18nEditor from "thing-editor/src/editor/ui/props-editor/props-editors/l18n-editor";
+import L10nEditor from "thing-editor/src/editor/ui/props-editor/props-editors/l10n-editor";
 import PrefabPropertyEditor from "thing-editor/src/editor/ui/props-editor/props-editors/prefab-property-editor";
 import RectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/rect-editor";
 import SoundEditor from "thing-editor/src/editor/ui/props-editor/props-editors/sound-editor";
@@ -406,7 +406,7 @@ export default PropsEditor;
 PropsEditor.registerRenderer('color', ColorEditor, 0);
 PropsEditor.registerRenderer('number', NumberEditor, 0);
 PropsEditor.registerRenderer('string', StringEditor, null);
-PropsEditor.registerRenderer('l18n', L18nEditor, null);
+PropsEditor.registerRenderer('l10n', L10nEditor, null);
 PropsEditor.registerRenderer('image', ImageEditor, null);
 PropsEditor.registerRenderer('prefab', PrefabPropertyEditor, null);
 PropsEditor.registerRenderer('sound', SoundEditor, null);

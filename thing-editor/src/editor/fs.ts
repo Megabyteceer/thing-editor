@@ -51,7 +51,7 @@ interface FileDescSound extends FileDesc {
 interface FileDescImage extends FileDesc {
 	asset: Texture;
 }
-interface FileDescL18n extends FileDesc {
+interface FileDescL10n extends FileDesc {
 	asset: KeyedObject;
 	dir: string;
 	lang: string;
@@ -583,5 +583,5 @@ export default class fs {
 const scheduledSoundsRebuilds: Set<string> = new Set();
 
 export { AllAssetsTypes, AssetType };
-export type { FileDesc, FileDescClass, FileDescImage, FileDescL18n, FileDescPrefab, FileDescScene, FileDescSound, LibInfo };
+export type { FileDesc, FileDescClass, FileDescImage, FileDescL10n, FileDescPrefab, FileDescScene, FileDescSound, LibInfo };
 

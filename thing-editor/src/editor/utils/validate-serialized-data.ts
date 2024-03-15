@@ -38,7 +38,7 @@ function validateObjectDataRecursive(objectData: SerializedObject, rootName: str
 							}, field.name, 99999, objectsConstructor);
 						}
 					}
-				} else if(field.type === 'l18n') {
+				} else if(field.type === 'l10n') {
 					if(objectData.p.hasOwnProperty(field.name)) {
 						const localizationKey = objectData.p[field.name];
 						if(!L.has(localizationKey)) {
