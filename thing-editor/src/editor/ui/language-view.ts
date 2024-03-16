@@ -257,8 +257,12 @@ const parseAssets = () => {
 	});
 
 	assetsFiles.forEach((folderFiles: Map<string, FileDescL10n>) => {
-		if(!folderFiles.has(L.getCurrentLanguageId())) {
-			createFilesForLanguage(L.getCurrentLanguageId());
+		const langs = L.getLanguagesList();
+		for(const langId of langs) {
+			if(!folderFiles.has(langId)) {
+				L.getLanguagesList()
+				createFilesForLanguage(langId);
+			}
 		}
 	});
 	generateLocalizationTypings();
@@ -510,12 +514,16 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 				}, id),
 				langsIdsList.map((langId) => {
 
-					let text = currentDirAssets.get(langId)!.asset[id];
+					const asset = currentDirAssets.get(langId)!;
+
+					let text = asset.asset[id];
 
 					let areaId = textAreaID(langId, id);
-					return R.div({ key: langId, className: 'langs-editor-td' }, R.textarea({
-						key: currentDirAssets.get(langId)!.assetName + '_' + areaId, value: text, id: areaId, onInput: (ev: InputEvent) => {
-							currentDirAssets.get(langId)!.asset[id] = (ev.target as any).value as string;
+
+
+					return R.div({ key: langId, className: asset.__isLangIdPlaceHolder ? 'langs-editor-td disabled' : 'langs-editor-td' }, R.textarea({
+						key: asset.assetName + '_' + areaId, value: text, id: areaId, onInput: (ev: InputEvent) => {
+							asset.asset[id] = (ev.target as any).value as string;
 							parseAssets();
 							onModified(langId);
 						}
@@ -587,9 +595,11 @@ function onModified(modifiedLangId?: string) {
 		L.refreshAllTextEverywhere();
 
 		currentDirAssets.forEach((file, langId) => {
-			if(!modifiedLangId || modifiedLangId === langId) {
-				let content = __serializeLanguage(file.asset);
-				fs.saveAsset(file.assetName, AssetType.RESOURCE, content);
+			if(!file.__isLangIdPlaceHolder) {
+				if(!modifiedLangId || modifiedLangId === langId) {
+					let content = __serializeLanguage(file.asset);
+					fs.saveAsset(file.assetName, AssetType.RESOURCE, content);
+				}
 			}
 		});
 
@@ -604,11 +614,18 @@ function createFilesForLanguage(langId: string) {
 
 	assetsFiles.forEach((dirAssets: Map<string, FileDescL10n>, dir: string) => {
 		if(!dirAssets.has(langId)) {
-			const fileName = dir + '/' + langId + '.json';
-			fs.writeFile(fileName, langData);
-			game.editor.ui.status.warn("Localization file " + fileName + ' created.');
+			if(dir.endsWith('.json')) {
+				// add placeholders for non standard translations added via assets-loader.js
+				const placeholder = Object.assign({}, dirAssets.values().next().value) as FileDescL10n;
+				placeholder.__isLangIdPlaceHolder = true;
+				dirAssets.set(langId, placeholder);
+			} else {
+				const fileName = dir + '/' + langId + '.json';
+				fs.writeFile(fileName, langData);
+				game.editor.ui.status.warn("Localization file " + fileName + ' created.');
 
-			created = true;
+				created = true;
+			}
 		}
 		if(created) {
 			fs.refreshAssetsList();

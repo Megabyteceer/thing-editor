@@ -229,6 +229,17 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			null,
 			{
+				name: 'Local store view...',
+				tip: "View 'game.settings' saved data content.",
+				onClick: () => game.editor.LocalStoreView.toggle()
+			},
+			{
+				name: 'Text data editor...',
+				tip: 'Edit localization text data',
+				onClick: () => game.editor.LanguageView.toggle(),
+				hotkey: { key: 'e', ctrlKey: true }
+			},
+			{
 				name: () => {
 					return R.fragment('Switch project language [', R.b({ className: 'project-language-tip' }, L.getCurrentLanguageId()), ']');
 				},
@@ -240,18 +251,6 @@ const MAIN_MENU: MainMenuItem[] = [
 				},
 				stayAfterClick: true,
 				hotkey: { key: 'l', ctrlKey: true, altKey: true }
-			},
-			{
-				name: 'Local store view...',
-				tip: "View 'game.settings' saved data content.",
-				onClick: () => game.editor.LocalStoreView.toggle(),
-				hotkey: { key: 'e', ctrlKey: true }
-			},
-			{
-				name: 'Text data editor...',
-				tip: 'Edit localization text data',
-				onClick: () => game.editor.LanguageView.toggle(),
-				hotkey: { key: 'e', ctrlKey: true }
 			},
 			{
 				name: 'Project Properties...',

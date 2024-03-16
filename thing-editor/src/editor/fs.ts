@@ -55,6 +55,7 @@ interface FileDescL10n extends FileDesc {
 	asset: KeyedObject;
 	dir: string;
 	lang: string;
+	__isLangIdPlaceHolder?: boolean;
 }
 
 enum AssetType {
