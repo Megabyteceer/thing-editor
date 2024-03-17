@@ -1,7 +1,8 @@
-import { Container, DisplayObject } from "pixi.js";
+import type { Container } from "pixi.js";
+import { DisplayObject } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import type Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 const ACCESS_ASSERTING_Func = () => {
 	assert(false, 'Scene`s "all" object vas not initialized yet. You can not use "all" before call super.init().', 10017);
@@ -64,7 +65,7 @@ const getAllObjectRefsCount = (name: string): string | undefined => {
 	if(count > 1) {
 		return getRefuseReason(count);
 	}
-}
+};
 
 
 export { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator, getAllObjectRefsCount };

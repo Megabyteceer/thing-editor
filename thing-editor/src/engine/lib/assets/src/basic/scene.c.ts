@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { FileDesc } from "thing-editor/src/editor/fs";
+import type { FileDesc } from "thing-editor/src/editor/fs";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";
 import assert from "thing-editor/src/engine/debug/assert";

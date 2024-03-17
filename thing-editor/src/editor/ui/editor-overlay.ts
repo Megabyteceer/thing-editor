@@ -1,4 +1,5 @@
-import { Container, Point, Sprite } from "pixi.js";
+import type { Sprite } from "pixi.js";
+import { Container, Point } from "pixi.js";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 

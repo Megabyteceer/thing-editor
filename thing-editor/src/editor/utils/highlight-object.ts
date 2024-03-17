@@ -1,5 +1,5 @@
 import { OutlineFilter } from "@pixi/filter-outline";
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 
 const highlightFilter = new OutlineFilter(3, 0xff0000);
 

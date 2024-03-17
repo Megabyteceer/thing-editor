@@ -1,4 +1,5 @@
-import { Container, Text } from "pixi.js";
+import type { Container} from "pixi.js";
+import { Text } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";

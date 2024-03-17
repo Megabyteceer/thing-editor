@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import Lib from "thing-editor/src/engine/lib";
 
 const loadSafeInstanceByClassName = (className: string, isForWrapping = false): Container => {
@@ -20,6 +20,6 @@ const loadSafeInstanceByClassName = (className: string, isForWrapping = false): 
 	}
 
 	return ret;
-}
+};
 
 export default loadSafeInstanceByClassName;

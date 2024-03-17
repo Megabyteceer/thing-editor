@@ -1,10 +1,11 @@
-import { Container } from 'pixi.js';
-import { ComponentChild, ComponentChildren, Fragment, h, render } from 'preact';
+import type { Container } from 'pixi.js';
+import type { ComponentChild, ComponentChildren } from 'preact';
+import { Fragment, h, render } from 'preact';
 import type { FileDescClass, FileDescImage } from 'thing-editor/src/editor/fs';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
-import { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
+import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 
@@ -27,7 +28,7 @@ const renderClass = (file: FileDescClass) => {
 		R.span(assetsItemNameProps,
 			(file.asset).__className)
 	);
-}
+};
 
 class R {
 	static div: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
@@ -211,7 +212,7 @@ const hidePreview = () => {
 		clearTimeout(assetPreviewTimeout);
 		assetPreviewTimeout = 0;
 	}
-}
+};
 
 window.addEventListener('mousedown', hidePreview);
 
@@ -237,7 +238,7 @@ const onImageAssetEnter = (ev: MouseEvent) => {
 			'(' + img.naturalWidth + ' × ' + img.naturalHeight + ')'
 		), imagePreviewContainer);
 	}, 100);
-}
+};
 
 const onImageAssetLeave = () => {
 	hidePreview();

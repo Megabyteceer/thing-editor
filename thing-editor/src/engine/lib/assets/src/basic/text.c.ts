@@ -1,5 +1,6 @@
 
-import { Text, TextStyleAlign, TextStyleFontWeight } from "pixi.js";
+import type { TextStyleAlign, TextStyleFontWeight } from "pixi.js";
+import { Text } from "pixi.js";
 
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
 import LanguageView from "thing-editor/src/editor/ui/language-view";

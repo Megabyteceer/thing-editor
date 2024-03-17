@@ -1,4 +1,5 @@
-import fs, { FileDescClass } from "thing-editor/src/editor/fs";
+import type { FileDescClass } from "thing-editor/src/editor/fs";
+import fs from "thing-editor/src/editor/fs";
 import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
 import { addSharedAssetContextMenu } from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";

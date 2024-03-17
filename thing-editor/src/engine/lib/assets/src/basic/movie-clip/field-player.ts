@@ -1,14 +1,14 @@
 /// #if EDITOR
-import FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
-import TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
+import type FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
+import type TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
 import game from "thing-editor/src/engine/game.js";
 
 /// #endif
 
-import TimelineLabelView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view";
-import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
+import type TimelineLabelView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view";
+import type TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
 
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
+import type MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 
 interface TimelineKeyFrame {

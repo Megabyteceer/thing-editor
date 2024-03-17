@@ -1,7 +1,7 @@
-import { SelectionData } from "thing-editor/src/editor/utils/selection";
+import type { SelectionData } from "thing-editor/src/editor/utils/selection";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import type Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 let selectionData: SelectionData | undefined;
 let newSceneData: SerializedObject | undefined;
@@ -11,7 +11,7 @@ const __refreshPrefabRefsPrepare = () => {
 		selectionData = game.editor.selection.saveSelection();
 		newSceneData = Lib.__serializeObject(game.currentScene);
 	}
-}
+};
 
 const __refreshPrefabRefs = () => {
 	if(game.__EDITOR_mode) {
@@ -20,7 +20,7 @@ const __refreshPrefabRefs = () => {
 		newSceneData = undefined;
 		selectionData = undefined;
 	}
-}
+};
 
 export default __refreshPrefabRefs;
 

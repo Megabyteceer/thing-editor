@@ -1,4 +1,5 @@
-import { Circle, Ellipse, Graphics, Point, Polygon, Rectangle, RoundedRectangle } from "pixi.js";
+import type { Point} from "pixi.js";
+import { Circle, Ellipse, Graphics, Polygon, Rectangle, RoundedRectangle } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable.js";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";

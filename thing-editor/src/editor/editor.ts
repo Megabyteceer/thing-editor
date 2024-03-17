@@ -2,24 +2,28 @@ import R from "./preact-fabrics";
 
 import game from "../engine/game";
 
-import { Component, ComponentChild, h, render } from "preact";
-import fs, { AssetType, FileDesc, FileDescClass, LibInfo } from "thing-editor/src/editor/fs";
-import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import type { Component, ComponentChild } from "preact";
+import { h, render } from "preact";
+import type { FileDesc, FileDescClass, LibInfo } from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
+import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import ProjectsList from "thing-editor/src/editor/ui/choose-project";
 import UI from "thing-editor/src/editor/ui/ui";
 import historyInstance from "thing-editor/src/editor/utils/history";
 import protectAccessToSceneNode from "thing-editor/src/editor/utils/protect-access-to-node";
-import Selection, { SelectionData } from "thing-editor/src/editor/utils/selection";
+import type { SelectionData } from "thing-editor/src/editor/utils/selection";
+import Selection from "thing-editor/src/editor/utils/selection";
 import Lib from "thing-editor/src/engine/lib";
 import Settings from "thing-editor/src/engine/utils/settings";
 import ClassesLoader from "./classes-loader";
 
 import LanguageView from "thing-editor/src/editor/ui/language-view";
 
-import { Container, Point, Texture } from "pixi.js";
+import type { Point } from "pixi.js";
+import { Container, Texture } from "pixi.js";
 
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
-import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
+import type { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
 import LocalStoreView from 'thing-editor/src/editor/ui/local-store-view';
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
 import "thing-editor/src/editor/ui/sound-profiler";
@@ -33,13 +37,13 @@ import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import { __UnknownClass } from "thing-editor/src/editor/utils/unknown-class";
 import validateObjectDataRecursive from "thing-editor/src/editor/utils/validate-serialized-data";
 import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
-import HowlSound from "thing-editor/src/engine/HowlSound";
+import type HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 import { __UnknownClassScene } from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
-import WebFont from 'webfontloader';
+import type WebFont from 'webfontloader';
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
@@ -997,7 +1001,7 @@ class Editor {
 			return {
 				fileName: lib.dir + '/thing-lib.json',
 				desc: this.libsDescriptors[lib.name]
-			}
+			};
 		});
 		descriptorsStack.push({
 			fileName: this.currentProjectDir + 'thing-project.json',
@@ -1013,7 +1017,7 @@ class Editor {
 			const libsProjectDescMerged = {} as ProjectDesc;
 			descriptorsStack.forEach((desc) => {
 				mergeProjectDesc(libsProjectDescMerged, desc.desc);
-			})
+			});
 
 			for(let key in libsProjectDescMerged) {
 				if(descToSave.hasOwnProperty(key)) {

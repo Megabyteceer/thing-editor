@@ -1,4 +1,5 @@
-import { ClassAttributes, Component, ComponentChild, h } from "preact";
+import type { ClassAttributes, Component, ComponentChild } from "preact";
+import { h } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics.js";
 import ChooseList from "thing-editor/src/editor/ui/choose-list";

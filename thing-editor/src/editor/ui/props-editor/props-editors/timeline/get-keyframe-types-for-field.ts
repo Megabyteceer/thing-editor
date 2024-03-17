@@ -1,6 +1,6 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import game from "thing-editor/src/engine/game";
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
+import type MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
 import { TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 function getDefaultKeyframeTypeForField(o: MovieClip, propertyName: string): TimelineKeyFrameType {

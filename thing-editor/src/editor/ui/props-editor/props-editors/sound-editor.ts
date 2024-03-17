@@ -1,8 +1,8 @@
-import { ComponentChild } from "preact";
+import type { ComponentChild } from "preact";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import game from "thing-editor/src/engine/game";
 

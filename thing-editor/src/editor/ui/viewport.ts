@@ -1,5 +1,6 @@
-import { Container, Point } from "pixi.js";
-import { ClassAttributes, ComponentChild, h } from "preact";
+import type { Container, Point } from "pixi.js";
+import type { ClassAttributes, ComponentChild } from "preact";
+import { h } from "preact";
 import ClassesLoader from "thing-editor/src/editor/classes-loader";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
@@ -14,7 +15,8 @@ import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import libInfo from "thing-editor/src/editor/utils/lib-info";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import game, { FixedViewportSize } from "thing-editor/src/engine/game";
+import type { FixedViewportSize } from "thing-editor/src/engine/game";
+import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
 import Keys from "thing-editor/src/engine/utils/keys";
@@ -42,7 +44,7 @@ const SPEED_SELECT = [0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
 
 const onBgColorChange = (ev: InputEvent) => {
 	PrefabEditor.BGColor = parseInt((ev.target as HTMLInputElement).value.replace('#', ''), 16);
-}
+};
 
 interface ViewportStats {
 	prefabMode: string | null;
@@ -246,7 +248,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				R.fragment(
 					R.div(null, game.W + '×' + game.H),
 					R.hr()
-				)
+				);
 		}
 
 		const reloadClassesBtn = R.btn(R.icon('recompile'), game.editor.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
@@ -361,18 +363,18 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				className: 'editor-viewport',
 				onDblClick: this.onDoubleClick
 			})
-		)
+		);
 	}
 }
 
 const panelWrapperProps = {
 	className: "viewport-panel-wrapper"
-}
+};
 
 const panelProps = {
 	className: "viewport-panel"
-}
+};
 
 const panelBottomProps = {
 	className: "viewport-panel viewport-bottom-panel"
-}
+};

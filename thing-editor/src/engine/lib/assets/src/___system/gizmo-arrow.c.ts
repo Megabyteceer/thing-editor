@@ -1,4 +1,5 @@
-import { Container, Point } from "pixi.js";
+import type { Container} from "pixi.js";
+import { Point } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import { stopRightButtonMoving } from "thing-editor/src/editor/ui/editor-overlay";
 import StatusBar from "thing-editor/src/editor/ui/status-bar";

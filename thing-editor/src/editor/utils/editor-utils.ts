@@ -1,6 +1,6 @@
 import { Container, MIPMAP_MODES, Point, Sprite, WRAP_MODES } from "pixi.js";
 import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
+import type { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import exportAsPng from "thing-editor/src/editor/utils/export-as-png";
@@ -12,8 +12,8 @@ import game from "thing-editor/src/engine/game";
 import Lib, { constructRecursive } from "thing-editor/src/engine/lib";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
-import { ComponentChild } from "preact";
-import { FileDescClass } from "thing-editor/src/editor/fs";
+import type { ComponentChild } from "preact";
+import type { FileDescClass } from "thing-editor/src/editor/fs";
 
 import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";

@@ -1,7 +1,7 @@
 
 import { Container } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
-import LayeredContainer from "thing-editor/src/engine/lib/assets/src/extended/layered-container.c";
+import type LayeredContainer from "thing-editor/src/engine/lib/assets/src/extended/layered-container.c";
 
 export default class LayeredContainerPortal extends Container {
 

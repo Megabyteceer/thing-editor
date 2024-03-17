@@ -1,5 +1,5 @@
-import { Container } from "pixi.js";
-import { ClassAttributes } from "preact";
+import type { Container } from "pixi.js";
+import type { ClassAttributes } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
@@ -18,7 +18,7 @@ import Selection from "thing-editor/src/editor/utils/selection";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import type Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import { mouseHandlerGlobal } from "thing-editor/src/engine/utils/game-interaction";
 
 function onEmptyClick() {

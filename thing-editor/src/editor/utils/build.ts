@@ -1,4 +1,5 @@
-import fs, { AssetType, FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
+import type { FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import enumAssetsPropsRecursive from "thing-editor/src/editor/utils/enum-assets-recursive";
 import getHashedAssetName from "thing-editor/src/editor/utils/get-hashed-asset-name";

@@ -1,4 +1,5 @@
-import { Application, BaseTexture, Container, GC_MODES, IApplicationOptions, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
+import type { IApplicationOptions } from "pixi.js";
+import { Application, BaseTexture, Container, GC_MODES, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from "pixi.js";
 import type { __EditorType } from "thing-editor/src/editor/editor";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
@@ -13,12 +14,12 @@ import FullScreen from "thing-editor/src/engine/utils/full-screen";
 import initGameInteraction, { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction";
 import { setValueByPath } from "thing-editor/src/engine/utils/get-value-by-path";
 import Keys from "thing-editor/src/engine/utils/keys";
-import L from "thing-editor/src/engine/utils/l";
+import type L from "thing-editor/src/engine/utils/l";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 import Settings from "thing-editor/src/engine/utils/settings";
 import Sound from "thing-editor/src/engine/utils/sound";
 import sureQuestionInit from "thing-editor/src/engine/utils/sure-question";
-import WebFont from "webfontloader";
+import type WebFont from "webfontloader";
 
 import ERROR_HTML from './utils/html-error.html?raw';
 

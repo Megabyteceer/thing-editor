@@ -1,11 +1,14 @@
 import { Text } from "pixi.js";
-import { ClassAttributes, ComponentChild, h } from "preact";
-import fs, { AssetType, FileDescL10n } from "thing-editor/src/editor/fs";
+import type { ClassAttributes, ComponentChild } from "preact";
+import { h } from "preact";
+import type { FileDescL10n } from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
-import SelectEditor, { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import type { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
@@ -84,7 +87,7 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 	static toggle() {
 		if(!instance) {
 			showAdditionalWindow('language-view', 'language-view', 'Localization', h(LanguageView, null), 40, 0, 100, 70, 600, 300);
-			Window.bringWindowForward('#language-view')
+			Window.bringWindowForward('#language-view');
 		} else {
 			hideAdditionalWindow('language-view');
 		}
@@ -117,7 +120,7 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 					let a: string[] = [];
 					text.replace(/%\w/gm, ((m: string) => {
 						a.push(m);
-					}) as any)
+					}) as any);
 
 					a.sort((a, b) => {
 						if(a > b) return 1;
@@ -156,14 +159,14 @@ const assetsUpdateHandler = (enforced = false) => {
 			instance.refresh();
 		}
 	}
-}
+};
 
 let initialized = false;
 const init = () => {
 	initialized = true;
 	editorEvents.on('assetsRefreshed', assetsUpdateHandler);
 	editorEvents.on('firstSceneWillOpen', () => assetsUpdateHandler(true));
-}
+};
 
 
 
@@ -184,7 +187,7 @@ const __serializeLanguage = (langData: KeyedObject, empty = false) => {
 		}
 	}
 	return ret;
-}
+};
 
 const parseAssets = () => {
 	assetsFilesIsDirty = false;
@@ -260,13 +263,13 @@ const parseAssets = () => {
 		const langs = L.getLanguagesList();
 		for(const langId of langs) {
 			if(!folderFiles.has(langId)) {
-				L.getLanguagesList()
+				L.getLanguagesList();
 				createFilesForLanguage(langId);
 			}
 		}
 	});
 	generateLocalizationTypings();
-}
+};
 
 const generateLocalizationTypings = () => {
 	const src = ['interface LocalizationKeys {'];
@@ -283,7 +286,7 @@ const sortTextList = (a: SelectEditorItem, b: SelectEditorItem) => {
 	} else {
 		return -1;
 	}
-}
+};
 
 //////////////////////////////////////////////////////////
 ////// TABLE ////////////////////////////////////////////
@@ -317,7 +320,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		onInput: this.onSearchChange.bind(this),
 		placeholder: 'Search',
 		value: ''
-	}
+	};
 
 	constructor(props: ClassAttributes<LanguageTableEditor>) {
 		super(props);

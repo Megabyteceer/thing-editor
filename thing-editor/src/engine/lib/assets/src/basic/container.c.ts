@@ -1,5 +1,6 @@
 
-import { Container, DisplayObject, Filter, Point } from "pixi.js";
+import type { Filter, Point } from "pixi.js";
+import { Container, DisplayObject } from "pixi.js";
 import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable.js";
 
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";

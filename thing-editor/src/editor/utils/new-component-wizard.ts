@@ -1,6 +1,6 @@
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
+import type { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
 import game from "thing-editor/src/engine/game";
 
 interface ChooseTempletItem extends ChooseListItem {

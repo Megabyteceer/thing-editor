@@ -1,4 +1,5 @@
-import { Point, Renderer } from "pixi.js";
+import type { Renderer } from "pixi.js";
+import { Point } from "pixi.js";
 import game from "thing-editor/src/engine/game";
 import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 

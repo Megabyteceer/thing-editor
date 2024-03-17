@@ -2,9 +2,11 @@ import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-
 import Lib from "thing-editor/src/engine/lib";
 
 import { Container, DisplayObject, Sprite, Text } from "pixi.js";
-import fs, { AssetType, FileDescClass } from "thing-editor/src/editor/fs";
+import type { FileDescClass } from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDesc, EditablePropertyType, _editableEmbed, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
+import type { EditablePropertyDesc, EditablePropertyType } from "thing-editor/src/editor/props-editor/editable";
+import { _editableEmbed, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { regenerateClassesTypings } from "thing-editor/src/editor/utils/generate-editor-typings";

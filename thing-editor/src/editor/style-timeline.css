@@ -1,5 +1,3 @@
-
-
 #timeline {
 	border: 1px solid #682e24;
 }
@@ -160,7 +158,7 @@
 	border-left: 1px solid #ad7000;
 }
 
-.timelilne-select-frame {
+.timeline-select-frame {
 	pointer-events: none;
 	position: absolute;
 	border: 1px dashed #080;
@@ -350,45 +348,45 @@
 	background: #814833;
 }
 
-.tip-icon{
-	font-family:sans-serif;
-	font-weight:bold;
-	display:inline-block;
-	border-radius:50%;
-	background:#b97852;
+.tip-icon {
+	font-family: sans-serif;
+	font-weight: bold;
+	display: inline-block;
+	border-radius: 50%;
+	background: #b97852;
 	color: #ffe564;
 	text-align: center;
 	cursor: pointer;
 	padding: 0 4px;
 }
 
-.tip-icon:hover{
-	transform:scale(1.3);
+.tip-icon:hover {
+	transform: scale(1.3);
 }
 
 .tip-discard-btn {
 	border-radius: 20px;
-    position: absolute;
-    padding: 2px 20px;
-    right: 19px;
-    background: #440000;
-    top: 0px;
+	position: absolute;
+	padding: 2px 20px;
+	right: 19px;
+	background: #440000;
+	top: 0px;
 }
 
-.tip-container{
+.tip-container {
 	background: #3e3e3e;
-    color: #eae3be;
-	padding:10px;
+	color: #eae3be;
+	padding: 10px;
 	display: block;
 	z-index: 4;
 	text-align: left;
-	cursor:initial;
+	cursor: initial;
 }
 
 .tip-discard-btn {
 	position: absolute;
-	right:0;
-	top:0;
+	right: 0;
+	top: 0;
 }
 
 .tip-paragraph {

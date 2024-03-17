@@ -1,4 +1,5 @@
-import { Container, Point } from "pixi.js";
+import type { Point } from "pixi.js";
+import { Container } from "pixi.js";
 import { moveSelectionToGlobalPoint } from "thing-editor/src/editor/ui/editor-overlay";
 import game from "thing-editor/src/engine/game";
 import ___GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c";

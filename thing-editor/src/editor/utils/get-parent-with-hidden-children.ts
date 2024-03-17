@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 
 export default function getParentWhichHideChildren(child: Container, closest = false): Container | undefined {

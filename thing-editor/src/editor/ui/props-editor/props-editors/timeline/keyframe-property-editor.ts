@@ -1,4 +1,5 @@
-import { ClassAttributes, h } from "preact";
+import type { ClassAttributes } from "preact";
+import { h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import CallbackEditor from "thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor";
@@ -7,7 +8,7 @@ import PowDampPresetSelector from "thing-editor/src/editor/ui/props-editor/props
 import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import { getKeyframeTypesForField } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/get-keyframe-types-for-field";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
+import type TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
 import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
 import game from "thing-editor/src/engine/game";
 import { TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
@@ -271,7 +272,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 				R.input({ className: 'clickable', id: 'speed-set-checkbox', type: 'checkbox', onChange: this.onSetSpeedExistsChanged, checked: hasSpeed }),
 				hasSpeed ? h(NumberEditor, { value: speedVal, step: (edField.step || 1) / 10, min: -1000, max: 1000, onChange: this.onSpeedChanged }) : undefined,
 				R.space()
-			)
+			);
 		}
 		let hasRandom = kf.hasOwnProperty('r');
 		let randomEditor;

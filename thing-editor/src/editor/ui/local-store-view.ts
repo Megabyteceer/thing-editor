@@ -1,4 +1,5 @@
-import { ClassAttributes, ComponentChild, h } from 'preact';
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { h } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
 import Window from 'thing-editor/src/editor/ui/editor-window';
@@ -34,7 +35,7 @@ export default class LocalStoreView extends ComponentDebounced<ClassAttributes<L
 		onInput: this.onSearchChange.bind(this),
 		placeholder: 'Search',
 		value: ''
-	}
+	};
 
 	static refresh() {
 		if(instance) {
@@ -45,7 +46,7 @@ export default class LocalStoreView extends ComponentDebounced<ClassAttributes<L
 	static toggle() {
 		if(!instance) {
 			showAdditionalWindow('language-view', 'language-view', 'Localization', h(LocalStoreView, null), 40, 0, 100, 70, 600, 300);
-			Window.bringWindowForward('#language-view')
+			Window.bringWindowForward('#language-view');
 		} else {
 			hideAdditionalWindow('language-view');
 		}

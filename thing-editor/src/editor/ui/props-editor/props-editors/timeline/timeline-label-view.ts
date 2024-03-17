@@ -1,13 +1,14 @@
-import { ClassAttributes, Component, ComponentChild } from "preact";
+import type { ClassAttributes, ComponentChild } from "preact";
+import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
-import ObjectsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/objects-timeline";
+import type ObjectsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/objects-timeline";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
 import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import { TimelineLabelData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { TimelineLabelData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 let labelNamesProps = {
 	className: 'selectable-text',

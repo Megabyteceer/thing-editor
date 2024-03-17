@@ -1,8 +1,9 @@
-import { Container, Texture } from "pixi.js";
-import { ComponentChildren } from "preact";
+import type { Container } from "pixi.js";
+import { Texture } from "pixi.js";
+import type { ComponentChildren } from "preact";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
-import HowlSound from "thing-editor/src/engine/HowlSound";
+import type HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor/src/engine/lib";

@@ -1,6 +1,6 @@
-import { Container, Text } from "pixi.js";
+import type { Container, Text } from "pixi.js";
 import game from "thing-editor/src/engine/game";
-import Button from "thing-editor/src/engine/lib/assets/src/basic/button.c";
+import type Button from "thing-editor/src/engine/lib/assets/src/basic/button.c";
 import callByPath from "thing-editor/src/engine/utils/call-by-path";
 import L from "thing-editor/src/engine/utils/l";
 
@@ -87,6 +87,6 @@ const sureQuestionInit = (container: Container, title: string, message: string, 
 			okBtn.x = (okBtn.x + noBtn.x) / 2; //Centralize ok button
 		}
 	}
-}
+};
 
 export default sureQuestionInit;

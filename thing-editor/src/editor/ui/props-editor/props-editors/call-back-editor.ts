@@ -1,4 +1,5 @@
-import DataPathEditor, { DataPathEditorProps } from "thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor";
+import type { DataPathEditorProps } from "thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor";
+import DataPathEditor from "thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 

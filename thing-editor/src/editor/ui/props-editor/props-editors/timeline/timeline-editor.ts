@@ -1,4 +1,5 @@
-import { ClassAttributes, Component, h } from "preact";
+import type { ClassAttributes } from "preact";
+import { Component, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";

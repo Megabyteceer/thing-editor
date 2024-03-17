@@ -1,10 +1,11 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import { Component, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditableRect } from "thing-editor/src/editor/props-editor/editable";
+import type { EditableRect } from "thing-editor/src/editor/props-editor/editable";
 import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
-import NumberEditor, { NumberEditorProps } from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
-import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import type { NumberEditorProps } from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
+import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
+import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import ___RectGuide from "thing-editor/src/engine/lib/assets/src/___system/___rect-guide.c";

@@ -1,4 +1,4 @@
-import { ComponentChild, ComponentChildren } from "preact";
+import type { ComponentChild, ComponentChildren } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";

@@ -1,7 +1,8 @@
-import { ClassAttributes, Component, ComponentChild, h } from "preact";
+import type { ClassAttributes, ComponentChild} from "preact";
+import { Component, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import type { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
 import Help from "thing-editor/src/editor/ui/help";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import assert from "thing-editor/src/engine/debug/assert";

@@ -530,7 +530,7 @@ function showSndDebugger() {
 
 	for(let clearBtn of document.querySelectorAll('.snd-clear')) {  // eslint-disable-line no-unreachable
 		clearBtn.addEventListener('click', (ev) => {
-			const soundName = sndNameByEvent(ev as InputEvent)
+			const soundName = sndNameByEvent(ev as InputEvent);
 			IndexedDBUtils.save(soundName, 'sound');
 			showSndDebugger();
 			overrideSound(soundName);

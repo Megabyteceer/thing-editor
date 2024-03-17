@@ -1,7 +1,8 @@
 
 import { Container } from 'pixi.js';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import editable, { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+import editable from 'thing-editor/src/editor/props-editor/editable';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
@@ -10,7 +11,8 @@ import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import DSprite from 'thing-editor/src/engine/lib/assets/src/basic/d-sprite.c';
-import FieldPlayer, { TimelineData, TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineKeyFrameType, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
+import type { TimelineData, TimelineFieldData, TimelineFrameValuesCache, TimelineKeyFrame, TimelineLabelData, TimelineSerializedData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
+import FieldPlayer, { TimelineKeyFrameType } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
 

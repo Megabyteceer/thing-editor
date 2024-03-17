@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 /// <reference types="vite/client" />
 
 type CallBackPath = string;

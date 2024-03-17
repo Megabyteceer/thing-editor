@@ -1,4 +1,5 @@
-import { ClassAttributes, Component, ComponentChild } from "preact";
+import type { ClassAttributes, ComponentChild } from "preact";
+import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";

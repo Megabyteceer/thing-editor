@@ -1,7 +1,7 @@
 import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import type Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 function onNewSceneClick() {
 	game.editor.askSceneToSaveIfNeed();

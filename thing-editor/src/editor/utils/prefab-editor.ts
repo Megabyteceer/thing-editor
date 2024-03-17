@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
 import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
 
@@ -6,8 +6,8 @@ import __refreshPrefabRefs, { __refreshPrefabRefsPrepare } from "thing-editor/sr
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import __SystemBackDrop from "thing-editor/src/engine/lib/assets/src/___system/backdrop.c";
-import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
+import type __SystemBackDrop from "thing-editor/src/engine/lib/assets/src/___system/backdrop.c";
+import type Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
 import loadDynamicTextures from "thing-editor/src/engine/utils/load-dynamic-textures";
 
 let prefabsStack: string[] = [];

@@ -1,4 +1,5 @@
-import fs, { AssetType, FileDesc } from "thing-editor/src/editor/fs";
+import type { FileDesc } from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView, { addSharedAssetContextMenu, assetTypesIcons } from "thing-editor/src/editor/ui/assets-view/assets-view";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";

@@ -1,8 +1,9 @@
-import { Container } from "pixi.js";
-import { ClassAttributes, h } from "preact";
+import type { Container } from "pixi.js";
+import type { ClassAttributes } from "preact";
+import { h } from "preact";
 
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { getDefaultKeyframeTypeForField } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/get-keyframe-types-for-field";
@@ -23,7 +24,7 @@ import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 interface TimelineCopyPasteData {
 	fields: KeyedMap<TimelineSerializedKeyFrame[]>,
@@ -996,7 +997,7 @@ function createKeyframe(o: MovieClip, name: string, time: number, field: Timelin
 				game.editor.ui.modal.showEditorQuestion("Animation generator", "Do you want to create keyframes for all same images?",
 					() => {
 						let image = o.image;
-						while(true) {// eslint-disable-line no-constant-condition
+						while(true) {
 							image = increaseNumberInName(image, nameStep)!;
 							if(Lib.hasTexture(image)) {
 								time += step;

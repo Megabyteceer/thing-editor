@@ -1,8 +1,9 @@
-import { Container } from 'pixi.js';
-import { Component, ComponentChild } from 'preact';
+import type { Container } from 'pixi.js';
+import type { ComponentChild } from 'preact';
+import { Component } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
-import { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
+import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import StatusBar from 'thing-editor/src/editor/ui/status-bar';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
@@ -54,10 +55,10 @@ interface NumberEditorState {
 const onArrowOver = () => {
 	StatusBar.addStatus('drag arrow up and down - to delta value', 'number-editor');
 
-}
+};
 const onArrowOut = () => {
 	StatusBar.removeStatus('number-editor');
-}
+};
 
 class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 

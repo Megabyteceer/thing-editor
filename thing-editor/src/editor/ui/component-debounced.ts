@@ -1,4 +1,5 @@
-import { Component, ComponentChild } from "preact";
+import type { ComponentChild } from "preact";
+import { Component } from "preact";
 
 export default class ComponentDebounced<P = object, S = object> extends Component<P, S> {
 	private _refreshTimeout = 0;

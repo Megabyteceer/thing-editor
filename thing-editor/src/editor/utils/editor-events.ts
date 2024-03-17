@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
-import { Container } from "pixi.js";
-import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
-import TypedEventEmitter from "typed-emitter";
+import type { Container } from "pixi.js";
+import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import type TypedEventEmitter from "typed-emitter";
 
 type EditorEvents = {
 	projectDidOpen: () => void,

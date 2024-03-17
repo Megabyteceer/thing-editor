@@ -1,4 +1,5 @@
-import { ClassAttributes, Component, h } from "preact";
+import type { ClassAttributes} from "preact";
+import { Component, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
 import FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
@@ -7,8 +8,8 @@ import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-edit
 import StatusBar from "thing-editor/src/editor/ui/status-bar";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import { TimelineFieldData, TimelineLabelData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
+import type { TimelineFieldData, TimelineLabelData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 const objectsTimelineProps = { className: 'objects-timeline' };
 

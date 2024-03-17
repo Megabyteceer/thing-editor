@@ -1,6 +1,8 @@
-import { Container } from "pixi.js";
-import { ClassAttributes, Component, h } from "preact";
-import SelectEditor, { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import type { Container } from "pixi.js";
+import type { ClassAttributes} from "preact";
+import { Component, h } from "preact";
+import type { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import game from "thing-editor/src/engine/game";
 
 interface PowDampPreset {

@@ -1,4 +1,4 @@
-import { ComponentChild } from "preact";
+import type { ComponentChild } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import game from "thing-editor/src/engine/game";
 
@@ -18,7 +18,7 @@ const getCurrentStack = (title: ComponentChild): DebugStack => {
 		title,
 		stack: (new Error()).stack as string
 	};
-}
+};
 
 const showStack = (stack: DebugStack) => {
 	let a = stack.stack.split('\n');
@@ -74,7 +74,7 @@ const showStack = (stack: DebugStack) => {
 			}
 		}, R.b(null, i.functionName), ' (', i.path, ')');
 	})));
-}
+};
 
 
 export { getCurrentStack, showStack };

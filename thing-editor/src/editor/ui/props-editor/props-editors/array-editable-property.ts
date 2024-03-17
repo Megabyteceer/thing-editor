@@ -1,7 +1,8 @@
-import { Component, ComponentChild, h } from "preact";
+import type { ComponentChild} from "preact";
+import { Component, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
-import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 
 const arrayProps = { className: 'array-prop' };
 const arrayItemProps = { className: 'array-prop-item' };

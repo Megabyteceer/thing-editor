@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import R from "thing-editor/src/editor/preact-fabrics";
 
 import assert from "thing-editor/src/engine/debug/assert";
@@ -88,8 +88,8 @@ const L: TL = ((id: string, values?: KeyedObject): string => {
 }) as any;
 
 L.has = (id: string) => {
-	return currentLanguageTable.hasOwnProperty(id)
-}
+	return currentLanguageTable.hasOwnProperty(id);
+};
 
 L.setCurrentLanguage = (languageId?: string) => {
 	if(!isLangDataLoaded) {
@@ -116,7 +116,7 @@ L.setCurrentLanguage = (languageId?: string) => {
 		currentLanguageTable = languages[currentLanguageId];
 		L.refreshAllTextEverywhere();
 	}
-}
+};
 
 L.setLanguagesAssets = (_languages: KeyedMap<KeyedMap<string>>) => {
 	isLangDataLoaded = true;
@@ -130,7 +130,7 @@ L.refreshAllTextEverywhere = () => {
 	if(game.stage) {
 		game.forAllChildrenEverywhere(refreshTranslatableText);
 	}
-}
+};
 
 function refreshTranslatableText(o: any) {
 	if(o.onLanguageChanged) {
@@ -140,17 +140,17 @@ function refreshTranslatableText(o: any) {
 
 L.getCurrentLanguageId = () => {
 	return currentLanguageId;
-}
+};
 
 L.getLanguagesList = () => {
 	return Object.keys(languages);
-}
+};
 
 L._deserializeLanguage = (langSrc: KeyedObject): KeyedMap<string> => {
 	let ret: KeyedMap<string> = {};
 	deserializeEntry(langSrc, ret);
 	return ret;
-}
+};
 
 const deserializeEntry = (src: KeyedObject, output: KeyedMap<string>, path?: string) => {
 	for(let key in src) {
@@ -171,6 +171,6 @@ const deserializeEntry = (src: KeyedObject, output: KeyedMap<string>, path?: str
 			}
 		}
 	}
-}
+};
 
 export default L;

@@ -1,5 +1,5 @@
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 
 const StringEditor = (props: EditablePropertyEditorProps) => {
 	const elementProps = {

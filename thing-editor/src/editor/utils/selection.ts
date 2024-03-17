@@ -2,7 +2,7 @@ import assert from "thing-editor/src/engine/debug/assert";
 
 import { OutlineFilter } from '@pixi/filter-outline';
 
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import TreeNode from "thing-editor/src/editor/ui/tree-view/tree-node";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";

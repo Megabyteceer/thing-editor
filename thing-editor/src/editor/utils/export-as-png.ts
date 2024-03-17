@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 

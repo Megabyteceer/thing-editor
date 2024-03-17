@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
 import game from "thing-editor/src/engine/game";
 
@@ -9,7 +9,7 @@ const toggleIsolation = () => {
 	} else {
 		isolateSelected();
 	}
-}
+};
 
 const isolateSelected = () => {
 	EDITOR_FLAGS.isolationEnabled = true;
@@ -28,7 +28,7 @@ const isolateSelected = () => {
 		}
 	}
 	game.editor.refreshTreeViewAndPropertyEditor();
-}
+};
 
 const exitIsolation = () => {
 	if(EDITOR_FLAGS.isolationEnabled) {
@@ -36,14 +36,15 @@ const exitIsolation = () => {
 		game.forAllChildrenEverywhere(unIsolateObject);
 		game.editor.refreshTreeViewAndPropertyEditor();
 	}
-}
+};
 
 const isolateObject = (o: Container) => {
 	o.__nodeExtendData.isolate = true;
-}
+};
 
 const unIsolateObject = (o: Container) => {
 	o.__nodeExtendData.isolate = false;
-}
+};
 
-export { toggleIsolation, exitIsolation };
+export { exitIsolation, toggleIsolation };
+

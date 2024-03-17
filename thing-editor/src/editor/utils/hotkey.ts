@@ -26,7 +26,7 @@ const isHotkeyHit = (ev: KeyboardEvent | Hotkey, element: HTMLElement, hotkey?: 
 	) {
 		return true;
 	}
-}
+};
 
 export default isHotkeyHit;
 

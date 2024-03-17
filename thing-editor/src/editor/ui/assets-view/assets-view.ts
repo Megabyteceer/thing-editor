@@ -1,5 +1,7 @@
-import { ComponentChild, h } from "preact";
-import fs, { AllAssetsTypes, AssetType, FileDesc, FileDescClass } from "thing-editor/src/editor/fs";
+import type { ComponentChild} from "preact";
+import { h } from "preact";
+import type { FileDesc, FileDescClass } from "thing-editor/src/editor/fs";
+import fs, { AllAssetsTypes, AssetType } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import assetItemRendererClass from "thing-editor/src/editor/ui/assets-view/asset-view-class";
 import assetItemRendererImage from "thing-editor/src/editor/ui/assets-view/asset-view-image";
@@ -8,8 +10,9 @@ import assetItemRendererSound from "thing-editor/src/editor/ui/assets-view/asset
 import assetItemRendererFont from 'thing-editor/src/editor/ui/assets-view/assets-view-font';
 import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
 import assetItemRendererResource from "thing-editor/src/editor/ui/assets-view/assets-view-resource";
-import { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
-import Window, { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
+import type { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import type { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
+import Window from "thing-editor/src/editor/ui/editor-window";
 import group from "thing-editor/src/editor/ui/group";
 import WindowMenu from "thing-editor/src/editor/ui/window-menu";
 import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";

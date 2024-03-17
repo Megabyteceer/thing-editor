@@ -1,12 +1,14 @@
-import { ClassAttributes, Component, ComponentChild, h } from "preact";
+import type { ClassAttributes, ComponentChild } from "preact";
+import { Component, h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
+import type FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
 import TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
 import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
 import assert from "thing-editor/src/engine/debug/assert";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import FieldPlayer, { TimelineFieldData, TimelineKeyFrame } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type FieldPlayer from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { TimelineFieldData, TimelineKeyFrame } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 let _scale = 1;
 let _shift = 0;
@@ -103,7 +105,7 @@ export default class TimelineLineView extends Component<TimelineLineViewProps> {
 					R.svg({ className: 'timeline-chart', height, width },
 						lines.map(points => R.polyline({ points: points.join(' ') }))
 					)
-				)
+				);
 			}
 		}
 

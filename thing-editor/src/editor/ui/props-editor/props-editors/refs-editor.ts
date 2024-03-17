@@ -1,7 +1,7 @@
 import { Container } from "pixi.js";
 import { Component, isValidElement } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import highlightObject from "thing-editor/src/editor/utils/highlight-object";
 import game from "thing-editor/src/engine/game";
 

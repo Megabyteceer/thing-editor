@@ -33,6 +33,6 @@ const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: So
 	});
 
 	return fileName;
-}
+};
 
 export { getPropertyDefinitionUrl };

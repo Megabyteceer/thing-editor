@@ -1,5 +1,5 @@
-import { ComponentChild, ComponentChildren } from "preact";
-import { FileDesc, LibInfo } from "thing-editor/src/editor/fs";
+import type { ComponentChild, ComponentChildren } from "preact";
+import type { FileDesc, LibInfo } from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 
 const libIconCache: Map<LibInfo, ComponentChild> = new Map();

@@ -1,4 +1,4 @@
-import { ComponentChild } from "preact";
+import type { ComponentChild } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 
@@ -27,7 +27,7 @@ export default class WindowMenu extends ComponentDebounced<WindowMenuProps, Wind
 	render() {
 		let body: ComponentChild;
 		if(this.state.toggled) {
-			body = R.div(windowMenuBodyProps, this.props.menu)
+			body = R.div(windowMenuBodyProps, this.props.menu);
 		}
 		return R.div({
 			className: 'window-menu',

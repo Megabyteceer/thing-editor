@@ -1,4 +1,5 @@
-import fs, { AssetType, FileDesc } from "thing-editor/src/editor/fs";
+import type { FileDesc } from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 
 const getHashedAssetName = (file: FileDesc) => {
 	if(!file._hashedAssetName) {

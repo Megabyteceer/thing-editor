@@ -1,7 +1,7 @@
 import { Point } from "pixi.js";
 import game from "thing-editor/src/engine/game";
 import Button from "thing-editor/src/engine/lib/assets/src/basic/button.c";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import type Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 import L from "thing-editor/src/engine/utils/l";
 import Sound from "thing-editor/src/engine/utils/sound";
 

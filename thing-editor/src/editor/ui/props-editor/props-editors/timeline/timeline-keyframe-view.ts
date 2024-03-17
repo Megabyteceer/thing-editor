@@ -1,15 +1,16 @@
-import { ClassAttributes, Component } from "preact";
+import type { ClassAttributes} from "preact";
+import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import { getKeyframeTypesForField } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/get-keyframe-types-for-field";
 import KeyframePropertyEditor, { READABLE_KEYFRAME_TYPES } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/keyframe-property-editor";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
-import { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
+import type TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
+import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import { TimelineKeyFrame, TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { TimelineKeyFrame, TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 const keyframesClasses = [
 	'timeline-keyframe-smooth',

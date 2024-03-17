@@ -1,4 +1,5 @@
-import { ClassAttributes, ComponentChild, h } from "preact";
+import type { ClassAttributes, ComponentChild} from "preact";
+import { h } from "preact";
 
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
@@ -6,8 +7,9 @@ import Window from "thing-editor/src/editor/ui/editor-window";
 import MainMenu from "thing-editor/src/editor/ui/main-menu";
 import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
 import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import { DebugStack, getCurrentStack, showStack } from "thing-editor/src/editor/utils/stack-utils";
-import HowlSound from "thing-editor/src/engine/HowlSound";
+import type { DebugStack} from "thing-editor/src/editor/utils/stack-utils";
+import { getCurrentStack, showStack } from "thing-editor/src/editor/utils/stack-utils";
+import type HowlSound from "thing-editor/src/engine/HowlSound";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
 import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";

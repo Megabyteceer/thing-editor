@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import { getCurrentStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";

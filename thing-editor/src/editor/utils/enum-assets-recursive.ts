@@ -1,4 +1,5 @@
-import fs, { AssetType, FileDesc } from "thing-editor/src/editor/fs";
+import type { FileDesc } from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
@@ -11,7 +12,7 @@ const addImageToAssetsList = (imageName: string, ret: Set<FileDesc>) => {
 			ret.add(file);
 		}
 	}
-}
+};
 
 const addSoundToAssetsList = (soundName: string, ret: Set<FileDesc>) => {
 	if(soundName) {
@@ -19,7 +20,7 @@ const addSoundToAssetsList = (soundName: string, ret: Set<FileDesc>) => {
 		assert(file, "Wrong sound name.");
 		ret.add(file);
 	}
-}
+};
 
 const addPrefabToAssetsList = (prefabName: string, ret: Set<FileDesc>) => {
 	if(prefabName) {
@@ -31,7 +32,7 @@ const addPrefabToAssetsList = (prefabName: string, ret: Set<FileDesc>) => {
 			enumAssetsPropsRecursive(Lib.prefabs[prefabName], ret);
 		}
 	}
-}
+};
 
 const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 	if(o.c) {
@@ -91,6 +92,6 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 			enumAssetsPropsRecursive(c, ret);
 		}
 	}
-}
+};
 
-export default enumAssetsPropsRecursive
+export default enumAssetsPropsRecursive;

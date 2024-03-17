@@ -10,6 +10,6 @@ const waitForCondition = (condition: () => any) => {
 			}
 		}, 100);
 	});
-}
+};
 
 export default waitForCondition;

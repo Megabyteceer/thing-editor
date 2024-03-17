@@ -1,10 +1,11 @@
-import { ClassAttributes, Component } from "preact";
+import type { ClassAttributes} from "preact";
+import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
+import type TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
 import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
-import { TimelineKeyFrame } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { TimelineKeyFrame } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
 
 
 interface TimelineLoopPointProps extends ClassAttributes<TimelineLoopPoint> {

@@ -1,6 +1,8 @@
 
-import { Assets, Cache, Container, MIPMAP_MODES, Spritesheet, Texture, WRAP_MODES } from "pixi.js";
-import fs, { AssetType, FileDesc, FileDescImage, FileDescL10n, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
+import type { Container, Spritesheet } from "pixi.js";
+import { Assets, Cache, MIPMAP_MODES, Texture, WRAP_MODES } from "pixi.js";
+import type { FileDesc, FileDescImage, FileDescL10n, FileDescPrefab, FileDescSound } from "thing-editor/src/editor/fs";
+import fs, { AssetType } from "thing-editor/src/editor/fs";
 import TLib from "thing-editor/src/editor/prefabs-typing";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";

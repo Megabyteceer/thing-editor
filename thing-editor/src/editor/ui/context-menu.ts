@@ -1,7 +1,8 @@
-import { ComponentChild, render } from "preact";
+import type { ComponentChild} from "preact";
+import { render } from "preact";
 
 import R from "thing-editor/src/editor/preact-fabrics";
-import { Hotkey } from "thing-editor/src/editor/utils/hotkey";
+import type { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 
 interface ContextMenuItemData {
 	name: ComponentChild | (() => ComponentChild),

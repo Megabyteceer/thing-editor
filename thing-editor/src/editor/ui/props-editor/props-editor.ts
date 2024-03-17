@@ -1,9 +1,12 @@
-import { Container } from "pixi.js";
-import { ClassAttributes, Component, ComponentChild, ComponentType, h } from "preact";
+import type { Container } from "pixi.js";
+import type { ClassAttributes, Component, ComponentChild, ComponentType} from "preact";
+import { h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDesc, EditablePropertyType, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
+import type { EditablePropertyDesc, EditablePropertyType} from "thing-editor/src/editor/props-editor/editable";
+import { propertyAssert } from "thing-editor/src/editor/props-editor/editable";
 import Window from "thing-editor/src/editor/ui/editor-window";
-import group, { GroupableItem } from "thing-editor/src/editor/ui/group";
+import type { GroupableItem } from "thing-editor/src/editor/ui/group";
+import group from "thing-editor/src/editor/ui/group";
 import PropsFieldWrapper from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import assert from "thing-editor/src/engine/debug/assert";

@@ -1,6 +1,8 @@
-import { Container, Sprite } from "pixi.js";
+import type { Container} from "pixi.js";
+import { Sprite } from "pixi.js";
 import R from "thing-editor/src/editor/preact-fabrics";
-import showContextMenu, { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import type { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import showContextMenu from "thing-editor/src/editor/ui/context-menu";
 import { toggleIsolation } from "thing-editor/src/editor/ui/isolation";
 import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
 import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";

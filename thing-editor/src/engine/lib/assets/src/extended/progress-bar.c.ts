@@ -1,5 +1,6 @@
 
-import { Container, DisplayObject, NineSlicePlane, Point, Sprite } from "pixi.js";
+import type { DisplayObject, Sprite } from "pixi.js";
+import { Container, NineSlicePlane, Point } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";

@@ -1,10 +1,13 @@
-import { ClassAttributes, Component, ComponentChild } from "preact";
+import type { ClassAttributes, ComponentChild } from "preact";
+import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { ContextMenuItem, hideContextMenu, refreshContextMenu } from "thing-editor/src/editor/ui/context-menu";
+import type { ContextMenuItem} from "thing-editor/src/editor/ui/context-menu";
+import { hideContextMenu, refreshContextMenu } from "thing-editor/src/editor/ui/context-menu";
 import Window from "thing-editor/src/editor/ui/editor-window";
 import { MAIN_MENU } from "thing-editor/src/editor/ui/main-menu";
 import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
-import isHotkeyHit, { Hotkey } from "thing-editor/src/editor/utils/hotkey";
+import type { Hotkey } from "thing-editor/src/editor/utils/hotkey";
+import isHotkeyHit from "thing-editor/src/editor/utils/hotkey";
 import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
 import game from "thing-editor/src/engine/game";

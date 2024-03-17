@@ -1,5 +1,6 @@
-import { Container } from "pixi.js";
-import { ClassAttributes, h } from "preact";
+import type { Container } from "pixi.js";
+import type { ClassAttributes } from "preact";
+import { h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import showContextMenu from "thing-editor/src/editor/ui/context-menu";
@@ -133,19 +134,19 @@ const selectIfNotSelected = (node: Container) => {
 	if(game.editor.selection.indexOf(node) < 0) {
 		game.editor.selection.select(node);
 	}
-}
+};
 
 const onContextMenu = (node: Container, ev: PointerEvent) => {
 
 	selectIfNotSelected(node);
 
 	sp(ev);
-	showContextMenu(TREE_NODE_CONTEXT_MENU, ev)
+	showContextMenu(TREE_NODE_CONTEXT_MENU, ev);
 };
 
 const isNodeVisibleInTree = (node: Container) => {
 	return !node.__nodeExtendData.hidden;
-}
+};
 
 function nodeHasExpandableChildren(node: Container) {
 	return node.children.some(isNodeVisibleInTree) && !node.__hideChildren;

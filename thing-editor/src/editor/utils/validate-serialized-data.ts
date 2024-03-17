@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import fs, { AssetType } from "thing-editor/src/editor/fs";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";

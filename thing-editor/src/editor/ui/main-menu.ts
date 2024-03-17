@@ -1,8 +1,10 @@
-import { Component, ComponentChild, h } from "preact";
+import type { ComponentChild } from "preact";
+import { Component, h } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 
-import showContextMenu, { ContextMenuItem, toggleContextMenu } from "thing-editor/src/editor/ui/context-menu";
+import type { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
+import showContextMenu, { toggleContextMenu } from "thing-editor/src/editor/ui/context-menu";
 import { findMenuItemForHotkey } from "thing-editor/src/editor/ui/editor-button";
 import Window from 'thing-editor/src/editor/ui/editor-window';
 import Build from "thing-editor/src/editor/utils/build";
@@ -21,7 +23,7 @@ const UNMUTED_ICON = (): ComponentChild => {
 		unmutedIconsCache = R.icon('asset-sound');
 	}
 	return unmutedIconsCache;
-}
+};
 
 let mutedIconsCache: ComponentChild;
 const MUTED_ICON = (): ComponentChild => {
@@ -29,44 +31,44 @@ const MUTED_ICON = (): ComponentChild => {
 		mutedIconsCache = R.icon('sound-mute');
 	}
 	return mutedIconsCache;
-}
+};
 
 const menuProps = {
 	className: 'main-menu',
 	"data-help": 'editor.MainMenu'
-}
+};
 
 const chooseProjectClick = () => {
 	game.editor.chooseProject();
-}
+};
 
 const saveSceneClick = () => {
 	game.editor.saveCurrentScene();
-}
+};
 
 const savePrefabClick = () => {
 	PrefabEditor.acceptPrefabEdition();
-}
+};
 
 const exitClick = () => {
 	fs.exitWithResult('exit menu click');
-}
+};
 
 const browseClick = () => {
 	fs.browseDir(game.editor.currentProjectDir);
-}
+};
 
 const projectPropsClick = () => {
 	game.editor.editSource(game.editor.currentProjectDir + 'thing-project.json');
-}
+};
 
 const buildReleaseClick = () => {
 	Build.build(false);
-}
+};
 
 const buildDebugClick = () => {
 	Build.build(true);
-}
+};
 
 interface MainMenuItem {
 	name: string,
@@ -83,21 +85,21 @@ const MUTE_SOUND_MENU_ITEM: ContextMenuItem = {
 	},
 	stayAfterClick: true,
 	hotkey: { key: 'm', ctrlKey: true }
-}
+};
 
 const proxyMenuItemName = (targetItem: ContextMenuItem) => {
 	const item = findMenuItemForHotkey(targetItem!.hotkey!);
 	if(item) {
 		return item.name;
 	}
-}
+};
 
 const proxyMenuItemClick = (targetItem: ContextMenuItem) => {
 	const item = findMenuItemForHotkey(targetItem!.hotkey!);
 	if(item) {
 		item.onClick();
 	}
-}
+};
 
 let isProxySearch = false;
 
@@ -120,35 +122,35 @@ const proxyMenuItemDisabled = (targetItem: ContextMenuItem) => {
 		}
 	}
 	return true;
-}
+};
 
 const COPY_PROXY_MENU_ITEM: ContextMenuItem = {
 	name: () => proxyMenuItemName(COPY_PROXY_MENU_ITEM),
 	onClick: () => proxyMenuItemClick(COPY_PROXY_MENU_ITEM),
 	disabled: () => proxyMenuItemDisabled(COPY_PROXY_MENU_ITEM) as any,
 	hotkey: { key: "c", ctrlKey: true },
-}
+};
 
 const PASTE_PROXY_MENU_ITEM: ContextMenuItem = {
 	name: () => proxyMenuItemName(PASTE_PROXY_MENU_ITEM),
 	onClick: () => proxyMenuItemClick(PASTE_PROXY_MENU_ITEM),
 	disabled: () => proxyMenuItemDisabled(PASTE_PROXY_MENU_ITEM) as any,
 	hotkey: { key: "v", ctrlKey: true },
-}
+};
 
 const CUT_PROXY_MENU_ITEM: ContextMenuItem = {
 	name: () => proxyMenuItemName(CUT_PROXY_MENU_ITEM),
 	onClick: () => proxyMenuItemClick(CUT_PROXY_MENU_ITEM),
 	disabled: () => proxyMenuItemDisabled(CUT_PROXY_MENU_ITEM) as any,
 	hotkey: { key: "x", ctrlKey: true },
-}
+};
 
 const CLONE_PROXY_MENU_ITEM: ContextMenuItem = {
 	name: () => proxyMenuItemName(CLONE_PROXY_MENU_ITEM),
 	onClick: () => proxyMenuItemClick(CLONE_PROXY_MENU_ITEM),
 	disabled: () => proxyMenuItemDisabled(CLONE_PROXY_MENU_ITEM) as any,
 	hotkey: { key: "d", ctrlKey: true },
-}
+};
 
 const MAIN_MENU: MainMenuItem[] = [
 	{
@@ -346,7 +348,7 @@ export default class MainMenu extends Component {
 				id: targetMenuId,
 				name: targetMenuId,
 				items: []
-			}
+			};
 			MAIN_MENU.push(menu);
 		}
 		if(typeof pos === 'number') {

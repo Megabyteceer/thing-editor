@@ -1,8 +1,8 @@
-import { Container, DisplayObject } from "pixi.js";
-import { FileDesc } from "thing-editor/src/editor/fs";
+import type { Container, DisplayObject } from "pixi.js";
+import type { FileDesc } from "thing-editor/src/editor/fs";
 import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
-import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import { Hotkey } from "thing-editor/src/editor/utils/hotkey";
+import type { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import type { Hotkey } from "thing-editor/src/editor/utils/hotkey";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 

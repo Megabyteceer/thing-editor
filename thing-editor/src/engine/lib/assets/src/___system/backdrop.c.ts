@@ -1,4 +1,5 @@
-import { Point, Renderer } from "pixi.js";
+import type { Renderer } from "pixi.js";
+import { Point } from "pixi.js";
 import editable from "thing-editor/src/editor/props-editor/editable";
 import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
 import game from "thing-editor/src/engine/game";

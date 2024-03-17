@@ -1,5 +1,6 @@
 import { Container } from "pixi.js";
-import { ClassAttributes, ComponentChild, h } from "preact";
+import type { ClassAttributes, ComponentChild } from "preact";
+import { h } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics.js";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
 import group from "thing-editor/src/editor/ui/group";
@@ -233,7 +234,7 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 				lastClickedList = this;
 
 				if(typeof item.owner === "function") {
-					(item.owner as (ev: PointerEvent) => void)(ev)
+					(item.owner as (ev: PointerEvent) => void)(ev);
 				} else if(item.owner && (item.owner instanceof Container)) {
 					let extendData = item.owner.__nodeExtendData;
 					if((item.owner.___id !== item.ownerId) || (extendData.statusWarnOwnerId !== item.ownerId)) {

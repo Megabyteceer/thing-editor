@@ -1,4 +1,5 @@
-import { ClassAttributes, Component, ComponentChild } from "preact";
+import type { ClassAttributes, ComponentChild } from "preact";
+import { Component } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import group from "thing-editor/src/editor/ui/group";
 import sp from "thing-editor/src/editor/utils/stop-propagation";
@@ -34,7 +35,7 @@ export type { ChooseListItem };
 
 export default class ChooseList extends Component<ChooseListProps, ChooseListState> {
 
-	searchInputProps: any
+	searchInputProps: any;
 
 	constructor(props: ChooseListProps) {
 		super(props);

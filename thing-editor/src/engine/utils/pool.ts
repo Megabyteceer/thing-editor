@@ -18,7 +18,7 @@ const onNew = (ret: any) => {
 		}
 	}
 	onTake(ret);
-}
+};
 
 const onTake = (ret: any) => {
 	if(ret instanceof Container) {
@@ -26,7 +26,7 @@ const onTake = (ret: any) => {
 		ret.___id = __idCounter++;
 		ret.__nodeExtendData = {};
 	}
-}
+};
 
 /// #endif
 
@@ -49,7 +49,7 @@ export default class Pool {
 		if(!pools.has(constructor)) {
 			const ret = new constructor();
 			/// #if EDITOR
-			onNew(ret)
+			onNew(ret);
 			/// #endif
 			return ret;
 		}
@@ -57,7 +57,7 @@ export default class Pool {
 		if(a.length === 0) {
 			const ret = new constructor();
 			/// #if EDITOR
-			onNew(ret)
+			onNew(ret);
 			/// #endif
 			return ret;
 		}

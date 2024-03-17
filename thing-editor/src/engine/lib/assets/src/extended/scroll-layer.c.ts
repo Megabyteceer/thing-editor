@@ -1,5 +1,6 @@
 
-import editable, { EditableRect } from "thing-editor/src/editor/props-editor/editable";
+import type { EditableRect } from "thing-editor/src/editor/props-editor/editable";
+import editable from "thing-editor/src/editor/props-editor/editable";
 import game from "thing-editor/src/engine/game";
 import Container from "thing-editor/src/engine/lib/assets/src/basic/container.c";
 import { mouseHandlerGlobal } from "thing-editor/src/engine/utils/game-interaction";

@@ -1,4 +1,4 @@
-import { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
+import type { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
 import Lib from "thing-editor/src/engine/lib";
 
 export default function makePrefabSelector(startsWith?: string, canBeEmpty = true, filter?: ((item: SelectEditorItem) => boolean)) {

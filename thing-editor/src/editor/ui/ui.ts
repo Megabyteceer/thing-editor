@@ -1,4 +1,5 @@
-import { ComponentChild, h, render } from "preact";
+import type { ComponentChild } from "preact";
+import { h, render } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
 import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
 import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
@@ -20,7 +21,7 @@ interface UIProps {
 
 const workingAreaProps = {
 	id: 'working-area'
-}
+};
 
 export default class UI extends ComponentDebounced<UIProps> {
 

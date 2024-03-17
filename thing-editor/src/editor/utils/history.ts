@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import MainMenu from "thing-editor/src/editor/ui/main-menu";
 import regenerateCurrentSceneMapTypings from "thing-editor/src/editor/utils/generate-editor-typings";
 import type { SelectionData } from "thing-editor/src/editor/utils/selection";
@@ -9,7 +9,7 @@ import Lib from "thing-editor/src/engine/lib";
 import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
 
 import Pool from "thing-editor/src/engine/utils/pool";
-import TypedEmitter from "typed-emitter";
+import type TypedEmitter from "typed-emitter";
 
 const HISTORY_LEN = 100;
 const STRICT_HISTORY_LEN = 20;

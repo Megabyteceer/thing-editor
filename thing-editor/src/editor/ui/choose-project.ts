@@ -1,4 +1,5 @@
-import { Component, ComponentChild, h } from "preact";
+import type { ComponentChild } from "preact";
+import { Component, h } from "preact";
 import fs from "thing-editor/src/editor/fs";
 import R from "thing-editor/src/editor/preact-fabrics";
 import group from "thing-editor/src/editor/ui/group";

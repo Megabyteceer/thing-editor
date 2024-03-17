@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { DebugStack } from "thing-editor/src/editor/utils/stack-utils";
+import type { DebugStack } from "thing-editor/src/editor/utils/stack-utils";
 import { removeHoldersToCleanup } from "thing-editor/src/engine/lib";
 
 class RemoveHolder extends Container {

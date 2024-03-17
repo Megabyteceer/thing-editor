@@ -1,8 +1,8 @@
-import HowlSound from "thing-editor/src/engine/HowlSound";
+import type HowlSound from "thing-editor/src/engine/HowlSound";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "thing-editor/src/engine/game";
 import Lib from "thing-editor/src/engine/lib";
-import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
+import type BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
 import { stepTo } from "thing-editor/src/engine/utils/utils";
 
 const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01

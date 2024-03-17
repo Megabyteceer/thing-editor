@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import type { Container } from "pixi.js";
 import assert from "thing-editor/src/engine/debug/assert";
 import game from "../game";
 import { pathDebugging, setValueByPath } from "./get-value-by-path";

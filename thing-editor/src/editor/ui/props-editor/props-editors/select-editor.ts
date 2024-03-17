@@ -1,6 +1,7 @@
-import { Component, ComponentChild, render } from "preact";
+import type { ComponentChild} from "preact";
+import { Component, render } from "preact";
 import R from "thing-editor/src/editor/preact-fabrics";
-import { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
+import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
 import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
 import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
 import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-or-text";
