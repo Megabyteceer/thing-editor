@@ -1,5 +1,8 @@
 
 import fs from 'fs';
+import * as patcher from '../electron-main/pixi-typings-patch.js';
+
+patcher.default();
 
 if(!fs.existsSync('./games')) {
 	fs.mkdirSync('./games');

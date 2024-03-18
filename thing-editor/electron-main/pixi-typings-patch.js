@@ -202,7 +202,9 @@ function tryToPatch(folder, mainWindow) {
 					console.log('PIXI typings patched: ' + fn);
 				} else {
 					console.error('PIXI typings patch "' + find + '" was not applied: ' + fn);
-					dialog.showMessageBoxSync(mainWindow, 'PIXI typing patch error', 'PIXI typings patch "' + find + '" was not applied: ' + fn);
+					if(mainWindow) {
+						dialog.showMessageBoxSync(mainWindow, 'PIXI typing patch error', 'PIXI typings patch "' + find + '" was not applied: ' + fn);
+					}
 				}
 			}
 		}
@@ -224,7 +226,9 @@ module.exports = function (mainWindow) {
 		if(!patch.done) {
 			debugger;
 			console.error('PIXI typings was not found: ' + patch.fileName);
-			dialog.showMessageBoxSync(mainWindow, 'PIXI typings was not found: ' + patch.fileName);
+			if(mainWindow) {
+				dialog.showMessageBoxSync(mainWindow, 'PIXI typings was not found: ' + patch.fileName);
+			}
 		}
 	}
 };
