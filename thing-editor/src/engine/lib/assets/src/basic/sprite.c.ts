@@ -39,11 +39,11 @@ export { imageJSPropertyDescriptor as imagePropertyDescriptor };
 
 const tintRDesc = {
 	get: function (this: Sprite) {
-		return this.tint >> 16;
+		return this.tint as number >> 16;
 	},
 	set: function (this: Sprite, v: number) {
 		assert(!isNaN(v), "invalid value for 'tintR'. Valid number value expected.", 10001);
-		this.tint = (this.tint & 0xFFFF) | (v << 16);
+		this.tint = (this.tint as number & 0xFFFF) | (v << 16);
 	}, configurable: true
 };
 
@@ -64,11 +64,11 @@ Object.defineProperty(Mesh.prototype, 'tintPicker', tintPickerDesc);
 
 const tintGDesc = {
 	get: function (this: Sprite) {
-		return (this.tint & 0xFF00) >> 8;
+		return (this.tint as number & 0xFF00) >> 8;
 	},
 	set: function (this: Sprite, v: number) {
 		assert(!isNaN(v), "invalid value for 'tintG'. Valid number value expected.", 10001);
-		this.tint = (this.tint & 0xFF00FF) | (v << 8);
+		this.tint = (this.tint as number & 0xFF00FF) | (v << 8);
 	}, configurable: true
 };
 
@@ -77,11 +77,11 @@ Object.defineProperty(Mesh.prototype, 'tintG', tintGDesc);
 
 const tintBDesc = {
 	get: function (this: Sprite) {
-		return this.tint & 0xFF;
+		return this.tint as number & 0xFF;
 	},
 	set: function (this: Sprite, v: number) {
 		assert(!isNaN(v), "invalid value for 'tintB'. Valid number value expected.", 10001);
-		this.tint = (this.tint & 0xFFFF00) | v;
+		this.tint = (this.tint as number & 0xFFFF00) | v;
 	}, configurable: true
 };
 

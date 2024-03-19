@@ -36,8 +36,8 @@ const initParsers = () => {
 	const spriteSheetLoader = Assets.loader.parsers.find(p => p.name === 'spritesheetLoader');
 	const originalParser = spriteSheetLoader!.parse!;
 	spriteSheetLoader!.parse = (asset: any, options, ...args) => {
-		const n = options!.src.lastIndexOf('/') + 1;
-		let url = options!.src.substring(0, n) + asset.meta.image;
+		const n = options!.src!.lastIndexOf('/') + 1;
+		let url = options!.src!.substring(0, n) + asset.meta.image;
 		asset.meta.image = unHashedFileToHashed.get(url)!.split('/').pop();
 		return originalParser(asset, options, ...args);
 	};

@@ -9,7 +9,7 @@ let __currentClassesMap: string;
 
 const getImportSrcForClass = (className: string) => {
 	const path = game.classes[className].__sourceFileName!;
-	return 'import ' + className + ' from "' + path.substring(1, path?.length - 3) + '";';
+	return 'import type ' + className + ' from "' + path.substring(1, path?.length - 3) + '";';
 };
 
 const regenerateCurrentSceneMapTypings = () => {
@@ -55,8 +55,8 @@ const regenerateCurrentSceneMapTypings = () => {
 		}
 
 		let mapJS = `// thing-editor auto generated file.
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
-import { Container } from "pixi.js";
+import type Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import type { Container } from "pixi.js";
 `
 			+ imports.join('\n') +
 			`
