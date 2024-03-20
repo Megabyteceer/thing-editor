@@ -44,6 +44,7 @@ import { __UnknownClassScene } from "thing-editor/src/engine/lib/assets/src/basi
 import Pool from "thing-editor/src/engine/utils/pool";
 import Sound from "thing-editor/src/engine/utils/sound";
 import type WebFont from 'webfontloader';
+import Build from './utils/build';
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
@@ -95,8 +96,6 @@ class Editor {
 
 	disableFieldsCache = false;
 
-	buildProjectAndExit: any;
-
 	history = historyInstance;
 
 	_lastChangedFiledName: string | null = null;
@@ -127,8 +126,8 @@ class Editor {
 	}
 
 	constructor() {
-
-		for(let arg of electron_ThingEditorServer.argv) {
+		const args = fs.getArgs();
+		for(let arg of args) {
 			if(arg.startsWith('--') && arg.indexOf('=') > 0) {
 				const a = arg.split('=');
 				this.editorArguments[a[0].substring(2)] = a[1];
@@ -155,6 +154,9 @@ class Editor {
 
 			this.ui = ui;
 			// load built in components
+			if(this.buildProjectAndExit) {
+				this.settings.setItem('last-opened-project', this.buildProjectAndExit);
+			}
 
 			if(this.settings.getItem('last-opened-project')) {
 				this.openProject(this.settings.getItem('last-opened-project'));
@@ -292,6 +294,9 @@ class Editor {
 		}
 	}
 
+	get buildProjectAndExit(): string | undefined {
+		return this.editorArguments['build-and-exit'] as string;
+	}
 
 	async openProject(dir?: string) {
 		this.ui.viewport.stopExecution();
@@ -416,6 +421,13 @@ class Editor {
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
+
+			if(this.buildProjectAndExit) {
+				await Build.build(false);
+				await Build.build(true);
+				fs.exitWithResult('build finished');
+			}
+
 		}
 	}
 

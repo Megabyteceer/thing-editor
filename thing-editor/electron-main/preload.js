@@ -1,7 +1,7 @@
 const {
 	contextBridge,
 	ipcRenderer
-} = require('electron')
+} = require('electron');
 
 contextBridge.exposeInMainWorld(
 	'electron_ThingEditorServer',
@@ -19,7 +19,7 @@ contextBridge.exposeInMainWorld(
 		},
 		onServerMessage: (_onServerMessage) => {
 			ipcRenderer.on('serverMessage', _onServerMessage);
-		},
-		argv: process.argv
+		}
 	}
-)
+);
+

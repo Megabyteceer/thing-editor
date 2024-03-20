@@ -13,7 +13,7 @@ console.log = (txt) => {
 	try {
 		originalLog(txt);
 	} catch(er) { } // eslint-disable-line no-empty
-}
+};
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
 
@@ -29,7 +29,8 @@ const {exec} = require("child_process");
 
 process.on('unhandledRejection', function (err) {
 	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
-})
+});
+
 process.on('uncaughtException', function (err) {
 	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
 });
@@ -78,7 +79,7 @@ const createWindow = () => {
 		console.log(message + " " + sourceId + " (" + line + ")");
 	});*/
 
-	nativeTheme.themeSource = 'dark'
+	nativeTheme.themeSource = 'dark';
 
 
 	require('./pixi-typings-patch.js')(mainWindow);
@@ -107,16 +108,16 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
-	createWindow()
+	createWindow();
 
 	app.on('activate', () => {
-		if(BrowserWindow.getAllWindows().length === 0) createWindow()
-	})
+		if(BrowserWindow.getAllWindows().length === 0) createWindow();
+	});
 });
 
 app.on('window-all-closed', () => {
 	console.log('thing-editor exit');
-	if(process.platform !== 'darwin') app.quit()
+	if(process.platform !== 'darwin') app.quit();
 });
 
 exec("git update-index --assume-unchanged thing-editor.code-workspace tsconfig.json thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts", {cwd: __dirname + '/../..'});

@@ -69,7 +69,7 @@ let assetsToCopy: { from: string, to: string; }[] = [];
 
 export default class Build {
 	static build(debug: boolean) {
-
+		fs.log(debug ? 'build debug' : 'build release');
 		game.editor.validateResources();
 
 		assetsToCopy = [];
@@ -183,7 +183,7 @@ export default class Build {
 			}
 		}
 
-		fs.build(game.editor.currentProjectDir, debug, assetsToCopy).then(async (result: any) => {
+		return fs.build(game.editor.currentProjectDir, debug, assetsToCopy).then(async (result: any) => {
 			game.editor.ui.modal.hideSpinner();
 			if(!game.editor.buildProjectAndExit) {
 				if(result instanceof Error) {

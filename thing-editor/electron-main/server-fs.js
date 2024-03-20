@@ -92,6 +92,10 @@ module.exports = (mainWindow) => {
 						return fs.statSync(fileNameParsed).mtimeMs;
 					}, event);
 					return;
+				case 'fs/log':
+					console.log(fileName);
+					event.returnValue = true;
+					return;
 				case 'fs/copyFile':
 					attemptFSOperation(() => {
 						const from = fn(fileName);
@@ -174,6 +178,9 @@ module.exports = (mainWindow) => {
 				case 'fs/showFile':
 					shell.showItemInFolder(fn(fileName));
 					event.returnValue = true;
+					return;
+				case 'fs/get-args':
+					event.returnValue = process.argv;
 					return;
 				case 'fs/sounds-build':
 					require('./build-sounds.js')(fileName, notify).then((res) => {

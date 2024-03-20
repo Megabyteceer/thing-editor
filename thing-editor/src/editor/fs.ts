@@ -275,6 +275,10 @@ export default class fs {
 		return execFs('fs/exists', fileName);
 	}
 
+	static log(message: string) {
+		return execFs('fs/log', message);
+	}
+
 	static copyFile(from: string, to: string) {
 		return execFs('fs/copyFile', from, to);
 	}
@@ -431,6 +435,10 @@ export default class fs {
 			defaultBitrate: game.editor.projectDesc.soundDefaultBitrate
 		};
 		return execFs('fs/sounds-build', options as any) as any;
+	}
+
+	static getArgs(): string[] {
+		return execFs('fs/get-args') as any;
 	}
 
 	static getFolderAssets(dirName: string): FileDesc[] {

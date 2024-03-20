@@ -26,7 +26,7 @@ export default defineConfig({
 		dedupe: [
 			'thing-editor/**'
 		],
-
+		preserveSymlinks: true,
 		alias: {
 			'fs': __dirname + '/thing-editor/electron-main/empty-module.js',
 			'path': __dirname + '/thing-editor/electron-main/empty-module.js',

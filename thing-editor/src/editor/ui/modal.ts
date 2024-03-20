@@ -209,12 +209,16 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 			});
 		}
 
-		return this.showModal(R.div(null, message,
-			R.div(questionFooterProps,
-				yesBtn,
-				noBtn
-			)
-		), title, noEasyClose);
+		if(game.editor.buildProjectAndExit) {
+			fs.log(JSON.stringify(message));
+		} else {
+			return this.showModal(R.div(null, message,
+				R.div(questionFooterProps,
+					yesBtn,
+					noBtn
+				)
+			), title, noEasyClose);
+		}
 	}
 
 	showError(message: ComponentChild, errorCode = 99999, title = 'Error!', noEasyClose = false, toBottom = false): Promise<any> {
@@ -239,7 +243,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 					message = txt.join('\n');
 				} catch(er) { } // eslint-disable-line no-empty
 			}
-			fs.exitWithResult(undefined, (game.editor.buildProjectAndExit ? ('Build failed: ' + game.editor.buildProjectAndExit.projectName + '\n') : '') + message + '; Error code: ' + errorCode);
+			fs.exitWithResult(undefined, (game.editor.buildProjectAndExit ? ('Build failed: ' + game.editor.buildProjectAndExit + '\n') : '') + message + '; Error code: ' + errorCode);
 			return Promise.resolve();
 		} else {
 			if(game.stage && !game.__EDITOR_mode) {
