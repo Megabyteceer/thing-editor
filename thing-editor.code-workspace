@@ -15,10 +15,7 @@
 	"settings": {
 		"json.schemas": [
 			{
-				"fileMatch": [
-					"thing-project.json",
-					"thing-lib.json"
-				],
+				"fileMatch": ["thing-project.json", "thing-lib.json"],
 				"url": "./thing-editor/src/editor/schema-thing-project.json"
 			}
 		],
@@ -30,9 +27,9 @@
 			"**/.DS_Store": true,
 			"**/Thumbs.db": true,
 			"vite.config.js.timestamp-*": true,
-			"thing-editor/demo": true,
+			"thing-editor/demo": true
 		},
-		"editor.formatOnSave": true,
+		"editor.formatOnSave": false,
 		"editor.codeActionsOnSave": {
 			"source.organizeImports": "always",
 			"source.fixAll.eslint": "always",
@@ -81,46 +78,8 @@
 		"prettier.singleQuote": true,
 		"typescript.preferences.quoteStyle": "single",
 		"javascript.preferences.quoteStyle": "single",
-		"cSpell.words": [
-			"Hitrate",
-			"Schedulable",
-			"Skipable",
-			"Spritesheet"
-		],
-		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
-		"eslint.options": {
-			"overrideConfig": {
-				"parser": "@typescript-eslint/parser",
-				"parserOptions": {
-					"ecmaVersion": "latest",
-					"sourceType": "module"
-				},
-				"plugins": [
-					"@typescript-eslint"
-				],
-				"rules": {
-					"no-debugger": 0,
-					"prefer-const": 0,
-					"indent": "off",
-					"semi": "error",
-
-					"no-constant-condition": 0,
-					"@typescript-eslint/consistent-type-imports": 1,
-					"@typescript-eslint/no-this-alias": 0,
-					"@typescript-eslint/ban-ts-comment": 0,
-					"@typescript-eslint/no-non-null-assertion": 0,
-					"@typescript-eslint/no-explicit-any": 0,
-					"@typescript-eslint/no-var-requires": 0,
-					"@typescript-eslint/no-namespace": 0,
-					"@typescript-eslint/no-unused-vars": 0, /*ts check it already */
-					"no-useless-catch": 0,
-					"no-prototype-builtins": 0,
-					"no-useless-escape": 0
-				}
-			}
-
-
-		}
+		"cSpell.words": ["Hitrate", "Schedulable", "Skipable", "Spritesheet"],
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint"
 	},
 	"tasks": {
 		"version": "2.0.0",
@@ -129,9 +88,7 @@
 				"label": "Run vite",
 				"isBackground": true,
 				"command": "node",
-				"args": [
-					"${workspaceFolder}/node_modules/vite/bin/vite.js"
-				],
+				"args": ["${workspaceFolder}/node_modules/vite/bin/vite.js"],
 				"runOptions": {
 					"runOn": "folderOpen"
 				},
@@ -150,10 +107,7 @@
 				"windows": {
 					"command": "${workspaceFolder}/node_modules/.bin/electron.cmd"
 				},
-				"args": [
-					"--remote-debugging-port=9223",
-					"./thing-editor/electron-main"
-				],
+				"args": ["--remote-debugging-port=9223", "./thing-editor/electron-main"],
 				"isBackground": true,
 				"runOptions": {
 					//	"runOn": "folderOpen"
@@ -171,9 +125,7 @@
 			{
 				"label": "launchElectronIfStopped",
 				"command": "node",
-				"args": [
-					"${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"
-				],
+				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"],
 				"isBackground": false,
 				"type": "process",
 				"problemMatcher": [
@@ -213,13 +165,10 @@
 				"skipFiles": [],
 				"sourceMaps": true,
 				"smartStep": true,
-				"resolveSourceMapLocations": [
-					"${workspaceFolder}/**",
-					"!**/node_modules/**"
-				],
+				"resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
 				"urlFilter": "http://localhost:5173/*",
 				"outFiles": [],
-				"preLaunchTask": "launchElectronIfStopped",
+				"preLaunchTask": "launchElectronIfStopped"
 				/*"trace": {
 					"logFile": "C:\\tmp\\trace.txt"
 				}*/
@@ -239,10 +188,7 @@
 				"skipFiles": [],
 				"sourceMaps": true,
 				"smartStep": true,
-				"resolveSourceMapLocations": [
-					"${workspaceFolder}/**",
-					"!**/node_modules/**"
-				],
+				"resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
 				"urlFilter": "http://localhost:5173/*",
 				"outFiles": []
 			},
@@ -291,37 +237,28 @@
 				"request": "launch",
 				"name": "runner",
 				"cwd": "${workspaceFolder}",
-				"args": [
-					"${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"
-				]
+				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"]
 			},
 			{
 				"type": "node",
 				"request": "launch",
 				"name": "vite dev",
 				"cwd": "${workspaceFolder}",
-				"args": [
-					"${workspaceFolder}/node_modules/vite/bin/vite.js"
-				]
+				"args": ["${workspaceFolder}/node_modules/vite/bin/vite.js"]
 			}
 		],
 		"compounds": [
 			{
 				"name": "Main & Render",
-				"configurations": [
-					"Render",
-					"Main"
-				],
+				"configurations": ["Render", "Main"],
 				"stopAll": true,
 				"presentation": {
 					//"hidden": true
 				}
-			},{
+			},
+			{
 				"name": "Build And Exit",
-				"configurations": [
-					"Render",
-					"BuildAndExitServer"
-				],
+				"configurations": ["Render", "BuildAndExitServer"],
 				"stopAll": true,
 				"presentation": {
 					//"hidden": true

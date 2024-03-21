@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@pixi/filter-outline": "^5.2.0",
+    "@stylistic/eslint-plugin-ts": "^1.7.0",
     "@types/events": "^3.0.0",
     "@types/howler": "^2.2.7",
     "@types/webfontloader": "^1.6.36",
