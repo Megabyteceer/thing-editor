@@ -24,7 +24,7 @@ let mainWindow;
 
 const path = require('path');
 
-const PositionRestoreWindow = require("./thing-editor-window.js");
+const getPositionRestoreWindow = require("./thing-editor-window.js");
 const {exec} = require("child_process");
 
 process.on('unhandledRejection', function (err) {
@@ -51,7 +51,8 @@ const createWindow = () => {
 		//opacity: 0
 	};
 
-	mainWindow = new PositionRestoreWindow(windowState, 'main');
+	mainWindow = getPositionRestoreWindow(windowState, 'main');
+
 	mainWindow.setMenu(null);
 	mainWindow.webContents.setWindowOpenHandler((event) => {
 		shell.openExternal(event.url);
@@ -117,7 +118,7 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
 	console.log('thing-editor exit');
-	if(process.platform !== 'darwin') app.quit();
+	app.quit()
 });
 
 exec("git update-index --assume-unchanged thing-editor.code-workspace tsconfig.json thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts", {cwd: __dirname + '/../..'});
