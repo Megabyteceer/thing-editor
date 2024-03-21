@@ -1,8 +1,8 @@
-import type { Container} from "pixi.js";
-import { Point } from "pixi.js";
-import overlayLayer from "thing-editor/src/editor/ui/editor-overlay";
-import Lib from "thing-editor/src/engine/lib";
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
+import type { Container } from 'pixi.js';
+import { Point } from 'pixi.js';
+import overlayLayer from 'thing-editor/src/editor/ui/editor-overlay';
+import Lib from 'thing-editor/src/engine/lib';
+import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 
 const all: Map<string, ___Guide> = new Map();
 
@@ -31,7 +31,7 @@ export default class ___Guide extends MovieClip {
 
 	static show(x: number, y: number, rotation: number, id: string, owner: Container) {
 		let guide: ___Guide;
-		if(!all.has(id)) {
+		if (!all.has(id)) {
 			guide = Lib.loadPrefab('___system/guide') as ___Guide;
 			guide.id = id;
 			all.set(id, guide);

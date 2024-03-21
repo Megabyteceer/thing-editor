@@ -1,27 +1,27 @@
-import type { ClassAttributes, ComponentChild } from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { ContextMenuItem} from "thing-editor/src/editor/ui/context-menu";
-import { hideContextMenu, refreshContextMenu } from "thing-editor/src/editor/ui/context-menu";
-import Window from "thing-editor/src/editor/ui/editor-window";
-import { MAIN_MENU } from "thing-editor/src/editor/ui/main-menu";
-import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
-import type { Hotkey } from "thing-editor/src/editor/utils/hotkey";
-import isHotkeyHit from "thing-editor/src/editor/utils/hotkey";
-import isEventFocusOnInputElement from "thing-editor/src/editor/utils/is-event-focus-on-input-element";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import game from "thing-editor/src/engine/game";
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
+import { hideContextMenu, refreshContextMenu } from 'thing-editor/src/editor/ui/context-menu';
+import Window from 'thing-editor/src/editor/ui/editor-window';
+import { MAIN_MENU } from 'thing-editor/src/editor/ui/main-menu';
+import DataPathFixer from 'thing-editor/src/editor/utils/data-path-fixer';
+import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
+import isHotkeyHit from 'thing-editor/src/editor/utils/hotkey';
+import isEventFocusOnInputElement from 'thing-editor/src/editor/utils/is-event-focus-on-input-element';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import game from 'thing-editor/src/engine/game';
 
 const allHotkeyButtons: EditorButton[] = [];
 
 
 const findItemForHotkey = (ev: Hotkey, handlers?: ContextMenuItem[][], windowBody?: HTMLDivElement): ContextMenuItem | undefined => {
-	if(handlers) {
-		for(let menuGroup of handlers) {
-			for(let menuItem of menuGroup) {
-				if(menuItem) {
-					if(typeof menuItem.disabled !== 'function' || !menuItem.disabled()) {
-						if(isHotkeyHit(ev, windowBody as HTMLElement, menuItem.hotkey)) {
+	if (handlers) {
+		for (let menuGroup of handlers) {
+			for (let menuItem of menuGroup) {
+				if (menuItem) {
+					if (typeof menuItem.disabled !== 'function' || !menuItem.disabled()) {
+						if (isHotkeyHit(ev, windowBody as HTMLElement, menuItem.hotkey)) {
 							return menuItem;
 						}
 					}
@@ -32,34 +32,34 @@ const findItemForHotkey = (ev: Hotkey, handlers?: ContextMenuItem[][], windowBod
 };
 
 const findMenuItemForHotkey = (hotkey: Hotkey): ContextMenuItem | undefined => {
-	for(let w of Window.allOrdered) {
+	for (let w of Window.allOrdered) {
 		let ret = findItemForHotkey(hotkey, w.props.hotkeysHandlers, w.base as HTMLDivElement);
-		if(ret) {
+		if (ret) {
 			return ret;
 		}
 	}
 
-	for(let item of MAIN_MENU) {
+	for (let item of MAIN_MENU) {
 		let ret = findItemForHotkey(hotkey, [item.items]);
-		if(ret) {
+		if (ret) {
 			return ret;
 		}
 	}
 };
 
-window.addEventListener("keydown", (ev) => {
-	if(ev.key !== 'Control' && ev.key !== 'Alt' && ev.key !== 'Shift') {
-		for(let b of allHotkeyButtons) {
-			if(b.onKeyDown(ev)) { //call only first button with this hotkey
+window.addEventListener('keydown', (ev) => {
+	if (ev.key !== 'Control' && ev.key !== 'Alt' && ev.key !== 'Shift') {
+		for (let b of allHotkeyButtons) {
+			if (b.onKeyDown(ev)) { //call only first button with this hotkey
 				hideContextMenu();
 				return;
 			}
 		}
 
 		const item = findMenuItemForHotkey(ev as Hotkey);
-		if(item) {
+		if (item) {
 			isEventFocusOnInputElement(ev).then((isHotkeyCapturedByInputElement) => {
-				if(!isHotkeyCapturedByInputElement) {
+				if (!isHotkeyCapturedByInputElement) {
 					item.onClick();
 					refreshContextMenu();
 					game.editor.ui.modal.notify((typeof item.name === 'function') ? item.name() : item.name, 'hotkey');
@@ -87,9 +87,9 @@ interface EditorButtonStats {
 class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 
 	onKeyDown(ev: KeyboardEvent) {
-		if(!this.props.disabled && isHotkeyHit(ev as any as Hotkey, this.base as HTMLElement, this.props.hotkey)) {
+		if (!this.props.disabled && isHotkeyHit(ev as any as Hotkey, this.base as HTMLElement, this.props.hotkey)) {
 			isEventFocusOnInputElement(ev).then((isHotkeyCapturedByInputElement) => {
-				if(!isHotkeyCapturedByInputElement) {
+				if (!isHotkeyCapturedByInputElement) {
 					this.onMouseDown(ev as unknown as PointerEvent);
 					sp(ev);
 				}
@@ -104,7 +104,7 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 	}
 
 	componentWillReceiveProps(props: EditorButtonProps) {
-		if(this.props.hotkey !== props.hotkey) {
+		if (this.props.hotkey !== props.hotkey) {
 			this.unregisterHotkey();
 			this.registerHotkey(props);
 		}
@@ -115,21 +115,21 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 	}
 
 	registerHotkey(props: EditorButtonProps) {
-		if(this.props.hotkey) {
+		if (this.props.hotkey) {
 			allHotkeyButtons.unshift(this);
 		}
 
 		let title = props.title;
 		let hotkey = props.hotkey;
-		if(hotkey) {
+		if (hotkey) {
 			let help = [];
-			if(hotkey.ctrlKey) {
+			if (hotkey.ctrlKey) {
 				help.push('Ctrl');
 			}
-			if(hotkey.altKey) {
+			if (hotkey.altKey) {
 				help.push('Alt');
 			}
-			if(hotkey.shiftKey) {
+			if (hotkey.shiftKey) {
 				help.push('Shift');
 			}
 			help.push('"' + ((hotkey.key.length > 1) ? hotkey.key : hotkey.key.toUpperCase()) + '"');
@@ -139,9 +139,9 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 	}
 
 	unregisterHotkey() {
-		if(this.props.hotkey) {
+		if (this.props.hotkey) {
 			let i = allHotkeyButtons.indexOf(this);
-			if(i >= 0) {
+			if (i >= 0) {
 				allHotkeyButtons.splice(i, 1);
 			}
 		}
@@ -152,12 +152,12 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 	}
 
 	onMouseDown(ev: PointerEvent) {
-		if(ev.button === 2) {
+		if (ev.button === 2) {
 			//             ↓
 			this.props.onClick; // hover "onClick" and Ctrl+Click [FunctionLocation] to go to handler declaration
 			debugger; //   ↑
 		} else {
-			if(this.props.disabled) return;
+			if (this.props.disabled) return;
 			DataPathFixer.onNameBlur();
 			this.props.onClick(ev);
 			(ev.target as HTMLElement).blur();

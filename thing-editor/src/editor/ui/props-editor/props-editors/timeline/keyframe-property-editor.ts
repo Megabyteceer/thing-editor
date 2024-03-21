@@ -1,17 +1,17 @@
-import type { ClassAttributes } from "preact";
-import { h } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import CallbackEditor from "thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor";
-import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
-import PowDampPresetSelector from "thing-editor/src/editor/ui/props-editor/props-editors/pow-damp-preset-selector";
-import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import { getKeyframeTypesForField } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/get-keyframe-types-for-field";
-import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import type TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
-import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
-import game from "thing-editor/src/engine/game";
-import { TimelineKeyFrameType } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { ClassAttributes } from 'preact';
+import { h } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import CallbackEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor';
+import NumberEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/number-editor';
+import PowDampPresetSelector from 'thing-editor/src/editor/ui/props-editor/props-editors/pow-damp-preset-selector';
+import SelectEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
+import { getKeyframeTypesForField } from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/get-keyframe-types-for-field';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
+import type TimelineKeyframeView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view';
+import type { TimelineSelectable } from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable';
+import game from 'thing-editor/src/engine/game';
+import { TimelineKeyFrameType } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
 const READABLE_KEYFRAME_TYPES = ['SMOOTH', 'LINEAR', 'DISCRETE', 'BOUNCE ⬇', 'BOUNCE ⬆'];
 
@@ -48,16 +48,16 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	static refresh() {
-		if(instance) {
+		if (instance) {
 			instance.refresh();
 		}
 	}
 
 	onKeyframeChanged() {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			let kf = k.props.keyFrame;
-			if(kf.hasOwnProperty('a')) {
-				if(!kf.a) {
+			if (kf.hasOwnProperty('a')) {
+				if (!kf.a) {
 					delete kf.a;
 				}
 			}
@@ -67,7 +67,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onObjectChanged() {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			let objectTimelineEditor = k.props.owner.props.owner.props.owner;
 			Timeline.allFieldDataChanged(objectTimelineEditor.props.node);
 			objectTimelineEditor.forceUpdate();
@@ -76,8 +76,8 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onGravityChange(value: number) {
-		for(let k of this.keyframes) {
-			if(k.props.keyFrame.m > TimelineKeyFrameType.DISCRETE) {
+		for (let k of this.keyframes) {
+			if (k.props.keyFrame.m > TimelineKeyFrameType.DISCRETE) {
 				k.props.keyFrame.g = value;
 			}
 		}
@@ -86,8 +86,8 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 
 	onBouncingChange(ev: InputEvent) {
 		let val = parseFloat((ev.target as HTMLInputElement).value);
-		for(let k of this.keyframes) {
-			if(k.props.keyFrame.m > TimelineKeyFrameType.DISCRETE) {
+		for (let k of this.keyframes) {
+			if (k.props.keyFrame.m > TimelineKeyFrameType.DISCRETE) {
 				k.props.keyFrame.b = -val;
 			}
 		}
@@ -95,10 +95,10 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onActionChange(val: string | InputEvent) {
-		if(val && (val as InputEvent).target) {
+		if (val && (val as InputEvent).target) {
 			val = ((val as InputEvent).target as HTMLInputElement).value;
 		}
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			k.props.keyFrame!.a = val as string;
 		}
 		this.onKeyframeChanged();
@@ -109,9 +109,9 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onSpeedChanged(val: number) {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			let p = k.props.owner.props.owner.props;
-			if((typeof (p.owner.props.node as KeyedObject)[p.field.n]) === 'number') {
+			if ((typeof (p.owner.props.node as KeyedObject)[p.field.n]) === 'number') {
 				k.props.keyFrame.s = val;
 			}
 		}
@@ -119,7 +119,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onRandomChanged(val: number) {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			let kf = k.props.keyFrame;
 			kf.r = Math.min(val, kf.n.t - kf.j - 1);
 		}
@@ -127,9 +127,9 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onSetSpeedExistsChanged(ev: InputEvent) {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			let p = k.props.owner.props.owner.props;
-			if(((typeof (p.owner.props.node as KeyedObject)[p.field.n]) === 'number') && ((ev.target as HTMLInputElement).checked)) {
+			if (((typeof (p.owner.props.node as KeyedObject)[p.field.n]) === 'number') && ((ev.target as HTMLInputElement).checked)) {
 				k.props.keyFrame.s = 0;
 			} else {
 				delete k.props.keyFrame.s;
@@ -139,8 +139,8 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onSetRandomExistsChanged(ev: InputEvent) {
-		for(let k of this.keyframes) {
-			if((ev.target as HTMLInputElement).checked) {
+		for (let k of this.keyframes) {
+			if ((ev.target as HTMLInputElement).checked) {
 				k.props.keyFrame.r = 0;
 			} else {
 				delete k.props.keyFrame.r;
@@ -150,21 +150,21 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onJumpChanged(val: number) {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			k.props.keyFrame.j = val;
 		}
 		this.onKeyframeChanged();
 	}
 
 	resetJumpTime() {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			k.props.keyFrame.___loopPointView!.deleteLoopPoint();
 		}
 		this.onKeyframeChanged();
 	}
 
 	onDampChanged(val: number) {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			let o = k.props.owner.props.owner.props.owner.props.node;
 			o._timelineData.d = val;
 		}
@@ -172,7 +172,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onPowChanged(val: number) {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			let o = k.props.owner.props.owner.props.owner.props.node;
 			o._timelineData.p = val;
 		}
@@ -180,7 +180,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onPresetSelected(pow: number, damp: number) {
-		for(let k of this.keyframes) {
+		for (let k of this.keyframes) {
 			let o = k.props.owner.props.owner.props.owner.props.node;
 			o._timelineData.p = pow;
 			o._timelineData.d = damp;
@@ -189,7 +189,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	}
 
 	onTypeSelect(val: TimelineKeyFrameType) {
-		for(let kfView of this.keyframes) {
+		for (let kfView of this.keyframes) {
 			kfView.setKeyframeType(val);
 		}
 		this.onKeyframeChanged();
@@ -200,7 +200,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 
 		let keyframes = this.keyframes;
 		let kfView = keyframes[0];
-		if(!kfView) {
+		if (!kfView) {
 			return R.fragment();
 		}
 		let kf = kfView.props.keyFrame;
@@ -212,16 +212,16 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		let speedVal: false | number = false;
 
 
-		for(let k of keyframes) {
+		for (let k of keyframes) {
 
 			let fieldsProps = k.props.owner.props.owner.props;
 			speedSetPossible = speedSetPossible && ((typeof (fieldsProps.owner.props.node as KeyedObject)[fieldsProps.field.n]) === 'number');
-			if(speedVal === false && k.props.keyFrame.hasOwnProperty('s')) {
+			if (speedVal === false && k.props.keyFrame.hasOwnProperty('s')) {
 				speedVal = k.props.keyFrame.s!;
 			}
 
 			let types = getKeyframeTypesForField(game.editor.selection, fieldsProps.field.n);
-			if(!availableKeyframeTypes || (availableKeyframeTypes.length > types.length)) {
+			if (!availableKeyframeTypes || (availableKeyframeTypes.length > types.length)) {
 				availableKeyframeTypes = types;
 			}
 		}
@@ -236,18 +236,18 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		let body;
 
 		let selectedObjectsTimeline = kfView.props.owner.props.owner.props.owner.props.node._timelineData;
-		if((!kf) || (!selectedObjectsTimeline)) {
+		if ((!kf) || (!selectedObjectsTimeline)) {
 			return R.div();
 		}
 
 		let extendEditor;
-		if(kf.m > 2) { //BOUNCE ⬆, BOUNCE ⬇
+		if (kf.m > 2) { //BOUNCE ⬆, BOUNCE ⬇
 			extendEditor = R.fragment(
 				'Gravity', h(NumberEditor, { value: kf.g as number, step: 0.0001, min: 0.0001, max: 10, onChange: this.onGravityChange }),
 				R.smallSpace(),
 				'Bouncing', h(NumberEditor, { value: -(kf.b as number), step: 0.01, min: 0.01, max: 10, onChange: this.onBouncingChange })
 			);
-		} else if(kf.m === TimelineKeyFrameType.SMOOTH) {
+		} else if (kf.m === TimelineKeyFrameType.SMOOTH) {
 
 			extendEditor = R.fragment(
 				'Power', h(NumberEditor, { value: selectedObjectsTimeline.p, step: 0.001, min: 0.00001, max: 1, onChange: this.onPowChanged }),
@@ -264,7 +264,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 
 
 		let speedEditor;
-		if(speedSetPossible) {
+		if (speedSetPossible) {
 			let hasSpeed = kf.hasOwnProperty('s');
 			let edField = game.editor.getObjectField(game.editor.selection[0], kf.___view!.props.owner.props.owner.props.field.n);
 			speedEditor = R.fragment(
@@ -276,17 +276,17 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		}
 		let hasRandom = kf.hasOwnProperty('r');
 		let randomEditor;
-		if(hasRandom) {
+		if (hasRandom) {
 			randomEditor = h(NumberEditor, { value: kf.r, step: 1, min: -1000, onChange: this.onRandomChanged });
 		}
 
 		let jumpReset;
-		if(kf.j !== kf.t) {
-			jumpReset = R.btn('x', this.resetJumpTime, "Remove loop point");
+		if (kf.j !== kf.t) {
+			jumpReset = R.btn('x', this.resetJumpTime, 'Remove loop point');
 		}
 		let jumpEditor = h(NumberEditor, { value: kf.j, step: 1, min: -99999999, max: 99999999, onChange: this.onJumpChanged });
 
-		if(document.activeElement && document.activeElement.className === 'props-editor-callback') {
+		if (document.activeElement && document.activeElement.className === 'props-editor-callback') {
 			window.setTimeout(() => {
 				(document.querySelector('.keyframe-callback-editor .props-editor-callback') as HTMLInputElement).focus();
 			});

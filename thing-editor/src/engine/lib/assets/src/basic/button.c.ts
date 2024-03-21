@@ -1,13 +1,13 @@
-import editable from "thing-editor/src/editor/props-editor/editable";
+import editable from 'thing-editor/src/editor/props-editor/editable';
 
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import DSprite from "thing-editor/src/engine/lib/assets/src/basic/d-sprite.c";
-import callByPath from "thing-editor/src/engine/utils/call-by-path";
-import { mouseHandlerGlobal } from "thing-editor/src/engine/utils/game-interaction";
-import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
-import Sound from "thing-editor/src/engine/utils/sound";
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import DSprite from 'thing-editor/src/engine/lib/assets/src/basic/d-sprite.c';
+import callByPath from 'thing-editor/src/engine/utils/call-by-path';
+import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';
+import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
+import Sound from 'thing-editor/src/engine/utils/sound';
 
 let latestClickTime = 0;
 const SCROLL_THRESHOLD = 30;
@@ -41,7 +41,7 @@ export default class Button extends DSprite {
 	sndOver: string | null = null;
 
 	get scrollable() {
-		if(game.classes.ScrollLayer) {
+		if (game.classes.ScrollLayer) {
 			const parentScrollLayer = this.findParentByType(game.classes.ScrollLayer);
 			return parentScrollLayer &&
 				((parentScrollLayer.fullArea.w > parentScrollLayer.visibleArea.w) ||
@@ -77,13 +77,13 @@ export default class Button extends DSprite {
 		this.on('pointerover', this.onOver);
 		this.on('pointerout', this.onOut);
 
-		assert(!game.__EDITOR_mode, "'init()' called in edition mode");
-		assert(allActiveButtons.indexOf(this) < 0, "Button already in active list.");
+		assert(!game.__EDITOR_mode, '\'init()\' called in edition mode');
+		assert(allActiveButtons.indexOf(this) < 0, 'Button already in active list.');
 		allActiveButtons.unshift(this);
 
 		this.initialScale = this.scale.x;
 		this.initialImage = this.image;
-		if(this.interactive) {
+		if (this.interactive) {
 			this.enable();
 		} else {
 			this.disable();
@@ -103,30 +103,30 @@ export default class Button extends DSprite {
 
 		let i = allActiveButtons.indexOf(this);
 		/// #if DEBUG
-		assert((!this._thing_initialized) || (i >= 0), "Button is not in active list.");
+		assert((!this._thing_initialized) || (i >= 0), 'Button is not in active list.');
 		this._thing_initialized = false;
 		/// #endif
 
-		if(i >= 0) { // could be removed before initialization in parent init method
+		if (i >= 0) { // could be removed before initialization in parent init method
 			allActiveButtons.splice(i, 1);
 		}
 
-		if(downedByKeycodeButton === this) {
+		if (downedByKeycodeButton === this) {
 			downedByKeycodeButton = undefined;
 		}
 		this.initialImage = null;
 		this.interactive = false;
 
-		if(this.hasOwnProperty('onClickCallback')) {
+		if (this.hasOwnProperty('onClickCallback')) {
 			delete (this.onClickCallback);
 		}
 	}
 
 	disable() {
-		if(this.initialImage) {
+		if (this.initialImage) {
 			this.onUp();
 			this.onOut();
-			if(this.disabledImage) {
+			if (this.disabledImage) {
 				this.image = this.disabledImage;
 			} else {
 				this.alpha = this.disabledAlpha;
@@ -136,8 +136,8 @@ export default class Button extends DSprite {
 	}
 
 	enable() {
-		if(this.initialImage) {
-			if(this.disabledImage) {
+		if (this.initialImage) {
+			if (this.disabledImage) {
 				this.image = this.initialImage;
 			} else {
 				this.alpha = 1;
@@ -159,7 +159,7 @@ export default class Button extends DSprite {
 	}
 
 	click() {
-		if(this.isCanBePressed) {
+		if (this.isCanBePressed) {
 			this._executeOnClick('invoke');
 		}
 	}
@@ -168,34 +168,34 @@ export default class Button extends DSprite {
 
 	_executeOnClick(source/** optional tracking tag */?: string) {
 		/// #if EDITOR
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			return;
 		}
 		/// #endif
-		assert(this.isCanBePressed, "_executeOnClick called for button which could not be pressed at the moment.");
+		assert(this.isCanBePressed, '_executeOnClick called for button which could not be pressed at the moment.');
 
-		if(Button.globalOnClick) {
+		if (Button.globalOnClick) {
 			Button.globalOnClick(this, source);
 		}
 
 		Button.clickedButton = this;
-		if(this.onClickCallback) {
+		if (this.onClickCallback) {
 			this.onClickCallback();
 		}
 
-		for(const action of this.onClick) {
+		for (const action of this.onClick) {
 			callByPath(action, this);
 		}
 
-		if(source === 'hotkey') {
-			if(game.classes.ClickOutsideTrigger) {
+		if (source === 'hotkey') {
+			if (game.classes.ClickOutsideTrigger) {
 				game.classes.ClickOutsideTrigger.shootAll(this);
 			}
 		}
 
 		Button.clickedButton = null;
 
-		if(this.sndClick) {
+		if (this.sndClick) {
 			Sound.play(this.sndClick);
 		}
 
@@ -204,25 +204,25 @@ export default class Button extends DSprite {
 
 	onDown(ev: PointerEvent | null, source = 'pointerdown') {
 		Sound._unlockSound();
-		if(game.time === latestClickTime
+		if (game.time === latestClickTime
 			/// #if EDITOR
 			&& !game.__paused
 			/// #endif
 		) {
 			return;
 		}
-		if(ev) {
-			if(ev.buttons !== 1) {
+		if (ev) {
+			if (ev.buttons !== 1) {
 				return;
 			}
 			mouseHandlerGlobal(ev);
 		}
-		if(this.isCanBePressed && (Math.abs(latestClickTime - game.time) > 1)) {
-			if(Button.downedButton !== this) {
-				if(Button.downedButton) {
+		if (this.isCanBePressed && (Math.abs(latestClickTime - game.time) > 1)) {
+			if (Button.downedButton !== this) {
+				if (Button.downedButton) {
 					Button.downedButton.onUp();
 				}
-				if(this.pressImage) {
+				if (this.pressImage) {
 					this.image = this.pressImage;
 				} else {
 					this.scale.x =
@@ -231,7 +231,7 @@ export default class Button extends DSprite {
 				Button.downedButton = this;
 				this.curDelay = this.repeatDelay;
 
-				if(this.scrollable) {
+				if (this.scrollable) {
 					this.pointerStartPos = { x: game.mouse.x, y: game.mouse.y };
 				} else {
 					this._executeOnClick(source);
@@ -243,13 +243,13 @@ export default class Button extends DSprite {
 	update() {
 
 		/// #if EDITOR
-		if(this.isCanBePressed) {
+		if (this.isCanBePressed) {
 			this.onClick.forEach((action, i) => {
 				let f;
 				try {
 					f = getValueByPath(action, this, true);
-				} catch(er) { } // eslint-disable-line no-empty
-				if(typeof f !== 'function') {
+				} catch (er) { } // eslint-disable-line no-empty
+				if (typeof f !== 'function') {
 					game.editor.ui.status.error('Wrong onClick handler: ' + action, 32054, this, 'onClick', i);
 					getValueByPath(action, this, true);
 				}
@@ -257,13 +257,13 @@ export default class Button extends DSprite {
 		}
 		/// #endif
 
-		if(this.isDowned) {
-			if((!game.mouse.click && (downedByKeycodeButton !== this)) || !game.isFocused) {
+		if (this.isDowned) {
+			if ((!game.mouse.click && (downedByKeycodeButton !== this)) || !game.isFocused) {
 				this.onUp();
-			} else if(this.curDelay > 0) {
+			} else if (this.curDelay > 0) {
 				this.curDelay--;
-				if(this.curDelay === 0) {
-					if(this.isCanBePressed && (Math.abs(latestClickTime - game.time) > 1)) {
+				if (this.curDelay === 0) {
+					if (this.isCanBePressed && (Math.abs(latestClickTime - game.time) > 1)) {
 						this._executeOnClick('autorepeat');
 					}
 					this.curDelay = this.repeatInterval;
@@ -274,9 +274,9 @@ export default class Button extends DSprite {
 	}
 
 	onUp(ev?: PointerEvent | KeyboardEvent, src = 'pointerup') {
-		if(Button.downedButton === this) {
-			if(this.pressImage) {
-				if(this.initialImage) {
+		if (Button.downedButton === this) {
+			if (this.pressImage) {
+				if (this.initialImage) {
 					this.image = this.initialImage;
 				}
 			} else {
@@ -285,7 +285,7 @@ export default class Button extends DSprite {
 			}
 			Button.downedButton = null;
 
-			if(ev && this.scrollable && Math.hypot(game.mouse.x - this.pointerStartPos!.x, game.mouse.y - this.pointerStartPos!.y) <= SCROLL_THRESHOLD) {
+			if (ev && this.scrollable && Math.hypot(game.mouse.x - this.pointerStartPos!.x, game.mouse.y - this.pointerStartPos!.y) <= SCROLL_THRESHOLD) {
 				this._executeOnClick(src);
 			}
 		}
@@ -293,19 +293,19 @@ export default class Button extends DSprite {
 
 	onOver() {
 
-		if(Button.overedButton !== this) {
-			if(Button.overedButton) {
+		if (Button.overedButton !== this) {
+			if (Button.overedButton) {
 				Button.overedButton.onOut();
 			}
 			Button.overedButton = this;
-			if(this.hoverImage) {
+			if (this.hoverImage) {
 				this.image = this.hoverImage;
 			} else {
 				this.scale.x =
 					this.scale.y = this.initialScale * 1.05;
 			}
 
-			if(this.sndOver) {
+			if (this.sndOver) {
 				Sound.play(this.sndOver);
 			}
 			this.gotoLabelRecursive('btn-over');
@@ -317,11 +317,11 @@ export default class Button extends DSprite {
 	}
 
 	onOut() {
-		if(Button.overedButton === this) {
+		if (Button.overedButton === this) {
 			Button.overedButton = null;
 
-			if(this.hoverImage) {
-				if(this.initialImage) {
+			if (this.hoverImage) {
+				if (this.initialImage) {
 					this.image = this.initialImage;
 				}
 			} else {
@@ -335,8 +335,8 @@ export default class Button extends DSprite {
 	}
 
 	static _tryToClickByKeycode(keyCode: number): Button | undefined {
-		for(let b of allActiveButtons) {
-			if((b.hotkey === keyCode) && b.isCanBePressed) {
+		for (let b of allActiveButtons) {
+			if ((b.hotkey === keyCode) && b.isCanBePressed) {
 				b.onDown(null, 'hotkey');
 				return b;
 			}
@@ -345,13 +345,13 @@ export default class Button extends DSprite {
 
 	/// #if EDITOR
 	__EDITOR_onCreate() {
-		if(Lib.hasTexture('ui/button.png')) {
+		if (Lib.hasTexture('ui/button.png')) {
 			this.image = 'ui/button.png';
 		}
-		if(Lib.hasSound('click')) {
+		if (Lib.hasSound('click')) {
 			this.sndClick = 'click';
 		}
-		if(Lib.hasSound('over')) {
+		if (Lib.hasSound('over')) {
 			this.sndOver = 'over';
 		}
 	}
@@ -366,24 +366,24 @@ let downedByKeycodeButton: Button | undefined;
 let allActiveButtons: Button[] = [];
 
 window.addEventListener('keydown', (ev) => {
-	if(ev.repeat) {
+	if (ev.repeat) {
 		return;
 	}
 	/// #if EDITOR
-	if(game.__EDITOR_mode) {
+	if (game.__EDITOR_mode) {
 		return;
 	}
 	/// #endif
 
 	downedByKeycodeButton = Button._tryToClickByKeycode(ev.keyCode);
-	if(downedByKeycodeButton) {
+	if (downedByKeycodeButton) {
 		ev.preventDefault();
 		ev.stopPropagation();
 	}
 });
 
 window.addEventListener('keyup', (ev) => {
-	if(downedByKeycodeButton && downedByKeycodeButton.hotkey === ev.keyCode) {
+	if (downedByKeycodeButton && downedByKeycodeButton.hotkey === ev.keyCode) {
 		downedByKeycodeButton.onUp(ev, 'hotkey');
 		downedByKeycodeButton = undefined;
 	}

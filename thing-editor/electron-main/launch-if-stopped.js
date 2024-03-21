@@ -8,18 +8,18 @@ import('ps-list').then(async (psList) => {
 
 	const ps = await psList.default();
 
-	if(!ps.some(p => p.name === processName)) {
+	if (!ps.some(p => p.name === processName)) {
 
 		let command = path.join(process.cwd(), './node_modules/.bin/electron');
-		if(isWin) {
+		if (isWin) {
 			command = path.join(process.cwd(), './node_modules/electron/dist/electron.exe');
 		}
 
 		let c = child_process.spawn(command,
 			[
-				"--remote-debugging-port=9223",
-				"./thing-editor/electron-main",
-				"debugger-detection-await"
+				'--remote-debugging-port=9223',
+				'./thing-editor/electron-main',
+				'debugger-detection-await'
 			],
 			{
 				stdio: ['ignore', 'ignore', 'ignore'],

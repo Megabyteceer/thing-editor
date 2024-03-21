@@ -1,14 +1,14 @@
-import type { ClassAttributes, Component, ComponentChild } from "preact";
-import { h } from "preact";
-import fs from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics.js";
-import ChooseList from "thing-editor/src/editor/ui/choose-list";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import Help from "thing-editor/src/editor/ui/help";
-import Prompt from "thing-editor/src/editor/ui/modal/prompt";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import assert from "thing-editor/src/engine/debug/assert.js";
-import game from "thing-editor/src/engine/game";
+import type { ClassAttributes, Component, ComponentChild } from 'preact';
+import { h } from 'preact';
+import fs from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics.js';
+import ChooseList from 'thing-editor/src/editor/ui/choose-list';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import Help from 'thing-editor/src/editor/ui/help';
+import Prompt from 'thing-editor/src/editor/ui/modal/prompt';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
+import assert from 'thing-editor/src/engine/debug/assert.js';
+import game from 'thing-editor/src/engine/game';
 
 let modal: Modal;
 
@@ -24,7 +24,7 @@ const questionFooterProps = { className: 'modal-footer' };
 let blackoutProps = { className: 'modal-blackout fadein-animation' };
 let blackoutPropsClosable = {
 	className: 'modal-blackout fadein-animation', style: { cursor: 'pointer' }, onMouseDown: (ev: PointerEvent) => {
-		if((ev.target as HTMLElement).className.indexOf('modal-blackout') === 0) {
+		if ((ev.target as HTMLElement).className.indexOf('modal-blackout') === 0) {
 			modal.hideModal();
 		}
 	}
@@ -36,10 +36,10 @@ let titleProps = { className: 'modal-title' };
 let contentProps = {
 	className: 'modal-content',
 	ref: (content: HTMLDivElement | null) => {
-		if(content) {
+		if (content) {
 			const searchInput = (content as HTMLDivElement).querySelectorAll('input')[0] as HTMLInputElement;
 
-			if(searchInput) {
+			if (searchInput) {
 				window.setTimeout(() => {
 					searchInput.select();
 				}, 10);
@@ -60,7 +60,7 @@ let spinnerShowCounter = 0;
 let renderModal = (props: ModalEntry, i: number) => {
 	let title;
 
-	if(props.title) {
+	if (props.title) {
 		title = R.div(titleProps, props.title);
 	}
 
@@ -97,14 +97,14 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 
 	isUIBlockedByModal(element?: HTMLElement) {
-		if(!element) {
+		if (!element) {
 			return false;
 		}
-		if(spinnerShowCounter > 0) {
+		if (spinnerShowCounter > 0) {
 			return true;
 		}
 
-		if(this.state.modals.length > 0) {
+		if (this.state.modals.length > 0) {
 			const topModals = document.querySelectorAll('.modal-body');
 			const topModal = topModals[topModals.length - 1];
 			return !topModal.contains(element) && !element.classList.contains('modal-close-button');
@@ -147,12 +147,12 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 
 	notify(txt: string | Component, hideId?: string) {
-		if(EDITOR_FLAGS.isTryTime) {
+		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		notifyTexts.add(txt);
-		if(hideId) {
-			if(notifyHides.has(hideId)) {
+		if (hideId) {
+			if (notifyHides.has(hideId)) {
 				notifyTexts.delete(notifyHides.get(hideId)!);
 			}
 			notifyHides.set(hideId, txt);
@@ -172,8 +172,8 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 	showSpinner() {
 		spinnerShowCounter++;
-		if(spinnerShowCounter === 1) {
-			if(game.stage) {
+		if (spinnerShowCounter === 1) {
+			if (game.stage) {
 				game.stage.interactiveChildren = false;
 			}
 			modal.refresh();
@@ -182,9 +182,9 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 	hideSpinner() {
 		spinnerShowCounter--;
-		if(spinnerShowCounter === 0) {
+		if (spinnerShowCounter === 0) {
 			window.setTimeout(() => {
-				if(game.stage) {
+				if (game.stage) {
 					game.stage.interactiveChildren = true;
 				}
 				modal.refresh();
@@ -196,20 +196,20 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 		let yesBtn = R.btn(yesLabel, () => {
 			modal.hideModal(true);
-			if(onYes) {
+			if (onYes) {
 				onYes();
 			}
 		}, undefined, 'main-btn', { key: 'Enter' });
 
 		let noBtn;
-		if(typeof onNo !== 'undefined') {
+		if (typeof onNo !== 'undefined') {
 			noBtn = R.btn(noLabel, () => {
 				modal.hideModal();
 				onNo();
 			});
 		}
 
-		if(game.editor.buildProjectAndExit) {
+		if (game.editor.buildProjectAndExit) {
 			fs.log(JSON.stringify(message));
 		} else {
 			return this.showModal(R.div(null, message,
@@ -222,31 +222,31 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 
 	showError(message: ComponentChild, errorCode = 99999, title = 'Error!', noEasyClose = false, toBottom = false): Promise<any> {
-		if(EDITOR_FLAGS.isTryTime) {
+		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		try {
 			document.fullscreenElement && document.exitFullscreen();
-		} catch(_er) {/**/ }
+		} catch (_er) { /**/ }
 
 		debugger;
-		if(game.editor.buildProjectAndExit) {
-			if(typeof message === 'object') {
+		if (game.editor.buildProjectAndExit) {
+			if (typeof message === 'object') {
 				try {
 					let txt: string[] = [];
 					JSON.stringify(message, (key, value) => {
-						if(key !== 'type' && typeof value === 'string') {
+						if (key !== 'type' && typeof value === 'string') {
 							txt.push(value);
 						}
 						return value;
 					});
 					message = txt.join('\n');
-				} catch(er) { } // eslint-disable-line no-empty
+				} catch (er) { } // eslint-disable-line no-empty
 			}
 			fs.exitWithResult(undefined, (game.editor.buildProjectAndExit ? ('Build failed: ' + game.editor.buildProjectAndExit + '\n') : '') + message + '; Error code: ' + errorCode);
 			return Promise.resolve();
 		} else {
-			if(game.stage && !game.__EDITOR_mode) {
+			if (game.stage && !game.__EDITOR_mode) {
 				window.setTimeout(game.editor.ui.viewport.stopExecution, 0);
 			}
 			return this.showModal(R.div(errorProps, R.multilineText(message)), R.span(null, R.icon('error'), errorCode, ' ', title, R.btn('?', () => {
@@ -256,7 +256,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 
 	showFatalError(message: ComponentChild, errorCode: number, additionalText = 'Please check console output for exceptions messages, and restart application (Reload page) by press (F5) button. You will receive question about saving any unsaved changes.') {
-		if(EDITOR_FLAGS.isTryTime) {
+		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		game.editor.__FatalError = true;
@@ -265,29 +265,29 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 	render(): ComponentChild {
 		let spinner: ComponentChild;
-		if(spinnerShowCounter > 0) {
+		if (spinnerShowCounter > 0) {
 			spinner = renderSpinner();
 		}
 
 		let notify: ComponentChild;
 		let notifies: ComponentChild[] = [];
-		notifyWrapperProps.style.left = game.editor.mouseX + "px";
-		notifyWrapperProps.style.top = (game.editor.mouseY) + "px";
+		notifyWrapperProps.style.left = game.editor.mouseX + 'px';
+		notifyWrapperProps.style.top = (game.editor.mouseY) + 'px';
 		notifyTexts.forEach((notifyText) => {
 			notifies.push(R.div(notifyProps, notifyText));
 		});
-		if(notifies.length > 0) {
+		if (notifies.length > 0) {
 			notify = R.div(spinner ? notifyPropsDuringSpinner : notifyWrapperProps, notifies);
 		}
 
 		let hotkeyButton;
-		if(this.state.modals.length > 0) {
+		if (this.state.modals.length > 0) {
 			hotkeyButton = R.btn('х', () => {
 				let m = modal.state.modals[modal.state.modals.length - 1];
-				if(m && !m.noEasyClose) {
+				if (m && !m.noEasyClose) {
 					modal.hideModal();
 				}
-			}, undefined, "modal-close-button hidden", { key: 'Escape' });
+			}, undefined, 'modal-close-button hidden', { key: 'Escape' });
 		}
 		return R.fragment(spinner, this.state.modals.map(renderModal), notify, hotkeyButton);
 	}

@@ -63,15 +63,15 @@ class R {
 
 
 	static btn(label: ComponentChild, onClick: (ev: PointerEvent) => void, title?: string, className?: string, hotkey?: Hotkey, disabled = false) {
-		assert(typeof onClick === 'function', "Function as onClick handler expected.");
+		assert(typeof onClick === 'function', 'Function as onClick handler expected.');
 		className = className || '';
 		return h(EditorButton, { label, onClick, className, title, hotkey, disabled });
 	}
 	static icon(name: string) {
-		if(!_iconsCache.hasOwnProperty(name)) {
-			assert(name, "Icon's name expected.");
+		if (!_iconsCache.hasOwnProperty(name)) {
+			assert(name, 'Icon\'s name expected.');
 			let src;
-			if(name.startsWith('/')) {
+			if (name.startsWith('/')) {
 				src = name;
 			} else {
 				src = '/thing-editor/img/' + name;
@@ -82,14 +82,14 @@ class R {
 		return _iconsCache[name];
 	}
 	static multilineText = (txt: ComponentChild) => {
-		if(typeof txt !== 'string') {
+		if (typeof txt !== 'string') {
 			return txt;
 		}
 		return R.div(null, txt.split('\n').map((line, i) => {
 			const lineProps = { key: i };
 			const words = line.split(/[ :;,\(\)]/gm);
 			words.some((word) => {
-				if(/\.(ts|js|json)$/gm.test(word)) {
+				if (/\.(ts|js|json)$/gm.test(word)) {
 					(lineProps as any).onClick = () => {
 						game.editor.editFile(word);
 					};
@@ -106,8 +106,8 @@ class R {
 	}
 
 	static imageIcon(file: FileDescImage) {
-		if(file) {
-			if(file.parentAsset) {
+		if (file) {
+			if (file.parentAsset) {
 				const frame = (file.parentAsset.asset as any).frames[file.assetName].frame;
 				const textureUrl = file.asset.baseTexture.resource.src;
 				const scale = Math.min(30 / frame.w, 30 / frame.h);
@@ -151,7 +151,7 @@ class R {
 	static sceneNode(node: Container) {
 
 		let desc;
-		if(node.__description) {
+		if (node.__description) {
 			desc = R.div(descriptionProps, node.__description.split('\n')[0]);
 		}
 		return R.div(sceneNodeProps,
@@ -169,7 +169,7 @@ class R {
 	};
 
 	static input(props: ComponentProps): ComponentChild {
-		if(props.hasOwnProperty('onChange') && !props.suspendOnChangeWarning && props.type !== 'checkbox' && props.type !== 'color') {
+		if (props.hasOwnProperty('onChange') && !props.suspendOnChangeWarning && props.type !== 'checkbox' && props.type !== 'color') {
 			debugger;
 			//'onChage handler detected for "input" element. Use onInput instead', 99999, () => {
 		}
@@ -185,7 +185,7 @@ let nameProps = {
 let classProps = { className: 'scene-node-class' };
 let sceneNodeProps = { className: 'scene-node-item' };
 
-for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'label',
+for (let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'label',
 	'b', 'a', 'br', 'hr', 'svg', 'td', 'tr', 'th', 'tbody', 'thead', 'table', 'polyline',
 	'textarea', 'iframe', 'h2', 'h3', 'h4', 'h5', 'script', 'meta', 'space', 'smallSpace']) {
 
@@ -193,7 +193,6 @@ for(let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'label',
 		return h(factoryType, ...theArgs as [any]);
 	};
 }
-
 
 
 let previewShown = false;
@@ -204,11 +203,11 @@ imagePreviewContainer.id = 'image-preview-container';
 window.document.body.appendChild(imagePreviewContainer);
 
 const hidePreview = () => {
-	if(previewShown) {
+	if (previewShown) {
 		render(R.fragment(), imagePreviewContainer);
 		previewShown = false;
 	}
-	if(assetPreviewTimeout) {
+	if (assetPreviewTimeout) {
 		clearTimeout(assetPreviewTimeout);
 		assetPreviewTimeout = 0;
 	}
@@ -243,8 +242,6 @@ const onImageAssetEnter = (ev: MouseEvent) => {
 const onImageAssetLeave = () => {
 	hidePreview();
 };
-
-
 
 
 export type { ComponentProps };

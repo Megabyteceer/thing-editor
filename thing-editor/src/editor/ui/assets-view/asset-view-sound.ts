@@ -1,16 +1,16 @@
-import type { FileDesc } from "thing-editor/src/editor/fs";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import AssetsView, { addSharedAssetContextMenu, assetTypesIcons } from "thing-editor/src/editor/ui/assets-view/assets-view";
-import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import { MUTE_SOUND_MENU_ITEM } from "thing-editor/src/editor/ui/main-menu";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import libInfo from "thing-editor/src/editor/utils/lib-info";
-import game from "thing-editor/src/engine/game";
+import type { FileDesc } from 'thing-editor/src/editor/fs';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import AssetsView, { addSharedAssetContextMenu, assetTypesIcons } from 'thing-editor/src/editor/ui/assets-view/assets-view';
+import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
+import { MUTE_SOUND_MENU_ITEM } from 'thing-editor/src/editor/ui/main-menu';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import libInfo from 'thing-editor/src/editor/utils/lib-info';
+import game from 'thing-editor/src/engine/game';
 
 const BITRATE_PROPS = {
 	className: 'semi-transparent'
-}
+};
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -29,32 +29,32 @@ const assetItemRendererSound = (file: FileDesc) => {
 				showContextMenu(addSharedAssetContextMenu(file, [
 					MUTE_SOUND_MENU_ITEM,
 					{
-						name: R.fragment("Move to library..."),
+						name: R.fragment('Move to library...'),
 						onClick: () => {
-							game.editor.moveAssetToLibrary("Where to move sound '" + file.assetName + "'?", file);
+							game.editor.moveAssetToLibrary('Where to move sound \'' + file.assetName + '\'?', file);
 						},
 						disabled: () => game.editor.getUserVisibleFolders().length < 2
 					},
 					{
 						name: R.span({ className: isDefaultBitrate ? 'semi-transparent' : undefined },
-							"Bitrate ",
+							'Bitrate ',
 							currentBitrate,
-							"kbps",
-							isDefaultBitrate ? " (default)" : undefined,
+							'kbps',
+							isDefaultBitrate ? ' (default)' : undefined,
 							' ▾'
 						),
 						onClick: (ev?: PointerEvent) => {
 							showContextMenu([8, 16, 24, 32, 40, 48, 56, 64, 80, 96, 112, 128, 144, 160, 192, 224, 256].map((bitrate) => {
 								const isDefaultBitrate = bitrate === game.editor.projectDesc.soundDefaultBitrate;
 								return {
-									name: bitrate + 'kbps' + (isDefaultBitrate ? " (default)" : ""),
+									name: bitrate + 'kbps' + (isDefaultBitrate ? ' (default)' : ''),
 									disabled: () => currentBitrate === bitrate,
 									onClick: () => {
 										const desc = file.lib ? game.editor.libsDescriptors[file.lib.name] : game.editor.projectDesc;
-										if(!desc.soundBitRates) {
+										if (!desc.soundBitRates) {
 											desc.soundBitRates = {};
 										}
-										if(isDefaultBitrate) {
+										if (isDefaultBitrate) {
 											delete desc.soundBitRates[file.assetName];
 											delete game.editor.projectDesc.soundBitRates[file.assetName];
 										} else {
@@ -65,13 +65,13 @@ const assetItemRendererSound = (file: FileDesc) => {
 										game.editor.ui.refresh();
 										fs.rebuildSounds(file.lib ? file.lib.assetsDir : game.editor.currentProjectAssetsDir);
 									}
-								}
+								};
 							}), ev!);
 						},
 					},
 					null,
 					{
-						name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' sound..."),
+						name: R.fragment(R.icon('delete'), ' Delete \'' + file.assetName + '\' sound...'),
 						onClick: () => {
 							game.editor.ui.modal.showEditorQuestion(
 								'Ase you sure?',
@@ -81,7 +81,7 @@ const assetItemRendererSound = (file: FileDesc) => {
 								), () => {
 									fs.deleteAsset(file.assetName, file.assetType);
 									game.editor.ui.refresh();
-								}, R.fragment(R.icon('delete'), " Delete.")
+								}, R.fragment(R.icon('delete'), ' Delete.')
 							);
 						},
 						disabled: () => !!(file.lib && file.lib.isEmbed)
@@ -89,7 +89,7 @@ const assetItemRendererSound = (file: FileDesc) => {
 				]), ev);
 			},
 			onMouseDown: (ev: PointerEvent) => {
-				if(ev.buttons === 1 && !(ev.target as HTMLDivElement).closest('.modal-content')) {
+				if (ev.buttons === 1 && !(ev.target as HTMLDivElement).closest('.modal-content')) {
 					game.editor.previewSound(file.assetName);
 				}
 			}

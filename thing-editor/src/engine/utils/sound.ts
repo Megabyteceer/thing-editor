@@ -1,12 +1,12 @@
 /// #if EDITOR
-import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
+import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 /// #endif
 
-import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import HowlSound from "thing-editor/src/engine/HowlSound";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import HowlSound from 'thing-editor/src/engine/HowlSound';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 import IndexedDBUtils from 'thing-editor/src/engine/utils/indexed-db-utils';
 const MIN_VOL_ENABLE = 0.05;
 
@@ -18,7 +18,7 @@ export default class Sound {
 
 	static get soundsVol() {
 		/// #if EDITOR
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			return 1;
 		}
 		/// #endif
@@ -26,7 +26,7 @@ export default class Sound {
 	}
 
 	static set soundsVol(v) {
-		assert(!isNaN(v), "invalid value for 'soundsVol'. Valid number value expected.", 10001);
+		assert(!isNaN(v), 'invalid value for \'soundsVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
 		soundsVol = v;
 		game.settings.setItem('soundsVol', soundsVol);
@@ -45,16 +45,16 @@ export default class Sound {
 	}
 
 	static set musicVol(v) {
-		assert(!isNaN(v), "invalid value for 'musicVol'. Valid number value expected.", 10001);
+		assert(!isNaN(v), 'invalid value for \'musicVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
-		if(musicVol !== v) {
-			if(game.classes.BgMusic) {
+		if (musicVol !== v) {
+			if (game.classes.BgMusic) {
 				game.classes.BgMusic._clearCustomFades(0.2);
 			}
 		}
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
-		if(game.classes.BgMusic) {
+		if (game.classes.BgMusic) {
 			game.classes.BgMusic._recalculateMusic();
 		}
 	}
@@ -66,15 +66,15 @@ export default class Sound {
 	static set fullVol(v) {
 		let a = game.settings.getItem('musicEnabled', true);
 		let b = game.settings.getItem('soundEnabled', true);
-		if(!a && !b) {
+		if (!a && !b) {
 			a = b = true;
 		}
-		if(a) {
+		if (a) {
 			Sound.musicVol = v;
 		} else {
 			game.settings.setItem('musicVolEnabling', v);
 		}
-		if(b) {
+		if (b) {
 			Sound.soundsVol = v;
 		} else {
 			game.settings.setItem('soundsVolEnabling', v);
@@ -86,11 +86,11 @@ export default class Sound {
 	}
 
 	static set musicEnabled(val) {
-		if(Sound.musicEnabled !== val) {
-			if(game.classes.BgMusic) {
+		if (Sound.musicEnabled !== val) {
+			if (game.classes.BgMusic) {
 				game.classes.BgMusic._clearCustomFades(0.2);
 			}
-			if(val) {
+			if (val) {
 				Sound.musicVol = normalizeVolForEnabling(game.settings.getItem('musicVolEnabling'), game.projectDesc.defaultMusVol);
 			} else {
 				game.settings.setItem('musicVolEnabling', musicVol);
@@ -101,7 +101,7 @@ export default class Sound {
 	}
 
 	static rememberEnablings() {
-		if(!enablingSaveTimeout) {
+		if (!enablingSaveTimeout) {
 			enablingSaveTimeout = window.setTimeout(_rememberEnablings, 10);
 		}
 	}
@@ -115,8 +115,8 @@ export default class Sound {
 	}
 
 	static set soundEnabled(val) {
-		if(Sound.soundEnabled !== val) {
-			if(val) {
+		if (Sound.soundEnabled !== val) {
+			if (val) {
 				Sound.soundsVol = normalizeVolForEnabling(game.settings.getItem('soundsVolEnabling'), game.projectDesc.defaultSoundsVol);
 			} else {
 				game.settings.setItem('soundsVolEnabling', soundsVol);
@@ -131,7 +131,7 @@ export default class Sound {
 	}
 
 	static toggleFullSound() {
-		if(Sound.soundEnabled || Sound.musicEnabled) {
+		if (Sound.soundEnabled || Sound.musicEnabled) {
 			Sound.soundEnabled = false;
 			Sound.musicEnabled = false;
 		} else {
@@ -152,7 +152,7 @@ export default class Sound {
 	/// #if EDITOR
 	static __resetSounds() {
 		MusicFragment.__stopAll();
-		for(let soundName in Lib.__soundsList) {
+		for (let soundName in Lib.__soundsList) {
 
 			let snd = Lib.getSound(soundName);
 			snd.off('fade');
@@ -170,7 +170,7 @@ export default class Sound {
 		/// #if DEBUG
 		rate = rate * game.pixiApp.ticker.speed;
 		/// #endif
-		if(Sound.isSoundsLockedByBrowser || (!game.isVisible // eslint-disable-line no-constant-condition
+		if (Sound.isSoundsLockedByBrowser || (!game.isVisible // eslint-disable-line no-constant-condition
 			/// #if EDITOR
 			&& false
 			/// #endif
@@ -191,28 +191,28 @@ export default class Sound {
 		}
 		//*/
 
-		if(s.lastPlayStartFrame < game.time
+		if (s.lastPlayStartFrame < game.time
 			/// #if EDITOR
 			|| game.__EDITOR_mode
 			/// #endif
 		) {
-			if(!multiInstanced && s.playing()) {
+			if (!multiInstanced && s.playing()) {
 				s.stop();
 			}
 			volume = volume * Sound.soundsVol * Sound.soundsVol;
-			if(volume > 0.01) {
+			if (volume > 0.01) {
 				try {
-					if(multiInstanced) {
+					if (multiInstanced) {
 						s.soundIdSaved = s.play();
 						s.volume(volume, s.soundIdSaved);
 						s.rate(rate, s.soundIdSaved);
-						if(seek !== 0) {
+						if (seek !== 0) {
 							s.seek(seek, s.soundIdSaved);
 						}
 					} else {
 						s.volume(volume);
 						s.rate(rate);
-						if(seek !== 0) {
+						if (seek !== 0) {
 							s.seek(seek);
 						}
 						s.soundIdSaved = s.play(s.soundIdSaved);
@@ -225,7 +225,7 @@ export default class Sound {
 					editorEvents.emit('soundPlay', soundId, volume);
 
 					/// #endif
-				} catch(er) { } // eslint-disable-line no-empty
+				} catch (er) { } // eslint-disable-line no-empty
 			}
 		}
 	}
@@ -233,12 +233,12 @@ export default class Sound {
 	static playPitched(soundId: string, resetTimeout = 200, pitchStep = 1.0594630943592953, pitchLimit = 3) {
 		let prevTime = pitchedPlayTimeouts[soundId];
 		let d = game.time - prevTime;
-		if(d < 2) {
+		if (d < 2) {
 			return;
 		}
 
 		let pitch;
-		if(d < resetTimeout) {
+		if (d < resetTimeout) {
 			pitch = Math.min(pitches[soundId] * pitchStep, pitchLimit);
 		} else {
 			pitch = 1;
@@ -259,13 +259,13 @@ export default class Sound {
 		soundLockTimeoutId = window.setTimeout(blockedHanlder, 500);
 		try {
 			EMPTY_SOUND.play();
-		} catch(er) {
+		} catch (er) {
 			soundLockHandler(true);
 		}
 	}
 
 	static _unlockSound() {
-		if(Sound.isSoundsLockedByBrowser) {
+		if (Sound.isSoundsLockedByBrowser) {
 			soundLockHandler(false);
 		}
 	}
@@ -278,8 +278,8 @@ export default class Sound {
 
 	/// #if EDITOR
 	static __stop() {
-		if(game.__EDITOR_mode) {
-			for(let soundName in Lib.__soundsList) {
+		if (game.__EDITOR_mode) {
+			for (let soundName in Lib.__soundsList) {
 				Lib.getSound(soundName).stop();
 			}
 		}
@@ -294,19 +294,19 @@ let isHandlerShootAlready = false;
 const LOADING_OWNER_NAME = 'checkSoundLock';
 
 const soundLockHandler = (isLocked = false) => {
-	if(!isHandlerShootAlready) {
+	if (!isHandlerShootAlready) {
 		game.loadingRemove(LOADING_OWNER_NAME);
 		isHandlerShootAlready = true;
-		if(soundLockTimeoutId) {
+		if (soundLockTimeoutId) {
 			clearTimeout(soundLockTimeoutId);
 		}
 	}
-	if(!isLocked) {
+	if (!isLocked) {
 		EMPTY_SOUND.off('playerror');
 		EMPTY_SOUND.off('play');
 		EMPTY_SOUND.unload();
 		Sound.isSoundsLockedByBrowser = false;
-		if(game.classes.BgMusic) {
+		if (game.classes.BgMusic) {
 			(game.classes.BgMusic as any)._recalculateMusic();
 		}
 	}
@@ -319,7 +319,7 @@ let pitchedPlayTimeouts: KeyedMap<number> = {};
 let enablingSaveTimeout = 0;
 function _rememberEnablings() {
 	enablingSaveTimeout = 0;
-	if(Sound.soundEnabled || Sound.musicEnabled) {
+	if (Sound.soundEnabled || Sound.musicEnabled) {
 		game.settings.setItem('soundEnabled', Sound.soundEnabled);
 		game.settings.setItem('musicEnabled', Sound.musicEnabled);
 	}
@@ -331,7 +331,7 @@ let musicVol: number;
 /// #if EDITOR
 (Sound.play as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (Sound.play as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
-	return game.editor.chooseSound("Choose sound to play:");
+	return game.editor.chooseSound('Choose sound to play:');
 };
 
 (Sound.playPitched as SelectableProperty).___EDITOR_isGoodForChooser = true;
@@ -355,9 +355,9 @@ const defaultSoundsUrls: KeyedMap<string> = {};
 
 function overrideSound(name: string, src?: string) {
 
-	if(!defaultSoundsUrls[name]) {
+	if (!defaultSoundsUrls[name]) {
 		defaultSoundsUrls[name] = (Lib.getSound(name) as any)._src;
-		assert(defaultSoundsUrls[name], "Howler is changed");
+		assert(defaultSoundsUrls[name], 'Howler is changed');
 	}
 	Lib.__overrideSound(name, src || defaultSoundsUrls[name]);
 }
@@ -371,7 +371,7 @@ function hideSndDebugger() {
 }
 
 function highlightPlayedSound(soundId: string) {
-	if(sndDebuggerShowed) {
+	if (sndDebuggerShowed) {
 		let soundTitle: HTMLDivElement = document.querySelector('.sounds-debug-panel .snd-name-' + soundId)!;
 		soundTitle.classList.remove('animate-sound-play');
 		window.setTimeout(() => {
@@ -382,11 +382,11 @@ function highlightPlayedSound(soundId: string) {
 
 let libSounds: KeyedMap<HowlSound>;
 function __loadSoundOverrides() {
-	if(!libSounds) {
+	if (!libSounds) {
 		libSounds = Lib.sounds;
-		for(let sndName in libSounds) {
+		for (let sndName in libSounds) {
 			const data = IndexedDBUtils.load(sndName, 'sound');
-			if(data) {
+			if (data) {
 				overrideSound(sndName, data.data);
 			}
 		}
@@ -400,7 +400,7 @@ function showSndDebugger() {
 	/// #endif
 
 	// sounds playing animation
-	document.head.insertAdjacentHTML("beforeend", `<style>
+	document.head.insertAdjacentHTML('beforeend', `<style>
 	.animate-sound-play {
 		animation: color-change 5s infinite;
 	  }
@@ -412,18 +412,18 @@ function showSndDebugger() {
 	  }
 	   </style>`);
 
-	if(!sndDebugger) { // eslint-disable-line no-unreachable
+	if (!sndDebugger) { // eslint-disable-line no-unreachable
 		sndDebugger = document.createElement('div');
-		sndDebugger.style.position = "fixed";
-		sndDebugger.style.right = "0";
-		sndDebugger.style.top = "0";
-		sndDebugger.style.zIndex = "10000";
-		sndDebugger.style.color = "#ffffff";
-		sndDebugger.style.background = "#000000";
-		sndDebugger.style.padding = "5vh";
-		sndDebugger.style.margin = "5vh";
-		sndDebugger.style.maxHeight = "90vh";
-		sndDebugger.style.overflowY = "auto";
+		sndDebugger.style.position = 'fixed';
+		sndDebugger.style.right = '0';
+		sndDebugger.style.top = '0';
+		sndDebugger.style.zIndex = '10000';
+		sndDebugger.style.color = '#ffffff';
+		sndDebugger.style.background = '#000000';
+		sndDebugger.style.padding = '5vh';
+		sndDebugger.style.margin = '5vh';
+		sndDebugger.style.maxHeight = '90vh';
+		sndDebugger.style.overflowY = 'auto';
 		document.body.appendChild(sndDebugger);
 		__loadSoundOverrides();
 	}
@@ -461,12 +461,12 @@ function showSndDebugger() {
 	</style><div class="sounds-debug-panel"><table border="0" cellspacing="0" cellpadding="0">`];
 	let i = 0;
 	let libSounds = Lib.__soundsList;
-	for(let sndName in libSounds) {
+	for (let sndName in libSounds) {
 		soundNames[i] = sndName;
 		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName +
 			'</b></td><td><button class="snd-override">Choose...</button></td><td>');
 		const overrideData = IndexedDBUtils.load(sndName, 'sound')!;
-		if(overrideData) {
+		if (overrideData) {
 			txt.push(' ЗАГРУЖЕН (' + overrideData!.fileName + ')</td><td><button class="snd-clear">x</button>');
 		} else {
 			txt.push('-</td><td>-');
@@ -482,17 +482,17 @@ function showSndDebugger() {
 
 	function sndNameByEvent(ev: InputEvent) {
 		let t: HTMLElement | null = ev.target as HTMLElement;
-		while(t) {
-			if(t.id && t.id.indexOf('-soundNum') > 0) {
+		while (t) {
+			if (t.id && t.id.indexOf('-soundNum') > 0) {
 				return soundNames[parseInt(t.id)];
 			}
 			t = t.parentElement;
 		}
 	}
 
-	for(let fileChooser of document.querySelectorAll('.snd-override') as any as HTMLInputElement[]) {  // eslint-disable-line no-unreachable
+	for (let fileChooser of document.querySelectorAll('.snd-override') as any as HTMLInputElement[]) { // eslint-disable-line no-unreachable
 
-		fileChooser.addEventListener("click", async function (ev: any) {
+		fileChooser.addEventListener('click', async function (ev: any) {
 
 			let sndName = sndNameByEvent(ev);
 			const sndData = await IndexedDBUtils.openFile(sndName);
@@ -514,11 +514,11 @@ function showSndDebugger() {
 		IndexedDBUtils.import();
 	});
 
-	for(let a of document.querySelectorAll('.snd-name')) {  // eslint-disable-line no-unreachable
+	for (let a of document.querySelectorAll('.snd-name')) { // eslint-disable-line no-unreachable
 		a.addEventListener('click', (ev: any) => {
 			let sndName = sndNameByEvent(ev);
 			Sound.play(sndName);
-			if(timeouts[sndName]) {
+			if (timeouts[sndName]) {
 				clearTimeout(timeouts[sndName]);
 				delete timeouts[sndName];
 			}
@@ -528,7 +528,7 @@ function showSndDebugger() {
 		});
 	}
 
-	for(let clearBtn of document.querySelectorAll('.snd-clear')) {  // eslint-disable-line no-unreachable
+	for (let clearBtn of document.querySelectorAll('.snd-clear')) { // eslint-disable-line no-unreachable
 		clearBtn.addEventListener('click', (ev) => {
 			const soundName = sndNameByEvent(ev as InputEvent);
 			IndexedDBUtils.save(soundName, 'sound');
@@ -541,8 +541,8 @@ function showSndDebugger() {
 const timeouts: KeyedMap<number> = {};
 
 window.addEventListener('keydown', (ev) => {
-	if(ev.keyCode === 115) {
-		if(sndDebuggerShowed) {
+	if (ev.keyCode === 115) {
+		if (sndDebuggerShowed) {
 			hideSndDebugger();
 			return;
 		}

@@ -1,7 +1,7 @@
-import type { Container } from "pixi.js";
+import type { Container } from 'pixi.js';
 import { getCurrentStack } from 'thing-editor/src/editor/utils/stack-utils';
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 let tryCatchWarned = false;
 let tryTime = 0;
@@ -37,10 +37,10 @@ class EDITOR_FLAGS {
 	static checkTryTime() {
 		clearTimeout(this.checkTimeOut);
 		EDITOR_FLAGS.isTryTime--;
-		assert(EDITOR_FLAGS.isTryTime >= 0, "checkTryTime() without rememberTryTime() detected.");
-		if(!tryCatchWarned && ((Date.now() - tryTime) > 1000)) {
+		assert(EDITOR_FLAGS.isTryTime >= 0, 'checkTryTime() without rememberTryTime() detected.');
+		if (!tryCatchWarned && ((Date.now() - tryTime) > 1000)) {
 			tryCatchWarned = true;
-			game.editor.ui.status.warn("Looks like you stopped on caught exception, probably you need to disable 'stop on caught exception' option in your debugger.", 30014);
+			game.editor.ui.status.warn('Looks like you stopped on caught exception, probably you need to disable \'stop on caught exception\' option in your debugger.', 30014);
 		}
 	}
 }

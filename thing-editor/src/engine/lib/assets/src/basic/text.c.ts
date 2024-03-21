@@ -1,15 +1,15 @@
 
-import type { TextStyleAlign, TextStyleFontWeight } from "pixi.js";
-import { Text } from "pixi.js";
+import type { TextStyleAlign, TextStyleFontWeight } from 'pixi.js';
+import { Text } from 'pixi.js';
 
-import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
-import LanguageView from "thing-editor/src/editor/ui/language-view";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import ___Guide from "thing-editor/src/engine/lib/assets/src/___system/guide.c";
+import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable';
+import LanguageView from 'thing-editor/src/editor/ui/language-view';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import ___Guide from 'thing-editor/src/engine/lib/assets/src/___system/guide.c';
 
-import L from "thing-editor/src/engine/utils/l";
+import L from 'thing-editor/src/engine/utils/l';
 
 export default Text;
 
@@ -43,10 +43,10 @@ const TEXT_TRANSFORM: KeyedMap<TextTransform> = {
 
 
 const applyTextTransform = (value: string, textTransform: TextTransform) => {
-	if(textTransform === TEXT_TRANSFORM.none) return value;
-	if(textTransform === TEXT_TRANSFORM.uppercase) return value.toUpperCase();
-	if(textTransform === TEXT_TRANSFORM.lowercase) return value.toLowerCase();
-	if(textTransform === TEXT_TRANSFORM.capitalize) return value.replace(/(?:^|\s)\S/g, (char) => char.toUpperCase());
+	if (textTransform === TEXT_TRANSFORM.none) return value;
+	if (textTransform === TEXT_TRANSFORM.uppercase) return value.toUpperCase();
+	if (textTransform === TEXT_TRANSFORM.lowercase) return value.toLowerCase();
+	if (textTransform === TEXT_TRANSFORM.capitalize) return value.replace(/(?:^|\s)\S/g, (char) => char.toUpperCase());
 	assert(false, `Invalid "textTransform" value for text (${textTransform})`);
 };
 
@@ -56,10 +56,10 @@ Object.defineProperties(Text.prototype, {
 			return (this as any)._translatableText;
 		},
 		set: function (this: Text, val: string) {
-			if((this as any)._translatableText !== val) {
-				if(val) {
+			if ((this as any)._translatableText !== val) {
+				if (val) {
 					/// #if EDITOR
-					if(!L.has(val)) {
+					if (!L.has(val)) {
 						game.editor.ui.status.warn('translatableText refers to not existing key: "' + val + '"', 32032, this, 'translatableText');
 					}
 					/// #endif
@@ -73,14 +73,14 @@ Object.defineProperties(Text.prototype, {
 		get: function (this: Text) {
 			return undefined;
 		},
-		set: function (this: Text) {/* empty */ }
+		set: function (this: Text) { /* empty */ }
 	},
 	'style.align': {
 		get: function (this: Text) {
 			return this.style.align;
 		},
 		set: function (this: Text, val) {
-			if(this.style.align != val) {
+			if (this.style.align != val) {
 				this.style.align = val;
 				_refreshAnchor(this);
 				checkAlignBlur(this);
@@ -92,7 +92,7 @@ Object.defineProperties(Text.prototype, {
 			return (this as any)._verticalAlign;
 		},
 		set: function (this: Text, val) {
-			if((this as any)._verticalAlign != val) {
+			if ((this as any)._verticalAlign != val) {
 				(this as any)._verticalAlign = val;
 				_refreshAnchor(this);
 				checkAlignBlur(this);
@@ -104,7 +104,7 @@ Object.defineProperties(Text.prototype, {
 			return (this as any)._styleFill;
 		},
 		set: function (this: Text, val: string) {
-			if(val && val.indexOf(',') >= 0) {
+			if (val && val.indexOf(',') >= 0) {
 				/// #if EDITOR
 				val = val.replace(/(\s|")/g, '');
 				/// #endif
@@ -113,13 +113,13 @@ Object.defineProperties(Text.prototype, {
 					.filter((c) => {
 						return isColor(c, this);
 					});
-				if(this.style.fill.length === 0) {
+				if (this.style.fill.length === 0) {
 					this.style.fill = '#000';
 				}
 				/// #endif
 			} else {
 				/// #if EDITOR
-				if(isColor(val, this)) {
+				if (isColor(val, this)) {
 					/// #endif
 					this.style.fill = val;
 					/// #if EDITOR
@@ -136,7 +136,7 @@ Object.defineProperties(Text.prototype, {
 			return ((this as any)['style.fill'] as string).split(',').map(v => parseInt(v.replace('#', ''), 16));
 		},
 		set: function (this: Text, val: number[]) {
-			if(Array.isArray(val)) {
+			if (Array.isArray(val)) {
 				(this as any)['style.fill'] = val.map(v => '#' + v.toString(16).padStart(6, '0')).join(',');
 			} else {
 				(this as any)['style.fill'] = '#' + (val as number).toString(16).padStart(6, '0');
@@ -150,12 +150,12 @@ Object.defineProperties(Text.prototype, {
 		},
 		set: function (this: Text, val) {
 			/// #if EDITOR
-			if(typeof val === 'string') {
+			if (typeof val === 'string') {
 				val = val.split(',').map((i: string) => i ? parseFloat(i) : 1);
 			}
 			let min = 0;
 			val.forEach((v: number, i: number) => {
-				if(v < min) {
+				if (v < min) {
 					v = min;
 					val[i] = min;
 				}
@@ -216,7 +216,7 @@ Object.defineProperties(Text.prototype, {
 			return;
 			/// #endif
 
-			if(val === 0 && isLetterSpacingUnsupported) { /*eslint-disable-line no-unreachable */
+			if (val === 0 && isLetterSpacingUnsupported) { /*eslint-disable-line no-unreachable */
 				this.style.letterSpacing = 0.001;
 			} else {
 				this.style.letterSpacing = val;
@@ -293,9 +293,9 @@ Object.defineProperties(Text.prototype, {
 			return (this as any)._textTransform;
 		},
 		set: function (this: Text, v) {
-			if(v !== (this as any)._textTransform) {
+			if (v !== (this as any)._textTransform) {
 				(this as any)._textTransform = v;
-				if(v && (this as any)._text) {
+				if (v && (this as any)._text) {
 					(this as any)._text = applyTextTransform((this as any)._text, this.textTransform);
 					this.dirty = true;
 				}
@@ -308,7 +308,7 @@ Object.defineProperties(Text.prototype, {
 			return (this as any)._maxWidth;
 		},
 		set: function (this: Text, val) {
-			if((this as any)._maxWidth !== val) {
+			if ((this as any)._maxWidth !== val) {
 				(this as any)._maxWidth = val;
 				recalculateTextSize(this);
 			}
@@ -317,12 +317,12 @@ Object.defineProperties(Text.prototype, {
 });
 
 let d = Object.getOwnPropertyDescriptor(Text.prototype, 'text')!;
-assert(d, "Text component needs refactoring", 90001);
+assert(d, 'Text component needs refactoring', 90001);
 const originalTextSetter = d.set!;
 d.set = function (this: Text, v) {
-	if(this.textTransform && v) {
+	if (this.textTransform && v) {
 		/// #if EDITOR
-		if(typeof v === 'number') {
+		if (typeof v === 'number') {
 			game.editor.ui.status.error('textTransform is set for label which shows numeric value. Please set it to "none" to avoid senseless processing.', 10075, this, 'textTransform');
 			originalTextSetter.call(this, v);
 			return;
@@ -346,7 +346,7 @@ Text.prototype.init = function () {
 	/// #if EDITOR
 	EDITOR_FLAGS._root_initCalled.delete(this);
 	/// #endif
-	if(this.translatableText) {
+	if (this.translatableText) {
 		this.text = L(this.translatableText);
 	}
 	recalculateTextSize(this);
@@ -372,19 +372,19 @@ Text.prototype.setAlign = function (align: TextStyleAlign) {
 
 function checkAlignBlur(text: Text) {
 	let w = text.texture.width;
-	if(w > 0) {
-		if(text.style.align === CENTER) {
+	if (w > 0) {
+		if (text.style.align === CENTER) {
 			text.anchor.x = Math.round(0.5 * w) / w;
 		}
 		let h = text.texture.height;
-		if((text.style as any)._verticalAlign === CENTER) {
+		if ((text.style as any)._verticalAlign === CENTER) {
 			text.anchor.y = Math.round(0.5 * h) / h;
 		}
 	}
 }
 
 (Text.prototype as any).onLanguageChanged = function onLanguageChanged() {
-	if((this as any)._translatableText) {
+	if ((this as any)._translatableText) {
 		let t = (this as any)._translatableText;
 		(this as any)._translatableText = null;
 		this.translatableText = t;
@@ -396,21 +396,21 @@ function _refreshAnchor(text: Text) {
 }
 
 function recalculateTextSize(text: Text) {
-	if((text as any)._maxWidth !== 0) {
-		if(text._texture.width > (text as any)._maxWidth) {
+	if ((text as any)._maxWidth !== 0) {
+		if (text._texture.width > (text as any)._maxWidth) {
 			const q = (text as any)._maxWidth / text._texture.width;
-			if(text.scale.x !== q || text.scale.y !== q) {
+			if (text.scale.x !== q || text.scale.y !== q) {
 				text.scale.x = q;
 				text.scale.y = q;
-				if(text.parent) {
+				if (text.parent) {
 					text.updateTransform();
 				}
 			}
 		} else {
-			if(text.scale.x !== 1 || text.scale.y !== 1) {
+			if (text.scale.x !== 1 || text.scale.y !== 1) {
 				text.scale.x = 1;
 				text.scale.y = 1;
-				if(text.parent) {
+				if (text.parent) {
 					text.updateTransform();
 				}
 			}
@@ -423,34 +423,34 @@ function recalculateTextSize(text: Text) {
 function isColor(strColor: string, node: Text) {
 	let s = new Option().style;
 	s.color = strColor;
-	if(s.color) {
+	if (s.color) {
 		return true;
 	} else {
-		if(!game.__EDITOR_mode) {
-			game.editor.ui.status.error("Wrong color gradient entry: " + strColor, 32057, node, "style.fill");
+		if (!game.__EDITOR_mode) {
+			game.editor.ui.status.error('Wrong color gradient entry: ' + strColor, 32057, node, 'style.fill');
 		}
 	}
 }
 
 
 Text.prototype.__EDITOR_onCreate = function __EDITOR_onCreate() {
-	this.text = "New Text 1";
+	this.text = 'New Text 1';
 };
 
 Text.prototype.__beforeSerialization = function __beforeSerialization() {
-	if((this as any)._translatableText) {
+	if ((this as any)._translatableText) {
 		this.text = '';
 	}
-	if(this.maxWidth > 0) {
+	if (this.maxWidth > 0) {
 		this.scale.x = 1;
 		this.scale.y = 1;
 	}
 };
 Text.prototype.__afterSerialization = function __afterSerialization() {
-	if((this as any)._translatableText) {
+	if ((this as any)._translatableText) {
 		this.text = L((this as any)._translatableText);
 	}
-	if(this.maxWidth > 0) {
+	if (this.maxWidth > 0) {
 		let tmp = this.maxWidth;
 		this.maxWidth = 0;
 		this.maxWidth = tmp;
@@ -479,7 +479,7 @@ _editableEmbed(Text, 'text', {
 	important: true,
 	multiline: true,
 	disabled: (node: Text) => {
-		return node.translatableText && "Disabled because 'translatableText' property is set.";
+		return node.translatableText && 'Disabled because \'translatableText\' property is set.';
 	}
 });
 
@@ -509,7 +509,7 @@ _editableEmbed(Text, 'Copy style', {
 			})
 			.map((property) => ({ property: property.name, value: (o as KeyedObject)[property.name] }));
 		game.editor.settings.setItem('__EDITOR-clipboard-data-text-style', styleProperties);
-		game.editor.ui.modal.notify("Copied current text style");
+		game.editor.ui.modal.notify('Copied current text style');
 	}
 });
 
@@ -517,7 +517,7 @@ _editableEmbed(Text, 'Paste style', {
 	type: 'btn',
 	title: 'Paste text style.',
 	onClick: (o: Text) => {
-		game.editor.ui.modal.notify("Text style pasted");
+		game.editor.ui.modal.notify('Text style pasted');
 		(game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', []) as { property: string, value: any; }[])
 			.forEach(({ property, value }) => game.editor.onObjectsPropertyChanged(o, property, value, false));
 	},
@@ -580,7 +580,7 @@ _editableEmbed(Text, 'style.strokeThickness', {
 });
 
 _editableEmbed(Text, 'style.stroke', {
-	type: "color",
+	type: 'color',
 	noNullCheck: true,
 	default: 0,
 	visible: (node: Text) => {
@@ -594,7 +594,7 @@ _editableEmbed(Text, 'style.dropShadow', {
 });
 
 _editableEmbed(Text, 'style.drShColor', {
-	type: "color",
+	type: 'color',
 	noNullCheck: true,
 	default: 0,
 	visible: (node: Text) => node.style.dropShadow
@@ -636,7 +636,7 @@ _editableEmbed(Text, 'style.fontFamily', {
 		const text = game.editor.selection[0] as Text;
 		const currentWeight = text.style.fontWeight;
 		const weights = getFontWeights(val);
-		if(!weights.find(w => w.name === currentWeight)) {
+		if (!weights.find(w => w.name === currentWeight)) {
 			text.style.fontWeight = weights[Math.floor(weights.length / 2)].value;
 		}
 	}
@@ -644,14 +644,14 @@ _editableEmbed(Text, 'style.fontFamily', {
 
 function getFontWeights(family: string) {
 	let availableWeights: KeyedObject = {};
-	for(let f of Array.from(document.fonts.values())) {
-		if(f.family === family) {
+	for (let f of Array.from(document.fonts.values())) {
+		if (f.family === family) {
 			let w = parseInt(f.weight);
-			if(w < 301) {
+			if (w < 301) {
 				availableWeights.lighter = true;
-			} else if(w > 801) {
+			} else if (w > 801) {
 				availableWeights.bolder = true;
-			} else if(w > 501) {
+			} else if (w > 501) {
 				availableWeights.bold = true;
 			} else {
 				availableWeights.normal = true;
@@ -659,7 +659,7 @@ function getFontWeights(family: string) {
 		}
 	}
 	let a = Object.keys(availableWeights);
-	if(a.length > 0) {
+	if (a.length > 0) {
 		return a.map((k) => {
 			return { name: k, value: k as TextStyleFontWeight };
 		});
@@ -706,15 +706,15 @@ _editableEmbed(Text, 'maxWidth', {
 		let textObject = overrideO || game.editor.selection[0] as Text;
 		let right = textObject.maxWidth;
 		let y = 0;
-		if(right === 0) {
-			for(let t of game.editor.selection) {
+		if (right === 0) {
+			for (let t of game.editor.selection) {
 				t.scale.x = 1;
 				t.scale.y = 1;
 			}
 			___Guide.hide('maxWidthRight');
 			___Guide.hide('maxWidthLeft');
 		} else {
-			switch(textObject.style.align) {
+			switch (textObject.style.align) {
 				case CENTER:
 					right *= 0.5;
 					y = -right;

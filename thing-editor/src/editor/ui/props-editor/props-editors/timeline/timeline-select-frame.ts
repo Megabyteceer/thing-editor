@@ -1,9 +1,9 @@
-import type { ClassAttributes } from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import Window from "thing-editor/src/editor/ui/editor-window";
-import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import game from "thing-editor/src/engine/game";
+import type { ClassAttributes } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import Window from 'thing-editor/src/editor/ui/editor-window';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
+import game from 'thing-editor/src/engine/game';
 
 let timelineRect: DOMRect;
 let isDragging = false;
@@ -27,7 +27,7 @@ export default class TimelineSelectFrame extends Component<ClassAttributes<Timel
 	}
 
 	onMouseMove(ev: MouseEvent) {
-		if(isDragging) {
+		if (isDragging) {
 			let s = Window.all.timeline.renderedScale;
 
 			w = (ev.clientX - timelineRect.x) / s - x;
@@ -37,18 +37,18 @@ export default class TimelineSelectFrame extends Component<ClassAttributes<Timel
 	}
 
 	cancelSelection() {
-		if(isDragging) {
+		if (isDragging) {
 			isDragging = false;
 			this.forceUpdate();
 		}
 	}
 
 	getRectAndFinishDragging() {
-		if(isDragging) {
+		if (isDragging) {
 			isDragging = false;
 
 			let a = document.querySelector('.timeline-select-frame');
-			if(!a) {
+			if (!a) {
 				return;
 			}
 			let ret = a.getBoundingClientRect();
@@ -59,7 +59,7 @@ export default class TimelineSelectFrame extends Component<ClassAttributes<Timel
 	}
 
 	render() {
-		if(isDragging) {
+		if (isDragging) {
 			return R.div({
 				className: game.__EDITOR_mode ? 'timeline-select-frame' : 'timeline-select-frame disabled',
 				style: {

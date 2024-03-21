@@ -1,7 +1,7 @@
-import { Text } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import game from "thing-editor/src/engine/game";
-import ___Guide from "thing-editor/src/engine/lib/assets/src/___system/guide.c";
+import { Text } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import game from 'thing-editor/src/engine/game';
+import ___Guide from 'thing-editor/src/engine/lib/assets/src/___system/guide.c';
 
 const CENTER = 'center';
 const BOTTOM = 'bottom';
@@ -25,7 +25,7 @@ export default class MultilineText extends Text {
 
 	set maxHeightLandscape(val) {
 		this._maxHeightLandscape = val;
-		if(!game.isPortrait && (val !== 0)) {
+		if (!game.isPortrait && (val !== 0)) {
 			this._applyMaxHeight();
 		}
 	}
@@ -37,7 +37,7 @@ export default class MultilineText extends Text {
 
 	set maxHeightPortrait(val) {
 		this._maxHeightPortrait = val;
-		if(game.isPortrait && (val !== 0)) {
+		if (game.isPortrait && (val !== 0)) {
 			this._applyMaxHeight();
 		}
 	}
@@ -57,7 +57,7 @@ export default class MultilineText extends Text {
 	}
 
 	applyWorldWrapping() {
-		if(this.style) {
+		if (this.style) {
 			this.style.wordWrapWidth = (game.isPortrait ? this.maxWidthPortrait : this.maxWidthLandscape);
 			this.style.wordWrap = true;
 			this._applyMaxHeight();
@@ -74,13 +74,13 @@ export default class MultilineText extends Text {
 	}
 
 	_applyMaxHeight() {
-		if(this.style) {
+		if (this.style) {
 			this.maxWidth = this.style.wordWrapWidth;
 		}
 		let h = game.isPortrait ? this._maxHeightPortrait : this._maxHeightLandscape;
-		if((h > 0) && (this._texture.height > h)) {
+		if ((h > 0) && (this._texture.height > h)) {
 			let q = h / this._texture.height;
-			if(this.scale.x !== q || this.scale.y !== q) {
+			if (this.scale.x !== q || this.scale.y !== q) {
 				this.scale.x = q;
 				this.scale.y = q;
 			}
@@ -90,7 +90,7 @@ export default class MultilineText extends Text {
 	/// #if EDITOR
 	__beforeSerialization() {
 		super.__beforeSerialization!();
-		if((game.isPortrait ? this._maxHeightPortrait : this._maxHeightLandscape) > 0) {
+		if ((game.isPortrait ? this._maxHeightPortrait : this._maxHeightLandscape) > 0) {
 			this.scale.x = 1;
 			this.scale.y = 1;
 		}
@@ -116,15 +116,15 @@ function afterMaxHeightEdit() {
 	let o = game.editor.selection[0] as MultilineText;
 	let yBottom = game.isPortrait ? o._maxHeightPortrait : o._maxHeightLandscape;
 	let yTop = 0;
-	if(yBottom === 0) {
-		for(let t of game.editor.selection) {
+	if (yBottom === 0) {
+		for (let t of game.editor.selection) {
 			t.scale.x = 1;
 			t.scale.y = 1;
 		}
 		___Guide.hide('maxHeightBottom');
 		___Guide.hide('maxHeightTop');
 	} else {
-		switch((o as any).verticalAlign) {
+		switch ((o as any).verticalAlign) {
 			case CENTER:
 				yBottom *= 0.5;
 				yTop = -yBottom;
@@ -144,14 +144,14 @@ function afterMaxHeightEdit() {
 }
 
 function afterMaxWidthEdit() {
-	for(let o of game.editor.selection as any as MultilineText[]) {
+	for (let o of game.editor.selection as any as MultilineText[]) {
 		o.applyWorldWrapping();
 	}
 	let o = game.editor.selection[0] as MultilineText;
 
 	let props = (o.constructor as SourceMappedConstructor).__editableProps;
-	for(let p of props) {
-		if(p.name === 'maxWidth') {
+	for (let p of props) {
+		if (p.name === 'maxWidth') {
 			o.maxWidth = o.style.wordWrapWidth;
 			p.afterEdited!();
 			o.maxWidth = 0;

@@ -1,9 +1,9 @@
-import assert from "thing-editor/src/engine/debug/assert.js";
-import game from "../game.js";
+import assert from 'thing-editor/src/engine/debug/assert.js';
+import game from '../game.js';
 
-import { Container } from "pixi.js";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags.js";
-import { stringToCallData } from "./call-by-path.js";
+import { Container } from 'pixi.js';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags.js';
+import { stringToCallData } from './call-by-path.js';
 /// #if EDITOR
 let latestDetectedSceneNode: Container | null;
 /// #endif
@@ -12,23 +12,23 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 	, isLatestNodeGetting = false
 	/// #endif
 ) => {
-	assert(this_, "'this' argument is not provided in to 'getValueByPath'", 10028);
-	assert(valuePath, "Empty data source path string.", 10029);
+	assert(this_, '\'this\' argument is not provided in to \'getValueByPath\'', 10028);
+	assert(valuePath, 'Empty data source path string.', 10029);
 	let data = stringToCallData(valuePath);
 	let path = data.p;
 	let c: any;
 	let rootName: string = path[0] as string;
 	/// #if EDITOR
-	if(!isLatestNodeGetting) {
+	if (!isLatestNodeGetting) {
 		pathDebugging(this_, valuePath);
 	}
 	/// #endif
-	if(rootName === 'this') {
+	if (rootName === 'this') {
 		c = this_;
 	} else {
 		/// #if EDITOR
-		if(!isLatestNodeGetting && !(rootName in game)) {
-			game.editor.ui.status.error("Unknown root element name '" + rootName + "' in '" + valuePath + "'.", 30025, this_, game.editor.getFieldNameByValue(this_, valuePath));
+		if (!isLatestNodeGetting && !(rootName in game)) {
+			game.editor.ui.status.error('Unknown root element name \'' + rootName + '\' in \'' + valuePath + '\'.', 30025, this_, game.editor.getFieldNameByValue(this_, valuePath));
 			return;
 		}
 		/// #endif
@@ -38,20 +38,20 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 	let fOwner;
 
 	/// #if EDITOR
-	if(!c && isLatestNodeGetting) {
+	if (!c && isLatestNodeGetting) {
 		return c;
 	}
 	/// #endif
 
-	while(i < path.length) {
+	while (i < path.length) {
 		let n = path[i];
 		fOwner = c;
-		if(typeof n === 'string') {
+		if (typeof n === 'string') {
 			c = c[n];
 		} else {
 			/// #if EDITOR
-			if(!c.getChildByName) {
-				return "getChildByName for not a Container.";
+			if (!c.getChildByName) {
+				return 'getChildByName for not a Container.';
 			}
 			/// #endif
 			c = c.getChildByName(n.s
@@ -60,11 +60,11 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 				/// #endif
 			);
 		}
-		if(!c) {
+		if (!c) {
 			return c;
 		}
 		/// #if EDITOR
-		if(c instanceof Container) {
+		if (c instanceof Container) {
 			latestDetectedSceneNode = c;
 		}
 		/// #endif
@@ -73,32 +73,32 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 	}
 
 	/// #if EDITOR
-	if(isLatestNodeGetting) {
+	if (isLatestNodeGetting) {
 		return c;
 	}
 	/// #endif
 
-	if(typeof c === "function") {
+	if (typeof c === 'function') {
 		return c.apply(fOwner, data.v);
 	}
 	return c;
 };
 
 const setValueByPath = (valuePath: string, val: any, this_: any) => {
-	assert(this_, "'this' object is not provided in to 'setValueByPath'", 10030);
-	assert(valuePath, "Empty setValueByPath string.", 10031);
+	assert(this_, '\'this\' object is not provided in to \'setValueByPath\'', 10030);
+	assert(valuePath, 'Empty setValueByPath string.', 10031);
 	let path = stringToCallData(valuePath).p;
 	let c;
 	let rootName: string = path[0] as string;
 	/// #if EDITOR
 	pathDebugging(this_, valuePath);
 	/// #endif
-	if(rootName === 'this') {
+	if (rootName === 'this') {
 		c = this_;
 	} else {
 		/// #if EDITOR
-		if(!(rootName in game)) {
-			game.editor.ui.status.error("Unknown root element name '" + rootName + "' in '" + valuePath + "'.", 32015, this_, game.editor.getFieldNameByValue(this_, valuePath));
+		if (!(rootName in game)) {
+			game.editor.ui.status.error('Unknown root element name \'' + rootName + '\' in \'' + valuePath + '\'.', 32015, this_, game.editor.getFieldNameByValue(this_, valuePath));
 			return;
 		}
 		/// #endif
@@ -106,26 +106,26 @@ const setValueByPath = (valuePath: string, val: any, this_: any) => {
 	}
 
 	let i = 1;
-	while(i < path.length - 1) {
+	while (i < path.length - 1) {
 		let n = path[i];
-		if(typeof n === 'string') {
+		if (typeof n === 'string') {
 			c = c[n];
 		} else {
 			/// #if EDITOR
-			if(!c.getChildByName) {
-				return "getChildByName for not a Container.";
+			if (!c.getChildByName) {
+				return 'getChildByName for not a Container.';
 			}
 			/// #endif
 			c = c.getChildByName(n.s);
 		}
-		if(!c) {
+		if (!c) {
 			return;
 		}
 		i++;
 	}
 	let n = path[i] as string;
-	if(c[n] !== val) {
-		assert(typeof c[n] !== 'function', "Attempt to override function in setValueByPath", 10069);
+	if (c[n] !== val) {
+		assert(typeof c[n] !== 'function', 'Attempt to override function in setValueByPath', 10069);
 		c[n] = val;
 	}
 };
@@ -138,8 +138,8 @@ const getLatestSceneNodeBypath = (path: string, _this: any, suspendWarning = fal
 	EDITOR_FLAGS.rememberTryTime();
 	try {
 		getValueByPath(path, _this, true);
-	} catch(er) {
-		if(!suspendWarning) {
+	} catch (er) {
+		if (!suspendWarning) {
 			console.warn('path validation exception: (' + path + '): ' + _this.___info + ' ' + ((typeof er) === 'object' ? (er as any).message : er));
 		}
 	}
@@ -150,8 +150,8 @@ const getLatestSceneNodeBypath = (path: string, _this: any, suspendWarning = fal
 const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
 	let ret = [];
 	let pathsParts = path.split(/[,|`]/);
-	for(let p of pathsParts) {
-		if(!p) {
+	for (let p of pathsParts) {
+		if (!p) {
 			ret.push(null);
 		} else {
 			ret.push(getLatestSceneNodeBypath(p, o));
@@ -161,8 +161,8 @@ const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
 };
 
 const pathDebugging = (o: Container, path: string) => {
-	if(o instanceof Container) {
-		if(o.__nodeExtendData.hasOwnProperty('__pathBreakpoint') && o.__nodeExtendData.__pathBreakpoint === path) {
+	if (o instanceof Container) {
+		if (o.__nodeExtendData.hasOwnProperty('__pathBreakpoint') && o.__nodeExtendData.__pathBreakpoint === path) {
 			//data-path breakpoint activated
 			debugger; // eslint-disable-line no-debugger
 			delete o.__nodeExtendData.__pathBreakpoint;
@@ -174,7 +174,7 @@ const pathDebugging = (o: Container, path: string) => {
 setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
 	return new Promise((resolve) => {
 		game.editor.ui.modal.showPrompt('Enter data path', '').then((enteredText1) => {
-			if(enteredText1) {
+			if (enteredText1) {
 				game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
 					resolve([enteredText1, enteredText2]);
 				});
@@ -191,8 +191,8 @@ export {
 
 /// #endif
 
-export {
-	setValueByPath
-};
+	export {
+		setValueByPath
+	};
 
 export default getValueByPath;

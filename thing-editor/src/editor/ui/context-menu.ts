@@ -1,8 +1,8 @@
-import type { ComponentChild} from "preact";
-import { render } from "preact";
+import type { ComponentChild } from 'preact';
+import { render } from 'preact';
 
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { Hotkey } from "thing-editor/src/editor/utils/hotkey";
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 
 interface ContextMenuItemData {
 	name: ComponentChild | (() => ComponentChild),
@@ -27,9 +27,9 @@ let menuShown = false;
 let hideMenuTimeout = 0;
 
 window.addEventListener('pointerdown', (ev: PointerEvent) => {
-	if(menuShown) {
+	if (menuShown) {
 		hideMenuTimeout = window.setTimeout(() => {
-			if((ev.target as HTMLDivElement).closest('.stay-after-click-menu-item') || (ev.target as HTMLDivElement).classList.contains('context-menu')) {
+			if ((ev.target as HTMLDivElement).closest('.stay-after-click-menu-item') || (ev.target as HTMLDivElement).classList.contains('context-menu')) {
 				refreshContextMenu();
 			} else {
 				hideContextMenu();
@@ -42,7 +42,7 @@ let shownMenuTemplate: ContextMenuItem[];
 let shownMenuEvent: PointerEvent;
 
 const toggleContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
-	if(menuShown && shownMenuTemplate === menuTemplate) {
+	if (menuShown && shownMenuTemplate === menuTemplate) {
 		hideContextMenu();
 	} else {
 		showContextMenu(menuTemplate, ev);
@@ -50,8 +50,8 @@ const toggleContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) =>
 };
 
 const isItemActive = (item: ContextMenuItem) => {
-	if(item) {
-		if((typeof item.disabled === "function") ? item.disabled() : item.disabled) {
+	if (item) {
+		if ((typeof item.disabled === 'function') ? item.disabled() : item.disabled) {
 			return false;
 		}
 	}
@@ -59,7 +59,7 @@ const isItemActive = (item: ContextMenuItem) => {
 };
 
 const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
-	if(hideMenuTimeout) {
+	if (hideMenuTimeout) {
 		clearTimeout(hideMenuTimeout);
 		hideMenuTimeout = 0;
 	}
@@ -69,15 +69,15 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 
 	//menuTemplate = menuTemplate.filter(isItemDisabled);
 
-	while(menuTemplate[0] === null) { //trim splitters
+	while (menuTemplate[0] === null) { //trim splitters
 		menuTemplate.shift();
 	}
-	while(menuTemplate[menuTemplate.length - 1] === null) {
+	while (menuTemplate[menuTemplate.length - 1] === null) {
 		menuTemplate.pop();
 	}
 
-	for(let i = menuTemplate.length - 3; i >= 0; i--) { // cut double splitters
-		if(menuTemplate[i] === null && menuTemplate[i - 1] === null) {
+	for (let i = menuTemplate.length - 3; i >= 0; i--) { // cut double splitters
+		if (menuTemplate[i] === null && menuTemplate[i - 1] === null) {
 			menuTemplate.splice(i, 1);
 		}
 	}
@@ -89,9 +89,9 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 		left: Math.max(0, Math.min(window.innerWidth - 200, ev.clientX - 3)),
 		top: Math.max(0, Math.min(window.innerHeight - menuHeight, ev.clientY - menuHeight / 2 - 10))
 	};
-	if((ev.target as HTMLDivElement).closest('.main-menu')) {
+	if ((ev.target as HTMLDivElement).closest('.main-menu')) {
 		const mainMenuButton = (ev.target as HTMLDivElement).closest('button') as HTMLButtonElement;
-		if(!mainMenuButton) {
+		if (!mainMenuButton) {
 			return;
 		}
 		const bounds = mainMenuButton.getBoundingClientRect();
@@ -99,7 +99,7 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 		style.top = bounds.bottom;
 	}
 
-	if(menuTemplate.length > 0) {
+	if (menuTemplate.length > 0) {
 		render(R.div({
 			className: 'context-menu',
 			style,
@@ -109,18 +109,17 @@ const showContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) => {
 };
 
 const refreshContextMenu = () => {
-	if(menuShown) {
+	if (menuShown) {
 		showContextMenu(shownMenuTemplate, shownMenuEvent);
 	}
 };
-
 
 
 export default showContextMenu;
 
 function renderMenuItem(item: ContextMenuItem) {
 
-	if(item) {
+	if (item) {
 		return R.btn((typeof item.name === 'function') ? item.name() : item.name, item.onClick, item.tip, item.stayAfterClick ? 'stay-after-click-menu-item' : undefined, item.hotkey, !isItemActive(item));
 	} else {
 		return R.hr();
@@ -129,5 +128,5 @@ function renderMenuItem(item: ContextMenuItem) {
 
 export type { ContextMenuItem };
 
-export { hideContextMenu, refreshContextMenu, toggleContextMenu };
+	export { hideContextMenu, refreshContextMenu, toggleContextMenu };
 

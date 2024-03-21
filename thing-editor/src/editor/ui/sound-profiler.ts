@@ -1,18 +1,18 @@
-import type { ClassAttributes, ComponentChild} from "preact";
-import { h } from "preact";
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { h } from 'preact';
 
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import Window from "thing-editor/src/editor/ui/editor-window";
-import MainMenu from "thing-editor/src/editor/ui/main-menu";
-import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
-import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import type { DebugStack} from "thing-editor/src/editor/utils/stack-utils";
-import { getCurrentStack, showStack } from "thing-editor/src/editor/utils/stack-utils";
-import type HowlSound from "thing-editor/src/engine/HowlSound";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
+import R from 'thing-editor/src/editor/preact-fabrics';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import Window from 'thing-editor/src/editor/ui/editor-window';
+import MainMenu from 'thing-editor/src/editor/ui/main-menu';
+import { hideAdditionalWindow, showAdditionalWindow } from 'thing-editor/src/editor/ui/ui';
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import type { DebugStack } from 'thing-editor/src/editor/utils/stack-utils';
+import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
+import type HowlSound from 'thing-editor/src/engine/HowlSound';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
 
 const profilerProps = { className: 'music-profiler' };
 const PROFILER_COLORS = [
@@ -85,35 +85,35 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 
 	renderMusicItem(m: BgMusic, i: number) {
 		let state;
-		if(m.__currentFragment) {
-			if(!m.__currentFragment.playing()) {
+		if (m.__currentFragment) {
+			if (!m.__currentFragment.playing()) {
 				state = R.div({ className: 'danger music-profiler-row-text' }, 'ref to not playing fragment');
 			} else {
 				state = R.div({ className: 'sound-vol-bar-bg' },
-					R.div({ className: 'sound-vol-bar', title: "Volume: " + m.__getVolume(), style: { width: m.__getVolume()! * 100 } })
+					R.div({ className: 'sound-vol-bar', title: 'Volume: ' + m.__getVolume(), style: { width: m.__getVolume()! * 100 } })
 				);
 			}
 		} else {
 			state = state = R.div({ className: 'sound-vol-bar-bg' },
-				"stopped"
+				'stopped'
 			);
 		}
 		return R.div({
 			className: 'clickable music-profiler-row', key: i, onClick: () => {
-				if(m.getRootContainer() === game.currentContainer) {
+				if (m.getRootContainer() === game.currentContainer) {
 					game.editor.ui.sceneTree.selectInTree(m);
 				} else {
 					let root = m.getRootContainer();
-					if(!root) {
+					if (!root) {
 						root = m;
-						while(root.parent) {
+						while (root.parent) {
 							root = root.parent;
 						}
 					}
 					game.editor.ui.modal.notify('Cant select music object');
 				}
 			}
-		}, R.span({ className: 'music-profiler-row-text', title: "Intro sound: " + (m.intro || "NONE") }, m.intro), R.span({ className: 'music-profiler-row-text', title: "Loop sound: " + (m.loop || "NONE") }, m.loop), state
+		}, R.span({ className: 'music-profiler-row-text', title: 'Intro sound: ' + (m.intro || 'NONE') }, m.intro), R.span({ className: 'music-profiler-row-text', title: 'Loop sound: ' + (m.loop || 'NONE') }, m.loop), state
 		);
 	}
 
@@ -121,7 +121,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 		let soundsLanes = [];
 		SoundProfiler.soundsProfilerArray = SoundProfiler.soundsProfilerArray.filter(i => (i.startFrame + i.durationFrames) > (game.time - 200) && (i.startFrame <= game.time));
 
-		for(let soundEntry of SoundProfiler.soundsProfilerArray) {
+		for (let soundEntry of SoundProfiler.soundsProfilerArray) {
 			soundsLanes.push(R.div({
 				onClick: () => {
 					soundEntry.sound.lastPlayStartFrame = -1000;
@@ -136,11 +136,11 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 		let bgMusicsList;
 		let profilerBody;
 
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			profilerBody = R.fragment(R.btn('Start', () => {
 				game.editor.ui.viewport.onTogglePlay();
 			}), ' game execution to profile sounds.');
-		} else if(game.editor.settings.getItem('sound-muted')) {
+		} else if (game.editor.settings.getItem('sound-muted')) {
 			profilerBody = R.fragment('Sounds is muted. ', R.btn('Enable Sounds', () => {
 				game.editor.toggleSoundMute();
 			}), ' to activate sound profiler.');
@@ -156,16 +156,16 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 
 
 	static onSoundPlay(soundId: string, volume: number) {
-		if(SoundProfiler.ignoreSoundProfile) {
+		if (SoundProfiler.ignoreSoundProfile) {
 			return;
 		}
 		let sound = Lib.getSound(soundId);
 		let durationFrames = Math.round(sound.duration() * 60);
 
 		let colors = SoundProfiler.soundsProfilerColorsCache[soundId];
-		if(!colors) {
+		if (!colors) {
 			let hash = 0;
-			for(let i = 0; i < soundId.length; i++) {
+			for (let i = 0; i < soundId.length; i++) {
 				hash += soundId.charCodeAt(i);
 			}
 			colors = PROFILER_COLORS[hash % PROFILER_COLORS.length];
@@ -184,7 +184,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 			borderColor: colors.borderColor
 		});
 		SoundProfiler.soundsProfilerLane += 18;
-		if(SoundProfiler.soundsProfilerLane >= 61) {
+		if (SoundProfiler.soundsProfilerLane >= 61) {
 			SoundProfiler.soundsProfilerLane -= 60;
 		}
 	}
@@ -195,7 +195,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 	}
 
 	static renderWindow() {
-		if(game.editor.settings.getItem('sound-profiler-shown')) {
+		if (game.editor.settings.getItem('sound-profiler-shown')) {
 			SoundProfiler.show();
 		} else {
 			SoundProfiler.hide();

@@ -1,18 +1,18 @@
-import game from "../game.js";
+import game from '../game.js';
 
 let downedKeys: Set<number> = new Set();
 const keyUpsToApply: number[] = [];
 
 let w = window;
 try {
-	while(w) {
+	while (w) {
 		w.addEventListener('keydown', (ev) => {
 			downedKeys.add(ev.keyCode);
 
 			/// #if EDITOR
 			return;
 			/// #endif
-			if(ev.keyCode >= 37 && ev.keyCode <= 40) { //eslint-disable-line no-unreachable
+			if (ev.keyCode >= 37 && ev.keyCode <= 40) { //eslint-disable-line no-unreachable
 				ev.preventDefault();
 			}
 
@@ -22,7 +22,7 @@ try {
 		w.addEventListener('keyup', (ev) => {
 
 			/// #if EDITOR
-			if(game.__EDITOR_mode) {
+			if (game.__EDITOR_mode) {
 				downedKeys.delete(ev.keyCode);
 				return;
 			}
@@ -30,20 +30,20 @@ try {
 			keyUpsToApply.push(ev.keyCode);
 		});
 
-		if(w.parent !== w) {
+		if (w.parent !== w) {
 			w = w.parent as any;
 		} else {
 			break;
 		}
 	}
-} catch(e) {
+} catch (e) {
 	/// catch parent window acess for iframed on another websites
 }
 
 export default class Keys {
 
 	static update() {
-		while(keyUpsToApply.length > 0) {
+		while (keyUpsToApply.length > 0) {
 			downedKeys.delete(keyUpsToApply.pop() as number);
 		}
 	}
@@ -57,7 +57,7 @@ export default class Keys {
 	}
 
 	static set up(val) {
-		if(val) {
+		if (val) {
 			downedKeys.add(38);
 		} else {
 			downedKeys.delete(38);
@@ -70,7 +70,7 @@ export default class Keys {
 	}
 
 	static set down(val) {
-		if(val) {
+		if (val) {
 			downedKeys.add(40);
 		} else {
 			downedKeys.delete(40);
@@ -95,7 +95,7 @@ export default class Keys {
 	}
 
 	static set left(val) {
-		if(val) {
+		if (val) {
 			downedKeys.add(37);
 		} else {
 			downedKeys.delete(37);
@@ -108,7 +108,7 @@ export default class Keys {
 	}
 
 	static set right(val) {
-		if(val) {
+		if (val) {
 			downedKeys.add(39);
 		} else {
 			downedKeys.delete(39);

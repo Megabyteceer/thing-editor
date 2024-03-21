@@ -1,30 +1,30 @@
-import type { Container } from "pixi.js";
-import type { ClassAttributes } from "preact";
-import { h } from "preact";
+import type { Container } from 'pixi.js';
+import type { ClassAttributes } from 'preact';
+import { h } from 'preact';
 
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import Window from "thing-editor/src/editor/ui/editor-window";
-import { getDefaultKeyframeTypeForField } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/get-keyframe-types-for-field";
-import KeyframePropertyEditor from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/keyframe-property-editor";
-import ObjectsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/objects-timeline";
-import TimeMarker from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/time-marker";
-import TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
-import TimelineLabelView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view";
-import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
-import TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
-import TimelineSelectFrame from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-select-frame";
-import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
-import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import increaseNumberInName from "thing-editor/src/editor/utils/increase-number-in-name";
-import { scrollInToView } from "thing-editor/src/editor/utils/scroll-in-view";
-import shakeDomElement from "thing-editor/src/editor/utils/shake-element";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import type { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import Window from 'thing-editor/src/editor/ui/editor-window';
+import { getDefaultKeyframeTypeForField } from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/get-keyframe-types-for-field';
+import KeyframePropertyEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/keyframe-property-editor';
+import ObjectsTimelineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/objects-timeline';
+import TimeMarker from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/time-marker';
+import TimelineKeyframeView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view';
+import TimelineLabelView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view';
+import TimelineLineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view';
+import TimelineLoopPoint from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point';
+import TimelineSelectFrame from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-select-frame';
+import type { TimelineSelectable } from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable';
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import increaseNumberInName from 'thing-editor/src/editor/utils/increase-number-in-name';
+import { scrollInToView } from 'thing-editor/src/editor/utils/scroll-in-view';
+import shakeDomElement from 'thing-editor/src/editor/utils/shake-element';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import type { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
 interface TimelineCopyPasteData {
 	fields: KeyedMap<TimelineSerializedKeyFrame[]>,
@@ -65,17 +65,17 @@ const justModifiedKeyframes: Set<TimelineSelectable> = new Set();
 const selectedComponents: TimelineSelectable[] = [];
 
 function clearSelection() {
-	while(selectedComponents.length > 0) {
+	while (selectedComponents.length > 0) {
 		unselect(selectedComponents[selectedComponents.length - 1]);
 	}
 }
 
 function select(component: TimelineSelectable) {
 	let k = (component as TimelineKeyframeView).props.keyFrame;
-	if(k) {
+	if (k) {
 		k.___keepLoopPoint = (k.t !== k.j);
 	}
-	assert(selectedComponents.indexOf(component) < 0, "Component already selected");
+	assert(selectedComponents.indexOf(component) < 0, 'Component already selected');
 	(component as TimelineKeyframeView).setState({ isSelected: true });
 	selectedComponents.push(component);
 	KeyframePropertyEditor.refresh();
@@ -83,11 +83,11 @@ function select(component: TimelineSelectable) {
 
 function unselect(component: TimelineSelectable) {
 	let k = (component as TimelineKeyframeView).props.keyFrame;
-	if(k) {
+	if (k) {
 		delete k.___keepLoopPoint;
 	}
 	let i = selectedComponents.indexOf(component);
-	assert(i >= 0, "Component is not selected");
+	assert(i >= 0, 'Component is not selected');
 	(component as TimelineKeyframeView).setState({ isSelected: false });
 	selectedComponents.splice(i, 1);
 	KeyframePropertyEditor.refresh();
@@ -145,10 +145,10 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		let fieldsByName: KeyedMap<KeyedMap<TimelineSerializedKeyFrame>[]> = {};
 
 		selectedComponents.forEach((c) => {
-			if(c instanceof TimelineKeyframeView) {
+			if (c instanceof TimelineKeyframeView) {
 				let k: KeyedObject = {};
-				for(let name in c.props.keyFrame) {
-					if((name.length === 1) && (name !== 'n')) {
+				for (let name in c.props.keyFrame) {
+					if ((name.length === 1) && (name !== 'n')) {
 						k[name] = (c.props.keyFrame as KeyedObject)[name];
 					}
 				}
@@ -157,16 +157,16 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				fieldsByName[fieldName] = fieldsByName[fieldName] || [];
 
 				fieldsByName[fieldName].push(k);
-			} else if(c instanceof TimelineLabelView) {
+			} else if (c instanceof TimelineLabelView) {
 				labels[c.props.labelName] = c.props.label.t;
 			}
 		});
-		for(let name in fieldsByName) {
+		for (let name in fieldsByName) {
 			fields[name] = fieldsByName[name];
 		}
 
 		const labelsList = Object.keys(labels);
-		if((labelsList.length > 0) || (keyframesCount > 0)) {
+		if ((labelsList.length > 0) || (keyframesCount > 0)) {
 			let bufferData: TimelineCopyPasteData = {
 				fields,
 				labels,
@@ -174,37 +174,37 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				d: (game.editor.selection[0] as MovieClip)._timelineData.d
 			};
 			game.editor.settings.setItem('__EDITOR-clipboard-data-timeline', bufferData);
-			let name = "";
-			if(keyframesCount) {
-				name += "Keyframes: " + keyframesCount;
+			let name = '';
+			if (keyframesCount) {
+				name += 'Keyframes: ' + keyframesCount;
 			}
-			if(labelsList.length) {
-				if(name) {
+			if (labelsList.length) {
+				if (name) {
 					name += '\n';
 				}
-				name += "Labels: " + labelsList.length;
+				name += 'Labels: ' + labelsList.length;
 			}
 			game.editor.settings.removeItem('__EDITOR-clipboard-data');
 			game.editor.settings.setItem('__EDITOR-clipboard-data-timeline-name', 'Paste: \n' + name + '\n');
-			game.editor.ui.modal.notify("Copied: " + name);
+			game.editor.ui.modal.notify('Copied: ' + name);
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
 	}
 
 	static pasteSelection() {
 		let data: TimelineCopyPasteData = game.editor.settings.getItem('__EDITOR-clipboard-data-timeline');
-		if(data) {
+		if (data) {
 			let allKeyframesToSelect: TimelineKeyFrame[] = [];
-			for(let o of game.editor.selection as any as MovieClip[]) {
+			for (let o of game.editor.selection as any as MovieClip[]) {
 
-				if(!o._timelineData) {
+				if (!o._timelineData) {
 					o._timelineData = { l: {}, f: [], p: data.p, d: data.d };
 				}
 				let tl = o._timelineData;
 
-				for(let labelName in data.labels) {
+				for (let labelName in data.labels) {
 					let labelTime = data.labels[labelName];
-					if(!tl.l[labelName]) {
+					if (!tl.l[labelName]) {
 						let l = { t: labelTime } as TimelineLabelData;
 						tl.l[labelName] = l;
 					} else {
@@ -212,10 +212,10 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 					}
 					allKeyframesToSelect.push(tl.l[labelName] as any as TimelineKeyFrame);
 				}
-				for(let fieldName in data.fields) {
+				for (let fieldName in data.fields) {
 					const keyframes = data.fields[fieldName];
 					getFrameAtTimeOrCreate(o, fieldName, 0);
-					for(let keyframeData of keyframes) {
+					for (let keyframeData of keyframes) {
 						let k = getFrameAtTimeOrCreate(o, fieldName, keyframeData.t!, true);
 						Object.assign(k, keyframeData);
 						allKeyframesToSelect.push(k as TimelineKeyFrame);
@@ -236,8 +236,8 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	static unselectKeyframe(keyframe: TimelineKeyFrame) {
-		for(let c of selectedComponents as TimelineKeyframeView[]) {
-			if(c.props.keyFrame === keyframe) {
+		for (let c of selectedComponents as TimelineKeyframeView[]) {
+			if (c.props.keyFrame === keyframe) {
 				unselect(c);
 				return;
 			}
@@ -245,7 +245,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	static unselectComponent(loopPointView: TimelineSelectable) {
-		if(selectedComponents.indexOf(loopPointView) >= 0) {
+		if (selectedComponents.indexOf(loopPointView) >= 0) {
 			unselect(loopPointView);
 		}
 	}
@@ -268,10 +268,10 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	static deselectMovieClip(o: MovieClip) {
-		for(let i = selectedComponents.length - 1; i >= 0; i--) {
+		for (let i = selectedComponents.length - 1; i >= 0; i--) {
 			let c = selectedComponents[i];
-			if(c instanceof TimelineKeyframeView) {
-				if(c.props.owner.props.owner.props.owner.props.node === o) {
+			if (c instanceof TimelineKeyframeView) {
+				if (c.props.owner.props.owner.props.owner.props.node === o) {
 					unselect(c);
 				}
 			}
@@ -303,16 +303,16 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	deleteSelectedKeyframes() {
 		let i = selectedComponents.length - 1;
-		if(i < 0) {
+		if (i < 0) {
 			return;
 		}
-		while(i >= 0) {
+		while (i >= 0) {
 			let c = selectedComponents[i];
-			if(c instanceof TimelineKeyframeView) {
+			if (c instanceof TimelineKeyframeView) {
 				c.props.owner.props.owner.deleteKeyframe(c.props.keyFrame);
-			} else if(c instanceof TimelineLabelView) {
+			} else if (c instanceof TimelineLabelView) {
 				c.deleteLabel();
-			} else if(c instanceof TimelineLoopPoint) {
+			} else if (c instanceof TimelineLoopPoint) {
 				c.deleteLoopPoint();
 			}
 			i--;
@@ -325,12 +325,12 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		let tmp = heightZoom;
 
 		heightZoom *= delta;
-		if(heightZoom < 18) {
+		if (heightZoom < 18) {
 			heightZoom = 18;
-		} else if(heightZoom > 135) {
+		} else if (heightZoom > 135) {
 			heightZoom = 135;
 		}
-		if(tmp !== heightZoom) {
+		if (tmp !== heightZoom) {
 			heightZoom = Math.round(heightZoom);
 			game.editor.settings.setItem('timeline-height-zoom', heightZoom);
 			TimelineLineView.invalidateChartsRenderCache();
@@ -351,14 +351,14 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		widthZoom = this.state.widthZoom;
 		let tmp = widthZoom;
 		widthZoom *= delta;
-		if(widthZoom < 0.5) {
+		if (widthZoom < 0.5) {
 			widthZoom = 0.5;
-		} else if(widthZoom > 28.5) {
+		} else if (widthZoom > 28.5) {
 			widthZoom = 28.5;
 		}
-		if(tmp !== widthZoom) {
+		if (tmp !== widthZoom) {
 			game.editor.settings.setItem('timeline-width-zoom', widthZoom);
-			if(widthZoom < 1.00001) {
+			if (widthZoom < 1.00001) {
 				widthZoom = Math.round(widthZoom * 20) / 20.0;
 			} else {
 				widthZoom = Math.round(widthZoom);
@@ -371,7 +371,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	centralizeSelection() {
 		window.setTimeout(() => {
-			if(selectedComponents.length > 0) {
+			if (selectedComponents.length > 0) {
 				timeMarker.scrollInToView(selectedComponents[0].getTime());
 			}
 		}, 0);
@@ -380,8 +380,8 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	nextKeyFrame() {
 		let time = this.getTime();
 		let allKeyframes = this._getAllKeyframes();
-		for(let k of allKeyframes) {
-			if(k.t > time) {
+		for (let k of allKeyframes) {
+			if (k.t > time) {
 				this.selectKeyframe(k);
 				return;
 			}
@@ -391,9 +391,9 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	_getAllKeyframes() {
 		let allKeyframes: TimelineKeyFrame[] = [];
-		for(let m of game.editor.selection) {
-			if(m instanceof MovieClip && m._timelineData) {
-				for(let f of m._timelineData.f) {
+		for (let m of game.editor.selection) {
+			if (m instanceof MovieClip && m._timelineData) {
+				for (let f of m._timelineData.f) {
 					allKeyframes = allKeyframes.concat(f.t);
 				}
 			}
@@ -405,13 +405,13 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	prevKeyFrame() {
 		let time = this.getTime();
 		let allKeyframes = this._getAllKeyframes();
-		if(allKeyframes.length > 0) {
-			if(time === 0) {
+		if (allKeyframes.length > 0) {
+			if (time === 0) {
 				this.selectKeyframe(allKeyframes[allKeyframes.length - 1]);
 			} else {
 				let reClosestKeyframe = allKeyframes[0];
-				for(let k of allKeyframes) {
-					if(k.t >= time) {
+				for (let k of allKeyframes) {
+					if (k.t >= time) {
 						this.selectKeyframe(reClosestKeyframe);
 						return;
 					}
@@ -431,7 +431,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	renderObjectsTimeline(node: MovieClip) {
 		let key = node.___id;
-		if(node instanceof MovieClip) {
+		if (node instanceof MovieClip) {
 			return h(ObjectsTimelineView, {
 				owner: this, node, key,
 				heightZoom,
@@ -455,7 +455,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	_syncOtherMovieClips(time: number) {
 		let movieClips: MovieClip[] = game.editor.selection as any as MovieClip[];
 
-		if(!game.__EDITOR_mode || !(movieClips[0])._timelineData) {
+		if (!game.__EDITOR_mode || !(movieClips[0])._timelineData) {
 			return;
 		}
 
@@ -465,22 +465,22 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		let nextLeftLabel;
 		let nextLeftLabelName;
 
-		for(let labelName in movieClips[0]._timelineData.l) {
+		for (let labelName in movieClips[0]._timelineData.l) {
 			let label = movieClips[0]._timelineData.l[labelName];
-			if((label.t <= time) && (!nextLeftLabel || nextLeftLabel.t < label.t)) {
+			if ((label.t <= time) && (!nextLeftLabel || nextLeftLabel.t < label.t)) {
 				nextLeftLabel = label;
 				nextLeftLabelName = labelName;
 			}
 		}
-		if(nextLeftLabel && game.currentContainer) {
+		if (nextLeftLabel && game.currentContainer) {
 			let labelShift = time - nextLeftLabel.t;
 			let a = game.currentContainer.findChildrenByType(MovieClip);
-			if(game.currentContainer instanceof MovieClip) {
+			if (game.currentContainer instanceof MovieClip) {
 				a.push(game.currentContainer);
 			}
-			for(let m of a) {
-				if(!m.__nodeExtendData.isSelected) {
-					if(m.hasLabel(nextLeftLabelName as string)) {
+			for (let m of a) {
+				if (!m.__nodeExtendData.isSelected) {
+					if (m.hasLabel(nextLeftLabelName as string)) {
 						let time = m._timelineData.l[nextLeftLabelName as string].t + labelShift;
 						m.__applyCurrentTimeValuesToFields(time);
 					} else {
@@ -492,8 +492,8 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	applyCurrentTimeValuesToFields(nodes: MovieClip[], time?: number) {
-		if(game.__EDITOR_mode) {
-			if(time === undefined) {
+		if (game.__EDITOR_mode) {
+			if (time === undefined) {
 				time = this.getTime();
 			}
 			nodes.some((o) => {
@@ -529,7 +529,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 						R.btn('+', this.horizontalZoomIn, 'Horizontal Zoom In', undefined, { key: 'Equal', ctrlKey: true })
 					),
 					R.span(buttonsGroupProps,
-						R.btn('copy', Timeline.copySelection, "Copy selected keyframes and labels", undefined, { key: 'c', ctrlKey: true }, !Timeline.isElementsSelected),
+						R.btn('copy', Timeline.copySelection, 'Copy selected keyframes and labels', undefined, { key: 'c', ctrlKey: true }, !Timeline.isElementsSelected),
 						R.btn('paste', Timeline.pasteSelection, Timeline.isPasteAvailable + '', undefined, { key: 'v', ctrlKey: true }, !Timeline.isPasteAvailable)
 					)
 				),
@@ -563,12 +563,12 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	onMouseUp(ev: MouseEvent) {
 		isTimeDragging = false;
-		if(draggingComponent) {
-			if(reduceRepeatingKeyframesInSelected()) {
+		if (draggingComponent) {
+			if (reduceRepeatingKeyframesInSelected()) {
 				this.refresh();
 			}
-			if((ev.clientX > 0) && !ev.ctrlKey && (Math.abs(draggingStartX - ev.clientX) < 2)) {
-				if(selectedComponents.length > 1) {
+			if ((ev.clientX > 0) && !ev.ctrlKey && (Math.abs(draggingStartX - ev.clientX) < 2)) {
+				if (selectedComponents.length > 1) {
 					clearSelection();
 					select(draggingComponent);
 				}
@@ -578,7 +578,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			draggingComponent = null;
 		} else {
 			let selectedRect = selectionFrame.getRectAndFinishDragging();
-			if(selectedRect) {
+			if (selectedRect) {
 				selectElementsInRectangle(selectedRect, ev.shiftKey);
 			}
 		}
@@ -587,35 +587,35 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	onMouseDown(ev: MouseEvent) {
 		isDragging = true;
 		this.onMouseMove(ev);
-		if(!draggingComponent && !ev.ctrlKey && !isTimeDragging) {
+		if (!draggingComponent && !ev.ctrlKey && !isTimeDragging) {
 			selectionFrame.onMouseDown(ev);
 		}
 	}
 
 	onMouseMove(ev: MouseEvent) {
-		if(!Window.all.timeline) {
+		if (!Window.all.timeline) {
 			return;
 		}
-		if(Math.abs(draggingStartX - ev.clientX) > 20) {
+		if (Math.abs(draggingStartX - ev.clientX) > 20) {
 			draggingStartX = -10000;
 		}
 
 		isDragging = isDragging && ev.buttons > 0;
 
 		let time = Timeline.mouseEventToTime(ev);
-		if(isDragging) {
-			if(draggingComponent) {
-				if(ev.buttons === 1) {
+		if (isDragging) {
+			if (draggingComponent) {
+				if (ev.buttons === 1) {
 					let delta = time - prevDragTime;
-					if(delta !== 0) {
-						for(let c of selectedComponents) {
+					if (delta !== 0) {
+						for (let c of selectedComponents) {
 							let t = c.getTime();
 							delta = Math.max(0, t + delta) - t;
-							if(delta === 0) {
+							if (delta === 0) {
 								return;
 							}
 						}
-						for(let c of selectedComponents) {
+						for (let c of selectedComponents) {
 							c.setTime(c.getTime() + delta);
 						}
 
@@ -624,11 +624,11 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 					this.setTime(prevDragTime, true);
 				}
 			} else {
-				if(ev.ctrlKey) {
-					for(let c of selectedComponents) {
-						if(c instanceof TimelineKeyframeView || c instanceof TimelineLoopPoint) {
+				if (ev.ctrlKey) {
+					for (let c of selectedComponents) {
+						if (c instanceof TimelineKeyframeView || c instanceof TimelineLoopPoint) {
 							let kf = c.props.keyFrame;
-							if(kf.j !== time) {
+							if (kf.j !== time) {
 								kf.j = time;
 								c.onChanged();
 								c.props.owner.forceUpdate();
@@ -639,7 +639,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				}
 			}
 		}
-		if(isTimeDragging) {
+		if (isTimeDragging) {
 			this.setTime(time);
 		}
 		selectionFrame.onMouseMove(ev);
@@ -647,13 +647,13 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	static unregisterDraggableComponent(component: TimelineSelectable) {
 		let i = selectedComponents.indexOf(component);
-		if(i >= 0) {
+		if (i >= 0) {
 			selectedComponents.splice(i, 1);
 		}
 	}
 
 	static allFieldDataChanged(movieClip: MovieClip) {
-		for(let f of movieClip._timelineData.f) {
+		for (let f of movieClip._timelineData.f) {
 			Timeline.fieldDataChanged(f, movieClip);
 		}
 		Timeline._invalidateNodeCache(movieClip);
@@ -665,7 +665,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		let timeLineData = fieldData.t;
 
 		timeLineData.sort(sortFieldsByTime);
-		for(let field of timeLineData) {
+		for (let field of timeLineData) {
 			field.n = MovieClip._findNextKeyframe(timeLineData, field.j);
 		}
 
@@ -691,12 +691,12 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	_afterHistoryJump() {
 		window.setTimeout(() => {
 			let v = Array.from(justModifiedKeyframes.values());
-			if(v.length > 0) {
+			if (v.length > 0) {
 				clearSelection();
-				for(let c of v) {
+				for (let c of v) {
 					select(c);
 				}
-				if(timeMarker) {
+				if (timeMarker) {
 					this.setTime(v[0].getTime(), true);
 				}
 			}
@@ -704,22 +704,22 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	static onBeforePropertyChanged(o: Container, fieldName: string, _field: EditablePropertyDesc, _val: any, _isDelta?: boolean) {
-		if((!Timeline.timelineDOMElement) || recordingIsDisabled) {
+		if ((!Timeline.timelineDOMElement) || recordingIsDisabled) {
 			beforeChangeValueRemember = new WeakMap();
 		}
 
-		if(o instanceof MovieClip) {
-			if(Timeline.timelineDOMElement && !recordingIsDisabled) {
-				if(timelineInstance.isNeedAnimateProperty(o, fieldName)) {
+		if (o instanceof MovieClip) {
+			if (Timeline.timelineDOMElement && !recordingIsDisabled) {
+				if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
 					getFrameAtTimeOrCreate(o, fieldName, 0);
 				}
 			} else {
 				let editableField = game.editor.getObjectField(o, fieldName);
 
-				if(editableField.type === 'number') {
+				if (editableField.type === 'number') {
 					beforeChangeValueRemember.set(o, (o as KeyedObject)[fieldName]);
-				} else if(game.__EDITOR_mode && getFieldByName(o, fieldName)) {
-					game.editor.ui.modal.showInfo("Could not change '" + fieldName + "' field`s  value, because '" + fieldName + "' field is animated and it`s type is not numeric", "Could not change '" + fieldName + "' value", 30016);
+				} else if (game.__EDITOR_mode && getFieldByName(o, fieldName)) {
+					game.editor.ui.modal.showInfo('Could not change \'' + fieldName + '\' field`s  value, because \'' + fieldName + '\' field is animated and it`s type is not numeric', 'Could not change \'' + fieldName + '\' value', 30016);
 				}
 			}
 		}
@@ -727,26 +727,26 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	static onAfterPropertyChanged(o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) {
 
-		if(o instanceof MovieClip) {
-			if(Timeline.timelineDOMElement && !recordingIsDisabled) {
-				if(timelineInstance.isNeedAnimateProperty(o, fieldName)) {
+		if (o instanceof MovieClip) {
+			if (Timeline.timelineDOMElement && !recordingIsDisabled) {
+				if (timelineInstance.isNeedAnimateProperty(o, fieldName)) {
 					timelineInstance.createKeyframeWithCurrentObjectsValue(o, fieldName, undefined, isDelta, val);
 				}
 			} else { //shift all keyframes instead of add keyframe
 				let editableField = game.editor.getObjectField(o, fieldName);
-				if(editableField.type === 'number') {
+				if (editableField.type === 'number') {
 					let val = (o as KeyedObject)[fieldName];
 					let oldVal = beforeChangeValueRemember.get(o) as number;
-					if(oldVal !== val) {
+					if (oldVal !== val) {
 						let delta = val - oldVal;
 						let fld = getFieldByName(o, fieldName);
-						if(fld) {
-							for(let kf of fld.t) {
+						if (fld) {
+							for (let kf of fld.t) {
 								let changedVal = (kf.v as number) + delta;
-								if(field.hasOwnProperty('min')) {
+								if (field.hasOwnProperty('min')) {
 									changedVal = Math.max(field.min!, changedVal);
 								}
-								if(field.hasOwnProperty('max')) {
+								if (field.hasOwnProperty('max')) {
 									changedVal = Math.min(field.max!, changedVal);
 								}
 								kf.v = changedVal;
@@ -755,13 +755,13 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 						}
 					}
 				}
-				if(game.__EDITOR_mode) {
+				if (game.__EDITOR_mode) {
 					o.resetTimeline();
 				}
 			}
 		}
 
-		if(timelineInstance) {
+		if (timelineInstance) {
 			timelineInstance.refresh();
 		}
 	}
@@ -781,7 +781,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	createKeyframeWithCurrentObjectsValue(o: MovieClip, fieldName: string, time?: number, isDelta = false, deltaValue?: number) {
 		let keyFrame = getFrameAtTimeOrCreate(o, fieldName, time || this.getTime());
-		if(isDelta && !getFrameAtTimeOrCreateReturnedNewKeyframe) {
+		if (isDelta && !getFrameAtTimeOrCreateReturnedNewKeyframe) {
 			let editableField = game.editor.getObjectField(o, fieldName);
 			let step = editableField.step || 1;
 			keyFrame.v = Math.round(((keyFrame.v as number) + deltaValue!) / step) * step;
@@ -791,9 +791,9 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		}
 		let field = getFieldByNameOrCreate(o, fieldName);
 		Timeline.fieldDataChanged(field, o);
-		if(isDelta && keyFrame.___view) {
+		if (isDelta && keyFrame.___view) {
 			let timelineVal = MovieClip.__getValueAtTime(field, keyFrame.t) as number;
-			if(!isNaN(timelineVal)) {
+			if (!isNaN(timelineVal)) {
 				(o as KeyedObject)[fieldName] = timelineVal;
 			}
 		}
@@ -809,24 +809,24 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 
 	static onAutoSelect(selectPath: string[]) {
-		for(let o of game.editor.selection as any as MovieClip[]) {
-			if(o._timelineData) {
-				if(selectPath[2]) { // select label or keyframe.
-					if(!selectPath[1]) { //label
+		for (let o of game.editor.selection as any as MovieClip[]) {
+			if (o._timelineData) {
+				if (selectPath[2]) { // select label or keyframe.
+					if (!selectPath[1]) { //label
 						getTimelineWindow('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView: HTMLDivElement) => {
 							shakeDomElement(labelView);
 						});
 						return;
 					} else {
-						for(let f of o._timelineData.f) {
-							if(f.n === selectPath[1]) {
+						for (let f of o._timelineData.f) {
+							if (f.n === selectPath[1]) {
 								let time = parseInt(selectPath[2]);
-								for(let kf of f.t) {
-									if(kf.t == time) {
-										if(!kf.___view!.state || !kf.___view!.state.isSelected) {
+								for (let kf of f.t) {
+									if (kf.t == time) {
+										if (!kf.___view!.state || !kf.___view!.state.isSelected) {
 											select(kf.___view!);
 											let kfNode = kf.___view!.base as HTMLDivElement;
-											if(kfNode) {
+											if (kfNode) {
 												scrollInToView(kfNode);
 												shakeDomElement(kfNode);
 											}
@@ -854,24 +854,24 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	static onDraggableMouseDown(this: TimelineSelectable, ev: PointerEvent) {
 		draggingStartX = ev.clientX;
 		game.editor.blurPropsInputs();
-		if(!(this as TimelineKeyframeView).state || !(this as TimelineKeyframeView).state.isSelected) {
-			if(!ev.ctrlKey && !ev.shiftKey) {
+		if (!(this as TimelineKeyframeView).state || !(this as TimelineKeyframeView).state.isSelected) {
+			if (!ev.ctrlKey && !ev.shiftKey) {
 				clearSelection();
 			}
 			select(this);
 		} else {
-			if(!ev.shiftKey && ev.ctrlKey) {
+			if (!ev.shiftKey && ev.ctrlKey) {
 				unselect(this);
 			}
 		}
 
-		if(ev.altKey) {
+		if (ev.altKey) {
 			cloneSelectedKeyframes();
 		}
 
 		draggingComponent = this;
 		let isInvertedShift;
-		if(this instanceof TimelineLoopPoint) {
+		if (this instanceof TimelineLoopPoint) {
 			prevDragTime = this.props.keyFrame.j;
 			isInvertedShift = this.props.keyFrame.j > this.props.keyFrame.t;
 		} else {
@@ -879,7 +879,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		}
 
 		let bounds = (ev.currentTarget as HTMLDivElement).getBoundingClientRect();
-		if(isInvertedShift) {
+		if (isInvertedShift) {
 			draggingXShift = ev.clientX - bounds.x - bounds.width;
 		} else {
 			draggingXShift = ev.clientX - bounds.x;
@@ -891,12 +891,12 @@ function getTimelineWindow(childSelector: string): Promise<HTMLDivElement> {
 	return new Promise((resolve) => {
 		let interval = window.setInterval(() => {
 			let w = document.querySelector('#timeline') as HTMLDivElement;
-			if(w) {
-				if(childSelector) {
+			if (w) {
+				if (childSelector) {
 					w = w.querySelector(childSelector) as HTMLDivElement;
 				}
 			}
-			if(w) {
+			if (w) {
 				clearInterval(interval);
 				resolve(w);
 			}
@@ -905,10 +905,10 @@ function getTimelineWindow(childSelector: string): Promise<HTMLDivElement> {
 }
 
 function getFieldByName(o: MovieClip, name: string) {
-	if(o._timelineData) {
+	if (o._timelineData) {
 		let fields = o._timelineData.f;
-		for(let field of fields) {
-			if(field.n === name) {
+		for (let field of fields) {
+			if (field.n === name) {
 				return field;
 			}
 		}
@@ -917,8 +917,8 @@ function getFieldByName(o: MovieClip, name: string) {
 
 function getFieldByNameOrCreate(o: MovieClip, name: string) {
 	let field: TimelineFieldData = getFieldByName(o, name) as TimelineFieldData;
-	if(!field) {
-		if(!o._timelineData) {
+	if (!field) {
+		if (!o._timelineData) {
 			o.__initTimeline();
 		}
 		field = {
@@ -939,8 +939,8 @@ let getFrameAtTimeOrCreateReturnedNewKeyframe = false;
 
 function getFrameAtTimeOrCreate(o: MovieClip, name: string, time: number, doNotModifyEarlyKeyframes = false): TimelineKeyFrame {
 	let field = getFieldByNameOrCreate(o, name);
-	for(let keyFrame of field.t) {
-		if(keyFrame.t === time) {
+	for (let keyFrame of field.t) {
+		if (keyFrame.t === time) {
 			getFrameAtTimeOrCreateReturnedNewKeyframe = false;
 			return keyFrame;
 		}
@@ -955,22 +955,22 @@ function createKeyframe(o: MovieClip, name: string, time: number, field: Timelin
 	let mode;
 	let jumpTime = time;
 	let prevField = MovieClip.__findPreviousKeyframe(field.t, time);
-	if(prevField) {
+	if (prevField) {
 		mode = prevField.m;
-		if(mode === 3 || mode === 4) {
+		if (mode === 3 || mode === 4) {
 			mode = 0;
 		}
-		if(!doNotModifyEarlyKeyframes) {
-			if(prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
+		if (!doNotModifyEarlyKeyframes) {
+			if (prevField.j !== prevField.t) { //takes loop point from previous keyframe if it is exists;
 				let labelBetweenKeyframes = null;
-				for(let lName in o.timeline!.l) {
+				for (let lName in o.timeline!.l) {
 					let lTime = o.timeline!.l[lName];
-					if(lTime >= prevField.t && lTime <= time) {
+					if (lTime >= prevField.t && lTime <= time) {
 						labelBetweenKeyframes = true;
 						break;
 					}
 				}
-				if(!labelBetweenKeyframes) {
+				if (!labelBetweenKeyframes) {
 					jumpTime = prevField.j;
 					prevField.j = prevField.t;
 				}
@@ -988,18 +988,18 @@ function createKeyframe(o: MovieClip, name: string, time: number, field: Timelin
 		___react_id: MovieClip.__generateKeyframeId()
 	} as any;
 
-	if(!isAutomaticCreation && (name === 'image') && prevField) {
+	if (!isAutomaticCreation && (name === 'image') && prevField) {
 		let step = time - prevField.t;
 		let nameStep = increaseNumberInName(prevField.v as string, 1) === o.image ? 1 : -1;
 		let nextName = increaseNumberInName(prevField.v as string, nameStep);
-		if((nextName !== prevField.v) && (nextName === o.image)) {
-			if(Lib.hasTexture(increaseNumberInName(o.image, nameStep)!)) {
-				game.editor.ui.modal.showEditorQuestion("Animation generator", "Do you want to create keyframes for all same images?",
+		if ((nextName !== prevField.v) && (nextName === o.image)) {
+			if (Lib.hasTexture(increaseNumberInName(o.image, nameStep)!)) {
+				game.editor.ui.modal.showEditorQuestion('Animation generator', 'Do you want to create keyframes for all same images?',
 					() => {
 						let image = o.image;
-						while(true) {
+						while (true) {
 							image = increaseNumberInName(image, nameStep)!;
-							if(Lib.hasTexture(image)) {
+							if (Lib.hasTexture(image)) {
 								time += step;
 								o[name] = image;
 								createKeyframe(o, name, time, field, true);
@@ -1024,15 +1024,15 @@ let draggingXShift = 0;
 let prevDragTime = -1;
 
 function cloneSelectedKeyframes() {
-	for(let c of selectedComponents) {
-		if(c instanceof TimelineKeyframeView) {
+	for (let c of selectedComponents) {
+		if (c instanceof TimelineKeyframeView) {
 			c.clone();
 		}
 	}
 }
 
 const sortFieldsByTime = (a: TimelineKeyFrame, b: TimelineKeyFrame) => {
-	if(a.t !== b.t) {
+	if (a.t !== b.t) {
 		return a.t - b.t;
 	}
 	return ((a.___view && a.___view.state && a.___view.state.isSelected) ? 0 : 1) -
@@ -1041,7 +1041,7 @@ const sortFieldsByTime = (a: TimelineKeyFrame, b: TimelineKeyFrame) => {
 
 function onTimelineScroll(ev: Event) {
 	selectionFrame.cancelSelection();
-	for(const element of(document.querySelectorAll('.timeline-fixed-block') as any as HTMLDivElement[])) {
+	for (const element of (document.querySelectorAll('.timeline-fixed-block') as any as HTMLDivElement[])) {
 		element.style.left = (ev.target as HTMLDivElement).scrollLeft + 'px';
 	}
 	(document.querySelector('.timeline-labels-background') as HTMLDivElement).style.top = (ev.target as HTMLDivElement).scrollTop + 'px';
@@ -1058,13 +1058,13 @@ function getSelectedKeyframes(): TimelineKeyframeView[] {
 
 function reduceRepeatingKeyframesInSelected() {
 	let isModified = false;
-	for(let keyframeComponent of getSelectedKeyframes()) {
+	for (let keyframeComponent of getSelectedKeyframes()) {
 		let timeLineKeyframes = keyframeComponent.props.owner.props.owner.props.field.t;
-		for(let i = 0; i < timeLineKeyframes.length; i++) {
+		for (let i = 0; i < timeLineKeyframes.length; i++) {
 			let kf = timeLineKeyframes[i];
-			for(let j = i + 1; j < timeLineKeyframes.length; j++) {
+			for (let j = i + 1; j < timeLineKeyframes.length; j++) {
 				let keyFrame = timeLineKeyframes[j];
-				if((kf !== keyFrame) && (kf.t === keyFrame.t)) {
+				if ((kf !== keyFrame) && (kf.t === keyFrame.t)) {
 					timeLineKeyframes.splice(j, 1);
 					j--;
 					isModified = true;
@@ -1084,38 +1084,38 @@ function selectIfInRect(rect: DOMRect, obj: TimelineKeyFrame) {
 }
 
 function selectViewIfInRect(rect: DOMRect, view: TimelineSelectable) {
-	if(selectedComponents.indexOf(view) >= 0) {
+	if (selectedComponents.indexOf(view) >= 0) {
 		return;
 	}
 	let domElement = (view as TimelineKeyframeView).base as HTMLDivElement;
-	if(!domElement) {
+	if (!domElement) {
 		return;
 	}
 	let r = domElement.getBoundingClientRect();
 
-	if(r.right > rect.left && r.left < rect.right) {
-		if(r.bottom > rect.top && r.top < rect.bottom) {
+	if (r.right > rect.left && r.left < rect.right) {
+		if (r.bottom > rect.top && r.top < rect.bottom) {
 			select(view);
 		}
 	}
 }
 
 function selectElementsInRectangle(rect: DOMRect, shiftKey = false) {
-	if(!shiftKey) {
+	if (!shiftKey) {
 		clearSelection();
 	}
 
-	for(let o of game.editor.selection) {
-		if((o instanceof MovieClip) && (o._timelineData)) {
-			for(let f of o._timelineData.f) {
-				for(let kf of f.t) {
+	for (let o of game.editor.selection) {
+		if ((o instanceof MovieClip) && (o._timelineData)) {
+			for (let f of o._timelineData.f) {
+				for (let kf of f.t) {
 					selectIfInRect(rect, kf);
-					if(kf.___loopPointView) {
+					if (kf.___loopPointView) {
 						selectViewIfInRect(rect, kf.___loopPointView as any as TimelineSelectable);
 					}
 				}
 			}
-			for(let labelName in o._timelineData.l) {
+			for (let labelName in o._timelineData.l) {
 				let label = o._timelineData.l[labelName];
 				selectIfInRect(rect, label as any);
 			}

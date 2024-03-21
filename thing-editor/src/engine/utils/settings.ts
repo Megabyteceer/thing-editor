@@ -1,5 +1,5 @@
-import fs from "thing-editor/src/editor/fs";
-import game from "thing-editor/src/engine/game";
+import fs from 'thing-editor/src/editor/fs';
+import game from 'thing-editor/src/engine/game';
 
 class Settings {
 	_storageId: string;
@@ -12,48 +12,48 @@ class Settings {
 		this._storageId = storageId;
 		this.data = {};
 		try {
-			if(typeof (Storage) !== "undefined") {
-				if(localStorage.hasOwnProperty(storageId)) {
+			if (typeof (Storage) !== 'undefined') {
+				if (localStorage.hasOwnProperty(storageId)) {
 					this.data = JSON.parse(localStorage[storageId]);
 				}
 			}
-		} catch(er) { /* empty */ }
+		} catch (er) { /* empty */ }
 		this.flush = this.flush.bind(this);
 		window.addEventListener('unload', () => {
-			if(this.__flushInterval) {
+			if (this.__flushInterval) {
 				this.flush();
 			}
 		});
 	}
 
 	getItem(name: string, def?: any): any {
-		if(this.data.hasOwnProperty(name)) {
+		if (this.data.hasOwnProperty(name)) {
 			return this.data[name];
 		}
 		return def;
 	}
 
 	setItem(name: string, val: any) {
-		if((val !== this.data[name]) || (typeof (val) === 'object')) {
+		if ((val !== this.data[name]) || (typeof (val) === 'object')) {
 			this.data[name] = val;
 			this.changed();
-			if(Settings.globalOnChanged) {
+			if (Settings.globalOnChanged) {
 				Settings.globalOnChanged(name, val);
 			}
 		}
 	}
 
 	removeItem(name: string) {
-		if(this.data.hasOwnProperty(name)) {
+		if (this.data.hasOwnProperty(name)) {
 			delete (this.data[name]);
 			this.changed();
 		}
 	}
 
 	changed() {
-		if(!this.__flushInterval) {
+		if (!this.__flushInterval) {
 			/// #if EDITOR
-			if(game.__EDITOR_mode) {
+			if (game.__EDITOR_mode) {
 				this.flush();
 				return;
 			}
@@ -68,7 +68,7 @@ class Settings {
 	}
 
 	flush() {
-		if(typeof (Storage) !== "undefined") {
+		if (typeof (Storage) !== 'undefined') {
 			this.__flushInterval = 0;
 
 			/// #if EDITOR
@@ -82,7 +82,7 @@ class Settings {
 					fs.fieldsFilter
 					/// #endif
 				));
-			} catch(er) {
+			} catch (er) {
 				this.data = this.data || {};
 			}
 		}

@@ -1,15 +1,14 @@
-import type { Container } from "pixi.js";
-import type { ClassAttributes} from "preact";
-import { Component, h } from "preact";
-import type { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import game from "thing-editor/src/engine/game";
+import type { Container } from 'pixi.js';
+import type { ClassAttributes } from 'preact';
+import { Component, h } from 'preact';
+import type { SelectEditorItem } from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
+import SelectEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
+import game from 'thing-editor/src/engine/game';
 
 interface PowDampPreset {
 	p: number,
 	d: number,
 }
-
 
 
 interface PowDampPresetSelectorProps extends ClassAttributes<PowDampPresetSelector> {
@@ -27,7 +26,7 @@ export default class PowDampPresetSelector extends Component<PowDampPresetSelect
 	}
 
 	onSelect(selected: PowDampPreset) {
-		if(selected.p) {
+		if (selected.p) {
 			this.props.onPresetSelected(selected.p, selected.d);
 		}
 	}
@@ -146,7 +145,7 @@ export class PowDampPresetEditor extends PowDampPresetSelector {
 	}
 
 	onSelect(selected: PowDampPreset) {
-		if(selected.p) {
+		if (selected.p) {
 			game.editor.editProperty('pow', selected.p);
 			game.editor.editProperty('damp', selected.d);
 		}

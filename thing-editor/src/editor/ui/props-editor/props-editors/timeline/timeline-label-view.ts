@@ -1,14 +1,14 @@
-import type { ClassAttributes, ComponentChild } from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import type ObjectsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/objects-timeline";
-import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import game from "thing-editor/src/engine/game";
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import type { TimelineLabelData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type ObjectsTimelineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/objects-timeline';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
+import type { TimelineSelectable } from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import game from 'thing-editor/src/engine/game';
+import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import type { TimelineLabelData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
 let labelNamesProps = {
 	className: 'selectable-text',
@@ -52,12 +52,12 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 
 		let k1 = this.props.label;
 		let k2 = props.label;
-		if(k1.___view === this) {
+		if (k1.___view === this) {
 			k1.___view = null;
 		}
 		k2.___view = this;
 
-		if(this.props.label.t !== props.label.t) {
+		if (this.props.label.t !== props.label.t) {
 			Timeline._justModifiedSelectable(this);
 		}
 	}
@@ -74,7 +74,7 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 	setTime(time: number) {
 		const label = this.props.label;
 
-		if(label.t !== time) {
+		if (label.t !== time) {
 			label.t = time;
 			this.onChanged();
 		}
@@ -95,7 +95,7 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 	}
 
 	onLabelMouseDown(ev: PointerEvent) {
-		if(ev.buttons === 2) {
+		if (ev.buttons === 2) {
 			this.deleteLabel();
 			sp(ev);
 		} else {
@@ -111,18 +111,18 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 	}
 
 	static renormalizeAllLabels(movieClip: MovieClip) {
-		for(let key in movieClip._timelineData.l) {
-			if(!movieClip._timelineData.l.hasOwnProperty(key)) continue;
+		for (let key in movieClip._timelineData.l) {
+			if (!movieClip._timelineData.l.hasOwnProperty(key)) continue;
 			TimelineLabelView.renormalizeLabel(movieClip._timelineData.l[key], movieClip);
 		}
 	}
 
 	static askForLabelName(existingLabelsNames: string[], title: ComponentChild, defaultName = '', allowedDuplicateName?: string) {
 		return game.editor.ui.modal.showPrompt(title, defaultName, undefined, (nameToCheck: string) => {
-			if(nameToCheck === allowedDuplicateName) {
+			if (nameToCheck === allowedDuplicateName) {
 				return;
 			}
-			if(existingLabelsNames.indexOf(nameToCheck) >= 0) {
+			if (existingLabelsNames.indexOf(nameToCheck) >= 0) {
 				return 'Label with that name already exists.';
 			}
 		});
@@ -133,8 +133,8 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		let label = this.props.label;
 		let name = this.props.labelName;
 
-		TimelineLabelView.askForLabelName(this.props.labelsNamesList, "Rename label", name, name).then((enteredName) => {
-			if(enteredName && (name !== enteredName)) {
+		TimelineLabelView.askForLabelName(this.props.labelsNamesList, 'Rename label', name, name).then((enteredName) => {
+			if (enteredName && (name !== enteredName)) {
 				tl.l[enteredName] = label;
 				delete tl.l[name];
 				this.onChanged();
@@ -146,7 +146,7 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 	render() {
 
 		let className = 'timeline-label';
-		if(this.state && this.state.isSelected) {
+		if (this.state && this.state.isSelected) {
 			className += ' timeline-label-selected';
 		}
 

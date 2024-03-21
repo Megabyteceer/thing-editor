@@ -1,7 +1,7 @@
-import type { ClassAttributes} from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
+import type { ClassAttributes } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 
 const timeMarkerLineProps = { className: 'time-marker-v-line' };
 const timeMarkerLabelProps = { className: 'time-marker-label' };
@@ -28,7 +28,7 @@ export default class TimeMarker extends Component<TimeMarkerProps, TimeMarkerSta
 
 	setTime(time: number, scrollInToView = false) {
 		this.setState({ time });
-		if(scrollInToView) {
+		if (scrollInToView) {
 			this.scrollInToView(time);
 		}
 	}
@@ -36,13 +36,13 @@ export default class TimeMarker extends Component<TimeMarkerProps, TimeMarkerSta
 	scrollInToView(time: number) {
 		let hw = Timeline.timelineDOMElement!.clientWidth / 2;
 		let x = time * this.props.owner.state.widthZoom - hw;
-		if(Math.abs(Timeline.timelineDOMElement!.scrollLeft - x) > hw) {
+		if (Math.abs(Timeline.timelineDOMElement!.scrollLeft - x) > hw) {
 			Timeline.timelineDOMElement!.scrollLeft = x;
 		} else {
 			let s = Timeline.timelineDOMElement!.scrollLeft;
-			if(s < (x + 150 - hw)) {
+			if (s < (x + 150 - hw)) {
 				Timeline.timelineDOMElement!.scrollLeft = (x + 150 - hw);
-			} else if(s > (x - 40 + hw)) {
+			} else if (s > (x - 40 + hw)) {
 				Timeline.timelineDOMElement!.scrollLeft = (x - 40 + hw);
 			}
 		}

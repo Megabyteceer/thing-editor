@@ -18,7 +18,7 @@ function clearDownedArrayRef() {
 	downedArrow = null;
 }
 function onMouseUp() {
-	if(draggingElement) {
+	if (draggingElement) {
 		document.exitPointerLock();
 		draggingElement = undefined;
 	}
@@ -28,12 +28,12 @@ function onMouseUp() {
 document.addEventListener('mouseup', onMouseUp);
 
 document.addEventListener('mousemove', (ev) => {
-	if(!draggingElement) return;
+	if (!draggingElement) return;
 
 	StatusBar.addStatus('Hold Ctrl - to fast scroll.', 'number-editor');
 
 	let d = -ev.movementY;
-	if(d !== 0) {
+	if (d !== 0) {
 		preventClickBecauseOfDragging = true;
 		d = d * (draggingElement.step);
 		draggingElement.deltaValue(d, ev.ctrlKey);
@@ -86,7 +86,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	}
 
 	onBlur() {
-		if(this.state) {
+		if (this.state) {
 			delete this.tmpVal;
 			delete this.rawVal;
 			this.forceUpdate();
@@ -94,34 +94,34 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	}
 
 	get step() {
-		if(this.props.field) {
+		if (this.props.field) {
 			return this.props.field.step || 1;
 		}
 		return this.props.step || 1;
 	}
 
 	get max(): number {
-		if(this.props.field && !isNaN(this.props.field.max as number)) {
+		if (this.props.field && !isNaN(this.props.field.max as number)) {
 			return this.props.field.max as number;
 		}
 		return !isNaN(this.props.max as number) ? this.props.max as number : Number.POSITIVE_INFINITY;
 	}
 
 	get min(): number {
-		if(this.props.field && !isNaN(this.props.field.min as number)) {
+		if (this.props.field && !isNaN(this.props.field.min as number)) {
 			return this.props.field.min as number;
 		}
 		return !isNaN(this.props.min as number) ? this.props.min as number : Number.NEGATIVE_INFINITY;
 	}
 
 	onUpClick(ev: PointerEvent) {
-		if(!preventClickBecauseOfDragging && downedArrow === ev.target) {
+		if (!preventClickBecauseOfDragging && downedArrow === ev.target) {
 			this.deltaValue(this.step, ev.ctrlKey);
 		}
 	}
 
 	onDownClick(ev: PointerEvent) {
-		if(!preventClickBecauseOfDragging && downedArrow === ev.target) {
+		if (!preventClickBecauseOfDragging && downedArrow === ev.target) {
 			this.deltaValue(-this.step, ev.ctrlKey);
 		}
 	}
@@ -136,7 +136,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	onChange(ev: InputEvent, forceFormat = false) {
 		forceFormat = (forceFormat === true);
 		let props = this.props;
-		if(forceFormat) {
+		if (forceFormat) {
 			this.tmpVal = undefined;
 		} else {
 			this.tmpVal = parseFloat((ev.target as HTMLInputElement).value);
@@ -145,13 +145,13 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		let targetValue = (ev.target as HTMLInputElement).value;
 		try {
 			targetValue = eval((ev.target as HTMLInputElement).value);
-		} catch(e) { } // eslint-disable-line no-empty
+		} catch (e) { } // eslint-disable-line no-empty
 
 		let val = (props.field && props.field.basis) ? parseInt((ev.target as HTMLInputElement).value, props.field.basis) : parseFloat(targetValue);
-		if(isNaN(val) && !forceFormat) {
+		if (isNaN(val) && !forceFormat) {
 			return;
 		}
-		if(!val) {
+		if (!val) {
 			val = 0;
 		}
 		props.onChange(this.cropVal(val));
@@ -166,7 +166,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	}
 
 	onKeyDown(ev: KeyboardEvent) {
-		switch(ev.keyCode) {
+		switch (ev.keyCode) {
 			case 38:
 				this.deltaValue(this.step, ev.ctrlKey);
 				sp(ev);
@@ -179,7 +179,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	}
 
 	deltaValue(d: number, x10 = false) {
-		if(x10) {
+		if (x10) {
 			d *= 10;
 		}
 		let step = this.step;
@@ -200,11 +200,11 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	}
 
 	componentWillReceiveProps(props: NumberEditorProps, state: NumberEditorState) {
-		if(!state) {
+		if (!state) {
 			state = {};
 		}
 		state.value = props.value;
-		if(state.o !== game.editor.selection[0]) {
+		if (state.o !== game.editor.selection[0]) {
 			this.tmpVal = undefined;
 		}
 		this.setState({ o: game.editor.selection[0], value: props.value });
@@ -214,12 +214,12 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	render() {
 		let props = this.props;
 		let val: number = ((typeof this.tmpVal !== 'undefined') ? this.tmpVal : this.state.value) as number;
-		if(props.field && props.field.notSerializable && (typeof val === 'undefined')) {
+		if (props.field && props.field.notSerializable && (typeof val === 'undefined')) {
 			val = props.field.default as number;
 		}
 		return R.span(numberEditorProps,
 			R.input({
-				className: "number-input",
+				className: 'number-input',
 				suspendOnChangeWarning: true,
 				onBlur: this.onBlur,
 				onChange: this.onChange,

@@ -1,21 +1,21 @@
-import { Text } from "pixi.js";
-import type { ClassAttributes, ComponentChild } from "preact";
-import { h } from "preact";
-import type { FileDescL10n } from "thing-editor/src/editor/fs";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import Window from "thing-editor/src/editor/ui/editor-window";
-import group from "thing-editor/src/editor/ui/group";
-import type { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import game from "thing-editor/src/engine/game";
-import L from "thing-editor/src/engine/utils/l";
+import { Text } from 'pixi.js';
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { h } from 'preact';
+import type { FileDescL10n } from 'thing-editor/src/editor/fs';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import Window from 'thing-editor/src/editor/ui/editor-window';
+import group from 'thing-editor/src/editor/ui/group';
+import type { SelectEditorItem } from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
+import SelectEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
+import { hideAdditionalWindow, showAdditionalWindow } from 'thing-editor/src/editor/ui/ui';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import game from 'thing-editor/src/engine/game';
+import L from 'thing-editor/src/engine/utils/l';
 
 /** dir_name >> language >> FileDescL10n */
 const assetsFiles: Map<string, Map<string, FileDescL10n>> = new Map();
@@ -58,17 +58,17 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 	static selectableList: SelectEditorItem[] = [];
 
 	static addAssets(file: FileDescL10n) {
-		if(!initialized) {
+		if (!initialized) {
 			init();
 		}
 		file.asset = L._deserializeLanguage(file.asset);
 		const a = file.fileName.split('/');
-		if(!file.lang) {
+		if (!file.lang) {
 			file.lang = (a.pop()!).replace(/\.json$/, '');
 		}
 		file.dir = a.join('/');
 
-		if(!assetsFiles.has(file.dir)) {
+		if (!assetsFiles.has(file.dir)) {
 			assetsFiles.set(file.dir, new Map());
 		}
 		assetsFiles.get(file.dir)!.set(file.lang, file);
@@ -78,14 +78,14 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 
 	static removeAsset(file: FileDescL10n) {
 		const dirAssets = assetsFiles.get(file.dir);
-		if(dirAssets) {
+		if (dirAssets) {
 			dirAssets.delete(file.lang);
 			assetsFilesIsDirty = true;
 		}
 	}
 
 	static toggle() {
-		if(!instance) {
+		if (!instance) {
 			showAdditionalWindow('language-view', 'language-view', 'Localization', h(LanguageView, null), 40, 0, 100, 70, 600, 300);
 			Window.bringWindowForward('#language-view');
 		} else {
@@ -94,13 +94,13 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 	}
 
 	static editKey(key: string | null, langId: string = L.getCurrentLanguageId()) {
-		if(!ignoreEdit) {
+		if (!ignoreEdit) {
 			ignoreEdit = true;
 			window.setTimeout(() => {
 				ignoreEdit = false;
 			}, 10);
 			showTextTable().then(() => {
-				if(key) {
+				if (key) {
 					view!.createKeyOrEdit(key, langId);
 				} else {
 					view!.onAddNewKeyClick();
@@ -113,9 +113,9 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 		currentDirAssets.forEach((langData, langId) => {
 
 			let templatesExample;
-			for(let textId in langData) {
+			for (let textId in langData) {
 				let text = langData.asset[textId];
-				if(text) {
+				if (text) {
 
 					let a: string[] = [];
 					text.replace(/%\w/gm, ((m: string) => {
@@ -123,16 +123,16 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 					}) as any);
 
 					a.sort((a, b) => {
-						if(a > b) return 1;
-						if(a < b) return -1;
+						if (a > b) return 1;
+						if (a < b) return -1;
 						return 0;
 					});
 					let templates = a.join(',');
 
-					if(typeof templatesExample === 'undefined') {
+					if (typeof templatesExample === 'undefined') {
 						templatesExample = templates;
 					} else {
-						if(templatesExample !== templates) {
+						if (templatesExample !== templates) {
 							(() => {
 								let localLangId = langId;
 								let localTextId = textId;
@@ -153,9 +153,9 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 }
 
 const assetsUpdateHandler = (enforced = false) => {
-	if(assetsFilesIsDirty && (game.editor.isProjectOpen || enforced)) {
+	if (assetsFilesIsDirty && (game.editor.isProjectOpen || enforced)) {
 		parseAssets();
-		if(instance) {
+		if (instance) {
 			instance.refresh();
 		}
 	}
@@ -169,16 +169,15 @@ const init = () => {
 };
 
 
-
 const __serializeLanguage = (langData: KeyedObject, empty = false) => {
 	let ret: KeyedObject = {};
-	for(let srcId in langData) {
-		if(langData.hasOwnProperty(srcId)) {
+	for (let srcId in langData) {
+		if (langData.hasOwnProperty(srcId)) {
 			let a = srcId.split(/[\.]/gm);
 			let r = ret;
-			while(a.length > 1) {
+			while (a.length > 1) {
 				let pathPart = a.shift() as string;
-				if(!r.hasOwnProperty(pathPart)) {
+				if (!r.hasOwnProperty(pathPart)) {
 					r[pathPart] = {};
 				}
 				r = r[pathPart];
@@ -203,18 +202,18 @@ const parseAssets = () => {
 
 	let lastDir: string;
 
-	for(let folder of game.editor.assetsFolders) {
+	for (let folder of game.editor.assetsFolders) {
 		assetsFiles.forEach((folderFiles: Map<string, FileDescL10n>) => {
 
 			const firstFile = folderFiles.values().next().value;
-			if(folder === (firstFile.lib ? firstFile.lib.assetsDir : game.editor.currentProjectAssetsDir)) {
+			if (folder === (firstFile.lib ? firstFile.lib.assetsDir : game.editor.currentProjectAssetsDir)) {
 				assetsDirs.push(firstFile.dir);
 
 				folderFiles.forEach((file: FileDescL10n) => {
 
 					const langId = file.lang;
 					let langData: L10NData;
-					if(!languages[file.lang]) {
+					if (!languages[file.lang]) {
 						langsIdsList.push(langId);
 						langData = {};
 						languages[langId] = langData;
@@ -229,14 +228,14 @@ const parseAssets = () => {
 		});
 	}
 
-	if(!currentDir) {
+	if (!currentDir) {
 		currentDir = lastDir!;
 	}
 
 	currentDirAssets = assetsFiles.get(currentDir)!;
 
 	const firstFile = currentDirAssets.values().next().value;
-	for(let key in firstFile.asset) {
+	for (let key in firstFile.asset) {
 		idsList.push(key);
 	}
 
@@ -245,7 +244,7 @@ const parseAssets = () => {
 
 	currentLanguageData = languages[L.getCurrentLanguageId()];
 
-	for(let key in currentLanguageData) {
+	for (let key in currentLanguageData) {
 		list.push({
 			value: key,
 			name: key
@@ -261,8 +260,8 @@ const parseAssets = () => {
 
 	assetsFiles.forEach((folderFiles: Map<string, FileDescL10n>) => {
 		const langs = L.getLanguagesList();
-		for(const langId of langs) {
-			if(!folderFiles.has(langId)) {
+		for (const langId of langs) {
+			if (!folderFiles.has(langId)) {
 				L.getLanguagesList();
 				createFilesForLanguage(langId);
 			}
@@ -273,7 +272,7 @@ const parseAssets = () => {
 
 const generateLocalizationTypings = () => {
 	const src = ['interface LocalizationKeys {'];
-	for(const key in currentLanguageData) {
+	for (const key in currentLanguageData) {
 		src.push('(id: "' + key + '", values?: KeyedObject): string;');
 	}
 	src.push('}');
@@ -281,7 +280,7 @@ const generateLocalizationTypings = () => {
 };
 
 const sortTextList = (a: SelectEditorItem, b: SelectEditorItem) => {
-	if(a.value > b.value) {
+	if (a.value > b.value) {
 		return 1;
 	} else {
 		return -1;
@@ -298,7 +297,7 @@ const langsEditorWrapperProps = { className: 'langs-editor-wrapper' };
 
 function showTextTable(): Promise<void> {
 	return new Promise((resolve) => {
-		if(!view) {
+		if (!view) {
 			LanguageView.toggle();
 			window.setTimeout(resolve, 1);
 		} else {
@@ -350,12 +349,12 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 				return langId.toLowerCase();
 			},
 			(langId) => { //accept
-				if(currentLanguageData.hasOwnProperty(langId)) {
-					return "Language with ID=" + langId + " already exists";
+				if (currentLanguageData.hasOwnProperty(langId)) {
+					return 'Language with ID=' + langId + ' already exists';
 				}
 			}
 		).then((langId) => {
-			if(langId) {
+			if (langId) {
 				createFilesForLanguage(langId);
 				this.forceUpdate();
 			}
@@ -363,20 +362,20 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 	}
 
 	onAddNewFolderClick() {
-		alert("TODO");
+		alert('TODO');
 		//choose library of project where assets will be created; if all libraries and project has localization data - do not show "create folder" button'
 	}
 
 	onAddNewKeyClick() {
 
 		let defaultKey = game.editor.projectDesc.__localesNewKeysPrefix;
-		for(let o of game.editor.selection) {
+		for (let o of game.editor.selection) {
 			let props = (o.constructor as SourceMappedConstructor).__editableProps;
-			for(let p of props) {
-				if(p.isTranslatableKey) {
+			for (let p of props) {
+				if (p.isTranslatableKey) {
 					let k = (o as any)[p.name];
-					if(k) {
-						if(!L.has(k)) {
+					if (k) {
+						if (!L.has(k)) {
 							defaultKey = k;
 						}
 						break;
@@ -384,12 +383,12 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 				}
 			}
 		}
-		if(!defaultKey) {
-			if(idsList[0]) {
+		if (!defaultKey) {
+			if (idsList[0]) {
 				let a = idsList[0].split('.');
 				a.pop();
 				defaultKey = a.join('.');
-				if(defaultKey) {
+				if (defaultKey) {
 					defaultKey += '.';
 				}
 			} else {
@@ -404,7 +403,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			},
 			isKeyInvalid
 		).then((enteredName) => {
-			if(enteredName) {
+			if (enteredName) {
 				this.createKeyOrEdit(enteredName, undefined, true);
 			}
 		});
@@ -413,11 +412,11 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 	createKeyOrEdit(key: string, langId = 'en', enforceCreateInCurrentSource = false) {
 		showTextTable().then(() => {
 
-			if(!enforceCreateInCurrentSource) {
-				if(!idsList.hasOwnProperty(key)) { // find key in another source
+			if (!enforceCreateInCurrentSource) {
+				if (!idsList.hasOwnProperty(key)) { // find key in another source
 					assetsFiles.forEach((dirAssets) => {
 						dirAssets!.forEach((file) => {
-							if(file.asset.hasOwnProperty(key)) {
+							if (file.asset.hasOwnProperty(key)) {
 								currentDir = file.dir;
 								parseAssets();
 								this.refresh();
@@ -427,7 +426,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 				}
 			}
 
-			if(!currentLanguageData.hasOwnProperty(key)) {
+			if (!currentLanguageData.hasOwnProperty(key)) {
 				currentDirAssets.forEach((file) => {
 					file.asset[key] = '';
 				});
@@ -435,10 +434,10 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 				onModified(langId);
 				this.forceUpdate();
 
-				if(game.editor.selection.length === 1) {
-					if(game.editor.selection[0] instanceof Text) {
+				if (game.editor.selection.length === 1) {
+					if (game.editor.selection[0] instanceof Text) {
 						let t = game.editor.selection[0];
-						if(((!t.text) || (t.text === 'New Text 1')) && !t.translatableText) {
+						if (((!t.text) || (t.text === 'New Text 1')) && !t.translatableText) {
 							game.editor.onObjectsPropertyChanged(t, 'translatableText', key);
 						}
 					}
@@ -462,9 +461,9 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 
 		idsList.forEach((id) => {
 			let filter = this.state.filter;
-			if(filter) {
-				if(id.indexOf(filter) < 0) {
-					if(langsIdsList.every(langId => (currentDirAssets.get(langId)!).asset[id].toLowerCase().indexOf(filter!) < 0)) {
+			if (filter) {
+				if (id.indexOf(filter) < 0) {
+					if (langsIdsList.every(langId => (currentDirAssets.get(langId)!).asset[id].toLowerCase().indexOf(filter!) < 0)) {
 						return;
 					}
 				}
@@ -473,12 +472,12 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			lines.push(R.span({ key: id, className: 'langs-editor-tr' },
 				R.div({
 					className: 'langs-editor-th selectable-text',
-					title: "Ctrl+click to copy key, Double click to rename, Right click to delete",
+					title: 'Ctrl+click to copy key, Double click to rename, Right click to delete',
 					onContextMenu: sp,
 					onMouseDown: (ev: PointerEvent) => {
 						let currentKey = (ev.target as any).innerText as string;
 
-						if(ev.buttons === 2) {
+						if (ev.buttons === 2) {
 							return game.editor.ui.modal.showEditorQuestion('Translatable key delete', 'Delete key ' + currentKey + '?', () => {
 								currentDirAssets.forEach((file) => {
 									delete file.asset[currentKey];
@@ -487,7 +486,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 								this.forceUpdate();
 							});
 						}
-						else if(ev.ctrlKey) {
+						else if (ev.ctrlKey) {
 							copyTextByClick(ev);
 						}
 						sp(ev);
@@ -495,15 +494,15 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 					onDoubleClick: (ev: PointerEvent) => {
 						let currentKey = (ev.target as any).innerText as string;
 
-						return game.editor.ui.modal.showPrompt("Translatable key rename:", currentKey, undefined, (nameToCheck) => {
-							if(nameToCheck === currentKey) {
+						return game.editor.ui.modal.showPrompt('Translatable key rename:', currentKey, undefined, (nameToCheck) => {
+							if (nameToCheck === currentKey) {
 								return 'Please rename key.';
 							}
-							if(currentLanguageData.hasOwnProperty(nameToCheck)) {
+							if (currentLanguageData.hasOwnProperty(nameToCheck)) {
 								return 'Key with that name already exists.';
 							}
 						}).then((newKey) => {
-							if(newKey) {
+							if (newKey) {
 								currentDirAssets.forEach((file) => {
 									file.asset[newKey] = currentLanguageData[id];
 									delete file.asset[id];
@@ -535,7 +534,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			));
 		});
 
-		if(!this.state.filter) {
+		if (!this.state.filter) {
 			lines = group.groupArray(lines, '.');
 		}
 
@@ -551,7 +550,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			(assetsDirs.length > 1) ? R.div(null, 'Localization data source: ',
 				h(SelectEditor, {
 					onChange: (value: string) => {
-						if(value !== currentDir) {
+						if (value !== currentDir) {
 							currentDir = value;
 							parseAssets();
 							this.forceUpdate();
@@ -571,13 +570,13 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 }
 
 function isKeyInvalid(val: string) {
-	if(currentLanguageData.hasOwnProperty(val)) {
-		return "ID already exists";
+	if (currentLanguageData.hasOwnProperty(val)) {
+		return 'ID already exists';
 	}
-	if(val.endsWith('.') || val.startsWith('.')) {
+	if (val.endsWith('.') || val.startsWith('.')) {
 		return 'ID can not begin or end with "."';
 	}
-	if(val.match(/[^a-zA-Z\._\d\/]/gm)) {
+	if (val.match(/[^a-zA-Z\._\d\/]/gm)) {
 		return 'ID can contain letters, digits, "_", "/" and "."';
 	}
 }
@@ -590,7 +589,7 @@ function textAreaID(lang: string, id: string) {
 
 let debounceTimeOut = 0;
 function onModified(modifiedLangId?: string) {
-	if(debounceTimeOut) {
+	if (debounceTimeOut) {
 		clearTimeout(debounceTimeOut);
 	}
 
@@ -598,8 +597,8 @@ function onModified(modifiedLangId?: string) {
 		L.refreshAllTextEverywhere();
 
 		currentDirAssets.forEach((file, langId) => {
-			if(!file.__isLangIdPlaceHolder) {
-				if(!modifiedLangId || modifiedLangId === langId) {
+			if (!file.__isLangIdPlaceHolder) {
+				if (!modifiedLangId || modifiedLangId === langId) {
 					let content = __serializeLanguage(file.asset);
 					fs.saveAsset(file.assetName, AssetType.RESOURCE, content);
 				}
@@ -616,8 +615,8 @@ function createFilesForLanguage(langId: string) {
 	let created = false;
 
 	assetsFiles.forEach((dirAssets: Map<string, FileDescL10n>, dir: string) => {
-		if(!dirAssets.has(langId)) {
-			if(dir.endsWith('.json')) {
+		if (!dirAssets.has(langId)) {
+			if (dir.endsWith('.json')) {
 				// add placeholders for non standard translations added via assets-loader.js
 				const placeholder = Object.assign({}, dirAssets.values().next().value) as FileDescL10n;
 				placeholder.__isLangIdPlaceHolder = true;
@@ -625,12 +624,12 @@ function createFilesForLanguage(langId: string) {
 			} else {
 				const fileName = dir + '/' + langId + '.json';
 				fs.writeFile(fileName, langData);
-				game.editor.ui.status.warn("Localization file " + fileName + ' created.');
+				game.editor.ui.status.warn('Localization file ' + fileName + ' created.');
 
 				created = true;
 			}
 		}
-		if(created) {
+		if (created) {
 			fs.refreshAssetsList();
 		}
 	});

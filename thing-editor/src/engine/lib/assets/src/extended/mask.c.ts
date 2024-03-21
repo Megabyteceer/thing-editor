@@ -1,7 +1,7 @@
-import { Container } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
-import game from "thing-editor/src/engine/game";
+import { Container } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
+import game from 'thing-editor/src/engine/game';
 
 export default class Mask extends Container {
 
@@ -10,7 +10,7 @@ export default class Mask extends Container {
 	init() {
 		super.init();
 		this._maskComponentIsActive = true;
-		if(this._enabled) {
+		if (this._enabled) {
 			this.enableMask();
 		}
 	}
@@ -22,8 +22,8 @@ export default class Mask extends Container {
 
 	set enabled(v) {
 		this._enabled = v;
-		if(this._maskComponentIsActive) {
-			if(v) {
+		if (this._maskComponentIsActive) {
+			if (v) {
 				this.enableMask();
 			} else {
 				this.disableMask();
@@ -41,20 +41,20 @@ export default class Mask extends Container {
 		this.mask = this.findChildByName('mask') as any;
 
 		/// #if EDITOR
-		if(!this.mask) {
+		if (!this.mask) {
 			game.editor.ui.status.warn('Mask component did not found child named "mask".', 32022, this);
 		}
 		/// #endif
-		if(this.mask) {
+		if (this.mask) {
 			this.__maskVisibilityTmp = (this.mask as Container).visible;
 		}
-		if(this.mask) {
+		if (this.mask) {
 			(this.mask as Container).visible = true;
 		}
 	}
 
 	disableMask() {
-		if(this.mask) {
+		if (this.mask) {
 			(this.mask as Container).visible = this.__maskVisibilityTmp;
 		}
 		this.mask = null;
@@ -80,7 +80,7 @@ export default class Mask extends Container {
 	__exitPreviewMode() {
 		this.disableMask();
 	}
-	/// #endif	
+	/// #endif
 }
 
 /// #if EDITOR

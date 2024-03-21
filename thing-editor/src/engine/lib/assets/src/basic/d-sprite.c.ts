@@ -1,5 +1,5 @@
-import { Sprite } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable";
+import { Sprite } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable';
 
 export default class DSprite extends Sprite {
 	constructor() {

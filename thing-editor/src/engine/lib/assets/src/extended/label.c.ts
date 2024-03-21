@@ -1,11 +1,11 @@
-import { Text } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import callByPath from "thing-editor/src/engine/utils/call-by-path";
-import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
-import L from "thing-editor/src/engine/utils/l";
-import { stepTo } from "thing-editor/src/engine/utils/utils";
+import { Text } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import callByPath from 'thing-editor/src/engine/utils/call-by-path';
+import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
+import L from 'thing-editor/src/engine/utils/l';
+import { stepTo } from 'thing-editor/src/engine/utils/utils';
 
 export default class Label extends Text {
 
@@ -15,7 +15,7 @@ export default class Label extends Text {
 	@editable({ min: 0 })
 	refreshInterval = 10;
 
-	@editable({ type: 'string', multiline: true, tip: "template example: <b>Your have %d coins</b>", disabled: (node: Label) => { return node.translatableText; } })
+	@editable({ type: 'string', multiline: true, tip: 'template example: <b>Your have %d coins</b>', disabled: (node: Label) => { return node.translatableText; } })
 	template: string | null = null;
 
 	/** replace pattern for translatableText */
@@ -28,7 +28,7 @@ export default class Label extends Text {
 	@editable({ disabled: (node: Label) => { return !node.isNumeric; } })
 	plusMinus = false;
 
-	@editable({ min: 0.001, max: 1, step: 0.001, visible: (node: Label) => { return node.isNumeric; }, tip: `1 - shows value immediately. less that 1 - shows with counting.` })
+	@editable({ min: 0.001, max: 1, step: 0.001, visible: (node: Label) => { return node.isNumeric; }, tip: '1 - shows value immediately. less that 1 - shows with counting.' })
 	counterSpeed = 1;
 
 	@editable({ min: 0, max: 20, visible: (node: Label) => { return node.isNumeric; } })
@@ -60,8 +60,8 @@ export default class Label extends Text {
 		this.localizationParams = {};
 
 		/// #if EDITOR
-		if(this.translatableText) {
-			if(L(this.translatableText).indexOf(this.paramName) < 0) {
+		if (this.translatableText) {
+			if (L(this.translatableText).indexOf(this.paramName) < 0) {
 				game.editor.ui.status.warn('Localized text contain no parameter ' + this.paramName, 99999, this, 'paramName');
 			}
 		}
@@ -69,11 +69,11 @@ export default class Label extends Text {
 	}
 
 	onLanguageChanged() {
-		if((this as any)._translatableText) {
+		if ((this as any)._translatableText) {
 			this.showedVal = undefined;
 			this.refreshNow();
 
-			if(
+			if (
 				/// #if EDITOR
 				game.__EDITOR_mode ||
 				/// #endif
@@ -89,24 +89,24 @@ export default class Label extends Text {
 	}
 
 	update() {
-		if((game.time - this.lastUpdateTime) > 1) {
+		if ((game.time - this.lastUpdateTime) > 1) {
 			this.refreshNow();
 		}
 		this.lastUpdateTime = game.time;
 
-		if(this.currentInterval <= 0 && this.dataPath) {
+		if (this.currentInterval <= 0 && this.dataPath) {
 
 			let val = getValueByPath(this.dataPath, this);
 			val = this.customizeVal(val);
-			if(val || val === 0) {
-				if(val !== this.processedVal) {
-					if(this.onChanged) {
+			if (val || val === 0) {
+				if (val !== this.processedVal) {
+					if (this.onChanged) {
 						callByPath(this.onChanged, this);
 					}
 					this.processedVal = val;
 				}
 
-				if(val !== this.showedVal) {
+				if (val !== this.showedVal) {
 					this.visible = true;
 					this.applyValue(val);
 				}
@@ -124,23 +124,23 @@ export default class Label extends Text {
 	}
 
 	applyValue(val: any) {
-		if(this.isNumeric) {
-			if((this.counterSpeed < 1) && (this.showedVal !== undefined)) {
+		if (this.isNumeric) {
+			if ((this.counterSpeed < 1) && (this.showedVal !== undefined)) {
 				let step = Math.max(1 / Math.pow(10, this.decimalsCount), Math.abs((val - (this.showedVal || 0)) * this.counterSpeed));
 				this.showedVal = stepTo(this.showedVal || 0, val, step);
-				if(this.showedVal === val) {
-					if(this.onCounterFinish) {
+				if (this.showedVal === val) {
+					if (this.onCounterFinish) {
 						callByPath(this.onCounterFinish, this);
 					}
 				} else {
-					if(this.onCounter) {
+					if (this.onCounter) {
 						callByPath(this.onCounter, this);
 					}
 				}
 			} else {
 				this.showedVal = val;
 			}
-			if(this.plusMinus && val > 0) {
+			if (this.plusMinus && val > 0) {
 				val = '+' + Label.formatMoney(this.showedVal, this.decimalsCount);
 			} else {
 				val = Label.formatMoney(this.showedVal, this.decimalsCount);
@@ -150,9 +150,9 @@ export default class Label extends Text {
 			this.showedVal = val;
 		}
 
-		if(this.template) {
+		if (this.template) {
 			this.text = this.template.replace(this.paramName, val);
-		} else if((this as any)._translatableText) {
+		} else if ((this as any)._translatableText) {
 			this.localizationParams[this.paramName] = val;
 			this.text = L((this as any)._translatableText, this.localizationParams);
 		} else {
@@ -175,31 +175,31 @@ export default class Label extends Text {
 	/// #if EDITOR
 	__beforeSerialization() {
 		super.__beforeSerialization!();
-		if((this as any)._translatableText) {
+		if ((this as any)._translatableText) {
 			this.template = null;
 		}
 	}
 
 	/// #endif
 	static formatMoney(num: number, c = 0) {
-		assert(typeof num === 'number', "Numeric value expected, but got '" + typeof num + "'", 10012);
+		assert(typeof num === 'number', 'Numeric value expected, but got \'' + typeof num + '\'', 10012);
 
 		let neg = num < 0;
 		let ret;
-		if(neg) {
+		if (neg) {
 			num = -num;
 		}
 
-		if(c > 0) {
+		if (c > 0) {
 			let str = num.toFixed(c).split('.');
-			if(str[0].length > 3) {
+			if (str[0].length > 3) {
 				str[0] = str[0].replace(/(.)(?=(.{3})+$)/g, '$1 ');
 			}
 			ret = str.join('.');
 		} else {
 			ret = num.toFixed(0).replace(/(.)(?=(.{3})+$)/g, '$1 ');
 		}
-		if(neg) {
+		if (neg) {
 			return '-' + ret;
 		}
 		return ret;
@@ -208,5 +208,5 @@ export default class Label extends Text {
 
 /// #if EDITOR
 Label.__EDITOR_icon = 'tree/label';
-Label.__EDITOR_tip = `<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.`;
+Label.__EDITOR_tip = '<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.';
 /// #endif

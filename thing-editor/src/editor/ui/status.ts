@@ -1,16 +1,16 @@
-import { Container } from "pixi.js";
-import type { ClassAttributes, ComponentChild } from "preact";
-import { h } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics.js";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import group from "thing-editor/src/editor/ui/group";
-import Help from "thing-editor/src/editor/ui/help";
-import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import shakeDomElement from "thing-editor/src/editor/utils/shake-element";
-import waitForCondition from "thing-editor/src/editor/utils/wait-for-condition";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import { Container } from 'pixi.js';
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { h } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics.js';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import group from 'thing-editor/src/editor/ui/group';
+import Help from 'thing-editor/src/editor/ui/help';
+import { hideAdditionalWindow, showAdditionalWindow } from 'thing-editor/src/editor/ui/ui';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
+import shakeDomElement from 'thing-editor/src/editor/utils/shake-element';
+import waitForCondition from 'thing-editor/src/editor/utils/wait-for-condition';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
@@ -34,20 +34,20 @@ const needAddInToList = (map: StatusItemsOwnersMap, owner?: StatusListItemOwner,
 	waitForCondition(() => {
 		return game.projectDesc;
 	});
-	if(game.projectDesc && game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode!) >= 0)) {
+	if (game.projectDesc && game.projectDesc.__suspendWarnings && (game.projectDesc.__suspendWarnings.indexOf(errorCode!) >= 0)) {
 		return;
 	}
-	if(!(owner instanceof Container)) {
+	if (!(owner instanceof Container)) {
 		return true;
 	} else {
 		let exData = owner.__nodeExtendData;
 
 		exData.statusWarnOwnerId = owner.___id;
 
-		if(!fieldName) {
+		if (!fieldName) {
 			fieldName = '_no_field_name_';
 		}
-		if(!map.has(exData)) {
+		if (!map.has(exData)) {
 			let o: KeyedMap<true> = {};
 			o[fieldName] = true;
 			map.set(exData, o);
@@ -101,20 +101,20 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 	}
 
 	error(message: string, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, fieldArrayItemNumber = -1) {
-		if(EDITOR_FLAGS.isTryTime) {
+		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.error(errorCode + ': ' + message + getErrorDetailsUrl(errorCode));
 		let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode, fieldArrayItemNumber };
-		if(owner && fieldName) {
+		if (owner && fieldName) {
 			item.val = (owner as KeyedObject)[fieldName];
 		}
 
-		if(needAddInToList(this.errorsMap, owner, fieldName, errorCode)) {
+		if (needAddInToList(this.errorsMap, owner, fieldName, errorCode)) {
 			this.errors.push(item);
-			if(this.errorsList) {
+			if (this.errorsList) {
 				this.errorsList.refresh();
 			} else {
 				this.show();
@@ -125,19 +125,19 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 	}
 
 	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false, fieldArrayItemNumber = -1) {
-		if(EDITOR_FLAGS.isTryTime) {
+		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message + getErrorDetailsUrl(errorCode));
-		if(doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
+		if (doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
 			let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode, fieldArrayItemNumber };
-			if(owner && fieldName) {
+			if (owner && fieldName) {
 				item.val = (owner as KeyedObject)[fieldName];
 			}
 
 			this.warns.push(item);
-			if(this.errorsList) {
+			if (this.errorsList) {
 				this.warnsList.forceUpdate();
 			} else {
 				this.show();
@@ -170,10 +170,10 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 	}
 
 	render() {
-		if(this.state.toggled && ((this.errors.length > 0) || (this.warns.length > 0))) {
+		if (this.state.toggled && ((this.errors.length > 0) || (this.warns.length > 0))) {
 			showAdditionalWindow('window-info', 'Notifications', 'Notifications', R.fragment(
 				R.btn('×', this.clear, 'Hide all', 'close-window-btn'),
-				R.div({ className: "status-body" },
+				R.div({ className: 'status-body' },
 					h(InfoList, { ref: this.errorsListRef, id: 'errors-list', title: 'Errors:', icon: errorIcon, className: 'info-errors-list info-list', list: this.errors, itemsMap: this.errorsMap }),
 					h(InfoList, { ref: this.warnsListRef, id: 'warns-list', title: 'Warnings:', icon: warnIcon, className: 'info-warns-list info-list', list: this.warns, itemsMap: this.warnsMap })
 				)
@@ -186,14 +186,14 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 }
 
 function getErrorDetailsUrl(errorCode?: number) {
-	if(errorCode && (errorCode < 90000)) {
-		return " DETAILS: " + Help.getUrlForError(errorCode);
+	if (errorCode && (errorCode < 90000)) {
+		return ' DETAILS: ' + Help.getUrlForError(errorCode);
 	}
 	return '';
 }
 
 
-const selectableSceneNodeProps = { className: "selectable-scene-node" };
+const selectableSceneNodeProps = { className: 'selectable-scene-node' };
 
 interface InfoListProps extends ClassAttributes<InfoList> {
 	list: StatusListItem[];
@@ -213,9 +213,9 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 
 	clearItem(item: StatusListItem) {
 		let i = this.props.list.indexOf(item);
-		assert(i >= 0, "info list is corrupted");
+		assert(i >= 0, 'info list is corrupted');
 		this.props.list.splice(i, 1);
-		if(item.owner instanceof Container) {
+		if (item.owner instanceof Container) {
 			let exData = item.owner.__nodeExtendData;
 			this.props.itemsMap.delete(exData);
 		}
@@ -225,31 +225,31 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 	renderItem(item: StatusListItem, i: number) {
 
 		let node;
-		if(item.owner && item.owner instanceof Container) {
+		if (item.owner && item.owner instanceof Container) {
 			node = R.div(selectableSceneNodeProps, R.sceneNode(item.owner));
 		}
 		return R.div({
-			key: i, className: 'info-item clickable', title: "Click line to go problem.", onClick: async (ev: PointerEvent) => {
+			key: i, className: 'info-item clickable', title: 'Click line to go problem.', onClick: async (ev: PointerEvent) => {
 				lastClickedItem = item;
 				lastClickedList = this;
 
-				if(typeof item.owner === "function") {
+				if (typeof item.owner === 'function') {
 					(item.owner as (ev: PointerEvent) => void)(ev);
-				} else if(item.owner && (item.owner instanceof Container)) {
+				} else if (item.owner && (item.owner instanceof Container)) {
 					let extendData = item.owner.__nodeExtendData;
-					if((item.owner.___id !== item.ownerId) || (extendData.statusWarnOwnerId !== item.ownerId)) {
+					if ((item.owner.___id !== item.ownerId) || (extendData.statusWarnOwnerId !== item.ownerId)) {
 						let newOwnerFinded = false;
 
 						game.forAllChildrenEverywhere((o) => {
-							if(o.constructor === (item.owner as Container).constructor && o.___id === item.ownerId) {
-								if(!newOwnerFinded) {
+							if (o.constructor === (item.owner as Container).constructor && o.___id === item.ownerId) {
+								if (!newOwnerFinded) {
 									item.owner = o;
 									newOwnerFinded = true;
 								}
 							}
 						});
 
-						if(!newOwnerFinded) {
+						if (!newOwnerFinded) {
 							game.editor.ui.modal.showInfo('Object already removed form stage, or problem was solved.', undefined, 32042);
 							return;
 						}
@@ -262,12 +262,12 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 			Help.openErrorCodeHelp(item.errorCode);
 		}, 'Open description for this notification (F1)', 'error-status-help-button', { key: 'F1' }), R.btn('×', () => {
 			this.clearItem(item);
-		}, "Hide notification", 'clear-item-btn danger-btn')
+		}, 'Hide notification', 'clear-item-btn danger-btn')
 		);
 	}
 
 	render() {
-		if(this.props.list.length <= 0) {
+		if (this.props.list.length <= 0) {
 			return R.div();
 		}
 		return R.div(null,

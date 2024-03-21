@@ -1,8 +1,8 @@
-import type { Point} from "pixi.js";
-import { Circle, Ellipse, Graphics, Polygon, Rectangle, RoundedRectangle } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable.js";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
+import type { Point } from 'pixi.js';
+import { Circle, Ellipse, Graphics, Polygon, Rectangle, RoundedRectangle } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable.js';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 
 enum SHAPE_TYPE {
 	RECT = 0,
@@ -61,8 +61,8 @@ export default class Shape extends Graphics {
 	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !o.__nodeExtendData.isPrefabReference; } })
 	protected set _shapePoints(v: Point[] | null) {
 		this.__shapePoints = v;
-		if(v) {
-			for(let o of v) {
+		if (v) {
+			for (let o of v) {
 				Object.freeze(o);
 			}
 		}
@@ -77,7 +77,7 @@ export default class Shape extends Graphics {
 	init() {
 		super.init();
 		this._drawThing();
-		if(this.isItHitArea && this.parent) {
+		if (this.isItHitArea && this.parent) {
 			this.applyHitAreaToParent();
 		}
 		this.__deserialized = true;
@@ -85,7 +85,7 @@ export default class Shape extends Graphics {
 
 	protected _drawThing() {
 		this.clear();
-		if(!this.isItHitArea
+		if (!this.isItHitArea
 			/// #if EDITOR
 			|| game.__EDITOR_mode
 			/// #endif
@@ -100,7 +100,7 @@ export default class Shape extends Graphics {
 
 	drawThing() {
 		let points;
-		switch(this.shape) {
+		switch (this.shape) {
 			case SHAPE_TYPE.ROUND_RECT:
 				this.drawRoundedRect(0, 0, this.width, this.height, this.shapeRadius);
 				break;
@@ -115,10 +115,10 @@ export default class Shape extends Graphics {
 				break;
 			case SHAPE_TYPE.POLY:
 				/// #if EDITOR
-				if(!this._shapePoints) {
+				if (!this._shapePoints) {
 					this._shapePoints = [];
 				}
-				while(this._shapePoints.length < DEFAULT_POINTS.length) {
+				while (this._shapePoints.length < DEFAULT_POINTS.length) {
 					let p = {
 						x: DEFAULT_POINTS[this._shapePoints.length][0],
 						y: DEFAULT_POINTS[this._shapePoints.length][1]
@@ -127,9 +127,9 @@ export default class Shape extends Graphics {
 					Object.freeze(p);
 				}
 				/// #endif
-				if(this._shapePoints.length > 2) {
+				if (this._shapePoints.length > 2) {
 					points = [];
-					for(let c of this._shapePoints) {
+					for (let c of this._shapePoints) {
 						points.push(c.x, c.y);
 					}
 					this.drawPolygon(points);
@@ -139,7 +139,7 @@ export default class Shape extends Graphics {
 	}
 
 	getHitareaShape() {
-		switch(this.shape) {
+		switch (this.shape) {
 			case SHAPE_TYPE.ROUND_RECT:
 				return new RoundedRectangle(this.x, this.y, this.width, this.height, this.shapeRadius);
 				break;
@@ -154,9 +154,9 @@ export default class Shape extends Graphics {
 				break;
 
 			case SHAPE_TYPE.POLY:
-				if((this._shapePoints as Point[]).length > 2) {
+				if ((this._shapePoints as Point[]).length > 2) {
 					let points = [];
-					for(let c of this._shapePoints as Point[]) {
+					for (let c of this._shapePoints as Point[]) {
 						points.push(c.x + this.x, c.y + this.y);
 					}
 					return new Polygon(points);
@@ -174,7 +174,7 @@ export default class Shape extends Graphics {
 	onRemove() {
 		super.onRemove();
 		this.clear();
-		if(this.isItHitArea && this.parent) {
+		if (this.isItHitArea && this.parent) {
 			this.parent.hitArea = null;
 		}
 		this.__deserialized = false;
@@ -183,10 +183,10 @@ export default class Shape extends Graphics {
 	@editable({ select: shapeTypeSelect, important: true, visible: (o) => !o.__nodeExtendData.isPrefabReference })
 	set shape(s: SHAPE_TYPE) {
 		this._shape = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			/// #if EDITOR
-			if(s === SHAPE_TYPE.POLY) {
-				if(!this._shapePoints) {
+			if (s === SHAPE_TYPE.POLY) {
+				if (!this._shapePoints) {
 					this._shapePoints = [];
 				}
 			} else {
@@ -199,7 +199,7 @@ export default class Shape extends Graphics {
 			this._drawThing();
 
 			/// #if EDITOR
-			if(s === SHAPE_TYPE.POLY) {
+			if (s === SHAPE_TYPE.POLY) {
 				this.__startPointRefreshIfSelected();
 			}
 			/// #endif
@@ -213,7 +213,7 @@ export default class Shape extends Graphics {
 	@editable({ visible: isShapeHasWidthHeight, important: true })
 	set width(s) {
 		this._width = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -225,7 +225,7 @@ export default class Shape extends Graphics {
 	@editable({ visible: isShapeHasWidthHeight, important: true })
 	set height(s) {
 		this._height = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -237,7 +237,7 @@ export default class Shape extends Graphics {
 	@editable({ visible: isShapeHasRedius, important: true })
 	set shapeRadius(s) {
 		this._shapeRadius = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -249,7 +249,7 @@ export default class Shape extends Graphics {
 	@editable({ min: 0, max: 1, step: 0.01, default: 1 })
 	set shapeFillAlpha(s) {
 		this._fillAlpha = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -261,7 +261,7 @@ export default class Shape extends Graphics {
 	@editable({ type: 'color', visible: (o) => { return o.shapeFillAlpha > 0; } })
 	set shapeFillColor(s) {
 		this._fillColor = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -273,7 +273,7 @@ export default class Shape extends Graphics {
 	@editable({ min: 0 })
 	set shapeLineWidth(s) {
 		this._lineWidth = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -285,7 +285,7 @@ export default class Shape extends Graphics {
 	@editable({ type: 'color', visible: (o) => { return o.shapeLineWidth > 0; } })
 	set shapeLineColor(s) {
 		this._lineColor = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -297,7 +297,7 @@ export default class Shape extends Graphics {
 	@editable({ min: 0, max: 1, step: 0.01, visible: (o) => { return o.shapeLineWidth > 0; } })
 	set shapeLineAlpha(s) {
 		this._llineAlpha = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -309,7 +309,7 @@ export default class Shape extends Graphics {
 	@editable({ min: 0, max: 1, step: 0.01, visible: (o) => { return o.shapeLineWidth > 0; } })
 	set shapeLineAlignment(s) {
 		this._lineAlignment = s;
-		if(this.__deserialized) {
+		if (this.__deserialized) {
 			this._drawThing();
 		}
 	}
@@ -338,16 +338,16 @@ export default class Shape extends Graphics {
 	}
 
 	__removePolyPoints() {
-		for(let i = this.children.length - 1; i >= 0; i--) {
+		for (let i = this.children.length - 1; i >= 0; i--) {
 			let c = this.children[i];
-			if(c.name === '___point') {
+			if (c.name === '___point') {
 				c.remove();
 			}
 		}
 	}
 
 	__afterSerialization(data: SerializedObject) {
-		if(this._shapePoints && !this.__nodeExtendData.isPrefabReference && this.shape === SHAPE_TYPE.POLY) {
+		if (this._shapePoints && !this.__nodeExtendData.isPrefabReference && this.shape === SHAPE_TYPE.POLY) {
 			data.p._shapePoints = this._shapePoints;
 		}
 	}
@@ -362,10 +362,10 @@ export default class Shape extends Graphics {
 	}
 
 	__showPoints() {
-		if(this.shape === SHAPE_TYPE.POLY) {
-			if(game.__EDITOR_mode) {
+		if (this.shape === SHAPE_TYPE.POLY) {
+			if (game.__EDITOR_mode) {
 				this.__removePolyPoints();
-				for(let p of this._shapePoints as Point[]) {
+				for (let p of this._shapePoints as Point[]) {
 					this.__newPointView(p);
 				}
 			}
@@ -377,7 +377,7 @@ export default class Shape extends Graphics {
 	}
 
 	__stopPointsRefreshInterval() {
-		if(this.__pointsUpdateIntervalInitialized) {
+		if (this.__pointsUpdateIntervalInitialized) {
 			this.__removePolyPoints();
 			game.editor.refreshTreeViewAndPropertyEditor();
 			clearInterval(this.__pointsUpdateIntervalInitialized);
@@ -389,9 +389,9 @@ export default class Shape extends Graphics {
 		let isAnyPointSelected;
 
 		this._shapePoints = [];
-		for(let o of this.children) {
-			if(o.name === '___point') {
-				if(o.__nodeExtendData.isSelected) {
+		for (let o of this.children) {
+			if (o.name === '___point') {
+				if (o.__nodeExtendData.isSelected) {
 					isAnyPointSelected = true;
 				}
 				this._shapePoints.push({
@@ -406,13 +406,13 @@ export default class Shape extends Graphics {
 		this._drawThing();
 
 
-		if(this.shape !== SHAPE_TYPE.POLY || !isAnyPointSelected && !this.__nodeExtendData.isSelected) {
+		if (this.shape !== SHAPE_TYPE.POLY || !isAnyPointSelected && !this.__nodeExtendData.isSelected) {
 			this.__stopPointsRefreshInterval();
 		}
 	}
 
 	__newPointView(src: Point) {
-		let p: Shape = Lib._deserializeObject({ c: "Shape", p: {} }) as Shape;
+		let p: Shape = Lib._deserializeObject({ c: 'Shape', p: {} }) as Shape;
 		p.name = '___point';
 		p.shape = SHAPE_TYPE.RECT;
 		p.width = 4;
@@ -425,24 +425,24 @@ export default class Shape extends Graphics {
 		p.y = src.y;
 		this.addChild(p);
 		let extData = p.__nodeExtendData;
-		extData.hidePropsEditor = { title: "Polygon's vertex is selected", visibleFields: { x: true, y: true } };
+		extData.hidePropsEditor = { title: 'Polygon\'s vertex is selected', visibleFields: { x: true, y: true } };
 		extData.noSerialize = true;
 		return p;
 	}
 
 	__startPointRefreshIfSelected() {
-		if(game.__EDITOR_mode && !this.__nodeExtendData.isPrefabReference && (this.shape === SHAPE_TYPE.POLY) && (!this.__pointsUpdateIntervalInitialized)) {
+		if (game.__EDITOR_mode && !this.__nodeExtendData.isPrefabReference && (this.shape === SHAPE_TYPE.POLY) && (!this.__pointsUpdateIntervalInitialized)) {
 			let isAnySelected = this.__nodeExtendData.isSelected;
-			if(!isAnySelected) {
-				for(let o of this.children) {
-					if((o.name === '___point') && o.__nodeExtendData.isSelected) {
+			if (!isAnySelected) {
+				for (let o of this.children) {
+					if ((o.name === '___point') && o.__nodeExtendData.isSelected) {
 						isAnySelected = true;
 						break;
 					}
 				}
 			}
 
-			if(isAnySelected) {
+			if (isAnySelected) {
 				this.__showPoints();
 				this.__pointsUpdateIntervalInitialized = window.setInterval(this.__pointsUpdate, 40);
 			}

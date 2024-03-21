@@ -1,5 +1,5 @@
 
-type ProjectOrientation = "landscape" | "portrait" | "auto";
+type ProjectOrientation = 'landscape' | 'portrait' | 'auto';
 
 interface ProjectDesc {
 	id: string;

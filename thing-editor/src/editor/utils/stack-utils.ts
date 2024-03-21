@@ -1,6 +1,6 @@
-import type { ComponentChild } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import game from "thing-editor/src/engine/game";
+import type { ComponentChild } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import game from 'thing-editor/src/engine/game';
 
 interface DebugStack {
 	title: ComponentChild;
@@ -27,7 +27,7 @@ const showStack = (stack: DebugStack) => {
 
 	const items: StackItem[] = a.map((s) => {
 		let functionName;
-		if(s.indexOf(' (') > 0) {
+		if (s.indexOf(' (') > 0) {
 			functionName = s.split(' (');
 			s = functionName[1].split(')').shift()!;
 			functionName = functionName[0];
@@ -41,7 +41,7 @@ const showStack = (stack: DebugStack) => {
 		pathParts.shift();
 		s = pathParts.join('/');
 
-		if(s.indexOf('?') > 0) {
+		if (s.indexOf('?') > 0) {
 			pathParts = s.split('?');
 			let a = pathParts[1].split(':');
 			s = pathParts[0] + ':' + a[1];
@@ -51,17 +51,17 @@ const showStack = (stack: DebugStack) => {
 	game.editor.ui.modal.showModal(R.div(null, R.b(null, stack.title), ' was invoked at:', items.map((i, key) => {
 		return R.div({
 			key, className: 'list-item stack-item', onMouseDown: async () => {
-				if(i.path) {
+				if (i.path) {
 					const a = i.path.split(':');
 					const url = a[0];
-					if(url) {
+					if (url) {
 						const line = a[1];
 						const SourceMapConsumer = (await (import('source-map-js'))).default.SourceMapConsumer;
 						const src = await (await fetch('/' + url + '?' + Date.now())).text();
-						if(src) {
+						if (src) {
 							const sourceMapUrl = src.split('sourceMappingURL=')[1];
 							const sourceMap = await (await fetch(sourceMapUrl)).text();
-							if(sourceMap) {
+							if (sourceMap) {
 								const consumer = new SourceMapConsumer(sourceMap as any);
 								const ret = consumer.originalPositionFor({ line: parseInt(line), column: 0 });
 								game.editor.editSource('/' + url, ret.line as any, ret.column as any);
@@ -79,5 +79,5 @@ const showStack = (stack: DebugStack) => {
 
 export { getCurrentStack, showStack };
 
-export type { DebugStack };
+	export type { DebugStack };
 

@@ -1,11 +1,11 @@
-import type { ClassAttributes } from "preact";
-import { Component, h } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import Window from "thing-editor/src/editor/ui/editor-window";
-import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import { hideAdditionalWindow, showAdditionalWindow } from "thing-editor/src/editor/ui/ui";
-import game from "thing-editor/src/engine/game";
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
+import type { ClassAttributes } from 'preact';
+import { Component, h } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import Window from 'thing-editor/src/editor/ui/editor-window';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
+import { hideAdditionalWindow, showAdditionalWindow } from 'thing-editor/src/editor/ui/ui';
+import game from 'thing-editor/src/engine/game';
+import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 
 function bringTimelineForward() {
 	Window.bringWindowForward('#propsEditor');
@@ -37,13 +37,13 @@ export default class TimelineEditor extends Component<ClassAttributes<TimelineEd
 		let t = !this.state.toggled;
 		this.setState({ toggled: t });
 		game.editor.settings.setItem('timeline-showed', t);
-		if(t) {
+		if (t) {
 			bringTimelineForward();
 		}
 	}
 
 	onAutoSelect(selectPath: string[]) {
-		if(!this.state.toggled) {
+		if (!this.state.toggled) {
 			this.onToggleClick();
 			window.setTimeout(() => {
 				Timeline.onAutoSelect(selectPath);
@@ -62,7 +62,7 @@ export default class TimelineEditor extends Component<ClassAttributes<TimelineEd
 	}
 
 	_renderWindow() {
-		if(this.state.toggled) {
+		if (this.state.toggled) {
 			showAdditionalWindow('timeline', 'Timeline', 'Timeline',
 				R.div({ title: '' },
 					h(Timeline, { onCloseClick: this.onToggleClick }),
@@ -74,8 +74,8 @@ export default class TimelineEditor extends Component<ClassAttributes<TimelineEd
 
 	_hideWindow() {
 		hideAdditionalWindow('timeline');
-		if(game.currentContainer && game.__EDITOR_mode) {
-			for(let m of game.currentContainer.findChildrenByType(MovieClip)) {
+		if (game.currentContainer && game.__EDITOR_mode) {
+			for (let m of game.currentContainer.findChildrenByType(MovieClip)) {
 				m.resetTimeline();
 			}
 		}

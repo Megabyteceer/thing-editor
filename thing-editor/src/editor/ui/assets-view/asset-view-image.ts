@@ -1,14 +1,14 @@
-import type { FileDescImage } from "thing-editor/src/editor/fs";
-import fs from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import AssetsView, { addSharedAssetContextMenu } from "thing-editor/src/editor/ui/assets-view/assets-view";
-import type { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
-import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import libInfo from "thing-editor/src/editor/utils/lib-info";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
+import type { FileDescImage } from 'thing-editor/src/editor/fs';
+import fs from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import AssetsView, { addSharedAssetContextMenu } from 'thing-editor/src/editor/ui/assets-view/assets-view';
+import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
+import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import libInfo from 'thing-editor/src/editor/utils/lib-info';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -21,21 +21,21 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 	const menu: ContextMenuItem[] = [
 		null,
 		{
-			name: R.fragment(R.icon('copy'), "Copy image`s name"),
+			name: R.fragment(R.icon('copy'), 'Copy image`s name'),
 			onClick: () => {
 				game.editor.copyToClipboard(file.assetName);
 			}
 		},
 		null,
 		{
-			name: R.fragment("Move to library..."),
+			name: R.fragment('Move to library...'),
 			onClick: async () => {
-				game.editor.moveAssetToLibrary("Where to move image '" + file.assetName + "'?", file);
+				game.editor.moveAssetToLibrary('Where to move image \'' + file.assetName + '\'?', file);
 			},
 			disabled: () => game.editor.getUserVisibleFolders().length < 2 || Lib.__isSystemTexture(file.asset)
 		},
 		{
-			name: R.fragment(R.icon('delete'), " Delete '" + file.assetName + "' image..."),
+			name: R.fragment(R.icon('delete'), ' Delete \'' + file.assetName + '\' image...'),
 			onClick: () => {
 				game.editor.ui.modal.showEditorQuestion(
 					'Ase you sure?',
@@ -45,19 +45,19 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 					), () => {
 						fs.deleteAsset(file.assetName, file.assetType);
 						game.editor.ui.refresh();
-					}, R.fragment(R.icon('delete'), " Delete.")
+					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			},
 			disabled: () => Lib.__isSystemTexture(file.asset)
 		}
 	];
 
-	if(game.editor.selection.length) {
+	if (game.editor.selection.length) {
 		const props = (game.editor.selection[0].constructor as SourceMappedConstructor).__editableProps;
-		for(let i = props.length - 1; i >= 0; i--) {
+		for (let i = props.length - 1; i >= 0; i--) {
 			const prop = props[i];
-			if(game.editor.ui.propsEditor.editableProps[prop.name]) {
-				if(prop.type === 'image') {
+			if (game.editor.ui.propsEditor.editableProps[prop.name]) {
+				if (prop.type === 'image') {
 					menu.unshift({
 						name: 'Assign to "' + prop.name + '" >>',
 						onClick: () => {

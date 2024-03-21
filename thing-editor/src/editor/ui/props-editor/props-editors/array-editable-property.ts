@@ -1,8 +1,8 @@
-import type { ComponentChild} from "preact";
-import { Component, h } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
-import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
+import type { ComponentChild } from 'preact';
+import { Component, h } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import PropsEditor from 'thing-editor/src/editor/ui/props-editor/props-editor';
+import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 
 const arrayProps = { className: 'array-prop' };
 const arrayItemProps = { className: 'array-prop-item' };
@@ -21,10 +21,10 @@ export default class ArrayEditableProperty extends Component<EditablePropertyEdi
 	render(): ComponentChild {
 		const field = this.props.field;
 		let arrayValue = this.props.value;
-		if(arrayValue && !Array.isArray(arrayValue)) {
+		if (arrayValue && !Array.isArray(arrayValue)) {
 			arrayValue = [arrayValue];
 		}
-		if(arrayValue.length === 0) {
+		if (arrayValue.length === 0) {
 			arrayValue = [field.defaultArrayItemValue || PropsEditor.getDefaultForType(field)];
 		}
 		return R.div(
@@ -33,7 +33,7 @@ export default class ArrayEditableProperty extends Component<EditablePropertyEdi
 				return R.div(arrayItemProps, h(field.renderer, {
 					value,
 					onChange: (itemValue: any) => {
-						if(itemValue && itemValue.target) {
+						if (itemValue && itemValue.target) {
 							itemValue = itemValue.target.value;
 						}
 						const newArray = arrayValue.slice();

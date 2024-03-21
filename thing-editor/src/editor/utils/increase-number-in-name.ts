@@ -1,12 +1,12 @@
 const regex = /(\d+)(?!.*\d)/;
 
 export default function increaseNumberInName(name: string | null, step = 1) {
-	if(name) {
+	if (name) {
 		let a = regex.exec(name);
-		if(a) {
+		if (a) {
 			let oldNum = a.pop()!;
 			let newNum = (parseInt(oldNum) + step).toString();
-			while(newNum.length < oldNum.length) {
+			while (newNum.length < oldNum.length) {
 				newNum = '0' + newNum;
 			}
 			a.shift();

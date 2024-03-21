@@ -1,7 +1,7 @@
 let debounces: Map<() => void, number> = new Map();
 
 const debouncedCall = (f: () => void, timeMs = 0) => {
-	if(debounces.has(f)) {
+	if (debounces.has(f)) {
 		clearTimeout(debounces.get(f));
 		debounces.delete(f);
 	}

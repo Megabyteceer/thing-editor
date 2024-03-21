@@ -1,13 +1,13 @@
-import type { Container } from "pixi.js";
-import { Texture } from "pixi.js";
-import type { ComponentChildren } from "preact";
-import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
-import type HowlSound from "thing-editor/src/engine/HowlSound";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import type { Container } from 'pixi.js';
+import { Texture } from 'pixi.js';
+import type { ComponentChildren } from 'preact';
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import { EDITOR_BACKUP_PREFIX } from 'thing-editor/src/editor/utils/flags';
+import type HowlSound from 'thing-editor/src/engine/HowlSound';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor/src/engine/lib';
+import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
 interface LibInfo {
 	name: string,
@@ -60,13 +60,13 @@ interface FileDescL10n extends FileDesc {
 }
 
 enum AssetType {
-	IMAGE = "IMAGE",
-	SOUND = "SOUND",
-	SCENE = "SCENE",
-	PREFAB = "PREFAB",
-	CLASS = "CLASS",
-	RESOURCE = "RESOURCE",
-	FONT = "FONT",
+	IMAGE = 'IMAGE',
+	SOUND = 'SOUND',
+	SCENE = 'SCENE',
+	PREFAB = 'PREFAB',
+	CLASS = 'CLASS',
+	RESOURCE = 'RESOURCE',
+	FONT = 'FONT',
 }
 
 const AllAssetsTypes: AssetType[] = Object.values(AssetType);
@@ -81,7 +81,7 @@ let assetsByTypeByName: Map<AssetType, Map<string, FileDesc>>;
 const resetAssetsMap = () => {
 	assetsByTypeByName = new Map();
 
-	for(const assetType of AllAssetsTypes) {
+	for (const assetType of AllAssetsTypes) {
 		assetsByTypeByName.set(assetType, new Map());
 		assetsListsByType.set(assetType, []);
 	}
@@ -137,8 +137,8 @@ const WHITE: FileDescImage = {
 
 const execFs = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => {
 	const ret = electron_ThingEditorServer.fs(command, filename, content, ...args);
-	if(ret instanceof Error) {
-		game.editor.ui.modal.showFatalError("Main process error.", 99999, ret.message);
+	if (ret instanceof Error) {
+		game.editor.ui.modal.showFatalError('Main process error.', 99999, ret.message);
 		throw ret;
 	}
 	return ret;
@@ -157,22 +157,22 @@ const fileChangeHandler = () => {
 };
 
 electron_ThingEditorServer.onServerMessage((_ev: any, event: string, path: string) => {
-	if(!game.editor.isProjectOpen) {
+	if (!game.editor.isProjectOpen) {
 		return;
 	}
-	if(event === 'fs/change') {
+	if (event === 'fs/change') {
 		path = '/' + path.replace(/\\/g, '/');
-		if(!ignoreFiles.has(path)) {
-			if(fileChangeDebounceTimeout) {
+		if (!ignoreFiles.has(path)) {
+			if (fileChangeDebounceTimeout) {
 				clearTimeout(fileChangeDebounceTimeout);
 			}
-			if(path.endsWith('.ts')) {
+			if (path.endsWith('.ts')) {
 				game.editor.classesUpdatedExternally();
 			} else {
 				fileChangeDebounceTimeout = window.setTimeout(fileChangeHandler, 330);
 			}
 		}
-	} else if(event === 'fs/notify') {
+	} else if (event === 'fs/notify') {
 		game.editor.ui.modal.notify(path);
 	}
 });
@@ -187,7 +187,7 @@ function ignoreWatch(fileName: string) {
 
 const assetNameToFileName = (assetName: string, assetType: AssetType, libName = game.editor.currentProjectAssetsDirRooted): string => {
 	const asset = (assetsByTypeByName.get(assetType) as Map<string, FileDesc>).get(assetName);
-	if(asset) {
+	if (asset) {
 		return asset.fileName;
 	}
 	return libName + assetName + (ASSET_TYPE_TO_EXT as KeyedObject)[assetType];
@@ -214,7 +214,7 @@ export default class fs {
 	static getAssetsList(assetType?: AssetType.PREFAB): FileDescPrefab[];
 	static getAssetsList(assetType?: AssetType): FileDesc[];
 	static getAssetsList(assetType: AssetType | null = null): FileDesc[] {
-		if(assetType === null) {
+		if (assetType === null) {
 			return allAssets;
 		}
 		return assetsListsByType.get(assetType) as FileDesc[];
@@ -224,7 +224,7 @@ export default class fs {
 	static getFileOfRoot(object: Container): FileDescPrefab | FileDescScene {
 		const root = object.getRootContainer() || game.currentContainer;
 		const rootName = root.name as string;
-		if(root instanceof Scene) {
+		if (root instanceof Scene) {
 			return this.getFileByAssetName(rootName, AssetType.SCENE);
 		} else {
 			return this.getFileByAssetName(rootName, AssetType.PREFAB);
@@ -243,15 +243,15 @@ export default class fs {
 
 	static removeSubAsset(assetName: string, type: AssetType) {
 		const file = this.getFileByAssetName(assetName, type);
-		if(file) {
+		if (file) {
 			const list = (assetsListsByType.get(file.assetType) as FileDesc[]);
 			list.splice(list.indexOf(file), 1);
 			allAssets.splice(allAssets.indexOf(file), 1);
 			assetsByTypeByName.get(file.assetType)!.delete(file.assetName);
 		}
-		if(prevAssetsByTypeByName) {
+		if (prevAssetsByTypeByName) {
 			const file = prevAssetsByTypeByName.get(type)!.get(assetName) as FileDesc;
-			if(file) {
+			if (file) {
 				prevAssetsByTypeByName.get(file.assetType as AssetType)!.delete(assetName);
 			}
 		}
@@ -265,7 +265,7 @@ export default class fs {
 
 	/** returns new mTime */
 	static writeFile(fileName: string, data: string | Blob | KeyedObject): number {
-		if(typeof data !== 'string' && !(data instanceof Blob)) {
+		if (typeof data !== 'string' && !(data instanceof Blob)) {
 			data = JSON.stringify(data, fs.fieldsFilter, '	');
 		}
 		return execFs('fs/saveFile', fileName, data as string) as number;
@@ -288,7 +288,7 @@ export default class fs {
 		const res = await execFsAsync('fs/run', script, undefined, args);
 
 		game.editor.ui.modal.hideSpinner();
-		if(res instanceof Error) {
+		if (res instanceof Error) {
 			game.editor.ui.modal.showError(res.stack, undefined, 'Deploy error');
 			return null;
 		}
@@ -297,7 +297,7 @@ export default class fs {
 
 	static renameAsset(file: FileDesc) {
 		let ext = '';
-		if(file.assetType === AssetType.IMAGE) {
+		if (file.assetType === AssetType.IMAGE) {
 			ext = file.assetName.substring(file.assetName.lastIndexOf('.'));
 		}
 		game.editor.ui.modal.showPrompt('Rename asset ' + ext, file.assetName.substring(0, file.assetName.length - ext.length),
@@ -307,19 +307,19 @@ export default class fs {
 			(val) => { //accept
 				const newAssetName = val + ext;
 				let newFile = fs.getFileByAssetName(newAssetName, file.assetType);
-				if(file === newFile) {
+				if (file === newFile) {
 					return;
 				}
-				if(newFile) {
-					return "Already exists";
+				if (newFile) {
+					return 'Already exists';
 				}
-				if(val.endsWith('/') || val.startsWith('/')) {
+				if (val.endsWith('/') || val.startsWith('/')) {
 					return 'name can not begin or end with "/"';
 				}
 			}).then((newName: string) => {
-				if(newName) {
+				if (newName) {
 					newName += ext;
-					if(newName !== file.assetName) {
+					if (newName !== file.assetName) {
 						const i = file.fileName.lastIndexOf(file.assetName);
 						fs.copyFile(file.fileName, file.fileName.substring(0, i) + newName + file.fileName.substring(i + file.assetName.length));
 						fs.deleteFile(file.fileName);
@@ -329,7 +329,7 @@ export default class fs {
 	}
 
 	static copyAssetToProject(file: FileDesc) {
-		if(file.assetType === AssetType.CLASS) {
+		if (file.assetType === AssetType.CLASS) {
 			game.editor.ui.modal.showInfo('Class can not be copied to the project. Create a new class inherited from ' + (file as FileDescClass).asset.__className + ' instead.', 'Can not copy class.');
 			return;
 		}
@@ -349,12 +349,12 @@ export default class fs {
 		ignoreWatch(fileName);
 		const mTime = fs.writeFile(fileName, data);
 		const file = fs.getFileByAssetName(assetName, assetType);
-		if(file) {
+		if (file) {
 			file.mTime = mTime;
 			file.asset = data as SerializedObject;
 			sortAssets();
 			game.editor.ui.refresh();
-		} else if(!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
+		} else if (!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 			fs.refreshAssetsList();
 		}
 		game.editor.scrollAssetInToView(assetName);
@@ -367,7 +367,7 @@ export default class fs {
 	static deleteAsset(assetName: string, assetType: AssetType) {
 		const fileName = assetNameToFileName(assetName, assetType);
 		fs.deleteFile(fileName);
-		if(!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
+		if (!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 			fs.refreshAssetsList();
 		}
 	}
@@ -375,8 +375,8 @@ export default class fs {
 	static parseJSON(src: string, fileName: string) {
 		try {
 			return JSON.parse(src);
-		} catch(er) {
-			game.editor.ui.modal.showFatalError("JSON parse error.", 99999, "Error in file: " + fileName + '\n' + (er as Error).message);
+		} catch (er) {
+			game.editor.ui.modal.showFatalError('JSON parse error.', 99999, 'Error in file: ' + fileName + '\n' + (er as Error).message);
 		}
 	}
 
@@ -422,7 +422,7 @@ export default class fs {
 	}
 
 	static rebuildSoundsIfNeed(file: FileDesc) {
-		if(file.assetType === AssetType.SOUND) {
+		if (file.assetType === AssetType.SOUND) {
 			scheduledSoundsRebuilds.add(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir);
 		}
 	}
@@ -448,16 +448,16 @@ export default class fs {
 		const files = execFs('fs/readDir', dirName, game.editor.projectDesc as any) as FileDesc[];
 		return files.filter((file) => {
 			const wrongSymbol = fs.getWrongSymbol(file.fileName);
-			if(wrongSymbol) {
-				game.editor.ui.status.warn("File " + file.fileName + " ignored because of wrong symbol '" + wrongSymbol + "' in it's name", 32044);
+			if (wrongSymbol) {
+				game.editor.ui.status.warn('File ' + file.fileName + ' ignored because of wrong symbol \'' + wrongSymbol + '\' in it\'s name', 32044);
 				return;
 			}
 			const assetName = file.assetName || file.fileName.substring(dirName.length);
-			for(const ext in ASSETS_PARSERS) {
-				if(assetName.endsWith(ext)) {
+			for (const ext in ASSETS_PARSERS) {
+				if (assetName.endsWith(ext)) {
 					const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
 					file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGHTS.get(assetType) as number));
-					if(assetType === AssetType.CLASS) {
+					if (assetType === AssetType.CLASS) {
 						file.assetName = file.assetName.replace(/-/g, '');
 					}
 					file.fileName = '/' + file.fileName;
@@ -471,7 +471,7 @@ export default class fs {
 
 	static refreshAssetsList(dirNames?: string[]) {
 
-		if(dirNames) {
+		if (dirNames) {
 			assert(!lastAssetsDirs, 'dirNames already defined.');
 			lastAssetsDirs = dirNames;
 		} else {
@@ -488,14 +488,14 @@ export default class fs {
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('EMPTY', EMPTY);
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
 
-		for(const dirName of dirNames!) {
+		for (const dirName of dirNames!) {
 			const files = fs.getFolderAssets(dirName);
-			for(const file of files) {
+			for (const file of files) {
 				const map = assetsByTypeByName.get(file.assetType as AssetType) as Map<string, FileDesc>;
-				if(file.assetType !== AssetType.CLASS && map.has(file.assetName)) {
+				if (file.assetType !== AssetType.CLASS && map.has(file.assetName)) {
 					const existingFile = map.get(file.assetName)!;
 					window.setTimeout(() => {
-						if(fs.isFilesEqual(file.fileName, existingFile.fileName)) {
+						if (fs.isFilesEqual(file.fileName, existingFile.fileName)) {
 							game.editor.warnEqualFiles(file, existingFile);
 						}
 					}, 0);
@@ -504,18 +504,18 @@ export default class fs {
 			}
 		}
 
-		for(const assetsMap of assetsByTypeByName.values()) {
-			for(const file of assetsMap.values()) {
+		for (const assetsMap of assetsByTypeByName.values()) {
+			for (const file of assetsMap.values()) {
 				(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
 				allAssets.push(file);
 
 				const oldAsset = prevAssetsByTypeByName.get(file.assetType)!.get(file.assetName);
-				if(!oldAsset) {
+				if (!oldAsset) {
 					fs.rebuildSoundsIfNeed(file);
 					__onAssetAdded(file);
 				} else {
 					file.asset = oldAsset.asset;
-					if(oldAsset.mTime !== file.mTime) {
+					if (oldAsset.mTime !== file.mTime) {
 						file.v = (oldAsset.v || 0) + 1;
 						fs.rebuildSoundsIfNeed(file);
 						__onAssetUpdated(file);
@@ -529,8 +529,8 @@ export default class fs {
 
 		prevAssetsByTypeByName.forEach((prevAllAssets) => {
 			prevAllAssets.forEach((file) => {
-				if(!file.assetName.startsWith(EDITOR_BACKUP_PREFIX) && !fs.getFileByAssetName(file.assetName, file.assetType)) {
-					if(file.parentAsset) {
+				if (!file.assetName.startsWith(EDITOR_BACKUP_PREFIX) && !fs.getFileByAssetName(file.assetName, file.assetType)) {
+					if (file.parentAsset) {
 						const newParentAsset = this.getFileByAssetName(file.parentAsset.assetName, file.parentAsset.assetType);
 						file.parentAsset = newParentAsset;
 						this.addSubAsset(file);
@@ -546,17 +546,17 @@ export default class fs {
 
 		let dirsToRebuildSounds = scheduledSoundsRebuilds.values();
 		let soundsData: Map<string, KeyedObject> = new Map();
-		for(let dir of dirsToRebuildSounds) {
+		for (let dir of dirsToRebuildSounds) {
 			soundsData.set(dir, fs.rebuildSounds(dir));
 		}
 		scheduledSoundsRebuilds.clear();
 
 		const sounds = this.getAssetsList(AssetType.SOUND);
-		for(const file of sounds) {
+		for (const file of sounds) {
 			const soundsDirData = soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
-			if(soundsDirData) {
+			if (soundsDirData) {
 				const sndData = soundsDirData.soundInfo[file.fileName.substring(1)];
-				if(sndData) {
+				if (sndData) {
 					file.asset.preciseDuration = sndData.duration;
 				}
 			}
@@ -570,13 +570,13 @@ export default class fs {
 
 	static getWrongSymbol(fileName: string) {
 		const wrongSymbolPos = fileName.search(/[^a-zA-Z_\-\.\d\/]/gm);
-		if(wrongSymbolPos >= 0) {
+		if (wrongSymbolPos >= 0) {
 			return fileName[wrongSymbolPos];
 		}
 	}
 
 	static fieldsFilter = (key: string, value: any) => {
-		if(!key.startsWith('___')) {
+		if (!key.startsWith('___')) {
 			return value;
 		}
 	};

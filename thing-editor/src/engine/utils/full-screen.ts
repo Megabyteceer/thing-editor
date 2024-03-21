@@ -1,6 +1,6 @@
-import { ButtonOnlyPropertyDesc } from "thing-editor/src/editor/utils/button-only-selectable-property";
-import { addOnClickOnce } from "thing-editor/src/engine/utils/game-interaction.js";
-import game from "../game.js";
+import { ButtonOnlyPropertyDesc } from 'thing-editor/src/editor/utils/button-only-selectable-property';
+import { addOnClickOnce } from 'thing-editor/src/engine/utils/game-interaction.js';
+import game from '../game.js';
 
 const docElement = document.documentElement;
 
@@ -9,7 +9,7 @@ export default class FullScreen {
 	static isAvailable = (docElement.requestFullscreen as any as boolean) && !(window as KeyedObject).cordova;
 
 	static get isFullscreen() {
-		if(document.fullscreenElement)
+		if (document.fullscreenElement)
 			return true;
 		return false;
 	}
@@ -20,22 +20,22 @@ export default class FullScreen {
 
 	static _openInner() {
 		try {
-			if(docElement.requestFullscreen) {
+			if (docElement.requestFullscreen) {
 				docElement.requestFullscreen().finally(() => {
-					if(game.projectDesc.screenOrientation !== 'auto') {
+					if (game.projectDesc.screenOrientation !== 'auto') {
 						(screen.orientation as any).lock(game.projectDesc.screenOrientation);
 					}
 				});
 			}
 			game._fireNextOnResizeImmediately();
-			if(game.projectDesc.screenOrientation !== 'auto') {
+			if (game.projectDesc.screenOrientation !== 'auto') {
 				(screen.orientation as any).lock(game.projectDesc.screenOrientation);
 			}
-		} catch(err) { } // eslint-disable-line no-empty
+		} catch (err) { } // eslint-disable-line no-empty
 	}
 
 	static toggle() {
-		if(FullScreen.isFullscreen) {
+		if (FullScreen.isFullscreen) {
 			FullScreen.close();
 		} else {
 			FullScreen.open();
@@ -53,7 +53,7 @@ export default class FullScreen {
 
 	static _closeInner() {
 		game._fireNextOnResizeImmediately();
-		if(document.exitFullscreen) {
+		if (document.exitFullscreen) {
 			document.exitFullscreen();
 		}
 	}

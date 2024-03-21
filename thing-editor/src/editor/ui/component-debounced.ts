@@ -1,10 +1,10 @@
-import type { ComponentChild } from "preact";
-import { Component } from "preact";
+import type { ComponentChild } from 'preact';
+import { Component } from 'preact';
 
 export default class ComponentDebounced<P = object, S = object> extends Component<P, S> {
 	private _refreshTimeout = 0;
 	refresh() {
-		if(!this._refreshTimeout) {
+		if (!this._refreshTimeout) {
 			this._refreshTimeout = window.setTimeout(() => {
 				this._refreshTimeout = 0;
 				this.forceUpdate();
@@ -13,14 +13,14 @@ export default class ComponentDebounced<P = object, S = object> extends Componen
 	}
 
 	componentDidUpdate() {
-		if(this._refreshTimeout) {
+		if (this._refreshTimeout) {
 			clearTimeout(this._refreshTimeout);
 			this._refreshTimeout = 0;
 		}
 	}
 
 	componentWillUnmount(): void {
-		if(this._refreshTimeout) {
+		if (this._refreshTimeout) {
 			clearInterval(this._refreshTimeout);
 		}
 	}

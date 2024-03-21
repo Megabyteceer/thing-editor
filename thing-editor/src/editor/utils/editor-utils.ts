@@ -1,29 +1,29 @@
-import { Container, MIPMAP_MODES, Point, Sprite, WRAP_MODES } from "pixi.js";
-import R, { renderClass } from "thing-editor/src/editor/preact-fabrics";
-import type { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
-import DataPathFixer from "thing-editor/src/editor/utils/data-path-fixer";
-import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import exportAsPng from "thing-editor/src/editor/utils/export-as-png";
-import getParentWhichHideChildren from "thing-editor/src/editor/utils/get-parent-with-hidden-children";
-import increaseNumberInName from "thing-editor/src/editor/utils/increase-number-in-name";
-import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib, { constructRecursive } from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import { Container, MIPMAP_MODES, Point, Sprite, WRAP_MODES } from 'pixi.js';
+import R, { renderClass } from 'thing-editor/src/editor/preact-fabrics';
+import type { EditablePropertyDescRaw } from 'thing-editor/src/editor/props-editor/editable';
+import DataPathFixer from 'thing-editor/src/editor/utils/data-path-fixer';
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import exportAsPng from 'thing-editor/src/editor/utils/export-as-png';
+import getParentWhichHideChildren from 'thing-editor/src/editor/utils/get-parent-with-hidden-children';
+import increaseNumberInName from 'thing-editor/src/editor/utils/increase-number-in-name';
+import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib, { constructRecursive } from 'thing-editor/src/engine/lib';
+import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
-import type { ComponentChild } from "preact";
-import type { FileDescClass } from "thing-editor/src/editor/fs";
+import type { ComponentChild } from 'preact';
+import type { FileDescClass } from 'thing-editor/src/editor/fs';
 
-import { regeneratePrefabsTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
-import loadSafeInstanceByClassName from "thing-editor/src/editor/utils/load-safe-instance-by-class-name";
+import { regeneratePrefabsTypings } from 'thing-editor/src/editor/utils/generate-editor-typings';
+import loadSafeInstanceByClassName from 'thing-editor/src/editor/utils/load-safe-instance-by-class-name';
 
 const prefabNameFilter = /[^a-zA-Z\-\/0-9_]/g;
 
 const cachedImages = new Set();
 
 const onPreviewButtonClick = (o: Container) => {
-	if(o.__nodeExtendData.__isPreviewMode) {
+	if (o.__nodeExtendData.__isPreviewMode) {
 		editorUtils.exitPreviewMode(o);
 	} else {
 		editorUtils.goToPreviewMode(o);
@@ -41,33 +41,33 @@ const classNamePropertyDescriptor = {
 export namespace editorUtils {
 
 	export const findInvisibleParent = (o: Container): Container | undefined => {
-		if(!o) {
+		if (!o) {
 			return o;
 		}
-		if(!o.visible || o.alpha < 0.01 || o.scale.x < 0.001 || o.scale.y < 0.001 || (game.__EDITOR_mode && o.__hideInEditor) || (o instanceof Sprite && o.image === 'EMPTY' && o === game.editor.selection[0])) {
+		if (!o.visible || o.alpha < 0.01 || o.scale.x < 0.001 || o.scale.y < 0.001 || (game.__EDITOR_mode && o.__hideInEditor) || (o instanceof Sprite && o.image === 'EMPTY' && o === game.editor.selection[0])) {
 			return o;
 		}
-		if(o.parent === game.stage) {
+		if (o.parent === game.stage) {
 			return;
 		}
 		return findInvisibleParent(o.parent);
 	};
 
 	export const isInModal = (o: EventTarget | HTMLElement | null) => {
-		if(o) {
+		if (o) {
 			return (o as HTMLElement).closest('.modal-body');
 		}
 	};
 
 	export const exitPreviewMode = (o: Container) => {
-		if(!o.__nodeExtendData.__isPreviewMode) return;
+		if (!o.__nodeExtendData.__isPreviewMode) return;
 		editorEvents.off('beforePropertyChanged', o.__exitPreviewMode!);
 		o.__exitPreviewMode!();
 		o.__nodeExtendData.__isPreviewMode = false;
 	};
 
 	export const goToPreviewMode = (o: Container) => {
-		if(o.__nodeExtendData.__isPreviewMode) return;
+		if (o.__nodeExtendData.__isPreviewMode) return;
 		editorEvents.on('beforePropertyChanged', o.__exitPreviewMode!);
 		o.__goToPreviewMode!();
 		o.__nodeExtendData.__isPreviewMode = true;
@@ -81,14 +81,14 @@ export namespace editorUtils {
 
 		const editor = game.editor;
 
-		if((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
+		if ((editor.selection.length > 0) && (editor.selection[0] !== game.currentContainer)) {
 
 			DataPathFixer.rememberPathReferences();
 
 			let p = editor.selection[0].parent;
 			let i = p.getChildIndex(editor.selection[0]);
 
-			while(editor.selection.length > 0) {
+			while (editor.selection.length > 0) {
 				let o = editor.selection[0];
 				Lib.__invalidateSerializationCache(o.parent);
 				o.remove();
@@ -96,19 +96,19 @@ export namespace editorUtils {
 
 			let isAnotherNodeSelected = false;
 
-			while(i < p.children.length) {
+			while (i < p.children.length) {
 				let c = p.getChildAt(i++);
-				if(!getParentWhichHideChildren(c, true)) {
+				if (!getParentWhichHideChildren(c, true)) {
 					editor.ui.sceneTree.selectInTree(c);
 					isAnotherNodeSelected = true;
 					break;
 				}
 			}
 			i--;
-			if(!isAnotherNodeSelected) {
-				while(i >= 0) {
+			if (!isAnotherNodeSelected) {
+				while (i >= 0) {
 					let c = p.getChildAt(i--);
-					if(!getParentWhichHideChildren(c, true)) {
+					if (!getParentWhichHideChildren(c, true)) {
 						editor.ui.sceneTree.selectInTree(c);
 						isAnotherNodeSelected = true;
 						break;
@@ -116,7 +116,7 @@ export namespace editorUtils {
 				}
 			}
 
-			if(!isAnotherNodeSelected && (p !== game.stage)) {
+			if (!isAnotherNodeSelected && (p !== game.stage)) {
 				editor.ui.sceneTree.selectInTree(p);
 			}
 
@@ -128,12 +128,12 @@ export namespace editorUtils {
 	};
 
 	export const centralizeObjectToContent = (o: Container) => {
-		if(!o.children.length) {
+		if (!o.children.length) {
 			return;
 		}
 		let b = o.getBounds();
 		let p;
-		if(b.width > 0 || b.height > 0) {
+		if (b.width > 0 || b.height > 0) {
 			let b = o.getBounds();
 			let midX = b.x + b.width / 2;
 			let midY = b.y + b.height / 2;
@@ -141,13 +141,13 @@ export namespace editorUtils {
 			o.parent.toLocal(p, undefined, p);
 		} else {
 			let midX = 0;
-			for(let c of o.children) {
+			for (let c of o.children) {
 				midX += c.x;
 			}
 			midX /= o.children.length;
 
 			let midY = 0;
-			for(let c of o.children) {
+			for (let c of o.children) {
 				midY += c.y;
 			}
 			midY /= o.children.length;
@@ -176,7 +176,7 @@ export namespace editorUtils {
 
 
 	export const clone = () => {
-		if(game.editor.selection.some((o) => o.parent === game.stage)) {
+		if (game.editor.selection.some((o) => o.parent === game.stage)) {
 			game.editor.ui.modal.showInfo('Can not clone root object', '', 30017);
 			return;
 		}
@@ -192,10 +192,10 @@ export namespace editorUtils {
 
 			let cloneExData = clone.__nodeExtendData;
 			let exData = o.__nodeExtendData;
-			if(exData.hidePropsEditor) {
+			if (exData.hidePropsEditor) {
 				cloneExData.hidePropsEditor = exData.hidePropsEditor;
 			}
-			if(exData.noSerialize) {
+			if (exData.noSerialize) {
 				cloneExData.noSerialize = exData.noSerialize;
 			}
 			cloneExData.__isJustCloned = true;
@@ -203,12 +203,12 @@ export namespace editorUtils {
 			clone.name = increaseNumberInName(clone.name);
 
 			let i = o.parent.children.indexOf(o) + 1;
-			while(o.parent.children[i] && ((allCloned.indexOf(o.parent.children[i]) >= 0) || o.parent.children[i].__nodeExtendData.isSelected)) {
+			while (o.parent.children[i] && ((allCloned.indexOf(o.parent.children[i]) >= 0) || o.parent.children[i].__nodeExtendData.isSelected)) {
 				i++;
 			}
 			o.parent.addChildAt(clone, i);
 
-			if(!game.__EDITOR_mode) {
+			if (!game.__EDITOR_mode) {
 				constructRecursive(clone);
 			}
 			Lib.__invalidateSerializationCache(clone);
@@ -216,14 +216,14 @@ export namespace editorUtils {
 		});
 
 		game.editor.selection.clearSelection();
-		for(let c of allCloned) {
+		for (let c of allCloned) {
 			game.editor.selection.add(c);
 		}
 
 		game.editor.disableFieldsCache = false;
 
 		DataPathFixer.validatePathReferences();
-		for(let c of allCloned) {
+		for (let c of allCloned) {
 			let cloneExData = c.__nodeExtendData;
 			cloneExData.__isJustCloned = false;
 		}
@@ -233,14 +233,14 @@ export namespace editorUtils {
 
 	export const onDeleteClick = () => {
 
-		if((game.editor.selection.length > 0) && (game.editor.selection[0] !== game.currentContainer)) {
+		if ((game.editor.selection.length > 0) && (game.editor.selection[0] !== game.currentContainer)) {
 
 			DataPathFixer.rememberPathReferences();
 
 			let p = game.editor.selection[0].parent;
 			let i = p.getChildIndex(game.editor.selection[0]);
 
-			while(game.editor.selection.length > 0) {
+			while (game.editor.selection.length > 0) {
 				let o = game.editor.selection[0];
 				Lib.__invalidateSerializationCache(o.parent);
 				o.remove();
@@ -248,19 +248,19 @@ export namespace editorUtils {
 
 			let isNextChildSelected = false;
 
-			while(i < p.children.length) {
+			while (i < p.children.length) {
 				let c = p.getChildAt(i++);
-				if(!getParentWhichHideChildren(c, true)) {
+				if (!getParentWhichHideChildren(c, true)) {
 					game.editor.ui.sceneTree.selectInTree(c);
 					isNextChildSelected = true;
 					break;
 				}
 			}
 			i--;
-			if(!isNextChildSelected) {
-				while(i >= 0) {
+			if (!isNextChildSelected) {
+				while (i >= 0) {
 					let c = p.getChildAt(i--);
-					if(!getParentWhichHideChildren(c, true)) {
+					if (!getParentWhichHideChildren(c, true)) {
 						game.editor.ui.sceneTree.selectInTree(c);
 						isNextChildSelected = true;
 						break;
@@ -268,7 +268,7 @@ export namespace editorUtils {
 				}
 			}
 
-			if(!isNextChildSelected && (p !== game.stage)) {
+			if (!isNextChildSelected && (p !== game.stage)) {
 				game.editor.ui.sceneTree.selectInTree(p);
 			}
 
@@ -286,10 +286,10 @@ export namespace editorUtils {
 				return val.replace(prefabNameFilter, '-');
 			},
 			(val) => { //accept
-				if(Lib.prefabs.hasOwnProperty(val)) {
-					return "Prefab with such name already exists";
+				if (Lib.prefabs.hasOwnProperty(val)) {
+					return 'Prefab with such name already exists';
 				}
-				if(val.endsWith('/') || val.startsWith('/')) {
+				if (val.endsWith('/') || val.startsWith('/')) {
 					return 'name can not begin or end with "/"';
 				}
 			}
@@ -300,30 +300,30 @@ export namespace editorUtils {
 
 		const isContainer = container instanceof Container;
 
-		if(container instanceof Scene) {
+		if (container instanceof Scene) {
 			game.editor.ui.modal.showInfo('You can not save Scene as prefab. Please select some object from scene first.', undefined, 32037);
 		} else {
 
-			game.editor.chooseAssetsFolder("Where to save prefab?").then((chosenFolder) => {
+			game.editor.chooseAssetsFolder('Where to save prefab?').then((chosenFolder) => {
 
-				if(!chosenFolder!) {
+				if (!chosenFolder!) {
 					return;
 				}
 
 				let defaultPrefabName = '';
-				if(PrefabEditor.currentPrefabName) {
+				if (PrefabEditor.currentPrefabName) {
 					let a = PrefabEditor.currentPrefabName.split('/');
 					a.pop();
 					defaultPrefabName = a.join('/');
-					if(defaultPrefabName) {
+					if (defaultPrefabName) {
 						defaultPrefabName += '/';
 					}
 				}
 
 				enterPrefabName(defaultPrefabName, R.span(null, 'Enter name for new prefab: ', isContainer ? R.sceneNode(container) : renderClass(container))).then((enteredName) => {
-					if(enteredName) {
+					if (enteredName) {
 						const fin = (doNotOpenToEdit = false) => {
-							if(isContainer) {
+							if (isContainer) {
 								Lib.__savePrefab(container, enteredName, chosenFolder);
 							} else {
 								const instance = loadSafeInstanceByClassName(container.asset.__className);
@@ -331,12 +331,12 @@ export namespace editorUtils {
 								Lib.destroyObjectAndChildren(instance);
 							}
 							regeneratePrefabsTypings();
-							if(!doNotOpenToEdit) {
+							if (!doNotOpenToEdit) {
 								PrefabEditor.editPrefab(enteredName);
 							}
 						};
 
-						if(container !== game.currentContainer && isContainer) {
+						if (container !== game.currentContainer && isContainer) {
 							game.editor.ui.modal.showEditorQuestion('Reference?', 'Turn selected in to prefab reference?', () => {
 								fin(true);
 								Lib.__preparePrefabReference(container, enteredName);
@@ -353,14 +353,14 @@ export namespace editorUtils {
 	};
 
 	export const isCanBeUnwrapped = () => {
-		if(game.editor.selection.length !== 1) {
+		if (game.editor.selection.length !== 1) {
 			return;
 		}
 		let o = game.editor.selection[0];
-		if((o.parent === game.stage) && !game.__EDITOR_mode) {
+		if ((o.parent === game.stage) && !game.__EDITOR_mode) {
 			return;
 		}
-		if(o === game.currentContainer) {
+		if (o === game.currentContainer) {
 			return !(o instanceof Scene) && (o.children.length === 1);
 		}
 		return o.children.length > 0;
@@ -369,7 +369,7 @@ export namespace editorUtils {
 	export const onExportAsPngClick = async () => {
 		let o = game.editor.selection[0];
 		let blob = await exportAsPng(o);
-		if(blob) {
+		if (blob) {
 			let a = document.createElement('a');
 			document.body.append(a);
 			a.download = (o.name || 'image') + '.png';
@@ -377,12 +377,12 @@ export namespace editorUtils {
 			a.click();
 			a.remove();
 		} else {
-			game.editor.ui.modal.showModal("Nothing visible selected to export.");
+			game.editor.ui.modal.showModal('Nothing visible selected to export.');
 		}
 	};
 
 	export const onUnwrapClick = () => {
-		if(isCanBeUnwrapped()) {
+		if (isCanBeUnwrapped()) {
 
 			DataPathFixer.rememberPathReferences();
 
@@ -394,18 +394,18 @@ export namespace editorUtils {
 
 			game.editor.selection.clearSelection();
 
-			if(isPrefab && o.children.length !== 1) {
-				game.editor.ui.modal.showError("To unwrap prefab it is should have exactly one children.", 30005);
+			if (isPrefab && o.children.length !== 1) {
+				game.editor.ui.modal.showError('To unwrap prefab it is should have exactly one children.', 30005);
 				return;
 			}
 
-			while(o.children.length > 0) {
+			while (o.children.length > 0) {
 				let c = o.getChildAt(o.children.length - 1);
 				c.detachFromParent();
 
 				parent.toLocal(c, o, c);
 
-				if(isPrefab) {
+				if (isPrefab) {
 					c.name = o.name;
 					Lib.__invalidateSerializationCache(c);
 					game.__setCurrentContainerContent(c);
@@ -418,7 +418,7 @@ export namespace editorUtils {
 			}
 
 
-			if(!isPrefab) {
+			if (!isPrefab) {
 				Lib.__invalidateSerializationCache(o.parent);
 				o.remove();
 			}
@@ -431,7 +431,7 @@ export namespace editorUtils {
 
 	export const onCopyClick = () => {
 
-		if(game.editor.selection.length > 0) {
+		if (game.editor.selection.length > 0) {
 			const data = game.editor.selection.map(Lib.__serializeObject);
 			let assets = new Set<string>();
 
@@ -449,15 +449,15 @@ export namespace editorUtils {
 	export const wrap = (nodes: Container[], wrapper: Container) => {
 		const o = nodes[0];
 		let parent = o.parent;
-		for(let c of nodes) {
-			if(c.parent !== parent) {
+		for (let c of nodes) {
+			if (c.parent !== parent) {
 				game.editor.ui.modal.showInfo('Selected object should have same parent to be wrapped.', 'Can not wrap', 30012);
 				return;
 			}
 		}
 
-		if(o instanceof Scene) {
-			game.editor.ui.modal.showInfo("Scene can not be wrapped, you can change scene's type instead.", 'Can not wrap', 30013);
+		if (o instanceof Scene) {
+			game.editor.ui.modal.showInfo('Scene can not be wrapped, you can change scene\'s type instead.', 'Can not wrap', 30013);
 			return;
 		}
 		DataPathFixer.rememberPathReferences();
@@ -467,10 +467,10 @@ export namespace editorUtils {
 
 		let indexToAdd = parent.getChildIndex(o);
 
-		for(let c of nodes) {
+		for (let c of nodes) {
 			wrapper.addChild(c);
 		}
-		if(isPrefab) {
+		if (isPrefab) {
 			wrapper.name = prefabName;
 			o.name = null;
 			let data = Lib.__serializeObject(wrapper);
@@ -490,21 +490,21 @@ export namespace editorUtils {
 	};
 
 	export const wrapSelected = (Class?: SourceMappedConstructor, prefabName?: string) => {
-		assert(game.__EDITOR_mode, "Can not wrap in running mode.");
+		assert(game.__EDITOR_mode, 'Can not wrap in running mode.');
 
-		if(game.editor.selection.length < 1) {
+		if (game.editor.selection.length < 1) {
 			assert(false, 'Nothing selected to be wrapped.');
-		} else if((!Class && !prefabName) && (!clipboard.data || clipboard.data.data.length !== 1)) {
+		} else if ((!Class && !prefabName) && (!clipboard.data || clipboard.data.data.length !== 1)) {
 			game.editor.ui.status.error('Exactly one container should be copied in to clipBoard to wrap selection with it.');
 		} else {
 			let a = game.editor.selection.slice(0);
 			let w;
-			if(Class) {
+			if (Class) {
 				w = loadSafeInstanceByClassName(Class.__className, true);
 				wrap(a, w);
 			} else {
 
-				if(prefabName) {
+				if (prefabName) {
 					w = Lib.__loadPrefabReference(prefabName);
 				} else {
 					game.editor.disableFieldsCache = true;
@@ -526,7 +526,7 @@ export namespace editorUtils {
 	};
 
 	export const onPasteClick = async () => {
-		if(canPaste()) {
+		if (canPaste()) {
 
 			DataPathFixer.rememberPathReferences();
 
@@ -534,11 +534,11 @@ export namespace editorUtils {
 			let added: Container[] = [];
 
 			let insertTo = game.editor.selection.slice();
-			if(insertTo.length === 0) {
+			if (insertTo.length === 0) {
 				insertTo.push(game.currentContainer);
 			}
 			game.editor.selection.clearSelection();
-			for(let selected of insertTo) {
+			for (let selected of insertTo) {
 				clipboard.data.data.some((data) => {
 					let o = Lib._deserializeObject(data);
 					added.push(o);
@@ -548,7 +548,7 @@ export namespace editorUtils {
 			}
 			DataPathFixer.validatePathReferences();
 
-			while(added.length > 0) {
+			while (added.length > 0) {
 				let o = added.shift() as Container;
 				o.__nodeExtendData.__isJustCloned = false;
 			}
@@ -564,7 +564,7 @@ export namespace editorUtils {
 
 	export const onBringUpClick = () => {
 		let i = 0;
-		while(onMoveUpClick(true) && i++ < 100000); //moves selected object up until its become top
+		while (onMoveUpClick(true) && i++ < 100000); //moves selected object up until its become top
 		game.editor.sceneModified(true);
 		game.editor.refreshTreeViewAndPropertyEditor();
 	};
@@ -573,11 +573,11 @@ export namespace editorUtils {
 		let ret = false;
 
 		game.editor.selection.some((o) => {
-			if(o.parent !== game.stage) {
+			if (o.parent !== game.stage) {
 				let i = o.parent.getChildIndex(o);
-				if(i > 0) {
+				if (i > 0) {
 					let upper = o.parent.getChildAt(i - 1);
-					if(!upper.__nodeExtendData.isSelected) {
+					if (!upper.__nodeExtendData.isSelected) {
 						o.parent.swapChildren(o, upper);
 						Lib.__invalidateSerializationCache(o.parent);
 						ret = true;
@@ -585,7 +585,7 @@ export namespace editorUtils {
 				}
 			}
 		});
-		if(doNotSaveHistoryState !== true) {
+		if (doNotSaveHistoryState !== true) {
 			game.editor.sceneModified(true);
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
@@ -593,9 +593,9 @@ export namespace editorUtils {
 	};
 
 	export const preCacheImages = (preactContent?: any) => {
-		if(preactContent && (preactContent as any).props) {
-			if(preactContent.type === 'img') {
-				if(!cachedImages.has(preactContent.props.src)) {
+		if (preactContent && (preactContent as any).props) {
+			if (preactContent.type === 'img') {
+				if (!cachedImages.has(preactContent.props.src)) {
 					cachedImages.add(preactContent.props.src);
 					const img = new Image();
 					img.src = preactContent.props.src;
@@ -603,7 +603,7 @@ export namespace editorUtils {
 					img.style.display = 'none';
 				}
 			}
-			if(preactContent.props.children) {
+			if (preactContent.props.children) {
 				preactContent.props.children.forEach(preCacheImages);
 			}
 		}
@@ -614,11 +614,11 @@ export namespace editorUtils {
 		let a = game.editor.selection.slice(0);
 		a.reverse();
 		a.some((o) => {
-			if(o.parent !== game.stage) {
+			if (o.parent !== game.stage) {
 				let i = o.parent.getChildIndex(o);
-				if(i < (o.parent.children.length - 1)) {
+				if (i < (o.parent.children.length - 1)) {
 					let lower = o.parent.getChildAt(i + 1);
-					if(!lower.__nodeExtendData.isSelected) {
+					if (!lower.__nodeExtendData.isSelected) {
 						o.parent.swapChildren(o, lower);
 						Lib.__invalidateSerializationCache(o.parent);
 						ret = true;
@@ -626,7 +626,7 @@ export namespace editorUtils {
 				}
 			}
 		});
-		if(doNotSaveHistoryState !== true) {
+		if (doNotSaveHistoryState !== true) {
 			game.editor.sceneModified(true);
 			game.editor.refreshTreeViewAndPropertyEditor();
 		}
@@ -634,7 +634,7 @@ export namespace editorUtils {
 	};
 	export const onBringDownClick = () => {
 		let i = 0;
-		while(onMoveDownClick(true) && i++ < 100000); //move selected element down until its become bottom.
+		while (onMoveDownClick(true) && i++ < 100000); //move selected element down until its become bottom.
 		game.editor.sceneModified(true);
 		game.editor.refreshTreeViewAndPropertyEditor();
 	};
@@ -643,8 +643,8 @@ export namespace editorUtils {
 	export const __setTextureSettingsBits = (name: string, bits: number, mask = 0xffffffff) => {
 		let current = Lib._getTextureSettingsBits(name, 0xffffffff);
 		let n = (current & (mask ^ 0xffffffff)) | bits;
-		if(n !== current) {
-			if(n === 0) {
+		if (n !== current) {
+			if (n === 0) {
 				delete game.projectDesc.loadOnDemandTextures[name];
 			} else {
 				game.projectDesc.loadOnDemandTextures[name] = n;
@@ -652,12 +652,12 @@ export namespace editorUtils {
 			game.editor.saveProjectDesc();
 
 			const TEXTURE_BITS = 4 | 8 | 16;
-			if(Lib.hasTexture(name) && ((current & TEXTURE_BITS) !== (n & TEXTURE_BITS))) {
+			if (Lib.hasTexture(name) && ((current & TEXTURE_BITS) !== (n & TEXTURE_BITS))) {
 				let baseTexture = Lib.getTexture(name).baseTexture;
 				baseTexture.mipmap = (n & 4) ? MIPMAP_MODES.ON : MIPMAP_MODES.OFF;
-				if(n & 16) {
+				if (n & 16) {
 					baseTexture.wrapMode = WRAP_MODES.MIRRORED_REPEAT;
-				} else if(n & 8) {
+				} else if (n & 8) {
 					baseTexture.wrapMode = WRAP_MODES.REPEAT;
 				} else {
 					baseTexture.wrapMode = WRAP_MODES.CLAMP;

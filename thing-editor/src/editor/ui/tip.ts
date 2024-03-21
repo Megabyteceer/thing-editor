@@ -1,7 +1,7 @@
-import type { ClassAttributes } from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import game from "thing-editor/src/engine/game";
+import type { ClassAttributes } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import game from 'thing-editor/src/engine/game';
 
 const tipProps = { className: 'tip-container' };
 
@@ -36,7 +36,7 @@ export default class Tip extends Component<TipProps> {
 	}
 
 	render() {
-		if(game.editor.settings.getItem('tip-discard-' + this.props.id)) {
+		if (game.editor.settings.getItem('tip-discard-' + this.props.id)) {
 			return R.span();
 		}
 		return R.span({ className: 'tip-icon', onMouseDown: this.onMouseDown }, '?');

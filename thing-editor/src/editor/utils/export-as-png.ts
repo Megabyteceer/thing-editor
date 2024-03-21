@@ -1,15 +1,15 @@
-import type { Container } from "pixi.js";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
+import type { Container } from 'pixi.js';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 
 export default async function exportAsPng(object: Container, width = 0, height = 0, cropAlphaThreshold = 1) {
 
-	if(object.width > 0 && object.height > 0) {
+	if (object.width > 0 && object.height > 0) {
 		let tmpVisible = object.visible;
 		object.visible = true;
 		let oldParent = object.parent;
 		let oldIndex = 0;
-		if(oldParent) {
+		if (oldParent) {
 			oldIndex = oldParent.children.indexOf(object);
 		}
 		let f = object.filters;
@@ -30,64 +30,64 @@ export default async function exportAsPng(object: Container, width = 0, height =
 		let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
 		let cropTop = 0;
-		while(cropTop < canvas.height) {
+		while (cropTop < canvas.height) {
 			let isEmptyLine = true;
 			let y = cropTop * canvas.width * 4 + 3;
-			for(let x = 0; x < canvas.width; x++) {
-				if(imageData[x * 4 + y] >= cropAlphaThreshold) {
+			for (let x = 0; x < canvas.width; x++) {
+				if (imageData[x * 4 + y] >= cropAlphaThreshold) {
 					isEmptyLine = false;
 					break;
 				}
 			}
-			if(!isEmptyLine) {
+			if (!isEmptyLine) {
 				break;
 			}
 			cropTop++;
 		}
 
 		let cropBottom = 0;
-		while(cropBottom < canvas.height) {
+		while (cropBottom < canvas.height) {
 			let isEmptyLine = true;
 			let y = (canvas.height - 1 - cropBottom) * canvas.width * 4 + 3;
-			for(let x = 0; x < canvas.width; x++) {
-				if(imageData[x * 4 + y] >= cropAlphaThreshold) {
+			for (let x = 0; x < canvas.width; x++) {
+				if (imageData[x * 4 + y] >= cropAlphaThreshold) {
 					isEmptyLine = false;
 					break;
 				}
 			}
-			if(!isEmptyLine) {
+			if (!isEmptyLine) {
 				break;
 			}
 			cropBottom++;
 		}
 
 		let cropLeft = 0;
-		while(cropLeft < canvas.width) {
+		while (cropLeft < canvas.width) {
 			let isEmptyLine = true;
 			let x = cropLeft * 4 + 3;
-			for(let y = 0; y < canvas.height; y++) {
-				if(imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
+			for (let y = 0; y < canvas.height; y++) {
+				if (imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
 					isEmptyLine = false;
 					break;
 				}
 			}
-			if(!isEmptyLine) {
+			if (!isEmptyLine) {
 				break;
 			}
 			cropLeft++;
 		}
 
 		let cropRight = 0;
-		while(cropRight < canvas.width) {
+		while (cropRight < canvas.width) {
 			let isEmptyLine = true;
 			let x = (canvas.width - 1 - cropRight) * 4 + 3;
-			for(let y = 0; y < canvas.height; y++) {
-				if(imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
+			for (let y = 0; y < canvas.height; y++) {
+				if (imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
 					isEmptyLine = false;
 					break;
 				}
 			}
-			if(!isEmptyLine) {
+			if (!isEmptyLine) {
 				break;
 			}
 			cropRight++;
@@ -103,7 +103,7 @@ export default async function exportAsPng(object: Container, width = 0, height =
 			return b2;
 		};
 
-		if(width > 0 && height > 0) {
+		if (width > 0 && height > 0) {
 
 			b2.x = 0;
 			b2.y = 0;
@@ -124,12 +124,12 @@ export default async function exportAsPng(object: Container, width = 0, height =
 			b2.height -= cropTop + cropBottom;
 			b2.x += cropLeft;
 			b2.width -= cropLeft + cropRight;
-			if(b2.x < 0) {
+			if (b2.x < 0) {
 				b2.x = Math.floor(b2.x);
 			} else {
 				b2.x = Math.ceil(b2.x);
 			}
-			if(b2.y < 0) {
+			if (b2.y < 0) {
 				b2.y = Math.floor(b2.y);
 			} else {
 				b2.y = Math.ceil(b2.y);
@@ -145,7 +145,7 @@ export default async function exportAsPng(object: Container, width = 0, height =
 
 		delete (c2 as any).getLocalBounds;
 		object.filters = f;
-		if(oldParent) {
+		if (oldParent) {
 			oldParent.addChildAt(object, oldIndex);
 		} else {
 			object.detachFromParent();

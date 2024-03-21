@@ -4,7 +4,7 @@ import Lib from 'thing-editor/src/engine/lib';
 const IS_SKIN_MODIFIED = '__is-skin-modified';
 
 function message(msg: string) {
-	if(game.classes.FlyText) {
+	if (game.classes.FlyText) {
 		game.classes.FlyText.flyText(msg, game.mouse.x, game.mouse.y);
 	} else {
 		alert(msg);
@@ -27,8 +27,8 @@ interface PackageData {
 let fileInput: HTMLInputElement;
 let func: () => void;
 function clickElem(elem: HTMLInputElement) {
-	const eventMouse = document.createEvent("MouseEvents");
-	eventMouse.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	const eventMouse = document.createEvent('MouseEvents');
+	eventMouse.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 	elem.dispatchEvent(eventMouse);
 }
 
@@ -36,8 +36,8 @@ export default class IndexedDBUtils {
 
 	static save(name: string, type: string, data?: IndexedDBRecord | KeyedObject) {
 		const id = name + '::' + type;
-		if(JSON.stringify(dataStore[id]) !== JSON.stringify(data)) {
-			if(typeof data === 'undefined') {
+		if (JSON.stringify(dataStore[id]) !== JSON.stringify(data)) {
+			if (typeof data === 'undefined') {
 				delete dataStore[id];
 				getTransaction().then(db => db.delete(id));
 			} else {
@@ -55,7 +55,7 @@ export default class IndexedDBUtils {
 
 	private static clear() {
 		Object.keys(game.settings.data).forEach((key) => {
-			if(key.startsWith('IDB_')) {
+			if (key.startsWith('IDB_')) {
 				game.settings.removeItem(key);
 			}
 		});
@@ -73,11 +73,11 @@ export default class IndexedDBUtils {
 
 	static export() {
 
-		const a = document.createElement("a");
+		const a = document.createElement('a');
 		const content = this.getRawData();
-		if(content) {
+		if (content) {
 			const file = new Blob([content], { type: 'text/plain' });
-			a.href = URL.createObjectURL(file) + "#_Export_skin";
+			a.href = URL.createObjectURL(file) + '#_Export_skin';
 			a.download = game.settings.getItem('IDB_skin-name', 'New-skin.json');
 			a.click();
 			this.resetIsSkinModified();
@@ -85,13 +85,13 @@ export default class IndexedDBUtils {
 	}
 
 	static getRawData() {
-		if(!Object.keys(dataStore).length) {
+		if (!Object.keys(dataStore).length) {
 			message('no data to export');
 			return;
 		}
 		const settings = {} as KeyedObject;
 		Object.keys(game.settings.data).forEach((key) => {
-			if(key.startsWith('IDB_')) {
+			if (key.startsWith('IDB_')) {
 				settings[key] = game.settings.getItem(key);
 			}
 		});
@@ -112,19 +112,19 @@ export default class IndexedDBUtils {
 
 	static async importRawData(data: string, fileName?: string) {
 		try {
-			if(Lib.hasPrefab('final-fader')) {
+			if (Lib.hasPrefab('final-fader')) {
 				game.showModal('final-fader');
 			}
 			const content = JSON.parse(data) as PackageData;
-			if(content.type !== 'indexed-db-utils-dump') {
+			if (content.type !== 'indexed-db-utils-dump') {
 				message('Wrong file format.');
 				return;
 			}
-			if(fileName) {
+			if (fileName) {
 				content.settings['IDB_skin-name'] = fileName;
 			}
 			await this.setFullData(content);
-		} catch(er: any) {
+		} catch (er: any) {
 			game.hideModal();
 			message('import error: ' + er.message);
 		}
@@ -140,7 +140,7 @@ export default class IndexedDBUtils {
 				});
 			});
 		}));
-		for(const key in data.settings) {
+		for (const key in data.settings) {
 			game.settings.setItem(key, data.settings[key]);
 		}
 		window.location.reload();
@@ -148,7 +148,7 @@ export default class IndexedDBUtils {
 
 	private static async askAboutUnsavedChanges(okMessage: string) {
 		return new Promise<void>((resolve) => {
-			if(this.isSkinModified()) {
+			if (this.isSkinModified()) {
 				game.showQuestion('Are you sure?', 'Current skin has unsaved changes.', okMessage, resolve);
 			} else {
 				resolve();
@@ -170,11 +170,11 @@ export default class IndexedDBUtils {
 		await this.setFullData({ settings: {}, data: {}, type: 'indexed-db-utils-dump' });
 	}
 
-	static async openFile(key: string, type = 'sound', accept = "audio/x-wav"): Promise<IndexedDBRecord> {
+	static async openFile(key: string, type = 'sound', accept = 'audio/x-wav'): Promise<IndexedDBRecord> {
 
 		const contents = await chooseFile(accept);
 
-		if(contents) {
+		if (contents) {
 			IndexedDBUtils.save(
 				key,
 				type,
@@ -185,11 +185,11 @@ export default class IndexedDBUtils {
 	}
 }
 
-async function chooseFile(accept = "audio/x-wav"): Promise<IndexedDBRecord> {
+async function chooseFile(accept = 'audio/x-wav'): Promise<IndexedDBRecord> {
 	return new Promise((resolve) => {
 		const readFile = (ev: InputEvent) => {
 			const file = (ev.target as HTMLInputElement).files![0];
-			if(!file) {
+			if (!file) {
 				return;
 			}
 			const reader = new FileReader();
@@ -201,14 +201,14 @@ async function chooseFile(accept = "audio/x-wav"): Promise<IndexedDBRecord> {
 				});
 
 			};
-			if(file.name.endsWith('.json')) {
+			if (file.name.endsWith('.json')) {
 				reader.readAsText(file);
 			} else {
 				reader.readAsDataURL(file);
 			}
 		};
-		if(!fileInput) {
-			fileInput = document.createElement("input");
+		if (!fileInput) {
+			fileInput = document.createElement('input');
 			fileInput.type = 'file';
 			document.body.appendChild(fileInput);
 			fileInput.style.display = 'none';
@@ -231,8 +231,8 @@ let db: IDBDatabase;
 
 function getTransaction(): Promise<IDBObjectStore> {
 	return new Promise((resolve) => {
-		const transaction = db.transaction("MyObjectStore", "readwrite");
-		resolve(transaction.objectStore("MyObjectStore"));
+		const transaction = db.transaction('MyObjectStore', 'readwrite');
+		resolve(transaction.objectStore('MyObjectStore'));
 
 		/*transaction.oncomplete = function () {
 			db.close();
@@ -243,12 +243,12 @@ function getTransaction(): Promise<IDBObjectStore> {
 
 window.addEventListener('game-will-init', () => {
 	game.loadingAdd('indexed-db');
-	//@ts-ignore 
+	//@ts-ignore
 	let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB as IDBFactory;
-	const openDB = indexedDB.open("DB" + game.projectDesc.id, 1);
+	const openDB = indexedDB.open('DB' + game.projectDesc.id, 1);
 
 	openDB.onupgradeneeded = function () {
-		openDB.result.createObjectStore("MyObjectStore", { keyPath: "id" });
+		openDB.result.createObjectStore('MyObjectStore', { keyPath: 'id' });
 	};
 
 	openDB.onsuccess = () => {
@@ -256,7 +256,7 @@ window.addEventListener('game-will-init', () => {
 		getTransaction().then(transaction => {
 			const req = transaction.getAllKeys();
 			req.onsuccess = () => {
-				for(const key of req.result) {
+				for (const key of req.result) {
 					const getData = transaction.get(key);
 					game.loadingAdd(key);
 					getData.onsuccess = function () {

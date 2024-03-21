@@ -1,7 +1,7 @@
 let filterAll = false;
 
 const filterWarnings = (args: string[]) => {
-	if(filterAll) {
+	if (filterAll) {
 		return true;
 	}
 	filterAll = args.some(a => a.includes('PixiJS Deprecation'));
@@ -16,13 +16,13 @@ console.groupEnd = () => {
 };
 const originalWarn = console.warn;
 console.warn = (...args: string[]) => {
-	if(!filterWarnings(args)) {
+	if (!filterWarnings(args)) {
 		originalWarn.apply(console, args);
 	}
 };
 const originalGroupCollapsed = console.groupCollapsed;
 console.groupCollapsed = (...args: string[]) => {
-	if(!filterWarnings(args)) {
+	if (!filterWarnings(args)) {
 		originalGroupCollapsed.apply(console, args);
 	}
 };
@@ -33,7 +33,7 @@ const filterDebug = (args: string[]) => {
 
 const originalDebug = console.debug;
 console.debug = (...args: string[]) => {
-	if(!filterDebug(args)) {
+	if (!filterDebug(args)) {
 		originalDebug.apply(console, args);
 	}
 };

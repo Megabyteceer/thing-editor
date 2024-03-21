@@ -1,8 +1,8 @@
-import type { Container } from "pixi.js";
-import R from "thing-editor/src/editor/preact-fabrics";
+import type { Container } from 'pixi.js';
+import R from 'thing-editor/src/editor/preact-fabrics';
 
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 let currentLanguageTable: KeyedMap<string> = {};
 /// #if EDITOR
@@ -27,26 +27,26 @@ interface TL extends LocalizationKeys {
 
 const L: TL = ((id: string, values?: KeyedObject): string => {
 	/// #if EDITOR
-	if(!currentLanguageTable.hasOwnProperty(id)) {
+	if (!currentLanguageTable.hasOwnProperty(id)) {
 		let fieldName: string;
 		const tryToFindOwner = () => {
 			let owner: Container | undefined;
 			game.forAllChildrenEverywhere((o: Container) => {
-				if(owner) {
+				if (owner) {
 					return;
 				}
 				let props = (o.constructor as SourceMappedConstructor).__editableProps;
-				for(let p of props) {
-					if(p.isTranslatableKey && (o as KeyedObject)[p.name] === id) {
+				for (let p of props) {
+					if (p.isTranslatableKey && (o as KeyedObject)[p.name] === id) {
 						fieldName = p.name;
 						owner = o;
 						return;
 					}
 				}
 			});
-			if(owner) {
+			if (owner) {
 				let tryToFixKey = game.editor.projectDesc.__localesNewKeysPrefix + id.split('.').pop();
-				if(currentLanguageTable.hasOwnProperty(tryToFixKey)) {
+				if (currentLanguageTable.hasOwnProperty(tryToFixKey)) {
 					game.editor.onObjectsPropertyChanged(owner, fieldName, tryToFixKey);
 					game.editor.ui.modal.notify('key changed to: ' + tryToFixKey);
 				}
@@ -59,9 +59,9 @@ const L: TL = ((id: string, values?: KeyedObject): string => {
 				}, 'Create');
 			}
 		};
-		if(!warnedIds.hasOwnProperty(id)) {
+		if (!warnedIds.hasOwnProperty(id)) {
 			warnedIds[id] = true;
-			game.editor.ui.status.warn("Translatable text key '" + id + "' is not exists.", 32031, tryToFindOwner);
+			game.editor.ui.status.warn('Translatable text key \'' + id + '\' is not exists.', 32031, tryToFindOwner);
 			window.setTimeout(() => {
 				warnedIds = {};
 			}, 1000);
@@ -70,16 +70,16 @@ const L: TL = ((id: string, values?: KeyedObject): string => {
 	/// #endif
 
 	let ret;
-	if(currentLanguageTable.hasOwnProperty(id)) {
+	if (currentLanguageTable.hasOwnProperty(id)) {
 		ret = currentLanguageTable[id];
-		if(L.messageProcessor) {
+		if (L.messageProcessor) {
 			ret = L.messageProcessor(ret, values);
 		}
 	} else {
 		ret = id;
 	}
-	if(values) {
-		for(let key in values) {
+	if (values) {
+		for (let key in values) {
 			ret = ret.replace(key, values[key]);
 		}
 
@@ -92,21 +92,21 @@ L.has = (id: string) => {
 };
 
 L.setCurrentLanguage = (languageId?: string) => {
-	if(!isLangDataLoaded) {
-		assert(languageId, "languageId expected.");
+	if (!isLangDataLoaded) {
+		assert(languageId, 'languageId expected.');
 		currentLanguageId = languageId!;
 		return;
 	}
-	if(currentLanguageId !== languageId) {
+	if (currentLanguageId !== languageId) {
 
-		if(languageId && languages.hasOwnProperty(languageId)) {
+		if (languageId && languages.hasOwnProperty(languageId)) {
 			currentLanguageId = languageId;
 		} else {
 			currentLanguageId = game.projectDesc.defaultLanguage;
-			if(window.navigator && navigator.languages) {
-				for(let l of navigator.languages) {
+			if (window.navigator && navigator.languages) {
+				for (let l of navigator.languages) {
 					l = l.split('-')[0];
-					if(languages.hasOwnProperty(l)) {
+					if (languages.hasOwnProperty(l)) {
 						currentLanguageId = l;
 						break;
 					}
@@ -120,20 +120,20 @@ L.setCurrentLanguage = (languageId?: string) => {
 
 L.setLanguagesAssets = (_languages: KeyedMap<KeyedMap<string>>) => {
 	isLangDataLoaded = true;
-	for(let langId in _languages) {
+	for (let langId in _languages) {
 		languages[langId] = Object.assign(languages[langId] || {}, _languages[langId]);
 	}
 	L.setCurrentLanguage();
 };
 
 L.refreshAllTextEverywhere = () => {
-	if(game.stage) {
+	if (game.stage) {
 		game.forAllChildrenEverywhere(refreshTranslatableText);
 	}
 };
 
 function refreshTranslatableText(o: any) {
-	if(o.onLanguageChanged) {
+	if (o.onLanguageChanged) {
 		o.onLanguageChanged();
 	}
 }
@@ -153,17 +153,17 @@ L._deserializeLanguage = (langSrc: KeyedObject): KeyedMap<string> => {
 };
 
 const deserializeEntry = (src: KeyedObject, output: KeyedMap<string>, path?: string) => {
-	for(let key in src) {
-		if(src.hasOwnProperty(key)) {
+	for (let key in src) {
+		if (src.hasOwnProperty(key)) {
 			let val = src[key];
-			if((typeof val) === 'string') {
-				if(path) {
+			if ((typeof val) === 'string') {
+				if (path) {
 					output[path + key] = src[key];
 				} else {
 					output[key] = src[key];
 				}
 			} else {
-				if(path) {
+				if (path) {
 					deserializeEntry(val, output, path + key + '.');
 				} else {
 					deserializeEntry(val, output, key + '.');

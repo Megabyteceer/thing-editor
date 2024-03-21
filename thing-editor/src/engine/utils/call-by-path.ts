@@ -1,11 +1,11 @@
-import type { Container } from "pixi.js";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "../game";
-import { pathDebugging, setValueByPath } from "./get-value-by-path";
+import type { Container } from 'pixi.js';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from '../game';
+import { pathDebugging, setValueByPath } from './get-value-by-path';
 
 const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
-	assert(this_, "'this' argument is not provided in to 'callByPath'.", 10026);
-	assert(callbackPath, "Empty callByPath string.", 10027);
+	assert(this_, '\'this\' argument is not provided in to \'callByPath\'.', 10026);
+	assert(callbackPath, 'Empty callByPath string.', 10027);
 
 	let data = stringToCallData(callbackPath);
 	let path = data.p;
@@ -14,12 +14,12 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	/// #if EDITOR
 	pathDebugging(this_, callbackPath);
 	/// #endif
-	if(rootName === 'this') {
+	if (rootName === 'this') {
 		c = this_;
 	} else {
 		/// #if EDITOR
-		if(!(rootName in game)) {
-			game.editor.ui.status.error("Unknown root element name '" + rootName + "' in '" + callbackPath + "'.", 30025, this_, game.editor.getFieldNameByValue(this_, callbackPath));
+		if (!(rootName in game)) {
+			game.editor.ui.status.error('Unknown root element name \'' + rootName + '\' in \'' + callbackPath + '\'.', 30025, this_, game.editor.getFieldNameByValue(this_, callbackPath));
 			return;
 		}
 		/// #endif
@@ -27,10 +27,10 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	}
 	let i = 1;
 	let fOwner;
-	while(i < path.length) {
+	while (i < path.length) {
 		let n = path[i];
 		fOwner = c;
-		if(typeof n === 'string') {
+		if (typeof n === 'string') {
 			//assert(n.indexOf(',') < 0, "Comma ',' character detected in field name in callback`s path: " + callbackPath + '". Use "`" character to separate callback\s parameter block.', 10025); /// 99999 remove error docs 10025
 			c = c[n];
 		} else {
@@ -41,12 +41,12 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 			);
 		}
 
-		assert(c, "Can't find " + ((typeof n === 'string') ? "property '" + n : "child '#" + n.s) + "' in callback`s path: " + callbackPath, 10025);
+		assert(c, 'Can\'t find ' + ((typeof n === 'string') ? 'property \'' + n : 'child \'#' + n.s) + '\' in callback`s path: ' + callbackPath, 10025);
 
 		i++;
 	}
-	if(data.hasOwnProperty('v')) {
-		if(c === setValueByPath) {
+	if (data.hasOwnProperty('v')) {
+		if (c === setValueByPath) {
 			return setValueByPath(data.v![0], data.v![1], this_);
 		}
 		return c.apply(fOwner, data.v);
@@ -58,7 +58,7 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 const _callsCache: KeyedMap<CallBackParsedData> = {};
 
 const stringToCallData = (s: string): CallBackParsedData => {
-	if(_callsCache.hasOwnProperty(s)) {
+	if (_callsCache.hasOwnProperty(s)) {
 		return _callsCache[s];
 	}
 	let a = s.split(',');
@@ -66,7 +66,7 @@ const stringToCallData = (s: string): CallBackParsedData => {
 		p: a.shift()!.split('.').map(pathPartsMapper),
 	};
 
-	if(a.length) {
+	if (a.length) {
 		data.v = a.map(turnInToNumberIfNumeric);
 	}
 	_callsCache[s] = data;
@@ -75,24 +75,24 @@ const stringToCallData = (s: string): CallBackParsedData => {
 
 const turnInToNumberIfNumeric = (s: string) => {
 	let ret = parseFloat(s);
-	if(!isNaN(ret)) {
+	if (!isNaN(ret)) {
 		return ret;
 	}
 
 	ret = parseInt(s);
-	if(!isNaN(ret)) {
+	if (!isNaN(ret)) {
 		return ret;
 	}
-	if(s === 'true') {
+	if (s === 'true') {
 		return true;
-	} else if(s === 'false') {
+	} else if (s === 'false') {
 		return false;
 	}
 	return s;
 };
 
 const pathPartsMapper = (s: string) => {
-	if(s.charCodeAt(0) === 35) {//'#'
+	if (s.charCodeAt(0) === 35) { //'#'
 		return { s: s.substring(1) }; // - child name started with '#'
 	}
 	return s;

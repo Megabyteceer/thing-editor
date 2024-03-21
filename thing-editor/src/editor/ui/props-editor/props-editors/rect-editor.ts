@@ -1,14 +1,14 @@
-import type { Container } from "pixi.js";
-import { Component, h } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { EditableRect } from "thing-editor/src/editor/props-editor/editable";
-import BooleanEditor from "thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor";
-import type { NumberEditorProps } from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
-import NumberEditor from "thing-editor/src/editor/ui/props-editor/props-editors/number-editor";
-import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import ___RectGuide from "thing-editor/src/engine/lib/assets/src/___system/___rect-guide.c";
+import type { Container } from 'pixi.js';
+import { Component, h } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { EditableRect } from 'thing-editor/src/editor/props-editor/editable';
+import BooleanEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor';
+import type { NumberEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-editors/number-editor';
+import NumberEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/number-editor';
+import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import ___RectGuide from 'thing-editor/src/engine/lib/assets/src/___system/___rect-guide.c';
 
 interface RectEditorState {
 	focus: boolean;
@@ -44,7 +44,7 @@ export default class RectEditor extends Component<EditablePropertyEditorProps, R
 	}
 
 	UNSAFE_componentWillReceiveProps() {
-		if(!this.timeout) {
+		if (!this.timeout) {
 			this.timeout = window.setTimeout(() => {
 				this.checkNullability();
 				clearTimeout(this.timeout);
@@ -54,14 +54,14 @@ export default class RectEditor extends Component<EditablePropertyEditorProps, R
 	}
 
 	componentWillUnmount() {
-		if(this.timeout) {
+		if (this.timeout) {
 			clearTimeout(this.timeout);
 			this.timeout = 0;
 		}
 	}
 
 	checkNullability() {
-		if(!(game.editor.selection[0] as KeyedObject)[this.props.field.name] && !this.props.field.canBeEmpty) {
+		if (!(game.editor.selection[0] as KeyedObject)[this.props.field.name] && !this.props.field.canBeEmpty) {
 			this.onNullCheckboxChange();
 		}
 	}
@@ -86,21 +86,21 @@ export default class RectEditor extends Component<EditablePropertyEditorProps, R
 		let fieldName = this.props.field.name;
 		let updated = false;
 
-		for(let o of game.editor.selection as KeyedObject[]) {
-			if(isDelta && delta !== 0) {
+		for (let o of game.editor.selection as KeyedObject[]) {
+			if (isDelta && delta !== 0) {
 				o[fieldName][name] += delta;
 				Lib.__invalidateSerializationCache(o as Container);
 				updated = true;
-			} else if(o[fieldName][name] !== val) {
+			} else if (o[fieldName][name] !== val) {
 				o[fieldName][name] = val;
 				Lib.__invalidateSerializationCache(o as Container);
 				updated = true;
 			}
-			if(this.props.field.hasOwnProperty('parser')) {
+			if (this.props.field.hasOwnProperty('parser')) {
 				o[fieldName] = this.props.field.parser!(o[fieldName]);
 			}
 		}
-		if(updated) {
+		if (updated) {
 			this.forceUpdate();
 			game.editor.sceneModified();
 		}
@@ -110,10 +110,10 @@ export default class RectEditor extends Component<EditablePropertyEditorProps, R
 		const field = this.props.field;
 		let fieldName = field.name;
 		const rectKey = '___deletedRectangle_' + field.name;
-		for(let o of game.editor.selection) {
+		for (let o of game.editor.selection) {
 			let extData = o.__nodeExtendData as KeyedObject;
 			const rect = (o as KeyedObject)[fieldName] as EditableRect;
-			if(rect) {
+			if (rect) {
 				extData[rectKey] = rect;
 				(o as KeyedObject)[fieldName] = null;
 			} else {
@@ -134,7 +134,7 @@ export default class RectEditor extends Component<EditablePropertyEditorProps, R
 
 		let r = (game.editor.selection[0] as KeyedObject)[f.name];
 		let body;
-		if(r) {
+		if (r) {
 			body = R.div(null,
 				R.div(propGroupProps,
 					xLabel,

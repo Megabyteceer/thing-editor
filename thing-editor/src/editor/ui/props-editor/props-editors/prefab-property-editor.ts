@@ -1,10 +1,10 @@
-import type { ComponentChild } from "preact";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import game from "thing-editor/src/engine/game";
+import type { ComponentChild } from 'preact';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
+import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import game from 'thing-editor/src/engine/game';
 
 const prefabEditorProps = { className: 'asset-editor' };
 
@@ -18,7 +18,7 @@ const PrefabPropertyEditor = (props: EditablePropertyEditorProps): ComponentChil
 	return R.div(prefabEditorProps,
 		R.btn(props.value ? R.span(assetNameProps, props.value) : '. . .', () => {
 			game.editor.choosePrefab('Select "' + props.field.name + '" prefab', props.value, props.field.filterAssets).then((selectedImage) => {
-				if(selectedImage) {
+				if (selectedImage) {
 					props.onChange(selectedImage);
 					game.editor.history.scheduleHistorySave();
 				}
@@ -27,13 +27,13 @@ const PrefabPropertyEditor = (props: EditablePropertyEditorProps): ComponentChil
 		props.value ? R.btn(R.icon('reject'), (ev: PointerEvent) => {
 			showContextMenu([
 				{
-					name: R.fragment(R.icon('reject'), "Clear '" + props.field.name + "'"),
+					name: R.fragment(R.icon('reject'), 'Clear \'' + props.field.name + '\''),
 					onClick: () => {
 						props.onChange(null);
 					}
 				},
 				{
-					name: "Cancel",
+					name: 'Cancel',
 					onClick: () => { } // eslint-disable-line @typescript-eslint/no-empty-function
 				}
 			], ev);

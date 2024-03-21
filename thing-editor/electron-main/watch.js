@@ -8,17 +8,17 @@ function watchFolders(dirs, onEvent) {
 
 	const _onEvent = (path) => {
 		onEvent(path);
-	}
+	};
 
-	for(let dir in currentWatchers) {
-		if(dirs.indexOf(dir) < 0) {
+	for (let dir in currentWatchers) {
+		if (dirs.indexOf(dir) < 0) {
 			currentWatchers[dir].close();
 			delete currentWatchers[dir];
 		}
 	}
 
-	for(let dir of dirs) {
-		if(!currentWatchers[dir]) {
+	for (let dir of dirs) {
+		if (!currentWatchers[dir]) {
 			const watcher = chokidar.watch(dir, {
 				ignoreInitial: true,
 				//	awaitWriteFinish: true,

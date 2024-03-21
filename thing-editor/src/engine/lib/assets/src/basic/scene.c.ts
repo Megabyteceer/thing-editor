@@ -1,9 +1,9 @@
-import { Container } from "pixi.js";
-import type { FileDesc } from "thing-editor/src/editor/fs";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from "thing-editor/src/editor/utils/scene-all-validator";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import { Container } from 'pixi.js';
+import type { FileDesc } from 'thing-editor/src/editor/fs';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from 'thing-editor/src/editor/utils/scene-all-validator';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 export default class Scene extends Container {
 
@@ -59,7 +59,7 @@ export default class Scene extends Container {
 		allObjectToRefresh = this.all;
 
 		this.forAllChildren(_refreshChildRef);
-		if(game.currentScene === this) {
+		if (game.currentScene === this) {
 			game.all = this.all;
 		}
 	}
@@ -68,13 +68,13 @@ export default class Scene extends Container {
 	__afterDeserialization() {
 		this.all = ACCESS__ALL_ASSERTING_PROXY as ThingSceneAllMap;
 
-		if(game.currentScene === this) {
+		if (game.currentScene === this) {
 			game.all = this.all;
 		}
 	}
 
 	remove() { //allows editor to hide scene`s remove method and do not hide DisplayObject's remove method
-		assert(false, "Scenes remove() method should not be called. Use game.closeCurrentScene() method instead.", 10074);
+		assert(false, 'Scenes remove() method should not be called. Use game.closeCurrentScene() method instead.', 10074);
 	}
 
 	static __canAcceptParent() {
@@ -86,7 +86,7 @@ export default class Scene extends Container {
 
 let allObjectToRefresh: KeyedMap<Container>;
 const _refreshChildRef = (o: Container) => {
-	if(o.name) {
+	if (o.name) {
 		allObjectToRefresh[o.name] = o;
 	}
 };
@@ -99,7 +99,7 @@ class __UnknownClassScene extends Scene {
 	static __defaultValues = {};
 }
 
-__UnknownClassScene.__EDITOR_icon = "tree/unknown-class";
+__UnknownClassScene.__EDITOR_icon = 'tree/unknown-class';
 
 export { __UnknownClassScene };
 /// #endif

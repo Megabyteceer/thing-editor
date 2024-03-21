@@ -1,13 +1,13 @@
-import type { Container } from "pixi.js";
-import type { ClassAttributes } from "preact";
-import { h } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import { TREE_NODE_CONTEXT_MENU } from "thing-editor/src/editor/ui/tree-view/tree-node-context-menu";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import type { Container } from 'pixi.js';
+import type { ClassAttributes } from 'preact';
+import { h } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
+import { TREE_NODE_CONTEXT_MENU } from 'thing-editor/src/editor/ui/tree-view/tree-node-context-menu';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 let caretClosed = R.span({ className: 'tree-caret' }, '▸');
 let caretOpened = R.span({ className: 'tree-caret' }, '▾');
@@ -32,30 +32,30 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 
 		let extendData = this.props.node.__nodeExtendData;
 
-		if(extendData.treeNodeView !== this) { // object was removed but tree is outdated yet
+		if (extendData.treeNodeView !== this) { // object was removed but tree is outdated yet
 			return;
 		}
 
-		if((isClickedAtRightEdge(ev)) && nodeHasExpandableChildren(this.props.node)) {
+		if ((isClickedAtRightEdge(ev)) && nodeHasExpandableChildren(this.props.node)) {
 			extendData.childrenExpanded = !extendData.childrenExpanded;
-			if(!extendData.childrenExpanded) {
+			if (!extendData.childrenExpanded) {
 				collapseChildrenRecursively(this.props.node);
-			} else if(ev.altKey) {
+			} else if (ev.altKey) {
 				expandChildrenRecursively(this.props.node);
 			}
 			this.refresh();
 			return;
 		}
 
-		if(ev.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
+		if (ev.shiftKey && lastClickedItem && (lastClickedItem.props.node.parent === this.props.node.parent)) {
 			let p = this.props.node.parent;
 			let i1 = p.getChildIndex(lastClickedItem.props.node);
 			let i2 = p.getChildIndex(this.props.node);
 			let from = Math.min(i1, i2);
 			let to = Math.max(i1, i2);
-			while(from <= to) {
+			while (from <= to) {
 				let n = p.getChildAt(from) as Container;
-				if(n !== lastClickedItem.props.node) {
+				if (n !== lastClickedItem.props.node) {
 					game.editor.selection.select(n, true);
 				}
 				from++;
@@ -64,7 +64,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 			game.editor.selection.select(this.props.node, ev.ctrlKey);
 		}
 
-		if(extendData.isSelected) {
+		if (extendData.isSelected) {
 			lastClickedItem = this;
 		}
 		game.editor.blurPropsInputs();
@@ -80,8 +80,8 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 		extendData.treeNodeView = this;
 		let children;
 		let caret;
-		if(nodeHasExpandableChildren(node)) {
-			if(extendData.childrenExpanded) {
+		if (nodeHasExpandableChildren(node)) {
+			if (extendData.childrenExpanded) {
 				caret = caretOpened;
 				children = R.div({ className: 'tree-children' },
 					node.children.map(renderSceneNode as any)
@@ -92,25 +92,25 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 		}
 		let className = 'tree-item';
 
-		if(extendData.isSelected) {
-			if(!lastClickedItem) {
+		if (extendData.isSelected) {
+			if (!lastClickedItem) {
 				lastClickedItem = this;
 			}
 			className += ' item-selected';
 		}
 
-		if(extendData.isPrefabReference) {
+		if (extendData.isPrefabReference) {
 			className += (extendData.unknownPrefab ? ' item-prefab-reference-unknown' : ' item-prefab-reference');
 		}
 
 		let style;
-		if(extendData.hidden || extendData.isolate) {
+		if (extendData.hidden || extendData.isolate) {
 			style = { display: 'none' };
 		}
 
 		return R.fragment(R.div({
 			onDblClick: (ev: PointerEvent) => {
-				if(!isClickedAtRightEdge(ev) && !ev.ctrlKey) {
+				if (!isClickedAtRightEdge(ev) && !ev.ctrlKey) {
 					game.editor.editClassSource(node);
 				}
 			},
@@ -122,7 +122,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 			onClick: this.onClick,
 			onDragStart(ev: DragEvent) {
 				selectIfNotSelected(node);
-				ev.dataTransfer!.setData("text/drag-thing-editor-tree-selection", '');
+				ev.dataTransfer!.setData('text/drag-thing-editor-tree-selection', '');
 			},
 			draggable: node.parent !== game.stage
 		}, R.sceneNode(node), caret), children);
@@ -131,7 +131,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 
 
 const selectIfNotSelected = (node: Container) => {
-	if(game.editor.selection.indexOf(node) < 0) {
+	if (game.editor.selection.indexOf(node) < 0) {
 		game.editor.selection.select(node);
 	}
 };
@@ -159,14 +159,14 @@ function isClickedAtRightEdge(ev: PointerEvent) {
 
 function collapseChildrenRecursively(node: Container) {
 	node.__nodeExtendData.childrenExpanded = false;
-	if(node.hasOwnProperty('children')) {
+	if (node.hasOwnProperty('children')) {
 		node.children.some(collapseChildrenRecursively as any);
 	}
 }
 
 function expandChildrenRecursively(node: Container) {
 	node.__nodeExtendData.childrenExpanded = true;
-	if(node.hasOwnProperty('children')) {
+	if (node.hasOwnProperty('children')) {
 		node.children.some(expandChildrenRecursively as any);
 	}
 }
@@ -174,10 +174,10 @@ function expandChildrenRecursively(node: Container) {
 export default TreeNode;
 
 const renderSceneNode = (node: Container) => {
-	if(node.__nodeExtendData.hidden) {
+	if (node.__nodeExtendData.hidden) {
 		return;
 	}
-	assert(typeof node.___id === 'number', "scene object without ___id detected.", 40902);
+	assert(typeof node.___id === 'number', 'scene object without ___id detected.', 40902);
 	return h(TreeNode, { node: node, key: node.___id });
 };
 

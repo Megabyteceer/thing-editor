@@ -1,13 +1,13 @@
 
 
-import type { Renderer } from "pixi.js";
-import { Point } from "pixi.js";
-import type { EditablePropertyDesc, EditableRect } from "thing-editor/src/editor/props-editor/editable";
-import overlayLayer from "thing-editor/src/editor/ui/editor-overlay";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import type Container from "thing-editor/src/engine/lib/assets/src/basic/container.c";
-import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
+import type { Renderer } from 'pixi.js';
+import { Point } from 'pixi.js';
+import type { EditablePropertyDesc, EditableRect } from 'thing-editor/src/editor/props-editor/editable';
+import overlayLayer from 'thing-editor/src/editor/ui/editor-overlay';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import type Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c';
+import Shape from 'thing-editor/src/engine/lib/assets/src/extended/shape.c';
 
 const p = new Point();
 const p2 = new Point();
@@ -20,10 +20,10 @@ export default class ___RectGuide extends Shape {
 	rectKey!: string;
 
 	render(renderer: Renderer): void {
-		if(!this.owner) {
+		if (!this.owner) {
 			super.render(renderer);
 			return;
-		} else if(!this.isShouldBeRemoved()) {
+		} else if (!this.isShouldBeRemoved()) {
 
 			this.rotation = this.owner.parent.getGlobalRotation();
 			this.shapeLineColor = this.field.guideColor || 53546;
@@ -43,16 +43,16 @@ export default class ___RectGuide extends Shape {
 	}
 
 	isShouldBeRemoved() {
-		if(!this.owner.__nodeExtendData || (this.owner.__nodeExtendData as KeyedObject)[this.rectKey] !== this) {
+		if (!this.owner.__nodeExtendData || (this.owner.__nodeExtendData as KeyedObject)[this.rectKey] !== this) {
 			return true;
-		} else if(!this.owner.__nodeExtendData.isSelected || (this.owner as KeyedObject)[this.field.name] !== this.rect) {
+		} else if (!this.owner.__nodeExtendData.isSelected || (this.owner as KeyedObject)[this.field.name] !== this.rect) {
 			delete (this.owner.__nodeExtendData as KeyedObject)[this.rectKey];
 			return true;
 		}
 	}
 
 	update(): void {
-		if(this.isShouldBeRemoved()) {
+		if (this.isShouldBeRemoved()) {
 			this.owner = null!;
 			this.__nodeExtendData.constructorCalled = false;
 			this.remove();
@@ -64,7 +64,7 @@ export default class ___RectGuide extends Shape {
 	static show(owner: Container, field: EditablePropertyDesc, rect: EditableRect) {
 		let rectGuide: ___RectGuide;
 		const rectKey = '___rectangleRef_' + field.name;
-		if(!owner.__nodeExtendData.hasOwnProperty(rectKey)) {
+		if (!owner.__nodeExtendData.hasOwnProperty(rectKey)) {
 			rectGuide = Lib.loadPrefab('___system/rect-guide') as ___RectGuide;
 			rectGuide.owner = owner;
 			rectGuide.rect = rect;

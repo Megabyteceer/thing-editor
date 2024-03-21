@@ -1,7 +1,7 @@
-import type { FileDescPrefab } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import libInfo from "thing-editor/src/editor/utils/lib-info";
+import type { FileDescPrefab } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import libInfo from 'thing-editor/src/editor/utils/lib-info';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -16,6 +16,6 @@ const assetItemRendererFont = (file: FileDescPrefab) => {
 		libInfo(file),
 		' font: ',
 		R.span(assetsItemNameProps, file.assetName.split('/').pop()!.split('.woff')[0]));
-}
+};
 
 export default assetItemRendererFont;

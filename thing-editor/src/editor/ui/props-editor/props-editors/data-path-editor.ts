@@ -1,21 +1,21 @@
-import { Container, DisplayObject } from "pixi.js";
-import type { ComponentChild} from "preact";
-import { Component, render } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
-import CallbackEditor from "thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor";
-import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import { getAllObjectRefsCount } from "thing-editor/src/editor/utils/scene-all-validator";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import callByPath from "thing-editor/src/engine/utils/call-by-path";
-import getValueByPath, { getLatestSceneNodeBypath } from "thing-editor/src/engine/utils/get-value-by-path";
+import { Container, DisplayObject } from 'pixi.js';
+import type { ComponentChild } from 'preact';
+import { Component, render } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+import CallbackEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor';
+import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
+import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
+import { getAllObjectRefsCount } from 'thing-editor/src/editor/utils/scene-all-validator';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import callByPath from 'thing-editor/src/engine/utils/call-by-path';
+import getValueByPath, { getLatestSceneNodeBypath } from 'thing-editor/src/engine/utils/get-value-by-path';
 
-const fieldEditorWrapperProps = { className: "field-editor-wrapper" };
-const selectableSceneNodeProps = { className: "selectable-scene-node" };
-const functionTipProps = { className: "path-editor-function-tip" };
+const fieldEditorWrapperProps = { className: 'field-editor-wrapper' };
+const selectableSceneNodeProps = { className: 'selectable-scene-node' };
+const functionTipProps = { className: 'path-editor-function-tip' };
 
 let initialized = false;
 
@@ -30,7 +30,7 @@ const filteredNamesInDisplayObject = new Set([
 
 let tipSyncInterval = 0;
 const syncTip = () => {
-	if(document.activeElement) {
+	if (document.activeElement) {
 		let bounds = document.activeElement.getBoundingClientRect();
 		dataPathTipContainer.style.left = (bounds.x - 2) + 'px';
 		dataPathTipContainer.style.top = (bounds.y - 27) + 'px';
@@ -38,12 +38,12 @@ const syncTip = () => {
 };
 
 const startTipSync = (enabled: any = false) => {
-	if(enabled) {
-		if(!tipSyncInterval) {
+	if (enabled) {
+		if (!tipSyncInterval) {
 			tipSyncInterval = window.setInterval(syncTip, 50);
 		}
 	} else {
-		if(tipSyncInterval) {
+		if (tipSyncInterval) {
 			clearInterval(tipSyncInterval);
 			tipSyncInterval = 0;
 		}
@@ -54,7 +54,7 @@ const dataPathTipContainer = window.document.createElement('div');
 dataPathTipContainer.id = 'data-path-tip-container';
 window.document.body.appendChild(dataPathTipContainer);
 
-interface DataPathEditorProps extends Omit<EditablePropertyEditorProps, "field"> {
+interface DataPathEditorProps extends Omit<EditablePropertyEditorProps, 'field'> {
 	field?: EditablePropertyDesc;
 	title: string;
 }
@@ -102,17 +102,17 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 	onGotoTargetClick() {
 
-		if(this.props.value && this.props.value.startsWith('Sound.play')) {
+		if (this.props.value && this.props.value.startsWith('Sound.play')) {
 			callByPath(this.props.value, game.editor.selection[0]);
 			return;
 		}
 
 		game.currentScene._refreshAllObjectRefs();
 		let node = getLatestSceneNodeBypath(this.props.value, game.editor.selection[0]);
-		if(!node) {
+		if (!node) {
 			return;
 		}
-		if(node.getRootContainer() !== game.currentContainer) {
+		if (node.getRootContainer() !== game.currentContainer) {
 			PrefabEditor.exitPrefabEdit();
 		}
 		game.editor.ui.sceneTree.selectInTree(node);
@@ -124,8 +124,8 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	onEditClicked() {
-		if(!this.props.disabled) {
-			if(!initialized) {
+		if (!this.props.disabled) {
+			if (!initialized) {
 				initSelectableProps();
 				initialized = true;
 			}
@@ -141,21 +141,21 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		let path: string[];
 		let parent: KeyedObject = game;
 		_rootParent = parent;
-		if(this.props.value) {
+		if (this.props.value) {
 			path = this.cleanupPath(this.props.value as string).split('.');
 			parentsPath = [];
 			let pathI;
-			for(pathI = 0; (pathI < path.length - 1); pathI++) {
+			for (pathI = 0; (pathI < path.length - 1); pathI++) {
 				let itemName = path[pathI];
 				let p: KeyedObject;
-				if((itemName === 'this') && (pathI === 0)) {
+				if ((itemName === 'this') && (pathI === 0)) {
 					p = game.editor.selection[0];
-				} else if(itemName.startsWith('#')) {
+				} else if (itemName.startsWith('#')) {
 					p = (parent as Container).getChildByName(itemName.substr(1)) as KeyedObject;
 				} else {
 					p = parent[itemName];
 				}
-				if(p) {
+				if (p) {
 					parentsPath.push(parent);
 					parent = p;
 				} else {
@@ -176,11 +176,11 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	isItTargetValue(val: any) {
-		if(this.props.field!.isValueValid && !this.props.field!.isValueValid(val)) {
+		if (this.props.field!.isValueValid && !this.props.field!.isValueValid(val)) {
 			return false;
 		}
 
-		if(!val) return true;
+		if (!val) return true;
 
 		let type = typeof val;
 
@@ -199,25 +199,25 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	isFieldGoodForCallbackChoose(fieldName: string, object: KeyedObject, val?: SelectableProperty, isChild = false) {
 		EDITOR_FLAGS.rememberTryTime();
 		try {
-			if(filteredNamesInDisplayObject.has(fieldName) && object instanceof Container) {
+			if (filteredNamesInDisplayObject.has(fieldName) && object instanceof Container) {
 				EDITOR_FLAGS.checkTryTime();
 				return false;
 			}
-			if(fieldName.startsWith('_') && object[fieldName.replace(/^_+/, '')]) {
+			if (fieldName.startsWith('_') && object[fieldName.replace(/^_+/, '')]) {
 				EDITOR_FLAGS.checkTryTime();
 				return false;
 			}
-			if(typeof val === 'undefined') {
+			if (typeof val === 'undefined') {
 				val = object[fieldName];
 			}
-			if(!val) {
+			if (!val) {
 				EDITOR_FLAGS.checkTryTime();
 				return true;
 			}
 			let type = typeof val;
-			if(type === 'object' || (type === 'function')) {
+			if (type === 'object' || (type === 'function')) {
 
-				if(isChild && val instanceof DisplayObject && val.__nodeExtendData.hidden) {
+				if (isChild && val instanceof DisplayObject && val.__nodeExtendData.hidden) {
 					EDITOR_FLAGS.checkTryTime();
 					return false;
 				}
@@ -227,7 +227,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			}
 			EDITOR_FLAGS.checkTryTime();
 			return true;
-		} catch(_er) { /* empty */ }
+		} catch (_er) { /* empty */ }
 		EDITOR_FLAGS.checkTryTime();
 	}
 
@@ -247,22 +247,22 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	}
 
 	refreshTip() {
-		if(!this.state || !this.state.focus || !game.editor.selection.length || !game.currentScene) {
+		if (!this.state || !this.state.focus || !game.editor.selection.length || !game.currentScene) {
 			return;
 		}
 		let val = this.props.value;
-		if(val) {
+		if (val) {
 			game.currentScene._refreshAllObjectRefs();
 			let f;
 			try {
 				f = getValueByPath(val, game.editor.selection[0], true);
-			} catch(er) { }// eslint-disable-line no-empty
+			} catch (er) { }// eslint-disable-line no-empty
 
-			if(typeof f === 'function') {
+			if (typeof f === 'function') {
 				let paramsView: ComponentChild;
 				let firstLine = f.toString().split('\n').shift();
 				let params: string[] = firstLine.split('(').pop().split(')').shift().split(', ').filter((p: string) => p);
-				if(!params.length) {
+				if (!params.length) {
 					paramsView = 'no parameters';
 				} else {
 					let paramsW: Array<ComponentChild> = [];
@@ -270,22 +270,22 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 					let cursorPos = ((this.base as HTMLDivElement).querySelector('input') as HTMLInputElement).selectionStart || 0;
 					let selectedParamIndex = -1;
 					let paramsStartVal = val.indexOf(',');
-					if(paramsStartVal > 0 && cursorPos > paramsStartVal) {
+					if (paramsStartVal > 0 && cursorPos > paramsStartVal) {
 						selectedParamIndex = 0;
 						let leftPart = val.substr(0, cursorPos);
 						let a = leftPart.split(',');
-						if(a.length > 1) {
+						if (a.length > 1) {
 							selectedParamIndex = a.length - 2;
 						}
 					}
 
 					let paramIndex = 0;
-					for(let param of params) {
-						if(param) {
-							if(paramsW.length) {
+					for (let param of params) {
+						if (param) {
+							if (paramsW.length) {
 								paramsW.push(', ');
 							}
-							if(paramIndex === selectedParamIndex) {
+							if (paramIndex === selectedParamIndex) {
 								paramsW.push(R.b(null, param));
 							} else {
 								paramsW.push(param);
@@ -313,16 +313,16 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		let val = this.props.value;
 
 		let breakpointBtn;
-		if(val && !game.__EDITOR_mode) {
+		if (val && !game.__EDITOR_mode) {
 			breakpointBtn = R.btn('■', this.onBreakpointClick, 'Breakpoint', 'tool-btn breakpoint-btn');
 		}
 		let chooseBtn;
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			chooseBtn = R.btn('...', this.onEditClicked, this.chooseButtonTip, 'tool-btn');
 		}
 
 		let gotoButton;
-		if(val) {
+		if (val) {
 			gotoButton = R.btn('➥', this.onGotoTargetClick, 'Find target object', 'tool-btn');
 		}
 
@@ -349,7 +349,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		let items: DataPathSelectItem[] = [];
 
 		const addSceneNodeIfValid = (o: Container, pureName: string, isChild = false, order = 100000) => {
-			if(o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(pureName, parent, o, isChild)) {
+			if (o && (o instanceof DisplayObject) && this.isFieldGoodForCallbackChoose(pureName, parent, o, isChild)) {
 				let item: DataPathSelectItem = {
 					order,
 					pureName,
@@ -359,10 +359,10 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 					)
 				};
 
-				if(isChild) {
+				if (isChild) {
 					items.forEach(i => {
-						if(i.nameOfChild === pureName) {
-							item.refusedBecause = i.refusedBecause = "Refused because more that one object with that name present in container";
+						if (i.nameOfChild === pureName) {
+							item.refusedBecause = i.refusedBecause = 'Refused because more that one object with that name present in container';
 						}
 					});
 					item.nameOfChild = pureName;
@@ -370,9 +370,9 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 					item.pureName = pureName;
 				}
 
-				if(parent === game.currentScene.all) {
+				if (parent === game.currentScene.all) {
 					let refuse = getAllObjectRefsCount((o as Container).name!);
-					if(refuse) {
+					if (refuse) {
 						item.refusedBecause = refuse;
 					}
 				}
@@ -384,7 +384,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		};
 
 
-		if(path.length === 0) {
+		if (path.length === 0) {
 			addSceneNodeIfValid(game.editor.selection[0], 'this', false, 1000000);
 		}
 
@@ -393,51 +393,51 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		addedNames.add('constructor');
 		addedNames.add('prototype');
 		addedNames.add('tempDisplayObjectParent');
-		if(parent instanceof DisplayObject) {
+		if (parent instanceof DisplayObject) {
 			addedNames.add('init');
 			addedNames.add('update');
 			addedNames.add('onRemove');
 		}
 		let topPathElement = path[path.length - 1];
-		if(topPathElement && topPathElement.startsWith('#')) {
+		if (topPathElement && topPathElement.startsWith('#')) {
 			addedNames.add('parent'); // prevent to go from parent to child and back
 		}
 
-		if(path.length > 0) {
+		if (path.length > 0) {
 			items.push(BACK_ITEM);
 		}
 
 
-		if(parent.hasOwnProperty('parent') && !addedNames.hasOwnProperty('parent')) {
+		if (parent.hasOwnProperty('parent') && !addedNames.hasOwnProperty('parent')) {
 			addSceneNodeIfValid(parent.parent, 'parent');
 		}
 
-		if(parent.hasOwnProperty('children') && Array.isArray(parent.children)) {
-			for(let child of parent.children) {
-				if(child.name) {
+		if (parent.hasOwnProperty('children') && Array.isArray(parent.children)) {
+			for (let child of parent.children) {
+				if (child.name) {
 					addSceneNodeIfValid(child, child.name, true);
 				}
 			}
 		}
 
 		const addIfGood = (name: string) => {
-			if(!addedNames.has(name)) {
+			if (!addedNames.has(name)) {
 				Lib.__outdatedReferencesDetectionDisabled = true;
-				if(this.isFieldGoodForCallbackChoose(name, parent)) {
-					if(!addSceneNodeIfValid(parent[name], name)) {
+				if (this.isFieldGoodForCallbackChoose(name, parent)) {
+					if (!addSceneNodeIfValid(parent[name], name)) {
 						let order = 0;
 						let isBold;
 						EDITOR_FLAGS.rememberTryTime();
 						try {
 							let val = parent[name];
 							order = val.___EDITOR_ChooserOrder || 0;
-							if(val.___EDITOR_isGoodForChooser || (this.itIsCallbackEditor && val.___EDITOR_isGoodForCallbackChooser) || val === game.data) {
+							if (val.___EDITOR_isGoodForChooser || (this.itIsCallbackEditor && val.___EDITOR_isGoodForCallbackChooser) || val === game.data) {
 								order += 100;
 								isBold = true;
 							}
-						} catch(_er) { /* empty */ }
+						} catch (_er) { /* empty */ }
 						EDITOR_FLAGS.checkTryTime();
-						if(!isBold) {
+						if (!isBold) {
 							items.push({ name });
 						} else {
 							items.push({ pureName: name, name: R.b(null, name), order });
@@ -450,11 +450,11 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			}
 		};
 
-		if(parent.constructor && !this.itIsCallbackEditor) {
+		if (parent.constructor && !this.itIsCallbackEditor) {
 			let props = (parent.constructor as SourceMappedConstructor).__editableProps;
-			if(props && Array.isArray(props)) {
-				for(let p of props as EditablePropertyDesc[]) {
-					if(!p.notSerializable) {
+			if (props && Array.isArray(props)) {
+				for (let p of props as EditablePropertyDesc[]) {
+					if (!p.notSerializable) {
 						let name = p.name;
 						items.push({ pureName: name, name: R.b(null, name), order: 10000 });
 						addedNames.add(name);
@@ -466,22 +466,22 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 		let type = typeof parent;
 
-		if(type === 'object' || type === 'function') {
+		if (type === 'object' || type === 'function') {
 			let props = enumProps(parent);
-			if(parent !== _rootParent) {
+			if (parent !== _rootParent) {
 				props.sort();
 			}
 			let a = props.slice();
 			props = [];
 			a = a.filter((p) => {
-				if(!p.startsWith('_')) {
+				if (!p.startsWith('_')) {
 					props.push(p);
 					return false;
 				}
 				return true;
 			});
 			a = a.filter((p) => {
-				if(!p.startsWith('__')) {
+				if (!p.startsWith('__')) {
 					props.push(p);
 					return false;
 				}
@@ -489,9 +489,9 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			});
 			props = props.concat(a);
 
-			for(let name of props) {
-				if(type === 'function') {
-					if(name === 'length' || name === 'name') {
+			for (let name of props) {
+				if (type === 'function') {
+					if (name === 'length' || name === 'name') {
 						continue;
 					}
 				}
@@ -500,7 +500,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		}
 
 		let acceptNowBtn;
-		if(!this.props.field || !this.props.field.isValueValid || this.props.field.isValueValid(parent)) {
+		if (!this.props.field || !this.props.field.isValueValid || this.props.field.isValueValid(parent)) {
 			acceptNowBtn = R.btn('✔', () => {
 				this.finalValueChoosed(path, parent, parentsPath[parentsPath.length - 1]);
 				game.editor.ui.modal.hideModal();
@@ -518,12 +518,12 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			),
 			items)
 			.then((selected: DataPathSelectItem) => {
-				if(selected) {
+				if (selected) {
 					let val;
-					if(selected === BACK_ITEM) {
+					if (selected === BACK_ITEM) {
 						path.pop();
 						val = parentsPath.pop();
-					} else if(selected.nameOfChild) {
+					} else if (selected.nameOfChild) {
 						path.push('#' + selected.nameOfChild);
 						parentsPath.push(parent);
 						val = parent.getChildByName(selected.nameOfChild);
@@ -531,14 +531,14 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 						let name = (selected.pureName || selected.name) as string;
 						path.push(name);
 						parentsPath.push(parent);
-						if(name === 'this') {
+						if (name === 'this') {
 							val = game.editor.selection[0];
 						} else {
 							val = parent[name];
 						}
 					}
 
-					if(this.isItTargetValue(val)) {
+					if (this.isItTargetValue(val)) {
 						this.finalValueChoosed(path, val, parent);
 					} else {
 						this.chooseProperty(val, path);
@@ -551,9 +551,9 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 function initSelectableProps() {
 	let tmpSprite = Lib._loadClassInstanceById('Sprite') as KeyedObject;
 	let spriteProps = enumProps(tmpSprite);
-	for(let p of spriteProps) {
+	for (let p of spriteProps) {
 		let v = tmpSprite[p];
-		if((typeof v) === 'function') {
+		if ((typeof v) === 'function') {
 			hidePropertyFromEnumerationForChooser(v);
 		}
 	}
@@ -577,16 +577,16 @@ let enumeratedProps: string[];
 
 const enumSub = (o: KeyedObject) => {
 	let op = Object.getOwnPropertyNames(o);
-	for(let name of op) {
+	for (let name of op) {
 		EDITOR_FLAGS.rememberTryTime();
 		try {
-			if(hiddenProps.has(o[name])) {
+			if (hiddenProps.has(o[name])) {
 				EDITOR_FLAGS.checkTryTime();
 				continue;
 			}
-		} catch(_er) { /* empty */ }
+		} catch (_er) { /* empty */ }
 		EDITOR_FLAGS.checkTryTime();
-		if(enumeratedProps.indexOf(name) === -1) {
+		if (enumeratedProps.indexOf(name) === -1) {
 			enumeratedProps.push(name);
 		}
 	}
@@ -600,20 +600,20 @@ function enumProps(o: KeyedObject) {
 	enumeratedProps = [];
 	enumSub(o);
 	let cc = o.constructor;
-	for(; cc && (cc !== Function) && (cc !== Object);
+	for (; cc && (cc !== Function) && (cc !== Object);
 
 		(cc = (cc as any).__proto__)) {
 
 		let p = cc.prototype;
-		if(p) {
+		if (p) {
 			enumSub(p);
 		}
 	}
 	Lib.__outdatedReferencesDetectionDisabled = false;
 
-	if(o instanceof Container) {
+	if (o instanceof Container) {
 		enumeratedProps = enumeratedProps.filter((prop) => {
-			if(referenceContainer[prop] !== null) {
+			if (referenceContainer[prop] !== null) {
 				return true;
 			}
 		});

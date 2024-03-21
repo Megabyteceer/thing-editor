@@ -1,13 +1,13 @@
-import { Container } from "pixi.js";
-import R from "thing-editor/src/editor/preact-fabrics";
-import makePathForKeyframeAutoSelect from "thing-editor/src/editor/utils/movie-clip-keyframe-select-path";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import type MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import type { TimelineData } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import { Container } from 'pixi.js';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import type MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import type { TimelineData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
-import { getLatestSceneNodeBypath, getLatestSceneNodesByComplexPath } from "thing-editor/src/engine/utils/get-value-by-path";
+import { getLatestSceneNodeBypath, getLatestSceneNodesByComplexPath } from 'thing-editor/src/engine/utils/get-value-by-path';
 
 /** data about objects, all not empty data-path properties reference to */
 let rememberedRefs: Map<Container, KeyedMap<ReferencesData>>;
@@ -15,12 +15,12 @@ let rememberedRefs: Map<Container, KeyedMap<ReferencesData>>;
 export default class DataPathFixer {
 
 	static rememberPathReferences() {
-		if(beforeNameEditOldValues) {
+		if (beforeNameEditOldValues) {
 			DataPathFixer.onNameBlur();
 		}
 		_validateRefEntryOldNames = undefined;
 		_validateRefEntryNewName = undefined;
-		if(game.currentScene) {
+		if (game.currentScene) {
 			game.currentScene._refreshAllObjectRefs();
 		}
 		rememberedRefs = new Map();
@@ -31,7 +31,7 @@ export default class DataPathFixer {
 	static validatePathReferences(oldNames?: (string | null)[], newName?: string) {
 		_validateRefEntryOldNames = oldNames;
 		_validateRefEntryNewName = newName;
-		if(game.currentScene) {
+		if (game.currentScene) {
 			game.currentScene._refreshAllObjectRefs();
 		}
 		rememberedRefs.forEach(validateRefEntry);
@@ -39,14 +39,14 @@ export default class DataPathFixer {
 
 	static beforeNameEdit(newName: string) {
 		nameEditNewName = newName;
-		if(!beforeNameEditOldValues) {
+		if (!beforeNameEditOldValues) {
 			DataPathFixer.rememberPathReferences();
 			beforeNameEditOldValues = game.editor.selection.map(o => o.name);
 		}
 	}
 
 	static onNameBlur() {
-		if(beforeNameEditOldValues) {
+		if (beforeNameEditOldValues) {
 			DataPathFixer.validatePathReferences(beforeNameEditOldValues, nameEditNewName);
 			beforeNameEditOldValues = undefined;
 		}
@@ -66,33 +66,33 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 	let pathes = path_.split(/[,|`]/);
 	let atLeastOnePartFixed = false;
 
-	assert(pathes.length === oldRefs.length, "DataPathFixer refs count does not match.");
+	assert(pathes.length === oldRefs.length, 'DataPathFixer refs count does not match.');
 
 	let clones: Container[] = [];
 	game.currentContainer.forAllChildren((o) => {
-		if(o.__nodeExtendData.__isJustCloned) {
-			if(o.name) {
+		if (o.__nodeExtendData.__isJustCloned) {
+			if (o.name) {
 				clones.push(o);
 			}
 			o.forAllChildren((c) => {
-				if(c.name) {
+				if (c.name) {
 					clones.push(c);
 				}
 			});
 		}
 	});
 
-	for(let j = 0; j < oldRefs.length; j++) {
+	for (let j = 0; j < oldRefs.length; j++) {
 
 		let currentRef = currentRefs[j];
 		let oldRef = oldRefs[j];
-		if(currentRef === oldRef) {
+		if (currentRef === oldRef) {
 			continue;
 		}
 
 		let path = pathes[j];
 
-		if(!oldRef || !oldRef.parent) {
+		if (!oldRef || !oldRef.parent) {
 			return;
 		}
 
@@ -100,22 +100,22 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 		let newPath = path;
 
 
-		if(clones.length) { //is was clone or paste. try to rename cloned nodes to fix ref
-			for(let c of clones) {
+		if (clones.length) { //is was clone or paste. try to rename cloned nodes to fix ref
+			for (let c of clones) {
 				let tmpName = c.name;
 				c.name += '-copy';
 				game.currentScene._refreshAllObjectRefs();
 				repairNode = getLatestSceneNodeBypath(newPath, node);
-				if(repairNode === oldRef) {
+				if (repairNode === oldRef) {
 					break;
 				}
 				c.name = tmpName;
 			}
 		}
-		if(repairNode !== oldRef) {
-			if(_validateRefEntryOldNames) { //it is was renaming. try to fix .#names
-				for(let oldName of _validateRefEntryOldNames) {
-					if(oldName) {
+		if (repairNode !== oldRef) {
+			if (_validateRefEntryOldNames) { //it is was renaming. try to fix .#names
+				for (let oldName of _validateRefEntryOldNames) {
+					if (oldName) {
 						oldName = oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 						let pathFixer = new RegExp('\\.#' + oldName + '(\\.|$)');
 						let pathFixer2 = new RegExp('(\\.all\\.)' + oldName + '(\\.|$)');
@@ -129,37 +129,37 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 			} else { //node added or removed
 
 				let pathParts = path.split('.');
-				for(let i = 0; i < pathParts.length;) { //try to remove one of the part of chain
+				for (let i = 0; i < pathParts.length;) { //try to remove one of the part of chain
 					i++;
 					let a = pathParts.slice(0);
 					a.splice(i, 1);
 					newPath = a.join('.');
 					repairNode = getLatestSceneNodeBypath(newPath, node, true);
-					if(repairNode === oldRef) {
+					if (repairNode === oldRef) {
 						break;
 					}
 				}
 
-				if(repairNode !== oldRef) { //try to insert "parent" somwhere in chain
-					for(let i = 0; i < pathParts.length;) {
+				if (repairNode !== oldRef) { //try to insert "parent" somwhere in chain
+					for (let i = 0; i < pathParts.length;) {
 						i++;
 						let a = pathParts.slice(0);
 						a.splice(i, 0, 'parent');
 						newPath = a.join('.');
 						repairNode = getLatestSceneNodeBypath(newPath, node, true);
-						if(repairNode === oldRef) {
+						if (repairNode === oldRef) {
 							break;
 						}
 					}
 				}
 
-				if(repairNode !== oldRef) { //try to insert new name somewhere in chain
+				if (repairNode !== oldRef) { //try to insert new name somewhere in chain
 					let changedNode = game.editor.selection[0];
 					let changedName = changedNode.name;
-					if(!changedName) {
+					if (!changedName) {
 						changedName = 'new' + changedNode.constructor.name;
 						let i = 1;
-						while(changedNode.parent.getChildByName(changedName + i)) {
+						while (changedNode.parent.getChildByName(changedName + i)) {
 							i++;
 						}
 						changedName += i;
@@ -167,45 +167,45 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 						Lib.__invalidateSerializationCache(changedNode);
 					}
 					changedName = '#' + changedName;
-					for(let i = 0; i < pathParts.length;) {
+					for (let i = 0; i < pathParts.length;) {
 						i++;
 						let a = pathParts.slice(0);
 						a.splice(i, 0, changedName);
 						newPath = a.join('.');
 						repairNode = getLatestSceneNodeBypath(newPath, node, true);
-						if(repairNode === oldRef) {
+						if (repairNode === oldRef) {
 							break;
 						}
 					}
 				}
 			}
 		}
-		if(repairNode === oldRef) {
+		if (repairNode === oldRef) {
 			pathes[j] = newPath;
 			atLeastOnePartFixed = true;
 		} else {
 			return;
 		}
 	}
-	assert(atLeastOnePartFixed, "Path fixing error.");
+	assert(atLeastOnePartFixed, 'Path fixing error.');
 
 	//apply fixed path
 
 	let finalPath = pathes.shift();
-	if(pathes.length > 0) {
+	if (pathes.length > 0) {
 		finalPath += ',' + pathes.join(',');
 	}
 
 	let fn = fieldName.split(',');
 	let keyframe;
-	if(fn.length > 1) {
+	if (fn.length > 1) {
 		//it is keyframe action
 		const movieClip = node as MovieClip;
-		for(let f of movieClip._timelineData.f) {
-			if(f.n === fn[1]) {
+		for (let f of movieClip._timelineData.f) {
+			if (f.n === fn[1]) {
 				let targetTime = parseInt(fn[2]);
-				for(let kf of f.t) {
-					if(kf.t == targetTime) {
+				for (let kf of f.t) {
+					if (kf.t == targetTime) {
 						keyframe = kf;
 						break;
 					}
@@ -215,10 +215,10 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 		}
 	}
 
-	if(keyframe) {
+	if (keyframe) {
 		keyframe.a = finalPath;
 	} else {
-		if(fieldName.indexOf(ARRAY_ITEM_SPLITTER) > 0) {
+		if (fieldName.indexOf(ARRAY_ITEM_SPLITTER) > 0) {
 			const a = fieldName.split(ARRAY_ITEM_SPLITTER); // EditablePropertyDescRaw.arrayProperty
 			(node as KeyedObject)[a[0]][a[1]] = finalPath;
 		} else {
@@ -226,7 +226,7 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 		}
 	}
 	Lib.__invalidateSerializationCache(node);
-	if((node as KeyedObject).__invalidateSerializeCache) {
+	if ((node as KeyedObject).__invalidateSerializeCache) {
 		(node as KeyedObject).__invalidateSerializeCache();
 	}
 	return true;
@@ -245,10 +245,10 @@ function _rememberPathReference(o: Container) {
 	let objectsFieldsRefs: KeyedMap<ReferencesData> | null = null;
 
 	const rememberRef = (path: string, name: string) => {
-		if(path) {
+		if (path) {
 			let targetNodes = getLatestSceneNodesByComplexPath(path, o);
 
-			if(!objectsFieldsRefs) {
+			if (!objectsFieldsRefs) {
 				objectsFieldsRefs = {};
 				rememberedRefs.set(o, objectsFieldsRefs);
 			}
@@ -256,9 +256,9 @@ function _rememberPathReference(o: Container) {
 		}
 	};
 
-	for(let p of props) {
-		if(p.type === 'data-path' || p.type === 'callback') {
-			if(p.arrayProperty) {
+	for (let p of props) {
+		if (p.type === 'data-path' || p.type === 'callback') {
+			if (p.arrayProperty) {
 				let a = (o as KeyedObject)[p.name] as string[];
 				a.forEach((path, i) => {
 					rememberRef(path, p.name + ARRAY_ITEM_SPLITTER + i);
@@ -266,12 +266,12 @@ function _rememberPathReference(o: Container) {
 			} else {
 				rememberRef((o as KeyedObject)[p.name], p.name);
 			}
-		} else if(p.type === 'timeline') {
+		} else if (p.type === 'timeline') {
 			let timeline = (o as KeyedObject)[p.name] as TimelineData;
-			if(timeline) {
-				for(let field of timeline.f) {
-					for(let k of field.t) {
-						if(k.a) {
+			if (timeline) {
+				for (let field of timeline.f) {
+					for (let k of field.t) {
+						if (k.a) {
 							rememberRef(k.a, makePathForKeyframeAutoSelect(p, field, k));
 						}
 					}
@@ -282,29 +282,29 @@ function _rememberPathReference(o: Container) {
 }
 
 const validateRefEntry = (m: KeyedMap<ReferencesData>, o: Container) => {
-	if(o.parent) {
-		for(let fieldName in m) {
+	if (o.parent) {
+		for (let fieldName in m) {
 
 			let item = m[fieldName];
 			let path = item.path;
 			let oldRefs = item.targetNodes;
 			let currentRefs = getLatestSceneNodesByComplexPath(path, o);
 
-			for(let i = 0; i < oldRefs.length; i++) {
-				if(oldRefs[i] !== currentRefs[i]) {
-					if(!tryToFixDataPath(o, fieldName, path, oldRefs, currentRefs)) {
+			for (let i = 0; i < oldRefs.length; i++) {
+				if (oldRefs[i] !== currentRefs[i]) {
+					if (!tryToFixDataPath(o, fieldName, path, oldRefs, currentRefs)) {
 
 						let oldRef = oldRefs[i];
 						let currentRef = currentRefs[i];
 
 						let was;
-						if(oldRef instanceof Container) {
+						if (oldRef instanceof Container) {
 							was = R.sceneNode(oldRef);
 						} else {
 							was = '' + oldRef;
 						}
 						let become;
-						if(currentRef instanceof Container) {
+						if (currentRef instanceof Container) {
 							become = R.sceneNode(currentRef);
 						} else {
 							become = '' + currentRef;
@@ -314,7 +314,7 @@ const validateRefEntry = (m: KeyedMap<ReferencesData>, o: Container) => {
 						let splitter = ',';
 
 						let itemIndex = -1;
-						if(fieldName.includes(ARRAY_ITEM_SPLITTER)) {
+						if (fieldName.includes(ARRAY_ITEM_SPLITTER)) {
 							const a = fieldName.split(ARRAY_ITEM_SPLITTER);
 							fieldName = a[0];
 							itemIndex = parseInt(a[1]);

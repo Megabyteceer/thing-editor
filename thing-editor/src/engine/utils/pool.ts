@@ -1,5 +1,5 @@
-import { Container } from "pixi.js";
-import assert from "thing-editor/src/engine/debug/assert";
+import { Container } from 'pixi.js';
+import assert from 'thing-editor/src/engine/debug/assert';
 
 let pools = new Map();
 /// #if EDITOR
@@ -7,10 +7,10 @@ let __idCounter = 1;
 
 const onNew = (ret: any) => {
 	const editableProps = (ret.constructor as SourceMappedConstructor).__editableProps;
-	if(editableProps) {
-		for(let prop of editableProps) {
-			if(prop.__nullCheckingIsApplied) {
-				if(ret.hasOwnProperty(prop.name)) {
+	if (editableProps) {
+		for (let prop of editableProps) {
+			if (prop.__nullCheckingIsApplied) {
+				if (ret.hasOwnProperty(prop.name)) {
 					delete ret[prop.name]; //delete own numeric properties to make NaN checking work
 					ret[prop.name] = (ret.constructor as SourceMappedConstructor).__defaultValues[prop.name];
 				}
@@ -21,8 +21,8 @@ const onNew = (ret: any) => {
 };
 
 const onTake = (ret: any) => {
-	if(ret instanceof Container) {
-		assert(!(ret as any)._eventsCount, "Object has unsubscribed events");
+	if (ret instanceof Container) {
+		assert(!(ret as any)._eventsCount, 'Object has unsubscribed events');
 		ret.___id = __idCounter++;
 		ret.__nodeExtendData = {};
 	}
@@ -46,7 +46,7 @@ export default class Pool {
 	/// #endif
 
 	static create<T>(constructor: new () => T): T {
-		if(!pools.has(constructor)) {
+		if (!pools.has(constructor)) {
 			const ret = new constructor();
 			/// #if EDITOR
 			onNew(ret);
@@ -54,7 +54,7 @@ export default class Pool {
 			return ret;
 		}
 		let a = pools.get(constructor);
-		if(a.length === 0) {
+		if (a.length === 0) {
 			const ret = new constructor();
 			/// #if EDITOR
 			onNew(ret);
@@ -65,7 +65,7 @@ export default class Pool {
 		let i = Math.floor(Math.random() * a.length);
 		let ret = a[i];
 		a.splice(i, 1);
-		assert(!(ret instanceof Container) || ret.children.length === 0, "Pool contains " + (constructor as any as SourceMappedConstructor).__className + " with non empty children.", 90001);
+		assert(!(ret instanceof Container) || ret.children.length === 0, 'Pool contains ' + (constructor as any as SourceMappedConstructor).__className + ' with non empty children.', 90001);
 		onTake(ret);
 		return ret;
 		/// #endif
@@ -78,7 +78,7 @@ export default class Pool {
 		obj.___id = null;
 		/// #endif
 		let key = obj.constructor;
-		if(!pools.has(key)) {
+		if (!pools.has(key)) {
 			pools.set(key, []);
 		}
 

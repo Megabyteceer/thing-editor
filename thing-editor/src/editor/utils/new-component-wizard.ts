@@ -1,7 +1,7 @@
-import fs from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { ChooseListItem } from "thing-editor/src/editor/ui/choose-list";
-import game from "thing-editor/src/engine/game";
+import fs from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { ChooseListItem } from 'thing-editor/src/editor/ui/choose-list';
+import game from 'thing-editor/src/engine/game';
 
 interface ChooseTempletItem extends ChooseListItem {
 	title: string;
@@ -12,34 +12,34 @@ interface ChooseTempletItem extends ChooseListItem {
 
 const newComponentWizard = async () => {
 
-	let chosenFolder: string | undefined = await game.editor.chooseAssetsFolder("Where to create component?");
+	let chosenFolder: string | undefined = await game.editor.chooseAssetsFolder('Where to create component?');
 
-	if(!chosenFolder) {
+	if (!chosenFolder) {
 		return;
 	}
 
-	let selectedTemplate = await game.editor.ui.modal.showListChoose("Choose template for new Custom Component", ([
+	let selectedTemplate = await game.editor.ui.modal.showListChoose('Choose template for new Custom Component', ([
 		{
-			title: "Basic Game Object",
-			desc: "Creates simple game object. Then you can program this object's logic with javascript. This type of object will contain only basic methods of game object 'init', 'update', 'onRemove', but you can add any method you want manually.",
+			title: 'Basic Game Object',
+			desc: 'Creates simple game object. Then you can program this object\'s logic with javascript. This type of object will contain only basic methods of game object \'init\', \'update\', \'onRemove\', but you can add any method you want manually.',
 			path: 'basic-game-object.tst',
 			isScene: false
 		},
 		{
-			title: "Basic Scene",
-			desc: "Creates new type of scenes. Then you can create new scenes with this type.",
+			title: 'Basic Scene',
+			desc: 'Creates new type of scenes. Then you can create new scenes with this type.',
 			path: 'basic-scene.tst',
 			isScene: true
 		},
 		{
-			title: "Full Game Object",
-			desc: "Contains all the methods of game object. Include 'game methods', and 'editor mode methods'.",
+			title: 'Full Game Object',
+			desc: 'Contains all the methods of game object. Include \'game methods\', and \'editor mode methods\'.',
 			path: 'full-game-object.tst',
 			isScene: false
 		},
 		{
-			title: "Full Scene",
-			desc: "Contains all the methods of game scene. Include 'game methods', and 'editor mode methods'.",
+			title: 'Full Scene',
+			desc: 'Contains all the methods of game scene. Include \'game methods\', and \'editor mode methods\'.',
 			path: 'full-scene.tst',
 			isScene: true
 		}
@@ -53,7 +53,7 @@ const newComponentWizard = async () => {
 	}), false, true);
 
 
-	if(!selectedTemplate) {
+	if (!selectedTemplate) {
 		return;
 	}
 
@@ -63,37 +63,37 @@ const newComponentWizard = async () => {
 			return val.replace(/[^a-zA-Z0-9\/]/gm, '_');
 		},
 		(val) => { //accept
-			if(game.classes[val]) {
-				return "Component with name '" + val + "' already exists";
+			if (game.classes[val]) {
+				return 'Component with name \'' + val + '\' already exists';
 			}
 		}
 	);
 
-	if(!enteredClassName) {
+	if (!enteredClassName) {
 		return;
 	}
 
 	let selectedBaseClassName = await game.editor.chooseClass(selectedTemplate.isScene, '_baseClass', 'Choose base Component');
 
-	if(!selectedBaseClassName) {
+	if (!selectedBaseClassName) {
 		return;
 	}
 
 	const selectedBaseClass = game.classes[selectedBaseClassName];
 	let enteredClassNameParts = enteredClassName.split('/').filter((i: string) => i);
 	enteredClassName = enteredClassNameParts.pop()!;
-	if(!enteredClassName) {
+	if (!enteredClassName) {
 		game.editor.ui.modal.showError('Wrong component name provided.', 30001);
 		return;
 	}
-	if(enteredClassName.match('/^[\d_]/m')) {
+	if (enteredClassName.match('/^[\d_]/m')) {
 		game.editor.ui.modal.showError('Class name can not start with digit or "_".', 30002);
 		return;
 	}
 	enteredClassName = enteredClassName.substr(0, 1).toUpperCase() + enteredClassName.substr(1);
 
 	let classFoldername = enteredClassNameParts.join('/');
-	if(classFoldername) {
+	if (classFoldername) {
 		classFoldername += '/';
 	}
 	let templateSrc = fs.readFile('thing-editor/src/editor/templates/' + selectedTemplate.path);
@@ -103,7 +103,7 @@ const newComponentWizard = async () => {
 	const regex = /(\/\/)(super\.)([a-zA-Z_]+)(\(\);)/gm;
 	templateSrc = templateSrc.replace(regex, (_substr, _m1, m2, m3, m4) => {
 		let isSuperClassHasThisMethod = (baseClassInstance as KeyedObject)[m3];
-		if(isSuperClassHasThisMethod) {
+		if (isSuperClassHasThisMethod) {
 			return m2 + m3 + m4;
 		} else {
 			return '';

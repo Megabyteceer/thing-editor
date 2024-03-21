@@ -1,8 +1,8 @@
-import type { ClassAttributes, ComponentChild } from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import game from "thing-editor/src/engine/game";
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import game from 'thing-editor/src/engine/game';
 
 let modalRejectProps = { className: 'modal-reject-text' };
 
@@ -34,11 +34,11 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 	componentDidMount() {
 		window.setTimeout(() => {
 			let input = document.querySelector('.modal-content input') as HTMLInputElement;
-			if(input) {
+			if (input) {
 				try {
 					input.focus();
 					input.setSelectionRange(0, input.value.length);
-				} catch(er) { } // eslint-disable-line no-empty
+				} catch (er) { } // eslint-disable-line no-empty
 			}
 		}, 1);
 		this.checkAcceptance(this.state.value);
@@ -59,7 +59,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 	}
 
 	onAcceptClick() {
-		if(this.state.accepted) {
+		if (this.state.accepted) {
 			game.editor.ui.modal.hideModal(this.state.value);
 		}
 	}
@@ -69,7 +69,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 		return R.fragment(
 			R.div(modalRejectProps, this.state.rejectReason || ' '),
 			R.btn('auto accept', (ev) => {
-				if(!this.props.multiline) {
+				if (!this.props.multiline) {
 					this.onAcceptClick();
 					sp(ev);
 				}

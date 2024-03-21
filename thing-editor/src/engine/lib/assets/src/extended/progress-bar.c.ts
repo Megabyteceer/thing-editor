@@ -1,23 +1,23 @@
 
-import type { DisplayObject, Sprite } from "pixi.js";
-import { Container, NineSlicePlane, Point } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import game from "thing-editor/src/engine/game";
-import Shape from "thing-editor/src/engine/lib/assets/src/extended/shape.c";
+import type { DisplayObject, Sprite } from 'pixi.js';
+import { Container, NineSlicePlane, Point } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import game from 'thing-editor/src/engine/game';
+import Shape from 'thing-editor/src/engine/lib/assets/src/extended/shape.c';
 
-import callByPath from "thing-editor/src/engine/utils/call-by-path";
-import getValueByPath, { setValueByPath } from "thing-editor/src/engine/utils/get-value-by-path";
-import { stepTo } from "thing-editor/src/engine/utils/utils";
+import callByPath from 'thing-editor/src/engine/utils/call-by-path';
+import getValueByPath, { setValueByPath } from 'thing-editor/src/engine/utils/get-value-by-path';
+import { stepTo } from 'thing-editor/src/engine/utils/utils';
 
 const tmpPoint = new Point();
 
 
 function setObjectHeight(node: DisplayObject, height: number) {
-	if(node instanceof Shape || node instanceof NineSlicePlane) { //prevent wrong size in next life of "bar" sprite instance
+	if (node instanceof Shape || node instanceof NineSlicePlane) { //prevent wrong size in next life of "bar" sprite instance
 		node.height = height;
-	} else if((node as Sprite).texture) {
+	} else if ((node as Sprite).texture) {
 		node.scale.y = height / (node as Sprite).texture.height;
-		if(game.classes.Fill && (node instanceof game.classes.Fill)) {
+		if (game.classes.Fill && (node instanceof game.classes.Fill)) {
 			(node as any).yRepeat = node.scale.y;
 		}
 	}
@@ -114,7 +114,7 @@ export default class ProgressBar extends Container {
 	}
 
 	set height(v) {
-		if(this._progress_bar_height !== v) {
+		if (this._progress_bar_height !== v) {
 			this._progress_bar_height = v;
 			this.applyValue(this.showedVal || 0);
 			this._applyBgHeight();
@@ -123,11 +123,11 @@ export default class ProgressBar extends Container {
 
 	_applyBgHeight() {
 		let h = this.getChildByName('bg');
-		if(h) {
+		if (h) {
 			setObjectHeight(h, this._progress_bar_height!);
 		}
 		const hitArea = this.findChildByName('hit-area');
-		if(hitArea) {
+		if (hitArea) {
 			setObjectHeight(hitArea, this._progress_bar_height! + hitArea.y * -2);
 		}
 	}
@@ -144,45 +144,45 @@ export default class ProgressBar extends Container {
 	}
 
 	onDown() {
-		if(this.isCanBePressed) {
+		if (this.isCanBePressed) {
 			this.scrolling = true;
 		}
 	}
 
 	update() {
-		if(this.scrolling) {
-			if(game.mouse.click) {
+		if (this.scrolling) {
+			if (game.mouse.click) {
 				let p = this.toLocal(game.mouse, game.stage, tmpPoint, true);
 				let q = p.y / this._progress_bar_height!;
-				if(q < 0) {
+				if (q < 0) {
 					q = 0;
-				} else if(q > 1) {
+				} else if (q > 1) {
 					q = 1;
 				}
 				let val = this.min + q * (this.max - this.min);
-				if(this.step > 0) {
+				if (this.step > 0) {
 					val = Math.round(val / this.step) * this.step;
 				}
 				this.applyValue(val);
-				if(this.dataPath) {
+				if (this.dataPath) {
 					setValueByPath(this.dataPath, val, this);
 				}
 			} else {
 				this.scrolling = false;
-				if(this.afterSlide) {
+				if (this.afterSlide) {
 					callByPath(this.afterSlide, this);
 				}
 			}
-		} else if(this.currentInterval <= 0 && this.dataPath) {
+		} else if (this.currentInterval <= 0 && this.dataPath) {
 			let val = getValueByPath(this.dataPath, this);
-			if(val || val === 0) {
-				if(val > this.max) {
+			if (val || val === 0) {
+				if (val > this.max) {
 					val = this.max;
 				}
-				if(val < this.min) {
+				if (val < this.min) {
 					val = this.min;
 				}
-				if(val !== this.showedVal) {
+				if (val !== this.showedVal) {
 					this.applyValue(val);
 				}
 			} else {
@@ -192,7 +192,7 @@ export default class ProgressBar extends Container {
 		} else {
 			this.currentInterval--;
 		}
-		if(this.smooth) {
+		if (this.smooth) {
 			this.currentQ = stepTo(this.currentQ, this.targetQ, this.smoothStep);
 			this.applyQ();
 		}
@@ -200,8 +200,8 @@ export default class ProgressBar extends Container {
 	}
 
 	applyValue(val: number) {
-		if(val !== this.showedVal) {
-			if(this.onChanged
+		if (val !== this.showedVal) {
+			if (this.onChanged
 				/// #if EDITOR
 				&& !game.__EDITOR_mode
 				/// #endif
@@ -211,41 +211,41 @@ export default class ProgressBar extends Container {
 		}
 		let q = (val - this.min) / (this.max - this.min);
 		this.targetQ = q;
-		if(typeof this.showedVal === 'undefined') {
+		if (typeof this.showedVal === 'undefined') {
 			this.currentQ = q;
 		}
 		this.showedVal = val;
 
-		if(!this.smooth) {
+		if (!this.smooth) {
 			this.currentQ = q;
 			this.applyQ();
 		}
 	}
 
 	applyQ() {
-		if(this.onFinish && !this.isProgressFinished && this.currentQ === 1) {
+		if (this.onFinish && !this.isProgressFinished && this.currentQ === 1) {
 			this.isProgressFinished = true;
 			callByPath(this.onFinish, this);
 		}
 		const reachedItem = Math.floor(this.currentQ * this.itemsCount);
-		while(reachedItem > this.calledItem) {
+		while (reachedItem > this.calledItem) {
 			this.calledItem++;
 			this.gotoLabelRecursive('progress-item-' + this.calledItem);
 		}
 
 		/// #if EDITOR
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			this._initChildren();
 		}
 		/// #endif
-		if(this.bar) {
+		if (this.bar) {
 			setObjectHeight(this.bar, this._progress_bar_height * this.currentQ);
 		}
-		if(this.cap) {
+		if (this.cap) {
 			this.cap.y = this.capMargin + (this._progress_bar_height - this.capMargin * 2) * this.currentQ;
 		}
 		/// #if EDITOR
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			this.bar = undefined;
 			this.cap = undefined;
 		}

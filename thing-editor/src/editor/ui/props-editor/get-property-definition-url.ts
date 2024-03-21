@@ -1,8 +1,8 @@
-import fs from "thing-editor/src/editor/fs";
+import fs from 'thing-editor/src/editor/fs';
 
 
 const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: SourceMappedConstructor): string => {
-	if(!Class.hasOwnProperty('__sourceCode')) {
+	if (!Class.hasOwnProperty('__sourceCode')) {
 		Class.__sourceCode = fs.readFile(fileName).split('\n');
 	}
 
@@ -14,19 +14,19 @@ const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: So
 
 	src.some((line, i) => {
 		let match = fieldRegExp1.exec(line);
-		if(match) {
-			if(i > 0 && src[i - 1].indexOf('@editable(') >= 0) {
+		if (match) {
+			if (i > 0 && src[i - 1].indexOf('@editable(') >= 0) {
 				fileName += ':' + (i + 1) + ':' + (match.index + 1);
 				return true;
 			}
 		}
 		match = fieldRegExp2.exec(line);
-		if(match) {
+		if (match) {
 			fileName += ':' + (i + 1) + ':' + (match.index + 1);
 			return true;
 		}
 		match = fieldRegExp3.exec(line);
-		if(match) {
+		if (match) {
 			fileName += ':' + (i + 1) + ':' + (match.index + 1);
 			return true;
 		}

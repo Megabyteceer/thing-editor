@@ -1,6 +1,6 @@
-import type { ComponentChild } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
+import type { ComponentChild } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
 
 const windowMenuBodyProps = { className: 'window-menu-body' };
 
@@ -19,14 +19,14 @@ export default class WindowMenu extends ComponentDebounced<WindowMenuProps, Wind
 		this.onMouseLeave = this.onMouseLeave.bind(this);
 	}
 	onMouseLeave() {
-		if(this.state.toggled) {
+		if (this.state.toggled) {
 			this.setState({ toggled: false });
 		}
 	}
 
 	render() {
 		let body: ComponentChild;
-		if(this.state.toggled) {
+		if (this.state.toggled) {
 			body = R.div(windowMenuBodyProps, this.props.menu);
 		}
 		return R.div({

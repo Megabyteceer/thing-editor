@@ -1,8 +1,8 @@
-import editable from "thing-editor/src/editor/props-editor/editable";
-import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
-import game from "thing-editor/src/engine/game";
-import Container from "thing-editor/src/engine/lib/assets/src/basic/container.c";
-import callByPath from "thing-editor/src/engine/utils/call-by-path";
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
+import game from 'thing-editor/src/engine/game';
+import Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c';
+import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 
 const propDisabler = (_o: OrientationTrigger) => { return true; };
 
@@ -24,12 +24,12 @@ export default class OrientationTrigger extends Container {
 	@editable({ type: 'callback' })
 	set onPortrait(val: string | null) {
 		this.__onPortrait = val;
-		if(!IGNORE_DIRECT_PROPS) {
+		if (!IGNORE_DIRECT_PROPS) {
 			this.__callIfValueByPathSetter(this.__onPortrait);
-			if(!this.getTriggerConditionState()) {
+			if (!this.getTriggerConditionState()) {
 				const extendData = this.__nodeExtendData;
 				window.setTimeout(() => {
-					if(extendData === this.__nodeExtendData) {
+					if (extendData === this.__nodeExtendData) {
 						this.__callIfValueByPathSetter(this.__onLandscape);
 					}
 				}, 600);
@@ -43,12 +43,12 @@ export default class OrientationTrigger extends Container {
 	@editable({ type: 'callback' })
 	set onLandscape(val: string | null) {
 		this.__onLandscape = val;
-		if(!IGNORE_DIRECT_PROPS) {
+		if (!IGNORE_DIRECT_PROPS) {
 			this.__callIfValueByPathSetter(this.__onLandscape);
-			if(this.getTriggerConditionState()) {
+			if (this.getTriggerConditionState()) {
 				const extendData = this.__nodeExtendData;
 				window.setTimeout(() => {
-					if(extendData === this.__nodeExtendData) {
+					if (extendData === this.__nodeExtendData) {
 						this.__callIfValueByPathSetter(this.__onPortrait);
 					}
 				}, 600);
@@ -97,8 +97,6 @@ export default class OrientationTrigger extends Container {
 	portraitR = 0;
 
 
-
-
 	init() {
 		super.init();
 		this.applyOrientation();
@@ -110,7 +108,7 @@ export default class OrientationTrigger extends Container {
 
 	applyOrientation() {
 		this.__currentOrientationIsPortrait = this.getTriggerConditionState();
-		if(this.__currentOrientationIsPortrait) {
+		if (this.__currentOrientationIsPortrait) {
 			this.x = this.portraitX;
 			this.y = this.portraitY;
 			this['scale.x'] = this.portraitScaleX;
@@ -146,19 +144,19 @@ export default class OrientationTrigger extends Container {
 		this.visible = (this.alpha > 0.015) && (Math.abs(this.scale.x) > 0.0015) && (Math.abs(this.scale.y) > 0.0015);
 
 		/// #if EDITOR
-		if(handler) {
+		if (handler) {
 			let h = handler.split(',')[0];
-			if(h === 'this.update') {
+			if (h === 'this.update') {
 				game.editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 10071, this, handlerName);
 				return;
 			}
-			else if(h === 'this.parent.update' && this.parent.children.indexOf(this) < (this.parent.children.length - 1)) {
+			else if (h === 'this.parent.update' && this.parent.children.indexOf(this) < (this.parent.children.length - 1)) {
 				game.editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.parent.update", but it is not last children of parent. Please move this OrientationTrigger to the end of the list.', 10072, this, handlerName);
 				return;
 			}
 		}
 		/// #endif
-		if(handler
+		if (handler
 			/// #if EDITOR
 			&& (!game.__EDITOR_mode || handler.startsWith('setValueByPath`') || this.__callInEditorMode)
 			/// #endif
@@ -168,13 +166,13 @@ export default class OrientationTrigger extends Container {
 	}
 
 	update() {
-		if(this.visible) {
+		if (this.visible) {
 			super.update();
 		}
 	}
 
 	_onRenderResize() {
-		if(this.__currentOrientationIsPortrait !== game.isPortrait // eslint-disable-line no-constant-condition
+		if (this.__currentOrientationIsPortrait !== game.isPortrait // eslint-disable-line no-constant-condition
 			/// #if EDITOR
 			|| true
 			/// #endif
@@ -187,10 +185,10 @@ export default class OrientationTrigger extends Container {
 	/// #if EDITOR
 
 	__callIfValueByPathSetter(path: string | null) {
-		if(path && path.startsWith('setValueByPath`')) {
+		if (path && path.startsWith('setValueByPath`')) {
 			try {
 				callByPath(path, this);
-			} catch(er) {
+			} catch (er) {
 				console.error(er);
 			}
 		}
@@ -199,7 +197,7 @@ export default class OrientationTrigger extends Container {
 	__EDITOR_onCreate() {
 		this.__checkWarnings();
 		window.setTimeout(() => {
-			if(this.getTriggerConditionState()) {
+			if (this.getTriggerConditionState()) {
 				this.landscapeX = this.portraitX;
 				this.landscapeY = this.portraitY;
 				this.landscapeScaleX = this.portraitScaleX;
@@ -221,8 +219,8 @@ export default class OrientationTrigger extends Container {
 	//@ts-ignore
 	set alpha(v) {
 		this._alpha = v;
-		if(IGNORE_DIRECT_PROPS) return;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return;
+		if (this.getTriggerConditionState()) {
 			this.portraitAlpha = v;
 		} else {
 			this.landscapeAlpha = v;
@@ -230,8 +228,8 @@ export default class OrientationTrigger extends Container {
 	}
 
 	get alpha() {
-		if(IGNORE_DIRECT_PROPS) return this._alpha;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return this._alpha;
+		if (this.getTriggerConditionState()) {
 			return this._alpha = isNaN(this.portraitAlpha) ? 1 : this.portraitAlpha;
 		} else {
 			return this._alpha = isNaN(this.landscapeAlpha) ? 1 : this.landscapeAlpha;
@@ -240,8 +238,8 @@ export default class OrientationTrigger extends Container {
 
 	set x(v) {
 		super.x = v;
-		if(IGNORE_DIRECT_PROPS) return;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return;
+		if (this.getTriggerConditionState()) {
 			this.portraitX = v;
 		} else {
 			this.landscapeX = v;
@@ -249,8 +247,8 @@ export default class OrientationTrigger extends Container {
 	}
 
 	get x() {
-		if(IGNORE_DIRECT_PROPS) return super.x;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return super.x;
+		if (this.getTriggerConditionState()) {
 			return super.x = isNaN(this.portraitX) ? 0 : this.portraitX;
 		} else {
 			return super.x = isNaN(this.landscapeX) ? 0 : this.landscapeX;
@@ -259,8 +257,8 @@ export default class OrientationTrigger extends Container {
 
 	set rotation(v) {
 		super.rotation = v;
-		if(IGNORE_DIRECT_PROPS) return;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return;
+		if (this.getTriggerConditionState()) {
 			this.portraitR = v;
 		} else {
 			this.landscapeR = v;
@@ -268,8 +266,8 @@ export default class OrientationTrigger extends Container {
 	}
 
 	get rotation() {
-		if(IGNORE_DIRECT_PROPS) return super.rotation;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return super.rotation;
+		if (this.getTriggerConditionState()) {
 			return super.rotation = isNaN(this.portraitR) ? 0 : this.portraitR;
 		} else {
 			return super.rotation = isNaN(this.landscapeR) ? 0 : this.landscapeR;
@@ -278,8 +276,8 @@ export default class OrientationTrigger extends Container {
 
 	set y(v) {
 		super.y = v;
-		if(IGNORE_DIRECT_PROPS) return;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return;
+		if (this.getTriggerConditionState()) {
 			this.portraitY = v;
 		} else {
 			this.landscapeY = v;
@@ -287,50 +285,50 @@ export default class OrientationTrigger extends Container {
 	}
 
 	get y() {
-		if(IGNORE_DIRECT_PROPS) return super.y;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return super.y;
+		if (this.getTriggerConditionState()) {
 			return super.y = isNaN(this.portraitY) ? 0 : this.portraitY;
 		} else {
 			return super.y = isNaN(this.landscapeY) ? 0 : this.landscapeY;
 		}
 	}
 	//@ts-ignore
-	set "scale.x"(v) {
+	set 'scale.x'(v) {
 		//@ts-ignore
 		super['scale.x'] = v;
-		if(IGNORE_DIRECT_PROPS) return;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return;
+		if (this.getTriggerConditionState()) {
 			this.portraitScaleX = v;
 		} else {
 			this.landscapeScaleX = v;
 		}
 	}
 
-	get "scale.x"() {
+	get 'scale.x'() {
 		//@ts-ignore
-		if(IGNORE_DIRECT_PROPS) return super['scale.x'];
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return super['scale.x'];
+		if (this.getTriggerConditionState()) {
 			return super.scale.x = isNaN(this.portraitScaleX) ? 0 : this.portraitScaleX;
 		} else {
 			return super.scale.x = isNaN(this.landscapeScaleX) ? 0 : this.landscapeScaleX;
 		}
 	}
 	//@ts-ignore
-	set "scale.y"(v) {
+	set 'scale.y'(v) {
 		//@ts-ignore
 		super['scale.y'] = v;
-		if(IGNORE_DIRECT_PROPS) return;
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return;
+		if (this.getTriggerConditionState()) {
 			this.portraitScaleY = v;
 		} else {
 			this.landscapeScaleY = v;
 		}
 	}
 
-	get "scale.y"() {
+	get 'scale.y'() {
 		//@ts-ignore
-		if(IGNORE_DIRECT_PROPS) return super['scale.y'];
-		if(this.getTriggerConditionState()) {
+		if (IGNORE_DIRECT_PROPS) return super['scale.y'];
+		if (this.getTriggerConditionState()) {
 			return super.scale.y = isNaN(this.portraitScaleY) ? 0 : this.portraitScaleY;
 		} else {
 			return super.scale.y = isNaN(this.landscapeScaleY) ? 0 : this.landscapeScaleY;
@@ -339,7 +337,7 @@ export default class OrientationTrigger extends Container {
 
 	__beforeSerialization() {
 		IGNORE_DIRECT_PROPS = true;
-		if(!this.__nodeExtendData.isTypeChanging) {
+		if (!this.__nodeExtendData.isTypeChanging) {
 			this.x = 0;
 			this.y = 0;
 			this.rotation = 0;
@@ -359,14 +357,14 @@ export default class OrientationTrigger extends Container {
 	}
 
 	__checkWarnings() {
-		if(game.projectDesc.screenOrientation !== 'auto') {
-			game.editor.ui.status.warn("Orientation trigger is not useful if projects screenOrientation is not set to 'auto'", 32023, this);
+		if (game.projectDesc.screenOrientation !== 'auto') {
+			game.editor.ui.status.warn('Orientation trigger is not useful if projects screenOrientation is not set to \'auto\'', 32023, this);
 		}
 	}
 
 	__afterDeserialization() {
 		IGNORE_DIRECT_PROPS = false;
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			this.applyOrientation();
 		}
 	}
@@ -382,7 +380,7 @@ export default class OrientationTrigger extends Container {
 
 	static __beforeChangeToThisType(_o: Container) {
 		const o = _o as OrientationTrigger;
-		if(isNaN(o.landscapeX) || isNaN(o.landscapeY) ||
+		if (isNaN(o.landscapeX) || isNaN(o.landscapeY) ||
 			isNaN(o.landscapeScaleX) || isNaN(o.landscapeScaleY) ||
 			isNaN(o.landscapeAlpha) || isNaN(o.landscapeR)) {
 			o.landscapeX = o.portraitX = o.x;

@@ -1,8 +1,8 @@
-import type { ClassAttributes } from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import type FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
+import type { ClassAttributes } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type FieldsTimelineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
 
 interface TimelineFieldControlsProps extends ClassAttributes<TimelineFieldControls> {
 	owner: FieldsTimelineView;

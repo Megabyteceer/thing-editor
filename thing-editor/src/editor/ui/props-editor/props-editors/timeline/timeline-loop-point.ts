@@ -1,11 +1,11 @@
-import type { ClassAttributes} from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import type TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
-import type { TimelineSelectable } from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import type { TimelineKeyFrame } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { ClassAttributes } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
+import type TimelineLineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view';
+import type { TimelineSelectable } from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-selectable';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import type { TimelineKeyFrame } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
 
 interface TimelineLoopPointProps extends ClassAttributes<TimelineLoopPoint> {
@@ -37,7 +37,7 @@ export default class TimelineLoopPoint extends Component<TimelineLoopPointProps,
 	componentWillReceiveProps(props: TimelineLoopPointProps) {
 		let t1 = this.props.keyFrame;
 		let t2 = props.keyFrame;
-		if(t1 !== t2) {
+		if (t1 !== t2) {
 			delete t1.___loopPointView;
 			t2.___loopPointView = this;
 			Timeline._justModifiedSelectable(this);
@@ -51,14 +51,14 @@ export default class TimelineLoopPoint extends Component<TimelineLoopPointProps,
 
 	setTime(time: number) {
 		const keyFrame = this.props.keyFrame;
-		if(keyFrame.j !== time) {
+		if (keyFrame.j !== time) {
 			keyFrame.j = time;
 			this.onChanged();
 		}
 	}
 
 	onLoopPointMouseDown(ev: PointerEvent) {
-		if(ev.buttons === 2) {
+		if (ev.buttons === 2) {
 			this.deleteLoopPoint();
 			sp(ev);
 		} else {
@@ -90,16 +90,16 @@ export default class TimelineLoopPoint extends Component<TimelineLoopPointProps,
 		let keyFrame = this.props.keyFrame;
 
 		let className = 'timeline-loop-point';
-		if(this.state && this.state.isSelected) {
+		if (this.state && this.state.isSelected) {
 			className += ' timeline-loop-point-selected';
 		}
-		else if(keyFrame.___view!.state && keyFrame.___view!.state.isSelected) {
+		else if (keyFrame.___view!.state && keyFrame.___view!.state.isSelected) {
 			className += ' timeline-loop-point-owner-selected';
 		}
 
 		let w = (width < 8) ? 8 : width;
 		let l = keyFrame.j * width;
-		if(keyFrame.j > keyFrame.t) {
+		if (keyFrame.j > keyFrame.t) {
 			l = l - w;
 		}
 		return R.div({

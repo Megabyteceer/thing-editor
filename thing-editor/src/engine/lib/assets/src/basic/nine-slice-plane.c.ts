@@ -1,7 +1,7 @@
 
-import { NineSlicePlane as PIXI_NineSlicePlane } from "pixi.js";
-import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
-import Lib from "thing-editor/src/engine/lib";
+import { NineSlicePlane as PIXI_NineSlicePlane } from 'pixi.js';
+import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable';
+import Lib from 'thing-editor/src/engine/lib';
 
 export default class NineSlicePlane extends PIXI_NineSlicePlane {
 	constructor() {

@@ -1,17 +1,17 @@
-import type { ComponentChild } from "preact";
-import { Component, h } from "preact";
-import fs from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
+import type { ComponentChild } from 'preact';
+import { Component, h } from 'preact';
+import fs from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
 
-import type { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
-import showContextMenu, { toggleContextMenu } from "thing-editor/src/editor/ui/context-menu";
-import { findMenuItemForHotkey } from "thing-editor/src/editor/ui/editor-button";
+import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
+import showContextMenu, { toggleContextMenu } from 'thing-editor/src/editor/ui/context-menu';
+import { findMenuItemForHotkey } from 'thing-editor/src/editor/ui/editor-button';
 import Window from 'thing-editor/src/editor/ui/editor-window';
-import Build from "thing-editor/src/editor/utils/build";
-import newComponentWizard from "thing-editor/src/editor/utils/new-component-wizard";
-import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import { onNewSceneClick, onSaveAsSceneClick } from "thing-editor/src/editor/utils/scene-utils";
-import game from "thing-editor/src/engine/game";
+import Build from 'thing-editor/src/editor/utils/build';
+import newComponentWizard from 'thing-editor/src/editor/utils/new-component-wizard';
+import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
+import { onNewSceneClick, onSaveAsSceneClick } from 'thing-editor/src/editor/utils/scene-utils';
+import game from 'thing-editor/src/engine/game';
 import L from 'thing-editor/src/engine/utils/l';
 
 const CHECKED = h('span', { className: '.menu-icon' }, '☑');
@@ -19,7 +19,7 @@ const UNCHECKED = h('span', { className: '.menu-icon' }, '☐');
 
 let unmutedIconsCache: ComponentChild;
 const UNMUTED_ICON = (): ComponentChild => {
-	if(!unmutedIconsCache) {
+	if (!unmutedIconsCache) {
 		unmutedIconsCache = R.icon('asset-sound');
 	}
 	return unmutedIconsCache;
@@ -27,7 +27,7 @@ const UNMUTED_ICON = (): ComponentChild => {
 
 let mutedIconsCache: ComponentChild;
 const MUTED_ICON = (): ComponentChild => {
-	if(!mutedIconsCache) {
+	if (!mutedIconsCache) {
 		mutedIconsCache = R.icon('sound-mute');
 	}
 	return mutedIconsCache;
@@ -35,7 +35,7 @@ const MUTED_ICON = (): ComponentChild => {
 
 const menuProps = {
 	className: 'main-menu',
-	"data-help": 'editor.MainMenu'
+	'data-help': 'editor.MainMenu'
 };
 
 const chooseProjectClick = () => {
@@ -89,14 +89,14 @@ const MUTE_SOUND_MENU_ITEM: ContextMenuItem = {
 
 const proxyMenuItemName = (targetItem: ContextMenuItem) => {
 	const item = findMenuItemForHotkey(targetItem!.hotkey!);
-	if(item) {
+	if (item) {
 		return item.name;
 	}
 };
 
 const proxyMenuItemClick = (targetItem: ContextMenuItem) => {
 	const item = findMenuItemForHotkey(targetItem!.hotkey!);
-	if(item) {
+	if (item) {
 		item.onClick();
 	}
 };
@@ -107,17 +107,17 @@ function switchLanguage(direction: number) {
 	let a = L.getLanguagesList();
 	let i = a.indexOf(L.getCurrentLanguageId());
 	i += direction;
-	if(i < 0) i = a.length - 1;
-	if(i >= a.length) i = 0;
+	if (i < 0) i = a.length - 1;
+	if (i >= a.length) i = 0;
 	L.setCurrentLanguage(a[i]);
 }
 
 const proxyMenuItemDisabled = (targetItem: ContextMenuItem) => {
-	if(!isProxySearch) {
+	if (!isProxySearch) {
 		isProxySearch = true;
 		const item = findMenuItemForHotkey(targetItem!.hotkey!);
 		isProxySearch = false;
-		if(item) {
+		if (item) {
 			return item.disabled ? item.disabled() : false;
 		}
 	}
@@ -128,28 +128,28 @@ const COPY_PROXY_MENU_ITEM: ContextMenuItem = {
 	name: () => proxyMenuItemName(COPY_PROXY_MENU_ITEM),
 	onClick: () => proxyMenuItemClick(COPY_PROXY_MENU_ITEM),
 	disabled: () => proxyMenuItemDisabled(COPY_PROXY_MENU_ITEM) as any,
-	hotkey: { key: "c", ctrlKey: true },
+	hotkey: { key: 'c', ctrlKey: true },
 };
 
 const PASTE_PROXY_MENU_ITEM: ContextMenuItem = {
 	name: () => proxyMenuItemName(PASTE_PROXY_MENU_ITEM),
 	onClick: () => proxyMenuItemClick(PASTE_PROXY_MENU_ITEM),
 	disabled: () => proxyMenuItemDisabled(PASTE_PROXY_MENU_ITEM) as any,
-	hotkey: { key: "v", ctrlKey: true },
+	hotkey: { key: 'v', ctrlKey: true },
 };
 
 const CUT_PROXY_MENU_ITEM: ContextMenuItem = {
 	name: () => proxyMenuItemName(CUT_PROXY_MENU_ITEM),
 	onClick: () => proxyMenuItemClick(CUT_PROXY_MENU_ITEM),
 	disabled: () => proxyMenuItemDisabled(CUT_PROXY_MENU_ITEM) as any,
-	hotkey: { key: "x", ctrlKey: true },
+	hotkey: { key: 'x', ctrlKey: true },
 };
 
 const CLONE_PROXY_MENU_ITEM: ContextMenuItem = {
 	name: () => proxyMenuItemName(CLONE_PROXY_MENU_ITEM),
 	onClick: () => proxyMenuItemClick(CLONE_PROXY_MENU_ITEM),
 	disabled: () => proxyMenuItemDisabled(CLONE_PROXY_MENU_ITEM) as any,
-	hotkey: { key: "d", ctrlKey: true },
+	hotkey: { key: 'd', ctrlKey: true },
 };
 
 const MAIN_MENU: MainMenuItem[] = [
@@ -182,12 +182,12 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			null,
 			{
-				name: "New scene...",
+				name: 'New scene...',
 				onClick: onNewSceneClick,
 				hotkey: { key: 'n', ctrlKey: true }
 			},
 			{
-				name: "Save scene as...",
+				name: 'Save scene as...',
 				onClick: onSaveAsSceneClick,
 				hotkey: { key: 's', ctrlKey: true, shiftKey: true }
 			},
@@ -232,7 +232,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			null,
 			{
 				name: 'Local store view...',
-				tip: "View 'game.settings' saved data content.",
+				tip: 'View \'game.settings\' saved data content.',
 				onClick: () => game.editor.LocalStoreView.toggle()
 			},
 			{
@@ -319,9 +319,9 @@ const MAIN_MENU: MainMenuItem[] = [
 				stayAfterClick: true
 			},
 			{
-				name: "Reset windows layout",
+				name: 'Reset windows layout',
 				onClick: () => {
-					for(const w of Window.allOrdered) {
+					for (const w of Window.allOrdered) {
 						w.eraseSettings();
 						w.resetLayout();
 					}
@@ -338,12 +338,12 @@ const injectedNames: Set<string> = new Set();
 export default class MainMenu extends Component {
 
 	static injectMenu(targetMenuId: string, items: ContextMenuItem[], injectionName: string, pos?: number) {
-		if(injectedNames.has(injectionName)) {
+		if (injectedNames.has(injectionName)) {
 			return;
 		}
 		injectedNames.add(injectionName);
 		let menu: MainMenuItem | undefined = MAIN_MENU.find(i => i.id === targetMenuId);
-		if(!menu) {
+		if (!menu) {
 			menu = {
 				id: targetMenuId,
 				name: targetMenuId,
@@ -351,7 +351,7 @@ export default class MainMenu extends Component {
 			};
 			MAIN_MENU.push(menu);
 		}
-		if(typeof pos === 'number') {
+		if (typeof pos === 'number') {
 			menu.items.splice(pos, 0, ...items);
 		} else {
 			menu.items = menu.items.concat(items);
@@ -359,14 +359,14 @@ export default class MainMenu extends Component {
 	}
 
 	render() {
-		if(!game.editor) {
+		if (!game.editor) {
 			return R.fragment();
 		}
 		return R.div(menuProps,
 			MAIN_MENU.map((menuItem: MainMenuItem) => {
 				return R.span({
 					onPointerOver: (ev: PointerEvent) => {
-						if(document.querySelector('.context-menu')) {
+						if (document.querySelector('.context-menu')) {
 							showContextMenu(menuItem.items, ev);
 						}
 					}

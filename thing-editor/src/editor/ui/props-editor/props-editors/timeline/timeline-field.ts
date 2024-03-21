@@ -1,15 +1,15 @@
-import type { ClassAttributes } from "preact";
-import { h } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import type ObjectsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/objects-timeline";
-import Timeline from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline";
-import TimelineFieldControls from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field-controls";
-import TimelineLineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import type { TimelineFieldData, TimelineKeyFrame } from "thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player";
+import type { ClassAttributes } from 'preact';
+import { h } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import type ObjectsTimelineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/objects-timeline';
+import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
+import TimelineFieldControls from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field-controls';
+import TimelineLineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import type { TimelineFieldData, TimelineKeyFrame } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
 
 interface FieldsTimelineViewProps extends ClassAttributes<FieldsTimelineView> {
@@ -30,14 +30,14 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 	componentWillReceiveProps(props: FieldsTimelineViewProps) {
 		let k1 = this.props.field;
 		let k2 = props.field;
-		if(k1.___view === this) {
+		if (k1.___view === this) {
 			k1.___view = null;
 		}
 		k2.___view = this;
 	}
 
 	componentWillUnmount() {
-		if(this.props.field.___view === this) {
+		if (this.props.field.___view === this) {
 			this.props.field.___view = null;
 		}
 	}
@@ -45,7 +45,7 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 	toggleKeyframe(time: number) {
 		let field = this.props.field;
 		let currentKeyframe = MovieClip._findNextKeyframe(field.t, time - 1);
-		if(currentKeyframe.t !== time) {
+		if (currentKeyframe.t !== time) {
 			this.props.owner.createKeyframeWithTimelineValue(field, time);
 			this.refresh();
 		} else {
@@ -56,8 +56,8 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 	deleteKeyframe(keyFrame: TimelineKeyFrame) {
 		let f = this.props.field;
 		let i = f.t.indexOf(keyFrame);
-		assert(i >= 0, "can't delete keyFrame.");
-		if(i > 0) {
+		assert(i >= 0, 'can\'t delete keyFrame.');
+		if (i > 0) {
 			Timeline.unselectKeyframe(keyFrame);
 			f.t.splice(i, 1);
 			this.onChanged();
@@ -66,7 +66,7 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 	}
 
 	onRemoveFieldClick() {
-		game.editor.ui.modal.showEditorQuestion("Field animation delete", "Are you sure you want to delete animation track for field '" + this.props.field.n + "'?",
+		game.editor.ui.modal.showEditorQuestion('Field animation delete', 'Are you sure you want to delete animation track for field \'' + this.props.field.n + '\'?',
 			() => {
 				this.props.owner.deleteAnimationField(this.props.field);
 			}, 'Delete'
@@ -83,12 +83,12 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 
 		let moved = (currentKeyframe.t - currentTime);
 
-		if(!(((direction > 0) === (moved > 0)) && ((direction < 0) === (moved < 0)))) {
+		if (!(((direction > 0) === (moved > 0)) && ((direction < 0) === (moved < 0)))) {
 			i += direction;
-			if(i < 0) {
+			if (i < 0) {
 				i = field.t.length - 1;
 			}
-			else if(i >= field.t.length) {
+			else if (i >= field.t.length) {
 				i = 0;
 			}
 		}

@@ -1,16 +1,16 @@
-import type { FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from "thing-editor/src/editor/fs";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import enumAssetsPropsRecursive from "thing-editor/src/editor/utils/enum-assets-recursive";
-import getHashedAssetName from "thing-editor/src/editor/utils/get-hashed-asset-name";
-import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from "thing-editor/src/engine/game";
-import Lib, { isAtlasAsset } from "thing-editor/src/engine/lib";
+import type { FileDesc, FileDescClass, FileDescImage, FileDescPrefab, FileDescScene, FileDescSound } from 'thing-editor/src/editor/fs';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import enumAssetsPropsRecursive from 'thing-editor/src/editor/utils/enum-assets-recursive';
+import getHashedAssetName from 'thing-editor/src/editor/utils/get-hashed-asset-name';
+import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from 'thing-editor/src/engine/game';
+import Lib, { isAtlasAsset } from 'thing-editor/src/engine/lib';
 
 const addedCallbacks: Set<string> = new Set();
 const postBuildCallbacks: ((path: string) => void)[] = [];
 
 function addPostBuildScript(callback: (outPath: string) => void, id: string) {
-	if(!addedCallbacks.has(id)) {
+	if (!addedCallbacks.has(id)) {
 		addedCallbacks.add(id);
 		postBuildCallbacks.push(callback);
 	}
@@ -27,14 +27,14 @@ function filterAssets(file: FileDesc) {
 }
 
 const filterChildrenByName = (childData: SerializedObject) => {
-	if(!childData.hasOwnProperty('p')) {
+	if (!childData.hasOwnProperty('p')) {
 		return true;
 	}
-	if(childData.p.hasOwnProperty('name') && childData.p.name &&
+	if (childData.p.hasOwnProperty('name') && childData.p.name &&
 		childData.p.name.startsWith(prefixToCutOff)) {
 		return false;
 	}
-	if(childData.p.hasOwnProperty('prefabName') &&
+	if (childData.p.hasOwnProperty('prefabName') &&
 		!isFileNameValidForBuild(childData.p.prefabName)) {
 		return false;
 	}
@@ -42,14 +42,14 @@ const filterChildrenByName = (childData: SerializedObject) => {
 };
 
 const fieldsFilter = (key: string, value: any) => {
-	if(!key.startsWith(prefixToCutOff)) {
-		if(key === ':' && Array.isArray(value)) { // cut off __ objects
+	if (!key.startsWith(prefixToCutOff)) {
+		if (key === ':' && Array.isArray(value)) { // cut off __ objects
 			return value.filter(filterChildrenByName);
 		}
 		return value;
 	}
-	if(typeof value === 'object') { //its prefab or scene data
-		if(isFileNameValidForBuild(key)) {
+	if (typeof value === 'object') { //its prefab or scene data
+		if (isFileNameValidForBuild(key)) {
 			return value;
 		}
 	}
@@ -74,7 +74,7 @@ export default class Build {
 
 		assetsToCopy = [];
 
-		if(game.editor.askSceneToSaveIfNeed() === false) {
+		if (game.editor.askSceneToSaveIfNeed() === false) {
 			return;
 		}
 		game.editor.ui.modal.showSpinner();
@@ -85,7 +85,7 @@ export default class Build {
 		preloaderAssets.add(fs.getFileByAssetName(PRELOADER_SCENE_NAME, AssetType.SCENE));
 		preloaderAssets.add(fs.getFileByAssetName(DEFAULT_FADER_NAME, AssetType.PREFAB));
 		const fonts = fs.getAssetsList(AssetType.FONT);
-		for(const font of fonts) {
+		for (const font of fonts) {
 			preloaderAssets.add(font);
 		}
 		enumAssetsPropsRecursive(Lib.scenes[PRELOADER_SCENE_NAME], preloaderAssets);
@@ -102,8 +102,8 @@ export default class Build {
 
 		const mainAssets: Set<FileDesc> = new Set();
 		const allAssets = fs.getAssetsList();
-		for(let asset of allAssets) {
-			if(!preloaderAssets.has(asset)) {
+		for (let asset of allAssets) {
+			if (!preloaderAssets.has(asset)) {
 				mainAssets.add(asset);
 			}
 		}
@@ -118,9 +118,9 @@ export default class Build {
 		let classesFiles = getAssetsForBuild(AssetType.CLASS) as FileDescClass[];
 
 		classesFiles.sort((a, b) => {
-			if(a.assetName > b.assetName) {
+			if (a.assetName > b.assetName) {
 				return 1;
-			} else if(a.assetName < b.assetName) {
+			} else if (a.assetName < b.assetName) {
 				return -1;
 			}
 			return 0;
@@ -134,7 +134,7 @@ export default class Build {
 
 		const findRef = (class_: SourceMappedConstructor): boolean => {
 			let name = class_.__className;
-			if(findClassNameInAssetFiles(name, scenesFiles) || findClassNameInAssetFiles(name, prefabsFiles)) {
+			if (findClassNameInAssetFiles(name, scenesFiles) || findClassNameInAssetFiles(name, prefabsFiles)) {
 				return true;
 			}
 			return classesFiles.some((c: FileDescClass) => {
@@ -144,13 +144,13 @@ export default class Build {
 
 		classesFiles = classesFiles.filter(f => findRef(f.asset));
 
-		for(const classFile of classesFiles) {
-			if(classFile.asset.__requiredComponents) {
-				for(const requiredClass of classFile.asset.__requiredComponents) {
-					if(!requiredClass.__classAsset) {
+		for (const classFile of classesFiles) {
+			if (classFile.asset.__requiredComponents) {
+				for (const requiredClass of classFile.asset.__requiredComponents) {
+					if (!requiredClass.__classAsset) {
 						game.editor.ui.status.warn(classFile.asset.__className + '.__requiredComponents contains wrong component: ' + (requiredClass.name || requiredClass));
 					} else {
-						if(classesFiles.indexOf(requiredClass.__classAsset) < 0) {
+						if (classesFiles.indexOf(requiredClass.__classAsset) < 0) {
 							classesFiles.push(requiredClass.__classAsset);
 						}
 					}
@@ -158,11 +158,11 @@ export default class Build {
 			}
 		}
 
-		for(let classFile of classesFiles) {
+		for (let classFile of classesFiles) {
 			let name = classFile.asset.__className;
 			let path = classFile.fileName;
 
-			if(path.startsWith('/')) {
+			if (path.startsWith('/')) {
 				path = path.substr(1);
 			}
 			src.push('import ' + name + ' from "' + path + '";');
@@ -175,9 +175,9 @@ export default class Build {
 
 		const reversedDirsList = game.editor.assetsFolders.slice().reverse();
 
-		for(let dir of reversedDirsList) {
+		for (let dir of reversedDirsList) {
 			const htmlName = dir + 'index.html';
-			if(fs.exists(htmlName)) {
+			if (fs.exists(htmlName)) {
 				fs.copyFile(htmlName, game.editor.currentProjectDir + '.tmp/index.html');
 				break;
 			}
@@ -185,12 +185,12 @@ export default class Build {
 
 		return fs.build(game.editor.currentProjectDir, debug, assetsToCopy).then(async (result: any) => {
 			game.editor.ui.modal.hideSpinner();
-			if(!game.editor.buildProjectAndExit) {
-				if(result instanceof Error) {
+			if (!game.editor.buildProjectAndExit) {
+				if (result instanceof Error) {
 					const a = result.message.split('\n');
 					const b = (a[1] as string).split(':');
 					const i = b.findIndex(t => t.indexOf('ERROR') >= 0);
-					if(i > 3) {
+					if (i > 3) {
 						const lineNum = b[i - 2];
 						const charNum = b[i - 1];
 						b.length = i - 2;
@@ -201,10 +201,10 @@ export default class Build {
 					game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
 				} else {
 					const path = game.editor.currentProjectDir + (debug ? 'debug/' : 'release/');
-					for(const f of postBuildCallbacks) {
+					for (const f of postBuildCallbacks) {
 						await f(path);
 					}
-					game.editor.ui.modal.showEditorQuestion("Build", "Builded successfully.", () => {
+					game.editor.ui.modal.showEditorQuestion('Build', 'Builded successfully.', () => {
 						game.editor.openUrl('http://localhost:5174/' + path);
 					}, 'Open');
 				}
@@ -214,19 +214,19 @@ export default class Build {
 }
 
 function findClassNameInAssetFiles(className: string, assets: FileDesc[]) {
-	for(let prefab of assets) {
-		if(findClassNameInPrefabData(className, prefab.asset as SerializedObject)) return true;
+	for (let prefab of assets) {
+		if (findClassNameInPrefabData(className, prefab.asset as SerializedObject)) return true;
 	}
 }
 
 function findClassNameInPrefabData(name: string, data: SerializedObject): boolean {
-	if(!filterChildrenByName(data)) {
+	if (!filterChildrenByName(data)) {
 		return false;
 	}
-	if(data.c === name) {
+	if (data.c === name) {
 		return true;
 	}
-	if(data.hasOwnProperty(':')) {
+	if (data.hasOwnProperty(':')) {
 		return data[':']!.some((d) => {
 			return findClassNameInPrefabData(name, d);
 		});
@@ -247,10 +247,10 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 	let fonts: string[] | undefined;
 
 	assets.forEach((file) => {
-		if(isFileNameValidForBuild(file.assetName)) {
-			if(file.assetType === AssetType.IMAGE) {
-				if(!Lib.__isSystemTexture((file as FileDescImage).asset)) {
-					if(!file.parentAsset) {
+		if (isFileNameValidForBuild(file.assetName)) {
+			if (file.assetType === AssetType.IMAGE) {
+				if (!Lib.__isSystemTexture((file as FileDescImage).asset)) {
+					if (!file.parentAsset) {
 						assetsToCopy.push({
 							from: file.fileName,
 							to: getHashedAssetName(file)
@@ -258,21 +258,21 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 						images.push(getHashedAssetName(file));
 					}
 				}
-			} else if(file.assetType === AssetType.SCENE) {
+			} else if (file.assetType === AssetType.SCENE) {
 				scenes[file.assetName] = file.asset as SerializedObject;
-			} else if(file.assetType === AssetType.PREFAB) {
+			} else if (file.assetType === AssetType.PREFAB) {
 				prefabs[file.assetName] = file.asset as SerializedObject;
-			} else if(file.assetType === AssetType.SOUND) {
-				for(let ext of game.projectDesc.soundFormats) {
+			} else if (file.assetType === AssetType.SOUND) {
+				for (let ext of game.projectDesc.soundFormats) {
 					assetsToCopy.push({
 						from: file.fileName.replace(/\wav$/, ext),
 						to: getHashedAssetName(file) + '.' + ext
 					});
 				}
 				sounds.push([getHashedAssetName(file), (file as FileDescSound).asset.preciseDuration]);
-			} else if(file.assetType === AssetType.RESOURCE) {
-				if(isAtlasAsset(file.asset)) {
-					if(!resources) {
+			} else if (file.assetType === AssetType.RESOURCE) {
+				if (isAtlasAsset(file.asset)) {
+					if (!resources) {
 						resources = [];
 					}
 					resources.push(getHashedAssetName(file));
@@ -281,8 +281,8 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 						to: getHashedAssetName(file) + '.json'
 					});
 				}
-			} else if(file.assetType === AssetType.FONT) {
-				if(!fonts) {
+			} else if (file.assetType === AssetType.FONT) {
+				if (!fonts) {
 					fonts = [];
 				}
 				const hashedFontName = getHashedAssetName(file);
@@ -312,7 +312,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 }
 
 function renderTextWithFilesLinks(txt: string) {
-	if(txt.indexOf(' in file ') > 0) {
+	if (txt.indexOf(' in file ') > 0) {
 		const a = txt.split(' in file ');
 		return R.span(null, a[0], ' in file ', R.a({
 			href: '#',

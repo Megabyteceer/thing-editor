@@ -1,7 +1,7 @@
 
-import editable from "thing-editor/src/editor/props-editor/editable";
-import DSprite from "thing-editor/src/engine/lib/assets/src/basic/d-sprite.c";
-import { stepTo } from "thing-editor/src/engine/utils/utils";
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import DSprite from 'thing-editor/src/engine/lib/assets/src/basic/d-sprite.c';
+import { stepTo } from 'thing-editor/src/engine/utils/utils';
 
 export default class ParticleShort extends DSprite {
 
@@ -35,12 +35,12 @@ export default class ParticleShort extends DSprite {
 		this.ySpeed += (Math.random() - 0.65);
 		this.ySpeed *= this.ySpeedFactor;
 
-		if(this.alpha < 1) {
+		if (this.alpha < 1) {
 			this.alpha -= this.alphaSpeed;
-			if(this.alpha <= 0) {
+			if (this.alpha <= 0) {
 				this.remove();
 			}
-		} else if(Math.random() > this.chanceToRemove) {
+		} else if (Math.random() > this.chanceToRemove) {
 			this.alpha -= this.alphaSpeed;
 		}
 		super.update();

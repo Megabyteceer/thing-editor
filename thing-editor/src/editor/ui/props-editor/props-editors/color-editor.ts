@@ -1,6 +1,6 @@
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
-import game from "thing-editor/src/engine/game";
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
+import game from 'thing-editor/src/engine/game';
 
 const ColorEditor = (props: EditablePropertyEditorProps) => {
 	let val = props.value || 0;

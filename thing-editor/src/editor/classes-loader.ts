@@ -1,20 +1,20 @@
-import wrapPropertyWithNumberChecker from "thing-editor/src/editor/utils/number-checker";
-import Lib from "thing-editor/src/engine/lib";
+import wrapPropertyWithNumberChecker from 'thing-editor/src/editor/utils/number-checker';
+import Lib from 'thing-editor/src/engine/lib';
 
-import { Container, DisplayObject, Sprite, Text } from "pixi.js";
-import type { FileDescClass } from "thing-editor/src/editor/fs";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { EditablePropertyDesc, EditablePropertyType } from "thing-editor/src/editor/props-editor/editable";
-import { _editableEmbed, propertyAssert } from "thing-editor/src/editor/props-editor/editable";
-import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
-import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import { regenerateClassesTypings } from "thing-editor/src/editor/utils/generate-editor-typings";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import ___GizmoArrow from "thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c";
-import MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import { Container, DisplayObject, Sprite, Text } from 'pixi.js';
+import type { FileDescClass } from 'thing-editor/src/editor/fs';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { EditablePropertyDesc, EditablePropertyType } from 'thing-editor/src/editor/props-editor/editable';
+import { _editableEmbed, propertyAssert } from 'thing-editor/src/editor/props-editor/editable';
+import PropsEditor from 'thing-editor/src/editor/ui/props-editor/props-editor';
+import SelectEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
+import { regenerateClassesTypings } from 'thing-editor/src/editor/utils/generate-editor-typings';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import ___GizmoArrow from 'thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c';
+import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
 const EMBED_CLASSES_NAMES_FIXER: Map<any, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
@@ -47,9 +47,9 @@ export default class ClassesLoader {
 			const onClassLoaded = (module: { default: SourceMappedConstructor; }): SourceMappedConstructor => {
 
 				const RawClass = module.default;
-				if(!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
+				if (!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
 					game.editor.editSource(file.fileName);
-					if(!RawClass) {
+					if (!RawClass) {
 						game.editor.showError('file ' + file.fileName + ' exports empty statement: ' + RawClass);
 					} else {
 						game.editor.showError('file ' + file.fileName + ' exports class which does not extend PIXI.Container: ' + RawClass.name);
@@ -64,8 +64,8 @@ export default class ClassesLoader {
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
 
-				if(className.startsWith('_')) {
-					if(
+				if (className.startsWith('_')) {
+					if (
 						(className.startsWith('_') && !file.fileName.includes('/_')) ||
 						(className.startsWith('___') && !file.fileName.includes('/___')) ||
 						(className.startsWith('__') && !file.fileName.includes('/__')) ||
@@ -86,64 +86,64 @@ export default class ClassesLoader {
 
 				Class.__isScene = (instance instanceof Scene);
 
-				if(!Class.hasOwnProperty('__editablePropsRaw')) {
+				if (!Class.hasOwnProperty('__editablePropsRaw')) {
 					Class.__editablePropsRaw = [];
-					assert(Class.hasOwnProperty('__editablePropsRaw'), "Editable not own");
+					assert(Class.hasOwnProperty('__editablePropsRaw'), 'Editable not own');
 				}
 				const editableProps: EditablePropertyDesc[] = Class.__editablePropsRaw;
-				for(let prop of editableProps) {
+				for (let prop of editableProps) {
 					prop.class = Class;
-					if(!prop.hasOwnProperty('type')) {
+					if (!prop.hasOwnProperty('type')) {
 						let type = typeof (instance as KeyedObject)[prop.name];
 						propertyAssert(prop, prop.override || type === 'string' || type === 'number' || type === 'boolean', 'can not detect type for editable property ' + prop.name);
 
 						prop.type = (type || 'number') as EditablePropertyType;
 					}
 
-					if(prop.name.startsWith('___')) {
+					if (prop.name.startsWith('___')) {
 						prop.notSerializable = true;
 					}
 
-					if(!prop.noNullCheck && !prop.arrayProperty && (prop.type === 'number' || prop.type === 'color')) {
+					if (!prop.noNullCheck && !prop.arrayProperty && (prop.type === 'number' || prop.type === 'color')) {
 						wrapPropertyWithNumberChecker(Class, prop.name);
 						prop.__nullCheckingIsApplied = true;
 					}
 
-					if(NOT_SERIALIZABLE_PROPS_TYPES.has(prop.type) || prop.name.startsWith('___')) {
+					if (NOT_SERIALIZABLE_PROPS_TYPES.has(prop.type) || prop.name.startsWith('___')) {
 						prop.notSerializable = true;
 					}
 
-					if(!prop.notSerializable) {
-						if(!prop.hasOwnProperty('default')) {
+					if (!prop.notSerializable) {
+						if (!prop.hasOwnProperty('default')) {
 							prop.default = (instance as KeyedObject)[prop.name];
-							if(!prop.default) {
+							if (!prop.default) {
 								prop.default = PropsEditor.getDefaultForType(prop);
 							}
-							if(Array.isArray(prop.default)) {
+							if (Array.isArray(prop.default)) {
 								prop.arrayProperty = true;
 							}
-							propertyAssert(prop, typeof prop.default !== 'undefined', "Editable property '" + prop.name + "' in class '" + Class.__className + "' has no default value.");
+							propertyAssert(prop, typeof prop.default !== 'undefined', 'Editable property \'' + prop.name + '\' in class \'' + Class.__className + '\' has no default value.');
 						}
 						Class.__defaultValues[prop.name] = prop.default;
 					}
 
-					if(prop.hasOwnProperty('min')) {
-						propertyAssert(prop, prop.type === 'number', "'min' attribute possible for properties with 'number' type only.");
-						propertyAssert(prop, typeof prop.min === 'number', "'min' attribute should have number value.");
-						propertyAssert(prop, prop.default >= prop.min!, "default value " + prop.default + " is less that 'min' attribute " + prop.min);
+					if (prop.hasOwnProperty('min')) {
+						propertyAssert(prop, prop.type === 'number', '\'min\' attribute possible for properties with \'number\' type only.');
+						propertyAssert(prop, typeof prop.min === 'number', '\'min\' attribute should have number value.');
+						propertyAssert(prop, prop.default >= prop.min!, 'default value ' + prop.default + ' is less that \'min\' attribute ' + prop.min);
 					}
-					if(prop.hasOwnProperty('max')) {
-						propertyAssert(prop, prop.type === 'number', "'max' attribute possible for properties with 'number' type only.");
-						propertyAssert(prop, typeof prop.max === 'number', "'max' attribute should have number value.");
-						propertyAssert(prop, prop.default <= prop.max!, "default value " + prop.default + " is bigger that 'max' attribute " + prop.max);
+					if (prop.hasOwnProperty('max')) {
+						propertyAssert(prop, prop.type === 'number', '\'max\' attribute possible for properties with \'number\' type only.');
+						propertyAssert(prop, typeof prop.max === 'number', '\'max\' attribute should have number value.');
+						propertyAssert(prop, prop.default <= prop.max!, 'default value ' + prop.default + ' is bigger that \'max\' attribute ' + prop.max);
 					}
-					if(prop.hasOwnProperty('step')) {
-						propertyAssert(prop, prop.type === 'number', "'step' attribute possible for properties with 'number' type only.");
-						propertyAssert(prop, typeof prop.step === 'number', "'step' attribute should have number value.");
+					if (prop.hasOwnProperty('step')) {
+						propertyAssert(prop, prop.type === 'number', '\'step\' attribute possible for properties with \'number\' type only.');
+						propertyAssert(prop, typeof prop.step === 'number', '\'step\' attribute should have number value.');
 					}
 
-					if(!prop.override) {
-						if(prop.hasOwnProperty('select')) {
+					if (!prop.override) {
+						if (prop.hasOwnProperty('select')) {
 							prop.renderer = SelectEditor;
 						} else {
 							prop.renderer = PropsEditor.getRenderer(prop);
@@ -151,7 +151,7 @@ export default class ClassesLoader {
 					}
 				}
 
-				if((Class.__editablePropsRaw.length < 1) || (Class.__editablePropsRaw[0].type !== 'splitter')) {
+				if ((Class.__editablePropsRaw.length < 1) || (Class.__editablePropsRaw[0].type !== 'splitter')) {
 					_editableEmbed(Class, className + '-splitter', {
 						type: 'splitter',
 						name: className,
@@ -166,7 +166,7 @@ export default class ClassesLoader {
 			let moduleName = '../../..' + file.fileName.replace(/\.ts$/, '');
 
 			const versionQuery = file.fileName.startsWith('/thing-editor/src/engine/lib/') ? undefined : ('?v=' + componentsVersion);
-			if(versionQuery) {
+			if (versionQuery) {
 				moduleName += '.ts' + versionQuery;
 			}
 			return imp(moduleName).then(onClassLoaded) as any;
@@ -174,13 +174,13 @@ export default class ClassesLoader {
 		})).then((_classes: SourceMappedConstructor[]) => {
 			let classes: GameClasses = {} as any;
 
-			for(let c of _classes) {
-				if(!c) {
+			for (let c of _classes) {
+				if (!c) {
 					return;
 				}
 				const className = c.__className;
 
-				if(classes[className]) {
+				if (classes[className]) {
 					game.editor.editClassSource(c);
 					game.editor.showError(R.div(null,
 						'class ',
@@ -195,16 +195,16 @@ export default class ClassesLoader {
 
 			Lib._setClasses(classes);
 
-			for(let c of _classes) {
+			for (let c of _classes) {
 
 				let superClass = c;
 
 				const allProps: EditablePropertyDesc[] = [];
-				while(superClass.__editablePropsRaw) {
-					if(superClass.hasOwnProperty('__editablePropsRaw')) {
+				while (superClass.__editablePropsRaw) {
+					if (superClass.hasOwnProperty('__editablePropsRaw')) {
 						allProps!.unshift.apply(allProps, superClass.__editablePropsRaw);
 						Object.assign(c.__defaultValues, superClass.__defaultValues);
-						if(allProps[0].name === '__root-splitter') {
+						if (allProps[0].name === '__root-splitter') {
 							break;
 						}
 					}
@@ -214,17 +214,17 @@ export default class ClassesLoader {
 				const editableProps: EditablePropertyDesc[] = [];
 				const existingProps: Set<string> = new Set();
 
-				for(const thisProp of allProps) {
-					if(existingProps.has(thisProp.name)) {
+				for (const thisProp of allProps) {
+					if (existingProps.has(thisProp.name)) {
 						const sameNamedPropIndex = editableProps.findIndex(p => p.name === thisProp.name);
 						const existingProp = editableProps[sameNamedPropIndex];
-						if(!thisProp.override) {
+						if (!thisProp.override) {
 							game.editor.editSource(thisProp.__src);
 							game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + existingProp, 40004);
 						} else {
 
 							editableProps[sameNamedPropIndex] = Object.assign({}, existingProp, thisProp);
-							if(thisProp.hasOwnProperty('default')) {
+							if (thisProp.hasOwnProperty('default')) {
 								c.__defaultValues[thisProp.name] = thisProp.default;
 							}
 						}
@@ -236,8 +236,8 @@ export default class ClassesLoader {
 
 				c.__editableProps = editableProps;
 
-				if(!c.hasOwnProperty('__EDITOR_icon')) {
-					if(c.prototype instanceof MovieClip) {
+				if (!c.hasOwnProperty('__EDITOR_icon')) {
+					if (c.prototype instanceof MovieClip) {
 						c.__EDITOR_icon = 'tree/movie-custom';
 					} else {
 						c.__EDITOR_icon = 'tree/game';
@@ -245,7 +245,7 @@ export default class ClassesLoader {
 				}
 			}
 			regenerateClassesTypings();
-			if(!oneClassNameFixed) {
+			if (!oneClassNameFixed) {
 				game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
 			}
 			return classes;

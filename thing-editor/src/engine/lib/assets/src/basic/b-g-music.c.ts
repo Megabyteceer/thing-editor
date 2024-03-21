@@ -1,13 +1,13 @@
-import { Container } from "pixi.js";
+import { Container } from 'pixi.js';
 
-import editable from "thing-editor/src/editor/props-editor/editable";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
-import callByPath from "thing-editor/src/engine/utils/call-by-path";
-import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
-import Sound from "thing-editor/src/engine/utils/sound";
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
+import callByPath from 'thing-editor/src/engine/utils/call-by-path';
+import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
+import Sound from 'thing-editor/src/engine/utils/sound';
 
 const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01
 
@@ -22,11 +22,11 @@ export default class BgMusic extends Container {
 	init() {
 		this._externalVolume = 0;
 		super.init();
-		assert(allActiveMusics.indexOf(this) < 0, "BgMusic reference already registered");
+		assert(allActiveMusics.indexOf(this) < 0, 'BgMusic reference already registered');
 		allActiveMusics.push(this);
 
 		BgMusic._recalculateMusic();
-		if(!this.dynamicPreloading) {
+		if (!this.dynamicPreloading) {
 			Lib.preloadSound(this.intro
 				/// #if EDITOR
 				, this
@@ -50,7 +50,7 @@ export default class BgMusic extends Container {
 	}
 
 	set intro(v) {
-		if(this._intro !== v) {
+		if (this._intro !== v) {
 			this._intro = v;
 			this.musicFragmentHash = (this._intro || '') + '#' + (this._loop || '');
 			BgMusic._recalculateMusic();
@@ -65,7 +65,7 @@ export default class BgMusic extends Container {
 	}
 
 	set loop(v) {
-		if(this._loop !== v) {
+		if (this._loop !== v) {
 			this._loop = v;
 			this.musicFragmentHash = (this._intro || '') + '#' + (this._loop || '');
 			BgMusic._recalculateMusic();
@@ -80,7 +80,7 @@ export default class BgMusic extends Container {
 	}
 
 	set isPlaying(v) {
-		if(this._isPlaying !== v) {
+		if (this._isPlaying !== v) {
 			this._isPlaying = v;
 			BgMusic._recalculateMusic();
 		}
@@ -97,7 +97,7 @@ export default class BgMusic extends Container {
 	}
 
 	set volume(v) {
-		if(this._volume !== v) {
+		if (this._volume !== v) {
 			this._volume = v;
 			BgMusic._recalculateMusic();
 		}
@@ -140,7 +140,7 @@ export default class BgMusic extends Container {
 	onRemove() {
 		super.onRemove();
 		let i = allActiveMusics.indexOf(this);
-		if(i >= 0) { // could be removed before initialization in parent init method
+		if (i >= 0) { // could be removed before initialization in parent init method
 			allActiveMusics.splice(i, 1);
 		}
 		BgMusic._recalculateMusic();
@@ -159,26 +159,26 @@ export default class BgMusic extends Container {
 
 	update() {
 		super.update();
-		if(this._isPlaying && this.globalVolumePath) {
-			if(this._appliedPathVol !== getValueByPath(this.globalVolumePath, this)) {
+		if (this._isPlaying && this.globalVolumePath) {
+			if (this._appliedPathVol !== getValueByPath(this.globalVolumePath, this)) {
 				BgMusic._recalculateMusic();
 			}
 		}
 	}
 
 	applyResetPosition() {
-		if(this.isPlaying && this.resetPositionOnPlay) {
+		if (this.isPlaying && this.resetPositionOnPlay) {
 			this.resetPosition();
 		}
 	}
 
 	_getTargetVol() {
-		if(!this._isPlaying) {
+		if (!this._isPlaying) {
 			return 0;
 		}
 		assert(!isNaN(this._volume * this._externalVolume * Sound.musicVol), 'MgMusic volume is invalid');
 		let globalVolume;
-		if(this.globalVolumePath) {
+		if (this.globalVolumePath) {
 			this._appliedPathVol = getValueByPath(this.globalVolumePath, this);
 			globalVolume = this._appliedPathVol;
 		} else {
@@ -190,7 +190,7 @@ export default class BgMusic extends Container {
 
 	play(fade?: number) {
 		this.customFade = fade;
-		if(!this.isPlaying) {
+		if (!this.isPlaying) {
 			this.isPlaying = true;
 			this.applyResetPosition();
 		}
@@ -210,20 +210,20 @@ export default class BgMusic extends Container {
 	}
 
 	_onIntroFinish() {
-		if(this.onIntroFinish) {
+		if (this.onIntroFinish) {
 			callByPath(this.onIntroFinish, this);
 		}
 	}
 
 	static _recalculateMusic() {
-		if(!musicRecalculationIsScheduled) {
+		if (!musicRecalculationIsScheduled) {
 			window.setTimeout(recalculateMusic, 1);
 			musicRecalculationIsScheduled = true;
 		}
 	}
 
 	static _clearCustomFades(fade: number) {
-		for(let m of allActiveMusics) {
+		for (let m of allActiveMusics) {
 			m.customFade = fade;
 		}
 		MusicFragment._applyFadeForAll(fade);
@@ -236,12 +236,12 @@ export default class BgMusic extends Container {
 
 	/// #if DEBUG
 	static __onSoundOverride(name: string) {
-		for(let bgm of game.currentContainer.findChildrenByType(BgMusic)) {
-			if(bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
+		for (let bgm of game.currentContainer.findChildrenByType(BgMusic)) {
+			if (bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
 				bgm.stop(0);
 				MusicFragment.__stopAll();
 				window.setTimeout(() => {
-					if((bgm.intro === name || bgm.loop === name)) {
+					if ((bgm.intro === name || bgm.loop === name)) {
 						bgm.play();
 					}
 				}, 60);
@@ -265,7 +265,7 @@ export default class BgMusic extends Container {
 	}
 
 	get __currentFragment() {
-		if(this._getTargetVol() > MIN_VOL_THRESHOLD) {
+		if (this._getTargetVol() > MIN_VOL_THRESHOLD) {
 			return MusicFragment.__getFragment(this.musicFragmentHash);
 		}
 		return undefined;
@@ -282,12 +282,12 @@ function recalculateMusic() {
 	musicRecalculationIsScheduled = false;
 
 	/// #if EDITOR
-	if(!game.projectDesc) {
+	if (!game.projectDesc) {
 		return;
 	}
 	/// #endif
 
-	if(game._isWaitingToHideFader) {
+	if (game._isWaitingToHideFader) {
 		return;
 	}
 	let priorities = [];
@@ -295,25 +295,25 @@ function recalculateMusic() {
 
 	let currentFader = game.currentFader;
 
-	if(currentFader) { //to enforce mute all musics under fader
+	if (currentFader) { //to enforce mute all musics under fader
 		musicsMap.set(FADER_MUSIC_PRIORITY, []);
 		priorities.push(FADER_MUSIC_PRIORITY);
 	}
 
-	for(let m of allActiveMusics) {
+	for (let m of allActiveMusics) {
 		let root = m.getRootContainer();
 		let priority;
-		if(root === game.currentContainer) {
+		if (root === game.currentContainer) {
 			priority = CURRENT_CONTAINER_MUSIC_PRIORITY;
-		} else if(root === currentFader) {
+		} else if (root === currentFader) {
 			priority = FADER_MUSIC_PRIORITY;
-		} else if(root.parent) {
+		} else if (root.parent) {
 			priority = root.parent.getChildIndex(root);
 		} else {
 			m._externalVolume = 0;
 			continue;
 		}
-		if(!musicsMap.has(priority)) {
+		if (!musicsMap.has(priority)) {
 			priorities.push(priority);
 			musicsMap.set(priority, []);
 		}
@@ -330,12 +330,12 @@ function recalculateMusic() {
 	/// #if EDITOR
 	muteAllNext = muteAllNext || game.__EDITOR_mode;
 	/// #endif
-	for(let priority of priorities) {
+	for (let priority of priorities) {
 		let a = musicsMap.get(priority)!;
-		for(let m of a) {
-			if(muteAllNext) {
+		for (let m of a) {
+			if (muteAllNext) {
 				m._externalVolume = 0;
-			} else if(priority < CURRENT_CONTAINER_MUSIC_PRIORITY) {
+			} else if (priority < CURRENT_CONTAINER_MUSIC_PRIORITY) {
 				m._externalVolume = m.volumeUnderModals;
 			} else {
 				m._externalVolume = 1;
@@ -346,9 +346,9 @@ function recalculateMusic() {
 
 	let playingFragments = [];
 
-	for(let m of allActiveMusics) {
+	for (let m of allActiveMusics) {
 		let vol = m._getTargetVol();
-		if((vol >= MIN_VOL_THRESHOLD) && (m._loop || m._intro)) {
+		if ((vol >= MIN_VOL_THRESHOLD) && (m._loop || m._intro)) {
 			m._cachedTargetVol = vol;
 			playingFragments.push(m);
 		}

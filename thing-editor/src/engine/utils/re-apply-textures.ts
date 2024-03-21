@@ -1,10 +1,10 @@
-import game from "thing-editor/src/engine/game";
+import game from 'thing-editor/src/engine/game';
 
 const texturesRefreshSchedulledNames = new Set();
 let texturesRefreshSchedulledTimeout = 0;
 
 function reApplyTextures(name: string) {
-	if(texturesRefreshSchedulledTimeout) {
+	if (texturesRefreshSchedulledTimeout) {
 		clearTimeout(texturesRefreshSchedulledTimeout);
 	}
 	texturesRefreshSchedulledTimeout = window.setTimeout(refreshAllTextures, 10);
@@ -14,7 +14,7 @@ function reApplyTextures(name: string) {
 function refreshAllTextures() {
 	texturesRefreshSchedulledTimeout = 0;
 	game.forAllChildrenEverywhere((o: any) => {
-		if(o.image && texturesRefreshSchedulledNames.has(o.image)) {
+		if (o.image && texturesRefreshSchedulledNames.has(o.image)) {
 			let tmp = o.image;
 			o.image = 'EMPTY';
 			o.image = tmp;

@@ -1,9 +1,9 @@
-import { Container, Point } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import type DSprite from "thing-editor/src/engine/lib/assets/src/basic/d-sprite.c";
-import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
+import { Container, Point } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import type DSprite from 'thing-editor/src/engine/lib/assets/src/basic/d-sprite.c';
+import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 
 const zeroPoint = new Point();
 
@@ -42,20 +42,20 @@ export default class SpawnerRing extends Container {
 
 	spawn() {
 		/// #if EDITOR
-		if(!this.prefabToSpawn) {
+		if (!this.prefabToSpawn) {
 			game.editor.ui.status.error('Prefab to spawn is not selected.', 30015, this, 'prefabToSpawn');
 			return;
-		} else if(!Lib.hasPrefab(this.prefabToSpawn)) {
+		} else if (!Lib.hasPrefab(this.prefabToSpawn)) {
 			game.editor.ui.status.error('Prefab with name "' + this.prefabToSpawn + '" is not exists.', 30016, this, 'prefabToSpawn');
 			return;
 		}
 		/// #endif
-		if(!this._container) {
-			if(this.container) {
+		if (!this._container) {
+			if (this.container) {
 				this._container = getValueByPath(this.container, this);
 				/// #if EDITOR
-				if(!this._container) {
-					game.editor.ui.status.error("Spawner targeted to not existing container: " + this.container, 30017, this, 'container');
+				if (!this._container) {
+					game.editor.ui.status.error('Spawner targeted to not existing container: ' + this.container, 30017, this, 'container');
 					this._container = game.currentContainer;
 				}
 				/// #endif
@@ -68,15 +68,15 @@ export default class SpawnerRing extends Container {
 		}
 
 		/// #if EDITOR
-		if(this.___containerID !== this._container.___id) {
-			game.editor.ui.status.error("SpawnerRing's target container has been removed. Please disable spawner before removing target container or use not removable target container.", 32055, this, 'container');
+		if (this.___containerID !== this._container.___id) {
+			game.editor.ui.status.error('SpawnerRing\'s target container has been removed. Please disable spawner before removing target container or use not removable target container.', 32055, this, 'container');
 			return;
 		}
 		/// #endif
 
 		this._container.toLocal(zeroPoint, this, spawnPoint);
 		let step = PI2 / (this.count + (this.countRandom * Math.random()));
-		for(let i = 0; i < PI2; i += step) {
+		for (let i = 0; i < PI2; i += step) {
 			let sin = Math.sin(i);
 			let cos = Math.cos(i);
 

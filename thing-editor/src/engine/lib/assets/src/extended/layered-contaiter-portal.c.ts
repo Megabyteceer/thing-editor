@@ -1,7 +1,7 @@
 
-import { Container } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import type LayeredContainer from "thing-editor/src/engine/lib/assets/src/extended/layered-container.c";
+import { Container } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import type LayeredContainer from 'thing-editor/src/engine/lib/assets/src/extended/layered-container.c';
 
 export default class LayeredContainerPortal extends Container {
 
@@ -9,7 +9,7 @@ export default class LayeredContainerPortal extends Container {
 	containerOwner!: LayeredContainer;
 
 	render(renderer: any) {
-		if(this.containerOwner.isRenderingLayered()) {
+		if (this.containerOwner.isRenderingLayered()) {
 			this.containerOwner.renderForPortal(renderer);
 		}
 	}

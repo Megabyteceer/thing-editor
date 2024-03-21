@@ -1,27 +1,27 @@
-import type { Container, Point } from "pixi.js";
-import type { ClassAttributes, ComponentChild } from "preact";
-import { h } from "preact";
-import ClassesLoader from "thing-editor/src/editor/classes-loader";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import "thing-editor/src/editor/ui/editor-overlay";
-import { exitIsolation } from "thing-editor/src/editor/ui/isolation";
+import type { Container, Point } from 'pixi.js';
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { h } from 'preact';
+import ClassesLoader from 'thing-editor/src/editor/classes-loader';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
+import 'thing-editor/src/editor/ui/editor-overlay';
+import { exitIsolation } from 'thing-editor/src/editor/ui/isolation';
 
-import SelectEditor from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import { editorEvents } from "thing-editor/src/editor/utils/editor-events";
-import EDITOR_FLAGS from "thing-editor/src/editor/utils/flags";
-import libInfo from "thing-editor/src/editor/utils/lib-info";
-import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import type { FixedViewportSize } from "thing-editor/src/engine/game";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import MusicFragment from "thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment";
-import Keys from "thing-editor/src/engine/utils/keys";
-import Pool from "thing-editor/src/engine/utils/pool";
-import Sound from "thing-editor/src/engine/utils/sound";
+import SelectEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
+import libInfo from 'thing-editor/src/editor/utils/lib-info';
+import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
+import type { FixedViewportSize } from 'thing-editor/src/engine/game';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
+import Keys from 'thing-editor/src/engine/utils/keys';
+import Pool from 'thing-editor/src/engine/utils/pool';
+import Sound from 'thing-editor/src/engine/utils/sound';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -60,12 +60,12 @@ interface ViewportSizeItem {
 }
 
 const resolutions: ViewportSizeItem[] = [
-	{ name: "Responsive", value: false },
-	{ name: "Fixed", value: true },
-	{ name: "Pixel 2 XL", value: { w: 823, h: 411 } },
-	{ name: "iPhone 8", value: { w: 667, h: 375 } },
-	{ name: "iPhone X", value: { w: 812, h: 375 } },
-	{ name: "iPad", value: { w: 1024, h: 768 } }
+	{ name: 'Responsive', value: false },
+	{ name: 'Fixed', value: true },
+	{ name: 'Pixel 2 XL', value: { w: 823, h: 411 } },
+	{ name: 'iPhone 8', value: { w: 667, h: 375 } },
+	{ name: 'iPhone X', value: { w: 812, h: 375 } },
+	{ name: 'iPad', value: { w: 1024, h: 768 } }
 ];
 
 export default class Viewport extends ComponentDebounced<ClassAttributes<Viewport>, ViewportStats> {
@@ -91,7 +91,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 		let currentItem = resolutions.find((i) => {
 			return currentResolutionSettings === JSON.stringify(i.value);
 		});
-		if(currentItem) {
+		if (currentItem) {
 			this.setCurrentResolution(currentItem);
 		}
 	}
@@ -111,7 +111,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 	}
 
 	onTogglePlay() {
-		if(!playTogglingTime && !game.editor.__FatalError) {
+		if (!playTogglingTime && !game.editor.__FatalError) {
 
 			Keys.resetAll();
 
@@ -125,7 +125,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			PrefabEditor.acceptPrefabEdition();
 			Sound.__resetSounds();
 			Pool.__resetIdCounter();
-			if(play) { // launch game
+			if (play) { // launch game
 				game.data = {} as any;
 				(game.data as SelectableProperty).___EDITOR_isGoodForChooser = true;
 				(game.data as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
@@ -174,13 +174,13 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 
 	stopExecution() {
 		PrefabEditor.acceptPrefabEdition();
-		if(!game.__EDITOR_mode) {
+		if (!game.__EDITOR_mode) {
 			this.onTogglePlay();
 		}
 	}
 
 	onDoubleClick(ev: PointerEvent) {
-		if(ev.ctrlKey) {
+		if (ev.ctrlKey) {
 			this.resetZoom();
 		}
 	}
@@ -188,7 +188,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 	resetZoom() {
 		game.stage.scale.x = 1;
 		game.stage.scale.y = 1;
-		if(PrefabEditor.currentPrefabName) {
+		if (PrefabEditor.currentPrefabName) {
 			game.stage.x = game.W / 2;
 			game.stage.y = game.H / 2;
 		} else {
@@ -200,7 +200,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 	currentResolution = resolutions[0];
 
 	setCurrentResolution(resolution: ViewportSizeItem) {
-		if(!game.projectDesc.dynamicStageSize) {
+		if (!game.projectDesc.dynamicStageSize) {
 			return;
 		}
 		this.currentResolution = resolution;
@@ -209,19 +209,19 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 
 	scrollInToScreen(node: Container) {
 		let b = node.getBounds();
-		if(b.width === 0 && b.height === 0) {
+		if (b.width === 0 && b.height === 0) {
 			node.getGlobalPosition(b as any as Point);
 		}
 
-		if(b.left < 0) {
+		if (b.left < 0) {
 			game.stage.x -= b.left;
-		} else if(b.right > game.W) {
+		} else if (b.right > game.W) {
 			game.stage.x -= b.right - game.W;
 		}
 
-		if(b.top < 0) {
+		if (b.top < 0) {
 			game.stage.y -= b.top;
-		} else if(b.bottom > game.H) {
+		} else if (b.bottom > game.H) {
 			game.stage.y -= b.bottom - game.H;
 		}
 	}
@@ -233,7 +233,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 		let statusHeader: ComponentChild;
 
 		let resolutionSelect;
-		if(game.editor.projectDesc) {
+		if (game.editor.projectDesc) {
 			resolutionSelect = game.projectDesc.dynamicStageSize ?
 				R.fragment(
 					R.div({
@@ -254,15 +254,15 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 		const reloadClassesBtn = R.btn(R.icon('recompile'), game.editor.reloadClasses, ClassesLoader.isClassesWaitsReloading ? 'Source code modified externally. Click to load changes.' : 'Reload classes', ClassesLoader.isClassesWaitsReloading ? 'big-btn red-frame' : 'big-btn');
 		const orientationButton = (game.editor.projectDesc && game.editor.projectDesc.screenOrientation === 'auto') ? R.btn(ORIENTATION_ICON, game.editor.toggleScreenOrientation, 'Portrait/Landscape switch', undefined, { key: 'r', ctrlKey: true }) : undefined;
 		let prefabFile = this.state.prefabMode && fs.getFileByAssetName(this.state.prefabMode, AssetType.PREFAB);
-		if(!prefabFile && this.state.prefabMode) {
+		if (!prefabFile && this.state.prefabMode) {
 			PrefabEditor.exitPrefabEdit(true); // prefab removed
 		}
-		if(prefabFile) {
+		if (prefabFile) {
 			className += ' editor-viewport-wrapper-prefab-mode';
 
 
 			let fileLibraryName = prefabFile.lib;
-			if(fileLibraryName) {
+			if (fileLibraryName) {
 				className += ' editor-viewport-wrapper-prefab-mode-lib';
 			}
 
@@ -275,12 +275,12 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					fileLibraryName ? libInfo(prefabFile) : undefined,
 					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes', 'main-btn', { key: 'Enter' }),
 					R.btn(R.icon('reject'), () => {
-						if(game.editor.isCurrentContainerModified) {
+						if (game.editor.isCurrentContainerModified) {
 							game.editor.ui.modal.showEditorQuestion(
-								"Are you sure?",
-								"Are you really wanted to discard all changes made in prefab?",
+								'Are you sure?',
+								'Are you really wanted to discard all changes made in prefab?',
 								() => { PrefabEditor.exitPrefabEdit(true); },
-								"Discard changes."
+								'Discard changes.'
 							);
 						} else {
 							PrefabEditor.exitPrefabEdit(true);
@@ -292,7 +292,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 						className: 'clickable',
 						type: 'color',
 						value: '#' + PrefabEditor.BGColor.toString(16).padStart(6, '0'),
-						title: "Background color"
+						title: 'Background color'
 					}),
 				),
 				R.span(panelBottomProps,
@@ -303,10 +303,10 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			);
 		} else {
 			let pauseResumeBtn, oneStepBtn;
-			if(game && !game.__EDITOR_mode) {
-				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, "Pause/Resume", 'big-btn', { key: 'p', ctrlKey: true });
-				if(game.__paused) {
-					statusHeader = R.div({ className: "red-blink" }, 'paused');
+			if (game && !game.__EDITOR_mode) {
+				pauseResumeBtn = R.btn(game.__paused ? PLAY_ICON : PAUSE_ICON, this.onPauseResumeClick, 'Pause/Resume', 'big-btn', { key: 'p', ctrlKey: true });
+				if (game.__paused) {
+					statusHeader = R.div({ className: 'red-blink' }, 'paused');
 					oneStepBtn = R.btn('One step', this.onOneStepClick, undefined, 'big-btn', { key: 'BracketLeft', ctrlKey: true });
 				} else {
 					statusHeader = R.div(null, 'running');
@@ -330,7 +330,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					R.hr(),
 					resolutionSelect,
 					R.btn('⛶', () => {
-						if(document.fullscreenElement) {
+						if (document.fullscreenElement) {
 							document.exitFullscreen();
 						} else {
 							(document.querySelector('#viewport-root') as HTMLElement).requestFullscreen().then(() => {
@@ -368,13 +368,13 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 }
 
 const panelWrapperProps = {
-	className: "viewport-panel-wrapper"
+	className: 'viewport-panel-wrapper'
 };
 
 const panelProps = {
-	className: "viewport-panel"
+	className: 'viewport-panel'
 };
 
 const panelBottomProps = {
-	className: "viewport-panel viewport-bottom-panel"
+	className: 'viewport-panel viewport-bottom-panel'
 };

@@ -1,7 +1,7 @@
-import type { ComponentChild, ComponentChildren } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import type { ComponentChild, ComponentChildren } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 const GROUP_ID_CHECKER = /[^0-9a-zA-Z_\-]/gm;
 
@@ -37,19 +37,19 @@ function groupArray(a: ComponentChild[], delimiter = '/', level = 0, noSort = fa
 	let ret = [];
 	const orders = new Map();
 
-	for(let item of a as GroupableItem[]) {
+	for (let item of a as GroupableItem[]) {
 
 		let name = item.key;
 		let np = name.split(delimiter);
 		let groupId = np.slice(0, level + 1).join('-_-') + idPrefix;
-		if(np.length > (level + 1)) {
-			if(level > 0) {
+		if (np.length > (level + 1)) {
+			if (level > 0) {
 				np.splice(0, level);
 			}
 
 			groupName = np.shift() as string;
 
-			if(!groups.hasOwnProperty(groupName)) {
+			if (!groups.hasOwnProperty(groupName)) {
 				group = [];
 				groups[groupName] = [];
 			}
@@ -64,23 +64,23 @@ function groupArray(a: ComponentChild[], delimiter = '/', level = 0, noSort = fa
 		ret.push(item);
 	}
 
-	for(groupName in groups) {
+	for (groupName in groups) {
 		group = groups[groupName];
-		if(!noSort) {
+		if (!noSort) {
 			group.sort((_a: GroupableItem, _b: GroupableItem) => {
 				const a = orders.get(_a);
 				const b = orders.get(_b);
-				if(typeof a === 'number') {
+				if (typeof a === 'number') {
 					return a - b;
 				}
-				if(a === b) {
+				if (a === b) {
 					return 0;
 				}
 				return (a > b) ? 1 : -1;
 			});
 		}
 		let i = 0;
-		while(i < ret.length && ret[i].key.endsWith(' ::')) {
+		while (i < ret.length && ret[i].key.endsWith(' ::')) {
 			i++;
 		}
 		ret.splice(i, 0, renderGroup({ key: group.__groupId.replace(GROUP_ID_CHECKER, '__'), title: groupName, content: groupArray(group, delimiter, level + 1, noSort, idPrefix) }));
@@ -98,7 +98,7 @@ function toggleGroup(ev: MouseEvent) {
 	let group = (ev.target as any).closest('.props-group').querySelector('.props-group-body');
 	let isHidden = group.classList.contains('hidden');
 	game.editor.settings.setItem(groupId, !isHidden);
-	if(isHidden) {
+	if (isHidden) {
 		group.classList.remove('hidden');
 		group.style.transition = 'unset';
 		group.style.opacity = 0.001;
@@ -109,14 +109,14 @@ function toggleGroup(ev: MouseEvent) {
 		let height: number;
 		let timer = window.setInterval(() => {
 			height = group.clientHeight;
-			if(height > 0) {
+			if (height > 0) {
 				clearInterval(timer);
 				group.style.maxHeight = '0px';
 				group.style.position = 'unset';
 				group.style.opacity = 1;
 				group.style.transition = 'all 0.1s';
 				timer = window.setInterval(() => {
-					if(group.clientHeight <= 6) {
+					if (group.clientHeight <= 6) {
 						clearInterval(timer);
 						group.style.transform = 'scaleY(1)';
 						group.style.maxHeight = height + 'px';

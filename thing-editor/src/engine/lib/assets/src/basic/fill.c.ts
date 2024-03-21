@@ -1,8 +1,8 @@
-import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from "pixi.js";
-import type { EditablePropertyDescRaw } from "thing-editor/src/editor/props-editor/editable";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
-import Lib from "thing-editor/src/engine/lib";
+import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from 'pixi.js';
+import type { EditablePropertyDescRaw } from 'thing-editor/src/editor/props-editor/editable';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
+import Lib from 'thing-editor/src/engine/lib';
 
 const PI_2 = Math.PI * 2;
 
@@ -46,15 +46,15 @@ const fragmentSrc = `
 
 /// #if EDITOR
 const isWrapDisabled = (o: Fill) => {
-	if(!o.image) {
+	if (!o.image) {
 		return 'image property is not set.';
 	}
 
-	if(Lib.__isSystemTexture(o.texture)) {
+	if (Lib.__isSystemTexture(o.texture)) {
 		return 'System image ' + o.image + ' can not has wrapping mode.';
 	}
 
-	if(!o.texture.baseTexture.isPowerOfTwo) {
+	if (!o.texture.baseTexture.isPowerOfTwo) {
 		return 'Texture should have size power of two (32, 64, 128, 256...) to be wrapped.';
 	}
 };
@@ -76,7 +76,7 @@ export default class Fill extends Mesh {
 	_verticesX = 2;
 	@editable({ min: 2, max: 30, important: true })
 	set verticesX(v) {
-		if(this._verticesX !== v) {
+		if (this._verticesX !== v) {
 			this._verticesX = v;
 			this.meshResized = true;
 		}
@@ -89,7 +89,7 @@ export default class Fill extends Mesh {
 	_verticesY = 2;
 	@editable({ min: 2, max: 30, important: true })
 	set verticesY(v) {
-		if(this._verticesY !== v) {
+		if (this._verticesY !== v) {
 			this._verticesY = v;
 			this.meshResized = true;
 		}
@@ -106,7 +106,7 @@ export default class Fill extends Mesh {
 	}
 
 	set xRepeat(v) {
-		if(this._xRepeat !== v) {
+		if (this._xRepeat !== v) {
 			this._xRepeat = v;
 			this.fillUpdated = true;
 		}
@@ -119,7 +119,7 @@ export default class Fill extends Mesh {
 	}
 
 	set yRepeat(v) {
-		if(this._yRepeat !== v) {
+		if (this._yRepeat !== v) {
 			this._yRepeat = v;
 			this.fillUpdated = true;
 		}
@@ -132,7 +132,7 @@ export default class Fill extends Mesh {
 	}
 
 	set xShift(v) {
-		if(this._xShift !== v) {
+		if (this._xShift !== v) {
 			this._xShift = v;
 			this.fillUpdated = true;
 		}
@@ -145,7 +145,7 @@ export default class Fill extends Mesh {
 	}
 
 	set yShift(v) {
-		if(this._yShift !== v) {
+		if (this._yShift !== v) {
 			this._yShift = v;
 			this.fillUpdated = true;
 		}
@@ -160,11 +160,11 @@ export default class Fill extends Mesh {
 	/// #if EDITOR
 	@editable(TEXTURE_WRAP_MODE_DESC)
 	set TEXTURE_WRAP_MODE(v: number) {
-		if(this.texture) {
+		if (this.texture) {
 			let bits = 0;
-			if(v === WRAP_MODES.REPEAT) {
+			if (v === WRAP_MODES.REPEAT) {
 				bits = 8;
-			} else if(v === WRAP_MODES.MIRRORED_REPEAT) {
+			} else if (v === WRAP_MODES.MIRRORED_REPEAT) {
 				bits = 16;
 			}
 			editorUtils.__setTextureSettingsBits(this.image, bits, 24);
@@ -184,7 +184,7 @@ export default class Fill extends Mesh {
 	}
 
 	set xWaveAmp(v) {
-		if(this._xWaveAmp !== v) {
+		if (this._xWaveAmp !== v) {
 			this._xWaveAmp = v;
 			this.fillUpdated = true;
 		}
@@ -197,7 +197,7 @@ export default class Fill extends Mesh {
 	}
 
 	set xWaveStep(v) {
-		if(this._xWaveStep !== v) {
+		if (this._xWaveStep !== v) {
 			this._xWaveStep = v;
 			this.fillUpdated = true;
 		}
@@ -210,7 +210,7 @@ export default class Fill extends Mesh {
 	}
 
 	set xWavePhase(v) {
-		if(this._xWavePhase !== v) {
+		if (this._xWavePhase !== v) {
 			this._xWavePhase = v;
 			this.fillUpdated = true;
 		}
@@ -226,7 +226,7 @@ export default class Fill extends Mesh {
 	}
 
 	set yWaveAmp(v) {
-		if(this._yWaveAmp !== v) {
+		if (this._yWaveAmp !== v) {
 			this._yWaveAmp = v;
 			this.fillUpdated = true;
 		}
@@ -239,7 +239,7 @@ export default class Fill extends Mesh {
 	}
 
 	set yWaveStep(v) {
-		if(this._yWaveStep !== v) {
+		if (this._yWaveStep !== v) {
 			this._yWaveStep = v;
 			this.fillUpdated = true;
 		}
@@ -252,7 +252,7 @@ export default class Fill extends Mesh {
 	}
 
 	set yWavePhase(v) {
-		if(this._yWavePhase !== v) {
+		if (this._yWavePhase !== v) {
 			this._yWavePhase = v;
 			this.fillUpdated = true;
 		}
@@ -267,7 +267,7 @@ export default class Fill extends Mesh {
 	@editable()
 	@editable({ type: 'splitter', title: 'Transparency:', name: 'Transparency' })
 	set transparentTop(v) {
-		if(this._transparentTop !== v) {
+		if (this._transparentTop !== v) {
 			this._transparentTop = v;
 			this.transparencyUpdated = true;
 		}
@@ -280,7 +280,7 @@ export default class Fill extends Mesh {
 	_transparentBottom = false;
 	@editable()
 	set transparentBottom(v) {
-		if(this._transparentBottom !== v) {
+		if (this._transparentBottom !== v) {
 			this._transparentBottom = v;
 			this.transparencyUpdated = true;
 		}
@@ -293,7 +293,7 @@ export default class Fill extends Mesh {
 	_transparentLeft = false;
 	@editable()
 	set transparentLeft(v) {
-		if(this._transparentLeft !== v) {
+		if (this._transparentLeft !== v) {
 			this._transparentLeft = v;
 			this.transparencyUpdated = true;
 		}
@@ -306,7 +306,7 @@ export default class Fill extends Mesh {
 	_transparentRight = false;
 	@editable()
 	set transparentRight(v) {
-		if(this._transparentRight !== v) {
+		if (this._transparentRight !== v) {
 			this._transparentRight = v;
 			this.transparencyUpdated = true;
 		}
@@ -349,10 +349,10 @@ export default class Fill extends Mesh {
 		let textureW = this.texture.width;
 		leftSize /= textureW;
 		rightSize /= textureW;
-		if(leftSize < 0) {
+		if (leftSize < 0) {
 			leftSize = 0;
 		}
-		if(rightSize < 0) {
+		if (rightSize < 0) {
 			rightSize = 0;
 		}
 		this.scale.x = Math.min(1, 1 - leftSize - rightSize);
@@ -364,10 +364,10 @@ export default class Fill extends Mesh {
 		let textureH = this.texture.height;
 		topSize /= textureH;
 		bottomSize /= textureH;
-		if(topSize < 0) {
+		if (topSize < 0) {
 			topSize = 0;
 		}
-		if(bottomSize < 0) {
+		if (bottomSize < 0) {
 			bottomSize = 0;
 		}
 		this.scale.y = Math.min(1, 1 - topSize - bottomSize);
@@ -376,37 +376,37 @@ export default class Fill extends Mesh {
 	}
 
 	update() {
-		if(this.xShiftSpeed !== 0) {
+		if (this.xShiftSpeed !== 0) {
 			this.xShift += this.xShiftSpeed;
-			if(this._xShift > 2) {
+			if (this._xShift > 2) {
 				this._xShift -= 2;
-			} else if(this._xShift < -2) {
+			} else if (this._xShift < -2) {
 				this._xShift += 2;
 			}
 		}
-		if(this.yShiftSpeed !== 0) {
+		if (this.yShiftSpeed !== 0) {
 			this.yShift += this.yShiftSpeed;
-			if(this._yShift > 2) {
+			if (this._yShift > 2) {
 				this._yShift -= 2;
-			} else if(this._yShift < -2) {
+			} else if (this._yShift < -2) {
 				this._yShift += 2;
 			}
 		}
 
-		if(this.xWaveSpeed !== 0) {
+		if (this.xWaveSpeed !== 0) {
 			this.xWavePhase += this.xWaveSpeed;
-			if(this._xWavePhase > PI_2) {
+			if (this._xWavePhase > PI_2) {
 				this._xWavePhase -= PI_2;
-			} else if(this._xWavePhase < 0) {
+			} else if (this._xWavePhase < 0) {
 				this._xWavePhase += PI_2;
 			}
 		}
 
-		if(this.yWaveSpeed !== 0) {
+		if (this.yWaveSpeed !== 0) {
 			this.yWavePhase += this.yWaveSpeed;
-			if(this._yWavePhase > PI_2) {
+			if (this._yWavePhase > PI_2) {
 				this._yWavePhase -= PI_2;
-			} else if(this._yWavePhase < 0) {
+			} else if (this._yWavePhase < 0) {
 				this._yWavePhase += PI_2;
 			}
 		}
@@ -414,7 +414,7 @@ export default class Fill extends Mesh {
 	}
 
 	set texture(v) {
-		if(v !== super.texture) {
+		if (v !== super.texture) {
 
 			this.meshResized = this.meshResized ||
 				/// #if EDITOR
@@ -442,21 +442,21 @@ export default class Fill extends Mesh {
 	}
 
 	validateFill() {
-		if(this.meshResized) {
+		if (this.meshResized) {
 			this.refreshSize();
 			this.meshResized = false;
 		}
-		if(this.fillUpdated) {
+		if (this.fillUpdated) {
 			this.updateFilling();
 			this.fillUpdated = false;
 		}
-		if(this.transparencyUpdated) {
+		if (this.transparencyUpdated) {
 			this.updateTransparency();
 		}
 	}
 
 	calculateVertices() {
-		if(this.meshResized) {
+		if (this.meshResized) {
 			this.refreshSize();
 			this.meshResized = false;
 		}
@@ -468,35 +468,35 @@ export default class Fill extends Mesh {
 
 		let buffer = this.geometry.buffers[3];
 
-		if(buffer.data.length !== len) {
+		if (buffer.data.length !== len) {
 			buffer.data = new Float32Array(len);
 		}
 		let a = buffer.data;
 
-		for(let i = 0; i < len; i++) {
+		for (let i = 0; i < len; i++) {
 			a[i] = 1;
 		}
 
-		if(this.transparentTop) {
-			for(let i = this.verticesX - 1; i >= 0; i--) {
+		if (this.transparentTop) {
+			for (let i = this.verticesX - 1; i >= 0; i--) {
 				a[i] = 0;
 			}
 		}
 
-		if(this.transparentBottom) {
-			for(let i = len - this.verticesX; i < len; i++) {
+		if (this.transparentBottom) {
+			for (let i = len - this.verticesX; i < len; i++) {
 				a[i] = 0;
 			}
 		}
 
-		if(this.transparentLeft) {
-			for(let i = 0; i < len; i += this.verticesX) {
+		if (this.transparentLeft) {
+			for (let i = 0; i < len; i += this.verticesX) {
 				a[i] = 0;
 			}
 		}
 
-		if(this.transparentRight) {
-			for(let i = this.verticesX - 1; i < len; i += this.verticesX) {
+		if (this.transparentRight) {
+			for (let i = this.verticesX - 1; i < len; i += this.verticesX) {
 				a[i] = 0;
 			}
 		}
@@ -517,14 +517,14 @@ export default class Fill extends Mesh {
 		let xWaveStep = this._xWaveStep / stepsX;
 		let yWaveStep = this._yWaveStep / stepsY;
 
-		if(this._xWaveAmp !== 0 || this._yWaveAmp !== 0) {
+		if (this._xWaveAmp !== 0 || this._yWaveAmp !== 0) {
 
 			let curYWavePhase = this._yWavePhase;
-			for(let y = 0; y <= stepsY; y++) {
+			for (let y = 0; y <= stepsY; y++) {
 
 				curxShift = this._xShift + Math.sin(curYWavePhase) * this._yWaveAmp;
 				let curXWavePhase = this._xWavePhase;
-				for(let x = 0; x <= stepsX; x++) {
+				for (let x = 0; x <= stepsX; x++) {
 
 					a[i++] = curxShift;
 					a[i++] = curyShift + Math.sin(curXWavePhase) * this._xWaveAmp;
@@ -535,9 +535,9 @@ export default class Fill extends Mesh {
 				curyShift += yStep;
 			}
 		} else {
-			for(let y = 0; y <= stepsY; y++) {
+			for (let y = 0; y <= stepsY; y++) {
 				curxShift = this._xShift;
-				for(let x = 0; x <= stepsX; x++) {
+				for (let x = 0; x <= stepsX; x++) {
 					a[i++] = curxShift;
 					a[i++] = curyShift;
 					curxShift += xStep;

@@ -1,9 +1,9 @@
-import { Point } from "pixi.js";
-import game from "thing-editor/src/engine/game";
-import Button from "thing-editor/src/engine/lib/assets/src/basic/button.c";
-import type Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
-import L from "thing-editor/src/engine/utils/l";
-import Sound from "thing-editor/src/engine/utils/sound";
+import { Point } from 'pixi.js';
+import game from 'thing-editor/src/engine/game';
+import Button from 'thing-editor/src/engine/lib/assets/src/basic/button.c';
+import type Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import L from 'thing-editor/src/engine/utils/l';
+import Sound from 'thing-editor/src/engine/utils/sound';
 
 const globalPoint = new Point();
 const stagePoint = new Point();
@@ -11,7 +11,7 @@ const stagePoint = new Point();
 const mouseHandlerGlobalDown = (ev: PointerEvent) => {
 	game.mouse.click = true;
 	mouseHandlerGlobal(ev);
-	if(
+	if (
 		/// #if EDITOR
 		!game.__EDITOR_mode &&
 		!game.__paused &&
@@ -26,7 +26,7 @@ const mouseHandlerGlobalDown = (ev: PointerEvent) => {
 const mouseHandlerGlobalUp = (ev: PointerEvent) => {
 	game.mouse.click = false;
 	mouseHandlerGlobal(ev);
-	if(
+	if (
 		/// #if EDITOR
 		!game.__EDITOR_mode &&
 		!game.__paused &&
@@ -37,11 +37,11 @@ const mouseHandlerGlobalUp = (ev: PointerEvent) => {
 };
 
 const mouseHandlerGlobalMove = (ev: PointerEvent) => {
-	if(ev.buttons === 0) {
+	if (ev.buttons === 0) {
 		game.mouse.click = false;
 	}
 	mouseHandlerGlobal(ev);
-	if(
+	if (
 		/// #if EDITOR
 		!game.__EDITOR_mode &&
 		!game.__paused &&
@@ -73,15 +73,15 @@ const mouseHandlerGlobal = (ev: PointerEvent) => {
 	game.__mouse_uncropped.y = y;
 	/// #endif
 
-	if(x > game.W) {
+	if (x > game.W) {
 		x = game.W;
-	} else if(x < 0) {
+	} else if (x < 0) {
 		x = 0;
 	}
 
-	if(y > game.H) {
+	if (y > game.H) {
 		y = game.H;
-	} else if(y < 0) {
+	} else if (y < 0) {
 		y = 0;
 	}
 	game.mouse.x = x;
@@ -89,12 +89,12 @@ const mouseHandlerGlobal = (ev: PointerEvent) => {
 };
 
 
-if((window as KeyedObject).cordova) {
+if ((window as KeyedObject).cordova) {
 	document.addEventListener('backbutton', function () {
 		Button._tryToClickByKeycode(27);
 	}, false);
 	game.exitApp = (enforced = false) => {
-		if(enforced) {
+		if (enforced) {
 			(navigator as any).app.exitApp();
 		} else {
 
@@ -126,15 +126,15 @@ function addOnClickOnce(callback: (ev: PointerEvent) => void) {
 
 export default function initGameInteraction() {
 	const clickHandler = (ev: PointerEvent) => { // calls browsers functions which require to be fired in user context event
-		while(onClickOnceCallbacks.length > 0) {
+		while (onClickOnceCallbacks.length > 0) {
 			let f = onClickOnceCallbacks.shift();
 			(f as (ev: PointerEvent) => void)(ev);
 		}
 		/// #if EDITOR
 		return;
 		/// #endif
-		if(game.isMobile.any ? game.projectDesc.autoFullScreenMobile : game.projectDesc.autoFullScreenDesktop) {	// eslint-disable-line no-unreachable
-			if(game.fullscreen.isAvailable && !game.fullscreen.isFullscreen) {
+		if (game.isMobile.any ? game.projectDesc.autoFullScreenMobile : game.projectDesc.autoFullScreenDesktop) {	// eslint-disable-line no-unreachable
+			if (game.fullscreen.isAvailable && !game.fullscreen.isFullscreen) {
 				game.fullscreen._openInner();
 			}
 		}

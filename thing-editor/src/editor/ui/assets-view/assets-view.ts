@@ -1,26 +1,26 @@
-import type { ComponentChild} from "preact";
-import { h } from "preact";
-import type { FileDesc, FileDescClass } from "thing-editor/src/editor/fs";
-import fs, { AllAssetsTypes, AssetType } from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import assetItemRendererClass from "thing-editor/src/editor/ui/assets-view/asset-view-class";
-import assetItemRendererImage from "thing-editor/src/editor/ui/assets-view/asset-view-image";
-import assetItemRendererScene from "thing-editor/src/editor/ui/assets-view/asset-view-scene";
-import assetItemRendererSound from "thing-editor/src/editor/ui/assets-view/asset-view-sound";
+import type { ComponentChild } from 'preact';
+import { h } from 'preact';
+import type { FileDesc, FileDescClass } from 'thing-editor/src/editor/fs';
+import fs, { AllAssetsTypes, AssetType } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import assetItemRendererClass from 'thing-editor/src/editor/ui/assets-view/asset-view-class';
+import assetItemRendererImage from 'thing-editor/src/editor/ui/assets-view/asset-view-image';
+import assetItemRendererScene from 'thing-editor/src/editor/ui/assets-view/asset-view-scene';
+import assetItemRendererSound from 'thing-editor/src/editor/ui/assets-view/asset-view-sound';
 import assetItemRendererFont from 'thing-editor/src/editor/ui/assets-view/assets-view-font';
-import assetItemRendererPrefab from "thing-editor/src/editor/ui/assets-view/assets-view-prefab";
-import assetItemRendererResource from "thing-editor/src/editor/ui/assets-view/assets-view-resource";
-import type { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
-import type { WindowProps, WindowState } from "thing-editor/src/editor/ui/editor-window";
-import Window from "thing-editor/src/editor/ui/editor-window";
-import group from "thing-editor/src/editor/ui/group";
-import WindowMenu from "thing-editor/src/editor/ui/window-menu";
-import { EDITOR_BACKUP_PREFIX } from "thing-editor/src/editor/utils/flags";
-import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import scrollInToViewAndShake from "thing-editor/src/editor/utils/scroll-in-view";
-import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-or-text";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
+import assetItemRendererPrefab from 'thing-editor/src/editor/ui/assets-view/assets-view-prefab';
+import assetItemRendererResource from 'thing-editor/src/editor/ui/assets-view/assets-view-resource';
+import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
+import type { WindowProps, WindowState } from 'thing-editor/src/editor/ui/editor-window';
+import Window from 'thing-editor/src/editor/ui/editor-window';
+import group from 'thing-editor/src/editor/ui/group';
+import WindowMenu from 'thing-editor/src/editor/ui/window-menu';
+import { EDITOR_BACKUP_PREFIX } from 'thing-editor/src/editor/utils/flags';
+import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
+import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view';
+import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/searc-by-regexp-or-text';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 
 const SETTINGS_KEY = '__EDITOR_assetsView_list';
 
@@ -89,7 +89,7 @@ interface AssetsViewState extends WindowState {
 
 const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 	const i = menu.lastIndexOf(null);
-	if(file.lib) {
+	if (file.lib) {
 		menu.splice(i + 1, 0, {
 			name: 'Override asset in project',
 			onClick: () => {
@@ -97,7 +97,7 @@ const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 			}
 		});
 	}
-	if(file.assetType !== AssetType.CLASS) {
+	if (file.assetType !== AssetType.CLASS) {
 		menu.splice(i + 1, 0, {
 			name: 'Rename...',
 			onClick: () => {
@@ -106,7 +106,7 @@ const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 		});
 	}
 	menu.splice(i + 1, 0, {
-		name: "Reveal in Explorer",
+		name: 'Reveal in Explorer',
 		onClick: () => {
 			fs.showFile(file.fileName);
 		}
@@ -123,11 +123,11 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	constructor(props: AssetsViewProps) {
 		super(props);
 
-		if(!this.state.filter) {
+		if (!this.state.filter) {
 			this.setState({ filter: {} });
 		}
 
-		if(this.props.hideMenu) {
+		if (this.props.hideMenu) {
 			this.setState({ filter: props.filter, filtersActive: true });
 		}
 
@@ -141,9 +141,9 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	componentDidMount(): void {
 		super.componentDidMount();
 		const input = (this.base as HTMLDivElement).querySelector('.search-input') as HTMLInputElement;
-		if(input) {
+		if (input) {
 			input.value = this.state.search || '';
-			if(this.props.onItemSelect) {
+			if (this.props.onItemSelect) {
 				input.select();
 			}
 		}
@@ -155,11 +155,11 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	static scrollAssetInToView(assetName: string) {
-		for(let windowId of allWindowsIds) {
+		for (let windowId of allWindowsIds) {
 			const windowElement = document.getElementById(windowId) as HTMLDivElement;
 			let items = windowElement.querySelectorAll('.assets-item') as any as HTMLElement[];
-			for(let item of items) {
-				if(item.textContent === assetName) {
+			for (let item of items) {
+				if (item.textContent === assetName) {
 					window.setTimeout(() => {
 						scrollInToViewAndShake(item);
 					}, 10);
@@ -170,15 +170,15 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	static renderAssetsViews(): ComponentChild {
-		if(!game.editor.isProjectOpen) {
+		if (!game.editor.isProjectOpen) {
 			return R.span();
 		}
-		if(allWindowsIds.length === 0) {
+		if (allWindowsIds.length === 0) {
 			allWindowsIds = game.editor.settings.getItem(SETTINGS_KEY);
-			if(!allWindowsIds) {
+			if (!allWindowsIds) {
 				allWindowsIds = [];
 				let idCounter = 0;
-				for(let state of [
+				for (let state of [
 					{
 						x: 0,
 						y: 70,
@@ -261,7 +261,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		let files = fs.getAssetsList();
 		let menu;
 
-		if(!this.props.hideMenu) {
+		if (!this.props.hideMenu) {
 			menu = AllAssetsTypes.map((assetType) => {
 				return R.span({ key: 'Filters/' + assetType }, R.btn(assetTypesIcons.get(assetType), () => {
 					this.state.filter[assetType] = !this.state.filter[assetType];
@@ -272,7 +272,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 
 			menu.push(R.span({ key: 'Settings/rename' }, R.btn('...', () => {
 				enterNameForAssetsWindow(this.state.title as string).then((title) => {
-					if(title) {
+					if (title) {
 						this.setState({ title });
 					}
 				});
@@ -293,7 +293,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				game.editor.ui.refresh();
 			}, 'Clone window')));
 
-			if(allWindowsIds.length > 1) {
+			if (allWindowsIds.length > 1) {
 				menu.push(R.span({ key: 'Settings/close' }, R.btn('×', () => {
 					game.editor.ui.modal.showEditorQuestion('Are you sure?', 'You about to close "' + this.state.title + '" window.', () => {
 						this.eraseSettings();
@@ -310,15 +310,15 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		const showSystemAssets = game.editor.settings.getItem('show-system-assets', false);
 
 		files = files.filter((asset) => {
-			if(asset.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
+			if (asset.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 				return false;
 			}
-			if(!this.state.filtersActive) {
+			if (!this.state.filtersActive) {
 				return true;
 			}
 
-			if(!showSystemAssets) {
-				if(asset.assetName.startsWith('___') || asset.assetName.indexOf('/___') > 0) {
+			if (!showSystemAssets) {
+				if (asset.assetName.startsWith('___') || asset.assetName.indexOf('/___') > 0) {
 					return false;
 				}
 			}
@@ -327,16 +327,16 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		});
 
 		let clearSearchBtn;
-		if(this.state.search) {
+		if (this.state.search) {
 			files = files.filter((asset) => {
-				if(asset.assetName === AssetsView.currentItemName) {
+				if (asset.assetName === AssetsView.currentItemName) {
 					return true;
-				} else if(asset.assetType === AssetType.SCENE) {
-					if(asset.assetName === game.editor.currentSceneName) {
+				} else if (asset.assetType === AssetType.SCENE) {
+					if (asset.assetName === game.editor.currentSceneName) {
 						return true;
 					}
-				} else if(asset.assetType === AssetType.PREFAB) {
-					if(asset.assetName === PrefabEditor.currentPrefabName) {
+				} else if (asset.assetType === AssetType.PREFAB) {
+					if (asset.assetName === PrefabEditor.currentPrefabName) {
 						return true;
 					}
 				}
@@ -351,13 +351,13 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		}
 		AssetsView.currentItemName = this.props.currentValue;
 
-		if(this.props.filterCallback) {
+		if (this.props.filterCallback) {
 			files = files.filter(this.props.filterCallback);
 		}
 
 		let items = files.map(AssetsView.renderAssetItem);
 
-		if(!this.state.search) {
+		if (!this.state.search) {
 			items = group.groupArray(items, undefined, undefined, true, this.props.id);
 		}
 
@@ -387,12 +387,12 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	selectItem(itemElement: HTMLDivElement, ev: MouseEvent) {
-		if(itemElement) {
+		if (itemElement) {
 			let chosen = (itemElement.querySelector('.selectable-text') as HTMLSpanElement).innerText;
-			if(ev.ctrlKey && this.props.onItemPreview) {
+			if (ev.ctrlKey && this.props.onItemPreview) {
 				this.props.onItemPreview!(chosen);
 			} else {
-				if(this.props.currentValue !== chosen) {
+				if (this.props.currentValue !== chosen) {
 					this.props.onItemSelect!(chosen);
 				}
 			}
@@ -409,10 +409,10 @@ function enterNameForAssetsWindow(defaultTitle?: string) {
 		defaultTitle,
 		undefined,
 		(val: string) => { //accept
-			if(Lib.hasScene(val)) {
-				return "Scene with such name already exists";
+			if (Lib.hasScene(val)) {
+				return 'Scene with such name already exists';
 			}
-			if(val.endsWith('/') || val.startsWith('/')) {
+			if (val.endsWith('/') || val.startsWith('/')) {
 				return 'name can not begin or end with "/"';
 			}
 		}

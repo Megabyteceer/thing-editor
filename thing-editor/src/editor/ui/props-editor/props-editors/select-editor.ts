@@ -1,12 +1,12 @@
-import type { ComponentChild} from "preact";
-import { Component, render } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { EditablePropertyDesc } from "thing-editor/src/editor/props-editor/editable";
-import type { EditablePropertyEditorProps } from "thing-editor/src/editor/ui/props-editor/props-field-wrapper";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import { searchByRegexpOrText } from "thing-editor/src/editor/utils/searc-by-regexp-or-text";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import game from "thing-editor/src/engine/game";
+import type { ComponentChild } from 'preact';
+import { Component, render } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/searc-by-regexp-or-text';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import game from 'thing-editor/src/engine/game';
 
 const CLASS_NAME = 'select-editor-current clickable';
 const CLASS_NAME_DISABLED = 'select-editor-current disabled';
@@ -41,7 +41,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 	constructor(props: SelectEditorProps) {
 		super(props);
-		if(this.props.field) {
+		if (this.props.field) {
 			this.filterName = (this.props.field.filterName || this.props.field.name) + '-filter';
 		}
 		this.state = {};
@@ -60,7 +60,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 	}
 
 	_hideList() {
-		if(openedList === this) {
+		if (openedList === this) {
 			render(R.fragment(), document.getElementById('select-lists-root') as HTMLElement);
 			openedList = null;
 		}
@@ -75,7 +75,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 	}
 
 	hide() {
-		if(this.state.toggled) {
+		if (this.state.toggled) {
 			this.setState({
 				toggled: false
 			});
@@ -84,7 +84,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 	}
 
 	onToggle() {
-		if(!this.state.toggled && !this.props.disabled) {
+		if (!this.state.toggled && !this.props.disabled) {
 			this.focusFilter = true;
 			this.setState({
 				toggled: true,
@@ -123,23 +123,23 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 	render() {
 
 		let list = this.props.select || this.props.field!.select;
-		if(typeof list === "function") {
+		if (typeof list === 'function') {
 			list = list();
-			if(list.length === 0) {
-				return R.span({ className: 'danger' }, "empty values list");
+			if (list.length === 0) {
+				return R.span({ className: 'danger' }, 'empty values list');
 			}
 		}
 		let filterInput: ComponentChild;
 
 		let item: SelectEditorItem | undefined | ComponentChild;
 
-		if(this.props.hasOwnProperty('value')) {
+		if (this.props.hasOwnProperty('value')) {
 			item = list.find((i) => {
-				if(i.value === this.props.value) return i;
+				if (i.value === this.props.value) return i;
 			});
-			if(!item) {
+			if (!item) {
 				item = R.span({ className: 'danger' }, this.props.value);
-				if(this.props.field && !this.props.field.isTranslatableKey) {
+				if (this.props.field && !this.props.field.isTranslatableKey) {
 					window.setTimeout(() => {
 						game.editor.ui.status.error('Invalid enum value: ' + this.props.value + ' ▾', 32002, game.editor.selection[0], this.props.field!.name);
 					}, 1);
@@ -147,24 +147,24 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 			}
 		}
 
-		if(this.state.toggled) {
-			if(this.focusFilter) {
+		if (this.state.toggled) {
+			if (this.focusFilter) {
 				window.setTimeout(() => {
 					let input = document.querySelector('#select-lists-root .select-editor-filter') as HTMLInputElement;
-					if(input) {
+					if (input) {
 						try {
 							input.focus();
 							input.setSelectionRange(0, input.value.length);
-						} catch(er) { } // eslint-disable-line no-empty
+						} catch (er) { } // eslint-disable-line no-empty
 					}
 				}, 10);
 			}
 			let a = list;
-			if(this.props.field) {
-				if(this.state.filter) {
+			if (this.props.field) {
+				if (this.state.filter) {
 					let flt = this.state.filter.toLocaleLowerCase();
 					a = a.filter((i) => {
-						return i === this.selectedItem || searchByRegexpOrText(i.name, flt) || (i.name === "EMPTY") || !i.value;
+						return i === this.selectedItem || searchByRegexpOrText(i.name, flt) || (i.name === 'EMPTY') || !i.value;
 					});
 				}
 				a = a.slice(0, 20);
@@ -181,7 +181,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 				style: this.props.field ? undefined : { display: 'none' }
 			});
 
-			if(this.checkForNeedClearFilter && a.length < 1) {
+			if (this.checkForNeedClearFilter && a.length < 1) {
 				this.checkForNeedClearFilter = false;
 				window.setTimeout(() => {
 					this.setFilter('');
@@ -193,12 +193,12 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 			window.setTimeout(() => {
 				window.setTimeout(() => {
 					let b = this.base as HTMLElement;
-					if(b) {
+					if (b) {
 						const bounds = b.getBoundingClientRect();
 						let l = document.getElementById('select-list-content') as HTMLElement;
-						if(l) {
+						if (l) {
 							const height = Math.min(Math.round((window.innerHeight * 0.4)), l.clientHeight);
-							if(bounds.top > window.innerHeight * 0.55) {
+							if (bounds.top > window.innerHeight * 0.55) {
 								bounds.y -= height - 25;
 							}
 							l.style.left = bounds.left + 'px';
@@ -219,7 +219,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 
 		this.focusFilter = false;
 
-		if(!item) {
+		if (!item) {
 			item = list[0];
 		}
 
@@ -241,7 +241,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 }
 
 const stopPropagationIfCtrl = (ev: MouseEvent) => {
-	if(ev.ctrlKey) {
+	if (ev.ctrlKey) {
 		sp(ev);
 	}
 };

@@ -1,6 +1,6 @@
-import { Container } from "pixi.js";
-import type { DebugStack } from "thing-editor/src/editor/utils/stack-utils";
-import { removeHoldersToCleanup } from "thing-editor/src/engine/lib";
+import { Container } from 'pixi.js';
+import type { DebugStack } from 'thing-editor/src/editor/utils/stack-utils';
+import { removeHoldersToCleanup } from 'thing-editor/src/engine/lib';
 
 class RemoveHolder extends Container {
 	constructor() {
@@ -15,7 +15,7 @@ class RemoveHolder extends Container {
 	onRemove() {
 		super.onRemove();
 		let i = removeHoldersToCleanup.indexOf(this);
-		if(i >= 0) {
+		if (i >= 0) {
 			removeHoldersToCleanup.splice(i, 1);
 		}
 	}

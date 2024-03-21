@@ -4,10 +4,10 @@ import * as patcher from '../electron-main/pixi-typings-patch.js';
 
 patcher.default();
 
-if(!fs.existsSync('./games')) {
+if (!fs.existsSync('./games')) {
 	fs.mkdirSync('./games');
 }
-if(!fs.existsSync('./libs')) {
+if (!fs.existsSync('./libs')) {
 	fs.mkdirSync('./libs');
 }
 

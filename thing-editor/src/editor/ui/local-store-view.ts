@@ -38,13 +38,13 @@ export default class LocalStoreView extends ComponentDebounced<ClassAttributes<L
 	};
 
 	static refresh() {
-		if(instance) {
+		if (instance) {
 			instance.refresh();
 		}
 	}
 
 	static toggle() {
-		if(!instance) {
+		if (!instance) {
 			showAdditionalWindow('language-view', 'language-view', 'Localization', h(LocalStoreView, null), 40, 0, 100, 70, 600, 300);
 			Window.bringWindowForward('#language-view');
 		} else {
@@ -70,11 +70,11 @@ export default class LocalStoreView extends ComponentDebounced<ClassAttributes<L
 
 		let filter = this.state.filter;
 
-		for(const key in game.settings.data) {
+		for (const key in game.settings.data) {
 
 			const val = JSON.stringify(game.settings.data[key]);
-			if(filter) {
-				if(!key.toLocaleLowerCase().includes(filter) && !val.toLocaleLowerCase().includes(filter)) {
+			if (filter) {
+				if (!key.toLocaleLowerCase().includes(filter) && !val.toLocaleLowerCase().includes(filter)) {
 					continue;
 				}
 			}
@@ -97,7 +97,7 @@ export default class LocalStoreView extends ComponentDebounced<ClassAttributes<L
 				list
 			),
 			R.btn(R.fragment('Clear local store', R.icon('delete')), () => {
-				game.editor.ui.modal.showEditorQuestion("Are you sure?", "You about to remove game's local store data.", () => {
+				game.editor.ui.modal.showEditorQuestion('Are you sure?', 'You about to remove game\'s local store data.', () => {
 					game.settings.clear();
 					this.refresh();
 				}, R.fragment('Clear ', R.icon('delete')));

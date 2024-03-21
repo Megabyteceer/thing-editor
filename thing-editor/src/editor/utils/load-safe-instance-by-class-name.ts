@@ -1,5 +1,5 @@
-import type { Container } from "pixi.js";
-import Lib from "thing-editor/src/engine/lib";
+import type { Container } from 'pixi.js';
+import Lib from 'thing-editor/src/engine/lib';
 
 const loadSafeInstanceByClassName = (className: string, isForWrapping = false): Container => {
 
@@ -7,7 +7,7 @@ const loadSafeInstanceByClassName = (className: string, isForWrapping = false): 
 
 	const PREFAB_NAME = '___default_content/' + className.toLocaleLowerCase();
 
-	if(Lib.hasPrefab(PREFAB_NAME)) {
+	if (Lib.hasPrefab(PREFAB_NAME)) {
 		ret = Lib.loadPrefab(PREFAB_NAME);
 		ret.name = '';
 		return ret;
@@ -15,7 +15,7 @@ const loadSafeInstanceByClassName = (className: string, isForWrapping = false): 
 		ret = Lib._loadClassInstanceById(className);
 	}
 
-	if(ret.__EDITOR_onCreate) {
+	if (ret.__EDITOR_onCreate) {
 		ret.__EDITOR_onCreate(isForWrapping);
 	}
 

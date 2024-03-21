@@ -1,19 +1,19 @@
-import type { ComponentChild } from "preact";
-import { h, render } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import AssetsView from "thing-editor/src/editor/ui/assets-view/assets-view";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import Window from "thing-editor/src/editor/ui/editor-window";
-import MainMenu from "thing-editor/src/editor/ui/main-menu";
-import Modal from "thing-editor/src/editor/ui/modal";
-import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
-import Status from "thing-editor/src/editor/ui/status";
-import StatusBar from "thing-editor/src/editor/ui/status-bar";
-import { TREE_NODE_CONTEXT_ARRANGE_MENU, TREE_NODE_CONTEXT_MENU } from "thing-editor/src/editor/ui/tree-view/tree-node-context-menu";
-import TreeView from "thing-editor/src/editor/ui/tree-view/tree-view";
-import Viewport from "thing-editor/src/editor/ui/viewport";
-import PrefabEditor from "thing-editor/src/editor/utils/prefab-editor";
-import game from "thing-editor/src/engine/game";
+import type { ComponentChild } from 'preact';
+import { h, render } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import AssetsView from 'thing-editor/src/editor/ui/assets-view/assets-view';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import Window from 'thing-editor/src/editor/ui/editor-window';
+import MainMenu from 'thing-editor/src/editor/ui/main-menu';
+import Modal from 'thing-editor/src/editor/ui/modal';
+import PropsEditor from 'thing-editor/src/editor/ui/props-editor/props-editor';
+import Status from 'thing-editor/src/editor/ui/status';
+import StatusBar from 'thing-editor/src/editor/ui/status-bar';
+import { TREE_NODE_CONTEXT_ARRANGE_MENU, TREE_NODE_CONTEXT_MENU } from 'thing-editor/src/editor/ui/tree-view/tree-node-context-menu';
+import TreeView from 'thing-editor/src/editor/ui/tree-view/tree-view';
+import Viewport from 'thing-editor/src/editor/ui/viewport';
+import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
+import game from 'thing-editor/src/engine/game';
 
 interface UIProps {
 	onUIMounted: (ui: UI) => void
@@ -108,7 +108,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 					minW: 64,
 					minH: 400,
 					onResize: () => {
-						if(game.projectDesc) {
+						if (game.projectDesc) {
 							game._onContainerResize();
 						}
 					}
@@ -129,7 +129,7 @@ const additionalWindowsContainers: Map<string, HTMLDivElement> = new Map();
 
 function showAdditionalWindow(id: string, helpId: string, title: ComponentChild, content: ComponentChild,
 	x: number, y: number, w: number, _h: number, minW: number, minH: number, onResize?: () => void) {
-	if(!additionalWindowsContainers.has(id)) {
+	if (!additionalWindowsContainers.has(id)) {
 		let c = window.document.createElement('div');
 		c.classList.add('additional-window-layer');
 		window.document.querySelector('#working-area')?.appendChild(c);
@@ -140,7 +140,7 @@ function showAdditionalWindow(id: string, helpId: string, title: ComponentChild,
 }
 
 function hideAdditionalWindow(id: string) {
-	if(additionalWindowsContainers.has(id)) {
+	if (additionalWindowsContainers.has(id)) {
 		render(R.fragment(), additionalWindowsContainers.get(id) as HTMLDivElement);
 	}
 }

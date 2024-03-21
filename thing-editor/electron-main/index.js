@@ -12,7 +12,7 @@ const originalLog = console.log.bind(console);
 console.log = (txt) => {
 	try {
 		originalLog(txt);
-	} catch(er) { } // eslint-disable-line no-empty
+	} catch (er) { } // eslint-disable-line no-empty
 };
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
@@ -24,8 +24,8 @@ let mainWindow;
 
 const path = require('path');
 
-const getPositionRestoreWindow = require("./thing-editor-window.js");
-const {exec} = require("child_process");
+const getPositionRestoreWindow = require('./thing-editor-window.js');
+const {exec} = require('child_process');
 
 process.on('unhandledRejection', function (err) {
 	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
@@ -42,7 +42,7 @@ const createWindow = () => {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			additionalArguments: [
-				"--remote-debugging-port=9223",
+				'--remote-debugging-port=9223',
 				//"--wait-for-debugger"
 			],
 			webSecurity: false
@@ -56,7 +56,7 @@ const createWindow = () => {
 	mainWindow.setMenu(null);
 	mainWindow.webContents.setWindowOpenHandler((event) => {
 		shell.openExternal(event.url);
-		return {action: "deny"};
+		return {action: 'deny'};
 	});
 
 	mainWindow.on('focus', () => {
@@ -93,12 +93,12 @@ const createWindow = () => {
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
 	};
 
-	if(IS_DEBUG) {
+	if (IS_DEBUG) {
 
 		//let debuggerDetector = require('./debugger-detection');
 		mainWindow.loadURL('http://localhost:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
-			if(er.code === 'ERR_CONNECTION_REFUSED') {
+			if (er.code === 'ERR_CONNECTION_REFUSED') {
 				dialog.showErrorBox('Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 			}
 		});
@@ -112,7 +112,7 @@ app.whenReady().then(() => {
 	createWindow();
 
 	app.on('activate', () => {
-		if(BrowserWindow.getAllWindows().length === 0) createWindow();
+		if (BrowserWindow.getAllWindows().length === 0) createWindow();
 	});
 });
 
@@ -121,4 +121,4 @@ app.on('window-all-closed', () => {
 	app.quit();
 });
 
-exec("git update-index --assume-unchanged thing-editor.code-workspace tsconfig.json thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts", {cwd: __dirname + '/../..'});
+exec('git update-index --assume-unchanged thing-editor.code-workspace tsconfig.json thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts', {cwd: __dirname + '/../..'});

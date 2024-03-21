@@ -1,15 +1,15 @@
 /// #if EDITOR
-import type FieldsTimelineView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field";
-import type TimelineKeyframeView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view";
-import game from "thing-editor/src/engine/game.js";
+import type FieldsTimelineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field';
+import type TimelineKeyframeView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-keyframe-view';
+import game from 'thing-editor/src/engine/game.js';
 
 /// #endif
 
-import type TimelineLabelView from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view";
-import type TimelineLoopPoint from "thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point";
+import type TimelineLabelView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view';
+import type TimelineLoopPoint from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point';
 
-import type MovieClip from "thing-editor/src/engine/lib/assets/src/basic/movie-clip.c";
-import callByPath from "thing-editor/src/engine/utils/call-by-path";
+import type MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 
 interface TimelineKeyFrame {
 
@@ -90,7 +90,6 @@ interface TimelineSerializedFieldData {
 
 	t: TimelineSerializedKeyFrame[];
 }
-
 
 
 interface TimelineLabelData {
@@ -181,7 +180,7 @@ export default class FieldPlayer {
 		this.__processedTime = undefined;
 		/// #endif
 		this.currentFrame = this.timeline[0];
-		if(this.currentFrame.hasOwnProperty('r')
+		if (this.currentFrame.hasOwnProperty('r')
 			/// #if EDITOR
 			&& !ignoreRandom
 			/// #endif
@@ -193,11 +192,11 @@ export default class FieldPlayer {
 		this.speed = 0;
 
 		/// #if EDITOR
-		if(game.__EDITOR_mode && this.target.__previewFrame) {
+		if (game.__EDITOR_mode && this.target.__previewFrame) {
 			let kf = this.timeline.find((kf) => {
 				return kf.t >= this.target.__previewFrame;
 			}) || this.timeline[this.timeline.length - 1];
-			if(kf) {
+			if (kf) {
 				(this.target as KeyedObject)[this.fieldName] = kf.v;
 				return;
 			}
@@ -209,14 +208,14 @@ export default class FieldPlayer {
 	goto(time: number, nextKeyframe: TimelineKeyFrame) {
 		this.time = time;
 		this.currentFrame = nextKeyframe;
-		if(nextKeyframe.m === TimelineKeyFrameType.LINEAR) {
+		if (nextKeyframe.m === TimelineKeyFrameType.LINEAR) {
 			let dist = nextKeyframe.t - this.time;
-			if(dist > 0) {
+			if (dist > 0) {
 				this.speed = (nextKeyframe.v as number - this.val) / dist;
 			} else {
 				this.speed = 0;
 			}
-		} else if(nextKeyframe.m === TimelineKeyFrameType.DISCRETE) {
+		} else if (nextKeyframe.m === TimelineKeyFrameType.DISCRETE) {
 			this.speed = 0;
 		}
 	}
@@ -230,21 +229,21 @@ export default class FieldPlayer {
 		this.__processedTime = this.time;
 		/// #endif
 		let currentFrame = this.currentFrame;
-		if(this.time === currentFrame.t) {
+		if (this.time === currentFrame.t) {
 			/// #if EDITOR
 			this.__lastFiredKeyframe = currentFrame;
 			/// #endif
 			let action;
-			if(currentFrame.hasOwnProperty('a')) {
+			if (currentFrame.hasOwnProperty('a')) {
 				action = currentFrame.a;
 			}
 
-			if(currentFrame.m === TimelineKeyFrameType.LINEAR || currentFrame.m === TimelineKeyFrameType.DISCRETE) {
+			if (currentFrame.m === TimelineKeyFrameType.LINEAR || currentFrame.m === TimelineKeyFrameType.DISCRETE) {
 				this.val = currentFrame.v;
 			}
 
 			this.time = currentFrame.j;
-			if(currentFrame.hasOwnProperty('r')
+			if (currentFrame.hasOwnProperty('r')
 				/// #if EDITOR
 				&& !ignoreRandom
 				/// #endif
@@ -252,33 +251,33 @@ export default class FieldPlayer {
 				this.time += Math.round(Math.random() * (currentFrame.r as number));
 			}
 
-			if(currentFrame.m === TimelineKeyFrameType.SMOOTH) {
+			if (currentFrame.m === TimelineKeyFrameType.SMOOTH) {
 				this.speed += (currentFrame.v as number - this.val) * this.pow;
 				this.val += this.speed;
 				this.speed *= this.damper;
 			}
 
-			if(currentFrame.hasOwnProperty('s')) {
+			if (currentFrame.hasOwnProperty('s')) {
 				this.speed = currentFrame.s as number;
 			}
 
 			this.currentFrame = currentFrame.n;
 			currentFrame = currentFrame.n;
-			if(currentFrame.m === TimelineKeyFrameType.LINEAR) {
+			if (currentFrame.m === TimelineKeyFrameType.LINEAR) {
 				let dist = currentFrame.t - this.time;
-				if(dist > 0) {
+				if (dist > 0) {
 					this.speed = (currentFrame.v as number - this.val) / dist;
 				} else {
 					this.speed = 0;
 				}
 			}
 
-			if(action) {
+			if (action) {
 				/// #if EDITOR
-				if(!this.__doNotCallActions) {
-					if(this.target.__logLevel > 1) {
+				if (!this.__doNotCallActions) {
+					if (this.target.__logLevel > 1) {
 						game.editor.ui.status.warn('action call: ' + action + '; timeline time: ' + this.time + '; game time:' + game.time + '; id:' + this.target.___id, 30019, this.target, undefined, true);
-						if(this.target.__logLevel === 3) {
+						if (this.target.__logLevel === 3) {
 							/// break on callbacks
 							console.log('callback: ' + action);
 							debugger; // eslint-disable-line no-debugger
@@ -295,23 +294,23 @@ export default class FieldPlayer {
 			this.__lastFiredKeyframe = undefined;
 			/// #endif
 
-			if(currentFrame.m === TimelineKeyFrameType.SMOOTH) {
+			if (currentFrame.m === TimelineKeyFrameType.SMOOTH) {
 				this.speed += (currentFrame.v as number - this.val) * this.pow;
 				this.val += this.speed;
 				this.speed *= this.damper;
-			} else if(currentFrame.m === TimelineKeyFrameType.LINEAR) {
+			} else if (currentFrame.m === TimelineKeyFrameType.LINEAR) {
 				this.val += this.speed;
-			} else if(currentFrame.m === TimelineKeyFrameType.BOUNCE_BOTTOM) {
+			} else if (currentFrame.m === TimelineKeyFrameType.BOUNCE_BOTTOM) {
 				this.speed += currentFrame.g as number;
 				this.val += this.speed;
-				if(this.val >= currentFrame.v) {
+				if (this.val >= currentFrame.v) {
 					this.val = currentFrame.v;
 					this.speed *= currentFrame.b as number;
 				}
-			} else if(currentFrame.m === TimelineKeyFrameType.BOUNCE_TOP) {
+			} else if (currentFrame.m === TimelineKeyFrameType.BOUNCE_TOP) {
 				this.speed -= currentFrame.g as number;
 				this.val += this.speed;
-				if(this.val <= currentFrame.v) {
+				if (this.val <= currentFrame.v) {
 					this.val = currentFrame.v;
 					this.speed *= currentFrame.b as number;
 				}

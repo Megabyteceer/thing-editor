@@ -1,15 +1,15 @@
-import type { Container } from "pixi.js";
-import type { ClassAttributes, ComponentChild} from "preact";
-import { Component, h } from "preact";
+import type { Container } from 'pixi.js';
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { Component, h } from 'preact';
 
-import R from "thing-editor/src/editor/preact-fabrics";
-import type { EditablePropertyDesc, EditablePropertyType } from "thing-editor/src/editor/props-editor/editable";
-import showContextMenu from "thing-editor/src/editor/ui/context-menu";
-import PropsEditor from "thing-editor/src/editor/ui/props-editor/props-editor";
-import ArrayEditableProperty from "thing-editor/src/editor/ui/props-editor/props-editors/array-editable-property";
-import copyTextByClick from "thing-editor/src/editor/utils/copy-text-by-click";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import R from 'thing-editor/src/editor/preact-fabrics';
+import type { EditablePropertyDesc, EditablePropertyType } from 'thing-editor/src/editor/props-editor/editable';
+import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
+import PropsEditor from 'thing-editor/src/editor/ui/props-editor/props-editor';
+import ArrayEditableProperty from 'thing-editor/src/editor/ui/props-editor/props-editors/array-editable-property';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 const wrapperProps = { className: 'props-wrapper' };
 const defaultValueProps = {
@@ -48,20 +48,20 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 
 	let clickedArrayItemIndex = -1;
 
-	if(field.arrayProperty) {
+	if (field.arrayProperty) {
 		const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
 		clickedArrayItemIndex = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
 	}
 
 	showContextMenu([
 		{
-			name: R.fragment(R.icon('copy'), "Copy value"),
+			name: R.fragment(R.icon('copy'), 'Copy value'),
 			onClick: () => {
-				if(field.arrayProperty) {
+				if (field.arrayProperty) {
 					const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
 
 					let i = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
-					if(i >= 0) {
+					if (i >= 0) {
 						game.editor.copyToClipboard(value[i]);
 						return;
 					}
@@ -71,17 +71,17 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
-			name: R.fragment(R.icon('paste'), "Paste value"),
+			name: R.fragment(R.icon('paste'), 'Paste value'),
 			onClick: () => {
 				navigator.clipboard.readText().then(text => {
 					let val: any;
 
 					let a = text.split(',');
-					if(field.type === 'color' || field.type === 'number') {
+					if (field.type === 'color' || field.type === 'number') {
 						a = a.map(v => parseFloat(v) || 0) as any;
 					}
-					if(field.arrayProperty) {
-						if(clickedArrayItemIndex < 0) {
+					if (field.arrayProperty) {
+						if (clickedArrayItemIndex < 0) {
 							val = a;
 						} else {
 							val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
@@ -96,16 +96,16 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
-			name: R.fragment(R.icon('copy'), "Copy property name"),
+			name: R.fragment(R.icon('copy'), 'Copy property name'),
 			onClick: () => { game.editor.copyToClipboard(field.name); }
 		},
 		{
-			name: "Why disabled?..",
-			onClick: () => { game.editor.ui.modal.showInfo(R.fragment(R.b(null, field.name), R.br(), game.editor.ui.propsEditor.disableReasons[field.name]), "Property is disabled."); },
+			name: 'Why disabled?..',
+			onClick: () => { game.editor.ui.modal.showInfo(R.fragment(R.b(null, field.name), R.br(), game.editor.ui.propsEditor.disableReasons[field.name]), 'Property is disabled.'); },
 			disabled: () => !game.editor.ui.propsEditor.disableReasons[field.name]
 		},
 		(clickedArrayItemIndex >= 0) ? {
-			name: "➦ Insert item upper",
+			name: '➦ Insert item upper',
 			onClick: () => {
 				const val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
 				val.splice(clickedArrayItemIndex, 0, field.defaultArrayItemValue || PropsEditor.getDefaultForType(field));
@@ -114,7 +114,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 
 		} : null,
 		(clickedArrayItemIndex >= 0) ? {
-			name: "➥ Insert item lower",
+			name: '➥ Insert item lower',
 			onClick: () => {
 				const val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
 				val.splice(clickedArrayItemIndex + 1, 0, field.defaultArrayItemValue || PropsEditor.getDefaultForType(field));
@@ -123,7 +123,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 
 		} : null,
 		(clickedArrayItemIndex > 0) ? {
-			name: "↑ Move item up",
+			name: '↑ Move item up',
 			onClick: () => {
 				const val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
 				let item = val[clickedArrayItemIndex];
@@ -134,10 +134,10 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 
 		} : null,
 		(clickedArrayItemIndex >= 0) ? {
-			name: "↓ Move item down",
+			name: '↓ Move item down',
 			onClick: () => {
 				const val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
-				if(clickedArrayItemIndex < (val.length - 1)) {
+				if (clickedArrayItemIndex < (val.length - 1)) {
 					let item = val[clickedArrayItemIndex];
 					val.splice(clickedArrayItemIndex, 1);
 					val.splice(clickedArrayItemIndex + 1, 0, item);
@@ -148,7 +148,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		} : null,
 		null,
 		{
-			name: "Go to property definition >>",
+			name: 'Go to property definition >>',
 			onClick: () => {
 				game.editor.editSource(field.__src);
 			}
@@ -181,7 +181,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 	}
 
 	_onBlur() {
-		if(this.props.field.onBlur) {
+		if (this.props.field.onBlur) {
 			this.props.field.onBlur();
 		}
 	}
@@ -191,44 +191,44 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 	}
 
 	componentWillReceiveProps() {
-		if(this.ownerContainer !== game.editor.selection[0]) {
+		if (this.ownerContainer !== game.editor.selection[0]) {
 			this.ownerContainer = game.editor.selection[0];
 			this.setState({ value: undefined });
 		}
 	}
 
 	onChange(val: any, isDelta = false, deltaVal?: number) {
-		if(val && val.target) {
+		if (val && val.target) {
 			val = val.target.value;
 		}
-		assert(!(val instanceof Event), "Pure value expected. Event received.");
-		assert((!isDelta) || (typeof isDelta === 'boolean'), "Delta expected to be boolean");
+		assert(!(val instanceof Event), 'Pure value expected. Event received.');
+		assert((!isDelta) || (typeof isDelta === 'boolean'), 'Delta expected to be boolean');
 		let field = this.props.field;
 
-		if(field.hasOwnProperty('parser')) {
+		if (field.hasOwnProperty('parser')) {
 			val = (field.parser as (val: any) => any)(val);
 		}
 
-		if(field.renderer.hasOwnProperty('parser')) {
+		if (field.renderer.hasOwnProperty('parser')) {
 			val = (field.renderer.parser as (val: any) => any)(val);
 		}
 
-		if(field.hasOwnProperty('min')) {
-			if(Array.isArray(val)) {
+		if (field.hasOwnProperty('min')) {
+			if (Array.isArray(val)) {
 				val = val.map(v => Math.max(field.min!, v));
 			} else {
 				val = Math.max(field.min!, val);
 			}
 		}
-		if(field.hasOwnProperty('max')) {
-			if(Array.isArray(val)) {
+		if (field.hasOwnProperty('max')) {
+			if (Array.isArray(val)) {
 				val = val.map(v => Math.min(field.max!, v));
 			} else {
 				val = Math.min(field.max!, val);
 			}
 		}
-		if((this.state as any).value !== val) {
-			if(isDelta) {
+		if ((this.state as any).value !== val) {
+			if (isDelta) {
 				this.props.onChange(field, deltaVal, true);
 			} else {
 				this.props.onChange(field, val);
@@ -239,7 +239,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 	}
 
 	onAutoSelect(selectPath: string[]) {
-		if(this.propertyEditor && (this.propertyEditor as any).onAutoSelect) {
+		if (this.propertyEditor && (this.propertyEditor as any).onAutoSelect) {
 			(this.propertyEditor as any).onAutoSelect(selectPath);
 		}
 	}
@@ -251,7 +251,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 	render() {
 		let field = this.props.field;
 		let node: Container = game.editor.selection[0];
-		if(!node) {
+		if (!node) {
 			return R.fragment();
 		}
 		let value = (node as KeyedObject)[field.name];
@@ -260,24 +260,24 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 
 		let className = field.important ? 'props-field props-field-important props-field-' + field.type : 'props-field props-field-' + field.type;
 
-		if(field.notSerializable) {
-			if(value == field.default || !field.hasOwnProperty('default')) {
+		if (field.notSerializable) {
+			if (value == field.default || !field.hasOwnProperty('default')) {
 				className += ' props-wrapper-default-value';
 			}
 		} else {
-			if(value == this.props.defaultValue) {
+			if (value == this.props.defaultValue) {
 				className += ' props-wrapper-default-value';
 			}
 		}
 
-		if(field.separator) {
+		if (field.separator) {
 			className += ' props-wrapper-separator';
 		}
 
 		let tip;
-		if(field.hasOwnProperty('tip')) {
+		if (field.hasOwnProperty('tip')) {
 			tip = ((typeof field.tip === 'function') ? field.tip() : field.tip);
-			if(tip) {
+			if (tip) {
 				tip = R.tip(field.name,
 					'Field "' + field.name + '" description:',
 					tip
@@ -292,7 +292,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 			title: field.name,
 			'data-help': field.helpUrl,
 			onContextMenu: (ev: PointerEvent) => {
-				if((ev.target as HTMLElement).tagName !== 'button') {
+				if ((ev.target as HTMLElement).tagName !== 'button') {
 					onContextMenu(this, value, ev);
 				}
 			}

@@ -1,11 +1,11 @@
 
-import type { EditableRect } from "thing-editor/src/editor/props-editor/editable";
-import editable from "thing-editor/src/editor/props-editor/editable";
-import game from "thing-editor/src/engine/game";
-import Container from "thing-editor/src/engine/lib/assets/src/basic/container.c";
-import { mouseHandlerGlobal } from "thing-editor/src/engine/utils/game-interaction";
-import getValueByPath from "thing-editor/src/engine/utils/get-value-by-path";
-import { stepTo } from "thing-editor/src/engine/utils/utils";
+import type { EditableRect } from 'thing-editor/src/editor/props-editor/editable';
+import editable from 'thing-editor/src/editor/props-editor/editable';
+import game from 'thing-editor/src/engine/game';
+import Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c';
+import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';
+import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
+import { stepTo } from 'thing-editor/src/engine/utils/utils';
 
 let draggingLayer: ScrollLayer | null;
 let mouseX_prev = 0;
@@ -70,19 +70,19 @@ export default class ScrollLayer extends Container {
 
 	init() {
 		super.init();
-		if(this.mouseHandler) {
+		if (this.mouseHandler) {
 			this._mouseHandlerContainer = getValueByPath(this.mouseHandler, this);
 			this._mouseHandlerContainer.on('pointerdown', this.onDown);
 			/// #if EDITOR
-			if(!this._mouseHandlerContainer.interactive) {
+			if (!this._mouseHandlerContainer.interactive) {
 				let isInteractiveChildFound = false;
 				this._mouseHandlerContainer.forAllChildren((o) => {
-					if(!isInteractiveChildFound) {
+					if (!isInteractiveChildFound) {
 						isInteractiveChildFound = o.interactive;
 					}
 				});
-				if(!isInteractiveChildFound) {
-					game.editor.ui.status.warn("ScrollLayer's mouseHandler refers to container which has no interactive children.", 32047, this, 'mouseHandler');
+				if (!isInteractiveChildFound) {
+					game.editor.ui.status.warn('ScrollLayer\'s mouseHandler refers to container which has no interactive children.', 32047, this, 'mouseHandler');
 				}
 			}
 			/// #endif
@@ -100,51 +100,51 @@ export default class ScrollLayer extends Container {
 	}
 
 	onWheel(ev: WheelEvent) {
-		if(this.autoScrolling) {
+		if (this.autoScrolling) {
 			return;
 		}
 
 		let d = 0;
-		if(this._mouseHandlerContainer) {
-			if(this._mouseHandlerContainer.isCanBePressed) {
+		if (this._mouseHandlerContainer) {
+			if (this._mouseHandlerContainer.isCanBePressed) {
 				let p = game.mouse;
-				if(this._mouseHandlerContainer.getBounds().contains(p.x, p.y)) {
+				if (this._mouseHandlerContainer.getBounds().contains(p.x, p.y)) {
 					d = ev.deltaY;
 					ev.stopPropagation();
-					if(ev.cancelable) {
+					if (ev.cancelable) {
 						ev.preventDefault();
 					}
 				}
 			}
 		} else {
-			if(this.isCanBePressed) {
+			if (this.isCanBePressed) {
 				d = ev.deltaY;
 				ev.stopPropagation();
-				if(ev.cancelable) {
+				if (ev.cancelable) {
 					ev.preventDefault();
 				}
 			}
 		}
-		if(d) {
-			if(ev.deltaMode === 1) {
+		if (d) {
+			if (ev.deltaMode === 1) {
 				d *= 60;
 			}
 			d = Math.min(60, Math.max(-60, d));
-			if(this.isYScrollAvailable) {
+			if (this.isYScrollAvailable) {
 				this.ySpeed = -d;
-			} else if(this.isXScrollAvailable) {
+			} else if (this.isXScrollAvailable) {
 				this.xSpeed = d;
 			}
 		}
 	}
 
 	onDown(ev: PointerEvent) {
-		if(this.worldVisible) {
+		if (this.worldVisible) {
 			mouseHandlerGlobal(ev);
 
 			/// #if EDITOR
-			if(draggingLayer) {
-				game.editor.ui.status.warn("More than one scroll layer want to be dragged by one mouse handler", 32048);
+			if (draggingLayer) {
+				game.editor.ui.status.warn('More than one scroll layer want to be dragged by one mouse handler', 32048);
 			}
 			/// #endif
 
@@ -156,18 +156,18 @@ export default class ScrollLayer extends Container {
 	}
 
 	static updateGlobal() {
-		if(draggingLayer) {
+		if (draggingLayer) {
 			draggingLayer.updateGlobal();
 		}
 	}
 
 	updateGlobal() {
-		if(game.mouse.click) {
-			if(this.fullArea.w > this.visibleArea.w) {
+		if (game.mouse.click) {
+			if (this.fullArea.w > this.visibleArea.w) {
 				this.xSpeed = (game.mouse.x - mouseX_prev);
 				this._virtualScrollX += this.xSpeed;
 			}
-			if(this.fullArea.h > this.visibleArea.h) {
+			if (this.fullArea.h > this.visibleArea.h) {
 				this.ySpeed = (game.mouse.y - mouseY_prev);
 				this._virtualScrollY += this.ySpeed;
 			}
@@ -180,7 +180,7 @@ export default class ScrollLayer extends Container {
 		this.stopDragThisLayer();
 		document.removeEventListener('wheel', this.onWheel, WHEEL_EVENT_OPTIONS);
 
-		if(this._mouseHandlerContainer) {
+		if (this._mouseHandlerContainer) {
 			this._mouseHandlerContainer.removeListener('pointerdown', this.onDown);
 		} else {
 			(game.pixiApp.view as HTMLCanvasElement).removeEventListener('pointerdown', this.onDown);
@@ -189,14 +189,14 @@ export default class ScrollLayer extends Container {
 	}
 
 	update() {
-		if(this.visible) {
+		if (this.visible) {
 
-			if(draggingLayer !== this) {
+			if (draggingLayer !== this) {
 
 				this._virtualScrollX += this.xSpeed;
 				this._virtualScrollY += this.ySpeed;
-				if(!this.autoScrolling) {
-					if(game.isMobile.any) {
+				if (!this.autoScrolling) {
+					if (game.isMobile.any) {
 						this.xSpeed *= this.mobileInertia;
 						this.ySpeed *= this.mobileInertia;
 					} else {
@@ -214,16 +214,16 @@ export default class ScrollLayer extends Container {
 			let v = this.visibleArea;
 			let f = this.fullArea;
 
-			if(this.autoScrolling) {
+			if (this.autoScrolling) {
 				this._checkScrollToBounds();
 				this.xSpeed += (this.scrollToX - this._virtualScrollX) * 0.06;
 				this.ySpeed += (this.scrollToY - this._virtualScrollY) * 0.06;
 				this.xSpeed *= 0.7;
 				this.ySpeed *= 0.7;
-				if((Math.abs(this.scrollToX - this._virtualScrollX) <= 1) && (Math.abs(this.xSpeed) < 0.5) && (Math.abs(this.scrollToY - this._virtualScrollY) <= 1) && (Math.abs(this.ySpeed) < 0.5)) {
+				if ((Math.abs(this.scrollToX - this._virtualScrollX) <= 1) && (Math.abs(this.xSpeed) < 0.5) && (Math.abs(this.scrollToY - this._virtualScrollY) <= 1) && (Math.abs(this.ySpeed) < 0.5)) {
 					this.xSpeed = 0;
 					this.ySpeed = 0;
-					if(this.callAfterScroll) {
+					if (this.callAfterScroll) {
 						this.callAfterScroll();
 					}
 					this._virtualScrollX = this.scrollToX;
@@ -235,15 +235,15 @@ export default class ScrollLayer extends Container {
 
 			let limitShift = 0;
 
-			if(((v.x + v.w) - this._virtualScrollX) > (f.x + f.w)) {
+			if (((v.x + v.w) - this._virtualScrollX) > (f.x + f.w)) {
 				limitShift = (((v.x + v.w) - this._virtualScrollX) - (f.x + f.w));
 			}
-			if((v.x - this._virtualScrollX - limitShift) < f.x) {
+			if ((v.x - this._virtualScrollX - limitShift) < f.x) {
 				limitShift = -(f.x - (v.x - this._virtualScrollX));
 			}
 
-			if(limitShift !== 0) {
-				if(this.bouncingBounds) {
+			if (limitShift !== 0) {
+				if (this.bouncingBounds) {
 					this.xSpeed *= 0.95;
 					this._virtualScrollX = stepTo(this._virtualScrollX, this._virtualScrollX + limitShift, Math.abs(limitShift / 4));
 				} else {
@@ -253,15 +253,15 @@ export default class ScrollLayer extends Container {
 			}
 
 			limitShift = 0;
-			if(((v.y + v.h) - this._virtualScrollY) > (f.y + f.h)) {
+			if (((v.y + v.h) - this._virtualScrollY) > (f.y + f.h)) {
 				limitShift = (((v.y + v.h) - this._virtualScrollY) - (f.y + f.h));
 			}
-			if((v.y - this._virtualScrollY - limitShift) < f.y) {
+			if ((v.y - this._virtualScrollY - limitShift) < f.y) {
 				limitShift = -(f.y - (v.y - this._virtualScrollY));
 			}
 
-			if(limitShift !== 0) {
-				if(this.bouncingBounds) {
+			if (limitShift !== 0) {
+				if (this.bouncingBounds) {
 					this.ySpeed *= 0.95;
 					this._virtualScrollY = stepTo(this._virtualScrollY, this._virtualScrollY + limitShift, Math.abs(limitShift / 4));
 				} else {
@@ -275,7 +275,7 @@ export default class ScrollLayer extends Container {
 			this.ySpeed = 0;
 		}
 
-		if(!this.visible || !game.mouse.click) {
+		if (!this.visible || !game.mouse.click) {
 			this.stopDragThisLayer();
 		}
 		super.update();
@@ -345,34 +345,34 @@ export default class ScrollLayer extends Container {
 		let v = this.visibleArea;
 		let f = this.fullArea;
 
-		if(this.scrollToX > -f.x) {
+		if (this.scrollToX > -f.x) {
 			this.scrollToX = -f.x;
-		} else if(this.scrollToX < -(f.x + f.w - v.w)) {
+		} else if (this.scrollToX < -(f.x + f.w - v.w)) {
 			this.scrollToX = -(f.x + f.w - v.w);
 		}
 
-		if(this.scrollToY > -f.y) {
+		if (this.scrollToY > -f.y) {
 			this.scrollToY = -f.y;
-		} else if(this.scrollToY < -(f.y + f.h - v.h)) {
+		} else if (this.scrollToY < -(f.y + f.h - v.h)) {
 			this.scrollToY = -(f.y + f.h - v.h);
 		}
 	}
 
 	stopDragThisLayer() {
-		if(draggingLayer === this) {
+		if (draggingLayer === this) {
 			draggingLayer = null;
 		}
 	}
 
 	scrollTo(o: Container, callback?: () => void, instantly = false) {
-		if(!o) {
+		if (!o) {
 			this.autoScrolling = false;
 			this.xSpeed = 0;
 			this.ySpeed = 0;
 			return;
 		}
 
-		if(typeof o === 'string') {
+		if (typeof o === 'string') {
 			o = this.getChildByName(o)!;
 		}
 
@@ -383,7 +383,7 @@ export default class ScrollLayer extends Container {
 
 		this._checkScrollToBounds();
 
-		if(instantly) {
+		if (instantly) {
 			this._virtualScrollX = this.scrollToX;
 			this._virtualScrollY = this.scrollToY;
 		}
@@ -395,10 +395,10 @@ export default class ScrollLayer extends Container {
 ScrollLayer.__EDITOR_icon = 'tree/scroll';
 
 function validateAreas() {
-	for(const o of game.editor.selection as any as ScrollLayer[]) {
+	for (const o of game.editor.selection as any as ScrollLayer[]) {
 		let w = Math.max(o.visibleArea.w, o.fullArea.w);
 		let h = Math.max(o.visibleArea.h, o.fullArea.h);
-		if(o.fullArea.w !== w || o.fullArea.h !== h) {
+		if (o.fullArea.w !== w || o.fullArea.h !== h) {
 			o.fullArea.w = w;
 			o.fullArea.h = h;
 			game.editor.refreshPropsEditor();

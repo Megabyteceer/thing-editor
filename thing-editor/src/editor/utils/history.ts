@@ -1,15 +1,15 @@
-import { EventEmitter } from "events";
-import type { Container } from "pixi.js";
-import MainMenu from "thing-editor/src/editor/ui/main-menu";
-import regenerateCurrentSceneMapTypings from "thing-editor/src/editor/utils/generate-editor-typings";
-import type { SelectionData } from "thing-editor/src/editor/utils/selection";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
+import { EventEmitter } from 'events';
+import type { Container } from 'pixi.js';
+import MainMenu from 'thing-editor/src/editor/ui/main-menu';
+import regenerateCurrentSceneMapTypings from 'thing-editor/src/editor/utils/generate-editor-typings';
+import type { SelectionData } from 'thing-editor/src/editor/utils/selection';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
-import Pool from "thing-editor/src/engine/utils/pool";
-import type TypedEmitter from "typed-emitter";
+import Pool from 'thing-editor/src/engine/utils/pool';
+import type TypedEmitter from 'typed-emitter';
 
 const HISTORY_LEN = 100;
 const STRICT_HISTORY_LEN = 20;
@@ -26,10 +26,10 @@ let currentSelectionNavigation = 0;
 
 function applyState(state: HistoryRecord) {
 	assert(state, 'Empty history record.');
-	assert(game.__EDITOR_mode, "Attempt to save undo history in runtime mode.");
+	assert(game.__EDITOR_mode, 'Attempt to save undo history in runtime mode.');
 	currentSelectionNavigation = 0;
 	let stateChanged = state.treeData !== lastAppliedTreeData;
-	if(stateChanged) {
+	if (stateChanged) {
 		instance.events.emit('beforeHistoryJump');
 		Pool.__resetIdCounter();
 		let node = Lib._deserializeObject(state.treeData);
@@ -42,18 +42,18 @@ function applyState(state: HistoryRecord) {
 	stage.scale.x = stage.scale.y = state.selectionData._stageS as number;
 	lastAppliedTreeData = state.treeData;
 
-	if(stateChanged) {
+	if (stateChanged) {
 		instance.events.emit('afterHistoryJump');
 	}
 }
 
 function getHistoryName() {
-	if((typeof game === 'undefined') || !game.currentContainer) {
+	if ((typeof game === 'undefined') || !game.currentContainer) {
 		return;
 	}
 	let n = game.currentContainer.name;
 	assert(n, 'currentContainer name is empty.');
-	if(game.currentContainer instanceof Scene) {
+	if (game.currentContainer instanceof Scene) {
 		n = 's/' + n;
 	} else {
 		n = 'p/' + n;
@@ -98,16 +98,16 @@ class History {
 
 	_sceneModifiedInner(saveImmediately = false) {
 		clearSelectionSaveTimeout();
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			needHistorySave = true;
-			if(saveImmediately) {
+			if (saveImmediately) {
 				instance.scheduleHistorySave();
 			}
 		}
 	}
 
 	scheduleHistorySave() {
-		if(!historySaveScheduled) {
+		if (!historySaveScheduled) {
 			historySaveScheduled = window.setTimeout(() => {
 				historySaveScheduled = 0;
 				instance.saveHistoryNow();
@@ -117,17 +117,17 @@ class History {
 
 	scheduleSelectionSave() {
 		clearSelectionSaveTimeout();
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			needSaveSelectionInToHistory = window.setTimeout(saveSelectionState, 50);
 		}
 	}
 
 	saveHistoryNow() {
-		if(needHistorySave) {
+		if (needHistorySave) {
 			clearSelectionSaveTimeout();
 			needHistorySave = false;
 			instance.addHistoryState();
-			if(historySaveScheduled) {
+			if (historySaveScheduled) {
 				clearInterval(historySaveScheduled);
 				historySaveScheduled = 0;
 			}
@@ -147,10 +147,10 @@ class History {
 
 	get _undoList(): HistoryRecord[] {
 		let n = getHistoryName();
-		if(!n) {
+		if (!n) {
 			return [];
 		}
-		if(!undoStack.hasOwnProperty(n)) {
+		if (!undoStack.hasOwnProperty(n)) {
 			undoStack[n] = [];
 		}
 		return undoStack[n];
@@ -158,22 +158,22 @@ class History {
 
 	get _redoList(): HistoryRecord[] {
 		let n = getHistoryName();
-		if(!n) {
+		if (!n) {
 			return [];
 		}
-		if(!redosStack.hasOwnProperty(n)) {
+		if (!redosStack.hasOwnProperty(n)) {
 			redosStack[n] = [];
 		}
 		return redosStack[n];
 	}
 
 	_pushCurrentStateToUndoHistory(selectionData: SelectionData, selectionOnly = false) {
-		assert(game.__EDITOR_mode, "Attempt to use history in running time.");
+		assert(game.__EDITOR_mode, 'Attempt to use history in running time.');
 
 		let treeData: HistorySerializedData;
 
-		if(selectionOnly) {
-			if(!this.currentState || arraysEqual(selectionData, this.currentState.selectionData)) {
+		if (selectionOnly) {
+			if (!this.currentState || arraysEqual(selectionData, this.currentState.selectionData)) {
 				return;
 			}
 			treeData = this.currentState.treeData;
@@ -191,9 +191,9 @@ class History {
 		this._undoList.push(historyRecord);
 
 		//reduce and limit history
-		if(this._undoList.length > HISTORY_LEN) {
+		if (this._undoList.length > HISTORY_LEN) {
 			let i = HISTORY_LEN - 1;
-			while(i > STRICT_HISTORY_LEN) {
+			while (i > STRICT_HISTORY_LEN) {
 				i -= 2;
 				this._undoList.splice(i, 1);
 			}
@@ -211,15 +211,15 @@ class History {
 		selectionData._stageX = stage.x;
 		selectionData._stageY = stage.y;
 		selectionData._stageS = stage.scale.x;
-		if(!selectionOnly) {
+		if (!selectionOnly) {
 			this._redoList.length = 0;
 		}
 		this._pushCurrentStateToUndoHistory(selectionData, selectionOnly);
 	}
 
 	undo() {
-		if(this.isUndoAvailable()) {
-			if(this.currentState.fieldName) {
+		if (this.isUndoAvailable()) {
+			if (this.currentState.fieldName) {
 				game.editor.ui.propsEditor.selectField(this.currentState.fieldName);
 			}
 			this._redoList.push(this._undoList.pop() as HistoryRecord);
@@ -228,10 +228,10 @@ class History {
 	}
 
 	redo() {
-		if(this.isRedoAvailable()) {
+		if (this.isRedoAvailable()) {
 			this._undoList.push(this._redoList.pop() as HistoryRecord);
 			applyState(this.currentState);
-			if(this.currentState.fieldName) {
+			if (this.currentState.fieldName) {
 				game.editor.ui.propsEditor.selectField(this.currentState.fieldName);
 			}
 		}
@@ -239,7 +239,7 @@ class History {
 
 	get currentState(): HistoryRecord {
 		let undo = this._undoList;
-		if(undo) {
+		if (undo) {
 			return undo[undo.length - 1];
 		}
 
@@ -252,7 +252,7 @@ class History {
 	}
 
 	setCurrentStateUnmodified() {
-		if(this._undoList.length === 0 && this._redoList.length === 0) {
+		if (this._undoList.length === 0 && this._redoList.length === 0) {
 			this.addHistoryState();
 		}
 		this._undoList.some((s) => {
@@ -266,19 +266,19 @@ class History {
 	}
 
 	navigateSelection(direction = -1) {
-		while(true) { // eslint-disable-line no-constant-condition
+		while (true) { // eslint-disable-line no-constant-condition
 			currentSelectionNavigation += direction;
 
 			let targetHistoryState;
-			if(currentSelectionNavigation <= 0) {
+			if (currentSelectionNavigation <= 0) {
 				targetHistoryState = this._undoList[this._undoList.length - 1 + currentSelectionNavigation];
 				currentSelectionNavigation = Math.max(-(this._undoList.length - 1), currentSelectionNavigation);
 			} else {
 				targetHistoryState = this._redoList[currentSelectionNavigation - 1];
 				currentSelectionNavigation = Math.min(this._redoList.length, currentSelectionNavigation);
 			}
-			if(targetHistoryState) {
-				if(JSON.stringify(targetHistoryState.selectionData.slice()) !== JSON.stringify(game.editor.selection.saveSelection())) {
+			if (targetHistoryState) {
+				if (JSON.stringify(targetHistoryState.selectionData.slice()) !== JSON.stringify(game.editor.selection.saveSelection())) {
 					game.editor.selection.loadSelection(targetHistoryState.selectionData);
 					break;
 				}
@@ -290,36 +290,35 @@ class History {
 }
 
 
-
 let historySaveScheduled = 0;
 let needHistorySave = false;
 
 let needSaveSelectionInToHistory = 0;
 
 function clearSelectionSaveTimeout() {
-	if(needSaveSelectionInToHistory) {
+	if (needSaveSelectionInToHistory) {
 		clearInterval(needSaveSelectionInToHistory);
 		needSaveSelectionInToHistory = 0;
 	}
 }
 
 function saveSelectionState() {
-	if(game.__EDITOR_mode) {
+	if (game.__EDITOR_mode) {
 		game.editor.history.addSelectionHistoryState();
 	}
 	needSaveSelectionInToHistory = 0;
 }
 
 function arraysEqual(a: any[], b: any[]) {
-	if(a === b) return true;
-	if(a == null || b == null) return false;
-	if(a.length !== b.length) return false;
+	if (a === b) return true;
+	if (a == null || b == null) return false;
+	if (a.length !== b.length) return false;
 
-	for(let i = 0; i < a.length; ++i) {
-		if(Array.isArray(a[i])) {
-			if(!arraysEqual(a[i], b[i])) return false;
+	for (let i = 0; i < a.length; ++i) {
+		if (Array.isArray(a[i])) {
+			if (!arraysEqual(a[i], b[i])) return false;
 		} else {
-			if(a[i] !== b[i]) return false;
+			if (a[i] !== b[i]) return false;
 		}
 	}
 	return true;

@@ -1,8 +1,8 @@
 /// #if EDITOR
-import game from "thing-editor/src/engine/game";
+import game from 'thing-editor/src/engine/game';
 /// #endif
-import { Container } from "pixi.js";
-import editable from "thing-editor/src/editor/props-editor/editable";
+import { Container } from 'pixi.js';
+import editable from 'thing-editor/src/editor/props-editor/editable';
 
 export default class ParticleContainer extends Container {
 
@@ -16,7 +16,7 @@ export default class ParticleContainer extends Container {
 
 	forAllChildren(callback: (o: Container) => void) {
 		/// #if EDITOR
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			super.forAllChildren(callback);
 		}
 		/// #endif

@@ -1,9 +1,9 @@
-import { BLEND_MODES, Mesh, Sprite } from "pixi.js";
-import fs, { AssetType } from "thing-editor/src/editor/fs";
-import { _editableEmbed } from "thing-editor/src/editor/props-editor/editable";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
+import { BLEND_MODES, Mesh, Sprite } from 'pixi.js';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 
 export default Sprite;
 
@@ -12,14 +12,14 @@ const imageJSPropertyDescriptor = {
 		return this._imageID;
 	},
 	set: function (this: Sprite, v: string) {
-		assert(typeof v === 'string', "texture's name expected.", 10022);
-		if(this._imageID !== v) {
+		assert(typeof v === 'string', 'texture\'s name expected.', 10022);
+		if (this._imageID !== v) {
 			this._imageID = v;
 			this.texture = Lib.getTexture(v);
-			assert(this.texture && this.texture.baseTexture, "baseTexture is empty.");
+			assert(this.texture && this.texture.baseTexture, 'baseTexture is empty.');
 			/// #if EDITOR
-			if(this.texture.valid && (Lib.hasTexture(this._imageID))) {
-				if(this.anchor && ((((this.texture.height & 1) !== 0) && this.anchor.x === 0.5) || (((this.texture.width & 1) !== 0) && this.anchor.y === 0.5))) {
+			if (this.texture.valid && (Lib.hasTexture(this._imageID))) {
+				if (this.anchor && ((((this.texture.height & 1) !== 0) && this.anchor.x === 0.5) || (((this.texture.width & 1) !== 0) && this.anchor.y === 0.5))) {
 					game.editor.ui.status.warn('Texture "' + v + '" has non even sized bounds ('
 						+ this.texture.width + 'x' + this.texture.height + '). It is can cause unwanted blurring for objects with centralized pivot point.', 32028,
 						() => {
@@ -42,7 +42,7 @@ const tintRDesc = {
 		return this.tint as number >> 16;
 	},
 	set: function (this: Sprite, v: number) {
-		assert(!isNaN(v), "invalid value for 'tintR'. Valid number value expected.", 10001);
+		assert(!isNaN(v), 'invalid value for \'tintR\'. Valid number value expected.', 10001);
 		this.tint = (this.tint as number & 0xFFFF) | (v << 16);
 	}, configurable: true
 };
@@ -67,7 +67,7 @@ const tintGDesc = {
 		return (this.tint as number & 0xFF00) >> 8;
 	},
 	set: function (this: Sprite, v: number) {
-		assert(!isNaN(v), "invalid value for 'tintG'. Valid number value expected.", 10001);
+		assert(!isNaN(v), 'invalid value for \'tintG\'. Valid number value expected.', 10001);
 		this.tint = (this.tint as number & 0xFF00FF) | (v << 8);
 	}, configurable: true
 };
@@ -80,7 +80,7 @@ const tintBDesc = {
 		return this.tint as number & 0xFF;
 	},
 	set: function (this: Sprite, v: number) {
-		assert(!isNaN(v), "invalid value for 'tintB'. Valid number value expected.", 10001);
+		assert(!isNaN(v), 'invalid value for \'tintB\'. Valid number value expected.', 10001);
 		this.tint = (this.tint as number & 0xFFFF00) | v;
 	}, configurable: true
 };
@@ -92,15 +92,15 @@ Object.defineProperty(Mesh.prototype, 'tintB', tintBDesc);
 /// #if EDITOR
 
 Sprite.prototype.__beforeDestroy = function () {
-	assert(this._width === 0, "width property was assigned but not cleared to zero on object disposing.", 10065);
-	assert(this._height === 0, "height property was assigned but not cleared to zero on object disposing.", 10066);
+	assert(this._width === 0, 'width property was assigned but not cleared to zero on object disposing.', 10065);
+	assert(this._height === 0, 'height property was assigned but not cleared to zero on object disposing.', 10066);
 };
 
 (Sprite.prototype.destroy as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 (Mesh.prototype.destroy as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 
 Sprite.prototype.__EDITOR_onCreate = function (isWrapping) {
-	if(!isWrapping && game.editor.projectDesc.icon.startsWith('assets/')) {
+	if (!isWrapping && game.editor.projectDesc.icon.startsWith('assets/')) {
 		this.image = game.editor.projectDesc.icon.replace('assets/', '');
 	}
 };

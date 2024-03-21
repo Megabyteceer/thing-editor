@@ -1,12 +1,12 @@
-import type { ClassAttributes, ComponentChild} from "preact";
-import { Component, h } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import ComponentDebounced from "thing-editor/src/editor/ui/component-debounced";
-import type { ContextMenuItem } from "thing-editor/src/editor/ui/context-menu";
-import Help from "thing-editor/src/editor/ui/help";
-import { editorUtils } from "thing-editor/src/editor/utils/editor-utils";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { Component, h } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
+import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
+import Help from 'thing-editor/src/editor/ui/help';
+import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 const MENU_HEIGHT = 24;
 const CLAMP_POW = 5;
@@ -53,9 +53,9 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		super(props);
 
 		const state: WindowState = {} as WindowState;
-		for(let key in props) {
+		for (let key in props) {
 			let val = props[key];
-			if(typeof val === 'number' || typeof val === 'boolean') {
+			if (typeof val === 'number' || typeof val === 'boolean') {
 				(state as KeyedObject)[key] = val;
 			}
 		}
@@ -84,10 +84,10 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 		this.onMouseDown = this.onMouseDown.bind(this);
 
-		if(props.hotkeysHandlers) {
-			for(let handlers of props.hotkeysHandlers) {
-				for(let item of handlers) {
-					if(item) {
+		if (props.hotkeysHandlers) {
+			for (let handlers of props.hotkeysHandlers) {
+				for (let item of handlers) {
+					if (item) {
 						editorUtils.preCacheImages(item.name);
 					}
 				}
@@ -96,18 +96,18 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	componentDidMount() {
-		if(!this.isModal()) {
+		if (!this.isModal()) {
 			Window.all[this.props.id] = this as Window;
 			Window.allOrdered.push(this as Window);
 		}
 	}
 
 	componentWillUnmount() {
-		if(this.saveStateTimeout) {
+		if (this.saveStateTimeout) {
 			clearTimeout(this.saveStateTimeout);
 			this.saveStateTimeout = 0;
 		}
-		if(!this.isModal()) {
+		if (!this.isModal()) {
 			delete Window.all[this.props.id];
 			Window.allOrdered.splice(Window.allOrdered.indexOf(this as Window), 1);
 		}
@@ -125,7 +125,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 	setState<K extends keyof S>(state: ((prevState: Readonly<S>, props: Readonly<P>) => Pick<S, K> | Partial<S> | null) | Pick<S, K> | Partial<S> | null): void {
 		super.setState(state);
-		if(this.saveStateTimeout) {
+		if (this.saveStateTimeout) {
 			clearTimeout(this.saveStateTimeout);
 		}
 		this.saveStateTimeout = window.setTimeout(() => {
@@ -176,7 +176,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	deltaT(_x: number, y: number) {
-		if(this.state.y + y < 0) {
+		if (this.state.y + y < 0) {
 			y -= (this.state.y + y);
 		}
 
@@ -225,7 +225,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 		(this.state as any).x = x;
 		(this.state as any).y = y;
-		if(this.base) {
+		if (this.base) {
 			(this.base as HTMLDivElement).style.left = x + '%';
 			(this.base as HTMLDivElement).style.top = y + '%';
 		}
@@ -236,14 +236,14 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		h = Math.max(h, 5);
 		w = Math.min(w, 100);
 		h = Math.min(h, 100);
-		if((this.state.w !== w) || (this.state.h !== h)) {
-			if(this.props.onResize) {
+		if ((this.state.w !== w) || (this.state.h !== h)) {
+			if (this.props.onResize) {
 				this.props.onResize();
 			}
 		}
 		(this.state as any).w = w;
 		(this.state as any).h = h;
-		if(this.base) {
+		if (this.base) {
 			(this.base as HTMLDivElement).style.width = w + '%';
 			(this.base as HTMLDivElement).style.height = h + '%';
 			let s = ((this.base as HTMLDivElement).querySelector('.window-content') as HTMLElement).style;
@@ -253,7 +253,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 			const minW = this.props.minW;
 			const minH = this.props.minH;
 
-			if(contentWpx < minW || contentHpx < minH) {
+			if (contentWpx < minW || contentHpx < minH) {
 				let scale = Math.min(contentWpx / minW, contentHpx / minH);
 				this.renderedScale = scale;
 				s.transform = 'scale(' + scale + ')';
@@ -272,38 +272,38 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 	clamp() {
 		const div = this.base as HTMLDivElement;
-		if(div) {
+		if (div) {
 			div.getClientRects();
 			let bounds = div.getBoundingClientRect();
 
 			const W = window.innerWidth / 100;
 			const H = (window.innerHeight - MENU_HEIGHT) / 100;
 			let clamped = false;
-			for(let w of noDragWindows) {
+			for (let w of noDragWindows) {
 				const otherBounds = (w.base as HTMLDivElement).getBoundingClientRect();
 				let d = bounds.left - otherBounds.right;
-				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
+				if (Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
 					this.setPosition(otherBounds.right / W, this.state.y);
 					this.setSize(this.state.w + d / W, this.state.h);
 					clamped = true;
 				}
 				d = bounds.right - otherBounds.left;
-				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
+				if (Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
 					this.setSize(this.state.w - d / W, this.state.h);
 					clamped = true;
 				}
 				d = bounds.top - otherBounds.bottom;
-				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
+				if (Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
 					this.setPosition(this.state.x, (otherBounds.bottom - MENU_HEIGHT) / H);
 					this.setSize(this.state.w, this.state.h + d / window.innerHeight * 100);
 					clamped = true;
 				}
 				d = bounds.bottom - otherBounds.top;
-				if(Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
+				if (Math.abs(d) > 0.55 && Math.abs(d) < CLAMP_POW) {
 					this.setSize(this.state.w, this.state.h - d / window.innerHeight * 100);
 					clamped = true;
 				}
-				if(clamped) {
+				if (clamped) {
 					return;
 				}
 			}
@@ -315,7 +315,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 	}
 
 	onMouseDown() {
-		if(!this.isModal()) {
+		if (!this.isModal()) {
 			Window.bringWindowForward((this.base as HTMLDivElement));
 		}
 	}
@@ -335,7 +335,7 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 		const minW = this.props.minW;
 		const minH = this.props.minH;
 
-		if(contentWpx < minW || contentHpx < minH) {
+		if (contentWpx < minW || contentHpx < minH) {
 			let scale = Math.min(contentWpx / minW, contentHpx / minH);
 			this.renderedScale = scale;
 			contentProps.style = {
@@ -428,16 +428,16 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 
 	static bringWindowForward(windowBody: HTMLElement | string, setCurrentHelp?: boolean) {
 		window.setTimeout(() => {
-			if(typeof windowBody === 'string') {
+			if (typeof windowBody === 'string') {
 				windowBody = document.querySelector(windowBody) as HTMLElement;
 			}
-			if(windowBody) {
-				if(setCurrentHelp) {
+			if (windowBody) {
+				if (setCurrentHelp) {
 					Help.setCurrentHelp((windowBody as HTMLElement).dataset.help as string);
 				}
 
 				let w = Window.allOrdered.find(wnd => wnd.base === windowBody) as Window;
-				assert(w, "Wrong window to bring forward.");
+				assert(w, 'Wrong window to bring forward.');
 				Window.allOrdered.splice(Window.allOrdered.indexOf(w), 1);
 				Window.allOrdered.unshift(w);
 
@@ -460,16 +460,15 @@ let emptyImage = new Image();
 type DraggerType = 'v' | 'h';
 
 
-
 const allDraggers: CornerDragger[] = [];
 const activeDraggers: CornerDragger[] = [];
 let noDragWindows: Window[] = [];
 
 
 const addNeighborDraggersAsActive = (thisBounds: DOMRect, ev: DragEvent, draggerType?: DraggerType) => {
-	for(let dragger of allDraggers) {
-		if(dragger.props.type === draggerType) {
-			if(activeDraggers.indexOf(dragger) < 0) {
+	for (let dragger of allDraggers) {
+		if (dragger.props.type === draggerType) {
+			if (activeDraggers.indexOf(dragger) < 0) {
 				const b = (dragger.base as HTMLDivElement).getBoundingClientRect();
 
 				let isDraggersNeighbors = false;
@@ -480,7 +479,7 @@ const addNeighborDraggersAsActive = (thisBounds: DOMRect, ev: DragEvent, dragger
 					((thisBounds.top) <= b.bottom) &&
 					((thisBounds.bottom) >= b.top);
 
-				if(isDraggersNeighbors) {
+				if (isDraggersNeighbors) {
 					activeDraggers.push(dragger);
 					dragger.prevX = ev.pageX;
 					dragger.prevY = ev.pageY;
@@ -506,13 +505,13 @@ class CornerDragger extends Component<CornerDraggerProps> {
 	}
 
 	componentDidMount(): void {
-		if(this.props.type) {
+		if (this.props.type) {
 			allDraggers.push(this);
 		}
 	}
 
 	componentWillUnmount(): void {
-		if(this.props.type) {
+		if (this.props.type) {
 			allDraggers.splice(allDraggers.indexOf(this), 1);
 		}
 	}
@@ -524,7 +523,7 @@ class CornerDragger extends Component<CornerDraggerProps> {
 		activeDraggers.length = 0;
 		activeDraggers.push(this);
 
-		if(!ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
+		if (!ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
 			let thisBounds = (this.base as HTMLDivElement).getBoundingClientRect();
 			addNeighborDraggersAsActive(thisBounds, ev, this.props.type);
 		}
@@ -535,8 +534,8 @@ class CornerDragger extends Component<CornerDraggerProps> {
 	}
 
 	drag(ev: DragEvent) {
-		if(this.prevX !== ev.pageX || this.prevY !== ev.pageY) {
-			if(ev.pageX !== 0 || ev.pageY !== 0) {
+		if (this.prevX !== ev.pageX || this.prevY !== ev.pageY) {
+			if (ev.pageX !== 0 || ev.pageY !== 0) {
 				let ret = this.props.onDrag((ev.pageX - this.prevX) / window.innerWidth * 100, (ev.pageY - this.prevY) / window.innerHeight * 100);
 				this.prevX += Math.round(ret.x * window.innerWidth / 100);
 				this.prevY += Math.round(ret.y * window.innerHeight / 100);
@@ -545,21 +544,21 @@ class CornerDragger extends Component<CornerDraggerProps> {
 	}
 
 	dragHandler(ev: DragEvent) {
-		if(ev.x === 0 && ev.y === 0) {
+		if (ev.x === 0 && ev.y === 0) {
 			return; // drag finish generates zero positioned event bug.
 		}
-		for(let dragger of activeDraggers) {
+		for (let dragger of activeDraggers) {
 			dragger.drag(ev);
 		}
-		if(!ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
-			for(let dragger of activeDraggers) {
+		if (!ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
+			for (let dragger of activeDraggers) {
 				dragger.props.owner.clamp();
 			}
 		}
 	}
 
 	dragEndHandler() {
-		for(let dragger of activeDraggers) {
+		for (let dragger of activeDraggers) {
 			dragger.props.onDragEnd();
 		}
 	}

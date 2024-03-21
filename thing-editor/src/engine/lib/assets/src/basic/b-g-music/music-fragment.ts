@@ -1,9 +1,9 @@
-import type HowlSound from "thing-editor/src/engine/HowlSound";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
-import Lib from "thing-editor/src/engine/lib";
-import type BgMusic from "thing-editor/src/engine/lib/assets/src/basic/b-g-music.c";
-import { stepTo } from "thing-editor/src/engine/utils/utils";
+import type HowlSound from 'thing-editor/src/engine/HowlSound';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import type BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
+import { stepTo } from 'thing-editor/src/engine/utils/utils';
 
 const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01
 
@@ -20,7 +20,7 @@ let __ownersValidationId = 0;
 
 
 window.setInterval(() => {
-	for(let h in allActiveFragments) {
+	for (let h in allActiveFragments) {
 		allActiveFragments[h]._updateFading();
 	}
 }, FADE_INTERVAL);
@@ -43,7 +43,7 @@ export default class MusicFragment {
 	isLoopPos = false;
 
 	constructor(bgMusic: BgMusic) {
-		if(bgMusic.dynamicPreloading) {
+		if (bgMusic.dynamicPreloading) {
 			bgMusic.loop && Lib.preloadSound(bgMusic.loop
 				/// #if EDITOR
 				, bgMusic
@@ -62,12 +62,12 @@ export default class MusicFragment {
 	}
 
 	_updateFading() {
-		assert(this._currentFragment, "MusicFragment wrongly registered as active");
+		assert(this._currentFragment, 'MusicFragment wrongly registered as active');
 		let curVol = this.getVolume();
-		if(this._fadeToVol !== curVol) {
+		if (this._fadeToVol !== curVol) {
 			curVol = stepTo(curVol, this._fadeToVol, 1 / (this._fadeSpeed + 0.0001) * FADE_STEP);
 
-			if(curVol < MIN_VOL_THRESHOLD && this._fadeToVol < MIN_VOL_THRESHOLD) {
+			if (curVol < MIN_VOL_THRESHOLD && this._fadeToVol < MIN_VOL_THRESHOLD) {
 				this._releaseCurrentFragment();
 			} else {
 				this._currentFragment!.volume(curVol);
@@ -76,74 +76,74 @@ export default class MusicFragment {
 	}
 
 	getVolume() {
-		assert(this._currentFragment, "BgMusic component is not paying to getVolume.");
-		if(this._currentFragment) {
-			assert((this._currentFragment as any)._sounds && (this._currentFragment as any)._sounds[0] && !isNaN((this._currentFragment as any)._sounds[0]._volume), "BgMusic component is not paying to getVolume.");
+		assert(this._currentFragment, 'BgMusic component is not paying to getVolume.');
+		if (this._currentFragment) {
+			assert((this._currentFragment as any)._sounds && (this._currentFragment as any)._sounds[0] && !isNaN((this._currentFragment as any)._sounds[0]._volume), 'BgMusic component is not paying to getVolume.');
 			return (this._currentFragment as any)._sounds[0]._volume;
 		}
 		return 0;
 	}
 
 	static onMusicRemove(bgMusic: BgMusic) {
-		for(let h in allActiveFragments) {
+		for (let h in allActiveFragments) {
 			let f = allActiveFragments[h];
-			if(f.owner === bgMusic) {
+			if (f.owner === bgMusic) {
 				clearFragmentsOwner(f);
 			}
 		}
 	}
 
 	static resetPosition(musicFragmentHash: string) {
-		if(allFragments.hasOwnProperty(musicFragmentHash)) {
+		if (allFragments.hasOwnProperty(musicFragmentHash)) {
 			allFragments[musicFragmentHash].resetPosition();
 		}
 	}
 
 	resetPosition() {
 		let restorePlaying;
-		if(this._currentFragment) {
+		if (this._currentFragment) {
 			this._releaseCurrentFragment();
 			restorePlaying = true;
 		}
 		this.introPos = 0;
 		this.loopPos = 0;
 		this.isLoopPos = false;
-		if(restorePlaying) {
+		if (restorePlaying) {
 			this.startPlay();
 		}
 	}
 
 	startPlay() {
 
-		if(this.intro && !this.isLoopPos) {
+		if (this.intro && !this.isLoopPos) {
 			this._playMusicFragment(this.intro, this.introPos, this._fadeToVol);
-			if(this._currentFragment) {
+			if (this._currentFragment) {
 				this._currentFragment.loop(false);
 				this._currentFragment.on('end', this.onIntroEnd);
 			}
-		} else if(this.loop) {
+		} else if (this.loop) {
 			this.isLoopPos = true;
 			this._playMusicFragment(this.loop, this.loopPos);
-			if(this._currentFragment) {
+			if (this._currentFragment) {
 				this._currentFragment.loop(true);
 			}
 		}
-		assert(this._currentFragment || (!this.loop && this.isLoopPos), "Failed to play Music intro: " + (this.intro || 'EMPTY') + '; loop: ' + (this.loop || 'EMPTY'));
+		assert(this._currentFragment || (!this.loop && this.isLoopPos), 'Failed to play Music intro: ' + (this.intro || 'EMPTY') + '; loop: ' + (this.loop || 'EMPTY'));
 	}
 
 	onIntroEnd() {
-		if(this._currentFragment) {
+		if (this._currentFragment) {
 			let vol = this.getVolume();
 			this._releaseCurrentFragment();
 			this._playMusicFragment(this.loop, 0, vol);
 			this.isLoopPos = true;
-			if(this._currentFragment) {
+			if (this._currentFragment) {
 				this._currentFragment.loop(true);
 			}
 		}
-		if(this.owner) {
+		if (this.owner) {
 			/// #if EDITOR
-			assert(this.owner.__nodeExtendData.__fragmentOwnerId === this.__fragmentOwnerId, "fragment refers to outdated owner.", 90001);
+			assert(this.owner.__nodeExtendData.__fragmentOwnerId === this.__fragmentOwnerId, 'fragment refers to outdated owner.', 90001);
 			/// #endif
 			this.owner._onIntroFinish();
 		}
@@ -152,7 +152,7 @@ export default class MusicFragment {
 	_playMusicFragment(s: string | null, pos = 0, startVol = MIN_VOL_THRESHOLD) {
 		assert(!this._currentFragment, 'MusicFragment already playing.');
 
-		if(s) {
+		if (s) {
 			try {
 				const snd = Lib.getSound(s, true);
 				snd.volume(startVol);
@@ -163,16 +163,16 @@ export default class MusicFragment {
 				snd.soundIdSaved = snd.play(snd.soundIdSaved);
 
 				this._currentFragment = snd;
-				assert((snd as any)._sounds.length === 1, "Music started in more that one instance.");
+				assert((snd as any)._sounds.length === 1, 'Music started in more that one instance.');
 				allActiveFragments[this.musicFragmentHash!] = this;
-			} catch(er) { } // eslint-disable-line no-empty
+			} catch (er) { } // eslint-disable-line no-empty
 		}
 	}
 
 	_releaseCurrentFragment() {
-		if(this._currentFragment) {
+		if (this._currentFragment) {
 			this._currentFragment.off('end', this.onIntroEnd);
-			if(this.isLoopPos) {
+			if (this.isLoopPos) {
 				this.loopPos = this._currentFragment.seek();
 			} else {
 				this.introPos = this._currentFragment.seek();
@@ -185,19 +185,19 @@ export default class MusicFragment {
 	}
 
 	static _applyFadeForAll(fade: number) {
-		for(let h in allActiveFragments) {
+		for (let h in allActiveFragments) {
 			allActiveFragments[h]._fadeSpeed = fade;
 		}
 	}
 
 	static setPlayingBGMusics(bgMusics: BgMusic[]) {
 		let hashesToPlay: KeyedMap<boolean> = {};
-		for(let f of bgMusics) {
+		for (let f of bgMusics) {
 			let fragment: MusicFragment;
 
 			hashesToPlay[f.musicFragmentHash] = true;
 
-			if(!allFragments.hasOwnProperty(f.musicFragmentHash)) {
+			if (!allFragments.hasOwnProperty(f.musicFragmentHash)) {
 				fragment = new MusicFragment(f);
 				allFragments[f.musicFragmentHash] = fragment;
 			} else {
@@ -212,16 +212,16 @@ export default class MusicFragment {
 			fragment.__fragmentOwnerId = __ownersValidationId;
 			__ownersValidationId++;
 			/// #endif
-			if(!allActiveFragments.hasOwnProperty(f.musicFragmentHash)) {
+			if (!allActiveFragments.hasOwnProperty(f.musicFragmentHash)) {
 				fragment.startPlay();
 			}
-			assert(fragment._currentFragment || (!fragment.loop && fragment.isLoopPos), "wrong music-fragment position");
+			assert(fragment._currentFragment || (!fragment.loop && fragment.isLoopPos), 'wrong music-fragment position');
 		}
 
-		for(let h in allActiveFragments) {
-			if(!hashesToPlay.hasOwnProperty(h)) {
+		for (let h in allActiveFragments) {
+			if (!hashesToPlay.hasOwnProperty(h)) {
 				allActiveFragments[h]._fadeToVol = 0;
-				if(allActiveFragments[h].owner) {
+				if (allActiveFragments[h].owner) {
 					clearFragmentsOwner(allActiveFragments[h]);
 				}
 			}
@@ -229,9 +229,9 @@ export default class MusicFragment {
 	}
 
 	static __applyGameSpeed(rate: number) {
-		for(let h in allActiveFragments) {
+		for (let h in allActiveFragments) {
 			let f = allActiveFragments[h];
-			if(f._currentFragment) {
+			if (f._currentFragment) {
 				f._currentFragment.rate(rate);
 			}
 		}
@@ -249,7 +249,7 @@ export default class MusicFragment {
 	}
 
 	static __getFragment(musicFragmentHash: string) {
-		if(allActiveFragments[musicFragmentHash]) {
+		if (allActiveFragments[musicFragmentHash]) {
 			return allActiveFragments[musicFragmentHash]._currentFragment;
 		}
 	}
@@ -257,12 +257,12 @@ export default class MusicFragment {
 
 	/// #if DEBUG
 	static __stopAll() {
-		for(let h in allActiveFragments) {
+		for (let h in allActiveFragments) {
 			MusicFragment.resetPosition(h);
 			allActiveFragments[h]._releaseCurrentFragment();
 		}
 	}
-	/// #endif	
+	/// #endif
 
 }
 

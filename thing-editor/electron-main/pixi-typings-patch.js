@@ -169,24 +169,24 @@ function patch(fileName, ...findInserts) {
 
 const path = require('path');
 const fs = require('fs');
-const {dialog} = require("electron");
+const {dialog} = require('electron');
 
 function tryToPatch(folder, mainWindow) {
-	for(let patch of patches) {
+	for (let patch of patches) {
 		let isReplace = false;
 		var fn = path.join(folder, patch.fileName);
-		if(fs.existsSync(fn)) {
+		if (fs.existsSync(fn)) {
 			patch.done = true;
 			let txt = fs.readFileSync(fn, 'utf8');
-			if(txt.indexOf(PATCH_BEGIN) >= 0) {
+			if (txt.indexOf(PATCH_BEGIN) >= 0) {
 				continue;
 			}
 
 			let findInserts = patch.findInserts;
-			while(findInserts.length > 0) {
+			while (findInserts.length > 0) {
 
 				let find = findInserts.shift();
-				if(find === 'replace') {
+				if (find === 'replace') {
 					isReplace = true;
 					find = findInserts.shift();
 				}
@@ -196,13 +196,13 @@ function tryToPatch(folder, mainWindow) {
 	// thing-editor patch end
 `;
 
-				if(txt.indexOf(find) >= 0) {
+				if (txt.indexOf(find) >= 0) {
 					txt = txt.replace(find, insert);
 					fs.writeFileSync(fn, txt);
 					console.log('PIXI typings patched: ' + fn);
 				} else {
 					console.error('PIXI typings patch "' + find + '" was not applied: ' + fn);
-					if(mainWindow) {
+					if (mainWindow) {
 						dialog.showMessageBoxSync(mainWindow, 'PIXI typing patch error', 'PIXI typings patch "' + find + '" was not applied: ' + fn);
 					}
 				}
@@ -214,19 +214,19 @@ function tryToPatch(folder, mainWindow) {
 module.exports = function (mainWindow) {
 	let projectRoot = path.join(__dirname, '../..');
 	tryToPatch(path.join(__dirname, '..'));
-	while(fs.existsSync(projectRoot)) {
+	while (fs.existsSync(projectRoot)) {
 		tryToPatch(projectRoot, mainWindow);
 		let parentPath = path.join(projectRoot, '..');
-		if(parentPath === projectRoot) {
+		if (parentPath === projectRoot) {
 			break;
 		}
 		projectRoot = parentPath;
 	}
-	for(let patch of patches) {
-		if(!patch.done) {
+	for (let patch of patches) {
+		if (!patch.done) {
 			debugger;
 			console.error('PIXI typings was not found: ' + patch.fileName);
-			if(mainWindow) {
+			if (mainWindow) {
 				dialog.showMessageBoxSync(mainWindow, 'PIXI typings was not found: ' + patch.fileName);
 			}
 		}

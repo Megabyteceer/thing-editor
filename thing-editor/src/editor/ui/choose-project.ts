@@ -1,9 +1,9 @@
-import type { ComponentChild } from "preact";
-import { Component, h } from "preact";
-import fs from "thing-editor/src/editor/fs";
-import R from "thing-editor/src/editor/preact-fabrics";
-import group from "thing-editor/src/editor/ui/group";
-import game from "thing-editor/src/engine/game";
+import type { ComponentChild } from 'preact';
+import { Component, h } from 'preact';
+import fs from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import group from 'thing-editor/src/editor/ui/group';
+import game from 'thing-editor/src/engine/game';
 
 function getIconPath(desc: ProjectDesc) {
 	return '/games/' + desc.dir + '/' + desc.icon;
@@ -12,17 +12,17 @@ function getIconPath(desc: ProjectDesc) {
 let topItem: ProjectDesc | null;
 
 function renderProjectItem(desc: ProjectDesc): ComponentChild {
-	if(!topItem) {
+	if (!topItem) {
 		topItem = desc;
 	}
 	let icon;
-	if(desc.icon) {
+	if (desc.icon) {
 		icon = R.img({ src: getIconPath(desc) });
 	}
 	let key = (desc.__group && !desc.dir.startsWith(desc.__group + '/')) ? desc.__group + '/' + desc.dir : desc.dir;
 	let isProjectWrong;
 	let wrongSymbol = fs.getWrongSymbol(desc.dir);
-	if(wrongSymbol) {
+	if (wrongSymbol) {
 		isProjectWrong = 'Project is blocked because of wrong symbol "' + wrongSymbol + '" in its folder name.';
 	}
 	const isCurrentProject = ('games/' + desc.dir + '/') === game.editor.currentProjectDir;
@@ -61,7 +61,6 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 		const projects = fs.enumProjects();
 
 
-
 		projects.sort((a, b) => {
 			return projectOrder(b) - projectOrder(a);
 		});
@@ -75,7 +74,7 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 			filter, searchInputProps: {
 				className: 'projects-search-input',
 				onKeyDown: (e: KeyboardEvent) => {
-					if(e.key === 'Enter' && topItem) {
+					if (e.key === 'Enter' && topItem) {
 						game.editor.ui.modal.hideModal(topItem.dir);
 					}
 				},
@@ -98,7 +97,7 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 		let f = this.state.filter.toLowerCase();
 		let items;
 		const projects = this.props.projects;
-		if(f) {
+		if (f) {
 			items = projects.filter((i: ProjectDesc) => {
 				return i.title.toLowerCase().indexOf(f) >= 0 || i.dir.toLowerCase().indexOf(f) >= 0;
 			}).map(renderProjectItem);
@@ -106,8 +105,8 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 
 			items = group.groupArray(projects.map(renderProjectItem), undefined, undefined, true).sort((a: any, b: any) => {
 				// sort projects groups
-				if(a.key < b.key) return -1;
-				if(a.key > b.key) return 1;
+				if (a.key < b.key) return -1;
+				if (a.key > b.key) return 1;
 				return 0;
 			});
 		}

@@ -46,21 +46,21 @@ export default class MovieClip extends DSprite {
 		this._goToLabelNextFrame = false;
 		this._disposePlayers();
 
-		if(data === null) {
+		if (data === null) {
 			this._timelineData = null as any;
 			return;
 		}
 
 		let desData!: TimelineData;
 
-		if(!deserializeCache.has(data)
+		if (!deserializeCache.has(data)
 			/// #if EDITOR
 			|| game.editor.disableFieldsCache
 			/// #endif
 		) {
 			desData = MovieClip._deserializeTimelineData(data);
 			/// #if EDITOR
-			if(!game.editor.disableFieldsCache) {
+			if (!game.editor.disableFieldsCache) {
 				/// #endif
 				deserializeCache.set(data, desData);
 				/// #if EDITOR
@@ -71,13 +71,13 @@ export default class MovieClip extends DSprite {
 			desData = deserializeCache.get(data);
 		}
 
-		assert(Array.isArray(data.f), "Wrong timeline data?");
+		assert(Array.isArray(data.f), 'Wrong timeline data?');
 		this._timelineData = desData;
 
 		let pow = desData.p;
 		let damper = desData.d;
 		let fieldsData = desData.f;
-		for(let i = 0; i < fieldsData.length; i++) {
+		for (let i = 0; i < fieldsData.length; i++) {
 			let p = Pool.create(FieldPlayer);
 			p.init(this, fieldsData[i], pow, damper);
 			this.fieldPlayers.push(p);
@@ -87,10 +87,10 @@ export default class MovieClip extends DSprite {
 	/// #if EDITOR
 	//timeline reading has sense in editor mode only
 	get timeline(): TimelineSerializedData | null { // -eslint-disable-line @typescript-eslint/adjacent-overload-signatures
-		if(!this._timelineData) {
+		if (!this._timelineData) {
 			return null;
 		}
-		if(!serializeCache.has(this._timelineData) ||
+		if (!serializeCache.has(this._timelineData) ||
 			game.editor.disableFieldsCache
 		) {
 			//console.warn("MovieClip serialization invoked >>>");
@@ -101,20 +101,20 @@ export default class MovieClip extends DSprite {
 					t: f.t.map((k): TimelineSerializedKeyFrame => {
 						let ret: TimelineSerializedKeyFrame = Object.assign({}, k);
 						let tmpJ = ret.j as number;
-						if(ret.j === ret.t && !k.___keepLoopPoint) {
+						if (ret.j === ret.t && !k.___keepLoopPoint) {
 							delete (ret.j);
 						}
 
-						if((typeof (this as KeyedObject)[f.n]) !== 'number') {
+						if ((typeof (this as KeyedObject)[f.n]) !== 'number') {
 							delete ret.s;
 						}
 
-						if(ret.m === 0) {
+						if (ret.m === 0) {
 							delete ret.m;
 						}
-						if(ret.r === 0) {
+						if (ret.r === 0) {
 							delete ret.r;
-						} else if((ret.r as number) > 0) {
+						} else if ((ret.r as number) > 0) {
 							ret.r = Math.min(ret.r as number, (ret.n as TimelineKeyFrame).t as number - tmpJ - 1);
 						}
 						delete ret.n;
@@ -124,7 +124,7 @@ export default class MovieClip extends DSprite {
 			});
 
 			let labels: TimelineSerializedLabelsData = {};
-			for(let key in tl.l) {
+			for (let key in tl.l) {
 				let label = tl.l[key];
 				labels[key] = label.t;
 			}
@@ -134,7 +134,7 @@ export default class MovieClip extends DSprite {
 				d: tl.d,
 				f: fields
 			};
-			if(game.editor.disableFieldsCache) {
+			if (game.editor.disableFieldsCache) {
 				return c;
 			}
 			serializeCache.set(this._timelineData, c);
@@ -150,20 +150,20 @@ export default class MovieClip extends DSprite {
 	_timelineData!: TimelineData;
 
 	update() {
-		if(this.isPlaying) {
-			if(this.delay > 0) {
+		if (this.isPlaying) {
+			if (this.delay > 0) {
 				this.delay--;
 			} else {
-				if(this._goToLabelNextFrame) {
+				if (this._goToLabelNextFrame) {
 					let label = this._timelineData.l[this._goToLabelNextFrame];
 					this._goToLabelNextFrame = false;
 					let l = this.fieldPlayers.length;
-					for(let i = 0; i < l; i++) {
+					for (let i = 0; i < l; i++) {
 						this.fieldPlayers[i].goto(label.t, label.n[i]);
 					}
 				}
 
-				for(let p of this.fieldPlayers) {
+				for (let p of this.fieldPlayers) {
 					p.update();
 				}
 			}
@@ -173,8 +173,8 @@ export default class MovieClip extends DSprite {
 
 	static _findNextKeyframe(timeLineData: TimelineKeyFrame[], time: number): TimelineKeyFrame {
 		let ret;
-		for(let f of timeLineData) {
-			if(f.t > time) {
+		for (let f of timeLineData) {
+			if (f.t > time) {
 				return f;
 			}
 			ret = f;
@@ -187,20 +187,20 @@ export default class MovieClip extends DSprite {
 
 			let fieldTimeline = f.t.map((k) => {
 				/// #if EDITOR
-				if(!k.hasOwnProperty('___react_id')) {
+				if (!k.hasOwnProperty('___react_id')) {
 					k.___react_id = MovieClip.__generateKeyframeId();
 				}
 				/// #endif
 				let ret = Object.assign({}, k);
-				if(!ret.hasOwnProperty('j')) {
+				if (!ret.hasOwnProperty('j')) {
 					ret.j = ret.t;
 				}
-				if(!ret.hasOwnProperty('m')) {
+				if (!ret.hasOwnProperty('m')) {
 					ret.m = TimelineKeyFrameType.SMOOTH;
 				}
 				return ret;
 			});
-			for(let f of fieldTimeline) {
+			for (let f of fieldTimeline) {
 				f.n = MovieClip._findNextKeyframe(fieldTimeline as TimelineKeyFrame[], f.j as number);
 			}
 			return {
@@ -210,7 +210,7 @@ export default class MovieClip extends DSprite {
 		});
 
 		let labels: KeyedMap<TimelineLabelData> = {};
-		for(let key in timelineData.l) {
+		for (let key in timelineData.l) {
 			let labelTime = timelineData.l[key];
 			let nextList = fields.map((field) => {
 				return MovieClip._findNextKeyframe(field.t, labelTime - 1);
@@ -236,20 +236,20 @@ export default class MovieClip extends DSprite {
 	}
 
 	_disposePlayers() {
-		while(this.fieldPlayers.length > 0) {
+		while (this.fieldPlayers.length > 0) {
 			Pool.dispose(this.fieldPlayers.pop());
 		}
 	}
 
 	resetTimeline() {
-		for(let p of this.fieldPlayers) {
+		for (let p of this.fieldPlayers) {
 			p.reset();
 		}
 	}
 
 	hasLabel(labelName: string) {
 		/// #if EDITOR
-		if(!this._timelineData) {
+		if (!this._timelineData) {
 			return;
 		}
 		/// #endif
@@ -257,11 +257,11 @@ export default class MovieClip extends DSprite {
 	}
 
 	gotoLabel(labelName: string) {
-		assert(this.hasLabel(labelName), "Label '" + labelName + "' not found.", 10055);
+		assert(this.hasLabel(labelName), 'Label \'' + labelName + '\' not found.', 10055);
 		/// #if EDITOR
-		if(this.__logLevel) {
-			let stack = getCurrentStack("gotoLabel");
-			if(this._goToLabelNextFrame && (this._goToLabelNextFrame !== labelName)) {
+		if (this.__logLevel) {
+			let stack = getCurrentStack('gotoLabel');
+			if (this._goToLabelNextFrame && (this._goToLabelNextFrame !== labelName)) {
 				game.editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; new label:' + labelName + '; time: ' + game.time, 30021, this, undefined, true);
 			}
 			game.editor.ui.status.warn(
@@ -279,17 +279,17 @@ export default class MovieClip extends DSprite {
 	}
 
 	gotoRandomLabel() {
-		assert(arguments.length > 1, "Two or more arguments expected for method gotoRandomLabel.", 10056);
+		assert(arguments.length > 1, 'Two or more arguments expected for method gotoRandomLabel.', 10056);
 
 		const labelName = arguments[Math.floor(Math.random() * arguments.length)]; // eslint-disable-line prefer-rest-params
 
-		if(labelName) {
+		if (labelName) {
 			this.gotoLabel(labelName);
 		}
 	}
 
 	gotoLabelIf(labelName: string, variablePath: string, invert?: boolean) {
-		if((!getValueByPath(variablePath, this)) !== (!invert)) {
+		if ((!getValueByPath(variablePath, this)) !== (!invert)) {
 			this.gotoLabel(labelName);
 		}
 	}
@@ -304,14 +304,14 @@ export default class MovieClip extends DSprite {
 
 	playRecursive() {
 		this.isPlaying = true;
-		for(let c of this.findChildrenByType(MovieClip)) {
+		for (let c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = true;
 		}
 	}
 
 	stopRecursive() {
 		this.isPlaying = false;
-		for(let c of this.findChildrenByType(MovieClip)) {
+		for (let c of this.findChildrenByType(MovieClip)) {
 			c.isPlaying = false;
 		}
 	}
@@ -320,24 +320,24 @@ export default class MovieClip extends DSprite {
 
 	init() {
 		super.init();
-		if((this.constructor === MovieClip) && (!this._timelineData || !this._timelineData.f.length)) {
-			game.editor.ui.status.warn("MovieClip " + this.___info + " has no timeline.", 32003, this, 'timeline');
+		if ((this.constructor === MovieClip) && (!this._timelineData || !this._timelineData.f.length)) {
+			game.editor.ui.status.warn('MovieClip ' + this.___info + ' has no timeline.', 32003, this, 'timeline');
 		}
 
 		let timelineData = this._timelineData;
-		if(timelineData) {
+		if (timelineData) {
 			const fieldsData: TimelineFieldData[] = timelineData.f;
-			for(let fieldNum = 0; fieldNum < fieldsData.length; fieldNum++) {
+			for (let fieldNum = 0; fieldNum < fieldsData.length; fieldNum++) {
 				const field = fieldsData[fieldNum];
-				for(let kf of field.t) {
-					if(kf.a === 'this.remove') {
+				for (let kf of field.t) {
+					if (kf.a === 'this.remove') {
 						fieldNum++;
-						for(; fieldNum < fieldsData.length; fieldNum++) {
+						for (; fieldNum < fieldsData.length; fieldNum++) {
 							const field2 = fieldsData[fieldNum];
-							for(let kf2 of field2.t) {
-								if(kf2.a && kf2.a.startsWith('this.') && (kf.t === kf2.t)) {
+							for (let kf2 of field2.t) {
+								if (kf2.a && kf2.a.startsWith('this.') && (kf.t === kf2.t)) {
 									game.editor.ui.status.error(
-										"MovieClip '" + kf2.a + "' action detected after 'this.remove'. Its may cause invalid action. Please move 'this.remove' action to the bottom field of the timeline.", 99999, this, makePathForKeyframeAutoSelect("timeline", field2, kf2));
+										'MovieClip \'' + kf2.a + '\' action detected after \'this.remove\'. Its may cause invalid action. Please move \'this.remove\' action to the bottom field of the timeline.', 99999, this, makePathForKeyframeAutoSelect('timeline', field2, kf2));
 								}
 							}
 						}
@@ -349,8 +349,8 @@ export default class MovieClip extends DSprite {
 
 	static __findPreviousKeyframe(timeLineData: TimelineKeyFrame[], time: number): TimelineKeyFrame {
 		let ret;
-		for(let f of timeLineData) {
-			if(f.t > time) {
+		for (let f of timeLineData) {
+			if (f.t > time) {
 				return ret as TimelineKeyFrame;
 			}
 			ret = f;
@@ -359,7 +359,7 @@ export default class MovieClip extends DSprite {
 	}
 
 	__EDITOR_getKeyframeIcon(action: string) {
-		switch(action) {
+		switch (action) {
 			case 'this.stop': // eslint-disable-line indent
 				return ICON_STOP; // eslint-disable-line indent
 			case 'this.remove': // eslint-disable-line indent
@@ -367,7 +367,7 @@ export default class MovieClip extends DSprite {
 			case 'this.parent.parent.remove': // eslint-disable-line indent
 				return ICON_REMOVE; // eslint-disable-line indent
 			default: // eslint-disable-line indent
-				if(action.startsWith('Sound.play')) { // eslint-disable-line indent
+				if (action.startsWith('Sound.play')) { // eslint-disable-line indent
 					return ICON_SOUND; // eslint-disable-line indent
 				} // eslint-disable-line indent
 				return ICON_DEFAULT; // eslint-disable-line indent
@@ -396,34 +396,34 @@ export default class MovieClip extends DSprite {
 
 	__afterSerialization(data: SerializedObject) {
 		const def = getPrefabDefaults(this);
-		if(data.p.timeline) { // remove animated props from object props
-			for(let f of data.p.timeline.f) {
-				if(def[f.n] !== f.t[0].v) {
+		if (data.p.timeline) { // remove animated props from object props
+			for (let f of data.p.timeline.f) {
+				if (def[f.n] !== f.t[0].v) {
 					data.p[f.n] = f.t[0].v;
 				} else {
 					delete data.p[f.n];
 				}
 			}
 		}
-		if(this.__nodeExtendData.isPrefabReference) {
+		if (this.__nodeExtendData.isPrefabReference) {
 			delete data.p.timeline;
 		}
 	}
 
 	__checkVisibilityForEditor() {
-		if(game.__EDITOR_mode) {
-			if(this._timelineData && this._timelineData.f) {
+		if (game.__EDITOR_mode) {
+			if (this._timelineData && this._timelineData.f) {
 				let fields = this._timelineData.f;
-				if(fields.find(f => f.n === 'visible')) {
+				if (fields.find(f => f.n === 'visible')) {
 					this.visible = this.visible || !this.__doNotSelectByClick;
 				}
-				if((this.alpha < 0.1) && fields.find(f => f.n === 'alpha')) {
+				if ((this.alpha < 0.1) && fields.find(f => f.n === 'alpha')) {
 					this.alpha = 1;
 				}
-				if((Math.abs(this.scale.x) < 0.02) && fields.find(f => f.n === 'scale.x')) {
+				if ((Math.abs(this.scale.x) < 0.02) && fields.find(f => f.n === 'scale.x')) {
 					this.scale.x = 1;
 				}
-				if((Math.abs(this.scale.y) < 0.02) && fields.find(f => f.n === 'scale.y')) {
+				if ((Math.abs(this.scale.y) < 0.02) && fields.find(f => f.n === 'scale.y')) {
 					this.scale.y = 1;
 				}
 			}
@@ -431,8 +431,8 @@ export default class MovieClip extends DSprite {
 	}
 
 	__afterDeserialization() {
-		if(game.__EDITOR_mode) {
-			if((this.constructor !== MovieClip) && (!this._timelineData)) {
+		if (game.__EDITOR_mode) {
+			if ((this.constructor !== MovieClip) && (!this._timelineData)) {
 				this.__initTimeline();
 				Lib.__invalidateSerializationCache(this);
 			}
@@ -454,7 +454,7 @@ export default class MovieClip extends DSprite {
 	@editable({ min: 0 })
 	set __previewFrame(v) {
 		this.___previewFrame = v;
-		if(game.__EDITOR_mode) {
+		if (game.__EDITOR_mode) {
 			this.resetTimeline();
 		}
 	}
@@ -468,15 +468,15 @@ export default class MovieClip extends DSprite {
 	}
 
 	__applyCurrentTimeValuesToFields(time: number) {
-		if(this._timelineData) {
-			for(let f of this._timelineData.f) {
+		if (this._timelineData) {
+			for (let f of this._timelineData.f) {
 				this.__applyValueToMovieClip(f, time);
 			}
 		}
 	}
 
 	static __getValueAtTime(field: TimelineFieldData, time: number): number | boolean | string {
-		if(!field.___cacheTimeline) {
+		if (!field.___cacheTimeline) {
 			let fieldPlayer = Pool.create(FieldPlayer);
 			let discretePositions: true[] = [];
 			let c: TimelineFrameValuesCache = [] as any;
@@ -486,14 +486,14 @@ export default class MovieClip extends DSprite {
 			fieldPlayer.init({} as any, field, wholeTimelineData.p, wholeTimelineData.d);
 			fieldPlayer.reset(true);
 			calculateCacheSegmentForField(fieldPlayer, c);
-			for(let keyFrame of field.t) {
-				if(keyFrame.m === TimelineKeyFrameType.DISCRETE) {
+			for (let keyFrame of field.t) {
+				if (keyFrame.m === TimelineKeyFrameType.DISCRETE) {
 					discretePositions[keyFrame.t] = true;
 				}
 			}
-			for(let labelName in wholeTimelineData.l) {
+			for (let labelName in wholeTimelineData.l) {
 				const label = wholeTimelineData.l[labelName];
-				if(!c.hasOwnProperty(label.t)) { //time at this label is not calculated yet
+				if (!c.hasOwnProperty(label.t)) { //time at this label is not calculated yet
 					const prevKeyframe = MovieClip.__findPreviousKeyframe(field.t, label.t);
 					fieldPlayer.val = prevKeyframe.v;
 					fieldPlayer.speed = 0;
@@ -507,12 +507,12 @@ export default class MovieClip extends DSprite {
 			c.max = Math.max.apply(null, filteredValues);
 			Pool.dispose(fieldPlayer);
 		}
-		if(field.___cacheTimeline.hasOwnProperty(time)) {
+		if (field.___cacheTimeline.hasOwnProperty(time)) {
 			return field.___cacheTimeline[time];
 		} else {
 			let prevKeyframe = MovieClip.__findPreviousKeyframe(field.t, time);
 			time = prevKeyframe.t;
-			if(field.___cacheTimeline.hasOwnProperty(time)) {
+			if (field.___cacheTimeline.hasOwnProperty(time)) {
 				return field.___cacheTimeline[time];
 			}
 			return prevKeyframe.v as number;
@@ -538,11 +538,11 @@ export default class MovieClip extends DSprite {
 
 
 	static __isPropertyDisabled(field: EditablePropertyDesc) { //prevent editing of properties animated inside prefab reference
-		for(let o of game.editor.selection) {
-			if(o.__nodeExtendData.isPrefabReference) {
+		for (let o of game.editor.selection) {
+			if (o.__nodeExtendData.isPrefabReference) {
 				let timeline = getPrefabDefaults(o).timeline as TimelineSerializedData;
-				if(timeline && timeline.f.find(f => f.n === field.name)) {
-					return "The property is disabled, because it is animated inside prefab.";
+				if (timeline && timeline.f.find(f => f.n === field.name)) {
+					return 'The property is disabled, because it is animated inside prefab.';
 				}
 			}
 		}
@@ -554,13 +554,13 @@ export default class MovieClip extends DSprite {
 let deserializeCache = new WeakMap();
 
 Container.prototype.gotoLabelRecursive = function (labelName) {
-	if(this instanceof MovieClip) {
-		if(this.hasLabel(labelName)) {
+	if (this instanceof MovieClip) {
+		if (this.hasLabel(labelName)) {
 			this.delay = 0;
 			this.gotoLabel(labelName);
 		}
 	}
-	for(let c of this.children) {
+	for (let c of this.children) {
 		c.gotoLabelRecursive(labelName);
 	}
 };
@@ -571,7 +571,7 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 
 	return new Promise((resolve) => {
 		let movieClips = context.findChildrenByType(MovieClip);
-		if(context instanceof MovieClip) {
+		if (context instanceof MovieClip) {
 			movieClips.push(context);
 		}
 
@@ -581,9 +581,9 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 
 		let labels = [];
 		movieClips.forEach((m) => {
-			if(m.timeline) {
-				for(let name in m.timeline.l) {
-					if(!addedLabels.has(name)) {
+			if (m.timeline) {
+				for (let name in m.timeline.l) {
+					if (!addedLabels.has(name)) {
 						labels.push({ name: R.b(null, name), pureName: name });
 						addedLabels.add(name);
 					}
@@ -593,9 +593,9 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 
 		labels.push(CUSTOM_LABEL_ITEM);
 
-		return game.editor.ui.modal.showListChoose("Choose label to go recursive for event " + game.editor.currentPathChoosingField!.name, labels).then((choosed) => {
-			if(choosed) {
-				if(choosed === CUSTOM_LABEL_ITEM) {
+		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + game.editor.currentPathChoosingField!.name, labels).then((choosed) => {
+			if (choosed) {
+				if (choosed === CUSTOM_LABEL_ITEM) {
 					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
 						resolve([enteredText]);
 					});
@@ -619,9 +619,9 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 
 		let labels = [];
 
-		if(context.timeline) {
-			for(let name in context.timeline.l) {
-				if(!addedLabels.has(name)) {
+		if (context.timeline) {
+			for (let name in context.timeline.l) {
+				if (!addedLabels.has(name)) {
 					labels.push({ name: R.b(null, name), pureName: name });
 					addedLabels.add(name);
 				}
@@ -631,9 +631,9 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 
 		labels.push(CUSTOM_LABEL_ITEM);
 
-		return game.editor.ui.modal.showListChoose("Choose label to go", labels).then((choosed) => {
-			if(choosed) {
-				if(choosed === CUSTOM_LABEL_ITEM) {
+		return game.editor.ui.modal.showListChoose('Choose label to go', labels).then((choosed) => {
+			if (choosed) {
+				if (choosed === CUSTOM_LABEL_ITEM) {
 					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
 						resolve([enteredText]);
 					});
@@ -656,9 +656,9 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 	let i = 0;
 	let fields = fieldPlayer.timeline;
 	let limit = fields[fields.length - 1].t;
-	while(!cacheArray.hasOwnProperty(fieldPlayer.time)) {
+	while (!cacheArray.hasOwnProperty(fieldPlayer.time)) {
 		time = fieldPlayer.time;
-		if(time > limit) {
+		if (time > limit) {
 			break;
 		}
 		fieldPlayer.update(true);
@@ -667,7 +667,6 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 	}
 	fieldPlayer.__doNotCallActions = false;
 };
-
 
 
 (MovieClip.prototype.play as SelectableProperty).___EDITOR_isGoodForChooser = true;

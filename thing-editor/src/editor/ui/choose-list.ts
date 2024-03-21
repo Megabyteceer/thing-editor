@@ -1,10 +1,10 @@
-import type { ClassAttributes, ComponentChild } from "preact";
-import { Component } from "preact";
-import R from "thing-editor/src/editor/preact-fabrics";
-import group from "thing-editor/src/editor/ui/group";
-import sp from "thing-editor/src/editor/utils/stop-propagation";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import type { ClassAttributes, ComponentChild } from 'preact';
+import { Component } from 'preact';
+import R from 'thing-editor/src/editor/preact-fabrics';
+import group from 'thing-editor/src/editor/ui/group';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 let listProps = { className: 'list-view' };
 let listHeaderProps = { className: 'choose-list-header' };
@@ -60,17 +60,17 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 	}
 
 	renderChoosingItem(item: ChooseListItem, key: string) {
-		assert((typeof item.name === 'string') || item.pureName || item.__className, "pureName property expected for non plain text named items.");
+		assert((typeof item.name === 'string') || item.pureName || item.__className, 'pureName property expected for non plain text named items.');
 
 		let icon;
-		if(item.__EDITOR_icon) {
+		if (item.__EDITOR_icon) {
 			icon = R.classIcon(item as SourceMappedConstructor);
 		}
 		let name = item.__className || item.name;
 
-		if(typeof name === 'string') {
+		if (typeof name === 'string') {
 			key = name;
-		} else if(typeof key !== 'string') {
+		} else if (typeof key !== 'string') {
 			key = '' + key;
 		}
 
@@ -79,13 +79,13 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 
 		const isCurrentItem = this.props.activeValue === (item.pureName || item.name);
 
-		if(isCurrentItem) {
+		if (isCurrentItem) {
 			className += ' assets-item-current';
 		}
 
 		return R.div({
 			onClick: isCurrentItem ? undefined : () => {
-				if(!item.refusedBecause) {
+				if (!item.refusedBecause) {
 					game.editor.ui.modal.hideModal(item);
 				}
 			},
@@ -96,7 +96,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 	}
 
 	get list() {
-		if(this.state.search) {
+		if (this.state.search) {
 			return this.props.list.filter(this.searchFilter);
 		}
 
@@ -111,7 +111,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 	render() {
 
 		let list: any = this.list.map(this.renderChoosingItem as any);
-		if(!this.props.doNotGroup) {
+		if (!this.props.doNotGroup) {
 			list = group.groupArray(list);
 		}
 
@@ -121,9 +121,9 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search')
 			),
 			R.btn('auto accept', (ev) => {
-				if(this.list.length >= 1) {
-					if((this.list[0] as any).noAutoSelect) {
-						if(this.list.length >= 2) {
+				if (this.list.length >= 1) {
+					if ((this.list[0] as any).noAutoSelect) {
+						if (this.list.length >= 2) {
 							game.editor.ui.modal.hideModal(this.list[1]);
 							sp(ev);
 						}

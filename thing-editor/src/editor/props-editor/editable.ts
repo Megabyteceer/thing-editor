@@ -1,10 +1,10 @@
-import type { Container, DisplayObject } from "pixi.js";
-import type { FileDesc } from "thing-editor/src/editor/fs";
-import { getPropertyDefinitionUrl } from "thing-editor/src/editor/ui/props-editor/get-property-definition-url";
-import type { SelectEditorItem } from "thing-editor/src/editor/ui/props-editor/props-editors/select-editor";
-import type { Hotkey } from "thing-editor/src/editor/utils/hotkey";
-import assert from "thing-editor/src/engine/debug/assert";
-import game from "thing-editor/src/engine/game";
+import type { Container, DisplayObject } from 'pixi.js';
+import type { FileDesc } from 'thing-editor/src/editor/fs';
+import { getPropertyDefinitionUrl } from 'thing-editor/src/editor/ui/props-editor/get-property-definition-url';
+import type { SelectEditorItem } from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
+import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
+import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 
 interface EditableRect {
 	x: number;
@@ -93,12 +93,12 @@ To define editable properties for your own classes, please use '@editable()' dec
 function _editableEmbed<T extends DisplayObject>(target: SourceMappedConstructor | SourceMappedConstructor[], propertyName: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 
 
-	if(editablePropertyDesc && !editablePropertyDesc.name) {
+	if (editablePropertyDesc && !editablePropertyDesc.name) {
 		editablePropertyDesc.name = propertyName;
 	}
 
-	if(Array.isArray(target)) {
-		for(let t of target) {
+	if (Array.isArray(target)) {
+		for (let t of target) {
 			editableInner(t.prototype as any, propertyName, editablePropertyDesc);
 		}
 	} else {
@@ -108,28 +108,28 @@ function _editableEmbed<T extends DisplayObject>(target: SourceMappedConstructor
 
 function editableInner<T extends DisplayObject>(target: T, name: string, editablePropertyDesc?: EditablePropertyDescRaw<T>) {
 
-	if(!target.constructor.hasOwnProperty('__editablePropsRaw')) {
+	if (!target.constructor.hasOwnProperty('__editablePropsRaw')) {
 		(target.constructor as SourceMappedConstructor).__editablePropsRaw = [];
-		assert(target.constructor.hasOwnProperty('__editablePropsRaw'), "Editable not own");
+		assert(target.constructor.hasOwnProperty('__editablePropsRaw'), 'Editable not own');
 	}
-	if(!editablePropertyDesc) {
+	if (!editablePropertyDesc) {
 		editablePropertyDesc = {};
 	}
 
-	if(editablePropertyDesc.hasOwnProperty('name')) {
+	if (editablePropertyDesc.hasOwnProperty('name')) {
 		name = editablePropertyDesc.name!;
 	}
 
-	if(editablePropertyDesc.type === 'btn') {
+	if (editablePropertyDesc.type === 'btn') {
 		editablePropertyDesc.notSerializable = true;
-		assert(editablePropertyDesc.name, "property with type 'btn' should have 'name'. ");
+		assert(editablePropertyDesc.name, 'property with type \'btn\' should have \'name\'. ');
 	}
 	editablePropertyDesc.name = name;
 
-	let er = new Error("tmpError");
+	let er = new Error('tmpError');
 	let stack = (er.stack as string).split('\n');
 	let lineIndex = stack.findIndex(line => line.indexOf('__decorateClass') > 0) + 1;
-	if(lineIndex === 0) {
+	if (lineIndex === 0) {
 		lineIndex = stack.findIndex(line => line.indexOf('_editableEmbed') > 0) + 1;
 	}
 
@@ -149,8 +149,8 @@ export type { EditablePropertyDesc, EditablePropertyDescRaw, EditablePropertyTyp
 
 
 const propertyAssert = (prop: EditablePropertyDesc, condition: any, message: string) => {
-	if(!condition) {
-		if(prop.__src) {
+	if (!condition) {
+		if (prop.__src) {
 			game.editor.editSource(prop.__src);
 		}
 		message = 'Editable property "' + prop.name + '" of class "' + prop.class.__className + '" validation error: \n' + message;
