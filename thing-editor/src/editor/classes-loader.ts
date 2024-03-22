@@ -45,7 +45,7 @@ export default class ClassesLoader {
 		return Promise.all(files.map((file): SourceMappedConstructor => {
 			fs.log('classes-file-load:' + file.fileName);
 			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {
-
+				fs.log('loaded-loaded:' + file.fileName);
 				const RawClass = module.default;
 				if (!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
 					game.editor.editSource(file.fileName);
@@ -176,7 +176,9 @@ export default class ClassesLoader {
 
 			fs.log('classes-imp-load:' + moduleName);
 
-			return imp(moduleName).then(onClassLoaded) as any;
+			return imp(moduleName).then(onClassLoaded).catch((er) => {
+				fs.log('imp-err: ' + moduleName + '; ' + er.stack);
+			}) as any;
 
 		})).then((_classes: SourceMappedConstructor[]) => {
 			fs.log('classes-load-stage2');
