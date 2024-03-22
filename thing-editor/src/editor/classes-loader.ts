@@ -28,12 +28,19 @@ const NOT_SERIALIZABLE_PROPS_TYPES: Set<EditablePropertyType> = new Set();
 NOT_SERIALIZABLE_PROPS_TYPES.add('btn');
 NOT_SERIALIZABLE_PROPS_TYPES.add('ref');
 NOT_SERIALIZABLE_PROPS_TYPES.add('splitter');
+import('games/example-project/assets/src/custom/bunny.c').then(() => {
+	fs.log('BUNNY LOADED1');
+});
 
 export default class ClassesLoader {
 
 	static isClassesWaitsReloading: boolean;
 
 	static async reloadClasses(): Promise<GameClasses | undefined> {
+
+		import('games/example-project/assets/src/custom/bunny.c').then(() => {
+			fs.log('BUNNY LOADED2');
+		});
 
 		componentsVersion++;
 

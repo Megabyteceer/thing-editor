@@ -1112,11 +1112,6 @@ class Game {
 		document.addEventListener('click', () => {
 			game._reloadGame();
 		});
-
-		import('games/example-project/assets/src/custom/bunny.c').then((c) => {
-			fs.log('BUNNY LOADED');
-		});
-
 	}
 
 	_setCurrentScene(scene: Scene | null) {
