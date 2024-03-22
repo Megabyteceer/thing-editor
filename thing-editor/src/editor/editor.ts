@@ -75,6 +75,10 @@ window.addEventListener('error', (er) => {
 	fs.log('unhandled error (0):');
 	fs.log(er.error.stack);
 });
+window.addEventListener('unhandledrejection', (er) => {
+	fs.log('unhandled unhandledrejection (0):');
+	fs.log(er.reason);
+});
 
 fs.log('stage0');
 
