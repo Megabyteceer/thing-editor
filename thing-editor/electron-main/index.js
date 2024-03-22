@@ -28,10 +28,12 @@ const getPositionRestoreWindow = require('./thing-editor-window.js');
 const {exec} = require('child_process');
 
 process.on('unhandledRejection', function (err) {
+	console.error(err.stack || err.message || err);
 	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
 });
 
 process.on('uncaughtException', function (err) {
+	console.error(err.stack || err.message || err);
 	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
 });
 
@@ -59,9 +61,11 @@ const createWindow = () => {
 		return {action: 'deny'};
 	});
 
-	mainWindow.webContents.addListener('console-message', (ev) =>{
+	mainWindow.webContents.addListener('console-message', (_event, _level, message, line, sourceId) =>{
 		console.log('console-message:');
-		console.log(ev.message);
+		console.log(message);
+		console.log(sourceId);
+		console.log(line);
 	});
 
 	mainWindow.on('focus', () => {
@@ -104,6 +108,7 @@ const createWindow = () => {
 		mainWindow.loadURL('http://localhost:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
 			if (er.code === 'ERR_CONNECTION_REFUSED') {
+				console.error('Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 				dialog.showErrorBox('Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 			}
 		});
