@@ -260,6 +260,7 @@ export default class ClassesLoader {
 			return classes;
 		}).catch((er) => {
 			fs.log(er.stack);
+			return undefined;
 		});
 	}
 }
