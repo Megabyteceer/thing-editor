@@ -71,6 +71,8 @@ import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr f
 
 let previewedSound: HowlSound;
 
+fs.log('stage0');
+
 class Editor {
 
 	LanguageView = LanguageView;
