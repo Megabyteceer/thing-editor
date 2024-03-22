@@ -60,6 +60,7 @@ const createWindow = () => {
 	});
 
 	mainWindow.webContents.addListener('console-message', (ev) =>{
+		console.log('console-message:');
 		console.log(ev.message);
 	});
 

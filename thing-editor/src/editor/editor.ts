@@ -72,6 +72,7 @@ import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr f
 let previewedSound: HowlSound;
 
 window.addEventListener('error', (er) => {
+	fs.log('unhandled error (0):');
 	fs.log(er.error.stack);
 });
 
