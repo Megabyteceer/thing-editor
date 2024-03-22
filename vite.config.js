@@ -7,13 +7,7 @@ const resolver = require('./thing-editor/electron-main/resolver/resolver.js');
 export default defineConfig({
 	server: {
 		hmr: false,
-		watch: {
-			ignored: [
-				'games/**/.tmp/**',
-				'games/**/debug/**',
-				'games/**/release/**'
-			]
-		},
+		watch: false,
 		strictPort: 5173
 	},
 	plugins: [
