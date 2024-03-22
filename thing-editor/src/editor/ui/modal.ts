@@ -9,6 +9,7 @@ import Prompt from 'thing-editor/src/editor/ui/modal/prompt';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import assert from 'thing-editor/src/engine/debug/assert.js';
 import game from 'thing-editor/src/engine/game';
+import { getCurrentStack } from '../utils/stack-utils';
 
 let modal: Modal;
 
@@ -123,6 +124,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 	showModal(content: ComponentChild, title: ComponentChild = '', noEasyClose = false, toBottom = false): Promise<any> {
 		fs.log('modal-show');
+		fs.log(getCurrentStack('modal show').stack);
 		game.editor.blurPropsInputs();
 		return new Promise((resolve) => {
 			modal.state.modals[toBottom ? 'unshift' : 'push']({ content, title, noEasyClose, resolve });
