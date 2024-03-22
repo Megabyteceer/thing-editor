@@ -80,6 +80,9 @@ window.addEventListener('error', (er) => {
 window.addEventListener('unhandledrejection', (er) => {
 	fs.log('unhandled unhandledrejection (0):');
 	fs.log(er.reason);
+	fs.log(er.stack);
+	fs.log(JSON.stringify(er));
+	fs.log(er.error.stack);
 });
 
 fs.log('stage0');
