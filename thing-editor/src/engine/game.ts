@@ -21,6 +21,7 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 import type WebFont from 'webfontloader';
 
+import fs from '../editor/fs';
 import ERROR_HTML from './utils/html-error.html?raw';
 
 /// #if EDITOR
@@ -161,9 +162,9 @@ class Game {
 
 		Lib.addTexture('EMPTY', Texture.EMPTY);
 		Lib.addTexture('WHITE', Texture.WHITE);
-
+		fs.log('inint1');
 		this.pixiApp = app = new Application(pixiOptions);
-
+		fs.log('inint2');
 		(element || document.body).appendChild(app.view as HTMLCanvasElement);
 
 		this.onResize = this.onResize.bind(this);
@@ -181,13 +182,13 @@ class Game {
 		/// #if EDITOR
 		this.___enforcedOrientation = game.editor.settingsLocal.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
 		/// #endif
-
+		fs.log('inint3');
 		initGameInteraction();
-
+		fs.log('inint4');
 		loadFonts();
 
 		app.stage.addChild(stage);
-
+		fs.log('inint5');
 		/// #if EDITOR
 		/*
 		/// #endif
