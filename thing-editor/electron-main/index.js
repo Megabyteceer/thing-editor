@@ -118,6 +118,14 @@ const createWindow = () => {
 			}
 		});
 		setTimeout(loadEditorIndexHTML, 600);
+		setTimeout(() => {
+			mainWindow.capturePage((img) => {
+				fs.writeFile('1.png', img.toPng(), () =>{
+					console.log('Saved 1.png');
+				});
+			});
+
+		}, 5000);
 	} else {
 		loadEditorIndexHTML();
 	}
