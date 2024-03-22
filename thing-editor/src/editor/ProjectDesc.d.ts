@@ -27,30 +27,30 @@ interface ProjectDesc {
 			families: string[];
 		};
 		timeout: number;
-	} | null | WebFont.Config,
-	fontHolderText: string,
-	mipmap: false,
-	version: string,
-	soundFormats: string[],
-	soundDefaultBitrate: number,
-	soundBitRates: KeyedObject<number>,
-	loadOnDemandSounds: KeyedObject<number>,
-	loadOnDemandTextures: KeyedObject<number>,
-	defaultMusVol: number,
-	defaultSoundsVol: number,
-	embedLocales: true,
-	__localesNewKeysPrefix: string,
-	__suspendWarnings: number[],
-	defaultLanguage: string,
-	autoFullScreenDesktop: false,
-	autoFullScreenMobile: false,
-	__proxyFetchesViaNodeServer: false,
-	__group: string,
+	} | null | WebFont.Config;
+	fontHolderText: string;
+	mipmap: false;
+	version: string;
+	soundFormats: string[];
+	soundDefaultBitrate: number;
+	soundBitRates: KeyedObject<number>;
+	loadOnDemandSounds: KeyedObject<number>;
+	loadOnDemandTextures: KeyedObject<number>;
+	defaultMusVol: number;
+	defaultSoundsVol: number;
+	embedLocales: true;
+	__localesNewKeysPrefix: string;
+	__suspendWarnings: number[];
+	defaultLanguage: string;
+	autoFullScreenDesktop: false;
+	autoFullScreenMobile: false;
+	__proxyFetchesViaNodeServer: false;
+	__group: string;
 	__webpack: {
-		debug: string,
+		debug: string;
 		production: string;
-	},
-	libs: string[],
+	};
+	libs: string[];
 }
 
 

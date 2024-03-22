@@ -137,7 +137,7 @@ export default class SceneLinkedPromise extends Container {
 
 	/// #if DEBUG
 	___stack: any;
-	__passedHandlersDebug: { handler: ((result?: any) => any), currentResult: any; }[] = [];
+	__passedHandlersDebug: { handler: ((result?: any) => any); currentResult: any }[] = [];
 	/// #endif
 
 	onRemove() {

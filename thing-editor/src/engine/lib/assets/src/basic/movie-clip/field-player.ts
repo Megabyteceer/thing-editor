@@ -25,7 +25,7 @@ interface TimelineKeyFrame {
 	s?: number;
 
 	/** time */
-	t: number
+	t: number;
 
 	/** time to jump (loop time) */
 	j: number;

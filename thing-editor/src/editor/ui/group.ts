@@ -6,9 +6,9 @@ import game from 'thing-editor/src/engine/game';
 const GROUP_ID_CHECKER = /[^0-9a-zA-Z_\-]/gm;
 
 interface GroupProps {
-	key: string
-	title: string
-	content: ComponentChildren
+	key: string;
+	title: string;
+	content: ComponentChildren;
 }
 
 function renderGroup(props: GroupProps): GroupableItem {
@@ -26,7 +26,7 @@ function renderGroup(props: GroupProps): GroupableItem {
 }
 
 interface GroupableItem {
-	key: string
+	key: string;
 }
 
 function groupArray(a: ComponentChild[], delimiter = '/', level = 0, noSort = false, idPrefix = '') {

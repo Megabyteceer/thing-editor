@@ -55,8 +55,8 @@ document.addEventListener('fullscreenchange', () => {
 });
 
 interface ViewportSizeItem {
-	name: string
-	value: FixedViewportSize
+	name: string;
+	value: FixedViewportSize;
 }
 
 const resolutions: ViewportSizeItem[] = [

@@ -925,7 +925,7 @@ class Editor {
 			}
 		}
 		if (!absolutePath) {
-			let rootPath: string = electron_ThingEditorServer.argv[0].split('node_modules')[0];
+			let rootPath: string = fs.getArgs()[0].split('node_modules')[0];
 			if (fileName.startsWith('\\') || fileName.startsWith('/')) {
 				rootPath = rootPath.substring(0, rootPath.length - 1);
 			}
@@ -1104,7 +1104,7 @@ function excludeOtherProjects() {
 
 		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
 		const workspaceConfig = JSON.parse('{' + foldersDataString + '}');
-		const folders = (workspaceConfig.folders as { path: string, name: string; }[]).filter((folderData) => {
+		const folders = (workspaceConfig.folders as { path: string; name: string }[]).filter((folderData) => {
 			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
 		});
 		if (game.editor.settings.getItem('vs-code-excluding')) {
@@ -1187,7 +1187,7 @@ function excludeOtherProjects() {
 }
 
 interface PathToInclude {
-	project: string,
+	project: string;
 	libs: LibInfo[];
 }
 

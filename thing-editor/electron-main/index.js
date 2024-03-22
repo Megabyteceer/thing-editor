@@ -12,7 +12,7 @@ const originalLog = console.log.bind(console);
 console.log = (txt) => {
 	try {
 		originalLog(txt);
-	} catch (er) { } // eslint-disable-line no-empty
+	} catch (_er) { }
 };
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
@@ -121,4 +121,6 @@ app.on('window-all-closed', () => {
 	app.quit();
 });
 
-exec('git update-index --assume-unchanged thing-editor.code-workspace tsconfig.json thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts', {cwd: __dirname + '/../..'});
+exec('git update-index --assume-unchanged thing-editor.code-workspace tsconfig.json thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts', {
+	cwd: __dirname + '/../..'
+});

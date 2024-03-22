@@ -13,15 +13,15 @@ function message(msg: string) {
 interface IndexedDBRecord {
 
 	// visible file name which was selected to override sound
-	fileName: string,
+	fileName: string;
 	// url encodes sound data.
 	data: string;
 }
 
 interface PackageData {
-	data: KeyedObject,
-	settings: KeyedObject,
-	type: 'indexed-db-utils-dump'
+	data: KeyedObject;
+	settings: KeyedObject;
+	type: 'indexed-db-utils-dump';
 }
 
 let fileInput: HTMLInputElement;

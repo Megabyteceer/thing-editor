@@ -145,7 +145,7 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 		let targetValue = (ev.target as HTMLInputElement).value;
 		try {
 			targetValue = eval((ev.target as HTMLInputElement).value);
-		} catch (e) { } // eslint-disable-line no-empty
+		} catch (_er) { }
 
 		let val = (props.field && props.field.basis) ? parseInt((ev.target as HTMLInputElement).value, props.field.basis) : parseFloat(targetValue);
 		if (isNaN(val) && !forceFormat) {

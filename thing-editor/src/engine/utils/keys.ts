@@ -36,8 +36,8 @@ try {
 			break;
 		}
 	}
-} catch (e) {
-	/// catch parent window acess for iframed on another websites
+} catch (_e) {
+	/// catch parent window access for iframed on another websites
 }
 
 export default class Keys {

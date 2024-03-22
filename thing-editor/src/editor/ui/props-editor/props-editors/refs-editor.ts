@@ -63,7 +63,7 @@ export default class RefFieldEditor extends Component<EditablePropertyEditorProp
 								R.b({ className: '' }, (game.editor.selection[0].constructor as SourceMappedConstructor).__className + '.' + this.props.field.name + ' content:'),
 								R.textarea({ readonly: true, value: JSON.stringify(this.props.value, undefined, ' ') })
 							));
-						} catch (er) {
+						} catch (_er) {
 							game.editor.ui.modal.showInfo('Object has circular structures and can not be represented as text. Please check browser\'s console to see reference\'s value.', undefined, 32039);
 						}
 					}

@@ -29,7 +29,7 @@ import('ps-list').then(async (psList) => {
 			}
 		);
 
-		c.on('error', (er) => {
+		c.on('error', (_er) => {
 			debugger;
 		});
 

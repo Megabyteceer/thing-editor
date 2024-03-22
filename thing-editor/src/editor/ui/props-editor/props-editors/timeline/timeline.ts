@@ -27,8 +27,8 @@ import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c
 import type { TimelineFieldData, TimelineKeyFrame, TimelineLabelData, TimelineSerializedKeyFrame, TimelineSerializedLabelsData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
 interface TimelineCopyPasteData {
-	fields: KeyedMap<TimelineSerializedKeyFrame[]>,
-	labels: KeyedMap<number>,
+	fields: KeyedMap<TimelineSerializedKeyFrame[]>;
+	labels: KeyedMap<number>;
 	p: number;
 	d: number;
 }

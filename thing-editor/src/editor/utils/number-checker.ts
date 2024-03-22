@@ -74,7 +74,7 @@ export default function wrapPropertyWithNumberChecker(constructor: SourceMappedC
 
 	try {
 		Object.defineProperty(constructor.prototype, propertyName, d);
-	} catch (er) {
+	} catch (_er) {
 		assert(false, 'Can not add NaN checking for property \'' + propertyName + '\'. Please make this property configurable or add noNullCheck flag in it`s descriptor.', 40903);
 	}
 }

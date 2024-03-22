@@ -135,7 +135,7 @@ module.exports = async function (options, notify) {
 
 			try {
 				fs.accessSync(fn, fs.constants.R_OK | fs.constants.W_OK);
-			} catch (err) {
+			} catch (_er) {
 				console.log('file reading blocked: ' + fn);
 				setTimeout(conversionAttempt, 1000);
 				return;
@@ -176,11 +176,11 @@ function md5FileSafe(fn) {
 	return new Promise((resolve) => {
 		try {
 			resolve(md5File.sync(fn));
-		} catch (er) { // eslint-disable-line no-empty
+		} catch (_er) {
 			setInterval(() => {
 				try {
 					resolve(md5File.sync(fn));
-				} catch (er) { }// eslint-disable-line no-empty
+				} catch (_er) { }
 			}, 1000);
 		}
 	});

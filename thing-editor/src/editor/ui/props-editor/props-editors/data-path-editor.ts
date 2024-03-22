@@ -256,7 +256,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			let f;
 			try {
 				f = getValueByPath(val, game.editor.selection[0], true);
-			} catch (er) { }// eslint-disable-line no-empty
+			} catch (_er) { }
 
 			if (typeof f === 'function') {
 				let paramsView: ComponentChild;

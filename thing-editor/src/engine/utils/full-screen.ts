@@ -31,7 +31,7 @@ export default class FullScreen {
 			if (game.projectDesc.screenOrientation !== 'auto') {
 				(screen.orientation as any).lock(game.projectDesc.screenOrientation);
 			}
-		} catch (err) { } // eslint-disable-line no-empty
+		} catch (_err) { }
 	}
 
 	static toggle() {

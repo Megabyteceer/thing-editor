@@ -43,8 +43,8 @@ function accessToOldReferenceDetector(obj: OutdatedProxy, prop: any): any {
 }
 
 interface OutdatedProxy {
-	thisIsOutdatedReference: 'thisIsOutdatedReference',
-	class_: SourceMappedConstructor,
+	thisIsOutdatedReference: 'thisIsOutdatedReference';
+	class_: SourceMappedConstructor;
 	fieldName: string;
 }
 

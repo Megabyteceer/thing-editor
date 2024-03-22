@@ -44,7 +44,7 @@ export default class ClassesLoader {
 
 		return Promise.all(files.map((file): SourceMappedConstructor => {
 
-			const onClassLoaded = (module: { default: SourceMappedConstructor; }): SourceMappedConstructor => {
+			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {
 
 				const RawClass = module.default;
 				if (!RawClass || !(RawClass.prototype instanceof DisplayObject)) {

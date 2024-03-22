@@ -16,16 +16,16 @@ interface EditableRect {
 type EditablePropertyType = keyof IEditablePropertyType;
 
 interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
-	min?: number,
-	max?: number,
-	step?: number,
-	type?: EditablePropertyType,
-	name?: string,
-	basis?: number,
-	default?: any,
-	canBeEmpty?: false,
-	visible?: (o: T) => boolean,
-	helpUrl?: string,
+	min?: number;
+	max?: number;
+	step?: number;
+	type?: EditablePropertyType;
+	name?: string;
+	basis?: number;
+	default?: any;
+	canBeEmpty?: false;
+	visible?: (o: T) => boolean;
+	helpUrl?: string;
 	/** field changes pass vale through this function  */
 	parser?: (val: any) => any;
 	disabled?: (o: T) => string | undefined | boolean | null;
@@ -39,10 +39,10 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	filterAssets?: (file: FileDesc) => boolean;
 
 	/** splitter header */
-	title?: string,
-	animate?: true,
+	title?: string;
+	animate?: true;
 	select?: SelectEditorItem[] | (() => SelectEditorItem[]);
-	noNullCheck?: true,
+	noNullCheck?: true;
 	important?: boolean;
 	tip?: string | (() => string | undefined);
 	afterEdited?: () => void;
@@ -71,12 +71,12 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 }
 
 interface EditablePropertyDesc<T extends Container = Container> extends EditablePropertyDescRaw<T> {
-	class: SourceMappedConstructor,
-	type: EditablePropertyType,
-	default: any,
-	name: string,
-	__src: string,
-	__nullCheckingIsApplied?: true,
+	class: SourceMappedConstructor;
+	type: EditablePropertyType;
+	default: any;
+	name: string;
+	__src: string;
+	__nullCheckingIsApplied?: true;
 	renderer?: any;
 	isTranslatableKey?: boolean;
 }

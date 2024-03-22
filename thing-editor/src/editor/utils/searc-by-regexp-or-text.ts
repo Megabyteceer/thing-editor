@@ -13,7 +13,7 @@ function searchByRegexpOrText(source: string, query: string) {
 			lastSearchRegExp = regExp;
 		}
 		return source.search(regExp) >= 0;
-	} catch (er) {
+	} catch (_er) {
 		return source.toLowerCase().indexOf(query.toLowerCase()) >= 0;
 	}
 }

@@ -65,7 +65,7 @@ function getAssetsForBuild(type: AssetType) {
 	return fs.getAssetsList(type).filter(filterAssets);
 }
 
-let assetsToCopy: { from: string, to: string; }[] = [];
+let assetsToCopy: { from: string; to: string }[] = [];
 
 export default class Build {
 	static build(debug: boolean) {

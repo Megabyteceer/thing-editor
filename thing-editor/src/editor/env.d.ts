@@ -5,7 +5,7 @@ type CallBackPath = string;
 type ValuePath = string;
 type CallBackParsedData = {
 	/** callback path names*/
-	p: (string | { s: string; })[];
+	p: (string | { s: string })[];
 	/** callback parameter */
 	v?: any[];
 };
@@ -52,7 +52,7 @@ interface NodeExtendData {
 	isFaderShootCalledForThisFader?: boolean;
 
 	hidePropsEditor?: {
-		title: string,
+		title: string;
 		visibleFields: KeyedMap<true>;
 	};
 
@@ -79,12 +79,12 @@ interface NodeExtendData {
 
 type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number | boolean;
 
-type KeyedObject = { [key: string]: any; };
+type KeyedObject = { [key: string]: any };
 
 type SerializedDataValidationError = undefined | {
-	message: string,
-	findObjectCallback: ((o: import('pixi.js').Container) => boolean),
-	fieldName?: string,
+	message: string;
+	findObjectCallback: ((o: import('pixi.js').Container) => boolean);
+	fieldName?: string;
 	errorCode?: number;
 };
 
@@ -98,13 +98,13 @@ type KeyedMap<T> = {
 
 type SerializedObject = {
 	/** constructor class name */
-	c?: string,
+	c?: string;
 
 	/** prefab reference name */
-	r?: string,
+	r?: string;
 
-	p: SerializedObjectProps,
-	':'?: SerializedObject[] | undefined,
+	p: SerializedObjectProps;
+	':'?: SerializedObject[] | undefined;
 };
 
 type Electron_ThingEditorServer = { // exposed from electron

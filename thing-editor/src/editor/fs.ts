@@ -10,10 +10,10 @@ import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
 interface LibInfo {
-	name: string,
-	dir: string,
-	libNum: number,
-	assetsDir: string,
+	name: string;
+	dir: string;
+	libNum: number;
+	assetsDir: string;
 	isEmbed?: boolean;
 }
 
@@ -21,13 +21,13 @@ const prefabNameFilter = /[^a-zA-Z\-\/0-9_]/g;
 
 interface FileDesc {
 	/** file name*/
-	fileName: string,
-	assetName: string,
-	assetType: AssetType,
+	fileName: string;
+	assetName: string;
+	assetType: AssetType;
 	/** modification time*/
-	mTime: number,
-	lib: LibInfo | null,
-	libInfoCache?: ComponentChildren,
+	mTime: number;
+	lib: LibInfo | null;
+	libInfoCache?: ComponentChildren;
 	v?: number;
 	_hashedAssetName?: string;
 
@@ -409,7 +409,7 @@ export default class fs {
 		return execFs('fs/showFile', fileName);
 	}
 
-	static build(projectDir: string, debug: boolean, copyAssets: { from: string, to: string; }[]) {
+	static build(projectDir: string, debug: boolean, copyAssets: { from: string; to: string }[]) {
 		return execFsAsync('fs/build', projectDir, debug, copyAssets);
 	}
 

@@ -71,9 +71,9 @@ const buildDebugClick = () => {
 };
 
 interface MainMenuItem {
-	name: string,
-	id: string,
-	items: ContextMenuItem[]
+	name: string;
+	id: string;
+	items: ContextMenuItem[];
 }
 
 const MUTE_SOUND_MENU_ITEM: ContextMenuItem = {

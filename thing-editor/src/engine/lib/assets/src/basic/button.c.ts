@@ -62,7 +62,7 @@ export default class Button extends DSprite {
 	@editable({ min: 0 })
 	repeatInterval = 0;
 
-	pointerStartPos?: { x: number, y: number; };
+	pointerStartPos?: { x: number; y: number };
 
 	constructor() {
 		super();
@@ -248,7 +248,7 @@ export default class Button extends DSprite {
 				let f;
 				try {
 					f = getValueByPath(action, this, true);
-				} catch (er) { } // eslint-disable-line no-empty
+				} catch (_er) { }
 				if (typeof f !== 'function') {
 					game.editor.ui.status.error('Wrong onClick handler: ' + action, 32054, this, 'onClick', i);
 					getValueByPath(action, this, true);

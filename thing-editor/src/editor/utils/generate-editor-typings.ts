@@ -31,7 +31,7 @@ const regenerateCurrentSceneMapTypings = () => {
 				let className = (game.all[n].constructor as SourceMappedConstructor).__className;
 				classes.add(className);
 				json[n] = className;
-			} catch (er) { } // eslint-disable-line no-empty
+			} catch (_er) { }
 		}
 	}
 	let jsonString = JSON.stringify(json);

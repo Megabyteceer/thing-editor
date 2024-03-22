@@ -62,8 +62,8 @@ function getHistoryName() {
 }
 
 type HistoryEvents = {
-	beforeHistoryJump: () => void,
-	afterHistoryJump: () => void
+	beforeHistoryJump: () => void;
+	afterHistoryJump: () => void;
 }
 
 interface HistorySerializedData extends SerializedObject {
@@ -72,11 +72,11 @@ interface HistorySerializedData extends SerializedObject {
 
 interface HistoryRecord {
 
-	treeData: HistorySerializedData,
+	treeData: HistorySerializedData;
 	/** field was edited to undo record created */
-	fieldName: string | null,
+	fieldName: string | null;
 
-	selectionData: SelectionData,
+	selectionData: SelectionData;
 
 }
 

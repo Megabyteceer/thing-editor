@@ -5,11 +5,11 @@ import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
 const windowMenuBodyProps = { className: 'window-menu-body' };
 
 interface WindowMenuProps {
-	menu: ComponentChild
+	menu: ComponentChild;
 }
 
 interface WindowMenuState {
-	toggled?: boolean
+	toggled?: boolean;
 }
 
 export default class WindowMenu extends ComponentDebounced<WindowMenuProps, WindowMenuState> {

@@ -44,13 +44,13 @@ function renderProjectItem(desc: ProjectDesc): ComponentChild {
 }
 
 interface ProjectsListProps {
-	projects: ProjectDesc[]
+	projects: ProjectDesc[];
 
 }
 
 interface ProjectsListState {
-	filter: string,
-	searchInputProps: KeyedObject
+	filter: string;
+	searchInputProps: KeyedObject;
 }
 
 export default class ProjectsList extends Component<ProjectsListProps, ProjectsListState> {

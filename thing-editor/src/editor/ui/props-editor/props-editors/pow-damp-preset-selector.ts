@@ -6,8 +6,8 @@ import SelectEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/
 import game from 'thing-editor/src/engine/game';
 
 interface PowDampPreset {
-	p: number,
-	d: number,
+	p: number;
+	d: number;
 }
 
 

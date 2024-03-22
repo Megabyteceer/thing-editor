@@ -155,7 +155,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 						try {
 							input.focus();
 							input.setSelectionRange(0, input.value.length);
-						} catch (er) { } // eslint-disable-line no-empty
+						} catch (_er) { } // eslint-disable-line no-empty
 					}
 				}, 10);
 			}

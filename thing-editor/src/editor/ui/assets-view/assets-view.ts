@@ -73,17 +73,17 @@ function __saveWindowsIds() {
 }
 
 interface AssetsViewProps extends WindowProps {
-	filter: KeyedMap<boolean>,
-	hideMenu?: boolean,
-	currentValue?: string,
+	filter: KeyedMap<boolean>;
+	hideMenu?: boolean;
+	currentValue?: string;
 	onItemSelect?: (assetName: string) => void;
 	onItemPreview?: (assetName: string) => void;
 	filterCallback?: (f: FileDesc) => boolean;
 }
 
 interface AssetsViewState extends WindowState {
-	filter: KeyedMap<boolean>,
-	filtersActive?: boolean,
+	filter: KeyedMap<boolean>;
+	filtersActive?: boolean;
 	search: string;
 }
 

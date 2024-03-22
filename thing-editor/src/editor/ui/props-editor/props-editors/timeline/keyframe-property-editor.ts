@@ -227,8 +227,8 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		}
 
 		let selectableKeyframeTypes: ({
-			name: string,
-			value: TimelineKeyFrameType,
+			name: string;
+			value: TimelineKeyFrameType;
 		}[]) = READABLE_KEYFRAME_TYPES.map((name, value) => {
 			return { name, value };
 		});

@@ -11,16 +11,12 @@ module.exports = function vitePluginIfDef(isDebug) {
 		enforce: 'pre',
 		load(id) {
 			if (id.indexOf('/thing-editor/src/editor/') >= 0) {
-
-				let importedAt = '';
 				let importPath = 'thing-editor/src/editor/' + id.split('/thing-editor/src/editor/')[1].replace(/\.ts$/, '');
 				for (let a of processedFiles) {
 					if (Array.isArray(a)) {
 						if ((a.find(l => !l.startsWith('//') && l.indexOf(importPath) >= 0))) {
 							debugger;
 						}
-					} else {
-						importedAt = a;
 					}
 				}
 				debugger;

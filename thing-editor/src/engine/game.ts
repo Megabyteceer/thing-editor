@@ -46,7 +46,7 @@ let scale = 1;
 
 /// #if DEBUG
 let lastFPSTime = 0;
-type FixedViewportSize = { w: number, h: number; } | boolean;
+type FixedViewportSize = { w: number; h: number } | boolean;
 
 const loadingsInProgressOwners: Set<any> = new Set();
 /// #endif
@@ -64,8 +64,8 @@ let fireNextOnResizeImmediately = false;
 
 interface Mouse {
 	click: boolean;
-	x: number,
-	y: number,
+	x: number;
+	y: number;
 }
 
 const processOnResize = (o: Container) => {

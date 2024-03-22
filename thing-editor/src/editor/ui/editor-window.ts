@@ -12,7 +12,7 @@ const MENU_HEIGHT = 24;
 const CLAMP_POW = 5;
 
 interface CornerDraggerProps extends ClassAttributes<CornerDragger> {
-	onDrag: (deltaX: number, deltaY: number) => { x: number, y: number; };
+	onDrag: (deltaX: number, deltaY: number) => { x: number; y: number };
 	onDragEnd: () => void;
 	className: string;
 	type?: DraggerType;

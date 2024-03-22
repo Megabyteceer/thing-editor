@@ -165,7 +165,7 @@ export default class MusicFragment {
 				this._currentFragment = snd;
 				assert((snd as any)._sounds.length === 1, 'Music started in more that one instance.');
 				allActiveFragments[this.musicFragmentHash!] = this;
-			} catch (er) { } // eslint-disable-line no-empty
+			} catch (_er) { }
 		}
 	}
 

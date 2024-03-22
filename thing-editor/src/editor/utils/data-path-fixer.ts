@@ -236,8 +236,8 @@ const tryToFixDataPath = (node: Container, fieldName: string, path_: string, old
 type ReferencesOfDataPath = (Container | null)[];
 
 interface ReferencesData {
-	targetNodes: ReferencesOfDataPath,
-	path: string,
+	targetNodes: ReferencesOfDataPath;
+	path: string;
 }
 
 function _rememberPathReference(o: Container) {

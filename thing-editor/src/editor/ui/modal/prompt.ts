@@ -12,7 +12,7 @@ interface PromptProps extends ClassAttributes<Prompt> {
 	accept?: (val: string) => string | undefined;
 	multiline?: boolean;
 	/** accept button tool tip */
-	title?: string
+	title?: string;
 }
 
 interface PromptState {
@@ -38,7 +38,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 				try {
 					input.focus();
 					input.setSelectionRange(0, input.value.length);
-				} catch (er) { } // eslint-disable-line no-empty
+				} catch (_er) { }
 			}
 		}, 1);
 		this.checkAcceptance(this.state.value);

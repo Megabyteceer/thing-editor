@@ -45,7 +45,7 @@ module.exports = (mainWindow) => {
 		mainWindow.webContents.send('serverMessage', 'fs/notify', text);
 	};
 
-	ipcMain.handle('fs', async (event, command, fileName, content, ...args) => {
+	ipcMain.handle('fs', async (_event, command, fileName, content, ...args) => {
 		let isDebug;
 		try {
 			switch (command) {

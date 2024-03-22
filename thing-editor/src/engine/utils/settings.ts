@@ -17,7 +17,7 @@ class Settings {
 					this.data = JSON.parse(localStorage[storageId]);
 				}
 			}
-		} catch (er) { /* empty */ }
+		} catch (_er) { /* empty */ }
 		this.flush = this.flush.bind(this);
 		window.addEventListener('unload', () => {
 			if (this.__flushInterval) {
@@ -82,7 +82,7 @@ class Settings {
 					fs.fieldsFilter
 					/// #endif
 				));
-			} catch (er) {
+			} catch (_er) {
 				this.data = this.data || {};
 			}
 		}

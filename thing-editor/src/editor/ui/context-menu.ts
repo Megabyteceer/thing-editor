@@ -5,12 +5,12 @@ import R from 'thing-editor/src/editor/preact-fabrics';
 import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 
 interface ContextMenuItemData {
-	name: ComponentChild | (() => ComponentChild),
-	onClick: ((ev?: PointerEvent) => void) | (() => void),
-	disabled?: (() => boolean),
-	hidden?: boolean,
-	stayAfterClick?: boolean,
-	tip?: string,
+	name: ComponentChild | (() => ComponentChild);
+	onClick: ((ev?: PointerEvent) => void) | (() => void);
+	disabled?: (() => boolean);
+	hidden?: boolean;
+	stayAfterClick?: boolean;
+	tip?: string;
 	hotkey?: Hotkey;
 }
 

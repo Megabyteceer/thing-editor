@@ -241,7 +241,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 						return value;
 					});
 					message = txt.join('\n');
-				} catch (er) { } // eslint-disable-line no-empty
+				} catch (_er) { }
 			}
 			fs.exitWithResult(undefined, (game.editor.buildProjectAndExit ? ('Build failed: ' + game.editor.buildProjectAndExit + '\n') : '') + message + '; Error code: ' + errorCode);
 			return Promise.resolve();

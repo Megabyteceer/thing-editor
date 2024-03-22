@@ -225,7 +225,7 @@ export default class Sound {
 					editorEvents.emit('soundPlay', soundId, volume);
 
 					/// #endif
-				} catch (er) { } // eslint-disable-line no-empty
+				} catch (_er) { }
 			}
 		}
 	}
@@ -259,7 +259,7 @@ export default class Sound {
 		soundLockTimeoutId = window.setTimeout(blockedHanlder, 500);
 		try {
 			EMPTY_SOUND.play();
-		} catch (er) {
+		} catch (_er) {
 			soundLockHandler(true);
 		}
 	}

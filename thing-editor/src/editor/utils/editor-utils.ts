@@ -671,9 +671,9 @@ export namespace editorUtils {
 }
 
 interface ClipboardData {
-	data: SerializedObject[],
-	assets: string[],
-	project: string,
+	data: SerializedObject[];
+	assets: string[];
+	project: string;
 	libs: string[];
 
 }

@@ -19,7 +19,7 @@ interface ChooseListProps extends ClassAttributes<ChooseList> {
 
 
 interface ChooseListState {
-	search: string
+	search: string;
 }
 
 interface ChooseListItem {

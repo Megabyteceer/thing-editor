@@ -518,7 +518,7 @@ _editableEmbed(Text, 'Paste style', {
 	title: 'Paste text style.',
 	onClick: (o: Text) => {
 		game.editor.ui.modal.notify('Text style pasted');
-		(game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', []) as { property: string, value: any; }[])
+		(game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', []) as { property: string; value: any }[])
 			.forEach(({ property, value }) => game.editor.onObjectsPropertyChanged(o, property, value, false));
 	},
 	visible: () => !!game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', false),
@@ -669,7 +669,7 @@ function getFontWeights(family: string) {
 		{ name: 'bold', value: 'bold' },
 		{ name: 'bolder', value: 'bolder' },
 		{ name: 'lighter', value: 'lighter' }
-	] as { name: string, value: TextStyleFontWeight }[];
+	] as { name: string; value: TextStyleFontWeight }[];
 }
 
 _editableEmbed(Text, 'style.fontWeight', {

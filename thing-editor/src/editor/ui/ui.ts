@@ -16,7 +16,7 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import game from 'thing-editor/src/engine/game';
 
 interface UIProps {
-	onUIMounted: (ui: UI) => void
+	onUIMounted: (ui: UI) => void;
 }
 
 const workingAreaProps = {

@@ -6,7 +6,7 @@ import game from 'thing-editor/src/engine/game';
 const transparentProps = { className: 'transparent' };
 const statusProps = { className: 'status-entry' };
 
-const statusEntries: { text: string, id: string, priority: number }[] = [];
+const statusEntries: { text: string; id: string; priority: number }[] = [];
 
 export default class StatusBar extends Component {
 

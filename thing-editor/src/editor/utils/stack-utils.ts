@@ -9,8 +9,8 @@ interface DebugStack {
 }
 
 interface StackItem {
-	functionName: string,
-	path: string,
+	functionName: string;
+	path: string;
 }
 
 const getCurrentStack = (title: ComponentChild): DebugStack => {
