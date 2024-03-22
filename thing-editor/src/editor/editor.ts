@@ -171,13 +171,18 @@ class Editor {
 
 			this.ui = ui;
 			// load built in components
+
+			fs.log('this.buildProjectAndExit: ' + this.buildProjectAndExit);
+
 			if (this.buildProjectAndExit) {
 				this.settings.setItem('last-opened-project', this.buildProjectAndExit);
 			}
 			fs.log('stage0.5');
 			if (this.settings.getItem('last-opened-project')) {
+				fs.log('stage0.6');
 				this.openProject(this.settings.getItem('last-opened-project'));
 			} else {
+				fs.log('stage0.7');
 				this.chooseProject(true);
 			}
 
