@@ -853,7 +853,9 @@ class Editor {
 		if (refresh) {
 			fs.refreshAssetsList(this.assetsFolders);
 		}
+		fs.log('classes-will-load');
 		await this.reloadClasses();
+		fs.log('classes-loaded');
 		await waitForCondition(() => {
 			return game.loadingProgress === 100;
 		});

@@ -41,7 +41,7 @@ export default class ClassesLoader {
 		this.isClassesWaitsReloading = false;
 
 		let oneClassNameFixed = false;
-
+		fs.log('classes-load-stage1');
 		return Promise.all(files.map((file): SourceMappedConstructor => {
 
 			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {
@@ -172,6 +172,7 @@ export default class ClassesLoader {
 			return imp(moduleName).then(onClassLoaded) as any;
 
 		})).then((_classes: SourceMappedConstructor[]) => {
+			fs.log('classes-load-stage2');
 			let classes: GameClasses = {} as any;
 
 			for (let c of _classes) {
@@ -244,6 +245,7 @@ export default class ClassesLoader {
 					}
 				}
 			}
+			fs.log('classes-load-stage3');
 			regenerateClassesTypings();
 			if (!oneClassNameFixed) {
 				game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
