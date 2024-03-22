@@ -120,12 +120,12 @@ const createWindow = () => {
 		setTimeout(loadEditorIndexHTML, 600);
 		setTimeout(() => {
 			mainWindow.capturePage((img) => {
-				fs.writeFile('1.png', img.toPng(), () =>{
+				fs.writeFile(path.join(process.cwd(), '1.png'), img.toPng(), () =>{
 					console.log('Saved 1.png');
 				});
 			});
 
-		}, 5000);
+		}, 3000);
 	} else {
 		loadEditorIndexHTML();
 	}
