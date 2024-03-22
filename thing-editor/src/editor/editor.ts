@@ -411,7 +411,9 @@ class Editor {
 			excludeOtherProjects();
 			fs.log('stage4');
 			game.applyProjectDesc(this.projectDesc);
+			fs.log('preinit');
 			editorEvents.emit('gameWillBeInitialized');
+			fs.log('preinit2');
 			game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id);
 
 			game.stage.interactiveChildren = false;
