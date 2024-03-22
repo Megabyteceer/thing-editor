@@ -133,6 +133,8 @@ class Editor {
 	}
 
 	constructor() {
+		fs.log('stage0.1');
+
 		const args = fs.getArgs();
 		for (let arg of args) {
 			if (arg.startsWith('--') && arg.indexOf('=') > 0) {
@@ -151,6 +153,7 @@ class Editor {
 				fs.log(er.error.stack);
 			});
 		}
+		fs.log('stage0.2');
 		this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 
 		game.__EDITOR_mode = true;
