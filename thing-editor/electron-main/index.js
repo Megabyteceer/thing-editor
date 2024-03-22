@@ -101,7 +101,7 @@ const createWindow = () => {
 
 	require('./server-fs.js')(mainWindow);
 
-	const EDITOR_VITE_ROOT = 'http://localhost:5173/thing-editor/';
+	const EDITOR_VITE_ROOT = 'http://127.0.0.1:5173/thing-editor/';
 	const loadEditorIndexHTML = () => {
 		mainWindow.setOpacity(1);
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
