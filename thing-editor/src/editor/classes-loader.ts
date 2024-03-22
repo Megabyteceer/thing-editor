@@ -30,8 +30,8 @@ NOT_SERIALIZABLE_PROPS_TYPES.add('ref');
 NOT_SERIALIZABLE_PROPS_TYPES.add('splitter');
 
 fs.log('BUNNY LOAD1');
-import('games/example-project/assets/src/custom/bunny.c').then(() => {
-	fs.log('BUNNY LOADED1');
+import('games/Flight/assets/src/custom/flight-spark-particle.c').then(() => {
+	fs.log('SPARKLE LOADED 1');
 });
 
 export default class ClassesLoader {
@@ -40,8 +40,8 @@ export default class ClassesLoader {
 
 	static async reloadClasses(): Promise<GameClasses | undefined> {
 
-		import('games/example-project/assets/src/custom/bunny.c').then(() => {
-			fs.log('BUNNY LOADED2');
+		import('games/Flight/assets/src/custom/flight-spark-particle.c').then(() => {
+			fs.log('SPARKLE LOADED 2');
 		});
 
 		componentsVersion++;
@@ -185,13 +185,13 @@ export default class ClassesLoader {
 
 			fs.log('classes-imp-load:' + moduleName);
 			try {
-			return imp(moduleName).then(onClassLoaded).catch((er) => {
-				fs.log('imp-err: ' + moduleName + '; ' + er.stack);
-			}) as any;
-		} catch (er) {
-			fs.log('imp-err2: ' + moduleName + '; ' + (er as any).stack);
-			return undefined as any;
-		}
+				return imp(moduleName).then(onClassLoaded).catch((er) => {
+					fs.log('imp-err: ' + moduleName + '; ' + er.stack);
+				}) as any;
+			} catch (er) {
+				fs.log('imp-err2: ' + moduleName + '; ' + (er as any).stack);
+				return undefined as any;
+			}
 
 		})).then((_classes: SourceMappedConstructor[]) => {
 			fs.log('classes-load-stage2');
