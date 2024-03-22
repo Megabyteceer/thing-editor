@@ -24,6 +24,7 @@ let mainWindow;
 
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 
 const getPositionRestoreWindow = require('./thing-editor-window.js');
 const {exec} = require('child_process');
@@ -119,10 +120,12 @@ const createWindow = () => {
 		});
 		setTimeout(loadEditorIndexHTML, 600);
 		setTimeout(() => {
-			mainWindow.capturePage((img) => {
-				fs.writeFile(path.join(process.cwd(), '1.png'), img.toPng(), () =>{
+			mainWindow.capturePage().then((img) => {
+				fs.writeFile(path.join(process.cwd(), '1.png'), img.toPNG(), () =>{
 					console.log('Saved 1.png');
 				});
+			}).catch((_er) => {
+				console.log('could not capture page ' + _er.stack);
 			});
 
 		}, 3000);
