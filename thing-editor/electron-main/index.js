@@ -23,6 +23,7 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 let mainWindow;
 
 const path = require('path');
+const os = require('os');
 
 const getPositionRestoreWindow = require('./thing-editor-window.js');
 const {exec} = require('child_process');
@@ -47,6 +48,7 @@ const createWindow = () => {
 				'--js-flags="--max_old_space_size=8192',
 				'--disable-dev-shm-usage',
 				'--disable-gpu',
+				'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data'),
 				'--remote-debugging-port=9223',
 				//"--wait-for-debugger"
 			],
