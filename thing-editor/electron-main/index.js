@@ -110,7 +110,7 @@ const createWindow = () => {
 	if (IS_DEBUG) {
 
 		//let debuggerDetector = require('./debugger-detection');
-		mainWindow.loadURL('http://localhost:5173/thing-editor/debugger-awaiter.html').catch((er) => {
+		mainWindow.loadURL('http://127.0.0.1:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
 			if (er.code === 'ERR_CONNECTION_REFUSED') {
 				console.error('Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
