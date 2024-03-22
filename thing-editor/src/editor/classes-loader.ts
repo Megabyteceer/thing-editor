@@ -28,6 +28,8 @@ const NOT_SERIALIZABLE_PROPS_TYPES: Set<EditablePropertyType> = new Set();
 NOT_SERIALIZABLE_PROPS_TYPES.add('btn');
 NOT_SERIALIZABLE_PROPS_TYPES.add('ref');
 NOT_SERIALIZABLE_PROPS_TYPES.add('splitter');
+
+fs.log('BUNNY LOAD1');
 import('games/example-project/assets/src/custom/bunny.c').then(() => {
 	fs.log('BUNNY LOADED1');
 });

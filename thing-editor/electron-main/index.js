@@ -44,6 +44,7 @@ const createWindow = () => {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			additionalArguments: [
+				'--disable-3d-apis',
 				'--remote-debugging-port=9223',
 				//"--wait-for-debugger"
 			],
