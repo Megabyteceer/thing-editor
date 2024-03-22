@@ -139,6 +139,11 @@ class Editor {
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
 
+		if (this.buildProjectAndExit) {
+			window.addEventListener('error', (er) => {
+				fs.log(er.error.stack);
+			});
+		}
 		this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 
 		game.__EDITOR_mode = true;
@@ -307,6 +312,8 @@ class Editor {
 		}
 		const newProjectDir = 'games/' + dir + '/';
 
+		fs.log('stage1');
+
 		if (newProjectDir !== this.currentProjectDir) {
 			this.currentProjectDir = newProjectDir;
 			this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
@@ -329,7 +336,7 @@ class Editor {
 			this.settingsLocal = new Settings('__EDITOR_project_' + projectDesc.id);
 
 			const libsProjectDescMerged = {} as ProjectDesc;
-
+			fs.log('stage2');
 			this.currentProjectLibs = projectDesc.libs.map(parseLibName);
 			this.currentProjectLibs.unshift({
 				name: 'thing-editor-embed',
@@ -364,7 +371,7 @@ class Editor {
 			if (libSchema) {
 				schemas.push(libSchema);
 			}
-
+			fs.log('stage3');
 			const mergedSchema = schemas[0];
 			for (const schema of schemas) {
 				if (schema !== mergedSchema) {
@@ -382,7 +389,7 @@ class Editor {
 			mergeProjectDesc(this.projectDesc, projectDesc);
 
 			excludeOtherProjects();
-
+			fs.log('stage4');
 			game.applyProjectDesc(this.projectDesc);
 			editorEvents.emit('gameWillBeInitialized');
 			game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id);
@@ -421,7 +428,7 @@ class Editor {
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
-
+			fs.log('stage5');
 			if (this.buildProjectAndExit) {
 				await Build.build(false);
 				await Build.build(true);
