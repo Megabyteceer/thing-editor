@@ -7,7 +7,7 @@ const resolver = require('./thing-editor/electron-main/resolver/resolver.js');
 export default defineConfig({
 	server: {
 		hmr: false,
-		watch: false,
+		watch: null,
 		strictPort: 5173
 	},
 	plugins: [
