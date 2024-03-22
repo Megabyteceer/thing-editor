@@ -1093,6 +1093,8 @@ class Game {
 	}
 
 	_onLoadingError(url: string) {
+		fs.log('loading error: ' + url);
+
 		if (game._loadingErrorIsDisplayed) {
 			return;
 		}
