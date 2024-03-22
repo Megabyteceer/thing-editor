@@ -93,7 +93,7 @@ module.exports = (mainWindow) => {
 					}, event);
 					return;
 				case 'fs/log':
-					console.log(fileName);
+					console.log('FS-LOG: ' + fileName);
 					event.returnValue = true;
 					return;
 				case 'fs/copyFile':

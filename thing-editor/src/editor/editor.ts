@@ -162,9 +162,11 @@ class Editor {
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 		this.editProperty = this.editProperty.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
+		fs.log('stage0.3');
 	}
 
 	onUIMounted(ui: UI) {
+		fs.log('stage0.4');
 		window.setTimeout(() => {
 
 			this.ui = ui;
@@ -172,7 +174,7 @@ class Editor {
 			if (this.buildProjectAndExit) {
 				this.settings.setItem('last-opened-project', this.buildProjectAndExit);
 			}
-
+			fs.log('stage0.5');
 			if (this.settings.getItem('last-opened-project')) {
 				this.openProject(this.settings.getItem('last-opened-project'));
 			} else {
@@ -180,6 +182,7 @@ class Editor {
 			}
 
 			window.onbeforeunload = (e) => {
+				fs.log('before-unload');
 				if (!this.restartInProgress && !this.__FatalError) {
 					if (this.askSceneToSaveIfNeed() === false) {
 						e.returnValue = false;
