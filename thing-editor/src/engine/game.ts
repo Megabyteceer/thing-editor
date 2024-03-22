@@ -21,7 +21,7 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 import type WebFont from 'webfontloader';
 
-import fs from '../editor/fs';
+import fs from 'thing-editor/src/editor/fs';
 import ERROR_HTML from './utils/html-error.html?raw';
 
 /// #if EDITOR
