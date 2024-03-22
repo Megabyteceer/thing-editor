@@ -145,6 +145,8 @@ class Editor {
 			}
 		}
 
+		fs.log(JSON.stringify(this.editorArguments));
+
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
 
