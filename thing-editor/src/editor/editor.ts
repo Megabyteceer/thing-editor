@@ -417,12 +417,12 @@ class Editor {
 			game.stage.interactiveChildren = false;
 			protectAccessToSceneNode(game.stage, 'game stage');
 			protectAccessToSceneNode(game.stage.parent, 'PIXI stage');
-
+			fs.log('stage4.1');
 			await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
 				Lib.REMOVED_TEXTURE = t;
 				return Promise.all([this.reloadAssetsAndClasses(true)]);
 			});
-
+			fs.log('stage4.2');
 
 			if (this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {
 				this.saveLastSceneOpenName('');
@@ -430,7 +430,7 @@ class Editor {
 			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
 			editorEvents.emit('firstSceneWillOpen');
 			this.restoreBackup();
-
+			fs.log('stage4.3');
 			regeneratePrefabsTypings();
 			if (!this.buildProjectAndExit) {
 				fs.watchDirs(this.assetsFolders.slice(1)); //slice - exclude watching embed library.
@@ -439,11 +439,11 @@ class Editor {
 			this.isProjectOpen = true;
 
 			game.onResize();
-
+			fs.log('stage4.4');
 			this.settings.setItem('last-opened-project', dir);
 
 			this.validateResources();
-
+			fs.log('stage4.5');
 			editorEvents.emit('projectDidOpen');
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));

@@ -549,8 +549,9 @@ export default class fs {
 		for (let dir of dirsToRebuildSounds) {
 			soundsData.set(dir, fs.rebuildSounds(dir));
 		}
+		fs.log('sounds-build complete');
 		scheduledSoundsRebuilds.clear();
-
+		fs.log('sounds-build complete2');
 		const sounds = this.getAssetsList(AssetType.SOUND);
 		for (const file of sounds) {
 			const soundsDirData = soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
@@ -562,6 +563,7 @@ export default class fs {
 			}
 		}
 		editorEvents.emit('assetsRefreshed');
+		fs.log('sounds-build complete3');
 	}
 
 	static getFileHash(fileName: string): string {
