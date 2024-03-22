@@ -185,7 +185,14 @@ class Game {
 		fs.log('inint3');
 		initGameInteraction();
 		fs.log('inint4');
-		loadFonts();
+
+		/// #if EDITOR
+		if (!this.editor.buildProjectAndExit) {
+			/// #endif
+			loadFonts();
+			/// #if EDITOR
+		}
+		/// #endif
 
 		app.stage.addChild(stage);
 		fs.log('inint5');
@@ -386,17 +393,17 @@ class Game {
 		let rotateCanvas = false;
 
 		switch (orientation) {
-			case 'portrait':
-				rotateCanvas = w > h;
-				game.isPortrait = true;
-				break;
-			case 'auto':
-				game.isPortrait = w < h;
-				break;
-			default: //landscape
-				rotateCanvas = h > w;
-				game.isPortrait = false;
-				break;
+		case 'portrait':
+			rotateCanvas = w > h;
+			game.isPortrait = true;
+			break;
+		case 'auto':
+			game.isPortrait = w < h;
+			break;
+		default: //landscape
+			rotateCanvas = h > w;
+			game.isPortrait = false;
+			break;
 		}
 
 		if (!this.isMobile.any // eslint-disable-line no-constant-condition
