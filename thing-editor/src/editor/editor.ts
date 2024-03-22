@@ -74,6 +74,7 @@ let previewedSound: HowlSound;
 window.addEventListener('error', (er) => {
 	fs.log('unhandled error (0):');
 	fs.log(er.error.stack);
+	fs.log(JSON.stringify(er));
 });
 window.addEventListener('unhandledrejection', (er) => {
 	fs.log('unhandled unhandledrejection (0):');
