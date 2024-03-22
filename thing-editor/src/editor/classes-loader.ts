@@ -29,20 +29,11 @@ NOT_SERIALIZABLE_PROPS_TYPES.add('btn');
 NOT_SERIALIZABLE_PROPS_TYPES.add('ref');
 NOT_SERIALIZABLE_PROPS_TYPES.add('splitter');
 
-fs.log('BUNNY LOAD1');
-import('games/Flight/assets/src/custom/flight-spark-particle.c').then(() => {
-	fs.log('SPARKLE LOADED 1');
-});
-
 export default class ClassesLoader {
 
 	static isClassesWaitsReloading: boolean;
 
 	static async reloadClasses(): Promise<GameClasses | undefined> {
-
-		import('games/Flight/assets/src/custom/flight-spark-particle.c').then(() => {
-			fs.log('SPARKLE LOADED 2');
-		});
 
 		componentsVersion++;
 
