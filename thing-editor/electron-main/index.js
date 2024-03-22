@@ -59,6 +59,10 @@ const createWindow = () => {
 		return {action: 'deny'};
 	});
 
+	mainWindow.webContents.addListener('console-message', (ev) =>{
+		console.log(ev.message);
+	});
+
 	mainWindow.on('focus', () => {
 		globalShortcut.register('F5', () => {
 			mainWindow.reload();
