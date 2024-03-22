@@ -44,7 +44,9 @@ const createWindow = () => {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			additionalArguments: [
-				'--disable-3d-apis',
+				'--js-flags="--max_old_space_size=8192',
+				'--disable-dev-shm-usage',
+				'--disable-gpu',
 				'--remote-debugging-port=9223',
 				//"--wait-for-debugger"
 			],
