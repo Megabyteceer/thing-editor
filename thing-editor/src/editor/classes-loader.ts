@@ -64,6 +64,8 @@ export default class ClassesLoader {
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
 
+				fs.log('classes-load1: ' + className);
+
 				if (className.startsWith('_')) {
 					if (
 						(className.startsWith('_') && !file.fileName.includes('/_')) ||
@@ -150,6 +152,8 @@ export default class ClassesLoader {
 						}
 					}
 				}
+
+				fs.log('classes-load2: ' + className);
 
 				if ((Class.__editablePropsRaw.length < 1) || (Class.__editablePropsRaw[0].type !== 'splitter')) {
 					_editableEmbed(Class, className + '-splitter', {
