@@ -1113,6 +1113,9 @@ class Game {
 			game._reloadGame();
 		});
 
+		import('games/example-project/assets/src/custom/bunny.c').then((c) => {
+			fs.log('BUNNY LOADED');
+		});
 
 	}
 
