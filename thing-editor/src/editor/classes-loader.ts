@@ -175,10 +175,14 @@ export default class ClassesLoader {
 			}
 
 			fs.log('classes-imp-load:' + moduleName);
-
+			try {
 			return imp(moduleName).then(onClassLoaded).catch((er) => {
 				fs.log('imp-err: ' + moduleName + '; ' + er.stack);
 			}) as any;
+		} catch (er) {
+			fs.log('imp-err2: ' + moduleName + '; ' + (er as any).stack);
+			return undefined as any;
+		}
 
 		})).then((_classes: SourceMappedConstructor[]) => {
 			fs.log('classes-load-stage2');
