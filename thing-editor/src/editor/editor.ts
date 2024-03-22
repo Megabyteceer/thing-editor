@@ -71,6 +71,10 @@ import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr f
 
 let previewedSound: HowlSound;
 
+window.addEventListener('error', (er) => {
+	fs.log(er.error.stack);
+});
+
 fs.log('stage0');
 
 class Editor {
