@@ -405,9 +405,9 @@ class Editor {
 			this.restoreBackup();
 
 			regeneratePrefabsTypings();
-
-			fs.watchDirs(this.assetsFolders.slice(1)); //slice - exclude watching embed library.
-
+			if (!this.buildProjectAndExit) {
+				fs.watchDirs(this.assetsFolders.slice(1)); //slice - exclude watching embed library.
+			}
 			this.ui.modal.hideSpinner();
 			this.isProjectOpen = true;
 
