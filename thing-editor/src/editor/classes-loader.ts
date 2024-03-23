@@ -285,6 +285,9 @@ import('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c')
 import('libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
 	fs.log('SKIN TOOL IMPORTED ABS');
 });
-imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
-	fs.log('SKIN TOOL IMPORTED IMP');
+imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts?v=1711210124003').then(() => {
+	fs.log('SKIN TOOL IMPORTED IMP 1');
+});
+imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts?v=1711210124003.ts').then(() => {
+	fs.log('SKIN TOOL IMPORTED IMP 2');
 });
