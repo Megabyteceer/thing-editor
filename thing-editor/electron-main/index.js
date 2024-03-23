@@ -106,6 +106,18 @@ const createWindow = () => {
 	const loadEditorIndexHTML = () => {
 		mainWindow.setOpacity(1);
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
+
+		setTimeout(() => {
+			console.log('try to capture image ');
+			mainWindow.capturePage().then((img) => {
+				fs.writeFile(path.join(process.cwd(), '1.png'), img.toPNG(), () =>{
+					console.log('Saved 1.png');
+				});
+			}).catch((_er) => {
+				console.log('could not capture page ' + _er.stack);
+			});
+
+		}, 3000);
 	};
 
 	if (IS_DEBUG) {
@@ -119,17 +131,6 @@ const createWindow = () => {
 			}
 		});
 		setTimeout(loadEditorIndexHTML, 600);
-		setTimeout(() => {
-			console.log('try to capture image ');
-			mainWindow.capturePage().then((img) => {
-				fs.writeFile(path.join(process.cwd(), '1.png'), img.toPNG(), () =>{
-					console.log('Saved 1.png');
-				});
-			}).catch((_er) => {
-				console.log('could not capture page ' + _er.stack);
-			});
-
-		}, 3000);
 	} else {
 		loadEditorIndexHTML();
 	}
