@@ -7,7 +7,6 @@ const resolver = require('./thing-editor/electron-main/resolver/resolver.js');
 export default defineConfig({
 	server: {
 		hmr: false,
-		host: '0.0.0.0',
 		watch: {
 			ignored: [
 				'**/**'
