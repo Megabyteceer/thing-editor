@@ -19,7 +19,7 @@ class Settings {
 			}
 		} catch (_er) { /* empty */ }
 		this.flush = this.flush.bind(this);
-		window.addEventListener('unload', () => {
+		window.addEventListener('beforeunload', () => {
 			if (this.__flushInterval) {
 				this.flush();
 			}
