@@ -124,6 +124,7 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
+	app.disableHardwareAcceleration();
 	createWindow();
 
 	app.on('activate', () => {
