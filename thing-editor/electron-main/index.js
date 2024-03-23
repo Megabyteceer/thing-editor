@@ -108,14 +108,17 @@ const createWindow = () => {
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
 
 		setTimeout(() => {
-			console.log('try to capture image ');
-			mainWindow.capturePage().then((img) => {
-				fs.writeFile(path.join(process.cwd(), '1.png'), img.toPNG(), () =>{
-					console.log('image saved ' + path.join(process.cwd(), '1.png'));
+			mainWindow.webContents.openDevTools();
+			setTimeout(() => {
+				console.log('try to capture image ');
+				mainWindow.capturePage().then((img) => {
+					fs.writeFile(path.join(process.cwd(), '1.png'), img.toPNG(), () =>{
+						console.log('image saved ' + path.join(process.cwd(), '1.png'));
+					});
+				}).catch((_er) => {
+					console.log('could not capture page ' + _er.stack);
 				});
-			}).catch((_er) => {
-				console.log('could not capture page ' + _er.stack);
-			});
+			}, 200);
 
 		}, 3000);
 	};
