@@ -32,7 +32,6 @@ export default class HowlSound extends Howl {
 
 		this.on('loaderror', () => {
 			if (attempt < 3 && !game._loadingErrorIsDisplayed) {
-				console.log(attempt);
 				attempt++;
 				window.setTimeout(() => {
 					this.load();
