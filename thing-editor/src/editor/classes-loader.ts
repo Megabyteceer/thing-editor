@@ -175,8 +175,16 @@ export default class ClassesLoader {
 				moduleName += '.ts' + versionQuery;
 			}
 
-			fs.log('classes-imp-load:' + moduleName);
+			imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts?v=1711210124003.ts').then(() => {
+				fs.log('SKIN TOOL IMPORTED IMP DEEP');
+			});
+
+
 			try {
+				imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts?v=1711210124003.ts').then(() => {
+					fs.log('SKIN TOOL IMPORTED IMP TRY CATCH');
+				});
+
 				return imp(moduleName).then(onClassLoaded).catch((er) => {
 					fs.log('imp-err: ' + moduleName + '; ' + er.stack);
 				}) as any;
