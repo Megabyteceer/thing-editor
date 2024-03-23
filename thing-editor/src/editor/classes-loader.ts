@@ -174,26 +174,7 @@ export default class ClassesLoader {
 			if (versionQuery) {
 				moduleName += '.ts' + versionQuery;
 			}
-
-			if (!triedDeep) {
-				imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts?v=1711210124003.ts').then(() => {
-					fs.log('SKIN TOOL IMPORTED IMP DEEP');
-				}).catch(() => {
-					fs.log('SKIN TOOL FAIL IMP DEEP');
-				});
-
-			}
-
 			try {
-				if (!triedDeep) {
-					triedDeep = true;
-					imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts?v=1711210124003.ts').then(() => {
-						fs.log('SKIN TOOL IMPORTED IMP TRY CATCH');
-					}).catch(() => {
-						fs.log('SKIN TOOL FAIL IMP TRY CATCH');
-					});
-				}
-
 				return imp(moduleName).then(onClassLoaded).catch((er) => {
 					fs.log('imp-err: ' + moduleName + '; ' + er.stack);
 				}) as any;
@@ -294,26 +275,3 @@ const imp = (moduleName: string) => {
 	fs.log('imp-path: ' + moduleName);
 	return import(/* @vite-ignore */ `/${moduleName}.ts`);
 };
-
-let triedDeep = false;
-
-import('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
-	fs.log('SKIN TOOL IMPORTED RELATIVE');
-}).catch(() => {
-	fs.log('SKIN TOOL FAIL RELATIVE');
-});
-import('libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
-	fs.log('SKIN TOOL IMPORTED ABS');
-}).catch(() => {
-	fs.log('SKIN TOOL FAIL ABS');
-});
-imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts?v=1711210124003').then(() => {
-	fs.log('SKIN TOOL IMPORTED IMP 1');
-}).catch(() => {
-	fs.log('SKIN TOOL FAIL IMP 1');
-});
-imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts?v=1711210124003.ts').then(() => {
-	fs.log('SKIN TOOL IMPORTED IMP 2');
-}).catch(() => {
-	fs.log('SKIN TOOL FAIL IMP 2');
-});
