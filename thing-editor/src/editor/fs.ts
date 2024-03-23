@@ -317,15 +317,15 @@ export default class fs {
 					return 'name can not begin or end with "/"';
 				}
 			}).then((newName: string) => {
-				if (newName) {
-					newName += ext;
-					if (newName !== file.assetName) {
-						const i = file.fileName.lastIndexOf(file.assetName);
-						fs.copyFile(file.fileName, file.fileName.substring(0, i) + newName + file.fileName.substring(i + file.assetName.length));
-						fs.deleteFile(file.fileName);
-					}
+			if (newName) {
+				newName += ext;
+				if (newName !== file.assetName) {
+					const i = file.fileName.lastIndexOf(file.assetName);
+					fs.copyFile(file.fileName, file.fileName.substring(0, i) + newName + file.fileName.substring(i + file.assetName.length));
+					fs.deleteFile(file.fileName);
 				}
-			});
+			}
+		});
 	}
 
 	static copyAssetToProject(file: FileDesc) {
@@ -584,7 +584,7 @@ export default class fs {
 	};
 
 	static exitWithResult(success: string | undefined, error?: string) {
-		execFs('fs/exitWithResult', success, error);
+		//execFs('fs/exitWithResult', success, error);
 	}
 
 	static showQuestion(title: string, message: string, yes: string, no: string, cancel?: string): number {
