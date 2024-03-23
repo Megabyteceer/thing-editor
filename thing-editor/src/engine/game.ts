@@ -163,7 +163,11 @@ class Game {
 		Lib.addTexture('EMPTY', Texture.EMPTY);
 		Lib.addTexture('WHITE', Texture.WHITE);
 		fs.log('inint1');
-		this.pixiApp = app = new Application(pixiOptions);
+
+		if (!this.editor.buildProjectAndExit) {
+			this.pixiApp = app = new Application(pixiOptions);
+		}
+
 		fs.log('inint2');
 		(element || document.body).appendChild(app.view as HTMLCanvasElement);
 
