@@ -88,7 +88,9 @@ module.exports = async function (options, notify) {
 			fs.writeFileSync(cacheFn, JSON.stringify(cache));
 		}
 		result.soundInfo = cache;
-		resolve(result);
+		setTimeout(() => {
+			resolve(result);
+		}, 4000);
 	});
 
 	function getBitrate(fn) {
