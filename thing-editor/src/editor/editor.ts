@@ -44,6 +44,7 @@ import { __UnknownClassScene } from 'thing-editor/src/engine/lib/assets/src/basi
 import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';
+import Build from './utils/build';
 
 let refreshTreeViewAndPropertyEditorScheduled = false;
 
@@ -455,9 +456,9 @@ class Editor {
 			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
 			fs.log('stage5');
 			if (this.buildProjectAndExit) {
-				/*await Build.build(false);
+				await Build.build(false);
 				await Build.build(true);
-				fs.exitWithResult('build finished');*/
+				//fs.exitWithResult('build finished');
 			}
 
 		}
