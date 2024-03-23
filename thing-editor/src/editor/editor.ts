@@ -458,7 +458,7 @@ class Editor {
 			if (this.buildProjectAndExit) {
 				await Build.build(false);
 				await Build.build(true);
-				//fs.exitWithResult('build finished');
+				fs.exitWithResult('build finished');
 			}
 
 		}
