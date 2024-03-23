@@ -120,6 +120,7 @@ const createWindow = () => {
 		});
 		setTimeout(loadEditorIndexHTML, 600);
 		setTimeout(() => {
+			console.log('try to capture image ');
 			mainWindow.capturePage().then((img) => {
 				fs.writeFile(path.join(process.cwd(), '1.png'), img.toPNG(), () =>{
 					console.log('Saved 1.png');
