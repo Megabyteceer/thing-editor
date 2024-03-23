@@ -30,14 +30,6 @@ NOT_SERIALIZABLE_PROPS_TYPES.add('ref');
 NOT_SERIALIZABLE_PROPS_TYPES.add('splitter');
 
 
-import('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
-	fs.log('SKIN TOOL IMPORTED RELATIVE');
-});
-import('libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
-	fs.log('SKIN TOOL IMPORTED ABS');
-});
-
-
 export default class ClassesLoader {
 
 	static isClassesWaitsReloading: boolean;
@@ -284,3 +276,14 @@ export default class ClassesLoader {
 const imp = (moduleName: string) => {
 	return import(/* @vite-ignore */ `/${moduleName}.ts`);
 };
+
+
+import('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
+	fs.log('SKIN TOOL IMPORTED RELATIVE');
+});
+import('libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
+	fs.log('SKIN TOOL IMPORTED ABS');
+});
+imp('../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c').then(() => {
+	fs.log('SKIN TOOL IMPORTED IMP');
+});
