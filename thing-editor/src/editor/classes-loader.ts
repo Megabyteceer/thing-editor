@@ -16,6 +16,9 @@ import ___GizmoArrow from 'thing-editor/src/engine/lib/assets/src/___system/gizm
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
+import __SkinTool from '../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts';
+__SkinTool.__className;
+
 const EMBED_CLASSES_NAMES_FIXER: Map<any, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
 EMBED_CLASSES_NAMES_FIXER.set(Sprite, 'Sprite');
