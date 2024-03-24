@@ -512,7 +512,7 @@ export default class fs {
 			for (const file of assetsMap.values()) {
 				(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
 				allAssets.push(file);
-				fs.sleep(100);
+				fs.sleep(40);
 
 				const oldAsset = prevAssetsByTypeByName.get(file.assetType)!.get(file.assetName);
 				if (!oldAsset) {

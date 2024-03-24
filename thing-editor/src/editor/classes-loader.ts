@@ -184,7 +184,7 @@ export default class ClassesLoader {
 
 		for (let file of files) {
 			_classes.push(await loadFunc(file));
-			fs.sleep(200);
+			fs.sleep(40);
 		}
 
 		let classes: GameClasses = {} as any;
