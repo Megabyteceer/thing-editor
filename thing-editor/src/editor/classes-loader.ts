@@ -37,10 +37,10 @@ export default class ClassesLoader {
 	static async reloadClasses(): Promise<GameClasses | undefined> {
 
 		componentsVersion++;
-
+		fs.log('lo3');
 		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
 		this.isClassesWaitsReloading = false;
-
+		fs.log('lo4');
 		let oneClassNameFixed = false;
 		const loadFunc = async (file: FileDescClass):Promise< SourceMappedConstructor> => {
 			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {

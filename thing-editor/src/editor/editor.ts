@@ -234,13 +234,15 @@ class Editor {
 		this.ui.modal.showSpinner();
 		let restorePrefabName = PrefabEditor.currentPrefabName;
 		let needRestoring = !restorePrefabName && game.__EDITOR_mode && game.editor.isCurrentContainerModified;
-
+		fs.log('lo1');
 		if (needRestoring) {
 			this.saveBackup();
 		}
-
+		fs.log('lo2');
 		this.ui.viewport.stopExecution();
+		fs.log('lo7');
 		await ClassesLoader.reloadClasses();
+		fs.log('lo6');
 		if (restorePrefabName) {
 			PrefabEditor.editPrefab(restorePrefabName);
 		} if (needRestoring) {
