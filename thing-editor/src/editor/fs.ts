@@ -257,6 +257,10 @@ export default class fs {
 		}
 	}
 
+	static sleep(time:number) {
+		return execFs('fs/sleep', time as any) as number;
+	}
+
 	static addSubAsset(file: FileDesc) {
 		(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
 		allAssets.push(file);
@@ -508,6 +512,7 @@ export default class fs {
 			for (const file of assetsMap.values()) {
 				(assetsListsByType.get(file.assetType) as FileDesc[]).push(file);
 				allAssets.push(file);
+				fs.sleep(100);
 
 				const oldAsset = prevAssetsByTypeByName.get(file.assetType)!.get(file.assetName);
 				if (!oldAsset) {
