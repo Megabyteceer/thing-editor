@@ -48,6 +48,7 @@ const createWindow = () => {
 				'--js-flags="--max_old_space_size=8192',
 				'--disable-dev-shm-usage',
 				'--disable-gpu',
+				'--headless',
 				'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data'),
 				'--remote-debugging-port=9223',
 				//"--wait-for-debugger"
@@ -105,6 +106,17 @@ const createWindow = () => {
 	const loadEditorIndexHTML = () => {
 		mainWindow.setOpacity(1);
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
+
+		setTimeout(() => {
+			mainWindow.webContents.executeJavaScript(`function gethtml () {
+				return new Promise((resolve, reject) => { resolve(document.documentElement.innerHTML); });
+				}
+				gethtml();`).then((html) => {
+				console.log(html);
+			  });
+		}, 20000);
+
+
 	};
 
 	if (IS_DEBUG) {
