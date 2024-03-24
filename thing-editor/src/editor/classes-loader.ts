@@ -42,13 +42,9 @@ export default class ClassesLoader {
 		this.isClassesWaitsReloading = false;
 
 		let oneClassNameFixed = false;
-		fs.log('classes-load-stage1');
-
-
 		const loadFunc = async (file: FileDescClass):Promise< SourceMappedConstructor> => {
-			fs.log('classes-file-load:' + file.fileName);
 			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {
-				fs.log('loaded-loaded:' + file.fileName);
+				fs.log('class-loaded:' + file.fileName);
 				const RawClass = module.default;
 				if (!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
 					game.editor.editSource(file.fileName);
@@ -66,8 +62,6 @@ export default class ClassesLoader {
 				let instance: Container = new (Class as any)() as Container;
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
-
-				fs.log('classes-load1: ' + className);
 
 				if (className.startsWith('_')) {
 					if (
@@ -156,8 +150,6 @@ export default class ClassesLoader {
 					}
 				}
 
-				fs.log('classes-load2: ' + className);
-
 				if ((Class.__editablePropsRaw.length < 1) || (Class.__editablePropsRaw[0].type !== 'splitter')) {
 					_editableEmbed(Class, className + '-splitter', {
 						type: 'splitter',
@@ -196,7 +188,6 @@ export default class ClassesLoader {
 			fs.sleep(200);
 		}
 
-		fs.log('classes-load-stage2');
 		let classes: GameClasses = {} as any;
 
 		for (let c of _classes) {
@@ -269,7 +260,6 @@ export default class ClassesLoader {
 				}
 			}
 		}
-		fs.log('classes-load-stage3');
 		regenerateClassesTypings();
 		if (!oneClassNameFixed) {
 			game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
