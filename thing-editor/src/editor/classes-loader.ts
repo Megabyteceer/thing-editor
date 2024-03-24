@@ -168,15 +168,11 @@ export default class ClassesLoader {
 			if (versionQuery) {
 				moduleName += '.ts' + versionQuery;
 			}
-			try {
-				return imp(moduleName).then(onClassLoaded).catch((er) => {
-					fs.log('imp-err: ' + moduleName + '; ' + er.stack);
-				}) as any;
-			} catch (er) {
-				fs.log('imp-err2: ' + moduleName + '; ' + (er as any).stack);
-				return undefined as any;
-			}
-
+			fs.log('lo77');
+			return imp(moduleName).then(onClassLoaded).catch((er) => {
+				fs.log('imp-err: ' + moduleName + '; ' + er.stack);
+			}) as any;
+			fs.log('lo78');
 		};
 
 		fs.sleep(4000);
