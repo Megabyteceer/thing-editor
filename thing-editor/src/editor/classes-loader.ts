@@ -16,8 +16,6 @@ import ___GizmoArrow from 'thing-editor/src/engine/lib/assets/src/___system/gizm
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
-import __SkinTool from '../../../libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts';
-__SkinTool.__className;
 
 const EMBED_CLASSES_NAMES_FIXER: Map<any, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
@@ -271,5 +269,5 @@ export default class ClassesLoader {
 // vite dynamic imports broke sourcemaps lines; Thats why import moved to the bottom of the file.
 const imp = (moduleName: string) => {
 	fs.log('imp-path: ' + moduleName);
-	return import(/* @vite-ignore */ `${moduleName}.ts`);
+	return import('/libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts');
 };
