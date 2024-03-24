@@ -187,13 +187,13 @@ export default class ClassesLoader {
 
 		};
 
+		fs.sleep(4000);
+
 		const _classes = [] as SourceMappedConstructor[];
 
 		for (let file of files) {
 			_classes.push(await loadFunc(file));
-			await new Promise((r) => {
-				setTimeout(r, 200);
-			});
+			fs.sleep(200);
 		}
 
 		fs.log('classes-load-stage2');
