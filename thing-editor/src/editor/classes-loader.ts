@@ -268,9 +268,6 @@ export default class ClassesLoader {
 
 // vite dynamic imports broke sourcemaps lines; Thats why import moved to the bottom of the file.
 const imp = (moduleName: string) => {
-	fs.log('/libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts');
-	import(/* @vite-ignore */ '/libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts');
-
 	fs.log('imp-path: ' + moduleName);
-	return import(/* @vite-ignore */ '/libs/thing-games-utils/common/assets/src/common/__skin-tool.c.ts');
+	return import(/* @vite-ignore */ moduleName);
 };
