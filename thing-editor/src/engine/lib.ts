@@ -66,7 +66,6 @@ export default class Lib
 	static REMOVED_TEXTURE: Texture;
 
 	static loadScene(name: string): Scene {
-		console.log('hop 69');
 		if (
 			/// #if EDITOR
 			!game.__EDITOR_mode &&
@@ -74,7 +73,6 @@ export default class Lib
 			staticScenes.hasOwnProperty(name)) {
 			return staticScenes[name];
 		}
-		console.log('hop 77');
 		let isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, 'No scene with name \'' + name + '\'', 10046);
 		/// #if EDITOR
@@ -126,17 +124,14 @@ export default class Lib
 	static __outdatedReferencesDetectionDisabled = false;
 
 	static hasPrefab(name: string) {
-		console.log('hop 129');
 		return prefabs.hasOwnProperty(name);
 	}
 
 	static hasScene(name: string) {
-		console.log('hop 134');
 		return scenes.hasOwnProperty(name);
 	}
 
 	static hasTexture(name: string) {
-		console.log('hop 139');
 		return textures.hasOwnProperty(name);
 	}
 
@@ -269,7 +264,6 @@ export default class Lib
 	*/
 	static _getTextureSettingsBits(name: string, mask: number) {
 		let s = game.projectDesc.loadOnDemandTextures;
-		console.log('hop 272');
 		return s.hasOwnProperty(name) ? (s[name] & mask) : 0;
 	}
 
@@ -307,7 +301,6 @@ export default class Lib
 	static getTexture(name: string) {
 
 		/// #if EDITOR
-		console.log('hop 310');
 		if (!textures.hasOwnProperty(name)) {
 			textures[name] = Lib.REMOVED_TEXTURE.clone();
 		}
@@ -321,12 +314,10 @@ export default class Lib
 	}
 
 	static hasSound(soundId: string) {
-		console.log('hop 324');
 		return soundsHowlers.hasOwnProperty(soundId);
 	}
 
 	static getSound(soundId: string, __dynamicPreloading = false): HowlSound {
-		console.log('hop 329');
 		assert(soundsHowlers.hasOwnProperty(soundId), 'No sound with id \'' + soundId + '\' found.');
 		let s = soundsHowlers[soundId];
 		/// #if EDITOR
@@ -367,7 +358,6 @@ export default class Lib
 	) {
 		if (soundId) {
 			/// #if EDITOR
-			console.log('hop 370');
 			if (!soundsHowlers.hasOwnProperty(soundId)) {
 				game.editor.ui.status.error('No sound with id \'' + soundId + '\' found.', 10043, owner);
 				return;
@@ -393,7 +383,6 @@ export default class Lib
 
 		deserializationDeepness++;
 
-		console.log('hop 396');
 		if (src.hasOwnProperty('r')) { // prefab reference
 
 			let replacedPrefabName: string | undefined;
@@ -421,7 +410,7 @@ export default class Lib
 
 			let replaceClass: SourceMappedConstructor | undefined = undefined;
 			let replaceClassName: string | undefined;
-			console.log('hop 242');
+
 			if (!classes.hasOwnProperty(src.c!)) {
 				replaceClass = (((Object.values(scenes).indexOf(src) >= 0) || isScene) ? __UnknownClassScene : __UnknownClass);
 				replaceClassName = replaceClass.__className;
@@ -457,7 +446,7 @@ export default class Lib
 		const ret = Pool.create(src.c as any as Constructor);
 		Object.assign(ret, src.p);
 		//*/
-		console.log('hop 460');
+
 		if (src.hasOwnProperty(':')) {
 			let childrenData: SerializedObject[] = src[':'] as SerializedObject[];
 
@@ -468,10 +457,9 @@ export default class Lib
 			/// #endif
 			for (let childData of childrenData) {
 				/// #if EDITOR
-				console.log('hop 471');
+
 				let isVisible = game.__EDITOR_mode || !childData.p.hasOwnProperty('name') || !childData.p.name || !childData.p.name.startsWith('___');
 				if (isVisible && Lib.__isPrefabPreviewLoading) {
-					console.log('hop 474');
 					isVisible = !childData.p.hasOwnProperty('name') || !childData.p.name || !childData.p.name.startsWith('____'); //99999
 				}
 				if (isVisible) {
@@ -740,7 +728,6 @@ export default class Lib
 	}
 
 	static __deleteScene(_sceneName: string) {
-		console.log('hop 743');
 		assert(scenes.hasOwnProperty(_sceneName), 'attempt to delete not existing scene: ' + _sceneName);
 		delete scenes[_sceneName];
 		return fs.deleteAsset(_sceneName, AssetType.SCENE);
@@ -1145,13 +1132,11 @@ const __checkClassesForEditorOnlyMethods = (classes: GameClasses) => {
 	for (let key in classes) {
 		const Class = classes[key];
 		for (const propName of EDITOR_ONLY_METHODS) {
-			console.log('hop 1148');
 			if (Class.prototype.hasOwnProperty(propName)) {
 				game.__showDebugError('Class ' + key + ' contains "' + propName + '" method, which has sense in editor only, and should be wrapped with "/// #if EDITOR", "/// #endif" tags', 99999);
 			}
 		}
 		for (const propName of EDITOR_ONLY_STATIC_METHODS) {
-			console.log('hop 1154');
 			if (Class.hasOwnProperty(propName)) {
 				game.__showDebugError('Class ' + key + ' contains "' + propName + '" static method, which has sense in editor only, and should be wrapped with "/// #if EDITOR", "/// #endif" tags', 99999);
 			}
@@ -1161,7 +1146,6 @@ const __checkClassesForEditorOnlyMethods = (classes: GameClasses) => {
 /// #endif
 
 (Lib as any).loadPrefab = (name: string): Container => { //moved here to keep auto typing generation (TLib) work
-	console.log('hop 1164');
 	assert(prefabs.hasOwnProperty(name), 'No prefab with name \'' + name + '\' registered in Lib', 10044);
 	/// #if EDITOR
 	if (!name.startsWith(EDITOR_BACKUP_PREFIX)) {
