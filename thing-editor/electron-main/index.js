@@ -16,7 +16,6 @@ console.log = (txt) => {
 };
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
-const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
