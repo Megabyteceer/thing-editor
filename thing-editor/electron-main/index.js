@@ -16,6 +16,7 @@ console.log = (txt) => {
 };
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
+const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -102,14 +103,16 @@ const createWindow = () => {
 	const loadEditorIndexHTML = () => {
 		mainWindow.setOpacity(1);
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
-		delay = 1000;
-		mainWindow.on('did-fail-load', () => {
-			setTimeout(() => {
-				console.log('reload attempt');
-				mainWindow.reload();
-				delay += 1000;
-			}, delay);
-		});
+		if (IS_CI_RUN) {
+			delay = 1000;
+			mainWindow.on('did-fail-load', () => {
+				setTimeout(() => {
+					console.log('reload attempt');
+					mainWindow.reload();
+					delay += 1000;
+				}, delay);
+			});
+		}
 	};
 
 	if (IS_DEBUG) {
