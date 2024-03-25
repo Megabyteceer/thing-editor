@@ -15,6 +15,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "forceConsistentCasingInFileNames": false,
     "allowSyntheticDefaultImports": true,
     /* Linting */
     "strict": true,
@@ -29,5 +30,9 @@
     },
     "baseUrl": "./."
   },
-  "include":["./games/game1/","./libs/lib1","thing-editor/src"]
+  "include": [
+    "./games/example-project/",
+    "./libs/example-lib",
+    "thing-editor/src"
+  ]
 }

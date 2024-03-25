@@ -4,30 +4,45 @@
 			"path": "."
 		},
 		{
-			"path": "./games/game1/",
-			"name": "games/game1/"
+			"path": "./games/example-project/",
+			"name": "games/example-project/"
 		},
 		{
-			"path": "./libs/lib1",
-			"name": "libs/lib1"
+			"path": "./libs/example-lib",
+			"name": "libs/example-lib"
 		}
 	],
 	"settings": {
 		"json.schemas": [
 			{
-				"fileMatch": ["thing-project.json", "thing-lib.json"],
+				"fileMatch": [
+					"thing-project.json",
+					"thing-lib.json"
+				],
 				"url": "./thing-editor/src/editor/schema-thing-project.json"
 			}
 		],
 		"files.exclude": {
+			"**/release": true,
+			"**/debug": true,
 			"**/___editor_backup_*": true,
 			"**/.svn": true,
 			"**/.hg": true,
+			"**/*.p.json": true,
+			"**/*.s.json": true,
+			"**/*.wav": true,
+			"**/*.ogg": true,
+			"**/*.psd": true,
+			"**/*.flp": true,
+			"**/*.png": true,
+			"**/*.jpg": true,
+			"**/*.aac": true,
 			"**/CVS": true,
 			"**/.DS_Store": true,
 			"**/Thumbs.db": true,
 			"vite.config.js.timestamp-*": true,
-			"thing-editor/demo": true
+			"thing-editor/demo": true,
+			"node_modules": true,
 		},
 		"editor.formatOnSave": false,
 		"editor.codeActionsOnSave": {
@@ -75,11 +90,32 @@
 		"typescript.preferences.importModuleSpecifierEnding": "index",
 		"eslint.format.enable": false,
 		"eslint.enable": true,
-		"prettier.singleQuote": true,
 		"typescript.preferences.quoteStyle": "single",
 		"javascript.preferences.quoteStyle": "single",
-		"cSpell.words": ["Hitrate", "Schedulable", "Skipable", "Spritesheet"],
-		"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+		"cSpell.words": [
+			"Hitrate",
+			"Schedulable",
+			"Skipable",
+			"Spritesheet"
+		],
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
+		"[json]": {
+			"editor.formatOnSave": true
+		},
+		"[mjs]": {
+			"editor.formatOnSave": true
+		},
+		"[js]": {
+			"editor.formatOnSave": true
+		},
+		"[jsonc]": {
+			"editor.formatOnSave": true,
+			"editor.defaultFormatter": "vscode.json-language-features"
+		},
+		"json.format.enable": true,
+		"[html]": {
+			"editor.defaultFormatter": "vscode.html-language-features"
+		}
 	},
 	"tasks": {
 		"version": "2.0.0",
@@ -88,7 +124,9 @@
 				"label": "Run vite",
 				"isBackground": true,
 				"command": "node",
-				"args": ["${workspaceFolder}/node_modules/vite/bin/vite.js"],
+				"args": [
+					"${workspaceFolder}/node_modules/vite/bin/vite.js"
+				],
 				"runOptions": {
 					"runOn": "folderOpen"
 				},
@@ -107,7 +145,10 @@
 				"windows": {
 					"command": "${workspaceFolder}/node_modules/.bin/electron.cmd"
 				},
-				"args": ["--remote-debugging-port=9223", "./thing-editor/electron-main"],
+				"args": [
+					"--remote-debugging-port=9223",
+					"./thing-editor/electron-main"
+				],
 				"isBackground": true,
 				"runOptions": {
 					//	"runOn": "folderOpen"
@@ -125,7 +166,9 @@
 			{
 				"label": "launchElectronIfStopped",
 				"command": "node",
-				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"],
+				"args": [
+					"${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"
+				],
 				"isBackground": false,
 				"type": "process",
 				"problemMatcher": [
@@ -165,7 +208,10 @@
 				"skipFiles": [],
 				"sourceMaps": true,
 				"smartStep": true,
-				"resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+				"resolveSourceMapLocations": [
+					"${workspaceFolder}/**",
+					"!**/node_modules/**"
+				],
 				"urlFilter": "http://localhost:5173/*",
 				"outFiles": [],
 				"preLaunchTask": "launchElectronIfStopped"
@@ -188,7 +234,10 @@
 				"skipFiles": [],
 				"sourceMaps": true,
 				"smartStep": true,
-				"resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+				"resolveSourceMapLocations": [
+					"${workspaceFolder}/**",
+					"!**/node_modules/**"
+				],
 				"urlFilter": "http://localhost:5173/*",
 				"outFiles": []
 			},
@@ -226,7 +275,7 @@
 					"./thing-editor/electron-main",
 					"debugger-detection-await",
 					"no-vscode-integration",
-					"--build-and-exit=Flight"
+					"--build-and-exit=example-project"
 				],
 				"presentation": {
 					"hidden": true
@@ -237,20 +286,27 @@
 				"request": "launch",
 				"name": "runner",
 				"cwd": "${workspaceFolder}",
-				"args": ["${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"]
+				"args": [
+					"${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"
+				]
 			},
 			{
 				"type": "node",
 				"request": "launch",
 				"name": "vite dev",
 				"cwd": "${workspaceFolder}",
-				"args": ["${workspaceFolder}/node_modules/vite/bin/vite.js"]
+				"args": [
+					"${workspaceFolder}/node_modules/vite/bin/vite.js"
+				]
 			}
 		],
 		"compounds": [
 			{
 				"name": "Main & Render",
-				"configurations": ["Render", "Main"],
+				"configurations": [
+					"Render",
+					"Main"
+				],
 				"stopAll": true,
 				"presentation": {
 					//"hidden": true
@@ -258,7 +314,10 @@
 			},
 			{
 				"name": "Build And Exit",
-				"configurations": ["Render", "BuildAndExitServer"],
+				"configurations": [
+					"Render",
+					"BuildAndExitServer"
+				],
 				"stopAll": true,
 				"presentation": {
 					//"hidden": true
