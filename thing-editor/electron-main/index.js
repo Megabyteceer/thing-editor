@@ -16,6 +16,7 @@ console.log = (txt) => {
 };
 
 const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
+const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -45,7 +46,7 @@ const createWindow = () => {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			additionalArguments: [
-				'--js-flags="--max_old_space_size=8192',
+				IS_CI_RUN ? '' : '--js-flags="--max_old_space_size=8192',
 				'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data')
 				//"--wait-for-debugger"
 			],
