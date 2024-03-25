@@ -7,11 +7,8 @@ const queue = [];
 if (IS_CI_RUN) {
 	setInterval(() => {
 		if (queue.length) {
-			const o = queue.shift();
-			o.next();
-			console.log('resolved ' + o.url);
+			queue.shift()();
 		}
-
 	}, 50); // delay each response to prevent CI chrome crash
 }
 
@@ -21,7 +18,7 @@ module.exports = {
 	configureServer(server) {
 		if (IS_CI_RUN) {
 			server.middlewares.use((_req, _res, next) => {
-				queue.push({next, url: _req.originalUrl});
+				queue.push(next);
 			});
 		}
 	},
