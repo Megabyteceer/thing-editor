@@ -71,17 +71,6 @@ import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr f
 
 let previewedSound: HowlSound;
 
-window.addEventListener('error', (er) => {
-	fs.log('unhandled error (0):');
-	fs.log(er.error.stack);
-});
-window.addEventListener('unhandledrejection', (er) => {
-	fs.log('unhandled unhandledrejection (0):');
-	fs.log(er.reason);
-});
-
-fs.log('stage0');
-
 class Editor {
 
 	LanguageView = LanguageView;
@@ -137,8 +126,6 @@ class Editor {
 	}
 
 	constructor() {
-		fs.log('stage0.1');
-
 		const args = fs.getArgs();
 		for (let arg of args) {
 			if (arg.startsWith('--') && arg.indexOf('=') > 0) {
@@ -149,19 +136,24 @@ class Editor {
 			}
 		}
 
-		fs.log(JSON.stringify(this.editorArguments));
-
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
 
 		if (this.buildProjectAndExit) {
 			window.addEventListener('error', (er) => {
-				fs.log(er.error.stack);
+				fs.log('unhandled error:');
+				fs.exitWithResult(undefined, er.error.stack);
 			});
+			window.addEventListener('unhandledrejection', (er) => {
+				fs.log('unhandled rejection:');
+				fs.exitWithResult(undefined, er.reason);
+			});
+
 			setInterval(() => {
 				if (document.querySelector('vite-error-overlay')) {
-					fs.log('VITE OVERLAY');
+					fs.log('VITE OVERLAY:');
 					fs.log(document.querySelector('vite-error-overlay')!.textContent!);
+					fs.exitWithResult(undefined, 'vite-error-overlay show');
 				}
 			}, 1000);
 			R.icon = R.fragment as any;
@@ -169,7 +161,7 @@ class Editor {
 			R.img = R.fragment as any;
 			game.editor.settings.setItem('sound-muted', true);
 		}
-		fs.log('stage0.2');
+
 		this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 
 		game.__EDITOR_mode = true;
@@ -178,32 +170,27 @@ class Editor {
 		this.__saveProjectDescriptorInner = this.__saveProjectDescriptorInner.bind(this);
 		this.editProperty = this.editProperty.bind(this);
 		this.reloadClasses = this.reloadClasses.bind(this);
-		fs.log('stage0.3');
 	}
 
 	onUIMounted(ui: UI) {
-		fs.log('stage0.4');
 		window.setTimeout(() => {
 
 			this.ui = ui;
 			// load built in components
 
-			fs.log('this.buildProjectAndExit: ' + this.buildProjectAndExit);
+			fs.log('buildProjectAndExit: ' + this.buildProjectAndExit);
 
 			if (this.buildProjectAndExit) {
 				this.settings.setItem('last-opened-project', this.buildProjectAndExit);
 			}
-			fs.log('stage0.5');
+
 			if (this.settings.getItem('last-opened-project')) {
-				fs.log('stage0.6');
 				this.openProject(this.settings.getItem('last-opened-project'));
 			} else {
-				fs.log('stage0.7');
 				this.chooseProject(true);
 			}
 
 			window.onbeforeunload = (e) => {
-				fs.log('before-unload');
 				if (!this.restartInProgress && !this.__FatalError) {
 					if (this.askSceneToSaveIfNeed() === false) {
 						e.returnValue = false;
@@ -238,15 +225,11 @@ class Editor {
 		this.ui.modal.showSpinner();
 		let restorePrefabName = PrefabEditor.currentPrefabName;
 		let needRestoring = !restorePrefabName && game.__EDITOR_mode && game.editor.isCurrentContainerModified;
-		fs.log('lo1');
 		if (needRestoring) {
 			this.saveBackup();
 		}
-		fs.log('lo2');
 		this.ui.viewport.stopExecution();
-		fs.log('lo7');
 		await ClassesLoader.reloadClasses();
-		fs.log('lo6');
 		if (restorePrefabName) {
 			PrefabEditor.editPrefab(restorePrefabName);
 		} if (needRestoring) {
@@ -348,8 +331,6 @@ class Editor {
 		}
 		const newProjectDir = 'games/' + dir + '/';
 
-		fs.log('stage1');
-
 		if (newProjectDir !== this.currentProjectDir) {
 			this.currentProjectDir = newProjectDir;
 			this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
@@ -372,7 +353,7 @@ class Editor {
 			this.settingsLocal = new Settings('__EDITOR_project_' + projectDesc.id);
 
 			const libsProjectDescMerged = {} as ProjectDesc;
-			fs.log('stage2');
+
 			this.currentProjectLibs = projectDesc.libs.map(parseLibName);
 			this.currentProjectLibs.unshift({
 				name: 'thing-editor-embed',
@@ -407,7 +388,7 @@ class Editor {
 			if (libSchema) {
 				schemas.push(libSchema);
 			}
-			fs.log('stage3');
+
 			const mergedSchema = schemas[0];
 			for (const schema of schemas) {
 				if (schema !== mergedSchema) {
@@ -425,22 +406,21 @@ class Editor {
 			mergeProjectDesc(this.projectDesc, projectDesc);
 
 			excludeOtherProjects();
-			fs.log('stage4');
+
 			game.applyProjectDesc(this.projectDesc);
-			fs.log('preinit');
+
 			editorEvents.emit('gameWillBeInitialized');
-			fs.log('preinit2');
+
 			game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id);
 
 			game.stage.interactiveChildren = false;
 			protectAccessToSceneNode(game.stage, 'game stage');
 			protectAccessToSceneNode(game.stage.parent, 'PIXI stage');
-			fs.log('stage4.1');
+
 			await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
 				Lib.REMOVED_TEXTURE = t;
 				return Promise.all([this.reloadAssetsAndClasses(true)]);
 			});
-			fs.log('stage4.2');
 
 			if (this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {
 				this.saveLastSceneOpenName('');
@@ -448,7 +428,7 @@ class Editor {
 			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
 			editorEvents.emit('firstSceneWillOpen');
 			this.restoreBackup();
-			fs.log('stage4.3');
+
 			regeneratePrefabsTypings();
 			if (!this.buildProjectAndExit) {
 				fs.watchDirs(this.assetsFolders.slice(1)); //slice - exclude watching embed library.
@@ -457,16 +437,16 @@ class Editor {
 			this.isProjectOpen = true;
 
 			game.onResize();
-			fs.log('stage4.4');
+
 			this.settings.setItem('last-opened-project', dir);
 
 			this.validateResources();
-			fs.log('stage4.5');
+
 			editorEvents.emit('projectDidOpen');
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
-			fs.log('stage5');
+
 			if (this.buildProjectAndExit) {
 				await Build.build(false);
 				await Build.build(true);
@@ -869,9 +849,9 @@ class Editor {
 		if (refresh) {
 			fs.refreshAssetsList(this.assetsFolders);
 		}
-		fs.log('classes-will-load');
+
 		await this.reloadClasses();
-		fs.log('classes-loaded');
+
 		await waitForCondition(() => {
 			return game.loadingProgress === 100;
 		});

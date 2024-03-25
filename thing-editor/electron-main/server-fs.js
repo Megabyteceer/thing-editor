@@ -82,11 +82,6 @@ module.exports = (mainWindow) => {
 					return true;
 				}, event);
 				return;
-			case 'fs/sleep':
-				setTimeout(() => {
-					event.returnValue = true;
-				}, fileName);
-				return;
 			case 'fs/saveFile':
 				attemptFSOperation(() => {
 					ensureDirectoryExistence(fileName);

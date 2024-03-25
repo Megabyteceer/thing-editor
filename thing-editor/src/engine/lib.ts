@@ -945,7 +945,6 @@ const isAtlasAsset = (asset: any) => {
 };
 
 const __onAssetAdded = (file: FileDesc) => {
-	fs.log('asset added :' + file.fileName);
 	switch (file.assetType) {
 	case AssetType.PREFAB:
 		assert(!file.asset, 'asset reference of added file should be empty.');

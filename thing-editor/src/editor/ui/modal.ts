@@ -123,8 +123,10 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 
 	showModal(content: ComponentChild, title: ComponentChild = '', noEasyClose = false, toBottom = false): Promise<any> {
-		fs.log('modal-show');
-		fs.log(getCurrentStack('modal show').stack);
+		if (game.editor.buildProjectAndExit) {
+			fs.log('editor.ui.modal.showModal() called');
+			fs.exitWithResult(undefined, getCurrentStack('modal show').stack);
+		}
 		game.editor.blurPropsInputs();
 		return new Promise((resolve) => {
 			modal.state.modals[toBottom ? 'unshift' : 'push']({ content, title, noEasyClose, resolve });
@@ -214,6 +216,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 		if (game.editor.buildProjectAndExit) {
 			fs.log(JSON.stringify(message));
+			fs.exitWithResult(undefined, 'editor modal question shown.');
 		} else {
 			return this.showModal(R.div(null, message,
 				R.div(questionFooterProps,

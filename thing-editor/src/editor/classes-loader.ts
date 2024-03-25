@@ -42,11 +42,9 @@ export default class ClassesLoader {
 		this.isClassesWaitsReloading = false;
 
 		let oneClassNameFixed = false;
-		fs.log('classes-load-stage1');
+
 		return Promise.all(files.map((file): SourceMappedConstructor => {
-			fs.log('classes-file-load:' + file.fileName);
 			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {
-				fs.log('loaded-loaded:' + file.fileName);
 				const RawClass = module.default;
 				if (!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
 					game.editor.editSource(file.fileName);
@@ -64,9 +62,6 @@ export default class ClassesLoader {
 				let instance: Container = new (Class as any)() as Container;
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
-
-				fs.log('classes-load1: ' + className);
-
 				if (className.startsWith('_')) {
 					if (
 						(className.startsWith('_') && !file.fileName.includes('/_')) ||
@@ -154,8 +149,6 @@ export default class ClassesLoader {
 					}
 				}
 
-				fs.log('classes-load2: ' + className);
-
 				if ((Class.__editablePropsRaw.length < 1) || (Class.__editablePropsRaw[0].type !== 'splitter')) {
 					_editableEmbed(Class, className + '-splitter', {
 						type: 'splitter',
@@ -174,17 +167,13 @@ export default class ClassesLoader {
 			if (versionQuery) {
 				moduleName += '.ts' + versionQuery;
 			}
-			try {
-				return imp(moduleName).then(onClassLoaded).catch((er) => {
-					fs.log('imp-err: ' + moduleName + '; ' + er.stack);
-				}) as any;
-			} catch (er) {
-				fs.log('imp-err2: ' + moduleName + '; ' + (er as any).stack);
-				return undefined as any;
-			}
+
+			return imp(moduleName).then(onClassLoaded).catch((er) => {
+				fs.log('class import error: ' + moduleName + '; ' + er.stack);
+			}) as any;
 
 		})).then((_classes: SourceMappedConstructor[]) => {
-			fs.log('classes-load-stage2');
+
 			let classes: GameClasses = {} as any;
 
 			for (let c of _classes) {
@@ -257,14 +246,12 @@ export default class ClassesLoader {
 					}
 				}
 			}
-			fs.log('classes-load-stage3');
 			regenerateClassesTypings();
 			if (!oneClassNameFixed) {
 				game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
 			}
 			return classes;
-		}).catch((er) => {
-			fs.log(er.stack);
+		}).catch((_er) => {
 			return undefined;
 		});
 	}
@@ -272,6 +259,5 @@ export default class ClassesLoader {
 
 // vite dynamic imports broke sourcemaps lines; Thats why import moved to the bottom of the file.
 const imp = (moduleName: string) => {
-	fs.log('imp-path: ' + moduleName);
 	return import(/* @vite-ignore */ `${moduleName}.ts`);
 };
