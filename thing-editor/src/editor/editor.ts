@@ -140,6 +140,7 @@ class Editor {
 		game.editor = this;
 
 		if (this.buildProjectAndExit) {
+			this.editorArguments['no-vscode-integration'] = true;
 			window.addEventListener('error', (er) => {
 				fs.log('unhandled error:');
 				fs.exitWithResult(undefined, er.error.stack);
