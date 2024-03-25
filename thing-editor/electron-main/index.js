@@ -102,10 +102,9 @@ const createWindow = () => {
 	const EDITOR_VITE_ROOT = 'http://localhost:5173/thing-editor/';
 	const loadEditorIndexHTML = () => {
 		mainWindow.setOpacity(1);
-		mainWindow.loadURL(EDITOR_VITE_ROOT);
 		if (IS_CI_RUN) {
 			delay = 1000;
-			mainWindow.on('did-fail-load', () => {
+			mainWindow.webContents.on('did-fail-load', () => {
 				setTimeout(() => {
 					console.log('reload attempt');
 					mainWindow.reload();
@@ -113,6 +112,8 @@ const createWindow = () => {
 				}, delay);
 			});
 		}
+
+		mainWindow.loadURL(EDITOR_VITE_ROOT);
 	};
 
 	if (IS_DEBUG) {
