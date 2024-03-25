@@ -159,7 +159,6 @@ class Editor {
 			R.icon = R.fragment as any;
 			R.imageIcon = R.fragment as any;
 			R.img = R.fragment as any;
-			window.document.body.style.display = 'none';
 			game.editor.settings.setItem('sound-muted', true);
 		}
 
@@ -438,6 +437,10 @@ class Editor {
 			this.isProjectOpen = true;
 
 			game.onResize();
+
+			if (this.buildProjectAndExit) {
+				window.document.body.style.display = 'none';
+			}
 
 			this.settings.setItem('last-opened-project', dir);
 
