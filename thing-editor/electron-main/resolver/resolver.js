@@ -4,7 +4,7 @@ const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
 
 const queue = [];
 
-if (isCIrun) {
+if (IS_CI_RUN) {
 	setInterval(() => {
 		if (queue.length) {
 			const o = queue.shift();
@@ -19,7 +19,7 @@ module.exports = {
 	name: 'thing-editor:resolver',
 
 	configureServer(server) {
-		if (isCIrun) {
+		if (IS_CI_RUN) {
 			server.middlewares.use((_req, _res, next) => {
 				queue.push({next, url: _req.originalUrl});
 			});
