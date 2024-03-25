@@ -208,6 +208,13 @@ export default class Lib
 	}
 
 	static addTexture(name: string, textureURL: string | Texture, attempt = 0) {
+		/// #if EDITOR
+		if (game.editor.buildProjectAndExit) {
+			if (typeof textureURL === 'string') {
+				textureURL = Texture.WHITE;
+			}
+		}
+		/// #endif
 
 		if (typeof textureURL === 'string') {
 
