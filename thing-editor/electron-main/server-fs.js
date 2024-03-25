@@ -184,7 +184,6 @@ module.exports = (mainWindow) => {
 				return;
 			case 'fs/sounds-build':
 				require('./build-sounds.js')(fileName, notify).then((res) => {
-					console.log('sounds build called back');
 					event.returnValue = res;
 				});
 				return;
