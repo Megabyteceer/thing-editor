@@ -246,7 +246,7 @@ export default class Lib
 						game.loadingRemove(textureURL);
 					}, attempt * 1000);
 				} else {
-					game._onLoadingError(textureURL);
+					game._onLoadingError(textureURL as string);
 				}
 			});
 		} else {

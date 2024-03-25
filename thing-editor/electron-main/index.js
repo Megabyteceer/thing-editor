@@ -141,6 +141,12 @@ app.whenReady().then(() => {
 	});
 });
 
+app.on('render-process-gone', (_event, _webContents, details) => {
+	console.log('render-process-gone:');
+	console.log(JSON.stringify(details));
+	app.quit();
+});
+
 app.on('window-all-closed', () => {
 	console.log('thing-editor exit');
 	app.quit();

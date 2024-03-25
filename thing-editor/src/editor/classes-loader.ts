@@ -16,7 +16,6 @@ import ___GizmoArrow from 'thing-editor/src/engine/lib/assets/src/___system/gizm
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
-
 const EMBED_CLASSES_NAMES_FIXER: Map<any, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
 EMBED_CLASSES_NAMES_FIXER.set(Sprite, 'Sprite');
@@ -38,14 +37,16 @@ export default class ClassesLoader {
 	static async reloadClasses(): Promise<GameClasses | undefined> {
 
 		componentsVersion++;
-		fs.log('lo3');
+
 		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
 		this.isClassesWaitsReloading = false;
-		fs.log('lo4');
+
 		let oneClassNameFixed = false;
-		const loadFunc = async (file: FileDescClass):Promise< SourceMappedConstructor> => {
+		fs.log('classes-load-stage1');
+		return Promise.all(files.map((file): SourceMappedConstructor => {
+			fs.log('classes-file-load:' + file.fileName);
 			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {
-				fs.log('class-loaded:' + file.fileName);
+				fs.log('loaded-loaded:' + file.fileName);
 				const RawClass = module.default;
 				if (!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
 					game.editor.editSource(file.fileName);
@@ -63,6 +64,8 @@ export default class ClassesLoader {
 				let instance: Container = new (Class as any)() as Container;
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
+
+				fs.log('classes-load1: ' + className);
 
 				if (className.startsWith('_')) {
 					if (
@@ -151,6 +154,8 @@ export default class ClassesLoader {
 					}
 				}
 
+				fs.log('classes-load2: ' + className);
+
 				if ((Class.__editablePropsRaw.length < 1) || (Class.__editablePropsRaw[0].type !== 'splitter')) {
 					_editableEmbed(Class, className + '-splitter', {
 						type: 'splitter',
@@ -169,100 +174,99 @@ export default class ClassesLoader {
 			if (versionQuery) {
 				moduleName += '.ts' + versionQuery;
 			}
-			fs.log('lo77');
-			return imp(moduleName).then(onClassLoaded).catch((er) => {
-				fs.log('imp-err: ' + moduleName + '; ' + er.stack);
-			}) as any;
-			fs.log('lo78');
-		};
-
-		fs.sleep(4000);
-
-		const _classes = [] as SourceMappedConstructor[];
-
-		for (let file of files) {
-			_classes.push(await loadFunc(file));
-			fs.sleep(40);
-		}
-
-		let classes: GameClasses = {} as any;
-
-		for (let c of _classes) {
-			if (!c) {
-				return;
+			try {
+				return imp(moduleName).then(onClassLoaded).catch((er) => {
+					fs.log('imp-err: ' + moduleName + '; ' + er.stack);
+				}) as any;
+			} catch (er) {
+				fs.log('imp-err2: ' + moduleName + '; ' + (er as any).stack);
+				return undefined as any;
 			}
-			const className = c.__className;
 
-			if (classes[className]) {
-				game.editor.editClassSource(c);
-				game.editor.showError(R.div(null,
-					'class ',
-					R.b(null, className),
-					'" (' + c.__sourceFileName + ') overrides existing class ',
-					R.b(null, (classes[className].__sourceFileName)),
-					'. Please change your class name.'), 30008);
+		})).then((_classes: SourceMappedConstructor[]) => {
+			fs.log('classes-load-stage2');
+			let classes: GameClasses = {} as any;
+
+			for (let c of _classes) {
+				if (!c) {
+					return;
+				}
+				const className = c.__className;
+
+				if (classes[className]) {
+					game.editor.editClassSource(c);
+					game.editor.showError(R.div(null,
+						'class ',
+						R.b(null, className),
+						'" (' + c.__sourceFileName + ') overrides existing class ',
+						R.b(null, (classes[className].__sourceFileName)),
+						'. Please change your class name.'), 30008);
+				}
+				classes[className] = c;
+
 			}
-			classes[className] = c;
 
-		}
+			Lib._setClasses(classes);
 
-		Lib._setClasses(classes);
+			for (let c of _classes) {
 
-		for (let c of _classes) {
+				let superClass = c;
 
-			let superClass = c;
-
-			const allProps: EditablePropertyDesc[] = [];
-			while (superClass.__editablePropsRaw) {
-				if (superClass.hasOwnProperty('__editablePropsRaw')) {
+				const allProps: EditablePropertyDesc[] = [];
+				while (superClass.__editablePropsRaw) {
+					if (superClass.hasOwnProperty('__editablePropsRaw')) {
 						allProps!.unshift.apply(allProps, superClass.__editablePropsRaw);
 						Object.assign(c.__defaultValues, superClass.__defaultValues);
 						if (allProps[0].name === '__root-splitter') {
 							break;
 						}
-				}
-				superClass = (superClass as any).__proto__;
-			}
-
-			const editableProps: EditablePropertyDesc[] = [];
-			const existingProps: Set<string> = new Set();
-
-			for (const thisProp of allProps) {
-				if (existingProps.has(thisProp.name)) {
-					const sameNamedPropIndex = editableProps.findIndex(p => p.name === thisProp.name);
-					const existingProp = editableProps[sameNamedPropIndex];
-					if (!thisProp.override) {
-						game.editor.editSource(thisProp.__src);
-						game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + existingProp, 40004);
-					} else {
-
-						editableProps[sameNamedPropIndex] = Object.assign({}, existingProp, thisProp);
-						if (thisProp.hasOwnProperty('default')) {
-							c.__defaultValues[thisProp.name] = thisProp.default;
-						}
 					}
-				} else {
-					editableProps.push(thisProp);
-					existingProps.add(thisProp.name);
+					superClass = (superClass as any).__proto__;
+				}
+
+				const editableProps: EditablePropertyDesc[] = [];
+				const existingProps: Set<string> = new Set();
+
+				for (const thisProp of allProps) {
+					if (existingProps.has(thisProp.name)) {
+						const sameNamedPropIndex = editableProps.findIndex(p => p.name === thisProp.name);
+						const existingProp = editableProps[sameNamedPropIndex];
+						if (!thisProp.override) {
+							game.editor.editSource(thisProp.__src);
+							game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + existingProp, 40004);
+						} else {
+
+							editableProps[sameNamedPropIndex] = Object.assign({}, existingProp, thisProp);
+							if (thisProp.hasOwnProperty('default')) {
+								c.__defaultValues[thisProp.name] = thisProp.default;
+							}
+						}
+					} else {
+						editableProps.push(thisProp);
+						existingProps.add(thisProp.name);
+					}
+				}
+
+				c.__editableProps = editableProps;
+
+				if (!c.hasOwnProperty('__EDITOR_icon')) {
+					if (c.prototype instanceof MovieClip) {
+						c.__EDITOR_icon = 'tree/movie-custom';
+					} else {
+						c.__EDITOR_icon = 'tree/game';
+					}
 				}
 			}
-
-			c.__editableProps = editableProps;
-
-			if (!c.hasOwnProperty('__EDITOR_icon')) {
-				if (c.prototype instanceof MovieClip) {
-					c.__EDITOR_icon = 'tree/movie-custom';
-				} else {
-					c.__EDITOR_icon = 'tree/game';
-				}
+			fs.log('classes-load-stage3');
+			regenerateClassesTypings();
+			if (!oneClassNameFixed) {
+				game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
 			}
-		}
-		regenerateClassesTypings();
-		if (!oneClassNameFixed) {
-			game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
-		}
-		return classes;
-
+			return classes;
+		}).catch((er) => {
+			fs.log(er.stack);
+			return undefined;
+		});
 	}
 }
 

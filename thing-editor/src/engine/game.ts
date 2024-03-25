@@ -484,6 +484,9 @@ class Game {
 		if (!document.fullscreenElement) {
 			S = 1;
 		}
+		if (this.editor.buildProjectAndExit) {
+			S = 1/16;
+		}
 		/// #endif
 
 		if (this.pixiApp && this.pixiApp.renderer) {

@@ -164,6 +164,10 @@ class Editor {
 					fs.log(document.querySelector('vite-error-overlay')!.textContent!);
 				}
 			}, 1000);
+			R.icon = R.fragment as any;
+			R.imageIcon = R.fragment as any;
+			R.img = R.fragment as any;
+			game.editor.settings.setItem('sound-muted', true);
 		}
 		fs.log('stage0.2');
 		this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
