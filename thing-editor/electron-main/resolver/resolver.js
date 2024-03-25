@@ -1,7 +1,28 @@
 const moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
+const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
+
+const queue = [];
+
+if (IS_CI_RUN) {
+	setInterval(() => {
+		if (queue.length) {
+			queue.shift()();
+		}
+	}, 50); // delay each response to prevent CI chrome crash
+}
+
 module.exports = {
 	name: 'thing-editor:resolver',
+
+	configureServer(server) {
+		if (IS_CI_RUN) {
+			server.middlewares.use((_req, _res, next) => {
+				queue.push(next);
+			});
+		}
+	},
+
 	transform(src, id) {
 
 		if (id.indexOf('.ts?') > 0) {
