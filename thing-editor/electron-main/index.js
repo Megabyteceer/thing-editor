@@ -46,8 +46,6 @@ const createWindow = () => {
 			preload: path.join(__dirname, 'preload.js'),
 			additionalArguments: [
 				'--js-flags="--max_old_space_size=8192',
-				'--disable-gpu',
-				'--headless',
 				'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data')
 				//"--wait-for-debugger"
 			],

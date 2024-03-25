@@ -7,7 +7,7 @@ import HowlSound from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
-
+import IndexedDBUtils from 'thing-editor/src/engine/utils/indexed-db-utils';
 const MIN_VOL_ENABLE = 0.05;
 
 function normalizeVolForEnabling(vol: number, defaultVol: number) {
@@ -380,9 +380,175 @@ function highlightPlayedSound(soundId: string) {
 	}
 }
 
+let libSounds: KeyedMap<HowlSound>;
 function __loadSoundOverrides() {
-
+	if (!libSounds) {
+		libSounds = Lib.sounds;
+		for (let sndName in libSounds) {
+			const data = IndexedDBUtils.load(sndName, 'sound');
+			if (data) {
+				overrideSound(sndName, data.data);
+			}
+		}
+	}
 }
+
+function showSndDebugger() {
+
+	/// #if EDITOR
+	//return;
+	/// #endif
+
+	// sounds playing animation
+	document.head.insertAdjacentHTML('beforeend', `<style>
+	.animate-sound-play {
+		animation: color-change 5s infinite;
+	  }
+	  
+	  @keyframes color-change {
+		0% { color: white; }
+		1% { color: green; }
+		100% { color: white; }
+	  }
+	   </style>`);
+
+	if (!sndDebugger) { // eslint-disable-line no-unreachable
+		sndDebugger = document.createElement('div');
+		sndDebugger.style.position = 'fixed';
+		sndDebugger.style.right = '0';
+		sndDebugger.style.top = '0';
+		sndDebugger.style.zIndex = '10000';
+		sndDebugger.style.color = '#ffffff';
+		sndDebugger.style.background = '#000000';
+		sndDebugger.style.padding = '5vh';
+		sndDebugger.style.margin = '5vh';
+		sndDebugger.style.maxHeight = '90vh';
+		sndDebugger.style.overflowY = 'auto';
+		document.body.appendChild(sndDebugger);
+		__loadSoundOverrides();
+	}
+
+	sndDebuggerShowed = true; // eslint-disable-line no-unreachable
+	sndDebugger.style.display = 'block';
+
+	let soundNames: KeyedObject = {};
+
+	let txt = [`<style>
+	.sounds-debug-panel button {
+		cursor: pointer;
+		border-radius: 20px;
+		border: none;
+		background: #333333;
+		color: #ffffff;
+	}
+
+	.sounds-debug-panel table {
+		margin-bottom: 10px;
+	}
+
+	.sounds-debug-panel tr:hover {
+		background: #141414;
+	}
+	
+	.sounds-debug-panel td button,
+	.sounds-debug-panel td {
+		padding: 2px 10px;
+	}
+
+	.sounds-debug-panel .snd-clear {
+		background: #990000;
+	}
+	</style><div class="sounds-debug-panel"><table border="0" cellspacing="0" cellpadding="0">`];
+	let i = 0;
+	let libSounds = Lib.__soundsList;
+	for (let sndName in libSounds) {
+		soundNames[i] = sndName;
+		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName +
+			'</b></td><td><button class="snd-override">Choose...</button></td><td>');
+		const overrideData = IndexedDBUtils.load(sndName, 'sound')!;
+		if (overrideData) {
+			txt.push(' ЗАГРУЖЕН (' + overrideData!.fileName + ')</td><td><button class="snd-clear">x</button>');
+		} else {
+			txt.push('-</td><td>-');
+		}
+		txt.push('</td></tr>');
+		i++;
+	}
+	txt.push('</table>');
+	txt.push('<button id="export-skin-button">Export pack...</button>');
+	txt.push('<button id="import-skin-button">Import pack...</button>');
+	txt.push('</div>');
+	sndDebugger.innerHTML = txt.join('');
+
+	function sndNameByEvent(ev: InputEvent) {
+		let t: HTMLElement | null = ev.target as HTMLElement;
+		while (t) {
+			if (t.id && t.id.indexOf('-soundNum') > 0) {
+				return soundNames[parseInt(t.id)];
+			}
+			t = t.parentElement;
+		}
+	}
+
+	for (let fileChooser of document.querySelectorAll('.snd-override') as any as HTMLInputElement[]) { // eslint-disable-line no-unreachable
+
+		fileChooser.addEventListener('click', async function (ev: any) {
+
+			let sndName = sndNameByEvent(ev);
+			const sndData = await IndexedDBUtils.openFile(sndName);
+			let a = new Audio(sndData.data);
+			a.play();
+			window.setTimeout(() => {
+				a.pause();
+			}, 2000);
+			overrideSound(sndName, sndData.data);
+			showSndDebugger();
+		});
+	}
+
+	document.querySelector('#export-skin-button')?.addEventListener('click', () => {
+		IndexedDBUtils.export();
+	});
+
+	document.querySelector('#import-skin-button')?.addEventListener('click', () => {
+		IndexedDBUtils.import();
+	});
+
+	for (let a of document.querySelectorAll('.snd-name')) { // eslint-disable-line no-unreachable
+		a.addEventListener('click', (ev: any) => {
+			let sndName = sndNameByEvent(ev);
+			Sound.play(sndName);
+			if (timeouts[sndName]) {
+				clearTimeout(timeouts[sndName]);
+				delete timeouts[sndName];
+			}
+			timeouts[sndName] = window.setTimeout(() => {
+				Lib.getSound(sndName).stop();
+			}, 2000);
+		});
+	}
+
+	for (let clearBtn of document.querySelectorAll('.snd-clear')) { // eslint-disable-line no-unreachable
+		clearBtn.addEventListener('click', (ev) => {
+			const soundName = sndNameByEvent(ev as InputEvent);
+			IndexedDBUtils.save(soundName, 'sound');
+			showSndDebugger();
+			overrideSound(soundName);
+		});
+	}
+}
+
+const timeouts: KeyedMap<number> = {};
+
+window.addEventListener('keydown', (ev) => {
+	if (ev.keyCode === 115) {
+		if (sndDebuggerShowed) {
+			hideSndDebugger();
+			return;
+		}
+		showSndDebugger();
+	}
+});
 
 
 /// #endif

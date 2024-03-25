@@ -1,6 +1,6 @@
 const moduleImportFixer = /(^\s*import.+from\s*['"][^'"]+)(['"])/gm;
 
-const isCIrun = process.env.ELECTRON_ENABLE_LOGGING==='true';
+const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
 
 const queue = [];
 

@@ -168,9 +168,7 @@ export default class ClassesLoader {
 				moduleName += '.ts' + versionQuery;
 			}
 
-			return imp(moduleName).then(onClassLoaded).catch((er) => {
-				fs.log('class import error: ' + moduleName + '; ' + er.stack);
-			}) as any;
+			return imp(moduleName).then(onClassLoaded) as any;
 
 		})).then((_classes: SourceMappedConstructor[]) => {
 
@@ -251,8 +249,6 @@ export default class ClassesLoader {
 				game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
 			}
 			return classes;
-		}).catch((_er) => {
-			return undefined;
 		});
 	}
 }

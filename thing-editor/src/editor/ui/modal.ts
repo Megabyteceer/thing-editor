@@ -125,7 +125,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	showModal(content: ComponentChild, title: ComponentChild = '', noEasyClose = false, toBottom = false): Promise<any> {
 		if (game.editor.buildProjectAndExit) {
 			fs.log('editor.ui.modal.showModal() called');
-			fs.exitWithResult(undefined, getCurrentStack('modal show').stack);
+			fs.exitWithResult(undefined, getCurrentStack('modal shown').stack);
 		}
 		game.editor.blurPropsInputs();
 		return new Promise((resolve) => {
