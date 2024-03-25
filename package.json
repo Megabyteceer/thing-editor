@@ -18,7 +18,7 @@
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "chokidar": "^3.5.3",
-    "electron": "^19.1",
+    "electron": "^29.1.5",
     "electron-settings": "^4.0.2",
     "eslint": "^8.42.0",
     "events": "^3.3.0",
