@@ -159,6 +159,7 @@ class Editor {
 			R.icon = R.fragment as any;
 			R.imageIcon = R.fragment as any;
 			R.img = R.fragment as any;
+			window.document.body.style.display = 'none';
 			game.editor.settings.setItem('sound-muted', true);
 		}
 
