@@ -102,17 +102,14 @@ const createWindow = () => {
 	const loadEditorIndexHTML = () => {
 		mainWindow.setOpacity(1);
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
-
-		setTimeout(() => {
-			mainWindow.webContents.executeJavaScript(`function gethtml () {
-				return new Promise((resolve, reject) => { resolve(document.documentElement.innerHTML); });
-				}
-				gethtml();`).then((html) => {
-				console.log(html);
-			  });
-		}, 120000);
-
-
+		delay = 1000;
+		mainWindow.on('did-fail-load', () => {
+			setTimeout(() => {
+				console.log('reload attempt');
+				mainWindow.reload();
+				delay += 1000;
+			}, delay);
+		});
 	};
 
 	if (IS_DEBUG) {
