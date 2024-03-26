@@ -14,6 +14,7 @@
     "block-spacing": "warn",
     "space-before-blocks": "warn",
     "keyword-spacing": "warn",
+    "space-infix-ops": "warn",
     "space-in-parens": "warn",
     "comma-spacing": "warn",
     "@typescript-eslint/key-spacing": "warn",
