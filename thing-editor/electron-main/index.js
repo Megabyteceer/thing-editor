@@ -92,9 +92,6 @@ const createWindow = () => {
 
 	nativeTheme.themeSource = 'dark';
 
-
-	require('./pixi-typings-patch.js')(mainWindow);
-
 	require('./server-fs.js')(mainWindow);
 
 	const EDITOR_VITE_ROOT = 'http://localhost:5173/thing-editor/';
