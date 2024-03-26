@@ -39,11 +39,11 @@ module.exports = {
 				if (!_substr.includes('.css?inline"')) {
 					if (m1.includes('".')) { // relative imports treats games or libs if imported from games or libs
 						if (id.startsWith(gamesPath) || id.startsWith(libsPath)) {
-						//	return m1 + query + m2;
+							return m1 + query + m2;
 						}
 					} else {
 						if (m1.includes('from \"games/') || m1.includes('from \"libs/')) {
-						//	return m1 + query + m2;
+							return m1 + query + m2;
 						}
 					}
 				}
