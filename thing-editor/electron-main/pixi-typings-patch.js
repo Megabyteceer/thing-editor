@@ -1,4 +1,7 @@
 // add vscode intellisense for injected methods
+
+const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
+
 let patches = [];
 const PATCH_BEGIN = ` // thing-editor patch begin
 `;
@@ -212,6 +215,9 @@ function tryToPatch(folder, mainWindow) {
 }
 
 module.exports = function (mainWindow) {
+	if (IS_CI_RUN) {
+		return;
+	}
 	let projectRoot = path.join(__dirname, '../..');
 	tryToPatch(path.join(__dirname, '..'));
 	while (fs.existsSync(projectRoot)) {
