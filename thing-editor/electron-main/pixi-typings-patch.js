@@ -1,6 +1,6 @@
 // add vscode intellisense for injected methods
 
-const IS_CI_RUN = !!process.env.CI_COMMIT_REF_NAME;
+const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
 
 let patches = [];
 const PATCH_BEGIN = ` // thing-editor patch begin
