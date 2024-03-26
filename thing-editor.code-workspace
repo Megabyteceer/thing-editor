@@ -28,8 +28,6 @@
 			"**/___editor_backup_*": true,
 			"**/.svn": true,
 			"**/.hg": true,
-			"**/*.p.json": true,
-			"**/*.s.json": true,
 			"**/*.wav": true,
 			"**/*.ogg": true,
 			"**/*.psd": true,
