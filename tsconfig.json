@@ -31,6 +31,7 @@
     "baseUrl": "./."
   },
   "include": [
+    "**/*.mjs",
     "./games/example-project/",
     "./libs/example-lib",
     "thing-editor/src"
