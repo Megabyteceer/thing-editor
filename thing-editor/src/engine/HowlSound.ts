@@ -15,7 +15,21 @@ type HowlSoundOptions = HowlOptions
 export default class HowlSound extends Howl {
 
 	constructor(options: HowlOptions) {
+
+		/// #if EDITOR
+		if (game.editor.buildProjectAndExit) {
+			options.preload = false;
+		}
+		/// #endif
+
 		super(options);
+
+		/// #if EDITOR
+		if (game.editor.buildProjectAndExit) {
+			return;
+		}
+		/// #endif
+
 		game.loadingAdd(this);
 		this.once('load', () => {
 			game.loadingRemove(this);
@@ -32,7 +46,6 @@ export default class HowlSound extends Howl {
 
 		this.on('loaderror', () => {
 			if (attempt < 3 && !game._loadingErrorIsDisplayed) {
-				console.log(attempt);
 				attempt++;
 				window.setTimeout(() => {
 					this.load();

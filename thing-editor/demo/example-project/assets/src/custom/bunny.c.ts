@@ -1,11 +1,14 @@
 
 
+import fs from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import game from 'thing-editor/src/engine/game';
 import DSprite from 'thing-editor/src/engine/lib/assets/src/basic/d-sprite.c';
 
 
 let FLOOR_Y = 0;
+
+fs.log('BUNNY LOG');
 
 export default class Bunny extends DSprite {
 

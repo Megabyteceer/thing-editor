@@ -49,12 +49,12 @@ module.exports = (mainWindow) => {
 		let isDebug;
 		try {
 			switch (command) {
-				case 'fs/run':
-					args[0].unshift(notify);
-					return await require(path.join('../..', fileName)).apply(null, args[0]);
-				case 'fs/build':
-					isDebug = content;
-					return await require('./build.js').build(fileName, isDebug, args[0]);
+			case 'fs/run':
+				args[0].unshift(notify);
+				return await require(path.join('../..', fileName)).apply(null, args[0]);
+			case 'fs/build':
+				isDebug = content;
+				return await require('./build.js').build(fileName, isDebug, args[0]);
 			}
 		} catch (er) {
 			console.error(er);
@@ -76,120 +76,120 @@ module.exports = (mainWindow) => {
 
 		try {
 			switch (command) {
-				case 'fs/delete':
-					attemptFSOperation(() => {
-						fs.unlinkSync(fn(fileName));
-						return true;
-					}, event);
-					return;
-				case 'fs/saveFile':
-					attemptFSOperation(() => {
-						ensureDirectoryExistence(fileName);
-						const fileNameParsed = fn(fileName);
-						fd = fs.openSync(fileNameParsed, 'w');
-						fs.writeSync(fd, content);
-						fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
-						return fs.statSync(fileNameParsed).mtimeMs;
-					}, event);
-					return;
-				case 'fs/log':
-					console.log(fileName);
-					event.returnValue = true;
-					return;
-				case 'fs/copyFile':
-					attemptFSOperation(() => {
-						const from = fn(fileName);
-						const to = fn(content);
-						ensureDirectoryExistence(content);
-						fs.copyFileSync(from, to);
-						return true;
-					}, event);
-					return;
-				case 'fs/exists':
-					event.returnValue = fs.existsSync(fn(fileName));
-					return;
-				case 'fs/readFileIfExists':
-					if (fs.existsSync(fn(fileName))) {
-						fd = fs.openSync(fn(fileName), 'r');
-						c = fs.readFileSync(fd, fsOptions);
-						fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
-						event.returnValue = c;
-					} else {
-						event.returnValue = null;
-					}
-					return;
-				case 'fs/readFile':
+			case 'fs/delete':
+				attemptFSOperation(() => {
+					fs.unlinkSync(fn(fileName));
+					return true;
+				}, event);
+				return;
+			case 'fs/saveFile':
+				attemptFSOperation(() => {
+					ensureDirectoryExistence(fileName);
+					const fileNameParsed = fn(fileName);
+					fd = fs.openSync(fileNameParsed, 'w');
+					fs.writeSync(fd, content);
+					fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
+					return fs.statSync(fileNameParsed).mtimeMs;
+				}, event);
+				return;
+			case 'fs/log':
+				console.log('FS-LOG: ' + fileName);
+				event.returnValue = true;
+				return;
+			case 'fs/copyFile':
+				attemptFSOperation(() => {
+					const from = fn(fileName);
+					const to = fn(content);
+					ensureDirectoryExistence(content);
+					fs.copyFileSync(from, to);
+					return true;
+				}, event);
+				return;
+			case 'fs/exists':
+				event.returnValue = fs.existsSync(fn(fileName));
+				return;
+			case 'fs/readFileIfExists':
+				if (fs.existsSync(fn(fileName))) {
 					fd = fs.openSync(fn(fileName), 'r');
 					c = fs.readFileSync(fd, fsOptions);
 					fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
 					event.returnValue = c;
-					return;
-				case 'fs/readDir':
-					ret = walkSync(fileName, []);
-					assetsLoaderPath = process.cwd() + '/' + fileName + 'assets-loader.cjs';
-					if (fs.existsSync(assetsLoaderPath)) {
-						require(assetsLoaderPath)(ret, content /* ProjectDesc */);
-					}
-					event.returnValue = ret;
-					return;
-				case 'fs/watchDirs':
-					event.returnValue = watchFolders(fileName, onFileChange);
-					return;
-				case 'fs/isFilesEqual':
-					event.returnValue = isFilesEqual(fn(fileName), fn(content));
-					return;
-				case 'fs/enumProjects':
-					event.returnValue = enumProjects();
-					return;
-				case 'fs/getFileHash':
-					event.returnValue = getFileHash(fn(fileName));
-					return;
-				case 'fs/exitWithResult':
-					success = fileName;
-					error = content;
-					if (error) {
-						console.error(error);
-					} else if (success) {
-						console.log(success);
-					}
-					//dialog.showMessageBox(mainWindow, 'process.exit', error || success);
-					process.exit(error ? 1 : 0);
-					return;
-				case 'fs/showQuestion':
-					buttons = Object.values(args).filter(b => b);
-					event.returnValue = dialog.showMessageBoxSync(mainWindow, {
-						title: fileName,
-						message: content,
-						buttons,
-						defaultId: 0,
-						cancelId: buttons.length - 1
-					});
-					return;
-				case 'fs/browseDir':
-					explorer;
-					switch (require('os').platform()) {
-						case 'win32': explorer = 'explorer'; break;
-						case 'linux': explorer = 'xdg-open'; break;
-						case 'darwin': explorer = 'open'; break;
-					}
-					require('child_process').spawn(explorer, [fn(fileName)], {detached: true}).unref();
-					event.returnValue = true;
-					return;
-				case 'fs/showFile':
-					shell.showItemInFolder(fn(fileName));
-					event.returnValue = true;
-					return;
-				case 'fs/get-args':
-					event.returnValue = process.argv;
-					return;
-				case 'fs/sounds-build':
-					require('./build-sounds.js')(fileName, notify).then((res) => {
-						event.returnValue = res;
-					});
-					return;
-				default:
-					event.returnValue = new Error('unknown fs command: ' + command + ': ' + (fileName || ''));
-					return;
+				} else {
+					event.returnValue = null;
+				}
+				return;
+			case 'fs/readFile':
+				fd = fs.openSync(fn(fileName), 'r');
+				c = fs.readFileSync(fd, fsOptions);
+				fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
+				event.returnValue = c;
+				return;
+			case 'fs/readDir':
+				ret = walkSync(fileName, []);
+				assetsLoaderPath = process.cwd() + '/' + fileName + 'assets-loader.cjs';
+				if (fs.existsSync(assetsLoaderPath)) {
+					require(assetsLoaderPath)(ret, content /* ProjectDesc */);
+				}
+				event.returnValue = ret;
+				return;
+			case 'fs/watchDirs':
+				event.returnValue = watchFolders(fileName, onFileChange);
+				return;
+			case 'fs/isFilesEqual':
+				event.returnValue = isFilesEqual(fn(fileName), fn(content));
+				return;
+			case 'fs/enumProjects':
+				event.returnValue = enumProjects();
+				return;
+			case 'fs/getFileHash':
+				event.returnValue = getFileHash(fn(fileName));
+				return;
+			case 'fs/exitWithResult':
+				success = fileName;
+				error = content;
+				if (error) {
+					console.error(error);
+				} else if (success) {
+					console.log(success);
+				}
+				//dialog.showMessageBox(mainWindow, 'process.exit', error || success);
+				process.exit(error ? 1 : 0);
+				return;
+			case 'fs/showQuestion':
+				buttons = Object.values(args).filter(b => b);
+				event.returnValue = dialog.showMessageBoxSync(mainWindow, {
+					title: fileName,
+					message: content,
+					buttons,
+					defaultId: 0,
+					cancelId: buttons.length - 1
+				});
+				return;
+			case 'fs/browseDir':
+				explorer;
+				switch (require('os').platform()) {
+				case 'win32': explorer = 'explorer'; break;
+				case 'linux': explorer = 'xdg-open'; break;
+				case 'darwin': explorer = 'open'; break;
+				}
+				require('child_process').spawn(explorer, [fn(fileName)], {detached: true}).unref();
+				event.returnValue = true;
+				return;
+			case 'fs/showFile':
+				shell.showItemInFolder(fn(fileName));
+				event.returnValue = true;
+				return;
+			case 'fs/get-args':
+				event.returnValue = process.argv;
+				return;
+			case 'fs/sounds-build':
+				require('./build-sounds.js')(fileName, notify).then((res) => {
+					event.returnValue = res;
+				});
+				return;
+			default:
+				event.returnValue = new Error('unknown fs command: ' + command + ': ' + (fileName || ''));
+				return;
 			}
 		} catch (er) {
 			event.returnValue = er;

@@ -140,10 +140,29 @@ class Editor {
 		game.editor = this;
 
 		if (this.buildProjectAndExit) {
+			this.editorArguments['no-vscode-integration'] = true;
 			window.addEventListener('error', (er) => {
-				fs.log(er.error.stack);
+				fs.log('unhandled error:');
+				fs.exitWithResult(undefined, er.error.stack);
 			});
+			window.addEventListener('unhandledrejection', (er) => {
+				fs.log('unhandled rejection:');
+				fs.exitWithResult(undefined, er.reason);
+			});
+
+			setInterval(() => {
+				if (document.querySelector('vite-error-overlay')) {
+					fs.log('VITE OVERLAY:');
+					fs.log(document.querySelector('vite-error-overlay')!.textContent!);
+					fs.exitWithResult(undefined, 'vite-error-overlay show');
+				}
+			}, 1000);
+			R.icon = R.fragment as any;
+			R.imageIcon = R.fragment as any;
+			R.img = R.fragment as any;
+			game.editor.settings.setItem('sound-muted', true);
 		}
+
 		this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 
 		game.__EDITOR_mode = true;
@@ -159,6 +178,9 @@ class Editor {
 
 			this.ui = ui;
 			// load built in components
+
+			fs.log('buildProjectAndExit: ' + this.buildProjectAndExit);
+
 			if (this.buildProjectAndExit) {
 				this.settings.setItem('last-opened-project', this.buildProjectAndExit);
 			}
@@ -204,11 +226,9 @@ class Editor {
 		this.ui.modal.showSpinner();
 		let restorePrefabName = PrefabEditor.currentPrefabName;
 		let needRestoring = !restorePrefabName && game.__EDITOR_mode && game.editor.isCurrentContainerModified;
-
 		if (needRestoring) {
 			this.saveBackup();
 		}
-
 		this.ui.viewport.stopExecution();
 		await ClassesLoader.reloadClasses();
 		if (restorePrefabName) {
@@ -312,8 +332,6 @@ class Editor {
 		}
 		const newProjectDir = 'games/' + dir + '/';
 
-		fs.log('stage1');
-
 		if (newProjectDir !== this.currentProjectDir) {
 			this.currentProjectDir = newProjectDir;
 			this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
@@ -336,7 +354,7 @@ class Editor {
 			this.settingsLocal = new Settings('__EDITOR_project_' + projectDesc.id);
 
 			const libsProjectDescMerged = {} as ProjectDesc;
-			fs.log('stage2');
+
 			this.currentProjectLibs = projectDesc.libs.map(parseLibName);
 			this.currentProjectLibs.unshift({
 				name: 'thing-editor-embed',
@@ -371,7 +389,7 @@ class Editor {
 			if (libSchema) {
 				schemas.push(libSchema);
 			}
-			fs.log('stage3');
+
 			const mergedSchema = schemas[0];
 			for (const schema of schemas) {
 				if (schema !== mergedSchema) {
@@ -389,9 +407,11 @@ class Editor {
 			mergeProjectDesc(this.projectDesc, projectDesc);
 
 			excludeOtherProjects();
-			fs.log('stage4');
+
 			game.applyProjectDesc(this.projectDesc);
+
 			editorEvents.emit('gameWillBeInitialized');
+
 			game.init(window.document.getElementById('viewport-root') || undefined, 'editor.' + this.projectDesc.id);
 
 			game.stage.interactiveChildren = false;
@@ -402,7 +422,6 @@ class Editor {
 				Lib.REMOVED_TEXTURE = t;
 				return Promise.all([this.reloadAssetsAndClasses(true)]);
 			});
-
 
 			if (this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {
 				this.saveLastSceneOpenName('');
@@ -420,6 +439,10 @@ class Editor {
 
 			game.onResize();
 
+			if (this.buildProjectAndExit) {
+				window.document.body.style.display = 'none';
+			}
+
 			this.settings.setItem('last-opened-project', dir);
 
 			this.validateResources();
@@ -428,7 +451,7 @@ class Editor {
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
 			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
-			fs.log('stage5');
+
 			if (this.buildProjectAndExit) {
 				await Build.build(false);
 				await Build.build(true);
@@ -831,7 +854,9 @@ class Editor {
 		if (refresh) {
 			fs.refreshAssetsList(this.assetsFolders);
 		}
+
 		await this.reloadClasses();
+
 		await waitForCondition(() => {
 			return game.loadingProgress === 100;
 		});

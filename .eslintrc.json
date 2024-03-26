@@ -8,27 +8,31 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "no-multi-spaces": "error",
-    "no-multiple-empty-lines": "error",
-    "key-spacing": "error",
-    "block-spacing": "error",
-    "space-before-blocks": "error",
-    "keyword-spacing": "error",
-    "space-in-parens": "error",
-    "comma-spacing": "error",
-    "@typescript-eslint/key-spacing": "error",
-    "eol-last": "error",
-    "no-trailing-spaces": "error",
+    "no-multi-spaces": "warn",
+    "no-multiple-empty-lines": "warn",
+    "key-spacing": "warn",
+    "block-spacing": "warn",
+    "space-before-blocks": "warn",
+    "keyword-spacing": "warn",
+    "space-infix-ops": "warn",
+    "space-in-parens": "warn",
+    "comma-spacing": "warn",
+    "@typescript-eslint/key-spacing": "warn",
+    "eol-last": "warn",
+    "no-trailing-spaces": "warn",
     "no-debugger": 0,
     "prefer-const": 0,
-    "indent": "off",
-    "semi": "error",
+    "indent": [
+      "warn",
+      "tab"
+    ],
+    "semi": "warn",
     "quotes": [
-      "error",
+      "warn",
       "single"
     ],
     "@typescript-eslint/member-delimiter-style": [
-      "error",
+      "warn",
       {
         "multiline": {
           "delimiter": "semi",
@@ -48,7 +52,7 @@
     "@typescript-eslint/no-var-requires": 0,
     "@typescript-eslint/no-namespace": 0,
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       {
         "args": "all",
         "argsIgnorePattern": "^_",

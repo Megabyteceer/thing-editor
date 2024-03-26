@@ -29,6 +29,7 @@ NOT_SERIALIZABLE_PROPS_TYPES.add('btn');
 NOT_SERIALIZABLE_PROPS_TYPES.add('ref');
 NOT_SERIALIZABLE_PROPS_TYPES.add('splitter');
 
+
 export default class ClassesLoader {
 
 	static isClassesWaitsReloading: boolean;
@@ -43,9 +44,7 @@ export default class ClassesLoader {
 		let oneClassNameFixed = false;
 
 		return Promise.all(files.map((file): SourceMappedConstructor => {
-
 			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {
-
 				const RawClass = module.default;
 				if (!RawClass || !(RawClass.prototype instanceof DisplayObject)) {
 					game.editor.editSource(file.fileName);
@@ -63,7 +62,6 @@ export default class ClassesLoader {
 				let instance: Container = new (Class as any)() as Container;
 
 				let className: string = EMBED_CLASSES_NAMES_FIXER.has(Class) ? (EMBED_CLASSES_NAMES_FIXER.get(Class) as string) : Class.name;
-
 				if (className.startsWith('_')) {
 					if (
 						(className.startsWith('_') && !file.fileName.includes('/_')) ||
@@ -169,9 +167,11 @@ export default class ClassesLoader {
 			if (versionQuery) {
 				moduleName += '.ts' + versionQuery;
 			}
+
 			return imp(moduleName).then(onClassLoaded) as any;
 
 		})).then((_classes: SourceMappedConstructor[]) => {
+
 			let classes: GameClasses = {} as any;
 
 			for (let c of _classes) {
@@ -255,5 +255,5 @@ export default class ClassesLoader {
 
 // vite dynamic imports broke sourcemaps lines; Thats why import moved to the bottom of the file.
 const imp = (moduleName: string) => {
-	return import(/* @vite-ignore */ `/${moduleName}.ts`);
+	return import(/* @vite-ignore */ `${moduleName}.ts`);
 };

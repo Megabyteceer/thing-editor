@@ -21,6 +21,7 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 import type WebFont from 'webfontloader';
 
+import fs from 'thing-editor/src/editor/fs';
 import ERROR_HTML from './utils/html-error.html?raw';
 
 /// #if EDITOR
@@ -184,7 +185,13 @@ class Game {
 
 		initGameInteraction();
 
-		loadFonts();
+		/// #if EDITOR
+		if (!this.editor.buildProjectAndExit) {
+			/// #endif
+			loadFonts();
+			/// #if EDITOR
+		}
+		/// #endif
 
 		app.stage.addChild(stage);
 
@@ -385,17 +392,17 @@ class Game {
 		let rotateCanvas = false;
 
 		switch (orientation) {
-			case 'portrait':
-				rotateCanvas = w > h;
-				game.isPortrait = true;
-				break;
-			case 'auto':
-				game.isPortrait = w < h;
-				break;
-			default: //landscape
-				rotateCanvas = h > w;
-				game.isPortrait = false;
-				break;
+		case 'portrait':
+			rotateCanvas = w > h;
+			game.isPortrait = true;
+			break;
+		case 'auto':
+			game.isPortrait = w < h;
+			break;
+		default: //landscape
+			rotateCanvas = h > w;
+			game.isPortrait = false;
+			break;
 		}
 
 		if (!this.isMobile.any // eslint-disable-line no-constant-condition
@@ -473,6 +480,9 @@ class Game {
 		/// #if EDITOR
 		if (!document.fullscreenElement) {
 			S = 1;
+		}
+		if (this.editor.buildProjectAndExit) {
+			S = 1/16;
 		}
 		/// #endif
 
@@ -1092,6 +1102,12 @@ class Game {
 	}
 
 	_onLoadingError(url: string) {
+		/// #if EDITOR
+		if (this.editor.buildProjectAndExit) {
+			fs.exitWithResult(undefined, 'loading error: ' + url);
+		}
+		/// #endif
+
 		if (game._loadingErrorIsDisplayed) {
 			return;
 		}
@@ -1111,8 +1127,6 @@ class Game {
 		document.addEventListener('click', () => {
 			game._reloadGame();
 		});
-
-
 	}
 
 	_setCurrentScene(scene: Scene | null) {

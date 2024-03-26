@@ -23,15 +23,18 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 let mainWindow;
 
 const path = require('path');
+const os = require('os');
 
 const getPositionRestoreWindow = require('./thing-editor-window.js');
 const {exec} = require('child_process');
 
 process.on('unhandledRejection', function (err) {
+	console.error(err.stack || err.message || err);
 	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
 });
 
 process.on('uncaughtException', function (err) {
+	console.error(err.stack || err.message || err);
 	dialog.showErrorBox('Thing-editor back-end error.', err.stack || err.message || err);
 });
 
@@ -42,7 +45,7 @@ const createWindow = () => {
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			additionalArguments: [
-				'--remote-debugging-port=9223',
+				'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data')
 				//"--wait-for-debugger"
 			],
 			webSecurity: false
@@ -57,6 +60,13 @@ const createWindow = () => {
 	mainWindow.webContents.setWindowOpenHandler((event) => {
 		shell.openExternal(event.url);
 		return {action: 'deny'};
+	});
+
+	mainWindow.webContents.addListener('console-message', (_event, _level, message, line, sourceId) =>{
+		console.log('console-message:');
+		console.log(message);
+		console.log(sourceId);
+		console.log(line);
 	});
 
 	mainWindow.on('focus', () => {
@@ -82,14 +92,21 @@ const createWindow = () => {
 
 	nativeTheme.themeSource = 'dark';
 
-
-	require('./pixi-typings-patch.js')(mainWindow);
-
 	require('./server-fs.js')(mainWindow);
 
 	const EDITOR_VITE_ROOT = 'http://localhost:5173/thing-editor/';
 	const loadEditorIndexHTML = () => {
 		mainWindow.setOpacity(1);
+
+		let reloadAttemptDelayDelay = 1000;
+		mainWindow.webContents.on('did-fail-load', () => {
+			setTimeout(() => {
+				console.log('reload attempt');
+				mainWindow.reload();
+				reloadAttemptDelayDelay += 1000;
+			}, reloadAttemptDelayDelay);
+		});
+
 		mainWindow.loadURL(EDITOR_VITE_ROOT);
 	};
 
@@ -99,6 +116,7 @@ const createWindow = () => {
 		mainWindow.loadURL('http://localhost:5173/thing-editor/debugger-awaiter.html').catch((er) => {
 			mainWindow.setOpacity(1);
 			if (er.code === 'ERR_CONNECTION_REFUSED') {
+				console.error('Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 				dialog.showErrorBox('Thing-editor startup error.', 'Could not load ' + EDITOR_VITE_ROOT + '.\nDoes vite.js server started?');
 			}
 		});
@@ -114,6 +132,12 @@ app.whenReady().then(() => {
 	app.on('activate', () => {
 		if (BrowserWindow.getAllWindows().length === 0) createWindow();
 	});
+});
+
+app.on('render-process-gone', (_event, _webContents, details) => {
+	console.log('render-process-gone:');
+	console.log(JSON.stringify(details));
+	app.quit();
 });
 
 app.on('window-all-closed', () => {

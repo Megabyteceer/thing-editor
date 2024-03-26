@@ -9,7 +9,7 @@ let __currentClassesMap: string;
 
 const getImportSrcForClass = (className: string) => {
 	const path = game.classes[className].__sourceFileName!;
-	return 'import type ' + className + ' from "' + path.substring(1, path?.length - 3) + '";';
+	return 'import type ' + className + ' from \'' + path.substring(1, path?.length - 3) + '\';';
 };
 
 const regenerateCurrentSceneMapTypings = () => {
@@ -51,16 +51,16 @@ const regenerateCurrentSceneMapTypings = () => {
 			if (isRefused) {
 				declarations.push(`/** @deprecated ${isRefused} */`);
 			}
-			declarations.push('"' + name + '":' + ((className === 'Container') ? 'Container' : className) + ';');
+			declarations.push('\'' + name + '\': ' + ((className === 'Container') ? 'Container' : className) + ';');
 		}
 
 		let mapJS = `// thing-editor auto generated file.
-import type Scene from "thing-editor/src/engine/lib/assets/src/basic/scene.c";
-import type { Container } from "pixi.js";
+import type Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import type { Container } from 'pixi.js';
 `
 			+ imports.join('\n') +
-			`
-			
+`
+
 declare global {
 type CurrentSceneType = ` + game.currentScene.constructor.name + `;
 
@@ -95,15 +95,15 @@ const regenerateClassesTypings = () => {
 		}
 
 		for (let className of classesNames) {
-			declarations.push('"' + className + '": typeof ' + className + ';');
+			declarations.push('\'' + className + '\': typeof ' + className + ';');
 		}
 
 		let mapJS = `// thing-editor auto generated file.
 
 `
 			+ imports.join('\n') +
-			`
-			
+`
+
 declare global {
 
 interface GameClasses {
@@ -164,7 +164,8 @@ export default class TLib {
 	static loadPrefab(prefabName: string): Container {
 		return prefabName as any;
 	}
-}`;
+}
+`;
 
 		fs.writeFile('/thing-editor/src/editor/prefabs-typing.ts', mapJS);
 	}

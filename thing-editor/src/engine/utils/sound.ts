@@ -541,6 +541,9 @@ function showSndDebugger() {
 const timeouts: KeyedMap<number> = {};
 
 window.addEventListener('keydown', (ev) => {
+	if (game.editor) {
+		return;
+	}
 	if (ev.keyCode === 115) {
 		if (sndDebuggerShowed) {
 			hideSndDebugger();
