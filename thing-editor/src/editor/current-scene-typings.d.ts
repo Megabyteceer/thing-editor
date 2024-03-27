@@ -1,8 +1,8 @@
 // thing-editor auto generated file.
 
-import { Container } from "pixi.js";
+import type { Container } from 'pixi.js';
 
-			
+
 declare global {
 type CurrentSceneType = Scene;
 
