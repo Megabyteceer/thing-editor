@@ -1232,17 +1232,20 @@ interface PathToInclude {
 
 function rememberPathsToInclude() {
 	const paths = editor.settings.getItem('paths-to-include', []) as PathToInclude[];
-	if (!paths.some(path => path.project === editor.currentProjectDir)) {
+	const currentProjectEntry = paths.find(path => path.project === editor.currentProjectDir);
+
+	if (!currentProjectEntry) {
 		paths.unshift({
 			project: editor.currentProjectDir,
 			libs: editor.currentProjectLibs
-
 		});
 		if (paths.length > 2) {
 			paths.length = 2;
 		}
-		editor.settings.setItem('paths-to-include', paths);
+	} else {
+		currentProjectEntry.libs = editor.currentProjectLibs;
 	}
+	editor.settings.setItem('paths-to-include', paths);
 }
 
 const editor = new Editor();
