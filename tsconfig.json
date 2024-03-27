@@ -32,8 +32,8 @@
   },
   "include": [
     "**/*.mjs",
-    "./games/example-project/",
-    "./libs/example-lib",
+    "./games",
+    "./libs",
     "thing-editor/src"
   ]
 }

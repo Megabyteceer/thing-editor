@@ -26,7 +26,6 @@ const path = require('path');
 const os = require('os');
 
 const getPositionRestoreWindow = require('./thing-editor-window.js');
-const {exec} = require('child_process');
 
 process.on('unhandledRejection', function (err) {
 	console.error(err.stack || err.message || err);
@@ -145,6 +144,6 @@ app.on('window-all-closed', () => {
 	app.quit();
 });
 
-exec('git update-index --assume-unchanged thing-editor.code-workspace tsconfig.json thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts', {
+exec('git update-index --assume-unchanged thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts', {
 	cwd: __dirname + '/../..'
 });

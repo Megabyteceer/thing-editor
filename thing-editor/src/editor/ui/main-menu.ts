@@ -310,7 +310,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('vs-code-excluding') ? UNCHECKED : CHECKED, ' VScode excluding');
+					return R.fragment(game.editor.settings.getItem('vs-code-excluding') ? CHECKED : UNCHECKED, ' VScode excluding');
 				},
 				tip: 'Does VSCode should exclude other projects from workspace.',
 				onClick: () => {
@@ -371,9 +371,9 @@ export default class MainMenu extends Component {
 						}
 					}
 				},
-					R.btn(menuItem.name, (ev: PointerEvent) => {
-						toggleContextMenu(menuItem.items, ev);
-					}));
+				R.btn(menuItem.name, (ev: PointerEvent) => {
+					toggleContextMenu(menuItem.items, ev);
+				}));
 			}));
 	}
 

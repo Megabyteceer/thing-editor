@@ -2,14 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "./games/example-project/",
-			"name": "games/example-project/"
-		},
-		{
-			"path": "./libs/example-lib",
-			"name": "libs/example-lib"
 		}
 	],
 	"settings": {

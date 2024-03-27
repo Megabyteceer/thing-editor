@@ -519,6 +519,7 @@ class Editor {
 	toggleVSCodeExcluding() {
 		game.editor.settings.setItem('vs-code-excluding', !game.editor.settings.getItem('vs-code-excluding'));
 		excludeOtherProjects();
+		fs.run('/thing-editor/electron-main/assume-unchanged.js', game.editor.settings.getItem('vs-code-excluding'));
 	}
 
 	toggleShowSystemAssets() {
@@ -1126,6 +1127,9 @@ function sanitizeJSON(input: string) {
 
 
 function excludeOtherProjects() {
+	if (!game.editor.settings.getItem('vs-code-excluding')) {
+		return;
+	}
 	rememberPathsToInclude();
 	const paths = editor.settings.getItem('paths-to-include', []) as PathToInclude[];
 	try { // vscode workspace
@@ -1139,33 +1143,24 @@ function excludeOtherProjects() {
 		const folders = (workspaceConfig.folders as { path: string; name: string }[]).filter((folderData) => {
 			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
 		});
-		if (game.editor.settings.getItem('vs-code-excluding')) {
+
+		for (const path of paths) {
 			folders.push({
-				path: './games/',
-				name: 'games'
+				path: './' + path.project,
+				name: path.project
 			});
-			folders.push({
-				path: './libs/',
-				name: 'libs'
-			});
-		} else {
-			for (const path of paths) {
-				folders.push({
-					path: './' + path.project,
-					name: path.project
-				});
-				const addedLibs: Set<string> = new Set();
-				for (let lib of path.libs) {
-					if (!lib.isEmbed && !addedLibs.has(lib.dir)) {
-						folders.push({
-							path: './' + lib.dir,
-							name: lib.dir
-						});
-						addedLibs.add(lib.dir);
-					}
+			const addedLibs: Set<string> = new Set();
+			for (let lib of path.libs) {
+				if (!lib.isEmbed && !addedLibs.has(lib.dir)) {
+					folders.push({
+						path: './' + lib.dir,
+						name: lib.dir
+					});
+					addedLibs.add(lib.dir);
 				}
 			}
 		}
+
 		folders.sort();
 		let newFoldersSrc = JSON.stringify({ folders }, undefined, '\t');
 		newFoldersSrc = newFoldersSrc.substring(3, newFoldersSrc.length - 2);
@@ -1190,21 +1185,17 @@ function excludeOtherProjects() {
 			return !folder.startsWith('./games/') && !folder.startsWith('./libs/');
 		});
 
-		if (game.editor.settings.getItem('vs-code-excluding')) {
-			include.push('./games/');
-			include.push('./libs/');
-		} else {
-			const addedLibs: Set<string> = new Set();
-			for (const path of paths) {
-				include.push('./' + path.project);
-				for (let lib of path.libs) {
-					if (!lib.isEmbed && !addedLibs.has(lib.dir)) {
-						include.push('./' + lib.dir);
-						addedLibs.add(lib.dir);
-					}
+		const addedLibs: Set<string> = new Set();
+		for (const path of paths) {
+			include.push('./' + path.project);
+			for (let lib of path.libs) {
+				if (!lib.isEmbed && !addedLibs.has(lib.dir)) {
+					include.push('./' + lib.dir);
+					addedLibs.add(lib.dir);
 				}
 			}
 		}
+
 		include.sort();
 		let newFoldersSrc = JSON.stringify({ include });
 		newFoldersSrc = newFoldersSrc.substring(1, newFoldersSrc.length - 1);
