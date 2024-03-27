@@ -184,7 +184,11 @@ export default class Build {
 		}
 
 		return fs.build(game.editor.currentProjectDir, debug, assetsToCopy).then(async (result: any) => {
-			game.editor.ui.modal.hideSpinner();
+
+			const path = game.editor.currentProjectDir + (debug ? 'debug/' : 'release/');
+			for (const f of postBuildCallbacks) {
+				await f(path);
+			}
 			if (!game.editor.buildProjectAndExit) {
 				if (result instanceof Error) {
 					const a = result.message.split('\n');
@@ -200,10 +204,7 @@ export default class Build {
 					}
 					game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
 				} else {
-					const path = game.editor.currentProjectDir + (debug ? 'debug/' : 'release/');
-					for (const f of postBuildCallbacks) {
-						await f(path);
-					}
+
 					game.editor.ui.modal.showEditorQuestion('Build', 'Builded successfully.', () => {
 						game.editor.openUrl('http://localhost:5174/' + path);
 					}, 'Open');
