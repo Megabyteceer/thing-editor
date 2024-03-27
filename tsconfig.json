@@ -30,10 +30,5 @@
     },
     "baseUrl": "./."
   },
-  "include": [
-    "**/*.mjs",
-    "./games",
-    "./libs",
-    "thing-editor/src"
-  ]
+  "include":["**/*.mjs","./games/","./libs/","thing-editor/src"]
 }

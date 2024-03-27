@@ -2,6 +2,14 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "./games/",
+			"name": "games"
+		},
+		{
+			"path": "./libs/",
+			"name": "libs"
 		}
 	],
 	"settings": {
@@ -15,6 +23,8 @@
 			}
 		],
 		"files.exclude": {
+			"libs": true,
+			"games": true,
 			"**/release": true,
 			"**/debug": true,
 			"**/___editor_backup_*": true,
@@ -32,7 +42,7 @@
 			"**/Thumbs.db": true,
 			"vite.config.js.timestamp-*": true,
 			"thing-editor/demo": true,
-			"node_modules": true,
+			"node_modules": true
 		},
 		"editor.formatOnSave": false,
 		"editor.codeActionsOnSave": {

@@ -518,7 +518,7 @@ class Editor {
 
 	toggleVSCodeExcluding() {
 		game.editor.settings.setItem('vs-code-excluding', !game.editor.settings.getItem('vs-code-excluding'));
-		excludeOtherProjects();
+		excludeOtherProjects(true);
 		fs.run('/thing-editor/electron-main/assume-unchanged.js', game.editor.settings.getItem('vs-code-excluding'));
 	}
 
@@ -1126,8 +1126,11 @@ function sanitizeJSON(input: string) {
 }
 
 
-function excludeOtherProjects() {
-	if (!game.editor.settings.getItem('vs-code-excluding')) {
+function excludeOtherProjects(forced = false) {
+
+	const isExcludingEnabled = game.editor.settings.getItem('vs-code-excluding');
+
+	if (!forced && !isExcludingEnabled) {
 		return;
 	}
 	rememberPathsToInclude();
@@ -1144,21 +1147,30 @@ function excludeOtherProjects() {
 			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
 		});
 
-		for (const path of paths) {
-			folders.push({
-				path: './' + path.project,
-				name: path.project
-			});
-			const addedLibs: Set<string> = new Set();
-			for (let lib of path.libs) {
-				if (!lib.isEmbed && !addedLibs.has(lib.dir)) {
-					folders.push({
-						path: './' + lib.dir,
-						name: lib.dir
-					});
-					addedLibs.add(lib.dir);
+		if (isExcludingEnabled) {
+			for (const path of paths) {
+				folders.push({
+					path: './' + path.project,
+					name: path.project
+				});
+				for (let lib of path.libs) {
+					if (!lib.isEmbed && !folders.find(f => f.name === lib.dir)) {
+						folders.push({
+							path: './' + lib.dir,
+							name: lib.dir
+						});
+					}
 				}
 			}
+		} else {
+			folders.push({
+				path: './games/',
+				name: 'games'
+			});
+			folders.push({
+				path: './libs/',
+				name: 'libs'
+			});
 		}
 
 		folders.sort();
@@ -1185,15 +1197,19 @@ function excludeOtherProjects() {
 			return !folder.startsWith('./games/') && !folder.startsWith('./libs/');
 		});
 
-		const addedLibs: Set<string> = new Set();
-		for (const path of paths) {
-			include.push('./' + path.project);
-			for (let lib of path.libs) {
-				if (!lib.isEmbed && !addedLibs.has(lib.dir)) {
-					include.push('./' + lib.dir);
-					addedLibs.add(lib.dir);
+		if (isExcludingEnabled) {
+			for (const path of paths) {
+				include.push('./' + path.project);
+				for (let lib of path.libs) {
+					const pathToAdd = './' + lib.dir;
+					if (!lib.isEmbed && !include.includes(pathToAdd)) {
+						include.push(pathToAdd);
+					}
 				}
 			}
+		} else {
+			include.push('./games/');
+			include.push('./libs/');
 		}
 
 		include.sort();
