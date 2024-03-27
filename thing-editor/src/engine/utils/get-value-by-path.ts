@@ -191,8 +191,8 @@ export {
 
 /// #endif
 
-	export {
-		setValueByPath
-	};
-
 export default getValueByPath;
+
+export {
+	setValueByPath
+};
