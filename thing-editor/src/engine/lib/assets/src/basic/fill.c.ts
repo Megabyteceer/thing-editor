@@ -50,7 +50,7 @@ const isWrapDisabled = (o: Fill) => {
 		return 'image property is not set.';
 	}
 
-	if (Lib.__isSystemTexture(o.texture)) {
+	if (Lib.__isSystemTexture(o.texture, o.image)) {
 		return 'System image ' + o.image + ' can not has wrapping mode.';
 	}
 
@@ -152,10 +152,10 @@ export default class Fill extends Mesh {
 	}
 
 	@editable({ step: 0.0001 })
-	xShiftSpeed = 0;
+		xShiftSpeed = 0;
 
 	@editable({ step: 0.0001 })
-	yShiftSpeed = 0;
+		yShiftSpeed = 0;
 
 	/// #if EDITOR
 	@editable(TEXTURE_WRAP_MODE_DESC)
@@ -217,7 +217,7 @@ export default class Fill extends Mesh {
 	}
 
 	@editable({ step: 0.0001, visible: o => o.xWaveAmp !== 0 })
-	xWaveSpeed = 0;
+		xWaveSpeed = 0;
 
 	_yWaveAmp = 0;
 	@editable({ step: 0.001 })
@@ -259,7 +259,7 @@ export default class Fill extends Mesh {
 	}
 
 	@editable({ step: 0.0001, visible: o => o.yWaveAmp !== 0 })
-	yWaveSpeed = 0;
+		yWaveSpeed = 0;
 
 	transparencyUpdated = false;
 	_transparentTop = false;

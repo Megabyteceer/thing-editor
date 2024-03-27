@@ -32,7 +32,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 			onClick: async () => {
 				game.editor.moveAssetToLibrary('Where to move image \'' + file.assetName + '\'?', file);
 			},
-			disabled: () => game.editor.getUserVisibleFolders().length < 2 || Lib.__isSystemTexture(file.asset)
+			disabled: () => game.editor.getUserVisibleFolders().length < 2 || Lib.__isSystemTexture(file.asset, file.assetName)
 		},
 		{
 			name: R.fragment(R.icon('delete'), ' Delete \'' + file.assetName + '\' image...'),
@@ -48,7 +48,7 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			},
-			disabled: () => Lib.__isSystemTexture(file.asset)
+			disabled: () => Lib.__isSystemTexture(file.asset, file.assetName)
 		}
 	];
 

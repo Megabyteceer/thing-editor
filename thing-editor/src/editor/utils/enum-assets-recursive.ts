@@ -8,7 +8,7 @@ const addImageToAssetsList = (imageName: string, ret: Set<FileDesc>) => {
 	if (imageName) {
 		const file = fs.getFileByAssetName(imageName, AssetType.IMAGE);
 		assert(file, 'Wrong image name.');
-		if (!Lib.__isSystemTexture(file.asset)) {
+		if (!Lib.__isSystemTexture(file.asset, file.assetName)) {
 			ret.add(file);
 		}
 	}

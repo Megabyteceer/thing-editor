@@ -230,7 +230,7 @@ export default class Lib
 				textureURL).then((newTexture) => {
 				/// #if EDITOR
 				if (textures[name]) {
-					if (textures[name] && !Lib.__isSystemTexture(textures[name])) {
+					if (textures[name] && !Lib.__isSystemTexture(textures[name], name)) {
 						Lib._unloadTexture(name);
 					}
 					const oldTexture = textures[name];
@@ -298,7 +298,10 @@ export default class Lib
 	}
 
 	/// #if EDITOR
-	static __isSystemTexture(texture: Texture) {
+	static __isSystemTexture(texture: Texture, imageName:string) {
+		if (game.editor.buildProjectAndExit) {
+			return imageName === 'EMPTY' || imageName === 'WHITE';
+		}
 		return texture.baseTexture === Lib.REMOVED_TEXTURE.baseTexture ||
 			texture.baseTexture === textures.EMPTY.baseTexture ||
 			texture.baseTexture === textures.WHITE.baseTexture;

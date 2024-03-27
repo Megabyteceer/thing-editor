@@ -482,7 +482,7 @@ class Game {
 			S = 1;
 		}
 		if (this.editor.buildProjectAndExit) {
-			S = 1/16;
+			S = 1 / 16;
 		}
 		/// #endif
 

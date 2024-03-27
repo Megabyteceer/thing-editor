@@ -228,13 +228,13 @@ const onImageAssetEnter = (ev: MouseEvent) => {
 			},
 			className: 'image-preview-tooltip fadein-animation'
 		},
-			R.div({
-				className: 'image-preview-img',
-				style: {
-					backgroundImage: 'url("' + img.src + '")'
-				}
-			}),
-			'(' + img.naturalWidth + ' × ' + img.naturalHeight + ')'
+		R.div({
+			className: 'image-preview-img',
+			style: {
+				backgroundImage: 'url("' + img.src + '")'
+			}
+		}),
+		'(' + img.naturalWidth + ' × ' + img.naturalHeight + ')'
 		), imagePreviewContainer);
 	}, 100);
 };

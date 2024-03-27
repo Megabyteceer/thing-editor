@@ -251,7 +251,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 	assets.forEach((file) => {
 		if (isFileNameValidForBuild(file.assetName)) {
 			if (file.assetType === AssetType.IMAGE) {
-				if (!Lib.__isSystemTexture((file as FileDescImage).asset)) {
+				if (!Lib.__isSystemTexture((file as FileDescImage).asset, file.assetName)) {
 					if (!file.parentAsset) {
 						assetsToCopy.push({
 							from: file.fileName,
