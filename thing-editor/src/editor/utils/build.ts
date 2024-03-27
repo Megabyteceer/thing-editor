@@ -210,6 +210,7 @@ export default class Build {
 					}, 'Open');
 				}
 			}
+			game.editor.ui.modal.hideSpinner();
 		});
 	}
 }
