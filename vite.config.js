@@ -12,12 +12,14 @@ export default defineConfig({
 		watch: IS_CI_RUN ? {
 			ignored: [
 				'**/**'
+
 			]
 		} : {
 			ignored: [
 				'**/node_modules/**',
-				'**/release/**',
-				'**/debug/**'
+				'games/**/.tmp/**',
+				'games/**/debug/**',
+				'games/**/release/**'
 			]
 		},
 		strictPort: 5173
