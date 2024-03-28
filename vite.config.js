@@ -13,7 +13,13 @@ export default defineConfig({
 			ignored: [
 				'**/**'
 			]
-		}: undefined,
+		} : {
+			ignored: [
+				'**/node_modules/**',
+				'**/release/**',
+				'**/debug/**'
+			]
+		},
 		strictPort: 5173
 	},
 	plugins: [
