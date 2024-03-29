@@ -1105,6 +1105,17 @@ input[disabled] {
 	border: 1px solid #555555;
 }
 
+.context-menu-item-hotkey {
+    color: #676767;
+    float: right;
+}
+
+.context-menu-item-hotkey::before {
+	display: inline-block;
+	width: 10px;
+	content: " ";
+}
+
 .context-menu button {
 	width: 100%;
 	white-space: nowrap;

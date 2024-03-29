@@ -7,7 +7,7 @@ import Window from 'thing-editor/src/editor/ui/editor-window';
 import { MAIN_MENU } from 'thing-editor/src/editor/ui/main-menu';
 import DataPathFixer from 'thing-editor/src/editor/utils/data-path-fixer';
 import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
-import isHotkeyHit from 'thing-editor/src/editor/utils/hotkey';
+import isHotkeyHit, { hotkeyToString } from 'thing-editor/src/editor/utils/hotkey';
 import isEventFocusOnInputElement from 'thing-editor/src/editor/utils/is-event-focus-on-input-element';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
@@ -122,20 +122,9 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 		let title = props.title;
 		let hotkey = props.hotkey;
 		if (hotkey) {
-			let help = [];
-			if (hotkey.ctrlKey) {
-				help.push('Ctrl');
-			}
-			if (hotkey.altKey) {
-				help.push('Alt');
-			}
-			if (hotkey.shiftKey) {
-				help.push('Shift');
-			}
-			help.push('"' + ((hotkey.key.length > 1) ? hotkey.key : hotkey.key.toUpperCase()) + '"');
-			title = (title || '') + ' (' + help.join(' + ') + ')';
+			title = props.title ? props.title + hotkeyToString(hotkey) : hotkeyToString(hotkey);
 		}
-		this.setState({ title });
+		this.setState({ title});
 	}
 
 	unregisterHotkey() {
@@ -176,5 +165,5 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 }
 
 export default EditorButton;
-
 export { findMenuItemForHotkey };
+

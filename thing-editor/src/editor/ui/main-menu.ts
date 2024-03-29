@@ -14,6 +14,7 @@ import { onNewSceneClick, onSaveAsSceneClick } from 'thing-editor/src/editor/uti
 import game from 'thing-editor/src/engine/game';
 import L from 'thing-editor/src/engine/utils/l';
 
+// no R.span because it causes use before initialization
 const CHECKED = h('span', { className: '.menu-icon' }, '☑');
 const UNCHECKED = h('span', { className: '.menu-icon' }, '☐');
 

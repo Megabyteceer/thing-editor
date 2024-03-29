@@ -2,7 +2,7 @@ import type { ComponentChild } from 'preact';
 import { render } from 'preact';
 
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
+import { hotkeyToString, type Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 
 interface ContextMenuItemData {
 	name: ComponentChild | (() => ComponentChild);
@@ -13,6 +13,10 @@ interface ContextMenuItemData {
 	tip?: string;
 	hotkey?: Hotkey;
 }
+
+const hotkeyTipProps = {
+	className: 'context-menu-item-hotkey'
+};
 
 type ContextMenuItem = ContextMenuItemData | null;
 
@@ -120,13 +124,20 @@ export default showContextMenu;
 function renderMenuItem(item: ContextMenuItem) {
 
 	if (item) {
-		return R.btn((typeof item.name === 'function') ? item.name() : item.name, item.onClick, item.tip, item.stayAfterClick ? 'stay-after-click-menu-item' : undefined, item.hotkey, !isItemActive(item));
+		return R.btn(
+			R.fragment(
+				(typeof item.name === 'function') ? item.name() : item.name,
+				item.hotkey ? R.span(hotkeyTipProps, hotkeyToString(item.hotkey)) : undefined),
+			item.onClick,
+			item.tip,
+			item.stayAfterClick ? 'context-menu-item stay-after-click-menu-item' : 'context-menu-item',
+			item.hotkey,
+			!isItemActive(item));
 	} else {
 		return R.hr();
 	}
 }
 
+export { hideContextMenu, refreshContextMenu, toggleContextMenu };
 export type { ContextMenuItem };
-
-	export { hideContextMenu, refreshContextMenu, toggleContextMenu };
 

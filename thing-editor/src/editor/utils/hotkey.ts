@@ -28,6 +28,24 @@ const isHotkeyHit = (ev: KeyboardEvent | Hotkey, element: HTMLElement, hotkey?: 
 	}
 };
 
-export default isHotkeyHit;
 
+const hotkeyToString = (hotkey:Hotkey) :string => {
+	let help = [];
+	if (hotkey.ctrlKey) {
+		help.push('Ctrl');
+	}
+	if (hotkey.altKey) {
+		help.push('Alt');
+	}
+	if (hotkey.shiftKey) {
+		help.push('Shift');
+	}
+	help.push('"' + ((hotkey.key.length > 1) ? hotkey.key : hotkey.key.toUpperCase()) + '"');
+	return ' (' + help.join(' + ') + ')';
+};
+
+
+export default isHotkeyHit;
+export { hotkeyToString };
 export type { Hotkey };
+
