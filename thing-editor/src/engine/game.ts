@@ -1101,7 +1101,7 @@ class Game {
 		});
 	}
 
-	_onLoadingError(url: string) {
+	showLoadingError(url: string) {
 		/// #if EDITOR
 		if (this.editor.buildProjectAndExit) {
 			fs.exitWithResult(undefined, 'loading error: ' + url);

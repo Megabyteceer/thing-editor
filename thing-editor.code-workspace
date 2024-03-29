@@ -96,7 +96,8 @@
 			"Hitrate",
 			"Schedulable",
 			"Skipable",
-			"Spritesheet"
+			"Spritesheet",
+			"unclickable"
 		],
 		"editor.defaultFormatter": "dbaeumer.vscode-eslint",
 		"[json]": {

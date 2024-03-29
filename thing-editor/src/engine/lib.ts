@@ -202,7 +202,7 @@ export default class Lib
 					game.loadingRemove(url);
 				}, attempt * 1000);
 			} else {
-				game._onLoadingError(url);
+				game.showLoadingError(url);
 			}
 		});
 	}
@@ -253,7 +253,7 @@ export default class Lib
 						game.loadingRemove(textureURL);
 					}, attempt * 1000);
 				} else {
-					game._onLoadingError(textureURL as string);
+					game.showLoadingError(textureURL as string);
 				}
 			});
 		} else {
@@ -823,8 +823,8 @@ export default class Lib
 	}
 
 	/**
-	 * @protected
-	 */
+	* @protected
+	*/
 	static __overrideSound(name: string, src: string[] | string) {
 		let opt = { src };
 		let s = new HowlSound(opt);

@@ -359,7 +359,7 @@ function overrideSound(name: string, src?: string) {
 		defaultSoundsUrls[name] = (Lib.getSound(name) as any)._src;
 		assert(defaultSoundsUrls[name], 'Howler is changed');
 	}
-	Lib.__overrideSound(name, src || defaultSoundsUrls[name]);
+	Lib.__overrideSound(name, src || defaultSoundsUrls[name]); //@ts-ignore
 }
 
 
@@ -403,14 +403,14 @@ function showSndDebugger() {
 	document.head.insertAdjacentHTML('beforeend', `<style>
 	.animate-sound-play {
 		animation: color-change 5s infinite;
-	  }
-	  
-	  @keyframes color-change {
+	}
+
+	@keyframes color-change {
 		0% { color: white; }
 		1% { color: green; }
 		100% { color: white; }
-	  }
-	   </style>`);
+	}
+</style>`);
 
 	if (!sndDebugger) { // eslint-disable-line no-unreachable
 		sndDebugger = document.createElement('div');

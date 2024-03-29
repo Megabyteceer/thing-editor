@@ -51,7 +51,7 @@ export default class HowlSound extends Howl {
 					this.load();
 				}, attempt * 1000);
 			} else {
-				game._onLoadingError((this as any)._src);
+				game.showLoadingError((this as any)._src);
 			}
 		});
 	}
