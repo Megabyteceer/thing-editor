@@ -34,14 +34,14 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 			//assert(n.indexOf(',') < 0, "Comma ',' character detected in field name in callback`s path: " + callbackPath + '". Use "`" character to separate callback\s parameter block.', 10025); /// 99999 remove error docs 10025
 			c = c[n];
 		} else {
-			c = c.getChildByName(n.s
+			c = c.getChildByName(n.c
 				/// #if EDITOR
 				, this_
 				/// #endif
 			);
 		}
 
-		assert(c, 'Can\'t find ' + ((typeof n === 'string') ? 'property \'' + n : 'child \'#' + n.s) + '\' in callback`s path: ' + callbackPath, 10025);
+		assert(c, 'Can\'t find ' + ((typeof n === 'string') ? 'property \'' + n : 'child \'#' + n.c) + '\' in callback`s path: ' + callbackPath, 10025);
 
 		i++;
 	}
@@ -93,7 +93,7 @@ const turnInToNumberIfNumeric = (s: string) => {
 
 const pathPartsMapper = (s: string) => {
 	if (s.charCodeAt(0) === 35) { //'#'
-		return { s: s.substring(1) }; // - child name started with '#'
+		return { c: s.substring(1) }; // - child name started with '#'
 	}
 	return s;
 };

@@ -50,11 +50,15 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 			c = c[n];
 		} else {
 			/// #if EDITOR
+			if (!(c instanceof Container)) {
+				game.editor.ui.status.error('Path contains all.#name but all.name without "#" character expected.', 99999, this_);
+				return 'Path syntax error: all.#';
+			};
 			if (!c.getChildByName) {
 				return 'getChildByName for not a Container.';
 			}
 			/// #endif
-			c = c.getChildByName(n.s
+			c = c.getChildByName(n.c
 				/// #if EDITOR
 				, this_
 				/// #endif
@@ -116,7 +120,7 @@ const setValueByPath = (valuePath: string, val: any, this_: any) => {
 				return 'getChildByName for not a Container.';
 			}
 			/// #endif
-			c = c.getChildByName(n.s);
+			c = c.getChildByName(n.c);
 		}
 		if (!c) {
 			return;

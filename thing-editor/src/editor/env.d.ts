@@ -5,7 +5,7 @@ type CallBackPath = string;
 type ValuePath = string;
 type CallBackParsedData = {
 	/** callback path names*/
-	p: (string | { s: string })[];
+	p: (string | { c: string /** child name to getChildByName */})[];
 	/** callback parameter */
 	v?: any[];
 };
