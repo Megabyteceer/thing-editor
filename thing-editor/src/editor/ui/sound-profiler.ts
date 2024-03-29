@@ -206,7 +206,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 		showAdditionalWindow('sound-profiler', 'SoundProfiler', 'SoundProfiler',
 			R.div({ title: '' },
 				h(SoundProfiler, { onCloseClick: SoundProfiler.toggle }),
-			), 50, 50, 30, 30, 300, 200);
+			), 50, 50, 80, 80, 300, 200);
 		Window.bringWindowForward('#sound-profiler');
 	}
 
@@ -221,7 +221,7 @@ editorEvents.on('soundPlay', SoundProfiler.onSoundPlay);
 
 MainMenu.injectMenu('settings', [{
 	name: () => {
-		return R.fragment(h('span', { className: '.menu-icon' }, game.editor.settings.getItem('sound-profiler-shown') ? '☑' : '☐'), ' Show sound profiler');
+		return R.fragment(R.span({ className: '.menu-icon' }, game.editor.settings.getItem('sound-profiler-shown') ? '☑' : '☐'), ' Sound profiler');
 	},
 	onClick: () => {
 		SoundProfiler.toggle();
