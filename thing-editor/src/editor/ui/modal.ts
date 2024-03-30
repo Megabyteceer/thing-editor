@@ -237,19 +237,8 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 		debugger;
 		if (game.editor.buildProjectAndExit) {
-			if (typeof message === 'object') {
-				try {
-					let txt: string[] = [];
-					JSON.stringify(message, (key, value) => {
-						if (key !== 'type' && typeof value === 'string') {
-							txt.push(value);
-						}
-						return value;
-					});
-					message = txt.join('\n');
-				} catch (_er) { }
-			}
-			fs.exitWithResult(undefined, (game.editor.buildProjectAndExit ? ('Build failed: ' + game.editor.buildProjectAndExit + '\n') : '') + message + '; Error code: ' + errorCode);
+			message = preactComponentChildToString(message);
+			fs.exitWithResult(undefined, 'Build failed: ' + game.editor.buildProjectAndExit + '\n' + message + '; Error code: ' + errorCode);
 			return Promise.resolve();
 		} else {
 			if (game.stage && !game.__EDITOR_mode) {
@@ -300,4 +289,23 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 }
 
+function preactComponentChildToString(message: ComponentChild) {
+	if (typeof message === 'string') {
+		return message;
+	}
+	let ret = '';
+	try {
+		JSON.stringify(message, (key, value) => {
+			if (key !== 'type' && typeof value === 'string') {
+				ret += value + '\n';
+			}
+			return value;
+		});
+	} catch (_er) { }
+	return ret;
+}
+
 export default Modal;
+
+export { preactComponentChildToString };
+

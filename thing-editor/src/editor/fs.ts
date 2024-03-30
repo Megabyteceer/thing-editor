@@ -584,7 +584,7 @@ export default class fs {
 
 	static exitWithResult(success: string | undefined, error?: string) {
 		debugger; // stop before exit
-		execFs('fs/exitWithResult', success, error);
+		execFs('fs/exitWithResult', success, typeof error === 'string' ? error : JSON.stringify(error));
 	}
 
 	static showQuestion(title: string, message: string, yes: string, no: string, cancel?: string): number {

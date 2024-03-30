@@ -426,9 +426,13 @@ export default class Lib
 				replaceClassName = replaceClass.__className;
 				if (!showedReplaces[src.c!]) {
 					showedReplaces[src.c!] = true;
-					window.setTimeout(() => { // wait for id assign
-						game.editor.ui.status.error('Unknown class ' + src.c, 32012, ret);
-					}, 1);
+					if (game.editor.buildProjectAndExit) {
+						game.editor.ui.status.error('Unknown class ' + src.c, 32012);
+					} else {
+						window.setTimeout(() => { // wait for id assign
+							game.editor.ui.status.error('Unknown class ' + src.c, 32012, ret);
+						}, 1);
+					}
 				}
 			}
 			if (!replaceClass) {

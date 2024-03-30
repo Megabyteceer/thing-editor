@@ -87,8 +87,6 @@ const MUTE_SOUND_MENU_ITEM: ContextMenuItem = {
 	hotkey: { key: 'm', ctrlKey: true }
 };
 
-let isProxySearch = false;
-
 function switchLanguage(direction: number) {
 	let a = L.getLanguagesList();
 	let i = a.indexOf(L.getCurrentLanguageId());

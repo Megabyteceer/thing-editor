@@ -11,6 +11,8 @@ import shakeDomElement from 'thing-editor/src/editor/utils/shake-element';
 import waitForCondition from 'thing-editor/src/editor/utils/wait-for-condition';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import fs from '../fs';
+import { preactComponentChildToString } from './modal';
 
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
@@ -102,6 +104,16 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 
 	error(message: string, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, fieldArrayItemNumber = -1) {
 		if (EDITOR_FLAGS.isTryTime) {
+			return Promise.resolve();
+		}
+
+		if (game.editor.buildProjectAndExit) {
+			message = preactComponentChildToString(message);
+			fs.exitWithResult(undefined, 'Build failed: ' + game.editor.buildProjectAndExit + '\n' + message +
+			'; Error code: ' + errorCode + (owner instanceof Container ?
+				'; owner: ' + owner.___info : '') +
+				 (fieldName ? '; Field name: ' + fieldName : '')
+				 );
 			return Promise.resolve();
 		}
 
