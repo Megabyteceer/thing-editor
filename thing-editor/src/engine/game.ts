@@ -105,6 +105,7 @@ class Game {
 
 	isMobile = utils.isMobile;
 	isPortrait = false;
+	isLandscapeMobile = false;
 	_isCanvasRotated = false;
 
 	_isWaitingToHideFader = false;
@@ -404,6 +405,8 @@ class Game {
 			game.isPortrait = false;
 			break;
 		}
+
+		this.isLandscapeMobile = !this.isPortrait && this.isMobile.any;
 
 		if (!this.isMobile.any // eslint-disable-line no-constant-condition
 			/// #if EDITOR
