@@ -22,9 +22,9 @@ const imageJSPropertyDescriptor = {
 				if (this.anchor && ((((this.texture.height & 1) !== 0) && this.anchor.x === 0.5) || (((this.texture.width & 1) !== 0) && this.anchor.y === 0.5))) {
 					game.editor.ui.status.warn('Texture "' + v + '" has non even sized bounds ('
 						+ this.texture.width + 'x' + this.texture.height + '). It is can cause unwanted blurring for objects with centralized pivot point.', 32028,
-						() => {
-							game.editor.editSource(fs.getFileByAssetName(v, AssetType.IMAGE).fileName);
-						});
+					() => {
+						game.editor.editSource(fs.getFileByAssetName(v, AssetType.IMAGE).fileName);
+					});
 				}
 			}
 			/// #endif

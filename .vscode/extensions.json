@@ -1,0 +1,8 @@
+{
+	"recommendations": [
+		"VasiliyKostin.blocks-highlighter",
+		"VasiliyKostin.thing-editor-integration",
+		"streetsidesoftware.code-spell-checker",
+		"dbaeumer.vscode-eslint"
+	]
+}
