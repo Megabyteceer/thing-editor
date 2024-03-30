@@ -24,7 +24,12 @@
     "prefer-const": 0,
     "indent": [
       "warn",
-      "tab"
+      "tab",
+      {
+        "ignoredNodes": [
+          "PropertyDefinition" /* ESLint decorators issue. https://github.com/eslint/eslint/issues/15299#issuecomment-968099681*/
+        ]
+      }
     ],
     "semi": "warn",
     "quotes": [
