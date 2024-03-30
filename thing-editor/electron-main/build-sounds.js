@@ -103,7 +103,6 @@ module.exports = async function (options, notify) {
 		let bitrate = getBitrate(fn);
 
 		let logTxt = 'convert sound:' + fn + ' -> ' + ext + ' ' + bitrate + 'Kb';
-		console.log(logTxt);
 		notify(logTxt);
 		let fileParts = path.parse(fn);
 		let resultName = fileParts.dir + '/' + fileParts.name + '.' + ext;
