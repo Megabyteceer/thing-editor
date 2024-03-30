@@ -2,7 +2,7 @@
 // and contain all possible methods. Remove any of methods you do not need.
 // For details: https://github.com/Megabyteceer/thing-editor/wiki/Custom-Components#custom-component-methods
 
-import BASE_CLASS_NAME from "BASE_CLASS_PATH";
+import BASE_CLASS_NAME from 'BASE_CLASS_PATH';
 
 export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 	
@@ -105,7 +105,7 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 
 /// #if EDITOR
 
-//NEW_CLASS_NAME.__EDITOR_icon= "CURRENT_PROJECT_DIR/tree-icons/icon";
+//NEW_CLASS_NAME.__EDITOR_icon= 'CURRENT_PROJECT_DIR/tree-icons/icon';
 //NEW_CLASS_NAME.__canNotHaveChildren = true; //uncomment this line if your component should have no children
 
 

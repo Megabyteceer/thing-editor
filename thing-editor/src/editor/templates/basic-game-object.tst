@@ -2,7 +2,7 @@
 // and contain basic game-object's methods.
 // For details: https://github.com/Megabyteceer/thing-editor/wiki/Custom-Components#custom-component-methods
 
-import BASE_CLASS_NAME from "BASE_CLASS_PATH";
+import BASE_CLASS_NAME from 'BASE_CLASS_PATH';
 
 export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 
