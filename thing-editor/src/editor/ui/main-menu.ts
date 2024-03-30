@@ -217,7 +217,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('show-gizmo') ? CHECKED : UNCHECKED, ' Gizmo');
+					return R.fragment(game.editor.settings.getItem('show-gizmo', true) ? CHECKED : UNCHECKED, ' Gizmo');
 				},
 				tip: 'Hides gizmo and selection outline.',
 				onClick: () => {
@@ -228,7 +228,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('safe-area-frame') ? CHECKED : UNCHECKED, ' Safe area');
+					return R.fragment(game.editor.settings.getItem('safe-area-frame', true) ? CHECKED : UNCHECKED, ' Safe area');
 				},
 				tip: 'Hides project`s safe area frame.',
 				onClick: () => {

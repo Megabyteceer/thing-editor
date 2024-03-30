@@ -450,7 +450,7 @@ class Editor {
 			editorEvents.emit('projectDidOpen');
 			game.editor.saveProjectDesc();
 			this.setIsMobileAny(game.editor.settings.getItem('isMobile.any', false));
-			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
+			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame', true) && game.projectDesc.dynamicStageSize;
 
 			if (this.buildProjectAndExit) {
 				await Build.build(false);
@@ -497,12 +497,12 @@ class Editor {
 	}
 
 	toggleSafeAreaFrame() {
-		game.editor.settings.setItem('safe-area-frame', !game.editor.settings.getItem('safe-area-frame'));
+		game.editor.settings.setItem('safe-area-frame', !game.editor.settings.getItem('safe-area-frame', true));
 		this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame') && game.projectDesc.dynamicStageSize;
 	}
 
 	toggleHideHelpers() {
-		game.editor.settings.setItem('show-gizmo', !game.editor.settings.getItem('show-gizmo'));
+		game.editor.settings.setItem('show-gizmo', !game.editor.settings.getItem('show-gizmo', true));
 		this.showGizmo = game.editor.settings.getItem('show-gizmo');
 	}
 
