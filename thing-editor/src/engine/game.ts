@@ -1115,7 +1115,7 @@ class Game {
 			return;
 		}
 		game._loadingErrorIsDisplayed = true;
-		if (game.classes.BgMusic) {
+		if (game.classes && game.classes.BgMusic) {
 			(game.classes.BgMusic as any)._recalculateMusic();
 		}
 		/// #if EDITOR
