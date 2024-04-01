@@ -378,7 +378,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 					this.selectItem(itemElement, ev);
 				} : undefined
 			},
-				items
+			items
 			));
 	}
 

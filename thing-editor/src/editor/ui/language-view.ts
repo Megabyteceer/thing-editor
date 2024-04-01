@@ -600,7 +600,7 @@ function onModified(modifiedLangId?: string) {
 			if (!file.__isLangIdPlaceHolder) {
 				if (!modifiedLangId || modifiedLangId === langId) {
 					let content = __serializeLanguage(file.asset);
-					fs.saveAsset(file.assetName, AssetType.RESOURCE, content);
+					fs.saveAsset(file.assetName, AssetType.L10N, content);
 				}
 			}
 		});

@@ -983,9 +983,10 @@ const __onAssetAdded = (file: FileDesc) => {
 		file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
 		if (isAtlasAsset(file.asset)) {
 			Lib.addAtlas(file.assetName, file.fileName, 0, file);
-		} else {
-			game.editor.LanguageView.addAssets(file as FileDescL10n);
 		}
+		break;
+	case AssetType.L10N:
+		game.editor.LanguageView.addAssets(file as FileDescL10n);
 		break;
 	}
 };
@@ -1038,10 +1039,11 @@ const __onAssetUpdated = (file: FileDesc) => {
 			Lib.removeAtlas(file);
 			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
 			Lib.addAtlas(file.assetName, file.fileName, 0, file);
-		} else {
-			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
-			game.editor.LanguageView.addAssets(file as FileDescL10n);
 		}
+		break;
+	case AssetType.L10N:
+		file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
+		game.editor.LanguageView.addAssets(file as FileDescL10n);
 		break;
 	}
 };
@@ -1065,9 +1067,10 @@ const __onAssetDeleted = (file: FileDesc) => {
 		if (isAtlasAsset(file.asset)) {
 			Lib.removeAtlas(file);
 			game.editor.ui.refresh();
-		} else {
-			game.editor.LanguageView.removeAsset(file as FileDescL10n);
 		}
+		break;
+	case AssetType.L10N:
+		game.editor.LanguageView.removeAsset(file as FileDescL10n);
 		break;
 	case AssetType.SOUND:
 		Lib.__deleteSound(file as FileDescSound);

@@ -66,6 +66,7 @@ enum AssetType {
 	PREFAB = 'PREFAB',
 	CLASS = 'CLASS',
 	RESOURCE = 'RESOURCE',
+	L10N = 'L10N',
 	FONT = 'FONT',
 }
 
@@ -95,6 +96,7 @@ const ASSETS_PARSERS = {
 	'.webp': AssetType.IMAGE,
 	'.s.json': AssetType.SCENE,
 	'.p.json': AssetType.PREFAB,
+	'.l.json': AssetType.L10N,
 	'.json': AssetType.RESOURCE,
 	'.woff': AssetType.FONT,
 	'.woff2': AssetType.FONT,
@@ -108,14 +110,15 @@ const ASSET_TYPE_TO_EXT = {
 	[AssetType.CLASS]: '.c.ts'
 };
 
-const ASSET_EXT_CROP_LENGHTS: Map<AssetType, number> = new Map();
-ASSET_EXT_CROP_LENGHTS.set(AssetType.FONT, 0);
-ASSET_EXT_CROP_LENGHTS.set(AssetType.IMAGE, 0);
-ASSET_EXT_CROP_LENGHTS.set(AssetType.SCENE, 7);
-ASSET_EXT_CROP_LENGHTS.set(AssetType.PREFAB, 7);
-ASSET_EXT_CROP_LENGHTS.set(AssetType.SOUND, 4);
-ASSET_EXT_CROP_LENGHTS.set(AssetType.CLASS, 5);
-ASSET_EXT_CROP_LENGHTS.set(AssetType.RESOURCE, 5);
+const ASSET_EXT_CROP_LENGTHS: Map<AssetType, number> = new Map();
+ASSET_EXT_CROP_LENGTHS.set(AssetType.FONT, 0);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.IMAGE, 0);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.SCENE, 7);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.PREFAB, 7);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.L10N, 7);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.SOUND, 4);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.CLASS, 5);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.RESOURCE, 5);
 
 const EMPTY: FileDescImage = {
 	assetName: 'EMPTY',
@@ -456,7 +459,7 @@ export default class fs {
 			for (const ext in ASSETS_PARSERS) {
 				if (assetName.endsWith(ext)) {
 					const assetType = (ASSETS_PARSERS as KeyedObject)[ext];
-					file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGHTS.get(assetType) as number));
+					file.assetName = assetName.substring(0, assetName.length - (ASSET_EXT_CROP_LENGTHS.get(assetType) as number));
 					if (assetType === AssetType.CLASS) {
 						file.assetName = file.assetName.replace(/-/g, '');
 					}
