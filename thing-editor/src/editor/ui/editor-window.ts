@@ -360,69 +360,69 @@ class Window<P extends WindowProps = WindowProps, S extends WindowState = Window
 			},
 			'data-help': 'game.editor.' + this.props.helpId
 		},
-			R.div({
-				className: 'window-header'
-			}, this.state.title || this.props.title,
-				h(CornerDragger, {
-					className: 'window-dragger',
-					onDragEnd: this.saveState,
-					onDrag: this.deltaPosition,
-					owner: this as Window
-				})
-			),
-			R.div(contentProps, this.renderWindowContent()),
-			h(CornerDragger, {
-				className: 'window-r-dragger',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaR,
-				type: 'v',
-				owner: this as Window
-			}),
-			h(CornerDragger, {
-				className: 'window-l-dragger',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaL,
-				type: 'v',
-				owner: this as Window
-			}),
-			h(CornerDragger, {
-				className: 'window-b-dragger',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaB,
-				type: 'h',
-				owner: this as Window
-			}),
-			h(CornerDragger, {
-				className: 'window-t-dragger',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaT,
-				type: 'h',
-				owner: this as Window
-			}),
-			h(CornerDragger, {
-				className: 'window-rb-corner',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaRBCorner,
-				owner: this as Window
-			}),
-			h(CornerDragger, {
-				className: 'window-lb-corner',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaLBCorner,
-				owner: this as Window
-			}),
-			h(CornerDragger, {
-				className: 'window-rt-corner',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaRTCorner,
-				owner: this as Window
-			}),
-			h(CornerDragger, {
-				className: 'window-lt-corner',
-				onDragEnd: this.saveState,
-				onDrag: this.deltaLTCorner,
-				owner: this as Window
-			})
+		R.div({
+			className: 'window-header'
+		}, this.state.title || this.props.title,
+		h(CornerDragger, {
+			className: 'window-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaPosition,
+			owner: this as Window
+		})
+		),
+		R.div(contentProps, this.renderWindowContent()),
+		h(CornerDragger, {
+			className: 'window-r-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaR,
+			type: 'v',
+			owner: this as Window
+		}),
+		h(CornerDragger, {
+			className: 'window-l-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaL,
+			type: 'v',
+			owner: this as Window
+		}),
+		h(CornerDragger, {
+			className: 'window-b-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaB,
+			type: 'h',
+			owner: this as Window
+		}),
+		h(CornerDragger, {
+			className: 'window-t-dragger',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaT,
+			type: 'h',
+			owner: this as Window
+		}),
+		h(CornerDragger, {
+			className: 'window-rb-corner',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaRBCorner,
+			owner: this as Window
+		}),
+		h(CornerDragger, {
+			className: 'window-lb-corner',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaLBCorner,
+			owner: this as Window
+		}),
+		h(CornerDragger, {
+			className: 'window-rt-corner',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaRTCorner,
+			owner: this as Window
+		}),
+		h(CornerDragger, {
+			className: 'window-lt-corner',
+			onDragEnd: this.saveState,
+			onDrag: this.deltaLTCorner,
+			owner: this as Window
+		})
 		);
 	}
 

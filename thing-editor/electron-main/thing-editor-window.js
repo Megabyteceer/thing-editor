@@ -1,6 +1,8 @@
 const { BrowserWindow } = require('electron');
 const appConfig = require('electron-settings');
 
+const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
+
 module.exports = function getPositionRestoreWindow(windowState, id) {
 	const stateId = 'windowPosition-' + id;
 
@@ -10,8 +12,12 @@ module.exports = function getPositionRestoreWindow(windowState, id) {
 
 	const window = new BrowserWindow(windowState);
 
-	if (windowState.isMaximized) {
-		window.maximize();
+	if (IS_CI_RUN) {
+		window.minimize();
+	} else {
+		if (windowState.isMaximized) {
+			window.maximize();
+		}
 	}
 
 	const saveWindowPos = () => {
