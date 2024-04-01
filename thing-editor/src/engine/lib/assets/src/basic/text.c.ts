@@ -715,13 +715,13 @@ _editableEmbed(Text, 'maxWidth', {
 			___Guide.hide('maxWidthLeft');
 		} else {
 			switch (textObject.style.align) {
-				case CENTER:
-					right *= 0.5;
-					y = -right;
-					break;
-				case RIGHT:
-					right *= -1;
-					break;
+			case CENTER:
+				right *= 0.5;
+				y = -right;
+				break;
+			case RIGHT:
+				right *= -1;
+				break;
 			}
 			let tmpScale = textObject.scale.x;
 			textObject.scale.x = 1;

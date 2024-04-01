@@ -389,8 +389,8 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 						title: 'Ctrl+click to copy prefab`s name',
 						onMouseDown: copyTextByClick
 					},
-						R.span(null, R.classIcon(getSerializedObjectClass(file.asset)), prefabName),
-						prefabSelectCaret
+					R.span(null, R.classIcon(getSerializedObjectClass(file.asset)), prefabName),
+					prefabSelectCaret
 					), this.onChangePrefabClick, 'Change prefab referenced to', 'change-prefab-button', undefined, !game.__EDITOR_mode),
 					R.btn('Edit prefab', () => {
 						PrefabEditor.editPrefab(prefabName, true);

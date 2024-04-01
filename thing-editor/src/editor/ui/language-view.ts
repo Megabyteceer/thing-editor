@@ -31,7 +31,7 @@ let currentDirAssets: Map<string, FileDescL10n>;
 let currentDir: string;
 let languages: KeyedMap<L10NData> = {};
 
-let idsList: string[] = [];
+let currentIdsList: string[] = [];
 
 let instance: LanguageView | null;
 
@@ -191,7 +191,7 @@ const parseAssets = () => {
 
 	assetsDirs.length = 0;
 	langsIdsList.length = 0;
-	idsList.length = 0;
+	currentIdsList.length = 0;
 
 	languages = {};
 
@@ -237,7 +237,7 @@ const parseAssets = () => {
 
 	const firstFile = currentDirAssets.values().next().value;
 	for (let key in firstFile.asset) {
-		idsList.push(key);
+		currentIdsList.push(key);
 	}
 
 	L.setLanguagesAssets(languages);
@@ -380,8 +380,8 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			}
 		}
 		if (!defaultKey) {
-			if (idsList[0]) {
-				let a = idsList[0].split('.');
+			if (currentIdsList[0]) {
+				let a = currentIdsList[0].split('.');
 				a.pop();
 				defaultKey = a.join('.');
 				if (defaultKey) {
@@ -409,16 +409,21 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		showTextTable().then(() => {
 
 			if (!enforceCreateInCurrentSource) {
-				if (!idsList.hasOwnProperty(key)) { // find key in another source
-					assetsFiles.forEach((dirAssets) => {
-						dirAssets!.forEach((file) => {
+				if (!currentIdsList.includes(key)) { // find key in another source
+					for (const dirAssets of assetsFiles.values()) {
+						for (const file of dirAssets.values()) {
 							if (file.asset.hasOwnProperty(key)) {
 								currentDir = file.dir;
 								parseAssets();
 								this.refresh();
+
+								setTimeout(() => {
+									this.createKeyOrEdit(key, langId, enforceCreateInCurrentSource);
+								}, 20);
+								return;
 							}
-						});
-					});
+						}
+					}
 				}
 			}
 
@@ -455,7 +460,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			return R.div({ key: langId, className: 'langs-editor-th' }, langId);
 		}));
 
-		idsList.forEach((id) => {
+		currentIdsList.forEach((id) => {
 			let filter = this.state.filter;
 			if (filter) {
 				if (id.indexOf(filter) < 0) {
@@ -518,13 +523,20 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 
 					let areaId = textAreaID(langId, id);
 
-					return R.div({ key: langId, className: asset.__isLangIdPlaceHolder ? 'langs-editor-td disabled' : 'langs-editor-td' }, R.textarea({
-						key: asset.assetName + '_' + areaId, value: text, id: areaId, onInput: (ev: InputEvent) => {
-							asset.asset[id] = (ev.target as any).value as string;
-							parseAssets();
-							onModified(langId);
-						}
-					}));
+					return R.div({ key: langId, className: asset.__isLangIdPlaceHolder ? 'langs-editor-td disabled' : 'langs-editor-td' },
+					 R.textarea({
+							key: asset.assetName + '_' + areaId,
+							value: text,
+							id: areaId,
+							disabled: asset.readOnly,
+							onInput: (ev: InputEvent) => {
+								console.log('edited: ' + id);
+								asset.asset[id] = (ev.target as any).value as string;
+								parseAssets();
+								onModified(langId);
+							}
+						})
+					);
 				})
 			));
 		});
@@ -583,6 +595,13 @@ function textAreaID(lang: string, id: string) {
 
 let debounceTimeOut = 0;
 function onModified(modifiedLangId?: string) {
+	if (modifiedLangId) {
+		currentDirAssets.get(modifiedLangId)!.isDirty = true;
+	} else {
+		for (const file of 	currentDirAssets.values()) {
+			file.isDirty = true;
+		}
+	}
 	if (debounceTimeOut) {
 		clearTimeout(debounceTimeOut);
 	}
@@ -590,11 +609,11 @@ function onModified(modifiedLangId?: string) {
 	debounceTimeOut = window.setTimeout(() => {
 		L.refreshAllTextEverywhere();
 
-		currentDirAssets.forEach((file, langId) => {
-			if (!file.__isLangIdPlaceHolder) {
-				if (!modifiedLangId || modifiedLangId === langId) {
+		currentDirAssets.forEach((file) => {
+			if (!file.readOnly) {
+				if (file.isDirty) {
 					let content = __serializeLanguage(file.asset);
-					fs.saveAsset(file.assetName, AssetType.L10N, content);
+					fs.saveAsset(file.assetName, AssetType.L10N, content, undefined, true);
 				}
 			}
 		});

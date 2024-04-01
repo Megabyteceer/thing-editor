@@ -58,6 +58,7 @@ interface FileDescL10n extends FileDesc {
 	readOnly?: boolean;
 	lang: string;
 	__isLangIdPlaceHolder?: boolean;
+	isDirty?: boolean;
 }
 
 enum AssetType {
@@ -348,14 +349,16 @@ export default class fs {
 		game.editor.ui.refresh();
 	}
 
-	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject, libName?: string) {
+	static saveAsset(assetName: string, assetType: AssetType, data: string | Blob | KeyedObject, libName?: string, doNotSetFileAsset = false) {
 		const fileName = assetNameToFileName(assetName, assetType, libName);
 		ignoreWatch(fileName);
 		const mTime = fs.writeFile(fileName, data);
 		const file = fs.getFileByAssetName(assetName, assetType);
 		if (file) {
 			file.mTime = mTime;
-			file.asset = data as SerializedObject;
+			if (!doNotSetFileAsset) {
+				file.asset = data as SerializedObject;
+			}
 			sortAssets();
 			game.editor.ui.refresh();
 		} else if (!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
