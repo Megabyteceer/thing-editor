@@ -39,6 +39,17 @@ let assetsFilesIsDirty = false;
 
 let ignoreEdit = false;
 
+const priority = (file:FileDescL10n) => {
+	let ret = file.lang.charCodeAt(0);
+	if (file.lang === game.projectDesc.defaultLanguage) {
+		ret += 1000;
+	}
+	return ret;
+};
+const sortLanguages = (a:FileDescL10n, b:FileDescL10n) => {
+	return priority(b) - priority(a);
+};
+
 export default class LanguageView extends ComponentDebounced<ClassAttributes<LanguageView>> {
 
 	componentDidMount(): void {
@@ -51,37 +62,21 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 
 	render(): ComponentChild {
 		return R.fragment(
-			R.btn('×', LanguageView.toggle, 'Hide Text Editor', 'close-window-btn'),
+			R.btn('×', LanguageView.toggle, 'Hide Text Editor', 'close-window-btn', {key: 'Escape'}),
 			h(LanguageTableEditor, null));
 	}
 
 	static selectableList: SelectEditorItem[] = [];
 
-	static addAssets(file: FileDescL10n) {
+	static addAssets() {
 		if (!initialized) {
 			init();
 		}
-		file.asset = L._deserializeLanguage(file.asset);
-		const a = file.fileName.split('/');
-		if (!file.lang) {
-			file.lang = (a.pop()!).replace(/\.json$/, '');
-		}
-		file.dir = a.join('/');
-
-		if (!assetsFiles.has(file.dir)) {
-			assetsFiles.set(file.dir, new Map());
-		}
-		assetsFiles.get(file.dir)!.set(file.lang, file);
-
 		assetsFilesIsDirty = true;
 	}
 
-	static removeAsset(file: FileDescL10n) {
-		const dirAssets = assetsFiles.get(file.dir);
-		if (dirAssets) {
-			dirAssets.delete(file.lang);
-			assetsFilesIsDirty = true;
-		}
+	static removeAsset() {
+		assetsFilesIsDirty = true;
 	}
 
 	static toggle() {
@@ -200,36 +195,42 @@ const parseAssets = () => {
 
 	languages = {};
 
-	let lastDir: string;
+	assetsFiles.clear();
 
-	for (let folder of game.editor.assetsFolders) {
-		assetsFiles.forEach((folderFiles: Map<string, FileDescL10n>) => {
+	const files = fs.getAssetsList(AssetType.L10N) as FileDescL10n[];
 
-			const firstFile = folderFiles.values().next().value;
-			if (folder === (firstFile.lib ? firstFile.lib.assetsDir : game.editor.currentProjectAssetsDir)) {
-				assetsDirs.push(firstFile.dir);
-
-				folderFiles.forEach((file: FileDescL10n) => {
-
-					const langId = file.lang;
-					let langData: L10NData;
-					if (!languages[file.lang]) {
-						langsIdsList.push(langId);
-						langData = {};
-						languages[langId] = langData;
-					} else {
-						langData = languages[langId];
-					}
-					Object.assign(langData, file.asset);
-
-					lastDir = file.dir;
-				});
-			}
-		});
+	for (const file of files) {
+		const a = file.fileName.split('/');
+		if (!file.lang) {
+			file.lang = (a.pop()!).replace(/\.l\.json$/, '');
+		}
+		if (!file.dir) { // can be already set in assets-loader.cjs
+			file.dir = a.join('/');
+		}
 	}
 
-	if (!currentDir) {
-		currentDir = lastDir!;
+	files.sort(sortLanguages);
+
+	for (const file of files) {
+		if (!assetsFiles.has(file.dir)) {
+			assetsFiles.set(file.dir, new Map());
+			assetsDirs.push(file.dir);
+		}
+		if (!currentDir) {
+			currentDir = file.dir;
+		}
+		assetsFiles.get(file.dir)!.set(file.lang, file);
+
+		const langId = file.lang;
+		let langData: L10NData;
+		if (!languages[file.lang]) {
+			langsIdsList.push(langId);
+			langData = {};
+			languages[langId] = langData;
+		} else {
+			langData = languages[langId];
+		}
+		Object.assign(langData, file.asset);
 	}
 
 	currentDirAssets = assetsFiles.get(currentDir)!;
@@ -359,11 +360,6 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 				this.forceUpdate();
 			}
 		});
-	}
-
-	onAddNewFolderClick() {
-		alert('TODO');
-		//choose library of project where assets will be created; if all libraries and project has localization data - do not show "create folder" button'
 	}
 
 	onAddNewKeyClick() {
@@ -522,7 +518,6 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 
 					let areaId = textAreaID(langId, id);
 
-
 					return R.div({ key: langId, className: asset.__isLangIdPlaceHolder ? 'langs-editor-td disabled' : 'langs-editor-td' }, R.textarea({
 						key: asset.assetName + '_' + areaId, value: text, id: areaId, onInput: (ev: InputEvent) => {
 							asset.asset[id] = (ev.target as any).value as string;
@@ -545,7 +540,6 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
 			R.btn('+ Add language...', this.onAddNewLanguageClick),
-			R.btn('+ Add l10n folder...', this.onAddNewFolderClick),
 			R.input(this.searchInputProps),
 			(assetsDirs.length > 1) ? R.div(null, 'Localization data source: ',
 				h(SelectEditor, {
@@ -616,13 +610,15 @@ function createFilesForLanguage(langId: string) {
 
 	assetsFiles.forEach((dirAssets: Map<string, FileDescL10n>, dir: string) => {
 		if (!dirAssets.has(langId)) {
-			if (dir.endsWith('.json')) {
+			if (dir.endsWith('.l.json')) {
 				// add placeholders for non standard translations added via assets-loader.js
 				const placeholder = Object.assign({}, dirAssets.values().next().value) as FileDescL10n;
 				placeholder.__isLangIdPlaceHolder = true;
 				dirAssets.set(langId, placeholder);
 			} else {
-				const fileName = dir + '/' + langId + '.json';
+				debugger;
+
+				const fileName = dir + '/' + langId + '.l.json';
 				fs.writeFile(fileName, langData);
 				game.editor.ui.status.warn('Localization file ' + fileName + ' created.');
 

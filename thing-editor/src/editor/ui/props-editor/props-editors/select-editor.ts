@@ -227,15 +227,15 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 			className: 'select-editor',
 			onClick: this.onToggle
 		},
-			R.div({
-				className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
-			}, R.span({
-				ctrlclickcopyvalue: this.props.noCopyValue ? undefined : ((typeof (item as SelectEditorItem).value === 'undefined') ? item : (item as SelectEditorItem).value),
-				className: this.props.noCopyValue ? undefined : 'selectable-text',
-				title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
-				onClick: stopPropagationIfCtrl,
-				onMouseDown: copyTextByClick
-			}, (item as SelectEditorItem).name ? (item as SelectEditorItem).name : item, ' ▾'))
+		R.div({
+			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
+		}, R.span({
+			ctrlclickcopyvalue: this.props.noCopyValue ? undefined : ((typeof (item as SelectEditorItem).value === 'undefined') ? item : (item as SelectEditorItem).value),
+			className: this.props.noCopyValue ? undefined : 'selectable-text',
+			title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
+			onClick: stopPropagationIfCtrl,
+			onMouseDown: copyTextByClick
+		}, (item as SelectEditorItem).name ? (item as SelectEditorItem).name : item, ' ▾'))
 		);
 	}
 }

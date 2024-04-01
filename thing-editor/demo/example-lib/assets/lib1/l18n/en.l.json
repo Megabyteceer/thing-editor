@@ -1,7 +1,4 @@
 {
-	"menu": "LIb MMM",
-	"menu2": "LIb 2222",
-	"menu3": "LIb 444478",
-	"menu4": "LIb 3333",
-	"click": "LIb CLICK"
+	"menu": "Menu",
+	"click_to_continue": "Click to continue..."
 }

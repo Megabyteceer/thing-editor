@@ -90,7 +90,7 @@ export default class LocalStoreView extends ComponentDebounced<ClassAttributes<L
 
 
 		return R.fragment(
-			R.btn('×', LocalStoreView.toggle, 'Hide Local Store View', 'close-window-btn'),
+			R.btn('×', LocalStoreView.toggle, 'Hide Local Store View', 'close-window-btn', {key: 'Escape'}),
 			R.input(this.searchInputProps),
 			R.div(
 				LIST_PROPS,

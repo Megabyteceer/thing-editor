@@ -510,7 +510,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	render() {
 		return R.fragment(
 			(selectedComponents.length > 0) ? R.btn('', this.deleteSelectedKeyframes, undefined, 'hidden', { key: 'Delete' }) : undefined,
-			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
+			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn', {key: 'Escape'}),
 			R.div(
 				{
 					onScroll: onTimelineScroll,

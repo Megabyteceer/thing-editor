@@ -55,6 +55,7 @@ interface FileDescImage extends FileDesc {
 interface FileDescL10n extends FileDesc {
 	asset: KeyedObject;
 	dir: string;
+	readOnly?: boolean;
 	lang: string;
 	__isLangIdPlaceHolder?: boolean;
 }
@@ -464,7 +465,9 @@ export default class fs {
 						file.assetName = file.assetName.replace(/-/g, '');
 					}
 					file.fileName = '/' + file.fileName;
-					file.assetType = assetType;
+					if (!file.assetType) { // can be already set in assets-loader.cjs
+						file.assetType = assetType;
+					}
 					file.lib = lib;
 					return true;
 				}

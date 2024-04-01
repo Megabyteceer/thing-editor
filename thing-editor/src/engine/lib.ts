@@ -1,7 +1,7 @@
 
 import type { Container, Spritesheet } from 'pixi.js';
 import { Assets, Cache, MIPMAP_MODES, Texture, WRAP_MODES } from 'pixi.js';
-import type { FileDesc, FileDescImage, FileDescL10n, FileDescPrefab, FileDescSound } from 'thing-editor/src/editor/fs';
+import type { FileDesc, FileDescImage, FileDescPrefab, FileDescSound } from 'thing-editor/src/editor/fs';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import TLib from 'thing-editor/src/editor/prefabs-typing';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
@@ -986,7 +986,8 @@ const __onAssetAdded = (file: FileDesc) => {
 		}
 		break;
 	case AssetType.L10N:
-		game.editor.LanguageView.addAssets(file as FileDescL10n);
+		file.asset = L._deserializeLanguage(fs.readJSONFile(file.fileName) as KeyedObject);
+		game.editor.LanguageView.addAssets();
 		break;
 	}
 };
@@ -1042,8 +1043,8 @@ const __onAssetUpdated = (file: FileDesc) => {
 		}
 		break;
 	case AssetType.L10N:
-		file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
-		game.editor.LanguageView.addAssets(file as FileDescL10n);
+		file.asset = L._deserializeLanguage(fs.readJSONFile(file.fileName) as KeyedObject);
+		game.editor.LanguageView.addAssets();
 		break;
 	}
 };
@@ -1070,7 +1071,7 @@ const __onAssetDeleted = (file: FileDesc) => {
 		}
 		break;
 	case AssetType.L10N:
-		game.editor.LanguageView.removeAsset(file as FileDescL10n);
+		game.editor.LanguageView.removeAsset();
 		break;
 	case AssetType.SOUND:
 		Lib.__deleteSound(file as FileDescSound);

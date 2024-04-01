@@ -149,7 +149,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 			profilerBody = R.div(profilerProps, bgMusicsList, R.div({ className: 'sound-profiler-lane' }, soundsLanes));
 		}
 		return R.fragment(
-			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn'),
+			R.btn('×', this.props.onCloseClick, 'Hide timeline', 'close-window-btn', {key: 'Escape'}),
 			profilerBody
 		);
 	}

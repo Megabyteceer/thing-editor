@@ -1303,6 +1303,10 @@ input[disabled] {
 	right: 4px;
 }
 
+.langs-editor .select-editor-current {
+	white-space: nowrap;
+}
+
 .langs-editor .select-editor {
 	margin: 10px;
 	display: inline-block;
