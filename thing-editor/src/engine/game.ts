@@ -622,7 +622,7 @@ class Game {
 	/// #endif
 
 	forAllChildrenEverywhere(callback: (o: Container) => void) {
-		if (game.stage) {
+		if (game.stage && game.stage.forAllChildren) {
 			game.stage.forAllChildren(callback);
 		}
 		game.forAllChildrenEverywhereBack(callback);
