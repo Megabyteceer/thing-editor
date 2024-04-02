@@ -13,10 +13,18 @@ interface StackItem {
 	path: string;
 }
 
-const getCurrentStack = (title: ComponentChild): DebugStack => {
+const getCurrentStack = (title: string): DebugStack => {
+	let stack = (new Error(title)).stack as string;
+
+	stack = stack.replace('Error: ', '');
+	stack = stack.split('http://localhost:5173').join('');
+	const a = stack.split('\n');
+	a.splice(1, 1);
+	stack = a.join('\n');
+
 	return {
 		title,
-		stack: (new Error()).stack as string
+		stack
 	};
 };
 
@@ -78,6 +86,5 @@ const showStack = (stack: DebugStack) => {
 
 
 export { getCurrentStack, showStack };
-
-	export type { DebugStack };
+export type { DebugStack };
 

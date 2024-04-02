@@ -23,6 +23,7 @@ Usage:
 
 import { Container } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import type { DebugStack } from 'thing-editor/src/editor/utils/stack-utils';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -53,7 +54,10 @@ export default class Delay extends Container {
 			container.addChild(d);
 			/// #if EDITOR
 			d.name = container.name + '; ' + (callback.name || 'anonymous function');
+
 			d.___stack = getCurrentStack('Delay');
+
+			d.__description = d.___stack.stack;
 
 			/// #endif
 			return d;
@@ -65,7 +69,7 @@ export default class Delay extends Container {
 	callback: null | (() => void) = null;
 
 	@editable({ type: 'ref', onClick: showStack })
-	___stack: any;
+	___stack!: DebugStack;
 
 	/// #if EDITOR
 	onRemove() {
