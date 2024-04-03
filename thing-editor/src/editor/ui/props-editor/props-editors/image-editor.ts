@@ -1,6 +1,8 @@
 import type { ComponentChild } from 'preact';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import R from 'thing-editor/src/editor/preact-fabrics';
+import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
+import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
 import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
@@ -45,6 +47,20 @@ const ImageEditor = (props: EditablePropertyEditorProps): ComponentChild => {
 
 ImageEditor.parser = (val: string) => {
 	return val || null;
+};
+
+ImageEditor.contextMenuInjection = (contextMenu: ContextMenuItem[], _field:EditablePropertyDesc, _clickedValue:any, _value:any) => {
+	if (_clickedValue) {
+		contextMenu.splice(contextMenu.indexOf(null) + 1, 0, {
+			name: 'Reveal In Explorer',
+			onClick: () => {
+				const file = fs.getFileByAssetName(_clickedValue, AssetType.IMAGE);
+				if (file) {
+					fs.showFile(file.fileName);
+				}
+			}
+		});
+	}
 };
 
 export default ImageEditor;

@@ -68,7 +68,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		}
 	}
 
-	showContextMenu([
+	const contextMenu = [
 		{
 			name: R.fragment(R.icon('copy'), 'Copy value', R.span(nameValueProps, clickedValue)),
 			onClick: () => {
@@ -168,7 +168,13 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			disabled: () => defaultValue === undefined || value === defaultValue || !game.editor.ui.propsEditor.editableProps[field.name]
 		},
 
-	], ev);
+	];
+
+	if (field.renderer.contextMenuInjection) {
+		field.renderer.contextMenuInjection(contextMenu, field, clickedValue, value);
+	}
+
+	showContextMenu(contextMenu, ev);
 };
 
 export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps> {
