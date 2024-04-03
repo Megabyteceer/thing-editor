@@ -19,7 +19,6 @@ import loadDynamicTextures from 'thing-editor/src/engine/utils/load-dynamic-text
 import Settings from 'thing-editor/src/engine/utils/settings';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
-import type WebFont from 'webfontloader';
 
 import fs from 'thing-editor/src/editor/fs';
 import ERROR_HTML from './utils/html-error.html?raw';
@@ -1319,6 +1318,12 @@ function loadFonts() {
 	url('` + fontPath + `') format('woff');
 }
 									`);
+							} else if (fontsProviderName === 'google') {
+								const link = document.createElement('link');
+								link.rel = 'stylesheet';
+								link.type = 'text/css';
+								link.href = 'https://fonts.googleapis.com/css?family=' + family;
+								document.head.appendChild(link);
 							}
 
 							let a = family.split(':');
@@ -1333,25 +1338,14 @@ function loadFonts() {
 								fontHolder.appendChild(span);
 							}
 						}
-
 					}
 				}
 			}
 			document.body.appendChild(fontHolder);
 		}
 
-		import('webfontloader').then((webfontloader) => {
-			let webFontOptions: WebFont.Config = JSON.parse(JSON.stringify(game.projectDesc.webfontloader!));
-			webFontOptions.timeout = webFontOptions.timeout || 6000;
-			let resolved = false;
-			webFontOptions.inactive = webFontOptions.active = () => {
-				if (resolved) {
-					return;
-				}
-				resolved = true;
-				game.loadingRemove('FontsLoading');
-			};
-			webfontloader.load(webFontOptions);
+		document.fonts.ready.then(() => {
+			game.loadingRemove('FontsLoading');
 		});
 	}
 }

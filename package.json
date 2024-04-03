@@ -19,7 +19,7 @@
     "@typescript-eslint/parser": "^7.2.0",
     "chokidar": "^3.5.3",
     "electron": "^29.1.5",
-    "electron-settings": "^4.0.2",
+    "electron-settings": "^3.2.0",
     "eslint": "^8.42.0",
     "events": "^3.3.0",
     "express": "^4.18.2",
@@ -37,7 +37,6 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.0",
     "vite-plugin-image-optimizer": "^1.1.6",
-    "webfontloader": "^1.6.28",
     "zip-dir": "^2.0.0"
   }
 }

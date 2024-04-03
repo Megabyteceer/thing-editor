@@ -7,7 +7,7 @@ module.exports = function getPositionRestoreWindow(windowState, id) {
 	const stateId = 'windowPosition-' + id;
 
 	if (appConfig.has(stateId)) {
-		windowState = Object.assign({}, appConfig.getSync(stateId), windowState);
+		windowState = Object.assign({}, appConfig.get(stateId), windowState);
 	}
 
 	const window = new BrowserWindow(windowState);
