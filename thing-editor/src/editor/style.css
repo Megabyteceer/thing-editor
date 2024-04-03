@@ -1107,13 +1107,7 @@ input[disabled] {
 
 .context-menu-item-hotkey {
     color: #676767;
-    float: right;
-}
-
-.context-menu-item-hotkey::before {
-	display: inline-block;
-	width: 10px;
-	content: " ";
+    margin-left: 20px;
 }
 
 .context-menu button {
@@ -1121,9 +1115,12 @@ input[disabled] {
 	white-space: nowrap;
 	background: transparent;
 	border: none;
-	display: block;
-	text-align: left;
-	padding: 5px 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 5px 20px 5px 50px;
+	position: relative;
+	height: 26px;
 }
 
 .context-menu button:has(.current-menu-item) {
@@ -1141,7 +1138,10 @@ input[disabled] {
 }
 
 .context-menu img {
-	margin-right: 10px;
+	left: 17px;
+    top: 5px;
+	height: 16px;
+    position: absolute;
 }
 
 .small-text {

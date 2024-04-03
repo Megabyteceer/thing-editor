@@ -18,6 +18,10 @@ const defaultValueProps = {
 	onMouseDown: copyTextByClick
 };
 
+const nameValueProps = {
+	className: 'selectable-text context-menu-item-hotkey'
+};
+
 interface EditablePropertyEditorProps extends ClassAttributes<PropsFieldWrapper> {
 	field: EditablePropertyDesc;
 	value: any;
@@ -53,20 +57,22 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		clickedArrayItemIndex = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
 	}
 
+	let clickedValue = value;
+	if (field.arrayProperty) {
+		clickedValue = value && value.length && value.join(',');
+		const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
+
+		let i = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
+		if (i >= 0) {
+			clickedValue = value[i];
+		}
+	}
+
 	showContextMenu([
 		{
-			name: R.fragment(R.icon('copy'), 'Copy value'),
+			name: R.fragment(R.icon('copy'), 'Copy value', R.span(nameValueProps, clickedValue)),
 			onClick: () => {
-				if (field.arrayProperty) {
-					const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
-
-					let i = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
-					if (i >= 0) {
-						game.editor.copyToClipboard(value[i]);
-						return;
-					}
-				}
-				game.editor.copyToClipboard(value);
+				game.editor.copyToClipboard(clickedValue);
 			},
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
@@ -96,7 +102,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
-			name: R.fragment(R.icon('copy'), 'Copy property name'),
+			name: R.fragment(R.icon('copy'), 'Copy property name', R.span(nameValueProps, field.name)),
 			onClick: () => { game.editor.copyToClipboard(field.name); }
 		},
 		{
@@ -297,33 +303,33 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 				}
 			}
 		},
-			R.div({
-				className: field.name.startsWith('__') ? 'props-label props-label-helper selectable-text' : 'props-label selectable-text',
-				title: 'Double click - go to definition, Ctrl+click to copy field`s name',
-				onMouseDown: copyTextByClick,
-				onDblClick: () => {
-					game.editor.editSource(field.__src);
-				}
-			}, tip, field.name),
-			R.div(wrapperProps,
-				field.arrayProperty ?
-					h(ArrayEditableProperty, {
-						ref: this.editorRef,
-						value,
-						onChange: this.onChange as any,
-						onBlur: this._onBlur,
-						field,
-						disabled
-					}) :
-					h(field.renderer, {
-						ref: this.editorRef,
-						value,
-						onChange: this.onChange as any,
-						onBlur: this._onBlur,
-						field,
-						disabled
-					})
-			));
+		R.div({
+			className: field.name.startsWith('__') ? 'props-label props-label-helper selectable-text' : 'props-label selectable-text',
+			title: 'Double click - go to definition, Ctrl+click to copy field`s name',
+			onMouseDown: copyTextByClick,
+			onDblClick: () => {
+				game.editor.editSource(field.__src);
+			}
+		}, tip, field.name),
+		R.div(wrapperProps,
+			field.arrayProperty ?
+				h(ArrayEditableProperty, {
+					ref: this.editorRef,
+					value,
+					onChange: this.onChange as any,
+					onBlur: this._onBlur,
+					field,
+					disabled
+				}) :
+				h(field.renderer, {
+					ref: this.editorRef,
+					value,
+					onChange: this.onChange as any,
+					onBlur: this._onBlur,
+					field,
+					disabled
+				})
+		));
 	}
 }
 

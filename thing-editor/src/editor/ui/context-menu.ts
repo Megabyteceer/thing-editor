@@ -126,7 +126,7 @@ function renderMenuItem(item: ContextMenuItem) {
 	if (item) {
 		return R.btn(
 			R.fragment(
-				(typeof item.name === 'function') ? item.name() : item.name,
+				R.span(null, (typeof item.name === 'function') ? item.name() : item.name),
 				item.hotkey ? R.span(hotkeyTipProps, hotkeyToString(item.hotkey)) : undefined),
 			item.onClick,
 			item.tip,

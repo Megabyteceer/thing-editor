@@ -13,9 +13,9 @@ const assetItemRendererFont = (file: FileDescPrefab) => {
 	return R.div({
 		key: file.assetName
 	},
-		libInfo(file),
-		' font: ',
-		R.span(assetsItemNameProps, file.assetName.split('/').pop()!.split('.woff')[0]));
+	libInfo(file),
+	' font: ',
+	R.span(assetsItemNameProps, file.assetName.split('/').pop()!.split('.woff')[0]));
 };
 
 export default assetItemRendererFont;

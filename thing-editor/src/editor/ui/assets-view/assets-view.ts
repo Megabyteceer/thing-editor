@@ -21,6 +21,7 @@ import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view
 import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/searc-by-regexp-or-text';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import assetItemRendererL10n from './assets-view-l10n';
 
 const SETTINGS_KEY = '__EDITOR_assetsView_list';
 
@@ -34,6 +35,7 @@ assetsItemsRenderers.set(AssetType.PREFAB, assetItemRendererPrefab as (file: Fil
 
 assetsItemsRenderers.set(AssetType.RESOURCE, assetItemRendererResource as (file: FileDesc) => ComponentChild);
 assetsItemsRenderers.set(AssetType.FONT, assetItemRendererFont as (file: FileDesc) => ComponentChild);
+assetsItemsRenderers.set(AssetType.L10N, assetItemRendererL10n as (file: FileDesc) => ComponentChild);
 
 
 (assetsItemsRenderers as Map<AssetType, (file: FileDescClass) => ComponentChild>).set(AssetType.CLASS, assetItemRendererClass);
