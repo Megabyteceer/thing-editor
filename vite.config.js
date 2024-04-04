@@ -42,8 +42,7 @@ export default defineConfig({
 			'libs': __dirname + '/libs',
 			'games': __dirname + '/games',
 			'thing-editor': __dirname + '/thing-editor',
-			'pixi.js': __dirname + '/node_modules/pixi.js/dist/pixi.mjs',
-			'preact': __dirname + '/node_modules/preact/dist/preact.module.js'
+			'pixi.js': __dirname + '/node_modules/pixi.js/dist/pixi.mjs'
 		}
 	}
 });
