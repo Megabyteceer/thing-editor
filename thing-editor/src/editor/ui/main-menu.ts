@@ -276,7 +276,7 @@ const injectedNames: Set<string> = new Set();
 
 export default class MainMenu extends Component {
 
-	static injectMenu(targetMenuId: string, items: ContextMenuItem[], injectionName: string, pos?: number) {
+	static injectMenu(targetMenuId: 'file' | 'edit' | 'project' | 'settings' | any, items: ContextMenuItem[], injectionName: string, pos?: number) {
 		if (injectedNames.has(injectionName)) {
 			return;
 		}

@@ -22,6 +22,7 @@ import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-musi
 import Keys from 'thing-editor/src/engine/utils/keys';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
+import DataAccessDebugger from '../utils/data-access-debugger';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -126,7 +127,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			Sound.__resetSounds();
 			Pool.__resetIdCounter();
 			if (play) { // launch game
-				game.data = {} as any;
+				game.data = new Proxy({}, DataAccessDebugger.handler) as any;
 				(game.data as SelectableProperty).___EDITOR_isGoodForChooser = true;
 				(game.data as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
@@ -240,8 +241,8 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 						className: 'resolution clickable',
 						onMouseDown: this.showResolutionSelectMenu
 					},
-						R.div(null, this.currentResolution.name),
-						R.div(null, game.W + '×' + game.H),
+					R.div(null, this.currentResolution.name),
+					R.div(null, game.W + '×' + game.H),
 					),
 					R.hr()
 				) :
