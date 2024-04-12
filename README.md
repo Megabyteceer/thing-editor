@@ -1,4 +1,6 @@
-# Thing-editor
+# Thing-editor 2.0b
+
+Editor migrated to _typescript_ and many other improvements.
 
 ![Editor screenshot](https://pixel-cave.com/thing-editor-screen.jpg)
 
