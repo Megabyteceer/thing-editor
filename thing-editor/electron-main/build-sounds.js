@@ -5,6 +5,13 @@ const md5File = require('md5-file');
 const {exec} = require('child_process');
 const {walkSync} = require('./editor-server-utils');
 
+const isWin = process.platform === 'win32';
+
+const getCommandPath = (commandName) => {
+	const absPath = path.join(__dirname, './.bin/ffmpeg/' + commandName + (isWin ? '.exe' : ''));
+	return fs.existsSync(absPath) ? absPath : commandName;
+};
+
 module.exports = async function (options, notify) {
 
 	const soundsPath = options.dir;
@@ -33,10 +40,7 @@ module.exports = async function (options, notify) {
 	}
 	let filesToConvert = [];
 
-	let probePath = path.join(__dirname, './ffmpeg/bin/ffprobe.exe');
-	if (!fs.existsSync(probePath)) {
-		probePath = 'ffprobe';
-	}
+	let probePath = getCommandPath('ffprobe');
 
 	let files = walkSync(soundsPath);
 	for (let fileEntry of files) {
@@ -139,25 +143,21 @@ module.exports = async function (options, notify) {
 				setTimeout(conversionAttempt, 1000);
 				return;
 			}
-			let ffmpegPath = path.join(__dirname, './ffmpeg/bin/ffmpeg.exe');
-			if (!fs.existsSync(ffmpegPath)) {
-				ffmpegPath = 'ffmpeg';
-			}
+			let ffmpegPath = getCommandPath('ffmpeg');
 
 			exec(ffmpegPath + ' -i "' + fn + '" ' + additionalOptions + ' "' + resultName + '"', (err, out, outError) => {
 				if (err) {
 					errorArgs = [err, outError, out];
 					console.log(err, out);
 					console.error(outError);
-					setTimeout(conversionAttempt, 1000);
+					throw err;
 				} else {
 					exec(probePath + ' -show_entries format=duration -v quiet -of csv="p=0" -i "' + fn + '"', (err, out, outError) => {
 						if (err) {
 							errorArgs = [err, outError, out];
 							console.log(err, out);
 							console.error(outError);
-							setTimeout(conversionAttempt, 1000);
-
+							throw err;
 						} else {
 							fileData.cache.duration = parseFloat(out);
 							cb();
