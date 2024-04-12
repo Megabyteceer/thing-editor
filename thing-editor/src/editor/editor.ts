@@ -233,7 +233,8 @@ class Editor {
 		await ClassesLoader.reloadClasses();
 		if (restorePrefabName) {
 			PrefabEditor.editPrefab(restorePrefabName);
-		} if (needRestoring) {
+		}
+		if (needRestoring) {
 			this.restoreBackup();
 		}
 		editor.ui.refresh();

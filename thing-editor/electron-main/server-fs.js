@@ -133,7 +133,8 @@ module.exports = (mainWindow) => {
 				event.returnValue = ret;
 				return;
 			case 'fs/watchDirs':
-				event.returnValue = watchFolders(fileName, onFileChange);
+				watchFolders(fileName, onFileChange);
+				event.returnValue = true;
 				return;
 			case 'fs/isFilesEqual':
 				event.returnValue = isFilesEqual(fn(fileName), fn(content));

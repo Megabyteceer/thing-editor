@@ -496,7 +496,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			if (time === undefined) {
 				time = this.getTime();
 			}
-			nodes.some((o) => {
+			nodes.forEach((o) => {
 				o.__applyCurrentTimeValuesToFields(time!);
 			});
 		}

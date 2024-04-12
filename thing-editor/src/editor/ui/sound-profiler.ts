@@ -94,7 +94,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 				);
 			}
 		} else {
-			state = state = R.div({ className: 'sound-vol-bar-bg' },
+			state = R.div({ className: 'sound-vol-bar-bg' },
 				'stopped'
 			);
 		}

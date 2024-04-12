@@ -94,8 +94,7 @@ export default class ClassesLoader {
 					if (!prop.hasOwnProperty('type')) {
 						let type = typeof (instance as KeyedObject)[prop.name];
 						propertyAssert(prop, prop.override || type === 'string' || type === 'number' || type === 'boolean', 'can not detect type for editable property ' + prop.name);
-
-						prop.type = (type || 'number') as EditablePropertyType;
+						prop.type = type as EditablePropertyType;
 					}
 
 					if (prop.name.startsWith('___')) {

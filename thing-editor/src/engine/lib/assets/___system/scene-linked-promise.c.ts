@@ -89,7 +89,7 @@ export default class SceneLinkedPromise extends Container {
 		let results: any[] | null = [];
 		let count = promises.length;
 		return SceneLinkedPromise.promise((resolve: (result: any) => void, reject?: (result: any) => void, promise?: SceneLinkedPromise) => {
-			promises.some((p, i) => {
+			promises.forEach((p, i) => {
 				assert(p instanceof SceneLinkedPromise, 'SceneLinkedPromise expected', 10060);
 				promise!.addChild(p);
 				p.then((data: any) => {

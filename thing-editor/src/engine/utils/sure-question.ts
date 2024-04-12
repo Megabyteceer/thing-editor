@@ -5,7 +5,7 @@ import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 
 /** thing-editor internal */
-const sureQuestionInit = (container: Container, title: string, message: string, yesLabel?: string, onYes?: () => void, noLabel?: string, onNo?: () => void, easyClose = true) => {
+const sureQuestionInit = (container: Container, title: string, message: string, yesLabel?: string, onYes?: (() => void) | string, noLabel?: string, onNo?: (() => void) | string, easyClose = true) => {
 
 	const onYesHandler = () => {
 		game.hideModal(container);
