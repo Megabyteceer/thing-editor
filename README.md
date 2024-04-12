@@ -6,9 +6,11 @@ Visual game editor based on _typescript_, _pixi.js_, and _vite.js_.
 
 # installation:
 
-For Windows user you can download standalone work ready build by official link: [https://pixel-cave.com/thing-editor-win10-64-2.0b.zip](https://pixel-cave.com/thing-editor-win10-64-2.0b.zip)
+For __Windows__ user you can download standalone work ready build by official link: [https://pixel-cave.com/thing-editor-win10-64-2.0b.zip](https://pixel-cave.com/thing-editor-win10-64-2.0b.zip)
 
-Mac and Linux installation
+__Mac__ and __Linux__ installation:
+
+Install __ffmpeg__ and __ffprobe__ and then use next commands to instal Thing-Editor:
 ```
 git clone https://github.com/Megabyteceer/thing-editor.git
 cd thing-editor
