@@ -224,13 +224,12 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				TimelineLabelView.renormalizeAllLabels(o);
 				Timeline.allFieldDataChanged(o);
 			}
-			timelineInstance.refresh();
-			window.setTimeout(() => {
+			timelineInstance.refresh(() => {
 				clearSelection();
 				allKeyframesToSelect.forEach((kf) => {
 					select(kf.___view!);
 				});
-			}, 2);
+			});
 			game.editor.sceneModified();
 		}
 	}

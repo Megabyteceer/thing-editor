@@ -116,10 +116,9 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	hideModal(val?: any) {
 		assert(modal.state.modals.length > 0, 'tried to close modal dialogue, but no one opened.');
 		let closedModalItem = modal.state.modals.pop()!;
-		modal.refresh();
-		window.setTimeout(() => {
+		modal.refresh(() => {
 			closedModalItem.resolve(val);
-		}, 1);
+		});
 	}
 
 	showModal(content: ComponentChild, title: ComponentChild = '', noEasyClose = false, toBottom = false): Promise<any> {

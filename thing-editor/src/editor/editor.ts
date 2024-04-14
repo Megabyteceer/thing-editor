@@ -46,8 +46,6 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';
 import Build from './utils/build';
 
-let refreshTreeViewAndPropertyEditorScheduled = false;
-
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
 
 const parseLibName = (name: string): LibInfo => {
@@ -174,43 +172,40 @@ class Editor {
 	}
 
 	onUIMounted(ui: UI) {
-		window.setTimeout(() => {
+		this.ui = ui;
+		// load built in components
 
-			this.ui = ui;
-			// load built in components
+		fs.log('buildProjectAndExit: ' + this.buildProjectAndExit);
 
-			fs.log('buildProjectAndExit: ' + this.buildProjectAndExit);
+		if (this.buildProjectAndExit) {
+			this.settings.setItem('last-opened-project', this.buildProjectAndExit);
+		}
 
-			if (this.buildProjectAndExit) {
-				this.settings.setItem('last-opened-project', this.buildProjectAndExit);
+		if (this.settings.getItem('last-opened-project')) {
+			this.openProject(this.settings.getItem('last-opened-project'));
+		} else {
+			this.chooseProject(true);
+		}
+
+		window.onbeforeunload = (e) => {
+			if (!this.restartInProgress && !this.__FatalError) {
+				if (this.askSceneToSaveIfNeed() === false) {
+					e.returnValue = false;
+				}
 			}
+		};
 
-			if (this.settings.getItem('last-opened-project')) {
-				this.openProject(this.settings.getItem('last-opened-project'));
-			} else {
-				this.chooseProject(true);
+		window.setInterval(() => { //keep props editor and tree actual during scene is launched
+			if (EDITOR_FLAGS.updateInProgress) {
+				EDITOR_FLAGS.updateInProgress = false;
+				editor.ui.modal.showFatalError(R.fragment('Exception during update().', R.br(), R.btn('reload page', () => {
+					location.reload();
+				})), 99999);
 			}
-
-			window.onbeforeunload = (e) => {
-				if (!this.restartInProgress && !this.__FatalError) {
-					if (this.askSceneToSaveIfNeed() === false) {
-						e.returnValue = false;
-					}
-				}
-			};
-
-			window.setInterval(() => { //keep props editor and tree actual during scene is launched
-				if (EDITOR_FLAGS.updateInProgress) {
-					EDITOR_FLAGS.updateInProgress = false;
-					editor.ui.modal.showFatalError(R.fragment('Exception during update().', R.br(), R.btn('reload page', () => {
-						location.reload();
-					})), 99999);
-				}
-				if (!game.__EDITOR_mode && !game.__paused) {
-					this.refreshTreeViewAndPropertyEditor();
-				}
-			}, 300);
-		}, 0);
+			if (!game.__EDITOR_mode && !game.__paused) {
+				this.refreshTreeViewAndPropertyEditor();
+			}
+		}, 300);
 	}
 
 	get isCurrentSceneModified() {
@@ -917,14 +912,9 @@ class Editor {
 		this.ui.modal.notify(message);
 	}
 
-	refreshTreeViewAndPropertyEditor() {
-		if (refreshTreeViewAndPropertyEditorScheduled || document.fullscreenElement) return;
-		refreshTreeViewAndPropertyEditorScheduled = true;
-		window.setTimeout(() => {
-			refreshTreeViewAndPropertyEditorScheduled = false;
-			this.ui.sceneTree.refresh();
-			this.refreshPropsEditor();
-		}, 1);
+	refreshTreeViewAndPropertyEditor(onTreeViewUpdated?:() => void) {
+		this.ui.sceneTree.refresh(onTreeViewUpdated);
+		this.refreshPropsEditor();
 	}
 
 	refreshPropsEditor() {

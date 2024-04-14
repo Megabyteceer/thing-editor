@@ -5,17 +5,17 @@ import { TimelineKeyFrameType } from 'thing-editor/src/engine/lib/assets/src/bas
 
 function getDefaultKeyframeTypeForField(o: MovieClip, propertyName: string): TimelineKeyFrameType {
 	switch (propertyName) {
-		case 'x':
-		case 'y':
-		case 'rotation':
-			return TimelineKeyFrameType.SMOOTH;
-		case 'alpha':
-		case 'tintR':
-		case 'tintG':
-		case 'tintB':
-			return TimelineKeyFrameType.LINEAR;
-		default:
-			return getKeyframeTypesForField([o], propertyName)[0];
+	case 'x':
+	case 'y':
+	case 'rotation':
+		return TimelineKeyFrameType.SMOOTH;
+	case 'alpha':
+	case 'tintR':
+	case 'tintG':
+	case 'tintB':
+		return TimelineKeyFrameType.LINEAR;
+	default:
+		return getKeyframeTypesForField([o], propertyName)[0];
 	}
 }
 

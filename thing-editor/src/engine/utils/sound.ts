@@ -96,13 +96,13 @@ export default class Sound {
 				game.settings.setItem('musicVolEnabling', musicVol);
 				Sound.musicVol = 0;
 			}
-			Sound.rememberEnablings();
+			Sound.rememberEnableLevels();
 		}
 	}
 
-	static rememberEnablings() {
+	static rememberEnableLevels() {
 		if (!enablingSaveTimeout) {
-			enablingSaveTimeout = window.setTimeout(_rememberEnablings, 10);
+			enablingSaveTimeout = window.setTimeout(_rememberEnableLevels, 10);
 		}
 	}
 
@@ -122,7 +122,7 @@ export default class Sound {
 				game.settings.setItem('soundsVolEnabling', soundsVol);
 				Sound.soundsVol = 0;
 			}
-			Sound.rememberEnablings();
+			Sound.rememberEnableLevels();
 		}
 	}
 
@@ -317,7 +317,7 @@ let pitches: KeyedMap<number> = {};
 let pitchedPlayTimeouts: KeyedMap<number> = {};
 
 let enablingSaveTimeout = 0;
-function _rememberEnablings() {
+function _rememberEnableLevels() {
 	enablingSaveTimeout = 0;
 	if (Sound.soundEnabled || Sound.musicEnabled) {
 		game.settings.setItem('soundEnabled', Sound.soundEnabled);

@@ -593,6 +593,7 @@ input {
 
 .tree-item {
 	position: relative;
+	overflow-x: hidden;
 }
 
 .item-prefab-reference {
@@ -669,8 +670,8 @@ input {
 
 .tree-caret {
 	position: absolute;
-	right: 0;
-	top: 3px;
+	right: -8px;
+	top: 0;
 	font-size: 200%;
 	pointer-events: none;
 	line-height: 50%;

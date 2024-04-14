@@ -9,8 +9,8 @@ import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 
-let caretClosed = R.span({ className: 'tree-caret' }, '▸');
-let caretOpened = R.span({ className: 'tree-caret' }, '▾');
+let caretClosed = R.img({ className: 'tree-caret', src: '/thing-editor/img/caret.png' });
+let caretOpened = R.img({ className: 'tree-caret', src: '/thing-editor/img/caret-open.png' });
 
 let lastClickedItem: TreeNode | null;
 

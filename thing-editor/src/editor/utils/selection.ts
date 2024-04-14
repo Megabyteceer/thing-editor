@@ -50,7 +50,7 @@ let IS_SELECTION_LOADING_TIME = false;
 
 export default class Selection extends Array<Container> {
 
-	select(object: Container, add?: boolean) {
+	select(object: Container, add?: boolean, onTreeViewUpdated?:() => void) {
 		if (!add) {
 			this.clearSelection();
 		}
@@ -61,7 +61,7 @@ export default class Selection extends Array<Container> {
 		}
 		filterPhase = false;
 		this.sortSelectedNodes();
-		game.editor.refreshTreeViewAndPropertyEditor();
+		game.editor.refreshTreeViewAndPropertyEditor(onTreeViewUpdated);
 	}
 
 	sortSelectedNodes() {
