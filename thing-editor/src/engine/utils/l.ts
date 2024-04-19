@@ -16,7 +16,7 @@ let isLangDataLoaded = false;
 interface TL extends LocalizationKeys {
 	(id: string, values?: KeyedObject): string;
 	setLanguagesAssets: (src: KeyedObject) => void;
-	messageProcessor: (id: string, values?: KeyedObject) => string;
+	messageProcessor: (text: string, values?: KeyedObject) => string;
 	has: (id: string) => boolean;
 	setCurrentLanguage: (languageId?: string) => void;
 	refreshAllTextEverywhere: () => void;
