@@ -141,7 +141,6 @@ export default class HTMLOverlay extends ScrollLayer {
 		if (this.currentHtmlOpacity > 0.001
 			/// #if EDITOR
 			&& !game.__EDITOR_mode
-
 			/// #endif
 		) {
 			if (!this._htmlDiv) {
@@ -204,7 +203,7 @@ export default class HTMLOverlay extends ScrollLayer {
 
 	_applyClassName() {
 		if (this._htmlDiv) {
-			this._htmlDiv.className = this._htmlDiv.className ? (this.className + (game.isPortrait ? ' portrait-' : ' landscape-') + this.className) : '';
+			this._htmlDiv.className = this.className ? (this.className + (game.isPortrait ? ' portrait-' : ' landscape-') + this.className) : '';
 		}
 	}
 }
