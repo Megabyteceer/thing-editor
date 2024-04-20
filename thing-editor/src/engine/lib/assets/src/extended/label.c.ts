@@ -170,6 +170,8 @@ export default class Label extends Text {
 
 	refreshNow() {
 		this.currentInterval = 0;
+		this.lastUpdateTime = game.time;
+		this.update();
 	}
 
 	/// #if EDITOR
