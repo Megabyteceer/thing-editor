@@ -1039,7 +1039,11 @@ class Game {
 		}
 
 		const promise = modalToHide.getChildByName('modal-promise-awaiter') as SceneLinkedPromise;
-		if (promise) {
+		if (promise
+			/// #if EDITOR
+			&& !game.__EDITOR_mode
+			/// #endif
+		) {
 			promise.resolve(modalToHide);
 			promise.update();
 		}
