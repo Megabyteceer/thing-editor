@@ -14,14 +14,7 @@ console.groupEnd = () => {
 	originalGroupEnd.apply(console);
 
 };
-const originalLog = console.log;
-console.log = (...args: string[]) => {
-	if (args.some(a => a.includes('optimized dependencies changed. reloading'))) {
-		window.location.reload();
-		return;
-	}
-	originalLog.apply(console, args);
-};
+
 const originalWarn = console.warn;
 console.warn = (...args: string[]) => {
 	if (!filterWarnings(args)) {
