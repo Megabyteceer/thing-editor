@@ -24,6 +24,9 @@ export default defineConfig({
 		},
 		strictPort: 5173
 	},
+	optimizeDeps: {
+		disabled: true
+	},
 	plugins: [
 		resolver
 	],
