@@ -1,10 +1,6 @@
 let filterAll = false;
 
 const filterWarnings = (args: string[]) => {
-	if (args.some(a => a.includes('optimized dependencies changed. reloading'))) {
-		window.location.reload();
-		return;
-	}
 	if (filterAll) {
 		return true;
 	}
@@ -17,6 +13,14 @@ console.groupEnd = () => {
 	filterAll = false;
 	originalGroupEnd.apply(console);
 
+};
+const originalLog = console.log;
+console.log = (...args: string[]) => {
+	if (args.some(a => a.includes('optimized dependencies changed. reloading'))) {
+		window.location.reload();
+		return;
+	}
+	originalLog.apply(console, args);
 };
 const originalWarn = console.warn;
 console.warn = (...args: string[]) => {
