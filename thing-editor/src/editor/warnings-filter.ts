@@ -1,6 +1,10 @@
 let filterAll = false;
 
 const filterWarnings = (args: string[]) => {
+	if (args.some(a => a.includes('optimized dependencies changed. reloading'))) {
+		window.location.reload();
+		return;
+	}
 	if (filterAll) {
 		return true;
 	}
