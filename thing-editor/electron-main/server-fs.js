@@ -255,7 +255,7 @@ const getFileHash = (fileName) => {
 	const fileBuffer = fs.readFileSync(fileName);
 	hashSum.update(fileBuffer);
 	const ret = '' + hashSum.digest('base64');
-	return ret.substring(0, 8);
+	return ret.substring(0, 8).replaceAll('/', '_').replaceAll('+', '-').padStart('_', 8);
 };
 
 function isFilesEqual(a, b) {
