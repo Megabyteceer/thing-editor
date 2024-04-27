@@ -170,7 +170,7 @@
 				"args": [
 					"${workspaceFolder}/thing-editor/electron-main/launch-if-stopped.js"
 				],
-				"isBackground": false,
+				"isBackground": true,
 				"type": "process",
 				"problemMatcher": [
 					{
@@ -184,8 +184,8 @@
 						],
 						"background": {
 							"activeOnStart": true,
-							"beginsPattern": ".",
-							"endsPattern": "."
+							"beginsPattern": "editor",
+							"endsPattern": "launched"
 						}
 					}
 				]
