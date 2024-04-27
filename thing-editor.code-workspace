@@ -206,7 +206,9 @@
 				"presentation": {
 					//"hidden": true
 				},
-				"skipFiles": [],
+				"skipFiles": [
+					"**/debug/assert**"
+				],
 				"sourceMaps": true,
 				"smartStep": true,
 				"resolveSourceMapLocations": [
@@ -232,7 +234,9 @@
 				"presentation": {
 					"hidden": true
 				},
-				"skipFiles": [],
+				"skipFiles": [
+					"**/debug/assert**"
+				],
 				"sourceMaps": true,
 				"smartStep": true,
 				"resolveSourceMapLocations": [

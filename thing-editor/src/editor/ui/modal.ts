@@ -250,7 +250,6 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	}
 
 	showFatalError(message: ComponentChild, errorCode: number, additionalText = 'Please check console output for exceptions messages, and restart application (Reload page) by press (F5) button. You will receive question about saving any unsaved changes.') {
-		debugger;
 		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
