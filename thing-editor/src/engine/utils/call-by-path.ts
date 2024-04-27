@@ -12,7 +12,7 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	let c: any;
 	let rootName: string = path[0] as string;
 	/// #if EDITOR
-	pathDebugging(this_, callbackPath);
+	if (pathDebugging(this_, callbackPath)) debugger; // stopped at editor breakpoint
 	/// #endif
 	if (rootName === 'this') {
 		c = this_;

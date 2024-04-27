@@ -20,7 +20,7 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 	let rootName: string = path[0] as string;
 	/// #if EDITOR
 	if (!isLatestNodeGetting) {
-		pathDebugging(this_, valuePath);
+		if (pathDebugging(this_, valuePath)) debugger; // stopped at editor breakpoint
 	}
 	/// #endif
 	if (rootName === 'this') {
@@ -95,7 +95,7 @@ const setValueByPath = (valuePath: string, val: any, this_: any) => {
 	let c;
 	let rootName: string = path[0] as string;
 	/// #if EDITOR
-	pathDebugging(this_, valuePath);
+	if (pathDebugging(this_, valuePath)) debugger; // stopped at editor breakpoint
 	/// #endif
 	if (rootName === 'this') {
 		c = this_;
@@ -167,9 +167,8 @@ const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
 const pathDebugging = (o: Container, path: string) => {
 	if (o instanceof Container) {
 		if (o.__nodeExtendData.hasOwnProperty('__pathBreakpoint') && o.__nodeExtendData.__pathBreakpoint === path) {
-			//data-path breakpoint activated
-			debugger; // eslint-disable-line no-debugger
 			delete o.__nodeExtendData.__pathBreakpoint;
+			return true;
 		}
 	}
 };
