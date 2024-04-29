@@ -416,8 +416,8 @@ export default class fs {
 		return execFs('fs/showFile', fileName);
 	}
 
-	static build(projectDir: string, debug: boolean, copyAssets: { from: string; to: string }[]) {
-		return execFsAsync('fs/build', projectDir, debug, copyAssets);
+	static build(projectDir: string, debug: boolean, copyAssets: { from: string; to: string }[], projectDesc:ProjectDesc) {
+		return execFsAsync('fs/build', projectDir, debug, copyAssets, projectDesc);
 	}
 
 	static watchDirs(dirs: string[]) {

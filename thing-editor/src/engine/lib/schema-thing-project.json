@@ -25,7 +25,11 @@
 		"screenOrientation": {
 			"description": "projects screen orientation",
 			"type": "string",
-			"enum": ["landscape", "portrait", "auto"],
+			"enum": [
+				"landscape",
+				"portrait",
+				"auto"
+			],
 			"default": "landscape"
 		},
 		"width": {
@@ -86,7 +90,9 @@
 							"items": {
 								"type": "string"
 							},
-							"default": ["Fira Sans:300,400,700:cyrillic"]
+							"default": [
+								"Fira Sans:300,400,700:cyrillic"
+							]
 						}
 					}
 				},
@@ -99,7 +105,9 @@
 							"items": {
 								"type": "string"
 							},
-							"default": ["Soup Of Justice"]
+							"default": [
+								"Soup Of Justice"
+							]
 						}
 					}
 				}
@@ -112,63 +120,96 @@
 		},
 		"soundFormats": {
 			"description": "List of sounds formats which will be generated for project. Required because there is no format all the browsers support. Usually ogg + aac covers all the browsers you need.",
-			"type":"array",
+			"type": "array",
 			"items": {
 				"type": "string"
 			},
-			"default": ["ogg", "aac"]
+			"default": [
+				"ogg",
+				"aac"
+			]
 		},
 		"soundDefaultBitrate": {
 			"description": "sounds default bitrate for auto generated ogg and aac files.",
-			"type":"number",
+			"type": "number",
 			"default": 48,
-			"enum": [8, 16, 24, 32, 40, 48,56,64,80,96,112,128,144,160,192,224,256]
+			"enum": [
+				8,
+				16,
+				24,
+				32,
+				40,
+				48,
+				56,
+				64,
+				80,
+				96,
+				112,
+				128,
+				144,
+				160,
+				192,
+				224,
+				256
+			]
 		},
-		"fontHolderText":  {
+		"fontHolderText": {
 			"description": "invisible peace of text added to the web page for each loaded font, to keep web fonts from unloading. Add a few characters of your language if fonts in game look wrong.",
 			"type": "string",
 			"default": "ЯSфz"
 		},
-		"loadOnDemandSounds":  {
+		"__buildConfigDebug": {
+			"description": "path to vite config used for debug build.",
+			"type": "string",
+			"default": "thing-editor/electron-main/build-config.js"
+		},
+		"__buildConfigRelease": {
+			"description": "path to vite config used for release build.",
+			"type": "string",
+			"default": "thing-editor/electron-main/build-config.js"
+		},
+		"loadOnDemandSounds": {
 			"description": "info about way assets loading in to project. Usually this data generated automatically.",
 			"type": "object",
 			"default": {}
 		},
-		"mipmap":  {
+		"mipmap": {
 			"description": "enables mipmap generation for all textures. prevent aliasing effect on small size sprites.",
 			"type": "boolean",
 			"default": false
 		},
-		"version":  {
+		"version": {
 			"description": "your project`s version",
 			"type": "string",
-			"default":"0.0.1"
+			"default": "0.0.1"
 		},
-		"defaultMusVol":  {
+		"defaultMusVol": {
 			"description": "default global volume level for all BgMusic",
 			"type": "number",
-			"default":1
+			"default": 1
 		},
-		"defaultSoundsVol":  {
+		"defaultSoundsVol": {
 			"description": "default global volume level for all sounds",
 			"type": "number",
-			"default":1
+			"default": 1
 		},
-		"embedLocales":  {
+		"embedLocales": {
 			"description": "built in all localization data in to projects`s assets.",
 			"type": "boolean",
-			"default":true
+			"default": true
 		},
-		"__localesNewKeysPrefix":  {
+		"__localesNewKeysPrefix": {
 			"description": "all new created localization keys will start with this prefix.",
 			"type": "string",
-			"default":""
+			"default": ""
 		},
-		"__suspendWarnings":  {
+		"__suspendWarnings": {
 			"description": "suspends all warnings with listed codes.",
 			"type": "array",
-			"items": {"type": "number"},
-			"default":[]
+			"items": {
+				"type": "number"
+			},
+			"default": []
 		},
 		"defaultLanguage": {
 			"description": "language will be used if no users language present in localization data",
@@ -187,9 +228,13 @@
 		},
 		"libs": {
 			"description": "list libraries assets of will be included in to the projects.",
-			"type":"array",
-			"items": {"type":"string"},
-			"default": ["my-library"]
+			"type": "array",
+			"items": {
+				"type": "string"
+			},
+			"default": [
+				"my-library"
+			]
 		}
 	},
 	"title": "JSON schema for thing-editor configuration files"

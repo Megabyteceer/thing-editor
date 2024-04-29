@@ -54,7 +54,7 @@ module.exports = (mainWindow) => {
 				return await require(path.join('../..', fileName)).apply(null, args[0]);
 			case 'fs/build':
 				isDebug = content;
-				return await require('./build.js').build(fileName, isDebug, args[0]);
+				return await require('./build.js').build(fileName, isDebug, ...args);
 			}
 		} catch (er) {
 			console.error(er);

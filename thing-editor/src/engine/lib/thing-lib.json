@@ -13,6 +13,8 @@
 	"preventUpscale": false,
 	"fontHolderText": "ЯSфz",
 	"mipmap": false,
+	"__buildConfigDebug": "thing-editor/electron-main/build-config.js",
+	"__buildConfigRelease": "thing-editor/electron-main/build-config.js",
 	"version": "0.0.1",
 	"soundFormats": [
 		"ogg",

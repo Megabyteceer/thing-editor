@@ -18,6 +18,8 @@ interface ProjectDesc {
 	renderResolutionMobile: number;
 	framesSkipLimit: number;
 	dynamicStageSize: boolean;
+	__buildConfigDebug: string;
+	__buildConfigRelease: string;
 	preventUpscale: boolean;
 	webfontloader: {
 		custom?: {

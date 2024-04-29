@@ -185,7 +185,7 @@ import Lib from 'thing-editor/src/engine/lib';`];
 			}
 		}
 
-		return fs.build(game.editor.currentProjectDir, debug, assetsToCopy).then(async (result: any) => {
+		return fs.build(game.editor.currentProjectDir, debug, assetsToCopy, game.projectDesc).then(async (result: any) => {
 
 			const path = game.editor.currentProjectDir + (debug ? 'debug/' : 'release/');
 			for (const f of postBuildCallbacks) {
