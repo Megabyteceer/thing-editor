@@ -811,6 +811,7 @@ input {
 }
 
 input[type=checkbox] {
+	cursor: pointer;
 	float: left;
 	background: #181818;
 	appearance: none;
@@ -1046,6 +1047,7 @@ input[disabled] {
 	border-radius: 10px;
 }
 
+#data-access-debugger,
 #window-info,
 #language-view {
 	border: 1px solid #995500;
@@ -1496,7 +1498,9 @@ input[disabled] {
 	color: #008f5f;
 }
 
-
+.data-access-debugger-item .select-editor {
+	display: inline-block;
+}
 
 
 

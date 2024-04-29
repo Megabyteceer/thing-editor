@@ -524,7 +524,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 					let areaId = textAreaID(langId, id);
 
 					return R.div({ key: langId, className: asset.__isLangIdPlaceHolder ? 'langs-editor-td disabled' : 'langs-editor-td' },
-					 R.textarea({
+						R.textarea({
 							key: asset.assetName + '_' + areaId,
 							value: text,
 							id: areaId,

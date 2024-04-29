@@ -127,7 +127,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			Sound.__resetSounds();
 			Pool.__resetIdCounter();
 			if (play) { // launch game
-				game.data = new Proxy({}, DataAccessDebugger.handler) as any;
+				DataAccessDebugger.initializeGameData();
 				(game.data as SelectableProperty).___EDITOR_isGoodForChooser = true;
 				(game.data as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
