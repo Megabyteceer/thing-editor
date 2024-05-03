@@ -50,7 +50,7 @@ export default class DataAccessDebugger extends ComponentDebounced<ClassAttribut
 
 	static initializeGameData() {
 		this.gameData = {} as any;
-		this.gameDataProxy = new Proxy({}, DataAccessDebugger.handler) as any;
+		this.gameDataProxy = new Proxy(this.gameData, DataAccessDebugger.handler) as any;
 		this.applyDataToGame();
 	}
 
@@ -83,8 +83,8 @@ export default class DataAccessDebugger extends ComponentDebounced<ClassAttribut
 	}
 
 	static handler = {
-		set: setData,
-		deleteProperty
+		set: setData_thing_editor_debug_helper,
+		deleteProperty: deleteProperty_thing_editor_debug_helper
 	};
 
 	constructor() {
@@ -190,7 +190,7 @@ editorEvents.on('projectDidOpen', () => {
 	}
 });
 
-function deleteProperty(data:any, prop:any):any {
+function deleteProperty_thing_editor_debug_helper(data:any, prop:any):any {
 	for (const item of instance!.state.debugEntries) {
 		if ((prop === item.propertyName) && ((item.mode === DataAccessDebuggerMode.ANY) || (typeof item.parsedValue === 'undefined'))) {
 			debugger; // access to data detected
@@ -201,7 +201,7 @@ function deleteProperty(data:any, prop:any):any {
 	return true;
 }
 
-function setData(data:any, prop:any, val:any):any {
+function setData_thing_editor_debug_helper(data:any, prop:any, val:any):any {
 	let valueParsed = false;
 	let valueToCompare;
 

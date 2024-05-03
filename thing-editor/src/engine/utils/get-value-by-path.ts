@@ -20,7 +20,7 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 	let rootName: string = path[0] as string;
 	/// #if EDITOR
 	if (!isLatestNodeGetting) {
-		if (pathDebugging(this_, valuePath)) debugger; // stopped at editor breakpoint
+		pathDebugging_thing_editor_debug_helper(this_, valuePath); // stopped at editor breakpoint
 	}
 	/// #endif
 	if (rootName === 'this') {
@@ -95,7 +95,7 @@ const setValueByPath = (valuePath: string, val: any, this_: any) => {
 	let c;
 	let rootName: string = path[0] as string;
 	/// #if EDITOR
-	if (pathDebugging(this_, valuePath)) debugger; // stopped at editor breakpoint
+	pathDebugging_thing_editor_debug_helper(this_, valuePath); // stopped at editor breakpoint
 	/// #endif
 	if (rootName === 'this') {
 		c = this_;
@@ -164,11 +164,11 @@ const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
 	return ret;
 };
 
-const pathDebugging = (o: Container, path: string) => {
+const pathDebugging_thing_editor_debug_helper = (o: Container, path: string) => {
 	if (o instanceof Container) {
 		if (o.__nodeExtendData.hasOwnProperty('__pathBreakpoint') && o.__nodeExtendData.__pathBreakpoint === path) {
 			delete o.__nodeExtendData.__pathBreakpoint;
-			return true;
+			debugger;
 		}
 	}
 };
@@ -189,7 +189,7 @@ setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
 export {
 	getLatestSceneNodeBypath,
 	getLatestSceneNodesByComplexPath,
-	pathDebugging
+	pathDebugging_thing_editor_debug_helper
 };
 
 /// #endif
