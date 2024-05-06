@@ -248,6 +248,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 	const prefabs: KeyedMap<SerializedObject> = {};
 
 	let resources: string[] | undefined;
+	let xmls: string[] | undefined;
 	let fonts: string[] | undefined;
 
 	assets.forEach((file) => {
@@ -285,6 +286,15 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 						to: getHashedAssetName(file) + '.json'
 					});
 				}
+			} else if (file.assetType === AssetType.BITMAP_FONT) {
+				if (!xmls) {
+					xmls = [];
+				}
+				xmls.push(getHashedAssetName(file));
+				assetsToCopy.push({
+					from: file.fileName,
+					to: getHashedAssetName(file) + '.xml'
+				});
 			} else if (file.assetType === AssetType.FONT) {
 				if (!fonts) {
 					fonts = [];
@@ -302,6 +312,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 		scenes,
 		prefabs,
 		resources,
+		xmls,
 		fonts,
 		images,
 		sounds,

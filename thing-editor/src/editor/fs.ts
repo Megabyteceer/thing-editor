@@ -68,6 +68,7 @@ enum AssetType {
 	PREFAB = 'PREFAB',
 	CLASS = 'CLASS',
 	RESOURCE = 'RESOURCE',
+	BITMAP_FONT = 'BITMAP_FONT',
 	L10N = 'L10N',
 	FONT = 'FONT',
 }
@@ -103,6 +104,7 @@ const ASSETS_PARSERS = {
 	'.woff': AssetType.FONT,
 	'.woff2': AssetType.FONT,
 	'.wav': AssetType.SOUND,
+	'.xml': AssetType.BITMAP_FONT,
 	'.c.ts': AssetType.CLASS
 };
 
@@ -121,6 +123,7 @@ ASSET_EXT_CROP_LENGTHS.set(AssetType.L10N, 7);
 ASSET_EXT_CROP_LENGTHS.set(AssetType.SOUND, 4);
 ASSET_EXT_CROP_LENGTHS.set(AssetType.CLASS, 5);
 ASSET_EXT_CROP_LENGTHS.set(AssetType.RESOURCE, 5);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.BITMAP_FONT, 4);
 
 const EMPTY: FileDescImage = {
 	assetName: 'EMPTY',
@@ -579,7 +582,7 @@ export default class fs {
 	}
 
 	static getWrongSymbol(fileName: string) {
-		const wrongSymbolPos = fileName.search(/[^a-zA-Z_\-\.\d\/]/gm);
+		const wrongSymbolPos = fileName.search(/[^@a-zA-Z_\-\.\d\/]/gm);
 		if (wrongSymbolPos >= 0) {
 			return fileName[wrongSymbolPos];
 		}

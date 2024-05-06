@@ -161,6 +161,7 @@ interface AssetsDescriptor {
 	prefabs: KeyedMap<SerializedObject>;
 	images: string[];
 	resources?: string[];
+	xmls?: string[];
 	fonts?: string[];
 	sounds: SoundAssetEntry[];
 	text?: KeyedObject;

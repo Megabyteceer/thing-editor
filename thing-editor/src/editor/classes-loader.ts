@@ -219,7 +219,7 @@ export default class ClassesLoader {
 						const existingProp = editableProps[sameNamedPropIndex];
 						if (!thisProp.override) {
 							game.editor.editSource(thisProp.__src);
-							game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + existingProp, 40004);
+							game.editor.ui.modal.showError('Redefinition of property "' + thisProp.name + '" at class ' + superClass.__className + '. Already defined at: ' + existingProp.__src, 40004);
 						} else {
 
 							editableProps[sameNamedPropIndex] = Object.assign({}, existingProp, thisProp);
