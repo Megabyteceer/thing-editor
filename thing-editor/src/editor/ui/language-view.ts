@@ -637,7 +637,9 @@ function createFilesForLanguage(langId: string) {
 			} else {
 				const fileName = dir + '/' + langId + '.l.json';
 				fs.writeFile(fileName, langData);
-				game.editor.ui.status.warn('Localization file ' + fileName + ' created.');
+				game.editor.ui.status.warn('Localization file ' + fileName + ' created.', 90001, () => {
+					fs.showFile(fileName);
+				});
 
 				created = true;
 			}
