@@ -624,7 +624,6 @@ function onModified(modifiedLangId?: string) {
 }
 
 function createFilesForLanguage(langId: string) {
-	let langData: KeyedObject = __serializeLanguage((currentDirAssets.values().next().value as FileDescL10n).asset, true);
 	let created = false;
 
 	assetsFiles.forEach((dirAssets: Map<string, FileDescL10n>, dir: string) => {
@@ -634,7 +633,9 @@ function createFilesForLanguage(langId: string) {
 				const placeholder = Object.assign({}, dirAssets.values().next().value) as FileDescL10n;
 				placeholder.__isLangIdPlaceHolder = true;
 				dirAssets.set(langId, placeholder);
-			} else {
+			} else if (!game.projectDesc.__doNotAutoCreateLocalizationFiles) {
+
+				let langData: KeyedObject = __serializeLanguage((currentDirAssets.values().next().value as FileDescL10n).asset, true);
 				const fileName = dir + '/' + langId + '.l.json';
 				fs.writeFile(fileName, langData);
 				game.editor.ui.status.warn('Localization file ' + fileName + ' created.', 90001, () => {

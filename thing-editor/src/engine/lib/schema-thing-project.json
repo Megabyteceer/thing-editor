@@ -203,6 +203,11 @@
 			"type": "string",
 			"default": ""
 		},
+		"__doNotAutoCreateLocalizationFiles": {
+			"description": "disable automatic creation of localization files for all languages.",
+			"type": "boolean",
+			"default": "false"
+		},
 		"__suspendWarnings": {
 			"description": "suspends all warnings with listed codes.",
 			"type": "array",
