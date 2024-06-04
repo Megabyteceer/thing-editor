@@ -255,9 +255,9 @@ function setData_thing_editor_debug_helper(data:any, prop:any, val:any):any {
 
 MainMenu.injectMenu('project', [
 	{
-		name: 'Debug game.data access',
+		name: 'Debug game.data access...',
 		onClick: () => {
 			DataAccessDebugger.toggle();
 		}
 	}
-], 'debug-data-access');
+], 'debug-data-access', -1);
