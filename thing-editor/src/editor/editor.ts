@@ -402,7 +402,7 @@ class Editor {
 			mergeProjectDesc(this.projectDesc, libsProjectDescMerged);
 			mergeProjectDesc(this.projectDesc, projectDesc);
 
-			excludeOtherProjects();
+			setTimeout(excludeOtherProjects, 1);
 
 			game.applyProjectDesc(this.projectDesc);
 
