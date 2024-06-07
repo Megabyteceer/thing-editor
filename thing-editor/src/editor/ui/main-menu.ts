@@ -315,7 +315,7 @@ export default class MainMenu extends Component {
 				},
 				R.btn(menuItem.name, (ev: PointerEvent) => {
 					toggleContextMenu(menuItem.items, ev);
-				}));
+				}, 'menu item id: ' + menuItem.id));
 			}));
 	}
 

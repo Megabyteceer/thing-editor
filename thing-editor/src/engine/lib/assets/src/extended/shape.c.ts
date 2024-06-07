@@ -101,67 +101,67 @@ export default class Shape extends Graphics {
 	drawThing() {
 		let points;
 		switch (this.shape) {
-			case SHAPE_TYPE.ROUND_RECT:
-				this.drawRoundedRect(0, 0, this.width, this.height, this.shapeRadius);
-				break;
-			case SHAPE_TYPE.RECT:
-				this.drawRect(0, 0, this.width, this.height);
-				break;
-			case SHAPE_TYPE.CIRCLE:
-				this.drawCircle(0, 0, this.shapeRadius);
-				break;
-			case SHAPE_TYPE.ELLIPSE:
-				this.drawEllipse(0, 0, this.width, this.height);
-				break;
-			case SHAPE_TYPE.POLY:
-				/// #if EDITOR
-				if (!this._shapePoints) {
-					this._shapePoints = [];
+		case SHAPE_TYPE.ROUND_RECT:
+			this.drawRoundedRect(0, 0, this.width, this.height, this.shapeRadius);
+			break;
+		case SHAPE_TYPE.RECT:
+			this.drawRect(0, 0, this.width, this.height);
+			break;
+		case SHAPE_TYPE.CIRCLE:
+			this.drawCircle(0, 0, this.shapeRadius);
+			break;
+		case SHAPE_TYPE.ELLIPSE:
+			this.drawEllipse(0, 0, this.width, this.height);
+			break;
+		case SHAPE_TYPE.POLY:
+			/// #if EDITOR
+			if (!this._shapePoints) {
+				this._shapePoints = [];
+			}
+			while (this._shapePoints.length < DEFAULT_POINTS.length) {
+				let p = {
+					x: DEFAULT_POINTS[this._shapePoints.length][0],
+					y: DEFAULT_POINTS[this._shapePoints.length][1]
+				};
+				this._shapePoints.push(p as Point);
+				Object.freeze(p);
+			}
+			/// #endif
+			if (this._shapePoints.length > 2) {
+				points = [];
+				for (let c of this._shapePoints) {
+					points.push(c.x, c.y);
 				}
-				while (this._shapePoints.length < DEFAULT_POINTS.length) {
-					let p = {
-						x: DEFAULT_POINTS[this._shapePoints.length][0],
-						y: DEFAULT_POINTS[this._shapePoints.length][1]
-					};
-					this._shapePoints.push(p as Point);
-					Object.freeze(p);
-				}
-				/// #endif
-				if (this._shapePoints.length > 2) {
-					points = [];
-					for (let c of this._shapePoints) {
-						points.push(c.x, c.y);
-					}
-					this.drawPolygon(points);
-				}
-				break;
+				this.drawPolygon(points);
+			}
+			break;
 		}
 	}
 
 	getHitareaShape() {
 		switch (this.shape) {
-			case SHAPE_TYPE.ROUND_RECT:
-				return new RoundedRectangle(this.x, this.y, this.width, this.height, this.shapeRadius);
-				break;
-			case SHAPE_TYPE.RECT:
-				return new Rectangle(this.x, this.y, this.width, this.height);
-				break;
-			case SHAPE_TYPE.CIRCLE:
-				return new Circle(this.x, this.y, this.shapeRadius);
-				break;
-			case SHAPE_TYPE.ELLIPSE:
-				return new Ellipse(this.x, this.y, this.width, this.height);
-				break;
+		case SHAPE_TYPE.ROUND_RECT:
+			return new RoundedRectangle(this.x, this.y, this.width, this.height, this.shapeRadius);
+			break;
+		case SHAPE_TYPE.RECT:
+			return new Rectangle(this.x, this.y, this.width, this.height);
+			break;
+		case SHAPE_TYPE.CIRCLE:
+			return new Circle(this.x, this.y, this.shapeRadius);
+			break;
+		case SHAPE_TYPE.ELLIPSE:
+			return new Ellipse(this.x, this.y, this.width, this.height);
+			break;
 
-			case SHAPE_TYPE.POLY:
-				if ((this._shapePoints as Point[]).length > 2) {
-					let points = [];
-					for (let c of this._shapePoints as Point[]) {
-						points.push(c.x + this.x, c.y + this.y);
-					}
-					return new Polygon(points);
+		case SHAPE_TYPE.POLY:
+			if ((this._shapePoints as Point[]).length > 2) {
+				let points = [];
+				for (let c of this._shapePoints as Point[]) {
+					points.push(c.x + this.x, c.y + this.y);
 				}
-				break;
+				return new Polygon(points);
+			}
+			break;
 		}
 		return null;
 	}

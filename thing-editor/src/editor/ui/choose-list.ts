@@ -74,14 +74,9 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 			key = '' + key;
 		}
 
-		let className = item.refusedBecause ? 'refused-item choosing-item' : 'clickable choosing-item';
-
-
 		const isCurrentItem = this.props.activeValue === (item.pureName || item.name);
 
-		if (isCurrentItem) {
-			className += ' assets-item-current';
-		}
+		let className = item.refusedBecause ? 'refused-item choosing-item' : (isCurrentItem ? 'choosing-item assets-item-current' : 'clickable choosing-item');
 
 		return R.div({
 			onClick: isCurrentItem ? undefined : () => {

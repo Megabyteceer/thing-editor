@@ -389,6 +389,10 @@ textarea:focus-visible {
 	max-height: 60vh;
 }
 
+.clickable.choosing-item:hover {
+	background-color: #28292a;
+}
+
 .choosing-item {
 	white-space: nowrap;
 	padding: 4px;
