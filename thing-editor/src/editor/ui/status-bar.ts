@@ -62,7 +62,9 @@ export default class StatusBar extends Component {
 
 			if (game.editor.selection.length > 0) {
 				let p = game.editor.selection[0].toLocal(game.mouse);
-				txt += ' (x: ' + Math.round(p.x - game.editor.selection[0].pivot.x) + '; y: ' + Math.round(p.y - game.editor.selection[0].pivot.y) + ')';
+				if (!isNaN(p.x)) {
+					txt += ' (x: ' + Math.round(p.x - game.editor.selection[0].pivot.x) + '; y: ' + Math.round(p.y - game.editor.selection[0].pivot.y) + ')';
+				}
 			}
 
 			let resetZoomBtn;
