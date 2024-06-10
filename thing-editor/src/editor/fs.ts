@@ -143,7 +143,7 @@ const WHITE: FileDescImage = {
 	lib: null
 };
 
-const execFs = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => {
+const execFs = (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => {
 	const ret = electron_ThingEditorServer.fs(command, filename, content, ...args);
 	if (ret instanceof Error) {
 		game.editor.ui.modal.showFatalError('Main process error.', 99999, ret.message);
@@ -435,6 +435,10 @@ export default class fs {
 		if (file.assetType === AssetType.SOUND) {
 			scheduledSoundsRebuilds.add(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir);
 		}
+	}
+
+	static setProgressBar(progress: number) {
+		execFs('fs/setProgressBar', progress);
 	}
 
 	static rebuildSounds(dir: string): object {

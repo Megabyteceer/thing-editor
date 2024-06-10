@@ -52,6 +52,9 @@ module.exports = {
 				require('./static-server.js');
 				console.log('BUILD COMPLETE: ' + 'http://localhost:5174/' + projectDir);
 				return res;
+			}).catch((er) => {
+				console.error(er.stack);
+				return er;
 			});
 		});
 	}

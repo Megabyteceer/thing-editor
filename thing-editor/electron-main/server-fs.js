@@ -118,6 +118,10 @@ module.exports = (mainWindow) => {
 					event.returnValue = null;
 				}
 				return;
+			case 'fs/setProgressBar':
+				mainWindow.setProgressBar(fileName);
+				event.returnValue = null;
+				return;
 			case 'fs/readFile':
 				fd = fs.openSync(fn(fileName), 'r');
 				c = fs.readFileSync(fd, fsOptions);
