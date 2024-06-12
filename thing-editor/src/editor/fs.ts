@@ -272,9 +272,9 @@ export default class fs {
 	}
 
 	/** returns new mTime */
-	static writeFile(fileName: string, data: string | Blob | KeyedObject): number {
+	static writeFile(fileName: string, data: string | Blob | KeyedObject, separator:string | null = '	'): number {
 		if (typeof data !== 'string' && !(data instanceof Blob)) {
-			data = JSON.stringify(data, fs.fieldsFilter, '	');
+			data = JSON.stringify(data, fs.fieldsFilter, separator as string);
 		}
 		return execFs('fs/saveFile', fileName, data as string) as number;
 	}
