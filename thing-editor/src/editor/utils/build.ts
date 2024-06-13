@@ -68,7 +68,7 @@ function getAssetsForBuild(type: AssetType) {
 let assetsToCopy: { from: string; to: string }[] = [];
 
 export default class Build {
-	static build(debug: boolean) {
+	static async build(debug: boolean) {
 		fs.log(debug ? 'build debug' : 'build release');
 		game.editor.validateResources();
 
@@ -185,7 +185,7 @@ import Lib from 'thing-editor/src/engine/lib';`];
 			}
 		}
 
-		return fs.build(game.editor.currentProjectDir, debug, assetsToCopy, game.projectDesc).then(async (result: any) => {
+		await fs.build(game.editor.currentProjectDir, debug, assetsToCopy, game.projectDesc).then(async (result: any) => {
 
 			if (!game.editor.buildProjectAndExit) {
 				if (result instanceof Error) {
