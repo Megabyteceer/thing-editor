@@ -41,6 +41,22 @@ const _initParsers = () => {
 		asset.meta.image = unHashedFileToHashed.get(url)!.split('/').pop();
 		return originalParser(asset, options, ...args);
 	};
+
+	const loadBitmapFont = Assets.loader.parsers.find(p => p.name === 'loadBitmapFont');
+	const originalBMFParser = loadBitmapFont!.parse!;
+	loadBitmapFont!.parse = (asset: string, options, ...args) => {
+		const reg = /(file=")(.+)(")/gm;
+		let result:RegExpExecArray |null;
+		let fixedAsset:string = asset;
+		while ((result = reg.exec(asset)) !== null) {
+			const a = options!.src!.split('/');
+			a.pop();
+			const textureName = result![2];
+			const fileName = a.join('/') + '/' + textureName;
+			fixedAsset = fixedAsset.replace(textureName, unHashedFileToHashed.get(fileName)!.split('/').pop()!);
+		}
+		return originalBMFParser(fixedAsset, options, ...args);
+	};
 };
 
 /// #if EDITOR
@@ -530,6 +546,11 @@ export default class Lib
 				Lib.addAtlas(unHashFileName(atlasName, assetsRoot), assetsRoot + atlasName + '.json');
 			}
 		}
+		if (data.xmls) {
+			for (const xmlName of data.xmls) {
+				Assets.load(assetsRoot + xmlName + '.xml');
+			}
+		}
 		if (data.fonts) {
 			for (const fontName of data.fonts) {
 				Lib.fonts[unHashFileName(fontName, assetsRoot)] = assetsRoot + fontName;
@@ -985,6 +1006,9 @@ const __onAssetAdded = (file: FileDesc) => {
 			Lib.addAtlas(file.assetName, file.fileName, 0, file);
 		}
 		break;
+	case AssetType.BITMAP_FONT:
+		Assets.load(file.fileName);
+		break;
 	case AssetType.L10N:
 		file.asset = L._deserializeLanguage(fs.readJSONFile(file.fileName) as KeyedObject);
 		game.editor.LanguageView.addAssets();
@@ -1041,6 +1065,9 @@ const __onAssetUpdated = (file: FileDesc) => {
 			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
 			Lib.addAtlas(file.assetName, file.fileName, 0, file);
 		}
+		break;
+	case AssetType.BITMAP_FONT:
+		Assets.load(file.fileName + '?v=' + file.v);
 		break;
 	case AssetType.L10N:
 		file.asset = L._deserializeLanguage(fs.readJSONFile(file.fileName) as KeyedObject);

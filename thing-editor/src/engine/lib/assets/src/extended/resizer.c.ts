@@ -8,6 +8,14 @@ const p1 = new Point(1, 1);
 const p = new Point();
 const p2 = new Point();
 
+/// #if EDITOR
+const afterEdited = () => {
+	for (const o of game.editor.selection as any as Resizer[]) {
+	 o.recalculateSize();
+	}
+};
+/// #endif
+
 export default class Resizer extends Container {
 
 	init() {
@@ -162,13 +170,14 @@ export default class Resizer extends Container {
 	}
 	/// #endif
 
-	@editable({ visible: (o) => { return o.resizeX || o.resizeY || o.relativeY || o.relativeX; } })
+	@editable({afterEdited, visible: (o) => { return o.resizeX || o.resizeY || o.relativeY || o.relativeX; } })
 	fixed = false;
 
 }
 
 
 /// #if EDITOR
+
 
 Resizer.__EDITOR_icon = 'tree/resizer';
 

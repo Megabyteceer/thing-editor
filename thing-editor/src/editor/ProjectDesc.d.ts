@@ -18,6 +18,8 @@ interface ProjectDesc {
 	renderResolutionMobile: number;
 	framesSkipLimit: number;
 	dynamicStageSize: boolean;
+	__buildConfigDebug: string;
+	__buildConfigRelease: string;
 	preventUpscale: boolean;
 	webfontloader: {
 		custom?: {
@@ -40,6 +42,7 @@ interface ProjectDesc {
 	defaultSoundsVol: number;
 	embedLocales: true;
 	__localesNewKeysPrefix: string;
+	__doNotAutoCreateLocalizationFiles: string;
 	__suspendWarnings: number[];
 	defaultLanguage: string;
 	autoFullScreenDesktop: false;

@@ -68,6 +68,7 @@ enum AssetType {
 	PREFAB = 'PREFAB',
 	CLASS = 'CLASS',
 	RESOURCE = 'RESOURCE',
+	BITMAP_FONT = 'BITMAP_FONT',
 	L10N = 'L10N',
 	FONT = 'FONT',
 }
@@ -103,6 +104,7 @@ const ASSETS_PARSERS = {
 	'.woff': AssetType.FONT,
 	'.woff2': AssetType.FONT,
 	'.wav': AssetType.SOUND,
+	'.xml': AssetType.BITMAP_FONT,
 	'.c.ts': AssetType.CLASS
 };
 
@@ -121,6 +123,7 @@ ASSET_EXT_CROP_LENGTHS.set(AssetType.L10N, 7);
 ASSET_EXT_CROP_LENGTHS.set(AssetType.SOUND, 4);
 ASSET_EXT_CROP_LENGTHS.set(AssetType.CLASS, 5);
 ASSET_EXT_CROP_LENGTHS.set(AssetType.RESOURCE, 5);
+ASSET_EXT_CROP_LENGTHS.set(AssetType.BITMAP_FONT, 4);
 
 const EMPTY: FileDescImage = {
 	assetName: 'EMPTY',
@@ -140,7 +143,7 @@ const WHITE: FileDescImage = {
 	lib: null
 };
 
-const execFs = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => {
+const execFs = (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => {
 	const ret = electron_ThingEditorServer.fs(command, filename, content, ...args);
 	if (ret instanceof Error) {
 		game.editor.ui.modal.showFatalError('Main process error.', 99999, ret.message);
@@ -269,9 +272,9 @@ export default class fs {
 	}
 
 	/** returns new mTime */
-	static writeFile(fileName: string, data: string | Blob | KeyedObject): number {
+	static writeFile(fileName: string, data: string | Blob | KeyedObject, separator:string | null = '	'): number {
 		if (typeof data !== 'string' && !(data instanceof Blob)) {
-			data = JSON.stringify(data, fs.fieldsFilter, '	');
+			data = JSON.stringify(data, fs.fieldsFilter, separator as string);
 		}
 		return execFs('fs/saveFile', fileName, data as string) as number;
 	}
@@ -382,8 +385,8 @@ export default class fs {
 	static parseJSON(src: string, fileName: string) {
 		try {
 			return JSON.parse(src);
-		} catch (er) {
-			game.editor.ui.modal.showFatalError('JSON parse error.', 99999, 'Error in file: ' + fileName + '\n' + (er as Error).message);
+		} catch (er: any) {
+			game.editor.ui.modal.showFatalError('JSON parse error. ' + fileName + '; ' + er.message, 99999, 'Error in file: ' + fileName + '\n' + (er as Error).message);
 		}
 	}
 
@@ -416,8 +419,8 @@ export default class fs {
 		return execFs('fs/showFile', fileName);
 	}
 
-	static build(projectDir: string, debug: boolean, copyAssets: { from: string; to: string }[]) {
-		return execFsAsync('fs/build', projectDir, debug, copyAssets);
+	static build(projectDir: string, debug: boolean, copyAssets: { from: string; to: string }[], projectDesc:ProjectDesc) {
+		return execFsAsync('fs/build', projectDir, debug, copyAssets, projectDesc);
 	}
 
 	static watchDirs(dirs: string[]) {
@@ -432,6 +435,10 @@ export default class fs {
 		if (file.assetType === AssetType.SOUND) {
 			scheduledSoundsRebuilds.add(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir);
 		}
+	}
+
+	static setProgressBar(progress: number) {
+		execFs('fs/setProgressBar', progress);
 	}
 
 	static rebuildSounds(dir: string): object {
@@ -579,7 +586,7 @@ export default class fs {
 	}
 
 	static getWrongSymbol(fileName: string) {
-		const wrongSymbolPos = fileName.search(/[^a-zA-Z_\-\.\d\/]/gm);
+		const wrongSymbolPos = fileName.search(/[^@a-zA-Z_\-\.\d\/]/gm);
 		if (wrongSymbolPos >= 0) {
 			return fileName[wrongSymbolPos];
 		}

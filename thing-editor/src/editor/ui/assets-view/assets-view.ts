@@ -33,6 +33,7 @@ assetsItemsRenderers.set(AssetType.SOUND, assetItemRendererSound);
 assetsItemsRenderers.set(AssetType.SCENE, assetItemRendererScene as (file: FileDesc) => ComponentChild);
 assetsItemsRenderers.set(AssetType.PREFAB, assetItemRendererPrefab as (file: FileDesc) => ComponentChild);
 
+assetsItemsRenderers.set(AssetType.BITMAP_FONT, assetItemRendererResource as (file: FileDesc) => ComponentChild);
 assetsItemsRenderers.set(AssetType.RESOURCE, assetItemRendererResource as (file: FileDesc) => ComponentChild);
 assetsItemsRenderers.set(AssetType.FONT, assetItemRendererFont as (file: FileDesc) => ComponentChild);
 assetsItemsRenderers.set(AssetType.L10N, assetItemRendererL10n as (file: FileDesc) => ComponentChild);

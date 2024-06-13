@@ -36,11 +36,11 @@ function renderProjectItem(desc: ProjectDesc): ComponentChild {
 			game.editor.ui.modal.hideModal(desc.dir);
 		}
 	},
-		icon,
-		R.div({ className: 'project-item-title' }, desc.title,
-			R.div({ className: 'small-text' }, desc.dir.split('/').pop()),
-		),
-		isProjectWrong ? R.span({ className: 'danger small-text' }, ' (' + isProjectWrong + ')') : undefined);
+	icon,
+	R.div({ className: 'project-item-title' }, desc.title,
+		R.div({ className: 'small-text' }, desc.dir.split('/').pop()),
+	),
+	isProjectWrong ? R.span({ className: 'danger small-text' }, ' (' + isProjectWrong + ')') : undefined);
 }
 
 interface ProjectsListProps {

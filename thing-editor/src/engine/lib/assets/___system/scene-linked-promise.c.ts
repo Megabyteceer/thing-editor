@@ -79,10 +79,10 @@ export default class SceneLinkedPromise extends Container {
 		return promise;
 	}
 
-	static resolve(data: any) {
+	static resolve(data: any, container?: Container) {
 		return SceneLinkedPromise.promise((r) => {
 			r(data);
-		});
+		}, container);
 	}
 
 	static all(promises: SceneLinkedPromise[], container = game.currentContainer) {

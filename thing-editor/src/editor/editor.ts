@@ -402,7 +402,7 @@ class Editor {
 			mergeProjectDesc(this.projectDesc, libsProjectDescMerged);
 			mergeProjectDesc(this.projectDesc, projectDesc);
 
-			excludeOtherProjects();
+			setTimeout(excludeOtherProjects, 1);
 
 			game.applyProjectDesc(this.projectDesc);
 
@@ -1124,8 +1124,7 @@ function excludeOtherProjects(forced = false) {
 	if (!forced && !isExcludingEnabled) {
 		return;
 	}
-	rememberPathsToInclude();
-	const paths = editor.settings.getItem('paths-to-include', []) as PathToInclude[];
+
 	try { // vscode workspace
 
 		const workspaceConfigSrc = fs.readFile(WORKSPACE_FILE_NAME);
@@ -1139,18 +1138,16 @@ function excludeOtherProjects(forced = false) {
 		});
 
 		if (isExcludingEnabled) {
-			for (const path of paths) {
-				folders.push({
-					path: './' + path.project,
-					name: path.project
-				});
-				for (let lib of path.libs) {
-					if (!lib.isEmbed && !folders.find(f => f.name === lib.dir)) {
-						folders.push({
-							path: './' + lib.dir,
-							name: lib.dir
-						});
-					}
+			folders.push({
+				path: './' + editor.currentProjectDir,
+				name: editor.currentProjectDir
+			});
+			for (let lib of editor.currentProjectLibs) {
+				if (!lib.isEmbed && !folders.find(f => f.name === lib.dir)) {
+					folders.push({
+						path: './' + lib.dir,
+						name: lib.dir
+					});
 				}
 			}
 		} else {
@@ -1189,13 +1186,11 @@ function excludeOtherProjects(forced = false) {
 		});
 
 		if (isExcludingEnabled) {
-			for (const path of paths) {
-				include.push('./' + path.project);
-				for (let lib of path.libs) {
-					const pathToAdd = './' + lib.dir;
-					if (!lib.isEmbed && !include.includes(pathToAdd)) {
-						include.push(pathToAdd);
-					}
+			include.push('./' + editor.currentProjectDir);
+			for (let lib of editor.currentProjectLibs) {
+				const pathToAdd = './' + lib.dir;
+				if (!lib.isEmbed && !include.includes(pathToAdd)) {
+					include.push(pathToAdd);
 				}
 			}
 		} else {
@@ -1214,29 +1209,6 @@ function excludeOtherProjects(forced = false) {
 		console.error('JSON parsing error: ' + TS_CONFIG_FILE_NAME);
 		console.error(er);
 	}
-}
-
-interface PathToInclude {
-	project: string;
-	libs: LibInfo[];
-}
-
-function rememberPathsToInclude() {
-	const paths = editor.settings.getItem('paths-to-include', []) as PathToInclude[];
-	const currentProjectEntry = paths.find(path => path.project === editor.currentProjectDir);
-
-	if (!currentProjectEntry) {
-		paths.unshift({
-			project: editor.currentProjectDir,
-			libs: editor.currentProjectLibs
-		});
-		if (paths.length > 2) {
-			paths.length = 2;
-		}
-	} else {
-		currentProjectEntry.libs = editor.currentProjectLibs;
-	}
-	editor.settings.setItem('paths-to-include', paths);
 }
 
 const editor = new Editor();

@@ -54,7 +54,7 @@ module.exports = (mainWindow) => {
 				return await require(path.join('../..', fileName)).apply(null, args[0]);
 			case 'fs/build':
 				isDebug = content;
-				return await require('./build.js').build(fileName, isDebug, args[0]);
+				return await require('./build.js').build(fileName, isDebug, ...args);
 			}
 		} catch (er) {
 			console.error(er);
@@ -117,6 +117,10 @@ module.exports = (mainWindow) => {
 				} else {
 					event.returnValue = null;
 				}
+				return;
+			case 'fs/setProgressBar':
+				mainWindow.setProgressBar(fileName);
+				event.returnValue = null;
 				return;
 			case 'fs/readFile':
 				fd = fs.openSync(fn(fileName), 'r');
@@ -255,7 +259,7 @@ const getFileHash = (fileName) => {
 	const fileBuffer = fs.readFileSync(fileName);
 	hashSum.update(fileBuffer);
 	const ret = '' + hashSum.digest('base64');
-	return ret.substring(0, 8);
+	return ret.substring(0, 8).replaceAll('/', '_').replaceAll('+', '-').padStart('_', 8);
 };
 
 function isFilesEqual(a, b) {

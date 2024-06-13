@@ -397,7 +397,7 @@ class Game {
 			game.isPortrait = true;
 			break;
 		case 'auto':
-			game.isPortrait = w < h;
+			game.isPortrait = (w < h) && game.isMobile.any;
 			break;
 		default: //landscape
 			rotateCanvas = h > w;

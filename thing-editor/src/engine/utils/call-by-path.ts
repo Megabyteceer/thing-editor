@@ -1,7 +1,7 @@
 import type { Container } from 'pixi.js';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from '../game';
-import { pathDebugging, setValueByPath } from './get-value-by-path';
+import { pathDebugging_thing_editor_debug_helper, setValueByPath } from './get-value-by-path';
 
 const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	assert(this_, '\'this\' argument is not provided in to \'callByPath\'.', 10026);
@@ -12,7 +12,7 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 	let c: any;
 	let rootName: string = path[0] as string;
 	/// #if EDITOR
-	pathDebugging(this_, callbackPath);
+	pathDebugging_thing_editor_debug_helper(this_, callbackPath); // stopped at editor breakpoint
 	/// #endif
 	if (rootName === 'this') {
 		c = this_;

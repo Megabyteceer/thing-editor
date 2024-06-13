@@ -4,12 +4,7 @@ const fs = require('fs');
 const {walkSync} = require('./editor-server-utils');
 
 module.exports = {
-	build: (projectDir, debug, assetsToCopy) => {
-
-		const ifDefPlugin = require('./vite-plugin-ifdef/if-def-loader.js');
-		const {ViteImageOptimizer} = require('vite-plugin-image-optimizer');
-
-
+	build: (projectDir, debug, assetsToCopy, projectDesc) => {
 		const editorRoot = path.resolve(__dirname, '../..');
 		const root = path.resolve(editorRoot, projectDir);
 		const outDir = root + (debug ? '/debug' : '/release');
@@ -53,54 +48,14 @@ module.exports = {
 				});
 			});
 		})).then(() => {
-			return require('vite').build({
-				root: root + '/.tmp',
-				publicDir,
-				base: './',
-				esbuild: {
-					target: 'ES2015'
-				},
-				plugins: [
-					ifDefPlugin(debug),
-					ViteImageOptimizer({})
-				],
-				build: {
-					target: 'ES2015',
-					emptyOutDir: true,
-					minify: !debug,
-					outDir,
-					rollupOptions: {
-						input: ''
-					},
-				},
-				resolve: {
-					alias: {
-						'game-root': root,
-						'games': path.resolve(__dirname, '../../games'),
-						'libs': path.resolve(__dirname, '../../libs'),
-						'thing-editor': path.resolve(__dirname, '../../thing-editor'),
-						'howler.js': 'https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js',
-						'pixi.js': 'https://cdn.jsdelivr.net/npm/pixi.js-legacy@7.2.4/dist/pixi-legacy.min.mjs'
-					}
-				}
-			}).then((res) => {
+			return require('vite').build(require(path.resolve(editorRoot, debug ? projectDesc.__buildConfigDebug : projectDesc.__buildConfigRelease))(root, publicDir, outDir, debug, projectDesc)).then((res) => {
 				require('./static-server.js');
 				console.log('BUILD COMPLETE: ' + 'http://localhost:5174/' + projectDir);
 				return res;
+			}).catch((er) => {
+				console.error(er.stack);
+				return er;
 			});
 		});
 	}
 };
-
-if (require.main === module) {
-	module.exports.build('games/game1/', true, [
-		{
-			from: '/libs/lib1/assets/flag.png',
-			to: 'flag.png',
-		},
-		{
-			from: '/games/game1/assets/bunny.png',
-			to: 'bunny.png',
-		},
-	]);
-}

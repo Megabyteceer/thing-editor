@@ -291,6 +291,9 @@ export default class MainMenu extends Component {
 			MAIN_MENU.push(menu);
 		}
 		if (typeof pos === 'number') {
+			if (pos < 0) {
+				pos = menu.items.length + pos;
+			}
 			menu.items.splice(pos, 0, ...items);
 		} else {
 			menu.items = menu.items.concat(items);
@@ -312,7 +315,7 @@ export default class MainMenu extends Component {
 				},
 				R.btn(menuItem.name, (ev: PointerEvent) => {
 					toggleContextMenu(menuItem.items, ev);
-				}));
+				}, 'menu item id: ' + menuItem.id));
 			}));
 	}
 

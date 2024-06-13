@@ -34,6 +34,9 @@
 			"**/*.ogg": true,
 			"**/*.psd": true,
 			"**/*.flp": true,
+			"LICENSE": true,
+			"run-ubuntu.sh": true,
+			"run-win10.bat": true,
 			"**/*.png": true,
 			"**/*.jpg": true,
 			"**/*.aac": true,
@@ -183,9 +186,9 @@
 							}
 						],
 						"background": {
-							"activeOnStart": true,
-							"beginsPattern": ".",
-							"endsPattern": "."
+							"activeOnStart": false,
+							"beginsPattern": "editor",
+							"endsPattern": "launched"
 						}
 					}
 				]
@@ -206,7 +209,9 @@
 				"presentation": {
 					//"hidden": true
 				},
-				"skipFiles": [],
+				"skipFiles": [
+					"**/debug/assert**"
+				],
 				"sourceMaps": true,
 				"smartStep": true,
 				"resolveSourceMapLocations": [
@@ -232,7 +237,9 @@
 				"presentation": {
 					"hidden": true
 				},
-				"skipFiles": [],
+				"skipFiles": [
+					"**/debug/assert**"
+				],
 				"sourceMaps": true,
 				"smartStep": true,
 				"resolveSourceMapLocations": [

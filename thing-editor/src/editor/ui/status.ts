@@ -112,8 +112,8 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 			fs.exitWithResult(undefined, 'Build failed: ' + game.editor.buildProjectAndExit + '\n' + message +
 			'; Error code: ' + errorCode + (owner instanceof Container ?
 				'; owner: ' + owner.___info : '') +
-				 (fieldName ? '; Field name: ' + fieldName : '')
-				 );
+				(fieldName ? '; Field name: ' + fieldName : '')
+			);
 			return Promise.resolve();
 		}
 
