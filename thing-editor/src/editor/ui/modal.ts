@@ -253,6 +253,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
+		debugger;
 		game.editor.__FatalError = true;
 		this.showError(R.div(null, R.div(null, R.b(null, R.multilineText(message))), R.multilineText(additionalText)), errorCode, 'Fatal Error', true, true);
 	}

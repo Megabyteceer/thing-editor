@@ -385,8 +385,8 @@ export default class fs {
 	static parseJSON(src: string, fileName: string) {
 		try {
 			return JSON.parse(src);
-		} catch (er) {
-			game.editor.ui.modal.showFatalError('JSON parse error.', 99999, 'Error in file: ' + fileName + '\n' + (er as Error).message);
+		} catch (er: any) {
+			game.editor.ui.modal.showFatalError('JSON parse error. ' + fileName + '; ' + er.message, 99999, 'Error in file: ' + fileName + '\n' + (er as Error).message);
 		}
 	}
 
