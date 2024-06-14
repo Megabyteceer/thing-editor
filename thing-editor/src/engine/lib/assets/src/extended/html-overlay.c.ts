@@ -206,4 +206,13 @@ export default class HTMLOverlay extends ScrollLayer {
 			this._htmlDiv.className = this.className ? (this.className + (game.isPortrait ? ' portrait-' : ' landscape-') + this.className) : '';
 		}
 	}
+
+	set width(val:number) { // Anchor helpers
+		this.visibleArea.w = val;
+		this.fullArea.w = val;
+	}
+
+	set height(val:number) {
+		this.visibleArea.h = val;
+	}
 }

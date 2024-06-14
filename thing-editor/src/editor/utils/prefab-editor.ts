@@ -80,8 +80,8 @@ export default class PrefabEditor {
 			if (selectionData) {
 				game.editor.selection.loadSelection(selectionData);
 			}
+			game.onResize();
 		}, 1);
-
 		loadDynamicTextures();
 	}
 
