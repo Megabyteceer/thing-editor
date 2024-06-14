@@ -145,7 +145,7 @@ class Editor {
 			});
 			window.addEventListener('unhandledrejection', (er) => {
 				fs.log('unhandled rejection:');
-				fs.exitWithResult(undefined, er.reason);
+				fs.exitWithResult(undefined, er.reason.stack);
 			});
 
 			setInterval(() => {
