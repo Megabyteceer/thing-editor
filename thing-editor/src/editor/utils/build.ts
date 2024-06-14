@@ -68,7 +68,7 @@ function getAssetsForBuild(type: AssetType) {
 let assetsToCopy: { from: string; to: string }[] = [];
 
 export default class Build {
-	static build(debug: boolean) {
+	static async build(debug: boolean) {
 		fs.log(debug ? 'build debug' : 'build release');
 		game.editor.validateResources();
 
@@ -185,38 +185,39 @@ import Lib from 'thing-editor/src/engine/lib';`];
 			}
 		}
 
-		return fs.build(game.editor.currentProjectDir, debug, assetsToCopy, game.projectDesc).then(async (result: any) => {
+		await fs.build(game.editor.currentProjectDir, debug, assetsToCopy, game.projectDesc).then(async (result: any) => {
 
-			if (!game.editor.buildProjectAndExit) {
-				if (result instanceof Error) {
-					const a = result.message.split('\n');
-					if (a.length > 1) {
-						const b = (a[1] as string).split(':');
-						const i = b.findIndex(t => t.indexOf('ERROR') >= 0);
-						if (i > 3) {
-							const lineNum = b[i - 2];
-							const charNum = b[i - 1];
-							b.length = i - 2;
-							const fileName = b.join(':');
 
-							game.editor.editSource(fileName, lineNum, charNum, true);
-						}
-					} else {
-						const a = result.message.split(' in file ');
-						if (a.length > 1) {
-							debugger;
-							const b = (a[1] as string).split(':');
-							const lineNum = b[b.length - 1];
-							const fileName = a[1];
-							game.editor.editSource(fileName, lineNum, undefined, true);
-						}
+			if (result instanceof Error) {
+				const a = result.message.split('\n');
+				if (a.length > 1) {
+					const b = (a[1] as string).split(':');
+					const i = b.findIndex(t => t.indexOf('ERROR') >= 0);
+					if (i > 3) {
+						const lineNum = b[i - 2];
+						const charNum = b[i - 1];
+						b.length = i - 2;
+						const fileName = b.join(':');
+
+						game.editor.editSource(fileName, lineNum, charNum, true);
 					}
-					game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
 				} else {
-					const path = game.editor.currentProjectDir + (debug ? 'debug/' : 'release/');
-					for (const f of postBuildCallbacks) {
-						await f(path);
+					const a = result.message.split(' in file ');
+					if (a.length > 1) {
+						debugger;
+						const b = (a[1] as string).split(':');
+						const lineNum = b[b.length - 1];
+						const fileName = a[1];
+						game.editor.editSource(fileName, lineNum, undefined, true);
 					}
+				}
+				game.editor.ui.modal.showError(renderTextWithFilesLinks(result.message), 99999, 'Build error!');
+			} else {
+				const path = game.editor.currentProjectDir + (debug ? 'debug/' : 'release/');
+				for (const f of postBuildCallbacks) {
+					await f(path);
+				}
+				if (!game.editor.buildProjectAndExit) {
 					game.editor.ui.modal.showEditorQuestion('Build', 'Builded successfully.', () => {
 						game.editor.openUrl('http://localhost:5174/' + path);
 					}, 'Open');

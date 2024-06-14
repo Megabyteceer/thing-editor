@@ -435,10 +435,6 @@ class Editor {
 
 			game.onResize();
 
-			if (this.buildProjectAndExit) {
-				window.document.body.style.display = 'none';
-			}
-
 			this.settings.setItem('last-opened-project', dir);
 
 			this.validateResources();
