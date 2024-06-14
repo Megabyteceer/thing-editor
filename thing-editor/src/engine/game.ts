@@ -386,7 +386,7 @@ class Game {
 		/// #endif
 
 		if (orientation === 'auto') {
-			orientation = (w < h) ? 'portrait' : 'landscape';
+			orientation = ((w < h) && game.isMobile.any) ? 'portrait' : 'landscape';
 		}
 
 		let rotateCanvas = false;
@@ -395,9 +395,6 @@ class Game {
 		case 'portrait':
 			rotateCanvas = w > h;
 			game.isPortrait = true;
-			break;
-		case 'auto':
-			game.isPortrait = (w < h) && game.isMobile.any;
 			break;
 		default: //landscape
 			rotateCanvas = h > w;
