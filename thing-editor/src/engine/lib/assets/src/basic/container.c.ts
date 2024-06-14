@@ -307,7 +307,7 @@ Container.prototype.__isAnyChildSelected = function __isAnyChildSelected(): bool
 Container.__EDITOR_icon = 'tree/container';
 
 const getObjectInfo = (o: Container) => {
-	return (o.name || ('(' + (o.constructor as SourceMappedConstructor).__className + ')'));
+	return ('[' + (o.constructor as SourceMappedConstructor).__className + ':' + o.name + ']');
 };
 
 _editableEmbed(Container, '__root-splitter', { type: 'splitter', title: 'Basic props' });
