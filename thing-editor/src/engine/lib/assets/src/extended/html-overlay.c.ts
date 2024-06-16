@@ -207,7 +207,7 @@ export default class HTMLOverlay extends ScrollLayer {
 		}
 	}
 
-	set width(val:number) { // Anchor helpers
+	set width(val:number) { // ParentResizer helpers
 		this.visibleArea.w = val;
 		this.fullArea.w = val;
 	}
