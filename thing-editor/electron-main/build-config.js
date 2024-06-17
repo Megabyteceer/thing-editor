@@ -25,7 +25,7 @@ module.exports = (root, publicDir, outDir, debug, _projectDesc) => {
 		},
 		resolve: {
 			alias: {
-				'game-root': root,
+				'project-assets': path.resolve(root, 'assets'),
 				'games': path.resolve(__dirname, '../../games'),
 				'libs': path.resolve(__dirname, '../../libs'),
 				'thing-editor': path.resolve(__dirname, '../../thing-editor'),

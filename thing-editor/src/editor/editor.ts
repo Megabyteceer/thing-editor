@@ -332,6 +332,7 @@ class Editor {
 			this.currentProjectDir = newProjectDir;
 			this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
 			this.currentProjectAssetsDirRooted = '/' + this.currentProjectAssetsDir;
+			await import('/thing-editor/src/editor/empty-script.ts?set-project-path=' + this.currentProjectAssetsDirRooted);
 
 			this.ui.modal.showSpinner();
 			this.settings.removeItem('last-opened-project');
@@ -1171,9 +1172,9 @@ function excludeOtherProjects(forced = false) {
 
 	try { // tsconfig
 
-		const workspaceConfigSrc = fs.readFile(TS_CONFIG_FILE_NAME);
+		const tsConfigSrc = fs.readFile(TS_CONFIG_FILE_NAME);
 		const foldersDataRegExt = /"include"\s*:\s*\[[^\]]*\]/gm;
-		let foldersData = foldersDataRegExt.exec(workspaceConfigSrc);
+		let foldersData = foldersDataRegExt.exec(tsConfigSrc);
 
 		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
 		const tsConfig = JSON.parse('{' + foldersDataString + '}');
@@ -1198,7 +1199,9 @@ function excludeOtherProjects(forced = false) {
 		let newFoldersSrc = JSON.stringify({ include });
 		newFoldersSrc = newFoldersSrc.substring(1, newFoldersSrc.length - 1);
 		if (newFoldersSrc !== foldersDataString) {
-			fs.writeFile(TS_CONFIG_FILE_NAME, workspaceConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
+			fs.writeFile(TS_CONFIG_FILE_NAME, tsConfigSrc.replace(/\n/gm, 'new_line_holder_3342').replace(/"project-assets\/\*[^\]]+]/mg, `"project-assets/*": [
+				"./${game.editor.currentProjectAssetsDir}*"
+			  ]`).replace(/new_line_holder_3342/gm, '\n').replace(foldersDataRegExt, newFoldersSrc));
 		}
 	} catch (er) {
 		debugger;
