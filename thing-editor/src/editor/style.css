@@ -635,6 +635,10 @@ input {
 	display: inline-block;
 }
 
+#window-info .status-body {
+	overflow-y: auto;
+}
+
 .tree-desc {
 	margin-bottom: 4px;
 	margin-left: 18px;
