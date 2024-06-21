@@ -41,6 +41,9 @@ export default class ProgressBar extends Container {
 	@editable({ min: 0 })
 	refreshInterval = 10;
 
+	@editable()
+	reverse = false;
+
 	@editable({ type: 'callback' })
 	onFinish = null;
 
@@ -238,11 +241,13 @@ export default class ProgressBar extends Container {
 			this._initChildren();
 		}
 		/// #endif
+
+		const q = this.reverse ? (1 - this.currentQ) : this.currentQ;
 		if (this.bar) {
-			setObjectHeight(this.bar, this._progress_bar_height * this.currentQ);
+			setObjectHeight(this.bar, this._progress_bar_height * q);
 		}
 		if (this.cap) {
-			this.cap.y = this.capMargin + (this._progress_bar_height - this.capMargin * 2) * this.currentQ;
+			this.cap.y = this.capMargin + (this._progress_bar_height - this.capMargin * 2) * q;
 		}
 		/// #if EDITOR
 		if (game.__EDITOR_mode) {
