@@ -1,6 +1,6 @@
 import R from './preact-fabrics';
 
-import game from '../engine/game';
+import game, { loadFonts } from '../engine/game';
 
 import type { Component, ComponentChild } from 'preact';
 import { h, render } from 'preact';
@@ -424,6 +424,12 @@ class Editor {
 				this.saveLastSceneOpenName('');
 			}
 			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
+
+			loadFonts();
+			await waitForCondition(() => {
+				return game.loadingProgress === 100;
+			});
+
 			editorEvents.emit('firstSceneWillOpen');
 			this.restoreBackup();
 
@@ -1082,16 +1088,18 @@ class Editor {
 						for (const groupName in libsValue as WebFont.Config) {
 							const group = libsValue[groupName] as WebFont.Google;
 							if (group && group.families) {
-								const projectFontGroup = (projectValue[groupName] as WebFont.Google).families;
-								for (const family of group.families) {
-									const stringedValue = JSON.stringify(family);
-									const i = projectFontGroup.findIndex(f => JSON.stringify(f) === stringedValue);
-									if (i >= 0) {
-										projectFontGroup.splice(i, 1);
+								const projectFontGroup = (projectValue[groupName] as WebFont.Google)?.families;
+								if (projectFontGroup) {
+									for (const family of group.families) {
+										const stringedValue = JSON.stringify(family);
+										const i = projectFontGroup.findIndex(f => JSON.stringify(f) === stringedValue);
+										if (i >= 0) {
+											projectFontGroup.splice(i, 1);
+										}
 									}
-								}
-								if (projectFontGroup.length === 0) {
-									delete projectValue[groupName];
+									if (projectFontGroup.length === 0) {
+										delete projectValue[groupName];
+									}
 								}
 							}
 						}

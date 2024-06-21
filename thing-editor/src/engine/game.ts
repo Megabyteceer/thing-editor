@@ -20,7 +20,7 @@ import Settings from 'thing-editor/src/engine/utils/settings';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 
-import fs from 'thing-editor/src/editor/fs';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import ERROR_HTML from './utils/html-error.html?raw';
 
 /// #if EDITOR
@@ -186,12 +186,10 @@ class Game {
 		initGameInteraction();
 
 		/// #if EDITOR
-		if (!this.editor.buildProjectAndExit) {
-			/// #endif
-			loadFonts();
-			/// #if EDITOR
-		}
+		/*
 		/// #endif
+		loadFonts();
+		//*/
 
 		app.stage.addChild(stage);
 
@@ -1298,19 +1296,16 @@ function loadFonts() {
 							if (fontsProviderName === 'custom') {
 
 								family = family.replace(/ /g, '');
-								let fontPath = family + '.woff';
-
-								/// #if EDITOR
-								fontPath = game.editor.currentProjectAssetsDirRooted + 'fonts/' + family.replace(/ /g, '') + '.woff';
-								/// #endif
-
+								let fontPath = 'fonts/' + family.replace(/ /g, '') + '.woff';
 								let fontPath2 = fontPath + '2';
 
 								/// #if EDITOR
+								fontPath = fs.getFileByAssetName(fontPath, AssetType.FONT).fileName;
+								fontPath2 = fs.getFileByAssetName(fontPath2, AssetType.FONT).fileName;
 								/*
 								/// #endif
-								fontPath = Lib.fonts['fonts/' + family + '.woff'];
-								fontPath2 = Lib.fonts['fonts/' + family + '.woff2'];
+								fontPath = Lib.fonts[fontPath];
+								fontPath2 = Lib.fonts[fontPath];
 								//*/
 								game.applyCSS(`
 @font-face {
@@ -1400,7 +1395,7 @@ let __currentSceneValue: Scene;
 
 const game = new Game();
 export default game;
-export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME };
+export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME, loadFonts };
 export type { FixedViewportSize };
 
 /// #if EDITOR

@@ -976,7 +976,7 @@ Object.freeze(EMPTY_NODE_EXTEND_DATA);
 export { __onAssetAdded, __onAssetDeleted, __onAssetUpdated, constructRecursive };
 
 const isAtlasAsset = (asset: any) => {
-	return (asset as KeyedObject).meta && (asset as KeyedObject).meta.scale;
+	return (asset as KeyedObject)?.meta?.scale;
 };
 
 const __onAssetAdded = (file: FileDesc) => {
