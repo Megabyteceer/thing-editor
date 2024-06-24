@@ -1395,7 +1395,7 @@ let __currentSceneValue: Scene;
 
 const game = new Game();
 export default game;
-export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME, loadFonts };
+export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME, loadFonts, processOnResize };
 export type { FixedViewportSize };
 
 /// #if EDITOR
