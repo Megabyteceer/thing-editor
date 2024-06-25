@@ -1305,7 +1305,7 @@ function loadFonts() {
 								/*
 								/// #endif
 								fontPath = Lib.fonts[fontPath];
-								fontPath2 = Lib.fonts[fontPath];
+								fontPath2 = Lib.fonts[fontPath2];
 								//*/
 								game.applyCSS(`
 @font-face {
