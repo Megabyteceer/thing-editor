@@ -125,6 +125,7 @@ class Editor {
 
 	constructor() {
 		const args = fs.getArgs();
+		fs.setProgressBar(-1);
 		for (let arg of args) {
 			if (arg.startsWith('--') && arg.indexOf('=') > 0) {
 				const a = arg.split('=');

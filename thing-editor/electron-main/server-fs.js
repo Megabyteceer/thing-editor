@@ -121,6 +121,8 @@ module.exports = (mainWindow) => {
 				return;
 			case 'fs/setProgressBar':
 				mainWindow.setProgressBar(fileName);
+				mainWindow.__currentProgressOperation = content;
+				mainWindow.__currentProgress = fileName;
 				event.returnValue = null;
 				return;
 			case 'fs/readFile':
