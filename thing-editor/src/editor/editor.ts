@@ -333,7 +333,6 @@ class Editor {
 			this.currentProjectDir = newProjectDir;
 			this.currentProjectAssetsDir = this.currentProjectDir + 'assets/';
 			this.currentProjectAssetsDirRooted = '/' + this.currentProjectAssetsDir;
-			await import(/* @vite-ignore */ '/thing-editor/src/editor/empty-script.ts?set-project-path=' + this.currentProjectAssetsDirRooted);
 
 			this.ui.modal.showSpinner();
 			this.settings.removeItem('last-opened-project');

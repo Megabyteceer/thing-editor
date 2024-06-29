@@ -7,6 +7,10 @@ const resolver = require('./thing-editor/electron-main/resolver/resolver.js');
 const IS_CI_RUN = process.env.IS_CI_RUN === 'true';
 
 export default defineConfig({
+	json: {
+		stringify: true,
+		namedExports: false
+	},
 	server: {
 		hmr: false,
 		watch: IS_CI_RUN ? {
