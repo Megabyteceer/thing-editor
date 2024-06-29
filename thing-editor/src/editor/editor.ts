@@ -1208,9 +1208,7 @@ function excludeOtherProjects(forced = false) {
 		let newFoldersSrc = JSON.stringify({ include });
 		newFoldersSrc = newFoldersSrc.substring(1, newFoldersSrc.length - 1);
 		if (newFoldersSrc !== foldersDataString) {
-			fs.writeFile(TS_CONFIG_FILE_NAME, tsConfigSrc.replace(/\n/gm, 'new_line_holder_3342').replace(/"project-assets\/\*[^\]]+]/mg, `"project-assets/*": [
-				"./${game.editor.currentProjectAssetsDir}*"
-			  ]`).replace(/new_line_holder_3342/gm, '\n').replace(foldersDataRegExt, newFoldersSrc));
+			fs.writeFile(TS_CONFIG_FILE_NAME, tsConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
 		}
 	} catch (er) {
 		debugger;

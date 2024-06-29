@@ -29,11 +29,6 @@ module.exports = {
 			});
 		}
 	},
-	resolveId(id) {
-		if (id.startsWith('project-assets/')) {
-			return id.replace(/^project-assets/, projectDir);
-		}
-	},
 	transform(src, id) {
 		if (id.includes('.ts?')) {
 			if (id.includes('?set-project-path=')) {
@@ -46,10 +41,6 @@ module.exports = {
 
 			src = src.replace(moduleImportFixer, (_substr, m1, m2) => {
 				if (!_substr.includes('.css?inline"')) {
-					if (m1.includes('from "project-assets/')) {
-						m1 = m1.replace('project-assets', projectDir);
-					}
-
 					if (m1.includes('".')) { // relative imports treats games or libs if imported from games or libs
 						if (id.startsWith(gamesPath) || id.startsWith(libsPath)) {
 							return m1 + query + m2;

@@ -26,7 +26,7 @@ import ERROR_HTML from './utils/html-error.html?raw';
 /// #if EDITOR
 /*
 /// #endif
-	import preloaderAssets from 'project-assets/../.tmp/assets-preloader' assert { type: 'json' };
+	import preloaderAssets from '.tmp/assets-preloader' assert { type: 'json' };
 //*/
 
 let app: Application;
@@ -196,7 +196,7 @@ class Game {
 		/// #if EDITOR
 		/*
 		/// #endif
-		import('project-assets/../.tmp/classes').then(() => {
+		import('.tmp/classes').then(() => {
 			game._startGame();
 		});
 		//*/
@@ -772,7 +772,7 @@ class Game {
 						/*
 						/// #endif
 						this.loadingAdd('assets-main load');
-						import('project-assets/../.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
+						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
 							this.loadingRemove('assets-main load');
 							game.addAssets(mainAssets.default);
 						});

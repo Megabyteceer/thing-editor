@@ -17,7 +17,7 @@ export default defineConfig({
 		} : {
 			ignored: [
 				'**/node_modules/**',
-				'games/**/.tmp/**',
+				'/**/.tmp/**',
 				'games/**/debug/**',
 				'games/**/release/**'
 			]

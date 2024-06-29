@@ -173,14 +173,14 @@ import Lib from 'thing-editor/src/engine/lib';`];
 
 		src.push('const classes:KeyedObject = {' + classesNames.join(',') + '};');
 		src.push('Lib._setClasses(classes);');
-		fs.writeFile(game.editor.currentProjectDir + '.tmp/classes.ts', src.join('\n'));
+		fs.writeFile('.tmp/classes.ts', src.join('\n'));
 
 		const reversedDirsList = game.editor.assetsFolders.slice().reverse();
 
 		for (let dir of reversedDirsList) {
 			const htmlName = dir + 'index.html';
 			if (fs.exists(htmlName)) {
-				fs.copyFile(htmlName, game.editor.currentProjectDir + '.tmp/index.html');
+				fs.writeFile('.tmp/index.html', fs.readFile(htmlName).replace(/\%__project-assets-dir__\%\//gm, game.editor.currentProjectAssetsDir));
 				break;
 			}
 		}
@@ -332,7 +332,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 	};
 
 	fs.writeFile(
-		game.editor.currentProjectDir + '.tmp/' + fileName,
+		'.tmp/' + fileName,
 		JSON.stringify(assetsObj, fieldsFilter)
 	);
 }
