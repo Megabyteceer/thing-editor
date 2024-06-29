@@ -254,5 +254,9 @@ export default class ClassesLoader {
 
 // vite dynamic imports broke sourcemaps lines; Thats why import moved to the bottom of the file.
 const imp = (moduleName: string) => {
-	return import(/* @vite-ignore */ `${moduleName}.ts`);
+	if (moduleName.includes('?')) {
+		return import(/* @vite-ignore */ `${moduleName}`);
+	} else {
+		return import(/* @vite-ignore */ `${moduleName}.ts`);
+	}
 };
