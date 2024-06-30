@@ -130,19 +130,19 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		},
 		draggable: true
 	},
-		libInfo(file),
-		renderClass(file),
-		tip,
-		R.span(toolButtonsProps,
-			R.btn('<', (ev) => {
-				sp(ev);
-				findNextOfThisType(file.asset, -1, ev.ctrlKey, ev.altKey);
-			}, 'Find previous ' + file.asset.__className, clickTip),
-			R.btn('>', (ev) => {
-				sp(ev);
-				findNextOfThisType(file.asset, 1, ev.ctrlKey, ev.altKey);
-			}, 'Find next ' + file.asset.__className, clickTip)
-		)
+	libInfo(file),
+	renderClass(file),
+	tip,
+	R.span(toolButtonsProps,
+		R.btn('<', (ev) => {
+			sp(ev);
+			findNextOfThisType(file.asset, -1, ev.ctrlKey, ev.altKey);
+		}, 'Find previous ' + file.asset.__className, clickTip),
+		R.btn('>', (ev) => {
+			sp(ev);
+			findNextOfThisType(file.asset, 1, ev.ctrlKey, ev.altKey);
+		}, 'Find next ' + file.asset.__className, clickTip)
+	)
 	);
 };
 

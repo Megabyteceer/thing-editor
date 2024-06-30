@@ -226,6 +226,7 @@ class Editor {
 			this.saveBackup();
 		}
 		this.ui.viewport.stopExecution();
+		editorEvents.emit('willClassesReload');
 		await ClassesLoader.reloadClasses();
 		if (restorePrefabName) {
 			PrefabEditor.editPrefab(restorePrefabName);

@@ -10,6 +10,7 @@ import Build from 'thing-editor/src/editor/utils/build';
 import newComponentWizard from 'thing-editor/src/editor/utils/new-component-wizard';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import { onNewSceneClick, onSaveAsSceneClick } from 'thing-editor/src/editor/utils/scene-utils';
+import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import L from 'thing-editor/src/engine/utils/l';
 
@@ -272,15 +273,11 @@ const MAIN_MENU: MainMenuItem[] = [
 	}
 ];
 
-const injectedNames: Set<string> = new Set();
+const injectedMenus: Map<string, ContextMenuItem[]> = new Map();
 
 export default class MainMenu extends Component {
 
-	static injectMenu(targetMenuId: 'file' | 'edit' | 'project' | 'settings' | any, items: ContextMenuItem[], injectionName: string, pos?: number) {
-		if (injectedNames.has(injectionName)) {
-			return;
-		}
-		injectedNames.add(injectionName);
+	static injectMenu(targetMenuId: 'file' | 'edit' | 'project' | 'settings' | any, items: ContextMenuItem[], injectionId: string, pos?: number) {
 		let menu: MainMenuItem | undefined = MAIN_MENU.find(i => i.id === targetMenuId);
 		if (!menu) {
 			menu = {
@@ -290,6 +287,18 @@ export default class MainMenu extends Component {
 			};
 			MAIN_MENU.push(menu);
 		}
+
+		if (injectedMenus.has(injectionId)) {
+			const oldItems = injectedMenus.get(injectionId)!;
+			let i = 0;
+			for (const item of oldItems) {
+				i = menu.items.findIndex(i => i === item, i - 1); // remove closest null splitter
+				assert(i >= 0, 'main menu re-injection error');
+				menu.items.splice(i, 1);
+			}
+		}
+		injectedMenus.set(injectionId, items);
+
 		if (typeof pos === 'number') {
 			if (pos < 0) {
 				pos = menu.items.length + pos;
