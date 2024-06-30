@@ -78,6 +78,7 @@ class Editor {
 	currentProjectAssetsDir = '';
 	currentProjectAssetsDirRooted = '';
 	assetsFolders!: string[];
+	assetsFoldersReversed!: string[];
 	libsDescriptors: KeyedMap<ProjectDesc> = {};
 
 	editorArguments: KeyedMap<true | string> = {};
@@ -397,6 +398,7 @@ class Editor {
 			fs.writeFile('thing-editor/src/editor/schema-thing-project.json', mergedSchema);
 
 			this.assetsFolders.push(this.currentProjectAssetsDir);
+			this.assetsFoldersReversed = game.editor.assetsFolders.slice().reverse();
 
 			this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
 

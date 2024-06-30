@@ -175,7 +175,7 @@ import Lib from 'thing-editor/src/engine/lib';`];
 		src.push('Lib._setClasses(classes);');
 		fs.writeFile('.tmp/classes.ts', src.join('\n'));
 
-		const reversedDirsList = game.editor.assetsFolders.slice().reverse();
+		const reversedDirsList = game.editor.assetsFoldersReversed;
 
 		for (let dir of reversedDirsList) {
 			const htmlName = dir + 'index.html';
