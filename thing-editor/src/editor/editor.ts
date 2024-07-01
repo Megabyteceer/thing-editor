@@ -126,7 +126,6 @@ class Editor {
 
 	constructor() {
 		const args = fs.getArgs();
-		fs.setProgressBar(-1);
 		for (let arg of args) {
 			if (arg.startsWith('--') && arg.indexOf('=') > 0) {
 				const a = arg.split('=');
@@ -138,7 +137,7 @@ class Editor {
 
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
-
+		fs.setProgressBar(-1);
 		if (this.buildProjectAndExit) {
 			this.editorArguments['no-vscode-integration'] = true;
 			window.addEventListener('error', (er) => {

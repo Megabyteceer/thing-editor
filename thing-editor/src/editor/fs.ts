@@ -443,6 +443,7 @@ export default class fs {
 		} else {
 			assert(!operationName, 'operationName should be empty for progress clear.');
 		}
+		game.editor.ui?.modal.setSpinnerProgress(progress, operationName);
 		execFs('fs/setProgressBar', progress, operationName);
 	}
 

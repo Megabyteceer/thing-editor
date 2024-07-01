@@ -31,7 +31,10 @@ let blackoutPropsClosable = {
 	}
 };
 
+let spinnerProgress = -1;
+let spinnerName: string | undefined;
 let spinnerProps = { className: 'modal-spinner' };
+let spinnerProgressProps = { className: 'modal-spinner-progress' };
 let bodyProps = { className: 'modal-body' };
 let titleProps = { className: 'modal-title' };
 let contentProps = {
@@ -79,7 +82,8 @@ let renderModal = (props: ModalEntry, i: number) => {
 
 let renderSpinner = () => {
 	return R.div(blackoutProps,
-		R.div(spinnerProps)
+		R.div(spinnerProps),
+		(spinnerProgress >= 0) ? R.div(spinnerProgressProps, R.div({style: {width: (spinnerProgress * 100) + '%'}}), spinnerName) : undefined
 	);
 };
 
@@ -184,7 +188,15 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		}
 	}
 
+
+	setSpinnerProgress(val:number, operationName?:string) {
+		spinnerProgress = val;
+		spinnerName = operationName;
+		modal.refresh();
+	}
+
 	hideSpinner() {
+		spinnerProgress = -1;
 		spinnerShowCounter--;
 		if (spinnerShowCounter === 0) {
 			window.setTimeout(() => {
