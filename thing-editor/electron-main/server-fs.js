@@ -132,6 +132,10 @@ module.exports = (mainWindow) => {
 				event.returnValue = c;
 				return;
 			case 'fs/readDir':
+				if (!fs.existsSync(fileName)) {
+					event.returnValue = [];
+					return;
+				}
 				ret = walkSync(fileName, []);
 				assetsLoaderPath = process.cwd() + '/' + fileName + 'assets-loader.cjs';
 				if (fs.existsSync(assetsLoaderPath)) {
