@@ -124,6 +124,9 @@ class Editor {
 		return game.keys.altKey;
 	}
 
+	// set or delete properties to override them in game.projectDesc embedded in to build.
+	forceProjectDescPropsInBuild = {} as Partial<ProjectDesc>;
+
 	constructor() {
 		const args = fs.getArgs();
 		for (let arg of args) {

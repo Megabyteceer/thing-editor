@@ -40,7 +40,7 @@ interface ProjectDesc {
 	loadOnDemandTextures: KeyedObject<number>;
 	defaultMusVol: number;
 	defaultSoundsVol: number;
-	embedLocales: true;
+	embedLocales: boolean;
 	__localesNewKeysPrefix: string;
 	__doNotAutoCreateLocalizationFiles: string;
 	__suspendWarnings: number[];
