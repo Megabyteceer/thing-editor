@@ -451,6 +451,7 @@ input {
 }
 
 .modal-reject-text {
+	height: 33px;
 	color: #ff0000;
 }
 
