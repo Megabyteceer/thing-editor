@@ -32,7 +32,7 @@ module.exports = {
 			let query = id.split('.ts?')[1];
 			query = '?' + query;
 			src = src.replace(moduleImportFixer, (_substr, m1, m2) => {
-				if (!_substr.includes('.css?inline"')) {
+				if (!m1.includes('?')) {
 					if (m1.includes('".')) { // relative imports treats games or libs if imported from games or libs
 						if (id.startsWith(gamesPath) || id.startsWith(libsPath)) {
 							return m1 + query + m2;
