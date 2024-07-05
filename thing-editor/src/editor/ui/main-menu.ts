@@ -79,7 +79,7 @@ interface MainMenuItem {
 
 const MUTE_SOUND_MENU_ITEM: ContextMenuItem = {
 	name: () => {
-		return R.fragment(game.editor.settings.getItem('sound-muted') ? MUTED_ICON() : UNMUTED_ICON(), ' Mute game sounds');
+		return R.span(null, game.editor.settings.getItem('sound-muted') ? MUTED_ICON() : UNMUTED_ICON(), ' Mute game sounds');
 	},
 	onClick: () => {
 		game.editor.toggleSoundMute();
@@ -183,7 +183,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment('Switch project language [', R.b({ className: 'project-language-tip' }, L.getCurrentLanguageId()), ']');
+					return R.span(null, 'Switch project language [', R.b({ className: 'project-language-tip' }, L.getCurrentLanguageId()), ']');
 				},
 				onClick: () => {
 					switchLanguage(1);
@@ -208,7 +208,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			MUTE_SOUND_MENU_ITEM,
 			{
 				name: () => {
-					return R.fragment(game.isMobile.any ? CHECKED : UNCHECKED, ' isMobile.any',);
+					return R.span(null, game.isMobile.any ? CHECKED : UNCHECKED, ' isMobile.any',);
 				},
 				onClick: () => {
 					game.editor.toggleIsMobileAny();
@@ -218,7 +218,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('show-gizmo', true) ? CHECKED : UNCHECKED, ' Gizmo');
+					return R.span(null, game.editor.settings.getItem('show-gizmo', true) ? CHECKED : UNCHECKED, ' Gizmo');
 				},
 				tip: 'Hides gizmo and selection outline.',
 				onClick: () => {
@@ -229,7 +229,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('safe-area-frame', true) ? CHECKED : UNCHECKED, ' Safe area');
+					return R.span(null, game.editor.settings.getItem('safe-area-frame', true) ? CHECKED : UNCHECKED, ' Safe area');
 				},
 				tip: 'Hides project`s safe area frame.',
 				onClick: () => {
@@ -241,7 +241,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			null,
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('show-system-assets') ? CHECKED : UNCHECKED, ' Show editor`s system assets');
+					return R.span(null, game.editor.settings.getItem('show-system-assets') ? CHECKED : UNCHECKED, ' Show editor`s system assets');
 				},
 				onClick: () => {
 					game.editor.toggleShowSystemAssets();
@@ -250,7 +250,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('vs-code-excluding') ? CHECKED : UNCHECKED, ' VScode excluding');
+					return R.span(null, game.editor.settings.getItem('vs-code-excluding') ? CHECKED : UNCHECKED, ' VScode excluding');
 				},
 				tip: 'Does VSCode should exclude other projects from workspace.',
 				onClick: () => {
@@ -311,7 +311,7 @@ export default class MainMenu extends Component {
 
 	render() {
 		if (!game.editor) {
-			return R.fragment();
+			return R.span(null,);
 		}
 		return R.div(menuProps,
 			MAIN_MENU.map((menuItem: MainMenuItem) => {

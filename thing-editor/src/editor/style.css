@@ -1152,6 +1152,12 @@ input[disabled] {
 	height: 26px;
 }
 
+.context-menu-item-content {
+	width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
 .context-menu button:has(.current-menu-item) {
 	box-sizing: border-box;
 	background: #282828;

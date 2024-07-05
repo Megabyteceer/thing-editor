@@ -221,10 +221,10 @@ editorEvents.on('soundPlay', SoundProfiler.onSoundPlay);
 
 MainMenu.injectMenu('settings', [{
 	name: () => {
-		return R.fragment(R.span({ className: '.menu-icon' }, game.editor.settings.getItem('sound-profiler-shown') ? '☑' : '☐'), ' Sound profiler');
+		return R.span(null, R.span({ className: '.menu-icon' }, game.editor.settings.getItem('sound-profiler-shown') ? '☑' : '☐'), ' Show sound profiler');
 	},
 	onClick: () => {
 		SoundProfiler.toggle();
 	},
 	stayAfterClick: true
-}], 'sound-profiler');
+}], 'sound-profiler', -1);
