@@ -560,6 +560,11 @@ export default class Lib
 
 	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
 		/// #if EDITOR
+
+		if (EDITOR_FLAGS._root_initCalled.has(o)) {
+			assert(false, 'Attempt to self remove inside init() method. Operation does not supported. Do not instance object if you going to just remove. Or remove it in parent.init() method before its init() method called.', 90000);
+		}
+
 		let extData = o.__nodeExtendData;
 		editorUtils.exitPreviewMode(o);
 		if (extData.constructorCalled) {
