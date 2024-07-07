@@ -206,7 +206,7 @@ function setData_thing_editor_debug_helper(data:any, prop:any, val:any):any {
 	let valueToCompare;
 
 	for (const item of instance!.state.debugEntries) {
-		if (prop === item.propertyName) {
+		if (item.enabled && prop === item.propertyName) {
 			if (!item.rawValue) {
 				debugger; // access to data detected
 			}
