@@ -22,7 +22,7 @@ EMBED_CLASSES_NAMES_FIXER.set(Sprite, 'Sprite');
 EMBED_CLASSES_NAMES_FIXER.set(Text, 'Text');
 EMBED_CLASSES_NAMES_FIXER.set(___GizmoArrow, '___GizmoArrow');
 
-let componentsVersion = Date.now();
+let componentsVersion = 0;
 
 const NOT_SERIALIZABLE_PROPS_TYPES: Set<EditablePropertyType> = new Set();
 NOT_SERIALIZABLE_PROPS_TYPES.add('btn');
