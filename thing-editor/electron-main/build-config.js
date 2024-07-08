@@ -4,6 +4,10 @@ const {ViteImageOptimizer} = require('vite-plugin-image-optimizer');
 
 module.exports = (_root, publicDir, outDir, debug, _projectDesc) => {
 	return {
+		json: {
+			stringify: true,
+			namedExports: false
+		},
 		root: '.tmp',
 		publicDir,
 		base: './',
