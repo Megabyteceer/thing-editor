@@ -6,7 +6,6 @@ import type { Component, ComponentChild } from 'preact';
 import { h, render } from 'preact';
 import type { FileDesc, FileDescClass, LibInfo } from 'thing-editor/src/editor/fs';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
-import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import ProjectsList from 'thing-editor/src/editor/ui/choose-project';
 import UI from 'thing-editor/src/editor/ui/ui';
 import historyInstance from 'thing-editor/src/editor/utils/history';
@@ -45,6 +44,10 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';
 import Build from './utils/build';
+
+import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
+import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
+import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
 
