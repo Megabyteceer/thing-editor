@@ -3,7 +3,6 @@ import type { ClassAttributes, ComponentChild } from 'preact';
 import { Component, h } from 'preact';
 
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc, EditablePropertyType } from 'thing-editor/src/editor/props-editor/editable';
 import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
 import PropsEditor from 'thing-editor/src/editor/ui/props-editor/props-editor';
 import ArrayEditableProperty from 'thing-editor/src/editor/ui/props-editor/props-editors/array-editable-property';

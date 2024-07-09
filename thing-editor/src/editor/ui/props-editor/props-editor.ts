@@ -2,7 +2,6 @@ import type { Container } from 'pixi.js';
 import type { ClassAttributes, Component, ComponentChild, ComponentType } from 'preact';
 import { h } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc, EditablePropertyType } from 'thing-editor/src/editor/props-editor/editable';
 import { propertyAssert } from 'thing-editor/src/editor/props-editor/editable';
 import Window from 'thing-editor/src/editor/ui/editor-window';
 import type { GroupableItem } from 'thing-editor/src/editor/ui/group';

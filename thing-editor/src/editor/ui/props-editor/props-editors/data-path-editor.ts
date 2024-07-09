@@ -2,7 +2,6 @@ import { Container, DisplayObject } from 'pixi.js';
 import type { ComponentChild } from 'preact';
 import { Component, render } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import CallbackEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';

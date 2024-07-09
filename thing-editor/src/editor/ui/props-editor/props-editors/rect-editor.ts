@@ -1,7 +1,6 @@
 import type { Container } from 'pixi.js';
 import { Component, h } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditableRect } from 'thing-editor/src/editor/props-editor/editable';
 import BooleanEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/boolean-editor';
 import type { NumberEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-editors/number-editor';
 import NumberEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/number-editor';

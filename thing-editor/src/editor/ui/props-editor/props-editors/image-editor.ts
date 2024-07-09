@@ -1,7 +1,6 @@
 import type { ComponentChild } from 'preact';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
 import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';

@@ -2,7 +2,6 @@ import type { Container } from 'pixi.js';
 import type { ComponentChild } from 'preact';
 import { Component } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import StatusBar from 'thing-editor/src/editor/ui/status-bar';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
@@ -167,14 +166,14 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 
 	onKeyDown(ev: KeyboardEvent) {
 		switch (ev.keyCode) {
-			case 38:
-				this.deltaValue(this.step, ev.ctrlKey);
-				sp(ev);
-				break;
-			case 40:
-				this.deltaValue(-this.step, ev.ctrlKey);
-				sp(ev);
-				break;
+		case 38:
+			this.deltaValue(this.step, ev.ctrlKey);
+			sp(ev);
+			break;
+		case 40:
+			this.deltaValue(-this.step, ev.ctrlKey);
+			sp(ev);
+			break;
 		}
 	}
 

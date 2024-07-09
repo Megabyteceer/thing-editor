@@ -1,6 +1,5 @@
 import { Container, MIPMAP_MODES, Point, Sprite, WRAP_MODES } from 'pixi.js';
 import R, { renderClass } from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDescRaw } from 'thing-editor/src/editor/props-editor/editable';
 import DataPathFixer from 'thing-editor/src/editor/utils/data-path-fixer';
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
 import exportAsPng from 'thing-editor/src/editor/utils/export-as-png';

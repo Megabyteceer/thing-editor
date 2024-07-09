@@ -5,7 +5,6 @@ import { Container, DisplayObject, Sprite, Text } from 'pixi.js';
 import type { FileDescClass } from 'thing-editor/src/editor/fs';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc, EditablePropertyType } from 'thing-editor/src/editor/props-editor/editable';
 import { _editableEmbed, propertyAssert } from 'thing-editor/src/editor/props-editor/editable';
 import PropsEditor from 'thing-editor/src/editor/ui/props-editor/props-editor';
 import SelectEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
@@ -88,7 +87,7 @@ export default class ClassesLoader {
 					Class.__editablePropsRaw = [];
 					assert(Class.hasOwnProperty('__editablePropsRaw'), 'Editable not own');
 				}
-				const editableProps: EditablePropertyDesc[] = Class.__editablePropsRaw;
+				const editableProps: EditablePropertyDesc[] = Class.__editablePropsRaw as any;
 				for (let prop of editableProps) {
 					prop.class = Class;
 					if (!prop.hasOwnProperty('type')) {
@@ -201,7 +200,7 @@ export default class ClassesLoader {
 				const allProps: EditablePropertyDesc[] = [];
 				while (superClass.__editablePropsRaw) {
 					if (superClass.hasOwnProperty('__editablePropsRaw')) {
-						allProps!.unshift.apply(allProps, superClass.__editablePropsRaw);
+						allProps!.unshift.apply(allProps, superClass.__editablePropsRaw as any);
 						Object.assign(c.__defaultValues, superClass.__defaultValues);
 						if (allProps[0].name === '__root-splitter') {
 							break;
