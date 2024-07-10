@@ -51,6 +51,10 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 		}
 		return c.apply(fOwner, data.v);
 	} else {
+		/// #if DEBUG
+		///@ts-ignore
+		callbackPath, this_; // debug watch helpers
+		/// #endif
 		return c.call(fOwner);
 	}
 };
