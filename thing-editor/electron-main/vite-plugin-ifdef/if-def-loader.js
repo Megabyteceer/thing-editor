@@ -1,5 +1,5 @@
 const fileRegex = /\.(ts)$/;
-import fs from 'fs';
+
 const editorImportRegex = /^import.*((thing-editor\/src\/editor\/)|(from "preact"))/;
 
 module.exports = function vitePluginIfDef(isDebug) {
@@ -23,7 +23,8 @@ module.exports = function vitePluginIfDef(isDebug) {
 				throw new Error('File ' + id + ' was included in to build.');
 			}
 			if (fileRegex.test(id)) {
-				const src = fs.readFileSync(id, 'utf8');
+				const src = require('fs').readFileSync(id, 'utf8');
+
 
 				processedFiles.push(id);
 
