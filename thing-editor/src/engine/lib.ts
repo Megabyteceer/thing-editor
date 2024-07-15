@@ -635,6 +635,11 @@ export default class Lib
 
 	static _loadClassInstanceById(id: string): Container {
 		const Class = classes[id];
+		/// #if DEBUG
+		if (!Class) {
+			assert(false, 'No class with id "' + id + '" found.', 99999);
+		}
+		/// #endif
 		let ret = Pool.create(Class as any) as Container;
 		Object.assign(ret, Class.__defaultValues);
 
