@@ -137,7 +137,7 @@ export default class Lib
 	static prefabs: KeyedMap<SerializedObject>;
 
 	private static __isPrefabPreviewLoading = 0;
-	static __outdatedReferencesDetectionDisabled = false;
+	static __outdatedReferencesDetectionDisabled = 0;
 
 	static hasPrefab(name: string) {
 		return prefabs.hasOwnProperty(name);
