@@ -7,6 +7,7 @@ type EditorEvents = {
 	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void;
 	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void;
 	willClassesReload: () => void;
+	didClassesReloaded: () => void;
 	gameWillBeInitialized: () => void;
 	firstSceneWillOpen: () => void;
 	assetsRefreshed: () => void;

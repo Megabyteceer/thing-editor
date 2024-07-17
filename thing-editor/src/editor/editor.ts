@@ -241,6 +241,7 @@ class Editor {
 			this.restoreBackup();
 		}
 		editor.ui.refresh();
+		editorEvents.emit('didClassesReloaded');
 		this.ui.modal.hideSpinner();
 	}
 
