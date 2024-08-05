@@ -1,5 +1,4 @@
 
-import type { EditableRect } from 'thing-editor/src/editor/props-editor/editable';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import game from 'thing-editor/src/engine/game';
 import Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c';
@@ -139,7 +138,7 @@ export default class ScrollLayer extends Container {
 	}
 
 	onDown(ev: PointerEvent) {
-		if (this.worldVisible) {
+		if (this.worldVisible && this.getRootContainer().parent) {
 			mouseHandlerGlobal(ev);
 
 			/// #if EDITOR
@@ -157,6 +156,10 @@ export default class ScrollLayer extends Container {
 
 	static updateGlobal() {
 		if (draggingLayer) {
+			if (!draggingLayer.getRootContainer().parent) {
+				draggingLayer.stopDragThisLayer();
+				return;
+			}
 			draggingLayer.updateGlobal();
 		}
 	}

@@ -67,7 +67,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 	render() {
 		let input = (this.props.multiline ? R.textarea : R.input);
 		return R.fragment(
-			R.div(modalRejectProps, this.state.rejectReason || ' '),
+			R.div(modalRejectProps, this.state.rejectReason),
 			R.btn('auto accept', (ev) => {
 				if (!this.props.multiline) {
 					this.onAcceptClick();

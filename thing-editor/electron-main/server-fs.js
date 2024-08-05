@@ -15,6 +15,7 @@ const fsOptions = {
 const path = require('path');
 
 const fs = require('fs');
+const enumProjects = require('./enum-projects');
 
 const fn = (fileName) => {
 	if (fileName.indexOf('..') >= 0) {
@@ -120,6 +121,8 @@ module.exports = (mainWindow) => {
 				return;
 			case 'fs/setProgressBar':
 				mainWindow.setProgressBar(fileName);
+				mainWindow.__currentProgressOperation = content;
+				mainWindow.__currentProgress = fileName;
 				event.returnValue = null;
 				return;
 			case 'fs/readFile':
@@ -129,6 +132,10 @@ module.exports = (mainWindow) => {
 				event.returnValue = c;
 				return;
 			case 'fs/readDir':
+				if (!fs.existsSync(fileName)) {
+					event.returnValue = [];
+					return;
+				}
 				ret = walkSync(fileName, []);
 				assetsLoaderPath = process.cwd() + '/' + fileName + 'assets-loader.cjs';
 				if (fs.existsSync(assetsLoaderPath)) {
@@ -221,33 +228,6 @@ function attemptFSOperation(cb, ev) {
 	};
 	attempt();
 }
-
-const GAMES_ROOT = path.join(__dirname, '../../games');
-
-const enumProjects = (ret = [], subDir = '') => {
-	let dir = path.join(GAMES_ROOT, subDir);
-	fs.readdirSync(dir).forEach(file => {
-		if (file !== '.git' && file !== 'node_modules') {
-			let dirName = path.join(dir, file);
-			if (fs.statSync(dirName).isDirectory()) {
-				let projDescFile = dirName + '/thing-project.json';
-				if (fs.existsSync(projDescFile)) {
-					let desc;
-					try {
-						desc = JSON.parse(fs.readFileSync(projDescFile, 'utf8'));
-					} catch (er) {
-						throw (new Error('Error in file: ' + projDescFile + '\n' + er.message));
-					}
-					desc.dir = subDir ? (subDir + '/' + file) : file;
-					ret.push(desc);
-				} else {
-					enumProjects(ret, subDir ? (subDir + '/' + file) : file);
-				}
-			}
-		}
-	});
-	return ret;
-};
 
 let crypto;
 

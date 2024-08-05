@@ -137,7 +137,7 @@ export default class Lib
 	static prefabs: KeyedMap<SerializedObject>;
 
 	private static __isPrefabPreviewLoading = 0;
-	static __outdatedReferencesDetectionDisabled = false;
+	static __outdatedReferencesDetectionDisabled = 0;
 
 	static hasPrefab(name: string) {
 		return prefabs.hasOwnProperty(name);
@@ -560,6 +560,11 @@ export default class Lib
 
 	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
 		/// #if EDITOR
+
+		if (EDITOR_FLAGS._root_initCalled.has(o)) {
+			assert(false, 'Attempt to self remove inside init() method. Operation does not supported. Do not instance object if you going to just remove. Or remove it in parent.init() method before its init() method called.', 90000);
+		}
+
 		let extData = o.__nodeExtendData;
 		editorUtils.exitPreviewMode(o);
 		if (extData.constructorCalled) {
@@ -630,6 +635,11 @@ export default class Lib
 
 	static _loadClassInstanceById(id: string): Container {
 		const Class = classes[id];
+		/// #if DEBUG
+		if (!Class) {
+			assert(false, 'No class with id "' + id + '" found.', 99999);
+		}
+		/// #endif
 		let ret = Pool.create(Class as any) as Container;
 		Object.assign(ret, Class.__defaultValues);
 
@@ -976,7 +986,7 @@ Object.freeze(EMPTY_NODE_EXTEND_DATA);
 export { __onAssetAdded, __onAssetDeleted, __onAssetUpdated, constructRecursive };
 
 const isAtlasAsset = (asset: any) => {
-	return (asset as KeyedObject).meta && (asset as KeyedObject).meta.scale;
+	return (asset as KeyedObject)?.meta?.scale;
 };
 
 const __onAssetAdded = (file: FileDesc) => {

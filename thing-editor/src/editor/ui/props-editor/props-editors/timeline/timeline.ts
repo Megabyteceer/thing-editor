@@ -3,7 +3,6 @@ import type { ClassAttributes } from 'preact';
 import { h } from 'preact';
 
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
 import Window from 'thing-editor/src/editor/ui/editor-window';
 import { getDefaultKeyframeTypeForField } from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/get-keyframe-types-for-field';

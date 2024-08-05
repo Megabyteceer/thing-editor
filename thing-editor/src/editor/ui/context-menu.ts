@@ -121,12 +121,14 @@ const refreshContextMenu = () => {
 
 export default showContextMenu;
 
+const menuItemProps = { className: 'context-menu-item-content'};
+
 function renderMenuItem(item: ContextMenuItem) {
 
 	if (item) {
 		return R.btn(
-			R.fragment(
-				R.span(null, (typeof item.name === 'function') ? item.name() : item.name),
+			R.span(menuItemProps,
+				(typeof item.name === 'function') ? item.name() : item.name,
 				item.hotkey ? R.span(hotkeyTipProps, hotkeyToString(item.hotkey)) : undefined),
 			item.onClick,
 			item.tip,

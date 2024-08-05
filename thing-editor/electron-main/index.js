@@ -22,6 +22,22 @@ const {
 		}
 	});
 
+	function isClosingBlocked() {
+		if (mainWindow.__currentProgressOperation) {
+			const res = dialog.showMessageBoxSync(mainWindow, {
+				title: 'Are you sure?',
+				message: mainWindow.__currentProgressOperation + ' in progress. ' + Math.round(mainWindow.__currentProgress * 100) + '% of 100% complete',
+				buttons: [
+					'Abort ' + mainWindow.__currentProgressOperation + ' and close',
+					'Wait for ' + mainWindow.__currentProgressOperation + ' finish',
+				],
+				defaultId: 1,
+				cancelId: 0
+			});
+			return res === 1;
+		}
+	}
+
 	const {exec} = require('child_process');
 
 	const originalLog = console.log.bind(console);
@@ -85,7 +101,9 @@ const {
 
 		mainWindow.on('focus', () => {
 			globalShortcut.register('F5', () => {
-				mainWindow.reload();
+				if (!isClosingBlocked()) {
+					mainWindow.reload();
+				}
 			});
 			globalShortcut.register('F12', () => { // On windows set HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug\UserDebuggerHotKey to '2f' value to make F12 it work
 				mainWindow.webContents.openDevTools();
@@ -93,6 +111,12 @@ const {
 		});
 		mainWindow.on('blur', () => {
 			globalShortcut.unregisterAll();
+		});
+
+		mainWindow.on('close', (ev) => {
+			if (isClosingBlocked()) {
+				ev.preventDefault();
+			}
 		});
 
 

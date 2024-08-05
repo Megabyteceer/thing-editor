@@ -1,4 +1,4 @@
-import type { Container, Point } from 'pixi.js';
+import { type Container, type Point } from 'pixi.js';
 import type { ClassAttributes, ComponentChild } from 'preact';
 import { h } from 'preact';
 import ClassesLoader from 'thing-editor/src/editor/classes-loader';
@@ -82,8 +82,8 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 		this.onOneStepClick = this.onOneStepClick.bind(this);
 		this.showResolutionSelectMenu = this.showResolutionSelectMenu.bind(this);
 		editorEvents.once('projectDidOpen', () => {
+			this.setSpeed(game.editor.settings.getItem('speed', 1));
 			this.restoreResolution();
-
 		});
 	}
 
@@ -343,12 +343,10 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					'Speed:',
 					h(SelectEditor, {
 						onChange: (val) => {
-							game.pixiApp.ticker.speed = val;
-							MusicFragment.__applyGameSpeed(val);
-							this.forceUpdate();
+							this.setSpeed(val);
 						},
 						noCopyValue: true,
-						value: game.pixiApp ? game.pixiApp.ticker.speed : 1,
+						value: game.editor.settings.getItem('speed', 1),
 						select: SPEED_SELECT
 					}),
 					R.hr()
@@ -365,6 +363,13 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				onDblClick: this.onDoubleClick
 			})
 		);
+	}
+
+	setSpeed(speed:number) {
+		game.pixiApp.ticker.speed = speed;
+		MusicFragment.__applyGameSpeed(speed);
+		this.forceUpdate();
+		game.editor.settings.setItem('speed', speed);
 	}
 }
 

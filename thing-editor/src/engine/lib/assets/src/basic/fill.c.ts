@@ -1,5 +1,4 @@
 import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from 'pixi.js';
-import type { EditablePropertyDescRaw } from 'thing-editor/src/editor/props-editor/editable';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import Lib from 'thing-editor/src/engine/lib';

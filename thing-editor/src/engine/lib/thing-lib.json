@@ -21,6 +21,7 @@
 		"aac"
 	],
 	"soundDefaultBitrate": 48,
+	"loadOnDemandSounds": {},
 	"soundBitRates": {},
 	"loadOnDemandTextures": {
 		"common/ui/spin-icon-blur.png": 8,

@@ -437,8 +437,14 @@ export default class fs {
 		}
 	}
 
-	static setProgressBar(progress: number) {
-		execFs('fs/setProgressBar', progress);
+	static setProgressBar(progress: number, operationName?:string) {
+		if (progress >= 0) {
+			assert(operationName, 'operationName expected.');
+		} else {
+			assert(!operationName, 'operationName should be empty for progress clear.');
+		}
+		game.editor.ui?.modal.setSpinnerProgress(progress, operationName);
+		execFs('fs/setProgressBar', progress, operationName);
 	}
 
 	static rebuildSounds(dir: string): object {

@@ -1,85 +1,7 @@
-import type { Container, DisplayObject } from 'pixi.js';
-import type { FileDesc } from 'thing-editor/src/editor/fs';
+import type { DisplayObject } from 'pixi.js';
 import { getPropertyDefinitionUrl } from 'thing-editor/src/editor/ui/props-editor/get-property-definition-url';
-import type { SelectEditorItem } from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
-import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
-
-interface EditableRect {
-	x: number;
-	y: number;
-	w: number;
-	h: number;
-}
-
-type EditablePropertyType = keyof IEditablePropertyType;
-
-interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
-	min?: number;
-	max?: number;
-	step?: number;
-	type?: EditablePropertyType;
-	name?: string;
-	basis?: number;
-	default?: any;
-	canBeEmpty?: false;
-	visible?: (o: T) => boolean;
-	helpUrl?: string;
-	/** field changes pass vale through this function  */
-	parser?: (val: any) => any;
-	disabled?: (o: T) => string | undefined | boolean | null;
-	beforeEdited?: (val: any) => void;
-	onBlur?: () => void;
-	onClick?: (ev: any) => void;
-	className?: string;
-	hotkey?: Hotkey;
-
-	/** filter assets for selector */
-	filterAssets?: (file: FileDesc) => boolean;
-
-	/** splitter header */
-	title?: string;
-	animate?: true;
-	select?: SelectEditorItem[] | (() => SelectEditorItem[]);
-	noNullCheck?: true;
-	important?: boolean;
-	tip?: string | (() => string | undefined);
-	afterEdited?: () => void;
-	multiline?: boolean;
-	notSerializable?: true;
-	override?: true;
-	filterName?: string;
-	arrayProperty?: true;
-	defaultArrayItemValue?: any;
-	separator?: true;
-
-	guideColor?: number;
-
-	rect_minX?: number;
-	rect_maxX?: number;
-	rect_minY?: number;
-	rect_maxY?: number;
-	rect_minW?: number;
-	rect_maxW?: number;
-	rect_minH?: number;
-	rect_maxH?: number;
-
-	/** call-back and data-path properties validator */
-	isValueValid?: (val: any) => boolean;
-
-}
-
-interface EditablePropertyDesc<T extends Container = Container> extends EditablePropertyDescRaw<T> {
-	class: SourceMappedConstructor;
-	type: EditablePropertyType;
-	default: any;
-	name: string;
-	__src: string;
-	__nullCheckingIsApplied?: true;
-	renderer?: any;
-	isTranslatableKey?: boolean;
-}
 
 /** editable property decorator */
 function editable<T extends DisplayObject>(editablePropertyDesc?: EditablePropertyDescRaw<T>) {
@@ -145,7 +67,6 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 
 export default editable;
 export { _editableEmbed, propertyAssert };
-export type { EditablePropertyDesc, EditablePropertyDescRaw, EditablePropertyType, EditableRect };
 
 
 const propertyAssert = (prop: EditablePropertyDesc, condition: any, message: string) => {

@@ -8,7 +8,7 @@ module.exports = {
 		const editorRoot = path.resolve(__dirname, '../..');
 		const root = path.resolve(editorRoot, projectDir);
 		const outDir = root + (debug ? '/debug' : '/release');
-		const tmpDir = root + '/.tmp';
+		const tmpDir = editorRoot + '/.tmp';
 		const publicDir = tmpDir + '/public';
 		const publicAssetsDir = publicDir + '/assets/';
 

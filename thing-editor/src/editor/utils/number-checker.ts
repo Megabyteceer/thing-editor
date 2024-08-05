@@ -34,7 +34,7 @@ export default function wrapPropertyWithNumberChecker(constructor: SourceMappedC
 					game.editor.editSource(propDesc.__src);
 				}
 			}
-			assert(false, 'invalid value for "' + propertyName + '". Valid number value expected. ' + val + ' received.', 10001);
+			assert(false, 'invalid value for "' + propertyName + '". Valid number value expected. ' + val + ' received. ' + (this.___info || ''), 10001);
 		}
 
 		(originalSetter as any).call(this, val);

@@ -20,13 +20,13 @@ import Settings from 'thing-editor/src/engine/utils/settings';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 
-import fs from 'thing-editor/src/editor/fs';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import ERROR_HTML from './utils/html-error.html?raw';
 
 /// #if EDITOR
 /*
 /// #endif
-	import preloaderAssets from 'game-root/.tmp/assets-preloader' assert { type: 'json' };
+	import preloaderAssets from '.tmp/assets-preloader' assert { type: 'json' };
 //*/
 
 let app: Application;
@@ -186,19 +186,17 @@ class Game {
 		initGameInteraction();
 
 		/// #if EDITOR
-		if (!this.editor.buildProjectAndExit) {
-			/// #endif
-			loadFonts();
-			/// #if EDITOR
-		}
+		/*
 		/// #endif
+		loadFonts();
+		//*/
 
 		app.stage.addChild(stage);
 
 		/// #if EDITOR
 		/*
 		/// #endif
-		import('game-root/.tmp/classes').then(() => {
+		import('.tmp/classes').then(() => {
 			game._startGame();
 		});
 		//*/
@@ -386,7 +384,7 @@ class Game {
 		/// #endif
 
 		if (orientation === 'auto') {
-			orientation = (w < h) ? 'portrait' : 'landscape';
+			orientation = ((w < h) && game.isMobile.any) ? 'portrait' : 'landscape';
 		}
 
 		let rotateCanvas = false;
@@ -395,9 +393,6 @@ class Game {
 		case 'portrait':
 			rotateCanvas = w > h;
 			game.isPortrait = true;
-			break;
-		case 'auto':
-			game.isPortrait = (w < h) && game.isMobile.any;
 			break;
 		default: //landscape
 			rotateCanvas = h > w;
@@ -777,7 +772,7 @@ class Game {
 						/*
 						/// #endif
 						this.loadingAdd('assets-main load');
-						import('game-root/.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
+						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
 							this.loadingRemove('assets-main load');
 							game.addAssets(mainAssets.default);
 						});
@@ -1301,19 +1296,16 @@ function loadFonts() {
 							if (fontsProviderName === 'custom') {
 
 								family = family.replace(/ /g, '');
-								let fontPath = family + '.woff';
-
-								/// #if EDITOR
-								fontPath = game.editor.currentProjectAssetsDirRooted + 'fonts/' + family.replace(/ /g, '') + '.woff';
-								/// #endif
-
+								let fontPath = 'fonts/' + family.replace(/ /g, '') + '.woff';
 								let fontPath2 = fontPath + '2';
 
 								/// #if EDITOR
+								fontPath = fs.getFileByAssetName(fontPath, AssetType.FONT).fileName;
+								fontPath2 = fs.getFileByAssetName(fontPath2, AssetType.FONT).fileName;
 								/*
 								/// #endif
-								fontPath = Lib.fonts['fonts/' + family + '.woff'];
-								fontPath2 = Lib.fonts['fonts/' + family + '.woff2'];
+								fontPath = Lib.fonts[fontPath];
+								fontPath2 = Lib.fonts[fontPath2];
 								//*/
 								game.applyCSS(`
 @font-face {
@@ -1403,7 +1395,7 @@ let __currentSceneValue: Scene;
 
 const game = new Game();
 export default game;
-export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME };
+export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME, loadFonts, processOnResize };
 export type { FixedViewportSize };
 
 /// #if EDITOR

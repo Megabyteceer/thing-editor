@@ -33,12 +33,18 @@ export default class Resizer extends Container {
 				p.x = Math.round(this._xPos * game.W);
 				p.y = Math.round(this._yPos * game.H);
 				this.parent.toLocal(p, game.stage, p, false);
-				if (this.relativeX) {
-					this.x = p.x;
+				/// #if EDITOR
+				if (!isNaN(p.x)) {
+				/// #endif
+					if (this.relativeX) {
+						this.x = p.x;
+					}
+					if (this.relativeY) {
+						this.y = p.y;
+					}
+					/// #if EDITOR
 				}
-				if (this.relativeY) {
-					this.y = p.y;
-				}
+				/// #endif
 			}
 
 			if (this.resizeX || this.resizeY) {

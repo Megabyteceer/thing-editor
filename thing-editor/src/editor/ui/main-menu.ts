@@ -10,6 +10,7 @@ import Build from 'thing-editor/src/editor/utils/build';
 import newComponentWizard from 'thing-editor/src/editor/utils/new-component-wizard';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import { onNewSceneClick, onSaveAsSceneClick } from 'thing-editor/src/editor/utils/scene-utils';
+import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import L from 'thing-editor/src/engine/utils/l';
 
@@ -78,7 +79,7 @@ interface MainMenuItem {
 
 const MUTE_SOUND_MENU_ITEM: ContextMenuItem = {
 	name: () => {
-		return R.fragment(game.editor.settings.getItem('sound-muted') ? MUTED_ICON() : UNMUTED_ICON(), ' Mute game sounds');
+		return R.span(null, game.editor.settings.getItem('sound-muted') ? MUTED_ICON() : UNMUTED_ICON(), ' Mute game sounds');
 	},
 	onClick: () => {
 		game.editor.toggleSoundMute();
@@ -182,7 +183,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment('Switch project language [', R.b({ className: 'project-language-tip' }, L.getCurrentLanguageId()), ']');
+					return R.span(null, 'Switch project language [', R.b({ className: 'project-language-tip' }, L.getCurrentLanguageId()), ']');
 				},
 				onClick: () => {
 					switchLanguage(1);
@@ -207,7 +208,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			MUTE_SOUND_MENU_ITEM,
 			{
 				name: () => {
-					return R.fragment(game.isMobile.any ? CHECKED : UNCHECKED, ' isMobile.any',);
+					return R.span(null, game.isMobile.any ? CHECKED : UNCHECKED, ' isMobile.any',);
 				},
 				onClick: () => {
 					game.editor.toggleIsMobileAny();
@@ -217,7 +218,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('show-gizmo', true) ? CHECKED : UNCHECKED, ' Gizmo');
+					return R.span(null, game.editor.settings.getItem('show-gizmo', true) ? CHECKED : UNCHECKED, ' Gizmo');
 				},
 				tip: 'Hides gizmo and selection outline.',
 				onClick: () => {
@@ -228,7 +229,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('safe-area-frame', true) ? CHECKED : UNCHECKED, ' Safe area');
+					return R.span(null, game.editor.settings.getItem('safe-area-frame', true) ? CHECKED : UNCHECKED, ' Safe area');
 				},
 				tip: 'Hides project`s safe area frame.',
 				onClick: () => {
@@ -240,7 +241,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			null,
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('show-system-assets') ? CHECKED : UNCHECKED, ' Show editor`s system assets');
+					return R.span(null, game.editor.settings.getItem('show-system-assets') ? CHECKED : UNCHECKED, ' Show editor`s system assets');
 				},
 				onClick: () => {
 					game.editor.toggleShowSystemAssets();
@@ -249,7 +250,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: () => {
-					return R.fragment(game.editor.settings.getItem('vs-code-excluding') ? CHECKED : UNCHECKED, ' VScode excluding');
+					return R.span(null, game.editor.settings.getItem('vs-code-excluding') ? CHECKED : UNCHECKED, ' VScode excluding');
 				},
 				tip: 'Does VSCode should exclude other projects from workspace.',
 				onClick: () => {
@@ -272,15 +273,11 @@ const MAIN_MENU: MainMenuItem[] = [
 	}
 ];
 
-const injectedNames: Set<string> = new Set();
+const injectedMenus: Map<string, ContextMenuItem[]> = new Map();
 
 export default class MainMenu extends Component {
 
-	static injectMenu(targetMenuId: 'file' | 'edit' | 'project' | 'settings' | any, items: ContextMenuItem[], injectionName: string, pos?: number) {
-		if (injectedNames.has(injectionName)) {
-			return;
-		}
-		injectedNames.add(injectionName);
+	static injectMenu(targetMenuId: 'file' | 'edit' | 'project' | 'settings' | any, items: ContextMenuItem[], injectionId: string, pos?: number) {
 		let menu: MainMenuItem | undefined = MAIN_MENU.find(i => i.id === targetMenuId);
 		if (!menu) {
 			menu = {
@@ -290,6 +287,18 @@ export default class MainMenu extends Component {
 			};
 			MAIN_MENU.push(menu);
 		}
+
+		if (injectedMenus.has(injectionId)) {
+			const oldItems = injectedMenus.get(injectionId)!;
+			let i = 0;
+			for (const item of oldItems) {
+				i = menu.items.findIndex(i => i === item, i - 1); // remove closest null splitter
+				assert(i >= 0, 'main menu re-injection error');
+				menu.items.splice(i, 1);
+			}
+		}
+		injectedMenus.set(injectionId, items);
+
 		if (typeof pos === 'number') {
 			if (pos < 0) {
 				pos = menu.items.length + pos;
@@ -302,7 +311,7 @@ export default class MainMenu extends Component {
 
 	render() {
 		if (!game.editor) {
-			return R.fragment();
+			return R.span(null,);
 		}
 		return R.div(menuProps,
 			MAIN_MENU.map((menuItem: MainMenuItem) => {

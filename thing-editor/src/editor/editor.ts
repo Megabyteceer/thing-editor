@@ -1,12 +1,11 @@
 import R from './preact-fabrics';
 
-import game from '../engine/game';
+import game, { loadFonts } from '../engine/game';
 
 import type { Component, ComponentChild } from 'preact';
 import { h, render } from 'preact';
 import type { FileDesc, FileDescClass, LibInfo } from 'thing-editor/src/editor/fs';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
-import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import ProjectsList from 'thing-editor/src/editor/ui/choose-project';
 import UI from 'thing-editor/src/editor/ui/ui';
 import historyInstance from 'thing-editor/src/editor/utils/history';
@@ -46,6 +45,10 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';
 import Build from './utils/build';
 
+import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
+import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
+import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
+
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
 
 const parseLibName = (name: string): LibInfo => {
@@ -78,6 +81,7 @@ class Editor {
 	currentProjectAssetsDir = '';
 	currentProjectAssetsDirRooted = '';
 	assetsFolders!: string[];
+	assetsFoldersReversed!: string[];
 	libsDescriptors: KeyedMap<ProjectDesc> = {};
 
 	editorArguments: KeyedMap<true | string> = {};
@@ -123,6 +127,9 @@ class Editor {
 		return game.keys.altKey;
 	}
 
+	// set or delete properties to override them in game.projectDesc embedded in to build.
+	forceProjectDescPropsInBuild = {} as Partial<ProjectDesc>;
+
 	constructor() {
 		const args = fs.getArgs();
 		for (let arg of args) {
@@ -136,7 +143,7 @@ class Editor {
 
 		this.onUIMounted = this.onUIMounted.bind(this);
 		game.editor = this;
-
+		fs.setProgressBar(-1);
 		if (this.buildProjectAndExit) {
 			this.editorArguments['no-vscode-integration'] = true;
 			window.addEventListener('error', (er) => {
@@ -145,7 +152,7 @@ class Editor {
 			});
 			window.addEventListener('unhandledrejection', (er) => {
 				fs.log('unhandled rejection:');
-				fs.exitWithResult(undefined, er.reason);
+				fs.exitWithResult(undefined, er.reason.stack);
 			});
 
 			setInterval(() => {
@@ -225,6 +232,7 @@ class Editor {
 			this.saveBackup();
 		}
 		this.ui.viewport.stopExecution();
+		editorEvents.emit('willClassesReload');
 		await ClassesLoader.reloadClasses();
 		if (restorePrefabName) {
 			PrefabEditor.editPrefab(restorePrefabName);
@@ -233,6 +241,7 @@ class Editor {
 			this.restoreBackup();
 		}
 		editor.ui.refresh();
+		editorEvents.emit('didClassesReloaded');
 		this.ui.modal.hideSpinner();
 	}
 
@@ -395,6 +404,7 @@ class Editor {
 			fs.writeFile('thing-editor/src/editor/schema-thing-project.json', mergedSchema);
 
 			this.assetsFolders.push(this.currentProjectAssetsDir);
+			this.assetsFoldersReversed = game.editor.assetsFolders.slice().reverse();
 
 			this.settings.setItem(dir + '_EDITOR_lastOpenTime', Date.now());
 
@@ -423,6 +433,12 @@ class Editor {
 				this.saveLastSceneOpenName('');
 			}
 			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
+
+			loadFonts();
+			await waitForCondition(() => {
+				return game.loadingProgress === 100;
+			});
+
 			editorEvents.emit('firstSceneWillOpen');
 			this.restoreBackup();
 
@@ -1081,16 +1097,18 @@ class Editor {
 						for (const groupName in libsValue as WebFont.Config) {
 							const group = libsValue[groupName] as WebFont.Google;
 							if (group && group.families) {
-								const projectFontGroup = (projectValue[groupName] as WebFont.Google).families;
-								for (const family of group.families) {
-									const stringedValue = JSON.stringify(family);
-									const i = projectFontGroup.findIndex(f => JSON.stringify(f) === stringedValue);
-									if (i >= 0) {
-										projectFontGroup.splice(i, 1);
+								const projectFontGroup = (projectValue[groupName] as WebFont.Google)?.families;
+								if (projectFontGroup) {
+									for (const family of group.families) {
+										const stringedValue = JSON.stringify(family);
+										const i = projectFontGroup.findIndex(f => JSON.stringify(f) === stringedValue);
+										if (i >= 0) {
+											projectFontGroup.splice(i, 1);
+										}
 									}
-								}
-								if (projectFontGroup.length === 0) {
-									delete projectValue[groupName];
+									if (projectFontGroup.length === 0) {
+										delete projectValue[groupName];
+									}
 								}
 							}
 						}
@@ -1171,9 +1189,9 @@ function excludeOtherProjects(forced = false) {
 
 	try { // tsconfig
 
-		const workspaceConfigSrc = fs.readFile(TS_CONFIG_FILE_NAME);
+		const tsConfigSrc = fs.readFile(TS_CONFIG_FILE_NAME);
 		const foldersDataRegExt = /"include"\s*:\s*\[[^\]]*\]/gm;
-		let foldersData = foldersDataRegExt.exec(workspaceConfigSrc);
+		let foldersData = foldersDataRegExt.exec(tsConfigSrc);
 
 		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
 		const tsConfig = JSON.parse('{' + foldersDataString + '}');
@@ -1198,7 +1216,7 @@ function excludeOtherProjects(forced = false) {
 		let newFoldersSrc = JSON.stringify({ include });
 		newFoldersSrc = newFoldersSrc.substring(1, newFoldersSrc.length - 1);
 		if (newFoldersSrc !== foldersDataString) {
-			fs.writeFile(TS_CONFIG_FILE_NAME, workspaceConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
+			fs.writeFile(TS_CONFIG_FILE_NAME, tsConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
 		}
 	} catch (er) {
 		debugger;

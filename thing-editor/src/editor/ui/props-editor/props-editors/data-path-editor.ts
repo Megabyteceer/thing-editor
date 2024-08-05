@@ -2,7 +2,6 @@ import { Container, DisplayObject } from 'pixi.js';
 import type { ComponentChild } from 'preact';
 import { Component, render } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import CallbackEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
@@ -255,7 +254,9 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			game.currentScene._refreshAllObjectRefs();
 			let f;
 			try {
+				Lib.__outdatedReferencesDetectionDisabled++;
 				f = getValueByPath(val, game.editor.selection[0], true);
+				Lib.__outdatedReferencesDetectionDisabled--;
 			} catch (_er) { }
 
 			if (typeof f === 'function') {
@@ -422,7 +423,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 		const addIfGood = (name: string) => {
 			if (!addedNames.has(name)) {
-				Lib.__outdatedReferencesDetectionDisabled = true;
+				Lib.__outdatedReferencesDetectionDisabled++;
 				if (this.isFieldGoodForCallbackChoose(name, parent)) {
 					if (!addSceneNodeIfValid(parent[name], name)) {
 						let order = 0;
@@ -446,7 +447,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 						addedNames.add(name);
 					}
 				}
-				Lib.__outdatedReferencesDetectionDisabled = false;
+				Lib.__outdatedReferencesDetectionDisabled--;
 			}
 		};
 
@@ -596,7 +597,7 @@ let _rootParent: KeyedObject;
 const referenceContainer = new Container() as KeyedObject;
 
 function enumProps(o: KeyedObject) {
-	Lib.__outdatedReferencesDetectionDisabled = true;
+	Lib.__outdatedReferencesDetectionDisabled++;
 	enumeratedProps = [];
 	enumSub(o);
 	let cc = o.constructor;
@@ -609,7 +610,7 @@ function enumProps(o: KeyedObject) {
 			enumSub(p);
 		}
 	}
-	Lib.__outdatedReferencesDetectionDisabled = false;
+	Lib.__outdatedReferencesDetectionDisabled--;
 
 	if (o instanceof Container) {
 		enumeratedProps = enumeratedProps.filter((prop) => {

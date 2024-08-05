@@ -8,11 +8,18 @@ import Lib, { isAtlasAsset } from 'thing-editor/src/engine/lib';
 
 const addedCallbacks: Set<string> = new Set();
 const postBuildCallbacks: ((path: string) => void)[] = [];
+const preBuildCallbacks: ((debug: boolean) => void)[] = [];
 
 function addPostBuildScript(callback: (outPath: string) => void, id: string) {
-	if (!addedCallbacks.has(id)) {
-		addedCallbacks.add(id);
+	if (!addedCallbacks.has(id + '-post-build')) {
+		addedCallbacks.add(id + '-post-build');
 		postBuildCallbacks.push(callback);
+	}
+}
+function addPreBuildScript(callback: (debug: boolean) => void, id: string) {
+	if (!addedCallbacks.has(id + '-pre-build')) {
+		addedCallbacks.add(id + '-pre-build');
+		preBuildCallbacks.push(callback);
 	}
 }
 
@@ -70,6 +77,14 @@ let assetsToCopy: { from: string; to: string }[] = [];
 export default class Build {
 	static async build(debug: boolean) {
 		fs.log(debug ? 'build debug' : 'build release');
+
+		for (const f of preBuildCallbacks) {
+			await f(debug);
+		}
+
+		let projectDesc = JSON.parse(JSON.stringify(game.projectDesc)) as ProjectDesc;
+		Object.assign(projectDesc, game.editor.forceProjectDescPropsInBuild);
+
 		game.editor.validateResources();
 
 		assetsToCopy = [];
@@ -90,7 +105,7 @@ export default class Build {
 		}
 		enumAssetsPropsRecursive(Lib.scenes[PRELOADER_SCENE_NAME], preloaderAssets);
 
-		const text = game.editor.projectDesc.embedLocales ?
+		const text = projectDesc.embedLocales ?
 			game.editor.LanguageView.__getTextAssets()
 			:
 			undefined;
@@ -98,7 +113,7 @@ export default class Build {
 		///////////////////////////////////////////////////////////
 		/// assets-preloader.json ////////////////////////////////
 		/////////////////////////////////////////////////////////
-		saveAssetsDescriptor(preloaderAssets, 'assets-preloader.json', game.projectDesc, text);
+		saveAssetsDescriptor(preloaderAssets, 'assets-preloader.json', projectDesc, text);
 
 		const mainAssets: Set<FileDesc> = new Set();
 		const allAssets = fs.getAssetsList();
@@ -173,19 +188,19 @@ import Lib from 'thing-editor/src/engine/lib';`];
 
 		src.push('const classes:KeyedObject = {' + classesNames.join(',') + '};');
 		src.push('Lib._setClasses(classes);');
-		fs.writeFile(game.editor.currentProjectDir + '.tmp/classes.ts', src.join('\n'));
+		fs.writeFile('.tmp/classes.ts', src.join('\n'));
 
-		const reversedDirsList = game.editor.assetsFolders.slice().reverse();
+		const reversedDirsList = game.editor.assetsFoldersReversed;
 
 		for (let dir of reversedDirsList) {
 			const htmlName = dir + 'index.html';
 			if (fs.exists(htmlName)) {
-				fs.copyFile(htmlName, game.editor.currentProjectDir + '.tmp/index.html');
+				fs.writeFile('.tmp/index.html', fs.readFile(htmlName).replace(/\%__project-assets-dir__\%\//gm, game.editor.currentProjectAssetsDir));
 				break;
 			}
 		}
 
-		await fs.build(game.editor.currentProjectDir, debug, assetsToCopy, game.projectDesc).then(async (result: any) => {
+		await fs.build(game.editor.currentProjectDir, debug, assetsToCopy, projectDesc).then(async (result: any) => {
 
 
 			if (result instanceof Error) {
@@ -332,7 +347,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 	};
 
 	fs.writeFile(
-		game.editor.currentProjectDir + '.tmp/' + fileName,
+		'.tmp/' + fileName,
 		JSON.stringify(assetsObj, fieldsFilter)
 	);
 }
@@ -350,4 +365,4 @@ function renderTextWithFilesLinks(txt: string) {
 	return txt;
 }
 
-export { addPostBuildScript };
+export { addPostBuildScript, addPreBuildScript };

@@ -1,7 +1,6 @@
 
 import { Container } from 'pixi.js';
 import R from 'thing-editor/src/editor/preact-fabrics';
-import type { EditablePropertyDesc } from 'thing-editor/src/editor/props-editor/editable';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
