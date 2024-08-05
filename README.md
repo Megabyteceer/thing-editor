@@ -16,7 +16,7 @@ Install __ffmpeg__ and __ffprobe__ and then use next commands to instal Thing-Ed
 ```
 git clone https://github.com/Megabyteceer/thing-editor.git
 cd thing-editor
-npm -i
+npm i
 ```
 
 # launch:
