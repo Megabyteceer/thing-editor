@@ -12,6 +12,7 @@ import waitForCondition from 'thing-editor/src/editor/utils/wait-for-condition';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import fs from '../fs';
+import { scrollInToView } from '../utils/scroll-in-view';
 import { preactComponentChildToString } from './modal';
 
 const errorIcon = R.icon('error-icon');
@@ -133,6 +134,8 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 			}
 			game.editor.pauseGame();
 		}
+
+		showLastInfoLine();
 		shakeDomElement(document.querySelector('#window-info') as HTMLElement);
 	}
 
@@ -154,6 +157,7 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 			} else {
 				this.show();
 			}
+			showLastInfoLine();
 		}
 	}
 
@@ -204,6 +208,15 @@ function getErrorDetailsUrl(errorCode?: number) {
 	return '';
 }
 
+function showLastInfoLine() {
+	setTimeout(() => {
+		const elements = document.querySelectorAll('.status-body .info-item');
+		const element = elements[elements.length - 1];
+		if (element) {
+		 scrollInToView(element as HTMLElement);
+		}
+	}, 10);
+}
 
 const selectableSceneNodeProps = { className: 'selectable-scene-node' };
 
