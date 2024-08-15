@@ -167,15 +167,16 @@ export default class ScrollLayer extends Container {
 	updateGlobal() {
 		if (game.mouse.click) {
 			if (this.fullArea.w > this.visibleArea.w) {
-				this.xSpeed = (game.mouse.x - mouseX_prev);
+				this.xSpeed = (game.mouse.x - mouseX_prev) / this.worldTransform.a;
 				this._virtualScrollX += this.xSpeed;
 			}
 			if (this.fullArea.h > this.visibleArea.h) {
-				this.ySpeed = (game.mouse.y - mouseY_prev);
+				this.ySpeed = (game.mouse.y - mouseY_prev) / this.worldTransform.d;
 				this._virtualScrollY += this.ySpeed;
 			}
 			mouseX_prev = game.mouse.x;
 			mouseY_prev = game.mouse.y;
+			this.applyLimit();
 		}
 	}
 
@@ -214,9 +215,6 @@ export default class ScrollLayer extends Container {
 				}
 			}
 
-			let v = this.visibleArea;
-			let f = this.fullArea;
-
 			if (this.autoScrolling) {
 				this._checkScrollToBounds();
 				this.xSpeed += (this.scrollToX - this._virtualScrollX) * 0.06;
@@ -236,42 +234,7 @@ export default class ScrollLayer extends Container {
 				}
 			}
 
-			let limitShift = 0;
-
-			if (((v.x + v.w) - this._virtualScrollX) > (f.x + f.w)) {
-				limitShift = (((v.x + v.w) - this._virtualScrollX) - (f.x + f.w));
-			}
-			if ((v.x - this._virtualScrollX - limitShift) < f.x) {
-				limitShift = -(f.x - (v.x - this._virtualScrollX));
-			}
-
-			if (limitShift !== 0) {
-				if (this.bouncingBounds) {
-					this.xSpeed *= 0.95;
-					this._virtualScrollX = stepTo(this._virtualScrollX, this._virtualScrollX + limitShift, Math.abs(limitShift / 4));
-				} else {
-					this.xSpeed = 0;
-					this._virtualScrollX += limitShift;
-				}
-			}
-
-			limitShift = 0;
-			if (((v.y + v.h) - this._virtualScrollY) > (f.y + f.h)) {
-				limitShift = (((v.y + v.h) - this._virtualScrollY) - (f.y + f.h));
-			}
-			if ((v.y - this._virtualScrollY - limitShift) < f.y) {
-				limitShift = -(f.y - (v.y - this._virtualScrollY));
-			}
-
-			if (limitShift !== 0) {
-				if (this.bouncingBounds) {
-					this.ySpeed *= 0.95;
-					this._virtualScrollY = stepTo(this._virtualScrollY, this._virtualScrollY + limitShift, Math.abs(limitShift / 4));
-				} else {
-					this.ySpeed = 0;
-					this._virtualScrollY += limitShift;
-				}
-			}
+			this.applyLimit();
 
 		} else {
 			this.xSpeed = 0;
@@ -282,6 +245,49 @@ export default class ScrollLayer extends Container {
 			this.stopDragThisLayer();
 		}
 		super.update();
+	}
+
+	private applyLimit() {
+
+		let v = this.visibleArea;
+		let f = this.fullArea;
+
+		let limitShift = 0;
+
+		if (((v.x + v.w) - this._virtualScrollX) > (f.x + f.w)) {
+			limitShift = (((v.x + v.w) - this._virtualScrollX) - (f.x + f.w));
+		}
+		if ((v.x - this._virtualScrollX - limitShift) < f.x) {
+			limitShift = -(f.x - (v.x - this._virtualScrollX));
+		}
+
+		if (limitShift !== 0) {
+			if (this.bouncingBounds) {
+				this.xSpeed *= 0.95;
+				this._virtualScrollX = stepTo(this._virtualScrollX, this._virtualScrollX + limitShift, Math.abs(limitShift / 4));
+			} else {
+				this.xSpeed = 0;
+				this._virtualScrollX += limitShift;
+			}
+		}
+
+		limitShift = 0;
+		if (((v.y + v.h) - this._virtualScrollY) > (f.y + f.h)) {
+			limitShift = (((v.y + v.h) - this._virtualScrollY) - (f.y + f.h));
+		}
+		if ((v.y - this._virtualScrollY - limitShift) < f.y) {
+			limitShift = -(f.y - (v.y - this._virtualScrollY));
+		}
+
+		if (limitShift !== 0) {
+			if (this.bouncingBounds) {
+				this.ySpeed *= 0.95;
+				this._virtualScrollY = stepTo(this._virtualScrollY, this._virtualScrollY + limitShift, Math.abs(limitShift / 4));
+			} else {
+				this.ySpeed = 0;
+				this._virtualScrollY += limitShift;
+			}
+		}
 	}
 
 	scrollRight(pow = 16) {
