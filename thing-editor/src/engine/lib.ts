@@ -136,8 +136,9 @@ export default class Lib
 	static scenes: KeyedMap<SerializedObject>;
 	static prefabs: KeyedMap<SerializedObject>;
 
-	private static __isPrefabPreviewLoading = 0;
+	/// #if EDITOR
 	static __outdatedReferencesDetectionDisabled = 0;
+	/// #endif
 
 	static hasPrefab(name: string) {
 		return prefabs.hasOwnProperty(name);
@@ -489,7 +490,7 @@ export default class Lib
 				/// #if EDITOR
 
 				let isVisible = game.__EDITOR_mode || !childData.p.hasOwnProperty('name') || !childData.p.name || !childData.p.name.startsWith('___');
-				if (isVisible && Lib.__isPrefabPreviewLoading) {
+				if (isVisible) {
 					isVisible = !childData.p.hasOwnProperty('name') || !childData.p.name || !childData.p.name.startsWith('____'); //99999
 				}
 				if (isVisible) {
