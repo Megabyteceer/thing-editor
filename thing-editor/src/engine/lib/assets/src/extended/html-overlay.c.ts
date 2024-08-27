@@ -97,7 +97,7 @@ export default class HTMLOverlay extends ScrollLayer {
 	}
 
 	_updateHtmlOpacity() {
-		let isVisible = this.worldVisible && this._htmlContent && this.isCanBePressed && Math.abs(this.worldTransform.a) > 0.1 && !this._isHtmlContentInvalidated;
+		let isVisible = this.worldVisible && this._htmlContent && this.getRootContainer().parent && this.isCanBePressed && Math.abs(this.worldTransform.a) > 0.1 && !this._isHtmlContentInvalidated;
 		let htmlTargetOpacity = isVisible ? this.worldAlpha : 0;
 		this.currentHtmlOpacity = stepTo(this.currentHtmlOpacity, htmlTargetOpacity, this.fadeSpeed);
 	}
@@ -106,7 +106,7 @@ export default class HTMLOverlay extends ScrollLayer {
 		if ((game.time - this.latestTime) > 1) {
 			this._updateHtmlOpacity();
 		}
-		if (!this.worldVisible) {
+		if (!this.worldVisible || !this.getRootContainer().parent) {
 			this._releaseHtmlDiv();
 		}
 	}
