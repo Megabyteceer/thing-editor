@@ -198,6 +198,8 @@ class Game {
 		/// #endif
 		import('.tmp/classes').then(() => {
 			game._startGame();
+		}).catch(() => {
+			game.showLoadingError('classes.js');
 		});
 		//*/
 	}
@@ -775,6 +777,8 @@ class Game {
 						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
 							this.loadingRemove('assets-main load');
 							game.addAssets(mainAssets.default);
+						}).catch(() => {
+							game.showLoadingError('assets-main.json');
 						});
 						//*/
 					}
@@ -1395,7 +1399,7 @@ let __currentSceneValue: Scene;
 
 const game = new Game();
 export default game;
-export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME, loadFonts, processOnResize };
+export { DEFAULT_FADER_NAME, loadFonts, PRELOADER_SCENE_NAME, processOnResize };
 export type { FixedViewportSize };
 
 /// #if EDITOR
