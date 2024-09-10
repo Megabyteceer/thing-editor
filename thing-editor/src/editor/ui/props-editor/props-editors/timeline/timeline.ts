@@ -470,16 +470,27 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				nextLeftLabelName = labelName;
 			}
 		}
-		if (nextLeftLabel && game.currentContainer) {
-			let labelShift = time - nextLeftLabel.t;
+		if (game.currentContainer) {
 			let a = game.currentContainer.findChildrenByType(MovieClip);
 			if (game.currentContainer instanceof MovieClip) {
 				a.push(game.currentContainer);
 			}
-			for (let m of a) {
-				if (!m.__nodeExtendData.isSelected) {
-					if (m.hasLabel(nextLeftLabelName as string)) {
-						let time = m._timelineData.l[nextLeftLabelName as string].t + labelShift;
+			if (nextLeftLabel) {
+				let labelShift = time - nextLeftLabel.t;
+				for (let m of a) {
+					if (!m.__nodeExtendData.isSelected) {
+						if (m.hasLabel(nextLeftLabelName as string)) {
+							let time = m._timelineData.l[nextLeftLabelName as string].t + labelShift;
+							m.__applyCurrentTimeValuesToFields(time);
+						} else {
+							m.resetTimeline();
+						}
+					}
+				}
+			} else {
+				for (let m of a) {
+					const hasZeroLabel = Object.values(m._timelineData.l).some(l => l.t === 0);
+					if (!hasZeroLabel) {
 						m.__applyCurrentTimeValuesToFields(time);
 					} else {
 						m.resetTimeline();
