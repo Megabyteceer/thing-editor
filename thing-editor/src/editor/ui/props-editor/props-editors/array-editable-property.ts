@@ -49,10 +49,14 @@ export default class ArrayEditableProperty extends Component<EditablePropertyEdi
 					this.onChange(newArray);
 				}, 'remove item', 'array-prop-item-remove-btn'));
 			}),
-			R.btn('+', () => {
+			R.btn('+', (ev) => {
 				const newArray = arrayValue.slice();
 				newArray.push(field.defaultArrayItemValue || PropsEditor.getDefaultForType(field));
 				this.onChange(newArray);
+				setTimeout(() => {
+					const allInputs = (ev.target as HTMLDivElement).closest('.array-prop')!.querySelectorAll('input');
+					allInputs[allInputs?.length - 1].focus();
+				}, 10);
 			}, 'Add item', 'add-item-button')
 		);
 	}
