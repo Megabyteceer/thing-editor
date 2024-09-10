@@ -31,6 +31,8 @@ let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
+const unHashedFileToHashed: Map<string, string> = new Map();
+
 //@ts-ignore
 const _initParsers = () => {
 	const spriteSheetLoader = Assets.loader.parsers.find(p => p.name === 'spritesheetLoader');
@@ -160,7 +162,6 @@ export default class Lib
 		Texture.removeFromCache(texture);
 		texture.destroy(true);
 	}
-
 
 	/// #if EDITOR
 	static removeAtlas(file: FileDesc) {
@@ -511,6 +512,15 @@ export default class Lib
 		/// #endif
 
 		return ret;
+	}
+
+	static getHashedFileName(assetName:string) {
+		/// #if EDITOR
+		return fs.getFileByAssetName(assetName, AssetType.IMAGE)?.fileName;
+		/*
+		/// #endif
+		return Lib.ASSETS_ROOT + unHashedFileToHashed.get(Lib.ASSETS_ROOT + assetName);
+		//*/
 	}
 
 	static addAssets(data: AssetsDescriptor, assetsRoot = Lib.ASSETS_ROOT) {
@@ -1130,7 +1140,6 @@ const __preparePrefabReference = (o: Container, prefabName: string) => {
 };
 /// #endif
 
-const unHashedFileToHashed: Map<string, string> = new Map();
 
 const unHashFileName = (fileName: string, assetsRoot: string): string => {
 	const n = fileName.lastIndexOf('.');

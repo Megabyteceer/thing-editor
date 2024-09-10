@@ -3,7 +3,7 @@ import R from 'thing-editor/src/editor/preact-fabrics';
 import type { ChooseListItem } from 'thing-editor/src/editor/ui/choose-list';
 import game from 'thing-editor/src/engine/game';
 
-interface ChooseTempletItem extends ChooseListItem {
+interface ChooseTemplateItem extends ChooseListItem {
 	title: string;
 	desc: string;
 	path: string;
@@ -43,7 +43,7 @@ const newComponentWizard = async () => {
 			path: 'full-scene.tst',
 			isScene: true
 		}
-	] as ChooseTempletItem[]).map((tmp) => {
+	] as ChooseTemplateItem[]).map((tmp) => {
 		tmp.pureName = tmp.title;
 		tmp.name = R.div({ className: 'project-item-select' },
 			R.div(null, tmp.title),
