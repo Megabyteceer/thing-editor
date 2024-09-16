@@ -15,7 +15,9 @@ module.exports = (_root, publicDir, outDir, debug, _projectDesc) => {
 		},
 		plugins: [
 			ifDefPlugin(debug),
-			ViteImageOptimizer({})
+			ViteImageOptimizer({
+				exclude: /.*no-optimize.*/
+			})
 		],
 		build: {
 			target: 'ES2015',
