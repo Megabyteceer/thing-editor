@@ -480,7 +480,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				for (let m of a) {
 					if (!m.__nodeExtendData.isSelected) {
 						if (m.hasLabel(nextLeftLabelName as string)) {
-							let time = m._timelineData.l[nextLeftLabelName as string].t + labelShift;
+							let time = m._timelineData?.l[nextLeftLabelName as string].t + labelShift || 0;
 							m.__applyCurrentTimeValuesToFields(time);
 						} else {
 							m.resetTimeline();
@@ -489,11 +489,13 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				}
 			} else {
 				for (let m of a) {
-					const hasZeroLabel = Object.values(m._timelineData.l).some(l => l.t === 0);
-					if (!hasZeroLabel) {
-						m.__applyCurrentTimeValuesToFields(time);
-					} else {
-						m.resetTimeline();
+					if (m._timelineData) {
+						const hasZeroLabel = Object.values(m._timelineData.l).some(l => l.t === 0);
+						if (!hasZeroLabel) {
+							m.__applyCurrentTimeValuesToFields(time);
+						} else {
+							m.resetTimeline();
+						}
 					}
 				}
 			}

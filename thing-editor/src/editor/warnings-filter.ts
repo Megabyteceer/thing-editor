@@ -29,7 +29,7 @@ console.groupCollapsed = (...args: string[]) => {
 };
 
 const filterDebug = (args: string[]) => {
-	return args.some(a => a.includes('[vite] connecting...') || a.includes('[vite] connected.'));
+	return args.some(a => a?.includes('[vite] connecting...') || a?.includes('[vite] connected.'));
 };
 
 const originalDebug = console.debug;
