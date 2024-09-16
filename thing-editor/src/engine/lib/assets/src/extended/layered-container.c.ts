@@ -25,11 +25,13 @@ export default class LayeredContainer extends Container {
 
 	rendererPortalContainer!: LayeredContainerPortal;
 
+	needInit = true;
+
 	init() {
 		super.init();
 		this.rendererPortalContainer = Lib._loadClassInstanceById('LayeredContainerPortal') as LayeredContainerPortal;
 		this.rendererPortalContainer.containerOwner = this;
-		this._updateTargetContainer();
+		this.needInit = true;
 	}
 
 	enable() {
@@ -43,7 +45,11 @@ export default class LayeredContainer extends Container {
 	}
 
 	isRenderingLayered() {
-		return this.rendererPortalContainer && this._targetContainer && this.enabled;
+		return this.enabled
+		/// #if EDITOR
+		 && this.rendererPortalContainer &&
+		this._targetContainer;
+		/// #endif
 	}
 
 	_updateTargetContainer() {
@@ -59,12 +65,22 @@ export default class LayeredContainer extends Container {
 	}
 
 	render(renderer: any) {
+		if (this.needInit) {
+			this._updateTargetContainer();
+			this.needInit = false;
+		}
 		if (!this.isRenderingLayered()) {
 			super.render(renderer);
 		}
 	}
 
 	renderForPortal(renderer: any) {
+		if (this.needInit) {
+			this._updateTargetContainer();
+			this._recursivePostUpdateTransform();
+			this.updateTransform();
+			this.needInit = false;
+		}
 		this.visible = this.parent.worldVisible;
 		super.render(renderer);
 	}
