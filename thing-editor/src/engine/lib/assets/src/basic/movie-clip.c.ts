@@ -214,7 +214,7 @@ export default class MovieClip extends DSprite {
 			let nextList = fields.map((field) => {
 				return MovieClip._findNextKeyframe(field.t, labelTime - 1);
 			});
-			labels[key] = { t: labelTime, n: nextList };
+			labels[key] = { t: labelTime, n: nextList, ___name: key };
 		}
 
 		const ret = {
