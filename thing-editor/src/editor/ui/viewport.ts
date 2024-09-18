@@ -274,7 +274,15 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 					R.hr(),
 					fileLibraryName ? libInfo(prefabFile) : undefined,
-					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes', 'main-btn', { key: 'Enter' }),
+					R.btn(R.icon('accept'), (ev) => {
+						if (ev instanceof KeyboardEvent) {
+							if ((ev.target as HTMLInputElement)?.tagName === 'INPUT' || (ev.target as HTMLInputElement)?.tagName === 'TEXTAREA') {
+								(ev.target as HTMLInputElement).blur();
+								return;
+							}
+						}
+						PrefabEditor.acceptPrefabEdition(true);
+					}, 'Accept prefab changes', 'main-btn', { key: 'Enter' }),
 					R.btn(R.icon('reject'), () => {
 						if (game.editor.isCurrentContainerModified) {
 							game.editor.ui.modal.showEditorQuestion(
