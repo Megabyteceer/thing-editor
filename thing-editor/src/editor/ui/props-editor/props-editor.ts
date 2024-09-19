@@ -202,7 +202,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 
 			let fn = a[0];
 			this.refs.forEach((field) => {
-				if (field.props.field.name === fieldName) {
+				if (field.props.field.name === fn) {
 					field.onAutoSelect(a);
 				}
 			});
