@@ -492,7 +492,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				}
 			} else {
 				for (let m of a) {
-					if (m._timelineData) {
+					if (m._timelineData && m.isPlaying) {
 						const hasZeroLabel = Object.values(m._timelineData.l).some(l => l.t === 0);
 						if (!hasZeroLabel) {
 							m.__applyCurrentTimeValuesToFields(time);
