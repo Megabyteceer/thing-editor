@@ -1045,11 +1045,11 @@ function cloneSelectedKeyframes() {
 			let newName!:string;
 			if (/\d/.test(c.props.label.___name)) {
 				newName = increaseNumberInName(c.props.label.___name)!;
-				while (c.props.owner.props.node._timelineData.l[newName]) {
-					newName = increaseNumberInName(newName)!;
-				}
 			} else {
 				newName = c.props.label.___name + '-2';
+			}
+			while (c.props.owner.props.node._timelineData.l[newName]) {
+				newName = increaseNumberInName(newName)!;
 			}
 			c.clone(newName);
 		}
