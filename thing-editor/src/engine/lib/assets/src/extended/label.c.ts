@@ -88,7 +88,7 @@ export default class Label extends Text {
 		return val;
 	}
 
-	update() {
+	updateValue() {
 		if ((game.time - this.lastUpdateTime) > 1) {
 			this.refreshNow();
 		}
@@ -120,6 +120,10 @@ export default class Label extends Text {
 		} else {
 			this.currentInterval--;
 		}
+	}
+
+	update() {
+		this.updateValue();
 		super.update();
 	}
 
@@ -171,7 +175,7 @@ export default class Label extends Text {
 	refreshNow() {
 		this.currentInterval = 0;
 		this.lastUpdateTime = game.time;
-		this.update();
+		this.updateValue();
 	}
 
 	/// #if EDITOR
