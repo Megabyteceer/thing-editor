@@ -7,6 +7,7 @@ import { toggleIsolation } from 'thing-editor/src/editor/ui/isolation';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
 
@@ -115,6 +116,20 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 			editorUtils.savePrefab(game.editor.selection[0]);
 		},
 		disabled: () => game.editor.selection.length !== 1 || game.editor.selection[0] instanceof Scene
+	},
+	{
+		name: R.fragment(R.icon('asset-prefab'), 'Unreference'),
+		onClick: () => {
+			const o = game.editor.selection[0];
+			delete o.__nodeExtendData.isPrefabReference;
+			for (const c of o.children) {
+				delete c.__nodeExtendData.hidden;
+			}
+			Lib.__invalidateSerializationCache(o);
+			game.editor.refreshTreeViewAndPropertyEditor();
+			game.editor.sceneModified(false);
+		},
+		disabled: () => game.editor.selection.length !== 1 || !game.editor.selection[0].__nodeExtendData.isPrefabReference
 	},
 	null,
 	{
