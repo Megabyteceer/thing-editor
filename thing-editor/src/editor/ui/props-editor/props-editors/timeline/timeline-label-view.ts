@@ -89,12 +89,10 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 
 	deleteLabel() {
 		let name = this.props.label.___name;
-		game.editor.ui.modal.showEditorQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
-			Timeline.unselectComponent(this);
-			let tl = this.props.owner.props.node._timelineData;
-			delete tl.l[name];
-			this.onChanged();
-		}, R.span(null, R.icon('delete'), ' Delete'));
+		Timeline.unselectComponent(this);
+		let tl = this.props.owner.props.node._timelineData;
+		delete tl.l[name];
+		this.onChanged();
 	}
 
 	onLabelMouseDown(ev: PointerEvent) {
