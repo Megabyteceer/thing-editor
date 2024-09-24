@@ -160,7 +160,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				title += 's';
 			}
 		}
-		game.editor.chooseClass(isScene, '_changeClass', title, (game.editor.selection[0].constructor as SourceMappedConstructor).__className).then((selectedClassName) => {
+		game.editor.chooseClass(isScene, '_changeClass', title, ((game.editor.selection[0].__nodeExtendData.unknownConstructor || game.editor.selection[0].constructor) as SourceMappedConstructor).__className).then((selectedClassName) => {
 			if (selectedClassName) {
 				const selectedClass = game.classes[selectedClassName];
 				assert(selectedClass, 'Class selection return wrong class name.');
