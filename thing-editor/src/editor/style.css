@@ -836,6 +836,15 @@ input {
 	height: 21px;
 }
 
+.color-sample {
+	display: inline-block;
+	width: 31px;
+	margin-top: -4px;
+	padding: 0;
+	height: 16px;
+	border: 1px solid #777777;
+}
+
 input[type=checkbox] {
 	cursor: pointer;
 	float: left;

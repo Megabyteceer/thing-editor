@@ -3,6 +3,7 @@ import type { ClassAttributes, ComponentChild } from 'preact';
 import { Component, h } from 'preact';
 
 import R from 'thing-editor/src/editor/preact-fabrics';
+import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
 import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
 import PropsEditor from 'thing-editor/src/editor/ui/props-editor/props-editor';
 import ArrayEditableProperty from 'thing-editor/src/editor/ui/props-editor/props-editors/array-editable-property';
@@ -45,7 +46,7 @@ const CAN_COPY_VALUES_OF_TYPE: EditablePropertyType[] = [
 	'number'
 ];
 
-const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEvent) => {
+const onContextMenu = async (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEvent) => {
 	const field: EditablePropertyDesc = fieldEditor.props.field;
 	const defaultValue: any = fieldEditor.props.defaultValue;
 
@@ -55,6 +56,8 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
 		clickedArrayItemIndex = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
 	}
+
+	let clipboardText = await navigator.clipboard.readText();
 
 	let clickedValue = value;
 	if (field.arrayProperty) {
@@ -67,6 +70,36 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 		}
 	}
 
+	let colorSampleCopy: any;
+	let colorSample: any;
+	let hexValue: any;
+	if (field.type === 'color') {
+		if (Array.isArray(clickedValue)) {
+			hexValue = clickedValue.map((v) => {
+				if (typeof v === 'number') {
+					return v.toString(16).padStart(6, '0');
+				} else {
+					return '000000';
+				}
+			});
+		} else {
+			if (typeof clickedValue === 'number') {
+				hexValue = clickedValue.toString(16).padStart(6, '0');
+			}
+			if (clipboardText) {
+				colorSample = R.span({
+					style: {background: '#' + clipboardText},
+					className: 'color-sample'
+				});
+			}
+			colorSampleCopy = R.span({
+				style: {background: '#' + clickedValue.toString(16).padStart(6, '0')},
+				className: 'color-sample'
+			});
+		}
+
+	}
+
 	const contextMenu = [
 		{
 			name: R.fragment(R.icon('copy'), 'Copy value', R.span(nameValueProps, clickedValue)),
@@ -76,27 +109,59 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
-			name: R.fragment(R.icon('paste'), 'Paste value'),
+			hidden: field.type !== 'color' || Array.isArray(clickedValue),
+			name: R.fragment(R.icon('copy'), R.fragment('Copy HEX', colorSampleCopy)),
 			onClick: () => {
-				navigator.clipboard.readText().then(text => {
-					let val: any;
+				game.editor.copyToClipboard(hexValue);
+			}
+		},
+		{
+			name: R.fragment(R.icon('paste'), R.fragment('Paste value')),
+			onClick: () => {
 
-					let a = text.split(',');
-					if (field.type === 'color' || field.type === 'number') {
-						a = a.map(v => parseFloat(v) || 0) as any;
-					}
-					if (field.arrayProperty) {
-						if (clickedArrayItemIndex < 0) {
-							val = a;
-						} else {
-							val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
-							val[clickedArrayItemIndex] = a[0];
-						}
+				let val: any;
+
+				let a = clipboardText.split(',');
+				if (field.type === 'color' || field.type === 'number') {
+					a = a.map(v => parseFloat(v) || 0) as any;
+				}
+				if (field.arrayProperty) {
+					if (clickedArrayItemIndex < 0) {
+						val = a;
 					} else {
-						val = a[0];
+						val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
+						val[clickedArrayItemIndex] = a[0];
 					}
-					game.editor.editProperty(field, val);
-				});
+				} else {
+					val = a[0];
+				}
+				game.editor.editProperty(field, val);
+			},
+			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
+		},
+		{
+			hidden: field.type !== 'color' || !colorSample,
+			name: R.fragment(R.icon('paste'), R.fragment('Paste HEX', colorSample)),
+			onClick: () => {
+				let val: any;
+
+				clipboardText = clipboardText.replace('#', '');
+
+				let a = clipboardText.split(',');
+				if (field.type === 'color' || field.type === 'number') {
+					a = a.map(v => parseInt(v, 16) || 0) as any;
+				}
+				if (field.arrayProperty) {
+					if (clickedArrayItemIndex < 0) {
+						val = a;
+					} else {
+						val = ((game.editor.selection[0] as any as KeyedMap<any[]>)[field.name] || []).slice();
+						val[clickedArrayItemIndex] = a[0];
+					}
+				} else {
+					val = a[0];
+				}
+				game.editor.editProperty(field, val);
 			},
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
@@ -167,7 +232,7 @@ const onContextMenu = (fieldEditor: PropsFieldWrapper, value: any, ev: PointerEv
 			disabled: () => defaultValue === undefined || value === defaultValue || !game.editor.ui.propsEditor.editableProps[field.name]
 		},
 
-	];
+	] as ContextMenuItem[];
 
 	if (field.renderer.contextMenuInjection) {
 		field.renderer.contextMenuInjection(contextMenu, field, clickedValue, value);
