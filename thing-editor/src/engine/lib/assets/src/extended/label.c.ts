@@ -1,11 +1,11 @@
 import { Text } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
-import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 import { stepTo } from 'thing-editor/src/engine/utils/utils';
+import formatMoney from '../utils/format-money';
 
 export default class Label extends Text {
 
@@ -187,29 +187,7 @@ export default class Label extends Text {
 	}
 
 	/// #endif
-	static formatMoney(num: number, c = 0) {
-		assert(typeof num === 'number', 'Numeric value expected, but got \'' + typeof num + '\'', 10012);
-
-		let neg = num < 0;
-		let ret;
-		if (neg) {
-			num = -num;
-		}
-
-		if (c > 0) {
-			let str = num.toFixed(c).split('.');
-			if (str[0].length > 3) {
-				str[0] = str[0].replace(/(.)(?=(.{3})+$)/g, '$1 ');
-			}
-			ret = str.join('.');
-		} else {
-			ret = num.toFixed(0).replace(/(.)(?=(.{3})+$)/g, '$1 ');
-		}
-		if (neg) {
-			return '-' + ret;
-		}
-		return ret;
-	}
+	static formatMoney = formatMoney;
 }
 
 /// #if EDITOR
