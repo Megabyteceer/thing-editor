@@ -30,7 +30,11 @@ export default class RefFieldEditor extends Component<EditablePropertyEditorProp
 			return R.span(this.RENDER_PROPS, R.btn(R.sceneNode(val),
 				() => {
 					if (this.props.value) {
-						game.editor.selection.select(this.props.value);
+						if ((this.props.value as Container).getRootContainer().parent !== game.stage) {
+							game.editor.notify('Object is not attached to stage.');
+						} else {
+							game.editor.selection.select(this.props.value);
+						}
 					}
 				}
 			));

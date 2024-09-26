@@ -23,6 +23,7 @@ export default class LayeredContainer extends Container {
 	@editable()
 	enabled = true;
 
+	@editable({ type: 'ref' })
 	rendererPortalContainer!: LayeredContainerPortal;
 
 	needInit = true;
