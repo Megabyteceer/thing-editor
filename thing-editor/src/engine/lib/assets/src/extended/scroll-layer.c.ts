@@ -140,13 +140,6 @@ export default class ScrollLayer extends Container {
 	onDown(ev: PointerEvent) {
 		if (this.worldVisible && this.getRootContainer().parent) {
 			mouseHandlerGlobal(ev);
-
-			/// #if EDITOR
-			if (draggingLayer) {
-				game.editor.ui.status.warn('More than one scroll layer want to be dragged by one mouse handler', 32048);
-			}
-			/// #endif
-
 			draggingLayer = this;
 			mouseX_prev = game.mouse.x;
 			mouseY_prev = game.mouse.y;
