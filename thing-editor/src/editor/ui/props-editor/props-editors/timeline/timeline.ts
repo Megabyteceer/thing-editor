@@ -452,9 +452,6 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	_syncOtherMovieClips(time: number) {
 		let movieClips: MovieClip[] = game.editor.selection as any as MovieClip[];
-		if (!movieClips.length) {
-			return;
-		}
 
 		if (!game.__EDITOR_mode || !(movieClips[0])._timelineData) {
 			return;
@@ -473,32 +470,19 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				nextLeftLabelName = labelName;
 			}
 		}
-		if (game.currentContainer) {
+		if (nextLeftLabel && game.currentContainer) {
+			let labelShift = time - nextLeftLabel.t;
 			let a = game.currentContainer.findChildrenByType(MovieClip);
 			if (game.currentContainer instanceof MovieClip) {
 				a.push(game.currentContainer);
 			}
-			if (nextLeftLabel) {
-				let labelShift = time - nextLeftLabel.t;
-				for (let m of a) {
-					if (!m.__nodeExtendData.isSelected) {
-						if (m.hasLabel(nextLeftLabelName as string)) {
-							let time = m._timelineData?.l[nextLeftLabelName as string].t + labelShift || 0;
-							m.__applyCurrentTimeValuesToFields(time);
-						} else {
-							m.resetTimeline();
-						}
-					}
-				}
-			} else {
-				for (let m of a) {
-					if (m._timelineData && m.isPlaying) {
-						const hasZeroLabel = Object.values(m._timelineData.l).some(l => l.t === 0);
-						if (!hasZeroLabel) {
-							m.__applyCurrentTimeValuesToFields(time);
-						} else {
-							m.resetTimeline();
-						}
+			for (let m of a) {
+				if (!m.__nodeExtendData.isSelected) {
+					if (m.hasLabel(nextLeftLabelName as string)) {
+						let time = m._timelineData.l[nextLeftLabelName as string].t + labelShift;
+						m.__applyCurrentTimeValuesToFields(time);
+					} else {
+						m.resetTimeline();
 					}
 				}
 			}
