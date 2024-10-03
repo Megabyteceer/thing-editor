@@ -41,7 +41,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 			onClick: () => {
 				editorUtils.wrapSelected(file.asset);
 			},
-			disabled: () => { return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset); }
+			disabled: () => { return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset, game.editor.selection[0].parent); }
 		},
 		null,
 		{

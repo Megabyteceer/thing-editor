@@ -188,9 +188,9 @@ export default class Label extends Text {
 
 	/// #endif
 	static formatMoney = formatMoney;
-}
 
-/// #if EDITOR
-Label.__EDITOR_icon = 'tree/label';
-Label.__EDITOR_tip = '<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.';
-/// #endif
+	/// #if EDITOR
+	static __EDITOR_icon = 'tree/label';
+	static __EDITOR_tip = '<b>Label</b> - is component which represent value of specified javaScript variable on screen. Useful for in-game counters.';
+	/// #endif
+}
