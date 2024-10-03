@@ -274,7 +274,7 @@ const parseAssets = () => {
 const generateLocalizationTypings = () => {
 	const src = ['interface LocalizationKeys {'];
 	for (const key in currentLanguageData) {
-		src.push('(id: \'' + key + '\', values?: KeyedObject): string;');
+		src.push('(id: \'' + key + '\', values?: KeyedObject | number): string;');
 	}
 	src.push('}\n');
 	fs.writeFile('/thing-editor/src/editor/localization-typings.d.ts', src.join('\n'));
