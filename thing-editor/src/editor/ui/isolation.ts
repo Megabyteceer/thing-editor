@@ -22,7 +22,7 @@ const isolateSelected = () => {
 		while (p) {
 			unIsolateObject(p);
 			p = p.parent;
-			if (!p.parent.__nodeExtendData.isolate) {
+			if (!p.__nodeExtendData.isolate) {
 				break;
 			}
 		}

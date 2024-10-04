@@ -235,7 +235,7 @@ const parseAssets = () => {
 
 	currentDirAssets = assetsFiles.get(currentDir)!;
 
-	const firstFile = currentDirAssets.values().next().value;
+	const firstFile = currentDirAssets.values().next().value!;
 	for (let key in firstFile.asset) {
 		currentIdsList.push(key);
 	}
