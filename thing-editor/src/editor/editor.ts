@@ -461,6 +461,7 @@ class Editor {
 			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame', true) && game.projectDesc.dynamicStageSize;
 
 			if (this.buildProjectAndExit) {
+				await waitForCondition(() => !game.editor.ui.modal.isSpinnerShown());
 				await Build.build(false);
 				await Build.build(true);
 				fs.exitWithResult('build finished');

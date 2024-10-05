@@ -105,7 +105,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		if (!element) {
 			return false;
 		}
-		if (spinnerShowCounter > 0) {
+		if (this.isSpinnerShown()) {
 			return true;
 		}
 
@@ -176,6 +176,10 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	componentDidMount() {
 		assert(!modal, 'Modal already mounted.');
 		modal = this;
+	}
+
+	isSpinnerShown() {
+		return spinnerShowCounter > 0;
 	}
 
 	showSpinner() {
