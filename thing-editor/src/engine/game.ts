@@ -1109,6 +1109,9 @@ class Game {
 	}
 
 	showLoadingError(url: string) {
+		/// #if DEBUG
+		debugger;
+		/// #endif
 		/// #if EDITOR
 		if (this.editor.buildProjectAndExit) {
 			fs.exitWithResult(undefined, 'loading error: ' + url);
