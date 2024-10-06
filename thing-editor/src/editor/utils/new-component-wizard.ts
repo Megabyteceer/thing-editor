@@ -116,6 +116,13 @@ const newComponentWizard = async () => {
 	templateSrc = templateSrc.replace(/NEW_CLASS_NAME/gm, enteredClassName);
 	templateSrc = templateSrc.replace(/BASE_CLASS_NAME/gm, selectedBaseClass.__className);
 	templateSrc = templateSrc.replace(/BASE_CLASS_PATH/gm, baseClassPath);
+	let createdCount = game.editor.settings.getItem('created-components', 0);
+	createdCount++;
+	game.editor.settings.setItem('created-components', createdCount);
+
+	if (createdCount > 3) {
+		templateSrc = templateSrc.replace(/\t*((\/\*(.|\n)+\*\/)|(\/\/.+))\n\t*/gm, '');
+	}
 
 	let fileName = enteredClassName.replace(/[A-Z]/gm, (substr: string, offset: number) => {
 		return ((offset === 0 || enteredClassName[offset - 1] === '_') ? '' : '-') + substr.toLowerCase();
