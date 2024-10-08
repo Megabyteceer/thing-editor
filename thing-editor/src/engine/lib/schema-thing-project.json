@@ -118,6 +118,11 @@
 			"type": "string",
 			"default": "Fira Sans, Arial"
 		},
+		"jpgQuality": {
+			"description": "output build jpg quality 0 - 100",
+			"type": "number",
+			"default": 80
+		},
 		"soundFormats": {
 			"description": "List of sounds formats which will be generated for project. Required because there is no format all the browsers support. Usually ogg + aac covers all the browsers you need.",
 			"type": "array",

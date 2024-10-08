@@ -16,7 +16,13 @@ module.exports = (_root, publicDir, outDir, debug, _projectDesc) => {
 		plugins: [
 			ifDefPlugin(debug),
 			ViteImageOptimizer({
-				exclude: /.*no-optimize.*/
+				exclude: /.*no-optimize.*/,
+				jpeg: {
+					quality: _projectDesc.jpgQuality,
+				},
+				jpg: {
+					quality: _projectDesc.jpgQuality,
+				}
 			})
 		],
 		build: {
