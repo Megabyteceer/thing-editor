@@ -9,7 +9,6 @@ import Lib from 'thing-editor/src/engine/lib';
 import { ButtonOnlyPropertyDesc } from 'thing-editor/src/editor/utils/button-only-selectable-property';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import SceneLinkedPromise from 'thing-editor/src/engine/lib/assets/___system/scene-linked-promise.c';
-import type ScrollLayer from 'thing-editor/src/engine/lib/assets/src/extended/scroll-layer.c';
 import FullScreen from 'thing-editor/src/engine/utils/full-screen';
 import initGameInteraction, { addOnClickOnce } from 'thing-editor/src/engine/utils/game-interaction';
 import { setValueByPath } from 'thing-editor/src/engine/utils/get-value-by-path';
@@ -678,9 +677,7 @@ class Game {
 		if ((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
 			/// #endif
 
-			if (game.classes.ScrollLayer) {
-				(game.classes.ScrollLayer as unknown as ScrollLayer).updateGlobal();
-			}
+			this.stage.emit('global-update');//99999
 
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
 			/// #if EDITOR
@@ -761,6 +758,8 @@ class Game {
 			contextLoseTime = 0;
 		}
 
+		this.stage.emit('update'); //99999
+
 		if (game._isWaitingToHideFader) {
 			if (game.loadingsFinished === game.loadingsInProgress) {
 				game._processScenesStack();
@@ -824,6 +823,7 @@ class Game {
 			}
 		}
 		this.keys.update();
+		this.stage.emit('updated');//99999
 		Lib._cleanupRemoveHolders();
 	}
 
