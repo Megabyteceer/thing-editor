@@ -2,6 +2,7 @@
 import { Container } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import assert from 'thing-editor/src/engine/debug/assert';
+import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import LayeredContainerPortal from 'thing-editor/src/engine/lib/assets/src/extended/layered-contaiter-portal.c';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
@@ -75,6 +76,13 @@ export default class LayeredContainer extends Container {
 		}
 	}
 
+	update(): void {
+		super.update();
+		if (this.rendererPortalContainer) {
+			allPortalsContainers.add(this.rendererPortalContainer.parent);
+		}
+	}
+
 	renderForPortal(renderer: any) {
 		if (this.needInit) {
 			this._updateTargetContainer();
@@ -97,3 +105,24 @@ export default class LayeredContainer extends Container {
 LayeredContainer.__requiredComponents = [LayeredContainerPortal];
 
 /// #endif
+
+const allPortalsContainers = new Set() as Set<Container>;
+
+game.stage.on('update', () => {
+	allPortalsContainers.clear();
+});
+game.stage.on('updated', () => {
+	if (game.isUpdateBeforeRender) {
+		allPortalsContainers.forEach(sortPortals);
+	}
+});
+
+const sortPortals = (container:Container) => {
+	if (container) {
+		(container.children as LayeredContainerPortal[]).sort(sort);
+	}
+};
+
+const sort = (a:LayeredContainerPortal, b:LayeredContainerPortal) => {
+	return (a.containerOwner ? a.containerOwner.worldTransform.ty : 10000) - (b.containerOwner ? b.containerOwner.worldTransform.ty : 10000);
+};
