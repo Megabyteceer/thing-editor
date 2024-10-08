@@ -205,6 +205,9 @@ Object.defineProperty(Container.prototype, 'isCanBePressed', {
 		let p = this.parent;
 		while (p !== game.stage && p.interactiveChildren && p.visible) {
 			p = p.parent;
+			if (!p) {
+				return false;
+			}
 		}
 		return p.interactiveChildren && p.visible;
 	},
