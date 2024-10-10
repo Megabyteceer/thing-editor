@@ -110,6 +110,8 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 			style = { display: 'none' };
 		}
 
+		const treeInjection = node.__treeInjection ? node.__treeInjection() : undefined; /// 99999
+
 		return R.fragment(R.div({
 			onDblClick: (ev: PointerEvent) => {
 				if (!isClickedAtRightEdge(ev) && !ev.ctrlKey) {
@@ -127,7 +129,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 				ev.dataTransfer!.setData('text/drag-thing-editor-tree-selection', '');
 			},
 			draggable: node.parent !== game.stage
-		}, R.sceneNode(node), caret), children);
+		}, R.sceneNode(node), caret), treeInjection, children);
 	}
 }
 
