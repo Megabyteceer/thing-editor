@@ -333,6 +333,9 @@ export default class Lib
 			textures[name] = Lib.REMOVED_TEXTURE.clone();
 		}
 		/// #endif
+		/// #if DEBUG
+		assert(textures.hasOwnProperty(name), 'wrong image name ' + name);
+		/// #endif
 
 		return textures[name];
 	}
