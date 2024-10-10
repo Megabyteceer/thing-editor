@@ -295,6 +295,9 @@ class Game {
 		if (data.projectDesc) {
 			game.applyProjectDesc(data.projectDesc);
 		}
+		if (game.stage) {
+			game.stage.emit('assets-will-add', data); // 99999
+		}
 		Lib.addAssets(data);
 	}
 
