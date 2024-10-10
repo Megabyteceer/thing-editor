@@ -415,7 +415,7 @@ export default class Lib
 		deserializationDeepness++;
 
 		if (src.hasOwnProperty('r')) { // prefab reference
-
+			deserializationReferencesDeepness++;
 			let replacedPrefabName: string | undefined;
 			if (!Lib.hasPrefab(src.r!)) {
 				replacedPrefabName = '___system/unknown-prefab';
@@ -435,7 +435,7 @@ export default class Lib
 				ret.__nodeExtendData.unknownPrefabProps = src.p;
 			}
 			__preparePrefabReference(ret, src.r!);
-
+			deserializationReferencesDeepness--;
 		} else { // not a prefab reference
 
 
@@ -486,7 +486,7 @@ export default class Lib
 			let childrenData: SerializedObject[] = src[':'] as SerializedObject[];
 
 			/// #if EDITOR
-			if (!game.__EDITOR_mode) {
+			if (!game.__EDITOR_mode || deserializationReferencesDeepness) {
 				childrenData = childrenData.filter(_filterStaticTriggers);
 			}
 			/// #endif
@@ -893,6 +893,7 @@ const __isSerializableObject = (o: Container) => {
 };
 
 let deserializationDeepness = 0;
+let deserializationReferencesDeepness = 0;
 
 let constructRecursive = (o: Container) => {
 	assert(!game.__EDITOR_mode, 'initialization attempt in editing mode.');
