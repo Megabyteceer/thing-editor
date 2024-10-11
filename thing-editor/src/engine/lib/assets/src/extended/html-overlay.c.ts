@@ -95,7 +95,6 @@ export default class HTMLOverlay extends ScrollLayer {
 
 		if (this.handleScroll && this._htmlDiv) {
 			this._htmlDiv.scrollTop = -this.y * canvasScale;
-			this.y = -Math.round(this._htmlDiv.scrollTop / canvasScale);
 		}
 		this._updateHtmlOpacity();
 	}
