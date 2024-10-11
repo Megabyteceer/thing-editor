@@ -5,6 +5,7 @@ import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable.js
 
 import DataPathFixer from 'thing-editor/src/editor/utils/data-path-fixer';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags.js';
+import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
 import assert from 'thing-editor/src/engine/debug/assert.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -385,7 +386,7 @@ const alignX = () => { ///99999
 	let p = firstObject.getRootContainer().toLocal(firstObject, firstObject.parent);
 	for (let i = 1; i < game.editor.selection.length; i++) {
 		let o = game.editor.selection[i];
-		game.editor.onObjectsPropertyChanged(o, 'x', o.parent.toLocal(p, firstObject.getRootContainer()).x);
+		game.editor.onObjectsPropertyChanged(o, 'x', roundUpPoint(o.parent.toLocal(p, firstObject.getRootContainer())).x);
 	}
 };
 _editableEmbed(Container, 'splitter-transform', { type: 'btn', name: 'Align X ↔', onClick: alignX });
@@ -394,7 +395,7 @@ const alignY = () => { ///99999
 	let p = firstObject.getRootContainer().toLocal(firstObject, firstObject.parent);
 	for (let i = 1; i < game.editor.selection.length; i++) {
 		let o = game.editor.selection[i];
-		game.editor.onObjectsPropertyChanged(o, 'y', o.parent.toLocal(p, firstObject.getRootContainer()).y);
+		game.editor.onObjectsPropertyChanged(o, 'y', roundUpPoint(o.parent.toLocal(p, firstObject.getRootContainer())).y);
 	}
 };
 _editableEmbed(Container, 'splitter-transform', { type: 'btn', name: 'Align Y ↕', onClick: alignY });

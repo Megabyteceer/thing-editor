@@ -260,6 +260,9 @@ function _rememberPathReference(o: Container) {
 		if (p.type === 'data-path' || p.type === 'callback') {
 			if (p.arrayProperty) {
 				let a = (o as KeyedObject)[p.name] as string[];
+				if (!Array.isArray(a)) {
+					a = [a];
+				}
 				a.forEach((path, i) => {
 					rememberRef(path, p.name + ARRAY_ITEM_SPLITTER + i);
 				});

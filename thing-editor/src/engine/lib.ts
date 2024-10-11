@@ -1172,6 +1172,7 @@ const processAfterDeserialization = (o: Container) => {
 
 const EDITOR_ONLY_METHODS = [
 	'__beforeDeserialization',
+	'__treeInjection',
 	'__beforeSerialization',
 	'__afterDeserialization',
 	'__afterSerialization',

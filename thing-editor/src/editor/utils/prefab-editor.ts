@@ -169,6 +169,9 @@ export default class PrefabEditor {
 }
 
 function checkPrefabDataForLoop(data: SerializedObject, loopName: string): boolean {
+	if (!data) {
+		return false;
+	}
 	if (data.r === loopName) {
 		return true;
 	}

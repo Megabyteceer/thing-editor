@@ -48,6 +48,7 @@ import Build from './utils/build';
 import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
+import roundUpPoint from './utils/round-up-point';
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
 
@@ -751,6 +752,7 @@ class Editor {
 		for (let c of o.children) {
 			let p = o.toLocal(c.__nodeExtendData.tmpGlobalPos as Point);
 			this.shiftObject(c as Container, Math.round(p.x - c.x), Math.round(p.y - c.y));
+			roundUpPoint(c);
 		}
 	}
 

@@ -16,6 +16,7 @@ import type { FileDescClass } from 'thing-editor/src/editor/fs';
 
 import { regeneratePrefabsTypings } from 'thing-editor/src/editor/utils/generate-editor-typings';
 import loadSafeInstanceByClassName from 'thing-editor/src/editor/utils/load-safe-instance-by-class-name';
+import roundUpPoint from './round-up-point';
 
 const prefabNameFilter = /[^a-zA-Z\-\/0-9_]/g;
 
@@ -157,6 +158,7 @@ export namespace editorUtils {
 		let pos = o.getGlobalPosition();
 		let p2 = new Point();
 		o.parent.toLocal(pos, undefined, p2);
+		roundUpPoint(pos);
 
 		game.editor.moveContainerWithoutChildren(o, Math.round(p.x - p2.x), Math.round(p.y - p2.y));
 	};
@@ -402,11 +404,12 @@ export namespace editorUtils {
 				let c = o.getChildAt(o.children.length - 1);
 				c.detachFromParent();
 
+				Lib.__invalidateSerializationCache(c);
 				parent.toLocal(c, o, c);
+				roundUpPoint(c);
 
 				if (isPrefab) {
 					c.name = o.name;
-					Lib.__invalidateSerializationCache(c);
 					game.__setCurrentContainerContent(c);
 				} else {
 					parent.addChildAt(c, i);

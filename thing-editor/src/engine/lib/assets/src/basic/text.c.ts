@@ -310,7 +310,7 @@ Object.defineProperties(Text.prototype, {
 		set: function (this: Text, val) {
 			if ((this as any)._maxWidth !== val) {
 				(this as any)._maxWidth = val;
-				recalculateTextSize(this);
+				(this as any).recalculateTextSize();
 			}
 		}, configurable: true
 	}
@@ -339,7 +339,7 @@ let _original_onTextureUpdate = (Text.prototype as any)._onTextureUpdate;
 (Text.prototype as any)._onTextureUpdate = function _onTextureUpdate() { // centred text with odd width is blurred bug fix
 	checkAlignBlur(this);
 	_original_onTextureUpdate.call(this);
-	recalculateTextSize(this); // recalculate max width
+	this.recalculateTextSize(); // recalculate max width
 };
 
 Text.prototype.init = function () {
@@ -349,7 +349,7 @@ Text.prototype.init = function () {
 	if (this.translatableText) {
 		this.text = L(this.translatableText);
 	}
-	recalculateTextSize(this);
+	(this as any).recalculateTextSize();
 };
 
 /// #if EDITOR
@@ -395,28 +395,28 @@ function _refreshAnchor(text: Text) {
 	text.anchor.set(alignValues[text.style.align], alignValues[(text as any)._verticalAlign as 'top' | 'bottom' | 'center']);
 }
 
-function recalculateTextSize(text: Text) {
-	if ((text as any)._maxWidth !== 0) {
-		if (text._texture.width > (text as any)._maxWidth) {
-			const q = (text as any)._maxWidth / text._texture.width;
-			if (text.scale.x !== q || text.scale.y !== q) {
-				text.scale.x = q;
-				text.scale.y = q;
-				if (text.parent) {
-					text.updateTransform();
+(Text.prototype as any).recalculateTextSize = function recalculateTextSize() {
+	if ((this as any)._maxWidth !== 0) {
+		if (this._texture.width > (this as any)._maxWidth) {
+			const q = (this as any)._maxWidth / this._texture.width;
+			if (this.scale.x !== q || this.scale.y !== q) {
+				this.scale.x = q;
+				this.scale.y = q;
+				if (this.parent) {
+					this.updateTransform();
 				}
 			}
 		} else {
-			if (text.scale.x !== 1 || text.scale.y !== 1) {
-				text.scale.x = 1;
-				text.scale.y = 1;
-				if (text.parent) {
-					text.updateTransform();
+			if (this.scale.x !== 1 || this.scale.y !== 1) {
+				this.scale.x = 1;
+				this.scale.y = 1;
+				if (this.parent) {
+					this.updateTransform();
 				}
 			}
 		}
 	}
-}
+};
 
 /// #if EDITOR
 
