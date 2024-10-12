@@ -20,10 +20,10 @@ const selectInvisibleParent = (node: Container) => {
 		} else if (o.alpha < 0.01) {
 			game.editor.selection.select(o);
 			game.editor.ui.propsEditor.selectField('alpha', true);
-		} else if (o.scale.x < 0.001) {
+		} else if (Math.abs(o.scale.x) < 0.001) {
 			game.editor.selection.select(o);
 			game.editor.ui.propsEditor.selectField('scale.x', true);
-		} else if (o.scale.y < 0.001) {
+		} else if (Math.abs(o.scale.y) < 0.001) {
 			game.editor.selection.select(o);
 			game.editor.ui.propsEditor.selectField('scale.y', true);
 		} else if (o.__hideInEditor) {

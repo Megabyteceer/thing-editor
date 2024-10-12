@@ -44,7 +44,7 @@ export namespace editorUtils {
 		if (!o) {
 			return o;
 		}
-		if (!o.visible || o.alpha < 0.01 || o.scale.x < 0.001 || o.scale.y < 0.001 || (game.__EDITOR_mode && o.__hideInEditor) || (o instanceof Sprite && o.image === 'EMPTY' && o === game.editor.selection[0])) {
+		if (!o.visible || o.alpha < 0.01 || Math.abs(o.scale.x) < 0.001 || Math.abs(o.scale.y) < 0.001 || (game.__EDITOR_mode && o.__hideInEditor) || (o instanceof Sprite && o.image === 'EMPTY' && o === game.editor.selection[0])) {
 			return o;
 		}
 		if (o.parent === game.stage) {
