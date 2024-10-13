@@ -367,7 +367,7 @@ Text.prototype.onRemove = function () {
 };
 
 Text.prototype.setAlign = function (align: TextStyleAlign) {
-	this.style.align = align;
+	(this as any)['style.align'] = align;
 };
 
 function checkAlignBlur(text: Text) {
