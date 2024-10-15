@@ -167,7 +167,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 				hideDragTarget();
 				highlightedDragItem = treeItem;
 				if (Math.abs(pointerToItemRelationY) < 4 || isWrap) {
-					if (!dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length) { // can expand tree item
+					if (!dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length && !ev.ctrlKey) { // can expand tree item
 						if (dragTargetExpandTimeOutTarget !== dragTargetNode) {
 							clearDragExpandTimeOut();
 							dragTargetExpandTimeOutTarget = dragTargetNode;
