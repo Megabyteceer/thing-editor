@@ -409,11 +409,11 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		}
 
 
-		if (parent.hasOwnProperty('parent') && !addedNames.hasOwnProperty('parent')) {
+		if (Object.prototype.hasOwnProperty.call(parent, 'parent') && !addedNames.hasOwnProperty('parent')) {
 			addSceneNodeIfValid(parent.parent, 'parent');
 		}
 
-		if (parent.hasOwnProperty('children') && Array.isArray(parent.children)) {
+		if (Object.prototype.hasOwnProperty.call(parent, 'children') && Array.isArray(parent.children)) {
 			for (let child of parent.children) {
 				if (child.name) {
 					addSceneNodeIfValid(child, child.name, true);

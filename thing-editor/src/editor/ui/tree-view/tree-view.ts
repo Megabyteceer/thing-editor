@@ -279,7 +279,6 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			pointerToItemRelationY = ev.clientY - (itemBox.y + itemBox.height / 2);
 			dragTargetNode = game.currentContainer;
 			const overedId = parseInt(treeItem.innerText.split(/#|\n/)[1]);
-			console.log(overedId);
 			game.currentContainer.forAllChildren((c: Container) => {
 				if (overedId === c.___id) {
 					dragTargetNode = c;
