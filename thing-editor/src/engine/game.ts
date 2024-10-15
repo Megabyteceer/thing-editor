@@ -352,9 +352,13 @@ class Game {
 				w = size.w;
 				h = size.h;
 			} else {
-				w = this.__fixedViewport.w;
-				h = this.__fixedViewport.h;
-
+				if (game.isPortrait) {
+					w = this.__fixedViewport.h;
+					h = this.__fixedViewport.w;
+				} else {
+					w = this.__fixedViewport.w;
+					h = this.__fixedViewport.h;
+				}
 			}
 		}
 
