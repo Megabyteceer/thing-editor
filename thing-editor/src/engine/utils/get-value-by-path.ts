@@ -44,6 +44,11 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 	/// #endif
 
 	while (i < path.length) {
+		/// #if EDITOR
+		if (c instanceof Container) {
+			latestDetectedSceneNode = c;
+		}
+		/// #endif
 		let n = path[i];
 		fOwner = c;
 		if (typeof n === 'string') {
@@ -63,11 +68,6 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 		if (!c) {
 			return c;
 		}
-		/// #if EDITOR
-		if (c instanceof Container) {
-			latestDetectedSceneNode = c;
-		}
-		/// #endif
 
 		i++;
 	}
