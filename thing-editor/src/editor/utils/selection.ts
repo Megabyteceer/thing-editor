@@ -50,14 +50,14 @@ let IS_SELECTION_LOADING_TIME = false;
 
 export default class Selection extends Array<Container> {
 
-	select(object: Container, add?: boolean, onTreeViewUpdated?:() => void) {
+	select(object: Container, add?: boolean, onTreeViewUpdated?:() => void, scrollInView = false) {
 		if (!add) {
 			this.clearSelection();
 		}
 		if (object.__nodeExtendData.isSelected) {
 			this.remove(object);
 		} else {
-			this.add(object);
+			this.add(object, scrollInView);
 		}
 		filterPhase = false;
 		this.sortSelectedNodes();
@@ -69,7 +69,7 @@ export default class Selection extends Array<Container> {
 		this.sort(sortByDeepness);
 	}
 
-	add(o: Container) {
+	add(o: Container, scrollInView = false) {
 		let nodePath = getPathOfNode(o);
 		let hidingParent = getParentWhichHideChildren(o, true);
 		if (hidingParent && (hidingParent !== o)) {
@@ -108,9 +108,9 @@ export default class Selection extends Array<Container> {
 		o.addFilter(selectionFilter);
 		this.push(o);
 		o.__onSelect();
-
-		game.editor.ui.viewport.scrollInToScreen(o);
-
+		if (scrollInView) {
+			game.editor.ui.viewport.scrollInToScreen(o);
+		}
 		if (!IS_SELECTION_LOADING_TIME) {
 			game.editor.history.scheduleSelectionSave();
 		}

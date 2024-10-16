@@ -58,12 +58,12 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 			while (from <= to) {
 				let n = p.getChildAt(from) as Container;
 				if (n !== lastClickedItem.props.node) {
-					game.editor.selection.select(n, true);
+					game.editor.selection.select(n, true, undefined, true);
 				}
 				from++;
 			}
 		} else {
-			game.editor.selection.select(this.props.node, ev.ctrlKey);
+			game.editor.selection.select(this.props.node, ev.ctrlKey, undefined, true);
 		}
 
 		if (extendData.isSelected) {
