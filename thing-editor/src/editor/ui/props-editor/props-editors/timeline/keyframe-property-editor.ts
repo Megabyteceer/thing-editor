@@ -315,7 +315,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 			extendEditor
 		);
 
-		return R.div({ className: game.__EDITOR_mode ? 'bottom-panel' : 'bottom-panel disabled' },
+		return R.div({ className: 'bottom-panel'},
 			body
 		);
 	}
