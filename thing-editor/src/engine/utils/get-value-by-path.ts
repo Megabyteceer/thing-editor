@@ -58,11 +58,7 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 				return 'getChildByName for not a Container.';
 			}
 			/// #endif
-			c = c.getChildByName(n.c
-				/// #if EDITOR
-				, this_
-				/// #endif
-			);
+			c = c.getChildByName(n.c);
 		}
 		if (!c) {
 			return c;

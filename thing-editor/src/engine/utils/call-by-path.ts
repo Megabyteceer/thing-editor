@@ -34,11 +34,7 @@ const callByPath = (callbackPath: CallBackPath, this_: Container): any => {
 			//assert(n.indexOf(',') < 0, "Comma ',' character detected in field name in callback`s path: " + callbackPath + '". Use "`" character to separate callback\s parameter block.', 10025); /// 99999 remove error docs 10025
 			c = c[n];
 		} else {
-			c = c.getChildByName(n.c
-				/// #if EDITOR
-				, this_
-				/// #endif
-			);
+			c = c.getChildByName(n.c);
 		}
 
 		assert(c, 'Can\'t find ' + ((typeof n === 'string') ? 'property \'' + n : 'child \'#' + n.c) + '\' in callback`s path: ' + callbackPath, 10025);
