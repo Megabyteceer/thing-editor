@@ -76,7 +76,7 @@ export default class ClickOutsideTrigger extends Container {
 	}
 
 	onThisDown(ev: PointerEvent) {
-		if (ev.buttons !== 4) {
+		if (ev.buttons !== 4 && (!ev.target || (ev.target as Container).isCanBePressed)) {
 			this.thisDownTime = game.time;
 		}
 	}
@@ -106,7 +106,7 @@ export default class ClickOutsideTrigger extends Container {
 				if (exceptContainer) {
 					let p = exceptContainer;
 					while (p) {
-						if (o._insideContainers.indexOf(p) >= 0) {
+						if (o._insideContainers.includes(p) && p.isCanBePressed) {
 							continue loop1;
 						}
 						p = p.parent;

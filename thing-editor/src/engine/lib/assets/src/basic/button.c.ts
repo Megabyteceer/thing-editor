@@ -16,7 +16,7 @@ export default class Button extends DSprite {
 
 	onClickCallback?: () => void;
 
-	@editable({ name: 'interactive', default: true, override: true })
+	@editable({ name: 'interactive', default: true, override: true, disabled: () => 'Please use "enabled" property instead.' })
 
 	@editable({ type: 'image' })
 	hoverImage = null;
@@ -27,6 +27,9 @@ export default class Button extends DSprite {
 
 	@editable({ visible: (o) => { return !o.disabledImage; }, min: 0, max: 1, step: 0.01, default: 0.76 })
 	disabledAlpha = 0;
+
+	@editable({ important: true })
+	enabled = true;
 
 	@editable({ type: 'callback', important: true })
 	onClick: string[] = [];
@@ -64,11 +67,6 @@ export default class Button extends DSprite {
 
 	pointerStartPos?: { x: number; y: number };
 
-	constructor() {
-		super();
-		this.cursor = 'pointer';
-	}
-
 	init() {
 		super.init();
 
@@ -83,7 +81,7 @@ export default class Button extends DSprite {
 
 		this.initialScale = this.scale.x;
 		this.initialImage = this.image;
-		if (this.interactive) {
+		if (this.enabled) {
 			this.enable();
 		} else {
 			this.disable();
@@ -115,7 +113,7 @@ export default class Button extends DSprite {
 			downedByKeycodeButton = undefined;
 		}
 		this.initialImage = null;
-		this.interactive = false;
+		this.enabled = false;
 
 		if (this.hasOwnProperty('onClickCallback')) {
 			delete (this.onClickCallback);
@@ -132,7 +130,8 @@ export default class Button extends DSprite {
 				this.alpha = this.disabledAlpha;
 			}
 		}
-		this.interactive = false;
+		this.enabled = false;
+		this.cursor = 'default';
 	}
 
 	enable() {
@@ -143,7 +142,8 @@ export default class Button extends DSprite {
 				this.alpha = 1;
 			}
 		}
-		this.interactive = true;
+		this.enabled = true;
+		this.cursor = 'pointer';
 	}
 
 	static clickedButton: Button | null = null;
@@ -162,6 +162,13 @@ export default class Button extends DSprite {
 		if (this.isCanBePressed) {
 			this._executeOnClick('invoke');
 		}
+	}
+
+	//@ts-ignore
+	get isCanBePressed() {
+		if (!this.enabled) return false;
+		//@ts-ignore
+		return super.isCanBePressed;
 	}
 
 	static globalOnClick?: (b: Button, source?: string) => void;
@@ -292,23 +299,24 @@ export default class Button extends DSprite {
 	}
 
 	onOver() {
-
-		if (Button.overedButton !== this) {
-			if (Button.overedButton) {
-				Button.overedButton.onOut();
-			}
-			Button.overedButton = this;
-			if (this.hoverImage) {
-				this.image = this.hoverImage;
-			} else {
-				this.scale.x =
+		if (this.enabled) {
+			if (Button.overedButton !== this) {
+				if (Button.overedButton) {
+					Button.overedButton.onOut();
+				}
+				Button.overedButton = this;
+				if (this.hoverImage) {
+					this.image = this.hoverImage;
+				} else {
+					this.scale.x =
 					this.scale.y = this.initialScale * 1.05;
-			}
+				}
 
-			if (this.sndOver) {
-				Sound.play(this.sndOver);
+				if (this.sndOver) {
+					Sound.play(this.sndOver);
+				}
+				this.gotoLabelRecursive('btn-over');
 			}
-			this.gotoLabelRecursive('btn-over');
 		}
 	}
 
