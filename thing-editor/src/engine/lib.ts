@@ -549,15 +549,15 @@ export default class Lib
 		}
 
 		for (const textureName of data.images) {
-			Lib.addTexture(unHashFileName(textureName, assetsRoot), assetsRoot + textureName);
+			Lib.addTexture(Lib.unHashFileName(textureName, assetsRoot), assetsRoot + textureName);
 		}
 
 		for (const soundEntry of data.sounds) {
-			Lib.addSound(unHashFileName(soundEntry[0], assetsRoot), assetsRoot + soundEntry[0], soundEntry[1]);
+			Lib.addSound(Lib.unHashFileName(soundEntry[0], assetsRoot), assetsRoot + soundEntry[0], soundEntry[1]);
 		}
 		if (data.resources) {
 			for (const atlasName of data.resources) {
-				Lib.addAtlas(unHashFileName(atlasName, assetsRoot), assetsRoot + atlasName + '.json');
+				Lib.addAtlas(Lib.unHashFileName(atlasName, assetsRoot), assetsRoot + atlasName + '.json');
 			}
 		}
 		if (data.xmls) {
@@ -567,9 +567,19 @@ export default class Lib
 		}
 		if (data.fonts) {
 			for (const fontName of data.fonts) {
-				Lib.fonts[unHashFileName(fontName, assetsRoot)] = assetsRoot + fontName;
+				Lib.fonts[Lib.unHashFileName(fontName, assetsRoot)] = assetsRoot + fontName;
 			}
 		}
+	}
+
+	static unHashFileName (fileName: string, assetsRoot: string = Lib.ASSETS_ROOT): string {
+		const n = fileName.lastIndexOf('.');
+		if (n > 0) {
+			const ret = fileName.substring(0, n - 9) + fileName.substring(n);
+			unHashedFileToHashed.set(assetsRoot + ret, fileName);
+			return ret;
+		}
+		return fileName.slice(0, -9);
 	}
 
 	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
@@ -1143,18 +1153,6 @@ const __preparePrefabReference = (o: Container, prefabName: string) => {
 	}
 };
 /// #endif
-
-
-const unHashFileName = (fileName: string, assetsRoot: string): string => {
-	const n = fileName.lastIndexOf('.');
-	if (n > 0) {
-		const ret = fileName.substring(0, n - 9) + fileName.substring(n);
-		unHashedFileToHashed.set(assetsRoot + ret, fileName);
-		return ret;
-	}
-	return fileName.slice(0, -9);
-
-};
 
 /// #if DEBUG
 function __callInitIfNotCalled(node: Container) {
