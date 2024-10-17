@@ -26,13 +26,13 @@ export default class ___RectGuide extends Shape {
 
 			this.rotation = this.owner.parent.getGlobalRotation();
 			this.shapeLineColor = this.field.guideColor || 53546;
-			p.x = this.owner.x + this.rect.x;
-			p.y = this.owner.y + this.rect.y;
-			this.parent.toLocal(p, this.owner.parent, this);
+			p.x = this.rect.x;
+			p.y = this.rect.y;
+			this.parent.toLocal(p, this.owner, this);
 
 			p.x += this.rect.w;
 			p.y += this.rect.h;
-			this.toLocal(p, this.owner.parent, p2);
+			this.toLocal(p, this.owner, p2);
 			this.width = p2.x;
 			this.height = p2.y;
 			this.shapeLineWidth = Math.ceil(game.editor.ui.viewport.viewportScale);
