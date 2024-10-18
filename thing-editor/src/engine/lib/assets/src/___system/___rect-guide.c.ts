@@ -26,8 +26,8 @@ export default class ___RectGuide extends Shape {
 
 			this.rotation = this.owner.parent.getGlobalRotation();
 			this.shapeLineColor = this.field.guideColor || 53546;
-			p.x = this.rect.x;
-			p.y = this.rect.y;
+			p.x = this.rect.x + this.owner.pivot.x;
+			p.y = this.rect.y + this.owner.pivot.y;
 			this.parent.toLocal(p, this.owner, this);
 
 			p.x += this.rect.w;
@@ -44,7 +44,8 @@ export default class ___RectGuide extends Shape {
 	isShouldBeRemoved() {
 		if (!this.owner.__nodeExtendData || (this.owner.__nodeExtendData as KeyedObject)[this.rectKey] !== this) {
 			return true;
-		} else if (!this.owner.__nodeExtendData.isSelected || (this.owner as KeyedObject)[this.field.name] !== this.rect) {
+		}
+		if (!this.owner.__nodeExtendData.isSelected || (this.owner as KeyedObject)[this.field.name] !== this.rect) {
 			delete (this.owner.__nodeExtendData as KeyedObject)[this.rectKey];
 			return true;
 		}
@@ -56,6 +57,7 @@ export default class ___RectGuide extends Shape {
 			this.__nodeExtendData.constructorCalled = false;
 			this.remove();
 		} else {
+			this.visible = (!this.field.visible) || this.field.visible(this.owner);
 			super.update();
 		}
 	}
