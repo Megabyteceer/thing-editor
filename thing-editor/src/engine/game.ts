@@ -420,12 +420,12 @@ class Game {
 
 		if (game.isPortrait) {
 			/** game screen current width */
-			this.W = this.projectDesc.portraitWidth || 408;
+			this.W = this.projectDesc.portraitWidth;
 			/** game screen current height */
-			this.H = this.projectDesc.portraitHeight || 720;
+			this.H = this.projectDesc.portraitHeight;
 		} else {
-			this.W = this.projectDesc.width || 1280;
-			this.H = this.projectDesc.height || 720;
+			this.W = this.projectDesc.width;
+			this.H = this.projectDesc.height;
 		}
 
 
