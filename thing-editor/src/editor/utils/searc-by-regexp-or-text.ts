@@ -12,10 +12,11 @@ function searchByRegexpOrText(source: string, query: string) {
 			lastSearchQuery = query;
 			lastSearchRegExp = regExp;
 		}
-		return source.search(regExp) >= 0;
-	} catch (_er) {
-		return source.toLowerCase().indexOf(query.toLowerCase()) >= 0;
-	}
+		if (source.search(regExp) >= 0) {
+			return true;
+		}
+	} catch (_er) {}
+	return source.toLowerCase().indexOf(query.toLowerCase()) >= 0;
 }
 
 export { searchByRegexpOrText };

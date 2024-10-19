@@ -347,7 +347,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				if (asset.assetType === AssetType.PREFAB) {
 					let prefabAsset = (asset as FileDescPrefab).asset;
 					while (prefabAsset) {
-						const desc = (asset as FileDescPrefab).asset.p.__description;
+						const desc = prefabAsset.p.__description;
 						if (desc) {
 							if (searchByRegexpOrText(desc, this.state.search)) {
 								return true;
@@ -358,6 +358,10 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 						} else {
 							break;
 						}
+					}
+				} else if (asset.assetType === AssetType.CLASS) {
+					if (searchByRegexpOrText((asset as FileDescClass).asset.__className, this.state.search)) {
+						return true;
 					}
 				}
 
