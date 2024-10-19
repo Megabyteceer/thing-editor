@@ -1,6 +1,6 @@
 import type { ComponentChild } from 'preact';
 import { h } from 'preact';
-import type { FileDesc, FileDescClass } from 'thing-editor/src/editor/fs';
+import type { FileDesc, FileDescClass, FileDescPrefab } from 'thing-editor/src/editor/fs';
 import fs, { AllAssetsTypes, AssetType } from 'thing-editor/src/editor/fs';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import assetItemRendererClass from 'thing-editor/src/editor/ui/assets-view/asset-view-class';
@@ -261,7 +261,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	}
 
 	renderWindowContent(): ComponentChild {
-		let files = fs.getAssetsList();
+		let files = fs.getAssetsList() as FileDesc[];
 		let menu;
 
 		if (!this.props.hideMenu) {
@@ -341,6 +341,23 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				} else if (asset.assetType === AssetType.PREFAB) {
 					if (asset.assetName === PrefabEditor.currentPrefabName) {
 						return true;
+					}
+				}
+
+				if (asset.assetType === AssetType.PREFAB) {
+					let prefabAsset = (asset as FileDescPrefab).asset;
+					while (prefabAsset) {
+						const desc = (asset as FileDescPrefab).asset.p.__description;
+						if (desc) {
+							if (searchByRegexpOrText(desc, this.state.search)) {
+								return true;
+							}
+						}
+						if (prefabAsset.r) {
+							prefabAsset = Lib.prefabs[prefabAsset.r];
+						} else {
+							break;
+						}
 					}
 				}
 

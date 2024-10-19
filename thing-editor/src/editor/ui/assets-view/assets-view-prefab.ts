@@ -119,6 +119,10 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 };
 
 const assetItemRendererPrefab = (file: FileDescPrefab) => {
+	let desc;
+	if (file.asset.p.__description) {
+		desc = R.div(descriptionProps, file.asset.p.__description.split('\n')[0]);
+	}
 	const Class = getSerializedObjectClass(file.asset);
 	return R.div(
 		{
@@ -162,8 +166,10 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		},
 		libInfo(file),
 		R.classIcon(Class),
-		R.span(assetsItemNameProps, file.assetName));
+		R.span(assetsItemNameProps, file.assetName),
+		desc
+	);
 };
-
+const descriptionProps = { className: 'tree-desc' };
 
 export default assetItemRendererPrefab;
