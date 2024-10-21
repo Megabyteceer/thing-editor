@@ -22,7 +22,7 @@ const libInfo = (file: FileDesc): ComponentChildren => {
 				className: 'lib-info',
 				title: libInfo.name
 			},
-				icon
+			icon
 			);
 		}
 		return file.libInfoCache;

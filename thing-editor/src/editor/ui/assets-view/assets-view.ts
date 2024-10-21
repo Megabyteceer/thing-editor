@@ -21,6 +21,7 @@ import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view
 import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/searc-by-regexp-or-text';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import { libIcon } from '../../utils/lib-info';
 import assetItemRendererL10n from './assets-view-l10n';
 
 const SETTINGS_KEY = '__EDITOR_assetsView_list';
@@ -86,7 +87,9 @@ interface AssetsViewProps extends WindowProps {
 
 interface AssetsViewState extends WindowState {
 	filter: KeyedMap<boolean>;
+	filterLibs?: KeyedMap<boolean>;
 	filtersActive?: boolean;
+	filtersLibActive?: boolean;
 	search: string;
 }
 
@@ -127,7 +130,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		super(props);
 
 		if (!this.state.filter) {
-			this.setState({ filter: {} });
+			this.setState({ filter: {}, filterLibs: {} });
 		}
 
 		if (this.props.hideMenu) {
@@ -265,12 +268,33 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		let menu;
 
 		if (!this.props.hideMenu) {
-			menu = AllAssetsTypes.map((assetType) => {
-				return R.span({ key: 'Filters/' + assetType }, R.btn(assetTypesIcons.get(assetType), () => {
+			menu = [(R.span({ key: 'Libs/' }, R.btn('Proj', () => {
+				if (!this.state.filterLibs) {
+					//@ts-ignore
+					this.state.filterLibs = {};
+				}
+				this.state.filterLibs!['project'] = !this.state.filterLibs!['project'];
+				this.setState({ filtersLibActive: Object.values(this.state.filterLibs!).some(v => v) });
+			}, 'Project assets', (this.state.filterLibs?.project) ? 'toggled-button' : undefined)))];
+
+			for (const lib of game.editor.currentProjectLibs) {
+				menu.push(R.span({ key: 'Libs/' }, R.btn(libIcon(lib), () => {
+					if (!this.state.filterLibs) {
+						//@ts-ignore
+						this.state.filterLibs = {};
+					}
+					this.state.filterLibs![lib.name] = !this.state.filterLibs![lib.name];
+					this.setState({ filtersLibActive: Object.values(this.state.filterLibs!).some(v => v) });
+				}, lib.name, (this.state.filterLibs?.[lib.name]) ? 'toggled-button' : undefined))
+				);
+			}
+
+			AllAssetsTypes.forEach((assetType) => {
+				menu.push(R.span({ key: 'Filters/' + assetType }, R.btn(assetTypesIcons.get(assetType), () => {
 					this.state.filter[assetType] = !this.state.filter[assetType];
 					this.setState({ filtersActive: Object.values(this.state.filter).some(v => v) });
-				}, undefined, this.state.filter[assetType] ? 'toggled-button' : undefined)
-				);
+				}, assetType, this.state.filter[assetType] ? 'toggled-button' : undefined)
+				));
 			});
 
 			menu.push(R.span({ key: 'Settings/rename' }, R.btn('...', () => {
@@ -316,17 +340,22 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			if (asset.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 				return false;
 			}
-			if (!this.state.filtersActive) {
-				return true;
+			if (this.state.filtersActive) {
+				if (!this.state.filter[asset.assetType]) {
+					return false;
+				}
 			}
-
+			if (this.state.filtersLibActive) {
+				if (!this.state.filterLibs![asset.lib?.name || 'project']) {
+					return false;
+				}
+			}
 			if (!showSystemAssets) {
 				if (asset.assetName.startsWith('___') || asset.assetName.indexOf('/___') > 0) {
 					return false;
 				}
 			}
-
-			return this.state.filter[asset.assetType];
+			return true;
 		});
 
 		let clearSearchBtn;
