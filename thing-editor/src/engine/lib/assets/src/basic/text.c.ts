@@ -56,17 +56,15 @@ Object.defineProperties(Text.prototype, {
 			return (this as any)._translatableText;
 		},
 		set: function (this: Text, val: string) {
-			if ((this as any)._translatableText !== val) {
-				if (val) {
-					/// #if EDITOR
-					if (!L.has(val)) {
-						game.editor.ui.status.warn('translatableText refers to not existing key: "' + val + '"', 32032, this, 'translatableText');
-					}
-					/// #endif
-					this.text = L(val);
+			if (val) {
+				/// #if EDITOR
+				if (!L.has(val)) {
+					game.editor.ui.status.warn('translatableText refers to not existing key: "' + val + '"', 32032, this, 'translatableText');
 				}
-				(this as any)._translatableText = val;
+				/// #endif
+				this.text = L(val);
 			}
+			(this as any)._translatableText = val;
 		}
 	},
 	image: { //remove sprite texture property
