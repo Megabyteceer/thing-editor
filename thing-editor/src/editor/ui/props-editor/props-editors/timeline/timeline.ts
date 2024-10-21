@@ -204,7 +204,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				for (let labelName in data.labels) {
 					let labelTime = data.labels[labelName];
 					if (!tl.l[labelName]) {
-						let l = { t: labelTime } as TimelineLabelData;
+						let l = { t: labelTime, ___name: labelName } as TimelineLabelData;
 						tl.l[labelName] = l;
 					} else {
 						game.editor.ui.status.warn('Could not paste label "' + labelName + '". Already exists.', 99999, o, 'timeline');
