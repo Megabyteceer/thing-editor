@@ -290,11 +290,10 @@ export default class Button extends DSprite {
 				this.scale.x =
 					this.scale.y = this.initialScale * ((this.isOvered && !this.hoverImage) ? 1.05 : 1);
 			}
-			Button.downedButton = null;
-
 			if (ev && this.scrollable && Math.hypot(game.mouse.x - this.pointerStartPos!.x, game.mouse.y - this.pointerStartPos!.y) <= SCROLL_THRESHOLD) {
 				this._executeOnClick(src);
 			}
+			Button.downedButton = null;
 		}
 	}
 
