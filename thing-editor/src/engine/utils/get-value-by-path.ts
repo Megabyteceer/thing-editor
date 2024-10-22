@@ -44,6 +44,11 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 	/// #endif
 
 	while (i < path.length) {
+		/// #if EDITOR
+		if (c instanceof Container) {
+			latestDetectedSceneNode = c;
+		}
+		/// #endif
 		let n = path[i];
 		fOwner = c;
 		if (typeof n === 'string') {
@@ -58,20 +63,11 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 				return 'getChildByName for not a Container.';
 			}
 			/// #endif
-			c = c.getChildByName(n.c
-				/// #if EDITOR
-				, this_
-				/// #endif
-			);
+			c = c.getChildByName(n.c);
 		}
 		if (!c) {
 			return c;
 		}
-		/// #if EDITOR
-		if (c instanceof Container) {
-			latestDetectedSceneNode = c;
-		}
-		/// #endif
 
 		i++;
 	}

@@ -1,4 +1,4 @@
-import { type Container, type Point } from 'pixi.js';
+import { type Container } from 'pixi.js';
 import type { ClassAttributes, ComponentChild } from 'preact';
 import { h } from 'preact';
 import ClassesLoader from 'thing-editor/src/editor/classes-loader';
@@ -209,21 +209,18 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 	}
 
 	scrollInToScreen(node: Container) {
-		let b = node.getBounds();
-		if (b.width === 0 && b.height === 0) {
-			node.getGlobalPosition(b as any as Point);
+		let b = node.getGlobalPosition();
+
+		if (b.x > game.W) {
+			game.stage.x -= b.x - game.W / 2;
+		} else if (b.x < 0) {
+			game.stage.x += -b.x + game.W / 2;
 		}
 
-		if (b.left < 0) {
-			game.stage.x -= b.left;
-		} else if (b.right > game.W) {
-			game.stage.x -= b.right - game.W;
-		}
-
-		if (b.top < 0) {
-			game.stage.y -= b.top;
-		} else if (b.bottom > game.H) {
-			game.stage.y -= b.bottom - game.H;
+		if (b.y > game.H) {
+			game.stage.y -= b.y - game.H / 2;
+		} else if (b.y < 0) {
+			game.stage.y += -b.y + game.H / 2;
 		}
 	}
 
@@ -274,7 +271,15 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					R.div(prefabTitleProps, 'Prefab: ', R.br(), R.b(prefabLabelProps, this.state.prefabMode)),
 					R.hr(),
 					fileLibraryName ? libInfo(prefabFile) : undefined,
-					R.btn(R.icon('accept'), () => { PrefabEditor.acceptPrefabEdition(true); }, 'Accept prefab changes', 'main-btn', { key: 'Enter' }),
+					R.btn(R.icon('accept'), (ev) => {
+						if (ev instanceof KeyboardEvent) {
+							if ((ev.target as HTMLInputElement)?.tagName === 'INPUT' || (ev.target as HTMLInputElement)?.tagName === 'TEXTAREA') {
+								(ev.target as HTMLInputElement).blur();
+								return;
+							}
+						}
+						PrefabEditor.acceptPrefabEdition(true);
+					}, 'Accept prefab changes', 'main-btn', { key: 'Enter' }),
 					R.btn(R.icon('reject'), () => {
 						if (game.editor.isCurrentContainerModified) {
 							game.editor.ui.modal.showEditorQuestion(

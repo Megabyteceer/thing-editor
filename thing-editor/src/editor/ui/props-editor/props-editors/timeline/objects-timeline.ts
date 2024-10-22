@@ -8,7 +8,7 @@ import TimelineLineView from 'thing-editor/src/editor/ui/props-editor/props-edit
 import StatusBar from 'thing-editor/src/editor/ui/status-bar';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
-import type MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import type { TimelineFieldData, TimelineLabelData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
 const objectsTimelineProps = { className: 'objects-timeline' };
@@ -29,18 +29,21 @@ export default class ObjectsTimelineView extends Component<ObjectsTimelineViewPr
 	}
 
 	renderTimeLabel(labelName: string, labelsNamesList: string[]) {
+		const label = this.props.node._timelineData.l[labelName];
+		if (!label.___key) {
+			label.___key = MovieClip.__generateKeyframeId();
+		}
 		return h(TimelineLabelView, {
-			key: labelName,
+			key: label.___key,
 			owner: this,
-			label: this.props.node._timelineData.l[labelName],
-			labelName,
+			label: label,
 			labelsNamesList
 		});
 	}
 
 	onLabelChange(label: TimelineLabelData) {
 		let o = this.props.node;
-		TimelineLabelView.renormalizeLabel(label, this.props.node);
+		TimelineLabelView.reNormalizeLabel(label, this.props.node);
 		Timeline.allFieldDataChanged(o);
 		this.forceUpdate();
 	}
@@ -64,6 +67,23 @@ export default class ObjectsTimelineView extends Component<ObjectsTimelineViewPr
 		this.props.node.__invalidateSerializeCache();
 		game.editor.sceneModified();
 		this.forceUpdate();
+	}
+
+	cloneLabel(newName:string, oldName:string) {
+		const oldLabel = this.props.node._timelineData.l[oldName];
+		this.addLabel(newName, oldLabel.t);
+		const newLabel = this.props.node._timelineData.l[newName];
+		this.props.node._timelineData.l[oldName] = newLabel;
+		this.props.node._timelineData.l[newName] = oldLabel;
+		newLabel.___name = oldName;
+		oldLabel.___name = newName;
+	}
+
+	addLabel(name:string, time:number) {
+		let label: TimelineLabelData = { t: time, ___name: name } as TimelineLabelData;
+		this.props.node._timelineData.l[name] = label;
+		TimelineLabelView.reNormalizeLabel(label, this.props.node);
+		this.onLabelChange(label);
 	}
 
 	render() {
@@ -97,10 +117,7 @@ export default class ObjectsTimelineView extends Component<ObjectsTimelineViewPr
 
 					TimelineLabelView.askForLabelName(labelsNames, 'Create new label:').then((name) => {
 						if (name) {
-							let label: TimelineLabelData = { t: time } as TimelineLabelData;
-							tl.l[name] = label;
-							TimelineLabelView.renormalizeLabel(label, this.props.node);
-							this.onLabelChange(label);
+							this.addLabel(name, time);
 						}
 					});
 				} else if (ev.ctrlKey) {

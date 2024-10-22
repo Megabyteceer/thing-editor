@@ -1,6 +1,7 @@
 import { Container, Point } from 'pixi.js';
 import fs from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
 import game from 'thing-editor/src/engine/game';
 
 const p0 = new Point(0, 0);
@@ -35,7 +36,8 @@ export default class Resizer extends Container {
 				this.parent.toLocal(p, game.stage, p, false);
 				/// #if EDITOR
 				if (!isNaN(p.x)) {
-				/// #endif
+					roundUpPoint(p);
+					/// #endif
 					if (this.relativeX) {
 						this.x = p.x;
 					}

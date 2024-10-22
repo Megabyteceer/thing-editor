@@ -22,7 +22,6 @@ const labelStartMarkerProps = {
 
 interface TimelineLabelViewProps extends ClassAttributes<TimelineLabelView> {
 	label: TimelineLabelData;
-	labelName: string;
 	owner: ObjectsTimelineView;
 	labelsNamesList: string[];
 }
@@ -80,18 +79,20 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		}
 	}
 
+	clone(newName:string) {
+		this.props.owner.cloneLabel(newName, this.props.label.___name);
+	}
+
 	onChanged() {
 		this.props.owner.onLabelChange(this.props.label);
 	}
 
 	deleteLabel() {
-		let name = this.props.labelName;
-		game.editor.ui.modal.showEditorQuestion('Label removing', 'Delete Label "' + name + '"?', () => {
-			Timeline.unselectComponent(this);
-			let tl = this.props.owner.props.node._timelineData;
-			delete tl.l[name];
-			this.onChanged();
-		}, R.span(null, R.icon('delete'), ' Delete'));
+		let name = this.props.label.___name;
+		Timeline.unselectComponent(this);
+		let tl = this.props.owner.props.node._timelineData;
+		delete tl.l[name];
+		this.onChanged();
 	}
 
 	onLabelMouseDown(ev: PointerEvent) {
@@ -103,17 +104,17 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		}
 	}
 
-	static renormalizeLabel(label: TimelineLabelData, movieClip: MovieClip) { //re find keyframes for modified label
+	static reNormalizeLabel(label: TimelineLabelData, movieClip: MovieClip) { //re find keyframes for modified label
 		label.n = movieClip._timelineData.f.map((fieldTimeline) => {
 			return MovieClip._findNextKeyframe(fieldTimeline.t, label.t - 1);
 		});
 		movieClip.__invalidateSerializeCache();
 	}
 
-	static renormalizeAllLabels(movieClip: MovieClip) {
+	static reNormalizeAllLabels(movieClip: MovieClip) {
 		for (let key in movieClip._timelineData.l) {
 			if (!movieClip._timelineData.l.hasOwnProperty(key)) continue;
-			TimelineLabelView.renormalizeLabel(movieClip._timelineData.l[key], movieClip);
+			TimelineLabelView.reNormalizeLabel(movieClip._timelineData.l[key], movieClip);
 		}
 	}
 
@@ -131,11 +132,12 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 	onDoubleClick(ev: PointerEvent) { //rename label by double click
 		let tl = this.props.owner.props.node._timelineData;
 		let label = this.props.label;
-		let name = this.props.labelName;
+		let name = label.___name;
 
 		TimelineLabelView.askForLabelName(this.props.labelsNamesList, 'Rename label', name, name).then((enteredName) => {
 			if (enteredName && (name !== enteredName)) {
 				tl.l[enteredName] = label;
+				label.___name = enteredName;
 				delete tl.l[name];
 				this.onChanged();
 			}
@@ -151,7 +153,7 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		}
 
 		let label = this.props.label;
-		let name = this.props.labelName;
+		let name = this.props.label.___name;
 
 		return R.div({
 			className, id: 'timeline-label-' + name.replace('.', '-').replace('#', '-'), style: { left: label.t * this.props.owner.props.widthZoom },

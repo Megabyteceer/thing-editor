@@ -157,7 +157,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 				fieldsByName[fieldName].push(k);
 			} else if (c instanceof TimelineLabelView) {
-				labels[c.props.labelName] = c.props.label.t;
+				labels[c.props.label.___name] = c.props.label.t;
 			}
 		});
 		for (let name in fieldsByName) {
@@ -204,7 +204,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 				for (let labelName in data.labels) {
 					let labelTime = data.labels[labelName];
 					if (!tl.l[labelName]) {
-						let l = { t: labelTime } as TimelineLabelData;
+						let l = { t: labelTime, ___name: labelName } as TimelineLabelData;
 						tl.l[labelName] = l;
 					} else {
 						game.editor.ui.status.warn('Could not paste label "' + labelName + '". Already exists.', 99999, o, 'timeline');
@@ -220,7 +220,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 						allKeyframesToSelect.push(k as TimelineKeyFrame);
 					}
 				}
-				TimelineLabelView.renormalizeAllLabels(o);
+				TimelineLabelView.reNormalizeAllLabels(o);
 				Timeline.allFieldDataChanged(o);
 			}
 			timelineInstance.refresh(() => {
@@ -674,7 +674,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 
 	static _invalidateNodeCache(node: MovieClip) {
 		node.__invalidateSerializeCache();
-		TimelineLabelView.renormalizeAllLabels(node);
+		TimelineLabelView.reNormalizeAllLabels(node);
 		game.editor.sceneModified();
 	}
 
@@ -1025,6 +1025,17 @@ function cloneSelectedKeyframes() {
 	for (let c of selectedComponents) {
 		if (c instanceof TimelineKeyframeView) {
 			c.clone();
+		} else if (c instanceof TimelineLabelView) {
+			let newName!:string;
+			if (/\d/.test(c.props.label.___name)) {
+				newName = increaseNumberInName(c.props.label.___name)!;
+			} else {
+				newName = c.props.label.___name + '-2';
+			}
+			while (c.props.owner.props.node._timelineData.l[newName]) {
+				newName = increaseNumberInName(newName)!;
+			}
+			c.clone(newName);
 		}
 	}
 }

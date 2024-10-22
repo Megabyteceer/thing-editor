@@ -84,8 +84,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		this.onKeyframeChanged();
 	}
 
-	onBouncingChange(ev: InputEvent) {
-		let val = parseFloat((ev.target as HTMLInputElement).value);
+	onBouncingChange(val:number) {
 		for (let k of this.keyframes) {
 			if (k.props.keyFrame.m > TimelineKeyFrameType.DISCRETE) {
 				k.props.keyFrame.b = -val;
@@ -316,7 +315,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 			extendEditor
 		);
 
-		return R.div({ className: game.__EDITOR_mode ? 'bottom-panel' : 'bottom-panel disabled' },
+		return R.div({ className: 'bottom-panel'},
 			body
 		);
 	}

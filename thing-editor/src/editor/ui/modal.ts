@@ -105,7 +105,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		if (!element) {
 			return false;
 		}
-		if (spinnerShowCounter > 0) {
+		if (this.isSpinnerShown()) {
 			return true;
 		}
 
@@ -178,6 +178,10 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		modal = this;
 	}
 
+	isSpinnerShown() {
+		return spinnerShowCounter > 0;
+	}
+
 	showSpinner() {
 		spinnerShowCounter++;
 		if (spinnerShowCounter === 1) {
@@ -246,7 +250,6 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 			document.fullscreenElement && document.exitFullscreen();
 		} catch (_er) { /**/ }
 
-		debugger;
 		if (game.editor.buildProjectAndExit) {
 			message = preactComponentChildToString(message);
 			fs.exitWithResult(undefined, 'Build failed: ' + game.editor.buildProjectAndExit + '\n' + message + '; Error code: ' + errorCode);
@@ -265,7 +268,6 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
-		debugger;
 		game.editor.__FatalError = true;
 		this.showError(R.div(null, R.div(null, R.b(null, R.multilineText(message))), R.multilineText(additionalText)), errorCode, 'Fatal Error', true, true);
 	}

@@ -31,6 +31,8 @@ let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
+const unHashedFileToHashed: Map<string, string> = new Map();
+
 //@ts-ignore
 const _initParsers = () => {
 	const spriteSheetLoader = Assets.loader.parsers.find(p => p.name === 'spritesheetLoader');
@@ -136,8 +138,9 @@ export default class Lib
 	static scenes: KeyedMap<SerializedObject>;
 	static prefabs: KeyedMap<SerializedObject>;
 
-	private static __isPrefabPreviewLoading = 0;
+	/// #if EDITOR
 	static __outdatedReferencesDetectionDisabled = 0;
+	/// #endif
 
 	static hasPrefab(name: string) {
 		return prefabs.hasOwnProperty(name);
@@ -159,7 +162,6 @@ export default class Lib
 		Texture.removeFromCache(texture);
 		texture.destroy(true);
 	}
-
 
 	/// #if EDITOR
 	static removeAtlas(file: FileDesc) {
@@ -331,6 +333,9 @@ export default class Lib
 			textures[name] = Lib.REMOVED_TEXTURE.clone();
 		}
 		/// #endif
+		/// #if DEBUG
+		assert(textures.hasOwnProperty(name), 'wrong image name ' + name);
+		/// #endif
 
 		return textures[name];
 	}
@@ -410,7 +415,7 @@ export default class Lib
 		deserializationDeepness++;
 
 		if (src.hasOwnProperty('r')) { // prefab reference
-
+			deserializationReferencesDeepness++;
 			let replacedPrefabName: string | undefined;
 			if (!Lib.hasPrefab(src.r!)) {
 				replacedPrefabName = '___system/unknown-prefab';
@@ -430,7 +435,7 @@ export default class Lib
 				ret.__nodeExtendData.unknownPrefabProps = src.p;
 			}
 			__preparePrefabReference(ret, src.r!);
-
+			deserializationReferencesDeepness--;
 		} else { // not a prefab reference
 
 
@@ -481,7 +486,7 @@ export default class Lib
 			let childrenData: SerializedObject[] = src[':'] as SerializedObject[];
 
 			/// #if EDITOR
-			if (!game.__EDITOR_mode) {
+			if (!game.__EDITOR_mode || deserializationReferencesDeepness) {
 				childrenData = childrenData.filter(_filterStaticTriggers);
 			}
 			/// #endif
@@ -489,7 +494,7 @@ export default class Lib
 				/// #if EDITOR
 
 				let isVisible = game.__EDITOR_mode || !childData.p.hasOwnProperty('name') || !childData.p.name || !childData.p.name.startsWith('___');
-				if (isVisible && Lib.__isPrefabPreviewLoading) {
+				if (isVisible) {
 					isVisible = !childData.p.hasOwnProperty('name') || !childData.p.name || !childData.p.name.startsWith('____'); //99999
 				}
 				if (isVisible) {
@@ -510,6 +515,15 @@ export default class Lib
 		/// #endif
 
 		return ret;
+	}
+
+	static getHashedFileName(assetName:string) {
+		/// #if EDITOR
+		return fs.getFileByAssetName(assetName, AssetType.IMAGE)?.fileName;
+		/*
+		/// #endif
+		return Lib.ASSETS_ROOT + unHashedFileToHashed.get(Lib.ASSETS_ROOT + assetName);
+		//*/
 	}
 
 	static addAssets(data: AssetsDescriptor, assetsRoot = Lib.ASSETS_ROOT) {
@@ -535,15 +549,15 @@ export default class Lib
 		}
 
 		for (const textureName of data.images) {
-			Lib.addTexture(unHashFileName(textureName, assetsRoot), assetsRoot + textureName);
+			Lib.addTexture(Lib.unHashFileName(textureName, assetsRoot), assetsRoot + textureName);
 		}
 
 		for (const soundEntry of data.sounds) {
-			Lib.addSound(unHashFileName(soundEntry[0], assetsRoot), assetsRoot + soundEntry[0], soundEntry[1]);
+			Lib.addSound(Lib.unHashFileName(soundEntry[0], assetsRoot), assetsRoot + soundEntry[0], soundEntry[1]);
 		}
 		if (data.resources) {
 			for (const atlasName of data.resources) {
-				Lib.addAtlas(unHashFileName(atlasName, assetsRoot), assetsRoot + atlasName + '.json');
+				Lib.addAtlas(Lib.unHashFileName(atlasName, assetsRoot), assetsRoot + atlasName + '.json');
 			}
 		}
 		if (data.xmls) {
@@ -553,9 +567,19 @@ export default class Lib
 		}
 		if (data.fonts) {
 			for (const fontName of data.fonts) {
-				Lib.fonts[unHashFileName(fontName, assetsRoot)] = assetsRoot + fontName;
+				Lib.fonts[Lib.unHashFileName(fontName, assetsRoot)] = assetsRoot + fontName;
 			}
 		}
+	}
+
+	static unHashFileName (fileName: string, assetsRoot: string = Lib.ASSETS_ROOT): string {
+		const n = fileName.lastIndexOf('.');
+		if (n > 0) {
+			const ret = fileName.substring(0, n - 9) + fileName.substring(n);
+			unHashedFileToHashed.set(assetsRoot + ret, fileName);
+			return ret;
+		}
+		return fileName.slice(0, -9);
 	}
 
 	static destroyObjectAndChildren(o: Container, itsRootRemoving?: boolean) {
@@ -879,6 +903,7 @@ const __isSerializableObject = (o: Container) => {
 };
 
 let deserializationDeepness = 0;
+let deserializationReferencesDeepness = 0;
 
 let constructRecursive = (o: Container) => {
 	assert(!game.__EDITOR_mode, 'initialization attempt in editing mode.');
@@ -1129,19 +1154,6 @@ const __preparePrefabReference = (o: Container, prefabName: string) => {
 };
 /// #endif
 
-const unHashedFileToHashed: Map<string, string> = new Map();
-
-const unHashFileName = (fileName: string, assetsRoot: string): string => {
-	const n = fileName.lastIndexOf('.');
-	if (n > 0) {
-		const ret = fileName.substring(0, n - 9) + fileName.substring(n);
-		unHashedFileToHashed.set(assetsRoot + ret, fileName);
-		return ret;
-	}
-	return fileName.slice(0, -9);
-
-};
-
 /// #if DEBUG
 function __callInitIfNotCalled(node: Container) {
 	assert(!game.__EDITOR_mode, 'Attempt to init object in editor mode.');
@@ -1158,6 +1170,7 @@ const processAfterDeserialization = (o: Container) => {
 
 const EDITOR_ONLY_METHODS = [
 	'__beforeDeserialization',
+	'__treeInjection',
 	'__beforeSerialization',
 	'__afterDeserialization',
 	'__afterSerialization',

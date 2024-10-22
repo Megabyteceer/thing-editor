@@ -52,7 +52,7 @@ module.exports = (mainWindow) => {
 			switch (command) {
 			case 'fs/run':
 				args[0].unshift(notify);
-				return await require(path.join('../..', fileName)).apply(null, args[0]);
+				return await require(path.join('../..', fileName)).apply(null, ...args);
 			case 'fs/build':
 				isDebug = content;
 				return await require('./build.js').build(fileName, isDebug, ...args);

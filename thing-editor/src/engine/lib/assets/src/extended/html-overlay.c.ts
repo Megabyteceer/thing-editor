@@ -58,6 +58,11 @@ export default class HTMLOverlay extends ScrollLayer {
 
 	latestTime = 0;
 
+	constructor() {
+		super();
+		this._overlayIntervalUpdate = this._overlayIntervalUpdate.bind(this);
+	}
+
 	init() {
 		this.bouncingBounds = false;
 		super.init();
@@ -65,7 +70,6 @@ export default class HTMLOverlay extends ScrollLayer {
 		this.currentHtmlOpacity = 0;
 		this.latestTime = 0;
 		this.interactive = true;
-		this._overlayIntervalUpdate = this._overlayIntervalUpdate.bind(this);
 		assert(!this._htmlDiv, 'previous this._htmlDiv instance was not removed properly');
 		this._scripts = [];
 	}
@@ -91,13 +95,12 @@ export default class HTMLOverlay extends ScrollLayer {
 
 		if (this.handleScroll && this._htmlDiv) {
 			this._htmlDiv.scrollTop = -this.y * canvasScale;
-			this.y = -Math.round(this._htmlDiv.scrollTop / canvasScale);
 		}
 		this._updateHtmlOpacity();
 	}
 
 	_updateHtmlOpacity() {
-		let isVisible = this.worldVisible && this._htmlContent && this.isCanBePressed && Math.abs(this.worldTransform.a) > 0.1 && !this._isHtmlContentInvalidated;
+		let isVisible = this.worldVisible && this._htmlContent && this.getRootContainer().parent && this.isCanBePressed && Math.abs(this.worldTransform.a) > 0.1 && !this._isHtmlContentInvalidated;
 		let htmlTargetOpacity = isVisible ? this.worldAlpha : 0;
 		this.currentHtmlOpacity = stepTo(this.currentHtmlOpacity, htmlTargetOpacity, this.fadeSpeed);
 	}
@@ -106,7 +109,7 @@ export default class HTMLOverlay extends ScrollLayer {
 		if ((game.time - this.latestTime) > 1) {
 			this._updateHtmlOpacity();
 		}
-		if (!this.worldVisible) {
+		if (!this.worldVisible || !this.getRootContainer().parent) {
 			this._releaseHtmlDiv();
 		}
 	}
@@ -138,16 +141,18 @@ export default class HTMLOverlay extends ScrollLayer {
 
 	_renderHtmlContainer() {
 
-		if (this.currentHtmlOpacity > 0.001
-			/// #if EDITOR
-			&& !game.__EDITOR_mode
-			/// #endif
-		) {
+		/// #if EDITOR
+		if (game.__EDITOR_mode) {
+			this.currentHtmlOpacity = this.worldVisible ? this.alpha : 0;
+		}
+		/// #endif
+
+		if (this.currentHtmlOpacity > 0.001) {
 			if (!this._htmlDiv) {
 				this._htmlDiv = document.createElement('div');
-				this._htmlDiv.style.position = 'fixed';
+				this._htmlDiv.style.position = 'absolute';
 				this._htmlDiv.innerHTML = this._htmlContent;
-				this._htmlDiv.style.overflow = 'hidden';
+				this._htmlDiv.style.overflowY = 'hidden';
 				this._htmlDiv.style.zIndex = this.zIndexHTML.toString();
 				this._htmlDiv.style.transformOrigin = '0 0';
 				this._applyClassName();
@@ -165,7 +170,7 @@ export default class HTMLOverlay extends ScrollLayer {
 					}
 				}
 
-				document.body.appendChild(this._htmlDiv);
+				game.pixiApp.view.parentNode!.appendChild(this._htmlDiv);
 
 				for (let i = 0; i < this._scripts.length; i++) {
 					document.body.appendChild(this._scripts[i]);
@@ -176,22 +181,24 @@ export default class HTMLOverlay extends ScrollLayer {
 			this._htmlDiv.style.opacity = this.currentHtmlOpacity.toString();
 			_canvasBoundsCache = null;
 
-			recalcCanvasBounds();
+			recalcCanvasBounds()
+			;
+			if (Math.abs(this.currentHtmlScale - this.worldTransform.a) > 0.001) {
+				this.currentHtmlScale = this.worldTransform.a;
+				this._htmlDiv.style.transform = 'scale(' + (this.currentHtmlScale).toFixed(3) + ')';
+			}
 
-			this._htmlDiv.style.left = (_canvasBoundsCache!.left + Math.round(this.parent.worldTransform.tx) * canvasScale / game.stage.scale.x) + 'px';
+			this._htmlDiv.style.left = (game.pixiApp.view as HTMLCanvasElement).offsetLeft + (Math.round(this.parent.worldTransform.tx) * canvasScale) + 'px';
 
 
-			this._htmlDiv.style.top = (_canvasBoundsCache!.top + Math.round(this.parent.worldTransform.ty) * canvasScale / game.stage.scale.x) + 'px';
+			this._htmlDiv.style.top = (game.pixiApp.view as HTMLCanvasElement).offsetTop + (Math.round(this.parent.worldTransform.ty) * canvasScale) + 'px';
 
 
 			this._htmlDiv.style.width = (this.visibleArea.w * canvasScale) + 'px';
 
 			this._htmlDiv.style.height = (this.visibleArea.h * canvasScale) + 'px';
 
-			if (Math.abs(this.currentHtmlScale - this.worldTransform.a) > 0.001) {
-				this.currentHtmlScale = this.worldTransform.a;
-				this._htmlDiv.style.transform = 'scale(' + (this.currentHtmlScale / game.stage.scale.x).toFixed(3) + ')';
-			}
+
 		} else {
 			this._releaseHtmlDiv();
 		}

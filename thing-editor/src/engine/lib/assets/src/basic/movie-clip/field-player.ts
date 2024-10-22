@@ -102,6 +102,8 @@ interface TimelineLabelData {
 
 	/// #if EDITOR
 	___view?: TimelineLabelView | null;
+	___name: string;
+	___key?: number;
 	/// #endif
 }
 

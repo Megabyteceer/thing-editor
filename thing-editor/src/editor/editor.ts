@@ -48,6 +48,7 @@ import Build from './utils/build';
 import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
+import roundUpPoint from './utils/round-up-point';
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
 
@@ -461,6 +462,7 @@ class Editor {
 			this.isSafeAreaVisible = game.editor.settings.getItem('safe-area-frame', true) && game.projectDesc.dynamicStageSize;
 
 			if (this.buildProjectAndExit) {
+				await waitForCondition(() => !game.editor.ui.modal.isSpinnerShown());
 				await Build.build(false);
 				await Build.build(true);
 				fs.exitWithResult('build finished');
@@ -750,6 +752,7 @@ class Editor {
 		for (let c of o.children) {
 			let p = o.toLocal(c.__nodeExtendData.tmpGlobalPos as Point);
 			this.shiftObject(c as Container, Math.round(p.x - c.x), Math.round(p.y - c.y));
+			roundUpPoint(c);
 		}
 	}
 

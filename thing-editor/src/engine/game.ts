@@ -9,7 +9,6 @@ import Lib from 'thing-editor/src/engine/lib';
 import { ButtonOnlyPropertyDesc } from 'thing-editor/src/editor/utils/button-only-selectable-property';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import SceneLinkedPromise from 'thing-editor/src/engine/lib/assets/___system/scene-linked-promise.c';
-import type ScrollLayer from 'thing-editor/src/engine/lib/assets/src/extended/scroll-layer.c';
 import FullScreen from 'thing-editor/src/engine/utils/full-screen';
 import initGameInteraction, { addOnClickOnce } from 'thing-editor/src/engine/utils/game-interaction';
 import { setValueByPath } from 'thing-editor/src/engine/utils/get-value-by-path';
@@ -198,6 +197,8 @@ class Game {
 		/// #endif
 		import('.tmp/classes').then(() => {
 			game._startGame();
+		}).catch(() => {
+			game.showLoadingError('classes.js');
 		});
 		//*/
 	}
@@ -294,6 +295,9 @@ class Game {
 		if (data.projectDesc) {
 			game.applyProjectDesc(data.projectDesc);
 		}
+		if (game.stage) {
+			game.stage.emit('assets-will-add', data); // 99999
+		}
 		Lib.addAssets(data);
 	}
 
@@ -348,9 +352,13 @@ class Game {
 				w = size.w;
 				h = size.h;
 			} else {
-				w = this.__fixedViewport.w;
-				h = this.__fixedViewport.h;
-
+				if (game.isPortrait) {
+					w = this.__fixedViewport.h;
+					h = this.__fixedViewport.w;
+				} else {
+					w = this.__fixedViewport.w;
+					h = this.__fixedViewport.h;
+				}
 			}
 		}
 
@@ -412,12 +420,12 @@ class Game {
 
 		if (game.isPortrait) {
 			/** game screen current width */
-			this.W = this.projectDesc.portraitWidth || 408;
+			this.W = this.projectDesc.portraitWidth;
 			/** game screen current height */
-			this.H = this.projectDesc.portraitHeight || 720;
+			this.H = this.projectDesc.portraitHeight;
 		} else {
-			this.W = this.projectDesc.width || 1280;
-			this.H = this.projectDesc.height || 720;
+			this.W = this.projectDesc.width;
+			this.H = this.projectDesc.height;
 		}
 
 
@@ -676,9 +684,7 @@ class Game {
 		if ((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
 			/// #endif
 
-			if (game.classes.ScrollLayer) {
-				(game.classes.ScrollLayer as unknown as ScrollLayer).updateGlobal();
-			}
+			this.stage.emit('global-update');//99999
 
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
 			/// #if EDITOR
@@ -759,6 +765,8 @@ class Game {
 			contextLoseTime = 0;
 		}
 
+		this.stage.emit('update'); //99999
+
 		if (game._isWaitingToHideFader) {
 			if (game.loadingsFinished === game.loadingsInProgress) {
 				game._processScenesStack();
@@ -775,6 +783,8 @@ class Game {
 						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
 							this.loadingRemove('assets-main load');
 							game.addAssets(mainAssets.default);
+						}).catch(() => {
+							game.showLoadingError('assets-main.json');
 						});
 						//*/
 					}
@@ -820,6 +830,7 @@ class Game {
 			}
 		}
 		this.keys.update();
+		this.stage.emit('updated');//99999
 		Lib._cleanupRemoveHolders();
 	}
 
@@ -1105,6 +1116,9 @@ class Game {
 	}
 
 	showLoadingError(url: string) {
+		/// #if DEBUG
+		debugger;
+		/// #endif
 		/// #if EDITOR
 		if (this.editor.buildProjectAndExit) {
 			fs.exitWithResult(undefined, 'loading error: ' + url);
@@ -1395,7 +1409,7 @@ let __currentSceneValue: Scene;
 
 const game = new Game();
 export default game;
-export { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME, loadFonts, processOnResize };
+export { DEFAULT_FADER_NAME, loadFonts, PRELOADER_SCENE_NAME, processOnResize };
 export type { FixedViewportSize };
 
 /// #if EDITOR

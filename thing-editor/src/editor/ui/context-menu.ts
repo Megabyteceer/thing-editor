@@ -126,6 +126,9 @@ const menuItemProps = { className: 'context-menu-item-content'};
 function renderMenuItem(item: ContextMenuItem) {
 
 	if (item) {
+		if (item.hidden) {
+			return R.fragment();
+		}
 		return R.btn(
 			R.span(menuItemProps,
 				(typeof item.name === 'function') ? item.name() : item.name,

@@ -214,7 +214,7 @@ export default class MovieClip extends DSprite {
 			let nextList = fields.map((field) => {
 				return MovieClip._findNextKeyframe(field.t, labelTime - 1);
 			});
-			labels[key] = { t: labelTime, n: nextList };
+			labels[key] = { t: labelTime, n: nextList, ___name: key };
 		}
 
 		const ret = {
@@ -358,13 +358,12 @@ export default class MovieClip extends DSprite {
 	}
 
 	__EDITOR_getKeyframeIcon(action: string) {
+		if (action.endsWith('.remove')) {
+			return ICON_REMOVE;
+		}
 		switch (action) {
 			case 'this.stop': // eslint-disable-line indent
 				return ICON_STOP; // eslint-disable-line indent
-			case 'this.remove': // eslint-disable-line indent
-			case 'this.parent.remove': // eslint-disable-line indent
-			case 'this.parent.parent.remove': // eslint-disable-line indent
-				return ICON_REMOVE; // eslint-disable-line indent
 			default: // eslint-disable-line indent
 				if (action.startsWith('Sound.play')) { // eslint-disable-line indent
 					return ICON_SOUND; // eslint-disable-line indent
@@ -552,7 +551,14 @@ export default class MovieClip extends DSprite {
 
 let deserializeCache = new WeakMap();
 
+/// #if EDITOR
+let goToLabelRecursionLevel = 0; // eslint-disable-line @typescript-eslint/no-unused-vars
+/// #endif
+
 Container.prototype.gotoLabelRecursive = function (labelName) {
+	/// #if EDITOR
+	goToLabelRecursionLevel++;
+	/// #endif
 	if (this instanceof MovieClip) {
 		if (this.hasLabel(labelName)) {
 			this.delay = 0;
@@ -562,6 +568,9 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 	for (let c of this.children) {
 		c.gotoLabelRecursive(labelName);
 	}
+	/// #if EDITOR
+	goToLabelRecursionLevel--;
+	/// #endif
 };
 
 /// #if EDITOR
@@ -592,7 +601,7 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 
 		labels.push(CUSTOM_LABEL_ITEM);
 
-		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + game.editor.currentPathChoosingField!.name, labels).then((choosed) => {
+		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + (game.editor.currentPathChoosingField?.name) || ' of keyframe.', labels).then((choosed) => {
 			if (choosed) {
 				if (choosed === CUSTOM_LABEL_ITEM) {
 					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {

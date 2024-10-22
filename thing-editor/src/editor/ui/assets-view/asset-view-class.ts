@@ -41,7 +41,7 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 			onClick: () => {
 				editorUtils.wrapSelected(file.asset);
 			},
-			disabled: () => { return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset); }
+			disabled: () => { return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset, game.editor.selection[0].parent); }
 		},
 		null,
 		{
@@ -137,11 +137,11 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		R.btn('<', (ev) => {
 			sp(ev);
 			findNextOfThisType(file.asset, -1, ev.ctrlKey, ev.altKey);
-		}, 'Find previous ' + file.asset.__className, clickTip),
+		}, 'Find previous ' + file.asset.__className + ' Ctrl - all, Alt - strict', clickTip),
 		R.btn('>', (ev) => {
 			sp(ev);
 			findNextOfThisType(file.asset, 1, ev.ctrlKey, ev.altKey);
-		}, 'Find next ' + file.asset.__className, clickTip)
+		}, 'Find next ' + file.asset.__className + ' Ctrl - all, Alt - strict', clickTip)
 	)
 	);
 };
@@ -163,7 +163,7 @@ function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findA
 		}
 	} else {
 		game.editor.ui.sceneTree.findNext((o) => {
-			if (strictType) {
+			if (!strictType) {
 				return (o instanceof c) && !getParentWhichHideChildren(o);
 			} else {
 				return (o.constructor === c) && !getParentWhichHideChildren(o);

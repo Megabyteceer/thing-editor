@@ -16,7 +16,7 @@ let isLangDataLoaded = false;
 interface TL extends LocalizationKeys {
 	(id: string, values?: KeyedObject): string;
 	setLanguagesAssets: (src: KeyedObject) => void;
-	messageProcessor: (text: string, values?: KeyedObject) => string;
+	messageProcessor: (text: string, values?: KeyedObject | number) => string;
 	has: (id: string) => boolean;
 	setCurrentLanguage: (languageId?: string) => void;
 	refreshAllTextEverywhere: () => void;
@@ -25,7 +25,7 @@ interface TL extends LocalizationKeys {
 	_deserializeLanguage: (langSrc: KeyedObject) => KeyedMap<string>;
 }
 
-const L: TL = ((id: string, values?: KeyedObject): string => {
+const L: TL = ((id: string, values?: KeyedObject | number): string => {
 	/// #if EDITOR
 	if (!currentLanguageTable.hasOwnProperty(id)) {
 		let fieldName: string;
@@ -78,7 +78,7 @@ const L: TL = ((id: string, values?: KeyedObject): string => {
 	} else {
 		ret = id;
 	}
-	if (values) {
+	if (typeof values === 'object') {
 		for (let key in values) {
 			ret = ret.replace(key, values[key]);
 		}

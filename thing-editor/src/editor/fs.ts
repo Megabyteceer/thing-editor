@@ -32,6 +32,8 @@ interface FileDesc {
 	_hashedAssetName?: string;
 
 	parentAsset?: FileDesc;
+	/** set true to include unknown json file in to build. Will be available in runtime via Lib.resources['json.name'] */
+	includeToBuild?: boolean;
 
 	asset: SourceMappedConstructor | SerializedObject | Texture | HowlSound | KeyedObject;
 }

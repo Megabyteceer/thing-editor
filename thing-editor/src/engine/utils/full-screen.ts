@@ -22,9 +22,11 @@ export default class FullScreen {
 		try {
 			if (docElement.requestFullscreen) {
 				docElement.requestFullscreen().finally(() => {
-					if (game.projectDesc.screenOrientation !== 'auto') {
-						(screen.orientation as any).lock(game.projectDesc.screenOrientation);
-					}
+					try {
+						if (game.projectDesc.screenOrientation !== 'auto') {
+							(screen.orientation as any).lock(game.projectDesc.screenOrientation);
+						}
+					} catch (_err) { }
 				});
 			}
 			game._fireNextOnResizeImmediately();

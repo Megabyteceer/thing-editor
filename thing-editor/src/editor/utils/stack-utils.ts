@@ -43,14 +43,8 @@ const showStack = (stack: DebugStack) => {
 			functionName = '';
 		}
 
-		let pathParts = s.split('/');
-		pathParts.shift();
-		pathParts.shift();
-		pathParts.shift();
-		s = pathParts.join('/');
-
 		if (s.indexOf('?') > 0) {
-			pathParts = s.split('?');
+			let pathParts = s.split('?');
 			let a = pathParts[1].split(':');
 			s = pathParts[0] + ':' + a[1];
 		}
@@ -65,7 +59,7 @@ const showStack = (stack: DebugStack) => {
 					if (url) {
 						const line = a[1];
 						const SourceMapConsumer = (await (import('source-map-js'))).default.SourceMapConsumer;
-						const src = await (await fetch('/' + url + '?' + Date.now())).text();
+						const src = await (await fetch(url)).text();
 						if (src) {
 							const sourceMapUrl = src.split('sourceMappingURL=')[1];
 							const sourceMap = await (await fetch(sourceMapUrl)).text();

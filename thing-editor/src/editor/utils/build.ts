@@ -302,7 +302,7 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 				}
 				sounds.push([getHashedAssetName(file), (file as FileDescSound).asset.preciseDuration]);
 			} else if (file.assetType === AssetType.RESOURCE) {
-				if (isAtlasAsset(file.asset)) {
+				if (isAtlasAsset(file.asset) || file.includeToBuild) {
 					if (!resources) {
 						resources = [];
 					}

@@ -166,6 +166,9 @@ export default class ___GizmoArrow extends Shape {
 	}
 
 	onPointerDown(ev: PointerEvent) {
+		if (!game.editor.selection.length) {
+			return;
+		}
 		if (ev.buttons === 1) {
 
 			invertedY = this.dragR && game.__mouse_uncropped.x > game.editor.selection[0].worldTransform.tx;

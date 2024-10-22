@@ -52,6 +52,7 @@ patch(
     __beforeDeserialization?(): void;
     __beforeSerialization?(): void;
     __afterDeserialization?(): void;
+    __treeInjection?(): void;
     __afterSerialization?(data: SerializedObject): void;
     __beforeDestroy?(): void;
 

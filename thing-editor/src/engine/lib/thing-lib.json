@@ -1,11 +1,12 @@
 {
 	"mainScene": "main",
 	"defaultFont": "Arial",
+	"jpgQuality": 80,
 	"screenOrientation": "landscape",
 	"width": 1920,
 	"height": 1080,
 	"portraitWidth": 1080,
-	"portraitHeight": 1800,
+	"portraitHeight": 1920,
 	"renderResolution": 1,
 	"renderResolutionMobile": 1,
 	"framesSkipLimit": 4,
