@@ -601,7 +601,7 @@ Container.prototype.gotoLabelRecursive = function (labelName) {
 
 		labels.push(CUSTOM_LABEL_ITEM);
 
-		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + (game.editor.currentPathChoosingField?.name) || ' of keyframe.', labels).then((choosed) => {
+		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + (game.editor.currentPathChoosingField?.name || ' of keyframe.'), labels).then((choosed) => {
 			if (choosed) {
 				if (choosed === CUSTOM_LABEL_ITEM) {
 					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
