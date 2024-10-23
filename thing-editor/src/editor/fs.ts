@@ -146,12 +146,6 @@ const WHITE: FileDescImage = {
 };
 
 const execFs = (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => {
-	try {
-		if (game.editor.buildProjectAndExit) {
-			console.log('execFsAsync', command, filename);
-		}
-	} catch (_er) {};
-
 	const ret = electron_ThingEditorServer.fs(command, filename, content, ...args);
 	if (ret instanceof Error) {
 		game.editor.ui.modal.showFatalError('Main process error.', 99999, ret.message);
@@ -161,11 +155,6 @@ const execFs = (command: string, filename?: string | string[] | number, content?
 };
 
 const execFsAsync = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]): Promise<any> => {
-	try {
-		if (game.editor.buildProjectAndExit) {
-			console.log('execFsAsync', command, filename);
-		}
-	} catch (_er) {};
 	return electron_ThingEditorServer.fsAsync(command, filename, content, ...args);
 };
 
