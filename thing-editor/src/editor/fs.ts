@@ -148,7 +148,7 @@ const WHITE: FileDescImage = {
 const execFs = (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => {
 	setTimeout(() => {
 		if (game.editor.buildProjectAndExit) {
-			console.log('execFsAsync', command, filename, content, ...args);
+			console.log('execFsAsync', command, filename);
 		}
 	}, 10);
 	const ret = electron_ThingEditorServer.fs(command, filename, content, ...args);
@@ -162,7 +162,7 @@ const execFs = (command: string, filename?: string | string[] | number, content?
 const execFsAsync = (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]): Promise<any> => {
 	setTimeout(() => {
 		if (game.editor.buildProjectAndExit) {
-			console.log('execFsAsync', command, filename, content, ...args);
+			console.log('execFsAsync', command, filename);
 		}
 	}, 10);
 	return electron_ThingEditorServer.fsAsync(command, filename, content, ...args);
