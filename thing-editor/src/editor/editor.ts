@@ -385,14 +385,14 @@ class Editor {
 					return;
 				}
 				mergeProjectDesc(libsProjectDescMerged, this.libsDescriptors[lib.name]);
-				if (this.buildProjectAndExit) {
+				if (!this.buildProjectAndExit) {
 					const libSchema = fs.readJSONFileIfExists(lib.dir + '/schema-thing-project.json');
 					if (libSchema) {
 						schemas.push(libSchema);
 					}
 				}
 			}
-			if (this.buildProjectAndExit) {
+			if (!this.buildProjectAndExit) {
 				const libSchema = fs.readJSONFileIfExists(this.currentProjectDir + '/schema-thing-project.json');
 				if (libSchema) {
 					schemas.push(libSchema);
