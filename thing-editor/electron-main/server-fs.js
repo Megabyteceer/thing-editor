@@ -58,8 +58,8 @@ module.exports = (mainWindow) => {
 				return await require('./build.js').build(fileName, isDebug, ...args);
 			}
 		} catch (er) {
+			console.log(er.stack);
 			console.error(er.stack);
-			notify(er.stack);
 			_event.returnValue = er.stack;
 			return new Error(er.stack);
 		}
