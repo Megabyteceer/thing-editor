@@ -607,7 +607,9 @@ export default class fs {
 	};
 
 	static exitWithResult(success: string | undefined, error?: string) {
-		console.log((new Error('exitWithResult').stack));
+		if (error) {
+			console.log((new Error('exitWithResult ' + error).stack));
+		}
 		debugger; // stop before exit
 		execFs('fs/exitWithResult', success, typeof error === 'string' ? error : JSON.stringify(error));
 	}
