@@ -47,7 +47,7 @@ module.exports = (mainWindow) => {
 	};
 
 	ipcMain.handle('fs', async (_event, command, fileName, content, ...args) => {
-		console.log('FS EXEC:', _event, command, fileName);
+		console.log('FS EXEC:', command, fileName);
 		let isDebug;
 		try {
 			switch (command) {
@@ -68,7 +68,7 @@ module.exports = (mainWindow) => {
 
 	ipcMain.on('fs', (event, command, fileName, content, ...args) => {
 
-		console.log('FS EXEC:', event, command, fileName);
+		console.log('FS EXEC:', command, fileName);
 
 		let fd;
 		let c;
