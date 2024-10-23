@@ -783,7 +783,8 @@ class Game {
 						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
 							this.loadingRemove('assets-main load');
 							game.addAssets(mainAssets.default);
-						}).catch(() => {
+						}).catch((er) => {
+							console.error(er);
 							game.showLoadingError('assets-main.json');
 						});
 						//*/
