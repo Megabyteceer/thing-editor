@@ -209,6 +209,7 @@ module.exports = (mainWindow) => {
 				return;
 			}
 		} catch (er) {
+			console.log('fs error: ' + er.stack);
 			event.returnValue = er;
 		}
 	});
