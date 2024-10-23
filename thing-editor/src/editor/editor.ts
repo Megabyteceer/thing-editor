@@ -385,24 +385,29 @@ class Editor {
 					return;
 				}
 				mergeProjectDesc(libsProjectDescMerged, this.libsDescriptors[lib.name]);
-				const libSchema = fs.readJSONFileIfExists(lib.dir + '/schema-thing-project.json');
+				if (this.buildProjectAndExit) {
+					const libSchema = fs.readJSONFileIfExists(lib.dir + '/schema-thing-project.json');
+					if (libSchema) {
+						schemas.push(libSchema);
+					}
+				}
+			}
+			if (this.buildProjectAndExit) {
+				const libSchema = fs.readJSONFileIfExists(this.currentProjectDir + '/schema-thing-project.json');
 				if (libSchema) {
 					schemas.push(libSchema);
 				}
 			}
 
-			const libSchema = fs.readJSONFileIfExists(this.currentProjectDir + '/schema-thing-project.json');
-			if (libSchema) {
-				schemas.push(libSchema);
-			}
-
-			const mergedSchema = schemas[0];
-			for (const schema of schemas) {
-				if (schema !== mergedSchema) {
-					Object.assign(mergedSchema.properties, schema.properties);
+			if (schemas.length) {
+				const mergedSchema = schemas[0];
+				for (const schema of schemas) {
+					if (schema !== mergedSchema) {
+						Object.assign(mergedSchema.properties, schema.properties);
+					}
 				}
+				fs.writeFile('thing-editor/src/editor/schema-thing-project.json', mergedSchema);
 			}
-			fs.writeFile('thing-editor/src/editor/schema-thing-project.json', mergedSchema);
 
 			this.assetsFolders.push(this.currentProjectAssetsDir);
 			this.assetsFoldersReversed = game.editor.assetsFolders.slice().reverse();
