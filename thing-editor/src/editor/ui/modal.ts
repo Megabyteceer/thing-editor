@@ -158,6 +158,10 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
+		if (game.editor.buildProjectAndExit) {
+			console.log('notification: ');
+			console.log(txt);
+		}
 		notifyTexts.add(txt);
 		if (hideId) {
 			if (notifyHides.has(hideId)) {

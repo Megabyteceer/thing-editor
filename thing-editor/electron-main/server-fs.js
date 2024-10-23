@@ -60,6 +60,7 @@ module.exports = (mainWindow) => {
 		} catch (er) {
 			console.error(er);
 			er.message = er.stack;
+			notify(er.message);
 			return er;
 		}
 	});
