@@ -26,7 +26,7 @@ function addPreBuildScript(callback: (debug: boolean) => void, id: string) {
 let prefixToCutOff: '___' | '__';
 
 function isFileNameValidForBuild(name: string) {
-	return !name.startsWith(prefixToCutOff) && (name.indexOf('/' + prefixToCutOff) < 0);
+	return !name.startsWith(prefixToCutOff) && (!name.includes('/' + prefixToCutOff));
 }
 
 function filterAssets(file: FileDesc) {
@@ -34,15 +34,13 @@ function filterAssets(file: FileDesc) {
 }
 
 const filterChildrenByName = (childData: SerializedObject) => {
-	if (!childData.hasOwnProperty('p')) {
-		return true;
-	}
-	if (childData.p.hasOwnProperty('name') && childData.p.name &&
+
+	if (childData.p?.name &&
 		childData.p.name.startsWith(prefixToCutOff)) {
 		return false;
 	}
-	if (childData.p.hasOwnProperty('prefabName') &&
-		!isFileNameValidForBuild(childData.p.prefabName)) {
+	if (childData.r &&
+		!isFileNameValidForBuild(childData.r)) {
 		return false;
 	}
 	return true;
@@ -76,6 +74,7 @@ let assetsToCopy: { from: string; to: string }[] = [];
 
 export default class Build {
 	static async build(debug: boolean) {
+		game.editor.ui.modal.showSpinner();
 		fs.log(debug ? 'build debug' : 'build release');
 
 		for (const f of preBuildCallbacks) {
@@ -92,7 +91,6 @@ export default class Build {
 		if (game.editor.askSceneToSaveIfNeed() === false) {
 			return;
 		}
-		game.editor.ui.modal.showSpinner();
 
 		prefixToCutOff = (debug ? '___' : '__');
 
