@@ -19,6 +19,8 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 const ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 const ICON_SOUND = R.img({ src: '/thing-editor/img/timeline/sound.png' });
 const ICON_REMOVE = R.img({ src: '/thing-editor/img/timeline/remove.png' });
+const ICON_ENABLE = R.img({ src: '/thing-editor/img/timeline/enable.png' });
+const ICON_DISABLE = R.img({ src: '/thing-editor/img/timeline/disable.png' });
 const ICON_DEFAULT = R.img({ src: '/thing-editor/img/timeline/default.png' });
 
 const SELECT_LOG_LEVEL = [
@@ -360,6 +362,12 @@ export default class MovieClip extends DSprite {
 	__EDITOR_getKeyframeIcon(action: string) {
 		if (action.endsWith('.remove')) {
 			return ICON_REMOVE;
+		}
+		if (action.endsWith('.enable')) {
+			return ICON_ENABLE;
+		}
+		if (action.endsWith('.disable')) {
+			return ICON_DISABLE;
 		}
 		switch (action) {
 			case 'this.stop': // eslint-disable-line indent
