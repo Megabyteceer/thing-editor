@@ -298,12 +298,16 @@ export default class Button extends DSprite {
 	}
 
 	onOver() {
+		if (game.isMobile.any) {
+			return;
+		}
 		if (this.enabled) {
 			if (Button.overedButton !== this) {
 				if (Button.overedButton) {
 					Button.overedButton.onOut();
 				}
 				Button.overedButton = this;
+
 				if (this.hoverImage) {
 					this.image = this.hoverImage;
 				} else {
@@ -315,6 +319,7 @@ export default class Button extends DSprite {
 					Sound.play(this.sndOver);
 				}
 				this.gotoLabelRecursive('btn-over');
+
 			}
 		}
 	}
@@ -324,6 +329,9 @@ export default class Button extends DSprite {
 	}
 
 	onOut() {
+		if (game.isMobile.any) {
+			return;
+		}
 		if (Button.overedButton === this) {
 			Button.overedButton = null;
 
@@ -333,7 +341,7 @@ export default class Button extends DSprite {
 				}
 			} else {
 				this.scale.x =
-					this.scale.y = this.initialScale;
+				this.scale.y = this.initialScale;
 			}
 
 			this.onUp();
