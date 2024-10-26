@@ -367,7 +367,7 @@ export default class ScrollLayer extends Container {
 	}
 
 	scrollTo(o: Container, callback?: () => void, instantly = false) {
-		if (!o) {
+		if (!o || (this.fullArea.w <= this.visibleArea.w && this.fullArea.h <= this.visibleArea.h)) {
 			this.autoScrolling = false;
 			this.xSpeed = 0;
 			this.ySpeed = 0;
@@ -385,7 +385,7 @@ export default class ScrollLayer extends Container {
 
 		this._checkScrollToBounds();
 
-		if (instantly) {
+		if (instantly || !this.worldVisible) {
 			this._virtualScrollX = this.scrollToX;
 			this._virtualScrollY = this.scrollToY;
 		}
