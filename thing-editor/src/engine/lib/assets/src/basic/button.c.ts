@@ -359,6 +359,15 @@ export default class Button extends DSprite {
 	}
 
 	/// #if EDITOR
+
+	__beforeSerialization(): void {
+		this.interactive = true;
+	}
+
+	__afterDeserialization(): void {
+		this.interactive = true;
+	}
+
 	__EDITOR_onCreate() {
 		if (Lib.hasTexture('ui/button.png')) {
 			this.image = 'ui/button.png';
