@@ -582,18 +582,11 @@ class Game {
 
 				renderer.resolution = scale;
 
-				/*PIXI.InteractionManager.resolution = scale;
-				renderer.plugins.interaction.resolution = scale;
-
-				if(renderer.rootRenderTarget) {
-					renderer.rootRenderTarget.resolution = scale;
-				}*/
-
 				renderer.resize(_rendererWidth + 0.0001, _rendererHeight + 0.0001); //prevent canvas size decreasing by pixel because of Math.ceil
 				/// #if EDITOR
 			}
 			/// #endif
-
+			this.stage.emit('stage-will-resize');
 			this.forAllChildrenEverywhere(processOnResize);
 			/// #if EDITOR
 			if (!this.__enforcedW) {

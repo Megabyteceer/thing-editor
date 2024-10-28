@@ -217,7 +217,6 @@ import Lib from 'thing-editor/src/engine/lib';`];
 				} else {
 					const a = result.message.split(' in file ');
 					if (a.length > 1) {
-						debugger;
 						const b = (a[1] as string).split(':');
 						const lineNum = b[b.length - 1];
 						const fileName = a[1];
