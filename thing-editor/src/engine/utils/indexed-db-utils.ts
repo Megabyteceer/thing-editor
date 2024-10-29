@@ -34,6 +34,11 @@ function clickElem(elem: HTMLInputElement) {
 
 export default class IndexedDBUtils {
 
+	static getEntriesList(type: string) {
+		type = '::' + type;
+		return Object.keys(dataStore).filter(k => k.endsWith(type)).map(k => k.replace(type, ''));
+	}
+
 	static save(name: string, type: string, data?: IndexedDBRecord | KeyedObject) {
 		const id = name + '::' + type;
 		if (JSON.stringify(dataStore[id]) !== JSON.stringify(data)) {

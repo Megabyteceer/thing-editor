@@ -251,7 +251,7 @@ export default class Sound {
 	static checkSoundLockByBrowser() {
 		Sound.isSoundsLockedByBrowser = true;
 		game.loadingAdd(LOADING_OWNER_NAME);
-		EMPTY_SOUND = new HowlSound({ src: 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV' });
+		initEmptySound();
 		const blockedHanlder = () => soundLockHandler(true);
 		const unblockedHanlder = () => soundLockHandler(false);
 		EMPTY_SOUND.once('playerror', blockedHanlder);
@@ -285,7 +285,39 @@ export default class Sound {
 		}
 	}
 	/// #endif
+
+	static playFirst(...soundIds: string[]) {
+		for (const soundId of soundIds) {
+			/// #if DEBUG
+			highlightPlayedSound(soundId);
+			/// #endif
+			if (Lib.hasSound(soundId)
+				/// #if DEBUG
+				&& Lib.getSound(soundId) !== EMPTY_SOUND
+				/// #endif
+			) {
+				Sound.play(soundId, 1, 1, 0, true);
+				break;
+			}
+			/// #if DEBUG
+			if (!Lib.hasSound(soundId)) {
+				Lib.__soundsList[soundId] = EMPTY_SOUND;
+				if (sndDebuggerShowed) {
+					showSndDebugger();
+				}
+			}
+			/// #endif
+		}
+	}
 }
+
+const initEmptySound = () => {
+	EMPTY_SOUND = new HowlSound({ src: 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV' });
+};
+
+/// #if DEBUG
+setTimeout(initEmptySound, 0);
+/// #endif
 
 let EMPTY_SOUND: HowlSound;
 let soundLockTimeoutId = 0;
@@ -351,11 +383,19 @@ let musicVol: number;
 // ===== SOUND DEBUG PANEL ======================
 // ==============================================
 
+const classesCache = new Map() as Map<string, string>;
+const cleanupClassName = (soundId:string) => {
+	if (!classesCache.has(soundId)) {
+		classesCache.set(soundId, 'snd-name-' + soundId.replace(/\//gm, '_s_'));
+	}
+	return classesCache.get(soundId);
+};
+
 const defaultSoundsUrls: KeyedMap<string> = {};
 
 function overrideSound(name: string, src?: string) {
 
-	if (!defaultSoundsUrls[name]) {
+	if (!defaultSoundsUrls[name] && Lib.hasSound(name)) {
 		defaultSoundsUrls[name] = (Lib.getSound(name) as any)._src;
 		assert(defaultSoundsUrls[name], 'Howler is changed');
 	}
@@ -372,11 +412,13 @@ function hideSndDebugger() {
 
 function highlightPlayedSound(soundId: string) {
 	if (sndDebuggerShowed) {
-		let soundTitle: HTMLDivElement = document.querySelector('.sounds-debug-panel .snd-name-' + soundId)!;
-		soundTitle.classList.remove('animate-sound-play');
-		window.setTimeout(() => {
-			soundTitle.classList.add('animate-sound-play');
-		}, 5);
+		let soundTitle: HTMLDivElement = document.querySelector('.sounds-debug-panel .' + cleanupClassName(soundId))!;
+		if (soundTitle) {
+			soundTitle.classList.remove('animate-sound-play');
+			window.setTimeout(() => {
+				soundTitle.classList.add('animate-sound-play');
+			}, 5);
+		}
 	}
 }
 
@@ -384,7 +426,8 @@ let libSounds: KeyedMap<HowlSound>;
 function __loadSoundOverrides() {
 	if (!libSounds) {
 		libSounds = Lib.sounds;
-		for (let sndName in libSounds) {
+		const overrides = IndexedDBUtils.getEntriesList('sound');
+		for (let sndName of overrides) {
 			const data = IndexedDBUtils.load(sndName, 'sound');
 			if (data) {
 				overrideSound(sndName, data.data);
@@ -393,8 +436,15 @@ function __loadSoundOverrides() {
 	}
 }
 
+let showSndDebuggerTimeOut = 0;
 function showSndDebugger() {
+	if (!showSndDebuggerTimeOut) {
+		showSndDebuggerTimeOut = window.setTimeout(showSndDebuggerInner, 0);
+	}
+}
 
+function showSndDebuggerInner() {
+	showSndDebuggerTimeOut = 0;
 	/// #if EDITOR
 	//return;
 	/// #endif
@@ -402,7 +452,7 @@ function showSndDebugger() {
 	// sounds playing animation
 	document.head.insertAdjacentHTML('beforeend', `<style>
 	.animate-sound-play {
-		animation: color-change 5s infinite;
+		animation: color-change 5s normal;
 	}
 
 	@keyframes color-change {
@@ -446,6 +496,10 @@ function showSndDebugger() {
 		margin-bottom: 10px;
 	}
 
+	.sounds-debug-panel .snd-name-empty {
+		opacity: 0.5;
+	}
+
 	.sounds-debug-panel tr:hover {
 		background: #141414;
 	}
@@ -463,11 +517,11 @@ function showSndDebugger() {
 	let libSounds = Lib.__soundsList;
 	for (let sndName in libSounds) {
 		soundNames[i] = sndName;
-		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name snd-name-' + sndName + '">' + sndName +
+		txt.push('<tr id="' + i + '-soundNum"><td><b style="cursor: pointer;" class="snd-name ' + ((Lib.getSound(sndName) === EMPTY_SOUND) ? 'snd-name-empty ' : '') + cleanupClassName(sndName) + '">' + sndName +
 			'</b></td><td><button class="snd-override">Choose...</button></td><td>');
 		const overrideData = IndexedDBUtils.load(sndName, 'sound')!;
 		if (overrideData) {
-			txt.push(' ЗАГРУЖЕН (' + overrideData!.fileName + ')</td><td><button class="snd-clear">x</button>');
+			txt.push(' UPLOADED (' + overrideData!.fileName + ')</td><td><button class="snd-clear">x</button>');
 		} else {
 			txt.push('-</td><td>-');
 		}
@@ -541,9 +595,9 @@ function showSndDebugger() {
 const timeouts: KeyedMap<number> = {};
 
 window.addEventListener('keydown', (ev) => {
-	if (game.editor) {
-		return;
-	}
+	/// #if EDITOR
+	return;
+	/// #endif
 	if (ev.keyCode === 115) {
 		if (sndDebuggerShowed) {
 			hideSndDebugger();
