@@ -210,6 +210,14 @@ export default class Button extends DSprite {
 	}
 
 	onDown(ev: PointerEvent | null, source = 'pointerdown') {
+
+		/// #if DEBUG
+		if (this.onClick.some(s => s.startsWith('__'))) {
+			latestClickTime = -1;
+		}
+		/// #endif
+
+
 		Sound._unlockSound();
 		if (game.time === latestClickTime
 			/// #if EDITOR
@@ -298,9 +306,13 @@ export default class Button extends DSprite {
 	}
 
 	onOver() {
+		/// #if EDITOR
+		/*
+		/// #endif
 		if (game.isMobile.any) {
 			return;
 		}
+		//*/
 		if (this.enabled) {
 			if (Button.overedButton !== this) {
 				if (Button.overedButton) {
@@ -329,9 +341,13 @@ export default class Button extends DSprite {
 	}
 
 	onOut() {
+		/// #if EDITOR
+		/*
+		/// #endif
 		if (game.isMobile.any) {
 			return;
 		}
+		//*/
 		if (Button.overedButton === this) {
 			Button.overedButton = null;
 

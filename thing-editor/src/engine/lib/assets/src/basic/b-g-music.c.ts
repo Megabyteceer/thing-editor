@@ -236,6 +236,9 @@ export default class BgMusic extends Container {
 
 	/// #if DEBUG
 	static __onSoundOverride(name: string) {
+		if (!game.currentContainer) {
+			return;
+		}
 		for (let bgm of game.currentContainer.findChildrenByType(BgMusic)) {
 			if (bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
 				bgm.stop(0);

@@ -35,11 +35,11 @@ import mergeProjectDesc, { isProjectDescValueKeyedMap } from 'thing-editor/src/e
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import { __UnknownClass } from 'thing-editor/src/editor/utils/unknown-class';
 import validateObjectDataRecursive from 'thing-editor/src/editor/utils/validate-serialized-data';
-import waitForCondition from 'thing-editor/src/editor/utils/wait-for-condition';
 import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
 import { __UnknownClassScene } from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import waitForCondition from 'thing-editor/src/engine/lib/assets/src/utils/wait-for-condition';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';

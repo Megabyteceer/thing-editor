@@ -21,6 +21,7 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import RemoveHolder from 'thing-editor/src/engine/utils/remove-holder';
+import Sound from './utils/sound';
 
 let classes: GameClasses;
 let scenes: KeyedMap<SerializedObject> = {};
@@ -380,6 +381,9 @@ export default class Lib
 		const s = new HowlSound({ src: game.projectDesc.soundFormats.map(ext => url + '.' + ext) });
 		s.preciseDuration = duration;
 		soundsHowlers[name] = s;
+		/// #if DEBUG
+		Sound.__refreshDebugger();
+		/// #endif
 	}
 
 	static preloadSound(soundId: string | null
@@ -884,12 +888,17 @@ export default class Lib
 	/**
 	* @protected
 	*/
-	static __overrideSound(name: string, src: string[] | string) {
-		let opt = { src };
-		let s = new HowlSound(opt);
+	static __overrideSound(name: string, src: string[] | string | HowlSound) {
+		let s:HowlSound;
+		if (src instanceof HowlSound) {
+			s = src;
+		} else {
+			let opt = { src };
+			s = new HowlSound(opt);
+		}
 		s.lastPlayStartFrame = 0;
 		soundsHowlers[name] = s;
-		if (game.classes.BgMusic) {
+		if (game.classes?.BgMusic) {
 			(game.classes.BgMusic).__onSoundOverride(name);
 		}
 	}

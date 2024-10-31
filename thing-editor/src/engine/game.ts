@@ -156,7 +156,6 @@ class Game {
 		game.addAssets(preloaderAssets);
 		//*/
 
-
 		window.dispatchEvent(new CustomEvent('game-will-init'));
 
 		Lib.addTexture('EMPTY', Texture.EMPTY);
@@ -673,9 +672,10 @@ class Game {
 
 		/// #if EDITOR
 		EDITOR_FLAGS.updateInProgress = true;
-
+		/// #endif
+		/// #if DEBUG
 		if ((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
-			/// #endif
+		/// #endif
 
 			this.stage.emit('global-update');//99999
 
@@ -698,16 +698,20 @@ class Game {
 				game.isUpdateBeforeRender = !(frameCounterTime > FRAME_PERIOD);
 				this._updateFrame();
 
-				/// #if EDITOR
+				/// #if DEBUG
 				if (this.__doOneStep) {
+					/// #if EDITOR
 					this.editor.refreshTreeViewAndPropertyEditor();
+					/// #endif
 					this.__doOneStep = false;
 					frameCounterTime = 0;
 					break;
 				}
+				/// #endif
 			}
-			/// #endif
+		/// #if DEBUG
 		}
+		/// #endif
 
 		if (this.currentScene) {
 			app.renderer.background.backgroundColor.setValue(this.currentScene.backgroundColor);
@@ -1067,6 +1071,16 @@ class Game {
 		game.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
 	}
+
+	/// #if DEBUG
+	__togglePause() {
+		game.__paused = !game.__paused;
+	}
+
+	__oneStep() {
+		game.__doOneStep = true;
+	}
+	/// #endif
 
 	/** call when fader covered the stage */
 	faderShoot() {
@@ -1496,3 +1510,22 @@ const visibilityChangeHandler = () => {
 };
 focusChangeHandler(true);
 visibilityChangeHandler();
+
+
+/// #if DEBUG
+
+(function pauseRuntimeHotKey() {
+	/// #if EDITOR
+	return;
+	/// #endif
+	window.addEventListener('keydown', (ev) => {
+		if (ev.keyCode === 80 && ev.ctrlKey) {
+			game.__togglePause();
+			ev.preventDefault();
+		} else if (ev.keyCode === 219 && ev.ctrlKey) {
+			game.__oneStep();
+			ev.preventDefault();
+		}
+	});
+})();
+/// #endif
