@@ -363,6 +363,10 @@ const sortReverted = (a: number, b: number) => {
 	return b - a;
 };
 
+/// #if DEBUG
+game.stage.on('__sound-overridden', BgMusic.__onSoundOverride);
+/// #endif
+
 /// #if EDITOR
 
 BgMusic.__EDITOR_icon = 'tree/music';

@@ -459,6 +459,11 @@ function overrideSound(name: string, src?: string) {
 }
 
 
+function toggleSoundsPanelLeft() {
+	game.settings.setItem('__sounds-panel-is-left', !game.settings.getItem('__sounds-panel-is-left'));
+	showSndDebugger();
+}
+
 let sndDebugger: HTMLDivElement;
 let sndDebuggerShowed = false;
 
@@ -472,13 +477,6 @@ function hideSndDebugger() {
 	sndDebugger.style.display = 'none';
 	sndDebuggerShowed = false;
 	game.settings.setItem('_sound-debugger-shown', false);
-	const ids = Object.keys(Lib.sounds);
-	for (const id of ids) {
-		if (Lib.sounds[id].__isEmptySound) {
-			delete Lib.sounds[id];
-		}
-	}
-	render(undefined, sndDebugger);
 }
 
 let libSounds: KeyedMap<HowlSound>;
@@ -566,23 +564,43 @@ function renderSoundsPanel() {
 		items.push(renderSoundPanelItem(soundId));
 	}
 
-	return R.div({
-		className: 'sounds-debug-panel',
-		title: 'Ctrl + click to copy sound\'s name'
-	},
-	R.button({
-		id: 'close-sounds-button',
-		onClick: Sound.__toggleDebugger
-	}, '×'),
-	R.table({border: 0, cellspacing: 0, cellpadding: 0},
-		items
-	),
-	R.button({onClick: () => {
-		IndexedDBUtils.export();
-	}}, 'Export pack...'),
-	R.button({onClick: () => {
-		IndexedDBUtils.import();
-	}}, 'Import pack...')
+	return R.fragment(
+		game.settings.getItem('__sounds-panel-is-left') ? R.span({className: 'panel-is-left'}) : undefined,
+		R.button({
+			className: 'close-sounds-button',
+			onClick: Sound.__toggleDebugger
+		}, '×'),
+		R.button({
+			onClick: toggleSoundsPanelLeft
+		}, '< >'),
+		R.div({
+			className: 'sounds-debug-panel-body',
+			title: 'Ctrl + click to copy sound\'s name'
+		},
+
+		R.table({border: 0, cellspacing: 0, cellpadding: 0},
+			items
+		)
+		),
+		R.button({onClick: () => {
+			IndexedDBUtils.export();
+		}}, 'Export pack...'),
+		R.button({onClick: () => {
+			IndexedDBUtils.import();
+		}}, 'Import pack...'),
+		R.button({
+			className: 'close-sounds-button',
+			onClick: () => {
+				const ids = Object.keys(Lib.sounds);
+				for (const id of ids) {
+					if (Lib.sounds[id].__isEmptySound) {
+						delete Lib.sounds[id];
+					}
+				}
+				showSndDebugger();
+			}
+		}, 'Clear optionals')
+
 	);
 }
 
@@ -593,19 +611,11 @@ async function showSndDebuggerInner() {
 	/// #endif
 
 	if (!sndDebugger) { // eslint-disable-line no-unreachable
+
 		game.applyCSS(debugPanelStyle);
 		sndDebugger = document.createElement('div');
-		sndDebugger.style.position = 'fixed';
-		sndDebugger.style.right = '0';
-		sndDebugger.style.top = '0';
-		sndDebugger.style.zIndex = '10000';
-		sndDebugger.style.color = '#ffffff';
-		sndDebugger.style.background = 'rgba(0, 0, 0, 0.8)';
-		sndDebugger.style.padding = '5vh';
-		sndDebugger.style.margin = '5vh';
-		sndDebugger.style.maxHeight = '90vh';
-		sndDebugger.style.overflowY = 'auto';
-		document.body.appendChild(sndDebugger);
+		sndDebugger.classList.add('sounds-debug-panel');
+		window.document.body.appendChild(sndDebugger);
 		await __loadSoundOverrides();
 	}
 
@@ -623,6 +633,15 @@ window.addEventListener('keydown', (ev) => {
 	/// #endif
 	if (ev.keyCode === 115) {
 		Sound.__toggleDebugger();
+	}
+});
+
+/// #endif
+
+/// #if EDITOR
+editorEvents.on('playToggle', () => {
+	while (__animatedSoundItems.length) {
+		__animatedSoundItems.pop()!.style.color = 'rgb(255,255,255)';
 	}
 });
 

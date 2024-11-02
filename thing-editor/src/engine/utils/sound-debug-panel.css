@@ -1,3 +1,26 @@
+.sounds-debug-panel {
+	position:fixed;
+	right: 0;
+	top: 0;
+	z-index: 10000;
+	color: #ffffff;
+	background: rgba(0, 0, 0, 0.8);
+	padding: 20px;
+	margin: 20px;
+	max-height: 90vh;
+}
+
+.sounds-debug-panel:HAS(.panel-is-left) {
+	left: 0;
+	right: unset;
+}
+
+.sounds-debug-panel-body {
+	overflow-y: auto;
+	max-height: 80vh;
+	margin-bottom: 10px;
+}
+
 .sounds-debug-panel button {
 	padding: 5px;
 	cursor: pointer;
@@ -11,10 +34,9 @@
 	margin-bottom: 10px;
 }
 	
-.sounds-debug-panel #close-sounds-button {
+.sounds-debug-panel .close-sounds-button {
 	background: #770000;
 	position: absolute;
-	top: 10px;
 	right: 10px;
 }
 
@@ -26,11 +48,10 @@
 	cursor: pointer;
 }
 
-
-.sounds-debug-panel .snd-name-empty {
-	opacity: 0.5;
+.sounds-debug-panel .snd-name-empty::before {
+  content: "(?) ";
+  color: rgb(68, 142, 185);
 }
-
 
 
 .sounds-debug-panel tr:hover {

@@ -126,6 +126,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 			PrefabEditor.acceptPrefabEdition();
 			Sound.__resetSounds();
 			Pool.__resetIdCounter();
+			editorEvents.emit('playToggle');
 			if (play) { // launch game
 				DataAccessDebugger.initializeGameData();
 				(game.data as SelectableProperty).___EDITOR_isGoodForChooser = true;

@@ -127,9 +127,7 @@ L.setLanguagesAssets = (_languages: KeyedMap<KeyedMap<string>>) => {
 };
 
 L.refreshAllTextEverywhere = () => {
-	if (game.stage) {
-		game.forAllChildrenEverywhere(refreshTranslatableText);
-	}
+	game.forAllChildrenEverywhere(refreshTranslatableText);
 };
 
 function refreshTranslatableText(o: any) {

@@ -149,6 +149,13 @@ class Game {
 
 	setValueByPath = setValueByPath;
 
+	constructor() {
+		stage = new Container();
+		stage.name = 'stage';
+		this.stage = stage;
+		stage.__nodeExtendData = {};
+	}
+
 	init(element?: HTMLElement, gameId?: string, pixiOptions?: Partial<IApplicationOptions>) {
 		/// #if EDITOR
 		/*
@@ -169,11 +176,6 @@ class Game {
 		/// #if EDITOR
 		(this.onResize as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 		/// #endif
-
-		stage = new Container();
-		stage.name = 'stage';
-		this.stage = stage;
-		stage.__nodeExtendData = {};
 
 		this.settings = new Settings(gameId || this.projectDesc.id);
 
@@ -294,9 +296,7 @@ class Game {
 		if (data.projectDesc) {
 			game.applyProjectDesc(data.projectDesc);
 		}
-		if (game.stage) {
-			game.stage.emit('assets-will-add', data); // 99999
-		}
+		game.stage.emit('assets-will-add', data); // 99999
 		Lib.addAssets(data);
 	}
 

@@ -68,7 +68,7 @@ export default class StatusBar extends Component {
 			}
 
 			let resetZoomBtn;
-			if (game.stage) {
+			if (game.pixiApp) {
 				if (game.stage.scale.x !== 1) {
 					txt += ' zoom: ' + game.stage.scale.x;
 				}

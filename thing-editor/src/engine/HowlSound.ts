@@ -48,7 +48,6 @@ export default class HowlSound extends Howl {
 				}
 			});
 
-
 			let attempt = 0;
 
 			this.on('loaderror', () => {

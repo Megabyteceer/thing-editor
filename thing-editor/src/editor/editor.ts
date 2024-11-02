@@ -501,7 +501,7 @@ class Editor {
 	}
 
 	_processIsMobileHandlers() {
-		if (game.stage) {
+		if (game.pixiApp) {
 			game.forAllChildrenEverywhere((o: any) => {
 				if (o.__onIsMobileChange) {
 					o.__onIsMobileChange();
