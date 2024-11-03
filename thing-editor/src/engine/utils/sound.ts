@@ -309,11 +309,13 @@ export default class Sound {
 					setTimeout(() => Sound.__highlightPlayedSound(soundId), 20);
 				}
 			}
-			let soundTitle: HTMLDivElement = document.querySelector('.sounds-debug-panel .' + cleanupClassName(soundId))!;
-			if (soundTitle) {
-				soundTitle.style.color = 'rgb(0,150,0)';
-				if (!__animatedSoundItems.includes(soundTitle)) {
-					__animatedSoundItems.push(soundTitle);
+			if (!game.__EDITOR_mode) {
+				let soundTitle: HTMLDivElement = document.querySelector('.sounds-debug-panel .' + cleanupClassName(soundId))!;
+				if (soundTitle) {
+					soundTitle.style.color = 'rgb(0,150,0)';
+					if (!__animatedSoundItems.includes(soundTitle)) {
+						__animatedSoundItems.push(soundTitle);
+					}
 				}
 			}
 		}
@@ -538,19 +540,21 @@ function renderSoundPanelItem(soundName:string) {
 						delete timeouts[soundName];
 					}
 					timeouts[soundName] = window.setTimeout(() => {
-						Lib.getSound(soundName).stop();
+						if (Lib.hasSound(soundName)) {
+							Lib.getSound(soundName).stop();
+						}
 					}, 2000);
 				}
 			}
 		}, soundName),
 		R.td(null, R.button({ className: 'snd-override', onClick: async () => {
 			const sndData = await IndexedDBUtils.openFile(soundName);
-			let a = new Audio(sndData.data);
+			let a = new Audio(sndData[0].data);
 			a.play();
 			window.setTimeout(() => {
 				a.pause();
 			}, 2000);
-			overrideSound(soundName, sndData.data);
+			overrideSound(soundName, sndData[0].data);
 			showSndDebugger();
 		}
 		}, 'Choose...')),
@@ -582,12 +586,21 @@ function renderSoundsPanel() {
 			items
 		)
 		),
-		R.button({onClick: () => {
-			IndexedDBUtils.export();
-		}}, 'Export pack...'),
-		R.button({onClick: () => {
-			IndexedDBUtils.import();
-		}}, 'Import pack...'),
+		/*R.button({onClick: () => {
+			// TODO:
+		}}, 'Download sounds...'),*/
+		R.button({onClick: async () => {
+			const files = await IndexedDBUtils.openFile('', undefined, undefined, true);
+			for (const fileData of files) {
+				let soundName = fileData.fileName.replace(/.wav$/, '');
+				if (!Lib.hasSound(soundName)) {
+					soundName = 'snd/' + soundName;
+				}
+				Lib.__overrideSound(soundName, fileData.data);
+				IndexedDBUtils.save(soundName, 'sound', fileData);
+			}
+			showSndDebugger();
+		}}, 'Upload sounds...'),
 		R.button({
 			className: 'close-sounds-button',
 			onClick: () => {

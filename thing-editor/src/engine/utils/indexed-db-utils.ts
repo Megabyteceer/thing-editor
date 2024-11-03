@@ -1,5 +1,6 @@
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import assert from '../debug/assert';
 
 const IS_SKIN_MODIFIED = '__is-skin-modified';
 
@@ -110,7 +111,7 @@ export default class IndexedDBUtils {
 	static async import() {
 		await this.askAboutUnsavedChanges('Load Anyway');
 
-		const data = await chooseFile('application/json');
+		const data = (await chooseFile('application/json'))[0];
 		this.importRawData(data.data, data.fileName);
 
 	}
@@ -175,46 +176,55 @@ export default class IndexedDBUtils {
 		await this.setFullData({ settings: {}, data: {}, type: 'indexed-db-utils-dump' });
 	}
 
-	static async openFile(key: string, type = 'sound', accept = 'audio/x-wav'): Promise<IndexedDBRecord> {
+	static async openFile(key: string, type = 'sound', accept = 'audio/x-wav', multiple = false): Promise<IndexedDBRecord[]> {
 
-		const contents = await chooseFile(accept);
+		const contents = await chooseFile(accept, multiple);
 
-		if (contents) {
+		if (contents && key) {
+			assert(contents.length === 1, 'key should be empty for multiply files selection');
 			IndexedDBUtils.save(
 				key,
 				type,
-				contents
+				contents[0]
 			);
 		}
 		return contents;
 	}
 }
 
-async function chooseFile(accept = 'audio/x-wav'): Promise<IndexedDBRecord> {
+async function chooseFile(accept = 'audio/x-wav', multiple = false): Promise<IndexedDBRecord[]> {
 	return new Promise((resolve) => {
 		const readFile = (ev: InputEvent) => {
-			const file = (ev.target as HTMLInputElement).files![0];
-			if (!file) {
+			const files = (ev.target as HTMLInputElement).files;
+			if (!files?.length) {
 				return;
 			}
-			const reader = new FileReader();
-			reader.onload = function (e) {
-				const contents = e.target!.result as string;
-				resolve({
-					fileName: (ev.target as HTMLInputElement).value.split(/[\\\/]/).pop()!,
-					data: contents
-				});
+			const ret = [] as IndexedDBRecord[];
 
-			};
-			if (file.name.endsWith('.json')) {
-				reader.readAsText(file);
-			} else {
-				reader.readAsDataURL(file);
+			for (const file of files) {
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					const contents = e.target!.result as string;
+					ret.push({
+						fileName: file.name.split(/[\\\/]/).pop()!,
+						data: contents
+					});
+					if (ret.length === files.length) {
+						resolve(ret);
+					}
+				};
+
+				if (file.name.endsWith('.json')) {
+					reader.readAsText(file);
+				} else {
+					reader.readAsDataURL(file);
+				}
 			}
 		};
 		if (!fileInput) {
 			fileInput = document.createElement('input');
 			fileInput.type = 'file';
+			fileInput.multiple = multiple;
 			document.body.appendChild(fileInput);
 			fileInput.style.display = 'none';
 		}
