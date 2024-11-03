@@ -21,7 +21,7 @@ export default class HowlSound extends Howl {
 	constructor(options: HowlOptions) {
 
 		/// #if EDITOR
-		if (game.editor.buildProjectAndExit) {
+		if (game.editor?.buildProjectAndExit) {
 			options.preload = false;
 		}
 		/// #endif
@@ -29,7 +29,7 @@ export default class HowlSound extends Howl {
 		super(options);
 
 		/// #if EDITOR
-		if (game.editor.buildProjectAndExit) {
+		if (game.editor?.buildProjectAndExit) {
 			return;
 		}
 		/// #endif

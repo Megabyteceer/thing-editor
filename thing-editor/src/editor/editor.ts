@@ -48,6 +48,8 @@ import Build from './utils/build';
 import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
+import type { ContextMenuItem } from './ui/context-menu';
+import MainMenu from './ui/main-menu';
 import roundUpPoint from './utils/round-up-point';
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
@@ -72,6 +74,12 @@ import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr f
 });
 
 let previewedSound: HowlSound;
+
+interface RecentProject {
+	dir: string;
+	icon: string;
+	title: string;
+}
 
 class Editor {
 
@@ -190,7 +198,7 @@ class Editor {
 		}
 
 		if (this.settings.getItem('last-opened-project')) {
-			this.openProject(this.settings.getItem('last-opened-project'));
+			this.loadProject(this.settings.getItem('last-opened-project'));
 		} else {
 			this.chooseProject(true);
 		}
@@ -310,12 +318,16 @@ class Editor {
 		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
 			if (dir) {
 				if (this.askSceneToSaveIfNeed()) {
-					this.settings.setItem('last-opened-project', dir);
-					this.restartInProgress = true;
-					window.document.location.reload();
+					this.openProject(dir);
 				}
 			}
 		});
+	}
+
+	openProject(dir:string) {
+		this.settings.setItem('last-opened-project', dir);
+		this.restartInProgress = true;
+		window.document.location.reload();
 	}
 
 	pauseGame() {
@@ -329,7 +341,7 @@ class Editor {
 		return this.editorArguments['build-and-exit'] as string;
 	}
 
-	async openProject(dir?: string) {
+	async loadProject(dir?: string) {
 		this.ui.viewport.stopExecution();
 
 		if (!dir) {
@@ -473,7 +485,30 @@ class Editor {
 				fs.exitWithResult('build finished');
 			}
 
+			const recentProjects = this.getRecentProjects().filter(p => p.dir !== projectDesc.dir);
+			recentProjects.unshift({icon: projectDesc.icon, title: projectDesc.title, dir: projectDesc.dir});
+			if (recentProjects.length > 5) {
+				recentProjects.pop();
+			}
+			this.settings.setItem('recent-projects', recentProjects);
+			const recentProjectsMenu = recentProjects.map((project) => {
+				return {
+					name: R.span(null, project.icon ? R.img({src: '/' + project.dir + project.icon }) : undefined, project.title),
+					disabled: () => {
+						return project.dir === game.editor.currentProjectDir;
+					},
+					onClick: () => {
+						game.editor.openProject(project.dir.substring(6, project.dir.length - 1));
+					}
+				}as ContextMenuItem;
+			});
+			recentProjectsMenu.unshift(null);
+			MainMenu.injectMenu('file', recentProjectsMenu, 'recent-projects', 1);
 		}
+	}
+
+	getRecentProjects():RecentProject[] {
+		return this.settings.getItem('recent-projects', []);
 	}
 
 	toggleScreenOrientation() {

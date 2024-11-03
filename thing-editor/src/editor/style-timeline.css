@@ -393,3 +393,15 @@
 	margin: 10px;
 	line-height: 1.6;
 }
+
+@keyframes fireAnimation {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
