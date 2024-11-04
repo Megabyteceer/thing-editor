@@ -180,7 +180,9 @@ class Game {
 		this.settings = new Settings(gameId || this.projectDesc.id);
 
 		/// #if EDITOR
-		this.___enforcedOrientation = game.editor.settingsLocal.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
+		if (game.projectDesc.screenOrientation === 'auto') {
+			this.___enforcedOrientation = game.editor.settingsLocal.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
+		}
 		/// #endif
 
 		initGameInteraction();
