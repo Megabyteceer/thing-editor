@@ -203,7 +203,7 @@ export default class Sound {
 
 		if (s.lastPlayStartFrame < game.time
 			/// #if EDITOR
-			|| game.__EDITOR_mode || game.__paused
+			|| game.__EDITOR_mode
 		/// #endif
 		) {
 			Sound.__highlightPlayedSound(soundId);
@@ -534,6 +534,7 @@ function renderSoundPanelItem(soundName:string) {
 					/// #endif
 					FlyText.flyText('Copied to clipboard: ' + txt, 200, 200);
 				} else {
+					Lib.getSound(soundName).lastPlayStartFrame = -1;
 					Sound.play(soundName);
 					if (timeouts[soundName]) {
 						clearTimeout(timeouts[soundName]);
