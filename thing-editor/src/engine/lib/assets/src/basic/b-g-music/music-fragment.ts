@@ -156,9 +156,9 @@ export default class MusicFragment {
 		if (s) {
 			try {
 				const snd = Lib.getSound(s, true);
-				Sound.__highlightPlayedSound(s);
 				snd.volume(startVol);
 				/// #if DEBUG
+				Sound.__highlightPlayedSound(s);
 				snd.rate(game.pixiApp.ticker.speed);
 				/// #endif
 				snd.seek(pos);

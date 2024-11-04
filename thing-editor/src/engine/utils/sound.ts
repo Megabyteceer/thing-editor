@@ -206,7 +206,10 @@ export default class Sound {
 			|| game.__EDITOR_mode
 		/// #endif
 		) {
+			/// #if DEBUG
 			Sound.__highlightPlayedSound(soundId);
+			/// #endif
+
 			if (!multiInstanced && s.playing()) {
 				s.stop();
 			}
