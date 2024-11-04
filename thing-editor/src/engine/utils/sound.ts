@@ -203,8 +203,8 @@ export default class Sound {
 
 		if (s.lastPlayStartFrame < game.time
 			/// #if EDITOR
-			|| game.__EDITOR_mode
-			/// #endif
+			|| game.__EDITOR_mode || game.__paused
+		/// #endif
 		) {
 			Sound.__highlightPlayedSound(soundId);
 			if (!multiInstanced && s.playing()) {
