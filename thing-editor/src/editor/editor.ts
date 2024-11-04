@@ -493,7 +493,12 @@ class Editor {
 			this.settings.setItem('recent-projects', recentProjects);
 			const recentProjectsMenu = recentProjects.map((project) => {
 				return {
-					name: R.span(null, project.icon ? R.img({src: '/' + project.dir + project.icon }) : undefined, project.title),
+					name: R.span(null, project.icon ? R.img({src: '/' + project.dir + project.icon, onError: (er:ErrorEvent) => {
+						recentProjects.splice(recentProjects.findIndex(p => p.dir === project.dir), 1);
+						this.settings.setItem('recent-projects', recentProjects);
+						((er.target as HTMLImageElement).closest('.context-menu-item') as HTMLDivElement).style.display = 'none';
+					}
+					 }) : undefined, project.title),
 					disabled: () => {
 						return project.dir === game.editor.currentProjectDir;
 					},
