@@ -772,6 +772,7 @@ class Game {
 				if (!game.currentScene._onShowCalled) {
 					game.currentScene._onShowCalled = true;
 					game.currentScene.onShow();
+					game.currentScene.emit('on-scene-show');
 					loadDynamicTextures();
 					if (game.currentScene.name === PRELOADER_SCENE_NAME) {
 						game._hideCurrentFaderAndStartScene();
