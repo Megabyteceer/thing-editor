@@ -24,7 +24,7 @@ interface EditableRect {
 
 type EditablePropertyType = keyof IEditablePropertyType;
 
-interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
+interface EditablePropertyDescRaw<T extends import('pixi.js').DisplayObject = import('pixi.js').DisplayObject> {
 	min?: number;
 	max?: number;
 	step?: number;
@@ -42,15 +42,15 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 	onBlur?: () => void;
 	onClick?: (ev: any) => void;
 	className?: string;
-	hotkey?: Hotkey;
+	hotkey?: import('./utils/hotkey').Hotkey;
 
 	/** filter assets for selector */
-	filterAssets?: (file: FileDesc) => boolean;
+	filterAssets?: (file: import('./fs').FileDesc) => boolean;
 
 	/** splitter header */
 	title?: string;
 	animate?: true;
-	select?: SelectEditorItem[] | (() => SelectEditorItem[]);
+	select?: import('./ui/props-editor/props-editors/select-editor').SelectEditorItem[] | (() => import('./ui/props-editor/props-editors/select-editor').SelectEditorItem[]);
 	noNullCheck?: true;
 	important?: boolean;
 	tip?: string | (() => string | undefined);
@@ -79,7 +79,7 @@ interface EditablePropertyDescRaw<T extends DisplayObject = DisplayObject> {
 
 }
 
-interface EditablePropertyDesc<T extends Container = Container> extends EditablePropertyDescRaw<T> {
+interface EditablePropertyDesc<T extends import('pixi.js').Container = import('pixi.js').Container> extends EditablePropertyDescRaw<T> {
 	class: SourceMappedConstructor;
 	type: EditablePropertyType;
 	default: any;
@@ -100,7 +100,7 @@ interface NodeExtendData {
 	deepness?: number;
 	isSelected?: boolean;
 
-	treeNodeView?: TreeNode;
+	treeNodeView?: import('./ui/tree-view/tree-node').default;
 
 	isPrefabReference?: string;
 
@@ -154,7 +154,7 @@ interface NodeExtendData {
 	eatenRotation?: number;
 }
 
-type FSCallback = Uint8Array | undefined | FileDesc[] | ProjectDesc[] | number | boolean;
+type FSCallback = Uint8Array | undefined | import('./fs').FileDesc[] | ProjectDesc[] | number | boolean;
 
 type KeyedObject = { [key: string]: any };
 
@@ -185,8 +185,8 @@ type SerializedObject = {
 };
 
 type Electron_ThingEditorServer = { // exposed from electron
-	fs: (command: string, filename?: string | string[] | number, content?: string | boolean, ...args?: any[]) => FSCallback;
-	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args?: any[]) => Promise<any>;
+	fs: (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => FSCallback;
+	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => Promise<any>;
 	versions: KeyedObject;
 	onServerMessage: (_onServerMessage: (event: string, ...args: any[]) => void) => void;
 	argv: string[];
@@ -226,10 +226,6 @@ interface SelectableProperty extends AnyType {
 	___EDITOR_callbackParameterChooserFunction?: (owner: any) => Promise<any[] | any>;
 }
 
-declare global {
-	let electron_ThingEditorServer: electron_ThingEditorServer; // exposed from electron
-}
-
 /** sound name, duration */
 type SoundAssetEntry = [soundName: string, duration: number];
 
@@ -244,5 +240,3 @@ interface AssetsDescriptor {
 	text?: KeyedObject;
 	projectDesc?: ProjectDesc;
 }
-
-throw new Error('env.d.ts should not be imported.');

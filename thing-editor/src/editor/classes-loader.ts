@@ -154,7 +154,7 @@ export default class ClassesLoader {
 						title: className,
 						notSerializable: true
 					});
-					Class.__editablePropsRaw.unshift(Class.__editablePropsRaw.pop() as EditablePropertyDesc);
+					Class.__editablePropsRaw.unshift(Class.__editablePropsRaw.pop()!);
 				}
 
 				return Class;

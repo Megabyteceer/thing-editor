@@ -58,7 +58,7 @@ const isWrapDisabled = (o: Fill) => {
 	}
 };
 
-const TEXTURE_WRAP_MODE_DESC: EditablePropertyDescRaw = {
+const TEXTURE_WRAP_MODE_DESC: EditablePropertyDescRaw<Fill> = {
 	notSerializable: true,
 	select: [
 		{ name: 'CLAMP', value: WRAP_MODES.CLAMP },

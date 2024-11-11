@@ -653,8 +653,8 @@ class Game {
 	}
 
 	/// #if EDITOR
-	get currentScene(): CurrentSceneType {
-		return __currentSceneValue;
+	get currentScene() {
+		return __currentSceneValue as CurrentSceneType | Scene;
 	}
 	/*
 	/// #endif
