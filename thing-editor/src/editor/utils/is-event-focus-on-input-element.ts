@@ -8,7 +8,7 @@ const isEventFocusOnInputElement = (ev: KeyboardEvent): boolean => {
 		if (ev.key === 'ArrowDown' || ev.key === 'ArrowLeft' || ev.key === 'ArrowRight' || ev.key === 'ArrowUp') {
 			return true;
 		}
-		if (ev.key === 'Backspace' || ev.key === 'Delete' || ev.key === 'Enter') {
+		if (ev.key === 'Backspace' || ev.key === 'Delete' || ev.key === 'Enter' || ev.code === 'Comma' || ev.code === 'Period') {
 			return true;
 		}
 
