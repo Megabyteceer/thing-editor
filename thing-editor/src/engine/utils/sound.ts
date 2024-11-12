@@ -369,11 +369,11 @@ const __onUpdate = () => {
 setTimeout(() => {
 	/// #if EDITOR
 	editorEvents.on('projectDidOpen', () => {
-		game.stage.on('updated', __onUpdate);
+		game.on('updated', __onUpdate);
 	});
 	return;
 	/// #endif
-	game.stage.on('updated', __onUpdate);
+	game.on('updated', __onUpdate);
 }, 10);
 
 setTimeout(initEmptySound, 0);

@@ -888,7 +888,7 @@ export default class Lib
 	/**
 	* @protected
 	*/
-	static __overrideSound(name: string, src: string[] | string | HowlSound) {
+	static __overrideSound(soundId: string, src: string[] | string | HowlSound) {
 		let s:HowlSound;
 		if (src instanceof HowlSound) {
 			s = src;
@@ -897,8 +897,8 @@ export default class Lib
 			s = new HowlSound(opt);
 		}
 		s.lastPlayStartFrame = 0;
-		soundsHowlers[name] = s;
-		game.stage.emit('__sound-overridden', name);
+		soundsHowlers[soundId] = s;
+		game.emit('__sound-overridden', soundId);
 	}
 
 	/// #endif

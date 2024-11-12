@@ -73,7 +73,18 @@ const processOnResize = (o: Container) => {
 	}
 };
 
-class Game {
+export interface ThingGameEvents {
+	'assets-will-add': [data: AssetsDescriptor];
+	'stage-will-resize': [];
+	'global-update': [];
+	'update': [];
+	'updated': [];
+	/// #if EDITOR
+	'__sound-overridden': [soundId:string];
+	/// #endif
+}
+
+class Game extends utils.EventEmitter<ThingGameEvents> {
 
 	W = 0;
 	H = 0;
@@ -150,6 +161,7 @@ class Game {
 	setValueByPath = setValueByPath;
 
 	constructor() {
+		super();
 		stage = new Container();
 		stage.name = 'stage';
 		this.stage = stage;
@@ -298,7 +310,7 @@ class Game {
 		if (data.projectDesc) {
 			game.applyProjectDesc(data.projectDesc);
 		}
-		game.stage.emit('assets-will-add', data); // 99999
+		game.emit('assets-will-add', data); // 99999
 		Lib.addAssets(data);
 	}
 
@@ -587,7 +599,7 @@ class Game {
 				/// #if EDITOR
 			}
 			/// #endif
-			this.stage.emit('stage-will-resize');
+			this.emit('stage-will-resize');
 			this.forAllChildrenEverywhere(processOnResize);
 			/// #if EDITOR
 			if (!this.__enforcedW) {
@@ -679,7 +691,7 @@ class Game {
 		if ((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
 		/// #endif
 
-			this.stage.emit('global-update');//99999
+			this.emit('global-update');//99999
 
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
 			/// #if EDITOR
@@ -764,7 +776,7 @@ class Game {
 			contextLoseTime = 0;
 		}
 
-		this.stage.emit('update'); //99999
+		this.emit('update'); //99999
 
 		if (game._isWaitingToHideFader) {
 			if (game.loadingsFinished === game.loadingsInProgress) {
@@ -831,7 +843,7 @@ class Game {
 			}
 		}
 		this.keys.update();
-		this.stage.emit('updated');//99999
+		this.emit('updated');//99999
 		Lib._cleanupRemoveHolders();
 	}
 

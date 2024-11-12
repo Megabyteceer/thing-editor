@@ -393,7 +393,7 @@ export default class ScrollLayer extends Container {
 	}
 }
 
-game.stage.on('global-update', ScrollLayer.updateGlobal);
+game.on('global-update', ScrollLayer.updateGlobal);
 
 /// #if EDITOR
 ScrollLayer.__EDITOR_icon = 'tree/scroll';

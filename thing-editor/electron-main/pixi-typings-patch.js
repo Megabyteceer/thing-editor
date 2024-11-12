@@ -29,12 +29,12 @@ patch(
     onRemove(): void;
     addFilter(filter: Filter): void;
     removeFilter(filter: Filter): void;
-    gotoLabelRecursive(labelName: string);
+    gotoLabelRecursive(labelName: string): void;
     isCanBePressed: boolean;
     findParentByType<T extends Container>(classType: new () => T): T | null;
     findParentByName(name: string): Container;
 
-    _onRenderResize?();
+    _onRenderResize?(): void;
 
     /** search child recursively by it's name */
     findChildByName(name: string): Container | undefined;
@@ -86,7 +86,7 @@ patch(
     /** debug uniq id of object  (exists in editor only)*/
     ___id: number;
 
-	__shiftObject?(dX, dY);
+	__shiftObject?(dX: number, dY: number): void;
 	
     /** added because pixi exports classes with wrong names */
     static __className: string;
@@ -97,9 +97,9 @@ patch(
     static name: string;
     static __sourceFileName?: string;
     static __defaultValues: KeyedObject;
-    static __requiredComponents?: Constructor[];
+    static __requiredComponents?: SourceMappedConstructor[];
     static __EDITOR_icon?: string;
-    static __classAsset: FileDescClass;
+    static __classAsset: import ( "thing-editor/src/editor/fs").FileDescClass;
     static __editableProps: EditablePropertyDesc[];
     static __editablePropsRaw: EditablePropertyDescRaw[];
 

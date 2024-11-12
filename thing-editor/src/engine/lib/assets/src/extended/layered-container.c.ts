@@ -108,10 +108,11 @@ LayeredContainer.__requiredComponents = [LayeredContainerPortal];
 
 const allPortalsContainers = new Set() as Set<Container>;
 
-game.stage.on('update', () => {
+game.on('update', () => {
 	allPortalsContainers.clear();
 });
-game.stage.on('updated', () => {
+
+game.on('updated', () => {
 	if (game.isUpdateBeforeRender) {
 		allPortalsContainers.forEach(sortPortals);
 	}

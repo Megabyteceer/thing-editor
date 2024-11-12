@@ -364,7 +364,7 @@ const sortReverted = (a: number, b: number) => {
 };
 
 /// #if DEBUG
-game.stage.on('__sound-overridden', BgMusic.__onSoundOverride);
+game.on('__sound-overridden', BgMusic.__onSoundOverride);
 /// #endif
 
 /// #if EDITOR
