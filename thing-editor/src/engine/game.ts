@@ -1510,7 +1510,7 @@ const visibilityChangeHandler = () => {
 
 		if (game.pixiApp) {
 			window.setTimeout(() => {
-				if (game.classes.BgMusic) {
+				if (game.classes?.BgMusic) {
 					/// #if EDITOR
 					/*
 					/// #endif
