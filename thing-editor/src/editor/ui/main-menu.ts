@@ -268,6 +268,12 @@ const MAIN_MENU: MainMenuItem[] = [
 					location.reload();
 				}
 			},
+			{
+				name: 'Patch PIXI typings',
+				onClick: () => {
+					fs.run('/thing-editor/electron-main/pixi-typings-patch.js');
+				}
+			},
 
 		]
 	}

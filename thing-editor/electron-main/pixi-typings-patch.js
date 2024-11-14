@@ -52,7 +52,7 @@ patch(
     __beforeDeserialization?(): void;
     __beforeSerialization?(): void;
     __afterDeserialization?(): void;
-    __treeInjection?(): void;
+   __treeInjection?(): import('preact').ComponentChild;
     __afterSerialization?(data: SerializedObject): void;
     __beforeDestroy?(): void;
 
@@ -175,7 +175,7 @@ const path = require('path');
 const fs = require('fs');
 const {dialog} = require('electron');
 
-function tryToPatch(folder, mainWindow) {
+function tryToPatch(folder) {
 	for (let patch of patches) {
 		let isReplace = false;
 		var fn = path.join(folder, patch.fileName);
@@ -213,16 +213,15 @@ function tryToPatch(folder, mainWindow) {
 			}
 		}
 	}
-}
-
-module.exports = function (mainWindow) {
+};
+module.exports = function () {
 	if (IS_CI_RUN) {
 		return;
 	}
 	let projectRoot = path.join(__dirname, '../..');
 	tryToPatch(path.join(__dirname, '..'));
 	while (fs.existsSync(projectRoot)) {
-		tryToPatch(projectRoot, mainWindow);
+		tryToPatch(projectRoot);
 		let parentPath = path.join(projectRoot, '..');
 		if (parentPath === projectRoot) {
 			break;
