@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "postinstall": "node ./thing-editor/demo/install.js"
+    "dependencies": "node ./thing-editor/demo/install.js"
   },
   "devDependencies": {
     "@pixi/filter-outline": "^5.2.0",
