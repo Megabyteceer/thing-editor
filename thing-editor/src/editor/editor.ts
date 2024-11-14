@@ -450,7 +450,7 @@ class Editor {
 			if (this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {
 				this.saveLastSceneOpenName('');
 			}
-			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
+			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || (Lib.hasScene(this.projectDesc.mainScene) ? this.projectDesc.mainScene : Object.keys(Lib.scenes)[0]));
 
 			loadFonts();
 			await waitForCondition(() => {
