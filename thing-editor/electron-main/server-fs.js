@@ -245,6 +245,9 @@ const getFileHash = (fileName) => {
 };
 
 function isFilesEqual(a, b) {
+	if (a === b) {
+		return false; // the same file
+	}
 	if (fs.statSync(a).size !== fs.statSync(b).size) {
 		return false;
 	}
