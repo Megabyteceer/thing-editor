@@ -35,6 +35,7 @@ export default defineConfig({
 		keepNames: true
 	},
 	resolve: {
+		extensions: [ '.ts', '.js', '.mjs', '.json', '.jsx', '.tsx'],
 		dedupe: [
 			'thing-editor/**'
 		],
