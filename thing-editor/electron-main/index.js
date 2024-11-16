@@ -6,7 +6,6 @@ const {
 	globalShortcut,
 	shell
 } = require('electron');
-const {argv} = require('process');
 
 (() => {
 	/** @type BrowserWindow */
