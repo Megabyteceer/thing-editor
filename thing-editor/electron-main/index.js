@@ -6,6 +6,7 @@ const {
 	globalShortcut,
 	shell
 } = require('electron');
+const {argv} = require('process');
 
 (() => {
 	/** @type BrowserWindow */
@@ -48,7 +49,7 @@ const {
 		} catch (_er) { }
 	};
 
-	const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
+	const IS_DEBUG = process.argv.includes('debugger-detection-await');
 
 	process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -92,12 +93,14 @@ const {
 			return {action: 'deny'};
 		});
 
-		mainWindow.webContents.addListener('console-message', (_event, _level, message, line, sourceId) =>{
-			console.log('console-message:');
-			console.log(message);
-			console.log(sourceId);
-			console.log(line);
-		});
+		if (process.argv.some(a => a.startsWith('--build-and-exit'))) {
+			mainWindow.webContents.addListener('console-message', (_event, _level, message, line, sourceId) =>{
+				console.log('console-message:');
+				console.log(message);
+				console.log(sourceId);
+				console.log(line);
+			});
+		}
 
 		mainWindow.on('focus', () => {
 			globalShortcut.register('F5', () => {
@@ -118,15 +121,6 @@ const {
 				ev.preventDefault();
 			}
 		});
-
-
-		//mainWindow.webContents.openDevTools();
-		//mainWindow.hide();
-
-		/*
-		mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
-			console.log(message + " " + sourceId + " (" + line + ")");
-		});*/
 
 		nativeTheme.themeSource = 'dark';
 
