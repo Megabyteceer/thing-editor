@@ -494,12 +494,7 @@ class Editor {
 			const recentProjectsMenu = recentProjects.map((project) => {
 				return {
 					name: R.span(null, project.icon ? R.img({src: '/' + project.dir + project.icon, onError: (er:ErrorEvent) => {
-						const i = recentProjects.findIndex(p => p.dir === project.dir);
-						if (i >= 0) {
-							recentProjects.splice(i, 1);
-							this.settings.setItem('recent-projects', recentProjects);
-							((er.target as HTMLImageElement).closest('.context-menu-item') as HTMLDivElement).style.display = 'none';
-						}
+						((er.target as HTMLImageElement).closest('.context-menu-item') as HTMLDivElement).style.display = 'none';
 					}
 					 }) : undefined, project.title),
 					disabled: () => {
