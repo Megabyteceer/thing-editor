@@ -159,7 +159,7 @@ export default class Fill extends Mesh {
 	/// #if EDITOR
 	@editable(TEXTURE_WRAP_MODE_DESC)
 	set TEXTURE_WRAP_MODE(v: number) {
-		if (this.texture) {
+		if (this.texture && this.image) {
 			let bits = 0;
 			if (v === WRAP_MODES.REPEAT) {
 				bits = 8;
