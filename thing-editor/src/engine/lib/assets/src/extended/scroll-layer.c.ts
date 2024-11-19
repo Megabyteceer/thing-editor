@@ -5,6 +5,7 @@ import Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c'
 import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import { stepTo } from 'thing-editor/src/engine/utils/utils';
+import Button from '../basic/button.c';
 
 let draggingLayer: ScrollLayer | null;
 let mouseX_prev = 0;
@@ -139,11 +140,22 @@ export default class ScrollLayer extends Container {
 
 	onDown(ev: PointerEvent) {
 		if (this.worldVisible && this.getRootContainer().parent) {
+			if (Button.downedButton) {
+				let p = Button.downedButton.parent;
+				while (p) {
+					if (p === this) {
+						break;
+					}
+					p = p.parent;
+					if (!p) {
+						return;
+					}
+				}
+			}
 			mouseHandlerGlobal(ev);
 			draggingLayer = this;
 			mouseX_prev = game.mouse.x;
 			mouseY_prev = game.mouse.y;
-
 		}
 	}
 
