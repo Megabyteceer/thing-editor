@@ -464,7 +464,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			let filter = this.state.filter;
 			if (filter) {
 				if (id.indexOf(filter) < 0) {
-					if (langsIdsList.every(langId => (currentDirAssets.get(langId)!).asset[id].toLowerCase().indexOf(filter!) < 0)) {
+					if (langsIdsList.every(langId => (currentDirAssets.get(langId)!).asset[id]?.toLowerCase().indexOf(filter!) < 0)) {
 						return;
 					}
 				}
