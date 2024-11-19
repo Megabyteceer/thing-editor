@@ -116,6 +116,7 @@ export default class HTMLOverlay extends ScrollLayer {
 
 	_releaseHtmlDiv() {
 		if (this._htmlDiv) {
+			this.emit('html-will-remove'); /// 99999
 			this._htmlDiv.remove();
 			this._htmlDiv = null;
 			if (this._overlayInterval) {
@@ -177,6 +178,7 @@ export default class HTMLOverlay extends ScrollLayer {
 				}
 				this._isHtmlContentInvalidated = false;
 				this._overlayInterval = window.setInterval(this._overlayIntervalUpdate, 1000 / 60);
+				this.emit('html-attached'); /// 99999
 			}
 			this._htmlDiv.style.opacity = this.currentHtmlOpacity.toString();
 			_canvasBoundsCache = null;
