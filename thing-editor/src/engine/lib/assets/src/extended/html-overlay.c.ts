@@ -154,6 +154,7 @@ export default class HTMLOverlay extends ScrollLayer {
 				this._htmlDiv.style.position = 'absolute';
 				this._htmlDiv.innerHTML = this._htmlContent;
 				this._htmlDiv.style.overflowY = 'hidden';
+				this._htmlDiv.style.overflowX = 'visible';
 				this._htmlDiv.style.zIndex = this.zIndexHTML.toString();
 				this._htmlDiv.style.transformOrigin = '0 0';
 				this._applyClassName();
@@ -212,7 +213,11 @@ export default class HTMLOverlay extends ScrollLayer {
 
 	_applyClassName() {
 		if (this._htmlDiv) {
-			this._htmlDiv.className = this.className ? (this.className + (game.isPortrait ? ' portrait-' : ' landscape-') + this.className) : '';
+			this._htmlDiv.className = this.className ? (
+				this.className +
+				(game.isPortrait ? ' portrait-' : ' landscape-') + this.className +
+				(game.isMobile.any ? ' mobile-' : ' desktop-') + this.className
+			) : '';
 		}
 	}
 
