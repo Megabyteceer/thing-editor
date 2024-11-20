@@ -140,7 +140,7 @@ export default class ScrollLayer extends Container {
 
 	onDown(ev: PointerEvent) {
 		if (this.worldVisible && this.getRootContainer().parent) {
-			if (Button.downedButton) {
+			if (Button.downedButton && Button.downedButton.isCanBePressed) {
 				let p = Button.downedButton.parent;
 				while (p) {
 					if (p === this) {
