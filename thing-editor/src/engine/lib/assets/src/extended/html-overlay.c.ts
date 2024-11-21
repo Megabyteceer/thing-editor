@@ -151,7 +151,7 @@ export default class HTMLOverlay extends ScrollLayer {
 		if (this.currentHtmlOpacity > 0.001) {
 			if (!this._htmlDiv) {
 				this._htmlDiv = document.createElement('div');
-				this._htmlDiv.style.position = 'absolute';
+				this._htmlDiv.style.position = 'fixed';
 				this._htmlDiv.innerHTML = this._htmlContent;
 				this._htmlDiv.style.overflowY = 'hidden';
 				this._htmlDiv.style.overflowX = 'visible';
