@@ -687,9 +687,12 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #if EDITOR
 		EDITOR_FLAGS.updateInProgress = true;
 		/// #endif
-		/// #if DEBUG
-		if ((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
-		/// #endif
+
+		if ((!this.__paused || this.__doOneStep)
+			/// #if EDITOR
+			&& !this.__EDITOR_mode
+			/// #endif
+		) {
 
 			this.emit('global-update');//99999
 
@@ -712,7 +715,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				game.isUpdateBeforeRender = !(frameCounterTime > FRAME_PERIOD);
 				this._updateFrame();
 
-				/// #if DEBUG
 				if (this.__doOneStep) {
 					/// #if EDITOR
 					this.editor.refreshTreeViewAndPropertyEditor();
@@ -721,11 +723,8 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 					frameCounterTime = 0;
 					break;
 				}
-				/// #endif
 			}
-		/// #if DEBUG
 		}
-		/// #endif
 
 		if (this.currentScene) {
 			app.renderer.background.backgroundColor.setValue(this.currentScene.backgroundColor);
@@ -1087,7 +1086,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #endif
 	}
 
-	/// #if DEBUG
 	__togglePause() {
 		game.__paused = !game.__paused;
 	}
@@ -1095,7 +1093,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 	__oneStep() {
 		game.__doOneStep = true;
 	}
-	/// #endif
 
 	/** call when fader covered the stage */
 	faderShoot() {
@@ -1220,9 +1217,9 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		return scene;
 	}
 
-	/// #if DEBUG
 	__doOneStep = false;
 	__paused = false;
+	/// #if DEBUG
 	protected _FPS = 0;
 	FPS = 0;
 	/// #endif
@@ -1526,13 +1523,15 @@ const visibilityChangeHandler = () => {
 focusChangeHandler(true);
 visibilityChangeHandler();
 
-
-/// #if DEBUG
-
-(function pauseRuntimeHotKey() {
+let pauseRuntimeHotKeysInititalized = false;
+export function __pauseRuntimeHotKeysInit() { // 99999
 	/// #if EDITOR
 	return;
 	/// #endif
+	if (pauseRuntimeHotKeysInititalized) {
+		return;
+	}
+	pauseRuntimeHotKeysInititalized = true;
 	window.addEventListener('keydown', (ev) => {
 		if (ev.keyCode === 80 && ev.ctrlKey) {
 			game.__togglePause();
@@ -1542,5 +1541,8 @@ visibilityChangeHandler();
 			ev.preventDefault();
 		}
 	});
-})();
+}
+
+/// #if DEBUG
+__pauseRuntimeHotKeysInit();
 /// #endif
