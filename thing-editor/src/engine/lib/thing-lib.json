@@ -36,9 +36,5 @@
 	"autoFullScreenMobile": true,
 	"__proxyFetchesViaNodeServer": false,
 	"__group": "slots",
-	"__webpack": {
-		"debug": "config/webpack.debug.js",
-		"production": "config/webpack.prod.js"
-	},
 	"__suspendWarnings": []
 }

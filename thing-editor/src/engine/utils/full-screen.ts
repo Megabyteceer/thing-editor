@@ -29,7 +29,6 @@ export default class FullScreen {
 					} catch (_err) { }
 				});
 			}
-			game._fireNextOnResizeImmediately();
 			if (game.projectDesc.screenOrientation !== 'auto') {
 				(screen.orientation as any).lock(game.projectDesc.screenOrientation);
 			}
@@ -54,7 +53,6 @@ export default class FullScreen {
 	}
 
 	static _closeInner() {
-		game._fireNextOnResizeImmediately();
 		if (document.exitFullscreen) {
 			document.exitFullscreen();
 		}

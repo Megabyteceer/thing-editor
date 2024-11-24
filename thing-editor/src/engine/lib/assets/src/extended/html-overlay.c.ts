@@ -151,7 +151,11 @@ export default class HTMLOverlay extends ScrollLayer {
 		if (this.currentHtmlOpacity > 0.001) {
 			if (!this._htmlDiv) {
 				this._htmlDiv = document.createElement('div');
-				this._htmlDiv.style.position = 'fixed';
+				this._htmlDiv.style.position =
+				/// #if EDITOR
+				(game.__EDITOR_mode) ? 'absolute' :
+				/// #endif
+					'fixed';
 				this._htmlDiv.innerHTML = this._htmlContent;
 				this._htmlDiv.style.overflowY = 'hidden';
 				this._htmlDiv.style.overflowX = 'visible';
@@ -191,10 +195,22 @@ export default class HTMLOverlay extends ScrollLayer {
 				this._htmlDiv.style.transform = 'scale(' + (this.currentHtmlScale).toFixed(3) + ')';
 			}
 
-			this._htmlDiv.style.left = (game.pixiApp.view as HTMLCanvasElement).offsetLeft + (Math.round(this.parent.worldTransform.tx) * canvasScale) + 'px';
+			this._htmlDiv.style.left = (
+				/// #if EDITOR
+				(!game.__EDITOR_mode) ? _canvasBoundsCache!.left :
+				/// #endif
+					(game.pixiApp.view as HTMLCanvasElement).offsetLeft)
+
+			+ (Math.round(this.parent.worldTransform.tx) * canvasScale) + 'px';
 
 
-			this._htmlDiv.style.top = (game.pixiApp.view as HTMLCanvasElement).offsetTop + (Math.round(this.parent.worldTransform.ty) * canvasScale) + 'px';
+			this._htmlDiv.style.top = (
+			/// #if EDITOR
+				(!game.__EDITOR_mode) ? _canvasBoundsCache!.top :
+				/// #endif
+					(game.pixiApp.view as HTMLCanvasElement).offsetTop)
+
+			+ (Math.round(this.parent.worldTransform.ty) * canvasScale) + 'px';
 
 
 			this._htmlDiv.style.width = (this.visibleArea.w * canvasScale) + 'px';

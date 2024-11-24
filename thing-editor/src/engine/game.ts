@@ -58,9 +58,6 @@ const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
 
-let resizeOutJump = 0;
-let fireNextOnResizeImmediately = false;
-
 interface Mouse {
 	click: boolean;
 	x: number;
@@ -244,30 +241,8 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 	}
 
 	_onContainerResize() {
-		if (resizeOutJump) {
-			clearTimeout(resizeOutJump);
-		}
-		if (fireNextOnResizeImmediately) {
-			fireNextOnResizeImmediately = false;
-			this.onResize();
-		} else {
-			resizeOutJump = window.setTimeout(() => {
-				resizeOutJump = 0;
-				if (game.isMobile.any // eslint-disable-line no-constant-condition
-					/// #if EDITOR
-					&& false
-					/// #endif
-				) {
-					for (let i of [20, 40, 80, 200, 500, 1000, 1500, 2000, 3000]) {
-						window.setTimeout(this.onResize, i);
-					}
-				}
-				this.onResize();
-			}, game.isMobile.any // eslint-disable-line no-constant-condition
-				/// #if EDITOR
-				&& false
-				/// #endif
-				? 1 : 200);
+		for (let i of [1, 20, 40, 80, 200, 500, 1000, 1500, 2000, 3000]) {
+			window.setTimeout(this.onResize, i);
 		}
 	}
 
@@ -1180,10 +1155,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #endif
 		game.currentScene = scene;
 		//*/
-	}
-
-	_fireNextOnResizeImmediately() {
-		fireNextOnResizeImmediately = true;
 	}
 
 	_setCurrentSceneContent(scene: Scene) {

@@ -50,10 +50,6 @@ interface ProjectDesc {
 	autoFullScreenMobile: false;
 	__proxyFetchesViaNodeServer: false;
 	__group: string;
-	__webpack: {
-		debug: string;
-		production: string;
-	};
 	libs: string[];
 }
 
