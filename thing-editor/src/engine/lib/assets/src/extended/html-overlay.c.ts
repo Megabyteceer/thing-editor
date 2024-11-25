@@ -188,8 +188,8 @@ export default class HTMLOverlay extends ScrollLayer {
 			this._htmlDiv.style.opacity = this.currentHtmlOpacity.toString();
 			_canvasBoundsCache = null;
 
-			recalcCanvasBounds()
-			;
+			recalcCanvasBounds();
+
 			if (Math.abs(this.currentHtmlScale - this.worldTransform.a) > 0.001) {
 				this.currentHtmlScale = this.worldTransform.a;
 				this._htmlDiv.style.transform = 'scale(' + (this.currentHtmlScale).toFixed(3) + ')';
