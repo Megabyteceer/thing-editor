@@ -643,7 +643,9 @@ export namespace editorUtils {
 
 	/// #if EDITOR
 	export const __setTextureSettingsBits = (name: string, bits: number, mask = 0xffffffff) => {
-		assert(name && name !== 'EMPTY' && name !== 'WHITE', 'Texture name expected.');
+		if (!name || name === 'EMPTY' || name === 'WHITE') {
+			return;
+		}
 		let current = Lib._getTextureSettingsBits(name, 0xffffffff);
 		let n = (current & (mask ^ 0xffffffff)) | bits;
 		if (n !== current) {
