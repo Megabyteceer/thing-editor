@@ -140,7 +140,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	onSetRandomExistsChanged(ev: InputEvent) {
 		for (let k of this.keyframes) {
 			if ((ev.target as HTMLInputElement).checked) {
-				k.props.keyFrame.r = 0;
+				k.props.keyFrame.r = -10;
 			} else {
 				delete k.props.keyFrame.r;
 			}
@@ -276,7 +276,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		let hasRandom = kf.hasOwnProperty('r');
 		let randomEditor;
 		if (hasRandom) {
-			randomEditor = h(NumberEditor, { value: kf.r, step: 1, min: -1000, onChange: this.onRandomChanged });
+			randomEditor = h(NumberEditor, { value: kf.r, step: 1, min: -1000, max: -1, onChange: this.onRandomChanged });
 		}
 
 		let jumpReset;

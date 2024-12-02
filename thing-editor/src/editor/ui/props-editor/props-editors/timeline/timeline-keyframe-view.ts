@@ -186,7 +186,7 @@ export default class TimelineKeyframeView extends Component<TimelineKeyframeView
 		}
 		if (keyFrame.hasOwnProperty('r')) {
 			let len = Math.abs(keyFrame.r! * width);
-			randomMeter = R.svg({ className: (keyFrame.r! > 0) ? 'keyframe-random-meter' : 'keyframe-random-meter keyframe-random-meter-neg', height: 4, width: len },
+			randomMeter = R.svg({ className: 'keyframe-random-meter', height: 4, width: len },
 				R.polyline({ points: '0,3 1,1 ' + (len - 2) + ',1 ' + (len) + ',3' })
 			);
 		}

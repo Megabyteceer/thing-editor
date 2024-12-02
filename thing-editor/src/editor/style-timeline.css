@@ -190,9 +190,6 @@
 	fill: none;
 	stroke: rgb(41, 119, 184);
 	stroke-width: 1.5;
-}
-
-.keyframe-random-meter-neg {
 	left: unset;
 	right: 100%;
 }
