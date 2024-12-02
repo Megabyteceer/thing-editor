@@ -41,7 +41,7 @@ module.exports = (_root, publicDir, outDir, debug, _projectDesc) => {
 				'libs': path.resolve(__dirname, '../../libs'),
 				'thing-editor': path.resolve(__dirname, '../../thing-editor'),
 				'howler.js': 'https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js',
-				'pixi.js': 'https://cdn.jsdelivr.net/npm/pixi.js-legacy@7.2.4/dist/pixi-legacy.min.mjs'
+				'pixi.js': 'https://cdn.jsdelivr.net/npm/pixi.js@7.2.4/dist/pixi-legacy.min.mjs'
 			}
 		}
 	};
