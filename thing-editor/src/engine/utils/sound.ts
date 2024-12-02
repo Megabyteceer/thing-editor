@@ -236,6 +236,10 @@ export default class Sound {
 						s.soundIdSaved = s.play(s.soundIdSaved);
 					}
 					s.lastPlayStartFrame = game.time + 2;
+					/// #if DEBUG
+					refreshSndDebugger();
+					/// #endif
+
 					/// #if EDITOR
 					editorEvents.emit('soundPlay', soundId, volume);
 					/// #endif
@@ -304,11 +308,11 @@ export default class Sound {
 	}
 
 	static __highlightPlayedSound(soundId: string) {
+		LAST_HIT_TIME.set(soundId, game.time);
 		if (sndDebuggerShowed) {
 			if (!Lib.hasSound(soundId)) {
 				Lib.__soundsList[soundId] = EMPTY_SOUND;
 				if (sndDebuggerShowed) {
-					showSndDebugger();
 					setTimeout(() => Sound.__highlightPlayedSound(soundId), 20);
 				}
 			}
@@ -321,6 +325,7 @@ export default class Sound {
 					}
 				}
 			}
+			refreshSndDebugger();
 		}
 	}
 
@@ -420,6 +425,11 @@ function _rememberEnableLevels() {
 let soundsVol: number;
 let musicVol: number;
 
+/// #if DEBUG
+const LAST_HIT_TIME = new Map() as Map<string, number>;
+/// #endif
+
+
 /// #if EDITOR
 (Sound.play as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (Sound.play as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
@@ -510,6 +520,12 @@ function showSndDebugger() {
 	}
 }
 
+function refreshSndDebugger() {
+	if (sndDebugger) {
+		showSndDebugger();
+	}
+}
+
 function renderSoundPanelItem(soundName:string) {
 	const overrideData = IndexedDBUtils.load(soundName, 'sound')!;
 	let info;
@@ -576,11 +592,11 @@ function renderSoundsPanel() {
 		list = Object.keys(Lib.__soundsList);
 		if (sortByTime > 0) {
 			list.sort((a, b) => {
-				return Lib.getSound(a).lastPlayStartFrame - Lib.getSound(b).lastPlayStartFrame;
+				return (LAST_HIT_TIME.get(a) || 0) - (LAST_HIT_TIME.get(b) || 0);
 			});
 		} else {
 			list.sort((b, a) => {
-				return Lib.getSound(a).lastPlayStartFrame - Lib.getSound(b).lastPlayStartFrame;
+				return (LAST_HIT_TIME.get(a) || 0) - (LAST_HIT_TIME.get(b) || 0);
 			});
 		}
 	} else if (sortByName) {
