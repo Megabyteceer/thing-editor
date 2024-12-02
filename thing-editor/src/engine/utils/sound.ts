@@ -521,7 +521,7 @@ function showSndDebugger() {
 }
 
 function refreshSndDebugger() {
-	if (sndDebugger) {
+	if (sndDebugger && sndDebuggerShowed) {
 		showSndDebugger();
 	}
 }
