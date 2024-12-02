@@ -308,7 +308,7 @@ export default class Sound {
 	}
 
 	static __highlightPlayedSound(soundId: string) {
-		LAST_HIT_TIME.set(soundId, game.time);
+		LAST_HIT_TIME.set(soundId, Date.now());
 		if (sndDebuggerShowed) {
 			if (!Lib.hasSound(soundId)) {
 				Lib.__soundsList[soundId] = EMPTY_SOUND;
@@ -553,8 +553,9 @@ function renderSoundPanelItem(soundName:string) {
 					/// #endif
 					FlyText.flyText('Copied to clipboard: ' + txt, 200, 200);
 				} else {
-					Lib.getSound(soundName).lastPlayStartFrame = -1;
-					Sound.play(soundName);
+					const s = Lib.getSound(soundName);
+					s.lastPlayStartFrame = -1;
+					s.play();
 					if (timeouts[soundName]) {
 						clearTimeout(timeouts[soundName]);
 						delete timeouts[soundName];
