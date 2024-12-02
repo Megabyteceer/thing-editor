@@ -550,7 +550,7 @@ function renderSoundPanelItem(soundName:string) {
 					}, 2000);
 				}
 			}
-		}, soundName),
+		}, soundName.startsWith('snd/') ? soundName.substring(4) : soundName),
 		R.td(null, R.button({ className: 'snd-override', onClick: async () => {
 			const sndData = await IndexedDBUtils.openFile(soundName);
 			let a = new Audio(sndData[0].data);
@@ -568,8 +568,42 @@ function renderSoundPanelItem(soundName:string) {
 
 function renderSoundsPanel() {
 	const items = [];
-	for (const soundId in Lib.__soundsList) {
-		items.push(renderSoundPanelItem(soundId));
+
+	let list: string[] | undefined;
+	const sortByTime = game.settings.getItem('__sounds-panel-sort-by-time', 0);
+	const sortByName = game.settings.getItem('__sounds-panel-sort-by-name', 0);
+	if (sortByTime) {
+		list = Object.keys(Lib.__soundsList);
+		if (sortByTime > 0) {
+			list.sort((a, b) => {
+				return Lib.getSound(a).lastPlayStartFrame - Lib.getSound(b).lastPlayStartFrame;
+			});
+		} else {
+			list.sort((b, a) => {
+				return Lib.getSound(a).lastPlayStartFrame - Lib.getSound(b).lastPlayStartFrame;
+			});
+		}
+	} else if (sortByName) {
+		list = Object.keys(Lib.__soundsList);
+		if (sortByName > 0) {
+			list.sort((a, b) => {
+				return (a > b) ? -1 : 1;
+			});
+		} else {
+			list.sort((b, a) => {
+				return (a > b) ? -1 : 1;
+			});
+		}
+	}
+
+	if (list) {
+		for (const soundId of list) {
+			items.push(renderSoundPanelItem(soundId));
+		}
+	} else {
+		for (const soundId in Lib.__soundsList) {
+			items.push(renderSoundPanelItem(soundId));
+		}
 	}
 
 	return R.fragment(
@@ -581,11 +615,33 @@ function renderSoundsPanel() {
 		R.button({
 			onClick: toggleSoundsPanelLeft
 		}, '< >'),
+		R.div({className: 'list-header'}, 'Sort by: ',
+			R.span({className: 'sort-button', onClick: () => {
+				if (sortByName > 0) {
+					game.settings.setItem('__sounds-panel-sort-by-name', -1);
+				} else {
+					game.settings.setItem('__sounds-panel-sort-by-name', 1);
+				}
+				game.settings.removeItem('__sounds-panel-sort-by-time');
+				showSndDebugger();
+			}
+			}, 'name ', sortByName ? ((sortByName > 0) ? '⮟' : '⮝') : '\u00A0'),
+
+			R.span({className: 'sort-button', onClick: () => {
+				if (sortByTime > 0) {
+					game.settings.setItem('__sounds-panel-sort-by-time', -1);
+				} else {
+					game.settings.setItem('__sounds-panel-sort-by-time', 1);
+				}
+				game.settings.removeItem('__sounds-panel-sort-by-name');
+				showSndDebugger();
+			}
+			}, 'play-time ', sortByTime ? ((sortByTime > 0) ? '⮟' : '⮝') : '\u00A0')
+		),
 		R.div({
 			className: 'sounds-debug-panel-body',
 			title: 'Ctrl + click to copy sound\'s name'
 		},
-
 		R.table({border: 0, cellspacing: 0, cellpadding: 0},
 			items
 		)

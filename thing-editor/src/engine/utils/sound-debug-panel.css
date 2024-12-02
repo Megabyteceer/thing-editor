@@ -15,6 +15,16 @@
 	right: unset;
 }
 
+.sounds-debug-panel .list-header {
+	color: #999999;
+}
+
+.sounds-debug-panel .sort-button {
+	display: inline-block;
+	padding: 4px 10px;
+	cursor: pointer;
+}
+
 .sounds-debug-panel-body {
 	overflow-y: auto;
 	max-height: 80vh;
