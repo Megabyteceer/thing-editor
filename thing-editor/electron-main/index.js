@@ -128,16 +128,6 @@ const {
 		const EDITOR_VITE_ROOT = 'http://localhost:5173/thing-editor/';
 		const loadEditorIndexHTML = () => {
 			mainWindow.setOpacity(1);
-
-			let reloadAttemptDelayDelay = 1000;
-			mainWindow.webContents.on('did-fail-load', () => {
-				setTimeout(() => {
-					console.log('reload attempt');
-					mainWindow.reload();
-					reloadAttemptDelayDelay += 1000;
-				}, reloadAttemptDelayDelay);
-			});
-
 			mainWindow.loadURL(EDITOR_VITE_ROOT);
 		};
 
