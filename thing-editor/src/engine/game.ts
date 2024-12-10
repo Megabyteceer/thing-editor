@@ -576,8 +576,8 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				const h = isWide ? bodyH : Math.round(bodyW * _rendererHeight / _rendererWidth);
 				c.style.width = w + 'px';
 				c.style.height = h + 'px';
-				c.style.left = Math.round((window.document.body.clientWidth - w) / 2) + 'px';
-				c.style.top = Math.round((window.document.body.clientHeight - h) / 2) + 'px';
+				c.style.left = Math.round((bodyW - w) / 2) + 'px';
+				c.style.top = Math.round((bodyH - h) / 2) + 'px';
 				//*/
 
 				/// #if EDITOR
