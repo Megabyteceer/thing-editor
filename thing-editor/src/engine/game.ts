@@ -584,12 +584,12 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		const isWide = (bodyW / _rendererWidth) >= (bodyH / _rendererHeight);
 
 		const c = this.pixiApp.view as HTMLCanvasElement;
-		const w = isWide ? Math.round(bodyH * _rendererWidth / _rendererHeight) : bodyW;
-		const h = isWide ? bodyH : Math.round(bodyW * _rendererHeight / _rendererWidth);
-		c.style.width = w + 'px';
-		c.style.height = h + 'px';
-		c.style.left = Math.round((bodyW - w) / 2) + 'px';
-		c.style.top = Math.round((bodyH - h) / 2) + 'px';
+		const w2 = isWide ? Math.round(bodyH * _rendererWidth / _rendererHeight) : bodyW;
+		const h2 = isWide ? bodyH : Math.round(bodyW * _rendererHeight / _rendererWidth);
+		c.style.width = w2 + 'px';
+		c.style.height = h2 + 'px';
+		c.style.left = Math.round((bodyW - w2) / 2) + 'px';
+		c.style.top = Math.round((bodyH - h2) / 2) + 'px';
 		//*/
 
 		assert(_rendererWidth, 'Render\'s size was not calculated correctly.');
