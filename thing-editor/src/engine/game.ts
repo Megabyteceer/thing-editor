@@ -570,13 +570,19 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 				renderer.resolution = scale;
 
-				renderer.resize(_rendererWidth + 0.0001, _rendererHeight + 0.0001); //prevent canvas size decreasing by pixel because of Math.ceil
+				_rendererWidth = Math.ceil(_rendererWidth += 0.0001);
+				_rendererHeight = Math.ceil(_rendererHeight += 0.0001);
+				renderer.resize(_rendererWidth, _rendererHeight); //prevent canvas size decreasing by pixel because of Math.ceil
 				/// #if EDITOR
 				/*
 				/// #endif
 				const c = this.pixiApp.view as HTMLCanvasElement;
-				c.style.left = Math.round((window.document.body.clientWidth - c.clientWidth) / 2) + 'px';
-				c.style.top = Math.round((window.document.body.clientHeight - c.clientHeight) / 2) + 'px';
+				const w = Math.round(_rendererWidth / scale);
+				const h = Math.round(_rendererHeight / scale);
+				c.style.width = w + 'px';
+				c.style.height = h + 'px';
+				c.style.left = Math.round((window.document.body.clientWidth - w) / 2) + 'px';
+				c.style.top = Math.round((window.document.body.clientHeight - h) / 2) + 'px';
 				//*/
 
 				/// #if EDITOR
