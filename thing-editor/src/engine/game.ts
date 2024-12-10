@@ -577,8 +577,8 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				/*
 				/// #endif
 				const c = this.pixiApp.view as HTMLCanvasElement;
-				const w = Math.round(_rendererWidth / scale);
-				const h = Math.round(_rendererHeight / scale);
+				const w = Math.round(_rendererWidth / (window.devicePixelRatio || 1));
+				const h = Math.round(_rendererHeight / (window.devicePixelRatio || 1));
 				c.style.width = w + 'px';
 				c.style.height = h + 'px';
 				c.style.left = Math.round((window.document.body.clientWidth - w) / 2) + 'px';
