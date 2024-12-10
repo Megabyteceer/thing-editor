@@ -327,6 +327,9 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			h = (this.pixiApp.view.parentNode as HTMLDivElement).clientHeight;
 		}
 
+		const bodyW = w;
+		const bodyH = h;
+
 		//let debugInfo = 'w: ' + w + '; h: ' + h;
 
 		let dynamicStageSize = game.projectDesc.dynamicStageSize;
@@ -575,19 +578,15 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			/// #endif
 		}
 
-		/// #if EDITOR
-		/*
-		/// #endif
-		const bodyW = window.document.body.clientWidth;
-		const bodyH = window.document.body.clientHeight;
-
 		const isWide = (bodyW / _rendererWidth) >= (bodyH / _rendererHeight);
-
 		const c = this.pixiApp.view as HTMLCanvasElement;
 		const w2 = isWide ? Math.round(bodyH * _rendererWidth / _rendererHeight) : bodyW;
 		const h2 = isWide ? bodyH : Math.round(bodyW * _rendererHeight / _rendererWidth);
 		c.style.width = w2 + 'px';
 		c.style.height = h2 + 'px';
+		/// #if EDITOR
+		/*
+		/// #endif
 		c.style.left = Math.round((bodyW - w2) / 2) + 'px';
 		c.style.top = Math.round((bodyH - h2) / 2) + 'px';
 		//*/
