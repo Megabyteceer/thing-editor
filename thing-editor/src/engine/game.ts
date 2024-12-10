@@ -572,6 +572,14 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 				renderer.resize(_rendererWidth + 0.0001, _rendererHeight + 0.0001); //prevent canvas size decreasing by pixel because of Math.ceil
 				/// #if EDITOR
+				/*
+				/// #endif
+				const c = this.pixiApp.view as HTMLCanvasElement;
+				c.style.left = Math.round((window.document.body.clientWidth - c.clientWidth) / 2) + 'px';
+				c.style.top = Math.round((window.document.body.clientHeight - c.clientHeight) / 2) + 'px';
+				//*/
+
+				/// #if EDITOR
 			}
 			/// #endif
 			this.emit('stage-will-resize');
@@ -1334,6 +1342,7 @@ function loadFonts() {
 							for (let w of weights) {
 								let span = document.createElement('span');
 								span.style.fontFamily = `"${fontName}"`;
+								span.style.userSelect = 'none';
 								span.style.fontWeight = w;
 								span.innerHTML = game.projectDesc.fontHolderText;
 								fontHolder.appendChild(span);
