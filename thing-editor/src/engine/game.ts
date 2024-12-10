@@ -564,23 +564,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				_rendererHeight = Math.floor(_rendererHeight += 0.0001);
 				renderer.resize(_rendererWidth, _rendererHeight); //prevent canvas size decreasing by pixel because of Math.ceil
 				/// #if EDITOR
-				/*
-				/// #endif
-				const bodyW = window.document.body.clientWidth;
-				const bodyH = window.document.body.clientHeight;
-
-				const isWide = (bodyW / _rendererWidth) >= (bodyH / _rendererHeight);
-
-				const c = this.pixiApp.view as HTMLCanvasElement;
-				const w = isWide ? Math.round(bodyH * _rendererWidth / _rendererHeight) : bodyW;
-				const h = isWide ? bodyH : Math.round(bodyW * _rendererHeight / _rendererWidth);
-				c.style.width = w + 'px';
-				c.style.height = h + 'px';
-				c.style.left = Math.round((bodyW - w) / 2) + 'px';
-				c.style.top = Math.round((bodyH - h) / 2) + 'px';
-				//*/
-
-				/// #if EDITOR
 			}
 			/// #endif
 			this.emit('stage-will-resize');
@@ -591,6 +574,23 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			}
 			/// #endif
 		}
+
+		/// #if EDITOR
+		/*
+		/// #endif
+		const bodyW = window.document.body.clientWidth;
+		const bodyH = window.document.body.clientHeight;
+
+		const isWide = (bodyW / _rendererWidth) >= (bodyH / _rendererHeight);
+
+		const c = this.pixiApp.view as HTMLCanvasElement;
+		const w = isWide ? Math.round(bodyH * _rendererWidth / _rendererHeight) : bodyW;
+		const h = isWide ? bodyH : Math.round(bodyW * _rendererHeight / _rendererWidth);
+		c.style.width = w + 'px';
+		c.style.height = h + 'px';
+		c.style.left = Math.round((bodyW - w) / 2) + 'px';
+		c.style.top = Math.round((bodyH - h) / 2) + 'px';
+		//*/
 
 		assert(_rendererWidth, 'Render\'s size was not calculated correctly.');
 		assert(_rendererHeight, 'Render\'s size was not calculated correctly.');
