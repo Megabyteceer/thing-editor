@@ -552,16 +552,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		}
 
 		if (needResizeRenderer) {
-			/*
-			if(!game.__EDITOR_mode && Lib.hasPrefab('ui/sure-question')) {
-				game.showQuestion('', 'W: ' + _rendererWidth +
-					';   H: ' + _rendererHeight +
-					';\nS: ' + S +
-					'\n\nw: ' + domElement.clientWidth +
-					';   h: ' + domElement.clientHeight +
-					';\nration: ' + window.devicePixelRatio
-				);
-			}//*/
 
 			/// #if EDITOR
 			if (!this.__enforcedW) {
@@ -570,15 +560,20 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 				renderer.resolution = scale;
 
-				_rendererWidth = Math.ceil(_rendererWidth += 0.0001);
-				_rendererHeight = Math.ceil(_rendererHeight += 0.0001);
+				_rendererWidth = Math.floor(_rendererWidth += 0.0001);
+				_rendererHeight = Math.floor(_rendererHeight += 0.0001);
 				renderer.resize(_rendererWidth, _rendererHeight); //prevent canvas size decreasing by pixel because of Math.ceil
 				/// #if EDITOR
 				/*
 				/// #endif
+				const bodyW = window.document.body.clientWidth;
+				const bodyH = window.document.body.clientHeight;
+
+				const isWide = (bodyW / _rendererWidth) >= (bodyH / _rendererHeight);
+
 				const c = this.pixiApp.view as HTMLCanvasElement;
-				const w = Math.round(_rendererWidth / (window.devicePixelRatio || 1));
-				const h = Math.round(_rendererHeight / (window.devicePixelRatio || 1));
+				const w = isWide ? Math.round(bodyH * _rendererWidth / _rendererHeight) : bodyW;
+				const h = isWide ? bodyH : Math.round(bodyW * _rendererHeight / _rendererWidth);
 				c.style.width = w + 'px';
 				c.style.height = h + 'px';
 				c.style.left = Math.round((window.document.body.clientWidth - w) / 2) + 'px';
