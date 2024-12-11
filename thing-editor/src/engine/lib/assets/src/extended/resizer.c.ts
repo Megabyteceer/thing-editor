@@ -1,5 +1,4 @@
 import { Container, Point } from 'pixi.js';
-import fs from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
 import game from 'thing-editor/src/engine/game';
@@ -152,11 +151,6 @@ export default class Resizer extends Container {
 	}
 
 	/// #if EDITOR
-	__beforeSerialization() {
-		if (!game.projectDesc.dynamicStageSize && !fs.getFileOfRoot(this).lib) {
-			game.editor.ui.status.warn('Resizer is not useful if projects dynamicStageSize is not set to true', 32025, this);
-		}
-	}
 
 	__afterDeserialization() {
 		this.recalculateSize();
