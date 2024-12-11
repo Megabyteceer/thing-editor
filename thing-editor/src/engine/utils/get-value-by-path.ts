@@ -68,7 +68,11 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 		if (!c) {
 			return c;
 		}
-
+		/// #if EDITOR
+		if (c instanceof Container) {
+			latestDetectedSceneNode = c;
+		}
+		/// #endif
 		i++;
 	}
 
