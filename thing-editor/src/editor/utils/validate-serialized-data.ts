@@ -59,11 +59,10 @@ function validateObjectDataRecursive(objectData: SerializedObject, rootName: str
 				}
 			}
 		}
-
-		if (objectData.hasOwnProperty(':')) {
-			for (let child of objectData[':']!) {
-				validateObjectDataRecursive(child, rootName);
-			}
+	}
+	if (objectData.hasOwnProperty(':')) {
+		for (let child of objectData[':']!) {
+			validateObjectDataRecursive(child, rootName);
 		}
 	}
 }
