@@ -52,6 +52,9 @@ export default class Selection extends Array<Container> {
 
 	select(object: Container, add?: boolean, onTreeViewUpdated?:() => void, scrollInView = false) {
 		if (!add) {
+			if (this.length === 1 && this[0] === object) {
+				return;
+			}
 			this.clearSelection();
 		}
 		if (object.__nodeExtendData.isSelected) {

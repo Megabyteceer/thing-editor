@@ -24,7 +24,10 @@ let lastAppliedTreeData: HistorySerializedData;
 
 let currentSelectionNavigation = 0;
 
+let STATE_APPLY_TIME = false;
+
 function applyState(state: HistoryRecord) {
+	STATE_APPLY_TIME = true;
 	assert(state, 'Empty history record.');
 	assert(game.__EDITOR_mode, 'Attempt to save undo history in runtime mode.');
 	currentSelectionNavigation = 0;
@@ -45,6 +48,7 @@ function applyState(state: HistoryRecord) {
 	if (stateChanged) {
 		instance.events.emit('afterHistoryJump');
 	}
+	STATE_APPLY_TIME = false;
 }
 
 function getHistoryName() {
@@ -116,9 +120,11 @@ class History {
 	}
 
 	scheduleSelectionSave() {
-		clearSelectionSaveTimeout();
-		if (game.__EDITOR_mode) {
-			needSaveSelectionInToHistory = window.setTimeout(saveSelectionState, 50);
+		if (!STATE_APPLY_TIME) {
+			clearSelectionSaveTimeout();
+			if (game.__EDITOR_mode) {
+				needSaveSelectionInToHistory = window.setTimeout(saveSelectionState, 50);
+			}
 		}
 	}
 
