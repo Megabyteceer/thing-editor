@@ -529,6 +529,9 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			this.H++;
 		}
 
+		rendererWidth = Math.floor(rendererWidth += 0.0001);
+		rendererHeight = Math.floor(rendererHeight += 0.0001);
+
 		let needResizeRenderer = (_rendererWidth !== rendererWidth) || (_rendererHeight !== rendererHeight) || (scale !== S);
 
 		//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -562,9 +565,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				let renderer = game.pixiApp.renderer;
 
 				renderer.resolution = scale;
-
-				_rendererWidth = Math.floor(_rendererWidth += 0.0001);
-				_rendererHeight = Math.floor(_rendererHeight += 0.0001);
 				renderer.resize(_rendererWidth, _rendererHeight); //prevent canvas size decreasing by pixel because of Math.ceil
 				/// #if EDITOR
 			}
