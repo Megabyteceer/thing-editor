@@ -1295,6 +1295,7 @@ function loadFonts() {
 			if (!fontHolder) {
 				fontHolder = document.createElement('span');
 				fontHolder.style.opacity = '0';
+				fontHolder.style.userSelect = 'none';
 				fontHolder.style.color = 'rgba(0,0,0,0.01)';
 				fontHolder.style.position = 'absolute';
 				fontHolder.style.zIndex = '-1';
@@ -1342,7 +1343,6 @@ function loadFonts() {
 							for (let w of weights) {
 								let span = document.createElement('span');
 								span.style.fontFamily = `"${fontName}"`;
-								span.style.userSelect = 'none';
 								span.style.fontWeight = w;
 								span.innerHTML = game.projectDesc.fontHolderText;
 								fontHolder.appendChild(span);
