@@ -45,6 +45,7 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';
 import Build from './utils/build';
 
+import Spine from '../engine/lib/assets/src/extended/spine.c';
 import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
@@ -342,6 +343,9 @@ class Editor {
 	}
 
 	async loadProject(dir?: string) {
+
+		const spineLoading = Spine._loadSpineRuntime();
+
 		this.ui.viewport.stopExecution();
 
 		if (!dir) {
@@ -442,9 +446,11 @@ class Editor {
 			protectAccessToSceneNode(game.stage, 'game stage');
 			protectAccessToSceneNode(game.stage.parent, 'PIXI stage');
 
+			await spineLoading;
+
 			await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
 				Lib.REMOVED_TEXTURE = t;
-				return Promise.all([this.reloadAssetsAndClasses(true)]);
+				return this.reloadAssetsAndClasses(true);
 			});
 
 			if (this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {

@@ -1,3 +1,7 @@
+import * as PIXI from 'pixi.js';
+(window as any).PIXI = {};
+Object.assign((window as any).PIXI, PIXI);
+
 import type { IApplicationOptions } from 'pixi.js';
 import { Application, BaseTexture, Container, GC_MODES, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from 'pixi.js';
 import type { __EditorType } from 'thing-editor/src/editor/editor';

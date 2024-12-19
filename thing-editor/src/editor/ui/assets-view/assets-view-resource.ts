@@ -11,7 +11,8 @@ const assetsItemNameProps = {
 
 const assetItemRendererResource = (file: FileDescPrefab) => {
 	return R.div({
-		key: file.assetName
+		key: file.assetName,
+		className: 'assets-item'
 	},
 	libInfo(file),
 	' resource: ',

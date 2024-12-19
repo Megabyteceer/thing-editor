@@ -326,7 +326,7 @@ export default class fs {
 				if (val.endsWith('/') || val.startsWith('/')) {
 					return 'name can not begin or end with "/"';
 				}
-			}).then((newName: string) => {
+			}).then((newName) => {
 			if (newName) {
 				newName += ext;
 				if (newName !== file.assetName) {

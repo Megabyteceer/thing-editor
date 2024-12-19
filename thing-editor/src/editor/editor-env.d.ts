@@ -206,9 +206,17 @@ interface IEditablePropertyType {
 	'string': true;
 	'prefab': true;
 	'pow-damp-preset': true;
+	'spine-sequence': true;
 	'number': true;
 	'image': true;
 	'sound': true;
+	'resource': true;
+}
+
+interface IGoToLabelConsumer {
+	gotoLabel(label: string);
+	gotoLabelRecursive(label: string);
+	__getLabels():undefined | string[];
 }
 
 declare const electron_ThingEditorServer: Electron_ThingEditorServer;

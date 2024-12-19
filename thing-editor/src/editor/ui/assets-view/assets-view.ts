@@ -389,7 +389,11 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 						}
 					}
 				} else if (asset.assetType === AssetType.CLASS) {
-					if (searchByRegexpOrText((asset as FileDescClass).asset.__className, this.state.search)) {
+					const a = (asset as FileDescClass).asset;
+					if (!a) {
+						debugger;
+					}
+					if (searchByRegexpOrText(a.__className, this.state.search)) {
 						return true;
 					}
 				}

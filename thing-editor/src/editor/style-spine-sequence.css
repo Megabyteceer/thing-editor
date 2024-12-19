@@ -1,0 +1,103 @@
+#spine-sequence {
+	border: 1px solid #682e24;
+}
+
+.spine-sequence-wrapper {
+    display: flex;
+}
+
+.spine-sequence-headers {
+	text-align: right;
+	margin: 20px 0;
+	flex-shrink: 1;
+    width: 130px;
+	overflow-x: hidden;
+	max-height: 175px;
+}
+
+.spine-sequence-header {
+	padding: 4px 10px;
+}
+.spine-sequence-header:hover {
+	background-color: #333333;
+}
+
+.spine-sequence-header-active {
+	background-color: #181818;
+	border-top-left-radius: 20px;
+	border-bottom-left-radius: 20px;
+}
+
+.spine-sequence-body {
+	white-space: nowrap;
+	background-color: #181818;
+	flex-grow: 1;
+	overflow-y: hidden;
+	border-radius: 20px;
+	padding: 10px;
+    padding-top: 30px;
+	position: relative;
+}
+
+.spine-sequence-body button {
+	vertical-align: top;
+}
+
+.spine-sequence-item {
+	height: 40px;
+	box-sizing: border-box;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 0;
+	background-color: #222222;
+	background-color: #222222;
+	border-radius: 20px;
+	display: inline-block;
+	border: 1px solid #000000;
+	position: relative;
+}
+
+.spine-sequence-item-name {
+	padding-left: 10px;
+	position: absolute;
+	top: 10px;
+}
+
+.spine-sequence-item-delay {
+	position: absolute;
+	height: 100%;
+	background-color: #33333366;
+	border-right: 1px solid #000;
+}
+
+.spine-sequence-item-loop {
+    position: absolute;
+    left: 4px;
+    bottom: 0px;
+    border-left: 3px solid #339955;
+    padding-left: 4px;
+    font-size: 70%;
+    color: #339955;
+}
+
+.spine-sequence-item-active {
+	border: 1px solid #339955;
+}
+
+.spine-sequence-item-invalid {
+	border: 1px solid #cc1616;
+	color: #cc1616;
+}
+
+.spine-sequence-item-props-editor {
+	padding: 10px;
+	flex-shrink: 1;
+}
+
+.spine-sequence-mix-view {
+	position: absolute;
+	left: 0;
+	top: 0;
+	fill: #00000088;
+	stroke: none;
+}

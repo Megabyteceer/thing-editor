@@ -22,7 +22,7 @@ function onNewSceneClick() {
 
 const sceneNameFilter = /[^a-z\-\/0-9]/g;
 
-function askNewSceneName(title: string, defaultSceneName = ''): Promise<string> {
+function askNewSceneName(title: string, defaultSceneName = '') {
 	return game.editor.ui.modal.showPrompt(title,
 		defaultSceneName,
 		(val) => { // filter

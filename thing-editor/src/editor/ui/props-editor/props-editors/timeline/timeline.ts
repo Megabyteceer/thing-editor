@@ -811,7 +811,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			if (o._timelineData) {
 				if (selectPath[2]) { // select label or keyframe.
 					if (!selectPath[1]) { //label
-						getTimelineWindow('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView: HTMLDivElement) => {
+						getWindowElement('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView: HTMLDivElement) => {
 							shakeDomElement(labelView);
 						});
 						return;
@@ -831,7 +831,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 											timelineInstance.refresh();
 										}
 
-										getTimelineWindow('.bottom-panel').then((w) => {
+										getWindowElement('.bottom-panel').then((w) => {
 											let actionEditField = w.querySelector('.props-editor-callback') as HTMLDivElement;
 											shakeDomElement(actionEditField);
 										});
@@ -885,10 +885,10 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 }
 
-function getTimelineWindow(childSelector: string): Promise<HTMLDivElement> {
+export function getWindowElement(childSelector: string, windowId = '#timeline'): Promise<HTMLDivElement> {
 	return new Promise((resolve) => {
 		let interval = window.setInterval(() => {
-			let w = document.querySelector('#timeline') as HTMLDivElement;
+			let w = document.querySelector(windowId) as HTMLDivElement;
 			if (w) {
 				if (childSelector) {
 					w = w.querySelector(childSelector) as HTMLDivElement;

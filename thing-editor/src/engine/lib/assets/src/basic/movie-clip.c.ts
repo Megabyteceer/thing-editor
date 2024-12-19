@@ -1,9 +1,9 @@
 
-import { Container } from 'pixi.js';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
+import { decorateGotoLabelMethods } from 'thing-editor/src/editor/utils/goto-label-consumer';
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from 'thing-editor/src/engine/debug/assert';
@@ -33,7 +33,7 @@ const SELECT_LOG_LEVEL = [
 
 let idCounter = 1;
 
-export default class MovieClip extends DSprite {
+export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 
 	fieldPlayers: FieldPlayer[] = [];
 
@@ -317,6 +317,14 @@ export default class MovieClip extends DSprite {
 		}
 	}
 
+	gotoLabelRecursive(labelName: string): void {
+		if (this.hasLabel(labelName)) {
+			this.delay = 0;
+			this.gotoLabel(labelName);
+		}
+		super.gotoLabelRecursive(labelName);
+	}
+
 	/// #if EDITOR
 
 	init() {
@@ -539,6 +547,12 @@ export default class MovieClip extends DSprite {
 		this.__initTimeline();
 	}
 
+	__getLabels():undefined | string[] {
+		if (this.timeline) {
+			return Object.keys(this.timeline.l);
+		}
+	}
+
 	@editable({ select: SELECT_LOG_LEVEL })
 	__logLevel = 0;
 
@@ -560,107 +574,7 @@ export default class MovieClip extends DSprite {
 let deserializeCache = new WeakMap();
 
 /// #if EDITOR
-let goToLabelRecursionLevel = 0; // eslint-disable-line @typescript-eslint/no-unused-vars
-/// #endif
 
-Container.prototype.gotoLabelRecursive = function (labelName) {
-	/// #if EDITOR
-	goToLabelRecursionLevel++;
-	/// #endif
-	if (this instanceof MovieClip) {
-		if (this.hasLabel(labelName)) {
-			this.delay = 0;
-			this.gotoLabel(labelName);
-		}
-	}
-	for (let c of this.children) {
-		c.gotoLabelRecursive(labelName);
-	}
-	/// #if EDITOR
-	goToLabelRecursionLevel--;
-	/// #endif
-};
-
-/// #if EDITOR
-
-(Container.prototype.gotoLabelRecursive as SelectableProperty).___EDITOR_callbackParameterChooserFunction = (context: Container) => {
-
-	return new Promise((resolve) => {
-		let movieClips = context.findChildrenByType(MovieClip);
-		if (context instanceof MovieClip) {
-			movieClips.push(context);
-		}
-
-		let addedLabels: Set<string> = new Set();
-
-		const CUSTOM_LABEL_ITEM = { name: 'Custom label...' };
-
-		let labels = [];
-		movieClips.forEach((m) => {
-			if (m.timeline) {
-				for (let name in m.timeline.l) {
-					if (!addedLabels.has(name)) {
-						labels.push({ name: R.b(null, name), pureName: name });
-						addedLabels.add(name);
-					}
-				}
-			}
-		});
-
-		labels.push(CUSTOM_LABEL_ITEM);
-
-		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + (game.editor.currentPathChoosingField?.name || ' of keyframe.'), labels).then((choosed) => {
-			if (choosed) {
-				if (choosed === CUSTOM_LABEL_ITEM) {
-					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
-						resolve([enteredText]);
-					});
-				} else {
-					resolve([choosed.pureName]);
-				}
-			}
-			return null;
-		});
-	});
-};
-
-
-(MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_callbackParameterChooserFunction = (context: MovieClip) => {
-
-	return new Promise((resolve) => {
-
-		let addedLabels: Set<string> = new Set();
-
-		const CUSTOM_LABEL_ITEM = { name: 'Custom label...' };
-
-		let labels = [];
-
-		if (context.timeline) {
-			for (let name in context.timeline.l) {
-				if (!addedLabels.has(name)) {
-					labels.push({ name: R.b(null, name), pureName: name });
-					addedLabels.add(name);
-				}
-			}
-		}
-
-
-		labels.push(CUSTOM_LABEL_ITEM);
-
-		return game.editor.ui.modal.showListChoose('Choose label to go', labels).then((choosed) => {
-			if (choosed) {
-				if (choosed === CUSTOM_LABEL_ITEM) {
-					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
-						resolve([enteredText]);
-					});
-				} else {
-					resolve([choosed.pureName]);
-				}
-			}
-			return null;
-		});
-	});
-};
 
 const filterUndefined = (v: number) => {
 	return v !== undefined;
@@ -689,11 +603,11 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 (MovieClip.prototype.stop as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.playRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.stopRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
-(MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForChooser = true;
-(Container.prototype.gotoLabelRecursive as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
 let serializeCache = new WeakMap();
 
 MovieClip.__EDITOR_icon = 'tree/movie';
+decorateGotoLabelMethods(MovieClip);
 
 /// #endif
