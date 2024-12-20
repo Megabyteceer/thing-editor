@@ -344,14 +344,18 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	/// #if EDITOR
 	containsPoint(p:Point) {
 		let ret = false;
-		 this.spineContent?.forAllChildren((c) => {
-			if ((c as Sprite).containsPoint) {
-				if (!ret) {
-					ret = (c as Sprite).containsPoint(p);
+		if (this.spineContent?.visible) {
+			this.spineContent.parent = this;
+			this.spineContent.forAllChildren((c) => {
+				if ((c as Sprite).containsPoint) {
+					if (!ret) {
+						ret = (c as Sprite).containsPoint(p);
+					}
 				}
-			}
-		 });
-		 return ret;
+			});
+			this.spineContent.parent = null;
+		}
+		return ret;
 	}
 
 	__sequences!: SpineSequence[];
