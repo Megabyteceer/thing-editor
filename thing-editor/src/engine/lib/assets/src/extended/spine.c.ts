@@ -120,6 +120,8 @@ const filterAssets = (file:FileDesc) => {
 
 const sequencesByNamesCache = new Map() as Map<SpineSequence[], Map<string, SpineSequence>>;
 
+const EMPTY_MAP = new Map();
+
 export default class Spine extends Container implements IGoToLabelConsumer {
 
 	_speed = 1;
@@ -147,32 +149,29 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		this._skinPoseAnimation = this.currentAnimation!;
 		this.playingSequence = undefined;
 
-		/// #if EDITOR
-		if (!this.sequences) {
-			this._sequencesByNames = new Map();
-			return;
-		}
-		/// #endif
-
-		if (!sequencesByNamesCache.has(this.sequences)) {
-			const names = new Map() as Map<string, SpineSequence>;
-			for (const s of this.sequences) {
-				names.set(s.n, s);
-				for (let i = 0; i < s.s.length; i++) {
-					const item = s.s[i];
-					item.___next = s.s[i + 1] || s.s[s.l!];
-					item.___duration = this.getItemDurationFrames(item)!;
-					if (item.actions) {
-						for (let i = 0; i < item.actions.length; i++) {
-							const action = item.actions[i];
-							action.___next = item.actions[i + 1];
+		if (this.sequences) {
+			if (!sequencesByNamesCache.has(this.sequences)) {
+				const names = new Map() as Map<string, SpineSequence>;
+				for (const s of this.sequences) {
+					names.set(s.n, s);
+					for (let i = 0; i < s.s.length; i++) {
+						const item = s.s[i];
+						item.___next = s.s[i + 1] || s.s[s.l!];
+						item.___duration = this.getItemDurationFrames(item)!;
+						if (item.actions) {
+							for (let i = 0; i < item.actions.length; i++) {
+								const action = item.actions[i];
+								action.___next = item.actions[i + 1];
+							}
 						}
 					}
 				}
+				sequencesByNamesCache.set(this.sequences, names);
 			}
-			sequencesByNamesCache.set(this.sequences, names);
+			this._sequencesByNames = sequencesByNamesCache.get(this.sequences)!;
+		} else {
+			this._sequencesByNames = EMPTY_MAP;
 		}
-		this._sequencesByNames = sequencesByNamesCache.get(this.sequences)!;
 	}
 
 	getItemDurationFrames(item:SpineSequenceItem) {
@@ -355,15 +354,14 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		 return ret;
 	}
 
-
-	@editable({type: 'spine-sequence', name: 'sequences'})
 	__sequences!: SpineSequence[];
 
+	@editable({type: 'spine-sequence', name: 'sequences'})
 	set sequences(val :SpineSequence[]) {
 		this.__sequences = JSON.parse(JSON.stringify(val));
 	}
 
-	get sequences(): SpineSequence[] {
+	get sequences(): SpineSequence[] | undefined {
 		return this.__isSerialization ? JSON.parse(JSON.stringify(this.__sequences)) : this.__sequences;
 	}
 
@@ -856,7 +854,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		return this.___previewFrame || 0;
 	}
 
-	static __validateSpineHasAnimation(data:any, animationName:string, fieldName:string) {
+	static __validateSpineHasAnimation(data:any, animationName:string, fieldName:string): SerializedDataValidationError | undefined {
 		if (
 			!(Lib.resources[data.spineData].spineData as ISkeletonData).animations.find((a) => a.name == animationName)
 		) {

@@ -150,14 +150,16 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 	}
 
 	onAutoSelect(selectPath: string[]) {
-		this.setActiveSequence(this.spine.sequences[parseInt(selectPath[1])].n);
-		this.onSequenceItemClick(this.activeSequence.s[parseInt(selectPath[2])]);
+		if (this.spine.sequences) {
+			this.setActiveSequence(this.spine.sequences[parseInt(selectPath[1])].n);
+			this.onSequenceItemClick(this.activeSequence.s[parseInt(selectPath[2])]);
 
-		getWindowElement('#sequence-item-' + selectPath[1] + '-' + selectPath[2], '#spine-sequence').then(() => {
-			getWindowElement('.spine-sequence-animations-select-wrapper', '#spine-sequence').then((itemView: HTMLDivElement) => {
-				shakeDomElement(itemView);
+			getWindowElement('#sequence-item-' + selectPath[1] + '-' + selectPath[2], '#spine-sequence').then(() => {
+				getWindowElement('.spine-sequence-animations-select-wrapper', '#spine-sequence').then((itemView: HTMLDivElement) => {
+					shakeDomElement(itemView);
+				});
 			});
-		});
+		}
 	}
 
 	static onAutoSelect(selectPath: string[]) {
@@ -331,7 +333,7 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 		}) : undefined;
 
 		return R.div({
-			id: 'sequence-item-' + this.spine.sequences.indexOf(this.activeSequence) + '-' + itemId,
+			id: 'sequence-item-' + this.spine.sequences!.indexOf(this.activeSequence) + '-' + itemId,
 			onMouseDown: (ev:MouseEvent) => {
 				sp(ev);
 				this.onSequenceItemClick(item);

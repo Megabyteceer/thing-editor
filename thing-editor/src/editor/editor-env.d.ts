@@ -160,7 +160,7 @@ type KeyedObject = { [key: string]: any };
 
 type SerializedDataValidationError = undefined | {
 	message: string;
-	findObjectCallback: ((o: import('pixi.js').Container) => boolean);
+	findObjectCallback: ((o: import('pixi.js').Container) => boolean | undefined);
 	fieldName?: string;
 	errorCode?: number;
 };
