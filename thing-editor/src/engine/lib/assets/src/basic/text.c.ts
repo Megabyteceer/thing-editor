@@ -558,6 +558,7 @@ _editableEmbed(Text, '___fill', {
 	type: 'color',
 	arrayProperty: true,
 	notSerializable: true,
+	canBeEmpty: false,
 	default: [0xffffff]
 });
 
