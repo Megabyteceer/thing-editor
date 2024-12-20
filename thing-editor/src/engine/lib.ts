@@ -48,7 +48,7 @@ const _initParsers = () => {
 	const loadBitmapFont = Assets.loader.parsers.find(p => p.name === 'loadBitmapFont');
 	const originalBMFParser = loadBitmapFont!.parse!;
 	loadBitmapFont!.parse = (asset: string, options, ...args) => {
-		const reg = /(file=")(.+)(")/gm;
+		const reg = /(file=")([^"]+)(")/gm;
 		let result:RegExpExecArray |null;
 		let fixedAsset:string = asset;
 		while ((result = reg.exec(asset)) !== null) {
