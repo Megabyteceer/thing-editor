@@ -353,7 +353,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 					}
 				}
 			});
-			this.spineContent.parent = null;
+			this.spineContent.parent = null!;
 		}
 		return ret;
 	}

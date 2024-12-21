@@ -214,8 +214,8 @@ interface IEditablePropertyType {
 }
 
 interface IGoToLabelConsumer {
-	gotoLabel(label: string);
-	gotoLabelRecursive(label: string);
+	gotoLabel(label: string): void;
+	gotoLabelRecursive(label: string): void;
 	__getLabels():undefined | string[];
 }
 
