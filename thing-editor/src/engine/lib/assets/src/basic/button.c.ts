@@ -1,3 +1,4 @@
+import R from 'thing-editor/src/editor/preact-fabrics';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 
 import assert from 'thing-editor/src/engine/debug/assert';
@@ -434,6 +435,12 @@ window.addEventListener('keyup', (ev) => {
 
 Button.__EDITOR_icon = 'tree/button';
 
+setTimeout(() => {
+	const ACTION_ICON_ENABLE = R.img({ src: '/thing-editor/img/timeline/enable.png' });
+	const ACTION_ICON_DISABLE = R.img({ src: '/thing-editor/img/timeline/disable.png' });
+	(Button.prototype.enable as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_ENABLE;
+	(Button.prototype.disable as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_DISABLE;
+});
 (Button.prototype.enable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Button.prototype.disable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Button.prototype.click as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;

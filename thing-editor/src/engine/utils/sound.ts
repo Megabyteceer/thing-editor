@@ -726,6 +726,12 @@ window.addEventListener('keydown', (ev) => {
 	}
 });
 
+/// #if EDITOR
+export const ACTION_ICON_SOUND = R.img({ src: '/thing-editor/img/timeline/sound.png' });
+(Sound.play as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_SOUND;
+/// #endif
+
+
 /// #endif
 
 /// #if EDITOR

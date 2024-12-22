@@ -7,6 +7,7 @@
 }
 
 .spine-sequence-headers {
+	white-space: nowrap;
 	text-align: right;
 	margin: 20px 0;
 	flex-shrink: 1;
@@ -43,12 +44,19 @@
 	vertical-align: top;
 }
 
+.spine-sequence-item-wrapper {
+	display: inline-block;
+	position: relative;
+}
+
 .spine-sequence-item {
+	width: 100%;
 	height: 40px;
 	box-sizing: border-box;
 	white-space: nowrap;
 	overflow: hidden;
 	padding: 0;
+	margin-right: 3px;
 	background-color: #222222;
 	background-color: #222222;
 	border-radius: 20px;
@@ -57,10 +65,47 @@
 	position: relative;
 }
 
+.spine-sequence-action-time-pointer {
+	position: absolute;
+	left: -1px;
+	bottom: 10px;
+	height: 50px;
+	border-left: 1px solid #333333;
+}
+
+.spine-sequence-action-active .spine-sequence-action-time-pointer {
+	border-left: 1px solid #eb8000;
+}
+
 .spine-sequence-item-name {
 	padding-left: 10px;
 	position: absolute;
 	top: 10px;
+}
+
+.spine-sequence-action {
+	position: absolute;
+	width: 8px;
+	height: 20px;
+	border: 1px solid #333333;
+	cursor: ew-resize;
+	background-color: #c1c1c1;
+}
+
+.spine-sequence-action-empty {
+	background-color: #cc1616;
+}
+
+.spine-sequence-action img {
+    pointer-events: none;
+}
+
+.spine-sequence-action-active {
+	border: 1px solid #eb8000;
+}
+
+.spine-sequence-action:hover {
+	background-color: #d1d1d1;
 }
 
 .spine-sequence-item-delay {
@@ -81,7 +126,8 @@
 }
 
 .spine-sequence-item-active {
-	border: 1px solid #339955;
+	cursor: ew-resize;
+	border: 1px solid #eb8000;
 }
 
 .spine-sequence-item-invalid {
@@ -100,4 +146,10 @@
 	top: 0;
 	fill: #00000088;
 	stroke: none;
+}
+
+.spine-sequences-actions-body {
+	position: absolute;
+	left: 0;
+	top: 40px
 }

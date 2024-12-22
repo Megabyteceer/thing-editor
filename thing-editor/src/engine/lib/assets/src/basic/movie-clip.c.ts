@@ -1,11 +1,11 @@
 
 import R from 'thing-editor/src/editor/preact-fabrics';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import LabelsLogger from 'thing-editor/src/editor/ui/labels-logger';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
 import { decorateGotoLabelMethods } from 'thing-editor/src/editor/utils/goto-label-consumer';
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
-import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -16,12 +16,7 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
 
 /// #if EDITOR
-const ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
-const ICON_SOUND = R.img({ src: '/thing-editor/img/timeline/sound.png' });
-const ICON_REMOVE = R.img({ src: '/thing-editor/img/timeline/remove.png' });
-const ICON_ENABLE = R.img({ src: '/thing-editor/img/timeline/enable.png' });
-const ICON_DISABLE = R.img({ src: '/thing-editor/img/timeline/disable.png' });
-const ICON_DEFAULT = R.img({ src: '/thing-editor/img/timeline/default.png' });
+export const ACTION_ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 
 const SELECT_LOG_LEVEL = [
 	{ name: 'disabled', value: 0 },
@@ -259,22 +254,6 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 
 	gotoLabel(labelName: string) {
 		assert(this.hasLabel(labelName), 'Label \'' + labelName + '\' not found.', 10055);
-		/// #if EDITOR
-		if (this.__logLevel) {
-			let stack = getCurrentStack('gotoLabel');
-			if (this._goToLabelNextFrame && (this._goToLabelNextFrame !== labelName)) {
-				game.editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; new label:' + labelName + '; time: ' + game.time, 30021, this, undefined, true);
-			}
-			game.editor.ui.status.warn(
-				R.span(null,
-					R.btn('Show stack...', () => {
-						showStack(stack);
-					}),
-					((this._goToLabelNextFrame === labelName) ? 'repeated gotoLabel: ' : 'gotoLabel: ') + labelName + '; time: ' + game.time
-				),
-				30020, this, undefined, true);
-		}
-		/// #endif
 		this._goToLabelNextFrame = labelName;
 		this.play();
 	}
@@ -365,27 +344,6 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 			ret = f;
 		}
 		return ret as TimelineKeyFrame;
-	}
-
-	__EDITOR_getKeyframeIcon(action: string) {
-		if (action.endsWith('.remove')) {
-			return ICON_REMOVE;
-		}
-		if (action.endsWith('.enable')) {
-			return ICON_ENABLE;
-		}
-		if (action.endsWith('.disable')) {
-			return ICON_DISABLE;
-		}
-		switch (action) {
-			case 'this.stop': // eslint-disable-line indent
-				return ICON_STOP; // eslint-disable-line indent
-			default: // eslint-disable-line indent
-				if (action.startsWith('Sound.play')) { // eslint-disable-line indent
-					return ICON_SOUND; // eslint-disable-line indent
-				} // eslint-disable-line indent
-				return ICON_DEFAULT; // eslint-disable-line indent
-		}
 	}
 
 	__invalidateSerializeCache() {
@@ -553,9 +511,9 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 		}
 	}
 
+	@editable({name: 'log labels', type: 'btn', onClick: LabelsLogger.toggle })
 	@editable({ select: SELECT_LOG_LEVEL })
 	__logLevel = 0;
-
 
 	static __isPropertyDisabled(field: EditablePropertyDesc) { //prevent editing of properties animated inside prefab reference
 		for (let o of game.editor.selection) {
@@ -601,6 +559,7 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 
 (MovieClip.prototype.play as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.stop as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(MovieClip.prototype.stop as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_STOP;
 (MovieClip.prototype.playRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.stopRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;

@@ -1,8 +1,10 @@
+import type { Container } from 'pixi.js';
 import type { ClassAttributes } from 'preact';
 import { Component, h } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import game from 'thing-editor/src/engine/game';
 import type Spine from 'thing-editor/src/engine/lib/assets/src/extended/spine.c';
+import type { SpineSequence } from 'thing-editor/src/engine/lib/assets/src/extended/spine.c';
 import Window from '../../../editor-window';
 import { hideAdditionalWindow, showAdditionalWindow } from '../../../ui';
 import SpineSequences from './spine-sequences';
@@ -22,6 +24,37 @@ export default class SpineSequencesEditor extends Component<ClassAttributes<Spin
 		super(props);
 		this.state = { toggled: game.editor.settings.getItem('timeline-showed', true) };
 		this.onToggleClick = this.onToggleClick.bind(this);
+	}
+
+	static search(textToSearch:string, sequences: SpineSequence[], property: EditablePropertyDesc, o:Container, addSearchEntry: (o: Container, propertyName: string) => void): boolean {
+		let ret = false;
+		let sequenceNum = 0;
+		for (let sequence of sequences) {
+			if (sequence.n.toLocaleLowerCase().includes(textToSearch)) {
+				addSearchEntry(o, property.name + ',' + sequenceNum);
+				ret = true;
+			}
+			let itemNum = 0;
+			for (let item of sequence.s) {
+				if (item.n && (item.n.toLowerCase().includes(textToSearch))) {
+					addSearchEntry(o, property.name + ',' + sequenceNum + ',' + itemNum);
+					ret = true;
+				}
+				if (item.actions) {
+					let actionNum = 0;
+					for (let action of item.actions) {
+						if (action.a && (action.a.toLowerCase().includes(textToSearch))) {
+							addSearchEntry(o, property.name + ',' + sequenceNum + ',' + itemNum + ',' + actionNum);
+							ret = true;
+						}
+						actionNum++;
+					}
+				}
+				itemNum++;
+			}
+			sequenceNum++;
+		}
+		return ret;
 	}
 
 	componentDidMount() {

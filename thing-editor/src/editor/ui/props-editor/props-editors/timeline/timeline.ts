@@ -811,6 +811,8 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			if (o._timelineData) {
 				if (selectPath[2]) { // select label or keyframe.
 					if (!selectPath[1]) { //label
+						clearSelection();
+						select(o._timelineData.l[selectPath[2]].___view!);
 						getWindowElement('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView: HTMLDivElement) => {
 							shakeDomElement(labelView);
 						});
@@ -822,6 +824,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 								for (let kf of f.t) {
 									if (kf.t == time) {
 										if (!kf.___view!.state || !kf.___view!.state.isSelected) {
+											clearSelection();
 											select(kf.___view!);
 											let kfNode = kf.___view!.base as HTMLDivElement;
 											if (kfNode) {

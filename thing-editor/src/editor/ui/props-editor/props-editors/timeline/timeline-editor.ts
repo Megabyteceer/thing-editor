@@ -1,11 +1,14 @@
+import type { Container } from 'pixi.js';
 import type { ClassAttributes } from 'preact';
 import { Component, h } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import Window from 'thing-editor/src/editor/ui/editor-window';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 import { hideAdditionalWindow, showAdditionalWindow } from 'thing-editor/src/editor/ui/ui';
+import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import game from 'thing-editor/src/engine/game';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import type { TimelineData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
 function bringTimelineForward() {
 	Window.bringWindowForward('#propsEditor');
@@ -22,6 +25,25 @@ export default class TimelineEditor extends Component<ClassAttributes<TimelineEd
 		super(props);
 		this.state = { toggled: game.editor.settings.getItem('timeline-showed', true) };
 		this.onToggleClick = this.onToggleClick.bind(this);
+	}
+
+	static search(textToSearch:string, timeline: TimelineData, property: EditablePropertyDesc, o:Container, addSearchEntry: (o: Container, propertyName: string) => void): boolean {
+		let ret = false;
+		for (let field of timeline.f) {
+			for (let k of field.t) {
+				if (k.a && (k.a.toLowerCase().indexOf(textToSearch) >= 0)) {
+					addSearchEntry(o, makePathForKeyframeAutoSelect(property, field, k));
+					ret = true;
+				}
+			}
+		}
+		for (let label in timeline.l) {
+			if (label.toLowerCase().indexOf(textToSearch) >= 0) {
+				addSearchEntry(o, property.name + ',,' + label);
+				ret = true;
+			}
+		}
+		return ret;
 	}
 
 	componentDidMount() {

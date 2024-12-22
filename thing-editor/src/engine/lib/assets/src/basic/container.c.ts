@@ -8,6 +8,7 @@ import DataPathFixer from 'thing-editor/src/editor/utils/data-path-fixer';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags.js';
 import { decorateGotoLabelMethods } from 'thing-editor/src/editor/utils/goto-label-consumer';
 import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
+import R from 'thing-editor/src/engine/basic-preact-fabrics';
 import assert from 'thing-editor/src/engine/debug/assert.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -58,6 +59,11 @@ Container.prototype.onRemove = function onRemove() {
 Container.prototype.remove = function remove() {
 	Lib.destroyObjectAndChildren(this, true);
 };
+
+/// #if EDITOR
+const ACTION_ICON_REMOVE = R.img({ src: '/thing-editor/img/timeline/remove.png' });
+(Container.prototype.remove as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_REMOVE;
+/// #endif
 
 Container.prototype.removeWithoutHolder = function remove() {
 	Lib.destroyObjectAndChildren(this);

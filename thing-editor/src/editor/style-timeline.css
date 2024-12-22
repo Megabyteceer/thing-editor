@@ -288,6 +288,7 @@
 
 .select-item,
 .select-editor-current {
+	white-space: nowrap;
 	padding: 3px 10px;
 	line-height: 19px;
 }

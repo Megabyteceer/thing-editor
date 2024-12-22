@@ -11,6 +11,7 @@ import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import type { TimelineKeyFrame, TimelineKeyFrameType } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
+import { getCallbackIcon } from 'thing-editor/src/engine/utils/get-value-by-path';
 
 const keyframesClasses = [
 	'timeline-keyframe-smooth',
@@ -203,7 +204,7 @@ export default class TimelineKeyframeView extends Component<TimelineKeyframeView
 
 		let mark;
 		if (keyFrame.hasOwnProperty('a')) {
-			mark = p.node.__EDITOR_getKeyframeIcon(keyFrame.a!);
+			mark = getCallbackIcon(keyFrame.a!, p.node);
 		}
 
 		return R.div({

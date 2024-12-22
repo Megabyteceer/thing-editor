@@ -10,6 +10,8 @@ import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib, { unHashedFileToHashed } from 'thing-editor/src/engine/lib';
 import type MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import { ACTION_ICON_STOP } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 
 const poolMap = new Map() as Map<string, SpineContent[]>;
 
@@ -567,6 +569,10 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			if (this.isPlaying) {
 				if (this.playingSequenceItem) {
 					this.actionsTime++;
+					while (this.nextAction?.t <= this.actionsTime) {
+						callByPath(this.nextAction!.a, this);
+						this.nextAction = this.nextAction!.___next;
+					}
 					if (this.sequenceDelay) {
 						this.sequenceDelay--;
 					} else {
@@ -686,6 +692,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 
 	timeToNextItem = -1;
 	actionsTime = 0;
+	nextAction?: SpineSequenceItemAction;
 	playingSequence?: SpineSequence;
 	playingSequenceItem?: SpineSequenceItem;
 	sequenceDelay = 0;
@@ -704,6 +711,9 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			this.sequenceDelay = item.delay || 0;
 			this.speed = (item.hasOwnProperty('speed') ? item.speed : 1) as number;
 			this.timeToNextItem = item.___duration!;
+			if (item.actions) {
+				this.nextAction = item.actions[0];
+			}
 		}
 		this.actionsTime = 0;
 		this.playingSequenceItem = item;
@@ -899,6 +909,24 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 								sequence.s.forEach((item, itemId) => {
 									if (!ret) {
 										ret = this.__validateSpineHasAnimation(data, item.n, 'sequences,' + sequenceId + ',' + itemId);
+
+										if (!ret && item.actions) {
+											item.actions.forEach((action, actionId) => {
+												if (!action.a && !ret) {
+													ret = {
+														message: 'Spine sequence action has empty callback path. Please delete the action or set the callback path.',
+														findObjectCallback: (o:Container) => {
+															if ((o as Spine).spineData === data.spineData) {
+																return (o as Spine).sequences?.some(s => s.s.some(i => i.actions?.some(a => !a.a)));
+															}
+															return false;
+														},
+														fieldName: 'sequences,' + sequenceId + ',' + itemId + ',' + actionId,
+														errorCode: 99999
+													};
+												}
+											});
+										}
 									}
 								});
 							});
@@ -943,6 +971,8 @@ Spine.__EDITOR_icon = 'tree/spine';
 	}));
 	return game.editor.ui.modal.showListChoose('Choose spine skin', list).then((choose) => (choose ? choose.name : null));
 };
+(Spine.prototype.toInitPose as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_STOP;
+
 (Spine.prototype.setCurrentSkin as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Spine.prototype.setCurrentSkin as SelectableProperty).___EDITOR_callbackParameterChooserFunction = (context: Spine) => {
 	const spineContent = context.spineContent;
@@ -987,6 +1017,7 @@ export interface SpineSequence {
 	/** loop sequence index */
 	l?: number;
 	___activeItemName?: string;
+	___activeActionId?: number;
 }
 
 decorateGotoLabelMethods(Spine);
