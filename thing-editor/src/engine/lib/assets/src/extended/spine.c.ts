@@ -569,7 +569,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			if (this.isPlaying) {
 				if (this.playingSequenceItem) {
 					this.actionsTime++;
-					while (this.nextAction?.t <= this.actionsTime) {
+					while ((this.nextAction?.t as number) <= this.actionsTime) {
 						callByPath(this.nextAction!.a, this);
 						this.nextAction = this.nextAction!.___next;
 					}

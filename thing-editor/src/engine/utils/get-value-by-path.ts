@@ -4,9 +4,9 @@ import game from '../game.js';
 import { Container } from 'pixi.js';
 import type { ComponentChild } from 'preact';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags.js';
-import R from '../basic-preact-fabrics';
 import { stringToCallData } from './call-by-path.js';
 /// #if EDITOR
+import R from '../basic-preact-fabrics';
 let latestDetectedSceneNode: Container | null;
 let latestMethodOwner: any;
 /// #endif
@@ -236,9 +236,9 @@ setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
 };
 
 export {
-    getLatestSceneNodeBypath,
-    getLatestSceneNodesByComplexPath,
-    pathDebugging_thing_editor_debug_helper
+	getLatestSceneNodeBypath,
+	getLatestSceneNodesByComplexPath,
+	pathDebugging_thing_editor_debug_helper
 };
 
 /// #endif
@@ -246,6 +246,6 @@ export {
 export default getValueByPath;
 
 export {
-    setValueByPath
+	setValueByPath
 };
 

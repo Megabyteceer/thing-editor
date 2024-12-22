@@ -1,6 +1,5 @@
-import R from 'thing-editor/src/editor/preact-fabrics';
-import editable from 'thing-editor/src/editor/props-editor/editable';
 
+import editable from 'thing-editor/src/editor/props-editor/editable';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -9,6 +8,10 @@ import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Sound from 'thing-editor/src/engine/utils/sound';
+
+/// #if EDITOR
+import R from 'thing-editor/src/editor/preact-fabrics';
+/// #endif
 
 let latestClickTime = 0;
 const SCROLL_THRESHOLD = 30;

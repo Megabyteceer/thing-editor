@@ -24,10 +24,7 @@ const alignValues = {
 };
 const EMPTY_FONT_NAME = 'EMPTY';
 
-assert(
-	BitmapFont.install instanceof Function,
-	'Thing editor needs refactoring of BitmapFont atlases error handling.'
-);
+assert(BitmapFont.install instanceof Function, 'Thing editor needs refactoring of BitmapFont atlases error handling.');
 const origin_font_install = BitmapFont.install;
 BitmapFont.install = function (this : typeof BitmapFont, _data: any, textures: Texture | Texture[]): BitmapFont | undefined {
 	try {

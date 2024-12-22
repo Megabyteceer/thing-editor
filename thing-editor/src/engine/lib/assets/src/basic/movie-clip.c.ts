@@ -1,5 +1,3 @@
-
-import R from 'thing-editor/src/editor/preact-fabrics';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import LabelsLogger from 'thing-editor/src/editor/ui/labels-logger';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
@@ -16,6 +14,7 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
 
 /// #if EDITOR
+import R from 'thing-editor/src/editor/preact-fabrics';
 export const ACTION_ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 
 const SELECT_LOG_LEVEL = [
