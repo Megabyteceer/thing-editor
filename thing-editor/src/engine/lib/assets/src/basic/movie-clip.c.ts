@@ -507,7 +507,7 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 
 	__getLabels():undefined | string[] {
 		if (this.timeline) {
-			return Object.keys(this.timeline.l);
+			return Object.keys(this.timeline.l).filter(l => !l.startsWith('__'));
 		}
 	}
 
