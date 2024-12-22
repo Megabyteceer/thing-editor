@@ -186,7 +186,9 @@ export const findMethodDecorator = (decoratorName:SelectablePropertyKeys, owner:
 		f = undefined!;
 		while (owner && !f) {
 			owner = Object.getPrototypeOf(owner);
-			f = owner[methodName];
+			if (owner) {
+				f = owner[methodName];
+			}
 		}
 	}
 };
