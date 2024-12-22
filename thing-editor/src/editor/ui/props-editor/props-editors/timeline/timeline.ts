@@ -585,8 +585,9 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	onMouseDown(ev: MouseEvent) {
 		isDragging = true;
 		this.onMouseMove(ev);
-		if (!draggingComponent && !ev.ctrlKey && !isTimeDragging) {
-			selectionFrame.onMouseDown(ev);
+
+		if (!draggingComponent && !ev.ctrlKey && (!isTimeDragging || ev.shiftKey)) {
+			selectionFrame.onMouseDown(ev, isTimeDragging && ev.shiftKey);
 		}
 	}
 

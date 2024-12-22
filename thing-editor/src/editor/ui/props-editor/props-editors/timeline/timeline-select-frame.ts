@@ -13,14 +13,17 @@ let y = 0;
 let w = 0;
 let h = 0;
 
+let isFullHeightDrag = false;
+
 export default class TimelineSelectFrame extends Component<ClassAttributes<TimelineSelectFrame>> {
 
-	onMouseDown(ev: MouseEvent) {
+	onMouseDown(ev: MouseEvent, _isFullHeightDrag = false) {
 		timelineRect = Timeline.timelineDOMElement!.getBoundingClientRect();
 		isDragging = true;
 		let s = Window.all.timeline.renderedScale;
 		x = (ev.clientX - timelineRect.x) / s;
-		y = (ev.clientY - timelineRect.y) / s;
+		isFullHeightDrag = _isFullHeightDrag; /// 99999 shift + timeHeader drag selects all height
+		y = isFullHeightDrag ? 0 : ((ev.clientY - timelineRect.y) / s);
 		w = 0;
 		h = 0;
 		this.forceUpdate();
@@ -29,9 +32,8 @@ export default class TimelineSelectFrame extends Component<ClassAttributes<Timel
 	onMouseMove(ev: MouseEvent) {
 		if (isDragging) {
 			let s = Window.all.timeline.renderedScale;
-
 			w = (ev.clientX - timelineRect.x) / s - x;
-			h = (ev.clientY - timelineRect.y) / s - y;
+			h = isFullHeightDrag ? 40000 : ((ev.clientY - timelineRect.y) / s - y);
 			this.forceUpdate();
 		}
 	}
@@ -53,7 +55,9 @@ export default class TimelineSelectFrame extends Component<ClassAttributes<Timel
 			}
 			let ret = a.getBoundingClientRect();
 			this.forceUpdate();
-
+			if (isFullHeightDrag) {
+				ret.height = Number.MAX_SAFE_INTEGER;
+			}
 			return ret;
 		}
 	}
