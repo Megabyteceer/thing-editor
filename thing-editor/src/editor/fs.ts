@@ -17,6 +17,8 @@ interface LibInfo {
 	isEmbed?: boolean;
 }
 
+const OVERRIDDEN_ASSETS:Set<string> = new Set();
+
 const prefabNameFilter = /[^a-zA-Z\-\/0-9_]/g;
 
 interface FileDesc {
@@ -343,7 +345,9 @@ export default class fs {
 			game.editor.ui.modal.showInfo('Class can not be copied to the project. Create a new class inherited from ' + (file as FileDescClass).asset.__className + ' instead.', 'Can not copy class.');
 			return;
 		}
-		fs.copyFile(file.fileName, file.fileName.replace(file.lib!.assetsDir, game.editor.currentProjectAssetsDir));
+		const newFileName = file.fileName.replace(file.lib!.assetsDir, game.editor.currentProjectAssetsDir);
+		OVERRIDDEN_ASSETS.add(newFileName);
+		fs.copyFile(file.fileName, newFileName);
 		file.lib = null;
 		game.editor.ui.refresh();
 	}
@@ -516,7 +520,7 @@ export default class fs {
 			const files = fs.getFolderAssets(dirName);
 			for (const file of files) {
 				const map = assetsByTypeByName.get(file.assetType as AssetType) as Map<string, FileDesc>;
-				if (file.assetType !== AssetType.CLASS && map.has(file.assetName)) {
+				if (file.assetType !== AssetType.CLASS && map.has(file.assetName) && !OVERRIDDEN_ASSETS.has(file.fileName)) {
 					const existingFile = map.get(file.assetName)!;
 					window.setTimeout(() => {
 						if (fs.isFilesEqual(file.fileName, existingFile.fileName)) {
