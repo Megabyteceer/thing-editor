@@ -2,6 +2,7 @@ import type { DataPathEditorProps } from 'thing-editor/src/editor/ui/props-edito
 import DataPathEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import { findMethodDecorator } from 'thing-editor/src/engine/utils/get-value-by-path';
 
 
 export default class CallbackEditor extends DataPathEditor {
@@ -25,8 +26,9 @@ export default class CallbackEditor extends DataPathEditor {
 	finalValueChoosed(_path: string[], val: any, parent: any) {
 		let path = _path.join('.');
 
-		if (val.___EDITOR_callbackParameterChooserFunction) {
-			val.___EDITOR_callbackParameterChooserFunction(parent).then((params: any[] | any) => {
+		let helper = (typeof val === 'function') && findMethodDecorator('___EDITOR_callbackParameterChooserFunction', parent, val);
+		if (helper) {
+			helper(parent).then((params: any[] | any) => {
 				if (!params) {
 					return;
 				}

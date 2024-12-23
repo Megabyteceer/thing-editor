@@ -148,7 +148,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		);
 	}
 
-	showPrompt(title: ComponentChild, defaultText?: string, filter?: (val: string) => string, accept?: (val: string) => string | undefined, noEasyClose?: boolean, multiline?: boolean) {
+	showPrompt(title: ComponentChild, defaultText?: string, filter?: (val: string) => string, accept?: (val: string) => string | undefined, noEasyClose?: boolean, multiline?: boolean):Promise<string | undefined> {
 		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
 	}
 

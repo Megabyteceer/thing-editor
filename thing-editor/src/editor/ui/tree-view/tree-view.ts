@@ -12,7 +12,6 @@ import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import { getSerializedObjectClass } from 'thing-editor/src/editor/utils/generate-editor-typings';
 import getParentWhichHideChildren from 'thing-editor/src/editor/utils/get-parent-with-hidden-children';
 import loadSafeInstanceByClassName from 'thing-editor/src/editor/utils/load-safe-instance-by-class-name';
-import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import { scrollInToView } from 'thing-editor/src/editor/utils/scroll-in-view';
 import Selection from 'thing-editor/src/editor/utils/selection';
 import assert from 'thing-editor/src/engine/debug/assert';
@@ -316,7 +315,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 
 	onSearchChange(ev: InputEvent) {
 		const val = (ev.target as HTMLInputElement).value;
-		const search = val.toLowerCase();
+		const search = val;
 		const needSearch = !this.state.search || (this.state.search.length < search.length);
 		this.setState({ search }, () => {
 			if (needSearch) {
@@ -334,33 +333,25 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 				return;
 			}
 
-			if ((o.constructor as SourceMappedConstructor).__className.toLowerCase().indexOf(this.state.search) >= 0) return true;
+			const search = this.state.search.toLowerCase();
 
-			if (o.__nodeExtendData.isPrefabReference && o.__nodeExtendData.isPrefabReference.toLocaleLowerCase().includes(this.state.search)) return true;
+			if ((o.constructor as SourceMappedConstructor).__className.toLowerCase().includes(search)) return true;
+
+			if (o.__nodeExtendData.isPrefabReference && o.__nodeExtendData.isPrefabReference.toLocaleLowerCase().includes(search)) return true;
 
 			let props = (o.constructor as SourceMappedConstructor).__editableProps;
 			for (let p of props) {
-				if (p.type === 'timeline') {
-					let timeline = (o as KeyedObject)[p.name];
-					if (timeline) {
-						for (let field of timeline.f) {
-							for (let k of field.t) {
-								if (k.a && (k.a.toLowerCase().indexOf(this.state.search) >= 0)) {
-									addSearchEntry(o, makePathForKeyframeAutoSelect(p, field, k));
-									ret = true;
-								}
-							}
-						}
-						for (let label in timeline.l) {
-							if (label.toLowerCase().indexOf(this.state.search) >= 0) {
-								addSearchEntry(o, p.name + ',,' + label);
-								ret = true;
-							}
+				if (p.renderer?.search) {
+					let data = (o as KeyedObject)[p.name];
+					if (data) {
+						const r = (p.renderer?.search as PropertySearchHandler)(search, data, p, o, addSearchEntry);
+						if (r) {
+							ret = r;
 						}
 					}
 				} else if (p.type !== 'splitter') {
 					let val = '' + (o as KeyedObject)[p.name];
-					if (val.toLowerCase().indexOf(this.state.search) >= 0) {
+					if (val.toLowerCase().includes(search)) {
 						addSearchEntry(o, p.name);
 						ret = true;
 					}
@@ -479,3 +470,5 @@ const renderSceneStackItem = (s: Scene, i: number, a: Scene[]) => {
 		body
 	);
 };
+
+export type PropertySearchHandler = (textToSearch:string, data:any, property:EditablePropertyDesc, o:Container, addSearchEntry: (o: Container, propertyName: string) => void) => boolean;

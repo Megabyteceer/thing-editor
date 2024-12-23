@@ -1,11 +1,9 @@
-
-import { Container } from 'pixi.js';
-import R from 'thing-editor/src/editor/preact-fabrics';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import LabelsLogger from 'thing-editor/src/editor/ui/labels-logger';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
+import { decorateGotoLabelMethods } from 'thing-editor/src/editor/utils/goto-label-consumer';
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
-import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -16,12 +14,8 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
 
 /// #if EDITOR
-const ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
-const ICON_SOUND = R.img({ src: '/thing-editor/img/timeline/sound.png' });
-const ICON_REMOVE = R.img({ src: '/thing-editor/img/timeline/remove.png' });
-const ICON_ENABLE = R.img({ src: '/thing-editor/img/timeline/enable.png' });
-const ICON_DISABLE = R.img({ src: '/thing-editor/img/timeline/disable.png' });
-const ICON_DEFAULT = R.img({ src: '/thing-editor/img/timeline/default.png' });
+import R from 'thing-editor/src/editor/preact-fabrics';
+export const ACTION_ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 
 const SELECT_LOG_LEVEL = [
 	{ name: 'disabled', value: 0 },
@@ -33,7 +27,7 @@ const SELECT_LOG_LEVEL = [
 
 let idCounter = 1;
 
-export default class MovieClip extends DSprite {
+export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 
 	fieldPlayers: FieldPlayer[] = [];
 
@@ -259,22 +253,6 @@ export default class MovieClip extends DSprite {
 
 	gotoLabel(labelName: string) {
 		assert(this.hasLabel(labelName), 'Label \'' + labelName + '\' not found.', 10055);
-		/// #if EDITOR
-		if (this.__logLevel) {
-			let stack = getCurrentStack('gotoLabel');
-			if (this._goToLabelNextFrame && (this._goToLabelNextFrame !== labelName)) {
-				game.editor.ui.status.warn('CANCELED label: ' + this._goToLabelNextFrame + '; new label:' + labelName + '; time: ' + game.time, 30021, this, undefined, true);
-			}
-			game.editor.ui.status.warn(
-				R.span(null,
-					R.btn('Show stack...', () => {
-						showStack(stack);
-					}),
-					((this._goToLabelNextFrame === labelName) ? 'repeated gotoLabel: ' : 'gotoLabel: ') + labelName + '; time: ' + game.time
-				),
-				30020, this, undefined, true);
-		}
-		/// #endif
 		this._goToLabelNextFrame = labelName;
 		this.play();
 	}
@@ -317,6 +295,14 @@ export default class MovieClip extends DSprite {
 		}
 	}
 
+	gotoLabelRecursive(labelName: string): void {
+		if (this.hasLabel(labelName)) {
+			this.delay = 0;
+			this.gotoLabel(labelName);
+		}
+		super.gotoLabelRecursive(labelName);
+	}
+
 	/// #if EDITOR
 
 	init() {
@@ -357,27 +343,6 @@ export default class MovieClip extends DSprite {
 			ret = f;
 		}
 		return ret as TimelineKeyFrame;
-	}
-
-	__EDITOR_getKeyframeIcon(action: string) {
-		if (action.endsWith('.remove')) {
-			return ICON_REMOVE;
-		}
-		if (action.endsWith('.enable')) {
-			return ICON_ENABLE;
-		}
-		if (action.endsWith('.disable')) {
-			return ICON_DISABLE;
-		}
-		switch (action) {
-			case 'this.stop': // eslint-disable-line indent
-				return ICON_STOP; // eslint-disable-line indent
-			default: // eslint-disable-line indent
-				if (action.startsWith('Sound.play')) { // eslint-disable-line indent
-					return ICON_SOUND; // eslint-disable-line indent
-				} // eslint-disable-line indent
-				return ICON_DEFAULT; // eslint-disable-line indent
-		}
 	}
 
 	__invalidateSerializeCache() {
@@ -539,9 +504,15 @@ export default class MovieClip extends DSprite {
 		this.__initTimeline();
 	}
 
+	__getLabels():undefined | string[] {
+		if (this.timeline) {
+			return Object.keys(this.timeline.l).filter(l => !l.startsWith('__'));
+		}
+	}
+
+	@editable({name: 'log labels', type: 'btn', onClick: LabelsLogger.toggle })
 	@editable({ select: SELECT_LOG_LEVEL })
 	__logLevel = 0;
-
 
 	static __isPropertyDisabled(field: EditablePropertyDesc) { //prevent editing of properties animated inside prefab reference
 		for (let o of game.editor.selection) {
@@ -560,107 +531,7 @@ export default class MovieClip extends DSprite {
 let deserializeCache = new WeakMap();
 
 /// #if EDITOR
-let goToLabelRecursionLevel = 0; // eslint-disable-line @typescript-eslint/no-unused-vars
-/// #endif
 
-Container.prototype.gotoLabelRecursive = function (labelName) {
-	/// #if EDITOR
-	goToLabelRecursionLevel++;
-	/// #endif
-	if (this instanceof MovieClip) {
-		if (this.hasLabel(labelName)) {
-			this.delay = 0;
-			this.gotoLabel(labelName);
-		}
-	}
-	for (let c of this.children) {
-		c.gotoLabelRecursive(labelName);
-	}
-	/// #if EDITOR
-	goToLabelRecursionLevel--;
-	/// #endif
-};
-
-/// #if EDITOR
-
-(Container.prototype.gotoLabelRecursive as SelectableProperty).___EDITOR_callbackParameterChooserFunction = (context: Container) => {
-
-	return new Promise((resolve) => {
-		let movieClips = context.findChildrenByType(MovieClip);
-		if (context instanceof MovieClip) {
-			movieClips.push(context);
-		}
-
-		let addedLabels: Set<string> = new Set();
-
-		const CUSTOM_LABEL_ITEM = { name: 'Custom label...' };
-
-		let labels = [];
-		movieClips.forEach((m) => {
-			if (m.timeline) {
-				for (let name in m.timeline.l) {
-					if (!addedLabels.has(name)) {
-						labels.push({ name: R.b(null, name), pureName: name });
-						addedLabels.add(name);
-					}
-				}
-			}
-		});
-
-		labels.push(CUSTOM_LABEL_ITEM);
-
-		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + (game.editor.currentPathChoosingField?.name || ' of keyframe.'), labels).then((choosed) => {
-			if (choosed) {
-				if (choosed === CUSTOM_LABEL_ITEM) {
-					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
-						resolve([enteredText]);
-					});
-				} else {
-					resolve([choosed.pureName]);
-				}
-			}
-			return null;
-		});
-	});
-};
-
-
-(MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_callbackParameterChooserFunction = (context: MovieClip) => {
-
-	return new Promise((resolve) => {
-
-		let addedLabels: Set<string> = new Set();
-
-		const CUSTOM_LABEL_ITEM = { name: 'Custom label...' };
-
-		let labels = [];
-
-		if (context.timeline) {
-			for (let name in context.timeline.l) {
-				if (!addedLabels.has(name)) {
-					labels.push({ name: R.b(null, name), pureName: name });
-					addedLabels.add(name);
-				}
-			}
-		}
-
-
-		labels.push(CUSTOM_LABEL_ITEM);
-
-		return game.editor.ui.modal.showListChoose('Choose label to go', labels).then((choosed) => {
-			if (choosed) {
-				if (choosed === CUSTOM_LABEL_ITEM) {
-					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
-						resolve([enteredText]);
-					});
-				} else {
-					resolve([choosed.pureName]);
-				}
-			}
-			return null;
-		});
-	});
-};
 
 const filterUndefined = (v: number) => {
 	return v !== undefined;
@@ -687,13 +558,14 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 
 (MovieClip.prototype.play as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.stop as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(MovieClip.prototype.stop as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_STOP;
 (MovieClip.prototype.playRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.stopRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
-(MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForChooser = true;
-(Container.prototype.gotoLabelRecursive as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
 let serializeCache = new WeakMap();
 
 MovieClip.__EDITOR_icon = 'tree/movie';
+decorateGotoLabelMethods(MovieClip);
 
 /// #endif

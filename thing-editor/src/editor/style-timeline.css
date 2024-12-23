@@ -288,6 +288,7 @@
 
 .select-item,
 .select-editor-current {
+	white-space: nowrap;
 	padding: 3px 10px;
 	line-height: 19px;
 }
@@ -331,6 +332,12 @@
 	cursor: w-resize;
 }
 
+.timeline-label-tip {
+	background-color: transparent;
+	color: #0c0;
+	outline: none !important;
+}
+
 .timeline-label:hover {
 	z-index: 1;
 	text-decoration: underline;
@@ -343,6 +350,10 @@
 	width: 2px;
 	position: absolute;
 	background: #814833;
+}
+
+.timeline-label-tip .timeline-label-pointer {
+	background: #0c0;
 }
 
 .tip-icon {

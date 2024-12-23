@@ -308,6 +308,12 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 						from: file.fileName,
 						to: getHashedAssetName(file) + '.json'
 					});
+					if ((file.asset as any)?.skeleton) {
+						assetsToCopy.push({
+							from: file.fileName.replace(/\.json$/, '.atlas'),
+							to: getHashedAssetName(file) + '.atlas'
+						});
+					}
 				}
 			} else if (file.assetType === AssetType.BITMAP_FONT) {
 				if (!xmls) {

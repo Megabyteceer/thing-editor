@@ -160,7 +160,7 @@ type KeyedObject = { [key: string]: any };
 
 type SerializedDataValidationError = undefined | {
 	message: string;
-	findObjectCallback: ((o: import('pixi.js').Container) => boolean);
+	findObjectCallback: ((o: import('pixi.js').Container) => boolean | undefined);
 	fieldName?: string;
 	errorCode?: number;
 };
@@ -206,9 +206,17 @@ interface IEditablePropertyType {
 	'string': true;
 	'prefab': true;
 	'pow-damp-preset': true;
+	'spine-sequence': true;
 	'number': true;
 	'image': true;
 	'sound': true;
+	'resource': true;
+}
+
+interface IGoToLabelConsumer {
+	gotoLabel(label: string): void;
+	gotoLabelRecursive(label: string): void;
+	__getLabels():undefined | string[];
 }
 
 declare const electron_ThingEditorServer: Electron_ThingEditorServer;
@@ -223,6 +231,7 @@ interface SelectableProperty extends AnyType {
 	___EDITOR_isGoodForChooser?: true;
 	___EDITOR_isGoodForCallbackChooser?: true;
 	___EDITOR_ChooserOrder?: true;
+	___EDITOR_actionIcon?: import('preact').ComponentChild;
 	___EDITOR_callbackParameterChooserFunction?: (owner: any) => Promise<any[] | any>;
 }
 

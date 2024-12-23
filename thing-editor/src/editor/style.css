@@ -1557,10 +1557,25 @@ input[disabled] {
 	display: inline-block;
 }
 
+.labels-log-list {
+	height: 100%;
+}
 
+.labels-log-item {
+	cursor: pointer;
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+	padding: 3px 10px;
+}
 
+.labels-log-item:hover {
+	background-color: #333333;
+}
 
-
+.labels-log-item .scene-node-item {
+	display: inline-block;
+}
 
 
 

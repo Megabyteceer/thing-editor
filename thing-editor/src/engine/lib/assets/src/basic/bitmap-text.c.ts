@@ -24,10 +24,7 @@ const alignValues = {
 };
 const EMPTY_FONT_NAME = 'EMPTY';
 
-assert(
-	BitmapFont.install instanceof Function,
-	'Thing editor needs refactoring of BitmapFont atlases error handling.'
-);
+assert(BitmapFont.install instanceof Function, 'Thing editor needs refactoring of BitmapFont atlases error handling.');
 const origin_font_install = BitmapFont.install;
 BitmapFont.install = function (this : typeof BitmapFont, _data: any, textures: Texture | Texture[]): BitmapFont | undefined {
 	try {
@@ -91,6 +88,12 @@ export default class BitmapText extends BitmapTextOriginal {
 		/// #endif
 		super.updateText();
 		this.maxW = this._maxW || 0; // recalculate max width
+		/// #if EDITOR
+		for (const c of this.children) {
+			c.__nodeExtendData = {};
+			c._thing_initialized = true;
+		}
+		/// #endif
 	}
 
 	forAllChildren(cb:any) {
@@ -393,7 +396,7 @@ _editableEmbed(BitmapText, 'tint', {
 _editableEmbed(BitmapText, 'textProvider', {
 	type: 'data-path',
 	isValueValid: (o) => {
-		return 'text' in o;
+		return o && (typeof o === 'object') && ('text' in o);
 	}
 });
 

@@ -1,5 +1,5 @@
-import editable from 'thing-editor/src/editor/props-editor/editable';
 
+import editable from 'thing-editor/src/editor/props-editor/editable';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -8,6 +8,10 @@ import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Sound from 'thing-editor/src/engine/utils/sound';
+
+/// #if EDITOR
+import R from 'thing-editor/src/editor/preact-fabrics';
+/// #endif
 
 let latestClickTime = 0;
 const SCROLL_THRESHOLD = 30;
@@ -434,6 +438,12 @@ window.addEventListener('keyup', (ev) => {
 
 Button.__EDITOR_icon = 'tree/button';
 
+setTimeout(() => {
+	const ACTION_ICON_ENABLE = R.img({ src: '/thing-editor/img/timeline/enable.png' });
+	const ACTION_ICON_DISABLE = R.img({ src: '/thing-editor/img/timeline/disable.png' });
+	(Button.prototype.enable as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_ENABLE;
+	(Button.prototype.disable as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_DISABLE;
+});
 (Button.prototype.enable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Button.prototype.disable as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Button.prototype.click as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;

@@ -39,6 +39,8 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import ResourceEditor from './props-editors/resource-editor';
+import SpineSequencesEditor from './props-editors/spine-sequences/spine-sequences-editor';
 
 let editorProps = {
 	className: 'props-editor window-scrollable-content',
@@ -410,6 +412,7 @@ PropsEditor.registerRenderer('number', NumberEditor, 0);
 PropsEditor.registerRenderer('string', StringEditor, null);
 PropsEditor.registerRenderer('l10n', L10nEditor, null);
 PropsEditor.registerRenderer('image', ImageEditor, null);
+PropsEditor.registerRenderer('resource', ResourceEditor, null);
 PropsEditor.registerRenderer('prefab', PrefabPropertyEditor, null);
 PropsEditor.registerRenderer('sound', SoundEditor, null);
 PropsEditor.registerRenderer('boolean', BooleanEditor, false);
@@ -421,4 +424,4 @@ PropsEditor.registerRenderer('callback', CallbackEditor, null);
 PropsEditor.registerRenderer('timeline', TimelineEditor, null);
 PropsEditor.registerRenderer('pow-damp-preset', PowDampPresetEditor, null);
 PropsEditor.registerRenderer('rect', RectEditor, null);
-
+PropsEditor.registerRenderer('spine-sequence', SpineSequencesEditor, null);

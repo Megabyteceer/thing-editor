@@ -27,6 +27,9 @@ export default class ArrayEditableProperty extends Component<EditablePropertyEdi
 		if (arrayValue.length === 0) {
 			arrayValue = [field.defaultArrayItemValue || PropsEditor.getDefaultForType(field)];
 		}
+
+		const canRemoveItem = field.canBeEmpty !== false || arrayValue.length > 1;
+
 		return R.div(
 			arrayProps,
 			arrayValue.map((value: any, i: number) => {
@@ -47,7 +50,7 @@ export default class ArrayEditableProperty extends Component<EditablePropertyEdi
 					const newArray = arrayValue.slice();
 					newArray.splice(i, 1);
 					this.onChange(newArray);
-				}, 'remove item', 'array-prop-item-remove-btn'));
+				}, 'remove item', 'array-prop-item-remove-btn', undefined, !canRemoveItem));
 			}),
 			R.btn('+', (ev) => {
 				const newArray = arrayValue.slice();

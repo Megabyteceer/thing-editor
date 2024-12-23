@@ -300,8 +300,8 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 				startTipSync(true);
 				return;
 			}
-			this.hideParamsTip();
 		}
+		this.hideParamsTip();
 	}
 
 	hideParamsTip() {
