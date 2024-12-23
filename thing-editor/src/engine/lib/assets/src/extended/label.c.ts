@@ -48,7 +48,7 @@ export default class Label extends Text {
 	processedVal: any;
 	lastUpdateTime = 0;
 
-	localizationParams!: KeyedObject;
+	localizationParams = {} as KeyedObject;
 
 	init() {
 		super.init();

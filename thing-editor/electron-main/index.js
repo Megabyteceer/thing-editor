@@ -48,7 +48,7 @@ const {
 		} catch (_er) { }
 	};
 
-	const IS_DEBUG = process.argv.indexOf('debugger-detection-await') >= 0;
+	const IS_DEBUG = process.argv.includes('debugger-detection-await');
 
 	process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -92,12 +92,14 @@ const {
 			return {action: 'deny'};
 		});
 
-		mainWindow.webContents.addListener('console-message', (_event, _level, message, line, sourceId) =>{
-			console.log('console-message:');
-			console.log(message);
-			console.log(sourceId);
-			console.log(line);
-		});
+		if (process.argv.some(a => a.startsWith('--build-and-exit'))) {
+			mainWindow.webContents.addListener('console-message', (_event, _level, message, line, sourceId) =>{
+				console.log('console-message:');
+				console.log(message);
+				console.log(sourceId);
+				console.log(line);
+			});
+		}
 
 		mainWindow.on('focus', () => {
 			globalShortcut.register('F5', () => {
@@ -119,15 +121,6 @@ const {
 			}
 		});
 
-
-		//mainWindow.webContents.openDevTools();
-		//mainWindow.hide();
-
-		/*
-		mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
-			console.log(message + " " + sourceId + " (" + line + ")");
-		});*/
-
 		nativeTheme.themeSource = 'dark';
 
 		require('./server-fs.js')(mainWindow);
@@ -135,16 +128,6 @@ const {
 		const EDITOR_VITE_ROOT = 'http://localhost:5173/thing-editor/';
 		const loadEditorIndexHTML = () => {
 			mainWindow.setOpacity(1);
-
-			let reloadAttemptDelayDelay = 1000;
-			mainWindow.webContents.on('did-fail-load', () => {
-				setTimeout(() => {
-					console.log('reload attempt');
-					mainWindow.reload();
-					reloadAttemptDelayDelay += 1000;
-				}, reloadAttemptDelayDelay);
-			});
-
 			mainWindow.loadURL(EDITOR_VITE_ROOT);
 		};
 

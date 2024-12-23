@@ -58,9 +58,10 @@ module.exports = (mainWindow) => {
 				return await require('./build.js').build(fileName, isDebug, ...args);
 			}
 		} catch (er) {
-			console.error(er);
-			er.message = er.stack;
-			return er;
+			console.log(er.stack);
+			console.error(er.stack);
+			_event.returnValue = er.stack;
+			return new Error(er.stack);
 		}
 	});
 
@@ -160,7 +161,7 @@ module.exports = (mainWindow) => {
 				success = fileName;
 				error = content;
 				if (error) {
-					console.error(error);
+					console.log(error);
 				} else if (success) {
 					console.log(success);
 				}
@@ -204,6 +205,7 @@ module.exports = (mainWindow) => {
 				return;
 			}
 		} catch (er) {
+			console.log('fs error: ' + er.stack);
 			event.returnValue = er;
 		}
 	});
@@ -243,6 +245,9 @@ const getFileHash = (fileName) => {
 };
 
 function isFilesEqual(a, b) {
+	if (a === b) {
+		return false; // the same file
+	}
 	if (fs.statSync(a).size !== fs.statSync(b).size) {
 		return false;
 	}

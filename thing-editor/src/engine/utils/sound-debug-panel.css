@@ -1,0 +1,78 @@
+.sounds-debug-panel {
+	position:fixed;
+	right: 0;
+	top: 0;
+	z-index: 10000;
+	color: #ffffff;
+	background: rgba(0, 0, 0, 0.8);
+	padding: 20px;
+	margin: 20px;
+	max-height: 90vh;
+}
+
+.sounds-debug-panel:HAS(.panel-is-left) {
+	left: 0;
+	right: unset;
+}
+
+.sounds-debug-panel .list-header {
+	color: #999999;
+}
+
+.sounds-debug-panel .sort-button {
+	display: inline-block;
+	padding: 4px 10px;
+	cursor: pointer;
+}
+
+.sounds-debug-panel-body {
+	overflow-y: auto;
+	max-height: 80vh;
+	margin-bottom: 10px;
+}
+
+.sounds-debug-panel button {
+	padding: 5px;
+	cursor: pointer;
+	border-radius: 20px;
+	border: none;
+	background: #333333;
+	color: #ffffff;
+}
+
+.sounds-debug-panel table {
+	margin-bottom: 10px;
+}
+	
+.sounds-debug-panel .close-sounds-button {
+	background: #770000;
+	position: absolute;
+	right: 10px;
+}
+
+.sounds-debug-panel .snd-name {
+	background: #000;
+}
+
+.sounds-debug-panel .snd-name:hover {
+	cursor: pointer;
+}
+
+.sounds-debug-panel .snd-name-empty::before {
+  content: "(?) ";
+  color: rgb(68, 142, 185);
+}
+
+
+.sounds-debug-panel tr:hover {
+	background: #141414;
+}
+
+.sounds-debug-panel td button,
+.sounds-debug-panel td {
+	padding: 2px 10px;
+}
+
+.sounds-debug-panel .snd-clear {
+	background: #990000;
+}

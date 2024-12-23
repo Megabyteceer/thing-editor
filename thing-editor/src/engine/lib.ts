@@ -21,6 +21,7 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import RemoveHolder from 'thing-editor/src/engine/utils/remove-holder';
+import Sound from './utils/sound';
 
 let classes: GameClasses;
 let scenes: KeyedMap<SerializedObject> = {};
@@ -31,7 +32,7 @@ let soundsHowlers: KeyedMap<HowlSound> = {};
 
 const removeHoldersToCleanup: RemoveHolder[] = [];
 
-const unHashedFileToHashed: Map<string, string> = new Map();
+export const unHashedFileToHashed: Map<string, string> = new Map();
 
 //@ts-ignore
 const _initParsers = () => {
@@ -47,7 +48,7 @@ const _initParsers = () => {
 	const loadBitmapFont = Assets.loader.parsers.find(p => p.name === 'loadBitmapFont');
 	const originalBMFParser = loadBitmapFont!.parse!;
 	loadBitmapFont!.parse = (asset: string, options, ...args) => {
-		const reg = /(file=")(.+)(")/gm;
+		const reg = /(file=")([^"]+)(")/gm;
 		let result:RegExpExecArray |null;
 		let fixedAsset:string = asset;
 		while ((result = reg.exec(asset)) !== null) {
@@ -173,35 +174,42 @@ export default class Lib
 	}
 	/// #endif
 
-	static addAtlas(name: string, url: string, attempt = 0
+	static __parsersLoadingPromises = [] as Promise<true>[];
+
+	static async addResource(name: string, url: string, attempt = 0
 		/// #if EDITOR
 		, parentAsset?: FileDesc
 		/// #endif
 	) {
 		game.loadingAdd(url);
+
+		await Promise.all(Lib.__parsersLoadingPromises);
+
 		Assets.load(
 			/// #if EDITOR
 			getVersionedFileName(parentAsset!) ||
 			/// #endif
 			url).then((atlas: Spritesheet) => {
-			for (const textureName in atlas.textures) {
-				const texture = atlas.textures[textureName];
-				textures[textureName] = texture;
+			if (atlas.textures) {
+				for (const textureName in atlas.textures) {
+					const texture = atlas.textures[textureName];
+					textures[textureName] = texture;
 
-				/// #if EDITOR
-				const existingAsset = fs.getFileByAssetName(textureName, AssetType.IMAGE);
-				if (existingAsset) {
-					existingAsset.asset = texture;
-					existingAsset.parentAsset = parentAsset;
-				} else {
-					const cloneAsset = Object.assign({}, parentAsset);
-					cloneAsset.asset = texture;
-					cloneAsset.assetName = textureName;
-					cloneAsset.parentAsset = parentAsset;
-					cloneAsset.assetType = AssetType.IMAGE;
-					fs.addSubAsset(cloneAsset);
-				}
+					/// #if EDITOR
+					const existingAsset = fs.getFileByAssetName(textureName, AssetType.IMAGE);
+					if (existingAsset) {
+						existingAsset.asset = texture;
+						existingAsset.parentAsset = parentAsset;
+					} else {
+						const cloneAsset = Object.assign({}, parentAsset);
+						cloneAsset.asset = texture;
+						cloneAsset.assetName = textureName;
+						cloneAsset.parentAsset = parentAsset;
+						cloneAsset.assetType = AssetType.IMAGE;
+						fs.addSubAsset(cloneAsset);
+					}
 				/// #endif
+				}
 			}
 			Lib.resources[name] = atlas;
 			game.loadingRemove(url);
@@ -209,10 +217,13 @@ export default class Lib
 			game.editor.ui.refresh();
 			/// #endif
 		}).catch((_er) => {
+			/// #if DEBUG
+			debugger;
+			/// #endif
 			if (attempt < 3 && !game._loadingErrorIsDisplayed) {
 				attempt++;
 				window.setTimeout(() => {
-					Lib.addAtlas(name, url + ((attempt === 1) ? '?a' : 'a'), attempt
+					Lib.addResource(name, url + ((attempt === 1) ? '?a' : 'a'), attempt
 						/// #if EDITOR
 						, parentAsset
 						/// #endif
@@ -380,6 +391,9 @@ export default class Lib
 		const s = new HowlSound({ src: game.projectDesc.soundFormats.map(ext => url + '.' + ext) });
 		s.preciseDuration = duration;
 		soundsHowlers[name] = s;
+		/// #if DEBUG
+		Sound.__refreshDebugger();
+		/// #endif
 	}
 
 	static preloadSound(soundId: string | null
@@ -517,9 +531,13 @@ export default class Lib
 		return ret;
 	}
 
-	static getHashedFileName(assetName:string) {
+	static getHashedFileName(assetName:string
 		/// #if EDITOR
-		return fs.getFileByAssetName(assetName, AssetType.IMAGE)?.fileName;
+		, assetType = AssetType.IMAGE
+		/// #endif
+	) {
+		/// #if EDITOR
+		return fs.getFileByAssetName(assetName, assetType)?.fileName;
 		/*
 		/// #endif
 		return Lib.ASSETS_ROOT + unHashedFileToHashed.get(Lib.ASSETS_ROOT + assetName);
@@ -556,8 +574,8 @@ export default class Lib
 			Lib.addSound(Lib.unHashFileName(soundEntry[0], assetsRoot), assetsRoot + soundEntry[0], soundEntry[1]);
 		}
 		if (data.resources) {
-			for (const atlasName of data.resources) {
-				Lib.addAtlas(Lib.unHashFileName(atlasName, assetsRoot), assetsRoot + atlasName + '.json');
+			for (const name of data.resources) {
+				Lib.addResource(Lib.unHashFileName(name, assetsRoot), assetsRoot + name + '.json');
 			}
 		}
 		if (data.xmls) {
@@ -884,14 +902,17 @@ export default class Lib
 	/**
 	* @protected
 	*/
-	static __overrideSound(name: string, src: string[] | string) {
-		let opt = { src };
-		let s = new HowlSound(opt);
-		s.lastPlayStartFrame = 0;
-		soundsHowlers[name] = s;
-		if (game.classes.BgMusic) {
-			(game.classes.BgMusic).__onSoundOverride(name);
+	static __overrideSound(soundId: string, src: string[] | string | HowlSound) {
+		let s:HowlSound;
+		if (src instanceof HowlSound) {
+			s = src;
+		} else {
+			let opt = { src };
+			s = new HowlSound(opt);
 		}
+		s.lastPlayStartFrame = 0;
+		soundsHowlers[soundId] = s;
+		game.emit('__sound-overridden', soundId);
 	}
 
 	/// #endif
@@ -1011,7 +1032,7 @@ Object.freeze(EMPTY_NODE_EXTEND_DATA);
 export { __onAssetAdded, __onAssetDeleted, __onAssetUpdated, constructRecursive };
 
 const isAtlasAsset = (asset: any) => {
-	return (asset as KeyedObject)?.meta?.scale;
+	return asset?.meta?.scale || asset?.skeleton;
 };
 
 const __onAssetAdded = (file: FileDesc) => {
@@ -1038,7 +1059,7 @@ const __onAssetAdded = (file: FileDesc) => {
 	case AssetType.RESOURCE:
 		file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
 		if (isAtlasAsset(file.asset)) {
-			Lib.addAtlas(file.assetName, file.fileName, 0, file);
+			Lib.addResource(file.assetName, file.fileName, 0, file);
 		}
 		break;
 	case AssetType.BITMAP_FONT:
@@ -1098,7 +1119,7 @@ const __onAssetUpdated = (file: FileDesc) => {
 		if (isAtlasAsset(file.asset)) {
 			Lib.removeAtlas(file);
 			file.asset = fs.readJSONFile(file.fileName) as KeyedObject;
-			Lib.addAtlas(file.assetName, file.fileName, 0, file);
+			Lib.addResource(file.assetName, file.fileName, 0, file);
 		}
 		break;
 	case AssetType.BITMAP_FONT:

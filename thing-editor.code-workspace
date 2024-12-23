@@ -55,7 +55,7 @@
 		},
 		"javascript.preferences.importModuleSpecifier": "shortest",
 		"typescript.preferences.importModuleSpecifier": "shortest",
-		"typescript.tsserver.experimental.enableProjectDiagnostics": false,
+		"typescript.tsserver.experimental.enableProjectDiagnostics": true,
 		"cSpell.diagnosticLevel": "Hint",
 		"editor.formatOnType": false,
 		"editor.formatOnPaste": false,
@@ -119,7 +119,8 @@
 		"json.format.enable": true,
 		"[html]": {
 			"editor.defaultFormatter": "vscode.html-language-features"
-		}
+		},
+		"js/ts.implicitProjectConfig.checkJs": true
 	},
 	"tasks": {
 		"version": "2.0.0",

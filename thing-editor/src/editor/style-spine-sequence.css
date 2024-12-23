@@ -1,0 +1,155 @@
+#spine-sequence {
+	border: 1px solid #682e24;
+}
+
+.spine-sequence-wrapper {
+    display: flex;
+}
+
+.spine-sequence-headers {
+	white-space: nowrap;
+	text-align: right;
+	margin: 20px 0;
+	flex-shrink: 1;
+    width: 130px;
+	overflow-x: hidden;
+	max-height: 175px;
+}
+
+.spine-sequence-header {
+	padding: 4px 10px;
+}
+.spine-sequence-header:hover {
+	background-color: #333333;
+}
+
+.spine-sequence-header-active {
+	background-color: #181818;
+	border-top-left-radius: 20px;
+	border-bottom-left-radius: 20px;
+}
+
+.spine-sequence-body {
+	white-space: nowrap;
+	background-color: #181818;
+	flex-grow: 1;
+	overflow-y: hidden;
+	border-radius: 20px;
+	padding: 10px;
+    padding-top: 30px;
+	position: relative;
+}
+
+.spine-sequence-body button {
+	vertical-align: top;
+}
+
+.spine-sequence-item-wrapper {
+	display: inline-block;
+	position: relative;
+}
+
+.spine-sequence-item {
+	width: 100%;
+	height: 40px;
+	box-sizing: border-box;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 0;
+	margin-right: 3px;
+	background-color: #222222;
+	background-color: #222222;
+	border-radius: 20px;
+	display: inline-block;
+	border: 1px solid #000000;
+	position: relative;
+}
+
+.spine-sequence-action-time-pointer {
+	position: absolute;
+	left: -1px;
+	bottom: 10px;
+	height: 50px;
+	border-left: 1px solid #333333;
+}
+
+.spine-sequence-action-active .spine-sequence-action-time-pointer {
+	border-left: 1px solid #eb8000;
+}
+
+.spine-sequence-item-name {
+	padding-left: 10px;
+	position: absolute;
+	top: 10px;
+}
+
+.spine-sequence-action {
+	position: absolute;
+	width: 8px;
+	height: 20px;
+	border: 1px solid #333333;
+	cursor: ew-resize;
+	background-color: #c1c1c1;
+}
+
+.spine-sequence-action-empty {
+	background-color: #cc1616;
+}
+
+.spine-sequence-action img {
+    pointer-events: none;
+}
+
+.spine-sequence-action-active {
+	border: 1px solid #eb8000;
+}
+
+.spine-sequence-action:hover {
+	background-color: #d1d1d1;
+}
+
+.spine-sequence-item-delay {
+	position: absolute;
+	height: 100%;
+	background-color: #33333366;
+	border-right: 1px solid #000;
+}
+
+.spine-sequence-item-loop {
+    position: absolute;
+    left: 4px;
+    bottom: 0px;
+    border-left: 3px solid #339955;
+    padding-left: 4px;
+    font-size: 70%;
+    color: #339955;
+}
+
+.spine-sequence-item-active {
+	cursor: ew-resize;
+	border: 1px solid #eb8000;
+}
+
+.spine-sequence-item-invalid {
+	border: 1px solid #cc1616;
+	color: #cc1616;
+}
+
+.spine-sequence-item-props-editor {
+	padding: 10px;
+	flex-shrink: 1;
+}
+
+.spine-sequence-mix-view {
+	position: absolute;
+	left: 0;
+	top: 0;
+	fill: #00000088;
+	stroke: none;
+}
+
+.spine-sequences-actions-body {
+	position: absolute;
+	left: 0;
+	top: 40px
+}

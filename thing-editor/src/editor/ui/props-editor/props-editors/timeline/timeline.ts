@@ -585,8 +585,9 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	onMouseDown(ev: MouseEvent) {
 		isDragging = true;
 		this.onMouseMove(ev);
-		if (!draggingComponent && !ev.ctrlKey && !isTimeDragging) {
-			selectionFrame.onMouseDown(ev);
+
+		if (!draggingComponent && !ev.ctrlKey && (!isTimeDragging || ev.shiftKey)) {
+			selectionFrame.onMouseDown(ev, isTimeDragging && ev.shiftKey);
 		}
 	}
 
@@ -811,7 +812,9 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			if (o._timelineData) {
 				if (selectPath[2]) { // select label or keyframe.
 					if (!selectPath[1]) { //label
-						getTimelineWindow('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView: HTMLDivElement) => {
+						clearSelection();
+						select(o._timelineData.l[selectPath[2]].___view!);
+						getWindowElement('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView: HTMLDivElement) => {
 							shakeDomElement(labelView);
 						});
 						return;
@@ -822,6 +825,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 								for (let kf of f.t) {
 									if (kf.t == time) {
 										if (!kf.___view!.state || !kf.___view!.state.isSelected) {
+											clearSelection();
 											select(kf.___view!);
 											let kfNode = kf.___view!.base as HTMLDivElement;
 											if (kfNode) {
@@ -831,7 +835,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 											timelineInstance.refresh();
 										}
 
-										getTimelineWindow('.bottom-panel').then((w) => {
+										getWindowElement('.bottom-panel').then((w) => {
 											let actionEditField = w.querySelector('.props-editor-callback') as HTMLDivElement;
 											shakeDomElement(actionEditField);
 										});
@@ -885,10 +889,10 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 	}
 }
 
-function getTimelineWindow(childSelector: string): Promise<HTMLDivElement> {
+export function getWindowElement(childSelector: string, windowId = '#timeline'): Promise<HTMLDivElement> {
 	return new Promise((resolve) => {
 		let interval = window.setInterval(() => {
-			let w = document.querySelector('#timeline') as HTMLDivElement;
+			let w = document.querySelector(windowId) as HTMLDivElement;
 			if (w) {
 				if (childSelector) {
 					w = w.querySelector(childSelector) as HTMLDivElement;

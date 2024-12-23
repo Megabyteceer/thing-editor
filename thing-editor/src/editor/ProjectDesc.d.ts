@@ -36,9 +36,9 @@ interface ProjectDesc {
 	version: string;
 	soundFormats: string[];
 	soundDefaultBitrate: number;
-	soundBitRates: KeyedObject<number>;
-	loadOnDemandSounds: KeyedObject<number>;
-	loadOnDemandTextures: KeyedObject<number>;
+	soundBitRates: KeyedMap<number>;
+	loadOnDemandSounds: KeyedMap<number>;
+	loadOnDemandTextures: KeyedMap<number>;
 	defaultMusVol: number;
 	defaultSoundsVol: number;
 	embedLocales: boolean;
@@ -50,10 +50,6 @@ interface ProjectDesc {
 	autoFullScreenMobile: false;
 	__proxyFetchesViaNodeServer: false;
 	__group: string;
-	__webpack: {
-		debug: string;
-		production: string;
-	};
 	libs: string[];
 }
 

@@ -26,7 +26,7 @@ function addPreBuildScript(callback: (debug: boolean) => void, id: string) {
 let prefixToCutOff: '___' | '__';
 
 function isFileNameValidForBuild(name: string) {
-	return !name.startsWith(prefixToCutOff) && (name.indexOf('/' + prefixToCutOff) < 0);
+	return !name.startsWith(prefixToCutOff) && (!name.includes('/' + prefixToCutOff));
 }
 
 function filterAssets(file: FileDesc) {
@@ -34,15 +34,13 @@ function filterAssets(file: FileDesc) {
 }
 
 const filterChildrenByName = (childData: SerializedObject) => {
-	if (!childData.hasOwnProperty('p')) {
-		return true;
-	}
-	if (childData.p.hasOwnProperty('name') && childData.p.name &&
+
+	if (childData.p?.name &&
 		childData.p.name.startsWith(prefixToCutOff)) {
 		return false;
 	}
-	if (childData.p.hasOwnProperty('prefabName') &&
-		!isFileNameValidForBuild(childData.p.prefabName)) {
+	if (childData.r &&
+		!isFileNameValidForBuild(childData.r)) {
 		return false;
 	}
 	return true;
@@ -76,6 +74,7 @@ let assetsToCopy: { from: string; to: string }[] = [];
 
 export default class Build {
 	static async build(debug: boolean) {
+		game.editor.ui.modal.showSpinner();
 		fs.log(debug ? 'build debug' : 'build release');
 
 		for (const f of preBuildCallbacks) {
@@ -92,7 +91,6 @@ export default class Build {
 		if (game.editor.askSceneToSaveIfNeed() === false) {
 			return;
 		}
-		game.editor.ui.modal.showSpinner();
 
 		prefixToCutOff = (debug ? '___' : '__');
 
@@ -219,7 +217,6 @@ import Lib from 'thing-editor/src/engine/lib';`];
 				} else {
 					const a = result.message.split(' in file ');
 					if (a.length > 1) {
-						debugger;
 						const b = (a[1] as string).split(':');
 						const lineNum = b[b.length - 1];
 						const fileName = a[1];
@@ -295,10 +292,12 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 				prefabs[file.assetName] = file.asset as SerializedObject;
 			} else if (file.assetType === AssetType.SOUND) {
 				for (let ext of game.projectDesc.soundFormats) {
-					assetsToCopy.push({
-						from: file.fileName.replace(/\wav$/, ext),
-						to: getHashedAssetName(file) + '.' + ext
-					});
+					if (!file.parentAsset) {
+						assetsToCopy.push({
+							from: file.fileName.replace(/\wav$/, ext),
+							to: getHashedAssetName(file) + '.' + ext
+						});
+					}
 				}
 				sounds.push([getHashedAssetName(file), (file as FileDescSound).asset.preciseDuration]);
 			} else if (file.assetType === AssetType.RESOURCE) {
@@ -311,6 +310,12 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 						from: file.fileName,
 						to: getHashedAssetName(file) + '.json'
 					});
+					if ((file.asset as any)?.skeleton) {
+						assetsToCopy.push({
+							from: file.fileName.replace(/\.json$/, '.atlas'),
+							to: getHashedAssetName(file) + '.atlas'
+						});
+					}
 				}
 			} else if (file.assetType === AssetType.BITMAP_FONT) {
 				if (!xmls) {

@@ -9,7 +9,7 @@ import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Sound from 'thing-editor/src/engine/utils/sound';
 
-const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01
+const MIN_VOL_THRESHOLD = 0.01000001; // howler has min threshold 0.01
 
 const allActiveMusics: BgMusic[] = [];
 
@@ -236,6 +236,9 @@ export default class BgMusic extends Container {
 
 	/// #if DEBUG
 	static __onSoundOverride(name: string) {
+		if (!game.currentContainer) {
+			return;
+		}
 		for (let bgm of game.currentContainer.findChildrenByType(BgMusic)) {
 			if (bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
 				bgm.stop(0);
@@ -359,6 +362,10 @@ function recalculateMusic() {
 const sortReverted = (a: number, b: number) => {
 	return b - a;
 };
+
+/// #if DEBUG
+game.on('__sound-overridden', BgMusic.__onSoundOverride);
+/// #endif
 
 /// #if EDITOR
 

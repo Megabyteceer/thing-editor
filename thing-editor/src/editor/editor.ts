@@ -35,19 +35,22 @@ import mergeProjectDesc, { isProjectDescValueKeyedMap } from 'thing-editor/src/e
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import { __UnknownClass } from 'thing-editor/src/editor/utils/unknown-class';
 import validateObjectDataRecursive from 'thing-editor/src/editor/utils/validate-serialized-data';
-import waitForCondition from 'thing-editor/src/editor/utils/wait-for-condition';
 import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
 import { __UnknownClassScene } from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import waitForCondition from 'thing-editor/src/engine/lib/assets/src/utils/wait-for-condition';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';
 import Build from './utils/build';
 
+import Spine from '../engine/lib/assets/src/extended/spine.c';
 import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
+import type { ContextMenuItem } from './ui/context-menu';
+import MainMenu from './ui/main-menu';
 import roundUpPoint from './utils/round-up-point';
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
@@ -72,6 +75,12 @@ import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr f
 });
 
 let previewedSound: HowlSound;
+
+interface RecentProject {
+	dir: string;
+	icon: string;
+	title: string;
+}
 
 class Editor {
 
@@ -190,7 +199,7 @@ class Editor {
 		}
 
 		if (this.settings.getItem('last-opened-project')) {
-			this.openProject(this.settings.getItem('last-opened-project'));
+			this.loadProject(this.settings.getItem('last-opened-project'));
 		} else {
 			this.chooseProject(true);
 		}
@@ -310,12 +319,16 @@ class Editor {
 		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
 			if (dir) {
 				if (this.askSceneToSaveIfNeed()) {
-					this.settings.setItem('last-opened-project', dir);
-					this.restartInProgress = true;
-					window.document.location.reload();
+					this.openProject(dir);
 				}
 			}
 		});
+	}
+
+	openProject(dir:string) {
+		this.settings.setItem('last-opened-project', dir);
+		this.restartInProgress = true;
+		window.document.location.reload();
 	}
 
 	pauseGame() {
@@ -329,7 +342,10 @@ class Editor {
 		return this.editorArguments['build-and-exit'] as string;
 	}
 
-	async openProject(dir?: string) {
+	async loadProject(dir?: string) {
+
+		const spineLoading = Spine._loadSpineRuntime();
+
 		this.ui.viewport.stopExecution();
 
 		if (!dir) {
@@ -385,24 +401,29 @@ class Editor {
 					return;
 				}
 				mergeProjectDesc(libsProjectDescMerged, this.libsDescriptors[lib.name]);
-				const libSchema = fs.readJSONFileIfExists(lib.dir + '/schema-thing-project.json');
+				if (!this.buildProjectAndExit) {
+					const libSchema = fs.readJSONFileIfExists(lib.dir + '/schema-thing-project.json');
+					if (libSchema) {
+						schemas.push(libSchema);
+					}
+				}
+			}
+			if (!this.buildProjectAndExit) {
+				const libSchema = fs.readJSONFileIfExists(this.currentProjectDir + '/schema-thing-project.json');
 				if (libSchema) {
 					schemas.push(libSchema);
 				}
 			}
 
-			const libSchema = fs.readJSONFileIfExists(this.currentProjectDir + '/schema-thing-project.json');
-			if (libSchema) {
-				schemas.push(libSchema);
-			}
-
-			const mergedSchema = schemas[0];
-			for (const schema of schemas) {
-				if (schema !== mergedSchema) {
-					Object.assign(mergedSchema.properties, schema.properties);
+			if (schemas.length) {
+				const mergedSchema = schemas[0];
+				for (const schema of schemas) {
+					if (schema !== mergedSchema) {
+						Object.assign(mergedSchema.properties, schema.properties);
+					}
 				}
+				fs.writeFile('thing-editor/src/editor/schema-thing-project.json', mergedSchema);
 			}
-			fs.writeFile('thing-editor/src/editor/schema-thing-project.json', mergedSchema);
 
 			this.assetsFolders.push(this.currentProjectAssetsDir);
 			this.assetsFoldersReversed = game.editor.assetsFolders.slice().reverse();
@@ -425,15 +446,17 @@ class Editor {
 			protectAccessToSceneNode(game.stage, 'game stage');
 			protectAccessToSceneNode(game.stage.parent, 'PIXI stage');
 
+			await spineLoading;
+
 			await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
 				Lib.REMOVED_TEXTURE = t;
-				return Promise.all([this.reloadAssetsAndClasses(true)]);
+				return this.reloadAssetsAndClasses(true);
 			});
 
 			if (this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {
 				this.saveLastSceneOpenName('');
 			}
-			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || this.projectDesc.mainScene || 'main');
+			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || (Lib.hasScene(this.projectDesc.mainScene) ? this.projectDesc.mainScene : Object.keys(Lib.scenes)[0]));
 
 			loadFonts();
 			await waitForCondition(() => {
@@ -468,7 +491,33 @@ class Editor {
 				fs.exitWithResult('build finished');
 			}
 
+			const recentProjects = this.getRecentProjects().filter(p => p.dir !== projectDesc.dir);
+			recentProjects.unshift({icon: projectDesc.icon, title: projectDesc.title, dir: projectDesc.dir});
+			if (recentProjects.length > 5) {
+				recentProjects.pop();
+			}
+			this.settings.setItem('recent-projects', recentProjects);
+			const recentProjectsMenu = recentProjects.map((project) => {
+				return {
+					name: R.span(null, project.icon ? R.img({src: '/' + project.dir + project.icon, onError: (er:ErrorEvent) => {
+						((er.target as HTMLImageElement).closest('.context-menu-item') as HTMLDivElement).style.display = 'none';
+					}
+					 }) : undefined, project.title),
+					disabled: () => {
+						return project.dir === game.editor.currentProjectDir;
+					},
+					onClick: () => {
+						game.editor.openProject(project.dir.substring(6, project.dir.length - 1));
+					}
+				}as ContextMenuItem;
+			});
+			recentProjectsMenu.unshift(null);
+			MainMenu.injectMenu('file', recentProjectsMenu, 'recent-projects', 1);
 		}
+	}
+
+	getRecentProjects():RecentProject[] {
+		return this.settings.getItem('recent-projects', []);
 	}
 
 	toggleScreenOrientation() {
@@ -496,7 +545,7 @@ class Editor {
 	}
 
 	_processIsMobileHandlers() {
-		if (game.stage) {
+		if (game.pixiApp) {
 			game.forAllChildrenEverywhere((o: any) => {
 				if (o.__onIsMobileChange) {
 					o.__onIsMobileChange();

@@ -62,7 +62,7 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 	url = getPropertyDefinitionUrl(url, name, target as any);
 	(editablePropertyDesc as EditablePropertyDesc).__src = url;
 
-	(target.constructor as SourceMappedConstructor).__editablePropsRaw.push(editablePropertyDesc as EditablePropertyDesc);
+	(target.constructor as SourceMappedConstructor).__editablePropsRaw.push(editablePropertyDesc as EditablePropertyDescRaw);
 }
 
 export default editable;

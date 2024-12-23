@@ -20,9 +20,12 @@ const regenerateCurrentSceneMapTypings = () => {
 		return;
 	}
 
+	const sceneClass = (game.currentScene.constructor as SourceMappedConstructor);
+
 	const json: KeyedMap<string> = {};
 	const classes: Set<string> = new Set();
 
+	classes.add(sceneClass.__className);
 
 	game.currentScene._refreshAllObjectRefs();
 	for (let n of Object.keys(game.currentScene.all)) {
@@ -42,27 +45,32 @@ const regenerateCurrentSceneMapTypings = () => {
 		let declarations = [];
 
 		for (let className of classes.values()) {
-			imports.push(getImportSrcForClass(className));
+			if (className !== 'Container') {
+				imports.push(getImportSrcForClass(className));
+			}
 		}
 
-		for (let name of Object.keys(json)) {
+		const keys = Object.keys(json);
+		for (let name of keys) {
 			let className = json[name];
-			const isRefused = getAllObjectRefsCount(name);
-			if (isRefused) {
-				declarations.push(`/** @deprecated ${isRefused} */`);
+			if (className !== 'Container') {
+				const isRefused = getAllObjectRefsCount(name);
+				if (isRefused) {
+					declarations.push(`/** @deprecated ${isRefused} */`);
+				}
+				declarations.push('\'' + name + '\': ' + className + ';');
 			}
-			declarations.push('\'' + name + '\': ' + ((className === 'Container') ? 'Container' : className) + ';');
 		}
 
 		let mapJS = `// thing-editor auto generated file.
-import type Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+
 import type { Container } from 'pixi.js';
 `
 			+ imports.join('\n') +
 `
 
 declare global {
-type CurrentSceneType = ` + game.currentScene.constructor.name + `;
+type CurrentSceneType = ` + sceneClass.__className + `;
 
 interface ThingSceneAllMap {
 	[key: string]: Container;
@@ -107,7 +115,7 @@ const regenerateClassesTypings = () => {
 declare global {
 
 interface GameClasses {
-[key: string]: typeof Constructor;
+[key: string]: SourceMappedConstructor;
 `
 			+ declarations.join('\n') + `
 }

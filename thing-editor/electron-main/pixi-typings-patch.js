@@ -29,12 +29,12 @@ patch(
     onRemove(): void;
     addFilter(filter: Filter): void;
     removeFilter(filter: Filter): void;
-    gotoLabelRecursive(labelName: string);
+    gotoLabelRecursive(labelName: string): void;
     isCanBePressed: boolean;
     findParentByType<T extends Container>(classType: new () => T): T | null;
     findParentByName(name: string): Container;
 
-    _onRenderResize?();
+    _onRenderResize?(): void;
 
     /** search child recursively by it's name */
     findChildByName(name: string): Container | undefined;
@@ -52,7 +52,7 @@ patch(
     __beforeDeserialization?(): void;
     __beforeSerialization?(): void;
     __afterDeserialization?(): void;
-    __treeInjection?(): void;
+   __treeInjection?(): import('preact').ComponentChild;
     __afterSerialization?(data: SerializedObject): void;
     __beforeDestroy?(): void;
 
@@ -86,7 +86,7 @@ patch(
     /** debug uniq id of object  (exists in editor only)*/
     ___id: number;
 
-	__shiftObject?(dX, dY);
+	__shiftObject?(dX: number, dY: number): void;
 	
     /** added because pixi exports classes with wrong names */
     static __className: string;
@@ -97,9 +97,9 @@ patch(
     static name: string;
     static __sourceFileName?: string;
     static __defaultValues: KeyedObject;
-    static __requiredComponents?: Constructor[];
+    static __requiredComponents?: SourceMappedConstructor[];
     static __EDITOR_icon?: string;
-    static __classAsset: FileDescClass;
+    static __classAsset: import ( "thing-editor/src/editor/fs").FileDescClass;
     static __editableProps: EditablePropertyDesc[];
     static __editablePropsRaw: EditablePropertyDescRaw[];
 
@@ -175,7 +175,7 @@ const path = require('path');
 const fs = require('fs');
 const {dialog} = require('electron');
 
-function tryToPatch(folder, mainWindow) {
+function tryToPatch(folder) {
 	for (let patch of patches) {
 		let isReplace = false;
 		var fn = path.join(folder, patch.fileName);
@@ -213,16 +213,15 @@ function tryToPatch(folder, mainWindow) {
 			}
 		}
 	}
-}
-
-module.exports = function (mainWindow) {
+};
+module.exports = function () {
 	if (IS_CI_RUN) {
 		return;
 	}
 	let projectRoot = path.join(__dirname, '../..');
 	tryToPatch(path.join(__dirname, '..'));
 	while (fs.existsSync(projectRoot)) {
-		tryToPatch(projectRoot, mainWindow);
+		tryToPatch(projectRoot);
 		let parentPath = path.join(projectRoot, '..');
 		if (parentPath === projectRoot) {
 			break;

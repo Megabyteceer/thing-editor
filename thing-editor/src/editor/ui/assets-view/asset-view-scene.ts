@@ -12,6 +12,7 @@ import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import { __UnknownClass } from 'thing-editor/src/editor/utils/unknown-class';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game, { PRELOADER_SCENE_NAME } from 'thing-editor/src/engine/game';
+import { getSerializedObjectClass } from '../../utils/generate-editor-typings';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -87,6 +88,10 @@ const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
 				if (!isCurrent && !editorUtils.isInModal(ev.target)) {
 					game.editor.openScene(file.assetName);
 				}
+			},
+			onDblClick: () => {
+				const Class = getSerializedObjectClass(file.asset);
+				game.editor.editClassSource(Class, file.asset.c);
 			},
 			title: 'click to open scene.'
 		},

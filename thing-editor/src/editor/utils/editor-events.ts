@@ -3,6 +3,7 @@ import type { Container } from 'pixi.js';
 import type TypedEventEmitter from 'typed-emitter';
 
 type EditorEvents = {
+	playToggle: () => void;
 	projectDidOpen: () => void;
 	beforePropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void;
 	afterPropertyChanged: (o: Container, fieldName: string, field: EditablePropertyDesc, val: any, isDelta?: boolean) => void;

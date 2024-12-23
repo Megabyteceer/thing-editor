@@ -1,26 +1,24 @@
-const isEventFocusOnInputElement = (ev: KeyboardEvent): Promise<boolean> => {
-	return new Promise((resolve) => {
-		let tag = ev.target && (ev.target as HTMLElement).tagName;
+const isEventFocusOnInputElement = (ev: KeyboardEvent): boolean => {
 
-		if (((tag === 'INPUT') && ((ev.target as HTMLInputElement).type !== 'checkbox')) ||
-			tag === 'TEXTAREA' ||
-			tag === 'SELECT') {
+	let tag = ev.target && (ev.target as HTMLElement).tagName;
 
-			if (ev.key === 'ArrowDown' || ev.key === 'ArrowLeft' || ev.key === 'ArrowRight' || ev.key === 'ArrowUp') {
-				resolve(true);
-			} else if ((ev.target as HTMLInputElement).classList.contains('tree-view-search')) {
-				resolve(true);
-			} else {
-				const currentVal = (ev.target as HTMLInputElement).value;
-				window.setTimeout(() => {
-					resolve(currentVal !== (ev.target as HTMLInputElement).value);
+	if (((tag === 'INPUT') && ((ev.target as HTMLInputElement).type !== 'checkbox')) ||
+			tag === 'TEXTAREA') {
 
-				}, 0);
-			}
-		} else {
-			resolve(false);
+		if (ev.key === 'ArrowDown' || ev.key === 'ArrowLeft' || ev.key === 'ArrowRight' || ev.key === 'ArrowUp') {
+			return true;
 		}
-	});
+		if (ev.key === 'Backspace' || ev.key === 'Delete' || ev.key === 'Enter' || ev.code === 'Comma' || ev.code === 'Period') {
+			return true;
+		}
+
+		if (ev.ctrlKey) {
+			if (ev.key === 'z' || ev.key === 'x' || ev.key === 'c' || ev.key === 'v' || ev.key === 'y' || ev.key === 'a') {
+				return true;
+			}
+		}
+	}
+	return false;
 };
 
 export default isEventFocusOnInputElement;

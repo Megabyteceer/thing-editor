@@ -140,7 +140,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 	onSetRandomExistsChanged(ev: InputEvent) {
 		for (let k of this.keyframes) {
 			if ((ev.target as HTMLInputElement).checked) {
-				k.props.keyFrame.r = 0;
+				k.props.keyFrame.r = -10;
 			} else {
 				delete k.props.keyFrame.r;
 			}
@@ -210,7 +210,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		let speedSetPossible = true;
 		let speedVal: false | number = false;
 
-
+		let keyframeTypes:TimelineKeyFrameType[];
 		for (let k of keyframes) {
 
 			let fieldsProps = k.props.owner.props.owner.props;
@@ -219,17 +219,17 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 				speedVal = k.props.keyFrame.s!;
 			}
 
-			let types = getKeyframeTypesForField(game.editor.selection, fieldsProps.field.n);
-			if (!availableKeyframeTypes || (availableKeyframeTypes.length > types.length)) {
-				availableKeyframeTypes = types;
+			keyframeTypes = getKeyframeTypesForField(game.editor.selection, fieldsProps.field.n);
+			if (!availableKeyframeTypes || (availableKeyframeTypes.length > keyframeTypes.length)) {
+				availableKeyframeTypes = keyframeTypes;
 			}
 		}
 
 		let selectableKeyframeTypes: ({
 			name: string;
 			value: TimelineKeyFrameType;
-		}[]) = READABLE_KEYFRAME_TYPES.map((name, value) => {
-			return { name, value };
+		}[]) = keyframeTypes!.map((type) => {
+			return { name: READABLE_KEYFRAME_TYPES[type], value: type };
 		});
 
 		let body;
@@ -276,7 +276,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		let hasRandom = kf.hasOwnProperty('r');
 		let randomEditor;
 		if (hasRandom) {
-			randomEditor = h(NumberEditor, { value: kf.r, step: 1, min: -1000, onChange: this.onRandomChanged });
+			randomEditor = h(NumberEditor, { value: kf.r, step: 1, min: -1000, max: -1, onChange: this.onRandomChanged });
 		}
 
 		let jumpReset;

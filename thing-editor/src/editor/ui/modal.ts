@@ -34,6 +34,7 @@ let blackoutPropsClosable = {
 let spinnerProgress = -1;
 let spinnerName: string | undefined;
 let spinnerProps = { className: 'modal-spinner' };
+let spinnerOverlayProps = { className: 'modal-spinner-overlay' };
 let spinnerProgressProps = { className: 'modal-spinner-progress' };
 let bodyProps = { className: 'modal-body' };
 let titleProps = { className: 'modal-title' };
@@ -83,6 +84,7 @@ let renderModal = (props: ModalEntry, i: number) => {
 let renderSpinner = () => {
 	return R.div(blackoutProps,
 		R.div(spinnerProps),
+		R.div(spinnerOverlayProps),
 		(spinnerProgress >= 0) ? R.div(spinnerProgressProps, R.div({style: {width: (spinnerProgress * 100) + '%'}}), spinnerName) : undefined
 	);
 };
@@ -146,7 +148,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		);
 	}
 
-	showPrompt(title: ComponentChild, defaultText?: string, filter?: (val: string) => string, accept?: (val: string) => string | undefined, noEasyClose?: boolean, multiline?: boolean) {
+	showPrompt(title: ComponentChild, defaultText?: string, filter?: (val: string) => string, accept?: (val: string) => string | undefined, noEasyClose?: boolean, multiline?: boolean):Promise<string | undefined> {
 		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
 	}
 
@@ -157,6 +159,10 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	notify(txt: string | Component, hideId?: string) {
 		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
+		}
+		if (game.editor.buildProjectAndExit) {
+			console.log('notification: ');
+			console.log(txt);
 		}
 		notifyTexts.add(txt);
 		if (hideId) {

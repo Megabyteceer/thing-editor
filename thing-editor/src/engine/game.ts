@@ -1,3 +1,7 @@
+import * as PIXI from 'pixi.js';
+(window as any).PIXI = {};
+Object.assign((window as any).PIXI, PIXI);
+
 import type { IApplicationOptions } from 'pixi.js';
 import { Application, BaseTexture, Container, GC_MODES, MIPMAP_MODES, Point, Texture, TextureGCSystem, utils } from 'pixi.js';
 import type { __EditorType } from 'thing-editor/src/editor/editor';
@@ -58,9 +62,6 @@ const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
 
-let resizeOutJump = 0;
-let fireNextOnResizeImmediately = false;
-
 interface Mouse {
 	click: boolean;
 	x: number;
@@ -73,7 +74,18 @@ const processOnResize = (o: Container) => {
 	}
 };
 
-class Game {
+export interface ThingGameEvents {
+	'assets-will-add': [data: AssetsDescriptor];
+	'stage-will-resize': [];
+	'global-update': [];
+	'update': [];
+	'updated': [];
+	/// #if EDITOR
+	'__sound-overridden': [soundId:string];
+	/// #endif
+}
+
+class Game extends utils.EventEmitter<ThingGameEvents> {
 
 	W = 0;
 	H = 0;
@@ -149,13 +161,20 @@ class Game {
 
 	setValueByPath = setValueByPath;
 
+	constructor() {
+		super();
+		stage = new Container();
+		stage.name = 'stage';
+		this.stage = stage;
+		stage.__nodeExtendData = {};
+	}
+
 	init(element?: HTMLElement, gameId?: string, pixiOptions?: Partial<IApplicationOptions>) {
 		/// #if EDITOR
 		/*
 		/// #endif
 		game.addAssets(preloaderAssets);
 		//*/
-
 
 		window.dispatchEvent(new CustomEvent('game-will-init'));
 
@@ -171,15 +190,12 @@ class Game {
 		(this.onResize as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 		/// #endif
 
-		stage = new Container();
-		stage.name = 'stage';
-		this.stage = stage;
-		stage.__nodeExtendData = {};
-
 		this.settings = new Settings(gameId || this.projectDesc.id);
 
 		/// #if EDITOR
-		this.___enforcedOrientation = game.editor.settingsLocal.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
+		if (game.projectDesc.screenOrientation === 'auto') {
+			this.___enforcedOrientation = game.editor.settingsLocal.getItem('__EDITOR_is-portrait-orientation') ? 'portrait' : undefined;
+		}
 		/// #endif
 
 		initGameInteraction();
@@ -229,30 +245,8 @@ class Game {
 	}
 
 	_onContainerResize() {
-		if (resizeOutJump) {
-			clearTimeout(resizeOutJump);
-		}
-		if (fireNextOnResizeImmediately) {
-			fireNextOnResizeImmediately = false;
-			this.onResize();
-		} else {
-			resizeOutJump = window.setTimeout(() => {
-				resizeOutJump = 0;
-				if (game.isMobile.any // eslint-disable-line no-constant-condition
-					/// #if EDITOR
-					&& false
-					/// #endif
-				) {
-					for (let i of [20, 40, 80, 200, 500, 1000, 1500, 2000, 3000]) {
-						window.setTimeout(this.onResize, i);
-					}
-				}
-				this.onResize();
-			}, game.isMobile.any // eslint-disable-line no-constant-condition
-				/// #if EDITOR
-				&& false
-				/// #endif
-				? 1 : 200);
+		for (let i of [1, 20, 40, 80, 200, 500, 1000, 1500, 2000, 3000]) {
+			window.setTimeout(this.onResize, i);
 		}
 	}
 
@@ -295,9 +289,7 @@ class Game {
 		if (data.projectDesc) {
 			game.applyProjectDesc(data.projectDesc);
 		}
-		if (game.stage) {
-			game.stage.emit('assets-will-add', data); // 99999
-		}
+		game.emit('assets-will-add', data); // 99999
 		Lib.addAssets(data);
 	}
 
@@ -338,6 +330,9 @@ class Game {
 			w = (this.pixiApp.view.parentNode as HTMLDivElement).clientWidth;
 			h = (this.pixiApp.view.parentNode as HTMLDivElement).clientHeight;
 		}
+
+		const bodyW = w;
+		const bodyH = h;
 
 		//let debugInfo = 'w: ' + w + '; h: ' + h;
 
@@ -538,6 +533,9 @@ class Game {
 			this.H++;
 		}
 
+		rendererWidth = Math.floor(rendererWidth += 0.0001);
+		rendererHeight = Math.floor(rendererHeight += 0.0001);
+
 		let needResizeRenderer = (_rendererWidth !== rendererWidth) || (_rendererHeight !== rendererHeight) || (scale !== S);
 
 		//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -564,16 +562,6 @@ class Game {
 		}
 
 		if (needResizeRenderer) {
-			/*
-			if(!game.__EDITOR_mode && Lib.hasPrefab('ui/sure-question')) {
-				game.showQuestion('', 'W: ' + _rendererWidth +
-					';   H: ' + _rendererHeight +
-					';\nS: ' + S +
-					'\n\nw: ' + domElement.clientWidth +
-					';   h: ' + domElement.clientHeight +
-					';\nration: ' + window.devicePixelRatio
-				);
-			}//*/
 
 			/// #if EDITOR
 			if (!this.__enforcedW) {
@@ -581,19 +569,11 @@ class Game {
 				let renderer = game.pixiApp.renderer;
 
 				renderer.resolution = scale;
-
-				/*PIXI.InteractionManager.resolution = scale;
-				renderer.plugins.interaction.resolution = scale;
-
-				if(renderer.rootRenderTarget) {
-					renderer.rootRenderTarget.resolution = scale;
-				}*/
-
-				renderer.resize(_rendererWidth + 0.0001, _rendererHeight + 0.0001); //prevent canvas size decreasing by pixel because of Math.ceil
+				renderer.resize(_rendererWidth, _rendererHeight); //prevent canvas size decreasing by pixel because of Math.ceil
 				/// #if EDITOR
 			}
 			/// #endif
-
+			this.emit('stage-will-resize');
 			this.forAllChildrenEverywhere(processOnResize);
 			/// #if EDITOR
 			if (!this.__enforcedW) {
@@ -601,6 +581,19 @@ class Game {
 			}
 			/// #endif
 		}
+
+		const isWide = (bodyW / _rendererWidth) >= (bodyH / _rendererHeight);
+		const c = this.pixiApp.view as HTMLCanvasElement;
+		const w2 = isWide ? Math.round(bodyH * _rendererWidth / _rendererHeight) : bodyW;
+		const h2 = isWide ? bodyH : Math.round(bodyW * _rendererHeight / _rendererWidth);
+		c.style.width = w2 + 'px';
+		c.style.height = h2 + 'px';
+		/// #if EDITOR
+		/*
+		/// #endif
+		c.style.left = Math.round((bodyW - w2) / 2) + 'px';
+		c.style.top = Math.round((bodyH - h2) / 2) + 'px';
+		//*/
 
 		assert(_rendererWidth, 'Render\'s size was not calculated correctly.');
 		assert(_rendererHeight, 'Render\'s size was not calculated correctly.');
@@ -659,8 +652,8 @@ class Game {
 	}
 
 	/// #if EDITOR
-	get currentScene(): CurrentSceneType {
-		return __currentSceneValue;
+	get currentScene() {
+		return __currentSceneValue as CurrentSceneType | Scene;
 	}
 	/*
 	/// #endif
@@ -680,11 +673,15 @@ class Game {
 
 		/// #if EDITOR
 		EDITOR_FLAGS.updateInProgress = true;
+		/// #endif
 
-		if ((!this.__paused || this.__doOneStep) && !this.__EDITOR_mode) {
+		if ((!this.__paused || this.__doOneStep)
+			/// #if EDITOR
+			&& !this.__EDITOR_mode
 			/// #endif
+		) {
 
-			this.stage.emit('global-update');//99999
+			this.emit('global-update');//99999
 
 			dt = Math.min(dt, FRAME_PERIOD_LIMIT);
 			/// #if EDITOR
@@ -705,15 +702,15 @@ class Game {
 				game.isUpdateBeforeRender = !(frameCounterTime > FRAME_PERIOD);
 				this._updateFrame();
 
-				/// #if EDITOR
 				if (this.__doOneStep) {
+					/// #if EDITOR
 					this.editor.refreshTreeViewAndPropertyEditor();
+					/// #endif
 					this.__doOneStep = false;
 					frameCounterTime = 0;
 					break;
 				}
 			}
-			/// #endif
 		}
 
 		if (this.currentScene) {
@@ -765,7 +762,7 @@ class Game {
 			contextLoseTime = 0;
 		}
 
-		this.stage.emit('update'); //99999
+		this.emit('update'); //99999
 
 		if (game._isWaitingToHideFader) {
 			if (game.loadingsFinished === game.loadingsInProgress) {
@@ -773,6 +770,7 @@ class Game {
 				if (!game.currentScene._onShowCalled) {
 					game.currentScene._onShowCalled = true;
 					game.currentScene.onShow();
+					game.currentScene.emit('on-scene-show');
 					loadDynamicTextures();
 					if (game.currentScene.name === PRELOADER_SCENE_NAME) {
 						game._hideCurrentFaderAndStartScene();
@@ -783,7 +781,8 @@ class Game {
 						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
 							this.loadingRemove('assets-main load');
 							game.addAssets(mainAssets.default);
-						}).catch(() => {
+						}).catch((er) => {
+							console.error(er);
 							game.showLoadingError('assets-main.json');
 						});
 						//*/
@@ -830,7 +829,7 @@ class Game {
 			}
 		}
 		this.keys.update();
-		this.stage.emit('updated');//99999
+		this.emit('updated');//99999
 		Lib._cleanupRemoveHolders();
 	}
 
@@ -1074,6 +1073,14 @@ class Game {
 		/// #endif
 	}
 
+	__togglePause() {
+		game.__paused = !game.__paused;
+	}
+
+	__oneStep() {
+		game.__doOneStep = true;
+	}
+
 	/** call when fader covered the stage */
 	faderShoot() {
 		/// #if EDITOR
@@ -1162,10 +1169,6 @@ class Game {
 		//*/
 	}
 
-	_fireNextOnResizeImmediately() {
-		fireNextOnResizeImmediately = true;
-	}
-
 	_setCurrentSceneContent(scene: Scene) {
 		//DODO: cleanup
 		assert(!game.currentScene, 'Attempt to set current scene content with previous scene exists.');
@@ -1197,9 +1200,9 @@ class Game {
 		return scene;
 	}
 
-	/// #if DEBUG
 	__doOneStep = false;
 	__paused = false;
+	/// #if DEBUG
 	protected _FPS = 0;
 	FPS = 0;
 	/// #endif
@@ -1296,6 +1299,7 @@ function loadFonts() {
 			if (!fontHolder) {
 				fontHolder = document.createElement('span');
 				fontHolder.style.opacity = '0';
+				fontHolder.style.userSelect = 'none';
 				fontHolder.style.color = 'rgba(0,0,0,0.01)';
 				fontHolder.style.position = 'absolute';
 				fontHolder.style.zIndex = '-1';
@@ -1487,7 +1491,7 @@ const visibilityChangeHandler = () => {
 
 		if (game.pixiApp) {
 			window.setTimeout(() => {
-				if (game.classes.BgMusic) {
+				if (game.classes?.BgMusic) {
 					/// #if EDITOR
 					/*
 					/// #endif
@@ -1502,3 +1506,27 @@ const visibilityChangeHandler = () => {
 };
 focusChangeHandler(true);
 visibilityChangeHandler();
+
+let pauseRuntimeHotKeysInititalized = false;
+export function __pauseRuntimeHotKeysInit() { // 99999
+	/// #if EDITOR
+	return;
+	/// #endif
+	if (pauseRuntimeHotKeysInititalized) {
+		return;
+	}
+	pauseRuntimeHotKeysInititalized = true;
+	window.addEventListener('keydown', (ev) => {
+		if (ev.keyCode === 80 && ev.ctrlKey) {
+			game.__togglePause();
+			ev.preventDefault();
+		} else if (ev.keyCode === 219 && ev.ctrlKey) {
+			game.__oneStep();
+			ev.preventDefault();
+		}
+	});
+}
+
+/// #if DEBUG
+__pauseRuntimeHotKeysInit();
+/// #endif

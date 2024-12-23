@@ -116,6 +116,7 @@ export default class HTMLOverlay extends ScrollLayer {
 
 	_releaseHtmlDiv() {
 		if (this._htmlDiv) {
+			this.emit('html-will-remove'); /// 99999
 			this._htmlDiv.remove();
 			this._htmlDiv = null;
 			if (this._overlayInterval) {
@@ -150,9 +151,14 @@ export default class HTMLOverlay extends ScrollLayer {
 		if (this.currentHtmlOpacity > 0.001) {
 			if (!this._htmlDiv) {
 				this._htmlDiv = document.createElement('div');
-				this._htmlDiv.style.position = 'absolute';
+				this._htmlDiv.style.position =
+				/// #if EDITOR
+				(game.__EDITOR_mode) ? 'absolute' :
+				/// #endif
+					'fixed';
 				this._htmlDiv.innerHTML = this._htmlContent;
 				this._htmlDiv.style.overflowY = 'hidden';
+				this._htmlDiv.style.overflowX = 'visible';
 				this._htmlDiv.style.zIndex = this.zIndexHTML.toString();
 				this._htmlDiv.style.transformOrigin = '0 0';
 				this._applyClassName();
@@ -177,21 +183,34 @@ export default class HTMLOverlay extends ScrollLayer {
 				}
 				this._isHtmlContentInvalidated = false;
 				this._overlayInterval = window.setInterval(this._overlayIntervalUpdate, 1000 / 60);
+				this.emit('html-attached'); /// 99999
 			}
 			this._htmlDiv.style.opacity = this.currentHtmlOpacity.toString();
 			_canvasBoundsCache = null;
 
-			recalcCanvasBounds()
-			;
+			recalcCanvasBounds();
+
 			if (Math.abs(this.currentHtmlScale - this.worldTransform.a) > 0.001) {
 				this.currentHtmlScale = this.worldTransform.a;
 				this._htmlDiv.style.transform = 'scale(' + (this.currentHtmlScale).toFixed(3) + ')';
 			}
 
-			this._htmlDiv.style.left = (game.pixiApp.view as HTMLCanvasElement).offsetLeft + (Math.round(this.parent.worldTransform.tx) * canvasScale) + 'px';
+			this._htmlDiv.style.left = (
+				/// #if EDITOR
+				(!game.__EDITOR_mode) ? _canvasBoundsCache!.left :
+				/// #endif
+					(game.pixiApp.view as HTMLCanvasElement).offsetLeft)
+
+			+ (Math.round(this.parent.worldTransform.tx) * canvasScale) + 'px';
 
 
-			this._htmlDiv.style.top = (game.pixiApp.view as HTMLCanvasElement).offsetTop + (Math.round(this.parent.worldTransform.ty) * canvasScale) + 'px';
+			this._htmlDiv.style.top = (
+			/// #if EDITOR
+				(!game.__EDITOR_mode) ? _canvasBoundsCache!.top :
+				/// #endif
+					(game.pixiApp.view as HTMLCanvasElement).offsetTop)
+
+			+ (Math.round(this.parent.worldTransform.ty) * canvasScale) + 'px';
 
 
 			this._htmlDiv.style.width = (this.visibleArea.w * canvasScale) + 'px';
@@ -210,7 +229,11 @@ export default class HTMLOverlay extends ScrollLayer {
 
 	_applyClassName() {
 		if (this._htmlDiv) {
-			this._htmlDiv.className = this.className ? (this.className + (game.isPortrait ? ' portrait-' : ' landscape-') + this.className) : '';
+			this._htmlDiv.className = this.className ? (
+				this.className +
+				(game.isPortrait ? ' portrait-' : ' landscape-') + this.className +
+				(game.isMobile.any ? ' mobile-' : ' desktop-') + this.className
+			) : '';
 		}
 	}
 

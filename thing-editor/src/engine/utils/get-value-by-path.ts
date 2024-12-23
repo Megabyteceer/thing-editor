@@ -2,10 +2,13 @@ import assert from 'thing-editor/src/engine/debug/assert.js';
 import game from '../game.js';
 
 import { Container } from 'pixi.js';
+import type { ComponentChild } from 'preact';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags.js';
 import { stringToCallData } from './call-by-path.js';
 /// #if EDITOR
+import R from '../basic-preact-fabrics';
 let latestDetectedSceneNode: Container | null;
+let latestMethodOwner: any;
 /// #endif
 const getValueByPath = (valuePath: ValuePath, this_: any
 	/// #if EDITOR
@@ -68,12 +71,17 @@ const getValueByPath = (valuePath: ValuePath, this_: any
 		if (!c) {
 			return c;
 		}
-
+		/// #if EDITOR
+		if (c instanceof Container) {
+			latestDetectedSceneNode = c;
+		}
+		/// #endif
 		i++;
 	}
 
 	/// #if EDITOR
 	if (isLatestNodeGetting) {
+		latestMethodOwner = fOwner;
 		return c;
 	}
 	/// #endif
@@ -160,6 +168,53 @@ const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
 	return ret;
 };
 
+const ACTION_ICON_DEFAULT = R.img({ src: '/thing-editor/img/timeline/default.png' });
+
+type SelectablePropertyKeys = keyof SelectableProperty;
+
+export const findMethodDecorator = (decoratorName:SelectablePropertyKeys, owner: any, func: Function) => {
+	const methodName = func.name;
+	let f = func;
+	while (typeof f === 'function') {
+		if (decoratorName in f) {
+			const ret = (f as SelectableProperty)[decoratorName];
+			if (f !== func) {
+				(func as SelectableProperty)[decoratorName] = ret;
+			}
+			return ret;
+		}
+		f = undefined!;
+		while (owner && !f) {
+			owner = Object.getPrototypeOf(owner);
+			if (owner) {
+				f = owner[methodName];
+			}
+		}
+	}
+};
+
+export const getCallbackIcon = (path: string, _this: any, suspendWarning = false): ComponentChild | undefined => {
+	if (!path) {
+		return ACTION_ICON_DEFAULT;
+	}
+	EDITOR_FLAGS.rememberTryTime();
+	let ret:ComponentChild;
+	try {
+		latestMethodOwner = null;
+		let func = getValueByPath(path, _this, true);
+
+		if (typeof func === 'function') {
+			ret = findMethodDecorator('___EDITOR_actionIcon', latestMethodOwner, func);
+		}
+	} catch (er) {
+		if (!suspendWarning) {
+			console.warn('timeline icon search error: (' + path + '): ' + _this.___info + ' ' + ((typeof er) === 'object' ? (er as any).message : er));
+		}
+	}
+	EDITOR_FLAGS.checkTryTime();
+	return ret || ACTION_ICON_DEFAULT;
+};
+
 const pathDebugging_thing_editor_debug_helper = (o: Container, path: string) => {
 	if (o instanceof Container) {
 		if (o.__nodeExtendData.hasOwnProperty('__pathBreakpoint') && o.__nodeExtendData.__pathBreakpoint === path) {
@@ -195,3 +250,4 @@ export default getValueByPath;
 export {
 	setValueByPath
 };
+

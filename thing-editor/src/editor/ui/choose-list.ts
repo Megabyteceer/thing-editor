@@ -103,6 +103,22 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		return item.noFilter || ((item.__className || item.pureName || item.name) as string).toLocaleLowerCase().indexOf(f) >= 0;
 	}
 
+	acceptByEnter(ev:KeyboardEvent) {
+		if (this.list.length >= 1) {
+			if ((this.list[0] as any).noAutoSelect) {
+				if (this.list.length >= 2) {
+					game.editor.ui.modal.hideModal(this.list[1]);
+					sp(ev);
+				}
+			} else {
+
+				game.editor.ui.modal.hideModal(this.list[0]);
+				sp(ev);
+
+			}
+		}
+	}
+
 	render() {
 
 		let list: any = this.list.map(this.renderChoosingItem as any);
@@ -116,19 +132,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search')
 			),
 			R.btn('auto accept', (ev) => {
-				if (this.list.length >= 1) {
-					if ((this.list[0] as any).noAutoSelect) {
-						if (this.list.length >= 2) {
-							game.editor.ui.modal.hideModal(this.list[1]);
-							sp(ev);
-						}
-					} else {
-
-						game.editor.ui.modal.hideModal(this.list[0]);
-						sp(ev);
-
-					}
-				}
+				this.acceptByEnter(ev as any);
 			}, undefined, 'hidden', { key: 'Enter' }),
 			R.div(listProps, list)
 		);

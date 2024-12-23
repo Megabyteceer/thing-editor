@@ -155,6 +155,11 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		let label = this.props.label;
 		let name = this.props.label.___name;
 
+		if (name.startsWith('__')) {
+			className += ' timeline-label-tip';
+			name = name.substring(2).trimStart();
+		}
+
 		return R.div({
 			className, id: 'timeline-label-' + name.replace('.', '-').replace('#', '-'), style: { left: label.t * this.props.owner.props.widthZoom },
 			onMouseDown: this.onLabelMouseDown,

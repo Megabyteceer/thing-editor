@@ -339,15 +339,27 @@ textarea:focus-visible {
 .modal-spinner {
 	margin: auto;
 	margin-top: 120px;
-	border: 4px solid rgba(0, 0, 0, 0);
-	border-top: 4px solid #bfbfbf;
-	border-left: 4px solid #bfbfbf;
+	border: 10px solid rgba(0, 0, 0, 0);
+	border-top: 10px solid #bfbfbf;
+	border-left: 10px solid #bfbfbf;
 	border-radius: 50%;
 	width: 60px;
 	height: 60px;
 	background: rgba(0, 0, 0, 0.3);
 	animation: spin 2s linear infinite;
 }
+
+.modal-spinner-overlay {
+	margin: auto;
+	margin-top: -69px;
+	border-radius: 50%;
+	width: 70px;
+	height: 70px;
+	position: relative;
+	background: #000;
+}
+
+
 
 .modal-spinner-progress {
 	margin: auto;
@@ -1188,6 +1200,7 @@ input[disabled] {
     top: 5px;
 	height: 16px;
     position: absolute;
+	max-width: 28px;
 }
 
 .small-text {
@@ -1221,7 +1234,6 @@ input[disabled] {
 	max-height: 40px;
 	max-width: 50%;
 }
-
 
 .path-editor-function-tip {
 	white-space: nowrap;
@@ -1545,10 +1557,25 @@ input[disabled] {
 	display: inline-block;
 }
 
+.labels-log-list {
+	height: 100%;
+}
 
+.labels-log-item {
+	cursor: pointer;
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+	padding: 3px 10px;
+}
 
+.labels-log-item:hover {
+	background-color: #333333;
+}
 
-
+.labels-log-item .scene-node-item {
+	display: inline-block;
+}
 
 
 
@@ -1589,6 +1616,16 @@ input[disabled] {
 	animation: scale-up-tr linear .1s;
 	animation-iteration-count: 1;
 	animation-fill-mode: forwards;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 @keyframes scale-up-tr {

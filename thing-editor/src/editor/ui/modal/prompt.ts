@@ -68,14 +68,16 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 		let input = (this.props.multiline ? R.textarea : R.input);
 		return R.fragment(
 			R.div(modalRejectProps, this.state.rejectReason),
-			R.btn('auto accept', (ev) => {
-				if (!this.props.multiline) {
-					this.onAcceptClick();
-					sp(ev);
-				}
-			}, undefined, 'hidden', { key: 'Enter' }),
 			R.div({ className: 'prompt-dialogue' },
-				input({ value: this.state.value, onInput: this.onChange })
+				input({ value: this.state.value, onInput: this.onChange, onKeyDown: (ev: KeyboardEvent) => {
+					if (ev.key === 'Enter') {
+						if (!this.props.multiline) {
+							this.onAcceptClick();
+							sp(ev);
+						}
+					}
+				}
+				 })
 			),
 			R.btn('Ok', this.onAcceptClick, this.props.title, 'main-btn', this.props.multiline ? undefined : { key: 'Enter' })
 		);

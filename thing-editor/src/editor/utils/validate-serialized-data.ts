@@ -59,16 +59,15 @@ function validateObjectDataRecursive(objectData: SerializedObject, rootName: str
 				}
 			}
 		}
-
-		if (objectData.hasOwnProperty(':')) {
-			for (let child of objectData[':']!) {
-				validateObjectDataRecursive(child, rootName);
-			}
+	}
+	if (objectData.hasOwnProperty(':')) {
+		for (let child of objectData[':']!) {
+			validateObjectDataRecursive(child, rootName);
 		}
 	}
 }
 
-function validationError(message: string, rootName: string, findObjectCallback: (o: Container) => boolean, fieldName?: string, errorCode = 99999, constructor?: SourceMappedConstructor) {
+function validationError(message: string, rootName: string, findObjectCallback: (o: Container) => boolean | undefined, fieldName?: string, errorCode = 99999, constructor?: SourceMappedConstructor) {
 	const selectObject = (o: Container) => {
 		game.editor.selection.select(o);
 		if (fieldName) {

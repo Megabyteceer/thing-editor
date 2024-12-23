@@ -1,6 +1,6 @@
 import type { Container } from 'pixi.js';
 import type { ComponentChild, ComponentChildren } from 'preact';
-import { Fragment, h, render } from 'preact';
+import { h, render } from 'preact';
 import type { FileDescClass, FileDescImage } from 'thing-editor/src/editor/fs';
 import EditorButton from 'thing-editor/src/editor/ui/editor-button';
 import Tip from 'thing-editor/src/editor/ui/tip';
@@ -8,6 +8,7 @@ import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import { default as BasicR } from '../engine/basic-preact-fabrics';
 
 interface ComponentProps {
 	className?: string;
@@ -30,7 +31,8 @@ const renderClass = (file: FileDescClass) => {
 	);
 };
 
-class R {
+
+class R extends BasicR {
 	static div: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static form: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static span: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
@@ -100,10 +102,6 @@ class R {
 			return R.div(lineProps, line);
 		}));
 	};
-
-	static fragment(...children: ComponentChildren[]) {
-		return h(Fragment, null, ...children);
-	}
 
 	static imageIcon(file: FileDescImage) {
 		if (file) {
@@ -185,16 +183,6 @@ let nameProps = {
 let classProps = { className: 'scene-node-class' };
 let sceneNodeProps = { className: 'scene-node-item' };
 
-for (let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'label',
-	'b', 'a', 'br', 'hr', 'svg', 'td', 'tr', 'th', 'tbody', 'thead', 'table', 'polyline',
-	'textarea', 'iframe', 'h2', 'h3', 'h4', 'h5', 'script', 'meta', 'space', 'smallSpace']) {
-
-	(R as KeyedObject)[factoryType] = (...theArgs: any[]) => {
-		return h(factoryType, ...theArgs as [any]);
-	};
-}
-
-
 let previewShown = false;
 let assetPreviewTimeout = 0;
 
@@ -214,6 +202,8 @@ const hidePreview = () => {
 };
 
 window.addEventListener('mousedown', hidePreview);
+
+Object.assign(R, BasicR);
 
 const onImageAssetEnter = (ev: MouseEvent) => {
 	hidePreview();

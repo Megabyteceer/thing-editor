@@ -2,10 +2,15 @@
 import type { Filter, Point } from 'pixi.js';
 import { Container, DisplayObject } from 'pixi.js';
 import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable.js';
+import LabelsLogger from 'thing-editor/src/editor/ui/labels-logger';
 
 import DataPathFixer from 'thing-editor/src/editor/utils/data-path-fixer';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags.js';
+import { decorateGotoLabelMethods } from 'thing-editor/src/editor/utils/goto-label-consumer';
 import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
+/// #if EDITOR
+import R from 'thing-editor/src/engine/basic-preact-fabrics';
+/// #endif
 import assert from 'thing-editor/src/engine/debug/assert.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -56,6 +61,11 @@ Container.prototype.onRemove = function onRemove() {
 Container.prototype.remove = function remove() {
 	Lib.destroyObjectAndChildren(this, true);
 };
+
+/// #if EDITOR
+const ACTION_ICON_REMOVE = R.img({ src: '/thing-editor/img/timeline/remove.png' });
+(Container.prototype.remove as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_REMOVE;
+/// #endif
 
 Container.prototype.removeWithoutHolder = function remove() {
 	Lib.destroyObjectAndChildren(this);
@@ -407,4 +417,28 @@ _editableEmbed(Container, 'skew.x', { step: 0.01, animate: true });
 _editableEmbed(Container, 'skew.y', { step: 0.01, animate: true });
 _editableEmbed(Container, 'pivot.x', { animate: true });
 _editableEmbed(Container, 'pivot.y', { animate: true });
+/// #endif
+
+
+/// #if EDITOR
+let goToLabelRecursionLevel = 0; // eslint-disable-line @typescript-eslint/no-unused-vars
+/// #endif
+
+Container.prototype.gotoLabelRecursive = function (labelName) {
+	/// #if EDITOR
+	if (!goToLabelRecursionLevel) {
+		LabelsLogger.logGotoLabelRecursive(labelName, this);
+	}
+	goToLabelRecursionLevel++;
+	/// #endif
+	for (let c of this.children) {
+		c.gotoLabelRecursive(labelName);
+	}
+	/// #if EDITOR
+	goToLabelRecursionLevel--;
+	/// #endif
+};
+
+/// #if EDITOR
+decorateGotoLabelMethods(Container as any);
 /// #endif

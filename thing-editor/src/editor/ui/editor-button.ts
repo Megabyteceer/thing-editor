@@ -58,15 +58,13 @@ window.addEventListener('keydown', (ev) => {
 
 		const item = findMenuItemForHotkey(ev as Hotkey);
 		if (item) {
-			isEventFocusOnInputElement(ev).then((isHotkeyCapturedByInputElement) => {
-				if (!isHotkeyCapturedByInputElement) {
-					item.onClick();
-					refreshContextMenu();
-					game.editor.ui.modal.notify((typeof item.name === 'function') ? item.name() : item.name, 'hotkey');
-					sp(ev);
-					return;
-				}
-			});
+			if (!isEventFocusOnInputElement(ev)) {
+				item.onClick();
+				refreshContextMenu();
+				game.editor.ui.modal.notify((typeof item.name === 'function') ? item.name() : item.name, 'hotkey');
+				sp(ev);
+				return;
+			}
 		}
 	}
 });
@@ -88,12 +86,10 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 
 	onKeyDown(ev: KeyboardEvent) {
 		if (!this.props.disabled && isHotkeyHit(ev as any as Hotkey, this.base as HTMLElement, this.props.hotkey)) {
-			isEventFocusOnInputElement(ev).then((isHotkeyCapturedByInputElement) => {
-				if (!isHotkeyCapturedByInputElement) {
-					this.onMouseDown(ev as unknown as PointerEvent);
-					sp(ev);
-				}
-			});
+			if (!isEventFocusOnInputElement(ev)) {
+				this.onMouseDown(ev as unknown as PointerEvent);
+				sp(ev);
+			}
 			return true;
 		}
 	}

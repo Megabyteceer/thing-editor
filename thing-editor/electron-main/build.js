@@ -6,9 +6,9 @@ const {walkSync} = require('./editor-server-utils');
 module.exports = {
 	build: (projectDir, debug, assetsToCopy, projectDesc) => {
 		const editorRoot = path.resolve(__dirname, '../..');
-		const root = path.resolve(editorRoot, projectDir);
-		const outDir = root + (debug ? '/debug' : '/release');
 		const tmpDir = editorRoot + '/.tmp';
+		const projectRoot = path.join('..', projectDir);
+		const outDir = projectRoot + (debug ? '/debug' : '/release');
 		const publicDir = tmpDir + '/public';
 		const publicAssetsDir = publicDir + '/assets/';
 
@@ -48,7 +48,7 @@ module.exports = {
 				});
 			});
 		})).then(() => {
-			return require('vite').build(require(path.resolve(editorRoot, debug ? projectDesc.__buildConfigDebug : projectDesc.__buildConfigRelease))(root, publicDir, outDir, debug, projectDesc)).then((res) => {
+			return require('vite').build(require(path.resolve(editorRoot, debug ? projectDesc.__buildConfigDebug : projectDesc.__buildConfigRelease))(projectRoot, publicDir, outDir, debug, projectDesc)).then((res) => {
 				require('./static-server.js');
 				console.log('BUILD COMPLETE: ' + 'http://localhost:5174/' + projectDir);
 				return res;
