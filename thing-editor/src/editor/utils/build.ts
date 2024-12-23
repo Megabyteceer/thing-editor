@@ -292,10 +292,12 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 				prefabs[file.assetName] = file.asset as SerializedObject;
 			} else if (file.assetType === AssetType.SOUND) {
 				for (let ext of game.projectDesc.soundFormats) {
-					assetsToCopy.push({
-						from: file.fileName.replace(/\wav$/, ext),
-						to: getHashedAssetName(file) + '.' + ext
-					});
+					if (!file.parentAsset) {
+						assetsToCopy.push({
+							from: file.fileName.replace(/\wav$/, ext),
+							to: getHashedAssetName(file) + '.' + ext
+						});
+					}
 				}
 				sounds.push([getHashedAssetName(file), (file as FileDescSound).asset.preciseDuration]);
 			} else if (file.assetType === AssetType.RESOURCE) {
