@@ -208,7 +208,7 @@ export const getCallbackIcon = (path: string, _this: any, suspendWarning = false
 		}
 	} catch (er) {
 		if (!suspendWarning) {
-			console.warn('path validation exception: (' + path + '): ' + _this.___info + ' ' + ((typeof er) === 'object' ? (er as any).message : er));
+			console.warn('timeline icon search error: (' + path + '): ' + _this.___info + ' ' + ((typeof er) === 'object' ? (er as any).message : er));
 		}
 	}
 	EDITOR_FLAGS.checkTryTime();
