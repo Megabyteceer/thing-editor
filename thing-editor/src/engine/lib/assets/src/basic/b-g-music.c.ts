@@ -9,7 +9,7 @@ import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Sound from 'thing-editor/src/engine/utils/sound';
 
-const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01
+const MIN_VOL_THRESHOLD = 0.01000001; // howler has min threshold 0.01
 
 const allActiveMusics: BgMusic[] = [];
 

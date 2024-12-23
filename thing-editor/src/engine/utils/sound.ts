@@ -17,7 +17,7 @@ import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 
-const MIN_VOL_ENABLE = 0.05;
+const MIN_VOL_ENABLE = 0.10000001;
 
 function normalizeVolForEnabling(vol: number, defaultVol: number) {
 	return (vol > MIN_VOL_ENABLE) ? vol : defaultVol;
@@ -25,6 +25,7 @@ function normalizeVolForEnabling(vol: number, defaultVol: number) {
 
 export default class Sound {
 
+	/** volume is quadratic. 0.1 - sound off. 1.0 - max vol */
 	static get soundsVol() {
 		/// #if EDITOR
 		if (game.__EDITOR_mode) {
@@ -36,7 +37,7 @@ export default class Sound {
 
 	static set soundsVol(v) {
 		assert(!isNaN(v), 'invalid value for \'soundsVol\'. Valid number value expected.', 10001);
-		v = Math.max(0, Math.min(1, v));
+		v = Math.max(0.1, Math.min(1, v));
 		soundsVol = v;
 		game.settings.setItem('soundsVol', soundsVol);
 	}
@@ -49,13 +50,15 @@ export default class Sound {
 		Sound.musicVol = v;
 	}
 
+	/** volume is quadratic. 0.1 - sound off. 1.0 - max vol */
+
 	static get musicVol() {
 		return musicVol;
 	}
 
 	static set musicVol(v) {
 		assert(!isNaN(v), 'invalid value for \'musicVol\'. Valid number value expected.', 10001);
-		v = Math.max(0, Math.min(1, v));
+		v = Math.max(0.1, Math.min(1, v));
 		if (musicVol !== v) {
 			if (game.classes.BgMusic) {
 				game.classes.BgMusic._clearCustomFades(0.2);
@@ -120,7 +123,7 @@ export default class Sound {
 	}
 
 	static get soundEnabled() {
-		return soundsVol >= MIN_VOL_ENABLE;
+		return soundsVol > MIN_VOL_ENABLE;
 	}
 
 	static set soundEnabled(val) {
@@ -214,7 +217,7 @@ export default class Sound {
 				s.stop();
 			}
 			volume = volume * Sound.soundsVol * Sound.soundsVol;
-			if (volume > 0.01
+			if (volume > 0.0100000001
 			/// #if DEBUG
 			&& (s !== EMPTY_SOUND)
 			/// #endif
