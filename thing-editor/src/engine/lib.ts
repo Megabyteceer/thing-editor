@@ -12,7 +12,6 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import __refreshPrefabRefs, { __refreshPrefabRefsPrepare } from 'thing-editor/src/editor/utils/refresh-prefabs';
 import { getCurrentStack } from 'thing-editor/src/editor/utils/stack-utils';
 import { __UnknownClass } from 'thing-editor/src/editor/utils/unknown-class';
-
 import HowlSound from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';

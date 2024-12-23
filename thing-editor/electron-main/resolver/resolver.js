@@ -20,6 +20,17 @@ if (IS_CI_RUN) {
 module.exports = {
 	name: 'thing-editor:resolver',
 
+	resolveId(id) {
+		if (id.endsWith('thing-editor/src/editor/prefabs-typing')) {
+			return 'thing-editor/src/editor/prefabs-typing';
+		}
+	},
+	load(id) {
+		if (id === 'thing-editor/src/editor/prefabs-typing') {
+			return 'export default class TLib {}';
+		}
+	},
+
 	configureServer(server) {
 		if (IS_CI_RUN) {
 			server.middlewares.use((_req, _res, next) => {
