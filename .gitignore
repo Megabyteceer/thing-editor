@@ -15,3 +15,5 @@ node_modules
 **/.tmp/
 /thing-editor/src/editor/prefabs-typing.ts
 /thing-editor/src/editor/current-scene-typings.d.ts
+/tsconfig.json
+/thing-editor.code-workspace
