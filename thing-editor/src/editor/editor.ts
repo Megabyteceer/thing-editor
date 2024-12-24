@@ -578,7 +578,6 @@ class Editor {
 	toggleVSCodeExcluding() {
 		game.editor.settings.setItem('vs-code-excluding', !game.editor.settings.getItem('vs-code-excluding'));
 		excludeOtherProjects(true);
-		fs.run('/thing-editor/electron-main/assume-unchanged.js', game.editor.settings.getItem('vs-code-excluding'));
 	}
 
 	toggleShowSystemAssets() {
