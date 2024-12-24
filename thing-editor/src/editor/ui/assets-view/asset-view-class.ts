@@ -9,6 +9,7 @@ import libInfo from 'thing-editor/src/editor/utils/lib-info';
 import loadSafeInstanceByClassName from 'thing-editor/src/editor/utils/load-safe-instance-by-class-name';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
+import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
 const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 	showContextMenu(addSharedAssetContextMenu(file, [
@@ -41,7 +42,15 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 			onClick: () => {
 				editorUtils.wrapSelected(file.asset);
 			},
-			disabled: () => { return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset, game.editor.selection[0].parent); }
+			disabled: () => {
+				if (!game.editor.selection.length) {
+					return true;
+				}
+				if (game.editor.selection[0] instanceof Scene) {
+					return true;
+				}
+				return file.asset.__isScene || !game.editor.isCanBeAddedAsChild(file.asset, game.editor.selection[0]?.parent);
+			}
 		},
 		null,
 		{
