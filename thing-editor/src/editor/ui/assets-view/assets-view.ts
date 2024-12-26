@@ -391,7 +391,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				} else if (asset.assetType === AssetType.CLASS) {
 					const a = (asset as FileDescClass).asset;
 					if (!a) {
-						debugger;
+						return false; // class loading in progress
 					}
 					if (searchByRegexpOrText(a.__className, this.state.search)) {
 						return true;
