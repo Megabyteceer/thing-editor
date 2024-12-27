@@ -234,7 +234,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 			title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
 			onClick: stopPropagationIfCtrl,
 			onMouseDown: copyTextByClick
-		}, (item as SelectEditorItem).name ? (item as SelectEditorItem).name : item, ' ▾'))
+		}, (item as SelectEditorItem).hasOwnProperty('name') ? (item as SelectEditorItem).name : item, ' ▾'))
 		);
 	}
 }
