@@ -274,7 +274,6 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 	}
 
 	play() {
-		assert(!game.__EDITOR_mode, 'play() call in editor mode.');
 		this.isPlaying = true;
 	}
 
