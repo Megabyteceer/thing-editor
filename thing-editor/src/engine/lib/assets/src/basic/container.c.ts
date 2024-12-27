@@ -426,7 +426,6 @@ let goToLabelRecursionLevel = 0; // eslint-disable-line @typescript-eslint/no-un
 
 Container.prototype.gotoLabelRecursive = function (labelName) {
 	/// #if EDITOR
-	assert(!game.__EDITOR_mode, 'gotoLabelRecursive call in editor mode.');
 	if (!goToLabelRecursionLevel) {
 		LabelsLogger.logGotoLabelRecursive(labelName, this);
 	}
