@@ -364,6 +364,9 @@ export namespace editorUtils {
 		if (o === game.currentContainer) {
 			return !(o instanceof Scene) && (o.children.length === 1);
 		}
+		if (o.__nodeExtendData.isPrefabReference) {
+			return false;
+		}
 		return o.children.length > 0;
 	};
 
