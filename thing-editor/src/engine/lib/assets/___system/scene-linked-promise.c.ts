@@ -1,5 +1,6 @@
 import { Container } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game, { PRELOADER_SCENE_NAME } from 'thing-editor/src/engine/game';
@@ -143,7 +144,7 @@ export default class SceneLinkedPromise extends Container {
 	onRemove() {
 		super.onRemove();
 		/// #if EDITOR
-		if (!game.__EDITOR_mode && game.__time) { // game stopping - time = 0;
+		if (!game.__EDITOR_mode && !EDITOR_FLAGS.isStoppingTime) {
 			if (this._promiseWaitForResult) {
 				game.editor.ui.status.warn('SceneLinkedPromise was removed before its resolved or rejected.', 10061, this);
 			}
