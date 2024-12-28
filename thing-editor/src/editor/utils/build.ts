@@ -16,6 +16,8 @@ function addPostBuildScript(callback: (outPath: string) => void, id: string) {
 		postBuildCallbacks.push(callback);
 	}
 }
+
+/** you can add generated properties to game.ProjectDesc by adding them to game.editor.forceProjectDescPropsInBuild */
 function addPreBuildScript(callback: (debug: boolean) => void, id: string) {
 	if (!addedCallbacks.has(id + '-pre-build')) {
 		addedCallbacks.add(id + '-pre-build');
@@ -83,6 +85,8 @@ export default class Build {
 
 		let projectDesc = JSON.parse(JSON.stringify(game.projectDesc)) as ProjectDesc;
 		Object.assign(projectDesc, game.editor.forceProjectDescPropsInBuild);
+
+		game.editor.forceProjectDescPropsInBuild = {};
 
 		game.editor.validateResources();
 
