@@ -11,7 +11,6 @@ import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import ___GizmoArrow from 'thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c';
 
-let selectionDisabled = false;
 let isViewPortScrolling = false;
 let scrollingX = 0;
 let scrollingY = 0;
@@ -51,8 +50,13 @@ editorEvents.once('gameWillBeInitialized', () => {
 					rightButtonDraggingStarted = true;
 				}
 			} else {
-				if (!selectionDisabled && ev.buttons === 1 && !___GizmoArrow.overedArrow) {
-					selectByStageClick(ev);
+				const selectionDisabled = !game.__EDITOR_mode && !game.__paused;
+				if (!selectionDisabled) {
+					if (ev.buttons === 1 && !___GizmoArrow.overedArrow) {
+						selectByStageClick(ev);
+					}
+				} else {
+					game.editor.selection.clearSelection();
 				}
 			}
 		} else {
