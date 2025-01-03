@@ -50,7 +50,7 @@ editorEvents.once('gameWillBeInitialized', () => {
 					rightButtonDraggingStarted = true;
 				}
 			} else {
-				const selectionDisabled = !game.__EDITOR_mode && !game.__paused;
+				const selectionDisabled = !game.__EDITOR_mode && !game.__paused && !ev.altKey && !ev.ctrlKey && !ev.shiftKey;
 				if (!selectionDisabled) {
 					if (ev.buttons === 1 && !___GizmoArrow.overedArrow) {
 						selectByStageClick(ev);
