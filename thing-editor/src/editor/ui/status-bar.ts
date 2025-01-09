@@ -61,7 +61,7 @@ export default class StatusBar extends Component {
 			let txt = ' x: ' + game.__mouse_uncropped.x + ' y: ' + game.__mouse_uncropped.y;
 
 			if (game.editor.selection.length > 0) {
-				let p = game.editor.selection[0].toLocal(game.mouse);
+				let p = game.editor.selection[0].toLocal(game.mouse, game.currentContainer);
 				if (!isNaN(p.x)) {
 					txt += ' (x: ' + Math.round(p.x - game.editor.selection[0].pivot.x) + '; y: ' + Math.round(p.y - game.editor.selection[0].pivot.y) + ')';
 				}

@@ -191,6 +191,7 @@ export default class ScrollLayer extends Container {
 
 		if (this._mouseHandlerContainer) {
 			this._mouseHandlerContainer.removeListener('pointerdown', this.onDown);
+			this._mouseHandlerContainer = null as any;
 		} else {
 			(game.pixiApp.view as HTMLCanvasElement).removeEventListener('pointerdown', this.onDown);
 		}
