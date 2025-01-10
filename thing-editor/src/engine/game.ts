@@ -77,6 +77,7 @@ const processOnResize = (o: Container) => {
 export interface ThingGameEvents {
 	'assets-will-add': [data: AssetsDescriptor];
 	'stage-will-resize': [];
+	'preloader-scene-will-start': [];
 	'global-update': [];
 	'update': [];
 	'updated': [];
@@ -241,6 +242,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		this.pixiApp.view.addEventListener!('wheel', (ev) => ev.preventDefault());
 		window.addEventListener('resize', this._onContainerResize.bind(this));
 		this.onResize();
+		this.emit('preloader-scene-will-start');
 		this.showScene(PRELOADER_SCENE_NAME);
 	}
 

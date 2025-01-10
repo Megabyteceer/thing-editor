@@ -99,7 +99,7 @@ export default class Fill extends Mesh {
 	}
 
 	_xRepeat = 1;
-	@editable({ step: 0.001 })
+	@editable({ step: 0.001, min: 0.00001 })
 	get xRepeat() {
 		return this._xRepeat;
 	}
@@ -112,7 +112,7 @@ export default class Fill extends Mesh {
 	}
 
 	_yRepeat = 1;
-	@editable({ step: 0.001 })
+	@editable({ step: 0.001, min: 0.00001 })
 	get yRepeat() {
 		return this._yRepeat;
 	}
@@ -152,11 +152,29 @@ export default class Fill extends Mesh {
 
 	@editable({ step: 0.0001 })
 	xShiftSpeed = 0;
+	/// #if EDITOR
+	@editable()
+	get ___xShiftSpeedPixels() : number {
+		return this.xShiftSpeed * (this.texture ? this.texture.width : 0) / this.xRepeat * this.scale.x;
+	}
 
+	set ___xShiftSpeedPixels(val: number) {
+		this.xShiftSpeed = val / (this.texture ? this.texture.width : 0) * this.yRepeat / this.scale.x;
+	}
+	/// #endif
 	@editable({ step: 0.0001 })
 	yShiftSpeed = 0;
 
 	/// #if EDITOR
+	@editable()
+	get ___yShiftSpeedPixels() : number {
+		return this.yShiftSpeed * (this.texture ? this.texture.height : 0) / this.yRepeat * this.scale.y;
+	}
+
+	set ___yShiftSpeedPixels(val: number) {
+		this.yShiftSpeed = val / (this.texture ? this.texture.height : 1) * this.yRepeat / this.scale.y;
+	}
+
 	@editable(TEXTURE_WRAP_MODE_DESC)
 	set TEXTURE_WRAP_MODE(v: number) {
 		if (this.texture && this.image) {

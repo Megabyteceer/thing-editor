@@ -15,6 +15,8 @@ export default class MultilineText extends Text {
 	@editable({ afterEdited: afterMaxWidthEdit, min: 10, disabled: () => { return !game.isPortrait; } })
 	maxWidthPortrait = 400;
 
+	static FORCE_WORDS_BREAK = false;
+
 	_maxHeightLandscape = 0;
 	_maxHeightPortrait = 0;
 
@@ -54,6 +56,9 @@ export default class MultilineText extends Text {
 	init() {
 		super.init();
 		this.applyWorldWrapping();
+		if (MultilineText.FORCE_WORDS_BREAK) {
+			this.breakWords = true;
+		}
 	}
 
 	applyWorldWrapping() {
@@ -125,13 +130,13 @@ function afterMaxHeightEdit() {
 		___Guide.hide('maxHeightTop');
 	} else {
 		switch ((o as any).verticalAlign) {
-			case CENTER:
-				yBottom *= 0.5;
-				yTop = -yBottom;
-				break;
-			case BOTTOM:
-				yBottom *= -1;
-				break;
+		case CENTER:
+			yBottom *= 0.5;
+			yTop = -yBottom;
+			break;
+		case BOTTOM:
+			yBottom *= -1;
+			break;
 		}
 		let tmpScale = o.scale.x;
 		o.scale.x = 1;

@@ -23,6 +23,7 @@ Usage:
 
 import { Container } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import type { DebugStack } from 'thing-editor/src/editor/utils/stack-utils';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 import assert from 'thing-editor/src/engine/debug/assert';
@@ -74,7 +75,7 @@ export default class Delay extends Container {
 	/// #if EDITOR
 	onRemove() {
 		super.onRemove();
-		if (!game.__EDITOR_mode && game.__time) { // game stopping - time = 0;
+		if (!game.__EDITOR_mode && !EDITOR_FLAGS.isStoppingTime) {
 			if (this.callback) {
 				game.editor.ui.status.warn('Delay was removed before its triggered', 32021, this);
 			}

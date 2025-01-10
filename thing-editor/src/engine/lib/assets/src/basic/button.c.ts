@@ -72,6 +72,8 @@ export default class Button extends DSprite {
 	pointerStartPos?: { x: number; y: number };
 
 	init() {
+
+		assert(!this.onClickCallback, 'Button onClickCallback was not clean properly.');
 		super.init();
 
 		this.on('pointerdown', this.onDown);
