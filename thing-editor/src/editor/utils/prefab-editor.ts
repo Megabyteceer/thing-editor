@@ -9,10 +9,26 @@ import Lib from 'thing-editor/src/engine/lib';
 import type __SystemBackDrop from 'thing-editor/src/engine/lib/assets/src/___system/backdrop.c';
 import type Shape from 'thing-editor/src/engine/lib/assets/src/extended/shape.c';
 import loadDynamicTextures from 'thing-editor/src/engine/utils/load-dynamic-textures';
+import type { PREFAB_PIVOT } from '../ui/viewport';
 
 let prefabsStack: string[] = [];
 let backDrop: Container;
 let backDropBG: Shape;
+
+function applyGridPos() {
+	if (backDrop) {
+		switch (PrefabEditor.pivot) {
+		case 'left-top':
+			backDrop.x = game.W / 2;
+			backDrop.y = game.H / 2;
+			break;
+		default:
+			backDrop.x = 0;
+			backDrop.y = 0;
+
+		}
+	}
+}
 
 export default class PrefabEditor {
 
@@ -37,6 +53,16 @@ export default class PrefabEditor {
 		}
 	}
 
+	private static __pivot: PREFAB_PIVOT;
+	static set pivot(v: PREFAB_PIVOT) {
+		PrefabEditor.__pivot = v;
+		applyGridPos();
+	}
+
+	static get pivot() {
+		return PrefabEditor.__pivot;
+	}
+
 	static get BGColor() {
 		return backDropBG.shapeFillColor;
 	}
@@ -48,6 +74,7 @@ export default class PrefabEditor {
 	private static savePrefabSettings() {
 		if (this.currentPrefabName) {
 			game.editor.settings.setItem('prefab-settings' + this.currentPrefabName, {
+				pivot: PrefabEditor.pivot,
 				bg: backDropBG.shapeFillColor,
 				x: game.stage.x,
 				y: game.stage.y,
@@ -62,10 +89,12 @@ export default class PrefabEditor {
 			backDrop.name = null; // prevent get by name error;
 			backDrop.__nodeExtendData.hidden = true;
 			backDropBG = backDrop.findChildByName('backdrop') as Shape;
+			applyGridPos();
 		}
 		exitIsolation();
 		PrefabEditor.hidePreview();
 		const prefabSettings = game.editor.settings.getItem('prefab-settings' + object.name, { bg: 0 });
+		PrefabEditor.pivot = prefabSettings.pivot;
 		PrefabEditor.BGColor = prefabSettings.bg;
 		game.stage.scale.x = game.stage.scale.y = prefabSettings.s || 1;
 		game.stage.x = prefabSettings.x || (-object.x + game.W / 2);

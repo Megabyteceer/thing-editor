@@ -106,7 +106,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 					w: 100,
 					h: 70,
 					minW: 64,
-					minH: 400,
+					minH: 460,
 					onResize: () => {
 						if (game.projectDesc) {
 							game._onContainerResize();

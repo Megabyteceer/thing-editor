@@ -65,6 +65,8 @@ interface EditablePropertyDescRaw<T extends import('pixi.js').DisplayObject = im
 
 	guideColor?: number;
 
+	rectScaleIgnore?: true;
+
 	rect_minX?: number;
 	rect_maxX?: number;
 	rect_minY?: number;

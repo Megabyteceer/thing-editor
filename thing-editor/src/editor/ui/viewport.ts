@@ -37,6 +37,22 @@ let prefabLabelProps = {
 	onMouseDown: copyTextByClick
 };
 
+export enum PREFAB_PIVOT {
+	MIDDLE = 'middle',
+	LEFT_TOP = 'left-top'
+}
+
+export const __SystemBackDropPivots = [
+	{
+		name: R.icon('pivot/middle') as any,
+		value: PREFAB_PIVOT.MIDDLE
+	},
+	{
+		name: R.icon('pivot/left-top') as any,
+		value: PREFAB_PIVOT.LEFT_TOP
+	}
+];
+
 const ORIENTATION_ICON = R.icon('orientation-toggle');
 
 const SPEED_SELECT = [0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
@@ -301,6 +317,12 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 						value: '#' + PrefabEditor.BGColor.toString(16).padStart(6, '0'),
 						title: 'Background color'
 					}),
+					h(SelectEditor, {select: __SystemBackDropPivots,
+						onChange: (value: PREFAB_PIVOT) => {
+							PrefabEditor.pivot = value;
+							this.refresh();
+						}, value: PrefabEditor.pivot || __SystemBackDropPivots[0].value
+					})
 				),
 				R.span(panelBottomProps,
 					orientationButton,

@@ -28,11 +28,21 @@ export default class ___RectGuide extends Shape {
 			this.shapeLineColor = this.field.guideColor || 53546;
 			p.x = this.rect.x + this.owner.pivot.x;
 			p.y = this.rect.y + this.owner.pivot.y;
+
 			this.parent.toLocal(p, this.owner, this);
 
 			p.x += this.rect.w;
 			p.y += this.rect.h;
+			let tmpX = this.owner.scale.x;
+			let tmpY = this.owner.scale.y;
+			if (this.field.rectScaleIgnore) {
+				this.owner.scale.x = this.owner.scale.y = 1;
+			}
 			this.toLocal(p, this.owner, p2);
+			if (this.field.rectScaleIgnore) {
+				this.owner.scale.x = tmpX;
+				this.owner.scale.y = tmpY;
+			}
 			this.width = p2.x;
 			this.height = p2.y;
 			this.shapeLineWidth = Math.ceil(game.editor.ui.viewport.viewportScale);
