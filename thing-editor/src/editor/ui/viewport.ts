@@ -321,6 +321,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 						onChange: (value: PREFAB_PIVOT) => {
 							PrefabEditor.pivot = value;
 							this.refresh();
+							game.editor.onObjectsPropertyChanged(game.currentContainer, '__prefabPivot', value);
 						}, value: PrefabEditor.pivot || __SystemBackDropPivots[0].value
 					})
 				),

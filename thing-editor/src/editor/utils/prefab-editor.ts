@@ -53,8 +53,8 @@ export default class PrefabEditor {
 		}
 	}
 
-	private static __pivot: PREFAB_PIVOT;
-	static set pivot(v: PREFAB_PIVOT) {
+	private static __pivot?: PREFAB_PIVOT;
+	static set pivot(v: PREFAB_PIVOT | undefined) {
 		PrefabEditor.__pivot = v;
 		applyGridPos();
 	}
@@ -74,7 +74,6 @@ export default class PrefabEditor {
 	private static savePrefabSettings() {
 		if (this.currentPrefabName) {
 			game.editor.settings.setItem('prefab-settings' + this.currentPrefabName, {
-				pivot: PrefabEditor.pivot,
 				bg: backDropBG.shapeFillColor,
 				x: game.stage.x,
 				y: game.stage.y,
@@ -94,7 +93,7 @@ export default class PrefabEditor {
 		exitIsolation();
 		PrefabEditor.hidePreview();
 		const prefabSettings = game.editor.settings.getItem('prefab-settings' + object.name, { bg: 0 });
-		PrefabEditor.pivot = prefabSettings.pivot;
+		PrefabEditor.pivot = object.__prefabPivot;
 		PrefabEditor.BGColor = prefabSettings.bg;
 		game.stage.scale.x = game.stage.scale.y = prefabSettings.s || 1;
 		game.stage.x = prefabSettings.x || (-object.x + game.W / 2);

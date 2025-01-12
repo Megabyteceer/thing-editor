@@ -2,6 +2,8 @@
 	"c": "MovieClip",
 	"p": {
 		"name": "final-fader",
+		"alpha": 0,
+		"__prefabPivot": "left-top",
 		"timeline": {
 			"l": {},
 			"p": 0.02,
@@ -24,16 +26,12 @@
 					]
 				}
 			]
-		},
-		"alpha": 0
+		}
 	},
 	":": [
 		{
 			"c": "BackDrop",
-			"p": {
-				"width": 1919.9999999999998,
-				"height": 1132
-			}
+			"p": {}
 		}
 	]
 }

@@ -852,6 +852,7 @@ export default class Lib
 		}
 		game.editor.disableFieldsCache = true;
 		let prefabData = Lib.__serializeObject(object);
+		prefabData.p.___prefabPivot = PrefabEditor.pivot;
 		game.editor.disableFieldsCache = false;
 		prefabs[name] = prefabData;
 		fs.saveAsset(name, AssetType.PREFAB, prefabData, libName);

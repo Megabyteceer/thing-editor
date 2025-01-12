@@ -35,6 +35,8 @@ patch(
     findParentByName(name: string): Container;
 
     _onRenderResize?(): void;
+	
+	__prefabPivot?: import('thing-editor/src/editor/ui/viewport').PREFAB_PIVOT;
 
     /** search child recursively by it's name */
     findChildByName(name: string): Container | undefined;

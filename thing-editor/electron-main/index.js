@@ -38,8 +38,6 @@ const {
 		}
 	}
 
-	const {exec} = require('child_process');
-
 	const originalLog = console.log.bind(console);
 
 	console.log = (txt) => {
@@ -164,9 +162,5 @@ const {
 	app.on('window-all-closed', () => {
 		console.log('thing-editor exit');
 		app.quit();
-	});
-
-	exec('git update-index --assume-unchanged thing-editor/src/editor/current-scene-typings.d.ts thing-editor/src/editor/prefabs-typing.ts', {
-		cwd: __dirname + '/../..'
 	});
 })();
