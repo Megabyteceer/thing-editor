@@ -282,7 +282,7 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 	}
 
 	get activeSequenceName(): string {
-		return (this.spine.spineContent?.skeleton as any).__activeEditorSequence!;
+		return (this.spine.spineContent?.skeleton as any)?.__activeEditorSequence!;
 	}
 
 	_activeSequence!: SpineSequence;
@@ -715,6 +715,12 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 		if (!(game.editor.selection[0] instanceof Spine)) {
 			return 'No Spine element elected.';
 		}
+		if (!(game.editor.selection[0] as Spine)?.spineData) {
+			return R.btn('spineData is not set.', () => {
+				game.editor.ui.propsEditor.selectField('spineData');
+			});
+		}
+
 		let sequenceView;
 		if (this.activeSequence) {
 
