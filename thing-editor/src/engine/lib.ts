@@ -216,8 +216,9 @@ export default class Lib
 			game.editor.ui.refresh();
 			/// #endif
 		}).catch((_er) => {
-			/// #if DEBUG
+			/// #if EDITOR
 			debugger;
+			attempt = 3;
 			/// #endif
 			if (attempt < 3 && !game._loadingErrorIsDisplayed) {
 				attempt++;
@@ -230,7 +231,11 @@ export default class Lib
 					game.loadingRemove(url);
 				}, attempt * 1000);
 			} else {
-				game.showLoadingError(url);
+				game.showLoadingError(url
+					/// #if DEBUG
+					+ '; ' + _er.stack
+					/// #endif
+				);
 			}
 		});
 	}

@@ -370,8 +370,7 @@ export namespace editorUtils {
 		return o.children.length > 0;
 	};
 
-	export const onExportAsPngClick = async () => {
-		let o = game.editor.selection[0];
+	export const onExportAsPngClick = async (o = game.editor.selection[0]) => {
 		let blob = await exportAsPng(o);
 		if (blob) {
 			let a = document.createElement('a');
