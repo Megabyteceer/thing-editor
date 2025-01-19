@@ -285,12 +285,6 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		}
 		let jumpEditor = h(NumberEditor, { value: kf.j, step: 1, min: -99999999, max: 99999999, onChange: this.onJumpChanged });
 
-		if (document.activeElement && document.activeElement.className === 'props-editor-callback') {
-			window.setTimeout(() => {
-				(document.querySelector('.keyframe-callback-editor .props-editor-callback') as HTMLInputElement).focus();
-			});
-		}
-
 		body = R.fragment(
 			'Action',
 			R.span({ className: 'keyframe-callback-editor' },

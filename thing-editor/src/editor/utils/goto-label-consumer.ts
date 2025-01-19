@@ -14,10 +14,12 @@ const gotoLabelHelper = (context: IGoToLabelConsumer) => {
 
 		const l = context.__getLabels();
 
-		for (let name in l) {
-			if (!addedLabels.has(name)) {
-				labels.push({ name: R.b(null, name), pureName: name });
-				addedLabels.add(name);
+		if (l) {
+			for (let name of l) {
+				if (!addedLabels.has(name)) {
+					labels.push({ name: R.b(null, name), pureName: name });
+					addedLabels.add(name);
+				}
 			}
 		}
 
