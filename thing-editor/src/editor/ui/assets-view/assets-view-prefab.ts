@@ -120,7 +120,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 
 const assetItemRendererPrefab = (file: FileDescPrefab) => {
 	let desc;
-	if (file.asset.p.__description) {
+	if (file.asset?.p.__description) {
 		desc = R.div(descriptionProps, file.asset.p.__description.split('\n')[0]);
 	}
 	const Class = getSerializedObjectClass(file.asset);
