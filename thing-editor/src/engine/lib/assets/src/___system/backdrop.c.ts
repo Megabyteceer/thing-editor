@@ -48,7 +48,7 @@ export default class __SystemBackDrop extends Shape {
 			this.height = game.H / game.stage.scale.y;
 
 		}
-		if (PrefabEditor.currentPrefabName && this.isFixedStageFrame || this.isStageFrame) {
+		if (PrefabEditor.currentPrefabName && (this.isFixedStageFrame || this.isStageFrame)) {
 			switch (PrefabEditor.pivot) {
 			case PREFAB_PIVOT.LEFT_TOP:
 				this.x += game.W / 2 * game.stage.scale.x;
