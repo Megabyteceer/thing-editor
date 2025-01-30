@@ -4,7 +4,7 @@ const filterWarnings = (args: string[]) => {
 	if (filterAll) {
 		return true;
 	}
-	filterAll = args.some((a) => { return a?.includes('PixiJS Deprecation'); });
+	filterAll = args.some((a) => { return (typeof a === 'string') && a.includes('PixiJS Deprecation'); });
 	return filterAll;
 };
 

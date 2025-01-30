@@ -151,21 +151,9 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 
 	currentTime = 0;
 
-	timeout = 0;
-
-	componentWillReceiveProps(): void {
-		this.timeout = window.setTimeout(() => {
-			this.setActiveSequence(this.activeSequenceName);
-			this.timeout = 0;
-		}, 1);
-	}
-
 	componentWillUnmount(): void {
 		instance = undefined;
 		window.removeEventListener('mousemove', this.onMouseMove);
-		if (this.timeout) {
-			clearTimeout(this.timeout);
-		}
 	}
 
 	askForSequenceName(defaultText = '') {
@@ -720,6 +708,8 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 				game.editor.ui.propsEditor.selectField('spineData');
 			});
 		}
+
+		this.setActiveSequence(this.activeSequenceName);
 
 		let sequenceView;
 		if (this.activeSequence) {
