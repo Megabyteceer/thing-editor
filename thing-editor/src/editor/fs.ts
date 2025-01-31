@@ -291,6 +291,10 @@ export default class fs {
 		return execFs('fs/log', message);
 	}
 
+	static openDevTools() {
+		return execFs('fs/devTools');
+	}
+
 	static copyFile(from: string, to: string) {
 		return execFs('fs/copyFile', from, to);
 	}

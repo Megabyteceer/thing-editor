@@ -94,6 +94,10 @@ module.exports = (mainWindow) => {
 					return fs.statSync(fileNameParsed).mtimeMs;
 				}, event);
 				return;
+			case 'fs/devTools':
+				mainWindow.webContents.openDevTools();
+				event.returnValue = true;
+				return;
 			case 'fs/log':
 				console.log('FS-LOG: ' + fileName);
 				event.returnValue = true;

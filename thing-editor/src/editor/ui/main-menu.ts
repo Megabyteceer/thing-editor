@@ -259,6 +259,12 @@ const MAIN_MENU: MainMenuItem[] = [
 				stayAfterClick: true
 			},
 			{
+				name: 'Open dev tools',
+				onClick: () => {
+					fs.openDevTools();
+				}
+			},
+			{
 				name: 'Reset windows layout',
 				onClick: () => {
 					for (const w of Window.allOrdered) {
