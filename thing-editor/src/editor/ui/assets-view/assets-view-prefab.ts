@@ -53,6 +53,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 		null,
 		{
 			name: R.fragment(R.icon('asset-prefab'), 'Duplicate prefab'),
+			disabled: () => game.__EDITOR_mode,
 			onClick: () => {
 				editorUtils.enterPrefabName(file.assetName, 'Enter name for duplicate prefab: ' + file.assetName).then((enteredName) => {
 					if (enteredName) {
@@ -66,6 +67,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 		},
 		{
 			name: R.fragment(R.icon('asset-prefab'), 'Inherit prefab'),
+			disabled: () => game.__EDITOR_mode,
 			onClick: () => {
 				editorUtils.enterPrefabName(file.assetName, 'Enter name for inherited prefab: ' + file.assetName).then((enteredName) => {
 					if (enteredName) {
