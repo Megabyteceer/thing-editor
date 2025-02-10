@@ -99,7 +99,7 @@ export default class SpineSequencesEditor extends Component<ClassAttributes<Spin
 			showAdditionalWindow('spine-sequence', 'Spine sequences', 'Spine sequences',
 				R.div({ title: '' },
 					h(SpineSequences, { spine: game.editor.selection[0] as Spine, onCloseClick: this.onToggleClick }),
-				), 0, 70, 100, 220, 1120, 220);
+				), 20, 65, 90, 95, 1120, 220);
 		} else {
 			this._hideWindow();
 		}
