@@ -336,6 +336,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			const search = this.state.search.toLowerCase();
 
 			if ((o.constructor as SourceMappedConstructor).__className.toLowerCase().includes(search)) return true;
+			if (o.__nodeExtendData.unknownConstructor?.toLowerCase().includes(search)) return true;
 
 			if (o.__nodeExtendData.isPrefabReference && o.__nodeExtendData.isPrefabReference.toLocaleLowerCase().includes(search)) return true;
 
