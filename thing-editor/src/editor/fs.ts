@@ -352,13 +352,14 @@ export default class fs {
 		const newFileName = file.fileName.replace(file.lib!.assetsDir, game.editor.currentProjectAssetsDir);
 		OVERRIDDEN_ASSETS.add(newFileName);
 		fs.copyFile(file.fileName, newFileName);
-		file.lib = null;
+		fs.refreshAssetsList();
 		game.editor.ui.refresh();
 	}
 
 	static moveAssetToFolder(file: FileDesc, lib: null | LibInfo) {
 		fs.copyFile(file.fileName, file.fileName.replace(file.lib ? file.lib.assetsDir : game.editor.currentProjectAssetsDir, lib ? lib.assetsDir : game.editor.currentProjectAssetsDir));
-		fs.deleteAsset(file.assetName, file.assetType);
+		fs.deleteFile(file.fileName);
+		fs.refreshAssetsList();
 		game.editor.ui.refresh();
 	}
 
