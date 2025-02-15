@@ -61,7 +61,7 @@ export default class Label extends Text {
 
 		/// #if EDITOR
 		if (this.translatableText) {
-			if (L(this.translatableText).indexOf(this.paramName) < 0) {
+			if (this.paramName && (L(this.translatableText).indexOf(this.paramName) < 0)) {
 				game.editor.ui.status.warn('Localized text contain no parameter ' + this.paramName, 99999, this, 'paramName');
 			}
 		}
