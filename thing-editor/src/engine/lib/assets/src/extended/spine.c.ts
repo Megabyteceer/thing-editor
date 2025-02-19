@@ -153,6 +153,12 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		this._skinPoseAnimation = this.currentAnimation!;
 		this.playingSequence = undefined;
 
+		if (!this._sequencesByNames) {
+			this._initSequencesByName();
+		}
+	}
+
+	private _initSequencesByName() {
 		if (this.sequences) {
 			if (!sequencesByNamesCache.has(this.sequences)) {
 				const names = new Map() as Map<string, SpineSequence>;
@@ -430,6 +436,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	onRemove() {
 		this._releaseSpine();
 		super.onRemove();
+		this._sequencesByNames = undefined!;
 		this._spineData = null;
 		this._currentAnimation = null;
 		this._currentSkin = null!;
@@ -722,6 +729,9 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	}
 
 	hasLabel(labelName: string) {
+		if (!this._sequencesByNames) {
+			this._initSequencesByName();
+		}
 		return this._sequencesByNames.has(labelName);
 	}
 
