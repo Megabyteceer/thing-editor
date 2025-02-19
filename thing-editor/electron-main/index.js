@@ -105,9 +105,6 @@ const {
 					mainWindow.reload();
 				}
 			});
-			globalShortcut.register('F12', () => { // On windows set HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug\UserDebuggerHotKey to '2f' value to make F12 it work
-				mainWindow.webContents.openDevTools();
-			});
 		});
 		mainWindow.on('blur', () => {
 			globalShortcut.unregisterAll();

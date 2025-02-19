@@ -260,6 +260,7 @@ const MAIN_MENU: MainMenuItem[] = [
 			},
 			{
 				name: 'Open dev tools',
+				hotkey: {key: 'F12'},
 				onClick: () => {
 					fs.openDevTools();
 				}
