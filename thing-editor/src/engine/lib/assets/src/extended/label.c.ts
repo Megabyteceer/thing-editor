@@ -61,7 +61,7 @@ export default class Label extends Text {
 
 		/// #if EDITOR
 		if (this.translatableText) {
-			if (L(this.translatableText).indexOf(this.paramName) < 0) {
+			if (this.paramName && (L(this.translatableText).indexOf(this.paramName) < 0)) {
 				game.editor.ui.status.warn('Localized text contain no parameter ' + this.paramName, 99999, this, 'paramName');
 			}
 		}
@@ -157,8 +157,12 @@ export default class Label extends Text {
 		if (this.template) {
 			this.text = this.template.replace(this.paramName, val);
 		} else if ((this as any)._translatableText) {
-			this.localizationParams[this.paramName] = val;
-			this.text = L((this as any)._translatableText, this.localizationParams);
+			if (this.paramName) {
+				this.localizationParams[this.paramName] = val;
+				this.text = L((this as any)._translatableText, this.localizationParams);
+			} else {
+				this.text = L((this as any)._translatableText, val);
+			}
 		} else {
 			this.text = val;
 		}

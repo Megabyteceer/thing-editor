@@ -164,6 +164,7 @@ function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findA
 			a.push(game.currentContainer);
 		}
 		game.editor.selection.clearSelection();
+		a = a.filter(o => !o.__nodeExtendData.isolate);
 		if (strictType) {
 			a = a.filter(o => o.constructor === c);
 		}
@@ -172,10 +173,12 @@ function findNextOfThisType(c: SourceMappedConstructor, direction: 1 | -1, findA
 		}
 	} else {
 		game.editor.ui.sceneTree.findNext((o) => {
-			if (!strictType) {
-				return (o instanceof c) && !getParentWhichHideChildren(o);
-			} else {
-				return (o.constructor === c) && !getParentWhichHideChildren(o);
+			if (!o.__nodeExtendData.isolate) {
+				if (!strictType) {
+					return (o instanceof c) && !getParentWhichHideChildren(o);
+				} else {
+					return (o.constructor === c) && !getParentWhichHideChildren(o);
+				}
 			}
 		}, direction);
 	}

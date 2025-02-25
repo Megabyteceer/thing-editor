@@ -72,6 +72,10 @@ export default class SpawnerRing extends Container {
 			game.editor.ui.status.error('SpawnerRing\'s target container has been removed. Please disable spawner before removing target container or use not removable target container.', 32055, this, 'container');
 			return;
 		}
+		if (this._container?.worldTransform.a === 0 || this._container?.worldTransform.d === 0) {
+			game.editor.ui.status.error('SpawnerRing\'s target container has zero scale. Impossible to calculate target point.', 99999, this, 'container');
+			return;
+		}
 		/// #endif
 
 		this._container.toLocal(zeroPoint, this, spawnPoint);

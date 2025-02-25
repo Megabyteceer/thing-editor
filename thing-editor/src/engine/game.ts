@@ -978,7 +978,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 	closeCurrentScene(faderType?: string) {
 		/// #if EDITOR
 		if (scenesStack.length <= 1) {
-			this.editor.ui.modal.notify('It is no other scene in stack to close current scene.');
+			game.editor.ui.modal.notify('It is no other scene in stack to close current scene.');
 			return;
 		}
 		/// #endif
@@ -1350,6 +1350,7 @@ function loadFonts() {
 								let span = document.createElement('span');
 								span.style.fontFamily = `"${fontName}"`;
 								span.style.fontWeight = w;
+								span.style.position = 'absolute';
 								span.innerHTML = game.projectDesc.fontHolderText;
 								fontHolder.appendChild(span);
 							}

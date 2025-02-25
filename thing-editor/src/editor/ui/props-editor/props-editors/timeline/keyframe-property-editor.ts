@@ -228,7 +228,7 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 		let selectableKeyframeTypes: ({
 			name: string;
 			value: TimelineKeyFrameType;
-		}[]) = keyframeTypes!.map((type) => {
+		}[]) = availableKeyframeTypes!.map((type) => {
 			return { name: READABLE_KEYFRAME_TYPES[type], value: type };
 		});
 
@@ -284,12 +284,6 @@ export default class KeyframePropertyEditor extends ComponentDebounced<KeyframeP
 			jumpReset = R.btn('x', this.resetJumpTime, 'Remove loop point');
 		}
 		let jumpEditor = h(NumberEditor, { value: kf.j, step: 1, min: -99999999, max: 99999999, onChange: this.onJumpChanged });
-
-		if (document.activeElement && document.activeElement.className === 'props-editor-callback') {
-			window.setTimeout(() => {
-				(document.querySelector('.keyframe-callback-editor .props-editor-callback') as HTMLInputElement).focus();
-			});
-		}
 
 		body = R.fragment(
 			'Action',

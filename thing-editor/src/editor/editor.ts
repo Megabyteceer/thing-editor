@@ -318,17 +318,17 @@ class Editor {
 	chooseProject(notSkipable = false) {
 		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
 			if (dir) {
-				if (this.askSceneToSaveIfNeed()) {
-					this.openProject(dir);
-				}
+				this.openProject(dir);
 			}
 		});
 	}
 
 	openProject(dir:string) {
-		this.settings.setItem('last-opened-project', dir);
-		this.restartInProgress = true;
-		window.document.location.reload();
+		if (this.askSceneToSaveIfNeed()) {
+			this.settings.setItem('last-opened-project', dir);
+			this.restartInProgress = true;
+			window.document.location.reload();
+		}
 	}
 
 	pauseGame() {

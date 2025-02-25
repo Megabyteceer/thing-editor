@@ -18,6 +18,7 @@ interface TL extends LocalizationKeys {
 	setLanguagesAssets: (src: KeyedObject) => void;
 	messageProcessor: (text: string, values?: KeyedObject | number) => string;
 	has: (id: string) => boolean;
+	getData: () => KeyedMap<KeyedMap<string>>;
 	setCurrentLanguage: (languageId?: string) => void;
 	refreshAllTextEverywhere: () => void;
 	getCurrentLanguageId: () => string;
@@ -89,6 +90,10 @@ const L: TL = ((id: string, values?: KeyedObject | number): string => {
 
 L.has = (id: string) => {
 	return currentLanguageTable.hasOwnProperty(id);
+};
+
+L.getData = () => {
+	return languages;
 };
 
 L.setCurrentLanguage = (languageId?: string) => {

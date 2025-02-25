@@ -72,7 +72,7 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 };
 
 const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
-	assert(file.asset.c, 'scene can not be prefab reference');
+	assert(file.asset ? file.asset.c : true, 'scene can not be prefab reference'); // asset can be empty if it is equal asset overriding notification popup where overrides asset overridden too
 
 	const isCurrent = (file.assetName === game.editor.currentSceneName) || (AssetsView.currentItemName === game.editor.currentSceneName);
 
@@ -96,7 +96,7 @@ const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
 			title: 'click to open scene.'
 		},
 		libInfo(file),
-		R.classIcon(game.classes[file.asset.c!] || __UnknownClass),
+		R.classIcon(game.classes[file.asset?.c!] || __UnknownClass),
 		R.span(assetsItemNameProps, file.assetName));
 };
 

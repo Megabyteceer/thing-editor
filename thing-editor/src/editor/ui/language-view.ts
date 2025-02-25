@@ -518,6 +518,9 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 				langsIdsList.map((langId) => {
 
 					const asset = currentDirAssets.get(langId)!;
+					if (!asset) {
+						return undefined;
+					}
 
 					let text = asset.asset[id];
 

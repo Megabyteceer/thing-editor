@@ -11,10 +11,12 @@ import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
 /// #if EDITOR
 import R from 'thing-editor/src/engine/basic-preact-fabrics';
 /// #endif
+import { PREFAB_PIVOT } from 'thing-editor/src/editor/ui/viewport';
 import assert from 'thing-editor/src/engine/debug/assert.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import ___Guide from 'thing-editor/src/engine/lib/assets/src/___system/guide.c';
+import Scene from './scene.c';
 
 /** returns object rotation relative to it`s scene */
 Container.prototype.getGlobalRotation = function getGlobalRotation() {
@@ -382,6 +384,9 @@ _editableEmbed(Container, 'angle', {
 _editableEmbed(Container, '__hideInEditor', { type: 'boolean', tip: 'hide object in viewport during editor mode' });
 _editableEmbed(Container, '__doNotSelectByClick', { type: 'boolean', tip: 'prevent object to be selected by viewport click' });
 _editableEmbed(Container, '__description', { type: 'string', multiline: true });
+_editableEmbed(Container, '__prefabPivot', { type: 'string', disabled: () => true, default: PREFAB_PIVOT.MIDDLE, visible: (o) => {
+	return !(o instanceof Scene) && o === game.currentContainer;
+} });
 _editableEmbed(Container, '__hideChildren', { type: 'boolean', tip: 'hide children in tree' });
 _editableEmbed(Container, '___id', {
 	type: 'number',

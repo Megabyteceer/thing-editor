@@ -1,7 +1,8 @@
 {
 	"c": "Container",
 	"p": {
-		"name": "fader/default"
+		"name": "fader/default",
+		"__prefabPivot": "left-top"
 	},
 	":": [
 		{
@@ -56,10 +57,7 @@
 			":": [
 				{
 					"c": "BackDrop",
-					"p": {
-						"width": 1942,
-						"height": 1080
-					}
+					"p": {}
 				}
 			]
 		}

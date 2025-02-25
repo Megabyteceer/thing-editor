@@ -2,6 +2,7 @@
 	"c": "Resizer",
 	"p": {
 		"name": "ui/sure-question",
+		"__prefabPivot": "left-top",
 		"relativeX": true,
 		"xPos": 0.5,
 		"relativeY": true,

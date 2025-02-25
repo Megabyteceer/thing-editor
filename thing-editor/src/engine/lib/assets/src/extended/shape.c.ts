@@ -4,7 +4,7 @@ import editable from 'thing-editor/src/editor/props-editor/editable.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 
-enum SHAPE_TYPE {
+export enum SHAPE_TYPE {
 	RECT = 0,
 	ROUND_RECT = 1,
 	CIRCLE = 2,
@@ -61,11 +61,13 @@ export default class Shape extends Graphics {
 	@editable({ type: 'ref', visible: (o) => { return o.shape === SHAPE_TYPE.POLY && !o.__nodeExtendData.isPrefabReference; } })
 	protected set _shapePoints(v: Point[] | null) {
 		this.__shapePoints = v;
+		/// #if EDITOR
 		if (v) {
 			for (let o of v) {
 				Object.freeze(o);
 			}
 		}
+		/// #endif
 	}
 
 	protected get _shapePoints(): Point[] | null {

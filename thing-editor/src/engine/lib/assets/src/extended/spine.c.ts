@@ -5,6 +5,7 @@ import { Assets, Container } from 'pixi.js';
 import { type FileDesc } from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import { decorateGotoLabelMethods } from 'thing-editor/src/editor/utils/goto-label-consumer';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -126,6 +127,7 @@ const EMPTY_MAP = new Map();
 
 export default class Spine extends Container implements IGoToLabelConsumer {
 
+	@editable({type: 'btn', name: 'export as PNG...', visible: (o) => !!(o as Spine).spineContent, onClick: () => editorUtils.onExportAsPngClick((game.editor.selection[0] as Spine).spineContent!)})
 	_speed = 1;
 	spineContent: SpineContent | null = null;
 	updateTime = 0;
@@ -151,6 +153,12 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		this._skinPoseAnimation = this.currentAnimation!;
 		this.playingSequence = undefined;
 
+		if (!this._sequencesByNames) {
+			this._initSequencesByName();
+		}
+	}
+
+	private _initSequencesByName() {
 		if (this.sequences) {
 			if (!sequencesByNamesCache.has(this.sequences)) {
 				const names = new Map() as Map<string, SpineSequence>;
@@ -428,6 +436,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	onRemove() {
 		this._releaseSpine();
 		super.onRemove();
+		this._sequencesByNames = undefined!;
 		this._spineData = null;
 		this._currentAnimation = null;
 		this._currentSkin = null!;
@@ -720,6 +729,9 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	}
 
 	hasLabel(labelName: string) {
+		if (!this._sequencesByNames) {
+			this._initSequencesByName();
+		}
 		return this._sequencesByNames.has(labelName);
 	}
 
