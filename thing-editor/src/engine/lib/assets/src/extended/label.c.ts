@@ -157,8 +157,12 @@ export default class Label extends Text {
 		if (this.template) {
 			this.text = this.template.replace(this.paramName, val);
 		} else if ((this as any)._translatableText) {
-			this.localizationParams[this.paramName] = val;
-			this.text = L((this as any)._translatableText, this.localizationParams);
+			if (this.paramName) {
+				this.localizationParams[this.paramName] = val;
+				this.text = L((this as any)._translatableText, this.localizationParams);
+			} else {
+				this.text = L((this as any)._translatableText, val);
+			}
 		} else {
 			this.text = val;
 		}
