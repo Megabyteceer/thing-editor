@@ -105,6 +105,9 @@ const {
 					mainWindow.reload();
 				}
 			});
+			globalShortcut.register('CmdOrCtrl+Shift+I', () => {
+				mainWindow.webContents.openDevTools();
+			});
 		});
 		mainWindow.on('blur', () => {
 			globalShortcut.unregisterAll();
