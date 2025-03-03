@@ -330,7 +330,7 @@ export type {
 };
 
 
-enum TimelineKeyFrameType {
+const enum TimelineKeyFrameType {
 	SMOOTH = 0,
 	LINEAR = 1,
 	DISCRETE = 2,

@@ -37,7 +37,7 @@ let prefabLabelProps = {
 	onMouseDown: copyTextByClick
 };
 
-export enum PREFAB_PIVOT {
+export const enum PREFAB_PIVOT {
 	MIDDLE = 'middle',
 	LEFT_TOP = 'left-top'
 }
