@@ -15,6 +15,7 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 
 /// #if EDITOR
 import R from 'thing-editor/src/editor/preact-fabrics';
+import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 export const ACTION_ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 
 const SELECT_LOG_LEVEL = [
@@ -253,6 +254,36 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 
 	gotoLabel(labelName: string) {
 		assert(this.hasLabel(labelName), 'Label \'' + labelName + '\' not found.', 10055);
+		/// #if EDITOR
+		if (this.__logLevel) {
+			let stack = getCurrentStack('gotoLabel');
+			if (this._goToLabelNextFrame && this._goToLabelNextFrame !== labelName) {
+				game.editor.ui.status.warn(
+					'CANCELED label: ' + this._goToLabelNextFrame + '; new label:' + labelName + '; time: ' + game.time,
+					30021,
+					this,
+					undefined,
+					true
+				);
+			}
+			game.editor.ui.status.warn(
+				R.span(
+					null,
+					R.btn('Show stack...', () => {
+						showStack(stack);
+					}),
+					(this._goToLabelNextFrame === labelName ? 'repeated gotoLabel: ' : 'gotoLabel: ') +
+						labelName +
+						'; time: ' +
+						game.time
+				),
+				30020,
+				this,
+				undefined,
+				true
+			);
+		}
+		/// #endif
 		this._goToLabelNextFrame = labelName;
 		this.play();
 	}
