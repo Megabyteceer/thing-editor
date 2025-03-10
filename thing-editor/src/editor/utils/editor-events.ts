@@ -15,29 +15,30 @@ type EditorEvents = {
 	soundPlay: (soundId: string, volume: number) => void;
 };
 
-/** Warning! Events handlers can be added more that once because of dynamic classes reloading.
- * Please ensure you adding handlers with checking if you not added it already.
- * As example you can store a flag some where in global object:
- *
-`````````
-import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
-import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
-/// #if EDITOR
-// this code will be called after each classes reloading so you will add the same handler many times
-
-if (!(EDITOR_FLAGS as any).__myClassesReloadingHandlerAdded) {
-	editorEvents.on('willClassesReload', () => {
-		console.log('fire once per classes reloading');
-	});
-	(EDITOR_FLAGS as any).__myClassesReloadingHandlerAdded = true;
-}
-editorEvents.on('willClassesReload', () => {
-	console.log('fire as many times per each classes reloading, as many time you have reloaded them.');
-});
-/// #endif
-`````````
- * */
 const editorEvents = new EventEmitter() as TypedEventEmitter<EditorEvents>;
+editorEvents.setMaxListeners(1000);
+const originalOn = editorEvents.on.bind(editorEvents) as any;
+
+(editorEvents as any).on = function proxiedOn(...args:any) {
+	if ((editorEvents as any).__classesReloadingTime) {
+		(args[1] as any).__userHandler_iIUH213 = true;
+	}
+	originalOn(...args);
+};
+(editorEvents as any).__removeUserHandlers = function() {
+	for (const key in (editorEvents as any)._events) {
+		const a = (editorEvents as any)._events[key] as any;
+		if (Array.isArray(a)) {
+			for (let i = a.length - 1; i >= 0; i--) {
+				const f = a[i];
+				if (f.__userHandler_iIUH213) {
+					editorEvents.off(key as any, f);
+				}
+			}
+		}
+	}
+	//
+}.bind(editorEvents);
 
 export { editorEvents };
 
