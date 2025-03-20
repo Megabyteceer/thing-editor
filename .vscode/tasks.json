@@ -10,7 +10,11 @@
         {
             "label": "Start Editor Windows",
             "type": "shell",
-            "command": "start cmd /c \"npx vite & npx electron ./thing-editor/electron-main\"",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "start npx vite && start npx electron ./thing-editor/electron-main"
+            ],
             "problemMatcher": []
         }
     ]
