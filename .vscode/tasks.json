@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Vite and Electron",
+            "type": "shell",
+            "command": "npx vite & npx electron ./thing-editor/electron-main",
+            "problemMatcher": []
+        }
+    ]
+}
