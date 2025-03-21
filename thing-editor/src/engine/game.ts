@@ -1031,7 +1031,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #if EDITOR
 		game.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
-		this.emit('modal-shown');
+		game.emit('modal-shown');
 		return container;
 	}
 
