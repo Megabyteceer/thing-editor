@@ -17,4 +17,4 @@ node_modules
 /thing-editor/src/editor/current-scene-typings.d.ts
 /tsconfig.json
 /thing-editor.code-workspace
-/thing-editor/electron-main/.bin
+.DS_Store
