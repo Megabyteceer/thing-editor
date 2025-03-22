@@ -104,6 +104,10 @@ export default class LayeredContainer extends Container {
 /// #if EDITOR
 LayeredContainer.__requiredComponents = [LayeredContainerPortal];
 
+LayeredContainer.__EDITOR_tip = '<b>LayeredContainer</b> - customizable layered container component. ' +
+'Use "targetContainer" to specify the data-path of the container where the renderer portal is added. ' +
+'Activate or deactivate layer rendering via "enabled", and ensure "rendererPortalContainer" is linked to a valid portal instance.';
+
 /// #endif
 
 const allPortalsContainers = new Set() as Set<Container>;

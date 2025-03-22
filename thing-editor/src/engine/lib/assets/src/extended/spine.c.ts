@@ -972,6 +972,26 @@ Spine._loadSpineRuntime();
 editorEvents.on('playToggle', Spine.clearPool);
 
 Spine.__EDITOR_icon = 'tree/spine';
+Spine.__EDITOR_tip = `
+    <h1>Spine Component Overview</h1>
+    <p>The Spine component provides advanced skeleton animation capabilities using the <code>pixi-spine</code> library. It supports:</p>
+    <ul>
+      <li><strong>Animation Control:</strong> Load animations, switch between them, and blend transitions with configurable mix durations.</li>
+      <li><strong>Skin Management:</strong> Change skins dynamically. The component validates the provided skin names against the resource data.</li>
+      <li><strong>Playback Features:</strong> Play, pause, and stop animations with support for delayed transitions, looping, and sequential animation execution using callback actions.</li>
+      <li><strong>Instance Pooling:</strong> Efficiently reuses Spine instances for improved performance.</li>
+      <li><strong>Export Options:</strong> Provides an option to export the current animation state as PNG.</li>
+    </ul>
+    <p><em>How to Use:</em></p>
+    <ul>
+      <li>Assign a resource name with valid spine data to the <code>spineData</code> property.</li>
+      <li>Use the <code>currentAnimation</code> property to specify which animation to play.</li>
+      <li>Utilize the <code>currentSkin</code> property to change the displayed skin.</li>
+      <li>Control the playback via methods like <code>play</code>, <code>stop</code>, and <code>gotoLabel</code>.</li>
+      <li>Adjust additional properties like <code>speed</code>, <code>mixDuration</code>, and <code>tint</code> to fine-tune animation behavior.</li>
+      <li>Use the integrated editor features to preview animations and choose skins/animations from a list.</li>
+    </ul>
+`;
 (Spine.prototype.toInitPose as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Spine.prototype.play as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 (Spine.prototype.stop as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
