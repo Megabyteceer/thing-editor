@@ -2,7 +2,7 @@
 
 Editor migrated to _typescript_ and many other improvements.
 
-![Editor screenshot](https://pixel-cave.com/thing-editor-screen.jpg)
+![Thing-Editor with Aviamasters game open](https://pixel-cave.com/thing-editor-screen-aviamasters.jpg)
 
 Visual game editor based on _typescript_, _pixi.js_, and _vite.js_.
 
