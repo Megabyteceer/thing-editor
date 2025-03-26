@@ -4,7 +4,7 @@ import editable from 'thing-editor/src/editor/props-editor/editable.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 
-export enum SHAPE_TYPE {
+export const enum SHAPE_TYPE {
 	RECT = 0,
 	ROUND_RECT = 1,
 	CIRCLE = 2,

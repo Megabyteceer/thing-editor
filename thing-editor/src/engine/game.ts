@@ -79,6 +79,7 @@ export interface ThingGameEvents {
 	'stage-will-resize': [];
 	'preloader-scene-will-start': [];
 	'global-update': [];
+	'modal-shown': [];
 	'update': [];
 	'updated': [];
 	/// #if EDITOR
@@ -1030,6 +1031,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #if EDITOR
 		game.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
+		game.emit('modal-shown');
 		return container;
 	}
 

@@ -7,7 +7,6 @@ import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/time
 import TimelineFieldControls from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-field-controls';
 import TimelineLineView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-line-view';
 import assert from 'thing-editor/src/engine/debug/assert';
-import game from 'thing-editor/src/engine/game';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import type { TimelineFieldData, TimelineKeyFrame } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 
@@ -66,11 +65,7 @@ export default class FieldsTimelineView extends ComponentDebounced<FieldsTimelin
 	}
 
 	onRemoveFieldClick() {
-		game.editor.ui.modal.showEditorQuestion('Field animation delete', 'Are you sure you want to delete animation track for field \'' + this.props.field.n + '\'?',
-			() => {
-				this.props.owner.deleteAnimationField(this.props.field);
-			}, 'Delete'
-		);
+		this.props.owner.deleteAnimationField(this.props.field);
 	}
 
 	gotoNextKeyframe(direction: number) {

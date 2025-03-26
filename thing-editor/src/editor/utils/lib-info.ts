@@ -8,7 +8,7 @@ const LIB_HOLDER = R.span({ className: 'empty-lib-holder' });
 
 const libIcon = (libInfo: LibInfo): ComponentChildren => {
 	if (!libIconCache.has(libInfo)) {
-		libIconCache.set(libInfo, R.icon('lib' + (libInfo.libNum % 5)));
+		libIconCache.set(libInfo, R.icon('lib' + (libInfo.libNum % 7)));
 	}
 	return libIconCache.get(libInfo);
 };

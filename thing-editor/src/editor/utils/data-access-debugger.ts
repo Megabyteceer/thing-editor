@@ -11,7 +11,7 @@ import { hideAdditionalWindow, showAdditionalWindow } from '../ui/ui';
 import { editorEvents } from './editor-events';
 import sp from './stop-propagation';
 
-enum DataAccessDebuggerMode {
+const enum DataAccessDebuggerMode {
 	EQUAL = 'EQUAL',
 	LESS = 'LESS',
 	BIGGER = 'BIGGER',

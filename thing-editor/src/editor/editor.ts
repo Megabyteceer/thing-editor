@@ -243,7 +243,10 @@ class Editor {
 		}
 		this.ui.viewport.stopExecution();
 		editorEvents.emit('willClassesReload');
+		(editorEvents as any).__classesReloadingTime = true;
+		(editorEvents as any).__removeUserHandlers();
 		await ClassesLoader.reloadClasses();
+		(editorEvents as any).__classesReloadingTime = false;
 		if (restorePrefabName) {
 			PrefabEditor.editPrefab(restorePrefabName);
 		}

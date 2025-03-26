@@ -66,11 +66,11 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 	}
 
 	static logGotoLabelRecursive(label: string, root:Container) {
-		log.push({label, root, _rootId: root.___id});
-		if (log.length > 1100) {
-			log.splice(0, 100);
-		}
 		if (instance) {
+			log.push({label, root, _rootId: root.___id});
+			if (log.length > 1100) {
+				log.splice(0, 100);
+			}
 			instance.refresh();
 		}
 	}
@@ -124,7 +124,7 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 			R.div(listProps,
 				list.map(this.renderItem)
 			),
-			R.btn('CLEAR', clearLog, undefined, undefined, undefined, !log.length)
+			R.btn(R.fragment('CLEAR', R.icon('delete')), clearLog, undefined, 'danger', undefined, !log.length)
 		);
 	}
 
