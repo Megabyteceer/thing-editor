@@ -94,6 +94,14 @@ export default class Lib
 		let isSceneExists = scenes.hasOwnProperty(name);
 		assert(isSceneExists, 'No scene with name \'' + name + '\'', 10046);
 		/// #if EDITOR
+
+		let overrideName = name;
+		if (!game.__EDITOR_mode && (name === game.editor.currentSceneName)) {
+			if (scenes[game.editor.currentSceneBackupName]) {
+				overrideName = game.editor.currentSceneBackupName;
+			}
+		}
+
 		if (!name.startsWith(EDITOR_BACKUP_PREFIX)) {
 			scenes[name].p.name = name;
 		}
@@ -103,7 +111,11 @@ export default class Lib
 		showedReplaces = {};
 		/// #endif
 
-		const s: Scene = Lib._deserializeObject(scenes[name]) as Scene;
+		const s: Scene = Lib._deserializeObject(scenes[
+			/// #if EDITOR
+			overrideName ||
+			/// #endif
+			name]) as Scene;
 
 		/// #if EDITOR
 		if (!game.__EDITOR_mode) {
