@@ -21,7 +21,7 @@ export default class SceneLinkedRequest {
 		assert(owner, 'Request\'s owner display object should be provided.', 10062);
 		assert(url, 'Request\'s URL should be provided.', 10063);
 		let ret = SceneLinkedPromise.promise(async (resolve, reject) => {
-			let delay = 1000;
+			let delay = 0;
 			if (hooks.length) {
 				await Promise.all(hooks.map(hook => hook(url, resultFormat, options)));
 			}
@@ -46,14 +46,16 @@ export default class SceneLinkedRequest {
 						resolve(res);
 					}).catch((er) => {
 						attempts--;
+						delay += 1000;
 						if (attempts === 0) {
 							if (reject) {
 								reject(er);
 							}
 						}
 					});
-				await new Promise((resolve) => { window.setTimeout(resolve, delay); });
-				delay += 1000;
+				if (delay) {
+					await new Promise((resolve) => { window.setTimeout(resolve, delay); });
+				}
 			}
 			if (queued) {
 				queuedInProgress = false;
