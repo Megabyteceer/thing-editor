@@ -428,9 +428,11 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 					if (!addSceneNodeIfValid(parent[name], name)) {
 						let order = 0;
 						let isBold;
+						let refusedBecause:string|undefined;
 						EDITOR_FLAGS.rememberTryTime();
 						try {
 							let val = parent[name];
+							refusedBecause = (val as SelectableProperty).___EDITOR_rejectionReason;
 							order = val.___EDITOR_ChooserOrder || 0;
 							if (val.___EDITOR_isGoodForChooser || (this.itIsCallbackEditor && val.___EDITOR_isGoodForCallbackChooser) || val === game.data) {
 								order += 100;
@@ -439,9 +441,9 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 						} catch (_er) { /* empty */ }
 						EDITOR_FLAGS.checkTryTime();
 						if (!isBold) {
-							items.push({ name });
+							items.push({ name, refusedBecause });
 						} else {
-							items.push({ pureName: name, name: R.b(null, name), order });
+							items.push({ pureName: name, name: R.b(null, name), order, refusedBecause});
 						}
 
 						addedNames.add(name);
