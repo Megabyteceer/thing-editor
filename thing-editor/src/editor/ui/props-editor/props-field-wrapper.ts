@@ -61,7 +61,7 @@ const onContextMenu = async (fieldEditor: PropsFieldWrapper, value: any, ev: Poi
 
 	let clickedValue = value;
 	if (field.arrayProperty) {
-		clickedValue = value && value.length && value.join(',');
+		clickedValue = value && value.length && value.join('\n');
 		const items = Array.from((fieldEditor.base as HTMLDivElement)!.querySelectorAll('.array-prop-item'));
 
 		let i = items.findIndex(i => i.contains(ev!.target as HTMLDivElement) || i === ev!.target);
@@ -121,7 +121,7 @@ const onContextMenu = async (fieldEditor: PropsFieldWrapper, value: any, ev: Poi
 
 				let val: any;
 
-				let a = clipboardText.split(',');
+				let a = clipboardText.split('\n');
 				if (field.type === 'color' || field.type === 'number') {
 					a = a.map(v => parseFloat(v) || 0) as any;
 				}

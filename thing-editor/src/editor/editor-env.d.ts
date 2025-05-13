@@ -227,7 +227,8 @@ type AnyType = any;
 
 /** signals for DataPathChooser and CallbackPathChooser */
 interface SelectableProperty extends AnyType {
-	___EDITOR_isHiddenForChooser?: true | string;
+	___EDITOR_isHiddenForChooser?: true;
+	___EDITOR_rejectionReason?: string;
 	___EDITOR_isHiddenForCallbackChooser?: true;
 	___EDITOR_isHiddenForDataChooser?: true;
 	___EDITOR_isGoodForChooser?: true;

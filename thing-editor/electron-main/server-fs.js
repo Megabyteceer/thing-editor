@@ -80,7 +80,7 @@ module.exports = (mainWindow) => {
 			switch (command) {
 			case 'fs/delete':
 				attemptFSOperation(() => {
-					fs.unlinkSync(fn(fileName));
+					shell.trashItem(fn(fileName));
 					return true;
 				}, event);
 				return;

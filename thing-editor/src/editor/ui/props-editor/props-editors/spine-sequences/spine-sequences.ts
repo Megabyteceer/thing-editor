@@ -284,7 +284,10 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 	}
 
 	setActiveSequence(name?:string) {
-		this.currentTime = 0;
+		const isChanged = this.activeSequence?.n !== name;
+		if (isChanged) {
+			this.currentTime = 0;
+		}
 		this.activeSequence = this.sequences.find(s => s.n === name)!;
 		if (!this.activeSequence) {
 			this.activeSequence = this.sequences[0];
@@ -294,8 +297,10 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 			if (this.spine.spineContent && this.activeSequenceName !== name) {
 				(this.spine.spineContent?.skeleton as any).__activeEditorSequence = name;
 			}
-			this.activeSequenceItem = this.activeSequence.s.find(i => i.n === this.activeSequence.___activeItemName);
-			this.activeSequenceAction = this.activeSequenceItem?.actions?.find((_a, i) => i === this.activeSequence.___activeActionId);
+			if (isChanged) {
+				this.activeSequenceItem = this.activeSequence.s.find(i => i.n === this.activeSequence.___activeItemName);
+				this.activeSequenceAction = this.activeSequenceItem?.actions?.find((_a, i) => i === this.activeSequence.___activeActionId);
+			}
 		}
 		this.refresh();
 	}

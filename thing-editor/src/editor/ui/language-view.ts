@@ -552,6 +552,11 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			return { value: dir, name: dir };
 		});
 
+		const openBtn = R.btn('🔍 file', () => {
+			const firstFile = currentDirAssets.values().next().value!;
+			game.editor.editSource(firstFile.fileName);
+		});
+
 		return R.div(langsEditorProps,
 			R.btn('+ Add translatable KEY...', this.onAddNewKeyClick, undefined, 'main-btn'),
 			R.btn('+ Add language...', this.onAddNewLanguageClick),
@@ -567,7 +572,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 
 					}, noCopyValue: true, value: currentDir, select
 				})
-			) : R.div(null, currentDir),
+				, openBtn) : R.div(null, currentDir, openBtn),
 			R.div(langsEditorWrapperProps,
 				header,
 				R.div(tableBodyProps,
