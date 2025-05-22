@@ -152,6 +152,14 @@ export default class ProgressBar extends Container {
 		}
 	}
 
+	isMin() {
+		return this.showedVal === this.min;
+	}
+
+	isMax() {
+		return this.showedVal === this.max;
+	}
+
 	update() {
 		if (this.scrolling) {
 			if (game.mouse.click) {

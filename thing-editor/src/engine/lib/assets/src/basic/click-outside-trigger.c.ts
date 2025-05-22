@@ -5,6 +5,7 @@ import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import game from 'thing-editor/src/engine/game';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
+import Button from './button.c';
 
 const globalPointerDownEvents = (game.pixiApp.renderer.events.rootBoundary as any).mappingTable.pointerdown;
 
@@ -35,6 +36,9 @@ export default class ClickOutsideTrigger extends Container {
 		/// #if EDITOR
 		if (!this.onClickOutside) {
 			game.editor.ui.status.warn('onClickOutside event handler is empty.', 32020, this, 'onClickOutside');
+		}
+		if (this.findParentByType(Button)) {
+			game.editor.ui.status.warn('ClickOutsideTrigger can not work inside Button.', 99999, this);
 		}
 		/// #endif
 
