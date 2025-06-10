@@ -1,3 +1,4 @@
+import type { Renderer } from 'pixi.js';
 import { Container, Point } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
@@ -82,6 +83,13 @@ export default class Resizer extends Container {
 	}
 
 	/// #if EDITOR
+
+	render(renderer: Renderer): void {
+		if (this.fixed && game.__EDITOR_mode) {
+			this.recalculateSize();
+		}
+		super.render(renderer);
+	}
 
 	_resizeX = false;
 
