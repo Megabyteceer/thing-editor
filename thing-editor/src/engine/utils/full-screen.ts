@@ -21,7 +21,7 @@ export default class FullScreen {
 	static _openInner() {
 		try {
 			if (docElement.requestFullscreen) {
-				docElement.requestFullscreen().finally(() => {
+				docElement.requestFullscreen().catch(() => {}).finally(() => {
 					try {
 						if (game.projectDesc.screenOrientation !== 'auto') {
 							(screen.orientation as any).lock(game.projectDesc.screenOrientation);
