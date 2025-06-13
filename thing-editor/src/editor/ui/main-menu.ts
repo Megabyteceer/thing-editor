@@ -274,7 +274,7 @@ const MAIN_MENU: MainMenuItem[] = [
 					}
 					location.reload();
 				}
-			},
+			}
 		]
 	}
 ];
