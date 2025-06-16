@@ -11,6 +11,7 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 
 /// #if EDITOR
 import R from 'thing-editor/src/editor/preact-fabrics';
+import isEventFocusOnInputElement from 'thing-editor/src/editor/utils/is-event-focus-on-input-element';
 /// #endif
 
 let latestClickTime = 0;
@@ -417,6 +418,9 @@ window.addEventListener('keydown', (ev) => {
 	}
 	/// #if EDITOR
 	if (game.__EDITOR_mode) {
+		return;
+	}
+	if (isEventFocusOnInputElement(ev)) {
 		return;
 	}
 	/// #endif
