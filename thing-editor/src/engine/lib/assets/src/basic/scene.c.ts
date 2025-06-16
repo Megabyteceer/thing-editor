@@ -25,6 +25,7 @@ export default class Scene extends Container {
 	/// #if EDITOR
 	@editable({min: 0, tip: 'Quickly scrolls the time to the defined frame at the scene beginning. Debug purposes only.'})
 	__skipFrames = 0;
+	___framesToSkip = 0;
 
 	@editable({disabled: () => true})
 	__sceneTime = 0;
@@ -32,8 +33,11 @@ export default class Scene extends Container {
 	update(): void {
 		this.__sceneTime++;
 		super.update();
-		while (this.__skipFrames) {
-			this.__skipFrames--;
+		while (this.___framesToSkip) {
+			this.___framesToSkip--;
+			if (!this.___framesToSkip) {
+				game.editor.ui.status.warn(this.__skipFrames + ' frames skipped. Set __skipFrames zero to avoid frames skipping.', 99999, this, '__skipFrames');
+			}
 			this.update();
 		}
 	}
@@ -83,6 +87,7 @@ export default class Scene extends Container {
 	/// #if EDITOR
 
 	__afterDeserialization() {
+		this.___framesToSkip = this.__skipFrames;
 		this.__sceneTime = 0;
 		this.all = ACCESS__ALL_ASSERTING_PROXY as ThingSceneAllMap;
 
