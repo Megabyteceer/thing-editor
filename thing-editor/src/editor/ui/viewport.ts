@@ -179,6 +179,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 	onPauseResumeClick() {
 		game.__paused = !game.__paused;
 		this.forceUpdate();
+		game.editor.refreshPropsEditor();
 	}
 
 	onOneStepClick() {
