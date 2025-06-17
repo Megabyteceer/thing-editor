@@ -9,6 +9,9 @@ import game from 'thing-editor/src/engine/game';
 import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
+
+let wakeLock:WakeLockSentinel | null | true = null;
+
 interface LibInfo {
 	name: string;
 	dir: string;
@@ -448,10 +451,20 @@ export default class fs {
 		}
 	}
 
-	static setProgressBar(progress: number, operationName?:string) {
+	static async setProgressBar(progress: number, operationName?:string) {
 		if (progress >= 0) {
 			assert(operationName, 'operationName expected.');
+			if (!wakeLock) {
+				wakeLock = true;
+				try {
+					wakeLock = await navigator.wakeLock.request('screen');
+				} catch (_er) {}
+			}
 		} else {
+			if (wakeLock && wakeLock !== true) {
+				wakeLock.release();
+				wakeLock = null;
+			}
 			assert(!operationName, 'operationName should be empty for progress clear.');
 		}
 		game.editor.ui?.modal.setSpinnerProgress(progress, operationName);
