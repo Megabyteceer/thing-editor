@@ -407,7 +407,7 @@ const soundLockHandler = (isLocked = false) => {
 		EMPTY_SOUND.unload();
 		Sound.isSoundsLockedByBrowser = false;
 		if (game.classes.BgMusic) {
-			(game.classes.BgMusic as any)._recalculateMusic();
+			game.classes.BgMusic._recalculateMusic();
 		}
 	}
 };

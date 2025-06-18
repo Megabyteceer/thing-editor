@@ -5,17 +5,15 @@ const isEventFocusOnInputElement = (ev: KeyboardEvent): boolean => {
 	if (((tag === 'INPUT') && ((ev.target as HTMLInputElement).type !== 'checkbox')) ||
 			tag === 'TEXTAREA') {
 
-		if (ev.key === 'ArrowDown' || ev.key === 'ArrowLeft' || ev.key === 'ArrowRight' || ev.key === 'ArrowUp') {
-			return true;
-		}
-		if (ev.key === 'Backspace' || ev.key === 'Delete' || ev.key === 'Enter' || ev.code === 'Comma' || ev.code === 'Period') {
-			return true;
-		}
-
 		if (ev.ctrlKey) {
-			if (ev.key === 'z' || ev.key === 'x' || ev.key === 'c' || ev.key === 'v' || ev.key === 'y' || ev.key === 'a') {
+			if (ev.key === 'z' || ev.key === 'v' || ev.key === 'y' || ev.key === 'a') {
 				return true;
 			}
+			if (ev.key === 'x' || ev.key === 'c') {
+				return !!document.getSelection();
+			}
+		} else {
+			return true;
 		}
 	}
 	return false;

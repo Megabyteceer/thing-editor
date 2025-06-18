@@ -55,8 +55,6 @@ editorEvents.once('gameWillBeInitialized', () => {
 					if (ev.buttons === 1 && !___GizmoArrow.overedArrow) {
 						selectByStageClick(ev);
 					}
-				} else {
-					game.editor.selection.clearSelection();
 				}
 			}
 		} else {

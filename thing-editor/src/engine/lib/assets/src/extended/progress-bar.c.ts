@@ -83,6 +83,7 @@ export default class ProgressBar extends Container {
 
 	currentInterval = 0;
 
+	@editable({disabled: () => true, visible: () => !game.__EDITOR_mode, type: 'ref'})
 	showedVal: any = undefined;
 
 	isProgressFinished = true;
