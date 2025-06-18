@@ -141,8 +141,6 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 
 	_goToLabelNextFrame: string | false = false;
 
-	_skinPoseAnimation!: string;
-
 	init() {
 		super.init();
 		this.staticView = this.getChildByName('static-view')!;
@@ -150,7 +148,6 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		this._goToLabelNextFrame = false;
 
 		this.timeToInitPose = 0;
-		this._skinPoseAnimation = this.currentAnimation!;
 		this.playingSequence = undefined;
 
 		if (!this._sequencesByNames) {
@@ -504,12 +501,14 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	timeToInitPose = 0;
 
 	toInitPose(timeFrames: number) {
-		if (this.timeToInitPose || !this.isPlaying) {
-			return;
+		if (this._currentAnimation) {
+			if (this.timeToInitPose || !this.isPlaying) {
+				return;
+			}
+			this.play(this._currentAnimation!, timeFrames / 60 * 0.0000000001);
+			this.speed = 0.0000000001;
+			this.timeToInitPose = timeFrames;
 		}
-		this.play(this._skinPoseAnimation, timeFrames / 60 * 0.0000000001);
-		this.speed = 0.0000000001;
-		this.timeToInitPose = timeFrames;
 	}
 
 	stop(isNeedRefresh = false) {
@@ -580,6 +579,9 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 					this.actionsTime++;
 					while ((this.nextAction?.t as number) <= this.actionsTime) {
 						callByPath(this.nextAction!.a, this);
+						if (!this.parent) {
+							return;
+						}
 						this.nextAction = this.nextAction!.___next;
 					}
 					if (this.sequenceDelay) {
