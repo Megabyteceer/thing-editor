@@ -385,7 +385,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				header = R.fragment(
 
 					R.btn(R.b({
-						ctrlclickcopyvalue: prefabName,
+						ctrlClickCopyValue: prefabName,
 						className: 'selectable-text',
 						title: 'Ctrl+click to copy prefab`s name',
 						onMouseDown: copyTextByClick
