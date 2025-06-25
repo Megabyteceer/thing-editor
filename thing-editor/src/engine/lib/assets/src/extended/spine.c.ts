@@ -589,7 +589,13 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 					} else {
 						this.timeToNextItem--;
 						if (this.timeToNextItem === 0) {
-							this._playSequenceItem(this.playingSequenceItem!.___next);
+							if (!this.playingSequenceItem!.___next) {
+								this.stop();
+								this.actionsTime = 0;
+								this.playingSequenceItem = undefined;
+							} else {
+								this._playSequenceItem(this.playingSequenceItem!.___next);
+							}
 						}
 						this.updateTime += 0.01666666666667;
 					}
