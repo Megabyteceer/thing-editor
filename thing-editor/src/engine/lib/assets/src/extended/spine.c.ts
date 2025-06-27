@@ -882,10 +882,24 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			return this.sequences.map(s => s.n);
 		}
 	}
-
+	@editable(editorUtils.makePreviewModeButton('Preview', 'components.Trigger#preview-switched'))
 	@editable({min: 0, step: 0.001})
 	get __previewFrame() {
 		return this.___previewFrame || 0;
+	}
+	__goToPreviewMode() {
+		if (this.spineContent) {
+			this._applyAnimation();
+			this.spineContent.autoUpdate = true;
+		}
+	}
+
+	__exitPreviewMode() {
+		if (this.spineContent) {
+			this.spineContent.autoUpdate = false;
+			this._applyAnimation();
+			this.spineContent.update(this.__previewFrame);
+		}
 	}
 
 	static __validateSpineHasAnimation(data:any, animationName:string, fieldName:string): SerializedDataValidationError | undefined {
