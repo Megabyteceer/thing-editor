@@ -815,6 +815,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 						clearSelection();
 						select(o._timelineData.l[selectPath[2]].___view!);
 						getWindowElement('#timeline-label-' + selectPath[2].replace('.', '-').replace('#', '-')).then((labelView: HTMLDivElement) => {
+							scrollInToView(labelView);
 							shakeDomElement(labelView);
 						});
 						return;
