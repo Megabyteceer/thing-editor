@@ -96,10 +96,9 @@ const assetItemRendererSound = (file: FileDesc) => {
 		},
 		libInfo(file),
 		assetTypesIcons.get(AssetType.SOUND),
-		R.span(assetsItemNameProps, file.assetName,
-			isDefaultBitrate ? undefined : R.span(
-				BITRATE_PROPS, ' (', game.editor.projectDesc.soundBitRates[file.assetName], 'kbps)'
-			)
+		R.span(assetsItemNameProps, file.assetName),
+		isDefaultBitrate ? undefined : R.span(
+			BITRATE_PROPS, ' (', game.editor.projectDesc.soundBitRates[file.assetName], 'kbps)'
 		)
 	);
 };
