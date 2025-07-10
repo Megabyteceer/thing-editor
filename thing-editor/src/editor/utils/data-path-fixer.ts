@@ -239,22 +239,20 @@ interface ReferencesData {
 	targetNodes: ReferencesOfDataPath;
 	path: string;
 }
-
+const rememberRef = (o: Container, path: string, name: string) => {
+	if (path) {
+		let targetNodes = getLatestSceneNodesByComplexPath(path, o);
+		let objectsFieldsRefs = rememberedRefs.get(o);
+		if (!objectsFieldsRefs) {
+			objectsFieldsRefs = {};
+			rememberedRefs.set(o, objectsFieldsRefs);
+		}
+		objectsFieldsRefs[name] = { targetNodes, path };
+	}
+};
 function _rememberPathReference(o: Container) {
 	let props = (o.constructor as SourceMappedConstructor).__editableProps;
-	let objectsFieldsRefs: KeyedMap<ReferencesData> | null = null;
 
-	const rememberRef = (path: string, name: string) => {
-		if (path) {
-			let targetNodes = getLatestSceneNodesByComplexPath(path, o);
-
-			if (!objectsFieldsRefs) {
-				objectsFieldsRefs = {};
-				rememberedRefs.set(o, objectsFieldsRefs);
-			}
-			objectsFieldsRefs[name] = { targetNodes, path };
-		}
-	};
 
 	for (let p of props) {
 		if (p.type === 'data-path' || p.type === 'callback') {
@@ -264,10 +262,10 @@ function _rememberPathReference(o: Container) {
 					a = [a];
 				}
 				a.forEach((path, i) => {
-					rememberRef(path, p.name + ARRAY_ITEM_SPLITTER + i);
+					rememberRef(o, path, p.name + ARRAY_ITEM_SPLITTER + i);
 				});
 			} else {
-				rememberRef((o as KeyedObject)[p.name], p.name);
+				rememberRef(o, (o as KeyedObject)[p.name], p.name);
 			}
 		} else if (p.type === 'timeline') {
 			let timeline = (o as KeyedObject)[p.name] as TimelineData;
@@ -275,7 +273,7 @@ function _rememberPathReference(o: Container) {
 				for (let field of timeline.f) {
 					for (let k of field.t) {
 						if (k.a) {
-							rememberRef(k.a, makePathForKeyframeAutoSelect(p, field, k));
+							rememberRef(o, k.a, makePathForKeyframeAutoSelect(p, field, k));
 						}
 					}
 				}
