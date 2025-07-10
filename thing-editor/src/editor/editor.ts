@@ -916,7 +916,7 @@ class Editor {
 
 		const file = fs.getFileByAssetName('src/__beforeprojectopen', AssetType.CLASS);
 		if (file) {
-			await import(file.fileName);
+			await import(/* @vite-ignore */ file.fileName);
 		}
 		await this.reloadClasses();
 
