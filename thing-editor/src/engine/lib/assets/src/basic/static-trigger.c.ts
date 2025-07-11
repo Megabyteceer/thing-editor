@@ -45,7 +45,7 @@ export default class StaticTrigger extends Container {
 		return true;
 	}
 
-	__canAcceptChild(_Class: SourceMappedConstructor) {
+	static __canAcceptChild(_Class: SourceMappedConstructor) {
 		return false;
 	}
 	/// #endif
