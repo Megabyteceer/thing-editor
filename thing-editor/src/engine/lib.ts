@@ -984,6 +984,8 @@ const normalizeSerializedDataRecursive = (data: SerializedObject) => {
 	if (data.c) {
 		if (typeof data.c === 'string') {
 
+			assert(game.classes[data.c], 'Unknown class ' + data.c);
+
 			data.c = game.classes[data.c] as any; // in runtime mode ".c" contains Class directly
 			data.p = Object.assign({}, (data.c as any as SourceMappedConstructor).__defaultValues, data.p);
 			if (data[':']) {
