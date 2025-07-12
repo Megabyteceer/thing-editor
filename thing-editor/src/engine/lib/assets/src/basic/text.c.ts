@@ -583,7 +583,7 @@ _editableEmbed(Text, 'style.stroke', {
 	noNullCheck: true,
 	default: 0,
 	visible: (node: Text) => {
-		return node.style.strokeThickness > 0;
+		return node.style?.strokeThickness > 0;
 	}
 });
 
@@ -596,7 +596,7 @@ _editableEmbed(Text, 'style.drShColor', {
 	type: 'color',
 	noNullCheck: true,
 	default: 0,
-	visible: (node: Text) => node.style.dropShadow
+	visible: (node: Text) => node.style?.dropShadow
 });
 
 _editableEmbed(Text, 'style.drShAlpha', {
@@ -604,14 +604,14 @@ _editableEmbed(Text, 'style.drShAlpha', {
 	default: 1,
 	step: 0.01,
 	min: 0,
-	visible: (node: Text) => node.style.dropShadow
+	visible: (node: Text) => node.style?.dropShadow
 });
 
 _editableEmbed(Text, 'style.drShAngle', {
 	type: 'number',
 	default: 0.524,
 	step: 0.001,
-	visible: (node: Text) => node.style.dropShadow
+	visible: (node: Text) => node.style?.dropShadow
 });
 
 _editableEmbed(Text, 'style.drShBlur', {
@@ -619,14 +619,14 @@ _editableEmbed(Text, 'style.drShBlur', {
 	default: 0,
 	step: 0.01,
 	min: 0,
-	visible: (node: Text) => node.style.dropShadow
+	visible: (node: Text) => node.style?.dropShadow
 });
 
 _editableEmbed(Text, 'style.drShDistance', {
 	type: 'number',
 	default: 5,
 	min: 0,
-	visible: (node: Text) => node.style.dropShadow
+	visible: (node: Text) => node.style?.dropShadow
 });
 
 _editableEmbed(Text, 'style.fontFamily', {
