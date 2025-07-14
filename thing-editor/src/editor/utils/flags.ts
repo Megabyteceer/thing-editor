@@ -22,6 +22,8 @@ class EDITOR_FLAGS {
 
 	static isStoppingTime = false;
 
+	static pathValidationCurrentThis: any = null;
+
 	static rememberTryTime() {
 		if (!cachedErrorsChecked) {
 			detectCachedErrorsStopping();
