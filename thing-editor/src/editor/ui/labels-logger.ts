@@ -164,7 +164,7 @@ editorEvents.on('playToggle', clearLog);
 
 MainMenu.injectMenu('settings', [{
 	name: () => {
-		return R.span(null, R.span({ className: '.menu-icon' }, game.editor.settings.getItem('labels-logger-shown') ? '☑' : '☐'), ' Show labels logger');
+		return R.span(null, R.span({ className: '.menu-icon' }, game.editor.settings.getItem('labels-logger-shown') ? '☑' : '☐'), ' Labels logger');
 	},
 	onClick: () => {
 		LabelsLogger.toggle();
