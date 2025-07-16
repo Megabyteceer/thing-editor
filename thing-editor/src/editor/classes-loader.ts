@@ -36,6 +36,7 @@ export default class ClassesLoader {
 	static async reloadClasses(): Promise<GameClasses | undefined> {
 
 		componentsVersion++;
+		fs.removeSubAsset('src/__beforeprojectopen', AssetType.CLASS);
 
 		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
 		this.isClassesWaitsReloading = false;

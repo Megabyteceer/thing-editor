@@ -236,7 +236,6 @@ class Editor {
 
 	async reloadClasses() {
 		this.ui.modal.showSpinner();
-		fs.removeSubAsset('src/__beforeprojectopen', AssetType.CLASS);
 		let restorePrefabName = PrefabEditor.currentPrefabName;
 		let needRestoring = !restorePrefabName && game.__EDITOR_mode && game.editor.isCurrentContainerModified;
 		if (needRestoring) {
