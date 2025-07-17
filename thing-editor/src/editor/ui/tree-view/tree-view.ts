@@ -19,6 +19,7 @@ import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import type Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';
+import shakeDomElement from '../../utils/shake-element';
 
 function onEmptyClick() {
 	game.editor.selection.clearSelection(true);
@@ -299,6 +300,9 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 				Window.bringWindowForward(e.closest('.window-body') as HTMLElement);
 				scrollInToView(e);
 				(e.closest('.scene-tree-view') as HTMLElement).scrollLeft = 0;
+				if (!fieldName) {
+					shakeDomElement(e);
+				}
 			}
 		});
 	}
