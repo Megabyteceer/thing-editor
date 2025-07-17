@@ -226,9 +226,9 @@ export default class Button extends DSprite {
 
 
 		Sound._unlockSound();
-		if (game.time === latestClickTime
+		if (game.time === latestClickTime && !this.name?.startsWith('_')
 			/// #if EDITOR
-			&& !game.__paused && !this.name?.startsWith('_')
+			&& !game.__paused
 		/// #endif
 		) {
 			return;
