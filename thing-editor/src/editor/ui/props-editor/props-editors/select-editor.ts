@@ -3,7 +3,7 @@ import { Component, render } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
-import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/searc-by-regexp-or-text';
+import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/search-by-regexp-or-text';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 
@@ -229,7 +229,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 		R.div({
 			className: this.props.disabled ? CLASS_NAME_DISABLED : CLASS_NAME
 		}, R.span({
-			ctrlclickcopyvalue: this.props.noCopyValue ? undefined : ((typeof (item as SelectEditorItem).value === 'undefined') ? item : (item as SelectEditorItem).value),
+			ctrlClickCopyValue: this.props.noCopyValue ? undefined : ((typeof (item as SelectEditorItem).value === 'undefined') ? item : (item as SelectEditorItem).value),
 			className: this.props.noCopyValue ? undefined : 'selectable-text',
 			title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
 			onClick: stopPropagationIfCtrl,

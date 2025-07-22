@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import type { Container } from 'pixi.js';
 import type TypedEventEmitter from 'typed-emitter';
+import EDITOR_FLAGS from './flags';
 
 type EditorEvents = {
 	playToggle: () => void;
@@ -20,7 +21,7 @@ editorEvents.setMaxListeners(1000);
 const originalOn = editorEvents.on.bind(editorEvents) as any;
 
 (editorEvents as any).on = function proxiedOn(...args:any) {
-	if ((editorEvents as any).__classesReloadingTime) {
+	if (EDITOR_FLAGS.__classesReloadingTime) {
 		(args[1] as any).__userHandler_iIUH213 = true;
 	}
 	originalOn(...args);

@@ -109,13 +109,16 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 						R.div(null, 'You about to delete prefab'),
 						file.assetName
 					), () => {
+						if (file.assetName === PrefabEditor.currentPrefabName) {
+							PrefabEditor.exitPrefabEdit(true);
+						}
 						fs.deleteAsset(file.assetName, file.assetType);
 						game.editor.ui.refresh();
 						regeneratePrefabsTypings();
 					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			},
-			disabled: () => file.assetName === DEFAULT_FADER_NAME || file.assetName === PrefabEditor.currentPrefabName
+			disabled: () => file.assetName === DEFAULT_FADER_NAME
 		}
 	]), ev);
 };

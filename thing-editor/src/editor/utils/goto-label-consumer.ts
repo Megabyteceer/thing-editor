@@ -25,7 +25,7 @@ const gotoLabelHelper = (context: IGoToLabelConsumer) => {
 
 		labels.push(CUSTOM_LABEL_ITEM);
 
-		return game.editor.ui.modal.showListChoose('Choose label to go', labels).then((choosed) => {
+		return game.editor.ui.modal.showListChoose('Choose label to go', labels, false, false, undefined, false, 'Accept').then((choosed) => {
 			if (choosed) {
 				if (choosed === CUSTOM_LABEL_ITEM) {
 					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {
@@ -63,7 +63,7 @@ const gotoLabelRecursiveHelper = (context: Container) => {
 		const CUSTOM_LABEL_ITEM = { name: 'Custom label...' };
 		labels.push(CUSTOM_LABEL_ITEM);
 
-		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + (game.editor.currentPathChoosingField?.name || ' of keyframe.'), labels).then((chosen) => {
+		return game.editor.ui.modal.showListChoose('Choose label to go recursive for event ' + (game.editor.currentPathChoosingField?.name || ' of keyframe.'), labels, false, false, undefined, false, 'Accept').then((chosen) => {
 			if (chosen) {
 				if (chosen === CUSTOM_LABEL_ITEM) {
 					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText) => {

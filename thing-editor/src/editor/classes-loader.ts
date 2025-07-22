@@ -37,12 +37,13 @@ export default class ClassesLoader {
 
 		componentsVersion++;
 
+
 		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
 		this.isClassesWaitsReloading = false;
 
 		let oneClassNameFixed = false;
 
-		return Promise.all(files.map((file): SourceMappedConstructor => {
+		return Promise.all(files.filter(f => f.assetName !== 'src/__beforeprojectopen').map((file): SourceMappedConstructor => {
 			const onClassLoaded = (module: { default: SourceMappedConstructor }): SourceMappedConstructor => {
 				const RawClass = module.default;
 				if (!RawClass || !(RawClass.prototype instanceof DisplayObject)) {

@@ -243,10 +243,10 @@ class Editor {
 		}
 		this.ui.viewport.stopExecution();
 		editorEvents.emit('willClassesReload');
-		(editorEvents as any).__classesReloadingTime = true;
+		EDITOR_FLAGS.__classesReloadingTime = true;
 		(editorEvents as any).__removeUserHandlers();
 		await ClassesLoader.reloadClasses();
-		(editorEvents as any).__classesReloadingTime = false;
+		EDITOR_FLAGS.__classesReloadingTime = false;
 		if (restorePrefabName) {
 			PrefabEditor.editPrefab(restorePrefabName);
 		}
@@ -453,7 +453,7 @@ class Editor {
 
 			await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
 				Lib.REMOVED_TEXTURE = t;
-				return this.reloadAssetsAndClasses(true);
+				return this.reloadAssetsAndClasses();
 			});
 
 			if (this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {
@@ -910,11 +910,13 @@ class Editor {
 		assert(false, 'use \'editorEvents.on\' global object instead');
 	}
 
-	async reloadAssetsAndClasses(refresh = false) {
-		if (refresh) {
-			fs.refreshAssetsList(this.assetsFolders);
-		}
+	async reloadAssetsAndClasses() {
+		fs.refreshAssetsList(this.assetsFolders);
 
+		const file = fs.getFileByAssetName('src/__beforeprojectopen', AssetType.CLASS);
+		if (file) {
+			await import(/* @vite-ignore */ file.fileName);
+		}
 		await this.reloadClasses();
 
 		await waitForCondition(() => {

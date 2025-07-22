@@ -99,7 +99,7 @@ export default class LocalStoreView extends ComponentDebounced<ClassAttributes<L
 			R.btn(R.fragment('Clear local store', R.icon('delete')), () => {
 				game.editor.ui.modal.showEditorQuestion('Are you sure?', 'You about to remove game\'s local store data.', () => {
 					game.settings.clear();
-					this.refresh();
+					LocalStoreView.toggle();
 				}, R.fragment('Clear ', R.icon('delete')));
 			})
 		);

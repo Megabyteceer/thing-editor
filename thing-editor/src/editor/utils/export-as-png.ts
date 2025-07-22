@@ -136,6 +136,16 @@ export default async function exportAsPng(object: Container, width = 0, height =
 			}
 		}
 
+		b2.width = Math.ceil(b2.width);
+		b2.height = Math.ceil(b2.height);
+
+		if (b2.width & 1) {
+			b2.width++;
+		}
+		if (b2.height & 1) {
+			b2.height++;
+		}
+
 		canvas = game.pixiApp.renderer.plugins.extract.canvas(c2);
 
 		let png: Blob = await new Promise((resolve) => {

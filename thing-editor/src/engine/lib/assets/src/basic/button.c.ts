@@ -226,10 +226,10 @@ export default class Button extends DSprite {
 
 
 		Sound._unlockSound();
-		if (game.time === latestClickTime
+		if (game.time === latestClickTime && !this.name?.startsWith('_')
 			/// #if EDITOR
 			&& !game.__paused
-			/// #endif
+		/// #endif
 		) {
 			return;
 		}
@@ -239,7 +239,7 @@ export default class Button extends DSprite {
 			}
 			mouseHandlerGlobal(ev);
 		}
-		if (this.isCanBePressed && (Math.abs(latestClickTime - game.time) > 1)) {
+		if (this.isCanBePressed && ((Math.abs(latestClickTime - game.time) > 1) || this.name?.startsWith('_'))) {
 			if (Button.downedButton !== this) {
 				if (Button.downedButton) {
 					Button.downedButton.onUp();

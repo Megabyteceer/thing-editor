@@ -18,7 +18,7 @@ import WindowMenu from 'thing-editor/src/editor/ui/window-menu';
 import { EDITOR_BACKUP_PREFIX } from 'thing-editor/src/editor/utils/flags';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view';
-import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/searc-by-regexp-or-text';
+import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/search-by-regexp-or-text';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import { libIcon } from '../../utils/lib-info';

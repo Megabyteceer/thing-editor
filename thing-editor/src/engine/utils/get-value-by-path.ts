@@ -156,6 +156,8 @@ const getLatestSceneNodeBypath = (path: string, _this: any, suspendWarning = fal
 };
 
 const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
+	assert(!EDITOR_FLAGS.pathValidationCurrentThis, 'EDITOR_FLAGS.pathValidationCurrentThis is not empty.');
+	EDITOR_FLAGS.pathValidationCurrentThis = o;
 	let ret = [];
 	let pathsParts = path.split(/[,|`]/);
 	for (let p of pathsParts) {
@@ -164,6 +166,9 @@ const getLatestSceneNodesByComplexPath = (path: string, o: Container) => {
 		} else {
 			ret.push(getLatestSceneNodeBypath(p, o));
 		}
+	}
+	if (EDITOR_FLAGS.pathValidationCurrentThis === o) {
+		EDITOR_FLAGS.pathValidationCurrentThis = null;
 	}
 	return ret;
 };
