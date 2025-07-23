@@ -337,6 +337,9 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		const showSystemAssets = game.editor.settings.getItem('show-system-assets', false);
 
 		files = files.filter((asset) => {
+			if (asset.assetName === 'src/__beforeprojectopen') {
+				return false;
+			}
 			if (asset.assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 				return false;
 			}
