@@ -150,7 +150,7 @@ Please do not modify it. Any changes will be overridden anyway.*/
 import Lib from 'thing-editor/src/engine/lib';`];
 
 		const findRef = (class_: SourceMappedConstructor): boolean => {
-			let name = class_.__className;
+			let name = class_?.__className;
 			if (findClassNameInAssetFiles(name, scenesFiles) || findClassNameInAssetFiles(name, prefabsFiles)) {
 				return true;
 			}
