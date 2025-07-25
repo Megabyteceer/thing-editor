@@ -208,6 +208,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	hideSpinner() {
 		spinnerProgress = -1;
 		spinnerShowCounter--;
+		assert(spinnerShowCounter >= 0, 'hideSpinner() invoked without showSpinner()');
 		if (spinnerShowCounter === 0) {
 			window.setTimeout(() => {
 				if (game.stage) {

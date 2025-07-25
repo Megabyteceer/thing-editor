@@ -359,22 +359,22 @@ textarea:focus-visible {
 	background: #000;
 }
 
-
-
 .modal-spinner-progress {
 	margin: auto;
 	margin-top: 190px;
 	border: 5px solid #223344;
-	width: 260px;
-	height: 20px;
-	background: rgba(0, 0, 0, 0.3);
+	width: 360px;
+	height: 50px;
+	background: rgba(0, 0, 0, 0.8);
 	overflow: hidden;
 	border-radius: 35px;
 	text-align: center;
+	line-height: 0;
 }
+
 .modal-spinner-progress div {
-	margin-bottom: -19px;
-	height: 20px;
+	margin-bottom: -25px;
+	height: 50px;
 	background-color: #002c23;
 }
 

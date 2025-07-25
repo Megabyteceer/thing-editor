@@ -268,14 +268,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		let menu;
 
 		if (!this.props.hideMenu) {
-			menu = [(R.span({ key: 'Libs/' }, R.btn('Proj', () => {
-				if (!this.state.filterLibs) {
-					//@ts-ignore
-					this.state.filterLibs = {};
-				}
-				this.state.filterLibs!['project'] = !this.state.filterLibs!['project'];
-				this.setState({ filtersLibActive: Object.values(this.state.filterLibs!).some(v => v) });
-			}, 'Project assets', (this.state.filterLibs?.project) ? 'toggled-button' : undefined)))];
+			menu = [];
 
 			for (const lib of game.editor.currentProjectLibs) {
 				menu.push(R.span({ key: 'Libs/' }, R.btn(libIcon(lib), () => {
@@ -288,6 +281,14 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				}, lib.name, (this.state.filterLibs?.[lib.name]) ? 'toggled-button' : undefined))
 				);
 			}
+			menu.push(R.span({ key: 'Libs/' }, R.btn('Proj', () => {
+				if (!this.state.filterLibs) {
+					//@ts-ignore
+					this.state.filterLibs = {};
+				}
+				this.state.filterLibs!['project'] = !this.state.filterLibs!['project'];
+				this.setState({ filtersLibActive: Object.values(this.state.filterLibs!).some(v => v) });
+			}, 'Project assets', (this.state.filterLibs?.project) ? 'toggled-button' : undefined)));
 
 			AllAssetsTypes.forEach((assetType) => {
 				menu.push(R.span({ key: 'Filters/' + assetType }, R.btn(assetTypesIcons.get(assetType), () => {

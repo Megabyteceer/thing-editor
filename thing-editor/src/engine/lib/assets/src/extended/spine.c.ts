@@ -6,6 +6,7 @@ import { type FileDesc } from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import { decorateGotoLabelMethods } from 'thing-editor/src/editor/utils/goto-label-consumer';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -50,8 +51,8 @@ function getSpineInstance(name:string):SpineContent {
 		if (!res) {
 			return null as any;
 		}
+		res.___lastTouch = EDITOR_FLAGS.__touchTime;
 		/// #endif
-
 		let ret = new (window as any).PIXI.spine.Spine(res.spineData) as SpineContent;
 		ret.autoUpdate = false;
 		assert(!(ret as any)._poolName, 'Spine structure changed. Pooling needs refactoring (_poolName field renaming).');
@@ -645,6 +646,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		if (this.spineContent?.visible && this.visible) {
 			/// #if EDITOR
 			this.spineContent.filters = this.filters;
+			Spine.__touchedSpines.set(this.spineData, EDITOR_FLAGS.__touchTime);
 			/// #endif
 			this.spineContent.render(renderer);
 		}
@@ -832,6 +834,8 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		}
 	}
 	/// #if EDITOR
+
+	static __touchedSpines = new Map() as Map<string, number>;
 
 	@editable({max: 255, min: 0, notSerializable: true, disabled: (node) => node.useParentTint})
 	get tintR () {

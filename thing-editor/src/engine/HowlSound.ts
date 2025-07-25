@@ -9,6 +9,7 @@ import 'howler.js';
 
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import EDITOR_FLAGS from '../editor/utils/flags';
 
 type HowlSoundOptions = HowlOptions
 
@@ -63,7 +64,11 @@ export default class HowlSound extends Howl {
 		}
 	}
 	/// #if EDITOR
+
+	__lastTouch = 0;
+
 	play(spriteOrId?: string | number): number {
+		this.__lastTouch = EDITOR_FLAGS.__touchTime;
 		if (!game.editor.settings.getItem('sound-muted') || game.__EDITOR_mode) {
 			return super.play(spriteOrId);
 		}

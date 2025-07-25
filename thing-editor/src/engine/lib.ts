@@ -456,7 +456,7 @@ export default class Lib
 					}, 1);
 				}
 			}
-
+			prefabs[replacedPrefabName || src.r!].__lastTouch = EDITOR_FLAGS.__touchTime;
 			ret = Lib._deserializeObject(prefabs[replacedPrefabName || src.r!]);
 			Object.assign(ret, src.p);
 
@@ -539,6 +539,7 @@ export default class Lib
 		/// #if EDITOR
 		deserializationDeepness--;
 		if (deserializationDeepness === 0) {
+			src.__lastTouch = EDITOR_FLAGS.__touchTime;
 			processAfterDeserialization(ret);
 			ret.forAllChildren(processAfterDeserialization);
 		}

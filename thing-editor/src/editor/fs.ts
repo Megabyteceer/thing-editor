@@ -1,12 +1,13 @@
+
 import type { Container } from 'pixi.js';
-import { Texture } from 'pixi.js';
+import { BitmapFont, Text, Texture } from 'pixi.js';
 import type { ComponentChildren } from 'preact';
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
 import { EDITOR_BACKUP_PREFIX } from 'thing-editor/src/editor/utils/flags';
-import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
-import { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor/src/engine/lib';
+import type HowlSound from 'thing-editor/src/engine/HowlSound';
+import Lib, { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
 
@@ -270,6 +271,63 @@ export default class fs {
 				prevAssetsByTypeByName.get(file.assetType as AssetType)!.delete(assetName);
 			}
 		}
+	}
+
+	static getLastTouch(file: FileDesc):number {
+		let ret = 0;
+		switch (file.assetType) {
+		case AssetType.CLASS:
+			return 0;
+		case AssetType.SCENE:
+			return Lib.scenes[file.assetName].__lastTouch || 0;
+		case AssetType.PREFAB:
+			return Lib.prefabs[file.assetName].__lastTouch || 0;
+		case AssetType.IMAGE:
+			ret = Lib.getTexture(file.assetName).baseTexture.touched;
+			if (ret === 0) {
+				const images = fs.getAssetsList(AssetType.IMAGE);
+				const src = ((file as FileDescImage).asset.baseTexture.resource as any)?.url;
+				if (src) {
+					for (const image of images) {
+						if (image.asset.baseTexture.resource?.src === src) {
+							ret = Math.max(ret, image.asset.baseTexture.touched);
+						}
+					}
+				}
+				game.classes.Spine.__touchedSpines.forEach((time, spineName) => {
+					const spine = Lib.resources[spineName];
+					if (spine.spineAtlas.pages.some((page: any) => {
+						return page.baseTexture.resource.src === src;
+					})) {
+						ret = Math.max(ret, time);
+					}
+				});
+			}
+			return ret;
+		case AssetType.FONT:
+
+			const fontName = file.assetName.split('/').pop()?.replace(/\.woff2?$/, '').toLocaleLowerCase();
+			const names = Array.from(Text.__touchedFonts.keys()) as string[];
+			for (let k of names) {
+				const a = k.toLocaleLowerCase().split(',');
+				if (a.some((fn) => {
+					return fn.trim() == fontName;
+				})) {
+					ret = Math.max(ret, Text.__touchedFonts.get(k)!);
+				}
+			}
+			return ret;
+
+		case AssetType.SOUND:
+			return Lib.getSound(file.assetName).__lastTouch;
+		case AssetType.BITMAP_FONT:
+			const fontTextures = BitmapFont.available[file.assetName].pageTextures;
+			return fontTextures[Object.keys(fontTextures)[0]].baseTexture.touched;
+		case AssetType.RESOURCE:
+			return Lib.resources[file.assetName]?.___lastTouch || Number.MAX_SAFE_INTEGER;
+			debugger;
+		}
+		return Number.MAX_SAFE_INTEGER;
 	}
 
 	static addSubAsset(file: FileDesc) {

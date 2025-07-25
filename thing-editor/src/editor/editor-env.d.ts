@@ -151,8 +151,6 @@ interface NodeExtendData {
 
 	isTypeChanging?: boolean;
 
-	__fragmentOwnerId?: number;
-
 	eatenRotation?: number;
 }
 
@@ -181,6 +179,8 @@ type SerializedObject = {
 
 	/** prefab reference name */
 	r?: string;
+
+	__lastTouch?: number;
 
 	p: SerializedObjectProps;
 	':'?: SerializedObject[] | undefined;
