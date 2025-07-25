@@ -76,6 +76,7 @@ let assetsToCopy: { from: string; to: string }[] = [];
 
 export default class Build {
 	static async build(debug: boolean) {
+		fs.removeSubAsset('src/__beforeprojectopen', AssetType.CLASS);
 		game.editor.ui.modal.showSpinner();
 		fs.log(debug ? 'build debug' : 'build release');
 
@@ -150,9 +151,6 @@ Please do not modify it. Any changes will be overridden anyway.*/
 import Lib from 'thing-editor/src/engine/lib';`];
 
 		const findRef = (class_: SourceMappedConstructor): boolean => {
-			if (!class_) {
-				return false;
-			}
 			let name = class_.__className;
 			if (findClassNameInAssetFiles(name, scenesFiles) || findClassNameInAssetFiles(name, prefabsFiles)) {
 				return true;
