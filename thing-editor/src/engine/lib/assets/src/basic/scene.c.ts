@@ -5,6 +5,10 @@ import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from 'thing-editor/s
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 
+/// #if EDITOR
+let framesSkipAlerted = false;
+/// #endif
+
 export default class Scene extends Container {
 
 	declare name: string;
@@ -35,7 +39,8 @@ export default class Scene extends Container {
 		super.update();
 		while (this.___framesToSkip) {
 			this.___framesToSkip--;
-			if (!this.___framesToSkip) {
+			if (!this.___framesToSkip && !framesSkipAlerted) {
+				framesSkipAlerted = true;
 				game.editor.ui.status.warn(this.__skipFrames + ' frames skipped. Set __skipFrames zero to avoid frames skipping.', 99999, this, '__skipFrames');
 			}
 			this.update();
