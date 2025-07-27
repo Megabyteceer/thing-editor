@@ -1,5 +1,6 @@
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
+import { roundUpNumber } from 'thing-editor/src/editor/utils/round-up-point';
 import game from 'thing-editor/src/engine/game';
 import Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
@@ -344,6 +345,10 @@ export default class OrientationTrigger extends Container {
 			this.alpha = 1;
 			this.scale.x = 1;
 			this.scale.y = 1;
+			this.portraitX = roundUpNumber(this.portraitX);
+			this.portraitY = roundUpNumber(this.portraitY);
+			this.landscapeX = roundUpNumber(this.landscapeX);
+			this.landscapeY = roundUpNumber(this.landscapeY);
 		}
 	}
 
