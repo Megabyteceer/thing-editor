@@ -27,7 +27,7 @@ export default class MusicFragment {
 
 	intro: string | null;
 	loop: string | null;
-	musicFragmentHash: string | undefined;
+	musicFragmentHash!: string;
 	_currentFragment!: HowlSound | undefined;
 	_fadeToVol!: number;
 	_fadeSpeed!: number;
@@ -158,8 +158,13 @@ export default class MusicFragment {
 
 				this._currentFragment = snd;
 				assert((snd as any)._sounds.length === 1, 'Music started in more that one instance.');
-				allActiveFragments[this.musicFragmentHash!] = this;
-			} catch (_er) { }
+				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
+				allActiveFragments[this.musicFragmentHash] = this;
+			} catch (_er) {
+				/// #if EDITOR
+				debugger;
+				/// #endif
+			}
 		}
 	}
 
@@ -173,8 +178,9 @@ export default class MusicFragment {
 			}
 			this._currentFragment.stop();
 
+			assert(allActiveFragments[this.musicFragmentHash] === this, 'allActiveFragments map corrupted.');
 			this._currentFragment = undefined;
-			delete allActiveFragments[this.musicFragmentHash!];
+			delete allActiveFragments[this.musicFragmentHash];
 		}
 	}
 
@@ -196,7 +202,9 @@ export default class MusicFragment {
 				allFragments[bgMusic.musicFragmentHash] = fragment;
 			} else {
 				fragment = allFragments[bgMusic.musicFragmentHash];
+				assert(fragment.musicFragmentHash === bgMusic.musicFragmentHash, 'allFragments map corrupted');
 			}
+
 
 			fragment._fadeToVol = bgMusic._cachedTargetVol;
 			fragment._fadeSpeed = bgMusic._getFade(fragment._fadeToVol < MIN_VOL_THRESHOLD);
