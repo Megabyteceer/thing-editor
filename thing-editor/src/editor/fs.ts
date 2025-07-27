@@ -321,7 +321,7 @@ export default class fs {
 		case AssetType.SOUND:
 			return Lib.getSound(file.assetName).__lastTouch;
 		case AssetType.BITMAP_FONT:
-			const fontTextures = BitmapFont.available[file.assetName].pageTextures;
+			const fontTextures = BitmapFont.available[file.assetName.split('/').pop()!].pageTextures;
 			return fontTextures[Object.keys(fontTextures)[0]].baseTexture.touched;
 		case AssetType.RESOURCE:
 			return Lib.resources[file.assetName]?.___lastTouch || Number.MAX_SAFE_INTEGER;
