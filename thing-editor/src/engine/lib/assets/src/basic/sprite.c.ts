@@ -1,6 +1,7 @@
-import { BLEND_MODES, Mesh, Sprite } from 'pixi.js';
+import { BLEND_MODES, Container, Mesh, Sprite } from 'pixi.js';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -90,6 +91,13 @@ Object.defineProperty(Mesh.prototype, 'tintB', tintBDesc);
 
 
 /// #if EDITOR
+
+Sprite.prototype.update = function update() {
+	Container.prototype.update.call(this);
+	if (this.texture?.baseTexture) {
+		this.texture.baseTexture.touched = EDITOR_FLAGS.__touchTime;
+	}
+};
 
 Sprite.prototype.__beforeDestroy = function () {
 	assert(this._width === 0, 'width property was assigned but not cleared to zero on object disposing.', 10065);

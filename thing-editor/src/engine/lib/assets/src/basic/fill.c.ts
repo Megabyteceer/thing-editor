@@ -1,6 +1,7 @@
 import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import Lib from 'thing-editor/src/engine/lib';
 
 const PI_2 = Math.PI * 2;
@@ -428,6 +429,11 @@ export default class Fill extends Mesh {
 			}
 		}
 		super.update();
+		/// #if EDITOR
+		if (this.texture?.baseTexture) {
+			this.texture.baseTexture.touched = EDITOR_FLAGS.__touchTime;
+		}
+		/// #endif
 	}
 
 	set texture(v) {
