@@ -71,6 +71,7 @@ assetTypesIcons.set(AssetType.RESOURCE, R.img({
 }));
 
 let allWindowsIds: string[] = [];
+const additionalWindows = [] as AssetsView[];
 
 function __saveWindowsIds() {
 	game.editor.settings.setItem(SETTINGS_KEY, allWindowsIds);
@@ -146,12 +147,21 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 
 	componentDidMount(): void {
 		super.componentDidMount();
+		if (!allWindowsIds.includes(this.props.id)) {
+			additionalWindows.push(this);
+		}
 		const input = (this.base as HTMLDivElement).querySelector('.search-input') as HTMLInputElement;
 		if (input) {
 			input.value = this.state.search || '';
 			if (this.props.onItemSelect) {
 				input.select();
 			}
+		}
+	}
+
+	componentWillUnmount(): void {
+		if (additionalWindows.includes(this)) {
+			additionalWindows.splice(additionalWindows.indexOf(this), 1);
 		}
 	}
 
@@ -178,6 +188,9 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	static renderAssetsViews(): ComponentChild {
 		if (!game.editor.isProjectOpen) {
 			return R.span();
+		}
+		for (const w of additionalWindows) {
+			w.refresh();
 		}
 		if (allWindowsIds.length === 0) {
 			allWindowsIds = game.editor.settings.getItem(SETTINGS_KEY);
