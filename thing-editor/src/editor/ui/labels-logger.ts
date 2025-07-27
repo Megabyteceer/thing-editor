@@ -66,7 +66,7 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 	}
 
 	static logGotoLabelRecursive(label: string, root:Container) {
-		if (instance) {
+		if (instance && !game.currentScene.___framesToSkip) {
 			log.push({label, root, _rootId: root.___id});
 			if (log.length > 1100) {
 				log.splice(0, 100);
