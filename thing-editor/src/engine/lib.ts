@@ -20,6 +20,7 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import RemoveHolder from 'thing-editor/src/engine/utils/remove-holder';
+import roundUpPoint from '../editor/utils/round-up-point';
 import Sound from './utils/sound';
 
 let classes: GameClasses;
@@ -739,6 +740,7 @@ export default class Lib
 	static __serializeObject(o: Container): SerializedObject {
 
 		editorUtils.exitPreviewMode(o);
+		roundUpPoint(o);
 		if (o.__beforeSerialization) {
 			o.__beforeSerialization();
 		}
