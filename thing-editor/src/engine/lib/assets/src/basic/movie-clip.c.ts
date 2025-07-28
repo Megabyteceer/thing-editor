@@ -30,7 +30,7 @@ let idCounter = 1;
 
 export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 
-	_seed = Math.floor(Math.random() * 0x80000000);
+	_seed = 0;
 
 	fieldPlayers: FieldPlayer[] = [];
 
@@ -340,6 +340,7 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 
 	init() {
 		super.init();
+		this._seed = Math.floor(Math.random() * 0x80000000);
 		if ((this.constructor === MovieClip) && (!this._timelineData || !this._timelineData.f.length)) {
 			game.editor.ui.status.warn('MovieClip ' + this.___info + ' has no timeline.', 32003, this, 'timeline');
 		}
