@@ -1,6 +1,7 @@
 import { Container } from 'pixi.js';
 
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
@@ -159,6 +160,17 @@ export default class BgMusic extends Container {
 
 	update() {
 		super.update();
+		/// #if EDITOR
+		if (this._isPlaying) {
+			if (this.intro) {
+				Lib.getSound(this.intro).__lastTouch = EDITOR_FLAGS.__touchTime;
+			}
+			if (this.loop) {
+				Lib.getSound(this.loop).__lastTouch = EDITOR_FLAGS.__touchTime;
+			}
+		}
+		/// #endif
+
 		if (this._isPlaying && this.globalVolumePath) {
 			if (this._appliedPathVol !== getValueByPath(this.globalVolumePath, this)) {
 				BgMusic._recalculateMusic();
