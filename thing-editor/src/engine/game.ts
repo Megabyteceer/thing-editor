@@ -124,6 +124,8 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 	mouse: Mouse = new Point() as any as Mouse;
 
+	frameSeed = 0; // 99999
+
 	/// #if EDITOR
 	__mouse_EDITOR: Mouse = new Point() as any as Mouse;
 	__mouse_uncropped: Mouse = new Point() as any as Mouse;
@@ -740,6 +742,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		if (game._loadingErrorIsDisplayed) {
 			return;
 		}
+		this.frameSeed = Math.floor(Math.random() * 0x80000000);
 
 		/// #if EDITOR
 		this.__time++;

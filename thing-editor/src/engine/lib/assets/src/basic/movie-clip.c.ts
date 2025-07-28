@@ -30,6 +30,8 @@ let idCounter = 1;
 
 export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 
+	_seed = Math.floor(Math.random() * 0x80000000);
+
 	fieldPlayers: FieldPlayer[] = [];
 
 	_goToLabelNextFrame: string | false = false;

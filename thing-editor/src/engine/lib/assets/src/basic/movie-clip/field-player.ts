@@ -187,7 +187,7 @@ export default class FieldPlayer {
 			&& !ignoreRandom
 			/// #endif
 		) {
-			this.time += Math.round(Math.random() * (this.currentFrame.r as number));
+			this.time -= (game.frameSeed ^ this.target._seed) % (this.currentFrame.r as number);
 		}
 		this.val = this.currentFrame.v;
 		this.targetVal = this.val;
@@ -250,7 +250,7 @@ export default class FieldPlayer {
 				&& !ignoreRandom
 				/// #endif
 			) {
-				this.time += Math.round(Math.random() * (currentFrame.r as number));
+				this.time -= (game.frameSeed ^ this.target._seed) % (currentFrame.r as number);
 			}
 
 			if (currentFrame.m === TimelineKeyFrameType.SMOOTH) {
