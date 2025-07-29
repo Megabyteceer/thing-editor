@@ -12,6 +12,8 @@ import game from 'thing-editor/src/engine/game';
 import copyTextByClick from '../utils/copy-text-by-click';
 import { searchByRegexpOrText } from '../utils/search-by-regexp-or-text';
 
+let lastItemTime = 0;
+
 /// 99999
 
 interface LabelsLoggerProps extends ClassAttributes<LabelsLogger> {
@@ -29,6 +31,7 @@ interface LabelLogItem {
 	label: string;
 	root: Container;
 	_rootId: number;
+	time: number;
 }
 
 
@@ -67,7 +70,7 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 
 	static logGotoLabelRecursive(label: string, root:Container) {
 		if (instance && !game.currentScene.___framesToSkip) {
-			log.push({label, root, _rootId: root.___id});
+			log.push({label, root, _rootId: root.___id, time: game.time});
 			if (log.length > 1100) {
 				log.splice(0, 100);
 			}
@@ -85,15 +88,23 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 
 	renderItem(item: LabelLogItem) {
 		const isRemoved = item._rootId !== item.root.___id;
+		const timeDelta = item.time - lastItemTime;
+		lastItemTime = item.time;
+		const timeSplitter = timeDelta ? R.div({title: 'game.time shift in frames', className: 'labels-log-time'}, '+', timeDelta) : undefined;
 
-		return R.div({
-			className: isRemoved ? 'labels-log-item disabled' : 'labels-log-item',
-			onClick: isRemoved ? undefined : () => {
-				game.editor.selection.select(item.root);
-			}
-		},
-		R.span(labelNamesProps, item.label),
-		R.sceneNode(item.root)
+		return R.fragment(
+			timeSplitter,
+			R.div(
+				{
+					className: isRemoved ? 'labels-log-item disabled' : (item.root.__nodeExtendData.isSelected ? 'labels-log-item labels-log-item-selected' : 'labels-log-item'),
+					onClick: isRemoved ? undefined : () => {
+						game.editor.selection.select(item.root);
+						instance.refresh();
+					}
+				},
+				R.span(labelNamesProps, item.label),
+				R.sceneNode(item.root)
+			)
 		);
 	}
 
@@ -114,6 +125,8 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 				}
 			});
 		}
+
+		lastItemTime = list[0]?.time || 0;
 
 		return R.fragment(
 			R.btn('×', LabelsLogger.toggle, 'Hide label logger', 'close-window-btn', { key: 'Escape' }),

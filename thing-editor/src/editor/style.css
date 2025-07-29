@@ -1561,12 +1561,22 @@ input[disabled] {
 	height: 100%;
 }
 
+.labels-log-time {
+	font-size: 70%;
+	color: #505050;
+	border-bottom: 1px solid #505050;
+}
+
 .labels-log-item {
 	cursor: pointer;
 	display: flex;
     align-items: center;
     justify-content: space-between;
 	padding: 3px 10px;
+}
+
+.labels-log-item-selected {
+	outline: 1px solid #995500;
 }
 
 .labels-log-item:hover {
