@@ -1154,7 +1154,11 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 		let e = document.createElement('div');// eslint-disable-line no-unreachable
 
-		e.innerHTML = ERROR_HTML.replace('$TITLE$', game.projectDesc.title);
+		e.innerHTML = ERROR_HTML.replace('$TITLE$', game.projectDesc.title
+		/// #if DEBUG
+			+ '<br>' + (url || '').replace(/\n/gm, '<br>')
+		/// #endif
+		);
 		document.body.appendChild(e);
 		document.addEventListener('click', () => {
 			game._reloadGame();
