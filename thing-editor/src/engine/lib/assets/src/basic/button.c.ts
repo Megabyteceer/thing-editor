@@ -241,22 +241,24 @@ export default class Button extends DSprite {
 		latestClickTime = game.time;
 	}
 
+	_isNotPausable() {
+		if (game.classes.UnPausableContainer) {
+			return this.findParentByType(game.classes.UnPausableContainer);
+		}
+	}
+
 	onDown(ev: PointerEvent | null, source = 'pointerdown') {
 
-		/// #if DEBUG
-		if (this.onClick.some(s => s.startsWith('__'))) {
-			latestClickTime = -1;
-		}
-		/// #endif
-
-
 		Sound._unlockSound();
-		if (game.time === latestClickTime && !this.name?.startsWith('_')
-			/// #if EDITOR
-			&& !game.__paused
-		/// #endif
+		if (game.time === latestClickTime || game.__paused
 		) {
-			return;
+			/// #if EDITOR
+			if (!this._isNotPausable()) {
+			/// #endif
+				return;
+			/// #if EDITOR
+			}
+			/// #endif
 		}
 		if (ev) {
 			if (ev.buttons !== 1) {
@@ -264,7 +266,7 @@ export default class Button extends DSprite {
 			}
 			mouseHandlerGlobal(ev);
 		}
-		if (this.isCanBePressed && ((Math.abs(latestClickTime - game.time) > 1) || this.name?.startsWith('_'))) {
+		if (this.isCanBePressed && ((Math.abs(latestClickTime - game.time) > 1) || this._isNotPausable())) {
 			if (Button.downedButton !== this) {
 				if (Button.downedButton) {
 					Button.downedButton.onUp();
