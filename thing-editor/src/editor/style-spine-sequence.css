@@ -29,6 +29,10 @@
 	border-bottom-left-radius: 20px;
 }
 
+.spine-sequence-header-playing {
+	color: #cc1616;
+}
+
 .spine-sequence-body {
 	white-space: nowrap;
 	background-color: #181818;

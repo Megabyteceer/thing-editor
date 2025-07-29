@@ -233,7 +233,11 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 
 	renderSequenceLabel(sequence: SpineSequence) {
 		const isActive = sequence.n === this.activeSequence.n;
-		const className = isActive ? 'spine-sequence-header spine-sequence-header-active' : 'spine-sequence-header clickable';
+		const isPlaying = !game.__EDITOR_mode && (sequence.s.includes(this.spine.playingSequenceItem!));
+		let className = isActive ? 'spine-sequence-header spine-sequence-header-active' : 'spine-sequence-header clickable';
+		if (isPlaying) {
+			className += ' spine-sequence-header-playing';
+		}
 		return R.div({
 			className,
 			title: 'Ctrl+click to copy label`s name',

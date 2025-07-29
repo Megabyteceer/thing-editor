@@ -1562,9 +1562,11 @@ input[disabled] {
 }
 
 .labels-log-time {
-	font-size: 70%;
-	color: #505050;
-	border-bottom: 1px solid #505050;
+    font-size: 70%;
+    color: #505050;
+    background: #181818;
+    padding: 3px 15px;
+    border-radius: 10px;
 }
 
 .labels-log-item {

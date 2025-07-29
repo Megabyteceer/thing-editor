@@ -78,6 +78,10 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 		}
 	}
 
+	static refresh() {
+		instance?.refresh();
+	}
+
 	componentDidMount(): void {
 		instance = this;
 	}
