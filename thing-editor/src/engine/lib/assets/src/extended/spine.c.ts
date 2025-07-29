@@ -25,6 +25,7 @@ const _initSpineParser = () => {
 	atlasLoader!.parse = (asset: string, options, ...args) => {
 		asset = asset.split('\n\n').map((texture) => {
 			let imageName = texture.substring(0, texture.indexOf('\n'));
+			assert(!imageName.includes('\r'), 'Spine file contain \\r\\n line break styles. Can not parse spine: ' + asset);
 			const a = options!.src!.split('/');
 			a.pop();
 			a.push(imageName);
