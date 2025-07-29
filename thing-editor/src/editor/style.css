@@ -1037,6 +1037,17 @@ input[disabled] {
 	border-left: 3px dotted #676d12;
 }
 
+.selected-text {
+	background-color: rgb(102, 66, 0);
+}
+
+.prompt-variant-item {
+	color: #ababab;
+    text-decoration: underline;
+    margin: 10px;
+    padding: 0;
+}
+
 .props-header {
 	display: flex;
 	height: 33px;

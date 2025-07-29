@@ -68,7 +68,10 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 		this.setState({search: undefined});
 	}
 
+	static allLabels = new Set() as Set<string>;
+
 	static logGotoLabelRecursive(label: string, root:Container) {
+		this.allLabels.add(label);
 		if (instance && !game.currentScene.___framesToSkip) {
 			log.push({label, root, _rootId: root.___id, time: game.time});
 			if (log.length > 1100) {
@@ -133,7 +136,7 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 		lastItemTime = list[0]?.time || 0;
 
 		return R.fragment(
-			R.btn('×', LabelsLogger.toggle, 'Hide label logger', 'close-window-btn', { key: 'Escape' }),
+			R.btn('×', LabelsLogger.toggle, 'Hide labels logger', 'close-window-btn', { key: 'Escape' }),
 
 			R.input(this.searchInputProps),
 			R.btn('×', this.clearSearch, 'Discard search filter', 'close-btn clear-search-btn'),
@@ -183,6 +186,7 @@ MainMenu.injectMenu('settings', [{
 	name: () => {
 		return R.span(null, R.span({ className: '.menu-icon' }, game.editor.settings.getItem('labels-logger-shown') ? '☑' : '☐'), ' Labels logger');
 	},
+	hotkey: { key: 'l', ctrlKey: true, shiftKey: true },
 	onClick: () => {
 		LabelsLogger.toggle();
 	},

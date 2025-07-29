@@ -3,9 +3,11 @@ import game from 'thing-editor/src/engine/game';
 
 const copyTextByClick = (ev: PointerEvent) => {
 	if (ev.ctrlKey) {
-		const copyValue = ((ev.target as HTMLDivElement).attributes as any).ctrlClickCopyValue;
+		const target = ((ev.target as HTMLDivElement).closest('.selectable-text') || ev.target) as HTMLDivElement;
+
+		const copyValue = (target.attributes as any).ctrlClickCopyValue;
 		game.editor.copyToClipboard(typeof copyValue !== 'undefined' ?
-			copyValue.value : (ev.target as HTMLElement).innerText);
+			copyValue.value : (target).innerText);
 		sp(ev);
 	}
 };
