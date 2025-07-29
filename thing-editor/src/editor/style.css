@@ -1576,7 +1576,7 @@ input[disabled] {
 }
 
 .labels-log-item-selected {
-	outline: 1px solid #995500;
+	background-color: #362a00;
 }
 
 .labels-log-item:hover {
