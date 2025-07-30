@@ -1273,6 +1273,10 @@ input[disabled] {
 	padding: 5px;
 }
 
+.path-chooser-layer {
+	opacity: 0;
+}
+
 .modal-body .window-body {
 	position: relative;
 	min-height: 50vh;

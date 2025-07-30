@@ -2,7 +2,7 @@ import editable from 'thing-editor/src/editor/props-editor/editable';
 import LabelsLogger from 'thing-editor/src/editor/ui/labels-logger';
 import Timeline from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline';
 import getPrefabDefaults from 'thing-editor/src/editor/utils/get-prefab-defaults';
-import { decorateGotoLabelMethods } from 'thing-editor/src/editor/utils/goto-label-consumer';
+import { decorateGotoLabelMethods, gotoLabelHelper } from 'thing-editor/src/editor/utils/goto-label-consumer';
 import makePathForKeyframeAutoSelect from 'thing-editor/src/editor/utils/movie-clip-keyframe-select-path';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -15,6 +15,7 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 
 /// #if EDITOR
 import R from 'thing-editor/src/editor/preact-fabrics';
+import DataPathEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 export const ACTION_ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 
@@ -596,6 +597,24 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 (MovieClip.prototype.playRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.stopRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(MovieClip.prototype.gotoLabelIf as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(MovieClip.prototype.gotoLabelIf as SelectableProperty).___EDITOR_callbackParameterChooserFunction = async(context: MovieClip) => {
+	const label = await gotoLabelHelper(context);
+	if (label && label.length) {
+		const path = await DataPathEditor.choosePath(' gotoLabelIf condition');
+		if (path) {
+			label.push(path);
+			const isInverted = await game.editor.ui.modal.showListChoose('Invert condition?', [
+				{name: R.span({className: 'danger'}, 'invert'), pureName: 'invert', value: 1},
+				{name: 'no invert', value: 0}
+			]);
+			if (isInverted?.value) {
+				label.push('1');
+			}
+			return label;
+		}
+	}
+};
 
 let serializeCache = new WeakMap();
 

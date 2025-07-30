@@ -15,7 +15,6 @@ interface ChooseListProps extends ClassAttributes<ChooseList> {
 	noSearchField: boolean;
 	activeValue?: string;
 	doNotGroup?: boolean;
-	canCreate?: string;
 }
 
 
@@ -130,10 +129,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 		return R.div(bodyProps,
 			this.props.noSearchField ? undefined : R.div(listHeaderProps,
 				R.input(this.searchInputProps),
-				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search'),
-				this.props.canCreate ? R.btn(this.props.canCreate, () => {
-					game.editor.ui.modal.hideModal({name: this.state.search, pureName: this.state.search, value: this.state.search});
-				}, undefined, undefined, {key: 'Enter'}, !this.state.search) : undefined
+				R.btn(R.icon('reject'), this.onSearchClearClick, 'Clear search')
 			),
 			R.btn('auto accept', (ev) => {
 				this.acceptByEnter(ev as any);

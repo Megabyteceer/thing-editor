@@ -75,7 +75,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 		let input = (this.props.multiline ? R.textarea : R.input);
 
 		let variantsView;
-		let variantsStrings = (this.props.variants && this.state.value) ? this.props.variants.filter(v => v.includes(this.state.value)) : undefined;
+		let variantsStrings = (this.props.variants) ? this.props.variants.filter(v => !this.state.value || v.includes(this.state.value)) : undefined;
 		if (variantsStrings) {
 			if (variantsStrings.length > 20) {
 				variantsStrings.length = 20;
@@ -102,9 +102,10 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 					if (ev.ctrlKey) {
 						game.editor.copyToClipboard(txt);
 					} else {
-						this.setState({value: txt}, () => {
+						this.setState({value: txt, accepted: true});
+						setTimeout(() => {
 							this.onAcceptClick();
-						});
+						}, 10);
 					}
 				}, undefined, 'prompt-variant-item', undefined, !!isBlocked);
 			});

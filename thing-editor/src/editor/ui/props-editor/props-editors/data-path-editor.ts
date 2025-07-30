@@ -1,6 +1,6 @@
 import { Container, DisplayObject } from 'pixi.js';
 import type { ComponentChild } from 'preact';
-import { Component, render } from 'preact';
+import { Component, h, render } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import CallbackEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
@@ -17,6 +17,11 @@ const selectableSceneNodeProps = { className: 'selectable-scene-node' };
 const functionTipProps = { className: 'path-editor-function-tip' };
 
 let initialized = false;
+
+let chooserElement:HTMLDivElement;
+const hideChooser = () => {
+	render(R.fragment(), chooserElement);
+};
 
 const filteredNamesInDisplayObject = new Set([
 	'_tempDisplayObjectParent',
@@ -55,6 +60,7 @@ window.document.body.appendChild(dataPathTipContainer);
 
 interface DataPathEditorProps extends Omit<EditablePropertyEditorProps, 'field'> {
 	field?: EditablePropertyDesc;
+	onCancel?: () => void;
 	title: string;
 }
 
@@ -97,6 +103,35 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 
 	static isFunctionIsClass(f: () => any) {
 		return f.toString().startsWith('class ');
+	}
+
+	static choosePath(title: string, currentPath = ''):Promise<string> {
+		return new Promise((resolve:(ret: string)=> void) => {
+			if (!chooserElement) {
+				chooserElement = window.document.createElement('div');
+				chooserElement.classList.add('path-chooser-layer');
+				window.document.body.appendChild(chooserElement);
+			}
+			render(h(DataPathEditor, {
+				title: '',
+				field: {
+					name: title
+				} as EditablePropertyDesc,
+				ref: (ref:ComponentChild | null) => {
+					if (ref) {
+						(ref as DataPathEditor).startChoosing();
+					}
+				},
+				value: currentPath,
+				onChange: (value:string) => {
+					resolve(value);
+					hideChooser();
+				},
+				onCancel: () => {
+					hideChooser();
+				}
+			}), chooserElement);
+		});
 	}
 
 	onGotoTargetClick() {
@@ -519,7 +554,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 				(parent instanceof DisplayObject) ? R.sceneNode(parent as Container) : undefined,
 				acceptNowBtn
 			),
-			items)
+			items, false, false, undefined, false, this.props.onCancel)
 			.then((selected: DataPathSelectItem) => {
 				if (selected) {
 					let val;
