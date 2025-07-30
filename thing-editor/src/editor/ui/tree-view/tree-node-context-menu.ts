@@ -120,12 +120,19 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 	{
 		name: R.fragment(R.icon('asset-prefab'), 'Unreference'),
 		onClick: () => {
-			const o = game.editor.selection[0];
-			delete o.__nodeExtendData.isPrefabReference;
-			for (const c of o.children) {
+			const reference = game.editor.selection[0];
+			delete reference.__nodeExtendData.isPrefabReference;
+			for (const c of reference.children) {
 				delete c.__nodeExtendData.hidden;
 			}
-			Lib.__invalidateSerializationCache(o);
+			Lib.__savePrefab(reference, '___tmp', undefined, false);
+			const notReference = Lib.loadPrefab('___tmp');
+			notReference.name = reference.name;
+
+			reference.parent.addChildAt(notReference, reference.parent.children.indexOf(reference));
+			reference.remove();
+			game.editor.ui.sceneTree.selectInTree(notReference);
+			Lib.__invalidateSerializationCache(notReference);
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(false);
 		},

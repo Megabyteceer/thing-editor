@@ -858,7 +858,7 @@ export default class Lib
 		return fs.saveAsset(name, AssetType.SCENE, sceneData);
 	}
 
-	static __savePrefab(object: Container, name: string, libName?: string) {
+	static __savePrefab(object: Container, name: string, libName?: string, saveFile = true) {
 		invalidatePrefabDefaults();
 		assert(game.__EDITOR_mode, 'attempt to save prefab in running mode: ' + name);
 		assert(typeof name === 'string', 'Prefab name expected.');
@@ -875,7 +875,9 @@ export default class Lib
 		prefabData.p.___prefabPivot = PrefabEditor.pivot;
 		game.editor.disableFieldsCache = false;
 		prefabs[name] = prefabData;
-		fs.saveAsset(name, AssetType.PREFAB, prefabData, libName);
+		if (saveFile) {
+			fs.saveAsset(name, AssetType.PREFAB, prefabData, libName);
+		}
 		object.name = tmpName;
 	}
 
