@@ -495,7 +495,7 @@ class Editor {
 
 			const recentProjects = this.getRecentProjects().filter(p => p.dir !== projectDesc.dir);
 			recentProjects.unshift({icon: projectDesc.icon, title: projectDesc.title, dir: projectDesc.dir});
-			if (recentProjects.length > 5) {
+			if (recentProjects.length > 10) {
 				recentProjects.pop();
 			}
 			this.settings.setItem('recent-projects', recentProjects);
