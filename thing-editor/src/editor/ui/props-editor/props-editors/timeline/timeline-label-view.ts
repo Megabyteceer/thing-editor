@@ -9,6 +9,7 @@ import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import type { TimelineLabelData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
+import LabelsLogger from '../../../labels-logger';
 
 let labelNamesProps = {
 	className: 'selectable-text',
@@ -123,10 +124,10 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 			if (nameToCheck === allowedDuplicateName) {
 				return;
 			}
-			if (existingLabelsNames.indexOf(nameToCheck) >= 0) {
+			if (existingLabelsNames.includes(nameToCheck)) {
 				return 'Label with that name already exists.';
 			}
-		});
+		}, false, false, Array.from(LabelsLogger.allLabels));
 	}
 
 	onDoubleClick(ev: PointerEvent) { //rename label by double click

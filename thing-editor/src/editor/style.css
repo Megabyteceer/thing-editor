@@ -359,22 +359,22 @@ textarea:focus-visible {
 	background: #000;
 }
 
-
-
 .modal-spinner-progress {
 	margin: auto;
 	margin-top: 190px;
 	border: 5px solid #223344;
-	width: 260px;
-	height: 20px;
-	background: rgba(0, 0, 0, 0.3);
+	width: 360px;
+	height: 50px;
+	background: rgba(0, 0, 0, 0.8);
 	overflow: hidden;
 	border-radius: 35px;
 	text-align: center;
+	line-height: 0;
 }
+
 .modal-spinner-progress div {
-	margin-bottom: -19px;
-	height: 20px;
+	margin-bottom: -25px;
+	height: 50px;
 	background-color: #002c23;
 }
 
@@ -1037,6 +1037,17 @@ input[disabled] {
 	border-left: 3px dotted #676d12;
 }
 
+.selected-text {
+	background-color: rgb(102, 66, 0);
+}
+
+.prompt-variant-item {
+	color: #ababab;
+    text-decoration: underline;
+    margin: 10px;
+    padding: 0;
+}
+
 .props-header {
 	display: flex;
 	height: 33px;
@@ -1561,12 +1572,24 @@ input[disabled] {
 	height: 100%;
 }
 
+.labels-log-time {
+    font-size: 70%;
+    color: #505050;
+    background: #181818;
+    padding: 3px 15px;
+    border-radius: 10px;
+}
+
 .labels-log-item {
 	cursor: pointer;
 	display: flex;
     align-items: center;
     justify-content: space-between;
 	padding: 3px 10px;
+}
+
+.labels-log-item-selected {
+	background-color: #362a00;
 }
 
 .labels-log-item:hover {

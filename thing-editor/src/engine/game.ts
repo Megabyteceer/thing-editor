@@ -124,6 +124,8 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 	mouse: Mouse = new Point() as any as Mouse;
 
+	frameSeed = 0; // 99999
+
 	/// #if EDITOR
 	__mouse_EDITOR: Mouse = new Point() as any as Mouse;
 	__mouse_uncropped: Mouse = new Point() as any as Mouse;
@@ -675,6 +677,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #endif
 
 		/// #if EDITOR
+		EDITOR_FLAGS.__touchTime = (game.pixiApp.renderer as any).textureGC.count as number;
 		EDITOR_FLAGS.updateInProgress = true;
 		/// #endif
 
@@ -739,6 +742,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		if (game._loadingErrorIsDisplayed) {
 			return;
 		}
+		this.frameSeed = Math.floor(Math.random() * 0x80000000);
 
 		/// #if EDITOR
 		this.__time++;
@@ -1150,7 +1154,11 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 		let e = document.createElement('div');// eslint-disable-line no-unreachable
 
-		e.innerHTML = ERROR_HTML.replace('$TITLE$', game.projectDesc.title);
+		e.innerHTML = ERROR_HTML.replace('$TITLE$', game.projectDesc.title
+		/// #if DEBUG
+			+ '<br>' + (url || '').replace(/\n/gm, '<br>')
+		/// #endif
+		);
 		document.body.appendChild(e);
 		document.addEventListener('click', () => {
 			game._reloadGame();

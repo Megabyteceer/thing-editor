@@ -40,7 +40,7 @@ const findMenuItemForHotkey = (hotkey: Hotkey): ContextMenuItem | undefined => {
 	}
 
 	for (let item of MAIN_MENU) {
-		let ret = findItemForHotkey(hotkey, [item.items]);
+		let ret = findItemForHotkey(hotkey, [item.items], window.document.querySelector('#viewport') as HTMLDivElement);
 		if (ret) {
 			return ret;
 		}

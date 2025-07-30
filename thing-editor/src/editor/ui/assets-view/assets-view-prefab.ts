@@ -133,7 +133,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		{
 			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
 			key: file.assetName,
-			onClick: (ev: PointerEvent) => {
+			onMouseDown: (ev: PointerEvent) => {
 				if (PrefabEditor.currentPrefabName !== file.assetName && !editorUtils.isInModal(ev.target)) {
 
 					if (ev.altKey) {

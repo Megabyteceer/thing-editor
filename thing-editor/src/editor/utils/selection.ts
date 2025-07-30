@@ -8,6 +8,7 @@ import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import getParentWhichHideChildren from 'thing-editor/src/editor/utils/get-parent-with-hidden-children';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import game from 'thing-editor/src/engine/game';
+import LabelsLogger from '../ui/labels-logger';
 
 const selectionFilter = new OutlineFilter(3, 0xffff00);
 selectionFilter.padding = 3;
@@ -118,6 +119,7 @@ export default class Selection extends Array<Container> {
 		if (!IS_SELECTION_LOADING_TIME) {
 			game.editor.history.scheduleSelectionSave();
 		}
+		LabelsLogger.refresh();
 	}
 
 	remove(o: Container) {
@@ -136,6 +138,7 @@ export default class Selection extends Array<Container> {
 		if (o.__onUnselect) {
 			o.__onUnselect();
 		}
+		LabelsLogger.refresh();
 	}
 
 	saveSelection(): SelectionData {

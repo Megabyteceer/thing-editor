@@ -50,6 +50,11 @@ const applyTextTransform = (value: string, textTransform: TextTransform) => {
 	assert(false, `Invalid "textTransform" value for text (${textTransform})`);
 };
 
+/// #if EDITOR
+assert(!Text.__touchedFonts, 'refactoring is required');
+Text.__touchedFonts = new Map();
+/// #endif
+
 Object.defineProperties(Text.prototype, {
 	translatableText: {
 		get: function (this: Text) {
@@ -338,6 +343,13 @@ let _original_onTextureUpdate = (Text.prototype as any)._onTextureUpdate;
 	checkAlignBlur(this);
 	_original_onTextureUpdate.call(this);
 	this.recalculateTextSize(); // recalculate max width
+
+	/// #if EDITOR
+	if (this.style?.fontFamily) {
+		Text.__touchedFonts.set(this.style.fontFamily, EDITOR_FLAGS.__touchTime);
+	}
+	/// #endif
+
 };
 
 Text.prototype.init = function () {

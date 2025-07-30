@@ -20,6 +20,7 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import RemoveHolder from 'thing-editor/src/engine/utils/remove-holder';
+import roundUpPoint from '../editor/utils/round-up-point';
 import Sound from './utils/sound';
 
 let classes: GameClasses;
@@ -456,7 +457,7 @@ export default class Lib
 					}, 1);
 				}
 			}
-
+			prefabs[replacedPrefabName || src.r!].__lastTouch = EDITOR_FLAGS.__touchTime;
 			ret = Lib._deserializeObject(prefabs[replacedPrefabName || src.r!]);
 			Object.assign(ret, src.p);
 
@@ -539,6 +540,7 @@ export default class Lib
 		/// #if EDITOR
 		deserializationDeepness--;
 		if (deserializationDeepness === 0) {
+			src.__lastTouch = EDITOR_FLAGS.__touchTime;
 			processAfterDeserialization(ret);
 			ret.forAllChildren(processAfterDeserialization);
 		}
@@ -738,6 +740,7 @@ export default class Lib
 	static __serializeObject(o: Container): SerializedObject {
 
 		editorUtils.exitPreviewMode(o);
+		roundUpPoint(o);
 		if (o.__beforeSerialization) {
 			o.__beforeSerialization();
 		}

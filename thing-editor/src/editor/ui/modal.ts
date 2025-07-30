@@ -148,8 +148,8 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		);
 	}
 
-	showPrompt(title: ComponentChild, defaultText?: string, filter?: (val: string) => string, accept?: (val: string) => string | undefined, noEasyClose?: boolean, multiline?: boolean):Promise<string | undefined> {
-		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline }), title, noEasyClose);
+	showPrompt(title: ComponentChild, defaultText?: string, filter?: (val: string) => string, accept?: (val: string) => string | undefined, noEasyClose?: boolean, multiline?: boolean, variants?: string[]):Promise<string | undefined> {
+		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline, variants }), title, noEasyClose);
 	}
 
 	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField = false, activeValue?: string, doNotGroup = false, canCreate?: string) {
@@ -208,6 +208,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	hideSpinner() {
 		spinnerProgress = -1;
 		spinnerShowCounter--;
+		assert(spinnerShowCounter >= 0, 'hideSpinner() invoked without showSpinner()');
 		if (spinnerShowCounter === 0) {
 			window.setTimeout(() => {
 				if (game.stage) {

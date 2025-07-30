@@ -147,11 +147,11 @@ patch(
 	'node_modules/@pixi/text/lib/Text.d.ts',
 	'export declare class Text extends Sprite {',
 	`
-	setAlign(align:TextStyleAlign):void;
+	setAlign(align:import('pixi.js').TextStyleAlign):void;
 	translatableText: string | null;
 	textTransform: number;
 	maxWidth: number;
-
+	static __touchedFonts:Map<string, number>;
 	`);
 
 patch(

@@ -247,7 +247,6 @@ export default class ClassesLoader {
 			if (!oneClassNameFixed) {
 				game.editor.ui.status.warn('class name fixing and __className field is not necessary anymore.');
 			}
-			fs.removeSubAsset('src/__beforeprojectopen', AssetType.CLASS);
 			return classes;
 		});
 	}

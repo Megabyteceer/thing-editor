@@ -258,7 +258,6 @@ class Editor {
 		this.ui.modal.hideSpinner();
 	}
 
-
 	onEditorRenderResize() {
 		this.refreshTreeViewAndPropertyEditor();
 		this.ui.viewport.forceUpdate();
@@ -496,7 +495,7 @@ class Editor {
 
 			const recentProjects = this.getRecentProjects().filter(p => p.dir !== projectDesc.dir);
 			recentProjects.unshift({icon: projectDesc.icon, title: projectDesc.title, dir: projectDesc.dir});
-			if (recentProjects.length > 5) {
+			if (recentProjects.length > 10) {
 				recentProjects.pop();
 			}
 			this.settings.setItem('recent-projects', recentProjects);
@@ -871,6 +870,26 @@ class Editor {
 		}
 	}
 
+	showFilteredAssetsList(title: ComponentChild, filterCallback?: (f: FileDesc) => boolean, onItemSelect?: (assetName: string) => void, noEasyClose = false) {
+		const id = 'assets-list-' + title;
+		this.ui.modal.showModal(h(AssetsView, {
+			id,
+			onItemSelect,
+			content: undefined,
+			helpId: 'ChooseId',
+			x: 0,
+			minW: 400,
+			minH: 200,
+			y: 0,
+			w: 50,
+			h: 50,
+			key: id,
+			title,
+			filter: {/*project: true*/},
+			filterCallback
+		}), undefined, 	noEasyClose);
+	}
+
 	async chooseAsset(type: AssetType, title: ComponentChild, currentValue?: string, onItemPreview?: (assetName: string) => void, filterCallback?: (f: FileDesc) => boolean, idSuffix = ''): Promise<string | null> {
 		const id = type + '_choose_asset_list_popup' + idSuffix;
 		const chosen: string = await this.ui.modal.showModal(h(AssetsView, {
@@ -908,6 +927,20 @@ class Editor {
 	/** @deprecated use 'editorEvents.on' global object instead.*/
 	addEventListener() {
 		assert(false, 'use \'editorEvents.on\' global object instead');
+	}
+
+	previewAsset(file:FileDesc) {
+		switch (file.assetType) {
+		case AssetType.PREFAB:
+			PrefabEditor.editPrefab(file.assetName);
+			break;
+		case AssetType.SCENE:
+			game.editor.openScene(file.assetName);
+			break;
+		default:
+			fs.showFile(file.fileName);
+
+		}
 	}
 
 	async reloadAssetsAndClasses() {

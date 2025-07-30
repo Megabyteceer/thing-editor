@@ -519,6 +519,7 @@ async function __loadSoundOverrides() {
 let showSndDebuggerTimeOut = 0;
 function showSndDebugger() {
 	if (!showSndDebuggerTimeOut) {
+		sndDebuggerShowed = true;
 		showSndDebuggerTimeOut = window.setTimeout(showSndDebuggerInner, 0);
 	}
 }
@@ -699,6 +700,9 @@ function renderSoundsPanel() {
 
 async function showSndDebuggerInner() {
 	showSndDebuggerTimeOut = 0;
+	if (!sndDebuggerShowed) {
+		return;
+	}
 	/// #if EDITOR
 	//return;
 	/// #endif
@@ -712,7 +716,6 @@ async function showSndDebuggerInner() {
 		await __loadSoundOverrides();
 	}
 
-	sndDebuggerShowed = true; // eslint-disable-line no-unreachable
 	game.settings.setItem('_sound-debugger-shown', true);
 	render(renderSoundsPanel(), sndDebugger);
 	sndDebugger.style.display = 'block';

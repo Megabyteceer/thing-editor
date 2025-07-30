@@ -1,4 +1,5 @@
 
+import type { Renderer } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -11,6 +12,7 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 
 /// #if EDITOR
 import R from 'thing-editor/src/editor/preact-fabrics';
+import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import isEventFocusOnInputElement from 'thing-editor/src/editor/utils/is-event-focus-on-input-element';
 /// #endif
 
@@ -127,6 +129,29 @@ export default class Button extends DSprite {
 		}
 	}
 
+	/// #if EDITOR
+	render(renderer: Renderer): void {
+		super.render(renderer);
+		if (this.isCanBePressed && this.worldAlpha > 0.1) {
+			if (this.hoverImage) {
+				Lib.getTexture(this.hoverImage).baseTexture.touched = EDITOR_FLAGS.__touchTime;
+			}
+			if (this.pressImage) {
+				Lib.getTexture(this.pressImage).baseTexture.touched = EDITOR_FLAGS.__touchTime;
+			}
+			if (this.disabledImage) {
+				Lib.getTexture(this.disabledImage).baseTexture.touched = EDITOR_FLAGS.__touchTime;
+			}
+			if (this.sndOver) {
+				Lib.getSound(this.sndOver).__lastTouch = EDITOR_FLAGS.__touchTime;
+			}
+			if (this.sndClick) {
+				Lib.getSound(this.sndClick).__lastTouch = EDITOR_FLAGS.__touchTime;
+			}
+		}
+	}
+	/// #endif
+
 	disable() {
 		if (this.initialImage) {
 			this.onUp();
@@ -216,22 +241,24 @@ export default class Button extends DSprite {
 		latestClickTime = game.time;
 	}
 
+	_isNotPausable() {
+		if (game.classes.UnPausableContainer) {
+			return this.findParentByType(game.classes.UnPausableContainer);
+		}
+	}
+
 	onDown(ev: PointerEvent | null, source = 'pointerdown') {
 
-		/// #if DEBUG
-		if (this.onClick.some(s => s.startsWith('__'))) {
-			latestClickTime = -1;
-		}
-		/// #endif
-
-
 		Sound._unlockSound();
-		if (game.time === latestClickTime && !this.name?.startsWith('_')
-			/// #if EDITOR
-			&& !game.__paused
-		/// #endif
+		if (game.time === latestClickTime || game.__paused
 		) {
-			return;
+			/// #if EDITOR
+			if (!this._isNotPausable()) {
+			/// #endif
+				return;
+			/// #if EDITOR
+			}
+			/// #endif
 		}
 		if (ev) {
 			if (ev.buttons !== 1) {
@@ -239,7 +266,7 @@ export default class Button extends DSprite {
 			}
 			mouseHandlerGlobal(ev);
 		}
-		if (this.isCanBePressed && ((Math.abs(latestClickTime - game.time) > 1) || this.name?.startsWith('_'))) {
+		if (this.isCanBePressed && ((Math.abs(latestClickTime - game.time) > 1) || this._isNotPausable())) {
 			if (Button.downedButton !== this) {
 				if (Button.downedButton) {
 					Button.downedButton.onUp();

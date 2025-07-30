@@ -14,7 +14,7 @@ const isHotkeyHit = (ev: KeyboardEvent | Hotkey, element: HTMLElement, hotkey?: 
 	}
 
 	if (((hotkey.ctrlKey && (hotkey.key === 'c' || hotkey.key === 'v')) && (window.getSelection() || '').toString()) ||
-		((hotkey.key !== 'F1') && game.editor.ui.modal.isUIBlockedByModal(element)) // F1 - help hotkey works always
+		((hotkey.key !== 'F1' && hotkey.key !== 'F12') && game.editor.ui.modal.isUIBlockedByModal(element)) // F1, F12 - hotkey works always
 	) {
 		return;
 	}

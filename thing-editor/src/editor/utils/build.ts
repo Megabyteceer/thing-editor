@@ -76,6 +76,7 @@ let assetsToCopy: { from: string; to: string }[] = [];
 
 export default class Build {
 	static async build(debug: boolean) {
+		fs.removeSubAsset('src/__beforeprojectopen', AssetType.CLASS);
 		game.editor.ui.modal.showSpinner();
 		fs.log(debug ? 'build debug' : 'build release');
 

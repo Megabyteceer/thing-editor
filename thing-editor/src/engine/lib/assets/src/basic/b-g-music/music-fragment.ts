@@ -1,6 +1,6 @@
-import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import Lib from 'thing-editor/src/engine/lib';
 import type BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
 import Sound from 'thing-editor/src/engine/utils/sound';
@@ -15,10 +15,6 @@ const allFragments: KeyedMap<MusicFragment> = {};
 
 const allActiveFragments: KeyedMap<MusicFragment> = {};
 
-/// #if EDITOR
-let __ownersValidationId = 0;
-/// #endif
-
 
 window.setInterval(() => {
 	for (let h in allActiveFragments) {
@@ -31,13 +27,11 @@ export default class MusicFragment {
 
 	intro: string | null;
 	loop: string | null;
-	musicFragmentHash: string | undefined;
+	musicFragmentHash!: string;
 	_currentFragment!: HowlSound | undefined;
 	_fadeToVol!: number;
 	_fadeSpeed!: number;
-	owner?: BgMusic;
-
-	__fragmentOwnerId = 0;
+	owners: Set<BgMusic> = new Set();
 
 	introPos = 0;
 	loopPos = 0;
@@ -88,8 +82,8 @@ export default class MusicFragment {
 	static onMusicRemove(bgMusic: BgMusic) {
 		for (let h in allActiveFragments) {
 			let f = allActiveFragments[h];
-			if (f.owner === bgMusic) {
-				clearFragmentsOwner(f);
+			if (f.owners.has(bgMusic)) {
+				clearFragmentsOwner(f, bgMusic);
 			}
 		}
 	}
@@ -142,12 +136,10 @@ export default class MusicFragment {
 				this._currentFragment.loop(true);
 			}
 		}
-		if (this.owner) {
-			/// #if EDITOR
-			assert(this.owner.__nodeExtendData.__fragmentOwnerId === this.__fragmentOwnerId, 'fragment refers to outdated owner.', 90001);
-			/// #endif
-			this.owner._onIntroFinish();
-		}
+
+		this.owners.forEach((bgMusic) => {
+			bgMusic._onIntroFinish();
+		});
 	}
 
 	_playMusicFragment(s: string | null, pos = 0, startVol = MIN_VOL_THRESHOLD) {
@@ -166,8 +158,13 @@ export default class MusicFragment {
 
 				this._currentFragment = snd;
 				assert((snd as any)._sounds.length === 1, 'Music started in more that one instance.');
-				allActiveFragments[this.musicFragmentHash!] = this;
-			} catch (_er) { }
+				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
+				allActiveFragments[this.musicFragmentHash] = this;
+			} catch (_er) {
+				/// #if EDITOR
+				debugger;
+				/// #endif
+			}
 		}
 	}
 
@@ -181,8 +178,9 @@ export default class MusicFragment {
 			}
 			this._currentFragment.stop();
 
+			assert(allActiveFragments[this.musicFragmentHash] === this, 'allActiveFragments map corrupted.');
 			this._currentFragment = undefined;
-			delete allActiveFragments[this.musicFragmentHash!];
+			delete allActiveFragments[this.musicFragmentHash];
 		}
 	}
 
@@ -194,27 +192,25 @@ export default class MusicFragment {
 
 	static setPlayingBGMusics(bgMusics: BgMusic[]) {
 		let hashesToPlay: KeyedMap<boolean> = {};
-		for (let f of bgMusics) {
+		for (let bgMusic of bgMusics) {
 			let fragment: MusicFragment;
 
-			hashesToPlay[f.musicFragmentHash] = true;
+			hashesToPlay[bgMusic.musicFragmentHash] = true;
 
-			if (!allFragments.hasOwnProperty(f.musicFragmentHash)) {
-				fragment = new MusicFragment(f);
-				allFragments[f.musicFragmentHash] = fragment;
+			if (!allFragments.hasOwnProperty(bgMusic.musicFragmentHash)) {
+				fragment = new MusicFragment(bgMusic);
+				allFragments[bgMusic.musicFragmentHash] = fragment;
 			} else {
-				fragment = allFragments[f.musicFragmentHash];
+				fragment = allFragments[bgMusic.musicFragmentHash];
+				assert(fragment.musicFragmentHash === bgMusic.musicFragmentHash, 'allFragments map corrupted');
 			}
 
-			fragment._fadeToVol = f._cachedTargetVol;
-			fragment._fadeSpeed = f._getFade(fragment._fadeToVol < MIN_VOL_THRESHOLD);
-			fragment.owner = f;
-			/// #if EDITOR
-			f.__nodeExtendData.__fragmentOwnerId = __ownersValidationId;
-			fragment.__fragmentOwnerId = __ownersValidationId;
-			__ownersValidationId++;
-			/// #endif
-			if (!allActiveFragments.hasOwnProperty(f.musicFragmentHash)) {
+
+			fragment._fadeToVol = bgMusic._cachedTargetVol;
+			fragment._fadeSpeed = bgMusic._getFade(fragment._fadeToVol < MIN_VOL_THRESHOLD);
+			fragment.owners.add(bgMusic);
+
+			if (!allActiveFragments.hasOwnProperty(bgMusic.musicFragmentHash)) {
 				fragment.startPlay();
 			}
 			assert(fragment._currentFragment || (!fragment.loop && fragment.isLoopPos), 'wrong music-fragment position');
@@ -223,8 +219,10 @@ export default class MusicFragment {
 		for (let h in allActiveFragments) {
 			if (!hashesToPlay.hasOwnProperty(h)) {
 				allActiveFragments[h]._fadeToVol = 0;
-				if (allActiveFragments[h].owner) {
-					clearFragmentsOwner(allActiveFragments[h]);
+				if (allActiveFragments[h].owners.size) {
+					allActiveFragments[h].owners.forEach((bgMusic) => {
+						clearFragmentsOwner(allActiveFragments[h], bgMusic);
+					});
 				}
 			}
 		}
@@ -269,8 +267,14 @@ export default class MusicFragment {
 }
 
 
-function clearFragmentsOwner(fragment: MusicFragment) {
-	fragment._fadeSpeed = fragment.owner!._getFade(true);
-	fragment.owner!.customFade = undefined;
-	fragment.owner = undefined;
+function clearFragmentsOwner(fragment: MusicFragment, ownerBgMusic:BgMusic) {
+	ownerBgMusic.customFade = undefined;
+	fragment._fadeSpeed = ownerBgMusic._getFade(true);
+
+	fragment.owners.delete(ownerBgMusic);
+	if (!fragment.owners.size) {
+		if (fragment._currentFragment) {
+			fragment._currentFragment.off('end', fragment.onIntroEnd);
+		}
+	}
 }

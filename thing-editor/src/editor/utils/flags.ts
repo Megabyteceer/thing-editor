@@ -1,6 +1,5 @@
 import type { Container } from 'pixi.js';
 import assert from 'thing-editor/src/engine/debug/assert';
-import game from 'thing-editor/src/engine/game';
 
 const EDITOR_BACKUP_PREFIX = '___editor_backup_';
 
@@ -19,6 +18,8 @@ class EDITOR_FLAGS {
 	static isolationEnabled = false;
 
 	static isTryTime = 0;
+
+	static __touchTime = 0;
 
 	static isStoppingTime = false;
 
@@ -49,6 +50,6 @@ const detectCachedErrorsStopping = () => {
 	} catch (_er) {
 	}
 	if (((Date.now() - tryTime) > 1000)) {
-		game.editor.ui.status.warn('Looks like you stopped on caught exception, probably you need to disable \'stop on caught exception\' option in your debugger.', 30014);
+		alert('Looks like you stopped on caught exception, probably you need to disable \'stop on caught exception\' option in your debugger.');
 	}
 };

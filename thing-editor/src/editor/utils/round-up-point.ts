@@ -1,12 +1,16 @@
 
 const roundUpPoint = (p:{x: number; y: number}) =>{
-	if (Math.abs(p.x - Math.round(p.x)) < 0.00001) {
-		p.x = Math.round(p.x);
-	}
-	if (Math.abs(p.y - Math.round(p.y)) < 0.00001) {
-		p.y = Math.round(p.y);
-	}
+	p.x = roundUpNumber(p.x);
+	p.y = roundUpNumber(p.y);
 	return p;
 };
 
+const roundUpNumber = (n:number) =>{
+	if (Math.abs(n - Math.round(n)) < 0.00000001) {
+		return Math.round(n);
+	}
+	return n;
+};
+
+export { roundUpNumber };
 export default roundUpPoint;

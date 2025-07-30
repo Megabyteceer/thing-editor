@@ -12,10 +12,18 @@ import Spine, { spineAnimationsSelectList, type SpineSequence, type SpineSequenc
 import { getCallbackIcon } from 'thing-editor/src/engine/utils/get-value-by-path';
 import ComponentDebounced from '../../../component-debounced';
 import showContextMenu from '../../../context-menu';
+import LabelsLogger from '../../../labels-logger';
 import CallbackEditor from '../call-back-editor';
 import NumberEditor from '../number-editor';
 import SelectEditor from '../select-editor';
 import { getWindowElement } from '../timeline/timeline';
+
+const labelItemNameProps = {
+	className: 'selectable-text class-name',
+	title: 'Ctrl+click to copy name',
+	onMouseDown: copyTextByClick
+};
+
 
 const BODY_MARGIN = 10;
 const FRAME_WIDTH = 3;
@@ -159,7 +167,7 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 	askForSequenceName(defaultText = '') {
  		return game.editor.ui.modal.showPrompt('Enter sequence label', defaultText, undefined, (val:string) => {
 			return this.sequences.find(s => s.n === val) ? 'Sequence with label "' + val + '" already exists' : '';
-		});
+		}, false, false, Array.from(LabelsLogger.allLabels));
 	}
 
 	onAutoSelect(selectPath: string[]) {
@@ -233,15 +241,19 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 
 	renderSequenceLabel(sequence: SpineSequence) {
 		const isActive = sequence.n === this.activeSequence.n;
-		const className = isActive ? 'spine-sequence-header spine-sequence-header-active' : 'spine-sequence-header clickable';
+		const isPlaying = !game.__EDITOR_mode && (sequence.s.includes(this.spine.playingSequenceItem!));
+		let className = isActive ? 'spine-sequence-header spine-sequence-header-active' : 'spine-sequence-header clickable';
+		if (isPlaying) {
+			className += ' spine-sequence-header-playing';
+		}
+
 		return R.div({
 			className,
 			title: 'Ctrl+click to copy label`s name',
-			onClick: () => {
+			onMouseDown: () => {
 				this.setActiveSequence(sequence.n);
 				this.refresh();
 			},
-			onMouseDown: copyTextByClick,
 			onContextMenu: (ev: PointerEvent) => {
 				sp(ev);
 				showContextMenu([
@@ -265,7 +277,7 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 					}
 				], ev);
 			},
-		}, sequence.n
+		}, R.span(labelItemNameProps, sequence.n)
 		);
 	}
 
