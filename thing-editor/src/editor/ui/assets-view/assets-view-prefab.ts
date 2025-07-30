@@ -3,7 +3,7 @@ import fs from 'thing-editor/src/editor/fs';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import AssetsView, { addSharedAssetContextMenu } from 'thing-editor/src/editor/ui/assets-view/assets-view';
 import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
-import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
+import copyTextByClick, { isEventBlockedByTextCopy } from 'thing-editor/src/editor/utils/copy-text-by-click';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import { getSerializedObjectClass, regeneratePrefabsTypings } from 'thing-editor/src/editor/utils/generate-editor-typings';
 import libInfo from 'thing-editor/src/editor/utils/lib-info';
@@ -133,7 +133,10 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		{
 			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
 			key: file.assetName,
-			onMouseDown: (ev: PointerEvent) => {
+			onClick: (ev: PointerEvent) => {
+				if (isEventBlockedByTextCopy(ev)) {
+					return;
+				}
 				if (PrefabEditor.currentPrefabName !== file.assetName && !editorUtils.isInModal(ev.target)) {
 
 					if (ev.altKey) {
