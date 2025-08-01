@@ -1274,8 +1274,8 @@ const __checkClassesForEditorOnlyMethods = (classes: GameClasses) => {
 		/// #endif
 		constructRecursive(ret);
 		/// #if EDITOR
-		ret.__nodeExtendData.__deserializedFromPrefab = name;
 	}
+	ret.__nodeExtendData.__deserializedFromPrefab = name;
 	/// #endif
 	return ret;
 };

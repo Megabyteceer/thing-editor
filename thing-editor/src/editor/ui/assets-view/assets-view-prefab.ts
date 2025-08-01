@@ -203,16 +203,25 @@ function findNextOfThisType(name:string, direction: 1 | -1, findAll: boolean) {
 	if (findAll) {
 		let a = [] as Container[];
 
-		game.stage.forAllChildren((o)=> {
+		game.currentContainer.forAllChildren((o)=> {
 			if (o.__nodeExtendData.__deserializedFromPrefab === name) {
 				a.push(o);
 			}
 		});
+		if (game.currentContainer.__nodeExtendData.__deserializedFromPrefab === name) {
+			a.push(game.currentContainer);
+		}
+
 		game.editor.selection.clearSelection();
 		a = a.filter(o => !o.__nodeExtendData.isolate);
 
+		const currentPrefab = PrefabEditor.currentPrefabName;
 		for (let w of a) {
 			game.editor.ui.sceneTree.selectInTree(w, true);
+			if (currentPrefab !== PrefabEditor.currentPrefabName) {
+				findNextOfThisType(name, direction, findAll);
+				break;
+			}
 		}
 	} else {
 		game.editor.ui.sceneTree.findNext((o) => {
