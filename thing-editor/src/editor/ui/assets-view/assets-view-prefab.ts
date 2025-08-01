@@ -1,3 +1,4 @@
+import type { Container } from 'pixi.js';
 import type { FileDescPrefab } from 'thing-editor/src/editor/fs';
 import fs from 'thing-editor/src/editor/fs';
 import R from 'thing-editor/src/editor/preact-fabrics';
@@ -11,6 +12,12 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game, { DEFAULT_FADER_NAME } from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+
+const toolButtonsProps = {
+	className: 'asset-item-tool-buttons',
+	onDblClick: sp,
+	onClick: sp
+};
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -175,9 +182,41 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		libInfo(file),
 		R.classIcon(Class),
 		R.span(assetsItemNameProps, file.assetName),
+		R.span(toolButtonsProps,
+			R.btn('<', (ev) => {
+				sp(ev);
+				findNextOfThisType(file.assetName, -1, ev.ctrlKey);
+			}, 'Find previous (hold Ctrl to find all)'),
+			R.btn('>', (ev) => {
+				sp(ev);
+				findNextOfThisType(file.assetName, 1, ev.ctrlKey);
+			}, 'Find next (hold Ctrl to find all)')
+		),
 		desc
 	);
 };
 const descriptionProps = { className: 'tree-desc' };
 
 export default assetItemRendererPrefab;
+
+function findNextOfThisType(name:string, direction: 1 | -1, findAll: boolean) {
+	if (findAll) {
+		let a = [] as Container[];
+
+		game.stage.forAllChildren((o)=> {
+			if (o.__nodeExtendData.__deserializedFromPrefab === name) {
+				a.push(o);
+			}
+		});
+		game.editor.selection.clearSelection();
+		a = a.filter(o => !o.__nodeExtendData.isolate);
+
+		for (let w of a) {
+			game.editor.ui.sceneTree.selectInTree(w, true);
+		}
+	} else {
+		game.editor.ui.sceneTree.findNext((o) => {
+			return !o.__nodeExtendData.isolate && o.__nodeExtendData.__deserializedFromPrefab === name;
+		}, direction);
+	}
+}

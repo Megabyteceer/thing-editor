@@ -87,10 +87,8 @@ export default class Selection extends Array<Container> {
 
 				if (prefabName) {
 					popupShown = true;
-					game.editor.ui.modal.showEditorQuestion('Object is in inside prefab', 'Do you want to go to prefab \'' + prefabName + '\', containing this object?', () => {
-						PrefabEditor.editPrefab(prefabName);
-						game.editor.selection.loadSelection([nodePath]);
-					});
+					PrefabEditor.editPrefab(prefabName, true);
+					game.editor.selection.loadSelection([nodePath]);
 				}
 			}
 			if (!popupShown) {

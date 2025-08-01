@@ -457,8 +457,10 @@ export default class Lib
 					}, 1);
 				}
 			}
-			prefabs[replacedPrefabName || src.r!].__lastTouch = EDITOR_FLAGS.__touchTime;
-			ret = Lib._deserializeObject(prefabs[replacedPrefabName || src.r!]);
+			const refName = replacedPrefabName || src.r!;
+			prefabs[refName].__lastTouch = EDITOR_FLAGS.__touchTime;
+			ret = Lib._deserializeObject(prefabs[refName]);
+			ret.__nodeExtendData.__deserializedFromPrefab = refName;
 			Object.assign(ret, src.p);
 
 			if (replacedPrefabName) {
@@ -1272,6 +1274,7 @@ const __checkClassesForEditorOnlyMethods = (classes: GameClasses) => {
 		/// #endif
 		constructRecursive(ret);
 		/// #if EDITOR
+		ret.__nodeExtendData.__deserializedFromPrefab = name;
 	}
 	/// #endif
 	return ret;
