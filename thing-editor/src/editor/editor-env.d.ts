@@ -104,10 +104,8 @@ interface NodeExtendData {
 
 	treeNodeView?: import('./ui/tree-view/tree-node').default;
 
+	/** defined in editor time only */
 	isPrefabReference?: string;
-
-	/** tree will display objects of this children */
-	childrenContainer?: import('pixi.js').Container;
 
 	constructorCalled?: boolean;
 
