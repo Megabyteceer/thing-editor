@@ -1,8 +1,8 @@
-import type { Container } from 'pixi.js';
+import type { Container, Rectangle } from 'pixi.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 
-export default async function exportAsPng(object: Container, width = 0, height = 0, cropAlphaThreshold = 1) {
+export default async function exportAsPng(object: Container, width = 0, height = 0, cropAlphaThreshold = 1, bounds?: Rectangle) {
 
 	if (object.width > 0 && object.height > 0) {
 		let tmpVisible = object.visible;
@@ -100,7 +100,7 @@ export default async function exportAsPng(object: Container, width = 0, height =
 
 		let b2 = c2.getLocalBounds();
 		c2.getLocalBounds = () => {
-			return b2;
+			return bounds || b2;
 		};
 
 		if (width > 0 && height > 0) {

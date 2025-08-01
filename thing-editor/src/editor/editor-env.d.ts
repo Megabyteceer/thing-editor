@@ -119,6 +119,8 @@ interface NodeExtendData {
 	unknownPrefab?: string;
 	unknownPrefabProps?: SerializedObjectProps;
 
+	__deserializedFromPrefab?: string;
+
 	component_in_previewMode?: boolean;
 
 	noSerialize?: boolean;
@@ -187,7 +189,7 @@ type SerializedObject = {
 };
 
 type Electron_ThingEditorServer = { // exposed from electron
-	fs: (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => FSCallback;
+	fs: (command: string, filename?: string | string[] | number, content?: string | boolean | ArrayBuffer, ...args: any[]) => FSCallback;
 	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => Promise<any>;
 	versions: KeyedObject;
 	onServerMessage: (_onServerMessage: (event: string, ...args: any[]) => void) => void;

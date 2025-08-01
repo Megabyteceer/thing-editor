@@ -151,7 +151,7 @@ const WHITE: FileDescImage = {
 	lib: null
 };
 
-const execFs = (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => {
+const execFs = (command: string, filename?: string | string[] | number, content?: string | boolean | ArrayBuffer, ...args: any[]) => {
 	const ret = electron_ThingEditorServer.fs(command, filename, content, ...args);
 	if (ret instanceof Error) {
 		game.editor.ui.modal.showFatalError('Main process error.', 99999, ret.message);
@@ -337,8 +337,8 @@ export default class fs {
 	}
 
 	/** returns new mTime */
-	static writeFile(fileName: string, data: string | Blob | KeyedObject, separator:string | null = '	'): number {
-		if (typeof data !== 'string' && !(data instanceof Blob)) {
+	static writeFile(fileName: string, data: string | ArrayBuffer | KeyedObject, separator:string | null = '	'): number {
+		if (typeof data !== 'string' && !(data instanceof ArrayBuffer)) {
 			data = JSON.stringify(data, fs.fieldsFilter, separator as string);
 		}
 		return execFs('fs/saveFile', fileName, data as string) as number;
