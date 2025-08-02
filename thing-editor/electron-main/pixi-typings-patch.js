@@ -232,7 +232,6 @@ module.exports = function () {
 	}
 	for (let patch of patches) {
 		if (!patch.done) {
-			debugger;
 			console.error('PIXI typings was not found: ' + patch.fileName);
 			if (mainWindow) {
 				dialog.showMessageBoxSync(mainWindow, 'PIXI typings was not found: ' + patch.fileName);

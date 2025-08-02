@@ -2,6 +2,7 @@ import type { ClassAttributes, Component, ComponentChild } from 'preact';
 import { h } from 'preact';
 import fs from 'thing-editor/src/editor/fs';
 import R from 'thing-editor/src/editor/preact-fabrics.js';
+import type { ChooseListItem } from 'thing-editor/src/editor/ui/choose-list';
 import ChooseList from 'thing-editor/src/editor/ui/choose-list';
 import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
 import Help from 'thing-editor/src/editor/ui/help';
@@ -160,7 +161,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline, variants }), title, noEasyClose);
 	}
 
-	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField = false, activeValue?: string, doNotGroup = false, onCancel?:() =>void) {
+	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField = false, activeValue?: string, doNotGroup = false, onCancel?:() =>void):Promise<ChooseListItem> {
 		return this.showModal(h(ChooseList, { list, noSearchField, activeValue, doNotGroup}), title, noEasyClose, false, onCancel);
 	}
 

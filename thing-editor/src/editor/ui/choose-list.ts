@@ -29,6 +29,8 @@ interface ChooseListItem {
 	name: ComponentChild;
 	noFilter?: boolean;
 	refusedBecause?: string;
+	value?: any;
+	[key: string]: any;
 }
 
 export type { ChooseListItem };

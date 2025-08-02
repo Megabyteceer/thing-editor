@@ -1114,7 +1114,7 @@ class Editor {
 			folders[0].name = R.b(null, R.space(), 'project');
 			const chosenItem = (folders.length === 1) ? folders[0] : await game.editor.ui.modal.showListChoose(title, folders, false, true, activeFolderName, true);
 			if (chosenItem) {
-				return chosenItem.pureName || chosenItem.name;
+				return chosenItem.pureName || chosenItem.name as string;
 			}
 		}
 	}
