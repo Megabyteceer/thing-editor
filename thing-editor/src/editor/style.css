@@ -1579,9 +1579,17 @@ input[disabled] {
 .labels-log-time {
     font-size: 70%;
     color: #505050;
-    background: #181818;
-    padding: 3px 15px;
-    border-radius: 10px;
+	width: 60px;
+    padding: 3px;
+}
+
+.labels-log-label {
+    flex-grow: 1;
+}
+
+#labels-logger .choose-list-header input,
+#labels-logger .choose-list-header .select-editor {
+	flex-grow: 1;
 }
 
 .labels-log-item {
@@ -1598,6 +1606,10 @@ input[disabled] {
 
 .labels-log-item:hover {
 	background-color: #333333;
+}
+
+.labels-log-item-selected:hover {
+	background-color: #443500;
 }
 
 .labels-log-item .scene-node-item {
