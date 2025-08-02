@@ -20,6 +20,7 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import RemoveHolder from 'thing-editor/src/engine/utils/remove-holder';
+import { editorEvents } from '../editor/utils/editor-events';
 import roundUpPoint from '../editor/utils/round-up-point';
 import Sound from './utils/sound';
 
@@ -289,7 +290,7 @@ export default class Lib
 					/// #if EDITOR
 				}
 				/// #endif
-				Lib._applyTextureSettings(name);
+				Lib._afterTextureLoaded(name);
 				game.loadingRemove(textureURL);
 			}).catch(() => {
 				if (attempt < 3 && !game._loadingErrorIsDisplayed) {
@@ -304,7 +305,7 @@ export default class Lib
 			});
 		} else {
 			textures[name] = textureURL;
-			Lib._applyTextureSettings(name);
+			Lib._afterTextureLoaded(name);
 		}
 	}
 
@@ -320,7 +321,7 @@ export default class Lib
 		return s.hasOwnProperty(name) ? (s[name] & mask) : 0;
 	}
 
-	static _applyTextureSettings(name: string) {
+	static _afterTextureLoaded(name: string) {
 		let baseTexture = textures[name].baseTexture;
 		switch (Lib._getTextureSettingsBits(name, 24)) {
 		case 0:
@@ -341,6 +342,7 @@ export default class Lib
 		if (!game.isCanvasMode) {
 			baseTexture.update();
 		}
+		editorEvents.emit('textureUpdated', name);
 	}
 
 	/// #if EDITOR
