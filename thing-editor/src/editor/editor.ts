@@ -1033,7 +1033,7 @@ class Editor {
 	copyToClipboard(text: string) {
 		navigator.clipboard.writeText(text).then(() => {
 			this.notify(R.span(null, R.icon('copy'), '"' + text + '"'));
-		});
+		}).catch(_er => {});
 	}
 
 	editSource(fileName: string, line?: string, char?: string, absolutePath = false) {

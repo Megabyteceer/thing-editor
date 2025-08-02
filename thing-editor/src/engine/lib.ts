@@ -1025,6 +1025,11 @@ const normalizeSerializedDataRecursive = (data: SerializedObject) => {
 			}
 		}
 	}
+	if (data.p.timeline) {
+		for (const f of data.p.timeline.f) {
+			data.p[f.n] = f.t[0].v;
+		}
+	}
 };
 
 const normalizeSerializedData = () => {

@@ -401,14 +401,9 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 	}
 
 	__afterSerialization(data: SerializedObject) {
-		const def = getPrefabDefaults(this);
 		if (data.p.timeline) { // remove animated props from object props
 			for (let f of data.p.timeline.f) {
-				if (def[f.n] !== f.t[0].v) {
-					data.p[f.n] = f.t[0].v;
-				} else {
-					delete data.p[f.n];
-				}
+				delete data.p[f.n];
 			}
 		}
 		if (this.__nodeExtendData.isPrefabReference) {
@@ -437,6 +432,11 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 	}
 
 	__afterDeserialization() {
+		if (this._timelineData) { // remove animated props from object props
+			for (let f of this._timelineData.f) {
+				(this as KeyedMap<any>)[f.n] = f.t[0].v;
+			}
+		}
 		if (game.__EDITOR_mode) {
 			if ((this.constructor !== MovieClip) && (!this._timelineData)) {
 				this.__initTimeline();

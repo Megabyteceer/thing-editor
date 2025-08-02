@@ -336,11 +336,17 @@
 	background-color: transparent;
 	color: #0c0;
 	outline: none !important;
+	top: -18px;
 }
 
 .timeline-label:hover {
 	z-index: 1;
 	text-decoration: underline;
+}
+
+.timeline-label-tip:hover {
+	z-index: 1;
+	text-decoration: none;
 }
 
 .timeline-label-pointer {
@@ -354,6 +360,7 @@
 
 .timeline-label-tip .timeline-label-pointer {
 	background: #0c0;
+	top: 11px;
 }
 
 .tip-icon {

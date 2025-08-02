@@ -135,7 +135,7 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		let label = this.props.label;
 		let name = label.___name;
 
-		TimelineLabelView.askForLabelName(this.props.labelsNamesList, 'Rename label', name, name).then((enteredName) => {
+		TimelineLabelView.askForLabelName(this.props.labelsNamesList, name.startsWith('__') ? 'Change comment' : 'Rename label (or start with __ to turn label to a comment)', name, name).then((enteredName) => {
 			if (enteredName && (name !== enteredName)) {
 				tl.l[enteredName] = label;
 				label.___name = enteredName;
@@ -156,7 +156,8 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 		let label = this.props.label;
 		let name = this.props.label.___name;
 
-		if (name.startsWith('__')) {
+		const isComment = name.startsWith('__');
+		if (isComment) {
 			className += ' timeline-label-tip';
 			name = name.substring(2).trimStart();
 		}
@@ -165,7 +166,7 @@ export default class TimelineLabelView extends Component<TimelineLabelViewProps,
 			className, id: 'timeline-label-' + name.replace('.', '-').replace('#', '-'), style: { left: label.t * this.props.owner.props.widthZoom },
 			onMouseDown: this.onLabelMouseDown,
 			onDblClick: this.onDoubleClick
-		}, R.div(labelStartMarkerProps), R.span(labelNamesProps, name)
+		}, R.div(labelStartMarkerProps), R.span(isComment ? undefined : labelNamesProps, name)
 		);
 	}
 }

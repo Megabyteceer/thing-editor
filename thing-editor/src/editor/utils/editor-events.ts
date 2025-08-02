@@ -13,6 +13,7 @@ type EditorEvents = {
 	gameWillBeInitialized: () => void;
 	firstSceneWillOpen: () => void;
 	assetsRefreshed: () => void;
+	textureUpdated: (textureName: string) => void;
 	soundPlay: (soundId: string, volume: number) => void;
 };
 
