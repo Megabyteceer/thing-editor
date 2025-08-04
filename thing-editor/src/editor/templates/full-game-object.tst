@@ -97,7 +97,7 @@ export default class NEW_CLASS_NAME extends BASE_CLASS_NAME {
 
 	}
 
-	static __validateObjectData(data:KeyedObject):SerializedDataValidationError {
+	static __validateObjectData(data:SerializedObjectProps):SerializedDataValidationError {
 
 	}
 	/// #endif

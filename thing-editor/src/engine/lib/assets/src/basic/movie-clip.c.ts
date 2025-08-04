@@ -14,6 +14,7 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Pool from 'thing-editor/src/engine/utils/pool';
 
 /// #if EDITOR
+import type { Container } from 'pixi.js';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import DataPathEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
@@ -364,6 +365,27 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 							}
 						}
 					}
+				}
+			}
+		}
+	}
+
+	static __validateObjectData(data:SerializedObjectProps):SerializedDataValidationError | undefined {
+		const timeline = data.timeline as TimelineData;
+		if (timeline?.f.length === 1) {
+			for (const f of timeline.f) {
+				let i = 0;
+				for (const k of f.t) {
+					if (k.a?.startsWith('this.gotoLabel,')) {
+						return {
+							message: '"this.gotoLabel,..." action can be replaced with keyframe`s loop=' + timeline.l[k.a.split(',')[1]],
+							findObjectCallback: (o:Container) => {
+								return (o as MovieClip)._timelineData?.f.length === 1 && (o as MovieClip)._timelineData.f[0].t.some(_k => k.t === _k.t && _k.a?.startsWith('this.gotoLabel,'));
+							},
+							fieldName: 'timeline,' + f.n + ',' + k.t
+						};
+					}
+					i++;
 				}
 			}
 		}
