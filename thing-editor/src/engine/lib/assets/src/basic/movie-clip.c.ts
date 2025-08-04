@@ -374,7 +374,6 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 		const timeline = data.timeline as TimelineData;
 		if (timeline?.f.length === 1) {
 			for (const f of timeline.f) {
-				let i = 0;
 				for (const k of f.t) {
 					if (k.a?.startsWith('this.gotoLabel,')) {
 						return {
@@ -385,7 +384,6 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 							fieldName: 'timeline,' + f.n + ',' + k.t
 						};
 					}
-					i++;
 				}
 			}
 		}
