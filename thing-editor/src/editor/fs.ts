@@ -587,7 +587,7 @@ export default class fs {
 		resetAssetsMap();
 		allAssets = [];
 
-		console.log('refresh assets list');
+		//console.log('refresh assets list');
 
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('EMPTY', EMPTY);
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
