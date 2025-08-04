@@ -109,7 +109,7 @@ const onContextMenu = async (fieldEditor: PropsFieldWrapper, value: any, ev: Poi
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
-			hidden: field.type !== 'color' || Array.isArray(clickedValue),
+			hidden: () => field.type !== 'color' || Array.isArray(clickedValue),
 			name: R.fragment(R.icon('copy'), R.fragment('Copy HEX', colorSampleCopy)),
 			onClick: () => {
 				game.editor.copyToClipboard(hexValue);
@@ -140,7 +140,7 @@ const onContextMenu = async (fieldEditor: PropsFieldWrapper, value: any, ev: Poi
 			disabled: () => CAN_COPY_VALUES_OF_TYPE.indexOf(field.type) < 0
 		},
 		{
-			hidden: field.type !== 'color' || !colorSample,
+			hidden: () => field.type !== 'color' || !colorSample,
 			name: R.fragment(R.icon('paste'), R.fragment('Paste HEX', colorSample)),
 			onClick: () => {
 				let val: any;

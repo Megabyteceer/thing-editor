@@ -8,7 +8,7 @@ interface ContextMenuItemData {
 	name: ComponentChild | (() => ComponentChild);
 	onClick: ((ev?: PointerEvent) => void) | (() => void);
 	disabled?: (() => boolean);
-	hidden?: boolean;
+	hidden?: () => boolean;
 	stayAfterClick?: boolean;
 	tip?: string;
 	hotkey?: Hotkey;
@@ -126,7 +126,7 @@ const menuItemProps = { className: 'context-menu-item-content'};
 function renderMenuItem(item: ContextMenuItem) {
 
 	if (item) {
-		if (item.hidden) {
+		if (item.hidden && item.hidden()) {
 			return R.fragment();
 		}
 		return R.btn(
