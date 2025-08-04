@@ -108,26 +108,9 @@ Object.defineProperties(Text.prototype, {
 		},
 		set: function (this: Text, val: string) {
 			if (val && val.indexOf(',') >= 0) {
-				/// #if EDITOR
-				val = val.replace(/(\s|")/g, '');
-				/// #endif
-				this.style.fill = val.split(',')
-					/// #if EDITOR
-					.filter((c) => {
-						return isColor(c, this);
-					});
-				if (this.style.fill.length === 0) {
-					this.style.fill = '#000';
-				}
-				/// #endif
+				this.style.fill = val.split(',');
 			} else {
-				/// #if EDITOR
-				if (isColor(val, this)) {
-					/// #endif
-					this.style.fill = val;
-					/// #if EDITOR
-				}
-				/// #endif
+				this.style.fill = val;
 			}
 			(this as any)._styleFill = val;
 		}, configurable: true
@@ -430,19 +413,6 @@ function _refreshAnchor(text: Text) {
 
 /// #if EDITOR
 
-function isColor(strColor: string, node: Text) {
-	let s = new Option().style;
-	s.color = strColor;
-	if (s.color) {
-		return true;
-	} else {
-		if (!game.__EDITOR_mode) {
-			game.editor.ui.status.error('Wrong color gradient entry: ' + strColor, 32057, node, 'style.fill');
-		}
-	}
-}
-
-
 Text.prototype.__EDITOR_onCreate = function __EDITOR_onCreate() {
 	this.text = 'New Text 1';
 };
@@ -563,6 +533,7 @@ _editableEmbed(Text, 'verticalAlign', {
 
 _editableEmbed(Text, 'style.fill', {
 	type: 'string',
+	disabled: () => 'Please use "___fill" color picker instead.',
 	default: '#ffffff'
 });
 
