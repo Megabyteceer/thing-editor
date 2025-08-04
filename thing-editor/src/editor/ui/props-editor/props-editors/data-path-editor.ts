@@ -556,7 +556,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 				acceptNowBtn
 			),
 			items, false, false, undefined, false, this.props.onCancel)
-			.then((selected: DataPathSelectItem) => {
+			.then((selected?: DataPathSelectItem) => {
 				if (selected) {
 					let val;
 					if (selected === BACK_ITEM) {

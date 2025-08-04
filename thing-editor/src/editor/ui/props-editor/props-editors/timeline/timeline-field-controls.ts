@@ -5,6 +5,7 @@ import type FieldsTimelineView from 'thing-editor/src/editor/ui/props-editor/pro
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import type { TimelineFieldData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 import showContextMenu from '../../../context-menu';
 import Timeline from './timeline';
 import TimelineKeyframeView from './timeline-keyframe-view';
@@ -44,7 +45,7 @@ export default class TimelineFieldControls extends Component<TimelineFieldContro
 										t: srcField.t.map(src => {
 											return TimelineKeyframeView.cloneKeyFrame(src);
 										})
-									};
+									} as TimelineFieldData;
 									movieClip._timelineData!.f.splice(movieClip.timeline!.f.findIndex(f => srcField.n === f.n) + 1, 0, newField);
 									Timeline._invalidateNodeCache(movieClip);
 									fieldTimeline.props.owner.props.owner.refresh();
