@@ -68,6 +68,7 @@ let notifyTexts: Set<string | Component> = new Set();
 const notifyHides: Map<string, string | Component> = new Map();
 
 let spinnerShowCounter = 0;
+const spinnerCallStacks = [] as any;
 
 let renderModal = (props: ModalEntry, i: number) => {
 	let title;
@@ -199,6 +200,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 	showSpinner() {
 		spinnerShowCounter++;
+		spinnerCallStacks.push(getCurrentStack('showSpinner()'));
 		if (spinnerShowCounter === 1) {
 			if (game.stage) {
 				game.stage.interactiveChildren = false;
@@ -217,6 +219,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 	hideSpinner() {
 		spinnerProgress = -1;
 		spinnerShowCounter--;
+		spinnerCallStacks.pop();
 		assert(spinnerShowCounter >= 0, 'hideSpinner() invoked without showSpinner()');
 		if (spinnerShowCounter === 0) {
 			window.setTimeout(() => {
@@ -256,6 +259,10 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 				)
 			), title, noEasyClose);
 		}
+	}
+
+	__debugSpinnerCallStack() {
+		return spinnerCallStacks;
 	}
 
 	showError(message: ComponentChild, errorCode = 99999, title = 'Error!', noEasyClose = false, toBottom = false): Promise<any> {
