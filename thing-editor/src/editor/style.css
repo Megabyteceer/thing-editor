@@ -1259,6 +1259,11 @@ input[disabled] {
 	z-index: 20;
 }
 
+.data-path-header {
+    display: block;
+    height: 90px;
+}
+
 .asset-editor {
 	display: flex;
 }

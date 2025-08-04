@@ -22,6 +22,7 @@ let chooserElement:HTMLDivElement;
 const hideChooser = () => {
 	render(R.fragment(), chooserElement);
 };
+const headerProps = {className: 'data-path-header'};
 
 const filteredNamesInDisplayObject = new Set([
 	'_tempDisplayObjectParent',
@@ -548,7 +549,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			return (b.order || 0) - (a.order || 0);
 		});
 		game.editor.ui.modal.showListChoose(
-			R.span(null,
+			R.span(headerProps,
 				'Path for ' + (this.props.title || this.props.field!.name) + ': ' + path.join('.') + '.',
 				R.br(),
 				(parent instanceof DisplayObject) ? R.sceneNode(parent as Container) : undefined,
