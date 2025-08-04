@@ -161,7 +161,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		return this.showModal(h(Prompt, { defaultText, filter, accept, multiline, variants }), title, noEasyClose);
 	}
 
-	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField = false, activeValue?: string, doNotGroup = false, onCancel?:() =>void):Promise<ChooseListItem> {
+	showListChoose(title: ComponentChild, list: any[], noEasyClose?: boolean, noSearchField = false, activeValue?: string, doNotGroup = false, onCancel?:() =>void):Promise<ChooseListItem | undefined> {
 		return this.showModal(h(ChooseList, { list, noSearchField, activeValue, doNotGroup}), title, noEasyClose, false, onCancel);
 	}
 

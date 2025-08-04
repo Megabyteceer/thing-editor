@@ -315,6 +315,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			}
 			i--;
 		}
+		this.refresh();
 	}
 
 	verticalZoom(delta: number) {
