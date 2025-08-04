@@ -649,24 +649,20 @@ export default class fs {
 		sortAssets();
 
 		let dirsToRebuildSounds = scheduledSoundsRebuilds.values();
-		let soundsData: Map<string, KeyedObject> = new Map();
+		this.soundsData.clear();
 		for (let dir of dirsToRebuildSounds) {
-			soundsData.set(dir, fs.rebuildSounds(dir));
+			this.soundsData.set(dir, fs.rebuildSounds(dir));
 		}
 
 		scheduledSoundsRebuilds.clear();
 
-		const sounds = this.getAssetsList(AssetType.SOUND);
-		for (const file of sounds) {
-			const soundsDirData = soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
-			if (soundsDirData) {
-				const sndData = soundsDirData.soundInfo[file.fileName.substring(1)];
-				if (sndData) {
-					file.asset.preciseDuration = sndData.duration;
-				}
-			}
-		}
 		editorEvents.emit('assetsRefreshed');
+	}
+
+	static soundsData: Map<string, KeyedObject> = new Map();
+
+	static soundsRebuildInProgress() {
+		return scheduledSoundsRebuilds.size;
 	}
 
 	static getFileHash(fileName: string): string {

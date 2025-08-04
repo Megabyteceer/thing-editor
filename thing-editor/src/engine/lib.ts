@@ -22,6 +22,9 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import RemoveHolder from 'thing-editor/src/engine/utils/remove-holder';
+/// #if EDITOR
+import waitForCondition from './lib/assets/src/utils/wait-for-condition';
+/// #endif
 import Sound from './utils/sound';
 
 let classes: GameClasses;
@@ -395,10 +398,19 @@ export default class Lib
 	}
 
 	/// #if EDITOR
-	static __addSoundEditor(file: FileDescSound) {
-		const fileName = file.fileName.replace(/wav$/, 'ogg');
+	static async __addSoundEditor(file: FileDescSound) {
+		await waitForCondition(() => !fs.soundsRebuildInProgress());
+		const fileName = getVersionedFileName(file)!.replace(/wav(\?|$)/, 'ogg?');
 		soundsHowlers[file.assetName] = new HowlSound({ src: fileName });
 		file.asset = Lib.getSound(file.assetName);
+		const soundsDirData = fs.soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
+		if (soundsDirData) {
+			const sndData = soundsDirData.soundInfo[file.fileName.substring(1)];
+			if (sndData) {
+				file.asset.preciseDuration = sndData.duration;
+			}
+		}
+
 		game.editor.ui.refresh();
 	}
 	/// #endif
