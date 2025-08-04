@@ -478,7 +478,7 @@ function overrideSound(name: string, src?: string) {
 
 
 function toggleSoundsPanelLeft() {
-	game.settings.setItem('__sounds-panel-is-left', !game.settings.getItem('__sounds-panel-is-left'));
+	game.editor.settings.setItem('__sounds-panel-is-left', !game.editor.settings.getItem('__sounds-panel-is-left'));
 	showSndDebugger();
 }
 
@@ -486,7 +486,7 @@ let sndDebugger: HTMLDivElement;
 let sndDebuggerShowed = false;
 
 setTimeout(() => {
-	if (game.settings?.getItem('_sound-debugger-shown')) {
+	if (game.editor?.settings?.getItem('_sound-debugger-shown')) {
 		showSndDebugger();
 	}
 }, 10);
@@ -494,7 +494,7 @@ setTimeout(() => {
 function hideSndDebugger() {
 	sndDebugger.style.display = 'none';
 	sndDebuggerShowed = false;
-	game.settings.setItem('_sound-debugger-shown', false);
+	game.editor.settings.setItem('_sound-debugger-shown', false);
 }
 
 let libSounds: KeyedMap<HowlSound>;
@@ -591,8 +591,8 @@ function renderSoundsPanel() {
 	const items = [];
 
 	let list: string[] | undefined;
-	const sortByTime = game.settings.getItem('__sounds-panel-sort-by-time', 0);
-	const sortByName = game.settings.getItem('__sounds-panel-sort-by-name', 0);
+	const sortByTime = game.editor.settings.getItem('__sounds-panel-sort-by-time', -1);
+	const sortByName = game.editor.settings.getItem('__sounds-panel-sort-by-name', 0);
 	if (sortByTime) {
 		list = Object.keys(Lib.__soundsList);
 		if (sortByTime > 0) {
@@ -628,7 +628,7 @@ function renderSoundsPanel() {
 	}
 
 	return R.fragment(
-		game.settings.getItem('__sounds-panel-is-left') ? R.span({className: 'panel-is-left'}) : undefined,
+		game.editor.settings.getItem('__sounds-panel-is-left') ? R.span({className: 'panel-is-left'}) : undefined,
 		R.button({
 			className: 'close-sounds-button',
 			onClick: Sound.__toggleDebugger
@@ -639,22 +639,22 @@ function renderSoundsPanel() {
 		R.div({className: 'list-header'}, 'Sort by: ',
 			R.span({className: 'sort-button', onClick: () => {
 				if (sortByName > 0) {
-					game.settings.setItem('__sounds-panel-sort-by-name', -1);
+					game.editor.settings.setItem('__sounds-panel-sort-by-name', -1);
 				} else {
-					game.settings.setItem('__sounds-panel-sort-by-name', 1);
+					game.editor.settings.setItem('__sounds-panel-sort-by-name', 1);
 				}
-				game.settings.removeItem('__sounds-panel-sort-by-time');
+				game.editor.settings.removeItem('__sounds-panel-sort-by-time');
 				showSndDebugger();
 			}
 			}, 'name ', sortByName ? ((sortByName > 0) ? '⮟' : '⮝') : '\u00A0'),
 
 			R.span({className: 'sort-button', onClick: () => {
 				if (sortByTime > 0) {
-					game.settings.setItem('__sounds-panel-sort-by-time', -1);
+					game.editor.settings.setItem('__sounds-panel-sort-by-time', -1);
 				} else {
-					game.settings.setItem('__sounds-panel-sort-by-time', 1);
+					game.editor.settings.setItem('__sounds-panel-sort-by-time', 1);
 				}
-				game.settings.removeItem('__sounds-panel-sort-by-name');
+				game.editor.settings.removeItem('__sounds-panel-sort-by-name');
 				showSndDebugger();
 			}
 			}, 'play-time ', sortByTime ? ((sortByTime > 0) ? '⮟' : '⮝') : '\u00A0')
@@ -716,7 +716,7 @@ async function showSndDebuggerInner() {
 		await __loadSoundOverrides();
 	}
 
-	game.settings.setItem('_sound-debugger-shown', true);
+	game.editor.settings.setItem('_sound-debugger-shown', true);
 	render(renderSoundsPanel(), sndDebugger);
 	sndDebugger.style.display = 'block';
 }
