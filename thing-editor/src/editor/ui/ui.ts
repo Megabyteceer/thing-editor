@@ -132,7 +132,7 @@ function showAdditionalWindow(id: string, helpId: string, title: ComponentChild,
 	if (!additionalWindowsContainers.has(id)) {
 		let c = window.document.createElement('div');
 		c.classList.add('additional-window-layer');
-		window.document.querySelector('#working-area')?.appendChild(c);
+		window.document.querySelector('#working-area')!.appendChild(c);
 		additionalWindowsContainers.set(id, c);
 	}
 

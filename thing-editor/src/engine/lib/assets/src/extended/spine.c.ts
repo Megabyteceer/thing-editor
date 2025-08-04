@@ -384,8 +384,11 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		this.__isSerialization = true;
 	}
 
-	__afterSerialization(_data: SerializedObject): void {
+	__afterSerialization(data: SerializedObject): void {
 		this.__isSerialization = false;
+		if (this.__nodeExtendData.isPrefabReference) {
+			delete data.p.sequences;
+		}
 	}
 	/// #endif
 
@@ -927,7 +930,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 
 	}
 
-	static __validateObjectData(data:any):SerializedDataValidationError | undefined {
+	static __validateObjectData(data:SerializedObjectProps):SerializedDataValidationError | undefined {
 		if (data.spineData) {
 			if (!Lib.resources[data.spineData]) {
 				return {

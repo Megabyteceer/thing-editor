@@ -104,10 +104,8 @@ interface NodeExtendData {
 
 	treeNodeView?: import('./ui/tree-view/tree-node').default;
 
+	/** defined in editor time only */
 	isPrefabReference?: string;
-
-	/** tree will display objects of this children */
-	childrenContainer?: import('pixi.js').Container;
 
 	constructorCalled?: boolean;
 
@@ -118,6 +116,8 @@ interface NodeExtendData {
 	/** unknown prefabs's name */
 	unknownPrefab?: string;
 	unknownPrefabProps?: SerializedObjectProps;
+
+	__deserializedFromPrefab?: string;
 
 	component_in_previewMode?: boolean;
 
@@ -187,7 +187,7 @@ type SerializedObject = {
 };
 
 type Electron_ThingEditorServer = { // exposed from electron
-	fs: (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => FSCallback;
+	fs: (command: string, filename?: string | string[] | number, content?: string | boolean | ArrayBuffer, ...args: any[]) => FSCallback;
 	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => Promise<any>;
 	versions: KeyedObject;
 	onServerMessage: (_onServerMessage: (event: string, ...args: any[]) => void) => void;

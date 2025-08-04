@@ -151,7 +151,7 @@ const WHITE: FileDescImage = {
 	lib: null
 };
 
-const execFs = (command: string, filename?: string | string[] | number, content?: string | boolean, ...args: any[]) => {
+const execFs = (command: string, filename?: string | string[] | number, content?: string | boolean | ArrayBuffer, ...args: any[]) => {
 	const ret = electron_ThingEditorServer.fs(command, filename, content, ...args);
 	if (ret instanceof Error) {
 		game.editor.ui.modal.showFatalError('Main process error.', 99999, ret.message);
@@ -337,8 +337,8 @@ export default class fs {
 	}
 
 	/** returns new mTime */
-	static writeFile(fileName: string, data: string | Blob | KeyedObject, separator:string | null = '	'): number {
-		if (typeof data !== 'string' && !(data instanceof Blob)) {
+	static writeFile(fileName: string, data: string | ArrayBuffer | KeyedObject, separator:string | null = '	'): number {
+		if (typeof data !== 'string' && !(data instanceof ArrayBuffer)) {
 			data = JSON.stringify(data, fs.fieldsFilter, separator as string);
 		}
 		return execFs('fs/saveFile', fileName, data as string) as number;
@@ -587,7 +587,7 @@ export default class fs {
 		resetAssetsMap();
 		allAssets = [];
 
-		console.log('refresh assets list');
+		//console.log('refresh assets list');
 
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('EMPTY', EMPTY);
 		(assetsByTypeByName.get(AssetType.IMAGE) as Map<string, FileDesc>).set('WHITE', WHITE);
@@ -649,24 +649,20 @@ export default class fs {
 		sortAssets();
 
 		let dirsToRebuildSounds = scheduledSoundsRebuilds.values();
-		let soundsData: Map<string, KeyedObject> = new Map();
+		this.soundsData.clear();
 		for (let dir of dirsToRebuildSounds) {
-			soundsData.set(dir, fs.rebuildSounds(dir));
+			this.soundsData.set(dir, fs.rebuildSounds(dir));
 		}
 
 		scheduledSoundsRebuilds.clear();
 
-		const sounds = this.getAssetsList(AssetType.SOUND);
-		for (const file of sounds) {
-			const soundsDirData = soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
-			if (soundsDirData) {
-				const sndData = soundsDirData.soundInfo[file.fileName.substring(1)];
-				if (sndData) {
-					file.asset.preciseDuration = sndData.duration;
-				}
-			}
-		}
 		editorEvents.emit('assetsRefreshed');
+	}
+
+	static soundsData: Map<string, KeyedObject> = new Map();
+
+	static soundsRebuildInProgress() {
+		return scheduledSoundsRebuilds.size;
 	}
 
 	static getFileHash(fileName: string): string {

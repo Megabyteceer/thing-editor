@@ -4,12 +4,14 @@ import { Assets, Cache, MIPMAP_MODES, Texture, WRAP_MODES } from 'pixi.js';
 import type { FileDesc, FileDescImage, FileDescPrefab, FileDescSound } from 'thing-editor/src/editor/fs';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import TLib from 'thing-editor/src/editor/prefabs-typing';
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import EDITOR_FLAGS, { EDITOR_BACKUP_PREFIX } from 'thing-editor/src/editor/utils/flags';
 import getPrefabDefaults, { invalidatePrefabDefaults } from 'thing-editor/src/editor/utils/get-prefab-defaults';
 import { checkForOldReferences, markOldReferences } from 'thing-editor/src/editor/utils/old-references-detect';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import __refreshPrefabRefs, { __refreshPrefabRefsPrepare } from 'thing-editor/src/editor/utils/refresh-prefabs';
+import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
 import { getCurrentStack } from 'thing-editor/src/editor/utils/stack-utils';
 import { __UnknownClass } from 'thing-editor/src/editor/utils/unknown-class';
 import HowlSound from 'thing-editor/src/engine/HowlSound';
@@ -20,7 +22,9 @@ import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import L from 'thing-editor/src/engine/utils/l';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import RemoveHolder from 'thing-editor/src/engine/utils/remove-holder';
-import roundUpPoint from '../editor/utils/round-up-point';
+/// #if EDITOR
+import waitForCondition from './lib/assets/src/utils/wait-for-condition';
+/// #endif
 import Sound from './utils/sound';
 
 let classes: GameClasses;
@@ -289,7 +293,7 @@ export default class Lib
 					/// #if EDITOR
 				}
 				/// #endif
-				Lib._applyTextureSettings(name);
+				Lib._afterTextureLoaded(name);
 				game.loadingRemove(textureURL);
 			}).catch(() => {
 				if (attempt < 3 && !game._loadingErrorIsDisplayed) {
@@ -304,7 +308,7 @@ export default class Lib
 			});
 		} else {
 			textures[name] = textureURL;
-			Lib._applyTextureSettings(name);
+			Lib._afterTextureLoaded(name);
 		}
 	}
 
@@ -320,7 +324,7 @@ export default class Lib
 		return s.hasOwnProperty(name) ? (s[name] & mask) : 0;
 	}
 
-	static _applyTextureSettings(name: string) {
+	static _afterTextureLoaded(name: string) {
 		let baseTexture = textures[name].baseTexture;
 		switch (Lib._getTextureSettingsBits(name, 24)) {
 		case 0:
@@ -341,6 +345,9 @@ export default class Lib
 		if (!game.isCanvasMode) {
 			baseTexture.update();
 		}
+		/// #if EDITOR
+		editorEvents.emit('textureUpdated', name);
+		/// #endif
 	}
 
 	/// #if EDITOR
@@ -393,10 +400,19 @@ export default class Lib
 	}
 
 	/// #if EDITOR
-	static __addSoundEditor(file: FileDescSound) {
-		const fileName = file.fileName.replace(/wav$/, 'ogg');
+	static async __addSoundEditor(file: FileDescSound) {
+		await waitForCondition(() => !fs.soundsRebuildInProgress());
+		const fileName = getVersionedFileName(file)!.replace(/wav(\?|$)/, 'ogg?');
 		soundsHowlers[file.assetName] = new HowlSound({ src: fileName });
 		file.asset = Lib.getSound(file.assetName);
+		const soundsDirData = fs.soundsData.get(file.lib ? file.lib.dir : game.editor.currentProjectAssetsDir)!;
+		if (soundsDirData) {
+			const sndData = soundsDirData.soundInfo[file.fileName.substring(1)];
+			if (sndData) {
+				file.asset.preciseDuration = sndData.duration;
+			}
+		}
+
 		game.editor.ui.refresh();
 	}
 	/// #endif
@@ -457,8 +473,10 @@ export default class Lib
 					}, 1);
 				}
 			}
-			prefabs[replacedPrefabName || src.r!].__lastTouch = EDITOR_FLAGS.__touchTime;
-			ret = Lib._deserializeObject(prefabs[replacedPrefabName || src.r!]);
+			const refName = replacedPrefabName || src.r!;
+			prefabs[refName].__lastTouch = EDITOR_FLAGS.__touchTime;
+			ret = Lib._deserializeObject(prefabs[refName]);
+			ret.__nodeExtendData.__deserializedFromPrefab = refName;
 			Object.assign(ret, src.p);
 
 			if (replacedPrefabName) {
@@ -858,7 +876,7 @@ export default class Lib
 		return fs.saveAsset(name, AssetType.SCENE, sceneData);
 	}
 
-	static __savePrefab(object: Container, name: string, libName?: string) {
+	static __savePrefab(object: Container, name: string, libName?: string, saveFile = true) {
 		invalidatePrefabDefaults();
 		assert(game.__EDITOR_mode, 'attempt to save prefab in running mode: ' + name);
 		assert(typeof name === 'string', 'Prefab name expected.');
@@ -875,7 +893,9 @@ export default class Lib
 		prefabData.p.___prefabPivot = PrefabEditor.pivot;
 		game.editor.disableFieldsCache = false;
 		prefabs[name] = prefabData;
-		fs.saveAsset(name, AssetType.PREFAB, prefabData, libName);
+		if (saveFile) {
+			fs.saveAsset(name, AssetType.PREFAB, prefabData, libName);
+		}
 		object.name = tmpName;
 	}
 
@@ -1017,6 +1037,11 @@ const normalizeSerializedDataRecursive = (data: SerializedObject) => {
 			for (const c of data[':']) {
 				normalizeSerializedDataRecursive(c);
 			}
+		}
+	}
+	if (data.p.timeline) {
+		for (const f of data.p.timeline.f) {
+			data.p[f.n] = f.t[0].v;
 		}
 	}
 };
@@ -1271,6 +1296,7 @@ const __checkClassesForEditorOnlyMethods = (classes: GameClasses) => {
 		constructRecursive(ret);
 		/// #if EDITOR
 	}
+	ret.__nodeExtendData.__deserializedFromPrefab = name;
 	/// #endif
 	return ret;
 };

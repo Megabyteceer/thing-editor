@@ -1,5 +1,6 @@
 import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import Lib from 'thing-editor/src/engine/lib';
@@ -341,6 +342,15 @@ export default class Fill extends Mesh {
 		}));
 		this.geometry.addAttribute('aColor',
 			[0, 0, 1, 1], 1);
+
+		/// #if EDITOR
+		editorEvents.on('textureUpdated', (textureName: string) => {
+			if (textureName === this.image) {
+				this.refreshSize();
+			}
+		});
+
+		/// #endif
 	}
 
 	_applied_verticesX = 0;

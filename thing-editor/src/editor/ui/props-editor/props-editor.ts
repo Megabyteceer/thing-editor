@@ -365,6 +365,23 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				}
 			}
 			header = R.btn(classButtonContent, this.onChangeClassClick, 'Change objects Class', undefined, undefined, !game.__EDITOR_mode);
+			const deserializedFrom = game.editor.selection[0]?.__nodeExtendData.__deserializedFromPrefab;
+			if (!game.__EDITOR_mode && deserializedFrom) {
+				header = R.fragment(
+					header,
+					R.btn(R.b({
+						className: 'selectable-text',
+						title: 'Ctrl+click to copy prefab`s name',
+						onMouseDown: copyTextByClick
+					}, deserializedFrom), () => {
+						const prefabName = deserializedFrom;
+						if (prefabName) {
+							game.editor.ui.viewport.stopExecution();
+							PrefabEditor.editPrefab(prefabName, true);
+						}
+					}, undefined, undefined, { key: 'e', ctrlKey: true })
+				);
+			}
 		} else {
 			if (node.__nodeExtendData.unknownPrefab) {
 				header = R.btn(R.fragment(

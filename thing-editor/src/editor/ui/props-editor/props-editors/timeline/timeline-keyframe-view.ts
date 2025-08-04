@@ -143,9 +143,15 @@ export default class TimelineKeyframeView extends Component<TimelineKeyframeView
 	clone() {
 		let timeLineData = this.props.owner.props.owner.props.field.t;
 		let keyFrame = this.props.keyFrame;
-		let cloneKeyframe: TimelineKeyFrame = Object.assign({}, keyFrame);
-		cloneKeyframe.___react_id = MovieClip.__generateKeyframeId();
+		let cloneKeyframe = TimelineKeyframeView.cloneKeyFrame(keyFrame);
 		timeLineData.push(cloneKeyframe);
+	}
+
+	static cloneKeyFrame (srcKeyFrame:TimelineKeyFrame) {
+		const ret = {} as TimelineKeyFrame;
+		Object.assign(ret, srcKeyFrame);
+		ret.___react_id = MovieClip.__generateKeyframeId();
+		return ret;
 	}
 
 	onKeyframeMouseDown(ev: PointerEvent) {

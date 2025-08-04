@@ -9,6 +9,7 @@ import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import PrefabEditor from '../../utils/prefab-editor';
 
 
 const selectInvisibleParent = (node: Container) => {
@@ -118,14 +119,35 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 		disabled: () => game.editor.selection.length !== 1 || game.editor.selection[0] instanceof Scene
 	},
 	{
+		name: R.fragment(R.icon('asset-prefab'), 'Edit prefab'),
+		hidden: () => {
+			return game.__EDITOR_mode ? !game.editor.selection[0].__nodeExtendData.isPrefabReference : !game.editor.selection[0].__nodeExtendData.__deserializedFromPrefab;
+
+		},
+		onClick: () => {
+			const prefabName = game.__EDITOR_mode ? game.editor.selection[0].__nodeExtendData.isPrefabReference! : game.editor.selection[0].__nodeExtendData.__deserializedFromPrefab!;
+			if (!game.__EDITOR_mode) {
+				game.editor.ui.viewport.stopExecution();
+			}
+			PrefabEditor.editPrefab(prefabName, true);
+		}
+	},
+	{
 		name: R.fragment(R.icon('asset-prefab'), 'Unreference'),
 		onClick: () => {
-			const o = game.editor.selection[0];
-			delete o.__nodeExtendData.isPrefabReference;
-			for (const c of o.children) {
+			const reference = game.editor.selection[0];
+			delete reference.__nodeExtendData.isPrefabReference;
+			for (const c of reference.children) {
 				delete c.__nodeExtendData.hidden;
 			}
-			Lib.__invalidateSerializationCache(o);
+			Lib.__savePrefab(reference, '___tmp', undefined, false);
+			const notReference = Lib.loadPrefab('___tmp');
+			notReference.name = reference.name;
+
+			reference.parent.addChildAt(notReference, reference.parent.children.indexOf(reference));
+			reference.remove();
+			game.editor.ui.sceneTree.selectInTree(notReference);
+			Lib.__invalidateSerializationCache(notReference);
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(false);
 		},

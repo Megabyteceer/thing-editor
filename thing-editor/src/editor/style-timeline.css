@@ -301,8 +301,15 @@
 	margin: 1px;
 }
 
-.timeline-buttons-group .props-label {
-	margin: 0 4px;
+.timeline-field-name {
+	display: block;
+    background-color: #292929;
+    height: 24px;
+    padding-top: 2px;
+    padding-right: 5px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    width: 100px;
 }
 
 .objects-timeline-labels button {
@@ -336,11 +343,17 @@
 	background-color: transparent;
 	color: #0c0;
 	outline: none !important;
+	top: -18px;
 }
 
 .timeline-label:hover {
 	z-index: 1;
 	text-decoration: underline;
+}
+
+.timeline-label-tip:hover {
+	z-index: 1;
+	text-decoration: none;
 }
 
 .timeline-label-pointer {
@@ -354,6 +367,7 @@
 
 .timeline-label-tip .timeline-label-pointer {
 	background: #0c0;
+	top: 11px;
 }
 
 .tip-icon {

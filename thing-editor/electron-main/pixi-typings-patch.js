@@ -113,7 +113,7 @@ patch(
     static __canAcceptParent?: (parent: Container) => boolean;
     static __canAcceptChild?: (Class: SourceMappedConstructor) => boolean;
     static __beforeChangeToThisType?: (o: Container) => void;
-    static __validateObjectData?: (data: KeyedObject) => SerializedDataValidationError;
+    static __validateObjectData?: (data: SerializedObjectProps) => SerializedDataValidationError;
 	`);
 
 patch(
@@ -232,7 +232,6 @@ module.exports = function () {
 	}
 	for (let patch of patches) {
 		if (!patch.done) {
-			debugger;
 			console.error('PIXI typings was not found: ' + patch.fileName);
 			if (mainWindow) {
 				dialog.showMessageBoxSync(mainWindow, 'PIXI typings was not found: ' + patch.fileName);

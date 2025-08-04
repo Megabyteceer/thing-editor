@@ -91,6 +91,9 @@ module.exports = (mainWindow) => {
 					ensureDirectoryExistence(fileName);
 					const fileNameParsed = fn(fileName);
 					fd = fs.openSync(fileNameParsed, 'w');
+					if (content instanceof ArrayBuffer) {
+						content = Buffer.from(content);
+					}
 					fs.writeSync(fd, content);
 					fs.closeSync(fd, () => { }); // eslint-disable-line @typescript-eslint/no-empty-function
 					return fs.statSync(fileNameParsed).mtimeMs;

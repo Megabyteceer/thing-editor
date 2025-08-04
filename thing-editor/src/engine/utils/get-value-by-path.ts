@@ -230,14 +230,16 @@ const pathDebugging_thing_editor_debug_helper = (o: Container, path: string) => 
 };
 
 
-setValueByPath.___EDITOR_callbackParameterChooserFunction = () => {
+(setValueByPath as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
 	return new Promise((resolve) => {
-		game.editor.ui.modal.showPrompt('Enter data path', '').then((enteredText1) => {
-			if (enteredText1) {
-				game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
-					resolve([enteredText1, enteredText2]);
-				});
-			}
+		import('thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor').then((m) => {
+			m.default.choosePath('Enter data path', '').then((enteredText1) => {
+				if (enteredText1) {
+					game.editor.ui.modal.showPrompt('Enter value', '').then((enteredText2) => {
+						resolve([enteredText1, enteredText2]);
+					});
+				}
+			});
 		});
 	});
 };

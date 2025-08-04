@@ -15,11 +15,9 @@ module.exports = function vitePluginIfDef(isDebug) {
 				for (let a of processedFiles) {
 					if (Array.isArray(a)) {
 						if ((a.find(l => !l.startsWith('//') && l.indexOf(importPath) >= 0))) {
-							debugger;
 						}
 					}
 				}
-				debugger;
 				throw new Error('File ' + id + ' was included in to build.');
 			}
 			if (fileRegex.test(id)) {
@@ -59,7 +57,6 @@ module.exports = function vitePluginIfDef(isDebug) {
 
 					if (trimmedLine === '/// #endif') {
 						if (cuttingStack.length === 0) {
-							debugger;
 							throw new Error('/// #endif without /// #if EDITOR in file ' + id + ':' + (i + 1));
 						}
 						cuttingStack.pop();

@@ -35,8 +35,12 @@ module.exports = async function (options, notify) {
 	let cacheFn = path.join(soundsPath, '~snd-convert-cache.json');
 	if (fs.existsSync(cacheFn)) {
 		cache = JSON.parse(fs.readFileSync(cacheFn));
-	} else {
-		cache = {};
+		if (cache?.fileName !== cacheFn) {
+			cache = undefined;
+		}
+	}
+	if (!cache) {
+		cache = {fileName: cacheFn};
 	}
 	let filesToConvert = [];
 

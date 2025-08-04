@@ -377,7 +377,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 					a.push(o);
 				}
 				o.forAllChildren((o) => {
-					if (condition(o)) {
+					if (!o.__nodeExtendData.isolate && condition(o)) {
 						a.push(o);
 					}
 				});
@@ -388,7 +388,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 			searchIn(game.currentContainer);
 		} else {
 			game.stage.forAllChildren((o) => {
-				if (condition(o)) {
+				if (!o.__nodeExtendData.isolate && condition(o)) {
 					a.push(o);
 				}
 			});

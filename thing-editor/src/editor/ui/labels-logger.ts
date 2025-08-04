@@ -11,6 +11,8 @@ import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
 import game from 'thing-editor/src/engine/game';
 import copyTextByClick from '../utils/copy-text-by-click';
 import { searchByRegexpOrText } from '../utils/search-by-regexp-or-text';
+import type { SelectEditorItem } from './props-editor/props-editors/select-editor';
+import SelectEditor from './props-editor/props-editors/select-editor';
 
 let lastItemTime = 0;
 
@@ -23,8 +25,30 @@ let listProps = {
 	className: 'window-scrollable-content labels-log-list',
 };
 
+const enum FilterType {
+	ALL = 'all',
+	AFFECTS_SELECTION = 'affecting selection',
+	SELECTION_IS_ROOT = 'selection is root'
+}
+
+const filterSelect = [
+	{
+		name: FilterType.ALL,
+		value: FilterType.ALL
+	},
+	{
+		name: FilterType.AFFECTS_SELECTION,
+		value: FilterType.AFFECTS_SELECTION
+	},
+	{
+		name: FilterType.SELECTION_IS_ROOT,
+		value: FilterType.SELECTION_IS_ROOT
+	}
+] as SelectEditorItem[];
+
 interface LabelsLoggerState {
 	search: string;
+	filter: FilterType;
 }
 
 interface LabelLogItem {
@@ -36,7 +60,7 @@ interface LabelLogItem {
 
 
 let labelNamesProps = {
-	className: 'selectable-text',
+	className: 'selectable-text labels-log-label',
 	title: 'Ctrl+click to copy label`s name',
 	onMouseDown: copyTextByClick
 };
@@ -51,6 +75,11 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 	searchInputProps: KeyedObject;
 	constructor(props: LabelsLoggerProps) {
 		super(props);
+
+		this.state = {
+			search: '',
+			filter: FilterType.ALL
+		};
 
 		this.searchInputProps = {
 			className: 'search-input',
@@ -97,10 +126,9 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 		const isRemoved = item._rootId !== item.root.___id;
 		const timeDelta = item.time - lastItemTime;
 		lastItemTime = item.time;
-		const timeSplitter = timeDelta ? R.div({title: 'game.time shift in frames', className: 'labels-log-time'}, '+', timeDelta) : undefined;
+		const timeSplitter = R.div({title: 'game.time shift in frames', className: 'labels-log-time'}, timeDelta ? ('+' + timeDelta) : undefined);
 
 		return R.fragment(
-			timeSplitter,
 			R.div(
 				{
 					className: isRemoved ? 'labels-log-item disabled' : (item.root.__nodeExtendData.isSelected ? 'labels-log-item labels-log-item-selected' : 'labels-log-item'),
@@ -109,6 +137,7 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 						instance.refresh();
 					}
 				},
+				timeSplitter,
 				R.span(labelNamesProps, item.label),
 				R.sceneNode(item.root)
 			)
@@ -133,14 +162,33 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 			});
 		}
 
+		if (this.state.filter !== FilterType.ALL) {
+			const filterContainers = new Set();
+			for (let container of game.editor.selection) {
+				filterContainers.add(container);
+				if (this.state.filter === FilterType.AFFECTS_SELECTION) {
+					while (container) {
+						container = container.parent;
+						filterContainers.add(container);
+					}
+				}
+			}
+			list = list.filter(i => filterContainers.has(i.root));
+		}
+
 		lastItemTime = list[0]?.time || 0;
 
 		return R.fragment(
 			R.btn('×', LabelsLogger.toggle, 'Hide labels logger', 'close-window-btn', { key: 'Escape' }),
 
-			R.input(this.searchInputProps),
-			R.btn('×', this.clearSearch, 'Discard search filter', 'close-btn clear-search-btn'),
-
+			R.div({className: 'choose-list-header'},
+				h(SelectEditor, {
+					select: filterSelect,
+					onChange: (filter: FilterType) => {
+						this.setState({filter});
+					}, value: this.state.filter
+				}), R.input(this.searchInputProps), R.btn('×', this.clearSearch, 'Discard search filter', 'close-btn clear-search-btn')
+			),
 			R.div(listProps,
 				list.map(this.renderItem)
 			),
@@ -164,7 +212,7 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 	static show() {
 		showAdditionalWindow('labels-logger', 'LabelsLogger', 'Labels Logger',
 			h(LabelsLogger, null),
-			50, 50, 80, 80, 300, 200);
+			50, 50, 80, 80, 450, 200);
 		Window.bringWindowForward('#labels-logger');
 	}
 
