@@ -345,7 +345,9 @@ export default class Lib
 		if (!game.isCanvasMode) {
 			baseTexture.update();
 		}
+		/// #if EDITOR
 		editorEvents.emit('textureUpdated', name);
+		/// #endif
 	}
 
 	/// #if EDITOR
