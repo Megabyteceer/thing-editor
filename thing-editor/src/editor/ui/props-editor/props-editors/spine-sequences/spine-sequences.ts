@@ -230,12 +230,12 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 		}
 	}
 
-	invalidate() {
+	invalidate(saveImmediately = false) {
 		if (this.activeSequenceItem?.actions) {
 			this.activeSequenceItem?.actions.sort(sortActionsByTime);
 		}
 		Lib.__invalidateSerializationCache(this.spine);
-		game.editor.sceneModified(true);
+		game.editor.sceneModified(saveImmediately);
 		this.refresh();
 	}
 
