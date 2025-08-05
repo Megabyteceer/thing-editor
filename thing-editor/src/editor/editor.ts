@@ -426,6 +426,7 @@ class Editor {
 				}
 				fs.writeFile('thing-editor/src/editor/schema-thing-project.json', mergedSchema);
 			}
+			console.log(1);
 
 			this.assetsFolders.push(this.currentProjectAssetsDir);
 			this.assetsFoldersReversed = game.editor.assetsFolders.slice().reverse();
@@ -435,7 +436,7 @@ class Editor {
 			this.projectDesc = {} as ProjectDesc;
 			mergeProjectDesc(this.projectDesc, libsProjectDescMerged);
 			mergeProjectDesc(this.projectDesc, projectDesc);
-
+			console.log(2);
 			setTimeout(excludeOtherProjects, 1);
 
 			game.applyProjectDesc(this.projectDesc);
@@ -447,19 +448,19 @@ class Editor {
 			game.stage.interactiveChildren = false;
 			protectAccessToSceneNode(game.stage, 'game stage');
 			protectAccessToSceneNode(game.stage.parent, 'PIXI stage');
-
+			console.log(3);
 			await spineLoading;
-
+			console.log(4);
 			await Texture.fromURL('/thing-editor/img/wrong-texture.png').then((t) => {
 				Lib.REMOVED_TEXTURE = t;
 				return this.reloadAssetsAndClasses();
 			});
-
+			console.log(5);
 			if (this.settingsLocal.getItem(LAST_SCENE_NAME) && !Lib.hasScene(this.settingsLocal.getItem(LAST_SCENE_NAME))) {
 				this.saveLastSceneOpenName('');
 			}
 			this.settingsLocal.setItem(LAST_SCENE_NAME, this.settingsLocal.getItem(LAST_SCENE_NAME) || (Lib.hasScene(this.projectDesc.mainScene) ? this.projectDesc.mainScene : Object.keys(Lib.scenes)[0]));
-
+			console.log(6);
 			loadFonts();
 			await waitForCondition(() => {
 				return game.loadingProgress === 100;
