@@ -68,73 +68,115 @@
 					},
 					":": [
 						{
-							"c": "Shape",
+							"c": "Trigger",
 							"p": {
-								"alpha": 0.2,
-								"shape": 4,
-								"shapeFillColor": 16777215,
-								"_shapePoints": [
-									{
-										"x": 0,
-										"y": 0
-									},
-									{
-										"x": 10,
-										"y": 0
-									},
-									{
-										"x": 10,
-										"y": 4
-									},
-									{
-										"x": 7,
-										"y": 8
-									},
-									{
-										"x": 2,
-										"y": 10
-									},
-									{
-										"x": 0,
-										"y": 11
+								"visible": false,
+								"dataPath": "mouse.gameClick",
+								"invert": true,
+								"pow": 1,
+								"damp": 0
+							},
+							":": [
+								{
+									"c": "Shape",
+									"p": {
+										"alpha": 0.2,
+										"shape": 4,
+										"shapeFillColor": 16777215,
+										"_shapePoints": [
+											{
+												"x": 0,
+												"y": 0
+											},
+											{
+												"x": 10,
+												"y": 0
+											},
+											{
+												"x": 10,
+												"y": 4
+											},
+											{
+												"x": 7,
+												"y": 8
+											},
+											{
+												"x": 2,
+												"y": 10
+											},
+											{
+												"x": 0,
+												"y": 11
+											}
+										]
 									}
-								]
-							}
+								},
+								{
+									"c": "Shape",
+									"p": {
+										"rotation": -3.141592653589793,
+										"alpha": 0.2,
+										"shape": 4,
+										"shapeFillColor": 16777215,
+										"_shapePoints": [
+											{
+												"x": 0,
+												"y": 0
+											},
+											{
+												"x": 10,
+												"y": 0
+											},
+											{
+												"x": 10,
+												"y": 4
+											},
+											{
+												"x": 7,
+												"y": 8
+											},
+											{
+												"x": 2,
+												"y": 10
+											},
+											{
+												"x": 0,
+												"y": 11
+											}
+										]
+									}
+								}
+							]
 						},
 						{
-							"c": "Shape",
+							"c": "Trigger",
 							"p": {
-								"rotation": -3.141592653589793,
-								"alpha": 0.2,
-								"shape": 4,
-								"shapeFillColor": 16777215,
-								"_shapePoints": [
-									{
-										"x": 0,
-										"y": 0
-									},
-									{
-										"x": 10,
-										"y": 0
-									},
-									{
-										"x": 10,
-										"y": 4
-									},
-									{
-										"x": 7,
-										"y": 8
-									},
-									{
-										"x": 2,
-										"y": 10
-									},
-									{
-										"x": 0,
-										"y": 11
+								"visible": false,
+								"dataPath": "mouse.gameClick",
+								"pow": 1,
+								"damp": 0
+							},
+							":": [
+								{
+									"c": "Shape",
+									"p": {
+										"alpha": 0.2,
+										"width": 3000,
+										"height": 3000,
+										"shapeFillColor": 16777215
 									}
-								]
-							}
+								},
+								{
+									"c": "Shape",
+									"p": {
+										"rotation": -3.141592653589793,
+										"alpha": 0.2,
+										"width": 3000,
+										"height": 3000,
+										"shapeFillColor": 16777215
+									}
+								}
+							]
 						},
 						{
 							"c": "Shape",

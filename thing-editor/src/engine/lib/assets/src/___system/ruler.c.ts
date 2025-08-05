@@ -61,6 +61,7 @@ export default class ___Ruler extends Container {
 
 		this.currentContainer = game.currentContainer;
 
+		game.mouse.gameClick = false;
 		game.mouse.click = 0;
 	}
 
@@ -81,7 +82,7 @@ export default class ___Ruler extends Container {
 			this.parent.toLocal(this.startContainer, this.startContainer.parent, this);
 		}
 
-		if (game.mouse.click === 1) {
+		if (game.mouse.click === 1 && game.mouse.gameClick) {
 			this.startContainer.toLocal(game.__mouse_uncropped, game.currentContainer, this.startPoint);
 		}
 

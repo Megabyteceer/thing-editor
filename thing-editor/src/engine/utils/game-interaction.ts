@@ -9,9 +9,7 @@ const globalPoint = new Point();
 const stagePoint = new Point();
 
 const mouseHandlerGlobalDown = (ev: PointerEvent) => {
-	if (ev.target !== game.pixiApp.view) {
-		return;
-	}
+	game.mouse.gameClick = ev.target === game.pixiApp.view;
 	game.mouse.click = ev.buttons || 1;
 	mouseHandlerGlobal(ev);
 	if (
@@ -28,6 +26,7 @@ const mouseHandlerGlobalDown = (ev: PointerEvent) => {
 
 const mouseHandlerGlobalUp = (ev: PointerEvent) => {
 	game.mouse.click = 0;
+	game.mouse.gameClick = false;
 	mouseHandlerGlobal(ev);
 	if (
 		/// #if EDITOR
@@ -42,6 +41,7 @@ const mouseHandlerGlobalUp = (ev: PointerEvent) => {
 const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 	if (ev.buttons === 0) {
 		game.mouse.click = 0;
+		game.mouse.gameClick = false;
 	}
 	mouseHandlerGlobal(ev);
 	if (
