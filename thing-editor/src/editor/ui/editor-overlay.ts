@@ -10,12 +10,14 @@ import Selection from 'thing-editor/src/editor/utils/selection';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import ___GizmoArrow from 'thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c';
+import EDITOR_FLAGS from '../utils/flags';
 
 let isViewPortScrolling = false;
 let scrollingX = 0;
 let scrollingY = 0;
 
 let rightButtonDraggingStarted = false;
+let rightButtonDraggingBlocked = false;
 
 const overlayLayer = new Container();
 
@@ -41,19 +43,25 @@ editorEvents.once('gameWillBeInitialized', () => {
 				isViewPortScrolling = true;
 				scrollingX = game.__mouse_EDITOR.x;
 				scrollingY = game.__mouse_EDITOR.y;
-			} else if (ev.buttons === 2) {
-				if (!___GizmoArrow.overedArrow) {
-					if (ev.altKey) {
-						editorUtils.clone();
-					}
-					moveSelectionToMouse(ev);
-					rightButtonDraggingStarted = true;
-				}
 			} else {
-				const selectionDisabled = !game.__EDITOR_mode && !game.__paused && !ev.altKey && !ev.ctrlKey && !ev.shiftKey;
-				if (!selectionDisabled) {
-					if (ev.buttons === 1 && !___GizmoArrow.overedArrow) {
-						selectByStageClick(ev);
+				if (EDITOR_FLAGS.blockSelectByStageClick) {
+					rightButtonDraggingBlocked = true;
+					return;
+				}
+				if (ev.buttons === 2) {
+					if (!___GizmoArrow.overedArrow) {
+						if (ev.altKey) {
+							editorUtils.clone();
+						}
+						moveSelectionToMouse(ev);
+						rightButtonDraggingStarted = true;
+					}
+				} else {
+					const selectionDisabled = !game.__EDITOR_mode && !game.__paused && !ev.altKey && !ev.ctrlKey && !ev.shiftKey;
+					if (!selectionDisabled) {
+						if (ev.buttons === 1 && !___GizmoArrow.overedArrow) {
+							selectByStageClick(ev);
+						}
 					}
 				}
 			}
@@ -77,7 +85,7 @@ editorEvents.once('gameWillBeInitialized', () => {
 					scrollingX = game.__mouse_EDITOR.x;
 					scrollingY = game.__mouse_EDITOR.y;
 				}
-			} else if (ev.buttons === 2 && (rightButtonDraggingStarted || (ev.target === game.pixiApp.view)) && !___GizmoArrow.draggedArrow) {
+			} else if (!rightButtonDraggingBlocked && ev.buttons === 2 && (rightButtonDraggingStarted || (ev.target === game.pixiApp.view)) && !___GizmoArrow.draggedArrow) {
 				moveSelectionToMouse(ev);
 				rightButtonDraggingStarted = true;
 			}
@@ -233,6 +241,7 @@ function selectByStageClick(ev: MouseEvent) {
 
 function stopRightButtonMoving() {
 	rightButtonDraggingStarted = false;
+	rightButtonDraggingBlocked = false;
 }
 
 export default overlayLayer;

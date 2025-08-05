@@ -12,6 +12,8 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import { onNewSceneClick, onSaveAsSceneClick } from 'thing-editor/src/editor/utils/scene-utils';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
+import type ___Ruler from 'thing-editor/src/engine/lib/assets/src/___system/ruler.c';
 import L from 'thing-editor/src/engine/utils/l';
 
 // no R.span because it causes use before initialization
@@ -273,6 +275,21 @@ const MAIN_MENU: MainMenuItem[] = [
 						w.resetLayout();
 					}
 					location.reload();
+				}
+			},
+			{
+				name: 'Show ruler',
+				hotkey: {key: 'r', altKey: true},
+				onClick: async () => {
+					const overlay = (await import('thing-editor/src/editor/ui/editor-overlay')).default;
+					const ruler = overlay.getChildByName('___system/ruler') as ___Ruler;
+					if (ruler) {
+						ruler.removeRuler();
+					} else {
+						const ruler = Lib.loadPrefab('___system/ruler') as ___Ruler;
+						overlay.addChild(ruler);
+						ruler.initRuler();
+					}
 				}
 			}
 		]

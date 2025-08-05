@@ -1,0 +1,349 @@
+{
+	"c": "___Ruler",
+	"p": {
+		"name": "___system/ruler",
+		"x": 15,
+		"y": -13
+	},
+	":": [
+		{
+			"c": "__SystemBackDrop",
+			"p": {
+				"interactive": true,
+				"shapeFillAlpha": 0.29
+			}
+		},
+		{
+			"c": "Container",
+			"p": {
+				"name": "start-point"
+			},
+			":": [
+				{
+					"c": "Shape",
+					"p": {
+						"name": "reflected-guide",
+						"x": -100,
+						"alpha": 0.7,
+						"width": 200,
+						"height": 56,
+						"shapeFillAlpha": 0,
+						"shapeLineWidth": 2
+					}
+				},
+				{
+					"c": "Shape",
+					"p": {
+						"name": "guide",
+						"alpha": 0.2,
+						"height": 28,
+						"shapeFillAlpha": 0,
+						"shapeLineWidth": 15,
+						"shapeLineColor": 0
+					}
+				},
+				{
+					"c": "Shape",
+					"p": {
+						"name": "guide",
+						"height": 28,
+						"shapeFillAlpha": 0,
+						"shapeLineWidth": 2
+					}
+				},
+				{
+					"c": "Shape",
+					"p": {
+						"name": "guide",
+						"alpha": 0.6,
+						"height": 28,
+						"shapeFillAlpha": 0,
+						"shapeLineWidth": 5
+					}
+				},
+				{
+					"c": "Container",
+					"p": {
+						"name": "zero-point-view"
+					},
+					":": [
+						{
+							"c": "Shape",
+							"p": {
+								"alpha": 0.2,
+								"shape": 4,
+								"shapeFillColor": 16777215,
+								"_shapePoints": [
+									{
+										"x": 0,
+										"y": 0
+									},
+									{
+										"x": 10,
+										"y": 0
+									},
+									{
+										"x": 10,
+										"y": 4
+									},
+									{
+										"x": 7,
+										"y": 8
+									},
+									{
+										"x": 2,
+										"y": 10
+									},
+									{
+										"x": 0,
+										"y": 11
+									}
+								]
+							}
+						},
+						{
+							"c": "Shape",
+							"p": {
+								"rotation": -3.141592653589793,
+								"alpha": 0.2,
+								"shape": 4,
+								"shapeFillColor": 16777215,
+								"_shapePoints": [
+									{
+										"x": 0,
+										"y": 0
+									},
+									{
+										"x": 10,
+										"y": 0
+									},
+									{
+										"x": 10,
+										"y": 4
+									},
+									{
+										"x": 7,
+										"y": 8
+									},
+									{
+										"x": 2,
+										"y": 10
+									},
+									{
+										"x": 0,
+										"y": 11
+									}
+								]
+							}
+						},
+						{
+							"c": "Shape",
+							"p": {
+								"rotation": -3.141592653589793,
+								"shape": 2,
+								"shapeFillAlpha": 0,
+								"shapeLineWidth": 1
+							}
+						}
+					]
+				},
+				{
+					"c": "Container",
+					"p": {
+						"name": "start-point-info"
+					},
+					":": [
+						{
+							"c": "Container",
+							"p": {
+								"x": -77,
+								"y": -36
+							},
+							":": [
+								{
+									"c": "Trigger",
+									"p": {
+										"x": -50,
+										"y": -13,
+										"dataPath": "this.parent.parent.parent.parent.startPoint.x",
+										"pow": 1,
+										"damp": 0
+									},
+									":": [
+										{
+											"c": "Shape",
+											"p": {
+												"x": -14,
+												"y": -13,
+												"alpha": 0.4,
+												"shape": 1,
+												"width": 128,
+												"height": 28,
+												"shapeRadius": 69
+											}
+										},
+										{
+											"c": "Label",
+											"p": {
+												"text": "X: 12",
+												"style.fontSize": 32,
+												"style.align": "left",
+												"maxWidth": 105,
+												"dataPath": "this.parent.parent.parent.parent.parent.startPoint.x",
+												"refreshInterval": 0,
+												"template": "X: %d",
+												"isNumeric": true
+											}
+										}
+									]
+								},
+								{
+									"c": "Trigger",
+									"p": {
+										"x": -50,
+										"y": 16,
+										"dataPath": "this.parent.parent.parent.parent.startPoint.y",
+										"pow": 1,
+										"damp": 0
+									},
+									":": [
+										{
+											"c": "Shape",
+											"p": {
+												"x": -14,
+												"y": -14,
+												"alpha": 0.4,
+												"shape": 1,
+												"width": 128,
+												"height": 28,
+												"shapeRadius": 69
+											}
+										},
+										{
+											"c": "Label",
+											"p": {
+												"text": "Y: 12",
+												"style.fontSize": 32,
+												"style.align": "left",
+												"maxWidth": 105,
+												"dataPath": "this.parent.parent.parent.parent.parent.startPoint.y",
+												"refreshInterval": 0,
+												"template": "Y: %d",
+												"isNumeric": true
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"c": "Container",
+					"p": {
+						"name": "size-info",
+						"x": 99,
+						"y": 27
+					},
+					":": [
+						{
+							"c": "Container",
+							"p": {
+								"x": 70,
+								"y": 32
+							},
+							":": [
+								{
+									"c": "Trigger",
+									"p": {
+										"x": -50,
+										"y": -13,
+										"dataPath": "this.parent.parent.parent.parent.W",
+										"pow": 1,
+										"damp": 0
+									},
+									":": [
+										{
+											"c": "Shape",
+											"p": {
+												"x": -14,
+												"y": -13,
+												"alpha": 0.4,
+												"shape": 1,
+												"width": 128,
+												"height": 28,
+												"shapeRadius": 69
+											}
+										},
+										{
+											"c": "Label",
+											"p": {
+												"text": "W: 12",
+												"style.fontSize": 32,
+												"style.align": "left",
+												"maxWidth": 105,
+												"dataPath": "this.parent.parent.parent.parent.parent.W",
+												"refreshInterval": 0,
+												"template": "W: %d",
+												"isNumeric": true
+											}
+										}
+									]
+								},
+								{
+									"c": "Trigger",
+									"p": {
+										"x": -50,
+										"y": 16,
+										"dataPath": "this.parent.parent.parent.parent.H",
+										"pow": 1,
+										"damp": 0
+									},
+									":": [
+										{
+											"c": "Shape",
+											"p": {
+												"x": -14,
+												"y": -14,
+												"alpha": 0.4,
+												"shape": 1,
+												"width": 128,
+												"height": 28,
+												"shapeRadius": 69
+											}
+										},
+										{
+											"c": "Label",
+											"p": {
+												"text": "H: 12",
+												"style.fontSize": 32,
+												"style.align": "left",
+												"maxWidth": 105,
+												"dataPath": "this.parent.parent.parent.parent.parent.H",
+												"refreshInterval": 0,
+												"template": "H: %d",
+												"isNumeric": true
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"c": "Shape",
+							"p": {
+								"name": "size-info-rect",
+								"x": 3,
+								"y": 3,
+								"alpha": 0,
+								"width": 134,
+								"height": 61,
+								"shapeFillColor": 16711680
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

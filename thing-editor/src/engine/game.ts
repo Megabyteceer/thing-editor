@@ -63,7 +63,8 @@ const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
 
 interface Mouse {
-	click: boolean;
+	/** 1 - left button, 2 - right button, 0 - no button pressed*/
+	click: number;
 	x: number;
 	y: number;
 }
