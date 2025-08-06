@@ -244,8 +244,9 @@
 }
 
 .time-marker-label {
-	width: 230px;
+	width: 160px;
 	margin: 2px 12px;
+	background: #3b3b3b;
 	color: #b5b5b5;
 	pointer-events: none;
 }
@@ -299,6 +300,12 @@
 	padding-left: 0;
 	border-radius: 14px;
 	margin: 1px;
+}
+
+.timeline-time-number {
+	top: 2px;
+    position: absolute;
+    color: #636363;
 }
 
 .timeline-field-name {

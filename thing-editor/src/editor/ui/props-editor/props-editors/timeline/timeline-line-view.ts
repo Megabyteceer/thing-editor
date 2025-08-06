@@ -65,7 +65,7 @@ export default class TimelineLineView extends Component<TimelineLineViewProps> {
 		assert(lastKeyframe, 'Animated field with no keyframes detected.', 90001);
 		let width = Math.max(lastKeyframe.t, lastKeyframe.j);
 
-		width += 300;
+		width += 3300;
 		width *= widthZoom;
 		let height = heightZoom;
 

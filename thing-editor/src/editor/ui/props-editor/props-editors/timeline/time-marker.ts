@@ -49,7 +49,12 @@ export default class TimeMarker extends Component<TimeMarkerProps, TimeMarkerSta
 	}
 
 	render() {
+		const timeNumbers = [];
+		for (let i = 60; i < 1500; i += 60) {
+			timeNumbers.push(R.div({className: 'timeline-time-number', style: { left: i * this.props.owner.state.widthZoom}}, i));
+		}
 		return R.div({ className: 'time-marker-body', onMouseDown: this.onMouseDown },
+			timeNumbers,
 			R.div({ className: 'time-marker', style: { left: this.state.time * this.props.owner.state.widthZoom } },
 				R.div(timeMarkerLineProps),
 				R.div(timeMarkerLabelProps,
