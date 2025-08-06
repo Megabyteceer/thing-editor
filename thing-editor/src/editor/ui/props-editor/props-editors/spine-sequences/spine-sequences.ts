@@ -377,6 +377,13 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 			className += ' spine-sequence-item-invalid';
 		}
 
+		const randomMarker = item.delayRandom ? R.div({onMouseDown: (ev:PointerEvent) => {
+			if (ev.buttons === 2) {
+				delete item.delayRandom;
+				this.invalidate();
+			}
+		}, className: 'spine-sequence-random', title: 'Random delay ' + item.delayRandom}, '?') : undefined;
+
 		const isLoop = (this.activeSequence.l === itemId) ?
 			R.div(loopPointProps, 'loop') :
 			undefined;
@@ -517,6 +524,7 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 				style: {left: delayWidth},
 			}, item.n, ' (', duration, 'f)')
 			),
+			randomMarker,
 			actions);
 	}
 
@@ -620,6 +628,7 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 
 			const mixValue = this.activeSequenceItem?.hasOwnProperty('mixDuration') ? this.activeSequenceItem?.mixDuration : 0;
 			const delayValue = this.activeSequenceItem?.hasOwnProperty('delay') ? this.activeSequenceItem?.delay : 0;
+			const delayRandomValue = this.activeSequenceItem?.hasOwnProperty('delayRandom') ? this.activeSequenceItem?.delayRandom : 0;
 			const speedValue = this.activeSequenceItem?.hasOwnProperty('speed') ? this.activeSequenceItem?.speed : 1;
 
 			additionalProps = R.fragment(
@@ -659,9 +668,24 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 								min: 0,
 								onChange: (val) => {
 									if (val > 0) {
-							this.activeSequenceItem!.delay = val;
+										this.activeSequenceItem!.delay = val;
 									} else {
 										delete this.activeSequenceItem!.delay;
+									}
+									this.invalidate();
+								}
+							}))),
+					R.div({className: 'props-field'},
+						R.div({callsName: 'props-label'}, 'Delay random:'),
+						R.div({className: 'props-wrapper'},
+							h(NumberEditor, {
+								value: delayRandomValue,
+								min: 0,
+								onChange: (val) => {
+									if (val > 0) {
+										this.activeSequenceItem!.delayRandom = val;
+									} else {
+										delete this.activeSequenceItem!.delayRandom;
 									}
 									this.invalidate();
 								}

@@ -581,28 +581,32 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			}
 			if (this.isPlaying) {
 				if (this.playingSequenceItem) {
-					this.actionsTime++;
-					while ((this.nextAction?.t as number) <= this.actionsTime) {
-						callByPath(this.nextAction!.a, this);
-						if (!this.parent) {
-							return;
-						}
-						this.nextAction = this.nextAction!.___next;
-					}
-					if (this.sequenceDelay) {
-						this.sequenceDelay--;
+					if (this.sequenceDelayAdd) {
+						this.sequenceDelayAdd--;
 					} else {
-						this.timeToNextItem--;
-						if (this.timeToNextItem === 0) {
-							if (!this.playingSequenceItem!.___next) {
-								this.stop();
-								this.actionsTime = 0;
-								this.playingSequenceItem = undefined;
-							} else {
-								this._playSequenceItem(this.playingSequenceItem!.___next);
+						this.actionsTime++;
+						while ((this.nextAction?.t as number) <= this.actionsTime) {
+							callByPath(this.nextAction!.a, this);
+							if (!this.parent) {
+								return;
 							}
+							this.nextAction = this.nextAction!.___next;
 						}
-						this.updateTime += 0.01666666666667;
+						if (this.sequenceDelay) {
+							this.sequenceDelay--;
+						} else {
+							this.timeToNextItem--;
+							if (this.timeToNextItem === 0) {
+								if (!this.playingSequenceItem!.___next) {
+									this.stop();
+									this.actionsTime = 0;
+									this.playingSequenceItem = undefined;
+								} else {
+									this._playSequenceItem(this.playingSequenceItem!.___next);
+								}
+							}
+							this.updateTime += 0.01666666666667;
+						}
 					}
 				} else {
 					this.updateTime += 0.01666666666667;
@@ -719,6 +723,8 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	playingSequence?: SpineSequence;
 	playingSequenceItem?: SpineSequenceItem;
 	sequenceDelay = 0;
+	sequenceDelayAdd = 0;
+
 
 	gotoLabel(labelName: string) {
 		assert(this.hasLabel(labelName), 'Label \'' + labelName + '\' not found in Spine.', 99999);
@@ -732,6 +738,11 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			this.play(item.n, (item.mixDuration || 0) / 60);
 			this.loop = false;
 			this.sequenceDelay = item.delay || 0;
+			if (item.delayRandom) {
+				this.sequenceDelayAdd = Math.floor(Math.random() * item.delayRandom);
+			} else {
+				this.sequenceDelayAdd = 0;
+			}
 			this.speed = (item.hasOwnProperty('speed') ? item.speed : 1) as number;
 			this.timeToNextItem = item.___duration!;
 			if (item.actions) {
@@ -1042,6 +1053,7 @@ export interface SpineSequenceItem {
 	n: string;
 	mixDuration?: number;
 	delay?: number;
+	delayRandom?: number;
 	speed?: number;
 	actions?: SpineSequenceItemAction[]; // TODO: add actions (callbacks) editor
 

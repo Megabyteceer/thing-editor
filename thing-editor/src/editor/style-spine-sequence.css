@@ -23,6 +23,17 @@
 	background-color: #333333;
 }
 
+.spine-sequence-random {
+	position: absolute;
+    left: -7px;
+    top: -7px;
+    text-align: center;
+	color: #fff;
+    width: 20px;
+    border-radius: 20px;
+    background-color: #5a0056;
+}
+
 .spine-sequence-header-active {
 	background-color: #181818;
 	border-top-left-radius: 20px;
