@@ -374,7 +374,7 @@ export namespace editorUtils {
 		if (!(o instanceof Container)) {
 			o = game.editor.selection[0];
 		}
-		let blob = await exportAsPng(o);
+		let blob = await exportAsPng(o, undefined, undefined, 1) as Blob;
 		if (blob) {
 			let a = document.createElement('a');
 			document.body.append(a);

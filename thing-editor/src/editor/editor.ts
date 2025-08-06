@@ -304,7 +304,7 @@ class Editor {
 				this.onObjectsPropertyChanged(o, field, val, delta);
 			}
 			if (field.afterEdited) {
-				field.afterEdited();
+				field.afterEdited(val);
 			}
 		}
 	}

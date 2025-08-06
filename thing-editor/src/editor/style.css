@@ -1037,6 +1037,10 @@ input[disabled] {
 	border-left: 3px dotted #676d12;
 }
 
+.assets-item-prefab-pic {
+	vertical-align: middle;
+}
+
 .selected-text {
 	background-color: rgb(102, 66, 0);
 }

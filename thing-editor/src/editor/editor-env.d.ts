@@ -54,7 +54,7 @@ interface EditablePropertyDescRaw<T extends import('pixi.js').DisplayObject = im
 	noNullCheck?: true;
 	important?: boolean;
 	tip?: string | (() => string | undefined);
-	afterEdited?: () => void;
+	afterEdited?: (val: any) => void;
 	multiline?: boolean;
 	notSerializable?: true;
 	override?: true;

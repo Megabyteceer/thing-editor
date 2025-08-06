@@ -12,12 +12,16 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game, { DEFAULT_FADER_NAME } from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import exportAsPng from '../../utils/export-as-png';
 
 const toolButtonsProps = {
 	className: 'asset-item-tool-buttons',
 	onDblClick: sp,
 	onClick: sp
 };
+
+const NO_PREVIEW_IMG = document.createElement('img');
+NO_PREVIEW_IMG.src = 'can-not-generate-prefab-preview';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -26,13 +30,14 @@ const assetsItemNameProps = {
 };
 
 const placeAsChild = (file: FileDescPrefab) => {
-
 	let insertTo = game.editor.selection.slice();
 	game.editor.selection.clearSelection();
 	for (let o of insertTo) {
 		game.editor.addTo(o, Lib.__loadPrefabReference(file.assetName));
 	}
 };
+
+const previewsCache = new Map() as Map<string, HTMLCanvasElement>;
 
 const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 	showContextMenu(addSharedAssetContextMenu(file, [
@@ -136,6 +141,30 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		desc = R.div(descriptionProps, file.asset.p.__description.split('\n')[0]);
 	}
 	const Class = getSerializedObjectClass(file.asset);
+	let preview = R.span({
+		className: 'assets-item-prefab-pic',
+		ref: (ref: any) => {
+			if (ref && !game.editor.buildProjectAndExit) {
+				const img = previewsCache.get(file.assetName);
+				if (img) {
+					ref.appendChild(img);
+				} else {
+					setTimeout(() => {
+						const o = Lib.loadPrefab(file.assetName);
+						(exportAsPng(o, 30, 30, -1, undefined, true) as any).then((canvas: HTMLCanvasElement) => {
+							if (!canvas) {
+								canvas = NO_PREVIEW_IMG as any;
+							}
+							previewsCache.set(file.assetName, canvas);
+							ref.appendChild(canvas);
+						});
+					}, 10);
+				}
+			}
+		},
+	});
+
+
 	return R.div(
 		{
 			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
@@ -181,6 +210,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		},
 		libInfo(file),
 		R.classIcon(Class),
+		preview,
 		R.span(assetsItemNameProps, file.assetName),
 		R.span(toolButtonsProps,
 			R.btn('<', (ev) => {
