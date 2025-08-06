@@ -16,6 +16,18 @@ const KEEP_VISIBLE__EDITABLE_PROPERTY_DESC = {
 		}
 	}
 };
+
+const VISIBLE_PROPERTY_DESC = {
+	name: 'visible',
+	type: 'boolean',
+	override: true,
+	afterEdited: (val:boolean) => {
+		let o = game.editor.selection[0] as Trigger;
+		if (!val) {
+			o.__keepVisibleInEditor = false;
+		}
+	}
+} as EditablePropertyDescRaw;
 /// #endif
 
 
@@ -31,6 +43,7 @@ export default class Trigger extends Container {
 	lastUpdateTime = 0;
 
 	/// #if EDITOR
+	@editable(VISIBLE_PROPERTY_DESC)
 	__visibleInEditor?: boolean;
 
 	/// #endif
@@ -333,9 +346,6 @@ export default class Trigger extends Container {
 	set visible(v: boolean) {
 		delete this.__visibleInEditor;
 		this._visible = v;
-		if (!v) {
-			this.__keepVisibleInEditor = false;
-		}
 	}
 
 	/// #endif
