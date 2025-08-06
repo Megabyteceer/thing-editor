@@ -208,7 +208,7 @@
 		"version": "0.2.0",
 		"configurations": [
 			{
-				"name": "Editor",
+				"name": "EDITOR",
 				"type": "chrome",
 				"request": "attach",
 				"webRoot": "${workspaceFolder}",
@@ -319,7 +319,7 @@
 		],
 		"compounds": [
 			{
-				"name": "Main & Render",
+				"name": "front & be",
 				"configurations": [
 					"Render",
 					"Main"
