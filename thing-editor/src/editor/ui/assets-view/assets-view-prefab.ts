@@ -22,7 +22,7 @@ const toolButtonsProps = {
 };
 
 const NO_PREVIEW_IMG = document.createElement('img');
-NO_PREVIEW_IMG.src = 'can-not-generate-prefab-preview';
+NO_PREVIEW_IMG.src = '/thing-editor/img/broken-image.png';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
