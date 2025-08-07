@@ -515,7 +515,8 @@ input {
 }
 
 .props-field,
-.props-field input {
+.props-field input,
+.field-editor-wrapper input {
 	font-family: Consolas, "Courier New", monospace;
 }
 
