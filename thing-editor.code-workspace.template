@@ -219,7 +219,8 @@
 					//"hidden": true
 				},
 				"skipFiles": [
-					"**/debug/assert**"
+					"**/debug/assert**",
+					"**/number-checker.ts"
 				],
 				"sourceMaps": true,
 				"smartStep": true,
@@ -247,7 +248,8 @@
 					"hidden": true
 				},
 				"skipFiles": [
-					"**/debug/assert**"
+					"**/debug/assert**",
+					"**/number-checker.ts"
 				],
 				"sourceMaps": true,
 				"smartStep": true,
