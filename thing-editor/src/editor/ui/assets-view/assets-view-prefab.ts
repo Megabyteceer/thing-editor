@@ -12,6 +12,7 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game, { DEFAULT_FADER_NAME } from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import { editorEvents } from '../../utils/editor-events';
 import exportAsPng from '../../utils/export-as-png';
 
 const toolButtonsProps = {
@@ -38,6 +39,10 @@ const placeAsChild = (file: FileDescPrefab) => {
 };
 
 const previewsCache = new Map() as Map<string, HTMLCanvasElement>;
+
+editorEvents.on('prefabUpdated', (prefabName:string) => {
+	previewsCache.delete(prefabName);
+});
 
 const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 	showContextMenu(addSharedAssetContextMenu(file, [
@@ -143,7 +148,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 	const Class = getSerializedObjectClass(file.asset);
 	let preview = R.span({
 		className: 'assets-item-prefab-pic',
-		ref: (ref: any) => {
+		ref: (ref: HTMLSpanElement) => {
 			if (ref && !game.editor.buildProjectAndExit) {
 				const img = previewsCache.get(file.assetName);
 				if (img) {
@@ -156,6 +161,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 								canvas = NO_PREVIEW_IMG as any;
 							}
 							previewsCache.set(file.assetName, canvas);
+							ref.querySelector('canvas')?.remove();
 							ref.appendChild(canvas);
 							Lib.destroyObjectAndChildren(o);
 						});

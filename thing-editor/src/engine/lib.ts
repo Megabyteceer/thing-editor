@@ -897,6 +897,7 @@ export default class Lib
 			fs.saveAsset(name, AssetType.PREFAB, prefabData, libName);
 		}
 		object.name = tmpName;
+		editorEvents.emit('prefabUpdated', name);
 	}
 
 	static __preparePrefabReference(o: Container, prefabName: string) {

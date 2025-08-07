@@ -11,6 +11,7 @@ type EditorEvents = {
 	willClassesReload: () => void;
 	didClassesReloaded: () => void;
 	gameWillBeInitialized: () => void;
+	prefabUpdated: (prefabName:string) => void;
 	firstSceneWillOpen: () => void;
 	assetsRefreshed: () => void;
 	textureUpdated: (textureName: string) => void;
