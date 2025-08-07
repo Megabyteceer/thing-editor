@@ -157,6 +157,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 							}
 							previewsCache.set(file.assetName, canvas);
 							ref.appendChild(canvas);
+							Lib.destroyObjectAndChildren(o);
 						});
 					}, 10);
 				}
