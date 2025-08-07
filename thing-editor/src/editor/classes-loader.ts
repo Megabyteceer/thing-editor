@@ -167,7 +167,10 @@ export default class ClassesLoader {
 				moduleName += '.ts' + versionQuery;
 			}
 
-			return imp(moduleName).then(onClassLoaded) as any;
+			return imp(moduleName).then(onClassLoaded).catch((er:Error) => {
+				game.editor.editSource(file.fileName, undefined, undefined, false, er);
+				game.editor.showError(er?.stack, 30008);
+			})as any;
 
 		})).then((_classes: SourceMappedConstructor[]) => {
 

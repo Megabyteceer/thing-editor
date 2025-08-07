@@ -1037,26 +1037,70 @@ class Editor {
 		}).catch(_er => {});
 	}
 
-	editSource(fileName: string, line?: string, char?: string, absolutePath = false) {
+	async editSource(fileName: string, line?: string, char?: string, absolutePath = false, errorToFindLineNum?:{stack?: string}) {
 		if (this.editorArguments['no-vscode-integration']) {
 			return;
 		}
+		if (errorToFindLineNum) {
+			const pureFileName = fileName.split('?')[0].split(':')[0];
+			const errorLine = errorToFindLineNum?.stack?.split('\n').find(l => l.includes(pureFileName));
+			if (errorLine) {
+				const a = errorLine.split(':');
+				line = parseInt(a[a.length - 2]) as any;
+				char = parseInt(a[a.length - 1]) as any;
+				if (isNaN(line as any)) {
+					line = undefined;
+					char = undefined;
+				}
+				if (isNaN(char as any)) {
+					char = undefined;
+				}
+				await new Promise(resolve => setTimeout(resolve, 100));
+			}
+		}
+
 		if (line !== undefined) {
 			fileName += ':' + line;
 			if (char !== undefined) {
 				fileName += ':' + char;
 			}
 		}
+
+		let rootPath: string = fs.getArgs()[0].split('node_modules')[0].replace(/\\/gm, '/');
+		fileName = fileName.replace(rootPath, '/');
+		fileName = fileName.replace(/\?v=\d+/gm, '');
+		const a = fileName.split(':');
+		char = (a.length > 2) ? a.pop()! : '0';
+		line = a.pop()!;
+		if (!isNaN(parseInt(char)) && !isNaN(parseInt(line))) {
+			const url = a[0];
+			if (url) {
+				const SourceMapConsumer = (await (import('source-map-js'))).default.SourceMapConsumer;
+				const src = await (await fetch((url.startsWith('/') ? url : ('/' + url)) + '?source-map-version' + Date.now())).text();
+				if (src && !src.includes('<title>Error</title>\n')) { // vite error
+					const sourceMapUrl = src.split('sourceMappingURL=')[1];
+					const sourceMap = await (await fetch(sourceMapUrl)).json();
+					if (sourceMap) {
+						const consumer = new SourceMapConsumer(sourceMap as any);
+						const ret = consumer.originalPositionFor({ line: parseInt(line), column: parseInt(char) || 0 });
+						if (typeof ret.line === 'number') {
+							fileName = url + ':' + ret.line;
+							if (typeof ret.column === 'number') {
+								fileName += ':' + ret.column;
+							}
+						}
+					}
+				}
+			}
+		}
 		if (!absolutePath) {
-			let rootPath: string = fs.getArgs()[0].split('node_modules')[0];
+
 			if (fileName.startsWith('\\') || fileName.startsWith('/')) {
 				rootPath = rootPath.substring(0, rootPath.length - 1);
 			}
-			this.editFile(rootPath + fileName);
-		} else {
-			this.editFile(fileName);
+			fileName = rootPath + fileName;
 		}
-
+		this.editFile(fileName);
 	}
 
 	editFile(fileName: string, findText?: string) {
