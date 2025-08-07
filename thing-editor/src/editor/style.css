@@ -1040,6 +1040,7 @@ input[disabled] {
 
 .assets-item-prefab-pic {
 	vertical-align: middle;
+	margin: 0 10px;
 }
 
 .selected-text {
