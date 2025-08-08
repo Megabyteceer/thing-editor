@@ -60,7 +60,7 @@ PrefabPropertyEditor.contextMenuInjection = (contextMenu: ContextMenuItem[], _fi
 			}
 		},
 		{
-			name: 'Edit prefab',
+			name: R.fragment(R.icon('asset-prefab'), 'Edit prefab'),
 			onClick: () => {
 				PrefabEditor.editPrefab(_clickedValue, true);
 			}
