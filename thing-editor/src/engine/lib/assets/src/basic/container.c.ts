@@ -99,7 +99,7 @@ Container.prototype.addFilter = function addFilter(f) {
 };
 
 Container.prototype.removeFilter = function removeFilter(this: Container, f) {
-	let i = (this.filters as Filter[]).indexOf(f);
+	let i = (this.filters as Filter[])?.indexOf(f);
 	if (i >= 0) {
 		(this.filters as Filter[]).splice(i, 1);
 	}

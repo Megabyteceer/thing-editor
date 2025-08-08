@@ -51,6 +51,11 @@ let IS_SELECTION_LOADING_TIME = false;
 
 export default class Selection extends Array<Container> {
 
+	constructor() {
+		super();
+		this._refreshOutlinesInner = this._refreshOutlinesInner.bind(this);
+	}
+
 	select(object: Container, add?: boolean, onTreeViewUpdated?:() => void, scrollInView = false) {
 		if (!add) {
 			if (this.length === 1 && this[0] === object) {
@@ -108,7 +113,7 @@ export default class Selection extends Array<Container> {
 			}
 			p = p.parent;
 		}
-		o.addFilter(selectionFilter);
+
 		this.push(o);
 		o.__onSelect();
 		if (scrollInView) {
@@ -118,6 +123,33 @@ export default class Selection extends Array<Container> {
 			game.editor.history.scheduleSelectionSave();
 		}
 		LabelsLogger.refresh();
+		this._refreshOutlines();
+	}
+
+	private outlineTimeout = 0;
+
+	private _refreshOutlines() {
+		if (!this.outlineTimeout) {
+			this.outlineTimeout = window.setTimeout(this._refreshOutlinesInner, 1);
+		}
+	}
+
+	private _refreshOutlinesInner() {
+		this.outlineTimeout = 0;
+		forAllSelected:
+		for (const o of this) {
+			let p = o.parent;
+			while (p) {
+				if (p.__nodeExtendData.isSelected) {
+					o.removeFilter(selectionFilter);
+					continue forAllSelected;
+				}
+				p = p.parent;
+			}
+			if (!o.filters?.includes(selectionFilter)) {
+				o.addFilter(selectionFilter);
+			}
+		}
 	}
 
 	remove(o: Container) {
@@ -127,7 +159,6 @@ export default class Selection extends Array<Container> {
 		assert(i >= 0, 'Node is not registered in selected list.');
 		o.__nodeExtendData.isSelected = false;
 		o.removeFilter(selectionFilter);
-
 		this.splice(i, 1);
 		editorUtils.exitPreviewMode(o);
 		if (!IS_SELECTION_LOADING_TIME) {
@@ -137,6 +168,7 @@ export default class Selection extends Array<Container> {
 			o.__onUnselect();
 		}
 		LabelsLogger.refresh();
+		this._refreshOutlines();
 	}
 
 	saveSelection(): SelectionData {

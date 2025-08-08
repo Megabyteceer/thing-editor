@@ -288,9 +288,15 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 		return treeItem;
 	}
 
+	private selectingNode?: Container;
+
 	selectInTree(node: Container, add = false, fieldName?: string, fieldArrayItemNumber = -1) {
 		assert(node, 'Attempt to select in tree empty node');
+		this.selectingNode = node;
 		game.editor.selection.select(node, add, () => {
+			if (this.selectingNode !== node) { //select and shake last node only
+				return;
+			}
 			if (fieldName && !add) {
 				game.editor.ui.propsEditor.selectField(fieldName, false, false, fieldArrayItemNumber);
 			}
