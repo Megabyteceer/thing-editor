@@ -1269,6 +1269,10 @@ input[disabled] {
     display: block;
     height: 90px;
 }
+.data-path-small-header {
+   font-weight: normal;
+   font-size: 80%;
+}
 
 .asset-editor {
 	display: flex;

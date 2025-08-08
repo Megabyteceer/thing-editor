@@ -233,7 +233,7 @@ interface SelectableProperty extends AnyType {
 	___EDITOR_isHiddenForDataChooser?: true;
 	___EDITOR_isGoodForChooser?: true;
 	___EDITOR_isGoodForCallbackChooser?: true;
-	___EDITOR_ChooserOrder?: true;
+	___EDITOR_ChooserOrder?: number;
 	___EDITOR_actionIcon?: import('preact').ComponentChild;
 	___EDITOR_callbackParameterChooserFunction?: (owner: any) => Promise<any[] | any>;
 }
