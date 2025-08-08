@@ -103,12 +103,7 @@ export default class ProjectsList extends Component<ProjectsListProps, ProjectsL
 			}).map(renderProjectItem);
 		} else {
 
-			items = group.groupArray(projects.map(renderProjectItem), undefined, undefined, true).sort((a: any, b: any) => {
-				// sort projects groups
-				if (a.key < b.key) return -1;
-				if (a.key > b.key) return 1;
-				return 0;
-			});
+			items = group.groupArray(projects.map(renderProjectItem), 'choose-project');
 		}
 
 		return R.div({ className: 'project-open-chooser' },

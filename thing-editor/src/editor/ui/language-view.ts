@@ -545,7 +545,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		});
 
 		if (!this.state.filter) {
-			lines = group.groupArray(lines, '.');
+			lines = group.groupArray(lines, 'language-view', '.');
 		}
 
 		const select: SelectEditorItem[] = assetsDirs.map((dir) => {
