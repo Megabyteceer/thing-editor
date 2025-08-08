@@ -38,7 +38,7 @@ interface EditablePropertyDescRaw<T extends import('pixi.js').DisplayObject = im
 	/** field changes pass vale through this function  */
 	parser?: (val: any) => any;
 	disabled?: (o: T) => string | undefined | boolean | null;
-	beforeEdited?: (val: any) => void;
+	beforeEdited?: (val: any) => void | true | string;
 	onBlur?: () => void;
 	onClick?: (ev: any) => void;
 	className?: string;

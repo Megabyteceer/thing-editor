@@ -74,7 +74,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 			onClick: () => {
 				editorUtils.enterPrefabName(file.assetName, 'Enter name for duplicate prefab: ' + file.assetName).then((enteredName) => {
 					if (enteredName) {
-						const o = Lib.loadPrefab(file.assetName);
+						const o = Lib.__loadPrefabNoInit(file.assetName);
 						Lib.__savePrefab(o, enteredName);
 						PrefabEditor.editPrefab(enteredName);
 						Lib.destroyObjectAndChildren(o);
@@ -155,7 +155,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 					ref.appendChild(img);
 				} else {
 					setTimeout(() => {
-						const o = Lib.loadPrefab(file.assetName);
+						const o = Lib.__loadPrefabNoInit(file.assetName);
 						(exportAsPng(o, 30, 30, -1, undefined, true) as any).then((canvas: HTMLCanvasElement) => {
 							if (!canvas) {
 								canvas = NO_PREVIEW_IMG as any;

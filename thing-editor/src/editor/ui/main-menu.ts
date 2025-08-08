@@ -286,7 +286,7 @@ const MAIN_MENU: MainMenuItem[] = [
 					if (ruler) {
 						ruler.removeRuler();
 					} else {
-						const ruler = Lib.loadPrefab('___system/ruler') as ___Ruler;
+						const ruler = Lib.__loadPrefabNoInit('___system/ruler') as ___Ruler;
 						overlay.addChild(ruler);
 						ruler.initRuler();
 					}

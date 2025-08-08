@@ -296,8 +296,12 @@ class Editor {
 
 			assert(this.ui.propsEditor.editableProps[field.name], 'Property is disabled.');
 
-			if (field.beforeEdited) {
-				field.beforeEdited(val);
+			const blocked = field.beforeEdited && field.beforeEdited(val);
+			if (blocked) {
+				if (typeof blocked === 'string') {
+					editor.ui.modal.notify(blocked);
+				}
+				return;
 			}
 
 			for (let o of this.selection) {

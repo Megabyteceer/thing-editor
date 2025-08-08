@@ -1,3 +1,4 @@
+import type { Container } from 'pixi.js';
 import type { ComponentChild } from 'preact';
 import { h } from 'preact';
 import type { FileDesc, FileDescClass, FileDescPrefab } from 'thing-editor/src/editor/fs';
@@ -100,6 +101,20 @@ const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 		menu.splice(i + 1, 0, {
 			name: 'Override asset in project',
 			onClick: () => {
+				let o!:Container;
+				if (file.assetType === AssetType.SCENE) {
+					o = Lib.__loadPrefabNoInit(file.assetName);
+				} else if (file.assetType === AssetType.PREFAB) {
+					o = Lib.__loadPrefabNoInit(file.assetName);
+				}
+				if (o) {
+					const blocked = o?.__preventOverriding;
+					Lib.destroyObjectAndChildren(o);
+					if (blocked) {
+						game.editor.showError('Asset`s overriding is blocked.', 99999);
+						return;
+					}
+				}
 				fs.copyAssetToProject(file);
 			}
 		});
