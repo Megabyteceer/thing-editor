@@ -103,7 +103,7 @@ const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 			onClick: () => {
 				let o!:Container;
 				if (file.assetType === AssetType.SCENE) {
-					o = Lib.__loadPrefabNoInit(file.assetName);
+					o = Lib.__loadSceneNoInit(file.assetName);
 				} else if (file.assetType === AssetType.PREFAB) {
 					o = Lib.__loadPrefabNoInit(file.assetName);
 				}
@@ -111,7 +111,7 @@ const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 					const blocked = o?.__preventOverriding;
 					Lib.destroyObjectAndChildren(o);
 					if (blocked) {
-						game.editor.showError('Asset`s overriding is blocked.', 99999);
+						game.editor.showError('Asset`s overriding is prohibited.', 99999);
 						return;
 					}
 				}

@@ -44,7 +44,6 @@ const showImageContextMenu = (file: FileDescImage, ev: PointerEvent) => {
 						R.imageIcon(file)
 					), () => {
 						fs.deleteAsset(file.assetName, file.assetType);
-						game.editor.ui.refresh();
 					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			},

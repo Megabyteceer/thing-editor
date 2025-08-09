@@ -62,7 +62,6 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 						file.assetName
 					), () => {
 						fs.deleteAsset(file.assetName, file.assetType);
-						game.editor.openScene(game.projectDesc.mainScene);
 					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			},

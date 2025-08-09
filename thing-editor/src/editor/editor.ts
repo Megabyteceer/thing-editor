@@ -591,17 +591,17 @@ class Editor {
 		AssetsView.scrollAssetInToView(assetName);
 	}
 
-	warnEqualFiles(file: FileDesc, existingFile: FileDesc) {
-		this.ui.status.warn('File overlaps the same file in library. ' + file.fileName + ' => ' + existingFile.fileName, 99999, (ev?: PointerEvent) => {
+	warnEqualFiles(warning:string, file: FileDesc, existingFile: FileDesc) {
+		this.ui.status.warn(warning + ' ' + file.fileName + ' => ' + existingFile.fileName, 99999, (ev?: PointerEvent) => {
 			let preview = AssetsView.renderAssetItem(file);
 			if (ev && ev.ctrlKey) {
 				fs.deleteAsset(file.assetName, file.assetType);
 				game.editor.ui.status.clearLastClickedItem();
 			}
-			editor.ui.modal.showEditorQuestion('A you sure you want to remove duplicate file?', preview, () => {
+			editor.ui.modal.showEditorQuestion('A you sure you want to remove wrong overriding?', R.div(null, R.div(null, file.fileName), preview), () => {
 				fs.deleteAsset(file.assetName, file.assetType);
 				game.editor.ui.status.clearLastClickedItem();
-			}, R.span({ className: 'danger' }, R.img({ src: 'img/delete.png' }), 'Delete duplicate file'));
+			}, R.span({ className: 'danger' }, R.img({ src: 'img/delete.png' }), 'Delete wrong overriding'));
 		});
 	}
 
@@ -613,6 +613,10 @@ class Editor {
 		if (this.askSceneToSaveIfNeed()) {
 
 			Pool.__resetIdCounter();
+
+			while (game.editor.ui.modal.state.modals.length) {
+				game.editor.ui.modal.hideModal();
+			}
 
 			assert(name, 'name should be defined');
 

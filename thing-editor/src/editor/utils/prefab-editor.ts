@@ -38,6 +38,10 @@ export default class PrefabEditor {
 				game.editor.ui.modal.showError('No prefab with name ' + name + ' exists.');
 				return;
 			}
+			while (game.editor.ui.modal.state.modals.length) {
+				game.editor.ui.modal.hideModal();
+			}
+
 			let a = prefabsStack.slice();
 			PrefabEditor.acceptPrefabEdition();
 			if (isItStepInToStack) {

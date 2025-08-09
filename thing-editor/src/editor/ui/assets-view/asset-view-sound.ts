@@ -80,7 +80,6 @@ const assetItemRendererSound = (file: FileDesc) => {
 									file.assetName
 								), () => {
 									fs.deleteAsset(file.assetName, file.assetType);
-									game.editor.ui.refresh();
 								}, R.fragment(R.icon('delete'), ' Delete.')
 							);
 						},

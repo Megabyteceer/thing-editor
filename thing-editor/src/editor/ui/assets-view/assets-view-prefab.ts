@@ -6,7 +6,7 @@ import AssetsView, { addSharedAssetContextMenu } from 'thing-editor/src/editor/u
 import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
 import copyTextByClick, { isEventBlockedByTextCopy } from 'thing-editor/src/editor/utils/copy-text-by-click';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
-import { getSerializedObjectClass, regeneratePrefabsTypings } from 'thing-editor/src/editor/utils/generate-editor-typings';
+import { getSerializedObjectClass } from 'thing-editor/src/editor/utils/generate-editor-typings';
 import libInfo from 'thing-editor/src/editor/utils/lib-info';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
@@ -69,6 +69,13 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 		},
 		null,
 		{
+			name: R.fragment(R.icon('asset-prefab'), 'Edit prefab'),
+			disabled: () => !game.__EDITOR_mode,
+			onClick: () => {
+				PrefabEditor.editPrefab(file.assetName);
+			}
+		},
+		{
 			name: R.fragment(R.icon('asset-prefab'), 'Duplicate prefab'),
 			disabled: () => !game.__EDITOR_mode,
 			onClick: () => {
@@ -130,8 +137,6 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 							PrefabEditor.exitPrefabEdit(true);
 						}
 						fs.deleteAsset(file.assetName, file.assetType);
-						game.editor.ui.refresh();
-						regeneratePrefabsTypings();
 					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			},
