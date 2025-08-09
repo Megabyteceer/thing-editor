@@ -455,9 +455,9 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 }
 
 const renderRoots = (node: Container, i: number) => {
-	if ((node === game.currentContainer) || !game.__EDITOR_mode) {
+	if (node === game.currentContainer) {
 		return renderSceneNode(node);
-	} else {
+	} else if (!game.__EDITOR_mode) {
 		let style;
 		if (node.__nodeExtendData.hidden) {
 			style = { display: 'none' };
