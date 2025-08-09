@@ -9,6 +9,7 @@ import game from 'thing-editor/src/engine/game';
 import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import Lib, { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import { StatusClearingCondition } from './ui/status-clearing-confition';
 import { regeneratePrefabsTypings } from './utils/generate-editor-typings';
 
 
@@ -571,7 +572,8 @@ export default class fs {
 		return files.filter((file) => {
 			const wrongSymbol = fs.getWrongSymbol(file.fileName);
 			if (wrongSymbol) {
-				game.editor.ui.status.warn('File ' + file.fileName + ' ignored because of wrong symbol \'' + wrongSymbol + '\' in it\'s name', 32044);
+				game.editor.ui.status.warn('File ' + file.fileName + ' ignored because of wrong symbol \'' + wrongSymbol + '\' in it\'s name', 32044,
+					undefined, undefined, undefined, undefined, StatusClearingCondition.ASSETS_REFRESH);
 				return;
 			}
 			const assetName = file.assetName || file.fileName.substring(dirName.length);
@@ -594,6 +596,8 @@ export default class fs {
 	}
 
 	static refreshAssetsList(dirNames?: string[]) {
+
+		game.editor.ui.status.clearByCondition(StatusClearingCondition.ASSETS_REFRESH);
 
 		if (dirNames) {
 			assert(!lastAssetsDirs, 'dirNames already defined.');

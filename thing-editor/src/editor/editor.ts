@@ -51,6 +51,7 @@ import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototype
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
 import type { ContextMenuItem } from './ui/context-menu';
 import MainMenu from './ui/main-menu';
+import { StatusClearingCondition } from './ui/status-clearing-confition';
 import roundUpPoint from './utils/round-up-point';
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
@@ -602,7 +603,7 @@ class Editor {
 				fs.deleteAsset(file.assetName, file.assetType);
 				game.editor.ui.status.clearLastClickedItem();
 			}, R.span({ className: 'danger' }, R.img({ src: 'img/delete.png' }), 'Delete wrong overriding'));
-		});
+		}, undefined, undefined, undefined, StatusClearingCondition.ASSETS_REFRESH);
 	}
 
 	saveProjectDesc() {
@@ -798,7 +799,7 @@ class Editor {
 			c.__nodeExtendData.tmpGlobalPos = p;
 			let p2 = o.toLocal(p);
 			if (isNaN(p2.x) || isNaN(p2.y)) {
-				this.ui.status.warn('Object has zero scale and can not be moved without affecting children`s positions.', 30023, o);
+				this.ui.status.warn('Object has zero scale and can not be moved without affecting children`s positions.', 30023, o, undefined, undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 				return;
 			}
 		}

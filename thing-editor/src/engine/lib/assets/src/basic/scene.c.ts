@@ -1,6 +1,7 @@
 import { Container } from 'pixi.js';
 import type { FileDesc } from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from 'thing-editor/src/editor/utils/scene-all-validator';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -41,7 +42,7 @@ export default class Scene extends Container {
 			this.___framesToSkip--;
 			if (!this.___framesToSkip && !framesSkipAlerted) {
 				framesSkipAlerted = true;
-				game.editor.ui.status.warn(this.__skipFrames + ' frames skipped. Set __skipFrames zero to avoid frames skipping.', 99999, this, '__skipFrames');
+				game.editor.ui.status.warn(this.__skipFrames + ' frames skipped. Set __skipFrames zero to avoid frames skipping.', 99999, this, '__skipFrames', undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 			}
 			this.update();
 		}

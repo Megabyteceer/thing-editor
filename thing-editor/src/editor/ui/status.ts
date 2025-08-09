@@ -15,6 +15,7 @@ import { scrollInToView } from '../utils/scroll-in-view';
 import type { GroupFolderData } from './group';
 import group from './group';
 import { preactComponentChildToString } from './modal';
+import { StatusClearingCondition } from './status-clearing-confition';
 
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
@@ -25,6 +26,7 @@ interface StatusListItem {
 	message: string | ComponentChild;
 	owner?: StatusListItemOwner;
 	ownerId?: number;
+	clearingCondition?: StatusClearingCondition;
 	fieldName?: string;
 	fieldArrayItemNumber: number;
 	errorCode?: number;
@@ -140,14 +142,14 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 		shakeDomElement(document.querySelector('#window-info') as HTMLElement);
 	}
 
-	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false, fieldArrayItemNumber = -1) {
+	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false, fieldArrayItemNumber = -1, clearingCondition: StatusClearingCondition = StatusClearingCondition.NONE) {
 		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message + getErrorDetailsUrl(errorCode));
 		if (doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
-			let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode, fieldArrayItemNumber };
+			let item: StatusListItem = { owner, clearingCondition, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode, fieldArrayItemNumber };
 			if (owner && fieldName) {
 				item.val = (owner as KeyedObject)[fieldName];
 			}
@@ -166,6 +168,13 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 		assert(lastClickedItem, 'lastClickedItem already cleared.');
 		lastClickedList!.clearItem(lastClickedItem!);
 		lastClickedItem = undefined;
+	}
+
+	clearByCondition(condition:StatusClearingCondition) {
+		this.warns = this.warns.filter(w => w.clearingCondition !== condition);
+		if (!this.warns.length && !this.errors.length) {
+			this.hide();
+		}
 	}
 
 	clear() {

@@ -1,6 +1,7 @@
 import { Container } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import overlayLayer from 'thing-editor/src/editor/ui/editor-overlay';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import game from 'thing-editor/src/engine/game';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
@@ -35,10 +36,10 @@ export default class ClickOutsideTrigger extends Container {
 	init() {
 		/// #if EDITOR
 		if (!this.onClickOutside) {
-			game.editor.ui.status.warn('onClickOutside event handler is empty.', 32020, this, 'onClickOutside');
+			game.editor.ui.status.warn('onClickOutside event handler is empty.', 32020, this, 'onClickOutside', undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 		}
 		if (this.findParentByType(Button)) {
-			game.editor.ui.status.warn('ClickOutsideTrigger can not work inside Button.', 99999, this);
+			game.editor.ui.status.warn('ClickOutsideTrigger can not work inside Button.', 99999, this, undefined, undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 		}
 		/// #endif
 

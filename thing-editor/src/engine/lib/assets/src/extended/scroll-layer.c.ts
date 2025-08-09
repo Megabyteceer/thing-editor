@@ -1,5 +1,6 @@
 
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import game from 'thing-editor/src/engine/game';
 import Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c';
 import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';
@@ -82,7 +83,7 @@ export default class ScrollLayer extends Container {
 					}
 				});
 				if (!isInteractiveChildFound) {
-					game.editor.ui.status.warn('ScrollLayer\'s mouseHandler refers to container which has no interactive children.', 32047, this, 'mouseHandler');
+					game.editor.ui.status.warn('ScrollLayer\'s mouseHandler refers to container which has no interactive children.', 32047, this, 'mouseHandler', undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 				}
 			}
 			/// #endif

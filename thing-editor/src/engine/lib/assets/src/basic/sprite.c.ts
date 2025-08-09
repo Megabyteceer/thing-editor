@@ -1,6 +1,7 @@
 import { BLEND_MODES, Container, Mesh, Sprite } from 'pixi.js';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -25,7 +26,7 @@ const imageJSPropertyDescriptor = {
 						+ this.texture.width + 'x' + this.texture.height + '). It is can cause unwanted blurring for objects with centralized pivot point.', 32028,
 					() => {
 						fs.showFile(fs.getFileByAssetName(v, AssetType.IMAGE).fileName);
-					});
+					}, undefined, undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 				}
 			}
 			/// #endif

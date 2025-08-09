@@ -1,5 +1,6 @@
 import { Text } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import game from 'thing-editor/src/engine/game';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
@@ -62,7 +63,7 @@ export default class Label extends Text {
 		/// #if EDITOR
 		if (this.translatableText) {
 			if (this.paramName && (L(this.translatableText).indexOf(this.paramName) < 0)) {
-				game.editor.ui.status.warn('Localized text contain no parameter ' + this.paramName, 99999, this, 'paramName');
+				game.editor.ui.status.warn('Localized text contain no parameter ' + this.paramName, 99999, this, 'paramName', undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 			}
 		}
 		/// #endif

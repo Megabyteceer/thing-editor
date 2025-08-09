@@ -5,6 +5,7 @@ import type TimelineKeyframeView from 'thing-editor/src/editor/ui/props-editor/p
 
 import type TimelineLabelView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view';
 import type TimelineLoopPoint from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import game from 'thing-editor/src/engine/game.js';
 
 import type MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
@@ -277,7 +278,7 @@ export default class FieldPlayer {
 				/// #if EDITOR
 				if (!this.__doNotCallActions) {
 					if (this.target.__logLevel > 1) {
-						game.editor.ui.status.warn('action call: ' + action + '; timeline time: ' + this.time + '; game time:' + game.time + '; id:' + this.target.___id, 30019, this.target, undefined, true);
+						game.editor.ui.status.warn('action call: ' + action + '; timeline time: ' + this.time + '; game time:' + game.time + '; id:' + this.target.___id, 30019, this.target, undefined, true, undefined, StatusClearingCondition.LAUNCH_GAME);
 						if (this.target.__logLevel === 3) {
 							/// break on callbacks
 							console.log('callback: ' + action);

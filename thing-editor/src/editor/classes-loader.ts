@@ -14,6 +14,7 @@ import game from 'thing-editor/src/engine/game';
 import ___GizmoArrow from 'thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import { StatusClearingCondition } from './ui/status-clearing-confition';
 
 const EMBED_CLASSES_NAMES_FIXER: Map<any, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');
@@ -36,7 +37,7 @@ export default class ClassesLoader {
 	static async reloadClasses(): Promise<GameClasses | undefined> {
 
 		componentsVersion++;
-
+		game.editor.ui.status.clearByCondition(StatusClearingCondition.CLASSES_RELOAD);
 
 		let files = fs.getAssetsList(AssetType.CLASS) as FileDescClass[];
 		this.isClassesWaitsReloading = false;
