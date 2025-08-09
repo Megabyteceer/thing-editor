@@ -1038,9 +1038,26 @@ input[disabled] {
 	border-left: 3px dotted #676d12;
 }
 
-.assets-item-prefab-pic {
+.assets-item-scene .assets-item-preview-pic{
+	width: 60px;
+	height: 40px;
+}
+
+.assets-item-prefab .assets-item-preview-pic{
+	width: 30px;
+	height: 30px;
+}
+
+.assets-item-preview-pic {
 	vertical-align: middle;
 	margin: 0 10px;
+	padding: 1px;
+	background-color: #000;
+	display: inline-block;
+}
+
+.assets-item-preview-pic canvas {
+	display: block;
 }
 
 .selected-text {

@@ -885,7 +885,9 @@ export default class Lib
 		let sceneData = Lib.__serializeObject(scene);
 		game.editor.disableFieldsCache = false;
 		scenes[name] = sceneData;
-		return fs.saveAsset(name, AssetType.SCENE, sceneData);
+		const ret = fs.saveAsset(name, AssetType.SCENE, sceneData);
+		editorEvents.emit('sceneUpdate', name);
+		return ret;
 	}
 
 	static __savePrefab(object: Container, name: string, libName?: string, saveFile = true) {

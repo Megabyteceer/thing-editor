@@ -12,17 +12,13 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game, { DEFAULT_FADER_NAME } from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
-import { editorEvents } from '../../utils/editor-events';
-import exportAsPng from '../../utils/export-as-png';
+import { assetPreview } from './asset-preview';
 
 const toolButtonsProps = {
 	className: 'asset-item-tool-buttons',
 	onDblClick: sp,
 	onClick: sp
 };
-
-const NO_PREVIEW_IMG = document.createElement('img');
-NO_PREVIEW_IMG.src = '/thing-editor/img/broken-image.png';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -38,11 +34,6 @@ const placeAsChild = (file: FileDescPrefab) => {
 	}
 };
 
-const previewsCache = new Map() as Map<string, HTMLCanvasElement>;
-
-editorEvents.on('prefabUpdated', (prefabName:string) => {
-	previewsCache.delete(prefabName);
-});
 
 const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 	showContextMenu(addSharedAssetContextMenu(file, [
@@ -151,31 +142,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		desc = R.div(descriptionProps, file.asset.p.__description.split('\n')[0]);
 	}
 	const Class = getSerializedObjectClass(file.asset);
-	let preview = R.span({
-		className: 'assets-item-prefab-pic',
-		ref: (ref: HTMLSpanElement) => {
-			if (ref && !game.editor.buildProjectAndExit) {
-				const img = previewsCache.get(file.assetName);
-				if (img) {
-					ref.appendChild(img);
-				} else {
-					setTimeout(() => {
-						const o = Lib.__loadPrefabNoInit(file.assetName);
-						(exportAsPng(o, 30, 30, -1, undefined, true) as any).then((canvas: HTMLCanvasElement) => {
-							if (!canvas) {
-								canvas = NO_PREVIEW_IMG as any;
-							}
-							previewsCache.set(file.assetName, canvas);
-							ref.querySelector('canvas')?.remove();
-							ref.appendChild(canvas);
-							Lib.destroyObjectAndChildren(o);
-						});
-					}, 10);
-				}
-			}
-		},
-	});
-
+	const preview = assetPreview(file);
 
 	return R.div(
 		{
