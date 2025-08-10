@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+<head><script>
+	const filterDebug = (args) => {
+		return args.some(a => a?.includes('[vite] '));
+	};
+	const originalDebug = console.debug;
+	console.debug = (...args) => {
+		if (!filterDebug(args)) {
+			originalDebug.apply(console, args);
+		}
+	};
+</script>
 	<link rel="stylesheet" href="./src/editor/style.css">
 	<link rel="stylesheet" href="./src/editor/style-timeline.css">
 	<link rel="stylesheet" href="./src/editor/style-spine-sequence.css">

@@ -28,13 +28,4 @@ console.groupCollapsed = (...args: string[]) => {
 	}
 };
 
-const filterDebug = (args: string[]) => {
-	return args.some(a => a?.includes('[vite] connecting...') || a?.includes('[vite] connected.'));
-};
 
-const originalDebug = console.debug;
-console.debug = (...args: string[]) => {
-	if (!filterDebug(args)) {
-		originalDebug.apply(console, args);
-	}
-};
