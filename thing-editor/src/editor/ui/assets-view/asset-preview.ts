@@ -35,20 +35,17 @@ export const assetPreview = (file: FileDesc, width = 30, height = 30) => {
 					ref.appendChild(img);
 				} else {
 					setTimeout(() => {
-						const o = isScene ? Lib.__loadSceneNoInit(file.assetName) : Lib.__loadPrefabNoInit(file.assetName);
-						(exportAsPng(o, width, height, -1, undefined, true) as any).then((canvas: HTMLCanvasElement) => {
+						const o = isScene ? (game.editor.currentSceneName === file.assetName ? game.currentScene : Lib.__loadSceneNoInit(file.assetName)) : Lib.__loadPrefabNoInit(file.assetName);
+						const bgColor = isScene ? new Color((o as Scene).backgroundColor).toHex() : '#000';
+						(exportAsPng(o, width, height, -1, undefined, true, !o.parent) as any).then((canvas: HTMLCanvasElement) => {
 							if (!canvas) {
 								canvas = NO_PREVIEW_IMG as any;
+							} else {
+								canvas.style.backgroundColor = bgColor;
 							}
 							cache.set(file.assetName, canvas);
 							ref.querySelector('canvas')?.remove();
-
-							if (isScene) {
-								canvas.style.backgroundColor = new Color((o as Scene).backgroundColor).toHex();
-							}
-
 							ref.appendChild(canvas);
-							Lib.destroyObjectAndChildren(o);
 						});
 					}, 10);
 				}

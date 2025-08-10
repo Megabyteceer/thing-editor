@@ -97,7 +97,7 @@ export default class Selection extends Array<Container> {
 				}
 			}
 			if (!popupShown) {
-				game.editor.ui.modal.showInfo('Can not select object, because it is hidden by parent ' + (hidingParent.constructor as SourceMappedConstructor).__className + '; ' + o.___info, 'Can not select object', 30015);
+				game.editor.ui.modal.notify('Can not select object, because it is hidden by parent ' + (hidingParent.constructor as SourceMappedConstructor).__className + '; ' + o.___info, 'selection');
 			}
 			return;
 		}

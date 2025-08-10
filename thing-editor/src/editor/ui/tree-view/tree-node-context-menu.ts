@@ -83,7 +83,7 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 	},
 	{
 		name: R.fragment(R.icon('export-selected'), 'Export as PNG...'),
-		onClick: editorUtils.onExportAsPngClick
+		onClick: () => editorUtils.onExportAsPngClick(game.editor.selection[0])
 	},
 	{
 		name: 'Arrange ❯',

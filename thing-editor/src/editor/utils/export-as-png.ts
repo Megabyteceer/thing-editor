@@ -2,16 +2,18 @@ import type { Container, Rectangle } from 'pixi.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 
-export default async function exportAsPng(object: Container, width = 0, height = 0, cropAlphaThreshold = 1, bounds?: Rectangle, returnAsCanvas = false):Promise<Blob | HTMLCanvasElement | undefined> {
+/** exports DisplayObject as canvas, and destroys object if it has no parent */
+
+export default async function exportAsPng(object: Container, width = 0, height = 0, cropAlphaThreshold = 1, bounds?: Rectangle, returnAsCanvas = false, destroySource = false):Promise<Blob | HTMLCanvasElement | undefined> {
 
 	if (object.width > 0 && object.height > 0) {
 		let tmpVisible = object.visible;
 		object.visible = true;
-		let oldParent = object.parent;
+
+		let objectsParent = object.parent;
+
 		let oldIndex = 0;
-		if (oldParent) {
-			oldIndex = oldParent.children.indexOf(object);
-		}
+		oldIndex = objectsParent ? objectsParent.children.indexOf(object) : 0;
 		let f = object.filters;
 		let c = Lib._loadClassInstanceById('Container');
 		let c2 = Lib._loadClassInstanceById('Container');
@@ -153,19 +155,26 @@ export default async function exportAsPng(object: Container, width = 0, height =
 
 		canvas = game.pixiApp.renderer.plugins.extract.canvas(c2) as HTMLCanvasElement;
 
+		if (destroySource) {
+			Lib.destroyObjectAndChildren(object);
+		} else {
+			object.visible = tmpVisible;
+			object.filters = f;
+			if (objectsParent) {
+				objectsParent.addChildAt(object, oldIndex);
+			} else {
+				object.detachFromParent();
+			}
+		}
+		Lib.destroyObjectAndChildren(c2);
+
 		let ret = returnAsCanvas ? canvas : await new Promise((resolve) => {
 			canvas.toBlob(resolve, 'image/png');
 		});
-		object.visible = tmpVisible;
-
 		delete (c2 as any).getLocalBounds;
-		object.filters = f;
-		if (oldParent) {
-			oldParent.addChildAt(object, oldIndex);
-		} else {
-			object.detachFromParent();
-		}
+
 		game.editor.ui.modal.hideSpinner();
+
 		return ret as Blob | HTMLCanvasElement;
 	}
 }
