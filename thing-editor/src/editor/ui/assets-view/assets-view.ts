@@ -95,27 +95,33 @@ interface AssetsViewState extends WindowState {
 	search: string;
 }
 
+export const overrideAssetInProject = (file: FileDesc) => {
+	if (file.lib) {
+		let o!:Container;
+		if (file.assetType === AssetType.SCENE) {
+			o = Lib.__loadSceneNoInit(file.assetName);
+		} else if (file.assetType === AssetType.PREFAB) {
+			o = Lib.__loadPrefabNoInit(file.assetName);
+		}
+		if (o) {
+			const blocked = o?.__preventOverriding;
+			Lib.destroyObjectAndChildren(o);
+			if (blocked) {
+				game.editor.showError('Asset`s overriding is prohibited.', 99999);
+				return;
+			}
+		}
+		fs.copyAssetToProject(file);
+	}
+};
+
 const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 	const i = menu.lastIndexOf(null);
 	if (file.lib) {
 		menu.splice(i + 1, 0, {
 			name: 'Override asset in project',
 			onClick: () => {
-				let o!:Container;
-				if (file.assetType === AssetType.SCENE) {
-					o = Lib.__loadSceneNoInit(file.assetName);
-				} else if (file.assetType === AssetType.PREFAB) {
-					o = Lib.__loadPrefabNoInit(file.assetName);
-				}
-				if (o) {
-					const blocked = o?.__preventOverriding;
-					Lib.destroyObjectAndChildren(o);
-					if (blocked) {
-						game.editor.showError('Asset`s overriding is prohibited.', 99999);
-						return;
-					}
-				}
-				fs.copyAssetToProject(file);
+				overrideAssetInProject(file);
 			}
 		});
 	}
