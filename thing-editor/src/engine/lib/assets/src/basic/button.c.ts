@@ -248,13 +248,9 @@ export default class Button extends DSprite {
 		Sound._unlockSound();
 		if (game.time === latestClickTime || game.__paused
 		) {
-			/// #if EDITOR
 			if (!this._isNotPausable()) {
-			/// #endif
 				return;
-			/// #if EDITOR
 			}
-			/// #endif
 		}
 		if (ev) {
 			if (ev.buttons !== 1) {
