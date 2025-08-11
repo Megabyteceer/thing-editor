@@ -6,7 +6,6 @@ import type { Component, ComponentChild } from 'preact';
 import { h, render } from 'preact';
 import type { FileDesc, FileDescClass, LibInfo } from 'thing-editor/src/editor/fs';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
-import ProjectsList from 'thing-editor/src/editor/ui/choose-project';
 import UI from 'thing-editor/src/editor/ui/ui';
 import historyInstance from 'thing-editor/src/editor/utils/history';
 import protectAccessToSceneNode from 'thing-editor/src/editor/utils/protect-access-to-node';
@@ -94,9 +93,11 @@ class Editor {
 	assetsFolders!: string[];
 	assetsFoldersReversed!: string[];
 	libsDescriptors: KeyedMap<ProjectDesc> = {};
+	libsDescriptorsRaw: KeyedMap<string> = {};
 
 	editorArguments: KeyedMap<true | string> = {};
 	projectDesc!: ProjectDesc;
+	projectDescRaw!: string;
 
 	selection = new Selection();
 
@@ -323,10 +324,12 @@ class Editor {
 	}
 
 	chooseProject(notSkipable = false) {
-		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
-			if (dir) {
-				this.openProject(dir);
-			}
+		import('thing-editor/src/editor/ui/choose-project').then((ProjectsList) => {
+			ProjectsList.default.__chooseProject(notSkipable).then((dir: string) => {
+				if (dir) {
+					this.openProject(dir);
+				}
+			});
 		});
 	}
 
@@ -370,6 +373,7 @@ class Editor {
 			this.settings.removeItem('last-opened-project');
 
 			const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json') as ProjectDesc;
+			this.projectDescRaw = JSON.stringify(projectDesc);
 
 			if (!projectDesc) {
 				this.ui.modal.showError('Can\'t open project ' + dir).then(() => { this.chooseProject(true); });
@@ -403,6 +407,7 @@ class Editor {
 				const libFileName = lib.dir + '/thing-lib.json';
 				try {
 					this.libsDescriptors[lib.name] = fs.readJSONFile(libFileName);
+					this.libsDescriptorsRaw[lib.name] = JSON.stringify(this.libsDescriptors[lib.name]);
 				} catch (er: any) {
 					editor.ui.modal.showFatalError('Library loading error. Is "libs" option in "thing-projects.json" correct?', 99999, er.message);
 					return;
@@ -1190,19 +1195,22 @@ class Editor {
 		const descriptorsStack = this.currentProjectLibs.map((lib) => {
 			return {
 				fileName: lib.dir + '/thing-lib.json',
-				desc: this.libsDescriptors[lib.name]
+				desc: this.libsDescriptors[lib.name],
+				raw: this.libsDescriptorsRaw[lib.name]
 			};
 		});
 		descriptorsStack.push({
 			fileName: this.currentProjectDir + 'thing-project.json',
-			desc: this.projectDesc
+			desc: this.projectDesc,
+			raw: this.projectDescRaw,
 		});
 
 		while (descriptorsStack.length) {
 
 			const descData = descriptorsStack.pop()!;
 
-			let descToSave = JSON.parse(JSON.stringify(descData?.desc)) as KeyedObject;
+			const srcDescToSave = JSON.stringify(descData?.desc);
+			let descToSave = JSON.parse(srcDescToSave) as KeyedObject;
 
 			const libsProjectDescMerged = {} as ProjectDesc;
 			descriptorsStack.forEach((desc) => {
@@ -1262,7 +1270,7 @@ class Editor {
 				}
 			}
 			delete descToSave.dir;
-			if (!descData.fileName.startsWith('thing-editor/')) {
+			if (JSON.stringify(descToSave) !== descData.raw) {
 				fs.writeFile(descData.fileName, descToSave);
 			}
 		}
