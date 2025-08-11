@@ -27,7 +27,7 @@ export const assetPreview = (file: FileDesc, width = 30, height = 30) => {
 			if (ref && !game.editor.buildProjectAndExit) {
 
 				const isScene = file.assetType === AssetType.SCENE;
-
+				return;
 				const cache = isScene ? scenesPreviewsCache : prefabsPreviewsCache;
 
 				const img = cache.get(file.assetName);
