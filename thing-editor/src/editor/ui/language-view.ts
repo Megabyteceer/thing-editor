@@ -16,7 +16,7 @@ import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import L from 'thing-editor/src/engine/utils/l';
-import { StatusClearingCondition } from './status-clearing-confition';
+import { StatusClearingCondition } from './status-clearing-condition';
 
 /** dir_name >> language >> FileDescL10n */
 const assetsFiles: Map<string, Map<string, FileDescL10n>> = new Map();

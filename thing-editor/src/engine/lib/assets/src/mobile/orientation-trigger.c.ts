@@ -1,5 +1,5 @@
 import editable from 'thing-editor/src/editor/props-editor/editable';
-import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import { roundUpNumber } from 'thing-editor/src/editor/utils/round-up-point';
 import game from 'thing-editor/src/engine/game';

@@ -17,7 +17,7 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 import type { Container } from 'pixi.js';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import DataPathEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor';
-import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 export const ACTION_ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 

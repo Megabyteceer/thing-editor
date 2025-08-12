@@ -1,6 +1,6 @@
 import { Text } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
-import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import game from 'thing-editor/src/engine/game';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';

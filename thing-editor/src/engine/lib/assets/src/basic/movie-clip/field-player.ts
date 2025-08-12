@@ -5,7 +5,7 @@ import type TimelineKeyframeView from 'thing-editor/src/editor/ui/props-editor/p
 
 import type TimelineLabelView from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-label-view';
 import type TimelineLoopPoint from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-loop-point';
-import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import game from 'thing-editor/src/engine/game.js';
 
 import type MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';

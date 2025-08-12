@@ -1,7 +1,7 @@
 import { BLEND_MODES, Container, Mesh, Sprite } from 'pixi.js';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable';
-import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';

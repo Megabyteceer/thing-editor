@@ -1,6 +1,6 @@
 
 import editable from 'thing-editor/src/editor/props-editor/editable';
-import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import game from 'thing-editor/src/engine/game';
 import Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c';
 import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';

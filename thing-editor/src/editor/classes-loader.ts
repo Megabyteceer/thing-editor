@@ -14,7 +14,7 @@ import game from 'thing-editor/src/engine/game';
 import ___GizmoArrow from 'thing-editor/src/engine/lib/assets/src/___system/gizmo-arrow.c';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
-import { StatusClearingCondition } from './ui/status-clearing-confition';
+import { StatusClearingCondition } from './ui/status-clearing-condition';
 
 const EMBED_CLASSES_NAMES_FIXER: Map<any, string> = new Map();
 EMBED_CLASSES_NAMES_FIXER.set(Container, 'Container');

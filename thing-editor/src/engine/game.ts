@@ -1546,15 +1546,15 @@ const visibilityChangeHandler = () => {
 focusChangeHandler(true);
 visibilityChangeHandler();
 
-let pauseRuntimeHotKeysInititalized = false;
+let pauseRuntimeHotKeysInitialized = false;
 export function __pauseRuntimeHotKeysInit() { // 99999
 	/// #if EDITOR
 	return;
 	/// #endif
-	if (pauseRuntimeHotKeysInititalized) {
+	if (pauseRuntimeHotKeysInitialized) {
 		return;
 	}
-	pauseRuntimeHotKeysInititalized = true;
+	pauseRuntimeHotKeysInitialized = true;
 	window.addEventListener('keydown', (ev) => {
 		if (ev.keyCode === 80 && ev.ctrlKey) {
 			game.__togglePause();

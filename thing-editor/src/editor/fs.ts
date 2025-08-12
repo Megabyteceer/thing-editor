@@ -9,7 +9,7 @@ import game from 'thing-editor/src/engine/game';
 import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import Lib, { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
-import { StatusClearingCondition } from './ui/status-clearing-confition';
+import { StatusClearingCondition } from './ui/status-clearing-condition';
 import { regeneratePrefabsTypings } from './utils/generate-editor-typings';
 
 
