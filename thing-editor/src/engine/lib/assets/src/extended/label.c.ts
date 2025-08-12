@@ -169,6 +169,14 @@ export default class Label extends Text {
 		}
 	}
 
+	isEqual(value:any) {
+		return value == this.processedVal;
+	}
+
+	isBigger(value:number) {
+		return value < (this.processedVal as number);
+	}
+
 	freezeCounter() {
 		this.currentInterval = Number.MAX_SAFE_INTEGER;
 	}
