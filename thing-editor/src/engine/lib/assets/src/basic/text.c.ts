@@ -463,16 +463,26 @@ _editableEmbed(Text, 'text', {
 	}
 });
 
-_editableEmbed(Text, 'Edit text', {
+_editableEmbed(Text, 'translatableText', { type: 'l10n' });
+
+_editableEmbed(Text, 'Edit text 🖉', {
 	type: 'btn',
 	helpUrl: 'components.Text#edit-text',
-	title: 'Edit or create new translatable key.',
+	title: 'Edit translatable text.',
+	visible: (o:Text) => !!o.translatableText,
 	onClick: (o: Text) => {
 		LanguageView.editKey(o.translatableText);
 	}
 });
-
-_editableEmbed(Text, 'translatableText', { type: 'l10n' });
+_editableEmbed(Text, 'Create translatable text...', {
+	type: 'btn',
+	helpUrl: 'components.Text#edit-text',
+	title: 'Create new translatable key.',
+	visible: (o:Text) => !o.translatableText,
+	onClick: (o: Text) => {
+		LanguageView.editKey(o.translatableText);
+	}
+});
 
 _editableEmbed(Text, 'text-style', {
 	type: 'splitter',
