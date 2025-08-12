@@ -6,7 +6,6 @@ import type { Component, ComponentChild } from 'preact';
 import { h, render } from 'preact';
 import type { FileDesc, FileDescClass, LibInfo } from 'thing-editor/src/editor/fs';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
-import ProjectsList from 'thing-editor/src/editor/ui/choose-project';
 import UI from 'thing-editor/src/editor/ui/ui';
 import historyInstance from 'thing-editor/src/editor/utils/history';
 import protectAccessToSceneNode from 'thing-editor/src/editor/utils/protect-access-to-node';
@@ -51,6 +50,7 @@ import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototype
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
 import type { ContextMenuItem } from './ui/context-menu';
 import MainMenu from './ui/main-menu';
+import { StatusClearingCondition } from './ui/status-clearing-confition';
 import roundUpPoint from './utils/round-up-point';
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
@@ -93,9 +93,11 @@ class Editor {
 	assetsFolders!: string[];
 	assetsFoldersReversed!: string[];
 	libsDescriptors: KeyedMap<ProjectDesc> = {};
+	libsDescriptorsRaw: KeyedMap<string> = {};
 
 	editorArguments: KeyedMap<true | string> = {};
 	projectDesc!: ProjectDesc;
+	projectDescRaw!: string;
 
 	selection = new Selection();
 
@@ -296,15 +298,19 @@ class Editor {
 
 			assert(this.ui.propsEditor.editableProps[field.name], 'Property is disabled.');
 
-			if (field.beforeEdited) {
-				field.beforeEdited(val);
+			const blocked = field.beforeEdited && field.beforeEdited(val);
+			if (blocked) {
+				if (typeof blocked === 'string') {
+					editor.ui.modal.notify(blocked);
+				}
+				return;
 			}
 
 			for (let o of this.selection) {
 				this.onObjectsPropertyChanged(o, field, val, delta);
 			}
 			if (field.afterEdited) {
-				field.afterEdited();
+				field.afterEdited(val);
 			}
 		}
 	}
@@ -318,10 +324,12 @@ class Editor {
 	}
 
 	chooseProject(notSkipable = false) {
-		ProjectsList.__chooseProject(notSkipable).then((dir: string) => {
-			if (dir) {
-				this.openProject(dir);
-			}
+		import('thing-editor/src/editor/ui/choose-project').then((ProjectsList) => {
+			ProjectsList.default.__chooseProject(notSkipable).then((dir: string) => {
+				if (dir) {
+					this.openProject(dir);
+				}
+			});
 		});
 	}
 
@@ -365,6 +373,7 @@ class Editor {
 			this.settings.removeItem('last-opened-project');
 
 			const projectDesc = fs.readJSONFile(this.currentProjectDir + 'thing-project.json') as ProjectDesc;
+			this.projectDescRaw = JSON.stringify(projectDesc);
 
 			if (!projectDesc) {
 				this.ui.modal.showError('Can\'t open project ' + dir).then(() => { this.chooseProject(true); });
@@ -398,6 +407,7 @@ class Editor {
 				const libFileName = lib.dir + '/thing-lib.json';
 				try {
 					this.libsDescriptors[lib.name] = fs.readJSONFile(libFileName);
+					this.libsDescriptorsRaw[lib.name] = JSON.stringify(this.libsDescriptors[lib.name]);
 				} catch (er: any) {
 					editor.ui.modal.showFatalError('Library loading error. Is "libs" option in "thing-projects.json" correct?', 99999, er.message);
 					return;
@@ -435,7 +445,6 @@ class Editor {
 			this.projectDesc = {} as ProjectDesc;
 			mergeProjectDesc(this.projectDesc, libsProjectDescMerged);
 			mergeProjectDesc(this.projectDesc, projectDesc);
-
 			setTimeout(excludeOtherProjects, 1);
 
 			game.applyProjectDesc(this.projectDesc);
@@ -588,18 +597,18 @@ class Editor {
 		AssetsView.scrollAssetInToView(assetName);
 	}
 
-	warnEqualFiles(file: FileDesc, existingFile: FileDesc) {
-		this.ui.status.warn('File overlaps the same file in library. ' + file.fileName + ' => ' + existingFile.fileName, 99999, (ev?: PointerEvent) => {
+	warnEqualFiles(warning:string, file: FileDesc, existingFile: FileDesc) {
+		this.ui.status.warn(warning + ' ' + file.fileName + ' => ' + existingFile.fileName, 99999, (ev?: PointerEvent) => {
 			let preview = AssetsView.renderAssetItem(file);
 			if (ev && ev.ctrlKey) {
 				fs.deleteAsset(file.assetName, file.assetType);
 				game.editor.ui.status.clearLastClickedItem();
 			}
-			editor.ui.modal.showEditorQuestion('A you sure you want to remove duplicate file?', preview, () => {
+			editor.ui.modal.showEditorQuestion('A you sure you want to remove wrong overriding?', R.div(null, R.div(null, file.fileName), preview), () => {
 				fs.deleteAsset(file.assetName, file.assetType);
 				game.editor.ui.status.clearLastClickedItem();
-			}, R.span({ className: 'danger' }, R.img({ src: 'img/delete.png' }), 'Delete duplicate file'));
-		});
+			}, R.span({ className: 'danger' }, R.img({ src: 'img/delete.png' }), 'Delete wrong overriding'));
+		}, undefined, undefined, undefined, StatusClearingCondition.ASSETS_REFRESH);
 	}
 
 	saveProjectDesc() {
@@ -610,6 +619,10 @@ class Editor {
 		if (this.askSceneToSaveIfNeed()) {
 
 			Pool.__resetIdCounter();
+
+			while (game.editor.ui.modal.state.modals.length) {
+				game.editor.ui.modal.hideModal();
+			}
 
 			assert(name, 'name should be defined');
 
@@ -791,7 +804,7 @@ class Editor {
 			c.__nodeExtendData.tmpGlobalPos = p;
 			let p2 = o.toLocal(p);
 			if (isNaN(p2.x) || isNaN(p2.y)) {
-				this.ui.status.warn('Object has zero scale and can not be moved without affecting children`s positions.', 30023, o);
+				this.ui.status.warn('Object has zero scale and can not be moved without affecting children`s positions.', 30023, o, undefined, undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 				return;
 			}
 		}
@@ -1036,26 +1049,78 @@ class Editor {
 		}).catch(_er => {});
 	}
 
-	editSource(fileName: string, line?: string, char?: string, absolutePath = false) {
+	private lastSourceEditTime = 0;
+
+	async editSource(fileName: string, line?: string, char?: string, absolutePath = false, errorToFindLineNum?:{stack?: string}) {
+		const now = Date.now();
+		if (this.lastSourceEditTime > now - 50) {
+			return;
+		}
+		this.lastSourceEditTime = now;
+
 		if (this.editorArguments['no-vscode-integration']) {
 			return;
 		}
+		if (errorToFindLineNum) {
+			const pureFileName = fileName.split('?')[0].split(':')[0];
+			const errorLine = errorToFindLineNum?.stack?.split('\n').find(l => l.includes(pureFileName));
+			if (errorLine) {
+				const a = errorLine.split(':');
+				line = parseInt(a[a.length - 2]) as any;
+				char = parseInt(a[a.length - 1]) as any;
+				if (isNaN(line as any)) {
+					line = undefined;
+					char = undefined;
+				}
+				if (isNaN(char as any)) {
+					char = undefined;
+				}
+				await new Promise(resolve => setTimeout(resolve, 100));
+			}
+		}
+
 		if (line !== undefined) {
 			fileName += ':' + line;
 			if (char !== undefined) {
 				fileName += ':' + char;
 			}
 		}
+
+		let rootPath: string = fs.getArgs()[0].split('node_modules')[0].replace(/\\/gm, '/');
+		fileName = fileName.replace(rootPath, '/');
+		fileName = fileName.replace(/\?v=\d+/gm, '');
+		const a = fileName.split(':');
+		char = (a.length > 2) ? a.pop()! : '0';
+		line = a.pop()!;
+		if (!isNaN(parseInt(char)) && !isNaN(parseInt(line))) {
+			const url = a[0];
+			if (url) {
+				const SourceMapConsumer = (await (import('source-map-js'))).default.SourceMapConsumer;
+				const src = await (await fetch((url.startsWith('/') ? url : ('/' + url)) + '?source-map-version' + Date.now())).text();
+				if (src && !src.includes('<title>Error</title>\n')) { // vite error
+					const sourceMapUrl = src.split('sourceMappingURL=')[1];
+					const sourceMap = await (await fetch(sourceMapUrl)).json();
+					if (sourceMap) {
+						const consumer = new SourceMapConsumer(sourceMap as any);
+						const ret = consumer.originalPositionFor({ line: parseInt(line), column: parseInt(char) || 0 });
+						if (typeof ret.line === 'number') {
+							fileName = url + ':' + ret.line;
+							if (typeof ret.column === 'number') {
+								fileName += ':' + ret.column;
+							}
+						}
+					}
+				}
+			}
+		}
 		if (!absolutePath) {
-			let rootPath: string = fs.getArgs()[0].split('node_modules')[0];
+
 			if (fileName.startsWith('\\') || fileName.startsWith('/')) {
 				rootPath = rootPath.substring(0, rootPath.length - 1);
 			}
-			this.editFile(rootPath + fileName);
-		} else {
-			this.editFile(fileName);
+			fileName = rootPath + fileName;
 		}
-
+		this.editFile(fileName);
 	}
 
 	editFile(fileName: string, findText?: string) {
@@ -1130,19 +1195,22 @@ class Editor {
 		const descriptorsStack = this.currentProjectLibs.map((lib) => {
 			return {
 				fileName: lib.dir + '/thing-lib.json',
-				desc: this.libsDescriptors[lib.name]
+				desc: this.libsDescriptors[lib.name],
+				raw: this.libsDescriptorsRaw[lib.name]
 			};
 		});
 		descriptorsStack.push({
 			fileName: this.currentProjectDir + 'thing-project.json',
-			desc: this.projectDesc
+			desc: this.projectDesc,
+			raw: this.projectDescRaw,
 		});
 
 		while (descriptorsStack.length) {
 
 			const descData = descriptorsStack.pop()!;
 
-			let descToSave = JSON.parse(JSON.stringify(descData?.desc)) as KeyedObject;
+			const srcDescToSave = JSON.stringify(descData?.desc);
+			let descToSave = JSON.parse(srcDescToSave) as KeyedObject;
 
 			const libsProjectDescMerged = {} as ProjectDesc;
 			descriptorsStack.forEach((desc) => {
@@ -1202,7 +1270,7 @@ class Editor {
 				}
 			}
 			delete descToSave.dir;
-			if (!descData.fileName.startsWith('thing-editor/')) {
+			if (JSON.stringify(descToSave) !== descData.raw) {
 				fs.writeFile(descData.fileName, descToSave);
 			}
 		}

@@ -5,6 +5,7 @@ import enumAssetsPropsRecursive from 'thing-editor/src/editor/utils/enum-assets-
 import getHashedAssetName from 'thing-editor/src/editor/utils/get-hashed-asset-name';
 import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from 'thing-editor/src/engine/game';
 import Lib, { isAtlasAsset } from 'thing-editor/src/engine/lib';
+import { StatusClearingCondition } from '../ui/status-clearing-confition';
 
 const addedCallbacks: Set<string> = new Set();
 const postBuildCallbacks: ((path: string) => void)[] = [];
@@ -76,6 +77,9 @@ let assetsToCopy: { from: string; to: string }[] = [];
 
 export default class Build {
 	static async build(debug: boolean) {
+
+		game.editor.ui.status.clearByCondition(StatusClearingCondition.BUILD_PROJECT);
+
 		fs.removeSubAsset('src/__beforeprojectopen', AssetType.CLASS);
 		game.editor.ui.modal.showSpinner();
 		fs.log(debug ? 'build debug' : 'build release');
@@ -166,7 +170,7 @@ import Lib from 'thing-editor/src/engine/lib';`];
 			if (classFile.asset.__requiredComponents) {
 				for (const requiredClass of classFile.asset.__requiredComponents) {
 					if (!requiredClass.__classAsset) {
-						game.editor.ui.status.warn(classFile.asset.__className + '.__requiredComponents contains wrong component: ' + (requiredClass.name || requiredClass));
+						game.editor.ui.status.warn(classFile.asset.__className + '.__requiredComponents contains wrong component: ' + (requiredClass.name || requiredClass), 99999, undefined, undefined, undefined, undefined, StatusClearingCondition.BUILD_PROJECT);
 					} else {
 						if (classesFiles.indexOf(requiredClass.__classAsset) < 0) {
 							classesFiles.push(requiredClass.__classAsset);

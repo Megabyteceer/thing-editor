@@ -83,7 +83,7 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 	},
 	{
 		name: R.fragment(R.icon('export-selected'), 'Export as PNG...'),
-		onClick: editorUtils.onExportAsPngClick
+		onClick: () => editorUtils.onExportAsPngClick(game.editor.selection[0])
 	},
 	{
 		name: 'Arrange ❯',
@@ -141,7 +141,7 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 				delete c.__nodeExtendData.hidden;
 			}
 			Lib.__savePrefab(reference, '___tmp', undefined, false);
-			const notReference = Lib.loadPrefab('___tmp');
+			const notReference = Lib.__loadPrefabNoInit('___tmp');
 			notReference.name = reference.name;
 
 			reference.parent.addChildAt(notReference, reference.parent.children.indexOf(reference));

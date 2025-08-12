@@ -125,7 +125,7 @@ export default class ChooseList extends Component<ChooseListProps, ChooseListSta
 
 		let list: any = this.list.map(this.renderChoosingItem as any);
 		if (!this.props.doNotGroup) {
-			list = group.groupArray(list);
+			list = group.groupArray(list, 'choose-list');
 		}
 
 		return R.div(bodyProps,

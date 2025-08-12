@@ -11,6 +11,7 @@ import roundUpPoint from 'thing-editor/src/editor/utils/round-up-point';
 /// #if EDITOR
 import R from 'thing-editor/src/engine/basic-preact-fabrics';
 /// #endif
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import { PREFAB_PIVOT } from 'thing-editor/src/editor/ui/viewport';
 import assert from 'thing-editor/src/engine/debug/assert.js';
 import game from 'thing-editor/src/engine/game';
@@ -99,7 +100,7 @@ Container.prototype.addFilter = function addFilter(f) {
 };
 
 Container.prototype.removeFilter = function removeFilter(this: Container, f) {
-	let i = (this.filters as Filter[]).indexOf(f);
+	let i = (this.filters as Filter[])?.indexOf(f);
 	if (i >= 0) {
 		(this.filters as Filter[]).splice(i, 1);
 	}
@@ -326,6 +327,25 @@ const getObjectInfo = (o: Container) => {
 	return ('[' + (o.constructor as SourceMappedConstructor).__className + ':' + o.name + ']');
 };
 
+const preventOverridingPop = {
+	type: 'boolean',
+	visible: (o:Container) => o === game.currentContainer,
+	disabled: (o:Container) => o.__preventOverriding,
+	beforeEdited: (val:boolean) => {
+		if (val) {
+			if (game.editor.selection.some((o) =>{
+				const isScene = o instanceof Scene;
+				const asset = fs.getFileByAssetName(o.name!, isScene ? AssetType.SCENE : AssetType.PREFAB);
+				if (!asset.lib) {
+					return true;
+				}
+			})) {
+				return 'asset should be located in a library.';
+			}
+		}
+	}
+} as EditablePropertyDescRaw<Container>;
+
 _editableEmbed(Container, '__root-splitter', { type: 'splitter', title: 'Basic props' });
 _editableEmbed(Container, 'name', {
 	type: 'string',
@@ -388,6 +408,7 @@ _editableEmbed(Container, '__prefabPivot', { type: 'string', disabled: () => tru
 	return !(o instanceof Scene) && o === game.currentContainer;
 } });
 _editableEmbed(Container, '__hideChildren', { type: 'boolean', tip: 'hide children in tree' });
+_editableEmbed(Container, '__preventOverriding', preventOverridingPop);
 _editableEmbed(Container, '___id', {
 	type: 'number',
 	noNullCheck: true,

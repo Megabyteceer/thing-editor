@@ -3,7 +3,6 @@ import type { ClassAttributes, ComponentChild } from 'preact';
 import { h } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics.js';
 import ComponentDebounced from 'thing-editor/src/editor/ui/component-debounced';
-import group from 'thing-editor/src/editor/ui/group';
 import Help from 'thing-editor/src/editor/ui/help';
 import { hideAdditionalWindow, showAdditionalWindow } from 'thing-editor/src/editor/ui/ui';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
@@ -13,7 +12,10 @@ import game from 'thing-editor/src/engine/game';
 import waitForCondition from 'thing-editor/src/engine/lib/assets/src/utils/wait-for-condition';
 import fs from '../fs';
 import { scrollInToView } from '../utils/scroll-in-view';
+import type { GroupFolderData } from './group';
+import group from './group';
 import { preactComponentChildToString } from './modal';
+import { StatusClearingCondition } from './status-clearing-confition';
 
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');
@@ -24,6 +26,7 @@ interface StatusListItem {
 	message: string | ComponentChild;
 	owner?: StatusListItemOwner;
 	ownerId?: number;
+	clearingCondition?: StatusClearingCondition;
 	fieldName?: string;
 	fieldArrayItemNumber: number;
 	errorCode?: number;
@@ -139,14 +142,14 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 		shakeDomElement(document.querySelector('#window-info') as HTMLElement);
 	}
 
-	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false, fieldArrayItemNumber = -1) {
+	warn(message: ComponentChild, errorCode?: number, owner?: StatusListItemOwner, fieldName?: string, doNoFilterRepeats = false, fieldArrayItemNumber = -1, clearingCondition: StatusClearingCondition = StatusClearingCondition.NONE) {
 		if (EDITOR_FLAGS.isTryTime) {
 			return Promise.resolve();
 		}
 		assert((!errorCode) || (typeof errorCode === 'number'), 'Error code expected.');
 		console.warn(message + getErrorDetailsUrl(errorCode));
 		if (doNoFilterRepeats || needAddInToList(this.warnsMap, owner, fieldName, errorCode)) {
-			let item: StatusListItem = { owner, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode, fieldArrayItemNumber };
+			let item: StatusListItem = { owner, clearingCondition, ownerId: owner && (owner as Container).___id, message, fieldName, errorCode, fieldArrayItemNumber };
 			if (owner && fieldName) {
 				item.val = (owner as KeyedObject)[fieldName];
 			}
@@ -165,6 +168,13 @@ export default class Status extends ComponentDebounced<ClassAttributes<Status>, 
 		assert(lastClickedItem, 'lastClickedItem already cleared.');
 		lastClickedList!.clearItem(lastClickedItem!);
 		lastClickedItem = undefined;
+	}
+
+	clearByCondition(condition:StatusClearingCondition) {
+		this.warns = this.warns.filter(w => w.clearingCondition !== condition);
+		if (!this.warns.length && !this.errors.length) {
+			this.hide();
+		}
 	}
 
 	clear() {
@@ -295,9 +305,11 @@ class InfoList extends ComponentDebounced<InfoListProps> {
 		if (this.props.list.length <= 0) {
 			return R.div();
 		}
+		const items = this.props.list.map(this.renderItem) as GroupFolderData;
+		items.__subFolderName = items.__folderName = this.props.title;
 		return R.div(null,
 			R.div({ className: 'info-badge' }, this.props.list.length),
-			group.renderGroup({ key: this.props.id, content: this.props.list.map(this.renderItem), title: this.props.title })
+			group.renderGroup(items, this.props.id)
 		);
 	}
 }

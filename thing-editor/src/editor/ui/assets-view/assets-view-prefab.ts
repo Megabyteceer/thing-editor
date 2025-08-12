@@ -6,12 +6,13 @@ import AssetsView, { addSharedAssetContextMenu } from 'thing-editor/src/editor/u
 import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
 import copyTextByClick, { isEventBlockedByTextCopy } from 'thing-editor/src/editor/utils/copy-text-by-click';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
-import { getSerializedObjectClass, regeneratePrefabsTypings } from 'thing-editor/src/editor/utils/generate-editor-typings';
+import { getSerializedObjectClass } from 'thing-editor/src/editor/utils/generate-editor-typings';
 import libInfo from 'thing-editor/src/editor/utils/lib-info';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game, { DEFAULT_FADER_NAME } from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import { assetPreview } from './asset-preview';
 
 const toolButtonsProps = {
 	className: 'asset-item-tool-buttons',
@@ -26,13 +27,13 @@ const assetsItemNameProps = {
 };
 
 const placeAsChild = (file: FileDescPrefab) => {
-
 	let insertTo = game.editor.selection.slice();
 	game.editor.selection.clearSelection();
 	for (let o of insertTo) {
 		game.editor.addTo(o, Lib.__loadPrefabReference(file.assetName));
 	}
 };
+
 
 const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 	showContextMenu(addSharedAssetContextMenu(file, [
@@ -59,12 +60,19 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 		},
 		null,
 		{
+			name: R.fragment(R.icon('asset-prefab'), 'Edit prefab'),
+			disabled: () => !game.__EDITOR_mode,
+			onClick: () => {
+				PrefabEditor.editPrefab(file.assetName);
+			}
+		},
+		{
 			name: R.fragment(R.icon('asset-prefab'), 'Duplicate prefab'),
 			disabled: () => !game.__EDITOR_mode,
 			onClick: () => {
 				editorUtils.enterPrefabName(file.assetName, 'Enter name for duplicate prefab: ' + file.assetName).then((enteredName) => {
 					if (enteredName) {
-						const o = Lib.loadPrefab(file.assetName);
+						const o = Lib.__loadPrefabNoInit(file.assetName);
 						Lib.__savePrefab(o, enteredName);
 						PrefabEditor.editPrefab(enteredName);
 						Lib.destroyObjectAndChildren(o);
@@ -120,8 +128,6 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 							PrefabEditor.exitPrefabEdit(true);
 						}
 						fs.deleteAsset(file.assetName, file.assetType);
-						game.editor.ui.refresh();
-						regeneratePrefabsTypings();
 					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			},
@@ -136,6 +142,8 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		desc = R.div(descriptionProps, file.asset.p.__description.split('\n')[0]);
 	}
 	const Class = getSerializedObjectClass(file.asset);
+	const preview = assetPreview(file);
+
 	return R.div(
 		{
 			className: (file.assetName === PrefabEditor.currentPrefabName) || (AssetsView.currentItemName === file.assetName) ? 'assets-item assets-item-prefab assets-item-current' : 'assets-item assets-item-prefab',
@@ -181,6 +189,7 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		},
 		libInfo(file),
 		R.classIcon(Class),
+		preview,
 		R.span(assetsItemNameProps, file.assetName),
 		R.span(toolButtonsProps,
 			R.btn('<', (ev) => {

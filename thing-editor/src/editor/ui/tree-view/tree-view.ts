@@ -288,9 +288,15 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 		return treeItem;
 	}
 
+	private selectingNode?: Container;
+
 	selectInTree(node: Container, add = false, fieldName?: string, fieldArrayItemNumber = -1) {
 		assert(node, 'Attempt to select in tree empty node');
+		this.selectingNode = node;
 		game.editor.selection.select(node, add, () => {
+			if (this.selectingNode !== node) { //select and shake last node only
+				return;
+			}
 			if (fieldName && !add) {
 				game.editor.ui.propsEditor.selectField(fieldName, false, false, fieldArrayItemNumber);
 			}
@@ -449,9 +455,9 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 }
 
 const renderRoots = (node: Container, i: number) => {
-	if ((node === game.currentContainer) || !game.__EDITOR_mode) {
+	if (node === game.currentContainer) {
 		return renderSceneNode(node);
-	} else {
+	} else if (!game.__EDITOR_mode) {
 		let style;
 		if (node.__nodeExtendData.hidden) {
 			style = { display: 'none' };

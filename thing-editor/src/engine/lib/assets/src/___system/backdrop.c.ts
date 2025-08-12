@@ -7,6 +7,7 @@ import game from 'thing-editor/src/engine/game';
 import Shape from 'thing-editor/src/engine/lib/assets/src/extended/shape.c';
 
 const zeroPoint = new Point();
+const p = new Point();
 
 export default class __SystemBackDrop extends Shape {
 
@@ -43,9 +44,11 @@ export default class __SystemBackDrop extends Shape {
 			}
 		} else { //prefab editor back drop
 			this.parent.toLocal(zeroPoint, game.stage.parent, this, false);
-
-			this.width = game.W / game.stage.scale.x;
-			this.height = game.H / game.stage.scale.y;
+			p.x = game.W;
+			p.y = game.H;
+			this.toLocal(p, game.stage.parent, p, false);
+			this.width = p.x;
+			this.height = p.y;
 
 		}
 		if (PrefabEditor.currentPrefabName && (this.isFixedStageFrame || this.isStageFrame)) {

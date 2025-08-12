@@ -98,7 +98,7 @@ export default class ObjectsTimelineView extends Component<ObjectsTimelineViewPr
 				}
 			}
 		}
-		width += 500;
+		width += 3500;
 		width *= this.props.widthZoom;
 
 		let previewMarker;

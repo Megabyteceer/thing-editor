@@ -14,6 +14,8 @@ const fsOptions = {
 
 const path = require('path');
 
+const libsFolder = path.join( __dirname, '../../libs');
+
 const fs = require('fs');
 const enumProjects = require('./enum-projects');
 
@@ -257,10 +259,21 @@ function isFilesEqual(a, b) {
 	if (a === b) {
 		return false; // the same file
 	}
-	if (fs.statSync(a).size !== fs.statSync(b).size) {
+
+	const isSizeEqual = fs.statSync(a).size === fs.statSync(b).size;
+
+	const checkOverridePrevention = !a.startsWith(libsFolder) && ( b.endsWith('.p.json') || b.endsWith('.s.json'));
+
+	if (!checkOverridePrevention && !isSizeEqual) {
 		return false;
 	}
-	a = fs.readFileSync(a);
-	b = fs.readFileSync(b);
-	return Buffer.compare(a, b) === 0;
+
+	const A = fs.readFileSync(a);
+	const B = fs.readFileSync(b);
+	if(checkOverridePrevention) {
+		if(JSON.parse(B).p.__preventOverriding) {
+			return 'Prohibited override.';
+		}
+	}
+	return (isSizeEqual && A.equals(B)) ?'Override has no changes.': false;
 }

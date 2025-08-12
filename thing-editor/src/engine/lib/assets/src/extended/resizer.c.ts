@@ -162,9 +162,7 @@ export default class Resizer extends Container {
 
 	__afterDeserialization() {
 		if (game.__EDITOR_mode) {
-			setTimeout(() => {
-				this.recalculateSize();
-			}, 0);
+			this.recalculateSize();
 		}
 	}
 

@@ -17,6 +17,7 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 import type { Container } from 'pixi.js';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import DataPathEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 export const ACTION_ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 
@@ -267,7 +268,9 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 					30021,
 					this,
 					undefined,
-					true
+					true,
+					undefined,
+					StatusClearingCondition.LAUNCH_GAME
 				);
 			}
 			game.editor.ui.status.warn(
@@ -284,7 +287,9 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 				30020,
 				this,
 				undefined,
-				true
+				true,
+				undefined,
+				StatusClearingCondition.LAUNCH_GAME
 			);
 		}
 		/// #endif
@@ -344,7 +349,7 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 		super.init();
 		this._seed = Math.floor(Math.random() * 0x80000000);
 		if ((this.constructor === MovieClip) && (!this._timelineData || !this._timelineData.f.length)) {
-			game.editor.ui.status.warn('MovieClip ' + this.___info + ' has no timeline.', 32003, this, 'timeline');
+			game.editor.ui.status.warn('MovieClip ' + this.___info + ' has no timeline.', 32003, this, 'timeline', undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 		}
 
 		let timelineData = this._timelineData;

@@ -158,7 +158,7 @@ function afterMaxWidthEdit() {
 	for (let p of props) {
 		if (p.name === 'maxWidth') {
 			o.maxWidth = o.style.wordWrapWidth;
-			p.afterEdited!();
+			p.afterEdited!(o.style.wordWrapWidth);
 			o.maxWidth = 0;
 			break;
 		}

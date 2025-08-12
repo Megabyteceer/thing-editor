@@ -13,6 +13,8 @@ class EDITOR_FLAGS {
 
 	static __classesReloadingTime = false;
 
+	static blockSelectByStageClick = 0;
+
 	static updateInProgress = false;
 
 	static isolationEnabled = false;

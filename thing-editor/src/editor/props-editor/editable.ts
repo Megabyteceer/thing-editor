@@ -1,5 +1,4 @@
 import type { DisplayObject } from 'pixi.js';
-import { getPropertyDefinitionUrl } from 'thing-editor/src/editor/ui/props-editor/get-property-definition-url';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 
@@ -58,8 +57,6 @@ function editableInner<T extends DisplayObject>(target: T, name: string, editabl
 	let srcUrl = stack[lineIndex];
 
 	let url = srcUrl.split(window.location.origin)[1];
-	url = url.split(/[?:]/)[0];
-	url = getPropertyDefinitionUrl(url, name, target as any);
 	(editablePropertyDesc as EditablePropertyDesc).__src = url;
 
 	(target.constructor as SourceMappedConstructor).__editablePropsRaw.push(editablePropertyDesc as EditablePropertyDescRaw);

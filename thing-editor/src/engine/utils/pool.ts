@@ -82,7 +82,7 @@ export default class Pool {
 			pools.set(key, []);
 		}
 
-		assert(pools.get(key).indexOf(obj) === -1, 'Object already disposed');
+		assert(!pools.get(key).includes(obj), 'Object already disposed');
 
 		pools.get(key).push(obj);
 	}

@@ -16,6 +16,7 @@ import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import L from 'thing-editor/src/engine/utils/l';
+import { StatusClearingCondition } from './status-clearing-confition';
 
 /** dir_name >> language >> FileDescL10n */
 const assetsFiles: Map<string, Map<string, FileDescL10n>> = new Map();
@@ -133,7 +134,7 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 								let localTextId = textId;
 								game.editor.ui.status.warn('Localization data with id "' + textId + '" has no matched %d %s templates set.', 32052, () => {
 									LanguageView.editKey(localTextId, localLangId);
-								});
+								}, undefined, undefined, undefined, StatusClearingCondition.TEXT_EDITOR_CLOSE);
 							})();
 						}
 					}
@@ -340,6 +341,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 
 	componentWillUnmount() {
 		view = null;
+		game.editor.ui.status.clearByCondition(StatusClearingCondition.TEXT_EDITOR_CLOSE);
 		LanguageView.__validateTextData();
 	}
 
@@ -545,7 +547,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		});
 
 		if (!this.state.filter) {
-			lines = group.groupArray(lines, '.');
+			lines = group.groupArray(lines, 'language-view', '.');
 		}
 
 		const select: SelectEditorItem[] = assetsDirs.map((dir) => {
@@ -648,6 +650,7 @@ function createFilesForLanguage(langId: string) {
 				fs.writeFile(fileName, langData);
 				game.editor.ui.status.warn('Localization file ' + fileName + ' created.', 90001, () => {
 					fs.showFile(fileName);
+					game.editor.ui.status.clearLastClickedItem();
 				});
 
 				created = true;

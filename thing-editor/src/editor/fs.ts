@@ -9,6 +9,8 @@ import game from 'thing-editor/src/engine/game';
 import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import Lib, { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import { StatusClearingCondition } from './ui/status-clearing-confition';
+import { regeneratePrefabsTypings } from './utils/generate-editor-typings';
 
 
 let wakeLock:WakeLockSentinel | null | true = null;
@@ -447,11 +449,30 @@ export default class fs {
 	}
 
 	static deleteAsset(assetName: string, assetType: AssetType) {
+
+		if (assetType === AssetType.SCENE) {
+			if (assetName === game.editor.currentSceneName) {
+				game.editor.openScene(game.projectDesc.mainScene);
+			}
+		}
+
 		const fileName = assetNameToFileName(assetName, assetType);
 		fs.deleteFile(fileName);
 		if (!assetName.startsWith(EDITOR_BACKUP_PREFIX)) {
 			fs.refreshAssetsList();
 		}
+
+		if (assetType === AssetType.PREFAB) {
+			game.editor.ui.refresh();
+			regeneratePrefabsTypings();
+		} else if (assetType === AssetType.CLASS) {
+			game.editor.reloadClasses();
+		} else if (assetType === AssetType.IMAGE) {
+			game.editor.ui.refresh();
+		} else if (assetType === AssetType.SOUND) {
+			game.editor.ui.refresh();
+		}
+
 	}
 
 	static parseJSON(src: string, fileName: string) {
@@ -499,8 +520,8 @@ export default class fs {
 		execFs('fs/watchDirs', dirs);
 	}
 
-	static isFilesEqual(fileName1: string, fileName2: string): boolean {
-		return execFs('fs/isFilesEqual', fileName1, fileName2) as boolean;
+	static isFilesEqual(fileName1: string, fileName2: string): false | string {
+		return execFs('fs/isFilesEqual', fileName1, fileName2) as false | string;
 	}
 
 	static rebuildSoundsIfNeed(file: FileDesc) {
@@ -551,7 +572,8 @@ export default class fs {
 		return files.filter((file) => {
 			const wrongSymbol = fs.getWrongSymbol(file.fileName);
 			if (wrongSymbol) {
-				game.editor.ui.status.warn('File ' + file.fileName + ' ignored because of wrong symbol \'' + wrongSymbol + '\' in it\'s name', 32044);
+				game.editor.ui.status.warn('File ' + file.fileName + ' ignored because of wrong symbol \'' + wrongSymbol + '\' in it\'s name', 32044,
+					undefined, undefined, undefined, undefined, StatusClearingCondition.ASSETS_REFRESH);
 				return;
 			}
 			const assetName = file.assetName || file.fileName.substring(dirName.length);
@@ -574,6 +596,8 @@ export default class fs {
 	}
 
 	static refreshAssetsList(dirNames?: string[]) {
+
+		game.editor.ui.status.clearByCondition(StatusClearingCondition.ASSETS_REFRESH);
 
 		if (dirNames) {
 			assert(!lastAssetsDirs, 'dirNames already defined.');
@@ -599,8 +623,9 @@ export default class fs {
 				if (file.assetType !== AssetType.CLASS && map.has(file.assetName) && !OVERRIDDEN_ASSETS.has(file.fileName)) {
 					const existingFile = map.get(file.assetName)!;
 					window.setTimeout(() => {
-						if (fs.isFilesEqual(file.fileName, existingFile.fileName)) {
-							game.editor.warnEqualFiles(file, existingFile);
+						const warn = fs.isFilesEqual(file.fileName, existingFile.fileName);
+						if (warn) {
+							game.editor.warnEqualFiles(warn, file, existingFile);
 						}
 					}, 0);
 				}

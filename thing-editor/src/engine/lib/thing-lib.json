@@ -34,7 +34,6 @@
 	"embedLocales": true,
 	"autoFullScreenDesktop": false,
 	"autoFullScreenMobile": true,
-	"__proxyFetchesViaNodeServer": false,
 	"__group": "slots",
 	"__suspendWarnings": []
 }

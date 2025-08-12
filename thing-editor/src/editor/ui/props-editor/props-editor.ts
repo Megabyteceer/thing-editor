@@ -4,8 +4,7 @@ import { h } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import { propertyAssert } from 'thing-editor/src/editor/props-editor/editable';
 import Window from 'thing-editor/src/editor/ui/editor-window';
-import type { GroupableItem } from 'thing-editor/src/editor/ui/group';
-import group from 'thing-editor/src/editor/ui/group';
+import type { GroupFolderData } from 'thing-editor/src/editor/ui/group';
 import PropsFieldWrapper from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import assert from 'thing-editor/src/engine/debug/assert';
@@ -28,6 +27,7 @@ import StringEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/
 import TimelineEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/timeline/timeline-editor';
 
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import group from 'thing-editor/src/editor/ui/group';
 import ImageEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/image-editor';
 import L10nEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/l10n-editor';
 import PrefabPropertyEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/prefab-property-editor';
@@ -101,7 +101,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 	componentDidMount(): void {
 		this.restoreScrollPosInterval = window.setInterval(() => {
 			const div = (this.base as HTMLDivElement);
-			if (div.querySelector('.props-group-__root-splitter')) {
+			if (div.querySelector('.props-group-props-editorBasic__props')) {
 				div.scrollTop = game.editor.settings.getItem('props-editor-scroll-y', 0);
 				clearInterval(this.restoreScrollPosInterval);
 				this.restoreScrollPosInterval = 0;
@@ -198,7 +198,6 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 
 	selectField(fieldName: string, focus = false, selectAll = false, fieldArrayItemNumber = -1) {
 		let a = fieldName.split(',');
-
 
 		window.setTimeout(() => {
 
@@ -301,9 +300,8 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 			}
 		});
 
-		let groups: GroupableItem[] = [];
-		let curGroup: GroupableItem | undefined;
-		let curGroupArray: ComponentChild[] = [];
+		let propsList: ComponentChild[] = [];
+		let currentPropsGroup!: GroupFolderData;
 
 		const defaultValues = getObjectDefaults(node);
 
@@ -318,7 +316,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				}
 
 				if (invisible) {
-					curGroupArray.push( // invisible property place holder
+					currentPropsGroup.push( // invisible property place holder
 						R.div({ key: p.name })
 					);
 					continue;
@@ -326,18 +324,19 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 			}
 
 			if (p.type === 'splitter') {
-				if (curGroup) {
-					groups.push(curGroup);
+				if (currentPropsGroup) {
+					propsList.push(group.renderGroup(currentPropsGroup, 'props-editor'));
 				}
-				curGroupArray = [];
-				curGroup = group.renderGroup({ key: p.name, content: curGroupArray, title: p.title as string });
+				currentPropsGroup = [] as any;
+				currentPropsGroup.__folderName = currentPropsGroup.__subFolderName = p.title!;
 			} else {
-				curGroupArray.push(
+				currentPropsGroup.push(
 					h(PropsFieldWrapper, { key: p.name, defaultValue: defaultValues[p.name], propsEditor: this, field: p, onChange: game.editor.editProperty })
 				);
 			}
 		}
-		assert(curGroup, 'Properties list started not with splitter.');
+		assert(currentPropsGroup, 'Properties list started not with splitter.');
+		propsList.push(group.renderGroup(currentPropsGroup, 'props-editor'));
 
 		let header: ComponentChild;
 		if (prefabReferencesPresent === nonPrefabsPresent) {
@@ -417,8 +416,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 			}
 		}
 
-		groups.push(curGroup as GroupableItem);
-		return R.div(editorProps, R.div(headerProps, header), groups);
+		return R.div(editorProps, R.div(headerProps, header), propsList);
 	}
 }
 

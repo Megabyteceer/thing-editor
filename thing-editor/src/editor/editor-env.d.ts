@@ -38,7 +38,7 @@ interface EditablePropertyDescRaw<T extends import('pixi.js').DisplayObject = im
 	/** field changes pass vale through this function  */
 	parser?: (val: any) => any;
 	disabled?: (o: T) => string | undefined | boolean | null;
-	beforeEdited?: (val: any) => void;
+	beforeEdited?: (val: any) => void | true | string;
 	onBlur?: () => void;
 	onClick?: (ev: any) => void;
 	className?: string;
@@ -54,7 +54,7 @@ interface EditablePropertyDescRaw<T extends import('pixi.js').DisplayObject = im
 	noNullCheck?: true;
 	important?: boolean;
 	tip?: string | (() => string | undefined);
-	afterEdited?: () => void;
+	afterEdited?: (val: any) => void;
 	multiline?: boolean;
 	notSerializable?: true;
 	override?: true;
@@ -233,7 +233,7 @@ interface SelectableProperty extends AnyType {
 	___EDITOR_isHiddenForDataChooser?: true;
 	___EDITOR_isGoodForChooser?: true;
 	___EDITOR_isGoodForCallbackChooser?: true;
-	___EDITOR_ChooserOrder?: true;
+	___EDITOR_ChooserOrder?: number;
 	___EDITOR_actionIcon?: import('preact').ComponentChild;
 	___EDITOR_callbackParameterChooserFunction?: (owner: any) => Promise<any[] | any>;
 }

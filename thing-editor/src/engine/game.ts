@@ -24,6 +24,7 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import type Button from './lib/assets/src/basic/button.c';
 import ERROR_HTML from './utils/html-error.html?raw';
 
 /// #if EDITOR
@@ -63,7 +64,10 @@ const FRAME_PERIOD = 1.0;
 let frameCounterTime = 0;
 
 interface Mouse {
-	click: boolean;
+	/** click on game canvas */
+	gameClick: boolean;
+	/** 1 - left button, 2 - right button, 0 - no button pressed*/
+	click: number;
 	x: number;
 	y: number;
 }
@@ -76,6 +80,7 @@ const processOnResize = (o: Container) => {
 
 export interface ThingGameEvents {
 	'assets-will-add': [data: AssetsDescriptor];
+	'button-click': [button: Button, source?:string];
 	'stage-will-resize': [];
 	'preloader-scene-will-start': [];
 	'global-update': [];

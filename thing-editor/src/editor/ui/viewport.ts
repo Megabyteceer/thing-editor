@@ -23,6 +23,7 @@ import Keys from 'thing-editor/src/engine/utils/keys';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import DataAccessDebugger from '../utils/data-access-debugger';
+import { StatusClearingCondition } from './status-clearing-confition';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');
@@ -149,7 +150,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				(game.data as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 
 				exitIsolation();
-				game.editor.ui.status.clear();
+				game.editor.ui.status.clearByCondition(StatusClearingCondition.LAUNCH_GAME);
 				game.editor.saveBackup();
 				game.editor.selection.saveCurrentSelection();
 				game.__clearStage();

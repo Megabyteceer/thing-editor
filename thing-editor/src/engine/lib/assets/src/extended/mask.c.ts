@@ -1,5 +1,6 @@
 import { Container } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import game from 'thing-editor/src/engine/game';
 
@@ -42,7 +43,7 @@ export default class Mask extends Container {
 
 		/// #if EDITOR
 		if (!this.mask) {
-			game.editor.ui.status.warn('Mask component did not found child named "mask".', 32022, this);
+			game.editor.ui.status.warn('Mask component did not found child named "mask".', 32022, this, undefined, undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 		}
 		/// #endif
 		if (this.mask) {

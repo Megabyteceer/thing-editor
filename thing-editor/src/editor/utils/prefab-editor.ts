@@ -38,12 +38,16 @@ export default class PrefabEditor {
 				game.editor.ui.modal.showError('No prefab with name ' + name + ' exists.');
 				return;
 			}
+			while (game.editor.ui.modal.state.modals.length) {
+				game.editor.ui.modal.hideModal();
+			}
+
 			let a = prefabsStack.slice();
 			PrefabEditor.acceptPrefabEdition();
 			if (isItStepInToStack) {
 				prefabsStack = a;
 			}
-			let preview = Lib.loadPrefab(name);
+			let preview = Lib.__loadPrefabNoInit(name);
 			PrefabEditor.showPreview(preview);
 			game.editor.ui.sceneTree.selectInTree(preview);
 			game.editor.ui.viewport.setPrefabMode(name);
@@ -84,7 +88,7 @@ export default class PrefabEditor {
 
 	private static showPreview(object: Container) {
 		if (!backDrop) {
-			backDrop = Lib.loadPrefab('___system/backdrop') as __SystemBackDrop;
+			backDrop = Lib.__loadPrefabNoInit('___system/backdrop') as __SystemBackDrop;
 			backDrop.name = null; // prevent get by name error;
 			backDrop.__nodeExtendData.hidden = true;
 			backDropBG = backDrop.findChildByName('backdrop') as Shape;

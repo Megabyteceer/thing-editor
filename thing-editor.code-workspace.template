@@ -208,7 +208,7 @@
 		"version": "0.2.0",
 		"configurations": [
 			{
-				"name": "Editor",
+				"name": "EDITOR",
 				"type": "chrome",
 				"request": "attach",
 				"webRoot": "${workspaceFolder}",
@@ -219,7 +219,8 @@
 					//"hidden": true
 				},
 				"skipFiles": [
-					"**/debug/assert**"
+					"**/debug/assert**",
+					"**/number-checker.ts"
 				],
 				"sourceMaps": true,
 				"smartStep": true,
@@ -247,7 +248,8 @@
 					"hidden": true
 				},
 				"skipFiles": [
-					"**/debug/assert**"
+					"**/debug/assert**",
+					"**/number-checker.ts"
 				],
 				"sourceMaps": true,
 				"smartStep": true,
@@ -319,7 +321,7 @@
 		],
 		"compounds": [
 			{
-				"name": "Main & Render",
+				"name": "front & be",
 				"configurations": [
 					"Render",
 					"Main"

@@ -1,3 +1,4 @@
+import type { Container } from 'pixi.js';
 import type { ComponentChild } from 'preact';
 import { h } from 'preact';
 import type { FileDesc, FileDescClass, FileDescPrefab } from 'thing-editor/src/editor/fs';
@@ -94,13 +95,33 @@ interface AssetsViewState extends WindowState {
 	search: string;
 }
 
+export const overrideAssetInProject = (file: FileDesc) => {
+	if (file.lib) {
+		let o!:Container;
+		if (file.assetType === AssetType.SCENE) {
+			o = Lib.__loadSceneNoInit(file.assetName);
+		} else if (file.assetType === AssetType.PREFAB) {
+			o = Lib.__loadPrefabNoInit(file.assetName);
+		}
+		if (o) {
+			const blocked = o?.__preventOverriding;
+			Lib.destroyObjectAndChildren(o);
+			if (blocked) {
+				game.editor.showError('Asset`s overriding is prohibited.', 99999);
+				return;
+			}
+		}
+		fs.copyAssetToProject(file);
+	}
+};
+
 const addSharedAssetContextMenu = (file: FileDesc, menu: ContextMenuItem[]) => {
 	const i = menu.lastIndexOf(null);
 	if (file.lib) {
 		menu.splice(i + 1, 0, {
 			name: 'Override asset in project',
 			onClick: () => {
-				fs.copyAssetToProject(file);
+				overrideAssetInProject(file);
 			}
 		});
 	}
@@ -284,7 +305,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 			menu = [];
 
 			for (const lib of game.editor.currentProjectLibs) {
-				menu.push(R.span({ key: 'Libs/' }, R.btn(libIcon(lib), () => {
+				menu.push(R.span({ key: 'Libs/' + lib.name.replace(/\//gm, '!') }, R.btn(libIcon(lib), () => {
 					if (!this.state.filterLibs) {
 						//@ts-ignore
 						this.state.filterLibs = {};
@@ -294,7 +315,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				}, lib.name, (this.state.filterLibs?.[lib.name]) ? 'toggled-button' : undefined))
 				);
 			}
-			menu.push(R.span({ key: 'Libs/' }, R.btn('Proj', () => {
+			menu.push(R.span({ key: 'Libs/Proj' }, R.btn('Proj', () => {
 				if (!this.state.filterLibs) {
 					//@ts-ignore
 					this.state.filterLibs = {};
@@ -345,7 +366,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				}, 'Close window', 'close-btn')));
 			}
 
-			menu = h(WindowMenu, { menu: group.groupArray(menu, undefined, undefined, true, this.props.id) });
+			menu = h(WindowMenu, { menu: group.groupArray(menu, this.props.id) });
 		}
 
 		const showSystemAssets = game.editor.settings.getItem('show-system-assets', false);
@@ -432,7 +453,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 		let items = files.map(AssetsView.renderAssetItem);
 
 		if (!this.state.search) {
-			items = group.groupArray(items, undefined, undefined, true, this.props.id);
+			items = group.groupArray(items, this.props.id);
 		}
 
 		return R.fragment(menu,

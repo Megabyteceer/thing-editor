@@ -75,6 +75,7 @@ patch(
 
     /**hide children in editor TreeView window */
     __hideChildren?: boolean;
+    __preventOverriding?: boolean;
 
     /** hide object in viewport during editor mode */
     __hideInEditor?: boolean;

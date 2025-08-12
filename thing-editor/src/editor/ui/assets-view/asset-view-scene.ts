@@ -13,6 +13,7 @@ import { __UnknownClass } from 'thing-editor/src/editor/utils/unknown-class';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game, { PRELOADER_SCENE_NAME } from 'thing-editor/src/engine/game';
 import { getSerializedObjectClass } from '../../utils/generate-editor-typings';
+import { assetPreview } from './asset-preview';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
@@ -62,7 +63,6 @@ const showPrefabContextMenu = (file: FileDescScene, ev: PointerEvent) => {
 						file.assetName
 					), () => {
 						fs.deleteAsset(file.assetName, file.assetType);
-						game.editor.openScene(game.projectDesc.mainScene);
 					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			},
@@ -75,7 +75,7 @@ const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
 	assert(file.asset ? file.asset.c : true, 'scene can not be prefab reference'); // asset can be empty if it is equal asset overriding notification popup where overrides asset overridden too
 
 	const isCurrent = (file.assetName === game.editor.currentSceneName) || (AssetsView.currentItemName === game.editor.currentSceneName);
-
+	const preview = assetPreview(file, 60, 40);
 	return R.div(
 		{
 			className: isCurrent ? 'assets-item assets-item-scene assets-item-current' : 'assets-item assets-item-scene',
@@ -97,6 +97,7 @@ const assetItemRendererScene = (file: FileDescScene): ComponentChild => {
 		},
 		libInfo(file),
 		R.classIcon(game.classes[file.asset?.c!] || __UnknownClass),
+		preview,
 		R.span(assetsItemNameProps, file.assetName));
 };
 

@@ -203,8 +203,6 @@ export default class Button extends DSprite {
 		return super.isCanBePressed;
 	}
 
-	static globalOnClick?: (b: Button, source?: string) => void;
-
 	_executeOnClick(source/** optional tracking tag */?: string) {
 		/// #if EDITOR
 		if (game.__EDITOR_mode) {
@@ -213,9 +211,7 @@ export default class Button extends DSprite {
 		/// #endif
 		assert(this.isCanBePressed, '_executeOnClick called for button which could not be pressed at the moment.');
 
-		if (Button.globalOnClick) {
-			Button.globalOnClick(this, source);
-		}
+		game.emit('button-click', this, source);
 
 		Button.clickedButton = this;
 		if (this.onClickCallback) {
@@ -252,13 +248,9 @@ export default class Button extends DSprite {
 		Sound._unlockSound();
 		if (game.time === latestClickTime || game.__paused
 		) {
-			/// #if EDITOR
 			if (!this._isNotPausable()) {
-			/// #endif
 				return;
-			/// #if EDITOR
 			}
-			/// #endif
 		}
 		if (ev) {
 			if (ev.buttons !== 1) {

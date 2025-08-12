@@ -88,10 +88,22 @@ export default class Lib
 
 	static REMOVED_TEXTURE: Texture;
 
+	/// #if EDITOR
+	static __loadSceneNoInit(name: string): Scene {
+		return (this.loadScene as any)(name, true);
+	}
+
+	/// #endif
+
 	static loadScene(name: string): Scene {
+
+		/// #if EDITOR
+		const omitInitialization = arguments[1] || game.__EDITOR_mode;
+		/// #endif
+
 		if (
 			/// #if EDITOR
-			!game.__EDITOR_mode &&
+			!omitInitialization &&
 			/// #endif
 			staticScenes.hasOwnProperty(name)) {
 			return staticScenes[name];
@@ -101,7 +113,7 @@ export default class Lib
 		/// #if EDITOR
 
 		let overrideName = name;
-		if (!game.__EDITOR_mode && (name === game.editor.currentSceneName)) {
+		if (!omitInitialization && (name === game.editor.currentSceneName)) {
 			if (scenes[game.editor.currentSceneBackupName]) {
 				overrideName = game.editor.currentSceneBackupName;
 			}
@@ -123,7 +135,7 @@ export default class Lib
 			name]) as Scene;
 
 		/// #if EDITOR
-		if (!game.__EDITOR_mode) {
+		if (!omitInitialization) {
 			/// #endif
 			constructRecursive(s);
 			/// #if EDITOR
@@ -132,7 +144,7 @@ export default class Lib
 
 		if (s.isStatic
 			/// #if EDITOR
-			&& !game.__EDITOR_mode
+			&& !omitInitialization
 			/// #endif
 		) {
 			staticScenes[name] = s;
@@ -873,7 +885,9 @@ export default class Lib
 		let sceneData = Lib.__serializeObject(scene);
 		game.editor.disableFieldsCache = false;
 		scenes[name] = sceneData;
-		return fs.saveAsset(name, AssetType.SCENE, sceneData);
+		const ret = fs.saveAsset(name, AssetType.SCENE, sceneData);
+		editorEvents.emit('sceneUpdate', name);
+		return ret;
 	}
 
 	static __savePrefab(object: Container, name: string, libName?: string, saveFile = true) {
@@ -897,6 +911,11 @@ export default class Lib
 			fs.saveAsset(name, AssetType.PREFAB, prefabData, libName);
 		}
 		object.name = tmpName;
+		editorEvents.emit('prefabUpdated', name);
+	}
+
+	static __loadPrefabNoInit(prefabName: string) {
+		return (Lib.loadPrefab as any)(prefabName, true);
 	}
 
 	static __preparePrefabReference(o: Container, prefabName: string) {
@@ -1281,7 +1300,7 @@ const __checkClassesForEditorOnlyMethods = (classes: GameClasses) => {
 };
 /// #endif
 
-(Lib as any).loadPrefab = (name: string): Container => { //moved here to keep auto typing generation (TLib) work
+(Lib as any).loadPrefab = (name: string, omitInitialization = game.__EDITOR_mode): Container => { //moved here to keep auto typing generation (TLib) work
 	assert(prefabs.hasOwnProperty(name), 'No prefab with name \'' + name + '\' registered in Lib', 10044);
 	/// #if EDITOR
 	if (!name.startsWith(EDITOR_BACKUP_PREFIX)) {
@@ -1291,7 +1310,7 @@ const __checkClassesForEditorOnlyMethods = (classes: GameClasses) => {
 	/// #endif
 	const ret: Container = Lib._deserializeObject(prefabs[name]);
 	/// #if EDITOR
-	if (!game.__EDITOR_mode) {
+	if (!omitInitialization) {
 		/// #endif
 		constructRecursive(ret);
 		/// #if EDITOR

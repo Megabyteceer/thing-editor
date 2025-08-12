@@ -106,14 +106,18 @@ L.setCurrentLanguage = (languageId?: string) => {
 
 		if (languageId && languages.hasOwnProperty(languageId)) {
 			currentLanguageId = languageId;
+			game.settings.setItem('locale', languageId);
 		} else {
-			currentLanguageId = game.projectDesc.defaultLanguage;
-			if (window.navigator && navigator.languages) {
-				for (let l of navigator.languages) {
-					l = l.split('-')[0];
-					if (languages.hasOwnProperty(l)) {
-						currentLanguageId = l;
-						break;
+			currentLanguageId = game.settings?.getItem('locale');
+			if (!currentLanguageId) {
+				currentLanguageId = game.projectDesc.defaultLanguage;
+				if (window.navigator && navigator.languages) {
+					for (let l of navigator.languages) {
+						l = l.split('-')[0];
+						if (languages.hasOwnProperty(l)) {
+							currentLanguageId = l;
+							break;
+						}
 					}
 				}
 			}

@@ -515,7 +515,8 @@ input {
 }
 
 .props-field,
-.props-field input {
+.props-field input,
+.field-editor-wrapper input {
 	font-family: Consolas, "Courier New", monospace;
 }
 
@@ -1037,6 +1038,28 @@ input[disabled] {
 	border-left: 3px dotted #676d12;
 }
 
+.assets-item-scene .assets-item-preview-pic{
+	width: 60px;
+	height: 40px;
+}
+
+.assets-item-prefab .assets-item-preview-pic{
+	width: 30px;
+	height: 30px;
+}
+
+.assets-item-preview-pic {
+	vertical-align: middle;
+	margin: 0 10px;
+	padding: 1px;
+	background-color: #000;
+	display: inline-block;
+}
+
+.assets-item-preview-pic canvas {
+	display: block;
+}
+
 .selected-text {
 	background-color: rgb(102, 66, 0);
 }
@@ -1262,6 +1285,10 @@ input[disabled] {
 .data-path-header {
     display: block;
     height: 90px;
+}
+.data-path-small-header {
+   font-weight: normal;
+   font-size: 80%;
 }
 
 .asset-editor {

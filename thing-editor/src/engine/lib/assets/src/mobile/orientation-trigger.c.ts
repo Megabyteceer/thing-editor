@@ -1,4 +1,5 @@
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
 import { editorUtils } from 'thing-editor/src/editor/utils/editor-utils';
 import { roundUpNumber } from 'thing-editor/src/editor/utils/round-up-point';
 import game from 'thing-editor/src/engine/game';
@@ -148,11 +149,11 @@ export default class OrientationTrigger extends Container {
 		if (handler) {
 			let h = handler.split(',')[0];
 			if (h === 'this.update') {
-				game.editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 10071, this, handlerName);
+				game.editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.update", but only "this.parent.update" is possible, and if OrientationTrigger is last children only.', 10071, this, handlerName, undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 				return;
 			}
 			else if (h === 'this.parent.update' && this.parent.children.indexOf(this) < (this.parent.children.length - 1)) {
-				game.editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.parent.update", but it is not last children of parent. Please move this OrientationTrigger to the end of the list.', 10072, this, handlerName);
+				game.editor.ui.status.warn('OrientationTrigger`s "' + handlerName + '" handler has value "this.parent.update", but it is not last children of parent. Please move this OrientationTrigger to the end of the list.', 10072, this, handlerName, undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 				return;
 			}
 		}

@@ -96,7 +96,6 @@ const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 						renderClass(file)
 					), () => {
 						fs.deleteAsset(file.assetName, file.assetType);
-						game.editor.reloadClasses();
 					}, R.fragment(R.icon('delete'), ' Delete.')
 				);
 			}

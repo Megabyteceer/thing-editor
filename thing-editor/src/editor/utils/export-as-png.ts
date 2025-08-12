@@ -2,16 +2,18 @@ import type { Container, Rectangle } from 'pixi.js';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 
-export default async function exportAsPng(object: Container, width = 0, height = 0, cropAlphaThreshold = 1, bounds?: Rectangle) {
+/** exports DisplayObject as canvas, and destroys object if it has no parent */
+
+export default async function exportAsPng(object: Container, width = 0, height = 0, cropAlphaThreshold = 1, bounds?: Rectangle, returnAsCanvas = false, destroySource = false):Promise<Blob | HTMLCanvasElement | undefined> {
 
 	if (object.width > 0 && object.height > 0) {
 		let tmpVisible = object.visible;
 		object.visible = true;
-		let oldParent = object.parent;
+
+		let objectsParent = object.parent;
+
 		let oldIndex = 0;
-		if (oldParent) {
-			oldIndex = oldParent.children.indexOf(object);
-		}
+		oldIndex = objectsParent ? objectsParent.children.indexOf(object) : 0;
 		let f = object.filters;
 		let c = Lib._loadClassInstanceById('Container');
 		let c2 = Lib._loadClassInstanceById('Container');
@@ -23,80 +25,85 @@ export default async function exportAsPng(object: Container, width = 0, height =
 
 		let b = c.getLocalBounds();
 
-		let canvas = game.pixiApp.renderer.plugins.extract.canvas(c);
-		let ctx = canvas.getContext('2d', {
-			alpha: true
-		});
-		let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
+		let canvas;
 		let cropTop = 0;
-		while (cropTop < canvas.height) {
-			let isEmptyLine = true;
-			let y = cropTop * canvas.width * 4 + 3;
-			for (let x = 0; x < canvas.width; x++) {
-				if (imageData[x * 4 + y] >= cropAlphaThreshold) {
-					isEmptyLine = false;
-					break;
-				}
-			}
-			if (!isEmptyLine) {
-				break;
-			}
-			cropTop++;
-		}
-
 		let cropBottom = 0;
-		while (cropBottom < canvas.height) {
-			let isEmptyLine = true;
-			let y = (canvas.height - 1 - cropBottom) * canvas.width * 4 + 3;
-			for (let x = 0; x < canvas.width; x++) {
-				if (imageData[x * 4 + y] >= cropAlphaThreshold) {
-					isEmptyLine = false;
-					break;
-				}
-			}
-			if (!isEmptyLine) {
-				break;
-			}
-			cropBottom++;
-		}
-
 		let cropLeft = 0;
-		while (cropLeft < canvas.width) {
-			let isEmptyLine = true;
-			let x = cropLeft * 4 + 3;
-			for (let y = 0; y < canvas.height; y++) {
-				if (imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
-					isEmptyLine = false;
-					break;
-				}
-			}
-			if (!isEmptyLine) {
-				break;
-			}
-			cropLeft++;
-		}
-
 		let cropRight = 0;
-		while (cropRight < canvas.width) {
-			let isEmptyLine = true;
-			let x = (canvas.width - 1 - cropRight) * 4 + 3;
-			for (let y = 0; y < canvas.height; y++) {
-				if (imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
-					isEmptyLine = false;
+
+		if (cropAlphaThreshold >= 0) {
+			canvas = game.pixiApp.renderer.plugins.extract.canvas(c);
+			let ctx = canvas.getContext('2d', {
+				alpha: true
+			});
+			let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+
+			while (cropTop < canvas.height) {
+				let isEmptyLine = true;
+				let y = cropTop * canvas.width * 4 + 3;
+				for (let x = 0; x < canvas.width; x++) {
+					if (imageData[x * 4 + y] >= cropAlphaThreshold) {
+						isEmptyLine = false;
+						break;
+					}
+				}
+				if (!isEmptyLine) {
 					break;
 				}
+				cropTop++;
 			}
-			if (!isEmptyLine) {
-				break;
-			}
-			cropRight++;
-		}
 
-		b.y += cropTop;
-		b.height -= cropTop + cropBottom;
-		b.x += cropLeft;
-		b.width -= cropLeft + cropRight;
+			while (cropBottom < canvas.height) {
+				let isEmptyLine = true;
+				let y = (canvas.height - 1 - cropBottom) * canvas.width * 4 + 3;
+				for (let x = 0; x < canvas.width; x++) {
+					if (imageData[x * 4 + y] >= cropAlphaThreshold) {
+						isEmptyLine = false;
+						break;
+					}
+				}
+				if (!isEmptyLine) {
+					break;
+				}
+				cropBottom++;
+			}
+
+			while (cropLeft < canvas.width) {
+				let isEmptyLine = true;
+				let x = cropLeft * 4 + 3;
+				for (let y = 0; y < canvas.height; y++) {
+					if (imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
+						isEmptyLine = false;
+						break;
+					}
+				}
+				if (!isEmptyLine) {
+					break;
+				}
+				cropLeft++;
+			}
+
+			while (cropRight < canvas.width) {
+				let isEmptyLine = true;
+				let x = (canvas.width - 1 - cropRight) * 4 + 3;
+				for (let y = 0; y < canvas.height; y++) {
+					if (imageData[x + y * canvas.width * 4] >= cropAlphaThreshold) {
+						isEmptyLine = false;
+						break;
+					}
+				}
+				if (!isEmptyLine) {
+					break;
+				}
+				cropRight++;
+			}
+
+			b.y += cropTop;
+			b.height -= cropTop + cropBottom;
+			b.x += cropLeft;
+			b.width -= cropLeft + cropRight;
+		}
 
 		let b2 = c2.getLocalBounds();
 		c2.getLocalBounds = () => {
@@ -146,21 +153,28 @@ export default async function exportAsPng(object: Container, width = 0, height =
 			b2.height++;
 		}
 
-		canvas = game.pixiApp.renderer.plugins.extract.canvas(c2);
+		canvas = game.pixiApp.renderer.plugins.extract.canvas(c2) as HTMLCanvasElement;
 
-		let png: Blob = await new Promise((resolve) => {
+		if (destroySource) {
+			Lib.destroyObjectAndChildren(object);
+		} else {
+			object.visible = tmpVisible;
+			object.filters = f;
+			if (objectsParent) {
+				objectsParent.addChildAt(object, oldIndex);
+			} else {
+				object.detachFromParent();
+			}
+		}
+		Lib.destroyObjectAndChildren(c2);
+
+		let ret = returnAsCanvas ? canvas : await new Promise((resolve) => {
 			canvas.toBlob(resolve, 'image/png');
 		});
-		object.visible = tmpVisible;
-
 		delete (c2 as any).getLocalBounds;
-		object.filters = f;
-		if (oldParent) {
-			oldParent.addChildAt(object, oldIndex);
-		} else {
-			object.detachFromParent();
-		}
+
 		game.editor.ui.modal.hideSpinner();
-		return png;
+
+		return ret as Blob | HTMLCanvasElement;
 	}
 }
