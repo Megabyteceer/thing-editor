@@ -7,6 +7,8 @@ const {
 	shell
 } = require('electron');
 
+console.warn('debug only configuration running. Please use "EDITOR" configuration for normal editor work.');
+
 (() => {
 	/** @type BrowserWindow */
 	let mainWindow;

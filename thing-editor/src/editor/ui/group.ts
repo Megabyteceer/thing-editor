@@ -44,7 +44,6 @@ const getGroupByFolderName = (path:string[]) => {
 			group = g;
 			group.__folderName = folderName;
 			group.__subFolderName = subFolderName;
-			groupsArray.push();
 			groups[folderName] = group;
 		} else {
 			group = groups[folderName];
