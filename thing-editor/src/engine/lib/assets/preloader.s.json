@@ -45,7 +45,8 @@
 								"refreshInterval": 0,
 								"onFinish": "this.parent.toggle",
 								"onChanged": "",
-								"smooth": true
+								"smooth": true,
+								"smoothStep": 0.1
 							},
 							":": [
 								{
@@ -97,8 +98,6 @@
 							"p": {
 								"x": -77,
 								"y": -83,
-								"scale.x": 2,
-								"scale.y": 2,
 								"image": "WHITE",
 								"timeline": {
 									"l": {},
@@ -149,8 +148,6 @@
 							"c": "MovieClip",
 							"p": {
 								"y": -83,
-								"scale.x": 2,
-								"scale.y": 2,
 								"image": "WHITE",
 								"timeline": {
 									"l": {},
@@ -203,8 +200,6 @@
 							"p": {
 								"x": 77,
 								"y": -83,
-								"scale.x": 2,
-								"scale.y": 2,
 								"image": "WHITE",
 								"timeline": {
 									"l": {},
