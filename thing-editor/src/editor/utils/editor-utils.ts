@@ -761,7 +761,6 @@ const getL10nKey = (asset: L10nEntryAsset) => {
 };
 
 const replaceTranslationsRecursive = (o:SerializedObject, oldKey:string, newKey:string):boolean|undefined => {
-	debugger;
 	let ret;
 	if (o.c) {
 		const constr = game.classes[o.c];
@@ -798,6 +797,15 @@ const copyRelatedAssets = async () => {
 			return !fs.getFileByAssetName(asset.name, asset.type);
 		});
 
+		const fileExist = new Set() as Set<string>;
+		assets.forEach((asset) => {
+			asset.files?.forEach(fileName => {
+				if (fs.exists(fileName)) {
+					fileExist.add(fileName);
+				}
+			});
+		});
+
 		if (assets.length > 0) {
 			const selectedAssets = await (await import('../ui/filter-list')).showListFilter(
 				'Related assets will be copied to the project:',
@@ -811,9 +819,15 @@ const copyRelatedAssets = async () => {
 							value: asset
 						};
 					}
-					return { name: R.span({className: 'asset-files-names'}, asset.files.map((fileName) => {
-						return R.div(null, fileName);
-					})), pureName: asset.files[0], value: asset };
+					const deleted = asset.files.every(f => !fileExist.has(f));
+					return {
+						disabled: deleted,
+						unselected: deleted,
+						name: R.span({className: 'asset-files-names'}, asset.files.map((fileName) => {
+							return R.div(fileExist.has(fileName) ? null : {className: 'danger', title: 'deleted file'}, fileName);
+						})),
+					 	pureName: asset.files[0],
+					  	value: asset };
 				})
 			);
 
@@ -852,7 +866,6 @@ const copyRelatedAssets = async () => {
 
 			for (let asset of clipboard.data.assets) {
 				if (asset.type === AssetType.PREFAB) {
-					debugger;
 					let prefabName = asset.name;
 					for (let oldKey in replaces) {
 						let newKey = replaces[oldKey];

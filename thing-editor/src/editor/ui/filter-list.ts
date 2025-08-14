@@ -14,10 +14,12 @@ class FilterList extends ChooseList {
 	renderChoosingItem(item: ChooseListItem) {
 		return R.div(
 			{
-				className: 'filter-list-item clickable',
+				className: item.disabled ? 'filter-list-item disabled' : 'filter-list-item clickable',
 				onClick: () => {
-					item.unselected = !item.unselected;
-					this.forceUpdate();
+					if (!item.disabled) {
+						item.unselected = !item.unselected;
+						this.forceUpdate();
+					}
 				},
 				key: item.name
 			},
@@ -36,9 +38,11 @@ class FilterList extends ChooseList {
 			R.div({
 				className: 'filter-list-item clickable',
 				onClick: () => {
-					const checked = this.props.list.some(i => !i.unselected);
+					const checked = this.props.list.every(i => !i.unselected || i.disabled);
 					for (let i of this.props.list) {
-						i.unselected = checked;
+						if (!i.disabled) {
+							i.unselected = checked;
+						}
 					}
 					this.forceUpdate();
 				}
@@ -46,7 +50,7 @@ class FilterList extends ChooseList {
 			R.input({
 				className: 'checkbox filter-list-checkbox',
 				type: 'checkbox',
-				checked: this.props.list.every(i => !i.unselected)
+				checked: this.props.list.every(i => !i.unselected || i.disabled)
 			}),
 			'All'
 			),
