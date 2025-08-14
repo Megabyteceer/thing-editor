@@ -3,6 +3,7 @@ import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import L from 'thing-editor/src/engine/utils/l';
 
 const addImageToAssetsList = (imageName: string, ret: Set<FileDesc>) => {
 	if (imageName) {
@@ -11,6 +12,14 @@ const addImageToAssetsList = (imageName: string, ret: Set<FileDesc>) => {
 		if (!Lib.__isSystemTexture(file.asset, file.assetName)) {
 			ret.add(file);
 		}
+	}
+};
+
+const addResourceToAssetsList = (resourceName: string, ret: Set<FileDesc>) => {
+	if (resourceName) {
+		const file = fs.getFileByAssetName(resourceName, AssetType.RESOURCE);
+		assert(file, 'Wrong resource name.');
+		ret.add(file);
 	}
 };
 
@@ -44,6 +53,8 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 			if (field.type === 'image') {
 				imageFields[field.name] = true;
 				addImageToAssetsList(o.p[field.name], ret);
+			} else if (field.type === 'resource') {
+				addResourceToAssetsList(o.p[field.name], ret);
 			} else if (field.type === 'prefab') {
 				let prefabName = o.p[field.name];
 				if (Lib.hasPrefab(prefabName)) {
@@ -65,6 +76,22 @@ const enumAssetsPropsRecursive = (o: SerializedObject, ret: Set<FileDesc>) => {
 							addImageToAssetsList(p, ret);
 						}
 					}
+				}
+			} else if (field.type === 'l10n') {
+				let key = o.p[field.name];
+				if (key && L.has(key)) {
+					const entryTexts = {} as KeyedMap<string>;
+					const lData = L.getData();
+					for (const langId in lData) {
+						entryTexts[langId] = lData[langId][key];
+					}
+					let array = [key, entryTexts] as L10nEntryAsset;
+					let prefix = game.projectDesc.__localesNewKeysPrefix;
+					if (prefix && key.startsWith(prefix)) {
+						array.push(prefix);
+					}
+
+					ret.add({assetType: AssetType.L10N_ENTRY, asset: array, assetName: key, fileName: '', mTime: 0, lib: null});
 				}
 			}
 		}

@@ -89,7 +89,6 @@ interface EditablePropertyDesc<T extends import('pixi.js').Container = import('p
 	__src: string;
 	__nullCheckingIsApplied?: true;
 	renderer?: any;
-	isTranslatableKey?: boolean;
 }
 
 
@@ -173,6 +172,13 @@ type KeyedMap<T> = {
 	[key: string]: T;
 };
 
+interface ClipboardAsset {
+	name: string;
+	type: import ('./fs').AssetType;
+	l10n?: L10nEntryAsset;
+	files: string[];
+}
+
 type SerializedObject = {
 	/** constructor class name */
 	c?: string;
@@ -185,6 +191,8 @@ type SerializedObject = {
 	p: SerializedObjectProps;
 	':'?: SerializedObject[] | undefined;
 };
+
+type L10nEntryAsset = [key: string, text: KeyedMap<string>, projectPrefix?: string];
 
 type Electron_ThingEditorServer = { // exposed from electron
 	fs: (command: string, filename?: string | string[] | number, content?: string | boolean | ArrayBuffer, ...args: any[]) => FSCallback;

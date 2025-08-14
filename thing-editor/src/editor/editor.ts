@@ -1053,7 +1053,7 @@ class Editor {
 
 	async editSource(fileName: string, line?: string, char?: string, absolutePath = false, errorToFindLineNum?:{stack?: string}) {
 		const now = Date.now();
-		if (this.lastSourceEditTime > now - 50) {
+		if (this.lastSourceEditTime > now - 500) {
 			return;
 		}
 		this.lastSourceEditTime = now;

@@ -67,6 +67,7 @@ interface FileDescL10n extends FileDesc {
 	dir: string;
 	readOnly?: boolean;
 	lang: string;
+	isDefault?: boolean;
 	__isLangIdPlaceHolder?: boolean;
 	isDirty?: boolean;
 }
@@ -80,6 +81,8 @@ enum AssetType {
 	RESOURCE = 'RESOURCE',
 	BITMAP_FONT = 'BITMAP_FONT',
 	L10N = 'L10N',
+	/** non file asses. Used in enumAssetsPropsRecursive to copy l10n values */
+	L10N_ENTRY = 'L10N_ENTRY',
 	FONT = 'FONT',
 }
 

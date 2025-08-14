@@ -462,6 +462,11 @@ input {
 	padding: 5px 13px;
 }
 
+.main-btn {
+	font-size: 120%;
+	color: #008f5f;
+}
+
 .modal-reject-text {
 	height: 33px;
 	color: #ff0000;
@@ -914,6 +919,18 @@ input[disabled] {
 .select-item:hover {
 	border-radius: 20px;
 	background: #333333;
+}
+
+.filter-list-item {
+	display: flex;
+	height: 40px;
+}
+
+.filter-list-checkbox {
+	width: 18px !important;
+	display: inline-block;
+	padding: 3px;
+	margin-right: 5px;
 }
 
 .danger {

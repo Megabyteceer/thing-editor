@@ -270,8 +270,12 @@ function findClassNameInPrefabData(name: string, data: SerializedObject): boolea
 	return false;
 }
 
-function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDesc?: ProjectDesc, text?: KeyedObject) {
+function getAssetsToCopy(assets: Set<FileDesc>, noHashedVersions = false) {
+	enumAssetsToCopy(assets, noHashedVersions);
+	return assetsToCopy;
+}
 
+function enumAssetsToCopy(assets: Set<FileDesc>, noHashedVersions = false) {
 	let images: string[] = [];
 
 	let sounds: SoundAssetEntry[] = [];
@@ -283,6 +287,10 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 	let xmls: string[] | undefined;
 	let fonts: string[] | undefined;
 
+	const hashed = (file:FileDesc) => {
+		return noHashedVersions ? '' : getHashedAssetName(file);
+	};
+
 	assets.forEach((file) => {
 		if (isFileNameValidForBuild(file.assetName)) {
 			if (file.assetType === AssetType.IMAGE) {
@@ -290,9 +298,9 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 					if (!file.parentAsset) {
 						assetsToCopy.push({
 							from: file.fileName,
-							to: getHashedAssetName(file)
+							to: hashed(file)
 						});
-						images.push(getHashedAssetName(file));
+						images.push(hashed(file));
 					}
 				}
 			} else if (file.assetType === AssetType.SCENE) {
@@ -304,42 +312,52 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 					if (!file.parentAsset) {
 						assetsToCopy.push({
 							from: file.fileName.replace(/\wav$/, ext),
-							to: getHashedAssetName(file) + '.' + ext
+							to: hashed(file) + '.' + ext
 						});
 					}
 				}
-				sounds.push([getHashedAssetName(file), (file as FileDescSound).asset.preciseDuration]);
+				sounds.push([hashed(file), (file as FileDescSound).asset.preciseDuration]);
 			} else if (file.assetType === AssetType.RESOURCE) {
 				if (isAtlasAsset(file.asset) || file.includeToBuild) {
 					if (!resources) {
 						resources = [];
 					}
-					resources.push(getHashedAssetName(file));
+					resources.push(hashed(file));
 					assetsToCopy.push({
 						from: file.fileName,
-						to: getHashedAssetName(file) + '.json'
+						to: hashed(file) + '.json'
 					});
 					if ((file.asset as any)?.skeleton) {
 						assetsToCopy.push({
 							from: file.fileName.replace(/\.json$/, '.atlas'),
-							to: getHashedAssetName(file) + '.atlas'
+							to: hashed(file) + '.atlas'
 						});
+						const allImages = fs.getAssetsList(AssetType.IMAGE);
+						const fileRoot = file.fileName.substring(0, file.fileName.length - 5);
+						for (const i of allImages) {
+							if (i.fileName.startsWith(fileRoot)) {
+								assetsToCopy.push({
+									from: i.fileName,
+									to: hashed(i) + i.fileName.split('.').pop()
+								});
+							}
+						}
 					}
 				}
 			} else if (file.assetType === AssetType.BITMAP_FONT) {
 				if (!xmls) {
 					xmls = [];
 				}
-				xmls.push(getHashedAssetName(file));
+				xmls.push(hashed(file));
 				assetsToCopy.push({
 					from: file.fileName,
-					to: getHashedAssetName(file) + '.xml'
+					to: hashed(file) + '.xml'
 				});
 			} else if (file.assetType === AssetType.FONT) {
 				if (!fonts) {
 					fonts = [];
 				}
-				const hashedFontName = getHashedAssetName(file);
+				const hashedFontName = hashed(file);
 				fonts.push(hashedFontName);
 				assetsToCopy.push({
 					from: file.fileName,
@@ -348,21 +366,24 @@ function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDe
 			}
 		}
 	});
-	let assetsObj: AssetsDescriptor = {
+	return {
 		scenes,
 		prefabs,
 		resources,
 		xmls,
 		fonts,
 		images,
-		sounds,
-		projectDesc,
-		text
-	};
+		sounds
+	} as AssetsDescriptor;
+}
 
+function saveAssetsDescriptor(assets: Set<FileDesc>, fileName: string, projectDesc?: ProjectDesc, text?: KeyedObject) {
+	const content = enumAssetsToCopy(assets);
+	content.projectDesc = projectDesc;
+	content.text = text;
 	fs.writeFile(
 		'.tmp/' + fileName,
-		JSON.stringify(assetsObj, fieldsFilter)
+		JSON.stringify(content, fieldsFilter)
 	);
 }
 
@@ -379,4 +400,4 @@ function renderTextWithFilesLinks(txt: string) {
 	return txt;
 }
 
-export { addPostBuildScript, addPreBuildScript };
+export { addPostBuildScript, addPreBuildScript, getAssetsToCopy };

@@ -105,6 +105,22 @@ export default class LanguageView extends ComponentDebounced<ClassAttributes<Lan
 		}
 	}
 
+	static addTranslationToProject(key:string, value:string, langId:string) {
+		if (currentDirAssets) {
+
+			const file = currentDirAssets.get(langId)!;
+			if (!file.readOnly) {
+				file.asset[key] = value;
+				onModified(langId);
+			}
+
+			if (view) {
+				view.forceUpdate();
+			}
+			return true;
+		}
+	}
+
 	static __validateTextData() {
 		currentDirAssets.forEach((langData, langId) => {
 
@@ -217,9 +233,6 @@ const parseAssets = () => {
 			assetsFiles.set(file.dir, new Map());
 			assetsDirs.push(file.dir);
 		}
-		if (!currentDir) {
-			currentDir = file.dir;
-		}
 		assetsFiles.get(file.dir)!.set(file.lang, file);
 
 		const langId = file.lang;
@@ -232,6 +245,17 @@ const parseAssets = () => {
 			langData = languages[langId];
 		}
 		Object.assign(langData, file.asset);
+	}
+
+	if (!currentDir) {
+		game.editor.assetsFoldersReversed.some(folder => {
+			return files.some((file) => {
+				if (file.fileName.startsWith('/' + folder) || file.isDefault) {
+					currentDir = file.dir;
+					return true;
+				}
+			});
+		});
 	}
 
 	currentDirAssets = assetsFiles.get(currentDir)!;
@@ -370,7 +394,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 		for (let o of game.editor.selection) {
 			let props = (o.constructor as SourceMappedConstructor).__editableProps;
 			for (let p of props) {
-				if (p.isTranslatableKey) {
+				if (p.type === 'l10n') {
 					let k = (o as any)[p.name];
 					if (k) {
 						if (!L.has(k)) {

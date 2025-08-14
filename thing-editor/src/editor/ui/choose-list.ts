@@ -12,7 +12,7 @@ let bodyProps = { className: 'resizable-dialog left-align-text' };
 
 interface ChooseListProps extends ClassAttributes<ChooseList> {
 	list: ChooseListItem[];
-	noSearchField: boolean;
+	noSearchField?: boolean;
 	activeValue?: string;
 	doNotGroup?: boolean;
 }
