@@ -1267,6 +1267,7 @@ const EDITOR_ONLY_METHODS = [
 	'__afterSerialization',
 	'__beforeDestroy',
 	'__EDITOR_onCreate',
+	'__EDITOR_filterPropsSelection',
 	'__goToPreviewMode',
 	'__exitPreviewMode',
 	'__onSelect',

@@ -59,6 +59,8 @@ patch(
     __beforeDestroy?(): void;
 
     __EDITOR_onCreate?(isWrapping?: boolean): void;
+	__EDITOR_filterPropsSelection(propertyName:string): boolean;
+	static __EDITOR_filterPropsSelection(propertyName:string): boolean;
 
     __goToPreviewMode?(): void;
     __exitPreviewMode?(): void;

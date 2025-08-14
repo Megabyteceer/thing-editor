@@ -308,6 +308,41 @@ Object.defineProperties(Container.prototype, {
 	}
 });
 
+const FILTERED_PROPS = new Set([
+	'zIndex',
+	'transform',
+	'tabIndex',
+	'sortableChildren',
+	'sortDirty',
+	'skew',
+	'scale',
+	'renderable',
+	'renderId',
+	'position',
+	'pivot',
+	'localTransform',
+	'isSprite',
+	'isMask',
+	'getLocalBounds',
+	'eventMode',
+	'destroyed',
+	'cacheAsBitmap',
+	'cullable',
+	'accessibleType',
+	'accessiblePointerEvents',
+	'_tempDisplayObjectParent',
+	'accessible',
+	'accessibleChildren'
+]);
+
+Container.prototype.__EDITOR_filterPropsSelection = (propertyName:string): boolean => {
+	return FILTERED_PROPS.has(propertyName);
+};
+
+Container.__EDITOR_filterPropsSelection = (propertyName:string): boolean => {
+	return propertyName === 'defaultSortableChildren';
+};
+
 Container.prototype.__isAnyChildSelected = function __isAnyChildSelected(): boolean {
 	for (let o of game.editor.selection) {
 		while (o) {
