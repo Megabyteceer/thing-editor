@@ -139,7 +139,8 @@ const setValueByPath = (valuePath: string, val: any, this_: any) => {
 };
 
 /// #if EDITOR
-setValueByPath.___EDITOR_isGoodForCallbackChooser = true;
+(setValueByPath as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(setValueByPath as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 
 const getLatestSceneNodeBypath = (path: string, _this: any, suspendWarning = false): Container | null => {
 	latestDetectedSceneNode = null;

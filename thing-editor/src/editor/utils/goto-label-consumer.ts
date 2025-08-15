@@ -61,6 +61,7 @@ const gotoLabelRecursiveHelper = (context: Container) => {
 export function decorateGotoLabelMethods(constrictor: new() => IGoToLabelConsumer) {
 	(constrictor.prototype.gotoLabelRecursive as SelectableProperty).___EDITOR_callbackParameterChooserFunction = gotoLabelRecursiveHelper;
 	(constrictor.prototype.gotoLabelRecursive as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+	(constrictor.prototype.gotoLabelRecursive as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 	if (constrictor.prototype.gotoLabel) {
 		(constrictor.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
 		(constrictor.prototype.gotoLabel as SelectableProperty).___EDITOR_callbackParameterChooserFunction = gotoLabelHelper;

@@ -68,6 +68,9 @@ Container.prototype.remove = function remove() {
 /// #if EDITOR
 const ACTION_ICON_REMOVE = R.img({ src: '/thing-editor/img/timeline/remove.png' });
 (Container.prototype.remove as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_REMOVE;
+(Container.prototype.remove as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
+(Container.prototype.remove as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+
 /// #endif
 
 Container.prototype.removeWithoutHolder = function remove() {
@@ -108,7 +111,6 @@ Container.prototype.removeFilter = function removeFilter(this: Container, f) {
 
 /// #if EDITOR
 
-(Container.prototype.remove as SelectableProperty).___EDITOR_isGoodForChooser = true;
 
 Container.prototype.__onSelect = function __onSelect() {
 	let p = this.parent;
@@ -215,7 +217,7 @@ Container.prototype.forAllChildren = function (callback) {
 
 Object.defineProperty(Container.prototype, 'isCanBePressed', {
 	get: function () {
-		if (!this.interactive || game.disableAllButtons) return false;
+		if (!this.interactive || game.isAllButtonsDisabled) return false;
 		let p = this.parent;
 		while (p !== game.stage && p.interactiveChildren && p.visible) {
 			p = p.parent;

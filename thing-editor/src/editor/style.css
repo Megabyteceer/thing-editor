@@ -429,13 +429,14 @@ textarea:focus-visible {
 	position: relative;
 }
 
+.props-editor .props-header,
 .choosing-item:has(.path-choose-item):nth-of-type(1) {
 	position: absolute;
 	z-index: 1000;
-	width: 445px;
+	width: calc(100% - 20px);
 	background: var(--window-bg-color);
 }
-
+.props-editor .props-group,
 .choosing-item:has(.path-choose-item):nth-of-type(2) {
 	margin-top: 32px;
 }
@@ -524,10 +525,6 @@ input {
 	border-radius: 5px;
 	background: #4b4e4e;
 	color: #dddddd;
-}
-
-.props-editor {
-	position: relative;
 }
 
 .props-field,

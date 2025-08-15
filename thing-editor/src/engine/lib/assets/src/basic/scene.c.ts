@@ -123,6 +123,11 @@ const _refreshChildRef = (o: Container) => {
 /// #if EDITOR
 Scene.__EDITOR_icon = 'tree/scene';
 (Scene.prototype.remove as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onHide as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onMouseDown as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onMouseMove as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onMouseUp as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onShow as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 
 class __UnknownClassScene extends Scene {
 	static __defaultValues = {};

@@ -617,12 +617,18 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 
 
 (MovieClip.prototype.play as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(MovieClip.prototype.play as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.stop as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(MovieClip.prototype.stop as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.stop as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_STOP;
+(MovieClip.prototype.playRecursive as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.playRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.stopRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(MovieClip.prototype.stopRecursive as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.gotoLabelIf as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(MovieClip.prototype.gotoLabelIf as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.gotoLabelIf as SelectableProperty).___EDITOR_callbackParameterChooserFunction = async(context: MovieClip) => {
 	const label = await gotoLabelHelper(context);
 	if (label && label.length) {
