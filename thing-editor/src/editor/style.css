@@ -429,15 +429,13 @@ textarea:focus-visible {
 	position: relative;
 }
 
-.props-editor .props-header,
-.choosing-item:has(.path-choose-item):nth-of-type(1) {
+.props-editor .props-header {
 	position: absolute;
 	z-index: 1000;
 	width: calc(100% - 20px);
 	background: var(--window-bg-color);
 }
-.props-group:nth-of-type(2),
-.choosing-item:has(.path-choose-item):nth-of-type(2) {
+.props-group:nth-of-type(2) {
 	margin-top: 32px;
 }
 
