@@ -119,7 +119,8 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 		game.editor.choosePrefab('Select prefab to reference to', game.editor.selection[0].__nodeExtendData.isPrefabReference).then((selectedPrefabName) => {
 			if (selectedPrefabName) {
 				let newObjects = [];
-				for (let o of game.editor.selection) {
+				const selected = game.editor.selection.slice();
+				for (let o of selected) {
 					const objectData = Lib.__serializeObject(o);
 					objectData.r = selectedPrefabName!;
 
