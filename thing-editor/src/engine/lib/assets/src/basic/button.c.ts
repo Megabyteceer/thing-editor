@@ -133,19 +133,19 @@ export default class Button extends DSprite {
 	render(renderer: Renderer): void {
 		super.render(renderer);
 		if (this.isCanBePressed && this.worldAlpha > 0.1) {
-			if (this.hoverImage) {
+			if (this.hoverImage && Lib.hasTexture(this.hoverImage)) {
 				Lib.getTexture(this.hoverImage).baseTexture.touched = EDITOR_FLAGS.__touchTime;
 			}
-			if (this.pressImage) {
+			if (this.pressImage && Lib.hasTexture(this.pressImage)) {
 				Lib.getTexture(this.pressImage).baseTexture.touched = EDITOR_FLAGS.__touchTime;
 			}
-			if (this.disabledImage) {
+			if (this.disabledImage && Lib.hasTexture(this.disabledImage)) {
 				Lib.getTexture(this.disabledImage).baseTexture.touched = EDITOR_FLAGS.__touchTime;
 			}
-			if (this.sndOver) {
+			if (this.sndOver && Lib.hasSound(this.sndOver)) {
 				Lib.getSound(this.sndOver).__lastTouch = EDITOR_FLAGS.__touchTime;
 			}
-			if (this.sndClick) {
+			if (this.sndClick && Lib.hasSound(this.sndClick)) {
 				Lib.getSound(this.sndClick).__lastTouch = EDITOR_FLAGS.__touchTime;
 			}
 		}

@@ -87,15 +87,18 @@ const onContextMenu = async (fieldEditor: PropsFieldWrapper, value: any, ev: Poi
 				hexValue = clickedValue.toString(16).padStart(6, '0');
 			}
 			if (clipboardText) {
-				colorSample = R.span({
-					style: {background: '#' + clipboardText},
-					className: 'color-sample'
-				});
+				clipboardText = clipboardText.replace('#', '');
+				if (clipboardText.length <= 9) {
+					colorSample = R.fragment(R.span({className: 'semi-transparent'}, '#' + clipboardText), R.span({
+						style: {background: '#' + clipboardText},
+						className: 'color-sample'
+					}));
+				}
 			}
-			colorSampleCopy = R.span({
+			colorSampleCopy = R.fragment(R.span({className: 'semi-transparent'}, '#' + clickedValue.toString(16).padStart(6, '0')), R.span({
 				style: {background: '#' + clickedValue.toString(16).padStart(6, '0')},
 				className: 'color-sample'
-			});
+			}));
 		}
 
 	}
@@ -373,6 +376,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 				}
 			}
 		},
+		tip,
 		R.div({
 			className: field.name.startsWith('__') ? 'props-label props-label-helper selectable-text' : 'props-label selectable-text',
 			title: 'Double click - go to definition, Ctrl+click to copy field`s name',
@@ -380,7 +384,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 			onDblClick: () => {
 				game.editor.editSource(field.__src);
 			}
-		}, tip, field.name),
+		}, field.name),
 		R.div(wrapperProps,
 			field.arrayProperty ?
 				h(ArrayEditableProperty, {

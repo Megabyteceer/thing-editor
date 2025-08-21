@@ -38,7 +38,7 @@ const L: TL = ((id: string, values?: KeyedObject | number): string => {
 				}
 				let props = (o.constructor as SourceMappedConstructor).__editableProps;
 				for (let p of props) {
-					if (p.isTranslatableKey && (o as KeyedObject)[p.name] === id) {
+					if (p.type === 'l10n' && (o as KeyedObject)[p.name] === id) {
 						fieldName = p.name;
 						owner = o;
 						return;

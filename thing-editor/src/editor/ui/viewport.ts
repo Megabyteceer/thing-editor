@@ -23,7 +23,7 @@ import Keys from 'thing-editor/src/engine/utils/keys';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import DataAccessDebugger from '../utils/data-access-debugger';
-import { StatusClearingCondition } from './status-clearing-confition';
+import { StatusClearingCondition } from './status-clearing-condition';
 
 const PLAY_ICON = R.icon('play');
 const STOP_ICON = R.icon('stop');

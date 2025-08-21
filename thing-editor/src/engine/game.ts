@@ -53,6 +53,15 @@ let lastFPSTime = 0;
 type FixedViewportSize = { w: number; h: number } | boolean;
 
 const loadingsInProgressOwners: Set<any> = new Set();
+
+const FILTERED_PROPS = new Set([
+	'globalEventDispatcher',
+	'onGameReload',
+	'loadingsInProgress',
+	'loadingsFinished',
+	'addAssets',
+	'isAllButtonsDisabled'
+]);
 /// #endif
 
 let contextLoseTime = 0;
@@ -260,7 +269,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		}
 	}
 
-	get disableAllButtons() {
+	get isAllButtonsDisabled() {
 		return !!currentFader;
 	}
 
@@ -1236,6 +1245,10 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 	}
 
 	/// #if EDITOR
+	__EDITOR_filterPropsSelection (propertyName:string) {
+		return FILTERED_PROPS.has(propertyName);
+	}
+
 	__setCurrentContainerContent(o: Container) {
 		assert(game.__EDITOR_mode, 'attempt to replace current container content in running mode');
 		if (modals.length > 0) {
@@ -1444,18 +1457,31 @@ export type { FixedViewportSize };
 (Game.prototype.applyProjectDesc as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 
 (Game.prototype.closeAllScenes as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.closeAllScenes as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
+(Game.prototype.loadingAdd as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
+(Game.prototype.loadingRemove as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
+(Game.prototype.showLoadingError as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
+(Game.prototype.applyCSS as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
+
 (Game.prototype.closeCurrentScene as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.closeCurrentScene as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (Game.prototype.faderEnd as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.faderEnd as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (Game.prototype.faderShoot as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.faderShoot as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (FullScreen as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (Game.prototype.hideModal as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.hideModal as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (game.isMobile as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (Keys as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (Game.prototype.openUrl as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (Game.prototype.replaceScene as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (Game.prototype.showModal as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.showModal as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (Game.prototype.showQuestion as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.showQuestion as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (Game.prototype.showScene as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(Game.prototype.showScene as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 Object.defineProperty(game.openUrl, '___EDITOR_isHiddenForChooser', ButtonOnlyPropertyDesc);
 
 (Game.prototype.showModal as SelectableProperty).___EDITOR_callbackParameterChooserFunction = () => {
@@ -1546,15 +1572,15 @@ const visibilityChangeHandler = () => {
 focusChangeHandler(true);
 visibilityChangeHandler();
 
-let pauseRuntimeHotKeysInititalized = false;
+let pauseRuntimeHotKeysInitialized = false;
 export function __pauseRuntimeHotKeysInit() { // 99999
 	/// #if EDITOR
 	return;
 	/// #endif
-	if (pauseRuntimeHotKeysInititalized) {
+	if (pauseRuntimeHotKeysInitialized) {
 		return;
 	}
-	pauseRuntimeHotKeysInititalized = true;
+	pauseRuntimeHotKeysInitialized = true;
 	window.addEventListener('keydown', (ev) => {
 		if (ev.keyCode === 80 && ev.ctrlKey) {
 			game.__togglePause();

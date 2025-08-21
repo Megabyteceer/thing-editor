@@ -82,7 +82,11 @@ class Settings {
 					fs.fieldsFilter
 					/// #endif
 				));
-			} catch (_er) {
+			} catch (er) {
+				/// #if DEBUG
+				console.error((er as Error)?.stack);
+				debugger; // local store serialization error
+				/// #endif
 				this.data = this.data || {};
 			}
 		}

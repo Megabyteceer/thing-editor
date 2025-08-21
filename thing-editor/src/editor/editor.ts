@@ -50,7 +50,7 @@ import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototype
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
 import type { ContextMenuItem } from './ui/context-menu';
 import MainMenu from './ui/main-menu';
-import { StatusClearingCondition } from './ui/status-clearing-confition';
+import { StatusClearingCondition } from './ui/status-clearing-condition';
 import roundUpPoint from './utils/round-up-point';
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
@@ -1053,7 +1053,7 @@ class Editor {
 
 	async editSource(fileName: string, line?: string, char?: string, absolutePath = false, errorToFindLineNum?:{stack?: string}) {
 		const now = Date.now();
-		if (this.lastSourceEditTime > now - 50) {
+		if (this.lastSourceEditTime > now - 500) {
 			return;
 		}
 		this.lastSourceEditTime = now;

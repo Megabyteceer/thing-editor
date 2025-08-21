@@ -17,7 +17,7 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 import type { Container } from 'pixi.js';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import DataPathEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor';
-import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import { getCurrentStack, showStack } from 'thing-editor/src/editor/utils/stack-utils';
 export const ACTION_ICON_STOP = R.img({ src: '/thing-editor/img/timeline/stop.png' });
 
@@ -617,12 +617,18 @@ const calculateCacheSegmentForField = (fieldPlayer: FieldPlayer, cacheArray: Tim
 
 
 (MovieClip.prototype.play as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(MovieClip.prototype.play as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.stop as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(MovieClip.prototype.stop as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.stop as SelectableProperty).___EDITOR_actionIcon = ACTION_ICON_STOP;
+(MovieClip.prototype.playRecursive as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.playRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
 (MovieClip.prototype.stopRecursive as SelectableProperty).___EDITOR_isGoodForChooser = true;
+(MovieClip.prototype.stopRecursive as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(MovieClip.prototype.gotoLabel as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.gotoLabelIf as SelectableProperty).___EDITOR_isGoodForCallbackChooser = true;
+(MovieClip.prototype.gotoLabelIf as SelectableProperty).___EDITOR_isHiddenForDataChooser = true;
 (MovieClip.prototype.gotoLabelIf as SelectableProperty).___EDITOR_callbackParameterChooserFunction = async(context: MovieClip) => {
 	const label = await gotoLabelHelper(context);
 	if (label && label.length) {

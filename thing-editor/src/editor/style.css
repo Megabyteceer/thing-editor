@@ -425,8 +425,18 @@ textarea:focus-visible {
 .choosing-item {
 	white-space: nowrap;
 	padding: 4px;
-	border-bottom: 1px solid #636363;
+	border-bottom: 1px solid #424242;
 	position: relative;
+}
+
+.props-editor .props-header {
+	position: absolute;
+	z-index: 1000;
+	width: calc(100% - 20px);
+	background: var(--window-bg-color);
+}
+.props-group:nth-of-type(2) {
+	margin-top: 32px;
 }
 
 .refused-item {
@@ -460,6 +470,11 @@ input {
 	font-size: 130%;
 	width: 100%;
 	padding: 5px 13px;
+}
+
+.main-btn {
+	font-size: 120%;
+	color: #008f5f;
 }
 
 .modal-reject-text {
@@ -508,10 +523,6 @@ input {
 	border-radius: 5px;
 	background: #4b4e4e;
 	color: #dddddd;
-}
-
-.props-editor {
-	position: relative;
 }
 
 .props-field,
@@ -846,18 +857,96 @@ input {
 }
 
 .color-input {
-	margin: 2px;
-	padding: 0;
-	height: 21px;
+	display: inline-flex;
+	vertical-align: middle;
+}
+
+.color-input-eyedropper:hover {
+	background-color:  #414229;
+}
+
+.color-input-sample {
+	width: 40px;
+	display: inline-block;
+	height: 20px;
+	border: 1px solid #888888;
+	border-radius: 10px;
+}
+
+.color-input-sample:hover {
+	border-color: #cecc62;
 }
 
 .color-sample {
+	text-align: center;
 	display: inline-block;
 	width: 31px;
 	margin-top: -4px;
 	padding: 0;
 	height: 16px;
 	border: 1px solid #777777;
+}
+
+.color-slider {
+	box-sizing: border-box;
+	padding: 10px;
+	background-color: var(--window-bg-color);
+	position: absolute;
+	z-index: 1001;
+	border: 1px solid #555555;
+	border-radius: 4px;
+	text-align: center;
+	width: 314px;
+	height: 500px;
+}
+
+.color-slider .number-input{
+	display: inline-block;
+	vertical-align: middle;
+	width: 60px;
+	margin-right: 10px;
+}
+
+.color-slider input{
+	border-radius: 13px;
+}
+
+.color-slider-sl {
+	display: inline-block;
+	width: 256px;
+	height: 256px;
+	cursor: pointer;
+	position: relative;
+	margin-bottom: 10px;
+}
+
+.color-slider-hue {
+	background: linear-gradient(0deg,red,#ff0 17%,#0f0 33%,#0ff 50%,#00f 66%,#f0f 83%,red);
+	margin-left: 10px;
+	display: inline-block;
+	width: 24px;
+	height: 256px;
+	cursor: pointer;
+	position: relative;
+	margin-bottom: 10px;
+}
+
+.color-slider-sl-point {
+	pointer-events: none;
+	position: absolute;
+	width: 2px;
+	height: 2px;
+	background-color: #000000;
+	border: 2px solid #ffffff;
+}
+
+.color-slider-hue-point {
+	pointer-events: none;
+	position: absolute;
+	width: 32px;
+	height: 2px;
+	left: -6px;
+	border: 2px solid #ffffff;
 }
 
 input[type=checkbox] {
@@ -914,6 +1003,18 @@ input[disabled] {
 .select-item:hover {
 	border-radius: 20px;
 	background: #333333;
+}
+
+.filter-list-item {
+	display: flex;
+	height: 40px;
+}
+
+.filter-list-checkbox {
+	width: 18px !important;
+	display: inline-block;
+	padding: 3px;
+	margin-right: 5px;
 }
 
 .danger {
@@ -1066,9 +1167,9 @@ input[disabled] {
 
 .prompt-variant-item {
 	color: #ababab;
-    text-decoration: underline;
-    margin: 10px;
-    padding: 0;
+	text-decoration: underline;
+	margin: 10px;
+	padding: 0;
 }
 
 .props-header {
@@ -1192,8 +1293,8 @@ input[disabled] {
 }
 
 .context-menu-item-hotkey {
-    color: #676767;
-    margin-left: 20px;
+	color: #676767;
+	margin-left: 20px;
 }
 
 .context-menu button {
@@ -1211,8 +1312,8 @@ input[disabled] {
 
 .context-menu-item-content {
 	width: 100%;
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 .context-menu button:has(.current-menu-item) {
@@ -1231,9 +1332,9 @@ input[disabled] {
 
 .context-menu img {
 	left: 17px;
-    top: 5px;
+	top: 5px;
 	height: 16px;
-    position: absolute;
+	position: absolute;
 	max-width: 28px;
 }
 
@@ -1283,8 +1384,8 @@ input[disabled] {
 }
 
 .data-path-header {
-    display: block;
-    height: 90px;
+	display: block;
+	height: 90px;
 }
 .data-path-small-header {
    font-weight: normal;
@@ -1609,14 +1710,14 @@ input[disabled] {
 }
 
 .labels-log-time {
-    font-size: 70%;
-    color: #505050;
+	font-size: 70%;
+	color: #505050;
 	width: 60px;
-    padding: 3px;
+	padding: 3px;
 }
 
 .labels-log-label {
-    flex-grow: 1;
+	flex-grow: 1;
 }
 
 #labels-logger .choose-list-header input,
@@ -1627,8 +1728,8 @@ input[disabled] {
 .labels-log-item {
 	cursor: pointer;
 	display: flex;
-    align-items: center;
-    justify-content: space-between;
+	align-items: center;
+	justify-content: space-between;
 	padding: 3px 10px;
 }
 

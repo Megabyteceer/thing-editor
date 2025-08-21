@@ -15,7 +15,7 @@ import { scrollInToView } from '../utils/scroll-in-view';
 import type { GroupFolderData } from './group';
 import group from './group';
 import { preactComponentChildToString } from './modal';
-import { StatusClearingCondition } from './status-clearing-confition';
+import { StatusClearingCondition } from './status-clearing-condition';
 
 const errorIcon = R.icon('error-icon');
 const warnIcon = R.icon('warn-icon');

@@ -1,7 +1,7 @@
 import { Container } from 'pixi.js';
 import type { FileDesc } from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
-import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-confition';
+import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import { ACCESS__ALL_ASSERTING_PROXY, addAllRefsValidator } from 'thing-editor/src/editor/utils/scene-all-validator';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -123,6 +123,11 @@ const _refreshChildRef = (o: Container) => {
 /// #if EDITOR
 Scene.__EDITOR_icon = 'tree/scene';
 (Scene.prototype.remove as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onHide as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onMouseDown as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onMouseMove as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onMouseUp as SelectableProperty).___EDITOR_isHiddenForChooser = true;
+(Scene.prototype.onShow as SelectableProperty).___EDITOR_isHiddenForChooser = true;
 
 class __UnknownClassScene extends Scene {
 	static __defaultValues = {};

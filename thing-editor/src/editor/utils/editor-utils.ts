@@ -12,10 +12,16 @@ import Lib, { constructRecursive } from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 
 import type { ComponentChild } from 'preact';
-import type { FileDescClass } from 'thing-editor/src/editor/fs';
+import type { FileDesc, FileDescClass } from 'thing-editor/src/editor/fs';
+import { AssetType } from 'thing-editor/src/editor/fs';
 
+import fs from 'thing-editor/src/editor/fs';
 import { regeneratePrefabsTypings } from 'thing-editor/src/editor/utils/generate-editor-typings';
 import loadSafeInstanceByClassName from 'thing-editor/src/editor/utils/load-safe-instance-by-class-name';
+import L from 'thing-editor/src/engine/utils/l';
+import { getAssetsToCopy } from './build';
+import copyTextByClick from './copy-text-by-click';
+import enumAssetsPropsRecursive from './enum-assets-recursive';
 import roundUpPoint from './round-up-point';
 
 const prefabNameFilter = /[^a-zA-Z\-\/0-9_]/g;
@@ -36,6 +42,12 @@ const classNamePropertyDescriptor = {
 		let o = game.editor.selection[0];
 		return (o.__nodeExtendData.__isPreviewMode) ? 'danger-btn' : undefined;
 	}
+};
+
+let labelTextProps = {
+	className: 'selectable-text labels-log-label',
+	title: 'Ctrl+click to copy key name',
+	onMouseDown: copyTextByClick
 };
 
 export namespace editorUtils {
@@ -438,13 +450,53 @@ export namespace editorUtils {
 
 		if (game.editor.selection.length > 0) {
 			const data = game.editor.selection.map(Lib.__serializeObject);
-			let assets = new Set<string>();
+			let assets = new Set<FileDesc>();
+			for (let o of data) {
+				enumAssetsPropsRecursive(o, assets);
+			}
+			const assetsFileNames = new Set() as Set<string>;
+			const files = new Map() as Map<FileDesc, string[]>;
+			const assetsArray = Array.from(assets);
+			assets.forEach(a =>{
+				if (a.fileName) {
+					assetsFileNames.add(a.fileName);
+					files.set(a, [a.fileName]);
+				}
+			});
+
+
+			getAssetsToCopy(assets, true).forEach((f) => {
+				if (assetsFileNames.has(f.from)) {
+					return; // file already in assets list
+				}
+				if (assetsArray.some((asset) => {
+					if (asset.fileName.endsWith('.json')) {
+						const assetRoot = asset.fileName.substring(0, asset.fileName.length - 5);
+						if (f.from.startsWith(assetRoot)) {
+							files.get(asset)!.push(f.from);
+							return true;
+						}
+					}
+				})) {
+					return; // parent asset found
+				}
+
+				// cant find
+				assert(false, 'cant find parent asset for file ' + f.from);
+			});
 
 			clipboard.data = {
 				data,
-				assets: Array.from(assets),
-				project: game.editor.currentProjectDir,
-				libs: game.projectDesc.libs
+				assets: Array.from(assets).map(
+					a => {
+						return {
+							name: a.assetName,
+							type: a.assetType,
+							files: files.get(a),
+							l10n: (a.assetType === AssetType.L10N_ENTRY) ? a.asset as L10nEntryAsset : undefined
+						} as ClipboardAsset;
+					}),
+				project: game.editor.currentProjectDir
 			};
 
 			game.editor.refreshTreeViewAndPropertyEditor();
@@ -532,6 +584,11 @@ export namespace editorUtils {
 
 	export const onPasteClick = async () => {
 		if (canPaste()) {
+
+			if ((await copyRelatedAssets()) === false) {
+				// canceled
+				return;
+			}
 
 			DataPathFixer.rememberPathReferences();
 
@@ -680,10 +737,8 @@ export namespace editorUtils {
 
 interface ClipboardData {
 	data: SerializedObject[];
-	assets: string[];
+	assets: ClipboardAsset[];
 	project: string;
-	libs: string[];
-
 }
 
 class clipboard {
@@ -697,3 +752,130 @@ class clipboard {
 	}
 
 }
+
+
+const getL10nKey = (asset: L10nEntryAsset) => {
+	let originalKey = asset[0];
+	let foreignProjectPrefix = asset[2];
+	return foreignProjectPrefix ? originalKey.replace(foreignProjectPrefix, game.projectDesc.__localesNewKeysPrefix || '') : originalKey;
+};
+
+const replaceTranslationsRecursive = (o:SerializedObject, oldKey:string, newKey:string):boolean|undefined => {
+	let ret;
+	if (o.c) {
+		const constr = game.classes[o.c];
+		if (constr) {
+			let props = constr.__editableProps;
+			for (let field of props) {
+				if (field.type === 'l10n') {
+					let key = o.p[field.name];
+					if (key === oldKey) {
+						o.p[field.name] = newKey;
+						ret = true;
+					}
+				}
+			}
+		}
+	}
+	if (o[':']) {
+		for (let c of o[':']) {
+			ret = replaceTranslationsRecursive(c, oldKey, newKey) || ret;
+		}
+	}
+	return ret;
+};
+
+
+const copyRelatedAssets = async () => {
+
+	const replaces = {} as KeyedMap<string>;
+	if (clipboard.data.project !== game.editor.currentProjectDir) {
+		let assets = clipboard.data.assets.filter((asset) => {
+			if (asset.type === AssetType.L10N_ENTRY) {
+				return !L.has(getL10nKey(asset.l10n!));
+			}
+			return !fs.getFileByAssetName(asset.name, asset.type);
+		});
+
+		const fileExist = new Set() as Set<string>;
+		assets.forEach((asset) => {
+			asset.files?.forEach(fileName => {
+				if (fs.exists(fileName)) {
+					fileExist.add(fileName);
+				}
+			});
+		});
+
+		if (assets.length > 0) {
+			const selectedAssets = await (await import('../ui/filter-list')).showListFilter(
+				'Related assets will be copied to the project:',
+				assets.map((asset) => {
+					if (asset.type === AssetType.L10N_ENTRY) {
+						let l18n = getL10nKey(asset.l10n!);
+						const texts = asset.l10n![1];
+						return {
+							name: R.div({title: 'Localized text entry'}, R.span(labelTextProps, l18n), ': ', R.b(null, Object.values(texts)[0])),
+							pureName: l18n,
+							value: asset
+						};
+					}
+					const deleted = asset.files.every(f => !fileExist.has(f));
+					return {
+						disabled: deleted,
+						unselected: deleted,
+						name: R.span({className: 'asset-files-names'}, asset.files.map((fileName) => {
+							return R.div(fileExist.has(fileName) ? null : {className: 'danger', title: 'deleted file'}, fileName);
+						})),
+					 	pureName: asset.files[0],
+					  	value: asset };
+				})
+			);
+
+			const LanguageView = (await import('../ui/language-view')).default;
+
+			if (!selectedAssets) {
+				return false;
+			}
+
+			selectedAssets.forEach((i) => {
+				const asset: ClipboardAsset = i.value;
+				if (asset.type === AssetType.L10N_ENTRY) {
+					const originalKey = asset.l10n![0];
+					const texts = asset.l10n![1];
+					const projectKey = getL10nKey(asset.l10n!);
+					for (const langId in texts) {
+						LanguageView.addTranslationToProject(projectKey, texts[langId], langId);
+					}
+
+					if (originalKey !== projectKey) {
+						for (let o of clipboard.data.data) {
+							replaceTranslationsRecursive(o, originalKey, projectKey);
+							replaces[originalKey] = projectKey;
+						}
+					}
+
+				} else {
+					for (const fileName of asset.files) {
+						fs.copyFile(fileName, game.editor.currentProjectAssetsDirRooted + fileName.split('/assets/').pop());
+					}
+				}
+			});
+
+			fs.refreshAssetsList();
+			game.editor.ui.refresh();
+
+			for (let asset of clipboard.data.assets) {
+				if (asset.type === AssetType.PREFAB) {
+					let prefabName = asset.name;
+					for (let oldKey in replaces) {
+						let newKey = replaces[oldKey];
+						let prefabData = Lib.prefabs[prefabName];
+						if (replaceTranslationsRecursive(prefabData, oldKey, newKey)) {
+							Lib.__savePrefabData(prefabData, prefabName);
+						}
+					}
+				}
+			}
+		}
+	}
+};

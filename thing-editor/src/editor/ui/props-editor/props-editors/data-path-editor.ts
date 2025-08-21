@@ -4,9 +4,11 @@ import { Component, h, render } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import CallbackEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/call-back-editor';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
+import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import { getAllObjectRefsCount } from 'thing-editor/src/editor/utils/scene-all-validator';
+import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
@@ -16,6 +18,17 @@ const fieldEditorWrapperProps = { className: 'field-editor-wrapper' };
 const selectableSceneNodeProps = { className: 'selectable-scene-node' };
 const functionTipProps = { className: 'path-editor-function-tip' };
 
+const PROPERTY_ITEM_PROPS = {
+	className: 'selectable-text path-choose-item',
+	title: 'Ctrl+click to copy',
+	onMouseDown: copyTextByClick,
+	onClick: (ev:MouseEvent) => {
+		 if (ev.ctrlKey) {
+			sp(ev);
+		}
+	}
+};
+
 let initialized = false;
 
 let chooserElement:HTMLDivElement;
@@ -24,15 +37,6 @@ const hideChooser = () => {
 };
 const headerProps = {className: 'data-path-header'};
 const smallHeaderProps = {className: 'data-path-small-header'};
-
-const filteredNamesInDisplayObject = new Set([
-	'_tempDisplayObjectParent',
-	'__sourceCode',
-	'_bounds',
-	'_events',
-	'_onDisableByTrigger',
-	'_tintColor',
-]);
 
 let tipSyncInterval = 0;
 const syncTip = () => {
@@ -235,11 +239,11 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 	isFieldGoodForCallbackChoose(fieldName: string, object: KeyedObject, val?: SelectableProperty, isChild = false) {
 		EDITOR_FLAGS.rememberTryTime();
 		try {
-			if (filteredNamesInDisplayObject.has(fieldName) && object instanceof Container) {
+			if ((object as Container).__EDITOR_filterPropsSelection?.(fieldName)) {
 				EDITOR_FLAGS.checkTryTime();
 				return false;
 			}
-			if (fieldName.startsWith('_') && object[fieldName.replace(/^_+/, '')]) {
+			if (fieldName.startsWith('_')) {
 				EDITOR_FLAGS.checkTryTime();
 				return false;
 			}
@@ -494,7 +498,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			let props = (parent.constructor as SourceMappedConstructor).__editableProps;
 			if (props && Array.isArray(props)) {
 				for (let p of props as EditablePropertyDesc[]) {
-					if (!p.notSerializable) {
+					if (!p.notSerializable && !p.name.startsWith('_')) {
 						let name = p.name;
 						items.push({ pureName: name, name: R.b(null, name), order: 10000 });
 						addedNames.add(name);
@@ -549,6 +553,14 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 		items.sort((a, b) => {
 			return (b.order || 0) - (a.order || 0);
 		});
+
+		items.forEach(i => {
+			if (!i.pureName) {
+				i.pureName = i.name as string;
+			}
+			i.name = R.span(PROPERTY_ITEM_PROPS, i.name);
+		});
+
 		game.editor.ui.modal.showListChoose(
 			R.span(headerProps,
 				R.span(smallHeaderProps, 'Path for ' + (this.props.title || this.props.field!.name) + ': '), path.join('.') + '.',

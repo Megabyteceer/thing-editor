@@ -9,7 +9,7 @@ import game from 'thing-editor/src/engine/game';
 import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import Lib, { __onAssetAdded, __onAssetDeleted, __onAssetUpdated } from 'thing-editor/src/engine/lib';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
-import { StatusClearingCondition } from './ui/status-clearing-confition';
+import { StatusClearingCondition } from './ui/status-clearing-condition';
 import { regeneratePrefabsTypings } from './utils/generate-editor-typings';
 
 
@@ -67,6 +67,7 @@ interface FileDescL10n extends FileDesc {
 	dir: string;
 	readOnly?: boolean;
 	lang: string;
+	isDefault?: boolean;
 	__isLangIdPlaceHolder?: boolean;
 	isDirty?: boolean;
 }
@@ -80,6 +81,8 @@ enum AssetType {
 	RESOURCE = 'RESOURCE',
 	BITMAP_FONT = 'BITMAP_FONT',
 	L10N = 'L10N',
+	/** non file asses. Used in enumAssetsPropsRecursive to copy l10n values */
+	L10N_ENTRY = 'L10N_ENTRY',
 	FONT = 'FONT',
 }
 

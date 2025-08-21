@@ -906,11 +906,15 @@ export default class Lib
 		let prefabData = Lib.__serializeObject(object);
 		prefabData.p.___prefabPivot = PrefabEditor.pivot;
 		game.editor.disableFieldsCache = false;
+		this.__savePrefabData(prefabData, name, libName, saveFile);
+		object.name = tmpName;
+	}
+
+	static __savePrefabData(prefabData: SerializedObject, name: string, libName?: string, saveFile = true) {
 		prefabs[name] = prefabData;
 		if (saveFile) {
 			fs.saveAsset(name, AssetType.PREFAB, prefabData, libName);
 		}
-		object.name = tmpName;
 		editorEvents.emit('prefabUpdated', name);
 	}
 
@@ -1263,6 +1267,7 @@ const EDITOR_ONLY_METHODS = [
 	'__afterSerialization',
 	'__beforeDestroy',
 	'__EDITOR_onCreate',
+	'__EDITOR_filterPropsSelection',
 	'__goToPreviewMode',
 	'__exitPreviewMode',
 	'__onSelect',
