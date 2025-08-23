@@ -266,6 +266,14 @@ window.addEventListener('game-will-init', () => {
 		openDB.result.createObjectStore('MyObjectStore', { keyPath: 'id' });
 	};
 
+	openDB.onblocked = () => {
+		throw new Error('indexedDB blocked');
+	};
+
+	openDB.onerror = (er) => {
+		throw er;
+	};
+
 	openDB.onsuccess = () => {
 		db = openDB.result;
 		getTransaction().then(transaction => {
@@ -282,6 +290,9 @@ window.addEventListener('game-will-init', () => {
 				}
 				game.loadingRemove('indexed-db');
 			};
-		});
+			req.onerror = (er) => {
+				throw er;
+			};
+		}).catch((er) => { throw er; });
 	};
 });
