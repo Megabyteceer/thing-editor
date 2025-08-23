@@ -270,12 +270,12 @@ function findClassNameInPrefabData(name: string, data: SerializedObject): boolea
 	return false;
 }
 
-function getAssetsToCopy(assets: Set<FileDesc>, noHashedVersions = false) {
-	enumAssetsToCopy(assets, noHashedVersions);
+function getAssetsToCopy(assets: Set<FileDesc>, originalFileNames = false) {
+	enumAssetsToCopy(assets, originalFileNames);
 	return assetsToCopy;
 }
 
-function enumAssetsToCopy(assets: Set<FileDesc>, noHashedVersions = false) {
+function enumAssetsToCopy(assets: Set<FileDesc>, originalFileNames = false) {
 	let images: string[] = [];
 
 	let sounds: SoundAssetEntry[] = [];
@@ -288,7 +288,7 @@ function enumAssetsToCopy(assets: Set<FileDesc>, noHashedVersions = false) {
 	let fonts: string[] | undefined;
 
 	const hashed = (file:FileDesc) => {
-		return noHashedVersions ? '' : getHashedAssetName(file);
+		return originalFileNames ? '' : getHashedAssetName(file);
 	};
 
 	assets.forEach((file) => {
@@ -308,7 +308,7 @@ function enumAssetsToCopy(assets: Set<FileDesc>, noHashedVersions = false) {
 			} else if (file.assetType === AssetType.PREFAB) {
 				prefabs[file.assetName] = file.asset as SerializedObject;
 			} else if (file.assetType === AssetType.SOUND) {
-				for (let ext of game.projectDesc.soundFormats) {
+				for (let ext of (originalFileNames ? ['wav'] : game.projectDesc.soundFormats)) {
 					if (!file.parentAsset) {
 						assetsToCopy.push({
 							from: file.fileName.replace(/\wav$/, ext),
