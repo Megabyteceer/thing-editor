@@ -12,6 +12,7 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game, { DEFAULT_FADER_NAME } from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import { assetPreview } from './asset-preview';
 
 const toolButtonsProps = {
@@ -22,7 +23,7 @@ const toolButtonsProps = {
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
-	title: 'Ctrl+click to copy prefab`s name',
+	title: CTRL_READABLE + '+click to copy prefab`s name',
 	onMouseDown: copyTextByClick
 };
 
@@ -194,12 +195,12 @@ const assetItemRendererPrefab = (file: FileDescPrefab) => {
 		R.span(toolButtonsProps,
 			R.btn('<', (ev) => {
 				sp(ev);
-				findNextOfThisType(file.assetName, -1, ev.ctrlKey);
-			}, 'Find previous (hold Ctrl to find all)'),
+				findNextOfThisType(file.assetName, -1, (ev.ctrlKey || ev.metaKey));
+			}, 'Find previous (hold ' + CTRL_READABLE + ' to find all)'),
 			R.btn('>', (ev) => {
 				sp(ev);
-				findNextOfThisType(file.assetName, 1, ev.ctrlKey);
-			}, 'Find next (hold Ctrl to find all)')
+				findNextOfThisType(file.assetName, 1, (ev.ctrlKey || ev.metaKey));
+			}, 'Find next (hold ' + CTRL_READABLE + ' to find all)')
 		),
 		desc
 	);

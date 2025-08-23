@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld(
 	'electron_ThingEditorServer',
 	{
 		'versions': {
+			platform: process.platform,
 			node: process.versions.node,
 			chrome: process.versions.chrome,
 			electron: process.versions.electron

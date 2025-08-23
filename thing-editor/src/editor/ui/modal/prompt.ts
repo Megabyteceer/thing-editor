@@ -3,6 +3,7 @@ import { Component } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import copyTextByClick from '../../utils/copy-text-by-click';
 
 let modalRejectProps = { className: 'modal-reject-text' };
@@ -25,7 +26,7 @@ interface PromptState {
 
 const variantItemNameProps = {
 	className: 'selectable-text class-name',
-	title: 'Ctrl+click to copy name',
+	title: CTRL_READABLE + '+click to copy name',
 	onMouseDown: copyTextByClick
 };
 
@@ -99,7 +100,7 @@ export default class Prompt extends Component<PromptProps, PromptState> {
 				const label = R.span(variantItemNameProps, labelArray);
 
 				return R.btn(label, (ev) => {
-					if (ev.ctrlKey) {
+					if (ev.ctrlKey || ev.metaKey) {
 						game.editor.copyToClipboard(txt);
 					} else {
 						this.setState({value: txt, accepted: true});

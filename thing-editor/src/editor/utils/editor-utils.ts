@@ -19,6 +19,7 @@ import fs from 'thing-editor/src/editor/fs';
 import { regeneratePrefabsTypings } from 'thing-editor/src/editor/utils/generate-editor-typings';
 import loadSafeInstanceByClassName from 'thing-editor/src/editor/utils/load-safe-instance-by-class-name';
 import L from 'thing-editor/src/engine/utils/l';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import { getAssetsToCopy } from './build';
 import copyTextByClick from './copy-text-by-click';
 import enumAssetsPropsRecursive from './enum-assets-recursive';
@@ -46,7 +47,7 @@ const classNamePropertyDescriptor = {
 
 let labelTextProps = {
 	className: 'selectable-text labels-log-label',
-	title: 'Ctrl+click to copy key name',
+	title: CTRL_READABLE + '+click to copy key name',
 	onMouseDown: copyTextByClick
 };
 

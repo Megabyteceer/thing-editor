@@ -6,6 +6,7 @@ import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/search-by-regexp-or-text';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const CLASS_NAME = 'select-editor-current clickable';
 const CLASS_NAME_DISABLED = 'select-editor-current disabled';
@@ -231,7 +232,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 		}, R.span({
 			ctrlClickCopyValue: this.props.noCopyValue ? undefined : ((typeof (item as SelectEditorItem).value === 'undefined') ? item : (item as SelectEditorItem).value),
 			className: this.props.noCopyValue ? undefined : 'selectable-text',
-			title: this.props.noCopyValue ? undefined : 'Ctrl+click to copy value.',
+			title: this.props.noCopyValue ? undefined : CTRL_READABLE + '+click to copy value.',
 			onClick: stopPropagationIfCtrl,
 			onMouseDown: copyTextByClick
 		}, (item as SelectEditorItem).hasOwnProperty('name') ? (item as SelectEditorItem).name : item, ' ▾'))
@@ -240,7 +241,7 @@ class SelectEditor extends Component<SelectEditorProps, SelectEditorState> {
 }
 
 const stopPropagationIfCtrl = (ev: MouseEvent) => {
-	if (ev.ctrlKey) {
+	if ((ev.ctrlKey || ev.metaKey)) {
 		sp(ev);
 	}
 };

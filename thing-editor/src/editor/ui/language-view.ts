@@ -16,6 +16,7 @@ import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import L from 'thing-editor/src/engine/utils/l';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import { StatusClearingCondition } from './status-clearing-condition';
 
 /** dir_name >> language >> FileDescL10n */
@@ -499,7 +500,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 			lines.push(R.span({ key: id, className: 'langs-editor-tr' },
 				R.div({
 					className: 'langs-editor-th selectable-text',
-					title: 'Ctrl+click to copy key, Double click to rename, Right click to delete',
+					title: CTRL_READABLE + '+click to copy key, Double click to rename, Right click to delete',
 					onContextMenu: sp,
 					onMouseDown: (ev: PointerEvent) => {
 						let currentKey = (ev.target as any).innerText as string;
@@ -513,7 +514,7 @@ class LanguageTableEditor extends ComponentDebounced<ClassAttributes<LanguageTab
 								this.forceUpdate();
 							});
 						}
-						else if (ev.ctrlKey) {
+						else if ((ev.ctrlKey || ev.metaKey)) {
 							copyTextByClick(ev);
 						}
 						sp(ev);

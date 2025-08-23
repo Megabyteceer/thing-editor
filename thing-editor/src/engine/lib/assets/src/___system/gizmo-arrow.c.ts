@@ -62,7 +62,7 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 		}
 
 		if (___GizmoArrow.draggedArrow.dragX || ___GizmoArrow.draggedArrow.dragY) {
-			gizmo?.moveXY(p, ev.ctrlKey);
+			gizmo?.moveXY(p, (ev.ctrlKey || ev.metaKey));
 		}
 
 		if (___GizmoArrow.draggedArrow.dragR) {

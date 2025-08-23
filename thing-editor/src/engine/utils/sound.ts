@@ -10,6 +10,7 @@ import IndexedDBUtils from 'thing-editor/src/engine/utils/indexed-db-utils';
 import R from '../basic-preact-fabrics';
 import FlyText from '../lib/assets/src/basic/fly-text.c';
 import debugPanelStyle from './sound-debug-panel.css?raw';
+import { CTRL_READABLE } from './utils';
 /// #endif
 
 import HowlSound from 'thing-editor/src/engine/HowlSound';
@@ -547,8 +548,8 @@ function renderSoundPanelItem(soundName:string) {
 	return R.tr({key: soundName},
 		R.td({
 			className: (Lib.getSound(soundName) === EMPTY_SOUND) ? 'snd-name snd-name-empty ' + cleanupClassName(soundName) : 'snd-name ' + cleanupClassName(soundName),
-			onClick: (ev: Event) => {
-				if ((ev as MouseEvent).ctrlKey) {
+			onClick: (ev: MouseEvent) => {
+				if (ev.ctrlKey || ev.metaKey) {
 					const txt = soundName.split('/').pop()!;
 					navigator.clipboard.writeText(txt);
 					/// #if EDITOR
@@ -661,7 +662,7 @@ function renderSoundsPanel() {
 		),
 		R.div({
 			className: 'sounds-debug-panel-body',
-			title: 'Ctrl + click to copy sound\'s name'
+			title: CTRL_READABLE + ' + click to copy sound\'s name'
 		},
 		R.table({border: 0, cellspacing: 0, cellpadding: 0},
 			items

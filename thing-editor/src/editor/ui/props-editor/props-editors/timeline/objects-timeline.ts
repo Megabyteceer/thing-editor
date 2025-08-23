@@ -10,6 +10,7 @@ import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import type { TimelineFieldData, TimelineLabelData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const objectsTimelineProps = { className: 'objects-timeline' };
 
@@ -120,7 +121,7 @@ export default class ObjectsTimelineView extends Component<ObjectsTimelineViewPr
 							this.addLabel(name, time);
 						}
 					});
-				} else if (ev.ctrlKey) {
+				} else if ((ev.ctrlKey || ev.metaKey)) {
 					game.editor.onObjectsPropertyChanged(this.props.node, '__previewFrame', Timeline.mouseEventToTime(ev));
 				} else {
 					this.props.owner.setTime(Timeline.mouseEventToTime(ev));
@@ -129,12 +130,12 @@ export default class ObjectsTimelineView extends Component<ObjectsTimelineViewPr
 			},
 			style: { width },
 			onMouseOver: () => {
-				StatusBar.addStatus('Right click to add time label. Ctrl + click to set preview frame', 'timeline-header', 1);
+				StatusBar.addStatus('Right click to add time label. ' + CTRL_READABLE + ' + click to set preview frame', 'timeline-header', 1);
 			},
 			onMOuseOut: () => {
 				StatusBar.removeStatus('timeline-header');
 			},
-			title: tl && 'Right click to add time label\nCtrl + click to set preview frame',
+			title: tl && 'Right click to add time label\n' + CTRL_READABLE + ' + click to set preview frame',
 			className: 'timeline-labels-panel'
 		}, previewMarker, labelsNames
 			.sort((l1, l2) => {

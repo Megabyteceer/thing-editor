@@ -217,9 +217,7 @@ class Editor {
 		window.setInterval(() => { //keep props editor and tree actual during scene is launched
 			if (EDITOR_FLAGS.updateInProgress) {
 				EDITOR_FLAGS.updateInProgress = false;
-				editor.ui.modal.showFatalError(R.fragment('Exception during update().', R.br(), R.btn('reload page', () => {
-					location.reload();
-				})), 99999);
+				editor.ui.modal.showFatalError(R.fragment('Exception during update().'), 99999);
 			}
 			if (!game.__EDITOR_mode && !game.__paused) {
 				this.refreshTreeViewAndPropertyEditor();
@@ -600,7 +598,7 @@ class Editor {
 	warnEqualFiles(warning:string, file: FileDesc, existingFile: FileDesc) {
 		this.ui.status.warn(warning + ' ' + file.fileName + ' => ' + existingFile.fileName, 99999, (ev?: PointerEvent) => {
 			let preview = AssetsView.renderAssetItem(file);
-			if (ev && ev.ctrlKey) {
+			if (ev && (ev.ctrlKey || ev.metaKey)) {
 				fs.deleteAsset(file.assetName, file.assetType);
 				game.editor.ui.status.clearLastClickedItem();
 			}

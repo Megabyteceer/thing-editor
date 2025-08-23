@@ -8,6 +8,9 @@ try {
 	while (w) {
 		w.addEventListener('keydown', (ev) => {
 			downedKeys.add(ev.keyCode);
+			if (ev.metaKey) {
+				downedKeys.add(17);
+			}
 
 			/// #if EDITOR
 			return;
@@ -28,6 +31,9 @@ try {
 			}
 			/// #endif
 			keyUpsToApply.push(ev.keyCode);
+			if (ev.metaKey) {
+				keyUpsToApply.push(17);
+			}
 		});
 
 		if (w.parent !== w) {

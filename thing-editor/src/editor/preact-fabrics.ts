@@ -9,6 +9,7 @@ import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import { default as BasicR } from '../engine/basic-preact-fabrics';
+import { CTRL_READABLE } from '../engine/utils/utils';
 
 interface ComponentProps {
 	className?: string;
@@ -19,7 +20,7 @@ const _iconsCache: KeyedMap<preact.Component> = {};
 
 const assetsItemNameProps = {
 	className: 'selectable-text class-name',
-	title: 'Ctrl+click to copy class`s name',
+	title: CTRL_READABLE + '+click to copy class`s name',
 	onMouseDown: copyTextByClick
 };
 

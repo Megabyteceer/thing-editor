@@ -1,11 +1,11 @@
 const isEventFocusOnInputElement = (ev: KeyboardEvent): boolean => {
 
-	let tag = ev.target && (ev.target as HTMLElement).tagName;
+	let tag = document.activeElement?.tagName;
 
 	if (((tag === 'INPUT') && ((ev.target as HTMLInputElement).type !== 'checkbox')) ||
 			tag === 'TEXTAREA') {
 
-		if (ev.ctrlKey) {
+		if (ev.ctrlKey || ev.metaKey) {
 			if (ev.key === 'z' || ev.key === 'v' || ev.key === 'y' || ev.key === 'a') {
 				return true;
 			}

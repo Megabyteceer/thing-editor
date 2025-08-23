@@ -10,6 +10,8 @@ import { hideAdditionalWindow, showAdditionalWindow } from 'thing-editor/src/edi
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
 import game from 'thing-editor/src/engine/game';
 import copyTextByClick from '../utils/copy-text-by-click';
+
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import { searchByRegexpOrText } from '../utils/search-by-regexp-or-text';
 import type { SelectEditorItem } from './props-editor/props-editors/select-editor';
 import SelectEditor from './props-editor/props-editors/select-editor';
@@ -61,7 +63,7 @@ interface LabelLogItem {
 
 let labelNamesProps = {
 	className: 'selectable-text labels-log-label',
-	title: 'Ctrl+click to copy label`s name',
+	title: CTRL_READABLE + '+click to copy label`s name',
 	onMouseDown: copyTextByClick
 };
 

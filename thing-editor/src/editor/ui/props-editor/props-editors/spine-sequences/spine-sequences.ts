@@ -10,6 +10,7 @@ import Lib from 'thing-editor/src/engine/lib';
 import type { SpineSequenceItemAction } from 'thing-editor/src/engine/lib/assets/src/extended/spine.c';
 import Spine, { spineAnimationsSelectList, type SpineSequence, type SpineSequenceItem } from 'thing-editor/src/engine/lib/assets/src/extended/spine.c';
 import { getCallbackIcon } from 'thing-editor/src/engine/utils/get-value-by-path';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import ComponentDebounced from '../../../component-debounced';
 import showContextMenu from '../../../context-menu';
 import LabelsLogger from '../../../labels-logger';
@@ -20,7 +21,7 @@ import { getWindowElement } from '../timeline/timeline';
 
 const labelItemNameProps = {
 	className: 'selectable-text class-name',
-	title: 'Ctrl+click to copy name',
+	title: CTRL_READABLE + '+click to copy name',
 	onMouseDown: copyTextByClick
 };
 
@@ -249,7 +250,7 @@ export default class SpineSequences extends ComponentDebounced<SpineSequencesPro
 
 		return R.div({
 			className,
-			title: 'Ctrl+click to copy label`s name',
+			title: CTRL_READABLE + '+click to copy label`s name',
 			onMouseDown: () => {
 				this.setActiveSequence(sequence.n);
 				this.refresh();

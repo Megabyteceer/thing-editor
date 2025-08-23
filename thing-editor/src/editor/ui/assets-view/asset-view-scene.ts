@@ -12,12 +12,13 @@ import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import { __UnknownClass } from 'thing-editor/src/editor/utils/unknown-class';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game, { PRELOADER_SCENE_NAME } from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import { getSerializedObjectClass } from '../../utils/generate-editor-typings';
 import { assetPreview } from './asset-preview';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
-	title: 'Ctrl+click to copy scene`s name',
+	title: CTRL_READABLE + '+click to copy scene`s name',
 	onMouseDown: copyTextByClick
 };
 

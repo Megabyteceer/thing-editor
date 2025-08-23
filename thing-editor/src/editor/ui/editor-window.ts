@@ -523,7 +523,7 @@ class CornerDragger extends Component<CornerDraggerProps> {
 		activeDraggers.length = 0;
 		activeDraggers.push(this);
 
-		if (!ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
+		if (!(ev.ctrlKey || ev.metaKey) && !ev.shiftKey && !ev.altKey) {
 			let thisBounds = (this.base as HTMLDivElement).getBoundingClientRect();
 			addNeighborDraggersAsActive(thisBounds, ev, this.props.type);
 		}
@@ -550,7 +550,7 @@ class CornerDragger extends Component<CornerDraggerProps> {
 		for (let dragger of activeDraggers) {
 			dragger.drag(ev);
 		}
-		if (!ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
+		if (!(ev.ctrlKey || ev.metaKey) && !ev.shiftKey && !ev.altKey) {
 			for (let dragger of activeDraggers) {
 				dragger.props.owner.clamp();
 			}
