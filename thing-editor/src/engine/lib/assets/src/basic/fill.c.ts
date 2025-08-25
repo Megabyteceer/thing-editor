@@ -1,3 +1,4 @@
+import type { ITypedArray } from 'pixi.js';
 import { Mesh, MeshMaterial, PlaneGeometry, Program, Texture, WRAP_MODES } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
@@ -502,7 +503,7 @@ export default class Fill extends Mesh {
 		let buffer = this.geometry.buffers[3];
 
 		if (buffer.data.length !== len) {
-			buffer.data = new Float32Array(len);
+			buffer.data = new Float32Array(len) as unknown as ITypedArray;
 		}
 		let a = buffer.data;
 
