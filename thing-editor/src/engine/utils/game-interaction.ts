@@ -1,3 +1,4 @@
+import type { FederatedPointerEvent } from 'pixi.js';
 import { Point } from 'pixi.js';
 import game from 'thing-editor/src/engine/game';
 import Button from 'thing-editor/src/engine/lib/assets/src/basic/button.c';
@@ -54,7 +55,7 @@ const mouseHandlerGlobalMove = (ev: PointerEvent) => {
 	}
 };
 
-const mouseHandlerGlobal = (ev: PointerEvent) => {
+const mouseHandlerGlobal = (ev: PointerEvent | FederatedPointerEvent) => {
 	const canvasBounds = (game.pixiApp.view as HTMLCanvasElement).getBoundingClientRect();
 
 
