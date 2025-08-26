@@ -1,7 +1,7 @@
 import assert from 'thing-editor/src/engine/debug/assert';
 
 const PI2 = Math.PI * 2;
-/// #if DEBUG
+/// #if EDITOR
 const CTRL_READABLE = (electron_ThingEditorServer.versions.platform == 'darwin') ? '⌘' : 'Ctrl';
 /// #endif
 
@@ -35,7 +35,7 @@ const stepToR = (val: number, target: number, step: number) => {
 };
 
 export {
-	/// #if DEBUG
+	/// #if EDITOR
 	CTRL_READABLE,
 	/// #endif
 	PI2, stepTo, stepToR
