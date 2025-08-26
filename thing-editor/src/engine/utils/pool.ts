@@ -12,7 +12,7 @@ const onNew = (ret: any) => {
 			if (prop.__nullCheckingIsApplied) {
 				if (ret.hasOwnProperty(prop.name)) {
 					delete ret[prop.name]; //delete own numeric properties to make NaN checking work
-					ret[prop.name] = (ret.constructor as SourceMappedConstructor).__defaultValues[prop.name];
+					ret[prop.name] = prop.default;
 				}
 			}
 		}
