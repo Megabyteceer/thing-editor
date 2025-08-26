@@ -1,4 +1,4 @@
-import type { Container } from 'pixi.js';
+import type { Container, FederatedPointerEvent } from 'pixi.js';
 import { Point } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { stopRightButtonMoving } from 'thing-editor/src/editor/ui/editor-overlay';
@@ -165,7 +165,7 @@ export default class ___GizmoArrow extends Shape {
 		}
 	}
 
-	onPointerDown(ev: PointerEvent) {
+	onPointerDown(ev: FederatedPointerEvent) {
 		if (!game.editor.selection.length) {
 			return;
 		}

@@ -1,3 +1,4 @@
+import type { FederatedPointerEvent } from 'pixi.js';
 import { Container } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import overlayLayer from 'thing-editor/src/editor/ui/editor-overlay';
@@ -80,7 +81,7 @@ export default class ClickOutsideTrigger extends Container {
 		super.onRemove();
 	}
 
-	onThisDown(ev: PointerEvent) {
+	onThisDown(ev: PointerEvent | FederatedPointerEvent) {
 		if (ev.buttons !== 4 && (!ev.target || (ev.target as Container).isCanBePressed)) {
 			this.thisDownTime = game.time;
 		}
