@@ -10,7 +10,6 @@
     "dependencies": "node ./thing-editor/demo/install.js"
   },
   "devDependencies": {
-    "@pixi/filter-outline": "^5.2.0",
     "@stylistic/eslint-plugin-ts": "^1.7.0",
     "@types/events": "^3.0.0",
     "@types/howler": "^2.2.7",
@@ -27,8 +26,9 @@
     "md5-file": "^5.0.0",
     "node-ssh": "^13.1.0",
     "open": "^9.1.0",
+    "pixi.js": "^7.4.3",
     "pixi-spine": "^4.0.4",
-    "pixi.js": "^7.2.4",
+    "@pixi/filter-outline": "^5.2.0",
     "preact": "^10.15.1",
     "ps-list": "^8.1.1",
     "sharp": "^0.32.1",
