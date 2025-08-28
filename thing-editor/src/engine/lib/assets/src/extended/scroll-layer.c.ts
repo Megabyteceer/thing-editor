@@ -1,4 +1,5 @@
 
+import type { FederatedPointerEvent } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';
 import game from 'thing-editor/src/engine/game';
@@ -139,7 +140,7 @@ export default class ScrollLayer extends Container {
 		}
 	}
 
-	onDown(ev: PointerEvent) {
+	onDown(ev: PointerEvent | FederatedPointerEvent) {
 		if (this.worldVisible && this.getRootContainer().parent) {
 			if (Button.downedButton && Button.downedButton.isCanBePressed) {
 				let p = Button.downedButton.parent;

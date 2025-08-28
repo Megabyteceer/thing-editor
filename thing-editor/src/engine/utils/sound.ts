@@ -1,6 +1,7 @@
 /// #if EDITOR
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
 import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
+import { CTRL_READABLE } from './utils';
 /// #endif
 
 /// #if DEBUG
@@ -547,8 +548,8 @@ function renderSoundPanelItem(soundName:string) {
 	return R.tr({key: soundName},
 		R.td({
 			className: (Lib.getSound(soundName) === EMPTY_SOUND) ? 'snd-name snd-name-empty ' + cleanupClassName(soundName) : 'snd-name ' + cleanupClassName(soundName),
-			onClick: (ev: Event) => {
-				if ((ev as MouseEvent).ctrlKey) {
+			onClick: (ev: MouseEvent) => {
+				if (ev.ctrlKey || ev.metaKey) {
 					const txt = soundName.split('/').pop()!;
 					navigator.clipboard.writeText(txt);
 					/// #if EDITOR
@@ -661,7 +662,13 @@ function renderSoundsPanel() {
 		),
 		R.div({
 			className: 'sounds-debug-panel-body',
-			title: 'Ctrl + click to copy sound\'s name'
+			/// #if EDITOR
+			title: CTRL_READABLE + ' + click to copy sound\'s name'
+			/*
+			/// #endif
+			title: 'ctrl + click to copy sound\'s name'
+			//*/
+
 		},
 		R.table({border: 0, cellspacing: 0, cellpadding: 0},
 			items

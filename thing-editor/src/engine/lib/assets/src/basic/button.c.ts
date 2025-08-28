@@ -1,5 +1,5 @@
 
-import type { Renderer } from 'pixi.js';
+import type { FederatedPointerEvent, Renderer } from 'pixi.js';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
@@ -243,7 +243,7 @@ export default class Button extends DSprite {
 		}
 	}
 
-	onDown(ev: PointerEvent | null, source = 'pointerdown') {
+	onDown(ev: PointerEvent | null | FederatedPointerEvent, source = 'pointerdown') {
 
 		Sound._unlockSound();
 		if (game.time === latestClickTime || game.__paused
@@ -314,7 +314,7 @@ export default class Button extends DSprite {
 		super.update();
 	}
 
-	onUp(ev?: PointerEvent | KeyboardEvent, src = 'pointerup') {
+	onUp(ev?: PointerEvent | KeyboardEvent | FederatedPointerEvent, src = 'pointerup') {
 		if (Button.downedButton === this) {
 			if (this.pressImage) {
 				if (this.initialImage) {

@@ -6,6 +6,7 @@ import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/pro
 import StatusBar from 'thing-editor/src/editor/ui/status-bar';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const numberEditorProps = { className: 'number-input' };
 
@@ -29,13 +30,13 @@ document.addEventListener('mouseup', onMouseUp);
 document.addEventListener('mousemove', (ev) => {
 	if (!draggingElement) return;
 
-	StatusBar.addStatus('Hold Ctrl - to fast scroll.', 'number-editor');
+	StatusBar.addStatus('Hold ' + CTRL_READABLE + ' - to fast scroll.', 'number-editor');
 
 	let d = -ev.movementY;
 	if (d !== 0) {
 		preventClickBecauseOfDragging = true;
 		d = d * (draggingElement.step);
-		draggingElement.deltaValue(d, ev.ctrlKey);
+		draggingElement.deltaValue(d, (ev.ctrlKey || ev.metaKey));
 	}
 });
 
@@ -115,13 +116,13 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 
 	onUpClick(ev: PointerEvent) {
 		if (!preventClickBecauseOfDragging && downedArrow === ev.target) {
-			this.deltaValue(this.step, ev.ctrlKey);
+			this.deltaValue(this.step, (ev.ctrlKey || ev.metaKey));
 		}
 	}
 
 	onDownClick(ev: PointerEvent) {
 		if (!preventClickBecauseOfDragging && downedArrow === ev.target) {
-			this.deltaValue(-this.step, ev.ctrlKey);
+			this.deltaValue(-this.step, (ev.ctrlKey || ev.metaKey));
 		}
 	}
 
@@ -167,11 +168,11 @@ class NumberEditor extends Component<NumberEditorProps, NumberEditorState> {
 	onKeyDown(ev: KeyboardEvent) {
 		switch (ev.keyCode) {
 		case 38:
-			this.deltaValue(this.step, ev.ctrlKey);
+			this.deltaValue(this.step, (ev.ctrlKey || ev.metaKey));
 			sp(ev);
 			break;
 		case 40:
-			this.deltaValue(-this.step, ev.ctrlKey);
+			this.deltaValue(-this.step, (ev.ctrlKey || ev.metaKey));
 			sp(ev);
 			break;
 		}

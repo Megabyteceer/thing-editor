@@ -9,10 +9,11 @@ import libInfo from 'thing-editor/src/editor/utils/lib-info';
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
-	title: 'Ctrl+click to copy image name',
+	title: CTRL_READABLE + '+click to copy image name',
 	onMouseDown: copyTextByClick
 };
 

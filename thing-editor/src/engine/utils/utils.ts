@@ -1,6 +1,9 @@
 import assert from 'thing-editor/src/engine/debug/assert';
 
 const PI2 = Math.PI * 2;
+/// #if EDITOR
+const CTRL_READABLE = (electron_ThingEditorServer.versions.platform == 'darwin') ? '⌘' : 'Ctrl';
+/// #endif
 
 const stepTo = (val: number, to: number, step: number) => {
 	assert(!isNaN(val), 'stepTo val, valid number expected.');
@@ -31,5 +34,10 @@ const stepToR = (val: number, target: number, step: number) => {
 	return val - step;
 };
 
-export { PI2, stepTo, stepToR };
+export {
+	/// #if EDITOR
+	CTRL_READABLE,
+	/// #endif
+	PI2, stepTo, stepToR
+};
 

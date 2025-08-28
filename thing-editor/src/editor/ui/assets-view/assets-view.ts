@@ -22,6 +22,7 @@ import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view
 import { searchByRegexpOrText } from 'thing-editor/src/editor/utils/search-by-regexp-or-text';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import { libIcon } from '../../utils/lib-info';
 import assetItemRendererL10n from './assets-view-l10n';
 
@@ -466,7 +467,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 				: undefined,
 			clearSearchBtn,
 			R.div({
-				title: this.props.onItemPreview ? 'Click to choose. Ctrl + Click to preview.' : undefined,
+				title: this.props.onItemPreview ? 'Click to choose. ' + CTRL_READABLE + ' + Click to preview.' : undefined,
 				className: 'assets-view window-scrollable-content',
 				onMouseDown: this.props.onItemSelect ? (ev: MouseEvent) => {
 					let itemElement = (ev.target as HTMLDivElement).closest('.assets-item') as HTMLDivElement;
@@ -484,7 +485,7 @@ export default class AssetsView extends Window<AssetsViewProps, AssetsViewState>
 	selectItem(itemElement: HTMLDivElement, ev: MouseEvent) {
 		if (itemElement) {
 			let chosen = (itemElement.querySelector('.selectable-text') as HTMLSpanElement).innerText;
-			if (ev.ctrlKey && this.props.onItemPreview) {
+			if ((ev.ctrlKey || ev.metaKey) && this.props.onItemPreview) {
 				this.props.onItemPreview!(chosen);
 			} else {
 				if (this.props.currentValue !== chosen) {

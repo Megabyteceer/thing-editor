@@ -13,7 +13,7 @@ const scrollInToViewAndShake = (element: HTMLElement) => {
 };
 
 const scrollInToView = (element: HTMLElement) => {
-	element.scrollIntoView({ block: 'center', inline: 'center' });
+	(element as any).scrollIntoViewIfNeeded({ block: 'center', inline: 'center' });
 	document.scrollingElement!.scrollTop = 0;
 	document.scrollingElement!.scrollLeft = 0;
 	document.body.scrollTop = 0;

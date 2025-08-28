@@ -1582,10 +1582,10 @@ export function __pauseRuntimeHotKeysInit() { // 99999
 	}
 	pauseRuntimeHotKeysInitialized = true;
 	window.addEventListener('keydown', (ev) => {
-		if (ev.keyCode === 80 && ev.ctrlKey) {
+		if (ev.keyCode === 80 && (ev.ctrlKey || ev.metaKey)) {
 			game.__togglePause();
 			ev.preventDefault();
-		} else if (ev.keyCode === 219 && ev.ctrlKey) {
+		} else if (ev.keyCode === 219 && (ev.ctrlKey || ev.metaKey)) {
 			game.__oneStep();
 			ev.preventDefault();
 		}

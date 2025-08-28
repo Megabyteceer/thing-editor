@@ -63,7 +63,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 				from++;
 			}
 		} else {
-			game.editor.selection.select(this.props.node, ev.ctrlKey, undefined, true);
+			game.editor.selection.select(this.props.node, (ev.ctrlKey || ev.metaKey), undefined, true);
 		}
 
 		if (extendData.isSelected) {
@@ -114,7 +114,7 @@ class TreeNode extends ComponentDebounced<TreeNodeProps> {
 
 		return R.fragment(R.div({
 			onDblClick: (ev: PointerEvent) => {
-				if (!isClickedAtRightEdge(ev) && !ev.ctrlKey) {
+				if (!isClickedAtRightEdge(ev) && !(ev.ctrlKey || ev.metaKey)) {
 					game.editor.editClassSource(node);
 				}
 			},

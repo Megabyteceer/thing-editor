@@ -6,6 +6,7 @@ import Window from 'thing-editor/src/editor/ui/editor-window';
 import { hideAdditionalWindow, showAdditionalWindow } from 'thing-editor/src/editor/ui/ui';
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 let instance: LocalStoreView | null;
 
@@ -14,13 +15,13 @@ const ROW_PROPS = { className: 'local-store-row' };
 
 const HEADER_COLUMN_PROPS = {
 	className: 'selectable-text local-store-column local-store-column-header',
-	title: 'Ctrl+click to copy',
+	title: CTRL_READABLE + '+click to copy',
 	onMouseDown: copyTextByClick
 };
 
 const COLUMN_PROPS = {
 	className: 'selectable-text local-store-column',
-	title: 'Ctrl+click to copy',
+	title: CTRL_READABLE + '+click to copy',
 	onMouseDown: copyTextByClick
 };
 

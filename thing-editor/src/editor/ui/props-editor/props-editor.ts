@@ -39,6 +39,7 @@ import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import scrollInToViewAndShake from 'thing-editor/src/editor/utils/scroll-in-view';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import ResourceEditor from './props-editors/resource-editor';
 import SpineSequencesEditor from './props-editors/spine-sequences/spine-sequences-editor';
 
@@ -347,7 +348,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 			if (node.__nodeExtendData.unknownConstructor) {
 				classButtonContent = R.fragment(R.classIcon(node.constructor as SourceMappedConstructor), ' ', R.b({
 					className: 'danger selectable-text',
-					title: 'Ctrl+click to copy Class`s name',
+					title: CTRL_READABLE + '+click to copy Class`s name',
 					onMouseDown: copyTextByClick
 				}, node.__nodeExtendData.unknownConstructor));
 			} else {
@@ -359,7 +360,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				} else {
 					classButtonContent = R.fragment(R.classIcon(firstClass), ' ', R.b({
 						className: 'selectable-text',
-						title: 'Ctrl+click to copy Class`s name',
+						title: CTRL_READABLE + '+click to copy Class`s name',
 						onMouseDown: copyTextByClick
 					}, firstClass.__className));
 				}
@@ -371,7 +372,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 					header,
 					R.btn(R.b({
 						className: 'selectable-text',
-						title: 'Ctrl+click to copy prefab`s name',
+						title: CTRL_READABLE + '+click to copy prefab`s name',
 						onMouseDown: copyTextByClick
 					}, deserializedFrom), () => {
 						const prefabName = deserializedFrom;
@@ -387,7 +388,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 				header = R.btn(R.fragment(
 					R.b({
 						className: 'danger selectable-text',
-						title: 'Ctrl+click to copy prefab`s name',
+						title: CTRL_READABLE + '+click to copy prefab`s name',
 						onMouseDown: copyTextByClick
 					}, node.__nodeExtendData.unknownPrefab),
 					prefabSelectCaret
@@ -404,7 +405,7 @@ class PropsEditor extends ComponentDebounced<ClassAttributes<PropsEditor>> {
 					R.btn(R.b({
 						ctrlClickCopyValue: prefabName,
 						className: 'selectable-text',
-						title: 'Ctrl+click to copy prefab`s name',
+						title: CTRL_READABLE + '+click to copy prefab`s name',
 						onMouseDown: copyTextByClick
 					},
 					R.span(null, R.classIcon(getSerializedObjectClass(file.asset)), prefabName),

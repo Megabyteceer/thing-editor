@@ -19,6 +19,7 @@ import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import type Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 import { mouseHandlerGlobal } from 'thing-editor/src/engine/utils/game-interaction';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import shakeDomElement from '../../utils/shake-element';
 
 function onEmptyClick() {
@@ -161,13 +162,13 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 
 	onDragOver(ev: DragEvent) {
 		if (canBeDragAccepted(ev)) {
-			const isWrap = ev.ctrlKey; /// 99999
+			const isWrap = (ev.ctrlKey || ev.metaKey); /// 99999
 			let treeItem = this.getClosestTreeItem(ev);
 			if (treeItem) {
 				hideDragTarget();
 				highlightedDragItem = treeItem;
 				if (Math.abs(pointerToItemRelationY) < 4 || isWrap) {
-					if (!dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length && !ev.ctrlKey) { // can expand tree item
+					if (!dragTargetNode.__nodeExtendData.childrenExpanded && dragTargetNode.children.length && !(ev.ctrlKey || ev.metaKey)) { // can expand tree item
 						if (dragTargetExpandTimeOutTarget !== dragTargetNode) {
 							clearDragExpandTimeOut();
 							dragTargetExpandTimeOutTarget = dragTargetNode;
@@ -197,7 +198,7 @@ export default class TreeView extends ComponentDebounced<ClassAttributes<TreeVie
 				} else {
 					treeItem.classList.add('drag-target-bottom');
 				}
-				StatusBar.addStatus('Ctrl - to "wrap" mode', 'drag-tree-wrap');
+				StatusBar.addStatus(CTRL_READABLE + ' - to "wrap" mode', 'drag-tree-wrap');
 
 			} else {
 				hideDragTarget();

@@ -22,6 +22,7 @@ import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-musi
 import Keys from 'thing-editor/src/engine/utils/keys';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import DataAccessDebugger from '../utils/data-access-debugger';
 import { StatusClearingCondition } from './status-clearing-condition';
 
@@ -34,7 +35,7 @@ let playTogglingTime = false;
 let prefabTitleProps = { className: 'prefabs-mode-title' };
 let prefabLabelProps = {
 	className: 'selectable-text',
-	title: 'Ctrl+click to copy prefab`s name',
+	title: CTRL_READABLE + '+click to copy prefab`s name',
 	onMouseDown: copyTextByClick
 };
 
@@ -200,7 +201,7 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 	}
 
 	onDoubleClick(ev: PointerEvent) {
-		if (ev.ctrlKey) {
+		if ((ev.ctrlKey || ev.metaKey)) {
 			this.resetZoom();
 		}
 	}

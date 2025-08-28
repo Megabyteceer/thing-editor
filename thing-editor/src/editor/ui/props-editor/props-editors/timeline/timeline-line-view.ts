@@ -50,7 +50,7 @@ export default class TimelineLineView extends Component<TimelineLineViewProps> {
 	}
 
 	onMouseDown(ev: PointerEvent) {
-		if (ev.buttons === 2 && !ev.ctrlKey) {
+		if (ev.buttons === 2 && !(ev.ctrlKey || ev.metaKey)) {
 			this.props.owner.toggleKeyframe(Timeline.mouseEventToTime(ev));
 		}
 	}

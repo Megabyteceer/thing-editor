@@ -21,7 +21,7 @@ const findItemForHotkey = (ev: Hotkey, handlers?: ContextMenuItem[][], windowBod
 			for (let menuItem of menuGroup) {
 				if (menuItem) {
 					if (typeof menuItem.disabled !== 'function' || !menuItem.disabled()) {
-						if (isHotkeyHit(ev, windowBody as HTMLElement, menuItem.hotkey)) {
+						if (isHotkeyHit(ev as any, windowBody as HTMLElement, menuItem.hotkey)) {
 							return menuItem;
 						}
 					}
@@ -85,7 +85,7 @@ interface EditorButtonStats {
 class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 
 	onKeyDown(ev: KeyboardEvent) {
-		if (!this.props.disabled && isHotkeyHit(ev as any as Hotkey, this.base as HTMLElement, this.props.hotkey)) {
+		if (!this.props.disabled && isHotkeyHit(ev, this.base as HTMLElement, this.props.hotkey)) {
 			if (!isEventFocusOnInputElement(ev)) {
 				this.onMouseDown(ev as unknown as PointerEvent);
 				sp(ev);

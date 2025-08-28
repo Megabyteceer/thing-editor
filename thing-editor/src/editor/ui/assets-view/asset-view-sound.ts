@@ -7,6 +7,7 @@ import { MUTE_SOUND_MENU_ITEM } from 'thing-editor/src/editor/ui/main-menu';
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import libInfo from 'thing-editor/src/editor/utils/lib-info';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const BITRATE_PROPS = {
 	className: 'semi-transparent'
@@ -14,7 +15,7 @@ const BITRATE_PROPS = {
 
 const assetsItemNameProps = {
 	className: 'selectable-text',
-	title: 'Ctrl+click to copy sound name',
+	title: CTRL_READABLE + '+click to copy sound name',
 	onMouseDown: copyTextByClick
 };
 

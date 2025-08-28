@@ -694,7 +694,8 @@ _editableEmbed(Text, 'textTransform', {
 _editableEmbed(Text, 'maxWidth', {
 	type: 'number',
 	min: 0,
-	afterEdited: (overrideO?: Text) => {
+	afterEdited: (_val: number, overrideO?: Text) => {
+
 		let textObject = overrideO || game.editor.selection[0] as Text;
 		let right = textObject.maxWidth;
 		let y = 0;

@@ -2,6 +2,7 @@ import { Component } from 'preact';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const transparentProps = { className: 'transparent' };
 const statusProps = { className: 'status-entry' };
@@ -77,7 +78,7 @@ export default class StatusBar extends Component {
 				const defaultCameraY = PrefabEditor.currentPrefabName ? game.H / 2 : 0;
 
 				if (game.stage.scale.x !== 1 || game.stage.x !== defaultCameraX || game.stage.y !== defaultCameraY) {
-					resetZoomBtn = R.btn('x', game.editor.ui.viewport.resetZoom, 'Reset zoom and viewport position (Ctrl + double-click on viewport)', 'reset-zoom-btn');
+					resetZoomBtn = R.btn('x', game.editor.ui.viewport.resetZoom, 'Reset zoom and viewport position (' + CTRL_READABLE + ' + double-click on viewport)', 'reset-zoom-btn');
 				}
 			}
 			return R.span(null, resetZoomBtn, R.span(game.editor.isCurrentContainerModified ? null : transparentProps, '●'), txt, status);

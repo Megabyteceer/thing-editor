@@ -566,7 +566,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 			if (reduceRepeatingKeyframesInSelected()) {
 				this.refresh();
 			}
-			if ((ev.clientX > 0) && !ev.ctrlKey && (Math.abs(draggingStartX - ev.clientX) < 2)) {
+			if ((ev.clientX > 0) && !(ev.ctrlKey || ev.metaKey) && (Math.abs(draggingStartX - ev.clientX) < 2)) {
 				if (selectedComponents.length > 1) {
 					clearSelection();
 					select(draggingComponent);
@@ -587,7 +587,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		isDragging = true;
 		this.onMouseMove(ev);
 
-		if (!draggingComponent && !ev.ctrlKey && (!isTimeDragging || ev.shiftKey)) {
+		if (!draggingComponent && !(ev.ctrlKey || ev.metaKey) && (!isTimeDragging || ev.shiftKey)) {
 			selectionFrame.onMouseDown(ev, isTimeDragging && ev.shiftKey);
 		}
 	}
@@ -624,7 +624,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 					this.setTime(prevDragTime, true);
 				}
 			} else {
-				if (ev.ctrlKey) {
+				if (ev.ctrlKey || ev.metaKey) {
 					for (let c of selectedComponents) {
 						if (c instanceof TimelineKeyframeView || c instanceof TimelineLoopPoint) {
 							let kf = c.props.keyFrame;
@@ -859,12 +859,12 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 		draggingStartX = ev.clientX;
 		game.editor.blurPropsInputs();
 		if (!(this as TimelineKeyframeView).state || !(this as TimelineKeyframeView).state.isSelected) {
-			if (!ev.ctrlKey && !ev.shiftKey) {
+			if (!(ev.ctrlKey || ev.metaKey) && !ev.shiftKey) {
 				clearSelection();
 			}
 			select(this);
 		} else {
-			if (!ev.shiftKey && ev.ctrlKey) {
+			if (!ev.shiftKey && (ev.ctrlKey || ev.metaKey)) {
 				unselect(this);
 			}
 		}

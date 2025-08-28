@@ -13,6 +13,7 @@ import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import getValueByPath, { getLatestSceneNodeBypath } from 'thing-editor/src/engine/utils/get-value-by-path';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const fieldEditorWrapperProps = { className: 'field-editor-wrapper' };
 const selectableSceneNodeProps = { className: 'selectable-scene-node' };
@@ -20,10 +21,10 @@ const functionTipProps = { className: 'path-editor-function-tip' };
 
 const PROPERTY_ITEM_PROPS = {
 	className: 'selectable-text path-choose-item',
-	title: 'Ctrl+click to copy',
+	title: CTRL_READABLE + '+click to copy',
 	onMouseDown: copyTextByClick,
 	onClick: (ev:MouseEvent) => {
-		 if (ev.ctrlKey) {
+		 if (ev.ctrlKey || ev.metaKey) {
 			sp(ev);
 		}
 	}
@@ -676,3 +677,4 @@ function enumProps(o: KeyedObject) {
 
 
 export type { DataPathEditorProps, DataPathEditorState };
+

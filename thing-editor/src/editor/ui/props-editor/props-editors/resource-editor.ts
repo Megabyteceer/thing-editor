@@ -6,12 +6,13 @@ import showContextMenu from 'thing-editor/src/editor/ui/context-menu';
 import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/props-editor/props-field-wrapper';
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const resourceEditorProps = { className: 'asset-editor' };
 
 let assetNameProps = {
 	className: 'selectable-text',
-	title: 'Ctrl+click to copy resource`s name',
+	title: CTRL_READABLE + '+click to copy resource`s name',
 	onMouseDown: copyTextByClick
 };
 

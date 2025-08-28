@@ -7,12 +7,13 @@ import type { EditablePropertyEditorProps } from 'thing-editor/src/editor/ui/pro
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const prefabEditorProps = { className: 'asset-editor' };
 
 let assetNameProps = {
 	className: 'selectable-text',
-	title: 'Ctrl+click to copy prefabs`s name',
+	title: CTRL_READABLE + '+click to copy prefabs`s name',
 	onMouseDown: copyTextByClick
 };
 

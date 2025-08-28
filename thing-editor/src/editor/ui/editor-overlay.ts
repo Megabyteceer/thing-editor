@@ -57,7 +57,7 @@ editorEvents.once('gameWillBeInitialized', () => {
 						rightButtonDraggingStarted = true;
 					}
 				} else {
-					const selectionDisabled = !game.__EDITOR_mode && !game.__paused && !ev.altKey && !ev.ctrlKey && !ev.shiftKey;
+					const selectionDisabled = !game.__EDITOR_mode && !game.__paused && !ev.altKey && !(ev.ctrlKey || ev.metaKey) && !ev.shiftKey;
 					if (!selectionDisabled) {
 						if (ev.buttons === 1 && !___GizmoArrow.overedArrow) {
 							selectByStageClick(ev);
@@ -128,7 +128,7 @@ const p = new Point();
 
 function moveSelectionToMouse(ev: MouseEvent) {
 	if (game.editor.selection.length > 0) {
-		moveSelectionToGlobalPoint(game.__mouse_uncropped as any as Point, ev.ctrlKey);
+		moveSelectionToGlobalPoint(game.__mouse_uncropped as any as Point, (ev.ctrlKey || ev.metaKey));
 	}
 }
 
@@ -232,7 +232,7 @@ function selectByStageClick(ev: MouseEvent) {
 			i = allUnderMouse.indexOf(getParentWhichHideChildren(game.editor.selection[0]) || game.editor.selection[0]) + 1;
 		}
 		let o = allUnderMouse[i % allUnderMouse.length];
-		game.editor.ui.sceneTree.selectInTree(o, ev.ctrlKey);
+		game.editor.ui.sceneTree.selectInTree(o, (ev.ctrlKey || ev.metaKey));
 	} else {
 		game.editor.selection.clearSelection(true);
 	}

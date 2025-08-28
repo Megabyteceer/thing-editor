@@ -27,9 +27,10 @@ export default function wrapPropertyWithNumberChecker(constructor: SourceMappedC
 	let newSetter = function wrapPropertyWithNumberCheckerSetter(this: KeyedObject, val: any) {
 		const isNumberValid = typeof val === 'number' && !isNaN(val);
 		if (!isNumberValid) {
-			assert(false, 'invalid value for "' + propertyName + '". Valid number value expected. ' + val + ' received. ' + (this.___info || ''), 10001);
+			console.error('invalid value for "' + propertyName + '". Valid number value expected. ' + val + ' received. ' + (this.___info || ''));
+			debugger;
+			val = 0;
 		}
-
 		(originalSetter as any).call(this, val);
 	};
 

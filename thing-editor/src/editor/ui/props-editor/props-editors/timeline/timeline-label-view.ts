@@ -9,11 +9,12 @@ import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
 import type { TimelineLabelData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import LabelsLogger from '../../../labels-logger';
 
 let labelNamesProps = {
 	className: 'selectable-text',
-	title: 'Ctrl+click to copy field`s name',
+	title: CTRL_READABLE + '+click to copy field`s name',
 	onMouseDown: copyTextByClick
 };
 

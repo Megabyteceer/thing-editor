@@ -10,6 +10,7 @@ import loadSafeInstanceByClassName from 'thing-editor/src/editor/utils/load-safe
 import sp from 'thing-editor/src/editor/utils/stop-propagation';
 import game from 'thing-editor/src/engine/game';
 import Scene from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const showClassContextMenu = (file: FileDescClass, ev: PointerEvent) => {
 	showContextMenu(addSharedAssetContextMenu(file, [
@@ -120,7 +121,7 @@ const assetItemRendererClass = (file: FileDescClass) => {
 		);
 	}
 
-	const clickTip = '; Ctrl+click - find all. Alt+click - strict type';
+	const clickTip = '; ' + CTRL_READABLE + '+click - find all. Alt+click - strict type';
 
 	return R.div({
 		className: 'assets-item assets-item-class',
@@ -144,12 +145,12 @@ const assetItemRendererClass = (file: FileDescClass) => {
 	R.span(toolButtonsProps,
 		R.btn('<', (ev) => {
 			sp(ev);
-			findNextOfThisType(file.asset, -1, ev.ctrlKey, ev.altKey);
-		}, 'Find previous ' + file.asset.__className + ' Ctrl - all, Alt - strict', clickTip),
+			findNextOfThisType(file.asset, -1, (ev.ctrlKey || ev.metaKey), ev.altKey);
+		}, 'Find previous ' + file.asset.__className + ' ' + CTRL_READABLE + ' - all, Alt - strict', clickTip),
 		R.btn('>', (ev) => {
 			sp(ev);
-			findNextOfThisType(file.asset, 1, ev.ctrlKey, ev.altKey);
-		}, 'Find next ' + file.asset.__className + ' Ctrl - all, Alt - strict', clickTip)
+			findNextOfThisType(file.asset, 1, (ev.ctrlKey || ev.metaKey), ev.altKey);
+		}, 'Find next ' + file.asset.__className + ' ' + CTRL_READABLE + ' - all, Alt - strict', clickTip)
 	)
 	);
 };

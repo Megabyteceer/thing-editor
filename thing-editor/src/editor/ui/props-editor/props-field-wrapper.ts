@@ -10,11 +10,12 @@ import ArrayEditableProperty from 'thing-editor/src/editor/ui/props-editor/props
 import copyTextByClick from 'thing-editor/src/editor/utils/copy-text-by-click';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 
 const wrapperProps = { className: 'props-wrapper' };
 const defaultValueProps = {
 	className: 'default-value selectable-text',
-	title: 'Ctrl+click to copy default value',
+	title: CTRL_READABLE + '+click to copy default value',
 	onMouseDown: copyTextByClick
 };
 
@@ -379,7 +380,7 @@ export default class PropsFieldWrapper extends Component<PropsFieldWrapperProps>
 		tip,
 		R.div({
 			className: field.name.startsWith('__') ? 'props-label props-label-helper selectable-text' : 'props-label selectable-text',
-			title: 'Double click - go to definition, Ctrl+click to copy field`s name',
+			title: 'Double click - go to definition, ' + CTRL_READABLE + '+click to copy field`s name',
 			onMouseDown: copyTextByClick,
 			onDblClick: () => {
 				game.editor.editSource(field.__src);

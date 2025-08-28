@@ -67,7 +67,7 @@ export default class UI extends ComponentDebounced<UIProps> {
 
 	render(): ComponentChild {
 		return R.fragment(
-			R.btn('prevent page kill Ctrl+W', (ev) => {
+			R.btn('prevent page kill', (ev) => {
 				ev.preventDefault();
 			}, undefined, 'hidden', { key: 'w', ctrlKey: true }),
 			h(MainMenu, null),

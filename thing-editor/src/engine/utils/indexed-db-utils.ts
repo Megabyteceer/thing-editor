@@ -263,7 +263,16 @@ window.addEventListener('game-will-init', () => {
 	const openDB = indexedDB.open('DB' + game.projectDesc.id, 1);
 
 	openDB.onupgradeneeded = function () {
+		debugger;
 		openDB.result.createObjectStore('MyObjectStore', { keyPath: 'id' });
+	};
+
+	openDB.onblocked = () => {
+		throw new Error('indexedDB blocked');
+	};
+
+	openDB.onerror = (er) => {
+		throw er;
 	};
 
 	openDB.onsuccess = () => {
@@ -282,6 +291,9 @@ window.addEventListener('game-will-init', () => {
 				}
 				game.loadingRemove('indexed-db');
 			};
-		});
+			req.onerror = (er) => {
+				throw er;
+			};
+		}).catch((er) => { throw er; });
 	};
 });
