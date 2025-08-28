@@ -1,3 +1,5 @@
+/// <reference types="./editor-env" />
+/// <reference types="./ProjectDesc" />
 import R from './preact-fabrics';
 
 import game, { loadFonts } from '../engine/game';

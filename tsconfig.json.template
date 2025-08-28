@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+"compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -8,9 +8,10 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "skipLibCheck": false,
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -23,12 +24,13 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true,
-    "paths": {
-      "thing-editor": [
-        "./thing-editor"
-      ]
-    },
-    "baseUrl": "./."
+    "baseUrl": "./.",
+    "types": [
+      "pixi.js"
+    ]
   },
+  "exclude": [
+    "node_modules"
+  ],
   "include":["**/*.mjs","./games/","./libs/","thing-editor/src"]
 }
