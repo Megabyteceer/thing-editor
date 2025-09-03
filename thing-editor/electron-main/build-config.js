@@ -16,6 +16,7 @@ module.exports = (_root, publicDir, outDir, debug, _projectDesc) => {
 		plugins: [
 			ifDefPlugin(debug),
 			ViteImageOptimizer({
+				logStats: false,
 				test: /^((?!no-optimize).)*\.(jpe?g|png|gif|tiff|webp|svg|avif)$/i,
 				jpeg: {
 					quality: _projectDesc.jpgQuality,
