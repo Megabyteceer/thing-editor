@@ -15,6 +15,7 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 
 /// #if EDITOR
 import type { Container } from 'pixi.js';
+import type { IGoToLabelConsumer } from 'thing-editor/src/editor/editor-env';
 import R from 'thing-editor/src/editor/preact-fabrics';
 import DataPathEditor from 'thing-editor/src/editor/ui/props-editor/props-editors/data-path-editor';
 import { StatusClearingCondition } from 'thing-editor/src/editor/ui/status-clearing-condition';

@@ -1,5 +1,6 @@
 import type { Container } from 'pixi.js';
 import assert from 'thing-editor/src/engine/debug/assert';
+import type { FSCallback } from '../editor-env';
 
 const EDITOR_BACKUP_PREFIX = '___editor_backup_';
 
@@ -40,6 +41,17 @@ class EDITOR_FLAGS {
 		assert(EDITOR_FLAGS.isTryTime >= 0, 'checkTryTime() without rememberTryTime() detected.');
 	}
 }
+
+type Electron_ThingEditorServer = { // exposed from electron
+	fs: (command: string, filename?: string | string[] | number, content?: string | boolean | ArrayBuffer, ...args: any[]) => FSCallback;
+	fsAsync: (command: string, filename?: string | string[], content?: string | boolean, ...args: any[]) => Promise<any>;
+	versions: KeyedObject;
+	onServerMessage: (_onServerMessage: (event: string, ...args: any[]) => void) => void;
+	argv: string[];
+};
+
+export const electron_ThingEditorServer: Electron_ThingEditorServer = (window as any).electron_ThingEditorServer;
+
 
 export default EDITOR_FLAGS;
 

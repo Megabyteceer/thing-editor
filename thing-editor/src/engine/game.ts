@@ -24,6 +24,8 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import type { AssetsDescriptor } from '../editor/editor-env';
+import type { ProjectOrientation } from '../editor/project-desc';
 import type Button from './lib/assets/src/basic/button.c';
 import ERROR_HTML from './utils/html-error.html?raw';
 
@@ -99,6 +101,12 @@ export interface ThingGameEvents {
 	/// #if EDITOR
 	'__sound-overridden': [soundId:string];
 	/// #endif
+}
+
+declare global {
+	interface GameData {
+
+	}
 }
 
 class Game extends utils.EventEmitter<ThingGameEvents> {

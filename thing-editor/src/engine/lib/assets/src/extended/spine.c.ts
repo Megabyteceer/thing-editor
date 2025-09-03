@@ -2,6 +2,7 @@ import type { ISkeletonData, Spine as TSpine } from 'pixi-spine';
 
 import type { Point, Renderer, Sprite } from 'pixi.js';
 import { Assets, Container } from 'pixi.js';
+import type { IGoToLabelConsumer } from 'thing-editor/src/editor/editor-env';
 import { type FileDesc } from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';

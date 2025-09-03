@@ -5,6 +5,7 @@ import enumAssetsPropsRecursive from 'thing-editor/src/editor/utils/enum-assets-
 import getHashedAssetName from 'thing-editor/src/editor/utils/get-hashed-asset-name';
 import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from 'thing-editor/src/engine/game';
 import Lib, { isAtlasAsset } from 'thing-editor/src/engine/lib';
+import type { AssetsDescriptor, SoundAssetEntry } from '../editor-env';
 import { StatusClearingCondition } from '../ui/status-clearing-condition';
 
 const addedCallbacks: Set<string> = new Set();

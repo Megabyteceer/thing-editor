@@ -79,7 +79,7 @@ interface ThingSceneAllMap {
 }
 }
 `;
-		fs.writeFile('/thing-editor/src/editor/current-scene-typings.d.ts', mapJS);
+		fs.writeFile('/thing-editor/src/editor/current-scene-typings.ts', mapJS);
 	}
 };
 
@@ -107,21 +107,20 @@ const regenerateClassesTypings = () => {
 		}
 
 		let mapJS = `// thing-editor auto generated file.
-
 `
 			+ imports.join('\n') +
 `
 
 declare global {
 
-interface GameClasses {
+export interface GameClasses {
 [key: string]: SourceMappedConstructor;
 `
 			+ declarations.join('\n') + `
 }
 }
 `;
-		fs.writeFile('/thing-editor/src/editor/current-classes-typings.d.ts', mapJS);
+		fs.writeFile('/thing-editor/src/editor/current-classes-typings.ts', mapJS);
 	}
 };
 

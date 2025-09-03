@@ -1,5 +1,6 @@
 import type { Container } from 'pixi.js';
 import game from 'thing-editor/src/engine/game';
+import type { IGoToLabelConsumer } from '../editor-env';
 
 const gotoLabelHelper = (context: IGoToLabelConsumer):Promise<(string|undefined)[]> => {
 

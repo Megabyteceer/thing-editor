@@ -4,6 +4,7 @@ import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import L from 'thing-editor/src/engine/utils/l';
+import type { L10nEntryAsset } from '../editor-env';
 
 const addImageToAssetsList = (imageName: string, ret: Set<FileDesc>) => {
 	if (imageName) {

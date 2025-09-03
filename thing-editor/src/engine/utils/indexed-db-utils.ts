@@ -263,7 +263,6 @@ window.addEventListener('game-will-init', () => {
 	const openDB = indexedDB.open('DB' + game.projectDesc.id, 1);
 
 	openDB.onupgradeneeded = function () {
-		debugger;
 		openDB.result.createObjectStore('MyObjectStore', { keyPath: 'id' });
 	};
 

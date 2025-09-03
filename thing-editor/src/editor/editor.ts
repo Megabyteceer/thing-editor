@@ -1,5 +1,4 @@
-/// <reference types="./editor-env" />
-/// <reference types="./ProjectDesc" />
+
 import R from './preact-fabrics';
 
 import game, { loadFonts } from '../engine/game';
@@ -1345,18 +1344,18 @@ function excludeOtherProjects(forced = false) {
 
 		const tsConfigSrc = fs.readFile(TS_CONFIG_FILE_NAME);
 		const foldersDataRegExt = /"include"\s*:\s*\[[^\]]*\]/gm;
-		let foldersData = foldersDataRegExt.exec(tsConfigSrc);
+		let foldersData = foldersDataRegExt.exec(tsConfigSrc)!;
 
-		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
+		const foldersDataString = sanitizeJSON(foldersData[0]);
 		const tsConfig = JSON.parse('{' + foldersDataString + '}');
 		const include = (tsConfig.include as string[]).filter((folder) => {
 			return !folder.startsWith('./games/') && !folder.startsWith('./libs/');
 		});
 
 		if (isExcludingEnabled) {
-			include.push('./' + editor.currentProjectDir);
+			include.push('./' + editor.currentProjectDir + 'assets/src/**/*');
 			for (let lib of editor.currentProjectLibs) {
-				const pathToAdd = './' + lib.dir;
+				const pathToAdd = './' + lib.dir + '/assets/src/**/*';
 				if (!lib.isEmbed && !include.includes(pathToAdd)) {
 					include.push(pathToAdd);
 				}
