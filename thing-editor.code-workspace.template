@@ -4,6 +4,9 @@
 			"path": "."
 		},
 		{
+			"path": "./dir"
+		},
+		{
 			"path": "./games/",
 			"name": "games"
 		},
