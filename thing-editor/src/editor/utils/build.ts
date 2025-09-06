@@ -272,6 +272,7 @@ function findClassNameInPrefabData(name: string, data: SerializedObject): boolea
 }
 
 function getAssetsToCopy(assets: Set<FileDesc>, originalFileNames = false) {
+	assetsToCopy = [];
 	enumAssetsToCopy(assets, originalFileNames);
 	return assetsToCopy;
 }
