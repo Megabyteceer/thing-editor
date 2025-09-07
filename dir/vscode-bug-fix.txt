@@ -1,2 +1,0 @@
-vscode detects wrong progectRootDir when open workspace by 'thing-editor.code-workspace' double click.
-this directory in folders list fixes this bug.
