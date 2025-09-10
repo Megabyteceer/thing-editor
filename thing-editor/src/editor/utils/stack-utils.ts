@@ -28,7 +28,7 @@ const getCurrentStack = (title: string): DebugStack => {
 	};
 };
 
-const showStack = (stack: DebugStack) => {
+const showStack = (stack: DebugStack, header?: ComponentChild) => {
 	let a = stack.stack.split('\n');
 	a.shift();
 	a.shift();
@@ -50,7 +50,7 @@ const showStack = (stack: DebugStack) => {
 		}
 		return { functionName, path: s };
 	});
-	game.editor.ui.modal.showModal(R.div(null, R.b(null, stack.title), ' was invoked at:', items.map((i, key) => {
+	game.editor.ui.modal.showModal(R.div(null, header, R.b(null, stack.title), ' was invoked at:', items.map((i, key) => {
 		return R.div({
 			key, className: 'list-item stack-item', onMouseDown: async () => {
 				if (i.path) {
