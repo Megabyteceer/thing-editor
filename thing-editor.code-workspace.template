@@ -89,7 +89,7 @@
 				}
 			}
 		],
-		"bookmarks.keepBookmarksOnLineDelete": false,
+		"typescript.tsdk": "./node_modules/typescript/lib",
 		"javascript.preferences.importModuleSpecifierEnding": "index",
 		"typescript.preferences.importModuleSpecifierEnding": "index",
 		"eslint.format.enable": false,

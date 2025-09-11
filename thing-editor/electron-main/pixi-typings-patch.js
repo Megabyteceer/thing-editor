@@ -168,6 +168,13 @@ patch(
 	'    removeChildAt(index: number): Container;',
 );
 
+patch(
+	'node_modules/typescript/lib/typescript.js',
+	'replace',
+	'const isSearchPathInProjectRoot = () => containsPath(projectRootPath, searchPath, this.currentDirectory, !this.host.useCaseSensitiveFileNames);',
+	'const isSearchPathInProjectRoot = () => false;',
+);
+
 function patch(fileName, ...findInserts) {
 	patches.push({
 		fileName,
