@@ -359,9 +359,8 @@ export default class Lib
 			baseTexture.mipmap = MIPMAP_MODES.ON;
 		}
 
-		if (!game.isCanvasMode) {
-			baseTexture.update();
-		}
+		baseTexture.update();
+
 		/// #if EDITOR
 		editorEvents.emit('textureUpdated', name);
 		/// #endif
