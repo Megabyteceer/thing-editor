@@ -341,12 +341,17 @@ export default class MainMenu extends Component {
 				return R.span({
 					onPointerOver: (ev: PointerEvent) => {
 						if (document.querySelector('.context-menu')) {
+							(ev.target as HTMLElement).focus();
 							showContextMenu(menuItem.items, ev);
 						}
 					}
 				},
 				R.btn(menuItem.name, (ev: PointerEvent) => {
-					toggleContextMenu(menuItem.items, ev);
+					if (toggleContextMenu(menuItem.items, ev)) {
+						(ev.target as HTMLElement).focus();
+					} else {
+						(ev.target as HTMLElement).blur();
+					}
 				}, 'menu item id: ' + menuItem.id));
 			}));
 	}
