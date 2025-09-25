@@ -12,7 +12,7 @@ const isEventFocusOnInputElement = (ev: KeyboardEvent): boolean => {
 			if (ev.key === 'x' || ev.key === 'c') {
 				return !!document.getSelection();
 			}
-		} else {
+		} else if (ev.key !== 'Escape') {
 			return true;
 		}
 	}
