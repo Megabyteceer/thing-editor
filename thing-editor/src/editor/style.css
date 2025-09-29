@@ -422,6 +422,11 @@ textarea:focus-visible {
 	overflow-y: overlay;
 }
 
+.modal-content .preview-img {
+    max-height: 500px;
+    max-width: 500px;
+}
+
 .choose-list-header {
 	display: flex;
 	margin-bottom: 20px;
