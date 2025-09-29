@@ -334,7 +334,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	get currentSkin() {
 		return this._currentSkin;
 	}
-
+	@editable(editorUtils.makePreviewModeButton('Preview ▶', 'components.Trigger#preview-switched'))
 	@editable()
 	isPlaying = true;
 
@@ -902,7 +902,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			return this.sequences.map(s => s.n);
 		}
 	}
-	@editable(editorUtils.makePreviewModeButton('Preview', 'components.Trigger#preview-switched'))
+
 	@editable({min: 0, step: 0.001})
 	get __previewFrame() {
 		return this.___previewFrame || 0;
