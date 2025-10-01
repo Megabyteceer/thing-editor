@@ -15,7 +15,7 @@ let currentLanguageId = (window.navigator && navigator.language) ? navigator.lan
 let isLangDataLoaded = false;
 
 interface TL extends LocalizationKeys {
-	(id: string, values?: KeyedObject): string;
+	(id: string, values?: KeyedObject | number): string;
 	setLanguagesAssets: (src: KeyedObject) => void;
 	messageProcessor: (text: string, values?: KeyedObject | number) => string;
 	has: (id: string) => boolean;
