@@ -1,6 +1,5 @@
 import fs from 'thing-editor/src/editor/fs';
 
-
 const getPropertyDefinitionUrl = (fileName: string, fieldName: string, Class: SourceMappedConstructor): string => {
 	if (!Class.hasOwnProperty('__sourceCode')) {
 		Class.__sourceCode = fs.readFile(fileName).split('\n');

@@ -207,7 +207,7 @@ module.exports = (mainWindow) => {
 				event.returnValue = process.argv;
 				return;
 			case 'fs/sounds-build':
-				require('./build-sounds.js')(fileName, notify).then((res) => {
+				require('./build-sounds.js')(fileName).then((res) => {
 					event.returnValue = res;
 				});
 				return;

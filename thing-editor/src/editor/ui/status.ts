@@ -9,6 +9,7 @@ import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import shakeDomElement from 'thing-editor/src/editor/utils/shake-element';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import { EMPTY_NODE_EXTEND_DATA } from 'thing-editor/src/engine/lib';
 import waitForCondition from 'thing-editor/src/engine/lib/assets/src/utils/wait-for-condition';
 import fs from '../fs';
 import { scrollInToView } from '../utils/scroll-in-view';
@@ -47,8 +48,9 @@ const needAddInToList = (map: StatusItemsOwnersMap, owner?: StatusListItemOwner,
 		return true;
 	} else {
 		let exData = owner.__nodeExtendData;
-
-		exData.statusWarnOwnerId = owner.___id;
+		if (exData !== EMPTY_NODE_EXTEND_DATA) {
+			exData.statusWarnOwnerId = owner.___id;
+		}
 
 		if (!fieldName) {
 			fieldName = '_no_field_name_';

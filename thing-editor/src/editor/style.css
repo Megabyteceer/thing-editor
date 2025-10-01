@@ -86,7 +86,21 @@ hr {
 	background-color: #222222;
 }
 
+.main-menu button:focus-visible {
+    outline: none;
+}
+
+.main-menu button:focus {
+	border: 1px solid #777;
+	border-bottom: 1px solid transparent;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
 .main-menu button {
+	border-radius: 15px;
+	border: 1px solid transparent;
+	box-sizing: border-box;
 	height: 22px;
 	margin: 1px;
 	padding: 3px 10px;
@@ -406,6 +420,11 @@ textarea:focus-visible {
 	background: var(--window-bg-color);
 	max-height: 70vh;
 	overflow-y: overlay;
+}
+
+.modal-content .preview-img {
+    max-height: 500px;
+    max-width: 500px;
 }
 
 .choose-list-header {

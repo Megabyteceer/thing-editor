@@ -23,8 +23,13 @@ import L from 'thing-editor/src/engine/utils/l';
 import Pool from 'thing-editor/src/engine/utils/pool';
 import RemoveHolder from 'thing-editor/src/engine/utils/remove-holder';
 /// #if EDITOR
+// run EDITOR to regenerate this files:
+import 'thing-editor/src/editor/current-classes-typings';
+import 'thing-editor/src/editor/current-scene-typings';
+
 import waitForCondition from './lib/assets/src/utils/wait-for-condition';
 /// #endif
+import type { AssetsDescriptor } from '../editor/editor-env';
 import Sound from './utils/sound';
 
 let classes: GameClasses;
@@ -354,9 +359,8 @@ export default class Lib
 			baseTexture.mipmap = MIPMAP_MODES.ON;
 		}
 
-		if (!game.isCanvasMode) {
-			baseTexture.update();
-		}
+		baseTexture.update();
+
 		/// #if EDITOR
 		editorEvents.emit('textureUpdated', name);
 		/// #endif
@@ -1096,7 +1100,7 @@ const getVersionedFileName = (file: FileDesc) => {
 	}
 };
 
-const EMPTY_NODE_EXTEND_DATA: NodeExtendData = { objectDeleted: 'Container was deleted and it`s extend data replaced with temporary object.' };
+export const EMPTY_NODE_EXTEND_DATA: NodeExtendData = { objectDeleted: 'Container was deleted and it`s extend data replaced with temporary object.' };
 Object.freeze(EMPTY_NODE_EXTEND_DATA);
 
 export { __onAssetAdded, __onAssetDeleted, __onAssetUpdated, constructRecursive };

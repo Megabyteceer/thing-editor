@@ -2,6 +2,7 @@ import type { ISkeletonData, Spine as TSpine } from 'pixi-spine';
 
 import type { Point, Renderer, Sprite } from 'pixi.js';
 import { Assets, Container } from 'pixi.js';
+import type { IGoToLabelConsumer } from 'thing-editor/src/editor/editor-env';
 import { type FileDesc } from 'thing-editor/src/editor/fs';
 import editable from 'thing-editor/src/editor/props-editor/editable';
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
@@ -333,7 +334,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 	get currentSkin() {
 		return this._currentSkin;
 	}
-
+	@editable(editorUtils.makePreviewModeButton('Preview ▶', 'components.Trigger#preview-switched'))
 	@editable()
 	isPlaying = true;
 
@@ -901,7 +902,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			return this.sequences.map(s => s.n);
 		}
 	}
-	@editable(editorUtils.makePreviewModeButton('Preview', 'components.Trigger#preview-switched'))
+
 	@editable({min: 0, step: 0.001})
 	get __previewFrame() {
 		return this.___previewFrame || 0;

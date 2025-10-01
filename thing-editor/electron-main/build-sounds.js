@@ -12,7 +12,7 @@ const getCommandPath = (commandName) => {
 	return fs.existsSync(absPath) ? absPath : commandName;
 };
 
-module.exports = async function (options, notify) {
+module.exports = async function (options) {
 
 	const soundsPath = options.dir;
 
@@ -22,7 +22,6 @@ module.exports = async function (options, notify) {
 	});
 	let result = {};
 
-	notify('Sounds processing...');
 	function outputError(err, outError, out) {
 		if (!result.errors) {
 			result.errors = [];
@@ -110,8 +109,6 @@ module.exports = async function (options, notify) {
 		let fn = fileData.name;
 		let bitrate = getBitrate(fn);
 
-		let logTxt = 'convert sound:' + fn + ' -> ' + ext + ' ' + bitrate + 'Kb';
-		notify(logTxt);
 		let fileParts = path.parse(fn);
 		let resultName = fileParts.dir + '/' + fileParts.name + '.' + ext;
 

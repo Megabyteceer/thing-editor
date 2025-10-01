@@ -145,7 +145,9 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 			if (this.props.disabled) return;
 			DataPathFixer.onNameBlur();
 			this.props.onClick(ev);
-			(ev.target as HTMLElement).blur();
+			if (!(ev.target as HTMLElement).closest('.main-menu')) {
+				(ev.target as HTMLElement).blur();
+			}
 		}
 		sp(ev);
 	}

@@ -1,4 +1,5 @@
 import type { Container } from 'pixi.js';
+import type { LocalizationKeys } from 'thing-editor/src/editor/localization-typings';
 import R from 'thing-editor/src/editor/preact-fabrics';
 
 import assert from 'thing-editor/src/engine/debug/assert';

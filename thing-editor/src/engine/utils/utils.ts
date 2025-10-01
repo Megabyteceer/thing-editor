@@ -1,3 +1,4 @@
+import { electron_ThingEditorServer } from 'thing-editor/src/editor/utils/flags';
 import assert from 'thing-editor/src/engine/debug/assert';
 
 const PI2 = Math.PI * 2;

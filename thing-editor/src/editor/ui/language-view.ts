@@ -298,12 +298,12 @@ const parseAssets = () => {
 };
 
 const generateLocalizationTypings = () => {
-	const src = ['interface LocalizationKeys {'];
+	const src = ['export interface LocalizationKeys {'];
 	for (const key in currentLanguageData) {
 		src.push('(id: \'' + key + '\', values?: KeyedObject | number): string;');
 	}
 	src.push('}\n');
-	fs.writeFile('/thing-editor/src/editor/localization-typings.d.ts', src.join('\n'));
+	fs.writeFile('/thing-editor/src/editor/localization-typings.ts', src.join('\n'));
 };
 
 const sortTextList = (a: SelectEditorItem, b: SelectEditorItem) => {

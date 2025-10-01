@@ -2,6 +2,7 @@
 	"recommendations": [
 		"VasiliyKostin.blocks-highlighter",
 		"streetsidesoftware.code-spell-checker",
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"neotan.vscode-auto-restart-typescript-eslint-servers"
 	]
 }

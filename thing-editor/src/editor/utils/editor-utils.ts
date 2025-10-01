@@ -20,6 +20,7 @@ import { regeneratePrefabsTypings } from 'thing-editor/src/editor/utils/generate
 import loadSafeInstanceByClassName from 'thing-editor/src/editor/utils/load-safe-instance-by-class-name';
 import L from 'thing-editor/src/engine/utils/l';
 import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
+import type { ClipboardAsset, L10nEntryAsset } from '../editor-env';
 import { getAssetsToCopy } from './build';
 import copyTextByClick from './copy-text-by-click';
 import enumAssetsPropsRecursive from './enum-assets-recursive';

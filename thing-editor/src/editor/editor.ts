@@ -1,3 +1,4 @@
+
 import R from './preact-fabrics';
 
 import game, { loadFonts } from '../engine/game';
@@ -1296,8 +1297,8 @@ function excludeOtherProjects(forced = false) {
 		const workspaceConfigSrc = fs.readFile(WORKSPACE_FILE_NAME);
 		const foldersDataRegExt = /"folders"\s*:\s*\[[^\]]*\]/gm;
 		let foldersData = foldersDataRegExt.exec(workspaceConfigSrc);
-
-		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
+		const oldFoldersString = foldersData!.pop()!;
+		const foldersDataString = sanitizeJSON(oldFoldersString);
 		const workspaceConfig = JSON.parse('{' + foldersDataString + '}');
 		const folders = (workspaceConfig.folders as { path: string; name: string }[]).filter((folderData) => {
 			return !folderData.path.startsWith('./games/') && !folderData.path.startsWith('./libs/');
@@ -1330,7 +1331,7 @@ function excludeOtherProjects(forced = false) {
 		folders.sort();
 		let newFoldersSrc = JSON.stringify({ folders }, undefined, '\t');
 		newFoldersSrc = newFoldersSrc.substring(3, newFoldersSrc.length - 2);
-		if (newFoldersSrc !== foldersDataString) {
+		if (newFoldersSrc !== oldFoldersString) {
 			fs.writeFile(WORKSPACE_FILE_NAME, workspaceConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
 		}
 	} catch (er) {
@@ -1343,18 +1344,18 @@ function excludeOtherProjects(forced = false) {
 
 		const tsConfigSrc = fs.readFile(TS_CONFIG_FILE_NAME);
 		const foldersDataRegExt = /"include"\s*:\s*\[[^\]]*\]/gm;
-		let foldersData = foldersDataRegExt.exec(tsConfigSrc);
-
-		const foldersDataString = sanitizeJSON(foldersData!.pop()!);
+		let foldersData = foldersDataRegExt.exec(tsConfigSrc)!;
+		const oldFoldersString = foldersData[0];
+		const foldersDataString = sanitizeJSON(oldFoldersString);
 		const tsConfig = JSON.parse('{' + foldersDataString + '}');
 		const include = (tsConfig.include as string[]).filter((folder) => {
 			return !folder.startsWith('./games/') && !folder.startsWith('./libs/');
 		});
 
 		if (isExcludingEnabled) {
-			include.push('./' + editor.currentProjectDir);
+			include.push('./' + editor.currentProjectDir + 'assets/src/**/*');
 			for (let lib of editor.currentProjectLibs) {
-				const pathToAdd = './' + lib.dir;
+				const pathToAdd = './' + lib.dir + '/assets/src/**/*';
 				if (!lib.isEmbed && !include.includes(pathToAdd)) {
 					include.push(pathToAdd);
 				}
@@ -1367,7 +1368,7 @@ function excludeOtherProjects(forced = false) {
 		include.sort();
 		let newFoldersSrc = JSON.stringify({ include });
 		newFoldersSrc = newFoldersSrc.substring(1, newFoldersSrc.length - 1);
-		if (newFoldersSrc !== foldersDataString) {
+		if (newFoldersSrc !== oldFoldersString) {
 			fs.writeFile(TS_CONFIG_FILE_NAME, tsConfigSrc.replace(foldersDataRegExt, newFoldersSrc));
 		}
 	} catch (er) {

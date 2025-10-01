@@ -25,6 +25,7 @@
 		"files.exclude": {
 			"libs": true,
 			"games": true,
+			".tmp": true,
 			"**/release": true,
 			"**/debug": true,
 			"**/___editor_backup_*": true,
@@ -88,7 +89,7 @@
 				}
 			}
 		],
-		"bookmarks.keepBookmarksOnLineDelete": false,
+		"typescript.tsdk": "./node_modules/typescript/lib",
 		"javascript.preferences.importModuleSpecifierEnding": "index",
 		"typescript.preferences.importModuleSpecifierEnding": "index",
 		"eslint.format.enable": false,

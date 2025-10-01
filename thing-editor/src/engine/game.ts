@@ -24,6 +24,8 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import type { AssetsDescriptor } from '../editor/editor-env';
+import type { ProjectOrientation } from '../editor/project-desc';
 import type Button from './lib/assets/src/basic/button.c';
 import ERROR_HTML from './utils/html-error.html?raw';
 
@@ -101,6 +103,12 @@ export interface ThingGameEvents {
 	/// #endif
 }
 
+declare global {
+	interface GameData {
+
+	}
+}
+
 class Game extends utils.EventEmitter<ThingGameEvents> {
 
 	W = 0;
@@ -124,7 +132,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 	fullscreen = FullScreen;
 
-	isCanvasMode = false;
 	/** browser tab visibility */
 	isVisible = true;
 	isFocused = false;
@@ -506,20 +513,17 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #endif
 
 		if (this.pixiApp && this.pixiApp.renderer) {
-			game.isCanvasMode = !(this.pixiApp.renderer as any).gl;
-			if (!game.isCanvasMode) {
-				let gl = (this.pixiApp.renderer as any).gl as WebGL2RenderingContext;
-				let maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-				if (maxTextureSize < 3000) {
-					S = Math.min(1, S);
-				}
+			let gl = (this.pixiApp.renderer as any).gl as WebGL2RenderingContext;
+			let maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+			if (maxTextureSize < 3000) {
+				S = Math.min(1, S);
+			}
 
-				if (w * S > maxTextureSize) {
-					S = maxTextureSize / w;
-				}
-				if (h * S > maxTextureSize) {
-					S = maxTextureSize / h;
-				}
+			if (w * S > maxTextureSize) {
+				S = maxTextureSize / w;
+			}
+			if (h * S > maxTextureSize) {
+				S = maxTextureSize / h;
 			}
 		}
 
@@ -770,18 +774,16 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		this.time++;
 		//*/
 
-		if (!game.isCanvasMode) {
-			if ((this.pixiApp.renderer as any).gl.isContextLost()) {
-				if (game.isVisible) {
-					contextLoseTime++;
-					if (contextLoseTime === 60) {
-						game._reloadGame();
-					}
+		if ((this.pixiApp.renderer as any).gl.isContextLost()) {
+			if (game.isVisible) {
+				contextLoseTime++;
+				if (contextLoseTime === 60) {
+					game._reloadGame();
 				}
-				return;
 			}
-			contextLoseTime = 0;
+			return;
 		}
+		contextLoseTime = 0;
 
 		this.emit('update'); //99999
 
@@ -811,6 +813,9 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				} else {
 					game._hideCurrentFaderAndStartScene();
 				}
+			}
+			if (this.currentContainer && (this.currentContainer !== this.currentScene)) {
+				this.currentContainer.update();
 			}
 		} else if (this.currentContainer) {
 			if (!currentFader || (this.currentContainer !== this.currentScene) || (hidingModals.length < 1)) {

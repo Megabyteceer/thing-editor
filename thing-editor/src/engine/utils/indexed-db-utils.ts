@@ -176,9 +176,9 @@ export default class IndexedDBUtils {
 		await this.setFullData({ settings: {}, data: {}, type: 'indexed-db-utils-dump' });
 	}
 
-	static async openFile(key: string, type = 'sound', accept = 'audio/x-wav', multiple = false): Promise<IndexedDBRecord[]> {
+	static async openFile(key: string, type = 'sound', accept = 'audio/x-wav', multiple = false, contentParser?:(content: any) => Promise<any>): Promise<IndexedDBRecord[]> {
 
-		const contents = await chooseFile(accept, multiple);
+		const contents = await chooseFile(accept, multiple, contentParser);
 
 		if (contents && key) {
 			assert(contents.length === 1, 'key should be empty for multiply files selection');
@@ -192,7 +192,7 @@ export default class IndexedDBUtils {
 	}
 }
 
-async function chooseFile(accept = 'audio/x-wav', multiple = false): Promise<IndexedDBRecord[]> {
+async function chooseFile(accept = 'audio/x-wav', multiple = false, contentParser?:(content: any) => Promise<any>): Promise<IndexedDBRecord[]> {
 	return new Promise((resolve) => {
 		const readFile = (ev: InputEvent) => {
 			const files = (ev.target as HTMLInputElement).files;
@@ -203,8 +203,13 @@ async function chooseFile(accept = 'audio/x-wav', multiple = false): Promise<Ind
 
 			for (const file of files) {
 				const reader = new FileReader();
-				reader.onload = function (e) {
-					const contents = e.target!.result as string;
+				reader.onload = async function (e) {
+					let contents = e.target!.result as string;
+
+					if (contentParser) {
+						contents = await contentParser(contents);
+					}
+
 					ret.push({
 						fileName: file.name.split(/[\\\/]/).pop()!,
 						data: contents
@@ -263,7 +268,6 @@ window.addEventListener('game-will-init', () => {
 	const openDB = indexedDB.open('DB' + game.projectDesc.id, 1);
 
 	openDB.onupgradeneeded = function () {
-		debugger;
 		openDB.result.createObjectStore('MyObjectStore', { keyPath: 'id' });
 	};
 

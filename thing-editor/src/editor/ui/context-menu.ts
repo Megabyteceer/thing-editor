@@ -50,6 +50,7 @@ const toggleContextMenu = (menuTemplate: ContextMenuItem[], ev: PointerEvent) =>
 		hideContextMenu();
 	} else {
 		showContextMenu(menuTemplate, ev);
+		return true;
 	}
 };
 

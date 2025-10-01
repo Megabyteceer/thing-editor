@@ -8,12 +8,12 @@ node_modules
 /games
 /libs
 
-/thing-editor/src/editor/localization-typings.d.ts
+/thing-editor/src/editor/localization-typings.ts
 /thing-editor/src/editor/schema-thing-project.json
-/thing-editor/src/editor/current-classes-typings.d.ts
+/thing-editor/src/editor/current-classes-typings.ts
 /**/~*
 **/.tmp/
 /thing-editor/src/editor/prefabs-typing.ts
-/thing-editor/src/editor/current-scene-typings.d.ts
+/thing-editor/src/editor/current-scene-typings.ts
 /tsconfig.json
 /thing-editor.code-workspace
