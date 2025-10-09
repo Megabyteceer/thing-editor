@@ -105,6 +105,12 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 		});
 	}
 
+	addResolution(resolution: typeof resolutions[0]) {
+		if (!resolutions.some(r => r.name === resolution.name)) {
+			resolutions.push(resolution);
+		}
+	}
+
 	restoreResolution() {
 		let currentResolutionSettings = JSON.stringify(game.editor.settings.getItem('viewportMode', null));
 		let currentItem = resolutions.find((i) => {

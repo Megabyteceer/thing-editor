@@ -156,6 +156,9 @@ export default class Trigger extends Container {
 		this._state = true;
 		this.interactiveChildren = true;
 		this.triggering = true;
+		if (!this.dataPath) {
+			this.invert = true;
+		}
 	}
 
 
@@ -165,6 +168,9 @@ export default class Trigger extends Container {
 			this.interactiveChildren = false;
 		}
 		this.triggering = true;
+		if (!this.dataPath) {
+			this.invert = false;
+		}
 		this.forAllChildren(processOnDisable);
 	}
 

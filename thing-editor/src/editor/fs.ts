@@ -576,7 +576,9 @@ export default class fs {
 			const wrongSymbol = fs.getWrongSymbol(file.fileName);
 			if (wrongSymbol) {
 				game.editor.ui.status.warn('File ' + file.fileName + ' ignored because of wrong symbol \'' + wrongSymbol + '\' in it\'s name', 32044,
-					undefined, undefined, undefined, undefined, StatusClearingCondition.ASSETS_REFRESH);
+					() => {
+						fs.showFile(file.fileName);
+					}, undefined, undefined, undefined, StatusClearingCondition.ASSETS_REFRESH);
 				return;
 			}
 			const assetName = file.assetName || file.fileName.substring(dirName.length);
