@@ -1,16 +1,15 @@
 import { Container } from 'pixi.js';
 
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import type { SelectEditorItem } from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
-import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
+import MusicFragment, { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
 import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Sound from 'thing-editor/src/engine/utils/sound';
-
-const MIN_VOL_THRESHOLD = 0.01000001; // howler has min threshold 0.01
 
 const allActiveMusics: BgMusic[] = [];
 
@@ -104,7 +103,7 @@ export default class BgMusic extends Container {
 		}
 	}
 
-	@editable({ type: 'data-path' })
+	@editable({ type: 'data-path', select: () => Object.keys(Sound.outputs).map(name => { return {name, value: name} as SelectEditorItem; })})
 	globalVolumePath: string | null = null;
 
 	@editable({ min: 0, step: 0.01 })
@@ -136,7 +135,6 @@ export default class BgMusic extends Container {
 	musicFragmentHash!: string;
 	customFade?: number;
 	_appliedPathVol = 0;
-	_cachedTargetVol!: number;
 
 	onRemove() {
 		super.onRemove();
@@ -189,15 +187,7 @@ export default class BgMusic extends Container {
 			return 0;
 		}
 		assert(!isNaN(this._volume * this._externalVolume * Sound.musicVol), 'MgMusic volume is invalid');
-		let globalVolume;
-		if (this.globalVolumePath) {
-			this._appliedPathVol = getValueByPath(this.globalVolumePath, this);
-			globalVolume = this._appliedPathVol;
-		} else {
-			globalVolume = Sound.musicVol;
-		}
-
-		return this._volume * this._externalVolume * globalVolume * globalVolume || 0;
+		return this._volume * this._externalVolume || 0;
 	}
 
 	play(fade?: number) {
@@ -234,13 +224,6 @@ export default class BgMusic extends Container {
 		}
 	}
 
-	static _clearCustomFades(fade: number) {
-		for (let m of allActiveMusics) {
-			m.customFade = fade;
-		}
-		MusicFragment._applyFadeForAll(fade);
-	}
-
 	set fade(val: number) { // transition from fade to fadeIn fadeOut
 		this.fadeIn = val;
 		this.fadeOut = val;
@@ -272,7 +255,7 @@ export default class BgMusic extends Container {
 	}
 
 	__getVolume() {
-		return this.__currentFragment && this.__currentFragment.volume();
+		return this.__currentFragment?.volumeNode?.gain.value || 0;
 	}
 
 	get __isLoopPos() {
@@ -364,7 +347,6 @@ function recalculateMusic() {
 	for (let m of allActiveMusics) {
 		let vol = m._getTargetVol();
 		if ((vol >= MIN_VOL_THRESHOLD) && (m._loop || m._intro)) {
-			m._cachedTargetVol = vol;
 			playingFragments.push(m);
 		}
 	}

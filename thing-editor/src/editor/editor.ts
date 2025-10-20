@@ -837,12 +837,10 @@ class Editor {
 
 	previewSound(soundName: string) {
 
-		if (Lib.getSound(soundName).playing()) {
+		if (Lib.getSound(soundName)?.source) {
 			Lib.getSound(soundName).stop();
 		} else {
-			if (previewedSound && previewedSound.playing()) {
-				previewedSound.stop();
-			}
+			previewedSound.stop();
 			Sound.play(soundName);
 			previewedSound = Lib.getSound(soundName);
 		}

@@ -1,88 +1,124 @@
 
-/// #if EDITOR
-import type { HowlOptions } from 'howler';
-import { Howl } from 'howler';
-/*
-/// #endif
-import 'howler.js';
-//*/
+export const rootAudioContext = new AudioContext();
 
-import assert from 'thing-editor/src/engine/debug/assert';
+
 import game from 'thing-editor/src/engine/game';
 import EDITOR_FLAGS from '../editor/utils/flags';
 
-type HowlSoundOptions = HowlOptions
+const volumeNodes = new Map<number, GainNode>();
 
-export default class HowlSound extends Howl {
+export default class HowlSound {
 
 	/// #if DEBUG
 	__isEmptySound = false;
 	/// #endif
 
-	constructor(options: HowlOptions) {
+	audioBuffer!: AudioBuffer;
+	source?: AudioBufferSourceNode;
+	volumeNode?: GainNode;
+	src: string;
 
-		/// #if EDITOR
-		if (game.editor?.buildProjectAndExit) {
-			options.preload = false;
-		}
-		/// #endif
+	attempt = 0;
 
-		super(options);
-
+	constructor(src: string) {
+		this.src = src;
+		this.onEnded = this.onEnded.bind(this);
 		/// #if EDITOR
 		if (game.editor?.buildProjectAndExit) {
 			return;
 		}
 		/// #endif
+		this.load();
+	}
 
-		if (this.state() !== 'loaded') {
-			game.loadingAdd(this);
-
-			this.once('load', () => {
-				game.loadingRemove(this);
-				// hack precise duration
-				if (this.preciseDuration) {
-					assert(typeof (this as any)._duration === 'number', 'Howler _duration property moved.');
-					assert(Math.abs((this as any)._duration - this.preciseDuration) < 0.1, 'Sound duration detection error. Sounds are too different: ' + (this as any)._src);
-					(this as any)._duration = this.preciseDuration;
-					(this as any)._sprite.__default[1] = this.preciseDuration * 1000;
-				}
-			});
-
-			let attempt = 0;
-
-			this.on('loaderror', () => {
-				if (attempt < 3 && !game._loadingErrorIsDisplayed) {
-					attempt++;
+	load () {
+		game.loadingAdd(this);
+		fetch(this.src)
+			.then(res => res.arrayBuffer())
+			.then((buff) => {
+				rootAudioContext.decodeAudioData(buff).then((audioBuffer) => {
+					this.audioBuffer = audioBuffer;
+					/// #if EDITOR
+					if (!this.preciseDuration) {
+						this.preciseDuration = audioBuffer.duration;
+					}
+					/// #endif
+					game.loadingRemove(this);
+				});
+			}).catch(() => {
+				if (this.attempt < 3 && !game._loadingErrorIsDisplayed) {
+					this.attempt++;
 					window.setTimeout(() => {
 						this.load();
-					}, attempt * 1000);
+					}, this.attempt * 1000);
 				} else {
-					game.showLoadingError((this as any)._src);
+					game.loadingRemove(this);
 				}
 			});
+	}
+
+	stop() {
+		if (this.source) {
+			this.source.stop();
+			this.source.disconnect();
+			this.source = undefined;
 		}
 	}
-	/// #if EDITOR
 
-	__lastTouch = 0;
+	onEnded() {
+		this.source?.removeEventListener('ended', this.onEnded);
+		this.source = undefined;
+	}
 
-	play(spriteOrId?: string | number): number {
+	play(volume = 1, rate = 1, seek = 0) {
+		if (volume < 0.001 || !this.audioBuffer) {
+			return;
+		}
+		if (this.source) {
+			this.source.removeEventListener('ended', this.onEnded);
+		}
+		this.source = rootAudioContext.createBufferSource();
+		this.source.addEventListener('ended', this.onEnded);
+		this.source.buffer = this.audioBuffer;
+
+		/// #if EDITOR
 		this.__lastTouch = EDITOR_FLAGS.__touchTime;
-		if (!game.editor.settings.getItem('sound-muted') || game.__EDITOR_mode) {
-			return super.play(spriteOrId);
+		/// #endif
+
+		if (volume !== 1) {
+			volume = Math.round(volume * 1000) / 1000;
+			if (!volumeNodes.has(volume)) {
+				const volumeNode = rootAudioContext.createGain();
+				volumeNode.connect(game.Sound.outputs.FX);
+				volumeNode.gain.setValueAtTime(volume, rootAudioContext.currentTime);
+				volumeNodes.set(volume, volumeNode);
+			}
+			this.source.connect(volumeNodes.get(volume)!);
+		} else {
+			this.source.connect(game.Sound.outputs.FX);
 		}
-		return undefined!;
+		if (this.source.playbackRate.value !== rate) {
+			this.source.playbackRate.setValueAtTime(volume, rootAudioContext.currentTime);
+		}
+		this.source.start(0, seek);
 	}
+
+	/// #if EDITOR
+	__lastTouch = 0;
 	/// #endif
 
-	loadedWithError = false;
-	lastPlayStartFrame = 0;
+	unload() {
+		if (this.source) {
+			this.source.disconnect();
+			this.source = null!;
+			if (this.volumeNode) {
+				this.volumeNode.disconnect();
+				this.volumeNode = null!;
+			}
+		}
+	}
 
-	soundIdSaved?: number;
+	lastPlayStartFrame = 0;
 
 	preciseDuration = 0;
 }
-
-export type { HowlSoundOptions };
-

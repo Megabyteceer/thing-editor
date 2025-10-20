@@ -86,7 +86,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 	renderMusicItem(m: BgMusic, i: number) {
 		let state;
 		if (m.__currentFragment) {
-			if (!m.__currentFragment.playing()) {
+			if (!m.__currentFragment) {
 				state = R.div({ className: 'danger music-profiler-row-text' }, 'ref to not playing fragment');
 			} else {
 				state = R.div({ className: 'sound-vol-bar-bg' },
@@ -160,7 +160,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 			return;
 		}
 		let sound = Lib.getSound(soundId);
-		let durationFrames = Math.round(sound.duration() * 60);
+		let durationFrames = Math.round(sound.preciseDuration * 60);
 
 		let colors = SoundProfiler.soundsProfilerColorsCache[soundId];
 		if (!colors) {
