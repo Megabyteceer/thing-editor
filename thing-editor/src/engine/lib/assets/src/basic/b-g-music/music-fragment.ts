@@ -141,11 +141,12 @@ export default class MusicFragment {
 				//*/
 					, rootAudioContext.currentTime);
 
+				/// #if EDITOR
 				Sound.__highlightPlayedSound(s);
+				/// #endif
 
 				source.start(undefined, pos);
 
-				/// #endif
 				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
 				allActiveFragments[this.musicFragmentHash] = this;
 				this.fadingToVolume = startVol;
