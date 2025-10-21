@@ -15,6 +15,19 @@ const allActiveMusics: BgMusic[] = [];
 
 let musicRecalculationIsScheduled = false;
 
+/// #if EDITOR
+const selectOutput = () => {
+	const ret = Object.keys(Sound.outputs).map(name => { return {name, value: name} as SelectEditorItem; });
+	ret.unshift({name: 'default (MUSIC)', value: null});
+	ret.forEach(i => {
+		if (i.name === 'Sound.soundsVol') {
+		 i.name += ' (FX)';
+		}
+	});
+	return ret;
+};
+/// #endif
+
 export default class BgMusic extends Container {
 
 	_externalVolume = 0;
@@ -103,7 +116,7 @@ export default class BgMusic extends Container {
 		}
 	}
 
-	@editable({ type: 'data-path', select: () => Object.keys(Sound.outputs).map(name => { return {name, value: name} as SelectEditorItem; })})
+	@editable({ type: 'data-path', select: selectOutput})
 	globalVolumePath: string | null = null;
 
 	@editable({ min: 0, step: 0.01 })

@@ -525,6 +525,7 @@ input {
 }
 
 .modal-notification-wrapper {
+	max-width: 300px;
 	position: fixed;
 	pointer-events: none;
 	z-index: 1100000;
@@ -538,6 +539,7 @@ input {
 }
 
 .modal-notification {
+	word-wrap: break-word;
 	padding: 10px 20px;
 	border-radius: 5px;
 	background: #4b4e4e;

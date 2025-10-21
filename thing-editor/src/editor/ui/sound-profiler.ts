@@ -140,10 +140,6 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 			profilerBody = R.fragment(R.btn('Start', () => {
 				game.editor.ui.viewport.onTogglePlay();
 			}), ' game execution to profile sounds.');
-		} else if (game.editor.settings.getItem('sound-muted')) {
-			profilerBody = R.fragment('Sounds is muted. ', R.btn('Enable Sounds', () => {
-				game.editor.toggleSoundMute();
-			}), ' to activate sound profiler.');
 		} else {
 			bgMusicsList = BgMusic.__allActiveMusics.map(this.renderMusicItem);
 			profilerBody = R.div(profilerProps, bgMusicsList, R.div({ className: 'sound-profiler-lane' }, soundsLanes));

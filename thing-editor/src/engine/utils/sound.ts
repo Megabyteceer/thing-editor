@@ -1,6 +1,5 @@
 /// #if EDITOR
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
-import MusicFragment, { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 import { CTRL_READABLE } from './utils';
 /// #endif
 
@@ -17,6 +16,7 @@ import HowlSound, { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import MusicFragment, { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 
 export default class Sound {
 
@@ -161,6 +161,19 @@ export default class Sound {
 		pitchedPlayTimeouts = {};
 	}
 	/// #endif
+
+	static addMasterNode(node: AudioNode) {
+		const allOutputs = new Set<GainNode>();
+		for (let key in this.outputs) {
+			allOutputs.add(this.outputs[key]);
+		}
+		allOutputs.forEach((output) => {
+			output.disconnect();
+			output.connect(node);
+		});
+		node.connect(masterNodes[0]);
+		masterNodes.unshift(node);
+	}
 
 	static isSoundsLockedByBrowser = false;
 
@@ -722,6 +735,8 @@ editorEvents.on('playToggle', () => {
 });
 
 /// #endif
+
+let masterNodes = [rootAudioContext.destination] as AudioNode[];
 
 Sound.outputs['Sound.soundsVol'] = Sound.outputs.FX = rootAudioContext.createGain();
 Sound.outputs.MUSIC = rootAudioContext.createGain();
