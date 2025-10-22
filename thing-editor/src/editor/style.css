@@ -1645,6 +1645,9 @@ input[disabled] {
 	text-overflow: ellipsis;
 	height: 20px;
 }
+.music-profiler-row-text-active {
+	color:  #0f0;
+}
 
 .sound-vol-bar-bg {
 	border-radius: 9px;

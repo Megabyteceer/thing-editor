@@ -113,7 +113,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 					game.editor.ui.modal.notify('Cant select music object');
 				}
 			}
-		}, R.span({ className: 'music-profiler-row-text', title: 'Intro sound: ' + (m.intro || 'NONE') }, m.intro), R.span({ className: 'music-profiler-row-text', title: 'Loop sound: ' + (m.loop || 'NONE') }, m.loop), state
+		}, R.span({ className: (m.__currentFragment?.source?.loop === false) ? 'music-profiler-row-text music-profiler-row-text-active' : 'music-profiler-row-text', title: 'Intro sound: ' + (m.intro || 'NONE') }, m.intro), R.span({ className: (m.__currentFragment?.source?.loop === true) ? 'music-profiler-row-text music-profiler-row-text-active' : 'music-profiler-row-text', title: 'Loop sound: ' + (m.loop || 'NONE') }, m.loop), state
 		);
 	}
 

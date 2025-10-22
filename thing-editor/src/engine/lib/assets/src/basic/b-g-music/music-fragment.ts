@@ -31,6 +31,8 @@ export default class MusicFragment {
 	_fadeToVol!: number;
 	_fadeSpeed!: number;
 	owners: Set<BgMusic> = new Set();
+	_preciseDuration = 0;
+	introFinished = false;
 
 	constructor(bgMusic: BgMusic) {
 		this.volumeNode.connect(Sound.outputs.MUSIC);
@@ -58,7 +60,9 @@ export default class MusicFragment {
 		let curVol = this._fadeToVol;
 		if (curVol !== this.fadingToVolume) {
 			this.fadingToVolume = curVol;
-			this.volumeNode.gain.setTargetAtTime(curVol, rootAudioContext.currentTime, this._fadeSpeed);
+
+
+			this.volumeNode.gain.setTargetAtTime(curVol, rootAudioContext.currentTime, this._fadeSpeed / 3);
 		}
 	}
 
@@ -83,6 +87,7 @@ export default class MusicFragment {
 	}
 
 	resetPosition() {
+		this.introFinished = false;
 		this._releaseCurrentFragment();
 		this.startPlay();
 	}
@@ -90,8 +95,8 @@ export default class MusicFragment {
 	startPlay() {
 
 		if (this.source) {
-			this.source.start();
-		} else if (this.intro) {
+			this.source.start(undefined, 0, this._preciseDuration);
+		} else if (this.intro && !this.introFinished) {
 			this.source = this._playMusicFragment(this.intro, 0, this._fadeToVol);
 			if (this.source) {
 				this.source!.loop = false;
@@ -108,12 +113,17 @@ export default class MusicFragment {
 	}
 
 	onIntroEnd() {
+		this.introFinished = true;
 		if (this.source) {
-			let vol = this.getVolume();
-			this._releaseCurrentFragment();
-			this.source = this._playMusicFragment(this.loop, 0, vol);
-			if (this.source) {
+			if (this.owners.size) {
+				let vol = this.getVolume();
+				this._releaseCurrentFragment();
+				this.source = this._playMusicFragment(this.loop, 0, vol);
+				if (this.source) {
 				this.source!.loop = true;
+				}
+			} else {
+				this._releaseCurrentFragment();
 			}
 		}
 
@@ -145,13 +155,14 @@ export default class MusicFragment {
 				Sound.__highlightPlayedSound(s);
 				/// #endif
 
-				source.start(undefined, pos);
+				source.start(undefined, pos, snd.preciseDuration);
 
 				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
 				allActiveFragments[this.musicFragmentHash] = this;
 				this.fadingToVolume = startVol;
 				source!.connect(this.volumeNode);
-				source.loopEnd = snd.preciseDuration;
+				this._preciseDuration = snd.preciseDuration;
+				source.buffer;
 
 				return source;
 			} catch (_er) {
@@ -243,11 +254,5 @@ export default class MusicFragment {
 
 function clearFragmentsOwner(fragment: MusicFragment, ownerBgMusic:BgMusic) {
 	fragment._fadeSpeed = ownerBgMusic._takeFade();
-
 	fragment.owners.delete(ownerBgMusic);
-	if (!fragment.owners.size) {
-		if (fragment.source) {
-			fragment.source.removeEventListener('ended', fragment.onIntroEnd);
-		}
-	}
 }
