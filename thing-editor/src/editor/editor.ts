@@ -62,7 +62,6 @@ const applySoundMuting = () => {
 	editorMuteSoundNode.gain.setValueAtTime(game.editor.settings.getItem('sound-muted') ? 0 : 1, rootAudioContext.currentTime);
 };
 
-
 const parseLibName = (name: string): LibInfo => {
 	let dir;
 	if (name.startsWith('.')) {
@@ -489,6 +488,8 @@ class Editor {
 			}
 			this.ui.modal.hideSpinner();
 			this.isProjectOpen = true;
+
+			applySoundMuting();
 
 			game.onResize();
 

@@ -189,7 +189,7 @@ export default class MusicFragment {
 
 
 			fragment._fadeToVol = bgMusic._getTargetVol();
-			fragment._fadeSpeed = bgMusic._getFade(fragment._fadeToVol < MIN_VOL_THRESHOLD);
+			fragment._fadeSpeed = bgMusic._takeFade();
 			fragment.owners.add(bgMusic);
 
 			if (!allActiveFragments.hasOwnProperty(bgMusic.musicFragmentHash)) {
@@ -224,11 +224,6 @@ export default class MusicFragment {
 		return allActiveFragments[musicFragmentHash]?.source?.loop;
 	}
 
-	static ___currentPos(musicFragmentHash: string) {
-		let f = MusicFragment.__getFragment(musicFragmentHash);
-		return 0;
-	}
-
 	static __getFragment(musicFragmentHash: string) {
 		return allActiveFragments[musicFragmentHash];
 	}
@@ -247,8 +242,7 @@ export default class MusicFragment {
 
 
 function clearFragmentsOwner(fragment: MusicFragment, ownerBgMusic:BgMusic) {
-	ownerBgMusic.customFade = undefined;
-	fragment._fadeSpeed = ownerBgMusic._getFade(true);
+	fragment._fadeSpeed = ownerBgMusic._takeFade();
 
 	fragment.owners.delete(ownerBgMusic);
 	if (!fragment.owners.size) {

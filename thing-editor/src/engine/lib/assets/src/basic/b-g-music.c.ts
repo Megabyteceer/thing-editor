@@ -8,7 +8,6 @@ import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import MusicFragment, { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
-import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Sound from 'thing-editor/src/engine/utils/sound';
 
 const allActiveMusics: BgMusic[] = [];
@@ -134,19 +133,13 @@ export default class BgMusic extends Container {
 	@editable()
 	dynamicPreloading = false;
 
-	@editable({ type: 'ref' })
-	/// #if EDITOR
-	get ___currentPos() {
-		return (MusicFragment.___currentPos(this.musicFragmentHash) || 0).toFixed(3);
-	}
-
 	set ___currentPos(_val: string) {
 		/* empty */
 	}
 	/// #endif
 
 	musicFragmentHash!: string;
-	customFade?: number;
+	_fade?: number = undefined;
 	_appliedPathVol = 0;
 
 	onRemove() {
@@ -161,7 +154,7 @@ export default class BgMusic extends Container {
 		this._loop = null;
 		this._intro = null;
 		this._externalVolume = 0;
-		this.customFade = undefined;
+		this._fade = undefined;
 		this.onIntroFinish = null;
 	}
 
@@ -169,9 +162,9 @@ export default class BgMusic extends Container {
 		this.volume = v;
 	}
 
+	/// #if EDITOR
 	update() {
 		super.update();
-		/// #if EDITOR
 		if (this._isPlaying) {
 			if (this.intro) {
 				Lib.getSound(this.intro).__lastTouch = EDITOR_FLAGS.__touchTime;
@@ -180,14 +173,8 @@ export default class BgMusic extends Container {
 				Lib.getSound(this.loop).__lastTouch = EDITOR_FLAGS.__touchTime;
 			}
 		}
-		/// #endif
-
-		if (this._isPlaying && this.globalVolumePath) {
-			if (this._appliedPathVol !== getValueByPath(this.globalVolumePath, this)) {
-				BgMusic._recalculateMusic();
-			}
-		}
 	}
+	/// #endif
 
 	applyResetPosition() {
 		if (this.isPlaying && this.resetPositionOnPlay) {
@@ -203,21 +190,19 @@ export default class BgMusic extends Container {
 		return this._volume * this._externalVolume || 0;
 	}
 
-	play(fade?: number) {
-		this.customFade = fade;
+	play(fade = this.fadeIn) {
 		if (!this.isPlaying) {
+			this._fade = fade;
 			this.isPlaying = true;
 			this.applyResetPosition();
 		}
 	}
 
-	stop(fade?: number) {
-		this.customFade = fade;
-		this.isPlaying = false;
-	}
-
-	_getFade(isFadeOut = false): number {
-		return typeof this.customFade === 'number' ? this.customFade : (isFadeOut ? this.fadeOut : this.fadeIn);
+	stop(fade = this.fadeOut) {
+		if (this.isPlaying) {
+			this._fade = fade;
+			this.isPlaying = false;
+		}
 	}
 
 	resetPosition() {
@@ -228,6 +213,15 @@ export default class BgMusic extends Container {
 		if (this.onIntroFinish) {
 			callByPath(this.onIntroFinish, this);
 		}
+	}
+
+	_takeFade() {
+		if (typeof(this._fade) === 'number') {
+			const ret = this._fade;
+			this._fade = undefined;
+			return ret;
+		}
+		return 0.2;
 	}
 
 	static _recalculateMusic() {
