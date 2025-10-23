@@ -35,9 +35,6 @@ module.exports = (_root, publicDir, outDir, debug, _projectDesc) => {
 				input: ''
 			},
 		},
-		define: {
-			SPINE_SRC_PATH: JSON.stringify('https://cdn.jsdelivr.net/npm/pixi-spine@4.0.4/dist/pixi-spine.js')
-		},
 		resolve: {
 			alias: {
 				'games': path.resolve(__dirname, '../../games'),
