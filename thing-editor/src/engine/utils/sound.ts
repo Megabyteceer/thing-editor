@@ -1,5 +1,6 @@
 /// #if EDITOR
 import { editorEvents } from 'thing-editor/src/editor/utils/editor-events';
+import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 import { CTRL_READABLE } from './utils';
 /// #endif
 
@@ -16,11 +17,24 @@ import HowlSound, { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
-import MusicFragment, { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
+import { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
+
+export const slideAudioParamTo = (param:AudioParam, val:number, duration:number) => {
+	param.cancelScheduledValues(rootAudioContext.currentTime);
+	if (duration > 0) {
+		param.setValueCurveAtTime([param.value, val], rootAudioContext.currentTime, duration);
+	} else {
+		param.setValueAtTime(val, rootAudioContext.currentTime);
+	}
+};
 
 export default class Sound {
 
-	static outputs = {} as KeyedMap<GainNode>;
+	static outputs = {} as{
+		MUSIC: GainNode;
+		FX: GainNode;
+		[key: string]: GainNode;
+	};
 
 	/** volume is quadratic. 0.1 - sound off. 1.0 - max vol */
 	static get soundsVol() {
@@ -36,7 +50,7 @@ export default class Sound {
 		assert(!isNaN(v), 'invalid value for \'soundsVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
 		soundsVol = v;
-		Sound.outputs.FX.gain.setTargetAtTime(v * v, rootAudioContext.currentTime, 0.05);
+		slideAudioParamTo(Sound.outputs.FX.gain, v * v, 0.1);
 		game.settings.setItem('soundsVol', soundsVol);
 	}
 
@@ -59,7 +73,7 @@ export default class Sound {
 		v = Math.max(0, Math.min(1, v));
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
-		Sound.outputs.MUSIC.gain.setTargetAtTime(v * v, rootAudioContext.currentTime, 0.05);
+		slideAudioParamTo(Sound.outputs.MUSIC.gain, v * v, 0.1);
 	}
 
 	static get fullVol() {

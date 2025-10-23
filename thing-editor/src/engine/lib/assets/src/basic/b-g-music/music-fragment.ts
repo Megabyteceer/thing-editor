@@ -3,7 +3,7 @@ import game from 'thing-editor/src/engine/game';
 import { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import Lib from 'thing-editor/src/engine/lib';
 import type BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
-import Sound from 'thing-editor/src/engine/utils/sound';
+import Sound, { slideAudioParamTo } from 'thing-editor/src/engine/utils/sound';
 
 export const MIN_VOL_THRESHOLD = 0.001;
 
@@ -60,9 +60,7 @@ export default class MusicFragment {
 		let curVol = this._fadeToVol;
 		if (curVol !== this.fadingToVolume) {
 			this.fadingToVolume = curVol;
-
-
-			this.volumeNode.gain.setTargetAtTime(curVol, rootAudioContext.currentTime, this._fadeSpeed / 3);
+			slideAudioParamTo(this.volumeNode.gain, curVol, this._fadeSpeed);
 		}
 	}
 
