@@ -111,6 +111,14 @@ declare global {
 
 class Game extends utils.EventEmitter<ThingGameEvents> {
 
+	/** dynamically override spine library loading path */
+	SPINE_SRC_PATH =
+	/// #if EDITOR
+	'/node_modules/pixi-spine/dist/pixi-spine.js';
+	/*
+	/// #endif
+	'https://cdn.jsdelivr.net/npm/pixi-spine@4.0.4/dist/pixi-spine.js';
+	//*/
 	W = 0;
 	H = 0;
 
