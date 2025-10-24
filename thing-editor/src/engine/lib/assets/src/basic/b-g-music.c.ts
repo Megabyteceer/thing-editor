@@ -133,11 +133,6 @@ export default class BgMusic extends Container {
 	@editable()
 	dynamicPreloading = false;
 
-	set ___currentPos(_val: string) {
-		/* empty */
-	}
-	/// #endif
-
 	musicFragmentHash!: string;
 	_fade?: number = undefined;
 	_appliedPathVol = 0;

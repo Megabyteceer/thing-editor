@@ -51,9 +51,8 @@ export default class HowlSound {
 					window.setTimeout(() => {
 						this.load();
 					}, this.attempt * 1000);
-				} else {
-					game.loadingRemove(this);
 				}
+				game.loadingRemove(this);
 			});
 	}
 

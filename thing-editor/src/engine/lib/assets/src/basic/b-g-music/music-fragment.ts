@@ -87,7 +87,6 @@ export default class MusicFragment {
 	resetPosition() {
 		this.introFinished = false;
 		this._releaseCurrentFragment();
-		this.startPlay();
 	}
 
 	startPlay() {
@@ -157,7 +156,8 @@ export default class MusicFragment {
 
 				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
 				allActiveFragments[this.musicFragmentHash] = this;
-				this.fadingToVolume = startVol;
+				slideAudioParamTo(this.volumeNode.gain, this._fadeToVol, this._fadeSpeed, startVol);
+				this.fadingToVolume = this._fadeToVol;
 				source!.connect(this.volumeNode);
 				this._preciseDuration = snd.preciseDuration;
 				source.buffer;
@@ -200,7 +200,6 @@ export default class MusicFragment {
 			fragment._fadeToVol = bgMusic._getTargetVol();
 			fragment._fadeSpeed = bgMusic._takeFade();
 			fragment.owners.add(bgMusic);
-
 			if (!allActiveFragments.hasOwnProperty(bgMusic.musicFragmentHash)) {
 				fragment.startPlay();
 			}
@@ -242,13 +241,11 @@ export default class MusicFragment {
 	static __stopAll() {
 		for (let h in allActiveFragments) {
 			MusicFragment.resetPosition(h);
-			allActiveFragments[h]._releaseCurrentFragment();
 		}
 	}
 	/// #endif
 
 }
-
 
 function clearFragmentsOwner(fragment: MusicFragment, ownerBgMusic:BgMusic) {
 	fragment._fadeSpeed = ownerBgMusic._takeFade();
