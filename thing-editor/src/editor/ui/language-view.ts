@@ -43,8 +43,11 @@ let ignoreEdit = false;
 
 const priority = (file:FileDescL10n) => {
 	let ret = file.lang.charCodeAt(0);
+	if (file.priority) {
+		ret += file.priority;
+	}
 	if (file.lang === game.projectDesc.defaultLanguage) {
-		ret += 1000;
+		ret += 10000000;
 	}
 	return ret;
 };

@@ -67,6 +67,7 @@ interface FileDescL10n extends FileDesc {
 	dir: string;
 	readOnly?: boolean;
 	lang: string;
+	priority?: number;
 	isDefault?: boolean;
 	__isLangIdPlaceHolder?: boolean;
 	isDirty?: boolean;
