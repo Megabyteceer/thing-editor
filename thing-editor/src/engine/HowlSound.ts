@@ -44,6 +44,8 @@ export default class HowlSound {
 					}
 					/// #endif
 					game.loadingRemove(this);
+				}).catch(() => {
+					game.loadingRemove(this);
 				});
 			}).catch(() => {
 				if (this.attempt < 3 && !game._loadingErrorIsDisplayed) {

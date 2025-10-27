@@ -4,10 +4,12 @@ import { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import Lib from 'thing-editor/src/engine/lib';
 import type BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
 import Sound, { slideAudioParamTo } from 'thing-editor/src/engine/utils/sound';
+import { stepTo } from 'thing-editor/src/engine/utils/utils';
 
 export const MIN_VOL_THRESHOLD = 0.001;
 
-const FADE_INTERVAL = 40;
+const FADE_INTERVAL = 50;
+const FADE_INTERVAL_SECONDS = 1 / (1000 / FADE_INTERVAL);
 
 const allFragments: KeyedMap<MusicFragment> = {};
 
@@ -59,8 +61,16 @@ export default class MusicFragment {
 		assert(this.source, 'MusicFragment wrongly registered as active');
 		let curVol = this._fadeToVol;
 		if (curVol !== this.fadingToVolume) {
-			this.fadingToVolume = curVol;
-			slideAudioParamTo(this.volumeNode.gain, curVol, this._fadeSpeed);
+			if (this._fadeSpeed > 0) {
+				const from = this.fadingToVolume;
+				const to = stepTo(from, curVol, FADE_INTERVAL_SECONDS / this._fadeSpeed);
+				this.fadingToVolume = to;
+				slideAudioParamTo(this.volumeNode.gain, to * to, FADE_INTERVAL_SECONDS, from * from);
+			} else {
+				this.volumeNode.gain.cancelScheduledValues(rootAudioContext.currentTime);
+				this.volumeNode.gain.setValueAtTime(curVol * curVol, rootAudioContext.currentTime);
+				this.fadingToVolume = curVol;
+			}
 		}
 	}
 
@@ -93,20 +103,22 @@ export default class MusicFragment {
 
 		if (this.source) {
 			this.source.start(undefined, 0, this._preciseDuration);
+			return;
 		} else if (this.intro && !this.introFinished) {
 			this.source = this._playMusicFragment(this.intro, 0, this._fadeToVol);
 			if (this.source) {
 				this.source!.loop = false;
 
 				this.source!.addEventListener('ended', this.onIntroEnd);
+				return;
 			}
-		} else if (this.loop) {
+		}
+		if (this.loop) {
 			this.source = this._playMusicFragment(this.loop);
 			if (this.source) {
 				this.source!.loop = true;
 			}
 		}
-		assert(this.source || (!this.loop), 'Failed to play Music intro: ' + (this.intro || 'EMPTY') + '; loop: ' + (this.loop || 'EMPTY'));
 	}
 
 	onIntroEnd() {
@@ -156,8 +168,9 @@ export default class MusicFragment {
 
 				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
 				allActiveFragments[this.musicFragmentHash] = this;
-				slideAudioParamTo(this.volumeNode.gain, this._fadeToVol, this._fadeSpeed, startVol);
-				this.fadingToVolume = this._fadeToVol;
+				this.volumeNode.gain.cancelScheduledValues(rootAudioContext.currentTime);
+				this.volumeNode.gain.setValueAtTime(startVol, rootAudioContext.currentTime);
+				this.fadingToVolume = startVol;
 				source!.connect(this.volumeNode);
 				this._preciseDuration = snd.preciseDuration;
 				source.buffer;
@@ -196,14 +209,12 @@ export default class MusicFragment {
 				assert(fragment.musicFragmentHash === bgMusic.musicFragmentHash, 'allFragments map corrupted');
 			}
 
-
 			fragment._fadeToVol = bgMusic._getTargetVol();
 			fragment._fadeSpeed = bgMusic._takeFade();
 			fragment.owners.add(bgMusic);
 			if (!allActiveFragments.hasOwnProperty(bgMusic.musicFragmentHash)) {
 				fragment.startPlay();
 			}
-			assert(fragment.source, 'wrong music-fragment position');
 		}
 
 		for (let h in allActiveFragments) {

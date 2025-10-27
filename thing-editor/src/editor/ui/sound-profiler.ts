@@ -13,6 +13,7 @@ import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
+import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 
 const profilerProps = { className: 'music-profiler' };
 const PROFILER_COLORS = [
@@ -85,14 +86,12 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 
 	renderMusicItem(m: BgMusic, i: number) {
 		let state;
-		if (m.__currentFragment) {
-			if (!m.__currentFragment) {
-				state = R.div({ className: 'danger music-profiler-row-text' }, 'ref to not playing fragment');
-			} else {
-				state = R.div({ className: 'sound-vol-bar-bg' },
-					R.div({ className: 'sound-vol-bar', title: 'Volume: ' + m.__getVolume(), style: { width: m.__getVolume()! * 100 } })
-				);
-			}
+		const fragment = m.__currentFragment || MusicFragment.__getFragment(m.musicFragmentHash);
+		if (fragment) {
+			state = R.div({ className: 'sound-vol-bar-bg' },
+				R.div({ className: 'sound-vol-bar', title: 'Volume: ' + fragment.getVolume(), style: { width: fragment.getVolume()! * 100 } })
+			);
+
 		} else {
 			state = R.div({ className: 'sound-vol-bar-bg' },
 				'stopped'
