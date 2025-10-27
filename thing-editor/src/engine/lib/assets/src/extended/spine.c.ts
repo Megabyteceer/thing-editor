@@ -671,7 +671,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 				const s = window.document.createElement('script');
 				// pixi-spine loading via script attachment because ES module pixi-spine causes double pixi.js bundling.
 				//@ts-ignore
-				s.src = SPINE_SRC_PATH;
+				s.src = game.SPINE_SRC_PATH;
 				s.onload = () => {
 					game.loadingRemove('pixi-spine/dist/pixi-spine.js');
 					/// #if EDITOR
@@ -697,7 +697,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 				};
 				s.onerror = () => {
 				//@ts-ignore
-					game.showLoadingError(SPINE_SRC_PATH);
+					game.showLoadingError(s.src);
 				};
 				document.body.appendChild(s);
 			});

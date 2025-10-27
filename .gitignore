@@ -8,8 +8,6 @@ node_modules
 /games
 /libs
 
-games-aux
-
 /thing-editor/src/editor/localization-typings.ts
 /thing-editor/src/editor/schema-thing-project.json
 /thing-editor/src/editor/current-classes-typings.ts
