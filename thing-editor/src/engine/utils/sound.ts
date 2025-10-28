@@ -53,8 +53,8 @@ export default class Sound {
 	static set soundsVol(v) {
 		assert(!isNaN(v), 'invalid value for \'soundsVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
+		slideAudioParamTo(Sound.outputs.FX.gain, v * v, 0.1, (soundsVol * soundsVol) || 0);
 		soundsVol = v;
-		slideAudioParamTo(Sound.outputs.FX.gain, v * v, 0.1);
 		game.settings.setItem('soundsVol', soundsVol);
 	}
 
@@ -85,9 +85,9 @@ export default class Sound {
 	static set musicVol(v) {
 		assert(!isNaN(v), 'invalid value for \'musicVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
+		slideAudioParamTo(Sound.outputs.MUSIC.gain, v * v, 0.1, musicVol * musicVol || 0);
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
-		slideAudioParamTo(Sound.outputs.MUSIC.gain, v * v, 0.1);
 	}
 
 	static get fullVol() {
