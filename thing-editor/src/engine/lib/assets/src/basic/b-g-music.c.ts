@@ -317,11 +317,7 @@ function recalculateMusic() {
 	}
 
 	priorities.sort(sortReverted);
-	let muteAllNext = Sound.isSoundsLockedByBrowser || (game._loadingErrorIsDisplayed || (!game.isVisible
-		/// #if EDITOR
-		&& false
-		/// #endif
-	));
+	let muteAllNext = Sound.isSoundsLockedByBrowser || game._loadingErrorIsDisplayed;
 
 	/// #if EDITOR
 	muteAllNext = muteAllNext || game.__EDITOR_mode;

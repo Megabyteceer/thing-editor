@@ -28,6 +28,10 @@ export const slideAudioParamTo = (param:AudioParam, val:number, duration:number,
 	}
 };
 
+/// #if DEBUG
+let EMPTY_SOUND:HowlSound;
+/// #endif
+
 export default class Sound {
 
 	static outputs = {} as{
@@ -60,6 +64,16 @@ export default class Sound {
 
 	static setMusicVol(v: number) {
 		Sound.musicVol = v;
+	}
+
+	static _onVisibilityChange(visible: boolean) {
+		/// #if EDITOR
+		return;
+		/// #endif
+		for (let key in Sound.outputs) {
+			const node = Sound.outputs[key];
+			slideAudioParamTo(node.gain, visible ? soundsVol * soundsVol : 0, 0.1);
+		}
 	}
 
 	/** volume is quadratic. 0.1 - sound off. 1.0 - max vol */
@@ -189,18 +203,14 @@ export default class Sound {
 		masterNodes.unshift(node);
 	}
 
-	static isSoundsLockedByBrowser = false;
+	static isSoundsLockedByBrowser = true;
 
 	static play(soundId: string, volume = 1.0, rate = 1.0, seek = 0.0) {
 		/// #if DEBUG
 
 		rate = rate * game.pixiApp.ticker.speed;
 		/// #endif
-		if (Sound.isSoundsLockedByBrowser || (!game.isVisible // eslint-disable-line no-constant-condition
-			/// #if EDITOR
-			&& false
-			/// #endif
-		)) {
+		if (Sound.isSoundsLockedByBrowser) {
 			return;
 		}
 		let s = Lib.getSound(soundId);
@@ -266,24 +276,12 @@ export default class Sound {
 		Sound.play(soundId, 1, pitch, 0);
 	}
 
-	static checkSoundLockByBrowser() {
-		Sound.isSoundsLockedByBrowser = true;
-		game.loadingAdd(LOADING_OWNER_NAME);
-		initEmptySound();
-		const blockedHandler = () => soundLockHandler(true);
-		const unblockedHandler = () => soundLockHandler(false);
-		soundLockTimeoutId = window.setTimeout(blockedHandler, 200);
-		try {
-			EMPTY_SOUND.play();
-			EMPTY_SOUND.source!.addEventListener('ended', unblockedHandler);
-		} catch (_er) {
-			soundLockHandler(true);
-		}
-	}
-
 	static _unlockSound() {
 		if (Sound.isSoundsLockedByBrowser) {
-			soundLockHandler(false);
+			Sound.isSoundsLockedByBrowser = false;
+			if (game.classes.BgMusic) {
+				game.classes.BgMusic._recalculateMusic();
+			}
 		}
 	}
 
@@ -341,16 +339,12 @@ export default class Sound {
 	/// #endif
 }
 
+/// #if DEBUG
 const initEmptySound = async () => {
-
 	EMPTY_SOUND = new HowlSound('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV');
-	/// #if DEBUG
 	EMPTY_SOUND.__isEmptySound = true;
-	/// #endif
 };
 
-
-/// #if DEBUG
 const __animatedSoundItems = [] as HTMLDivElement[];
 const __onUpdate = () => {
 	for (let i = __animatedSoundItems.length - 1; i >= 0; i--) {
@@ -383,29 +377,6 @@ setTimeout(() => {
 
 setTimeout(initEmptySound, 0);
 /// #endif
-
-let EMPTY_SOUND: HowlSound;
-let soundLockTimeoutId = 0;
-let isHandlerShootAlready = false;
-
-const LOADING_OWNER_NAME = 'checkSoundLock';
-
-const soundLockHandler = (isLocked = false) => {
-	if (!isHandlerShootAlready) {
-		game.loadingRemove(LOADING_OWNER_NAME);
-		isHandlerShootAlready = true;
-		if (soundLockTimeoutId) {
-			clearTimeout(soundLockTimeoutId);
-		}
-	}
-	if (!isLocked) {
-		EMPTY_SOUND.unload();
-		Sound.isSoundsLockedByBrowser = false;
-		if (game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}
-	}
-};
 
 /* playPitched - increases pitch each time until timeout*/
 let pitches: KeyedMap<number> = {};

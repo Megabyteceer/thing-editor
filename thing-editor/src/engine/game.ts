@@ -26,7 +26,6 @@ import sureQuestionInit from 'thing-editor/src/engine/utils/sure-question';
 import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import type { AssetsDescriptor } from '../editor/editor-env';
 import type { ProjectOrientation } from '../editor/project-desc';
-import { rootAudioContext } from './HowlSound';
 import type Button from './lib/assets/src/basic/button.c';
 import ERROR_HTML from './utils/html-error.html?raw';
 
@@ -1548,36 +1547,7 @@ const visibilityChangeHandler = () => {
 		game.isVisible = isVisible;
 
 		if (game.pixiApp) {
-			window.setTimeout(() => {
-				const reCalcBgMusic = () => {
-					if (game.classes?.BgMusic) {
-						/// #if EDITOR
-						/*
-						/// #endif
-						game.classes.BgMusic._recalculateMusic();
-						//*/
-					}
-				};
-
-				if (isVisible) {
-					if (game.isMobile.apple.phone || game.isMobile.apple.ipod) {
-						setTimeout(() => {
-							const ctx = rootAudioContext;
-							if (ctx) {
-								ctx.suspend();
-								ctx.resume().then(reCalcBgMusic);
-							} else {
-								reCalcBgMusic();
-							}
-						}, 500);
-					} else {
-						reCalcBgMusic();
-					}
-				} else {
-					reCalcBgMusic();
-				}
-
-			}, 10);
+			Sound._onVisibilityChange(isVisible);
 		}
 		focusChangeHandler(isVisible);
 	}
