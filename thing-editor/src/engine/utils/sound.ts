@@ -727,4 +727,5 @@ Sound.outputs['Sound.soundsVol'] = Sound.outputs.FX = rootAudioContext.createGai
 Sound.outputs.MUSIC = rootAudioContext.createGain();
 Sound.outputs.FX.connect(rootAudioContext.destination);
 Sound.outputs.MUSIC.connect(rootAudioContext.destination);
-
+slideAudioParamTo(Sound.outputs.FX.gain, 0, 0);
+slideAudioParamTo(Sound.outputs.MUSIC.gain, 0, 0);
