@@ -66,10 +66,19 @@ export default class Sound {
 		Sound.musicVol = v;
 	}
 
+	static fixIosContext() {
+		try {
+			if (game.isMobile.apple.device && (rootAudioContext.state === 'suspended')) {
+				rootAudioContext.resume();
+			}
+		} catch (_er) {};
+	}
+
 	static _onVisibilityChange(visible: boolean) {
 		/// #if EDITOR
 		return;
 		/// #endif
+		Sound.fixIosContext();
 		for (let key in Sound.outputs) {
 			const node = Sound.outputs[key];
 			slideAudioParamTo(node.gain, visible ? soundsVol * soundsVol : 0, 0.1);

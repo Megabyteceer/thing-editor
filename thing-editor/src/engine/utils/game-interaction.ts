@@ -11,6 +11,7 @@ const stagePoint = new Point();
 
 const mouseHandlerGlobalDown = (ev: PointerEvent) => {
 	Sound._unlockSound();
+	Sound.fixIosContext();
 	game.mouse.gameClick = ev.target === game.pixiApp.view;
 	game.mouse.click = ev.buttons || 1;
 	mouseHandlerGlobal(ev);
