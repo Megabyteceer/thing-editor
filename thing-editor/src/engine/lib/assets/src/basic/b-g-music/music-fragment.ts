@@ -1,15 +1,15 @@
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
-import type HowlSound from 'thing-editor/src/engine/HowlSound';
+import { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import Lib from 'thing-editor/src/engine/lib';
 import type BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
-import Sound from 'thing-editor/src/engine/utils/sound';
+import Sound, { slideAudioParamTo } from 'thing-editor/src/engine/utils/sound';
 import { stepTo } from 'thing-editor/src/engine/utils/utils';
 
-const MIN_VOL_THRESHOLD = 0.0101; // howler has min threshold 0.01
+export const MIN_VOL_THRESHOLD = 0.001;
 
-const FADE_INTERVAL = 40;
-const FADE_STEP = 1.0 / FADE_INTERVAL;
+const FADE_INTERVAL = 50;
+const FADE_INTERVAL_SECONDS = 1 / (1000 / FADE_INTERVAL);
 
 const allFragments: KeyedMap<MusicFragment> = {};
 
@@ -24,20 +24,21 @@ window.setInterval(() => {
 
 export default class MusicFragment {
 
-
+	volumeNode = rootAudioContext.createGain();
+	fadingToVolume = 0;
 	intro: string | null;
 	loop: string | null;
 	musicFragmentHash!: string;
-	_currentFragment!: HowlSound | undefined;
+	source?: AudioBufferSourceNode;
 	_fadeToVol!: number;
 	_fadeSpeed!: number;
 	owners: Set<BgMusic> = new Set();
-
-	introPos = 0;
-	loopPos = 0;
-	isLoopPos = false;
+	_preciseDuration = 0;
+	introFinished = false;
 
 	constructor(bgMusic: BgMusic) {
+		this.volumeNode.connect(Sound.outputs.MUSIC);
+
 		if (bgMusic.dynamicPreloading) {
 			bgMusic.loop && Lib.preloadSound(bgMusic.loop
 				/// #if EDITOR
@@ -57,26 +58,25 @@ export default class MusicFragment {
 	}
 
 	_updateFading() {
-		assert(this._currentFragment, 'MusicFragment wrongly registered as active');
-		let curVol = this.getVolume();
-		if (this._fadeToVol !== curVol) {
-			curVol = stepTo(curVol, this._fadeToVol, 1 / (this._fadeSpeed + 0.0001) * FADE_STEP);
-
-			if (curVol < MIN_VOL_THRESHOLD && this._fadeToVol < MIN_VOL_THRESHOLD) {
-				this._releaseCurrentFragment();
+		assert(this.source, 'MusicFragment wrongly registered as active');
+		let curVol = this._fadeToVol;
+		if (curVol !== this.fadingToVolume) {
+			if (this._fadeSpeed > 0) {
+				const from = this.fadingToVolume;
+				const to = stepTo(from, curVol, FADE_INTERVAL_SECONDS / this._fadeSpeed);
+				this.fadingToVolume = to;
+				slideAudioParamTo(this.volumeNode.gain, to * to, FADE_INTERVAL_SECONDS, from * from);
 			} else {
-				this._currentFragment!.volume(curVol);
+				this.volumeNode.gain.cancelScheduledValues(rootAudioContext.currentTime);
+				this.volumeNode.gain.setValueAtTime(curVol * curVol, rootAudioContext.currentTime);
+				this.fadingToVolume = curVol;
 			}
 		}
 	}
 
 	getVolume() {
-		assert(this._currentFragment, 'BgMusic component is not paying to getVolume.');
-		if (this._currentFragment) {
-			assert((this._currentFragment as any)._sounds && (this._currentFragment as any)._sounds[0] && !isNaN((this._currentFragment as any)._sounds[0]._volume), 'BgMusic component is not paying to getVolume.');
-			return (this._currentFragment as any)._sounds[0]._volume;
-		}
-		return 0;
+		assert(this.source, 'BgMusic component is not paying to getVolume.');
+		return this.volumeNode.gain.value;
 	}
 
 	static onMusicRemove(bgMusic: BgMusic) {
@@ -95,45 +95,44 @@ export default class MusicFragment {
 	}
 
 	resetPosition() {
-		let restorePlaying;
-		if (this._currentFragment) {
-			this._releaseCurrentFragment();
-			restorePlaying = true;
-		}
-		this.introPos = 0;
-		this.loopPos = 0;
-		this.isLoopPos = false;
-		if (restorePlaying) {
-			this.startPlay();
-		}
+		this.introFinished = false;
+		this._releaseCurrentFragment();
 	}
 
 	startPlay() {
 
-		if (this.intro && !this.isLoopPos) {
-			this._playMusicFragment(this.intro, this.introPos, this._fadeToVol);
-			if (this._currentFragment) {
-				this._currentFragment.loop(false);
-				this._currentFragment.on('end', this.onIntroEnd);
-			}
-		} else if (this.loop) {
-			this.isLoopPos = true;
-			this._playMusicFragment(this.loop, this.loopPos);
-			if (this._currentFragment) {
-				this._currentFragment.loop(true);
+		if (this.source) {
+			this.source.start(undefined, 0, this._preciseDuration);
+			return;
+		} else if (this.intro && !this.introFinished) {
+			this.source = this._playMusicFragment(this.intro, 0, this._fadeToVol);
+			if (this.source) {
+				this.source!.loop = false;
+
+				this.source!.addEventListener('ended', this.onIntroEnd);
+				return;
 			}
 		}
-		assert(this._currentFragment || (!this.loop && this.isLoopPos), 'Failed to play Music intro: ' + (this.intro || 'EMPTY') + '; loop: ' + (this.loop || 'EMPTY'));
+		if (this.loop) {
+			this.source = this._playMusicFragment(this.loop);
+			if (this.source) {
+				this.source!.loop = true;
+			}
+		}
 	}
 
 	onIntroEnd() {
-		if (this._currentFragment) {
-			let vol = this.getVolume();
-			this._releaseCurrentFragment();
-			this._playMusicFragment(this.loop, 0, vol);
-			this.isLoopPos = true;
-			if (this._currentFragment) {
-				this._currentFragment.loop(true);
+		this.introFinished = true;
+		if (this.source) {
+			if (this.owners.size) {
+				let vol = this.getVolume();
+				this._releaseCurrentFragment();
+				this.source = this._playMusicFragment(this.loop, 0, vol);
+				if (this.source) {
+				this.source!.loop = true;
+				}
+			} else {
+				this._releaseCurrentFragment();
 			}
 		}
 
@@ -142,24 +141,41 @@ export default class MusicFragment {
 		});
 	}
 
-	_playMusicFragment(s: string | null, pos = 0, startVol = MIN_VOL_THRESHOLD) {
-		assert(!this._currentFragment, 'MusicFragment already playing.');
-
+	_playMusicFragment(s: string | null, pos = 0, startVol = 0.001) {
 		if (s) {
 			try {
 				const snd = Lib.getSound(s, true);
-				snd.volume(startVol);
-				/// #if DEBUG
-				Sound.__highlightPlayedSound(s);
-				snd.rate(game.pixiApp.ticker.speed);
-				/// #endif
-				snd.seek(pos);
-				snd.soundIdSaved = snd.play(snd.soundIdSaved);
+				if (!snd.audioBuffer) {
+					return;
+				}
 
-				this._currentFragment = snd;
-				assert((snd as any)._sounds.length === 1, 'Music started in more that one instance.');
+				const source = rootAudioContext.createBufferSource();
+				source.buffer = snd.audioBuffer;
+				source.playbackRate.setValueAtTime(
+					/// #if DEBUG
+					game.pixiApp.ticker.speed
+					/*
+				/// #endif
+				1
+				//*/
+					, rootAudioContext.currentTime);
+
+				/// #if EDITOR
+				Sound.__highlightPlayedSound(s);
+				/// #endif
+
+				source.start(undefined, pos, snd.preciseDuration);
+
 				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
 				allActiveFragments[this.musicFragmentHash] = this;
+				this.volumeNode.gain.cancelScheduledValues(rootAudioContext.currentTime);
+				this.volumeNode.gain.setValueAtTime(startVol, rootAudioContext.currentTime);
+				this.fadingToVolume = startVol;
+				source!.connect(this.volumeNode);
+				this._preciseDuration = snd.preciseDuration;
+				source.buffer;
+
+				return source;
 			} catch (_er) {
 				/// #if EDITOR
 				debugger;
@@ -169,24 +185,12 @@ export default class MusicFragment {
 	}
 
 	_releaseCurrentFragment() {
-		if (this._currentFragment) {
-			this._currentFragment.off('end', this.onIntroEnd);
-			if (this.isLoopPos) {
-				this.loopPos = this._currentFragment.seek();
-			} else {
-				this.introPos = this._currentFragment.seek();
-			}
-			this._currentFragment.stop();
-
+		if (this.source) {
+			this.source.removeEventListener('ended', this.onIntroEnd);
+			this.source.stop();
 			assert(allActiveFragments[this.musicFragmentHash] === this, 'allActiveFragments map corrupted.');
-			this._currentFragment = undefined;
+			this.source = undefined;
 			delete allActiveFragments[this.musicFragmentHash];
-		}
-	}
-
-	static _applyFadeForAll(fade: number) {
-		for (let h in allActiveFragments) {
-			allActiveFragments[h]._fadeSpeed = fade;
 		}
 	}
 
@@ -205,15 +209,12 @@ export default class MusicFragment {
 				assert(fragment.musicFragmentHash === bgMusic.musicFragmentHash, 'allFragments map corrupted');
 			}
 
-
-			fragment._fadeToVol = bgMusic._cachedTargetVol;
-			fragment._fadeSpeed = bgMusic._getFade(fragment._fadeToVol < MIN_VOL_THRESHOLD);
+			fragment._fadeToVol = bgMusic._getTargetVol();
+			fragment._fadeSpeed = bgMusic._takeFade();
 			fragment.owners.add(bgMusic);
-
 			if (!allActiveFragments.hasOwnProperty(bgMusic.musicFragmentHash)) {
 				fragment.startPlay();
 			}
-			assert(fragment._currentFragment || (!fragment.loop && fragment.isLoopPos), 'wrong music-fragment position');
 		}
 
 		for (let h in allActiveFragments) {
@@ -231,27 +232,19 @@ export default class MusicFragment {
 	static __applyGameSpeed(rate: number) {
 		for (let h in allActiveFragments) {
 			let f = allActiveFragments[h];
-			if (f._currentFragment) {
-				f._currentFragment.rate(rate);
+			if (f.source) {
+				f.source.playbackRate.setValueAtTime(rate, rootAudioContext.currentTime);
 			}
 		}
 	}
 	/// #if EDITOR
 
 	static __isLoopPosition(musicFragmentHash: string) {
-		let f = allActiveFragments[musicFragmentHash];
-		return f && f.isLoopPos;
-	}
-
-	static ___currentPos(musicFragmentHash: string) {
-		let f = MusicFragment.__getFragment(musicFragmentHash);
-		return f ? f.seek() : 0;
+		return allActiveFragments[musicFragmentHash]?.source?.loop;
 	}
 
 	static __getFragment(musicFragmentHash: string) {
-		if (allActiveFragments[musicFragmentHash]) {
-			return allActiveFragments[musicFragmentHash]._currentFragment;
-		}
+		return allActiveFragments[musicFragmentHash];
 	}
 	/// #endif
 
@@ -259,22 +252,13 @@ export default class MusicFragment {
 	static __stopAll() {
 		for (let h in allActiveFragments) {
 			MusicFragment.resetPosition(h);
-			allActiveFragments[h]._releaseCurrentFragment();
 		}
 	}
 	/// #endif
 
 }
 
-
 function clearFragmentsOwner(fragment: MusicFragment, ownerBgMusic:BgMusic) {
-	ownerBgMusic.customFade = undefined;
-	fragment._fadeSpeed = ownerBgMusic._getFade(true);
-
+	fragment._fadeSpeed = ownerBgMusic._takeFade();
 	fragment.owners.delete(ownerBgMusic);
-	if (!fragment.owners.size) {
-		if (fragment._currentFragment) {
-			fragment._currentFragment.off('end', fragment.onIntroEnd);
-		}
-	}
 }

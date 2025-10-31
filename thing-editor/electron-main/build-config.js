@@ -35,16 +35,12 @@ module.exports = (_root, publicDir, outDir, debug, _projectDesc) => {
 				input: ''
 			},
 		},
-		define: {
-			SPINE_SRC_PATH: JSON.stringify('https://cdn.jsdelivr.net/npm/pixi-spine@4.0.4/dist/pixi-spine.js')
-		},
 		resolve: {
 			alias: {
 				'games': path.resolve(__dirname, '../../games'),
 				'.tmp': path.resolve(__dirname, '../../.tmp'),
 				'libs': path.resolve(__dirname, '../../libs'),
 				'thing-editor': path.resolve(__dirname, '../../thing-editor'),
-				'howler.js': 'https://cdn.jsdelivr.net/npm/howler@2.2.3/dist/howler.min.js',
 				'pixi.js': 'https://cdn.jsdelivr.net/npm/pixi.js@7.2.4/dist/pixi.min.mjs'
 			}
 		}

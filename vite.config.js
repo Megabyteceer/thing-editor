@@ -46,8 +46,5 @@ export default defineConfig({
 			'thing-editor': __dirname + '/thing-editor',
 			'pixi.js': __dirname + '/node_modules/pixi.js/dist/pixi.mjs'
 		}
-	},
-	define: {
-		SPINE_SRC_PATH: JSON.stringify('/node_modules/pixi-spine/dist/pixi-spine.js')
 	}
 });

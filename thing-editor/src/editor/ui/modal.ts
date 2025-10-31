@@ -303,7 +303,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 
 		let notify: ComponentChild;
 		let notifies: ComponentChild[] = [];
-		notifyWrapperProps.style.left = game.editor.mouseX + 'px';
+		notifyWrapperProps.style.left = (Math.min(game.editor.mouseX, document.body.clientWidth - 300)) + 'px';
 		notifyWrapperProps.style.top = (game.editor.mouseY) + 'px';
 		notifyTexts.forEach((notifyText) => {
 			notifies.push(R.div(notifyProps, notifyText));

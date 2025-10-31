@@ -42,6 +42,7 @@
 			"**/*.jpg": true,
 			"**/*.aac": true,
 			"**/CVS": true,
+			"**/~snd-convert-cache.json": true,
 			"**/.DS_Store": true,
 			"**/Thumbs.db": true,
 			"vite.config.js.timestamp-*": true,
