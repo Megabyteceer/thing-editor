@@ -1547,37 +1547,7 @@ const visibilityChangeHandler = () => {
 		game.isVisible = isVisible;
 
 		if (game.pixiApp) {
-			window.setTimeout(() => {
-				const reCalcBgMusic = () => {
-					if (game.classes?.BgMusic) {
-						/// #if EDITOR
-						/*
-						/// #endif
-						(game.classes.BgMusic as any)._clearCustomFades(0.2);
-						game.classes.BgMusic._recalculateMusic();
-						//*/
-					}
-				};
-
-				if (isVisible) {
-					if (game.isMobile.apple.phone || game.isMobile.apple.ipod) {
-						setTimeout(() => {
-							const ctx = Howler.ctx;
-							if (ctx) {
-								ctx.suspend();
-								ctx.resume().then(reCalcBgMusic);
-							} else {
-								reCalcBgMusic();
-							}
-						}, 500);
-					} else {
-						reCalcBgMusic();
-					}
-				} else {
-					reCalcBgMusic();
-				}
-
-			}, 10);
+			Sound._onVisibilityChange(isVisible);
 		}
 		focusChangeHandler(isVisible);
 	}

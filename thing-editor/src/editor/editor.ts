@@ -37,7 +37,6 @@ import { __UnknownClass } from 'thing-editor/src/editor/utils/unknown-class';
 import validateObjectDataRecursive from 'thing-editor/src/editor/utils/validate-serialized-data';
 import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
-import BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
 import { __UnknownClassScene } from 'thing-editor/src/engine/lib/assets/src/basic/scene.c';
 import waitForCondition from 'thing-editor/src/engine/lib/assets/src/utils/wait-for-condition';
 import Pool from 'thing-editor/src/engine/utils/pool';
@@ -45,6 +44,7 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';
 import Build from './utils/build';
 
+import { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import Spine from '../engine/lib/assets/src/extended/spine.c';
 import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
@@ -55,6 +55,12 @@ import { StatusClearingCondition } from './ui/status-clearing-condition';
 import roundUpPoint from './utils/round-up-point';
 
 const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
+
+const editorMuteSoundNode = rootAudioContext.createGain();
+Sound.addMasterNode(editorMuteSoundNode);
+const applySoundMuting = () => {
+	editorMuteSoundNode.gain.setValueAtTime(game.editor.settings.getItem('sound-muted') ? 0 : 1, rootAudioContext.currentTime);
+};
 
 const parseLibName = (name: string): LibInfo => {
 	let dir;
@@ -75,7 +81,7 @@ import.meta.hot?.on('vite:beforeFullReload', (ev: any) => { //disable vite.hmr f
 	ev.path = 'vite please, do not reload anything.html';
 });
 
-let previewedSound: HowlSound;
+let previewedSound: HowlSound | null;
 
 interface RecentProject {
 	dir: string;
@@ -483,6 +489,8 @@ class Editor {
 			this.ui.modal.hideSpinner();
 			this.isProjectOpen = true;
 
+			applySoundMuting();
+
 			game.onResize();
 
 			this.settings.setItem('last-opened-project', dir);
@@ -578,8 +586,7 @@ class Editor {
 
 	toggleSoundMute() {
 		game.editor.settings.setItem('sound-muted', !game.editor.settings.getItem('sound-muted'));
-		Sound.__resetSounds();
-		BgMusic._recalculateMusic();
+		applySoundMuting();
 	}
 
 	toggleVSCodeExcluding() {
@@ -836,12 +843,12 @@ class Editor {
 	}
 
 	previewSound(soundName: string) {
-
-		if (Lib.getSound(soundName).playing()) {
+		if (Lib.getSound(soundName)?.source) {
 			Lib.getSound(soundName).stop();
 		} else {
-			if (previewedSound && previewedSound.playing()) {
+			 if (previewedSound) {
 				previewedSound.stop();
+				previewedSound = null;
 			}
 			Sound.play(soundName);
 			previewedSound = Lib.getSound(soundName);

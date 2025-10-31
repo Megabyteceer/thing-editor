@@ -13,6 +13,7 @@ import type HowlSound from 'thing-editor/src/engine/HowlSound';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
+import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 
 const profilerProps = { className: 'music-profiler' };
 const PROFILER_COLORS = [
@@ -85,14 +86,12 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 
 	renderMusicItem(m: BgMusic, i: number) {
 		let state;
-		if (m.__currentFragment) {
-			if (!m.__currentFragment.playing()) {
-				state = R.div({ className: 'danger music-profiler-row-text' }, 'ref to not playing fragment');
-			} else {
-				state = R.div({ className: 'sound-vol-bar-bg' },
-					R.div({ className: 'sound-vol-bar', title: 'Volume: ' + m.__getVolume(), style: { width: m.__getVolume()! * 100 } })
-				);
-			}
+		const fragment = m.__currentFragment || MusicFragment.__getFragment(m.musicFragmentHash);
+		if (fragment) {
+			state = R.div({ className: 'sound-vol-bar-bg' },
+				R.div({ className: 'sound-vol-bar', title: 'Volume: ' + fragment.getVolume(), style: { width: fragment.getVolume()! * 100 } })
+			);
+
 		} else {
 			state = R.div({ className: 'sound-vol-bar-bg' },
 				'stopped'
@@ -113,7 +112,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 					game.editor.ui.modal.notify('Cant select music object');
 				}
 			}
-		}, R.span({ className: 'music-profiler-row-text', title: 'Intro sound: ' + (m.intro || 'NONE') }, m.intro), R.span({ className: 'music-profiler-row-text', title: 'Loop sound: ' + (m.loop || 'NONE') }, m.loop), state
+		}, R.span({ className: (m.__currentFragment?.source?.loop === false) ? 'music-profiler-row-text music-profiler-row-text-active' : 'music-profiler-row-text', title: 'Intro sound: ' + (m.intro || 'NONE') }, m.intro), R.span({ className: (m.__currentFragment?.source?.loop === true) ? 'music-profiler-row-text music-profiler-row-text-active' : 'music-profiler-row-text', title: 'Loop sound: ' + (m.loop || 'NONE') }, m.loop), state
 		);
 	}
 
@@ -140,10 +139,6 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 			profilerBody = R.fragment(R.btn('Start', () => {
 				game.editor.ui.viewport.onTogglePlay();
 			}), ' game execution to profile sounds.');
-		} else if (game.editor.settings.getItem('sound-muted')) {
-			profilerBody = R.fragment('Sounds is muted. ', R.btn('Enable Sounds', () => {
-				game.editor.toggleSoundMute();
-			}), ' to activate sound profiler.');
 		} else {
 			bgMusicsList = BgMusic.__allActiveMusics.map(this.renderMusicItem);
 			profilerBody = R.div(profilerProps, bgMusicsList, R.div({ className: 'sound-profiler-lane' }, soundsLanes));
@@ -160,7 +155,7 @@ export default class SoundProfiler extends ComponentDebounced<SoundProfilerProps
 			return;
 		}
 		let sound = Lib.getSound(soundId);
-		let durationFrames = Math.round(sound.duration() * 60);
+		let durationFrames = Math.round(sound.preciseDuration * 60);
 
 		let colors = SoundProfiler.soundsProfilerColorsCache[soundId];
 		if (!colors) {

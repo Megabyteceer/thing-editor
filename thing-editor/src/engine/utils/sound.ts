@@ -13,18 +13,32 @@ import FlyText from '../lib/assets/src/basic/fly-text.c';
 import debugPanelStyle from './sound-debug-panel.css?raw';
 /// #endif
 
-import HowlSound from 'thing-editor/src/engine/HowlSound';
+import HowlSound, { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 
-const MIN_VOL_ENABLE = 0.10000001;
+export const slideAudioParamTo = (param:AudioParam, val:number, duration:number, fromValue = param.value) => {
+	param.cancelScheduledValues(rootAudioContext.currentTime);
+	if (duration > 0) {
+		param.setValueCurveAtTime([fromValue, val], rootAudioContext.currentTime, duration);
+	} else {
+		param.setValueAtTime(val, rootAudioContext.currentTime);
+	}
+};
 
-function normalizeVolForEnabling(vol: number, defaultVol: number) {
-	return (vol > MIN_VOL_ENABLE) ? vol : defaultVol;
-}
+/// #if DEBUG
+let EMPTY_SOUND:HowlSound;
+/// #endif
 
 export default class Sound {
+
+	static outputs = {} as{
+		MUSIC: GainNode;
+		FX: GainNode;
+		[key: string]: GainNode;
+	};
 
 	/** volume is quadratic. 0.1 - sound off. 1.0 - max vol */
 	static get soundsVol() {
@@ -38,7 +52,8 @@ export default class Sound {
 
 	static set soundsVol(v) {
 		assert(!isNaN(v), 'invalid value for \'soundsVol\'. Valid number value expected.', 10001);
-		v = Math.max(0.1, Math.min(1, v));
+		v = Math.max(0, Math.min(1, v));
+		slideAudioParamTo(Sound.outputs.FX.gain, v * v, 0.1, (soundsVol * soundsVol) || 0);
 		soundsVol = v;
 		game.settings.setItem('soundsVol', soundsVol);
 	}
@@ -51,6 +66,25 @@ export default class Sound {
 		Sound.musicVol = v;
 	}
 
+	static fixIosContext() {
+		try {
+			if (game.isMobile.apple.device && (rootAudioContext.state === 'suspended')) {
+				rootAudioContext.resume();
+			}
+		} catch (_er) {};
+	}
+
+	static _onVisibilityChange(visible: boolean) {
+		/// #if EDITOR
+		return;
+		/// #endif
+		Sound.fixIosContext();
+		for (let key in Sound.outputs) {
+			const node = Sound.outputs[key];
+			slideAudioParamTo(node.gain, visible ? soundsVol * soundsVol : 0, 0.1);
+		}
+	}
+
 	/** volume is quadratic. 0.1 - sound off. 1.0 - max vol */
 
 	static get musicVol() {
@@ -59,17 +93,10 @@ export default class Sound {
 
 	static set musicVol(v) {
 		assert(!isNaN(v), 'invalid value for \'musicVol\'. Valid number value expected.', 10001);
-		v = Math.max(0.1, Math.min(1, v));
-		if (musicVol !== v) {
-			if (game.classes.BgMusic) {
-				game.classes.BgMusic._clearCustomFades(0.2);
-			}
-		}
+		v = Math.max(0, Math.min(1, v));
+		slideAudioParamTo(Sound.outputs.MUSIC.gain, v * v, 0.1, musicVol * musicVol || 0);
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
-		if (game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}
 	}
 
 	static get fullVol() {
@@ -95,16 +122,13 @@ export default class Sound {
 	}
 
 	static get musicEnabled() {
-		return musicVol >= MIN_VOL_ENABLE;
+		return musicVol >= MIN_VOL_THRESHOLD;
 	}
 
 	static set musicEnabled(val) {
 		if (Sound.musicEnabled !== val) {
-			if (game.classes.BgMusic) {
-				game.classes.BgMusic._clearCustomFades(0.2);
-			}
 			if (val) {
-				Sound.musicVol = normalizeVolForEnabling(game.settings.getItem('musicVolEnabling'), game.projectDesc.defaultMusVol);
+				Sound.musicVol = game.settings.getItem('musicVolEnabling', game.projectDesc.defaultMusVol);
 			} else {
 				game.settings.setItem('musicVolEnabling', musicVol);
 				Sound.musicVol = 0;
@@ -124,13 +148,13 @@ export default class Sound {
 	}
 
 	static get soundEnabled() {
-		return soundsVol > MIN_VOL_ENABLE;
+		return soundsVol > MIN_VOL_THRESHOLD;
 	}
 
 	static set soundEnabled(val) {
 		if (Sound.soundEnabled !== val) {
 			if (val) {
-				Sound.soundsVol = normalizeVolForEnabling(game.settings.getItem('soundsVolEnabling'), game.projectDesc.defaultSoundsVol);
+				Sound.soundsVol = game.settings.getItem('soundsVolEnabling', game.projectDesc.defaultSoundsVol);
 			} else {
 				game.settings.setItem('soundsVolEnabling', soundsVol);
 				Sound.soundsVol = 0;
@@ -158,17 +182,15 @@ export default class Sound {
 	}
 
 	static init() {
-		soundsVol = game.settings.getItem('soundsVol', game.projectDesc.defaultSoundsVol);
-		musicVol = game.settings.getItem('musicVol', game.projectDesc.defaultMusVol);
+		Sound.soundsVol = game.settings.getItem('soundsVol', game.projectDesc.defaultSoundsVol);
+		Sound.musicVol = game.settings.getItem('musicVol', game.projectDesc.defaultMusVol);
 	}
 
 	/// #if EDITOR
 	static __resetSounds() {
 		MusicFragment.__stopAll();
 		for (let soundName in Lib.__soundsList) {
-
 			let snd = Lib.getSound(soundName);
-			snd.off('fade');
 			snd.stop();
 			snd.lastPlayStartFrame = 0;
 		}
@@ -177,18 +199,27 @@ export default class Sound {
 	}
 	/// #endif
 
-	static isSoundsLockedByBrowser = false;
+	static addMasterNode(node: AudioNode) {
+		const allOutputs = new Set<GainNode>();
+		for (let key in this.outputs) {
+			allOutputs.add(this.outputs[key]);
+		}
+		allOutputs.forEach((output) => {
+			output.disconnect();
+			output.connect(node);
+		});
+		node.connect(masterNodes[0]);
+		masterNodes.unshift(node);
+	}
 
-	static play(soundId: string, volume = 1.0, rate = 1.0, seek = 0.0, multiInstanced = false) {
+	static isSoundsLockedByBrowser = true;
+
+	static play(soundId: string, volume = 1.0, rate = 1.0, seek = 0.0) {
 		/// #if DEBUG
 
 		rate = rate * game.pixiApp.ticker.speed;
 		/// #endif
-		if (Sound.isSoundsLockedByBrowser || (!game.isVisible // eslint-disable-line no-constant-condition
-			/// #if EDITOR
-			&& false
-			/// #endif
-		)) {
+		if (Sound.isSoundsLockedByBrowser) {
 			return;
 		}
 		let s = Lib.getSound(soundId);
@@ -214,31 +245,15 @@ export default class Sound {
 			Sound.__highlightPlayedSound(soundId);
 			/// #endif
 
-			if (!multiInstanced && s.playing()) {
-				s.stop();
-			}
+
 			volume = volume * Sound.soundsVol * Sound.soundsVol;
-			if (volume > 0.0100000001
+			if (volume > MIN_VOL_THRESHOLD
 			/// #if DEBUG
 			&& (s !== EMPTY_SOUND)
 			/// #endif
 			) {
 				try {
-					if (multiInstanced) {
-						s.soundIdSaved = s.play();
-						s.volume(volume, s.soundIdSaved);
-						s.rate(rate, s.soundIdSaved);
-						if (seek !== 0) {
-							s.seek(seek, s.soundIdSaved);
-						}
-					} else {
-						s.volume(volume);
-						s.rate(rate);
-						if (seek !== 0) {
-							s.seek(seek);
-						}
-						s.soundIdSaved = s.play(s.soundIdSaved);
-					}
+					s.play(volume, rate, seek);
 					s.lastPlayStartFrame = game.time + 2;
 					/// #if DEBUG
 					refreshSndDebugger();
@@ -267,28 +282,15 @@ export default class Sound {
 		}
 		pitches[soundId] = pitch;
 		pitchedPlayTimeouts[soundId] = game.time;
-		Sound.play(soundId, 1, pitch, 0, true);
-	}
-
-	static checkSoundLockByBrowser() {
-		Sound.isSoundsLockedByBrowser = true;
-		game.loadingAdd(LOADING_OWNER_NAME);
-		initEmptySound();
-		const blockedHandler = () => soundLockHandler(true);
-		const unblockedHandler = () => soundLockHandler(false);
-		EMPTY_SOUND.once('playerror', blockedHandler);
-		EMPTY_SOUND.once('end', unblockedHandler);
-		soundLockTimeoutId = window.setTimeout(blockedHandler, 500);
-		try {
-			EMPTY_SOUND.play();
-		} catch (_er) {
-			soundLockHandler(true);
-		}
+		Sound.play(soundId, 1, pitch, 0);
 	}
 
 	static _unlockSound() {
 		if (Sound.isSoundsLockedByBrowser) {
-			soundLockHandler(false);
+			Sound.isSoundsLockedByBrowser = false;
+			if (game.classes.BgMusic) {
+				game.classes.BgMusic._recalculateMusic();
+			}
 		}
 	}
 
@@ -346,15 +348,12 @@ export default class Sound {
 	/// #endif
 }
 
-const initEmptySound = () => {
-	EMPTY_SOUND = new HowlSound({ src: 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV' });
-	/// #if DEBUG
+/// #if DEBUG
+const initEmptySound = async () => {
+	EMPTY_SOUND = new HowlSound('data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU2LjM2LjEwMAAAAAAAAAAAAAAA//OEAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU2LjQxAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//MUZAAAAAGkAAAAAAAAA0gAAAAATEFN//MUZAMAAAGkAAAAAAAAA0gAAAAARTMu//MUZAYAAAGkAAAAAAAAA0gAAAAAOTku//MUZAkAAAGkAAAAAAAAA0gAAAAANVVV');
 	EMPTY_SOUND.__isEmptySound = true;
-	/// #endif
 };
 
-
-/// #if DEBUG
 const __animatedSoundItems = [] as HTMLDivElement[];
 const __onUpdate = () => {
 	for (let i = __animatedSoundItems.length - 1; i >= 0; i--) {
@@ -387,31 +386,6 @@ setTimeout(() => {
 
 setTimeout(initEmptySound, 0);
 /// #endif
-
-let EMPTY_SOUND: HowlSound;
-let soundLockTimeoutId = 0;
-let isHandlerShootAlready = false;
-
-const LOADING_OWNER_NAME = 'checkSoundLock';
-
-const soundLockHandler = (isLocked = false) => {
-	if (!isHandlerShootAlready) {
-		game.loadingRemove(LOADING_OWNER_NAME);
-		isHandlerShootAlready = true;
-		if (soundLockTimeoutId) {
-			clearTimeout(soundLockTimeoutId);
-		}
-	}
-	if (!isLocked) {
-		EMPTY_SOUND.off('playerror');
-		EMPTY_SOUND.off('play');
-		EMPTY_SOUND.unload();
-		Sound.isSoundsLockedByBrowser = false;
-		if (game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}
-	}
-};
 
 /* playPitched - increases pitch each time until timeout*/
 let pitches: KeyedMap<number> = {};
@@ -755,3 +729,12 @@ editorEvents.on('playToggle', () => {
 });
 
 /// #endif
+
+let masterNodes = [rootAudioContext.destination] as AudioNode[];
+
+Sound.outputs['Sound.soundsVol'] = Sound.outputs.FX = rootAudioContext.createGain();
+Sound.outputs.MUSIC = rootAudioContext.createGain();
+Sound.outputs.FX.connect(rootAudioContext.destination);
+Sound.outputs.MUSIC.connect(rootAudioContext.destination);
+slideAudioParamTo(Sound.outputs.FX.gain, 0, 0);
+slideAudioParamTo(Sound.outputs.MUSIC.gain, 0, 0);

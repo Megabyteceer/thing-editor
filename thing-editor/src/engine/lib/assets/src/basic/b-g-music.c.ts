@@ -1,20 +1,31 @@
 import { Container } from 'pixi.js';
 
 import editable from 'thing-editor/src/editor/props-editor/editable';
+import type { SelectEditorItem } from 'thing-editor/src/editor/ui/props-editor/props-editors/select-editor';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
-import MusicFragment from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
+import MusicFragment, { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 import callByPath from 'thing-editor/src/engine/utils/call-by-path';
-import getValueByPath from 'thing-editor/src/engine/utils/get-value-by-path';
 import Sound from 'thing-editor/src/engine/utils/sound';
-
-const MIN_VOL_THRESHOLD = 0.01000001; // howler has min threshold 0.01
 
 const allActiveMusics: BgMusic[] = [];
 
 let musicRecalculationIsScheduled = false;
+
+/// #if EDITOR
+const selectOutput = () => {
+	const ret = Object.keys(Sound.outputs).map(name => { return {name, value: name} as SelectEditorItem; });
+	ret.unshift({name: 'default (MUSIC)', value: null});
+	ret.forEach(i => {
+		if (i.name === 'Sound.soundsVol') {
+		 i.name += ' (FX)';
+		}
+	});
+	return ret;
+};
+/// #endif
 
 export default class BgMusic extends Container {
 
@@ -104,7 +115,7 @@ export default class BgMusic extends Container {
 		}
 	}
 
-	@editable({ type: 'data-path' })
+	@editable({ type: 'data-path', select: selectOutput})
 	globalVolumePath: string | null = null;
 
 	@editable({ min: 0, step: 0.01 })
@@ -122,21 +133,9 @@ export default class BgMusic extends Container {
 	@editable()
 	dynamicPreloading = false;
 
-	@editable({ type: 'ref' })
-	/// #if EDITOR
-	get ___currentPos() {
-		return (MusicFragment.___currentPos(this.musicFragmentHash) || 0).toFixed(3);
-	}
-
-	set ___currentPos(_val: string) {
-		/* empty */
-	}
-	/// #endif
-
 	musicFragmentHash!: string;
-	customFade?: number;
+	_fade?: number = undefined;
 	_appliedPathVol = 0;
-	_cachedTargetVol!: number;
 
 	onRemove() {
 		super.onRemove();
@@ -150,7 +149,7 @@ export default class BgMusic extends Container {
 		this._loop = null;
 		this._intro = null;
 		this._externalVolume = 0;
-		this.customFade = undefined;
+		this._fade = undefined;
 		this.onIntroFinish = null;
 	}
 
@@ -158,9 +157,9 @@ export default class BgMusic extends Container {
 		this.volume = v;
 	}
 
+	/// #if EDITOR
 	update() {
 		super.update();
-		/// #if EDITOR
 		if (this._isPlaying) {
 			if (this.intro) {
 				Lib.getSound(this.intro).__lastTouch = EDITOR_FLAGS.__touchTime;
@@ -169,14 +168,8 @@ export default class BgMusic extends Container {
 				Lib.getSound(this.loop).__lastTouch = EDITOR_FLAGS.__touchTime;
 			}
 		}
-		/// #endif
-
-		if (this._isPlaying && this.globalVolumePath) {
-			if (this._appliedPathVol !== getValueByPath(this.globalVolumePath, this)) {
-				BgMusic._recalculateMusic();
-			}
-		}
 	}
+	/// #endif
 
 	applyResetPosition() {
 		if (this.isPlaying && this.resetPositionOnPlay) {
@@ -189,32 +182,22 @@ export default class BgMusic extends Container {
 			return 0;
 		}
 		assert(!isNaN(this._volume * this._externalVolume * Sound.musicVol), 'MgMusic volume is invalid');
-		let globalVolume;
-		if (this.globalVolumePath) {
-			this._appliedPathVol = getValueByPath(this.globalVolumePath, this);
-			globalVolume = this._appliedPathVol;
-		} else {
-			globalVolume = Sound.musicVol;
-		}
-
-		return this._volume * this._externalVolume * globalVolume * globalVolume || 0;
+		return this._volume * this._externalVolume || 0;
 	}
 
-	play(fade?: number) {
-		this.customFade = fade;
+	play(fade = this.fadeIn) {
 		if (!this.isPlaying) {
+			this._fade = fade;
 			this.isPlaying = true;
 			this.applyResetPosition();
 		}
 	}
 
-	stop(fade?: number) {
-		this.customFade = fade;
-		this.isPlaying = false;
-	}
-
-	_getFade(isFadeOut = false): number {
-		return typeof this.customFade === 'number' ? this.customFade : (isFadeOut ? this.fadeOut : this.fadeIn);
+	stop(fade = this.fadeOut) {
+		if (this.isPlaying) {
+			this._fade = fade;
+			this.isPlaying = false;
+		}
 	}
 
 	resetPosition() {
@@ -227,18 +210,20 @@ export default class BgMusic extends Container {
 		}
 	}
 
+	_takeFade() {
+		if (typeof(this._fade) === 'number') {
+			const ret = this._fade;
+			this._fade = undefined;
+			return ret;
+		}
+		return 0.2;
+	}
+
 	static _recalculateMusic() {
 		if (!musicRecalculationIsScheduled) {
 			window.setTimeout(recalculateMusic, 1);
 			musicRecalculationIsScheduled = true;
 		}
-	}
-
-	static _clearCustomFades(fade: number) {
-		for (let m of allActiveMusics) {
-			m.customFade = fade;
-		}
-		MusicFragment._applyFadeForAll(fade);
 	}
 
 	set fade(val: number) { // transition from fade to fadeIn fadeOut
@@ -269,10 +254,6 @@ export default class BgMusic extends Container {
 	/// #if EDITOR
 	static get __allActiveMusics() {
 		return allActiveMusics;
-	}
-
-	__getVolume() {
-		return this.__currentFragment && this.__currentFragment.volume();
 	}
 
 	get __isLoopPos() {
@@ -336,11 +317,7 @@ function recalculateMusic() {
 	}
 
 	priorities.sort(sortReverted);
-	let muteAllNext = Sound.isSoundsLockedByBrowser || (game._loadingErrorIsDisplayed || (!game.isVisible
-		/// #if EDITOR
-		&& false
-		/// #endif
-	));
+	let muteAllNext = Sound.isSoundsLockedByBrowser || game._loadingErrorIsDisplayed;
 
 	/// #if EDITOR
 	muteAllNext = muteAllNext || game.__EDITOR_mode;
@@ -364,7 +341,6 @@ function recalculateMusic() {
 	for (let m of allActiveMusics) {
 		let vol = m._getTargetVol();
 		if ((vol >= MIN_VOL_THRESHOLD) && (m._loop || m._intro)) {
-			m._cachedTargetVol = vol;
 			playingFragments.push(m);
 		}
 	}
