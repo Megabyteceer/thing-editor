@@ -11,7 +11,7 @@ import formatMoney from '../utils/format-money';
 export default class Label extends Text {
 
 	@editable({ type: 'data-path', important: true })
-	dataPath = null;
+	dataPath = null as string | null;
 
 	@editable({ min: 0 })
 	refreshInterval = 10;
