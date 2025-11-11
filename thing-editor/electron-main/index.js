@@ -78,7 +78,8 @@ console.warn('debug only configuration running. Please use "EDITOR" configuratio
 					'--user-data-dir=' + path.join(os.tmpdir(), 'chrome-user-tmp-data')
 					//"--wait-for-debugger"
 				],
-				webSecurity: false
+				webSecurity: false,
+				backgroundThrottling: false
 			},
 			icon: './thing-editor/img/favicon.ico',
 			//opacity: 0

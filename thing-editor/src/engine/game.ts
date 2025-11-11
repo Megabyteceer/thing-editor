@@ -242,6 +242,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		app.stage.addChild(stage);
 
 		/// #if EDITOR
+		window.addEventListener('resize', this._onContainerResize.bind(this));
 		/*
 		/// #endif
 		import('.tmp/classes').then(() => {
@@ -256,6 +257,14 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		if (!this.classes) {
 			this._updateGlobal = this._updateGlobal.bind(this);
 			app.ticker.add(this._updateGlobal);
+			/// #if EDITOR
+			setInterval(() => {
+				if (game.pixiApp.ticker.lastTime < (performance.now() - 100)) {
+					(game.pixiApp.ticker as any)._tick();
+				}
+			}, 100);
+
+			/// #endif
 			Sound.init();
 		}
 		this.classes = _classes;
