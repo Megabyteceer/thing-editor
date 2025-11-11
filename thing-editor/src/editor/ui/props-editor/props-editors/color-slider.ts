@@ -73,7 +73,7 @@ export default class ColorSlider extends Component<ColorSliderProps, ColorSlider
 	setHue(hue:number) {
 		const hsl = this.toHsl();
 		hsl[0] = hue;
-		lastHue = hue;
+		lastHue = hue * 6;
 		this.fromHSL(...hsl);
 	}
 
