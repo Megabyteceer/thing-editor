@@ -304,7 +304,7 @@ export default class DataPathEditor extends Component<DataPathEditorProps, DataP
 			if (typeof f === 'function') {
 				let paramsView: ComponentChild;
 				let firstLine = f.toString().split('\n').shift();
-				let params: string[] = firstLine.split('(').pop().split(')').shift().split(', ').filter((p: string) => p);
+				let params: string[] = f.___EDITOR_argumentsTip || firstLine.split('(').pop().split(')').shift().split(', ').filter((p: string) => p);
 				if (!params.length) {
 					paramsView = 'no parameters';
 				} else {

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 /// <reference types="vite/client" />
 
+import { ComponentChild } from 'preact';
+
 declare global {
 	type CallBackPath = string;
 	type ValuePath = string;
@@ -186,8 +188,9 @@ declare global {
 		___EDITOR_isGoodForChooser?: true;
 		___EDITOR_isGoodForCallbackChooser?: true;
 		___EDITOR_ChooserOrder?: number;
-		___EDITOR_actionIcon?: import('preact').ComponentChild;
+		___EDITOR_actionIcon?: ComponentChild;
 		___EDITOR_callbackParameterChooserFunction?: (owner: any) => Promise<any[] | any>;
+		___EDITOR_argumentsTip?: string[];
 	}
 }
 
