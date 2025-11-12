@@ -74,6 +74,11 @@ export default class Delay extends Container {
 	___stack!: DebugStack;
 
 	/// #if EDITOR
+
+	static __canAcceptParent(_parent: Container) {
+		return false;
+	}
+
 	onRemove() {
 		super.onRemove();
 		if (!game.__EDITOR_mode && !EDITOR_FLAGS.isStoppingTime) {

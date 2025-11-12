@@ -239,6 +239,12 @@ export default class SceneLinkedPromise extends Container {
 		}
 	}
 
+	/// #if EDITOR
+	static __canAcceptParent(_parent: Container) {
+		return false;
+	}
+	/// #endif
+
 	update() {
 		/// #if EDITOR
 		if (this.throttlingDelay > 0) {
