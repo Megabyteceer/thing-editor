@@ -15,10 +15,10 @@ Usage:
 	and if user will close scene and return to main menu,
 	or modal popup will appear,
 	delay will be postponed until user return to scene which delay created in, and exactly 30 frames in scene will past.
-	If scene will be destroyed, this delay will be canceled automaticly.
+	If scene will be destroyed, this delay will be canceled automatically.
 	So you will avoid tons of bugs.
 
-	You can see all currently scheduled delays in scene's tree in editor. Аlso you can see it`s 'delay' editable property and edit it due debugging purposes.
+	You can see all currently scheduled delays in scene's tree in editor. Also you can see it`s 'delay' editable property and edit it due debugging purposes.
 */
 
 import { Container } from 'pixi.js';
