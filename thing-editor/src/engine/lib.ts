@@ -30,7 +30,7 @@ import 'thing-editor/src/editor/current-scene-typings';
 import waitForCondition from './lib/assets/src/utils/wait-for-condition';
 /// #endif
 import type { AssetsDescriptor } from '../editor/editor-env';
-import Sound from './utils/sound';
+import Sound, { isFirefox } from './utils/sound';
 
 let classes: GameClasses;
 let scenes: KeyedMap<SerializedObject> = {};
@@ -439,6 +439,9 @@ export default class Lib
 		/// #endif
 		const s = new HowlSound(url + '.' + (game.isMobile.apple.device ? 'aac' : 'ogg'));
 		s.preciseDuration = duration;
+		if (isFirefox) {
+			s.preciseDuration = undefined as any;
+		}
 		soundsHowlers[name] = s;
 		/// #if DEBUG
 		Sound.__refreshDebugger();
