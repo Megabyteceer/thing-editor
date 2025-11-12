@@ -19,7 +19,7 @@ import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 
-const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+export const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
 export const slideAudioParamTo = (param:AudioParam, val:number, duration:number, fromValue = param.value) => {
 	param.cancelScheduledValues(rootAudioContext.currentTime);
@@ -83,7 +83,8 @@ export default class Sound {
 		Sound.fixIosContext();
 		for (let key in Sound.outputs) {
 			const node = Sound.outputs[key];
-			slideAudioParamTo(node.gain, visible ? soundsVol * soundsVol : 0, 0.1);
+			const vol = (key === 'MUSIC') ? musicVol : soundsVol;
+			slideAudioParamTo(node.gain, visible ? vol * vol : 0, 0.1);
 		}
 	}
 
