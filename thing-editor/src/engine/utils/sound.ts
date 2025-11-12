@@ -19,9 +19,11 @@ import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
 
+const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+
 export const slideAudioParamTo = (param:AudioParam, val:number, duration:number, fromValue = param.value) => {
 	param.cancelScheduledValues(rootAudioContext.currentTime);
-	if (duration > 0) {
+	if (duration > 0 && !isFirefox) {
 		param.setValueCurveAtTime([fromValue, val], rootAudioContext.currentTime, duration);
 	} else {
 		param.setValueAtTime(val, rootAudioContext.currentTime);
