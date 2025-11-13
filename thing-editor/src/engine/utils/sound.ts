@@ -24,7 +24,11 @@ export const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 export const slideAudioParamTo = (param:AudioParam, val:number, duration:number, fromValue = param.value) => {
 	param.cancelScheduledValues(rootAudioContext.currentTime);
 	if (duration > 0 && !isFirefox) {
-		param.setValueCurveAtTime([fromValue, val], rootAudioContext.currentTime, duration);
+		try {
+			param.setValueCurveAtTime([fromValue, val], rootAudioContext.currentTime, duration);
+		} catch (_er) {
+			param.setValueAtTime(val, rootAudioContext.currentTime + duration);
+		}
 	} else {
 		param.setValueAtTime(val, rootAudioContext.currentTime);
 	}
