@@ -291,9 +291,7 @@ export default class Sound {
 	static _unlockSound() {
 		if (Sound.isSoundsLockedByBrowser) {
 			Sound.isSoundsLockedByBrowser = false;
-			if (game.classes.BgMusic) {
-				game.classes.BgMusic._recalculateMusic();
-			}
+			game.classes?.BgMusic?._recalculateMusic();
 		}
 	}
 
