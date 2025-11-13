@@ -73,6 +73,7 @@ const showPrefabContextMenu = (file: FileDescPrefab, ev: PointerEvent) => {
 			onClick: () => {
 				editorUtils.enterPrefabName(file.assetName, 'Enter name for duplicate prefab: ' + file.assetName).then((enteredName) => {
 					if (enteredName) {
+						PrefabEditor.acceptPrefabEdition();
 						const o = Lib.__loadPrefabNoInit(file.assetName);
 						Lib.__savePrefab(o, enteredName);
 						PrefabEditor.editPrefab(enteredName);

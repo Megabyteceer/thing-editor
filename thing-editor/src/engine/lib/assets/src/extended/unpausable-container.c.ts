@@ -1,4 +1,5 @@
 
+import game from 'thing-editor/src/engine/game';
 import Container from 'thing-editor/src/engine/lib/assets/src/basic/container.c';
 
 export default class UnPausableContainer extends Container {
@@ -7,15 +8,17 @@ export default class UnPausableContainer extends Container {
 
 	init() {
 		this.started = window.setInterval(() => {
-			if (this.worldVisible && this.worldAlpha) {
-				super.update();
+			if (game.__paused) {
+				if (this.worldVisible && this.worldAlpha) {
+					super.update();
+				}
 			}
 		}, 1000 / 60);
 		super.init();
 	}
 
 	update(): void {
-
+		super.update();
 	}
 
 	onRemove() {

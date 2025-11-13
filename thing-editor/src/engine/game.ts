@@ -242,6 +242,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		app.stage.addChild(stage);
 
 		/// #if EDITOR
+		window.addEventListener('resize', this._onContainerResize.bind(this));
 		/*
 		/// #endif
 		import('.tmp/classes').then(() => {
@@ -256,6 +257,14 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		if (!this.classes) {
 			this._updateGlobal = this._updateGlobal.bind(this);
 			app.ticker.add(this._updateGlobal);
+			/// #if EDITOR
+			setInterval(() => {
+				if (game.pixiApp.ticker.lastTime < (performance.now() - 100)) {
+					(game.pixiApp.ticker as any)._tick();
+				}
+			}, 100);
+
+			/// #endif
 			Sound.init();
 		}
 		this.classes = _classes;
@@ -878,9 +887,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		this.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
 		currentFader = undefined;
-		if (game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}
+		game.classes?.BgMusic?._recalculateMusic();
 		game._isWaitingToHideFader = false;
 	}
 
@@ -997,9 +1004,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				}
 				currentFader = Lib.loadPrefab(faderType!);
 				this.stage.addChild(currentFader);
-				if (game.classes.BgMusic) {
-					game.classes.BgMusic._recalculateMusic();
-				}
+				game.classes?.BgMusic?._recalculateMusic();
 			}
 			/// #if EDITOR
 			this.editor.refreshTreeViewAndPropertyEditor();
@@ -1056,9 +1061,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 		container.interactiveChildren = false;
 		game.stage.addChild(container);
-		if (game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}
+		game.classes?.BgMusic?._recalculateMusic();
 		/// #if EDITOR
 		game.editor.refreshTreeViewAndPropertyEditor();
 		/// #endif
@@ -1099,9 +1102,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			modalToHide.interactiveChildren = false;
 			hidingModals.push(modalToHide);
 		}
-		if (game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}
+		game.classes?.BgMusic?._recalculateMusic();
 
 		/// #if EDITOR
 		game.editor.refreshTreeViewAndPropertyEditor();
@@ -1171,9 +1172,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			return;
 		}
 		game._loadingErrorIsDisplayed = true;
-		if (game.classes && game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}
+		game.classes?.BgMusic?._recalculateMusic();
 		/// #if EDITOR
 		this.editor.ui.modal.showError('Could not load file: ' + url);
 		return;
@@ -1311,9 +1310,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			Lib.destroyObjectAndChildren(hidingFaders.pop() as Container);
 		}
 		Lib.__clearStaticScenes();
-		if (game.classes.BgMusic) {
-			game.classes.BgMusic._recalculateMusic();
-		}
+		game.classes?.BgMusic?._recalculateMusic();
 	}
 
 	/// #endif
