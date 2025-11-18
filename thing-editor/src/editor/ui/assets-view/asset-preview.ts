@@ -7,8 +7,6 @@ import { AssetType, type FileDesc } from '../../fs';
 import { editorEvents } from '../../utils/editor-events';
 import exportAsPng from '../../utils/export-as-png';
 
-const NO_PREVIEW_IMG = document.createElement('img');
-NO_PREVIEW_IMG.src = '/thing-editor/img/broken-image.png';
 const prefabsPreviewsCache = new Map() as Map<string, HTMLCanvasElement>;
 const scenesPreviewsCache = new Map() as Map<string, HTMLCanvasElement>;
 
@@ -38,14 +36,12 @@ export const assetPreview = (file: FileDesc, width = 30, height = 30) => {
 						const o = isScene ? ((game.editor.currentSceneName === file.assetName && game.currentScene) ? game.currentScene : Lib.__loadSceneNoInit(file.assetName)) : Lib.__loadPrefabNoInit(file.assetName);
 						const bgColor = isScene ? new Color((o as Scene).backgroundColor).toHex() : '#000';
 						(exportAsPng(o, width, height, -1, undefined, true, !o.parent) as any).then((canvas: HTMLCanvasElement) => {
-							if (!canvas) {
-								canvas = NO_PREVIEW_IMG as any;
-							} else {
+							if (canvas) {
 								canvas.style.backgroundColor = bgColor;
+								cache.set(file.assetName, canvas);
+								ref.querySelector('canvas')?.remove();
+								ref.appendChild(canvas);
 							}
-							cache.set(file.assetName, canvas);
-							ref.querySelector('canvas')?.remove();
-							ref.appendChild(canvas);
 						});
 					}, 10);
 				}
