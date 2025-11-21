@@ -285,6 +285,18 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		this.onResize();
 		this.emit('preloader-scene-will-start');
 		this.showScene(PRELOADER_SCENE_NAME);
+		/// #if EDITOR
+		/*
+		/// #endif
+		this.loadingAdd('assets-main load');
+		import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
+			this.loadingRemove('assets-main load');
+			game.addAssets(mainAssets.default);
+		}).catch((er) => {
+			console.error(er);
+			game.showLoadingError('assets-main.json');
+		});
+		//*/
 	}
 
 	_onContainerResize() {
@@ -814,18 +826,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 					loadDynamicTextures();
 					if (game.currentScene.name === PRELOADER_SCENE_NAME) {
 						game._hideCurrentFaderAndStartScene();
-						/// #if EDITOR
-						/*
-						/// #endif
-						this.loadingAdd('assets-main load');
-						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
-							this.loadingRemove('assets-main load');
-							game.addAssets(mainAssets.default);
-						}).catch((er) => {
-							console.error(er);
-							game.showLoadingError('assets-main.json');
-						});
-						//*/
 					}
 				} else {
 					game._hideCurrentFaderAndStartScene();
