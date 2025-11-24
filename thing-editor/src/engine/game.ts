@@ -72,7 +72,8 @@ const DEFAULT_FADER_NAME = 'fader/default';
 const PRELOADER_SCENE_NAME = 'preloader';
 const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
-let frameCounterTime = 0;
+const FRAME_SKIP_PREVENTING_SHIFT = 0.5;
+let frameCounterTime = FRAME_SKIP_PREVENTING_SHIFT;
 
 interface Mouse {
 	/** click on game canvas */
@@ -730,7 +731,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			/// #endif
 
 			frameCounterTime += dt;
-			frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * game.projectDesc.framesSkipLimit);
+			frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * game.projectDesc.framesSkipLimit + FRAME_SKIP_PREVENTING_SHIFT);
 			while (frameCounterTime > FRAME_PERIOD) {
 
 				/// #if DEBUG
@@ -748,7 +749,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 					this.editor.refreshTreeViewAndPropertyEditor();
 					/// #endif
 					this.__doOneStep = false;
-					frameCounterTime = 0;
+					frameCounterTime = FRAME_SKIP_PREVENTING_SHIFT;
 					break;
 				}
 			}
