@@ -72,7 +72,7 @@ const DEFAULT_FADER_NAME = 'fader/default';
 const PRELOADER_SCENE_NAME = 'preloader';
 const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
-const FRAME_SKIP_PREVENTING_SHIFT = 0.5;
+const FRAME_SKIP_PREVENTING_SHIFT = 0.123123123123;
 let frameCounterTime = FRAME_SKIP_PREVENTING_SHIFT;
 
 interface Mouse {
