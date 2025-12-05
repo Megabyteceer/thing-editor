@@ -713,6 +713,9 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #endif
 
 		/// #if EDITOR
+		if (game.editor.__FatalError) {
+			return;
+		}
 		EDITOR_FLAGS.__touchTime = (game.pixiApp.renderer as any).textureGC.count as number;
 		EDITOR_FLAGS.updateInProgress = true;
 		/// #endif
