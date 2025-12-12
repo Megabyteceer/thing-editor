@@ -449,7 +449,7 @@ const defaultSoundsUrls: KeyedMap<string> = {};
 function overrideSound(name: string, src?: string) {
 
 	if (!defaultSoundsUrls[name] && (Lib.hasSound(name) && !Lib.getSound(name).__isEmptySound) && src) {
-		defaultSoundsUrls[name] = (Lib.getSound(name) as any)._src;
+		defaultSoundsUrls[name] = Lib.getSound(name).src;
 		assert(defaultSoundsUrls[name], 'Howler is changed');
 	}
 	let url = src || defaultSoundsUrls[name];
