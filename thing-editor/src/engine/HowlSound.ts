@@ -41,7 +41,7 @@ export default class HowlSound {
 			.then((buff) => {
 				rootAudioContext.decodeAudioData(buff).then((audioBuffer) => {
 					this.audioBuffer = audioBuffer;
-					/// #if EDITOR
+					/// #if DEBUG
 					if (!this.preciseDuration) {
 						this.preciseDuration = audioBuffer.duration;
 					}
