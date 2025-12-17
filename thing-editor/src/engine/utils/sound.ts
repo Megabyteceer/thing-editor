@@ -483,7 +483,7 @@ async function __loadSoundOverrides() {
 		libSounds = Lib.sounds;
 
 		await waitForCondition(() => {
-			return game.loadingProgress === 100;
+			return game.currentScene && game.loadingProgress === 100;
 		});
 
 		const overrides = IndexedDBUtils.getEntriesList('sound');
