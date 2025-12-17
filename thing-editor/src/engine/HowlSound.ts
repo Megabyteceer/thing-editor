@@ -20,6 +20,8 @@ export default class HowlSound {
 
 	attempt = 0;
 
+	loadingStarted = false;
+
 	constructor(src: string) {
 		this.src = src;
 		this.onEnded = this.onEnded.bind(this);
@@ -32,6 +34,7 @@ export default class HowlSound {
 	}
 
 	load () {
+		this.loadingStarted = true;
 		game.loadingAdd(this);
 		fetch(this.src)
 			.then(res => res.arrayBuffer())
@@ -41,6 +44,7 @@ export default class HowlSound {
 					/// #if EDITOR
 					if (!this.preciseDuration) {
 						this.preciseDuration = audioBuffer.duration;
+						game.classes.BgMusic._recalculateMusic();
 					}
 					/// #endif
 					game.loadingRemove(this);
