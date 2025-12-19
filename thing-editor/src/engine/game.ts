@@ -28,6 +28,7 @@ import type { AssetsDescriptor } from '../editor/editor-env';
 import type { ProjectOrientation } from '../editor/project-desc';
 import type Button from './lib/assets/src/basic/button.c';
 import ERROR_HTML from './utils/html-error.html?raw';
+import { stepTo } from './utils/utils';
 
 /// #if EDITOR
 /*
@@ -735,7 +736,8 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 			frameCounterTime += dt;
 			frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * game.projectDesc.framesSkipLimit + FRAME_SKIP_PREVENTING_SHIFT);
-			while (frameCounterTime > FRAME_PERIOD) {
+			frameCounterTime = stepTo(frameCounterTime, FRAME_PERIOD, 0.02);
+			while (frameCounterTime >= FRAME_PERIOD) {
 
 				/// #if DEBUG
 				frameCounterTime -= FRAME_PERIOD / game.pixiApp.ticker.speed;
