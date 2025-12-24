@@ -151,7 +151,7 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(false);
 		},
-		disabled: () => game.editor.selection.length !== 1 || !game.editor.selection[0].__nodeExtendData.isPrefabReference
+		disabled: () => game.editor.selection.length !== 1 || !game.editor.selection[0].__nodeExtendData.isPrefabReference || game.currentContainer === game.editor.selection[0]
 	},
 	null,
 	{
