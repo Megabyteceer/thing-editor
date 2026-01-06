@@ -90,8 +90,10 @@ export default class LayeredContainer extends Container {
 			this.updateTransform();
 			this.needInit = false;
 		}
+		const tmp = this.visible;
 		this.visible = this.parent.worldVisible;
 		super.render(renderer);
+		this.visible = tmp;
 	}
 
 	onRemove() {
