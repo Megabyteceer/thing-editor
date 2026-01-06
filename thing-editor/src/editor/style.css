@@ -986,6 +986,11 @@ input[type=checkbox]:checked {
 	background-image: url("/thing-editor/img/check-box-check.png");
 }
 
+.modal-title input[type=checkbox] {
+    float: unset;
+    vertical-align: middle;
+}
+
 input[disabled] {
 	opacity: 0.5;
 }
