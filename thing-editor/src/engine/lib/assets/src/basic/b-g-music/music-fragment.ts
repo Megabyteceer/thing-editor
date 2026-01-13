@@ -37,7 +37,7 @@ export default class MusicFragment {
 	introFinished = false;
 
 	constructor(bgMusic: BgMusic) {
-		this.volumeNode.connect(Sound.outputs.MUSIC);
+		this.volumeNode.connect(Sound.outputs[bgMusic.globalVolumePath || 'MUSIC']);
 
 		if (bgMusic.dynamicPreloading) {
 			bgMusic.loop && Lib.preloadSound(bgMusic.loop
