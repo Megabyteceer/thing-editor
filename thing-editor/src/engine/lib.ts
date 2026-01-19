@@ -43,6 +43,13 @@ const removeHoldersToCleanup: RemoveHolder[] = [];
 
 export const unHashedFileToHashed: Map<string, string> = new Map();
 
+const oggSupport = (() => {
+	try {
+		const audioTest = new Audio();
+		return audioTest.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/, '');
+	} catch (_er) {}
+})();
+
 //@ts-ignore
 const _initParsers = () => {
 	const spriteSheetLoader = Assets.loader.parsers.find(p => p.name === 'spritesheetLoader');
@@ -437,7 +444,7 @@ export default class Lib
 		/// #if EDITOR
 		assert(false, 'for editor mode use Lib.__addSoundEditor instead.');
 		/// #endif
-		const s = new HowlSound(url + '.' + (game.isMobile.apple.device ? 'aac' : 'ogg'));
+		const s = new HowlSound(url + '.' + (oggSupport ? 'ogg' : 'aac'));
 		s.preciseDuration = duration;
 		if (isFirefox) {
 			s.preciseDuration = undefined as any;
