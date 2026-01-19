@@ -344,11 +344,11 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 		super.gotoLabelRecursive(labelName);
 	}
 
-	/// #if EDITOR
-
 	init() {
 		super.init();
 		this._seed = Math.floor(Math.random() * 0x80000000);
+		/// #if EDITOR
+
 		if ((this.constructor === MovieClip) && (!this._timelineData || !this._timelineData.f.length)) {
 			game.editor.ui.status.warn('MovieClip ' + this.___info + ' has no timeline.', 32003, this, 'timeline', undefined, undefined, StatusClearingCondition.LAUNCH_GAME);
 		}
@@ -374,8 +374,10 @@ export default class MovieClip extends DSprite implements IGoToLabelConsumer {
 				}
 			}
 		}
+		/// #endif
 	}
 
+	/// #if EDITOR
 	static __validateObjectData(data:SerializedObjectProps):SerializedDataValidationError | undefined {
 		const timeline = data.timeline as TimelineData;
 		if (timeline?.f.length === 1) {

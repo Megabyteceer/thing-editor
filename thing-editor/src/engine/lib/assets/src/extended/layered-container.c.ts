@@ -72,6 +72,7 @@ export default class LayeredContainer extends Container {
 			this.needInit = false;
 		}
 		if (!this.isRenderingLayered()) {
+			this.visible = this.parent.worldVisible;
 			super.render(renderer);
 		}
 	}
@@ -125,5 +126,5 @@ const sortPortals = (container:Container) => {
 };
 
 const sort = (a:LayeredContainerPortal, b:LayeredContainerPortal) => {
-	return (a.containerOwner ? a.containerOwner.worldTransform.ty : 10000) - (b.containerOwner ? b.containerOwner.worldTransform.ty : 10000);
+	return (a.containerOwner ? (a.containerOwner.worldTransform.ty + a.containerOwner.worldTransform.tx * 0.0001) : 10000) - (b.containerOwner ? (b.containerOwner.worldTransform.ty + b.containerOwner.worldTransform.tx * 0.0001) : 10000);
 };

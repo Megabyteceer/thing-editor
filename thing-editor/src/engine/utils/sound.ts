@@ -23,11 +23,11 @@ export const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
 export const slideAudioParamTo = (param:AudioParam, val:number, duration:number, fromValue = param.value) => {
 	param.cancelScheduledValues(rootAudioContext.currentTime);
-	if (duration > 0 && !isFirefox) {
+	if (duration > 0 && !isFirefox && rootAudioContext.currentTime) {
 		try {
 			param.setValueCurveAtTime([fromValue, val], rootAudioContext.currentTime, duration);
 		} catch (_er) {
-			param.setValueAtTime(val, rootAudioContext.currentTime + duration);
+			param.setValueAtTime(val, rootAudioContext.currentTime);
 		}
 	} else {
 		param.setValueAtTime(val, rootAudioContext.currentTime);
@@ -449,7 +449,7 @@ const defaultSoundsUrls: KeyedMap<string> = {};
 function overrideSound(name: string, src?: string) {
 
 	if (!defaultSoundsUrls[name] && (Lib.hasSound(name) && !Lib.getSound(name).__isEmptySound) && src) {
-		defaultSoundsUrls[name] = (Lib.getSound(name) as any)._src;
+		defaultSoundsUrls[name] = Lib.getSound(name).src;
 		assert(defaultSoundsUrls[name], 'Howler is changed');
 	}
 	let url = src || defaultSoundsUrls[name];
@@ -483,7 +483,7 @@ async function __loadSoundOverrides() {
 		libSounds = Lib.sounds;
 
 		await waitForCondition(() => {
-			return game.loadingProgress === 100;
+			return game.currentScene && game.loadingProgress === 100;
 		});
 
 		const overrides = IndexedDBUtils.getEntriesList('sound');

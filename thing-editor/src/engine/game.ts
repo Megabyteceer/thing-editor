@@ -28,6 +28,7 @@ import type { AssetsDescriptor } from '../editor/editor-env';
 import type { ProjectOrientation } from '../editor/project-desc';
 import type Button from './lib/assets/src/basic/button.c';
 import ERROR_HTML from './utils/html-error.html?raw';
+import { stepTo } from './utils/utils';
 
 /// #if EDITOR
 /*
@@ -72,7 +73,8 @@ const DEFAULT_FADER_NAME = 'fader/default';
 const PRELOADER_SCENE_NAME = 'preloader';
 const FRAME_PERIOD_LIMIT = 4.0;
 const FRAME_PERIOD = 1.0;
-let frameCounterTime = 0;
+const FRAME_SKIP_PREVENTING_SHIFT = 0.123123123123;
+let frameCounterTime = FRAME_SKIP_PREVENTING_SHIFT;
 
 interface Mouse {
 	/** click on game canvas */
@@ -712,6 +714,9 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #endif
 
 		/// #if EDITOR
+		if (game.editor.__FatalError) {
+			return;
+		}
 		EDITOR_FLAGS.__touchTime = (game.pixiApp.renderer as any).textureGC.count as number;
 		EDITOR_FLAGS.updateInProgress = true;
 		/// #endif
@@ -730,8 +735,9 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			/// #endif
 
 			frameCounterTime += dt;
-			frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * game.projectDesc.framesSkipLimit);
-			while (frameCounterTime > FRAME_PERIOD) {
+			frameCounterTime = Math.min(frameCounterTime, FRAME_PERIOD * game.projectDesc.framesSkipLimit + FRAME_SKIP_PREVENTING_SHIFT);
+			frameCounterTime = stepTo(frameCounterTime, FRAME_PERIOD, 0.02);
+			while (frameCounterTime >= FRAME_PERIOD) {
 
 				/// #if DEBUG
 				frameCounterTime -= FRAME_PERIOD / game.pixiApp.ticker.speed;
@@ -748,7 +754,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 					this.editor.refreshTreeViewAndPropertyEditor();
 					/// #endif
 					this.__doOneStep = false;
-					frameCounterTime = 0;
+					frameCounterTime = FRAME_SKIP_PREVENTING_SHIFT;
 					break;
 				}
 			}
@@ -960,6 +966,11 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #endif
 
 		this.loadingsFinished++;
+		if (this.loadingsFinished === this.loadingsInProgress) {
+			if (Lib.scenes[ game.projectDesc.mainScene]) {
+				game.emit('loading-finish' as any);
+			}
+		}
 		this._refreshLoadingProgress();
 	}
 

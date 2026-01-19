@@ -43,6 +43,13 @@ const removeHoldersToCleanup: RemoveHolder[] = [];
 
 export const unHashedFileToHashed: Map<string, string> = new Map();
 
+const oggSupport = (() => {
+	try {
+		const audioTest = new Audio();
+		return audioTest.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/, '');
+	} catch (_er) {}
+})();
+
 //@ts-ignore
 const _initParsers = () => {
 	const spriteSheetLoader = Assets.loader.parsers.find(p => p.name === 'spritesheetLoader');
@@ -404,7 +411,7 @@ export default class Lib
 		let s = soundsHowlers[soundId];
 		/// #if EDITOR
 		if (!game.__EDITOR_mode) {
-			if (!s.audioBuffer) {
+			if (!s.audioBuffer && !s.loadingStarted) {
 				game.editor.ui.status.error('Sound "' + soundId + '" is not preloaded. Please check-on preloading mode for this sound, or use Lib.preloadSound("' + soundId + '") in scene\`s onShow() method before using this sound.', 32008);
 			} else if (!__dynamicPreloading && !s.audioBuffer) {
 				game.editor.ui.status.warn('Sound "' + soundId + '" preloading is not finished. Please preload sounds inside onShow method of scene, to automatic insurance of complete sounds preloading.', 32009);
@@ -437,7 +444,7 @@ export default class Lib
 		/// #if EDITOR
 		assert(false, 'for editor mode use Lib.__addSoundEditor instead.');
 		/// #endif
-		const s = new HowlSound(url + '.' + (game.isMobile.apple.device ? 'aac' : 'ogg'));
+		const s = new HowlSound(url + '.' + (oggSupport ? 'ogg' : 'aac'));
 		s.preciseDuration = duration;
 		if (isFirefox) {
 			s.preciseDuration = undefined as any;
@@ -461,7 +468,7 @@ export default class Lib
 			}
 			/// #endif
 			let s = soundsHowlers[soundId];
-			if (!s.audioBuffer) {
+			if (!s.audioBuffer && !s.loadingStarted) {
 				s.load();
 				return true;
 			}

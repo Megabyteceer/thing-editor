@@ -17,8 +17,8 @@ import type ___Ruler from 'thing-editor/src/engine/lib/assets/src/___system/rule
 import L from 'thing-editor/src/engine/utils/l';
 
 // no R.span because it causes use before initialization
-const CHECKED = h('span', { className: '.menu-icon' }, '☑');
-const UNCHECKED = h('span', { className: '.menu-icon' }, '☐');
+export const CHECKED = h('span', { className: '.menu-icon' }, '☑');
+export const UNCHECKED = h('span', { className: '.menu-icon' }, '☐');
 
 let unmutedIconsCache: ComponentChild;
 const UNMUTED_ICON = (): ComponentChild => {
