@@ -33,6 +33,7 @@ import ERROR_HTML from './utils/html-error.html?raw';
 /*
 /// #endif
 	import preloaderAssets from '.tmp/assets-preloader' assert { type: 'json' };
+	let globalLoadingInterval;
 //*/
 
 let app: Application;
@@ -94,6 +95,7 @@ export interface ThingGameEvents {
 	'button-click': [button: Button, source?:string];
 	'stage-will-resize': [];
 	'preloader-scene-will-start': [];
+	'loading-finish': [];
 	'global-update': [];
 	'modal-shown': [];
 	'update': [];
@@ -264,7 +266,13 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				}
 			}, 100);
 
+			/*
 			/// #endif
+
+			globalLoadingInterval = setInterval(() => {
+				this._updateGlobal(1000);
+			}, 1000 / 60);
+			//*/
 			Sound.init();
 		}
 		this.classes = _classes;
@@ -285,18 +293,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		this.onResize();
 		this.emit('preloader-scene-will-start');
 		this.showScene(PRELOADER_SCENE_NAME);
-		/// #if EDITOR
-		/*
-		/// #endif
-		this.loadingAdd('assets-main load');
-		import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
-			this.loadingRemove('assets-main load');
-			game.addAssets(mainAssets.default);
-		}).catch((er) => {
-			console.error(er);
-			game.showLoadingError('assets-main.json');
-		});
-		//*/
 	}
 
 	_onContainerResize() {
@@ -826,6 +822,19 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 					loadDynamicTextures();
 					if (game.currentScene.name === PRELOADER_SCENE_NAME) {
 						game._hideCurrentFaderAndStartScene();
+						/// #if EDITOR
+						/*
+						/// #endif
+						this.loadingAdd('assets-main load');
+						clearInterval(globalLoadingInterval);
+						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
+							this.loadingRemove('assets-main load');
+							game.addAssets(mainAssets.default);
+						}).catch((er) => {
+							console.error(er);
+							game.showLoadingError('assets-main.json');
+						});
+						//*/
 					}
 				} else {
 					game._hideCurrentFaderAndStartScene();
