@@ -34,6 +34,7 @@ import { stepTo } from './utils/utils';
 /*
 /// #endif
 	import preloaderAssets from '.tmp/assets-preloader' assert { type: 'json' };
+	let globalLoadingInterval;
 //*/
 
 let app: Application;
@@ -96,6 +97,7 @@ export interface ThingGameEvents {
 	'button-click': [button: Button, source?:string];
 	'stage-will-resize': [];
 	'preloader-scene-will-start': [];
+	'loading-finish': [];
 	'global-update': [];
 	'modal-shown': [];
 	'update': [];
@@ -266,7 +268,13 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 				}
 			}, 100);
 
+			/*
 			/// #endif
+
+			globalLoadingInterval = setInterval(() => {
+				this._updateGlobal(1000);
+			}, 1000 / 60);
+			//*/
 			Sound.init();
 		}
 		this.classes = _classes;
@@ -824,6 +832,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 						/*
 						/// #endif
 						this.loadingAdd('assets-main load');
+						clearInterval(globalLoadingInterval);
 						import('.tmp/assets-main', {assert: { type: 'json' }}).then((mainAssets: AssetsDescriptor) => {
 							this.loadingRemove('assets-main load');
 							game.addAssets(mainAssets.default);
