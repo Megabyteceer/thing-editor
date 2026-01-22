@@ -976,7 +976,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 		this.loadingsFinished++;
 		if (this.loadingsFinished === this.loadingsInProgress) {
-			if (Lib.scenes[ game.projectDesc.mainScene]) {
+			if (game.projectDesc && Lib.scenes[game.projectDesc.mainScene]) {
 				game.emit('loading-finish' as any);
 			}
 		}
