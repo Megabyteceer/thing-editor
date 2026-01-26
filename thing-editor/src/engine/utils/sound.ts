@@ -74,8 +74,11 @@ export default class Sound {
 
 	static fixIosContext() {
 		try {
+			/// #if EDITOR
+			return;
+			/// #endif
 			game.classes.FlyText.flyText(rootAudioContext.state);
-			if (game.isMobile.apple.device && (rootAudioContext.state === 'suspended')) {
+			if (game.isMobile.apple.device && ((rootAudioContext.state === 'suspended' || rootAudioContext.state === 'interrupted'))) {
 				rootAudioContext.suspend();
 				rootAudioContext.resume();
 			}
