@@ -75,12 +75,7 @@ export default class Sound {
 	static fixIosContext() {
 		try {
 			if (game.isMobile.apple.device && (rootAudioContext.state === 'suspended')) {
-				const _resumeOnUserGesture = () => {
-					document.removeEventListener('touchstart', _resumeOnUserGesture);
-					rootAudioContext.suspend();
-					rootAudioContext.resume();
-				};
-				document.addEventListener('touchstart', _resumeOnUserGesture);
+				rootAudioContext.resume();
 			}
 		} catch (_er) {};
 	}
