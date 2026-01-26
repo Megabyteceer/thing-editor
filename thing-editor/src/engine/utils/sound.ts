@@ -74,17 +74,11 @@ export default class Sound {
 
 	static fixIosContext() {
 		try {
-			/// #if EDITOR
-			return;
-			/// #endif
-			game.classes.FlyText.flyText(rootAudioContext.state);
 			if (game.isMobile.apple.device && ((rootAudioContext.state === 'suspended' || rootAudioContext.state === 'interrupted'))) {
 				rootAudioContext.suspend();
 				rootAudioContext.resume();
 			}
-		} catch (_er) {
-			alert(_er.message);
-		};
+		} catch (_er) {};
 	}
 
 	static _onVisibilityChange(visible: boolean) {
