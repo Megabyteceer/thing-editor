@@ -84,7 +84,9 @@ export default class Sound {
 		/// #if EDITOR
 		return;
 		/// #endif
-		Sound.fixIosContext();
+		if (visible) {
+			Sound.fixIosContext();
+		}
 		for (let key in Sound.outputs) {
 			const node = Sound.outputs[key];
 			const vol = (key === 'MUSIC') ? musicVol : soundsVol;
