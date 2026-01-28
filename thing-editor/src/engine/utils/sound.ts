@@ -83,7 +83,7 @@ export default class Sound {
 
 		for (let key in Sound.outputs) {
 			const node = Sound.outputs[key];
-			const vol = (key === 'MUSIC') ? musicVol : soundsVol;
+			const vol = ((key === 'MUSIC') ? musicVol : soundsVol) || 0;
 			slideAudioParamTo(node.gain, visible ? vol * vol : 0, 0.1);
 		}
 	}
