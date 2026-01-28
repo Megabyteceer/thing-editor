@@ -72,19 +72,15 @@ export default class Sound {
 		Sound.musicVol = v;
 	}
 
-	static fixIosContext() {
-		try {
-			if (game.isMobile.apple.device && (rootAudioContext.state === 'suspended')) {
-				rootAudioContext.resume();
-			}
-		} catch (_er) {};
-	}
-
 	static _onVisibilityChange(visible: boolean) {
 		/// #if EDITOR
 		return;
 		/// #endif
-		Sound.fixIosContext();
+
+		if (!visible && game.isMobile.apple.device && rootAudioContext.state === 'running') {
+			rootAudioContext.suspend();
+		}
+
 		for (let key in Sound.outputs) {
 			const node = Sound.outputs[key];
 			const vol = ((key === 'MUSIC') ? musicVol : soundsVol) || 0;
@@ -189,6 +185,16 @@ export default class Sound {
 	}
 
 	static init() {
+		if (game.isMobile.apple.device) {
+			document.addEventListener('touchstart', function() {
+				try {
+			    	if (rootAudioContext.state === 'suspended' || rootAudioContext.state === 'interrupted') {
+						rootAudioContext.resume();
+					}
+				} catch (_er) {
+				};
+			}, false);
+		}
 		Sound.soundsVol = game.settings.getItem('soundsVol', game.projectDesc.defaultSoundsVol);
 		Sound.musicVol = game.settings.getItem('musicVol', game.projectDesc.defaultMusVol);
 	}
