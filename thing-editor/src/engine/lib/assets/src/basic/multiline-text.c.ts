@@ -28,7 +28,7 @@ export default class MultilineText extends Text {
 	set maxHeightLandscape(val) {
 		this._maxHeightLandscape = val;
 		if (!game.isPortrait && (val !== 0)) {
-			this._applyMaxHeight();
+			(this as any).recalculateTextSize();
 		}
 	}
 
@@ -40,7 +40,7 @@ export default class MultilineText extends Text {
 	set maxHeightPortrait(val) {
 		this._maxHeightPortrait = val;
 		if (game.isPortrait && (val !== 0)) {
-			this._applyMaxHeight();
+			(this as any).recalculateTextSize();
 		}
 	}
 
@@ -65,7 +65,7 @@ export default class MultilineText extends Text {
 		if (this.style) {
 			this.style.wordWrapWidth = (game.isPortrait ? this.maxWidthPortrait : this.maxWidthLandscape);
 			this.style.wordWrap = true;
-			this._applyMaxHeight();
+			(this as any).recalculateTextSize();
 		}
 	}
 
@@ -73,19 +73,18 @@ export default class MultilineText extends Text {
 		this.applyWorldWrapping();
 	}
 
-	_onTextureUpdate() {
-		super._onTextureUpdate();
-		this._applyMaxHeight();
-	}
 
-	_applyMaxHeight() {
+	recalculateTextSize() {
+		//@ts-ignore
+		super.recalculateTextSize();
+
 		if (this.style) {
 			this.maxWidth = this.style.wordWrapWidth;
 		}
 		let h = game.isPortrait ? this._maxHeightPortrait : this._maxHeightLandscape;
-		if ((h > 0) && (this._texture.height > h)) {
+		if ((h > 0) && ((this._texture.height * this.scale.x) > h)) {
 			let q = h / this._texture.height;
-			if (this.scale.x !== q || this.scale.y !== q) {
+			if (q < this.scale.x) {
 				this.scale.x = q;
 				this.scale.y = q;
 			}
@@ -108,7 +107,7 @@ export default class MultilineText extends Text {
 	__afterSerialization(data: SerializedObject) {
 		delete data.p.maxWidth;
 		super.__afterSerialization!(data);
-		this._applyMaxHeight();
+		(this as any).recalculateTextSize();
 	}
 	/// #endif
 }
