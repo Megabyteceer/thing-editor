@@ -91,6 +91,7 @@
 			}
 		],
 		"typescript.tsdk": "./node_modules/typescript/lib",
+		"typescript.enablePromptUseWorkspaceTsdk": true,
 		"javascript.preferences.importModuleSpecifierEnding": "index",
 		"typescript.preferences.importModuleSpecifierEnding": "index",
 		"eslint.format.enable": false,
