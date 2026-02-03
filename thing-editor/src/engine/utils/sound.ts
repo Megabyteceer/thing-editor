@@ -131,6 +131,11 @@ export default class Sound {
 	static set musicEnabled(val) {
 		if (Sound.musicEnabled !== val) {
 			if (val) {
+				/// #if EDITOR
+				if (game.editor.settings.getItem('sound-muted')) {
+					game.editor.toggleSoundMute();
+				}
+				/// #endif
 				Sound.musicVol = game.settings.getItem('musicVolEnabling', game.projectDesc.defaultMusVol);
 			} else {
 				game.settings.setItem('musicVolEnabling', musicVol);
@@ -157,6 +162,11 @@ export default class Sound {
 	static set soundEnabled(val) {
 		if (Sound.soundEnabled !== val) {
 			if (val) {
+				/// #if EDITOR
+				if (game.editor.settings.getItem('sound-muted')) {
+					game.editor.toggleSoundMute();
+				}
+				/// #endif
 				Sound.soundsVol = game.settings.getItem('soundsVolEnabling', game.projectDesc.defaultSoundsVol);
 			} else {
 				game.settings.setItem('soundsVolEnabling', soundsVol);
@@ -227,7 +237,7 @@ export default class Sound {
 
 	static isSoundsLockedByBrowser = true;
 
-	static play(soundId: string, volume = 1.0, rate = 1.0, seek = 0.0) {
+	static play(soundId: string, volume = 1.0, rate = 1.0, seek = 0.0, outNode: AudioNode = Sound.outputs.FX) {
 		/// #if DEBUG
 
 		rate = rate * game.pixiApp.ticker.speed;
@@ -266,7 +276,7 @@ export default class Sound {
 			/// #endif
 			) {
 				try {
-					s.play(volume, rate, seek);
+					s.play(volume, rate, seek, outNode);
 					s.lastPlayStartFrame = game.time + 2;
 					/// #if DEBUG
 					refreshSndDebugger();

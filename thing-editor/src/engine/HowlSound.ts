@@ -75,7 +75,7 @@ export default class HowlSound {
 		this.source = undefined;
 	}
 
-	play(volume = 1, rate = 1, seek = 0) {
+	play(volume = 1, rate = 1, seek = 0, outNode: AudioNode = game.Sound.outputs.FX) {
 		if (volume < 0.001 || !this.audioBuffer) {
 			return;
 		}
@@ -94,13 +94,13 @@ export default class HowlSound {
 			volume = Math.round(volume * 1000) / 1000;
 			if (!volumeNodes.has(volume)) {
 				const volumeNode = rootAudioContext.createGain();
-				volumeNode.connect(game.Sound.outputs.FX);
+				volumeNode.connect(outNode);
 				volumeNode.gain.setValueAtTime(volume, rootAudioContext.currentTime);
 				volumeNodes.set(volume, volumeNode);
 			}
 			this.source.connect(volumeNodes.get(volume)!);
 		} else {
-			this.source.connect(game.Sound.outputs.FX);
+			this.source.connect(outNode);
 		}
 		if (this.source.playbackRate.value !== rate) {
 			this.source.playbackRate.setValueAtTime(volume, rootAudioContext.currentTime);

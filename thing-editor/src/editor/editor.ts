@@ -850,7 +850,7 @@ class Editor {
 				previewedSound.stop();
 				previewedSound = null;
 			}
-			Sound.play(soundName);
+			Sound.play(soundName, 1, 1, 0, rootAudioContext.destination);
 			previewedSound = Lib.getSound(soundName);
 		}
 	}
