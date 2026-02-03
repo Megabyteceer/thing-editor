@@ -664,6 +664,7 @@ input {
 .tree-item {
 	position: relative;
 	overflow-x: hidden;
+	overflow-y: clip;
 }
 
 .item-prefab-reference {
