@@ -1198,6 +1198,10 @@ class Editor {
 
 	protected __saveProjectDescriptorInner() {
 
+		if (editor.buildProjectAndExit) {
+			return;
+		}
+
 		const descriptorsStack = this.currentProjectLibs.map((lib) => {
 			return {
 				fileName: lib.dir + '/thing-lib.json',
