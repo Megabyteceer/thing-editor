@@ -722,6 +722,11 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		/// #endif
 
 		/// #if EDITOR
+		if (!game.currentScene) {
+			if (dt < 1) {
+				dt = 1;
+			}
+		}
 		if (game.editor.__FatalError) {
 			return;
 		}
