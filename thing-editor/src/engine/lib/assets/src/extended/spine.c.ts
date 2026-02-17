@@ -441,6 +441,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 		super.onRemove();
 		this._sequencesByNames = undefined!;
 		this._spineData = null;
+		this.nextAction = undefined;
 		this._currentAnimation = null;
 		this._currentSkin = null!;
 		this.playingSequence = undefined;
