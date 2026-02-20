@@ -67,7 +67,7 @@ Object.defineProperties(Text.prototype, {
 					game.editor.ui.status.warn('translatableText refers to not existing key: "' + val + '"', 32032, this, 'translatableText');
 				}
 				/// #endif
-				this.text = L(val);
+				this.text = L(val, 1);
 			}
 			(this as any)._translatableText = val;
 		}
@@ -428,7 +428,7 @@ Text.prototype.__beforeSerialization = function __beforeSerialization() {
 };
 Text.prototype.__afterSerialization = function __afterSerialization() {
 	if ((this as any)._translatableText) {
-		this.text = L((this as any)._translatableText);
+		this.text = L((this as any)._translatableText, 1);
 	}
 	if (this.maxWidth > 0) {
 		let tmp = this.maxWidth;
