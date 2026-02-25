@@ -24,6 +24,7 @@ import Pool from 'thing-editor/src/engine/utils/pool';
 import Sound from 'thing-editor/src/engine/utils/sound';
 import { CTRL_READABLE } from 'thing-editor/src/engine/utils/utils';
 import DataAccessDebugger from '../utils/data-access-debugger';
+import shakeDomElement from '../utils/shake-element';
 import { StatusClearingCondition } from './status-clearing-condition';
 
 const PLAY_ICON = R.icon('play');
@@ -57,7 +58,7 @@ export const __SystemBackDropPivots = [
 
 const ORIENTATION_ICON = R.icon('orientation-toggle');
 
-const SPEED_SELECT = [0.1, 0.25, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
+const SPEED_SELECT = [0.1, 0.2, 0.5, 1, 2, 4, 8, 16, 32].map((value) => {
 	return { value, name: '×' + value };
 });
 
@@ -168,6 +169,10 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 
 				game.showScene(Lib.hasScene(backupName) ? backupName : game.editor.currentSceneName);
 				game.stage.interactiveChildren = true;
+				if (game.editor.settings.getItem('speed', 1) < 1) {
+					game.editor.ui.modal.notify('Slowdown is active.');
+					shakeDomElement(document.querySelector('#speed-select') as HTMLElement);
+				}
 			} else { //stop game
 				EDITOR_FLAGS.isStoppingTime = true;
 				game.__EDITOR_mode = true;
@@ -352,6 +357,9 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 				}
 			}
 
+			const speed = game.editor.settings.getItem('speed', 1);
+			const speedClass = (speed < 1) ? 'danger' : undefined;
+
 			panel = R.span(panelWrapperProps,
 				R.span(panelProps,
 					reloadClassesBtn,
@@ -379,14 +387,15 @@ export default class Viewport extends ComponentDebounced<ClassAttributes<Viewpor
 					}, 'Go fullscreen', 'big-btn', { key: 'ENTER', altKey: true }),
 					R.hr(),
 					'Speed:',
-					h(SelectEditor, {
-						onChange: (val) => {
-							this.setSpeed(val);
-						},
-						noCopyValue: true,
-						value: game.editor.settings.getItem('speed', 1),
-						select: SPEED_SELECT
-					}),
+					R.div({className: speedClass, id: 'speed-select'},
+						h(SelectEditor, {
+							onChange: (val) => {
+								this.setSpeed(val);
+							},
+							noCopyValue: true,
+							value: speed,
+							select: SPEED_SELECT
+						})),
 					R.hr()
 				)
 			);
