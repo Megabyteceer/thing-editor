@@ -639,7 +639,7 @@ function renderSoundsPanel() {
 				} else {
 					(game.editor || game).settings.setItem('__sounds-panel-sort-by-name', 1);
 				}
-				(game.editor || game).settings.removeItem('__sounds-panel-sort-by-time');
+				(game.editor || game).settings.setItem('__sounds-panel-sort-by-time', 0);
 				showSndDebugger();
 			}
 			}, 'name ', sortByName ? ((sortByName > 0) ? '⮟' : '⮝') : '\u00A0'),
@@ -650,7 +650,7 @@ function renderSoundsPanel() {
 				} else {
 					(game.editor || game).settings.setItem('__sounds-panel-sort-by-time', 1);
 				}
-				(game.editor || game).settings.removeItem('__sounds-panel-sort-by-name');
+				(game.editor || game).settings.setItem('__sounds-panel-sort-by-name', 0);
 				showSndDebugger();
 			}
 			}, 'play-time ', sortByTime ? ((sortByTime > 0) ? '⮟' : '⮝') : '\u00A0')
