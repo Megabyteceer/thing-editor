@@ -37,16 +37,16 @@ const sureQuestionInit = (container: Container, title: string, message: string, 
 		}
 	}
 
-	if ((typeof title) === 'string') {
+	if (title) {
 		let tf = container.findChildByName('title') as Text;
 		if (tf) {
-			tf.text = title;
+			tf.text = '' + title;
 		}
 	}
-	if ((typeof message) === 'string') {
+	if (message) {
 		let tf = container.findChildByName('message') as Text;
 		if (tf) {
-			tf.text = message;
+			tf.text = '' + message;
 		}
 	}
 
