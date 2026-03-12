@@ -55,7 +55,7 @@ export default class SceneLinkedPromise extends Container {
 			promise.loadingAdded = false;
 		}
 		/// #if EDITOR
-		promise.throttlingDelay = Math.round(Math.random() * 15);
+		promise.throttlingDelay = 10 + Math.round(Math.random() * 15);
 		promise.name = 'Promise: ' + (handler.name || 'anonymous function');
 		promise.___stack = getCurrentStack('SceneLinkedPromise');
 		/// #endif
