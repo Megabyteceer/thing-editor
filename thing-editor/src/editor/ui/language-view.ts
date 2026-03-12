@@ -303,7 +303,7 @@ const parseAssets = () => {
 const generateLocalizationTypings = () => {
 	const src = ['export interface LocalizationKeys {'];
 	for (const key in currentLanguageData) {
-		src.push('(id: \'' + key + '\', values?: KeyedObject | number): string;');
+		src.push('(id: \'' + key + '\', values?: KeyedObject | number | string): string;');
 	}
 	src.push('}\n');
 	fs.writeFile('/thing-editor/src/editor/localization-typings.ts', src.join('\n'));
