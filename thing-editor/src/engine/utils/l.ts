@@ -27,7 +27,7 @@ interface TL extends LocalizationKeys {
 	_deserializeLanguage: (langSrc: KeyedObject) => KeyedMap<string>;
 }
 
-const L: TL = ((id: string, values?: KeyedObject | number): string => {
+const L: TL = ((id: string, values?: KeyedObject | number | string): string => {
 	/// #if EDITOR
 	if (!currentLanguageTable.hasOwnProperty(id)) {
 		let fieldName: string;
