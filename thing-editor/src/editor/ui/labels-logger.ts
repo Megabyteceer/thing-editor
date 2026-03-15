@@ -78,6 +78,8 @@ export default class LabelsLogger extends ComponentDebounced<LabelsLoggerProps, 
 	constructor(props: LabelsLoggerProps) {
 		super(props);
 
+		this.clearSearch = this.clearSearch.bind(this);
+
 		this.state = {
 			search: '',
 			filter: FilterType.ALL
