@@ -74,6 +74,13 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 		onClick: editorUtils.onPasteWrapClick,
 		hotkey: { key: 'v', ctrlKey: true, altKey: true }
 	},
+	{
+		name: 'Rename',
+		onClick: () => {
+			game.editor.ui.propsEditor.selectField('name', true);
+		},
+		hotkey: { key: 'F2'}
+	},
 	null,
 	{
 		name: R.fragment(R.icon('clone'), 'Clone'),
