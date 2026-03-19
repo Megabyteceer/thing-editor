@@ -509,7 +509,7 @@ class Editor {
 				fs.exitWithResult('build finished');
 			}
 
-			const recentProjects = this.getRecentProjects().filter(p => p.dir !== projectDesc.dir);
+			const recentProjects = this.getRecentProjects().filter(p => p.dir?.toLocaleLowerCase() !== projectDesc.dir?.toLocaleLowerCase());
 			recentProjects.unshift({icon: projectDesc.icon, title: projectDesc.title, dir: projectDesc.dir});
 			if (recentProjects.length > 10) {
 				recentProjects.pop();
