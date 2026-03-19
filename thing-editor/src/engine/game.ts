@@ -879,6 +879,8 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 		if (!currentFader) {
 			let i = hidingModals.length - 1; //hide modals process
 			while (i >= 0) {
+				game.mouse.gameClick = false;
+				game.mouse.click = 0;
 				let m = hidingModals[i];
 				m.alpha -= 0.1;
 				if (m.alpha <= 0.01) {
