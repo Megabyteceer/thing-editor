@@ -54,8 +54,11 @@ export default class SceneLinkedPromise extends Container {
 		} else {
 			promise.loadingAdded = false;
 		}
-		/// #if EDITOR
+		/// #if DEBUG
 		promise.throttlingDelay = 10 + Math.round(Math.random() * 15);
+		/// #endif
+
+		/// #if EDITOR
 		promise.name = 'Promise: ' + (handler.name || 'anonymous function');
 		promise.___stack = getCurrentStack('SceneLinkedPromise');
 		/// #endif
@@ -133,7 +136,7 @@ export default class SceneLinkedPromise extends Container {
 
 	loadingAdded = false;
 
-	/// #if EDITOR
+	/// #if DEBUG
 	throttlingDelay = 0;
 	/// #endif
 
@@ -246,7 +249,7 @@ export default class SceneLinkedPromise extends Container {
 	/// #endif
 
 	update() {
-		/// #if EDITOR
+		/// #if DEBUG
 		if (this.throttlingDelay > 0) {
 			this.throttlingDelay--;
 			return;
