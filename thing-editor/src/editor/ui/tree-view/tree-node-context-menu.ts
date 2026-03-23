@@ -77,7 +77,7 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 	{
 		name: 'Rename',
 		onClick: () => {
-			game.editor.ui.propsEditor.selectField('name', true);
+			game.editor.ui.propsEditor.selectField('name', true, true);
 		},
 		hotkey: { key: 'F2'}
 	},
