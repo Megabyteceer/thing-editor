@@ -10,10 +10,10 @@ const isEventFocusOnInputElement = (ev: KeyboardEvent): boolean => {
 
 	if (isInput(ev.target as HTMLInputElement) || isInput(document.activeElement as HTMLInputElement)) {
 		if (ev.ctrlKey || ev.metaKey) {
-			if (ev.key === 'z' || ev.key === 'v' || ev.key === 'y' || ev.key === 'a') {
+			if (ev.code === 'KeyZ' || ev.code === 'KeyV' || ev.code === 'KeyY' || ev.code === 'KeyA') {
 				return true;
 			}
-			if (ev.key === 'x' || ev.key === 'c') {
+			if (ev.code === 'KeyX' || ev.code === 'KeyC') {
 				return !!document.getSelection();
 			}
 		} else if (ev.key !== 'Escape') {
