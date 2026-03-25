@@ -827,8 +827,7 @@ export default class Timeline extends ComponentDebounced<TimelineProps, Timeline
 								for (let kf of f.t) {
 									if (kf.t == time) {
 										if (!kf.___view!.state || !kf.___view!.state.isSelected) {
-											clearSelection();
-											select(kf.___view!);
+											timelineInstance.selectKeyframe(kf);
 											let kfNode = kf.___view!.base as HTMLDivElement;
 											if (kfNode) {
 												scrollInToView(kfNode);

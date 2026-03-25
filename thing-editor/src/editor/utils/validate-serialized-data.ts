@@ -3,7 +3,10 @@ import fs, { AssetType } from 'thing-editor/src/editor/fs';
 import PrefabEditor from 'thing-editor/src/editor/utils/prefab-editor';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
+import MovieClip from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip.c';
+import type { TimelineData } from 'thing-editor/src/engine/lib/assets/src/basic/movie-clip/field-player';
 import L from 'thing-editor/src/engine/utils/l';
+import makePathForKeyframeAutoSelect from './movie-clip-keyframe-select-path';
 
 function validateObjectDataRecursive(objectData: SerializedObject, rootName: string) {
 	if (objectData.c) {
@@ -18,44 +21,65 @@ function validateObjectDataRecursive(objectData: SerializedObject, rootName: str
 				if (result) {
 					validationError(result.message, rootName, result.findObjectCallback, result.fieldName, result.errorCode, objectsConstructor);
 				}
+			}
 
-			} for (const field of objectsConstructor.__editableProps) {
-				if (field.type === 'image') {
-					if (objectData.p.hasOwnProperty(field.name)) {
-						const imageName = objectData.p[field.name];
-						if (!fs.getFileByAssetName(imageName, AssetType.IMAGE)) {
-							validationError('Invalid image \'' + imageName + '\'', rootName, (o: Container) => {
-								return (o as KeyedObject)[field.name] === imageName;
-							}, field.name, 99999, objectsConstructor);
+			for (const field of objectsConstructor.__editableProps) {
+
+				const values = [];
+				const fieldNames = [];
+				if (objectData.p.hasOwnProperty(field.name)) {
+					values.push(objectData.p[field.name]);
+					fieldNames.push(field.name);
+				}
+				if (objectData.p.timeline && field.type === 'image') {
+					const f = (objectData.p.timeline as TimelineData).f.find(f => f.n === field.name);
+					if (f) {
+						for (const k of f.t) {
+							values.push(k.v);
+							fieldNames.push(makePathForKeyframeAutoSelect('timeline', f, k));
 						}
 					}
-				} else if (field.type === 'sound') {
-					if (objectData.p.hasOwnProperty(field.name)) {
-						const soundName = objectData.p[field.name];
+				}
+				let i = 0;
+				for (const value of values) {
+					if (field.type === 'image') {
+						const imageName = value;
+						if (!fs.getFileByAssetName(imageName, AssetType.IMAGE)) {
+							validationError('Invalid image \'' + imageName + '\'', rootName, (o: Container) => {
+								if ((o as KeyedObject)[field.name] === imageName) {
+									return true;
+								}
+								if (o instanceof MovieClip) {
+									const f = o.timeline?.f.find(f => f.n === field.name);
+									if (f) {
+										return f.t.some(k => k.v === imageName);
+									}
+								}
+							}, fieldNames[i], 99999, objectsConstructor);
+						}
+					} else if (field.type === 'sound') {
+						const soundName = value;
 						if (!fs.getFileByAssetName(soundName, AssetType.SOUND)) {
 							validationError('Invalid sound \'' + soundName + '\'', rootName, (o: Container) => {
 								return (o as KeyedObject)[field.name] === soundName;
 							}, field.name, 99999, objectsConstructor);
 						}
-					}
-				} else if (field.type === 'l10n') {
-					if (objectData.p.hasOwnProperty(field.name)) {
-						const localizationKey = objectData.p[field.name];
+					} else if (field.type === 'l10n') {
+						const localizationKey = value;
 						if (!L.has(localizationKey)) {
 							validationError('Invalid localization key \'' + localizationKey + '\'', rootName, (o: Container) => {
 								return (o as KeyedObject)[field.name] === localizationKey;
 							}, field.name, 99999, objectsConstructor);
 						}
-					}
-				} else if (field.type === 'prefab') {
-					if (objectData.p.hasOwnProperty(field.name)) {
-						const prefabName = objectData.p[field.name];
+					} else if (field.type === 'prefab') {
+						const prefabName = value;
 						if (!fs.getFileByAssetName(prefabName, AssetType.PREFAB)) {
 							validationError('Invalid prefab \'' + prefabName + '\'', rootName, (o: Container) => {
 								return (o as KeyedObject)[field.name] === prefabName;
 							}, field.name, 99999, objectsConstructor);
 						}
 					}
+					i++;
 				}
 			}
 		}
