@@ -9,6 +9,9 @@ import L from 'thing-editor/src/engine/utils/l';
 import makePathForKeyframeAutoSelect from './movie-clip-keyframe-select-path';
 
 function validateObjectDataRecursive(objectData: SerializedObject, rootName: string) {
+	if (rootName.startsWith('___')) {
+		return;
+	}
 	if (objectData.c) {
 		let objectsConstructor = game.classes[objectData.c];
 		if (!objectsConstructor) {
