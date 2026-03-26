@@ -604,10 +604,14 @@ function renderSoundsPanel() {
 		list = Object.keys(Lib.__soundsList);
 		if (sortByName > 0) {
 			list.sort((a, b) => {
+				a = (a.startsWith('snd/') ? a.substring(4) : a).toLocaleLowerCase();
+				b = (b.startsWith('snd/') ? b.substring(4) : b).toLocaleLowerCase();
 				return (a > b) ? -1 : 1;
 			});
 		} else {
 			list.sort((b, a) => {
+				a = (a.startsWith('snd/') ? a.substring(4) : a).toLocaleLowerCase();
+				b = (b.startsWith('snd/') ? b.substring(4) : b).toLocaleLowerCase();
 				return (a > b) ? -1 : 1;
 			});
 		}
