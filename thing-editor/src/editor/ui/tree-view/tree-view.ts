@@ -109,25 +109,28 @@ function addToParentSafe(ClassId: string, prefabName: string, parent: Container,
 			nodes = game.editor.selection.slice();
 
 		}
-		game.editor.selection.clearSelection();
-
-		if (nodeAt) {
-			nodes.reverse();
-		}
 
 		let p = parent;
 		while (p) {
 			if (nodes.indexOf(p) >= 0) {
-				game.editor.ui.modal.notify('can not drop inside it self.');
 				return;
 			}
 			p = p.parent;
 		}
 
+		if (nodeAt && nodes.includes(nodeAt)) {
+			return;
+		}
+
+		game.editor.selection.clearSelection();
+
+		for (const node of nodes) {
+			node.detachFromParent();
+		}
 		for (const node of nodes) {
 			game.editor.addTo(parent, node);
 			if (nodeAt) {
-				parent.addChildAt(node, parent.children.indexOf(nodeAt) + (atShift || 0));
+				parent.addChildAt(node, parent.children.indexOf(nodeAt) + (atShift!++ || 0));
 			}
 		}
 	} else {
