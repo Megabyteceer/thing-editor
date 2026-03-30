@@ -5,7 +5,6 @@ import type { ContextMenuItem } from 'thing-editor/src/editor/ui/context-menu';
 import { hideContextMenu, refreshContextMenu } from 'thing-editor/src/editor/ui/context-menu';
 import Window from 'thing-editor/src/editor/ui/editor-window';
 import { MAIN_MENU } from 'thing-editor/src/editor/ui/main-menu';
-import DataPathFixer from 'thing-editor/src/editor/utils/data-path-fixer';
 import type { Hotkey } from 'thing-editor/src/editor/utils/hotkey';
 import isHotkeyHit, { hotkeyToString } from 'thing-editor/src/editor/utils/hotkey';
 import isEventFocusOnInputElement from 'thing-editor/src/editor/utils/is-event-focus-on-input-element';
@@ -143,7 +142,6 @@ class EditorButton extends Component<EditorButtonProps, EditorButtonStats> {
 			debugger; //   ↑
 		} else {
 			if (this.props.disabled) return;
-			DataPathFixer.onNameBlur();
 			this.props.onClick(ev);
 			if (!(ev.target as HTMLElement).closest('.main-menu')) {
 				(ev.target as HTMLElement).blur();

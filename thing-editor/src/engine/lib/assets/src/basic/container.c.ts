@@ -396,9 +396,6 @@ _editableEmbed(Container, 'name', {
 	},
 	beforeEdited: (val: string) => {
 		DataPathFixer.beforeNameEdit(val);
-	},
-	onBlur: () => {
-		DataPathFixer.onNameBlur();
 	}
 });
 _editableEmbed(Container, 'x', { animate: true });

@@ -15,9 +15,6 @@ let rememberedRefs: Map<Container, KeyedMap<ReferencesData>>;
 export default class DataPathFixer {
 
 	static rememberPathReferences() {
-		if (beforeNameEditOldValues) {
-			DataPathFixer.onNameBlur();
-		}
 		_validateRefEntryOldNames = undefined;
 		_validateRefEntryNewName = undefined;
 		if (game.currentScene) {
@@ -38,25 +35,20 @@ export default class DataPathFixer {
 	}
 
 	static beforeNameEdit(newName: string) {
-		nameEditNewName = newName;
-		if (!beforeNameEditOldValues) {
-			DataPathFixer.rememberPathReferences();
-			beforeNameEditOldValues = game.editor.selection.map(o => o.name);
-		}
-	}
-
-	static onNameBlur() {
-		if (beforeNameEditOldValues) {
-			DataPathFixer.validatePathReferences(beforeNameEditOldValues, nameEditNewName);
-			beforeNameEditOldValues = undefined;
-		}
+		DataPathFixer.rememberPathReferences();
+		const beforeNameEditOldValues = game.editor.selection.map((o) => {
+			const ret = o.name;
+			o.name = newName;
+			return ret;
+		});
+		DataPathFixer.validatePathReferences(beforeNameEditOldValues, newName);
+		game.editor.selection.forEach((o, i) => {
+			o.name = beforeNameEditOldValues[i];
+		});
 	}
 }
 
 const ARRAY_ITEM_SPLITTER = ':array-index:';
-
-let nameEditNewName: string;
-let beforeNameEditOldValues: (string | null)[] | undefined;
 
 let _validateRefEntryOldNames: (string | null)[] | undefined;
 let _validateRefEntryNewName: string | undefined;
