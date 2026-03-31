@@ -576,6 +576,31 @@ input {
 	content: "\00b0"
 }
 
+#property-editor-copy-style,
+#property-editor-paste-style  {
+	display: inline-block;
+	width: 50%;
+}
+
+#property-editor-smart-preset {
+	display: inline-block;
+	width: 80%;
+}
+
+#property-editor-smart-preset .props-wrapper,
+#property-editor-smart-preset button,
+#property-editor-copy-style .props-wrapper,
+#property-editor-copy-style button ,
+#property-editor-paste-style .props-wrapper,
+#property-editor-paste-style button {
+	width: 100%;
+}
+
+#property-editor-smart-preset-save {
+	display: inline-block;
+	width: 20%;
+}
+
 .field-editor-wrapper {
 	flex-grow: 2;
 	display: flex;

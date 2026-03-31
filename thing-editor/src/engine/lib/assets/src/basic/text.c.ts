@@ -16,10 +16,6 @@ import ___Guide from 'thing-editor/src/engine/lib/assets/src/___system/guide.c';
 
 import L from 'thing-editor/src/engine/utils/l';
 
-/// #if EDITOR
-import type Label from '../extended/label.c';
-/// #endif
-
 export default Text;
 
 const CENTER = 'center';
@@ -498,9 +494,9 @@ _editableEmbed(Text, 'text-style', {
 	title: 'Style:'
 });
 
-_editableEmbed(Text, 'Copy style', {
+_editableEmbed(Text, 'copy-style', {
 	type: 'btn',
-	title: 'Copy text style.',
+	title: 'Copy style',
 	onClick: (o: Text) => {
 		const styleProperties = (o.constructor as SourceMappedConstructor).__editableProps
 			.filter((property) => {
@@ -512,9 +508,9 @@ _editableEmbed(Text, 'Copy style', {
 	}
 });
 
-_editableEmbed(Text, 'Paste style', {
+_editableEmbed(Text, 'paste-style', {
 	type: 'btn',
-	title: 'Paste text style.',
+	title: 'Paste style',
 	onClick: (o: Text) => {
 		game.editor.ui.modal.notify('Text style pasted');
 		(game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', []) as { property: string; value: any }[])
@@ -523,37 +519,33 @@ _editableEmbed(Text, 'Paste style', {
 	visible: () => !!game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', false),
 });
 
-_editableEmbed(Text, 'Smart preset ', {
+_editableEmbed(Text, 'smart-preset', {
 	type: 'btn',
-	title: 'Smart preset',
+	title: 'Smart preset ▾',
 	onClick: async () => {
 		const preset = await game.editor.ui.modal.showListChoose('Smart presets',
 			fs.getAssetsList(AssetType.PREFAB).filter(p => p.assetName.startsWith('___text-style-templates/')).map((p) => {
+				const name = p.asset.p.__description || p.asset.p.name.replace('___text-style-templates/', '');
 				return {
-					name: R.div({className: 'project-item-select'}, p.asset.p.__description),
-					pureName: p.asset.p.__description,
+					name: R.div({className: 'project-item-select'}, name),
+					pureName: name,
 					value: p
 				};
-
 			}));
 		if (preset) {
-			for (const text of game.editor.selection as unknown as Label[]) {
+			for (let text of game.editor.selection as unknown as Text[]) {
+				if (text.parent instanceof Text) {
+					text = text.parent;
+				}
 				while (text.children.length) {
 					text.children[0].removeWithoutHolder();
 				}
-				const t = Lib.loadPrefab((preset.value as FileDescPrefab).assetName);
+				const t = Lib.loadPrefab((preset.value as FileDescPrefab).assetName) as Text;
 				while (t.children.length) {
-					text.addChild(t.children.shift()!);
+					const childText = t.children.shift() as Text;
+					text.addChild(childText);
 				}
-				const tmpPath = text.dataPath;
-				const tmpX = text.x;
-				const tmpY = text.y;
-				const tmpMaxWidth = text.maxWidth;
-				Object.assign(text, t);
-				text.dataPath = tmpPath;
-				text.x = tmpX;
-				text.y = tmpY;
-				text.maxWidth = tmpMaxWidth;
+				Object.assign(text.style, t.style);
 				Lib.__invalidateSerializationCache(text);
 			}
 			game.editor.sceneModified(true);
@@ -561,9 +553,9 @@ _editableEmbed(Text, 'Smart preset ', {
 	}
 });
 
-_editableEmbed(Text, 'Save as smart preset...', {
+_editableEmbed(Text, 'smart-preset-save', {
 	type: 'btn',
-	title: 'Save smart preset...',
+	title: '+',
 	onClick: async (o: Text) => {
 		const folder = await game.editor.chooseAssetsFolder('Where to save template?');
 		if (folder) {

@@ -459,7 +459,7 @@ const alignX = () => { ///99999
 		game.editor.onObjectsPropertyChanged(o, 'x', roundUpPoint(o.parent.toLocal(p, firstObject.getRootContainer())).x);
 	}
 };
-_editableEmbed(Container, 'splitter-transform', { type: 'btn', name: 'Align X ↔', onClick: alignX });
+_editableEmbed(Container, 'align-x', { type: 'btn', title: 'Align X ↔', onClick: alignX });
 const alignY = () => { ///99999
 	let firstObject = game.editor.selection[0];
 	let p = firstObject.getRootContainer().toLocal(firstObject, firstObject.parent);
@@ -468,7 +468,7 @@ const alignY = () => { ///99999
 		game.editor.onObjectsPropertyChanged(o, 'y', roundUpPoint(o.parent.toLocal(p, firstObject.getRootContainer())).y);
 	}
 };
-_editableEmbed(Container, 'splitter-transform', { type: 'btn', name: 'Align Y ↕', onClick: alignY });
+_editableEmbed(Container, 'align-y', { type: 'btn', title: 'Align Y ↕', onClick: alignY });
 
 _editableEmbed(Container, 'splitter-transform', { type: 'splitter', title: 'Transform' });
 _editableEmbed(Container, 'scale.x', { step: 0.01, default: 1, animate: true });

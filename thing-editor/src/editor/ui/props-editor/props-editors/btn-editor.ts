@@ -5,7 +5,7 @@ import game from 'thing-editor/src/engine/game';
 const BtnProperty = (props: EditablePropertyEditorProps) => {
 	const field = props.field;
 
-	return R.btn(field.name, () => {
+	return R.btn(field.title || field.name, () => {
 		game.editor.selection.some(field.onClick!);
 	}, field.title, field.className, field.hotkey);
 };
