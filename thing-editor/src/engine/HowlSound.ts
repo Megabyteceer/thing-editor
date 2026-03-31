@@ -43,7 +43,7 @@ export default class HowlSound {
 						this.preciseDuration = audioBuffer.duration;
 					}
 					/// #endif
-					game.classes.BgMusic?._recalculateMusic();
+					game.classes?.BgMusic?._recalculateMusic();
 					game.loadingRemove(this);
 				}).catch(() => {
 					game.loadingRemove(this);
