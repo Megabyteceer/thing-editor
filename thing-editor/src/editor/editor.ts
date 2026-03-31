@@ -44,8 +44,8 @@ import Sound from 'thing-editor/src/engine/utils/sound';
 import type WebFont from 'webfontloader';
 import Build from './utils/build';
 
-import { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import Spine from '../engine/lib/assets/src/extended/spine.c';
+import { rootAudioContext, slideAudioParamTo } from '../engine/utils/slide-audio-param-to';
 import './../engine/lib/assets/src/basic/container.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/sprite.c'; // import to patch prototypes before NaN checking applied.
 import './../engine/lib/assets/src/basic/text.c'; // import to patch prototypes before NaN checking applied.
@@ -59,7 +59,7 @@ const LAST_SCENE_NAME = '__EDITOR_last_scene_name';
 const editorMuteSoundNode = rootAudioContext.createGain();
 Sound.addMasterNode(editorMuteSoundNode);
 const applySoundMuting = () => {
-	editorMuteSoundNode.gain.setValueAtTime(game.editor.settings.getItem('sound-muted') ? 0 : 1, rootAudioContext.currentTime);
+	slideAudioParamTo(editorMuteSoundNode.gain, game.editor.settings.getItem('sound-muted') ? 0 : 1, 0);
 };
 
 const parseLibName = (name: string): LibInfo => {
