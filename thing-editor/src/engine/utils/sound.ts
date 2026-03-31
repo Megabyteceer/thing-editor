@@ -48,7 +48,7 @@ export default class Sound {
 	static set soundsVol(v) {
 		assert(!isNaN(v), 'invalid value for \'soundsVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
-		slideAudioParamTo(Sound.outputs.FX.gain, v * v, 0.1, (soundsVol * soundsVol) || 0);
+		slideAudioParamTo(Sound.outputs.FX.gain, v * v, 0.01, (soundsVol * soundsVol) || 0);
 		soundsVol = v;
 		game.settings.setItem('soundsVol', soundsVol);
 	}
@@ -73,7 +73,7 @@ export default class Sound {
 		for (let key in Sound.outputs) {
 			const node = Sound.outputs[key];
 			const vol = ((key === 'MUSIC') ? musicVol : soundsVol) || 0;
-			slideAudioParamTo(node.gain, visible ? vol * vol : 0, 0.1);
+			slideAudioParamTo(node.gain, visible ? vol * vol : 0, 0.01);
 		}
 	}
 
@@ -86,7 +86,7 @@ export default class Sound {
 	static set musicVol(v) {
 		assert(!isNaN(v), 'invalid value for \'musicVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
-		slideAudioParamTo(Sound.outputs.MUSIC.gain, v * v, 0.1, musicVol * musicVol || 0);
+		slideAudioParamTo(Sound.outputs.MUSIC.gain, v * v, 0.01, musicVol * musicVol || 0);
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
 	}
