@@ -12,7 +12,7 @@ export const slideAudioParamTo = (param:AudioParamProtected, val:number, duratio
 			param.__lastTimeTouch = time + duration;
 			param.setValueCurveAtTime([fromValue, val], time, duration);
 		} catch (_er) {
-			param.setValueAtTime(val, time);
+			param.setValueAtTime(val, time + duration);
 		}
 	} else {
 		param.setValueAtTime(val, time);
