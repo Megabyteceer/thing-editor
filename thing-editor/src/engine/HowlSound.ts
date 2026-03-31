@@ -1,9 +1,6 @@
-
-export const rootAudioContext = new AudioContext();
-
-
 import game from 'thing-editor/src/engine/game';
 import EDITOR_FLAGS from '../editor/utils/flags';
+import { rootAudioContext, slideAudioParamTo } from './utils/slide-audio-param-to';
 
 const volumeNodes = new Map<number, GainNode>();
 
@@ -41,12 +38,12 @@ export default class HowlSound {
 			.then((buff) => {
 				rootAudioContext.decodeAudioData(buff).then((audioBuffer) => {
 					this.audioBuffer = audioBuffer;
-					/// #if DEBUG
+					/// #if EDITOR
 					if (!this.preciseDuration) {
 						this.preciseDuration = audioBuffer.duration;
 					}
 					/// #endif
-					game.classes.BgMusic._recalculateMusic();
+					game.classes?.BgMusic?._recalculateMusic();
 					game.loadingRemove(this);
 				}).catch(() => {
 					game.loadingRemove(this);
@@ -95,7 +92,7 @@ export default class HowlSound {
 			if (!volumeNodes.has(volume)) {
 				const volumeNode = rootAudioContext.createGain();
 				volumeNode.connect(outNode);
-				volumeNode.gain.setValueAtTime(volume, rootAudioContext.currentTime);
+				slideAudioParamTo(volumeNode.gain, volume);
 				volumeNodes.set(volume, volumeNode);
 			}
 			this.source.connect(volumeNodes.get(volume)!);
@@ -103,7 +100,7 @@ export default class HowlSound {
 			this.source.connect(outNode);
 		}
 		if (this.source.playbackRate.value !== rate) {
-			this.source.playbackRate.setValueAtTime(volume, rootAudioContext.currentTime);
+			slideAudioParamTo(this.source.playbackRate, volume);
 		}
 		this.source.start(0, seek);
 	}

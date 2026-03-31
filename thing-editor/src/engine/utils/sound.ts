@@ -13,26 +13,15 @@ import FlyText from '../lib/assets/src/basic/fly-text.c';
 import debugPanelStyle from './sound-debug-panel.css?raw';
 /// #endif
 
-import HowlSound, { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
+import HowlSound from 'thing-editor/src/engine/HowlSound';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import { MIN_VOL_THRESHOLD } from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music/music-fragment';
+import { rootAudioContext, slideAudioParamTo } from './slide-audio-param-to';
 
 export const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
-export const slideAudioParamTo = (param:AudioParam, val:number, duration:number, fromValue = param.value) => {
-	param.cancelScheduledValues(rootAudioContext.currentTime);
-	if (duration > 0 && !isFirefox && rootAudioContext.currentTime) {
-		try {
-			param.setValueCurveAtTime([fromValue, val], rootAudioContext.currentTime, duration);
-		} catch (_er) {
-			param.setValueAtTime(val, rootAudioContext.currentTime);
-		}
-	} else {
-		param.setValueAtTime(val, rootAudioContext.currentTime);
-	}
-};
 
 /// #if DEBUG
 let EMPTY_SOUND:HowlSound;
@@ -59,7 +48,7 @@ export default class Sound {
 	static set soundsVol(v) {
 		assert(!isNaN(v), 'invalid value for \'soundsVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
-		slideAudioParamTo(Sound.outputs.FX.gain, v * v, 0.1, (soundsVol * soundsVol) || 0);
+		slideAudioParamTo(Sound.outputs.FX.gain, v * v, 0.01, (soundsVol * soundsVol) || 0);
 		soundsVol = v;
 		game.settings.setItem('soundsVol', soundsVol);
 	}
@@ -84,7 +73,7 @@ export default class Sound {
 		for (let key in Sound.outputs) {
 			const node = Sound.outputs[key];
 			const vol = ((key === 'MUSIC') ? musicVol : soundsVol) || 0;
-			slideAudioParamTo(node.gain, visible ? vol * vol : 0, 0.1);
+			slideAudioParamTo(node.gain, visible ? vol * vol : 0, 0.01);
 		}
 	}
 
@@ -97,7 +86,7 @@ export default class Sound {
 	static set musicVol(v) {
 		assert(!isNaN(v), 'invalid value for \'musicVol\'. Valid number value expected.', 10001);
 		v = Math.max(0, Math.min(1, v));
-		slideAudioParamTo(Sound.outputs.MUSIC.gain, v * v, 0.1, musicVol * musicVol || 0);
+		slideAudioParamTo(Sound.outputs.MUSIC.gain, v * v, 0.01, musicVol * musicVol || 0);
 		musicVol = v;
 		game.settings.setItem('musicVol', musicVol);
 	}
@@ -761,5 +750,5 @@ Sound.outputs['Sound.soundsVol'] = Sound.outputs.FX = rootAudioContext.createGai
 Sound.outputs.MUSIC = rootAudioContext.createGain();
 Sound.outputs.FX.connect(rootAudioContext.destination);
 Sound.outputs.MUSIC.connect(rootAudioContext.destination);
-slideAudioParamTo(Sound.outputs.FX.gain, 0, 0);
-slideAudioParamTo(Sound.outputs.MUSIC.gain, 0, 0);
+slideAudioParamTo(Sound.outputs.FX.gain, 0);
+slideAudioParamTo(Sound.outputs.MUSIC.gain, 0);

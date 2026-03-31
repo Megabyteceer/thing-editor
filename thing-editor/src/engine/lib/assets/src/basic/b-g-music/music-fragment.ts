@@ -1,9 +1,9 @@
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
-import { rootAudioContext } from 'thing-editor/src/engine/HowlSound';
 import Lib from 'thing-editor/src/engine/lib';
 import type BgMusic from 'thing-editor/src/engine/lib/assets/src/basic/b-g-music.c';
-import Sound, { slideAudioParamTo } from 'thing-editor/src/engine/utils/sound';
+import { rootAudioContext, slideAudioParamTo } from 'thing-editor/src/engine/utils/slide-audio-param-to';
+import Sound from 'thing-editor/src/engine/utils/sound';
 import { stepTo } from 'thing-editor/src/engine/utils/utils';
 
 export const MIN_VOL_THRESHOLD = 0.001;
@@ -67,8 +67,7 @@ export default class MusicFragment {
 				this.fadingToVolume = to;
 				slideAudioParamTo(this.volumeNode.gain, to * to, FADE_INTERVAL_SECONDS, from * from);
 			} else {
-				this.volumeNode.gain.cancelScheduledValues(rootAudioContext.currentTime);
-				this.volumeNode.gain.setValueAtTime(curVol * curVol, rootAudioContext.currentTime);
+				slideAudioParamTo(this.volumeNode.gain, curVol * curVol);
 				this.fadingToVolume = curVol;
 			}
 		}
@@ -116,7 +115,7 @@ export default class MusicFragment {
 		if (this.loop) {
 			this.source = this._playMusicFragment(this.loop);
 			if (this.source) {
-				this.source!.loop = true;
+				this.source.loop = true;
 			}
 		}
 	}
@@ -151,14 +150,14 @@ export default class MusicFragment {
 
 				const source = rootAudioContext.createBufferSource();
 				source.buffer = snd.audioBuffer;
-				source.playbackRate.setValueAtTime(
+				slideAudioParamTo(source.playbackRate,
 					/// #if DEBUG
 					game.pixiApp.ticker.speed
 					/*
 				/// #endif
 				1
 				//*/
-					, rootAudioContext.currentTime);
+					, 0);
 
 				/// #if EDITOR
 				Sound.__highlightPlayedSound(s);
@@ -168,8 +167,7 @@ export default class MusicFragment {
 
 				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
 				allActiveFragments[this.musicFragmentHash] = this;
-				this.volumeNode.gain.cancelScheduledValues(rootAudioContext.currentTime);
-				this.volumeNode.gain.setValueAtTime(startVol, rootAudioContext.currentTime);
+				slideAudioParamTo(this.volumeNode.gain, startVol);
 				this.fadingToVolume = startVol;
 				source!.connect(this.volumeNode);
 				this._preciseDuration = snd.preciseDuration;
@@ -233,7 +231,7 @@ export default class MusicFragment {
 		for (let h in allActiveFragments) {
 			let f = allActiveFragments[h];
 			if (f.source) {
-				f.source.playbackRate.setValueAtTime(rate, rootAudioContext.currentTime);
+				slideAudioParamTo(f.source.playbackRate, rate);
 			}
 		}
 	}

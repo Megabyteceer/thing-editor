@@ -5,11 +5,20 @@ import { Text } from 'pixi.js';
 import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable';
 import LanguageView from 'thing-editor/src/editor/ui/language-view';
 import EDITOR_FLAGS from 'thing-editor/src/editor/utils/flags';
+
+import type { FileDescPrefab } from 'thing-editor/src/editor/fs';
+import fs, { AssetType } from 'thing-editor/src/editor/fs';
+import R from 'thing-editor/src/engine/basic-preact-fabrics';
 import assert from 'thing-editor/src/engine/debug/assert';
 import game from 'thing-editor/src/engine/game';
+import Lib from 'thing-editor/src/engine/lib';
 import ___Guide from 'thing-editor/src/engine/lib/assets/src/___system/guide.c';
 
 import L from 'thing-editor/src/engine/utils/l';
+
+/// #if EDITOR
+import type Label from '../extended/label.c';
+/// #endif
 
 export default Text;
 
@@ -514,8 +523,64 @@ _editableEmbed(Text, 'Paste style', {
 	visible: () => !!game.editor.settings.getItem('__EDITOR-clipboard-data-text-style', false),
 });
 
+_editableEmbed(Text, 'Smart preset ', {
+	type: 'btn',
+	title: 'Smart preset',
+	onClick: async () => {
+		const preset = await game.editor.ui.modal.showListChoose('Smart presets',
+			fs.getAssetsList(AssetType.PREFAB).filter(p => p.assetName.startsWith('___text-style-templates/')).map((p) => {
+				return {
+					name: R.div({className: 'project-item-select'}, p.asset.p.__description),
+					pureName: p.asset.p.__description,
+					value: p
+				};
+
+			}));
+		if (preset) {
+			for (const text of game.editor.selection as unknown as Label[]) {
+				while (text.children.length) {
+					text.children[0].removeWithoutHolder();
+				}
+				const t = Lib.loadPrefab((preset.value as FileDescPrefab).assetName);
+				while (t.children.length) {
+					text.addChild(t.children.shift()!);
+				}
+				const tmpPath = text.dataPath;
+				const tmpX = text.x;
+				const tmpY = text.y;
+				const tmpMaxWidth = text.maxWidth;
+				Object.assign(text, t);
+				text.dataPath = tmpPath;
+				text.x = tmpX;
+				text.y = tmpY;
+				text.maxWidth = tmpMaxWidth;
+				Lib.__invalidateSerializationCache(text);
+			}
+			game.editor.sceneModified(true);
+		}
+	}
+});
+
+_editableEmbed(Text, 'Save as smart preset...', {
+	type: 'btn',
+	title: 'Save smart preset...',
+	onClick: async (o: Text) => {
+		const folder = await game.editor.chooseAssetsFolder('Where to save template?');
+		if (folder) {
+			const title = await game.editor.ui.modal.showPrompt('Enter template name');
+			if (title) {
+				const name = '___text-style-templates/' + (title.toLocaleLowerCase().replace(/ /g, '-'));
+				let tpmDesc = o.__description;
+				o.__description = title;
+				Lib.__savePrefab(o, name, folder, true);
+				o.__description = tpmDesc;
+			}
+		}
+	}
+});
+
 _editableEmbed(Text, 'style.fontSize', {
-	min: 1,
+	min: 0,
 	max: 300,
 	default: 24,
 	important: true
