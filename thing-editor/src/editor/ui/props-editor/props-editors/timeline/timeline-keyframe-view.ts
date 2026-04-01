@@ -208,6 +208,13 @@ export default class TimelineKeyframeView extends Component<TimelineKeyframeView
 			className += ' timeline-keyframe-unreachable';
 		}
 
+		if (!game.__EDITOR_mode) {
+			let fieldPlayer = this.props.owner.props.owner.props.owner.props.node.fieldPlayers[this.props.owner.props.owner.props.fieldIndex];
+			if (fieldPlayer.currentFrame === keyFrame) {
+				className += ' timeline-keyframe-current';
+			}
+		}
+
 		let mark;
 		if (keyFrame.hasOwnProperty('a')) {
 			mark = getCallbackIcon(keyFrame.a!, p.node);

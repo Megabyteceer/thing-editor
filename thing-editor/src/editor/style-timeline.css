@@ -98,6 +98,13 @@
 	outline: 1px solid #f00;
 }
 
+.timeline-keyframe-current::after {
+	right: 40px;
+	top: 4px;
+	position: relative;
+	content: url("/thing-editor/img/timeline/current-keyframe.png");
+}
+
 .timeline-keyframe-selected {
 	outline: 2px solid #eb8000;
 }
