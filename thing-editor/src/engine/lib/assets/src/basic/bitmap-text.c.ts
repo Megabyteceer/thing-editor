@@ -385,12 +385,8 @@ _editableEmbed(BitmapText, 'maxW', { afterEdited: () => { let o = game.editor.se
 
 
 _editableEmbed(BitmapText, 'tint', {
-	type: 'number',
-	basis: 16,
-	noNullCheck: true,
-	default: 0xffffff,
-	max: 0xffffff,
-	min: 0
+	type: 'color',
+	default: 0xffffff
 });
 
 _editableEmbed(BitmapText, 'textProvider', {
