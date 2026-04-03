@@ -37,7 +37,7 @@ npx electron "./thing-editor/electron-main"
 
 ## Sponsored:
 
-[<img src="https://assets-global.website-files.com/63b2c230b49fa188ad86ffec/63f4c9689497e0d7c32f4a31_BGaming_logo.svg" width="400" alt="BGaming">](https://www.bgaming.com/)
+[<img src="https://github.com/Megabyteceer/thing-editor/blob/dev/thing-editor/img/spinsored.png?raw=true" alt="BGaming">](https://www.bgaming.com/)
 
 ### Documentation
 For detailed documentation please check our [Wiki](https://github-com.translate.goog/Megabyteceer/thing-editor/wiki?_x_tr_sl=auto&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=wapp) for thing-editor v1.0.
