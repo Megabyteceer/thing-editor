@@ -1,5 +1,5 @@
 
-import type { TextStyleAlign, TextStyleFontWeight } from 'pixi.js';
+import type { Container, TextStyleAlign, TextStyleFontWeight } from 'pixi.js';
 import { Text } from 'pixi.js';
 
 import { _editableEmbed } from 'thing-editor/src/editor/props-editor/editable';
@@ -14,6 +14,7 @@ import game from 'thing-editor/src/engine/game';
 import Lib from 'thing-editor/src/engine/lib';
 import ___Guide from 'thing-editor/src/engine/lib/assets/src/___system/guide.c';
 
+import { assetPreview } from 'thing-editor/src/editor/ui/assets-view/asset-preview';
 import L from 'thing-editor/src/engine/utils/l';
 
 export default Text;
@@ -527,16 +528,25 @@ _editableEmbed(Text, 'smart-preset', {
 			fs.getAssetsList(AssetType.PREFAB).filter(p => p.assetName.startsWith('___text-style-templates/')).map((p) => {
 				const name = p.asset.p.__description || p.asset.p.name.replace('___text-style-templates/', '');
 				return {
-					name: R.div({className: 'project-item-select'}, name),
+					name: R.div({className: 'project-item-select'}, name, assetPreview(p, 200, 50)),
 					pureName: name,
 					value: p
 				};
 			}));
 		if (preset) {
-			for (let text of game.editor.selection as unknown as Text[]) {
-				if (text.parent instanceof Text) {
-					text = text.parent;
+
+			const selection = game.editor.selection.slice();
+			const selectRoots = new Set<Container>();
+			game.editor.selection.clearSelection();
+			for (let o of selection) {
+				while (o.parent instanceof Text) {
+					o = o.parent;
 				}
+				selectRoots.add(o);
+			}
+			selectRoots.forEach(o => game.editor.selection.select(o, true));
+
+			for (let text of game.editor.selection as unknown as Text[]) {
 				while (text.children.length) {
 					text.children[0].removeWithoutHolder();
 				}
