@@ -31,13 +31,14 @@ class R {
 	static meta: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static space: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
 	static smallSpace: (props?: ComponentProps | null, ...children: ComponentChildren[]) => preact.Component;
+	static canvas: (props?: ComponentProps | null) => preact.Component;
 
 	static fragment(...children: ComponentChildren[]) {
 		return h(Fragment, null, ...children);
 	}
 }
 
-for (let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'label',
+for (let factoryType of ['div', 'form', 'span', 'p', 'img', 'button', 'canvas', 'label',
 	'b', 'a', 'br', 'hr', 'svg', 'td', 'tr', 'th', 'tbody', 'thead', 'table', 'polyline',
 	'textarea', 'iframe', 'h2', 'h3', 'h4', 'h5', 'script', 'meta', 'space', 'smallSpace']) {
 
