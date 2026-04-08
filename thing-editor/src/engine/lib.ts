@@ -988,6 +988,7 @@ export default class Lib
 		}
 		s.lastPlayStartFrame = 0;
 		soundsHowlers[soundId] = s;
+		s.preciseDuration = undefined!;
 		game.emit('__sound-overridden', soundId);
 	}
 
