@@ -166,13 +166,12 @@ export default class MusicFragment {
 				source.start(undefined, pos, snd.preciseDuration);
 
 				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
-				allActiveFragments[this.musicFragmentHash] = this;
+
 				slideAudioParamTo(this.volumeNode.gain, startVol);
 				this.fadingToVolume = startVol;
 				source!.connect(this.volumeNode);
 				this._preciseDuration = snd.preciseDuration;
-				source.buffer;
-
+				allActiveFragments[this.musicFragmentHash] = this;
 				return source;
 			} catch (_er) {
 				/// #if EDITOR
