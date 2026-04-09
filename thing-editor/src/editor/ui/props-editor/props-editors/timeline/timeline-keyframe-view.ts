@@ -208,8 +208,9 @@ export default class TimelineKeyframeView extends Component<TimelineKeyframeView
 			className += ' timeline-keyframe-unreachable';
 		}
 
-		if (!game.__EDITOR_mode) {
-			let fieldPlayer = this.props.owner.props.owner.props.owner.props.node.fieldPlayers[this.props.owner.props.owner.props.fieldIndex];
+		const movieClip = this.props.owner.props.owner.props.owner.props.node;
+		if (!game.__EDITOR_mode && movieClip.isPlaying) {
+			let fieldPlayer = movieClip.fieldPlayers[this.props.owner.props.owner.props.fieldIndex];
 			if (fieldPlayer.currentFrame === keyFrame) {
 				className += ' timeline-keyframe-current';
 			}
