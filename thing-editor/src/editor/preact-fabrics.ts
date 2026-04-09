@@ -157,7 +157,7 @@ class R extends BasicR {
 			R.classIcon(node.constructor as SourceMappedConstructor),
 			node.name ? R.span(nameProps, node.name) : undefined,
 			R.span(classProps,
-				'(' + (node.__nodeExtendData.unknownConstructor ||
+				'(' + (node.__nodeExtendData?.unknownConstructor ||
 					(node.constructor as SourceMappedConstructor).__className) + ') #' + node.___id
 			),
 			desc);
