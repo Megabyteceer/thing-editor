@@ -88,7 +88,7 @@ export default class HowlSound {
 		/// #endif
 
 		if (volume !== 1) {
-			volume = Math.round(volume * 1000) / 1000;
+			volume = Math.round(volume * 100) / 100;
 			if (!volumeNodes.has(volume)) {
 				const volumeNode = rootAudioContext.createGain();
 				volumeNode.connect(outNode);
@@ -100,7 +100,7 @@ export default class HowlSound {
 			this.source.connect(outNode);
 		}
 		if (this.source.playbackRate.value !== rate) {
-			slideAudioParamTo(this.source.playbackRate, volume);
+			slideAudioParamTo(this.source.playbackRate, rate);
 		}
 		this.source.start(0, seek);
 	}
