@@ -676,7 +676,6 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 	forAllChildrenEverywhereBack(callback: (o: Container) => void) {
 		for (let s of scenesStack) {
 			if (typeof s !== 'string') {
-				callback(s);
 				if (!s.parent) {
 					callback(s);
 					s.forAllChildren(callback);
