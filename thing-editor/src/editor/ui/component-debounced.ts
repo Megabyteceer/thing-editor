@@ -30,7 +30,8 @@ export default class ComponentDebounced<P = object, S = object> extends Componen
 
 	componentWillUnmount(): void {
 		if (this._refreshTimeout) {
-			clearInterval(this._refreshTimeout);
+			clearTimeout(this._refreshTimeout);
+			this._refreshTimeout = 0;
 		}
 	}
 
