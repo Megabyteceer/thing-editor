@@ -83,10 +83,9 @@ module.exports = (mainWindow) => {
 		try {
 			switch (command) {
 			case 'fs/delete':
-				attemptFSOperation(() => {
-					shell.trashItem(fn(fileName));
-					return true;
-				}, event);
+				shell.trashItem(fn(fileName)).then(() => {
+					event.returnValue = true;
+				})
 				return;
 			case 'fs/saveFile':
 				attemptFSOperation(() => {
