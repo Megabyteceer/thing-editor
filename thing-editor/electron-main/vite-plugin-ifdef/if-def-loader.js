@@ -55,6 +55,7 @@ module.exports = function vitePluginIfDef(isDebug) {
 						}
 					}
 
+					const currentCuttingLevel = cuttingLevel;
 					if (trimmedLine === '/// #endif') {
 						if (cuttingStack.length === 0) {
 							throw new Error('/// #endif without /// #if EDITOR in file ' + id + ':' + (i + 1));
@@ -65,7 +66,7 @@ module.exports = function vitePluginIfDef(isDebug) {
 						}
 					}
 
-					if (cuttingLevel) {
+					if (currentCuttingLevel) {
 						return '///' + line;
 					}
 					return line;
