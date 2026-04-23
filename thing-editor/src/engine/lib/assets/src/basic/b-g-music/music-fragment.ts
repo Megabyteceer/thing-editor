@@ -142,42 +142,50 @@ export default class MusicFragment {
 
 	_playMusicFragment(s: string | null, pos = 0, startVol = 0.001) {
 		if (s) {
-			try {
-				const snd = Lib.getSound(s, true);
-				if (!snd.audioBuffer) {
-					return;
-				}
 
-				const source = rootAudioContext.createBufferSource();
-				source.buffer = snd.audioBuffer;
-				slideAudioParamTo(source.playbackRate,
-					/// #if DEBUG
-					game.pixiApp.ticker.speed
-					/*
+			/// #if EDITOR
+			/*
+			/// #endif
+			try {
+			//*/
+
+			const snd = Lib.getSound(s, true);
+			if (!snd.audioBuffer) {
+				return;
+			}
+
+			const source = rootAudioContext.createBufferSource();
+			source.buffer = snd.audioBuffer;
+			slideAudioParamTo(source.playbackRate,
+				/// #if DEBUG
+				game.pixiApp.ticker.speed
+				/*
 				/// #endif
 				1
 				//*/
-					, 0);
+				, 0);
 
-				/// #if EDITOR
-				Sound.__highlightPlayedSound(s);
-				/// #endif
+			/// #if EDITOR
+			Sound.__highlightPlayedSound(s);
+			/// #endif
 
-				source.start(undefined, pos, snd.preciseDuration);
+			source.start(undefined, pos, snd.preciseDuration);
 
-				assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
+			assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
 
-				slideAudioParamTo(this.volumeNode.gain, startVol);
-				this.fadingToVolume = startVol;
+			slideAudioParamTo(this.volumeNode.gain, startVol);
+			this.fadingToVolume = startVol;
 				source!.connect(this.volumeNode);
 				this._preciseDuration = snd.preciseDuration;
 				allActiveFragments[this.musicFragmentHash] = this;
 				return source;
+			/// #if EDITOR
+			/*
+			/// #endif
 			} catch (_er) {
-				/// #if EDITOR
 				debugger;
-				/// #endif
 			}
+				//** */
 		}
 	}
 

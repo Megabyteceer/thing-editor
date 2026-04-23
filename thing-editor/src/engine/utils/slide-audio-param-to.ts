@@ -5,9 +5,13 @@ interface AudioParamProtected extends AudioParam {
 export const rootAudioContext = new AudioContext();
 
 export const slideAudioParamTo = (param:AudioParamProtected, val:number, duration:number = 0, fromValue = param.value) => {
-	const time = Math.max(param.__lastTimeTouch ? (param.__lastTimeTouch + 0.00001) : 0, rootAudioContext.currentTime);
+	const time = Math.max(param.__lastTimeTouch ? (param.__lastTimeTouch + 0.003) : 0, rootAudioContext.currentTime);
 
 	if (duration > 0 && time) {
+		if (duration > 0.004) {
+			const durationCut = param.__lastTimeTouch ? Math.max(0, (param.__lastTimeTouch - rootAudioContext.currentTime)) : 0;
+			duration = Math.max(0.004, duration - durationCut);
+		}
 		try {
 			param.__lastTimeTouch = time + duration;
 			param.setValueCurveAtTime([fromValue, val], time, duration);
