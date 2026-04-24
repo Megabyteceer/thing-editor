@@ -61,6 +61,16 @@ assert(!Text.__touchedFonts, 'refactoring is required');
 Text.__touchedFonts = new Map();
 /// #endif
 
+//@ts-ignore
+const origRender = Text.prototype._render;
+//@ts-ignore
+Text.prototype._render = function _render(render) {
+	if (this.style.fontSize) {
+		origRender.call(this, render);
+	}
+};
+
+
 Object.defineProperties(Text.prototype, {
 	translatableText: {
 		get: function (this: Text) {
