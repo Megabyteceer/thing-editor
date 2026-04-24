@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import type { Container } from 'pixi.js';
 import type TypedEventEmitter from 'typed-emitter';
+import type { FileDesc } from '../fs';
 import EDITOR_FLAGS from './flags';
 
 type EditorEvents = {
@@ -17,6 +18,7 @@ type EditorEvents = {
 	assetsRefreshed: () => void;
 	textureUpdated: (textureName: string) => void;
 	soundPlay: (soundId: string, volume: number) => void;
+	preloaderAssetsEnum: (assets: Set<FileDesc>) => void;
 };
 
 const editorEvents = new EventEmitter() as TypedEventEmitter<EditorEvents>;
