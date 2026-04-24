@@ -37,7 +37,7 @@ const sureQuestionInit = (container: Container, title: string, message: string, 
 		}
 	}
 
-	if (title) {
+	if (title || (typeof title === 'string')) {
 		let tf = container.findChildByName('title') as Text;
 		if (tf) {
 			tf.text = '' + title;
