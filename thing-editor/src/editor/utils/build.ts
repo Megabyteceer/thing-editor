@@ -7,6 +7,7 @@ import game, { DEFAULT_FADER_NAME, PRELOADER_SCENE_NAME } from 'thing-editor/src
 import Lib, { isAtlasAsset } from 'thing-editor/src/engine/lib';
 import type { AssetsDescriptor, SoundAssetEntry } from '../editor-env';
 import { StatusClearingCondition } from '../ui/status-clearing-condition';
+import { editorEvents } from './editor-events';
 
 const addedCallbacks: Set<string> = new Set();
 const postBuildCallbacks: ((path: string) => void)[] = [];
@@ -112,6 +113,7 @@ export default class Build {
 			preloaderAssets.add(font);
 		}
 		enumAssetsPropsRecursive(Lib.scenes[PRELOADER_SCENE_NAME], preloaderAssets);
+		editorEvents.emit('preloaderAssetsEnum', preloaderAssets);
 
 		const text = projectDesc.embedLocales ?
 			game.editor.LanguageView.__getTextAssets()
