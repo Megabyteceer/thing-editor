@@ -33,6 +33,7 @@ import { stepTo } from './utils/utils';
 /// #if EDITOR
 /*
 /// #endif
+	import waitForCondition from './lib/assets/src/utils/wait-for-condition';
 	import preloaderAssets from '.tmp/assets-preloader' assert { type: 'json' };
 	let globalLoadingInterval;
 //*/
@@ -247,9 +248,12 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 
 		/// #if EDITOR
 		window.addEventListener('resize', this._onContainerResize.bind(this));
+
 		/*
 		/// #endif
-		import('.tmp/classes').then(() => {
+		Promise.all([import('.tmp/classes'), waitForCondition(() => {
+			return game.loadingProgress === 100;
+		})]).then(() => {
 			game._startGame();
 		}).catch(() => {
 			game.showLoadingError('classes.js');
