@@ -124,7 +124,7 @@ class Modal extends ComponentDebounced<ClassAttributes<Modal>, ModalState> {
 		if (this.state.modals.length > 0) {
 			const topModals = document.querySelectorAll('.modal-body');
 			const topModal = topModals[topModals.length - 1];
-			return !topModal.contains(element) && !element.classList.contains('modal-close-button');
+			return !topModal?.contains(element) && !element.classList.contains('modal-close-button');
 		}
 		return false;
 	}
