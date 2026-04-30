@@ -716,6 +716,7 @@ export default class Spine extends Container implements IGoToLabelConsumer {
 			}
 			/// #endif
 			this.spineContent!.skeleton.setSkinByName(this.currentSkin);
+			this.spineContent!.skeleton.setSlotsToSetupPose();
 		}
 	}
 
