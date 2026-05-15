@@ -573,6 +573,8 @@ function renderSoundPanelItem(soundName:string) {
 }
 
 function renderSoundsPanel() {
+	let showOptional = game.editor.settings.getItem('__sounds-panel-show-optional-sounds', true);
+
 	const items = [];
 
 	let list: string[] | undefined;
@@ -606,13 +608,18 @@ function renderSoundsPanel() {
 		}
 	}
 
+
 	if (list) {
 		for (const soundId of list) {
-			items.push(renderSoundPanelItem(soundId));
+			if (showOptional || (Lib.getSound(soundId) !== EMPTY_SOUND)) {
+				items.push(renderSoundPanelItem(soundId));
+			}
 		}
 	} else {
 		for (const soundId in Lib.__soundsList) {
-			items.push(renderSoundPanelItem(soundId));
+			if (showOptional || (Lib.getSound(soundId) !== EMPTY_SOUND)) {
+				items.push(renderSoundPanelItem(soundId));
+			}
 		}
 	}
 
@@ -646,7 +653,13 @@ function renderSoundsPanel() {
 				(game.editor || game).settings.setItem('__sounds-panel-sort-by-name', 0);
 				showSndDebugger();
 			}
-			}, 'play-time ', sortByTime ? ((sortByTime > 0) ? '⮟' : '⮝') : '\u00A0')
+			}, 'play-time ', sortByTime ? ((sortByTime > 0) ? '⮟' : '⮝') : '\u00A0'),
+			R.span({className: 'sort-button', title: 'Show optional sounds', onClick: () => {
+				showOptional = !showOptional;
+				(game.editor || game).settings.setItem('__sounds-panel-show-optional-sounds', showOptional);
+				showSndDebugger();
+			}
+			}, 'Show optional ', showOptional ? '☑' : '☐')
 		),
 		R.div({
 			className: 'sounds-debug-panel-body',
