@@ -573,7 +573,7 @@ function renderSoundPanelItem(soundName:string) {
 }
 
 function renderSoundsPanel() {
-	let showOptional = game.editor.settings.getItem('__sounds-panel-show-optional-sounds', true);
+	let showOptional = (game.editor || game).settings.getItem('__sounds-panel-show-optional-sounds', true);
 
 	const items = [];
 
