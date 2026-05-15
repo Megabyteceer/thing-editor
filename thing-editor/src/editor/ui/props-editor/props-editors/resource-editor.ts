@@ -53,7 +53,7 @@ ResourceEditor.contextMenuInjection = (contextMenu: ContextMenuItem[], _field:Ed
 		contextMenu.splice(contextMenu.indexOf(null) + 1, 0, {
 			name: 'Reveal In Explorer',
 			onClick: () => {
-				const file = fs.getFileByAssetName(_clickedValue, AssetType.IMAGE);
+				const file = fs.getFileByAssetName(_clickedValue, AssetType.RESOURCE);
 				if (file) {
 					fs.showFile(file.fileName);
 				}
