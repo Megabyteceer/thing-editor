@@ -147,18 +147,15 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 			for (const c of reference.children) {
 				delete c.__nodeExtendData.hidden;
 			}
-			Lib.__savePrefab(reference, '___tmp', undefined, false);
-			const notReference = Lib.__loadPrefabNoInit('___tmp');
-			notReference.name = reference.name;
-
-			reference.parent.addChildAt(notReference, reference.parent.children.indexOf(reference));
-			reference.remove();
-			game.editor.ui.sceneTree.selectInTree(notReference);
-			Lib.__invalidateSerializationCache(notReference);
+			Lib.__serializeObject(reference);
+			if (reference.__nodeExtendData?.serializationCache) {
+				Object.assign(reference, JSON.parse(JSON.stringify(reference.__nodeExtendData.serializationCache.p)));
+			}
+			Lib.__invalidateSerializationCache(reference);
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(false);
 		},
-		disabled: () => game.editor.selection.length !== 1 || !game.editor.selection[0].__nodeExtendData.isPrefabReference || game.currentContainer === game.editor.selection[0]
+		disabled: () => game.editor.selection.length !== 1 || !game.editor.selection[0].__nodeExtendData.isPrefabReference
 	},
 	null,
 	{
