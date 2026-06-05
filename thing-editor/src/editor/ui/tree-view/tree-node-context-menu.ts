@@ -147,23 +147,10 @@ const TREE_NODE_CONTEXT_MENU: ContextMenuItem[] = [
 			for (const c of reference.children) {
 				delete c.__nodeExtendData.hidden;
 			}
-			Lib.__savePrefab(reference, '___tmp', undefined, false);
-			const notReference = Lib.__loadPrefabNoInit('___tmp');
-			notReference.name = reference.name;
-
-			while (reference.children.length) {
-				reference.children[0].removeWithoutHolder();
-			}
-			while (notReference.children.length) {
-				reference.addChild(notReference.children[0]);
-			}
+			Lib.__serializeObject(reference);
 			if (reference.__nodeExtendData?.serializationCache) {
-				const p = JSON.parse(JSON.stringify(reference.__nodeExtendData.serializationCache.p));
-				delete p.name;
-				Object.assign(reference, p);
+				Object.assign(reference, JSON.parse(JSON.stringify(reference.__nodeExtendData.serializationCache.p)));
 			}
-			Lib.destroyObjectAndChildren(notReference);
-
 			Lib.__invalidateSerializationCache(reference);
 			game.editor.refreshTreeViewAndPropertyEditor();
 			game.editor.sceneModified(false);
