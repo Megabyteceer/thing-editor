@@ -5,7 +5,7 @@ import { CTRL_READABLE } from './utils';
 /// #endif
 
 /// #if DEBUG
-import { render } from 'preact';
+import { h, render } from 'preact';
 import waitForCondition from 'thing-editor/src/engine/lib/assets/src/utils/wait-for-condition';
 import IndexedDBUtils from 'thing-editor/src/engine/utils/indexed-db-utils';
 import R from '../basic-preact-fabrics';
@@ -572,7 +572,18 @@ function renderSoundPanelItem(soundName:string) {
 	);
 }
 
+let search: string | undefined;
+const onSearch = (e: InputEvent) => {
+	search = (e.target as HTMLInputElement).value;
+	game.settings.setItem('__sound-panel-search', search);
+	showSndDebugger();
+};
+
 function renderSoundsPanel() {
+	if (typeof search === 'undefined') {
+		search = game.settings.getItem('__sound-panel-search');
+	}
+
 	let showOptional = (game.editor || game).settings.getItem('__sounds-panel-show-optional-sounds', true);
 
 	const items = [];
@@ -608,16 +619,18 @@ function renderSoundsPanel() {
 		}
 	}
 
+	const searchLower = search?.toLocaleLowerCase() || '';
+
 
 	if (list) {
 		for (const soundId of list) {
-			if (showOptional || (Lib.getSound(soundId) !== EMPTY_SOUND)) {
+			if ((!searchLower || soundId.toLocaleLowerCase().includes(searchLower)) && (showOptional || (Lib.getSound(soundId) !== EMPTY_SOUND))) {
 				items.push(renderSoundPanelItem(soundId));
 			}
 		}
 	} else {
 		for (const soundId in Lib.__soundsList) {
-			if (showOptional || (Lib.getSound(soundId) !== EMPTY_SOUND)) {
+			if ((!searchLower || soundId.toLocaleLowerCase().includes(searchLower)) && (showOptional || (Lib.getSound(soundId) !== EMPTY_SOUND))) {
 				items.push(renderSoundPanelItem(soundId));
 			}
 		}
@@ -632,6 +645,7 @@ function renderSoundsPanel() {
 		R.button({
 			onClick: toggleSoundsPanelLeft
 		}, '< >'),
+		h('input', { onInput: onSearch, className: 'tree-view-search', value: search, placeholder: 'Search' }),
 		R.div({className: 'list-header'}, 'Sort by: ',
 			R.span({className: 'sort-button', onClick: () => {
 				if (sortByName > 0) {
