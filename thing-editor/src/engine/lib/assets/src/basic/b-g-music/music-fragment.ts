@@ -101,7 +101,9 @@ export default class MusicFragment {
 	startPlay() {
 
 		if (this.source) {
-			this.source.start(undefined, 0, this._preciseDuration);
+			this.source.loopEnd = this._preciseDuration;
+			this.source.loopStart = 0;
+			this.source.start();
 			return;
 		} else if (this.intro && !this.introFinished) {
 			this.source = this._playMusicFragment(this.intro, 0, this._fadeToVol);
@@ -169,7 +171,9 @@ export default class MusicFragment {
 			Sound.__highlightPlayedSound(s);
 			/// #endif
 
-			source.start(undefined, pos, snd.preciseDuration);
+			source.loopEnd = snd.preciseDuration;
+			source.loopStart = 0;
+			source.start(undefined, pos);
 
 			assert(!allActiveFragments[this.musicFragmentHash], 'Music fragment already exists');
 
