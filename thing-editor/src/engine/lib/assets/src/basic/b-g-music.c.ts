@@ -244,7 +244,7 @@ export default class BgMusic extends Container {
 					if ((bgm.intro === name || bgm.loop === name)) {
 						bgm.play();
 					}
-				}, 60);
+				}, 600);
 			}
 		}
 	}

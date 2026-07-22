@@ -171,7 +171,14 @@ export default class MusicFragment {
 			Sound.__highlightPlayedSound(s);
 			/// #endif
 
-			source.loopEnd = snd.preciseDuration;
+			/// #if DEBUG
+			if (snd.preciseDuration) {
+			/// #endif
+				source.loopEnd = snd.preciseDuration;
+			/// #if DEBUG
+			}
+			/// #endif
+
 			source.loopStart = 0;
 			source.start(undefined, pos);
 
