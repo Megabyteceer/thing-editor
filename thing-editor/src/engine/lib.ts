@@ -979,7 +979,7 @@ export default class Lib
 	/**
 	* @protected
 	*/
-	static __overrideSound(soundId: string, src: string | HowlSound) {
+	static async __overrideSound(soundId: string, src: string | HowlSound) {
 		let s:HowlSound;
 		if (src instanceof HowlSound) {
 			s = src;
@@ -989,6 +989,9 @@ export default class Lib
 		s.lastPlayStartFrame = 0;
 		soundsHowlers[soundId] = s;
 		s.preciseDuration = undefined!;
+		await waitForCondition(() => {
+			return s.audioBuffer;
+		});
 		game.emit('__sound-overridden', soundId);
 	}
 

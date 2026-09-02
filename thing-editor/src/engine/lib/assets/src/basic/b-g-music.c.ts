@@ -240,11 +240,7 @@ export default class BgMusic extends Container {
 			if (bgm.isPlaying && (bgm.intro === name || bgm.loop === name)) {
 				bgm.stop(0);
 				MusicFragment.__stopAll();
-				window.setTimeout(() => {
-					if ((bgm.intro === name || bgm.loop === name)) {
-						bgm.play();
-					}
-				}, 600);
+				bgm.play();
 			}
 		}
 	}
