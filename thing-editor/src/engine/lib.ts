@@ -642,7 +642,14 @@ export default class Lib
 		}
 		if (data.xmls) {
 			for (const xmlName of data.xmls) {
-				Assets.load(assetsRoot + xmlName + '.xml');
+				const url = assetsRoot + xmlName + '.xml';
+				game.loadingAdd(url);
+				Assets.load(url).then(() => {
+					game.loadingRemove(url);
+				}).catch(() => {
+					game.loadingRemove(url);
+					game.showLoadingError(url);
+				});
 			}
 		}
 		if (data.fonts) {
