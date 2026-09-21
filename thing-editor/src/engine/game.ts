@@ -268,7 +268,7 @@ class Game extends utils.EventEmitter<ThingGameEvents> {
 			/// #if EDITOR
 			setInterval(() => {
 				if (game.pixiApp.ticker.lastTime < (performance.now() - 100)) {
-					(game.pixiApp.ticker as any)._tick();
+					game._updateGlobal(0.1);
 				}
 			}, 100);
 
